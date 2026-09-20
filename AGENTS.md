@@ -43,7 +43,9 @@ from this Mac, usually as a Herdr swarm. `CLAUDE.md` is a symlink to this file.
 
 ## Working here
 
-- `uv run pytest` runs the offline suite; no network, no game.
+- `uv run pytest` runs the stdlib-only offline suite; no network, no game. Tests that import
+  `cv2`, `numpy` or `perception` are skipped there and run with `uv run --group perception pytest`
+  (`uv sync` afterwards restores the stdlib-only environment). Perception lanes run the second form.
 - Python via `uv`; standard library first; add a dependency only when a few lines cannot do it.
 - Several agents often share this checkout. Edit only the paths your brief names, and
   load the `shared-checkout` skill before committing.
