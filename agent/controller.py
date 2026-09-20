@@ -63,6 +63,12 @@ class Live:
     def release(self):
         self._apply(dict(NEUTRAL))
 
+    def keepalive(self):
+        """The range removes a player ~10 min after the last move or attack; camera and menu input do not count."""
+        for secs, pad in ((0.3, dict(ly=1.0)), (0.3, dict(ly=-1.0)), (0.15, dict(ly=0.0, rt=1.0)), (0.5, dict(rt=0.0))):
+            self.send(**pad)
+            time.sleep(secs)
+
     def _apply(self, s):
         b = self.vg.XUSB_BUTTON
         codes = {"A": b.XUSB_GAMEPAD_A, "B": b.XUSB_GAMEPAD_B, "X": b.XUSB_GAMEPAD_X, "Y": b.XUSB_GAMEPAD_Y,
@@ -91,12 +97,15 @@ from .state import ANCHOR, ENEMY, TARGET  # noqa: E402
 
 @dataclass
 class Cal:
-    """Measured on the live game (docs/lanes/l4-controller.md). Settings: Linear curve, aim assist 0, H/V sens 130/75."""
-    focal_1280: float = 760.0            # px at 1280 wide: screen offset = focal * tan(angle); HFOV 80 deg
-    # (stick, deg/s), ascending, from l4_measure.py yawmap. Instant and linear to 0.6; above that the game
-    # adds an outer-zone boost that takes ~100 ms to come in, so the first 0.1 s at 1.0 only averages 148 deg/s.
-    yaw_map: tuple = ((0.0, 0.0), (0.1, 8.4), (0.2, 23.6), (0.3, 40.8), (0.45, 66.3), (0.6, 88.0), (0.8, 179.0), (1.0, 236.0))
-    pitch_map: tuple = ((0.0, 0.0), (0.5, 38.3), (1.0, 138.6))
+    """Measured on the live game (docs/lanes/l4-controller.md). Settings: Linear curve, aim assist 0, H/V sens 265/75."""
+    # Horizontal FOV ~108 deg. Pinned by timing a full 360 deg turn at 0.45 stick (2.08 s = 173 deg/s) and choosing the
+    # focal length at which still-frame pixel shifts give the same rate. (Solving it from pixel shifts alone is
+    # ill-conditioned: it gave 590-860.)
+    focal_1280: float = 465.0            # px at 1280 wide: screen offset = focal * tan(angle)
+    # (stick, deg/s), ascending, l4_measure.py yawmap at Horizontal / Vertical Sensitivity 265 / 75, Linear curve,
+    # aim assist 0. The response is immediate at every deflection (first 60 ms average = steady rate within 6 %).
+    yaw_map: tuple = ((0.0, 0.0), (0.1, 18.5), (0.2, 61.5), (0.3, 110.0), (0.45, 172.0), (0.6, 241.0), (0.8, 320.0), (1.0, 415.0))
+    pitch_map: tuple = ((0.0, 0.0), (0.5, 43.0), (1.0, 99.0))
     latency_s: float = 0.045             # pad -> screen is 17-20 ms (measured); the rest is capture + perception + one loop period
     press_s: float = 0.033               # an 8 ms press of A registered 6/6; two 60 Hz periods leaves margin
     strike_s: float = 0.7                # web_strike: RB to arrival
@@ -104,7 +113,6 @@ class Cal:
     uppercut_s: float = 0.5
     melee_s: float = 1.3                 # RT held through punch, punch, kick
     swing_s: float = 1.0                 # LB hold for one arc
-    boost_tau_s: float = 0.08            # lag of the outer-zone turn boost
 
 
 def _interp(x, pts):
@@ -123,10 +131,11 @@ def stick_for(rate, rate_map):
 # The player's own third-person region, fractions of the frame. Its right edge stops short of the crosshair
 # (0.5): a small box we are aimed at sits on the crosshair and must never be mistaken for the hero.
 HERO_BOX = (0.27, 0.45, 0.47, 1.00)
-NEAR_H = 0.35                        # bbox height / frame height at melee range (brain.py uses the same guess)
+NEAR_H = 0.15                        # bbox height / frame height at melee range with perception/outline.py boxes (its box is 0.95 x the bar width)
 KP = 20.0                            # deg/s of commanded turn per degree of error
 KI = 2.0
 AIM_DONE_DEG = 0.4
+MAX_PITCH_STICK_S = 0.30             # pitch budget in stick-seconds from where the controller started (start it level)
 
 
 def in_hero_box(det, frame):
@@ -181,7 +190,7 @@ class Controller:
     cam: list = field(default_factory=lambda: [0.0, 0.0])   # integral of rate_cmd: the camera angle we have asked for
     cam_hist: list = field(default_factory=list)            # [(t, yaw, pitch)] over the last second
     stick: tuple = (0.0, 0.0)                               # right stick sent last step
-    boost: list = field(default_factory=lambda: [0.0, 0.0]) # modelled outer-zone boost, deg/s
+    pitch_used: float = 0.0                                 # integral of the pitch stick, stick-seconds
     integ: list = field(default_factory=lambda: [0.0, 0.0])
     next_shot_t: float = 0.0
     next_uppercut_t: float = 0.0
@@ -236,6 +245,7 @@ class Controller:
 
         if isinstance(intent, Search):
             out["rx"] = 0.45
+            out["ry"] = -math.copysign(0.5, self.pitch_used) if abs(self.pitch_used) > 0.03 else 0.0  # re-level
         elif isinstance(intent, Disengage):
             turn_s = 180.0 / self.cal.yaw_map[-1][1]
             if t - self.phase_t < turn_s:
@@ -279,20 +289,11 @@ class Controller:
 
     # -- target tracking and aim ---------------------------------------------
     def _advance(self, t, dt):
-        """Integrate the camera angle we have commanded, with the game's boost lag modelled.
-
-        Up to 0.6 stick the turn rate follows the stick at once. Above it the game adds an outer-zone boost that
-        arrives late (0.1 s at full stick turned 14.8 deg, the next 0.1 s 23.6 deg), modelled as a first-order lag.
-        """
-        rates = []
-        for i, (stick, rate_map, slope) in enumerate(((self.stick[0], self.cal.yaw_map, 147.0),
-                                                       (self.stick[1], self.cal.pitch_map, 77.0))):
-            full = _interp(abs(stick), rate_map)
-            base = min(full, slope * abs(stick))
-            self.boost[i] += (full - base - self.boost[i]) * min(1.0, dt / self.cal.boost_tau_s)
-            rates.append(math.copysign(base + self.boost[i], stick) if stick else 0.0)
-        self.rate_cmd = tuple(rates)
-        self.cam = [self.cam[0] + rates[0] * dt, self.cam[1] + rates[1] * dt]
+        """Integrate the camera angle we have commanded, from the sticks actually sent last step."""
+        self.rate_cmd = tuple(math.copysign(_interp(abs(v), m), v) for v, m in
+                              zip(self.stick, (self.cal.yaw_map, self.cal.pitch_map)))
+        self.cam = [self.cam[0] + self.rate_cmd[0] * dt, self.cam[1] + self.rate_cmd[1] * dt]
+        self.pitch_used += self.stick[1] * dt
         self.cam_hist.append((t, *self.cam))
         while self.cam_hist and self.cam_hist[0][0] < t - 1.0:
             self.cam_hist.pop(0)
@@ -342,10 +343,13 @@ class Controller:
             seed(best)   # the track has drifted off every box, and the target is not just hidden behind the hero
 
     def _behind_hero(self, state, shown, f):
-        """Third person: a target left of the crosshair passes behind the player's own body as we turn onto it."""
+        """Third person: a target left of the crosshair passes behind the player's own body as we turn onto it.
+
+        Only for 0.5 s, and never for a track at the crosshair itself (that one is simply lost: re-seed).
+        """
         w, h = state.frame
         x = w / 2 + f * math.tan(math.radians(max(-80.0, min(80.0, self.track.yaw - shown[0]))))
-        return HERO_BOX[0] * w - 40 <= x <= HERO_BOX[2] * w + 40
+        return state.t - self.track.seen_t < 0.5 and HERO_BOX[0] * w <= x <= HERO_BOX[2] * w
 
     def _measure(self, det, state):
         tr = self.track
@@ -362,6 +366,8 @@ class Controller:
         for i, err in enumerate(errs):
             self.integ[i] = max(-5.0, min(5.0, self.integ[i] + err * dt)) if abs(err) < 5.0 else 0.0
             rates.append(0.0 if abs(err) < AIM_DONE_DEG else KP * err + KI * self.integ[i])
+        if abs(self.pitch_used) > MAX_PITCH_STICK_S and rates[1] * self.pitch_used > 0:
+            rates[1] = 0.0   # a close bot's nameplate sits overhead: chasing it ran the camera into the ceiling
         out["rx"] = stick_for(rates[0], self.cal.yaw_map)
         out["ry"] = stick_for(rates[1], self.cal.pitch_map)
         fresh = state.t - tr.seen_t < 0.1

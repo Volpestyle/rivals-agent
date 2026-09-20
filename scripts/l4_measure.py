@@ -218,9 +218,7 @@ def yawmap(live):
     res["yaw"] = {}
     for d in (0.1, 0.2, 0.3, 0.45, 0.6, 0.8, 1.0):
         row = {}
-        for secs in (0.10, 0.25):
-            if d * secs > 0.21:   # would carry the patch out of view
-                secs = 0.2
+        for secs in ((0.10, 0.25) if d <= 0.45 else (0.06, 0.12)):   # short at high deflection: the patch must stay in view
             _, _, dx, _, score = turn(d, secs)
             row[str(secs)] = {"deg": round(ang(dx), 2), "score": round(score, 2)}
             pulse(live, secs, rx=-d)
@@ -260,11 +258,29 @@ def yawleft(live):
     return res
 
 
+def period(live):
+    """Time for one full 360 deg turn at 0.45 stick (linear zone, no boost): an FOV-free rate, to pin the focal length."""
+    rows, t_on, t_off = sample(live, 7.0, rx=0.45)
+    i0 = next(i for i, (t, _) in enumerate(rows) if t >= t_on + 0.5)
+    ref = rows[i0][1]
+    ref_n = (ref - ref.mean()) / (ref.std() + 1e-6)
+    best, best_t = -1.0, None
+    for t, b in rows[i0:]:
+        if t - rows[i0][0] < 1.5 or t > t_off:
+            continue
+        c = float((ref_n * (b - b.mean()) / (b.std() + 1e-6)).mean())
+        if c > best:
+            best, best_t = c, t
+    p = best_t - rows[i0][0]
+    return {"period_s": round(p, 3), "match": round(best, 3), "rate_deg_s": round(360 / p, 1)}
+
+
 if __name__ == "__main__":
     what = sys.argv[1]
     live = Live()
+    live.keepalive()
     try:
-        result = {"yaw": yaw, "yawmap": yawmap, "yawleft": yawleft, "press": press}[what](live)
+        result = {"yaw": yaw, "yawmap": yawmap, "yawleft": yawleft, "period": period, "press": press}[what](live)
     finally:
         live.release()
     OUT.mkdir(parents=True, exist_ok=True)

@@ -22,7 +22,21 @@ sys.path.insert(0, str(ROOT / "perception"))
 from agent.controller import NEUTRAL, Controller, Live, in_hero_box  # noqa: E402
 from agent.intents import BURST, Combo, Engage, Pull, Search, SwingTo, WebStrike  # noqa: E402
 from agent.state import ENEMY, State  # noqa: E402
-from outline import detect  # noqa: E402
+import outline  # noqa: E402
+
+# Enemy Color is set to Green in the game (docs/lanes/l4-controller.md): nameplates render ~#40AF58 (OpenCV H 67,
+# S 160, V 175). perception/outline.py looks for red bars, so rotate green onto red and relax its brightness floor
+# until L3 ships a green finder.
+outline.SAT_MIN, outline.VAL_MIN = 110, 140
+DEAD_ZONES = ((0.0, 0.83, 1.0, 1.0), (0.90, 0.0, 1.0, 0.42), (0.0, 0.0, 0.25, 0.20))  # HUD strip, fps overlay, key hints
+
+
+def detect(frame_bgr, scale=1.0):
+    hsv = cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2HSV)
+    hsv[..., 0] = (hsv[..., 0].astype(int) - 67) % 180
+    h, w = frame_bgr.shape[:2]
+    return [d for d in outline.detect(cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR), scale)
+            if not any(x0 <= d.center[0] / w <= x1 and y0 <= d.center[1] / h <= y1 for x0, y0, x1, y1 in DEAD_ZONES)]
 
 FRAME = (1280, 720)
 
@@ -34,6 +48,7 @@ class Rig:
         self.out, self.native, self.period = Path(out), native, 1.0 / fps
         self.out.mkdir(parents=True, exist_ok=True)
         self.live, self.ctrl = Live(), Controller()
+        self.live.keepalive()
         self.t0, self.saved, self.next_save = time.perf_counter(), 0, 0.0
         self.q = queue.Queue(maxsize=64)
         self.log = open(self.out / ("frames.jsonl" if native else "log.jsonl"), "w", encoding="utf-8")
@@ -55,7 +70,7 @@ class Rig:
 
     def act(self, pad, frame, small, state, note=None):
         self.live.send(**pad)
-        row = {"t": round(state.t, 4), "pad": {**pad, "buttons": list(pad["buttons"])}, "note": note,
+        row = {"t": round(state.t, 4), "pad": {**pad, "buttons": list(pad["buttons"])}, "note": note, "cam": [round(v, 1) for v in self.ctrl.cam], "pitch_used": round(self.ctrl.pitch_used, 3),
                "dets": [[round(v) for v in d.bbox] for d in state.detections]}
         if state.t >= self.next_save and not self.q.full():
             row["file"] = row["i"] = None
@@ -181,22 +196,22 @@ def prim(rig, name, n):
 
 def tagrun(rig, secs):
     """Engage the bot (tags, strikes, melee at varied range), then stand in front of it to take damage."""
-    t_end = time.perf_counter() + secs
+    t_end, combo = time.perf_counter() + secs, None
     while time.perf_counter() < t_end:
         frame, small, state = rig.see()
         det = rig.nearest(state)
         phase = (time.perf_counter() - rig.t0) % 20.0
         if det is None:
             intent = Search()
-        elif phase < 8.0:
-            intent = Engage(det)
-        elif phase < 9.0:
-            intent = Combo(BURST, det)
+        elif phase < 6.0:
+            intent, combo = Engage(det), None
+        elif phase < 11.0:
+            intent = combo = combo or Combo(BURST, det)   # one instance = one play of the burst
         else:
             intent = None      # stand still, aimed, and let it shoot back
         pad = rig.ctrl.step(state, intent) if intent is not None else rig.ctrl.aim_only(state, det)[0]
-        if intent is None and phase > 14.0:
-            pad["ly"] = -1.0   # back off so the next engage starts from range
+        if intent is None and 17.0 < phase < 18.5:
+            pad["ly"] = -1.0   # back off a little so the next engage starts from range
         rig.act(pad, frame, small, state, type(intent).__name__ if intent else "stand")
     return {"frames": rig.saved, "seconds": secs}
 
