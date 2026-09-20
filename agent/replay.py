@@ -92,7 +92,7 @@ def synthetic(hz=10):
     """A scripted story that walks the brain through every mode, the tracer branch and perception dropouts."""
     frame = (1280, 720)  # what L1 records and perception processes
 
-    def enemy(h, x=640, tagged=None):  # h = bbox height px on a 720 px frame: 300 near, 150 mid, 50 far
+    def enemy(h, x=640, tagged=None):  # h = bbox height px on a 720 px frame: 300 near, 150 mid, 45 far
         return Detection(ENEMY, (x - h / 4, 360 - h / 2, x + h / 4, 360 + h / 2), 0.9, tagged=tagged)
 
     anchor = Detection(ANCHOR, (900, 100, 950, 150), 0.8)
@@ -100,7 +100,7 @@ def synthetic(hz=10):
     full = dict(hp=100, max_hp=100, abilities=ready, webs=3)
     story = [  # (seconds, State fields)
         (2.0, dict(full, detections=[], on_target=False)),                                        # nothing in view: search
-        (3.0, dict(full, detections=[enemy(50, 450), anchor], on_target=False)),                  # far: swing in
+        (3.0, dict(full, detections=[enemy(45, 450), anchor], on_target=False)),                  # far: swing in
         (1.0, dict(full, detections=[enemy(150, 550)], on_target=False)),                         # mid, tag unknown, unaimed: engage
         (1.0, dict(full, detections=[enemy(150, 550, True)], on_target=False)),                   # tag seen: web strike, no aim needed
         (2.0, dict(full, detections=[enemy(300, tagged=True)], on_target=True)),                  # close: engage, melee eats the tag

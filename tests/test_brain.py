@@ -3,7 +3,7 @@ import json
 
 import pytest
 
-from agent.brain import BURST_HOLD_S, LOST_S, RETREAT_MAX_S, STRIKE_HOLD_S, Memory, decide
+from agent.brain import BURST_HOLD_S, FIGHT, LOST_S, RETREAT_MAX_S, STRIKE_HOLD_S, Memory, decide
 from agent.intents import BURST, MACROS, Combo, Disengage, Engage, Idle, Pull, Search, SwingTo, WebStrike
 from agent.state import ANCHOR, ENEMY, PULL, SWING, TARGET, UPPERCUT, Ability, Detection, State
 
@@ -11,7 +11,7 @@ FRAME = (2560, 1440)  # the test geometry below is authored at this size
 READY = {SWING: Ability(True, 3), PULL: Ability(True), UPPERCUT: Ability(True, 2)}
 
 
-def enemy(h=300, x=1280, k=1.0, **kw):  # h = bbox height px: 600 near, 300 mid, 100 far on a 1440 px frame; k rescales to a smaller frame
+def enemy(h=300, x=1280, k=1.0, **kw):  # h = bbox height px: 600 near, 300 mid, 90 far on a 1440 px frame; k rescales to a smaller frame
     box = (x - h / 4, 720 - h / 2, x + h / 4, 720 + h / 2)
     return Detection(kw.pop("cls", ENEMY), tuple(k * v for v in box), kw.pop("conf", 0.9), **kw)
 
@@ -50,25 +50,26 @@ def test_hostile_classes_both_count():
 def test_range_by_bbox_height():
     assert decide(st(0, detections=[enemy(600)]), Memory()) == Engage(enemy(600))  # near
     assert decide(st(0, detections=[enemy(300)]), Memory()) == Combo(BURST, enemy(300))  # mid
-    assert decide(st(0, detections=[enemy(100), ANCH]), Memory()) == SwingTo(ANCH)  # far
+    assert decide(st(0, detections=[enemy(90), ANCH]), Memory()) == SwingTo(ANCH)  # far
 
 
 def test_range_thresholds_come_from_one_table(monkeypatch):
     from agent import brain
     from agent.brain import RANGES, Ranges, range_of
 
-    # the values are unchanged until measured numbers arrive (docs/lanes/l6-integration.md)
-    assert (RANGES.near_m, RANGES.far_m, RANGES.near_h, RANGES.far_h) == (4.0, 20.0, 0.35, 0.08)
+    # L3's ground-truth ranging: distance_m = 1.30 / (box height / frame height); the table is that at 4 m and 20 m
+    assert (RANGES.near_m, RANGES.far_m, RANGES.near_h, RANGES.far_h) == (4.0, 20.0, 0.325, 0.065)
+    assert RANGES.near_h * RANGES.near_m == pytest.approx(1.30) == RANGES.far_h * RANGES.far_m
     s = st(0)
-    measured = Ranges(near_h=0.12, far_h=0.05)  # e.g. a table set from real boxes
-    assert [range_of(enemy(h), s) for h in (60, 130, 200)] == ["far", "mid", "mid"]  # guess table: 0.35 is out of reach
-    assert [range_of(enemy(h), s, measured) for h in (60, 130, 200)] == ["far", "mid", "near"]
-    assert range_of(enemy(100, distance=3.0), s, Ranges(near_m=2.5)) == "mid"  # the metre columns too
+    other = Ranges(near_h=0.12, far_h=0.05)  # a table with different height columns
+    assert [range_of(enemy(h), s) for h in (60, 130, 200)] == ["far", "mid", "mid"]  # 0.325 of 1440 px is 468 px
+    assert [range_of(enemy(h), s, other) for h in (60, 130, 200)] == ["far", "mid", "near"]
+    assert range_of(enemy(90, distance=3.0), s, Ranges(near_m=2.5)) == "mid"  # the metre columns too
     # decisions read the table at call time, so setting it needs no change at any call site
     box = enemy(200)
-    assert isinstance(decide(st(0, detections=[box]), Memory()), Combo)  # mid range under the guess table
-    monkeypatch.setattr(brain, "RANGES", measured)
-    assert decide(st(0, detections=[box]), Memory()) == Engage(box)  # near under the measured one
+    assert isinstance(decide(st(0, detections=[box]), Memory()), Combo)  # mid range under the default table
+    monkeypatch.setattr(brain, "RANGES", other)
+    assert decide(st(0, detections=[box]), Memory()) == Engage(box)  # near under the other one
 
 
 def test_range_and_aim_follow_the_frame_the_boxes_are_in():
@@ -87,11 +88,11 @@ def test_range_and_aim_follow_the_frame_the_boxes_are_in():
 
 
 def test_range_prefers_distance_estimate_over_bbox():
-    tiny_but_close = enemy(100, distance=3.0)  # bbox alone says far, so it would swing
+    tiny_but_close = enemy(90, distance=3.0)  # bbox alone says far, so it would swing
     assert decide(st(0, detections=[tiny_but_close, ANCH]), Memory()) == Engage(tiny_but_close)
     huge_but_far = enemy(600, distance=40.0)
     assert decide(st(0, detections=[huge_but_far, ANCH]), Memory()) == SwingTo(ANCH)
-    mid_by_distance = enemy(100, distance=12.0)
+    mid_by_distance = enemy(90, distance=12.0)
     assert decide(st(0, detections=[mid_by_distance]), Memory()) == Combo(BURST, mid_by_distance)
 
 
@@ -111,7 +112,7 @@ def test_near_range_engages_whatever_the_tag():
 
 
 def test_far_swing_needs_anchor_and_charge():
-    far = enemy(100)
+    far = enemy(90)
     assert decide(st(0, detections=[far]), Memory()) == Engage(far)  # no anchor
     spent = dict(READY, **{SWING: Ability(False, 0)})
     assert decide(st(0, detections=[far, ANCH], abilities=spent), Memory()) == Engage(far)
@@ -175,7 +176,7 @@ def test_combo_names_are_kit_macros():
 # --- unknown fields ---------------------------------------------------------
 
 def test_unknown_ability_is_never_spent():
-    mid, far = enemy(300, tagged=False), enemy(100)
+    mid, far = enemy(300, tagged=False), enemy(90)
     assert decide(st(0, detections=[mid], abilities={}), Memory()) == Engage(mid)
     assert decide(st(0, detections=[far, ANCH], abilities={}), Memory()) == Engage(far)
     unreadable = {PULL: READY[PULL], UPPERCUT: Ability(None, None)}
@@ -215,6 +216,21 @@ def test_short_flicker_keeps_intent_but_long_loss_searches():
     first = decide(st(0, detections=[enemy(300)], on_target=False), m)
     assert decide(st(0.3, detections=[]), m) is first
     assert decide(st(0.8, detections=[]), m) == Search()
+
+
+def test_a_target_lost_right_after_our_own_hit_is_not_the_target_leaving():
+    # L3: a bot flashes white when hit and its outline vanishes for a few frames (L4 holds its track 0.35 s).
+    # The brain's flicker window (LOST_S) outlasts that, so the fight is neither dropped nor turned into a search.
+    m = Memory()
+    near = enemy(600)
+    assert decide(st(0, detections=[near]), m) == Engage(near)
+    for i in range(1, 5):  # four blind frames at 10 Hz
+        assert decide(st(i / 10, detections=[]), m) == Engage(near)
+        assert m.mode == FIGHT
+    assert decide(st(0.5, detections=[enemy(600, x=1300)]), m) == Engage(enemy(600, x=1300))  # back on the same target
+    assert m.mode == FIGHT
+    assert LOST_S > 0.35  # the window, not the tests above, is what must outlast the flash
+    assert decide(st(0.5 + LOST_S + 0.2, detections=[]), m) == Search()  # a real loss still ends the fight
 
 
 # --- retreat ----------------------------------------------------------------

@@ -47,13 +47,15 @@ class Ranges:
     """Where near, mid and far begin: the one table every range decision reads (range_of).
 
     In metres, used when a Detection carries a distance; as bbox height / frame height,
-    used when it does not. Fill the height columns from a measured table: the height of a
-    real detection's box at true melee range (near_h) and at the far edge (far_h).
+    used when it does not. The height columns come from L3's ranging measurement against
+    hand-checked ground truth (perception/gt/, docs/lanes/l3-detector.md):
+    distance_m = 1.30 / (outline box height / frame height), about +-25% as a single
+    multiplier, calibrated on a 2 m character. near_h and far_h are that relation at 4 m and 20 m.
     """
     near_m: float = 4.0    # kit: Amazing Combo sphere and the kick reach 4 m
     far_m: float = 20.0    # kit: pull and the burst's Web Cluster reach 20 m (the web strike locks out to 24 m)
-    near_h: float = 0.35   # guess, and unreachable on real boxes: 2317 detections from run1 had median 0.086, max 0.350
-    far_h: float = 0.08    # guess (docs/lanes/l6-integration.md)
+    near_h: float = 0.325  # measured: 1.30 / 4 m
+    far_h: float = 0.065   # measured: 1.30 / 20 m
 
 
 RANGES = Ranges()  # replace or edit here; range_of reads it at call time

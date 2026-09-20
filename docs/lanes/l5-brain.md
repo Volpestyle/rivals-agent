@@ -4,11 +4,11 @@ Linear: project Rivals Agent, issue VUH-1303 (non-blocking Jev).
 
 **Built and tested offline; not yet running against the live game.** The scripted
 brain, the replay tool and both Jev variants (blocking and non-blocking) exist and pass
-113 tests with no network (124 with the `perception` group installed). `decide_jev` is
-the non-blocking variant with standing answers, measured from the PC at 10 Hz: Jev decides
-13% of ticks. Range thresholds sit in one table (`brain.RANGES`) that is waiting for
-measured numbers. The brain has never seen real perception output: it needs L2's HUD
-reads, L3's detections and L4's controller. The screen-read eval harness (damage, time to
+their tests with no network. `decide_jev` is the non-blocking variant with standing
+answers, measured from the PC at 10 Hz: Jev decides 13% of ticks. Range thresholds sit in
+one table (`brain.RANGES`), set from L3's ground-truth ranging measurement. The brain has
+never seen real perception output: it needs L2's HUD reads, L3's detections and L4's
+controller. The screen-read eval harness (damage, time to
 kill, uptime) is not built. Numbers below are from synthetic States unless stated.
 
 The offline half of L5 lives in `agent/`: a scripted brain that runs on recorded
@@ -329,16 +329,29 @@ whose intent differs from what the scripted policy would have chosen from the sa
   the brain never issues `SwingTo`.
 - **`Detection.tagged` has no producer yet.** Until an L2 `read_tagged` (or an L3 class)
   fills it, every tag is `None` and the brain only ever engages or bursts at mid range.
-- **Range thresholds are one table, `brain.RANGES` (a `Ranges`), and its height columns
-  are unmeasured.** `near_h = 0.35` is unreachable on real boxes: across 2317 detections from
-  run1 (`docs/lanes/l6-integration.md`) box height / frame height had median 0.086, p75
-  0.121 and max 0.350, so `near` never fired and combos ran 6 times in 636 s. The values are
-  unchanged on purpose until measured numbers arrive: rivals-det is deciding whether boxes
-  cover the full silhouette or ranging should use the nameplate, and rivals-l4 will measure
-  box height at true melee range. To set them, edit the `Ranges` fields (or assign
-  `brain.RANGES`); `range_of` reads the table at call time, so no call site changes. The
-  metre columns (4 m, 20 m) are the kit's. `agent/controller.py` (L4) keeps its own
-  `NEAR_H = 0.35`; it should read `brain.RANGES.near_h` so the two never diverge.
+- **Range thresholds are one table, `brain.RANGES` (a `Ranges`), set from L3's measurement.**
+  L3 measured ranging against hand-checked ground truth (`perception/gt/`,
+  `docs/lanes/l3-detector.md`, the ranging section): `distance_m = 1.30 / (outline box height / frame height)`,
+  about +-25% as a single multiplier, calibrated on a 2 m character. `near_h = 0.325` is
+  that relation at 4 m and `far_h = 0.065` at 20 m; `test_range_thresholds_come_from_one_table`
+  pins both to it. The old guess, `near_h = 0.35`, was unreachable on real boxes (2317
+  run1 detections had median 0.086, max 0.350; combos ran 6 times in 636 s). The metre
+  columns (4 m, 20 m) are the kit's. `range_of` reads the table at call time; the
+  controller (L4) reads `brain.RANGES.near_h` too, so the two never diverge. The +-25% is
+  one multiplier, so a hero of another height shifts every threshold by the same factor.
+- **A target lost right after our own hit is not the target leaving.** A bot flashes white
+  when hit and its outline vanishes for a few frames (L3, `docs/lanes/l3-detector.md`), so
+  the agent is blind to a target in the instant after it hits it. Two layers, two owners:
+  *continuity of the intent* is the brain's, and needs nothing new: `gate` already rides a
+  dropout out for `LOST_S` (0.5 s) by re-issuing the current intent without leaving FIGHT
+  or entering SEARCH, and a playing hold is not interrupted at all. That outlasts the
+  controller's 0.35 s `HIT_BLIND_S` and four blind frames at 10 Hz; it is pinned by
+  `test_a_target_lost_right_after_our_own_hit_is_not_the_target_leaving`. *Continuity of
+  the aim* (keep the camera on the predicted bearing and stay armed through the flash) is
+  the controller's track, and it already does it; `Memory` holds no bearing, so that half
+  cannot live there. If the blind stretch turns out longer than 0.5 s, the fix is a
+  longer window in `gate` for a lost target whose last intent was an attack (it reads
+  `memory.intent`, no new field); nothing measured says so yet.
 - **`State.frame` is required.** Every bbox is in the pixels of the frame the builder
   processed (1280x720 for L1 recordings and perception). L2's HUD row also reads a
   `tracer` slot; the brain ignores it because the kit does not say what it shows.
@@ -384,9 +397,9 @@ whose intent differs from what the scripted policy would have chosen from the sa
 
 ## Open
 
-- **Range thresholds:** `brain.RANGES` waits for the measured table (rivals-det and rivals-l4,
-  via the lead). Until then `near` never fires on real detections and the brain rarely leaves
-  `APPROACH`.
+- **Range thresholds are set but unrun:** `near` should now fire on real boxes at true melee
+  range, but the brain has not seen real detections, so whether it stops living in `APPROACH`
+  is unmeasured.
 - The screen-read eval harness (damage, time to kill, uptime). `stats.trace`, `stats.sources`
   and the `steered` measure in `bench_async` are what it should read.
 - A run against real perception output: everything above is on synthetic States. Whether a

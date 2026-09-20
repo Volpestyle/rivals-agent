@@ -21,7 +21,7 @@ READY = {SWING: Ability(True, 3), PULL: Ability(True), UPPERCUT: Ability(True, 2
 ANCH = Detection(ANCHOR, (1800, 200, 1900, 300), 0.8)
 
 
-def enemy(x=1280, tagged=None, h=300):  # h = bbox height px: 300 is mid range on a 1440 px frame
+def enemy(x=1280, tagged=None, h=300):  # h = bbox height px: 300 is mid range and 90 far on a 1440 px frame
     return Detection(ENEMY, (x - h / 4, 720 - h / 2, x + h / 4, 720 + h / 2), 0.9, tagged=tagged)
 
 
@@ -146,7 +146,7 @@ def test_only_intents_some_target_can_execute_are_offered():
     assert offered(detections=[enemy(tagged=False)], abilities={})[0] == ["engage", "search", "idle", "disengage"]
     assert offered(detections=[enemy(tagged=False)], webs=0)[0] == ["engage", "pull", "search", "idle", "disengage"]
     assert offered(detections=[enemy(tagged=False)], on_target=False)[0] == ["engage", "web_strike"][:1] + ["search", "idle", "disengage"]
-    far = enemy(h=100, tagged=False)  # beyond reach: the model may only engage or swing
+    far = enemy(h=90, tagged=False)  # beyond reach: the model may only engage or swing
     assert offered(detections=[far, ANCH])[0] == ["engage", "swing_to", "search", "idle", "disengage"]
 
 
