@@ -53,6 +53,10 @@ only once an outcome can be measured reliably.
   continue or escape, with bounded tests that say what they do not show.
 - **Jev** is frozen as a baseline and a possible label assistant. Its inference path does
   not learn from experience, and agreement with it is not gameplay quality.
+- **Compute budget.** James approved an initial $100 for rented cloud compute (2026-09-20).
+  Training is local first; renting is chosen from a measured local-versus-rental comparison,
+  spend is tracked, and the figure is revisited before it is exceeded. It is an experiment
+  allowance, not an estimate of what the project costs. Nothing has been rented.
 - **Third-party footage** stays under `data/` (gitignored). Frames from it are never
   committed or published to Linear.
 

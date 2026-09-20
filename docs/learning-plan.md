@@ -29,7 +29,7 @@ custom-lobby input; verified lobby navigation and an appropriate guard are prere
 |---|---|---|
 | Expert VODs | Screen history, visible HUD transitions, tactical examples | Exact inputs, private communications, intent, hidden game state |
 | James's synchronized gameplay | Screens and timestamped human inputs | Effective game response must still be checked |
-| Scripted pad recordings | Commanded inputs, frames, calibration trials | Commands may be ignored; scripted actions are not expert demonstrations |
+| Scripted pad recordings | Exact commanded pad inputs and frames; initial paired data for a later inverse-dynamics experiment | Commands may be ignored; scripted actions are not expert demonstrations |
 | Human annotations | Target/intent judgments, observable outcomes | Ambiguous decisions require unknown labels or multiple acceptable choices |
 
 Expert VODs are the first data source. James recording inputs is optional, not a
@@ -64,14 +64,62 @@ the label, but are never policy inputs. Later events and commentary are not evid
 that the player knew them earlier. Split by entire recording/session before extracting
 windows; nearby frames and mirrored uploads cannot cross train/evaluation boundaries.
 
+### Annotation ownership and pilot
+
+Codex co-lead owns the initial annotation specification and one independent pass;
+the tab-1 lead assigns the second annotator. Model-assisted labels are proposals,
+not human ground truth. James is not a required volume annotator. The HUD lane
+supplies observed transitions with evidence intervals; annotators infer tactical
+choices only where the visible evidence supports them. A human spot-check can
+adjudicate important disagreements, but unreviewed disagreements remain unknown.
+
+An uppercut use is not `Combo`, a web shot is not `burst`, and a swing charge spent
+does not identify an anchor or prove the `SwingTo` intent. RB-associated cooldown
+evidence plus a visible tracer and travel can support pull/strike labels, but a
+missing tracer is not proof of untagged. Burst requires the observed sequence,
+not one ammo decrement. Record primitive events separately from tactical options.
+
+Pilot format: six decision windows from the inspected samples, four Req and two
+Day, including a spectator negative. Each carries source ID, decision timestamp,
+the preceding five seconds (or an explicit truncated-context flag), and a separate
+next-five-seconds outcome segment. Both annotators first label the context alone:
+visible situation, candidate action(s), target bbox in original pixels or unknown,
+evidence timestamps, uncertainty and unusable reason. Outcome review is a separate
+field, not an input to a hindsight-corrected tactical label. These six examples test
+label observability and the contract, not policy quality or a training data budget.
+The loader owner implements the representation; this document does not add a
+second competing schema. Compare agreement and evidence, retain ambiguity, and do
+not treat two models agreeing as independent proof of correctness.
+
+### VOD perception and normalization
+
+VOD target labelling is a separate perception problem. The pure-green live finder
+does not transfer to arbitrary streamer outline colours; existing YOLO weights
+have not been validated on this domain. The pilot uses inspected visual target
+boxes, not unchecked detector pseudo-labels. Test target detection on hand-audited
+VOD frames before scaling labels, and include both creators/outline settings in
+evaluation so policy behavior does not depend on one highlight colour.
+
+Both domains pass through a common, recorded crop/resize for the scene input.
+Read native HUD crops separately into structured events before masking HUD and
+known overlay regions in the scene stream; carry visibility masks so missing
+pixels are not hallucinated. Originals stay intact. Exact mask bounds and working
+resolution are chosen against inspected samples, not inferred from screen height.
+Compression, HUD layout, player skins, map, controls and overlays are domain shifts
+that remain after normalization and need held-out evaluation.
+
+The passive practice range is out of distribution for team-fight judgment. It
+tests mechanics and integration; AI-only custom games are the first venue for
+meaningful interactive engage/escape evaluation, though still not human play.
+
 ## Training and runtime
 
 ```mermaid
 flowchart LR
     V[Expert VODs] --> D[Temporal demonstrations]
-    H[Human video and inputs] --> D
+    H[Optional human video and inputs] --> D
     D --> L[Reviewed intent and target labels]
-    L --> T[Imitation training on Mac]
+    L --> T[Imitation training locally or on rented GPU]
     T --> P[Learned temporal policy]
     F[Recent frames and observed events] --> P
     P --> I[Intent and target]
@@ -89,9 +137,15 @@ An option's completion or failure is distinct from the brain's guessed hold dura
 
 Behavioral cloning predicts reviewed demonstrated choices; it needs no reward function.
 Class imbalance matters: constant movement or idle frames must not swamp rare retreat
-and engagement decisions. Measure a simple baseline before choosing model size. Train
-on the Mac, niced; the PC GPU belongs to the live game. Runtime placement is measured
+and engagement decisions. Measure a simple baseline before choosing model size. The
+Mac is the initial training environment, niced; the PC GPU belongs to the live game. Runtime placement is measured
 against latency and game performance before adoption. No model family is selected yet.
+
+James approves an initial $100 cloud-compute budget (2026-09-20). Local hardware
+is a starting point, not an architectural limit: rent a GPU when measured throughput,
+memory requirements or iteration speed justify it. Track spend against that initial
+allocation and revisit funding before exceeding it; $100 is not an estimate for
+the complete project. Hosted annotation and storage costs are estimated separately.
 
 The [local-model measurement](lanes/local-jev.md) is a concrete placement constraint:
 the 35B-A3B server answers in about 85 ms median on the Mac but 175 ms median /
@@ -132,6 +186,39 @@ Disappearance is not a kill, ult charge is not damage, and missing evidence is u
 Manually adjudicated evaluation is valid while automatic outcome readers are incomplete.
 
 ## Sources
+
+### Acquisition evidence, 2026-09-20
+
+Installed `yt-dlp` lists recent videos for both Twitch channels and downloads
+bounded public sections without cookies or login. `ffprobe` confirms 1920x1080,
+60 fps for the inspected samples. `data/demos/samples/manifest.json` names nine
+sample frames and their clip-relative timestamps; images and clips are local only.
+
+| Source | Inspected sample | Finding |
+|---|---|---|
+| [Req, VOD 2873352801](https://www.twitch.tv/videos/2873352801) | Requested 32:00–33:00; local duration 60.083 s | Spider-Man combat, death/spectating and return. Chat intermittently obscures rightmost abilities/ult; HP and web ammo visible. +15 s is a different hero's spectator POV. |
+| [Day, VOD 2879354299](https://www.twitch.tv/videos/2879354299) | Requested 6:00:00–6:01:00; approximately 60 s locally | Spider-Man traversal and combat. At +5/+30/+45 s, HP is 250/242/99 and ammo 5/4/4. HP, ammo and ability icons visible; avatar and sponsor overlays need masks. |
+
+The six pilot decision times are clip-relative: Req +5, +15, +30, +45 seconds;
+Day +30 and +45 seconds. Source windows are already present in the two retained
+clips. Req +15 is a deliberate spectator negative. The manifest names the clips;
+the Day pilot uses the `-21600-60s.mp4` file, not the earlier ten-second probe.
+
+Req's metadata reports a 5:49:42 broadcast, uploaded September 13. Day's September
+20 broadcast is still growing when inspected (8:03:36 at the initial probe), so
+that duration is not final. Other Day samples contain hero selection, another hero,
+a break screen, a tournament co-watch and another game. Channel/title is insufficient
+to establish that a segment is the creator playing Spider-Man.
+
+The Day YouTube candidate `yF2fr6wSkqE` identifies Day and links `daymr`, but its
+media download returns HTTP 403; no access workaround is attempted. Twitch samples
+provide the required pixels. Rank claims are not independently verified. The
+[Twitch terms page](https://legal.twitch.com/en/legal/terms-of-service/) returned
+only a navigation shell to the reader, so this feasibility pass establishes no
+training licence or permission to redistribute. No full archive or training run
+is performed in this pass.
+
+### Research references
 
 - [VPT](https://openai.com/index/vpt/): action-labelled demonstrations support inference
   of actions in additional video; the scale of its Minecraft result is not a promise
