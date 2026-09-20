@@ -13,5 +13,8 @@ package = false
 [tool.pytest.ini_options]
 pythonpath = ["."]
 testpaths = ["tests"]
-# L2's hud scorer needs opencv + numpy and runs as a script (see its docstring), not under pytest.
-addopts = "--ignore=tests/test_hud.py"
+# pytest collects the decision-layer tests only. The perception harnesses (tests/test_hud.py,
+# test_replay_states.py, test_evalread.py, ...) need opencv + numpy and recorded data and run as
+# scripts (see their docstrings), so a bare `uv run pytest` must not import them. A stdlib-only
+# pytest test from another lane has to match one of these patterns, or be added here.
+python_files = ["test_brain*.py", "test_jev*.py"]
