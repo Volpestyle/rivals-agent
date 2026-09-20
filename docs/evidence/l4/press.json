@@ -1,0 +1,153 @@
+{
+ "LT": {
+  "8": {
+   "registered": "4/6",
+   "visible_after_ms": [
+    38,
+    58,
+    17,
+    55
+   ]
+  },
+  "16": {
+   "registered": "5/6",
+   "visible_after_ms": [
+    25,
+    47,
+    63,
+    20,
+    53
+   ]
+  },
+  "25": {
+   "registered": "6/6",
+   "visible_after_ms": [
+    321,
+    33,
+    51,
+    66,
+    32,
+    50
+   ]
+  },
+  "33": {
+   "registered": "4/6",
+   "visible_after_ms": [
+    37,
+    42,
+    62,
+    39
+   ]
+  },
+  "50": {
+   "registered": "5/6",
+   "visible_after_ms": [
+    54,
+    54,
+    57,
+    58,
+    57
+   ]
+  },
+  "80": {
+   "registered": "6/6",
+   "visible_after_ms": [
+    85,
+    86,
+    84,
+    87,
+    106,
+    84
+   ]
+  },
+  "120": {
+   "registered": "5/6",
+   "visible_after_ms": [
+    129,
+    128,
+    129,
+    129,
+    129
+   ]
+  }
+ },
+ "A": {
+  "8": {
+   "registered": "6/6",
+   "visible_after_ms": [
+    17,
+    17,
+    18,
+    121,
+    17,
+    21
+   ]
+  },
+  "16": {
+   "registered": "6/6",
+   "visible_after_ms": [
+    21,
+    20,
+    20,
+    121,
+    21,
+    20
+   ]
+  },
+  "25": {
+   "registered": "6/6",
+   "visible_after_ms": [
+    29,
+    29,
+    29,
+    63,
+    29,
+    30
+   ]
+  },
+  "33": {
+   "registered": "6/6",
+   "visible_after_ms": [
+    37,
+    37,
+    37,
+    155,
+    38,
+    37
+   ]
+  },
+  "50": {
+   "registered": "6/6",
+   "visible_after_ms": [
+    57,
+    57,
+    55,
+    125,
+    57,
+    57
+   ]
+  },
+  "80": {
+   "registered": "6/6",
+   "visible_after_ms": [
+    85,
+    84,
+    86,
+    86,
+    86,
+    87
+   ]
+  },
+  "120": {
+   "registered": "6/6",
+   "visible_after_ms": [
+    130,
+    129,
+    130,
+    128,
+    129,
+    130
+   ]
+  }
+ }
+}
