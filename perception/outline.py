@@ -51,6 +51,13 @@ HUE_LO, HUE_HI, SAT_MIN, VAL_MIN = 4, 168, 100, 195
 # on Spider-Man's own suit. The height floor is what separates them; it also serves as
 # the player-exclusion rule, since the player is never drawn a nameplate.
 BAR_MIN_ASPECT, BAR_MIN_W, BAR_MAX_W, BAR_MIN_H, BAR_MAX_H = 4.0, 35, 300, 6, 22
+# The GREEN mark is the health bar *and* the name text as one component -- 53 px tall
+# at native, where the red nameplate alone was 16-20. Measured on tagrun0; without
+# this the whole plate failed the bar test, fell through to the outline branch and
+# was reported as a second enemy above every visible one.
+GREEN_BAR_MAX_H = 30
+# A mark this much wider than tall is a plate, never a body.
+FLAT_ASPECT = 3.0
 # The body hangs under the bar, offset by a gap that scales with the bar (both shrink
 # with distance). Ratios to bar width, from 152 bars matched against a labelled box
 # underneath: gap p25/median/p75 0.31/0.48/0.63, body height 0.57/1.62/2.33, body width
@@ -104,6 +111,7 @@ GREEN_MIN_AREA = 60
 # Too large merges two adjacent enemies, which is the failure to watch for.
 GREEN_CLOSE = 14   # px at 720p
 GREEN_MERGE_GAP = 12  # px at 720p; boxes closer than this are arcs of one body
+BAR_ABOVE = 0.8  # a nameplate floats up to this share of the body height above its top
 # HUD elements that are green in this band and are not enemies, as fractions of the
 # frame: the fps/ping overlay is green text, and the player's own HP bar has green
 # segments. Same idea as autolabel's DEAD_ZONES, kept here because outline.py is used
@@ -189,7 +197,7 @@ def find_green(frame_bgr, scale=None, band=GREEN):
                 and h < PLAYER_ZONE_MIN_H * s):
             continue
         if (w / max(h, 1) >= BAR_MIN_ASPECT and BAR_MIN_W * s <= w <= BAR_MAX_W * s
-                and BAR_MIN_H * s <= h <= BAR_MAX_H * s):
+                and BAR_MIN_H * s <= h <= GREEN_BAR_MAX_H * s):
             out.append((int(x), int(y), int(w), int(h), "bar"))
         elif h >= GREEN_MIN_H * s and area / (w * h) <= GREEN_FILL_MAX:
             out.append((int(x), int(y), int(w), int(h), "outline"))
@@ -238,7 +246,8 @@ def find_enemies(frame_bgr, scale=None, band=GREEN):
     for x, y, w, h, kind in find_green(frame_bgr, scale, band):
         if kind == "outline":
             box = (float(x), float(y), float(x + w), float(y + h))
-            outlines.append(box)
+            if not _flat((x, y, x + w, y + h)):
+                outlines.append(box)   # a flat mark is a plate, not a body to anchor on
             conf = 0.9
         else:  # a bar sits above the body, same geometry as the red path
             bw, bh = w * BODY_W, w * BODY_H
@@ -248,14 +257,35 @@ def find_enemies(frame_bgr, scale=None, band=GREEN):
                    min(float(iw), cx + bw / 2), min(float(ih), top + bh))
             conf = round(min(0.95, 0.5 + w / 400), 3)
         if box[2] > box[0] and box[3] > box[1]:
-            out.append((kind, box, conf))
-    keep = [(k, b, c) for k, b, c in out
-            if k == "outline" or not any(_overlaps(b, o) for o in outlines)]
+            # keep the mark's own rect: the dedupe below must test where the *bar* is,
+            # not where its projected body would be
+            out.append((kind, box, conf, (x, y, x + w, y + h)))
+    # Drop any *plate* -- wide, flat, bar-like -- that belongs to a body already found.
+    # Testing flatness rather than the 'bar' label matters: when the plate is tall enough
+    # to miss the bar thresholds it is labelled an outline, and a label-based test then
+    # reports it as a second enemy.
+    keep = [(k, b, c) for k, b, c, raw in out
+            if not (_flat(raw) and any(_belongs_to(raw, o) for o in outlines))]
     return [Detection(cls=ENEMY, bbox=tuple(round(v, 1) for v in b), conf=c) for _k, b, c in keep]
 
 
-def _overlaps(a, b):
-    return a[0] < b[2] and b[0] < a[2] and a[1] < b[3] and b[1] < a[3]
+def _flat(rect):
+    return (rect[2] - rect[0]) / max(rect[3] - rect[1], 1) >= FLAT_ASPECT
+
+
+def _belongs_to(bar, outline):
+    """Is this bar the mark of the enemy that `outline` traces?
+
+    Overlap alone is not enough: the health bar and name float *above* the body, clear
+    of the silhouette, so an overlap test left one spare box per visible enemy -- the
+    single largest error in the first ground-truth pass. The bar belongs to the body if
+    it sits horizontally within it and starts no higher than BAR_ABOVE of the body's
+    height over its top.
+    """
+    ox1, oy1, ox2, oy2 = outline
+    if not (bar[0] < ox2 and ox1 < bar[2]):
+        return False
+    return oy1 - BAR_ABOVE * (oy2 - oy1) <= bar[3] <= oy2
 
 
 def detect(frame_bgr, scale=None, mode="auto"):

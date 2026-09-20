@@ -126,3 +126,21 @@ def test_band_is_a_parameter():
     assert find_enemies(f) == []
     blue = GREEN._replace(hue_lo=100, hue_hi=125)
     assert len(find_enemies(f, band=blue)) == 1
+
+
+def test_health_bar_floating_above_the_body_is_not_a_second_enemy():
+    """The bar clears the silhouette entirely, so an overlap test misses it."""
+    f = _frame()
+    f[250:262, 600:700] = GREEN_BGR      # health bar, well above and not touching
+    f[320:460, 610:690] = GREEN_BGR
+    f[326:454, 616:684] = 0              # body outline
+    assert len(find_enemies(f)) == 1
+
+
+def test_a_bar_far_above_a_body_is_still_its_own_enemy():
+    """An enemy on a balcony above another must not be swallowed."""
+    f = _frame()
+    f[60:72, 600:700] = GREEN_BGR        # far above: a different enemy's mark
+    f[320:460, 610:690] = GREEN_BGR
+    f[326:454, 616:684] = 0
+    assert len(find_enemies(f)) == 2

@@ -42,7 +42,7 @@ aim loop runs, and it is roughly 3x slower than this Mac for this work:
 | **960 px native crop** | 138 | 129 | **4.4 ms / p95 5.4** | 1.3 ms / p95 1.8 |
 
 Verified running on the PC against `C:\rivals-agent\perception\outline.py`, sha256
-`9dd2513b3812ecd58d2b7349cc1893fc3a4159e88445e555543da644f2d466b7`, identical to the
+`a5c320e60f7c3a2ec8094c78a0e6c49f8f166e7c1708e7b798f9cc0ddf078494`, identical to the
 Mac copy; `perception/detect.py` and `agent/state.py` are there too.
 
 **The crop mode was over budget until it was profiled.** The first PC run measured
@@ -59,9 +59,7 @@ exactly where the hero is drawn, so suppressing that region wholesale would blin
 melee case. No player-region false box has yet been seen on the green path; the zone
 is there because junk in front of the player is what caused L4's stray ability press.
 
-Not yet quantified: **precision and recall against hand-checked ground truth.** The
-numbers above are detections and latency, not correctness. Treat detections as
-high-quality-but-unverified until that lands.
+**Precision 82%, recall 83%** against hand-checked ground truth — see below.
 
 ## Status
 
@@ -69,7 +67,9 @@ high-quality-but-unverified until that lands.
 |---|---|
 | Pipeline end to end (autolabel → train → eval → detect) | Runs on Mac MPS |
 | `detect.py` returns `agent.state.Detection` | Done |
-| `outline.py` classical prototype | Done, measured, **not recommended as-is** |
+| Green finder (`find_enemies`) | **Live, on the PC, P 82% / R 83%** |
+| Hand-checked ground truth (72 native frames, 78 enemies) | Done, `data/gt/` |
+| Swatch sweep rendered hues | **Blocked**: sampled frames are not camera-matched |
 | PC CUDA environment | Verified: torch 2.11.0+cu128, CUDA True, RTX 4080 SUPER |
 | run1 fine-tune (2121 frames, 1632 instances) | Done |
 | Weights for the controller lane | `weights/range.pt`, and `C:\rivals-agent\weights\range.pt` |
@@ -90,9 +90,12 @@ the same open-vocabulary labeller as train, and that labeller is ~50% precise. T
 says the model faithfully reproduces the labeller, *including its mistakes*. The eval
 sheet shows exactly that: it boxes the purple bollard props confidently and never boxes
 the player. So the jump from 0.082 to 0.656 is real learning of a consistent signal, but
-it is consistency with a biased teacher, not accuracy against truth. **A hand-checked
-ground-truth set is required before this number means what it appears to mean**, and
-that is the main thing still owed on this lane.
+it is consistency with a biased teacher, not accuracy against truth.
+
+**This was then confirmed the hard way.** Against hand-checked ground truth on footage
+it had not seen, the same model finds **2 of 78 enemies — recall ~3%**. See "Ground
+truth" below. mAP50 0.656 and recall 3% are the same model on the same task; the gap
+is entirely the quality of the labels it was scored against.
 
 ### Loading it
 
@@ -188,7 +191,88 @@ hue bin:
 The green doors are an *emerald* green at standard hue 150–158°, about 30° away from
 pure green. They do not rule green out; they rule out that particular green.
 
-## outline.py — measured
+## Swatch sweep — not yet measurable, and why
+
+The 15 `swatch-*` dirs are on the PC. **No rendered-hue ranking from them yet, because
+the frames I sampled do not support one** — and a wrong colour number is worse than
+none, since it would send L4 to change a setting that is currently working at 82/83.
+
+Three methods tried on `swatch-courtyard-*` and `swatch-courtyard2-*`:
+
+| Method | Result | Why it failed |
+|---|---|---|
+| Difference each swatch against `Default` | ~44,000 "mark" pixels per frame | Far too many for a thin contour. The bots animate between takes, so the whole bot region differs, not just its outline. |
+| Hue histogram excess vs `Default` | Blue-Green 67, Green 24, Yellow-Green 73 (OpenCV) | Mutually inconsistent, and signal-to-noise 0.01–0.03: background variation between takes swamps the mark. Green measuring 24 is certainly wrong — it renders near 67. |
+| Crop the same region across swatches and look | The crop holds only foliage, and the `Green` take is visibly shifted and motion-blurred | **The camera was not identical between takes**, which is the assumption the whole design rested on. |
+
+What would make it measurable: frames where a bot is at a known screen position in
+*every* swatch, so the outline can be sampled directly in a crop around it rather than
+inferred by differencing. If L4 re-shoots, a stationary bot centred in frame with the
+camera locked, one take per swatch, is all it takes.
+
+Until then the colour evidence stands as the background statistics already reported —
+Blue-Green and Green quietest, Yellow-Green third — and **Green is measured working**
+end to end at 82% precision / 83% recall, which is the stronger evidence of the two.
+
+## Ground truth: the numbers that count
+
+72 native frames, hand-checked by eye one at a time (`data/gt/`, montages `m00`–`m17`),
+spread across all three tagruns and deliberately including the empty stretches and the
+hedge-facing stretch. **78 marked enemies** in total. An enemy counts as present if the
+game marks it — body visible or plate visible.
+
+| | green finder | YOLO (`weights/range.pt`) |
+|---|---|---|
+| True positives | **65** | 2 |
+| False positives | **14** | 3 |
+| False negatives | **13** | 76 |
+| **Precision** | **82%** | ~40% |
+| **Recall** | **83%** | **~3%** |
+| Latency (PC, 960 px crop) | 4.4 ms | 24.8 ms |
+
+### The YOLO result is the important one
+
+**mAP50 0.656 did not mean a working detector, and this is the proof.** On footage it
+had never seen, the fine-tuned model found 2 of 78 enemies. It fails identically at
+native 2560x1440 (5 detections / 72 frames), downscaled to its training 1280x720 (5),
+and on a 960 px crop (1) — so this is not an input-scale mistake. What it detects
+instead: a lamp, a flame, a speck on the stairs.
+
+The cause is the one flagged when that number was first reported: the model was trained
+*and validated* on labels from an open-vocabulary labeller that hand-checking showed to
+be ~50% scenery. mAP50 0.656 measured agreement with that labeller, including its
+mistakes — the eval sheet showed it confidently boxing purple bollard props. Agreement
+with a biased teacher is not accuracy, and on new footage it collapses.
+
+**Do not retire the YOLO path** — per the project direction it is still the only
+candidate for VOD footage, where the streamers' own enemy colours make the colour finder
+useless. But it needs retraining on labels that are actually right. The green finder can
+now produce those: 82% precision beats the 50% it was trained on, and it costs nothing
+per frame.
+
+### Where the 14 false positives come from
+
+| Category | Count | Note |
+|---|---|---|
+| The spawn room's **green health door and its cross** | 3 | One frame, three boxes. The risk the lead flagged is real — but it is *one* location, not the hedges. |
+| Green kiosk screens and lit panels | 5 | Small, in the mid-distance. |
+| One body split into two boxes | 2 | The merge gap did not bridge a raised arm at close range. |
+| Small green props and plants | 4 | |
+
+**The hedges and foliage produced zero false positives** across every hedge-facing frame
+(#048–#055, #012–#013). The predicted risk was the wrong one: the hedges are an emerald
+green at hue 75–79, outside the band, while the health door's cross is not.
+
+### Where the 13 misses come from
+
+| Category | Count | Note |
+|---|---|---|
+| Bot flashing white from a hit | ~4 | The outline washes out while the damage flash plays. Systematic and worth knowing: **the agent is blind to a target in the instant after it hits it.** |
+| Small / distant bots | ~4 | Below the size floor. |
+| Bot at point blank | ~2 | The contour runs off the frame edge and the component fails the fill test. |
+| Occluded or partly behind the player | ~3 | |
+
+## outline.py — earlier red-nameplate path, measured
 
 Over 2121 run1 frames (every 3rd of 6361), full-frame 1280x720, red path:
 
@@ -227,7 +311,57 @@ band was. After the fix the remaining 11 FPs in 36 are: player suit 5, map posts
 3, railing 1, empty ground 2. Player is now the largest single category, which is why
 the region guard stays in place downstream.
 
-### Ranging, settled on the native footage: use the outline's height
+### The height-to-distance relation, for L4 and `brain.RANGES`
+
+```
+d_m = 1872 / h_px        # native 2560x1440
+d_m = 1.30 / h_norm      # h_norm = box height / frame height; capture-size independent
+```
+
+| distance | box height (native) | `h_norm` |
+|---|---|---|
+| 2 m | 936 px | 0.650 |
+| **4 m (melee)** | **468 px** | **0.325** |
+| 6 m | 312 px | 0.217 |
+| 8 m | 234 px | 0.163 |
+| 10 m | 187 px | 0.130 |
+| 14 m | 134 px | 0.093 |
+| **20 m (pull)** | **94 px** | **0.065** |
+| 24 m | 78 px | 0.054 |
+
+**`brain.Ranges`: `near_h = 0.325`, `far_h = 0.065`** — replacing the guesses 0.35 and
+0.08, which turn out to have been close.
+
+**How distance was obtained, since nothing in the game reports it.** Two independent
+routes that agree, which is the only reason to trust the scale:
+
+1. **The melee anchor.** `frames.jsonl` labels 16 `tagrun0` frames with intent `Combo`.
+   The kit puts Amazing Combo's reach at 4 m, so those frames are at roughly 4 m. Their
+   outline height is median 468 px (p10 349, p90 532). Pinhole gives `d x h = k`, so
+   `k = 4 x 468 = 1872 m.px`.
+2. **L4's focal length, measured a completely different way** (timing a 360° turn):
+   465 px at 1280 wide, so 930 px native. Then `k = f x H` implies a character height
+   `H = 1872 / 930 = 2.01 m`. A ~2 m humanoid, with the outline box including a little
+   margin, is exactly right — a badly calibrated `k` would have produced an absurd height.
+
+**Uncertainty and how it propagates.** `k` is a single multiplier, so everything scales
+linearly with it. The melee p10–p90 spread gives `k` between 1396 and 2128 (±25%),
+because `Combo` frames include the wind-up before contact as well as the contact itself.
+If `k` is wrong by x%, every distance is wrong by x% and `near_h`/`far_h` move
+inversely. The *ordering* of detections by distance is unaffected.
+
+**Two limits worth knowing:**
+
+- **`k` is per character.** It was calibrated on the Luna Snow bot, a ~2 m humanoid.
+  The Galacta bots are squat, so the same box height means they are *closer* than this
+  table says. A per-class `k` needs a second anchor; until then, expect the Galacta bots
+  to read as further away than they are.
+- **The pinhole model was not confirmed by the approach itself.** Fitting `1/h` against
+  time over frames 130–200 gives R² 0.055 — that stretch is not a steady straight walk,
+  so it neither confirms nor refutes the model. The calibration rests on the two
+  independent anchors above, not on that fit.
+
+### Why the outline height and not the nameplate
 
 Measured on `tagrun0` frames 60–320, the single Luna Snow bot sweeping ~8 m to point
 blank:
