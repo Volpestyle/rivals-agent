@@ -29,12 +29,8 @@ SEARCH, APPROACH, FIGHT, RETREAT = "search", "approach", "fight", "retreat"
 
 HOSTILE = (ENEMY, TARGET)
 
-# Ranges come from the kit; everything else is a guess to tune by replaying L1 footage.
-MELEE_M = 4.0         # kit: Amazing Combo sphere and the kick reach 4 m
-FAR_M = 20.0          # kit: pull and the burst's Web Cluster reach 20 m (the web strike locks out to 24 m)
+# Everything below is a guess to tune by replaying L1 footage, except the ranges in metres (kit).
 MIN_CONF = 0.4        # guess: ignore detections below this
-NEAR_H = 0.35         # guess: "near" when bbox height / frame height is at least this (no distance estimate)
-FAR_H = 0.08          # guess: "far" when it is at most this
 HP_RETREAT = 0.30     # guess: enter retreat at or below this hp fraction
 HP_RESUME = 0.60      # guess: leave retreat, and re-arm it, at or above this
 RETREAT_MAX_S = 6.0   # guess: leave retreat anyway; the range has no healer, do not hide forever
@@ -44,6 +40,23 @@ BURST_HOLD_S = 3.0    # kit: a guide claims the whole burst fits under 3 s (unve
 PULL_HOLD_S = 0.8     # guess: 250 ms flight at 20 m plus the drag
 STRIKE_HOLD_S = 0.8   # guess: travel time is unmeasured
 SWING_HOLD_S = 1.2    # guess
+
+
+@dataclass(frozen=True)
+class Ranges:
+    """Where near, mid and far begin: the one table every range decision reads (range_of).
+
+    In metres, used when a Detection carries a distance; as bbox height / frame height,
+    used when it does not. Fill the height columns from a measured table: the height of a
+    real detection's box at true melee range (near_h) and at the far edge (far_h).
+    """
+    near_m: float = 4.0    # kit: Amazing Combo sphere and the kick reach 4 m
+    far_m: float = 20.0    # kit: pull and the burst's Web Cluster reach 20 m (the web strike locks out to 24 m)
+    near_h: float = 0.35   # guess, and unreachable on real boxes: 2317 detections from run1 had median 0.086, max 0.350
+    far_h: float = 0.08    # guess (docs/lanes/l6-integration.md)
+
+
+RANGES = Ranges()  # replace or edit here; range_of reads it at call time
 
 
 @dataclass
@@ -186,11 +199,13 @@ def ready(state, name):
     return bool(a.charges)  # icon unreadable but the charge count was
 
 
-def range_of(det, state):
+def range_of(det, state, ranges=None):
+    """'near', 'mid' or 'far' for a detection, from its distance if it has one, else its box height."""
+    r = ranges or RANGES
     if det.distance is not None:
-        return "near" if det.distance <= MELEE_M else "far" if det.distance > FAR_M else "mid"
+        return "near" if det.distance <= r.near_m else "far" if det.distance > r.far_m else "mid"
     h = det.height / state.frame[1]
-    return "near" if h >= NEAR_H else "far" if h <= FAR_H else "mid"
+    return "near" if h >= r.near_h else "far" if h <= r.far_h else "mid"
 
 
 def aimed_at(state, det):

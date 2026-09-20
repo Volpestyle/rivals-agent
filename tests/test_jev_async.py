@@ -274,5 +274,132 @@ def test_bench_async_reports_the_share():
     assert out["ticks"] == 300 and sum(out["decided_by"].values()) == 300
     assert 0 < out["jev_share_of_ticks"] < 1 and out["jev_share_of_choices"] >= out["jev_share_of_ticks"]
     assert out["tick_wall_ms"]["max"] < 50  # it never waits
-    assert sum(out["jev_chose"].values()) == out["decided_by"]["jev"]
-    assert sum(out["jev_differs_from_scripted"].values()) <= out["decided_by"]["jev"]  # Rotating disagrees sometimes
+    decided = out["decided_by"]["jev"] + out["decided_by"]["standing"]
+    assert sum(out["jev_chose"].values()) == decided
+    assert sum(out["jev_differs_from_scripted"].values()) <= decided  # Rotating disagrees sometimes
+    assert out["jev_share_of_ticks"] >= out["standing_share_of_ticks"] > 0
+
+
+# --- standing answers -----------------------------------------------------------
+
+def stood(*names_and_ticks):
+    """Drive an AsyncJev: ('land', response) resolves the oldest unresolved request; ('tick', State) ticks it.
+    Returns (jev, memory, air, intents from the ticks)."""
+    air, m, out = Air(), Memory(), []
+    j, resolved = AsyncJev(air), 0
+    for kind, arg in names_and_ticks:
+        if kind == "land":
+            air.futures[resolved].set_result(arg)
+            resolved += 1
+        else:
+            out.append(j(arg, m))
+    return j, m, air, out
+
+
+def test_an_adopted_answer_stands_until_the_next_answer_replaces_it():
+    j, m, air, out = stood(
+        ("tick", mid_unaimed(0.0)), ("land", reply("idle")),
+        ("tick", mid_unaimed(0.1)),  # adopted
+        ("tick", mid_unaimed(0.2)), ("tick", mid_unaimed(0.3)),  # standing; scripted would have engaged
+        ("land", reply("search")),
+        ("tick", mid_unaimed(0.4)),  # the next answer replaces it
+        ("tick", mid_unaimed(0.5)),
+    )
+    assert out == [Engage(enemy(tagged=False)), Idle(), Idle(), Idle(), Search(), Search()]
+    assert [src for _, src in j.stats.trace] == ["scripted", "jev", "standing", "standing", "jev", "standing"]
+    assert j.stats.jev_share == pytest.approx(5 / 6) and j.stats.standing_share == pytest.approx(3 / 6)
+    assert j.stats.chosen == Counter(idle=3, search=2) and j.stats.expired == Counter()
+    assert len(air.futures) == 3  # a request goes out each time an answer is adopted, so answers keep coming
+
+
+def test_a_standing_targeted_answer_follows_its_target():
+    j, m, air, out = stood(
+        ("tick", mid_unaimed(0.0)), ("land", reply("engage", target=0)),
+        ("tick", mid_unaimed(0.1, x=1300)),  # adopted
+        ("tick", mid_unaimed(0.2, x=1420)), ("tick", mid_unaimed(0.3, x=1540)),
+    )  # 120 px a tick is inside MATCH_FRAC (216 px) each time, but 240 px from where it was adopted
+    assert out[1:] == [Engage(enemy(1300, tagged=False)), Engage(enemy(1420, tagged=False)), Engage(enemy(1540, tagged=False))]
+    assert j.stats.sources == Counter(scripted=1, jev=1, standing=2) and j.stats.expired == Counter()
+
+
+EXPIRIES = [
+    # (reason, the tick that ends it), after an `engage` on the enemy at x=1280 was adopted at t=0.1
+    ("aged", mid_unaimed(1.2)),  # 1.2 s after the State it was about, over STANDING_MAX_S
+    ("situation", near(0.3)),  # asked at range, now in melee
+    ("target_gone", mid_unaimed(0.3, x=200)),  # nothing of its class near where it was
+    ("detector_down", st(0.8, detections=None)),  # past the 0.5 s flicker window the gate leaves it to us
+]
+
+
+@pytest.mark.parametrize("reason,ending", EXPIRIES)
+def test_a_standing_answer_ends_when_it_stops_being_valid_and_scripted_fills(reason, ending):
+    j, m, air, out = stood(
+        ("tick", mid_unaimed(0.0)), ("land", reply("engage", target=0)),
+        ("tick", mid_unaimed(0.1)), ("tick", mid_unaimed(0.2)), ("tick", ending),
+    )
+    assert j.stats.expired == Counter({reason: 1})
+    assert j.stats.trace[-1][1] == "scripted" and out[-1] == brain.decide(ending, Memory())  # the scripted policy filled in
+    assert j._standing is None
+    j(ending, m)  # nothing left standing, so it does not expire twice
+    assert j.stats.expired == Counter({reason: 1})
+
+
+def test_a_standing_answer_that_stops_being_legal_ends():
+    """Near range: scripted engages, Jev may pull. After the pull's hold the tag has appeared, so it cannot stand."""
+    j, m, air, out = stood(
+        ("tick", near(0.0)), ("land", reply("pull", target=0)),
+        ("tick", near(0.1)),  # adopted: a pull, held 0.8 s
+        ("tick", near(0.95, tagged=True)),  # the hold is over, but the target is now tagged
+    )
+    assert isinstance(out[1], brain.Pull) and j.stats.expired == Counter(illegal=1)
+    assert out[2] == Engage(enemy(tagged=True, h=600)) and j.stats.trace[-1][1] == "scripted"
+
+
+def test_a_dropped_answer_does_not_end_a_standing_one():
+    j, m, air, out = stood(
+        ("tick", mid_unaimed(0.0)), ("land", reply("idle")),
+        ("tick", mid_unaimed(0.1)),  # adopted; the request sent now is about t=0.1
+        ("land", reply("search")),
+        ("tick", mid_unaimed(0.8)),  # ...and lands 0.7 s later: stale, dropped, while the first answer (0.8 s old) still stands
+    )
+    assert out[2] == Idle() and j.stats.drops == Counter(stale=1) and j.stats.trace[-1][1] == "standing"
+
+
+def test_the_gate_preempts_a_standing_answer():
+    j, m, air, out = stood(
+        ("tick", mid_unaimed(0.0)), ("land", reply("idle")),
+        ("tick", mid_unaimed(0.1)),
+        ("tick", st(0.2, hp=20, detections=[enemy(tagged=False)], on_target=False)),  # low hp: retreat
+    )
+    assert out[1] == Idle() and isinstance(out[2], brain.Disengage) and j.stats.trace[-1][1] == "gate"
+
+
+def test_no_answer_stands_when_none_was_adopted():
+    j, m, air, out = stood(("tick", mid_unaimed(0.0)), ("tick", mid_unaimed(0.1)), ("tick", mid_unaimed(0.2)))
+    assert j.stats.sources == Counter(scripted=3) and j.stats.standing_share == 0
+
+
+def test_standing_off_restores_the_one_tick_behaviour():
+    air, m = Air(), Memory()
+    j = AsyncJev(air, standing_max_s=0)
+    j(mid_unaimed(0.0), m)
+    air.futures[0].set_result(reply("idle"))
+    assert j(mid_unaimed(0.1), m) == Idle()  # adopted
+    assert j(mid_unaimed(0.2), m) == Engage(enemy(tagged=False))  # the next scripted tick decides
+    assert j.stats.expired == Counter(aged=1)
+
+
+def test_bench_reports_steering_and_flapping():
+    out = jev.bench_async(300, 0, transport=Rotating())
+    assert 0 <= out["steered_share_of_ticks"] <= out["jev_share_of_ticks"]
+    assert out["intent_switches"] >= 0 and out["scripted_alone_switches"] > 0
+    assert isinstance(out["standing_expired"], dict) and out["standing_max_s"] == jev.STANDING_MAX_S
+
+
+def test_bench_records_which_endpoint_it_measured():
+    class Local(Rotating):
+        endpoint = jev.Endpoint(url="http://127.0.0.1:8724/v1/systemone", model="jev-local")
+        bearer = False
+
+    out = jev.bench_async(60, 0, transport=Local())
+    assert out["endpoint"] == {"url": "http://127.0.0.1:8724/v1/systemone", "model": "jev-local", "bearer_sent": False}

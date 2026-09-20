@@ -4,10 +4,12 @@ Linear: project Rivals Agent, issue VUH-1303 (non-blocking Jev).
 
 **Built and tested offline; not yet running against the live game.** The scripted
 brain, the replay tool and both Jev variants (blocking and non-blocking) exist and pass
-83 tests with no network. The non-blocking variant, `decide_jev`, was measured from the
-PC at 10 Hz. The brain has never seen real perception output: it needs L2's HUD reads,
-L3's detections and L4's controller. The screen-read eval harness (damage, time to kill,
-uptime) is not built. Numbers below are from synthetic States.
+113 tests with no network (124 with the `perception` group installed). `decide_jev` is
+the non-blocking variant with standing answers, measured from the PC at 10 Hz: Jev decides
+13% of ticks. Range thresholds sit in one table (`brain.RANGES`) that is waiting for
+measured numbers. The brain has never seen real perception output: it needs L2's HUD
+reads, L3's detections and L4's controller. The screen-read eval harness (damage, time to
+kill, uptime) is not built. Numbers below are from synthetic States unless stated.
 
 The offline half of L5 lives in `agent/`: a scripted brain that runs on recorded
 `State`s, no game needed. Test with `uv run pytest`; replay a run with
@@ -18,9 +20,9 @@ The offline half of L5 lives in `agent/`: a scripted brain that runs on recorded
 |------|-------|
 | `agent/state.py` | `State`, `Detection`, `Ability`; one `State` per JSONL line via `to_dict` / `from_dict`, which rejects a line without `frame` |
 | `agent/intents.py` | `Idle`, `Search`, `Engage`, `SwingTo`, `Pull`, `WebStrike`, `Combo`, `Disengage` (frozen dataclasses); each names the kit primitives it plays |
-| `agent/brain.py` | `decide(state, memory) -> Intent` plus `Memory`, in two halves: `gate` (retreat, playing holds, a flickering target: no choice needed) and `policy` (the scripted choice). All timing reads `state.t`, so replays are deterministic |
-| `agent/jev.py` | `decide_jev(state, memory)` (`AsyncJev`, never waits) and the blocking `Jev`: `gate`, then Jev makes the choice `policy` would make, with `policy` as the fallback. Also the benchmark: `uv run python -m agent.jev [--async --hz 10]` |
-| `agent/replay.py` | Decimates to the brain rate, prints the intent timeline and metrics (time per intent, switches, retreats, time to first attack, unknown-field share, max gap) |
+| `agent/brain.py` | `decide(state, memory) -> Intent` plus `Memory`, in two halves: `gate` (retreat, playing holds, a flickering target: no choice needed) and `policy` (the scripted choice). `Ranges` / `RANGES` is the one table of near, mid and far thresholds. All timing reads `state.t`, so replays are deterministic |
+| `agent/jev.py` | `decide_jev(state, memory)` (`AsyncJev`: never waits, adopted answers stand) and the blocking `Jev`: `gate`, then Jev makes the choice `policy` would make, with `policy` as the fallback. `Endpoint` reads `JEV_URL`, `JEV_MODEL`, `JEV_KEY`. Also the benchmark: `uv run python -m agent.jev [--async --hz 10]` |
+| `agent/replay.py` | Decimates to the brain rate (keeps a State once it is 0.9/hz after the last kept one: a real recording's spacing jitters around 1/hz), prints the intent timeline and metrics (time per intent, switches, retreats, time to first attack, unknown-field share, max gap) |
 
 What perception fills in (`None` means "could not read this frame", never zero or
 "not ready"). `State.frame` is required, has no default, and is the (width, height) of
@@ -163,10 +165,13 @@ for that tick and is counted per reason (`timeout`, `http`, `parse`, `vocab`) in
 
 1. `gate` runs. If it decides (retreat, a playing hold, a flickering target), that is
    the intent (source `gate`), and an answer that landed meanwhile is dropped as `gated`.
-2. Otherwise a landed answer is adopted if it is still valid (source `jev`); if not it
-   is dropped and counted, and `policy` decides (source `scripted`). `policy` also
-   decides every tick while the request is in the air.
-3. If nothing is in flight, the gate let a choice through and this tick started no
+   The gate preempts everything, standing answers included.
+2. Otherwise a landed answer is adopted if it is still valid (source `jev`). It then
+   **stands**: it becomes the policy choice on the following ticks (source `standing`)
+   until it ends. If the landed answer is not valid it is dropped and counted, and a
+   standing answer that is still valid carries on.
+3. `policy` decides (source `scripted`) only when no answer is standing.
+4. If nothing is in flight, the gate let a choice through and this tick started no
    hold, one new request goes out about the current State. Exactly one is in flight.
    (A request sent on a hold-starting tick would land inside the hold and be gated, so
    it is not sent.)
@@ -175,11 +180,26 @@ A landed answer is valid when it is not older than `MAX_AGE_S` (0.6 s of `state.
 guess that covers the p95 round trip), the situation (search / approach / fight) is the
 one it was asked in, its target re-associates to a current detection of the same class
 within `MATCH_FRAC` (0.15 of the frame height, a guess), and its intent is still `legal`
-for the State it lands in. It is adopted with the target as it is now, not as it was.
-Drop reasons: `gated`, `stale`, `situation`, `target_gone`, `illegal`, `detector_down`.
-`Stats` also holds `sources` and `trace` (`(state.t, source)` per tick, for the eval),
-`chosen` (which intents Jev's adopted answers were), `age_ms` and `latency_ms`. A hung
-request holds the slot until the socket cap (5 s); `policy` answers meanwhile.
+for the State it lands in. Drop reasons: `gated`, `stale`, `situation`, `target_gone`,
+`illegal`, `detector_down`.
+
+A standing answer ends, and is counted in `stats.expired`, when: the situation it was
+asked in changes (`situation`); its target no longer re-associates to a detection within
+`MATCH_FRAC` of where it was on the previous tick (`target_gone`; it follows the target
+tick to tick, so it tolerates motion but not a swap of enemy); it is no longer `legal`
+(`illegal`: a tag appeared, an ability is cooling); the detector is off (`detector_down`);
+or it is older than `STANDING_MAX_S` (1.0 s after the State it was about, a guess: about
+three round trips, so answers that keep landing keep it alive) (`aged`). The next valid
+answer replaces it. Each standing tick is re-issued with the target as it is now, and a
+hold-bearing intent re-commits its hold while it is legal. `--standing-max 0` turns
+standing off, which is the one-tick behaviour, for an A/B run (its `standing_expired`
+then just counts every answer as `aged`).
+
+`Stats` holds `sources` and `trace` (`(state.t, source)` per tick, for the eval),
+`chosen` (intents of the ticks Jev decided), `expired`, `drops`, `fallbacks`, `age_ms`
+and `latency_ms`; `jev_share` counts fresh and standing ticks, `standing_share` the
+standing ones. A hung request holds the slot until the socket cap (5 s); `policy`
+answers meanwhile.
 
 **Transport.** Standard library only. One kept-alive connection; `submit(body)` runs
 the request on a worker thread and returns a Future. The blocking `Jev` waits on it up
@@ -187,8 +207,24 @@ to a hard deadline (`TIMEOUT_S`, 0.2 s). A timed-out or still-running request is
 finish: a late answer leaves a warm connection, whereas dropping the session would make
 every next call pay a cold TLS handshake (about 500 ms). A new request never queues
 behind one in flight, and a failed one drops the session before the next. The key is read
-from `OPENROUTER_API_KEY` or the gitignored `.env` and never appears in a repr, error or
-log. Host, path and scheme are hard-coded to OpenRouter.
+from the environment or the gitignored `.env` and never appears in a repr, error or log
+(a server error that echoes it is redacted).
+
+**Endpoint (`JEV_URL`, `JEV_MODEL`, `JEV_KEY`).** Read once by `Endpoint.from_env()`, so
+pointing the agent at another server changes no call site; every default is the OpenRouter
+value. `JEV_URL` is the full URL of the route (scheme, host, port, path; `http` or
+`https`), default `https://openrouter.ai/api/alpha/decisions`. `JEV_MODEL` is the `model`
+field, default `typesafe/jev-1.13`. `JEV_KEY` is the Bearer key: unset, the default URL
+sends `OPENROUTER_API_KEY` (environment or `.env`) and any other URL sends no
+`Authorization` header and does not need the OpenRouter key. An empty variable counts as
+unset; a URL that is not `http(s)` with a host raises `ValueError`. The benchmark prints
+the endpoint it measured (URL, model, whether a key was sent, never the key). What the
+client sends is exactly the body shown above; a server must return `answers[q].choice`
+and an `answers[q].probabilities` entry for every option (a missing option counts as
+0), and may omit `confidence` and `usage`. `docs/lanes/local-jev.md` (R1-R7) is the
+server side of this contract. Its suggestion to make the `target` and `anchor` criteria
+text static, so the question head is cacheable, is not done: the saving is unmeasured and
+it would change what the real Jev is asked.
 
 **Measured, blocking `Jev`, 2026-09-20** (synthetic States, `uv run python -m agent.jev
 -n 60 --timeout T --hz H`; round trip is answered calls only, so short budgets truncate it):
@@ -213,53 +249,54 @@ log. Host, path and scheme are hard-coded to OpenRouter.
 
 **Measured, non-blocking `AsyncJev` at 10 Hz, 2026-09-20** (546 ticks, two passes of
 the synthetic story in real time, one Memory throughout; `uv run python -m agent.jev
---async -n 546 --hz 10`):
+--async -n 546 --hz 10 [--standing-max 0]`). "Steered" is a tick a Jev answer decided
+whose intent differs from what the scripted policy would have chosen from the same memory:
 
-| | PC | Mac |
-|---|---|---|
-| Ticks decided by gate / scripted / **Jev** | 431 / 89 / **26** | 431 / 88 / **27** |
-| **Jev's share of all ticks** | **4.8%** | 4.9% |
-| Jev's share of ticks the gate let through | 22.6% | 23.5% |
-| Requests sent / answered / fallbacks | 31 / 30 / 0 | 32 / 31 / 0 |
-| Answers dropped | 4 (`gated`) | 4 (2 `situation`, 2 `gated`) |
-| Round trip p50 / p95 / max | 226 / 403 / 758 ms | 227 / 349 / 437 ms |
-| Age of the State an adopted answer was about, p50 / p95 / max | 300 / 400 / 500 ms | 300 / 400 / 500 ms |
-| `decide_jev` per-tick wall time p50 / p95 / max | 0 / 0 / 3 ms | 0 / 0 / 1 ms |
-| Intents Jev chose | search 21, burst 4, engage 1 | search 21, burst 4, engage 2 |
-| Ticks where Jev chose differently from the scripted policy | 4 (`engage` -> `burst`) | 5 (4 `engage` -> `burst`, 1 `web_strike` -> `engage`) |
-| Cost of the run (answered calls) | $0.00057 | $0.00059 |
+| | PC, standing on | PC, off | Mac, on | Mac, off |
+|---|---|---|---|---|
+| Ticks by gate / scripted / Jev fresh / **standing** | 426 / 47 / 34 / **39** | 433 / 88 / 25 / 0 | 424 / 56 / 26 / **40** | 430 / 91 / 25 / 0 |
+| **Jev's share of all ticks** (fresh + standing) | **13.4%** | 4.6% | 12.1% | 4.6% |
+| Standing share of all ticks | 7.1% | 0 | 7.3% | 0 |
+| Jev's share of ticks the gate let through | 60.8% | 22.1% | 54.1% | 21.6% |
+| **Steered share of all ticks** | **2.4%** | 0.9% | 2.4% | 1.1% |
+| Intent switches (scripted brain alone: 22) | 24 | 22 | 22 | 20 |
+| Standing answers ended: situation / aged / detector_down | 3 / 3 / 2 | n/a | 2 / 4 / 2 | n/a |
+| Requests / answered / fallbacks | 37 / 36 / 0 | 30 / 29 / 0 | 30 / 29 / 0 | 31 / 30 / 0 |
+| Answers dropped | 2 `gated` | 4 `gated` | 3 (`gated`, `situation`, `stale`) | 5 (4 `gated`, 1 `stale`) |
+| Round trip p50 / p95 / max | 199 / 347 / 447 ms | 228 / 381 / 836 ms | 234 / 307 / 409 ms | 259 / 579 / 852 ms |
+| Age of the State an adopted answer was about, p50 / p95 / max | 200 / 400 / 500 ms | 300 / 400 / 400 ms | 300 / 400 / 500 ms | 300 / 500 / 600 ms |
+| `decide_jev` per-tick wall time p50 / p95 / max | 0 / 0 / 4 ms | 0 / 0 / 4 ms | 0 / 0 / 37 ms | 0 / 0 / 37 ms |
 
-- **It never stalls the loop.** The worst tick took 3 ms on the PC, and no request
-  failed or timed out. `policy` answered every tick Jev did not.
-- **Jev's share is small and bounded.** An answer lands about 2-3 ticks after it is asked
-  (median round trip 226 ms, and answers are adopted at the next tick boundary, median
-  age 300 ms), so at 10 Hz Jev can decide at most about one open-gate tick in three. The
-  synthetic story is hold-heavy, so the gate decides 79% of all ticks. Together: 4.8% of
-  ticks.
-- **Jev changed a decision on about 1% of ticks.** 21 of its 26 decisions were `search`,
-  which the scripted policy also chose; the only differences were 4 ticks where it chose
-  `burst` and the scripted policy `engage`. Only `pull`, `web_strike`,
-  `burst` and `swing_to` carry a hold, so only those outlast their tick; an adopted
-  `search`, `engage` or `idle` is overridden by the next scripted tick. If Jev is meant to
-  steer, an adopted non-hold intent would have to persist beyond its tick. Not built.
-- **Requests sent on hold-starting ticks are not sent.** Before that rule 20 of 44 landed
-  answers on the Mac were `gated`, wasted; after it, 3 of 30.
-- **Caveat:** synthetic States, not perception output, and no measure of whether a Jev
-  `burst` is better than the scripted `engage`.
-- **Cost:** about $0.000023 per answered call (558 input tokens). A request that is not
-  answered in time still finishes and is presumably billed (not verified). All probes
-  and every run so far (about 580 requests) cost roughly $0.014.
+- **Standing roughly triples Jev's share** of ticks (4.6% to 12-13%) and of the ticks the
+  gate lets through (22% to 54-61%). It is capped by the gate: 78% of the story's ticks
+  are held or retreating, so the scripted holds, not the round trip, now set the ceiling.
+- **It steers on 2.4% of ticks, about 13 of 546.** The differences are the same on both
+  machines: 9 ticks where Jev held `engage` and the scripted policy would have used
+  `web_strike` on a tagged enemy, and 4 where Jev chose `burst` and the scripted policy
+  `engage`. Most of what Jev decides is `search` (49-56 of its 66-73 ticks), where the
+  scripted policy agrees. Nothing here says whether Jev's choices are better.
+- **No extra flapping.** Standing keeps intents steady: 22-24 switches, against 22 for the
+  scripted brain alone.
+- **It never stalls the loop and nothing failed.** No fallbacks; the worst tick on the PC
+  was 4 ms. The Mac's 37 ms is the first tick (thread and session start).
+- **Cost:** about $0.0006 per 546-tick run. Every measurement to date (about 710 requests)
+  costs roughly $0.016. A request not answered in time is presumably billed (not verified).
+- **Caveat:** synthetic States, not perception output; the PC runs shared the machine with
+  other agents.
 
 ## Running things
 
-- **Tests:** `uv run pytest` (83, no network, about 1 s). `pyproject.toml` collects only
-  `test_brain*.py` and `test_jev*.py`. The perception harnesses (`tests/test_hud.py`,
-  `test_replay_states.py`, `test_evalread.py`, ...) need opencv, numpy and recorded data and run
-  as scripts (`uv run --no-project --with opencv-python-headless --with numpy python -m
-  tests.test_hud`); a per-file exclusion list broke every time a lane added one. A stdlib-only
-  pytest test from another lane has to match those patterns or be added to `python_files`.
+- **Tests:** `uv run pytest` (113, no network, about 1 s) is stdlib-only. `tests/conftest.py`
+  skips any `test_*.py` that imports `cv2`, `numpy` or `perception` while opencv and numpy are
+  not installed, so no file list is kept. `uv run --group perception pytest` (124) installs
+  the `perception` group (`opencv-python-headless>=4.10`, `numpy>=2.0`) and collects those
+  harnesses too; it leaves opencv in `.venv`, and `uv sync` puts the stdlib-only environment
+  back. The harnesses also run as scripts (`uv run --no-project --with opencv-python-headless
+  --with numpy python -m tests.test_hud`), and some need recorded data under `data/`.
 - **Replay:** `uv run python -m agent.replay data/synthetic.jsonl --synth` writes and replays
-  the synthetic story (`data/` is gitignored). `agent.jev.story_loop` repeats it end to end.
+  the synthetic story (`data/` is gitignored). `agent.jev.story_loop` repeats it end to end. Replay decimation
+  keeps a State once it is `DECIMATE_TOL / hz` (0.9 / hz) after the last kept one: L1's spacing jitters
+  around 0.1 s, and the earlier exact test (`>= 1/hz`) dropped 3181 of 6359 gaps at `--hz 10`.
 - **Every rule has a test that fails when the rule is broken.** That was checked by hand:
   copy `agent/` and `tests/` to a scratch directory, break one line, run pytest. It is not
   automated, so a rule added later needs the same check.
@@ -292,6 +329,16 @@ the synthetic story in real time, one Memory throughout; `uv run python -m agent
   the brain never issues `SwingTo`.
 - **`Detection.tagged` has no producer yet.** Until an L2 `read_tagged` (or an L3 class)
   fills it, every tag is `None` and the brain only ever engages or bursts at mid range.
+- **Range thresholds are one table, `brain.RANGES` (a `Ranges`), and its height columns
+  are unmeasured.** `near_h = 0.35` is unreachable on real boxes: across 2317 detections from
+  run1 (`docs/lanes/l6-integration.md`) box height / frame height had median 0.086, p75
+  0.121 and max 0.350, so `near` never fired and combos ran 6 times in 636 s. The values are
+  unchanged on purpose until measured numbers arrive: rivals-det is deciding whether boxes
+  cover the full silhouette or ranging should use the nameplate, and rivals-l4 will measure
+  box height at true melee range. To set them, edit the `Ranges` fields (or assign
+  `brain.RANGES`); `range_of` reads the table at call time, so no call site changes. The
+  metre columns (4 m, 20 m) are the kit's. `agent/controller.py` (L4) keeps its own
+  `NEAR_H = 0.35`; it should read `brain.RANGES.near_h` so the two never diverge.
 - **`State.frame` is required.** Every bbox is in the pixels of the frame the builder
   processed (1280x720 for L1 recordings and perception). L2's HUD row also reads a
   `tracer` slot; the brain ignores it because the kit does not say what it shows.
@@ -323,19 +370,31 @@ the synthetic story in real time, one Memory throughout; `uv run python -m agent
   1280x720 frame put every box 2x off without an error.
 - **A shared `docs/plan.md`.** Five agents rewriting one file lost two sections to a stale
   whole-file write. Lane status now lives in per-lane files; never write a shared file whole.
+- **A per-file pytest exclusion, then a name allowlist.** Both broke, or silently hid tests,
+  each time a lane added a harness that imports `cv2`. `tests/conftest.py` now decides by what a
+  module imports.
+- **Exact-spacing decimation** (`s.t - last >= 1/hz`). It dropped 3181 of 6359 gaps of a
+  real 10 fps recording. The tolerance is 0.9/hz.
+- **One-tick adoption of a Jev answer.** With the scripted policy answering the next tick,
+  an adopted non-hold intent lasted one tick: Jev decided 4.6% of ticks and steered 0.9%.
+  Standing answers replaced it.
 - **Not built, on purpose:** a confidence threshold (Jev returns `confidence`, p50 about
   0.89; nothing yet says where to cut), ult and team-up fields in `State`, and any provider
   interface beyond `decide_jev`.
 
 ## Open
 
-- The screen-read eval harness (damage, time to kill, uptime). `stats.trace` and
-  `stats.sources` are the per-tick source log it should read.
-- A run against real perception output: everything above is on synthetic States.
-- Jev decides about 5% of ticks and changed a decision on about 1%. Making it steer needs an
-  adopted non-hold intent to persist beyond its tick, or shorter scripted holds. Not built.
-- Host, path and scheme are hard-coded to OpenRouter; `docs/lanes/local-jev.md` lists what
-  a local server would need (R5), and it is a small change (`HOST`, `PATH`, the HTTPS connection and `load_key`) once someone picks one.
-- Tuning, all labelled `guess:` in code: `MAX_AGE_S`, `MATCH_FRAC`, `TIMEOUT_S`, the hold
-  times, `MIN_CONF`, the range and hp thresholds. The 4 m and 20 m ranges and the 3 s burst
-  window come from the kit; the window is a guide's claim.
+- **Range thresholds:** `brain.RANGES` waits for the measured table (rivals-det and rivals-l4,
+  via the lead). Until then `near` never fires on real detections and the brain rarely leaves
+  `APPROACH`.
+- The screen-read eval harness (damage, time to kill, uptime). `stats.trace`, `stats.sources`
+  and the `steered` measure in `bench_async` are what it should read.
+- A run against real perception output: everything above is on synthetic States. Whether a
+  Jev decision that differs from the scripted one is better is unmeasured; only the rate is.
+- The local server (VUH-1304): set `JEV_URL`, `JEV_MODEL` and `JEV_KEY` and run
+  `uv run python -m agent.jev --async --hz 10` from the PC; the output names the endpoint.
+  Nobody has run the client against it yet, so the wire contract above is untested there.
+- Tuning, all labelled `guess:` in code: `STANDING_MAX_S`, `MAX_AGE_S`, `MATCH_FRAC`,
+  `TIMEOUT_S`, the hold times, `MIN_CONF`, the hp thresholds and the `Ranges` height columns.
+  The 4 m and 20 m ranges and the 3 s burst window come from the kit; the window is a guide's
+  claim.

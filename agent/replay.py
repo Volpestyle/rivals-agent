@@ -4,7 +4,8 @@
   uv run python -m agent.replay data/synthetic.jsonl --synth   # write a synthetic run first
 
 One State per line (State.to_dict()). States arrive at capture rate; the replay
-decimates to --hz, the rate the brain runs at live.
+decimates to --hz, the rate the brain runs at live (a State is kept once it is at least 0.9/hz
+after the last kept one, because a real recording's frame spacing jitters around 1/hz).
 """
 import argparse
 import json
@@ -16,6 +17,7 @@ from .brain import Memory, decide
 from .intents import Combo
 from .state import ANCHOR, ENEMY, PULL, SWING, UPPERCUT, Ability, Detection, State
 
+DECIMATE_TOL = 0.9  # keep a State when it is at least this fraction of 1/hz after the last kept one
 ATTACKS = ("engage", "combo", "pull", "webstrike")  # intents that mean "started fighting"
 
 
@@ -43,7 +45,7 @@ def run(states, hz=10.0):
     """[(state, intent label)] for the states the brain would see at `hz`."""
     memory, last, rows = Memory(), None, []
     for s in states:
-        if last is None or s.t - last >= 1 / hz - 1e-9:
+        if last is None or s.t - last >= DECIMATE_TOL / hz:  # a recording's frame spacing jitters around 1/hz, so accept 90% of it
             last = s.t
             rows.append((s, label(decide(s, memory))))
     return rows

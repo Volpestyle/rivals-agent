@@ -1,5 +1,8 @@
 """Replay over a synthetic run: the timeline hits every mode and the metrics see the dropouts."""
+import random
+
 from agent import replay
+from agent.state import State
 
 
 def _synth(tmp_path):
@@ -30,3 +33,33 @@ def test_synthetic_run_walks_every_mode_and_the_tracer_branch(tmp_path):
 def test_replay_decimates_to_the_brain_rate(tmp_path):
     states = replay.load(_synth(tmp_path))  # 10 Hz on disk
     assert abs(2 * len(replay.run(states, hz=5)) - len(states)) <= 2
+
+
+def _stream(n, gap):
+    """n States spaced by gap() seconds; only t matters to decimation."""
+    t, out = 0.0, []
+    for _ in range(n):
+        out.append(State(t=t, frame=(1280, 720)))
+        t += gap()
+    return out
+
+
+def test_jittered_10_fps_recording_is_not_decimated_at_10_hz():
+    rng = random.Random(1)
+    states = _stream(1000, lambda: rng.uniform(0.092, 0.108))  # L1's spacing: near 0.1 s, never exactly
+    kept = len(replay.run(states, hz=10))
+    old = 0  # the rule this replaced: s.t - last >= 1/hz - 1e-9
+    last = None
+    for s in states:
+        if last is None or s.t - last >= 1 / 10 - 1e-9:
+            old += 1
+            last = s.t
+    assert kept == len(states)
+    assert old < 0.75 * len(states)  # it dropped a third of a real 10 fps run
+
+
+def test_decimation_still_thins_faster_streams():
+    fast = _stream(600, lambda: 1 / 60)
+    assert abs(len(replay.run(fast, hz=10)) - 100) <= 2  # one in six
+    close = _stream(200, lambda: 0.05)
+    assert abs(len(replay.run(close, hz=10)) - 100) <= 2  # every other one

@@ -358,3 +358,118 @@ def test_key_never_appears_in_repr_or_error_text(tmp_path, monkeypatch):
 
 def test_decide_jev_has_the_brain_signature():
     assert list(inspect.signature(jev.decide_jev).parameters) == list(inspect.signature(brain.decide).parameters)
+
+
+# --- configured endpoint -----------------------------------------------------
+
+LOCAL_URL = "http://192.168.4.20:8724/v1/systemone"
+
+
+def test_endpoint_defaults_are_the_openrouter_values():
+    ep = jev.Endpoint.from_env({})
+    assert (ep.url, ep.model, ep.key) == ("https://openrouter.ai/api/alpha/decisions", "typesafe/jev-1.13", None)
+    assert (ep.secure, ep.host, ep.port, ep.path) == (True, "openrouter.ai", None, "/api/alpha/decisions")
+    assert jev.Endpoint.from_env({"JEV_URL": "", "JEV_MODEL": ""}) == ep  # empty means unset
+
+
+def test_endpoint_reads_url_model_and_key_from_the_environment():
+    ep = jev.Endpoint.from_env({"JEV_URL": LOCAL_URL + "?debug=1", "JEV_MODEL": "jev-local", "JEV_KEY": "lan-key-123"})
+    assert (ep.secure, ep.host, ep.port, ep.path, ep.model) == (False, "192.168.4.20", 8724, "/v1/systemone?debug=1", "jev-local")
+    assert ep.key == "lan-key-123" and "lan-key-123" not in repr(ep)
+
+
+@pytest.mark.parametrize("bad", ["openrouter.ai/api", "ftp://host/x", "http:///nohost", "http://"])
+def test_a_url_that_is_not_http_with_a_host_is_refused(bad):
+    with pytest.raises(ValueError, match="JEV_URL"):
+        jev.Endpoint.from_env({"JEV_URL": bad})
+
+
+def test_key_policy_default_url_sends_the_openrouter_key_and_another_url_sends_only_jev_key(monkeypatch):
+    for name in ("JEV_URL", "JEV_MODEL", "JEV_KEY"):
+        monkeypatch.delenv(name, raising=False)
+    monkeypatch.setenv("OPENROUTER_API_KEY", "or-key")
+    assert HttpTransport().bearer  # OpenRouter's default needs its key
+    local = jev.Endpoint(url=LOCAL_URL)
+    assert not HttpTransport(endpoint=local).bearer  # a local server without a key gets no Authorization header
+    assert HttpTransport(endpoint=jev.Endpoint(url=LOCAL_URL, key="lan-key")).bearer
+    monkeypatch.delenv("OPENROUTER_API_KEY")
+    HttpTransport(endpoint=local)  # and it does not demand OPENROUTER_API_KEY either
+
+
+def test_the_model_name_follows_the_endpoint_and_the_environment(monkeypatch):
+    monkeypatch.delenv("JEV_MODEL", raising=False)
+    assert Jev(Stub(reply("search"))).model == "typesafe/jev-1.13"
+    monkeypatch.setenv("JEV_MODEL", "from-env")
+    stub = Stub(reply("search"))
+    Jev(stub)(st(detections=[]), Memory())
+    assert stub.calls[0][0]["model"] == "from-env"
+    assert Jev(Stub(reply("search")), model="explicit").model == "explicit"
+    tr = HttpTransport(key="k", endpoint=jev.Endpoint(url=LOCAL_URL, model="jev-local"))
+    assert Jev(tr).model == "jev-local"  # the transport's endpoint wins over the environment
+
+
+class FakeConn:
+    """Stands in for http.client.HTTP(S)Connection: records the request instead of sending it."""
+    made = []
+    status, reply_body = 200, b'{"answers": {}}'
+
+    def __init__(self, host, port=None, timeout=None):
+        self.host, self.port, self.sent = host, port, None
+        type(self).made.append(self)
+
+    def request(self, method, path, body, headers):
+        self.sent = (method, path, json.loads(body), headers)
+
+    def getresponse(self):
+        outer = self
+
+        class Resp:
+            status = outer.status
+
+            def read(self):
+                return outer.reply_body
+
+        return Resp()
+
+
+def test_the_session_posts_to_the_configured_route_with_or_without_a_bearer_key(monkeypatch):
+    class Plain(FakeConn):
+        made = []
+
+    class Secure(FakeConn):
+        made = []
+
+    monkeypatch.setattr(jev.http.client, "HTTPConnection", Plain)
+    monkeypatch.setattr(jev.http.client, "HTTPSConnection", Secure)
+    local = jev.Endpoint(url=LOCAL_URL)
+
+    s = jev._Session(None, local)
+    assert s.post({"q": 1}) == {"answers": {}}
+    (conn,) = Plain.made
+    assert (conn.host, conn.port) == ("192.168.4.20", 8724) and conn.sent[:3] == ("POST", "/v1/systemone", {"q": 1})
+    assert "Authorization" not in conn.sent[3] and conn.sent[3]["Content-Type"] == "application/json"
+
+    keyed = jev._Session("lan-key", local)
+    keyed.post({})
+    assert Plain.made[1].sent[3]["Authorization"] == "Bearer lan-key"
+
+    remote = jev._Session("or-key", jev.Endpoint())
+    remote.post({})
+    (conn,) = Secure.made  # https goes through the TLS connection class, on the scheme's default port
+    assert (conn.host, conn.port) == ("openrouter.ai", None) and conn.sent[1] == "/api/alpha/decisions"
+    assert conn.sent[3]["Authorization"] == "Bearer or-key"
+    for session in (s, keyed, remote):
+        session.close()
+
+
+def test_a_server_error_that_echoes_the_key_is_redacted(monkeypatch):
+    class Echo(FakeConn):
+        made = []
+        status, reply_body = 401, b'bad credentials: Bearer lan-key-123'
+
+    monkeypatch.setattr(jev.http.client, "HTTPConnection", Echo)
+    s = jev._Session("lan-key-123", jev.Endpoint(url=LOCAL_URL))
+    with pytest.raises(TransportError) as e:
+        s.post({})
+    assert "lan-key-123" not in str(e.value) and "HTTP 401" in str(e.value)
+    s.close()

@@ -53,6 +53,24 @@ def test_range_by_bbox_height():
     assert decide(st(0, detections=[enemy(100), ANCH]), Memory()) == SwingTo(ANCH)  # far
 
 
+def test_range_thresholds_come_from_one_table(monkeypatch):
+    from agent import brain
+    from agent.brain import RANGES, Ranges, range_of
+
+    # the values are unchanged until measured numbers arrive (docs/lanes/l6-integration.md)
+    assert (RANGES.near_m, RANGES.far_m, RANGES.near_h, RANGES.far_h) == (4.0, 20.0, 0.35, 0.08)
+    s = st(0)
+    measured = Ranges(near_h=0.12, far_h=0.05)  # e.g. a table set from real boxes
+    assert [range_of(enemy(h), s) for h in (60, 130, 200)] == ["far", "mid", "mid"]  # guess table: 0.35 is out of reach
+    assert [range_of(enemy(h), s, measured) for h in (60, 130, 200)] == ["far", "mid", "near"]
+    assert range_of(enemy(100, distance=3.0), s, Ranges(near_m=2.5)) == "mid"  # the metre columns too
+    # decisions read the table at call time, so setting it needs no change at any call site
+    box = enemy(200)
+    assert isinstance(decide(st(0, detections=[box]), Memory()), Combo)  # mid range under the guess table
+    monkeypatch.setattr(brain, "RANGES", measured)
+    assert decide(st(0, detections=[box]), Memory()) == Engage(box)  # near under the measured one
+
+
 def test_range_and_aim_follow_the_frame_the_boxes_are_in():
     half = (1280, 720)  # what L1 records and perception processes
     for h, expected in ((600, Engage), (300, Combo)):  # near, mid

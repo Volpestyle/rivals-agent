@@ -6,6 +6,7 @@ dependencies = []
 
 [dependency-groups]
 dev = ["pytest"]
+perception = ["opencv-python-headless>=4.10", "numpy>=2.0"]
 
 [tool.uv]
 package = false
@@ -13,8 +14,6 @@ package = false
 [tool.pytest.ini_options]
 pythonpath = ["."]
 testpaths = ["tests"]
-# pytest collects the decision-layer tests only. The perception harnesses (tests/test_hud.py,
-# test_replay_states.py, test_evalread.py, ...) need opencv + numpy and recorded data and run as
-# scripts (see their docstrings), so a bare `uv run pytest` must not import them. A stdlib-only
-# pytest test from another lane has to match one of these patterns, or be added here.
-python_files = ["test_brain*.py", "test_jev*.py"]
+# A bare `uv run pytest` is stdlib-only: tests/conftest.py skips the modules that import cv2, numpy or
+# `perception` unless opencv and numpy are installed. `uv run --group perception pytest` collects them too
+# (they also need recorded data under data/, which is gitignored and not on every machine).

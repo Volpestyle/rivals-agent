@@ -5,20 +5,23 @@ gate (retreat, playing holds, a flickering target) always runs first, so those
 rules never wait on the network; Jev replaces only the choice, brain.policy.
 
 Two ways to ask, both counted in Jev.stats and both logging per tick which source
-decided (gate, jev or scripted):
+decided (gate, jev, standing or scripted):
 
   Jev       blocking: wait up to a hard deadline for the answer, else brain.policy.
-  AsyncJev  never waits: one request in flight at a time, brain.policy answers every
-            tick meanwhile, and a landed answer is adopted only if it is still valid
-            (young enough, same situation, its target still visible, still legal),
-            else dropped and counted. This is what decide_jev uses.
+  AsyncJev  never waits: one request in flight at a time. A landed answer is adopted
+            only if it is still valid (young enough, same situation, its target still
+            visible, still legal), else dropped and counted. An adopted answer then
+            STANDS as the policy choice, tracking its target from tick to tick, until
+            the next answer replaces it, the situation or target it was about changes,
+            it is no longer legal, or it is older than STANDING_MAX_S. brain.policy
+            fills every tick with no valid standing answer. This is what decide_jev uses.
 
 A timeout, HTTP error, unparseable or out-of-vocabulary answer always means
 brain.policy for that tick.
 
 Wire shape (docs/lanes/l5-brain.md, "Jev"): POST https://openrouter.ai/api/alpha/decisions.
 The chat/completions route refuses this model, so tool_choice and response_format
-do not apply.
+do not apply. JEV_URL, JEV_MODEL and JEV_KEY point the same body at another server (Endpoint).
 
   {"model": ..., "state": {...typed fields...},
    "questions": {"intent": {"type": "choice", "instructions": ..., "criteria": {name: description}},
@@ -42,6 +45,7 @@ import time
 from collections import Counter
 from dataclasses import dataclass, field
 from pathlib import Path
+from urllib.parse import urlsplit
 
 from . import brain
 from .brain import (BURST_HOLD_S, HOSTILE, HP_RESUME, HP_RETREAT, MIN_CONF, PULL_HOLD_S, STRIKE_HOLD_S, SWING_HOLD_S,
@@ -50,9 +54,10 @@ from .intents import BURST, MACROS, Combo, Disengage, Engage, Idle, Pull, Search
 from .state import ANCHOR, PULL, SWING, UPPERCUT, State
 
 MODEL = "typesafe/jev-1.13"  # pinned: the jev-latest slug 404s on OpenRouter's models API
-HOST, PATH = "openrouter.ai", "/api/alpha/decisions"
+DEFAULT_URL = "https://openrouter.ai/api/alpha/decisions"
 TIMEOUT_S = 0.2      # guess: Jev's blocking budget, one tick at 5 Hz. The measured round trip is above this (docs/lanes/l5-brain.md)
 MAX_AGE_S = 0.6      # guess: AsyncJev drops an answer older than this (state.t). Covers the p95 round trip with margin
+STANDING_MAX_S = 1.0  # guess: a standing answer expires this long after the State it was about. About three round trips, so answers that keep landing keep it alive
 MATCH_FRAC = 0.15    # guess: an answered target must have a current detection of its class within this fraction of the frame height
 SOCKET_CAP_S = 5.0   # bounds a hung request: no new request can start until it ends
 MAX_OPTIONS = 6      # hostiles and anchors offered per call, nearest the crosshair first
@@ -220,13 +225,58 @@ def reassociate(state, det):
     return min(near, key=lambda d: math.dist(d.center, det.center), default=None)
 
 
+@dataclass(frozen=True)
+class Endpoint:
+    """Where the decisions route lives, the model name it gets, and the Bearer key it wants.
+
+    Read once from the environment, so pointing the agent at another server changes no
+    call site. Every default is the OpenRouter value:
+
+      JEV_URL    full URL of the route: scheme, host, port and path. http or https.
+      JEV_MODEL  the `model` field of the request.
+      JEV_KEY    Bearer key to send. Unset, the default URL sends OPENROUTER_API_KEY (environment
+                 or .env) and any other URL sends no Authorization header at all.
+    """
+    url: str = DEFAULT_URL
+    model: str = MODEL
+    key: str | None = field(default=None, repr=False)  # a secret: never in a repr
+
+    def __post_init__(self):
+        u = urlsplit(self.url)
+        if u.scheme not in ("http", "https") or not u.hostname:
+            raise ValueError(f"JEV_URL must be an http(s) URL with a host, got {self.url!r}")
+
+    @classmethod
+    def from_env(cls, env=None):
+        env = os.environ if env is None else env
+        return cls(env.get("JEV_URL") or DEFAULT_URL, env.get("JEV_MODEL") or MODEL, env.get("JEV_KEY") or None)
+
+    @property
+    def secure(self):
+        return urlsplit(self.url).scheme == "https"
+
+    @property
+    def host(self):
+        return urlsplit(self.url).hostname
+
+    @property
+    def port(self):
+        return urlsplit(self.url).port  # None: the scheme's default
+
+    @property
+    def path(self):
+        u = urlsplit(self.url)
+        return (u.path or "/") + (f"?{u.query}" if u.query else "")
+
+
 @dataclass
 class Stats:
     calls: int = 0                                          # requests that reached the model
     fallbacks: Counter = field(default_factory=Counter)     # failed or unusable answers, by reason: timeout, http, parse, vocab
     drops: Counter = field(default_factory=Counter)         # AsyncJev: usable answers not adopted: gated, stale, situation, ...
-    sources: Counter = field(default_factory=Counter)       # ticks by who decided: gate, jev, scripted
-    chosen: Counter = field(default_factory=Counter)        # intents Jev's adopted answers were, by name
+    expired: Counter = field(default_factory=Counter)       # AsyncJev: standing answers that ended: aged, situation, target_gone, illegal, detector_down
+    sources: Counter = field(default_factory=Counter)       # ticks by who decided: gate, jev (adopted this tick), standing, scripted
+    chosen: Counter = field(default_factory=Counter)        # intents of the ticks Jev decided (jev or standing), by name
     trace: list = field(default_factory=list)               # (state.t, source) per tick, for the eval
     latency_ms: list = field(default_factory=list)          # round trip of every answered call
     age_ms: list = field(default_factory=list)              # AsyncJev: how old each adopted answer's State was
@@ -240,9 +290,15 @@ class Stats:
 
     @property
     def jev_share(self):
-        """Fraction of ticks Jev decided."""
+        """Fraction of ticks decided by a Jev answer, fresh or standing."""
         n = sum(self.sources.values())
-        return self.sources["jev"] / n if n else 0.0
+        return (self.sources["jev"] + self.sources["standing"]) / n if n else 0.0
+
+    @property
+    def standing_share(self):
+        """Fraction of ticks decided by a standing answer (an answer adopted on an earlier tick)."""
+        n = sum(self.sources.values())
+        return self.sources["standing"] / n if n else 0.0
 
 
 @dataclass
@@ -262,9 +318,10 @@ class Asked:
 class Jev:
     """Blocking decide_jev: waits up to timeout_s for the answer. `transport(body, timeout_s) -> dict` is injectable."""
 
-    def __init__(self, transport=None, timeout_s=TIMEOUT_S, model=MODEL):
+    def __init__(self, transport=None, timeout_s=TIMEOUT_S, model=None):
         self.transport = transport or HttpTransport()
-        self.timeout_s, self.model, self.stats = timeout_s, model, Stats()
+        endpoint = getattr(self.transport, "endpoint", None) or Endpoint.from_env()
+        self.timeout_s, self.model, self.stats = timeout_s, model or endpoint.model, Stats()
 
     def __call__(self, state: State, memory: Memory):
         early, target = brain.gate(state, memory)
@@ -283,7 +340,7 @@ class Jev:
     def _done(self, state, source, intent):
         self.stats.sources[source] += 1
         self.stats.trace.append((state.t, source))
-        if source == "jev":
+        if source in ("jev", "standing"):
             self.stats.chosen[name_of(intent)] += 1
         return intent
 
@@ -351,20 +408,31 @@ class Flight:
     done_at: float | None = None  # perf_counter when it landed
 
 
+@dataclass
+class Standing:
+    """The adopted answer that is the policy choice until it ends."""
+    name: str
+    det: object     # the answered target or anchor, as of the last tick it was valid; None if the intent has none
+    asked: Asked    # the State it was about: its time and its situation
+
+
 class AsyncJev(Jev):
     """decide_jev that never waits on the network.
 
-    Each tick: run the scripted gate; collect the in-flight answer if it has landed;
-    adopt it if it is still valid, else drop it (counted); otherwise brain.policy
-    decides. If nothing is in flight, the gate let a choice through and no hold was just
-    started, a new request goes out about the current State. The transport needs `submit(body) -> Future`.
+    Each tick: run the scripted gate (it preempts everything); collect the in-flight
+    answer if it has landed; adopt it if it is still valid, else drop it (counted). An
+    adopted answer stands: on later ticks it is the choice for as long as it stays valid
+    for the State (see the module docstring). brain.policy decides only when no answer
+    is standing. If nothing is in flight, the gate let a choice through and no hold was
+    just started, a new request goes out about the current State. The transport needs `submit(body) -> Future`.
     A hung request holds the slot until the socket cap (SOCKET_CAP_S); brain.policy
     answers meanwhile.
     """
 
-    def __init__(self, transport=None, max_age_s=MAX_AGE_S, model=MODEL):
+    def __init__(self, transport=None, max_age_s=MAX_AGE_S, model=None, standing_max_s=STANDING_MAX_S):
         super().__init__(transport, timeout_s=None, model=model)
-        self.max_age_s, self._flight = max_age_s, None
+        self.max_age_s, self.standing_max_s = max_age_s, standing_max_s
+        self._flight = self._standing = None
 
     def __call__(self, state: State, memory: Memory):
         early, target = brain.gate(state, memory)
@@ -375,6 +443,8 @@ class AsyncJev(Jev):
             return self._done(state, "gate", early)
         intent = self._adopt(landed, state, memory, target) if landed else None
         source = "jev"
+        if intent is None:
+            intent, source = self._stand(state, memory, target), "standing"
         if intent is None:
             intent, source = brain.policy(state, memory, target), "scripted"
         if self._flight is None and memory.hold_until <= state.t and not (target is None and state.detections is None):
@@ -425,7 +495,32 @@ class AsyncJev(Jev):
             self.stats.drops[reason] += 1
             return None
         self.stats.age_ms.append((state.t - asked.t) * 1000)
+        self._standing = Standing(name, det, asked)  # replaces whatever was standing
         return adopt(state, memory, target, name, det)
+
+    def _stand(self, state, memory, target):
+        """The standing answer as this tick's intent while it is valid for `state`; else it ends (counted) and None."""
+        st = self._standing
+        if st is None:
+            return None
+        reason = (
+            "detector_down" if state.detections is None
+            else "aged" if state.t - st.asked.t > self.standing_max_s
+            else "situation" if brain.situation(state, target) != st.asked.situation
+            else None
+        )
+        det = st.det
+        if reason is None and det is not None:
+            det = reassociate(state, det)  # follow the target as it moves
+            reason = "target_gone" if det is None else None
+        if reason is None and not legal(st.name, state, det):
+            reason = "illegal"
+        if reason:
+            self.stats.expired[reason] += 1
+            self._standing = None
+            return None
+        st.det = det
+        return adopt(state, memory, target, st.name, det)
 
 
 # --- transport ---------------------------------------------------------------
@@ -450,16 +545,20 @@ def redact(text, key):
 class _Session:
     """One keep-alive connection and its single worker thread; dropped wholesale after any failure."""
 
-    def __init__(self, key):
-        self.key, self.conn = key, None
+    def __init__(self, key, endpoint):
+        self.key, self.endpoint, self.conn = key, endpoint, None
         self.pool = concurrent.futures.ThreadPoolExecutor(max_workers=1, thread_name_prefix="jev")
 
     def post(self, body):  # runs on the worker thread
+        ep = self.endpoint
         if self.conn is None:
-            self.conn = http.client.HTTPSConnection(HOST, timeout=SOCKET_CAP_S)
+            connect = http.client.HTTPSConnection if ep.secure else http.client.HTTPConnection
+            self.conn = connect(ep.host, ep.port, timeout=SOCKET_CAP_S)
+        headers = {"Content-Type": "application/json"}
+        if self.key:
+            headers["Authorization"] = "Bearer " + self.key
         try:
-            self.conn.request("POST", PATH, json.dumps(body),
-                              {"Authorization": "Bearer " + self.key, "Content-Type": "application/json"})
+            self.conn.request("POST", ep.path, json.dumps(body), headers)
             r = self.conn.getresponse()
             data = r.read()
         except TimeoutError:
@@ -481,7 +580,7 @@ class _Session:
 
 
 class HttpTransport:
-    """OpenRouter's decisions route over one kept-alive connection.
+    """The decisions route (OpenRouter's unless the environment says otherwise) over one kept-alive connection.
 
     submit(body) starts a request on a worker thread and returns its Future; calling
     the transport waits for it up to a hard wall-clock deadline (a socket timeout alone
@@ -493,12 +592,20 @@ class HttpTransport:
     dropped before the next.
     """
 
-    def __init__(self, key=None, session_factory=_Session):
-        self._key, self._factory = key or load_key(), session_factory
+    def __init__(self, key=None, session_factory=None, endpoint=None):
+        self.endpoint = endpoint or Endpoint.from_env()
+        # the default URL needs the OpenRouter key; any other server gets a key only if JEV_KEY names one
+        self._key = key or self.endpoint.key or (load_key() if self.endpoint.url == DEFAULT_URL else None)
+        self._factory = session_factory or (lambda k: _Session(k, self.endpoint))
         self._session, self._last, self.sent = None, None, 0
 
     def __repr__(self):
         return "HttpTransport()"  # the key must never reach a log line
+
+    @property
+    def bearer(self):
+        """Whether an Authorization header is sent."""
+        return self._key is not None
 
     def submit(self, body):
         last = self._last
@@ -597,7 +704,9 @@ def bench(n, timeout_s, hz=0.0, transport=None):
             time.sleep(max(0.0, 1 / hz - (time.perf_counter() - tick)))
     st, lat = jev.stats, jev.stats.latency_ms
     sent = getattr(jev.transport, "sent", None)  # requests actually sent: a timed-out one is still billed
+    endpoint = getattr(jev.transport, "endpoint", None)
     return {
+        "endpoint": {"url": endpoint.url, "model": jev.model, "bearer_sent": jev.transport.bearer} if endpoint else None,
         "calls": st.calls, "fallbacks": dict(st.fallbacks), "fallback_rate": round(st.fallback_rate, 3),
         "first_call_ms": round(lat[0]) if lat else None,
         "roundtrip_ms": {"p50": round(pct(lat[1:], 50)), "p95": round(pct(lat[1:], 95)), "min": round(min(lat[1:])),
@@ -614,30 +723,47 @@ def bench(n, timeout_s, hz=0.0, transport=None):
     }
 
 
-def bench_async(ticks, hz, max_age_s=MAX_AGE_S, transport=None):
+def _switches(names):
+    return sum(a != b for a, b in zip(names, names[1:]))
+
+
+def bench_async(ticks, hz, max_age_s=MAX_AGE_S, transport=None, standing_max_s=STANDING_MAX_S):
     """AsyncJev over the synthetic story at `hz` in real time (hz 0: no pacing), one Memory throughout."""
-    jev, memory, wall, differs = AsyncJev(transport, max_age_s), Memory(), [], Counter()
+    jev, memory, wall = AsyncJev(transport, max_age_s, standing_max_s=standing_max_s), Memory(), []
+    differs, names = Counter(), []
+    states = story_loop(ticks, hz or 10)  # hz 0 runs the 10 Hz story unpaced
     start = time.perf_counter()
-    for i, s in enumerate(story_loop(ticks, hz or 10)):  # hz 0 runs the 10 Hz story unpaced
+    for i, s in enumerate(states):
         if hz:
             time.sleep(max(0.0, start + i / hz - time.perf_counter()))
         shadow = copy.deepcopy(memory)  # what the scripted brain would have said from the same memory
         t0 = time.perf_counter()
         got = jev(s, memory)
         wall.append((time.perf_counter() - t0) * 1000)
-        if jev.stats.trace[-1][1] == "jev":
+        names.append(name_of(got))
+        if jev.stats.trace[-1][1] in ("jev", "standing"):
             scripted = name_of(brain.decide(s, shadow))
             if scripted != name_of(got):
                 differs[f"{scripted}->{name_of(got)}"] += 1
+    baseline, m = [], Memory()
+    for s in states:  # the scripted brain alone over the same States, for the flapping comparison
+        baseline.append(name_of(brain.decide(s, m)))
     st, lat = jev.stats, jev.stats.latency_ms
-    choices = st.sources["jev"] + st.sources["scripted"]  # ticks the gate let through
+    decided = st.sources["jev"] + st.sources["standing"]
+    choices = decided + st.sources["scripted"]  # ticks the gate let through
+    endpoint = getattr(jev.transport, "endpoint", None)
     return {
-        "ticks": ticks, "hz": hz, "max_age_s": max_age_s,
+        "endpoint": {"url": endpoint.url, "model": jev.model, "bearer_sent": jev.transport.bearer} if endpoint else None,
+        "ticks": ticks, "hz": hz, "max_age_s": max_age_s, "standing_max_s": standing_max_s,
         "decided_by": dict(st.sources),
-        "jev_share_of_ticks": round(st.jev_share, 3),
-        "jev_share_of_choices": round(st.sources["jev"] / choices, 3) if choices else None,
-        "jev_chose": dict(st.chosen.most_common()),  # only pull, web_strike, burst and swing_to outlast their tick
-        "jev_differs_from_scripted": dict(differs.most_common()),  # ticks Jev decided differently: scripted -> jev
+        "jev_share_of_ticks": round(st.jev_share, 3),        # fresh + standing
+        "standing_share_of_ticks": round(st.standing_share, 3),
+        "jev_share_of_choices": round(decided / choices, 3) if choices else None,
+        "steered_share_of_ticks": round(sum(differs.values()) / ticks, 3),  # Jev-decided ticks whose intent differs from the scripted one
+        "jev_chose": dict(st.chosen.most_common()),
+        "jev_differs_from_scripted": dict(differs.most_common()),  # scripted -> jev
+        "intent_switches": _switches(names), "scripted_alone_switches": _switches(baseline),
+        "standing_expired": dict(st.expired),
         "requests": st.calls, "answered": len(lat), "fallbacks": dict(st.fallbacks), "drops": dict(st.drops),
         "roundtrip_ms": _spread(lat, 50, 95), "first_roundtrip_ms": round(lat[0]) if lat else None,
         "age_at_adoption_ms": _spread(st.age_ms, 50, 95),
@@ -653,8 +779,11 @@ def main(argv=None):
     p.add_argument("--hz", type=float, default=0.0, help="pace calls or ticks like the live loop (0 = back to back)")
     p.add_argument("--async", dest="nonblocking", action="store_true", help="measure AsyncJev over the synthetic story")
     p.add_argument("--max-age", type=float, default=MAX_AGE_S, help="--async: drop answers older than this (seconds)")
+    p.add_argument("--standing-max", type=float, default=STANDING_MAX_S,
+                   help="--async: a standing answer expires this long after its State (0 turns standing off)")
     a = p.parse_args(argv)
-    result = bench_async(a.n, a.hz, a.max_age) if a.nonblocking else bench(a.n, a.timeout, a.hz)
+    result = (bench_async(a.n, a.hz, a.max_age, standing_max_s=a.standing_max) if a.nonblocking
+              else bench(a.n, a.timeout, a.hz))
     print(json.dumps(result, indent=1))
 
 
