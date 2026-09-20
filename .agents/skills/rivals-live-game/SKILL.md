@@ -73,15 +73,20 @@ tracks replacing this with a script that verifies the highlight itself.
 
 `RB` twice from the "all" tab reaches duelists; Spider-Man is the top-left portrait
 (~845,45 in 1280x720 units). `A` selects, `X` confirms (safe here, not on the lobby).
-The picker remembers the last hero and tab.
+The picker does not reliably remember the last hero or tab (it opened on Black Panther,
+"all" tab, after a drop), so crop and check the portrait under the cursor before `A`.
 
 ## The inactivity drop
 
 Idling in the spawn room, or sitting in a menu, raises a red countdown banner top-left and
 then returns the game to the PLAY lobby. `record.idle_warning(frame)` detects the banner.
 Walk forward ~6 s from spawn to leave the room (green door, onto a plaza facing the Luna
-Snow bot). Keep settings-menu visits short and put a few seconds of in-range input
-between them. Outside the spawn room no warning appeared in 12+ minutes of play.
+Snow bot). Outside the spawn room no warning appeared in 12+ minutes of play.
+
+Only moving or attacking resets the timer. Camera-only input and menu input do not: a
+drop came ~10 minutes after the last move or attack, during turn-only aim trials and
+settings visits. Put a move-and-attack step inside every measurement or trial, and keep
+menu visits under ~5 minutes.
 
 ## Spider-Man on the pad
 
