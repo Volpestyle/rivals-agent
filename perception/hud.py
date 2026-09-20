@@ -57,6 +57,42 @@ ICON_DX, ICON_Y = 0.0165, (0.890, 0.933)   # the icon glyph itself
 BADGE_DX, BADGE_Y = 0.0105, (0.849, 0.879)  # charge count above the icon
 ULT = (0.902, 0.872, 0.972, 0.950)
 
+
+@dataclass(frozen=True)
+class Layout:
+    """Where this HUD puts the things the readers look for.
+
+    Two exist. `PAD` is the console/controller HUD our own captures use. `MK` is
+    the mouse-and-keyboard HUD a PC streamer shows, measured off a 1080p Twitch
+    clip. The caller picks one; nothing here guesses per frame, because guessing
+    wrong is silent and the answer is a property of the source, not the frame.
+
+    The two differ less than they look. hp text, hp bar, the ability row and the
+    ult sit at the same fractions on both -- only these move:
+
+    * **The ammo slots are mirrored.** On the pad HUD the web count is the left
+      slot and melee is the right; on M&K it is the other way round.
+    * **The charge badge inverts.** Pad draws a dark digit on a light disc; M&K
+      draws a light digit and ring on a dark centre.
+    """
+
+    name: str
+    webs: tuple
+    webs_right: tuple
+    badge_light_disc: bool   # True: dark digit punched out of a light disc
+    hp_text: tuple = HP_TEXT
+    hp_bar: tuple = HP_BAR
+    slot_cx: dict = field(default_factory=lambda: dict(SLOT_CX))
+    ult: tuple = ULT
+
+
+PAD = Layout(name="pad", webs=WEBS, webs_right=WEBS_RIGHT, badge_light_disc=True)
+# Measured on reqmr-2873352801-1920: the count sits at x 0.2602-0.2672 on every
+# still, right-aligned like the pad one, so the box is the pad box shifted right.
+MK = Layout(name="mk", webs=(0.2455, 0.905, 0.2700, 0.950), webs_right=(48, 66),
+            badge_light_disc=False)
+LAYOUTS = {"pad": PAD, "mk": MK}
+
 # A ready icon is drawn in white, or gold while a buff is up; one that is
 # cooling or unavailable is drawn in red. Brightness alone does not separate
 # them — a red icon can be brighter than a thin white one — so the test is how
@@ -948,7 +984,7 @@ def _sole_occupant(groups, group, band):
     return True
 
 
-def read_hp(frame) -> tuple[int | None, int | None]:
+def read_hp(frame, layout=None) -> tuple[int | None, int | None]:
     """(hp, max_hp) from the "250 / 250" digits. Either may be None on its own.
 
     The two numbers are read independently at their own anchors, so a mangled
@@ -967,6 +1003,10 @@ def read_hp(frame) -> tuple[int | None, int | None]:
                     and not _lost_digit(mask, g[0][0], "left")):
                 hp = _number(g)
             elif (max_hp is None and HP_MAX_LEFT[0] <= left <= HP_MAX_LEFT[1]
+                    # No hero has single-digit maximum health, so one glyph here
+                    # is a partial read of a longer number, not a small number.
+                    # Current hp has no such floor -- 6 hp is perfectly real.
+                    and len(g) >= 2
                     and _sole_occupant(groups, g, HP_MAX_BAND)
                     and not _lost_digit(mask, g[-1][0], "right")):
                 max_hp = _number(g)
@@ -996,7 +1036,7 @@ def read_bar_fill(frame) -> float | None:
     return float((np.flatnonzero(filled)[-1] + 1) / len(filled))
 
 
-def read_webs(frame) -> int | None:
+def read_webs(frame, layout=PAD) -> int | None:
     """Web-Cluster count by the left weapon icon.
 
     None when the slot shows infinity, or a glyph the classifier will not
@@ -1005,11 +1045,11 @@ def read_webs(frame) -> int | None:
     """
     # One contrast: the count is drawn bright white, and the extra passes only
     # ever added junk here.
-    for mask in _masks(frame, WEBS, WEBS_FLOOR, contrasts=(55,)):
+    for mask in _masks(frame, layout.webs, WEBS_FLOOR, contrasts=(55,)):
         for g in _groups(_glyphs(mask)):
             last = g[-1][0]
             right = last[0] + last[2]
-            if WEBS_RIGHT[0] <= right <= WEBS_RIGHT[1]:
+            if layout.webs_right[0] <= right <= layout.webs_right[1]:
                 n = _number(g)
                 if n is not None:
                     return n
@@ -1040,13 +1080,18 @@ def _red_fraction(img):
     return float(red.sum()) / n
 
 
-def _badge_mask(frame, cx):
+def _badge_mask(frame, cx, layout=PAD):
     """Charge badges invert the HUD: a dark digit punched out of a light disc.
     Returns the digit as ordinary foreground, or None when no disc is drawn."""
     img = crop(frame, _badge_box(cx))
     s = _scale(frame)
     if s != 1.0:
         img = cv2.resize(img, None, fx=s, fy=s, interpolation=cv2.INTER_CUBIC)
+    # Pad: a light disc with the digit punched out of it. M&K: the opposite, a
+    # light ring and digit around a dark centre, so the digit is the bright ink
+    # itself rather than a hole in it.
+    if not layout.badge_light_disc:
+        return _ring_badge(img)
     disc = (img.min(axis=2) > 150).astype(np.uint8)
     n, lab, stats, _ = cv2.connectedComponentsWithStats(disc, connectivity=8)
     if n < 2:
@@ -1064,8 +1109,30 @@ def _badge_mask(frame, cx):
     return hole, h
 
 
-def read_charges(frame, cx) -> int | None:
-    found = _badge_mask(frame, cx)
+def _ring_badge(img):
+    """(mask, disc height) for a badge drawn as light ink on a dark centre."""
+    ink = (img.max(axis=2) > 170).astype(np.uint8)
+    n, lab, stats, _ = cv2.connectedComponentsWithStats(ink, connectivity=8)
+    if n < 2:
+        return None
+    # the ring is the biggest bright thing; the digit is the next one inside it
+    order = sorted(range(1, n), key=lambda i: -stats[i][cv2.CC_STAT_AREA])
+    ring = stats[order[0]]
+    rx, ry, rw, rh = ring[0], ring[1], ring[2], ring[3]
+    if rh < 14 or not 0.7 < rw / max(rh, 1) < 1.5:
+        return None
+    inner = np.zeros_like(ink)
+    for i in order[1:]:
+        x, y, w, h, area = stats[i]
+        if area >= 25 and rx < x and y > ry and x + w < rx + rw and y + h < ry + rh:
+            inner[lab == i] = 1
+    if not inner.any():
+        return None
+    return inner[ry:ry + rh, rx:rx + rw], int(rh)
+
+
+def read_charges(frame, cx, layout=PAD) -> int | None:
+    found = _badge_mask(frame, cx, layout)
     if found is None:
         return None
     mask, disc_h = found
@@ -1076,10 +1143,10 @@ def read_charges(frame, cx) -> int | None:
     return _number(glyphs) if glyphs else None
 
 
-def read_ability(frame, name) -> tuple[bool | None, int | None]:
+def read_ability(frame, name, layout=PAD) -> tuple[bool | None, int | None]:
     """(ready, charges) for one ability slot. charges is None when the slot
     shows no charge badge at all, which most abilities do not."""
-    cx = SLOT_CX[name]
+    cx = layout.slot_cx[name]
     frac = _red_fraction(crop(frame, _icon_box(cx)))
     if frac is None:
         ready = None
@@ -1089,12 +1156,12 @@ def read_ability(frame, name) -> tuple[bool | None, int | None]:
         ready = False
     else:
         ready = None
-    return ready, read_charges(frame, cx)
+    return ready, read_charges(frame, cx, layout)
 
 
-def read_ult(frame) -> tuple[bool | None, float | None]:
+def read_ult(frame, layout=PAD) -> tuple[bool | None, float | None]:
     """(ready, charge 0..1). Charge is the yellow fill of the ult diamond."""
-    hsv = cv2.cvtColor(crop(frame, ULT), cv2.COLOR_BGR2HSV)
+    hsv = cv2.cvtColor(crop(frame, layout.ult), cv2.COLOR_BGR2HSV)
     h, s, v = hsv[:, :, 0], hsv[:, :, 1], hsv[:, :, 2]
     frac = float(((h > 18) & (h < 35) & (s > 110) & (v > 140)).mean())
     charge = min(1.0, frac / ULT_READY)
@@ -1212,20 +1279,20 @@ class Hud:
         return dict(hp=self.hp, max_hp=self.max_hp, webs=self.webs, abilities=ab)
 
 
-def read(frame) -> Hud:
+def read(frame, layout=PAD) -> Hud:
     hp, max_hp = read_hp(frame)
     bar = read_bar_fill(frame)
     if hp is None and not bar:
         # No hp digits and no bar: a menu, a loading screen, the hero picker.
         # The ability row would otherwise read as "not ready", which is a guess.
         return Hud()
-    ult_ready, ult_charge = read_ult(frame)
+    ult_ready, ult_charge = read_ult(frame, layout)
     return Hud(
         hp=hp,
         max_hp=max_hp,
         bar_fill=bar,
-        webs=read_webs(frame),
-        abilities={n: read_ability(frame, n) for n in SLOT_CX},
+        webs=read_webs(frame, layout),
+        abilities={n: read_ability(frame, n, layout) for n in layout.slot_cx},
         ult_ready=ult_ready,
         ult_charge=ult_charge,
     )

@@ -1,6 +1,56 @@
 # L2 — HUD readers
 
-**Status: done and accepted.** Waiting on one thing only: a run of deliberate
+## Event stream format
+
+`data/demos/events/<clip-stem>.jsonl` is the agreed location, one file per clip,
+written by `perception/events.py`. Three line kinds, told apart by `type`:
+
+```jsonc
+{"type": "meta", "source": "reqmr-2873352801-1920", "layout": "mk",
+ "frames": 601, "fps": 10.0, "t_origin": "first frame of the media",
+ "duration_s": 60.0, "segments": 3, "events": 85}
+
+{"type": "segment", "start_i": 0, "start_t": 0.0, "end_i": 78, "end_t": 7.8,
+ "started_by": "run_start", "ended_by": "death"}
+
+{"kind": "ability_used", "i_from": 34, "t_from": 3.4, "i_to": 35, "t_to": 3.5,
+ "slot": "swing", "amount": null, "before": true, "after": false, "segment": 0}
+```
+
+**Events carry no `type` key**, so readers already consuming them keep working.
+Order is meta, then segments in time order, then events in time order.
+
+- **All `t_*` are seconds from the first frame of the media**, not from the
+  source VOD's start. All `i_*` are frame indices *at the sampling fps in the
+  meta line* — not the source video's native frame numbers. The clips here were
+  sampled at **10 fps** from 60 fps sources.
+- **An event is an interval, never an instant**: `i_from`/`t_from` is the last
+  frame showing the old value, `i_to`/`t_to` the first showing the new one. The
+  press happened somewhere between. At 10 fps that is about 100 ms wide.
+- `segment` on an event is the index of the segment line it belongs to. **No
+  event ever spans a segment boundary**; channels reset at each one.
+- `ended_by` is one of `run_end`, `death`, `killcam`, `spectating`,
+  `not_our_hero`, `no_hud`. `started_by` is `run_start`, `respawn`,
+  `killcam_over`, `spectating_over`, `hero_returned`, `hud_returned`.
+- Event `kind` is one of: `ability_used`, `ability_ready` (with `slot`),
+  `charges_spent`, `charges_regained` (with `slot` and `amount`),
+  `web_cluster_fired`, `web_cluster_reloaded`, `hp_lost`, `hp_gained`,
+  `shield_decayed`, `shield_gained`, `max_hp_changed`, `ult_ready`, `ult_spent`,
+  `death`, `respawn`.
+- **`hp_lost` is damage only when hp is below max.** Where max hp could not be
+  read, a shield tick still surfaces under this name: 68 of run1's 903 events
+  (7.5%) are shield movement wearing an `hp_lost` / `hp_gained` /
+  `max_hp_changed` label, every one of them at full health. The shield events
+  proper are the ones where both numbers were read and moved together. In the
+  practice range *nothing damages the player*, so any `hp_lost` there is a
+  shield tick by construction.
+
+This format is stable. Anything added will be a new key or a new `type`, never a
+change to what is above.
+
+## Status
+
+**Done and accepted.** Waiting on one thing only: a run of deliberate
 bot-tagging at varied distances, plus damage taken, at
 `C:\rivals-agent\data\l1\tagrun\` on the PC (L4 is recording it, the lead will
 say when it lands). That widens `read_tagged`'s calibration and supplies the
@@ -132,6 +182,48 @@ from the same code.
 - **max hp lags hp.** Its debounce coalesces consecutive shield ticks and it is
   unreadable on ~6% of frames, so the shield test looks for the nearest known
   max within a few frames rather than at one exact frame.
+
+### Hand-verified precision
+
+33 events sampled across every kind (four per kind, so rare kinds are
+over-represented) and checked against their own before/after crops in
+`docs/evidence/l2/events-verified-*.png`:
+
+- **33/33 are real transitions.** No phantom events: every one shows the stated
+  change in the two frames that prove it.
+- **24/33 carry a fully correct label.** The other 9 are shield ticks named
+  `hp_lost` / `hp_gained` / `max_hp_changed`, because max hp was unreadable on
+  those frames. Over the whole run that class is 7.5% of events, not 27% — the
+  sampler deliberately over-weights the rare kinds.
+
+### The two demo clips
+
+Both are 1080p60 sampled at 10 fps, read with the `mk` layout.
+
+| | Req (2873352801) | Day (21600-60s) |
+|---|---|---|
+| segments | 3 | 7 |
+| events | 85 | 62 |
+| ability used / ready | 16 / 16 | 19 / 19 |
+| web cluster fired / reloaded | **15 / 13** | **6 / 5** |
+| hp lost / gained | 10 / 14 | 5 / 8 |
+
+The ammo channel reads on both once the M&K layout is used — that was the
+mirrored slot, not a reader failure.
+
+**Every one of Day's segment boundaries is real; none is an overlay splitting
+continuous play.** Checked frame by frame at each one:
+
+| boundary | what is on screen |
+|---|---|
+| 12.7 s, 28.3 s, 41.6 s, 59.0 s | the player opens the **scoreboard**, which covers the HUD |
+| 45.5 s | **death** — hp reaches 0 |
+| 55.5 s | **killcam**: PAST LIVES, DEFEATED BY, and the killer's HUD reading 275 hp |
+| 55.9 s | the near-black respawn fade |
+
+So the Day player checks the scoreboard four times in sixty seconds. Those
+breaks currently report `no_hud`, which is true but unspecific; the scoreboard
+reader in the next piece of work can name them.
 
 ## Reading a streamer's HUD (1080p, mouse and keyboard)
 

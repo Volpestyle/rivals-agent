@@ -14,8 +14,14 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from perception.events import Event, extract, extract_one, segment  # noqa: E402
-from perception.hud import Hud  # noqa: E402
+from perception.events import (  # noqa: E402
+    BANNER_HOLD, Event, HUD_HOLD, banner_word, extract, extract_one, segment,
+)
+from perception.hud import MK, Hud, read as read_hud  # noqa: E402
+
+# Local-only: the demo clips are never committed, so anything that reads one
+# skips when it is absent rather than failing.
+DAY_CLIP = ROOT / "data/demos/samples/daymr-2879354299-21600-60s.mp4"
 
 SLOTS = ("teamup", "swing", "pull", "uppercut")
 
@@ -153,21 +159,28 @@ def test_spectating_ends_a_segment_and_no_event_crosses_it():
 
 
 def test_missing_hud_ends_a_segment():
-    rs = _tagged([hud(), Hud(), Hud(), hud()], [True, None, None, True])
+    """A menu or BRB card is long; a HUD gap has to last to be believed."""
+    rs = _tagged([hud()] * 4 + [Hud()] * 8 + [hud()] * 4, [True] * 16)
     segs = segment(rs)
     assert [s.ended_by for s in segs] == ["no_hud", "run_end"]
     assert [s.started_by for s in segs] == ["run_start", "hud_returned"]
 
 
+def test_a_brief_hud_dropout_does_not_cut_a_segment():
+    """Two frames where neither digits nor bar read is the reader struggling."""
+    rs = _tagged([hud()] * 4 + [Hud(), Hud()] + [hud()] * 4, [True] * 10)
+    assert len(segment(rs)) == 1
+
+
 def test_death_ends_a_segment_and_respawn_starts_one():
-    rs = _tagged([hud(hp=40), hud(hp=0), hud(hp=250)], [True, True, True])
+    rs = _tagged([hud(hp=40)] * 3 + [hud(hp=0)] * 3 + [hud(hp=250)] * 3, [True] * 9)
     segs = segment(rs)
     assert segs[0].ended_by == "death" and segs[1].started_by == "respawn"
 
 
 def test_unknown_hero_does_not_break_a_segment():
     """Not knowing who is playing is not evidence that it is not us."""
-    rs = _tagged([hud(), hud(), hud()], [True, None, True])
+    rs = _tagged([hud()] * 8, [True, True, True, None, None, True, True, True])
     assert len(segment(rs)) == 1
 
 
@@ -183,3 +196,83 @@ def test_a_brief_portrait_wobble_does_not_cut_a_segment():
     """One or two marginal frames are noise, not a hero swap."""
     rs = _tagged([hud()] * 6, [True, True, False, False, True, True])
     assert len(segment(rs)) == 1
+
+
+# --- killcam and the scoreboard overlay, from the DayMR clip --------------
+
+def _clip_frame(path, seconds):
+    """One frame of a local clip, or None when the clip is not on this machine."""
+    import cv2
+
+    if not path.exists():
+        return None
+    cap = cv2.VideoCapture(str(path))
+    try:
+        # By frame index, not milliseconds: seeking this clip by time lands
+        # seconds away and the whole point here is a specific moment.
+        cap.set(cv2.CAP_PROP_POS_FRAMES, int(seconds * (cap.get(cv2.CAP_PROP_FPS) or 60)))
+        ok, frame = cap.read()
+        return frame if ok else None
+    finally:
+        cap.release()
+
+
+def test_killcam_banner_is_read_off_the_clip():
+    """+50 s of the DayMR clip is the killcam: PAST LIVES beside the countdown."""
+    frame = _clip_frame(DAY_CLIP, 50.0)
+    if frame is None:
+        return
+    assert banner_word(frame) == "killcam"
+
+
+def test_the_killcam_shows_someone_elses_hud():
+    """The danger the reason exists for: a *readable* HUD that is not ours."""
+    frame = _clip_frame(DAY_CLIP, 50.2)
+    if frame is None:
+        return
+    hud_there = read_hud(frame, MK)
+    assert banner_word(frame) == "killcam"
+    assert hud_there.hp == 275, hud_there.hp   # the killer's health, not ours
+
+
+def test_scoreboard_overlay_leaves_the_hud_unreadable():
+    """+43 s: the scoreboard covers the HUD, so hp and bar must be unknown."""
+    frame = _clip_frame(DAY_CLIP, 43.0)
+    if frame is None:
+        return
+    hud_there = read_hud(frame, MK)
+    assert hud_there.hp is None and hud_there.bar_fill is None, hud_there
+
+
+def test_killcam_ends_a_segment_with_its_own_reason():
+    """It is not a hero swap and not spectating, and it gets its own name."""
+    reads = ([(i, i / 10, hud(hp=250), True, None) for i in range(6)]
+             + [(i, i / 10, hud(hp=275), True, "killcam") for i in range(6, 6 + BANNER_HOLD + 2)]
+             + [(i, i / 10, hud(hp=250), True, None) for i in range(6 + BANNER_HOLD + 2, 20)])
+    events, segs = extract(reads)
+    assert [s.ended_by for s in segs] == ["killcam", "run_end"], [s.ended_by for s in segs]
+    assert segs[1].started_by == "killcam_over"
+    assert events == [], "the killer's 275 hp must not become our hp events"
+
+
+def test_spectating_and_killcam_are_different_reasons():
+    def run(word):
+        reads = ([(i, i / 10, hud(), True, None) for i in range(6)]
+                 + [(i, i / 10, hud(), True, word) for i in range(6, 6 + BANNER_HOLD + 2)]
+                 + [(i, i / 10, hud(), True, None) for i in range(6 + BANNER_HOLD + 2, 20)])
+        return segment(reads)[0].ended_by
+
+    assert run("killcam") == "killcam"
+    assert run("spectating") == "spectating"
+
+
+def test_no_event_crosses_a_scoreboard_blackout():
+    """An overlay long enough to break the segment also breaks the event chain."""
+    blind = HUD_HOLD + 2
+    reads = ([(i, i / 10, hud(hp=250), True, None) for i in range(6)]
+             + [(i, i / 10, Hud(), True, None) for i in range(6, 6 + blind)]
+             + [(i, i / 10, hud(hp=180), True, None) for i in range(6 + blind, 6 + blind + 6)])
+    events, segs = extract(reads)
+    assert len(segs) == 2
+    assert not any(e.kind == "hp_lost" for e in events), \
+        "250 before the overlay and 180 after is not a readable 70 damage"

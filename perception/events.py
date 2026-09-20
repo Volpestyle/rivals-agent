@@ -75,6 +75,9 @@ PORTRAIT_MATCH, PORTRAIT_CLEAR = 0.34, 0.31
 # the spectating stretch of the sample VOD, where the portrait sits near the
 # boundary, shatters into ten two-frame segments instead of one.
 PORTRAIT_HOLD = 3
+# A real menu, death screen or BRB card lasts far longer than half a second; a
+# shorter gap in the HUD is the readers losing it against the scenery.
+HUD_HOLD = 6
 
 # Two 40x30 BGR crops of the hero portrait, one from the 1280x720 range capture and one
 # from a 1080p stream frame, zlib+base64. Matched in colour: greyscale gives no
@@ -225,6 +228,59 @@ def playing_spiderman(frame) -> bool | None:
     return None
 
 
+
+# --- the yellow status banner, top left ----------------------------------
+# While the player is out of the fight the game draws a yellow banner beside the
+# respawn countdown. The word in it says which state this is, and the two look
+# identical to everything except their ink: PAST LIVES is the killcam, showing
+# the killer's view and *their* HUD, and SPECTATING is watching a teammate.
+# Both must end a segment; they are different reasons and the lead wants them
+# told apart, so the words are matched as 32x112 ink masks.
+BANNER = (0.075, 0.052, 0.215, 0.092)
+BANNER_WORDS = ("killcam", "spectating")   # order matches the packed templates
+BANNER_MATCH = 0.55        # agreement with the better word
+BANNER_MARGIN = 0.03       # ... and by this much over the other one
+BANNER_HOLD = 3            # frames the banner must persist to be believed
+_BANNER_B64 = (
+    "eNrtmEkWgzAMQ6X7X7oL0uAhDdgE6MLalIbhvwz2swyUSiUnrtAf80qlUunmDNou+0DPdNsAvj/9f7uZyGbyu5Jjxxtm"
+    "u2g3E+lzT7l6XvzJ4y08vMKD3T+67YvzYHj7NkHwqHn63QSPgocJj5qXCIcBD2d5XMDjAU9uKZENv2MeJE8/e4EHcyxl"
+    "OMCcZeTTizhqOo39A0+seVWDpdK7/u98FPJhXqlUKt2dQk0pxOEwZAGjCv94B637FuN8qHn7U8a78DFeMF9zxuOEx3U8"
+    "eJ4zv+7FgF9BXyFacynPCWTZ65Y2xDN2JMpDkAeM5gfTtJjwwtGnugGe5+anjEfYcNqwECFM4pAXCvhR28Xx+rpRd3yY"
+    "6Blc5vEaT/vINbwP4AYFJA=="
+)
+_BANNER_CACHE: list = []
+
+
+def _banner_templates():
+    if not _BANNER_CACHE:
+        raw = zlib.decompress(base64.b64decode("".join(_BANNER_B64)))
+        _BANNER_CACHE.extend(np.frombuffer(raw, np.uint8).reshape(-1, 32, 112).astype(bool))
+    return _BANNER_CACHE
+
+
+def banner_word(frame):
+    """'killcam', 'spectating', or None when no banner is legible."""
+    import cv2
+
+    height, width = frame.shape[:2]
+    x0, y0, x1, y1 = BANNER
+    region = frame[int(y0 * height):int(y1 * height), int(x0 * width):int(x1 * width)]
+    if region.size == 0:
+        return None
+    hsv = cv2.cvtColor(region, cv2.COLOR_BGR2HSV)
+    hue, sat, val = hsv[:, :, 0].astype(int), hsv[:, :, 1].astype(int), hsv[:, :, 2].astype(int)
+    ink = ((hue > 20) & (hue < 40) & (sat > 110) & (val > 150)).astype(np.uint8)
+    if ink.mean() < 0.04:                      # no banner drawn at all
+        return None
+    ink = cv2.resize(ink * 255, (112, 32), interpolation=cv2.INTER_AREA) > 127
+    scores = [float((ink == t).mean()) for t in _banner_templates()]
+    best = max(range(len(scores)), key=lambda i: scores[i])
+    others = [s for i, s in enumerate(scores) if i != best]
+    if scores[best] < BANNER_MATCH or (others and scores[best] - max(others) < BANNER_MARGIN):
+        return None
+    return BANNER_WORDS[best]
+
+
 # --- segments -------------------------------------------------------------
 
 @dataclass(frozen=True)
@@ -236,7 +292,7 @@ class Segment:
     end_i: int
     end_t: float
     started_by: str   # run_start | respawn | hero_returned | hud_returned
-    ended_by: str     # run_end | death | not_our_hero | no_hud
+    ended_by: str     # run_end | death | killcam | spectating | not_our_hero | no_hud
 
     @property
     def frames(self):
@@ -247,34 +303,39 @@ def _hud_present(hud):
     return hud.hp is not None or hud.bar_fill is not None
 
 
-def _steady_playing(reads, hold=PORTRAIT_HOLD):
-    """The reads with the `playing` verdict steadied.
+def _steady(verdicts, hold):
+    """Per-frame verdicts with brief blips absorbed into their surroundings.
 
-    A run of the same verdict shorter than `hold` is noise and is absorbed into
-    the verdict around it; None inherits whatever was last believed. The
-    boundary lands on the frame the verdict actually changed, not `hold` frames
-    later -- otherwise the first frames of a spectated hero fall inside our
-    segment and their health becomes our hp events.
+    A run shorter than `hold` is only noise if the value returns to what it was
+    either side of it -- a two-frame dropout inside a minute of play. A short
+    run that sits between two *different* values, or at either end of the clip,
+    is a real change caught briefly and is kept. None always inherits whatever
+    was last believed.
     """
-    verdicts = [p for _, _, _, p in reads]
-    runs, start = [], 0            # [start, end_exclusive, value] over non-None runs
+    runs, start = [], 0
     for i in range(1, len(verdicts) + 1):
         if i == len(verdicts) or verdicts[i] != verdicts[start]:
             runs.append([start, i, verdicts[start]])
             start = i
-    steady = [None] * len(verdicts)
-    believed = None
-    for begin, end, value in runs:
-        if value is None or (end - begin) < hold:
-            value = believed        # too short, or unknown: keep what we had
+    resolved = []
+    for n, (begin, end, value) in enumerate(runs):
+        if value is None:
+            resolved.append(None)         # fill from the left below
+        elif (end - begin) >= hold:
+            resolved.append(value)
         else:
+            before = next((runs[m][2] for m in range(n - 1, -1, -1)
+                           if runs[m][2] is not None), None)
+            after = next((runs[m][2] for m in range(n + 1, len(runs))
+                          if runs[m][2] is not None), None)
+            resolved.append(None if before is not None and before == after else value)
+    steady, believed = [], None
+    for (begin, end, _), value in zip(runs, resolved):
+        if value is not None:
             believed = value
-        for i in range(begin, end):
-            steady[i] = value
-    # a leading noise run has nothing before it; take the first belief backwards
+        steady.extend([believed] * (end - begin))
     first = next((v for v in steady if v is not None), None)
-    steady = [first if v is None else v for v in steady]
-    return [(i, t, hud, steady[n]) for n, (i, t, hud, _) in enumerate(reads)]
+    return [first if v is None else v for v in steady]
 
 
 def segment(reads):
@@ -285,16 +346,36 @@ def segment(reads):
     reaches zero. An unknown portrait verdict does not break it, for the same
     reason an unknown HUD read does not: not knowing is not evidence.
     """
+    # Reads are (i, t, hud, playing) and may carry a fifth item: the word in the
+    # top-left status banner, when one is up.
+    # "" rather than None for "no banner": absence here is a real reading, not an
+    # unknown, and _steady carries unknowns forward from the last belief.
+    banners = _steady([(r[4] if len(r) > 4 else None) or "" for r in reads], BANNER_HOLD)
+    playing_steady = _steady([r[3] for r in reads], PORTRAIT_HOLD)
+    # The HUD gets the same treatment. A handful of frames where neither the hp
+    # digits nor the bar could be read is the readers struggling, not a menu:
+    # untreated it cuts one 60 s clip into nine pieces.
+    hud_steady = _steady([_hud_present(r[2]) for r in reads], HUD_HOLD)
     segments, start, last, reason = [], None, None, "run_start"
-    for i, t, hud, playing in _steady_playing(reads):
+    for n, read in enumerate(reads):
+        i, t, hud = read[0], read[1], read[2]
+        playing = playing_steady[n]
         dead = hud.hp == 0
-        broken = (playing is False and "not_our_hero") or (not _hud_present(hud) and "no_hud") \
-            or (dead and "death")
+        # Death first: it is the earlier and more specific fact, and the killcam
+        # that follows is then simply outside any segment. The banner comes next
+        # because killcam looks exactly like spectating to every other signal --
+        # a foreign hero with a perfectly readable HUD -- and the two are
+        # different things to anything learning from these labels.
+        broken = (dead and "death") or banners[n] \
+            or (playing is False and "not_our_hero") \
+            or (not hud_steady[n] and "no_hud")
         if broken:
             if start is not None:
                 segments.append(Segment(start[0], start[1], last[0], last[1], reason, broken))
                 start = None
-            reason = {"death": "respawn", "not_our_hero": "hero_returned"}.get(broken, "hud_returned")
+            reason = {"death": "respawn", "not_our_hero": "hero_returned",
+                      "killcam": "killcam_over", "spectating": "spectating_over"}.get(
+                          broken, "hud_returned")
             continue
         if start is None:
             start = (i, t)
@@ -500,7 +581,7 @@ def extract(reads, debounce=None):
     reset at every boundary, so no event spans one.
     """
     segments = segment(reads)
-    by_i = {i: (i, t, hud) for i, t, hud, _ in reads}
+    by_i = {r[0]: (r[0], r[1], r[2]) for r in reads}
     events = []
     for n, seg in enumerate(segments):
         inside = [by_i[i] for i in range(seg.start_i, seg.end_i + 1) if i in by_i]
@@ -509,11 +590,19 @@ def extract(reads, debounce=None):
     return events, segments
 
 
-def read_run(run_dir, limit=None, progress=None):
-    """[(i, t, Hud, playing)] by running the readers over a recorded L1 run."""
+def read_run(run_dir, limit=None, progress=None, layout=None):
+    """[(i, t, Hud, playing)] by running the readers over a frame directory.
+
+    `layout` says which HUD this source draws -- perception.hud.PAD for our own
+    captures, MK for a mouse-and-keyboard stream. It is the caller's to state:
+    guessing it per frame would be silent when wrong, and it is a property of
+    the source, not of any one frame.
+    """
     import cv2
 
-    from perception.hud import read as read_hud
+    from perception.hud import PAD, read as read_hud
+
+    layout = layout or PAD
 
     index = Path(run_dir) / "frames.jsonl"
     if not index.exists():
@@ -525,7 +614,8 @@ def read_run(run_dir, limit=None, progress=None):
     for n, row in enumerate(rows, 1):
         frame = cv2.imread(str(Path(run_dir) / row["file"]))
         if frame is not None:
-            out.append((row["i"], float(row["t"]), read_hud(frame), playing_spiderman(frame)))
+            out.append((row["i"], float(row["t"]), read_hud(frame, layout),
+                        playing_spiderman(frame), banner_word(frame)))
         if progress and n % progress == 0:
             print(f"  {n}/{len(rows)} frames", file=sys.stderr)
     return out
@@ -537,6 +627,45 @@ def counts(events):
         key = e.kind if e.slot is None else f"{e.kind}:{e.slot}"
         out[key] = out.get(key, 0) + 1
     return dict(sorted(out.items()))
+
+
+def sampling_fps(reads):
+    """Frames per second the run was sampled at, from the times themselves."""
+    times = sorted(r[1] for r in reads)
+    gaps = sorted(b - a for a, b in zip(times, times[1:]) if b > a)
+    if not gaps:
+        return None
+    return round(1.0 / gaps[len(gaps) // 2], 3)
+
+
+def dump(events, segments, reads, layout="pad", source=None):
+    """The per-clip JSONL: one meta line, then a segment line each, then events.
+
+    Three line kinds, told apart by `type`, which events omit for the sake of
+    the readers already consuming them:
+
+      {"type": "meta", ...}     once, first: sampling fps, layout, frame count
+      {"type": "segment", ...}  one per segment, in time order
+      {...}                     one per event, in time order, no `type` key
+
+    `t` values everywhere are seconds from the first frame of the media, and
+    `i` values are that media's frame index at the sampling fps in the meta
+    line -- not the source video's native frame numbers.
+    """
+    lines = [json.dumps({
+        "type": "meta",
+        "source": str(source) if source else None,
+        "layout": layout,
+        "frames": len(reads),
+        "fps": sampling_fps(reads),
+        "t_origin": "first frame of the media",
+        "duration_s": round(max(r[1] for r in reads) - min(r[1] for r in reads), 3) if reads else 0.0,
+        "segments": len(segments),
+        "events": len(events),
+    })]
+    lines += [json.dumps({"type": "segment", **asdict(s)}) for s in segments]
+    lines += [json.dumps(asdict(e)) for e in events]
+    return "\n".join(lines) + "\n"
 
 
 def segment_summary(segments):
@@ -553,14 +682,22 @@ def main(argv=None):
     p.add_argument("out")
     p.add_argument("--limit", type=int)
     p.add_argument("--progress", type=int, default=1000)
+    p.add_argument("--layout", default="pad", choices=("pad", "mk"),
+                   help="which HUD the source draws; never guessed from the frames")
     a = p.parse_args(argv)
-    reads = read_run(a.run_dir, a.limit, a.progress or None)
+    from perception.hud import LAYOUTS
+    reads = read_run(a.run_dir, a.limit, a.progress or None, LAYOUTS[a.layout])
     events, segments = extract(reads)
-    Path(a.out).parent.mkdir(parents=True, exist_ok=True)
-    Path(a.out).write_text("".join(json.dumps(asdict(e)) + "\n" for e in events))
+    out = Path(a.out)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    # The clip stem, not the frame directory: that is a scratch path on whoever
+    # ran this, and the stem is what a manifest joins on.
+    out.write_text(dump(events, segments, reads, layout=a.layout, source=out.stem))
     summary = segment_summary(segments)
-    print(json.dumps({"run": str(a.run_dir), "frames": len(reads), "events": len(events),
-                      "out": a.out, "counts": counts(events),
+    print(json.dumps({"run": str(a.run_dir), "layout": a.layout,
+                      "frames": len(reads), "events": len(events),
+                      "out": a.out, "fps": sampling_fps(reads),
+                      "counts": counts(events),
                       "segments": len(segments),
                       "segment_detail": summary if len(summary) <= 12 else summary[:12]},
                      indent=1))
