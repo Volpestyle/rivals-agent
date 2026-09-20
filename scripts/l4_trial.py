@@ -19,24 +19,26 @@ import cv2
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "perception"))
-from agent.controller import NEUTRAL, Controller, Live, in_hero_box  # noqa: E402
+from agent.controller import NEUTRAL, Controller, Live  # noqa: E402
 from agent.intents import BURST, Combo, Engage, Pull, Search, SwingTo, WebStrike  # noqa: E402
 from agent.state import ENEMY, State  # noqa: E402
-import outline  # noqa: E402
+from outline import find_enemies  # noqa: E402  (L3's green finder; Enemy Color = Green in the game)
+from agent.state import Detection  # noqa: E402
 
-# Enemy Color is set to Green in the game (docs/lanes/l4-controller.md): nameplates render ~#40AF58 (OpenCV H 67,
-# S 160, V 175). perception/outline.py looks for red bars, so rotate green onto red and relax its brightness floor
-# until L3 ships a green finder.
-outline.SAT_MIN, outline.VAL_MIN = 110, 140
-DEAD_ZONES = ((0.0, 0.83, 1.0, 1.0), (0.90, 0.0, 1.0, 0.42), (0.0, 0.0, 0.25, 0.20))  # HUD strip, fps overlay, key hints
+CROP = 960  # native px square around the crosshair: the aim sensor (4.4 ms on the PC); full frame only for search
 
 
-def detect(frame_bgr, scale=1.0):
-    hsv = cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2HSV)
-    hsv[..., 0] = (hsv[..., 0].astype(int) - 67) % 180
-    h, w = frame_bgr.shape[:2]
-    return [d for d in outline.detect(cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR), scale)
-            if not any(x0 <= d.center[0] / w <= x1 and y0 <= d.center[1] / h <= y1 for x0, y0, x1, y1 in DEAD_ZONES)]
+def detect(frame):
+    """Detections in 1280x720 pixels (the size State.frame declares). Crop first; whole view only if it is empty."""
+    h, w = frame.shape[:2]
+    k = w / 1280.0
+    x0, y0 = (w - CROP) // 2, (h - CROP) // 2
+    found = [(d, x0, y0) for d in find_enemies(frame[y0:y0 + CROP, x0:x0 + CROP], scale=k)]
+    if not found:
+        found = [(d, 0, 0) for d in find_enemies(frame, scale=k)]
+    return [Detection(cls=d.cls, conf=d.conf, bbox=tuple(round((v + (ox, oy)[i % 2]) / k, 1) for i, v in enumerate(d.bbox)))
+            for d, ox, oy in found]
+
 
 FRAME = (1280, 720)
 
@@ -64,7 +66,7 @@ class Rig:
     def see(self):
         frame = self.live.fresh()
         small = cv2.resize(frame, FRAME, interpolation=cv2.INTER_LINEAR)
-        dets = [d for d in detect(small, scale=1.0) if not in_hero_box(d, FRAME)]
+        dets = detect(frame)   # HUD and player-region exclusion are inside find_enemies
         state = State(t=self.live.frame_t - self.t0, frame=FRAME, detections=dets)
         return frame, small, state
 
@@ -113,37 +115,39 @@ class Rig:
             self.act({**NEUTRAL, **pad}, frame, small, state, note)
 
 
-def aim(rig, n):
-    results, f = [], rig.ctrl.cal.focal_1280
+def aim(rig, n, offset_deg=30.0):
+    """Turn `offset_deg` off a standing bot while the tracker keeps hold of THAT bot (several are in view), then time the re-aim."""
+    results, c = [], rig.ctrl
     for i in range(n):
         target = rig.acquire()
         if target is None:
             results.append({"trial": i, "error": "no bot acquired"})
             continue
-        side = 1.0 if i % 2 == 0 else -1.0
-        rig.hold(30.0 / 88.0, "offset", rx=0.6 * side)   # 0.6 stick is the top of the linear zone: 88 deg/s
-        rig.hold(0.3, "rest")
-        rig.ctrl.track = None
+        side, t_off = (1.0 if i % 2 == 0 else -1.0), time.perf_counter()
+        want_px = c.cal.focal_1280 * math.tan(math.radians(offset_deg))   # measured on screen, not from the camera model
+        while abs(c.track.ex) < want_px and time.perf_counter() - t_off < 1.0:
+            frame, small, state = rig.see()
+            pad, _ = c.aim_only(state, target)
+            pad["rx"], pad["ry"] = 0.45 * side, 0.0          # override the aim: turn away at 172 deg/s
+            c.stick = (pad["rx"], pad["ry"])                 # so the commanded-camera model stays true
+            rig.act(pad, frame, small, state, "offset")
+        off_deg = c.track.yaw - c.cam[0]
         frame, small, state = rig.see()
-        det = rig.nearest(state)
-        if det is None:
-            results.append({"trial": i, "error": "bot not in view after the offset"})
-            continue
-        off_deg = math.degrees(math.atan((det.center[0] - 640) / f))
         t_start, inside_since, settle, errs = state.t, None, None, []
         while state.t - t_start < 1.0:
-            pad, on = rig.ctrl.aim_only(state, det)
+            pad, on = c.aim_only(state, target)
             rig.act(pad, frame, small, state, f"aim{i}")
+            fresh = state.t - c.track.seen_t < 0.05
+            if fresh:
+                errs.append((round(state.t - t_start, 3), round(c.track.ex)))
+            inside = fresh and abs(c.track.ex) <= max(6.0, 0.5 * c.track.w)
+            inside_since = (inside_since if inside_since is not None else state.t) if inside else (None if fresh else inside_since)
+            if inside_since is not None and state.t - inside_since >= 0.15 and settle is None:
+                settle = inside_since - t_start
             frame, small, state = rig.see()
-            now = rig.nearest(state)
-            if now is not None:
-                ex = now.center[0] - 640
-                errs.append((round(state.t - t_start, 3), round(ex)))
-                inside = abs(ex) <= max(6.0, 0.5 * (now.bbox[2] - now.bbox[0]))
-                inside_since = (inside_since or state.t) if inside else None
-                if inside_since and state.t - inside_since >= 0.15 and settle is None:
-                    settle = inside_since - t_start
-        results.append({"trial": i, "offset_deg": round(off_deg, 1), "settle_ms": None if settle is None else round(settle * 1000),
+        results.append({"trial": i, "model_offset_deg": round(off_deg, 1),
+                        "offset_deg": round(math.degrees(math.atan(errs[0][1] / c.cal.focal_1280)), 1) if errs else None, "first_err_px": errs[0][1] if errs else None,
+                        "settle_ms": None if settle is None else round(settle * 1000), "box_w": round(c.track.w),
                         "err_px": errs[::4]})
     return results
 

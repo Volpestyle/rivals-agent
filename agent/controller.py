@@ -128,23 +128,23 @@ def stick_for(rate, rate_map):
     return math.copysign(_interp(mag, [(r, s) for s, r in rate_map]), rate) if mag > 0 else 0.0
 
 
-# The player's own third-person region, fractions of the frame. Its right edge stops short of the crosshair
-# (0.5): a small box we are aimed at sits on the crosshair and must never be mistaken for the hero.
+# The player's own third-person region, fractions of the frame: a target passing through it is hidden, not gone.
 HERO_BOX = (0.27, 0.45, 0.47, 1.00)
-NEAR_H = 0.15                        # bbox height / frame height at melee range with perception/outline.py boxes (its box is 0.95 x the bar width)
+HIT_BLIND_S = 0.35                   # a bot flashes white when hit and its outline vanishes for a few frames (L3):
+                                     # after our own attack, hold the track and its armed state this long
+CLOSE_LOST_S = 1.5                   # a point-blank outline runs off the frame edge: losing a near box is not it leaving
+LOST_S = 0.6
+
+
+def near_h():
+    from .brain import RANGES        # one calibrated table (outline height / frame height); read at call time
+    return RANGES.near_h
 KP = 20.0                            # deg/s of commanded turn per degree of error
 KI = 2.0
 AIM_DONE_DEG = 0.4
+ARM_FRAMES = 5                       # consecutive steps a target must be re-measured before anything is pressed
+PLAUSIBLE = (0.008, 0.9)             # box height / frame height outside this is not a bot
 MAX_PITCH_STICK_S = 0.30             # pitch budget in stick-seconds from where the controller started (start it level)
-
-
-def in_hero_box(det, frame):
-    """True when most of the box lies inside the player's own screen region: never aim at ourselves."""
-    w, h = frame
-    x1, y1, x2, y2 = det.bbox
-    hx1, hy1, hx2, hy2 = HERO_BOX[0] * w, HERO_BOX[1] * h, HERO_BOX[2] * w, HERO_BOX[3] * h
-    inter = max(0.0, min(x2, hx2) - max(x1, hx1)) * max(0.0, min(y2, hy2) - max(y1, hy1))
-    return inter > 0.6 * max(1e-6, (x2 - x1) * (y2 - y1))
 
 
 @dataclass
@@ -191,6 +191,9 @@ class Controller:
     cam_hist: list = field(default_factory=list)            # [(t, yaw, pitch)] over the last second
     stick: tuple = (0.0, 0.0)                               # right stick sent last step
     pitch_used: float = 0.0                                 # integral of the pitch stick, stick-seconds
+    stable: int = 0                                         # consecutive steps the target was re-measured, plausibly
+    attack_t: float = -1e9                                  # last step on which we pressed an attack
+    _measured: bool = False
     integ: list = field(default_factory=lambda: [0.0, 0.0])
     next_shot_t: float = 0.0
     next_uppercut_t: float = 0.0
@@ -237,9 +240,19 @@ class Controller:
 
         wanted = getattr(intent, "target", None) or getattr(intent, "anchor", None)
         if wanted is not None:
+            self._measured = False
             self._follow(state, wanted, dt)
             on_target = self._aim(state, out, dt)
+            ok = self._measured and PLAUSIBLE[0] <= self.track.h / state.frame[1] <= PLAUSIBLE[1]
+            if not self._measured and t - self.attack_t < HIT_BLIND_S:
+                self.track.seen_t = t          # hit flash: coast on the predicted bearing, stay armed
+            else:
+                self.stable = self.stable + 1 if ok else 0
+            # Junk-box guard: a stray X was once pressed on the first step of a run, on a false box. Nothing is
+            # pressed until the same target has been re-measured ARM_FRAMES steps running (so never on step one).
+            on_target = on_target and self.stable >= ARM_FRAMES
         else:
+            self.stable = 0
             self._advance(t, dt)
             on_target = False
 
@@ -255,7 +268,7 @@ class Controller:
                 if (t - self.phase_t - turn_s) % 1.2 < self.cal.press_s:
                     out["buttons"] = ("A",)
         elif isinstance(intent, Engage) and self.track is not None:
-            near = self.track.h / state.frame[1] >= NEAR_H
+            near = self.track.h / state.frame[1] >= near_h()
             out["ly"] = 0.0 if near else 1.0
             if not self.seq and on_target:
                 if near and t >= self.next_uppercut_t:
@@ -266,13 +279,15 @@ class Controller:
                     self.play("web_cluster", t); self.next_shot_t = t + 0.34
         elif isinstance(intent, (Pull, WebStrike, Combo, SwingTo)) and not self.seq and self.played is not intent:
             name = {"Pull": "pull", "WebStrike": "web_strike", "SwingTo": "swing"}.get(key[0], BURST)
-            if on_target or isinstance(intent, WebStrike):   # the web strike auto-locks a tagged enemy
+            if on_target or (isinstance(intent, WebStrike) and self.stable >= ARM_FRAMES):   # the strike auto-locks
                 self.play(name, t)
                 self.played = intent                         # one play per intent the brain issues
         while self.seq and t >= self.seq[0][0]:
             self.seq.pop(0)
         if self.seq:
             out.update(self.seq[0][1])  # the step being played overrides buttons/triggers (and ly for the swing)
+        if out["lt"] or out["rt"] or set(out["buttons"]) & {"X", "RB"}:
+            self.attack_t = t
         self.stick = (out["rx"], out["ry"])
         return out
 
@@ -320,6 +335,7 @@ class Controller:
             yaw, pitch = bearing(det)
             self.track = Track(yaw, pitch, seen_t=state.t)
             self._measure(det, state)
+            self.stable = 0   # a new target has to earn its presses again
 
         if self.track is None:
             seed(wanted)
@@ -329,8 +345,9 @@ class Controller:
             self.track.predict(dt)
         if not state.detections:
             return
-        cands = [d for d in state.detections
-                 if d.cls == wanted.cls and (d.cls == ANCHOR or not in_hero_box(d, state.frame))]
+        # No player-region filter here: perception/outline.py already drops the small marks the hero's own suit
+        # makes, and a real bot is often drawn behind the hero (third person), which is exactly when it needs aiming at.
+        cands = [d for d in state.detections if d.cls == wanted.cls]
         if not cands:
             return
         gate = math.degrees(math.atan2(max(60.0, 2.0 * max(self.track.w, self.track.h)) * w / 1280.0, f))
@@ -352,13 +369,15 @@ class Controller:
         return state.t - self.track.seen_t < 0.5 and HERO_BOX[0] * w <= x <= HERO_BOX[2] * w
 
     def _measure(self, det, state):
+        self._measured = True
         tr = self.track
         tr.w, tr.h, tr.seen_t = det.bbox[2] - det.bbox[0], det.height, state.t
         tr.ex, tr.ey = det.center[0] - state.frame[0] / 2, det.center[1] - state.frame[1] / 2
 
     def _aim(self, state, out, dt):
         tr = self.track
-        if state.t - tr.seen_t > 0.6:            # lost: stop turning rather than chase a ghost
+        lost_s = CLOSE_LOST_S if tr.h / state.frame[1] >= 0.6 * near_h() else LOST_S
+        if state.t - tr.seen_t > lost_s:         # lost: stop turning rather than chase a ghost
             return False
         lead = self.cal.latency_s
         errs = (tr.yaw + tr.v_yaw * lead - self.cam[0], tr.pitch + tr.v_pitch * lead - self.cam[1])
@@ -370,5 +389,5 @@ class Controller:
             rates[1] = 0.0   # a close bot's nameplate sits overhead: chasing it ran the camera into the ceiling
         out["rx"] = stick_for(rates[0], self.cal.yaw_map)
         out["ry"] = stick_for(rates[1], self.cal.pitch_map)
-        fresh = state.t - tr.seen_t < 0.1
+        fresh = state.t - tr.seen_t < 0.1   # seen_t is also advanced while coasting through a hit flash
         return fresh and abs(tr.ex) <= max(4.0, 0.5 * tr.w) and abs(tr.ey) <= max(4.0, 0.5 * tr.h)

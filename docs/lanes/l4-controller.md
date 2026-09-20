@@ -12,17 +12,18 @@ The game is in the Practice Range as Spider-Man, in the Galacta-bot courtyard, i
 | Native-resolution recordings for L2 / L3 | Three exist (table below). Bots, green nameplates and green enemy health bars at varied range: yes. Spider-Tracer tags: not confirmed on any frame. Damage taken: none, no bot met so far attacks |
 | Scoring source | **Found: hold View/BACK in the range for a scoreboard** with KOs / deaths / assists and a per-hero row: Accuracy, **Damage**, Damage Blocked, Healing, Web-Cluster Accuracy, Spectacular Spin KOs (`scoreboard-back-native.jpg`). Damage read 210 before one ultimate and 845 after it |
 | Ult charge as a damage proxy | Refuted for the range: the ultimate icon was lit again 3.5 s after casting (`ult-after-3s-killfeed.jpg`), so it does not meter damage there. A kill feed (top right) and a "DOUBLE!" banner do appear on KOs |
-| Box-height-by-distance table | Not done. Finding so far: the nameplate finder's box is 0.95 x the *bar width*, and the bar is the short name text (~58 px at 8 m) until the bot is damaged, then the wider health bar (~126 px at 4 m), so box height jumps on first damage and is a poor range proxy |
-| `agent/controller.py` | `Live` (dxcam + range-HUD guard on a frame under 100 ms old + one held pad + `keepalive()`), and the pure `Controller.step(state, intent) -> pad dict`. Aim ran live once (old calibration). Primitives pass offline tests; none has a clean live replay |
+| Ranging | Delivered by L3 from outline height (`distance_m = 1872 / outline_box_height_px` at native); `brain.RANGES` carries the thresholds. A live sanity check at two known distances is still owed |
+| `agent/controller.py` | `Live` (dxcam + range-HUD guard + one held pad + `keepalive()`), and the pure `Controller.step(state, intent) -> pad dict`. Reads `brain.RANGES.near_h`. Junk-box guard, hit-flash coast (`HIT_BLIND_S` 0.35 s after our own attack the track and its armed state are held), and a 1.5 s loss tolerance for a near box that runs off the frame. No player-region filter of its own (L3's finder has one) |
+| `tests/test_controller.py` | 9 offline checks, passing |
+| Enemy finder in the trials | L3's `find_enemies` on a 960 px native crop around the crosshair (`scale=2.0`), whole frame only when the crop is empty; boxes converted to 1280x720. Trial loop runs at ~70 Hz saving 720p frames |
+| **Aim settle, live** | Standing Galacta bots, offset measured on screen, same bot held through the offset by the tracker. **8 of 10 under 300 ms from 31-44 deg: 191 / 220 / 226 / 233 / 235 / 241 / 264 / 271 ms.** All five left turns (35 deg) settled in 220-271 ms, so the left-turn occlusion fix works live. Two failures: one 31 deg trial lost the box mid-turn (683 ms), one 52 deg trial started with the bot at the frame edge and did not settle in 1 s (`aim-30deg-result.json`; earlier runs `aim-20deg-result.json`, `aim-24deg-result.json`) |
+| **Primitive replays, live** | `web_cluster` 4 trials, `pull` 3, `burst` 3, all ran to completion; trial 0 of each inspected on a contact sheet: Web Cluster hits and the **Spider-Tracer icon appears over the bot's health bar** (`prim-web_cluster.jpg`); pull throws the web line and wraps the bot (`prim-pull.jpg`); burst tags, web-strikes across ~12 m, uppercuts, melees and **KOs the bot** with the kill feed showing (`prim-burst.jpg`). Trials 1+ not inspected. `melee_combo`, `uppercut`, `web_strike` not replayed on their own (they run inside burst). `swing` not run (no anchors) |
+| Durations seen in burst trial 0 | Web strike: RB to arrival ~0.8 s from ~12 m (box height 84 -> 168 px between 0.97 and 1.18 s after the LT). The scripted burst is 3.0 s long; the Galacta bot was KO'd about 2 s in. Not yet measured per primitive |
 | `agent/anchors.py` | Not written |
-| `tests/test_controller.py` | 4 offline checks, passing |
-| Aim settle | One live run, before the re-calibration: 296 / 297 / 305 ms turning right, 471 / 479 / 500 ms turning left, from an offset recorded as 25.5 deg that was really ~37 deg (362 px at the corrected focal length). Not re-run at Horizontal Sensitivity 265 or with the left-turn fix |
+| Not started | Scoreboard fixture frames, Practice Settings bot options, pad-state-to-frame offset and the 30 fps native check |
 
-**What blocks the aim and primitive trials: there is no working enemy finder for the green enemy colour.**
-`perception/outline.py` looks for red bars. `scripts/l4_trial.py` rotates green onto red and relaxes its
-saturation / brightness floor; that works on the bare plaza (one box, on Luna Snow) and returns 20-40 false boxes
-per frame in the courtyard (hedges, trees, the green door). The trials need L3's green finder, or the enemy colour
-put back to default red.
+Live finding: the bot nearest the crosshair is often drawn **behind Spider-Man's own body** (third person). A player-region
+filter in the controller froze the aim on it for a whole run; it was removed.
 
 ## Game settings set (through the game's own menu)
 
@@ -78,6 +79,24 @@ boxes the adapter returned; rows with `file` are the saved frames). Enemy Color 
 
 hp stayed 250/250 in all of them: neither the Luna Snow bot nor these Galacta bots attack. The ultimate gives
 500/500 for 2.4 s (`ult-cast.jpg`), which is the only hp change seen.
+
+## Enemy Color swatch sweep (PC, `C:\rivals-agent\data\l1\swatch-<spot>-<name>\`)
+
+`scripts/l4_swatch.py <spot> [turn_s pitch_s]`: one pad, sets each swatch through the screen-checked menu, records 50
+native frames (JPEG q90, 10 fps) per swatch with the camera untouched between them, verifies the Enemy Color header
+after each change, and leaves the game on Green. A full sweep takes about 2.5 minutes. Swatches: Green, Blue-Green,
+Yellow-Green, Default.
+
+| Spot | In view | Use |
+|------|---------|-----|
+| `courtyard2` | One standing Galacta bot (~12 m), hedges, cypresses, stairs. Camera identical across swatches. **Blue-Green is spoiled**: the keep-alive's Web Cluster knocked the bot down before that set | Bot vs background for Green, Yellow-Green, Default (`swatch-courtyard2-sheet.jpg`) |
+| `courtyard` | A downed bot, hedges, stairs, a wall-crawl camera tilt | Background; downed-bot outline |
+| `courtyard3`, `courtyard4` | Hedges, palms, cypresses only; camera identical within each set | False-positive rate per swatch (`swatch-courtyard4-sheet.jpg`) |
+
+Not done: the spot with the spawn-room health door and the Luna Snow bot (the player is a level below the plaza and
+the route back is not mapped). The keep-alive no longer attacks. Framing a view is unreliable: the `turn_s` argument
+turned the camera the wrong way on two of four runs, cause not found (suspect: the pad-connect "Switching Devices"
+disturbance), so check the first frame of a set before trusting it.
 
 ## What the aim loop is
 

@@ -43,9 +43,66 @@ def test_burst_presses_every_button_once_the_aim_is_on_and_idle_releases():
     assert c.step(State(t=7.0, frame=(1280, 720), detections=[d]), Idle()) == NEUTRAL
 
 
-def test_own_hero_box_is_never_a_target():
+def test_a_bot_drawn_behind_the_hero_is_still_aimed_at():
+    # live finding: the bot nearest the crosshair stood behind Spider-Man's own body and a player-region filter froze the aim
+    c, bot = Controller(), Detection(ENEMY, (440, 332, 596, 437), 0.9)
+    pad = c.step(State(t=0.0, frame=(1280, 720), detections=[bot]), Engage(bot))
+    assert pad["rx"] < 0                                  # turns left, onto it
+
+
+def _pressed(pad):
+    return set(pad["buttons"]) | ({"LT"} if pad["lt"] else set()) | ({"RT"} if pad["rt"] else set())
+
+
+def test_nothing_is_pressed_on_the_first_steps_even_dead_on_target():
+    c, d = Controller(), Detection(ENEMY, (630, 300, 650, 420), 0.9)   # tall enough to read as "near": Engage wants X
+    pads = [c.step(State(t=i / 60, frame=(1280, 720), detections=[d]), Engage(d)) for i in range(12)]
+    assert all(not _pressed(p) for p in pads[:4]), [_pressed(p) for p in pads[:4]]
+    assert any(_pressed(p) for p in pads[4:])
+
+
+def test_boxes_that_do_not_persist_never_earn_a_press():
+    import random
+    rng, c = random.Random(0), Controller()
+    for i in range(240):   # a different junk box every step, plus frames with none, as the hedges gave
+        x, y = rng.uniform(100, 1180), rng.uniform(80, 560)
+        dets = [] if i % 3 == 0 else [Detection(ENEMY, (x, y, x + 60, y + 130), 0.9)]
+        target = dets[0] if dets else Detection(ENEMY, (630, 300, 650, 420), 0.9)
+        for intent in (Engage(target), Combo(BURST, target)):
+            assert not _pressed(c.step(State(t=i / 60, frame=(1280, 720), detections=dets), intent))
+
+
+def test_a_sliver_or_a_frame_sized_box_is_not_a_target():
+    for box in ((630, 358, 650, 362), (0, 0, 1280, 700)):
+        c, d = Controller(), Detection(ENEMY, box, 0.9)
+        assert all(not _pressed(c.step(State(t=i / 60, frame=(1280, 720), detections=[d]), Engage(d))) for i in range(30))
+
+
+def _run(c, frames, intent_for):
+    out = []
+    for i, dets in frames:
+        target = dets[0] if dets else intent_for
+        out.append(c.step(State(t=i / 60, frame=(1280, 720), detections=dets), Engage(target)))
+    return out
+
+
+def test_tracker_coasts_through_the_hit_flash_and_stays_armed():
+    d = Detection(ENEMY, (610, 330, 670, 400), 0.9)                 # mid range: Engage fires Web Clusters
     c = Controller()
-    me = Detection(ENEMY, (420, 340, 580, 700), 0.9)       # Spider-Man's own torso
-    bot = Detection(ENEMY, (900, 330, 920, 365), 0.9)
-    pad = c.step(State(t=0.0, frame=(1280, 720), detections=[me, bot]), Engage(bot))
-    assert pad["rx"] > 0                                  # turns right, toward the bot
+    seen = _run(c, [(i, [d]) for i in range(30)], d)
+    assert any(p["lt"] for p in seen)                                # we attacked
+    last_attack = max(i for i, p in enumerate(seen) if p["lt"])
+    bearing = c.track.yaw
+    blind = _run(c, [(i, []) for i in range(last_attack + 1, last_attack + 13)], d)   # 0.2 s with no outline
+    assert c.track is not None and abs(c.track.yaw - bearing) < 0.5 and c.stable >= 5
+    back = _run(c, [(i, [d]) for i in range(last_attack + 13, last_attack + 40)], d)
+    assert any(p["lt"] for p in back[:22])                           # fires again without re-arming from zero
+
+
+def test_a_blackout_with_no_attack_behind_it_disarms():
+    d = Detection(ENEMY, (610, 330, 670, 400), 0.9)
+    c = Controller()
+    c.next_shot_t = 1e9                                              # never attacks
+    _run(c, [(i, [d]) for i in range(30)], d)
+    _run(c, [(i, []) for i in range(30, 42)], d)
+    assert c.stable == 0
