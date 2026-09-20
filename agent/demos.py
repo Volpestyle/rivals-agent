@@ -37,10 +37,16 @@ EPS = 1e-6
 
 SPLITS = ("train", "val", "test", "inspection_only")
 KINDS = ("vod", "run", "human")
-# The HUD lane's segmenter (perception/events.py) writes the first four of each; the rest refine the coarse ones for
-# annotators: not_our_hero -> spectating | hero_swap, no_hud -> menu | brb | unreadable_hud.
-STARTED_BY = ("run_start", "respawn", "hero_returned", "hud_returned")
-ENDED_BY = ("run_end", "death", "not_our_hero", "no_hud", "spectating", "hero_swap", "menu", "brb", "unreadable_hud")
+# The HUD lane's segmenter (perception/events.py, docs/lanes/l2-hud.md "Event stream format") writes the reasons on the
+# first line of each; the second line refines the coarse ones for annotators: not_our_hero -> hero_swap,
+# no_hud -> menu | brb | unreadable_hud.
+STARTED_BY = ("run_start", "respawn", "killcam_over", "spectating_over", "scoreboard_closed", "hero_returned", "hud_returned")
+ENDED_BY = ("run_end", "death", "killcam", "spectating", "scoreboard", "not_our_hero", "no_hud",
+            "hero_swap", "menu", "brb", "unreadable_hud")
+# A segment shorter than this is kept in the manifest (it is what the segmenter proved) but no window is ever cut from it:
+# a few frames of play between two scoreboard openings hold no decision worth learning from. The Day sample clip's slivers
+# run 0.1-0.8 s and its shortest real stretch 2.3 s; the Req clip's is 0.0 s and 16 s.
+MIN_SEGMENT_S = 1.0
 REQUIRED = ("id", "kind", "source_url", "run", "vod_id", "creator", "retrieved", "source_start_s", "source_end_s",
             "resolution", "fps", "hero", "overlays", "split", "media", "inputs", "events", "annotations", "segments_from")
 SEGMENTS_FROM = ("segmenter", "annotator", "assumed_whole_run")
@@ -66,6 +72,10 @@ class Segment:
     end_t: float     # the last frame proven inside
     started_by: str
     ended_by: str
+
+    @property
+    def length(self):
+        return self.end_t - self.start_t
 
 
 @dataclass(frozen=True)
@@ -493,11 +503,20 @@ def check_splits(clips, splits):
 
 # --- the loader ------------------------------------------------------------------------------------------------------
 class Demos:
-    def __init__(self, clips, fractions=(0.8, 0.1, 0.1), seed=0):
+    def __init__(self, clips, fractions=(0.8, 0.1, 0.1), seed=0, min_segment_s=MIN_SEGMENT_S):
         self.clips = {c.id: c for c in clips}
         self.splits = assign_splits(clips, fractions, seed)
         check_splits(clips, self.splits)
-        self.skipped = []
+        self.min_segment_s, self.skipped = min_segment_s, []
+
+    def _skip(self, clip, t, reason):
+        skip = Skipped(clip.id, t, reason)
+        if skip not in self.skipped:
+            self.skipped.append(skip)
+
+    def usable(self, clip):
+        """The segments windows may be cut from: those at least min_segment_s long."""
+        return [s for s in clip.segments if s.length >= self.min_segment_s - EPS]
 
     @classmethod
     def load(cls, *paths, **kw):
@@ -509,10 +528,14 @@ class Demos:
         return [c for c in self.clips.values() if self.splits[c.id] == split]
 
     def _decisions(self, clip, mode, hz):
-        """[(segment, t)] decision times inside segments; explicit ones outside any segment are recorded in `skipped`."""
+        """[(segment, t)] decision times inside usable segments. Explicit ones outside any segment, or inside one shorter than
+        min_segment_s, are recorded in `skipped`, as is each such short segment."""
+        for s in clip.segments:
+            if s.length < self.min_segment_s - EPS:
+                self._skip(clip, s.start_t, "segment_too_short")
         if mode == "grid":
             out = []
-            for s in clip.segments:
+            for s in self.usable(clip):
                 for k in range(math.ceil(s.start_t * hz - EPS), math.floor(s.end_t * hz + EPS) + 1):
                     f = clip.frames.snap(k / hz)
                     if f is not None and s.start_t - EPS <= f.t <= s.end_t + EPS and (not out or out[-1][1] < f.t - EPS):
@@ -524,7 +547,9 @@ class Demos:
         for t in sorted(set(clip.decisions) | set(clip.annotations)):
             s, f = clip.segment_at(t), clip.frames.snap(t)
             if s is None or f is None or f.t < s.start_t - EPS:
-                self.skipped.append(Skipped(clip.id, t, "outside_segments"))
+                self._skip(clip, t, "outside_segments")
+            elif s.length < self.min_segment_s - EPS:
+                self._skip(clip, t, "segment_too_short")
             else:
                 out.append((s, f.t))
         return out
@@ -632,11 +657,11 @@ def trim(rows, start_t, end_t, new_id, media_path=None):
 def summary(demos, hz=5.0):
     lines = []
     for c in demos.clips.values():
-        usable = sum(s.end_t - s.start_t for s in c.segments)
+        usable = sum(s.length for s in demos.usable(c))
         modes = [m for m, on in (("frames", c.frames is not None), ("inputs", c.inputs is not None),
                                  ("events", c.events is not None), ("annotations", bool(c.annotations))) if on]
         lines.append(f"{c.id}: {c.kind} split={demos.splits[c.id]} group={c.group} hero={c.hero} fps={c.fps} "
-                     f"res={c.resolution} segments={len(c.segments)} usable={usable:.1f}s "
+                     f"res={c.resolution} segments={len(c.segments)} (short: {len(c.segments) - len(demos.usable(c))}) usable={usable:.1f}s "
                      f"decisions@{hz:g}Hz={len(demos._decisions(c, 'grid', hz))} has={'+'.join(modes)}")
     return lines
 

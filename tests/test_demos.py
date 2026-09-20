@@ -130,9 +130,11 @@ def test_unknown_kinds_splits_reasons_and_shapes_are_refused(tmp_path):
 
 
 def test_the_reasons_the_hud_segmenter_writes_are_all_accepted():
-    """perception/events.py: started_by run_start | respawn | hero_returned | hud_returned; ended_by run_end | death | not_our_hero | no_hud."""
-    for a in ("run_start", "respawn", "hero_returned", "hud_returned"):
-        for b in ("run_end", "death", "not_our_hero", "no_hud"):
+    """docs/lanes/l2-hud.md, Event stream format: every started_by and ended_by the segmenter can write."""
+    started = ("run_start", "respawn", "killcam_over", "spectating_over", "scoreboard_closed", "hero_returned", "hud_returned")
+    ended = ("run_end", "death", "killcam", "spectating", "scoreboard", "not_our_hero", "no_hud")
+    for a in started:
+        for b in ended:
             demos.Clip(header(), [dict(start_t=0.0, end_t=1.0, started_by=a, ended_by=b)], ".")
 
 
@@ -176,6 +178,50 @@ def test_a_per_clip_events_file_that_carries_its_segments_becomes_a_manifest(tmp
     assert segs == SEGS
     clip = demos.write_manifest(tmp_path / "vodC.manifest.jsonl", header(id="vodC", events="vodC.events.jsonl"), segs)
     assert len(clip.segments) == 3 and len(clip.events) == len(EVENTS)      # events checked against those segments, by time
+
+
+def test_the_hud_lanes_event_file_shape_loads_as_written(tmp_path):
+    """meta line, then segment lines, then events without a type: the format in docs/lanes/l2-hud.md, verbatim."""
+    lines = [dict(type="meta", source="vodC", layout="mk", frames=601, fps=10.0, t_origin="first frame of the media",
+                  duration_s=60.0, segments=3, events=2)]
+    lines += [dict(type="segment", start_i=int(s["start_t"] * 10), end_i=int(s["end_t"] * 10), **s) for s in SEGS]
+    lines += [dict(kind="hp_lost", i_from=40, t_from=4.0, i_to=42, t_to=4.2, slot=None, amount=75, before=250, after=175, segment=0),
+              dict(kind="ability_used", i_from=100, t_from=10.0, i_to=104, t_to=10.4, slot="pull", amount=None, before=True,
+                   after=False, segment=0)]
+    jsonl(tmp_path / "vodC.events.jsonl", lines)
+    segs = demos.events_file_segments(tmp_path / "vodC.events.jsonl")
+    clip = demos.write_manifest(tmp_path / "vodC.manifest.jsonl", header(id="vodC", events="vodC.events.jsonl"), segs)
+    assert len(clip.segments) == 3 and [e.kind for e in clip.events] == ["hp_lost", "ability_used"]
+
+
+def test_slivers_between_scoreboard_openings_yield_no_windows(tmp_path):
+    segs = [dict(start_t=0.0, end_t=10.0, started_by="run_start", ended_by="scoreboard"),
+            dict(start_t=10.4, end_t=10.9, started_by="scoreboard_closed", ended_by="scoreboard"),      # a few frames of play
+            dict(start_t=12.0, end_t=20.0, started_by="scoreboard_closed", ended_by="run_end")]
+    sliver_event = dict(kind="ability_used", t_from=10.5, t_to=10.7, slot="pull", before=True, after=False)
+    path = make_vod(tmp_path, segs=segs, events=[sliver_event], duration_s=20.0, split="train", decisions=[5.0, 10.5, 15.0])
+    d = Demos.load(path)
+    clip, = d.clips.values()
+    assert len(clip.segments) == 3 and [e.kind for e in clip.events] == ["ability_used"]     # the sliver is kept: it is what was proven
+    obs = list(d.observations("train"))
+    assert obs and all(o.segment != 1 for o in obs) and not any(10.4 - 1e-6 <= o.t <= 10.9 + 1e-6 for o in obs)
+    assert [(k.t, k.reason) for k in d.skipped] == [(10.4, "segment_too_short")]
+    got = [round(s.observation.t, 3) for s in d.samples("train", decisions="manifest", hindsight=True)]
+    assert got == [5.0, 15.0]                                                               # the explicit one inside it is not cut
+    assert (10.5, "segment_too_short") in [(k.t, k.reason) for k in d.skipped]
+    assert not any(e.kind == "ability_used" for o in obs for e in o.events)                 # and its event reaches no window
+    assert "(short: 1)" in demos.summary(d)[0]
+
+
+def test_the_minimum_segment_length_is_named_and_a_segment_of_exactly_that_length_is_kept(tmp_path):
+    assert demos.MIN_SEGMENT_S == 1.0
+    segs = [dict(start_t=0.0, end_t=1.0, started_by="run_start", ended_by="scoreboard"),
+            dict(start_t=2.0, end_t=2.99, started_by="scoreboard_closed", ended_by="run_end")]
+    path = make_vod(tmp_path, segs=segs, duration_s=3.0, split="train")
+    d = Demos.load(path)
+    assert {o.segment for o in d.observations("train")} == {0}                              # 1.0 s stays, 0.99 s goes
+    assert {o.segment for o in Demos.load(path, min_segment_s=0.0).observations("train")} == {0, 1}   # the knob
+    assert {o.segment for o in Demos.load(path, min_segment_s=2.0).observations("train")} == set()
 
 
 def test_hud_segments_keeps_only_the_fields_that_matter():
@@ -622,4 +668,6 @@ def test_the_req_sample_manifest_iterates():
     gaps = [(clip.segments[i].end_t, clip.segments[i + 1].start_t) for i in range(len(clip.segments) - 1)]
     assert gaps and all(not any(a < s.observation.t < b for a, b in gaps) for s in got)   # nothing in a gap, +15 s is in one
     pilot = [round(s.observation.t, 3) for s in d.samples("inspection_only", decisions="manifest")]
-    assert pilot == [5.0, 30.0, 45.0] and [(x.t, x.reason) for x in d.skipped] == [(15.0, "outside_segments")]
+    assert pilot == [5.0, 30.0, 45.0]
+    assert sorted((x.t, x.reason) for x in d.skipped) == [(15.0, "outside_segments"), (16.7, "segment_too_short")]   # a 0.0 s sliver
+    assert all(s.observation.segment != 1 for s in got)

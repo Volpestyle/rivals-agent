@@ -3,7 +3,7 @@
 **Built and tested offline.** `agent/demos.py` is one on-disk format and one loader for three kinds of source:
 expert VOD clips (no inputs), the agent's own range recordings (pad state as the input modality), and later human
 annotations. It reads the design in [learning-plan.md](../learning-plan.md) and the "Direction" section of
-[plan.md](../plan.md); it adds no competing schema. Stdlib only: 41 tests in `tests/test_demos.py`, plus two that read the
+[plan.md](../plan.md); it adds no competing schema. Stdlib only: 44 tests in `tests/test_demos.py`, plus two that read the
 real `data/l1/tagrun0` and the Req sample manifest when they are on the machine. Nothing is committed.
 
 ```sh
@@ -39,16 +39,17 @@ flowchart LR
 One decision, on the clip's own clock (every `t` is seconds from the start of the media):
 
 ```
-clip time   0 ---- 7.6 | gap | 18.0 ------------------------------ 43.0 | gap | 43.8 ---- 59.8
-segments    [ seg 0    ]      [ seg 1                                  ]      [ seg 2       ]
-                              started_by=hero_returned          ended_by=no_hud
-decision                                     t=30.0
-observation                        [25.0 .......... 30.0]   frames, events with t_to <= 30.0, inputs
-hindsight                                            (30.0 .......... 35.0]   outcome window, still inside seg 1
+clip time   0 ---- 7.8 | gap | 16.7 | 18.1 ------------------------------ 43.1 | gap | 43.7 ---- 60.0
+segments    [ seg 0    ]      [seg 1] [ seg 2                                  ]      [ seg 3       ]
+                                      started_by=hero_returned        ended_by=scoreboard
+decision                                            t=30.0
+observation                               [25.0 .......... 30.0]   frames, events with t_to <= 30.0, inputs
+hindsight                                                (30.0 .......... 35.0]   outcome window, still inside seg 2
 ```
 
 Nothing crosses a boundary: history is clipped to the segment's start, the outcome window to its end, and a window cut by
-the segment says why (`ended_by`, `truncated`). A decision needs a frame proven inside a segment.
+the segment says why (`ended_by`, `truncated`). A decision needs a frame proven inside a segment that is at least
+`MIN_SEGMENT_S` long (seg 1 above is not).
 
 ## The manifest
 
@@ -76,32 +77,48 @@ silent. Unknown extra keys are kept and ignored.
 
 **Segments** are the stretches proven usable: `start_t` (first frame proven inside), `end_t` (last frame proven inside),
 `started_by`, `ended_by`. What lies between two segments is unproven, and its width is the boundary's uncertainty: an
-unreadable interval is a gap, never bridged. The reasons are the HUD segmenter's own, plus refinements an annotator may use:
+unreadable interval is a gap, never bridged. The reasons are the HUD segmenter's (docs/lanes/l2-hud.md, "Event stream
+format"), plus refinements an annotator may use:
 
 | Ended by | Meaning |
 |---|---|
 | `run_end` | end of the clip or recording |
 | `death` | hp reached zero |
-| `not_our_hero` | the hero played is known not to be ours (refines to `spectating`, `hero_swap`) |
+| `killcam` | the kill cam is playing |
+| `spectating` | spectating another player |
+| `scoreboard` | the scoreboard overlay is open |
+| `not_our_hero` | the hero played is known not to be ours (refines to `hero_swap`) |
 | `no_hud` | the HUD is gone (refines to `menu`, `brb`, `unreadable_hud`) |
 
-Started by: `run_start`, `respawn`, `hero_returned`, `hud_returned`. Any other value is refused when the manifest loads, as
-are overlapping or out-of-order segments and a segment that outlives the clip.
+Started by: `run_start`, `respawn`, `killcam_over`, `spectating_over`, `scoreboard_closed`, `hero_returned`, `hud_returned`.
+Any other value is refused when the manifest loads, as are overlapping or out-of-order segments and a segment that
+outlives the clip.
+
+**Slivers.** A segment shorter than `MIN_SEGMENT_S` (1.0 s) is kept in the manifest, because it is what the segmenter proved,
+and events inside it still validate, but no window is ever cut from it: a few frames of play between two scoreboard openings
+hold no decision worth learning from. Every decision that would have fallen in one (grid or explicit) is reported in
+`demos.skipped` as `segment_too_short` (as is each short segment, at its start), `Demos.usable(clip)` lists the segments windows
+may come from, and `summary` prints `(short: n)`. `Demos.load(..., min_segment_s=...)` changes the minimum. On the sample clips
+the slivers run 0.0-0.8 s and the shortest real stretch is 2.3 s, so 1.0 s separates them.
 
 ## Events: consumed as the HUD lane writes them
 
-`perception/events.py` emits one JSON object per transition, `asdict(Event)`: `kind`, `i_from`, `t_from`, `i_to`, `t_to`,
-`slot`, `amount`, `before`, `after`, `segment`. It is read unchanged. Two things matter to the loader:
+`perception/events.py` writes one file per clip, `data/demos/events/<clip-stem>.jsonl`, with three line kinds told apart by
+`type` (docs/lanes/l2-hud.md, "Event stream format"): a `meta` line, `segment` lines (`start_i`, `start_t`, `end_i`, `end_t`,
+`started_by`, `ended_by`), then events, which carry no `type`: `kind`, `i_from`, `t_from`, `i_to`, `t_to`, `slot`, `amount`,
+`before`, `after`, `segment`. The loader reads the events and ignores the other two kinds; `events_file_segments(path)` turns the
+segment lines into manifest segments, so a clip's manifest is `write_manifest(path, header, events_file_segments(events_file))`
+with `events` set to the file's path relative to the manifest (`../events/<stem>.jsonl`). Two things matter to the loader:
 
 - **An event is an interval, never an instant.** `t_from` is the last frame showing the old value, `t_to` the first showing
   the new one. There is no press time, and an unreadable stretch simply widens the interval. At decision time `t` an event
   is *known* only if `t_to <= t`; one with `t_from <= t < t_to` is still pending and belongs to hindsight.
 - **An event lies inside one segment.** The loader assigns it to a segment by time (the file's own `segment` index is only
   a hint, so editing segments cannot silently mis-assign events) and refuses the file if an event crosses a boundary or
-  sits in a gap. `type` is optional on an event line; `{"type": "segment", ...}` lines may share the file and are ignored
-  by the loader (`events_file_segments` turns them into manifest segments).
+  sits in a gap.
 
-`t_*` must be clip time, seconds from the first frame of the media. The two sample clips were sampled at 5 fps, so `t = n / 5`.
+All `t_*` are clip time, seconds from the first frame of the media; `i_*` index the sampling in the `meta` line (the sample
+clips were sampled at 10 fps from 60 fps sources, so `t = i / 10`).
 
 ## Annotations (the pilot's fields, one line each)
 
@@ -166,57 +183,60 @@ re-cuts them, and the loader refuses events that no longer fit the segments.
 
 ## Worked example: the Req sample clip
 
-`data/demos/samples/reqmr-2873352801-1920.manifest.jsonl` (built from the HUD segmenter's real output; header abridged):
+`data/demos/samples/reqmr-2873352801-1920.manifest.jsonl` (segments from the HUD lane's events file; header abridged):
 
 ```json
 {"type": "clip", "id": "reqmr-2873352801-1920", "kind": "vod", "source_url": "https://www.twitch.tv/videos/2873352801",
  "vod_id": "2873352801", "creator": "reqmr", "retrieved": "2026-09-20", "run": null, "source_start_s": 1920, "source_end_s": 1980,
  "resolution": [1920, 1080], "fps": 60, "hero": "spider-man", "overlays": ["chat intermittently covers the rightmost abilities and the ult"],
  "split": "inspection_only", "media": {"kind": "video", "path": "reqmr-2873352801-1920.mp4"}, "inputs": null,
- "events": "reqmr-2873352801-1920.events.jsonl", "annotations": null, "segments_from": "segmenter", "alignment": "requested",
+ "events": "../events/reqmr-2873352801-1920.jsonl", "annotations": null, "segments_from": "segmenter", "alignment": "requested",
  "licence": "unverified", "duration_s": 60.083, "decisions": [5, 15, 30, 45], "notes": "..."}
-{"type": "segment", "start_t": 0.0, "end_t": 7.6, "started_by": "run_start", "ended_by": "death"}
-{"type": "segment", "start_t": 18.0, "end_t": 43.0, "started_by": "hero_returned", "ended_by": "no_hud"}
-{"type": "segment", "start_t": 43.8, "end_t": 59.8, "started_by": "hud_returned", "ended_by": "run_end"}
+{"type": "segment", "start_t": 0.0, "end_t": 7.8, "started_by": "run_start", "ended_by": "death"}
+{"type": "segment", "start_t": 16.7, "end_t": 16.7, "started_by": "spectating_over", "ended_by": "scoreboard"}
+{"type": "segment", "start_t": 18.1, "end_t": 43.1, "started_by": "hero_returned", "ended_by": "scoreboard"}
+{"type": "segment", "start_t": 43.7, "end_t": 60.0, "started_by": "scoreboard_closed", "ended_by": "run_end"}
 ```
 
-An event line beside it (`reqmr-2873352801-1920.events.jsonl`, 30 lines, events only; the one the decision below meets):
+The event line beside it (`data/demos/events/reqmr-2873352801-1920.jsonl`, 84 events) that the decision below meets:
 
 ```json
-{"kind": "hp_lost", "i_from": 150, "t_from": 30.0, "i_to": 152, "t_to": 30.4, "slot": null, "amount": 45, "before": 250, "after": 205, "segment": 1}
+{"kind": "hp_lost", "i_from": 299, "t_from": 29.9, "i_to": 308, "t_to": 30.8, "slot": null, "amount": 45, "before": 250, "after": 205, "segment": 2}
 ```
 
 What the loader returns for the decision at clip time 30.0 (`samples("inspection_only", hindsight=True)`):
 
 ```
-observation  clip reqmr-2873352801-1920, segment 1, t 30.0, context_start 25.0, truncated_context False
+observation  clip reqmr-2873352801-1920, segment 2, t 30.0, context_start 25.0, truncated_context False
              26 frames: video refs (path + clip time, no pixels) every 0.2 s from t=25.0 to t=30.0, the last at 30.0
-             events []   (the hp_lost [30.0, 30.4] is pending at 30.0: its confirming frame is after the decision)
+             events web_cluster_fired [25.0, 25.2], web_cluster_reloaded [25.4, 25.6], web_cluster_reloaded [27.4, 27.6],
+                    web_cluster_fired [28.8, 29.1], web_cluster_fired [29.8, 30.0]
+                    (the hp_lost [29.9, 30.8] is pending at 30.0: its confirming frame is after the decision)
              inputs None (a VOD)
 labels       ()          (nothing annotated)
-outcome      t_end 35.0, 25 frames, events hp_lost [30.0, 30.4], ability_used swing [33.6, 34.0], ability_ready swing [34.0, 34.4]
+outcome      t_end 35.0, 25 frames, 8 events: hp_lost [29.9, 30.8], web_cluster_reloaded [30.8, 31.1], web_cluster_fired [31.1, 32.1],
+             web_cluster_reloaded [32.7, 33.1], web_cluster_fired [33.6, 34.1], ability_used swing [33.8, 34.0],
+             ability_ready swing [34.2, 34.3], web_cluster_reloaded [34.8, 35.0]
              ended_by None, truncated False
 source_time(30.0) = 1950.0
 ```
 
 The pilot's decisions are `[5, 15, 30, 45]`. `samples("inspection_only", decisions="manifest")` yields 5, 30 and 45 and skips
-15: it lies in the gap (7.6, 18.0), where the portrait check says the hero is not ours. That is the deliberate spectator
+15: it lies in the gap (7.8, 16.7), where the portrait check says the hero is not ours. That is the deliberate spectator
 negative. The skip is reported in `demos.skipped` as `(clip, 15.0, "outside_segments")`, and an annotation saying why
-(`unusable: "spectating another hero"`) is kept on the clip.
+(`unusable: "spectating another hero"`) is kept on the clip. The 0.0 s segment at 16.7 s is reported as
+`(clip, 16.7, "segment_too_short")` and yields nothing.
 
 ## What the real data showed
 
-- **Req.** The HUD segmenter (`perception.events`, run over the clip at 5 fps) gives three segments, 48.6 s usable, 246
-  decision times at 5 Hz, 30 events. +15 s is outside every segment and its hp read 663, the value the segmenter's
-  docstring warns about. +5, +30 and +45 s are inside.
-- **Day** (`daymr-2879354299-21600-60s`). Nine segments, several three or four frames long, 44.0 s usable, 229 decision
-  times, 24 events. hp at +5/+30/+45 reads 250/242/99, as the inspection notes say. The fragmentation is probably the
-  avatar, sponsor and chat overlays read as HUD dropouts; that is an honest gap, not something the format should bridge.
-  Ten frames read hp 0 (a `death` segment end at 45.4 s) and the stretch to 56.2 s is outside every segment; nothing in the
-  notes explains it, so it is recorded, not resolved.
-- **The ammo channel reads nothing** on either VOD (`webs` is `None` on 299 of 300 frames), so there are no
-  `web_cluster_fired` events. That is the HUD lane's, not the format's.
-- **The clips are variable frame rate.** Req has 4082 frames counted in 60.08 s while ffprobe reports 60/1; sampling at 5 fps
+- **Req.** Four segments, 49.1 s usable in three of them, 247 decision times at 5 Hz, 84 events. One segment is a 0.0 s sliver
+  (16.7 s, between the spectator stretch and the return). +15 s is outside every segment; +5, +30 and +45 s are inside.
+- **Day** (`daymr-2879354299-21600-60s`). Ten segments, 57 events. Five are shorter than 1.0 s (0.5, 0.8, 0.5, 0.4 and 0.1 s:
+  three of them a few frames of play between consecutive scoreboard openings) and are dropped from windows, leaving 43.0 s
+  usable in five segments and 218 decision times. The breaks are now named (`scoreboard` ends five segments, `death`, `no_hud`
+  and `not_our_hero` one each), which is what the HUD lane's overlay reader gives that the first segmentation could not.
+- **The ammo channel reads now:** `web_cluster_fired` / `web_cluster_reloaded` events exist on both clips (15 and 6 fired).
+- **The clips are variable frame rate.** Req has 4082 frames counted in 60.08 s while ffprobe reports 60/1; sampling at 10 fps
   aligns to the source only to about one source frame (16-50 ms). Manifests carry `alignment: "requested"`: the requested
   start is not frame-verified, and a video frame reference is a time on the nominal grid, to be decoded by timestamp.
 - **`tagrun0`.** 2070 rows, 609 with frames, 70.0 s, native 2560x1440, 9.21 fps, pad at about 30 Hz, notes Search / stand /
@@ -224,26 +244,14 @@ negative. The skip is reported in `demos.skipped` as `(clip, 15.0, "outside_segm
   load in 0.05 s and iterate 1,320 samples with hindsight in 0.09 s.
 - **Two recorders, two row shapes** (above), and three run directories that are jpgs only.
 
-## Asks for the HUD lane (through the lead)
-
-The event stream needs nothing new for the interval semantics: `i_from/t_from`/`i_to/t_to`, the reason vocabulary and the
-segment index all fit. Three small things would remove hand steps:
-
-1. **Write the segments down.** `python -m perception.events` prints segments but writes only events. If the per-clip file
-   carries `{"type": "segment", ...asdict(Segment)}` lines (and optionally `"type": "event"` on events), a manifest is one call:
-   `write_manifest(path, header, events_file_segments(events_file))`. Today the manifest is built from a run of the
-   segmenter's Python API.
-2. **Say what `t` is.** In the format section: `t_*` is clip time (seconds from the first frame of the media), the sampling
-   fps used, and that `i_*` indexes that sampling.
-3. **Location.** `data/demos/events/<clip-stem>.jsonl` works as is: the manifest's `events` is any path relative to the
-   manifest, e.g. `../events/<stem>.jsonl`. The two current manifests point at `<stem>.events.jsonl` beside them and can be
-   repointed when the files move.
-
 ## Decisions and what was not built
 
 - **Segments are the proven-usable intervals, not a partition.** The HUD segmenter records the last frame proven inside
   and the first frame proven inside the next; the frames between are unproven. Keeping that gap, rather than inventing a
   boundary time, is what "never bridge an unreadable interval" means in a file format.
+- **A sliver is kept and never sampled.** Dropping short segments from the manifest would lose what was proven and make an
+  event inside one look like an event in a gap; flagging them and skipping their windows keeps both true. The minimum is a
+  named constant with a parameter, not a number buried in a loop.
 - **Events belong to segments by time.** The alternative (trusting the file's segment index) breaks silently the first time
   a person edits a segment.
 - **No decoder, no pixels.** A frame is a reference (a jpg path, or a time in a video). Decoding, resizing, masking
@@ -257,6 +265,7 @@ segment index all fit. Three small things would remove hand steps:
 - **Not built:** video decoding, an annotation tool, event and annotation re-cutting on `trim`, verification of `alignment`,
   any training or sampling-weight code.
 
-Mutation checks: 19 hand-made breakages of `agent/demos.py` (a guard removed, a pending event counted as known, history or
+Mutation checks: 23 hand-made breakages of `agent/demos.py` (a guard removed, a pending event counted as known, history or
 outcome crossing a boundary, a filled-in missing modality, a split per clip instead of per group, a lost source clock, an
-outcome review folded into a label, ...) each fail at least one test; two escaped at first and now have tests.
+outcome review folded into a label, ...) (and, for slivers, the minimum ignored on the grid, ignored for explicit decisions, off by one at the boundary, and unreported)
+each fail at least one test; two escaped at first and now have tests.
