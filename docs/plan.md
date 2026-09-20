@@ -32,8 +32,9 @@ button sequences. Order: imitation first, human correction next, reinforcement l
 only once an outcome can be measured reliably.
 
 - **Sources.** Full VODs of top Spider-Man players (candidates DayMR and ReqMR; identity,
-  rank and availability are being verified), James's own play recorded with synchronized
-  inputs, and the agent's own pad recordings, which are perfectly labelled.
+  rank and availability are being verified) are the expert source. The agent's own pad
+  recordings, which are perfectly labelled, supply input-labelled video. James's own play
+  with synchronized inputs is optional and not planned.
 - **Labels without input logs.** The HUD readers turn cooldown, charge, ammo and hp
   transitions into a timestamped event stream, so ability timing and combo order are read
   off any video whose HUD is visible. Camera and movement labels for third-party video need
@@ -338,5 +339,4 @@ and never appears in a repr, error or log.
 - Accept the account risk: automation likely breaches the game's ToS even in the
   practice range. Use an account that can be lost.
 - Join the TypeSafe waitlist or create an OpenRouter key if Jev is wanted for L5.
-- Record your own Spider-Man play with synchronized inputs for the demonstration set.
 - Spot-check auto-labels in L3 (minutes, not hours).
