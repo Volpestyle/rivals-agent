@@ -1,0 +1,14 @@
+{
+ "note": "Native 2560x1440 JPEG q95 frames of the practice-range scoreboard (hold View/BACK), read by eye by the L4 agent. One burst was played between consecutive boards. killfeed-a/b.jpg: kill feed top right, no scoreboard.",
+ "open_timing_ms": "board starts fading in 270-520 ms after BACK goes down and is fully drawn ~200 ms later; hold BACK >= 0.8 s and read a frame after that",
+ "boards": {
+  "board0.jpg": {"kos": 6,  "deaths": 0, "assists": 1, "accuracy_pct": 0,  "damage": 1375, "damage_blocked": 0, "healing": 0, "web_cluster_accuracy_pct": 39, "spectacular_spin_kos": 3},
+  "board1.jpg": {"kos": 7,  "deaths": 0, "assists": 1, "accuracy_pct": 5,  "damage": 1625, "damage_blocked": 0, "healing": 0, "web_cluster_accuracy_pct": 41, "spectacular_spin_kos": 3},
+  "board2.jpg": {"kos": 8,  "deaths": 0, "assists": 1, "accuracy_pct": 10, "damage": 1805, "damage_blocked": 0, "healing": 0, "web_cluster_accuracy_pct": 41, "spectacular_spin_kos": 3},
+  "board3.jpg": {"kos": 9,  "deaths": 0, "assists": 1, "accuracy_pct": 12, "damage": 1905, "damage_blocked": 0, "healing": 0, "web_cluster_accuracy_pct": 41, "spectacular_spin_kos": 3},
+  "board4.jpg": {"kos": 10, "deaths": 0, "assists": 1, "accuracy_pct": 16, "damage": 2080, "damage_blocked": 0, "healing": 0, "web_cluster_accuracy_pct": 42, "spectacular_spin_kos": 3},
+  "board5.jpg": {"kos": 11, "deaths": 0, "assists": 1, "accuracy_pct": 15, "damage": 2180, "damage_blocked": 0, "healing": 0, "web_cluster_accuracy_pct": 44, "spectacular_spin_kos": 3},
+  "board6.jpg": {"kos": 12, "deaths": 0, "assists": 1, "accuracy_pct": 18, "damage": 2430, "damage_blocked": 0, "healing": 0, "web_cluster_accuracy_pct": 44, "spectacular_spin_kos": 3},
+  "board7.jpg": {"kos": 13, "deaths": 0, "assists": 1, "accuracy_pct": 21, "damage": 2680, "damage_blocked": 0, "healing": 0, "web_cluster_accuracy_pct": 45, "spectacular_spin_kos": 3}
+ }
+}

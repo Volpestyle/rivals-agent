@@ -220,11 +220,82 @@ def tagrun(rig, secs):
     return {"frames": rig.saved, "seconds": secs}
 
 
+def _native(path, frame):
+    cv2.imwrite(str(path), frame, [cv2.IMWRITE_JPEG_QUALITY, 95])
+
+
+def _play(rig, target, secs, intent=None, prim_name=None, save=None):
+    """Aim at `target` for `secs`, playing a burst intent or one bare primitive; optionally save native frames at 10 fps."""
+    c, t_end, n, t_next, played = rig.ctrl, time.perf_counter() + secs, 0, 0.0, False
+    c.played = None
+    while time.perf_counter() < t_end:
+        frame, small, state = rig.see()
+        if intent is not None:
+            pad = c.step(state, intent)
+        else:
+            pad, _ = c.aim_only(state, target)
+            if prim_name and not played:
+                c.play(prim_name, state.t); played = True
+            while c.seq and state.t >= c.seq[0][0]:
+                c.seq.pop(0)
+            if c.seq:
+                pad.update(c.seq[0][1])
+        rig.act(pad, frame, small, state, prim_name or "burst")
+        if save is not None and state.t >= t_next:
+            _native(save[0] / f"{save[1]}-{n:03d}.jpg", frame)
+            n, t_next = n + 1, state.t + 0.1
+    rig.live.release()
+    return n
+
+
+def scoreboard(rig, rounds):
+    """Fixtures for the scoreboard reader: hold View/BACK after each fight, native frames through the hold."""
+    out, res = rig.out, []
+    for r in range(rounds):
+        if r:   # round 0 is the board as it stands
+            target = rig.acquire(8.0)
+            if target is not None:
+                _play(rig, target, 3.6, intent=Combo(BURST, target), save=(out, f"fight{r}"))
+        time.sleep(0.4)
+        rig.live.fresh()
+        rig.live.send(buttons=("BACK",))          # the board dims the HUD, so no guarded send until it is released
+        t0, lum = time.perf_counter(), []
+        while time.perf_counter() - t0 < 1.3:
+            f = rig.live.fresh()
+            ms = round((time.perf_counter() - t0) * 1000)
+            lum.append((ms, round(float(f[::8, ::8].mean()), 1)))
+            if len(lum) % 6 == 0:
+                _native(out / f"board{r}-{ms:04d}ms.jpg", f)
+        rig.live.release()
+        time.sleep(0.8)
+        res.append({"round": r, "lum_ms": lum[::5]})
+    return res
+
+
+def tagged(rig, n):
+    """Native frames of one bot untagged, then with the Spider-Tracer icon after a Web Cluster (the tag lasts 3 s)."""
+    res = []
+    for i in range(n):
+        target = rig.acquire(8.0)
+        if target is None:
+            res.append({"trial": i, "error": "no bot acquired"})
+            continue
+        a = _play(rig, target, 1.0, save=(rig.out, f"t{i}-a-untagged"))
+        b = _play(rig, target, 3.0, prim_name="web_cluster", save=(rig.out, f"t{i}-b-after-web-cluster"))
+        rig.hold(4.0, "tag-expire")               # let the tag run out so the next trial starts untagged
+        res.append({"trial": i, "untagged_frames": a, "after_shot_frames": b})
+    return res
+
+
 if __name__ == "__main__":
     what = sys.argv[1]
     if what == "tagrun":
         rig = Rig(ROOT / "data" / "l1" / "tagrun", native=True, fps=10.0)
         run = lambda: tagrun(rig, float(sys.argv[2]) if len(sys.argv) > 2 else 60.0)  # noqa: E731
+    elif what in ("scoreboard", "tagged"):
+        rig = Rig(ROOT / "data" / "l4" / {"scoreboard": "scoreboard", "tagged": "tagged-native"}[what])
+        n = int(sys.argv[2]) if len(sys.argv) > 2 else 6
+        run = (lambda: scoreboard(rig, n)) if what == "scoreboard" else (lambda: tagged(rig, n))  # noqa: E731
     elif what == "aim":
         rig = Rig(ROOT / "data" / "l4" / "aim")
         run = lambda: aim(rig, int(sys.argv[2]) if len(sys.argv) > 2 else 10)  # noqa: E731

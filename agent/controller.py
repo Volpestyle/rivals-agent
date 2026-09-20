@@ -73,7 +73,8 @@ class Live:
         b = self.vg.XUSB_BUTTON
         codes = {"A": b.XUSB_GAMEPAD_A, "B": b.XUSB_GAMEPAD_B, "X": b.XUSB_GAMEPAD_X, "Y": b.XUSB_GAMEPAD_Y,
                  "LB": b.XUSB_GAMEPAD_LEFT_SHOULDER, "RB": b.XUSB_GAMEPAD_RIGHT_SHOULDER,
-                 "LS": b.XUSB_GAMEPAD_LEFT_THUMB, "RS": b.XUSB_GAMEPAD_RIGHT_THUMB}
+                 "LS": b.XUSB_GAMEPAD_LEFT_THUMB, "RS": b.XUSB_GAMEPAD_RIGHT_THUMB,
+                 "BACK": b.XUSB_GAMEPAD_BACK}   # View/BACK held = scoreboard in the range
         self.pad.reset()
         for name in s["buttons"]:
             self.pad.press_button(button=codes[name])

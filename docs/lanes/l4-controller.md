@@ -2,7 +2,12 @@
 
 Linear: VUH-1296. Evidence: `docs/evidence/l4/`. Raw measurements: `C:\rivals-agent\data\l4\` on the PC.
 
-The game is in the Practice Range as Spider-Man, in the Galacta-bot courtyard, idle, no pad connected.
+**The game is on the PLAY lobby** (`dropped-to-lobby-5.jpg`), idle, not queueing, no pad connected. It left the range between
+18:44:21 and ~18:44:50 with the pause menu open and the cursor resting on PRACTICE SETTINGS
+(`pause-menu-practice-settings-hover.jpg`); nothing had been pressed in the menu, the last in-range attack was at
+18:42:20 (so not the ~10 min inactivity rule), and the pad had just disconnected. Cause unknown; candidates are a
+range session time limit (about 80 minutes since the last entry) or the pad disconnecting while the pause menu is up.
+The menu tool refused to open a pad on the lobby.
 
 ## State
 
@@ -20,7 +25,9 @@ The game is in the Practice Range as Spider-Man, in the Galacta-bot courtyard, i
 | **Primitive replays, live** | `web_cluster` 4 trials, `pull` 3, `burst` 3, all ran to completion; trial 0 of each inspected on a contact sheet: Web Cluster hits and the **Spider-Tracer icon appears over the bot's health bar** (`prim-web_cluster.jpg`); pull throws the web line and wraps the bot (`prim-pull.jpg`); burst tags, web-strikes across ~12 m, uppercuts, melees and **KOs the bot** with the kill feed showing (`prim-burst.jpg`). Trials 1+ not inspected. `melee_combo`, `uppercut`, `web_strike` not replayed on their own (they run inside burst). `swing` not run (no anchors) |
 | Durations seen in burst trial 0 | Web strike: RB to arrival ~0.8 s from ~12 m (box height 84 -> 168 px between 0.97 and 1.18 s after the LT). The scripted burst is 3.0 s long; the Galacta bot was KO'd about 2 s in. Not yet measured per primitive |
 | `agent/anchors.py` | Not written |
-| Not started | Scoreboard fixture frames, Practice Settings bot options, pad-state-to-frame offset and the 30 fps native check |
+| Scoreboard fixtures | **Done.** `docs/evidence/l4/scoreboard/`: `board0..7.jpg` native, KOs 6 -> 13 and Damage 1375 -> 2680 (one burst between boards, a KO every round), values in `truth.json`; `killfeed-a.jpg`, `killfeed-b.jpg` native with the kill feed top right. Timing: the board starts fading in 270-520 ms after BACK goes down and is fully drawn ~200 ms later: hold >= 0.8 s. All in-between frames are on the PC in `data\l4\scoreboard\` (`board<r>-<ms>ms.jpg`, `fight<r>-NNN.jpg`) |
+| Native tagged frames | **Done.** `C:\rivals-agent\data\l4\tagged-native\`, 4 trials on one Galacta bot at ~3 m, native q95, 10 fps: `t<i>-a-untagged-000..009` (no icon), `t<i>-b-after-web-cluster-000..028` (Web Cluster fired at frame 000; the Spider-Tracer icon, a white web glyph above the health bar, is on every inspected frame 003-027; 000-002 are the shot and hit flash). One distance only (`tagged-native-sheet.jpg`) |
+| Not started | Practice Settings bot options (the drop happened on the way in), two-distance ranging check, pad-state-to-frame offset and the 30 fps native check, standalone melee / uppercut / web-strike replays, the two aim failures, `agent/anchors.py` |
 
 Live finding: the bot nearest the crosshair is often drawn **behind Spider-Man's own body** (third person). A player-region
 filter in the controller froze the aim on it for a whole run; it was removed.
