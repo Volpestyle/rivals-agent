@@ -33,6 +33,8 @@ screenshot. Read the screenshot before the next input.
   window, a terminal) silently eats the input.
 - Every new pad takes ~2 s to enumerate and raises a "Switching Devices" banner and a
   connect/disconnect toast. A real loop holds ONE pad for the whole session.
+  The first input after a pad connects is swallowed by that device switch, even 4 s after
+  connecting: send a throwaway move first.
 - Capture and pad code must run inside the desktop session (a `C:\desk` job that
   `Start-Process`es it). Over plain SSH dxcam fails with `DXGI_ERROR_NOT_CURRENTLY_AVAILABLE`.
 
@@ -87,6 +89,20 @@ Only moving or attacking resets the timer. Camera-only input and menu input do n
 drop came ~10 minutes after the last move or attack, during turn-only aim trials and
 settings visits. Put a move-and-attack step inside every measurement or trial, and keep
 menu visits under ~5 minutes.
+
+## Reading results in the range
+
+Hold `BACK` (View) for the scoreboard: KOs, deaths, assists, and a Spider-Man row with
+Accuracy, Damage, Damage Blocked, Healing, Web-Cluster Accuracy and Spectacular Spin KOs.
+KOs also appear in a kill feed at the top right. It is the only outcome measure found so
+far. Dead ends: the ult icon relights ~3.5 s after casting in the range, so ult charge says
+nothing about damage; Web Cluster ammo never depletes there; the range bots do not attack,
+so hp never drops. Re-picking a hero does not respawn the player.
+
+Enemy Color (Settings > Accessibility > Custom Colors) is a list of named swatches, not a
+hex entry, and it colours the enemy outline, name text, health bar and scoreboard panel.
+An undamaged bot shows its name text; after first damage a wider health bar replaces it.
+Holding `A` on a slider arrow auto-repeats.
 
 ## Spider-Man on the pad
 
