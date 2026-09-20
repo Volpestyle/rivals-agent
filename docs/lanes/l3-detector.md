@@ -69,7 +69,8 @@ is there because junk in front of the player is what caused L4's stray ability p
 | `detect.py` returns `agent.state.Detection` | Done |
 | Green finder (`find_enemies`) | **Live, on the PC, P 82% / R 83%** |
 | Hand-checked ground truth (72 native frames, 78 enemies) | Done, `data/gt/` |
-| Swatch sweep rendered hues | **Blocked**: sampled frames are not camera-matched |
+| Swatch sweep rendered hues | Closed by the lead; failure mode recorded as a dead end |
+| VOD colour finder | **Not viable** — 210 boxes over 40 frames, ~0 true. Go to model-assisted boxes |
 | PC CUDA environment | Verified: torch 2.11.0+cu128, CUDA True, RTX 4080 SUPER |
 | run1 fine-tune (2121 frames, 1632 instances) | Done |
 | Weights for the controller lane | `weights/range.pt`, and `C:\rivals-agent\weights\range.pt` |
@@ -138,6 +139,7 @@ passed in. sha256 `77ce87aa418e4eb3c39955d697efc05e632d7bd8df7a1f238e7d60ae402d1
 | `val` = window closest to proportional instance share | Picked an *empty* window | 15% of a small instance count is under one instance, so "closest" minimises toward zero. Replaced by maximising. |
 | Red-bar cue with loose thresholds (`S>120, V>110`) | Boxed half the architecture | The map's pink masonry is in range. Fixed by measuring the actual nameplate (bright, V~229) vs suit (dark, V~200) vs masonry (unsaturated, S~48). |
 | Red-bar cue at all, for Spider-Man | ~19% precision, structurally blind | Only the engaged/damaged bot (Luna Snow) has a red bar; Galacta bots have white nameplates and none. And **Spider-Man's belt is a wide thin bright-red bar** of near-identical geometry. Superseded by the green-outline request. |
+| Swatch sweep, to rank rendered outline hues | No trustworthy number; **closed by the lead, not to be redone** | The takes were not camera-matched. Differencing against Default gave ~44k "mark" px/frame (the bots animate between takes); hue-histogram excess was self-inconsistent at signal-to-noise 0.01-0.03 and put Green at hue 24, certainly wrong; the same crop across swatches showed the Green take shifted and motion-blurred. A locked camera on a stationary bot, one take per swatch, is what it would need. Green is measured working end to end at 82/83, which is the stronger evidence anyway. |
 | Inferring threshold scale from frame height | Wrong on crops | A 960 px square from a 1440p capture is 960 tall but its markers are 2.0x, not 1.33x. `scale` is now an explicit argument. |
 
 ## Tool and environment facts
@@ -190,6 +192,61 @@ hue bin:
 
 The green doors are an *emerald* green at standard hue 150–158°, about 30° away from
 pure green. They do not rule green out; they rule out that particular green.
+
+## VOD colour finder: not viable. Go to model-assisted boxes.
+
+**Answer to the question asked: a colour finder does not work on VOD footage, and the
+reasons are structural rather than tuning.** It is not close.
+
+Method: both retained clips (`reqmr-2873352801-1920`, `daymr-2879354299-21600-60s`),
+1080p60, frames at 1 fps, `find_enemies(..., scale=1.5, band=RED)`. `RED` is the game
+default, which is what both streamers use; `Band` gained hue-wrapping to express it,
+since red straddles hue 0. 40 frames hand-checked, 20 per clip, evenly spread.
+
+| | |
+|---|---|
+| Boxes over 40 hand-checked frames | **210** — mean 5.2/frame, median 4, max 13 |
+| Frames with zero boxes | **0** — it fires on every frame, including frames with no enemy at all |
+| True positives among the frames judged in detail | **essentially none** |
+| Latency | 4.3 ms (not the problem) |
+
+### What breaks it
+
+In rough order of damage. The first two are fatal on their own:
+
+1. **The player is Spider-Man in a red suit, large and centre-frame.** In `reqmr` the
+   single most common box is the player's own torso or leg. The range's player guard
+   cannot help: it deliberately keeps *large* marks in the player band so a bot at
+   point blank survives, which is exactly backwards here, where the large red thing in
+   the middle is always the player.
+2. **Streamer overlays are red and permanent.** `daymr` has a giant Spider-Man avatar
+   graphic pinned bottom-centre in *every* frame — it is boxed every time. Plus album
+   art in a music widget, chat text, and sponsor banners.
+3. **Red map architecture** — a red wall or door fills a third of some `daymr` frames
+   and comes back as one frame-filling box.
+4. **Red ability VFX and full-screen damage effects.** One frame is almost entirely red.
+5. **Non-gameplay screens.** The scoreboard has a red "ENEMY TEAM" panel; six boxes
+   land on it. Killcams and the defeat overlay are similar.
+6. **Real enemies are small and compression-smeared**, so the one thing the finder
+   should catch is the weakest signal in the frame.
+
+Note the asymmetry with the range: there, green was chosen *because* nothing else in
+the scene was green, and the player is red and blue. On a VOD nothing was chosen — the
+enemy colour is whatever the streamer left it at, and it collides with the player, the
+map, the effects and the overlays at once. The live finder's whole advantage was
+picking a colour no one else was using; that advantage does not exist here.
+
+### Recommendation
+
+**Go to model-assisted boxes**, as the lead's fallback anticipated. The colour route
+cannot be rescued by thresholds. Two things worth carrying forward:
+
+- **Mask the overlays first, whatever the label source.** They are fixed per streamer
+  and per layout, they are large, and they will poison a detector's labels exactly as
+  the scenery poisoned the range labels. The learning plan already calls for recorded
+  crop masks; these clips show why.
+- **Drop non-gameplay frames before labelling.** Scoreboard, killcam and defeat screens
+  are full-frame UI and are not rare.
 
 ## Swatch sweep — not yet measurable, and why
 

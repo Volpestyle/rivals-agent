@@ -144,3 +144,13 @@ def test_a_bar_far_above_a_body_is_still_its_own_enemy():
     f[320:460, 610:690] = GREEN_BGR
     f[326:454, 616:684] = 0
     assert len(find_enemies(f)) == 2
+
+
+def test_a_band_can_wrap_hue_zero():
+    """Red wraps 0, so hue_lo > hue_hi has to mean 'outside the gap', not 'empty'."""
+    from perception.outline import RED
+    f = _frame()
+    f[300:420, 600:660] = (40, 40, 220)   # BGR red, hue ~0
+    f[304:416, 604:656] = 0
+    assert len(find_enemies(f, band=RED)) == 1
+    assert find_enemies(f) == []          # and the green band must not see it

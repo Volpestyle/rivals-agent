@@ -98,6 +98,10 @@ class Band(NamedTuple):
 # it renders muted in game, about #40AF58 = OpenCV H67 S~160 V~175, so the band is
 # centred on 67 rather than on the menu value.
 GREEN = Band(54, 70, 90, 120)
+# The game's default enemy colour, for VOD footage where the streamer never changed it.
+# Hue wraps 0 for red, so hue_lo > hue_hi means "outside the gap" -- see find_green.
+# Values from the range's own default-red enemy plate: H~174, S 111-151, V~229.
+RED = Band(168, 6, 90, 120)
 # An enemy marker is either a thin closed contour around the body or a recoloured
 # health bar. Neither is a filled region, so a solid patch is scenery: a signboard, a
 # lit panel, foliage in sun. Background components already sit at fill p50 0.34 / p99
@@ -173,8 +177,12 @@ def find_green(frame_bgr, scale=None, band=GREEN):
     # cv2.inRange, not numpy comparisons: the numpy form casts three full-size planes to
     # int64 first, which on the PC cost more than everything else in the function put
     # together (960 px crop 11.1 ms -> see the lane doc). This runs in one pass, uint8.
-    mask = cv2.inRange(hsv, (band.hue_lo, band.sat_min + 1, band.val_min + 1),
-                       (band.hue_hi, 255, 255))
+    lo = (band.hue_lo, band.sat_min + 1, band.val_min + 1)
+    if band.hue_lo <= band.hue_hi:
+        mask = cv2.inRange(hsv, lo, (band.hue_hi, 255, 255))
+    else:  # wraps hue 0 (red): two ranges, OR'd
+        mask = cv2.inRange(hsv, lo, (179, 255, 255)) | cv2.inRange(
+            hsv, (0, band.sat_min + 1, band.val_min + 1), (band.hue_hi, 255, 255))
     # a contour drawn 1-2 px wide breaks into arcs over a body; rejoin them before
     # components are taken, or one bot comes back as eight boxes
     k = max(3, int(GREEN_CLOSE * s))
