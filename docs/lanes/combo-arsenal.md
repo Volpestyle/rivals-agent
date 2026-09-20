@@ -1,159 +1,168 @@
-# Spider-Man combo arsenal: expert-sourced findings
+# Spider-Man combo arsenal: inspected guide sources
 
-Researched from the web on 2026-09-20. Extends `docs/spiderman-kit.md`'s "Combos" section
-(8 combos, generic guide sites) with material specifically from DayMR and ReqMR, and from
-named community players/creators with demonstrated standing. **Nothing here has been
-checked in the live game or by watching the cited videos frame-by-frame** — see the
-methodology note below before trusting a timestamp.
+Source check: 2026-09-20. This is a timestamped demonstration inventory for
+[the kit](../spiderman-kit.md), not a set of verified current-patch controller macros.
+Codex owns this file; the lead owns kit integration and live verification.
 
-Xbox pad bindings used throughout (from `spiderman-kit.md`): **RT** Spider-Power melee,
-**LT** Web Cluster, **LB** Web-Swing, **RB** Get Over Here!, **X** Amazing Combo (uppercut),
-**A** jump, **Y** team-up, **LS+RS** ultimate.
+## Evidence and local media
 
-## Methodology and access limits
+Day and Req are the priority sources. Day explicitly introduces his guide as game
+sense rather than a comprehensive combo catalogue (00:00–00:19); its pull lesson is
+presented by guest MatchuXD. Req's selected video is match decision commentary, not
+an input tutorial. Matchu's own tutorials fill mechanical gaps. Hydro and FFAme are
+additional technique sources where those priority videos lack an input breakdown;
+their rank is not independently verified.
 
-YouTube, Twitch and X/Twitter serve their real content through client-side JavaScript;
-the fetch tool available here only sees the static page shell (nav/footer), so **no video
-was watched and no page was read in full**. What follows was built from three things
-instead, each weaker than a direct read and flagged accordingly:
+| ID | Author and source | Upload date / duration | Inspected content |
+|---|---|---|---|
+| D | [Day: Ultimate Guide, featuring MatchuXD](https://www.youtube.com/watch?v=yuh5NnzOLvo) | 2026-09-03 / 34:17 | Range demonstrations near the start, then narrated match/replay analysis |
+| R | [Req: Inside the Mind](https://www.youtube.com/watch?v=vwS65E0yNlU) | 2025-10-28 / 14:27 | Match POV, hero selection, death/killcam; no range in the sampled frames |
+| Y | [Matchu: Yo-Yo tutorial](https://www.youtube.com/watch?v=OGkhRImOzgs) | 2025-05-06 / 1:19 | Range; enlarged ability HUD; edited vertical layout |
+| T | [Matchu: Top 5 Combos](https://www.youtube.com/watch?v=UPecYKDUT-A) | 2026-05-29 / 1:59 | Range demonstrations and names; incomplete input narration for several entries |
+| B | [Matchu: Buffed combos](https://www.youtube.com/watch?v=1KCahJFDBDY) | 2026-09-11 / 1:41 | Match demonstrations of four double-uppercut variants; enlarged ability HUD |
+| S | [Matchu: Best Combo for All Ranks](https://www.youtube.com/watch?v=yVOR69zfQ6g) | 2025-06-20 / 1:34 | Sekkombo in the range, slow/fast demonstrations, keyboard/mouse overlay |
+| P | [Matchu: Old Combo Is Back](https://www.youtube.com/watch?v=DsYg_fWwimk) | 2026-01-15 / 0:22 | Peni-dependent variant in the range; keyboard/mouse overlay |
+| H | [Hydro: Easy and Advanced Combos](https://www.youtube.com/watch?v=tHsy7xGoYE0) | 2025-09-14 / 13:10 | Narrated input breakdowns; mixed range, settings and match/replay footage |
+| F | [FFAme: Season 1 CEO Guide](https://www.youtube.com/watch?v=57GoyFs3Pns) | 2025-01-11 / 37:12 | Clean range/timed-practice demonstrations; Stack narration and selected frames inspected |
 
-1. **YouTube's oembed endpoint** (`youtube.com/oembed?url=...`) — reliable for a video's
-   exact title and its uploading channel's handle/URL. Used for every identity
-   verification below.
-2. **Search-engine result snippets and AI summaries of them** — used for combo content,
-   descriptions, and approximate ("N days/weeks ago") upload dates. These are
-   paraphrases of paraphrases, not primary text; treat every input sequence below as
-   the gist, not a verbatim transcript.
-3. **Cross-references between sources** (a video description naming both players, a
-   third-party stats site stating a creator's other handles) — used to verify identity.
+Media, source metadata, automatic transcripts and inspection frames stay in
+`data/demos/guides/`, gitignored. The local manifest records decoded duration,
+resolution, FPS and transcript provenance. Dates above come from retrieved video
+metadata, not relative search snippets. Day's description links `twitch.tv/daymr`;
+Req's links `twitch.tv/reqmr`. Titles claiming rank do not verify rank.
 
-No timestamp below is from watching a video. Where a timestamp would normally go, it says
-`unknown` unless a chapter/description timestamp turned up in a search snippet (none did).
-Relative upload dates ("1 week ago") are resolved against this research's date, 2026-09-20,
-and marked approximate.
+Narration is transcribed locally with `mlx-whisper` and
+`mlx-community/whisper-large-v3-turbo`. The lists below normalize transcription
+errors such as “pole” to the ability name supported by the captions/demonstration.
+They preserve narrated action order, not verbatim prose or exact physical inputs.
+Automatic transcripts are not fully audited by listening; selected caption and
+scene frames are inspected. No current-game execution is performed in this lane.
 
-## Sources found
+All times are seconds on the full source video's timeline. A narrated interval
+locates an explanation; it does not establish the game's inter-input timing.
+Edits, pauses, replay speed, slow motion and HUD latency prevent that inference
+without a separate timing check. Even range footage retains patch, control-layout,
+compression and overlay differences from our runtime. Keyboard overlays are useful
+weak input evidence, not synchronized input logs.
 
-| # | Who | Handles | Evidence of standing | How verified | Practice-range footage? |
-|---|-----|---------|----------------------|---------------|--------------------------|
-| 1 | **DayMR** ("Day", "SG Day") | Twitch [twitch.tv/daymr](https://www.twitch.tv/daymr); YouTube [@DayRivals](https://www.youtube.com/@DayRivals); X [@DayMR__](https://x.com/DayMR__) | Twitch bio "BEST SPIDER-MAN WORLDWIDE"; 41.2K Twitch followers; signed to org "Swamp Gaming"; ran a $10,000 "Spider-Man Showdown" tournament; multiple third parties (Donatello, community tweets) call him "the best spiderman in the WORLD" / rank 1 | **Verified**: oembed shows every "DAYMR'S..." video's `author_url` is `@DayRivals`; third-party stats site twitchmetrics.net independently states DayMR's YouTube is `@DayRivals`; DayMR's own video "DAYMR VS REQ The #1 SPIDER-MEN..." (2026-02-15) names both "DayMr" and "Reqmr" in its description, cross-linking the two | Not found in any sampled video; all are ranked/tournament match POV |
-| 2 | **ReqMR** ("req", "Req") | Twitch [twitch.tv/reqmr](https://www.twitch.tv/reqmr); YouTube [@reqmr1](https://www.youtube.com/@reqmr1) | Videos titled "RANK 1 Spider-Man", "Inside The Mind Of The RANK 1 Spider-Man"; named opposite DayMR as the other top-ranked Spider-Man in DayMR's own content | **Verified via cross-link**: DayMR's "DAYMR VS REQ" video description names "Reqmr" as DayMR's rival #1 Spider-Man; YouTube handle `@reqmr1` is self-consistent with Twitch handle `reqmr`. Could **not** independently confirm via ReqMR's own Twitch "About" page — Twitch renders that client-side and the fetch tool could not read it (returned only the page title) | Not found; sampled videos are ranked-match POV |
-| 3 | **MatchuXD** | TikTok [@matchuxd](https://www.tiktok.com/@matchuxd); YouTube [@MatchuxD](https://www.youtube.com/@MatchuxD) | Search-engine summary states "peak top 500 One Above All", duo'd with a player named "Sypeh" (**UNVERIFIED**, could not independently confirm rank) | **Verified by feature**: DayMR's own guide video is titled "DAYMR'S ULTIMATE SPIDER-MAN GUIDE... (Ft. MatchuXD)" — a direct collaboration/endorsement by a verified rank-1 player | Some MatchuXD clips are TikTok Shorts-format tutorials; range vs. match not confirmed |
-| 4 | **sekkun** (Sekkombo originator) | TikTok/YouTube [@sekkunnn](https://www.youtube.com/@sekkunnn); Twitch [sekkun_](https://www.twitch.tv/sekkun_) | Self-attributed origin of a named tech ("Sekkombo is just what I call it — chill on me chat") | **Self-consistent** (same handle across TikTok/YouTube/Twitch); no independent rank confirmation found — **UNVERIFIED** standing | Not found; TikTok clips are short-form |
-| 5 | **Hydro_7** (Hydro Combo / "Perfect Swing") | YouTube [@Hydro_7](https://www.youtube.com/@Hydro_7) | Has own dedicated long-form combo guide ("Spider-Man Combos You NEED to Know") | **Self-consistent** only; no rank/follower evidence found — **UNVERIFIED** standing | Unknown — could not confirm |
-| 6 | **FFAmefs / "FFame"** (FFame Stack originator) | YouTube [@FFAmefs](https://www.youtube.com/@FFAmefs) | Tech is named after the creator, mirroring the Sekkombo/sekkun naming pattern; multiple third-party videos ("CEO/GODFATHER/REDNECK SPIDER-MAN TECH") reference the tech by name | **UNVERIFIED** standing — no rank or follower data found | Unknown |
-| 7 | **CaptainRocket685** ("Spider-Man Combo Crash Course" series) | YouTube [@CaptainRocket685](https://www.youtube.com/@CaptainRocket685) | Runs a numbered, season-updated combo-tutorial series (at least episodes through "Episode 10 — Sekkombo"); a TikTok reference claims "Rank 1k Spider-Man" in Season 4.5 | **UNVERIFIED** — the rank claim is third-party and thin | Series format strongly suggests practice-range demonstration, but **not confirmed** (no video watched) |
-| 8 | **MatchuXD / Dantu (@DantuMR) / Agni Kai (@AgniKaiYT)** — Yo-Yo combo teachers | YouTube handles as shown | Three independent channels teaching the same named tech; Dantu's video is explicitly controller-focused ("...with a CONTROLLER") | **UNVERIFIED** standing for Dantu and Agni Kai; MatchuXD per row 3 | Unknown |
-| 9 | **Blade** (Simple Swing Cancels), hosted on the FFAmefs channel | YouTube (channel `@FFAmefs`, guest "Blade") | Named, dated (Season 3.5) tech video | **UNVERIFIED** standing | Unknown |
-| 10 | **Wada124** — named for completeness, no distinct combo tech found | Twitch [twitch.tv/wada124](https://www.twitch.tv/wada124) | Multiple third-party video titles call him "TOP 1/RANK 1 SPIDER-MAN"; has a tracker.gg profile | **UNVERIFIED** (third-party title claims only) | N/A — not used as a combo source |
-| 11 | gamehelper.io (aggregator, 2026) | [gamehelper.io article](https://www.gamehelper.io/games/marvel-rivals/articles/spider-man-build-breakdown-marvel-rivals-2026) | — | Aggregator, not primary. Direct fetch returned 404 at research time; used only as the pointer that surfaced the "Long Pull / Downslam Exploit / Yo-Yo / Fame Stack / Hydro / Sekkombo" name list, each then traced to a primary creator above | N/A |
+## Narrated inputs and usage
 
-**Note on what actually came from DayMR/ReqMR directly:** their own channels lean toward
-ranked/tournament match VODs and patch-reaction commentary, not static combo breakdowns.
-DayMR has exactly one dedicated guide video (below), which he uses to platform MatchuXD.
-Every named tech in the table below (Sekkombo, FFame Stack, Downslam Exploit, Yo-Yo, Hydro
-Combo) originates with the wider named-creator community, not DayMR or ReqMR's own mouths
-— which satisfies task item 2 ("if those two have little, other widely recognised players'
-guides") more than item 1.
+Ability names are the source-level contract. The kit maps cluster to LT, melee to
+RT, uppercut to X, swing to LB, jump to A and the ordinary contextual Get Over Here!
+to RB. **Do not translate an explicitly aimed pull on a tagged target to RB until
+its control setting is verified.** Source creators use custom keyboard bindings.
+A downslam also needs its airborne prerequisites; “slam” is not an unconditional RT.
 
-## Combos and tech beyond the existing 8
+| Source/time | Technique | Narrated action order | Purpose / conditions stated |
+|---|---|---|---|
+| D 01:31–01:43 | Momentum setup | Swing or bunny-hop, then uppercut | Carry momentum farther before an off-map pull |
+| D 01:46–01:52 | Ground-zip setups | Ground zip → uppercut; or ground zip → cluster → double jump → uppercut | Preferred setups for crossing the map before a pull |
+| D 01:56–02:26 | Long/off-map pull | For swing/bunny-hop alone, aim the pull. After an uppercut setup, cancel uppercut with swing, then pull | Frees the pull sooner; an uppercut hit can make the target's trajectory easier to intercept |
+| D 02:28–02:46 | Pull practice and aim delay | Repeated practice; aim may change after the pull animation begins | Demonstrates starting toward one bot and flicking toward another; binding press is not projectile release |
+| Y 00:09–00:52 | Yo-Yo | Get airborne → pull → double jump → swing-cancel → cluster → uppercut → swing-cancel → cluster → downslam | Pull cancel must occur late enough for the pull to happen. Narrator claims a 275-HP finish; not measured here |
+| Y 00:52–01:06 | Yo-Yo target use | Same sequence | Displace Loki/Cloak from utility; coordinate allied fire if the full sequence fails. Interaction claims are dated source claims |
+| S 00:46–00:58 | Sekkombo base and extension | Cluster → pull → punch → cluster → uppercut; extend with swing-cancel → cluster | Pull the opponent out of position without travelling to them; follow-up helps against intervening healing |
+| S 00:26–00:46; 01:11–01:21 | Sekkombo movement and timing | Moving/jumping variant; time punch after pull arrival before the next cluster | Be harder to hit and avoid cancelling/missing the punch |
+| T 00:03–00:19 | Cluster/downslam string | Cluster → downslam → cluster → uppercut | Narrator warns the first shot advertises the attack and the slam requires precise arrival |
+| T 00:19–00:49 | Bread-and-butter / Hydro | Uppercut animation cancel and simple-swing use are discussed; full orders are not spoken here | Bread-and-butter is characterized as slow/counterable; Hydro as a simple-swing option. Names alone do not supply macros |
+| B 00:08–00:25 | Corn-on-the-Matchombo variant | Cluster → swing to feet → uppercut → swing → pull → swing → cluster → uppercut; optional swing → cluster → downslam | Two uppercuts and displacement. Title/name spelling in automatic speech is uncertain; identify by source/time and sequence |
+| B 00:25–00:43 | Symbiote ladder variant | Cluster → uppercut → swing → cluster → symbiote → swing → cluster → second uppercut; optional swing → cluster → downslam | Three-stage vertical displacement; **team-up dependent, outside the first bot's execution set** |
+| B 00:43–00:57 | New bread-and-butter | Cluster → uppercut → swing → cluster → Get Over Here! targeting → second uppercut; same optional extension | Narrator distinguishes targeting/strike here from pull elsewhere; describes a faster re-hit sequence |
+| B 00:58–01:20 | Double-uppercut CJ variant | Cluster → swing → uppercut past target → swing/pull → swing/cluster → uppercut | Greater displacement; simple swing is said to save a swing needed for downslam in the regular variant |
+| P 00:00–00:21 | Peni Sekkombo variant | Activate Peni team-up before pull; use its available activation during pull. Alternative waits about 1.5 s for explosion/tracer interaction | **Peni dependent**, not evidence for a solo macro or present-patch timing |
+| H 01:19–01:53 | Setup / Flashstep | Hold-to-swing on, separate simple-swing binding, optional secondary punch binding; cluster → Get Over Here! → simple swing → overhead → cluster → uppercut | Evasive displacement against hitscan/CC; manual and simple swing are distinct source controls |
+| H 03:50–04:24 | Reverse Flashstep | Cluster → Get Over Here! → simple swing → uppercut → manual swing → cluster → overhead | Slower but more consistent opener; uppercut has wider coverage |
+| H 04:30–05:04 | Delayed Flashstep | Cluster → Get Over Here! → uppercut → manual swing → cluster → simple swing → overhead | Vary displacement timing; narrator also recommends against flyers |
+| H 06:06–06:53 | Double-swing overhead | Uppercut → manual swing → cluster → simple swing → overhead | CC avoidance/extension; preserve swing resource for exit and consider enemy escapes |
+| H 07:04–08:12 | Hydro | Cluster → Get Over Here! → punch → cluster → simple swing → punch → cluster → uppercut | Burst against tankier/self-healing targets and post-ult follow-up; not the narrator's replacement for Sekkombo against strong CC |
+| H 08:39–10:44 | Double-swing Panther | Cluster → Get Over Here! → manual swing → cluster → simple swing → punch → cluster → uppercut | More reliable around cover/low ceilings; says both pull and attach work; manual-swing interval supports reaching the ground before punch |
+| H 10:50–11:41 | Short Panther variation | Cluster → Get Over Here! → simple swing → punch → cluster → uppercut | Requires grounded approach/target for punch; airborne follow-up can become overhead instead |
+| H 12:02–12:09 | C.e.ombo | Overhead → cluster → simple swing → punch → cluster → uppercut | High-precision bonus string; name is source-specific |
+| F 20:07–21:30 | FFAme Stack | Apply tracer → Get Over Here! → uppercut in very rapid succession, **Get Over Here! first** | Demonstrates rolling/plinking two bindings. Controller binding suggestions are speculative in the narration |
+| F 21:31–23:19 | Stack approach / extensions | Tag from farther away → swing within about 4 m → Stack; then swing-cancel → cluster → punch, or punch → cluster | Drive-by burst and follow-up; range and damage are historical source claims |
 
-### Mechanics
 
-| Name | Input order (source's terms) | Input order (Xbox pad) | Prerequisites |
-|------|-------------------------------|--------------------------|----------------|
-| **Sekkombo** (base) | Cluster -> pull -> punch -> cluster -> uppercut | LT (tags) -> RB -> RT -> LT (re-tags) -> X | Web Cluster charge, Get Over Here! off its 8 s cooldown, 1 Amazing Combo charge. **See contradiction flag below**: sources call the second step "pull," but per `spiderman-kit.md`'s own tracer rule a target tagged by the first LT should force RB into an auto-locked **web strike**, not a pull |
-| **FFame Stack** | "Get Over Here" + Amazing Combo pressed at the exact same time; advanced variant double-binds both to one shared key | RB + X pressed together (works on the default Xbox layout); the shared-single-button variant requires **rebinding RB's function and X's function onto the same physical button**, which the kit's documented default layout does not have | Get Over Here! off cooldown, 1 Amazing Combo charge. Full value wants the target tagged first (LT) for the +45 uppercut bonus, but sources describe the stack itself as tag-independent |
-| **Downslam Exploit** | Wall variant: aim at a wall, jump, web-swing-cancel at the wall, downslam. No-wall variant: jump, web-swing, cluster, downslam | Wall: A -> aim `rs:` at wall -> LB (cancelled) -> RT (slam). No-wall: A -> LB -> LT -> RT (slam) | Airborne; a brief web-fire/web-swing counts as the double jump per `spiderman-kit.md`'s existing **S**-tagged mechanic ("Web-Swing as a double jump"), which this tech directly exercises. Wall variant needs a nearby wall in aim range |
-| **Yo-Yo (pull-cancel, base)** | Progresses from a basic pull -> follow-up to "advanced pull cancel tech": cancel the Get Over Here! pull animation into a fast follow-up | RB, cancelled quickly into RT/LT/X depending on variant | Get Over Here! off cooldown, used on an **untagged** target (so it pulls rather than strikes). Exact cancel window: **U**, same as `spiderman-kit.md` combo #3's existing "cancel windows U" note |
-| **Long Pull** | B-hop -> manual (aimed) swing -> pull, for an extended drag distance | A/LB b-hop sequence (**U** on current patch per kit's existing combo #8) -> `rs:`-aimed LB -> RB pull | Automatic Swing **OFF** (so the swing is aimed, not auto-anchored) — already the kit's own recommended bot setting. Overlaps heavily with the kit's existing combo #6 "Ledge pull"; treat as elaboration, not a new primitive |
-| **Hydro Combo + "Perfect Swing"** | Not specified in any accessible source beyond "combines a swing-cancel tech with a punish combo" | **Unknown** — insufficient detail to translate | **U** across the board |
-| **Simple Swing Cancel** | Fire a web (Web Cluster) mid-swing to cancel the swing animation | LB (swinging) -> LT (cancel) | Airborne/swinging, 1 Web Cluster charge. This is the same tech `spiderman-kit.md` already lists under "Web-swing behaviour" > "Swing cancel" (dated 2025-03-09, tagged **G**/**U** on current patch); this source (Season 3.5, ~Aug 2025) is a second, independent, slightly later sighting of the same tech, not a new one |
-| **Season 10 double-Amazing-Combo window** | DayMR and ReqMR both frame the Season 10 patch (Amazing Combo between-cast cooldown 2 s -> 1 s, already **S**-sourced in `spiderman-kit.md`) as making combo strings "insanely smooth" | X, wait ~1 s, X again — now fits inside a burst window that previously fit only one cast | 2 Amazing Combo charges (kit: 6 s recharge each), patch >= Version 20260911 |
+B 01:20–01:36 gives a 290-damage subtotal for two clusters and two tracer-enhanced
+uppercuts, before other hits. This is the narrator's arithmetic/claim, not a measured
+current-patch damage result. Likewise the older 275-HP kill claims do not establish
+our bot's damage or timing. Consult the kit's current sourced values and live trials.
 
-### Evidence
+## Sekkombo: the actual unresolved dependency
 
-| Name | Damage | Season / patch / date | Source (URL, timestamp) | Footage | Verification of the number |
-|------|--------|------------------------|---------------------------|---------|------------------------------|
-| Sekkombo (base) | Not stated numerically by any source found | Referenced across Season 9-era TikToks and CaptainRocket685's crash-course episode 10; no hard date | [sekkun TikTok](https://www.tiktok.com/@sekkunnn/video/7514933906697669910) (naming); [MatchuXD TikTok explainer](https://www.tiktok.com/@matchuxd/video/7518159905673448734); [CaptainRocket685 short, "Episode 10 - Sekkombo"](https://www.youtube.com/shorts/bbpbpppyqDo) (timestamp: n/a, whole clip; upload date unknown) | TikTok/Shorts clips — practice range vs. match **not confirmed**, not watched | **U** |
-| FFame Stack | Not stated | Referenced as "SpiderMan S1 CEO Guide" and a Season 9.5 "updated" guide exist per search summaries — date range spans multiple seasons, exact dates **U** | [57GoyFs3Pns](https://www.youtube.com/watch?v=57GoyFs3Pns), [PS1ES-XmBnY](https://www.youtube.com/watch?v=PS1ES-XmBnY) ("CEO Tech Yap Meeting"), [as6BlJkCg7Y](https://www.youtube.com/watch?v=as6BlJkCg7Y), [OhGeeMT short crediting @FFAmefs](https://www.youtube.com/shorts/2Sg15WOGkbo) — none watched, timestamps unknown | Not confirmed | **U** |
-| Downslam Exploit | A search-engine summary attributes **"250-400 damage"** to *a* Spider-Man downslam-related combo with "a cooldown-bait opener and pull follow-up" — **this may not be the same combo as the wall/no-wall Downslam Exploit above**; the summarizer likely blended two TikToks. Treat the number as unattached until reconfirmed | Undated | [sekkun TikTok, "Master Downslam Techniques"](https://www.tiktok.com/@sekkunnn/video/7485563163417627926); broader aggregation from Downslam-tagged TikTok discovery pages (no single clean URL for the 250-400 figure) | Not confirmed | **U**, damage figure specifically flagged low-confidence |
-| Yo-Yo (base) | Not stated | Undated (no explicit date surfaced for any of the three videos) | [Agni Kai, "Yo-Yo Combo Guide"](https://www.youtube.com/watch?v=fTqNQtkrXLQ); [Dantu, "...with a CONTROLLER"](https://www.youtube.com/watch?v=U525nvibqO0); [MatchuXD, "YOYO COMBO CORRECTLY"](https://www.youtube.com/watch?v=OGkhRImOzgs) — none watched | Not confirmed | **U** |
-| Long Pull | Not stated here; the kit's existing combo #6 (same family) cites 25 dmg (pull only) | Same 2025-05-31 Gamerant source already in `spiderman-kit.md`, plus an undated TikTok ("Marvel Rivals Spiderman Tech Long Pull") | [gamerant.com pull techniques](https://gamerant.com/marvel-rivals-how-to-pull-people-off-map-spider-man-all-techniques-combos/) (already a kit source) | Match footage per the Gamerant article's framing | **G** (inherited from kit) |
-| Hydro Combo + Perfect Swing | Not stated | Undated | [Hydro_7, "Spider-Man Combos You NEED to Know"](https://www.youtube.com/watch?v=tHsy7xGoYE0) — not watched, timestamp unknown | Not confirmed | **U** |
-| Simple Swing Cancel | None (movement tech, no damage) | Season 3.5, approx. Aug 2025 by interpolation between `spiderman-kit.md`'s own Season 3 (2025-07-11) and Season 5 (2025-11-14) balance dates — **exact date UNVERIFIED**, this interpolation is mine, not sourced | [Blade, on @FFAmefs, "SIMPLE SWING CANCELS!"](https://www.youtube.com/watch?v=JLB7MmsklY8) — not watched, timestamp unknown | Not confirmed | **U** |
-| Season 10 double-Amazing-Combo window | Arithmetic only: 2 x (70 base, or 115 tagged) inside a shortened window — **D**, not observed | Season 10, patch Version 20260911 (2026-09-08 balance post, live 2026-09-11) — same patch already dated in `spiderman-kit.md` | DayMR: [7D1FaS0vVMM](https://www.youtube.com/watch?v=7D1FaS0vVMM) (~2026-09-13, approx. from "1 week ago" search snippet), [V7RGf1NXZ8M](https://www.youtube.com/watch?v=V7RGf1NXZ8M) (~2026-09-18, approx.), [RR0ttuf-ddM](https://www.youtube.com/watch?v=RR0ttuf-ddM) (~2026-09-15, approx.). ReqMR: [d0C8RMBnFfA](https://www.youtube.com/watch?v=d0C8RMBnFfA) (~2026-09-13, approx.) | All four are framed as ranked/tournament match content per their titles ("Dominating", "Lobbies") — not practice range | **D** (arithmetic on **S** numbers already in the kit); the *qualitative* claim ("insanely smooth") is **G**, attributed to both target players, not watched for confirmation |
+S 00:46–00:53 explicitly describes a pull, and inspected frames around 00:48–00:50
+show the enemy travelling toward Spider-Man. Treating the word as merely a mistaken
+name for web strike is unsupported by that demonstration. It does **not** prove the
+same sequence is possible with our default contextual RB or on the current patch.
 
-DayMR's own dedicated guide, [DAYMR'S ULTIMATE SPIDER-MAN GUIDE... (Ft. MatchuXD)](https://www.youtube.com/watch?v=yuh5NnzOLvo)
-(~2026-08-30, approximate — "3 weeks ago" per search snippet, **predating** the
-2026-09-08/09-11 Season 10 patch), and ReqMR's [Inside The Mind Of The RANK 1 Spider-Man](https://www.youtube.com/watch?v=vwS65E0yNlU)
-(Season 4.5, 2025-10-28, explicit date), are both real DayMR/ReqMR primary sources but
-their specific combo content could not be extracted (see "Not found"). They are listed
-here as sources whose existence is confirmed even though their contents are not.
+The kit already identifies a possible separate PC pull binding. Current settings,
+that binding's availability on pad, and tracer state at projectile release need a
+live check. Preserve `cluster → aimed pull` as the demonstrated semantic sequence;
+do not silently convert it to `cluster → web_strike`, or ship `LT → RB` as equivalent.
+The lead owns this live test and the resulting kit/controller decision.
 
-## Contradictions with spiderman-kit.md, and scope flags
+## Stack and swing controls
 
-1. **Sekkombo's "pull" step may misname a web strike.** `spiderman-kit.md`'s own
-   Spider-Tracer state diagram says Get Over Here! behaves differently by tag state:
-   untagged = aimed pull (25 dmg, enemy dragged to you); tagged = auto-locked web strike
-   (55 dmg, you zip to them) — and a tag is exactly what the preceding Web Cluster hit in
-   Sekkombo just applied. Every source describing Sekkombo calls the second step "pull,"
-   which is inconsistent with the kit's rule unless (a) community usage says "pull" for
-   RB generically regardless of what it actually does, or (b) the cluster in practice
-   often misses so the target stays untagged. **Do not encode Sekkombo as
-   `web_cluster -> pull` in the controller lane without resolving this**; it may actually
-   be `web_cluster -> web_strike`.
-2. **Sekkombiote and the full "Venom Yo-Yo" variant require the Venom Team-Up.**
-   `spiderman-kit.md` explicitly puts Symbiote Bond/Parker Power-Up (Y, partner-hero-only)
-   out of scope for the first bot and already dropped an older guide's Venom step for the
-   same reason. The advanced/full forms of Sekkombo ("Sekkombiote") and Yo-Yo (the
-   "Venom Yo-Yo": pull -> MS -> cluster -> **Venom teamup** -> swing -> downslam ->
-   cluster -> uppercut) are out of scope for the same reason; only their team-up-free
-   base forms (as tabled above) apply.
-3. **FFame Stack's shared-button variant needs a control scheme the kit doesn't document.**
-   Binding Get Over Here! and Amazing Combo to one physical button is not covered by
-   `spiderman-kit.md`'s "Default Xbox layout" table, and isn't mentioned anywhere in its
-   "Controller settings and aim assist" section either. This is a real gap for a future
-   verification pass (can Marvel Rivals's Xbox control-remap menu even bind two abilities
-   to one button?), not a contradiction of a stated fact — the kit is simply silent on it.
-4. **No contradiction found for Downslam Exploit or Simple Swing Cancel** — both
-   corroborate and add usage color to mechanics `spiderman-kit.md` already tags **S**
-   (Web-Swing as a double jump) or **G**/**U** (swing cancel). One source's caution that
-   the double-downslam variant is "very situational, should NOT be used often" is new
-   usage guidance the kit doesn't currently carry.
-5. **No mechanic referenced above no longer exists.** Everything found either maps onto
-   abilities the kit already documents as live in Season 10, or is explicitly a
-   team-up-dependent variant already flagged in point 2.
+F 20:10–20:18 first calls the Stack nearly simultaneous, then explicitly requires
+Get Over Here! **before** uppercut. F 20:33–21:04 demonstrates rolling/plinking two
+bindings; F 21:22–21:30 only speculates about controller bindings. This is not
+proof that one physical button triggers both, or that one simultaneous pad report
+works. Keep the ordered pair and measure its current valid interval in the range.
+H distinguishes manual swing from separately bound simple swing; mapping both to
+ordinary LB without checking settings would erase the demonstrated mechanic.
 
-## Not found
+## Practice-range material for HUD inspection
 
-- **Verbatim transcripts, descriptions, or chapter timestamps for any YouTube video.**
-  YouTube's video pages, Invidious mirrors (`yewtu.be`), and third-party transcript sites
-  (`youtubetranscript.com`, `downsub.com`, `youtubetotranscript.com`) all returned either a
-  bot-check page or an empty shell to the fetch tool available here. Every timestamp field
-  above is `unknown` as a result — none were watched, none were fabricated.
-- **DayMR's or ReqMR's own Twitch/YouTube "About" page text and social-link lists** —
-  both platforms render this client-side; the fetch tool saw only page titles.
-- **X/Twitter profile content** (`x.com/DayMR__`) — returned HTTP 402 (paywalled/blocked
-  to the fetch tool); identity was instead cross-checked through search-indexed tweets
-  *about* DayMR rather than his own profile page.
-- **A single written, primary-source "full combo arsenal" document from either DayMR or
-  ReqMR** (a pinned guide doc, a Discord export, a Google Sheet). DayMR's video
-  description reportedly points to a Discord server "with more Spider-Man related combos
-  and guides" (per a search-engine summary of the video page), but Discord content is
-  behind auth and out of reach here; the invite link itself was not recovered.
-- **A community combo spreadsheet.** None turned up in any search; Rivals Compendium
-  (rivals-compendium.com/abilities/spider-man) exists as a stats reference, not a combo
-  compendium.
-- **Independent confirmation of MatchuXD's, sekkun's, Hydro_7's, FFAmefs's, Dantu's,
-  Agni Kai's, or CaptainRocket685's actual rank/leaderboard standing.** Every claim of
-  "top 500" or "rank 1k" for these creators is third-party and unconfirmed; only DayMR
-  and ReqMR (via their cross-referencing of each other) and MatchuXD (via DayMR's direct
-  feature) clear a real verification bar here.
-- **Hydro Combo's and FFame Stack's actual input sequences at the needed level of
-  precision.** Both are named, real techniques with dedicated creators, but no accessible
-  source gave a clean step-by-step beyond what's tabled above.
-- **Whether the Season 10 balance patch changed anything about Sekkombo, Downslam
-  Exploit, Yo-Yo, or FFame Stack specifically** (as opposed to Amazing Combo's cooldown
-  generally, which the kit already covers). No source dated after 2026-09-11 addressed
-  these named techs directly.
+| Source / inspection interval | What is visible | Extraction caveat |
+|---|---|---|
+| D approximately 00:25–00:58 | Day's team-up/CC comparison; range banner visible at 00:30 and 00:45 | Team-up effects, avatar/chat and subscriber alert; edits/zooms |
+| D 01:22–02:49 | Matchu's movement/pull lesson; range visible at 01:30, 01:45, 02:15, 02:30 and 02:45 | Split-screen comparison around 02:00; cut/zoom and overlay boundaries need segmentation |
+| Y 00:09–01:12 | Range pull/uppercut demonstrations; enlarged HUD | Vertical re-layout, burned-in captions, edits; does not match a standard 1080p HUD table |
+| S 00:26–01:21 | Range movement and slow/fast Sekkombo demonstrations | Keyboard overlay may help label inputs, but delay and custom bindings are unverified; slow demonstration is not real-time timing evidence |
+| T 00:03–01:56 | Range examples including Hydro and Sekkombo | Large avatars/ranking text hide scene regions; full input order not spoken for all entries |
+| P 00:00–00:21 | Range Peni interaction | Team-up-specific, older patch, heavy overlays |
+| H around 02:50, 04:00 and 04:40 | Range/timed-practice examples; reverse/delayed notation visible at 04:00/04:40 | Mixed with match/replay footage; do not treat the whole chapter as range |
+| F 20:00–23:50 | Clean landscape range/timed-practice Stack teaching; inspected at 20:05/20:30/21:00/21:40/22:30/23:20 | Old Season 1 mechanics; narration includes failed attempts, which must remain separate from successes |
+
+These are inspection windows, not assertions that every frame within each interval
+is usable. Preserve originals, reject non-gameplay and edits, and mask person-like
+streamer graphics before target proposals. Read source-specific HUD regions; unknown
+or hidden values stay unknown. No numerical inter-ability timing is accepted yet.
+
+## Tactical annotations available from the priority sources
+
+- R 00:28–00:40: narrator identifies a Doctor Strange portal setup and attempts a
+  disruptive pull; R 01:12–01:18 describes pulling a displaced Peni into the team.
+- R 01:19–01:40: flank or pass the supports before engaging rather than entering
+  directly in their fire. This explains a decision, not a universal target rule.
+- D 11:02–11:12: when too close to the ground for the preliminary cluster, describes
+  taking the cluster opportunity after the downslam instead.
+- D 23:42–24:10: discusses timing an engage around the next swing recharge so an
+  exit charge becomes available; he also notes he could have waited longer.
+
+These are candidate narrated decision windows, not proof of optimal play, and narration
+may be retrospective. Separate what was observable at decision time from commentary.
+
+## Coverage and remaining verification
+
+The inventory is not a claim to contain every viable Spider-Man combo. Naming varies,
+several names overlap, and the videos span patches. Concrete source gaps remain:
+
+| Named tech | Current evidence status |
+|---|---|
+| Sekkombo | Spoken order and actual pull demonstrated in S; current pad translation unresolved |
+| Yo-Yo | Detailed spoken sequence and range demonstration in Y; cancel window unmeasured |
+| Long Pull | Detailed movement/pull lesson in D; travel/timing not measured |
+| Swing cancels | Specific pull/uppercut cancels narrated in D/Y/S; do not conflate them with every possible swing-cancel mechanic |
+| Season 10 double-uppercut strings | Four narrated variants in B, with match demonstrations; separate the symbiote variant |
+| Hydro / Perfect Swing | Hydro and double-swing variants have spoken orders in H; simple-swing control and current pad translation need verification |
+| FFAme Stack | F explicitly requires Get Over Here! before uppercut, demonstrated in the range; current timing and pad mapping unmeasured |
+| Downslam Exploit | Cluster/downslam string is narrated in T; the distinct wall/no-wall exploit from snippets is not verified |
+
+Additional discovery pointers remain unverified: [downslam tutorial](https://www.tiktok.com/@sekkunnn/video/7485563163417627926),
+[FFame discussion](https://www.youtube.com/watch?v=PS1ES-XmBnY),
+[FFame alternate guide](https://www.youtube.com/watch?v=as6BlJkCg7Y),
+[controller Yo-Yo](https://www.youtube.com/watch?v=U525nvibqO0),
+[Agni Kai Yo-Yo](https://www.youtube.com/watch?v=fTqNQtkrXLQ),
+[Blade swing cancels](https://www.youtube.com/watch?v=JLB7MmsklY8), and
+[CaptainRocket Sekkombo](https://www.youtube.com/shorts/bbpbpppyqDo).
+No input order or damage figure is accepted from their search snippets.

@@ -144,6 +144,12 @@ switch off before the anchor detector (L3) is trusted.
 
 ## Combos
 
+The experts' wider arsenal (Sekkombo, Yo-Yo pull-cancel, long pull, swing cancels, double-uppercut
+variants, FFAme Stack), transcribed from DayMR's, ReqMR's and featured creators' own guide videos with
+timestamps and practice-range windows, is in [lanes/combo-arsenal.md](lanes/combo-arsenal.md). That file
+marks what is spoken narration, what was seen on screen, and what has been verified live in the range;
+the table below is the older generic-guide set.
+
 Timing budget rules from the numbers above: the tag lasts 3 s, so every consumer must land within 3 s
 of the last Web Cluster hit; Spider-Power chains at 0.37 s then 0.82 s; Amazing Combo recasts after
 1 s; Get Over Here! is once per 8 s, so the burst is a once-per-8-s event.

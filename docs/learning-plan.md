@@ -234,6 +234,23 @@ directions or anchors need an agreed representation and working executor before 
 become outputs. Unknown abilities and invalid targets stay guarded at execution time.
 An option's completion or failure is distinct from the brain's guessed hold duration.
 
+Two policy domains remain explicit. The **range execution policy** uses live
+`State`, calibrated ranges and the controller; shared track IDs (VUH-1314) and
+observation-derived option status (VUH-1315) are queued work, not assumed inputs
+already delivered. The **VOD tactical policy** uses frame history and HUD events,
+with target supervision only where annotators draw boxes. These domains do not
+share a validated enemy/identity channel. Keep their datasets, labels and metrics
+separate until perception establishes comparable entities; any integrated v0
+trial is a measured transfer experiment with the fixed live selector.
+
+Target choice and positioning are explicitly **open goals after v0**. `Engage`
+hides substantial Spider-Man skill inside the engineered controller: approach
+geometry, movement, aim, range management and attack execution cannot be claimed
+as learned from VODs merely because a model chooses that option. Restoring learned
+target choice, spatial setup/escape choices and finer execution requires observable
+labels, an executable interface and separate evaluation. The narrow v0 measures
+intent selection; it does not satisfy the full game-sense objective.
+
 HUD events provide relatively cheap supervision for ability use and observable
 outcomes. They do not prove engage, disengage, no-engage or a complete combo choice:
 those labels still need reviewed temporal context. Primitive sequence learning and
@@ -330,6 +347,16 @@ provide the required pixels. Rank claims are not independently verified. The
 only a navigation shell to the reader, so this feasibility pass establishes no
 training licence or permission to redistribute. No full archive or training run
 is performed in this pass.
+
+### Guide demonstrations
+
+[Narrated combo inventory](lanes/combo-arsenal.md) records nine locally acquired
+and automatically transcribed guides from Day, Req, MatchuXD and two targeted
+supplementary sources. Source timestamps distinguish range demonstrations from
+match commentary. `data/demos/guides/manifest.json` records media properties and
+transcript provenance; raw media and transcripts stay local. Narration supplies
+semantic order and usage conditions, not exact pad inputs or current cancel
+intervals. The Sekkombo pull binding and Stack timing remain live-verification gates.
 
 ### Research references
 
