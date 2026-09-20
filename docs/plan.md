@@ -24,6 +24,40 @@ Out of scope for every lane — stop and report instead of working around:
 Smoothing and PID on the aim controller are in scope as control quality; tuning
 input to beat detection heuristics is item 2.
 
+## Direction: learn from demonstrations
+
+Decided by James, 2026-09-20. The agent learns Spider-Man from expert play, game sense
+included (target choice, engage or retreat, positioning, setup and recovery), not only
+button sequences. Order: imitation first, human correction next, reinforcement learning
+only once an outcome can be measured reliably.
+
+- **Sources.** Full VODs of top Spider-Man players (candidates DayMR and ReqMR; identity,
+  rank and availability are being verified), James's own play recorded with synchronized
+  inputs, and the agent's own pad recordings, which are perfectly labelled.
+- **Labels without input logs.** The HUD readers turn cooldown, charge, ammo and hp
+  transitions into a timestamped event stream, so ability timing and combo order are read
+  off any video whose HUD is visible. Camera and movement labels for third-party video need
+  an inverse-dynamics model trained on our own synchronized recordings.
+- **Keep raw video and history.** `State` is a compact view built for the scripted brain and
+  omits most of what game sense needs. Datasets keep frames, events and inputs as temporal
+  windows with preceding context and outcome; learning is not tied to `State`'s fields.
+- **Policy interface (open fork, argued in `docs/learning-plan.md`).** The lead's position:
+  the learned temporal policy first outputs options (intent, target, direction or anchor)
+  at 5-10 Hz and the reflex controller executes them, because enemies are ~20 px wide at
+  720p and aim is camera-limited; learned low-level execution follows from synchronized inputs.
+- **Where it can be tested.** Execution in the practice range; tactics in custom games
+  against AI with no human in the lobby. Neither establishes performance against humans,
+  and scope item 3 keeps the agent out of every mode where that could be tested.
+- **First milestone.** Recognize a suitable engagement opportunity, execute it, then
+  continue or escape, with bounded tests that say what they do not show.
+- **Jev** is frozen as a baseline and a possible label assistant. Its inference path does
+  not learn from experience, and agreement with it is not gameplay quality.
+- **Third-party footage** stays under `data/` (gitignored). Frames from it are never
+  committed or published to Linear.
+
+Co-led by the Claude lead (dispatch, integration, this file, Linear) and a Codex co-lead
+(`docs/learning-plan.md`, demonstration sourcing, independent review).
+
 ## Gate status (L0, 2026-09-20)
 
 | Check | Result |
@@ -304,4 +338,5 @@ and never appears in a repr, error or log.
 - Accept the account risk: automation likely breaches the game's ToS even in the
   practice range. Use an account that can be lost.
 - Join the TypeSafe waitlist or create an OpenRouter key if Jev is wanted for L5.
+- Record your own Spider-Man play with synchronized inputs for the demonstration set.
 - Spot-check auto-labels in L3 (minutes, not hours).
