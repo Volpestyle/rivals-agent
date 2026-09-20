@@ -95,7 +95,10 @@ menu visits under ~5 minutes.
 Hold `BACK` (View) for the scoreboard: KOs, deaths, assists, and a Spider-Man row with
 Accuracy, Damage, Damage Blocked, Healing, Web-Cluster Accuracy and Spectacular Spin KOs.
 KOs also appear in a kill feed at the top right. It is the only outcome measure found so
-far. Dead ends: the ult icon relights ~3.5 s after casting in the range, so ult charge says
+far. The board starts fading in 270-520 ms after `BACK` goes down and is fully drawn ~200 ms later: hold at
+least 0.8 s and capture at native resolution (the reader refuses frames under 1920 wide).
+`record.in_range` is false while the scoreboard is up, so a loop confirms the range BEFORE the
+press and never treats the hold as the range being lost. Dead ends: the ult icon relights ~3.5 s after casting in the range, so ult charge says
 nothing about damage; Web Cluster ammo never depletes there; the range bots do not attack,
 so hp never drops. Re-picking a hero does not respawn the player.
 
