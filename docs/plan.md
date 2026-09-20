@@ -42,8 +42,8 @@ only once an outcome can be measured reliably.
 - **Keep raw video and history.** `State` is a compact view built for the scripted brain and
   omits most of what game sense needs. Datasets keep frames, events and inputs as temporal
   windows with preceding context and outcome; learning is not tied to `State`'s fields.
-- **Policy interface (open fork, argued in `docs/learning-plan.md`).** The lead's position:
-  the learned temporal policy first outputs options (intent, target, direction or anchor)
+- **Policy interface (decided; design in [learning-plan.md](learning-plan.md)).** The
+  learned temporal policy first outputs options (intent, target, direction or anchor)
   at 5-10 Hz and the reflex controller executes them, because enemies are ~20 px wide at
   720p and aim is camera-limited; learned low-level execution follows from synchronized inputs.
 - **Where it can be tested.** Execution in the practice range; tactics in custom games
