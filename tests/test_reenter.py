@@ -44,7 +44,9 @@ NOISE = np.random.default_rng(0).integers(0, 255, (1440, 2560, 3), dtype=np.uint
 
 SCREENS = {
     "lobby-cursor-far": "lobby", "lobby-cursor-left-of-practice": "lobby", "lobby-cursor-on-practice": "lobby",
-    "panel-cursor-on-practice-range": "practice_panel",
+    "lobby-cursor-on-try-competitive": "lobby", "lobby-cursor-at-try-competitive-corner": "lobby",
+    "lobby-cursor-below-practice-tab": "lobby",
+    "panel-cursor-on-practice-range": "practice_panel", "panel-cursor-off-tiles": "practice_panel",
     "heroselect-all-tab-black-panther": "hero_select", "heroselect-duelists-cursor-off": "hero_select",
     "heroselect-cursor-on-spiderman": "hero_select",
     "in-range": "in_range",
@@ -83,6 +85,8 @@ CURSORS = {  # read off the screenshots; the hover ring (with its centre dot) an
     "lobby-cursor-far": (640, 256), "lobby-cursor-left-of-practice": (1146, 380), "lobby-cursor-on-practice": (1214, 380),
     "panel-cursor-on-practice-range": (780, 380), "heroselect-duelists-cursor-off": (780, 86),
     "heroselect-cursor-on-spiderman": (852, 48),
+    "lobby-cursor-on-try-competitive": (1127, 414), "lobby-cursor-at-try-competitive-corner": (1242, 408),
+    "lobby-cursor-below-practice-tab": (1210, 394),
 }
 
 
@@ -96,6 +100,7 @@ def test_no_cursor_is_invented_and_a_faint_one_is_not_guessed():
     assert R.find_cursor(frame("in-range")) is None  # l4_menu.find_cursor reports one here
     assert R.find_cursor(BLACK) is None and R.find_cursor(NOISE) is None
     assert R.find_cursor(frame("heroselect-all-tab-black-panther")) is None  # a faint halo over dark art: no press
+    assert R.find_cursor(frame("panel-cursor-off-tiles")) is None  # the same over the dimmed panel: found nowhere
 
 
 # --- the proofs that stand in front of every A ------------------------------------------------------------------------
@@ -115,6 +120,67 @@ def test_a_highlighted_try_competitive_blocks_the_lobby_press():
         f = edited("lobby-cursor-on-practice", lambda f, c=colour: fill(f, R.BOX["try_comp"], c))
         p = R.on_practice_tab(f)
         assert not p.ok and "TRY COMPETITIVE" in p.reason, colour
+
+
+# --- states that were once only painted: now real frames (the lead's manual navigations, 2026-09-20) -----------------------
+HIGHLIGHTED = ("lobby-cursor-on-try-competitive", "lobby-cursor-at-try-competitive-corner")
+
+
+def test_try_competitive_lights_up_when_hovered_and_the_banner_check_sees_it():
+    idle = R._box(R.small(frame("lobby-cursor-on-practice")), "try_comp")
+    assert float((idle.max(axis=2) < 75).mean()) == pytest.approx(R.TRY_COMP_DARK, abs=0.02)
+    for name in HIGHLIGHTED:
+        b = R._box(R.small(frame(name)), "try_comp")
+        assert float((b.max(axis=2) < 75).mean()) < 0.1 and R._lum(b) > 105, name  # idle: dark share 0.75, luminance 78.6
+
+
+def test_a_highlighted_try_competitive_refuses_the_lobby_press(monkeypatch):
+    for name in HIGHLIGHTED:
+        f = frame(name)
+        assert R.classify(f) == "lobby"
+        p = R.on_practice_tab(f)
+        assert not p.ok and "not inside the PRACTICE tab" in p.reason, name  # the cursor is on the banner, not the tab
+        with monkeypatch.context() as m:  # and the banner check alone would refuse it, cursor on the tab or not
+            m.setattr(R, "find_cursor", lambda fr: (1214.0, 380.0))
+            p = R.on_practice_tab(f)
+        assert not p.ok and "TRY COMPETITIVE does not look idle" in p.reason, name
+
+
+def test_a_cursor_on_the_lower_edge_of_the_practice_tab_does_not_press(monkeypatch):
+    f = frame("lobby-cursor-below-practice-tab")  # centre at y 394, the tab's bottom edge, ring overlapping the banner
+    p = R.on_practice_tab(f)
+    assert not p.ok and "not inside the PRACTICE tab" in p.reason
+    with monkeypatch.context() as m:  # the banner is idle here, so it is only the cursor position that refuses
+        m.setattr(R, "find_cursor", lambda fr: (1214.0, 380.0))
+        assert R.on_practice_tab(f).ok
+
+
+def test_an_unhovered_practice_range_tile_refuses(monkeypatch):
+    f = frame("panel-cursor-off-tiles")  # both tiles bright: nothing hovered
+    assert R.classify(f) == "practice_panel"
+    hovered, idle = frame("panel-cursor-on-practice-range"), f
+    assert R._lum(R._box(R.small(hovered), "range_tile")) < 60 < 200 < R._lum(R._box(R.small(idle), "range_tile"))
+    p = R.on_practice_range_tile(f)
+    assert not p.ok and "cursor ring was not found" in p.reason
+    with monkeypatch.context() as m:  # with the cursor where the tile is, it is the tile's look that refuses
+        m.setattr(R, "find_cursor", lambda fr: (760.0, 400.0))
+        p = R.on_practice_range_tile(f)
+    assert not p.ok and "not highlighted" in p.reason
+
+
+def test_a_hovered_doom_match_refuses(monkeypatch):
+    """No real frame has the cursor on DOOM MATCH. The cursor position refuses it; and with DOOM MATCH hovered the PRACTICE
+    RANGE tile is un-hovered, which the real un-hovered panel shows is bright, so the tile check refuses it either way."""
+    f = frame("panel-cursor-off-tiles")
+    with monkeypatch.context() as m:
+        m.setattr(R, "find_cursor", lambda fr: (560.0, 400.0))
+        p = R.on_practice_range_tile(f)
+        assert not p.ok and "DOOM MATCH" in p.reason
+        dark = edited("panel-cursor-off-tiles", lambda g: fill(g, R.BOX["doom"], (30, 30, 30)))  # painted: as if hovered
+        assert not R.on_practice_range_tile(dark).ok
+    with monkeypatch.context() as m:  # DOOM MATCH dark, the cursor claimed on the range tile: the tile is still bright
+        m.setattr(R, "find_cursor", lambda fr: (760.0, 400.0))
+        assert not R.on_practice_range_tile(dark).ok
 
 
 def test_a_panel_press_needs_the_practice_range_tile_and_not_doom_match(monkeypatch):
@@ -238,6 +304,8 @@ class Sim:
         "lobby_far": "lobby-cursor-far", "lobby_left": "lobby-cursor-left-of-practice", "lobby_on": "lobby-cursor-on-practice",
         "panel": "panel-cursor-on-practice-range", "hero_all": "heroselect-all-tab-black-panther",
         "hero_duel": "heroselect-duelists-cursor-off", "hero_spider": "heroselect-cursor-on-spiderman", "range": "in-range",
+        "lobby_try": "lobby-cursor-on-try-competitive", "lobby_corner": "lobby-cursor-at-try-competitive-corner",
+        "lobby_below": "lobby-cursor-below-practice-tab", "panel_off": "panel-cursor-off-tiles",
     }
 
     def now(self):
@@ -352,6 +420,21 @@ def test_a_cursor_left_of_practice_never_presses_a():
     assert sim.taps() == [] and e.value.frame is not None
 
 
+@pytest.mark.parametrize("state", ["lobby_try", "lobby_corner", "lobby_below"])
+def test_a_cursor_that_stays_on_try_competitive_or_its_edge_never_presses_a(state):
+    sim = Sim(state, {(state, "stick"): state})  # the pad moves nothing: the cursor cannot get onto the tab
+    with pytest.raises(R.Refuse, match="did not reach the PRACTICE tab"):
+        R.run(sim)
+    assert sim.taps() == []
+
+
+def test_a_panel_with_nothing_hovered_never_presses_a():
+    sim = Sim("panel_off", {})
+    with pytest.raises(R.Refuse, match="cursor ring was not found"):
+        R.run(sim)
+    assert sim.taps() == []
+
+
 def test_the_all_tab_with_black_panther_is_never_selected():
     sim = Sim("hero_all", {})  # RB does nothing
     with pytest.raises(R.Refuse, match="hero tab is all after RB"):
@@ -430,6 +513,10 @@ def test_dry_run_on_a_saved_frame_opens_nothing_and_says_what_it_would_do(capsys
         "lobby-cursor-left-of-practice": ["screen: lobby", "would steer the cursor to the PRACTICE tab", "not inside yet",
                                           "would NOT press A on this frame"],
         "lobby-cursor-far": ["would NOT press A on this frame"],
+        "lobby-cursor-on-try-competitive": ["screen: lobby", "proof for A right now: NO", "would NOT press A on this frame"],
+        "lobby-cursor-at-try-competitive-corner": ["proof for A right now: NO", "would NOT press A on this frame"],
+        "lobby-cursor-below-practice-tab": ["proof for A right now: NO", "not inside the PRACTICE tab"],
+        "panel-cursor-off-tiles": ["screen: practice_panel", "cursor: not found", "would jiggle the stick"],
         "panel-cursor-on-practice-range": ["screen: practice_panel", "proof for A right now: OK"],
         "heroselect-all-tab-black-panther": ["hero tab: all", "would press RB 2x to reach duelists", "cursor: not found",
                                               "would jiggle the stick"],

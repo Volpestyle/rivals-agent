@@ -2,7 +2,7 @@
 
 **Built and tested offline on `tests/fixtures/reentry`; never run live** (L4 owns the desktop). `scripts/reenter.py`
 takes the game from the PLAY lobby into the Practice Range as Spider-Man and stops at the first thing it cannot
-verify. 52 tests (`tests/test_reenter.py`) pass; `--dry-run` classifies a live or saved frame and prints what it would
+verify. 68 tests (`tests/test_reenter.py`) pass; `--dry-run` classifies a live or saved frame and prints what it would
 do without opening a pad. Handed back for the lead to schedule the live trial.
 
 ## Run it
@@ -82,8 +82,8 @@ the title requirement fixed it, and a test pins it.
 
 | `A` on | Proof (all must hold) | Measured |
 |---|---|---|
-| lobby | cursor centre inside the PRACTICE tab (x 1168-1256, y 372-394, 5 px margin); TRY COMPETITIVE looks idle | tab edges profiled on the frame with no cursor near it; banner dark share 0.75 and luminance 78.6 in all three lobby frames, tolerance 0.12 / 12 both ways |
-| panel | cursor inside the PRACTICE RANGE tile (10 px margin) and not on DOOM MATCH; the range tile dark (< 100), DOOM MATCH bright (> 150) | range tile 44.9, DOOM MATCH 232.4 |
+| lobby | cursor centre inside the PRACTICE tab (x 1168-1256, y 372-394, 5 px margin); TRY COMPETITIVE looks idle | tab edges profiled on the frame with no cursor near it. Of 22 lobby frames: 17 are identically idle (dark share 0.75-0.76, luminance 78.5-78.6), 2 near-idle where the cursor ring overlaps the banner's corner (0.71-0.72, 80-81), 3 highlighted (0.02-0.06, 111-112; one has a different lobby background). Tolerance 0.12 / 12, both ways |
+| panel | cursor inside the PRACTICE RANGE tile (10 px margin) and not on DOOM MATCH; the range tile dark (< 100), DOOM MATCH bright (> 150) | range tile hovered 43.6-46.4, **un-hovered 223**; DOOM MATCH 232-237 in every panel frame |
 | hero select | duelists tab active; cursor inside the top-left portrait slot (6 px margin); the slot has red in it (`SLOT_RED` 0.03) | red-hue share of the slot: unhovered 0.276, hovered 0.076, another hero 0.005 |
 | range (after) | the HUD hero portrait has red in it (`HUD_RED` 0.10) | 0.247 on Spider-Man, 0 with it blanked |
 
@@ -91,9 +91,34 @@ The lobby fixture `left-of-practice` puts the cursor on the TIMES SQUARE tab's r
 open the map picker; the proof refuses it with "not inside the PRACTICE tab". The all-tab Black Panther frame is refused
 twice over: the tab is not duelists, and its cursor is too faint to find.
 
-**Synthetic negatives.** No fixture shows TRY COMPETITIVE highlighted, DOOM MATCH hovered, or another hero in Spider-Man's
-slot with the cursor on it. Those tests paint a fixture (a yellow glow, white or black over the banner; the tiles'
-brightness swapped; a grey slot) or replace the cursor position, and say so. They pin the logic, not the game's look.
+**Real frames for the states that were first only painted.** The lead's earlier manual navigations (35 full-size
+screenshots) added four fixtures, named like the first eight:
+
+| Fixture | What it shows | What the proofs do |
+|---|---|---|
+| `lobby-cursor-on-try-competitive` | cursor on the banner, TRY COMPETITIVE highlighted (a lighter grey fill; dark share 0.06, luminance 112) | refused by the cursor position; with the cursor forced onto the tab, refused by the banner check alone |
+| `lobby-cursor-at-try-competitive-corner` | cursor at the banner's top-right, ring overlapping the PRACTICE tab, banner highlighted (0.02, 111), a different lobby background | the same: this is the frame where an `A` would queue a live match |
+| `lobby-cursor-below-practice-tab` | cursor centre at the tab's lower edge (y 394), ring on the banner's corner, banner still idle | refused by the cursor position only (the banner is idle here); pins the tab zone's bottom edge |
+| `panel-cursor-off-tiles` | the panel just opened, cursor still faint over dark art, **neither tile hovered**: both bright (range 223, DOOM MATCH 232) | cursor not found, so no press; with the cursor forced onto the range tile, refused as "not highlighted"; onto DOOM MATCH, refused |
+
+What they settle:
+
+- The banner highlight is a plain brightening, so the check must be two-sided, and it is. Dropping the "brighter" side, or
+  widening the tolerance, now fails a test on a real frame.
+- The default un-hovered panel has **both tiles bright**; only the hovered one darkens.
+- TRY COMPETITIVE lights up when the cursor centre is at about y 406 or lower (frames at 408 and 414 light it; 394 and 396
+  do not, banner luminance 80-81 from the ring overlapping its corner). The tab zone stops at y 389 after its margin, so
+  the cursor is at least 17 px clear of where the banner starts to react. The banner check is a second line of defence.
+
+Still painted, and said so in the tests: a **hovered DOOM MATCH** (no screenshot has the cursor on it), another hero in
+Spider-Man's slot with the cursor on it, and the HUD portrait swapped. A hovered DOOM MATCH is refused without needing its
+look: with DOOM MATCH hovered the PRACTICE RANGE tile is un-hovered, and the real un-hovered tile is bright, which the tile
+check refuses; the cursor position refuses it first.
+
+**Frames reviewed and ignored** (not lobby, panel or hero select, or a state already on file): the launch and title screens,
+the desktop, an older PLAY landing page, and the BATTLEPASS page with the cursor on a PURCHASE button (all classify
+`unknown`, so nothing would be sent; the BATTLEPASS one would make a good negative fixture); further all-tab hero-select
+frames, in-range frames, and repeats of the lobby, panel and hero-select states already covered.
 
 ## The cursor finder is ours, not `l4_menu.find_cursor`
 
@@ -137,11 +162,9 @@ tab 9 times in 300. The skill's measured speed (about 1200 px/s on a 2000 px vie
 
 ## Not verified: read these first in the live trial
 
-1. **TRY COMPETITIVE highlighted.** Only its idle look is on file. The check is two-sided "does not match idle", so any
-   glow or flash blocks the press, but a highlight that happens to keep the same dark share and luminance would not.
-2. **The un-hovered PRACTICE RANGE tile and a hovered DOOM MATCH.** The panel proof needs the range tile dark and DOOM
-   MATCH bright, as the one panel frame shows and the skill says ("it darkens when hovered"); the opposite states are
-   inferred.
+1. ~~TRY COMPETITIVE highlighted~~ and ~~the un-hovered PRACTICE RANGE tile~~: closed with real frames (above).
+2. **A hovered DOOM MATCH.** Still no frame with the cursor on it. It is refused by position and by the range tile being
+   un-hovered, but its own look (presumably darkened) is inferred.
 3. **After `A` on Spider-Man.** No fixture shows the selected state, so `X` is not gated on a visible change. `X` needs
    only a fresh frame classified as hero select. If `A` did nothing, `X` confirms whatever was selected and the arrival
    check ("HUD hero portrait is not Spider-Man", exit 1) reports it.
@@ -158,12 +181,12 @@ tab 9 times in 300. The skill's measured speed (about 1200 px/s on a 2000 px vie
    tab stops the run.
 
 If the live trial refuses somewhere unexpected, the saved frame plus `--dry-run --frame <that frame>` shows which check
-said no and why. Frames worth capturing for new fixtures: TRY COMPETITIVE hovered, DOOM MATCH hovered, the hero-select
-wheel after selecting Spider-Man, and the lobby with the pad banner up.
+said no and why. Frames worth capturing for new fixtures: DOOM MATCH hovered, the hero-select wheel after selecting
+Spider-Man, and the lobby with the pad banner up.
 
 ## Files
 
-`scripts/reenter.py` (the script), `tests/test_reenter.py` (52 tests: classifier, cursor finder, each proof with its
+`scripts/reenter.py` (the script), `tests/test_reenter.py` (68 tests: classifier, cursor finder, each proof with its
 negatives, steering against a simulated cursor, the whole flow against a simulated game serving the fixtures, dry run,
-`main`, and `Live` against a fake pad), `tests/fixtures/reentry/*.jpg` (the lead's eight frames). Untouched: L4's files.
+`main`, and `Live` against a fake pad), `tests/fixtures/reentry/*.jpg` (the lead's eight frames plus the four above). Untouched: L4's files.
 `tests/test_reenter.py` imports opencv, so `tests/conftest.py` skips it in the stdlib-only default run.
