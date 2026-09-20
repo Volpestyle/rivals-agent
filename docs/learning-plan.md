@@ -54,6 +54,9 @@ HUD transitions are **inferred event labels**, not ground-truth button presses.
 Cooldown changes may lag input; charges regenerate; death, reset, hero changes and
 OCR flicker can mimic transitions. Retain evidence and uncertainty. Unlimited web
 ammo in the range means an unchanged counter cannot establish whether a shot fired.
+Team-up shield decay can lower displayed HP without damage taken; the event extractor
+distinguishes `shield_decayed` from `hp_lost`. Low-health red vignettes can defeat HP
+digit reads even when the bar remains visible; preserve unknowns and reader provenance.
 Never bridge an unreadable interval as though a precise event time were observed.
 Validate VOD HUD geometry separately: resolution scaling alone may not align a
 mouse/keyboard HUD with our controller HUD, and streamer overlays can occlude it.
@@ -138,8 +141,11 @@ An option's completion or failure is distinct from the brain's guessed hold dura
 Behavioral cloning predicts reviewed demonstrated choices; it needs no reward function.
 Class imbalance matters: constant movement or idle frames must not swamp rare retreat
 and engagement decisions. Measure a simple baseline before choosing model size. The
-Mac is the initial training environment, niced; the PC GPU belongs to the live game. Runtime placement is measured
-against latency and game performance before adoption. No model family is selected yet.
+Mac is the default training environment, niced; James prefers using his local
+hardware wherever practical. Prefer MLX when the selected architecture has a suitable
+implementation, otherwise use PyTorch/MPS. The PC GPU belongs to the live game.
+Runtime placement is measured against latency and game performance before adoption.
+No model family is selected yet.
 
 James approves an initial $100 cloud-compute budget (2026-09-20). Local hardware
 is a starting point, not an architectural limit: rent a GPU when measured throughput,
@@ -177,6 +183,10 @@ Gameplay outcomes remain separate from imitation agreement. A different action i
 not necessarily worse, and a copied expert action is not necessarily appropriate for
 the executor's capabilities. Record recovery examples from the agent's own failures
 and obtain human corrections rather than only collecting more clean expert wins.
+
+The controller lane confirms that BACK opens a range scoreboard with damage and KOs.
+This provides an observable outcome source; reliable automated reads, counter deltas
+and episode/reset alignment still need validation before they become rewards.
 
 RL is not active. It requires dependable episode boundaries, reset, outcome labels and
 a trainable policy. For a bounded defeat-the-target task, confirmed completion is the
