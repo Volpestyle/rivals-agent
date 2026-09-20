@@ -25,7 +25,7 @@ from this Mac, usually as a Herdr swarm. `CLAUDE.md` is a symlink to this file.
 | `agent/` | `State` contract, intents, scripted brain, Jev client, replay |
 | `perception/` | HUD readers, enemy finders, training, offline State replay |
 | `scripts/` | `pad.py` (pad token sequencer), `padrun.sh`, `capture.py`, `record.py` |
-| `.env` | `OPENROUTER_API_KEY`; gitignored, also at `C:\rivals-agent\.env`. Never print or log it |
+| `.env` | `JEV_URL`, `JEV_MODEL`, `JEV_KEY` (TypeSafe's direct API, the default route) and `OPENROUTER_API_KEY` (fallback); gitignored, also at `C:\rivals-agent\.env`. Never print or log a key. `JEV_KEY` goes to whatever `JEV_URL` names, so set or clear them together |
 
 ## Rules that came from real failures
 
