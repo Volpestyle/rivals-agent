@@ -1,0 +1,17 @@
+[project]
+name = "rivals-agent"
+version = "0.0.0"
+requires-python = ">=3.10"
+dependencies = []
+
+[dependency-groups]
+dev = ["pytest"]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+# L2's hud scorer needs opencv + numpy and runs as a script (see its docstring), not under pytest.
+addopts = "--ignore=tests/test_hud.py"
