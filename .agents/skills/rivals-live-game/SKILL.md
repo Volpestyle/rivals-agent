@@ -110,5 +110,7 @@ Holding `A` on a slider arrow auto-repeats.
 `RB` Get Over Here!, `X` Amazing Combo (2 charges), `A` jump / wall crawl, `Y` team-up,
 `LS`+`RS` together ultimate. Full sourced reference: `docs/spiderman-kit.md`.
 
-Camera: full right-stick deflection is ~180 deg/s sustained, but a 0.25 s tap turns ~51
-deg; there is a ramp, so short taps are not proportional.
+Camera (Linear curve, Horizontal Sensitivity 265, aim assist 0): yaw responds at once,
+18 deg/s at 0.1 stick, 172 at 0.45, 415 at 1.0; pitch 43 deg/s at 0.5, 99 at 1.0. Horizontal
+FOV is ~108 deg (focal ~465 px at 1280 wide). The full map is in `docs/lanes/l4-controller.md`;
+re-measure it after any sensitivity change.
