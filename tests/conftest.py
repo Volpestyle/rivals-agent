@@ -16,3 +16,13 @@ def pytest_ignore_collect(collection_path, config):
     if HAVE_PERCEPTION or collection_path.suffix != ".py" or not collection_path.name.startswith("test_"):
         return None
     return True if NEEDS_PERCEPTION.search(collection_path.read_text()) else None
+
+
+import pytest
+
+
+@pytest.fixture(autouse=True)
+def _no_real_dotenv(monkeypatch):
+    """The developer's .env (endpoint, keys) never reaches a test."""
+    from agent import jev
+    monkeypatch.setattr(jev, "_dotenv", lambda path=None: {})

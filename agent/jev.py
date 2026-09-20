@@ -236,6 +236,9 @@ class Endpoint:
       JEV_MODEL  the `model` field of the request.
       JEV_KEY    Bearer key to send. Unset, the default URL sends OPENROUTER_API_KEY (environment
                  or .env) and any other URL sends no Authorization header at all.
+
+    All three are read from the environment, else the repo's gitignored .env. TypeSafe's own API
+    takes the same body: JEV_URL=https://api.typesafe.ai/v1/systemone, JEV_MODEL=jev-latest.
     """
     url: str = DEFAULT_URL
     model: str = MODEL
@@ -248,7 +251,7 @@ class Endpoint:
 
     @classmethod
     def from_env(cls, env=None):
-        env = os.environ if env is None else env
+        env = {**_dotenv(), **os.environ} if env is None else env  # the real environment wins over .env
         return cls(env.get("JEV_URL") or DEFAULT_URL, env.get("JEV_MODEL") or MODEL, env.get("JEV_KEY") or None)
 
     @property
@@ -524,6 +527,15 @@ class AsyncJev(Jev):
 
 
 # --- transport ---------------------------------------------------------------
+
+def _dotenv(path=None):
+    """NAME=value lines of the repo's gitignored .env as a dict; empty when there is none."""
+    path = ROOT / ".env" if path is None else path
+    if not path.is_file():
+        return {}
+    pairs = (line.partition("=") for line in path.read_text().splitlines() if "=" in line and not line.lstrip().startswith("#"))
+    return {name.strip(): value.strip().strip("'\"") for name, _, value in pairs}
+
 
 def load_key(env=ROOT / ".env"):
     """OPENROUTER_API_KEY from the environment, else the repo's gitignored .env. Never echoed."""

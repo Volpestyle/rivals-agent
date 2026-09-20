@@ -8,6 +8,8 @@ from concurrent.futures import ThreadPoolExecutor
 import pytest
 
 from agent import brain, jev
+
+REAL_DOTENV = jev._dotenv  # bound at import, before conftest stubs it per test
 from agent.brain import BURST_HOLD_S, PULL_HOLD_S, STRIKE_HOLD_S, SWING_HOLD_S, Memory
 from agent.intents import BURST, Combo, Disengage, Engage, Idle, Pull, Search, SwingTo, WebStrike
 from agent.jev import HttpTransport, Jev, TransportError
@@ -473,3 +475,16 @@ def test_a_server_error_that_echoes_the_key_is_redacted(monkeypatch):
         s.post({})
     assert "lan-key-123" not in str(e.value) and "HTTP 401" in str(e.value)
     s.close()
+
+
+def test_endpoint_reads_dotenv_and_the_environment_wins(tmp_path, monkeypatch):
+    env_file = tmp_path / ".env"
+    env_file.write_text("# comment\nJEV_URL=https://api.typesafe.ai/v1/systemone\nJEV_MODEL='jev-latest'\nJEV_KEY=abc\n")
+    monkeypatch.setattr(jev, "_dotenv", lambda path=None: REAL_DOTENV(env_file))
+    for name in ("JEV_URL", "JEV_MODEL", "JEV_KEY"):
+        monkeypatch.delenv(name, raising=False)
+    ep = jev.Endpoint.from_env()
+    assert (ep.url, ep.model, ep.key) == ("https://api.typesafe.ai/v1/systemone", "jev-latest", "abc")
+    assert "abc" not in repr(ep)
+    monkeypatch.setenv("JEV_MODEL", "jev-1.13.0")
+    assert jev.Endpoint.from_env().model == "jev-1.13.0"
