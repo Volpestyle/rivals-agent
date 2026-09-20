@@ -292,7 +292,8 @@ class Segment:
     end_i: int
     end_t: float
     started_by: str   # run_start | respawn | hero_returned | hud_returned
-    ended_by: str     # run_end | death | killcam | spectating | not_our_hero | no_hud
+    ended_by: str     # run_end | death | killcam | spectating | scoreboard
+                      #   | not_our_hero | no_hud
 
     @property
     def frames(self):
@@ -374,8 +375,8 @@ def segment(reads):
                 segments.append(Segment(start[0], start[1], last[0], last[1], reason, broken))
                 start = None
             reason = {"death": "respawn", "not_our_hero": "hero_returned",
-                      "killcam": "killcam_over", "spectating": "spectating_over"}.get(
-                          broken, "hud_returned")
+                      "killcam": "killcam_over", "spectating": "spectating_over",
+                      "scoreboard": "scoreboard_closed"}.get(broken, "hud_returned")
             continue
         if start is None:
             start = (i, t)
@@ -614,8 +615,15 @@ def read_run(run_dir, limit=None, progress=None, layout=None):
     for n, row in enumerate(rows, 1):
         frame = cv2.imread(str(Path(run_dir) / row["file"]))
         if frame is not None:
+            # One slot for "why we are out of the fight": the banner word when
+            # one is up, otherwise the scoreboard, which is the other thing that
+            # covers the HUD for seconds at a time.
+            from perception.scoreboard import is_scoreboard
+
+            aside = banner_word(frame) or ("scoreboard" if is_scoreboard(frame) is True
+                                           else None)
             out.append((row["i"], float(row["t"]), read_hud(frame, layout),
-                        playing_spiderman(frame), banner_word(frame)))
+                        playing_spiderman(frame), aside))
         if progress and n % progress == 0:
             print(f"  {n}/{len(rows)} frames", file=sys.stderr)
     return out

@@ -8,7 +8,7 @@ written by `perception/events.py`. Three line kinds, told apart by `type`:
 ```jsonc
 {"type": "meta", "source": "reqmr-2873352801-1920", "layout": "mk",
  "frames": 601, "fps": 10.0, "t_origin": "first frame of the media",
- "duration_s": 60.0, "segments": 3, "events": 85}
+ "duration_s": 60.0, "segments": 4, "events": 84}
 
 {"type": "segment", "start_i": 0, "start_t": 0.0, "end_i": 78, "end_t": 7.8,
  "started_by": "run_start", "ended_by": "death"}
@@ -30,8 +30,9 @@ Order is meta, then segments in time order, then events in time order.
 - `segment` on an event is the index of the segment line it belongs to. **No
   event ever spans a segment boundary**; channels reset at each one.
 - `ended_by` is one of `run_end`, `death`, `killcam`, `spectating`,
-  `not_our_hero`, `no_hud`. `started_by` is `run_start`, `respawn`,
-  `killcam_over`, `spectating_over`, `hero_returned`, `hud_returned`.
+  `scoreboard`, `not_our_hero`, `no_hud`. `started_by` is `run_start`,
+  `respawn`, `killcam_over`, `spectating_over`, `scoreboard_closed`,
+  `hero_returned`, `hud_returned`.
 - Event `kind` is one of: `ability_used`, `ability_ready` (with `slot`),
   `charges_spent`, `charges_regained` (with `slot` and `amount`),
   `web_cluster_fired`, `web_cluster_reloaded`, `hp_lost`, `hp_gained`,
@@ -224,6 +225,54 @@ continuous play.** Checked frame by frame at each one:
 So the Day player checks the scoreboard four times in sixty seconds. Those
 breaks currently report `no_hud`, which is true but unspecific; the scoreboard
 reader in the next piece of work can name them.
+
+## The scoreboard (`perception/scoreboard.py`)
+
+The project's only outcome measure, in two parts.
+
+**`is_scoreboard(frame)`** works on any scoreboard — the range's on a pad HUD and
+a live match's on a mouse-and-keyboard stream. It keys on the long horizontal
+rule under the team headers, measured as an edge rather than an absolute
+brightness, because the overlay dims the scene but so does a dark corner of a
+map. Real scoreboards score **0.91–0.97**; ordinary play tops out at **0.79**.
+
+That threshold is the lesson: set from eighteen sampled negatives it looked like
+0.70 was safe, and over a whole 60 s clip 0.70 fired on 48 play frames and
+shattered the segments. **Thresholds for a per-frame classifier have to be set
+against every frame of a clip, not a handful of stills.** Re-measured properly
+it also found a scoreboard in the Req clip at 43.6 s that nobody had spotted,
+which had been reported as a plain `no_hud` break.
+
+The segmenter now names those breaks `scoreboard` / `scoreboard_closed`.
+
+**`read_scoreboard(frame)`** reads the **range** scoreboard only and returns a
+plain dict — `kos`, `deaths`, `assists`, `accuracy`, `damage`, `damage_blocked`,
+`healing`, `web_cluster_accuracy`, `spin_kos`, each an int or None, plus `open`.
+On `docs/evidence/l4/scoreboard-back-native.jpg` it reads every one of the nine
+correctly: 3 / 0 / 1 and 0% 845 0 0 50% 3.
+
+Three things that HUD experience did not carry over:
+
+- **The KO/death/assist digits are gold.** The min-channel mask that reads the
+  rest of the HUD sees nothing there at all — gold has almost no blue — so the
+  tallies come off the strongest channel instead.
+- **The scoreboard sets numbers in a narrower face than the HUD**, 10–13 px per
+  glyph at 2560 against the HUD's 14–21, so it needs its own template bank.
+  Digits 2, 6, 7 and 9 do not appear on the one frame available; a value
+  containing one reads None until L4's extra frames arrive.
+- **Below 1920 wide the values are not there to read.** The 720p copy of the
+  same capture is still detectable as a scoreboard but reads *assists as 0 when
+  it is 1* and *Spin KOs as 0 when it is 3* — upscaling does not recover a 6 px
+  glyph, it invents one. `read_scoreboard` refuses under `MIN_WIDTH` and says
+  `too_small` rather than guessing.
+
+**Do not key on red for the enemy panel**: its tint follows the Enemy Color
+accessibility setting and is currently green. Nothing here reads panel colour.
+
+`tests/test_scoreboard.py` checks the detector on all five known scoreboards
+(range native, range 720, four match frames from the clip) and on play frames
+from both clips and the range run, and picks up anything L4 drops into
+`docs/evidence/l4/scoreboard/` automatically.
 
 ## Reading a streamer's HUD (1080p, mouse and keyboard)
 
