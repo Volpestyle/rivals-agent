@@ -59,6 +59,13 @@ Team-up shield decay can lower displayed HP without damage taken; the event extr
 distinguishes `shield_decayed` from `hp_lost`. Low-health red vignettes can defeat HP
 digit reads even when the bar remains visible; preserve unknowns and reader provenance.
 Never bridge an unreadable interval as though a precise event time were observed.
+A red/unavailable ability icon can also mean temporary animation or wall-climb
+lockout; it is not sufficient evidence of use. The aligned Req rerun finds
+`swing` use proposals during attacks/climbing with charge retained, plus visible
+Get Over Here/uppercut changes absent from the supplied events. Treat the event
+stream as proposals needing class-specific precision/recall checks. Net HP change
+is not damage taken: at +48.1/+48.2/+48.3 the native HUD reads 250/195/220 while the
+interval event reports loss 30. Damage and healing can cancel within an interval.
 Validate VOD HUD geometry separately: resolution scaling alone may not align a
 mouse/keyboard HUD with our controller HUD, and streamer overlays can occlude it.
 
@@ -216,7 +223,7 @@ flowchart LR
     D --> L[Reviewed intent and target labels]
     L --> T[Imitation training locally or on rented GPU]
     T --> P[Learned temporal policy]
-    F[Recent frames and observed events] --> P
+    F[Runtime frames and events: transfer unvalidated] --> P
     P --> I[Intent plus fixed target selector]
     I --> G[Current-state validity checks]
     G --> C[Calibrated controller]
@@ -305,8 +312,9 @@ the executor's capabilities. Record recovery examples from the agent's own failu
 and obtain human corrections rather than only collecting more clean expert wins.
 
 The controller lane confirms that BACK opens a range scoreboard with damage and KOs.
-This provides an observable outcome source; reliable automated reads, counter deltas
-and episode/reset alignment still need validation before they become rewards.
+This provides an observable outcome source. The lead reports 9/9 values read on
+one reference scoreboard frame; counter deltas, broader coverage and episode/reset
+alignment still need validation before they become rewards.
 
 RL is not active. It requires dependable episode boundaries, reset, outcome labels and
 a trainable policy. For a bounded defeat-the-target task, confirmed completion is the
