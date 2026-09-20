@@ -94,6 +94,72 @@ Full method, region table and annotated crops: `docs/evidence/l2/README.md`.
   that region. If L5 needs damage, the honest path is the scoreboard or the
   practice range's own damage readout, not the crosshair.
 
+## Ability events from HUD reads (`perception/events.py`)
+
+Turns a run of per-frame HUD reads into a timestamped event stream, so video with
+no input log can be labelled. Three rules carry it:
+
+- **Segment first.** The stream is cut wherever the performance is not
+  continuous: the hero being played is not ours, the HUD is gone (menu, BRB,
+  loading), or hp hits zero. Channels reset at every boundary, so no event is
+  produced across one. The gate is a colour match on the bottom-left hero
+  portrait — greyscale gives no separation at all (every hero lands 0.34–0.45),
+  colour puts Spider-Man at 0.35–0.52 and other heroes at 0.23–0.30. Without
+  this gate the spectating stretch of the sample VOD reads a stranger's 665 hp
+  as ours.
+- **Events are intervals, not instants.** Each carries `i_from`/`t_from` (last
+  frame with the old value) and `i_to`/`t_to` (first with the new). No field
+  claims a press time.
+- **Unknown is not a value.** A None read emits nothing and does not end the run
+  of the value before it. A new value must persist to be believed — 2 frames on
+  slow channels, **1 on `ready`**, because a real ability use is a *one-frame*
+  red icon flash at 10 fps: 165 of run1's 179 red stretches last a single frame,
+  so debouncing that channel at 2 would discard nearly every real use.
+
+Nothing is specialised to the practice range. The range simply never produces
+some kinds — its ammo never moves off 5, the bots never damage the player, and a
+roaming routine never casts the ult — so no `web_cluster_fired`, `hp_lost`,
+`death`, `respawn` or `ult_spent` appear there. The VOD produces all of them
+from the same code.
+
+### Things the range taught us that only a real match shows
+
+- **Shield decay is not damage.** The team-up buff lifts max hp to 300 and bleeds
+  it back two points at a time, and hp falls with it. Reported as `hp_lost` that
+  is a lie to anything learning from these labels, since nothing in the range
+  can hurt the player. The test is whether hp is still at max after the drop; if
+  it is, the pool shrank, and the event is `shield_decayed`.
+- **max hp lags hp.** Its debounce coalesces consecutive shield ticks and it is
+  unreadable on ~6% of frames, so the shield test looks for the nearest known
+  max within a few frames rather than at one exact frame.
+
+## Reading a streamer's HUD (1080p, mouse and keyboard)
+
+Measured against a 60 s 1080p60 Twitch clip of ReqMR on Spider-Man and six
+stills a co-lead read by eye. **The regions are fractions of the frame, so
+resolution alone changes nothing — 1920x1080 is the same 16:9 as 2560x1440 and
+1280x720.** What differs is the HUD itself:
+
+| Part | Holds? |
+|---|---|
+| hp digits | **Yes**, same region, correct values |
+| hp bar | **Yes** — 0.705 fill against a by-eye 175/250 |
+| digit templates | **Yes** — the same bank reads a stream's digits |
+| ammo count | **No** — the slots are mirrored. On the pad HUD the count is the *left* slot (0.162–0.179) and melee is the right; on the M&K HUD the count is the *right* slot, measured at x 0.260–0.267. Same digits, wrong box. |
+| ability row | **No** — different slot centres, and the key glyphs are C / LSHIFT / R / Q instead of Y / LB / RB / X |
+| ult | **No** — further right, and Twitch chat sits on top of it |
+| charge badges | **No** — they follow the ability row |
+
+So the re-templating needed is smaller than it looks: **no glyph work at all**,
+just a second set of slot coordinates for the M&K layout, chosen per source. The
+right shape is a small layout table (pad vs M&K) rather than the constants this
+module has now.
+
+Two things a stream adds that a capture does not: **chat overlays** the right of
+the HUD, so the ult and rightmost abilities go unreadable rather than wrong; and
+a **low-health red vignette** floods the screen, which is what makes the +59 s
+still (6 hp) unreadable while its bar still reads 0.138.
+
 ## Open
 
 - **No template for the digit `1`.** It appears in neither run: hp only ever

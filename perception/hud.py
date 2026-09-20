@@ -215,13 +215,21 @@ GLYPHS: dict[str, list[str]] = {
         "w/zH/8//n/8fPx8fPx4/Hj8ePj4+Pj58PHx8fHx8fHx4fPj8/Pz/+P/w//B/4AQA",
         "g/iH/o/+n/+f/x8+Pj4+Pj4+Pj5+fn5+fHx8fHx4fHh8ePj4/Pj/+P/w//B/4AQA",
         "B/wP/h/+H/8/Pz4fPj4+Pn4+fD58Pnw+/H58fnx8/Pz8/Ph8+Pz/+P/4//B/4B+A",
+        "ABAAOAf+D/8fHx4PHg8eDh4OHA4cHjgeOBw4HDg8eDh4OHA4cDjwePB4//D/4D+A",
+        "A/gP/x8HHgccBxwHHAccDzwPOA44DngeeB54HHAccDxwPGA84DjgOOB48fB/8B8A",
+        "ADgD/gf/n/8fDx4PHg8eDh4eHB48HjweOD44PHg8eDx4ePh48HjweP/4//j/4AgA",
         "ADgD/g//n/+fnx8PHw8eHz4ePh48HjwePD58PHw8eDx4fPh88Hjw+P/4//j/4D+A",
+        "gfiH/p//v/8+Hz4ePh58Hnw8fDx8PHx8fHx8fPx8/Hz4ePj48Pjw+P/w//D/4B+A",
+        "ADAD/w//H/8eDx4PHg8eDhwOHA48HjwcODw4PHg4eDh4OHB48HjwePD4//D/8D/A",
+        "AfwH/g//HgceBxwOHA4cDhwOHB4YHDgcODw4PDg4eDhwOHA4cDjwePB4//B/4D+A",
         "Af6H/p//n/8fPx4/PD48Pjw+PDw8PDw8fHx8fHx8eHj4ePh4+Pj5+P/4//D/4D+A",
         "B/4f/h//Ph88HzwfPB98H3wePD54Png+eD74Pvg8+DzgfOB84HzgfOD4//j/4H/A",
         "AeAH/w//H/8fDx4PHg8eHx4ePB48Hjw8ODx4PHh8eHj4ePB48Hj4+P/4//B/4A4A",
         "ADjD/8f/z//f/x8fHh8+Hj4ePh4+PD48PHw8fHx8fHx8fHj4ePz9/P/4//h/8B/A",
         "APgH/A/+H/4/Hj4ePj8+Pz4+PD48Pnw+fDx4PHh8eHx4fPh48Hj/+P/w//B/4B8A",
         "AHwH/g//H/8eDxwPHA88DzwOHB44HjweeB54HngeeBx4PHg88Dz4fP/4//g/8AMA",
+        "g/6H/w//Dw8ODw4PHg4eDh4ePB48Hjw+PD48PHw8fDx8/Px8/Pz//P/8//h/8B+A",
+        "AfgD/g8PHgYeBh4GHA4cDhwOHA44DDgcOBw4GDg4MDgwOHA4YDjgeGB4e/B/4AMA",
         "g/6H/4//j/8P3x8fHh4eHj4ePh4+Pjw8PDw8PDg8ODx4fHh8ePj4+P/4//D/8H/g",
         "A/4P/w//H/8eDxwHHA8cDxwPPA4YDjgOOB54HngeeB54HHAccBxwPPA8/Hz/+H/w",
         "B/4P/x//H/8eBxwPHA8cDzwPPA48DjwefB98Png+eD54PHg8+Dz4fv/8//h/8B/g",
@@ -253,27 +261,34 @@ GLYPHS: dict[str, list[str]] = {
         "AfwH/4//z//PD58Pnw+eHx4fPh48HjwePD48PDw8PDx8PHw8eHz8/P/4f/h/8B+A",
         "A/wH/x//P/8fDz4PPg8+Dx4fHB84HzgOOA54HHgceBx4HHA8cDxwPPh8//h/8D/g",
         "A/4f/x8/Pgc8BzwHPAc8BjgeeB54HngeeBx4HPg84DzgPOA84DzgPOB4/+D/4B8A",
-        "AHgH/w//H/8fDx4PHg8eDx4ePh48Hjw+PD54PHg8eDx4ePB48Hjw+P/4//D/4BkA",
         "AHgH/o//D/8eBxwHHA8cDxwOOA44DjgOOA54HngceBx4PHg8cDzwPPB4f/h/8B/g",
         "ABgD/gf/D/88BzwHPA8QDzAOMA44HngeeB74HPAc4DzgGOA84DzgfOBw//j/4B+A",
         "g/yP/p//n/+/Pz4fPj4+Pjw+fD58PHw8fHx8fHh8eHz4ePB48Hjw+P/w//D/4D8A",
         "A/wf/j//P/8/D34Pfg9+H34/fD94P3g+eD54PvA88DzwGOA84HzgfOBw//j/4D+A",
-        "AYAH/w//H/8fDx4PHg8eDh4OHB48HjwePD44PHg8eDh4OHB48HjwePD4//D/8D/A",
         "AOAD/h//H/8cBzwHPAc4BzgGOB44HDgcOBx4HGAcYBxgGGA4QDjAOMA4wCD44H/A",
         "j/4f/x//H/8eHx4PHg8eDz4fPB48Hjw+ODx4PHg8eDj4ePB48Hj4+P/4//D/4AEA",
         "B/4f/x//Pg88BzwHPAcYDhAOMA4wDngeeB5wPHA8YBjgGOA84DzgPOAw+Hj/4P/g",
+        "AdgH/w//H/8fDx4PPg9+D34ePh48Hjw+PD54PHg8eDx4ePB48Hjw+P/4//D/4A4A",
         "AfiD/s//3//fH94enh6+Hr4evhw8HDwcPDw8PDh8eHx4eHh5eHn48f/x//F/wD+A",
         "HAc8BzwHPA84DzAOMA44HngecA5wDHAMcBzwPPA84DzgPOB84HzgeOBw//D/4B+A",
         "A/4f/x//P/8/D34Pfg94D3wPfB94Png++D74PvA+8DzwGPB84HzgfPD8//h/4B/A",
         "AfCH/of+j/8PHw4eHh4eHh4ePhw8HDw8PDw4PHg8eDh8eHx4ePh5+H/4//B/4B+A",
         "D/4f/j//P/9+P3wffB98HnweeD54Png+8DzwPPA88DzweOB44HjgePD4//B/4B/A",
+        "APgH/w//H/8fHx4PHg8+Dz4fPh48HjweOD54PHg8eDh4OHA48HjwePD4//j/8D/A",
+        "AfwH/w//DgcOBw4HDAccDxwPHA4YDjgOOA44DDgcMBxwHHAccDjwOPB4//B/8B+A",
         "ABwD/gf/D58eBxwHHg88DzwPPB48HjgeOB54HHgceBxwHHAccDxwPHB8//h/8D/g",
         "ADwD/gf/D78+BzwHPA84D3wOeA54HngeeBz4HPAc8DzwGOA84HzgfODw//j/4H/A",
-        "QfwH/w//H/8fHx8PPg8+Hz4ePh48Hjw+fD58PHg8eHz4fPB48Pj4+P/4//j/4B8A",
         "A/4H/w//H/8eDx4PPg88DzwfPB88HjgeeB54HngeeB54Png88Dz5/P/4//B/8BoA",
+        "g/yP/p//v/8/vz4/Pj4+Pn4+fj5+Pnx+fH58fHx8eHz4fPj88Pjw+P/4//D/4D8A",
         "EAAQAB/+P/58D3gHeB94H3ge+B74HvgY+BDwEMAwwHDAcMBwwHCAcP/gf8AHAAIA",
+        "AfyH/o//D/8PHw4eHh4eHj4cPBw8HDw8PDx8PHx8eHx4fPj4+Pz//P/4//B/4B4A",
+        "AfyD/o//j/8PHw4eHh4eHj4cPhw8HDw8PDw8PDx8eHx4eHh4ePh5+P/4//D/8D+A",
+        "AfgH/w/fHgceBx4OHg4+DjwOPB48HjgcODx4PHg8+Dz4fPh48Hj8+P/4//D/4B+A",
+        "ADgH/4//H/8fDx8PHg8eHz4fPh9+fjw8fDx8PHg8eDz4fPh48Hj4+P/4//D/4B+A",
+        "AfwH/w//Hw8eDx4PHA4cDhwOHB48Hjg8ODx8PHg4eDhwePB48Hj8+P/4//D/4D8A",
         "ADgH/h//Dz8+DzwHPAcYBxgOOA4wBDgMOBxwDHAMcBhwGOA84DzwfOBwwDjAIMBA",
         "AfwH/w4DDAMYARgDGAMYAxgCGAYYDjgOOA44DnAOYAZgDnAYQBjAGMAYwBD/8H/g",
+        "AHyH/o//Hx8fDx8PHg8eHz4fPh48Hjw+PD58PPx8+Hz4fPB88Pj4+P/4//D/4D+A",
         "g/7H/8//Dw8PDw4PDg8eDhwePB48Hjw+PDw8PDw8ODw4PHg4eHj4+H/wf/AcAAgA",
         "B8AH/A/+H/4YHjgMOA4wDiAOIA/gHvAYcBhwGCAQABAAAGAQ4DDgMOBg/+B/wDgA",
         "A/wH/x//P/8+DzwHPA84D3wPfA54HngeeB74PvA88DzwGOB84HzgfOBw//j/4D+A",
@@ -283,13 +298,15 @@ GLYPHS: dict[str, list[str]] = {
         "AHgH/g//H/8eHxwfHB48Pjw+PDw8PDg8ODx4PHg8eDx4OPB48HjwePD4//D/8H+A",
         "AHgD/g//D/8cHxweHB4cHhwcPDw4PDg8ODw4PDg8cDhwOHA48HjgePDw//D/4D+A",
         "AfwP/g//HB8cDxgPGA4YDhgeMB5wHnAccDxwPHA8cDhwOOA44HjgeOBw8fB/4A8A",
+        "AEAB4If+j/8PHx4eHB4cHhwePDw8PDw8ODw4PDg8ODx4OHB4cHjwePDw//D/8H/g",
+        "A/4P/x4HHgceBx4HHg8cDzwOOA44DjgeeBx4HHgceDxwPOA44DjgeOB48fD/8AYA",
         "wfzD/8f/j/8Pnw8fDx4fHh4eHh4+Pjw8PDw8PDx8PHw4fHh8+Pz8+P/4//h/8B/A",
         "gHyD/4//H/8fDx8PHw8fHx4ePh48Hjw+PD48PHw8fDx4fHB48Hjw+P/4//B/4A+A",
+        "AfzH/s//3/+f/x+fHx8/Hj8ePx4+Pj4+Pjx8PHx8fHx4fPh8+Pz8+P/4//D/8D/A",
         "AH4B/wf/D/8fnx8PHg8cDzwPPA48DjgeeB54HHgceBz4HPg8+Dz4OP/4//B/gDwA",
         "A/4P/w//H/8eDx4PHA8cDjwOOA44DjgMeBx4HHgceBx4HHg8eDz8eP/4f/A/wBgA",
-        "AfzH/s//3/+f/x+fHx8/Hj8ePx4+Pj4+Pjx8PHx8fHx4fPh8+Pz8+P/4//D/8D/A",
         "A/4H/w//H/8f/z4fHh8eHzwfPB58HnwefB58Hng8+Dz8PPw8+Dz//P/wf+A+ABAA",
-        "Af6H/4//z//fP98fnx6+Hr4evj4+fjx8PHw8fDx8fHx8fHh8ePh9+H/4//B/4D+A",
+        "Af6H/4//z//fP98fnx++Hr4evj4+fjx8PHw8fDx8fHx8fHh8ePh9+H/4//B/4D+A",
         "A/wf/h8fPgY8BjwGOAY4HjgcOBwgHGAcYBhgGOAY4BjgOOA4wHzAfMB4//h/4AOA",
         "A/wH/w//D/8eDx4PHA88DzwPPB88H3wfeB94H3g+eD54Png88Dz8fP/4f/h/8AAA",
         "A/gf/j//P/8+Bz4HPg84DngOcA54HHgc+BzgHOA84DzgGOB84HzgfOD8//j/4H/A",
@@ -308,17 +325,18 @@ GLYPHS: dict[str, list[str]] = {
         "AfgP/H/+f/5//zwfOB8wDjAMMAj4GPg8cD5gPGAY4DjgOOA44HjgePBw//D/4D4A",
         "A/gf/h//D/8MBzwHPAZ4DnweOB84HzgceBx4HPAc8DzwGOA84HzgfOBw//h/4B8A",
         "Afgf/j//Ph88BzwHOAY4BjgE/Bz8Pnw/eD9gPmAc4DzgPOA84HzgfOB4//h/4AcA",
+        "APAB/of+z/7f/98fnx+/Hr4evh4+Pj48PDw8PHx8fHx4fHh8ePj8+P/4//B/4B+A",
         "BD8ODw4ADgAeAR4BHgEeAR4BHgAeADwAfAB8B3wPfA98H3gfeB/4H/g///7//H/8",
         "A4AP/D/+f/98D3gPeA94HngecB5wHnAe8B7AHsA+wDzAPMA8wDyAPAA8AHAP8A/A",
         "D/w//h4+GA94D3gOeA54BHAAcAhwGPAc4BzAGMAYwBjAGMA4wDiAOAA4AHAP8A/A",
         "AfQD/wz/HD8cBxwHPAc8BzwHPAc8BjwAOAB4HHgeeBx4PHA8cDzwPPB8//j/8H/w",
         "B/gf/j//P/8/Pz4PPg8eHzw/fB94H3geeD54PnA+cD5wfPB8YHxAfEH8f/gf4APA",
         "A/gf/h//P/8+Dz4PPg8eDzwOfA54HngeeB54HnAccDxwGPB8YHxAfEH8f/gf4APA",
+        "AfgD/o//z//PH44enh6eHr4ePh48Pjw+PHw8fHx8fHx4fHh8ePz9+P/4//B/4D+A",
         "ADAH/o//z//f/98/3x+/Hr4+vj6+Pj48Pjx8fHx8fH14/Xj9ePv8+//7//N/8T+A",
         "A/yP/8//3//fP98fvx6/Hr4evj4+Pj58Pnw8fHx8fHx8fPh8+Pz9+P/4//D/8D/A",
         "Af6H/8//3//fv98fnx++Pr4+vj4+PD48Pjw8fHx9eP14/Xj9ePv8+//7//N/8T+A",
         "A/gH/o/+n/+f/5++nj6+Pr4+vj5+fH58fnx8fHx4fHh8ePj4+Pj58P/w//D/4D/A",
-        "ADAH/of/z//f/98f3x+/Hr4evh4+Pj48PDw8fHx8fHx4fHh8+Pj9+P/4//B/4D+A",
         "A/4P/w//H/8fDz4PPA88DzwPPA48HnweeB54HngeeDx4PHg88Dz8fP/4f/g/8AcA",
         "A/4H/g+fHgccBxwHHAYYDhgOGA44DjgOOAw4DHgccBxwHHAc8BzgHPA4//B/8A+A",
         "A/6P/4//z8+PD54Pnh++Hx4fHh48Pjw+PD48Pjw8PDx8PHg8+Hx4eH/4f/g/8ADA",
@@ -327,6 +345,9 @@ GLYPHS: dict[str, list[str]] = {
         "A/gP/g/+H/8/Pz4ePh4+Pj4+fj58Pnw+fH58fHx8eHh4eHB4cHhweHjw//B/4D/A",
         "A/gP/g/+H/8ePhweHB48HjwePBw8HDwceDx4PHg4eHh4eHB4cHhweHjw//B/4D/A",
         "B/4f/z/fPAc8BzwHPAc8H3geeB54HngeeB54Png84DzgPOA84DzgfOB4//j/4H/A",
+    ],
+    "1": [
+        "APgD/wP/AH8APwA/AD4AfgB4AHgAeAB4AHgAeADwAPAA+AHwA/AD4Afgf/7/////",
     ],
     "2": [
         "AfwH/g//D/8PHx8eHh4APgB8APwB+APwB8APwB+APgA8AHgBeAF4Af/x//H/8H/w",
@@ -348,22 +369,28 @@ GLYPHS: dict[str, list[str]] = {
         "AfwH/gf/D/8PHw8ODx4AHgA+AHwA+AHwA+AHwA+AHwA+ADwBeAF4AX/xf/F/8APw",
         "A/gH/A/+H/8f/x8+Hz4fPg48APwB+AHxA+EHwQ+AHwA+AX4BfAF8A3/zf/P/8X/g",
         "AGAD/g/+H/8fvx8fHx8fPgR+APwB/AHwB/AH4B/AH4A+AHwAfAF8Af/5//n/+H/g",
-        "AfgD/gf/D/8PHw4eDh4APAB8APwA+AHwA8AHwA8wHhg8GDgJeAl4A3/jf+H/4QQA",
+        "AfgD/gf/D/8PHw4eDh4APAB8APwA+AHwA8AHwA8gHgA8ADgAeAB4AX/hf+H/4AQA",
         "A/4P/w//H/8eDxwPCB8AHgA8AHwA+APwB+APwB8APwB8AHgA+AD4wP/4//z/+APg",
         "AwA//D/8//z8PPgfeB8wHwA8APwD+AHgA+AH4B/APwA8AHwA/AD4APw4//z//P/8",
+        "AfgH/g//D/8PHw4eHh4APAB8AHgB8APwB8APwB+APgA8AHgAeAB4AX/h//H/8ABg",
+        "AfwH/g//H/8fDx4PHg8AHgB+AHgA+AHwA8AHgB+APgB8AHgA8ADwAP/w//j/8AAg",
+        "A/wP/g//Hw8eBx4PHB4APgB8AHgA+AHwA8AHgA8AHgA+AHgAcADgAOAA+/D/8F/w",
         "AfwP/x//H/8eDxwHHA8ADwAeADwA+AHwA+AHwAeAHwA+AHgAeABwAPgA//j/+H/w",
         "AfgP/h//H/8eHx4ePh4APgB+APgB8APgB8APgB8APgB8APgB8AHwAf/x//H/8ABg",
         "AeAD/g//D/8P/w+fDx8fPgR+AHwA+QH4B/APwB+AHwA/AH4BfAF/wX/5f/n/+X/w",
         "AfwP/g//H/8fHx8eHh4APgB8APgA8AHwA8AHgA8AHwA8ADwBfAF8wf/x//l/8B/A",
         "A/wP/h/+H/8fHh4eGB4APAD8APgB8APgB8APgB8APwB8AHgA+AH5wf/x//h/8AMA",
+        "ABAH/g/+D/8OHg4eDh4AHAA8AHwA+APwB8AHwA+AHgA8AHgBeAF8AX/x//H/4H/A",
+        "A/wH/g//HwceBx4GCA4AHgAcADgAcADgAcAHgAcAHgA8AHgAcADgAOAA+4D/8F/g",
+        "AHgP/g8fHA8cDhwOGA4AHgAcADgAcADgAcAHgA8AHgA8AHAA8ADgAMAA4AD/4P/g",
         "A/AP/h//H/8fHx8eHh4AHgA8AHwA+AHwA8AHwA+AHgA8AHgBeAF4AX/h//H/4E4A",
         "ACAH/g//D/8f/x8PHAccDwAPAB4AOABwAPAB4APAB4AfAD4AeAB4APAA8AD/+H/w",
+        "B/4P/h//Hh8eHhweHB4AHAB8APgA8AHgB8APgA8AHgA8AHAA8ADgAfAB//H/8H/g",
         "AfgH/g//D/8fnx8fHh4OHgA+AHwA+AHwA+AHwA/AHwA+AHwAeAF4AXgBf/H/8X/w",
         "B/4P/w//H/8eBxwHHA8cDwAeADwA8AHwA+AHwA+APwB+AH4A+AD4APng//h/+D/w",
         "H+A//D/8///8P/g/+D/wPyA/APwD+Af4B/gf4B/APwD8APwA/AD8AP/8////////",
         "AfgP/x//H/8eDx4PHg8ADwAeAD4AOABwAcADgAcAHgA4AHgAcABwAHgA//D/+H/w",
         "ANAH/h/+H/8eHh4ePB4cPgB8APwB+APwB+APwB+APwA+AHgA8ADwAfAB/+H/8P/g",
-        "AfgD/g/+D/8PHw4eHh4AHAB8AHwA8AHwA8AHwA+AHgA8AHgAeAF4AX/h//H/8AAg",
         "A/4f/h8fPAc8BzAHAA4ADAAYAHgA4AHAAcADgA8AHgA4AHAAcADgAMAAwAD/4P/g",
         "D/gf/D//P/8+P3w/fD8cPwB+AHwB/AP4D/APwB+AH4A/gH4AfgA//P////8//w+I",
         "H/g//P/////8//g/+D84PwD8APwB/Af4H+AfgD8APwD/APwA/AD//P///////xgY",
@@ -374,7 +401,6 @@ GLYPHS: dict[str, list[str]] = {
         "AwADAAeAB/wP/g//Dx8eHh4eHDwYfBn4Mfgj4A/AH4C+ADwBeAF4AX1j//P/8QAg",
         "B/4f/z+/Pgc8BzwHGB4APgB8APwA+AHgA8AHgB8APgB8APgA4ADAAOAA//j/+GZA",
         "Af4H/w//D/8PDx8PHg8AHwA+AHwA+AHwB+APwB+AHwA+AHwAeAD4AP/4//j/+H/g",
-        "AHAH/w//H/8fDx4PHg8AHgB+APwB+APwB+APwB+APgB8AHgA8ADwAP/w//j/8AAg",
         "ADgD/g//D/8eBxwHGA8ADwAOABwAMABwA8AHwAeAHgA4AHgAcABwAHAA//D/+D/w",
         "A/4f/j8/Pgc8BzwfGB8APgB8APwB+APgB8AfgD8APgB8APgA4ADgAOAA//j/+P/g",
         "AHgH/o//D/8eBxwHGA4AHgA8AHgA8APwB+APwB8AHgA8AHgA8AD4AP/4//j/+BgA",
@@ -405,12 +431,18 @@ GLYPHS: dict[str, list[str]] = {
         "AYAD/gf/Dj88BzwHMAcADgAcADgAcADgA4AHAA4AHAB4AHAA4ADAAMAA/+D/4EBA",
         "AfgH/g/+D/8eHx4eHh4APgB8APgB8APgB8APgB8APgB8AHgBcAFwA3/j//H/8Ufg",
         "/YAB+Af+D/4P/x4/Hh8eHgA+AHwA+AHwA+AHwA+AHwA+AHwBeAF4A3/j//P/8X/g",
+        "A/wP/x//Hh8cHxweDBwAPAB4APAB8APgB4APgB4APAB8APgA8ADwAf/h//H/8EAA",
         "APgH/A//H/8fPx4eHh4APAB8APgB8APhB8EPgB8APgB+AXwBeAH4Af/h//H/8X/g",
         "A/4H/w//H/8ePx4PDA4AHgA8AHwA+ADwA+APwB8AHwA8AHgAcABwAP/4//j/+AMA",
         "A/4P/w//D/8fHx8eDh4EfgB8APgB8APgB8APxB+APiA+IXwBeAF/gX/x//n/8Efw",
+        "AYAH/A/+D/8P/w4+Hh4ePgB8APgB8APgB8APgB8AHgA8AHgBcAF4AX/h//H/4X/A",
         "AHwB/wP/Bw8GBw4HAA4ADAAcAHgA8AHwAeAHwA+ADwA+AD4AeAB/4P/4//z//H/w",
         "/////v/8//j/8P/w/+D/4P+A/wD/APwB/AH4AfgA8ADwBOAE4ATABMAAgACAAIAA",
+        "A/wP/w//H/8fPx8fHx4ePgB+APwB+APwB+APwB+APwA+AHgBeAF4A//z//H/8H/g",
         "A/4P/x//Hw8eDx4PHB4APgB+APwB+APgB8AfgD8APgB8AHgA8ADwAP/w//j/8AAg",
+        "Af4H/wfvDgcOBw4OBA4AHgA8AHgA8AHgA+AHwA8AHgA8AHgAeAB/4P/4//j/8H/g",
+        "AAgD/w//D/8PDx4PHg8AHgAeAHwA+AHwB+APwB8AHgA8ADwAeAB4AH/4//j/8G/g",
+        "AfwH/g//HgceBx4OCA4AHAA8AHgA8AHgAcADgA8AHgA8AHgA8ADgAOAA+HD/8APw",
         "AfgH/h/+H/8eHx4eHB4APgB8APgB8APgB8APgB8APgB8AHgA8ADgAfhA/+D/4ABg",
         "AHgH/w//H/8eDxwHHAcADwAeABwAOABwAeADwAeADgAMABgAMABwAHAA+AB/+H/4",
         "AHAH/g//H/8eBxwHHA8ADwAeAD4A/gP4B/AP4B/APwA+AHgAcABwAHAA//D/+H/w",
@@ -441,7 +473,6 @@ GLYPHS: dict[str, list[str]] = {
         "B/4P/w4PDgYeBhwPAB4APgB8APgB8APgB8APgB8AHgA8AHgAYADgAPAA//j/8B/w",
         "DAIMAhwHHAcADwAeAB4AHAB4AHAA4APgB8AOAB4AHgA4AHAAcABwAHAA//B/+D/w",
         "H/j//P/8///8//g/eB8wHwA8APwD+AHgA+AH4B/APwA8AHwA+AD4APw4//z//P/8",
-        "AOgD/w//D/8PDx4PHg8AHgA+AHwA+AHwA+AHwB+APwA+ADwAeAB4AH/4f/j/8ABg",
         "AcAH/h//Pw88BzwHPA8AHwA+AHwA+AHgA8AHgA8AHgB8APgA4ADAAOAA//j/+H/g",
         "P/z//P/8/Dz4HzgcADwAPAD8A/gH+B/gH+AfwD8A/wD8APwA/AD//P///////xgA",
         "A/4P/x//H/8eDz4PPg8cHwB/AP4B/gP4A/AH4A/AP4B/AP4A+ADwAPAA//j/+H/w",
@@ -450,7 +481,6 @@ GLYPHS: dict[str, list[str]] = {
         "A/gH/g/+H/4eHx4fHh4efgB+APwB+APwB8APgA8AHgA8AHgAcABwAHAA/+D/8H/A",
         "gfzH/s//z//PD84Ojh6APoB8gPiB8IPgh8CPgB8APgA8AHgAeAB/8H/4//B/8GAA",
         "AfgH/g//H/8eDxwHHA8ADwAeADwA+AHwA+AHwA+APwB+AHwAeADwAPAA//B/8AIA",
-        "B/wP/x//Hh8eHjwePB4APgB8APgB8APgB8APgB8APgB8AHgA8ADwAfAB//H/8P/g",
         "AfAD/of+j/+OHp4enh6ePgA8AHwA+AHwA+AHwA+AHwA+ADwAeABwAHgAf/D/8H/w",
         "APgH/h//P/8+DzwHPA8AHwA+AHgAcADgA4AHAA8AHAB4APgA4ADgAMAA/+B/4AIA",
         "AHAH/g/+Hw8cBxwHHAcADgAeABwAMABgAcADgAcAHgA4AHgAcABwAHAA/+D/8DgA",
@@ -470,10 +500,10 @@ GLYPHS: dict[str, list[str]] = {
         "B/8f/z//fh9+B34fPB8AHwA+A/4H/gf8A/wAPAA8ADwAfPh8+HzgfOD8//j/4D/A",
         "A/4f/z//Ph98BzwHOB8AHgAeAH4D/AP8A/wAPAA8ADwAPOB84HzgfOB8//j/4B+A",
         "A/4P/x//Hw8eDx4PHg8AHwAeAB4H/Af4B/wAPAA8ADwAOHB48HjwePD4//D/8D/A",
-        "AfgP/h//H/8fHx4ePB4APgA+AfwH/Af8B/wA/AB8AHgAePB58Hnw+f/x//H/4D8A",
+        "A/wP/h/+P/8/Hz4ePh4AHgA+A/4H/Af4B/wA/AB9AHwAffD58Pnw+f/x//H/4H8A",
+        "AfgP/h//H/8fHx4ePB4AHgA+APwH/Af4B/wAfAA8AHgAePB58Hnw+f/x//H/4D8A",
         "A/4f/x8/Pgc8BzwHAAcABgAcABwD/AP8A3wAHAAcADwAPEA84DzAfOB4//h/wAeA",
         "A/4P/x//H/8fDx4PHA8ADwAfAf4H/gf+B/4APgAeADwAPHA88Dz8fP/4//h/4A8A",
-        "A/wP/h//H/8/Hz4ePh4IPgA+A/4H/Af8B/wA/AB9AH1wffB58Pnx+//7//H/4H+A",
         "AAgH/g//H/8fDx4PHg8MDwAfAB4D/gf4B/wAfAA8ADwAPHB48HjwePD4//D/8D/A",
         "A/gH/h//H/8eDxwHHAcABwAGAA4A/Af8A/wAHAAcABwAHHA88DzwPPB8f/h/8D/A",
         "AOAH/h//P/8ODzwHPAcABgAOAB4APAP8A/wAPAA8ADwAGMB84HzAfOBw//j/4B+A",
@@ -482,10 +512,10 @@ GLYPHS: dict[str, list[str]] = {
         "AIgH/w//H/8fDx4PHg8ADwAeAD4H/gf8B/wAPAA8ADwAePB48Hjw+P/4//D/4BkA",
         "D/g//D//f/////4/fD88PwB/AH8D/w//D/8AfwA/AD88P34/fj8//z//P/8//A/w",
         "A/4f/h8/PAc8BzwHAAYAHgAeADwD/AP8APwAPAA8ADwAPEA84DzAPOB4/+D/4B8A",
-        "AdAH/h/+H/8eHh4eHB4AHgAcADwH/Af4B/wAfAA8ADgAePB58Hnw8f/x//H/wB4A",
         "BAA//D/8//z8//g/+D/wPwA/AD8D/Af8B/wH/AA/AD8APwA/+D/4P/////z//D/8",
         "H/A//H/+//7//v//f/9//3/+D/8P/g/8D/wP/gD+AH8QfxA/eH94fn/+f/g/+B/4",
         "P/z////////4P/g/+D8APwD/B/8H/x/8B/8A/wD/AD/gP/g/+D/8P////////z/8",
+        "AJAH/h/+H/8eHx4eHB4AHAAcADwH/Af4B/wAfAA8ADgAePB58Hnw8f/x//F/wAoA",
         "A/wH/h/fPgc8BzwHAAYABgAcAPwD/AP8A/wAHAA8ADwAfGB84HzgfPj4//j/4D/A",
         "A+AH/w//H/8eBx4HHA8ADwAOAf4D/gf+A/4AfgA+AD4APHg8+Dz//P/4f/h/8A8A",
         "A8AH/w//H/8+Bz4HPB8ADwAOAf4D/gf+A/wAPAA8AHgAfPh8+Hz4/P/4//B/4AYA",
@@ -500,6 +530,7 @@ GLYPHS: dict[str, list[str]] = {
         "AYAD/g//D/8f/x8fHx8eHggeAf4H/gf8B/wH/AB9AH0wfXh9+P39+//7//H/4T+A",
         "A/wH/w//H/8fPx8fHh4cHgAeA/4H/Af8B/wAfAB9AH0wfXh9+P39+//7//H/4T+A",
         "A/gH/A/+H/8f/x8+Hj4ePgw+A/4H/A/5D/kH/QB5AHkweXj5+Pv58//z//P/4T+A",
+        "A/wP/h//P/8/Hz4ePh4cPgA+A/4P/A/8D/wA/AB8AH1wffD98Pn5+//7//H/4X+A",
         "B/wP/h//H/8/Pj4eHB4AHgA+B/wH/Af8B/wAfAA8AHwAeHh48Hj9+P/4//B/wA8A",
         "AfwP/h/+H/8fnx4fHB4cHgAeAHwH/Af4D/gH/AB8AHwAfHB98Hnwe/Dx//H/4H/A",
         "A/4P/x+fHgccBxwHAA8ADwAOAF4D/Af8A/wAHAAcABwAHHA88DxwPHA4f/g/8A/g",
@@ -552,17 +583,26 @@ GLYPHS: dict[str, list[str]] = {
         "D/6P/4//z/7fAJ8AngCeAB/8H/w//D48PjwcPAB9AH14fXj9ePn8+f/5//l/8T/A",
         "D/8P/x/+HgAcABwAHAA8AD/8P/4+PjgeAB4AHgA+ADxwPPA88Dz4eP/4//h/4AQA",
         "D/8P/x/+HgAcABwAHAAcAD/4P/4+fjgeMB4AHgA+ADwAPHA88DzwOPh4//h/+D/g",
+        "B/4P/5/+n8CfAB4APgA8ADzwP/g//D/8ODwAPAA8ADwAOGA4cHjwcfBx//H/4H/A",
+        "DgAP/x//H+AeAB4APAA4ABwAH/g//HwceBwAHAAcABgAOGA44HjgcOBw8PD/4B8A",
         "B/4P/o/+j/6PAJ4AngAe8B/4H/wf/D58fHwAeQB5AHkgeXh5eHH88f/zf+N/4R+A",
         "A/7H/sf+5/7HAM8AzgCOcI/4D/wP/D48PjzMOQA5ADkYeTx5PHl8eX/5P/E/8Q+A",
         "B/4H/w//D/4OAA4ADgAeAB74H/gf/Dz8PDgAOAB4AHgAeHB4+Hj4cPjwf/B/4D+A",
         "D/4P/w8AHAAcABwAHAAcANz4n/4cHjgeOB4QHgAeADwAPHA88DjwOPh4//h/8D/g",
+        "D/wP/x//n/+f/58wPgA+YD/4P/w//D/8PDw4PAA8AD0AfXB5cHnwef/x//F/4A8A",
+        "B/8P/w//DwAOAB4AHgAe8B/8H/wf/DwcOBwAHAA8ADhwOHA48Hj4eP/4//B/4A+A",
+        "B84H/w8ADgAOAB4AHAAcAB/4H/wePBgcOBwQHAAcADwAOHA4cDhwePB4//h/8D/g",
         "AYAP/4//n/8fAB8AHgAeAB/4H/w//jw+fD4APAA8ADxwfPh88Hj4eP/4//j/8D+A",
         "BbwH/4//z//f/88AnwCf8J/8P/x//D+8PDwYPAA9AH14fXh5eHn/+f/7f/F/4A+A",
         "D/8P/w8+HgAcABwAHAAe8D/8f/5//jwePB4YHAAcADwAPHA88DhwOHh4f/h/+D/g",
         "D/8f/x8APgA8ADwAPAA8AD3wP/w4HjgeMBwAHAA8ADwAPOA48HjgeOB4//j/8B+A",
         "D/4f/x//H/4eAB4AHgAeAD/4P/w//jw8PDw4PAB8AHwAePB48Hj4+P/4//j/8B+A",
+        "B/8P/w//n/4fAB8AHgA+AD/wP/w//Dw8eBwwHAA8ADwAfHB88Hnwefj5//n/4T/A",
+        "D/4P/w9gHgAcABwAPAA4ADnwP/w8PDgcMBwAHAA8ADwAOGB48HjwcPBw//D/4D8A",
+        "D/8PfgwADAAIABgAGAAQ4B/4GPwwHDAcABwAHAAYADgAOOA44HjgcOBw8fD/4AQA",
         "D/4P/5/+n/6/6D8APgA+AD/wP/g//Dw8eDwwPAA8AHwAfXj98Pnw+fv7//P/8X/A",
         "B/8P/w//H/4PAA4ADgAOAAwADHAP/B/8OBwAHAA8ADwAPHg4eDj4ePz4f/B/4B+A",
+        "D/8P/4/+nwAeAB4AHgAccB/8H/wcPDw8ODwQPAA8AHwAfHB88HjwePD4//h/8D/A",
         "Bj4P/5/+n/6eAB4APgA8AD/wP/g//Hx8fDx4PAB8AHwgfXD98Pnw+fv5//n/8X/g",
         "B/4P/w/+D/wOAA4ADgAMAAwAHfg//D/8fDwAPAB8AHgAeHhw+HD4eP/w//B/wB8A",
         "AAIAAx//H/8eBxwAOAA4ADgAPPh//nweeA4wDgAMABwAHAAQ4DDgMOBw//B/4A8A",
@@ -600,26 +640,34 @@ GLYPHS: dict[str, list[str]] = {
         "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",
+        "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",
+        "D/8f/5//v/+/EL4AvwA/8D/8P/w//D58ODwAPAA8AHwAeHh58Hn4+f/x//H/4D+A",
+        "D/wf/5/+/////7/8PgA/4T/5P/0//T/9PH04fQB5AHsA+3D78PP48//z/+P/wT+A",
         "BgAPgA8AD4AXnh//D/4P+A/ADDAMeAz8HBw4HBAcABwAPAA8MDxwOPBw//B/wB8A",
+        "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",
+        "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",
+        "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",
-        "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",
-        "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",
-        "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",
+        "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",
+        "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",
+        "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",
@@ -629,6 +677,7 @@ GLYPHS: dict[str, list[str]] = {
         "B/8H/wcADgAMAAwADAAIAA74H/4+HjwGGAYABgAOAA4AHgA8ADBgMOAw4Dj/+H/g",
         "B/8P/x//H/8eAj4APgA/AH/8f/5//n/+eD4APgA+ADwAPPA48DjgOOB4//D/8D/A",
         "D/4f/x/+H/4cABwAHAA8ADzgP/g//D/8eDgAeAB4AHgAePBw4PDg8ODw//D/4H/A",
+        "D/6f/5/8HgAeAB4AHgA8AD/4H/w//Dw8ODwwPAA4ADgAeHB48Hjg+PD4//D/4H/A",
     ],
     "6": [
         "AfgP/h//H/8eHx4ePB48ADwAPuA/+D/8P/w8fHg8eDh4ePB48Hjw+P/w//D/4B8A",
@@ -683,6 +732,7 @@ GLYPHS: dict[str, list[str]] = {
         "f/5//3/////4P/A+4DhAeAB4APgB8AHwAeADwAfAB4APAA8ADgAeAB4AfAF8ATgA",
         "P/9//3//f/9+f/w+/H5weAB8APgA+ADwAeABwAPAA4AHgAeABwAPAA8APgE+ARwA",
         "Pgx//n//f/54PvA+4D5AeAB4AHAB8AHwA+AD4AfAB8APgA8ADwAeAX4BfAF8AXwB",
+        "f/5//3//+B74HvgecD4AfAB4AHgA+AHwA/AD4AfAB4AHgA+AHwEeAT4BPgF8AXwA",
     ],
     "8": [
         "AfwH/4//n/8fDx4PHg8eHx4eHj4f/B/8P/x8PHg8eHx4fPB48Hj4+P/4//D/4BmA",
@@ -1003,7 +1053,11 @@ def _badge_mask(frame, cx):
         return None
     i = 1 + int(np.argmax(stats[1:, cv2.CC_STAT_AREA]))
     x, y, w, h, area = stats[i]
-    if area < 250 or h < 18 or not 0.6 < w / h < 1.7:  # a disc, not a stray highlight
+    # A badge disc is round: across run1 the legitimate ones measure 0.86-1.03
+    # wide-over-tall. A wider blob is the disc fused with something bright beside
+    # it, and its extra hole gets read as a leading digit -- that is how a plain
+    # "3" came back as 23 on 13 frames of run1.
+    if area < 250 or h < 18 or not 0.75 < w / h < 1.25:
         return None
     hole = (lab[y:y + h, x:x + w] != i).astype(np.uint8)
     hole[:2, :] = hole[-2:, :] = hole[:, :2] = hole[:, -2:] = 0  # drop the ring itself
@@ -1192,7 +1246,7 @@ def learn(specs, out=None):
         path, _, fields = spec.partition("=")
         frame = cv2.imread(path)
         if frame is None:
-            print(f"{path}: not readable")
+            print(f"{path}: not readable", file=sys.stderr)
             continue
         for field_spec in fields.split(";"):
             key, _, want = field_spec.partition(":")
@@ -1204,9 +1258,19 @@ def learn(specs, out=None):
                     if key == "webs":  # anchor exactly as read_webs does
                         boxes = [b for b in boxes
                                  if WEBS_RIGHT[0] <= b[0] + b[2] <= WEBS_RIGHT[1]]
-                    if len(boxes) != len(want):
+                    want_here = want
+                    if key == "hp" and len(boxes) != len(want) and "/" in want:
+                        # Only the current-hp number surfaced in this mask. Take
+                        # it alone, anchored the way read_hp anchors it, rather
+                        # than dropping a frame that carries a digit we lack.
+                        cur = want.split("/")[0]
+                        groups = [g for g in _groups(_glyphs(mask))
+                                  if HP_CUR_RIGHT[0] <= g[-1][0][0] + g[-1][0][2] <= HP_CUR_RIGHT[1]]
+                        if len(groups) == 1 and len(groups[0]) == len(cur):
+                            boxes, want_here = [b for b, _ in groups[0]], cur
+                    if len(boxes) != len(want_here):
                         continue
-                    for b, ch in zip(boxes, want):
+                    for b, ch in zip(boxes, want_here):
                         g = _normalise(mask, b)
                         kept = variants.setdefault(ch, [])
                         if not any(np.count_nonzero(g != k) <= 18 for k in kept):
@@ -1215,7 +1279,7 @@ def learn(specs, out=None):
             else:
                 found = _badge_mask(frame, SLOT_CX[key])
                 if found is None:
-                    print(f"{path} {key}: no badge")
+                    print(f"{path} {key}: no badge", file=sys.stderr)
                     continue
                 mask, disc_h = found
                 boxes = [b for b in _segment(mask, BADGE_SIZE, min_area=25)
@@ -1223,7 +1287,8 @@ def learn(specs, out=None):
             if key == "webs":
                 boxes = boxes[:len(want)]  # the separator after the count is not a glyph
             if len(boxes) != len(want):
-                print(f"{path} {key}: {len(boxes)} glyphs for {want!r} -- skipped")
+                print(f"{path} {key}: {len(boxes)} glyphs for {want!r} -- skipped",
+                      file=sys.stderr)
                 continue
             for b, ch in zip(boxes, want):
                 g = _normalise(mask, b)
