@@ -1,31 +1,83 @@
 # Local Jev on the Mac (2026-09-20)
 
-Research only: nothing here was installed, downloaded or run. Every number is a
-claim from a README, model card or issue, checked against the repo's own files where
-a README and the code could disagree. Repo state was read on 2026-09-20.
+snapjudge is read, installed and served on this Mac. "Security read", "Installed" and
+"Measured" below are present state; the comparison, latency-evidence and hand-rolled
+sections stay as researched claims from READMEs and model cards, checked against each
+repo's own files, and are marked where they are unverified.
 
 ## Recommendation
 
-Run **snapjudge** ([Micha0827/snapjudge](https://github.com/Micha0827/snapjudge),
-MIT) on the Mac with `mlx-community/Qwen3.6-35B-A3B-4bit`, serving `POST /v1/systemone`
-on the LAN. It is the "read next-token probabilities over option labels" route,
-already written for MLX, with our wire shape and a cached question prefix that fits
-a fixed intent vocabulary. It also publishes a game-decision benchmark run over HTTP on
-Apple Silicon: median 78 ms against a 0.5 s budget on an M2 Max.
+**Running.** snapjudge ([Micha0827/snapjudge](https://github.com/Micha0827/snapjudge), MIT,
+pinned at `2df5ce2753b5`) with `mlx-community/Qwen3.6-35B-A3B-4bit`, serving
+`POST /v1/systemone` on `192.168.4.126:8724`. It read clean, it installs in a few minutes,
+and it speaks our wire with one patch (see "Measured").
 
-The simplest route is not a separate option: a hand-rolled `mlx-lm` scorer would
-reimplement what snapjudge and system-one already do (see "The hand-rolled route").
-Keep it as the fallback if the acceptance gate below fails.
+What the measurement changed about the original recommendation:
 
-Three caveats decide how far to trust this:
+1. **Latency was never the hard part.** From the Mac it is 109-127 ms p50 against Jev's
+   237-250, and the loop gets a decision about twice as often. From the PC the advantage
+   almost vanishes, because 63-90 ms of the round trip is Wi-Fi.
+2. **Agreement is the hard part.** 61% with real Jev on our own States, systematically:
+   Jev bursts where this model pulls. No published figure predicted that, and none could -
+   every number in the comparison below is on support tickets and invoices.
+3. The three original caveats are answered. M5 Max latency: measured. Two commits and one
+   author: read line by line, clean. No agreement number for our task: there is one now,
+   and it is the reason to keep real Jev as the reference.
 
-1. No source measures logit-read latency on an **M5 Max**. The nearest are an M5 Pro
-   (64 GB) and an M2 Max (96 GB). The gate below measures it from the PC.
-2. snapjudge is two commits and one author, two days old. Pin the commit and read
-   its four Python modules (`cli`, `engine`, `prompts`, `server`; about 690 lines).
-3. No agreement number exists for our task. Every "agreement with Jev" figure below
-   is on TypeSafe's public support, invoice and security cases, not on Spider-Man
-   intents.
+The hand-rolled `mlx-lm` route stays unbuilt and unneeded: snapjudge does exactly that job,
+and the gap is in the model's judgement, which writing our own scorer would not close.
+
+## Security read (snapjudge, commit `2df5ce2753b5`)
+
+Read before anything ran, on a clone of
+`2df5ce2753b5f61d0b034f8f941b65495587458b` ("Fine-tuning, typed-decisions benchmark and
+an experimental browser agent", Michael Gross, 2026-09-19 20:29 +0200). Two commits, one
+author, and the tree read here is byte-identical to the one installed (`diff -r` clean).
+**Verdict: clean, installed.** Every file was read, not only the four modules the research
+pass covered: the second commit added `agent/` (a Playwright browser agent, 577 lines),
+`training/` and six more eval scripts.
+
+| Looked for | Found |
+|---|---|
+| Network calls beyond the model download and its own server | None in the served path. `snapjudge/{__init__,cli,server,engine,prompts}.py` import no HTTP client at all; the only egress is `mlx_vlm.load()` fetching weights from the HF cache/hub. `httpx` appears solely in `eval/` and is always aimed at an explicit `--url` (default `127.0.0.1:8724`) |
+| File access outside the working directory and the HF cache | None. Every path is `Path(__file__).resolve()`-relative or comes from an argument: `results/`, `adapters/`, `calibration.json`. No home-directory, keychain, SSH or browser-profile path anywhere |
+| Subprocess or shell execution | None. No `subprocess`, `os.system`, `popen`, `pty` or `shutil` in any file |
+| Dynamic code loading | None. No `eval()`, `exec()`, `compile()`, `__import__`, `pickle` or `marshal`. Every `.eval()` hit is `mx.eval` / `model.eval()` (MLX graph evaluation and eval mode), and `mlx.utils.tree_unflatten` in `_fuse_lora` |
+| Obfuscation | None. No base64, hex blobs or long string literals. One binary file in the repo, `assets/snaprun.gif` (a real GIF89a, 800x576) |
+| Telemetry | None. No analytics, sentry, posthog, phone-home or version check. CI is `actions/checkout@v4` + `setup-python@v5` on `macos-14`, running `pytest` only |
+| Credential or environment harvesting | No. Env reads are exactly `SO_MODEL`, `SO_NAME`, `SO_API_KEY`, `SO_CALIBRATION`, `SO_ADAPTER`, `SO_CACHE_LIMIT_GB` (engine and cli), plus `os.environ[args.key_env]` in `eval/run_eval.py`, where the caller names the variable. Nothing iterates `os.environ`, and nothing writes an env value to disk or a socket |
+| Packaging and install hooks | Plain `hatchling`, `packages = ["snapjudge"]`. No `setup.py`, no `setup.cfg`, no custom build hook, no `.pth` file, no post-install step. `pip install -e .` runs no project code |
+
+Two alarming-looking strings are test data, not behaviour: `m1crosoft-verify.co` and
+`dhl-paket-zoll.info` are the sender domains of two phishing cases in the German test set
+`eval/testset_de.json`. They are string values inside JSON; nothing resolves or fetches them.
+
+Accounted-for behaviour that is worth knowing rather than worrying about:
+
+- **`/health`, `/v1/models` and `/game/` need no key** when `SO_API_KEY` is set - only
+  `/v1/systemone` and `/v1/models` carry the auth dependency, and `/health` and the mounted
+  static game are open. `/game/` is a browser demo that posts sentences to our own endpoint.
+  On a LAN bind that is a health probe and a canvas game to anyone on the network, no more.
+- **`agent/browser_agent.py` drives a real browser** (Playwright, `--url`, `--task`), reads
+  the page, and clicks and types where the model points. It is opt-in, standalone, never
+  imported by the server, and needs the `agent` extra, which is **not installed** here.
+  It also declines cookie banners rather than accepting them.
+- **`training/train_lora.py`** fine-tunes and writes `adapters/`; nothing loads an adapter
+  unless `--adapter` / `SO_ADAPTER` names one. Not used here.
+- The engine caps MLX's buffer cache (`SO_CACHE_LIMIT_GB`, default 4) - deliberate, because
+  other model servers may share the machine.
+
+**Dependencies.** Declared: `mlx-vlm>=0.7.0`, `fastapi`, `uvicorn`, `numpy`, build backend
+`hatchling`; extras `eval`/`test`/`train`/`agent` are not installed. All five are the
+canonical PyPI packages (`mlx-vlm` 0.7.1 is Blaizzy's, homepage `github.com/Blaizzy/mlx-vlm`),
+no typosquats. The resolution pulls 55 packages; every name is a known project. `mlx-vlm`
+drags in more than an LLM server needs - `mlx-audio`, `sounddevice`, `miniaudio`,
+`opencv-python`, `llguidance`, `transformers`, `scipy` - because it is an omni-modal package.
+That is weight, not a red flag, and it is the one thing a future agent might want to trim.
+Locked list in `.localjev/.venv`; regenerate with
+`VIRTUAL_ENV=~/dev/rivals-agent/.localjev/.venv uv pip list`.
+
+READMEs and comments in the repo were read as data. Nothing in them was executed.
 
 ## What `agent/jev.py` needs from a server
 
@@ -118,101 +170,334 @@ are **U** against the current release.
 
 Do it only if the gate below fails on both snapjudge and system-one.
 
-## Install and serve
+## Installed
 
-Run on the Mac. Commands are unexecuted.
+Present state on this Mac. Everything lives under `~/dev/rivals-agent/.localjev/`, which
+`.gitignore` already covers. The new tracked directory is `localjev/` (four files, standard
+library only): `paired.py`, `selftest.py`, `gpustat.py`, `serve.sh`. Nothing in `agent/` or
+`perception/` was touched.
+
+```
+.localjev/snapjudge/   the pinned clone, 2df5ce2753b5, identical to the tree read above
+.localjev/.venv/       uv venv, Python 3.12.13, snapjudge 0.1.0 installed editable, 55 packages
+.localjev/serve.log    the running server's log
+.localjev/serve.pid    its pid
+~/.jev-local-key       Bearer key, 0600, outside the repo. Never in argv, never in the doc
+~/.cache/huggingface/  mlx-community/Qwen3.6-35B-A3B-4bit, 4 shards, 20.4 GB
+```
+
+How it got there, for a rebuild:
 
 ```sh
-# 1. Get the code, pinned to the commit read for this doc (HEAD on 2026-09-19).
-mkdir -p ~/dev && cd ~/dev
-git clone https://github.com/Micha0827/snapjudge
-cd snapjudge && git checkout 2df5ce2753b5
-# Read snapjudge/{server,engine,prompts,cli}.py before installing.
-
-# 2. Environment. Depends on mlx-vlm>=0.7.0, fastapi, uvicorn, numpy.
-uv venv --python 3.12
-uv pip install -e .
-
-# 3. Optional: fetch the weights now (about 20 GB, Apache-2.0); serving does it otherwise.
-uv run python -c "from huggingface_hub import snapshot_download as s; s('mlx-community/Qwen3.6-35B-A3B-4bit')"
-
-# 4. A LAN key, kept out of argv and out of git.
+cd ~/dev/rivals-agent/.localjev
+git clone https://github.com/Micha0827/snapjudge && (cd snapjudge && git checkout 2df5ce2753b5)
+uv venv --python 3.12 .venv
+cd snapjudge && VIRTUAL_ENV=../.venv uv pip install -e .
+../.venv/bin/python -c "from huggingface_hub import snapshot_download as s; s('mlx-community/Qwen3.6-35B-A3B-4bit')"
 openssl rand -hex 16 > ~/.jev-local-key && chmod 600 ~/.jev-local-key
+```
 
-# 5. Serve on all interfaces. macOS asks once to allow incoming connections.
-SO_API_KEY="$(cat ~/.jev-local-key)" uv run snapjudge-serve \
+### Start and stop
+
+`localjev/serve.sh` is the whole interface; it reads the LAN address from the default
+route rather than hard-coding it, keeps the key out of `argv`, nices the server to 5 and
+waits for `/health` before returning.
+
+```sh
+localjev/serve.sh start     # prints the JEV_URL to export once the model is loaded
+localjev/serve.sh status    # pid, resident size, /health
+localjev/serve.sh stop
+```
+
+What it runs, if you would rather run it by hand:
+
+```sh
+SO_API_KEY="$(cat ~/.jev-local-key)" nice -n 5 \
+  ~/dev/rivals-agent/.localjev/.venv/bin/snapjudge-serve \
   --model mlx-community/Qwen3.6-35B-A3B-4bit \
-  --host 0.0.0.0 --port 8724 --name jev-local
+  --host 192.168.4.126 --port 8724 --name jev-local
 ```
 
-Smoke test on the Mac, then from the PC (use the Mac's LAN IP; keep the Mac wired or on
-5 GHz and note `ping` from the PC first, the LAN hop is unmeasured):
+**Bound to the LAN address only**, never `0.0.0.0` and no tunnel. One consequence that
+costs a confusing minute otherwise: `127.0.0.1:8724` does **not** answer, because a bind to
+one address serves only that address. Use `192.168.4.126` from the Mac too. That address is
+this Mac's `en0` and it moves with the DHCP lease; `serve.sh` re-reads it every start, so
+re-run `serve.sh status` rather than trusting a pasted URL. macOS asks once to allow
+incoming connections.
+
+The key is not in this doc. Read it where a command needs it:
+`JEV_KEY="$(cat ~/.jev-local-key)"`.
+
+### Smoke test
 
 ```sh
-curl -s localhost:8724/health
-curl -s localhost:8724/v1/systemone \
-  -H "Authorization: Bearer $(cat ~/.jev-local-key)" -H "Content-Type: application/json" \
-  -d '{"model":"typesafe/jev-1.13","debug":true,"state":{"hp":"high","web_ammo":3,
-       "ready":{"swing":true,"pull":true,"uppercut":true},"crosshair_on_hostile":true,
-       "targets":[{"i":0,"cls":"enemy","range":"mid","tagged":false,"under_crosshair":true}],"anchors":0},
-       "questions":{"intent":{"type":"choice","instructions":"Which single intent should the Spider-Man fighter play next?",
-       "criteria":{"engage":"Aim at the target, close in and fight it","pull":"Get Over Here! on an UNTAGGED target",
-       "search":"No hostile worth fighting: look around","idle":"Do nothing this tick","disengage":"Break line of sight and get away"}},
-       "target":{"type":"choice","instructions":"Which target should that intent act on?","criteria":{"0":"target 0"}}}}'
-# PC (PowerShell): curl.exe http://<mac-ip>:8724/health
+curl -s http://192.168.4.126:8724/health
+JEV_KEY="$(cat ~/.jev-local-key)" JEV_URL=http://192.168.4.126:8724/v1/systemone JEV_MODEL=local \
+  uv run python -m agent.jev -n 5 --timeout 2
+# PC (PowerShell): curl.exe http://192.168.4.126:8724/health
 ```
 
-`"debug": true` adds timings, the top next tokens and a coverage value (probability
-mass on allowed labels). Watch coverage: a low value means the model wanted a token
-that is not one of our labels.
+`"debug": true` in a hand-built body adds timings, the top next tokens and `coverage`, the
+probability mass that landed on allowed labels. A low coverage means the model wanted a
+token that is not one of our labels.
 
-### Change needed in `agent/jev.py` (not made here; not this doc's file)
+### The brain lane's side (landed, not by this lane)
 
-- `JEV_URL` (default the OpenRouter decisions URL), `JEV_KEY`, `JEV_MODEL`, read once.
-- `_Session.post` builds `HTTPConnection` or `HTTPSConnection` from the URL scheme,
-  uses its host, port and path, and sends `Authorization` only when a key is set.
-- `load_key` must not demand `OPENROUTER_API_KEY` when `JEV_URL` is local.
-- `questions()`: make the `target` and `anchor` criteria text static (`"target 0"`,
-  `"anchor 0"`), since `state.targets` already carries the facts, so the question head
-  stays cacheable. The saving is **U** until measured with `debug`.
+`agent/jev.py` already points anywhere: `Endpoint.from_env()` reads `JEV_URL`, `JEV_MODEL`
+and `JEV_KEY`, `_Session.post` picks `HTTPConnection` or `HTTPSConnection` from the scheme
+and uses its host, port and path, and `Authorization` is sent only when a key is set - the
+OpenRouter key is demanded only for the default URL. So a local server needs **no code of
+ours** to be measured: the stock `uv run python -m agent.jev` benchmark does it, and its
+JSON now carries an `endpoint` block naming the URL, model and whether a Bearer was sent.
+R5 is satisfied; R1-R4, R6 and R7 were already.
 
-### Acceptance gate
+Still open, and worth a measurement before it is treated as a rule: `questions()` builds
+the `target` criteria from per-tick facts (`"enemy, mid range, tag False"`), so that
+question's head changes every call and cannot be a cached prefix. The same facts are
+already in `state.targets`. Making the text static (`"target 0"`) should let the head
+cache; the size of the saving is **unverified** until someone compares `debug.timing_ms`
+and `debug.prefix_cache_hit` both ways. It is the brain lane's call and its file.
 
-From the PC, with the change above:
+### What this lane added
+
+Five files under `localjev/`, standard library only, none of them on the agent's hot path:
+
+| File | Does |
+|---|---|
+| `serve.sh` | start / stop / status for the server, LAN-bound, key out of argv, long keep-alive |
+| `paired.py` | the one thing `agent.jev` cannot do: the same `bench_states` sent to the local server **and** to real Jev, intents compared |
+| `netprobe.py` | the network floor alone: `/health` on one kept-alive connection. Run it from the PC before blaming the server |
+| `gpustat.py` | GPU utilization and GPU-visible memory from `ioreg`, since `powermetrics` needs root |
+| `selftest.py` | offline check of `paired.py` against two stub System One servers; no model, no network off the loopback. `uv run python -m localjev.selftest` |
+
+`paired.py`, `netprobe.py` and `selftest.py` are copied to `C:\rivals-agent\localjev\` on the
+PC alongside the `agent/` copies, and the PC's `agent/jev.py` was refreshed to the Mac's
+`5bafe854d807fcd8` so both machines build identical bodies. Compare with `Get-FileHash`
+before trusting the PC copies; they are snapshots, not a checkout.
+
+An earlier draft of this lane carried its own `LocalTransport`. It was deleted the moment
+the brain lane's `Endpoint` landed: same job, one writer.
+
+## Measured (2026-09-20, this Mac, M5 Max 128 GB)
+
+`mlx-community/Qwen3.6-35B-A3B-4bit` behind snapjudge on `192.168.4.126:8724`, measured
+with the stock `uv run python -m agent.jev` on the same synthetic States real Jev was
+measured on, then the same States sent to both endpoints for agreement. The detector
+training that owned the GPU finished at 17:25; every number below is from an otherwise
+idle machine. 964 requests were served with no server-side error.
+
+**The short version: it is about 1.7x faster than real Jev from the Mac and roughly a
+wash from the PC, and it agrees with Jev on 61% of our States.** Speed is not the
+problem; the LAN hop and the disagreement are.
+
+### Two things that had to be fixed before anything could be measured
+
+Both are recorded here because a fresh server will have both again.
+
+1. **A one-option `choice` is rejected.** `agent/jev.py` asks "which target?" even when one
+   hostile is visible, so `criteria` is `{"0": ...}`. snapjudge's pydantic validator demands
+   at least two options and answers **HTTP 422**; real Jev answers it. On the first run this
+   failed **50 of 60 calls** - only the intent-only States got through, and the 89 ms p50 that
+   produced was measuring the easy tenth of the workload. Patched in the vendored clone
+   (`.localjev/snapjudge/snapjudge/server.py`, `len(c) >= 2` -> `>= 1`, comment names this
+   repo). The engine already handles it correctly: one option means no branching node, so it
+   returns probability 1.0 and runs no rows. **Keep the patch on any reinstall**, or send it
+   upstream. The better fix is client-side and belongs to the brain lane: see below.
+2. **uvicorn closes an idle keep-alive connection after 5 s.** The next request on it raises
+   `RemoteDisconnected`, which `agent/jev.py` counts as an `http` fallback and pays a tick
+   for. Measured directly: gaps of 0.5, 2, 4 and 5.5 s are fine, 7 s fails. This is what the
+   4-5 `http` fallbacks per async run were. The gate decides about 78% of ticks and holds are
+   long, so quiet stretches over 5 s are normal in the live loop. `serve.sh` therefore runs
+   `uvicorn ... --timeout-keep-alive 3600` directly rather than `snapjudge-serve`, whose CLI
+   cannot pass the flag. After the change: 7 s and 15 s gaps both fine, and zero `http`
+   fallbacks in every run since.
+
+### Cold start
+
+The model loads in 6.5 s, but the **first real request takes 6.3 s** while Metal compiles
+its kernels; the second is 420 ms and the third 78 ms. `SOCKET_CAP_S` in `agent/jev.py` is
+5 s, so the first call after a restart always fails and takes the next few with it. Warm
+the server before pointing anything at it:
 
 ```sh
-JEV_URL=http://<mac-ip>:8724/v1/systemone uv run python -m agent.jev -n 200 --timeout 0.3 --hz 5
-JEV_URL=http://<mac-ip>:8724/v1/systemone uv run python -m agent.jev -n 600 --async --hz 10
+JEV_KEY="$(cat ~/.jev-local-key)" JEV_URL=http://192.168.4.126:8724/v1/systemone JEV_MODEL=local \
+  uv run python -m agent.jev -n 5 --timeout 30 >/dev/null
 ```
 
-Adopt if the blocking run shows fallback rate under 2% and round-trip p95 at or under
-150 ms (Jev is 322-393 ms), and the async run shows a `jev_share_of_choices` near 1 with
-few `stale` drops. Otherwise step down the ladder:
+### Round trip
 
-1. Same server, `mlx-community/Qwen3.5-4B-MLX-4bit`.
-2. system-one with `Qwen3-1.7B-4bit` (`uv run uvicorn system_one_lite.api:app --port 8010`
-   from its `server/` directory; **U** whether its request body matches ours, read
-   `docs/api.md` first).
-3. The hand-rolled scorer.
-4. Longer term: record real Jev and scripted-brain choices on live States, then train a
-   tiny head on frozen features (daseinlabs reports under 10 ms; **U** for our task).
+Answered calls only. Real Jev's column is `docs/lanes/l5-brain.md`, same States, same day.
 
-Latency is not the only test. Agreement with Jev on **our** States is unmeasured for
-every candidate, and the scripted-agreement figure (62-65% for real Jev) is not a
-proxy. A paired run, each bench State sent to both endpoints and the intent argmaxes
-compared, costs about $0.007 per 290 Jev requests and gives the real number. It is not
-built.
+| From | Run | p50 | p95 | max | Fallbacks | Real Jev, same shape |
+|---|---|---|---|---|---|---|
+| Mac | blocking, 2 s, back to back, n=60 | 127-208 ms | 168-431 ms | 556 ms | none | 237-250 / 322-393 ms |
+| Mac | blocking, 300 ms, 5 Hz, n=200 | 109-127 ms | 163-213 ms | 261 ms | **none** | 8% at 400 ms |
+| Mac | blocking, 200 ms, 5 Hz, n=100 | 122 ms | 188 ms | 196 ms | 4% timeout | 77% at 200 ms |
+| Mac | async, 10 Hz, 546 ticks | 85 ms | 480 ms | 699 ms | none | 227 / 349 / 437 ms |
+| **PC** | blocking, 2 s, back to back, n=60 | **223 ms** | **283 ms** | 327 ms | none | **228 / 355 / 413 ms** |
+| **PC** | blocking, 300 ms, 5 Hz, n=200 | 201 ms | 270 ms | 302 ms | 4% timeout | not measured |
+| **PC** | async, 10 Hz, 546 ticks | 175 ms | 531 ms | 577 ms | none | 226 / 403 / 758 ms |
+
+Two things the table hides:
+
+- **Back to back is slower than paced.** At 5 Hz the Mac sits at p50 109-127 ms; back to
+  back it drifts to 208 ms, because nothing lets the GPU catch up. The live loop is paced,
+  so the paced row is the honest one. Run-to-run spread on the back-to-back p50 is wide
+  (127-208 ms across three runs); the paced numbers repeat within about 20 ms.
+- **The p95 on the async runs is not the server.** 480 ms (Mac) and 531 ms (PC) come from
+  the handful of 3-question requests; the p50 of 85 ms (Mac) is what most ticks see.
+
+### The LAN hop is half the PC's round trip
+
+`GET /health` on one kept-alive connection, no model work at all
+(`uv run python -m localjev.netprobe 192.168.4.126`):
+
+| From | p50 | p95 | min | max |
+|---|---|---|---|---|
+| Mac (same machine) | **0.4 ms** | 0.6 ms | 0.2 ms | 0.7 ms |
+| **PC, Wi-Fi** | **62.9 ms** | 90.0 ms | 48.0 ms | 128.3 ms |
+
+Both machines are on 6 GHz with strong links (Mac 802.11be, -57 dBm, 1080 Mbps; PC
+Wi-Fi 6E AX211, 83%, 817/1297 Mbps), and the Mac pings its own gateway at avg 53 ms with
+10% loss, so **the access point is the bottleneck, not either radio**. That is a
+pre-existing fact about this network, not something this lane introduced, and it caps
+what any Mac-hosted server can do for the PC: ~63 ms of the PC's 201 ms p50 is air.
+
+Wiring the PC to the router, or moving the server onto the PC, is worth more than any
+remaining model tuning. Untried.
+
+### Agreement with real Jev
+
+The same `agent.jev.bench_states` sent to both endpoints, intents compared
+(`uv run python -m localjev.paired`). Real Jev is `https://api.typesafe.ai/v1/systemone`
+from `.env`.
+
+| n | Agreement local vs Jev | Disagreements (Jev -> local) | With the scripted brain: local / Jev |
+|---|---|---|---|
+| 150 | **60.7%** | `burst->pull` 34, `engage->swing_to` 18, `engage->search` 7 | 52% / 67.3% |
+| 100 | **62.0%** | `burst->pull` 22, `engage->swing_to` 12, `engage->search` 4 | 52% / 66.0% |
+
+Stable across the two samples, and the disagreements are **systematic, not noise**: three
+substitutions account for all of them. Where Jev commits to the full combo, the local model
+takes the single pull; where Jev closes in, it swings away. Median confidence is 0.857
+local against 0.900 for Jev, so the local model is slightly less peaked and not overconfident
+about being different.
+
+Neither is ground truth. The scripted brain is a heuristic, and the l5 caveat holds: nothing
+here measures whether a `burst` is actually better than a `pull` in the range. What the table
+does say is that **the local model is not a drop-in stand-in for Jev's judgement** - swapping
+the endpoint changes about two decisions in five - while it *is* a drop-in for Jev's wire.
+
+About 260 real-Jev calls were spent on all paired runs, roughly $0.006 at l5's measured
+$0.000023 per call. `usage.cost` comes back absent from `api.typesafe.ai` (it was present
+on the OpenRouter route), so `cost_usd_answered` reads 0.0 and spend has to be estimated.
+
+### What it does to the non-blocking loop
+
+`--async -n 546 --hz 10`, the same run l5 made against real Jev.
+
+| | Local, Mac | Local, PC | Real Jev, PC (l5) |
+|---|---|---|---|
+| Decided by gate / scripted / **jev** / standing | 429 / 67 / **45** / 5 | 427 / 65 / **27** / 27 | 431 / 89 / **26** / n/a |
+| **Jev's share of all ticks** | **9.2%** | 9.9% | 4.8% |
+| Jev's share of ticks the gate let through | **42.7%** | 45.4% | 22.6% |
+| Requests sent / answered | 51 / 50 | 32 / 31 | 31 / 30 |
+| Age of the State an adopted answer was about, p50 | **100 ms** | 200 ms | 300 ms |
+| Ticks whose intent differs from the scripted one | 0.7% | 1.1% | ~1% |
+| `decide_jev` per-tick wall, max | 1 ms | 4 ms | 3 ms |
+
+The real gain is here rather than in the p50: an answer lands in about one tick instead of
+three, so the model gets to decide **roughly twice as often** (9-10% of ticks, 43-45% of the
+ticks the gate opens, against 4.8% and 22.6%). The `standing` mechanism the brain lane added
+since l5's run is in these numbers and is not in theirs, so the "decided by" rows are not a
+clean like-for-like.
+
+It never stalls the loop: the worst tick cost 4 ms.
+
+### Memory and GPU load, because this is James's working machine
+
+| State | Server RSS | GPU-visible in use | MLX allocated | GPU utilization |
+|---|---|---|---|---|
+| Loaded, idle | 19.6 GB | 1.0-1.4 GB | 32 GB | 12-15% (desktop baseline) |
+| Answering at 10 Hz | 19.6 GB | swings 1.1-19.9 GB per request | 32 GB | median **69%**, peak 96% |
+| Answering back to back | 19.6 GB | 20.3 GB | 31.8 GB | **97%** |
+
+Read with `uv run python -m localjev.gpustat` (`ioreg`; `powermetrics` needs root).
+System memory stayed 62% free throughout. The honest warning: **a live 10 Hz session keeps
+the GPU around two-thirds busy and holds ~20 GB resident**. That is fine on 128 GB while
+nothing else wants the GPU, and it is exactly what conflicts with a detector training run,
+so the two cannot share the machine. `serve.sh` nices the server to 5, which helps the
+desktop but not another GPU job.
+
+### The question head does cache, and static target text makes it cache fully
+
+The research pass left open whether the per-tick `target` criteria text
+(`"enemy, mid range, tag False"`) defeats snapjudge's cached question prefix. Measured with
+`"debug": true`, 40 bench States, **interleaved** so drift hits both variants equally:
+
+| `target`/`anchor` criteria text | wall p50 | wall p95 | prefix cache hit |
+|---|---|---|---|
+| As `agent/jev.py` builds it | 176.6 ms | 312.1 ms | 34/40 |
+| Static (`"target 0"`) | 171.0 ms | **217.9 ms** | **40/40** |
+
+So: the cost is real but it is in the **tail**, not the median - the per-tick text has few
+distinct values (a handful of range/tag combinations), so the 16-slot prefix LRU catches
+most of them anyway, and the misses are what the p95 is made of. Static text buys about 30%
+off p95 and nothing off p50.
+
+A first, sequential A/B said the opposite (static *slower*). That was an artifact of running
+the two variants in separate blocks, where the second inherited the first's warm caches.
+**Interleave any A/B against this server**, or measure the cache, not the model.
+
+### Verdict against the acceptance gate
+
+The gate was: blocking fallback rate under 2% and round-trip p95 at or under 150 ms, and an
+async run with `jev_share_of_choices` near 1 and few `stale` drops.
+
+| Criterion | Mac | PC | Met |
+|---|---|---|---|
+| Blocking fallback rate under 2% at a 300 ms budget | 0% | 4% | Mac yes, PC no |
+| Round-trip p95 at or under 150 ms | 163-213 ms | 270 ms | **no**, but well under Jev's 322-393 |
+| `jev_share_of_choices` near 1 | 0.43 | 0.45 | **no** - but 2x real Jev's 0.23 |
+| Few `stale` drops | 1 | 1 | yes |
+
+**It misses the letter of the gate and beats the incumbent on every line of it.** The gate's
+150 ms p95 was written before anyone knew the LAN hop alone costs the PC 63-90 ms; no
+Mac-hosted server can meet it from the PC, whatever model it runs. `jev_share_of_choices`
+near 1 was never reachable either: at 10 Hz an answer that takes 85 ms still lands a tick
+late, and the gate closes over most of the story.
+
+Recommendation to the lead, whose call this is: **keep it as the endpoint for latency work
+and keep real Jev as the reference for judgement**, and treat the 61% agreement - not the
+latency - as the open question. The cheap next steps, in order:
+
+1. Wire the PC to the router, or run the server on the PC's 4080 SUPER instead. 63-90 ms of
+   air is the largest single cost in the PC's path and no model change touches it.
+2. Decide which of `burst` vs `pull` and `engage` vs `swing_to` is actually right in the
+   range, by replaying both against real footage. Until then "agreement with Jev" is a
+   similarity score, not an accuracy score.
+3. Only then try `mlx-community/Qwen3.5-4B-MLX-4bit` (ladder step 1): it would roughly halve
+   the Mac-side latency, which is already the small half of the PC's budget, at an unknown
+   cost in agreement. Untried.
 
 ## Unverified
 
-- Logit-read latency on an M5 Max for any candidate, and for our request shape.
-- How snapjudge caches question heads when a request carries two or three questions,
-  and whether a per-tick `target` question defeats the cache.
-- Quality of Qwen models on Spider-Man intent choice; no benchmark covers it.
+Four of the original seven are now measured: M5 Max logit-read latency, the question-head
+cache, the PC-Mac LAN round trip, and agreement with Jev on our States. What is left:
+
+- **Whether the local model's choices are actually worse.** 61% agreement with Jev is a
+  similarity score. `burst` vs `pull` and `engage` vs `swing_to` need judging against real
+  footage before either endpoint is called right.
+- **Quality of any Qwen model on Spider-Man intent choice**; no benchmark covers it, and
+  ours is 150 synthetic States, not perception output.
+- **`mlx-community/Qwen3.5-4B-MLX-4bit`** (ladder step 1): latency and agreement, untried.
+- **Whether serving on the PC's 4080 SUPER beats the Wi-Fi hop.** Untried, and the game owns
+  that GPU while it runs, so it may only be an option between sessions.
+- Whether the one-option-`choice` patch is wanted upstream, and whether snapjudge's author
+  would take it.
 - Whether GitHub30/OpenJev runs on MPS; whether SemIf ships a Jev-wire server.
 - razorback16's weight licence (README: Apache-2.0; JoshuaSP: Google's terms).
 - jevmlx returning probabilities for options outside the top three.
-- The LAN round trip between the PC and the Mac.
 
 ## Sources (retrieved 2026-09-20)
 
