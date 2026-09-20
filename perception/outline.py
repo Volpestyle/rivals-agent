@@ -15,13 +15,19 @@ the bulk of it -- the suit is *tall* (0.4-0.9), a nameplate is a wide thin bar (
 bar. Player exclusion therefore needs the second test in SUIT_ABOVE_MAX below: what sits
 above the bar. Do not assume shape alone keeps the player out; it does not.
 
-Returns agent.state.Detection(cls=ENEMY) boxes for the body under each bar.
+Two paths: the green one (Accessibility > Custom Colors > Enemy Color = Green, which
+L4 has set) and the original red-nameplate one, kept because every frame recorded so
+far predates the setting. `detect(..., mode="auto")` prefers green and falls back.
+
+Returns agent.state.Detection(cls=ENEMY) boxes. Checks live in tests/test_outline.py;
+run them with `uv run --group perception pytest`.
 """
 import sys
 from pathlib import Path
 
 import cv2
 import numpy as np
+from typing import NamedTuple
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from agent.state import ENEMY, Detection  # noqa: E402
@@ -33,7 +39,12 @@ from agent.state import ENEMY, Detection  # noqa: E402
 #   pink masonry H~  8  S~ 48      V~178 (the map is full of this)
 # Brightness separates the bar from the player's suit; saturation drops the masonry.
 # A first attempt at S>120,V>110 alone boxed half the architecture.
-HUE_LO, HUE_HI, SAT_MIN, VAL_MIN = 8, 168, 100, 195
+# HUE_LO is deliberately tight. Red wraps hue 0, so the band is two-sided, but a real
+# nameplate sits at hue ~174 while the warm-lit tan railings and ledges that produced
+# most of the false boxes measure hue 7-8, S~100, V~200-216 -- right at the old
+# HUE_LO=8 edge. Pulling it to 4 cut detections over 531 frames from 154 to 55 (-64%)
+# and the verified LUNA SNOW nameplate is still found.
+HUE_LO, HUE_HI, SAT_MIN, VAL_MIN = 4, 168, 100, 195
 # A nameplate bar, measured at 1280x720: 8-10 px tall, 80-105 px wide. Profiling the
 # components found across 40 bot-bearing frames splits cleanly in two: real nameplates
 # at w 80-105 h 8-10, and a tail of w 20-40 h 3-5 slivers, which are specular highlights
@@ -60,6 +71,50 @@ FRAME_H = 720.0  # size the pixel thresholds above were measured at
 # Revisit if the agent ever plays another hero, or once the green enemy outline is on.
 SUIT_ABOVE_MAX = 0.30
 SUIT_STRIP = 3  # strip height above the bar, in bar heights
+
+# --- green path: Accessibility > Custom Colors > Enemy Color = Green (set by L4) ---
+# Sampled from the game's own swatch in docs/evidence/l4/settings-enemy-color-green.jpg:
+# BGR (92,199,83) = HSV H62 S149 V199. That lands in the emptiest part of the range's
+# palette: over 531 run1 frames (recorded *before* the setting, so this is pure
+# background) the band below holds 0.021% of pixels and 78 components >= 40 px in
+# total -- about 0.15 per frame, largest 399 px. The range's bright green door and its
+# green cross are NOT in this band; they are an emerald green at hue 75-79.
+class Band(NamedTuple):
+    """An enemy-colour band in HSV. One constant to change if L4 picks another swatch."""
+    hue_lo: int
+    hue_hi: int
+    sat_min: int
+    val_min: int
+
+
+# Accessibility > Custom Colors > Enemy Color = Green. The menu swatch is #53C75C but
+# it renders muted in game, about #40AF58 = OpenCV H67 S~160 V~175, so the band is
+# centred on 67 rather than on the menu value.
+GREEN = Band(54, 70, 90, 120)
+# An enemy marker is either a thin closed contour around the body or a recoloured
+# health bar. Neither is a filled region, so a solid patch is scenery: a signboard, a
+# lit panel, foliage in sun. Background components already sit at fill p50 0.34 / p99
+# 0.78, so fill alone is weak -- it is the size floor that does most of the work.
+GREEN_FILL_MAX = 0.80
+GREEN_MIN_H = 14   # px at 720p; below this a body outline is not resolvable anyway
+GREEN_MIN_AREA = 60
+# The outline is a 1-2 px contour that the body's own shape breaks into arcs -- a
+# shoulder, an arm, a leg each come back separately, and the first attempt returned
+# eight boxes for one Galacta bot. Close hard enough to rejoin the arcs of one body.
+# Too large merges two adjacent enemies, which is the failure to watch for.
+GREEN_CLOSE = 14   # px at 720p
+GREEN_MERGE_GAP = 12  # px at 720p; boxes closer than this are arcs of one body
+# HUD elements that are green in this band and are not enemies, as fractions of the
+# frame: the fps/ping overlay is green text, and the player's own HP bar has green
+# segments. Same idea as autolabel's DEAD_ZONES, kept here because outline.py is used
+# on its own by the aim path.
+PLAYER_ZONE = (0.28, 0.33, 0.64, 1.00)  # where the third-person hero is drawn
+PLAYER_ZONE_MIN_H = 60  # px at 720p; above this it is a close enemy, not junk
+GREEN_DEAD_ZONES = [
+    (0.00, 0.88, 1.00, 1.00),  # bottom HUD strip: own HP bar, ability row
+    (0.86, 0.06, 1.00, 0.32),  # top-right fps / ping / packet-loss readout, all green text
+    (0.00, 0.00, 0.26, 0.20),  # top-left practice-range key hints
+]
 
 
 def find_bars(frame_bgr, scale=None):
@@ -95,12 +150,126 @@ def find_bars(frame_bgr, scale=None):
     return sorted(bars, key=lambda b: -b[2])
 
 
-def detect(frame_bgr, scale=None):
-    """Enemy boxes inferred from the nameplate above each hostile.
+def find_green(frame_bgr, scale=None, band=GREEN):
+    """Enemy marks in the game's green: (x, y, w, h, kind), kind in {'outline', 'bar'}.
 
+    `Enemy Color = Green` recolours the enemy marks. Whether that is a contour around
+    the body, a health bar, or both is a question for the first recording made with the
+    setting on, so both shapes are accepted and the kind is reported.
+
+    An outline's bounding box *is* the silhouette, so unlike the red path this needs no
+    bar-to-body geometry -- the weakest part of that path disappears.
+    """
+    s = (frame_bgr.shape[0] / FRAME_H) if scale is None else scale
+    hsv = cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2HSV)
+    # cv2.inRange, not numpy comparisons: the numpy form casts three full-size planes to
+    # int64 first, which on the PC cost more than everything else in the function put
+    # together (960 px crop 11.1 ms -> see the lane doc). This runs in one pass, uint8.
+    mask = cv2.inRange(hsv, (band.hue_lo, band.sat_min + 1, band.val_min + 1),
+                       (band.hue_hi, 255, 255))
+    # a contour drawn 1-2 px wide breaks into arcs over a body; rejoin them before
+    # components are taken, or one bot comes back as eight boxes
+    k = max(3, int(GREEN_CLOSE * s))
+    mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, np.ones((k, k), np.uint8))
+    n, _, stats, _ = cv2.connectedComponentsWithStats(mask, 8)
+    ih, iw = frame_bgr.shape[:2]
+    out = []
+    for i in range(1, n):
+        x, y, w, h, area = stats[i]
+        if area < GREEN_MIN_AREA * s * s:
+            continue
+        cx, cy = (x + w / 2) / iw, (y + h / 2) / ih
+        if any(zx1 <= cx <= zx2 and zy1 <= cy <= zy2 for zx1, zy1, zx2, zy2 in GREEN_DEAD_ZONES):
+            continue
+        # The player's own band. Only enemies are outlined, so nothing here produced a
+        # false box in the tagrun footage -- but junk in front of the player is what
+        # caused a stray ability press, so small marks are dropped. The height test is
+        # the point: a bot at point blank stands exactly here and must survive.
+        if (PLAYER_ZONE[0] <= cx <= PLAYER_ZONE[2] and PLAYER_ZONE[1] <= cy <= PLAYER_ZONE[3]
+                and h < PLAYER_ZONE_MIN_H * s):
+            continue
+        if (w / max(h, 1) >= BAR_MIN_ASPECT and BAR_MIN_W * s <= w <= BAR_MAX_W * s
+                and BAR_MIN_H * s <= h <= BAR_MAX_H * s):
+            out.append((int(x), int(y), int(w), int(h), "bar"))
+        elif h >= GREEN_MIN_H * s and area / (w * h) <= GREEN_FILL_MAX:
+            out.append((int(x), int(y), int(w), int(h), "outline"))
+    return sorted(_merge(out, GREEN_MERGE_GAP * s), key=lambda b: -b[2] * b[3])
+
+
+def _merge(marks, gap):
+    """Join marks whose boxes are within `gap` px: arcs of one silhouette, not two bots.
+
+    Closing the mask alone cannot bridge a raised arm held away from the body, and that
+    came back as a second box on the same Galacta bot. Merging boxes afterwards is the
+    cheaper half of the fix; the risk is two enemies standing shoulder to shoulder
+    becoming one, which is why the gap is small relative to a body.
+    """
+    boxes = [list(m) for m in marks]
+    changed = True
+    while changed:
+        changed = False
+        for i in range(len(boxes)):
+            for j in range(i + 1, len(boxes)):
+                a, b = boxes[i], boxes[j]
+                if (a[0] - gap < b[0] + b[2] and b[0] - gap < a[0] + a[2]
+                        and a[1] - gap < b[1] + b[3] and b[1] - gap < a[1] + a[3]):
+                    x1, y1 = min(a[0], b[0]), min(a[1], b[1])
+                    x2, y2 = max(a[0] + a[2], b[0] + b[2]), max(a[1] + a[3], b[1] + b[3])
+                    kind = "outline" if "outline" in (a[4], b[4]) else "bar"
+                    boxes[i] = [x1, y1, x2 - x1, y2 - y1, kind]
+                    boxes.pop(j)
+                    changed = True
+                    break
+            if changed:
+                break
+    return [tuple(b) for b in boxes]
+
+
+def find_enemies(frame_bgr, scale=None, band=GREEN):
+    """Enemy boxes from the green marks. An outline box is the silhouette as drawn.
+
+    One enemy usually carries both marks -- a contour round the body and a nameplate
+    above it -- so a bar whose projected body overlaps an outline is dropped rather
+    than counted as a second enemy. A bar on its own is kept: that is an enemy whose
+    body is occluded, which the brain still wants to know about.
+    """
+    out = []
+    outlines = []
+    for x, y, w, h, kind in find_green(frame_bgr, scale, band):
+        if kind == "outline":
+            box = (float(x), float(y), float(x + w), float(y + h))
+            outlines.append(box)
+            conf = 0.9
+        else:  # a bar sits above the body, same geometry as the red path
+            bw, bh = w * BODY_W, w * BODY_H
+            cx, top = x + w / 2, y + h + w * BODY_GAP
+            ih, iw = frame_bgr.shape[:2]
+            box = (max(0.0, cx - bw / 2), min(float(ih), top),
+                   min(float(iw), cx + bw / 2), min(float(ih), top + bh))
+            conf = round(min(0.95, 0.5 + w / 400), 3)
+        if box[2] > box[0] and box[3] > box[1]:
+            out.append((kind, box, conf))
+    keep = [(k, b, c) for k, b, c in out
+            if k == "outline" or not any(_overlaps(b, o) for o in outlines)]
+    return [Detection(cls=ENEMY, bbox=tuple(round(v, 1) for v in b), conf=c) for _k, b, c in keep]
+
+
+def _overlaps(a, b):
+    return a[0] < b[2] and b[0] < a[2] and a[1] < b[3] and b[1] < a[3]
+
+
+def detect(frame_bgr, scale=None, mode="auto"):
+    """Enemy boxes. mode: 'green' (Enemy Color=Green), 'red' (nameplate), 'auto'.
+
+    'auto' prefers green and falls back to the red nameplate path, so it works on
+    footage recorded before the accessibility setting was changed as well as after.
     Boxes are in the pixels of the frame passed in, like detect.Detector, so a crop
     returns crop coordinates; the caller adds the crop origin. `scale` as in find_bars.
     """
+    if mode in ("green", "auto"):
+        green = find_enemies(frame_bgr, scale)
+        if green or mode == "green":
+            return green
     ih, iw = frame_bgr.shape[:2]
     out = []
     for x, y, w, h in find_bars(frame_bgr, scale):
@@ -119,25 +288,6 @@ def detect(frame_bgr, scale=None):
 
 
 if __name__ == "__main__":
-    # self-check: a wide thin bar is a nameplate, a tall red blob (the player's suit) is not
-    _f = np.zeros((720, 1280, 3), np.uint8)
-    _f[287:297, 449:554] = (0, 0, 255)   # nameplate, open space above it
-    _f[323:454, 453:560] = (0, 0, 255)   # Spider-Man's torso, below
-    _bars = find_bars(_f)
-    assert len(_bars) == 1 and _bars[0][:2] == (449, 287), _bars
-    _d = detect(_f)
-    assert len(_d) == 1 and _d[0].cls == ENEMY and _d[0].bbox[1] > 297, _d
-    # a native-resolution crop: same bar at 2x, found only when the caller says scale=2
-    _c = np.zeros((960, 960, 3), np.uint8)
-    _c[400:420, 100:310] = (0, 0, 255)
-    assert len(find_bars(_c, scale=2.0)) == 1, find_bars(_c, scale=2.0)
-    assert detect(_c, scale=2.0)[0].bbox[0] > 0
-    # the player's belt: nameplate geometry, but the suit sits directly above it
-    _p = np.zeros((720, 1280, 3), np.uint8)
-    _p[300:390, 430:530] = (0, 0, 200)   # torso
-    _p[392:400, 430:500] = (0, 0, 255)   # belt, a wide thin bright-red bar
-    assert find_bars(_p) == [], find_bars(_p)
-
     frame = cv2.imread(sys.argv[1])
     assert frame is not None, f"cannot read {sys.argv[1]}"
     dets = detect(frame)
@@ -147,4 +297,6 @@ if __name__ == "__main__":
         from detect import draw
         for x, y, w, h in find_bars(frame):
             cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 255), 1)
+        for x, y, w, h, _kind in find_green(frame):
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 255), 1)
         cv2.imwrite(sys.argv[2], draw(frame, dets))

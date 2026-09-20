@@ -6,6 +6,63 @@ Owner: `rivals-det` (pane w26:pA). Files: `perception/autolabel.py`, `train.py`,
 Full method, measurements and contact sheets: **`docs/evidence/l3/README.md`**.
 This file is status, facts other lanes depend on, and decisions.
 
+## Live finder: how to call it
+
+For the live client, with **Accessibility > Custom Colors > Enemy Color = Green** set.
+Classical, no GPU, no weights.
+
+```python
+from perception.outline import find_enemies      # perception/outline.py
+
+dets = find_enemies(frame_bgr, scale=None, band=GREEN)
+# -> list[agent.state.Detection]: cls=ENEMY, bbox=(x1,y1,x2,y2), conf
+```
+
+| Argument | Meaning |
+|---|---|
+| `frame_bgr` | BGR image. A full frame **or a crop** — boxes come back in *that* image's pixels, so add the crop origin yourself. |
+| `scale` | How big this image's pixels are vs 1280x720: `1.0` for 720p, **`2.0` for anything cut from the 2560x1440 capture**. `None` infers from frame height, which is right only for a *full* frame — a 960 px crop of a 1440p capture is 960 tall but its marks are 2.0x, so **the aim path must pass `scale=2.0`**. |
+| `band` | `outline.GREEN`, a `Band(hue_lo, hue_hi, sat_min, val_min)`. **A swatch change is this one constant** — nothing else in the file needs editing. |
+
+Aim path, 960 px native crop around the crosshair:
+
+```python
+crop = frame[cy-480:cy+480, cx-480:cx+480]
+for d in find_enemies(crop, scale=2.0):
+    x1, y1, x2, y2 = d.bbox
+    x1 += cx-480; x2 += cx-480; y1 += cy-480; y2 += cy-480
+```
+
+Measured over all 511 native `tagrun` frames. **Use the PC column** — that is where the
+aim loop runs, and it is roughly 3x slower than this Mac for this work:
+
+| Mode | detections | frames with ≥1 | PC (i9-14900KF) | Mac (M5 Max) |
+|---|---|---|---|---|
+| full 2560x1440 | 464 | 223 | 14.6 ms / p95 15.7 | 4.3 ms / p95 4.8 |
+| **960 px native crop** | 138 | 129 | **4.4 ms / p95 5.4** | 1.3 ms / p95 1.8 |
+
+Verified running on the PC against `C:\rivals-agent\perception\outline.py`, sha256
+`9dd2513b3812ecd58d2b7349cc1893fc3a4159e88445e555543da644f2d466b7`, identical to the
+Mac copy; `perception/detect.py` and `agent/state.py` are there too.
+
+**The crop mode was over budget until it was profiled.** The first PC run measured
+11.1 ms on the 960 px crop against a 10 ms budget, while the same code took 2.1 ms
+here — the mask was built from numpy comparisons, which cast three full-size planes to
+int64 before comparing. One `cv2.inRange` instead cut the PC crop to 4.4 ms and the
+full frame from 42.7 to 14.6, with detection counts unchanged. **Benchmark perception
+on the PC, not on the Mac; the ratio is not a constant factor you can divide by.**
+
+HUD and player-region exclusion are **inside** `find_enemies` — callers do not add
+their own. The HUD zones cover the green fps/ping readout and the player's own green
+HP bar. The player-region zone drops only *small* marks: a bot at point blank stands
+exactly where the hero is drawn, so suppressing that region wholesale would blind the
+melee case. No player-region false box has yet been seen on the green path; the zone
+is there because junk in front of the player is what caused L4's stray ability press.
+
+Not yet quantified: **precision and recall against hand-checked ground truth.** The
+numbers above are detections and latency, not correctness. Treat detections as
+high-quality-but-unverified until that lands.
+
 ## Status
 
 | | |
@@ -133,20 +190,70 @@ pure green. They do not rule green out; they rule out that particular green.
 
 ## outline.py — measured
 
-Over 2121 run1 frames (every 3rd of 6361), full-frame 1280x720:
+Over 2121 run1 frames (every 3rd of 6361), full-frame 1280x720, red path:
 
-| | detections | frames with ≥1 | latency median | p95 |
+| Stage | detections | frames with ≥1 | latency median / p95 | hand-judged precision |
 |---|---|---|---|---|
-| player guard off | 766 | 547 | 4.96 ms | 6.48 ms |
-| **player guard on** | **612** | **462** | **5.33 ms** | **7.42 ms** |
+| no player guard | 766 | 547 | 4.96 / 6.48 ms | ~19% |
+| + suit-above guard | 612 | 462 | 5.33 / 7.42 ms | ~19–29% (two samples of 36) |
+| **+ `HUE_LO` 8 → 4** | **215** | **213** | **2.35 / 2.76 ms** | **~67% (24/36)** |
 
-The guard removes **154 detections, 20.1%** — scaled to the lead's 2317 over the full
-run, about **466**. Hand-judged precision on 36 random detections rose from ~19% to
-~29%. Player boxes are much reduced but **not eliminated**: a few close-ups of the suit
-still produce one. Recall is not quoted yet — it needs hand-checked ground truth, and at
-21x33 px distant bots cannot be counted honestly by eye.
+The suit guard removes 154 detections (20.1%; ~466 of the lead's 2317 over the full
+run). Tightening `HUE_LO` then removed another 397 — see the table below for why that
+one change mattered most. Recall is still not quoted: it needs hand-checked ground
+truth, and at 21x33 px distant bots cannot be counted honestly by eye.
 
-### Ranging: use the nameplate, not the box height
+### What the false positives actually were
+
+36 random detections, hand-judged, *before* the `HUE_LO` fix (7 true, 29 false):
+
+| Category | Count | Share of FPs | Fixed by a colour change? |
+|---|---|---|---|
+| Warm-lit floor, ledges, ramps | 17 | 59% | **Yes** — measured hue 7–8, S~100, V~200–216 |
+| Map architecture: railings, pillars, archways | 8 | 28% | **Yes** — same warm-lit band |
+| Map prop (a pink sign) | 1 | 3% | Yes |
+| The player's own suit | 2 | 7% | Yes — suit is red/blue, not green |
+| HUD (the hero portrait) | 1 | 3% | Yes — portrait is red |
+
+**The decisive fact: they were all one thing.** Sampling the bars behind the "empty
+ground" boxes showed hue 7–8 — the *warm* side of the two-sided red band, where the
+range's tan railings and sunlit ledges live. A real nameplate is hue ~174. The band was
+two-sided only because red wraps 0; nothing needed the low side. Pulling `HUE_LO` from
+8 to 4 cut detections 154 → 55 over 531 frames (−64%) with the verified LUNA SNOW
+nameplate still found, and raised precision to ~67%.
+
+So: **a colour change fixes essentially all of it** — the approach is not broken, the
+band was. After the fix the remaining 11 FPs in 36 are: player suit 5, map posts/lamps
+3, railing 1, empty ground 2. Player is now the largest single category, which is why
+the region guard stays in place downstream.
+
+### Ranging, settled on the native footage: use the outline's height
+
+Measured on `tagrun0` frames 60–320, the single Luna Snow bot sweeping ~8 m to point
+blank:
+
+| Signal | Frames it exists in | Range | Dynamic range |
+|---|---|---|---|
+| **Outline bbox height** | **215 / 261 (82%)** | 44 → 1084 px | **24.6x** |
+| Bar/text width | 62 / 261 (24%) | 70 → 230 px | 3.3x |
+| Bar/text height | 62 / 261 (24%) | 12 → 44 px | 3.7x |
+
+The outline height wins on both counts — available 3.4x more often and with 7x the
+dynamic range. Two things the numbers show that confirm the lead's correction:
+
+- **The text/bar signal is missing exactly when ranging matters most.** No bar is found
+  at all before frame ~140, which is when the bot is furthest. At ~8 m the name text is
+  ~58 px, under the finder's 70 px floor at native scale. A range signal that
+  disappears at long range is not a range signal.
+- Use **height, not width.** Outline width is unreliable — it jumps to 554–581 px in
+  frames 210–290 while the height stays ~400, which is the contour merging with
+  something adjacent. Height is the stabler axis.
+
+Known failure mode: at point blank the contour runs off the frame edge, so height
+saturates and under-reports. The brain should treat a box touching a frame edge as
+"very close" rather than trusting the number.
+
+### Superseded: ranging from the nameplate (kept for the reasoning)
 
 The body box height is `BODY_H x bar_width` by construction, so **ranging by box height
 is already ranging by nameplate width**, just multiplied by a constant — it is not
@@ -163,6 +270,73 @@ Two ways to settle it, and the first is better:
 2. Raise `BODY_H` to the measured full-silhouette ratio (median 1.62 of bar width, p25
    0.57, p75 2.33) so the box looks right. This adds no information — same number, bigger
    constant — and the wide spread means the box will often overshoot into the ground.
+
+## Green path — confirmed working on the tagrun footage
+
+**The setting draws a real contour around the enemy body**, not just a recoloured bar —
+`docs/evidence/l3/green-outline-native.jpg` shows three Galacta bots each boxed tightly
+on their own silhouette, with no foliage, HUD or player false positives in frame. The
+nameplate is recoloured too, so a bot usually carries *both* marks.
+
+Measured over 171 native frames (every 3rd of `tagrun`, 2560x1440):
+
+| | detections | frames with ≥1 | latency median | p95 |
+|---|---|---|---|---|
+| full frame 2560x1440 | 187 | 79 (46%) | 7.5 ms | 8.2 ms |
+| 960 px native crop | 62 | — | **2.1 ms** | **2.6 ms** |
+
+The crop figure is the one that matters for the aim path, and it is comfortably inside
+the 10 ms budget with a classical method and no GPU.
+
+Four things the first real frames forced, none of which the synthetic tests predicted:
+
+1. **The contour arrives in arcs, not as one ring.** The body occludes its own outline,
+   so a shoulder, an arm and a leg come back separately — one bot returned eight boxes.
+   Fixed by closing harder (`GREEN_CLOSE`) and then merging boxes within
+   `GREEN_MERGE_GAP`. The failure to watch for is two enemies shoulder to shoulder
+   merging into one.
+2. **Green HUD exists.** The fps/ping/packet-loss readout is green text and the player's
+   own HP bar has green segments. `GREEN_DEAD_ZONES` masks both.
+3. **One enemy, two marks.** Outline plus nameplate double-counted every visible bot.
+   A bar whose body overlaps an outline is now dropped; a *lone* bar is kept, since that
+   is an enemy whose body is occluded.
+4. **Boxes are ~1-2 px larger than the drawn contour**, because closing the mask moves
+   the component bounds. Harmless, but the test asserts a tolerance rather than equality.
+
+## Green path — design notes
+
+L4 set **Accessibility > Custom Colors > Enemy Color = Green**
+(`docs/evidence/l4/settings-enemy-color-green.jpg`). Note what that setting is: it
+recolours the *enemy marks*, and the sibling entries ("Set the color for your own,
+ally, and enemy shields") say those marks include health/shield bars. Whether it also
+draws a body contour is the first thing to check in the new recording — so
+`find_green` accepts **both** shapes and reports which it found (`kind`).
+
+Sampled from the game's own swatch: **BGR (92,199,83) = HSV H62 S149 V199**, which is
+almost exactly the pure green requested. Band used: hue 54–70, S>90, V>120.
+
+**The green-door / foliage risk, measured before the recording landed.** Over 531 run1
+frames (recorded *before* the setting, so this is pure background competition):
+
+| | |
+|---|---|
+| Pixels in the green band | 0.021% |
+| Components ≥40 px | 78 total — about **0.15 per frame** |
+| Largest such component | 399 px |
+| Component fill ratio | p50 0.34, p99 0.78 |
+
+The range's bright green door and its green cross **are not in this band** — they are an
+emerald green at hue 75–79, ~13 hue steps away. The filled-blob rejection is still in
+(`GREEN_FILL_MAX`), but the honest reading is that the *size floor* does most of the
+work and the band is simply almost empty. This is the strongest evidence so far that
+the green path will beat both the red path and the YOLO labels.
+
+The other win: an outline's bounding box **is** the silhouette, so the bar-to-body
+geometry — the weakest part of the red path, and the source of the boxes-on-floor
+failure — disappears entirely.
+
+`detect(frame, scale, mode=)`: `"green"`, `"red"`, or `"auto"` (green first, falling
+back to red so pre-setting footage still works).
 
 ## Native-resolution aim path (lead direction)
 
