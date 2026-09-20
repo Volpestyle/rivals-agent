@@ -1238,10 +1238,14 @@ def learn(specs, out=None):
         lines.append("    ],")
     lines.append("}")
     text = "\n".join(lines)
-    print(text if out is None else f"{sum(len(v) for v in variants.values())} templates "
-          f"({''.join(sorted(variants))}) -> {out}")
     if out:
         Path(out).write_text(text + "\n")
+        print(f"{sum(len(v) for v in variants.values())} templates "
+              f"({''.join(sorted(variants))}) -> {out}", file=sys.stderr)
+    else:
+        # stdout by default, so this never litters the working directory with a
+        # half-finished template file someone else has to wonder about.
+        print(text)
 
 
 def sheet(paths, out="sheet.png", rows=10, height=64):
@@ -1314,7 +1318,7 @@ def annotate(path, out):
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else "check"
     if cmd == "learn":
-        learn(sys.argv[2:], out="glyphs.py")
+        learn(sys.argv[2:])   # prints the GLYPHS literal; redirect it where you want it
     elif cmd == "sheet":
         sheet(sys.argv[2:])
     elif cmd == "annotate":

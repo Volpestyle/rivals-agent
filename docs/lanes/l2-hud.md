@@ -11,7 +11,9 @@ fixed regions and a template-matched digit classifier. No ML.
 `tests/test_hud.py` passes on 145 hand-checked frames.
 
 Owned here: `perception/hud.py`, `perception/hud_truth.json`,
-`tests/test_hud*.py`, `docs/evidence/l2/`.
+`tests/test_hud*.py`, `docs/evidence/l2/`. Tracked as VUH-1294; the offline
+integration lane that consumes these readers is `docs/lanes/l6-integration.md`
+(VUH-1298).
 
 ## Results
 
@@ -62,6 +64,11 @@ Full method, region table and annotated crops: `docs/evidence/l2/README.md`.
   the team-up buff ticked down. Anything treating 250 as Spider-Man's health
   will be wrong for stretches of a run.
 - **A menu or loading screen returns an empty `Hud`**, not a row of "not ready".
+- **`State.on_target` cannot be read from the crosshair.** It is the same small
+  white square whether or not a hostile is under it — checked across 1544 frames,
+  32 of them with an enemy box over screen centre, with 1507 plain white dots and
+  no red ones at all. No reader was built. `agent.brain.aimed_at` already falls
+  back to crosshair-in-bbox geometry when the field is None, which is right.
 
 ## Decisions
 
@@ -77,6 +84,9 @@ Full method, region table and annotated crops: `docs/evidence/l2/README.md`.
 - **Ready vs cooling is decided by colour, not brightness.** A red cooling icon
   can be brighter than a thin white ready one, and a buffed icon is gold. The
   test is what share of the icon's ink is red.
+- **`python -m perception.hud learn` prints to stdout.** It used to write
+  `glyphs.py` into the working directory, which left a stray file at the repo
+  root for someone else to puzzle over. Redirect it where you want it.
 - **Damage numbers and hit markers are not read.** Damage numbers float away
   from the hit and fade, so no fixed region holds them. A crosshair hit marker
   was built, measured against L1's pad log, and removed: it fired on 29 of 66
