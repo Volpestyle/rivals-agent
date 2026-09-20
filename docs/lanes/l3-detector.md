@@ -70,7 +70,8 @@ is there because junk in front of the player is what caused L4's stray ability p
 | Green finder (`find_enemies`) | **Live, on the PC, P 82% / R 83%** |
 | Hand-checked ground truth (72 native frames, 78 enemies) | Done, `data/gt/` |
 | Swatch sweep rendered hues | Closed by the lead; failure mode recorded as a dead end |
-| VOD colour finder | **Not viable** — 210 boxes over 40 frames, ~0 true. Go to model-assisted boxes |
+| VOD colour finder | **Not viable** — 210 boxes over 40 frames, ~0 true |
+| VOD person detector + colour classifier | **Not good enough** — 7 boxes over 33 frames, 6 of them the player. Use annotator-drawn boxes |
 | PC CUDA environment | Verified: torch 2.11.0+cu128, CUDA True, RTX 4080 SUPER |
 | run1 fine-tune (2121 frames, 1632 instances) | Done |
 | Weights for the controller lane | `weights/range.pt`, and `C:\rivals-agent\weights\range.pt` |
@@ -193,7 +194,62 @@ hue bin:
 The green doors are an *emerald* green at standard hue 150–158°, about 30° away from
 pure green. They do not rule green out; they rule out that particular green.
 
-## VOD colour finder: not viable. Go to model-assisted boxes.
+## VOD person detector + colour classifier: also not good enough. Use annotator-drawn boxes.
+
+**Verdict: not good enough to propose target boxes for an annotator to confirm.** Over
+33 gameplay frames the COCO person detector produced **7 non-player boxes, of which 6
+are the streamer's own hero** and 1 is a real enemy. It is not near the bar.
+
+Setup, one pass, no training: `yolo11{s,m}.pt` COCO weights, `person` class only, conf
+0.25, at `imgsz` 1280 and 1920; fixed per-streamer overlay masks applied first; the
+player excluded by position and size; non-gameplay frames dropped first.
+
+| | |
+|---|---|
+| Sampled frames | 40 (the same hand-checked set) |
+| Passed the gameplay gate | **33** — 7 dropped as scoreboard, killcam, spectating |
+| Non-player person boxes, all four model/size combinations | 7–12 total, **0.2–0.3 per frame** |
+| Of the 7 (yolo11m @1920): actually a character | **1** |
+| Of the 7: the player himself | **6** |
+| Visible non-player characters in the 12 frames examined closely | ~15, of which **1** was detected |
+| Latency | 24–39 ms on MPS (irrelevant — this is offline) |
+
+`yolo11m` and `yolo11s` are indistinguishable here, and 1920 over 1280 buys nothing.
+The heroes are stylised, often airborne, small, and wrapped in effects; COCO "person"
+does not fire on them. It fires reliably on exactly one thing — the streamer's
+third-person Spider-Man, which is the one character we do not want.
+
+### The one encouraging part
+
+**The colour classifier works; detection is the blocker.** The single real enemy it
+boxed (`reqmr` frame 007) was classified **enemy** correctly from the red ring, and the
+player boxes came back **ally** — which is *right* about the colour and only wrong about
+whose it is: the ally colour is blue and the player's suit is blue, so a thin ring
+around him reads ally honestly. Given a box, red-versus-blue ring colour is a sound
+enemy/ally test. Nothing in this pass argues against the classify-locally idea; it
+argues that nothing off-the-shelf supplies the boxes.
+
+### Two things worth keeping regardless of label source
+
+- **The gameplay gate works and is reusable.** `hud.read` plus `events.playing_spiderman`
+  and `events.banner_word` dropped 7 of 40 frames correctly. The HUD check *alone* is not
+  enough — it passes spectating frames, which have a full HUD and a different hero.
+  `events.segment()` itself wants a contiguous run for its hold smoothing, so at 1 fps
+  its predicates were used per frame instead.
+- **Masking overlays costs recall, because they sit on top of the play area.** The chat
+  column overlaps the right of the screen where enemies appear, so it is deliberately
+  *not* masked (text does not trip a person detector anyway). Only person-like overlays
+  are blanked: `daymr`'s avatar graphic, music-widget album art, sponsor banner.
+
+### Recommendation
+
+**Annotator-drawn boxes on a small set**, as the lead's fallback. Model-assisted
+proposals would hand an annotator six boxes on the player for every one on an enemy,
+which is worse than an empty frame. Once a small annotated set exists, the ring
+classifier can label enemy/ally on those boxes and should be reused rather than
+re-derived.
+
+## VOD colour finder: not viable either.
 
 **Answer to the question asked: a colour finder does not work on VOD footage, and the
 reasons are structural rather than tuning.** It is not close.
