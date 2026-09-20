@@ -7,8 +7,9 @@ target selection, positioning, engagement, ability sequences, retreat and recove
 DayMR and ReqMR are James's selected expert sources. Their rank is not independently
 verified; channel titles are claims, not leaderboard evidence.
 
-The first learned policy chooses an intent and target from recent frame and event
-history. The existing calibrated controller executes it. This preserves the useful
+The first learned policy chooses an intent from recent frame and event history;
+a fixed visible-target selector supplies its target initially. The existing
+calibrated controller executes it. This preserves the useful
 capture, perception, replay and control work while making the tactical decisions
 trainable. Jev is an optional baseline or annotation assistant, not the learning
 mechanism. Inference calls do not update its weights from outcomes.
@@ -94,6 +95,65 @@ The loader owner implements the representation; this document does not add a
 second competing schema. Compare agreement and evidence, retain ambiguity, and do
 not treat two models agreeing as independent proof of correctness.
 
+The six-window comparison in local `data/demos/annotations/COMPARISON.md` finds
+usable/unusable agreement in 6/6 windows, exact option-set agreement in only 1/6
+(the spectator negative), overlap in 4/6, and disjoint options in 1/6. Two outcome
+narratives contradict. The sole shared target box has about 0.87 IoU. This does
+not pass the gate for scaling tactical labels. The passes used different sampling
+rates (1 versus 10 Hz), and the comparison agent did not inspect media: protocol
+differences are a plausible cause, not an adjudication of the conflicting facts.
+
+#### Aligned two-window rerun
+
+Redo only Req +30 and +45 before expanding annotation. Preserve the original
+passes. Both annotators use `data/demos/samples/reqmr-2873352801-1920.mp4` and the
+frozen event stream at
+`data/demos/annotations/rerun-inputs/reqmr-2873352801-1920.events.jsonl`, copied
+from `data/demos/events/reqmr-2873352801-1920.jsonl`. This is the MK-layout stream,
+not the older `.events.jsonl` beside the sample video.
+
+1. Inspect context from t−5 through t at **10 Hz**, including the decision frame
+   (51 samples), with native-resolution HP/ammo/ability/ult strips and access to
+   the original frame. Record actual source PTS; choose the frame at or before
+   each requested time. Only events confirmed by t are context inputs; retain
+   transition intervals rather than inventing instantaneous button presses.
+2. Derive a **per-frame visibility mask** from the event stream's segments, with
+   reasons for gaps. Add observed overlay/player occlusion separately: scene,
+   player and individual HUD fields can have different visibility. Do not infer
+   full visibility just because a frame passes the gameplay gate. Retain the
+   truncated-context flag for missing history; a visibility mask does not replace
+   it. Never carry a decision across death, spectating, reset or hero change.
+3. Record **tactical purpose separately from observed primitives**. Tactical
+   candidates are engage (approach/continue fighting), disengage (leave danger),
+   search (seek a target), reposition (non-combat rotation/setup), idle, or
+   unknown/no-vocabulary-fit with a reason. These are interpretation labels for
+   demonstrated behavior, not claims about the optimal next action. `get_over_here`
+   is a primitive event with `target_tagged: true | false | unknown`; unknown is
+   the default. Do not infer an untagged target from an unreadable tracer or map
+   that unknown to a live `Pull`. Keep existing live Pull/WebStrike execution
+   checks distinct. Label-to-runtime mapping is agreed before training; this
+   pilot does not silently extend `agent/intents.py`.
+4. Use explicit target status: visible selected target plus box, no selected
+   target, or unknown whether/which target is selected. Unknown does not assert
+   that a target exists. Record what is under the crosshair and whether the player,
+   scene and relevant HUD fields are visible. Use outline/nameplate evidence,
+   not costume colour, for team assignment; preserve unknown team and identity.
+5. Save the context judgment before examining the next five seconds at the same
+   rate with separate event/HUD evidence. Describe outcome observables with
+   timestamps: approach, displacement, attack evidence, target association and
+   damage/death evidence. Do not claim a hit or persistent target identity from
+   proximity alone. Record later corrections separately, without rewriting the
+   context judgment. Both passes have prior pilot exposure; this is a protocol
+   repair, not a new blinded evaluation.
+
+The lead assigns the Claude rerun; Codex owns its separate rerun. Compare tactical
+labels, primitive labels and outcome facts separately, then adjudicate against
+the same frames. Remaining unobservable distinctions become unknown or leave the
+supervised label set. Two repaired windows can unblock a larger observability
+pilot, not establish label reliability at training scale. The loader owner owns
+representation changes; the shared masks must also constrain eventual training
+observations so annotators cannot use history the policy will not receive.
+
 ### VOD perception and normalization
 
 VOD target labelling is a separate perception problem. The pure-green live finder
@@ -102,6 +162,38 @@ have not been validated on this domain. The pilot uses inspected visual target
 boxes, not unchecked detector pseudo-labels. Test target detection on hand-audited
 VOD frames before scaling labels, and include both creators/outline settings in
 evaluation so policy behavior does not depend on one highlight colour.
+
+L3's hand-checked test on 40 frames from the two retained VOD clips rejects a
+global red-colour finder: 210 proposed boxes, boxes on every frame including empty
+ones, and essentially no true positives. Both creators use default red enemies,
+but Spider-Man's own red suit and permanent red streamer graphics each defeat
+colour-only detection. Red architecture, ability/damage effects, scoreboard panels
+and defeat overlays add false positives; small, compression-smeared enemies supply
+the weakest signal. More threshold tuning does not resolve that ambiguity.
+
+The [live detector lane](lanes/l3-detector.md) reports 82% precision and 83% recall
+for the chosen green outline on its hand-checked range set, with 4.4 ms inference
+on a native crop on the PC. The old YOLO has about 3% recall on that same range set;
+its mAP50 of 0.656 measures agreement with a substantially incorrect auto-labeller,
+not trustworthy enemy detection. These range measurements do not establish VOD
+accuracy. Off-the-shelf COCO person detection also fails the proposal-only bar on
+the same 40 VOD frames. YOLO11 s/m at 1280/1920, with overlays masked and gameplay /
+player filtering, produces only 7–12 proposed non-player boxes over 33 gameplay
+frames. In the best configuration, six of seven are still the streamer's own hero
+and one is a real enemy; closer inspection finds roughly 15 visible characters
+across 12 frames. Neither tested size nor resolution solves the domain mismatch.
+The tested off-the-shelf paths cannot supply VOD target boxes. Annotators draw the
+initial small set; a thin red-versus-blue ring around a supplied box supports
+enemy/ally classification in the inspected examples, with unknown retained.
+
+Before any VOD target-labelling pass, exclude non-gameplay viewpoints and
+scoreboard-obscured scene frames, then mask person-like streamer graphics. This applies
+to every proposal source, including model-assisted annotation: permanent graphics
+must not become training targets. Keep excluded intervals explicit in the timeline
+and retain original media; an obscured HUD field remains unknown. For box proposals,
+do not blanket-mask the chat column: it overlaps real play and costs recall.
+The gameplay gate combines `hud.read`, `events.playing_spiderman` and the visible
+banner text; a full HUD alone also passes other heroes' spectator viewpoints.
 
 Both domains pass through a common, recorded crop/resize for the scene input.
 Read native HUD crops separately into structured events before masking HUD and
@@ -125,7 +217,7 @@ flowchart LR
     L --> T[Imitation training locally or on rented GPU]
     T --> P[Learned temporal policy]
     F[Recent frames and observed events] --> P
-    P --> I[Intent and target]
+    P --> I[Intent plus fixed target selector]
     I --> G[Current-state validity checks]
     G --> C[Calibrated controller]
     C --> E[Range or AI-only custom evaluation]
@@ -133,10 +225,20 @@ flowchart LR
     R --> D
 ```
 
-Policy v0 uses the existing intent vocabulary and selects a visible target. Spatial
+Policy v0 learns the existing intent vocabulary; a fixed targeting heuristic selects
+among current live detections, and evaluation holds that selector constant across
+policies. This isolates intent learning while VOD target labels are expensive.
+A small annotated target set measures observability and supports later learned target
+choice; v0 does not claim to learn expert target selection. Spatial
 directions or anchors need an agreed representation and working executor before they
 become outputs. Unknown abilities and invalid targets stay guarded at execution time.
 An option's completion or failure is distinct from the brain's guessed hold duration.
+
+HUD events provide relatively cheap supervision for ability use and observable
+outcomes. They do not prove engage, disengage, no-engage or a complete combo choice:
+those labels still need reviewed temporal context. Primitive sequence learning and
+tactical intent learning retain separate labels and metrics; reliable HUD extraction
+does not establish reliable tactical annotation.
 
 Behavioral cloning predicts reviewed demonstrated choices; it needs no reward function.
 Class imbalance matters: constant movement or idle frames must not swamp rare retreat
@@ -171,9 +273,10 @@ slice, not the definition of the whole goal.
 1. Inspect real samples from both creators and establish which labels are observable.
 2. Hand-label a small set of contiguous decisions and HUD events. Report event precision,
    recall and timing error, plus unreadable coverage, against those human labels.
-3. Train a first intent/target policy and evaluate on held-out sessions against a simple
+3. Train a first intent policy with the fixed target selector and evaluate on held-out sessions against a simple
    majority baseline and the scripted policy where its required inputs are available.
-   Report confusion by action, target-selection errors, invalid choices and abstentions.
+   Report confusion by action, invalid choices and abstentions. Report selector errors
+   separately on annotated examples; learned target choice needs its own later comparison.
 4. Compare integrated policies in repeatable range scenarios with the same perception,
    controller, start conditions and budget. Inspect actual successes and failures.
 5. Evaluate richer tactical choices in AI-only custom games once navigation and guards
