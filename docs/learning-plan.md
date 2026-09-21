@@ -183,6 +183,26 @@ build does not. Improvement requires beating the strongest applicable baseline o
 supported channels and matching timing comparisons, not just reducing training
 loss. No live deployment or gameplay-competence claim follows B0.
 
+**Measured reference.** The local `b0-multilabel-v1` experiment contains two
+40-epoch final checkpoints with the fixed two-layer 128-wide GRU. It fits 1,414
+Day windows or 1,836 Req windows with at least one supported label; held-out
+metrics use the per-channel masks across 2,305 Req or 1,937 Day windows.
+
+| Development direction | Supported-channel model F1 | HUD-resource F1 | Model timing error | Training-median timing error |
+|---|---:|---:|---:|---:|
+| Day to Req | 0.512 | 0.597 | 0.178 s | 0.132 s |
+| Req to Day | 0.554 | 0.390 | 0.193 s | 0.148 s |
+
+Req team-up has only 17 distinct positive events and is excluded from that
+direction's supported-channel F1. Timing uses identical supported interval rows
+for model and median. No channel clears the combined occurrence-and-timing
+improvement gate. These are observed-subset development results from one session
+per creator, not sealed-test results or evidence of game sense. The checkpoints
+reload to identical predictions over both complete held-out folds with the
+recorded evaluation batch size of 128. Artifacts and the reproducible command
+live under `data/experiments/b0-multilabel-v1/`; implementation and provenance
+are described in [the policy lane](lanes/policy.md).
+
 **Coarse-purpose labels remain the next head.** The next bounded tranche is
 24 new development windows, 12 per creator from accepted train sessions, under
 the aligned 10 Hz protocol. Sample across ordinary combat, traversal/search and
