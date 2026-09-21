@@ -42,14 +42,16 @@ def fill(f, box, bgr):  # box in 1280x720 px, whatever the frame's size
     f[y0:y1, x0:x1] = bgr
 
 
-def spawn_frame(door_x=0.5):
-    """The recorded spawn room with the door painted out and a tall green door painted at `door_x` (fraction of the width)."""
+def spawn_frame(door_x=None, width=80):
+    """The recorded spawn room with the door painted out and a tall green door painted at `door_x` (fraction of the width; by default on
+    the hero's column, R.HERO_X: straight ahead of him)."""
+    door_x = R.HERO_X if door_x is None else door_x
     lime = cv2.cvtColor(np.uint8([[[46, 140, 150]]]), cv2.COLOR_HSV2BGR)[0, 0].tolist()      # the door glass: hue ~46, S ~110-140, V ~125-150
 
     def paint(f):
         f[100:600, :1200] = (60, 50, 55)   # rows above 100 hold the "PRACTICE RANGE" banner that record.in_range proves the range by
         x = int(door_x * 2560)
-        f[240:840, max(0, x - 40):x + 40] = lime
+        f[240:840, max(0, x - width // 2):x + width // 2] = lime
     return edited("arrival-spawn-room", paint)
 
 
@@ -543,7 +545,7 @@ class Sim:
         "lobby_far": "lobby-cursor-far", "lobby_left": "lobby-cursor-left-of-practice", "lobby_on": "lobby-cursor-on-practice",
         "panel": "panel-cursor-on-practice-range", "hero_all": "heroselect-all-tab-black-panther",
         "hero_duel": "heroselect-duelists-cursor-off", "hero_spider": "heroselect-cursor-on-spiderman",
-        "spawn": lambda: spawn_frame(0.5), "range": "arrival-plaza-bot-ahead",
+        "spawn": lambda: spawn_frame(), "range": "arrival-plaza-bot-ahead",
         "hero_lost": "heroselect-spiderman-tooltip-ring-lost",
         "hero_fading": "heroselect-all-tab-fading-in", "hero_settled": "heroselect-all-tab-settled",
         "lobby_try": "lobby-cursor-on-try-competitive", "lobby_corner": "lobby-cursor-at-try-competitive-corner",
@@ -828,18 +830,20 @@ def test_a_bot_ringed_with_lime_is_seen_through_the_glass_not_in_the_open():
 def _pose_sim(start, table):
     sim = Sim(start, table)
     sim.FRAMES = dict(Sim.FRAMES, **{"p_ahead": "arrival-spawn-door-ahead", "p_wall": "arrival-spawn-wall-left-of-door",
-                                     "p_console": "arrival-spawn-console-two-doors", "p_first": "arrival-spawn-room"})
+                                     "p_console": "arrival-spawn-console-two-doors", "p_first": "arrival-spawn-room",
+                                     "p_on": lambda: spawn_frame()})
     return sim
 
 
-WALK_OUT = {("p_ahead", "stick"): lambda n: "range" if n >= 3 else "p_ahead"}
+# the recorded door-ahead pose has the pane at x 0.557, right of his column (0.40): a turn puts it on his column, then three steps take him out
+WALK_OUT = {("p_ahead", "rstick"): "p_on", ("p_on", "stick"): lambda n: "range" if n >= 3 else "p_on"}
 
 
 @pytest.mark.parametrize("start,table,expected", [
-    ("p_ahead", WALK_OUT, ["stick", "stick", "stick", "RT"]),                                             # door ahead: straight out
-    ("p_console", {**WALK_OUT, ("p_console", "rstick"): "p_ahead"}, ["rstick", "stick", "stick", "stick", "RT"]),
-    ("p_first", {**WALK_OUT, ("p_first", "rstick"): "p_ahead"}, ["rstick", "stick", "stick", "stick", "RT"]),
-    ("p_wall", {**WALK_OUT, ("p_wall", "rstick"): lambda n: "p_console" if n >= 2 else "p_wall", ("p_console", "rstick"): "p_ahead"},
+    ("p_ahead", WALK_OUT, ["rstick", "stick", "stick", "stick", "RT"]),                                   # door ahead: onto his column, out
+    ("p_console", {**WALK_OUT, ("p_console", "rstick"): "p_on"}, ["rstick", "stick", "stick", "stick", "RT"]),
+    ("p_first", {**WALK_OUT, ("p_first", "rstick"): "p_on"}, ["rstick", "stick", "stick", "stick", "RT"]),
+    ("p_wall", {**WALK_OUT, ("p_wall", "rstick"): lambda n: "p_console" if n >= 2 else "p_wall", ("p_console", "rstick"): "p_on"},
      ["rstick", "rstick", "rstick", "stick", "stick", "stick", "RT"]),                                    # no door in view: look around, then turn to it
 ])
 def test_arrival_from_each_recorded_spawn_pose_gets_out_and_never_walks_toward_nothing(start, table, expected):
@@ -910,7 +914,7 @@ class TurnSim(Sim):
 
     def stick(self, x, y, secs, screen=None):
         super().stick(x, y, secs)
-        if abs(self.door_x - 0.5) <= 0.08:
+        if abs(self.door_x - R.HERO_X) <= R.DOOR_TOL:
             self.walks += 1
 
 
@@ -919,9 +923,9 @@ def test_arrival_turns_toward_a_door_off_to_one_side_before_it_walks(door_x):
     sim = TurnSim(door_x)
     R.arrive(sim, R.Safe(sim, log=lambda *_: None))
     kinds = [i[0] for i in sim.inputs]
-    assert kinds[0] == "rstick" and math.copysign(1, sim.inputs[0][1]) == math.copysign(1, door_x - 0.5)   # turns TOWARD it
+    assert kinds[0] == "rstick" and math.copysign(1, sim.inputs[0][1]) == math.copysign(1, door_x - R.HERO_X)   # turns TOWARD it
     assert "stick" not in kinds[:kinds.index("stick")] and kinds.count("rstick") <= 3 and kinds[-1] == "RT"
-    assert abs(sim.door_x - 0.5) <= 0.08                                      # and walks only once it is ahead
+    assert abs(sim.door_x - R.HERO_X) <= R.DOOR_TOL                            # and walks only once it is on his column
 
 
 class Flicker(Sim):
@@ -929,7 +933,7 @@ class Flicker(Sim):
 
     def __init__(self):
         super().__init__("spawn", {})
-        self.seq = [spawn_frame(0.5), frame("arrival-plaza-bot-ahead")] + [spawn_frame(0.5)] * 200
+        self.seq = [spawn_frame(), frame("arrival-plaza-bot-ahead")] + [spawn_frame()] * 200
 
     def frame(self):
         return self.seq.pop(0) if len(self.seq) > 1 else self.seq[0]
@@ -1632,10 +1636,10 @@ def test_a_run_from_the_fading_in_hero_select_presses_rb_only_after_the_tab_is_r
 # --- the arrival log (a record for the live measurement; it must change nothing) -------------------------------------------------------
 ARRIVALS = {
     "door ahead": lambda: _pose_sim("p_ahead", WALK_OUT),
-    "console": lambda: _pose_sim("p_console", {**WALK_OUT, ("p_console", "rstick"): "p_ahead"}),
-    "first spawn": lambda: _pose_sim("p_first", {**WALK_OUT, ("p_first", "rstick"): "p_ahead"}),
+    "console": lambda: _pose_sim("p_console", {**WALK_OUT, ("p_console", "rstick"): "p_on"}),
+    "first spawn": lambda: _pose_sim("p_first", {**WALK_OUT, ("p_first", "rstick"): "p_on"}),
     "wall": lambda: _pose_sim("p_wall", {**WALK_OUT, ("p_wall", "rstick"): lambda n: "p_console" if n >= 2 else "p_wall",
-                                         ("p_console", "rstick"): "p_ahead"}),
+                                         ("p_console", "rstick"): "p_on"}),
     "wall, never out": lambda: _pose_sim("p_wall", {}),
     "glass, never through": lambda: _pose_sim("p_ahead", {}),
     "turn to the side": lambda: TurnSim(0.15),
@@ -1677,8 +1681,9 @@ def test_the_arrival_log_records_each_step_with_its_frame_and_gate(tmp_path):
     R.arrive(sim, R.Safe(sim, log=lambda *_: None), log)
     rows = [json.loads(l) for l in (log.dir / "steps.jsonl").read_text().splitlines()]
     assert [r["n"] for r in rows] == list(range(1, len(rows) + 1)) and log.failed == 0
-    assert rows[0]["action"].startswith("door off centre: turn") and rows[0]["door_x"] < 0.5 and rows[0]["door_px"] >= R.DOOR_MIN_PX
-    assert any(r["action"].startswith("door ahead: walk") for r in rows) and rows[-1]["action"] == "RT pressed once"
+    assert rows[0]["action"].startswith("door off his column: turn") and rows[0]["door_blob_x"] < R.HERO_X
+    assert rows[0]["door_px"] >= R.DOOR_MIN_PX
+    assert any(r["action"].startswith("door on his column: walk") for r in rows) and rows[-1]["action"] == "RT pressed once"
     assert all(r["gate"] == R.ARRIVAL_GATE and (log.dir / r["frame"]).exists() for r in rows)
     assert all(r["hero_x"] is None or 0.3 < r["hero_x"] < 0.5 for r in rows)
 
@@ -1698,3 +1703,48 @@ def test_a_failing_log_is_counted_not_raised(tmp_path):
     log = R.ArrivalLog(f)
     log.step(0.0, frame("arrival-spawn-room"), "walk")
     assert log.failed == 1 and log.error and "write failures" in log.summary()
+
+
+# --- the out state, the hero's column and the door kept (the live arrival of 2026-09-21 12:24, docs/evidence/l4/arrival-20260921-*) ----
+def test_through_the_door_it_never_steers_to_a_door_again_and_looks_left():
+    """Live: step 15 walked at the pane (33k px), step 16 showed none (the plaza-side planter): out. Then the old logic walked at a sliver
+    of the pane seen from outside (step 17) and at the whole pane (steps 20-23) back into the spawn room. Out, only left turns."""
+    m = R.ArrivalMemory(walked=True, last_px=33000)
+    assert R.arrival_step(frame("arrival-live-out-planter"), m)[:3] == ("turn", -R.YAW_STICK, R.SWEEP_S) and m.out
+    for name in ("arrival-live-out-pane-sliver", "arrival-live-out-pane"):
+        assert R.door(frame(name)) is not None                                   # a door is in view
+        assert R.arrival_step(frame(name), m)[:2] == ("turn", -R.YAW_STICK), name   # and is not steered to
+    assert R.arrival_step(frame("arrival-plaza-bot-ahead"), m)[0] == "plaza?"
+
+
+def test_a_door_that_leaves_the_view_by_a_turn_or_a_small_one_is_not_passing_through():
+    m = R.ArrivalMemory(walked=False, last_px=33000)                              # turned, not walked
+    R.arrival_step(frame("arrival-live-out-planter"), m)
+    assert not m.out
+    m = R.ArrivalMemory(walked=True, last_px=R.OUT_PX - 1)                        # walked at a small, far door
+    R.arrival_step(frame("arrival-live-out-planter"), m)
+    assert not m.out
+
+
+def test_outside_with_no_bot_it_turns_left_a_bounded_number_of_times_then_refuses():
+    sim = _pose_sim("p_on", {("p_on", "stick"): "outside"})
+    big = lambda: spawn_frame(width=240)                                         # a door on his column, well over OUT_PX
+    sim.FRAMES = dict(sim.FRAMES, p_on=big, outside="arrival-live-out-planter")
+    with pytest.raises(R.Refuse, match="out, but no bot in view"):
+        R.arrive(sim, R.Safe(sim, log=lambda *_: None))
+    kinds = [(i[0], i[1]) for i in sim.inputs]
+    assert kinds == [("stick", 0.0)] + [("rstick", -R.YAW_STICK)] * R.OUT_SWEEPS         # one walk through, then left turns only
+
+
+def test_the_pane_is_steered_onto_the_heros_column_not_the_screen_centre():
+    """Live step 21 (and the four refusals): the pane centred on the screen (0.54) with him at 0.39, on the dark jamb left of it."""
+    act = R.arrival_step(frame("arrival-live-jamb"), R.ArrivalMemory())
+    assert act[0] == "turn" and act[1] > 0                                       # right, which moves the pane left onto his column
+
+
+def test_a_door_being_walked_at_is_kept_when_a_bigger_one_comes_into_view():
+    """Live steps 1-5: two lime doors in view, the biggest blob jumped between them and the steering with it."""
+    f = frame("arrival-live-two-doors-left-bigger")                               # the kept door at 0.48, a bigger one at 0.12
+    assert R.arrival_step(f, R.ArrivalMemory(chosen=0.47))[0] == "walk"
+    fresh = R.arrival_step(f, R.ArrivalMemory())
+    assert fresh[0] == "turn" and fresh[1] < 0                                   # with nothing kept, the biggest: the other door
