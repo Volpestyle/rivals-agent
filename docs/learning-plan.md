@@ -30,15 +30,17 @@ The roadmap advances on evidence, not footage hours. Current evidence includes
 two inspected pilot clips, nine acquired guides (about 106 minutes), and about
 60 raw minutes from four VOD sessions; raw duration is not accepted training
 duration. The aligned two-window annotation rerun agrees on coarse tactical
-purpose, but exposes event-extractor defects. A trained gameplay policy and an
-RL training run are not yet delivered. The next deliverable is a small trustworthy
-training/evaluation set and a first imitation baseline, not an exhaustive archive.
+purpose, but exposes event-extractor defects. Event format 2 is delivered; its
+30-event Req hand-check is the current annotation gate (VUH-1306). A trained
+gameplay policy and an RL training run are not yet accepted. The next deliverable
+is a small trustworthy training/evaluation set and a first imitation baseline,
+not an exhaustive archive.
 
 | Milestone | Concrete result | Gate before advancing |
 |---|---|---|
 | A. Trust the examples and measurements | Corrected HUD events, per-frame visibility, reviewed imitation suitability, whole-session splits; repeatable range episodes and synchronized pad/video recordings | Hand-check VOD event classes and timing; preserve unknowns. Demonstrate start, terminal outcome, interruption and reset alignment on recorded episodes. Data quality gates imitation; episode/reward quality separately gates RL. |
 | B. First imitation policy | A locally trained temporal intent policy, using the fixed live target selector and existing controller | Beat a majority-label baseline on held-out sessions without hiding rare-action failures; compare the scripted policy where inputs are comparable. Measure runtime latency and inspect range transfer failures. Offline agreement alone does not establish gameplay improvement. |
-| C. Corrections from our own play | Reviewed examples of the agent recovering, retreating and correcting its own mistakes; a retrained imitation checkpoint | Compare against B on untouched evaluation sessions and bounded live scenarios. Accept demonstrated improvement; ambiguous failures stay out of positive imitation labels. This loop continues alongside later milestones. |
+| C. Corrections from our own play | Reviewed execution/navigation corrections and a retrained imitation checkpoint; combat retreat/recovery examples require F's fighting environment | Compare against B on untouched evaluation sessions and bounded live scenarios. Accept demonstrated improvement; ambiguous failures stay out of positive imitation labels. This loop continues alongside later milestones. |
 | D. First reinforcement-learning experiment | Fine-tune a trainable option policy on one bounded range encounter, starting from an imitation checkpoint with demonstrated range competence | Reward audit below passes; reset and episode recording work; freeze perception/controller/target selector for comparison. Retain the RL checkpoint only if held-out encounter outcomes improve over its starting checkpoint, not merely its training return. |
 | E. Learned target choice, positioning and swinging | Observable target/anchor outputs with a working executor; later, learned swing execution from synchronized video/input demonstrations | Evaluate target choices separately from intent, and swing destination success, time, charge use and collisions separately from combat. Demonstrate transfer to new starts/routes. Guide narration alone cannot supply stick trajectories. |
 | F. Tactical learning in AI-only custom games | Imitation and then RL for approach, target choice, engage/escape and objective play in a fighting environment | Verified AI-only lobby navigation/guard, episode/reset flow and outcome readers; comparable live/demo entities for learned target outputs. Compare frozen baselines on match wins and objective outcomes across repeated games, with uncertainty reported. |
@@ -47,6 +49,15 @@ These are dependencies, not six serial waits. Reward measurement starts during A
 E's recorder and controller work also starts now. D can test narrow range learning
 without waiting for expert-level swinging. An initial F intent-only trial can use
 the fixed selector, but cannot claim E's target-choice or positioning capabilities.
+
+B has a pipeline prerequisite under VUH-1311: cache encoder embeddings and train
+a temporal head to imitate the scripted brain on our own logged sessions, with a
+held-out-session comparison against the majority baseline. This establishes a
+working training/inference path, not learning from Day/Req or improving the
+teacher. Expert footage may supply embeddings without supplying trusted action
+labels. The separate coarse tactical-purpose head still needs A's audited labels;
+its metrics and claims stay separate from scripted-brain distillation. Any
+`--brain learned` integration retains the scripted policy's execution guards.
 
 ```mermaid
 flowchart TD
@@ -68,6 +79,9 @@ design. Claude owns dispatch, integration and Linear, assigning implementation
 to the existing dataset, HUD and controller owners or a named training owner.
 Existing dependencies include VUH-1306 (events), VUH-1309 (paired recording),
 VUH-1310 (AI-only lobby), VUH-1314 (tracks) and VUH-1315 (observed option status).
+Milestone issues are A VUH-1306/VUH-1319, B VUH-1311, C VUH-1320, D VUH-1321,
+E VUH-1322 and F VUH-1323. The live loop records pad state per tick in the loader's
+format; the measured frame/input offset remains VUH-1309's acceptance gap.
 This roadmap defines acceptance; Linear remains the record of assignment and
 completion. James is not required to supply inputs or hand-label at volume.
 
@@ -80,9 +94,17 @@ task, while RL execution remains gated.
 
 | Task | Primary objective | Supporting signals and limits |
 |---|---|---|
-| Bounded range encounter | Confirmed designated-target completion; distinguish death, task failure and timeout | Small elapsed-time cost; optional validated damage contribution. Aggregate KO counters alone cannot identify which target died. |
+| Bounded range encounter | Confirmed designated-target completion; terminal outcomes are completed, timeout, interrupted and lost-range | Small elapsed-time cost; optional validated outgoing damage contribution. Target identity needs tracks plus associated kill-feed evidence; aggregate KOs alone cannot identify which target died. No combat-death or damage-taken reward is available here. |
 | Swing/navigation skill | Reach a specified visible destination or region | Time, resource use and observed collision/fall failures. Do not reward simply pressing swing, travelling far or staying airborne. |
 | AI-only match | Team victory and verified objective progress | Combat contributions and avoidable death may support learning only if measured and shown not to encourage kill chasing or hiding. A useful trade ending in death is not automatically a bad decision. |
+
+Range bots do not deal damage, and Practice Settings offers no fighting-bot
+option. D therefore tests attack execution/completion, not survival or tactical
+retreat. Expert footage can supervise observable retreat decisions offline, but
+learning their consequences from our own play and testing their usefulness needs
+F. A lost-range termination records why control stops; it is not a claimed death
+or a successful disengagement. Reader failure remains an interruption/unknown,
+not a fabricated adverse gameplay outcome.
 
 Before an RL run, record the exact formula, weights, discount, episode limits and
 reader versions with the experiment. Numeric weights are not accepted yet; tune
@@ -91,15 +113,22 @@ Optional shaping must have a bounded contribution so damage farming or repeated
 partial progress cannot outweigh the actual task. Scoreboard checks are a means
 of measurement, not an action deserving positive reward.
 
-Audit reward extraction against hand-checked recordings of success, death,
-timeout, interruption and reset. Each reward component retains its observation
-source and validity; unknown does not become zero. Exclude episodes or learning
+Audit range reward extraction against hand-checked recordings of completion,
+timeout, interruption, lost-range and reset; add combat death and damage taken
+only in an environment where those occur. Each reward component retains its
+observation source and validity; unknown does not become zero. Exclude episodes or learning
 targets whose required outcome is unobservable. Treat a capture/lobby interruption
 as an interruption rather than inventing a gameplay death. Check that repeated
 scoreboard reads cannot award the same KO twice, resets cannot produce reward
 from counter jumps, and healing/shield decay cannot masquerade as damage.
 
-Run a small collection pilot before committing to RL scale: measure usable
+There is no verified in-range reset, and bot respawn time is unmeasured. A live
+run stranded the agent off the platform and needed full lobby re-entry, about
+two minutes with a script whose steering still needs correction. VUH-1319's
+episode/collection pilot depends on the live loop, tracks and observed option
+status; it must measure recovery costs rather than assume cheap resets.
+
+Run that small collection pilot before committing to RL scale: measure usable
 episodes per hour, reset time, invalid-data rate, inference latency and training
 throughput. This is one real game instance, not a simulator supplying thousands
 of parallel matches; rented GPUs accelerate training, not gameplay collection.
@@ -108,8 +137,9 @@ that data budget. Range option learning starts with the motor controller frozen;
 learning sticks and camera is a separate experiment under E.
 
 Each comparison keeps the scenario set, trial budget, perception and executor
-fixed, retains failures, and reports raw success/death/timeout counts and elapsed
-time as well as return. In custom games, report wins and objective outcomes.
+fixed, retains failures, and reports every applicable terminal-outcome count and
+elapsed time as well as return. In custom games, also report deaths, wins and
+objective outcomes.
 Claim improvement only at the tested scope; inconclusive results call for more
 evidence, not promotion of the highest-return checkpoint. Keep the preceding
 working policy available for rollback. Training stays local first, with the
@@ -127,6 +157,17 @@ approved initial $100 cloud allowance governed by the compute section below.
 Expert VODs are the first data source. James recording inputs is optional, not a
 prerequisite for VOD acquisition or tactical policy training. Low-level input
 imitation is deferred when exact action labels are absent.
+
+All our range recordings preceding the real-cooldown baseline have Practice
+Settings' default **No Ability Cooldown ON**: infinite ammo, no cooldown numbers
+and an observed ult refill around 3.5 seconds. Their dataset provenance must
+identify this cooldown-free regime. They can support execution/visual pipeline
+work, but cannot establish normal cooldown timing, resource management or legal
+combo cadence in matches. The upcoming baseline requires the setting OFF and
+observed cooldown/ammo behavior checked before recording. Keep the regimes
+separate in training and evaluation; do not silently pool them. For third-party
+range guides, settings remain unknown unless visible evidence establishes them;
+our local setting does not prove the creator used it.
 
 Keep originals under gitignored `data/demos/`, with source URL, VOD ID, creator,
 retrieval date, source start/end, resolution, frame timing, hero, visible patch/map
@@ -443,9 +484,9 @@ separately. The server is parked; no further Jev infrastructure is on the critic
 
 ## First acceptance and evaluation
 
-The first integrated skill recognizes an engagement opportunity, approaches, executes
-an attack, then continues or escapes. Mechanical execution is the first measurable
-slice, not the definition of the whole goal.
+The first range skill approaches and executes an attack; choosing whether to
+engage, continue or escape under threat requires AI-only custom evaluation.
+Mechanical execution is the first measurable slice, not the whole goal.
 
 1. Inspect real samples from both creators and establish which labels are observable.
 2. Hand-label a small set of contiguous decisions and HUD events. Report event precision,
@@ -464,14 +505,20 @@ not necessarily worse, and a copied expert action is not necessarily appropriate
 the executor's capabilities. Record recovery examples from the agent's own failures
 and obtain human corrections rather than only collecting more clean expert wins.
 
-The controller lane confirms that BACK opens a range scoreboard with damage and KOs.
-This provides an observable outcome source. The lead reports 9/9 values read on
-one reference scoreboard frame; counter deltas, broader coverage and episode/reset
-alignment still need validation before they become rewards.
+The controller lane confirms that BACK opens a range scoreboard with damage and
+KOs. The lead reports 9/9 values read on a reference frame and an automatically
+parsed 1 KO / 275 damage in a 30-second integrated run. That cooldown-free run
+holds 57 Hz reflex and 10 Hz decisions with zero reported over-budget ticks;
+it is not the real-cooldown baseline. Counter deltas, broader coverage and
+episode/reset alignment still need validation before becoming rewards.
+Designated-target completion additionally needs VUH-1314's identity tracking
+associated with the delivered kill-feed reader; either component alone does not
+prove that the selected target died.
 
 RL is not active. It requires dependable episode boundaries, reset, outcome labels and
-a trainable policy. For a bounded defeat-the-target task, confirmed completion is the
-primary reward, failure/death a penalty, and elapsed time a small cost. Damage or hits
+a trainable policy. The reward contract above limits range outcomes to confirmed
+completion, timeout, interruption and lost-range; passive bots supply no combat
+death or damage-taken signal. Elapsed time is a small cost; outgoing damage or hits
 are optional shaping only when measured reliably. No numeric weights are accepted yet.
 Disappearance is not a kill, ult charge is not damage, and missing evidence is unknown.
 Manually adjudicated evaluation is valid while automatic outcome readers are incomplete.
