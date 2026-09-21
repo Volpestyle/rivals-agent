@@ -19,6 +19,13 @@ button execution, with no exact input labels in public VODs. It is not the first
 experiment. A policy restricted to the current `State` loses positioning and temporal
 context; raw frame history remains available alongside structured observations.
 
+**Quality governs the order of work.** James prioritizes the best-supported path
+to capable gameplay over reaching a nominal training milestone sooner. Source
+fidelity, observable targets and motion, audited labels, session diversity and
+sealed evaluation determine progress. An auxiliary prediction checkpoint is
+useful evidence, but does not replace tactical imitation, own-play corrections
+or reward-driven learning against opponents that fight back.
+
 This plan follows [the scope boundary](plan.md#scope-boundary): autonomous trials
 stay in the practice range or custom games against AI. Matchmade human gameplay is
 an offline demonstration source only. The current range guard does not authorize
@@ -66,9 +73,98 @@ labels. The separate coarse tactical-purpose head still needs A's audited labels
 its metrics and claims stay separate from scripted-brain distillation. Any
 `--brain learned` integration retains the scripted policy's execution guards.
 
+### B0: auxiliary pretraining by predicting observed ability events
+
+An auxiliary expert-video pretraining experiment forecasts verified HUD events from preceding
+video. It reuses the frozen encoder and temporal training path under VUH-1311;
+it does not require tactical-purpose annotations. Its checkpoint is an offline
+event predictor, not a controller policy or completion of milestone B. It can
+learn sequence regularities and approximate HUD-event timing, but does not establish
+optimal combos, exact button timing, target choice, tactical purpose or range competence.
+
+**Inputs and labels.** Use five seconds of causal frame history ending at t,
+sampled at 10 Hz through the loader with the same normalization and visibility
+masks as runtime. The fixed first horizon is k = 1 second; do not tune it on test.
+Predict the next verified event in (t, t+1]: `get_over_here`, `swing`, `uppercut`,
+`web_cluster_fired`, `teamup`, or `no_verified_event`. Only audited event classes
+and known icon-to-ability mappings qualify. `ability_cast` names the ability;
+charge expenditure may corroborate that event but must not duplicate it. A web
+ammo decrement supports the web-shot event, not an invented burst. Exclude
+slot-availability transitions, unknown slots and unverified ult labels.
+
+Retain each event's [t_from, t_to] interval. An interval crossing t cannot label
+a future action; intervals crossing the horizon or with ambiguous earliest-event
+ordering are omitted from this first experiment, with exclusion counts reported.
+Timing is an auxiliary scalar prediction conditional on the event class: train
+and score its distance outside the observed interval, with zero error inside.
+Report interval widths alongside error so broad uncertainty cannot masquerade as
+precise prediction. Overlapping countdown/charge evidence for one cast counts once.
+
+`no_verified_event` means no accepted reader event in a fully observed horizon;
+it is not proof of no button press, a deliberate wait, or the controller's Idle.
+Death, hero change, spectating, cuts, clip ends and unreadable/occluded target HUD
+channels censor the horizon; never turn those gaps into negatives. A scoreboard
+gap in preceding history may be bridged only with its mask and a proven absence
+of a hard cut; any gap in the prediction horizon is censored. Require the full
+five-second context for the first run and report resulting eligible duration.
+
+Past events are optional inputs and require a causal availability check, not
+merely an event timestamp. The extractor uses temporal cleanup and per-source
+slot mapping; perturbing footage after t must not change input features at t.
+If that cannot yet be demonstrated, B0 starts with frame history only and uses
+offline events solely as targets. Do not feed future-confirmed casts, outcome
+frames, future cooldowns, or whole-session statistics into the observation.
+
+**Gates and split.** The independent VUH-1326 review must accept the two train
+sessions, corrected hero segmentation, PTS alignment, masks and provenance;
+their events must be regenerated with the agreed reader version and its
+class-specific audit. All stream files must satisfy the shared format contract.
+Patch and normal-cooldown provenance remain mandatory. Event prediction does
+not waive these gates or automatically promote a source into positive-action
+imitation: forecasting what an expert did can include mistakes, whereas teaching
+the controller to repeat it still needs suitability and execution acceptance.
+
+Fit only accepted TRAIN groups from `s10-normal-v0`. The sealed test broadcasts
+remain untouched during development, learning curves and model selection.
+While independent validation is unavailable, use the two train broadcasts as
+two explicitly developmental leave-one-session-out folds, fitting normalization
+and baselines on the fitting session only. This permits a first fit without
+pretending the official validation split is complete. Report each direction
+separately: creator and session effects are confounded. A new independently
+audited Day session can provide provisional Day-only validation; report that
+limitation rather than requiring unavailable Req archives or borrowing the sealed
+test. Final test evaluation follows a frozen model and evaluation protocol.
+
+**Deliverable and acceptance.** Save a reproducible local checkpoint, source and
+reader versions, included classes, exclusion counts, unique casts, session counts,
+normalization, seed, training command and elapsed time. Overlapping windows do
+not multiply the independent cast count. Report event-class macro F1, per-class
+precision/recall/support, the no-event confusion, and conditional timing interval
+error, per session. Compare with always-no-event, training-majority and the most
+recent observed event class; compare timing with the training-only median delay
+per class. An events-only baseline is also required if event history is an input,
+so cooldown arithmetic alone is not described as learned visual game sense.
+Run one predeclared configuration first. A reproducible negative result completes
+the probe; an improvement claim requires beating the strongest applicable class
+baseline on macro F1 and its timing baseline on the same held-out development
+examples, with support and failure cases shown. No live deployment follows B0.
+
+**Coarse-purpose labels remain the next head.** The next bounded tranche is
+24 new development windows, 12 per creator from accepted train sessions, under
+the aligned 10 Hz protocol. Sample across ordinary combat, traversal/search and
+recovery evidence, without assigning purpose from those sampling cues. A primary
+vision annotator labels them; Codex independently labels eight preselected windows
+(four per creator) before seeing that pass. Compare and adjudicate those eight
+before expanding the tranche; disagreements remain unknown until resolved against
+media. Claude assigns the primary annotator and comparison owner; Codex owns
+the second pass and acceptance. This is a measured annotation tranche, not a claim
+that 24 labels suffice to train a tactical policy, and it does not block B0.
+
 ```mermaid
 flowchart TD
   A[Audited demonstration labels] --> B[Imitation v0]
+  V[Audited HUD events and causal frames] --> P[B0 offline event predictor]
+  P -. representation and sequence evidence .-> B
   B --> C[Own-play corrections and retraining]
   C --> B
   R[Repeatable episodes and audited rewards] --> D[Bounded range RL]
@@ -415,6 +511,30 @@ learning comparison and retained checkpoint or honest negative result, not just
 an RL library installed or a loss curve going down.
 
 ## Data and labels
+
+### Source fidelity: investigate native replay before expanding downloads
+
+The game's replay system is a candidate source, not a verified acquisition path.
+Claude's replay-research lane owns public documentation research and a bounded
+in-client checklist. Further Twitch expansion waits for that result; the current
+bounded acquisition attempt may finish. Existing inspected footage remains useful
+for narration, event-reader testing and the auxiliary pretraining probe.
+
+Replay adoption requires an accessible expert match ID with patch/session
+provenance; recorded-player POV and HUD; checked camera, cooldown and event timing
+at normal playback speed; and native capture without streamer overlays. Test
+whether enemy colours follow our settings and score target detection on replay
+frames. The range green finder's 82/83 precision/recall does not transfer by
+assertion. A spectator reconstruction may differ from the original player's
+camera, visibility or HUD; identify those differences before treating it as an
+expert's observation. Native pixels cannot reveal hidden intent or unlogged inputs.
+
+If these checks pass, prioritize replay-derived demonstrations and retain one
+match/session identity across replay and VOD versions to prevent split leakage.
+Merge the live/demo perception paths only after a measured entity/observation
+contract supports it. Otherwise retain the two-domain design and document the
+specific replay limitation. The live-input freeze still applies: research does
+not authorize an unattended replay-menu visit or a new controller launch surface.
 
 | Source | Evidence provided | Missing or uncertain |
 |---|---|---|
@@ -996,7 +1116,7 @@ validation. Keep those uploads inspection-only until provenance resolves the
 overlap; the exception is not made safe by keeping them out of gradient updates.
 The two reserved broadcasts remain untouched final evaluation candidates.
 
-The next acquisition batch is bounded at four 15-minute sections from four
+The Twitch expansion proposal is bounded at four 15-minute sections from four
 additional current-patch broadcasts: two per creator, one per creator assigned
 to train and one to validation before fitting. Exclude existing and reserved
 session groups. Record normal cooldowns, own-Spider-Man visibility, source dates
@@ -1005,6 +1125,16 @@ with the HUD lane before completing the batch. Expected usable duration is a
 collection estimate, not an acceptance threshold. More sessions address the
 current creator/editing imbalance and session dominance; more minutes from the
 same sessions do not establish independent validation.
+
+The local `data/demos/vods/batch2/handback.md` records a sourcing blocker: the
+2026-09-20 public Req archive listing contains the existing and sealed broadcasts
+plus `2833877598`, dated 2026-07-31. It provides neither additional current-patch
+Req session required by the proposal. The attempted Day `2876184005` section
+(00:30–00:45) is rejected: all nine worker-inspected stills show another game;
+Codex's independent still check also finds no Rivals gameplay HUD. This classifies
+the sampled section, not the entire broadcast. No new HUD-ready pair or accepted
+validation session exists from this attempt. Acquisition is parked while replay
+feasibility is investigated; existing or sealed sessions are not substitutes.
 
 The initial 18.3 minutes can support a bounded first fit and a learning-curve
 probe after label acceptance. There is no evidence yet that this amount suffices
