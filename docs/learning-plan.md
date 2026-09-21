@@ -1141,6 +1141,51 @@ missing paired examples for collection after the live-input freeze lifts.
 
 ## Training and runtime
 
+### Configurable playstyle
+
+James wants selectable playstyle through interpretable sliders. The planned
+implementation is one policy conditioned on a small preference vector, sharing
+the same perception and controller, rather than a separate model per style.
+This extends E/F after the base policy and relevant actions work; it does not
+block B0 or the first imitation baseline. The sliders are planned capabilities,
+not controls implemented by the current policy.
+
+| Initial slider | Lower end | Higher end | Observable behavior to compare |
+|---|---|---|---|
+| Aggression | Wait for stronger openings | Commit more readily | Engagement choices and delay under comparable health, resources, targets and threats |
+| Swing conservation | Spend charges readily | Preserve charges for traversal or escape | Optional swing/cancel spending and charges retained under comparable opportunities |
+
+Combo commitment and target preference are later candidates, not additional
+initial controls. Style expresses a preference conditional on the situation;
+high aggression is not an instruction to ignore threats, and high conservation
+does not forbid a necessary escape. Use the declared slider direction consistently
+in labels, model inputs and UI. The neutral setting is an evaluated default.
+
+Training uses audited behavioral examples with style evidence and uncertainty.
+Creator identity can identify a demonstration source, but does not establish one
+fixed style: the same player changes behavior across encounters. Include ordinary
+play, failed attempts and successful outcomes; high movement alone does not prove
+aggression. Label observed tendencies over sufficient context, keeping inferred
+intent unknown where unsupported. Condition imitation on supported style labels;
+an unlabeled example is not automatically the neutral style. Sparse evidence
+supports a few evaluated presets before a claim of smooth slider interpolation.
+
+First evaluate low/default/high settings on matched starts or held-out situations,
+with perception, controller and patch fixed. Require a repeatable change in the
+named behavior, report effects on completion, survival and later match wins, and
+check whether the sliders interfere with each other. Aggression and escape claims
+need F's fighting venue; passive range bots only support mechanics and resource
+tests. A slider that does not change behavior is not accepted. Later RL may use
+bounded, explicit preference terms alongside the task objective, with tradeoffs
+reported rather than treating style compliance as gameplay success.
+
+Preferences cannot bypass action legality, input guards or executor capability.
+Simple-swing cancels become a style choice only after that action works and has
+audited labels; exact short-cancel execution is not a prerequisite for initial
+style work. Standardize our executor on hold-to-swing. Source hold/toggle settings
+matter only when reconstructing inputs; match the observed attachment/release
+behavior without implementing a user-facing release-style switch.
+
 ```mermaid
 flowchart LR
     V[Expert VODs] --> D[Temporal demonstrations]
@@ -1149,6 +1194,7 @@ flowchart LR
     L --> T[Imitation training locally or on rented GPU]
     T --> P[Learned temporal policy]
     F[Runtime frames and events: transfer unvalidated] --> P
+    S[Planned style preferences: aggression and swing conservation] -.-> P
     P --> I[Intent plus fixed target selector]
     I --> G[Current-state validity checks]
     G --> C[Calibrated controller]
