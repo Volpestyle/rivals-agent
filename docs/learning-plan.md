@@ -575,6 +575,29 @@ are requested, not frame-verified. Construct clip time from decoded PTS before
 extracting temporal labels. Collection continues independently of the HUD-fix /
 hand-checked-event gate; raw acquisition does not pass that gate.
 
+### Req YouTube gameplay batch
+
+`data/demos/youtube/reqmr/manifest.json` inventories six complete uploads from
+Req's verified source channel `@reqmr1`, acquired 2026-09-20: `yjc51uOjKEQ`,
+`d0C8RMBnFfA`, `ftnk5SVycXY`, `Cf_2goe1snQ`, `V6iaq9dP8FQ` and `G7HmV8zyEh8`.
+They add approximately 104 raw minutes at 1080p60. The existing Req narrated
+guide remains in `data/demos/guides/` and is not duplicated.
+
+Nine inspected stills per upload show Spider-Man combat, traversal, low HP,
+victory/defeat screens and exclusions including spectating, scoreboards and
+outros. HUDs are generally visible in sampled gameplay; alternate skins, chat
+overlap and damage vignettes remain perception concerns. Two uploads are from
+September 2026 and four from April/May; retain patch provenance. Full uploads
+are not necessarily continuous matches: segment editorial cuts as well as game
+state changes before constructing temporal examples.
+
+All six remain `inspection_only`, without new event/action labels or a verified
+usable duration. Match/session deduplication against Twitch and other uploads
+precedes split assignment; a YouTube upload ID is not an independent session.
+The loss-focused video visibly ends in defeat, but individual decisions still
+need suitability review. Acquisition expands coverage without passing the label
+audit or training gates.
+
 ### Guide demonstrations
 
 [Narrated combo inventory](lanes/combo-arsenal.md) records nine locally acquired
