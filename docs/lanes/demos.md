@@ -18,6 +18,7 @@ for obs in demos.observations("train", patch="Season 10, Version 20260911"):   #
     ...
 for s in demos.samples("val", hindsight=True):                                  # + labels, and the outcome window after t
     ...
+split = Demos.load_split("s10-normal-v0")                                       # data/demos/splits/<name>.json
 ```
 
 Media is never copied or re-encoded, and there is no database: a clip is one JSONL manifest beside its media
@@ -326,6 +327,65 @@ uploads stay unsplittable until the cross-source duplicate check runs.
 - Loader manifests for the sections and uploads are written beside their media from the acquisition `manifest.json`
   (dates, group, split) and the events file (segments, `observed`), through `write_manifest`, which validates them by loading.
 
+## The first dataset split: `s10-normal-v0` (proposed)
+
+`data/demos/splits/s10-normal-v0.json`, loaded with `Demos.load_split("s10-normal-v0")`. It is a **proposal**: `status:
+proposed` changes no source, `demos.splits` stay `inspection_only` for all six, the proposed sides are in `demos.proposed`, and
+no `train`/`val`/`test` iterator yields anything. A split file names a patch, a regime, its sources and whole session groups per
+side; the loader refuses a source of another patch or regime, a group on two sides or on none, and a side group with no source.
+`status: accepted` sets the sides, and only for sources whose own manifest allows it (`splittable: true`, `split` null or that
+side). Promotion is an edit to each source's manifest, never to the split file.
+
+Scope: Season 10, Version 20260911, `cooldowns: normal`. Excluded: the four April-May uploads (patch unknown), the guides (no
+loader manifest), and the two 60 s samples (not requested; each belongs to a train-side group).
+
+| Side | Session groups | Creator | Usable minutes | Windows (5 Hz) | Windows with bridged masked frames |
+|---|---|---|---|---|---|
+| train | `twitch:2879354299` (Day, broadcast 09-20), `twitch:2873352801` (Req, 09-13) | Day 9.2, Req 9.1 | **18.3** | 5,515 | 513 (9%) |
+| val | `youtube:d0C8RMBnFfA` (uploaded 09-11), `youtube:yjc51uOjKEQ` (09-12) | Req 23.5 | **23.5** | 7,075 | 632 (9%) |
+| test, sealed | `twitch:2877719252` (Day, 09-18), `twitch:2871472478` (Req, 09-11) | Day 9.5, Req 11.5 | **21.0** | 6,345 | 937 (15%) |
+
+Test is the two broadcasts `data/demos/vods/manifest.json` reserves as evaluation (`reserved_evaluation_candidate_new_session`),
+one per player. Train is the two pilot-session broadcasts. The September uploads go to val because their duplicate check across
+sources has not run, and by date they can repeat matches of the sealed 09-11 Req broadcast. On val a duplicate biases model
+selection; on train it would teach the test matches. By date they cannot repeat a train broadcast (09-13, 09-20).
+
+Events per type in usable segments:
+
+| Kind | train | val | test |
+|---|---|---|---|
+| `ability_cast` | 264 | 392 | 303 |
+| `charges_spent` / `charges_regained` | 73 / 54 | 114 / 74 | 82 / 49 |
+| `slot_unavailable` / `slot_available` | 219 / 224 | 308 / 304 | 291 / 287 |
+| `hp_lost` / `hp_gained` | 358 / 410 | 619 / 1012 | 527 / 469 |
+| `shield_gained` / `shield_decayed` / `max_hp_changed` | 2 / 3 / 9 | 17 / 26 / 32 | 10 / 4 / 16 |
+| `web_cluster_fired` / `web_cluster_reloaded` | 211 / 176 | 380 / 336 | 284 / 220 |
+| `ult_ready` / `ult_spent` | 10 / 10 | 17 / 17 | 15 / 17 |
+| `ko_feed` | 11 | 16 | 13 |
+
+Casts per slot: train get_over_here 86, uppercut 82, swing 54, teamup 42; val 122, 127, 78, 65; test 87, 96, 62, 58. No cast in
+the split has a null slot.
+
+**What makes it lopsided:**
+
+- **Train is the smallest side**: 18.3 of 62.8 minutes (29%), against 23.5 on val and 21.0 on test. The reservations fix test,
+  and the uploads' duplicate risk keeps them off train. Moving the uploads to train would give 41.8 / 0 / 21.0, with no val,
+  and a possible test leak.
+- **Val is one player, and edited uploads only.** All 23.5 minutes are Req's. A Day-specific failure cannot show up in val.
+- **One session carries most of a side's casts**: on test, `twitch:2871472478` has 185 of 303 (61%); on train,
+  `twitch:2879354299` has 157 of 264 (59%); on val, `yjc51uOjKEQ` has 213 of 392 (54%).
+- **Val holds 2.5x train's `hp_gained`** (1,012 against 410) and most shield events. That is more healing in the uploads, or
+  shield ticks read as hp where max hp was unreadable (docs/lanes/l2-hud.md): a val metric on hp events would not measure the
+  same thing as on train.
+- **Test has the most bridged windows** (15% against 9%): its sessions tap the scoreboard more (37 and 23 taps against 21 and 17).
+- **Maps are not recorded** anywhere (acquisition manifests, events, loader), so balance by map cannot be checked.
+- **Ults are rare**: 10-17 `ult_spent` per side, too few for an ult-use metric on any side.
+
+Promotion is blocked on the VUH-1326 independent re-check, the co-lead's label spec, and the uploads' duplicate check against
+`twitch:2871472478`. The uploads stay `splittable: false` until that check runs, so an `accepted` status is refused while they
+are in the split. A quick event-signature duplicate check could not tell sources apart: it matched a May upload against a
+September broadcast. So it settles nothing either way; the check needs frames.
+
 ## What format 4 does not give the loader
 
 - **Where the cuts are.** `cuts` is a count. A cut shows up only as a `hard_cut` segment end, so one inside a scoreboard tap or
@@ -351,8 +411,9 @@ uploads stay unsplittable until the cross-source duplicate check runs.
 - **Not built:** video decoding, an annotation tool, event and annotation re-cutting on `trim`, verification of `alignment`,
   mapping `observed` to a patch, and sampling-weight code.
 
-Mutation checks: 18 hand-made breakages of the format 4, bridging, mask and provenance code (a guessed slot accepted, the
+Mutation checks: 25 hand-made breakages of the format 4, bridging, mask and provenance code (a guessed slot accepted, the
 fixed ult unrecognised, format 3 accepted, meta keys unchecked, the tap width ignored, a cut made soft, bridging off by
 default, a gap hiding the HUD only, `partial` hiding, annotator masks dropped, events read off masked frames, the regime or
 patch gate off, a basis unchecked, observed countdowns unchecked, an unsplittable clip hashed into a split or allowed an
-explicit one, a run's manifest/meta.json clash ignored) each fail at least one test.
+explicit one, a run's manifest/meta.json clash ignored; for splits, a proposal that promotes, the accepted gate off, the patch
+unchecked, a group on two sides, on none or with no source, the status unchecked) each fail at least one test.

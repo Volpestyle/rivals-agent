@@ -1184,3 +1184,64 @@ def test_tagrun0_iterates():
     assert len(labelled) > 0.9 * len(samples) and all(l.kind == "recorded_inputs" for s in labelled for l in s.labels)
     assert all(s.hindsight.outcome.t_end <= clip.segments[0].end_t + 1e-6 for s in samples)
     assert samples[-1].hindsight.outcome.ended_by == "run_end"                                   # the run's own end cuts the window
+
+
+# --- a dataset split, by name -------------------------------------------------------------------------------------------------
+def split_fleet(tmp_path, status="proposed", **clip_kw):
+    for n, g in enumerate(("gA", "gB", "gC")):
+        make_vod(tmp_path, name=f"v{n}", vod_id=f"7{n}", group=g, **clip_kw)
+    spec = dict(name="s", status=status, patch="Season 10, Version 20260911", cooldowns="normal",
+                sources=[f"v{n}.manifest.jsonl" for n in range(3)], sides={"train": ["gA"], "val": ["gB"], "test": ["gC"]}, sealed=["test"])
+    (tmp_path / "splits").mkdir(exist_ok=True)
+    (tmp_path / "splits" / "s.json").write_text(json.dumps(spec))
+    return spec
+
+
+def rewrite(tmp_path, spec, **kw):
+    (tmp_path / "splits" / "s.json").write_text(json.dumps(dict(spec, **kw)))
+
+
+def test_a_proposed_split_loads_by_name_and_promotes_nothing(tmp_path):
+    split_fleet(tmp_path, split="inspection_only")
+    d = Demos.load_split("s", root=tmp_path)
+    assert d.proposed == {"v0": "train", "v1": "val", "v2": "test"} and set(d.splits.values()) == {"inspection_only"}
+    for side in ("train", "val", "test"):
+        assert list(d.observations(side)) == []                        # a proposal yields nothing to a training iterator
+
+
+def test_an_accepted_split_takes_effect_only_where_each_source_allows_it(tmp_path):
+    spec = split_fleet(tmp_path, split="inspection_only", status="accepted")
+    with pytest.raises(ProvenanceError, match=r"not splittable or their manifests keep another split"):
+        Demos.load_split("s", root=tmp_path)                           # the split file never overrides a manifest
+    d = fresh(tmp_path, "ok")
+    split_fleet(d, status="accepted")                                   # manifests with split null: promotion was made in them
+    got = Demos.load_split("s", root=d)
+    assert got.splits == {"v0": "train", "v1": "val", "v2": "test"} and {o.clip for o in got.observations("train")} == {"v0"}
+    d = fresh(tmp_path, "unsplit")
+    split_fleet(d, status="accepted", splittable=False)
+    with pytest.raises(ProvenanceError, match="not splittable"):
+        Demos.load_split("s", root=d)
+
+
+def test_a_split_refuses_a_mixed_patch_a_straddling_group_and_an_orphan(tmp_path):
+    spec = split_fleet(tmp_path)
+    for kw, err, why in [(dict(patch="Season 9"), RegimeError, "the split is 'Season 9'"),
+                         (dict(cooldowns="off"), RegimeError, "cooldowns 'normal'"),
+                         (dict(sides={"train": ["gA", "gB"], "val": ["gB"], "test": ["gC"]}), SplitError, "on 'train' and 'val'"),
+                         (dict(sides={"train": ["gA"], "val": ["gB"]}), SplitError, "gC' is on no side"),
+                         (dict(sides={"train": ["gA", "gZ"], "val": ["gB"], "test": ["gC"]}), SplitError, "no source: \\['gZ'\\]"),
+                         (dict(sides={"dev": ["gA"], "val": ["gB"], "test": ["gC"]}), FormatError, "side 'dev'"),
+                         (dict(status="final"), FormatError, "status 'final'")]:
+        rewrite(tmp_path, spec, **kw)
+        with pytest.raises(err, match=why):
+            Demos.load_split("s", root=tmp_path)
+
+
+@NO_DATA
+def test_the_first_season_10_split_is_a_proposal_with_the_reserved_sessions_sealed_as_test():
+    d = Demos.load_split("s10-normal-v0")
+    assert d.split_spec["status"] == "proposed" and set(d.splits.values()) == {"inspection_only"}
+    groups = {s: {d.clips[c].group for c, x in d.proposed.items() if x == s} for s in ("train", "val", "test")}
+    assert groups["test"] == {"twitch:2877719252", "twitch:2871472478"} and d.split_spec["sealed"] == ["test"]
+    assert all(d.clips[c].patch == "Season 10, Version 20260911" and d.clips[c].cooldowns == "normal" for c in d.proposed)
+    assert not any(d.clips[c].edited_upload for c, s in d.proposed.items() if s != "val")

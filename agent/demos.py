@@ -37,6 +37,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 EPS = 1e-6
+DEMOS_ROOT = Path(__file__).resolve().parent.parent / "data" / "demos"   # data/demos/splits/<name>.json names a dataset split
+SPLIT_STATUS = ("proposed", "accepted")
 
 SPLITS = ("train", "val", "test", "inspection_only")
 KINDS = ("vod", "run", "human")
@@ -736,6 +738,50 @@ class Demos:
     @classmethod
     def load(cls, *paths, **kw):
         return cls(discover(*paths), **kw)
+
+    @classmethod
+    def load_split(cls, name, root=DEMOS_ROOT, **kw):
+        """The dataset split `<root>/splits/<name>.json`: its sources, each whole session group on one side.
+
+          {"name": ..., "status": "proposed" | "accepted", "patch": ..., "cooldowns": ..., "sources": [manifest paths under root],
+           "sides": {"train": [group, ...], "val": [...], "test": [...]}, "sealed": ["test"], ...}
+
+        Every source must be of the split's one patch and one regime, and every group on exactly one side. A PROPOSED split
+        changes no source: `splits` stay what the manifests say (inspection_only) and the sides are only `proposed`, so no
+        training iterator yields them. An ACCEPTED split sets `splits` to its sides, and only for sources whose own manifest
+        allows it (splittable, split null or that side): the split file never overrides a source's provenance."""
+        path = Path(root) / "splits" / f"{name}.json"
+        spec = json.loads(path.read_text(encoding="utf-8"))
+        if spec.get("status") not in SPLIT_STATUS:
+            raise FormatError(f"{path}: status {spec.get('status')!r} is not one of {SPLIT_STATUS}")
+        side_of = {}
+        for side, groups in spec["sides"].items():
+            if side not in SPLITS[:3]:
+                raise FormatError(f"{path}: side {side!r} is not one of {SPLITS[:3]}")
+            for g in groups:
+                if g in side_of:
+                    raise SplitError(f"{path}: group {g!r} is on {side_of[g]!r} and {side!r}")
+                side_of[g] = side
+        clips = discover(*[Path(root) / s for s in spec["sources"]])
+        for c in clips:
+            if (c.patch, c.cooldowns) != (spec["patch"], spec["cooldowns"]):
+                raise RegimeError(f"{path}: {c.id} is patch {c.patch!r}, cooldowns {c.cooldowns!r}; the split is {spec['patch']!r}, "
+                                  f"{spec['cooldowns']!r}")
+            if c.group not in side_of:
+                raise SplitError(f"{path}: {c.id}'s group {c.group!r} is on no side")
+        empty = set(side_of) - {c.group for c in clips}
+        if empty:
+            raise SplitError(f"{path}: groups with no source: {sorted(empty)}")
+        if spec["status"] == "accepted":
+            bad = [c.id for c in clips if not c.splittable or c.split not in (None, side_of[c.group])]
+            if bad:
+                raise ProvenanceError(f"{path}: accepted, but {bad} are not splittable or their manifests keep another split: "
+                                      f"promotion is a change to each source's manifest, not to the split file")
+            for c in clips:
+                c.split = side_of[c.group]
+        demos = cls(clips, **kw)
+        demos.split_spec, demos.proposed = spec, {c.id: side_of[c.group] for c in clips}
+        return demos
 
     def clips_in(self, split):
         if split not in SPLITS:
