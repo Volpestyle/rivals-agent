@@ -247,6 +247,55 @@ reads = read_run(run_dir, layout=LAYOUTS[r["layout"]])
 deletes it; the events file keeps only meta, segments and events. A rerun is
 needed: about 10 minutes per 15-minute section on this machine, niced.
 
+#### Addendum: is a lockout distinguishable in the raw reads?
+
+**Not distinguishable — and on these MK clips there is no lockout state to
+distinguish.** Measured read-only on B0's per-frame sidecars
+(`data/experiments/b0/visibility/*.json`, writer `1336262e179c`), frames inside
+segments, per slot: its raw state (a) inside its **own** cooldown (from its own
+`ability_cast`, for the countdown it started at), (b) in the second after
+**another** slot's cast while not on its own cooldown — where a lockout would
+be — and (c) neither. "lit/dim/unread" is `ready` True/False/None; "num" is an
+int in `cooldowns[pos]`.
+
+| slot | own cooldown: a number read | after another cast: dim + no number | neither: dim + no number | after another cast: unread | neither: unread |
+|---|---|---|---|---|---|
+| ReqMR teamup / swing / GOH / uppercut | 97 / 82 / 93 / 35% | 2 / 3 / 0 / 1% | 1 / 2 / 1 / 1% | 10 / 20 / 66 / 65% | 5 / 16 / 54 / 57% |
+| DayMR teamup / swing / GOH / uppercut | 90 / 77 / 92 / 89% | 0 / 2 / 1 / 1% | 0 / 4 / 3 / 7% | 8 / 24 / 38 / 22% | 7 / 37 / 40 / 34% |
+
+- **(a) against a lockout: the raw field that differs is `cooldowns[pos]`.** Own
+  cooldown shows a number on 77–97% of its frames (ReqMR uppercut 35%, where the
+  slot is unread on most frames). `ready` does **not** separate them on MK: the
+  readiness reader calls a cooling icon "lit" on 31–91% of own-cooldown frames.
+- **The only raw state a lockout could produce — dim with no number — is not
+  enriched after another slot's cast** (0–3%, against 0–7% at baseline). During
+  another ability's animation the other slots read like any other frame: mostly
+  lit with no number, which the contract counts as observed-ready. A per-frame
+  lockout label cannot be read from these fields.
+- **(b) unreadable is its own raw state** (`ready is None`). Its rate after
+  another cast differs from baseline by up to 13 points in either direction
+  (ReqMR Get Over Here 66% against 54%; DayMR swing 24% against 37%), with no
+  consistent sign, so it is not a lockout marker either. Per creator it is driven by the slot, not the cast: ReqMR's
+  Get Over Here and uppercut are unread on 54–57% of ordinary frames, DayMR's
+  swing on 37%.
+- **PAD: not measured** on these clips (both are MK). The range audit saw PAD
+  icons dim without a countdown during wall climbs and swings, which is the
+  same raw signature as an unread countdown; not distinguishable per frame there
+  either, on that evidence.
+
+**What `docs/spiderman-kit.md` supports:** some abilities are cast *during or
+at the end of* another's animation — Web Cluster cancels the swing animation,
+and the fast-cancel chain fires RB, RT, LT and X in quick succession — with the
+cancel windows marked **U** (unverified). It says nothing about a greyed slot:
+whether a greyed slot accepts input is **not established** by any source in it.
+
+**For B0, a pointer rather than a finding:** under rule (4) a positive needs no
+coverage at all, and 14–81% of 1 s horizons per slot are fully observed on
+these clips (teamup 69–81%, Get Over Here 42–47%, swing 14–39%, uppercut
+16–22%). Requiring *every* slot to be observed around a cast is stricter than
+the contract and, with these per-slot rates, would leave almost nothing
+eligible. No label changes on this inference.
+
 ### Reproducing any of this
 
 `uv run --group perception python -m perception.events ...` — the shared venv's
@@ -766,22 +815,24 @@ three. The requested cut times are not used for anything.
 | section | PTS origin | own-Spider-Man play | share | segments | median / longest | events |
 |---|---|---|---|---|---|---|
 | `reqmr-2871472478-5400-900s` | 0 s | **11.57 min** of 15 | 77% | 55 | 6.5 / 65.8 s | 1669 |
-| `reqmr-2873352801-1980-900s` | 0 s | **9.12 min** of 15 | 61% | 30 | 12.1 / 56.4 s | 912 |
-| `daymr-2879354299-21660-900s` | 1.616 s | **9.28 min** of 15 | 62% | 46 | 4.9 / 68.7 s | 1144 |
-| `daymr-2877719252-1800-900s` | 0 s | **9.62 min** of 15 | 64% | 71 | 3.8 / 84.1 s | 927 |
-| **total** | | **39.6 min** of 60 | **66%** | 202 | | 4652 |
+| `reqmr-2873352801-1980-900s` | 0 s | **9.11 min** of 15 | 61% | 31 | 12.1 / 56.4 s | 910 |
+| `daymr-2879354299-21660-900s` | 1.616 s | **8.22 min** of 15 | 55% | 43 | 4.9 / 68.7 s | 978 |
+| `daymr-2877719252-1800-900s` | 0 s | **9.59 min** of 15 | 64% | 69 | 3.9 / 84.1 s | 922 |
+| **total** | | **38.5 min** of 60 | **64%** | 198 | | 4479 |
 
-**Two thirds of a retained expert section is usable, and a third is not.** Budget
-on 0.66, not on wall-clock minutes.
+Writer `1336262e179c`. **About two thirds of a retained expert section is usable,
+and a third is not.** Budget on 0.64, not on wall-clock minutes. The DayMR
+section's minute of Doctor Strange (see **Another hero passing as ours**) is the
+one real loss against earlier counts.
 
 Events per section, the types a policy would learn from:
 
 | section | get_over_here | swing | uppercut | team-up | hp_lost | hp_gained | web fired | ko_feed |
 |---|---|---|---|---|---|---|---|---|
 | `reqmr-2871472478-5400-900s` | 55 | 47 | 53 | 30 | 384 | 326 | 183 | 6 |
-| `reqmr-2873352801-1980-900s` | 37 | 27 | 22 | 21 | 134 | 236 | 115 | 6 |
-| `daymr-2879354299-21660-900s` | 49 | 27 | 71 | 21 | 230 | 175 | 96 | 5 |
-| `daymr-2877719252-1800-900s` | 32 | 16 | 45 | 28 | 144 | 147 | 102 | 7 |
+| `reqmr-2873352801-1980-900s` | 37 | 27 | 22 | 21 | 132 | 236 | 115 | 6 |
+| `daymr-2879354299-21660-900s` | 43 | 22 | 53 | 21 | 188 | 131 | 96 | 4 |
+| `daymr-2877719252-1800-900s` | 31 | 16 | 43 | 28 | 142 | 147 | 102 | 7 |
 
 Slot mapping came out per source, by icon: Req maps straight through, both Day
 sections have Web-Swing and Get Over Here the other way round. Each section's
@@ -790,7 +841,7 @@ above even though the key order was not.
 
 ### The play is not in long runs
 
-The median segment is **3.8–12.1 s**, against longest runs of 56–84 s. That is
+The median segment is **3.9–12.1 s**, against longest runs of 56–84 s. That is
 not the segmenter being twitchy — it is the players. **ReqMR taps the scoreboard
 on and off inside fights**: at 60.1 s of `reqmr-2871472478` the board is up
 (his row highlighted, 837 damage), at 60.5 s he is mid-swing at 245/250, at
@@ -799,15 +850,17 @@ these are decisive detections a third of a second apart, not threshold flicker.
 
 Two numbers a consumer will want:
 
-| section | segments >= 5 s | play inside them | after bridging gaps < 1 s |
+| section | segments >= 5 s | play inside them | after bridging scoreboard taps < 1 s |
 |---|---|---|---|
-| `reqmr-2871472478-5400-900s` | 34 | 11.1 min | 31 runs, median 16.0 s, longest 68 s |
-| `reqmr-2873352801-1980-900s` | 17 | 8.9 min | 15 runs, median 27.5 s, longest 145 s |
-| `daymr-2879354299-21660-900s` | 22 | 8.8 min | 25 runs, median 15.2 s, longest 82 s |
-| `daymr-2877719252-1800-900s` | 28 | 8.4 min | 31 runs, median 7.1 s, longest 84 s |
+| `reqmr-2871472478-5400-900s` | 34 | 11.1 min | 40 runs, median 14.5 s, longest 66 s |
+| `reqmr-2873352801-1980-900s` | 18 | 8.9 min | 19 runs, median 19.9 s, longest 145 s |
+| `daymr-2879354299-21660-900s` | 21 | 7.7 min | 29 runs, median 7.4 s, longest 82 s |
+| `daymr-2877719252-1800-900s` | 28 | 8.4 min | 36 runs, median 7.1 s, longest 84 s |
 
-Bridging halves the segment count and roughly triples the median run, and it
-costs almost no play time. **It is a loader policy, not a change to this format**
+Bridged here only where the format allows it: a gap that ends `scoreboard` and
+resumes `scoreboard_closed`, under a second, so no gap with a cut in it is ever
+joined. That cuts the segment count by a quarter to a half and roughly doubles
+the median run, at almost no cost in play time. **It is a loader policy, not a change to this format**
 — the files keep every break, because a bridged run has up to a second of
 scoreboard frames inside it, which must be masked rather than learned from.
 
@@ -1063,27 +1116,32 @@ arguably correct detections rather than errors.
 
 ### What the six uploads actually contain
 
-| upload | date | raw | usable play | share | cuts | breaking play | segments | events |
-|---|---|---|---|---|---|---|---|---|
-| `G7HmV8zyEh8` | Apr 25 | 14.1 min | **10.91 min** | 77% | 10 | 4 | 44 | 1496 |
-| `V6iaq9dP8FQ` | Apr 27 | 16.2 min | **12.83 min** | 79% | 76 | 21 | 74 | 1946 |
-| `Cf_2goe1snQ` | May 9 | 20.9 min | **16.90 min** | 81% | 55 | 10 | 63 | 2800 |
-| `ftnk5SVycXY` | May 10 | 25.4 min | **20.39 min** | 80% | 7 | 1 | 75 | 2697 |
-| `d0C8RMBnFfA` | Sep 11 | 12.8 min | **10.56 min** | 83% | 6 | 2 | 42 | 1594 |
-| `yjc51uOjKEQ` | Sep 12 | 14.7 min | **13.00 min** | 89% | 8 | 1 | 48 | 2075 |
-| **total** | | **104.1 min** | **84.6 min** | **81%** | 162 | 39 | | 12608 |
+| upload | date | raw | usable play | share | cuts | split play | in a gap | segments | events |
+|---|---|---|---|---|---|---|---|---|---|
+| `G7HmV8zyEh8` | Apr 25 | 14.1 min | **10.91 min** | 77% | 10 | 4 | 6 | 44 | 1496 |
+| `V6iaq9dP8FQ` | Apr 27 | 16.2 min | **12.83 min** | 79% | 76 | 21 | 48 | 74 | 1946 |
+| `Cf_2goe1snQ` | May 9 | 20.9 min | **16.86 min** | 81% | 55 | 10 | 44 | 58 | 2796 |
+| `ftnk5SVycXY` | May 10 | 25.4 min | **20.39 min** | 80% | 7 | 1 | 6 | 75 | 2697 |
+| `d0C8RMBnFfA` | Sep 11 | 12.8 min | **10.56 min** | 83% | 6 | 2 | 1 | 42 | 1594 |
+| `yjc51uOjKEQ` | Sep 12 | 14.7 min | **13.00 min** | 89% | 8 | 1 | 0 | 48 | 2075 |
+| **total** | | **104.1 min** | **84.6 min** | **81%** | 162 | 39 | 105 | | 12604 |
+
+Writer `1336262e179c`. "Split play": the cut falls between two frames of play
+and ends a segment there. "In a gap": the cut falls inside a scoreboard, death
+or other gap, which then ends `hard_cut` and resumes `after_cut` so it is never
+bridged. The other 18 fall before the first segment or after the last.
 
 **An edited upload is the richer source per raw minute: 81% usable against the
-retained sections' 66%.** The editor has already cut the queueing, the hero
+retained sections' 64%.** The editor has already cut the queueing, the hero
 select and the post-match screens that eat a third of a live broadcast. Budget
-on 0.8 for an upload and 0.66 for a raw section.
+on 0.8 for an upload and 0.64 for a raw section.
 
 **Edit density is a property of the upload, not of the era** — 7 cuts in one May
 upload and 76 in an April one. So the cut pass cannot be skipped for any file on
 the grounds that its neighbours were lightly cut.
 
 **Most cuts fall where the HUD already knows something changed**, at match
-boundaries and in outros: only 39 of 162 land inside a play segment. Those 39
+boundaries and in outros: only 39 of 162 split a play segment. Those 39
 are the whole point — each is a place where a segment would otherwise have
 spanned two unrelated fights, and `V6iaq9dP8FQ` alone accounts for 21.
 
@@ -1241,8 +1299,16 @@ bursts above 600 deg/s, **all within a second of a cast** (mostly Web-Swings,
 one 70 ms after a Get Over Here), against about 40% of the minute lying within
 a second of some cast by chance. But five of the six last a single frame, which
 is noise rather than a human flick; only one (134 ms, 877 deg/s, half a second
-before a swing) has a flick's duration. A swing moves the camera by itself, so
-none of this shows aiming. At 10 Hz the same minute tops out at 236 deg/s: the
+before a Web-Swing cast) has a flick's duration. A swing moves the camera by
+itself, so none of this shows aiming.
+
+**No swing here is labelled aimed, and no anchor is inferred** (VUH-1322). Simple
+versus aimed swing is part of the action contract (`docs/learning-plan.md`), and
+the HUD's swing event — a charge spent, a recharge countdown appearing — proves
+neither the mode nor the anchor. Camera motion before or during a swing is not
+evidence of either: with Automatic Swing the game picks the anchor itself, and
+the swing arc drives the camera on its own. Nothing in this probe or its outputs
+may be read as a swing-mode or anchor label. At 10 Hz the same minute tops out at 236 deg/s: the
 fast moves are simply invisible.
 
 ### Next
@@ -1250,6 +1316,8 @@ fast moves are simply invisible.
 Per the spec, only a small audited expert transfer set at 60 fps: hand-checked
 stretches of expert footage where the camera motion is unambiguous, labelled as
 **rotation** (not stick — a mouse player has no stick), before any bulk labels.
+Swing intervals are excluded from that set: their camera motion cannot be
+separated from the arc, and it would say nothing about swing mode or anchor.
 Paired swing footage from our own runs is the missing stratum, and has to wait
 for the live-input freeze to lift.
 
