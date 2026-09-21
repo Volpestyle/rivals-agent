@@ -1549,6 +1549,7 @@ def test_an_events_file_the_producer_calls_stale_is_refused_by_name_with_the_rea
             demos.write_manifest(d / "v.manifest.jsonl", header(events="v.events.jsonl"), SEGS)
 
 
+@pytest.mark.corpus
 def test_the_loaders_stale_rule_is_the_producers():
     events = pytest.importorskip("perception.events")          # imports numpy: runs under --group perception
     assert demos.producer_rule() == {"format": events.FORMAT_VERSION, "required_meta": tuple(events.REQUIRED_META),
@@ -1636,6 +1637,7 @@ def assert_windows_hold(d, clip, split="inspection_only", **kw):
     return n
 
 
+@pytest.mark.corpus
 @NO_DATA
 @FORMAT5_PENDING
 def test_both_sample_clips_load_under_the_current_format():
@@ -1645,6 +1647,7 @@ def test_both_sample_clips_load_under_the_current_format():
         assert clip.patch == "Season 10, Version 20260911" and clip.header["patch_from"] == "broadcast_date"
 
 
+@pytest.mark.corpus
 @NO_DATA
 @FORMAT5_PENDING
 def test_the_req_sample_manifest_iterates():
@@ -1659,6 +1662,7 @@ def test_the_req_sample_manifest_iterates():
     assert pilot == [5.0, 30.0, 45.0] and (15.0, "outside_segments") in [(x.t, x.reason) for x in d.skipped]
 
 
+@pytest.mark.corpus
 @NO_DATA
 @FORMAT5_PENDING
 def test_the_codex_rerun_rows_load_bridged_with_the_annotators_own_masks(tmp_path):
@@ -1689,6 +1693,7 @@ def test_the_codex_rerun_rows_load_bridged_with_the_annotators_own_masks(tmp_pat
     assert assert_windows_hold(d, d.clips[real.id], decisions="manifest") == 3
 
 
+@pytest.mark.corpus
 @NO_DATA
 @FORMAT5_PENDING
 def test_a_retained_section_loads_and_bridges_its_scoreboard_taps():
@@ -1706,6 +1711,7 @@ def test_a_retained_section_loads_and_bridges_its_scoreboard_taps():
         assert list(d.observations(split)) == []
 
 
+@pytest.mark.corpus
 @NO_DATA
 @FORMAT5_PENDING
 def test_an_edited_upload_loads_never_splittable_and_never_crosses_a_cut():
@@ -1816,6 +1822,7 @@ def test_a_pending_side_is_declared_empty_and_asking_it_for_anything_is_an_error
             Demos.load_split("s", root=tmp_path)
 
 
+@pytest.mark.corpus
 @NO_DATA
 @FORMAT5_PENDING
 def test_the_first_season_10_split_is_a_proposal_with_the_reserved_sessions_sealed_as_test():
