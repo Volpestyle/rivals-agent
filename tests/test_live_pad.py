@@ -268,3 +268,64 @@ def test_back_is_never_pressed_on_a_cached_range_frame():
         lv.scoreboard(hold_s=0.35)
     assert all("BACK" not in b for b, _ in pad.reports[n:]) and pad.neutral()
     lv.close()
+
+
+def test_a_closed_live_refuses_every_non_neutral_write_and_stays_closable():
+    import time as real
+    lv, _, pad = live()
+    lv.close(); lv.close(); lv.release()                    # idempotent
+    real.sleep(0.04)
+    with pytest.raises(RangeLost, match="closed"):          # the review: the watchdog is gone, so nothing may be accepted
+        lv.send(buttons=("X",))
+    with pytest.raises(RangeLost):
+        lv.scoreboard(hold_s=0.01)
+    real.sleep(0.4)
+    assert pad.neutral() and all(not b for b, _ in pad.reports)
+
+
+def test_waiting_for_the_pad_lock_cannot_hide_a_stale_proof():
+    import threading, time as real
+    lv, cap, pad = live()
+    proven, finished, errors = threading.Event(), threading.Event(), []
+
+    def proof(f):
+        proven.set()
+        return f == "range"
+    lv._in_range = proof
+
+    def send():
+        try:
+            lv.send(buttons=("X",))
+        except RangeLost as e:
+            errors.append(str(e))
+        finally:
+            finished.set()
+    worker = threading.Thread(target=send, daemon=True)
+    lv._lock.acquire()                                      # the review: the proof is valid, then the actuator is busy for 0.2 s
+    try:
+        worker.start()
+        assert proven.wait(0.5)
+        real.sleep(0.2)
+        cap.screen = "lobby"
+    finally:
+        lv._lock.release()
+    assert finished.wait(0.5)
+    assert errors and "actuator" in errors[0] and all("X" not in b for b, _ in pad.reports) and pad.neutral()
+    worker.join(1); lv.close()
+
+
+def test_a_close_racing_a_send_never_leaves_anything_held():
+    import threading, time as real
+    for _ in range(40):
+        lv, _, pad = live()
+        t = threading.Thread(target=lambda: [_try(lv) for _ in range(20)], daemon=True)
+        t.start(); lv.close(); t.join(1)
+        real.sleep(0.01)
+        assert pad.neutral()
+
+
+def _try(lv):
+    try:
+        lv.send(buttons=("X",), rt=1.0)
+    except RangeLost:
+        pass

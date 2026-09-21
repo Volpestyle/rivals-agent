@@ -82,7 +82,7 @@ class Live:
             self._codes = {n: n for n in ("A", "X", "LB", "RB", "BACK")}
             self._pad = pad_factory()
         self.sent = dict(NEUTRAL)
-        self._lock, self._lease_until, self._closed = threading.Lock(), None, threading.Event()
+        self._lock, self._lease_until, self._closed, self._dead = threading.Lock(), None, threading.Event(), False
         threading.Thread(target=self._watchdog, daemon=True).start()
         time.sleep(settle_s)  # enumerate + the "Switching Devices" banner
 
@@ -105,14 +105,16 @@ class Live:
 
     # -- the actuator -----------------------------------------------------------------------------------------------
     def _commit(self, state, proof):
-        """Write `state` if `proof(frame)` holds on a frame that is STILL under FRESH_S old after the proof was computed."""
+        """Write `state` if `proof(frame)` holds. The age of THAT frame is judged twice: here, after the proof has been
+        computed, and again at the actuator, inside the pad lock, immediately before the write (see _apply)."""
         if time.perf_counter() - self.frame_t > FRESH_S:
             self.fresh()
-        ok = bool(proof(self.frame))                                   # may be slow: the age check comes after it
-        if not ok or time.perf_counter() - self.frame_t > FRESH_S:
+        frame, proof_t = self.frame, self.frame_t                      # the specific frame proven, and when its grab started
+        ok = bool(proof(frame))                                        # may be slow: the age checks come after it
+        if not ok or time.perf_counter() - proof_t > FRESH_S:
             self.release()
             raise RangeLost("range proof missing or stale at commit; input released")
-        self._apply(state)
+        self._apply(state, proof_t)
 
     def send(self, **changes):
         """Apply pad changes: whitelisted buttons only, and only against fresh in-range proof at the moment of writing."""
@@ -127,7 +129,10 @@ class Live:
         self._apply(dict(NEUTRAL))
 
     def close(self):
-        self.release()
+        """Neutral, for good: after this every non-neutral write is refused. Idempotent."""
+        with self._lock:                                               # serialised with any commit at the actuator
+            self._dead = True
+            self._write(dict(NEUTRAL))
         self._closed.set()
 
     def hold(self, secs, **pad):
@@ -178,20 +183,39 @@ class Live:
             time.sleep(0.02)
         return shot
 
-    def _apply(self, s):
-        with self._lock:                                               # held for one pad report, never across capture or proof
-            pad = self._pad
-            pad.reset()
-            for name in s["buttons"]:
-                pad.press_button(button=self._codes[name])
-            pad.left_joystick_float(s["lx"], s["ly"])
-            pad.right_joystick_float(s["rx"], s["ry"])
-            pad.left_trigger_float(s["lt"])
-            pad.right_trigger_float(s["rt"])
-            pad.update()
-            self.sent = dict(s)
-            neutral = not s["buttons"] and not any(s[k] for k in ("lx", "ly", "rx", "ry", "lt", "rt"))
-            self._lease_until = None if neutral else _real_clock() + LEASE_S
+    def _apply(self, s, proof_t=None):
+        """The actuator. A neutral state is always written. A non-neutral one needs the timestamp of the frame that
+        proved it, and is checked HERE, inside the lock, immediately before the write: not closed, and the proof still
+        under FRESH_S old (a wait for the lock cannot hide a stale proof). Capture and proof never run under this lock."""
+        neutral = not s["buttons"] and not any(s[k] for k in ("lx", "ly", "rx", "ry", "lt", "rt"))
+        with self._lock:
+            if neutral:
+                self._write(s)
+                return
+            if self._dead:
+                refusal = "Live is closed; input refused"
+            elif proof_t is None or time.perf_counter() - proof_t > FRESH_S:
+                refusal = "range proof stale at the actuator; input released"
+            else:
+                self._write(s)
+                self._lease_until = _real_clock() + LEASE_S
+                return
+            self._write(dict(NEUTRAL))
+        raise RangeLost(refusal)
+
+    def _write(self, s):                                               # caller holds the lock
+        pad = self._pad
+        pad.reset()
+        for name in s["buttons"]:
+            pad.press_button(button=self._codes[name])
+        pad.left_joystick_float(s["lx"], s["ly"])
+        pad.right_joystick_float(s["rx"], s["ry"])
+        pad.left_trigger_float(s["lt"])
+        pad.right_trigger_float(s["rt"])
+        pad.update()
+        self.sent = dict(s)
+        if not s["buttons"] and not any(s[k] for k in ("lx", "ly", "rx", "ry", "lt", "rt")):
+            self._lease_until = None
 
     def _watchdog(self):
         """Real-time lease: whatever the caller, the capture or the guard is doing, a held input ends LEASE_S after the
