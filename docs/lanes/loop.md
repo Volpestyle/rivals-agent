@@ -103,11 +103,15 @@ old 3 s blind wait after attaching was about 75 degrees of it. On a live run (`-
    with the guards checked on every frame, not tests: nothing checks that the device switch cleared or that the view is still (a
    confirmation on a moving view has been seen in an arrival). They are supervised delays, to be set from M1, and M2 accepts the pose by
    eye, a still view included. At most 7 pulses in all, the priming pulse included, and 14 s overall, checked after each capture and
-   its guards, before every write (each pulse ends at the deadline if that comes first) and before acceptance; the range HUD gone, the
+   its guards, before every write (each pulse ends at the deadline if that comes first) and before acceptance: a caller-side scheduling
+   check, not a guarantee about when Live.send's write reaches the device; the range HUD gone, the
    idle banner, a capture with no new frame, a refused write or any exception closes Live and refuses: "plaza start view not confirmed".
-   Each step (pulse, delay, look, acceptance or refusal) is recorded after it, in memory, with its decision frame (at most 24), never
-   between a proof and a write; `main` writes them afterwards as `start-steps.jsonl` and `start-step-NN.png` in the run's folder, for a
-   refused start as for an accepted one, and a failing record never changes the phase, the close or the exit. `main` then returns 1 with nothing else built (no brain,
+   Each step (pulse, delay, look, acceptance or refusal) is recorded after it, in memory, never between a proof and a write, with the
+   latest frame actually acquired (a refusal carries the frame that failed; a pulse cut short is recorded as INTERRUPTED, after it is
+   neutral, never as completed; past 24 kept frames the row says the frame is missing, never an older one). `main` writes them
+   afterwards as `start-steps.jsonl` and `start-step-NN.png` in the run's folder, for a refused start, an unexpected failure (then the
+   exception as it was) and an accepted start alike; the evidence is written before the STOP message, and neither the record nor any of
+   this output can change the phase, the close or the exit (an interrupt still propagates). `main` then returns 1 with nothing else built (no brain,
    no log, no `Loop`, so no end-of-run scoreboard), and the process, and the device with it, ends;
 4. on success builds the brain and the log, saves both confirming frames (`start-confirm-1.png`, `start-confirm-2.png`; the second is
    the accepted start pose), writes the phase into `meta.json` (`start`: turns, the confirming frames' stamps after `LiveIO()` returned, the

@@ -616,8 +616,16 @@ def _write_start_steps(out, steps, save=None):
                 fh.write(json.dumps(row) + "\n")
         return "start-steps.jsonl"
     except Exception as e:                              # noqa: BLE001 - a record, never a control
-        print(f"loop: start steps not written: {e!r}")
+        _say(f"loop: start steps not written: {e!r}")
         return None
+
+
+def _say(message):
+    """Print, best effort: a closed or broken stdout never changes the run's result. An interrupt still propagates."""
+    try:
+        print(message)
+    except Exception:                                   # noqa: BLE001
+        pass
 
 
 def _plaza_view():
@@ -671,9 +679,12 @@ def main(argv=None):
         try:
             start = start_pose(source.live, percept.in_range, percept.idle, plaza, attached_t=opened, steps=steps)
         except StartRefused as e:                       # Live is closed and nothing else was built; the process ends, and the device with it
-            print(f"loop: STOP: {e}")
-            _write_start_steps(ROOT / "data" / "l1" / a.run, steps)
+            _write_start_steps(ROOT / "data" / "l1" / a.run, steps)   # the evidence first: the message below may fail
+            _say(f"loop: STOP: {e}")
             return 1
+        except Exception:                               # an unexpected failure: Live is closed; keep the evidence, then the exception as it was
+            _write_start_steps(ROOT / "data" / "l1" / a.run, steps)
+            raise
         ms = dict(start["ms"])
         if "attached_t_to_first_send_returned" in ms:   # measured from LiveIO's return, not from the device's attach
             ms["liveio_return_to_first_send_return"] = ms.pop("attached_t_to_first_send_returned")

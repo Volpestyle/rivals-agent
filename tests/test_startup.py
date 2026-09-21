@@ -452,3 +452,68 @@ def test_a_capture_that_returns_past_the_deadline_is_refused_at_the_capture_and_
     with pytest.raises(S.StartRefused, match="during a capture"):
         run(live, lambda f: judged.append(clock.t) or False, clock)
     assert judged == []
+
+
+# --- failed-start evidence and output that cannot change the result (review of 5a80807) ----------------------------------------------
+def test_a_pulse_refused_mid_way_is_recorded_as_interrupted_with_its_latest_frame():
+    clock, steps = Clock(), []
+    live = FakeLive(clock, frames("range"), fail_send_at=2)               # one real send, then Live refuses
+    with pytest.raises(S.StartRefused):
+        run(live, lambda f: False, clock, steps=steps)
+    rows = [r for r, _ in steps]
+    assert rows[0]["action"].startswith("pulse 1 of 7") and "INTERRUPTED" in rows[0]["action"]
+    assert not any(r["action"].endswith("then neutral") and "INTERRUPTED" not in r["action"] for r in rows)   # never "completed"
+    assert rows[-1]["action"].startswith("refused:") and all(f == "range" for _, f in steps)
+    assert live.closed and live.writes[-1][0] == "closed"
+
+
+def test_a_refusal_carries_the_frame_that_failed_not_an_older_look():
+    clock, steps = Clock(), []
+    live = FakeLive(clock, frames(*(["wall"] * 120), "gone"))            # looks at walls, then the HUD goes
+    with pytest.raises(S.StartRefused, match="range HUD is gone"):
+        run(live, lambda f: False, clock, steps=steps)
+    assert steps[-1][0]["action"].startswith("refused:") and steps[-1][1] == "gone"
+
+
+def test_when_the_frame_budget_is_spent_the_missing_frame_is_labelled_not_replaced(monkeypatch):
+    monkeypatch.setattr(S, "STEP_FRAMES", 1)
+    clock, steps = Clock(), []
+    live = FakeLive(clock, frames("wall"))
+    with pytest.raises(S.StartRefused):
+        run(live, lambda f: False, clock, steps=steps)
+    assert sum(f is not None for _, f in steps) == 1
+    assert steps[-1][1] is None and steps[-1][0]["frame_missing"] == "frame budget (1) exhausted"
+
+
+def test_an_unexpected_failure_writes_the_steps_and_keeps_its_exception(monkeypatch):
+    written = []
+
+    def broken():
+        raise ValueError("reader failed")
+    with pytest.raises(ValueError, match="reader failed"):
+        _main(monkeypatch, broken, written)
+    assert written == [[]]
+
+
+def test_a_failing_stop_message_still_writes_the_steps_and_returns_1(monkeypatch):
+    written = []
+    monkeypatch.setattr(L, "print", lambda *a, **k: (_ for _ in ()).throw(BrokenPipeError("closed stdout")), raising=False)
+
+    def refused():
+        raise S.StartRefused("plaza start view not confirmed: 7 turns taken")
+    code, order, made, io = _main(monkeypatch, refused, written)
+    assert code == 1 and written == [[]]
+
+
+def test_the_step_writer_never_throws_even_when_its_own_error_report_fails(monkeypatch, tmp_path):
+    monkeypatch.setattr(L, "print", lambda *a, **k: (_ for _ in ()).throw(BrokenPipeError("closed stdout")), raising=False)
+
+    def failing_save(*a):
+        raise OSError("save failed")
+    assert L._write_start_steps(tmp_path, [({"n": 1}, "frame")], failing_save) is None
+
+
+def test_an_interrupt_during_output_still_propagates(monkeypatch):
+    monkeypatch.setattr(L, "print", lambda *a, **k: (_ for _ in ()).throw(KeyboardInterrupt()), raising=False)
+    with pytest.raises(KeyboardInterrupt):
+        L._say("x")

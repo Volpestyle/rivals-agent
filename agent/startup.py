@@ -83,17 +83,24 @@ class PulseStopped(RuntimeError):
     pass
 
 
-def camera_pulse(live, secs, rx, in_range, idle, *, clock=time.perf_counter, sleep=time.sleep, every=0.05, on_write=None, deadline=None):
+def camera_pulse(live, secs, rx, in_range, idle, *, clock=time.perf_counter, sleep=time.sleep, every=0.05, on_write=None, deadline=None,
+                 on_frame=None):
     """Right stick `rx` for `secs`, every other axis, trigger and button neutral. EVERY write is preceded by a fresh frame on which the
     range HUD and NO idle banner are checked, then goes through Live.send (Live's own proof, whitelist and lease); neutral in finally,
     on every exit. Live.hold re-proves the range only, and the idle banner could come up mid-pulse (review of a89728e). `on_write(t)`
     is called after each send returns. `deadline` (a clock time): the pulse ends there, and no write goes out at or after it, however
-    late the capture before it returned."""
+    late the capture before it returned. `on_frame(frame, stamp)`: told of each frame as it is acquired, before its guards (the caller
+    keeps the latest as evidence; an in-memory assignment, never a log, and a failing one is ignored)."""
     pad, start = {**NEUTRAL, "rx": rx}, clock()
     end = start + secs if deadline is None else min(start + secs, deadline)
     try:
         while clock() < end:
             f = live.fresh()
+            if on_frame is not None:
+                try:
+                    on_frame(f, live.frame_t)
+                except Exception:                                      # noqa: BLE001 - bookkeeping, never control
+                    pass
             if not in_range(f):
                 raise PulseStopped("the range HUD is gone")
             if idle(f):
@@ -113,7 +120,7 @@ def start_pose(live, in_range, idle, plaza_view, *, attached_t=None, steps=None,
     two confirming frames with the time each grab started; the second is the accepted start pose. Raises StartRefused after closing Live.
     `attached_t`: a clock time the pad had attached by (no frame grabbed at or before it proves anything). `steps`: a list the step
     records are appended to (see the module doc)."""
-    t0, turns, last, kept = clock(), 0, None, 0
+    t0, turns, last, kept, latest = clock(), 0, None, 0, None
     deadline = t0 + START_DEADLINE_S
     timing = {}
 
@@ -125,9 +132,13 @@ def start_pose(live, in_range, idle, plaza_view, *, attached_t=None, steps=None,
             f, stamp = fr if fr is not None else (None, None)
             keep = f is not None and kept < STEP_FRAMES
             kept += keep
-            steps.append(({"n": len(steps) + 1, "t": round(clock() - t0, 3), "action": action,
-                           "stamp": None if stamp is None or attached_t is None else round(stamp - attached_t, 4),
-                           "plaza": plaza, "turns": turns}, f if keep else None))
+            row = {"n": len(steps) + 1, "t": round(clock() - t0, 3), "action": action,
+                   "stamp": None if stamp is None or attached_t is None else round(stamp - attached_t, 4), "plaza": plaza, "turns": turns}
+            if f is None:
+                row["frame_missing"] = "no frame acquired"
+            elif not keep:
+                row["frame_missing"] = f"frame budget ({STEP_FRAMES}) exhausted"   # never an older frame in its place
+            steps.append((row, f if keep else None))
         except Exception:                                              # noqa: BLE001 - a record, never a control
             pass
 
@@ -135,11 +146,16 @@ def start_pose(live, in_range, idle, plaza_view, *, attached_t=None, steps=None,
         if clock() >= deadline:
             raise StartRefused(f"{REFUSAL}: the start deadline ({START_DEADLINE_S:.0f} s) passed {what}, after {turns} turns")
 
+    def seen(f, stamp):
+        nonlocal latest
+        latest = (f, stamp)                                            # the evidence a refusal carries: the frame that failed, if one did
+
     def frame():
         nonlocal last
         past("before a capture")
         f = live.fresh()
         stamp = live.frame_t
+        seen(f, stamp)
         if last is not None and stamp <= last:
             raise StartRefused(f"{REFUSAL}: the capture delivered no new frame")
         if attached_t is not None and stamp <= attached_t:
@@ -164,27 +180,32 @@ def start_pose(live, in_range, idle, plaza_view, *, attached_t=None, steps=None,
                 timing["first_send_returned"] = t - t0
                 if attached_t is not None:
                     timing["attached_t_to_first_send_returned"] = t - attached_t
-        camera_pulse(live, START_TURN_S, START_TURN_RX, in_range, idle, clock=clock, sleep=sleep, on_write=sent, deadline=deadline)
-        note(f"pulse {turns} of {START_TURNS}: right stick {START_TURN_RX:+.2f} up to {START_TURN_S:.1f} s, then neutral", proof)
+        what = f"pulse {turns} of {START_TURNS}: right stick {START_TURN_RX:+.2f} up to {START_TURN_S:.1f} s"
+        try:
+            camera_pulse(live, START_TURN_S, START_TURN_RX, in_range, idle, clock=clock, sleep=sleep, on_write=sent, deadline=deadline,
+                         on_frame=seen)
+        except BaseException as e:                                     # neutral already (camera_pulse's finally, or Live's refusal)
+            note(f"{what}: INTERRUPTED ({e}), neutral", latest)
+            raise
+        note(f"{what}, then neutral", proof)
 
     def settle(secs):
-        end, f = clock() + secs, None
+        end = clock() + secs
         while clock() < end:                                           # frames only: the guards keep running, no input
-            f = frame()
+            frame()
             sleep(0.02)
-        note(f"delay {secs:.2f} s, frames only", f)
+        note(f"delay {secs:.2f} s, frames only", latest)
 
-    fr = None
     try:
         turn()                                                         # the priming pulse, sent even if the first view already passes
         timing["prime_done"] = clock() - t0
         settle(START_SETTLE_S)
         while True:
-            fr = a = frame()
+            a = frame()
             pa = plaza_view(a[0])
             note("look", a, pa)
             if pa:
-                fr = b = frame()                                       # a second, distinct acquisition
+                b = frame()                                            # a second, distinct acquisition
                 pb = plaza_view(b[0])
                 note("look again", b, pb)
                 if pb:
@@ -197,9 +218,9 @@ def start_pose(live, in_range, idle, plaza_view, *, attached_t=None, steps=None,
             settle(TURN_SETTLE_S)
     except (RangeLost, Forbidden, PulseStopped) as e:                  # refused at the pad, or a guard mid-pulse: already neutral
         live.close()
-        note(f"refused: {e}", fr)
+        note(f"refused: {e}", latest)
         raise StartRefused(f"{REFUSAL}: {e}") from e
     except BaseException as e:
         live.close()                                                   # neutral, and no input accepted after; the caller then drops the pad
-        note(f"refused: {e}", fr)
+        note(f"refused: {e}", latest)
         raise
