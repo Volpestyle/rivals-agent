@@ -330,11 +330,19 @@ uploads stay unsplittable until the cross-source duplicate check runs.
 ## The first dataset split: `s10-normal-v0` (proposed)
 
 `data/demos/splits/s10-normal-v0.json`, loaded with `Demos.load_split("s10-normal-v0")`. It is a **proposal**: `status:
-proposed` changes no source, `demos.splits` stay `inspection_only` for all six, the proposed sides are in `demos.proposed`, and
-no `train`/`val`/`test` iterator yields anything. A split file names a patch, a regime, its sources and whole session groups per
-side; the loader refuses a source of another patch or regime, a group on two sides or on none, and a side group with no source.
-`status: accepted` sets the sides, and only for sources whose own manifest allows it (`splittable: true`, `split` null or that
-side). Promotion is an edit to each source's manifest, never to the split file.
+proposed` changes no source, `demos.splits` stay `inspection_only` for all four, the proposed sides are in `demos.proposed`,
+and no `train`/`val`/`test` iterator yields anything. A split file names a patch, a regime, its sources and the whole session
+groups on each side. The loader refuses:
+
+- a source of another patch or regime;
+- a group on two sides or on none, and a side group with no source;
+- a side left empty without a declaration: an empty side must be listed under `pending`, with the reason;
+- an `unassigned` group (held out of every side, with the reason) that appears on a side or among the sources.
+
+Asking a pending side for anything (`observations`, `samples`, `clips_in`, `regimes`) raises `PendingError` with the
+reason, so a consumer can never read an empty validation set as a complete one. `status: accepted` sets the sides, and only
+for sources whose own manifest allows it (`splittable: true`, `split` null or that side). Promotion is an edit to each source's
+manifest, never to the split file.
 
 Scope: Season 10, Version 20260911, `cooldowns: normal`. Excluded: the four April-May uploads (patch unknown), the guides (no
 loader manifest), and the two 60 s samples (not requested; each belongs to a train-side group).
@@ -342,49 +350,52 @@ loader manifest), and the two 60 s samples (not requested; each belongs to a tra
 | Side | Session groups | Creator | Usable minutes | Windows (5 Hz) | Windows with bridged masked frames |
 |---|---|---|---|---|---|
 | train | `twitch:2879354299` (Day, broadcast 09-20), `twitch:2873352801` (Req, 09-13) | Day 9.2, Req 9.1 | **18.3** | 5,515 | 513 (9%) |
-| val | `youtube:d0C8RMBnFfA` (uploaded 09-11), `youtube:yjc51uOjKEQ` (09-12) | Req 23.5 | **23.5** | 7,075 | 632 (9%) |
+| val | **pending**: four new current-patch 15-minute sections from four additional distinct broadcasts, two per player, one per player preassigned to train and one to val (the co-lead is acquiring them) | | 0 | 0 | |
 | test, sealed | `twitch:2877719252` (Day, 09-18), `twitch:2871472478` (Req, 09-11) | Day 9.5, Req 11.5 | **21.0** | 6,345 | 937 (15%) |
+| unassigned | `youtube:d0C8RMBnFfA` (uploaded 09-11), `youtube:yjc51uOjKEQ` (09-12) | Req | (23.5) | | |
 
 Test is the two broadcasts `data/demos/vods/manifest.json` reserves as evaluation (`reserved_evaluation_candidate_new_session`),
-one per player. Train is the two pilot-session broadcasts. The September uploads are on val with a caveat. rivals-hud's pixel check shows they do not reuse the
-retained 15-minute sections. It cannot rule out the same match from another part of the sealed 09-11 Req broadcast, which is
-not held. So they serve model selection only: never the sealed test, and not train until their source broadcast is
-identified. On val a repeated match biases model selection; on train it would teach the test matches. By date they cannot
-repeat a train broadcast (09-13, 09-20).
+one per player. Train is the two pilot-session broadcasts.
+
+**Why the September uploads are on no side, and validation is empty.** Validation selects checkpoints and hyperparameters, so
+anything it shares with the sealed test leaks into every model chosen on it. The two uploads may share a match with the sealed
+ReqMR broadcast (`twitch:2871472478`, 09-11). rivals-hud's pixel check shows they do not reuse the retained 15-minute sections,
+but the full broadcast is not held, so the same match from another part of it cannot be ruled out. Until their source broadcast
+is identified they are held out of every side, validation included (the learning-plan owner's ruling). Validation stays empty
+and declared pending until the new broadcasts arrive, rather than being filled with sources that could compromise the test.
 
 Events per type in usable segments:
 
-| Kind | train | val | test |
-|---|---|---|---|
-| `ability_cast` | 264 | 392 | 303 |
-| `charges_spent` / `charges_regained` | 73 / 54 | 114 / 74 | 82 / 49 |
-| `slot_unavailable` / `slot_available` | 219 / 224 | 308 / 304 | 291 / 287 |
-| `hp_lost` / `hp_gained` | 358 / 410 | 619 / 1012 | 527 / 469 |
-| `shield_gained` / `shield_decayed` / `max_hp_changed` | 2 / 3 / 9 | 17 / 26 / 32 | 10 / 4 / 16 |
-| `web_cluster_fired` / `web_cluster_reloaded` | 211 / 176 | 380 / 336 | 284 / 220 |
-| `ult_ready` / `ult_spent` | 10 / 10 | 17 / 17 | 15 / 17 |
-| `ko_feed` | 11 | 16 | 13 |
+| Kind | train | test |
+|---|---|---|
+| `ability_cast` | 264 | 303 |
+| `charges_spent` / `charges_regained` | 73 / 54 | 82 / 49 |
+| `slot_unavailable` / `slot_available` | 219 / 224 | 291 / 287 |
+| `hp_lost` / `hp_gained` | 358 / 410 | 527 / 469 |
+| `shield_gained` / `shield_decayed` / `max_hp_changed` | 2 / 3 / 9 | 10 / 4 / 16 |
+| `web_cluster_fired` / `web_cluster_reloaded` | 211 / 176 | 284 / 220 |
+| `ult_ready` / `ult_spent` | 10 / 10 | 15 / 17 |
+| `ko_feed` | 11 | 13 |
 
-Casts per slot: train get_over_here 86, uppercut 82, swing 54, teamup 42; val 122, 127, 78, 65; test 87, 96, 62, 58. No cast in
-the split has a null slot.
+Casts per slot: train get_over_here 86, uppercut 82, swing 54, teamup 42; test 87, 96, 62, 58. No cast in the split has a null
+slot.
 
 **What makes it lopsided:**
 
-- **Train is the smallest side**: 18.3 of 62.8 minutes (29%), against 23.5 on val and 21.0 on test. The reservations fix test,
-  and the uploads' duplicate risk keeps them off train. Moving the uploads to train would give 41.8 / 0 / 21.0, with no val,
-  and a possible test leak.
-- **Val is one player, and edited uploads only.** All 23.5 minutes are Req's. A Day-specific failure cannot show up in val.
+- **Train is smaller than the sealed test**: 18.3 against 21.0 minutes, and there is no validation yet.
 - **One session carries most of a side's casts**: on test, `twitch:2871472478` has 185 of 303 (61%); on train,
-  `twitch:2879354299` has 157 of 264 (59%); on val, `yjc51uOjKEQ` has 213 of 392 (54%).
-- **Val holds 2.5x train's `hp_gained`** (1,012 against 410) and most shield events. That is more healing in the uploads, or
-  shield ticks read as hp where max hp was unreadable (docs/lanes/l2-hud.md): a val metric on hp events would not measure the
-  same thing as on train.
-- **Test has the most bridged windows** (15% against 9%): its sessions tap the scoreboard more (37 and 23 taps against 21 and 17).
+  `twitch:2879354299` has 157 of 264 (59%).
+- **Test has more bridged windows** (15% against 9%): its sessions tap the scoreboard more (37 and 23 taps against 21 and 17).
 - **Maps are not recorded** anywhere (acquisition manifests, events, loader), so balance by map cannot be checked.
-- **Ults are rare**: 10-17 `ult_spent` per side, too few for an ult-use metric on any side.
+- **Ults are rare**: 10 and 17 `ult_spent`, too few for an ult-use metric.
 
-Promotion is blocked on the VUH-1326 independent re-check, the co-lead's label spec, and identifying the uploads' source
-broadcast. The uploads stay `splittable: false` until then, so an `accepted` status is refused while they are in the split.
+Promotion is blocked on:
+
+- the VUH-1326 independent re-check;
+- the co-lead's label spec;
+- validation filled from the four new broadcasts;
+- identifying the September uploads' source broadcast.
+
 Event signatures cannot identify a shared match: a quick check matched a May upload against a September broadcast.
 
 ## What format 4 does not give the loader
@@ -412,9 +423,10 @@ Event signatures cannot identify a shared match: a quick check matched a May upl
 - **Not built:** video decoding, an annotation tool, event and annotation re-cutting on `trim`, verification of `alignment`,
   mapping `observed` to a patch, and sampling-weight code.
 
-Mutation checks: 25 hand-made breakages of the format 4, bridging, mask and provenance code (a guessed slot accepted, the
+Mutation checks: 30 hand-made breakages of the format 4, bridging, mask and provenance code (a guessed slot accepted, the
 fixed ult unrecognised, format 3 accepted, meta keys unchecked, the tap width ignored, a cut made soft, bridging off by
 default, a gap hiding the HUD only, `partial` hiding, annotator masks dropped, events read off masked frames, the regime or
 patch gate off, a basis unchecked, observed countdowns unchecked, an unsplittable clip hashed into a split or allowed an
 explicit one, a run's manifest/meta.json clash ignored; for splits, a proposal that promotes, the accepted gate off, the patch
-unchecked, a group on two sides, on none or with no source, the status unchecked) each fail at least one test.
+unchecked, a group on two sides, on none or with no source, the status unchecked, a pending side that answers, an empty side
+not declared pending, a pending side with groups, an unassigned group on a side or among the sources) each fail at least one test.

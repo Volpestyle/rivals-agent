@@ -11,7 +11,8 @@ from pathlib import Path
 import pytest
 
 from agent import demos
-from agent.demos import (AlignmentError, Demos, FormatError, LeakageError, Mask, Observation, ProvenanceError, RegimeError, SplitError,
+from agent.demos import (AlignmentError, Demos, FormatError, LeakageError, Mask, Observation, PendingError, ProvenanceError, RegimeError,
+                         SplitError,
                          FrameRef, Event, Input)
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -1228,7 +1229,8 @@ def test_a_split_refuses_a_mixed_patch_a_straddling_group_and_an_orphan(tmp_path
     for kw, err, why in [(dict(patch="Season 9"), RegimeError, "the split is 'Season 9'"),
                          (dict(cooldowns="off"), RegimeError, "cooldowns 'normal'"),
                          (dict(sides={"train": ["gA", "gB"], "val": ["gB"], "test": ["gC"]}), SplitError, "on 'train' and 'val'"),
-                         (dict(sides={"train": ["gA"], "val": ["gB"]}), SplitError, "gC' is on no side"),
+                         (dict(sides={"train": ["gA"], "val": ["gB"]}), SplitError, "side 'test' is empty; declare it under `pending`"),
+                         (dict(sides={"train": ["gA"], "val": [], "test": ["gB"]}, pending={"val": "later"}), SplitError, "gC' is on no side"),
                          (dict(sides={"train": ["gA", "gZ"], "val": ["gB"], "test": ["gC"]}), SplitError, "no source: \\['gZ'\\]"),
                          (dict(sides={"dev": ["gA"], "val": ["gB"], "test": ["gC"]}), FormatError, "side 'dev'"),
                          (dict(status="final"), FormatError, "status 'final'")]:
@@ -1237,11 +1239,36 @@ def test_a_split_refuses_a_mixed_patch_a_straddling_group_and_an_orphan(tmp_path
             Demos.load_split("s", root=tmp_path)
 
 
+def test_a_pending_side_is_declared_empty_and_asking_it_for_anything_is_an_error(tmp_path):
+    spec = split_fleet(tmp_path, split="inspection_only")
+    rewrite(tmp_path, spec, sources=["v0.manifest.jsonl", "v2.manifest.jsonl"], sides={"train": ["gA"], "val": [], "test": ["gC"]},
+            pending={"val": "four new broadcasts are being acquired"}, unassigned={"gB": "may overlap the sealed test"})
+    d = Demos.load_split("s", root=tmp_path)
+    assert d.pending == {"val": "four new broadcasts are being acquired"} and set(d.proposed.values()) == {"train", "test"}
+    for call in (lambda: list(d.observations("val")), lambda: list(d.samples("val")), lambda: d.clips_in("val"), lambda: d.regimes("val")):
+        with pytest.raises(PendingError, match="side 'val' of split 's' is pending, not empty-and-done: four new broadcasts"):
+            call()
+    assert list(d.observations("train")) == []                           # the other sides answer as before (proposed: nothing yet)
+    assert Demos.load(tmp_path / "v0.manifest.jsonl").pending == {}      # a Demos from plain paths has no pending side
+    for kw, why in [(dict(pending={"val": ""}), "must be empty and say why"),
+                    (dict(sides={"train": ["gA"], "val": ["gB"], "test": ["gC"]}, pending={"val": "x"}, unassigned={}), "must be empty"),
+                    (dict(unassigned={"gA": "x"}), "unassigned and also on a side"),
+                    (dict(sources=[f"v{n}.manifest.jsonl" for n in range(3)]), "v1 is unassigned .* but listed among the sources")]:
+        rewrite(tmp_path, dict(spec, sources=["v0.manifest.jsonl", "v2.manifest.jsonl"], sides={"train": ["gA"], "val": [], "test": ["gC"]},
+                               pending={"val": "later"}, unassigned={"gB": "may overlap the sealed test"}), **kw)
+        with pytest.raises((FormatError, SplitError), match=why):
+            Demos.load_split("s", root=tmp_path)
+
+
 @NO_DATA
 def test_the_first_season_10_split_is_a_proposal_with_the_reserved_sessions_sealed_as_test():
     d = Demos.load_split("s10-normal-v0")
     assert d.split_spec["status"] == "proposed" and set(d.splits.values()) == {"inspection_only"}
-    groups = {s: {d.clips[c].group for c, x in d.proposed.items() if x == s} for s in ("train", "val", "test")}
-    assert groups["test"] == {"twitch:2877719252", "twitch:2871472478"} and d.split_spec["sealed"] == ["test"]
+    groups = {s: {d.clips[c].group for c, x in d.proposed.items() if x == s} for s in ("train", "test")}
+    assert groups == {"train": {"twitch:2879354299", "twitch:2873352801"}, "test": {"twitch:2877719252", "twitch:2871472478"}}
+    assert d.split_spec["sealed"] == ["test"] and "val" in d.pending                    # validation is empty until acquired
+    with pytest.raises(PendingError):
+        list(d.observations("val"))
+    assert set(d.split_spec["unassigned"]) == {"youtube:d0C8RMBnFfA", "youtube:yjc51uOjKEQ"}   # on no side, validation included
     assert all(d.clips[c].patch == "Season 10, Version 20260911" and d.clips[c].cooldowns == "normal" for c in d.proposed)
-    assert not any(d.clips[c].edited_upload for c, s in d.proposed.items() if s != "val")
+    assert not any(d.clips[c].edited_upload for c in d.proposed)

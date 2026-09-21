@@ -101,6 +101,10 @@ class RegimeError(ValueError):
     """A split would mix resource regimes (cooldowns off, normal, unknown) or game patches and the caller did not ask for that."""
 
 
+class PendingError(SplitError):
+    """A side of a dataset split is declared empty until sources are acquired for it: it has nothing to give yet."""
+
+
 class ProvenanceError(ValueError):
     """Two records of one source's provenance disagree, or a claim has no basis: there is one authority, and it is not guessed."""
 
@@ -725,6 +729,7 @@ class Demos:
         self.splits = assign_splits(clips, fractions, seed)
         check_splits(clips, self.splits)
         self.min_segment_s, self.max_bridge_s, self.skipped = min_segment_s, max_bridge_s, []
+        self.pending = {}   # side -> why it is empty, from a split file (load_split)
 
     def _skip(self, clip, t, reason):
         skip = Skipped(clip.id, t, reason)
@@ -744,9 +749,12 @@ class Demos:
         """The dataset split `<root>/splits/<name>.json`: its sources, each whole session group on one side.
 
           {"name": ..., "status": "proposed" | "accepted", "patch": ..., "cooldowns": ..., "sources": [manifest paths under root],
-           "sides": {"train": [group, ...], "val": [...], "test": [...]}, "sealed": ["test"], ...}
+           "sides": {"train": [group, ...], "val": [], "test": [...]}, "sealed": ["test"],
+           "pending": {"val": "why it is empty and what fills it"}, "unassigned": {group: "why it is on no side"}, ...}
 
-        Every source must be of the split's one patch and one regime, and every group on exactly one side. A PROPOSED split
+        Every source must be of the split's one patch and one regime, and every group on exactly one side. Every side has groups
+        or is declared `pending` (empty, with the reason), never silently empty; asking a pending side for anything raises
+        PendingError. An `unassigned` group is held out of every side and may not be listed among the sources. A PROPOSED split
         changes no source: `splits` stay what the manifests say (inspection_only) and the sides are only `proposed`, so no
         training iterator yields them. An ACCEPTED split sets `splits` to its sides, and only for sources whose own manifest
         allows it (splittable, split null or that side): the split file never overrides a source's provenance."""
@@ -762,8 +770,20 @@ class Demos:
                 if g in side_of:
                     raise SplitError(f"{path}: group {g!r} is on {side_of[g]!r} and {side!r}")
                 side_of[g] = side
+        pending, unassigned = spec.get("pending") or {}, spec.get("unassigned") or {}
+        for side in SPLITS[:3]:
+            groups = spec["sides"].get(side) or []
+            if side in pending and (groups or not pending[side]):
+                raise FormatError(f"{path}: side {side!r} is pending, so it must be empty and say why")
+            if not groups and side not in pending:
+                raise SplitError(f"{path}: side {side!r} is empty; declare it under `pending` with the reason, or give it groups")
+        held = set(unassigned) & set(side_of)
+        if held:
+            raise SplitError(f"{path}: {sorted(held)} are unassigned and also on a side")
         clips = discover(*[Path(root) / s for s in spec["sources"]])
         for c in clips:
+            if c.group in unassigned:
+                raise SplitError(f"{path}: {c.id} is unassigned ({unassigned[c.group]}) but listed among the sources")
             if (c.patch, c.cooldowns) != (spec["patch"], spec["cooldowns"]):
                 raise RegimeError(f"{path}: {c.id} is patch {c.patch!r}, cooldowns {c.cooldowns!r}; the split is {spec['patch']!r}, "
                                   f"{spec['cooldowns']!r}")
@@ -780,12 +800,14 @@ class Demos:
             for c in clips:
                 c.split = side_of[c.group]
         demos = cls(clips, **kw)
-        demos.split_spec, demos.proposed = spec, {c.id: side_of[c.group] for c in clips}
+        demos.split_spec, demos.proposed, demos.pending = spec, {c.id: side_of[c.group] for c in clips}, dict(pending)
         return demos
 
     def clips_in(self, split):
         if split not in SPLITS:
             raise ValueError(f"split must be one of {SPLITS}, not {split!r}")
+        if split in self.pending:
+            raise PendingError(f"side {split!r} of split {self.split_spec['name']!r} is pending, not empty-and-done: {self.pending[split]}")
         return [c for c in self.clips.values() if self.splits[c.id] == split]
 
     def regimes(self, split):
