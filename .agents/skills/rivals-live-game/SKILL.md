@@ -37,6 +37,13 @@ screenshot. Read the screenshot before the next input.
   connecting: send a throwaway move first.
 - Capture and pad code must run inside the desktop session (a `C:\desk` job that
   `Start-Process`es it). Over plain SSH dxcam fails with `DXGI_ERROR_NOT_CURRENTLY_AVAILABLE`.
+- A sleeping monitor kills dxcam silently. The display idle-off (15 min) is not reset by the
+  virtual pad; the monitor drops its DisplayPort link, Windows shows 0 monitors
+  (`Get-PnpDevice -Class Monitor | Where-Object Present`), and dxcam returns no frame at all
+  while GDI and `desk.sh shot` keep working, so everything looks alive. Symptom in
+  `reenter.py`: every `A` refused for proof age. Run `python scripts/capture.py preflight`
+  before any live tool. Injected mouse movement and a monitor-power-on broadcast do not wake
+  it; someone has to press the monitor's power button.
 
 ## Dangerous buttons
 
