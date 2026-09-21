@@ -1037,11 +1037,15 @@ that a detector or inverse-dynamics model already supplies trustworthy labels.
    body with a guessed box. Store visible-extent `xyxy` in original pixels,
    `self/other/unknown`, `enemy/ally/unknown`, optional hero identity, occlusion,
    uncertainty and evidence PTS. `render_mode` is mandatory: `body`,
-   `outline_only`, or `unknown`. A normally rendered character with a coloured
+   `outline_only`, `mixed`, or `unknown`. A normally rendered character with a coloured
    rim is `body`; a character revealed only by an x-ray silhouette through
    geometry is `outline_only`. Box only the rendered extent of either, including
    visibly attached equipment, excluding nameplates, health bars and detached
-   effects. Keep outline renders as separate labels/classes, never body positives
+   effects and chevrons. `mixed` means one character has both directly rendered
+   parts and x-ray parts: one box encloses their combined visible extent, with
+   the two contributions noted; never box only its legs or split it into two
+   characters. Mixed renders are retained but excluded from the first two-class
+   detector loss and scored separately. Keep outline renders as separate labels/classes, never body positives
    or automatically shootable targets. Unknown render mode is not forced into
    either class. A short-window track ID is separate from hero class and survives
    only visually supported continuity.
@@ -1060,10 +1064,19 @@ that a detector or inverse-dynamics model already supplies trustworthy labels.
    are hard negatives when visibly resolved, not automatically ignored areas.
    A prone or airborne pose alone does not prove a corpse. Separate uncertainty
    about **existence**, **extent**, **class** and **allegiance**. An uncertain
-   allegiance does not discard an otherwise supported character box. Regions
-   with unresolved existence/extent/class carry a tight ignore region and reason,
-   not an empty-background label. Distinct supported bodies inside such a region
-   are still annotated. Audit ignored regions for misses and report their area.
+   allegiance does not discard an otherwise supported character box. A supported
+   character with uncertain extent gets a low-confidence visible-extent box,
+   clipping at the frame edge, plus extent uncertainty; it is never replaced by
+   an ignore region merely because it is truncated. Where needed, record a
+   supported core and a possible maximum extent; do not guess a hidden full body.
+   Unresolved existence or player-versus-summon class gets a tight ignore region
+   and reason, not a forced positive or empty background. If even the visible
+   extent cannot support a box, retain an explicit character-presence record and
+   mark localization unknown; this remains a localization limitation, not an
+   absent character. Distinct supported bodies inside any ignore region are still
+   annotated. Nameplate-only evidence is not a body box; retain unresolved presence
+   where justified and never invent pixels underneath the marker. Audit ignored
+   regions for misses and report their area.
 
    For the first detector experiment, the geometry-positive floor is **40 native
    pixels on the longest side at 1920x1080**, scaled with source resolution before
@@ -1112,16 +1125,15 @@ are conditional on that incomplete reference. One error among 22 changes the
 percentage by 4.5 points, which is not a +/-5-point confidence interval. These
 numbers establish neither universal annotator accuracy nor detector performance.
 
-Retain the 30-frame pilot and both original passes unchanged. A fresh cross-family
-pair first applies the revised rules to the failed outline, allegiance, extent
-and payload cases as a **protocol exercise**, explicitly exposed to adjudication.
-Then audit 12 new development frames blind, six per creator, counted within the
-150-frame cap: four crowded/effect-heavy frames, four with small characters or
-outline-only instances, and four genuine no-other-character gameplay negatives
-(two per creator). Avoid adjacent frames from the pilot and use only session groups
-cleared for development; the uncertain-origin September uploads stay inspection-only.
-If the eligible sources cannot supply a stratum, report the gap rather than
-quietly substituting it.
+The retained 30-frame pilot and both original passes stay unchanged. The 12-frame
+repair uses a fresh cross-family pair after an explicitly exposed protocol
+exercise, six frames per creator within the 150-frame cap. Its intended strata
+are four crowded/effect-heavy frames, four small-character/outline frames and
+four genuine no-other-character gameplay negatives (two per creator); the actual
+support and selection failures are recorded below. Further repairs avoid pilot
+adjacency and use only development-cleared session groups; uncertain-origin
+September uploads stay inspection-only. Missing strata are reported, never
+quietly substituted.
 
 Before the adjudicator sees either proposal set, it sweeps **all 12 full frames**
 with context and records its own candidate inventory, including ignored areas.
@@ -1133,6 +1145,53 @@ instances separately, and report false proposals per negative frame. If a class
 has too few supported examples, its result remains inconclusive rather than a
 zero-denominator pass. The full set still needs at least 20 current-regime genuine
 negative frames. Known payloads/overlays also supply hard-negative examples.
+
+**Repair-audit acceptance: no expansion or detector fit is authorized.** The
+12-frame adjudication in VUH-1322 gives resolved >=40 px body recall of 11/13
+for Claude and 13/13 for Codex, with precision 11/11 and 13/13. Including four
+unresolved bodies changes recall to 11/17 and 13/17; that is a sensitivity case,
+not proof those four are characters. Outline-only recall is 3/5 and 5/5, with
+precision 3/4 and 5/5: support is inconclusive. No overlay/HUD false proposals or
+wrong-side allegiance calls occur in this audit. The two-pass gate fails because
+Claude misses supported bodies. Codex meets the resolved-body point threshold,
+but neither general annotator accuracy nor robustness to unresolved instances
+is established. The nominal one-sided 95% binomial lower bound for 13/13 is
+about 79%, assuming independent trials; clustered characters in a few frames
+do not establish that assumption. A confidence-bound threshold is not added
+retroactively to the original point-estimate gate.
+
+The selector's four declared negatives contain only two genuinely empty scenes,
+both Req; one is pre-round and does not count toward the gameplay-negative quota.
+There is no demonstrated Day negative in this repair set. A negative requires
+a whole-frame and context check for bodies, outlines and sub-floor characters,
+with no unresolved character-presence region. Body-class negatives, below-floor
+scenes and genuine no-other-character gameplay negatives are separate facts.
+Death, spectating, scoreboard and pre-round screens cannot fill the latter quota.
+The selector records strata provisionally; the blind inventory determines actual
+support. Confirmed corpses require identity continuity plus temporal evidence;
+a kill-feed entry alone cannot identify a particular body.
+
+The next authorized work is a bounded protocol exercise on the existing failed
+truncation/ignore, merged-outline, mixed-render, corpse and sub-floor cases, with
+the adjudication exposed and no new accuracy claim. Standardize the explicit
+rules above, not one model family's judgments. In parallel, a selector may
+screen the two development-cleared sessions for up to 20 genuine gameplay-negative
+candidates, checking x-ray outlines as well as direct bodies and recording creator
+gaps. This is sourcing for a repair, not a new annotation tranche. Do not open
+sealed sessions or promote other footage to fill a quota; other retained Day
+sections need source/segment clearance first. If the current sections cannot
+supply candidates, hand back that specific gap and stop the scan.
+
+Before another blind repair is dispatched, freeze its candidate set and support
+rule: at least 30 resolved >=40 px instances per evaluated class across at least
+10 non-adjacent frames, with both creators represented, plus the full-set quota
+of 20 genuine gameplay negatives. These are prospective development support
+requirements, not a claim of 90% population accuracy. Each pass still needs the
+90/90 point threshold; unresolved sensitivity, creator support and size bands
+remain explicit. A class with inadequate support stays inconclusive. All repair
+frames count toward the existing 150-frame cap; do not start repeated small
+blind audits that cannot meet the declared support. Preserve every frozen pass,
+the adjudicator's pre-key inventory and its errata unchanged.
 
 The suggested 60 px proposal floor is an **initial evaluation threshold**, not
 measured detector capability. Report <40, 40-59, 60-99 and >=100 px performance
