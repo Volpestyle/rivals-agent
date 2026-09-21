@@ -108,7 +108,8 @@ old 3 s blind wait after attaching was about 75 degrees of it. On a live run (`-
    idle banner, a capture with no new frame, a refused write or any exception closes Live and refuses: "plaza start view not confirmed".
    Each step (pulse, delay, look, acceptance or refusal) is recorded after it, in memory, never between a proof and a write, with the
    latest frame actually acquired (a refusal carries the frame that failed; a pulse cut short is recorded as INTERRUPTED, after it is
-   neutral, never as completed; past 24 kept frames the row says the frame is missing, never an older one). `main` writes them
+   neutral, never as completed; past 24 kept frames the row says the frame is missing, never an older one). These are the latest
+   frames the PHASE acquired, not necessarily the exact frame Live.send proved a write on, if it refreshed its own. `main` writes them
    afterwards as `start-steps.jsonl` and `start-step-NN.png` in the run's folder, for a refused start, an unexpected failure (then the
    exception as it was) and an accepted start alike; the evidence is written before the STOP message, and neither the record nor any of
    this output can change the phase, the close or the exit (an interrupt still propagates). `main` then returns 1 with nothing else built (no brain,
@@ -119,6 +120,14 @@ old 3 s blind wait after attaching was about 75 degrees of it. On a live run (`-
    leaves out Live's own work after the device attached and includes the send's overhead; the attach itself is M1's to time), and runs the `Loop` with the forced start walk / back / RT off
    (`warmup=False`), so the episode clock and the controller's and tracker's camera history begin after the pose. The long-idle
    keep-alive is unchanged, and a replay (`--dry`) keeps the warm-up.
+
+**Pose only (`--live --pose-only`, for M2).** The same path up to the end of the start phase, then stop: the same perception and
+`plaza_view` loaded first, the same `LiveIO()` (range HUD proven before the pad opens, `Live(settle_s=0)`), the same `opened` origin
+for the step stamps, `start_pose` unchanged. On a confirmed pose it saves both confirming native frames (`start-confirm-1.png`,
+`start-confirm-2.png`), every step row and frame (`start-steps.jsonl`, `start-step-NN.png`) and `start.json` in `data/l1/<run>`, closes
+the pad and exits 0; a refusal takes the same branch as a live run (steps written, exit 1). It returns before any brain, `RunLog`,
+`Loop`, `Loop.run` or scoreboard exists, and needs no `--cooldowns` (it records no gameplay). Tests: the pose-only ones in
+`tests/test_startup.py` fail if any of those is built.
 
 `plaza_view` certifies an enemy box in the open in the middle of the view: not a bot's identity, not navigable ground; seven turns is
 a command budget, not a claim of full coverage. The pulse's effect on the drift is not yet measured: `scripts/padprime_m1.py` is that

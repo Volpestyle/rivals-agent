@@ -601,15 +601,33 @@ class Loop:
                 **({"start": self.start} if self.start is not None else {})}
 
 
+def _png(out):
+    """A saver writing native PNGs into `out` (made if missing): name -> file name, or None if the write failed."""
+    import cv2
+    out = Path(out)
+    out.mkdir(parents=True, exist_ok=True)
+    return lambda name, f: f"{name}.png" if cv2.imwrite(str(out / f"{name}.png"), f) else None
+
+
+def _save_start(out, start):
+    """--pose-only: the two confirming native frames (the second is the accepted start pose), every step row and frame, and start.json.
+    Best effort: a failing write is reported, never raised."""
+    try:
+        save = _png(out)
+        start["confirm_frames"] = [save(f"start-confirm-{k}", f) for k, (f, _) in enumerate(start.pop("frames"), 1)]
+        start["steps_file"] = _write_start_steps(out, start.pop("steps"), save)
+        (Path(out) / "start.json").write_text(json.dumps(start, indent=1))
+    except Exception as e:                              # noqa: BLE001 - a record, never a control
+        _say(f"loop: start record not written: {e!r}")
+
+
 def _write_start_steps(out, steps, save=None):
     """The start phase's step rows (start-steps.jsonl) and their kept decision frames (start-step-NN.png), after the phase: for a refused
     start as for an accepted one. Best effort: a failing write never changes the exit."""
     try:
         out = Path(out)
+        save = save or _png(out)
         out.mkdir(parents=True, exist_ok=True)
-        if save is None:
-            import cv2
-            save = lambda name, f: cv2.imwrite(str(out / f"{name}.png"), f) and f"{name}.png"   # noqa: E731
         with open(out / "start-steps.jsonl", "w") as fh:
             for row, frame in steps:
                 row = dict(row, frame=save(f"start-step-{row['n']:02d}", frame) if frame is not None else None)
@@ -664,8 +682,13 @@ def main(argv=None):
     ap.add_argument("--save-fps", type=float, default=10.0, help="native frames kept per second in the recording (0: none)")
     ap.add_argument("--scoreboard-every", type=float, help="also hold BACK for the scoreboard every N s (default: only at the end)")
     ap.add_argument("--no-scoreboard", action="store_true")
+    ap.add_argument("--pose-only", action="store_true", help="live: the start phase (agent/startup.py) and nothing after it: its steps and "
+                    "confirming frames saved to data/l1/<run>, the pad closed; exit 0 on a confirmed start pose, 1 on a refusal. No brain, "
+                    "no log, no loop, no scoreboard")
     a = ap.parse_args(argv)
-    if a.live and a.cooldowns not in ("off", "normal"):
+    if a.pose_only and not a.live:
+        ap.error("--pose-only needs --live")
+    if a.live and not a.pose_only and a.cooldowns not in ("off", "normal"):
         ap.error("--live needs --cooldowns off|normal (no default): a recording made with No Ability Cooldown ON is a different regime, "
                  "and a live run is one the operator can see")
 
@@ -691,6 +714,13 @@ def main(argv=None):
         start = {"turns": start["turns"], "stamps_s_after_liveio_return": [round(t - opened, 4) for _, t in start["frames"]], "ms": ms,
                  "liveio_ms": round((opened - t_open) * 1e3, 1), "frames": start["frames"], "steps": steps}
         out, save_fps, threaded = ROOT / "data" / "l1" / a.run, a.save_fps, True
+        if a.pose_only:                                 # M2: exactly the start phase, then stop; nothing below is reached
+            try:
+                _save_start(out, start)
+            finally:
+                source.close()                          # Live.close(): neutral, no input accepted after; the device ends with the process
+            _say(f"loop: pose only: plaza start view confirmed after {start['turns']} turns; saved in {out}")
+            return 0
     else:
         source, out, save_fps, threaded = RunSource(a.dry, a.limit), a.out, (a.save_fps if a.out else 0), a.threaded
         pad = FakePad(board=source.imread(str(source.items[0][1])) if source.items else None)

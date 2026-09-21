@@ -517,3 +517,57 @@ def test_an_interrupt_during_output_still_propagates(monkeypatch):
     monkeypatch.setattr(L, "print", lambda *a, **k: (_ for _ in ()).throw(KeyboardInterrupt()), raising=False)
     with pytest.raises(KeyboardInterrupt):
         L._say("x")
+
+
+# --- --pose-only: exactly the start phase, then stop (M2) ------------------------------------------------------------------------------
+def _pose_only(monkeypatch, start, argv=("--live", "--pose-only", "--run", "t")):
+    order, saved, written = [], [], []
+    io = FakeIO()
+    monkeypatch.setattr(L, "LiveIO", lambda: order.append("pad") or io)
+    monkeypatch.setattr(L, "default_perception", lambda: order.append("perception") or type("P", (), {"in_range": None, "idle": None})())
+    monkeypatch.setattr(L, "_plaza_view", lambda: order.append("plaza_view") or (lambda f: True))
+    monkeypatch.setattr(L, "start_pose", lambda *a, **k: order.append("start") or start())
+    monkeypatch.setattr(L, "_save_start", lambda out, rec: saved.append(dict(rec)))
+    monkeypatch.setattr(L, "_write_start_steps", lambda out, steps, save=None: written.append(steps) or "x")
+
+    def forbidden(what):
+        def build(*a, **k):
+            raise AssertionError(f"--pose-only built {what}")
+        return build
+    monkeypatch.setattr(L, "make_brain", forbidden("a brain"))
+    monkeypatch.setattr(L, "RunLog", forbidden("a RunLog"))
+    monkeypatch.setattr(L, "Loop", forbidden("a Loop (and so Loop.run, the scoreboard)"))
+    return L.main(list(argv)), order, saved, written, io
+
+
+def test_pose_only_runs_the_start_phase_saves_it_closes_and_builds_nothing_else(monkeypatch):
+    code, order, saved, written, io = _pose_only(monkeypatch, lambda: {"frames": [("plaza", 1.0), ("plaza", 1.1)], "turns": 1,
+                                                                       "ms": {"attached_t_to_first_send_returned": 60.0}})
+    assert code == 0 and order == ["perception", "plaza_view", "pad", "start"] and io.closed
+    assert saved[0]["turns"] == 1 and len(saved[0]["frames"]) == 2 and "steps" in saved[0]
+    assert saved[0]["ms"] == {"liveio_return_to_first_send_return": 60.0}
+
+
+def test_pose_only_refused_writes_its_steps_returns_1_and_builds_nothing_else(monkeypatch):
+    def refused():
+        raise S.StartRefused("plaza start view not confirmed: 7 turns taken")
+    code, order, saved, written, io = _pose_only(monkeypatch, refused)
+    assert code == 1 and order == ["perception", "plaza_view", "pad", "start"] and written == [[]] and not saved
+
+
+def test_pose_only_needs_live_and_no_cooldowns(monkeypatch):
+    with pytest.raises(SystemExit):
+        L.main(["--dry", "x", "--pose-only"])
+    code, *_ = _pose_only(monkeypatch, lambda: {"frames": [("p", 1.0), ("p", 1.1)], "turns": 1, "ms": {}})   # no --cooldowns given
+    assert code == 0
+
+
+def test_pose_only_saves_both_native_frames_every_step_and_its_record(tmp_path):
+    np = pytest.importorskip("numpy")
+    pytest.importorskip("cv2")
+    f = np.zeros((1440, 2560, 3), np.uint8)
+    rec = {"turns": 2, "ms": {}, "frames": [(f, 1.0), (f, 1.1)], "steps": [({"n": 1, "action": "look"}, f), ({"n": 2, "action": "x"}, None)]}
+    L._save_start(tmp_path, rec)
+    names = sorted(p.name for p in tmp_path.iterdir())
+    assert names == ["start-confirm-1.png", "start-confirm-2.png", "start-step-01.png", "start-steps.jsonl", "start.json"]
+    assert __import__("json").loads((tmp_path / "start.json").read_text())["confirm_frames"] == ["start-confirm-1.png", "start-confirm-2.png"]
