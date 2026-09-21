@@ -497,6 +497,22 @@ to both passes. Freeze all contexts before separate outcome release; no outcome
 may revise a context judgment. Inspect all supplied 10 Hz scene cells and HUD
 strips; use native frames for ambiguous evidence, and report what stays illegible.
 
+Pre-round screening belongs to the producer, never either annotator. Before
+selecting candidates or inspecting their cue mix, scan the two permitted sources'
+own-play segments on a fixed 1 Hz native-frame grid. A positive cue is legible
+UI explicitly identifying round preparation or a countdown to the round/objective
+opening. Record the exact wording and native cue-frame path; a spawn room, closed
+barrier, stationary hero, generic match clock or respawn countdown alone is not
+proof. Inspect adjacent retained 10 Hz native frames where the cue changes or is
+ambiguous. Record confirmed spans and unresolved pre-round transitions separately
+in a private producer file, then freeze it before selection. Expand each exclusion
+by **1.0 second at both ends**, clipped to the source; reject any candidate whose
+full `[t-5,t+5]` evidence window overlaps it. The margin is conservative screening,
+not measured transition precision. Report candidate counts before and after each
+exclusion and the sampled-screening limitation. No cue found does not prove active
+play; annotators may still mark pre-round or unknown, without replacements chosen
+after labels are seen. No automatic oversampling is authorized.
+
 Sample a reproducible mix of ordinary play and combat/traversal/recovery cues;
 keep cue metadata private from annotators, do not turn it into purpose, and report
 missing strata. The vocabulary stays engage / disengage / reposition / search /
