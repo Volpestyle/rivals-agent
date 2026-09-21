@@ -41,6 +41,41 @@ from this Mac, usually as a Herdr swarm. `CLAUDE.md` is a symlink to this file.
 - The PC's GPU belongs to the game while it is running. Train on the Mac (MPS), niced.
 - One agent drives the PC desktop at a time.
 
+## Agent delivery protocol
+
+Use `herdr-lead` for swarm coordination and `herdr` for pane operations. Keep one
+lead responsible for dispatch, shared integration and Linear status transitions;
+co-leads route scope decisions through that lead. A status request alone creates no work.
+
+- **Organize around two outcomes:** expert learning (audited demonstrations through a
+  baseline-compared policy) and reliable autonomous episodes (tracking, recovery, resets
+  and measured outcomes). Their owners join at learned-controller evaluation and RL;
+  use the advancement gates in `docs/learning-plan.md`, not a new parallel roadmap.
+- **Keep ownership through delivery.** One accountable owner carries each bounded result
+  from its prerequisites through integration and its next usable experiment. Specialists
+  own named files or artifacts and hand back to that owner. A brief names the existing
+  Linear issue, result, paths, acceptance, reviewer and next consumer; transfers are explicit.
+  Check the actual model and effort against `herdr-lead` before assigning consequential work.
+- **Use Linear as the result record.** Reuse the issue for the independently acceptable
+  outcome; use checklists for its steps and blocking relations only for real prerequisites.
+  Keep acceptance, accountable owner, current evidence, limitations and next action there.
+  Workers publish substantive results once; the lead owns disputed acceptance and transitions.
+  Load `linear-issues` and use the direct workspace Linear MCP for writes. Plans hold design,
+  lane docs hold technical findings, and panes hold coordination; none is a second status queue.
+- **Validate measurements early.** Pair a reader or label-rule change with a small inspected
+  native-frame sample before a large extraction. Test the demonstrated failures and valid
+  controls together; synthetic correctness alone cannot establish that a label is true.
+  Use only authorized development evidence; sealed sources remain under the plan's contract.
+- **Review the changed boundary.** Required independent review remains binding. Reuse accepted
+  evidence for unchanged inputs and behavior; re-review the delta and unresolved findings.
+  A new review or benchmark needs a named uncertainty, not another completion ceremony.
+- **Keep capacity tied to a deliverable.** Park workers with no independent ready result.
+  During shared-data migration, keep one corpus writer and stop dependent readers; spare
+  capacity may address the independent episode stream. Do not fill idle panes with new scope.
+- **Report delivery honestly.** Say what was produced, accepted, landed or demonstrated,
+  with evidence and the next blocker; a running pane is not progress. If two updates add only
+  preparation or coordination, name the blocker and shorten the path to a concrete attempt.
+
 ## Working here
 
 - `uv run pytest` runs the stdlib-only offline suite; no network, no game. Tests that import
