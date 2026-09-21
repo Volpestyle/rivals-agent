@@ -313,6 +313,33 @@ the way to earn them back, not a measurement of another object under the held ta
 and reach: it trusts the tracker, and inherits the camera-model id steal named above. Nothing here establishes that the engaged object is
 the designated target; that is shown only by supervised runs.
 
+## The held id's whole box after a fragment set the size (plaza30)
+
+Point blank, the tracker gives several fragments of one outline the same id, and the controller measures the one nearest its bearing.
+On plaza30 (t 28.31-28.36, every box cut by the crop's right edge at x 1760) that was id 71's upper piece, 200 -> 114 -> 107 px, while
+the same frames carried its 470-499 px piece. At 28.385 only the whole 631 px box was left: 5.9x the track's size, over `CLOSE_RATIO`,
+refused. Nothing re-measured the track after that, so it froze, and every leg went silent for 8.3 s with the bot 316 px right:
+
+| Leg | Predicate (controller.py) | Recorded values |
+|---|---|---|
+| yaw | `abs(err) < AIM_DONE_DEG` on the frozen track; from 28.97 the track counts as lost (`t - seen_t > LOST_S`, 0.6 s: 107 px is not close) | err −0.29 deg (track yaw 206.62, cam 206.91); the box's own bearing 225.7 |
+| pitch | `abs(pitch_used) > MAX_PITCH_STICK_S and rates[1] * pitch_used > 0`, then lost | err +11.55 deg up on the stale track, `pitch_used` +0.31 |
+| walk | `mine` is False: `_measured` False | the own-id box h 490-521 on every tick |
+| attack | `on_target` needs `_measured`; `stable` 0 < `ARM_FRAMES` | `stable` 0 from 28.385 |
+
+Once a track has gone unmeasured past the re-seed delay (0.25 s), it re-seeds onto the held id's own box, whatever its size. It is not
+taken sooner, because one frame's id can be wrong: at 16.836 an 89 px box carried the held id 37 of a 585 px bot 300 px away, and the size
+check refused it. A re-seed restarts arming from zero, and boxes with another id or no id still need the size ratio.
+
+On the plaza30 replay through the controller, the pad is identical to the recording through 28.607. At 28.626 (0.262 s after the last
+measurement) it re-seeds onto id 71's 517 px box and sends rx +0.92, ry −1.00: down is allowed, since `pitch_used` is +0.31 up. Nothing
+changes elsewhere in the run.
+
+A primitive already playing runs its course across intent changes; only Idle and Disengage preempt it. plaza30's LT at 25.651 (no crop
+box, Engage(66), after the second KO) is the last tap of the burst armed at 22.668 on Combo(54). That burst was armed on the held id's
+own 166 px box after 5 measured steps. Its sequence ends at 25.700, fixed when it was armed (+3.032 s): LT, RB 22.98, X 23.76, RT
+24.31-25.61, LT 25.65. Nothing is armed on the coast.
+
 ## Hand-offs lost to the camera model (reach30)
 
 All three real-bot hand-offs on reach30 lost the id at the tracker's gate: the held box, moved into the new frame's camera, lands 1.9, 3.0
