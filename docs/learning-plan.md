@@ -225,10 +225,10 @@ confirmed duplicates, six valid controls, charged-slot second-use/recharge cases
 the spectating/short-respawn transition and brief scoreboard, while preserving
 the existing false-killcam rejection.
 
-The frozen writer and all current event/annotation packets remain unchanged until
-primary2's outcome pass is frozen and the eight-window comparison is complete.
-Then the HUD owner repairs and versions the writer, runs the regressions and
-performs one coordinated regeneration of approved sources, with manifests kept
+The primary2 outcome pass and eight-window comparison are complete; the writer
+repair may proceed. All frozen event/annotation packets remain unchanged as evidence.
+The HUD owner repairs and versions the writer, runs the regressions and performs
+one coordinated regeneration of approved sources, with manifests kept
 identical to event segments. Inventory the regeneration's source IDs first; sealed
 sources are not implicitly authorized by a batch-wide command. Rebuild affected
 reader sidecars and derived windows under the new fingerprints, preserve the
@@ -243,8 +243,15 @@ baseline definitions on the corrected identical support. Channels below the
 existing minimum support remain inconclusive; if no channel meets it or fitting
 labels are constant, stop before fitting. Report the corrected result beside the
 archived one as a label repair, not a tuning improvement or sealed evaluation.
-Purpose annotation continues on its immutable proposals, with disagreements
-recorded; comparison does not promote disputed event labels to truth.
+Purpose annotation retains its immutable proposals and recorded disagreements;
+comparison does not promote disputed event labels to truth. The regeneration also
+corrects existing health-transition and icon-state semantics: HP gain/loss alone
+is not healing/damage, bonus-pool changes need evidence, and missing evidence leaves
+cause unknown. A prohibited/dim icon is a display-state observation, not proved
+mechanical availability or a cast. Native regressions cover the reported bonus-health
+and prohibition cases. New control-loss and KO-medal readers remain separate work;
+manual observations are retained without turning those missing modalities into
+prerequisites for the cast repair.
 
 **Coarse-purpose labels remain the next head.** The next bounded tranche is
 24 new development windows, 12 per creator from accepted train sessions, under
@@ -265,9 +272,8 @@ exposure disqualifies its four Day context judgments from the clean comparison;
 retain the disclosed pass. Their fresh replacement is complete under
 `purpose-tranche-1/codex-day-repair/`: four contexts frozen before outcome release,
 then four outcome records preserving those contexts byte-for-byte. Hash and
-structural checks pass; label agreement and accuracy are not yet accepted.
-Its four Req windows remain eligible for comparison, subject to the ordinary
-observability and agreement checks. A valid checksum proves preservation, not
+structural checks pass. The original second pass's four Req windows supply the
+other half of the comparison below. A valid checksum proves preservation, not
 context-first independence or label accuracy. The original primary pass also
 fails this boundary in all 24 windows: segment endings and event values confirmed
 after the decision were exposed before context judgments. Preserve that pass as
@@ -286,9 +292,25 @@ from this inspection-method deviation. Preserve the locked contexts; compare
 coarse purpose with that limitation stated, not as full aligned-protocol compliance
 or detailed HUD-event agreement. The outcome pass inspects all supplied scene
 cells and HUD strips. The separate native-evidence audit resolves cast disputes.
-Claude assigns the primary annotator and comparison owner; Codex owns
-the second pass and acceptance. This is a measured annotation tranche, not a claim
-that 24 labels suffice to train a tactical policy, and it does not block B0.
+The completed comparison is retained in
+`data/demos/annotations/purpose-tranche-1/comparison/REPORT.md`, with reproducible
+counts in `compare.py` and `metrics.json`. Usability agrees 8/8; preferred purpose
+agrees 6/7 usable windows (five engage, one reposition). Pt1-08 remains
+reposition/disengage, and pt1-29 is unusable pre-round. Target status agrees only
+4/8 (3/7 usable); the sole shared box has IoU 0.4804 and is not accepted as precise
+geometry. Outcomes agree on no own death and final HP, but ult use at pt1-05,
+health-pack attribution at pt1-36 and target continuity remain unsupported.
+These are method-limited development agreements, not accuracy estimates or a
+training promotion. No annotation expansion or purpose-head fit is authorized
+by the six agreed examples.
+
+Later combat does not prove that an earlier reposition judgment was wrong.
+Keep observed movement/attack separate from inferred purpose; ambiguous travel
+retains alternatives or unknown. A future-action forecast is a distinct label,
+not a hindsight-corrected current purpose. Control loss also differs from inability
+to observe purpose: future annotation distinguishes actor eligibility from label
+observability. Claude assigns the primary annotator; Codex owns the second pass,
+comparison and acceptance. This tranche does not block B0.
 
 ```mermaid
 flowchart TD
@@ -875,9 +897,10 @@ Validate VOD HUD geometry separately: resolution scaling alone may not align a
 mouse/keyboard HUD with our controller HUD, and streamer overlays can occlude it.
 
 Each tactical example separates observation history ending at decision time from
-the action label and subsequent outcome. Future frames may help an annotator establish
-the label, but are never policy inputs. Later events and commentary are not evidence
-that the player knew them earlier. Split by entire recording/session before extracting
+the action label and subsequent outcome. Future frames establish separately named
+outcome or future-action labels, not a revision to the locked current-purpose label,
+and are never inputs at the earlier decision time. Later events and commentary are
+not evidence that the player knew them earlier. Split by entire recording/session before extracting
 windows; nearby frames and mirrored uploads cannot cross train/evaluation boundaries.
 
 ### Annotation ownership and pilot
@@ -1260,16 +1283,30 @@ mandatory. Marker loss alone may be occlusion and is insufficient; if identity
 or the death transition is unresolved, retain the uncertainty rather than calling
 it a confirmed corpse.
 
-The next authorized work is a bounded protocol exercise on the existing failed
-truncation/ignore, merged-outline, mixed-render, corpse and sub-floor cases, with
-the adjudication exposed and no new accuracy claim. Standardize the explicit
-rules above, not one model family's judgments. In parallel, a selector may
-screen the two development-cleared sessions for up to 20 genuine gameplay-negative
-candidates, checking x-ray outlines as well as direct bodies and recording creator
-gaps. This is sourcing for a repair, not a new annotation tranche. Do not open
-sealed sessions or promote other footage to fill a quota; other retained Day
-sections need source/segment clearance first. If the current sections cannot
-supply candidates, hand back that specific gap and stop the scan.
+The exposed protocol exercise resolves the known failed cases but establishes
+no new accuracy. The strict negative scan in `data/demos/annotations/boxes/negative-scan/`
+finds three gameplay-negative candidates, all Req, and none from Day. Its pilot/audit
+proximity exclusions leave only 7.9 Day seconds and 159.7 Req seconds, insufficient
+for the 20-negative requirement with the declared spacing. The absence of Day
+negatives under those exclusions is not evidence the whole section lacks them.
+
+One bounded negative-only rescan may remove the 30-second pilot and 20-second
+repair-audit proximity exclusions on the same two development-cleared sessions.
+Still exclude every image supplied to the pilot/repair annotators and its supplied
+context interval; preserve the two-second segment margin and 20-second spacing among
+selected negatives. Report these as same-session development examples, not fresh
+independent generalization evidence. Positive-instance exclusions are unchanged.
+Verify each candidate at native resolution with context, including outlines and
+sub-floor characters. Reuse prior rejection evidence and stop at 20 total strict
+negative candidates or exhaustion of the eligible intervals; do not launch a new
+blind annotation tranche yet. Separately retain up to five marker-only hard negatives,
+covering both creators when available, without counting them toward the strict quota.
+The three existing candidates remain candidates pending the blind inventory.
+
+This does not lower the 20-negative floor, promote other footage or open sealed
+sessions. If the rescan still cannot supply the floor or a creator, record the
+shortfall once; more development footage needs source/segment clearance before
+another scan. Keep sourcing failures distinct from annotator accuracy.
 
 Before another blind repair is dispatched, freeze its candidate set and support
 rule: at least 30 resolved >=40 px instances per evaluated class across at least
