@@ -288,9 +288,12 @@ def near_h():
     return RANGES.near_h
 
 
-def reach_h():
+def beyond_reach(track, frame_h):
+    """Past the engagement cap (brain.RANGES): by the measured box's own distance when it has one, else by its height."""
     from .brain import RANGES
-    return RANGES.reach_h
+    if track.distance is not None:
+        return track.distance > RANGES.reach_m
+    return track.h / frame_h <= RANGES.reach_h
 KP = 20.0                            # deg/s of commanded turn per degree of error
 KI = 2.0
 AIM_DONE_DEG = 0.4
@@ -316,6 +319,7 @@ class Track:
     ex: float = 0.0         # last measured screen error from the crosshair, px
     ey: float = 0.0
     seen_t: float = 0.0
+    distance: float | None = None  # metres, from the box last measured (Detection.distance); None: not estimated, the height decides
     confirmed: bool = False  # measured by the reflex sensor at least once (a seed from the brain's target is only a bearing)
 
     def predict(self, dt):
@@ -438,11 +442,12 @@ class Controller:
                     out["buttons"] = ("A",)
         elif isinstance(intent, Engage) and self.track is not None:
             near = self.track.h / state.frame[1] >= near_h()
-            # Falling off must be impossible, not unlikely (a live run walked off a platform). Forward movement needs a box
-            # measured by the aim sensor ON THIS STEP: none on a coast, a hit flash, a lost track, or a target only the
-            # brain's whole-frame search has seen (that one is turned toward, nothing else). Search never moves. Nor toward a box
-            # beyond the kit's reach (handoff30: he walked 0.8 s at a 36 px dummy ~45 m off and went over the plaza's edge).
-            far = self.track.h / state.frame[1] <= reach_h()
+            # Forward movement needs a box measured by the aim sensor ON THIS STEP: none on a coast, a hit flash, a lost track, or a
+            # target only the brain's whole-frame search has seen (that one is turned toward, nothing else); a live run walked blind
+            # off a platform. Search never moves. Nor toward a box past the engagement cap (handoff30: he walked 0.8 s at a 36 px
+            # dummy ~45 m off and went over the plaza's edge). This does not know the ground: a target in reach across an edge is
+            # still walked at.
+            far = beyond_reach(self.track, state.frame[1])
             out["ly"] = 1.0 if self._measured and self.track.confirmed and not near and not far else 0.0
             if not self.seq and on_target:
                 if near and t >= self.next_uppercut_t:
@@ -565,7 +570,7 @@ class Controller:
     def _measure(self, det, state):
         self._measured = True
         tr = self.track
-        tr.w, tr.h, tr.seen_t = det.bbox[2] - det.bbox[0], det.height, state.t
+        tr.w, tr.h, tr.seen_t, tr.distance = det.bbox[2] - det.bbox[0], det.height, state.t, det.distance
         tr.ex, tr.ey = det.center[0] - state.frame[0] / 2, det.center[1] - state.frame[1] / 2
 
     def _aim(self, state, out, dt):

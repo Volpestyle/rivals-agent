@@ -328,12 +328,13 @@ def test_detection_recorded_before_the_tag_field_loads_as_unknown_tag():
     assert State.from_dict(old).detections[0].tagged is None
 
 
-def test_a_bot_beyond_the_kits_reach_is_never_picked():
-    """handoff30: five of seven targets were the range's robot dummies far down the shooting lane, 33-40 px (~45 m); nothing in the kit
-    reaches past 40 m (Web Cluster is at half damage there), and walking at one took him off the plaza. They are searched past."""
+def test_a_bot_beyond_the_engagement_cap_is_never_picked():
+    """handoff30: five of seven targets were the range's robot dummies far down the shooting lane, 33-40 px (~45 m) on the height ruler,
+    past the 40 m engagement cap (chosen from the kit: Web Cluster falls to 50% at 40 m), and walking at one took him off the plaza. They
+    are searched past."""
     m, dummy = Memory(), enemy(h=36, x=1300)
     assert [decide(st(t, detections=[replace(dummy, track=5)]), m) for t in (0.0, 0.1, 0.2)] == [Search()] * 3
-    m, bot = Memory(), enemy(h=60, x=1300, track=6)                          # the smallest bot engaged in reach on the recorded runs
+    m, bot = Memory(), enemy(h=60, x=1300, track=6)                          # the smallest bot engaged on the recorded runs
     assert isinstance([decide(st(t, detections=[bot]), m) for t in (0.0, 0.1)][-1], Engage)
     m = Memory()                                                             # with both in view, the far one nearer the crosshair
     got = [decide(st(t, detections=[replace(dummy, track=5, bbox=(1270, 700, 1288, 736)), replace(bot, bbox=(1800, 600, 1830, 660))]), m)
@@ -341,7 +342,7 @@ def test_a_bot_beyond_the_kits_reach_is_never_picked():
     assert got.target.track == 6
 
 
-def test_the_reach_line_reads_distance_when_it_has_one():
+def test_the_engagement_cap_reads_distance_when_it_has_one():
     from agent.brain import in_reach
     s = st(0)
     assert in_reach(enemy(h=20, distance=39.0), s) and not in_reach(enemy(h=600, distance=41.0), s)

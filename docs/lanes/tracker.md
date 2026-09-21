@@ -205,17 +205,22 @@ is its own item; a world-static classifier for it needs stationary bots as contr
 floor marked 10M-40M), outlined green by the game like every enemy (handoff30 native frame 000096). The finder is right to box them, and the
 finder GT counts them (it counts every enemy the game marks), so nothing is removed at the finder. At 30-42 px they are ~45 m off by the
 brain's ranging (1.30 / height share). Every recorded run has them: 62-112 decision boxes under 60 px per run, mostly these dummies, some
-scenery (the door's glass, pink pillars) inside the spawn-room windows. Every bot engaged in reach on the four runs is 60 px or more;
+scenery (the door's glass, pink pillars) inside the spawn-room windows. Every bot engaged on the four runs is 60 px or more;
 one dummy on the upper walkway behind a railing reads 41-48 px (stall30, 5.5-6.1 s).
 
-**The rule: nothing past the kit's reach is a target.** Web Cluster falls to half damage at 40 m and nothing else reaches past 30 m, so
-`brain.RANGES.reach_h` is 1.30 / 40 m = 0.0325 of the frame height (47 px at 1440p; `reach_m` 40 when a detection carries a distance).
+**The rule: nothing past a 40 m engagement cap is a target.** The cap is a chosen operational engagement and approach limit, informed by
+the kit's falloff (Web Cluster is full damage to 20 m and falls to 50% at 40 m). On the height ruler (distance ~ 1.30 / height share, about
++-25%) it is `brain.RANGES.reach_h` = 0.0325 of the frame height, 47 px at 1440p; a detection that carries a distance is judged by
+`reach_m` 40 instead.
 `_acquirable` refuses a new target at or under it; a held target is followed by its id as before. Search pans past the dummies.
 
 **Why he walked off.** `Engage` walks forward (`ly` 1.0) on every step where the aim crop measures the target's confirmed box and it is not
 near, at any range; a far target without a swing anchor is `Engage`d. On handoff30 that walked him 0.8 s at a 36 px dummy (id 92) and over
-the plaza's edge to the lower ring. The controller now also refuses the forward walk when the crop's box is at or under `reach_h`: the one
-line both read. Replayed, no forward walk on any of the four runs is toward a crop box under 48 px (was 28 px on three of them).
+the plaza's edge to the lower ring. The controller now also refuses the forward walk when the box measured this step is past the cap: by
+that measurement's own distance when it carries one, else by its height (`controller.beyond_reach`; the brain's `in_reach` reads the same
+table the same way). A held target keeps its id past the cap, and is aimed at, not walked at. Replayed, no forward walk on any of the four
+runs is toward a crop box under 48 px (was 28 px on three of them). This is not a ground check: the walkway dummy's 54 px crop boxes are
+still walked at, and so is any target inside the cap across an edge.
 
 **Search after the fall is not a pitch fault.** On the live sticks it paid back its pitch on entry (15.58-16.13 s), ran the absolute
 re-level at 17.6-21.2 s (1.8 s up into the clamp, the ceiling rosette in view; 1.8 s down at half stick) and then panned level to 29.6 s.
@@ -252,9 +257,9 @@ the track coasts; stall30's other is the lit glass dome (the junk window), uncha
 120 px label. handoff30's 0.55 s is junk: a colour-fringed smear at the base of the tree statue during a fast turn (id 63, 50 px), a finder
 residual. Kill feed is 0 everywhere; the door is unchanged (the plaza-side door on stall30 is the open residual above).
 
-**Residuals, not built.** The forward walk still has no notion of the ground: approaching a bot in reach across the plaza's edge would walk
-off it the same way. Once off the plaza, nothing brings him back: Search pans an empty corridor until the run ends. With only dummies in
-view (all past 40 m), he searches rather than engages.
+**Residuals, not built.** The forward walk walks toward a target inside the cap with no notion of the ground ahead: approaching one across
+the plaza's edge walks off it the same way, and a supervised run with this filter is not evidence that he cannot fall. Once off the plaza, nothing brings him back: Search pans an empty corridor until the run ends. With only dummies in
+view (all past the cap), he searches rather than engages.
 
 ## Coasting: a deliberate trade
 

@@ -39,7 +39,7 @@ LABELS = {
     # shooting lane (native frames 000096 and the small-box sheet), labelled "small" below
 }
 SMALL_H = 47          # px at 1440p: brain.RANGES.reach_h (40 m). A box this size or less outside the door and junk windows is "small": on the
-                      # four runs mostly the lane's dummies ~45 m off, some scenery; beyond the kit's reach either way
+                      # four runs mostly the lane's dummies ~45 m off, some scenery; past the 40 m engagement cap either way
 SIZE = (2560, 1440)
 KILL_FEED_BOX = [2319, 128, 2426, 247]
 
