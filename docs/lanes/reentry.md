@@ -384,6 +384,13 @@ match about as well). They are recording frames (h264, `-cq 19`), not the tool's
 is insensitive to these two compressions on these pairs, not that live frames read the same; the log's `moved` is the live value. Not shown offline: that 0.4 s
 to the left takes him off the rim and that the walk then carries on; the three supervised arrivals are the measurement.
 
+**A plant taken for a door (plaza30's re-entry, 2026-09-21 16:03; `docs/evidence/l4/plaza30-reenter-*`).** Outside already, steps 9-10
+took a lime blob on the leaves of the plaza-side planter (10k, then 19.6k px) for a door and walked at it once; with no blob on step 11,
+out latched on the 19.6k peak. It failed the safe way: left look-arounds only, six of them past the real pane (blobs of 10k, 37k and 49k
+on steps 13-15) with no steer and no walk at it, then `plaza_view` twice, exit 0. The blob test is not changed: the plant's blobs have
+fill (area / box) 0.29-0.37 and solidity (area / hull) 0.47-0.61, inside the range of the 290 door blobs of the eight logged arrivals
+(fill 0.10-, median 0.38; solidity 0.24-, median 0.59: a pane seen edge-on or clipped is a thin ragged strip).
+
 What the tool's result does and does not say: exit 0 means `plaza_view` held on two frames, not that the acceptance holds (two
 plaza-looking frames end it with out still False); `ARRIVE_S` is a budget of scheduled actions, not a wall-clock deadline (the three ran
 14.99, 12.04 and 15.18 s); a turn row's `door_x` is the prior or predicted door, not a certified selection; `plaza_view` finds an enemy box,
