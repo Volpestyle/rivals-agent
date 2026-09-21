@@ -565,3 +565,42 @@ def test_a_small_box_not_at_the_crop_edge_or_outside_the_body_is_not_taken_for_i
     young = Tracker()
     young.update([Detection(ENEMY, (1600.0, 250.0, 2293.0, 754.0), 0.9)], 0.0, F2)          # seen once: not a confirmed body
     assert young.update([Detection(ENEMY, (1736.0, 582.0, 1760.0, 612.0), 0.9)], 1 / 60, F2, clip=CROP)[0].track != 1
+
+
+# --- input-path review of 639c561 -------------------------------------------------------------------------------------------------------
+def test_an_older_frames_camera_never_rewrites_a_newer_track():
+    """Review P1: an empty, older worker result (t .05, yaw 0) projected a right-side box seen at yaw 50 behind its camera, clamped both
+    edges, and wrote that back: the next frame at yaw 50 gave the same bot a new id. An older frame is matched against a view only."""
+    tr, box = Tracker(), (2300.0, 550.0, 2400.0, 750.0)
+    for t in (0.20, 0.22, 0.24):
+        tr.update([Detection(ENEMY, box, 0.9)], t, F2, cam=CAM(50.0))
+    before = [(x.box, x.cam) for x in tr.tracks]
+    tr.update([], 0.05, F2, cam=CAM(0.0))
+    assert [(x.box, x.cam) for x in tr.tracks] == before                        # geometry and camera untouched
+    got = tr.update([Detection(ENEMY, box, 0.9)], 0.26, F2, cam=CAM(50.0))
+    assert got[0].track == 1 and len(tr.tracks) == 1
+
+
+def test_a_body_wholly_inside_the_crop_cannot_claim_a_sliver_at_its_edge_through_padding():
+    """Review P2: a confirmed body (1470-1730) wholly inside the crop gave its id to a box at the crop's edge (1736-1760) it does not touch."""
+    tr = Tracker()
+    for t in (0.0, 0.02, 0.04):
+        tr.update([Detection(ENEMY, (1470.0, 400.0, 1730.0, 1000.0), 0.9)], t, F2, cam=CAM(0.0))
+    got = tr.update([Detection(ENEMY, (1736.0, 582.0, 1760.0, 612.0), 0.9)], 0.06, F2, cam=CAM(0.0), clip=CROP)
+    assert got[0].track != 1
+
+
+def test_the_body_must_itself_reach_the_edge_that_cut_the_box():
+    tr = Tracker()
+    for t in (0.0, 0.02, 0.04):
+        tr.update([Detection(ENEMY, (1500.0, 400.0, 1753.0, 1000.0), 0.9)], t, F2, cam=CAM(0.0))   # stops 7 px short of the crop edge
+    got = tr.update([Detection(ENEMY, (1736.0, 582.0, 1760.0, 612.0), 0.9)], 0.06, F2, cam=CAM(0.0), clip=CROP)
+    assert got[0].track != 1                                                    # 71% of the box lies in it, but the body is not out there
+
+
+def test_a_body_that_reaches_the_edge_lends_its_id_only_to_a_box_on_the_body_itself():
+    tr = Tracker()
+    for t in (0.0, 0.02, 0.04):
+        tr.update([Detection(ENEMY, (1500.0, 400.0, 1800.0, 600.0), 0.9)], t, F2, cam=CAM(0.0))   # crosses the crop's right edge
+    got = tr.update([Detection(ENEMY, (1736.0, 610.0, 1760.0, 640.0), 0.9)], 0.06, F2, cam=CAM(0.0), clip=CROP)
+    assert got[0].track != 1                                                    # 10 px below it: only padding would join them

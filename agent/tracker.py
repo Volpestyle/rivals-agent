@@ -169,7 +169,9 @@ class Tracker:
     def _entering(self, box, cls, clip, used, t):
         """Index of the held, confirmed track whose body a box cut by `clip`'s edge is the visible part of, or None. A bot turned into the
         aim crop enters it as a sliver at the crop's edge (stall30: a 24 x 30 px box, of a bot the whole-frame search saw as 693 x 504),
-        which no size or distance gate matches; lying inside the track's predicted box, where the camera turn put it, it is that bot."""
+        which no size or distance gate matches. It is that bot if the track's predicted body (where the camera turn put it) reaches the same
+        edge of the crop and the box lies inside that body, unpadded: padding alone once let a body wholly inside the crop claim a box
+        outside it (input-path review)."""
         cut = (abs(box[0] - clip[0]) <= EDGE_PX or abs(box[1] - clip[1]) <= EDGE_PX
                or abs(box[2] - clip[2]) <= EDGE_PX or abs(box[3] - clip[3]) <= EDGE_PX)
         if not cut:
@@ -178,9 +180,14 @@ class Tracker:
         for k, tr in enumerate(self.tracks):
             if k in used or tr.cls != cls or tr.hits < CONFIRM:
                 continue
-            pb, pad = self._predicted(tr, t), PIECE_PAD * max(tr.size, 1.0)
-            w = max(0.0, min(box[2], pb[2] + pad) - max(box[0], pb[0] - pad))
-            h = max(0.0, min(box[3], pb[3] + pad) - max(box[1], pb[1] - pad))
+            pb = self._predicted(tr, t)
+            # The body itself must reach the edge that cut the box: a body wholly inside the crop has no part out there to show.
+            reaches = ((abs(box[0] - clip[0]) <= EDGE_PX and pb[0] <= clip[0] + EDGE_PX) or (abs(box[1] - clip[1]) <= EDGE_PX and pb[1] <= clip[1] + EDGE_PX)
+                       or (abs(box[2] - clip[2]) <= EDGE_PX and pb[2] >= clip[2] - EDGE_PX) or (abs(box[3] - clip[3]) <= EDGE_PX and pb[3] >= clip[3] - EDGE_PX))
+            if not reaches:
+                continue
+            w = max(0.0, min(box[2], pb[2]) - max(box[0], pb[0]))            # and the box lie in the body itself, not in a margin round it
+            h = max(0.0, min(box[3], pb[3]) - max(box[1], pb[1]))
             inside = w * h / max((box[2] - box[0]) * (box[3] - box[1]), 1e-9)
             if inside >= share:
                 best, share = k, inside
@@ -200,11 +207,13 @@ class Tracker:
         between a bot's last whole-frame box and its first aim-crop box, 1.5 track sizes on screen, and it got a new id both times.
         `clip`: (x1, y1, x2, y2) of the region the boxes were found in when it is not the whole frame (the aim crop)."""
         dets = dets or []
+        stored = {}                              # each track's own box and camera, put back unless a newer measurement replaces them
         if cam is not None and frame is not None:
             for tr in self.tracks:
-                if tr.cam is not None:
-                    tr.box = _turned(tr.box, tr.cam, cam, frame)
-                tr.cam = cam[:2]
+                stored[id(tr)] = (tr.box, tr.cam)
+                if tr.cam is not None:           # matched against a VIEW of the track in this frame's camera: the projection can clamp
+                    tr.box = _turned(tr.box, tr.cam, cam, frame)   # (a box behind an older camera), so it is never written back
+        moved = set()
         self.tracks = [tr for tr in self.tracks if t - tr.seen_t <= self._age(tr, frame)]   # an expired track cannot claim a box
         groups = self._bodies(dets)
         boxes = [_union([tuple(dets[i].bbox) for i in g]) for g in groups]
@@ -255,8 +264,15 @@ class Tracker:
                 else:
                     tr.vx = tr.vy = 0.0          # a long gap, or a box that changed size: the old velocity says nothing about where it went
                 tr.box, tr.seen_t, tr.hits = box, max(tr.seen_t, t), tr.hits + 1
+                tr.cam = cam[:2] if cam is not None else tr.cam
+                moved.add(id(tr))
                 tr.hs = [(tt, h) for tt, h in tr.hs if t - tt <= HIST_S] + [(t, box[3] - box[1])]
             ids.update({i: tr.id for i in g})
+        for tr in self.tracks:
+            if id(tr) in stored and id(tr) not in moved:
+                tr.box, tr.cam = stored[id(tr)]
+            elif tr.cam is None and cam is not None and id(tr) not in stored:
+                tr.cam = cam[:2]                 # a track born in this update is in this frame's camera
         out = [replace(d, track=ids[i]) for i, d in enumerate(dets)]
         seen = {tr.id for tr in got.values()} | {tr.id for tr in self.tracks if tr.seen_t >= t}
         self.coasting = tuple(tr.id for tr in self.tracks if tr.id not in seen and tr.hits >= CONFIRM)
