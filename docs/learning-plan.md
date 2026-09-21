@@ -30,8 +30,8 @@ The roadmap advances on evidence, not footage hours. Current evidence includes
 two inspected pilot clips, nine acquired guides (about 106 minutes), and about
 60 raw minutes from four VOD sessions; raw duration is not accepted training
 duration. The aligned two-window annotation rerun agrees on coarse tactical
-purpose, but exposes event-extractor defects. Event format 2 is delivered; its
-Req hand-check and per-source slot mapping govern label acceptance (VUH-1306).
+purpose, but exposes event-extractor defects. The HUD lane produces event format
+4; loader support and refreshed event audits govern label acceptance (VUH-1306).
 The policy lane has an offline DINO encoder / GRU intent-training pipeline;
 its reported held-out results do not beat the majority baseline. This is
 pipeline evidence, not an accepted gameplay policy. RL is not implemented or
@@ -52,6 +52,8 @@ These are dependencies, not six serial waits. Reward measurement starts during A
 E's recorder and controller work also starts now. D can test narrow range learning
 without waiting for expert-level swinging. An initial F intent-only trial can use
 the fixed selector, but cannot claim E's target-choice or positioning capabilities.
+E's offline box-annotation and camera-motion feasibility probes below run alongside
+these prerequisites; the first narrow policy does not defer all work on game sense.
 
 B has a pipeline prerequisite under VUH-1311: cache encoder embeddings and train
 a temporal head to imitate the scripted brain on our own logged sessions, with a
@@ -650,6 +652,12 @@ The tested off-the-shelf paths cannot supply VOD target boxes. Annotators draw t
 initial small set; a thin red-versus-blue ring around a supplied box supports
 enemy/ally classification in the inspected examples, with unknown retained.
 
+That result limits the current tools, not what expert footage can teach. A detector
+fine-tuned on reviewed VOD boxes is a candidate enabler for learned targeting and
+relative positioning. Visible camera motion and routes are potential supervision
+for aim and swing behavior. Each needs the observability tests below before its
+inferred labels are treated as demonstrated actions.
+
 Before any VOD target-labelling pass, exclude non-gameplay viewpoints and
 scoreboard-obscured scene frames, then mask person-like streamer graphics. This applies
 to every proposal source, including model-assisted annotation: permanent graphics
@@ -670,6 +678,109 @@ that remain after normalization and need held-out evaluation.
 The passive practice range is out of distribution for team-fight judgment. It
 tests mechanics and integration; AI-only custom games are the first venue for
 meaningful interactive engage/escape evaluation, though still not human play.
+
+### E enablers: bounded offline pilots
+
+These pilots use retained media and existing workers, with no live input or new
+footage collection. Claude assigns execution; Codex owns the label specification
+and independent audit. Their outputs are measured feasibility results, not a claim
+that a detector or inverse-dynamics model already supplies trustworthy labels.
+
+#### VOD character boxes: 30-frame audit, then at most 150 frames
+
+1. **Sampling and provenance.** Reserve 60 current-regime Day frames, 60
+   current-regime Req frames and 30 older-regime Req frames. Retained Day footage
+   does not supply an older-regime cell; do not invent a balanced creator/patch
+   matrix. Record source, session group, decoded PTS, source frame index, native
+   dimensions, patch evidence and cooldown regime. Observed uppercut cooldown
+   distinguishes these measured regimes; it does not uniquely identify a patch.
+   A source with unknown session identity cannot establish an independent split.
+2. **Diverse scenes.** Sample across independent encounters, sizes, maps, skins,
+   airborne/grounded characters, crowds, effects and partial occlusion. Include at
+   least 20 current-regime gameplay frames with no non-player character (own hero
+   may be visible) to measure false positives. Do not fill the set with adjacent
+   frames from one easy fight. Gate out death/spectating/scoreboards and hard cuts;
+   mask person-like overlays first, preserving mask coordinates. Retain native
+   frames and context locally under `data/demos/annotations/boxes/`; no media in git.
+3. **Label contract.** Two independent vision annotators draw every visibly
+   supported character box, not just the presumed target, on the same native frame.
+   Supply a short native-resolution context window at the existing 10 Hz annotation
+   rate; neighboring frames may clarify identity but may not fill an invisible
+   body with a guessed box. Store visible-extent `xyxy` in original pixels,
+   `self/other/unknown`, `enemy/ally/unknown`, optional hero identity, occlusion,
+   uncertainty and evidence PTS. Exclude health bars from body boxes. Record
+   unresolved regions as ignored, not empty background. A short-window track ID
+   is separate from hero class and survives only visually supported continuity.
+4. **Audit before volume.** Start with 30 frames: ten from each available
+   creator/regime group, selected outside the sealed final evaluation set. The
+   annotators do not see each other's proposals. Adjudicate against original pixels,
+   including missed characters and own-hero/overlay false positives. Report object
+   count agreement, matched-box IoU, centre error, allegiance agreement/unknowns and
+   error by box size. Agreement alone is not truth. Proposed scale gate: each pass
+   reaches at least 90% precision and recall against adjudicated visible instances,
+   matching at IoU >= 0.5; report denominators and median IoU separately. If either
+   fails, repair the protocol and repeat only failed categories before scaling.
+5. **Splits and detector experiment.** Freeze source-session groups before training;
+   approximately 60/30/30 current-regime frames go to train/development/sealed test,
+   subject to whole-session integrity rather than exact quotas. Keep both creators
+   in train and test where available; disclose any creator missing from development.
+   All 30 older-regime frames are a separate transfer diagnostic, not silently mixed
+   into the first training set. Reuse the detector lane's training path with audited
+   boxes; never reuse its inaccurate pseudo-labels as truth. Select thresholds on
+   development only. Report sealed-test precision/recall at IoU 0.5, small-character
+   recall, own-hero/overlay false positives, and failures per creator/regime. A
+   proposed proposal-only gate is >=80% precision and recall on the current test
+   set; with this small sample it authorizes assisted annotation, not autonomous
+   target selection. Keep human/model visual confirmation of proposals. A failure
+   means more targeted labels or a revised detector experiment, not blind scaling.
+
+Boxes expose candidate targets; they do not prove which one the expert selected.
+The enemy nearest the crosshair is a **candidate heuristic to audit**, especially
+around a cast. Third-person parallax, leading a moving enemy, target switching,
+area attacks and unseen targets can defeat it. Keep candidate sets/unknown, compare
+pre-cast context with visible projectile/ability response, and keep later outcomes
+separate from decision-time inputs. Kill-feed hero names are outcome evidence after
+credit/assist semantics are verified; they do not supply a free persistent target ID.
+
+Position labels begin with supported screen-relative relations (left/right,
+above/below, clustering and visible cover), plus uncertainty. Box height is an
+apparent-size cue, not a calibrated metre ruler across different heroes, poses,
+FOVs and maps. No minimap does not rule out learning spatial behavior from video,
+but boxes alone do not establish world coordinates or depth. Evaluate learned
+destination choice once the controller can execute the same representation.
+
+#### Camera motion and inverse dynamics: feasibility before inferred controls
+
+The HUD lane's probe uses existing synchronized own-run video and commanded pad
+logs, holding out whole runs. Start with visible image displacement/camera-motion
+estimation; use the measured stick response as a baseline, not as independent
+ground truth for achieved yaw/pitch. Fit any video/input offset on training runs
+and freeze it for evaluation; missing or uncertain alignment limits the conclusion.
+Stratify stationary turns, movement, ability-driven camera changes and swings.
+Report missing strata: a corpus without paired swings cannot validate swing recovery.
+
+Distinguish three outputs: observed screen motion, estimated camera rotation, and
+inferred control input. Translation, parallax, automatic ability camera movement,
+aim assist and motion blur can produce different motion for the same stick command.
+Known pad state is commanded-input truth; the turn-rate map is a calibration model.
+Do not label inferred rotation as exact measured camera ground truth. Report held-out
+direction errors, command-reconstruction error/lag, coverage/abstentions and variation
+across runs; assess uncertainty by run or contiguous block, not correlated frames.
+Compare against neutral-input and calibrated-response baselines on the same cases.
+
+The immediate result is whether any control-relevant signal is recoverable, in
+which regimes, with what error. A range result does not prove transfer to Twitch
+compression, mouse controls or different sensitivity/FOV. A swing cast's camera
+direction is only one feature: anchor, momentum, movement and release also matter;
+charge/cooldown events do not establish continuous button-hold duration.
+
+[VPT](https://arxiv.org/abs/2206.11795) demonstrates the paired-data inverse-dynamics
+approach in Minecraft; it supplies a research precedent, not a transfer guarantee
+for Rivals. An offline inverse model may inspect future frames to infer an earlier
+action, but the policy trained from those labels remains causal. If the probe
+succeeds, audit a small expert-video transfer set before producing training labels.
+If it fails, retain visible route/destination/timing supervision and identify the
+missing paired examples for collection after the live-input freeze lifts.
 
 ## Training and runtime
 
