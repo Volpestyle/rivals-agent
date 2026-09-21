@@ -219,7 +219,10 @@ source event streams: context packets contain only the permitted frames, raw HUD
 rows and events confirmed by the decision time. Freeze context judgments before
 releasing outcome packets. The second pass's accidental full-Day event-stream
 exposure disqualifies its four Day context judgments from the clean comparison;
-retain the disclosed pass and replace only those windows with a fresh annotator.
+retain the disclosed pass. Their fresh replacement is complete under
+`purpose-tranche-1/codex-day-repair/`: four contexts frozen before outcome release,
+then four outcome records preserving those contexts byte-for-byte. Hash and
+structural checks pass; label agreement and accuracy are not yet accepted.
 Its four Req windows remain eligible for comparison, subject to the ordinary
 observability and agreement checks. A valid checksum proves preservation, not
 context-first independence or label accuracy. The original primary pass also
