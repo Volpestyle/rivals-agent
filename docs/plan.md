@@ -68,6 +68,13 @@ only once an outcome can be measured reliably.
   games. They advance on evidence, not footage hours, and are dependencies rather than six
   serial waits. Linear carries assignment: A VUH-1306 and VUH-1319, B VUH-1311, C VUH-1320,
   D VUH-1321, E VUH-1322 (with VUH-1314, VUH-1296), F VUH-1323 (with VUH-1310).
+- **The patch is a fact, not a background assumption.** Balance patches change Spider-Man's
+  cooldowns, damage and mechanics every few weeks, so footage, measured timings, the scripted
+  brain's constants, the baseline score and any trained checkpoint are valid for one patch.
+  `docs/spiderman-kit.md` states the project's current patch in one place; every source and
+  run records its patch next to its cooldown regime; splits never mix patches silently; and
+  because casts are proved by cooldown countdowns, each source's observed cooldowns are checked
+  against the kit, which also tells us when the live game has changed under us (VUH-1324).
 - **Compute budget.** James approved an initial $100 for rented cloud compute (2026-09-20).
   Training is local first; renting is chosen from a measured local-versus-rental comparison,
   spend is tracked, and the figure is revisited before it is exceeded. It is an experiment
