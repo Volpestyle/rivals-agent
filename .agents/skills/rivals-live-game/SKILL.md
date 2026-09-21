@@ -102,6 +102,22 @@ press and never treats the hold as the range being lost. Dead ends: the ult icon
 nothing about damage; Web Cluster ammo never depletes there; the range bots do not attack,
 so hp never drops. Re-picking a hero does not respawn the player.
 
+Practice Settings (pause menu) has four rows and no bot options: No Ability Cooldown, its
+"(Always On)" sub-row, Friendly Fire and a controller test tool. **No Ability Cooldown is ON by
+default**, which gives infinite ammo, an ult back in seconds and no cooldown numbers, and the
+Always On sub-row re-enables it on every range entry (the sub-row disappears while the parent
+is off, so it cannot be switched off directly). After every entry run
+`scripts/l4_practice_settings.py cooldowns-off` and verify from play: web-cluster ammo drops
+below 5 after firing and Get Over Here shows a cooldown number. Every recording states its
+regime (`cooldowns: off | normal`) and the two are never mixed.
+
+Bots to fight: from the spawn room's green door a short stair leads down to a planter landing;
+the blue-lit archway 90 degrees left of that stair opens onto a walled arena of Galacta bots
+(the five-minute baseline's arena). Range bots never attack.
+
+Screen video: `ffmpeg` on the PC with `ddagrab` straight into `h264_nvenc` at native 2560x1440
+60 fps costs the loop nothing measurable; scaling on the CPU first costs it its rates.
+
 Enemy Color (Settings > Accessibility > Custom Colors) is a list of named swatches, not a
 hex entry, and it colours the enemy outline, name text, health bar and scoreboard panel.
 An undamaged bot shows its name text; after first damage a wider health bar replaces it.
