@@ -91,7 +91,9 @@ an annotator may use:
 | `hard_cut` | an editorial cut in an edited upload | `after_cut` |
 
 Any other value is refused when the manifest loads, as are overlapping or out-of-order segments and a segment that outlives
-the clip. A segment shorter than `MIN_SEGMENT_S` (1.0 s) is kept (it is what the segmenter proved; its events still validate)
+the clip. The refinements are an annotator's only change to the segmenter's segments. They are allowed only in a manifest with
+`segments_from: annotator`, only as the refinement of the reason the events file gives, and with times and `started_by` left as
+the segmenter's (`REFINES` in `agent/demos.py`). A segment shorter than `MIN_SEGMENT_S` (1.0 s) is kept (it is what the segmenter proved; its events still validate)
 but no decision is cut from it; the skip is reported in `demos.skipped` as `segment_too_short`, and `summary` prints `(short: n)`.
 
 ## Provenance: one authority, fail loud
@@ -175,10 +177,12 @@ meaning no mapping was attempted, which differs from `{}`: icons read and none i
   pending is hindsight.
 - **An event lies inside one segment.** The loader assigns it by time (the file's `segment` index is only a hint) and refuses
   one that crosses a boundary or sits in a gap.
-- **A manifest's segments are its events file's.** When the events file carries segment lines, the manifest's segment lines
-  must be identical to them, or loading raises `ProvenanceError` naming the first difference. A manifest written before its
-  events file was regenerated can hold a superset of today's segments. The every-event-inside-a-segment check never notices
-  that; this comparison does. The fix is always `write_manifest(path, header, events_file_segments(events))`.
+- **A manifest's segments are its events file's.** A manifest's segment lines must be identical to its events file's, or
+  loading raises `ProvenanceError` naming the first difference. The one exception is an annotator's refinement of an
+  `ended_by` (above). A manifest written before its events file was regenerated can hold a superset of today's segments. The
+  every-event-inside-a-segment check never notices that; this comparison does. There is no carve-out: the producer writes one
+  segment line per segment, so an events file with none says the clip has none, and a manifest with segments over it is
+  refused. The fix is always `write_manifest(path, header, events_file_segments(events))`.
 - **No HUD feature is read off a masked frame.** An event whose `t_from` or `t_to` frame an annotator masked for the HUD or
   for the event's own field (`hp`, `ammo`, the slot) does not enter the window.
 
@@ -274,6 +278,7 @@ cuts, deaths and spectating.
 | A null-slot cast stays null | `_slot_guessed` at load; `Event.slot` is never filled | `test_a_cast_at_an_unidentified_position_stays_null_through_every_window`, `test_a_guessed_ability_name_is_refused` |
 | No split mixes regimes or patches unasked | `Demos._clips` | `test_a_split_that_mixes_regimes_is_refused_unless_asked`, `test_a_split_that_mixes_patches_is_refused_unless_asked` |
 | Nothing unsplittable or inspection-only reaches train/val/test | `assign_splits`, `Clip._check_provenance` | `test_a_source_not_shown_independent_is_never_trained_or_scored_on` |
+| A sealed side is read only on purpose | `Demos.clips_in` raises `SealedError` without `unseal=True` | `test_a_sealed_side_is_read_only_on_purpose` |
 | An annotation is never attached to a window it was not made over | `_aligned` raises `AlignmentError` | `test_an_annotation_is_refused_when_the_masked_claim_or_the_history_disagrees` |
 | Splits are by whole recording | assignment is by group, hashed on `sha256(seed:group)` | `test_a_recording_is_never_on_both_sides`, `test_no_clip_and_no_group_appears_on_two_sides_over_many_random_fleets` |
 
@@ -358,10 +363,12 @@ uploads stay unsplittable until the cross-source duplicate check runs.
 
 ## The first dataset split: `s10-normal-v0` (proposed)
 
-`data/demos/splits/s10-normal-v0.json`, loaded with `Demos.load_split("s10-normal-v0")`. It is a **proposal**: `status:
-proposed` changes no source, `demos.splits` stay `inspection_only` for all four, the proposed sides are in `demos.proposed`,
-and no `train`/`val`/`test` iterator yields anything. A split file names a patch, a regime, its sources and the whole session
-groups on each side. The loader refuses:
+`data/demos/splits/s10-normal-v0.json`, loaded with `Demos.load_split("s10-normal-v0")`, is at `status: proposed`. A proposed
+split changes no source: each source's split is its own manifest's, and the split file's sides are in `demos.proposed`. **The
+train side is promoted in its sources' own manifests** (`split: train`). The lead did that on 2026-09-20 after the VUH-1326
+final re-check closed with promotion YES; the pre-promotion manifests are in `data/demos/backups/vods-pre-promotion-20260920`.
+So `observations("train")` yields the two train sessions. The reserved test broadcasts stay `inspection_only` and sealed, and
+validation is pending. A split file names a patch, a regime, its sources and the whole session groups on each side. The loader refuses:
 
 - a source of another patch or regime;
 - a group on two sides or on none, and a side group with no source;
@@ -372,6 +379,12 @@ Asking a pending side for anything (`observations`, `samples`, `clips_in`, `regi
 reason, so a consumer can never read an empty validation set as a complete one. `status: accepted` sets the sides, and only
 for sources whose own manifest allows it (`splittable: true`, `split` null or that side). Promotion is an edit to each source's
 manifest, never to the split file.
+
+**A sealed side is read only on purpose.** `sealed` in the split file (here `["test"]`) makes `clips_in`, `observations`,
+`samples` and `regimes` raise `SealedError` for that side. They also raise it for any split still holding a source the file puts
+on a sealed side: the reserved broadcasts are `inspection_only` today, so `observations("inspection_only")` raises too. The only
+way in is an explicit `unseal=True`, for the final evaluation. Accepting the split later therefore cannot make the test set
+iterable by default. That still needs every consumer to go through these calls: `policy/train.py`'s `TRAINABLE` lists `test`.
 
 Scope: Season 10, Version 20260911, `cooldowns: normal`. Excluded: the four April-May uploads (patch unknown), the guides (no
 loader manifest), and the two 60 s samples (not requested; each belongs to a train-side group).
@@ -418,12 +431,11 @@ slot.
 - **Maps are not recorded** anywhere (acquisition manifests, events, loader), so balance by map cannot be checked.
 - **Ults are rare**: 8 and 17 `ult_spent`, too few for an ult-use metric.
 
-Promotion is blocked on:
+`status: accepted` waits on:
 
-- the VUH-1326 independent re-check;
-- the co-lead's label spec;
-- validation filled from the four new broadcasts;
-- identifying the September uploads' source broadcast.
+- validation, filled from the four new broadcasts;
+- the test side's promotion, which comes only for the final evaluation, after every consumer honours the seal;
+- identifying the September uploads' source broadcast, before they can go on any side.
 
 Event signatures cannot identify a shared match: a quick check matched a May upload against a September broadcast.
 
@@ -448,7 +460,7 @@ Event signatures cannot identify a shared match: a quick check matched a May upl
 - **Not built:** video decoding, an annotation tool, event and annotation re-cutting on `trim`, verification of `alignment`,
   mapping `observed` to a patch, and sampling-weight code.
 
-Mutation checks: 38 hand-made breakages of the format 4, bridging, mask and provenance code (a guessed slot accepted, the
+Mutation checks: 46 hand-made breakages of the format 4, bridging, mask and provenance code (a guessed slot accepted, the
 fixed ult unrecognised, format 3 accepted, meta keys unchecked, the tap width ignored, a cut made soft, bridging off by
 default, a gap hiding the HUD only, `partial` hiding, annotator masks dropped, events read off masked frames, the regime or
 patch gate off, a basis unchecked, observed countdowns unchecked, an unsplittable clip hashed into a split or allowed an
@@ -456,4 +468,6 @@ explicit one, a run's manifest/meta.json clash ignored; for splits, a proposal t
 unchecked, a group on two sides, on none or with no source, the status unchecked, a pending side that answers, an empty side
 not declared pending, a pending side with groups, an unassigned group on a side or among the sources; for staleness and masks,
 the writer, the producer's keys or the recipe unchecked, masks looked up by exact millisecond, an unmatched or out-of-clip mask
-row passed silently, events checked against masks with no tolerance; a manifest's segments not compared with its events file's) each fail at least one test.
+row passed silently, events checked against masks with no tolerance; a manifest's segments not compared with its events file's; for sealing and refinements, a sealed side that answers, a sealed
+source answering from another split, `unseal` ignored, sealed names unchecked, the carve-out reopened, a segmenter manifest
+allowed to refine, any reason accepted as a refinement, a refinement allowed to move times) each fail at least one test.

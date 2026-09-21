@@ -12,7 +12,7 @@ import pytest
 
 from agent import demos
 from agent.demos import (AlignmentError, Demos, FormatError, LeakageError, Mask, Observation, PendingError, ProvenanceError, RegimeError,
-                         SplitError,
+                         SealedError, SplitError,
                          FrameRef, Event, Input)
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -49,6 +49,11 @@ META = dict(type="meta", format=4, source="x", layout="mk", frames=601, fps=10.0
 META.update({k: None for k in demos.producer_rule()["required_meta"] if k not in META})   # whatever else the producer now requires
 
 
+def events_file(path, segs, events=(), meta=None, pos=True):
+    """An events file as the producer writes it: meta, a segment line per segment, then events."""
+    jsonl(path, [meta or META] + [dict(type="segment", **s) for s in segs] + [with_pos(e) if pos else e for e in events])
+
+
 def with_pos(e):
     """An event as the format 4 extractor writes it: a named slot has the layout position it fired in (identity mapping here)."""
     return {**e, "slot_pos": e["slot"]} if e.get("slot") and "slot_pos" not in e else e
@@ -62,7 +67,7 @@ def make_vod(tmp, name="vodA", segs=SEGS, events=None, annotations=None, **kw):
     """Writes <name>.manifest.jsonl (and the events/annotation files it names). Returns the manifest path."""
     h = header(id=name, media={"kind": "video", "path": f"{name}.mp4"}, **kw)
     if events is not None:
-        jsonl(tmp / f"{name}.events.jsonl", [META] + [with_pos(e) for e in events])
+        events_file(tmp / f"{name}.events.jsonl", segs, events)
         h["events"] = f"{name}.events.jsonl"
     if annotations is not None:
         jsonl(tmp / f"{name}.annotations.jsonl", annotations)
@@ -194,6 +199,54 @@ def test_a_manifest_whose_segments_are_a_stale_superset_of_its_events_files_is_r
                       ([now[0], dict(now[1], ended_by="no_hud")], r"segment 1: manifest .*'no_hud'.* events .*'not_our_hero'")]:
         with pytest.raises(ProvenanceError, match=why):
             demos.write_manifest(tmp_path / "v.manifest.jsonl", header(events="v.events.jsonl", duration_s=60.0), segs)
+
+
+def test_an_events_file_without_segment_lines_is_compared_too(tmp_path):
+    """No carve-out: a manifest with segments over an events file with none is two records that disagree."""
+    jsonl(tmp_path / "v.events.jsonl", [META, with_pos(EVENTS[0])])
+    with pytest.raises(ProvenanceError, match="manifest's 3 segments are not its events file's 0"):
+        demos.write_manifest(tmp_path / "v.manifest.jsonl", header(events="v.events.jsonl"), SEGS)
+
+
+def test_an_annotator_may_only_name_a_coarse_reason_more_precisely(tmp_path):
+    segs = [dict(start_t=0.0, end_t=20.0, started_by="run_start", ended_by="not_our_hero"),
+            dict(start_t=30.0, end_t=50.0, started_by="hero_returned", ended_by="no_hud"),
+            dict(start_t=55.0, end_t=60.0, started_by="hud_returned", ended_by="run_end")]
+    events_file(tmp_path / "v.events.jsonl", segs)
+    refined = [dict(segs[0], ended_by="hero_swap"), dict(segs[1], ended_by="brb"), segs[2]]
+    mani = lambda rows, by: demos.write_manifest(tmp_path / "v.manifest.jsonl", header(events="v.events.jsonl", segments_from=by), rows)
+    assert [s.ended_by for s in mani(refined, "annotator").segments] == ["hero_swap", "brb", "run_end"]
+    for rows, by, why in [(refined, "segmenter", "segment 0: manifest .*hero_swap"),                     # only an annotator may refine
+                          ([dict(segs[0], ended_by="death"), *segs[1:]], "annotator", "segment 0"),       # not a refinement of it
+                          ([dict(segs[0], ended_by="brb"), *segs[1:]], "annotator", "segment 0"),         # a refinement of another reason
+                          ([dict(refined[0], end_t=19.0), *refined[1:]], "annotator", "segment 0"),       # times stay the segmenter's
+                          ([refined[0], dict(refined[1], started_by="respawn"), segs[2]], "annotator", "segment 1"),
+                          (refined[:2], "annotator", "manifest's 2 segments")]:
+        with pytest.raises(ProvenanceError, match=why):
+            mani(rows, by)
+
+
+def test_a_sealed_side_is_read_only_on_purpose(tmp_path):
+    spec = split_fleet(tmp_path, split="inspection_only")
+    d = Demos.load_split("s", root=tmp_path)
+    assert d.sealed == {"test": {"v2"}}
+    for call in (lambda: d.clips_in("test"), lambda: list(d.observations("test")), lambda: list(d.samples("test")),
+                 lambda: list(d.observations("inspection_only")), lambda: d.regimes("inspection_only")):  # v2 still sits there
+        with pytest.raises(SealedError, match=r"seals \['test'\]"):
+            call()
+    assert {c.id for c in d.clips_in("inspection_only", unseal=True)} == {"v0", "v1", "v2"}
+    assert {o.clip for o in d.observations("inspection_only", unseal=True, hz=0.2)} == {"v0", "v1", "v2"}
+    d = fresh(tmp_path, "acc")                                            # an accepted split: the test side is populated, still sealed
+    split_fleet(d, status="accepted")
+    got = Demos.load_split("s", root=d)
+    with pytest.raises(SealedError, match=r"would read \['v2'\]"):
+        list(got.samples("test"))
+    assert {s.observation.clip for s in got.samples("test", unseal=True, hz=0.2)} == {"v2"}
+    assert {o.clip for o in got.observations("train")} == {"v0"}           # the other sides answer as before
+    rewrite(tmp_path, spec, sealed=["holdout"])
+    with pytest.raises(FormatError, match="sealed \\['holdout'\\]"):
+        Demos.load_split("s", root=tmp_path)
+    assert Demos.load(tmp_path / "v2.manifest.jsonl").sealed == {}         # nothing is sealed outside a split file
 
 
 def test_a_manifest_regenerated_from_its_events_file_loads(tmp_path):
@@ -616,8 +669,9 @@ def test_events_are_intervals_and_a_pending_one_is_hindsight(tmp_path):
 def canary_run(tmp_path):
     """A recorder run whose rows and events carry their own time, so a leak names itself."""
     d = make_l4_run(tmp_path, "canary", seconds=30.0)
-    jsonl(d / "events.jsonl", [META] + [dict(kind="hp_lost", t_from=round(t, 2), t_to=round(t + 0.2, 2), before=250, after=f"after@{t + 0.2:.2f}")
-                                        for t in (2.0, 9.0, 14.9, 20.0, 27.0)])
+    events_file(d / "events.jsonl", [dict(start_t=0.0, end_t=29.95, started_by="run_start", ended_by="run_end")],
+                [dict(kind="hp_lost", t_from=round(t, 2), t_to=round(t + 0.2, 2), before=250, after=f"after@{t + 0.2:.2f}")
+                 for t in (2.0, 9.0, 14.9, 20.0, 27.0)])
     return d
 
 
@@ -921,7 +975,7 @@ def test_a_cast_at_an_unidentified_position_stays_null_through_every_window(tmp_
     """VUH-1326 finding 7: with no icon mapping for a position, the layout position must never become the ability's name."""
     cast = dict(kind="ability_cast", t_from=10.0, t_to=10.4, slot=None, slot_pos="teamup", amount=15, before="off", after=15)
     d = fresh(tmp_path, "null")
-    jsonl(d / "v.events.jsonl", [dict(META, slot_mapping={"swing": "swing"})] + [cast])
+    events_file(d / "v.events.jsonl", SEGS, [cast], dict(META, slot_mapping={"swing": "swing"}))
     got = Demos.load(demos.write_manifest(d / "v.manifest.jsonl", header(events="v.events.jsonl", split="train"), SEGS).path)
     seen = [e for o in got.observations("train") for e in o.events if e.kind == "ability_cast"]
     assert seen and all(e.slot is None and e.slot_pos == "teamup" for e in seen)
@@ -936,11 +990,11 @@ def test_a_guessed_ability_name_is_refused(tmp_path):
             ({"swing": "get_over_here"}, dict(slot="swing", slot_pos="swing"), "says 'get_over_here'"),               # rebound keys
             (MAPPING, dict(slot="swing"), "with no slot_pos")]):
         d = fresh(tmp_path, f"g{n}")
-        jsonl(d / "v.events.jsonl", [dict(META, slot_mapping=mapping), dict(cast, **extra)])
+        events_file(d / "v.events.jsonl", SEGS, [dict(cast, **extra)], dict(META, slot_mapping=mapping), pos=False)
         with pytest.raises(FormatError, match=f"names a guessed ability: .*{why}"):
             demos.write_manifest(d / "v.manifest.jsonl", header(events="v.events.jsonl"), SEGS)
     d = fresh(tmp_path, "ult")                                                         # the ult's position is fixed by the layout
-    jsonl(d / "v.events.jsonl", [dict(META, slot_mapping=None), dict(kind="ult_ready", t_from=5.0, t_to=5.1, slot="ult", slot_pos="ult")])
+    events_file(d / "v.events.jsonl", SEGS, [dict(kind="ult_ready", t_from=5.0, t_to=5.1, slot="ult", slot_pos="ult")], dict(META, slot_mapping=None))
     assert demos.write_manifest(d / "v.manifest.jsonl", header(events="v.events.jsonl"), SEGS).events[0].slot == "ult"
 
 
@@ -1020,7 +1074,7 @@ def test_every_provenance_field_is_required_and_a_claim_needs_a_basis(tmp_path):
             demos.write_manifest(p, header(**extra), SEGS)
     assert demos.read_manifest(make_vod(fresh(tmp_path, "o"), events=EVENTS, cooldowns_from="observed_cooldowns")).cooldowns == "normal"
     d = fresh(tmp_path, "off")                                                     # countdowns seen cannot back a claim of `off`
-    jsonl(d / "v.events.jsonl", [META])
+    events_file(d / "v.events.jsonl", SEGS)
     with pytest.raises(ProvenanceError, match="running countdowns prove normal"):
         demos.write_manifest(d / "v.manifest.jsonl", header(events="v.events.jsonl", cooldowns="off", cooldowns_from="observed_cooldowns"), SEGS)
 
@@ -1292,8 +1346,9 @@ def test_a_proposed_split_loads_by_name_and_promotes_nothing(tmp_path):
     split_fleet(tmp_path, split="inspection_only")
     d = Demos.load_split("s", root=tmp_path)
     assert d.proposed == {"v0": "train", "v1": "val", "v2": "test"} and set(d.splits.values()) == {"inspection_only"}
-    for side in ("train", "val", "test"):
+    for side in ("train", "val"):
         assert list(d.observations(side)) == []                        # a proposal yields nothing to a training iterator
+    assert list(d.observations("test", unseal=True)) == []
 
 
 def test_an_accepted_split_takes_effect_only_where_each_source_allows_it(tmp_path):
@@ -1348,13 +1403,20 @@ def test_a_pending_side_is_declared_empty_and_asking_it_for_anything_is_an_error
 
 @NO_DATA
 def test_the_first_season_10_split_is_a_proposal_with_the_reserved_sessions_sealed_as_test():
+    """Pins the state after the lead promoted the two train sessions in their own manifests (2026-09-20)."""
     d = Demos.load_split("s10-normal-v0")
-    assert d.split_spec["status"] == "proposed" and set(d.splits.values()) == {"inspection_only"}
-    groups = {s: {d.clips[c].group for c, x in d.proposed.items() if x == s} for s in ("train", "test")}
-    assert groups == {"train": {"twitch:2879354299", "twitch:2873352801"}, "test": {"twitch:2877719252", "twitch:2871472478"}}
-    assert d.split_spec["sealed"] == ["test"] and "val" in d.pending                    # validation is empty until acquired
-    with pytest.raises(PendingError):
+    train = {"daymr-2879354299-21660-900s", "reqmr-2873352801-1980-900s"}
+    reserved = {"daymr-2877719252-1800-900s", "reqmr-2871472478-5400-900s"}
+    assert d.split_spec["status"] == "proposed" and set(d.clips) == train | reserved
+    assert d.splits == {**{c: "train" for c in train}, **{c: "inspection_only" for c in reserved}}   # promotion is in the manifests
+    assert {c.id for c in d.clips_in("train")} == train and {o.clip for o in d.observations("train", hz=0.2)} == train
+    assert {d.clips[c].group for c in reserved} == {"twitch:2877719252", "twitch:2871472478"} and d.sealed == {"test": reserved}
+    for split in ("test", "inspection_only"):                                           # the reserved broadcasts are sealed
+        with pytest.raises(SealedError):
+            list(d.observations(split))
+    assert d.clips_in("test", unseal=True) == [] and {c.id for c in d.clips_in("inspection_only", unseal=True)} == reserved
+    with pytest.raises(PendingError):                                                    # validation is empty until acquired
         list(d.observations("val"))
     assert set(d.split_spec["unassigned"]) == {"youtube:d0C8RMBnFfA", "youtube:yjc51uOjKEQ"}   # on no side, validation included
-    assert all(d.clips[c].patch == "Season 10, Version 20260911" and d.clips[c].cooldowns == "normal" for c in d.proposed)
-    assert not any(d.clips[c].edited_upload for c in d.proposed)
+    assert not {"d0C8RMBnFfA", "yjc51uOjKEQ"} & set(d.clips)
+    assert all(c.patch == "Season 10, Version 20260911" and c.cooldowns == "normal" and not c.edited_upload for c in d.clips.values())

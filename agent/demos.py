@@ -52,6 +52,9 @@ STARTED_BY = ("run_start", "respawn", "killcam_over", "spectating_over", "scoreb
               "after_cut")
 ENDED_BY = ("run_end", "death", "killcam", "spectating", "scoreboard", "not_our_hero", "no_hud", "hard_cut",
             "hero_swap", "menu", "brb", "unreadable_hud")
+# The only change an annotator may make to the segmenter's segments (segments_from "annotator"): name a coarse ended_by more
+# precisely. Times, started_by and every other reason stay the segmenter's.
+REFINES = {"not_our_hero": ("hero_swap",), "no_hud": ("menu", "brb", "unreadable_hud")}
 # The events file the loader reads is the HUD lane's FORMAT 4 (docs/lanes/l2-hud.md, "Event stream format"): its meta line says
 # "format": 4. Any other format is refused, naming the file and both versions: format 1 claimed casts that never happened, 2 and 3
 # may name an ability by layout position (a guess) and know no editorial cut, so a stale file would train on what it is not.
@@ -125,6 +128,10 @@ class RegimeError(ValueError):
 
 class PendingError(SplitError):
     """A side of a dataset split is declared empty until sources are acquired for it: it has nothing to give yet."""
+
+
+class SealedError(SplitError):
+    """A sealed side of a dataset split (the final test set) was asked for without an explicit unseal=True."""
 
 
 class ProvenanceError(ValueError):
@@ -507,10 +514,13 @@ class Clip:
         self.events_meta = meta = _check_events_format(self._resolve(rel), rows)
         drawn = hud_segments([r for _, r in rows if r.get("type") == "segment"])
         mine = [dict(start_t=s.start_t, end_t=s.end_t, started_by=s.started_by, ended_by=s.ended_by) for s in self.segments]
-        if drawn and drawn != mine:
+        refined = self.header["segments_from"] == "annotator"
+        same = lambda a, b: a == b or (refined and {**a, "ended_by": b["ended_by"]} == b and a["ended_by"] in REFINES.get(b["ended_by"], ()))
+        if len(drawn) != len(mine) or not all(map(same, mine, drawn)):
             # A manifest copied from an older events file can hold a superset of today's segments, and then every event still lies
-            # inside one: only comparing the two records catches it.
-            n = next((n for n, (a, b) in enumerate(zip(mine, drawn)) if a != b), min(len(mine), len(drawn)))
+            # inside one: only comparing the two records catches it. An events file always carries its segment lines (the producer
+            # writes one per segment, none for a clip with none), so there is no file this comparison skips.
+            n = next((n for n, (a, b) in enumerate(zip(mine, drawn)) if not same(a, b)), min(len(mine), len(drawn)))
             at = lambda s: s[n] if n < len(s) else None
             raise ProvenanceError(f"{self.id}: the manifest's {len(mine)} segments are not its events file's {len(drawn)} ({rel}); first "
                                   f"difference at segment {n}: manifest {at(mine)}, events {at(drawn)}. Rewrite the manifest with "
@@ -783,6 +793,7 @@ class Demos:
         check_splits(clips, self.splits)
         self.min_segment_s, self.max_bridge_s, self.skipped = min_segment_s, max_bridge_s, []
         self.pending = {}   # side -> why it is empty, from a split file (load_split)
+        self.sealed = {}    # sealed side -> the clip ids a split file puts on it (load_split)
 
     def _skip(self, clip, t, reason):
         skip = Skipped(clip.id, t, reason)
@@ -853,15 +864,28 @@ class Demos:
             for c in clips:
                 c.split = side_of[c.group]
         demos = cls(clips, **kw)
+        sealed = set(spec.get("sealed") or ())
+        if not sealed <= set(SPLITS[:3]):
+            raise FormatError(f"{path}: sealed {sorted(sealed)} names a side that is not one of {SPLITS[:3]}")
         demos.split_spec, demos.proposed, demos.pending = spec, {c.id: side_of[c.group] for c in clips}, dict(pending)
+        demos.sealed = {s: {c for c, x in demos.proposed.items() if x == s} for s in sealed}
         return demos
 
-    def clips_in(self, split):
+    def clips_in(self, split, unseal=False):
+        """The clips of `split`. A pending side raises PendingError. A sealed side, or any split that holds a clip a split file put on
+        a sealed side (a reserved test source still inspection_only, say), raises SealedError unless the caller passes unseal=True:
+        the final test set is read on purpose or not at all."""
         if split not in SPLITS:
             raise ValueError(f"split must be one of {SPLITS}, not {split!r}")
         if split in self.pending:
             raise PendingError(f"side {split!r} of split {self.split_spec['name']!r} is pending, not empty-and-done: {self.pending[split]}")
-        return [c for c in self.clips.values() if self.splits[c.id] == split]
+        out = [c for c in self.clips.values() if self.splits[c.id] == split]
+        if not unseal:
+            held = sorted(c.id for c in out if any(c.id in ids for ids in self.sealed.values()))
+            if split in self.sealed or held:
+                raise SealedError(f"split {self.split_spec['name']!r} seals {sorted(self.sealed)}; asking for {split!r} would read "
+                                  f"{held or 'the sealed side'}. Pass unseal=True only for the final, deliberate evaluation")
+        return out
 
     def regimes(self, split):
         """The resource regimes present in a split, sorted."""
@@ -871,10 +895,10 @@ class Demos:
         """The game patches present in a split, sorted."""
         return sorted({c.patch for c in self.clips_in(split)})
 
-    def _clips(self, split, cooldowns, mix_regimes, patch=None, mix_patches=False):
+    def _clips(self, split, cooldowns, mix_regimes, patch=None, mix_patches=False, unseal=False):
         """The clips of `split` to cut windows from: only those of the named regime(s) and patch(es), and never a mix of either
         unless it was asked for."""
-        clips = self.clips_in(split)
+        clips = self.clips_in(split, unseal)
         for name, want, allowed, mix in (("cooldowns", cooldowns, COOLDOWNS, mix_regimes), ("patch", patch, None, mix_patches)):
             if want is not None:
                 want = (want,) if isinstance(want, str) else tuple(want)
@@ -1008,22 +1032,24 @@ class Demos:
         return tuple(labels)
 
     def observations(self, split, *, history_s=5.0, frame_hz=5.0, hz=5.0, decisions="grid", across_overlays=True,
-                     cooldowns=None, mix_regimes=False, patch=None, mix_patches=False):
+                     cooldowns=None, mix_regimes=False, patch=None, mix_patches=False, unseal=False):
         """What a policy may see, one Observation per decision time, from the clips of `split`. Nothing here holds a label,
         an outcome, or any datum later than the observation's own t. A window spans a scoreboard gap no wider than max_bridge_s,
         whose frames come back `masked` (across_overlays=False stops it at every boundary instead); death, killcam, spectating,
         a cut and the rest are never spanned. `cooldowns` / `patch` keep only clips of that regime / patch; several of either in
-        one split raise RegimeError unless `mix_regimes` / `mix_patches`."""
-        for clip in self._clips(split, cooldowns, mix_regimes, patch, mix_patches):
+        one split raise RegimeError unless `mix_regimes` / `mix_patches`. A sealed side needs `unseal=True` (see clips_in)."""
+        for clip in self._clips(split, cooldowns, mix_regimes, patch, mix_patches, unseal):
             for seg, t in self._decisions(clip, decisions, hz):
                 yield self._observe(clip, seg, t, history_s, frame_hz, across_overlays)
 
     def samples(self, split, *, history_s=5.0, frame_hz=5.0, hz=5.0, decisions="grid", outcome_s=5.0, label_s=0.5,
-                hindsight=False, across_overlays=True, cooldowns=None, mix_regimes=False, patch=None, mix_patches=False):
+                hindsight=False, across_overlays=True, cooldowns=None, mix_regimes=False, patch=None, mix_patches=False,
+                unseal=False):
         """Observations with their labels, and with `hindsight=True` the outcome window and outcome reviews too. Raises
         AlignmentError for an annotation whose declared context this window would not reproduce (see `_aligned`), and RegimeError
-        for a split that mixes resource regimes or patches unless one is picked or the mix is allowed."""
-        for clip in self._clips(split, cooldowns, mix_regimes, patch, mix_patches):
+        for a split that mixes resource regimes or patches unless one is picked or the mix is allowed, and SealedError for a sealed
+        side without `unseal=True`."""
+        for clip in self._clips(split, cooldowns, mix_regimes, patch, mix_patches, unseal):
             for seg, t in self._decisions(clip, decisions, hz):
                 obs, labels = self._observe(clip, seg, t, history_s, frame_hz, across_overlays), self._labels(clip, seg, t, label_s)
                 self._aligned(clip, obs, labels)
