@@ -40,6 +40,10 @@ LABELS = {
     # of x 700, where the door's edge is while the Luna bot stands left of the crop (id 44, x 327-600)
     # the plaza side of the door at the left until 3.9 s; then a box 60 px+ is a bot; the 30-42 px boxes are robot dummies far down the
     # shooting lane (native frames 000096 and the small-box sheet), labelled "small" below
+    "plaza30": dict(door=[(26.8, 28.05, 0, 1000)], bot_after=0.0, bot_h=60),
+    # the plaza side of the door at the left of the view 26.8-28.05 s (id 70, whole-frame box centred x 568) while the respawned Luna bot
+    # comes in at the right (id 71, x 1612); otherwise a box 60 px+ is the Luna bot or a fragment of her at point blank (62 and 97 px,
+    # ids 44 45); the 54 px box at the top right at 14.1-15.3 s (id 25) is a far dummy: "other" (above the 47 px cutoff)
 }
 SMALL_H = 47          # px at 1440p: brain.RANGES.reach_h (40 m). A box this size or less outside the door and junk windows is "small": on the
                       # four runs mostly the lane's dummies ~45 m off, some scenery; past the 40 m engagement cap either way
