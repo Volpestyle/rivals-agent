@@ -22,8 +22,12 @@ from dataclasses import replace  # noqa: E402
 import pytest  # noqa: E402
 
 # Local-only: the demo clips are never committed, so anything that reads one
-# skips when it is absent rather than failing.
-DAY_CLIP = ROOT / "data/demos/samples/daymr-2879354299-21600-60s.mp4"
+# skips when it is absent rather than failing. RIVALS_DATA points a worktree,
+# which has no data/, at a checkout's.
+import os as _os_env  # noqa: E402
+
+DATA = Path(_os_env.environ.get("RIVALS_DATA", ROOT / "data"))
+DAY_CLIP = DATA / "demos/samples/daymr-2879354299-21600-60s.mp4"
 
 SLOTS = ("teamup", "swing", "get_over_here", "uppercut")
 
@@ -548,7 +552,7 @@ def test_from_video_samples_an_exact_window_and_records_how(tmp_path):
     assert got["frames"] == 10                       # 1 s at 10 Hz, exactly
     assert abs(meta["pts_origin_s"] - 1.0) < 0.02    # source time of the first frame
     assert meta["recipe"] == {"video": str(video), "hz": 10, "start": 1.0,
-                              "duration": 1.0, "layout": "mk"}
+                              "duration": 1.0, "layout": "mk", "patch": None, "patch_from": "none"}
     assert meta["format"] == FORMAT_VERSION and meta["cuts"] is not None
     assert check(tmp_path / "events") == []
     assert not any((tmp_path / "work").iterdir())    # no frames left behind
@@ -559,9 +563,9 @@ def test_the_demonstration_directory_holds_one_format_throughout():
     that would be refused. Local data only -- skips where it is absent."""
     import pytest
 
-    from perception.events import EVENTS_DIR, check
+    from perception.events import check
 
-    root = ROOT / EVENTS_DIR
+    root = DATA / "demos/events"
     if not root.exists():
         pytest.skip("no local demonstration events")
     stale = check(root)
@@ -571,7 +575,7 @@ def test_the_demonstration_directory_holds_one_format_throughout():
 
 # --- another hero passing as ours --------------------------------------------
 
-STRANGE_VOD = ROOT / "data/demos/vods/daymr-2879354299-21660-900s.mp4"
+STRANGE_VOD = DATA / "demos/vods/daymr-2879354299-21660-900s.mp4"
 
 
 def _vod_frame(path, seconds):
@@ -611,7 +615,7 @@ def test_the_strange_stretch_is_no_longer_a_play_segment():
 
     import pytest
 
-    path = ROOT / "data/demos/events/sections/daymr-2879354299-21660-900s.jsonl"
+    path = DATA / "demos/events/sections/daymr-2879354299-21660-900s.jsonl"
     if not path.exists():
         pytest.skip("retained section events not on this machine")
     lines = [json.loads(l) for l in path.read_text().splitlines() if l.strip()]
@@ -1577,6 +1581,11 @@ def test_native_mk_charge_badges_read_across_the_uppercut_decrements():
                      (721.4, 721.8), (748.9, 749.0), (759.0, 759.1)):
         assert hud.read_charges(_native(src, two), mk.slot_cx["uppercut"], mk) == 2, two
         assert hud.read_charges(_native(src, one), mk.slot_cx["uppercut"], mk) == 1, one
+    # A "2" with a bright emote band merged into its digit is not a "1" (Req
+    # uppercut 237.5-240.1 and 443.0-444.5: every disc-fallback "1" there).
+    req = "reqmr-2873352801-1980-900s"
+    for t in (237.5, 238.9, 240.1, 250.7, 443.0, 443.9, 444.5):
+        assert hud.read_charges(_native(req, t), mk.slot_cx["uppercut"], mk) in (None, 2), t
     # Chat over the badge ("for some 1v1s") is not a charge count.
     assert hud.read_charges(_native("reqmr-2873352801-1980-900s", 165.0), mk.slot_cx["uppercut"], mk) is None
 
@@ -1617,13 +1626,14 @@ def test_prefix_invariant_on_every_real_segment(src):
     """Every prefix of every own-play segment of both train sections, and the
     whole source cut at tenths: the events known inside a prefix are the
     whole's, field for field, with the reference kit on both sides."""
-    from perception.events import KITS, KIT_REFERENCE, ceilings, charge_maxima, durations
+    from perception.events import KITS, KIT_REFERENCE, ceilings, charge_maxima, durations, variant_sets
 
     rows, mapping = _native_reads(src)
     spans = durations(KITS[KIT_REFERENCE], mapping)
     kw = dict(mapping=mapping, timers={p: f for p, (f, _) in spans.items() if f},
               locks={p: l for p, (_, l) in spans.items() if l}, tops=ceilings(KITS[KIT_REFERENCE], mapping),
-              maxes=charge_maxima(KITS[KIT_REFERENCE], mapping))
+              maxes=charge_maxima(KITS[KIT_REFERENCE], mapping),
+              variants=variant_sets(KITS[KIT_REFERENCE], mapping))
     by_i = {r[0]: (r[0], r[1], r[2], r[5]) for r in rows}
     casts = 0
     for seg in segment(rows):
@@ -1730,3 +1740,115 @@ def test_an_impossible_badge_count_places_no_cast_either():
     assert rs[0][2].abilities['swing'][1] == 7       # the raw read is kept, not clamped
     good, _ = casts(3)
     assert len(good) == 1 and good[0].t_from <= 2.2, good
+
+
+def test_the_written_file_records_the_kit_it_used_and_regeneration_keeps_it(tmp_path):
+    """One resolved patch drives extraction, the meta line and the recipe, and
+    regenerate replays it as recorded. Known (from the manifest), missing,
+    unrecognised, and an explicit override that differs from the manifest --
+    each written, then rebuilt after the manifest changes under it."""
+    import shutil
+    import subprocess
+
+    if not shutil.which("ffmpeg"):
+        pytest.skip("ffmpeg not installed")
+    from perception.events import KIT_REFERENCE, from_video, regenerate
+
+    def video(name, manifest_patch):
+        v = tmp_path / f"{name}.mp4"
+        subprocess.run(["ffmpeg", "-v", "error", "-f", "lavfi", "-i", "testsrc=size=320x180:rate=10",
+                        "-t", "1", "-pix_fmt", "yuv420p", str(v), "-y"], check=True)
+        if manifest_patch is not None:
+            v.with_suffix(".manifest.jsonl").write_text(_json.dumps({"type": "clip", "patch": manifest_patch}) + "\n")
+        return v
+
+    def meta(path):
+        return _json.loads(path.read_text().splitlines()[0])
+
+    old = "Season 10, Version 20260903"
+    cases = {  # name: (manifest patch, argument, expected patch, patch_from, table)
+        "known": (KIT_REFERENCE, None, KIT_REFERENCE, "manifest", KIT_REFERENCE),
+        "missing": (None, None, None, "none", None),
+        "unrecognised": ("Season 99, Version 1", None, "Season 99, Version 1", "manifest", None),
+        "override": (KIT_REFERENCE, old, old, "argument", old),
+    }
+    out = tmp_path / "events"
+    for name, (manifest, arg, patch, how, table) in cases.items():
+        v = video(name, manifest)
+        from_video(v, out / f"{name}.jsonl", hz=10, layout="mk", workdir=tmp_path / "w", patch=arg)
+        m = meta(out / f"{name}.jsonl")
+        assert (m["kit"]["patch"], m["kit"]["patch_from"], m["kit"]["table"]) == (patch, how, table), (name, m["kit"])
+        assert (m["recipe"]["patch"], m["recipe"]["patch_from"]) == (patch, how), name
+        if table is None:
+            assert not [l for l in (out / f"{name}.jsonl").read_text().splitlines()[1:]
+                        if '"ability_cast"' in l], name
+        # The manifest changes after the file was written; the rebuild must not follow it.
+        v.with_suffix(".manifest.jsonl").write_text(_json.dumps({"type": "clip", "patch": old}) + "\n")
+    regenerate(out, everything=True)
+    for name, (manifest, arg, patch, how, table) in cases.items():
+        m = meta(out / f"{name}.jsonl")
+        assert (m["kit"]["patch"], m["kit"]["patch_from"], m["kit"]["table"]) == (patch, how, table), \
+            ("after regenerate", name, m["kit"])
+
+
+def test_an_unrecognised_patch_has_no_kit():
+    from perception.events import kit_for
+
+    assert kit_for("Season 99, Version 1") is None and kit_for(None) is None
+
+
+
+def test_a_charged_use_is_placed_by_the_latest_decrement():
+    """Two decrements before the countdown: the use behind it is no earlier
+    than the later one (every use takes a charge)."""
+    vals = [None] * 60 + [1, 1] + [None] * 10
+    charges = [3] * 10 + [2] * 30 + [1] * 32
+    es = extract_one(_slot_reads(vals, slot="swing", charges=charges), mapping={"swing": "swing"})
+    (cast,) = [e for e in es if e.kind == "ability_cast"]
+    assert cast.t_from == 3.9, cast                   # the 2 -> 1 drop, not the 3 -> 2 at 0.9
+
+
+def test_an_unknown_team_up_variant_is_bounded_by_the_union_of_its_candidates():
+    """Symbiote Bond 15 s or Parker Power-Up 10 s, which one unknown. A timer
+    first read 15 then 15 excludes the 10 s candidate by its own reads (it
+    would start after the first read): (t - 0.9, t], still uncertain. One
+    first read 9 admits both, each placed on its own, and the event encloses
+    both -- never their intersection; where one would start before the segment,
+    the other alone bounds the in-segment part. Unknown kit: broad, from the
+    segment start."""
+    def run(first, kit=KIT, lead=120):
+        vals = [None] * lead + [first, first] + [None] * 40
+        rs = [(*r, True) for r in _slot_reads(vals, slot="teamup")]
+        es, _ = extract(rs, mapping={"teamup": "teamup"}, kit=kit)
+        return [e for e in es if e.kind.startswith("ability_")]
+    (e,) = run(15)
+    assert e.kind == "ability_uncertain" and (e.t_from, e.t_to) == (11.1, 12.0), e
+    (e,) = run(9)                                 # 15 s: (5.1, 6.15]; 10 s: (10.1, 11.15] -> enclosing
+    assert e.kind == "ability_uncertain" and (e.t_from, e.t_to) == (5.1, 11.2), e
+    (e,) = run(9, lead=30)                        # 15 s starts before the segment; 10 s: (1.1, 2.15]
+    assert e.kind == "ability_uncertain" and (e.t_from, e.t_to) == (1.1, 2.2), e
+    (e,) = run(15, kit=None)
+    assert e.kind == "ability_uncertain" and e.t_from == 0.0, e
+
+
+
+def test_a_decrement_after_the_countdown_appeared_does_not_place_its_use():
+    """A drop whose badge was still full after the countdown's first read is a
+    later use, not this countdown's: it bounds nothing here. The earlier drop
+    does."""
+    vals = [None] * 10 + [5] + [None] * 9 + [4] + [None] * 20
+    charges = [3] * 5 + [2] * 8 + [1] * 28
+    es = extract_one(_slot_reads(vals, slot="swing", charges=charges), mapping={"swing": "swing"})
+    (cast,) = [e for e in es if e.kind == "ability_cast"]
+    assert (cast.t_from, cast.t_to) == (0.4, 1.0), cast
+
+
+def test_an_incomplete_variant_set_bounds_nothing():
+    import copy
+
+    kit = copy.deepcopy(KIT)
+    kit["teamup"]["variants_complete"] = False
+    vals = [None] * 120 + [15, 15] + [None] * 40
+    es, _ = extract([(*r, True) for r in _slot_reads(vals, slot="teamup")], mapping={"teamup": "teamup"}, kit=kit)
+    (e,) = [e for e in es if e.kind.startswith("ability_")]
+    assert e.kind == "ability_uncertain" and e.t_from == 0.0, e

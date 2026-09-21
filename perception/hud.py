@@ -1226,13 +1226,21 @@ def read_charges(frame, cx, layout=PAD) -> int | None:
     if s != 1.0:
         img = cv2.resize(img, None, fx=s, fy=s, interpolation=cv2.INTER_CUBIC)
     for other in (_disc_badge, _lone_badge_digit):
-        n = _badge_number(other(img))
+        n = _badge_number(other(img), max_aspect=DIGIT_MAX_ASPECT)
         if n is not None:
             return n
     return None
 
 
-def _badge_number(found):
+# A badge digit is 9-12 px wide against 18-19 high. A wider blob in a fallback
+# read is the digit merged with something bright beside it: a Twitch emote band
+# abutting the badge read a "2" as "1" on all 37 Req uppercut disc reads of "1"
+# (237.5-240.1, 250.7, 443.0-444.5). The census of every fallback read: this
+# rejects those 37 and one correct "2" (Day 807.7, a badge fading in).
+DIGIT_MAX_ASPECT = 0.75
+
+
+def _badge_number(found, max_aspect=None):
     if found is None:
         return None
     mask, disc_h = found
@@ -1240,6 +1248,8 @@ def _badge_number(found):
     # the ring that survived, not a glyph, and must not be read as one.
     glyphs = [g for g in _glyphs(mask, BADGE_SIZE, min_area=25)
               if g[0][3] >= 0.45 * disc_h]
+    if max_aspect is not None and any(g[0][2] > max_aspect * g[0][3] for g in glyphs):
+        return None
     return _number(glyphs) if glyphs else None
 
 

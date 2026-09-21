@@ -101,8 +101,9 @@ SHIELD_WINDOW = 3   # frames apart that an hp and a max-hp change may still be o
 #    slot_unavailable / slot_available; the ult's icon too, unless its meter
 #    proves a spend or a refill. hp_lost / hp_gained carry `cause`: damage / heal
 #    only with max hp read unchanged on each side of the change, else unknown.
-#    The meta line gains `kit` and `timer_lengths` (observed tops, a report);
-#    segment lines gain `hero_weak_frames`.
+#    The meta line gains `kit` and `timer_lengths` (observed tops, a report),
+#    and its `recipe` the resolved `patch` and `patch_from`; segment lines gain
+#    `hero_weak_frames`.
 FORMAT_VERSION = 5
 REQUIRED_META = ("recipe", "cut_times", "observed", "slot_mapping", "writer",
                  "container_start_s", "stream_start_s", "timer_lengths", "kit")
@@ -895,7 +896,7 @@ def _despike(values, damaged=None, max_hp=None):
 
 
 def extract_one(reads, debounce=None, seg_index=0, mapping=None, timers=None, locks=None,
-                alarm=None, lag=0, clock=None, closed_i=None, tops=None, maxes=None):
+                alarm=None, lag=0, clock=None, closed_i=None, tops=None, maxes=None, variants=None):
     """[Event] for a single segment of (i, t, Hud) reads, in time order.
 
     `timers` is {position: full cooldown (one-charge) or recharge (charged)}
@@ -957,7 +958,8 @@ def extract_one(reads, debounce=None, seg_index=0, mapping=None, timers=None, lo
     for pos in positions:
         ability = mapping.get(pos) if mapping else None
         events.extend(_timer_events(reads, pos, ability, (timers or {}).get(pos), seg_index,
-                                    (locks or {}).get(pos), alarm, (tops or {}).get(pos), maxes))
+                                    (locks or {}).get(pos), alarm, (tops or {}).get(pos), maxes,
+                                    (variants or {}).get(pos)))
     events = _merge_shield(events)
     clock = clock or _clock(reads)
     out = []
@@ -1065,7 +1067,7 @@ KITS = {
         "get_over_here": {"full": 8.0},
         "swing": {"recharge": 6.0, "lock": None, "charges": 3},
         "uppercut": {"recharge": 6.0, "lock": 1.0, "charges": 2},
-        "teamup": {"full": None, "variants": TEAMUP_VARIANTS_20260911},
+        "teamup": {"full": None, "variants": TEAMUP_VARIANTS_20260911, "variants_complete": True},
     },
     # The balance post for 20260911 changed only Amazing Combo's lock 2 -> 1 s
     # and Parker Power-Up 15 -> 10 s; 20260903 changed nothing for Spider-Man.
@@ -1073,7 +1075,8 @@ KITS = {
         "get_over_here": {"full": 8.0},
         "swing": {"recharge": 6.0, "lock": None, "charges": 3},
         "uppercut": {"recharge": 6.0, "lock": 2.0, "charges": 2},
-        "teamup": {"full": None, "variants": {"symbiote_bond": 15.0, "parker_power_up": 15.0}},
+        "teamup": {"full": None, "variants": {"symbiote_bond": 15.0, "parker_power_up": 15.0},
+                   "variants_complete": True},
     },
 }
 KIT_REFERENCE = "Season 10, Version 20260911"   # the patch docs/spiderman-kit.md describes
@@ -1092,6 +1095,19 @@ def durations(kit, mapping):
     for pos, ability in (mapping or {}).items():
         spec = (kit or {}).get(ability) or {}
         out[pos] = (spec.get("recharge" if ability in CHARGED else "full"), spec.get("lock"))
+    return out
+
+
+def variant_sets(kit, mapping):
+    """{position: the candidate full lengths} for a one-charge slot whose length
+    depends on an unidentified variant -- only where the kit is known and its
+    variant set is complete (Spider-Man's team-ups: Symbiote Bond with Venom,
+    Parker Power-Up with Peni Parker, docs/spiderman-kit.md)."""
+    out = {}
+    for pos, ability in (mapping or {}).items():
+        spec = (kit or {}).get(ability) or {}
+        if spec.get("full") is None and spec.get("variants") and spec.get("variants_complete"):
+            out[pos] = sorted(set(spec["variants"].values()))
     return out
 
 
@@ -1151,7 +1167,7 @@ def _eligible(reads, segments):
 
 
 def _timer_events(reads, pos, ability, full, seg_index, lock=None, alarm=None, ceiling=None,
-                  maxes=None):
+                  maxes=None, variants=None):
     """ability_cast / ability_uncertain / cooldown_ended for one slot over one segment.
 
     One forward pass over the frames, deciding each event at the first frame
@@ -1268,6 +1284,8 @@ def _timer_events(reads, pos, ability, full, seg_index, lock=None, alarm=None, c
                 kind, lower, upper = "ability_uncertain", seg_start, tm["t"]
             elif ability in CHARGED:
                 kind, lower, upper = _classify_charged(tm, prev, seq, full, lock, seg_start)
+            elif full is None and variants:
+                kind, lower, upper = _classify_variants(tm, prev, variants, seg_start)
             else:
                 kind, lower, upper = _classify_timer(tm, prev, full, seg_start)
                 # A timer the kit cannot produce, first read while the previous
@@ -1318,6 +1336,39 @@ def _classify_timer(tm, prev, full, seg_start):
     return "ability_cast", lower, max(lower, upper)
 
 
+def _classify_variants(tm, prev, variants, seg_start):
+    """(kind, lower, upper) for a one-charge timer whose length is one of
+    `variants`, which one unknown. Each candidate is evaluated on its own and
+    the in-segment occurrence intervals kept are UNIONED (their enclosing
+    interval): never intersected, never the shortest taken. A candidate is
+    dropped when the timer's own confirmed reads exclude it -- a read of 15
+    puts the start after the first read for a 10 s variant -- or when it would
+    start before the previous timer ended. The kind stays ability_uncertain
+    whatever remains: the variant is not identified. With no candidate
+    placing a use in the segment -- each starts before it, or is the running
+    one continuing -- nothing; with every candidate excluded by the data, the
+    broad interval, as for an unknown length."""
+    lo, t = _exact(tm)[0], tm["t"]
+    kept, elsewhere = [], False
+    for f in variants:
+        s_lo, s_hi = lo - f, min(t, tm["hi"] - f)
+        if s_lo > s_hi + TIMER_EPS:
+            continue                                        # excluded by its own reads
+        if s_hi < seg_start - TIMER_EPS:
+            elsewhere = True                                # started before the segment
+            continue
+        if prev is not None and s_hi < prev["lo"] - TIMER_EPS:
+            elsewhere = True                                # the running cooldown continuing
+            continue
+        kept.append((max(s_lo, seg_start, prev["lo"] if prev else seg_start), s_hi))
+    if kept:
+        return "ability_uncertain", min(a for a, _ in kept), max(max(a, b) for a, b in kept)
+    if elsewhere:
+        return None, None, None
+    broad = max(seg_start, prev["lo"]) if prev is not None else seg_start
+    return "ability_uncertain", broad, t
+
+
 def _classify_charged(tm, prev, seq, full, lock, seg_start):
     """A charged slot's newly visible countdown: (kind, lower, upper).
 
@@ -1355,7 +1406,11 @@ def _classify_charged(tm, prev, seq, full, lock, seg_start):
             else:
                 runs.append([sv[4], sv[1], sv[1], 1])
     steady = [x for x in runs if x[3] >= TIMER_CONFIRM]
-    drops = [a[2] for a, b in zip(steady, steady[1:]) if b[0] < a[0] and b[1] <= tm["t"]]
+    # A decrement counts once confirmed by the classification frame, provided
+    # its last pre-drop read came before the countdown's first: the badge still
+    # full then means the countdown's use had not happened yet.
+    drops = [a[2] for a, b in zip(steady, steady[1:])
+             if b[0] < a[0] and a[2] < tm["t"] and b[1] <= seq[tm["last"]][1]]
     if drops:
         bounds.append(drops[-1])
     if lock is not None:
@@ -1411,7 +1466,7 @@ def _merge_shield(events):
 SEG_LAG = 12   # frames: the longest a frame's segment membership can still change (see _steady)
 
 
-def extract(reads, debounce=None, mapping=None, kit=None, alarm=None):
+def extract(reads, debounce=None, mapping=None, kit=None, alarm=None, used=None):
     """Segment the run, then pull events inside each segment.
 
     `reads` are (i, t, Hud, playing). Returns (events, segments); channels are
@@ -1425,6 +1480,8 @@ def extract(reads, debounce=None, mapping=None, kit=None, alarm=None):
     timers = {p: f for p, (f, _) in spans.items() if f is not None}
     locks = {p: l for p, (_, l) in spans.items() if l is not None}
     alarm = {} if alarm is None else alarm     # filled with kit contradictions, for the caller
+    if used is not None:                       # what drove this run, for the meta line (dump)
+        used.update(kit=kit, alarms=alarm)
     clock = _clock(reads)
     by_i = {r[0]: (r[0], r[1], r[2], r[5] if len(r) > 5 else None) for r in reads}
     order = [r[0] for r in reads]
@@ -1435,6 +1492,7 @@ def extract(reads, debounce=None, mapping=None, kit=None, alarm=None):
         events.extend(extract_one(inside, debounce, seg_index=n, mapping=mapping, timers=timers,
                                   locks=locks, alarm=alarm, lag=SEG_LAG, clock=clock,
                                   tops=ceilings(kit, mapping), maxes=charge_maxima(kit, mapping),
+                                  variants=variant_sets(kit, mapping),
                                   closed_i=after if seg.ended_by != "run_end" else None))
     events.sort(key=lambda e: (e.t_to, e.kind))
     counted = {e.segment for e in events if e.kind == "ability_cast"}
@@ -1812,21 +1870,42 @@ def patch_for(video):
     return None if patch in (None, "unknown") else patch
 
 
-def kit_meta(patch, kit, mapping, alarm, patch_from):
-    """The meta line's `kit` record, and a loud warning when there is none."""
+def resolve_patch(video, patch=None, patch_from=None):
+    """{patch, patch_from, manifest_patch}: the one resolution of which patch
+    decides a source's mechanics. An explicit `patch` overrides the manifest
+    ("argument"); else the manifest's ("manifest"); else none ("none"). A
+    recorded resolution replayed by regenerate passes `patch_from` too, and is
+    taken as recorded -- the manifest is not consulted again, so editing it
+    cannot silently change a rebuilt file."""
+    manifest = patch_for(video)
+    if patch_from is not None:
+        return {"patch": patch, "patch_from": patch_from, "manifest_patch": manifest}
+    if patch is not None:
+        return {"patch": patch, "patch_from": "argument", "manifest_patch": manifest}
+    return {"patch": manifest, "patch_from": "manifest" if manifest else "none",
+            "manifest_patch": manifest}
+
+
+def kit_meta(resolved, used, mapping):
+    """The meta line's `kit` record, from the resolution and the kit extract()
+    actually used, and a loud warning when there was none."""
+    kit, alarm = used.get("kit"), used.get("alarms") or {}
+    table = next((name for name, k in KITS.items() if k is kit), None)
+    patch, patch_from = resolved.get("patch"), resolved.get("patch_from")
     if kit is None:
         print(f"  WARNING: no kit for patch {patch!r} ({patch_from}): every timer-derived "
               "event is written ability_uncertain", file=sys.stderr)
     for pos, a in alarm.items():
         print(f"  WARNING: {pos}'s countdown read {a['read']} ticking at t={a['t']}, longer "
               f"than the kit's {a['kit']}: from there its uses are uncertain", file=sys.stderr)
-    return {"patch": patch, "patch_from": patch_from, "table": patch if kit is not None else None,
+    return {"patch": patch, "patch_from": patch_from, "manifest_patch": resolved.get("manifest_patch"),
+            "table": table,
             "durations": {p: {"length": f, "lock": l} for p, (f, l) in durations(kit, mapping).items()},
             "alarms": alarm}
 
 
 def from_video(video, out, hz=10.0, start=None, duration=None, layout="mk",
-               workdir=None, progress=None, patch=None):
+               workdir=None, progress=None, patch=None, patch_from=None):
     """A video (or a window of one) to an events file, recording its recipe.
 
     This is the one path demonstration files are made by. Everything needed to
@@ -1857,17 +1936,18 @@ def from_video(video, out, hz=10.0, start=None, duration=None, layout="mk",
         lay = LAYOUTS[layout]
         reads = read_run(run_dir, progress=progress, layout=lay)
         mapping = _mapping_for(run_dir, lay, len(reads))
-        patch_from = "argument" if patch else "manifest"
-        patch = patch or patch_for(video)
-        kit, alarm = kit_for(patch), {}
-        events, segments = extract(reads, mapping=mapping, kit=kit, alarm=alarm)
+        resolved = resolve_patch(video, patch, patch_from)
+        used = {}
+        events, segments = extract(reads, mapping=mapping, kit=kit_for(resolved["patch"]), used=used)
+        # The resolved patch is part of the recipe: regenerate replays it as
+        # recorded, override and all.
         recipe = {"video": str(video), "hz": hz, "start": start,
-                  "duration": duration, "layout": layout}
+                  "duration": duration, "layout": layout,
+                  "patch": resolved["patch"], "patch_from": resolved["patch_from"]}
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(dump(events, segments, reads, layout=layout, source=out.stem,
                             mapping=mapping, pts_origin=origin, recipe=recipe,
-                            starts=probe_starts(video),
-                            kit=kit_meta(patch, kit, mapping, alarm, patch_from)))
+                            starts=probe_starts(video), kit=kit_meta(resolved, used, mapping)))
     finally:
         shutil.rmtree(run_dir, ignore_errors=True)
     return {"out": str(out), "frames": len(reads), "events": len(events),
@@ -1915,8 +1995,11 @@ def regenerate(root=EVENTS_DIR, everything=False, progress=None):
             orphans.append(str(path))
             continue
         print(f"  regenerating {path}", file=sys.stderr)
+        # A recipe that recorded its patch is replayed exactly; one from before
+        # patches were recorded resolves afresh (and records the result).
         done.append(from_video(recipe["video"], path, recipe["hz"], recipe.get("start"),
-                               recipe.get("duration"), recipe["layout"], progress=progress))
+                               recipe.get("duration"), recipe["layout"], progress=progress,
+                               patch=recipe.get("patch"), patch_from=recipe.get("patch_from")))
     return {"regenerated": done, "no_recipe": orphans}
 
 
@@ -1984,15 +2067,16 @@ def main(argv=None):
         print(f"  {len(cuts)} cuts at score >= {CUT_SCORE}", file=sys.stderr)
     reads = read_run(a.run_dir, a.limit, a.progress or None, layout)
     mapping = _mapping_for(a.run_dir, layout, len(reads))
-    kit, alarm = kit_for(a.patch), {}
-    events, segments = extract(reads, mapping=mapping, kit=kit, alarm=alarm)
+    used = {}
+    events, segments = extract(reads, mapping=mapping, kit=kit_for(a.patch), used=used)
     out = Path(a.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     # The clip stem, not the frame directory: that is a scratch path on whoever
     # ran this, and the stem is what a manifest joins on.
     out.write_text(dump(events, segments, reads, layout=a.layout, source=out.stem,
                         mapping=mapping, pts_origin=a.pts_origin,
-                        kit=kit_meta(a.patch, kit, mapping, alarm, "argument")))
+                        kit=kit_meta({"patch": a.patch, "patch_from": "argument" if a.patch else "none"},
+                                     used, mapping)))
     summary = segment_summary(segments)
     print(json.dumps({"run": str(a.run_dir), "layout": a.layout,
                       "pts_origin_s": a.pts_origin,

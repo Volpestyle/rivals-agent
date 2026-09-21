@@ -1054,6 +1054,22 @@ centre — each only when the one before reads nothing, so no existing read
 changes. A lone digit must be the only digit-sized shape in the badge box:
 Twitch chat ("for some 1v1s", Req 163.9–167.2) read as badges before that rule.
 
+**A fallback digit must be digit-shaped** (width ≤ 0.75 × height; a badge
+digit is 9-12 px wide by 18-19 high). A bright Twitch emote band abutting a
+"2" merged into its digit and read as "1" on every one of the 37 Req uppercut
+disc-fallback reads of "1" (237.5–240.1, 250.7, 443.0–444.5), fabricating two
+`charges_spent`. The census of every fallback read on both sections: the guard
+removes exactly those 37 and one correct "2" (Day 807.7, a badge fading in; the
+next frame reads it), changes no other read, and the lone-digit path does not
+read those frames either.
+
+Req uppercut around 150 s looked kit-impossible (2 → 1 → 2 in 1.4 s) and is
+not: the badge shows "2" under chat at 142.6–143.0, the uppercut lock is
+visible at 144.0, the badge reads "1" (mostly under chat) from there to 151.1
+across a black transition, and "2" again from 151.2 — a use around 143–144 and
+its recharge completing about 7 s later. The spend's interval [142.9, 149.9] is
+wide because chat covered the badge; the 1.4 s was its `t_to` to the regain.
+
 Measured on every frame of both train sections: 0 existing reads changed;
 about 6,000 (Day) and 4,800 (Req) new swing and uppercut reads; a seeded
 sample of 96 new reads checked by eye, 96 correct (chat-covered badges among
@@ -1078,12 +1094,21 @@ source cut at tenths).
   variant is a property of the partner hero and can change mid-match, and the
   icon matcher returns a generic `teamup`. Where the kit, the variant or a value
   is unknown, a one-charge slot's timers are `ability_uncertain`, never casts.
-  - **Where a caller supplies it**: `from_video(..., patch=)`, or else the
-    `patch` on the first line of `<video stem>.manifest.jsonl` beside the video
-    (both train sections: "Season 10, Version 20260911"); the CLI takes
-    `--patch`. `regenerate` goes through `from_video`, so it finds the manifest
-    the same way. **Absent**: no kit, every timer-derived event uncertain, a
-    `WARNING` on stderr, and `kit.table: null` in the meta line.
+  - **One resolution drives the file.** `from_video(..., patch=)` resolves the
+    patch once (`resolve_patch`): the argument if given (`patch_from:
+    "argument"`), else the `patch` on the first line of
+    `<video stem>.manifest.jsonl` beside the video (`"manifest"`; both train
+    sections: "Season 10, Version 20260911"), else none (`"none"`). That patch
+    selects the kit `extract()` uses; the meta line's `kit` is built from the
+    kit `extract()` actually used (`table` names it, null when there was none)
+    together with the resolution and the manifest's own value; the recipe
+    records `patch` and `patch_from`, and `regenerate` replays them as recorded
+    without consulting the manifest again. **Absent or unrecognised**: no kit,
+    every timer-derived event uncertain, a `WARNING` on stderr, `kit.table:
+    null`. Written-output tests cover a known, a missing, an unrecognised and an
+    overriding patch, each rebuilt by `regenerate` after its manifest changes.
+    The frames CLI takes `--patch` (it writes no recipe); the video path has no
+    command-line override.
   - `extract()` takes the kit as an argument and defaults to `None`: an
     omitted patch is not evidence of the current one. Tests and fixtures with
     known mechanics pass the kit explicitly.
@@ -1106,7 +1131,10 @@ source cut at tenths).
   lock where the lock is known; no later than the first read. With the
   recharge unknown, the previous timer bounds nothing — its end implies a
   returned charge only through the recharge — and **only an independent badge
-  decrement places a use**; it needs no duration.
+  decrement places a use**; it needs no duration. A decrement counts once
+  confirmed (two reads) by the frame that confirms the countdown, and only if
+  its last pre-drop read came before the countdown's first read; the latest
+  such decrement is the bound.
 - **Charge evidence is validated against the kit's maximum** (swing 3,
   uppercut 2): a badge read above it is unknown, in the one derivation
   (`charge_evidence`) that both `charges_*` events and cast placement read. The
@@ -1122,6 +1150,18 @@ source cut at tenths).
   frame of timing (boundary regressions at 0.1 s and 1 s early).
 - **The previous timer** is the confirmed one expiring latest, not the latest
   created (the fabricated Day team-up cast at 101.8).
+- **Team-up, variant unknown**: with the patch known and its variant set
+  complete (Symbiote Bond 15 s, Parker Power-Up 10 s), each candidate length is
+  evaluated on its own against the confirmed timer, and the event's interval is
+  the **union** (enclosing interval) of the in-segment start windows the
+  candidates allow — never their intersection, never the shortest. A
+  candidate is excluded only by the timer's own confirmed reads (a 15 read
+  twice puts a 10 s variant's start after the first read) or by starting before
+  the previous timer ended; one that starts before the segment, or would be
+  the running cooldown continuing, places no in-segment use. The kind stays
+  `ability_uncertain` whatever remains. Unknown patch, an incomplete set, or
+  every candidate excluded: the broad interval, from the segment start or the
+  previous timer's end. Req [610.9, 642.5] becomes (641.6, 642.5].
 - **Reads the kit cannot produce** — above the length, or above the longest
   variant where the variant is unknown (team-up: 15) — are not countdowns.
 - **`cooldown_ended`**: a timer read in its last two seconds ran out. History
@@ -1226,7 +1266,9 @@ health. Both now say unknown.
 
 - **Review probes as regressions**: the first review's eight, the second
   round's five and the third round's six (three findings, three positive
-  controls), verbatim, all passing; the three findings fail on a63a510. One of the eight is restated on
+  controls), all passing; the three findings fail on a63a510. Two of the first
+  review's eight carry declared adaptations: one selects on `known_at` instead
+  of `t_to`, one passes the kit explicitly. One of the eight is restated on
   `known_at`: it selected by `t_to`, which was the knowledge time then and is
   occurrence now. The native reviews' findings each have a regression,
   including the seven M&K badge decrements, Req chat over a badge, and the
@@ -1243,15 +1285,24 @@ health. Both now say unknown.
   out as casts with finite bounds, width ≤ 2.5 s and `known_at − t_to` ≤ 1.5 s
   (measured 0.9–2.3 s and 0.1–1.1 s, from extract_one, without the segment
   lag); every prefix test also asserts a minimum count of known casts.
-- **Mutations in a scratch copy: 56 of 56 killed**, among them restoring a
+- **Mutations in a scratch copy: 68 of 68 killed**, among them the disc
+  fallback accepting a wide blob, the file-writing path using the reference kit
+  or an unknown patch defaulting to it, regenerate dropping the recorded patch,
+  the meta `table` taken from the patch instead of the kit used, a later or the
+  earliest decrement placing a use, and the variant union intersected, reduced
+  to the shortest, used without a complete set, or promoted to a cast; restoring a
   default kit, letting the previous timer bound a use with the recharge
   unknown, dropping or clamping the charge maximum in either path, removing the
   segmentation lag, the hp settling, the bounded lookahead, the causal spike
   ceiling, closed timers, the alarm's confirmation and span, the kit ceiling,
   the misread-inside-a-running-timer rule, and the badge fallbacks and their
   chat rule.
-- The suite's other failures are the same set as before this work: the loader
-  refusing format 5 (a stage-2 seam) and tests that need `data/`.
+- Tests that read local data honour `RIVALS_DATA`, so from a worktree they
+  run against a checkout's `data/`. One of them, the check that every file under
+  `data/demos/events/` is at the current format and writer, **fails there by
+  design until the regeneration**: every frozen file is format 4. The rest of
+  the suite's failures are the same set as before this work: the loader
+  refusing format 5 (a stage-2 seam) and tests that need `data/` in place.
 - Fixtures are numbers (per-frame reads) and small portrait-region crops only;
   whole-frame checks read native frames from `RIVALS_DATA` and skip without it.
 
@@ -1265,10 +1316,16 @@ health. Both now say unknown.
 
 ### Stage-2 seams (other owners; nothing here edits them)
 
-- **Loader** (`agent/demos.py`): read format 5 (it refuses it today); **select
-  events by `known_at`, never `t_to`**; carry `cause`, `known_i` / `known_at`,
-  `hero_weak_frames` and the meta `kit`; pass the manifest's `patch` through
-  to anything that regenerates.
+- **Loader and policy gate on `known_at`.** The loader gates observation
+  construction and validation, and each historical policy event-feature step,
+  on `known_at`; occurrence bounds `[t_from, t_to]` remain for targets. A
+  format-5 file missing `known_at` fails loudly and never falls back to `t_to`.
+  `cause` and the renamed kinds are updated together. At the review of this
+  writer, `agent/demos.py` still documented `t_to` as "known from here on" and
+  selected an observation's events by `t_to <= t`, and `policy/train.py`'s event
+  features selected on `t_to`; under format 5 that backdates every event by
+  the settling lag (1.3 s for a cast). **Regeneration must not land before the
+  loader selects on `known_at`.** Frozen format-4 artifacts stay untouched.
 - **B0**: censor `ability_uncertain` intervals for their ability; use
   `known_at` for causal inputs and `[t_from, t_to]` only as occurrence; apply
   the observability contract (readiness unknown after `cooldown_ended`); drop or
@@ -1276,58 +1333,59 @@ health. Both now say unknown.
 - **Policy**: `EVENT_KINDS` gains `ability_uncertain` and `cooldown_ended` and
   renames the icon kinds.
 - **Team-up variant**: per-segment partner identity needs its own verified
-  reader; until then team-up timer events stay uncertain.
+  reader; until then team-up timer events stay uncertain, bounded by the
+  variant union.
 - **Old sidecars and event files are archives.** Retained frames are re-read
   under the new writer into a new output, never relabelled in place.
 
 ### Dry run on the two train sections (read-only; no event file changed)
 
-The whole pipeline from the VODs, writer `3e2a58f07aab`, kit from each
-source's manifest (Season 10, Version 20260911), no alarms, against the frozen
-stream (`1336262e179c`) and the first fix (b6ae015). Scratch only.
+The whole pipeline from the VODs, writer `1141e804b50d`, kit resolved from
+each source's manifest (Season 10, Version 20260911, recorded in the recipe),
+no alarms, against the frozen stream (`1336262e179c`). Scratch only.
 
-| source | slot | casts: frozen → b6ae015 → **now** | `ability_uncertain`: b6ae015 → **now** |
+| source | slot | casts: frozen → **now** | `ability_uncertain` |
 |---|---|---|---|
-| Day | Get Over Here | 43 → 30 → **30** | 5 → **1** |
-| Day | team-up | 21 → 15 → **0** | 3 → **21** |
-| Day | uppercut | 53 → 53 → **53** | 0 → **6** |
-| Day | swing | 22 → 21 → **21** | 0 → **4** |
-| Req | Get Over Here | 37 → 27 → **27** | 1 → **0** |
-| Req | team-up | 21 → 15 → **0** | 1 → **21** |
-| Req | uppercut | 22 → 12 → **12** | 1 → **6** |
-| Req | swing | 27 → 27 → **27** | 0 → **1** |
+| Day | Get Over Here | 43 → **30** | 1 |
+| Day | team-up | 21 → **0** | 15 |
+| Day | uppercut | 53 → **53** | 6 |
+| Day | swing | 22 → **21** | 4 |
+| Req | Get Over Here | 37 → **27** | 0 |
+| Req | team-up | 21 → **0** | 15 |
+| Req | uppercut | 22 → **12** | 6 |
+| Req | swing | 27 → **27** | 1 |
 
-- **Team-up has no casts**: its length depends on the partner's variant, which
-  nothing identifies, so every team-up timer is uncertain. That includes the
-  one team-up control (Day 297.4).
-- **The seven Day uppercut uses** the native re-check found are casts again,
-  each placed by its badge decrement: 46.9 → [46.6, 46.9], 241.1 → [240.9,
-  241.1], 321.8 → [320.9, 321.8], 613.2 → [612.9, 613.2], 721.8 → [721.4,
-  721.8], 749.2 → [748.9, 749.2], 759.3 → [759.0, 759.3].
+- **Team-up has no casts**: its variant is unknown. Bounded by the variant
+  union, its uncertain events censor 12.5 s of Day play and 37.9 s of Req
+  (median 0.9 s each), where the broad interval censored 127.9 s and 226.7 s.
+- **The seven Day uppercut uses** are casts placed by their badge decrements:
+  (46.6, 46.9], (240.9, 241.1], (320.9, 321.8], (612.9, 613.2], (721.4, 721.8],
+  (748.9, 749.2], (759.0, 759.3]. `t_from` is the last frame still showing the
+  old count, so the use is after it.
 - **The 17 confirmed duplicates**: none emits anything. **The 6 valid controls**:
-  5 casts (Day Get Over Here 226.0 [225.1, 226.0], 255.6 [254.7, 255.6]; Req
-  254.0 [253.1, 254.0], 143.7 [141.8, 142.9], 621.2 [619.3, 620.4]); Day team-up
-  297.4 is uncertain (variant unknown). **The 3 charged second uses** are casts:
-  Day swing 51.5 [49.7, 51.5], Day uppercut 140.5 [139.0, 140.5], Req swing
-  93.4 [91.1, 93.4].
-- **Occurrence widths**, casts whose first read equals the kit length: Day 31,
-  Req 20, every one 0.9 s — (t − 1, t], narrowed by the next frame reading the
-  same value. First read below the length: Day 73, median 0.5 s (p10 0.1, p90
-  1.9, max 3.3); Req 46, median 1.1 s (p10 0.1, p90 4.3, max 5.9) — genuinely
-  missing observation, left wide.
-- **`known_at − t_to`**: casts median 1.3 s on both (Day p90 1.3, max 2.1; Req
-  p90 2.1, max 2.1); `ability_uncertain` 1.3 (max 2.4); `cooldown_ended`,
-  `charges_spent` and the icon kinds 1.2; hp kinds 1.6. **1.2 s of each is
-  SEG_LAG**, the own-play membership settling; the timer's own confirmation adds
-  0.1 s, and the rest is the time between the use's latest possible moment and
-  the confirming read.
-- **`charges_spent`**: Day 133, Req 105 (was 39 and 33), from the M&K badge
-  reads.
-- **`cooldown_ended`**: Day 28, Req 25. **Segments** unchanged: Day 48, Req 32.
-- **Charge validation** makes 7 of 4,209 Day uppercut own-play badge reads
-  unknown — the "3" discs at 315.8–316.4, which a two-charge slot cannot show —
-  and none of Day swing's 4,145, Req swing's 4,776 or Req uppercut's 2,143. No
-  `charges_*` event and no timer event changes.
+  5 casts (Day Get Over Here 226.0 (225.1, 226.0], 255.6 (254.7, 255.6]; Req
+  254.0 (253.1, 254.0], 143.7 (141.8, 142.9], 621.2 (619.3, 620.4]); Day
+  team-up 297.4 is uncertain. **The 3 charged second uses** are casts: Day swing
+  51.5 (49.7, 51.5], Day uppercut 140.5 (139.0, 140.5], Req swing 93.4
+  (91.1, 93.4].
+- **Charge events**, frozen → now: `charges_spent` Day 40 → 133 (uppercut 56,
+  swing 77), Req 33 → 103 (uppercut 25, swing 78); `charges_regained` Day 29 →
+  106 (44, 62), Req 25 → 88 (22, 66) — the M&K badge reads. The digit-shape
+  guard removed Req uppercut's two fabricated spends (229.9–237.6 and
+  439.4–443.1) and the regain after the second; the kit maximum makes 7 Day
+  uppercut reads unknown and changes no event.
+- **Occurrence widths**, `t_to − t_from` of casts whose first read equals the
+  kit length (8 s Get Over Here, 6 s swing and uppercut): Day 31 (0.9 s on 26,
+  0.8 on 1, 0.3 on 3, 0.2 on 1 — the charged ones tightened by a decrement),
+  Req 20, all 0.9 s. First read below the length: Day 73, median 0.5 s (p10
+  0.1, p90 1.9, max 3.3); Req 46, median 1.1 s (p10 0.1, p90 4.3, max 5.9).
+  The native re-check reported different width figures with the same counts;
+  these were re-derived from this run's events with that definition.
+- **`known_at − t_to`** for casts: median 1.3 s, max 2.1 s; 1.2 s of it is
+  SEG_LAG, an upper bound on when membership settles (it needs at most 10
+  frames), the rest confirmation.
+- **`cooldown_ended`**: Day 32, Req 27 (28 and 25 before the variant union
+  gave team-up timers placed in the segment). **Segments**: Day 48, Req 32.
 
 ## Retained sections: how much is actually own-Spider-Man play
 
