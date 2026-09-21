@@ -21,11 +21,15 @@ below is what changed. **Nothing was removed or renamed between 2 and 4**; forma
 | 4, added | meta gains **`recipe`**: source video, `hz`, window `start`/`duration`, `layout` — how the file was made. | Optional. `python -m perception.events regenerate` rebuilds from it. |
 | 4, added | segment lines gain **`cooldowns`**: `"normal"` when a countdown inside the segment proved cooldowns are on, else `"unknown"`. **Never `"off"`**: the HUD cannot prove an absence. | Read per segment. See **Cooldown regime per segment** for the guides. |
 | **5** | **`ability_cast` is recomputed**: a countdown read again after unread frames is the same cooldown, not a new cast (see **Writer fix, format 5**). | Expect fewer casts: 17 visually confirmed duplicates on the train sections are gone. |
-| **5** | new kind **`ability_uncertain`** (with `slot`, `slot_pos`, `amount`): a cast that cannot be told from a timer becoming readable. | Treat its interval as **unknown** for that ability: neither a positive nor a negative. |
-| **5** | new kind **`cooldown_ended`** (one-charge slots): the timer ran out by its own clock inside watched play. | The only certified "ready again" for Get Over Here and team-up; charged slots certify it with `charges_regained`. |
+| **5** | **Timer events are evidence-bounded and known-by.** For `ability_cast`, `ability_uncertain`: `t_to` is the confirming read, when the stream first knows the event; `t_from` the earliest the use can have been on evidence alone (expiry − full length; the previous timer's end; a charge badge read), never the frame before the first readable digit. `amount` is the timer's first read value, not "the cooldown it started at". | Select events by `t_to <= now`. Expect wide intervals: median 0.1 s before, mean over a second now (numbers under **Writer fix**). |
+| **5** | new kind **`ability_uncertain`** (with `slot`, `slot_pos`, `amount`): a timer this segment may or may not have started, a timer the kit cannot produce, or a single countdown read never confirmed (emitted once its expiry passes). | Treat its interval as **unknown** for that ability: neither a positive nor a negative. |
+| **5** | new kind **`cooldown_ended`** (one-charge slots): a timer read in its last seconds (≤ 2) ran out by its own clock. | **History, not readiness.** A recast the reader missed can start the instant it ends; the slot's state after it stays unknown until the next confirmed timer. |
+| **5** | `ult_spent` needs the meter seen refilling (part-charged) before it is next lit, and is known from that read; `ult_ready` needs a part-charged meter since it last went dark. Otherwise the ult icon's change is `icon_dimmed` / `icon_lit` with `slot: "ult"`. | A prohibition mark darkens the ult and brings it back full; it is not a spend. |
 | **5** | **renamed** `slot_unavailable` → **`icon_dimmed`**, `slot_available` → **`icon_lit`**. Display state only. | Rename; and never read either as availability or as a cast. |
-| **5** | `hp_lost` / `hp_gained` gain **`cause`**: `"damage"` / `"heal"` only with max hp read unchanged on both sides, else `"unknown"`. Every event carries `cause` (null outside these two). | Do not read `hp_lost` as damage unless `cause == "damage"`. |
-| **5** | meta gains **`timer_lengths`**: the full countdown length the timer model used per position. | Optional. |
+| **5** | `hp_lost` / `hp_gained` gain **`cause`**: `"damage"` / `"heal"` only with max hp read unchanged on each side of the change — one read at or before the last old frame, another after it, up to the confirming frame — else `"unknown"`. Every event carries `cause` (null outside these two). | Do not read `hp_lost` as damage unless `cause == "damage"`. |
+| **5** | meta gains **`timer_lengths`** (required): per position, `{"s", "from": "segments", "timers", "agree", "max"}` measured from ticking timers in own-play segment reads, or `{"s", "from": "kit", "max", "contradicted"}` for a charged slot's recharge. | Read `s`. `contradicted: true` means that slot's own timers ran longer than the kit, and every use of it was written `ability_uncertain`. |
+| **5** | segment lines gain **`hero_weak_frames`**: frames kept as own play on an own-portrait match under 0.39, `null` when no scores were recorded. | A weak match is low confidence that the hero is ours (see **Segmentation** under **Writer fix**). |
+| **5** | `observed` loses `relock_s` for charged slots (they emit no `cooldown_ended`), and its `countdown` counts first-read values, a different distribution from format 4's. | Compare fingerprints only within one format. |
 
 Event `kind` values, the `t_*`/`i_*` semantics and the three-line-kind layout
 are unchanged from 2. **Slot `pull` became `get_over_here` back in format 2.**
@@ -95,7 +99,10 @@ Order is meta, then segments in time order, then events in time order.
   sampled at **10 fps** from 60 fps sources.
 - **An event is an interval, never an instant**: `i_from`/`t_from` is the last
   frame showing the old value, `i_to`/`t_to` the first showing the new one. The
-  press happened somewhere between. At 10 fps that is about 100 ms wide.
+  press happened somewhere between. At 10 fps that is about 100 ms wide. Timer
+  events (`ability_cast`, `ability_uncertain`) are wider: `t_from` is the
+  earliest the use can have been on evidence, `t_to` the confirming read.
+  **Every event is known at its `t_to`**: nothing after it went into it.
 - `segment` on an event is the index of the segment line it belongs to. **No
   event ever spans a segment boundary**; channels reset at each one.
 - `ended_by` is one of `run_end`, `death`, `killcam`, `spectating`,
@@ -127,8 +134,9 @@ Order is meta, then segments in time order, then events in time order.
   `ko_feed`, `death`, `respawn`.
 - Slots are `teamup`, `swing`, **`get_over_here`** (was `pull`), `uppercut`,
   `ult`.
-- **`ability_cast` is the only kind that claims an ability fired, and
-  `cooldown_ended` / `charges_regained` the only ones that claim it is back.**
+- **`ability_cast` is the only kind that claims an ability fired.
+  `charges_regained` claims a charge is back; `cooldown_ended` claims only that
+  a watched timer ran out, and nothing about the slot after it.**
   `icon_dimmed` / `icon_lit` say what the icon looked like — dimmed on a wall
   climb, mid-swing, charmed, red prohibition marks — and nothing about what the
   ability could do.
@@ -156,27 +164,31 @@ below means *an event on that channel, had it happened, would have been
 emitted*. Everything else is **unknown**, never a negative.
 
 **Format 5 changes this contract.** Everything below is stated for the frozen
-writer `1336262e179c`; under format 5 three things change, and a B0 build
-against format-5 files must apply them:
+writer `1336262e179c`; a B0 build against format-5 files must apply these
+instead:
 
-- **"Lit, no number" no longer certifies ready.** It is display state: on the
-  stream HUD the icon reads lit through 31–91% of its own cooldown frames (see
-  the addendum below), and a lit icon beside an unread digit is exactly how a
-  continuing cooldown became a phantom cast. For **one-charge slots** (Get Over
-  Here, team-up) a frame is observed-ready only when the timer model says so:
-  a `cooldown_ended` for that slot earlier in the same segment, with no
-  `ability_cast` or `ability_uncertain` since. Before the first `cooldown_ended`
-  of a segment, the slot is observed only on frames where a countdown is read
-  (on cooldown: no use possible). This costs negatives at the start of every
-  segment; it is the price of not inferring ready from an icon. **Charged
-  slots** are unchanged: their returns were already certified by
-  `charges_regained`, and their observability rests on the charge badge.
+- **"Lit, no number" certifies nothing.** It is display state: on the stream
+  HUD the icon reads lit through 31–91% of its own cooldown frames (see the
+  addendum below), and a lit icon beside an unread digit is exactly how a
+  continuing cooldown became a phantom cast.
+- **Readiness and negative eligibility for a one-charge slot stay unknown
+  until a supported resynchronisation**, which is a confirmed countdown read (on
+  cooldown: no use possible until its expiry). `cooldown_ended` is not one: a
+  recast the reader missed can start the instant a timer ends, so the frames
+  after it are unknown, not ready. There is no pixel evidence of "ready" for
+  these slots on this HUD. **Charged slots** rest on the charge badge, as
+  before.
 - **`ability_uncertain` intervals are unknown** for that ability, whatever the
   per-frame reads say.
 - **The per-frame sidecars stay valid as raw reads**, and the rows below that
   read `ready` stay valid as descriptions of the icon. What is derived from
   them — which frames are observed, which horizons are negatives — has to be
-  recomputed under the rule above.
+  recomputed under these rules.
+- **Measured cost** (the native-frame reviewer, on b6ae015's weaker rule that
+  still let `cooldown_ended` certify ready): team-up alone falls from 92–93% of
+  in-segment frames observed to 45–49%, and *all channels known* from 31.8% to
+  11.1% (Day) and 20.9% to 11.3% (Req), before B0's 14-consecutive-frame
+  requirement. The rule above is stricter still, so those are upper bounds.
 
 **(1) Raw fields that make a channel observable on a frame.** `hud` is
 `perception.hud.read(frame, LAYOUTS["mk"])`. Slot fields are keyed by layout
@@ -1026,34 +1038,60 @@ is also every visible digit the reader could not read. A new timer is believed
 on two agreeing reads (a one-frame misread, like Day 339.0's 6 read as 8, is
 nothing), and classified once:
 
-- **One-charge slots** (Get Over Here, team-up): a timer expiring later than the
-  last is a cast, if it could have started after the last one ended — the kit's
-  restart at full value. One that would have to start earlier is not something
-  the kit allows: `ability_uncertain`. A timer that may have started before the
-  segment is nobody's cast in it.
+One model for every slot: **an event is placed by evidence alone, emitted when
+the stream knows it, and where the evidence cannot place it inside the segment
+it is `ability_uncertain`**, its own event, so silence is never read as "no cast".
+
+- **Evidence** is a timer's expiry (from its reads), the previous confirmed
+  timer in the segment, and a charge badge read. **Never a frame with the slot
+  lit and no number**, nor a frame with nothing read: a stream HUD shows both
+  through most of a running cooldown whose digits went unread.
+- **Interval**: `t_from` is the earliest the use can have been on that
+  evidence; `t_to` is the confirming (second) read, the known-by time. So a
+  prefix of the stream never shows an event a longer stream would not.
+- **One-charge slots** (Get Over Here, team-up): only a cast starts a timer, at
+  expiry − full length. That start wholly before the segment: nothing. Straddling
+  the segment start (a read of N says N−1 to N s remain, so a countdown first
+  read within about a second of the segment opening): uncertain. Inside it: a
+  cast, unless the kit rules it out — an earlier expiry than the timer still
+  running, or a start before that one ended — which is uncertain. "The timer
+  still running" is the confirmed one expiring latest, not the latest created:
+  two chat reads of "1" once formed their own timer and let two misread 8s pass
+  as a team-up cast while the real countdown ran (Day 101.8–109.9, found by the
+  native-frame review; a regression now). Without a measured length only a
+  previous timer places a cast.
 - **Charged slots** (swing, uppercut) draw their big countdown **only while
-  they have no charges left**, checked frame by frame on Day swing 48–52 s:
-  badge 1 and no number; a use, badge 0 and "2"; the recharge completes, badge
-  1 and the number gone; a second use, badge 0 and "5". So a countdown becoming
-  visible after the last one expired is a use — even when it is the next
-  recharge in a chain, which is exactly when a second use lands — and a
-  countdown returning with the same expiry is the reader, not a use. A recharge
-  completing shows the other way round: the number goes, `charges_regained`
-  fires, no cast. A countdown first seen part-way through right after the slot
-  showed a number it cannot show (chat over it) is `ability_uncertain`: that is
-  Req uppercut 52.0. **An unreadable frame alone is not that evidence**, and a
-  charged countdown's start is not placed from the 6 s recharge, because an
-  uppercut use shows a short between-cast lock ("1" on this patch). Two wrong
-  versions came first and the dry runs caught both: one counted unreadable
-  frames as blind and placed starts from the recharge (Day uppercut 53 → 4
-  casts); one read a chained recharge as "not a use" (about 35 charged casts
-  gone, which the frames show were real second uses).
-- **Full lengths** come from the source's own ticking timers for one-charge
-  slots (Get Over Here 8, matching the kit; team-up 15), and from the kit for
-  charged slots (6 s recharge, unchanged across the balance history), because a
-  charged slot's timer is rarely first seen full. Recorded in `timer_lengths`.
-- **A certified return** is `cooldown_ended`: the timer ran out by its own clock
-  inside watched play.
+  they have no charges left** (Day swing 48–52 s, frame by frame), and uppercut
+  also for its short between-cast lock ("1" on this patch). A countdown becoming
+  visible means a use. Its lower bounds, each valid alone: after the recharge
+  now showing began (expiry − 6 s); after the previous timer ran out; after the
+  last charge badge read ≥ 1 with no number (less uppercut's 1 s lock). The
+  latest inside the segment makes a cast; otherwise uncertain — the countdown
+  still says a use happened. A countdown first seen part-way through right after
+  a number the slot cannot show (chat) is uncertain: Req uppercut 52.0.
+- **A single read that never confirms** is uncertain once its expiry has passed
+  (a real between-cast "1" and a misread cannot be told apart: Req uppercut
+  89.7, 98.5), unless a confirmed timer was running across it, when the kit
+  rules a new use out and it is a misread (Day 339.0's 6 read as 8).
+- **Full lengths** are measured only on own-play segment reads (the review's
+  probe: three spectated heroes' 12 s timers outvoted our own 8), from ticking
+  timers, with their support recorded in `timer_lengths`: Get Over Here 8
+  (matching the kit), team-up 15 on both train sources — Symbiote Bond, whose
+  jagged icon both sources show; the 20260911 patch moved only Parker
+  Power-Up to 10 s. **Limit: one length per slot per source.** A partner hero
+  changing mid-match changes the team-up ability and its length, and the slot
+  mapping is also per source. Too long a length is the safe direction (starts
+  placed earlier: more uncertain); too short shows as a segment's own timer
+  ticking above it, and that segment then gets no length for the slot. Team-up
+  identity per segment from the icon is not built.
+- **Charged recharge** is the kit's 6 s (`RECHARGE_S`), the one length not
+  measured, because a charged timer is rarely first seen full. The source's
+  patch is not an input to the writer. Instead a charged slot's own ticking
+  timers topping out above 6, per source or per segment, contradict the kit;
+  every use of that slot there is then uncertain and the meta line says
+  `contradicted`. Neither train source contradicts it.
+- **`cooldown_ended`** is a timer read in its last two seconds running out by
+  its own clock. History only; see the observability contract.
 
 ### Icon semantics: display state
 
@@ -1062,14 +1100,22 @@ prohibition marks on three slots) is **what the icon looked like**, and the
 events are renamed to say so: `icon_dimmed` / `icon_lit`. Renaming rather than
 gating, because the observation is still worth having and a gate would have
 thrown it away; and because the old names were read as availability. Only a
-countdown (`ability_cast`, `cooldown_ended`) or a charge change (`charges_*`)
-certifies a cast or a return. The observability contract above says what this
+countdown (`ability_cast`) or a charge change (`charges_*`) certifies a cast;
+nothing on this HUD certifies a one-charge slot's return. The ult's icon is the
+same: going dark is `ult_spent` only once the meter is seen part-charged,
+refilling, before it is next lit (known from that read), and lighting is
+`ult_ready` only after a part-charged meter since it went dark. A prohibition
+mark darkens it and brings it straight back full, which is `icon_dimmed` /
+`icon_lit` with `slot: "ult"`. The observability contract above says what this
 does to B0's rules.
 
 ### HP semantics: a change in hp is not a cause
 
 `hp_lost` and `hp_gained` keep the direction the HUD showed and gain `cause`:
-`damage` / `heal` only with max hp read unchanged on both sides; a same-delta
+`damage` / `heal` only with max hp read unchanged on each side of the change —
+one read at or before the last old frame, a different one after it, no later
+than the confirming frame (one read serving both sides proves nothing about the
+other, and a later one would not be known with the event); a same-delta
 max-hp change still becomes `shield_*`, and `max_hp_changed` stays the evidence
 channel; everything else is `cause: "unknown"`. On Day 62–71 s the old stream
 emitted ten "damage" events for a bonus pool decaying (400 → 304 in 6 and 12 hp
@@ -1081,14 +1127,26 @@ health. Both now say unknown.
 - **Two-frame scoreboard taps cut.** The board gets its own two-frame vote;
   banner words keep three, so one false `killcam` frame (Day 330.0) still does
   not cut. Several of the confirmed duplicates' dark gaps were such taps.
-- **A black game area cuts at once**, under `no_hud`. Its brightest channel,
-  averaged over the game area, is 0–5 on respawn and loading blacks and 22 or
-  more on every other frame; every frame it fires on in both train sections is
-  a transition (checked by eye: 15 places).
+- **A black game area cuts at once**, under `no_hud`, when its brightest
+  channel averaged over the game area is under 8. Measured over all 17,986
+  frames of both train sections (native-frame review): firings reach 7.56; the
+  next values up are 10.03–10.19; **ordinary dark gameplay starts at 11.49**
+  (Req 46.5 s, combat in the underground map). The margin is 1.4x, not a clean
+  gap; boundary tests pin 7 (black) and 11 and 22 (not), and Req 46.5 is a
+  native regression. All 15 places it fires are real transitions (checked
+  twice, independently; Req 656.1 is the end of a spectated hero, hp 675/675
+  then 250/250).
 - **The two teammates DayMR spectates are portrait negatives**, beside Doctor
   Strange. They passed the one-class match at 0.36–0.38 and were kept as own
   play around 85, 201, 363, 693 and 718 s. Real Spider-Man frames score at
   most 0.705 against the negatives (391 frames); the teammates 0.72–0.99.
+  **Known limit: this is a per-source patch.** The own-hero bar is still the
+  one-class 0.34, and the next spectated hero not among the negatives who
+  scores in that band passes as own play, silently. What would generalise is
+  the SPECTATING banner, which is not read. So a weak own match is made
+  visible: segment lines carry `hero_weak_frames`, the frames kept as own play
+  on an own-portrait score under 0.39 (own frames: median 0.41, 5th
+  percentile 0.396, over 692 sampled own-play frames; the teammates 0.36–0.38).
 - **The "1s SPECTATING" banner is not read by the banner reader**, and the
   offset search tried for it read "killcam" over ordinary play on 2,251 Req
   frames and 475 Day frames, so it is not part of this fix. The stretch is closed
@@ -1096,14 +1154,26 @@ health. Both now say unknown.
 
 ### Checks
 
-- Regressions, each shown failing on the frozen writer with the same inputs:
-  the 17 confirmed duplicates (all 17 were casts; none is now), the 6 valid casts
-  (casts before and after — guards), the uncertain uppercut, a charged-slot use
-  during recharge, a recharge that is not a cast, the two-frame scoreboard, the
-  respawn black, the teammates' portraits, the countdown digits, and the HP
-  windows. The false-killcam negative holds before and after.
-- Mutations of the new logic in a scratch copy: **21 of 21 killed** (the
-  final set; two earlier survivors each got a test).
+- **The code review's eight contract probes** are regressions in
+  `tests/test_events.py`, verbatim; each failed on b6ae015 and passes now, as
+  do six more on the same rules (the uppercut lock needing evidence, an unread
+  frame being no evidence, a countdown that may predate the segment, a timer
+  last read far from zero recording no end, the ult coming back full).
+- **The native-frame review's findings** each have one: the fabricated team-up
+  cast (a numbers fixture of the frozen reads of Day 101.6–145.6 s), a single
+  read becoming uncertain, a misread inside a running cooldown staying nothing,
+  a charged kit contradiction, a segment whose timer outruns the source length,
+  black-level boundaries and Req 46.5 s, hp cause needing max hp *unchanged*
+  (a different-delta change), the cast's lower bound, the weak-hero count, and
+  a ticking-countdown test that now fails for the right reason.
+- Earlier regressions hold: the 17 confirmed duplicates, the 6 valid casts, the
+  uncertain uppercut, the charged second uses, the two-frame scoreboard, the
+  respawn black, the teammates' portraits, the countdown digits, the HP windows.
+- **Mutations in a scratch copy: 39 of 39 killed**, including the reviewer's
+  three survivors (black level 30, hp without the equality, lower bound at the
+  segment start) and one for each new rule.
+- The suite's other failures are the same set on b6ae015: the loader refusing
+  format 5 (a stage-2 seam) and tests that need `data/`, absent in a worktree.
 - Fixtures are numbers (per-frame reads) and small portrait-region crops only;
   whole-frame checks read native frames from `RIVALS_DATA` and skip without it.
 
@@ -1115,40 +1185,76 @@ health. Both now say unknown.
 - **KO-medal readers.** The kill feed is read as a line appearing (`ko_feed`);
   the medals and streak banners are not.
 
+### Stage-2 seams (other owners; nothing here edits them)
+
+- **Loader** (`agent/demos.py`): read format 5 (it refuses it today:
+  "this loader reads format 4"), carry `cause`, `hero_weak_frames` and the
+  `timer_lengths` provenance, and keep selecting by `t_to <= t`, which is now
+  the known-by time for every kind.
+- **B0**: censor `ability_uncertain` intervals for their ability; apply the
+  observability contract above (readiness unknown after `cooldown_ended`); and
+  recompute its causal baselines. Casts wider than its 1.0 s horizon can never
+  be targets and remove the decisions they span (numbers below).
+- **Policy**: `EVENT_KINDS` gains `ability_uncertain` and `cooldown_ended` and
+  renames the icon kinds.
+- **Old sidecars and event files are archives.** Retained frames are re-read
+  under the new writer into a new output, never relabelled in place.
+
 ### Dry run on the two train sections (read-only; no event file changed)
 
-The whole pipeline from the VODs, writer `65bf527ddd9e`, against the frozen
-stream (`1336262e179c`). Written to a scratch directory, never
-`data/demos/events/`.
+The whole pipeline from the VODs, writer `9c0099806a31`, against the frozen
+stream (`1336262e179c`) and the first fix (`65bf527ddd9e`, b6ae015). Written to
+a scratch directory, never `data/demos/events/`.
 
-| source | slot | casts, frozen → fixed | `ability_uncertain` |
+| source | slot | casts: frozen → b6ae015 → **now** | `ability_uncertain`: b6ae015 → **now** |
 |---|---|---|---|
-| Day | Get Over Here | 43 → **30** | 5 |
-| Day | team-up | 21 → **15** | 3 |
-| Day | uppercut | 53 → **53** | 0 |
-| Day | swing | 22 → **21** | 0 |
-| Req | Get Over Here | 37 → **27** | 1 |
-| Req | team-up | 21 → **15** | 1 |
-| Req | uppercut | 22 → **12** | 1 |
-| Req | swing | 27 → **27** | 0 |
+| Day | Get Over Here | 43 → 30 → **30** | 5 → **6** |
+| Day | team-up | 21 → 15 → **14** | 3 → **4** |
+| Day | uppercut | 53 → 53 → **46** | 0 → **13** |
+| Day | swing | 22 → 21 → **21** | 0 → **4** |
+| Req | Get Over Here | 37 → 27 → **27** | 1 → **1** |
+| Req | team-up | 21 → 15 → **13** | 1 → **3** |
+| Req | uppercut | 22 → 12 → **12** | 1 → **6** |
+| Req | swing | 27 → 27 → **27** | 0 → **1** |
 
-- **All 17 confirmed duplicates are gone; all 6 valid controls remain**, as do
-  the three charged-slot second uses checked on the frames (Day swing 51.5,
-  Day uppercut 140.5, Req swing 93.4).
-- **Req uppercut's ten fewer casts, one by one**: three are Twitch chat read as
-  "7" (uppercut cannot show 7); three are the same countdown returning after a
-  two-frame gap; three are a single "1" read under a chat line with no lock
-  icon on the frames, which no longer confirms a timer; one is the uncertain
-  52.0. Day swing's one fewer is a countdown already running at a segment's
-  first frame.
-- **Segments**: Day 43 → 48, play 8.22 → 8.07 min — the spectated-teammate
-  stretches (new portrait negatives, one of them in the 85 s respawn) and
-  two-frame scoreboard taps. Req 31 → 32, play 9.11 → 9.10 min.
-- **New kinds**: Day `cooldown_ended` 36, `ability_uncertain` 8; Req 34 and 3.
-  `icon_dimmed` / `icon_lit` replace the icon events one for one.
-- **HP cause**: Day `hp_lost` 184 = 68 damage + 116 unknown, `hp_gained` 131 =
-  44 heal + 87 unknown; Req `hp_lost` 131 = 48 + 83, `hp_gained` 236 = 115 +
-  121. Most hp changes on these sources have no readable max hp beside them.
+- **What became uncertain**: Day uppercut's seven lost casts are "1" locks and
+  mid-recharge reads with no badge read or previous timer to place them; the
+  other new uncertain events are countdowns first read within about a second
+  of a segment opening, and single reads that never confirmed (Req uppercut
+  89.7 and 98.5 among them). Day team-up's one fewer cast is the fabricated
+  101.8–109.9, now uncertain. Req team-up's two fewer: one now uncertain, one a
+  timer that started before its segment.
+- **The 17 confirmed duplicates**: none is a cast. 16 emit nothing; Day Get
+  Over Here 648.6 is `ability_uncertain` (its start straddles a segment
+  start). **The 6 valid controls** remain casts. **The three charged second
+  uses** (Day swing 51.5, Day uppercut 140.5, Req swing 93.4) remain casts,
+  each placed by a badge read or the previous timer.
+- **Removed since frozen, corrected accounting**: Day swing's one fewer is the
+  one-frame "1" at 323.6, mid-segment, with the badge going 1 → 0 at 323.5 —
+  a real use, still labelled `charges_spent`, not a cast. Req uppercut 566.0
+  is the same shape. Of Req uppercut's ten fewer: three are Twitch chat read as
+  "7", three the same countdown returning after a two-frame gap, three single
+  "1" reads under a chat line (two of them now uncertain), one the uncertain 52.0.
+- **`timer_lengths`**: Get Over Here 8 (Day 26 of 33 ticking timers agree, Req
+  19 of 26), team-up 15 (14 of 15; 14 of 14), both from own-play segments;
+  swing and uppercut the kit's 6, not contradicted (largest confirmed tops 6 and
+  5).
+- **Cast intervals**: the frozen stream's are all 0.1 s. Now median 1.3 s (Day)
+  and 1.2 s (Req), mean 2.20 and 1.76 s, max 6.2 s; **99 of 111 (Day) and 64 of
+  79 (Req) are wider than 1.0 s**, B0's horizon (b6ae015: 37 of 119 and 38 of
+  81), so as B0 stands they cannot be targets and they remove the decisions
+  they span. That is the price of not narrowing through lit-no-number frames.
+- **`cooldown_ended`**: Day 34, Req 33 (only timers read in their last 2 s).
+- **HP cause**: Day `hp_lost` 187 = 19 damage + 168 unknown, `hp_gained` 132 =
+  20 heal + 112 unknown; Req `hp_lost` 131 = 27 + 104, `hp_gained` 236 = 63 +
+  173. Down from 68 / 44 / 48 / 115 known: max hp must now be read on each
+  side, and after the change no later than the confirming frame.
+- **Ult**: Day `ult_spent` 6 → 3 and `ult_ready` 6 → 4, Req `ult_ready` 2 → 1;
+  the rest are `icon_dimmed` / `icon_lit` with `slot: "ult"`.
+- **`hero_weak_frames`**: Day 192 of 4,888 own-play frames (42 of 48 segments),
+  Req 191 of 5,490 (31 of 32): about 4%, as the measured 5th percentile says —
+  scattered frames, not a stretch.
+- **Segments** unchanged from b6ae015: Day 48, Req 32.
 
 ## Retained sections: how much is actually own-Spider-Man play
 

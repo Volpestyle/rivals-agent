@@ -18,6 +18,7 @@ from perception.events import (  # noqa: E402
     BANNER_HOLD, Event, HUD_HOLD, banner_word, extract, extract_one, segment,
 )
 from perception.hud import MK, Hud, read as read_hud  # noqa: E402
+from dataclasses import replace  # noqa: E402
 import pytest  # noqa: E402
 
 # Local-only: the demo clips are never committed, so anything that reads one
@@ -101,16 +102,21 @@ def test_a_dim_icon_is_a_lockout_not_a_cast():
 
 
 def test_a_cooldown_number_appearing_is_a_cast():
-    """What actually proves a cast: the slot's icon is replaced by a countdown."""
-    seq = reads(hud(), hud(get_over_here_cd=8), hud(get_over_here_cd=8), hud(get_over_here_cd=7))
-    casts = [e for e in extract_one(seq, mapping=IDENTITY) if e.kind == "ability_cast"]
+    """What actually proves a cast: the slot's icon is replaced by a countdown
+    whose start -- expiry less the full length -- lies inside the segment. A
+    read of 8 says 7 to 8 s remain, so the segment must be open a second first."""
+    seq = reads(*[hud()] * 12, hud(get_over_here_cd=8), hud(get_over_here_cd=8), hud(get_over_here_cd=7))
+    casts = [e for e in extract_one(seq, mapping=IDENTITY, timers={"get_over_here": 8})
+             if e.kind == "ability_cast"]
     assert len(casts) == 1 and casts[0].slot == "get_over_here"
     assert casts[0].amount == 8          # the cooldown it started at
 
 
 def test_a_countdown_ticking_down_is_not_more_casts():
-    seq = reads(*[hud(get_over_here_cd=n) for n in (8, 8, 7, 6, 5)])
-    assert [e.kind for e in extract_one(seq) if e.kind == "ability_cast"] == []
+    """One cast, placed inside the segment, however many values it ticks through."""
+    seq = reads(*[hud()] * 12, *[hud(get_over_here_cd=n) for n in (8, 8, 7, 7, 6, 6, 5, 5)])
+    got = extract_one(seq, mapping=IDENTITY, timers={"get_over_here": 8})
+    assert [e.kind for e in got if e.kind.startswith("ability_")] == ["ability_cast"]
 
 
 def test_debounce_is_overridable_per_channel():
@@ -130,18 +136,23 @@ def test_hp_emits_raw_steps_not_a_net():
 
 # --- one event per kind ---------------------------------------------------
 
+def _refilling(charge=0.4):
+    """The ult meter part-charged: what proves a spend, and a return."""
+    return replace(hud(ult=False), ult_charge=charge)
+
+
 def test_every_event_kind():
     cases = {
         ("icon_dimmed", "swing"): (hud(), hud(swing_ready=False), hud(swing_ready=False)),
-        ("ability_cast", "swing"): (hud(), hud(swing_cd=6), hud(swing_cd=6)),
+        ("ability_cast", "swing"): (*[hud()] * 12, hud(swing_cd=6), hud(swing_cd=6)),
         ("charges_spent", "swing"): (hud(swing_charges=3), hud(swing_charges=2), hud(swing_charges=2)),
         ("charges_regained", "swing"): (hud(swing_charges=2), hud(swing_charges=3), hud(swing_charges=3)),
         ("web_cluster_fired", None): (hud(webs=5), hud(webs=4), hud(webs=4)),
         ("web_cluster_reloaded", None): (hud(webs=2), hud(webs=5), hud(webs=5)),
         ("hp_lost", None): (hud(hp=250), hud(hp=200), hud(hp=200)),
         ("hp_gained", None): (hud(hp=200), hud(hp=250), hud(hp=250)),
-        ("ult_spent", "ult"): (hud(ult=True), hud(ult=False), hud(ult=False)),
-        ("ult_ready", "ult"): (hud(ult=False), hud(ult=True), hud(ult=True)),
+        ("ult_spent", "ult"): (hud(ult=True), hud(ult=False), _refilling()),
+        ("ult_ready", "ult"): (_refilling(), hud(ult=True), hud(ult=True)),
     }
     for want, huds in cases.items():
         got = kinds(extract_one(reads(*huds), mapping=IDENTITY))
@@ -426,11 +437,9 @@ def test_an_unmapped_slot_reports_no_ability_rather_than_a_guess():
     """A mapping that omits a position means its icon could not be identified."""
     seq = reads(hud(), hud(swing_cd=6), hud(swing_cd=6))
     named = extract_one(seq, mapping={"swing": "get_over_here"})
-    assert [(e.kind, e.slot, e.slot_pos) for e in named] == \
-        [("ability_cast", "get_over_here", "swing")]
+    assert [(e.slot, e.slot_pos) for e in named] == [("get_over_here", "swing")]
     blank = extract_one(seq, mapping={})
-    assert [(e.kind, e.slot, e.slot_pos) for e in blank] == \
-        [("ability_cast", None, "swing")]
+    assert [(e.slot, e.slot_pos) for e in blank] == [(None, "swing")]
 
 
 def test_no_mapping_at_all_is_unknown_not_the_layout_position():
@@ -440,13 +449,12 @@ def test_no_mapping_at_all_is_unknown_not_the_layout_position():
     is both Day sections and both guide windows."""
     seq = reads(hud(), hud(swing_cd=6), hud(swing_cd=6))
     got = extract_one(seq, mapping=None)
-    assert [(e.kind, e.slot, e.slot_pos) for e in got] == \
-        [("ability_cast", None, "swing")]
+    assert [(e.slot, e.slot_pos) for e in got] == [(None, "swing")]
 
 
 def test_the_ult_needs_no_icon_mapping():
     """There is one ult; knowing which ability it is needs no icon read."""
-    seq = reads(hud(ult=True), hud(ult=False), hud(ult=False))
+    seq = reads(hud(ult=True), hud(ult=False), _refilling())
     assert ("ult_spent", "ult") in kinds(extract_one(seq, mapping=None))
 
 
@@ -642,7 +650,7 @@ def test_every_cut_time_is_in_the_meta_line():
 
 def test_a_segment_is_normal_only_where_a_countdown_proved_it():
     """The HUD can prove cooldowns are on; it cannot prove they are off."""
-    rs = _reads7([hud(), hud(get_over_here_cd=8), hud(get_over_here_cd=8)] +
+    rs = _reads7([hud()] * 12 + [hud(get_over_here_cd=8)] * 10 + [hud(get_over_here_cd=7)] * 10 +
                  [hud(hp=0)] * 3 + [hud()] * 4)
     _, segs = extract(rs, mapping=IDENTITY)
     assert [s.cooldowns for s in segs] == ["normal", "unknown"]
@@ -748,12 +756,13 @@ def test_a_recharge_completing_is_not_a_cast_and_the_next_use_is():
     """Day swing 48-52 s, as the frames show it: a use empties the slot and a
     countdown appears; the recharge completes -- the number goes, the badge
     comes back -- which is not a cast; a second use empties it again and the
-    next recharge's countdown appears part-way through, which is."""
+    next recharge's countdown appears part-way through, which is. Each is known
+    on its confirming read; the badge read before each places it."""
     vals = [None] * 5 + [2] * 10 + [1] * 8 + [None] * 12 + [5] * 10
     chg = [1] * 5 + [0] * 18 + [1] * 12 + [0] * 10
     events = extract_one(_slot_reads(vals, charges=chg, ready=[True] * 45), mapping={"swing": "swing"})
     casts = [e.t_to for e in events if e.kind == "ability_cast"]
-    assert casts == [0.5, 3.5], casts
+    assert casts == [0.6, 3.6], casts
     assert [e.kind for e in events if e.kind == "charges_regained"] == ["charges_regained"]
 
 
@@ -772,7 +781,9 @@ def test_a_restart_at_full_value_after_the_cooldown_is_a_cast():
     events = extract_one(_slot_reads(vals, slot="get_over_here", ready=[True] * 50),
                          mapping={"get_over_here": "get_over_here"}, timers={"get_over_here": 8})
     casts = [e for e in events if e.kind == "ability_cast"]
-    assert len(casts) == 1 and casts[0].amount == 8 and abs(casts[0].t_to - 3.0) < 0.05
+    assert len(casts) == 1 and casts[0].amount == 8
+    assert abs(casts[0].t_to - 3.1) < 0.05, "known on the confirming read, not the first"
+    assert casts[0].t_from <= 1.9, "no earlier than the last timer's end allows, and no later"
 
 
 def test_a_timer_the_kit_cannot_produce_is_uncertain_not_a_cast():
@@ -891,7 +902,7 @@ def test_prohibition_marks_are_display_events_that_certify_nothing():
     assert all(e.slot in countdowns for e in certified)      # only where a countdown was read
 
 
-def test_a_cooldown_running_out_is_a_certified_return():
+def test_a_cooldown_watched_running_out_is_recorded():
     vals = [3] * 10 + [2] * 10 + [1] * 10 + [None] * 10
     events = extract_one(_slot_reads(vals, slot="get_over_here", ready=[True] * 40),
                          mapping={"get_over_here": "get_over_here"}, timers={"get_over_here": 8})
@@ -999,32 +1010,272 @@ def test_a_one_frame_misread_mid_countdown_is_nothing():
     assert not [e for e in events if e.kind in ("ability_cast", "ability_uncertain")]
 
 
-def test_an_uppercut_between_cast_lock_is_a_use():
+def test_an_uppercut_between_cast_lock_is_a_use_only_with_evidence_placing_it():
     """Every uppercut use shows the short between-cast lock ("1" on this patch).
-    Placing its start from the 6 s recharge wiped out nearly every uppercut cast
-    in a dry run; it is a use."""
-    vals = [None] * 10 + [1] * 8 + [None] * 10
-    events = extract_one(_slot_reads(vals, slot="uppercut", ready=[True] * 28), mapping={"uppercut": "uppercut"})
-    assert [e.kind for e in events if e.kind.startswith("ability_")] == ["ability_cast"]
+    A "1" after frames with no number could equally be the last second of a
+    recharge that began before the segment: uncertain. A charge badge read
+    beforehand places the use after it, less the lock itself."""
+    vals = [None] * 15 + [1] * 8 + [None] * 10
+    events = extract_one(_slot_reads(vals, slot="uppercut", ready=[True] * 33), mapping={"uppercut": "uppercut"})
+    assert [e.kind for e in events if e.kind.startswith("ability_")] == ["ability_uncertain"]
+    events = extract_one(_slot_reads(vals, slot="uppercut", charges=[1] * 33, ready=[True] * 33),
+                         mapping={"uppercut": "uppercut"})
+    (cast,) = [e for e in events if e.kind.startswith("ability_")]
+    assert cast.kind == "ability_cast" and cast.t_from <= 0.4 and cast.t_to == 1.6
 
 
-def test_an_unreadable_frame_alone_does_not_make_a_charged_use_uncertain():
-    """On the stream HUD most frames of a charged slot are unreadable (chat);
-    that is not the evidence that makes a use uncertain -- an out-of-kit read is."""
+def test_an_unread_frame_is_no_evidence_either_way_for_a_charged_use():
+    """On the stream HUD most frames of a charged slot are unreadable (chat).
+    Such a frame neither places a use (the countdown may have been running
+    unread) nor makes one doubtful; a charge badge read does place it, and an
+    out-of-kit read beside it makes it uncertain."""
     vals = [None] * 10 + [4] * 10 + [3] * 10
     ready = [None] * 10 + [True] * 20
     events = extract_one(_slot_reads(vals, slot="swing", ready=ready), mapping={"swing": "swing"})
+    assert [e.kind for e in events if e.kind.startswith("ability_")] == ["ability_uncertain"]
+    badge = [1] * 10 + [0] * 20
+    events = extract_one(_slot_reads(vals, slot="swing", charges=badge, ready=ready), mapping={"swing": "swing"})
     assert [e.kind for e in events if e.kind.startswith("ability_")] == ["ability_cast"]
     vals[5] = 9                                               # a number swing cannot show
-    events = extract_one(_slot_reads(vals, slot="swing", ready=ready), mapping={"swing": "swing"})
+    events = extract_one(_slot_reads(vals, slot="swing", charges=badge, ready=ready), mapping={"swing": "swing"})
     assert [e.kind for e in events if e.kind.startswith("ability_")] == ["ability_uncertain"]
 
 
-def test_a_cast_in_a_segments_first_second_counts_when_the_slot_was_seen_before_it():
+def test_a_countdown_that_may_predate_the_segment_is_uncertain_even_after_a_lit_slot():
     """A one-charge countdown first read at full just after the segment opens
-    may have started a moment before it -- unless the frame before shows the
-    slot lit with no number, which puts the start inside the segment."""
-    vals = [None] + [8] * 10 + [7] * 10
-    events = extract_one(_slot_reads(vals, slot="get_over_here", ready=[True] * 21),
+    may have started a moment before it. The frame before showing the slot lit
+    with no number does not settle it: that is also a running cooldown whose
+    digits went unread."""
+    vals = [None] * 3 + [8] * 10 + [7] * 10
+    events = extract_one(_slot_reads(vals, slot="get_over_here", ready=[True] * 23),
                          mapping={"get_over_here": "get_over_here"}, timers={"get_over_here": 8})
+    assert [e.kind for e in events if e.kind.startswith("ability_")] == ["ability_uncertain"]
+
+
+# --- review contract probes (writer-fix review of b6ae015) ------------------
+# Copied from the independent review. Each is a contract, not a tuning: they
+# failed on b6ae015 and hold for the evidence model above.
+
+def _probe_rows(values, slot="get_over_here", ready=True, start=0, playing=True):
+    result = []
+    for n, v in enumerate(values):
+        lit = ready[n] if isinstance(ready, list) else ready
+        i = start + n
+        result.append((i, round(i / 10, 3), Hud(hp=250, max_hp=250, bar_fill=1.0,
+                       abilities={slot: (lit, None)}, cooldowns={slot: v}), playing))
+    return result
+
+
+def _probe_events(rs, slot="get_over_here", full=8):
+    return extract_one(rs, mapping={slot: slot}, timers={slot: full})
+
+
+def _casts(es):
+    return [e for e in es if e.kind == "ability_cast"]
+
+
+def test_probe_lit_missing_number_does_not_prove_in_segment_cast():
+    # Segment opens mid-countdown, first glyph unreadable, then reads 5.
+    assert _casts(_probe_events(_probe_rows([None, 5, 5]))) == []
+
+
+def test_probe_unread_charge_slot_does_not_prove_in_segment_cast():
+    rs = _probe_rows([None] * 10 + [4] * 2, slot="swing", ready=[None] * 10 + [True] * 2)
+    assert _casts(_probe_events(rs, slot="swing", full=6)) == []
+
+
+def test_probe_number_dropout_does_not_narrow_event_interval():
+    # A use at 1.0 expires at 9.0, but the first readable digit is 4 at 5.0.
+    (event,) = _casts(_probe_events(_probe_rows([None] * 50 + [4] * 2)))
+    assert event.t_from <= 1.0, event
+
+
+def test_probe_confirmation_cannot_be_visible_in_an_earlier_prefix():
+    # First 8 at 2.0; confirming 7 at 3.0. At 2.0 no confirmed event exists.
+    rs = _probe_rows([None] * 20 + [8] + [None] * 9 + [7], ready=None)
+    short = [e for e in _probe_events(rs[:21]) if e.t_to <= 2.0]
+    long = [e for e in _probe_events(rs) if e.t_to <= 2.0]
+    assert short == long, long
+
+
+def test_probe_expiry_alone_is_not_observed_ready():
+    rs = _probe_rows([8, 8] + [None] * 85, ready=True)
+    es = _probe_events(rs)
+    ended = [e for e in es if e.kind == "cooldown_ended"]
+    observed_ready = bool(ended) and not any(
+        e.kind in ("ability_cast", "ability_uncertain") and e.t_to > ended[-1].t_to for e in es)
+    assert not observed_ready, ended
+
+
+def test_probe_non_play_timers_do_not_reclassify_own_play():
+    from perception.events import timer_lengths
+
+    own = _probe_rows([None] * 20 + [8] * 10 + [7] * 10 + [6] * 10 + [5] * 10, ready=None)
+    other = []
+    for start in (300, 600, 900):
+        other += _probe_rows([12] * 10 + [11] * 10 + [10] * 10, ready=None, start=start, playing=False)
+    short, _ = extract(own, mapping={"get_over_here": "get_over_here"})
+    long, _ = extract(own + other, mapping={"get_over_here": "get_over_here"})
+    a = [(e.kind, e.t_from, e.t_to) for e in short if e.kind == "ability_cast"]
+    b = [(e.kind, e.t_from, e.t_to) for e in long if e.kind == "ability_cast" and e.t_to <= own[-1][1]]
+    assert a
+    assert a == b, (timer_lengths(own), timer_lengths(own + other))
+
+
+def test_probe_one_max_hp_read_does_not_prove_both_sides_unchanged():
+    # A full 400 bonus pool decays to 394; after it max hp is unreadable.
+    rs = [(0, 0.0, Hud(hp=400, max_hp=400, bar_fill=1.0)),
+          (1, 0.1, Hud(hp=394, max_hp=None, bar_fill=1.0)),
+          (2, 0.2, Hud(hp=394, max_hp=None, bar_fill=1.0))]
+    (event,) = [e for e in extract_one(rs) if e.kind == "hp_lost"]
+    assert event.cause == "unknown", event
+
+
+def test_probe_ult_prohibition_is_not_a_spend():
+    rs = [(i, i / 10, Hud(hp=250, max_hp=250, bar_fill=1.0, ult_ready=v, ult_charge=q))
+          for i, (v, q) in enumerate([(True, 1.0), (False, 0.0), (False, 0.0), (True, 1.0)])]
+    assert [e for e in extract_one(rs) if e.kind == "ult_spent"] == []
+
+
+def test_a_timer_last_read_far_from_zero_records_no_end():
+    """An expiry by the clock alone is not recorded when the countdown was last
+    read with seconds to run: the slot after it is unknown, and an end event
+    there would read as the slot coming back."""
+    rs = _probe_rows([None] * 20 + [8] * 2 + [None] * 85, ready=True)
+    es = _probe_events(rs)
+    assert _casts(es) and not [e for e in es if e.kind == "cooldown_ended"]
+
+
+def test_an_ult_icon_coming_back_full_is_not_a_return():
+    """The other half of the prohibition mark: the icon lights again at full with
+    no refill seen, which is display, not the ult becoming ready."""
+    rs = [(i, i / 10, Hud(hp=250, max_hp=250, bar_fill=1.0, ult_ready=v, ult_charge=q))
+          for i, (v, q) in enumerate([(True, 1.0), (False, 0.0), (False, 0.0), (True, 1.0)])]
+    assert [(e.kind, e.slot) for e in extract_one(rs)] == [("icon_dimmed", "ult"), ("icon_lit", "ult")]
+
+
+# --- second review batch (native-frame review of b6ae015) --------------------
+
+def test_the_previous_timer_is_the_one_still_running_not_the_latest_made():
+    """Day team-up 101.6-145.6 s, the frozen reads: a countdown runs 14 -> 6;
+    chat read as "1" twice at 103.0 / 103.3 forms a timer of its own; at 109.9
+    two misread 8s (the slot shows 6). Against the chat timer the 8s passed the
+    kit check and became a cast while the cooldown was running."""
+    fx = _json.loads((ROOT / "tests/fixtures/teamup_prev.json").read_text())
+    rs = [(i, t, Hud(hp=250, max_hp=250, bar_fill=1.0, abilities={"teamup": (r, c)}, cooldowns={"teamup": cd}))
+          for i, t, cd, r, c in fx["frames"]]
+    events = extract_one(rs, mapping={"teamup": "teamup"}, timers={"teamup": 15})
+    assert not [e for e in events if e.kind == "ability_cast" and 101.6 <= e.t_to <= 115.5]
+    assert [e.kind for e in events if abs(e.t_to - 110.0) <= 0.2] == ["ability_uncertain"]
+
+
+def test_a_single_read_is_uncertain_once_its_expiry_passes():
+    """Req uppercut 89.7 / 98.5: one "1", every neighbour unreadable. A real
+    between-cast lock and a misread cannot be told apart; the stream says so,
+    from the moment the read could have been confirmed and was not."""
+    vals = [None] * 20 + [1] + [None] * 20
+    events = extract_one(_slot_reads(vals, slot="uppercut"), mapping={"uppercut": "uppercut"})
+    (e,) = [e for e in events if e.kind.startswith("ability_")]
+    assert e.kind == "ability_uncertain" and e.t_to >= 3.15 and e.t_from <= 2.0
+    early = extract_one(_slot_reads(vals[:30], slot="uppercut"), mapping={"uppercut": "uppercut"})
+    assert [x for x in early if x.t_to <= 3.0] == [x for x in events if x.t_to <= 3.0]
+
+
+def test_a_single_misread_inside_a_running_cooldown_is_nothing():
+    vals = [None] * 12 + [8] * 10 + [3] + [7] * 10 + [6] * 10 + [5] * 10 + [4] * 10
+    events = extract_one(_slot_reads(vals, slot="get_over_here"), mapping={"get_over_here": "get_over_here"},
+                         timers={"get_over_here": 8})
     assert [e.kind for e in events if e.kind.startswith("ability_")] == ["ability_cast"]
+
+
+def test_a_charged_slot_whose_timers_outrun_the_kit_writes_only_uncertainty():
+    """RECHARGE_S is the one length not measured. A patch that lengthened it
+    must not degrade silently: its own ticking timers above the kit contradict
+    it, and every use of that slot is then uncertain."""
+    from perception.events import kit_contradicted, timer_lengths
+
+    long = _slot_reads([None] * 12 + [9] * 10 + [8] * 10 + [7] * 10 + [None] * 20, charges=[1] * 12 + [0] * 50)
+    measured = timer_lengths(long, detail=True)
+    assert kit_contradicted(measured, {"swing": "swing"}) == {"swing"}
+    rs = [(*r, True) for r in long]
+    events, _ = extract(rs, mapping={"swing": "swing"})
+    assert [e.kind for e in events if e.kind.startswith("ability_")] == ["ability_uncertain"]
+    fits = _slot_reads([None] * 12 + [6] * 10 + [5] * 10 + [4] * 10, charges=[1] * 12 + [0] * 30)
+    assert kit_contradicted(timer_lengths(fits, detail=True), {"swing": "swing"}) == set()
+    # Day swing 152.5: one misread "8" inside a 6-5 recharge is not a longer timer.
+    one = _slot_reads([None] * 2 + [8] + [None] * 9 + [6] * 10 + [5] * 10 + [4] * 10,
+                      charges=[1] * 12 + [0] * 30)
+    assert kit_contradicted(timer_lengths(one, detail=True), {"swing": "swing"}) == set()
+
+
+def test_black_level_boundaries():
+    """Measured over all 17,986 frames of both train sections: firings at most
+    7.56, ordinary dark gameplay from 11.49 (Req 46.5 s, the underground map)."""
+    import numpy as np
+
+    from perception.events import is_black
+
+    for level, black in ((7, True), (11, False), (22, False)):
+        frame = np.full((1080, 1920, 3), 60, np.uint8)
+        frame[216:810, 384:1536] = level
+        assert is_black(frame) is black, level
+
+
+def test_native_dark_gameplay_is_not_black():
+    from perception.events import is_black
+
+    assert not is_black(_native("reqmr-2873352801-1980-900s", 46.5))
+
+
+def test_hp_cause_needs_max_hp_unchanged_not_merely_read():
+    """Max hp read on both sides but moved by a different amount than hp (the
+    ultimate's bonus coming off): not damage, and not a shield tick either."""
+    seq = reads(hud(hp=400, max_hp=500), hud(hp=150, max_hp=300), hud(hp=150, max_hp=300))
+    (e,) = [e for e in extract_one(seq) if e.kind == "hp_lost"]
+    assert e.cause == "unknown"
+
+
+def test_a_cast_interval_starts_no_earlier_than_its_timer_allows():
+    """The lower bound is expiry - full length, not the segment start."""
+    (e,) = _casts(_probe_events(_probe_rows([None] * 50 + [8] * 2)))
+    assert 3.7 <= e.t_from <= 3.9 and e.t_to == 5.1, e
+
+
+def test_a_weak_own_hero_match_is_visible_on_the_segment():
+    rs = [(i, i / 10, hud(), True, None, False, False, score)
+          for i, score in enumerate([0.41] * 5 + [0.37] * 3 + [0.41] * 5)]
+    _, segs = extract(rs, mapping=IDENTITY)
+    assert [s.hero_weak_frames for s in segs] == [3]
+    _, segs = extract([r[:7] for r in rs], mapping=IDENTITY)
+    assert [s.hero_weak_frames for s in segs] == [None]
+
+
+def test_a_timer_expiring_before_the_running_one_is_uncertain():
+    """A one-charge slot cannot start a second timer while one runs."""
+    vals = [None] * 40 + [8] * 10 + [5] * 2 + [7] * 10
+    events = extract_one(_slot_reads(vals, slot="get_over_here"), mapping={"get_over_here": "get_over_here"},
+                         timers={"get_over_here": 8})
+    assert [e.kind for e in events if e.kind.startswith("ability_")] == ["ability_cast", "ability_uncertain"]
+
+
+def test_without_a_length_a_first_timer_cannot_be_placed():
+    seq = reads(*[hud()] * 12, *[hud(get_over_here_cd=n) for n in (8, 8, 7, 7)])
+    got = extract_one(seq, mapping=IDENTITY)
+    assert [e.kind for e in got if e.kind.startswith("ability_")] == ["ability_uncertain"]
+
+
+def test_a_segment_whose_timer_outruns_the_source_length_gets_no_length():
+    """Team-up is Symbiote Bond (15 s) on the train sources and Parker Power-Up
+    (10 s) with another partner. A 15 s timer in a source measured at 10 must
+    not be placed with 10: that segment's first timer is then unplaceable."""
+    ten = [None] * 12 + [10] * 10 + [9] * 10 + [8] * 10 + [None] * 100
+    rs = [(i, round(i / 10, 3), Hud(hp=250, max_hp=250, bar_fill=1.0, abilities={"teamup": (True, None)},
+                                    cooldowns={"teamup": v}), True) for i, v in enumerate(ten * 3)]
+    fifteen = [None] * 12 + [15] * 10 + [14] * 10 + [13] * 10
+    start = len(rs) + 30
+    rs += [(start + i, round((start + i) / 10, 3), Hud(hp=0), True) for i in range(3)]      # a death between
+    rs += [(start + 3 + i, round((start + 3 + i) / 10, 3), Hud(hp=250, max_hp=250, bar_fill=1.0,
+            abilities={"teamup": (True, None)}, cooldowns={"teamup": v}), True) for i, v in enumerate(fifteen)]
+    events, segs = extract(rs, mapping={"teamup": "teamup"})
+    last = [e.kind for e in events if e.segment == len(segs) - 1 and e.kind.startswith("ability_")]
+    assert last == ["ability_uncertain"], last
