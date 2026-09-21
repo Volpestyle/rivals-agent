@@ -39,6 +39,7 @@ from .intents import Idle
 from .jev import pct
 from .replay import label
 from .state import ENEMY, State
+from .startup import StartRefused, start_pose
 from .tracker import Tracker
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -189,7 +190,7 @@ class LiveIO:
 
     def __init__(self, live=None):
         from .controller import Live
-        self.live = live or Live()
+        self.live = live or Live(settle_s=0)                            # no blind wait after the pad attaches: agent/startup.py follows at once
         self.t0 = self.live.frame_t
 
     def next(self):
@@ -358,10 +359,11 @@ class Loop:
     def __init__(self, source, pad, percept, decide=scripted.decide, *, log=None, controller=None, threaded=False,
                  reflex_hz=REFLEX_HZ, decision_hz=DECISION_HZ, max_s=MAX_S, keepalive_s=KEEPALIVE_S, warmup=True,
                  stale_s=STALE_S, scoreboard=True, scoreboard_every_s=None, brain_name="scripted", tracker=None, cooldowns="unknown",
-                 patch=None):
+                 patch=None, start=None):
         if cooldowns not in COOLDOWNS:
             raise ValueError(f"cooldowns must be one of {COOLDOWNS}, not {cooldowns!r}")
         self.patch = patch if patch is not None else kit_patch()   # the run's own metadata: the kit's current patch, or unknown
+        self.start = start           # the live start phase's record (agent/startup.py): the accepted start pose, its turns and timings
         self.cooldowns = cooldowns   # the range's "No Ability Cooldown": off = ON (infinite ammo, no cooldown numbers), normal = OFF
         self.source, self.pad, self.p, self.log, self.ctrl = source, pad, percept, log, controller or Controller()
         lock, tracker, self.coasting = threading.Lock(), tracker or Tracker(), ()
@@ -595,7 +597,59 @@ class Loop:
                 "decisions": dec.n, "decision_hz": round(dec.n / span, 1) if span else None, "decide_ms": spread(dec.ms),
                 "decision_lag_ms": spread(dec.lag), "missed_decisions": dec.missed, "sources": dict(self.sources),
                 "intents": dict(self.intents), "keepalives": self.keepalives, "range_gaps": self.gaps,
-                "scoreboards": self.boards, "errors": self.errors, "native": list(self.size) if self.size else None}
+                "scoreboards": self.boards, "errors": self.errors, "native": list(self.size) if self.size else None,
+                **({"start": self.start} if self.start is not None else {})}
+
+
+def _png(out):
+    """A saver writing native PNGs into `out` (made if missing): name -> file name, or None if the write failed."""
+    import cv2
+    out = Path(out)
+    out.mkdir(parents=True, exist_ok=True)
+    return lambda name, f: f"{name}.png" if cv2.imwrite(str(out / f"{name}.png"), f) else None
+
+
+def _save_start(out, start):
+    """--pose-only: the two confirming native frames (the second is the accepted start pose), every step row and frame, and start.json.
+    Best effort: a failing write is reported, never raised."""
+    try:
+        save = _png(out)
+        start["confirm_frames"] = [save(f"start-confirm-{k}", f) for k, (f, _) in enumerate(start.pop("frames"), 1)]
+        start["steps_file"] = _write_start_steps(out, start.pop("steps"), save)
+        (Path(out) / "start.json").write_text(json.dumps(start, indent=1))
+    except Exception as e:                              # noqa: BLE001 - a record, never a control
+        _say(f"loop: start record not written: {e!r}")
+
+
+def _write_start_steps(out, steps, save=None):
+    """The start phase's step rows (start-steps.jsonl) and their kept decision frames (start-step-NN.png), after the phase: for a refused
+    start as for an accepted one. Best effort: a failing write never changes the exit."""
+    try:
+        out = Path(out)
+        save = save or _png(out)
+        out.mkdir(parents=True, exist_ok=True)
+        with open(out / "start-steps.jsonl", "w") as fh:
+            for row, frame in steps:
+                row = dict(row, frame=save(f"start-step-{row['n']:02d}", frame) if frame is not None else None)
+                fh.write(json.dumps(row) + "\n")
+        return "start-steps.jsonl"
+    except Exception as e:                              # noqa: BLE001 - a record, never a control
+        _say(f"loop: start steps not written: {e!r}")
+        return None
+
+
+def _say(message):
+    """Print, best effort: a closed or broken stdout never changes the run's result. An interrupt still propagates."""
+    try:
+        print(message)
+    except Exception:                                   # noqa: BLE001
+        pass
+
+
+def _plaza_view():
+    """scripts/reenter.plaza_view, loaded before the pad opens (it pulls in opencv and the finder)."""
+    from reenter import plaza_view                      # scripts/, on sys.path through agent.controller
+    return plaza_view
 
 
 def make_brain(name):
@@ -628,21 +682,59 @@ def main(argv=None):
     ap.add_argument("--save-fps", type=float, default=10.0, help="native frames kept per second in the recording (0: none)")
     ap.add_argument("--scoreboard-every", type=float, help="also hold BACK for the scoreboard every N s (default: only at the end)")
     ap.add_argument("--no-scoreboard", action="store_true")
+    ap.add_argument("--pose-only", action="store_true", help="live: the start phase (agent/startup.py) and nothing after it: its steps and "
+                    "confirming frames saved to data/l1/<run>, the pad closed; exit 0 on a confirmed start pose, 1 on a refusal. No brain, "
+                    "no log, no loop, no scoreboard")
     a = ap.parse_args(argv)
-    if a.live and a.cooldowns not in ("off", "normal"):
+    if a.pose_only and not a.live:
+        ap.error("--pose-only needs --live")
+    if a.live and not a.pose_only and a.cooldowns not in ("off", "normal"):
         ap.error("--live needs --cooldowns off|normal (no default): a recording made with No Ability Cooldown ON is a different regime, "
                  "and a live run is one the operator can see")
 
+    start = percept = None
     if a.live:
-        source = pad = LiveIO()                         # confirms the range HUD before the pad opens
+        percept, plaza = default_perception(), _plaza_view()   # everything slow BEFORE the pad opens: the attach drift runs until priming
+        t_open = time.perf_counter()
+        source = pad = LiveIO()                         # confirms the range HUD before the pad opens; no blind wait after it attaches
+        opened = time.perf_counter()                    # LiveIO has returned: the pad attached before this
+        steps = []
+        try:
+            start = start_pose(source.live, percept.in_range, percept.idle, plaza, attached_t=opened, steps=steps)
+        except StartRefused as e:                       # Live is closed and nothing else was built; the process ends, and the device with it
+            _write_start_steps(ROOT / "data" / "l1" / a.run, steps)   # the evidence first: the message below may fail
+            _say(f"loop: STOP: {e}")
+            return 1
+        except Exception:                               # an unexpected failure: Live is closed; keep the evidence, then the exception as it was
+            _write_start_steps(ROOT / "data" / "l1" / a.run, steps)
+            raise
+        ms = dict(start["ms"])
+        if "attached_t_to_first_send_returned" in ms:   # measured from LiveIO's return, not from the device's attach
+            ms["liveio_return_to_first_send_return"] = ms.pop("attached_t_to_first_send_returned")
+        start = {"turns": start["turns"], "stamps_s_after_liveio_return": [round(t - opened, 4) for _, t in start["frames"]], "ms": ms,
+                 "liveio_ms": round((opened - t_open) * 1e3, 1), "frames": start["frames"], "steps": steps}
         out, save_fps, threaded = ROOT / "data" / "l1" / a.run, a.save_fps, True
+        if a.pose_only:                                 # M2: exactly the start phase, then stop; nothing below is reached
+            try:
+                _save_start(out, start)
+            finally:
+                source.close()                          # Live.close(): neutral, no input accepted after; the device ends with the process
+            _say(f"loop: pose only: plaza start view confirmed after {start['turns']} turns; saved in {out}")
+            return 0
     else:
         source, out, save_fps, threaded = RunSource(a.dry, a.limit), a.out, (a.save_fps if a.out else 0), a.threaded
         pad = FakePad(board=source.imread(str(source.items[0][1])) if source.items else None)
     try:                                                # from the moment the pad is open: a failing brain or log still closes it
-        loop = Loop(source, pad, default_perception(), make_brain(a.brain), threaded=threaded, brain_name=a.brain,
-                    log=RunLog(out, save_fps) if out else None, reflex_hz=a.reflex_hz, decision_hz=a.decision_hz, max_s=a.max_s,
-                    scoreboard=not a.no_scoreboard, scoreboard_every_s=a.scoreboard_every, cooldowns=a.cooldowns or "unknown")
+        brain = make_brain(a.brain)                     # before the log: a brain that cannot be built leaves no run directory
+        log = RunLog(out, save_fps) if out else None
+        if start is not None:                           # the two confirming frames: the second is the accepted start pose
+            frames = start.pop("frames")
+            start["confirm_frames"] = [log.save(f"start-confirm-{k}", f) if log else None for k, (f, _) in enumerate(frames, 1)]
+            start["steps_file"] = _write_start_steps(out, start.pop("steps"), log.save if log else None)
+        loop = Loop(source, pad, percept or default_perception(), brain, threaded=threaded, brain_name=a.brain,
+                    log=log, reflex_hz=a.reflex_hz, decision_hz=a.decision_hz, max_s=a.max_s,
+                    scoreboard=not a.no_scoreboard, scoreboard_every_s=a.scoreboard_every, cooldowns=a.cooldowns or "unknown",
+                    warmup=not a.live, start=start)     # live: no forced walk / back / RT at the start: it would move off the confirmed pose
         print(json.dumps(loop.run(), indent=1))
     finally:
         if a.live:

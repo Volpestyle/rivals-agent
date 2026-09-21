@@ -83,6 +83,70 @@ them, so its 59 dropped offers are a replay artifact: at 10 Hz the gap is 100 ms
 Dry run over all of `tagrun0`: 609 ticks, no guard tripped (609/609 frames are in range, none shows the idle banner), no
 errors; scripted brain: 287 `search`, 212 `engage:enemy`, 110 `combo:burst` ticks; one keep-alive (the warm-up).
 
+## The start pose, in the loop's own pad session (VUH-1314)
+
+A freshly attached virtual pad turns the camera LEFT at about 25 deg/s from within ~70 ms of attaching, through any number of neutral
+reports, until the first non-neutral report or the disconnect (measured, `docs/lanes/l4-controller.md`; the cause, the game, Steam Input
+or the attach, is not established). The pose re-entry confirmed is therefore not the pose a new pad session starts from, and the loop's
+old 3 s blind wait after attaching was about 75 degrees of it. On a live run (`--live`) `main` now:
+
+1. builds perception and loads `plaza_view` (scripts/reenter.py) BEFORE the pad opens, so nothing slow sits between the attach and
+   the first input;
+2. opens the pad with `LiveIO()`, which constructs `Live(settle_s=0)`: the range HUD is proven before the pad opens, and there is no
+   wait after it attaches;
+3. runs `agent/startup.py` `start_pose` before any decision offer, controller step, brain, log or `Loop`: a fresh frame acquired after
+   the attach is proven (range HUD, no idle banner); ONE priming pulse, right stick rx +0.45 with every other axis, trigger and button
+   neutral, 0.3 s, at the earliest guarded send (`camera_pulse`: before EVERY write a fresh frame shows the range HUD and no idle banner, and each write goes through
+   `Live.send`, proven, whitelisted and leased; neutral on every exit; `Live.hold` re-proves the range only), sent even if the view
+   already passes. M1 (`docs/lanes/l4-controller.md`): the prime ends the attach drift at every schedule tried (0.04-0.7 deg in the 2.8 s
+   after it, against about 70 unprimed; 0.0 deg of drift before it at the earliest send), and itself turns the view about 52-58 deg
+   right, which leaves the bot about 50 deg to the LEFT. Then neutral, 5 s of frames only (`START_SETTLE_S`); then two DISTINCT fresh
+   acquisitions with `plaza_view` true; otherwise a search pulse to the LEFT (`SEARCH_TURN_RX` -0.45, 0.3 s), 0.15 s of frames only
+   (`TURN_SETTLE_S`), and again. The search is bounded and goes the way the prime displaced the view; it is not a claim that one left
+   pulse cancels the prime, nor that the bot found is the one the arrival faced. The two waits are DELAYS
+   with the guards checked on every frame, not tests: nothing checks that the device switch cleared or that the view is still (a
+   confirmation on a moving view has been seen in an arrival). 5 s after the prime is a modest margin over M1's "Switching Devices"
+   banner, which ended 4.2-4.3 s after the prime went neutral; 0.15 s after a search pulse is not yet measured. M2 checks clearance and
+   stillness by eye: a banner still up or a moving view is a failed acceptance, whatever `plaza_view` and the exit code say. At most 7 pulses in all, the priming pulse included, and 14 s overall, checked after each capture and
+   its guards, before every write (each pulse ends at the deadline if that comes first) and before acceptance: a caller-side scheduling
+   check, not a guarantee about when Live.send's write reaches the device; the range HUD gone, the
+   idle banner, a capture with no new frame, a refused write or any exception closes Live and refuses: "plaza start view not confirmed".
+   The budget: the prime (0.3 s plus its proof capture), the 5 s delay, then up to six search turns of about 0.5-0.6 s each (a proof
+   capture, 0.3 s of writes each after a fresh capture, 0.15 s of frames, two looks) come to about 8.5-9.5 s at the 65-75 frames/s
+   dxcam delivers on the plaza, inside 14 s. It refuses on the seventh pulse without two passing frames, or earlier on the deadline
+   if captures slow the phase past 14 s.
+   Each step (pulse, delay, look, acceptance or refusal) is recorded after it, in memory, never between a proof and a write, with the
+   latest frame actually acquired (a refusal carries the frame that failed; a pulse cut short is recorded as INTERRUPTED, after it is
+   neutral, never as completed; past 24 kept frames the row says the frame is missing, never an older one). These are the latest
+   frames the PHASE acquired, not necessarily the exact frame Live.send proved a write on, if it refreshed its own. `main` writes them
+   afterwards as `start-steps.jsonl` and `start-step-NN.png` in the run's folder, for a refused start, an unexpected failure (then the
+   exception as it was) and an accepted start alike; the evidence is written before the STOP message, and neither the record nor any of
+   this output can change the phase, the close or the exit (an interrupt still propagates). `main` then returns 1 with nothing else built (no brain,
+   no log, no `Loop`, so no end-of-run scoreboard), and the process, and the device with it, ends;
+4. on success builds the brain and the log, saves both confirming frames (`start-confirm-1.png`, `start-confirm-2.png`; the second is
+   the accepted start pose), writes the phase into `meta.json` (`start`: turns, the confirming frames' stamps after `LiveIO()` returned, the
+   phase's timings, among them `liveio_return_to_first_send_return`: from `LiveIO()`'s return to the first pulse send's return, which
+   leaves out Live's own work after the device attached and includes the send's overhead; the attach itself is M1's to time), and runs the `Loop` with the forced start walk / back / RT off
+   (`warmup=False`), so the episode clock and the controller's and tracker's camera history begin after the pose. The long-idle
+   keep-alive is unchanged, and a replay (`--dry`) keeps the warm-up.
+
+**Pose only (`--live --pose-only`, for M2).** The same path up to the end of the start phase, then stop: the same perception and
+`plaza_view` loaded first, the same `LiveIO()` (range HUD proven before the pad opens, `Live(settle_s=0)`), the same `opened` origin
+for the step stamps, `start_pose` unchanged. On a confirmed pose it saves both confirming native frames (`start-confirm-1.png`,
+`start-confirm-2.png`), every step row and frame (`start-steps.jsonl`, `start-step-NN.png`) and `start.json` in `data/l1/<run>`, closes
+the pad and exits 0; a refusal takes the same branch as a live run (steps written, exit 1). It returns before any brain, `RunLog`,
+`Loop`, `Loop.run` or scoreboard exists, and needs no `--cooldowns` (it records no gameplay). Tests: the pose-only ones in
+`tests/test_startup.py` fail if any of those is built.
+
+`plaza_view` certifies an enemy box in the open in the middle of the view: not a bot's identity, not navigable ground; seven turns is
+a command budget, not a claim of full coverage. The pulse's effect on the drift is not yet measured: `scripts/padprime_m1.py` is that
+measurement (one session per invocation, the same `camera_pulse` at the earliest guarded send, +0.1 s or +0.3 s after the attach, then
+3 s of frames only; it reports the constructor return, when the first and last non-neutral `pad.update()` returned inside Live's lock,
+with the observer's overhead and not the device's receipt, or "unavailable" if the observation failed, and the release; the yaw comes
+from the recording). Its observer (`watch_pad`) is best-effort: the real update's result and exceptions pass through, a failure of its
+own bookkeeping never stops the write, the lease renewal or a neutral.
+Tests: `tests/test_startup.py`, `tests/test_padprime_m1.py`.
+
 ## Safety
 
 Every rule is enforced at one choke point (`_tick` and `clean`), and each has a test that fails without it (25 hand-made
