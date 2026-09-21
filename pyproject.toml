@@ -7,9 +7,21 @@ dependencies = []
 [dependency-groups]
 dev = ["pytest"]
 perception = ["opencv-python-headless>=4.10", "numpy>=2.0"]
+# The learned chooser: MLX on this Mac's GPU, mlx-image for the pretrained frame encoders.
+# ffmpeg (homebrew, not a Python package) decodes and scales; nothing here imports opencv.
+policy = ["numpy>=2.0", "mlx-image>=0.1.10"]  # mlx-image pins mlx==0.24.2
 
 [tool.uv]
 package = false
+# Three overrides, all forced by mlx-image 0.1.10's exact pins, all checked by tests/test_policy.py:
+#   numpy / mlx  it pins numpy==1.26.2 and mlx==0.24.2, which would drag every group (the
+#                perception lanes included) onto a numpy 1 stack. It runs fine on current versions.
+#   opencv       it depends on opencv-python, which installs a SECOND cv2 beside the perception
+#                group's opencv-python-headless and breaks `import cv2` for every perception lane.
+#                Both distributions provide cv2 and must never be installed together. The
+#                never-true marker drops it: mlx-image needs cv2 only in its image-IO and
+#                ImageFolder helpers, and the policy lane decodes with ffmpeg and imports neither.
+override-dependencies = ["numpy>=2.0", "mlx>=0.29", "opencv-python; sys_platform == 'never'"]
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
