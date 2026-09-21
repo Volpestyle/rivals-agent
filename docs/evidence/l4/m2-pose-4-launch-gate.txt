@@ -1,0 +1,17 @@
+The gate used for m2-pose-4, as run (zsh, on the Mac; S = this lane's scratch directory).
+
+1. The arrival, run bare; its whole output goes to a file and nothing filters it before its status is read:
+     zsh $S/reenter_plain.sh m2d > $S/reenter-m2d.out 2>&1
+   (m2-pose-4-launch-arrival.sh. On the PC it runs, detached from a desk job, under cmd /v:on:
+     echo START %time% > data\l4\reenter-m2d.log & uv run ... python scripts\reenter.py >> data\l4\reenter-m2d.log 2>&1 & echo EXIT !errorlevel! !time! >> data\l4\reenter-m2d.log
+    so the EXIT line is reenter.py's OWN exit status, written by cmd before anything reads the log.)
+2. The controlling status, read straight from that PC log, no grep / tail in between:
+     real=$(zsh ~/.claude/skills/windows-pc/pc.sh "(Select-String -Path C:\rivals-agent\data\l4\reenter-m2d.log -Pattern '^EXIT (\d+)').Matches[0].Groups[1].Value" | tr -d '[:space:]')
+   It printed: reenter.py own exit status: [0]
+3. Corroboration only: the log's line "reenter: in the Practice Range as Spider-Man", and the end pose by eye on a desktop
+   screenshot (m2-pose-4-arrival-endpose.jpg): on the plaza facing the Luna Snow bot, no door in view.
+4. Only then, in the next shell call (shell variables do not persist between this lane's tool calls, so the status read in
+   step 2 was carried over by hand as real=0):
+     real=0 && if [[ "$real" == "0" ]] && grep -q "in the Practice Range as Spider-Man" $S/reenter-m2d.out; then zsh $S/m2.sh 4; else echo "gate closed: no pose-only invocation"; fi
+   (m2-pose-4-launch-pose-only.sh: refuses a run name that already exists, starts the native ddagrab -> h264_nvenc recording,
+    then ONE `python -m agent.loop --live --pose-only --run m2-pose-4`.)
