@@ -79,7 +79,13 @@ SHIELD_WINDOW = 3   # frames apart that an hp and a max-hp change may still be o
 #    no ability by itself -- the binding is a player setting, and the two guide
 #    sources have Web-Swing and Get Over Here the other way round from the clip
 #    the layout was measured on.
-FORMAT_VERSION = 3
+# 4: edited sources. Segments break on an editorial cut, with `ended_by`
+#    "hard_cut" and `started_by` "after_cut"; the meta line gains `cuts` (how
+#    many were found, 0 for a continuous capture) and `observed` (the cooldowns
+#    this source's own HUD showed, a patch fingerprint). `slot_mapping` is null
+#    when no mapping was attempted, where it was previously {} -- {} now means
+#    only that the icons were read and none identified.
+FORMAT_VERSION = 4
 ULT = "ult"
 
 # --- is Spider-Man the hero being played? ---------------------------------
@@ -632,13 +638,17 @@ def extract_one(reads, debounce=None, seg_index=0, mapping=None):
             if described is None:
                 continue
             kind, slot, amount = described
-            # No mapping means the caller already knows its slot names. A mapping
-            # that omits a position means its icon could not be identified, and
-            # the ability is reported as unknown rather than guessed.
-            if mapping is None or not slot or slot == ULT:
+            # `slot` here is the layout POSITION. Turning it into an ability
+            # name needs the icon mapping, and without one the name is unknown:
+            # the position order differs per player, so copying the position
+            # across is a guess, and wrong on every source that swaps two slots.
+            # A mapping that omits a position means its icon could not be read,
+            # which is the same unknown. The ult is exempt -- there is one, and
+            # no icon has to be identified to know which.
+            if not slot or slot == ULT:
                 named = slot
             else:
-                named = mapping.get(slot)
+                named = mapping.get(slot) if mapping else None
             events.append(Event(kind=kind, i_from=from_i, t_from=from_t, i_to=i, t_to=t,
                                 slot=named, slot_pos=slot, amount=amount,
                                 before=before, after=after, segment=seg_index))
@@ -766,8 +776,11 @@ def read_run(run_dir, limit=None, progress=None, layout=None):
     # cuts.json is written next to the frames by whoever extracted them, because
     # the cut can only be seen in the video the frames came from.
     cuts_file = Path(run_dir) / "cuts.json"
-    cuts = json.loads(cuts_file.read_text()) if cuts_file.exists() else []
-    flags = _cut_flags(cuts, rows)
+    # No cuts.json means nobody ran the detection, which is not the same as
+    # finding no cuts: the flag is None, and the meta line says null rather
+    # than claiming a continuous capture that was never checked.
+    flags = (_cut_flags(json.loads(cuts_file.read_text()), rows)
+             if cuts_file.exists() else [None] * len(rows))
     out = []
     for n, row in enumerate(rows, 1):
         frame = cv2.imread(str(Path(run_dir) / row["file"]))
@@ -823,6 +836,81 @@ def sampling_fps(reads):
     return round(1.0 / gaps[len(gaps) // 2], 3)
 
 
+def observed(events):
+    """What this source's own footage says each ability's timings are.
+
+    A balance patch changes cooldowns, so the cooldowns visible in a recording
+    date it: footage whose only date is an upload can be placed against the
+    patch history in docs/spiderman-kit.md. Every number here is measured off
+    the HUD in this one source. **No kit value appears in this file** -- the
+    patch is stated in one place, that doc, and a copy here would drift from it.
+
+    Per slot:
+      casts           how many cooldown-proved casts it rests on
+      countdown_mode  **the fingerprint.** The most common countdown number seen
+                      the instant after a cast: the ability's cooldown as the
+                      game itself printed it. Lower numbers in `countdown` are
+                      reads that caught the timer after it had already ticked,
+                      so the mode is the full value and the tail sits below it.
+      countdown       every number seen, and how often -- so the mode can be
+                      judged rather than trusted
+      relock_s        median seconds from a cast to the slot being usable again
+      recast_s        p10 and median gap between consecutive casts, as support
+      charges         the highest charge count the badge ever showed. **This
+                      reads one below the true maximum**, because the badge is
+                      not drawn while the ability is at full charge: measured
+                      as 1 against a kit 2 for Amazing Combo and 2 against a kit
+                      3 for Web-Swing, on all six sources. Compare it to
+                      kit - 1, or use it only to tell two patches apart.
+
+    **The gap between casts is not the cooldown and must not be used as one.**
+    A player presses when the fight allows, not the instant the timer clears, so
+    the distribution has no floor at the true value; and its minimum is worse
+    still, being whatever artifact is shortest -- measured here at 0.4-0.6 s for
+    Get Over Here, which has an 8 s cooldown. The countdown the HUD prints is
+    the game's own statement and needs no such inference.
+    """
+    by_slot = {}
+    for e in events:
+        by_slot.setdefault(e.slot, []).append(e)
+    out = {}
+    # An unidentified slot is dropped: its casts are real but nobody knows which
+    # ability they belong to, so they cannot time one.
+    for slot in sorted(s for s in by_slot if s is not None):
+        evs = by_slot[slot]
+        casts = [e for e in evs if e.kind == "ability_cast"]
+        available = [e for e in evs if e.kind == "slot_available"]
+        row = {"casts": len(casts)}
+        numbers = [int(e.amount) for e in casts if e.amount is not None]
+        if numbers:
+            row["countdown_mode"] = max(set(numbers), key=numbers.count)
+            row["countdown"] = {str(v): numbers.count(v) for v in sorted(set(numbers))}
+        # Cast -> usable again, inside one segment: across a break the slot may
+        # have come back during footage nobody saw. Each availability is paired
+        # with the *nearest preceding* cast -- pairing every cast with its next
+        # availability instead credits one recharge to a whole combo, and turns
+        # a 2 s relock into the length of the combo that preceded it.
+        relock = []
+        for a in available:
+            prior = [c for c in casts if c.t_to <= a.t_to and c.segment == a.segment]
+            if prior:
+                relock.append(a.t_to - prior[-1].t_to)
+        if relock:
+            row["relock_s"] = round(sorted(relock)[len(relock) // 2], 2)
+            row["relock_n"] = len(relock)
+        gaps = sorted(round(b.t_to - a.t_to, 2) for a, b in zip(casts, casts[1:])
+                      if b.segment == a.segment)
+        if gaps:
+            row["recast_s"] = {"p10": gaps[int(len(gaps) * 0.1)],
+                               "median": gaps[len(gaps) // 2], "n": len(gaps)}
+        charges = [v for e in evs if e.kind.startswith("charges_")
+                   for v in (e.before, e.after) if isinstance(v, int)]
+        if charges:
+            row["charges"] = max(charges)
+        out[slot] = row
+    return out
+
+
 def dump(events, segments, reads, layout="pad", source=None, mapping=None,
          pts_origin=None):
     """The per-clip JSONL: one meta line, then a segment line each, then events.
@@ -854,14 +942,22 @@ def dump(events, segments, reads, layout="pad", source=None, mapping=None,
         "duration_s": round(max(r[1] for r in reads) - min(r[1] for r in reads), 3) if reads else 0.0,
         # How many editorial cuts were found in this source, and 0 for a
         # continuous capture. A null says nobody looked, which is not the same.
-        "cuts": sum(1 for r in reads if len(r) > 6 and r[6]) if reads else None,
+        "cuts": (sum(1 for r in reads if len(r) > 6 and r[6]) if reads
+                 and any(len(r) > 6 and r[6] is not None for r in reads) else None),
+        # Cooldowns as this source's own HUD showed them: a patch fingerprint
+        # for footage dated only by an upload. See `observed`.
+        "observed": observed(events),
         "segments": len(segments),
         "events": len(events),
         # Which ability sits in each layout position, and how that was decided.
         # Positions missing from this map could not be identified; their events
-        # carry slot: null rather than a guessed ability.
-        "slot_mapping": mapping or {},
-        "slot_mapping_from": "ability icon matched by shape, voted over sampled frames",
+        # carry slot: null rather than a guessed ability. **null, not {}, when
+        # no mapping was attempted at all** -- a file nobody identified must not
+        # read as one whose icons were checked and found absent.
+        "slot_mapping": mapping if mapping is not None else None,
+        "slot_mapping_from": (
+            "ability icon matched by shape, voted over sampled frames"
+            if mapping is not None else None),
     })]
     lines += [json.dumps({"type": "segment", **asdict(s)}) for s in segments]
     lines += [json.dumps(asdict(e)) for e in events]

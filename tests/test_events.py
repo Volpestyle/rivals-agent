@@ -44,6 +44,13 @@ def kinds(events):
     return [(e.kind, e.slot) for e in events]
 
 
+# Most tests here are about what the readers see, not about which ability sits
+# where, so they pass the mapping a source with our own slot order would give.
+# Without one every slot is legitimately unknown -- see the mapping tests.
+IDENTITY = {"teamup": "teamup", "swing": "swing",
+            "get_over_here": "get_over_here", "uppercut": "uppercut"}
+
+
 # --- the None rule --------------------------------------------------------
 
 def test_unknown_emits_nothing_and_breaks_nothing():
@@ -87,7 +94,7 @@ def test_a_dim_icon_is_a_lockout_not_a_cast():
     with the charge count unchanged, and that used to read as a use. An icon
     dimming says only that the slot is unusable right now."""
     seq = reads(hud(), hud(swing_ready=False), hud(), hud())
-    got = kinds(extract_one(seq))
+    got = kinds(extract_one(seq, mapping=IDENTITY))
     assert got == [("slot_unavailable", "swing"), ("slot_available", "swing")]
     assert not any(k == "ability_cast" for k, _ in got)
 
@@ -95,7 +102,7 @@ def test_a_dim_icon_is_a_lockout_not_a_cast():
 def test_a_cooldown_number_appearing_is_a_cast():
     """What actually proves a cast: the slot's icon is replaced by a countdown."""
     seq = reads(hud(), hud(get_over_here_cd=8), hud(get_over_here_cd=8), hud(get_over_here_cd=7))
-    casts = [e for e in extract_one(seq) if e.kind == "ability_cast"]
+    casts = [e for e in extract_one(seq, mapping=IDENTITY) if e.kind == "ability_cast"]
     assert len(casts) == 1 and casts[0].slot == "get_over_here"
     assert casts[0].amount == 8          # the cooldown it started at
 
@@ -136,7 +143,7 @@ def test_every_event_kind():
         ("ult_ready", "ult"): (hud(ult=False), hud(ult=True), hud(ult=True)),
     }
     for want, huds in cases.items():
-        got = kinds(extract_one(reads(*huds)))
+        got = kinds(extract_one(reads(*huds), mapping=IDENTITY))
         assert want in got, f"{want} not in {got}"
 
 
@@ -245,6 +252,19 @@ def test_a_source_with_no_cuts_segments_exactly_as_before():
            [(s.started_by, s.ended_by) for s in segment(_cut_at(huds, set()))]
 
 
+def test_a_source_nobody_checked_for_cuts_says_so_rather_than_claiming_none():
+    """0 means the detection ran and found nothing; null means it never ran."""
+    import json
+
+    from perception.events import dump
+
+    huds = [hud(hp=250)] * 3
+    unchecked = _tagged(huds, [True] * 3)                      # no cut flag at all
+    checked = _cut_at(huds, set())                             # ran, found none
+    assert json.loads(dump([], [], unchecked).splitlines()[0])["cuts"] is None
+    assert json.loads(dump([], [], checked).splitlines()[0])["cuts"] == 0
+
+
 def test_cut_times_land_on_the_first_frame_of_the_new_scene():
     from perception.events import _cut_flags
 
@@ -253,6 +273,58 @@ def test_cut_times_land_on_the_first_frame_of_the_new_scene():
     assert [n for n, f in enumerate(_cut_flags([0.35], rows)) if f] == [4]
     # Two cuts inside one sampling interval still only break once.
     assert sum(_cut_flags([0.31, 0.34], rows)) == 1
+
+
+def test_observed_cooldowns_are_measured_not_assumed():
+    """The patch fingerprint: what the HUD showed, per ability, per source."""
+    from perception.events import Event, observed
+
+    def cast(t, amount):
+        return Event("ability_cast", int(t * 10), t, int(t * 10) + 1, t + 0.1,
+                     slot="uppercut", amount=amount)
+
+    evs = [cast(0.0, 6), cast(1.0, 6), cast(5.0, 6),
+           Event("slot_available", 70, 7.0, 71, 7.1, slot="uppercut"),
+           Event("charges_spent", 80, 8.0, 81, 8.1, slot="uppercut",
+                 before=2, after=1)]
+    got = observed(evs)["uppercut"]
+    assert got["casts"] == 3
+    assert got["countdown_mode"] == 6            # the game printed 6 every time
+    assert got["countdown"] == {"6": 3}
+    assert got["charges"] == 2
+    # One availability, credited to the cast just before it (7.1 - 5.1), not to
+    # the whole combo that led up to it.
+    assert got["relock_s"] == 2.0 and got["relock_n"] == 1
+
+
+def test_the_countdown_mode_survives_reads_that_caught_the_timer_late():
+    """A cast read a tick late prints 7, not 8; the full value must still win."""
+    from perception.events import Event, observed
+
+    def cast(n, amount):
+        return Event("ability_cast", n * 100, n * 10.0, n * 100 + 1, n * 10.0 + 0.1,
+                     slot="get_over_here", amount=amount)
+
+    evs = [cast(n, a) for n, a in enumerate([8, 8, 8, 8, 8, 7, 7, 6, 5, 2])]
+    got = observed(evs)["get_over_here"]
+    assert got["countdown_mode"] == 8
+    assert got["countdown"]["8"] == 5 and got["countdown"]["2"] == 1
+
+
+def test_a_cooldown_is_not_measured_across_a_segment_break():
+    """The slot may have come back during footage nobody saw."""
+    from perception.events import Event, observed
+
+    evs = [Event("ability_cast", 0, 0.0, 1, 0.1, slot="swing", amount=6, segment=0),
+           Event("ability_cast", 90, 9.0, 91, 9.1, slot="swing", amount=6, segment=1)]
+    assert "recast_s" not in observed(evs)["swing"]
+
+
+def test_an_unidentified_slot_reports_no_cooldowns():
+    from perception.events import Event, observed
+
+    evs = [Event("ability_cast", 0, 0.0, 1, 0.1, slot=None, slot_pos="teamup")]
+    assert observed(evs) == {}
 
 
 def test_events_are_labelled_with_their_segment():
@@ -358,3 +430,34 @@ def test_an_unmapped_slot_reports_no_ability_rather_than_a_guess():
     blank = extract_one(seq, mapping={})
     assert [(e.kind, e.slot, e.slot_pos) for e in blank] == \
         [("ability_cast", None, "swing")]
+
+
+def test_no_mapping_at_all_is_unknown_not_the_layout_position():
+    """`slot` is an ability, `slot_pos` a position, and without the icon
+    mapping the ability is unknown. Copying the position across guesses, and
+    guesses wrong on every source whose slot order differs from ours -- which
+    is both Day sections and both guide windows."""
+    seq = reads(hud(), hud(swing_cd=6), hud(swing_cd=6))
+    got = extract_one(seq, mapping=None)
+    assert [(e.kind, e.slot, e.slot_pos) for e in got] == \
+        [("ability_cast", None, "swing")]
+
+
+def test_the_ult_needs_no_icon_mapping():
+    """There is one ult; knowing which ability it is needs no icon read."""
+    seq = reads(hud(ult=True), hud(ult=False), hud(ult=False))
+    assert ("ult_spent", "ult") in kinds(extract_one(seq, mapping=None))
+
+
+def test_a_file_with_no_mapping_says_so_rather_than_showing_an_empty_one():
+    """{} means the icons were read and none identified; null means nobody
+    looked. A loader must be able to tell those apart."""
+    import json
+
+    from perception.events import dump
+
+    seq = reads(hud(), hud(swing_cd=6), hud(swing_cd=6))
+    meta = json.loads(dump(extract_one(seq, mapping=None), [], seq).splitlines()[0])
+    assert meta["slot_mapping"] is None and meta["slot_mapping_from"] is None
+    meta = json.loads(dump(extract_one(seq, mapping={}), [], seq, mapping={}).splitlines()[0])
+    assert meta["slot_mapping"] == {} and meta["slot_mapping_from"]

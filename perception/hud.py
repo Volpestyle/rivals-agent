@@ -1202,6 +1202,13 @@ def read_cooldown(frame, name, layout=PAD) -> int | None:
         glyphs = [(b, classify(_normalise(mask, b)))
                   for b in _segment(mask, COOLDOWN_SIZE) if b[2] <= b[3]]
         for group in _groups(glyphs):
+            # A countdown is at most two digits: the slot draws whole seconds
+            # and the longest cooldown in the kit is 15 s. Three digits is never
+            # a countdown, and letting them through cost real data -- chat that
+            # happened to sit centred in the slot read as 120..188 and each one
+            # became a phantom cast, about twenty of them in one 15 min section.
+            if len(group) > 2:
+                continue
             value = _number(group)
             if value is None:
                 continue

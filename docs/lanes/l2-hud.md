@@ -2,11 +2,33 @@
 
 ## Event stream format
 
+### Upgrading a loader from format 2 — the exact diff
+
+`agent/demos.py` reads format 2 and so refuses every file on disk. Everything
+below is what changed; **nothing was removed or renamed between 2 and 4**, so a
+loader that accepts the new values and keys is done.
+
+| # | Change | What a loader must do |
+|---|---|---|
+| 3 | `slot` is now **the ability the icon says is in that position**, or `null` when the icon could not be identified. The layout position moved to the new **`slot_pos`**. | Read the ability from `slot`, not from position. Treat `null` as unknown — never fall back to `slot_pos`, which names a position, not an ability. |
+| 3 | meta gains **`slot_mapping`** (position → ability) and **`slot_mapping_from`**. | Optional. Use it to check a source's key order. |
+| 4 | `ended_by` gains **`hard_cut`**, `started_by` gains **`after_cut`** — an editorial cut in an edited upload. | Accept the two new values. A segment still never spans one. |
+| 4 | meta gains **`cuts`**: how many cuts were found, `0` for a continuous capture, `null` for "nobody looked". | Optional. |
+| 4 | meta gains **`observed`**: the cooldowns this source's own HUD showed, per ability. | Optional; see **Patch fingerprint**. |
+| 4 | meta `slot_mapping` is **`null` when no mapping was attempted**, where format 3 wrote `{}`. `{}` now means the icons *were* read and none identified. | Distinguish the two. Every file written so far carries a real mapping, so nothing on disk changes meaning. |
+
+Event `kind` values, the `t_*`/`i_*` semantics and the three-line-kind layout
+are unchanged from 2. **Slot `pull` became `get_over_here` back in format 2.**
+
+A format change is a cross-lane interface change; this table is the contract.
+
+### The format itself
+
 `data/demos/events/<clip-stem>.jsonl` is the agreed location, one file per clip,
 written by `perception/events.py`. Three line kinds, told apart by `type`:
 
 ```jsonc
-{"type": "meta", "format": 3, "source": "reqmr-2873352801-1920", "layout": "mk",
+{"type": "meta", "format": 4, "source": "reqmr-2873352801-1920", "layout": "mk",
  "frames": 601, "fps": 10.0, "t_origin": "first frame of the media",
  "pts_origin_s": 0.0, "duration_s": 60.0, "segments": 4, "events": 106,
  "slot_mapping": {"teamup": "teamup", "swing": "swing",
@@ -41,10 +63,17 @@ Order is meta, then segments in time order, then events in time order.
   `scoreboard_closed`, `hero_returned`, `hud_returned`, `after_cut`.
 - **`cuts` in the meta line counts the source's editorial cuts**, and is `0` for
   a continuous capture. `null` means nobody looked, which is not the same thing.
-- **`format` is 3.** Version 1 had `ability_used` / `ability_ready` and called a
+- **`observed` in the meta line is what this source's own HUD said each
+  ability's cooldown is** — a patch fingerprint for footage dated only by an
+  upload. See **Patch fingerprint** below for what each number means and which
+  two of them do not mean what they look like.
+- **`format` is 4.** Version 1 had `ability_used` / `ability_ready` and called a
   slot `pull`. Version 2 split those into `ability_cast` and
   `slot_unavailable` / `slot_available`. Version 3 makes `slot` the ability read
-  off the icon and adds `slot_pos`. See **Format 3** and **Format 2** below.
+  off the icon and adds `slot_pos`. Version 4 adds the editorial-cut break and
+  the `cuts` and `observed` meta keys. The upgrade table at the top of this
+  section is the contract; **Format 3** and **Format 2** below give the
+  reasoning behind each.
 - Event `kind` is one of: **`ability_cast`** (with `slot`; `amount` is the
   cooldown it started at), **`slot_unavailable`** / **`slot_available`** (with
   `slot`), `charges_spent`, `charges_regained` (with `slot` and `amount`),
@@ -202,11 +231,18 @@ Owned here: `perception/hud.py`, `perception/hud_truth.json`,
 integration lane that consumes these readers is `docs/lanes/l6-integration.md`
 (VUH-1298).
 
-**Demonstration corpus, current state.** Four retained 15-minute Twitch sections
-are extracted, segmented and evented (**Retained sections** below). The six
-ReqMR YouTube uploads the co-lead added are running now, with the hard-cut break
-reason described in **Event stream format**. Everything derived from a VOD lives
-in `data/` and is never committed; the evidence directory holds no VOD frame.
+**Demonstration corpus.** Two sets, both segmented and evented at an exact 10 Hz
+into `data/demos/events/`:
+
+- **Four retained 15-minute Twitch sections** (`sections/`), continuous capture,
+  two of them reserved as evaluation. See **Retained sections**.
+- **Six ReqMR YouTube uploads** (`youtube/`), edited, 104 raw minutes across two
+  balance patches. Cuts are detected per file so no segment spans an edit; see
+  **Edited uploads**. They do not reuse the Twitch footage — see the overlap
+  section — and each file's own cooldowns date it, see **Patch fingerprint**.
+
+Everything derived from a VOD lives in gitignored `data/` and is never
+committed; `docs/evidence/` holds no VOD frame.
 
 ## Results
 
@@ -626,6 +662,97 @@ last play segment**: the DEFEAT and rank screens, the next match's intro, and
 hero select, where the player picks **Jeff the Land Shark**. Spot-checked by eye
 at 720, 760, 820 and 880 s. A pipeline that trained on "15 minutes of expert
 Spider-Man" would have been training partly on a shark.
+
+## Do the YouTube uploads reuse the retained Twitch footage?
+
+**No.** An upload ID is not a session, and the two September uploads sit close
+enough to the retained ReqMR broadcasts to be the same matches re-cut, so this
+was decided on the pixels rather than on dates.
+
+**The cheap test failed, and it is worth knowing why.** Fingerprinting each file
+by its sequence of *(damage, gap since the previous damage)* pairs and looking
+for a long shared run found **8 consecutive shared pairs between a May upload
+and a September section** — footage that cannot possibly overlap. An expert
+repeating the same combo produces the same damage sequence at the same spacing
+every time, so this measures a player's habits, not a shared recording. **Do not
+use event content to test for duplicate footage.**
+
+The pixels decide it. Sampling all four sources at 1 Hz and comparing perceptual
+hashes: matches exist (4–36 per pair), but **they are all scoreboard frames** —
+the board's fixed layout collides under the hash while the names and numbers
+underneath are completely different. The test that settles it is the *shape* of
+the match set: shared footage appears as a **diagonal**, the same time offset
+repeated across consecutive seconds. The largest number of matches sharing any
+single offset is **1**, against a control of 880/880 for a source against
+itself. No diagonal, no shared footage.
+
+Scope: the two September uploads against both retained **ReqMR** sections, which
+is where overlap was possible. The April–May uploads predate those broadcasts by
+months, and the two DayMR sections are a different player. At 1 Hz an overlap of
+a second or two could hide, but any reuse worth caring about — a fight, a match —
+would show as a long diagonal.
+
+## Patch fingerprint: dating footage by its own cooldowns
+
+A balance patch moves cooldowns, so **the cooldowns visible in a recording date
+it**. That matters for footage whose only date is an upload, and it is the drift
+alarm for our own runs: if a live capture stops matching the kit, the game
+patched. `observed` in every events file's meta line carries it, per ability.
+
+**The countdown the HUD prints is the measurement. The gap between casts is
+not.** A player presses when the fight allows, not when the timer clears, so the
+gap distribution has no floor at the true cooldown — and its *minimum* is
+whatever artifact is shortest, measured at 0.4–0.6 s for Get Over Here, which
+has an 8 s cooldown. `countdown_mode` is the most common number seen the instant
+after a cast; reads that caught the timer a tick late fall below it, so the mode
+is the full value and the tail sits underneath.
+
+Observed against `docs/spiderman-kit.md` (Season 10, Version 20260911), which is
+the only place the patch is stated — **no patch value lives in `perception/`**:
+
+| source | date | Get Over Here | Amazing Combo | team-up |
+|---|---|---|---|---|
+| four Twitch sections | Season 10 | **8** (37–55 casts) | **1** (22–71) | 15 (21–30) |
+| `yjc51uOjKEQ` | Sep 12 | **8** (76) | **1** (67) | 15 (32) |
+| `d0C8RMBnFfA` | Sep 11 | **8** (46) | **1** (60) | 15 (34) |
+| `ftnk5SVycXY` | May 10 | *measuring* | *measuring* | — |
+| `Cf_2goe1snQ` | May 9 | **8** (104) | **2** (111) | — |
+| `V6iaq9dP8FQ` | Apr 27 | **8** (105) | **2** (56) | — |
+| `G7HmV8zyEh8` | Apr 25 | **8** (65) | **2** (68) | — |
+| *kit, Season 10* | | 8 s | 1 s (**was 2 s**) | — |
+
+**It works, and it separates the two patches perfectly.** Every Season 10 source
+reads Amazing Combo at **1**; all three April–May uploads measured so far read
+**2**, the pre-Season-10 value — 46 of 56 casts on one of them with not a single
+cast reading 1. Get Over Here reads 8 on both sides, which is right: that patch
+touched only Amazing Combo and Parker Power-Up. **A source can now be placed
+against the balance history from its own footage**, with no date needed.
+
+The same check on our own live runs is the drift alarm: if a capture stops
+matching the kit, the game patched.
+
+Two incidental observations from the same table: the **April–May uploads have no
+identifiable team-up icon at all** (a three-entry mapping, no team-up casts),
+while both September uploads identify all four slots; and **`slot: null` fires on
+real data** exactly as intended rather than guessing an ability.
+
+Two things that look like disagreements and are not:
+
+- **The team-up slot reads 15 s everywhere, including confirmed Season 10
+  footage, while the kit has Parker Power-Up at 10 s (was 15 s).** The team-up
+  ability depends on the partner hero, and `identify_slot` names the *position*,
+  not which team-up is loaded into it. A constant 15 across six sources is
+  consistent with Symbiote Bond, whose cooldown that patch did not touch. **Not
+  a patch mismatch — an ability-identity gap**, and until the two team-ups can
+  be told apart this slot cannot date anything.
+- **Charge counts read one below the kit** — 1 against 2 for Amazing Combo, 2
+  against 3 for Web-Swing, on all six sources. The badge is not drawn at full
+  charge, so the highest value it ever shows is one under the maximum. Compare
+  against kit − 1.
+
+Web-Swing's countdown is not a fingerprint at all: with three charges on a 6 s
+recharge the number shown is whatever recharge is in flight, so its mode carries
+no patch information.
 
 ## Edited uploads: finding the cuts
 
