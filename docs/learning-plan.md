@@ -1111,6 +1111,26 @@ compression, mouse controls or different sensitivity/FOV. A swing cast's camera
 direction is only one feature: anchor, momentum, movement and release also matter;
 charge/cooldown events do not establish continuous button-hold duration.
 
+**Simple versus aimed swing is part of the action contract.** The controller lane
+records Simple Swing OFF and Hold to Swing ON for our client. The narrated guide
+inventory also describes a separate simple-swing binding alongside manual swing,
+including both in one combo; a creator's default toggle therefore cannot identify
+every swing's control mode. Preserve `swing_mode = simple | aimed | unknown` per
+action when evidenced. A generic HUD swing event proves neither mode nor anchor.
+Do not infer the mode from a smooth trajectory or assume all expert swings are aimed.
+
+Record a separate `control_context` beside kit context: input device, default swing
+mode, separate-binding availability, hold/toggle release behavior, and known camera
+settings, each with evidence or unknown. Settings changes segment that context.
+For low-level imitation, use mode-compatible examples or explicitly condition on
+the mode and validate both mappings; unknown-mode footage can still supply visible
+route/destination supervision without invented anchor or button labels. Automatic
+anchor selection must not be labelled as the expert aiming at the selected anchor.
+Hold duration and toggle-release actions are distinct input targets. The present
+pad executor supports only its verified mapping; simple-swing-specific techniques
+remain unexecutable until the controller owner verifies a supported binding and
+completion behavior. Do not silently translate both modes to the same LB action.
+
 [VPT](https://arxiv.org/abs/2206.11795) demonstrates the paired-data inverse-dynamics
 approach in Minecraft; it supplies a research precedent, not a transfer guarantee
 for Rivals. An offline inverse model may inspect future frames to infer an earlier
