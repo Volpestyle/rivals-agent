@@ -5,6 +5,7 @@ Needs opencv and numpy (`uv run --group perception pytest tests/test_reenter.py`
 import json
 import math
 import random
+import re
 import sys
 import types
 from functools import lru_cache
@@ -1897,3 +1898,165 @@ def test_a_crossing_frame_that_is_the_plaza_confirms_on_the_next_frame(monkeypat
     _scripted(monkeypatch, (0, 30, 30), (False, True, True), ([(0.40, 20000)], []))
     m = R.ArrivalMemory()
     assert [R.arrival_step(None, m)[0] for _ in range(3)] == ["walk", "plaza?", "done"] and m.out
+
+
+# --- the cursor search, made cheaper (a live A refused at 0.31 / 0.32 s against the 0.3 s limit, the proof ~ all cursor search) ----------
+# The version before, verbatim, as the reference: the search must answer exactly as it did, on every frame.
+def _ref_ring_score(white, x, y):
+    """Contrast of a cursor-sprite signature centred at (x, y), or 0. Needs a ring bright ALL the way round."""
+    h, w = white.shape
+    xs = np.clip((x + R._R[:, None] * R._COS).round().astype(int), 0, w - 1)
+    ys = np.clip((y + R._R[:, None] * R._SIN).round().astype(int), 0, h - 1)
+    v = white[ys, xs].astype(float)              # (radius, angle)
+    mean, p20 = v.mean(axis=1), np.percentile(v, 20, axis=1)
+    dot = mean[:3].mean()
+    ra = 16 + int(p20[16:23].argmax())
+    contrast_a = p20[ra] - mean[ra + 4:ra + 8].mean()
+    rb = 23 + int(p20[23:31].argmax())
+    contrast_b = p20[rb] - mean[min(rb + 4, 33):min(rb + 8, 35)].mean()
+    hover = dot >= R.CURSOR_HOVER["dot"] and p20[ra] >= R.CURSOR_HOVER["ring"] and contrast_a >= R.CURSOR_HOVER["contrast"]
+    plain = p20[rb] >= R.CURSOR_PLAIN["ring"] and contrast_b >= R.CURSOR_PLAIN["contrast"]
+    return max(contrast_a if hover else 0.0, contrast_b if plain else 0.0)
+
+
+def _ref_find_cursor(frame):
+    """(x, y) of the pad cursor in 1280x720 px, or None. None is also the answer for a faint ring over dark art.
+
+    Candidate centres are the strongest matches of a white ring (of each sprite radius) against the mask of bright-in-every-channel
+    pixels, then judged by the ring signature, which is sharply peaked (one pixel off, its contrast falls from 130 to 50), so each is
+    refined over a +-2 px window first. The first version took its candidates from a Hough transform, whose strongest circles on a
+    busy portrait or a slightly noisy frame are other things: the ring was missed one frame in three, and a live run refused on hero
+    select with the cursor sitting on Spider-Man."""
+    s = R.small(frame)
+    white = s.min(axis=2)  # bright only where bright in every channel: the sprite, not coloured art
+    mask = cv2.resize((white > 190).astype(np.float32), None, fx=0.5, fy=0.5, interpolation=cv2.INTER_AREA)
+    best = (0.0, 0, 0)
+    for r in R.RING_R:
+        t = R._ring_template(r)
+        resp = cv2.matchTemplate(mask, t, cv2.TM_CCOEFF_NORMED)
+        resp = np.nan_to_num(resp, nan=0.0, posinf=0.0, neginf=0.0)
+        for _ in range(R.PEAKS):
+            _, top, _, (px, py) = cv2.minMaxLoc(resp)
+            if top < R.PEAK_MIN:
+                break
+            cx, cy = 2 * (px + t.shape[1] // 2), 2 * (py + t.shape[0] // 2)   # back to full size
+            resp[max(0, py - 6):py + 7, max(0, px - 6):px + 7] = 0
+            for dy in range(-R.REFINE_PX, R.REFINE_PX + 1):
+                for dx in range(-R.REFINE_PX, R.REFINE_PX + 1):
+                    score = _ref_ring_score(white, cx + dx, cy + dy)
+                    if score > best[0]:
+                        best = (score, cx + dx, cy + dy)
+    return (float(best[1]), float(best[2])) if best[0] > 0 else None
+
+
+def _cursor_frames():
+    rng = np.random.default_rng(0)
+    out = []
+    for p in sorted(Path("tests/fixtures").rglob("*.jpg")) + sorted(Path("tests/fixtures").rglob("*.png")):
+        f = cv2.imread(str(p))
+        if f is None or abs(f.shape[1] * 9 - f.shape[0] * 16) > 16:
+            continue
+        out.append((p.name, f))
+        if _ref_find_cursor(f) is not None:                                    # and the ring frames made noisier and more compressed
+            out += [(f"{p.name} noise{s}", np.clip(f.astype(float) + rng.normal(0, s, f.shape), 0, 255).astype(np.uint8)) for s in (3, 8, 12)]
+            out += [(f"{p.name} jpeg{q}", cv2.imdecode(cv2.imencode(".jpg", f, [cv2.IMWRITE_JPEG_QUALITY, q])[1], 1)) for q in (80, 50)]
+    return out
+
+
+def test_the_cheaper_cursor_search_answers_exactly_as_before():
+    frames = _cursor_frames()
+    assert sum(_ref_find_cursor(f) is not None for _, f in frames) >= 30                   # the rings are really there
+    assert [R.find_cursor(f) for _, f in frames] == [_ref_find_cursor(f) for _, f in frames]
+
+
+def test_every_ring_score_is_bit_identical_to_the_one_centre_version():
+    rng = np.random.default_rng(1)
+    for name in ("panel-cursor-on-practice-range", "lobby-cursor-on-practice", "heroselect-spiderman-tooltip-ring-lost"):
+        white = R.small(frame(name)).min(axis=2)
+        cx, cy = (int(v) for v in R.find_cursor(frame(name)))
+        xs = np.r_[cx + np.repeat(np.arange(-3, 4), 7), rng.integers(0, 1280, 200), 0, 1279]
+        ys = np.r_[cy + np.tile(np.arange(-3, 4), 7), rng.integers(0, 720, 200), 0, 719]
+        assert (R._ring_scores(white, xs, ys) == np.array([_ref_ring_score(white, x, y) for x, y in zip(xs, ys)])).all(), name
+
+
+def test_a_press_prints_its_age_and_stages_after_the_write(monkeypatch):
+    """Printed after the input and its settle, never between the proof and the write; a refused press writes and prints nothing."""
+    lobby = frame("lobby-cursor-on-practice")
+    live, calls, _ = make_live(monkeypatch, Screen(lobby, after=lobby))
+    monkeypatch.setattr(R, "print", lambda *a, **k: calls.append(("print", " ".join(map(str, a)), {})), raising=False)
+    live.tap("A", screen="lobby", proof_fn=R.on_practice_tab)
+    kinds = [c[0] for c in calls]
+    assert "press_button" in kinds and kinds[-1] == "print" and kinds.count("print") == 1
+    out = calls[-1][1]
+    assert re.search(r"A written at proof age \d+ ms \(limit 300\): grab \d+ ms \((dxcam|GDI)\), classify \d+, proof \d+, checks \d+", out)
+    live, calls, _ = make_live(monkeypatch, Screen(lobby, after=lobby))
+    monkeypatch.setattr(R, "print", lambda *a, **k: calls.append(("print", a, {})), raising=False)
+    with pytest.raises(R.Refuse):
+        live.tap("A", screen="lobby", proof_fn=lambda f: R.Proof(False, "no"))
+    assert not touched(calls)
+
+
+def test_nothing_is_timed_or_built_between_the_age_check_and_the_write(monkeypatch):
+    """Review of 534f88b: the stages string (another clock read) was built after the age was sampled and before the write, so the press
+    went out older than the age that was checked. With a clock that moves 1 ms on every read, the checked age must be the age at the
+    write exactly: no read, no work, in between."""
+    lobby = frame("lobby-cursor-on-practice")
+    live, calls, clock = make_live(monkeypatch, Screen(lobby, after=lobby))
+    raw = live.clock
+
+    def ticking():
+        clock.t += 0.001
+        return raw()
+    live.clock = ticking
+    at_write = []
+    real_update = live.pad.update
+
+    def update():
+        if calls and calls[-1][0] == "press_button":
+            at_write.append(clock.t - live.frame_t)
+        real_update()
+    live.pad.update = update
+    said = []
+    monkeypatch.setattr(R, "print", lambda *a, **k: said.append(" ".join(map(str, a))), raising=False)
+    live.tap("A", screen="lobby", proof_fn=lambda f: (setattr(clock, "t", clock.t + 0.2), R.Proof(True, "proved"))[1])
+    checked = int(re.search(r"proof age (\d+) ms", said[-1]).group(1))
+    assert len(at_write) == 1 and checked == round(at_write[0] * 1e3)
+
+
+def test_a_failing_output_after_the_press_is_dropped_not_raised(monkeypatch):
+    """Review of 534f88b: with stdout closed the print raised out of Live.tap after A had gone out. The press is done; the pad is neutral."""
+    lobby = frame("lobby-cursor-on-practice")
+    live, calls, _ = make_live(monkeypatch, Screen(lobby, after=lobby))
+
+    def broken(*a, **k):
+        raise BrokenPipeError("stdout closed")
+    monkeypatch.setattr(R, "print", broken, raising=False)
+    live.tap("A", screen="lobby", proof_fn=R.on_practice_tab)
+    assert presses(calls) == ["A"] and [c[0] for c in calls][-2:] == ["reset", "update"]
+    monkeypatch.setattr(R, "print", lambda *a, **k: (_ for _ in ()).throw(KeyboardInterrupt()), raising=False)
+    with pytest.raises(KeyboardInterrupt):                                        # an interrupt is not swallowed
+        live.tap("A", screen="lobby", proof_fn=R.on_practice_tab)
+
+
+def test_the_ring_signature_matches_at_its_window_edges_on_a_built_sprite():
+    """A plain ring at radius 30, where the outer window is clipped (33-35): random centres on real frames almost never light it."""
+    yy, xx = np.mgrid[0:720, 0:1280]
+    d = np.hypot(xx - 640, yy - 360)
+    white = np.zeros((720, 1280), np.uint8)
+    white[(d > 29.4) & (d < 30.6)] = 255
+    white[(d > 32.5) & (d < 33.5)] = 120
+    white[(d > 33.5) & (d < 34.5)] = 20
+    xs, ys = np.r_[640 + np.arange(-2, 3), 640], np.r_[np.full(5, 360), 361]
+    new = R._ring_scores(white, xs, ys)
+    assert (new == np.array([_ref_ring_score(white, x, y) for x, y in zip(xs, ys)])).all() and new.max() > 0
+
+
+def test_two_equally_good_rings_resolve_to_the_same_one_as_before():
+    """The first best in the order the candidates were found wins, as it did: the real cursor copied to a second place ties exactly."""
+    f = R.small(frame("panel-cursor-on-practice-range")).copy()                 # at 1280 x 720 the copy is pixel for pixel
+    x, y = (int(v) for v in R.find_cursor(f))
+    cx, cy = 300 + x % 2, 300 + y % 2                                              # the same parity: the ring's samples round alike
+    f[cy - 40:cy + 40, cx - 40:cx + 40] = f[y - 40:y + 40, x - 40:x + 40]
+    white = f.min(axis=2)
+    assert _ref_ring_score(white, cx, cy) == _ref_ring_score(white, x, y) > 0                    # a real tie
+    assert R.find_cursor(f) == _ref_find_cursor(f)
