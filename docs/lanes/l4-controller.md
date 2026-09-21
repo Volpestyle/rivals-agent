@@ -2,9 +2,19 @@
 
 Linear: VUH-1296. Evidence: `docs/evidence/l4/`. Raw measurements: `C:\rivals-agent\data\l4\` on the PC.
 
-The game is in the Practice Range as Spider-Man on the main plaza, beside the Hero Simulation kiosk with the Luna Snow bot
-3-4 m to his right, idle, no pad connected (`after-trackerlive30.jpg`). The PC holds `agent/`, `scripts/` (with templates)
-and `perception/` from `git archive 9e075f5`: all 42 tracked files verified by sha256, nothing else in those directories.
+**The game is on the Practice Range HERO SELECT screen** (Jubilee highlighted on the "all" tab, CONFIRM bottom right, a
+"GAME STARTED" clock counting up), no pad connected, nothing pressed since (`hero-select-after-reenter-refusal.jpg`). The run
+`stall30` has NOT happened. The PC holds `agent/`, `scripts/` (with templates) and `perception/` from
+`git archive 259bdd2`: all 42 tracked files verified by sha256; `capture.py preflight` passed (117 dxcam frames in 1 s).
+
+`scripts/reenter.py` refused at 09:41:23, exit 1: PRACTICE tab and PRACTICE RANGE tile pressed behind their proofs, then
+`STOP: hero tab None is not recognised` on the first hero-select frame, 2 s after that screen opened
+(`reenter-refuse-hero-tab-20260921-0941.jpg`, the game clock reads 00:02). Its own `--dry-run` reads that saved frame the same
+way ("would stop: the tab is not recognised") and reads the live screen 30 s later as `hero tab: all`, "would press RB 2x to
+reach duelists". The differences between the two frames: the early one carries the pad's LB / RB glyphs beside the tab strip
+and the clock at 00:02 (the screen had just opened); the later one shows keyboard glyphs. So the tab read failed on a frame
+taken as the screen opened, and the tool stops on its first failed read of that screen rather than looking again. For the
+re-entry owner; not retried here (a refusal is handed back).
 
 ## Supervised run `trackerlive30` (VUH-1314): `data/l1/trackerlive30/` on the PC and the Mac
 
