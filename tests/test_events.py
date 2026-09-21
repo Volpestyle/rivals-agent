@@ -23,16 +23,17 @@ from perception.hud import MK, Hud, read as read_hud  # noqa: E402
 # skips when it is absent rather than failing.
 DAY_CLIP = ROOT / "data/demos/samples/daymr-2879354299-21600-60s.mp4"
 
-SLOTS = ("teamup", "swing", "pull", "uppercut")
+SLOTS = ("teamup", "swing", "get_over_here", "uppercut")
 
 
 def hud(hp=250, max_hp=250, webs=5, ready=True, charges=None, ult=True, bar=1.0, **over):
-    """A Hud with every slot ready unless a keyword overrides one."""
+    """A Hud with every slot ready and no cooldown unless a keyword overrides one."""
     abilities = {s: (over.pop(f"{s}_ready", ready), over.pop(f"{s}_charges", charges))
                  for s in SLOTS}
+    cooldowns = {s: over.pop(f"{s}_cd", None) for s in SLOTS}
     assert not over, f"unused overrides {over}"
-    return Hud(hp=hp, max_hp=max_hp, bar_fill=bar, webs=webs,
-               abilities=abilities, ult_ready=ult, ult_charge=1.0 if ult else 0.0)
+    return Hud(hp=hp, max_hp=max_hp, bar_fill=bar, webs=webs, abilities=abilities,
+               ult_ready=ult, ult_charge=1.0 if ult else 0.0, cooldowns=cooldowns)
 
 
 def reads(*huds, start=0, hz=10.0):
@@ -57,7 +58,7 @@ def test_unknown_between_two_values_does_not_hide_the_change():
     assert kinds(events) == [("hp_lost", None)]
     assert events[0].amount == 50
     # the interval brackets the unknown frame rather than claiming an instant
-    assert events[0].i_from == 1 and events[0].i_to == 4
+    assert events[0].i_from == 1 and events[0].i_to == 3
 
 
 def test_unknown_does_not_confirm_a_candidate():
@@ -68,7 +69,10 @@ def test_unknown_does_not_confirm_a_candidate():
 
 # --- debounce -------------------------------------------------------------
 
-def test_single_frame_flicker_on_a_slow_channel_is_ignored():
+def test_single_frame_flicker_is_ignored_even_though_hp_steps_are_raw():
+    """hp confirms on one frame so that consecutive steps stay separate, so the
+    guard against a misread is its shape: gone for one frame, then the exact
+    same number back. A real hit does not undo itself."""
     seq = reads(hud(hp=250), hud(hp=250), hud(hp=13), hud(hp=250), hud(hp=250))
     assert extract_one(seq) == []
 
@@ -78,10 +82,27 @@ def test_two_frames_confirm_a_slow_channel():
     assert kinds(extract_one(seq)) == [("hp_lost", None)]
 
 
-def test_ready_confirms_on_one_frame_because_a_real_use_lasts_one():
-    """The Web-Swing icon is red for a single frame at 10 fps when it is used."""
+def test_a_dim_icon_is_a_lockout_not_a_cast():
+    """The audit's first finding: the swing icon goes red during a wall climb
+    with the charge count unchanged, and that used to read as a use. An icon
+    dimming says only that the slot is unusable right now."""
     seq = reads(hud(), hud(swing_ready=False), hud(), hud())
-    assert kinds(extract_one(seq)) == [("ability_used", "swing"), ("ability_ready", "swing")]
+    got = kinds(extract_one(seq))
+    assert got == [("slot_unavailable", "swing"), ("slot_available", "swing")]
+    assert not any(k == "ability_cast" for k, _ in got)
+
+
+def test_a_cooldown_number_appearing_is_a_cast():
+    """What actually proves a cast: the slot's icon is replaced by a countdown."""
+    seq = reads(hud(), hud(get_over_here_cd=8), hud(get_over_here_cd=8), hud(get_over_here_cd=7))
+    casts = [e for e in extract_one(seq) if e.kind == "ability_cast"]
+    assert len(casts) == 1 and casts[0].slot == "get_over_here"
+    assert casts[0].amount == 8          # the cooldown it started at
+
+
+def test_a_countdown_ticking_down_is_not_more_casts():
+    seq = reads(*[hud(get_over_here_cd=n) for n in (8, 8, 7, 6, 5)])
+    assert [e.kind for e in extract_one(seq) if e.kind == "ability_cast"] == []
 
 
 def test_debounce_is_overridable_per_channel():
@@ -89,11 +110,22 @@ def test_debounce_is_overridable_per_channel():
     assert extract_one(seq, debounce={"ready": 2}) == []
 
 
+def test_hp_emits_raw_steps_not_a_net():
+    """The audit's fourth finding: 250 -> 195 -> 220 in three frames became a
+    single net loss of 30, which is not a thing that happened. Both steps, or
+    nothing."""
+    seq = reads(hud(hp=250), hud(hp=195), hud(hp=220), hud(hp=220))
+    got = [(e.kind, e.amount) for e in extract_one(seq)]
+    assert ("hp_lost", 55) in got and ("hp_gained", 25) in got
+    assert ("hp_lost", 30) not in got
+
+
 # --- one event per kind ---------------------------------------------------
 
 def test_every_event_kind():
     cases = {
-        ("ability_used", "swing"): (hud(), hud(swing_ready=False), hud(swing_ready=False)),
+        ("slot_unavailable", "swing"): (hud(), hud(swing_ready=False), hud(swing_ready=False)),
+        ("ability_cast", "swing"): (hud(), hud(swing_cd=6), hud(swing_cd=6)),
         ("charges_spent", "swing"): (hud(swing_charges=3), hud(swing_charges=2), hud(swing_charges=2)),
         ("charges_regained", "swing"): (hud(swing_charges=2), hud(swing_charges=3), hud(swing_charges=3)),
         ("web_cluster_fired", None): (hud(webs=5), hud(webs=4), hud(webs=4)),
@@ -134,7 +166,7 @@ def test_real_damage_under_a_shield_is_still_damage():
 def test_events_carry_an_interval_not_an_instant():
     seq = reads(hud(hp=250), hud(hp=250), hud(hp=200), hud(hp=200))
     e = extract_one(seq)[0]
-    assert (e.i_from, e.i_to) == (1, 3), (e.i_from, e.i_to)
+    assert (e.i_from, e.i_to) == (1, 2), (e.i_from, e.i_to)
     assert e.t_from < e.t_to
     assert not hasattr(e, "t"), "no field may claim a single press time"
     assert set(Event.__dataclass_fields__) >= {"i_from", "t_from", "i_to", "t_to"}

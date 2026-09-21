@@ -6,15 +6,15 @@
 written by `perception/events.py`. Three line kinds, told apart by `type`:
 
 ```jsonc
-{"type": "meta", "source": "reqmr-2873352801-1920", "layout": "mk",
+{"type": "meta", "format": 2, "source": "reqmr-2873352801-1920", "layout": "mk",
  "frames": 601, "fps": 10.0, "t_origin": "first frame of the media",
- "duration_s": 60.0, "segments": 4, "events": 84}
+ "duration_s": 60.0, "segments": 4, "events": 123}
 
 {"type": "segment", "start_i": 0, "start_t": 0.0, "end_i": 78, "end_t": 7.8,
  "started_by": "run_start", "ended_by": "death"}
 
-{"kind": "ability_used", "i_from": 34, "t_from": 3.4, "i_to": 35, "t_to": 3.5,
- "slot": "swing", "amount": null, "before": true, "after": false, "segment": 0}
+{"kind": "ability_cast", "i_from": 299, "t_from": 29.9, "i_to": 300, "t_to": 30.0,
+ "slot": "get_over_here", "amount": 8, "before": "off", "after": 8, "segment": 2}
 ```
 
 **Events carry no `type` key**, so readers already consuming them keep working.
@@ -33,11 +33,22 @@ Order is meta, then segments in time order, then events in time order.
   `scoreboard`, `not_our_hero`, `no_hud`. `started_by` is `run_start`,
   `respawn`, `killcam_over`, `spectating_over`, `scoreboard_closed`,
   `hero_returned`, `hud_returned`.
-- Event `kind` is one of: `ability_used`, `ability_ready` (with `slot`),
-  `charges_spent`, `charges_regained` (with `slot` and `amount`),
+- **`format` is 2.** Version 1 had `ability_used` / `ability_ready` and called a
+  slot `pull`; anything reading those needs updating. See **Format 2** below.
+- Event `kind` is one of: **`ability_cast`** (with `slot`; `amount` is the
+  cooldown it started at), **`slot_unavailable`** / **`slot_available`** (with
+  `slot`), `charges_spent`, `charges_regained` (with `slot` and `amount`),
   `web_cluster_fired`, `web_cluster_reloaded`, `hp_lost`, `hp_gained`,
   `shield_decayed`, `shield_gained`, `max_hp_changed`, `ult_ready`, `ult_spent`,
-  `death`, `respawn`.
+  `ko_feed`, `death`, `respawn`.
+- Slots are `teamup`, `swing`, **`get_over_here`** (was `pull`), `uppercut`,
+  `ult`.
+- **`ability_cast` is the only kind that claims an ability fired.**
+  `slot_unavailable` means the icon dimmed, which also happens on a wall climb
+  or mid-swing, and is not a cast.
+- **Event proposals are not ability-use truth on a VOD.** They are what the HUD
+  showed. No hand-checked VOD sample exists yet; until 30 events on one clip have
+  been checked frame by frame, treat this stream as a proposal, not a label.
 - **`hp_lost` is damage only when hp is below max.** Where max hp could not be
   read, a shield tick still surfaces under this name: 68 of run1's 903 events
   (7.5%) are shield movement wearing an `hp_lost` / `hp_gained` /
@@ -46,8 +57,51 @@ Order is meta, then segments in time order, then events in time order.
   practice range *nothing damages the player*, so any `hp_lost` there is a
   shield tick by construction.
 
-This format is stable. Anything added will be a new key or a new `type`, never a
-change to what is above.
+### Format 2, and why
+
+An audit by two annotators against native frames found version 1 was emitting
+casts that never happened and missing the ones that did. Reproduced on the frames
+and fixed:
+
+1. **A dim or red icon is a lockout, not a cast.** The swing icon goes red during
+   a wall climb with the charge count unchanged, and every `ability_used` in the
+   old file lasted 0.1-1.4 s. Those are now `slot_unavailable` /
+   `slot_available`.
+2. **What proves a cast is the countdown.** A real cast replaces the slot's icon
+   with a number — clearly visible at i300, where Get Over Here becomes `8`. The
+   old reader never looked for it, so *neither* visible Get Over Here cast
+   (i299-300 and i401-402) produced an event. `ability_cast` now fires on a
+   cooldown number appearing or a charge going down, and carries the cooldown it
+   started at. The cooldown digits are 42-43 px tall against the hp row's 23-33
+   and needed their own templates: an 8 read as 3 until they were learned, from
+   two countdowns that label themselves as they tick.
+3. **hp emits raw steps, never a net.** 250 -> 195 -> 220 at 10 Hz is three
+   things that happened; it was being reported as a single net loss of 30. With
+   raw steps the losses across 45.1-50.0 s now total **210 hp, matching the
+   annotator's by-eye count exactly**, where the old stream reported 55 and
+   missed two hits. **A net figure is never reported as damage.**
+4. **The hp bar's red damage stripe is the corroborating witness.** A one-frame
+   drop that returns to the same number looks exactly like a misread, so it is
+   dropped — unless the jump is small enough to be plausible or the bar is
+   showing a fresh red stripe. Filtering on the shape alone deleted a real 25 hp
+   hit, and worse, deleted the heal between two hits and so erased the second
+   hit too.
+5. **Twitch chat scrolls through the ability row** and its letters are the right
+   size to read as cooldown digits: eight "uppercut casts" in 2.6 seconds on a
+   7 second cooldown. A countdown is centred in its slot; off-centre text is not
+   ours.
+
+Two findings did not reproduce as bugs:
+
+- **The 43.7 s segment edge.** On an exact 10 Hz grid the scoreboard is up
+  i433-i437 and gone by i438, and the segment starts at 43.8 — after the overlay,
+  as it should. The 43.7 s reading came from `-vf fps=10`, which lands one source
+  frame off. **Use `select='not(mod(n,6))'` on a 60 fps source.**
+- **The team-up slot is tracked**, and its use at 40.9 s appears as
+  `ability_cast:teamup` with a 15 s cooldown.
+
+This format is stable within a version. Anything added will be a new key or a new
+`type`; anything that changes the meaning of what is above bumps `format`.
 
 ## Status
 

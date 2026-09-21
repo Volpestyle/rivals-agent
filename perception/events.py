@@ -60,9 +60,19 @@ from perception.hud import SLOT_CX, Hud  # noqa: E402
 
 # Frames a new value must hold before it is believed. `ready` is 1 on purpose;
 # see the module docstring.
-DEBOUNCE = {"ready": 1, "charges": 2, "webs": 2, "hp": 2, "max_hp": 2, "ult_ready": 1,
-            "killfeed": 2}
+# hp is 1 on purpose: at 10 Hz a burst of hits shows as one value per frame, and
+# asking a step to persist for two merges them. A 250 -> 195 -> 220 sequence came
+# out as a single net loss of 30, which is not a thing that happened to anybody.
+# Raw steps, always; a net figure is never reported as damage.
+DEBOUNCE = {"ready": 1, "charges": 2, "webs": 2, "hp": 1, "max_hp": 2, "ult_ready": 1,
+            "killfeed": 2, "cooldown": 1}
 SHIELD_WINDOW = 3   # frames apart that an hp and a max-hp change may still be one shield tick
+# 1: ability_used / ability_ready, slot "pull".
+# 2: those split into ability_cast (a cooldown number appeared or a charge went
+#    down -- proof the ability fired) and slot_unavailable / slot_available (the
+#    icon dimmed, which is a lockout and happens on wall climbs and mid-swing);
+#    slot "pull" renamed get_over_here; hp emits raw steps, never a net.
+FORMAT_VERSION = 2
 ULT = "ult"
 
 # --- is Spider-Man the hero being played? ---------------------------------
@@ -450,10 +460,14 @@ _MISSING = _Missing()
 def _signals(hud: Hud):
     """The channels one frame contributes, as {name: value or None}."""
     out = {"hp": hud.hp, "max_hp": hud.max_hp, "webs": hud.webs, "ult_ready": hud.ult_ready}
-    for slot in SLOT_CX:
+    for slot in hud.abilities or SLOT_CX:
         ready, charges = hud.abilities.get(slot, (None, None))
         out[f"ready:{slot}"] = ready
         out[f"charges:{slot}"] = charges
+        # "off" rather than None, so a countdown ending is a transition and not
+        # an unknown. None here would mean "could not read the slot at all".
+        cd = (hud.cooldowns or {}).get(slot, None)
+        out[f"cooldown:{slot}"] = "off" if cd is None else cd
     return out
 
 
@@ -479,7 +493,16 @@ def _kind(name, before, after, max_before=None, max_after=None):
         slot = name.split(":", 1)[1]
         if slot == ULT:                    # the ult has its own channel above
             return None
-        return ("ability_ready" if after else "ability_used"), slot, None
+        # An icon going dim or red only says the slot cannot be used right now.
+        # It happens while climbing a wall, mid-swing, and through any other
+        # lockout, and it is *not* a cast: on this clip every one of these lasted
+        # 0.1-1.4 s with the charge count unchanged.
+        return ("slot_available" if after else "slot_unavailable"), slot, None
+    if name.startswith("cooldown:"):
+        slot = name.split(":", 1)[1]
+        if before == "off" and after != "off":
+            return "ability_cast", slot, after    # amount = the cooldown it started
+        return None                               # a countdown ticking or ending
     if name.startswith("charges:"):
         slot = name.split(":", 1)[1]
         delta = after - before
@@ -511,6 +534,41 @@ def _kind(name, before, after, max_before=None, max_after=None):
     return None
 
 
+DAMAGE_STRIPE = 0.03    # red on the bar above this means a hit really landed
+SPIKE_FRACTION = 0.4    # a one-frame excursion bigger than this share of max hp
+
+
+def _despike(values, damaged=None, max_hp=None):
+    """Drop a one-frame excursion that is too big to be real and that the hp bar
+    does not corroborate.
+
+    hp confirms on a single frame so that consecutive steps stay separate: at
+    10 Hz, 250 -> 195 -> 220 is three things that happened, and asking each step
+    to persist merged them into one net loss of 30, which is not a thing that
+    happened to anybody. Raw steps are what this emits.
+
+    The cost of a one-frame confirm is that a misread becomes two events, so it
+    is worth removing the ones that cannot be real. Two conditions, both needed:
+    the value jumps and the *exact* previous number comes straight back, and the
+    jump is more than SPIKE_FRACTION of maximum health, and the bar shows no
+    fresh red damage stripe. An earlier version filtered on the shape alone and
+    deleted a real 25 hp hit that was healed straight back -- and, worse, the
+    heal frame between two hits, which erased the second hit as well.
+    """
+    out = list(values)
+    ceiling = max((v for v in (max_hp or []) if v), default=None) or 250
+    for i in range(1, len(out) - 1):
+        if out[i] is None or out[i - 1] is None or out[i + 1] is None:
+            continue
+        if out[i] == out[i - 1] or out[i + 1] != out[i - 1]:
+            continue
+        if damaged and damaged[i]:
+            continue                       # the bar says this hit was real
+        if abs(out[i] - out[i - 1]) > SPIKE_FRACTION * ceiling:
+            out[i] = None
+    return out
+
+
 def extract_one(reads, debounce=None, seg_index=0):
     """[Event] for a single segment of (i, t, Hud) reads, in time order."""
     holds = {**DEBOUNCE, **(debounce or {})}
@@ -519,11 +577,15 @@ def extract_one(reads, debounce=None, seg_index=0):
         return holds.get(name.split(":", 1)[0], 2)
 
     channels, events, max_seen = {}, [], {}
-    for read in reads:
+    hp_clean = _despike([r[2].hp for r in reads],
+                        [(r[2].bar_damage or 0) > DAMAGE_STRIPE for r in reads],
+                        [r[2].max_hp for r in reads])
+    for n, read in enumerate(reads):
         i, t, hud = read[0], read[1], read[2]
         if hud.max_hp is not None:
             max_seen[i] = hud.max_hp
         signals = _signals(hud)
+        signals["hp"] = hp_clean[n]
         if len(read) > 3:                 # optional: is a kill-feed line up?
             signals["killfeed"] = read[3]
         for name, value in signals.items():
@@ -672,6 +734,7 @@ def dump(events, segments, reads, layout="pad", source=None):
     """
     lines = [json.dumps({
         "type": "meta",
+        "format": FORMAT_VERSION,
         "source": str(source) if source else None,
         "layout": layout,
         "frames": len(reads),

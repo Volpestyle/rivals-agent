@@ -52,7 +52,7 @@ WEBS_RIGHT = (24, 38)   # the count is right-aligned within its box
 # agent.state; "tracer" is his 4th slot, which agent/state.py has no name for.
 # The row is laid out per hero — Human Torch has five slots at other centres —
 # so these hold for Spider-Man only.
-SLOT_CX = {"teamup": 0.7516, "swing": 0.7950, "pull": 0.8348, "uppercut": 0.8723}
+SLOT_CX = {"teamup": 0.7516, "swing": 0.7950, "get_over_here": 0.8348, "uppercut": 0.8723}
 ICON_DX, ICON_Y = 0.0165, (0.890, 0.933)   # the icon glyph itself
 BADGE_DX, BADGE_Y = 0.0105, (0.849, 0.879)  # charge count above the icon
 ULT = (0.902, 0.872, 0.972, 0.950)
@@ -168,6 +168,10 @@ def _masks(frame, box, floor=115, contrasts=CONTRASTS):
 # window a region asks for is scenery, not text.
 TEXT_SIZE = (20, 36, 8, 26)   # min_h, max_h, min_w, max_w for the hp and ammo rows
 BADGE_SIZE = (10, 24, 5, 20)
+# A cooldown replaces the slot's icon with a countdown, set much larger than any
+# other number on the HUD: 42-43 px tall at 2560 against the hp row's 23-33.
+COOLDOWN_SIZE = (36, 52, 12, 30)
+COOLDOWN_CENTRE = 0.18   # how far off the slot's middle a countdown may sit
 
 
 def _segment(mask, size=TEXT_SIZE, min_area=35):
@@ -380,9 +384,12 @@ GLYPHS: dict[str, list[str]] = {
         "I/6P/4//nx+fHp4evh6+H74fPjw+PDw8PDw8PDg8OHx4eXh5+Hn/+X/xf/F/4AGA",
         "A/gP/g/+H/8/Pz4ePh4+Pj4+fj58Pnw+fH58fHx8eHh4eHB4cHhweHjw//B/4D/A",
         "A/gP/g/+H/8ePhweHB48HjwePBw8HDwceDx4PHg4eHh4eHB4cHhweHjw//B/4D/A",
-        "B/4f/z/fPAc8BzwHPAc8H3geeB54HngeeB54Png84DzgPOA84DzgfOB4//j/4H/A",
+        "H/h//n//+B/4D/gP+A/4D/gP+A/4D/gP+A/4D/gP+B/4H/gf+B/4H/gf//9//j/8",
     ],
     "1": [
+        "/8D/wP/gf+AH4AfgB+AH4AfgB+AH4AfgB+AH4AfgB+AH4AfgB+AH4Afg/////v//",
+        "f8B/wH/AB+AD4APgA+AD4APgA+AD4APgA+AD4APgA8ADwAPAA8AD4Afwf/9//v//",
+        "ecB/4P/wf/AD4APgA+AD4APgA+AD4APgA+AD4APgA+AH4APgA+AD4Afgf/9//3//",
         "APgD/wP/AH8APwA/AD4AfgB4AHgAeAB4AHgAeADwAPAA+AHwA/AD4Afgf/7/////",
     ],
     "2": [
@@ -522,8 +529,9 @@ GLYPHS: dict[str, list[str]] = {
         "AHAH/g/+Hw8cBxwHHAcADgAeABwAMABgAcADgAcAHgA4AHgAcABwAHAA/+D/8DgA",
         "AfzH/sf/z/+PD44Ojh6AHoA+gHyA+IHwA+AHwA+AHwA+ADwAeAB8AH/4f/j/8H/w",
         "P/z//P/+/D/4H/gf+B8APAD8AfgB+APgB+AfwB+APwA8APgA+AD4APz4////////",
-        "A/4P/w//DwcPDw4PHg8AHgA8AHgA8AHgA8AHwA8AHgA+AHwAeAB4AHgA//j/+P/w",
-        "B/4P/w//Dw4PHg4eHh4AHAB8APgA8AHgA+AHwA+AHwA+AHwAeAB4AXgB//H/8f/w",
+        "H/h//H/+/D94Png+eD4APgB8APgB+APwB+APwB+AHwA+AHwAeAB4AHwAf/5//n/+",
+        "H/x//n/+eB94D3gPcB8APgB+AHwB+AHwA+APwA+APwA+AHwA+AD4APgA////////",
+        "B+A//n/+f/94H3wffB9gPwB+AP4A+AHwA/AHwA+AHwA+AHwAfAD4APwA////////",
     ],
     "3": [
         "P/z//P/+/D/4H+A/4D8APwA/Af4D/Af8B/wAfwA/AB8AP/g/+D/4P/////7//D/4",
@@ -573,7 +581,9 @@ GLYPHS: dict[str, list[str]] = {
         "AAQB/A/+H/4fPx4ePh4+HgAeAD4A/sf8D/gP/AB8AHwAfHB98H3w+/D5//H/4X/A",
         "A/wP/x//H/8fDx4PHg8cDwAPAB8D/gf+B/4APgAeADwAPHA8+DzwPPh8f/h/+B/g",
         "P/z//P/8/D/4H+A/AD8APwA/A/wH/Af8B/4A/wA/+D/4P/g//D//////P/w//Afg",
-        "P/z//P/++B/4H/gf+B8AHwAcB/wH/Af8B/wAHAAeAB8AH/gf+B/4H/g8//z//D/4",
+        "f/x//P/++D74Pvg++D4APgA+Bf8P/g/+D/4APgA+AD4APvg++D74Pvh+//5//D/4",
+        "H/x//n/++B/4H/gfcB8AHwAfAB8H/gf+B/8AHwAfAB8AH/gf+B94H3gff/9//h/8",
+        "P/x//n/+fj54HngfeD8APwAeAL4P/gf8B/4APgA+AD4APng++D74Pnw+f/5//j/8",
     ],
     "4": [
         "AAbAH8A/gD6AfoD+AfwD/AP8B/wP/B88Hnw8fDz8f/z//P/8P/gA8AHwAfAB4ADg",
@@ -591,6 +601,7 @@ GLYPHS: dict[str, list[str]] = {
         "AAYAPgA/AH4A/gH+Af4D/gP8D/wffB58PHx4fPj8//z//v/8f/wA4ADgAeAB4ADA",
         "AAYADwAfAD8AfwD/Af4B/gP+B/wPnA88Hjw8ODh4//z//v/8//wA+ADwAPAB8ADg",
         "AA4AHwAeAD4AfgB+AP4D/gOeBh4OHAwcDBwYODg4eDz4/v/+//gAcABwAHAAcABg",
+        "AHwAfAD8AfwB/AP8A/wH/A+8DzwfPD48fj58Pnx+////////f/8AfAA8ADwAPAB8",
     ],
     "5": [
         "B/4P/4//z/7PAJ8AngAeAD/8P/w//D48PDwAPAB8AH0AfXh5eHn4+X/xf/F/4D+A",
@@ -712,7 +723,8 @@ GLYPHS: dict[str, list[str]] = {
         "A/AP/w/+H/AeABwAHAAcABgAPfg//D/8MBwAHAAcADwAOGA44DDgOOAw//D/8D/A",
         "B/8H/wcADgAMAAwADAAIAA74H/4+HjwGGAYABgAOAA4AHgA8ADBgMOAw4Dj/+H/g",
         "B/8P/x//H/8eAj4APgA/AH/8f/5//n/+eD4APgA+ADwAPPA48DjgOOB4//D/8D/A",
-        "D/4f/x/+H/4cABwAHAA8ADzgP/g//D/8eDgAeAB4AHgAePBw4PDg8ODw//D/4H/A",
+        "//7//v/++AD4APgA+AD4AP/8//7//vge+B4AHgAeAB8AH/g/+B/4H/gf//5//j/4",
+        "f/5//n/+eAB4AHgA+AD54Pv+//////wfeB94HwgfAB8IH3wPfB94H3gff/9//h/+",
         "D/6f/5/8HgAeAB4AHgA8AD/4H/w//Dw8ODwwPAA4ADgAeHB48Hjg+PD4//D/4H/A",
     ],
     "6": [
@@ -758,6 +770,8 @@ GLYPHS: dict[str, list[str]] = {
         "AfAH/g//H58cDxwHHAcYABgAOAA88D/8OHxwHGAcYBxgOGA44DDgMOBw//D/4D/A",
         "Af4D/w//H/8cDxwHGAcYAxgAOAA48D/4OHxwPHA8cDxgPGA44DjgOOB4//h/+D+A",
         "AHgD/gf/D/8PDw4HDg8eBB4AHgAf8D/8P/w8PDgcODx4PHg4cDhwOPhwf/B/4B+A",
+        "H/h//n//+B/wHvAe8A/wAPAA+AD//P/+//74Hvge+B74Hvge+B74Hvge//9//j/4",
+        "H/w//H/8eB54HngeeA54AHgA//j//P/+///8P/w//D/8Hvwe+B74Pvg+//5//j/8",
     ],
     "7": [
         "P/x//3//f//8fvx++HwA/AD4AfgB8APgB+AH4AfAD4EfgR8DPwA/AH4AfAD8AHgA",
@@ -768,6 +782,8 @@ GLYPHS: dict[str, list[str]] = {
         "f/5//3/////4P/A+4DhAeAB4APgB8AHwAeADwAfAB4APAA8ADgAeAB4AfAF8ATgA",
         "P/9//3//f/9+f/w+/H5weAB8APgA+ADwAeABwAPAA4AHgAeABwAPAA8APgE+ARwA",
         "Pgx//n//f/54PvA+4D5AeAB4AHAB8AHwA+AD4AfAB8APgA8ADwAeAX4BfAF8AXwB",
+        "HAb/////+//4Hvg+8D4APgA+AHwAfAD8APgA+AD4AfAD8APgA+AD4APgB+AHwAfA",
+        "AAN//3////94HngeeD4APgA+ADwAfAD8APgA+AD4AfgB8AHwA/AD4APgA+AH4AfA",
         "f/5//3//+B74HvgecD4AfAB4AHgA+AHwA/AD4AfAB4AHgA+AHwEeAT4BPgF8AXwA",
     ],
     "8": [
@@ -794,6 +810,8 @@ GLYPHS: dict[str, list[str]] = {
         "A/4P/x//H/8fDz4PPA88Dz4fP/4//j/+P/58PngeeDx4PHg88Dz8fP/4//h/8AYA",
         "AP4H/4//z/+fD58Pnw+eDx4fH74f/h/8P/w+PDw8fDx8PHw8eHz4/P/8f/h/8B+A",
         "A/wH/h8fDAc8BzwHOAYQBhAMOBw//D/4P/gwHHAMYAhgGOA84DzAPMAwwDj/4H/A",
+        "P/x//n///B/4H/gf+B/4H/gf/B9//j/8///4H/gf+B/4H/gf+B/4H/gf//9//h/8",
+        "H/w//n/+/B/8D3wPeA94D3gPeB9//n/+f/94H3wffB94H3gffB94H3wff/8//h/8",
     ],
     "9": [
         "AfwH/4//n/8fDx4PHg8eHx4fPB4+Hj/+P/wf/Ac8ADwAfHB48Hj4eP/4//D/4B+A",
@@ -816,6 +834,7 @@ GLYPHS: dict[str, list[str]] = {
         "AHAH/g//H58eDxwHHA8YDhgOGA44DjwcP/wf/AA4ABgAOEA44DDgOOB4//B/8D/A",
         "Af6H/9//3//fH58enh4eHh4eHhw+PD/8P/wf/A/8AHwAfDh9eHn4+X/xf/t/8z/D",
         "AHAD/g//D/8cBxwHHA8YDhgOOAw4DDgcP/wf/AA8ADwAPGA44DjgOOBw//B/4B4A",
+        "H/w//n//eB94D3gPeA94D3gPeA94D3//f/8//wAfAA8gH/gf+B/4H/wff/9//h/8",
     ],
 }
 
@@ -1036,6 +1055,22 @@ def read_bar_fill(frame) -> float | None:
     return float((np.flatnonzero(filled)[-1] + 1) / len(filled))
 
 
+def read_damage_segment(frame) -> float | None:
+    """The red stripe the bar leaves where health was just lost, 0..1 of the bar.
+
+    It is drawn for about a second after a hit and nothing else on the bar is
+    red, so it is an independent witness that damage happened -- which matters
+    when hp drops for a single frame and comes straight back: that shape is also
+    what a misread looks like, and only the stripe tells them apart.
+    """
+    bar = crop(frame, HP_BAR)
+    if bar.size == 0:
+        return None
+    hsv = cv2.cvtColor(bar, cv2.COLOR_BGR2HSV)
+    hue, sat, val = hsv[:, :, 0].astype(int), hsv[:, :, 1], hsv[:, :, 2]
+    return float((((hue < 10) | (hue > 170)) & (sat > 110) & (val > 110)).mean())
+
+
 def read_webs(frame, layout=PAD) -> int | None:
     """Web-Cluster count by the left weapon icon.
 
@@ -1141,6 +1176,34 @@ def read_charges(frame, cx, layout=PAD) -> int | None:
     glyphs = [g for g in _glyphs(mask, BADGE_SIZE, min_area=25)
               if g[0][3] >= 0.45 * disc_h]
     return _number(glyphs) if glyphs else None
+
+
+def read_cooldown(frame, name, layout=PAD) -> int | None:
+    """Seconds left on this slot's cooldown, or None when no number is drawn.
+
+    This is the signal that a cast actually happened. An icon going dim or red
+    only says the slot is unusable -- which also happens while climbing a wall,
+    mid-swing, or during any other lockout -- but the countdown appears only
+    when the ability itself went on cooldown.
+    """
+    cx = layout.slot_cx[name]
+    for mask in _masks(frame, _icon_box(cx), 115, contrasts=(55, 30)):
+        middle = mask.shape[1] / 2
+        glyphs = [(b, classify(_normalise(mask, b)))
+                  for b in _segment(mask, COOLDOWN_SIZE) if b[2] <= b[3]]
+        for group in _groups(glyphs):
+            value = _number(group)
+            if value is None:
+                continue
+            # A countdown is centred in its slot. On a stream, chat scrolls
+            # across the ability row and its letters are the right size to read
+            # as digits -- that is where eight uppercut "casts" in 2.6 seconds
+            # came from, on a 7 second cooldown. Off-centre text is not ours.
+            first, last = group[0][0], group[-1][0]
+            centre = (first[0] + last[0] + last[2]) / 2
+            if abs(centre - middle) <= COOLDOWN_CENTRE * mask.shape[1]:
+                return value
+    return None
 
 
 def read_ability(frame, name, layout=PAD) -> tuple[bool | None, int | None]:
@@ -1281,13 +1344,21 @@ class Hud:
     abilities: dict[str, tuple[bool | None, int | None]] = field(default_factory=dict)
     ult_ready: bool | None = None
     ult_charge: float | None = None
+    # Seconds left per slot, or None where no countdown is drawn. A number here
+    # is the only proof on this HUD that an ability was actually cast.
+    cooldowns: dict[str, int | None] = field(default_factory=dict)
+    bar_damage: float | None = None   # red stripe on the hp bar: damage just taken
 
     def state_kwargs(self):
         """The subset agent.state.State accepts today. ult_charge has no field
         there yet; ult lands as an Ability with its ready flag."""
         from agent.state import Ability
 
-        ab = {k: Ability(ready=r, charges=c) for k, (r, c) in self.abilities.items()}
+        # agent/state.py still calls this slot PULL = "pull"; the event stream
+        # calls it get_over_here (format 2). Translated here rather than in the
+        # brain's file, so the live loop keeps working until rivals-brain moves.
+        ab = {("pull" if k == "get_over_here" else k): Ability(ready=r, charges=c)
+              for k, (r, c) in self.abilities.items()}
         ab["ult"] = Ability(ready=self.ult_ready)
         return dict(hp=self.hp, max_hp=self.max_hp, webs=self.webs, abilities=ab)
 
@@ -1304,8 +1375,10 @@ def read(frame, layout=PAD) -> Hud:
         hp=hp,
         max_hp=max_hp,
         bar_fill=bar,
+        bar_damage=read_damage_segment(frame),
         webs=read_webs(frame, layout),
         abilities={n: read_ability(frame, n, layout) for n in layout.slot_cx},
+        cooldowns={n: read_cooldown(frame, n, layout) for n in layout.slot_cx},
         ult_ready=ult_ready,
         ult_charge=ult_charge,
     )
@@ -1330,6 +1403,23 @@ def learn(specs, out=None):
             continue
         for field_spec in fields.split(";"):
             key, _, want = field_spec.partition(":")
+            if key == "cd":
+                # cd:<slot>:<layout>:<seconds> -- the countdown drawn in a slot.
+                # Its digits are half again as tall as the hp row's and do not
+                # match those templates: an 8 read as 3 until these were learned.
+                slot, lay, want = want.split(":")
+                cx = LAYOUTS[lay].slot_cx[slot]
+                for mask in _masks(frame, _icon_box(cx), 115, contrasts=(55, 30)):
+                    boxes = [b for b in _segment(mask, COOLDOWN_SIZE) if b[2] <= b[3]]
+                    if len(boxes) != len(want):
+                        continue
+                    for b, ch in zip(boxes, want):
+                        g = _normalise(mask, b)
+                        kept = variants.setdefault(ch, [])
+                        if not any(np.count_nonzero(g != k) <= 18 for k in kept):
+                            kept.append(g)
+                    break
+                continue
             if key in ("hp", "webs"):
                 box, floor = ((HP_TEXT, 115) if key == "hp" else (WEBS, WEBS_FLOOR))
                 # Both kernels, so every mask a reader can produce has templates.
