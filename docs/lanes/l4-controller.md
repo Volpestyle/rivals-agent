@@ -2,10 +2,28 @@
 
 Linear: VUH-1296. Evidence: `docs/evidence/l4/`. Raw measurements: `C:\rivals-agent\data\l4\` on the PC.
 
-The game is in the Practice Range as Spider-Man, in the **Galacta target arena** (open floor with pink lane lines, walled
-and railed, standing and moving Galacta bots), idle, no pad connected. Route from the spawn room: the green door the lead
-left him facing leads down a short stair to a planter landing; the blue-lit archway 90 deg left of the stair opens onto
-the arena (`loop30c-sheet.jpg`).
+**Live work is frozen (VUH-1325, input-safety review).** The collection batch was stopped after `baseline4`, which
+reached its own `max_time` stop; no run was cut short and nothing was killed. After it: the game is in the Practice Range
+as Spider-Man, standing still on the lower ring beside a jump pad, HUD showing keyboard glyphs, no Xbox 360 device present
+in Windows and no loop or recorder process alive (`batch-stopped-state.jpg`). Another lane's `agent.server` (started
+19:21) is the only python left on the PC. Not to be run live until the review's fixes are re-reviewed:
+`scripts/l4_practice_settings.py`, `scripts/l4_menu.py`, `scripts/l4_leave.py`, `scripts/l4_swatch.py`, unattended loops.
+
+## Collection batch (scripted brain, cooldowns normal, same code and settings)
+
+| Run | KOs | Damage | Reflex Hz | tick p50 / p95 ms | Note |
+|---|---|---|---|---|---|
+| `baseline1` | 21 | 5,590 | 55.1 | 7.0 / 10.0 | no recorder |
+| `baseline2` | **0** | 0 | 57.0 | 7.0 / 10.9 | **stalled for the whole run**: camera pitched straight down beside a point-blank bot, brain on Engage throughout (17,090 ticks), aim crop saw no box, so no press, no move, no Search (and so no re-level) |
+| `baseline3` | 20 | 5,000 | 53.4 | 7.3 / 11.0 | ended outside the arena |
+| `baseline4` | **0** | 0 | 56.8 | 7.2 / 11.3 | Search for the whole run (16,997 ticks): he began it on the lower ring, where there are no bots |
+
+All four stopped on `max_time` with no range gap, no error, 0 missed decisions, 2-5 ticks over budget; runs 2-4 had the
+all-GPU recorder on (`C:\rivals-agent\data\video\baseline<n>.mp4`). Mean 10.3 KOs (sd 11.8), 2,648 damage (sd 3,067):
+the spread is two working runs (20-21 KOs, 5,000-5,590) and two dead ones, not noise around a mean. `baseline5` and
+`baseline6` were not run. On the Mac under `data/l1/<run>/`: `frames.jsonl`, `meta.json` (with `cooldowns`,
+`scoreboard_before`, `proxy`, `screen_recording`), `proxy-720p.mp4` (one video frame per saved image, in order) and the
+end scoreboard. Native frames and 60 fps recordings stay on the PC.
 
 ## Baseline (VUH-1300): `C:\rivals-agent\data\l1\baseline1\`
 
