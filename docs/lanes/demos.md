@@ -147,12 +147,25 @@ training set to one regime and one patch.
 `segment` lines, then events without a `type` (`kind`, `i_from`, `t_from`, `i_to`, `t_to`, `slot`, `slot_pos`, `amount`,
 `before`, `after`, `segment`). `events_file_segments(path)` turns the segment lines into manifest segments.
 
-**The loader reads format 4 only.** Any other `format` (a file with no meta line is format 1) is a `FormatError` that names
-the file and both versions, and so is a meta line without `fps`, `layout`, `t_origin`, `slot_mapping` or `slot_mapping_from`
-(`slot_mapping` may be `null`, meaning no mapping was attempted, which differs from `{}`, icons read and none identified). The
-loader keeps the meta line as `clip.events_meta` (`slot_mapping`, `observed` cooldowns and charge counts, `cuts`,
-`pts_origin_s`, `fps`, `layout`, `t_origin`). Format 1 vocabulary (`ability_used`, `ability_ready`, slot `pull`) inside a file
-is refused.
+**The loader reads format 4 only, and only from the current writer.** Any other `format` (a file with no meta line is format 1)
+is a `FormatError` that names the file and both versions. A format 4 file must also pass **the producer's own staleness verdict**
+(`perception.events.check`):
+
+- a non-empty `recipe`;
+- every key of the producer's `REQUIRED_META`;
+- a `writer` equal to the fingerprint of the producer's `WRITER_FILES` (SHA-256 over `perception/events.py`, `hud.py`,
+  `scoreboard.py`).
+
+A stale file is refused by name with the producer's reason and `regenerate it with python -m perception.events regen`.
+`producer_rule()` reads those constants from `perception/events.py` with `ast.literal_eval`, without importing it (it imports
+numpy), so there is no second list to drift. `test_the_loaders_stale_rule_is_the_producers` (perception group) checks that the
+two verdicts agree on every real file. Editing any writer file makes every events file stale until it is regenerated. That is
+the producer's contract, and the loader holds to it.
+
+The loader's own keys are `fps`, `layout`, `t_origin`, `slot_mapping` and `slot_mapping_from`. `slot_mapping` may be `null`,
+meaning no mapping was attempted, which differs from `{}`: icons read and none identified. The loader keeps the meta line as
+`clip.events_meta` (`slot_mapping`, `observed` cooldowns and charge counts, `cuts`, `cut_times`, `pts_origin_s`, `fps`, `layout`,
+`t_origin`, `recipe`, `writer`). Format 1 vocabulary (`ability_used`, `ability_ready`, slot `pull`) inside a file is refused.
 
 - **An ability is named only from its icon.** `slot` must equal `slot_mapping[slot_pos]`; a position the mapping does not
   identify, or a file with no mapping, has `slot: null`, and a named slot there is refused as a guess (VUH-1326 finding 7).
@@ -182,8 +195,18 @@ disk and not read.
 **`context_mask` and `outcome_mask`** name an annotator's per-frame visibility file, relative to the annotations file:
 `[{"t": 40.6, "scene": "partial", "player": "unavailable", "hp": "visible", ..., "reasons": ["camera_clips_geometry"]}, ...]`.
 A field that is `visible` or `partial` is not hidden; any other value (`unavailable`, `partial_chat_overlay`, anything
-unrecognised) hides that modality on that frame, whichever window the frame lands in. Two annotators' masks of one frame are
-unioned. `context_start` and `masked_context` are checked when a sample is built: `samples()` raises `AlignmentError` if the
+unrecognised) hides that modality, whichever window the frame lands in. Two annotators' masks of one frame are unioned.
+
+**A row lands on the nearest frame, or it is an error.** Mask rows sit on the annotator's grid (10 Hz), and window frames on
+whatever grid the window is built at. So a row applies to the window frame nearest it, within half the window's frame step
+(`Clip.masks_near`). At `frame_hz=3` a row at 9.6 lands on the 9.667 frame instead of vanishing. A frame collecting several rows
+takes their union. Some rows cannot land anywhere:
+
+- A row inside a window's span that lands on no frame (sparse jpgs, a hole in the grid) raises `AlignmentError`.
+- A row outside the clip is a `FormatError` at load.
+
+Events are checked the same way, with half the events file's own step: no event is read off a frame whose nearest mask row hides
+its field. `context_start` and `masked_context` are checked when a sample is built: `samples()` raises `AlignmentError` if the
 window starts later than the judged context or disagrees about holding masked frames, so an annotator never judged history the
 policy does not receive.
 
@@ -290,6 +313,11 @@ source_time(8.1) = 5408.1
 With `across_overlays=False` the same decision's history starts at 6.1 and is truncated.
 
 ## What the real data showed
+
+**Every events file on disk is stale at the moment** (12 of 14 by the producer's own `check`: none carries `cut_times`,
+`writer`, `container_start_s` or `stream_start_s`), so the loader refuses them all and the real-data tests fail until
+`python -m perception.events regen` runs. The numbers below were measured on the same files before the staleness rule, and are
+re-measured after regeneration.
 
 `uv run python -m agent.demos data/demos/samples data/demos/vods data/demos/youtube/reqmr`: twelve format 4 sources load in
 0.11 s and yield 37,693 observations at 5 Hz in 6.8 s.
@@ -400,10 +428,9 @@ Event signatures cannot identify a shared match: a quick check matched a May upl
 
 ## What format 4 does not give the loader
 
-- **Where the cuts are.** `cuts` is a count. A cut shows up only as a `hard_cut` segment end, so one inside a scoreboard tap or
-  another gap is invisible: reqmr-2871472478-5400-900s reports 4 cuts and no `hard_cut` end, reqmr-2873352801-1980-900s 15 cuts
-  and 4 ends, daymr-2879354299-21660-900s 17 and 2. A bridged 0.4-1.0 s tap cannot be proven cut-free. Cut times (or `hard_cut` whenever a cut falls in a gap) would
-  close it.
+- **Where the cuts are, in the files on disk.** The current writer records `cut_times` and marks a cut inside a gap with
+  `hard_cut` / `after_cut` on both sides, so a bridged tap is cut-free by construction. Until the stale files are regenerated,
+  none of them carries `cut_times`, and the loader refuses them.
 - **A patch.** `observed` is a fingerprint, not a patch: mapping it to one needs a dated per-patch cooldown table, and the kit
   states only the current patch. Its countdown histograms also carry misreads (uppercut `120`-`188` on one DayMR section).
 - **The clock offset in the window.** `pts_origin_s` is on the meta line (`clip.events_meta`), but clip time starts at the
@@ -423,10 +450,12 @@ Event signatures cannot identify a shared match: a quick check matched a May upl
 - **Not built:** video decoding, an annotation tool, event and annotation re-cutting on `trim`, verification of `alignment`,
   mapping `observed` to a patch, and sampling-weight code.
 
-Mutation checks: 30 hand-made breakages of the format 4, bridging, mask and provenance code (a guessed slot accepted, the
+Mutation checks: 37 hand-made breakages of the format 4, bridging, mask and provenance code (a guessed slot accepted, the
 fixed ult unrecognised, format 3 accepted, meta keys unchecked, the tap width ignored, a cut made soft, bridging off by
 default, a gap hiding the HUD only, `partial` hiding, annotator masks dropped, events read off masked frames, the regime or
 patch gate off, a basis unchecked, observed countdowns unchecked, an unsplittable clip hashed into a split or allowed an
 explicit one, a run's manifest/meta.json clash ignored; for splits, a proposal that promotes, the accepted gate off, the patch
 unchecked, a group on two sides, on none or with no source, the status unchecked, a pending side that answers, an empty side
-not declared pending, a pending side with groups, an unassigned group on a side or among the sources) each fail at least one test.
+not declared pending, a pending side with groups, an unassigned group on a side or among the sources; for staleness and masks,
+the writer, the producer's keys or the recipe unchecked, masks looked up by exact millisecond, an unmatched or out-of-clip mask
+row passed silently, events checked against masks with no tolerance) each fail at least one test.

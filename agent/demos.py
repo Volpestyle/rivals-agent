@@ -28,7 +28,9 @@ Rules the code enforces (each has a test):
 """
 import argparse
 import bisect
+import ast
 import dataclasses
+import functools
 import hashlib
 import json
 import math
@@ -54,8 +56,28 @@ ENDED_BY = ("run_end", "death", "killcam", "spectating", "scoreboard", "not_our_
 # "format": 4. Any other format is refused, naming the file and both versions: format 1 claimed casts that never happened, 2 and 3
 # may name an ability by layout position (a guess) and know no editorial cut, so a stale file would train on what it is not.
 EVENT_FORMAT = 4
-# What a format 4 meta line must carry: slot_mapping may be null (no mapping attempted) but must be present.
+# What a format 4 meta line must carry for this loader: slot_mapping may be null (no mapping attempted) but must be present.
 META_KEYS = ("fps", "layout", "t_origin", "slot_mapping", "slot_mapping_from")
+# STALENESS is the producer's own verdict (perception.events.check): the format, a non-empty recipe, every key of its
+# REQUIRED_META, and a `writer` equal to the fingerprint of its WRITER_FILES. Those constants are read from the producer's
+# source, never copied here (a copy drifted within the hour), and never imported (perception.events imports numpy).
+PRODUCER = Path(__file__).resolve().parent.parent / "perception" / "events.py"
+
+
+@functools.lru_cache(maxsize=None)
+def producer_rule(path=PRODUCER):
+    """{"format", "required_meta", "writer"}: the producer's current staleness rule, from its source file's literals."""
+    consts = {}
+    for node in ast.parse(Path(path).read_text(encoding="utf-8")).body:
+        if isinstance(node, ast.Assign) and len(node.targets) == 1 and isinstance(node.targets[0], ast.Name) \
+                and node.targets[0].id in ("FORMAT_VERSION", "REQUIRED_META", "WRITER_FILES"):
+            consts[node.targets[0].id] = ast.literal_eval(node.value)
+    if len(consts) != 3:
+        raise FormatError(f"{path}: cannot read the producer's staleness rule (found {sorted(consts)})")
+    h = hashlib.sha256()
+    for name in consts["WRITER_FILES"]:
+        h.update((Path(path).resolve().parent.parent / name).read_bytes())
+    return {"format": consts["FORMAT_VERSION"], "required_meta": tuple(consts["REQUIRED_META"]), "writer": h.hexdigest()[:12]}
 # Positions whose ability is fixed by the layout, not read off an icon: the ult is always the ult.
 FIXED_SLOTS = ("ult",)
 REMOVED_KINDS = ("ability_used", "ability_ready")   # replaced by ability_cast and slot_unavailable / slot_available
@@ -306,9 +328,17 @@ def _check_events_format(path, rows):
     if fmt != EVENT_FORMAT:
         raise FormatError(f"{path}: event stream format {fmt or 1}, this loader reads format {EVENT_FORMAT} (ability named from its "
                           f"icon or null, hard_cut/after_cut, observed cooldowns): regenerate it with perception.events")
-    missing = [k for k in META_KEYS if k not in meta]
+    rule = producer_rule()
+    if rule["format"] != EVENT_FORMAT:
+        raise FormatError(f"{PRODUCER}: the producer writes format {rule['format']}, this loader reads format {EVENT_FORMAT}")
+    regen = "regenerate it with `python -m perception.events regen`"
+    if not meta.get("recipe"):
+        raise FormatError(f"{path}: stale, no recipe, so it cannot be regenerated")
+    missing = [k for k in dict.fromkeys(META_KEYS + rule["required_meta"]) if k not in meta]
     if missing:
-        raise FormatError(f"{path}: format {EVENT_FORMAT} meta line lacks {missing}")
+        raise FormatError(f"{path}: stale, written by older code: the format {EVENT_FORMAT} meta line lacks {missing}; {regen}")
+    if meta["writer"] != rule["writer"]:
+        raise FormatError(f"{path}: stale, writer {meta['writer']}, current is {rule['writer']}; {regen}")
     return meta
 
 
@@ -379,6 +409,9 @@ class Clip:
         end = header.get("duration_s") or (self.frames.last_t if self.frames else None)
         if end is not None and self.segments and self.segments[-1].end_t > end + EPS:
             raise FormatError(f"{self.id}: a segment ends after the clip does ({self.segments[-1].end_t} > {end})")
+        outside = [t for t in self._mask_ts if t < -EPS or (end is not None and t > end + EPS)]
+        if outside:
+            raise FormatError(f"{self.id}: annotator mask rows at {outside[:3]} match no frame: the clip runs 0 to {end}")
 
     def _check_provenance(self):
         h = self.header
@@ -495,6 +528,7 @@ class Clip:
     def _load_annotations(self):
         self.annotations, self.outcome_reviews = {}, {}   # by decision time, rounded to a millisecond
         self.frame_masks = {}                             # clip time (ms) -> Mask, from annotators' per-frame visibility files
+        self._mask_ts = []
         rel = self.header["annotations"]
         if rel is None:
             return
@@ -515,6 +549,14 @@ class Clip:
                 self.outcome_reviews.setdefault(t, []).append((r.get("by"), r["outcome_review"]))
 
 
+    def masks_near(self, t, h):
+        """The union of the annotator mask rows within h of t, or None. A row describes the picture at its own time; the frame
+        nearest it (within half a step of the grid being built) carries it, so no grid, 60 fps or variable-rate, loses a row."""
+        m = None
+        for k in self._mask_ts[bisect.bisect_left(self._mask_ts, t - h - EPS):bisect.bisect_right(self._mask_ts, t + h + EPS)]:
+            m = self.frame_masks[k] if m is None else m | self.frame_masks[k]
+        return m
+
     def _load_frame_masks(self, path, where):
         """An annotator's per-frame visibility file: [{"t": s, "<field>": "visible" | "partial" | ..., "reasons": [...]}, ...].
         A field that is neither visible nor partial (unavailable, partial_chat_overlay, anything unrecognised) is hidden. Two
@@ -529,6 +571,7 @@ class Clip:
             if fields:
                 why = tuple(dict.fromkeys([*(r.get("reasons") or ()), *map(str, fields.values())]))
                 self.frame_masks[t] = Mask(why, tuple(fields)) | self.frame_masks.get(t)
+        self._mask_ts = sorted(self.frame_masks)
 
 
 # An annotator's visibility row: keys that are not modalities, and values that do not hide one.
@@ -867,12 +910,22 @@ class Demos:
         first, last = clip.stretch(seg, self.max_bridge_s) if across else (seg, seg)
         return first, last, set(range(first.n, last.n + 1))
 
-    def _masked(self, clip, f, across):
-        """The frame with every mask on record: the bridged gap's, and annotators' per-frame ones (whatever `across` is)."""
-        m = clip.frame_masks.get(round(f.t, 3))
-        gap = clip.mask_at(f.t, self.max_bridge_s) if across else None
-        m = gap | m if gap else m
-        return dataclasses.replace(f, masked=m) if m else f
+    def _masked(self, clip, frames, across, h):
+        """The frames with every mask on record: the bridged gap's, and each annotator row on the frame nearest it (within h, half
+        a step of this window's grid). A row inside the window's span that lands on no frame is an error, never a no-op."""
+        out = []
+        for f in frames:
+            m, gap = clip.masks_near(f.t, h), (clip.mask_at(f.t, self.max_bridge_s) if across else None)
+            m = gap | m if gap else m
+            out.append(dataclasses.replace(f, masked=m) if m else f)
+        if frames and clip._mask_ts:
+            ts = [f.t for f in frames]
+            lo, hi = min(ts), max(ts)
+            for k in clip._mask_ts[bisect.bisect_left(clip._mask_ts, lo - h - EPS):bisect.bisect_right(clip._mask_ts, hi + h + EPS)]:
+                if not any(abs(k - x) <= h + EPS for x in ts):
+                    raise AlignmentError(f"{clip.id}: the annotator mask row at {k} lands on no frame of the window {lo}-{hi} "
+                                         f"(frames more than {h:.3f} s away): it would silently not apply")
+        return out
 
     @staticmethod
     def _readable(clip, e):
@@ -880,8 +933,9 @@ class Demos:
         HUD-derived feature comes from a frame that must not be learned from."""
         field = (e.slot or e.slot_pos) if e.slot_pos or e.slot else \
             "ammo" if e.kind.startswith("web_cluster") else "hp" if e.kind.split("_")[0] in ("hp", "shield", "max") else None
+        h = 0.5 / float(clip.events_meta["fps"])       # the events' own grid: the mask rows nearest the frames they were read off
         for t in (e.t_from, e.t_to):
-            m = clip.frame_masks.get(round(t, 3))
+            m = clip.masks_near(t, h)
             if m and ("hud" in m.hidden or field in m.hidden):
                 return False
         return True
@@ -895,7 +949,8 @@ class Demos:
         for x in _grid(0.0, t - start, frame_hz):   # newest first: t, t - 1/hz, ...
             f = clip.frames.snap(t - x)
             if f is not None and f.t >= lo - EPS and (not frames or frames[-1].t > f.t + EPS):
-                frames.append(self._masked(clip, f, across))
+                frames.append(f)
+        frames = self._masked(clip, frames, across, 0.5 / frame_hz)
         events = None if clip.events is None else tuple(
             e for e in clip.events if e.segment in ids and e.t_to <= t + EPS and e.t_from >= start - EPS and self._readable(clip, e))
         inputs = None if clip.inputs is None else tuple(_span(clip.inputs, start, t, lambda i: i.t))
@@ -909,7 +964,8 @@ class Demos:
         for x in _grid(0.0, end - t, frame_hz)[1:]:
             f = clip.frames.snap(t + x)
             if f is not None and f.t > t + EPS and (not frames or frames[-1].t < f.t - EPS):
-                frames.append(self._masked(clip, f, across))
+                frames.append(f)
+        frames = self._masked(clip, frames, across, 0.5 / frame_hz)
         events = None if clip.events is None else tuple(
             e for e in clip.events if e.segment in ids and t + EPS < e.t_to <= end + EPS and self._readable(clip, e))
         cut = last.end_t < t + outcome_s - EPS

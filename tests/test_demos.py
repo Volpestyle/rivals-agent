@@ -44,7 +44,9 @@ EVENTS = [dict(kind="hp_lost", t_from=4.0, t_to=4.2, slot=None, amount=75, befor
 MAPPING = {s: s for s in ("teamup", "swing", "get_over_here", "uppercut")}
 META = dict(type="meta", format=4, source="x", layout="mk", frames=601, fps=10.0, t_origin="first frame of the media", pts_origin_s=0.0,
             cuts=0, slot_mapping=MAPPING, slot_mapping_from="ability icon matched by shape, voted over sampled frames",
-            observed={"get_over_here": {"casts": 2, "countdown_mode": 8}})
+            observed={"get_over_here": {"casts": 2, "countdown_mode": 8}}, cut_times=[],
+            recipe={"video": "x.mp4", "hz": 10.0, "start": None, "duration": None, "layout": "mk"}, writer=demos.producer_rule()["writer"])
+META.update({k: None for k in demos.producer_rule()["required_meta"] if k not in META})   # whatever else the producer now requires
 
 
 def with_pos(e):
@@ -1056,6 +1058,73 @@ def test_a_run_directorys_manifest_and_meta_json_must_agree(tmp_path):
     (d / "meta.json").unlink()
     c = demos.clip_from_run(d)
     assert (c.cooldowns, c.patch, c.header["patch_from"]) == ("unknown", "unknown", "none")    # never from a table, never from the date
+
+
+# --- stale event files: the producer's own rule, not a weaker copy --------------------------------------------------------------
+def test_an_events_file_the_producer_calls_stale_is_refused_by_name_with_the_reason(tmp_path):
+    """Review finding A: format 4 files written before cut_times / recipe loaded silently."""
+    for n, (meta, why) in enumerate([({k: v for k, v in META.items() if k != "cut_times"}, r"stale, written by older code: .* lacks \['cut_times'\]"),
+                                      ({k: v for k, v in META.items() if k != "observed"}, r"lacks \['observed'\]"),
+                                      ({k: v for k, v in META.items() if k != "recipe"}, "stale, no recipe, so it cannot be regenerated"),
+                                      (dict(META, recipe=None), "stale, no recipe"),
+                                      (dict(META, writer="0123456789ab"), "stale, writer 0123456789ab, current is " + META["writer"])]):
+        d = fresh(tmp_path, f"s{n}")
+        jsonl(d / "v.events.jsonl", [meta])
+        with pytest.raises(FormatError, match=r"v\.events\.jsonl: .*" + why):
+            demos.write_manifest(d / "v.manifest.jsonl", header(events="v.events.jsonl"), SEGS)
+
+
+def test_the_loaders_stale_rule_is_the_producers():
+    events = pytest.importorskip("perception.events")          # imports numpy: runs under --group perception
+    assert demos.producer_rule() == {"format": events.FORMAT_VERSION, "required_meta": tuple(events.REQUIRED_META),
+                                     "writer": events.writer_version()} and demos.EVENT_FORMAT == events.FORMAT_VERSION
+    if (DEMOS / "events").is_dir():                              # and on every real file, the same verdict as its own check
+        stale = {Path(p).resolve() for p, _ in events.check(DEMOS / "events")}
+        for path in sorted((DEMOS / "events").rglob("*.jsonl")):
+            rows = list(demos._jsonl(path))
+            try:
+                demos._check_events_format(path, rows)
+                refused = False
+            except FormatError:
+                refused = True
+            assert refused == (path.resolve() in stale), path
+
+
+# --- annotator masks land on the nearest frame, or loudly nowhere -------------------------------------------------------------
+def test_a_mask_row_reaches_the_nearest_frame_on_any_grid(tmp_path):
+    """Review finding D: a row at 9.6 vanished at frame_hz 3 (the frame is at 9.667), as it would on any 60 fps grid."""
+    d = fresh(tmp_path, "grid")
+    (d / "m.json").write_text(json.dumps(visibility([9.6], player="unavailable")))
+    make_vod(d, split="train", annotations=[annotation(11.0, context_mask="m.json")], decisions=[11.0])
+    got = Demos.load(d)
+    for hz in (10.0, 5.0, 3.0, 7.0):
+        o, = got.observations("train", decisions="manifest", frame_hz=hz)
+        hit = [f.t for f in o.frames if f.masked and "player" in f.masked.hidden]
+        assert len(hit) == 1 and abs(hit[0] - 9.6) <= 0.5 / hz + 1e-6, (hz, hit)
+    assert got.clips["vodA"].masks_near(9.6 + 1 / 60, 1 / 120) is None      # nearest within half a step, not a smear
+
+
+def test_a_mask_row_on_no_frame_is_an_error_not_a_no_op(tmp_path):
+    d = fresh(tmp_path, "sparse")                                   # jpgs once a second: a row at 10.5 is half a second from any
+    jsonl(d / "frames.jsonl", [{"t": float(k), "file": f"{k:06d}.jpg", "i": k} for k in range(30)])
+    (d / "m.json").write_text(json.dumps(visibility([10.5], hp="unavailable")))
+    jsonl(d / "annotations.jsonl", [annotation(11.0, context_mask="m.json")])
+    got = Demos.load(d)
+    with pytest.raises(AlignmentError, match="mask row at 10.5 lands on no frame"):
+        list(got.observations(got.splits["run:sparse"], hz=1.0, frame_hz=5.0))
+    (d / "m.json").write_text(json.dumps(visibility([99.0], hp="unavailable")))   # after the clip's end
+    with pytest.raises(FormatError, match=r"mask rows at \[99.0\] match no frame"):
+        Demos.load(d)
+
+
+def test_an_event_read_off_a_masked_frame_is_dropped_whatever_the_grid_phase(tmp_path):
+    d = fresh(tmp_path, "phase")                                    # the annotator's row sits a 60 fps frame off the events' grid
+    (d / "m.json").write_text(json.dumps(visibility([round(10.0 + 1 / 60, 3)], ammo="unavailable")))
+    ev = [dict(kind="web_cluster_fired", t_from=9.8, t_to=10.0, before=4, after=3),
+          dict(kind="hp_lost", t_from=9.8, t_to=10.0, amount=25, before=250, after=225)]
+    make_vod(d, events=ev, split="train", annotations=[annotation(12.0, context_mask="m.json")], decisions=[12.0])
+    o, = Demos.load(d).observations("train", decisions="manifest")
+    assert [e.kind for e in o.events] == ["hp_lost"]
 
 
 # --- real data: skipped only where data/ is absent, never on a format mismatch --------------------------------------------------
