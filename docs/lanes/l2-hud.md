@@ -1155,7 +1155,9 @@ source cut at tenths).
   evaluated on its own against the confirmed timer, and the event's interval is
   the **union** (enclosing interval) of the in-segment start windows the
   candidates allow — never their intersection, never the shortest; each
-  window's lower end is clamped to its upper. A candidate is excluded only by
+  window's lower end is clamped to its upper, so no bound falls after the
+  first read (needed when the reads leave an expiry window narrower than the
+  rounding slack; unexercised on the train sections). A candidate is excluded only by
   the timer's own confirmed value (a countdown never shows more than its
   length, so a read of 15 or 11 rules out 10 s) or by starting before the
   previous timer ended; one that starts before the segment, or would be the
@@ -1289,13 +1291,16 @@ health. Both now say unknown.
   out as casts with finite bounds, width ≤ 2.5 s and `known_at − t_to` ≤ 1.5 s
   (measured 0.9–2.3 s and 0.1–1.1 s, from extract_one, without the segment
   lag); every prefix test also asserts a minimum count of known casts.
-- **Mutations in a scratch copy: 71 of 72 killed.** The survivor is the
-  union's lower-end clamp, an equivalent mutant: with the value check, a
-  window's lower end can exceed its upper only by less than TIMER_EPS, at the
-  segment start or the previous timer's end, and frame snapping maps both to
-  the same frame. (An earlier count here, 68 of 68, named the "meta `table`
-  from the resolved patch" mutant as killed; it survived then, and a case with
-  the kit resolver returning nothing now kills it and the two-site variant.)
+- **Mutations in a scratch copy: 72 of 72 killed.** The union's lower-end
+  clamp is load-bearing: two team-up reads of 15 exactly 1.2 s apart leave an
+  expiry window so narrow that the 15 s candidate's start window has its lower
+  end up to TIMER_EPS after its upper, and without the clamp the event's `t_to`
+  lands a frame after the frame on which the countdown was already read
+  running. That synthetic case is a regression; no kept window needs the clamp
+  on the two train sections, so their output does not depend on it. (Two
+  earlier counts here were wrong: 68 of 68 named the "meta `table` from the
+  resolved patch" mutant as killed when it survived, and 71 of 72 called the
+  clamp mutant equivalent when it is not.)
   Among the killed: the disc
   fallback accepting a wide blob, the file-writing path using the reference kit
   or an unknown patch defaulting to it, regenerate dropping the recorded patch,

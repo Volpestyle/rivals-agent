@@ -1884,3 +1884,16 @@ def test_one_unconfirmed_team_up_digit_never_narrows_the_interval():
     es, _ = extract([(*r, True) for r in _slot_reads(vals, slot="teamup")], mapping={"teamup": "teamup"}, kit=KIT)
     (e,) = [e for e in es if e.kind.startswith("ability_")]
     assert e.kind == "ability_uncertain" and e.t_from == 0.0 and e.t_to == 12.0, e
+
+
+def test_the_union_never_bounds_a_use_after_its_first_read():
+    """Two team-up reads of 15 exactly 1.2 s apart leave an expiry window so
+    narrow that, for the 15 s candidate, the start window's lower end falls
+    TIMER_EPS after its upper (the first read). The clamp keeps the event's
+    t_to on the first read; without it, t_to lands a frame after the frame on
+    which the countdown was already read running. Unexercised on the two train
+    sections; load-bearing here."""
+    vals = [None] * 100 + [15] + [None] * 11 + [15] + [None] * 60
+    es, _ = extract([(*r, True) for r in _slot_reads(vals, slot="teamup")], mapping={"teamup": "teamup"}, kit=KIT)
+    (e,) = [e for e in es if e.kind.startswith("ability_")]
+    assert e.kind == "ability_uncertain" and e.t_from <= e.t_to <= 10.0, e
