@@ -441,8 +441,14 @@ class Clip:
         self.decisions = tuple(_num(t, f"{self.id} decisions") for t in header.get("decisions") or ())
         self._load_media()
         self._load_events()
-        self._load_annotations()
+        if self.events_sealed:        # human judgments of a sealed source are sealed with it: not even the file is opened
+            self._annotations = self._outcome_reviews = None
+            self.frame_masks, self._mask_ts = {}, []
+        else:
+            self._load_annotations()
         self._check_provenance()
+        if self.events_sealed and self.events_meta is not None:
+            self._seal_meta()
         end = header.get("duration_s") or (self.frames.last_t if self.frames else None)
         if end is not None and self.segments and self.segments[-1].end_t > end + EPS:
             raise FormatError(f"{self.id}: a segment ends after the clip does ({self.segments[-1].end_t} > {end})")
@@ -559,11 +565,10 @@ class Clip:
         rel = self.header["events"]
         if rel is None:
             return
-        rows = []
-        for n, r in _jsonl(self._resolve(rel)):
-            if self.events_sealed and r.get("type") not in ("meta", "segment"):
-                break                                  # the first event line: a sealed clip reads no further
-            rows.append((n, r))
+        # A sealed clip keeps only its meta and segment lines, wherever they stand in the file: the identity guard below then sees
+        # exactly what an unsealed load sees, and no event line is kept or turned into an Event.
+        rows = [(n, r) for n, r in _jsonl(self._resolve(rel))
+                if not self.events_sealed or r.get("type") in ("meta", "segment")]
         events = []
         self.events_meta = meta = _check_events_format(self._resolve(rel), rows)
         drawn = hud_segments([r for _, r in rows if r.get("type") == "segment"])
@@ -615,6 +620,35 @@ class Clip:
                 raise FormatError(f"{rel}:{n}: event {e.kind} [{e.t_from}, {e.t_to}] lies outside every segment or crosses a boundary")
             events.append(dataclasses.replace(e, segment=seg.n))
         self._events = tuple(sorted(events, key=lambda e: (e.known_at, e.t_to, e.kind)))   # the order they became known
+
+    @property
+    def annotations(self):
+        if self.events_sealed:
+            raise SealedError(f"{self.id}: sealed by a split file; its annotations were not read")
+        return self._annotations
+
+    @annotations.setter
+    def annotations(self, value):
+        self._annotations = value
+
+    @property
+    def outcome_reviews(self):
+        if self.events_sealed:
+            raise SealedError(f"{self.id}: sealed by a split file; its outcome reviews were not read")
+        return self._outcome_reviews
+
+    @outcome_reviews.setter
+    def outcome_reviews(self, value):
+        self._outcome_reviews = value
+
+    def _seal_meta(self):
+        """After every check has run on the full meta line, keep only what those checks and the format rule read: no timestamp, no
+        per-event detail, no count derived from the sealed events (cut_times, kit alarms and durations, timer_lengths, histograms)."""
+        m = self.events_meta
+        self.events_meta = {k: m[k] for k in ("type", "format", "writer", "source") + META_KEYS if k in m}
+        self.events_meta["observed"] = {s: {"countdown_mode": o["countdown_mode"]}
+                                        for s, o in (m.get("observed") or {}).items() if o.get("countdown_mode")}
+        self.kit = self.events_meta["kit"] = {k: self.kit[k] for k in ("patch", "patch_from")}
 
     def _load_annotations(self):
         self.annotations, self.outcome_reviews = {}, {}   # by decision time, rounded to a millisecond

@@ -1342,7 +1342,8 @@ def test_a_sealed_sources_events_are_never_parsed_by_a_routine_load(tmp_path, mo
     d = Demos.load_split("s", root=tmp_path)
     assert len(built) == 2 * len(EVENTS) + 1                                      # v0 and v1 only: nothing of v2's
     v2 = d.clips["v2"]
-    assert v2.events_sealed and v2.kit == META["kit"] and len(v2.segments) == len(SEGS) and v2.events_meta["format"] == 5
+    assert v2.events_sealed and v2.kit == {"patch": META["kit"]["patch"], "patch_from": META["kit"]["patch_from"]}
+    assert len(v2.segments) == len(SEGS) and v2.events_meta["format"] == 5
     with pytest.raises(SealedError, match="v2: sealed by a split file; its events were not read"):
         v2.events
     assert {k.clip for k in d.skipped} == {"v0"}                                  # v0's late event; nothing from sealed v2
@@ -1350,6 +1351,57 @@ def test_a_sealed_sources_events_are_never_parsed_by_a_routine_load(tmp_path, mo
     full = Demos.load_split("s", root=tmp_path, unseal=True)                     # unseal restores full loading
     assert len(built) == 3 * len(EVENTS) + 2 and len(full.clips["v2"].events) == len(EVENTS) + 1
     assert {k.clip for k in full.skipped} == {"v0", "v2"}
+
+
+def test_a_sealed_sources_annotations_are_sealed_with_it(tmp_path):
+    sealed_fleet(tmp_path, EVENTS)
+    rows = [json.loads(l) for l in (tmp_path / "v2.manifest.jsonl").read_text().splitlines()]
+    rows[0]["annotations"] = "v2.annotations.jsonl"
+    jsonl(tmp_path / "v2.manifest.jsonl", rows)
+    (tmp_path / "v2.annotations.jsonl").write_text("not even JSON\n")          # proof the file is never opened
+    d = Demos.load_split("s", root=tmp_path)
+    v2 = d.clips["v2"]
+    for attr in ("annotations", "outcome_reviews"):
+        with pytest.raises(SealedError, match=f"v2: sealed by a split file; its {attr.replace('_', ' ')} were not read"):
+            getattr(v2, attr)
+    assert v2.frame_masks == {}
+    with pytest.raises(FormatError, match="not JSON"):
+        Demos.load_split("s", root=tmp_path, unseal=True)                       # unsealed, the same file is read (and refused)
+
+
+def test_the_sealed_identity_guard_sees_what_the_unsealed_one_sees_in_any_line_order(tmp_path):
+    """Filter, never stop: a segment line after an event line is still compared, and a line of an unknown type is ignored alike."""
+    for n, (lines, manifest_segs, err) in enumerate([
+            ([META, dict(type="segment", **SEGS[0]), dict(type="segment", **SEGS[1]), with_pos(EVENTS[0]),
+              dict(type="segment", **SEGS[2])], SEGS[:2], ProvenanceError),                 # a third segment after an event
+            ([META, dict(type="segment", **SEGS[0]), dict(type="note", x=1), dict(type="segment", **SEGS[1]),
+              dict(type="segment", **SEGS[2]), with_pos(EVENTS[0])], SEGS, None)]):        # an unknown line among segments
+        d = fresh(tmp_path, f"o{n}")
+        sealed_fleet(d, EVENTS)
+        jsonl(d / "v2.events.jsonl", lines)
+        rows = [json.loads(l) for l in (d / "v2.manifest.jsonl").read_text().splitlines()][:1]
+        jsonl(d / "v2.manifest.jsonl", rows + [dict(type="segment", **s) for s in manifest_segs])
+        for unseal in (False, True):
+            if err:
+                with pytest.raises(err, match="manifest's 2 segments are not its events file's 3"):
+                    Demos.load_split("s", root=d, unseal=unseal)
+            else:
+                assert len(Demos.load_split("s", root=d, unseal=unseal).clips["v2"].segments) == 3
+
+
+def test_a_sealed_clips_meta_line_keeps_only_what_the_checks_read(tmp_path):
+    sealed_fleet(tmp_path, EVENTS)
+    meta = dict(META, cut_times=[12.3, 45.6], timer_lengths={"swing": {"s": 6}}, events=7, cuts=2,
+                observed={"get_over_here": {"casts": 2, "countdown_mode": 8, "countdown": {"8": 2}}},
+                kit=dict(META["kit"], alarms={"swing": {"i": 5, "t": 0.5, "read": 9, "kit": 6}}))
+    events_file(tmp_path / "v2.events.jsonl", SEGS, EVENTS, meta)
+    v2 = Demos.load_split("s", root=tmp_path).clips["v2"]
+    assert set(v2.events_meta) == {"type", "format", "writer", "source", "observed", "kit"} | set(demos.META_KEYS)
+    assert v2.events_meta["observed"] == {"get_over_here": {"countdown_mode": 8}}
+    assert v2.kit == v2.events_meta["kit"] == {"patch": META["kit"]["patch"], "patch_from": META["kit"]["patch_from"]}
+    assert "12.3" not in repr(v2.events_meta) and "alarms" not in repr(v2.events_meta)   # no timestamp, no alarm
+    full = Demos.load_split("s", root=tmp_path, unseal=True).clips["v2"]
+    assert full.events_meta["cut_times"] == [12.3, 45.6] and full.kit["alarms"]           # unsealed: as written
 
 
 def test_a_sealed_source_still_passes_every_provenance_and_identity_check(tmp_path):

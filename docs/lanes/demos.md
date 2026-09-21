@@ -406,8 +406,8 @@ The six real-data tests that read these event files are marked `xfail(raises=For
 (`FORMAT5_PENDING` in `tests/test_demos.py`). Where `data/` exists they are expected to fail on the format 4 refusal and
 on nothing else, and the marker must come off when the format 5 regeneration makes them pass. The retained-section test
 reads the train section `reqmr-2873352801-1980-900s`: no test reads a sealed section's windows. The split test loads
-`s10-normal-v0`, which parses the sealed sections' manifests and events to check their placement, but cuts no window
-from them.
+`s10-normal-v0` sealed: of the sealed sections it reads the manifests and the events files' meta and segment lines, to check
+their placement, and no event, annotation or window.
 
 Every events file is from the frozen writer `1336262e179c` (`python -m perception.events check`: all format 4, all
 regenerable), and every loader manifest's segments are identical to its events file's.
@@ -472,13 +472,25 @@ on a sealed side: the reserved broadcasts are `inspection_only` today, so `obser
 way in is an explicit `unseal=True`, for the final evaluation. Accepting the split later therefore cannot make the test set
 iterable by default. That still needs every consumer to go through these calls: `policy/train.py`'s `TRAINABLE` lists `test`.
 
-**A routine load never reads a sealed source's events.** For each source on a sealed side, `load_split` reads the manifest
-header and the events file's meta and segment lines, and stops at the first event line. Every provenance, kit-patch,
-observed-cooldowns and manifest-versus-events identity check still runs, but no event is parsed, `clip.events` raises
-`SealedError`, and no `Demos.skipped` row comes from it. The sealed clip still carries `clip.events_meta` and `clip.kit`: the
-meta line's aggregates, such as `observed` cast counts and `timer_lengths`, come from its events. Only
-`Demos.load_split(name, unseal=True)` loads a sealed source in full, and a sealed side's windows then still need
+**A routine load never reads a sealed source's events or its human judgments.** For each source on a sealed side, `load_split`
+reads the manifest header and the events file's meta and segment lines, wherever those lines stand in the file (it filters,
+it does not stop at the first event line). The identity guard therefore sees exactly what an unsealed load sees.
+
+- Every provenance, kit-patch, observed-cooldowns and manifest-versus-events identity check still runs.
+- No event is parsed: `clip.events` raises `SealedError`, and no `Demos.skipped` row comes from it.
+- The annotations file is never opened: `clip.annotations` and `clip.outcome_reviews` raise `SealedError`, and `clip.frame_masks` is
+  empty.
+- Once the checks have run, the meta line is cut to what they and the format rule read: `format`, `writer`, `source`, the loader's
+  own keys, `observed` reduced to each slot's `countdown_mode`, and `kit` reduced to `patch` and `patch_from`. No `cut_times`, no
+  kit `alarms` or `durations`, no `timer_lengths`, event count or histogram survives. That matters because policy code persists
+  `clip.events_meta` into its artifacts.
+
+Only `Demos.load_split(name, unseal=True)` loads a sealed source in full, and a sealed side's windows then still need
 `unseal=True` on the call. That makes two deliberate steps, both for the final evaluation.
+
+**Sealing is split-scoped by construction.** It exists only inside a `load_split` of a split file that seals the source. The
+same manifest read through `Demos.load`, `read_manifest` or `discover`, or through a second split file that lists its group on an
+unsealed side, is read in full.
 
 Scope: Season 10, Version 20260911, `cooldowns: normal`. Excluded: the four April-May uploads (patch unknown), the guides (no
 loader manifest), and the two 60 s samples (not requested; each belongs to a train-side group).
@@ -554,7 +566,7 @@ Event signatures cannot identify a shared match: a quick check matched a May upl
 - **Not built:** video decoding, an annotation tool, event and annotation re-cutting on `trim`, verification of `alignment`,
   mapping `observed` to a patch, and sampling-weight code.
 
-Mutation checks: 93 hand-made breakages of the event format, bridging, mask and provenance code (a guessed slot accepted, the
+Mutation checks: 102 hand-made breakages of the event format, bridging, mask and provenance code (a guessed slot accepted, the
 fixed ult unrecognised, format 3 accepted, meta keys unchecked, the tap width ignored, a cut made soft, bridging off by
 default, a gap hiding the HUD only, `partial` hiding, annotator masks dropped, events read off masked frames, the regime or
 patch gate off, a basis unchecked, observed countdowns unchecked, an unsplittable clip hashed into a split or allowed an
@@ -574,6 +586,8 @@ the `known_at` frame ignored by the mask check; `_readable` failing with a bare 
 experiment archive reached through `read_manifest`, a companion path or `events_file_segments`; a masked `ability_uncertain`
 keeping any of its reads, dropped, or a masked event kept; a sealed source's events parsed, readable, or feeding skip rows, sealing
 never applied, `unseal` ignored at load, provenance skipped for a sealed source; `fps` unchecked or zero allowed; the unbridged
-skip row missing, or rows judged on the segment alone) each fail at least one test. Three further breakages cannot change
+skip row missing, or rows judged on the segment alone; a sealed source's annotations loaded or readable, its outcome reviews
+readable, its lines read up to the first event instead of filtered, its meta line untrimmed, keeping `cut_times`, the full
+`observed` or the full `kit`, or trimmed before the checks ran) each fail at least one test. Three further breakages cannot change
 anything and are not counted: a `t_to` fallback at load, whose validation refuses every event it could apply to, and two that
 would keep or walk a sealed clip's events, of which there are none because none are parsed.
