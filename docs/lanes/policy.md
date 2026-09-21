@@ -1,8 +1,83 @@
 # Policy: the learned chooser (steps 1-3)
 
-## B0 masked occurrence experiment
+## Format-5 policy consumer seam
 
-`policy/b0_multilabel.py` implements the reference task in
+The policy consumer changes are staged for integration with the separate format-5
+writer and loader branches; neither regeneration nor a corrected-data fit is accepted.
+`policy/train.py` requires finite `known_at >= t_to` (otherwise `EventEvidenceError`,
+before the loader accessor) and counts events by availability
+at each historical step. The four event columns are verified damage events
+(`hp_lost` with `cause=damage`), web fire, icon dimming and icon lighting. Unknown-cause
+HP loss is not damage; icon appearance is not mechanical readiness. Feature width
+stays unchanged and checkpoints record the event-channel names.
+
+`b0.targets` keeps occurrence bounds for labels and retains uncertainty as a separate
+flag. Uncertainty blocks same-channel negatives, including confirmation margins.
+An independent contained cast can prove occurrence while an earlier uncertain use
+still disables first-use timing. Target construction for historical baselines filters
+by `known_at` **before** cast/charge corroboration: later corroboration cannot rewrite
+an earlier baseline input. A confirmation beyond the recorded source duration does
+not certify a positive.
+
+Numeric countdown observations are required for ability-negative coverage; lit icons
+and elapsed cooldowns do not certify readiness. Countdown values may decrease, but
+cannot reset upwards. All samples must share one possible expiry interval using
+the writer's `ROUND_S` and `TIMER_EPS`; the intersection must exceed 1e-6 s. This
+rejects frozen digits and impossible jumps. Charges and ammo must remain constant.
+Charged slots require
+valid badge counts under the writer's kit maximum; absent maxima are unknown.
+This certificate covers every 10 Hz read in `[t-.1,t+H+.2]` with the existing .6 s
+segment margin. A timer reaching zero or disappearing makes coverage unknown.
+The resource age bucket means time since timer-end **evidence arrived**, not readiness.
+
+The corrected runner uses the predeclared **two-second** horizon throughout its
+structural gates, targets, timing output and negative-support spacing. Distinct-positive
+support is a conservative lower bound: per segment count disjoint intervals within
+each evidence kind and take the largest count, never the sum of cast and charge
+witnesses. Report unpaired charge witnesses separately; their timing is ambiguous
+when a cast witness shares the horizon. This does not claim physical-use identity.
+The context-event proxy uses only the current segment; each window also reports
+same-segment occurred events not yet known. Support diagnostics copy the loader's
+`known_after_segment_end` and `known_after_segment_end_unbridged` skipped-row counts,
+separating events unavailable in either mode from those available only when bridged.
+
+`policy/b0_support.py` produces H1 diagnostics or H2 support in fresh directories.
+Its header records format, semantics, source fingerprints, windows hash and input
+hashes. The H2 builder checks these before cache arrays are opened. It reads exactly
+the authorized source caches and supplies no state or event columns to the model.
+Artifact reader metadata is an explicit provenance subset: format, writer, layout,
+sampling/clock fields, slot mapping and kit patch/source/table. Event aggregates,
+alarms, cut timestamps and recipes stay in their hashed source files.
+The raw-read adapter retains all eight reader fields and optional ninth glyph field.
+Targets use `Demos.window_event`; masked reads never certify a use, while their
+uncertain occurrence interval still blocks a negative.
+The global-next-event CLI has no fitting path.
+
+Synthetic checks: 34 pass in a source-only integration tree using writer `bdc145b`
+and loader `dcd29c4`, including real Visibility construction and the support-producer
+through H2-builder path. The expiry sweep preserves 600/600 valid windows per horizon; four additional
+mutations target expiry, rounding-boundary tolerance, resets and charge changes.
+The prior ten targeted mutations cover the previously uncovered guards. One additional
+synthetic slice check passes with reads before and after the requested horizon,
+and catches passing the whole timestamp array to the expiry check. No corrected corpus count or fit exists. The default
+checkout still requires integration with the accepted writer/loader before these
+format-5 paths run. Tests in `test_b0_format5.py` explicitly skip on format 4.
+
+After integration and authorized corrected sidecar extraction, the diagnostic commands are:
+
+```sh
+python -m policy.b0_support --horizon 1 --out data/experiments/b0-format5/support-h1
+python -m policy.b0_support --horizon 2 --out data/experiments/b0-format5/support-h2
+python -m policy.b0_multilabel
+```
+
+The last command builds without fitting. `--fit` additionally requires support and
+a nonconstant fitting channel. Every output uses a separate format-5 directory;
+archived reproduction requires its recorded code revision.
+
+## Archived B0 masked occurrence experiment
+
+The retained format-4 experiment, code `5046b25`, implements the reference task in
 [learning-plan.md](../learning-plan.md#b0-auxiliary-pretraining-by-predicting-observed-ability-events):
 five independent event-occurrence outputs and five class-conditional timing outputs.
 Unknown labels are masked independently; timing has a separate mask. The original
@@ -110,9 +185,8 @@ Do not describe the entire multi-agent session as having opened no sealed payloa
 Day's native origin 1.616 s and cached origin 0.027 s differ by the container start
 1.589 s; their relative clocks agree. `Cache.index_at` uses its own recorded origin.
 Native cuts are projected through `_cut_flags` onto sampled-frame timestamps before
-comparison with the accepted event metadata. The post-fit `policy/train.py` header
-cleanup only describes the current format-4 loader and frames-only B0 distinction;
-completed report fingerprints preserve the source present during the fits.
+comparison with the accepted event metadata. Completed report fingerprints preserve
+the source present during the fits; those artifacts are not rewritten by the format-5 seam.
 
 ## B0 machinery reference
 
@@ -218,9 +292,9 @@ it is handed events, so the B0 builder passes `events=None`.
   - *fitting prior / majority*: per-channel positive frequency on observed fitting labels,
     with the fixed 0.5 threshold for majority;
   - *recent-use persistence*: any accepted same-channel event confirmed in `(t-1,t]`,
-    an offline reference with unproven extractor prefix causality;
-  - *HUD resources*: causal raw cooldown, charges/ammo and time since an observed ready
-    transition, in fixed buckets fitted only on the fitting session;
+    filtered on `known_at` before corroboration;
+  - *HUD resources*: numeric cooldown, validated charges/ammo and time since a known
+    timer-end event, in fixed buckets fitted only on the fitting session;
   - *timing*: fitting-only median interval midpoint, compared on common timing support.
   The range trainer's previous-decision sticky baseline is not B0 persistence. B0 reports
   per-channel precision/recall/F1, confusion and probability error, plus descriptive and
@@ -242,7 +316,7 @@ file never overrides provenance.
 - `ProvenanceError`: two provenance records disagree, or a claim has no basis;
 - `RegimeError`: a split mixing patches or cooldown regimes;
 - `SplitError`: a group on two sides or on none, an unassigned group listed, or a silently empty side;
-- `FormatError`: an event file that is not format 4, or is stale (meta lacks required keys, or its
+- `FormatError`: an event file that differs from the integrated loader's format, or is stale (meta lacks required keys, or its
   `writer` is not the current producer's fingerprint);
 - `AlignmentError`: an annotation over a context the loader would not give;
 - `LeakageError`: an observation holding anything later than t.
@@ -271,8 +345,9 @@ file never overrides provenance.
   bridged scoreboard gap is usable only with its mask and a proven absence of a hard cut.
 - **Decoding cost.** H.264 caches at 200-400 frames/s. AV1 runs at about 100 frames/s, and
   VideoToolbox is slower than software for it. `showinfo` goes after the scale.
-- **Event format and inputs.** The loader validates format-4 events. The range-intent
-  trainer can count past events; B0 keeps them out of its frames-only neural input.
+- **Event format and inputs.** The policy seam requires format 5; the separate loader
+  migration must land with it. The range-intent trainer counts known past events;
+  B0 keeps them out of its frames-only neural input.
 
 **Built and measured offline. Nothing here aims, presses a button, or runs live.** This lane
 replaces *what* the agent decides — today `agent/brain.py`'s hand-written rules — with a model

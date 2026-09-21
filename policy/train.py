@@ -24,7 +24,7 @@ Three input channels per timestep, **missing never filled**:
               detections, crosshair. Every unknown reads as a zero **with its known-bit clear**,
               never as a value. L4's trial runs carry no `State`, so the channel is absent there
   events      the HUD event stream where a run has one, counted over (t - 1 s, t] at each step.
-              The loader validates current format-4 streams. This range-intent trainer can count
+              The loader validates format-5 streams. This range-intent trainer can count
               their past events; frames-only B0 passes events=None and uses only columns 0-385.
               Event-input prefix causality is unproven, so B0 uses events only for targets and
               explicitly separate offline diagnostic baselines.
@@ -40,6 +40,7 @@ Clocks, regimes, splits and patches are each pinned by one authority:
 """
 import argparse
 import json
+import math
 import sys
 import time
 from pathlib import Path
@@ -59,7 +60,7 @@ FRAME_HZ = 10.0          # the cache's rate: one embedding per step
 DECISION_HZ = 5.0        # windows per second of recording
 MATCH_S = 0.12           # how stale the at-or-before row may be: one 10 Hz step (0.1 s) plus 20 ms of PTS jitter
 STATE_F, EVENT_F = 13, 4
-EVENT_KINDS = ("hp_lost", "web_cluster_fired", "slot_unavailable", "slot_available")
+EVENT_KINDS = ("damage_taken", "web_cluster_fired", "icon_dimmed", "icon_lit")
 ROOT = Path(__file__).resolve().parent.parent
 
 
@@ -169,6 +170,18 @@ def _state_features(state):
     return out, True
 
 
+class EventEvidenceError(ValueError):
+    """Policy evidence lacks a valid format-5 availability clock."""
+
+
+def event_known_at(event):
+    value = getattr(event, 'known_at', None)
+    if (isinstance(value, bool) or not isinstance(value, (int, float))
+            or not math.isfinite(value) or value < event.t_to):
+        raise EventEvidenceError('format-5 event requires finite known_at >= t_to')
+    return value
+
+
 def _event_features(events, t, window_s=1.0):
     """Counts of the kinds confirmed in (t - window_s, t], for the step at time `t`.
 
@@ -180,8 +193,14 @@ def _event_features(events, t, window_s=1.0):
     if events is None:
         return out, False
     for e in events:
-        if t - window_s < e.t_to <= t and e.kind in EVENT_KINDS:
-            out[EVENT_KINDS.index(e.kind)] += 1.0
+        known = event_known_at(e)
+        kind = e.kind
+        if kind == 'hp_lost':
+            kind = 'damage_taken' if getattr(e, 'cause', None) == 'damage' else None
+        if kind in ('slot_available', 'slot_unavailable'):
+            raise EventEvidenceError('format-4 icon kind in format-5 policy input')
+        if t - window_s < known <= t and kind in EVENT_KINDS:
+            out[EVENT_KINDS.index(kind)] += 1.0
     return out, True
 
 

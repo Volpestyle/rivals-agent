@@ -8,6 +8,21 @@ import time
 from .b0 import OUT, digest, train_clips, write_json
 
 
+def serialize_reads(reads):
+    """Preserve the format-5 reader's score and optional glyph observations without using them as labels."""
+    rows = []
+    for read in reads:
+        if len(read) not in (8, 9):
+            raise ValueError('format-5 read_run must return 8 fields, or 9 with glyph evidence')
+        i, t, hud, playing, aside, killfeed, cut, score = read[:8]
+        row = dict(i=i, t=t, hud=asdict(hud), playing=playing, aside=aside, killfeed=killfeed,
+                   cut=cut, hero_score=score)
+        if len(read) == 9:
+            row['glyph_evidence'] = read[8]
+        rows.append(row)
+    return rows
+
+
 def main():
     from perception.events import extract_frames, read_run, scene_cuts, writer_version, _cut_flags
     from perception.hud import LAYOUTS
@@ -54,8 +69,7 @@ def main():
     reads = read_run(run_dir, layout=LAYOUTS[r['layout']], progress=500)
     if len(reads) != meta['frames'] or writer_version() != meta['writer']:
         raise ValueError('reader frame count or writer changed')
-    rows = [dict(i=i, t=t, hud=asdict(hud), playing=playing, aside=aside, killfeed=killfeed, cut=cut)
-            for i, t, hud, playing, aside, killfeed, cut in reads]
+    rows = serialize_reads(reads)
     payload = dict(meta=dict(source=clip.id, event_sha256=digest(clip._resolve(clip.header['events'])),
                             manifest_sha256=digest(clip.path), media_sha256=digest(r['video']),
                             writer=meta['writer'], fps=meta['fps'], pts_origin_s=origin,

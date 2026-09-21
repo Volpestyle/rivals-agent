@@ -16,22 +16,24 @@ import mlx.optimizers as optim
 import numpy as np
 
 from . import b0
-from .train import Cache, CacheMiss, Head, layout, step_row, _Tag
+from .train import Cache, CacheMiss, Head, layout, step_row, _Tag, event_known_at
 from .encode import DEFAULT, cache_dir
+from . import b0_support as diagnostic_mod
 
-OUT = Path('data/experiments/b0-multilabel-v1')
+OUT = Path('data/experiments/b0-multilabel-format5-h2')
 NAMES = b0.CLASSES[:-1]
-SPEC = dict(**b0.CONFIG, version='b0-multilabel-v1', binary_outputs=5, timing_outputs=5,
+SPEC = dict(**b0.CONFIG, version='b0-multilabel-format5-h2', binary_outputs=5, timing_outputs=5,
             loss='balanced masked BCE + independently masked interval distance', threshold=.5,
             positive_weight='observed_fit_count / (2 * positive_fit_count)',
             negative_weight='observed_fit_count / (2 * negative_fit_count)',
             unsupported='no positive or no negative fitting examples: mask channel from fit and comparisons',
-            resource_buckets=dict(cooldown=['unknown', 'ready-no-countdown', '1-3', '4+'],
+            resource_buckets=dict(cooldown=['unknown', '1-3', '4+'],
                                   charges_or_ammo=['unknown', '0', '1', '2+'],
-                                  since_observed_ready=['unknown', '<1s', '1-5s', '5s+'],
+                                  since_timer_end_evidence_arrived=['unknown', '<1s', '1-5s', '5s+'],
                                   smoothing='Laplace(1,1), unseen bucket falls back to fitting prior'),
-            persistence='any accepted same-channel event confirmed in (t-1,t]; offline causality unproven',
+            persistence='any accepted same-channel event with known_at in (t-1,t]',
             claim_gate=dict(held_unique_positive_events=20, held_nonoverlapping_negative_horizons=20),
+            distinct_support='sum across segments of max per-kind disjoint-interval counts; never cast plus charge',
             checkpoint_selection='final epoch only; no held-out selection or hyperparameter search')
 
 
@@ -43,43 +45,43 @@ def execution():
 
 
 def resource_keys(clip, vis):
-    """Raw prefix-only buckets at each frame; no interpolating/forward-filling unknown fields."""
+    """Numeric HUD plus known timer-end age. Neither glyph state nor timer end means ready."""
     mapping = vis.meta['slot_mapping']
-    keys, last_ready, previous, previous_segment = [], {}, {}, None
+    keys = []
+    ends = [(e, event_known_at(e)) for e in clip.events or () if e.kind == 'cooldown_ended']
     integer = lambda x: isinstance(x, int) and not isinstance(x, bool)
     for row in vis.rows:
         seg = clip.segment_at(row['t'])
         segment = None if seg is None else seg.n
-        if segment != previous_segment or segment is None:
-            last_ready, previous = {}, {}
-        previous_segment = segment
         current = []
         for name in NAMES:
             positions = [p for p, v in mapping.items() if v == name]
             pos = positions[0] if len(positions) == 1 else None
             hud = row['hud']
-            ready, charges = hud.get('abilities', {}).get(pos, (None, None))
+            _, charges = hud.get('abilities', {}).get(pos, (None, None))
             cd = hud.get('cooldowns', {}).get(pos)
-            if previous.get(name) is False and ready is True and segment is not None:
-                last_ready[name] = row['t']
-            previous[name] = ready
-            age = row['t'] - last_ready[name] if name in last_ready else None
+            known_ends = [known for e, known in ends if e.slot == name and e.segment == segment
+                          and segment is not None and known <= row['t']]
+            age = row['t'] - max(known_ends) if known_ends else None
             age_bucket = 'unknown' if age is None else '<1s' if age < 1 else '1-5s' if age < 5 else '5s+'
-            cooldown = ('1-3' if cd <= 3 else '4+') if integer(cd) else \
-                'ready-no-countdown' if ready is True else 'unknown'
+            cooldown = ('1-3' if cd <= 3 else '4+') if integer(cd) and cd > 0 else 'unknown'
             amount = hud.get('webs') if name == 'web_cluster_fired' else charges
-            amount_bucket = str(min(amount, 2)) if integer(amount) else 'unknown'
+            if name != 'web_cluster_fired':
+                top = vis.meta['charge_maxima'].get(pos)
+                if top is None or not integer(amount) or not 0 <= amount <= top:
+                    amount = None
+            amount_bucket = str(min(amount, 2)) if integer(amount) and amount >= 0 else 'unknown'
             current.append('|'.join((cooldown, amount_bucket, age_bucket)))
         keys.append(current)
     return keys
 
 
-def nonoverlap(times):
+def nonoverlap(times, horizon=SPEC['horizon_s']):
     end, count = -float('inf'), 0
     for t in sorted(times):
         if t >= end - 1e-8:
             count += 1
-            end = t + 1
+            end = t + horizon
     return count
 
 
@@ -91,60 +93,69 @@ def support(records, y, mask, timing):
         for c, name in enumerate(NAMES):
             positive = [i for i in ids if mask[i, c] and y[i, c]]
             negative = [i for i in ids if mask[i, c] and not y[i, c]]
-            events = {tuple(e) for i in positive for e in records[i]['channels'][name]['intervals']}
+            evidence = [e for i in positive for e in records[i]['channels'][name]['evidence']]
+            distinct = diagnostic_mod.positive_support(evidence)
             groups = {}
             for has_event in (False, True):
                 group = [i for i in ids if records[i]['context_event_proxy'] == has_event]
                 groups[str(has_event)] = dict(positive=sum(bool(mask[i, c] and y[i, c]) for i in group),
                                              negative=sum(bool(mask[i, c] and not y[i, c]) for i in group),
                                              unknown=sum(not mask[i, c] for i in group))
-            independent_negative = nonoverlap([records[i]['t'] for i in negative])
-            channels[name] = dict(positive_windows=len(positive), unique_positive_events=len(events),
+            independent_negative = nonoverlap([records[i]['t'] for i in negative], SPEC['horizon_s'])
+            channels[name] = dict(positive_windows=len(positive), **distinct,
                                   negative_windows=len(negative), unknown_windows=len(ids)-len(positive)-len(negative),
                                   nonoverlapping_negative_horizons=independent_negative,
                                   timing_supported_positives=int(timing[ids, c].sum()), context_event_proxy=groups,
-                                  held_support_gate=len(events) >= 20 and independent_negative >= 20)
+                                  held_support_gate=distinct['distinct_positive_lower_bound'] >= 20 and independent_negative >= 20)
         out[session] = dict(windows=len(ids), channels=channels)
     return out
 
 
-def build(out):
+def build(out, support_dir=diagnostic_mod.SUPPORT_OUT):
     demos, clips = b0.train_clips()
-    diagnostic = json.loads((b0.OUT / 'support-diagnostic.json').read_text())
-    records = json.loads((b0.OUT / 'support-windows.json').read_text())
+    support_dir = Path(support_dir)
+    diagnostic = json.loads((support_dir / 'support-diagnostic.json').read_text())
+    if (diagnostic.get('event_format') != 5 or diagnostic.get('policy_semantics') != diagnostic_mod.SEMANTICS
+            or diagnostic.get('source_versions') != diagnostic_mod.source_versions()
+            or diagnostic.get('horizon_s') != SPEC['horizon_s']):
+        raise ValueError('archived support diagnostic cannot feed corrected format-5 training')
+    if diagnostic.get('windows_sha256') != b0.digest(support_dir / 'support-windows.json'):
+        raise ValueError('support windows fingerprint mismatch')
+    records = json.loads((support_dir / 'support-windows.json').read_text())
     if {r['session'] for r in records} != set(b0.ALLOWED):
         raise ValueError('support windows contain sources outside authorized train set')
+    sources, vis_by_id, keys_by_id = {}, {}, {}
     cache_path = cache_dir(_Tag(DEFAULT), 10.)
-    cache = Cache(cache_path, ids=set(b0.ALLOWED))
-    if set(cache.by_clip) != set(b0.ALLOWED) or cache.dim != 384:
-        raise CacheMiss('exact authorized 384-d caches required')
-    sources, vis_by_id, events_by_id, keys_by_id = {}, {}, {}, {}
     for clip in clips:
-        vis_path = b0.OUT / 'visibility' / (clip.id + '.json')
-        if b0.digest(vis_path) != diagnostic['sessions'][clip.id]['visibility_sha256']:
+        recorded = diagnostic['sessions'][clip.id]
+        vis_path = Path(recorded['visibility'])
+        if (b0.digest(vis_path) != recorded['visibility_sha256']
+                or b0.digest(clip.path) != recorded['manifest_sha256']
+                or b0.digest(clip._resolve(clip.header['events'])) != recorded['event_sha256']):
             raise ValueError('support diagnostic and raw sidecar disagree')
         vis = b0.Visibility(vis_path, clip)
         vis_by_id[clip.id] = vis
-        events_by_id[clip.id] = b0.targets(clip)[0]
         keys_by_id[clip.id] = resource_keys(clip, vis)
         side = cache_path / (clip.id + '.json')
         sources[clip.id] = dict(manifest_sha256=b0.digest(clip.path), event_sha256=vis.meta['event_sha256'],
-                               reader=clip.events_meta, visibility=str(vis_path), visibility_sha256=b0.digest(vis_path),
+                               reader=b0.reader_provenance(clip.events_meta), visibility=str(vis_path), visibility_sha256=b0.digest(vis_path),
                                cache=json.loads(side.read_text()), cache_sha256=b0.digest(side.with_suffix('.npz')),
                                usable_segment_seconds=sum(s.length for s in demos.usable(clip)))
+    cache = Cache(cache_path, ids=set(b0.ALLOWED))
+    if set(cache.by_clip) != set(b0.ALLOWED) or cache.dim != 384:
+        raise CacheMiss('exact authorized 384-d caches required')
     by_id = {c.id: c for c in clips}
     x, y, mask, timing, bounds, recent, resources = [], [], [], [], [], [], []
     for record in records:
         clip = by_id[record['session']]
         t = record['t']
         seg = clip.segment_at(t)
-        if seg is None or seg.n != record['segment'] or t + 1 > seg.end_t + 1e-8:
+        if seg is None or seg.n != record['segment']:
             raise ValueError('support record no longer has a clean future gameplay segment')
         obs = demos._observe(clip, seg, t, 5., 10., across=True)
-        if obs.truncated_context or len(obs.frames) != 51 or abs(obs.frames[0].t-(t-5)) > .002:
-            raise ValueError('support record has incomplete history')
-        if any(t-5 < cut <= t+1 for cut in clip.events_meta['cut_times']):
-            raise ValueError('support record crosses cut')
+        reason = b0.window_reason(clip, seg, t, obs, SPEC['horizon_s'])
+        if reason:
+            raise ValueError('support record: ' + reason)
         block = []
         for frame in obs.frames:
             index = cache.index_at(clip.id, frame.t)
@@ -162,10 +173,12 @@ def build(out):
         timing.append([r['outcome'] == 'positive' and r['reason'] is None for r in labels])
         bounds.append([[min(r['intervals'])[0]-t, min(r['intervals'])[1]-t]
                        if r['outcome'] == 'positive' and r['reason'] is None else [0., 0.] for r in labels])
-        events = events_by_id[clip.id]
-        record['context_event_proxy'] = any(t-5 < e.hi <= t+1e-8 for e in events)
+        events = [e for e in b0.targets(clip, known_by=t)[0] if e.certain]
+        record['context_event_proxy'] = any(e.segment == seg.n and t-5 < e.known_at <= t for e in events)
+        record['context_events_not_yet_known'] = sum(e.segment == seg.n and t-5 < e.t_to <= t
+                                                    and event_known_at(e) > t for e in clip.events or ())
         record['masked_history_steps'] = sum(f.masked is not None and 'scene' in f.masked.hidden for f in obs.frames)
-        recent.append([any(e.cls == c and e.segment == seg.n and t-1 < e.hi <= t+1e-8 for e in events)
+        recent.append([any(e.cls == c and e.segment == seg.n and t-1 < e.known_at <= t for e in events)
                        for c in range(5)])
         vis = vis_by_id[clip.id]
         i = int(np.searchsorted(vis.times, t+1e-8, side='right'))-1
@@ -174,13 +187,14 @@ def build(out):
                   timing=np.array(timing, bool), bounds=np.array(bounds, np.float32),
                   recent=np.array(recent, np.float32), resources=np.array(resources))
     report = dict(support=support(records, arrays['y'], arrays['mask'], arrays['timing']),
+                  loader_knowledge_skips={k: v['loader_knowledge_skips'] for k, v in diagnostic['sessions'].items()},
                   sources=sources, shared_exclusions={k: v['shared_exclusions'] for k,v in diagnostic['sessions'].items()},
-                  support_diagnostic_sha256=b0.digest(b0.OUT/'support-diagnostic.json'),
-                  support_windows_sha256=b0.digest(b0.OUT/'support-windows.json'),
+                  support_diagnostic_sha256=b0.digest(support_dir/'support-diagnostic.json'),
+                  support_windows_sha256=b0.digest(support_dir/'support-windows.json'),
                   execution=execution(), feature_layout=layout(384), input_columns=[0,385], steps=51,
                   normalization='raw frozen embeddings; no learned normalization',
                   masked_history_windows=sum(r['masked_history_steps'] > 0 for r in records),
-                  context_proxy='any accepted deduplicated ability/ammo event confirmed in (t-5,t]; diagnostic only',
+                  context_proxy='any accepted current-segment ability/ammo event known in (t-5,t]; diagnostic only',
                   limitations=diagnostic['limitations'] + ['masks are not missing at random; scores cover observed subset only'])
     b0.write_json(out/'dataset-report.json', report)
     b0.write_json(out/'windows.json', records)
@@ -263,7 +277,7 @@ def timing_scores(pred, median, timing, bounds, supported):
 
 def masked_loss(model, x, y, mask, timing, bounds, weights):
     output = model(x)
-    logits, delays = output[:,:5], mx.sigmoid(output[:,5:])
+    logits, delays = output[:,:5], SPEC['horizon_s'] * mx.sigmoid(output[:,5:])
     # Stable BCE-with-logits; zero mask entries contribute neither loss nor gradients.
     bce = mx.maximum(logits,0)-logits*y+mx.log1p(mx.exp(-mx.abs(logits)))
     balanced = weights[:,0]*(1-y)+weights[:,1]*y
@@ -301,7 +315,7 @@ def fit_fold(data, records, held, out, dataset_report):
     model.eval();folder.mkdir(exist_ok=True);model.save_weights(str(folder/'model.safetensors'))
     xt=data['x'][te]
     raw=np.concatenate([np.asarray(model(mx.array(xt[i:i+128]))) for i in range(0,len(xt),128)])
-    probs=1/(1+np.exp(-raw[:,:5]));delays=1/(1+np.exp(-raw[:,5:]))
+    probs=1/(1+np.exp(-raw[:,:5]));delays=SPEC['horizon_s']/(1+np.exp(-raw[:,5:]))
     prior=np.array(stats['prior'])
     tables=resource_fit(data['resources'][tr],data['y'][tr],fit_mask,prior)
     baselines=dict(always_negative=np.zeros_like(probs), fitting_prior=np.tile(prior,(len(xt),1)),
@@ -327,7 +341,7 @@ def fit_fold(data, records, held, out, dataset_report):
                 evaluation=dict(batch_size=128,tail='natural final short batch',
                                 exact_replay='same row order and batch grouping; MLX can differ across batch sizes'),
                 dataset=dataset_report,baseline_information='HUD resource has raw HUD fields absent from neural input; '
-                'recent use has offline events with unproven extractor prefix causality')
+                'recent use uses accepted event evidence available by the decision time')
     b0.write_json(folder/'report.json',report);b0.write_json(folder/'resource-tables.json',tables)
     b0.write_json(folder/'windows.json',[r for r in records if r['session']==held])
     np.savez_compressed(folder/'predictions.npz',logits=raw[:,:5],probabilities=probs,delays=delays,
@@ -339,6 +353,7 @@ def main():
     ap=argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--fit',action='store_true')
     ap.add_argument('--out',type=Path,default=OUT,help='fresh output directory for a reproducibility rerun')
+    ap.add_argument('--support',type=Path,default=diagnostic_mod.SUPPORT_OUT)
     args=ap.parse_args()
     if any((args.out/fold/'model.safetensors').exists() for fold in ('day-to-req','req-to-day')):
         raise ValueError('refusing to rebuild artifacts beside an existing final checkpoint; use a fresh --out')
@@ -347,9 +362,11 @@ def main():
     if declaration.exists():
         if json.loads(declaration.read_text())['config']!=SPEC:raise ValueError('immutable config differs')
     else:b0.write_json(declaration,dict(config=SPEC,predeclaration_execution=execution(),classes=NAMES))
-    data,records,report=build(args.out)
+    data,records,report=build(args.out, args.support)
     print(json.dumps(report['support'],indent=2),flush=True)
     if args.fit:
+        if not any(c['held_support_gate'] for s in report['support'].values() for c in s['channels'].values()):
+            raise ValueError('no channel clears held support; stop before fit')
         folds=[fit_fold(data,records,held,args.out,report) for held in reversed(b0.ALLOWED)]
         b0.write_json(args.out/'report.json',dict(folds=folds,immutable_predeclaration=json.loads(declaration.read_text()),
                                            execution=execution(),limitations=report['limitations']))

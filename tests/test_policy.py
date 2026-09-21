@@ -566,9 +566,9 @@ def test_inspection_only_can_never_yield_a_training_row():
 @needs_mlx
 def test_an_event_is_counted_only_once_the_step_itself_could_know_it():
     """A reviewer found no upper bound: an early step counted events confirmed seconds later."""
-    from agent.demos import Event
+    from types import SimpleNamespace
     from policy.train import _event_features
-    later = Event(kind="hp_lost", t_from=9.0, t_to=10.0, amount=1)
+    later = SimpleNamespace(kind="hp_lost", t_from=8.0, t_to=9.0, known_at=10.0, amount=1, cause="damage")
     feat, present = _event_features([later], t=6.0)
     assert present and not feat.any(), "a step at t=6 must not see an event confirmed at t=10"
     feat, _ = _event_features([later], t=10.0)

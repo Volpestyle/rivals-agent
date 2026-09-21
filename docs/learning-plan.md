@@ -258,6 +258,20 @@ Keep prior-read, confirmation and segment-edge margins. Unsupported channels sta
 inconclusive; no supported channel or constant fitting labels means stop before
 fitting. No further horizon search is authorized.
 
+Count distinct-positive support conservatively: within each segment, select disjoint
+occurrence intervals separately per evidence kind, then take the largest count,
+not the sum across cast and charge witnesses. Sum those lower bounds across segments.
+Unresolved cross-kind pairings are reported and never credited twice; matching
+physical uses is not established by disjoint evidence bounds. A numeric ability
+negative requires a common expiry interval across every sample, using the writer's
+whole-second rounding band and frame tolerance; its width must exceed 1e-6 s so a
+frozen H1 window cannot pass by floating-point noise. Also reject upward resets
+(the tolerance can admit a small upward step), with constant validated charges on
+charged slots. Ammo remains constant. Every sampled read must be observed;
+a missing or ended countdown is unknown. This replaces raw-value constancy, which
+cannot certify a whole-second countdown over the declared horizon.
+
+
 Save a separate run specification and output directory, identifying this as a
 changed task. Compare models with baselines within that task; its F1/timing scores
 are not directly comparable to the archived one-second results. Report occurrence

@@ -1,7 +1,7 @@
 """Train-only B0 interval event prediction. No controller or event input features.
 
   nice -n 10 uv run --group policy python -m policy.b0 --dry-run
-  nice -n 10 uv run --group policy python -m policy.b0 --fit
+  Fits use policy.b0_multilabel; this global-task builder is diagnostic only.
 """
 import argparse
 from collections import Counter
@@ -19,7 +19,7 @@ import mlx.nn as nn
 import mlx.optimizers as optim
 
 from agent.demos import Demos
-from .train import Cache, CacheMiss, Head, layout, step_row, _Tag
+from .train import Cache, CacheMiss, Head, layout, step_row, _Tag, event_known_at, EventEvidenceError
 from .encode import DEFAULT, cache_dir
 from .frames import NORM
 
@@ -27,9 +27,9 @@ ALLOWED = {'daymr-2879354299-21660-900s': 'twitch:2879354299',
            'reqmr-2873352801-1980-900s': 'twitch:2873352801'}
 CLASSES = ('get_over_here', 'swing', 'uppercut', 'web_cluster_fired', 'teamup', 'no_verified_event')
 NONE = len(CLASSES) - 1
-CONFIG = dict(history_s=5.0, frame_hz=10.0, decision_hz=5.0, steps=51, horizon_s=1.0,
+CONFIG = dict(history_s=5.0, frame_hz=10.0, decision_hz=5.0, steps=51, horizon_s=2.0,
               hidden=128, epochs=40, batch=64, lr=0.001, seed=0, timing_weight=1.0)
-OUT = Path('data/experiments/b0')
+OUT = Path('data/experiments/b0-format5')
 
 
 def execution():
@@ -55,6 +55,8 @@ def train_clips():
         raise ValueError('B0 requires exactly the two promoted train IDs/groups before opening payloads')
     if any(not c.splittable or c.cooldowns != 'normal' for c in clips):
         raise ValueError('B0 requires splittable normal-regime sources')
+    if any(c.events_meta.get('format') != 5 for c in clips):
+        raise EventEvidenceError('corrected B0 requires accepted format-5 events; archived format 4 is not input')
     return demos, clips
 
 
@@ -65,44 +67,62 @@ class Target:
     hi: float
     segment: int
     evidence: tuple
+    known_at: float
+    certain: bool = True
 
 
-def targets(clip):
+def targets(clip, *, known_by=None):
     """Merge only overlapping cast/charge corroboration, preserving the interval union.
 
     Two same-kind overlapping records remain separate: they are ambiguous, not proven duplicates.
+    Historical callers filter BEFORE merging, so later corroboration cannot rewrite their inputs.
     """
     accepted, excluded = [], Counter()
     mapping = clip.events_meta['slot_mapping']
     for e in clip.events or ():
+        known = event_known_at(e)
+        if known_by is not None and known > known_by:
+            continue
         name = 'web_cluster_fired' if e.kind == 'web_cluster_fired' else e.slot
-        if e.kind not in ('ability_cast', 'charges_spent', 'web_cluster_fired'):
+        if e.kind not in ('ability_cast', 'ability_uncertain', 'charges_spent', 'web_cluster_fired'):
             excluded['non_target_kind:' + e.kind] += 1
             continue
+        if name in CLASSES[:-1] and e.kind != 'web_cluster_fired' and mapping.get(e.slot_pos) != name:
+            raise EventEvidenceError('event slot disagrees with slot_mapping')
         if name not in CLASSES[:-1] or (e.kind != 'web_cluster_fired' and mapping.get(e.slot_pos) != name):
             excluded['unknown_slot_or_unsupported_class'] += 1
+            # An unidentified ability cannot certify absence on any ability channel.
+            if name is None:
+                accepted.extend(Target(c, e.t_from, e.t_to, e.segment, (e.kind,), known, False)
+                                for c in (0, 1, 2, 4))
             continue
-        if e.amount is None or e.amount <= 0 or not Demos._readable(clip, e):
-            excluded['unverified_amount_or_masked_evidence'] += 1
-            continue
-        accepted.append(Target(CLASSES.index(name), e.t_from, e.t_to, e.segment, (e.kind,)))
-    casts = [e for e in accepted if e.evidence != ('charges_spent',)]
-    for charge in (e for e in accepted if e.evidence == ('charges_spent',)):
+        visible = Demos.window_event(clip, e)
+        certain = (visible is not None and visible.kind != 'ability_uncertain'
+                   and visible.amount is not None and visible.amount > 0
+                   and known <= clip.events_meta.get('duration_s', float('inf')))
+        if not certain:
+            excluded['retained_uncertain_evidence'] += 1
+        accepted.append(Target(CLASSES.index(name), e.t_from, e.t_to, e.segment, (e.kind,), known, certain))
+    casts = [e for e in accepted if not e.certain or e.evidence != ('charges_spent',)]
+    for charge in (e for e in accepted if e.certain and e.evidence == ('charges_spent',)):
         matches = [i for i, e in enumerate(casts) if e.cls == charge.cls and e.segment == charge.segment
-                   and 'ability_cast' in e.evidence and max(e.lo, charge.lo) <= min(e.hi, charge.hi) + 1e-8]
+                   and e.certain and 'ability_cast' in e.evidence
+                   and max(e.lo, charge.lo) <= min(e.hi, charge.hi) + 1e-8]
         if len(matches) == 1:
             i = matches[0]
             e = casts[i]
             casts[i] = Target(e.cls, min(e.lo, charge.lo), max(e.hi, charge.hi), e.segment,
-                              e.evidence + charge.evidence)
+                              e.evidence + charge.evidence, max(e.known_at, charge.known_at))
             excluded['corroborating_charge_merged'] += 1
         else:
             casts.append(charge)
     return sorted(casts, key=lambda e: (e.lo, e.hi, e.cls)), dict(excluded)
 
 
-def next_target(events, t, horizon=1.0):
+def next_target(events, t, horizon):
     overlapping = [e for e in events if e.hi > t + 1e-8 and e.lo <= t + horizon + 1e-8]
+    if any(not e.certain for e in overlapping):
+        return None, 'uncertain_event'
     if any(e.lo <= t + 1e-8 for e in overlapping):
         return None, 'interval_crosses_decision'
     if any(e.hi > t + horizon + 1e-8 for e in overlapping):
@@ -116,7 +136,7 @@ def next_target(events, t, horizon=1.0):
 
 
 def most_recent(events, t):
-    confirmed = [e for e in events if e.hi <= t + 1e-8]
+    confirmed = [e for e in events if e.certain and e.known_at <= t]
     if not confirmed:
         return NONE
     last = max(confirmed, key=lambda e: e.hi)
@@ -125,12 +145,12 @@ def most_recent(events, t):
     return last.cls
 
 
-def observed_channels(row, mapping):
-    """Frozen HUD contract: None/dim-without-countdown is never a negative."""
+def observed_channels(row, mapping, maxes):
+    """Sampled numeric observations only; lit icons and expired timers prove no readiness."""
     hud = row['hud']
     result, values = {}, {}
     integer = lambda v: isinstance(v, int) and not isinstance(v, bool)
-    result['web_cluster_fired'] = integer(hud.get('webs'))
+    result['web_cluster_fired'] = integer(hud.get('webs')) and hud['webs'] >= 0
     values['web_cluster_fired'] = hud.get('webs')
     for name in ('get_over_here', 'swing', 'uppercut', 'teamup'):
         positions = [pos for pos, ability in mapping.items() if ability == name]
@@ -140,16 +160,60 @@ def observed_channels(row, mapping):
         pos = positions[0]
         ready, charges = hud.get('abilities', {}).get(pos, (None, None))
         cd = hud.get('cooldowns', {}).get(pos)
-        lit = ready is True and cd is None
-        cooling = integer(cd) and (name not in ('swing', 'uppercut') or integer(charges))
-        result[name] = ready is not None and (lit or cooling)
+        top = (maxes or {}).get(pos)
+        cooling = integer(cd) and cd > 0 and (name not in ('swing', 'uppercut')
+                                              or (integer(charges) and top is not None and 0 <= charges <= top))
+        result[name] = ready is not None and cooling
         values[name] = (cd, charges) if name in ('swing', 'uppercut') else cd
     return result, values
+
+
+def no_reset(name, times, values):
+    """Observed reads must fit one live timer; frozen HUD digits cannot certify absence."""
+    if not values or len(times) != len(values):
+        return False
+    if name == 'web_cluster_fired':
+        return all(v == values[0] for v in values)
+    from perception.events import ROUND_S, TIMER_EPS
+    charged = name in ('swing', 'uppercut')
+    if charged and any(v[1] != values[0][1] for v in values):
+        return False
+    cds = [v[0] for v in values] if charged else values
+    # Slack can admit a small upward step; keep the no-reset guard as well.
+    if any(b > a for a, b in zip(cds, cds[1:])):
+        return False
+    lo = max(t + v - ROUND_S - TIMER_EPS for t, v in zip(times, cds))
+    hi = min(t + v + TIMER_EPS for t, v in zip(times, cds))
+    return hi - lo > 1e-6  # a frozen H1 window otherwise lies on the rounding boundary
+
+
+def reader_provenance(meta):
+    """Named extraction identity only; event contents remain in the hashed source file."""
+    fields = ('format', 'writer', 'layout', 'fps', 'frames', 'duration_s', 't_origin',
+              'pts_origin_s', 'container_start_s', 'stream_start_s', 'slot_mapping')
+    kit = meta.get('kit') or {}
+    return {k: meta.get(k) for k in fields} | {
+        'kit': {k: kit.get(k) for k in ('patch', 'patch_from', 'table')}}
+
+
+def window_reason(clip, seg, t, obs, horizon):
+    """One structural boundary contract for diagnostics and both builders."""
+    if obs.truncated_context or len(obs.frames) != CONFIG['steps'] or abs(obs.frames[0].t-(t-CONFIG['history_s'])) > .002:
+        return 'short_history'
+    if t < seg.start_t or t + horizon > seg.end_t + 1e-8:
+        return 'horizon_segment_end'
+    if any(t - CONFIG['history_s'] < cut <= t + horizon for cut in clip.events_meta['cut_times']):
+        return 'cut_in_context_or_horizon'
+    if any(t - .1 <= tm <= t + horizon + .2 for tm in clip._mask_ts):
+        return 'annotation_mask'
+    return None
 
 
 class Visibility:
     """Raw 10Hz reads, no fill or temporal cleanup. See l2-hud observability contract."""
     def __init__(self, path, clip):
+        if clip.events_meta.get('format') != 5:
+            raise EventEvidenceError('visibility requires format-5 events')
         data = json.loads(Path(path).read_text())
         meta = data['meta']
         if (meta['source'] != clip.id or meta['event_sha256'] != digest(clip._resolve(clip.header['events']))
@@ -157,6 +221,10 @@ class Visibility:
                 or meta['slot_mapping'] != clip.events_meta['slot_mapping']):
             raise ValueError(f'{clip.id}: visibility provenance/rate mismatch')
         self.meta = meta
+        # Reuse the writer's versioned kit, never a policy-local set of mechanics.
+        from perception.events import charge_maxima, kit_for
+        self.meta['charge_maxima'] = charge_maxima(kit_for(clip.events_meta['kit']['table']),
+                                                  meta['slot_mapping'])
         self.rows = data['frames']
         self.times = np.array([r['t'] for r in self.rows])
         if len(self.times) == 0 or np.any(np.diff(self.times) <= 0):
@@ -165,11 +233,14 @@ class Visibility:
     def covers(self, t, end, seg, events):
         # All channels need one prior read and two confirmation/cleanup frames.
         start, stop = t - .1, end + .2
+        if any(not e.certain and e.hi >= start and e.lo <= stop for e in events):
+            return False, 'uncertain_event'
         if start < seg.start_t + .6 - 1e-8 or stop > seg.end_t - .6 + 1e-8:
             return False, 'visibility_segment_margin'
         lo, hi = np.searchsorted(self.times, [start - 1e-7, stop + 1e-7])
         rows = self.rows[lo:hi]
-        if len(rows) != 14 or not np.allclose(self.times[lo:hi], start + np.arange(14) / 10, atol=.002):
+        count = round((stop - start) * 10) + 1
+        if len(rows) != count or not np.allclose(self.times[lo:hi], start + np.arange(count) / 10, atol=.002):
             return False, 'missing_visibility_frame'
         values = {name: [] for name in CLASSES[:-1]}
         for row in rows:
@@ -179,7 +250,7 @@ class Visibility:
                 return False, 'unobserved_hud_or_death'
             if row.get('cut') or row.get('aside') or row.get('playing') is False:
                 return False, 'raw_cut_banner_or_other_hero'
-            known, raw = observed_channels(row, self.meta['slot_mapping'])
+            known, raw = observed_channels(row, self.meta['slot_mapping'], self.meta['charge_maxima'])
             for name in CLASSES[:-1]:
                 if not known[name]:
                     return False, 'unreadable:' + name
@@ -189,7 +260,7 @@ class Visibility:
             if not within:
                 if any(e.cls == cls and t < e.hi <= stop + 1e-8 for e in events):
                     return False, 'confirmation_margin_event:' + name
-                if any(v != values[name][0] for v in values[name][1:]):
+                if not no_reset(name, self.times[lo:hi], values[name]):
                     return False, 'unconfirmed_or_negative_raw_change:' + name
         return True, None
 
@@ -207,6 +278,7 @@ def build(out=OUT):
         raise CacheMiss('B0 needs exactly two authorized 384-d caches')
     width = layout(cache.dim)['state']
     rows, records, summary = [], [], {}
+    horizon = CONFIG['horizon_s']
     for clip in clips:
         ev, rejected = targets(clip)
         exclusions = Counter()
@@ -214,27 +286,18 @@ def build(out=OUT):
         eligible_events = set()
         source_rows = []
         for seg, t in demos._decisions(clip, 'grid', CONFIG['decision_hz']):
-            candidate, candidate_reason = next_target([e for e in ev if e.segment == seg.n], t)
+            candidate, candidate_reason = next_target([e for e in ev if e.segment == seg.n], t, horizon)
             candidate_name = candidate_reason or CLASSES[candidate[0]]
             candidate_support[candidate_name] += 1
             obs = demos._observe(clip, seg, t, 5.0, 10.0, across=True)
-            reason = None
-            if obs.truncated_context or len(obs.frames) != 51 or abs(obs.frames[0].t - (t - 5)) > 0.002:
-                reason = 'short_history'
-            elif t + 1 > seg.end_t + 1e-8:
-                reason = 'horizon_segment_end'
-            elif any(t - 5 < cut <= t + 1 for cut in clip.events_meta['cut_times']):
-                reason = 'cut_in_context_or_horizon'
-            elif any(t - .1 <= tm <= t + 1.2 for tm in clip._mask_ts):
-                # Any annotated mask is conservatively censored on the target side.
-                reason = 'horizon_annotation_mask'
-            else:
-                _, reason = visibility[clip.id].covers(t, t + 1, seg, [e for e in ev if e.segment == seg.n])
+            reason = window_reason(clip, seg, t, obs, horizon)
+            if reason is None:
+                _, reason = visibility[clip.id].covers(t, t + horizon, seg, [e for e in ev if e.segment == seg.n])
             if reason:
                 exclusions[reason] += 1
                 excluded_candidates.setdefault(candidate_name, Counter())[reason] += 1
                 continue
-            label, reason = next_target([e for e in ev if e.segment == seg.n], t)
+            label, reason = next_target([e for e in ev if e.segment == seg.n], t, horizon)
             if reason:
                 exclusions[reason] += 1
                 excluded_candidates.setdefault(candidate_name, Counter())[reason] += 1
@@ -255,12 +318,14 @@ def build(out=OUT):
                 eligible_events.add(key)
             record = dict(session=clip.id, group=clip.group, segment=seg.n, t=t, target=cls,
                           lo=lo, hi=hi, event=key,
-                          recent=most_recent([e for e in ev if e.segment == seg.n], t))
+                          recent=most_recent([e for e in targets(clip, known_by=t)[0]
+                                              if e.segment == seg.n], t))
             records.append(record)
             source_rows.append(record)
             rows.append(np.stack(block))
         side = directory / (clip.id + '.json')
-        raw_known = [observed_channels(r, visibility[clip.id].meta['slot_mapping'])[0]
+        raw_known = [observed_channels(r, visibility[clip.id].meta['slot_mapping'],
+                                      visibility[clip.id].meta['charge_maxima'])[0]
                      for r in visibility[clip.id].rows]
         summary[clip.id] = dict(windows=len(source_rows),
                                raw_observed_frames={name: sum(r[name] for r in raw_known) for name in CLASSES[:-1]},
@@ -276,7 +341,7 @@ def build(out=OUT):
                                candidate_support_before_eligibility=dict(candidate_support),
                                candidate_exclusions={k: dict(v) for k, v in excluded_candidates.items()},
                                manifest_sha256=digest(clip.path), event_sha256=digest(clip._resolve(clip.header['events'])),
-                               reader=clip.events_meta, cache=json.loads(side.read_text()),
+                               reader=reader_provenance(clip.events_meta), cache=json.loads(side.read_text()),
                                cache_sha256=digest(side.with_suffix('.npz')),
                                visibility_sha256=digest(out / 'visibility' / (clip.id + '.json')))
     report = dict(execution=execution(), sessions=summary, classes=CLASSES, config=CONFIG, layout=layout(384),
@@ -425,6 +490,8 @@ def main():
     ap.add_argument('--dry-run', action='store_true')
     ap.add_argument('--fit', action='store_true')
     args = ap.parse_args()
+    if args.fit:
+        raise ValueError('global next-event fits are retired; use the predeclared masked H2 runner')
     args.out.mkdir(parents=True, exist_ok=True)
     spec = dict(config=CONFIG, classes=CLASSES, allowed=ALLOWED, command=' '.join(sys.argv),
                 encoder=DEFAULT, norm=NORM,
@@ -442,10 +509,7 @@ def main():
         write_json(args.out / 'blocked.json', dict(error=str(exc), command=spec['command']))
         raise
     print(json.dumps({k: {a: v[a] for a in ('windows', 'target_support', 'exclusions')} for k, v in report['sessions'].items()}, indent=2))
-    if args.fit:
-        folds = [fit_fold(x, records, held, args.out, report) for held in reversed(ALLOWED)]
-        write_json(args.out / 'report.json', dict(build=report, folds=folds,
-                    immutable_predeclaration=json.loads(path.read_text()), execution=execution()))
+
 
 
 if __name__ == '__main__':
