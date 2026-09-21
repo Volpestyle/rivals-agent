@@ -1,5 +1,159 @@
 # Policy: the learned chooser (steps 1-3)
 
+## B0 handoff
+
+For the worker taking B0 (next-event prediction, auxiliary pretraining only) and the current-only
+reference fit. The task itself is specified in [learning-plan.md](../learning-plan.md), "B0:
+auxiliary pretraining by predicting observed ability events". This section covers the lane's
+machinery and its rules. The lead releases the handoff; until then `policy/` has one owner.
+
+### 1. Paths and commands
+
+| Path | What it is |
+|---|---|
+| `policy/corpus.py` | Every source: media path, creator, split `group`, `cooldowns` and `patch` with the evidence for each. Reads manifests; no pixels |
+| `policy/frames.py` | The recorded normalization (`NORM = "n1"`): ffmpeg decode at source rate, scale the whole 16:9 frame to 224x224, paint HUD and overlay rects with the ImageNet mean. Also the frame decoders |
+| `policy/encode.py` | The embedding cache: frozen `vit_small_patch16_224.dino` (384-d), per-source `.npz` plus sidecar `.json` |
+| `policy/train.py` | `layout()` (the only copy of the feature offsets), `step_row()` (one timestep), `Cache` (at-or-before lookup), `windows()`, the GRU head, folds and baselines |
+| `policy/live.py` | `LearnedBrain`, the runtime chooser behind `agent/loop.py --brain learned`. Not live; not part of B0 |
+| `data/embeddings/vit_small_patch16_224-dino-n1-10hz/` | The cache. `<source>.npz` holds `emb` (float16, n x 384) and `t` (decoded seconds); `<source>.json` holds provenance, `clock`, `t_origin`, `sidecar_version` (3) |
+| `data/demos/splits/s10-normal-v0.json` | The split. `proposed`; train `twitch:2879354299` (DayMR) and `twitch:2873352801` (ReqMR); test (sealed) `twitch:2877719252`, `twitch:2871472478`; val pending; two YouTube uploads unassigned |
+| `data/demos/vods/*.manifest.jsonl`, `data/demos/events/**` | The four sources the split names, and their event streams: 14 files, format 4, writer `1336262e179c` |
+| `tests/test_policy.py` | 42 tests |
+
+```sh
+uv run --group policy python -m policy.encode --all --kinds vod   # build or extend the cache; niced; skips cached sources
+uv run --group policy python -m policy.encode --refresh           # rewrite sidecars from current provenance, decodes nothing
+uv run --group policy python -m policy.encode --list              # what is cached
+uv run --group policy python -m policy.train --regime normal --out report.json   # a fit on OUR OWN runs (see below)
+uv run --group policy pytest tests/test_policy.py                 # full suite
+uv sync && uv run pytest tests/test_policy.py                     # stdlib-only: 10 pass, 32 skip
+```
+
+The `policy` uv group resolves in the same universe as `perception` only because of three
+`[tool.uv] override-dependencies` in `pyproject.toml` (numpy 2, current mlx, and dropping
+mlx-image's `opencv-python`). Do not remove them.
+
+**No B0 fit command exists yet.** `policy.train` fits the scripted brain's intents on our own
+range runs, loaded through `Demos.load(*paths)`. B0 needs a new window builder that enters through
+`Demos.load_split("s10-normal-v0")`, takes next-event targets, and reuses `step_row`, `Cache`,
+`layout` and the head. All four split sources are already cached, and their loader clip ids equal
+the cache keys.
+
+### 2. The feature layout
+
+One timestep is a vector of **405** values at embedding dimension 384; a window is **51 steps**
+(5 s at 10 Hz, including the decision frame), oldest first. When history is short the missing
+steps are left-padded with zeros and every bit clear. The offsets are written in one place,
+`policy/train.layout(emb_dim)`, and `policy/live.py` reads it.
+
+| Cols | Field | Shape, units | Bits | Kind |
+|---|---|---|---|---|
+| 0-383 | embedding | 384 float32, frozen DINO CLS of the `n1` frame; unitless | | frames-only |
+| 384 | `emb_present` | {0,1} | a cache row at or before the step, no staler than `MATCH_S` = 0.12 s | frames-only |
+| 385 | `scene_masked` | {0,1} | the loader's `Mask.hidden` contains `scene` | frames-only (the mask comes from the HUD segmenter's segments) |
+| 386-387 | hp | fraction of max, [0,1] | value, known | state |
+| 388-389 | ammo | web charges / 5 | value, known | state |
+| 390-395 | swing, get_over_here, uppercut | ready {0,1} each | value, known each | state |
+| 396 | detections | min(count, 5) / 5 | no known bit | state, scene-derived |
+| 397-398 | on_target | {0,1} | value, known | state, scene-derived |
+| 399 | `state_present` | {0,1} | a `State` dict was recorded for the step | state |
+| 400-403 | events | counts in (t - 1 s, t] of `hp_lost`, `web_cluster_fired`, `slot_unavailable`, `slot_available` | | **event input** |
+| 404 | `events_present` | {0,1} | the clip has an event stream | event input |
+
+An unknown value is a zero with its known-bit clear, never a guess. A field named in
+`Mask.hidden` is zeroed together with its known-bit. `hidden` values are `scene` (embedding and
+scene-derived state), `hud` (every HUD field), or one field (`hp`, `ammo`, a slot). `player`
+drops nothing, because no feature is player-specific.
+
+**The state channel is empty on expert footage.** It comes from our own loop's `State` rows, so
+on every expert window its bits are clear. There is no layout version constant in code. The
+layout is pinned by `NORM`, the encoder name, `layout()`, the width and the saved head's spec
+(`width`, `emb_dim`, `state_f`, `event_f`, `event_kinds`). Whoever next changes the layout adds
+the constant first.
+
+**Deliberately absent:** target identity and track ids; remaining episode time and option status
+(RL only); ult, team-up, `ability_cast`, charges and the kill feed as inputs; chat (unmasked
+pixels, not a feature); audio.
+
+**The causal event-input gate.** Event columns may feed a model only once it is shown that
+perturbing footage after t leaves every event feature at t unchanged. That covers the extractor's
+temporal cleanup and per-source slot mapping, not just `t_to <= t`. **Status: not demonstrated;
+no such test exists.** The `(t - 1 s, t]` bound proves timestamp causality only. **So the
+reference fit is frames-only:** columns 0-385, with events used solely as targets. `step_row`
+fills columns 400-404 whenever it is handed events, so a frames-only builder passes `events=None`.
+
+### 3. Folds and baselines
+
+- **Development folds** use only the accepted train side of `s10-normal-v0`: two leave-one-session-
+  out folds, DayMR to ReqMR and ReqMR to DayMR. Report each direction separately, because creator
+  and session are confounded. Every fitted quantity (class weights, training majority, timing
+  medians) comes from the fitting session alone. The pipeline has no fitted normalization
+  statistics: embeddings are raw, and state uses fixed scalings.
+- **Never touched:**
+  - the sealed test broadcasts, for development, learning curves or model selection;
+  - the val side (pending: asking for it raises `PendingError`);
+  - a fold's held-out session, by any stage fitted for that fold, **pretraining included**;
+  - the unassigned uploads, ever.
+- **`policy/train.py` does not satisfy this as written.** `TRAINABLE = ("train", "val", "test")`
+  and its leave-one-session-out runs over every session it loads. A B0 builder takes the `train`
+  side only and folds within it.
+- **Baselines**, each scored on the same held-out windows:
+  - *training majority*: `bincount(y_train).argmax()`.
+  - *persistence*: in code today, the previous decision's label in the same session. For B0 the
+    plan's form is the most recent observed event class (the latest event with `t_to <= t`), plus
+    *always `no_verified_event`*.
+  - *timing*: the training-only median delay per class.
+  - *events-only*: required only if events become an input.
+  - Already reported by `policy.train`: majority, held-out majority, sticky, accuracy and
+    per-class recall on the change windows (where persistence scores zero), macro F1, confusion.
+  - A B0 builder has to add: always-no-event, most-recent-event and the timing median.
+
+### 4. Who may promote a source
+
+**Only the lead, on the independent reviewer's acceptance, never the training worker.** A source
+leaves `inspection_only` when the lead sets the split file's `status` to `accepted`. Even then,
+only sources whose own manifest allows it (`splittable`, split null or that side) take a side. The
+split file never overrides provenance. While the split is `proposed`, every source reads
+`inspection_only` and the train side yields **0** samples (checked).
+
+**`Demos.load_split(name)` is the only door.** It refuses with:
+- `PendingError`: asking a pending side for anything;
+- `ProvenanceError`: two provenance records disagree, or a claim has no basis;
+- `RegimeError`: a split mixing patches or cooldown regimes;
+- `SplitError`: a group on two sides or on none, an unassigned group listed, or a silently empty side;
+- `FormatError`: an event file that is not format 4, or is stale (meta lacks required keys, or its
+  `writer` is not the current producer's fingerprint);
+- `AlignmentError`: an annotation over a context the loader would not give;
+- `LeakageError`: an observation holding anything later than t.
+
+`Demos.load(*paths)` exists, and our own runs use it, but no split rule applies there.
+
+### 5. Traps
+
+- **A scripted edit that misses its target does nothing and reports nothing.** A `str.replace`
+  whose old text is one line off leaves the file unchanged. Assert that the match happened, grep
+  for every name you added, and check that the test count rose by the expected amount before
+  claiming a test exists.
+- **`Cache.at` is at-or-before, on one clock.** A video's rows are absolute decoded PTS; `Cache`
+  subtracts the sidecar's `t_origin` (the first decoded PTS, 0.027 s on
+  `daymr-2879354299-21660-900s`). It then takes the latest row at or before t, never the nearest:
+  the nearest can be after t. Check lookups by time with `Cache.index_at`. Event times arrive on
+  the loader's clip clock, which the cache is verified against. No cast has been checked against
+  its pixels in the cache.
+- **`CacheMiss` versus a mask.** A source absent from the cache, or an empty cache, raises
+  `CacheMiss`, and so does a window in which every step is a miss. A hidden scene is a fact with
+  its own bit. The two must never look alike: a zero block is not "masked".
+- **`Mask.hidden` is per field.** One hidden HUD slot must not drop a visible scene. `step_row`
+  drops exactly what `hidden` names.
+- **Clip time, sampling and short segments.** Expert play segments have medians of 4-12 s. B0
+  requires the full five-second context for its first run, so report the eligible duration. A
+  bridged scoreboard gap is usable only with its mask and a proven absence of a hard cut.
+- **Decoding cost.** H.264 caches at 200-400 frames/s. AV1 runs at about 100 frames/s, and
+  VideoToolbox is slower than software for it. `showinfo` goes after the scale.
+- `policy/train.py`'s module docstring still says events are format 2/3. They are format 4; the
+  code was left unchanged for this handoff.
+
 **Built and measured offline. Nothing here aims, presses a button, or runs live.** This lane
 replaces *what* the agent decides — today `agent/brain.py`'s hand-written rules — with a model
 that reads the last few seconds and names an intent from the existing vocabulary. The
@@ -307,10 +461,6 @@ What the reviewer tried and could **not** break, which is worth as much: no leak
 the loader, no per-clip normalization statistics, class weights not reaching reported accuracy,
 split integrity by group, and the `splittable` gate.
 
-**Events stay absent on purpose.** `agent/demos.py` reads event format 2 and the HUD lane now
-writes format 3, so no real events file loads today. rivals-brain owns that fix; nothing here
-depends on events until the lead says it landed.
-
 
 ## The cache
 
@@ -355,13 +505,9 @@ scratch directory and the numbers came here instead of the images.
   runs in every environment and fails the moment two `cv2` providers are installed together.
   Green in all three: `uv sync` leaves the stdlib-only env, `--group perception` has
   `cv2 5.0.0` with `numpy 2.5.3` and only the headless distribution, and `--group policy` runs.
-- **The trainer selects sources by regime before any window is cut**, then tells the loader
-  `mix_regimes=True`. The loader reads a run's regime from its `meta.json`, which the recorders do
-  not write yet (rivals-brain is adding a `--cooldowns` flag); `policy/corpus.py` holds the lead's
-  statement meanwhile, and a test pins that the selection is what pins the regime.
 - **Not built:** the tactical-purpose head (step 4), cross-source deduplication (approved as a
   proposal tool, not yet written), consumption of the HUD lane's bridged runs and their masked
-  scoreboard frames (waiting on the loader), any live run. Nothing is committed.
+  scoreboard frames (waiting on the loader), any live run.
 - **Window length is provisional.** 5 s at 10 Hz suits our own 300 s runs, but the HUD lane
   measures expert segments at medians of 4-12 s, so most expert windows will be short. A short
   window already degrades safely (absent steps keep their present bit clear), and the scene-mask
