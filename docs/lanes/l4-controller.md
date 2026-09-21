@@ -71,6 +71,68 @@ the right of the door's centre, or strafe right ~0.9 s before the walk.
 Route note: from the lower ring, the purple jump pad beside the plaza stairs launches him onto the main plaza in front of
 the spawn room's green door, facing the Luna Snow bot.
 
+## Tick-budget regression: profile (offline, no pad, 2026-09-21)
+
+Harness `docs/evidence/l4/tick-profile-harness.py`, result `tick-profile-postfreeze30-replay.json`: the real `Loop`,
+`default_perception`, `Tracker`, `Controller`, threaded `Decider`, `RunLog` and `Live` commit path, with a fake pad and a
+replay capture serving `postfreeze30`'s 273 native frames at 60 Hz (a fresh array per grab), run on the PC with the game up
+(on the lobby, ~480 fps, so GPU load is not the range's). It reproduces the run: 52.2 Hz, tick p50 / p95 / max
+11.1 / 17.0 / 22.0 ms, 77 of 1,372 ticks over 16.7 ms (live: 49.9 Hz, 11.4 / 17.9 / 25.7, 80 of 1,499).
+
+| Component (per tick) | p50 | p95 | max ms |
+|---|---|---|---|
+| aim finder (960 px crop) | 5.9 | 9.3 | 14.2 |
+| range proof inside `Live._commit` | 2.3 | 4.5 | 35.1 |
+| loop's early `in_range` guard | 2.0 | 2.7 | 6.9 |
+| loop's `idle_warning` guard | 0.6 | 0.8 | 4.0 |
+| `_log` (outside `tick_ms`; frame copy for the JPEG writer) | 0.1 | 4.1 | 25.9 |
+| controller step / tracker update / `decider.offer` / `Live._apply` (fake pad) | 0.06 / 0.03 / 0.00 / 0.01 | | |
+| capture: not comparable on replay. A delivered live dxcam grab measured 23.5 ms p50 on the lobby (GPU saturated at 480 fps); in the range the loop's period was 17-19 ms. The real pad write is not measured (no pad opened); before the safety work the whole tick, pad write included, was 6.9 ms | | | |
+
+- The regression is the positive range predicate run twice: 2.0 + 2.3 = 4.3 ms of the +4.5 ms. The tracker costs 0.03 ms.
+- Over-budget ticks: 76 of 77 had no box in the aim crop, and 76 of 77 overlapped the decision worker's whole-frame finder
+  (which only runs when the crop is empty; it takes 31 ms p50 on the worker here against 14.6 ms alone). In 56 the largest
+  excess was the aim finder (+5 ms mean: the two finders contend), in 21 one of the two predicates.
+- Removing only `Live`'s duplicate evaluation would bring 61 of the 77 back under budget.
+- **The predicate itself is the waste:** `record.banner_score` converts the whole 2560x1440 frame to grey (0.9 ms) and
+  resizes it (1.2 ms) to look at a 184x29 px corner. Cropping the banner window first gives the same score (0.981 vs 0.981
+  on a run frame) in 0.075 ms instead of 1.44 ms. With both predicates at ~0.3 ms all 77 over-budget ticks come back
+  under budget, with no change to the reviewed authorization boundary. The shared verdict would then save ~0.3 ms a tick.
+
+### Fix: `record.banner_score` crops before it converts (branch `shared-range-proof`, not deployed, awaiting the input-safety reviewer)
+
+The shared range verdict was NOT built (after this fix it would save ~0.3 ms a tick for a change to the reviewed
+authorization boundary). Only the predicate's internals change; `in_range`'s signature, thresholds, bar tests and every
+caller are untouched.
+
+- Crop-first is used only where it is exact: frames whose width and height are whole multiples of 1280x720 (the 2560x1440
+  capture, 3840x2160). There INTER_AREA is a k x k box average, so cropping the window's input pixels first gives
+  bit-identical output, and grey conversion is per pixel. Every other size takes the old whole-frame path unchanged: a
+  first version that aligned crops for fractional scales was off by +-1 grey level at 2560x1600, so it was dropped.
+- Equivalence, old (whole-frame reference) against new, on every recorded frame: **25,807 frames on the PC, 0 decision flips
+  against `BANNER_MIN` 0.55, max |new - old| = 0.0, 0 non-zero differences** (`banner-equivalence-pc-25807-frames.json`,
+  per source: 16,929 native 2560x1440 frames and 8,876 at 1280x720). Margins identical before and after: lowest positive
+  0.6826, highest negative 0.2152. Fixtures, the 210-frame positive set and 74 evidence images on the Mac: 320 frames (29
+  native), 0 flips, max difference 0.0 (`banner-equivalence-fixtures.json`). The PC's recordings hold only 89 negatives,
+  all 720p; native-resolution negatives (lobby, hero select, practice panel) come from `tests/fixtures/reentry`.
+- Permanent regression: `tests/test_banner_equivalence.py` keeps the old implementation as `reference_window` /
+  `reference_score` and holds the new one to it on all 36 fixtures at 10 sizes (native, 1920x1080, 3840x2160, 1600x900,
+  1366x768, 2560x1600, 1280x720, 1280x800, 1024x576, 640x360): same window pixels, same score, same decision. Also grey
+  frames, odd shapes, a banner partly or wholly off the frame, and frames too small to hold the banner (score 0, `in_range`
+  False, never raises; the old code raised `cv2.error` on a 1280-wide sliver). The existing 52-case suite passes unchanged.
+- Mutations of the new geometry, all killed: crop origin x+1, origin y-1, wrong scale, wrong corner, axes swapped, no +-4 px
+  slack, nearest instead of area, crop-first at non-multiple sizes, small-frame guard removed.
+- Profile with the fix (`tick-profile-cropfirst-replay.json`, same harness and frames): 54.7 Hz (was 52.2), tick p50 / p95
+  / max 9.0 / 15.7 / 18.9 ms (was 11.1 / 17.0 / 22.0), **28 of 1,439 ticks over budget (was 77 of 1,372)**. Early guard
+  0.8 / 1.2 / 2.6 ms, proof in `Live` 0.9 / 4.7 / 18.2, aim finder 6.1 / 9.6 / 15.3, idle guard 0.6 / 0.9 / 4.5. What is
+  left of the predicate (~0.8 ms) is the health-bar tests.
+- The 28 that remain: 27 had no box in the crop and all 28 overlapped the decision worker's whole-frame finder; in 22 the
+  largest excess was the aim finder (+5.9 ms mean). This replay uses no GPU in either finder, so it is CPU contention between
+  the two OpenCV finders (and the GIL around their Python parts), not GPU load; the aim finder's median is the same whether
+  or not the wide finder is running (6.3 vs 6.1 ms), only its tail moves. Worst tick 18.9 ms, so the cost is a tick ~2 ms
+  late on 2 % of ticks: not worth a change to reviewed code now. If it ever matters: run the wide search on the 720p
+  downscale, or cap OpenCV's threads on the worker.
+
 ## Capture fault: dxcam delivers no frames when no monitor is attached
 
 Since 2026-09-20 23:08:24 Desktop Duplication returns nothing: `AcquireNextFrame` times out (`0x887A0027`

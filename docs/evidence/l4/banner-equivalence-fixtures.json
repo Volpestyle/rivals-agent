@@ -1,0 +1,79 @@
+{
+ "tests/fixtures/range": {
+  "frames": 9,
+  "native_2560": 0,
+  "max_abs_diff": 0.0,
+  "flips": 0,
+  "pos": 6,
+  "neg": 3,
+  "min_pos_old/new": [
+   0.7159,
+   0.7159
+  ],
+  "max_neg_old/new": [
+   0.0,
+   0.0
+  ]
+ },
+ "tests/fixtures/menus": {
+  "frames": 8,
+  "native_2560": 0,
+  "max_abs_diff": 0.0,
+  "flips": 0,
+  "pos": 4,
+  "neg": 4,
+  "min_pos_old/new": [
+   0.669,
+   0.669
+  ],
+  "max_neg_old/new": [
+   0.0,
+   0.0
+  ]
+ },
+ "tests/fixtures/reentry": {
+  "frames": 19,
+  "native_2560": 17,
+  "max_abs_diff": 0.0,
+  "flips": 0,
+  "pos": 6,
+  "neg": 13,
+  "min_pos_old/new": [
+   0.9807,
+   0.9807
+  ],
+  "max_neg_old/new": [
+   0.1493,
+   0.1493
+  ]
+ },
+ "210 positives (baseline1/3 proxies)": {
+  "frames": 210,
+  "native_2560": 0,
+  "max_abs_diff": 0.0,
+  "flips": 0,
+  "pos": 210,
+  "neg": 0,
+  "min_pos_old/new": [
+   0.9207,
+   0.9207
+  ],
+  "max_neg_old/new": null
+ },
+ "docs/evidence (all lanes)": {
+  "frames": 74,
+  "native_2560": 12,
+  "max_abs_diff": 0.0,
+  "flips": 0,
+  "pos": 24,
+  "neg": 50,
+  "min_pos_old/new": [
+   0.6701,
+   0.6701
+  ],
+  "max_neg_old/new": [
+   0.2057,
+   0.2057
+  ]
+ }
+}

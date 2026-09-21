@@ -1,0 +1,145 @@
+{
+ "threaded": true,
+ "stop": "max_time",
+ "reflex_hz": 52.2,
+ "tick_ms": {
+  "p50": 11.06,
+  "p95": 17.02,
+  "max": 21.95
+ },
+ "period_ms": {
+  "p50": 17.51,
+  "p95": 30.29,
+  "max": 35.47
+ },
+ "over_budget": 77,
+ "decide_ms": {
+  "p50": 39.87,
+  "p95": 61.18,
+  "max": 80.25
+ },
+ "components": {
+  "live.range_proof": {
+   "n": 1373,
+   "p50": 2.26,
+   "p95": 4.46,
+   "max": 35.06
+  },
+  "capture.fresh(replay)": {
+   "n": 1579,
+   "p50": 3.67,
+   "p95": 14.02,
+   "max": 20.01
+  },
+  "loop.in_range": {
+   "n": 1373,
+   "p50": 2.03,
+   "p95": 2.67,
+   "max": 6.91
+  },
+  "loop.idle": {
+   "n": 1372,
+   "p50": 0.56,
+   "p95": 0.83,
+   "max": 4.01
+  },
+  "aim_finder": {
+   "n": 1372,
+   "p50": 5.94,
+   "p95": 9.32,
+   "max": 14.23
+  },
+  "tracker.update": {
+   "n": 1372,
+   "p50": 0.03,
+   "p95": 0.25,
+   "max": 0.45
+  },
+  "decider.offer": {
+   "n": 1372,
+   "p50": 0.0,
+   "p95": 0.02,
+   "max": 0.07
+  },
+  "controller.step": {
+   "n": 1372,
+   "p50": 0.06,
+   "p95": 0.07,
+   "max": 0.3
+  },
+  "live._apply": {
+   "n": 1373,
+   "p50": 0.01,
+   "p95": 0.01,
+   "max": 0.13
+  },
+  "loop._log": {
+   "n": 1372,
+   "p50": 0.1,
+   "p95": 4.0,
+   "max": 8.55
+  },
+  "TICK(total incl. log)": {
+   "n": 1373,
+   "p50": 11.43,
+   "p95": 18.15,
+   "max": 23.19
+  }
+ },
+ "over_budget_ticks": 77,
+ "over_budget_biggest_excess_component": {
+  "loop.in_range": 9,
+  "live.range_proof": 12,
+  "aim_finder": 56
+ },
+ "over_budget_mean_excess_ms": {
+  "live.range_proof": 1.55,
+  "capture.fresh(replay)": -0.53,
+  "loop.in_range": 1.39,
+  "loop.idle": 0.19,
+  "aim_finder": 4.63,
+  "tracker.update": -0.01,
+  "decider.offer": 0.0,
+  "controller.step": -0.01,
+  "live._apply": -0.0,
+  "loop._log": 0.37,
+  "TICK(total incl. log)": 7.74
+ },
+ "over_budget_worker_overlap": {
+  "worker.wide": 76,
+  "worker.hud": 68,
+  "worker.tag": 32
+ },
+ "all_ticks_worker_overlap": {
+  "worker.wide": 420,
+  "worker.hud": 495,
+  "worker.tag": 255
+ },
+ "worker_ms": {
+  "worker.tag": {
+   "n": 232,
+   "p50": 2.31,
+   "p95": 17.89
+  },
+  "worker.hud": {
+   "n": 258,
+   "p50": 14.25,
+   "p95": 23.17
+  },
+  "worker.wide": {
+   "n": 168,
+   "p50": 25.81,
+   "p95": 39.15
+  }
+ },
+ "ticks": 1372,
+ "over_budget_rescued_if_live_proof_free": 61,
+ "over_budget_rescued_if_both_predicates_cost_0.3ms": 77,
+ "over_budget_with_no_box": 0,
+ "no_box_ticks": 875,
+ "over_budget_no_box": 76,
+ "aim_ms_p50_while_worker_wide_running_vs_not": [
+  6.13,
+  5.9
+ ]
+}

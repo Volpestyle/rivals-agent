@@ -73,14 +73,36 @@ def _small_gray(frame):
     return g if g.shape[1] == 1280 else cv2.resize(g, (1280, 720), interpolation=cv2.INTER_AREA)
 
 
+def _banner_window(frame):
+    """The banner window of the 1280x720 view (BANNER_BOX +-4 px), as grey pixels, without converting the whole frame.
+
+    Crop-first is used only where it is EXACT: a frame whose width and height are whole multiples of 1280x720 (the 2560x1440
+    capture, 3840x2160). There INTER_AREA is a plain k x k box average, so output pixel (x, y) depends on input pixels
+    [x*k, (x+1)*k) x [y*k, (y+1)*k) and nothing else, and cropping those input pixels first gives bit-identical output;
+    grey conversion is per pixel, so its order does not matter either. Every other size (1280 wide as it is, 1920x1080,
+    non-16:9, anything smaller) takes the old whole-frame path unchanged: fractional area weights round differently on a
+    crop (seen: +-1 grey level at 2560x1600), and those sizes are not the live capture, so nothing is gained by risking it.
+    The point of all this: a full 2560x1440 grey conversion and resize cost 1.4 ms per call, twice a tick."""
+    x0, y0, x1, y1 = BANNER_BOX
+    x0, y0, x1, y1 = x0 - 4, y0 - 4, x1 + 4, y1 + 4
+    h, w = frame.shape[:2]
+    k = w // 1280
+    if k < 2 or w != 1280 * k or h != 720 * k:
+        return _small_gray(frame)[y0:y1, x0:x1]
+    crop = frame[y0 * k:y1 * k, x0 * k:x1 * k]
+    g = crop if crop.ndim == 2 else cv2.cvtColor(crop, cv2.COLOR_BGR2GRAY)
+    return cv2.resize(g, (x1 - x0, y1 - y0), interpolation=cv2.INTER_AREA)
+
+
 def banner_score(frame):
     """How well the top-left corner matches the range's own "PRACTICE RANGE" banner (-1..1; 0 for a flat image)."""
     global _BANNER
     if _BANNER is None:
         _BANNER = cv2.imread(str(Path(__file__).parent / "templates" / "range_banner.png"), cv2.IMREAD_GRAYSCALE)
         assert _BANNER is not None, "scripts/templates/range_banner.png is missing"
-    x0, y0, x1, y1 = BANNER_BOX
-    win = _small_gray(frame)[y0 - 4:y1 + 4, x0 - 4:x1 + 4]           # +-4 px of slack
+    win = _banner_window(frame)
+    if win.shape[0] < _BANNER.shape[0] or win.shape[1] < _BANNER.shape[1]:   # a frame too small to hold the banner
+        return 0.0
     if float(win.std()) < 5.0:                                       # flat (all white, all black): correlation is undefined
         return 0.0
     score = float(cv2.minMaxLoc(cv2.matchTemplate(win, _BANNER, cv2.TM_CCOEFF_NORMED))[1])
