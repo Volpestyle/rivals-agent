@@ -88,7 +88,13 @@ Snow bot). Outside the spawn room no warning appeared in 12+ minutes of play.
 Only moving or attacking resets the timer. Camera-only input and menu input do not: a
 drop came ~10 minutes after the last move or attack, during turn-only aim trials and
 settings visits. Put a move-and-attack step inside every measurement or trial, and keep
-menu visits under ~5 minutes.
+menu visits under ~5 minutes. An idle agent cannot feed the timer: a worker that ends its
+turn waiting on someone else stops sending input, so enter the range only when the run is
+ready to start (code deployed, reviewer done), not before.
+
+`scripts/reenter.py` does the menus reliably (lobby to in-range as Spider-Man, every press
+behind its proof). Its arrival walk can snag on the left jamb of the spawn room's green door
+and exit 1 inside the room; strafe right ~0.9 s, then walk forward, to clear it.
 
 ## Reading results in the range
 
