@@ -2,10 +2,52 @@
 
 Linear: VUH-1296. Evidence: `docs/evidence/l4/`. Raw measurements: `C:\rivals-agent\data\l4\` on the PC.
 
-The game is in the Practice Range as Spider-Man where the re-entry arrival ends: at the spawn room's door, beside its dark
-housing, facing into the spawn room, idle, no pad connected (`after-arrival-20260921-1228.jpg`, still in the range 3 min
-after the arrival ended). The PC holds `agent/`, `scripts/` (with templates) and `perception/` from `git archive 8c73f21`,
-all 42 tracked files verified by sha256, nothing of this lane's scratch beside them.
+The game is in the Practice Range as Spider-Man where the third `arrival-out` arrival ends: outside the spawn room on the
+plaza side of its door, facing the door's dark housing edge-on, idle, no pad connected
+(`arrival-out-3-20260921-131747-endpose.jpg`); the range's inactivity drop returns it to the lobby about 10 min after the
+last movement. The PC holds `agent/`, `scripts/` (with templates) and `perception/` from `git archive 8c5f800`, all 42
+tracked files verified by sha256, nothing of this lane's scratch beside them.
+
+## Three supervised arrivals from spawn at 8c5f800 (VUH-1299): `data/reenter/arrive-20260921-{125409,130539,131747}/`
+
+Three full `scripts/reenter.py` invocations from the PLAY lobby, each left to its own end: no strafe, no help, no other
+input, no 30 s run. `capture.py preflight` passed (96 dxcam frames in 1 s). Between arrivals the game went back to the lobby
+by its own inactivity drop (polled with `--dry-run`, which holds no pad): 12:54:50 -> lobby by 13:05:24; 13:06 -> lobby by
+13:17:32. Every menu step passed first time in all three (tooltip match 0.87, 1.00, 0.94); no refusal before the range, no
+re-invocation. After each: 0 python left, 0 Xbox pads present.
+
+Verdicts are by eye on the retained frames, not from the exit code or the row fields. In the rows a turn's `door_x` is taken
+before that frame's selection (None or the predicted prior-door position) and `door_blob_x` / `door_px` are the LARGEST
+current blob, not necessarily the kept door; `gate` is constant policy text; `t` is the logging time after the action; most
+frames are the decision frame before it. On the sheets every door-sized lime blob is boxed in yellow (recomputed from the
+saved 720p JPEG, the largest thick), the row's `door_x` is the cyan line, the hero column the red line, and the white ticks
+are the steering target 0.40 +- 0.08. Elapsed is first row's log to last row's log, which leaves out the first step
+(one 0.16-0.5 s action); `ARRIVE_S` is a budget of scheduled action time, not a wall-clock deadline.
+
+| | Arrival 1 (12:54:09) | Arrival 2 (13:05:39) | Arrival 3 (13:17:47) |
+|---|---|---|---|
+| Exit code / last line | **1**, `could not confirm the spawn room was left within 14 s` | **0**, `RT`, `in the Practice Range as Spider-Man` | **1**, same stop as arrival 1 |
+| Rows / elapsed | 23 / **14.99 s** | 20 / **12.04 s** | 23 / **15.18 s** |
+| Door taken first | the room's OTHER lime door (left of the plaza door): in frame 1 it is the bigger blob (8.2k px at 0.14-0.26, the plaza door 3.5k at 0.40-0.49), he turns left to it and keeps it | the plaza door: in frame 1 it is the bigger blob (6.0k at 0.41-0.49, on his column; the other door 5.8k) and he keeps it while the other door is the largest blob in frames 2-3 | the OTHER door, as arrival 1 (7.3k at 0.16-0.26 against 5.6k) |
+| a. the crossing: pane over the hero's column on the step before the door vanishes | other door (step 10 -> none on 11): the logged blob is a 3.4k strip at 0.45, 40 px right of his column (0.418), under the JPEG recompute's size floor; the pane covered his column one step earlier (0.20-0.49). Through with no snag. **Plaza door: NOT EXERCISED** (never crossed) | **PASS**: step 16, pane blob 0.31-0.52, hero 0.416; step 15, 0.37-0.53 | other door (step 10): strip 0.42-0.50, its left edge on his column (0.417). **Plaza door (step 21): PASS, marginal**: blob 0.31-0.42, hero 0.416 at its right edge. Through both with no snag |
+| b. OUT set, no step onto the door frame | **FAIL**: never set. The last walk before the door vanished was at a 3.4k px blob (19.1k the step before), under `OUT_PX` 20k. No jamb snag | **PASS**: last walk at 26.8k, next frame no door, `out: look around left`; no jamb snag (blob 44k -> 34k -> 27k over steps 14-16, steady advance) | **FAIL** on both crossings: last walks at 7.6k (other door) and 7.7k (plaza door; 19.9k the step before). No jamb snag |
+| c. after OUT: no steer toward and no walk at any door blob | **NOT EXERCISED** (OUT never set). What the rule is for did happen: outside the other door he looked right, turned to the room seen back through that door (steps 12-13) and walked back in (14-15), then turned to the plaza door (16) and walked at it five times (17-21) | **PASS, weakly exercised**: one post-OUT step, a left turn, on a frame with no lime blob in it | **NOT EXERCISED**. Same walk back in through the other door (steps 12-15), then the plaza door (16-21), through it on step 21; then `no door: look around` turns him RIGHT (the pre-OUT branch), and the final frame has a 7.7k sliver of the pane at 0.37-0.42 on his column (0.391): the next step would have walked at it, had budget remained |
+| d. the end: plaza_view twice, no door in view, a bot ahead | **FAIL**: `plaza_view` False throughout. He ends INSIDE the spawn room at the plaza door's right jamb, facing out through the pane (29k blob at 0.21-0.40), planter and stairs beyond it, no bot in view | **PASS**: `plaza_view` True on steps 18 and 19, no lime in view; he stands on the plaza beside the door's planter facing the Luna Snow bot (name bar readable) just right of his column at mid distance, the Hero Simulation console to her left, the stairs to the right. RT pressed once | **FAIL**: `plaza_view` False throughout. He ends OUTSIDE on the plaza side, at the door, facing its dark housing edge-on with the pane's sliver on his column; planter at the left edge, the room's pillars to the right of the housing; no bot in view |
+
+What the three show together:
+- Which door he takes is decided by frame 1: the two lime doors are within 0.3k-4.7k px of each other there, and he takes
+  whichever is the larger blob. Keeping the chosen door works (arrival 2 keeps the plaza door through two frames where the
+  other is larger; arrivals 1 and 3 keep the other door all the way through it).
+- OUT was set on 1 of the 4 crossings seen. The pane's blob shrinks as he reaches it (the last walk is at 3k-8k px on three
+  crossings, 27k on one; the step before that is 19.1k, 19.9k, 34k), so the 20k test on the last walk misses.
+- With OUT not set, the old behaviour is unchanged: a look-around to the RIGHT finds the door just left, from outside, and he
+  walks back at it. The 14 s budget then ends the arrival wherever he is.
+- `plaza_view` needs the bot's box between 0.35 and 0.95 of the width; it says the green finder has a plausible box there
+  with little lime round it, not that the box is a bot. In arrival 2 the box is the Luna Snow bot by eye.
+
+Evidence: `arrival-out-{1,2,3}-20260921-<time>-sheet.jpg` (one contact sheet per arrival), `...-steps.jsonl`,
+`...-endpose.jpg` (desktop screenshot after each end, no input), `arrival-out-2-crossing-out-plaza-end.jpg` (steps 16, 17,
+19 and the end pose), `arrival-out-3-crossings-end.jpg` (steps 9-12 and 20-23 and the end pose).
 
 ## Supervised arrival measurement (VUH-1299): `data/reenter/arrive-20260921-122442/` on the PC and the Mac
 
