@@ -35,6 +35,9 @@ LABELS = {
     # the spawn room until 3.5 s (at 3.7 s he is outside, and a bot is in view); the door again from the plaza side 11.6-15.4 s (ids 45 46 48); a lit glass dome in the ceiling 22-25 s
     # (id 98); otherwise a box 60 px+ is a bot (far ones on the plaza at 4.4-6.8 s are 60-160 px)
     "handoff30": dict(door=[(0.0, 3.95)], bot_after=3.95, bot_h=60),
+    "reach30": dict(door=[(3.9, 5.0), (14.8, 19.8), (22.7, 25.5, 700, 2560), (28.4, 29.6)], bot_after=5.0, bot_h=60),
+    # the plaza side of the door in four windows (docs/lanes/l4-controller.md, reach30 forward walks and targets); in 22.7-25.5 s only right
+    # of x 700, where the door's edge is while the Luna bot stands left of the crop (id 44, x 327-600)
     # the plaza side of the door at the left until 3.9 s; then a box 60 px+ is a bot; the 30-42 px boxes are robot dummies far down the
     # shooting lane (native frames 000096 and the small-box sheet), labelled "small" below
 }
@@ -49,7 +52,7 @@ def label(t, b):
     lab = LABELS.get(RUN.name, dict(bot_after=0.0, bot_h=100))
     if cx > 2300 and cy < 260:
         return "killfeed"
-    if any(lo <= t < hi for lo, hi in lab.get("door", ())):
+    if any(w[0] <= t < w[1] and (len(w) == 2 or w[2] <= cx < w[3]) for w in lab.get("door", ())):   # (from, to[, x from, x to])
         return "door"
     if any(lo <= t < hi for lo, hi in lab.get("junk", ())):
         return "other"
@@ -92,6 +95,12 @@ def replay(mod, no_kill_feed=False):
     import inspect
     from agent.controller import Controller
     ctrl, intent, intent_t, pads, walks = Controller(), None, None, [], []
+    measured = [None]                                      # the tracker id of the box the controller measured on this step, any version
+    own_measure = ctrl._measure
+    def spy(det, state):
+        measured[0] = det.track
+        return own_measure(det, state)
+    ctrl._measure = spy
     takes_t = "intent_t" in inspect.signature(ctrl.step).parameters
     tr, m, aim, wide, ticks, cost = mod.Tracker(), brain.Memory(), {}, {}, [], []
     with_cam = "cam" in inspect.signature(tr.update).parameters
@@ -119,11 +128,14 @@ def replay(mod, no_kill_feed=False):
                                         detections=list(use[0]), coasting=use[1]), m)
             intent_t = base.t
         if intent is not None:
+            measured[0] = None
             st = State(t=r["t"], frame=SIZE, detections=list(aim[i][0]), coasting=aim[i][1])
             pad = ctrl.step(st, intent, intent_t=intent_t) if takes_t else ctrl.step(st, intent)
             pads.append((r["t"], type(intent).__name__ not in ("Search", "Idle"), pad))
             if pad["ly"] > 0 and type(intent).__name__ == "Engage" and ctrl.track is not None:
-                walks.append((r["t"], ctrl.track.h, None if m.target is None else label(m.target_t, m.target.bbox)))
+                held = getattr(intent, "target", None)
+                walks.append((r["t"], ctrl.track.h, None if m.target is None else label(m.target_t, m.target.bbox),
+                              measured[0] is not None and held is not None and held.track is not None and measured[0] != held.track))
         tgt = m.target
         acting = intent is not None and type(intent).__name__ not in ("Search", "Idle")   # the target is only what the pad acts on while engaging
         ticks.append((r["t"], None if tgt is None or not acting else label(m.target_t, tgt.bbox),
@@ -245,7 +257,15 @@ def report(path, no_kill_feed=False):
             "stalls_over_0.5s": stalls(replay.pads), "handoffs": handoffs(rows, aim, ticks),
             "engage_walk_ticks_by_label": dict(collections.Counter(w[2] for w in replay.walks)),
             "engage_walk_min_crop_h": min((w[1] for w in replay.walks), default=None),
+            "engage_walk_ticks_on_another_id": sum(w[3] for w in replay.walks),
+            "attack_press_ticks_by_label": presses(ticks, replay.pads),
             "live_handoffs(t, live held, live crop id, replay id then, replay id now, kept)": live_handoffs(rows, aim, wide)}
+
+
+def presses(ticks, pads):
+    """Ticks on which an attack is held or pressed (a trigger, X or RB), by the label of the target the brain held then."""
+    lab = {t: l for t, l, _, _ in ticks}
+    return dict(collections.Counter(lab.get(t) for t, _, p in pads if p["lt"] or p["rt"] or set(p["buttons"]) & {"X", "RB"}))
 
 
 def engaged_seconds(ticks, pads=None):

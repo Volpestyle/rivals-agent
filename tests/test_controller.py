@@ -1,5 +1,6 @@
 """Offline checks for agent/controller.py: closed-loop aim against a simulated camera, and the burst's button set."""
 import math
+from dataclasses import replace
 
 from agent.controller import NEUTRAL, Cal, Controller, _interp
 from agent.intents import BURST, Combo, Engage, Idle
@@ -235,3 +236,63 @@ def test_a_held_target_whose_own_measured_distance_passes_the_cap_is_not_walked_
     d = Detection(ENEMY, (1270, 700, 1290, 740), 0.9, distance=20.0, track=4)    # 40 px, under the height line, but measured at 20 m
     s = State(t=0.4, frame=frame, detections=[d])
     assert c.step(s, decide(s, m), intent_t=s.t)["ly"] == 1.0
+
+
+def test_a_drifted_track_is_never_re_seeded_onto_another_object():
+    """reach30 t 24.46: the held target (the bot, id 44, whole-frame only, far left) was unseen for 0.25 s; the controller re-seeded on the
+    nearest crop box, the door's edge (id 51), counted it measured and confirmed, turned RIGHT and walked at it."""
+    bot = Detection(ENEMY, (20, 300, 80, 420), 0.9, track=44)                 # left of the aim crop: the brain's measurement only
+    door = Detection(ENEMY, (900, 250, 960, 450), 0.9, track=51)
+    c = Controller()
+    pads = [c.step(State(t=i / 60, frame=(1280, 720), detections=[door] if i > 12 else []), Engage(bot)) for i in range(60)]
+    assert all(p["ly"] == 0.0 for p in pads) and all(p["rx"] <= 0.0 for p in pads)
+    assert not c.track.confirmed
+
+
+def test_a_box_of_another_size_is_not_the_target():
+    """reach30 t 23.86-24.16: the whole-frame bot's track (183 px) took the 30-40 px distant boxes crossing its bearing as its measurement
+    and aimed after them. Boxes more than the tracker's SIZE_RATIO apart are not the same object."""
+    bot = Detection(ENEMY, (610, 314, 670, 406), 0.9, track=44)                # 92 px on 720 (reach30: 183 on 1440), at the crosshair
+    speck = Detection(ENEMY, (632, 342, 648, 360), 0.9, track=45)              # 18 px (36 on 1440), right where she is predicted
+    c = Controller()
+    for i in range(20):
+        c.step(State(t=i / 60, frame=(1280, 720), detections=[speck]), Engage(bot))
+    assert not c.track.confirmed and not c._measured
+    c.step(State(t=0.4, frame=(1280, 720), detections=[replace(bot, track=46)]), Engage(bot))   # her own size under another id: aimed at
+    assert c.track.confirmed
+
+
+def test_he_walks_only_at_the_held_targets_own_box():
+    """A box measured for the target but carrying another tracker id is aimed at and may be pressed on, but is not walked at. Boxes with
+    no ids (a finder run without the tracker) keep the old rule."""
+    held = Detection(ENEMY, (610, 330, 670, 400), 0.9, track=7)
+    for box, walks in ((held, True), (replace(held, track=8), False), (replace(held, track=None), True)):
+        c = Controller()
+        pads = [c.step(State(t=i / 60, frame=(1280, 720), detections=[box]), Engage(held)) for i in range(30)]
+        assert any(p["ly"] == 1.0 for p in pads) is walks, box.track
+
+
+def test_the_held_targets_own_id_is_its_measurement_wherever_the_bearing_put_it():
+    """The tracker matches through the camera's turn (it models it); the controller's bearing gate does not. A box carrying the held id is
+    the target even far off the predicted bearing."""
+    held = Detection(ENEMY, (610, 330, 670, 400), 0.9, track=7)
+    c = Controller()
+    for i in range(10):
+        c.step(State(t=i / 60, frame=(1280, 720), detections=[held]), Engage(held))
+    moved = replace(held, bbox=(1110, 330, 1170, 400))                         # 500 px right in one step
+    c.step(State(t=10 / 60, frame=(1280, 720), detections=[moved]), Engage(held))
+    assert c._measured and c._measured_as == 7
+
+
+def test_another_ids_box_never_arms_or_starts_an_attack_for_the_held_target():
+    """Review of d5818cf: WebStrike(id 1, tagged) with only id 2 at the same bearing and size (tag unknown) pressed RB on steps 4-5. The
+    tag is id 1's: whether RB pulls or zips at id 2 is unknown. Another id's box may be aimed at, but earns no arming, no press, no walk."""
+    from agent.intents import WebStrike
+    held, other = Detection(ENEMY, (580, 260, 700, 460), 0.9, track=1, tagged=True), Detection(ENEMY, (580, 260, 700, 460), 0.9, track=2)
+    for intent in (WebStrike(held), Engage(held)):
+        c = Controller()
+        pads = [c.step(State(t=i / 60, frame=(1280, 720), detections=[other]), intent) for i in range(30)]
+        assert not any(_pressed(p) or p["ly"] for p in pads) and c.stable == 0, type(intent).__name__
+    c = Controller()                                                            # the held target's own box: the strike goes out
+    pads = [c.step(State(t=i / 60, frame=(1280, 720), detections=[held]), WebStrike(held)) for i in range(30)]
+    assert any("RB" in p["buttons"] for p in pads)

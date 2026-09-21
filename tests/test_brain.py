@@ -347,3 +347,62 @@ def test_the_engagement_cap_reads_distance_when_it_has_one():
     s = st(0)
     assert in_reach(enemy(h=20, distance=39.0), s) and not in_reach(enemy(h=600, distance=41.0), s)
     assert in_reach(enemy(h=47), s) and not in_reach(enemy(h=46), s)       # 47 / 1440 = 0.0326 > reach_h 0.0325
+
+
+def test_a_new_id_of_the_held_targets_size_succeeds_it_while_it_coasts():
+    """reach30 11 -> 12: the tracker gave the bot a new id across a fast turn; the brain held the coasting 11 for 0.8 s while she stood in
+    view as 12, then searched. For a target last seen outside the aim crop, a NEW id (absent when it was last seen) of its size, present
+    at two decisions, takes its place."""
+    m = Memory()
+    for t in (0.0, 0.1):
+        decide(st(t, detections=[enemy(h=200, x=1900, track=11), enemy(h=190, x=200, track=3)]), m)
+    assert m.target.track == 11                                               # x 1900: outside the crop (800-1760 at 1440p)
+    her = enemy(h=173, x=1700, track=12)
+    wall = enemy(h=190, x=200, track=3)                                        # present beside 11, and nearer its size: never its successor
+    decide(st(0.2, detections=[her, wall], coasting=(11,)), m)                 # first sighting: not yet
+    assert m.target.track == 11
+    decide(st(0.3, detections=[her, wall], coasting=(11,)), m)
+    assert m.target.track == 12
+    m = Memory()
+    for t in (0.0, 0.1):
+        decide(st(t, detections=[enemy(h=200, x=1900, track=11)]), m)
+    for t in (0.2, 0.3):
+        decide(st(t, detections=[enemy(h=90, x=1700, track=12)], coasting=(11,)), m)   # another size: not her
+    assert m.target.track == 11
+    m = Memory()
+    for t in (0.0, 0.1):
+        decide(st(t, detections=[enemy(h=200, x=1400, track=11)]), m)         # inside the crop: the coasting trade stands
+    for t in (0.2, 0.3):
+        decide(st(t, detections=[enemy(h=190, x=1450, track=12)], coasting=(11,)), m)
+    assert m.target.track == 11
+
+
+def _at(track, x, h=200):
+    return enemy(h=h, x=x, track=track)
+
+
+def test_a_successor_still_outside_the_crop_is_not_taken():
+    """Review of d5818cf: id 1 (x 2000) coasting, a fresh id of its size at x 200, on the OPPOSITE side and outside the crop, became the
+    target. The successor must itself be inside the aim crop."""
+    m = Memory()
+    for t in (0.0, 0.1):
+        decide(st(t, detections=[_at(1, 2000)]), m)
+    for t in (0.2, 0.3):
+        decide(st(t, detections=[_at(2, 200)], coasting=(1,)), m)
+    assert m.target.track == 1
+
+
+def test_a_chain_of_fresh_outside_ids_is_never_carried_by_succession():
+    """Review of d5818cf: fresh ids alternating sides, each seen while the previous one coasts, were each taken as its successor, and
+    OUTSIDE_S restarted with every one. None is taken while the target it would succeed is coasting."""
+    m, last = Memory(), _at(1, 2000)
+    for t in (0.0, 0.1):
+        decide(st(t, detections=[last]), m)
+    for k in range(2, 16):
+        nxt, t = _at(k, 200 if k % 2 == 0 else 2000), (k - 1) * 0.2
+        for u in (t, t + 0.1):
+            held = m.target.track if m.target is not None else None
+            decide(st(u, detections=[nxt], coasting=(last.track,)), m)
+            if held == last.track:                                              # the held target coasts: no outside newcomer succeeds it
+                assert m.target is None or m.target.track == held, (k, u)
+        last = nxt
