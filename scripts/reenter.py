@@ -29,6 +29,7 @@ Everything that decides is a pure function of one frame (`look`, `on_practice_ta
 import argparse
 import atexit
 import base64
+import json
 import math
 import signal
 import sys
@@ -378,9 +379,69 @@ def _lime(s):
 def door(frame):
     """Centre x (0-1 of the width) of the biggest tall lime blob in the upper part of the view, or None: the spawn room's glass door.
     The plaza has none that big (at most 1.7k px on tagrun0, the door needs 3k); dead ahead it is 76k px."""
+    return door_blob(frame)[0]
+
+
+def door_blob(frame):
+    """(centre x 0-1, area px at 1280x720) of the door's blob, or (None, 0): door() and the arrival log read the same one."""
     n, _, st, cen = cv2.connectedComponentsWithStats(_lime(small(frame)), connectivity=8)
     blobs = [(st[i, 4], cen[i][0]) for i in range(1, n) if st[i, 3] >= DOOR_H and st[i, 4] >= DOOR_MIN_PX]
-    return float(max(blobs)[1] / 1280.0) if blobs else None
+    if not blobs:
+        return None, 0
+    px, x = max(blobs)
+    return float(x / 1280.0), int(px)
+
+
+def hero_column(frame):
+    """Median x (0-1 of the width) of Spider-Man's red suit in the middle of the view, or None: where the third-person camera draws him
+    (0.37-0.42 on the recorded arrival frames). For the arrival log only; nothing is steered by it."""
+    hsv = cv2.cvtColor(small(frame), cv2.COLOR_BGR2HSV)
+    red = ((hsv[..., 0] < 8) | (hsv[..., 0] > 172)) & (hsv[..., 1] > 150) & (hsv[..., 2] > 120)
+    red[:200], red[600:], red[:, :300] = False, False, False       # below the key hints, above the HUD row, off the portrait at the left
+    xs = np.nonzero(red)[1]
+    return round(float(np.median(xs)) / 1280.0, 3) if xs.size > 300 else None
+
+
+ARRIVAL_GATE = ("a fresh frame showed the range HUD and no idle banner (arrive.look); Safe re-read the screen as in_range on a fresh frame; "
+                "Live re-proves it at the write")
+
+
+class ArrivalLog:
+    """What `arrive` saw and did, one record and one frame per step, for the live measurement of the walk out of the spawn room
+    (docs/lanes/reentry.md). Writes data/reenter/arrive-<time>/steps.jsonl and NNN.jpg, where the refusal frames already go.
+
+    It is a record, not a control: it sends nothing, and it never raises into the flow. A failed write is counted and its first error
+    kept (`failed`, `error`), and the arrival carries on exactly as without it."""
+
+    def __init__(self, root=None):
+        self.dir, self.n, self.failed, self.error = None, 0, 0, None
+        try:
+            self.dir = (OUT if root is None else root) / f"arrive-{time.strftime('%Y%m%d-%H%M%S')}"
+        except Exception as e:                                          # noqa: BLE001 - a record must not stop the flow
+            self._fail(e)
+
+    def _fail(self, e):
+        self.failed += 1
+        self.error = self.error or repr(e)
+
+    def step(self, t, frame, action, door_x=None, plaza=None):
+        try:
+            self.n += 1
+            self.dir.mkdir(parents=True, exist_ok=True)
+            name = f"{self.n:03d}.jpg"
+            if not cv2.imwrite(str(self.dir / name), small(frame), [cv2.IMWRITE_JPEG_QUALITY, 92]):
+                raise OSError(f"could not write {name}")
+            x, px = door_blob(frame)
+            rec = {"n": self.n, "t": round(float(t), 3), "action": action, "door_x": None if door_x is None else round(door_x, 3),
+                   "door_blob_x": None if x is None else round(x, 3), "door_px": px, "hero_x": hero_column(frame),
+                   "plaza_view": plaza, "gate": ARRIVAL_GATE, "frame": name}
+            with open(self.dir / "steps.jsonl", "a") as fh:
+                fh.write(json.dumps(rec) + "\n")
+        except Exception as e:                                          # noqa: BLE001
+            self._fail(e)
+
+    def summary(self):
+        return f"{self.n} arrival steps logged to {self.dir}" + (f"; {self.failed} write failures, first {self.error}" if self.failed else "")
 
 
 def plaza_view(frame):
@@ -735,12 +796,33 @@ def wait_for(io, screens, timeout, poll=0.3):
     raise Refuse(f"did not reach {' or '.join(sorted(screens))} within {timeout:.0f} s", f)
 
 
-def arrive(io, safe):
+def arrive(io, safe, trace=None):
     """In the range, in the spawn room: walk to the door and out onto the plaza, steering the camera from the frames.
 
     Every step re-reads a fresh frame: the range HUD gone or the idle banner up stops it with no further input. It is done only
     when two frames in a row show the plaza (plaza_view); the budget is ARRIVE_S, and a run that cannot confirm exits 1 rather
-    than leave the player where the idle drop fires."""
+    than leave the player where the idle drop fires.
+
+    `trace` (an ArrivalLog; by default the one `main` attached to the live io as `arrival_log`, None in a simulation): each step is
+    recorded AFTER its input has gone out, so no record ever sits between a proof frame and the write it gates, and a record that fails
+    is swallowed here as well as inside it."""
+    trace = getattr(io, "arrival_log", None) if trace is None else trace
+    def note(f, action, x=None, plaza=None):
+        if trace is not None:
+            try:
+                trace.step(io.now(), f, action, x, plaza)
+            except Exception:                                           # noqa: BLE001 - a record must never change the flow
+                pass
+
+    try:
+        _arrive(io, safe, note)
+    except Refuse as r:
+        if r.frame is not None:                                         # no capture here: the refusal carries its frame or is not recorded
+            note(r.frame, f"refused: {r.reason}")
+        raise
+
+
+def _arrive(io, safe, note):
     def look():
         f = safe.frame()
         if not in_range(small(f)):
@@ -754,9 +836,11 @@ def arrive(io, safe):
         if plaza_view(f):
             plaza += 1
             if plaza >= 2:
+                note(f, "plaza confirmed on a second frame", plaza=True)
                 break
             safe.sleep(0.15)  # a second look, standing still, before believing it
             spent += 0.15
+            note(f, "plaza seen: a second look, standing still", plaza=True)
             f = look()
             continue
         plaza = 0
@@ -764,19 +848,23 @@ def arrive(io, safe):
         if x is None:  # nothing to walk toward (a wall, the plaza with no bot in view): look around, do not walk blind
             safe.rstick(YAW_STICK, 0.0, SWEEP_S, screen="in_range")
             spent += SWEEP_S + 0.15
+            note(f, f"no door: look around, rstick {YAW_STICK:+.2f} for {SWEEP_S:.2f} s", x, False)
         elif abs(x - 0.5) > DOOR_TOL:  # the door is off to a side: turn to it first, no walking
             deg = math.degrees(math.atan((x - 0.5) * 1280.0 / FOCAL))
             secs = min(0.6, abs(deg) / YAW_DEG_S)
             safe.rstick(math.copysign(YAW_STICK, deg), 0.0, secs, screen="in_range")
             spent += secs + 0.15
+            note(f, f"door off centre: turn, rstick {math.copysign(YAW_STICK, deg):+.2f} for {secs:.2f} s", x, False)
         else:
             safe.stick(0.0, 1.0, WALK_CHUNK_S, screen="in_range")
             spent += WALK_CHUNK_S + 0.25
+            note(f, f"door ahead: walk, stick forward for {WALK_CHUNK_S:.2f} s", x, False)
         f = look()
     else:
         raise Refuse(f"could not confirm the spawn room was left within {ARRIVE_S:.0f} s", f)
     safe.press("RT")
     f = look()
+    note(f, "RT pressed once")
     if not hero_is_spiderman(f):
         raise Refuse("in the range, but the HUD hero portrait is not Spider-Man", f)
 
@@ -1035,6 +1123,11 @@ def main(argv=None, capture=_dxcam, live=Live):
             signal.signal(signal.SIGTERM, lambda *_: sys.exit(143))   # a kill is an exit too
         except (ValueError, OSError):       # not the main thread, or no such signal here
             pass
+    trace = ArrivalLog()
+    try:
+        io.arrival_log = trace                                          # arrive() records its steps here; nothing else reads it
+    except Exception:                                                   # noqa: BLE001 - an io that takes no attribute runs unrecorded
+        pass
     try:
         run(io)
     except Refuse as r:
@@ -1042,6 +1135,8 @@ def main(argv=None, capture=_dxcam, live=Live):
         return 1
     finally:
         _release(io)
+        if trace.n or trace.failed:
+            print(f"reenter: {trace.summary()}")
     print("reenter: in the Practice Range as Spider-Man")
     return 0
 

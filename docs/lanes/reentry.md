@@ -279,6 +279,13 @@ False on all five. `arrive` has no notion of having passed the door: with the bo
 from outside first, steers to it and walks back toward it until the budget runs out. That sequence fits all five end poses; `arrive` logs no
 steps, so it is not shown.
 
+**The arrival log.** A real run records every arrival step in `data/reenter/arrive-<time>/`: `steps.jsonl` (time, the action and its
+stick, the door's centre and blob size, the hero's column, `plaza_view`, the gate the input passed) and the frame the step decided on
+(`NNN.jpg`); the last line of the run names the folder and any write failures. Each step is written after its input has gone out, and
+the log sends nothing and never raises into the flow: `test_the_arrival_log_changes_no_input` runs every recorded arrival scenario with
+the log off, on, unwritable and raising, and the pad writes, their times and the ending are identical. It exists to measure, live, what
+the saved frames cannot: whether the walk passes the door, and what the look-around meets outside.
+
 ## Not verified: read these first in the live trial
 
 1. ~~TRY COMPETITIVE highlighted~~ and ~~the un-hovered PRACTICE RANGE tile~~: closed with real frames (above).
