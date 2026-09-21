@@ -283,6 +283,20 @@ and team-up variant; missing mechanics leave that slot's timer inference uncerta
 Measured countdowns supply contradiction alarms, not modal duration calibration.
 This does not erase independently supported charge-decrement events.
 
+When the patch is known and its team-up variant set is complete, an unknown
+variant may use the **union of occurrence intervals over all admissible variants**
+to bound `ability_uncertain`. Use the existing confirmed-timer evidence and
+rounding/timestamp tolerances; an isolated OCR digit is not sufficient. Retain
+every compatible variant, including starts before the segment and explanations
+involving a continuing cooldown. If the schema stores one interval, use the
+union's enclosing interval, never its intersection or the shortest alternative.
+Unknown patch, incomplete variant set or contradictory evidence retains broad
+uncertainty. A uniquely compatible duration still does not promote this event
+to `ability_cast` or certify per-segment variant identity; that needs independently
+verified identity evidence. Apply bounds using evidence available at `known_at`,
+without later silent narrowing. This optional precision improvement does not
+replace the charge-reader correctness gate or change the two-second experiment.
+
 Each event separates occurrence `[t_from, t_to]` from `known_at`, when all evidence
 needed for that committed assertion is available. With identical kit inputs,
 extracting any prefix must give the same events with `known_at` inside that prefix
@@ -292,6 +306,16 @@ time. The property must also retain the verified control casts and charged secon
 uses with finite, evidence-justified knowledge times: empty output, unknown-only
 output or arbitrary end-of-file deferral is not a passing repair. This contract
 does not require a separate streaming service.
+
+The file-writing path must use the same resolved kit inputs for extraction,
+metadata and its regeneration recipe, including an explicit patch override.
+Test written outputs for known, missing and unrecognized patches and an override
+that differs from the manifest; regeneration must preserve the selected inputs.
+Before format-5 regeneration is promoted, loader observations and policy event
+features gate evidence on `known_at` (including each historical feature step),
+while target construction retains occurrence bounds. Missing format-5 knowledge
+timestamps fail loudly, never fall back to occurrence time. Keep archived
+format-4 experiments unchanged.
 
 **Positive glyph evidence is admissible for measurement, not yet certified.**
 An explicit per-frame match to the expected ability glyph is different from
