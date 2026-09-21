@@ -114,15 +114,11 @@ comparison with the accepted event metadata. The post-fit `policy/train.py` head
 cleanup only describes the current format-4 loader and frames-only B0 distinction;
 completed report fingerprints preserve the source present during the fits.
 
-The preexisting machinery handoff below is retained verbatim; the current B0 task,
-split status and results are documented above.
+## B0 machinery reference
 
-## B0 handoff
-
-For the worker taking B0 (next-event prediction, auxiliary pretraining only) and the current-only
-reference fit. The task itself is specified in [learning-plan.md](../learning-plan.md), "B0:
-auxiliary pretraining by predicting observed ability events". This section covers the lane's
-machinery and its rules. The lead releases the handoff; until then `policy/` has one owner.
+The current-only B0 task predicts per-ability occurrence with masked unknown labels,
+as specified in [learning-plan.md](../learning-plan.md#b0-auxiliary-pretraining-by-predicting-observed-ability-events).
+This section describes the shared machinery and its distinction from the range-intent trainer.
 
 ### 1. Paths and commands
 
@@ -151,17 +147,18 @@ The `policy` uv group resolves in the same universe as `perception` only because
 `[tool.uv] override-dependencies` in `pyproject.toml` (numpy 2, current mlx, and dropping
 mlx-image's `opencv-python`). Do not remove them.
 
-**No B0 fit command exists yet.** `policy.train` fits the scripted brain's intents on our own
-range runs, loaded through `Demos.load(*paths)`. B0 needs a new window builder that enters through
-`Demos.load_split("s10-normal-v0")`, takes next-event targets, and reuses `step_row`, `Cache`,
-`layout` and the head. All four split sources are already cached, and their loader clip ids equal
-the cache keys.
+`policy.b0_multilabel --fit` runs the B0 folds. Its builder enters through
+`Demos.load_split("s10-normal-v0")`, takes only the two promoted train sources, and reuses
+`step_row`, `Cache`, `layout` and the GRU head with masked occurrence and timing targets.
+`Cache` requires explicit source IDs; loader clip IDs equal cache keys. `policy.train`
+separately fits scripted-brain intents on our own range runs through `Demos.load(*paths)`.
 
 ### 2. The feature layout
 
 One timestep is a vector of **405** values at embedding dimension 384; a window is **51 steps**
-(5 s at 10 Hz, including the decision frame), oldest first. When history is short the missing
-steps are left-padded with zeros and every bit clear. The offsets are written in one place,
+(5 s at 10 Hz, including the decision frame), oldest first. The range-intent trainer
+left-pads short histories with zeros and clear bits. B0 omits short histories entirely
+and uses only the 386-value frames-only prefix. The offsets are written in one place,
 `policy/train.layout(emb_dim)`, and `policy/live.py` reads it.
 
 | Cols | Field | Shape, units | Bits | Kind |
@@ -197,8 +194,9 @@ pixels, not a feature); audio.
 perturbing footage after t leaves every event feature at t unchanged. That covers the extractor's
 temporal cleanup and per-source slot mapping, not just `t_to <= t`. **Status: not demonstrated;
 no such test exists.** The `(t - 1 s, t]` bound proves timestamp causality only. **So the
-reference fit is frames-only:** columns 0-385, with events used solely as targets. `step_row`
-fills columns 400-404 whenever it is handed events, so a frames-only builder passes `events=None`.
+reference fit is frames-only:** columns 0-385. Events supply targets and explicitly separate
+offline diagnostic baselines, never neural inputs. `step_row` fills columns 400-404 whenever
+it is handed events, so the B0 builder passes `events=None`.
 
 ### 3. Folds and baselines
 
@@ -212,30 +210,35 @@ fills columns 400-404 whenever it is handed events, so a frames-only builder pas
   - the val side (pending: asking for it raises `PendingError`);
   - a fold's held-out session, by any stage fitted for that fold, **pretraining included**;
   - the unassigned uploads, ever.
-- **`policy/train.py` does not satisfy this as written.** `TRAINABLE = ("train", "val", "test")`
-  and its leave-one-session-out runs over every session it loads. A B0 builder takes the `train`
-  side only and folds within it.
-- **Baselines**, each scored on the same held-out windows:
-  - *training majority*: `bincount(y_train).argmax()`.
-  - *persistence*: in code today, the previous decision's label in the same session. For B0 the
-    plan's form is the most recent observed event class (the latest event with `t_to <= t`), plus
-    *always `no_verified_event`*.
-  - *timing*: the training-only median delay per class.
-  - *events-only*: required only if events become an input.
-  - Already reported by `policy.train`: majority, held-out majority, sticky, accuracy and
-    per-class recall on the change windows (where persistence scores zero), macro F1, confusion.
-  - A B0 builder has to add: always-no-event, most-recent-event and the timing median.
+- **The range-intent trainer has a separate split contract.** `policy.train.TRAINABLE`
+  includes train, val and test for its own recordings. B0 takes only the promoted `train`
+  side through `Demos.load_split` and forms development folds within those two sessions.
+- **Implemented B0 baselines**, scored on identical observed held-out channel masks:
+  - *always negative*: zero occurrence probability;
+  - *fitting prior / majority*: per-channel positive frequency on observed fitting labels,
+    with the fixed 0.5 threshold for majority;
+  - *recent-use persistence*: any accepted same-channel event confirmed in `(t-1,t]`,
+    an offline reference with unproven extractor prefix causality;
+  - *HUD resources*: causal raw cooldown, charges/ammo and time since an observed ready
+    transition, in fixed buckets fitted only on the fitting session;
+  - *timing*: fitting-only median interval midpoint, compared on common timing support.
+  The range trainer's previous-decision sticky baseline is not B0 persistence. B0 reports
+  per-channel precision/recall/F1, confusion and probability error, plus descriptive and
+  support-gated macro F1; it has no sixth `no_verified_event` class.
 
 ### 4. Who may promote a source
 
-**Only the lead, on the independent reviewer's acceptance, never the training worker.** A source
-leaves `inspection_only` when the lead sets the split file's `status` to `accepted`. Even then,
-only sources whose own manifest allows it (`splittable`, split null or that side) take a side. The
-split file never overrides provenance. While the split is `proposed`, every source reads
-`inspection_only` and the train side yields **0** samples (checked).
+**Only the lead, on the independent reviewer's acceptance, never the training worker.**
+The two train manifests explicitly assign their promoted sources to `train`; the split
+intentionally remains `proposed`, so the loader preserves those manifest assignments.
+Reserved test sources remain sealed. An accepted split also requires each source's
+manifest to allow its assigned side (`splittable`, split null or that side); the split
+file never overrides provenance.
 
 **`Demos.load_split(name)` is the only door.** It refuses with:
 - `PendingError`: asking a pending side for anything;
+- `SealedError`: requesting a sealed side or an iterator containing a sealed source,
+  including reserved sources under `inspection_only`, without explicit unsealing; B0 never unseals;
 - `ProvenanceError`: two provenance records disagree, or a claim has no basis;
 - `RegimeError`: a split mixing patches or cooldown regimes;
 - `SplitError`: a group on two sides or on none, an unassigned group listed, or a silently empty side;
@@ -268,8 +271,8 @@ split file never overrides provenance. While the split is `proposed`, every sour
   bridged scoreboard gap is usable only with its mask and a proven absence of a hard cut.
 - **Decoding cost.** H.264 caches at 200-400 frames/s. AV1 runs at about 100 frames/s, and
   VideoToolbox is slower than software for it. `showinfo` goes after the scale.
-- `policy/train.py`'s module docstring still says events are format 2/3. They are format 4; the
-  code was left unchanged for this handoff.
+- **Event format and inputs.** The loader validates format-4 events. The range-intent
+  trainer can count past events; B0 keeps them out of its frames-only neural input.
 
 **Built and measured offline. Nothing here aims, presses a button, or runs live.** This lane
 replaces *what* the agent decides — today `agent/brain.py`'s hand-written rules — with a model
@@ -623,9 +626,8 @@ scratch directory and the numbers came here instead of the images.
   Green in all three: `uv sync` leaves the stdlib-only env, `--group perception` has
   `cv2 5.0.0` with `numpy 2.5.3` and only the headless distribution, and `--group policy` runs.
 - **Not built:** the tactical-purpose head (step 4), cross-source deduplication (approved as a
-  proposal tool, not yet written), consumption of the HUD lane's bridged runs and their masked
-  scoreboard frames (waiting on the loader), any live run.
-- **Window length is provisional.** 5 s at 10 Hz suits our own 300 s runs, but the HUD lane
-  measures expert segments at medians of 4-12 s, so most expert windows will be short. A short
-  window already degrades safely (absent steps keep their present bit clear), and the scene-mask
-  bit added for review finding 2 is what a bridged run's scoreboard frames will use.
+  proposal tool, not yet written), any live learned-policy run.
+- **Window length differs by task.** The range-intent trainer uses a provisional 5 s at
+  10 Hz and pads missing past steps with clear present bits. B0 requires all five seconds
+  and omits short histories. Loader-approved, cut-free scoreboard gaps in B0's preceding
+  context carry the scene-mask bit; prediction horizons cannot bridge those gaps.
