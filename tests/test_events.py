@@ -18,6 +18,7 @@ from perception.events import (  # noqa: E402
     BANNER_HOLD, Event, HUD_HOLD, banner_word, extract, extract_one, segment,
 )
 from perception.hud import MK, Hud, read as read_hud  # noqa: E402
+import pytest  # noqa: E402
 
 # Local-only: the demo clips are never committed, so anything that reads one
 # skips when it is absent rather than failing.
@@ -95,7 +96,7 @@ def test_a_dim_icon_is_a_lockout_not_a_cast():
     dimming says only that the slot is unusable right now."""
     seq = reads(hud(), hud(swing_ready=False), hud(), hud())
     got = kinds(extract_one(seq, mapping=IDENTITY))
-    assert got == [("slot_unavailable", "swing"), ("slot_available", "swing")]
+    assert got == [("icon_dimmed", "swing"), ("icon_lit", "swing")]
     assert not any(k == "ability_cast" for k, _ in got)
 
 
@@ -131,7 +132,7 @@ def test_hp_emits_raw_steps_not_a_net():
 
 def test_every_event_kind():
     cases = {
-        ("slot_unavailable", "swing"): (hud(), hud(swing_ready=False), hud(swing_ready=False)),
+        ("icon_dimmed", "swing"): (hud(), hud(swing_ready=False), hud(swing_ready=False)),
         ("ability_cast", "swing"): (hud(), hud(swing_cd=6), hud(swing_cd=6)),
         ("charges_spent", "swing"): (hud(swing_charges=3), hud(swing_charges=2), hud(swing_charges=2)),
         ("charges_regained", "swing"): (hud(swing_charges=2), hud(swing_charges=3), hud(swing_charges=3)),
@@ -284,7 +285,7 @@ def test_observed_cooldowns_are_measured_not_assumed():
                      slot="uppercut", amount=amount)
 
     evs = [cast(0.0, 6), cast(1.0, 6), cast(5.0, 6),
-           Event("slot_available", 70, 7.0, 71, 7.1, slot="uppercut"),
+           Event("cooldown_ended", 70, 7.0, 71, 7.1, slot="uppercut"),
            Event("charges_spent", 80, 8.0, 81, 8.1, slot="uppercut",
                  before=2, after=1)]
     got = observed(evs)["uppercut"]
@@ -487,7 +488,8 @@ def test_check_lists_old_formats_and_files_nobody_can_rebuild(tmp_path):
     from perception.events import writer_version
 
     full = {"recipe": recipe, "cut_times": [], "observed": {}, "slot_mapping": {},
-            "writer": writer_version(), "container_start_s": 0.0, "stream_start_s": 0.0}
+            "writer": writer_version(), "container_start_s": 0.0, "stream_start_s": 0.0,
+            "timer_lengths": {}}
     _write(tmp_path / "good.jsonl", {"format": FORMAT_VERSION, **full})
     _write(tmp_path / "sub" / "old.jsonl", {"format": FORMAT_VERSION - 1, **full})
     _write(tmp_path / "orphan.jsonl", {"format": FORMAT_VERSION, **full, "recipe": None})
@@ -674,3 +676,355 @@ def test_the_three_clocks_are_recorded_apart(tmp_path):
     assert abs(meta["pts_origin_s"] - meta["stream_start_s"]) < 0.02, meta
     seek_of_first = meta["pts_origin_s"] - meta["container_start_s"]
     assert abs(seek_of_first - (meta["stream_start_s"] - meta["container_start_s"])) < 0.02
+
+
+# --- countdown timers: a continuing cooldown is not a new cast ---------------
+# Regressions from the gap-resumption measurement (docs/lanes/l2-hud.md). The
+# fixture holds one slot's frozen per-frame reads around each ability_cast that
+# was checked by eye: 17 duplicates, 6 real casts, 1 that cannot be told.
+
+import json as _json
+
+GAP_FIXTURE = ROOT / "tests/fixtures/gap_casts.json"
+
+
+def _gap_cases(expect):
+    return [c for c in _json.loads(GAP_FIXTURE.read_text())["cases"] if c["expect"] == expect]
+
+
+def _run_case(case):
+    """extract_one over the case's reads, the slot mapped to itself."""
+    slot = case["slot"]
+    rs = [(i, t, Hud(hp=250, max_hp=250, bar_fill=1.0, abilities={slot: (ready, charges)},
+                     cooldowns={slot: cd}))
+          for i, t, cd, ready, charges in case["frames"]]
+    return extract_one(rs, mapping={slot: slot}, timers={slot: case["full"]} if case["full"] else None)
+
+
+def _near_event(events, kind, case, tol=0.35):
+    return [e for e in events if e.kind == kind and abs(e.t_to - case["t_event"]) <= tol]
+
+
+@pytest.mark.parametrize("case", _gap_cases("duplicate"), ids=lambda c: f"{c['source'][:5]}-{c['slot']}-{c['t_event']}")
+def test_a_countdown_read_again_after_a_gap_is_not_a_new_cast(case):
+    """Every one of these was a continuing countdown the old channel counted twice."""
+    assert not _near_event(_run_case(case), "ability_cast", case)
+
+
+@pytest.mark.parametrize("case", _gap_cases("cast"), ids=lambda c: f"{c['source'][:5]}-{c['slot']}-{c['t_event']}")
+def test_a_real_cast_is_still_a_cast(case):
+    """The controls: a fresh countdown after the icon was up. Must survive the fix."""
+    assert _near_event(_run_case(case), "ability_cast", case, tol=1.2)
+
+
+def test_a_case_that_cannot_be_told_stays_unknown():
+    """Req uppercut 52.0: its "previous countdown 7" is chat; with two charges a
+    continuing timer cannot rule out a real second use. Neither cast nor silence."""
+    (case,) = _gap_cases("uncertain")
+    events = _run_case(case)
+    assert not _near_event(events, "ability_cast", case)
+    assert _near_event(events, "ability_uncertain", case, tol=1.2)
+
+
+def _slot_reads(values, slot="swing", charges=None, ready=None, t0=0.0):
+    charges = charges or [None] * len(values)
+    ready = ready or [None] * len(values)
+    return [(k, round(t0 + k / 10, 3),
+             Hud(hp=250, max_hp=250, bar_fill=1.0, abilities={slot: (r, c)}, cooldowns={slot: v}))
+            for k, (v, c, r) in enumerate(zip(values, charges, ready))]
+
+
+def test_a_second_use_during_a_recharge_is_still_a_charge_spent():
+    """A charged slot's timer keeps running through a second use; the use is
+    proved by the charge count, and the timer must not erase it."""
+    vals = [5] * 10 + [4] * 10 + [None] * 3 + [3] * 7 + [2] * 10
+    chg = [1] * 20 + [None] * 3 + [0] * 17
+    events = extract_one(_slot_reads(vals, charges=chg), mapping={"swing": "swing"})
+    assert [e.kind for e in events if e.kind == "charges_spent"] == ["charges_spent"]
+    assert not [e for e in events if e.kind == "ability_cast"]
+
+
+def test_a_recharge_completing_is_not_a_cast_and_the_next_use_is():
+    """Day swing 48-52 s, as the frames show it: a use empties the slot and a
+    countdown appears; the recharge completes -- the number goes, the badge
+    comes back -- which is not a cast; a second use empties it again and the
+    next recharge's countdown appears part-way through, which is."""
+    vals = [None] * 5 + [2] * 10 + [1] * 8 + [None] * 12 + [5] * 10
+    chg = [1] * 5 + [0] * 18 + [1] * 12 + [0] * 10
+    events = extract_one(_slot_reads(vals, charges=chg, ready=[True] * 45), mapping={"swing": "swing"})
+    casts = [e.t_to for e in events if e.kind == "ability_cast"]
+    assert casts == [0.5, 3.5], casts
+    assert [e.kind for e in events if e.kind == "charges_regained"] == ["charges_regained"]
+
+
+def test_a_missing_read_never_ends_a_cooldown():
+    """Unread frames mid-countdown are the reader, not the cooldown ending."""
+    vals = [8] * 10 + [7] * 5 + [None] * 6 + [6] * 10 + [5] * 10
+    events = extract_one(_slot_reads(vals, slot="get_over_here", ready=[True] * 41),
+                         mapping={"get_over_here": "get_over_here"}, timers={"get_over_here": 8})
+    assert [e for e in events if e.kind == "ability_cast"] == []
+
+
+def test_a_restart_at_full_value_after_the_cooldown_is_a_cast():
+    """The kit's evidence for a new one-charge cast: the countdown runs out and
+    starts again at its full value."""
+    vals = [2] * 10 + [1] * 10 + [None] * 10 + [8] * 10 + [7] * 10
+    events = extract_one(_slot_reads(vals, slot="get_over_here", ready=[True] * 50),
+                         mapping={"get_over_here": "get_over_here"}, timers={"get_over_here": 8})
+    casts = [e for e in events if e.kind == "ability_cast"]
+    assert len(casts) == 1 and casts[0].amount == 8 and abs(casts[0].t_to - 3.0) < 0.05
+
+
+def test_a_timer_the_kit_cannot_produce_is_uncertain_not_a_cast():
+    """A one-charge countdown cannot restart before the running one ends."""
+    vals = [8] * 10 + [7] * 10 + [8] * 10 + [7] * 10     # jumps back up with 6 s still to run
+    events = extract_one(_slot_reads(vals, slot="get_over_here", ready=[True] * 40),
+                         mapping={"get_over_here": "get_over_here"}, timers={"get_over_here": 8})
+    kinds = [e.kind for e in events if e.kind.startswith("ability_")]
+    assert "ability_uncertain" in kinds and kinds.count("ability_cast") == 0
+
+
+def test_full_lengths_are_measured_from_ticking_timers():
+    """Get Over Here's 8 matches the kit; a number that sits still never counts."""
+    from perception.events import timer_lengths
+
+    ticking = _slot_reads([8] * 10 + [7] * 10 + [6] * 10, slot="get_over_here")
+    still = _slot_reads([12] * 60, slot="get_over_here", t0=100.0)
+    assert timer_lengths(ticking + still) == {"get_over_here": 8}
+
+
+# --- segmentation fixes ------------------------------------------------------
+
+def _aside_reads(asides, playing=None, huds=None):
+    playing = playing or [True] * len(asides)
+    huds = huds or [hud(hp=250)] * len(asides)
+    return [(i, round(i / 10, 3), h, p, a, False, False)
+            for i, (a, p, h) in enumerate(zip(asides, playing, huds))]
+
+
+def test_a_two_frame_scoreboard_tap_ends_the_segment():
+    """Req 657.7: the board fully up for two frames of a three-frame tap."""
+    segs = segment(_aside_reads([None] * 8 + ["scoreboard"] * 2 + [None] * 8))
+    assert [(s.started_by, s.ended_by) for s in segs] == \
+        [("run_start", "scoreboard"), ("scoreboard_closed", "run_end")]
+
+
+def test_one_false_killcam_frame_still_does_not_cut():
+    """Day 330.0: one frame reads "killcam" over ordinary play. It must not cut."""
+    assert len(segment(_aside_reads([None] * 8 + ["killcam"] + [None] * 8))) == 1
+
+
+def test_a_respawn_black_cuts_at_once():
+    """Day 85.2: one to two frames of black between a teammate's HUD and ours --
+    far shorter than the HUD vote, so it used to be absorbed."""
+    blank = Hud()
+    segs = segment(_aside_reads([None] * 8 + ["black"] * 2 + [None] * 8,
+                                huds=[hud(hp=325)] * 8 + [blank] * 2 + [hud(hp=250)] * 8))
+    assert [s.ended_by for s in segs][0] == "no_hud" and len(segs) == 2
+
+
+def test_is_black_on_a_black_game_area_only():
+    import numpy as np
+
+    from perception.events import is_black
+
+    frame = np.full((1080, 1920, 3), 60, np.uint8)
+    assert not is_black(frame)
+    frame[216:810, 384:1536] = 2          # the game area black, overlays around it intact
+    assert is_black(frame)
+
+
+# --- hp cause: a change in hp alone is not damage or healing ------------------
+
+def _hp_window(name):
+    fx = _json.loads((ROOT / "tests/fixtures/hp_cause.json").read_text())
+    return [(i, t, Hud(hp=hp, max_hp=mx, bar_fill=bar, bar_damage=dmg))
+            for i, t, hp, mx, bar, dmg in fx["windows"][name]]
+
+
+def test_a_decaying_shield_with_max_hp_unread_is_not_damage():
+    """Day 62-71 s: hp 400 -> 304 in 6 and 12 hp ticks, a bonus pool decaying,
+    max hp unreadable nearly throughout. The old stream called it ten hits."""
+    events = extract_one(_hp_window("decay"))
+    lost = [e for e in events if e.kind == "hp_lost"]
+    assert lost and all(e.cause == "unknown" for e in lost), [(e.t_to, e.cause) for e in lost]
+
+
+def test_an_ultimate_bonus_with_max_hp_unread_is_not_healing():
+    """Day 342.2 s: hp 124 -> 379, the ultimate's +250 bonus health."""
+    events = extract_one(_hp_window("ultimate"))
+    big = [e for e in events if e.kind == "hp_gained" and e.amount and e.amount >= 200]
+    assert big and all(e.cause == "unknown" for e in big)
+    assert not [e for e in events if e.kind == "hp_gained" and e.cause == "heal" and e.amount >= 200]
+
+
+def test_damage_is_damage_only_with_max_hp_read_unchanged():
+    seq = reads(hud(hp=250, max_hp=250), hud(hp=200, max_hp=250), hud(hp=200, max_hp=250))
+    (e,) = [e for e in extract_one(seq) if e.kind == "hp_lost"]
+    assert e.cause == "damage"
+    seq = reads(hud(hp=250, max_hp=None), hud(hp=200, max_hp=None), hud(hp=200, max_hp=None))
+    (e,) = [e for e in extract_one(seq) if e.kind == "hp_lost"]
+    assert e.cause == "unknown"
+
+
+def test_max_hp_changed_is_still_the_evidence_channel():
+    seq = reads(hud(hp=250, max_hp=250), hud(hp=250, max_hp=300), hud(hp=250, max_hp=300))
+    assert ("max_hp_changed", None) in kinds(extract_one(seq))
+
+
+# --- icons are display state -------------------------------------------------
+
+def test_prohibition_marks_are_display_events_that_certify_nothing():
+    """Day 13-27 s: the swing icon dims (13.9-18.8 s), then red prohibition marks. They are
+    reported as what the icon showed, never as a cast or as availability."""
+    fx = _json.loads((ROOT / "tests/fixtures/icon_display.json").read_text())
+    rs = [(i, t, Hud(hp=250, max_hp=250, bar_fill=1.0,
+                     abilities={s: (v[0], v[1]) for s, v in slots.items()},
+                     cooldowns={s: v[2] for s, v in slots.items()}))
+          for i, t, slots in fx["frames"]]
+    events = extract_one(rs, mapping=IDENTITY)
+    icon = [e for e in events if e.kind in ("icon_dimmed", "icon_lit")]
+    assert icon, "the fixture should show the marks"
+    assert not [e for e in events if e.kind in ("slot_available", "slot_unavailable")]
+    countdowns = {s for _, _, slots in fx["frames"] for s, v in slots.items() if v[2] is not None}
+    certified = [e for e in events if e.kind in ("ability_cast", "cooldown_ended")]
+    assert all(e.slot in countdowns for e in certified)      # only where a countdown was read
+
+
+def test_a_cooldown_running_out_is_a_certified_return():
+    vals = [3] * 10 + [2] * 10 + [1] * 10 + [None] * 10
+    events = extract_one(_slot_reads(vals, slot="get_over_here", ready=[True] * 40),
+                         mapping={"get_over_here": "get_over_here"}, timers={"get_over_here": 8})
+    (end,) = [e for e in events if e.kind == "cooldown_ended"]
+    assert 2.9 <= end.t_to <= 3.3
+
+
+def test_an_icon_lighting_up_is_not_a_return():
+    seq = reads(hud(get_over_here_ready=False), hud(), hud(), hud())
+    events = extract_one(seq, mapping=IDENTITY)
+    assert ("icon_lit", "get_over_here") in kinds(events)
+    assert not [e for e in events if e.kind == "cooldown_ended"]
+
+
+# --- portrait negatives: the spectated teammates ----------------------------
+
+def _portrait_frame(name):
+    import cv2
+    import numpy as np
+
+    from perception.events import PORTRAIT
+
+    crop = cv2.imread(str(ROOT / f"tests/fixtures/portrait-{name}.png"))
+    frame = np.zeros((1080, 1920, 3), np.uint8)
+    x0, y0 = int(PORTRAIT[0] * 1920), int(PORTRAIT[1] * 1080)
+    frame[y0:y0 + crop.shape[0], x0:x0 + crop.shape[1]] = crop
+    return frame
+
+
+def test_a_spectated_teammate_is_not_spider_man():
+    """Day 81 and 84.5 s: DayMR spectating two teammates. Both passed the
+    one-class portrait match and were kept as own play in several stretches."""
+    from perception.events import playing_spiderman
+
+    assert playing_spiderman(_portrait_frame("teammate-bearded")) is False
+    assert playing_spiderman(_portrait_frame("teammate-white-haired")) is False
+    assert playing_spiderman(_portrait_frame("spiderman")) is True
+
+
+# --- native frames that cannot be crops (local data only) -------------------
+
+import os as _os
+
+NATIVE = Path(_os.environ.get("RIVALS_DATA", ROOT / "data")) / "experiments/b0/frames"
+
+
+def _native(src, t):
+    import cv2
+
+    path = NATIVE / src / f"{round(t * 10) + 1:06d}.jpg"
+    if not path.exists():
+        pytest.skip("native frames not on this machine")
+    return cv2.imread(str(path))
+
+
+def test_native_respawn_black_is_black_and_play_is_not():
+    from perception.events import is_black
+
+    assert is_black(_native("daymr-2879354299-21660-900s", 85.2))
+    assert not is_black(_native("daymr-2879354299-21660-900s", 85.5))
+    assert not is_black(_native("daymr-2879354299-21660-900s", 330.0))
+
+
+def test_native_scoreboard_tap_is_read_on_its_open_frames():
+    from perception.scoreboard import is_scoreboard
+
+    assert is_scoreboard(_native("reqmr-2873352801-1980-900s", 657.7)) is True
+    assert is_scoreboard(_native("reqmr-2873352801-1980-900s", 657.8)) is True
+    assert is_scoreboard(_native("reqmr-2873352801-1980-900s", 658.0)) is False
+
+
+def test_native_false_killcam_is_one_frame():
+    """Day 330.0: the reader's one false 'killcam' over ordinary play. It stays
+    one frame, which the banner vote absorbs (see the synthetic test above)."""
+    from perception.events import banner_word
+
+    words = [banner_word(_native("daymr-2879354299-21660-900s", t)) for t in (329.9, 330.0, 330.1)]
+    assert words.count("killcam") <= 1
+
+
+def test_native_countdowns_the_old_reader_missed():
+    """Visible countdowns the classifier refused (6 against 8) or dropped as too
+    wide (11), now read; and none read as a different number."""
+    from perception import hud
+
+    cases = [("daymr-2879354299-21660-900s", "get_over_here", 244.3, 6),
+             ("daymr-2879354299-21660-900s", "get_over_here", 648.3, 6),
+             ("reqmr-2873352801-1980-900s", "get_over_here", 86.8, 6),
+             ("reqmr-2873352801-1980-900s", "get_over_here", 369.2, 6),
+             ("reqmr-2873352801-1980-900s", "teamup", 600.3, 11),
+             ("reqmr-2873352801-1980-900s", "teamup", 141.9, 10)]
+    for src, slot, t, want in cases:
+        assert hud.read_cooldown(_native(src, t), slot, hud.LAYOUTS["mk"]) == want, (src, t)
+    # A 9 whose tail half-closes on a busy background must not become an 8.
+    assert hud.read_cooldown(_native("daymr-2879354299-21660-900s", 337.7), "teamup",
+                             hud.LAYOUTS["mk"]) in (None, 9)
+
+
+def test_a_one_frame_misread_mid_countdown_is_nothing():
+    """Day 339.0: a running 6 read as 8 for one frame. One read is not a timer:
+    no cast, and no uncertainty either -- the countdown simply continues."""
+    vals = [7] * 10 + [6] * 5 + [8] + [6] * 5 + [5] * 10 + [4] * 10
+    events = extract_one(_slot_reads(vals, slot="get_over_here", ready=[True] * 41),
+                         mapping={"get_over_here": "get_over_here"}, timers={"get_over_here": 8})
+    assert not [e for e in events if e.kind in ("ability_cast", "ability_uncertain")]
+
+
+def test_an_uppercut_between_cast_lock_is_a_use():
+    """Every uppercut use shows the short between-cast lock ("1" on this patch).
+    Placing its start from the 6 s recharge wiped out nearly every uppercut cast
+    in a dry run; it is a use."""
+    vals = [None] * 10 + [1] * 8 + [None] * 10
+    events = extract_one(_slot_reads(vals, slot="uppercut", ready=[True] * 28), mapping={"uppercut": "uppercut"})
+    assert [e.kind for e in events if e.kind.startswith("ability_")] == ["ability_cast"]
+
+
+def test_an_unreadable_frame_alone_does_not_make_a_charged_use_uncertain():
+    """On the stream HUD most frames of a charged slot are unreadable (chat);
+    that is not the evidence that makes a use uncertain -- an out-of-kit read is."""
+    vals = [None] * 10 + [4] * 10 + [3] * 10
+    ready = [None] * 10 + [True] * 20
+    events = extract_one(_slot_reads(vals, slot="swing", ready=ready), mapping={"swing": "swing"})
+    assert [e.kind for e in events if e.kind.startswith("ability_")] == ["ability_cast"]
+    vals[5] = 9                                               # a number swing cannot show
+    events = extract_one(_slot_reads(vals, slot="swing", ready=ready), mapping={"swing": "swing"})
+    assert [e.kind for e in events if e.kind.startswith("ability_")] == ["ability_uncertain"]
+
+
+def test_a_cast_in_a_segments_first_second_counts_when_the_slot_was_seen_before_it():
+    """A one-charge countdown first read at full just after the segment opens
+    may have started a moment before it -- unless the frame before shows the
+    slot lit with no number, which puts the start inside the segment."""
+    vals = [None] + [8] * 10 + [7] * 10
+    events = extract_one(_slot_reads(vals, slot="get_over_here", ready=[True] * 21),
+                         mapping={"get_over_here": "get_over_here"}, timers={"get_over_here": 8})
+    assert [e.kind for e in events if e.kind.startswith("ability_")] == ["ability_cast"]
