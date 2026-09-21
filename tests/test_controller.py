@@ -116,7 +116,7 @@ def test_search_relevels_the_camera_and_engage_does_not_walk_blind():
     assert max(ry) == 1.0 and min(ry) == -0.5 and ry[-1] == 0.0          # up into the clamp, measured way down, then still
     c, d = Controller(), Detection(ENEMY, (610, 330, 670, 400), 0.9)
     pads = [c.step(State(t=i / 60, frame=(1280, 720), detections=[d] if i < 10 else []), Engage(d)) for i in range(120)]
-    assert pads[5]["ly"] == 1.0 and pads[-1]["ly"] == 0.0
+    assert pads[5]["ly"] == 1.0 and all(p["ly"] == 0.0 for p in pads[10:])
 
 
 def test_a_target_only_the_brain_saw_is_turned_toward_but_never_walked_at():
@@ -128,3 +128,15 @@ def test_a_target_only_the_brain_saw_is_turned_toward_but_never_walked_at():
         pads.append(c.step(State(t=i / 60, frame=(1280, 720), detections=[]), intent))
     assert all(p["ly"] == 0.0 for p in pads) and not any(_pressed(p) for p in pads)
     assert pads[1]["rx"] < 0                                                    # but it does turn toward it
+
+
+def test_forward_movement_only_on_steps_with_a_measured_box():
+    from agent.intents import Search
+    d, c = Detection(ENEMY, (610, 330, 670, 400), 0.9), Controller()
+    for i in range(240):
+        seen = (i // 7) % 2 == 0                                                # the box flickers, as live detectors do
+        pad = c.step(State(t=i / 60, frame=(1280, 720), detections=[d] if seen else []), Engage(d))
+        assert pad["ly"] == (1.0 if seen else 0.0), i
+    c = Controller()
+    assert all(c.step(State(t=i / 60, frame=(1280, 720), detections=[d]), Search())[k] == 0.0
+               for i in range(120) for k in ("lx", "ly"))

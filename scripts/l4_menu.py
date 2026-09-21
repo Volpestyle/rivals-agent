@@ -119,11 +119,11 @@ class Menu:
         else:
             raise Stop(f"unknown token {tok}")
 
-    def goto(self, tx, ty, tol=9):
+    def goto(self, tx, ty, tol=9, locate=find_cursor):
         """Step the cursor to (tx, ty), one axis at a time, re-finding it after every step."""
         misses = 0
         for _ in range(30):
-            pos = find_cursor(self.fresh())
+            pos = locate(self.fresh())
             if pos is None:  # lost over a busy widget: jiggle onto plainer ground and look again
                 misses += 1
                 if misses > 4:

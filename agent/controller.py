@@ -285,11 +285,10 @@ class Controller:
                     out["buttons"] = ("A",)
         elif isinstance(intent, Engage) and self.track is not None:
             near = self.track.h / state.frame[1] >= near_h()
-            # Live: the brain engaged targets only the whole-frame search could see; each Search/Engage flip re-seeded the
-            # track and walked 0.6 s at nothing, off the platform edge. Walk only toward a target the aim crop has measured;
-            # an unconfirmed one is turned toward (so it enters the crop) and nothing else.
-            seen = self.track.confirmed and t - self.track.seen_t < LOST_S
-            out["ly"] = 1.0 if seen and not near else 0.0   # never walk on blind: a live run marched 5 s at nothing
+            # Falling off must be impossible, not unlikely (a live run walked off a platform). Forward movement needs a box
+            # measured by the aim sensor ON THIS STEP: none on a coast, a hit flash, a lost track, or a target only the
+            # brain's whole-frame search has seen (that one is turned toward, nothing else). Search never moves.
+            out["ly"] = 1.0 if self._measured and self.track.confirmed and not near else 0.0
             if not self.seq and on_target:
                 if near and t >= self.next_uppercut_t:
                     self.play("uppercut", t); self.next_uppercut_t = t + 7.0

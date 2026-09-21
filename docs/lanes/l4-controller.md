@@ -2,9 +2,66 @@
 
 Linear: VUH-1296. Evidence: `docs/evidence/l4/`. Raw measurements: `C:\rivals-agent\data\l4\` on the PC.
 
-The game is in the Practice Range as Spider-Man, idle, no pad connected, **standing in a rock garden below the map's
-platforms** (the second live loop run walked him off an edge; `loop30b-sheet.jpg`). No bots there and no mapped route
-back: the five-minute baseline needs a fresh entry (spawn), then a walk to the plaza or courtyard.
+The game is in the Practice Range as Spider-Man, in the **Galacta target arena** (open floor with pink lane lines, walled
+and railed, standing and moving Galacta bots), idle, no pad connected. Route from the spawn room: the green door the lead
+left him facing leads down a short stair to a planter landing; the blue-lit archway 90 deg left of the stair opens onto
+the arena (`loop30c-sheet.jpg`).
+
+## Baseline (VUH-1300): `C:\rivals-agent\data\l1\baseline1\`
+
+Five minutes, scripted brain, **real cooldowns** (`"cooldowns": "normal"` and `scoreboard_before` added to its
+`meta.json` after the run), 2,760 native frames + `frames.jsonl` (16,522 rows), 1.6 GB. No video recorder running.
+
+| | `baseline1` |
+|---|---|
+| **Score** | **21 KOs and 5,590 damage in 300 s** (board before: 2 KOs / 645; end board parsed by `perception/scoreboard.py` and checked by eye: 23 KOs, 6,235 damage, 0 deaths, accuracy 40 %, Web-Cluster accuracy 56 %) |
+| Stop / guards | `max_time`; no range gap, no error, no stall, 1 keep-alive; never left the arena |
+| Reflex | 55.1 Hz, tick p50 / p95 / max 7.0 / 10.0 / 17.8 ms, period p50 / p95 17.3 / 23.1 ms, 2 of 16,522 ticks over the 16.7 ms budget |
+| Aim finder | 5.7 / 8.0 / 16.5 ms |
+| Decision | 10.0 Hz, 28.6 / 46.7 / 104.8 ms, lag 29.6 / 47.6 / 105.8 ms, 0 missed |
+| Intents (ticks) | engage 7,577, combo:burst 6,966, webstrike 917, search 860, pull 197, idle 5 |
+| Best 10 s | t = 290-300 s (237 attack ticks), `baseline1-best-10s.jpg` |
+| Worst 10 s | t = 10-20 s (0 attack ticks): after a KO he stands facing the downed bot's corner for ~7 s before Search starts, `baseline1-worst-10s.jpg`. Three more dead windows: 70-80, 180-190, 190-200 s |
+
+Capture-to-input is not logged separately; the reflex tick (frame in hand to `pad.send`) is the 7 ms above. The confirming
+run before it, `loop30c` (30 s, same place, cooldowns normal): 57.6 Hz, 0 over budget, 2 KOs.
+
+**Screen recording cost** (ffmpeg 8, `h264_nvenc`, 60 fps, started just before the loop; the game's FPS counter read 238-240
+in every case):
+
+| Recorder | Reflex Hz | tick p50 / p95 ms | over budget | decision p50 ms |
+|---|---|---|---|---|
+| none (`loop30c`) | 57.6 | 6.9 / 9.7 | 0 | 26 |
+| `ddagrab` -> `hwdownload` -> CPU scale to 1080p (`loop30v`) | 50.3 | 8.5 / 14.1 | 18 | 46 |
+| `ddagrab` straight into NVENC at native 2560x1440 (`loop30g`) | 56.7 | 7.8 / 10.9 | 0 | 31 |
+
+The CPU-scaled path costs the loop its rates; the all-GPU native path is close to free (`scale_d3d11` into NVENC failed
+with "Invalid argument", so 1080p has to be a re-encode afterwards). `C:\rivals-agent\data\video\loop30g.mp4`: 55 s,
+2560x1440, 60 fps, 215 MB; loop t = 0 is video second 4.0; 4 KOs in the 30 s; busiest fighting is video 9-29 s.
+
+**Practice Settings, cooldowns.** "No Ability Cooldown" is now OFF (`practice-settings-cooldowns-off.jpg`); its sub-option
+"(Always On)" disappears from the page when the parent is off (it was on, and its help text says it re-activates the
+parent "each time you enter the Practice Range", so **re-check after every re-entry**). Verified from play
+(`cooldowns-normal-verified.jpg`): Web Cluster ammo 2 after three shots, recharging; Get Over Here shows a 7 s cooldown
+number. `scripts/l4_practice_settings.py cooldowns-off` does it on one pad: the page's cursor cannot be found reliably
+(two sprites), so it steers by which pause-menu row is lit and by the help panel's title, steps right onto the switch,
+and closes the menu before the pad goes away. With real cooldowns the burst still KOs Galacta bots (23 in 5.5 minutes).
+
+**Earlier state, for the record.** The game was taken to the lobby on purpose through Pause > LEAVE GAME
+(`left-game-lobby.jpg`, dialog `leave-game-dialog.jpg`: "Are you sure you want to leave the game?", CONFIRM (X) /
+CANCEL (B); confirmed with the cursor and A, never X). During that visit a pad disconnected three times with the pause
+menu or the dialog open and the game stayed put, so that did not reproduce as the cause of the earlier drop.
+
+Movement rule since the fall: `Engage` walks forward only on a step where the aim sensor measured the target's box (not
+on a coast, a hit flash, a lost track, or a target only the brain's whole-frame search saw); `Search` never moves. Tested
+offline and held through `loop30c`, `baseline1`, `loop30v`, `loop30g`.
+
+**Cooldown regime.** Practice Settings has "No Ability Cooldown" and "No Ability Cooldown (Always On)" ON by default, and
+every range recording so far was made that way: `run1`, `trial1`, `tagrun`, `tagrun0`, `tagrun1`, `swatch-*`, `loop30a`,
+`loop30b`, and everything under `data\l4\` (aim, primitive, scoreboard, tagged-native, tagrb trials). That is why Web
+Cluster ammo never left 5, the ultimate relit in 3.5 s and no cooldown numbers appear. Runs made after the toggle was
+turned off (`loop30c`, `baseline1`, `loop30v`, `loop30g`) carry `"cooldowns": "normal"` in their `meta.json` (added after the run; `agent/loop.py` does not write it);
+runs without the field are cooldowns-off.
 
 ## Live loop (VUH-1300), first two runs
 

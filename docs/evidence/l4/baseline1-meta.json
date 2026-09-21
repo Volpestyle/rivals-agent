@@ -1,0 +1,88 @@
+{
+    "stop":  "max_time",
+    "brain":  "scripted",
+    "seconds":  300.006,
+    "ticks":  16522,
+    "reflex_hz":  55.1,
+    "period_ms":  {
+                      "p50":  17.32,
+                      "p95":  23.09,
+                      "max":  60.5
+                  },
+    "tick_ms":  {
+                    "p50":  6.98,
+                    "p95":  9.97,
+                    "max":  17.82
+                },
+    "aim_ms":  {
+                   "p50":  5.7,
+                   "p95":  7.96,
+                   "max":  16.46
+               },
+    "over_budget":  2,
+    "budget_ms":  16.67,
+    "decisions":  3014,
+    "decision_hz":  10.0,
+    "decide_ms":  {
+                      "p50":  28.56,
+                      "p95":  46.69,
+                      "max":  104.76
+                  },
+    "decision_lag_ms":  {
+                            "p50":  29.57,
+                            "p95":  47.6,
+                            "max":  105.83
+                        },
+    "missed_decisions":  0,
+    "sources":  {
+                    "waiting":  5,
+                    "scripted":  16517
+                },
+    "intents":  {
+                    "idle":  5,
+                    "engage:enemy":  7577,
+                    "combo:burst":  6966,
+                    "webstrike:enemy":  917,
+                    "search":  860,
+                    "pull:enemy":  197
+                },
+    "keepalives":  1,
+    "range_gaps":  [
+
+                   ],
+    "scoreboards":  [
+                        {
+                            "t":  300.028,
+                            "file":  "scoreboard-end.png",
+                            "size":  [
+                                         2560,
+                                         1440
+                                     ],
+                            "parsed":  {
+                                           "open":  true,
+                                           "kos":  23,
+                                           "deaths":  0,
+                                           "assists":  0,
+                                           "accuracy":  40,
+                                           "damage":  6235,
+                                           "damage_blocked":  0,
+                                           "healing":  0,
+                                           "web_cluster_accuracy":  56,
+                                           "spin_kos":  0
+                                       }
+                        }
+                    ],
+    "errors":  [
+
+               ],
+    "native":  [
+                   2560,
+                   1440
+               ],
+    "cooldowns":  "normal",
+    "scoreboard_before":  {
+                              "kos":  2,
+                              "damage":  645,
+                              "source":  "loop30c end board"
+                          }
+}
