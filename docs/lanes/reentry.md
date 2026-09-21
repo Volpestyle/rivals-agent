@@ -239,11 +239,13 @@ what `arrival_step` decides on each fresh frame (a pure function of the frame an
    still goes through `Safe` on `in_range`, re-proven at the write;
 2. finds the door and steers its pane onto **the hero's column** (`HERO_X` 0.40), not the screen centre: more than `DOOR_TOL` (8% of
    the width) off it, it turns the camera (`YAW_STICK` 0.45 = 172 deg/s, focal 465 px at 1280 wide) instead of walking; on it, it walks a
-   0.5 s step. Once walking at a door it **keeps that door**: the blob nearest where it should be after our own turn, within `DOOR_KEEP`
-   0.25 of the width, not the biggest (two lime doors can be in view inside); **no door in view, it looks around** (a 0.3 s right turn,
-   about 50 deg) and never walks blind;
-3. **out**: a walk step at a door of `OUT_PX` (20k px at 1280x720) or more followed by a frame with no door is passing through it. From
-   then on no door is steered to or walked at, not even a sliver of its pane, and it only turns LEFT (0.3 s, ~50 deg) up to `OUT_SWEEPS`
+   0.5 s step. With no door kept it takes **the door nearest his column**, not the biggest blob (the spawn room has two lime doors; on all
+   four logged spawns the plaza door sits 0.04 from his column and the other 0.19 off, and the other was the bigger blob in two). Once
+   walking at a door it **keeps that door**: the blob nearest where it should be after our own turn, within `DOOR_KEEP` 0.25 of the width;
+   **no door in view, it looks around** (a 0.3 s right turn, about 50 deg) and never walks blind;
+3. **out**: a walk step, then a frame with no door, where the kept door's biggest blob over its last `OUT_WALKS` 3 walk steps was
+   `OUT_PX` (10k px at 1280x720) or more, is passing through it. The pane shrinks as he reaches it, so the last walk alone is not the
+   measure (see the three supervised arrivals below). From then on no door is steered to or walked at, not even a sliver of its pane, and it only turns LEFT (0.3 s, ~50 deg) up to `OUT_SWEEPS`
    7 times (~360 deg) looking for the bot; none found is an exit 1 on the plaza;
 4. is done only when `plaza_view` holds on two frames in a row (a second look while standing still): the Luna Snow bot ahead in the open,
    the door behind (lime under 3% of the upper view);
@@ -297,6 +299,31 @@ step 2 keeps walking at the door it chose instead of turning to the other one, a
 turns (0.07-0.17 s) on steps 3, 4, 7, 10-15. Not shown offline: that the column aim gets him through without the jamb, that the out
 signal fires on a closed-loop crossing (the replay turns at step 15 where the live run walked), and that one left turn brings the bot into
 `plaza_view`'s window (0.35-0.95, 0.08-0.6 of the height) from wherever he exits; the three supervised arrivals are the measurement.
+
+**Three supervised arrivals (2026-09-21 12:54, 13:05, 13:17; rows and sheets `docs/evidence/l4/arrival-out-{1,2,3}-*`; the column aim,
+the kept door and the out state, before the two corrections above).** No jamb snag on any crossing. Arrival 2 passed: the plaza door
+kept through two frames where the other was the bigger blob, the pane 0.31-0.52 over his column on the step before it vanished, out set
+(last walk 26.8k px, then none), one left turn, `plaza_view` twice, ending on the plaza facing the Luna Snow bot; exit 0 after 12.04 s.
+Arrivals 1 and 3 failed on two measured causes, each now corrected:
+
+- **The wrong door.** In frame 1 the other door (x 0.21, 8.2k and 7.3k px) was the bigger blob against the plaza door on his column (0.44,
+  3.5k and 5.6k); he took it, kept it, went through, looked right, saw the room back through it and walked back in. The first choice is
+  now the door nearest his column.
+- **Out missed.** On the five logged crossings (a walk step, then no door) the kept door's last walk was 33.0k, 3.4k, 26.8k, 7.6k and 7.7k
+  px, so a 20k bar on it caught two; the peak over its last three walks was 53.6k, 19.1k, 44.0k, 16.0k and 26.3k. The only walk at a small
+  door followed by none is a sliver of the pane from outside after a look-around (3.8k, nothing before it kept). The bar is 10k on that peak.
+
+Replayed through `arrival_step` over the four logged arrivals' decision frames from a fresh memory (open loop: the frames are the live
+logic's, so this shows decisions only). Arrivals 1 and 3: frame 1 walks at the plaza door instead of turning to the other one, and where
+the live run later came out through the other door, out is set (steps 10-11). Arrival 2: the same decisions as live up to step 16, out set
+at 17 (its two plaza frames read `plaza_view` False on the saved 1280 JPEGs, True live on the native frames). The first logged arrival
+(older logic): the column aim turns where it walked, so out cannot fire on its frames. Not shown offline: that the plaza door is the one
+taken on a live spawn every time, and that out fires on a closed-loop crossing; the three supervised arrivals are the measurement.
+
+What the tool's result does and does not say: exit 0 means `plaza_view` held on two frames, not that the acceptance holds (two
+plaza-looking frames end it with out still False); `ARRIVE_S` is a budget of scheduled actions, not a wall-clock deadline (the three ran
+14.99, 12.04 and 15.18 s); a turn row's `door_x` is the prior or predicted door, not a certified selection; `plaza_view` finds an enemy box,
+it does not identify the bot.
 
 **The arrival log.** A real run records every arrival step in `data/reenter/arrive-<time>/`: `steps.jsonl` (time, the action and its
 stick, the door's centre and blob size, the hero's column, `plaza_view`, the gate the input passed) and the frame the step decided on

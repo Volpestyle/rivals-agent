@@ -1709,7 +1709,7 @@ def test_a_failing_log_is_counted_not_raised(tmp_path):
 def test_through_the_door_it_never_steers_to_a_door_again_and_looks_left():
     """Live: step 15 walked at the pane (33k px), step 16 showed none (the plaza-side planter): out. Then the old logic walked at a sliver
     of the pane seen from outside (step 17) and at the whole pane (steps 20-23) back into the spawn room. Out, only left turns."""
-    m = R.ArrivalMemory(walked=True, last_px=33000)
+    m = R.ArrivalMemory(walked=True, walks=[33000])
     assert R.arrival_step(frame("arrival-live-out-planter"), m)[:3] == ("turn", -R.YAW_STICK, R.SWEEP_S) and m.out
     for name in ("arrival-live-out-pane-sliver", "arrival-live-out-pane"):
         assert R.door(frame(name)) is not None                                   # a door is in view
@@ -1718,10 +1718,10 @@ def test_through_the_door_it_never_steers_to_a_door_again_and_looks_left():
 
 
 def test_a_door_that_leaves_the_view_by_a_turn_or_a_small_one_is_not_passing_through():
-    m = R.ArrivalMemory(walked=False, last_px=33000)                              # turned, not walked
+    m = R.ArrivalMemory(walked=False, walks=[33000])                              # turned, not walked
     R.arrival_step(frame("arrival-live-out-planter"), m)
     assert not m.out
-    m = R.ArrivalMemory(walked=True, last_px=R.OUT_PX - 1)                        # walked at a small, far door
+    m = R.ArrivalMemory(walked=True, walks=[R.OUT_PX - 1])                        # walked at a small, far door
     R.arrival_step(frame("arrival-live-out-planter"), m)
     assert not m.out
 
@@ -1746,5 +1746,30 @@ def test_a_door_being_walked_at_is_kept_when_a_bigger_one_comes_into_view():
     """Live steps 1-5: two lime doors in view, the biggest blob jumped between them and the steering with it."""
     f = frame("arrival-live-two-doors-left-bigger")                               # the kept door at 0.48, a bigger one at 0.12
     assert R.arrival_step(f, R.ArrivalMemory(chosen=0.47))[0] == "walk"
-    fresh = R.arrival_step(f, R.ArrivalMemory())
-    assert fresh[0] == "turn" and fresh[1] < 0                                   # with nothing kept, the biggest: the other door
+    far = R.ArrivalMemory(chosen=0.14)                                            # kept: the other door, bigger and far off his column
+    assert R.arrival_step(f, far)[:2] == ("turn", -R.YAW_STICK)                   # turns to the kept one
+    assert R.arrival_step(f, R.ArrivalMemory())[0] == "walk"                     # nothing kept: the one on his column, not the bigger
+
+
+def test_at_spawn_the_door_on_his_column_is_taken_not_the_bigger_one():
+    """Three supervised arrivals (2026-09-21): in two the other lime door was the bigger blob in frame 1 (8.2k at x 0.21 against the plaza
+    door's 3.5k at 0.44; 7.3k against 5.6k); he took it, went through, and walked back in. On all four logged spawns the plaza door sits
+    0.04 from his column and the other 0.19 off."""
+    for name in ("arrival-live-spawn-other-door-bigger-1", "arrival-live-spawn-other-door-bigger-3"):
+        f = frame(name)
+        assert R.door_blobs(f)[0][0] < 0.3                                        # the bigger blob is the other door, on the left
+        m = R.ArrivalMemory()
+        assert R.arrival_step(f, m)[0] == "walk" and abs(m.chosen - 0.44) < 0.03, name
+
+
+def test_out_is_the_panes_peak_over_its_last_walks_not_its_last_size():
+    """The pane shrinks as he reaches it: arrival 3 walked at 16.0k, 15.7k, then 7.6k px, and the next frame had no door. The last walk
+    alone (under OUT_PX) missed it; the peak of the last OUT_WALKS walks does not. A big peak older than that does not count."""
+    through = frame("arrival-live-through-other-door")
+    assert R.door(through) is None
+    m = R.ArrivalMemory(walked=True, walks=[16011, 15701, 7628])
+    R.arrival_step(through, m)
+    assert m.out
+    m = R.ArrivalMemory(walked=True, walks=[50000, 3000, 3000, 3000])
+    R.arrival_step(through, m)
+    assert not m.out
