@@ -360,6 +360,8 @@ class Loop:
         lock, tracker, self.coasting = threading.Lock(), tracker or Tracker(), ()
 
         def track(dets, t, size=None):                  # the reflex thread and the decision worker share one tracker
+            # Invariant `state.coasting` rests on: the wide finder runs only when the aim crop found nothing, so a decision State
+            # carries the crop's boxes (the bot among them) whenever the crop saw it; the whole-frame search never drops a bot the crop held.
             with lock:
                 out = tracker.update(dets, t, size)
                 self.coasting = tuple(getattr(tracker, "coasting", ()))
@@ -530,6 +532,17 @@ class Loop:
             return
         row = {"t": round(t, 4), "pad": {**pad, "buttons": list(pad["buttons"])}, "note": note, "source": source,
                "dets": [[round(v) for v in x.bbox] for x in dets], "ms": round(ms, 2)}
+        try:                                            # the id trace (a steal is visible per tick): logging only, never raises into the tick
+            row["ids"] = [x.track for x in dets]        # parallel to "dets"
+            row["coasting"] = list(self.coasting)
+            target = getattr(getattr(self.decider, "memory", None), "target", None)
+            tid = getattr(target, "track", None)
+            row["target"] = tid
+            box = next((x for x in dets if tid is not None and x.track == tid), target)   # this tick's box for the target's id, else the brain's last
+            row["target_px"] = (round(math.dist(box.center, (self.size[0] / 2, self.size[1] / 2)), 1)
+                                if box is not None and self.size else None)
+        except Exception:                               # noqa: BLE001 - a trace field is never worth a tick
+            pass
         if d is not None:
             row["d"] = d.n
             if d.n != self.last_d:                      # the row a decision first stood on carries its State

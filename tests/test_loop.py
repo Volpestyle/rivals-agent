@@ -612,6 +612,49 @@ def test_the_log_loads_through_agent_demos_as_an_own_recording(tmp_path):
     assert meta["stop"] == "source_end" and meta["scoreboards"][0]["file"] == "scoreboard-end.png" and meta["scoreboards"][0]["parsed"] is None
 
 
+def test_every_row_carries_the_id_trace_and_rows_without_it_still_load(tmp_path):
+    """A steal must be visible per tick: each row has the track id of each box (parallel to dets), the coasting ids, the brain's target id
+    and the target box's distance from the crosshair. Logging only, and a recording made before these fields loads the same."""
+    loop, run_dir = recorded(tmp_path, timeline(2.0, dets=[BOT]))
+    path = run_dir / "frames.jsonl"
+    rows = [json.loads(line) for line in path.read_text().splitlines()]
+    assert all(len(r["ids"]) == len(r["dets"]) and "coasting" in r and "target" in r and "target_px" in r for r in rows)
+    engaged = [r for r in rows if r["target"] is not None]
+    assert engaged and all(r["target"] in r["ids"] for r in engaged)
+    cx, cy = SIZE[0] / 2, SIZE[1] / 2
+    bx, by = (BOT.bbox[0] + BOT.bbox[2]) / 2, (BOT.bbox[1] + BOT.bbox[3]) / 2
+    assert engaged[-1]["target_px"] == pytest.approx(((bx - cx) ** 2 + (by - cy) ** 2) ** 0.5, abs=0.1)
+    def bot_at(t):                                                                 # a bot sliding 600 px/s: the brain's box lags the tick's
+        return [Detection(ENEMY, (1180.0 + 600 * t, 570.0, 1380.0 + 600 * t, 870.0), 0.9)]
+    _, moving = recorded(tmp_path / "moving", [(F(dets=bot_at(i / HZ)), i / HZ) for i in range(60)])
+    for r in map(json.loads, (moving / "frames.jsonl").read_text().splitlines()):
+        if r["target"] is not None:
+            x1, y1, x2, y2 = r["dets"][r["ids"].index(r["target"])]
+            assert r["target_px"] == pytest.approx((((x1 + x2) / 2 - cx) ** 2 + ((y1 + y2) / 2 - cy) ** 2) ** 0.5, abs=1.0)   # this tick's box
+    _, empty = recorded(tmp_path / "empty", timeline(0.5))                         # nobody in view: no target, no distance
+    assert all(r["target"] is None and r["target_px"] is None and r["ids"] == [] for r in
+               map(json.loads, (empty / "frames.jsonl").read_text().splitlines()))
+
+    n = len(next(iter(Demos.load(run_dir, fractions=(1.0, 0.0, 0.0)).clips.values())).inputs)
+    old = [{k: v for k, v in r.items() if k not in ("ids", "coasting", "target", "target_px")} for r in rows]
+    path.write_text("".join(json.dumps(r) + "\n" for r in old))
+    clip, = Demos.load(run_dir, fractions=(1.0, 0.0, 0.0)).clips.values()
+    assert len(clip.inputs) == n == len(rows)
+
+
+def test_a_broken_trace_never_touches_the_tick(tmp_path):
+    class Exploding:
+        @property
+        def target(self):
+            raise RuntimeError("memory went away")
+
+    log = RunLog(tmp_path / "run", save_fps=0, imwrite=jpeg)
+    loop = Loop(Frames(timeline(0.5, dets=[BOT])), FakePad(), readers(), idle, log=log, warmup=False)
+    loop.decider.memory = Exploding()                                              # idle ignores memory; only the trace reads it
+    out = loop.run()
+    assert out["stop"] == "source_end" and out["ticks"] == 30 and not out["errors"]
+
+
 def test_a_hud_gap_becomes_a_segment_boundary_the_loader_respects(tmp_path):
     items = timeline(6.0, dets=[BOT], ok=lambda t: not 3.0 <= t < 3.1)
     loop, run_dir = recorded(tmp_path, items)

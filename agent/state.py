@@ -33,6 +33,7 @@ class Detection:
     conf: float
     distance: float | None = None  # metres, estimated; None = no estimate
     tagged: bool | None = None  # Spider-Tracer icon over this enemy; None = not read (icon absent from view is not "untagged")
+    track: int | None = None  # identity, assigned once by agent.tracker between the finder and State; None = not tracked. Never reused
 
     @property
     def center(self):
@@ -60,6 +61,7 @@ class State:
     webs: int | None = None  # Web-Cluster ammo
     detections: list[Detection] | None = None  # None = detector did not run; [] = ran, saw nothing
     on_target: bool | None = None  # crosshair over a hostile
+    coasting: tuple[int, ...] = ()  # track ids the tracker still holds but did not see this frame (hit flash, occlusion, off the edge)
 
     def to_dict(self):
         return asdict(self)
@@ -77,4 +79,5 @@ class State:
             webs=d.get("webs"),
             detections=None if dets is None else [Detection(**{**x, "bbox": tuple(x["bbox"])}) for x in dets],
             on_target=d.get("on_target"),
+            coasting=tuple(d.get("coasting") or ()),
         )

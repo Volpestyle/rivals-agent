@@ -111,8 +111,8 @@ def gate(state: State, memory: Memory):
     if t < memory.hold_until:
         return memory.intent, target
 
-    if target is None and t - memory.target_t <= LOST_S:
-        return memory.intent, None  # flicker: keep doing what we were doing
+    if target is None and (t - memory.target_t <= LOST_S or _coasting(state, memory)):
+        return memory.intent, None  # flicker, or the tracker still holds the target's id: keep doing what we were doing
     return None, target
 
 
@@ -186,10 +186,23 @@ def _nearest(state, classes, point):
     return min(found, key=lambda d: math.dist(d.center, point), default=None)
 
 
+def _coasting(state, memory):
+    """The last target's track is held by the tracker but was not seen this frame: the same bot, briefly missing, not a gone one."""
+    return memory.target is not None and memory.target.track is not None and memory.target.track in state.coasting
+
+
 def _pick_target(state, memory):
-    """Stick with the last target while it is fresh, else take the one nearest the crosshair."""
-    sticky = memory.target is not None and state.t - memory.target_t <= LOST_S
-    return _nearest(state, HOSTILE, memory.target.center if sticky else crosshair(state))
+    """Stay on the last target: by its track id when it has one (present: it; held unseen: nobody, do not switch), else while it is fresh
+    by where it was; otherwise the hostile nearest the crosshair."""
+    last = memory.target
+    if last is not None and last.track is not None:
+        same = next((d for d in state.detections or [] if d.track == last.track and d.cls in HOSTILE and d.conf >= MIN_CONF), None)
+        if same is not None:
+            return same
+        if _coasting(state, memory):
+            return None
+    sticky = last is not None and state.t - memory.target_t <= LOST_S
+    return _nearest(state, HOSTILE, last.center if sticky else crosshair(state))
 
 
 def ready(state, name):

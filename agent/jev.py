@@ -219,7 +219,14 @@ def _best(resp, key, options, ok):
 
 
 def reassociate(state, det):
-    """The current detection of det's class nearest where det was, within MATCH_FRAC of the frame height; else None."""
+    """The current detection of det: the one with its track id when it has one (det itself while the tracker holds it unseen), else
+    the current detection of det's class nearest where det was, within MATCH_FRAC of the frame height; else None."""
+    if det.track is not None:
+        same = next((d for d in state.detections or [] if d.track == det.track and d.cls == det.cls and d.conf >= MIN_CONF), None)
+        if same is not None:
+            return same
+        if det.track in state.coasting:
+            return det
     near = [d for d in state.detections or []
             if d.cls == det.cls and d.conf >= MIN_CONF and math.dist(d.center, det.center) <= MATCH_FRAC * state.frame[1]]
     return min(near, key=lambda d: math.dist(d.center, det.center), default=None)
