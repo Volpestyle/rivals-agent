@@ -316,7 +316,7 @@ def test_the_tooltip_match_separates_spiderman_from_every_other_frame():
 
 def test_steering_needs_no_ring_when_the_tooltip_already_says_the_cursor_is_on_spiderman():
     sim = SimCursor(640, 256)                                                        # a cursor whose ring is never found
-    pos = R.steer(sim, R.SPIDER_SLOT, locate=lambda f: None, done=lambda f: True)
+    pos = R.steer(sim, R.SPIDER_SLOT, "hero_select", locate=lambda f: None, done=lambda f: True)
     assert pos is None and sim.sticks == 0                                           # nothing was sent: no jiggle, no nudge
 
 
@@ -369,7 +369,7 @@ class SimCursor:
             return None
         return (self.x, self.y)
 
-    def stick(self, x, y, secs):
+    def stick(self, x, y, secs, screen=None):
         self.sticks += 1
         if self.hidden > 0 and (x or y):
             self.hidden -= 1
@@ -393,7 +393,7 @@ class PhysCursor:
     def frame(self):
         return None
 
-    def stick(self, x, y, secs):
+    def stick(self, x, y, secs, screen=None):
         self.sticks += 1
         move = {"dead": max(0.0, secs - R.DEADBAND_S) * 700, "floor": secs * 700,
                 "ramp": 700 * secs * (1 - math.exp(-secs / 0.06))}[self.physics]
@@ -408,7 +408,7 @@ def test_steering_settles_into_the_18_px_tab_whatever_the_shortest_tap_does(phys
     for seed in range(30):
         rng = random.Random(seed)
         sim = PhysCursor(rng.uniform(40, 1240), rng.uniform(40, 680), rng, physics, gain)
-        pos = R.steer(sim, R.PRACTICE_TAB, locate=sim.locate)
+        pos = R.steer(sim, R.PRACTICE_TAB, "lobby", locate=sim.locate)
         assert R.PRACTICE_TAB.contains(pos) and sim.sticks < R.MAX_STEPS, (physics, gain, seed, sim.sticks)
 
 
@@ -461,9 +461,12 @@ def test_steering_backs_off_instead_of_dithering_when_the_error_is_below_the_sho
     sim = PhysCursor(1214.0, 386.0 + 30, rng, "floor", 1.0, noise=0.05)
     positions = []
     orig = sim.stick
-    sim.stick = lambda x, y, secs: (orig(x, y, secs), positions.append(sim.y))
-    assert R.PRACTICE_TAB.contains(R.steer(sim, R.PRACTICE_TAB, locate=sim.locate))
+    sim.stick = lambda x, y, secs, screen=None: (orig(x, y, secs), positions.append(sim.y))
+    assert R.PRACTICE_TAB.contains(R.steer(sim, R.PRACTICE_TAB, "lobby", locate=sim.locate))
     assert sim.sticks <= 6, positions
+
+
+ZONE_SCREEN = {R.PRACTICE_TAB.name: "lobby", R.RANGE_TILE.name: "practice_panel", R.SPIDER_SLOT.name: "hero_select"}
 
 
 @pytest.mark.parametrize("zone", [R.PRACTICE_TAB, R.RANGE_TILE, R.SPIDER_SLOT], ids=lambda z: z.name)
@@ -471,7 +474,7 @@ def test_steering_reaches_the_zone_from_anywhere_in_a_few_nudges(zone):
     for seed in range(12):
         rng = random.Random(seed)
         sim = SimCursor(rng.uniform(40, 1240), rng.uniform(40, 680), rng, gain=rng.uniform(0.8, 1.2))
-        pos = R.steer(sim, zone, locate=sim.locate)
+        pos = R.steer(sim, zone, ZONE_SCREEN[zone.name], locate=sim.locate)
         assert zone.contains(pos) and sim.sticks <= 16, (seed, sim.sticks)
 
 
@@ -479,7 +482,7 @@ def test_steering_corrects_y_when_x_is_already_on_target():
     """Regression: with x aligned and y a few px outside the zone, the loop once nudged x by nothing, forever."""
     for y in (391.4, 375.2, 389.9):
         sim = SimCursor(1212, y, gain=1.0)
-        assert R.PRACTICE_TAB.contains(R.steer(sim, R.PRACTICE_TAB, locate=sim.locate))
+        assert R.PRACTICE_TAB.contains(R.steer(sim, R.PRACTICE_TAB, "lobby", locate=sim.locate))
 
 
 @pytest.mark.parametrize("gain", [0.4, 0.6, 2.0, 2.5])
@@ -489,23 +492,23 @@ def test_steering_survives_a_cursor_much_faster_or_slower_than_assumed(gain):
         rng = random.Random(seed)
         sim = SimCursor(rng.uniform(40, 1240), rng.uniform(40, 680), rng, gain=gain)
         zone = (R.PRACTICE_TAB, R.RANGE_TILE, R.SPIDER_SLOT)[seed % 3]
-        assert zone.contains(R.steer(sim, zone, locate=sim.locate))
+        assert zone.contains(R.steer(sim, zone, ZONE_SCREEN[zone.name], locate=sim.locate))
 
 
 def test_steering_is_bounded_when_the_cursor_never_moves():
     sim = SimCursor(640, 256, frozen=True)
     with pytest.raises(R.Refuse, match="did not reach the PRACTICE tab"):
-        R.steer(sim, R.PRACTICE_TAB, locate=sim.locate)
+        R.steer(sim, R.PRACTICE_TAB, "lobby", locate=sim.locate)
     assert sim.sticks == R.MAX_STEPS
 
 
 def test_steering_wiggles_to_find_a_hidden_cursor_then_gives_up():
     sim = SimCursor(1210, 383, hidden=2)  # hidden until the stick has moved twice (the wiggles move it too)
-    pos = R.steer(sim, R.PRACTICE_TAB, locate=sim.locate)
+    pos = R.steer(sim, R.PRACTICE_TAB, "lobby", locate=sim.locate)
     assert R.PRACTICE_TAB.contains(pos) and sim.sticks >= 3
     lost = SimCursor(640, 256, hidden=10**6)
     with pytest.raises(R.Refuse, match="cursor ring was not found"):
-        R.steer(lost, R.PRACTICE_TAB, locate=lost.locate)
+        R.steer(lost, R.PRACTICE_TAB, "lobby", locate=lost.locate)
     assert lost.sticks == R.MAX_MISSES  # one wiggle per miss, and the last miss stops without another
 
 
@@ -553,12 +556,12 @@ class Sim:
         if rule is not None:
             self.state = rule(self.n[key]) if callable(rule) else rule
 
-    def stick(self, x, y, secs):
+    def stick(self, x, y, secs, screen=None):
         self.inputs.append(("stick", x, y))
         self.t += secs + 0.25
         self._fire("stick")
 
-    def rstick(self, x, y, secs):
+    def rstick(self, x, y, secs, screen=None):
         self.inputs.append(("rstick", x, y))
         self.t += secs + 0.15
         self._fire("rstick")
@@ -882,11 +885,11 @@ class TurnSim(Sim):
             return frame("arrival-plaza-bot-ahead")
         return spawn_frame(self.door_x)
 
-    def rstick(self, x, y, secs):
+    def rstick(self, x, y, secs, screen=None):
         super().rstick(x, y, secs)
         self.door_x -= 465.0 * math.radians(x / R.YAW_STICK * R.YAW_DEG_S * secs) / 1280.0   # turning right slides the door left
 
-    def stick(self, x, y, secs):
+    def stick(self, x, y, secs, screen=None):
         super().stick(x, y, secs)
         if abs(self.door_x - 0.5) <= 0.08:
             self.walks += 1
@@ -1143,7 +1146,7 @@ def test_no_proof_frame_may_predate_the_last_inputs_settling(monkeypatch):
     assert touched(calls) == []
     live.frame = real_frame                                                            # and inputs advance the settling time
     before = live.settled_t
-    live.stick(0.0, 0.0, 0.05)
+    live.stick(0.0, 0.0, 0.05, screen="lobby")
     assert live.settled_t > before
 
 
@@ -1165,11 +1168,11 @@ def test_the_arrivals_turns_are_gated_by_the_screen_too():
         def frame(self):
             return BLACK
 
-        def rstick(self, *a):
+        def rstick(self, *a, **kw):
             self.sticks.append(a)
 
     io = Io()
-    with pytest.raises(R.Refuse, match="the screen is unknown; no stick sent"):
+    with pytest.raises(R.Refuse, match="the screen is unknown, not .*; no stick sent"):
         R.Safe(io, log=lambda *_: None).rstick(0.45, 0.0, 0.3)
     assert io.sticks == []
 
@@ -1197,8 +1200,8 @@ def test_an_exception_or_ctrl_c_in_any_hold_still_releases_the_whole_pad(monkeyp
         live, calls, clock = make_live(monkeypatch, Screen(hero, after=hero))
         live.sleep = lambda s: (_ for _ in ()).throw(failure)                          # the sleep during the hold is interrupted
         with pytest.raises(type(failure)):
-            {"tap": lambda: live.tap("X", screen="hero_select"), "stick": lambda: live.stick(1.0, 0.0, 0.5),
-             "rstick": lambda: live.rstick(1.0, 0.0, 0.5)}[hold]()
+            {"tap": lambda: live.tap("X", screen="hero_select"), "stick": lambda: live.stick(1.0, 0.0, 0.5, screen="hero_select"),
+             "rstick": lambda: live.rstick(1.0, 0.0, 0.5, screen="hero_select")}[hold]()
         assert [c[0] for c in calls][-2:] == ["reset", "update"], hold                # neutral was the last thing written
 
 
@@ -1242,7 +1245,7 @@ def test_opening_the_pad_ends_neutral_even_if_the_settle_wait_is_interrupted(mon
 def test_a_stick_on_an_unknown_screen_is_never_written(monkeypatch, screen_frame):
     unknown = BLACK if screen_frame == "black" else NOISE
     live, calls, _ = make_live(monkeypatch, Screen(unknown, after=unknown))
-    with pytest.raises(R.Refuse, match="the screen is unknown; no stick sent"):
+    with pytest.raises(R.Refuse, match="the screen is unknown, not .*; no stick sent"):
         live.stick(0.0, 1.0, 0.2)
     with pytest.raises(R.Refuse, match="no stick sent"):
         live.rstick(1.0, 0.0, 0.2)
@@ -1264,15 +1267,15 @@ def test_steering_on_a_black_frame_sends_no_jiggle_at_all():
         def sleep(self, s):
             pass
 
-        def stick(self, x, y, secs):
+        def stick(self, x, y, secs, screen=None):
             self.sticks.append((x, y))
 
         rstick = stick
 
     io = Io()
     safe = R.Safe(io, log=lambda *_: None)
-    with pytest.raises(R.Refuse, match="the screen is unknown; no stick sent"):
-        R.steer(safe, R.PRACTICE_TAB)
+    with pytest.raises(R.Refuse, match="the screen is unknown, not .*; no stick sent"):
+        R.steer(safe, R.PRACTICE_TAB, "lobby")
     assert io.sticks == []
     with pytest.raises(R.Refuse, match="range HUD is gone|no stick sent"):
         R.arrive(io, safe)                                                             # the arrival never walks or turns on it either
@@ -1289,7 +1292,7 @@ def test_the_whole_run_sends_no_stick_once_the_screen_goes_unknown_mid_steering(
 def test_a_lost_ring_on_a_known_screen_still_jiggles_to_find_it():
     sim = Sim("panel_off", {})                                                         # the panel just opened, cursor faint: a real screen, no ring
     with pytest.raises(R.Refuse, match="cursor ring was not found"):
-        R.steer(R.Safe(sim, log=lambda *_: None), R.RANGE_TILE)
+        R.steer(R.Safe(sim, log=lambda *_: None), R.RANGE_TILE, "practice_panel")
     assert len([i for i in sim.inputs if i[0] == "stick"]) == R.MAX_MISSES
 
 
@@ -1312,7 +1315,7 @@ class Released:
     def sleep(self, s):
         pass
 
-    def stick(self, *a):
+    def stick(self, *a, **kw):
         raise Boom("boom") if self.fail else R.Refuse("stop")
 
 
@@ -1370,3 +1373,60 @@ def test_a_tooltip_that_does_not_fit_the_cursor_position_is_not_a_proof(monkeypa
     assert R.on_spiderman(f).ok
     monkeypatch.setattr(R, "find_cursor", lambda fr: None)                              # no ring: the tooltip alone proves nothing
     assert not R.on_spiderman(f).ok
+
+
+# --- the integrated re-review (b811f21): sticks carry their screen and a fresh, post-settle proof to the pad ---------------------------
+@pytest.mark.parametrize("method", ["stick", "rstick"])
+def test_a_stick_on_a_two_second_old_proof_is_refused(monkeypatch, method):
+    """A classify delayed by 2 s still wrote either stick: buttons had the age check, sticks did not."""
+    f = frame("arrival-spawn-door-ahead")
+    live, calls, clock = make_live(monkeypatch, Screen(after=f))
+    classify = R.classify
+
+    def slow(fr):
+        result = classify(fr)
+        clock.t += 2.0
+        return result
+
+    monkeypatch.setattr(R, "classify", slow)
+    with pytest.raises(R.Refuse, match="s old"):
+        getattr(live, method)(0.45, 0.0, 0.1)
+    assert touched(calls) == []
+
+
+@pytest.mark.parametrize("pose", ["arrival-spawn-door-ahead", "arrival-spawn-wall-left-of-door"])
+def test_an_arrival_stick_never_lands_on_the_lobby_that_replaced_the_range(monkeypatch, pose):
+    """Arrival's look sees the range, Safe's gate sees the range, the pad's own frame is the lobby with the cursor on TRY COMPETITIVE:
+    a recognized screen is not the screen the stick is for, so nothing is written."""
+    ranged, lobby = frame(pose), frame("lobby-cursor-on-try-competitive")
+    live, calls, _ = make_live(monkeypatch, Screen(ranged, ranged, lobby, after=lobby))
+    with pytest.raises(R.Refuse, match="the screen is lobby, not in_range"):
+        R.arrive(live, R.Safe(live, log=lambda *_: None))
+    assert touched(calls) == []
+
+
+def test_menu_steering_is_bound_to_its_own_screen_at_the_pad(monkeypatch):
+    lobby, hero = frame("lobby-cursor-far"), frame("heroselect-duelists-cursor-off")
+    live, calls, _ = make_live(monkeypatch, Screen(lobby, hero, after=hero))      # the pad's frame is another menu by the time it writes
+    with pytest.raises(R.Refuse, match="the screen is hero_select, not lobby"):
+        R.steer(R.Safe(live, log=lambda *_: None), R.PRACTICE_TAB, "lobby")
+    assert touched(calls) == []
+    with pytest.raises(R.Refuse, match="no stick is ever sent for screen unknown"):
+        live.stick(1.0, 0.0, 0.1, screen="unknown")
+
+
+@pytest.mark.parametrize("method", ["stick", "rstick"])
+def test_a_stick_proof_frame_may_not_predate_the_last_inputs_settling(monkeypatch, method):
+    f = frame("arrival-spawn-door-ahead")
+    live, calls, _ = make_live(monkeypatch, Screen(after=f))
+    real_frame = live.frame
+
+    def frame_from_before_the_input():
+        fr = real_frame()
+        live.frame_t = live.settled_t - 0.1                                             # fresh by age, but taken before the last input settled
+        return fr
+
+    live.frame = frame_from_before_the_input
+    with pytest.raises(R.Refuse, match="predates the last input's settling"):
+        getattr(live, method)(0.45, 0.0, 0.1)
+    assert touched(calls) == []

@@ -505,14 +505,23 @@ class Live:
         self.pad.reset()
         self.pad.update()
 
-    def _gate_stick(self):
-        f = self.frame()
-        screen = classify(f)
+    def _gate_stick(self, screen):
+        """A stick moves only on the screen its caller is working on (a recognized screen is not an acceptable one: an arrival stick
+        must not land on the lobby's cursor), proven on a frame taken after the last input settled and still fresh at the write."""
         if screen not in STICK_OK:
-            raise Refuse(f"the screen is {screen}; no stick sent", f)
+            raise Refuse(f"no stick is ever sent for screen {screen}")
+        f = self.frame()
+        now = classify(f)
+        if now != screen:
+            raise Refuse(f"the screen is {now}, not {screen}; no stick sent", f)
+        if self.frame_t < self.settled_t:
+            raise Refuse("the stick's proof frame predates the last input's settling; no stick sent", f)
+        age = self.clock() - self.frame_t
+        if age > MAX_PROOF_AGE_S:
+            raise Refuse(f"the stick's proof is {age:.2f} s old (limit {MAX_PROOF_AGE_S} s); no stick sent", f)
 
-    def stick(self, x, y, secs):
-        self._gate_stick()
+    def stick(self, x, y, secs, screen="in_range"):
+        self._gate_stick(screen)
         try:
             self.pad.left_joystick_float(x, y)
             self.pad.update()
@@ -522,8 +531,8 @@ class Live:
         self.sleep(0.25)
         self.settled_t = self.clock()
 
-    def rstick(self, x, y, secs):
-        self._gate_stick()
+    def rstick(self, x, y, secs, screen="in_range"):
+        self._gate_stick(screen)
         try:
             self.pad.right_joystick_float(x, y)
             self.pad.update()
@@ -583,19 +592,19 @@ class Safe:
     def sleep(self, s):
         self.io.sleep(s)
 
-    def _gate_stick(self):
+    def _gate_stick(self, screen):
         f = self.io.frame()
-        screen = classify(f)
-        if screen not in STICK_OK:
-            raise Refuse(f"the screen is {screen}; no stick sent", f)
+        now = classify(f)
+        if screen not in STICK_OK or now != screen:
+            raise Refuse(f"the screen is {now}, not {screen}; no stick sent", f)
 
-    def stick(self, x, y, secs):
-        self._gate_stick()
-        self.io.stick(x, y, secs)
+    def stick(self, x, y, secs, screen="in_range"):
+        self._gate_stick(screen)
+        self.io.stick(x, y, secs, screen=screen)
 
-    def rstick(self, x, y, secs):
-        self._gate_stick()
-        self.io.rstick(x, y, secs)
+    def rstick(self, x, y, secs, screen="in_range"):
+        self._gate_stick(screen)
+        self.io.rstick(x, y, secs, screen=screen)
 
     def press(self, button, proof_fn=None):
         f = self.io.frame()  # current, and re-taken by the pad layer at the press
@@ -644,7 +653,7 @@ class Reach:
         return max(0.0, a * (DEADBAND_S - c))
 
 
-def steer(io, zone, locate=None, done=None):
+def steer(io, zone, screen, locate=None, done=None):
     """Nudge the cursor into `zone`, one axis at a time (l4_menu's axis rule). Bounded: at most MAX_STEPS nudges.
 
     `done(frame)` is an independent way to know the cursor is where it must be (hero select: the game's tooltip names the hero); when it
@@ -665,7 +674,7 @@ def steer(io, zone, locate=None, done=None):
             misses, prev = misses + 1, None
             if misses > MAX_MISSES:
                 raise Refuse("the cursor ring was not found", f)
-            io.stick(-1.0 if misses % 2 else 0.0, 0.0 if misses % 2 else 1.0, 0.12)   # (through Safe: an unknown screen sends nothing)
+            io.stick(-1.0 if misses % 2 else 0.0, 0.0 if misses % 2 else 1.0, 0.12, screen=screen)   # only on the menu being steered
             continue
         if prev:
             axis, sign, secs, before = prev
@@ -681,7 +690,7 @@ def steer(io, zone, locate=None, done=None):
         if abs(d) < 0.7 * least:  # nearer than the shortest tap can reach: back off by it, then come back
             sign, d = -sign, least
         secs = reach[axis].secs(abs(d))
-        io.stick(sign if axis == "x" else 0.0, -sign if axis == "y" else 0.0, secs)  # stick up = screen up
+        io.stick(sign if axis == "x" else 0.0, -sign if axis == "y" else 0.0, secs, screen=screen)  # stick up = screen up
         prev = (axis, sign, secs, pos)
     raise Refuse(f"the cursor did not reach the {zone.name} in {MAX_STEPS} nudges", io.frame())
 
@@ -724,15 +733,15 @@ def arrive(io, safe):
         plaza = 0
         x = door(f)
         if x is None:  # nothing to walk toward (a wall, the plaza with no bot in view): look around, do not walk blind
-            safe.rstick(YAW_STICK, 0.0, SWEEP_S)
+            safe.rstick(YAW_STICK, 0.0, SWEEP_S, screen="in_range")
             spent += SWEEP_S + 0.15
         elif abs(x - 0.5) > DOOR_TOL:  # the door is off to a side: turn to it first, no walking
             deg = math.degrees(math.atan((x - 0.5) * 1280.0 / FOCAL))
             secs = min(0.6, abs(deg) / YAW_DEG_S)
-            safe.rstick(math.copysign(YAW_STICK, deg), 0.0, secs)
+            safe.rstick(math.copysign(YAW_STICK, deg), 0.0, secs, screen="in_range")
             spent += secs + 0.15
         else:
-            safe.stick(0.0, 1.0, WALK_CHUNK_S)
+            safe.stick(0.0, 1.0, WALK_CHUNK_S, screen="in_range")
             spent += WALK_CHUNK_S + 0.25
         f = look()
     else:
@@ -759,11 +768,11 @@ def run(io, log=print):
             arrive(io, safe)
             return
         if screen == "lobby":
-            steer(safe, PRACTICE_TAB)
+            steer(safe, PRACTICE_TAB, "lobby")
             safe.press("A", on_practice_tab)
             wait_for(io, {"practice_panel"}, 10)
         elif screen == "practice_panel":
-            steer(safe, RANGE_TILE)
+            steer(safe, RANGE_TILE, "practice_panel")
             safe.press("A", on_practice_range_tile)
             wait_for(io, {"hero_select", "in_range"}, 40)  # loading screens between are unknown: nothing is sent
         elif screen == "hero_select":
@@ -775,7 +784,7 @@ def run(io, log=print):
             f = io.frame()
             if hero_tab(f) != "duelists":
                 raise Refuse(f"the hero tab is {hero_tab(f)} after RB, not duelists", f)
-            steer(safe, SPIDER_SLOT, done=lambda fr: on_spiderman(fr).ok)   # the tooltip beside the ring counts; the tooltip alone does not
+            steer(safe, SPIDER_SLOT, "hero_select", done=lambda fr: on_spiderman(fr).ok)   # the tooltip beside the ring counts; the tooltip alone does not
             safe.press("A", on_spiderman)
             safe.press("X")  # hero select only: Safe re-classifies the frame first
             wait_for(io, {"in_range"}, 40)
