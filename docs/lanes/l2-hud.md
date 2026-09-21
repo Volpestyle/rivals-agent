@@ -1505,6 +1505,137 @@ single misread "40" or "25", the first max read of its segment, becomes the
   but not the heal (the max change at 11.9 is +250 against +258). R1 is the
   smaller rule.
 
+### Team-up variant on the train sections (measured, VUH-1306)
+
+Read-only, by eye on native frames (`data/experiments/b0/frames/<source>/`), one
+tile of the team-up slot at the start, middle and end of each own-play segment
+where no countdown was read. The two icons: Symbiote Bond (Venom) a jagged
+radial burst, 15 s; Parker Power-Up (Peni Parker) a bomb, 10 s on this patch
+(`docs/spiderman-kit.md`).
+
+**The variant never changes within either session.** Every segment where the
+icon is legible shows Symbiote Bond: DayMR 37 of 48 segments (one more, seg 18,
+shows only its countdown), ReqMR 21 of 32. No bomb appears on either source. The
+rest are short stretches (1 to 23 icon frames) where no team-up icon is legible:
+another screen, another hero's ability row kept as own play for a few frames,
+or a blur.
+
+| source | seg | t | variant seen | sure | frame (middle tile) |
+|---|---|---|---|---|---|
+| Day | 0 | 0.0–2.6 | Symbiote Bond (jagged radial burst) | high | `daymr-2879354299-21660-900s/000014.jpg` |
+| Day | 1 | 4.5–8.1 | Symbiote Bond (jagged radial burst) | high | `daymr-2879354299-21660-900s/000064.jpg` |
+| Day | 2 | 8.9–41.5 | Symbiote Bond (jagged radial burst) | high | `daymr-2879354299-21660-900s/000253.jpg` |
+| Day | 3 | 41.8–59.8 | Symbiote Bond (jagged radial burst) | high | `daymr-2879354299-21660-900s/000509.jpg` |
+| Day | 4 | 60.3–61.4 | Symbiote Bond (jagged radial burst) | high | `daymr-2879354299-21660-900s/000610.jpg` |
+| Day | 5 | 62.6–63.5 | Symbiote Bond (jagged radial burst) | high | `daymr-2879354299-21660-900s/000632.jpg` |
+| Day | 6 | 63.8–75.2 | Symbiote Bond (jagged radial burst) | high | `daymr-2879354299-21660-900s/000696.jpg` |
+| Day | 7 | 85.4–101.1 | Symbiote Bond (jagged radial burst) | high | `daymr-2879354299-21660-900s/000930.jpg` |
+| Day | 8 | 101.6–145.6 | Symbiote Bond (jagged radial burst) | high | `daymr-2879354299-21660-900s/001379.jpg` |
+| Day | 9 | 152.5–152.5 | none legible (crossed slashes: another screen) | — | `daymr-2879354299-21660-900s/001526.jpg` |
+| Day | 10 | 153.2–153.2 | none legible (another screen) | — | `daymr-2879354299-21660-900s/001533.jpg` |
+| Day | 11 | 154.6–155.4 | none legible (another hero's ability icon) | — | `daymr-2879354299-21660-900s/001551.jpg` |
+| Day | 12 | 155.8–170.1 | Symbiote Bond (jagged radial burst) | high | `daymr-2879354299-21660-900s/001610.jpg` |
+| Day | 13 | 170.5–191.8 | Symbiote Bond (jagged radial burst) | high | `daymr-2879354299-21660-900s/001841.jpg` |
+| Day | 14 | 202.1–213.5 | Symbiote Bond (jagged radial burst) | high | `daymr-2879354299-21660-900s/002079.jpg` |
+| Day | 15 | 214.1–236.9 | Symbiote Bond (jagged radial burst) | high | `daymr-2879354299-21660-900s/002205.jpg` |
+| Day | 16 | 237.2–282.8 | Symbiote Bond (jagged radial burst) | high | `daymr-2879354299-21660-900s/002698.jpg` |
+| Day | 17 | 285.4–300.6 | Symbiote Bond (jagged radial burst) | high | `daymr-2879354299-21660-900s/002915.jpg` |
+| Day | 18 | 300.9–306.7 | slot drawn, countdown only (10, 10, 8) | no icon | `daymr-2879354299-21660-900s/003034.jpg` |
+| Day | 19 | 313.4–313.4 | none legible (blurred) | — | `daymr-2879354299-21660-900s/003135.jpg` |
+| Day | 20 | 315.8–316.5 | none legible (another hero's ability icon) | — | `daymr-2879354299-21660-900s/003163.jpg` |
+| Day | 21 | 316.8–352.6 | Symbiote Bond (jagged radial burst) | high | `daymr-2879354299-21660-900s/003261.jpg` |
+| Day | 22 | 356.1–356.3 | none legible (another hero's ability icon) | — | `daymr-2879354299-21660-900s/003563.jpg` |
+| Day | 23 | 388.4–390.6 | none legible (white, blurred) | — | `daymr-2879354299-21660-900s/003896.jpg` |
+| Day | 24 | 576.6–576.9 | none legible (a menu (Spider-Man portrait)) | — | `daymr-2879354299-21660-900s/005769.jpg` |
+| Day | 25 | 588.3–594.1 | Symbiote Bond (jagged radial burst) | high | `daymr-2879354299-21660-900s/005913.jpg` |
+| Day | 26 | 594.7–595.7 | Symbiote Bond (jagged radial burst) | high | `daymr-2879354299-21660-900s/005953.jpg` |
+| Day | 27 | 598.1–598.9 | Symbiote Bond (jagged radial burst) | high | `daymr-2879354299-21660-900s/005986.jpg` |
+| Day | 28 | 599.5–604.4 | Symbiote Bond (jagged radial burst) | high | `daymr-2879354299-21660-900s/006021.jpg` |
+| Day | 29 | 604.8–606.9 | Symbiote Bond (jagged radial burst) | high | `daymr-2879354299-21660-900s/006060.jpg` |
+| Day | 30 | 607.4–636.9 | Symbiote Bond (jagged radial burst) | high | `daymr-2879354299-21660-900s/006178.jpg` |
+| Day | 31 | 637.9–666.7 | Symbiote Bond (jagged radial burst) | high | `daymr-2879354299-21660-900s/006548.jpg` |
+| Day | 32 | 668.5–683.7 | Symbiote Bond (jagged radial burst) | high | `daymr-2879354299-21660-900s/006732.jpg` |
+| Day | 33 | 693.8–696.2 | Symbiote Bond (jagged radial burst) | high | `daymr-2879354299-21660-900s/006951.jpg` |
+| Day | 34 | 698.0–709.2 | Symbiote Bond (jagged radial burst) | high | `daymr-2879354299-21660-900s/007010.jpg` |
+| Day | 35 | 719.4–734.0 | Symbiote Bond (jagged radial burst) | high | `daymr-2879354299-21660-900s/007235.jpg` |
+| Day | 36 | 734.4–735.1 | none legible (blurred) | — | `daymr-2879354299-21660-900s/007352.jpg` |
+| Day | 37 | 737.4–743.2 | Symbiote Bond (jagged radial burst) | high | `daymr-2879354299-21660-900s/007429.jpg` |
+| Day | 38 | 743.5–745.5 | Symbiote Bond (jagged radial burst) | high | `daymr-2879354299-21660-900s/007446.jpg` |
+| Day | 39 | 745.8–754.4 | Symbiote Bond (jagged radial burst) | high | `daymr-2879354299-21660-900s/007502.jpg` |
+| Day | 40 | 754.8–769.1 | Symbiote Bond (jagged radial burst) | high | `daymr-2879354299-21660-900s/007621.jpg` |
+| Day | 41 | 769.5–770.4 | Symbiote Bond (jagged radial burst) | high | `daymr-2879354299-21660-900s/007701.jpg` |
+| Day | 42 | 771.4–780.8 | Symbiote Bond (jagged radial burst) | high | `daymr-2879354299-21660-900s/007762.jpg` |
+| Day | 43 | 781.1–781.3 | Symbiote Bond (jagged radial burst) | high | `daymr-2879354299-21660-900s/007813.jpg` |
+| Day | 44 | 781.8–793.0 | Symbiote Bond (jagged radial burst) | high | `daymr-2879354299-21660-900s/007875.jpg` |
+| Day | 45 | 793.7–795.0 | Symbiote Bond (jagged radial burst) | high | `daymr-2879354299-21660-900s/007945.jpg` |
+| Day | 46 | 795.6–802.5 | Symbiote Bond (jagged radial burst) | high | `daymr-2879354299-21660-900s/007979.jpg` |
+| Day | 47 | 803.1–803.2 | none legible (blurred) | — | `daymr-2879354299-21660-900s/008033.jpg` |
+| Req | 0 | 0.0–5.5 | Symbiote Bond (jagged radial burst) | high | `reqmr-2873352801-1980-900s/000029.jpg` |
+| Req | 1 | 7.2–54.0 | Symbiote Bond (jagged radial burst) | high | `reqmr-2873352801-1980-900s/000271.jpg` |
+| Req | 2 | 54.8–58.0 | none legible (grey blur) | — | `reqmr-2873352801-1980-900s/000581.jpg` |
+| Req | 3 | 58.5–72.0 | Symbiote Bond (jagged radial burst) | high | `reqmr-2873352801-1980-900s/000672.jpg` |
+| Req | 4 | 72.7–110.6 | Symbiote Bond (jagged radial burst) | high | `reqmr-2873352801-1980-900s/000844.jpg` |
+| Req | 5 | 111.3–150.2 | Symbiote Bond (jagged radial burst) | high | `reqmr-2873352801-1980-900s/001244.jpg` |
+| Req | 6 | 150.9–152.2 | none legible (dark, no slot) | — | `reqmr-2873352801-1980-900s/001522.jpg` |
+| Req | 7 | 194.4–197.8 | Symbiote Bond (jagged radial burst) | high | `reqmr-2873352801-1980-900s/001962.jpg` |
+| Req | 8 | 198.3–243.3 | Symbiote Bond (jagged radial burst) | high | `reqmr-2873352801-1980-900s/002209.jpg` |
+| Req | 9 | 246.0–274.6 | Symbiote Bond (jagged radial burst) | high | `reqmr-2873352801-1980-900s/002679.jpg` |
+| Req | 10 | 275.7–275.7 | none legible (blurred) | — | `reqmr-2873352801-1980-900s/002758.jpg` |
+| Req | 11 | 283.6–283.6 | none legible (white card: another screen) | — | `reqmr-2873352801-1980-900s/002837.jpg` |
+| Req | 12 | 284.8–304.7 | Symbiote Bond (jagged radial burst) | high | `reqmr-2873352801-1980-900s/002927.jpg` |
+| Req | 13 | 313.8–314.0 | none legible (another hero's ability icon) | — | `reqmr-2873352801-1980-900s/003140.jpg` |
+| Req | 14 | 315.1–333.5 | Symbiote Bond (jagged radial burst) | high | `reqmr-2873352801-1980-900s/003244.jpg` |
+| Req | 15 | 334.0–342.6 | Symbiote Bond (jagged radial burst) | high | `reqmr-2873352801-1980-900s/003384.jpg` |
+| Req | 16 | 342.9–354.8 | Symbiote Bond (jagged radial burst) | high | `reqmr-2873352801-1980-900s/003490.jpg` |
+| Req | 17 | 355.0–384.5 | Symbiote Bond (jagged radial burst) | high | `reqmr-2873352801-1980-900s/003659.jpg` |
+| Req | 18 | 385.0–385.8 | none legible (grey blur) | — | `reqmr-2873352801-1980-900s/003859.jpg` |
+| Req | 19 | 386.2–386.2 | none legible (no icon frame) | — | — |
+| Req | 20 | 428.6–434.2 | Symbiote Bond (jagged radial burst) | high | `reqmr-2873352801-1980-900s/004315.jpg` |
+| Req | 21 | 435.4–462.9 | Symbiote Bond (jagged radial burst) | high | `reqmr-2873352801-1980-900s/004493.jpg` |
+| Req | 22 | 464.3–515.9 | Symbiote Bond (jagged radial burst) | high | `reqmr-2873352801-1980-900s/004824.jpg` |
+| Req | 23 | 526.5–538.6 | Symbiote Bond (jagged radial burst) | high | `reqmr-2873352801-1980-900s/005344.jpg` |
+| Req | 24 | 539.9–541.2 | Symbiote Bond (jagged radial burst) | high | `reqmr-2873352801-1980-900s/005407.jpg` |
+| Req | 25 | 541.6–589.1 | Symbiote Bond (jagged radial burst) | high | `reqmr-2873352801-1980-900s/005729.jpg` |
+| Req | 26 | 589.7–646.1 | Symbiote Bond (jagged radial burst) | high | `reqmr-2873352801-1980-900s/006235.jpg` |
+| Req | 27 | 656.4–657.6 | none legible (overlay) | — | `reqmr-2873352801-1980-900s/006569.jpg` |
+| Req | 28 | 657.9–684.0 | Symbiote Bond (jagged radial burst) | high | `reqmr-2873352801-1980-900s/006677.jpg` |
+| Req | 29 | 689.7–689.7 | none legible (another hero's ability icon) | — | `reqmr-2873352801-1980-900s/006898.jpg` |
+| Req | 30 | 690.1–692.0 | none legible (another hero's ability icon) | — | `reqmr-2873352801-1980-900s/006919.jpg` |
+| Req | 31 | 714.1–715.3 | none legible (another screen) | — | `reqmr-2873352801-1980-900s/007148.jpg` |
+
+**A reader is not needed for these two sources.** The icon matcher
+(`identify_slot`) has one generic `teamup` template and cannot separate the two
+by construction; a per-variant template was not built, because a declaration
+covers both sessions. It becomes necessary for a source whose partner changes
+mid-match, which neither of these does.
+
+**What the variant changes** (current reader, each segment's team-up events
+extracted as now and with Symbiote Bond's 15 s declared):
+
+| source | now: `ability_uncertain` | declared: `ability_cast` | declared: still uncertain |
+|---|---|---|---|
+| Day | 14 | 14 (first read 15 on all; width 0.8–0.9 s) | 0 |
+| Req | 15 | 13 (first read 15 on all; width 0.9 s) | 2 |
+
+The intervals do not move: a confirmed first read of 15 already excludes the
+10 s variant, so the union bounds are the 15 s ones. Declaring the variant
+changes the kind, not the width. Req's two that stay uncertain: (7.2, 7.8], the
+segment opening at 7.2 with the first "15" at 7.8, so the start window
+(6.8, 7.8] crosses the segment start; and (121.7, 136.9], a single "1" that never
+confirms (single reads never narrow).
+
+- **R3, a declared team-up variant.** A source's recipe may carry a team-up
+  variant declaration with its provenance (by-eye audit, frames named) and the
+  time ranges it covers. Within them the kit uses that variant's length and
+  team-up timers classify as for any known length; outside them, or with no
+  declaration, the variant stays unknown and the union rule applies. No
+  declaration is inferred. A source whose partner changes gets one range per
+  partner, or a per-variant icon reader measured before use.
+  **Regression frames**: Day team-up 297.4 (becomes a cast, (296.5, 297.4]);
+  Req 642.5 (a cast, (641.6, 642.5]); Req 7.2–7.8 (stays uncertain: crosses the
+  segment start); Req 121.7–136.9 (stays uncertain: one unconfirmed read); and
+  a source with no declaration, whose team-up events are unchanged.
+
 ## Retained sections: how much is actually own-Spider-Man play
 
 Four 15-minute 1080p60 expert sections, sampled at an exact 10 Hz and segmented.
