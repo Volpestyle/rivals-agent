@@ -36,15 +36,16 @@ def run(at, live_factory=Live, make_pad=None, clock=time.perf_counter, wall=time
     if make_pad is None:
         import vgamepad as vg
         make_pad = vg.VX360Gamepad
-    stamps, rec = {}, {}
+    stamps, rec = {}, {"reports": [], "failed": None}
 
     def stamp(name):
         stamps[name] = {"perf": round(clock(), 4), "wall": round(wall(), 4)}
 
     def pad():
+        nonlocal rec
         p = make_pad()
         stamp("attached")                                              # the constructor has returned: the drift starts about now
-        rec.update(watch_pad(p, clock))
+        rec = watch_pad(p, clock)                                      # the observer's OWN record: a failure it notes later is seen here
         return p
 
     def proven_frame(after):

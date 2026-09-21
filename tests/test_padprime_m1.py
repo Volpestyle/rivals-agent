@@ -109,3 +109,25 @@ def test_a_refused_write_is_reported_once_not_retried():
                 sleep=clock.sleep, guard=lambda f: True, idle=lambda f: False)
     assert out["outcome"].startswith("stopped: RangeLost") and out["first_non_neutral_update_returned"] is None
     assert all(not any(s.get(k) for k in ("lx", "ly", "rx", "ry", "lt", "rt")) for s in log)
+
+
+def test_a_partial_observer_failure_makes_every_m1_timing_unavailable():
+    """Review of 948da41: M1 copied the observer's record, so a failure noted after the attach stayed invisible and M1 reported partial
+    timings as valid. One missed observation (the second) must leave every report-derived field None and say why."""
+    clock, log, calls = Clock(), [], [0]
+
+    def flaky():
+        calls[0] += 1
+        if calls[0] == 2:
+            raise OSError("one missed observation")
+        return clock()
+    real = M.watch_pad
+    M.watch_pad = lambda p, _clock: real(p, flaky)
+    try:
+        out = M.run("earliest", live_factory=factory(clock, log), make_pad=lambda: Device(log), clock=clock, wall=clock,
+                    sleep=clock.sleep, guard=lambda f: True, idle=lambda f: False)
+    finally:
+        M.watch_pad = real
+    assert out["outcome"] == "ok" and out["update_timing"].startswith("unavailable") and "one missed observation" in out["update_timing"]
+    assert all(out[k] is None for k in ("first_non_neutral_update_returned", "last_non_neutral_update_returned",
+                                        "first_neutral_update_returned_after", "reports"))
