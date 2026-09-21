@@ -16,6 +16,7 @@ import time
 from pathlib import Path
 
 import cv2
+import pytest
 
 from perception.hud import SLOT_CX, read, read_tagged
 
@@ -220,6 +221,7 @@ def test_tracer_reads_at_native_resolution():
     assert tp / (tp + fn) >= 0.90, f"recall {tp / (tp + fn):.3f}"
 
 
+@pytest.mark.corpus
 def test_a_slot_under_chat_reads_unknown_not_a_verdict():
     """A stream's chat runs straight through the ability row. The availability
     reader used to commit to True/False on a slot it could not see; those were
@@ -253,6 +255,7 @@ def test_a_slot_under_chat_reads_unknown_not_a_verdict():
 
 # --- which ability is in which slot ---------------------------------------
 
+@pytest.mark.corpus
 def test_the_same_slot_holds_different_abilities_on_different_sources():
     """The finding this machinery exists for: a slot position names no ability.
 

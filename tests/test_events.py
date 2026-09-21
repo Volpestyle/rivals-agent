@@ -382,6 +382,7 @@ def _clip_frame(path, seconds):
         cap.release()
 
 
+@pytest.mark.corpus
 def test_killcam_banner_is_read_off_the_clip():
     """+50 s of the DayMR clip is the killcam: PAST LIVES beside the countdown."""
     frame = _clip_frame(DAY_CLIP, 50.0)
@@ -390,6 +391,7 @@ def test_killcam_banner_is_read_off_the_clip():
     assert banner_word(frame) == "killcam"
 
 
+@pytest.mark.corpus
 def test_the_killcam_shows_someone_elses_hud():
     """The danger the reason exists for: a *readable* HUD that is not ours."""
     frame = _clip_frame(DAY_CLIP, 50.2)
@@ -400,6 +402,7 @@ def test_the_killcam_shows_someone_elses_hud():
     assert hud_there.hp == 275, hud_there.hp   # the killer's health, not ours
 
 
+@pytest.mark.corpus
 def test_scoreboard_overlay_leaves_the_hud_unreadable():
     """+43 s: the scoreboard covers the HUD, so hp and bar must be unknown."""
     frame = _clip_frame(DAY_CLIP, 43.0)
@@ -558,6 +561,7 @@ def test_from_video_samples_an_exact_window_and_records_how(tmp_path):
     assert not any((tmp_path / "work").iterdir())    # no frames left behind
 
 
+@pytest.mark.corpus
 def test_the_demonstration_directory_holds_one_format_throughout():
     """The loader refuses anything but the current format; this names the files
     that would be refused. Local data only -- skips where it is absent."""
@@ -590,6 +594,7 @@ def _vod_frame(path, seconds):
         cap.release()
 
 
+@pytest.mark.corpus
 def test_doctor_strange_is_not_spider_man():
     """The box annotator's find: a minute of DayMR on Doctor Strange (650 hp)
     read as own-Spider-Man, because Strange scores inside Spider-Man's band on
@@ -609,6 +614,7 @@ def test_doctor_strange_is_not_spider_man():
         assert playing_spiderman(_vod_frame(STRANGE_VOD, seconds)) is not False, seconds
 
 
+@pytest.mark.corpus
 def test_the_strange_stretch_is_no_longer_a_play_segment():
     """End to end on the retained section: no segment may cover 822-878 s."""
     import json
@@ -1621,6 +1627,7 @@ def _native_reads(src):
     return rows, mapping
 
 
+@pytest.mark.corpus
 @pytest.mark.parametrize("src", ["daymr-2879354299-21660-900s", "reqmr-2873352801-1980-900s"])
 def test_prefix_invariant_on_every_real_segment(src):
     """Every prefix of every own-play segment of both train sections, and the

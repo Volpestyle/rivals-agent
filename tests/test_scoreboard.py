@@ -16,6 +16,7 @@ import sys
 from pathlib import Path
 
 import cv2
+import pytest
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
@@ -62,6 +63,7 @@ def test_range_scoreboard_is_detected_at_both_sizes():
         assert is_scoreboard(frame) is True, (path.name, rule_score(frame))
 
 
+@pytest.mark.corpus
 def test_match_scoreboard_is_detected_on_a_stream():
     """A different HUD, a different resolution, the same rule under the headers."""
     seen = 0
@@ -75,6 +77,7 @@ def test_match_scoreboard_is_detected_on_a_stream():
         assert seen == len(DAY_SCOREBOARD_S)
 
 
+@pytest.mark.corpus
 def test_ordinary_play_is_not_a_scoreboard():
     for seconds in DAY_PLAY_S:
         frame = _clip_frame(seconds)
