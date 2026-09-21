@@ -34,6 +34,7 @@ from typing import Callable
 from . import brain as scripted
 from .brain import Memory
 from .controller import NEUTRAL, Controller, RangeLost
+from .demos import COOLDOWNS
 from .intents import Idle
 from .jev import pct
 from .replay import label
@@ -328,7 +329,10 @@ def spread(xs):
 class Loop:
     def __init__(self, source, pad, percept, decide=scripted.decide, *, log=None, controller=None, threaded=False,
                  reflex_hz=REFLEX_HZ, decision_hz=DECISION_HZ, max_s=MAX_S, keepalive_s=KEEPALIVE_S, warmup=True,
-                 stale_s=STALE_S, scoreboard=True, scoreboard_every_s=None, brain_name="scripted", tracker=None):
+                 stale_s=STALE_S, scoreboard=True, scoreboard_every_s=None, brain_name="scripted", tracker=None, cooldowns="unknown"):
+        if cooldowns not in COOLDOWNS:
+            raise ValueError(f"cooldowns must be one of {COOLDOWNS}, not {cooldowns!r}")
+        self.cooldowns = cooldowns   # the range's "No Ability Cooldown": off = ON (infinite ammo, no cooldown numbers), normal = OFF
         self.source, self.pad, self.p, self.log, self.ctrl = source, pad, percept, log, controller or Controller()
         lock, tracker = threading.Lock(), tracker or Tracker()
 
@@ -517,7 +521,7 @@ class Loop:
         span = (self.last_t - self.t0) if self.t0 is not None and self.last_t is not None else 0.0
         n, dec = len(self.tick_ms), self.decider
         budget = 1000.0 / self.reflex_hz
-        return {"stop": self.stop, "brain": self.brain_name, "seconds": round(span, 3), "ticks": n,
+        return {"stop": self.stop, "brain": self.brain_name, "cooldowns": self.cooldowns, "seconds": round(span, 3), "ticks": n,
                 "reflex_hz": round(n / span, 1) if span else None, "period_ms": spread(self.periods),
                 "tick_ms": spread(self.tick_ms), "aim_ms": spread(self.aim_ms),
                 "over_budget": sum(ms > budget for ms in self.tick_ms), "budget_ms": round(budget, 2),
@@ -542,6 +546,8 @@ def main(argv=None):
     mode.add_argument("--dry", metavar="RUN_DIR", help="offline: replay a recorded run (frames.jsonl + jpgs) through the loop, fake pad")
     mode.add_argument("--live", action="store_true", help="the PC, desktop session, game in the Practice Range, one real pad")
     ap.add_argument("--brain", choices=("scripted", "jev"), default="scripted")
+    ap.add_argument("--cooldowns", choices=COOLDOWNS, help="the recording's resource regime: the range's Practice Settings 'No Ability Cooldown' "
+                    "ON is `off`, OFF is `normal`. Required with --live, and only off or normal there; written into meta.json and the manifest")
     ap.add_argument("--run", default=time.strftime("%Y%m%d-%H%M%S"), help="live: record to data/l1/<run>")
     ap.add_argument("--out", help="dry: also write the recording here")
     ap.add_argument("--limit", type=int, help="dry: only the first N frames")
@@ -553,6 +559,9 @@ def main(argv=None):
     ap.add_argument("--scoreboard-every", type=float, help="also hold BACK for the scoreboard every N s (default: only at the end)")
     ap.add_argument("--no-scoreboard", action="store_true")
     a = ap.parse_args(argv)
+    if a.live and a.cooldowns not in ("off", "normal"):
+        ap.error("--live needs --cooldowns off|normal (no default): a recording made with No Ability Cooldown ON is a different regime, "
+                 "and a live run is one the operator can see")
 
     if a.live:
         source = pad = LiveIO()                         # confirms the range HUD before the pad opens
@@ -562,7 +571,7 @@ def main(argv=None):
         pad = FakePad(board=source.imread(str(source.items[0][1])) if source.items else None)
     loop = Loop(source, pad, default_perception(), make_brain(a.brain), threaded=threaded, brain_name=a.brain,
                 log=RunLog(out, save_fps) if out else None, reflex_hz=a.reflex_hz, decision_hz=a.decision_hz, max_s=a.max_s,
-                scoreboard=not a.no_scoreboard, scoreboard_every_s=a.scoreboard_every)
+                scoreboard=not a.no_scoreboard, scoreboard_every_s=a.scoreboard_every, cooldowns=a.cooldowns or "unknown")
     print(json.dumps(loop.run(), indent=1))
     return 0
 

@@ -7,13 +7,16 @@ frames with a fake pad and, on the PC, on dxcam and L4's `Live`. Stdlib only at 
 
 ```sh
 uv run --group perception python -m agent.loop --dry data/l1/tagrun0 [--threaded] [--out DIR] [--limit N]   # offline, fake pad
-python -m agent.loop --live --run NAME [--brain jev] [--max-s 300]     # the PC, desktop session, game in the range (untested)
-uv run pytest tests/test_loop.py                                       # 44 stdlib tests
+python -m agent.loop --live --cooldowns off|normal --run NAME [--brain jev] [--max-s 300]   # the PC, desktop session, game in the range (untested)
+uv run pytest tests/test_loop.py                                       # 46 stdlib tests
 uv run --group perception pytest tests/test_loop_frames.py             # 8 tests on real frames (tagrun0 needs data/)
 ```
 
 `--live` is launched the way `scripts/l4_trial.py` is: the PC's own Python (dxcam, vgamepad, opencv, numpy), repo root as the
-working directory. It records to `data/l1/<run>/`, opens ONE pad, and stops on any guard below. `--brain jev` reads `JEV_*`
+working directory. It records to `data/l1/<run>/`, opens ONE pad, and stops on any guard below. `--cooldowns off|normal` is required with
+`--live`, with no default and no `unknown`: the range's Practice Settings "No Ability Cooldown" ON is `off` (infinite ammo, ult relit in seconds, no cooldown
+numbers), OFF is `normal`. It is a different regime, so it is written into `meta.json` and the manifest, and `agent.demos` refuses to
+mix the two in one split (docs/lanes/demos.md, "Resource regimes"). `--brain jev` reads `JEV_*`
 from the machine's `.env`; the key is never printed or logged.
 
 ## Two rates on one clock
@@ -120,7 +123,7 @@ second each time; unused live).
 
 Every run writes `data/l1/<run>/` in the shape `agent.demos` loads with no manifest, so each run is a labelled
 demonstration: `frames.jsonl` (a row per reflex tick), native `NNNNNN.jpg` at `--save-fps` (10) on a writer thread,
-`scoreboard-*.png`, `meta.json`, and `manifest.jsonl` only when the run had HUD gaps.
+`scoreboard-*.png`, `meta.json` (with `cooldowns`), and `manifest.jsonl` only when the run had HUD gaps.
 
 ```jsonc
 {"t": 12.3456, "pad": {"lx": 0.0, "ly": 1.0, "rx": 0.2, "ry": 0.0, "lt": 0.0, "rt": 0.0, "buttons": []},   // the pad actually sent

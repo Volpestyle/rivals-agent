@@ -1,9 +1,12 @@
 # Re-entry: PLAY lobby to the Practice Range as Spider-Man (VUH-1299)
 
-**Built and tested offline on `tests/fixtures/reentry`; never run live** (L4 owns the desktop). `scripts/reenter.py`
-takes the game from the PLAY lobby into the Practice Range as Spider-Man and stops at the first thing it cannot
-verify. 68 tests (`tests/test_reenter.py`) pass; `--dry-run` classifies a live or saved frame and prints what it would
-do without opening a pad. Handed back for the lead to schedule the live trial.
+**Built and tested offline on `tests/fixtures/reentry`; lead-run only.** `scripts/reenter.py` takes the game from the PLAY
+lobby into the Practice Range as Spider-Man and stops at the first thing it cannot verify. 119 tests (`tests/test_reenter.py`)
+pass; `--dry-run` classifies a live or saved frame and prints what it would do without opening a pad. The live trials
+(2026-09-20) held the safety rules every time (each refusal pressed nothing and exited 1) and found three defects, all fixed offline
+below and none re-run live: **the steering** (a cursor ring on the PRACTICE tab's lower half was never accepted), **the ring finder**
+(on hero select the ring was "not found" with the cursor sitting on Spider-Man) and **the arrival** (it ended inside the spawn room,
+where the idle drop fires).
 
 ## Run it
 
@@ -41,13 +44,13 @@ flowchart TD
   H2 -->|yes| H3[steer into the top-left portrait] --> HP{"proof: duelists tab, on the portrait, it is red"}
   HP -->|no| X2
   HP -->|yes| HA[A] --> HX["X, re-classified as hero select first"] --> HW[wait for the range, 40 s] --> F
-  ARR["HUD guard, walk forward 6 s in 0.5 s chunks, RT once"] --> Z{"HUD hero is Spider-Man?"}
+  ARR["arrival: walk to the door, camera steered from the frames; HUD and idle-banner guard every step;<br/>two frames of the plaza with the bot ahead, else exit 1 after 14 s; then RT once"] --> Z{"HUD hero is Spider-Man?"}
   Z -->|yes| OK[exit 0]
   Z -->|no| X2
 ```
 
 What is sent, and only this: `A` (three places, each behind a proof), `RB` and `X` (hero select only), left-stick
-moves (menus: cursor steering; range: forward), `RT` once (range). Never `START`, never the d-pad, never `X` on the lobby
+moves (menus: cursor steering; range: forward), right-stick turns (range: toward the spawn room's door), `RT` once (range). Never `START`, never the d-pad, never `X` on the lobby
 or the panel. A screen visited more than twice means a press did nothing: STOP, no third try.
 
 ## Rules and where they are enforced
@@ -59,11 +62,14 @@ or the panel. A screen visited more than twice means a press did nothing: STOP, 
 | Unknown screen: send nothing, stop | `run` refuses `unknown`; a real run opens no pad on an unknown first frame | `test_an_unknown_screen_sends_nothing`, `test_a_run_stops_before_opening_a_pad_on_an_unknown_first_frame` |
 | Loading is not "unknown screen": nothing is sent while waiting | `wait_for` (only classifies, never sends) | `test_a_screen_that_never_loads_stops_without_sending_anything_while_it_waits` |
 | Bounded | `MAX_STEPS` 30 nudges, `MAX_MISSES` 4 jiggles, 10 / 40 / 40 s waits, a screen may be visited twice | `test_steering_is_bounded_when_the_cursor_never_moves`, `test_a_press_that_does_nothing_is_not_repeated_forever` |
-| Arrival: walk ~6 s, attack once, confirm the range | `arrive`: the HUD is re-proved before every chunk and before `RT`; the HUD portrait must be Spider-Man | `test_arrival_stops_input_the_moment_the_range_hud_is_gone`, `test_arriving_as_another_hero_is_reported_not_hidden` |
+| Arrival: out of the spawn room, verified, or exit 1 | `arrive`: a fresh frame before every step; the range HUD gone or the idle banner up stops it with no further input; done only when two frames in a row show the plaza with the bot ahead; 14 s budget; only then `RT` once, and the HUD portrait must be Spider-Man | `test_arrival_stops_input_the_moment_the_range_hud_is_gone`, `test_arrival_stops_at_once_on_the_idle_banner`, `test_arrival_that_cannot_confirm_the_plaza_exits_after_its_budget_without_attacking`, `test_a_single_plaza_looking_frame_is_not_enough_to_believe_the_spawn_room_was_left`, `test_arriving_as_another_hero_is_reported_not_hidden` |
 
 Every rule has a test that fails when it is broken: 20 hand mutations of `reenter.py` (each proof check, each `ALLOWED`
 entry, the steering rules, the waits, the arrival checks) were run against the suite in a scratch copy; two slipped
-through at first and now have tests.
+through at first and now have tests. The steering and arrival changes had 14 more (the old tab rectangle, no idle or HUD check, one
+plaza frame instead of two, no budget, turning away from the door, never turning, an unguarded `RT`, no back-off, no learning, edge-pinned
+taps ignored, ...); all 14 are caught; the ring finder and tooltip proof had 8 more (no refinement, a tooltip threshold that accepts anything, no tooltip proof, no
+refusal for another hero's tooltip, `done` ignored or not passed by `run`, no screen check, no tab check), all caught after two gained tests.
 
 ## What each screen looks like (measured on the fixtures, 1280x720 px)
 
@@ -82,9 +88,9 @@ the title requirement fixed it, and a test pins it.
 
 | `A` on | Proof (all must hold) | Measured |
 |---|---|---|
-| lobby | cursor centre inside the PRACTICE tab (x 1168-1256, y 372-394, 5 px margin); TRY COMPETITIVE looks idle | tab edges profiled on the frame with no cursor near it. Of 22 lobby frames: 17 are identically idle (dark share 0.75-0.76, luminance 78.5-78.6), 2 near-idle where the cursor ring overlaps the banner's corner (0.71-0.72, 80-81), 3 highlighted (0.02-0.06, 111-112; one has a different lobby background). Tolerance 0.12 / 12, both ways |
+| lobby | cursor centre inside the drawn PRACTICE tab (rows 377-395, x 1166-1262, slanted, 2 px margin); TRY COMPETITIVE looks idle | tab edges profiled on the frame with no cursor near it and on the live refuse frame (below). Of 22 lobby frames: 17 are identically idle (dark share 0.75-0.76, luminance 78.5-78.6), 2 near-idle where the cursor ring overlaps the banner's corner (0.71-0.72, 80-81), 3 highlighted (0.02-0.06, 111-112; one has a different lobby background). Tolerance 0.12 / 12, both ways |
 | panel | cursor inside the PRACTICE RANGE tile (10 px margin) and not on DOOM MATCH; the range tile dark (< 100), DOOM MATCH bright (> 150) | range tile hovered 43.6-46.4, **un-hovered 223**; DOOM MATCH 232-237 in every panel frame |
-| hero select | duelists tab active; cursor inside the top-left portrait slot (6 px margin); the slot has red in it (`SLOT_RED` 0.03) | red-hue share of the slot: unhovered 0.276, hovered 0.076, another hero 0.005 |
+| hero select | duelists tab active, and Spider-Man under the cursor by either proof: the game's tooltip names SPIDER-MAN (`TOOLTIP_MATCH` 0.75), or the ring is inside the top-left portrait slot (6 px margin) and the slot has red in it (`SLOT_RED` 0.03); a tooltip for another hero refuses | red-hue share of the slot: unhovered 0.276, hovered 0.076, another hero 0.005 |
 | range (after) | the HUD hero portrait has red in it (`HUD_RED` 0.10) | 0.247 on Spider-Man, 0 with it blanked |
 
 The lobby fixture `left-of-practice` puts the cursor on the TIMES SQUARE tab's right end (x 1146), so a press there would
@@ -137,28 +143,87 @@ a larger plain ring (r about 26) otherwise, faint over dark art.
 | heroselect-cursor-on-spiderman | (852,48) | (528,268) **wrong** | (852,48) |
 | in-range | none | (1184,444) **invented** | None |
 
-Ours takes every Hough candidate down to radius 16 and keeps one only if it carries the sprite's signature on
+Ours (the first version) took every Hough candidate down to radius 16 and kept one only if it carried the sprite's signature on
 `min(B, G, R)` (bright only where every channel is bright): a ring bright all the way round (20th percentile of the ring
 samples) with contrast against just outside it, plus, for the hover sprite, a centre dot. No false candidate passed on any
 of the eight frames. The one miss is the faint all-tab cursor, and returning None there is the safe answer: no cursor, no
 press, and the run jiggles the stick (4 tries) and stops. A plain ring-versus-surroundings contrast score does not work: the
 hover ring's translucent interior is brighter than its outside. If L4 wants it, `find_cursor` in `reenter.py` is a drop-in.
 
+**Second live refusal, on hero select (2026-09-20 19:28, `heroselect-spiderman-tooltip-ring-lost.jpg`).** After RB RB the run stopped with
+"no proof for A: the cursor ring was not found" while the cursor sat ON the Spider-Man portrait (Iron Fist previewed: the picker did not
+remember a hero again). The saved frame shows a clear white ring over the red-and-blue portrait, and the finder finds it there, so the
+frame that failed was a neighbour of it: the ring signature is sharply peaked (one pixel off centre its contrast falls from 130 to 50, against a
+threshold of 40 to 70) and the Hough centre is good to only ~1.5 px, whose strongest circles on a busy portrait are other things. With
+Gaussian noise added to the saved frame the old finder missed it 15-30% of the time; under Hough the ring was not even among the 40
+strongest circles. The finder now takes its candidates from a ring template matched against the bright-in-every-channel mask (both sprite
+radii, the six strongest peaks each, on a half-size mask: ~50 ms a native frame) and refines each centre over +-3 px before judging it. It
+finds the ring on every one of 30 noisy copies at sigma 0, 2, 4, 8 and 12, and through JPEG q50; the eight fixtures give the same cursors and
+no false ring on the in-range, black, noise, faint all-tab and panel frames. `test_the_ring_is_found_on_a_busy_portrait_and_through_noise_and_compression`
+pins it.
+
+**A second, independent proof for the hero press: the game's own tooltip.** Hovering a portrait shows "Request to Team-Up with <HERO>" in a
+box that follows the cursor; its white name text is Spider-Man's exactly when the cursor is on his portrait. `tooltip_spiderman` matches that
+name against a template cut from the fixture (normalised correlation on the min-of-channels image, 1280x720 scale): 1.00 on its own frame and
+0.92 on the live one (a different icon, JPEG), at most 0.49 on every other frame, THE PUNISHER's tooltip 0.31. `on_spiderman` now passes on
+either proof, and needs no ring for the first: the tooltip names SPIDER-MAN, or the ring is in the top-left slot and the slot is red (as
+before). The reverse also holds: a tooltip that is up and does not name SPIDER-MAN refuses whatever the ring and the colours say (a red hero in that
+slot would have passed the colour check), and no other screen or tab is ever proven. `steer` takes a `done(frame)` predicate, so on hero
+select it stops the moment the tooltip names the hero instead of jiggling for a ring. Limits: the template comes from two frames (one of them the
+template's source), the tooltip appears only after the cursor has dwelt on the portrait, and it needs the game's language and UI scale as recorded.
+
 ## Steering
 
 `l4_menu`'s closed-loop `goto` is a closure inside `main()`, so it cannot be imported without editing L4's file, which is
-off limits. `steer` reuses its step law (one axis at a time, the x axis while it is more than 9 px off, full stick,
-`0.035 s + d / 700 px/s`) and its jiggle for a hidden cursor. Two additions came from simulating it against a cursor model
-(700 px/s, 35 ms dead time, +-15% noise) instead of trusting the happy path:
+off limits. `steer` keeps its axis rule (one axis at a time, the x axis while it is more than 9 px off) and its jiggle for a hidden
+cursor.
 
-- **A stall.** My first axis rule chose x whenever |dy| <= 9, so a cursor at the right x but 8 px outside the tab's 12 px
-  window got zero-length x nudges until the budget ran out (3 of 12 seeds). Now L4's rule: correct x while it is off by
-  more than 9 px, otherwise y. `test_steering_corrects_y_when_x_is_already_on_target` pins it.
-- **Overshoot.** An axis that reverses direction has overshot, so the real cursor is faster than assumed; its steps halve.
+**The live defect (2026-09-20 18:47, `tests/fixtures/reentry/lobby-cursor-on-practice-tab-lower-half.jpg`).** "The cursor did not reach
+the PRACTICE tab in 30 nudges", with the ring sitting on the tab at (1220,390). Reproduced from the frame: `find_cursor` finds it, and
+the old tab rectangle (rows 372-394, 5 px margin) accepted only y 377-389, a 12 px band 3 px above the middle of a tab that is drawn
+at rows 377-395. So the zone was wrong by one pixel on this frame and by a third of the tab's height in general. The zone is now the
+drawn tab (a slanted polygon) with a 2 px margin; TRY COMPETITIVE starts to react at y ~406 and is checked before every A, so the
+proof stays safe, and the fixture at y 394 (the tab's lower edge) is still refused.
 
-300 random starts per zone, nudges median / max (noise +-15%, except the 0.4x row at +-30%): gain 0.4x (slow) 16 / 24 on the tab; 0.5x 12 / 18; 1.0x 5 / 9; 2.0x
-5 / 8; 3.0x 8 / 10 (all 300 of 300 reach the zone, for the tab, tile and portrait). Without the damping 2.0x reached the
-tab 9 times in 300. The skill's measured speed (about 1200 px/s on a 2000 px view) is about 770 px/s here, 1.1x.
+**The step law.** The old law (`0.035 s + d / 700 px/s`, halved after a reversal) has a fixed shortest tap. If that tap already moves the
+cursor a long way (l4_menu lands "within ~9 px"; a 35 ms tap at 700 px/s is 24 px), an 18 px tab cannot be settled into: the cursor
+alternates either side of it. In simulation a floor cursor 1.5x faster than assumed never settled on 29 of 60 starts with the old law
+(none of the simulations the old tests used has a floor, so they never showed it). The live trial failed every nudge, which no simulation
+here reproduces; the zone above accounts for that frame, the law for the class. Now:
+
+- **Each axis learns its own tap law** (`Reach`): `moved = a * (secs - c)`, fitted from the taps it has seen, with l4_menu's law as a
+  low-weight prior. A cursor that pins at the screen edge counts as "went at least this far" at half weight, so a cursor 2.5x faster
+  than assumed still calibrates instead of bouncing between the edges.
+- **No correction shorter than the shortest tap.** If the error is under 0.7 of what the shortest tap moves, the cursor steps away by
+  that much and comes back with a real move, which lands within the noise of a move that size.
+
+Success over 60 random starts, three cursor physics (`dead`: 35 ms of nothing then 700 px/s; `floor`: the shortest tap already moves it;
+`ramp`: it accelerates), gains 0.4x-2.5x, noise +-15% (also +-30% and +-45% for gains 0.7-1.5x): the tab, the tile and the portrait
+reach their zone on every start, 3-16 nudges on average (tab, gain 1.0: 5-7). `test_steering_settles_into_the_18_px_tab_whatever_the_shortest_tap_does`
+pins the tab for all three physics and four gains (30 starts each).
+
+## Arrival: out of the spawn room
+
+The first live trial ended inside the spawn room facing the green door, which is where the idle drop fires; walking blind for 6 s does
+not leave it (the player is not always facing the door, and a hero re-pick does not respawn him). `arrive` now:
+
+1. proves the range HUD and no idle banner on a fresh frame before every step (either one stops it with no further input);
+2. reads the door (`door`: the biggest tall green panel in the upper 70% of the view) and, when it is more than 6% of the width off
+   centre, turns the camera to it with the right stick (`YAW_STICK` 0.45 = 172 deg/s, focal 465 px at 1280 wide, l4's measurements)
+   instead of walking; otherwise it walks a 0.5 s step;
+3. is done only when `plaza_view` holds on two frames in a row (a second look while standing still): L3's green finder on the NATIVE
+   frame finds an enemy box of plausible size (8-60% of the height) in the middle of the view (x 0.35-0.95). The spawn room's door makes
+   a box too, at x 0.28, which is why the left edge is excluded;
+4. exits 1 (frame saved) if that is not confirmed within `ARRIVE_S` (14 s), or the HUD is gone, or the idle banner is up; then `RT` once
+   and the HUD portrait must be Spider-Man.
+
+**Calibrated on one recording, so strict on purpose.** `tagrun0` frame 0 is the spawn room, frames 4-14 the plaza with the bot ahead, and
+those are the only labelled spawn frames on the Mac (`arrival-spawn-room.jpg`, `arrival-plaza-bot-ahead.jpg`, native, from it). The
+door thresholds (`DOOR_H` 100 px, `DOOR_MIN_PX` 500, `DOOR_TOL` 0.06) come from that one frame, where the door is a small blob at the left
+edge; a frame of the door dead ahead, and one of the wall left of it (the live trial's failure), would calibrate them. The plaza cue needs
+the Enemy Color set to Green (it is, per docs/lanes/l4-controller.md) and the bot in view; with neither it exits 1 rather than guess, so a
+false exit 1 is the failure to expect, not a false success. Untested live: the turn rate on the spawn room's geometry, and whether the
+door is reached from the pose a re-entry lands in.
 
 ## Not verified: read these first in the live trial
 
@@ -186,7 +251,9 @@ Spider-Man, and the lobby with the pad banner up.
 
 ## Files
 
-`scripts/reenter.py` (the script), `tests/test_reenter.py` (68 tests: classifier, cursor finder, each proof with its
-negatives, steering against a simulated cursor, the whole flow against a simulated game serving the fixtures, dry run,
-`main`, and `Live` against a fake pad), `tests/fixtures/reentry/*.jpg` (the lead's eight frames plus the four above). Untouched: L4's files.
+`scripts/reenter.py` (the script), `tests/test_reenter.py` (119 tests: classifier, cursor finder, each proof with its
+negatives, steering against simulated cursors of three physics, arrival against a simulated spawn room with a door that turns
+with the camera, the whole flow against a simulated game serving the fixtures, dry run, `main`, and `Live` against a fake pad),
+`tests/fixtures/reentry/*.jpg` (the lead's eight frames, the four above, the two live refuse frames, and two native arrival frames from `tagrun0`).
+Untouched: L4's files.
 `tests/test_reenter.py` imports opencv, so `tests/conftest.py` skips it in the stdlib-only default run.

@@ -14,12 +14,16 @@ Rules (docs/plan.md scope boundary; .agents/skills/rivals-live-game/SKILL.md):
   hero select. RB only on hero select.
 - An unrecognised screen: send nothing and stop. While waiting for a screen to load nothing is sent either.
 - Cursor steering and every wait are bounded.
-- On arrival: walk forward ~6 s and attack once (only moving or attacking resets the idle timer), confirm the range.
+- On arrival the player is in the SPAWN ROOM, where the range's idle drop fires. It walks toward the green door, steering the
+  camera from the frames, and only stops when two frames in a row show the plaza with the Luna Snow bot ahead; then it attacks
+  once (only moving or attacking resets the idle timer) and checks the HUD hero. It exits 1 if that is not confirmed in
+  ARRIVE_S seconds, or the idle banner shows, or the range HUD is gone.
 
 Everything that decides is a pure function of one frame (`look`, `on_practice_tab`, `on_practice_range_tile`,
 `on_spiderman`), tested offline on tests/fixtures/reentry. Coordinates are 1280x720 px; any 16:9 frame is scaled.
 """
 import argparse
+import base64
 import math
 import sys
 import time
@@ -31,7 +35,8 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
-from record import in_range  # noqa: E402  (the range HUD test every input loop uses)
+sys.path.insert(0, str(ROOT))
+from record import idle_warning, in_range  # noqa: E402  (the range HUD test every input loop uses, and the idle-kick banner)
 
 OUT = ROOT / "data" / "reenter"
 
@@ -46,7 +51,13 @@ TRY_COMP_DARK_TOL, TRY_COMP_LUM_TOL = 0.12, 12.0
 TILE_DARK, TILE_BRIGHT = 100, 150   # panel: the hovered tile darkens (measured 45), the other stays bright (232)
 SLOT_RED = 0.03         # hero select: red-hue share of Spider-Man's slot. Unhovered 0.276, hovered 0.076, another hero 0.005
 HUD_RED = 0.10          # range: red-hue share of the HUD hero portrait. Spider-Man 0.247
-WALK_S, WALK_CHUNK_S = 6.0, 0.5
+ARRIVE_S, WALK_CHUNK_S = 14.0, 0.5   # arrival: the whole budget to get out of the spawn room, and one walk step
+# Arrival cues, calibrated on ONE recording (tagrun0: frame 0 is the spawn room, frames 4-14 the plaza) and so, until the lead's own
+# spawn-room frames are added as fixtures, deliberately strict: no confirmation is an exit 1, never a guess.
+PLAZA_BOT_H, PLAZA_BOT_X, PLAZA_BOT_Y = (0.08, 0.6), (0.35, 0.95), (0.2, 0.85)   # the Luna Snow bot's box, fractions of the frame; the spawn
+                                                                                   # room's door makes a box at x 0.28, so x < 0.35 is out
+DOOR_H, DOOR_MIN_PX, DOOR_TOL = 100, 500, 0.06   # a tall green panel (px at 1280x720, area), and how far off-centre it may be
+YAW_STICK, YAW_DEG_S, FOCAL = 0.45, 172.0, 465.0   # the camera: deg/s at that right-stick deflection, and the focal length at 1280 wide (l4)
 # The pad cursor sprite: a small ring (r ~19) with a bright centre dot when it hovers a widget, a plain larger ring (r ~26)
 # otherwise. Both are white, so the search runs on min(B, G, R). l4_menu.find_cursor is not used: it takes the first
 # Hough circle unchecked with minRadius 20, so on the 8 fixtures it is right on 3 of the 7 that show a cursor, wrong on
@@ -61,6 +72,15 @@ BOX = dict(
     doom=(486, 346, 560, 440), range_tile=(818, 346, 846, 416),
     slot=(818, 14, 892, 72), hud_hero=(38, 608, 122, 678),
 )
+# The game's own hover tooltip on hero select ("Request to Team-Up with SPIDER-MAN"): it names the hovered hero in white text, right-aligned
+# in a box that follows the cursor. TOOLTIP_PNG is that name's text, cut from the fixture heroselect-cursor-on-spiderman (min of B, G, R,
+# 1280x720 scale); it matches 1.00 on its own frame and 0.92 on an independent one (the live refuse frame of 2026-09-20 19:28, a different
+# icon and JPEG), and at most 0.49 on every other frame, THE PUNISHER's tooltip (0.31) included.
+TOOLTIP_ROI, TOOLTIP_MATCH = (780, 55, 1130, 125), 0.75
+TOOLTIP_PNG = (
+    "iVBORw0KGgoAAAANSUhEUgAAADYAAAAQCAAAAAB429MqAAAClklEQVQoFZ3BS0gUcRgA8O/7z6xQioQE+cgiHR8hFISRIOmpNM1Kd3bWLct8B5ngC1N381kmlheLLnkosEMF5cEi053d2dEVIU0pjA5KFmKZPUAkd3f+X2DXTv5+KMFWoARbgRIAAhD8gwSbkGATEvwXxhLbk2pa0GOS0ecOi3mdFQKLXinZIPWoyfRpjDPYd3jQtyt9+Oe20zMfjZPzcyemlhBjuTC48T3NllQ3EfVVz7W4llbTCvbXennfw88r6QWzJMqtFd6iGmXu0IMXdaBPV73q0A2UONPaR7xXI8z5FvPzPFlrdXpawvNkErRmfbRd5WBr7e/tP2KbKb+8nMHHQ9MedY8EYRyHrtiKX5SvKLYzTxWzbnfpjog8mbMxu1O3qyQqTfM2r+ns7B0jI+W3x9Rb0ulGjOcUfHtn2Q9b5ZOk4Jdmi6tF1e2Rzcbj6/rEQlGllzOLHN9YIhW+c9+8Vq9rrqiIGxpgYoBwe++OAkvVsO/ZQYvsalM9jkhr8brP+SF2qjExbF3KWdvttJUtjx5ve9vncfSwag0wIYA506valb1WmfDcKavWoupNkXIuMt1+ILq+LG5lMdtVX3T3fHRPZ5a/VK+xZpdrgIkGebq9Qw3hVjOQYjOrt/Qhe4RSiGuqfaMvdQNQyekaSPFezMx+HyqluqtD7pVrgAlgdCjwzXwsN5/8F/Jkz078omQ6AHPvN+tvLo0LgYLM4q6GydLayb7I0YyB6hl3k8owHgmY6Q8REoh+kRMCIy4YgABoMCRCIEYsgAJwLhDziwZDlBAADMZNfoGQuMAJKWhDIBI5IBqIGADRQEIAYgBAhIxzjOMIgEQkGgQIwBlwhhwE4gjEOOPAOAIhAgEBCcwnEqAEW/EXHjA0aXhNW5EAAAAASUVORK5CYII="
+)
+_TOOLTIP = []
 TABS = {"all": (1078, 109), "tab2": (1118, 149), "duelists": (1153, 193), "tab4": (1184, 243), "tab5": (1208, 296)}
 RB_PRESSES = {"all": 2, "tab2": 1, "duelists": 0}  # RB moves one tab right; twice from "all" reaches duelists (skill)
 
@@ -80,7 +100,11 @@ class Zone:
         return tuple(np.array(self.poly, float).mean(axis=0))
 
 
-PRACTICE_TAB = Zone("PRACTICE tab", ((1168, 372), (1256, 372), (1256, 394), (1168, 394)), 5)
+# The drawn tab, profiled on a frame with no cursor near it (rows 377-394, edges slanted; the lightning icon ends it at ~1262) and
+# on the live refuse frame data/reenter/refuse-20260920-184737.jpg, whose ring sat at (1220,390): INSIDE the tab, and refused by
+# the old rectangle (rows 372-394, 5 px margin, so a 12 px band 3 px above the tab's middle). TRY COMPETITIVE starts to react at
+# y ~406, and is checked separately before every A, so a 2 px margin on the true edge is safe.
+PRACTICE_TAB = Zone("PRACTICE tab", ((1172, 377), (1262, 377), (1259, 395), (1166, 395)), 2)
 RANGE_TILE = Zone("PRACTICE RANGE tile", ((677, 329), (860, 329), (835, 469), (652, 469)), 10)
 DOOM_TILE = Zone("DOOM MATCH tile", ((449, 329), (675, 329), (639, 469), (420, 469)), 0)
 SPIDER_SLOT = Zone("Spider-Man portrait", ((812, 12), (896, 12), (896, 74), (812, 74)), 6)
@@ -153,16 +177,48 @@ def _ring_score(white, x, y):
     return max(contrast_a if hover else 0.0, contrast_b if plain else 0.0)
 
 
+RING_R, PEAKS, PEAK_MIN, REFINE_PX = (19, 26), 6, 0.2, 3   # sprite ring radii (hover, plain), peaks tried per radius, weakest peak, nudge window
+_RINGS = {}
+
+
+def _ring_template(r):
+    """A ring of radius r/2 (the search runs on a half-size mask: 4x cheaper), two px thick."""
+    if r not in _RINGS:
+        h = r // 2
+        m = np.zeros((2 * h + 5, 2 * h + 5), np.float32)
+        cv2.circle(m, (h + 2, h + 2), h, 1.0, 2)
+        _RINGS[r] = m
+    return _RINGS[r]
+
+
 def find_cursor(frame):
-    """(x, y) of the pad cursor in 1280x720 px, or None. None is also the answer for a faint ring over dark art."""
+    """(x, y) of the pad cursor in 1280x720 px, or None. None is also the answer for a faint ring over dark art.
+
+    Candidate centres are the strongest matches of a white ring (of each sprite radius) against the mask of bright-in-every-channel
+    pixels, then judged by the ring signature, which is sharply peaked (one pixel off, its contrast falls from 130 to 50), so each is
+    refined over a +-2 px window first. The first version took its candidates from a Hough transform, whose strongest circles on a
+    busy portrait or a slightly noisy frame are other things: the ring was missed one frame in three, and a live run refused on hero
+    select with the cursor sitting on Spider-Man."""
     s = small(frame)
-    circles = cv2.HoughCircles(cv2.cvtColor(s, cv2.COLOR_BGR2GRAY), cv2.HOUGH_GRADIENT, dp=1, minDist=20,
-                               param1=40, param2=20, minRadius=16, maxRadius=32)
-    if circles is None:
-        return None
     white = s.min(axis=2)  # bright only where bright in every channel: the sprite, not coloured art
-    best = max(((_ring_score(white, int(round(x)), int(round(y))), x, y) for x, y, _ in circles[0]), default=(0, 0, 0))
-    return (float(round(best[1])), float(round(best[2]))) if best[0] > 0 else None
+    mask = cv2.resize((white > 190).astype(np.float32), None, fx=0.5, fy=0.5, interpolation=cv2.INTER_AREA)
+    best = (0.0, 0, 0)
+    for r in RING_R:
+        t = _ring_template(r)
+        resp = cv2.matchTemplate(mask, t, cv2.TM_CCOEFF_NORMED)
+        resp = np.nan_to_num(resp, nan=0.0, posinf=0.0, neginf=0.0)
+        for _ in range(PEAKS):
+            _, top, _, (px, py) = cv2.minMaxLoc(resp)
+            if top < PEAK_MIN:
+                break
+            cx, cy = 2 * (px + t.shape[1] // 2), 2 * (py + t.shape[0] // 2)   # back to full size
+            resp[max(0, py - 6):py + 7, max(0, px - 6):px + 7] = 0
+            for dy in range(-REFINE_PX, REFINE_PX + 1):
+                for dx in range(-REFINE_PX, REFINE_PX + 1):
+                    score = _ring_score(white, cx + dx, cy + dy)
+                    if score > best[0]:
+                        best = (score, cx + dx, cy + dy)
+    return (float(best[1]), float(best[2])) if best[0] > 0 else None
 
 
 def classify(frame):
@@ -236,14 +292,38 @@ def on_practice_range_tile(frame):
     return Proof(True, "cursor is on the PRACTICE RANGE tile; DOOM MATCH is not")
 
 
+def tooltip_spiderman(frame):
+    """Match (0-1) of the hover tooltip's hero name against SPIDER-MAN: the game's own statement of which portrait is under the cursor."""
+    if not _TOOLTIP:
+        _TOOLTIP.append(cv2.imdecode(np.frombuffer(base64.b64decode(TOOLTIP_PNG), np.uint8), cv2.IMREAD_GRAYSCALE))
+    x0, y0, x1, y1 = TOOLTIP_ROI
+    roi = small(frame).min(axis=2)[y0:y1, x0:x1]
+    return float(cv2.matchTemplate(roi, _TOOLTIP[0], cv2.TM_CCOEFF_NORMED).max())
+
+
+def tooltip_up(frame):
+    """Is a hover tooltip drawn beside the top-left portrait? Its box has a white border, a row of it 190 px wide."""
+    x0, y0, x1, y1 = TOOLTIP_ROI
+    white = small(frame).min(axis=2)[y0:y1, x0:x1] > 205
+    return bool((white.sum(axis=1) >= 150).any())
+
+
 def on_spiderman(frame):
-    """Duelists tab, cursor inside the top-left portrait slot, and that slot looks like Spider-Man (red)."""
-    lk, bad = _need(frame, "hero_select")
-    if bad:
-        return bad
+    """Duelists tab, and Spider-Man under the cursor: the game's tooltip names SPIDER-MAN, or the cursor ring is inside the top-left
+    portrait slot and that slot looks like Spider-Man (red). Either alone is enough; the tooltip does not depend on finding the ring."""
+    lk = look(frame)
+    if lk.screen != "hero_select":
+        return Proof(False, f"the screen is {lk.screen}, not hero_select")
     tab = hero_tab(frame)
     if tab != "duelists":
         return Proof(False, f"the hero tab is {tab}, not duelists")
+    tip = tooltip_spiderman(frame)
+    if tip >= TOOLTIP_MATCH:
+        return Proof(True, f"the game's tooltip names SPIDER-MAN (match {tip:.2f})")
+    if tooltip_up(frame):  # the game names a hero, and it is not Spider-Man: whatever the ring and the colours say, it is not him
+        return Proof(False, f"a tooltip is up and does not name SPIDER-MAN (match {tip:.2f})")
+    if lk.cursor is None:
+        return Proof(False, "the cursor ring was not found, and no tooltip names SPIDER-MAN")
     if not SPIDER_SLOT.contains(lk.cursor):
         return Proof(False, f"cursor at ({lk.cursor[0]:.0f},{lk.cursor[1]:.0f}) is not on the Spider-Man portrait")
     red = _red_hue(_box(small(frame), "slot"))
@@ -257,6 +337,32 @@ def hero_is_spiderman(frame):
     return _red_hue(_box(small(frame), "hud_hero")) >= HUD_RED
 
 
+def plaza_view(frame):
+    """The plaza with the Luna Snow bot ahead: an enemy box (L3's green finder, on the NATIVE frame) of a plausible size in the
+    middle of the view. The spawn room has none; its green door does make a box, but at the left edge, which is excluded."""
+    from perception.outline import find_enemies
+    h, w = frame.shape[:2]
+    for d in find_enemies(frame, scale=w / 1280.0):
+        x1, y1, x2, y2 = d.bbox
+        if (PLAZA_BOT_H[0] <= (y2 - y1) / h <= PLAZA_BOT_H[1] and PLAZA_BOT_X[0] <= (x1 + x2) / 2 / w <= PLAZA_BOT_X[1]
+                and PLAZA_BOT_Y[0] <= (y1 + y2) / 2 / h <= PLAZA_BOT_Y[1]):
+            return True
+    return False
+
+
+def door(frame):
+    """Centre x (0-1 of the frame width) of the biggest tall green panel in the upper part of the view, or None: the spawn room's
+    green door. The HP bar, the fps readout and the frame's lower third are left out."""
+    s = small(frame)[:504]
+    hsv = cv2.cvtColor(s, cv2.COLOR_BGR2HSV)
+    H, S, V = hsv[..., 0], hsv[..., 1], hsv[..., 2]
+    m = ((H >= 55) & (H <= 90) & (S > 60) & (V > 90)).astype(np.uint8)
+    m[:130, 1180:] = 0
+    n, _, st, _ = cv2.connectedComponentsWithStats(m, connectivity=8)
+    tall = [(st[i, 4], st[i, 0] + st[i, 2] / 2) for i in range(1, n) if st[i, 3] >= DOOR_H and st[i, 4] >= DOOR_MIN_PX]
+    return float(max(tall)[1] / 1280.0) if tall else None
+
+
 def describe(frame):
     """What a run would do from this frame, as printable lines. Pure: sends nothing."""
     lk = look(frame)
@@ -265,7 +371,11 @@ def describe(frame):
     if lk.screen == "unknown":
         return out + ["would send nothing and stop: unknown screen"]
     if lk.screen == "in_range":
-        return out + ["would walk forward ~6 s, attack once, then check the HUD hero is Spider-Man"]
+        dr = door(frame)
+        return out + [f"plaza with the bot ahead: {'yes' if plaza_view(frame) else 'no'}",
+                      f"green door: {'not in view' if dr is None else f'centre x {dr:.2f} of the width'}",
+                      f"would walk toward the door (camera steered from the frames) until two frames show the plaza, for at most "
+                      f"{ARRIVE_S:.0f} s, attack once, then check the HUD hero is Spider-Man; exit 1 if the plaza is not confirmed"]
     steps = {"lobby": (PRACTICE_TAB, on_practice_tab, "A opens the PRACTICE panel"),
              "practice_panel": (RANGE_TILE, on_practice_range_tile, "A loads hero select (about 12 s)"),
              "hero_select": (SPIDER_SLOT, on_spiderman, "A selects the hero, then X confirms")}[lk.screen]
@@ -273,13 +383,15 @@ def describe(frame):
     if lk.screen == "hero_select":
         tab = hero_tab(frame)
         out.append(f"hero tab: {tab}")
+        tip = tooltip_spiderman(frame)
+        out.append(f"hover tooltip names SPIDER-MAN: {'yes' if tip >= TOOLTIP_MATCH else 'no'} (match {tip:.2f})")
         n = RB_PRESSES.get(tab)
         out.append("would stop: the tab is not recognised" if n is None else
                    f"would press RB {n}x to reach duelists" if n else "already on duelists")
-    if lk.cursor is None:
+    if lk.cursor is None and not (lk.screen == "hero_select" and tooltip_spiderman(frame) >= TOOLTIP_MATCH):
         out.append(f"would jiggle the stick to find the cursor (at most {MAX_MISSES} tries), then stop")
         return out
-    inside = zone.contains(lk.cursor)
+    inside = lk.cursor is not None and zone.contains(lk.cursor)
     out.append(f"would steer the cursor to the {zone.name} (aim {zone.aim[0]:.0f},{zone.aim[1]:.0f}); it is "
                + ("already inside" if inside else "not inside yet"))
     proof = proof_fn(frame)
@@ -325,6 +437,14 @@ class Live:
         self.pad.update()
         self.sleep(0.25)
 
+    def rstick(self, x, y, secs):
+        self.pad.right_joystick_float(x, y)
+        self.pad.update()
+        self.sleep(secs)
+        self.pad.right_joystick_float(0.0, 0.0)
+        self.pad.update()
+        self.sleep(0.15)
+
     def tap(self, button):
         b = self.vg.XUSB_BUTTON
         codes = {"A": b.XUSB_GAMEPAD_A, "X": b.XUSB_GAMEPAD_X, "RB": b.XUSB_GAMEPAD_RIGHT_SHOULDER}
@@ -369,30 +489,77 @@ class Safe:
         self.io.tap(button)
 
 
-def steer(io, zone, locate=find_cursor):
-    """Nudge the cursor into `zone`, one axis at a time (l4_menu's step law). Bounded: at most MAX_STEPS nudges.
+class Reach:
+    """What a tap does to the cursor along one axis, learned from the taps themselves: moved = a * (secs - c).
 
-    An axis whose direction reverses has overshot, so the real cursor is faster than SPEED: its steps are halved.
+    The prior is l4_menu's law (700 px/s after 35 ms of dead time). The real cursor may instead move a long way on the shortest
+    tap (a floor: c < 0), which no fixed law survives: a 24 px floor step cannot settle into an 18 px tab, it just alternates
+    either side of it. Every tap seen outweighs the prior, so the law follows the cursor that is really there."""
+
+    def __init__(self):
+        self.pts = [(DEADBAND_S, 0.0, 0.2), (0.5, SPEED * (0.5 - DEADBAND_S), 0.2)]   # (secs, px moved, weight)
+
+    def learn(self, secs, moved, weight=1.0):
+        self.pts.append((secs, max(0.0, moved), weight))
+
+    def fit(self):
+        w = sum(p[2] for p in self.pts)
+        ms, mm = sum(p[0] * p[2] for p in self.pts) / w, sum(p[1] * p[2] for p in self.pts) / w
+        var = sum(p[2] * (p[0] - ms) ** 2 for p in self.pts)
+        a = sum(p[2] * (p[0] - ms) * (p[1] - mm) for p in self.pts) / var if var > 1e-9 else SPEED
+        a = min(3000.0, max(150.0, a))
+        return a, ms - mm / a
+
+    def secs(self, d):
+        """Tap length expected to move the cursor d px (d > 0)."""
+        a, c = self.fit()
+        return min(0.5, max(DEADBAND_S, c + d / a))
+
+    def least(self):
+        """What the shortest tap moves the cursor by: 0 for a dead-time cursor, tens of px for a floor one."""
+        a, c = self.fit()
+        return max(0.0, a * (DEADBAND_S - c))
+
+
+def steer(io, zone, locate=None, done=None):
+    """Nudge the cursor into `zone`, one axis at a time (l4_menu's axis rule). Bounded: at most MAX_STEPS nudges.
+
+    `done(frame)` is an independent way to know the cursor is where it must be (hero select: the game's tooltip names the hero); when it
+    holds, steering stops without needing the ring at all.
+
+    Each axis learns its own tap law (Reach). A correction shorter than the shortest tap can move is not attempted: the cursor
+    steps AWAY by that much and comes back with a real move, which lands within the noise of a move that size instead of
+    overshooting by half a floor step every time.
     """
-    misses, last, scale = 0, {}, {"x": 1.0, "y": 1.0}
+    locate = locate or find_cursor  # looked up now, so a test can replace the finder
+    misses, reach, prev = 0, {"x": Reach(), "y": Reach()}, None
     for _ in range(MAX_STEPS):
         f = io.frame()
         pos = locate(f)
+        if done is not None and done(f):
+            return pos
         if pos is None:  # hidden until the stick moves, or lost over busy art: wiggle onto plainer ground
-            misses += 1
+            misses, prev = misses + 1, None
             if misses > MAX_MISSES:
                 raise Refuse("the cursor ring was not found", f)
             io.stick(-1.0 if misses % 2 else 0.0, 0.0 if misses % 2 else 1.0, 0.12)
             continue
+        if prev:
+            axis, sign, secs, before = prev
+            i, edge = "xy".index(axis), (1279, 719)["xy".index(axis)]
+            pinned = pos[i] >= edge - 1 if sign > 0 else pos[i] <= 1   # the screen edge stopped it: it went at LEAST this far
+            reach[axis].learn(secs, sign * (pos[i] - before[i]), 0.5 if pinned else 1.0)
+            prev = None
         if zone.contains(pos):
             return pos
         dx, dy = zone.aim[0] - pos[0], zone.aim[1] - pos[1]
-        axis, d, sign = ("x", abs(dx), math.copysign(1.0, dx)) if abs(dx) > 9 else ("y", abs(dy), math.copysign(1.0, dy))
-        if last.get(axis, sign) != sign:
-            scale[axis] *= 0.5
-        last[axis] = sign
-        secs = min(0.5, DEADBAND_S + scale[axis] * d / SPEED)
+        axis, d = ("x", dx) if abs(dx) > 9 else ("y", dy)
+        sign, least = math.copysign(1.0, d), reach[axis].least()
+        if abs(d) < 0.7 * least:  # nearer than the shortest tap can reach: back off by it, then come back
+            sign, d = -sign, least
+        secs = reach[axis].secs(abs(d))
         io.stick(sign if axis == "x" else 0.0, -sign if axis == "y" else 0.0, secs)  # stick up = screen up
+        prev = (axis, sign, secs, pos)
     raise Refuse(f"the cursor did not reach the {zone.name} in {MAX_STEPS} nudges", io.frame())
 
 
@@ -408,22 +575,44 @@ def wait_for(io, screens, timeout, poll=0.3):
 
 
 def arrive(io, safe):
-    """In the range: walk forward, attack once, and confirm. Input stops the moment the HUD is gone."""
-    def hud():
+    """In the range, in the spawn room: walk to the door and out onto the plaza, steering the camera from the frames.
+
+    Every step re-reads a fresh frame: the range HUD gone or the idle banner up stops it with no further input. It is done only
+    when two frames in a row show the plaza (plaza_view); the budget is ARRIVE_S, and a run that cannot confirm exits 1 rather
+    than leave the player where the idle drop fires."""
+    def look():
         f = io.frame()
         if not in_range(small(f)):
             raise Refuse("the range HUD is gone", f)
+        if idle_warning(small(f)):
+            raise Refuse("the idle-kick banner is up: still in the spawn room?", f)
         return f
 
-    hud()
-    walked = 0.0
-    while walked < WALK_S:
-        hud()
-        io.stick(0.0, 1.0, WALK_CHUNK_S)
-        walked += WALK_CHUNK_S + 0.25
-    hud()
+    f, plaza, spent = look(), 0, 0.0
+    while spent < ARRIVE_S:
+        if plaza_view(f):
+            plaza += 1
+            if plaza >= 2:
+                break
+            io.sleep(0.15)  # a second look, standing still, before believing it
+            spent += 0.15
+            f = look()
+            continue
+        plaza = 0
+        x = door(f)
+        if x is not None and abs(x - 0.5) > DOOR_TOL:  # the door is off to a side: turn to it first, no walking
+            deg = math.degrees(math.atan((x - 0.5) * 1280.0 / FOCAL))
+            secs = min(0.6, abs(deg) / YAW_DEG_S)
+            io.rstick(math.copysign(YAW_STICK, deg), 0.0, secs)
+            spent += secs + 0.15
+        else:
+            io.stick(0.0, 1.0, WALK_CHUNK_S)
+            spent += WALK_CHUNK_S + 0.25
+        f = look()
+    else:
+        raise Refuse(f"could not confirm the spawn room was left within {ARRIVE_S:.0f} s", f)
     safe.press("RT")
-    f = hud()
+    f = look()
     if not hero_is_spiderman(f):
         raise Refuse("in the range, but the HUD hero portrait is not Spider-Man", f)
 
@@ -460,7 +649,7 @@ def run(io, log=print):
             f = io.frame()
             if hero_tab(f) != "duelists":
                 raise Refuse(f"the hero tab is {hero_tab(f)} after RB, not duelists", f)
-            steer(io, SPIDER_SLOT)
+            steer(io, SPIDER_SLOT, done=lambda fr: tooltip_spiderman(fr) >= TOOLTIP_MATCH)
             safe.press("A", on_spiderman)
             safe.press("X")  # hero select only: Safe re-classifies the frame first
             wait_for(io, {"in_range"}, 40)

@@ -3,6 +3,7 @@
 A stub frame is an `F`; the stub readers say what it shows. Real frames (tagrun, the evidence stills) are in
 tests/test_loop_frames.py, which needs the perception group.
 """
+import json
 import threading
 import time
 from types import SimpleNamespace
@@ -14,7 +15,7 @@ from agent.controller import NEUTRAL, RangeLost
 from agent.demos import Demos
 from agent.intents import Engage, Idle
 from agent.loop import (ALLOWED, KEEPALIVE, LOST_GRACE_S, SB_HOLD_S, FakePad, ForbiddenInput, LiveIO, Loop, Perception,
-                        RunLog, active, clean, make_brain)
+                        RunLog, active, clean, main, make_brain)
 from agent.state import ENEMY, Detection, State
 
 SIZE = (2560, 1440)
@@ -532,3 +533,26 @@ def go_states(tracker):
 
     Loop(Frames(timeline(1.0, dets=[BOT])), FakePad(), readers(), brain, tracker=tracker, warmup=False).run()
     return out
+
+
+# --- the resource regime is part of what a recording is ------------------------------------------------------------------------
+def test_a_recording_carries_the_cooldowns_regime_into_meta_json_and_the_demos_clip(tmp_path):
+    for n, regime in enumerate(("off", "normal")):
+        log = RunLog(tmp_path / f"r{n}", save_fps=10.0, imwrite=jpeg)
+        out = Loop(Frames(timeline(2.0, dets=[BOT])), FakePad(), readers(), scripted.decide, log=log, warmup=False, cooldowns=regime).run()
+        assert out["cooldowns"] == regime
+        assert json.loads((tmp_path / f"r{n}" / "meta.json").read_text())["cooldowns"] == regime
+        assert Demos.load(tmp_path / f"r{n}", fractions=(1.0, 0.0, 0.0)).clips[f"run:r{n}"].cooldowns == regime
+    log = RunLog(tmp_path / "gap", save_fps=10.0, imwrite=jpeg)                 # the manifest a HUD gap writes says it too
+    Loop(Frames(timeline(3.0, dets=[BOT], ok=lambda t: not 1.0 <= t < 1.1)), FakePad(), readers(), scripted.decide, log=log, warmup=False,
+         cooldowns="normal").run()
+    assert json.loads((tmp_path / "gap" / "manifest.jsonl").read_text().splitlines()[0])["cooldowns"] == "normal"
+
+
+def test_the_regime_defaults_to_unknown_is_validated_and_a_live_run_must_name_it(tmp_path):
+    assert run(timeline(0.5))[2]["cooldowns"] == "unknown"
+    with pytest.raises(ValueError, match="cooldowns must be one of"):
+        Loop(Frames([]), FakePad(), readers(), idle, cooldowns="on")
+    for argv in (["--live"], ["--live", "--cooldowns", "unknown"]):              # no default, and unknown is for recordings nobody watched
+        with pytest.raises(SystemExit):                                          # argparse's error: nothing is opened first
+            main(argv)
