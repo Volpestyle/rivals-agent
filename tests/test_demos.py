@@ -1339,10 +1339,10 @@ def assert_windows_hold(d, clip, split="inspection_only", **kw):
 
 
 @NO_DATA
-def test_both_sample_clips_load_under_format_4():
+def test_both_sample_clips_load_under_the_current_format():
     for path in (REAL_REQ, REAL_DAY):
         clip = demos.read_manifest(path)                             # a format 3 events file fails here, naming both versions
-        assert clip.events_meta["format"] == 4 and clip.cooldowns == "normal" and clip.header["cooldowns_from"] == "observed_cooldowns"
+        assert clip.events_meta["format"] == demos.EVENT_FORMAT and clip.cooldowns == "normal" and clip.header["cooldowns_from"] == "observed_cooldowns"
         assert clip.patch == "Season 10, Version 20260911" and clip.header["patch_from"] == "broadcast_date"
 
 
@@ -1392,7 +1392,7 @@ def test_the_codex_rerun_rows_load_bridged_with_the_annotators_own_masks(tmp_pat
 def test_a_retained_section_loads_and_bridges_its_scoreboard_taps():
     d = Demos.load(REAL_SECTION)
     clip, = d.clips.values()
-    assert clip.events_meta["format"] == 4 and clip.events_meta["cuts"] == 4 and clip.header["edited_upload"] is False
+    assert clip.events_meta["format"] == demos.EVENT_FORMAT and clip.events_meta["cuts"] == 4 and clip.header["edited_upload"] is False
     assert (clip.cooldowns, clip.patch, clip.splittable, d.splits[clip.id]) == ("normal", "Season 10, Version 20260911", True, "inspection_only")
     taps = [n for n in range(len(clip.segments) - 1) if clip.soft_gap(n)]
     assert taps                                                                             # scoreboard taps under the maximum
