@@ -65,6 +65,7 @@ SCREENS = {
     "panel-cursor-on-practice-range": "practice_panel", "panel-cursor-off-tiles": "practice_panel",
     "heroselect-all-tab-black-panther": "hero_select", "heroselect-duelists-cursor-off": "hero_select",
     "heroselect-cursor-on-spiderman": "hero_select", "heroselect-spiderman-tooltip-ring-lost": "hero_select",
+    "heroselect-spiderman-tooltip-between-pixels": "hero_select",
     "in-range": "in_range", "arrival-spawn-room": "in_range", "arrival-plaza-bot-ahead": "in_range",
     "arrival-spawn-door-ahead": "in_range", "arrival-spawn-wall-left-of-door": "in_range", "arrival-spawn-console-two-doors": "in_range",
 }
@@ -305,7 +306,7 @@ def test_the_ring_proof_still_stands_without_a_tooltip_and_a_tooltip_for_another
 def test_the_tooltip_match_separates_spiderman_from_every_other_frame():
     scores = {n: R.tooltip_spiderman(frame(n)) for n in SCREENS}
     positives = {n for n, v in scores.items() if v >= R.TOOLTIP_MATCH}
-    assert positives == {"heroselect-cursor-on-spiderman", LOST}, scores
+    assert positives == {"heroselect-cursor-on-spiderman", LOST, BETWEEN}, scores
     assert max(v for n, v in scores.items() if n not in positives) < 0.6, scores    # a wide gap: 0.49 at most, 0.92 at least
     assert R.tooltip_spiderman(BLACK) < 0.3 and R.tooltip_spiderman(NOISE) < 0.3
     assert R.tooltip_spiderman(frame("heroselect-duelists-cursor-off")) < 0.4       # THE PUNISHER's tooltip: similar font, another name
@@ -313,6 +314,21 @@ def test_the_tooltip_match_separates_spiderman_from_every_other_frame():
     for _ in range(4):                                                               # and it survives noise
         g = np.clip(frame(LOST).astype(float) + rng.normal(0, 6, frame(LOST).shape), 0, 255).astype(np.uint8)
         assert R.tooltip_spiderman(g) > 0.75
+
+
+BETWEEN = "heroselect-spiderman-tooltip-between-pixels"
+
+
+def test_a_tooltip_landing_between_pixels_still_names_spiderman():
+    """Live refusal 2026-09-21 10:37: the tooltip beside the ring read SPIDER-MAN (140 x 28 px from the ring, where it belongs), but its
+    name fell half a pixel off the template's grid and one sharp match read 0.73, under TOOLTIP_MATCH: "a tooltip is up and does not
+    name SPIDER-MAN". The proof was there; the refusal was the matcher's."""
+    f = frame(BETWEEN)
+    assert R.tooltip_spiderman(f) > 0.85
+    p = R.on_spiderman(f)
+    assert p.ok and "tooltip names SPIDER-MAN" in p.reason
+    other = edited(BETWEEN, lambda g: fill(g, (996, 62, 1058, 80), (30, 20, 20)))  # the same box, its name blacked out: still a refusal
+    assert R.tooltip_up(other) and not R.on_spiderman(other).ok
 
 
 def test_steering_needs_no_ring_when_the_tooltip_already_says_the_cursor_is_on_spiderman():

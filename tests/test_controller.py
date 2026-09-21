@@ -205,3 +205,12 @@ def test_when_the_brain_switches_target_the_controller_aims_at_the_new_one_at_on
     new = Detection(ENEMY, (1882.0, 594.0, 1978.0, 750.0), 0.9, track=15)        # 650 px right, only in the whole-frame search
     pad = c.step(State(t=t, frame=F, detections=[]), Engage(new), intent_t=t - 0.05)
     assert pad["rx"] > 0.3 and not c.track.confirmed
+
+
+def test_he_never_walks_at_a_box_beyond_the_kits_reach():
+    """handoff30: a confirmed, crop-measured 36 px dummy ~45 m off (0.025 of the frame) drew 0.8 s of forward walk off the plaza's edge.
+    At the reach line (brain.RANGES.reach_h, 40 m) the walk stops; just inside it the walk stands."""
+    for h, walks in ((18, False), (23, False), (24, True), (70, True)):      # on 720: 23 px = 0.0319, 24 px = 0.0333
+        d, c = Detection(ENEMY, (630, 360 - h / 2, 650, 360 + h / 2), 0.9), Controller()
+        pads = [c.step(State(t=i / 60, frame=(1280, 720), detections=[d]), Engage(d)) for i in range(30)]
+        assert any(p["ly"] == 1.0 for p in pads) is walks, h

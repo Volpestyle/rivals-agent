@@ -1,5 +1,6 @@
 """State machine transitions and unknown-field handling. Plain asserts; run with `uv run pytest`."""
 import json
+from dataclasses import replace
 
 import pytest
 
@@ -325,3 +326,23 @@ def test_frame_is_required():
 def test_detection_recorded_before_the_tag_field_loads_as_unknown_tag():
     old = {"t": 1.0, "frame": [1280, 720], "detections": [{"cls": "enemy", "bbox": [0, 0, 10, 20], "conf": 0.9}]}
     assert State.from_dict(old).detections[0].tagged is None
+
+
+def test_a_bot_beyond_the_kits_reach_is_never_picked():
+    """handoff30: five of seven targets were the range's robot dummies far down the shooting lane, 33-40 px (~45 m); nothing in the kit
+    reaches past 40 m (Web Cluster is at half damage there), and walking at one took him off the plaza. They are searched past."""
+    m, dummy = Memory(), enemy(h=36, x=1300)
+    assert [decide(st(t, detections=[replace(dummy, track=5)]), m) for t in (0.0, 0.1, 0.2)] == [Search()] * 3
+    m, bot = Memory(), enemy(h=60, x=1300, track=6)                          # the smallest bot engaged in reach on the recorded runs
+    assert isinstance([decide(st(t, detections=[bot]), m) for t in (0.0, 0.1)][-1], Engage)
+    m = Memory()                                                             # with both in view, the far one nearer the crosshair
+    got = [decide(st(t, detections=[replace(dummy, track=5, bbox=(1270, 700, 1288, 736)), replace(bot, bbox=(1800, 600, 1830, 660))]), m)
+           for t in (0.0, 0.1)][-1]
+    assert got.target.track == 6
+
+
+def test_the_reach_line_reads_distance_when_it_has_one():
+    from agent.brain import in_reach
+    s = st(0)
+    assert in_reach(enemy(h=20, distance=39.0), s) and not in_reach(enemy(h=600, distance=41.0), s)
+    assert in_reach(enemy(h=47), s) and not in_reach(enemy(h=46), s)       # 47 / 1440 = 0.0326 > reach_h 0.0325

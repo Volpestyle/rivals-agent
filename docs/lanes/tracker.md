@@ -199,6 +199,63 @@ overlap the bots'), is present at two decisions in a row, starts a combo, and th
 (stall30 refind replay, 13.4-14.6 s: door 1.18 s). A real bot flashing white after a hit coasts the same way, so the hold is not cut. It
 is its own item; a world-static classifier for it needs stationary bots as controls, since a bot standing still is also world-static.
 
+## Targets beyond reach, and the walk off the plaza (handoff30)
+
+**What the small boxes are.** The 30-42 px boxes, often in pairs, are the range's robot dummies at the far end of the shooting lane (the
+floor marked 10M-40M), outlined green by the game like every enemy (handoff30 native frame 000096). The finder is right to box them, and the
+finder GT counts them (it counts every enemy the game marks), so nothing is removed at the finder. At 30-42 px they are ~45 m off by the
+brain's ranging (1.30 / height share). Every recorded run has them: 62-112 decision boxes under 60 px per run, mostly these dummies, some
+scenery (the door's glass, pink pillars) inside the spawn-room windows. Every bot engaged in reach on the four runs is 60 px or more;
+one dummy on the upper walkway behind a railing reads 41-48 px (stall30, 5.5-6.1 s).
+
+**The rule: nothing past the kit's reach is a target.** Web Cluster falls to half damage at 40 m and nothing else reaches past 30 m, so
+`brain.RANGES.reach_h` is 1.30 / 40 m = 0.0325 of the frame height (47 px at 1440p; `reach_m` 40 when a detection carries a distance).
+`_acquirable` refuses a new target at or under it; a held target is followed by its id as before. Search pans past the dummies.
+
+**Why he walked off.** `Engage` walks forward (`ly` 1.0) on every step where the aim crop measures the target's confirmed box and it is not
+near, at any range; a far target without a swing anchor is `Engage`d. On handoff30 that walked him 0.8 s at a 36 px dummy (id 92) and over
+the plaza's edge to the lower ring. The controller now also refuses the forward walk when the crop's box is at or under `reach_h`: the one
+line both read. Replayed, no forward walk on any of the four runs is toward a crop box under 48 px (was 28 px on three of them).
+
+**Search after the fall is not a pitch fault.** On the live sticks it paid back its pitch on entry (15.58-16.13 s), ran the absolute
+re-level at 17.6-21.2 s (1.8 s up into the clamp, the ceiling rosette in view; 1.8 s down at half stick) and then panned level to 29.6 s.
+The level frames (21.2, 25.0 s) show a curved corridor under the plaza with walls close on both sides; the floor and ceiling views are the
+up phase and the third-person camera colliding with a wall as it pans. Nothing was in view because nothing is down there. The fix is not
+falling.
+
+| Replay (open loop) | engaged, pad active: bot / small / other / door | forward walk ticks by target label | smallest crop box walked at |
+|---|---|---|---|
+| handoff30, main | 3.71 / 3.12 / 0 / 0 s | bot 40, small 109 | 28 px |
+| handoff30, this change | 4.92 / 0 / 0 / 0 s | bot 51 | 49 px |
+| stall30, main | 7.33 / 1.08 / 0.56 / 3.32 s | bot 82, small 37, door 78, other 23 | 28 px |
+| stall30, this change | 6.51 / 2.13 / 0.75 / 3.32 s | bot 102, small 60, door 70, other 23 | 54 px |
+| trackerlive30, main | 14.30 / 2.92 / 0.11 / 0.32 s | bot 172, small 27, door 3 | 28 px |
+| trackerlive30, this change | 14.89 / 0 / 0.80 / 0.32 s | bot 172, other 1, door 3 | 48 px |
+| postfreeze30, main | 9.33 / 0 / 0.61 / 5.16 s | bot 118, door 16, other 1 | 50 px |
+| postfreeze30, this change | 9.33 / 0 / 0.61 / 4.96 s | bot 118, door 16, other 1 | 50 px |
+
+"small" is a box of 47 px or less outside the door and junk windows (`SMALL_H` in `postfreeze30_replay.py`), labelled by the whole-frame
+box. stall30's rise is the open loop: the bot (id 7) is now picked at 4.03 s instead of 4.98 s, the recorded camera turns only when the live
+one did, so the replay releases it after `OUTSIDE_S` and takes the walkway dummy at 41-48 px; its crop boxes are 54 px or more. Stall runs
+over 0.5 s: handoff30 0.63 / 0.59 / 1.28 s -> 0.50 s; stall30 loses its first (1.05 s); trackerlive30 and postfreeze30 unchanged. The hand-offs
+(handoff30 15 -> 15, stall30 66 -> 66) hold; stall30's first one is not reached for the reason above. Cost: one division per candidate.
+
+| Refind replay (current finder) | bot / small / other / door, s |
+|---|---|
+| handoff30 | 5.13 / 3.36 / 0.22 / 0 -> 5.35 / 0 / 0.55 / 0 |
+| stall30 | 10.79 / 0.22 / 0.96 / 1.18 -> 10.79 / 0 / 0.96 / 1.18 |
+| trackerlive30 | 16.64 / 3.46 / 0.45 / 0 -> 17.17 / 1.30 / 0.45 / 0 |
+| postfreeze30 | 10.66 / 0.22 / 2.64 / 0 -> 10.66 / 0 / 2.64 / 0 |
+
+What is left under small and other: trackerlive30's 1.30 s is a combo held on a bot picked at 78 px, its last box (34 px) repeated while
+the track coasts; stall30's other is the lit glass dome (the junk window), unchanged; postfreeze30's other is 97-110 px bots under that run's
+120 px label. handoff30's 0.55 s is junk: a colour-fringed smear at the base of the tree statue during a fast turn (id 63, 50 px), a finder
+residual. Kill feed is 0 everywhere; the door is unchanged (the plaza-side door on stall30 is the open residual above).
+
+**Residuals, not built.** The forward walk still has no notion of the ground: approaching a bot in reach across the plaza's edge would walk
+off it the same way. Once off the plaza, nothing brings him back: Search pans an empty corridor until the run ends. With only dummies in
+view (all past 40 m), he searches rather than engages.
+
 ## Coasting: a deliberate trade
 
 A confirmed track (seen `CONFIRM` = 3 times) that goes unseen is held, its id in `state.coasting`, for `MAX_AGE_S` 0.8 s, `SMALL_AGE_S`
