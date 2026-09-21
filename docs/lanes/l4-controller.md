@@ -2,19 +2,53 @@
 
 Linear: VUH-1296. Evidence: `docs/evidence/l4/`. Raw measurements: `C:\rivals-agent\data\l4\` on the PC.
 
-**The game is on the Practice Range HERO SELECT screen** (Jubilee highlighted on the "all" tab, CONFIRM bottom right, a
-"GAME STARTED" clock counting up), no pad connected, nothing pressed since (`hero-select-after-reenter-refusal.jpg`). The run
-`stall30` has NOT happened. The PC holds `agent/`, `scripts/` (with templates) and `perception/` from
-`git archive 259bdd2`: all 42 tracked files verified by sha256; `capture.py preflight` passed (117 dxcam frames in 1 s).
+The game is in the Practice Range as Spider-Man on the lower ring below the plaza, camera pitched down, idle, no pad
+connected (`after-stall30.jpg`). The PC holds `agent/`, `scripts/` (with templates) and `perception/` from
+`git archive 259bdd2`, all 42 tracked files verified by sha256.
 
-`scripts/reenter.py` refused at 09:41:23, exit 1: PRACTICE tab and PRACTICE RANGE tile pressed behind their proofs, then
-`STOP: hero tab None is not recognised` on the first hero-select frame, 2 s after that screen opened
-(`reenter-refuse-hero-tab-20260921-0941.jpg`, the game clock reads 00:02). Its own `--dry-run` reads that saved frame the same
-way ("would stop: the tab is not recognised") and reads the live screen 30 s later as `hero tab: all`, "would press RB 2x to
-reach duelists". The differences between the two frames: the early one carries the pad's LB / RB glyphs beside the tab strip
-and the clock at 00:02 (the screen had just opened); the later one shows keyboard glyphs. So the tab read failed on a frame
-taken as the screen opened, and the tool stops on its first failed read of that screen rather than looking again. For the
-re-entry owner; not retried here (a refusal is handed back).
+## Supervised run `stall30` (VUH-1314): `data/l1/stall30/` on the PC and the Mac
+
+30 s, scripted brain, `--cooldowns normal` (from play before the run: ammo 2 after three shots, Get Over Here showing 7,
+`cooldowns-normal-verified-5.jpg`; the cooldowns script read the switch as already off and pressed nothing). Patch not read
+from the screen; the kit doc's Season 10, version 20260911 stands. Entry: `reenter.py` refused once on the first hero-select
+frame ("hero tab None is not recognised", 2 s after the screen opened, `reenter-refuse-hero-tab-20260921-0941.jpg`); its
+`--dry-run` read the settled screen as `hero tab: all`, and the one authorized re-invocation went RB, RB, A on the
+Spider-Man tooltip (0.92), X, in range, then stopped on the arrival confirmation again (exit 1) with him outside on the
+plaza side of the door.
+
+| | `stall30` | `trackerlive30` |
+|---|---|---|
+| Stop / guards | `max_time`; no range gap, no error, 1 keep-alive, 0 missed decisions; 0 python left, 0 Xbox pads present | same |
+| Reflex | 55.6 Hz; tick p50 / p95 / max 9.1 / 12.1 / 18.7 ms; 6 of 1,667 ticks over budget | 54.6 Hz; 9.8 / 12.6 / 18.0; 2 of 1,639 |
+| Aim finder | 6.1 / 8.5 / 14.9 ms | 6.7 / 8.9 / 12.8 |
+| Decision | 10.0 Hz; 51 / 73 / 104 ms | 52 / 76 / 92 |
+| Scoreboard (parsed) | 1 KO, 0 deaths, 445 damage, accuracy 30 %, Web-Cluster accuracy 28 % | 2 KOs, 0 deaths, 760 damage |
+
+**The acceptance question: targets known only to the whole-frame search when picked. Exercised twice.** Decision boxes, the
+aim crop and the held target (red) are drawn on `stall30-wholeframe-target15.jpg` and `stall30-wholeframe-target71.jpg`.
+
+| Pick | Id | Box (native) | From the crosshair | Re-aim | Did THAT id reach the aim crop | Elapsed / ending |
+|---|---|---|---|---|---|---|
+| t 4.98 s | 15 | (1882,594)-(1975,750), the Luna Snow bot right of the crop | 650 px | **No stick for the first 1.1 s** (rx = ry = 0 on twelve consecutive decisions, the box static at 650-656 px); the first stick command came at t 6.17 | **No.** The bot entered the crop at t 6.26 under a NEW id, 19, and was on the crosshair (8 px) by t 6.86; the held id 15 only coasted | released after 1.97 s (t 6.95); id 19 picked at t 7.13 and web-struck |
+| t 16.35 s | 71 | (1965,775)-(2533,1094), the bot at the bottom right, 3-4 m | 992 px | Yes, from the first decision (rx +1.0) | **No.** The bot entered the crop at t 16.95 (0.6 s) under a NEW id, 73, and was at 18 px by t 17.58; the held id 71 only coasted | held 2.10 s, then the brain switched to 73 (t 18.48); no abort |
+
+So the re-aim brings the bot into the crop (0.6 s when it steers at once), but the whole-frame id is never the id the crop
+gives it, so "the same target reached the crop" is NO in both cases by id, and the brain spends 2 s on a coasting id before
+it takes the new one. The first case also shows 1.1 s with no steering at all.
+
+`docs/evidence/l4/postfreeze30_replay.py --run data/l1/stall30` (generic labels: no `LABELS` entry was added for this run):
+ids 106, held-id visible 0.23, engaged 14.19 s "luna" + 2.93 s "other", stalls over 0.5 s (start s, length s):
+3.95 / 2.14, 10.41 / 0.91, 15.02 / 0.52, 19.61 / 1.07, 24.06 / 1.08. The generic labels call any box 100 px or taller the
+bot, which is wrong here; by eye on the drawn frames (`stall30-sheet.jpg`):
+
+- **Real bot: ~10.3 s** (ids 15, 19, 30, 71, 73).
+- **The green health door: 2.65 s, id 48 (t 12.68-15.33), seen from the PLAZA side, with the burst played at it (58 attack
+  ticks).** Ids 45 and 46 just before it (0.8 s, boxes at the crop's left edge as he turned onto the door) are probably
+  door too. The finder's hue rule drops the door seen from inside the spawn room; from outside it still makes a box.
+- Kill feed: 0 (0 reflex boxes in that corner).
+- Other: id 11, a 29x30 px box (1.25 s); id 98, the ceiling skylight seen from the lower ring (1.52 s).
+- Trace counts: 10 target ids, 94 ids issued, held id visible on 209 of 917 held ticks (23 %). After the web strike at
+  t ~18.7 he ended on the lower ring; the last attack is at t 19.2 and the last 8 s are Search with nothing in view.
 
 ## Supervised run `trackerlive30` (VUH-1314): `data/l1/trackerlive30/` on the PC and the Mac
 
