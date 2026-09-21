@@ -153,6 +153,25 @@ class Decoded:
         return np.asarray(self.times, np.float64)
 
 
+class DecodedProxy(Decoded):
+    """A run's proxy video: every frame, in order, one per logged frame.
+
+    The proxy carries a nominal frame rate, not the run's clock, so its PTS are not the truth
+    about when anything happened: the times come from the run's own frames.jsonl and `check`
+    only proves the counts line up.
+    """
+
+    def __init__(self, path, creator, expected, size=SIZE, batch=64):
+        super().__init__(path, creator, hz=1, src_fps=1, size=size, batch=batch)   # every=1: keep them all
+        self.expected = expected
+
+    def check(self):
+        if self.frames != self.expected:
+            raise ValueError(f"{self.path.name}: {self.frames} video frames against {self.expected} logged frames; "
+                             "row i would not be frame i")
+        return self.frames
+
+
 class DecodedJpegs(Decoded):
     """The same path for a run's saved jpgs, read as an image sequence in filename order.
 

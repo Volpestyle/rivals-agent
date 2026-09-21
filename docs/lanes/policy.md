@@ -1,4 +1,4 @@
-# Policy: the learned chooser (steps 1-2)
+# Policy: the learned chooser (steps 1-3)
 
 **Built and measured offline. Nothing here aims, presses a button, or runs live.** This lane
 replaces *what* the agent decides — today `agent/brain.py`'s hand-written rules — with a model
@@ -18,7 +18,8 @@ uv run --group policy python -m policy.encode --probe    # what the encoders sep
 uv run --group policy python -m policy.encode --all      # fill the cache; niced, resumable
 uv run --group policy python -m policy.train             # leave-one-session-out, regime off
 uv run --group policy python -m policy.train --split tail  # the control (see below)
-uv run --group policy pytest tests/test_policy.py        # 24 tests (stdlib-only ones also run bare)
+uv run --group policy python -m policy.live --bench       # step 3 latency on this Mac
+uv run --group policy pytest tests/test_policy.py        # 28 tests (stdlib-only ones also run bare)
 ```
 
 ```mermaid
@@ -30,7 +31,10 @@ flowchart LR
   C["data/embeddings/&lt;encoder&gt;-&lt;norm&gt;-&lt;hz&gt;/<br/>one .npz + .json per source"]
   C --> T["temporal head<br/>policy/train.py: 51 steps x 404 features<br/>2-layer GRU, class-weighted"]
   T --> M["leave-one-session-out<br/>vs majority baseline"]
-  C -.-> P["runtime seam (step 3)<br/>not built"]
+  T --> H["saved head + spec<br/>weights/policy-normal"]
+  H --> L["policy/live.py LearnedBrain<br/>agent/loop.py --brain learned"]
+  G["brain.gate: retreat, holds, flicker"] --> L
+  L --> K["jev.legal / jev.adopt<br/>kit preconditions, reused"]
 ```
 
 ## Regime is part of a source's identity
@@ -161,45 +165,78 @@ where a run has a stream. No run has one today, so that channel is absent on eve
 wired for the day one exists. 404 features, 51 steps. The head is a 2-layer GRU over a 128-d
 projection, class-weighted so the rare intents are not swamped.
 
-**The number, regime `off` (995 windows, 4 sessions, ~175 s of recording).** Leave-one-session-out:
+**The numbers, regime `normal`, patch Season 10 / 20260911, the loop's own runs only** (four
+300 s baselines, 6,000 windows; L4's trial logs are a different recorder and are excluded).
+Leave-one-session-out, against two baselines — the majority class, and **sticky**, which repeats
+the previous decision's intent:
 
-| Held out | Windows | Accuracy | Train majority | Held-out majority | Macro F1 | Fits its own training set |
-|---|---|---|---|---|---|---|
-| `loop30a` | 150 | 0.787 | 0.793 | 0.793 | 0.440 | 0.993 |
-| `tagrun` | 300 | **0.010** | 0.000 | 0.460 | 0.022 | 0.991 |
-| `tagrun0` | 349 | 0.324 | 0.613 | 0.613 | 0.187 | 0.994 |
-| `tagrun1` | 196 | 0.469 | 0.663 | 0.663 | 0.311 | 1.000 |
+| Held out | Windows | Accuracy | Train majority | Sticky | Intent changes | Accuracy on those | Fits own training set |
+|---|---|---|---|---|---|---|---|
+| `baseline1` | 1500 | 0.547 | 0.464 | **0.908** | 138 | 0.435 | 0.978 |
+| `baseline2` | 1500 | 0.980 | 0.000 | **0.999** | 1 | – | 0.261 |
+| `baseline3` | 1500 | 0.792 | 0.411 | **0.961** | 59 | 0.525 | 0.922 |
+| `baseline4` | 1500 | 0.997 | 0.002 | **0.997** | 5 | – | 0.954 |
 
-**No fold beats its majority baseline, and this is reported as the result.** What it does show:
-the head fits its own training set at 0.99-1.00 in every fold, so the path is wired end to end —
-features reach labels, the model can learn them, the splits hold — and the failure is
-generalization, not plumbing. The `tagrun` fold makes the reason plain: its train-majority
-baseline is **0.000**, because the class the other sessions are mostly made of does not occur in
-it at all. The per-session mix is nearly disjoint:
+**The head now beats the majority baseline** on the two sessions that contain more than one intent
+(0.547 against 0.464, 0.792 against 0.411) — it did not before. **It beats sticky nowhere.** That
+is the number that counts: intents are sticky, so repeating the last decision is right 91-100% of
+the time, and a temporal model has to be better than doing nothing.
 
-| Session | combo | engage | search | stand |
-|---|---|---|---|---|
-| `loop30a` | 0 | 31 | 119 | 0 |
-| `tagrun` | 74 | 88 | **0** | 138 |
-| `tagrun0` | 8 | 40 | 214 | 87 |
-| `tagrun1` | 19 | 28 | 130 | 19 |
+The only place a model can beat sticky is the moment the intent **changes**, where sticky scores
+zero by construction. There the head gets 0.435 (138 windows) and 0.525 (59 windows) on the two
+usable sessions. Those counts are the real limit: **two of the four baselines are single-intent
+runs** — `baseline2` is 1,500 windows of `engage`, `baseline4` is 1,496 of `search` — so across
+20 minutes of recording there are 203 decision changes in total. Transitions, not minutes, are
+what this lane is short of.
 
-A `--split tail` control (train on the first 70% of every session, test on each last 30%;
-optimistic, because neighbouring windows overlap) does not rescue it either: two folds are
-single-class at 1.00, and the other two are 0.600 against 0.511 and 0.712 against 0.797. There
-is not enough data here for any split to mean anything.
-
-**So the honest reading: the pipeline is proven and the numbers are not yet worth interpreting.**
-Three 30 s runs and two short trial logs is about 175 seconds of play; tens of minutes per regime
-are needed before held-out agreement says anything about a model. And distilling the scripted
-brain on cooldown-free runs teaches nothing new by construction — a better number here would only
-mean the head had copied its teacher more closely.
+*The sticky baseline had to be fixed before it meant anything: measured against the intent one
+control tick (~33 ms) earlier it read 0.99+ with 0-12 changes per fold, because consecutive rows of
+`frames.jsonl` agree by construction. It now compares against the previous decision in the same
+session.*
 
 **Two recorders, two vocabularies.** L4's trials log `Engage`, `Combo`, `stand`, `Search`; the
-loop logs `engage:enemy`, `search`, `combo:burst`, `idle`. `vocab_of` lowercases and cuts at the
-colon, but **`stand` and `idle` are deliberately kept apart**: one is a scripted pause, the other
-is the loop standing the controller down, and merging them would invent an equivalence. Any fold
-that trains on one recorder and tests on the other is partly measuring that mismatch.
+loop logs `engage:enemy`, `search`, `combo:burst`, `webstrike:enemy`, `pull:enemy`, `idle`.
+`vocab_of` lowercases and cuts at the colon, but **`stand` and `idle` are deliberately kept
+apart**: one is a scripted pause, the other is the loop standing the controller down. The trial
+logs are excluded from training entirely (`recorder="loop"`), so the two never pool.
+
+## Step 3: the learned chooser behind the loop's seam
+
+`policy/live.py` gives `LearnedBrain`, which has `brain.decide`'s signature, so
+`agent/loop.py --brain learned` reads nothing special of it. **The scripted gate runs first**,
+exactly as the Jev path does — retreat, a playing hold and a flickering target never wait on a
+model — and the head only replaces `brain.policy`. Every answer then goes through `jev.legal`,
+the same kit preconditions `brain.policy` enforces, and is adopted with `jev.adopt`, the same hold
+and mode bookkeeping. Neither is rewritten here; both are imported, and a test pins that.
+
+An answer is dropped and the tick falls to `brain.policy` when the head names something no target
+can execute, when the pixels are stale, or when the vocabulary does not map. Each reason is
+counted, so a run can say how often the head actually chose.
+
+**One change in `agent/loop.py` besides the flag.** The head reads pixels and the
+`decide(state, memory)` seam does not carry them, so `LearnedBrain` also exposes `see(frame, t)`,
+which the decision worker calls with the frame the `State` was built from. It is duck-typed like
+the loop's other seams (`.source`, the tracker) and a brain without `see` is called exactly as
+before. Flagged for the lead as the one line outside this lane's own files.
+
+**Latency, this Mac, batch 1, niced:**
+
+| Stage | p50 | p95 | max |
+|---|---|---|---|
+| `see` (resize 1440p, mask, encode) | 25.2 ms | 29.4 ms | 31.3 ms |
+| `decide` (window, head, gate, legality) | 4.9 ms | 7.3 ms | 8.0 ms |
+| **total per decision tick** | **30.2 ms** | **35.6 ms** | **38.6 ms** |
+
+That fits a 10 Hz decision tick (100 ms) with room, but it lands on the decision thread beside the
+HUD read and the tag reads, which the loop lane measures at 10-40 ms on the PC. The resize
+dominates `see`, and it keeps `INTER_AREA` deliberately: it is what ffmpeg's `area` scaler did when
+the cache was built, and a cheaper filter would feed the head vectors unlike its training set. A
+test checks that live and cached embeddings of the same frame agree (cosine > 0.99).
+
+**What still needs measuring, and where.** Nothing here has run live. On the PC the GPU belongs to
+the game, so the encoder would run CPU-side there, unmeasured; the alternative is hosting it on
+this Mac over the LAN, where the loop lane measured 63-90 ms per small call on the current Wi-Fi,
+and frame transport on top of that is unmeasured. Neither number exists yet and neither is assumed.
 
 ## Sources that may not be split on yet
 
@@ -217,6 +254,32 @@ the embeddings already exist, so it is a matrix product over ~100k vectors. Cave
 trusts it: an edited upload is re-encoded, so a duplicate is near but not identical; two distinct
 moments on the same map with the same HUD can be near neighbours; and the threshold needs
 hand-checked pairs before it draws a boundary. **Awaiting your go-ahead.**
+
+## What an independent review found, and what changed (VUH-1326)
+
+A reviewer outside every lane reproduced these by running the code. Each fix has a test built
+from that reproduction, so the defect cannot come back quietly.
+
+| # | Defect | Fix |
+|---|---|---|
+| 1 | `Cache.at` took the **nearest** row within 60 ms, so a decision could resolve to a frame *after* it (every PTS on one section is grid + 27 ms). Two clocks were never reconciled: the cache records absolute decoded PTS, `agent/demos.py` speaks clip time from the first frame, so a source with an offset origin missed on *every* frame | The sidecar records `clock` and `t_origin`; `Cache` converts once, then `searchsorted` takes the latest row **at or before** the step, never the nearest |
+| 2 | A cache miss left the block zero, indistinguishable from blank video. **baseline3 contributed a full 1,500-window held-out fold with embedding-present 0.000** | A source not in the cache raises `CacheMiss` naming it; a window with no embedding at all raises. A *masked* frame is now a separate bit, so "hidden scene" and "missing file" are different facts |
+| 3 | `windows()` iterated every split the loader assigned, so an `inspection_only` source could yield training rows | `TRAINABLE = ("train", "val", "test")`, an allow-list |
+| 5 | `_event_features` had no upper bound: an early step counted events confirmed seconds later | Counted over `(t - 1 s, t]` at each step, and the docstring says so |
+| 6 | `mix_regimes=True` was passed unconditionally, switching off the loader's guard, while `corpus.py` and the loader disagreed about who owns a run's regime | The run's own metadata is the authority; `corpus.RUNS` is a documented legacy fallback that **cannot qualify a run for training**; disagreement raises `RegimeConflict`; the loader's guard stays on (`cooldowns=regime`) |
+| 8 | `encode.py` skipped a source when both files existed, freezing sidecars (21 of 27 had `splittable: null`) | A cached source now has its sidecar rewritten from current provenance on every run, decoding nothing. `sidecar_version` marks the shape |
+| 9 | The test named "only from frames at or before its decision" compared no timestamps — finding 1 lived in that gap | It now compares them, on every cached source, on and between the grid |
+| — | *(found while fixing 2)* the runtime derived the feature layout a second time and, once a bit was added, fed the head a vector one column out of step | `layout()` in `policy/train.py` is the only place the offsets are written; `policy/live.py` reads it |
+| 10 | The headline numbers here were stale against the code | Regenerated below |
+
+What the reviewer tried and could **not** break, which is worth as much: no leakage past `t` inside
+the loader, no per-clip normalization statistics, class weights not reaching reported accuracy,
+split integrity by group, and the `splittable` gate.
+
+**Events stay absent on purpose.** `agent/demos.py` reads event format 2 and the HUD lane now
+writes format 3, so no real events file loads today. rivals-brain owns that fix; nothing here
+depends on events until the lead says it landed.
+
 
 ## The cache
 
@@ -265,5 +328,10 @@ scratch directory and the numbers came here instead of the images.
   `mix_regimes=True`. The loader reads a run's regime from its `meta.json`, which the recorders do
   not write yet (rivals-brain is adding a `--cooldowns` flag); `policy/corpus.py` holds the lead's
   statement meanwhile, and a test pins that the selection is what pins the regime.
-- **Not built:** `--brain learned` and its latency measurement (step 3), the tactical-purpose head
-  (step 4), cross-source deduplication (proposed above), any live run. Nothing is committed.
+- **Not built:** the tactical-purpose head (step 4), cross-source deduplication (approved as a
+  proposal tool, not yet written), consumption of the HUD lane's bridged runs and their masked
+  scoreboard frames (waiting on the loader), any live run. Nothing is committed.
+- **Window length is provisional.** 5 s at 10 Hz suits our own 300 s runs, but the HUD lane
+  measures expert segments at medians of 4-12 s, so most expert windows will be short. A short
+  window already degrades safely (absent steps keep their present bit clear), and the scene-mask
+  bit added for review finding 2 is what a bridged run's scoreboard frames will use.

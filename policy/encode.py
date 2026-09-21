@@ -37,11 +37,12 @@ import numpy as np
 from mlxim.model import create_model
 
 from . import corpus as corpus_mod
-from .frames import NORM, SIZE, Decoded, DecodedJpegs, rects, thin, visible_fraction
+from .frames import NORM, SIZE, Decoded, DecodedJpegs, DecodedProxy, rects, thin, visible_fraction
 
 ROOT = Path(__file__).resolve().parent.parent
 CACHE = ROOT / "data" / "embeddings"
 HZ = 10.0
+SIDECAR_VERSION = 3      # bumped whenever a provenance field is added; `fill` rewrites older ones
 DEFAULT = "vit_small_patch16_224.dino"
 CANDIDATES = ("mobilenet_v3_small", "resnet18", "vit_base_patch32_224", "vit_small_patch16_224.dino")
 MEAN = mx.array([0.485, 0.456, 0.406])
@@ -96,6 +97,10 @@ def encode_source(source, encoder, hz, out_dir):
     """Encode one source into out_dir. Returns (n, seconds) or None when it was already done."""
     npz, side = out_dir / f"{source.id.replace(':', '-')}.npz", out_dir / f"{source.id.replace(':', '-')}.json"
     if npz.exists() and side.exists():
+        # The pixels are done, but provenance keeps gaining fields and a regime can be corrected:
+        # rewrite the sidecar from what the corpus says NOW, without decoding anything.
+        with np.load(npz) as z:
+            side.write_text(json.dumps(sidecar(source, encoder.name, encoder.dim, hz, z["emb"], z["t"]), indent=1))
         return None
     started = time.perf_counter()
     chunks = []
@@ -106,7 +111,11 @@ def encode_source(source, encoder, hz, out_dir):
         times = decoded.check()
     else:
         files, times, _ = run_frames(source)
-        decoded = DecodedJpegs(source.path, files, source.creator, batch=encoder.batch)
+        # A run's frames are either its saved jpgs or, on newer runs, a proxy video with one frame
+        # per logged frame. Either way the clock is frames.jsonl's, never the media's.
+        decoded = (DecodedProxy(source.proxy, source.creator, len(files), batch=encoder.batch)
+                   if source.proxy and source.proxy.exists()
+                   else DecodedJpegs(source.path, files, source.creator, batch=encoder.batch))
         for batch in decoded:
             chunks.append(encoder(batch))
         decoded.check()
@@ -118,20 +127,62 @@ def encode_source(source, encoder, hz, out_dir):
     tmp_npz, tmp_side = npz.with_name(npz.name + ".tmp"), side.with_name(side.name + ".tmp")
     with tmp_npz.open("wb") as fh:                # a file object, so savez cannot append its own suffix
         np.savez(fh, emb=emb, t=times)
-    tmp_side.write_text(json.dumps({
-        "id": source.id, "kind": source.kind, "creator": source.creator, "group": source.group,
-        "cooldowns": source.cooldowns, "cooldowns_evidence": source.cooldowns_evidence,
-        "media": str(source.path.relative_to(ROOT)), "source_fps": source.fps,
-        "upload_date": source.upload_date, "edited_upload": source.edited, "splittable": source.splittable,
-        "encoder": encoder.name, "dim": encoder.dim, "norm": NORM, "size": SIZE, "hz": hz,
-        "masks": [list(r) for r in rects(source.creator)], "visible_fraction": round(visible_fraction(source.creator), 4),
-        "frames": len(emb), "t_first": float(times[0]) if len(times) else None,
-        "t_last": float(times[-1]) if len(times) else None,
-        "written": time.strftime("%Y-%m-%dT%H:%M:%S"),
-    }, indent=1))
+    tmp_side.write_text(json.dumps(sidecar(source, encoder.name, encoder.dim, hz, emb, times), indent=1))
     tmp_npz.rename(npz)                           # both files land only when both are complete
     tmp_side.rename(side)
     return len(emb), time.perf_counter() - started
+
+
+def sidecar(source, encoder_name, dim, hz, emb, times):
+    """Everything about a cached source except its vectors: provenance, regime, patch, masks."""
+    return {
+        "id": source.id, "kind": source.kind, "creator": source.creator, "group": source.group,
+        "cooldowns": source.cooldowns, "cooldowns_evidence": source.cooldowns_evidence,
+        "patch": source.patch, "patch_evidence": source.patch_evidence, "recorder": source.recorder,
+        "media": str(source.path.relative_to(ROOT)), "source_fps": source.fps,
+        "upload_date": source.upload_date, "edited_upload": source.edited, "splittable": source.splittable,
+        "encoder": encoder_name, "dim": dim, "norm": NORM, "size": SIZE, "hz": hz,
+        "masks": [list(r) for r in rects(source.creator)], "visible_fraction": round(visible_fraction(source.creator), 4),
+        "frames": len(emb), "t_first": float(times[0]) if len(times) else None,
+        "t_last": float(times[-1]) if len(times) else None,
+        # Which clock `t` is on, and where it starts. A video's rows carry ABSOLUTE decoded PTS,
+        # whose origin is not 0 (one DayMR section starts at 1.616 s), while agent/demos.py speaks
+        # clip time from the first frame. Whoever reads the cache converts with this, once.
+        "clock": "media_pts" if source.is_video else "recorder",
+        "t_origin": float(times[0]) if (source.is_video and len(times)) else 0.0,
+        "sidecar_version": SIDECAR_VERSION,
+        "written": time.strftime("%Y-%m-%dT%H:%M:%S"),
+    }
+
+
+def refresh(encoder_name=DEFAULT, hz=HZ, data=corpus_mod.DATA):
+    """Rewrite every cached sidecar from current provenance, without decoding a frame.
+
+    Provenance keeps gaining fields (the regime, then the patch, then splittable) while the vectors
+    are unchanged; re-encoding the corpus to add a key would cost fifteen minutes for nothing.
+    """
+    out_dir = cache_dir(_Tag(encoder_name), hz)
+    by_id = {s.id: s for s in corpus_mod.corpus(data)}
+    n = 0
+    for side in sorted(out_dir.glob("*.json")):
+        old = json.loads(side.read_text())
+        source = by_id.get(old["id"])
+        if source is None:
+            print(f"{old['id']:<34} cached but no longer in the corpus: left alone")
+            continue
+        with np.load(side.with_suffix(".npz")) as z:
+            fresh = sidecar(source, old["encoder"], old["dim"], old["hz"], z["emb"], z["t"])
+        side.write_text(json.dumps(fresh, indent=1))
+        n += 1
+    print(f"{n} sidecars rewritten in {out_dir}")
+    return out_dir
+
+
+class _Tag:
+    """cache_dir wants an Encoder; only its tag is read, and loading weights to rewrite JSON is waste."""
+
+    def __init__(self, name):
+        self.tag = name.replace(".", "-")
 
 
 def fill(encoder, hz=HZ, kinds=None, data=corpus_mod.DATA):
@@ -238,6 +289,7 @@ def main(argv=None):
     ap.add_argument("--bench", action="store_true")
     ap.add_argument("--probe", action="store_true")
     ap.add_argument("--list", action="store_true", help="what is cached already")
+    ap.add_argument("--refresh", action="store_true", help="rewrite every sidecar from current provenance; decodes nothing")
     ap.add_argument("--encoder", default=DEFAULT)
     ap.add_argument("--hz", type=float, default=HZ)
     a = ap.parse_args(argv)
@@ -247,6 +299,9 @@ def main(argv=None):
         return bench(a.hz)
     if a.probe:
         return probe(a.hz)
+    if a.refresh:
+        refresh(a.encoder, a.hz)
+        return 0
     if a.list:
         for side in sorted(CACHE.glob("*/*.json")):
             m = json.loads(side.read_text())

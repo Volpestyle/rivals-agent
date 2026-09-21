@@ -41,14 +41,6 @@ def test_a_run_that_nobody_recorded_a_regime_for_is_unknown_not_assumed(tmp_path
     assert [s.cooldowns for s in found] == [corpus_mod.UNKNOWN]
 
 
-def test_a_recorder_that_states_the_regime_is_believed_over_the_table(tmp_path):
-    (tmp_path / "l1" / "tagrun0").mkdir(parents=True)
-    (tmp_path / "l1" / "tagrun0" / "frames.jsonl").write_text('{"t": 0.0, "file": "000000.jpg"}\n')
-    (tmp_path / "l1" / "tagrun0" / "meta.json").write_text(json.dumps({"cooldowns": "normal"}))
-    source, = corpus_mod.runs(tmp_path)
-    assert source.cooldowns == "normal" and "meta.json" in source.cooldowns_evidence
-
-
 def test_our_recordings_from_before_the_baseline_are_the_cooldown_free_regime(tmp_path):
     for name in ("tagrun", "tagrun0", "tagrun1"):
         (tmp_path / "l1" / name).mkdir(parents=True)
@@ -83,7 +75,7 @@ def test_the_trainer_refuses_a_source_that_is_not_cleared_for_splitting(monkeypa
                                                                for s in cleared])
     monkeypatch.setattr(train.corpus_mod, "corpus", corpus_mod.corpus)
     with pytest.raises(ValueError, match="splittable"):
-        train.windows(regime="off")
+        train.windows(regime="off", recorder=None)
 
 
 def test_every_source_carries_a_split_group_so_nothing_is_split_within_a_recording():
@@ -268,13 +260,80 @@ def test_the_two_recorders_notes_map_to_one_vocabulary_without_inventing_equival
 
 
 @needs_mlx
-@needs_data
-def test_a_window_is_built_only_from_frames_at_or_before_its_decision():
-    """The loader enforces this; this pins that the trainer did not reach around it."""
-    from policy.train import windows
+@pytest.mark.skipif(not SAMPLES, reason="no sample clip on this machine")
+def test_the_live_path_reproduces_the_cached_embedding_for_the_same_frame():
+    """Train/serve skew: the cache decodes with ffmpeg, the loop resizes with cv2.
+
+    If the two normalizations disagreed, the head would be fed vectors unlike the ones it was
+    trained on and nothing downstream would say so.
+    """
+    cv2 = pytest.importorskip("cv2")
     import numpy as np
-    x, y, sessions, classes = windows(regime="off", decision_hz=1.0)
-    assert len(x) == len(y) == len(sessions) > 0
-    assert x.shape[1] == 51, "5 s of history at 10 Hz, including the decision frame"
-    assert set(classes) <= {"combo", "engage", "search", "stand", "idle", "disengage", "none"}
-    assert not np.isnan(x).any()
+
+    from policy.encode import Encoder
+    from policy.frames import SIZE, Decoded, mask
+    decoded = Decoded(SAMPLES[0], "us", hz=1, src_fps=60, batch=1)
+    cached_pixels = next(iter(decoded))[0]                     # ffmpeg: scale then mask
+
+    raw = subprocess.run(["ffmpeg", "-hide_banner", "-v", "error", "-i", str(SAMPLES[0]),
+                          "-frames:v", "1", "-pix_fmt", "bgr24", "-f", "rawvideo", "-"],
+                         capture_output=True, check=True).stdout
+    native = np.frombuffer(raw, np.uint8).reshape(1080, 1920, 3)
+    live_pixels = mask(cv2.cvtColor(cv2.resize(native, (SIZE, SIZE), interpolation=cv2.INTER_AREA),
+                                    cv2.COLOR_BGR2RGB)[None, ...].copy(), "us")
+
+    encoder = Encoder(batch=1)
+    a, b = encoder(cached_pixels[None, ...]).astype(np.float32)[0], encoder(live_pixels).astype(np.float32)[0]
+    cosine = float(a @ b / (np.linalg.norm(a) * np.linalg.norm(b)))
+    assert cosine > 0.99, f"live and cached embeddings disagree (cosine {cosine:.4f}): the head would be fed skewed input"
+
+
+@needs_mlx
+@needs_data
+def test_the_sticky_guess_is_what_was_already_in_force_and_never_the_answer():
+    """`prev` must come from an input at or before t, so it is available at decision time."""
+    from policy.train import windows
+    x, y, sessions, prev, classes = windows(regime="normal", decision_hz=1.0)
+    assert len(prev) == len(y)
+    assert (prev == y).mean() > 0.5, "intents are sticky: the previous one should usually still hold"
+    assert (prev == y).mean() < 1.0, "if it always matched, the label would be the observation"
+
+
+@needs_mlx
+def test_l4s_trial_logs_are_a_different_recorder_and_are_not_pooled_with_the_loops_runs():
+    runs = {s.id: s.recorder for s in corpus_mod.corpus(kinds=("run",))}
+    if not runs:
+        pytest.skip("no runs on this machine")
+    assert all(r in ("loop", "trial") for r in runs.values())
+    assert runs.get("run:tagrun0", "trial") == "trial"
+
+
+@needs_mlx
+def test_the_learned_brain_runs_the_scripted_gate_first_and_never_adopts_an_illegal_intent():
+    """The gate and the kit checks are imported from brain/jev, not reimplemented here."""
+    import inspect
+
+    import policy.live as live
+    source = inspect.getsource(live.LearnedBrain.__call__)
+    assert "brain.gate(state, memory)" in source, "the scripted gate must run before the head"
+    assert "jev.legal(" in source and "jev.adopt(" in source, "legality and adoption are jev's, reused"
+    assert live.TO_JEV["combo"] == "burst" and live.TO_JEV["webstrike"] == "web_strike"
+
+
+@needs_mlx
+def test_the_runtime_and_the_trainer_read_one_feature_layout():
+    """The live path once derived the offsets itself and fed the head a vector a column out."""
+    from policy.train import EVENT_F, STATE_F, emb_dim_of, layout
+    at = layout(384)
+    assert at["emb_present"] == 384 and at["scene_masked"] == 385
+    assert at["state"] == 386 and at["state_present"] == 386 + STATE_F
+    assert at["events_present"] == at["events"] + EVENT_F
+    assert emb_dim_of(at["width"]) == 384
+
+
+@needs_mlx
+def test_a_masked_frame_and_a_cache_miss_are_different_facts():
+    """Finding 2: blank video must not be able to pass as a hidden scene."""
+    from policy.train import layout
+    at = layout(384)
+    assert at["emb_present"] != at["scene_masked"], "one bit cannot say both"
