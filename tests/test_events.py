@@ -461,3 +461,216 @@ def test_a_file_with_no_mapping_says_so_rather_than_showing_an_empty_one():
     assert meta["slot_mapping"] is None and meta["slot_mapping_from"] is None
     meta = json.loads(dump(extract_one(seq, mapping={}), [], seq, mapping={}).splitlines()[0])
     assert meta["slot_mapping"] == {} and meta["slot_mapping_from"]
+
+
+# --- the writer: recipes, staleness, regeneration --------------------------
+
+def test_pts_times_are_read_off_showinfo():
+    from perception.events import _pts_times
+
+    log = ("[Parsed_showinfo_1 @ 0x1] n:   0 pts:  61440 pts_time:1200.02 duration:1\n"
+           "[Parsed_showinfo_1 @ 0x1] n:   1 pts:  61442 pts_time:1200.0533 duration:1\n")
+    assert _pts_times(log) == [1200.02, 1200.0533]
+
+
+def _write(path, meta):
+    import json
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps({"type": "meta", **meta}) + "\n")
+
+
+def test_check_lists_old_formats_and_files_nobody_can_rebuild(tmp_path):
+    from perception.events import FORMAT_VERSION, check
+
+    recipe = {"video": "v.mp4", "hz": 10.0, "start": None, "duration": None, "layout": "mk"}
+    from perception.events import writer_version
+
+    full = {"recipe": recipe, "cut_times": [], "observed": {}, "slot_mapping": {},
+            "writer": writer_version(), "container_start_s": 0.0, "stream_start_s": 0.0}
+    _write(tmp_path / "good.jsonl", {"format": FORMAT_VERSION, **full})
+    _write(tmp_path / "sub" / "old.jsonl", {"format": FORMAT_VERSION - 1, **full})
+    _write(tmp_path / "orphan.jsonl", {"format": FORMAT_VERSION, **full, "recipe": None})
+    # Same format number, written before cut_times existed: found by the key it lacks.
+    _write(tmp_path / "older.jsonl", {"format": FORMAT_VERSION, **{k: v for k, v in full.items()
+                                                                   if k != "cut_times"}})
+    stale = {p.name: why for p, why in check(tmp_path)}
+    _write(tmp_path / "other.jsonl", {"format": FORMAT_VERSION, **full, "writer": "000000000000"})
+    assert set(stale) | {"other.jsonl"} == {p.name for p, _ in check(tmp_path)}
+    assert set(stale) == {"old.jsonl", "orphan.jsonl", "older.jsonl"}
+    assert "format" in stale["old.jsonl"] and "recipe" in stale["orphan.jsonl"]
+    assert "cut_times" in stale["older.jsonl"]
+
+
+def test_regenerate_reports_a_file_it_cannot_rebuild_rather_than_skipping_it(tmp_path):
+    from perception.events import regenerate
+
+    _write(tmp_path / "orphan.jsonl", {"format": 1, "recipe": None})
+    assert regenerate(tmp_path)["no_recipe"] == [str(tmp_path / "orphan.jsonl")]
+
+
+def test_from_video_samples_an_exact_window_and_records_how(tmp_path):
+    """End to end on a synthetic 60 fps video: the window, the grid, the origin
+    in source seconds, times from zero, and a recipe that says all of it."""
+    import json
+    import shutil
+    import subprocess
+
+    import pytest
+
+    if not shutil.which("ffmpeg"):
+        pytest.skip("ffmpeg not installed")
+    from perception.events import FORMAT_VERSION, check, from_video
+
+    video = tmp_path / "src.mp4"
+    subprocess.run(["ffmpeg", "-v", "error", "-f", "lavfi", "-i", "testsrc=size=640x360:rate=60",
+                    "-t", "3", "-pix_fmt", "yuv420p", str(video), "-y"], check=True)
+    out = tmp_path / "events" / "src.jsonl"
+    got = from_video(video, out, hz=10, start=1.0, duration=1.0, layout="mk",
+                     workdir=tmp_path / "work")
+    meta = json.loads(out.read_text().splitlines()[0])
+    assert got["frames"] == 10                       # 1 s at 10 Hz, exactly
+    assert abs(meta["pts_origin_s"] - 1.0) < 0.02    # source time of the first frame
+    assert meta["recipe"] == {"video": str(video), "hz": 10, "start": 1.0,
+                              "duration": 1.0, "layout": "mk"}
+    assert meta["format"] == FORMAT_VERSION and meta["cuts"] is not None
+    assert check(tmp_path / "events") == []
+    assert not any((tmp_path / "work").iterdir())    # no frames left behind
+
+
+def test_the_demonstration_directory_holds_one_format_throughout():
+    """The loader refuses anything but the current format; this names the files
+    that would be refused. Local data only -- skips where it is absent."""
+    import pytest
+
+    from perception.events import EVENTS_DIR, check
+
+    root = ROOT / EVENTS_DIR
+    if not root.exists():
+        pytest.skip("no local demonstration events")
+    stale = check(root)
+    assert not stale, "run `python -m perception.events regenerate`:\n" + \
+        "\n".join(f"  {p}: {why}" for p, why in stale)
+
+
+# --- another hero passing as ours --------------------------------------------
+
+STRANGE_VOD = ROOT / "data/demos/vods/daymr-2879354299-21660-900s.mp4"
+
+
+def _vod_frame(path, seconds):
+    import cv2
+
+    cap = cv2.VideoCapture(str(path))
+    try:
+        cap.set(cv2.CAP_PROP_POS_MSEC, seconds * 1000)
+        ok, frame = cap.read()
+        return frame if ok else None
+    finally:
+        cap.release()
+
+
+def test_doctor_strange_is_not_spider_man():
+    """The box annotator's find: a minute of DayMR on Doctor Strange (650 hp)
+    read as own-Spider-Man, because Strange scores inside Spider-Man's band on
+    the one-class portrait match. Local VOD only; skips without it."""
+    import pytest
+
+    from perception.events import playing_spiderman
+
+    if not STRANGE_VOD.exists():
+        pytest.skip("retained section not on this machine")
+    # Source time, all Strange. One of them reads unknown (his portrait mid-animation),
+    # which the segmenter carries across; what must never happen is True.
+    verdicts = [playing_spiderman(_vod_frame(STRANGE_VOD, s)) for s in (822, 835, 850, 865, 878)]
+    assert True not in verdicts, verdicts
+    assert verdicts.count(False) >= 4, verdicts
+    for seconds in (800.0, 802.0):                         # Spider-Man, just before
+        assert playing_spiderman(_vod_frame(STRANGE_VOD, seconds)) is not False, seconds
+
+
+def test_the_strange_stretch_is_no_longer_a_play_segment():
+    """End to end on the retained section: no segment may cover 822-878 s."""
+    import json
+
+    import pytest
+
+    path = ROOT / "data/demos/events/sections/daymr-2879354299-21660-900s.jsonl"
+    if not path.exists():
+        pytest.skip("retained section events not on this machine")
+    lines = [json.loads(l) for l in path.read_text().splitlines() if l.strip()]
+    origin = lines[0]["pts_origin_s"] or 0.0
+    covering = [s for s in lines if s.get("type") == "segment"
+                and s["start_t"] + origin < 870 and s["end_t"] + origin > 830]
+    assert not covering, covering
+
+
+# --- format 5: cuts inside gaps, cut times, per-segment regime ---------------
+
+def _reads7(huds, aside=None, cuts=()):
+    aside = aside or {}
+    return [(i, round(i / 10, 3), h, True, aside.get(i), False, i in cuts)
+            for i, h in enumerate(huds)]
+
+
+def test_a_cut_inside_a_scoreboard_gap_is_not_a_bridgeable_tap():
+    """The loader bridges short scoreboard gaps. A cut hidden in one would fuse
+    two unrelated shots, so the cut outranks the scoreboard on both sides."""
+    huds = [hud(hp=250)] * 5 + [hud(hp=None)] * 4 + [hud(hp=180)] * 5
+    board = {i: "scoreboard" for i in range(5, 9)}
+    plain = segment(_reads7(huds, board))
+    assert [(s.started_by, s.ended_by) for s in plain] == \
+        [("run_start", "scoreboard"), ("scoreboard_closed", "run_end")]
+    cut = segment(_reads7(huds, board, cuts={7}))       # mid-gap
+    assert [(s.started_by, s.ended_by) for s in cut] == \
+        [("run_start", "hard_cut"), ("after_cut", "run_end")]
+
+
+def test_every_cut_time_is_in_the_meta_line():
+    import json
+
+    from perception.events import dump
+
+    huds = [hud(hp=250)] * 12
+    meta = json.loads(dump([], [], _reads7(huds, cuts={3, 9})).splitlines()[0])
+    assert meta["cut_times"] == [0.3, 0.9] and meta["cuts"] == 2
+    unchecked = json.loads(dump([], [], _tagged(huds, [True] * 12)).splitlines()[0])
+    assert unchecked["cut_times"] is None and unchecked["cuts"] is None
+
+
+def test_a_segment_is_normal_only_where_a_countdown_proved_it():
+    """The HUD can prove cooldowns are on; it cannot prove they are off."""
+    rs = _reads7([hud(), hud(get_over_here_cd=8), hud(get_over_here_cd=8)] +
+                 [hud(hp=0)] * 3 + [hud()] * 4)
+    _, segs = extract(rs, mapping=IDENTITY)
+    assert [s.cooldowns for s in segs] == ["normal", "unknown"]
+
+
+
+def test_the_three_clocks_are_recorded_apart(tmp_path):
+    """A container that starts before its video stream (audio first, as on the
+    DayMR section): the meta line must say both, and t + pts_origin_s -
+    container_start_s must land on the seek time of the frame."""
+    import json
+    import shutil
+    import subprocess
+
+    import pytest
+
+    if not shutil.which("ffmpeg"):
+        pytest.skip("ffmpeg not installed")
+    from perception.events import from_video
+
+    video = tmp_path / "late-video.mp4"
+    # 2 s of audio from 0, video starting 0.5 s later.
+    subprocess.run(["ffmpeg", "-v", "error", "-f", "lavfi", "-i", "testsrc=size=320x180:rate=60",
+                    "-f", "lavfi", "-i", "sine=frequency=440", "-t", "2",
+                    "-filter_complex", "[0:v]setpts=PTS+0.5/TB[v]", "-map", "[v]", "-map", "1:a",
+                    "-pix_fmt", "yuv420p", "-shortest", str(video), "-y"], check=True)
+    out = tmp_path / "e.jsonl"
+    from_video(video, out, hz=10, layout="mk", workdir=tmp_path / "w")
+    meta = json.loads(out.read_text().splitlines()[0])
+    assert meta["stream_start_s"] > meta["container_start_s"], meta
+    assert abs(meta["pts_origin_s"] - meta["stream_start_s"]) < 0.02, meta
+    seek_of_first = meta["pts_origin_s"] - meta["container_start_s"]
+    assert abs(seek_of_first - (meta["stream_start_s"] - meta["container_start_s"])) < 0.02

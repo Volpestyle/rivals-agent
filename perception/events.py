@@ -50,7 +50,7 @@ import json
 import subprocess
 import sys
 import zlib
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass, field, replace
 from pathlib import Path
 
 import numpy as np
@@ -85,7 +85,31 @@ SHIELD_WINDOW = 3   # frames apart that an hp and a max-hp change may still be o
 #    this source's own HUD showed, a patch fingerprint). `slot_mapping` is null
 #    when no mapping was attempted, where it was previously {} -- {} now means
 #    only that the icons were read and none identified.
+#    Later additions, all optional so a format-4 reader stays correct: meta
+#    `cut_times` and `recipe`, segment `cooldowns`, and a cut inside a gap
+#    marking both sides with the existing hard_cut / after_cut values -- which
+#    only ever makes a reader more conservative. `check` finds files written
+#    before them by the keys they lack (REQUIRED_META), not by a version bump.
 FORMAT_VERSION = 4
+REQUIRED_META = ("recipe", "cut_times", "observed", "slot_mapping", "writer",
+                 "container_start_s", "stream_start_s")
+# The code whose behaviour decides what an events file contains.
+WRITER_FILES = ("perception/events.py", "perception/hud.py", "perception/scoreboard.py")
+
+
+def writer_version():
+    """Fingerprint of the code that writes events files: the first 12 hex of a
+    SHA-256 over WRITER_FILES. A file stamped with anything else was written by
+    other code -- even a fix that left the format number alone -- and `check`
+    reports it, so "every file is from the current writer" is verified, not
+    asserted."""
+    import hashlib
+
+    root = Path(__file__).resolve().parent.parent
+    h = hashlib.sha256()
+    for name in WRITER_FILES:
+        h.update((root / name).read_bytes())
+    return h.hexdigest()[:12]
 ULT = "ult"
 
 # --- is Spider-Man the hero being played? ---------------------------------
@@ -95,6 +119,18 @@ PORTRAIT_SCALES = (0.8, 0.95, 1.1, 1.3, 1.5)
 # second streamer on a different skin; other heroes 0.225-0.304, including the
 # spectating still. The band between is reported as unknown rather than guessed.
 PORTRAIT_MATCH, PORTRAIT_CLEAR = 0.34, 0.31
+# A one-class threshold cannot reject a hero it never saw: Doctor Strange scores
+# 0.32-0.40 against the Spider-Man template, inside Spider-Man's own band, and a
+# minute of DayMR on Strange passed as ours. Known other heroes are therefore
+# matched as negatives too, on an absolute bar -- not "nearer class wins", which
+# fails because the colour match is weak: real Spider-Man frames score 0.46-0.48
+# against the Strange template, *higher* than against his own. Measured over 89
+# kept frames from every source, the highest against Strange is 0.69 (a frame an
+# editor had blurred whole); Strange himself is 0.78-1.00. The bar sits between,
+# and PORTRAIT_HOLD absorbs the odd blurred frame. The gap is narrow -- see the
+# lane notes -- and hp cannot back it up: Spider-Man in his ultimate with a
+# shield reads 650/650, exactly Strange's base maximum.
+PORTRAIT_OTHER = 0.75
 # The verdict gets the same debounce treatment as any other channel. Without it
 # the spectating stretch of the sample VOD, where the portrait sits near the
 # boundary, shatters into ten two-frame segments instead of one.
@@ -214,7 +250,63 @@ _PORTRAITS_B64 = (
 )
 
 
+# Other heroes' portraits, same 40x30 BGR layout, one per hero found passing as
+# ours. Doctor Strange: DayMR, daymr-2879354299 at 830 s.
+_OTHER_HEROES_B64 = (
+    "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"
+)
+
+
 _PORTRAIT_CACHE: list = []
+_OTHER_CACHE: list = []
+
+
+def _others():
+    if not _OTHER_CACHE:
+        raw = zlib.decompress(base64.b64decode("".join(_OTHER_HEROES_B64)))
+        _OTHER_CACHE.extend(np.frombuffer(raw, np.uint8).reshape(-1, 40, 30, 3).astype(np.float32))
+    return _OTHER_CACHE
 
 
 def _portraits():
@@ -224,8 +316,8 @@ def _portraits():
     return _PORTRAIT_CACHE
 
 
-def portrait_score(frame) -> float:
-    """Best colour match for the Spider-Man portrait in the hero slot."""
+def portrait_score(frame, templates=None) -> float:
+    """Best colour match for the Spider-Man portrait (or `templates`) in the hero slot."""
     import cv2
 
     height, width = frame.shape[:2]
@@ -233,7 +325,7 @@ def portrait_score(frame) -> float:
     region = frame[int(y0 * height):int(y1 * height), int(x0 * width):int(x1 * width)]
     region = region.astype(np.float32)
     best = 0.0
-    for tpl in _portraits():
+    for tpl in (_portraits() if templates is None else templates):
         for scale in PORTRAIT_SCALES:
             t = cv2.resize(tpl, None, fx=scale, fy=scale, interpolation=cv2.INTER_AREA)
             if t.shape[0] > region.shape[0] or t.shape[1] > region.shape[1]:
@@ -244,6 +336,8 @@ def portrait_score(frame) -> float:
 
 def playing_spiderman(frame) -> bool | None:
     """True, False, or None when the portrait slot is too ambiguous to call."""
+    if portrait_score(frame, _others()) >= PORTRAIT_OTHER:
+        return False
     score = portrait_score(frame)
     if score >= PORTRAIT_MATCH:
         return True
@@ -315,9 +409,12 @@ class Segment:
     start_t: float
     end_i: int
     end_t: float
-    started_by: str   # run_start | respawn | hero_returned | hud_returned
+    started_by: str   # run_start | respawn | hero_returned | hud_returned | ... | after_cut
     ended_by: str     # run_end | death | killcam | spectating | scoreboard
-                      #   | not_our_hero | no_hud
+                      #   | not_our_hero | no_hud | hard_cut
+    # What the HUD proves about cooldowns here: "normal" once a countdown was
+    # seen, "unknown" otherwise. Never "off" -- the HUD cannot prove an absence.
+    cooldowns: str = "unknown"
 
     @property
     def frames(self):
@@ -385,6 +482,7 @@ def segment(reads):
     # untreated it cuts one 60 s clip into nine pieces.
     hud_steady = _steady([_hud_present(r[2]) for r in reads], HUD_HOLD)
     segments, start, last, reason = [], None, None, "run_start"
+    cut_in_gap = False   # a cut has fallen somewhere in the current gap
     for n, read in enumerate(reads):
         i, t, hud = read[0], read[1], read[2]
         playing = playing_steady[n]
@@ -405,13 +503,21 @@ def segment(reads):
             if start is not None:
                 segments.append(Segment(start[0], start[1], last[0], last[1], reason, broken))
                 start = None
-            reason = {"death": "respawn", "not_our_hero": "hero_returned",
-                      "killcam": "killcam_over", "spectating": "spectating_over",
-                      "scoreboard": "scoreboard_closed",
-                      "hard_cut": "after_cut"}.get(broken, "hud_returned")
+            elif broken == "hard_cut" and segments and not cut_in_gap:
+                # A cut inside a gap that opened for another reason -- most often a
+                # scoreboard tap. The far side is unrelated footage, so the gap must
+                # never be bridged, and a loader that bridges short scoreboard gaps
+                # would do exactly that. The cut outranks the reason the gap opened.
+                segments[-1] = replace(segments[-1], ended_by="hard_cut")
+            cut_in_gap = cut_in_gap or broken == "hard_cut"
+            reason = "after_cut" if cut_in_gap else {
+                "death": "respawn", "not_our_hero": "hero_returned",
+                "killcam": "killcam_over", "spectating": "spectating_over",
+                "scoreboard": "scoreboard_closed"}.get(broken, "hud_returned")
             continue
         if start is None:
             start = (i, t)
+            cut_in_gap = False
         last = (i, t)
     if start is not None:
         segments.append(Segment(start[0], start[1], last[0], last[1], reason, "run_end"))
@@ -706,6 +812,9 @@ def extract(reads, debounce=None, mapping=None):
         inside = [by_i[i] for i in range(seg.start_i, seg.end_i + 1) if i in by_i]
         events.extend(extract_one(inside, debounce, seg_index=n, mapping=mapping))
     events.sort(key=lambda e: (e.t_to, e.kind))
+    counted = {e.segment for e in events if e.kind == "ability_cast"}
+    segments = [replace(s, cooldowns="normal" if n in counted else "unknown")
+                for n, s in enumerate(segments)]
     return events, segments
 
 
@@ -717,7 +826,25 @@ def extract(reads, debounce=None, mapping=None):
 CUT_SCORE = 0.55
 
 
-def scene_cuts(video, threshold=CUT_SCORE, pts_origin=0.0):
+def _pts_times(log):
+    """Every `pts_time:` ffmpeg's showinfo filter logged, in order."""
+    import re
+
+    return [float(m) for m in re.findall(r"pts_time:\s*(-?[\d.]+)", log)]
+
+
+def _window(start, duration):
+    """ffmpeg input options for a window. -copyts keeps the source's own
+    timestamps, so what showinfo reports is source time, not time since the seek."""
+    out = []
+    if start is not None:
+        out += ["-ss", str(start)]
+    if duration is not None:
+        out += ["-t", str(duration)]
+    return out + ["-copyts"]
+
+
+def scene_cuts(video, threshold=CUT_SCORE, pts_origin=0.0, start=None, duration=None):
     """[seconds] where the source cuts, from ffmpeg's own scene detection.
 
     Measured at the source's native frame rate, which is the only place a cut is
@@ -729,14 +856,15 @@ def scene_cuts(video, threshold=CUT_SCORE, pts_origin=0.0):
 
     A fade is not a cut and must not be reported as one: it changes the frame
     gradually, so every step scores low and none crosses the threshold.
+
+    `start`/`duration` restrict it to the same window the frames were taken
+    from, with the same seek, so the two timelines agree.
     """
-    out = subprocess.run(
-        ["ffprobe", "-v", "error", "-f", "lavfi",
-         f"movie={video},select=gt(scene\\,{threshold})",
-         "-show_entries", "frame=pts_time", "-of", "csv=p=0"],
-        capture_output=True, text=True, check=True).stdout
-    times = [float(line.rstrip(",")) - pts_origin
-             for line in out.splitlines() if line.strip()]
+    log = subprocess.run(
+        ["ffmpeg", "-hide_banner", "-nostats", *_window(start, duration), "-i", str(video),
+         "-vf", f"select=gt(scene\\,{threshold}),showinfo", "-an", "-f", "null", "-"],
+        capture_output=True, text=True, check=True).stderr
+    times = [t - pts_origin for t in _pts_times(log)]
     # A wipe or a flash trips several adjacent frames; they are one edit.
     return [t for n, t in enumerate(times) if n == 0 or t - times[n - 1] > 0.5]
 
@@ -912,7 +1040,7 @@ def observed(events):
 
 
 def dump(events, segments, reads, layout="pad", source=None, mapping=None,
-         pts_origin=None):
+         pts_origin=None, recipe=None, starts=None):
     """The per-clip JSONL: one meta line, then a segment line each, then events.
 
     Three line kinds, told apart by `type`, which events omit for the sake of
@@ -934,16 +1062,28 @@ def dump(events, segments, reads, layout="pad", source=None, mapping=None,
         "frames": len(reads),
         "fps": sampling_fps(reads),
         "t_origin": "first frame of the media",
-        # Seconds of the source's first *decoded* video PTS. One retained
-        # section starts at 1.616 s, not 0, and its offsets came from a stream
-        # copy that was never frame-verified -- so t here is keyed to what the
-        # decoder produced, and this records what that was.
+        # Three clocks, kept apart. `t` counts from the first decoded video
+        # frame; `pts_origin_s` is that frame's PTS on the video stream's own
+        # clock (decoded with -copyts, so not rebased). A container can start
+        # before its video stream -- one retained section has audio from 1.589 s
+        # and video from 1.616 s -- and players and ffmpeg's -ss count from the
+        # container's start. So:
+        #   stream PTS          = t + pts_origin_s
+        #   player / -ss time   = t + pts_origin_s - container_start_s
         "pts_origin_s": pts_origin,
+        "container_start_s": (starts or {}).get("container"),
+        "stream_start_s": (starts or {}).get("stream"),
+        "writer": writer_version(),
         "duration_s": round(max(r[1] for r in reads) - min(r[1] for r in reads), 3) if reads else 0.0,
         # How many editorial cuts were found in this source, and 0 for a
         # continuous capture. A null says nobody looked, which is not the same.
         "cuts": (sum(1 for r in reads if len(r) > 6 and r[6]) if reads
                  and any(len(r) > 6 and r[6] is not None for r in reads) else None),
+        # Each cut's time: the first decoded frame on its far side, in the same
+        # `t` as everything else. With these a loader can check any gap for a
+        # cut before bridging it, not only the gaps whose reason says so.
+        "cut_times": ([round(r[1], 3) for r in reads if len(r) > 6 and r[6]]
+                      if any(len(r) > 6 and r[6] is not None for r in reads) else None),
         # Cooldowns as this source's own HUD showed them: a patch fingerprint
         # for footage dated only by an upload. See `observed`.
         "observed": observed(events),
@@ -958,10 +1098,153 @@ def dump(events, segments, reads, layout="pad", source=None, mapping=None,
         "slot_mapping_from": (
             "ability icon matched by shape, voted over sampled frames"
             if mapping is not None else None),
+        # How this file was made, complete enough for `regenerate` to make it
+        # again: source video, sampling rate, window, layout. null for a file
+        # built from a frame directory, which only its recorder can rebuild.
+        "recipe": recipe,
     })]
     lines += [json.dumps({"type": "segment", **asdict(s)}) for s in segments]
     lines += [json.dumps(asdict(e)) for e in events]
     return "\n".join(lines) + "\n"
+
+
+EVENTS_DIR = Path("data/demos/events")
+
+
+def _probe_fps(video):
+    rate = subprocess.run(
+        ["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries",
+         "stream=r_frame_rate", "-of", "csv=p=0", str(video)],
+        capture_output=True, text=True, check=True).stdout.strip().rstrip(",")
+    num, _, den = rate.partition("/")
+    return float(num) / float(den or 1)
+
+
+def probe_starts(video):
+    """{"container": format start_time, "stream": video stream start_time}, seconds."""
+    out = subprocess.run(
+        ["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries",
+         "format=start_time:stream=start_time", "-of", "json", str(video)],
+        capture_output=True, text=True, check=True).stdout
+    info = json.loads(out)
+    as_float = lambda v: None if v in (None, "N/A") else round(float(v), 3)  # noqa: E731
+    return {"container": as_float(info.get("format", {}).get("start_time")),
+            "stream": as_float((info.get("streams") or [{}])[0].get("start_time"))}
+
+
+def extract_frames(video, run_dir, hz=10.0, start=None, duration=None):
+    """Sample `video` onto an exact grid into `run_dir`; returns the PTS origin.
+
+    Every Nth *decoded* frame, never `-vf fps=N`, which resamples and lands a
+    source frame off. `t` in frames.jsonl is each frame's own decoded PTS minus
+    the first one's, so a source whose rate is not exactly 60 does not drift
+    against a grid assumed from the frame index. The origin is returned in
+    source seconds: the first decoded frame of the window.
+    """
+    run_dir = Path(run_dir)
+    run_dir.mkdir(parents=True, exist_ok=True)
+    step = max(1, round(_probe_fps(video) / hz))
+    log = subprocess.run(
+        ["ffmpeg", "-hide_banner", "-nostats", *_window(start, duration), "-i", str(video),
+         "-vf", f"select=not(mod(n\\,{step})),showinfo", "-vsync", "0", "-q:v", "6",
+         "-an", str(run_dir / "%06d.jpg"), "-y"],
+        capture_output=True, text=True, check=True).stderr
+    times = _pts_times(log)
+    files = sorted(p.name for p in run_dir.glob("*.jpg"))
+    if len(times) != len(files):
+        raise RuntimeError(f"{video}: {len(files)} frames written, {len(times)} timestamps logged")
+    origin = times[0] if times else 0.0
+    with open(run_dir / "frames.jsonl", "w") as fh:
+        for i, (name, pts) in enumerate(zip(files, times)):
+            fh.write(json.dumps({"i": i, "t": round(pts - origin, 3), "file": name}) + "\n")
+    return round(origin, 3)
+
+
+def from_video(video, out, hz=10.0, start=None, duration=None, layout="mk",
+               workdir=None, progress=None):
+    """A video (or a window of one) to an events file, recording its recipe.
+
+    This is the one path demonstration files are made by. Everything needed to
+    make the file again goes into its meta line, so `regenerate` can rebuild it
+    after a format change without anybody remembering how it was cut. Cuts are
+    always detected: a continuous capture then records a verified 0 rather than
+    a null nobody checked.
+    """
+    import shutil
+    import tempfile
+
+    from perception.hud import LAYOUTS
+
+    video, out = Path(video), Path(out)
+    # Frames from a VOD stay under data/, which is gitignored; never /tmp on a
+    # shared machine, and never anywhere that could be committed.
+    base = Path(workdir) if workdir else Path("data/.work")
+    base.mkdir(parents=True, exist_ok=True)
+    run_dir = Path(tempfile.mkdtemp(prefix=out.stem + "-", dir=base))
+    try:
+        origin = extract_frames(video, run_dir, hz, start, duration)
+        cuts = scene_cuts(video, pts_origin=origin, start=start, duration=duration)
+        (run_dir / "cuts.json").write_text(json.dumps(cuts))
+        lay = LAYOUTS[layout]
+        reads = read_run(run_dir, progress=progress, layout=lay)
+        mapping = _mapping_for(run_dir, lay, len(reads))
+        events, segments = extract(reads, mapping=mapping)
+        recipe = {"video": str(video), "hz": hz, "start": start,
+                  "duration": duration, "layout": layout}
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(dump(events, segments, reads, layout=layout, source=out.stem,
+                            mapping=mapping, pts_origin=origin, recipe=recipe,
+                            starts=probe_starts(video)))
+    finally:
+        shutil.rmtree(run_dir, ignore_errors=True)
+    return {"out": str(out), "frames": len(reads), "events": len(events),
+            "segments": len(segments), "cuts": len(cuts), "pts_origin_s": origin}
+
+
+def check(root=EVENTS_DIR):
+    """[(path, why)] for every events file under `root` a loader should not see.
+
+    Stale means written at another format, or carrying no recipe, which means
+    nobody can rebuild it the next time the format moves. An empty list is the
+    only state in which the directory holds one format throughout.
+    """
+    stale, current = [], writer_version()
+    for path in sorted(Path(root).rglob("*.jsonl")):
+        try:
+            meta = json.loads(path.open().readline())
+        except (OSError, ValueError):
+            stale.append((path, "unreadable meta line"))
+            continue
+        missing = [k for k in REQUIRED_META if k not in meta]
+        if meta.get("format") != FORMAT_VERSION:
+            stale.append((path, f"format {meta.get('format')}, current is {FORMAT_VERSION}"))
+        elif not meta.get("recipe"):
+            stale.append((path, "no recipe, so it cannot be regenerated"))
+        elif missing:
+            stale.append((path, f"written by older code: lacks {', '.join(missing)}"))
+        elif meta["writer"] != current:
+            stale.append((path, f"writer {meta['writer']}, current is {current}"))
+    return stale
+
+
+def regenerate(root=EVENTS_DIR, everything=False, progress=None):
+    """Rebuild every stale file under `root` from its own recipe.
+
+    A file with no recipe cannot be rebuilt here and is reported, not skipped
+    silently. `everything` rebuilds current files too, for after a reader fix.
+    """
+    targets = [p for p in sorted(Path(root).rglob("*.jsonl"))] if everything \
+        else [p for p, _ in check(root)]
+    done, orphans = [], []
+    for path in targets:
+        recipe = json.loads(path.open().readline()).get("recipe")
+        if not recipe:
+            orphans.append(str(path))
+            continue
+        print(f"  regenerating {path}", file=sys.stderr)
+        done.append(from_video(recipe["video"], path, recipe["hz"], recipe.get("start"),
+                               recipe.get("duration"), recipe["layout"], progress=progress))
+    return {"regenerated": done, "no_recipe": orphans}
 
 
 def segment_summary(segments):
@@ -972,6 +1255,38 @@ def segment_summary(segments):
 
 
 def main(argv=None):
+    argv = list(sys.argv[1:] if argv is None else argv)
+    if argv[:1] == ["video"]:
+        p = argparse.ArgumentParser(prog="perception.events video")
+        p.add_argument("video")
+        p.add_argument("out")
+        p.add_argument("--hz", type=float, default=10.0)
+        p.add_argument("--start", type=float, help="window start, source seconds")
+        p.add_argument("--duration", type=float, help="window length, seconds")
+        p.add_argument("--layout", default="mk", choices=("pad", "mk"),
+                       help="which HUD the source draws; never guessed from the frames")
+        p.add_argument("--progress", type=int, default=2000)
+        a = p.parse_args(argv[1:])
+        print(json.dumps(from_video(a.video, a.out, a.hz, a.start, a.duration, a.layout,
+                                    progress=a.progress), indent=1))
+        return 0
+    if argv[:1] == ["check"]:
+        stale = check(argv[1] if len(argv) > 1 else EVENTS_DIR)
+        for path, why in stale:
+            print(f"{path}: {why}")
+        print(f"{len(stale)} stale" if stale else f"all format {FORMAT_VERSION}, all regenerable")
+        return 1 if stale else 0
+    if argv[:1] == ["regenerate"]:
+        p = argparse.ArgumentParser(prog="perception.events regenerate")
+        p.add_argument("root", nargs="?", default=str(EVENTS_DIR))
+        p.add_argument("--all", action="store_true", help="rebuild current files too")
+        p.add_argument("--progress", type=int, default=2000)
+        a = p.parse_args(argv[1:])
+        result = regenerate(a.root, a.all, a.progress)
+        print(json.dumps(result, indent=1))
+        return 1 if result["no_recipe"] or check(a.root) else 0
+    if argv[:1] == ["frames"]:
+        argv = argv[1:]
     p = argparse.ArgumentParser(description=__doc__,
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("run_dir")

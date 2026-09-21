@@ -12,15 +12,39 @@ loader that accepts the new values and keys is done.
 |---|---|---|
 | 3 | `slot` is now **the ability the icon says is in that position**, or `null` when the icon could not be identified. The layout position moved to the new **`slot_pos`**. | Read the ability from `slot`, not from position. Treat `null` as unknown — never fall back to `slot_pos`, which names a position, not an ability. |
 | 3 | meta gains **`slot_mapping`** (position → ability) and **`slot_mapping_from`**. | Optional. Use it to check a source's key order. |
-| 4 | `ended_by` gains **`hard_cut`**, `started_by` gains **`after_cut`** — an editorial cut in an edited upload. | Accept the two new values. A segment still never spans one. |
+| 4 | `ended_by` gains **`hard_cut`**, `started_by` gains **`after_cut`** — an abrupt full-frame discontinuity: an edit, or one of the game's own screen transitions. | Accept the two new values. A segment still never spans one. |
 | 4 | meta gains **`cuts`**: how many cuts were found, `0` for a continuous capture, `null` for "nobody looked". | Optional. |
 | 4 | meta gains **`observed`**: the cooldowns this source's own HUD showed, per ability. | Optional; see **Patch fingerprint**. |
 | 4 | meta `slot_mapping` is **`null` when no mapping was attempted**, where format 3 wrote `{}`. `{}` now means the icons *were* read and none identified. | Distinguish the two. Every file written so far carries a real mapping, so nothing on disk changes meaning. |
+| 4, added | **A cut inside a gap marks both sides.** When a cut falls in a gap that opened for another reason (a scoreboard tap, a death), the segment before now ends `hard_cut` and the one after starts `after_cut`. Before this, such a gap read `scoreboard` / `scoreboard_closed` and looked bridgeable. | **Never bridge a gap with `hard_cut` or `after_cut` on either side.** A gap is a bridgeable scoreboard tap only if it ends `scoreboard` *and* resumes `scoreboard_closed`. |
+| 4, added | meta gains **`cut_times`**: every cut's `t` (first frame on its far side), `null` when cuts were not looked for. | Optional: lets you check any gap for a cut directly. |
+| 4, added | meta gains **`recipe`**: source video, `hz`, window `start`/`duration`, `layout` — how the file was made. | Optional. `python -m perception.events regenerate` rebuilds from it. |
+| 4, added | segment lines gain **`cooldowns`**: `"normal"` when a countdown inside the segment proved cooldowns are on, else `"unknown"`. **Never `"off"`**: the HUD cannot prove an absence. | Read per segment. See **Cooldown regime per segment** for the guides. |
 
 Event `kind` values, the `t_*`/`i_*` semantics and the three-line-kind layout
 are unchanged from 2. **Slot `pull` became `get_over_here` back in format 2.**
 
+Rows marked **4, added** arrived after format 4 was first written and did **not**
+bump it: each is an optional field, or — for the cut inside a gap — the existing
+`hard_cut` / `after_cut` values used in one more place, which only ever makes a
+format-4 reader more conservative. A reader that ignores all of them is still
+correct.
+
+**Keeping the directory on one format.** `python -m perception.events check`
+lists every file under `data/demos/events/` at another format, without a
+recipe, or written by older code (missing a field the writer now always
+emits), and exits non-zero if there is one; `python -m perception.events
+regenerate [--all]` rebuilds stale files (or every file) from their own recipes.
+`tests/test_events.py` fails while the local directory is mixed.
+
 A format change is a cross-lane interface change; this table is the contract.
+
+**The writer is frozen.** `perception/events.py`, `perception/hud.py` and
+`perception/scoreboard.py` are fingerprinted into every file's `writer`, and the
+loader applies the same staleness rule as `check`. Any edit to any of the three
+re-stales every events file and, with them, the annotation and training inputs
+built on them. **Changes to those files go through the lead first**, are
+batched, and are followed by one `regenerate --all`.
 
 ### The format itself
 
@@ -36,7 +60,7 @@ written by `perception/events.py`. Three line kinds, told apart by `type`:
  "slot_mapping_from": "ability icon matched by shape, voted over sampled frames"}
 
 {"type": "segment", "start_i": 0, "start_t": 0.0, "end_i": 78, "end_t": 7.8,
- "started_by": "run_start", "ended_by": "death"}
+ "started_by": "run_start", "ended_by": "death", "cooldowns": "normal"}
 
 {"kind": "ability_cast", "i_from": 299, "t_from": 29.9, "i_to": 300, "t_to": 30.0,
  "slot": "get_over_here", "slot_pos": "get_over_here", "amount": 8,
@@ -46,10 +70,21 @@ written by `perception/events.py`. Three line kinds, told apart by `type`:
 **Events carry no `type` key**, so readers already consuming them keep working.
 Order is meta, then segments in time order, then events in time order.
 
-- **All `t_*` are seconds from the first decoded frame of the media**, not from
-  the times a clip was requested at. `pts_origin_s` records what the decoder
-  reported as the source's first video PTS — one retained section starts at
-  1.616 s, not 0 — so a consumer can map back to the original timeline. All `i_*` are frame indices *at the sampling fps in the
+- **All `t_*` are seconds from the first decoded video frame**, not from the
+  times a clip was requested at. Three clocks are recorded apart, because a
+  container can start before its video stream — `daymr-2879354299-21660-900s`
+  has audio from 1.589 s and video from 1.616 s:
+  - `pts_origin_s`: the first decoded frame's PTS **on the video stream's own
+    clock** (decoded with `-copyts`, so never rebased);
+  - `stream_start_s`: the video stream's start time, from ffprobe;
+  - `container_start_s`: the container's start time, which is what players and
+    ffmpeg's `-ss` count from.
+
+  So **stream PTS = `t + pts_origin_s`**, and **seek / player time = `t +
+  pts_origin_s − container_start_s`**. Before this, a 1.616 s origin was
+  presented as the way back to the original timeline; for seeking it was
+  1.589 s out, because a decode without `-copyts` rebases by the container's
+  start and puts that section's first frame at 0.027 s. All `i_*` are frame indices *at the sampling fps in the
   meta line* — not the source video's native frame numbers. The clips here were
   sampled at **10 fps** from 60 fps sources.
 - **An event is an interval, never an instant**: `i_from`/`t_from` is the last
@@ -61,8 +96,8 @@ Order is meta, then segments in time order, then events in time order.
   `scoreboard`, `not_our_hero`, `no_hud`, `hard_cut`. `started_by` is
   `run_start`, `respawn`, `killcam_over`, `spectating_over`,
   `scoreboard_closed`, `hero_returned`, `hud_returned`, `after_cut`.
-- **`cuts` in the meta line counts the source's editorial cuts**, and is `0` for
-  a continuous capture. `null` means nobody looked, which is not the same thing.
+- **`cuts` in the meta line counts the source's abrupt full-frame changes** — edits and
+  the game's own screen transitions — and is `0` when none were found. `null` means nobody looked, which is not the same thing.
 - **`observed` in the meta line is what this source's own HUD said each
   ability's cooldown is** — a patch fingerprint for footage dated only by an
   upload. See **Patch fingerprint** below for what each number means and which
@@ -71,7 +106,8 @@ Order is meta, then segments in time order, then events in time order.
   slot `pull`. Version 2 split those into `ability_cast` and
   `slot_unavailable` / `slot_available`. Version 3 makes `slot` the ability read
   off the icon and adds `slot_pos`. Version 4 adds the editorial-cut break and
-  the `cuts` and `observed` meta keys. The upgrade table at the top of this
+  the `cuts` and `observed` meta keys, and later gained the optional
+  `cut_times`, `recipe` and per-segment `cooldowns` without a bump. The upgrade table at the top of this
   section is the contract; **Format 3** and **Format 2** below give the
   reasoning behind each.
 - Event `kind` is one of: **`ability_cast`** (with `slot`; `amount` is the
@@ -103,15 +139,20 @@ Order is meta, then segments in time order, then events in time order.
 two-opencv clash is fixed.
 
 ```sh
-# frames on an exact grid -- never `-vf fps=N`, which lands one source frame off
-ffmpeg -i <clip>.mp4 -vf "select='not(mod(n,6))'" -vsync 0 -q:v 6 out/%06d.jpg   # 10 Hz from 60 fps
-ffmpeg -i <clip>.mp4 -vf "select='not(mod(n,2))'" -vsync 0 -q:v 4 out/%06d.jpg   # 30 Hz from 60 fps
-
-python -m perception.events out/ events.jsonl --layout mk --pts-origin <first decoded PTS>
+# One path makes every demonstration file, and records how in its meta line.
+python -m perception.events video <clip>.mp4 data/demos/events/<stem>.jsonl            # 10 Hz
+python -m perception.events video <guide>.mp4 <out>.jsonl --hz 30 --start 1200 --duration 230
+python -m perception.events check                  # stale: other format, no recipe, other writer
+python -m perception.events regenerate [--all]     # rebuild from each file's own recipe
 ```
 
-`--pts-origin` comes from `ffprobe -select_streams v:0 -show_entries stream=start_time`,
-not from the times a clip was cut at.
+Frames are taken as every Nth *decoded* frame on an exact grid (`select=not(mod(n,N))`),
+never `-vf fps=N`, which resamples and lands a source frame off. `writer` in the meta
+line fingerprints `perception/events.py`, `hud.py` and `scoreboard.py`; a file with any
+other value was made by other code, and `check` says so.
+
+`from_video` measures all three clocks itself; nothing is taken from the times
+a clip was requested at.
 
 ### Hand-check, Req clip (30 events, frame by frame)
 
@@ -227,7 +268,7 @@ fixed regions and a template-matched digit classifier. No ML.
 Owned here: `perception/hud.py`, `perception/hud_truth.json`,
 `tests/test_hud*.py`, `docs/evidence/l2/`, plus `perception/events.py`,
 `perception/scoreboard.py`, `perception/replay_states.py`,
-`perception/evalread.py` and their tests. Tracked as VUH-1294; the offline
+`perception/evalread.py`, `perception/camera_motion.py` and their tests. Tracked as VUH-1294; the offline
 integration lane that consumes these readers is `docs/lanes/l6-integration.md`
 (VUH-1298).
 
@@ -663,6 +704,68 @@ hero select, where the player picks **Jeff the Land Shark**. Spot-checked by eye
 at 720, 760, 820 and 880 s. A pipeline that trained on "15 minutes of expert
 Spider-Man" would have been training partly on a shark.
 
+## Cooldown regime per segment
+
+Every segment line carries `cooldowns`, and it can only ever be one of two
+values. **`"normal"` is proved** by a countdown appearing in the ability row
+inside that segment. **`"unknown"` is everything else**, and it is never
+promoted to `"off"`: the HUD cannot prove an absence. A segment without a
+countdown may have cooldowns off, or may simply contain no cast.
+
+**The guides.** Both guide windows (`guides/ffame-stack.jsonl`,
+`guides/day-pull-lesson.jsonl`) contain no countdown anywhere across 9510
+frames, so every one of their segments reads `"unknown"`. That they are
+cooldown-free in the practice-range stretches comes from the videos'
+narration and provenance, not from pixels, so it belongs in the loader's source
+metadata, stated as provenance. **Per segment, from the HUD, it cannot be
+determined**, and this file does not pretend otherwise. Every retained section
+and upload segment with a cast reads `"normal"`.
+
+## Another hero passing as ours
+
+**Found by the box annotator:** in `sections/daymr-2879354299-21660-900s`,
+source 820–882 s were kept as own-Spider-Man play while DayMR was on **Doctor
+Strange** (650 hp). **Cause: the portrait gate's tolerance.** It was one Spider-Man
+template scored against a threshold, with the band set from a handful of other
+heroes (0.225–0.304). Strange scores **0.32–0.40** against that template —
+inside Spider-Man's own band — so 537 of 621 frames read "playing Spider-Man".
+No hero swap mid-match was involved, and no hp check existed.
+
+**Fix: other heroes are now negatives**, on an absolute bar (`PORTRAIT_OTHER`,
+0.75). "Nearer class wins" would have been wrong: real Spider-Man frames score
+0.46–0.48 against the Strange template, *higher* than against his own, because
+the colour match is weak. Over 89 kept frames from every source, the highest
+score against Strange was 0.69, a frame an editor had blurred whole; Strange
+himself scores 0.78–1.00. The bar sits in that gap and the three-frame hold
+absorbs a stray blurred frame. One Strange frame, mid-animation, reads unknown
+(0.64), which is carried across rather than trusted. Test:
+`test_doctor_strange_is_not_spider_man`, local VOD only.
+
+**hp cannot back this up**, which I checked before trying: Spider-Man in his
+ultimate with a shield reads **650/650** (`V6iaq9dP8FQ`, 884 s) — exactly
+Strange's base maximum. Any hp veto near that value deletes real play.
+
+**The gap is narrow and the fix is per hero.** A hero whose portrait scores like
+Spider-Man and who is not yet a negative still passes. The durable fix is a
+portrait classifier trained on crops of the whole roster, or a second vote from
+the ability icons (`identify_slot` recognises Spider-Man's four icons, which no
+other hero draws). Until then this is tech debt, stated as such.
+
+**Found alongside:** `ftnk5SVycXY` at 1404 s is a SPECTATING screen the banner
+reader missed (the older patch draws it as a large yellow "10s SPECTATING"),
+and a DayMR scoreboard drawn translucent under his facecam was kept inside a
+play segment in `daymr-2877719252-1800-900s`. Both are open.
+
+**Animated overlays.** DayMR's stream overlays appear, move and disappear.
+- *HUD reads:* the slot readers go unknown when something runs straight through
+  a slot and its gaps (`_slot_occluded`, built for chat); digit readers reject
+  ink that does not match a glyph closely enough. A small overlay covering a
+  slot but not its gaps is **not** caught by the occlusion test — his Spider-Man
+  bobblehead sits over the lower-right HUD — and that has not been measured.
+- *Camera motion:* the learned overlay mask only covers overlays that never
+  move; an animated one is left to RANSAC, which rejects it when it is smaller
+  than the world's share of features.
+
 ## Do the YouTube uploads reuse the retained Twitch footage?
 
 **No.** An upload ID is not a session, and the two September uploads sit close
@@ -736,6 +839,31 @@ uploads has an identifiable team-up icon** — each gets a three-entry mapping a
 emits no team-up casts — while both September uploads identify all four slots.
 So `slot: null` fires on real data exactly as intended, rather than guessing.
 
+### What each fingerprint is consistent with
+
+A fingerprint narrows the patch; it does not name one. Two sources that read
+the same could still be on different patches that happen to share these
+values. So the loader should record, in this wording, **the patch range the
+observation is consistent with** — against the balance history in
+`docs/spiderman-kit.md`:
+
+| `observed` value | consistent with | not consistent with |
+|---|---|---|
+| `uppercut.countdown_mode` = **1** | **Season 10 (Version 20260911) or later**, until the kit next changes Amazing Combo | any patch before Season 10 |
+| `uppercut.countdown_mode` = **2** | **before Season 10 (Version 20260911)** | Season 10 as shipped |
+| `get_over_here.countdown_mode` = 8 | every patch in the kit history — uninformative | — |
+| team-up | nothing: the loaded team-up ability cannot be told apart | — |
+| `charges` | nothing beyond kit − 1 on every patch listed | — |
+
+So the six uploads and four sections resolve as: all four Twitch sections and
+both September uploads **consistent with Season 10 or later**; all four
+April–May uploads **consistent with before Season 10**. Only the lower bound of
+"before Season 10" is open — the kit history does not say when Amazing Combo
+first became 2 s, so these observations cannot date the April–May footage
+more closely than that. A file whose uppercut reads neither 1 nor 2, or whose
+mode rests on fewer than about 20 casts, is not consistent with any listed
+patch and should stay unknown.
+
 Two things that look like disagreements and are not:
 
 - **The team-up slot reads 15 s everywhere, including confirmed Season 10
@@ -780,7 +908,7 @@ On that file the scene scores fall in two groups with nothing between them:
 | score | what it actually is | count |
 |---|---|---|
 | 0.40–0.45 | the **scoreboard** opening or closing over continuous play | 10 |
-| 0.67–1.00 | genuine edits: ReqMR's lightning-bolt wipe, a glitch transition, the victory/MVP outro | 8 |
+| 0.67–1.00 | abrupt full-frame changes: the game's round-end lightning wipe, a glitch transition, the victory/MVP outro | 8 |
 
 An overlay appearing is a real full-frame change and scores like one. Taking the
 obvious "anything above the noise" threshold of 0.4 would have labelled every
@@ -790,6 +918,34 @@ the gap. Checked by eye on a before/after sheet of all 18 moments.
 
 A fade is not a cut and must not read as one: it changes the frame gradually, so
 every step scores low and none crosses the threshold. Only an abrupt change does.
+
+**The false positives cost almost nothing, but they are not zero.** Run against
+the continuous Twitch sections — which have no editorial cuts, so every hit is a
+false positive — the detector fires 4 to 15 times per 15 minutes on genuinely
+abrupt transitions. Most land inside a scoreboard, killcam or transition the HUD
+already excludes, but **some do split a play segment**:
+
+| section | detected | breaking play | play time lost |
+|---|---|---|---|
+| `reqmr-2871472478-5400-900s` | 4 | 0 | none |
+| `reqmr-2873352801-1980-900s` | 15 | 4 | 9.12 → 9.11 min |
+
+**What they are.** The four on `reqmr-2871472478` (t 394.4, 406.3, 436.4, 894.1
+s), checked frame by frame: the round-end lightning wipe into ROUND 1 COMPLETE;
+the round-complete board snapping to hero select; a round-start flash; ROUND 2
+COMPLETE. **Every one is the game's own screen transition at a round boundary**,
+none an error of the detector and none inside play. So **`hard_cut` means an
+abrupt full-frame discontinuity — an edit *or* a game screen change** — and
+either way nothing on one side continues on the other, which is the property a
+loader relies on. It does not mean "an editor cut here". The lightning wipe in
+the edited uploads is the same game animation, not an editing style.
+
+**A false positive splits a segment, it does not delete play** — the frames
+either side stay in the corpus, just in two segments instead of one. Half a
+second across a 15-minute section is the whole cost. Note also that a Twitch VOD
+is not guaranteed continuous: a streamer switching OBS scenes is a real cut in
+the broadcast even when the game is not interrupted, so some of these are
+arguably correct detections rather than errors.
 
 ### What the six uploads actually contain
 
@@ -816,6 +972,172 @@ the grounds that its neighbours were lightly cut.
 boundaries and in outros: only 39 of 162 land inside a play segment. Those 39
 are the whole point — each is a place where a segment would otherwise have
 spanned two unrelated fights, and `V6iaq9dP8FQ` alone accounts for 21.
+
+## Camera motion from video: can camera commands be recovered?
+
+`perception/camera_motion.py`, tests in `tests/test_camera_motion.py`. A bounded
+feasibility probe under `docs/learning-plan.md`, **E enablers**: no model, no
+training, nothing live. Outputs under `data/camera_motion/`.
+
+**Verdict.** Camera *direction* is recoverable from footage well enough to be
+a training target; camera *rate* is recoverable coarsely, and only at 60 fps.
+At 60 fps, over ordinary turns on held-out range footage, the video gets the
+turn direction right 97–99% of the time and reconstructs the commanded stick
+to within 0.03–0.05 for slow aim corrections and about 0.15 for the 0.45-stick
+spin (neutral baseline: 0.45). The 10 Hz proxies are not enough for anything
+faster than slow aim: they fit only a third of fast-turn intervals and
+under-read the rest by half. **The range supports no claim about expert VOD
+transfer**: there are no swings in it, and the ReqMR minute can be judged for
+plausibility only. The next step the spec allows is a small audited expert
+transfer set at 60 fps — not bulk inferred actions.
+
+### Three quantities, never merged
+
+| name | what it is | status |
+|---|---|---|
+| **observed** | matched feature displacement between frames, px | measured |
+| **estimated** | camera yaw/pitch fitted to that motion, deg/s | an estimate |
+| **inferred** | the stick command that rotation implies through the turn map | an inference |
+
+The pad log is truth about what was **commanded**, nothing more. The turn map
+(`agent.controller.Cal`) is a calibration model of what a command does, not
+truth about achieved motion — and the probe found regimes where the two part
+company (below). So every table here says which comparison each number is:
+
+- **rotation** columns: *estimated* rate against the *map's prediction* from the
+  commanded stick — agreement between two models, not accuracy;
+- **command** columns: *inferred* stick against *commanded* stick — the real
+  inverse-dynamics target, scored against truth.
+
+### Method
+
+ORB features outside the HUD bands, the third-person body and any logged enemy
+box; Lowe's ratio test (the defence against repeating wall panels, which defeat
+phase correlation); then a rotation-only fit — pixels back-projected to rays
+with the calibrated focal length (465 px at 1280 wide), Kabsch inside RANSAC on
+two-point samples. No small-angle approximation. The game camera cannot roll, so
+fitted roll is world yaw seen from a pitched camera, and world yaw is taken as
+the length of the yaw-roll component. Checked against synthetic rotations with
+known truth (`K R K⁻¹` warps), including signs, 15° steps and a 40°-pitched
+camera.
+
+**Static overlays had to be learned per source.** The first version read the
+0.45-stick spin as standing still: the range's "Practice Range" menu panel and
+the FPS counter sit outside the fixed HUD mask, never move, and out-voted a
+blurred or sparse world. `static_mask` now learns each source's static overlays
+from pixel variance across 60 frames spread over the run, restricted to the
+frame borders so a camera that holds still does not mask its own world. It
+moved held-out stick error on the spin run from 0.20 to 0.07 and direction from
+67% to 95%. It does **not** handle animated overlays (DayMR's); those are left
+to RANSAC.
+
+### Data and alignment
+
+- Four 300 s range runs with pad state at ~55 Hz (`data/l1/baseline1..4`).
+  Their 720p proxies are ~9.3 Hz, one video frame per saved image, so alignment
+  is exact by construction.
+- Native 60 fps recordings of `baseline4` and `loop30g`, copied from the PC.
+  **Their clocks were tied to the logs by image identity** — saved frames found
+  in the recording by nearest thumbnail — never by motion, which would fold the
+  latency under test into the alignment. Offsets: `baseline4` 3.772 s (24 of 28
+  samples agreeing within 26 ms), `loop30g` **3.749 s** (27 of 28 within 30 ms),
+  `baseline2` 3.734 s (11 of 28: mostly a static view). `loop30g` had been noted
+  as 4.0 s; that figure was rounded, and would have put 250 ms of error straight
+  into the latency.
+- Held out by **whole run**: the one fitted parameter, the stick-to-motion lag,
+  is fitted on three runs and frozen for the fourth. It came out 30 ms in every
+  fold. Uncertainty is a bootstrap over contiguous 10 s blocks within a run.
+- **Strata.** `still` (no command), `turn` (steady right stick, nothing else),
+  `mixed` (stick changed within the interval), `moving` (left stick: translation
+  and parallax), `ability` (a button in the preceding 0.5 s: pull and web strike
+  drag the camera), `attack` (a trigger held: melee or Web Cluster). **There are
+  no swings in any range recording** — no LB press in 67,000 ticks — so nothing
+  here validates swing recovery. There is also almost no fast turning: under 20
+  ticks above 0.6 stick in all four runs.
+
+### Results, held-out range runs at ~9 Hz (proxies)
+
+Command reconstruction, stick units, with 95% block-bootstrap intervals:
+
+| run (held out) | coverage | inferred vs commanded | neutral | direction right |
+|---|---|---|---|---|
+| `baseline1` | 0.84 | **0.042** (0.035–0.049) | 0.073 | 88% |
+| `baseline3` | 0.79 | **0.048** (0.042–0.056) | 0.100 | 90% |
+| `baseline4` (spin) | 0.59 | **0.074** (0.070–0.078) | 0.186 | 95% |
+| `baseline2` (still) | 1.00 | 0.002 | 0.000 | — |
+
+By stratum, pooled impressions across the three moving runs: `still` reads
+0.2–0.8 deg/s (a correct zero); `attack` and `ability` track the map at r
+0.62–0.80; the clean 0.45 `turn` band is fitted on only 33–56% of intervals and
+under-reads by 61–76 deg/s against a map of 172. Rotation correlation over all
+fitted intervals, estimated vs map: 0.74–0.81.
+
+### 60 fps against 10 Hz, same footage
+
+`baseline4`, lag frozen at 30 ms from the proxy folds:
+
+| clean 0.45-stick spin | 10 Hz | 60 fps |
+|---|---|---|
+| intervals fitted | 34% | **99%** |
+| direction right | 99% | 98% |
+| estimated rate, median (map 172) | 83 deg/s | 129 per frame; **150** over 0.1 s |
+| inferred vs commanded stick | 0.188 | **0.147** (0.141–0.153) |
+| neutral | 0.450 | 0.450 |
+
+At full stick (9 intervals) 60 fps reads 389 deg/s against the map's 415. So
+there is a residual under-read of roughly 6–13% against the calibration at 60
+fps, which this probe cannot attribute: it may be the estimator (masked centre,
+parallax) or the calibration's conditions (measured level, not pitched down).
+Slow aim corrections are good at 60 fps: `loop30g` low band r 0.80, 9.8 deg/s
+against a neutral 18.8, direction 100%. The 60 fps noise floor on a still camera
+is 5 deg/s — per-frame angle noise times 60 — which is why rates should be
+averaged over ~0.1 s before use.
+
+**Latency, stick to visible motion: 20 ms**, fitted on the 60 fps `baseline4`
+run alone as a diagnostic (the error is flat from 0 to 40 ms and rises steeply
+past 70 ms). That matches the controller lane's 17–20 ms pad-to-screen
+measurement. `loop30g` is too still to say anything.
+
+### What breaks it
+
+- **Combat holds the camera.** During melee combos the stick commands a turn
+  and the camera barely moves — visible frame to frame on `loop30g` (−0.21
+  commanded, the world still). Here the video is right and the map is wrong. It
+  means an inverse model trained on our pad logs would learn *commanded* stick
+  in those windows, while video can only ever show *achieved* motion: these
+  strata must be labelled as rotation, not as command.
+- **Low frame rate** (above): fast turns abstain or under-read at 10 Hz.
+- **Static overlays**: handled by the learned mask. **Animated overlays**: not.
+- **Translation**: `moving` intervals err 32–47 deg/s (few samples) — parallax
+  that a rotation-only model partly absorbs.
+- **Swings and fast mouse flicks**: no paired data; unvalidated.
+- The third-person body is masked; the blur of a very fast turn thins features
+  but at 60 fps coverage stays at 99%.
+
+### The ReqMR minute: plausibility only
+
+`samples/reqmr-2873352801-1920.mp4`, 1080p60, mouse. **No truth, and a range
+score does not transfer**; the focal length assumes our 108° FOV, and a
+different FOV would rescale every rate without changing its shape.
+
+At 60 fps the output is **plausible in shape**: 96% of intervals fitted; yaw
+rate median 13, p99 419, max 919 deg/s — bounded, and a mouse player's range;
+frame-to-frame correlation 0.69 with 5 isolated one-frame spikes in 3,440. Six
+bursts above 600 deg/s, **all within a second of a cast** (mostly Web-Swings,
+one 70 ms after a Get Over Here), against about 40% of the minute lying within
+a second of some cast by chance. But five of the six last a single frame, which
+is noise rather than a human flick; only one (134 ms, 877 deg/s, half a second
+before a swing) has a flick's duration. A swing moves the camera by itself, so
+none of this shows aiming. At 10 Hz the same minute tops out at 236 deg/s: the
+fast moves are simply invisible.
+
+### Next
+
+Per the spec, only a small audited expert transfer set at 60 fps: hand-checked
+stretches of expert footage where the camera motion is unambiguous, labelled as
+**rotation** (not stick — a mouse player has no stick), before any bulk labels.
+Paired swing footage from our own runs is the missing stratum, and has to wait
+for the live-input freeze to lift.
 
 ## Reading a streamer's HUD (1080p, mouse and keyboard)
 
