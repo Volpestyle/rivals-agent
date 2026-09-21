@@ -1,7 +1,7 @@
 # Re-entry: PLAY lobby to the Practice Range as Spider-Man (VUH-1299)
 
 **Built and tested offline on `tests/fixtures/reentry`; lead-run only.** `scripts/reenter.py` takes the game from the PLAY
-lobby into the Practice Range as Spider-Man and stops at the first thing it cannot verify. 168 tests (`tests/test_reenter.py`)
+lobby into the Practice Range as Spider-Man and stops at the first thing it cannot verify. 181 tests (`tests/test_reenter.py`)
 pass; `--dry-run` classifies a live or saved frame and prints what it would do without opening a pad. The live trials
 (2026-09-20) held the safety rules every time (each refusal pressed nothing and exited 1) and found three defects, all fixed offline
 below and none re-run live: **the steering** (a cursor ring on the PRACTICE tab's lower half was never accepted), **the ring finder**
@@ -16,6 +16,9 @@ uv run --no-project --python 3.11 --with dxcam --with opencv-python-headless --w
     python scripts/reenter.py                      # do it
     python scripts/reenter.py --dry-run            # grab one live frame, print what it would do, no pad
     python scripts/reenter.py --dry-run --frame shot.jpg   # the same on a saved frame (no capture at all)
+    python scripts/reenter.py --dry-run --timing 20      # no pad: a 2 s dxcam probe (frames, gaps, dxcam's own access-loss log), then 20 rounds of the
+                                                         # REAL Safe.press -> Live.tap code over a pad that is not there (vgamepad never imported), each
+                                                         # stage timed, and the age tap compared with the limit at the write
 # offline tests (need opencv + numpy, so they are only collected with the perception group)
 uv run --group perception pytest tests/test_reenter.py
 ```
@@ -80,7 +83,7 @@ The rules are enforced in `Live`, the lowest layer that touches the pad, not lef
 
 | Defect | Now | Test |
 |---|---|---|
-| `Live.frame()` returned the last frame when capture gave none, with no age limit; a static menu gives no dxcam frame, so a proof from before an input authorized the next | `frame()` is always the current screen: dxcam, else GDI (which reads the screen as it is), and it raises if neither can (fail closed). It never returns an older frame, and stamps `frame_t` | `test_a_static_menu_gives_no_new_frame_and_the_press_reads_the_screen_as_it_is_not_the_last_frame` (the reviewer's 22 s), `test_the_live_frame_is_never_an_older_one`, `test_no_frame_at_all_fails_closed_and_sends_nothing` |
+| `Live.frame()` returned the last frame when capture gave none, with no age limit; a static menu gives no dxcam frame, so a proof from before an input authorized the next | `frame()` is always the current screen: dxcam, else GDI (which reads the screen as it is), and it raises if neither can (fail closed). It never returns an older frame, and stamps `frame_t` with the start of the grab that produced it (a GDI frame with the GDI grab's start, not the dxcam wait before it: charging that 0.15 s made every press on a static lobby read 0.47 s old live) | `test_a_static_menu_gives_no_new_frame_and_the_press_reads_the_screen_as_it_is_not_the_last_frame` (the reviewer's 22 s), `test_the_live_frame_is_never_an_older_one`, `test_no_frame_at_all_fails_closed_and_sends_nothing`, `test_a_gdi_fallback_frame_carries_the_gdi_start_time_not_the_dxcam_wait`, `test_a_slow_dxcam_timeout_alone_no_longer_refuses_a_press`, `test_a_genuinely_stale_gdi_proof_is_still_refused`, `test_a_diagnostic_flag_can_never_route_to_a_live_run` |
 | a press rested on the frame that proved it | `tap` grabs its OWN frame at the press, requires the screen to be the one proven, re-runs the proof on it, and refuses a frame older than `MAX_PROOF_AGE_S` (0.3 s) at the moment before the pad is written, or taken before the last input settled (`settled_t`) | `test_a_proof_older_than_the_limit_is_refused_at_the_moment_of_the_press`, `test_no_proof_frame_may_predate_the_last_inputs_settling`, `test_a_tap_advances_the_settling_time_so_the_next_proof_must_be_newer`, `test_a_refused_press_or_a_missing_proof_writes_nothing` |
 | `tap` and every hold could leave a button or stick held on an exception or Ctrl-C | every hold is `try`/`finally` ending in `release_all` (`reset()` + `update()`: the whole pad); opening the pad releases even if the settle wait is interrupted; `main` releases in a `finally`, at exit (`atexit`), and on SIGTERM; a release that fails is reported and never masks the stop | `test_an_exception_or_ctrl_c_in_any_hold_still_releases_the_whole_pad`, `test_a_pad_write_that_fails_mid_press_still_ends_neutral`, `test_opening_the_pad_ends_neutral_even_if_the_settle_wait_is_interrupted`, `test_main_releases_the_pad_on_every_way_out`, `test_a_release_that_fails_is_reported_and_never_masks_the_stop` |
 | `steer` and `Safe.stick` jiggled the stick on black or unknown frames, four times, before refusing | a stick moves only on the screen it names: `Live` and `Safe` both classify a fresh frame first, and steering, the door search and the turns all send through `Safe`. Unknown sends nothing | `test_a_stick_on_an_unknown_screen_is_never_written`, `test_steering_on_a_black_frame_sends_no_jiggle_at_all`, `test_the_whole_run_sends_no_stick_once_the_screen_goes_unknown_mid_steering`, `test_the_arrivals_turns_are_gated_by_the_screen_too` |
@@ -279,7 +282,7 @@ Spider-Man, and the lobby with the pad banner up.
 
 ## Files
 
-`scripts/reenter.py` (the script), `tests/test_reenter.py` (168 tests: classifier, cursor finder, each proof with its
+`scripts/reenter.py` (the script), `tests/test_reenter.py` (181 tests: classifier, cursor finder, each proof with its
 negatives, steering against simulated cursors of three physics, arrival against a simulated spawn room with a door that turns
 with the camera, the whole flow against a simulated game serving the fixtures, dry run, `main`, and `Live` against a fake pad),
 `tests/fixtures/reentry/*.jpg` (the lead's eight frames, the four above, the two live refuse frames, and five native arrival frames: two from `tagrun0`, three of the lead's spawn-room poses).

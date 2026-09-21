@@ -1430,3 +1430,124 @@ def test_a_stick_proof_frame_may_not_predate_the_last_inputs_settling(monkeypatc
     with pytest.raises(R.Refuse, match="predates the last input's settling"):
         getattr(live, method)(0.45, 0.0, 0.1)
     assert touched(calls) == []
+
+
+# --- live 2026-09-20 23:35: a static menu charged the dxcam wait to the GDI frame (0.47 s "old" proofs) ------------------------------------
+class SlowGdi(Screen):
+    """GDI that takes `secs` of the test clock per grab and remembers when each grab started."""
+
+    def __init__(self, clock, secs, *frames, after=None):
+        super().__init__(*frames, after=after)
+        self.clock, self.secs, self.starts = clock, secs, []
+
+    def grab(self):
+        self.starts.append(self.clock.t)
+        self.clock.t += self.secs
+        return super().grab()
+
+
+def slow(proof_fn, clock, secs):
+    def fn(f):
+        clock.t += secs
+        return proof_fn(f)
+    return fn
+
+
+def test_a_gdi_fallback_frame_carries_the_gdi_start_time_not_the_dxcam_wait(monkeypatch):
+    lobby, clock = frame("lobby-cursor-on-practice"), Clock()
+    gdi = SlowGdi(clock, 0.05, after=lobby)
+    live, _, _ = make_live(monkeypatch, Screen(after=None), gdi=gdi, clock=clock)
+    t0 = clock.t
+    assert live.frame() is lobby
+    assert live.frame_t == gdi.starts[-1] and live.frame_t >= t0 + 0.15            # stamped when the GDI grab began, after the dxcam wait
+
+
+def test_a_slow_dxcam_timeout_alone_no_longer_refuses_a_press(monkeypatch):
+    """The live case: dxcam has nothing on a static lobby (0.15 s), GDI 0.05 s, a 0.2 s proof. Counted from the dxcam wait it was 0.4 s: refused.
+    The frame's own age at the write is 0.25 s."""
+    lobby, clock = frame("lobby-cursor-on-practice"), Clock()
+    live, calls, _ = make_live(monkeypatch, Screen(after=None), gdi=SlowGdi(clock, 0.05, after=lobby), clock=clock)
+    live.tap("A", screen="lobby", proof_fn=slow(R.on_practice_tab, clock, 0.2))
+    assert presses(calls) == ["A"]
+
+
+def test_a_genuinely_stale_gdi_proof_is_still_refused(monkeypatch):
+    lobby, clock = frame("lobby-cursor-on-practice"), Clock()
+    live, calls, _ = make_live(monkeypatch, Screen(after=None), gdi=SlowGdi(clock, 0.05, after=lobby), clock=clock)
+    with pytest.raises(R.Refuse, match="the proof is 0.3[0-9] s old"):
+        live.tap("A", screen="lobby", proof_fn=slow(R.on_practice_tab, clock, 0.28))   # 0.05 + 0.28 past the GDI grab's start
+    assert touched(calls) == []
+
+
+def test_the_timing_dry_run_runs_the_real_tap_path_and_opens_no_pad(monkeypatch):
+    """The timing must be the number a press would see, so it runs Safe.press -> Live.tap's own code over a pad that is not there."""
+    monkeypatch.setitem(sys.modules, "vgamepad", None)                               # importing vgamepad now raises: no device can be made
+    lobby, clock = frame("lobby-cursor-on-practice"), Clock()
+    cap = Screen(after=None)
+    cap.grab = lambda: (setattr(clock, "t", clock.t + 0.01), None)[1]               # dxcam: nothing new, 10 ms a poll
+    lines = []
+    rows = R.timings(cap, SlowGdi(clock, 0.05, after=lobby), 2, clock=clock, sleep=clock.sleep, log=lines.append)
+    assert [r["refused"] for r in rows] == ["no", "no"] and all(r["screen"] == "lobby" for r in rows)
+    assert rows[0]["tap_gdi_ms"] == pytest.approx(50) and rows[0]["tap_frame_ms"] >= 150        # the tap's own frame: dxcam wait + GDI
+    assert rows[0]["age_ms"] == pytest.approx(50, abs=1)                                         # GDI start to the write
+    assert "limit 300 ms" in lines[-1]
+
+
+def test_the_timing_reports_a_refusal_the_real_tap_would_make(monkeypatch):
+    monkeypatch.setitem(sys.modules, "vgamepad", None)
+    lobby, clock = frame("lobby-cursor-on-practice"), Clock()
+    monkeypatch.setitem(R.PROOFS, "lobby", slow(R.on_practice_tab, clock, 0.3))
+    rows = R.timings(Screen(after=None), SlowGdi(clock, 0.05, after=lobby), 1, clock=clock, sleep=clock.sleep, log=lambda *_: None)
+    assert "s old" in rows[0]["refused"] and rows[0]["age_ms"] == pytest.approx(350, abs=1)
+    assert rows[0]["tap_proof_ms"] == pytest.approx(300, abs=1)
+    assert R.classify.__name__ == "classify"                                         # the real classify is back after the timing
+
+
+def test_the_dxcam_probe_counts_frames_and_gaps():
+    clock, n = Clock(), [0]
+
+    def grab():
+        clock.t += 0.001
+        n[0] += 1
+        return frame("lobby-cursor-far") if n[0] % 100 == 0 else None               # a frame every 100 ms
+    cap, lines = Screen(), []
+    cap.grab = grab
+    got = R.dxcam_probe(cap, 1.0, clock=clock, log=lines.append)
+    assert len(got) in (9, 10) and "gap p50 100 ms" in lines[0] and "first after 100 ms" in lines[0]
+
+
+class ReachedPad(Exception):
+    pass
+
+
+@pytest.mark.parametrize("argv", [["--timing", "0"], ["--timing", "-1"], ["--timing", "3"],
+                                  ["--dry-run", "--timing", "0"], ["--dry-run", "--timing", "-1"],
+                                  ["--dry-run", "--timing", "3", "--frame", str(FIX / "lobby-cursor-far.jpg")],
+                                  ["--frame", ""], ["--timing", "0", "--frame", ""]])
+def test_a_diagnostic_flag_can_never_route_to_a_live_run(argv):
+    """Input-safety review: `--timing 0` was falsy, skipped both checks and fell through to the LIVE path. Every bad combination is an argparse
+    error before any capture or pad is constructed."""
+    touched = []
+
+    def capture():
+        touched.append("capture")
+        return Screen(after=frame("lobby-cursor-far"))
+
+    def live(*a, **k):
+        raise ReachedPad(argv)
+
+    with pytest.raises(SystemExit) as e:
+        R.main(argv, capture=capture, live=live)
+    assert e.value.code == 2 and touched == []
+
+
+def test_the_timing_dry_run_through_main_times_and_opens_no_pad(monkeypatch, capsys):
+    import types
+    lobby = frame("lobby-cursor-on-practice")
+    monkeypatch.setitem(sys.modules, "capture", types.SimpleNamespace(Capture=lambda backend: Screen(after=lobby)))
+    monkeypatch.setitem(sys.modules, "vgamepad", None)
+    monkeypatch.setattr(R, "dxcam_probe", lambda cap: print("reenter: dxcam probe stub"))
+    assert R.main(["--dry-run", "--timing", "2"], capture=lambda: Screen(after=None),
+                  live=lambda *a, **k: (_ for _ in ()).throw(ReachedPad())) == 0
+    out = capsys.readouterr().out
+    assert "dxcam probe stub" in out and out.count("reenter: timing screen=lobby") == 2 and "limit 300 ms" in out

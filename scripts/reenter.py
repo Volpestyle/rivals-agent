@@ -481,7 +481,9 @@ class Live:
         return self._gdi
 
     def frame(self, timeout=0.15):
-        """The screen as it is now. Sets `frame_t` to when this call began, so a frame is never younger than it says."""
+        """The screen as it is now. Sets `frame_t` to when the grab that produced it STARTED, so a frame is never younger than it says:
+        a dxcam frame is stamped with this call's start, a GDI frame with the moment the GDI grab began (the time spent waiting for a
+        dxcam frame that never came is not this frame's age)."""
         t0 = self.clock()
         while True:
             f = self.cap.grab() if self.cap is not None else None
@@ -491,13 +493,14 @@ class Live:
             if self.clock() - t0 > timeout:
                 break
             self.sleep(0.005)
+        t_gdi = self.clock()
         try:
             f = self.gdi().grab()  # the screen right now, changed or not
         except Exception as e:  # noqa: BLE001 - any capture failure means no proof
             raise Refuse(f"no current frame from the display ({e!r}); nothing sent") from None
         if f is None:
             raise Refuse("no current frame from the display; nothing sent")
-        self.frame_t = t0
+        self.frame_t = t_gdi
         return f
 
     def release_all(self):
@@ -835,15 +838,148 @@ def _last(io):
         return np.zeros((720, 1280, 3), np.uint8)
 
 
+PROOFS = {"lobby": on_practice_tab, "practice_panel": on_practice_range_tile, "hero_select": on_spiderman}
+
+
+class _NoPad:
+    """vgamepad's surface with no device behind it: records when the pad WOULD have been written. Used only by the timing dry run."""
+
+    def __init__(self, clock):
+        self.clock, self.writes = clock, []
+
+    def press_button(self, button):
+        self.writes.append(self.clock())
+
+    def right_trigger_float(self, v):
+        self.writes.append(self.clock())
+
+    def left_joystick_float(self, x, y):
+        pass
+
+    right_joystick_float = left_joystick_float
+
+    def reset(self):
+        pass
+
+    def update(self):
+        pass
+
+
+class DryLive(Live):
+    """Live's REAL frame() and tap() code over a pad that is not there: vgamepad is never imported and no device is created."""
+
+    def __init__(self, cap, gdi, clock=time.perf_counter, sleep=time.sleep):   # noqa: super().__init__ would open a pad: not called
+        self.cap, self._gdi, self.clock, self.sleep = cap, gdi, clock, sleep
+        codes = {"XUSB_GAMEPAD_A": "A", "XUSB_GAMEPAD_X": "X", "XUSB_GAMEPAD_RIGHT_SHOULDER": "RB"}
+        self.vg = type("vg", (), {"XUSB_BUTTON": type("XUSB_BUTTON", (), codes)})
+        self.pad = _NoPad(clock)
+        self.frame_t, self.settled_t = clock(), -math.inf
+
+
+def dxcam_probe(cap, secs=2.0, clock=time.perf_counter, log=print):
+    """How dxcam delivers on this screen: grabs that returned a frame over `secs` of back-to-back polling, and the gaps between them."""
+    t0, got, polls = clock(), [], 0
+    while clock() - t0 < secs:
+        polls += 1
+        if cap.grab() is not None:
+            got.append(clock())
+    gaps = sorted((b - a) * 1e3 for a, b in zip(got, got[1:]))
+    first = f"{(got[0] - t0) * 1e3:.0f} ms" if got else "never"
+    log(f"reenter: dxcam probe {len(got)} frames in {polls} grabs over {secs:.1f} s; first after {first}; "
+        + (f"gap p50 {gaps[len(gaps) // 2]:.0f} ms, max {gaps[-1]:.0f} ms" if gaps else "no gaps (fewer than two frames)"))
+    return got
+
+
+def timings(cap, gdi, n, clock=time.perf_counter, sleep=time.sleep, log=print):
+    """What a press costs on the live screen, with no pad: each round runs the REAL Safe.press -> Live.tap code (DryLive: the same frame(),
+    classify, proof and age check, the pad write a no-op) and times every stage from outside. `age` is what tap compared with
+    MAX_PROOF_AGE_S at the write, and `refused` says whether it refused. Returns the rows."""
+    dry, ev = DryLive(cap, gdi, clock, sleep), []
+    real_frame, real_classify, real_gdi = dry.frame, globals()["classify"], gdi.grab
+
+    def frame(*a, **k):
+        s = clock()
+        f = real_frame(*a, **k)
+        ev.append(("frame", s, clock(), dry.frame_t))
+        return f
+
+    def gdi_grab():
+        s = clock()
+        f = real_gdi()
+        ev.append(("gdi", s, clock(), None))
+        return f
+
+    def classify_timed(f):
+        s = clock()
+        r = real_classify(f)
+        ev.append(("classify", s, clock(), None))
+        return r
+
+    dry.frame, gdi.grab = frame, gdi_grab
+    globals()["classify"] = classify_timed
+    rows = []
+    try:
+        for _ in range(n):
+            ev.clear()
+            screen = real_classify(dry.frame())
+            fn = PROOFS.get(screen)
+            if fn is None:
+                log(f"reenter: timing screen={screen}: no A to prove here, round skipped")
+                continue
+
+            def proof(f, fn=fn):
+                s = clock()
+                r = fn(f)
+                ev.append(("proof", s, clock(), None))
+                return r
+
+            ev.clear()
+            dry.pad.writes.clear()
+            refused, t_check = None, None
+            try:
+                Safe(dry, log=lambda *_: None).press("A", proof)
+            except Refuse as r:
+                refused, t_check = r.reason, clock()
+            top = [e for e in ev if e[0] != "classify" or not any(p[0] == "proof" and p[1] <= e[1] <= p[2] for p in ev)]
+            frames = [e for e in top if e[0] == "frame"]
+            tap_t0 = frames[-1][1] if len(frames) >= 2 else None       # Safe.press's frame, then tap's own
+            in_tap = [e for e in top if tap_t0 is not None and e[1] >= tap_t0]
+            dur = lambda kind, es: sum((e[2] - e[1]) * 1e3 for e in es if e[0] == kind)   # noqa: E731
+            end = dry.pad.writes[0] if dry.pad.writes else t_check
+            row = dict(screen=screen, safe_ms=((tap_t0 or clock()) - (top[0][1] if top else clock())) * 1e3,
+                       tap_frame_ms=dur("frame", in_tap), tap_gdi_ms=dur("gdi", in_tap), tap_classify_ms=dur("classify", in_tap),
+                       tap_proof_ms=dur("proof", in_tap), age_ms=((end - frames[-1][3]) * 1e3) if tap_t0 is not None and end else float("nan"),
+                       refused=refused or "no")
+            rows.append(row)
+            log("reenter: timing " + " ".join(f"{k}={v:.1f}" if isinstance(v, float) else f"{k}={v}" for k, v in row.items()))
+    finally:
+        globals()["classify"], gdi.grab = real_classify, real_gdi
+    ages = sorted(r["age_ms"] for r in rows)
+    if ages:
+        log(f"reenter: timing age at the write p50 {ages[len(ages) // 2]:.0f} ms, max {ages[-1]:.0f} ms (limit {MAX_PROOF_AGE_S * 1e3:.0f} ms)")
+    return rows
+
+
 def main(argv=None, capture=_dxcam, live=Live):
     """`capture()` returns something with grab(); `live(cap, first_frame)` opens the pad. Both are injectable for tests."""
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--dry-run", action="store_true", help="classify a frame and print what would be done; open no pad")
     p.add_argument("--frame", help="with --dry-run: a saved frame instead of a live capture")
+    p.add_argument("--timing", type=int, metavar="N", help="with --dry-run: time N press-proofs on the live screen (capture only, no pad)")
     a = p.parse_args(argv)
-    if a.frame and not a.dry_run:
+    if a.frame is not None and not a.dry_run:           # `is not None`: an empty or zero value must never fall through to a live run
         p.error("--frame needs --dry-run")
-    if a.frame:
+    if a.timing is not None and (not a.dry_run or a.frame is not None or a.timing <= 0):
+        p.error("--timing needs --dry-run, the live screen and N >= 1")
+    if a.timing is not None:
+        import logging
+        logging.basicConfig(level=logging.WARNING, format="reenter: dxcam log %(message)s")   # dxcam reports access loss and recovery here
+        from capture import Capture
+        cap = capture()
+        dxcam_probe(cap)
+        timings(cap, Capture("gdi"), a.timing)
+        return 0
+    if a.frame is not None:
         first = cv2.imread(a.frame)
         if first is None:
             sys.exit(f"reenter: cannot read {a.frame}")
