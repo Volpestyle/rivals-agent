@@ -140,3 +140,55 @@ def test_forward_movement_only_on_steps_with_a_measured_box():
     c = Controller()
     assert all(c.step(State(t=i / 60, frame=(1280, 720), detections=[d]), Search())[k] == 0.0
                for i in range(120) for k in ("lx", "ly"))
+
+
+def test_a_whole_frame_target_is_re_aimed_from_every_new_measurement_until_the_crop_confirms_it():
+    """trackerlive30: seeded once from the brain's whole-frame target, the turn stopped where the controller's own model said it had
+    arrived, the bot stayed 630 px right, and the 1 s unconfirmed limit then stopped turning: 4.9 s standing still. Each new measurement
+    (a new decision) now re-aims the track at the camera angle of the frame it was measured in, so the turn goes on while the bot is off."""
+    c, F, dt = Controller(), (2560, 1440), 1 / 60
+    right = lambda: Detection(ENEMY, (1756.0, 355.0, 2058.0, 916.0), 0.9)     # the respawned bot, 630 px right of the crosshair
+    t, rx, intent = 0.0, [], Engage(right())
+    for k in range(120):                                                       # 2 s; the bot never comes in (a recorded frame)
+        if k % 6 == 0:
+            intent = Engage(right())                                            # a new decision: a new measurement, still 630 px right
+            it = t
+        rx.append(c.step(State(t=t, frame=F, detections=[]), intent, intent_t=it)["rx"])
+        t += dt
+    assert all(v > 0 for v in rx[-60:])                                         # still turning toward it a second and more in
+    old, t = Controller(), 0.0
+    first = Engage(right())
+    olds = []
+    for k in range(120):                                                       # the same, with the brain's target never re-measured
+        olds.append(old.step(State(t=t, frame=F, detections=[]), first, intent_t=0.0)["rx"])
+        t += dt
+    assert sum(1 for v in olds[-60:] if abs(v) > 0.02) == 0                     # the old behaviour: stopped
+
+
+def test_a_target_the_crop_confirmed_is_not_moved_by_the_brains_measurements():
+    c, F = Controller(), (2560, 1440)
+    box = Detection(ENEMY, (1230.0, 520.0, 1330.0, 920.0), 0.9)                # on the crosshair, in the crop
+    for k in range(10):
+        c.step(State(t=k / 60, frame=F, detections=[box]), Engage(box), intent_t=k / 60)
+    yaw = c.track.yaw
+    far = Detection(ENEMY, (2000.0, 520.0, 2100.0, 920.0), 0.9)                # a stale whole-frame box elsewhere
+    c.step(State(t=10 / 60, frame=F, detections=[box]), Engage(far), intent_t=0.0)
+    assert c.track.confirmed and abs(c.track.yaw - yaw) < 1.0
+
+
+def test_the_brains_target_is_placed_at_the_camera_angle_of_the_frame_it_was_measured_in():
+    """The decision runs 40-60 ms behind the reflex step; at a 172 deg/s search turn that is 7-10 degrees of camera. The bearing uses the
+    camera the measured frame showed, not the current one."""
+    from agent.intents import Search
+    c, F = Controller(), (2560, 1440)
+    t = 0.0
+    for k in range(18):                                                         # 0.3 s of search: the camera is turning right (it pauses 0.3-0.5 s)
+        c.step(State(t=t, frame=F, detections=[]), Search())
+        t += 1 / 60
+    measured_t = t - 0.1                                                        # the decision's frame, 100 ms back
+    box = Detection(ENEMY, (1230.0, 520.0, 1330.0, 920.0), 0.9)                # dead ahead in THAT frame
+    c.step(State(t=t, frame=F, detections=[]), Engage(box), intent_t=measured_t)
+    then = c._cam_at(measured_t - c.cal.latency_s)[0]
+    now = c._cam_at(t - c.cal.latency_s)[0]
+    assert abs(now - then) > 5.0                                                # the camera really moved in between
+    assert abs(c.track.yaw - then) < 0.5                                        # and the target sits where it was, not where we look now

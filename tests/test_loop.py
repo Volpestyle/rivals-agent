@@ -59,7 +59,7 @@ def timeline(seconds, hz=HZ, **at):
 class Walker:
     """A controller that always walks and attacks, so the pad is never neutral while input is allowed."""
 
-    def step(self, state, intent):
+    def step(self, state, intent, intent_t=None):
         return {**NEUTRAL, "ly": 1.0, "rt": 1.0}
 
 
@@ -131,7 +131,7 @@ def test_an_exception_in_the_brain_releases_the_pad_and_propagates():
 
 def test_an_exception_in_the_controller_releases_the_pad():
     class Broken(Walker):
-        def step(self, state, intent):
+        def step(self, state, intent, intent_t=None):
             if state.t > 0.3:
                 raise ValueError("controller died")
             return super().step(state, intent)
@@ -182,7 +182,7 @@ def test_live_refusing_a_send_ends_the_run_cleanly():
 @pytest.mark.parametrize("button", ["START", "BACK", "DPAD_UP", "LS", "RS", "B", "Y", "X+START"])
 def test_a_forbidden_button_never_reaches_the_pad(button):
     class Rogue(Walker):
-        def step(self, state, intent):
+        def step(self, state, intent, intent_t=None):
             return {**NEUTRAL, "buttons": ("A", button)}
 
     pad = FakePad()
@@ -877,3 +877,20 @@ def test_an_unreadable_kit_means_an_unknown_patch_not_a_guess(tmp_path):
     assert kit_patch(tmp_path / "missing.md") is None
     (tmp_path / "kit.md").write_text("# kit\nno patch line here\n")
     assert kit_patch(tmp_path / "kit.md") is None
+
+
+def test_the_controller_is_told_the_frame_time_of_the_decision_it_acts_on():
+    """A target from the decision is placed at the camera angle of the decision's frame (Controller.step's intent_t)."""
+    class Rec:
+        def __init__(self):
+            self.calls = []
+
+        def step(self, state, intent, intent_t=None):
+            self.calls.append((state.t, intent_t))
+            return dict(NEUTRAL)
+
+    rec = Rec()
+    Loop(Frames(timeline(1.0, dets=[BOT])), FakePad(), readers(), scripted.decide, controller=rec, warmup=False, scoreboard=False).run()
+    given = [(t, it) for t, it in rec.calls if it is not None]
+    assert given and all(it <= t for t, it in given)
+    assert {round(it * 10, 6) % 1 for _, it in given} <= {0.0}                   # decisions are at the 10 Hz ticks: 0.0, 0.1, ...

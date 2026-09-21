@@ -462,7 +462,8 @@ class Loop:
         d = self.decider.latest
         fresh = d is not None and t - d.t <= self.stale_s
         intent, source = (d.intent, d.source) if fresh else (Idle(), "stale" if d else "waiting")
-        pad = clean(self._keepalive(self.ctrl.step(State(t=t, frame=size, detections=dets, coasting=self.coasting), intent), t))
+        pad = clean(self._keepalive(self.ctrl.step(State(t=t, frame=size, detections=dets, coasting=self.coasting), intent,
+                                                   intent_t=d.t if fresh else None), t))
         self.pad.send(pad)                              # Live confirms its own frame again: a second, independent guard
         self.sent = pad
         if active(pad):

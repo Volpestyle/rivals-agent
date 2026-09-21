@@ -1,8 +1,10 @@
 """Replay the postfreeze30 trace (the first supervised post-freeze run: 30 s, ~50 Hz) through a tracker and the scripted brain, in live
-order, and score it against labels fixed by eye on the saved frames. Stdlib; reads data/l1/postfreeze30/frames.jsonl.
+order, and score it against labels fixed by eye on the saved frames. Stdlib; reads DIR/frames.jsonl (default data/l1/postfreeze30); the
+labels are per run (LABELS), a run without its own gets the generic ones. The trace replay also steps the controller each tick with the
+brain's intent and reports STALLS: engaged on a target with no stick, no move and no press.
 
-  python docs/evidence/l4/postfreeze30_replay.py [--no-kill-feed] [TRACKER.py ...]   # default: agent/tracker.py
-  uv run --group perception python docs/evidence/l4/postfreeze30_replay.py --refind OUTLINE.py [TRACKER.py]
+  python docs/evidence/l4/postfreeze30_replay.py [--run DIR] [--no-kill-feed] [TRACKER.py ...]   # default: postfreeze30, agent/tracker.py
+  uv run --group perception python docs/evidence/l4/postfreeze30_replay.py [--run DIR] --refind OUTLINE.py [TRACKER.py]
       # re-run a finder (perception/outline.py, or an older copy) on the 273 saved frames (~9 Hz) instead of the trace's recorded boxes
 
 Live order: every tick's aim-crop boxes update the tracker; when that tick's crop was empty, the decision's whole-frame search updates it
@@ -23,18 +25,24 @@ from agent import brain  # noqa: E402
 from agent.state import ENEMY, Detection, State  # noqa: E402
 
 RUN = Path("data/l1/postfreeze30")
+# Labels fixed by eye on each run's saved frames (docs/lanes/tracker.md). The kill feed's box is the same place on every run.
+LABELS = {
+    "postfreeze30": dict(door_before=13.8, bot_after=15.3, bot_h=120),   # the spawn door until 13.8 s; the Luna Snow bot from 15.3 s
+    "trackerlive30": dict(door_before=4.6, bot_after=0.0, bot_h=100),   # the spawn room until 4.6 s; after that a box 100 px+ is the bot,
+}                                                                       # a smaller one the downed bot (38 x 43) or a stray (22 x 31)
 SIZE = (2560, 1440)
 KILL_FEED_BOX = [2319, 128, 2426, 247]
 
 
 def label(t, b):
     cx, cy, h = (b[0] + b[2]) / 2, (b[1] + b[3]) / 2, b[3] - b[1]
+    lab = LABELS.get(RUN.name, dict(door_before=0.0, bot_after=0.0, bot_h=100))
     if cx > 2300 and cy < 260:
         return "killfeed"
-    if t < 13.8:
+    if t < lab["door_before"]:
         return "door"
-    if t >= 15.3 and h >= 120:
-        return "luna"
+    if t >= lab["bot_after"] and h >= lab["bot_h"]:
+        return "luna"                                  # the run's real bot
     return "other"
 
 
@@ -69,7 +77,11 @@ def tracker_module(path):
 def replay(mod, no_kill_feed=False):
     rows, events = load(no_kill_feed)
     by_t = {r["t"]: i for i, r in enumerate(rows)}
-    tr, m, aim, wide, ticks, cost, intent = mod.Tracker(), brain.Memory(), {}, {}, [], [], None
+    import inspect
+    from agent.controller import Controller
+    ctrl, intent, intent_t, pads = Controller(), None, None, []
+    takes_t = "intent_t" in inspect.signature(ctrl.step).parameters
+    tr, m, aim, wide, ticks, cost = mod.Tracker(), brain.Memory(), {}, {}, [], []
     last = {i: n for n, (_, _, _, i) in enumerate(events)}
     for n, (kind, t, boxes, i) in enumerate(events):
         c0 = time.perf_counter()
@@ -86,11 +98,33 @@ def replay(mod, no_kill_feed=False):
             base = State.from_dict({**s, "detections": []})
             intent = brain.decide(State(t=base.t, frame=base.frame, hp=base.hp, max_hp=base.max_hp, webs=base.webs, abilities=base.abilities,
                                         detections=list(use[0]), coasting=use[1]), m)
+            intent_t = base.t
+        if intent is not None:
+            st = State(t=r["t"], frame=SIZE, detections=list(aim[i][0]), coasting=aim[i][1])
+            pad = ctrl.step(st, intent, intent_t=intent_t) if takes_t else ctrl.step(st, intent)
+            pads.append((r["t"], type(intent).__name__ not in ("Search", "Idle"), pad))
         tgt = m.target
         acting = intent is not None and type(intent).__name__ not in ("Search", "Idle")   # the target is only what the pad acts on while engaging
         ticks.append((r["t"], None if tgt is None or not acting else label(m.target_t, tgt.bbox),
                       tgt is not None and any(d.track == tgt.track for d in aim[i][0]), None if tgt is None else tgt.track))
+    replay.pads = pads
     return rows, aim, wide, ticks, cost
+
+
+def stalls(pads, min_s=0.5):
+    """Runs of ticks engaging a target while the pad does nothing at all (no stick, no move, no press): (start, seconds)."""
+    out, start, last = [], None, None
+    for t, engaging, p in pads:
+        idle = engaging and max(abs(p["rx"]), abs(p["ry"]), abs(p["lx"]), abs(p["ly"]), p["lt"], p["rt"]) < 0.02 and not p["buttons"]
+        if idle and start is None:
+            start = t
+        if not idle and start is not None:
+            out.append((start, t - start))
+            start = None
+        last = t
+    if start is not None:
+        out.append((start, last - start))
+    return [(round(a, 2), round(b, 2)) for a, b in out if b >= min_s]
 
 
 def report(path, no_kill_feed=False):
@@ -119,7 +153,21 @@ def report(path, no_kill_feed=False):
             "held_id_visible": round(sum(x[2] for x in held) / max(len(held), 1), 3),
             "held_id_visible_on_luna": round(sum(x[2] for x in on_luna) / max(len(on_luna), 1), 3),
             "luna_target_ticks_by_cause": dict(why), "luna_target_ids": len({x[3] for x in on_luna}),
-            "update_ms_p50": round(c[len(c) // 2], 4), "update_ms_p95": round(c[int(0.95 * len(c))], 4)}
+            "update_ms_p50": round(c[len(c) // 2], 4), "update_ms_p95": round(c[int(0.95 * len(c))], 4),
+            "engaged_s": {k: round(v, 2) for k, v in engaged_seconds(ticks).items()},
+            "engaged_active_s": {k: round(v, 2) for k, v in engaged_seconds(ticks, replay.pads).items()},
+            "stalls_over_0.5s": stalls(replay.pads)}
+
+
+def engaged_seconds(ticks, pads=None):
+    """Seconds engaging each label; with `pads`, only the ticks on which the pad did something (a stick, a move or a press)."""
+    busy = None if pads is None else {t: max(abs(p["rx"]), abs(p["ry"]), abs(p["lx"]), abs(p["ly"]), p["lt"], p["rt"]) >= 0.02 or bool(p["buttons"])
+                                      for t, _, p in pads}
+    secs = collections.Counter()
+    for (t0, lab, _, _), (t1, _, _, _) in zip(ticks, ticks[1:]):
+        if lab is not None and (busy is None or busy.get(t0)):
+            secs[lab] += t1 - t0
+    return secs
 
 
 def refind(outline_path, tracker_path="agent/tracker.py", brain_decide=None):
@@ -157,6 +205,10 @@ def refind(outline_path, tracker_path="agent/tracker.py", brain_decide=None):
 
 
 if __name__ == "__main__":
+    if "--run" in sys.argv:
+        k = sys.argv.index("--run")
+        RUN = Path(sys.argv[k + 1])
+        del sys.argv[k:k + 2]
     if "--refind" in sys.argv:
         rest = [a for a in sys.argv[1:] if a != "--refind"]
         secs, _ = refind(*rest)
