@@ -71,6 +71,7 @@ class Memory:
     target: Detection | None = None
     target_t: float = -math.inf       # last time a hostile was seen
     retreat_armed: bool = True        # re-arms once hp recovers past HP_RESUME
+    seen: frozenset = frozenset()     # track ids of the hostiles present at the previous decision (acquisition needs two in a row)
 
 
 def decide(state: State, memory: Memory) -> Intent:
@@ -92,6 +93,7 @@ def gate(state: State, memory: Memory):
     hp = state.hp / state.max_hp if state.hp is not None and state.max_hp else None  # None = unreadable
 
     target = _pick_target(state, memory)
+    memory.seen = frozenset(d.track for d in state.detections or [] if d.track is not None)
     if target is not None:
         memory.target, memory.target_t = target, t
 
@@ -113,6 +115,11 @@ def gate(state: State, memory: Memory):
 
     if target is None and (t - memory.target_t <= LOST_S or _coasting(state, memory)):
         return memory.intent, None  # flicker, or the tracker still holds the target's id: keep doing what we were doing
+    if target is None:
+        # Released: past LOST_S and no longer held by the tracker (a coast lasts at most CLOSE_AGE_S, 1.5 s). On postfreeze30 the brain
+        # stops engaging a killed bot 0.94 s after its last sighting; clearing the target makes the loop's trace say so, instead of
+        # naming the dead bot as the target for as long as nothing else is picked. Choice is unaffected: stickiness is within LOST_S.
+        memory.target = None
     return None, target
 
 
@@ -181,8 +188,8 @@ def crosshair(state):
     return (state.frame[0] / 2, state.frame[1] / 2)
 
 
-def _nearest(state, classes, point):
-    found = [d for d in state.detections or [] if d.cls in classes and d.conf >= MIN_CONF]
+def _nearest(state, classes, point, allowed=lambda d: True):
+    found = [d for d in state.detections or [] if d.cls in classes and d.conf >= MIN_CONF and allowed(d)]
     return min(found, key=lambda d: math.dist(d.center, point), default=None)
 
 
@@ -193,7 +200,12 @@ def _coasting(state, memory):
 
 def _pick_target(state, memory):
     """Stay on the last target: by its track id when it has one (present: it; held unseen: nobody, do not switch), else while it is fresh
-    by where it was; otherwise the hostile nearest the crosshair."""
+    by where it was; otherwise the hostile nearest the crosshair.
+
+    A NEW target with a track id must have been present at the previous decision too. On postfreeze30 the spawn room door's last false
+    boxes are slivers seen in a single frame, and one sighting was enough to start a combo held for ~3 s; two decisions in a row (~0.1 s)
+    stops that and delays a real bot's first engagement by 0.34 s (docs/lanes/tracker.md). The held target is not re-acquired: its own
+    id is followed as above, and a missing decision is covered by LOST_S, the coast and a playing combo, as before."""
     last = memory.target
     if last is not None and last.track is not None:
         same = next((d for d in state.detections or [] if d.track == last.track and d.cls in HOSTILE and d.conf >= MIN_CONF), None)
@@ -202,7 +214,7 @@ def _pick_target(state, memory):
         if _coasting(state, memory):
             return None
     sticky = last is not None and state.t - memory.target_t <= LOST_S
-    return _nearest(state, HOSTILE, last.center if sticky else crosshair(state))
+    return _nearest(state, HOSTILE, last.center if sticky else crosshair(state), lambda d: d.track is None or d.track in memory.seen)
 
 
 def ready(state, name):

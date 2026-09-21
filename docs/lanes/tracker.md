@@ -52,6 +52,66 @@ overlap over their whole height and keep two ids. The hole that remains: two sep
 width under about 1.9, within a quarter height vertically and overlapping 0.6 of the width, still merge (two 250 x 200 boxes 10 px
 apart become one id); no realistic pair of bots at different depths built in review merged.
 
+**Pieces of a body already seen.** Live, at close range, the finder returns one bot as 2-5 pieces that change every frame, and the aim
+crop's edges (y 240 and 1200 at 1440p) cut it. A box that would start a new id is instead given the id of a confirmed track matched in
+the same update if at least `PIECE_INSIDE` (0.7) of it lies inside that body's box (last update's and this one's), padded by `PIECE_PAD`
+(0.1 of its size), and it is no taller than the body; the body's box becomes the union of its pieces. Only a body matched in the same
+update takes pieces: a small box where a body is merely predicted stays its own (a lamp at a coasting bot's place is a lamp). A box that
+matches a track of its own is never absorbed, so two dummies seen together from the start keep two ids. Only bodies matched on their
+own are witnesses: a piece taken this update never vouches for the next box, so the body cannot chain outward piece by piece, and which
+boxes join a body as its pieces does not depend on the order of the boxes. That holds for piece membership against the directly matched
+bodies only: the numbers given to new ids follow the order of the boxes, and the greedy matching of boxes to tracks is not claimed to be
+order-invariant.
+
+**Residual: a new, smaller bot appearing inside a confirmed near bot's box while that bot is still visible is taken as its piece.**
+Geometry cannot tell it from a piece (a 300 px bot at x 1030 inside a 600 px bot at x 1000 gets the near bot's id). If it is the first box
+of that id in a decision, the brain follows it under the held id, which bypasses two-decision acquisition. Nothing seen live has done this.
+
+## Live: postfreeze30 (30 s, ~50 Hz, the first supervised run)
+
+`docs/evidence/l4/postfreeze30_replay.py` replays it two ways, and reproduces every number below.
+
+- **The trace** (stdlib): the boxes the live finder recorded, through tracker and scripted brain in live order (every aim-crop update per
+  tick, the whole-frame search's update when the crop was empty, each decision after its row's updates). It makes 116 ids where the run
+  made 112. It cannot show a finder change; `--no-kill-feed` drops the kill feed's box, which the finder no longer makes.
+- **`--refind`** (perception group): a given finder re-run on the 273 saved frames (~9 Hz; the loop decides at 10 Hz), aim crop and whole
+  frame when the crop is empty, then tracker and brain. This is where a finder change shows.
+
+A tick counts toward a target only while the brain's intent engages (not Search or Idle): that is what the pad acts on. Labels are by eye
+on the saved frames: every box before t 13.8 s is the spawn room's lime glass door, a box at the kill feed's place (2319,128)-(2426,247)
+is the HUD kill feed, and after t 15.3 s a box 120 px or taller is the Luna Snow bot (who is killed at 19.3 s and back below the platform
+from 22.7 s).
+
+| Trace replay | ids | Luna ids / switches of her main box's id | engaged ticks: door / kill feed / Luna / other | held id visible (on Luna) | tracker update p50 / p95 |
+|---|---|---|---|---|---|
+| 36f1eec (its brain, finder, tracker) | 116 | 16 / 20 | 499 / 316 / 535 / 65 | 22% (54%) | 0.002 / 0.05 ms |
+| tracker-live, no kill feed | 103 | 11 / 16 | 478 / 0 / 532 / 104 | 28% (53%) | 0.002 / 0.05 ms |
+
+The trace carries the old finder's boxes, so its door count shows only the brain's part: on those dense boxes (the door in 52 frames of
+273) two decisions in a row trims 499 to 478. The finder's part shows in the refind replay.
+
+| Refind replay (finder -> tracker -> brain) | engaged: door / kill feed / Luna / other |
+|---|---|
+| 36f1eec finder, tracker and brain | 9.5 s / 1.1 s / 9.0 s / 5.5 s |
+| tracker-live | **0** / 0 / 12.5 s / 2.9 s |
+
+- **The kill feed and most of the door are gone at the finder** (docs/lanes/l3-detector.md). What is left of the door is four thin slivers
+  of its edge, each in one saved frame, and one sighting used to be enough for the brain to engage (a combo's ability hold then carried it
+  about 3 s: 3.6 s of door on this replay). **A new target needs its id present at two decisions in a row** (`brain._pick_target`, ~0.1 s
+  at the loop's 10 Hz); the held target keeps its own id path, `LOST_S`, the coast and a playing combo, so one missing decision does not
+  drop it. It stops the door and delays Luna's engagement by 0.35 s, 0.45 s and 0.23 s on her three appearances (15.3, 22.7, 24.9 s).
+  It works at the decision rate, which is the same live; a tracker confirmation count would not (at 50 Hz a sliver gets 3 hits in 60 ms).
+- **A killed bot is released** 0.94 s after its last sighting: the brain keeps a missing target only within `LOST_S` (0.5 s) or while the
+  tracker coasts its id (at most `CLOSE_AGE_S`, 1.5 s), plus a combo already playing. Measured gaps while Luna is alive and engaged are
+  at most 0.86 s live and 1.31 s on the replay, inside that bound. On release the brain now clears its remembered target, so the loop's
+  trace stops naming the dead bot (it used to, for as long as nothing else was picked).
+- **The engaged bot's own id churn is its pieces**, not the camera: within the gate, yet a new id, because a piece took the old id and
+  the others were born. The piece rule above takes the new-born pieces; what remains is two concurrent tracks on pieces that were born
+  apart (legs and torso in a kick), which keep their own ids. `Detection.plate` does not separate them from two bots (finder lane doc).
+- **The camera turning under the tracker** accounts for 19 of 105 new ids (with ego-motion from the commanded stick and the controller's
+  measured yaw map, the old box lands inside the gate; without it, it does not). 15 are boxes under 72 px, far bots. Of the rest, one
+  is Luna losing her far-range id in a turn at 15.4 s: the brain re-picks her. Compensating it is not built.
+
 ## Coasting: a deliberate trade
 
 A confirmed track (seen `CONFIRM` = 3 times) that goes unseen is held, its id in `state.coasting`, for `MAX_AGE_S` 0.8 s, `SMALL_AGE_S`
@@ -64,9 +124,11 @@ age limits above; after that the target is gone and the nearest hostile is picke
 
 ## Who reads the id
 
-- `brain._pick_target` follows the target by id (a hostile class at `MIN_CONF` or above only), and treats a coasting id as "briefly
-  missing", not gone.
+- `brain._pick_target` follows the target by id (a hostile class at `MIN_CONF` or above only), treats a coasting id as "briefly
+  missing", not gone, and takes a new target only once its id was present at the previous decision too.
 - `jev.reassociate` follows an answered target by id and class, returns it as-is while it coasts, and otherwise falls back to the
   nearest box of its class within `MATCH_FRAC`.
 - **The controller does not.** `Controller._follow` keeps its own `Track` and re-associates it by bearing each step; it never reads
-  `Detection.track`. Brain and controller can therefore still disagree for a step about which box is the target when two bots are close.
+  `Detection.track`. Brain identity is not actuator identity: the pad steers to whichever box lies at the tracked bearing, so brain and
+  controller can disagree about which box is the target when two bots are close, and the disagreement can persist for as long as the
+  bearing re-association stays on the other bot.

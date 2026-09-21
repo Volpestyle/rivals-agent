@@ -33,7 +33,7 @@ def detect(frame):
     h, w = frame.shape[:2]
     k = w / 1280.0
     x0, y0 = (w - CROP) // 2, (h - CROP) // 2
-    found = [(d, x0, y0) for d in find_enemies(frame[y0:y0 + CROP, x0:x0 + CROP], scale=k)]
+    found = [(d, x0, y0) for d in find_enemies(frame[y0:y0 + CROP, x0:x0 + CROP], scale=k, origin=(x0, y0), frame=(w, h))]
     if not found:
         found = [(d, 0, 0) for d in find_enemies(frame, scale=k)]
     return [Detection(cls=d.cls, conf=d.conf, bbox=tuple(round((v + (ox, oy)[i % 2]) / k, 1) for i, v in enumerate(d.bbox)))

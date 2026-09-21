@@ -34,6 +34,7 @@ class Detection:
     distance: float | None = None  # metres, estimated; None = no estimate
     tagged: bool | None = None  # Spider-Tracer icon over this enemy; None = not read (icon absent from view is not "untagged")
     track: int | None = None  # identity, assigned once by agent.tracker between the finder and State; None = not tracked. Never reused
+    plate: bool | None = None  # the game's name-and-health bar was seen belonging to this box; None = its place was out of view or not read
 
     @property
     def center(self):

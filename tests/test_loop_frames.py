@@ -161,3 +161,15 @@ def test_see_gets_a_read_only_view_of_the_real_frame_and_cannot_write_into_the_f
     seen = [c for c in calls if c != "write refused"]
     assert seen and all(w is False and shape == (1440, 2560, 3) for w, shape, _ in seen)
     assert calls.count("write refused") == len(seen)
+
+
+def test_the_aim_crop_tells_the_finder_where_it_sits_so_the_hud_zones_stay_on_the_hud():
+    """The aim crop's top-right corner is mid-screen (x 0.64, y 0.2-0.35), not the fps readout: a body there is found. Before the finder
+    was told the crop's origin, the readout's zone landed on it (postfreeze30: 32 aim-crop boxes removed, 16 of them 120 px or taller)."""
+    import numpy as np
+    from agent.loop import default_perception
+    f = np.zeros((1440, 2560, 3), np.uint8)
+    f[300:520, 1640:1720] = (83, 199, 92)                   # the game's enemy green, a body outline 220 px tall
+    f[312:508, 1652:1708] = 0
+    boxes = default_perception().aim(f)
+    assert len(boxes) == 1 and boxes[0].bbox[0] >= 1630 and boxes[0].height >= 200

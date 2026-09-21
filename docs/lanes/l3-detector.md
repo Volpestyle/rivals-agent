@@ -54,10 +54,52 @@ on the PC, not on the Mac; the ratio is not a constant factor you can divide by.
 
 HUD and player-region exclusion are **inside** `find_enemies` — callers do not add
 their own. The HUD zones cover the green fps/ping readout and the player's own green
-HP bar. The player-region zone drops only *small* marks: a bot at point blank stands
+HP bar, and the kill feed's first row (below). The player-region zone drops only *small* marks: a bot at point blank stands
 exactly where the hero is drawn, so suppressing that region wholesale would blind the
 melee case. No player-region false box has yet been seen on the green path; the zone
 is there because junk in front of the player is what caused L4's stray ability press.
+
+**The kill feed.** Its victim name is drawn in enemy green, one text line at a fixed place: on loop30a and postfreeze30 every one of 18
+such marks spans y 59-75 native, is 12-16 px tall and ends at x 2416-2433. It read as a name bar with a projected body, and on
+postfreeze30 that box was the brain's target for 6 s. `KILL_FEED` (0.86-0.96 x, 0.034-0.058 y of the frame) drops a mark only if it lies
+**wholly** inside that band. A real bot's bar at the top right is taller or touches the top edge and survives: tagrun0 000070, 000206,
+000228 and tagrun1 000342 each carry one there, and in three of them it is the bot's only detection, which is why the top-right zone is
+not simply extended to the top. Across 4973 native frames the band removes the kill feed and nothing else; the 72-frame ground truth is
+unchanged (count P 0.848 / R 0.859 before and after).
+
+**`Detection.plate`: was the box's name bar seen on its body.** True when a flat mark belongs to the outline (`_belongs_to`); None when
+the place the bar would float is above the image (cut off, so not seen either way) and for a projected box from a bar alone; False
+otherwise. A bar alone counts as nothing because it is exactly what green scenery fakes. Measured on postfreeze30 and tagrun0 (tracked
+as the loop runs the finder; `docs/evidence/l4/postfreeze30_bars.py`): tagrun0 bots show their bar on 68-98% of sightings 100 px and
+taller and 1% below; the spawn room door on 2 of 66 (both where its glass stripes sit just above a small outline, which `_belongs_to`
+accepts; the fake bar is 2.4 body heights wide, and real, partly hidden bots reach 2.87). Per track, no "has shown its bar" rule
+separates the door from the Luna Snow bot with margin: "any bar" admits one door track, and rules that reject it (bars spanning at least
+0.3 s) leave Luna targetable on 24 of her 87 saved frames, 3.8 s late on her first approach. No consumer reads `plate` yet.
+
+**The door is the band's low edge, and is judged per component.** 61% of the spawn room door's masked pixels are at hue 54, the band's
+lower bound, and 89% at 54-56; Luna's are centred on 64 (per-box median never below 57), tagrun0's bots on 65. Raising `hue_lo` would cut
+the bots' own edge pixels too: at 57 their outlines split into pieces, a ground-truth enemy is lost (tagrun1 000094) and bar-seen
+sightings 100 px and taller fall 4.6%. So the band keeps every pixel from 54 for connectivity, and a component whose own (pre-closing)
+pixels have a median hue under `GREEN_MIN_MEDIAN_HUE` (56) is dropped:
+
+| | before | median hue >= 56 |
+|---|---|---|
+| ground truth, count P / R | 0.848 / 0.859 | **0.931 / 0.859** (8 false positives fewer, no enemy lost) |
+| postfreeze30 door boxes (aim crop, whole frame when empty) | 66 in 52 frames | 4 in 4 frames |
+| postfreeze30 frames with a Luna box | 83 | 83 |
+| bar-seen sightings 100 px+ (every 4th native frame) | 71 | 71 |
+| Mac cost: aim crop / full frame p50 | 1.39 / 4.42 ms | 1.43 / 4.51 ms |
+
+The four door boxes left are thin slivers of the door's edge, each in a single frame. `tests/test_gt_range_green.py` gates at P 0.88 / R
+0.82 against the count numbers above. The rule applies to the `GREEN` band only.
+
+**The zones are places on the screen.** `find_green` / `find_enemies` take an optional `origin` (the image's top-left in the frame) and
+`frame` (w, h); a whole frame needs neither. The HUD and kill-feed zones are tested in frame terms, so on the 960 px aim crop they cover
+only real HUD (before, they removed 32 aim-crop boxes in 27 of postfreeze30's 273 frames, 16 of them 120 px or taller; now the crop
+finds 25 more boxes there and 12 more on tagrun0, and empties no frame). The two aim-crop callers, `agent.loop` and
+`scripts/l4_trial.py`, pass both. The **player zone** stays in
+the image's own fractions: placed in frame terms it covers most of the crop and drops small marks the crop exists to see (17 frames
+emptied on the two runs, Luna's pieces and a bot's bar among them). Where the hero is drawn inside the crop is not measured.
 
 **Precision 82%, recall 83%** against hand-checked ground truth — see below.
 

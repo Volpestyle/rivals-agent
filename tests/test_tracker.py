@@ -152,6 +152,44 @@ def test_two_bots_in_a_line_overlapping_on_screen_keep_two_ids():
     assert all(len(set(i)) == 2 for i, _ in run(Tracker(), touching))
 
 
+def test_a_close_bot_drawn_in_changing_pieces_keeps_one_id():
+    """postfreeze30: at close range the finder returns one bot as 2-5 pieces that change every frame, and the aim crop's edges cut it.
+    A piece that would start a new id, lying inside the body matched in the same update, is that body."""
+    tr = Tracker()
+    run(tr, [[det(1280, 760, 600, w=250)]] * 5)                                     # the bot, whole, confirmed
+    pieces = [[det(1280, 620, 300, w=240), det(1300, 930, 250, w=120)],             # upper and lower body
+              [det(1275, 700, 420, w=250), det(1250, 1000, 120, w=60), det(1320, 480, 90, w=80)],   # three pieces, one cut by the crop edge
+              [det(1285, 770, 610, w=255)]]                                         # and whole again
+    ids = [[d.track for d in tr.update(p, (5 + k) / HZ, FRAME)] for k, p in enumerate(pieces)]
+    assert ids == [[1, 1], [1, 1, 1], [1]]
+
+
+def test_a_piece_needs_its_body_seen_in_the_same_update():
+    tr = Tracker()
+    run(tr, [[det(1280, 760, 600, w=250)]] * 5)
+    got = tr.update([det(1300, 930, 250, w=120)], 5 / HZ, FRAME)                    # only a piece-sized box where the body is merely predicted
+    assert got[0].track == 1                                                        # (matched by the gate as before: close box, ratio 2.4)
+    tr2 = Tracker()
+    run(tr2, [[det(1000, 700, 400)]] * 5)
+    lamp = tr2.update([det(1000, 700, 60)], 5 / HZ, FRAME)                          # a lamp at a merely predicted body: a new id
+    assert lamp[0].track == 2
+
+
+def test_what_is_not_a_piece_of_the_body_gets_its_own_id():
+    tr = Tracker()
+    run(tr, [[det(1280, 760, 600, w=250)]] * 5)
+    beside = tr.update([det(1280, 760, 600, w=250), det(1460, 760, 300, w=125)], 5 / HZ, FRAME)   # a second bot, mostly outside the body
+    assert [d.track for d in beside] == [1, 2]
+    tr = Tracker()
+    run(tr, [[det(1280, 760, 600, w=250)]] * 5)
+    front = tr.update([det(1280, 760, 600, w=250), det(1300, 780, 800, w=330)], 5 / HZ, FRAME)    # a nearer, taller bot passing in front
+    assert [d.track for d in front] == [1, 2]
+    young = Tracker()
+    run(young, [[det(1280, 760, 600, w=250)]] * 2)                                  # seen twice: not yet a confirmed body
+    got = young.update([det(1275, 700, 420, w=250), det(1320, 480, 90, w=80)], 2 / HZ, FRAME)   # torso, and a head piece (not stacked)
+    assert len({d.track for d in got}) == 2                                         # it takes no pieces
+
+
 def test_none_is_no_detections():
     tr = Tracker()
     run(tr, [[det(1000, 700, 300)]] * 5)
@@ -211,9 +249,10 @@ def test_a_track_seen_long_ago_at_a_similar_place_is_a_new_bot():
 
 # --- State, the brain and Jev follow the id -------------------------------------------------------------------------------------
 def test_state_round_trips_track_ids_and_the_coasting_list_and_old_lines_still_load():
-    st = State(t=1.0, frame=FRAME, detections=[det(500, 500, 200, track=7)], coasting=(3, 5))
+    st = State(t=1.0, frame=FRAME, detections=[det(500, 500, 200, track=7, plate=True), det(900, 500, 200, plate=None)], coasting=(3, 5))
     back = State.from_dict(st.to_dict())
     assert back == st and back.detections[0].track == 7 and back.coasting == (3, 5)
+    assert [d.plate for d in back.detections] == [True, None]                        # unknown stays None, never False
     old = {"t": 1.0, "frame": [2560, 1440], "detections": [{"cls": "enemy", "bbox": [1, 2, 3, 4], "conf": 0.9}]}
     loaded = State.from_dict(old)
     assert loaded.detections[0].track is None and loaded.coasting == ()
@@ -229,6 +268,7 @@ def st(t, dets, coasting=(), **kw):
 def test_the_brain_stays_on_its_target_by_id_even_when_another_bot_is_nearer_the_crosshair():
     m = Memory()
     a, b = det(1000, 720, 600, track=1), det(1290, 720, 600, track=2)            # B is right on the crosshair, A is where the brain engaged
+    decide(st(-0.1, [a]), m)                                                    # seen at the previous decision: acquisition needs two in a row
     assert decide(st(0.0, [a]), m) == Engage(a)
     got = decide(st(0.1, [a, b]), m)
     assert got == Engage(a) and m.target.track == 1                             # not "nearest the crosshair": that is B
@@ -237,6 +277,7 @@ def test_the_brain_stays_on_its_target_by_id_even_when_another_bot_is_nearer_the
 def test_a_target_the_tracker_still_holds_is_not_swapped_and_its_intent_stands_past_the_flicker_window():
     m = Memory()
     a, b = det(1000, 720, 600, track=1), det(1050, 720, 600, track=2)
+    decide(st(-0.1, [a]), m)                                                    # seen at the previous decision: acquisition needs two in a row
     assert decide(st(0.0, [a]), m) == Engage(a)
     for k in range(1, 12):                                                      # A vanishes for 1.1 s; B is right where A was
         assert decide(st(k * 0.1, [b], coasting=(1,)), m) == Engage(a), k       # LOST_S alone (0.5 s) would have given up at k=6
@@ -266,6 +307,7 @@ def test_jevs_id_path_matches_the_class_as_well_as_the_id():
 def test_without_ids_the_old_behaviour_is_unchanged():
     m = Memory()
     a, b = det(1000, 720, 600), det(1050, 720, 600)
+    decide(st(-0.1, [a]), m)                                                    # seen at the previous decision: acquisition needs two in a row
     assert decide(st(0.0, [a]), m) == Engage(a)
     assert decide(st(0.1, [b]), m) == Engage(b)                                  # nearest where it was: the old rule
     assert decide(st(0.2, []), m) == Engage(b) and decide(st(1.0, []), m) == Search()
@@ -284,5 +326,71 @@ def test_jev_follows_a_target_by_id_and_keeps_one_the_tracker_holds():
 def test_the_mode_bookkeeping_is_unaffected_by_ids():
     m = Memory()
     near = det(1280, 720, 900, track=4)
+    decide(st(-0.1, [near]), m)
     decide(st(0.0, [near]), m)
     assert m.mode == brain.FIGHT
+
+
+def test_a_killed_target_is_released_once_the_tracker_lets_go_and_the_trace_stops_naming_it():
+    """postfreeze30: the brain stopped engaging a killed bot 0.94 s after its last sighting, but kept naming it as the target, so the
+    trace showed the dead bot held for five seconds. Held while its id coasts; released after, target cleared; a new bot is picked as usual."""
+    m = Memory()
+    a = det(1280, 720, 600, track=1)
+    decide(st(-0.1, [a]), m)                                                    # seen at the previous decision: acquisition needs two in a row
+    assert decide(st(0.0, [a]), m) == Engage(a)
+    assert decide(st(0.8, [], coasting=(1,)), m) == Engage(a) and m.target.track == 1      # the tracker still holds it: kept
+    released = decide(st(1.6, [], coasting=()), m)                                         # let go, and past LOST_S
+    assert not isinstance(released, Engage) and m.target is None
+    b = det(900, 720, 500, track=2)
+    decide(st(1.9, [b]), m)                                                          # a new bot: seen at two decisions in a row
+    assert decide(st(2.0, [b]), m) == Engage(b) and m.target.track == 2
+
+
+def test_a_brief_flicker_within_lost_s_keeps_the_target():
+    m = Memory()
+    a = det(1280, 720, 600, track=1)
+    decide(st(-0.1, [a]), m)
+    decide(st(0.0, [a]), m)
+    decide(st(brain.LOST_S / 2, [], coasting=()), m)
+    assert m.target is not None and m.target.track == 1
+
+
+def test_a_box_seen_at_a_single_decision_is_never_engaged():
+    """postfreeze30: the door's last false boxes are slivers in one frame each, and one sighting started a combo held ~3 s."""
+    m = Memory()
+    sliver = det(1270, 780, 128, w=21, track=5)
+    assert not isinstance(decide(st(0.0, [sliver]), m), Engage) and m.target is None
+    assert not isinstance(decide(st(0.1, []), m), Engage) and m.target is None
+    other = det(1400, 700, 130, w=22, track=6)                                  # another one-frame sliver, elsewhere: still nothing
+    assert not isinstance(decide(st(0.2, [other]), m), Engage) and m.target is None
+
+
+def test_a_held_target_survives_a_single_missing_decision_and_is_taken_back_by_its_id_at_once():
+    m = Memory()
+    a = det(1280, 720, 600, track=1)
+    decide(st(-0.1, [a]), m)
+    assert decide(st(0.0, [a]), m) == Engage(a)
+    assert decide(st(0.1, [], coasting=()), m) == Engage(a)                      # one decision without it (not even coasting): kept, LOST_S
+    back = det(1300, 720, 600, track=1)                                          # back, a little moved: its own id, no two-in-a-row needed
+    assert decide(st(0.2, [back]), m) == Engage(back) and m.target is back
+
+
+def _chain(reverse):
+    tr = Tracker()
+    run(tr, [[det(1000, 700, 600, w=250)]] * 5)
+    pieces = [det(x, 700, 80, w=140) for x in (1155, 1240, 1325, 1410, 1495)]      # only the first lies inside the body
+    got = tr.update([det(1000, 700, 600, w=250)] + (pieces[::-1] if reverse else pieces), 5 / HZ, FRAME)
+    by_x = {round((d.bbox[0] + d.bbox[2]) / 2): d.track for d in got[1:]}
+    return got[0].track, by_x, tr
+
+
+def test_an_absorbed_piece_is_never_a_witness_so_the_body_does_not_chain_outward():
+    """Input-path review: absorbed groups were witnesses for the next, growing the footprint box by box, and the result depended on the
+    order (HEAD [1,1,1,1,1,1] forward, [1,2,3,4,5,1] reversed). Only bodies matched on their own are witnesses."""
+    body, fwd, tr = _chain(False)
+    _, rev, _ = _chain(True)
+    assert fwd[1155] == body and all(fwd[x] != body for x in (1240, 1325, 1410, 1495))
+    assert {x: t == body for x, t in fwd.items()} == {x: t == body for x, t in rev.items()}        # the same partition either way
+    assert len({fwd[x] for x in (1240, 1325, 1410, 1495)}) == 4                                     # each outside box its own id
+    held = next(t for t in tr.tracks if t.id == body)
+    assert held.box[2] <= 1155 + 70 + 1                                              # the body's box reaches no further than its piece
