@@ -2,9 +2,65 @@
 
 Linear: VUH-1296. Evidence: `docs/evidence/l4/`. Raw measurements: `C:\rivals-agent\data\l4\` on the PC.
 
-The game is in the Practice Range as Spider-Man on the plaza, facing the Luna Snow bot a few metres off, idle, no pad
-connected (`after-reach30.jpg`). The PC holds `agent/`, `scripts/` (with templates) and `perception/` from
-`git archive 619bd62`, all 42 tracked files verified by sha256, nothing of this lane's scratch beside them.
+The game is in the Practice Range as Spider-Man where the re-entry arrival ends: at the spawn room's door, beside its dark
+housing, facing into the spawn room, idle, no pad connected (`after-arrival-20260921-1228.jpg`, still in the range 3 min
+after the arrival ended). The PC holds `agent/`, `scripts/` (with templates) and `perception/` from `git archive 8c73f21`,
+all 42 tracked files verified by sha256, nothing of this lane's scratch beside them.
+
+## Supervised arrival measurement (VUH-1299): `data/reenter/arrive-20260921-122442/` on the PC and the Mac
+
+One real `scripts/reenter.py` invocation at 8c73f21 with the arrival's step log, left to run to its own end: no strafe, no
+correction, no other input, no 30 s run. `capture.py preflight` passed (61 dxcam frames in 1 s). The game had dropped to the
+lobby by itself; `--dry-run` read `lobby`. Menus passed first time: PRACTICE tab, PRACTICE RANGE tile, `hero_select`, `RB`,
+`RB`, `A (... SPIDER-MAN (match 1.00) beside the cursor at (856,39))`, `X`, `in_range`. Then
+`STOP: could not confirm the spawn room was left within 14 s`, `24 arrival steps logged`, exit 1; 0 python left, 0 Xbox
+pads present. Rows: `arrival-20260921-122442-steps.jsonl`. Sheets with the door blob's box (yellow, the blob nearest the
+logged `door_blob_x`, recomputed from the saved 720p JPEG) and the hero column (red): `arrival-20260921-122442-sheet.jpg`
+(all 24), `arrival-20260921-122442-steps12-24.jpg` (larger).
+
+How to read the rows: `gate` is the same constant policy text on every row, the refused one included; it is not a measured
+verdict and not the actuator's proving frame. `t` is the logging time AFTER the action. Frames 1-23 are the decision frame
+BEFORE that row's action; frame 24 (the refusal) is the last frame looked at, after step 23's walk. No RT row exists: the
+arrival never reached the RT. Nothing here says when a frame was acquired or that a proof completed. `plaza_view` is False
+on all 23 action rows.
+
+| Steps | t after the first row (s) | Action (from the row) | `door_x` / `door_px` / `hero_x` | By eye on the frame |
+|---|---|---|---|---|
+| 1-5 | 0.0-2.5 | walk, turn left 0.24 s, walk, turn right 0.27 s, walk | 0.44, 0.17, 0.54, 0.88, 0.47 / 4.8k-16.9k / 0.38-0.42 | inside the spawn room; two lime doors are in view in frames 4 and 5, and the blob changes between them (0.17 then 0.54 then 0.88 then 0.47) |
+| 6-10 | 3.4-6.6 | five walks | 0.47-0.48 / 29k -> 63k / 0.416-0.418 | straight at the door from inside, the plaza and the Luna bot seen through the glass |
+| 11-12 | 6.8-7.7 | turn right 0.08 s, walk | 0.59, 0.50 / 48k, 44k / 0.42, 0.39 | at the door, inside. The glass fills the view's left two thirds; the blob is only the saturated right part of the pane |
+| 13-15 | 8.5-9.5 | walk, turn right 0.08 s, walk | 0.52, 0.59, 0.52 / 54k, 31k, 33k / 0.42, 0.42, 0.39 | **crossing the threshold.** The plaza is in the open to the left (Luna bot in clear view at x ~0.22, left of `plaza_view`'s 0.35-0.95 window); the blob is the strip of pane against the right jamb, over the planter |
+| 16 | 10.0 | no door: look around, right 0.30 s | none / 0 / 0.42 | **outside.** The planter ahead, the door's dark housing to the right, no lime blob |
+| 17 | 10.9 | **door ahead: walk** | 0.56 / 3.8k / 0.39 | outside, facing the door's dark housing; the blob is a 53 px wide lime sliver of the pane's edge. He walks at it |
+| 18-19 | 11.4-11.9 | look around right, twice | none | the housing at point blank, then the housing's side with the room behind it |
+| 20 | 12.3 | door off centre: turn right 0.24 s | 0.82 / 87k / 0.38 | **the door from OUTSIDE**: the pane with its green cross, the spawn room's pillars seen through it |
+| 21-23 | 13.1-14.7 | three walks | 0.54, 0.50, 0.57 / 67k, 94k, 77k / 0.39, 0.42, 0.42 | walking back at the door from outside |
+| 24 | 14.7 | refused | none / 0 / 0.42 | beside the housing, facing into the spawn room |
+
+The lead's questions, from the rows and frames:
+- **(a) He passes through the door.** The door stops being ahead on **step 16**: steps 13-15 are the crossing (the blob is
+  the pane's strip at the right jamb while the plaza is open to the left), and step 16's decision frame has no door blob and
+  shows the plaza-side planter.
+- **(b) Yes, the walk-back is in the rows.** After one look-around (step 16) the blob is the pane's edge seen from outside
+  and he walks at it (step 17); two more look-arounds bring the whole pane into view from outside (step 20, 87k px, the
+  biggest blob of the run), he centres it and walks at it three times (steps 21-23, 1.5 s of forward stick).
+- **(c) At the jamb** (step 21, outside): the pane's box is x 533-802 of 1280, centred at 0.54, and he stands at 0.39 in
+  front of the dark frame to the pane's left: the expected picture (pane 0.49-0.58, hero ~0.40). Step 22: pane 0.50
+  (box 374-796), hero 0.42, his column now inside the pane's box. Step 23: pane 0.57 (box 563-853), hero 0.42, just left of
+  the box, with the room in open view to the pane's left.
+- **(d) End pose** (frame 24 and `after-arrival-20260921-1228.jpg`, the same view 3 min later): he stands at ~0.41 beside
+  the door's dark housing (x 0.56-0.88, blue triangles, cyan strips), which is immediately to his right; he faces into the
+  spawn room along its inner ring, one of the room's tall glass pillars to the left and the room's other lime door small in
+  the distance at x ~0.55; the plaza's planter shows behind the housing at the right edge. No lime blob, `plaza_view` null
+  on the refusal row and False on every row before it. Whether his feet are inside the threshold cannot be read from the
+  frame; there is no glass between the camera and the room.
+
+Timing: the 14.0 s budget is a counter (0.75 per walk, turn + 0.15, 0.45 per look-around; 15 walks, 5 turns and 3
+look-arounds add up to 14.26); from the first row's log to the last is 14.70 s. Log-to-log intervals are 0.80-0.82 s per
+walk step, 0.51-0.52 s per look-around, 0.28-0.46 s per turn, so each step costs about 0.05-0.07 s more wall time than its
+budget share. The five earlier arrivals have no step rows, so a
+per-step comparison does not exist. Their end differs by eye: those ended outside at the door's plaza-side pillar
+(`reach30` started there); this one ends at the doorway facing into the room, after three walks back at the pane.
 
 ## Supervised run `reach30` (VUH-1314): `data/l1/reach30/` on the PC and the Mac
 
