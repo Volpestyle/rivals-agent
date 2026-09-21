@@ -9,11 +9,17 @@ then confirms the start view in THIS session:
 2. ONE priming pulse: right stick rx 0.45, everything else neutral, 0.3 s (camera_pulse: a fresh frame with the range HUD and no idle
    banner before every write, each write through Live.send, proven, whitelisted and leased). It is also the first of at most
    START_TURNS right turns;
-3. neutral, then a frame-only wait for the device switch to clear (START_SETTLE_S): no input;
+3. neutral, then a frame-only DELAY (START_SETTLE_S): no input, the guards checked on every frame. It does not test that the device
+   switch cleared or that the view stopped moving: it is a supervised delay, to be set from M1, and M2 accepts the pose by eye;
 4. two DISTINCT fresh acquisitions with plaza_view true, after the last pulse ended: done, and the second is the accepted start pose.
    Otherwise another right turn (the drift is always leftward, so the bot is to the right), a short frame-only settle, and again;
-5. at most START_TURNS pulses in all and START_DEADLINE_S overall; the range HUD gone, the idle banner, a capture that delivers no new
-   frame, a refused write or any exception ends it: Live is closed (neutral, no input accepted after) and StartRefused is raised.
+5. at most START_TURNS pulses in all and START_DEADLINE_S overall, checked after each capture and its guards, before every write (each
+   pulse capped by the time left) and before acceptance; the range HUD gone, the idle banner, a capture that delivers no new frame, a
+   refused write or any exception ends it: Live is closed (neutral, no input accepted after) and StartRefused is raised.
+
+Every step (each proof, pulse, delay, look, the acceptance or the refusal) is recorded AFTER it, never between a proof and a write, in
+memory: `steps` (a list the caller passes) gets {"n", "t", "action", "stamp", "plaza", "turns"} and the decision frame, at most STEP_FRAMES
+frames; the caller writes them out, for a refused start as for an accepted one. A failing record never stops the phase.
 
 This is a mitigation of an unexplained attach behaviour, restricted to supervised starts on the spawn plaza. plaza_view certifies an
 enemy box in the open in the middle of the view: not a bot's identity, not navigable ground. Seven turns is a command budget, not a claim
@@ -25,8 +31,10 @@ from .controller import NEUTRAL, Forbidden, RangeLost
 
 START_TURNS = 7                 # right-stick pulses in all, the priming pulse included
 START_TURN_S, START_TURN_RX = 0.3, 0.45
-START_SETTLE_S = 2.0            # frame-only, after the priming pulse: the game's "Switching Devices" banner (live arrivals: 1-2 frames)
-TURN_SETTLE_S = 0.15            # frame-only, after each later turn
+START_SETTLE_S = 2.0            # frame-only DELAYS, not tests: nothing checks that the device switch cleared or that the view is still.
+TURN_SETTLE_S = 0.15            # Supervised delays, to be informed by M1 (how long the drift and the "Switching Devices" banner last after
+                                # the pulse); M2's acceptance of the pose is by eye, a still view included
+STEP_FRAMES = 24                # decision frames kept for the step record: at most 7 pulses x (1 proof + 2 looks), and the last frame
 START_DEADLINE_S = 14.0         # the arrival's budget (scripts/reenter.py ARRIVE_S)
 REFUSAL = "plaza start view not confirmed"
 
@@ -75,19 +83,23 @@ class PulseStopped(RuntimeError):
     pass
 
 
-def camera_pulse(live, secs, rx, in_range, idle, *, clock=time.perf_counter, sleep=time.sleep, every=0.05, on_write=None):
+def camera_pulse(live, secs, rx, in_range, idle, *, clock=time.perf_counter, sleep=time.sleep, every=0.05, on_write=None, deadline=None):
     """Right stick `rx` for `secs`, every other axis, trigger and button neutral. EVERY write is preceded by a fresh frame on which the
     range HUD and NO idle banner are checked, then goes through Live.send (Live's own proof, whitelist and lease); neutral in finally,
     on every exit. Live.hold re-proves the range only, and the idle banner could come up mid-pulse (review of a89728e). `on_write(t)`
-    is called after each send returns."""
+    is called after each send returns. `deadline` (a clock time): the pulse ends there, and no write goes out at or after it, however
+    late the capture before it returned."""
     pad, start = {**NEUTRAL, "rx": rx}, clock()
+    end = start + secs if deadline is None else min(start + secs, deadline)
     try:
-        while clock() - start < secs:
+        while clock() < end:
             f = live.fresh()
             if not in_range(f):
                 raise PulseStopped("the range HUD is gone")
             if idle(f):
                 raise PulseStopped("the idle banner is up")
+            if deadline is not None and clock() >= deadline:           # after the capture and its guards, before the write
+                raise PulseStopped("the start deadline passed")
             live.send(**pad)
             if on_write is not None:
                 on_write(clock())
@@ -96,16 +108,36 @@ def camera_pulse(live, secs, rx, in_range, idle, *, clock=time.perf_counter, sle
         live.release()
 
 
-def start_pose(live, in_range, idle, plaza_view, *, attached_t=None, clock=time.perf_counter, sleep=time.sleep, log=print):
+def start_pose(live, in_range, idle, plaza_view, *, attached_t=None, steps=None, clock=time.perf_counter, sleep=time.sleep, log=print):
     """Run the start phase on an open controller.Live. Returns {"frames": [(frame, stamp), (frame, stamp)], "turns": n, "ms": {...}}: the
-    two confirming frames with the time each grab started; the second is the accepted start pose. Raises StartRefused after closing Live."""
-    t0, turns, last = clock(), 0, None
+    two confirming frames with the time each grab started; the second is the accepted start pose. Raises StartRefused after closing Live.
+    `attached_t`: a clock time the pad had attached by (no frame grabbed at or before it proves anything). `steps`: a list the step
+    records are appended to (see the module doc)."""
+    t0, turns, last, kept = clock(), 0, None, 0
+    deadline = t0 + START_DEADLINE_S
     timing = {}
+
+    def note(action, fr=None, plaza=None):                             # after the step, in memory; never raises into the phase
+        nonlocal kept
+        if steps is None:
+            return
+        try:
+            f, stamp = fr if fr is not None else (None, None)
+            keep = f is not None and kept < STEP_FRAMES
+            kept += keep
+            steps.append(({"n": len(steps) + 1, "t": round(clock() - t0, 3), "action": action,
+                           "stamp": None if stamp is None or attached_t is None else round(stamp - attached_t, 4),
+                           "plaza": plaza, "turns": turns}, f if keep else None))
+        except Exception:                                              # noqa: BLE001 - a record, never a control
+            pass
+
+    def past(what):
+        if clock() >= deadline:
+            raise StartRefused(f"{REFUSAL}: the start deadline ({START_DEADLINE_S:.0f} s) passed {what}, after {turns} turns")
 
     def frame():
         nonlocal last
-        if clock() - t0 > START_DEADLINE_S:
-            raise StartRefused(f"{REFUSAL}: the start deadline ({START_DEADLINE_S:.0f} s) passed after {turns} turns")
+        past("before a capture")
         f = live.fresh()
         stamp = live.frame_t
         if last is not None and stamp <= last:
@@ -117,45 +149,57 @@ def start_pose(live, in_range, idle, plaza_view, *, attached_t=None, clock=time.
             raise StartRefused(f"{REFUSAL}: the range HUD is gone")
         if idle(f):
             raise StartRefused(f"{REFUSAL}: the idle banner is up")
+        past("during a capture")                                       # a capture that returned late authorises nothing
         return f, stamp
 
     def turn():
         nonlocal turns
         if turns >= START_TURNS:
             raise StartRefused(f"{REFUSAL}: {START_TURNS} turns taken")
-        frame()                                                        # proven after the attach / the last settle, before any write
+        proof = frame()                                                # proven after the attach / the last delay, before any write
         turns += 1
 
         def sent(t):
-            if "first_write" not in timing:
-                timing["first_write"] = t - t0
+            if "first_send_returned" not in timing:
+                timing["first_send_returned"] = t - t0
                 if attached_t is not None:
-                    timing["attach_to_first_write"] = t - attached_t
-        camera_pulse(live, START_TURN_S, START_TURN_RX, in_range, idle, clock=clock, sleep=sleep, on_write=sent)
+                    timing["attached_t_to_first_send_returned"] = t - attached_t
+        camera_pulse(live, START_TURN_S, START_TURN_RX, in_range, idle, clock=clock, sleep=sleep, on_write=sent, deadline=deadline)
+        note(f"pulse {turns} of {START_TURNS}: right stick {START_TURN_RX:+.2f} up to {START_TURN_S:.1f} s, then neutral", proof)
 
     def settle(secs):
-        end = clock() + secs
+        end, f = clock() + secs, None
         while clock() < end:                                           # frames only: the guards keep running, no input
-            frame()
+            f = frame()
             sleep(0.02)
+        note(f"delay {secs:.2f} s, frames only", f)
 
+    fr = None
     try:
         turn()                                                         # the priming pulse, sent even if the first view already passes
         timing["prime_done"] = clock() - t0
         settle(START_SETTLE_S)
         while True:
-            a = frame()
-            if plaza_view(a[0]):
-                b = frame()                                            # a second, distinct acquisition
-                if plaza_view(b[0]):
+            fr = a = frame()
+            pa = plaza_view(a[0])
+            note("look", a, pa)
+            if pa:
+                fr = b = frame()                                       # a second, distinct acquisition
+                pb = plaza_view(b[0])
+                note("look again", b, pb)
+                if pb:
+                    past("before the acceptance")
                     timing["confirmed"] = clock() - t0
+                    note("accepted: plaza view on two distinct fresh frames", b, True)
                     log(f"start: plaza view confirmed after {turns} turns ({timing['confirmed']:.2f} s)")
                     return {"frames": [a, b], "turns": turns, "ms": {k: round(v * 1e3, 1) for k, v in timing.items()}}
             turn()
             settle(TURN_SETTLE_S)
     except (RangeLost, Forbidden, PulseStopped) as e:                  # refused at the pad, or a guard mid-pulse: already neutral
         live.close()
+        note(f"refused: {e}", fr)
         raise StartRefused(f"{REFUSAL}: {e}") from e
-    except BaseException:
+    except BaseException as e:
         live.close()                                                   # neutral, and no input accepted after; the caller then drops the pad
+        note(f"refused: {e}", fr)
         raise

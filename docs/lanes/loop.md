@@ -98,14 +98,21 @@ old 3 s blind wait after attaching was about 75 degrees of it. On a live run (`-
    the attach is proven (range HUD, no idle banner); ONE priming pulse, right stick rx 0.45 with every other axis, trigger and button
    neutral, 0.3 s (`camera_pulse`: before EVERY write a fresh frame shows the range HUD and no idle banner, and each write goes through
    `Live.send`, proven, whitelisted and leased; neutral on every exit; `Live.hold` re-proves the range only), sent even if the view
-   already passes; neutral, then 2 s of frames only (`START_SETTLE_S`, the device switch); then two DISTINCT fresh acquisitions with
-   `plaza_view` true; otherwise another right turn (the drift is leftward), a 0.15 s frame-only settle, and again. At most 7 pulses in
-   all, the priming pulse included, and 14 s overall; the range HUD gone, the idle banner, a capture with no new frame, a refused write
-   or any exception closes Live and refuses: "plaza start view not confirmed". `main` then returns 1 with nothing else built (no brain,
+   already passes; neutral, then 2 s of frames only (`START_SETTLE_S`); then two DISTINCT fresh acquisitions with `plaza_view` true;
+   otherwise another right turn (the drift is leftward), 0.15 s of frames only (`TURN_SETTLE_S`), and again. The two waits are DELAYS
+   with the guards checked on every frame, not tests: nothing checks that the device switch cleared or that the view is still (a
+   confirmation on a moving view has been seen in an arrival). They are supervised delays, to be set from M1, and M2 accepts the pose by
+   eye, a still view included. At most 7 pulses in all, the priming pulse included, and 14 s overall, checked after each capture and
+   its guards, before every write (each pulse ends at the deadline if that comes first) and before acceptance; the range HUD gone, the
+   idle banner, a capture with no new frame, a refused write or any exception closes Live and refuses: "plaza start view not confirmed".
+   Each step (pulse, delay, look, acceptance or refusal) is recorded after it, in memory, with its decision frame (at most 24), never
+   between a proof and a write; `main` writes them afterwards as `start-steps.jsonl` and `start-step-NN.png` in the run's folder, for a
+   refused start as for an accepted one, and a failing record never changes the phase, the close or the exit. `main` then returns 1 with nothing else built (no brain,
    no log, no `Loop`, so no end-of-run scoreboard), and the process, and the device with it, ends;
 4. on success builds the brain and the log, saves both confirming frames (`start-confirm-1.png`, `start-confirm-2.png`; the second is
-   the accepted start pose), writes the phase into `meta.json` (`start`: turns, the confirming frames' stamps after the attach, the
-   phase's timings including the attach to the first write), and runs the `Loop` with the forced start walk / back / RT off
+   the accepted start pose), writes the phase into `meta.json` (`start`: turns, the confirming frames' stamps after `LiveIO()` returned, the
+   phase's timings, among them `liveio_return_to_first_send_return`: from `LiveIO()`'s return to the first pulse send's return, which
+   leaves out Live's own work after the device attached and includes the send's overhead; the attach itself is M1's to time), and runs the `Loop` with the forced start walk / back / RT off
    (`warmup=False`), so the episode clock and the controller's and tracker's camera history begin after the pose. The long-idle
    keep-alive is unchanged, and a replay (`--dry`) keeps the warm-up.
 

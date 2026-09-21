@@ -601,6 +601,25 @@ class Loop:
                 **({"start": self.start} if self.start is not None else {})}
 
 
+def _write_start_steps(out, steps, save=None):
+    """The start phase's step rows (start-steps.jsonl) and their kept decision frames (start-step-NN.png), after the phase: for a refused
+    start as for an accepted one. Best effort: a failing write never changes the exit."""
+    try:
+        out = Path(out)
+        out.mkdir(parents=True, exist_ok=True)
+        if save is None:
+            import cv2
+            save = lambda name, f: cv2.imwrite(str(out / f"{name}.png"), f) and f"{name}.png"   # noqa: E731
+        with open(out / "start-steps.jsonl", "w") as fh:
+            for row, frame in steps:
+                row = dict(row, frame=save(f"start-step-{row['n']:02d}", frame) if frame is not None else None)
+                fh.write(json.dumps(row) + "\n")
+        return "start-steps.jsonl"
+    except Exception as e:                              # noqa: BLE001 - a record, never a control
+        print(f"loop: start steps not written: {e!r}")
+        return None
+
+
 def _plaza_view():
     """scripts/reenter.plaza_view, loaded before the pad opens (it pulls in opencv and the finder)."""
     from reenter import plaza_view                      # scripts/, on sys.path through agent.controller
@@ -647,14 +666,19 @@ def main(argv=None):
         percept, plaza = default_perception(), _plaza_view()   # everything slow BEFORE the pad opens: the attach drift runs until priming
         t_open = time.perf_counter()
         source = pad = LiveIO()                         # confirms the range HUD before the pad opens; no blind wait after it attaches
-        attached = time.perf_counter()                  # Live has returned: the pad attached just before
+        opened = time.perf_counter()                    # LiveIO has returned: the pad attached before this
+        steps = []
         try:
-            start = start_pose(source.live, percept.in_range, percept.idle, plaza, attached_t=attached)
+            start = start_pose(source.live, percept.in_range, percept.idle, plaza, attached_t=opened, steps=steps)
         except StartRefused as e:                       # Live is closed and nothing else was built; the process ends, and the device with it
             print(f"loop: STOP: {e}")
+            _write_start_steps(ROOT / "data" / "l1" / a.run, steps)
             return 1
-        start = {"turns": start["turns"], "stamps_s": [round(t - attached, 4) for _, t in start["frames"]], "ms": start["ms"],
-                 "open_ms": round((attached - t_open) * 1e3, 1), "frames": start["frames"]}
+        ms = dict(start["ms"])
+        if "attached_t_to_first_send_returned" in ms:   # measured from LiveIO's return, not from the device's attach
+            ms["liveio_return_to_first_send_return"] = ms.pop("attached_t_to_first_send_returned")
+        start = {"turns": start["turns"], "stamps_s_after_liveio_return": [round(t - opened, 4) for _, t in start["frames"]], "ms": ms,
+                 "liveio_ms": round((opened - t_open) * 1e3, 1), "frames": start["frames"], "steps": steps}
         out, save_fps, threaded = ROOT / "data" / "l1" / a.run, a.save_fps, True
     else:
         source, out, save_fps, threaded = RunSource(a.dry, a.limit), a.out, (a.save_fps if a.out else 0), a.threaded
@@ -665,6 +689,7 @@ def main(argv=None):
         if start is not None:                           # the two confirming frames: the second is the accepted start pose
             frames = start.pop("frames")
             start["confirm_frames"] = [log.save(f"start-confirm-{k}", f) if log else None for k, (f, _) in enumerate(frames, 1)]
+            start["steps_file"] = _write_start_steps(out, start.pop("steps"), log.save if log else None)
         loop = Loop(source, pad, percept or default_perception(), brain, threaded=threaded, brain_name=a.brain,
                     log=log, reflex_hz=a.reflex_hz, decision_hz=a.decision_hz, max_s=a.max_s,
                     scoreboard=not a.no_scoreboard, scoreboard_every_s=a.scoreboard_every, cooldowns=a.cooldowns or "unknown",

@@ -178,9 +178,10 @@ class FakeIO:
         self.closed = True
 
 
-def _main(monkeypatch, start):
+def _main(monkeypatch, start, written=None):
     order = []
     io = FakeIO()
+    monkeypatch.setattr(L, "_write_start_steps", lambda out, steps, save=None: (written if written is not None else []).append(steps) or "x")
     monkeypatch.setattr(L, "LiveIO", lambda: order.append("pad") or io)
     monkeypatch.setattr(L, "default_perception", lambda: order.append("perception") or type("P", (), {"in_range": None, "idle": None})())
     monkeypatch.setattr(L, "_plaza_view", lambda: order.append("plaza_view") or (lambda f: True))
@@ -314,3 +315,140 @@ def test_the_idle_banner_mid_pulse_stops_m1_on_the_real_live():
                 guard=lambda f: True, idle=lambda f: f["idle"])
     assert out["outcome"] == "stopped: PulseStopped: the idle banner is up"
     assert sum(moving(r) for r in device.reports) <= 2 and not moving(device.reports[-1])   # frames 2-3 (1 proved the attach), then neutral
+
+
+# --- the deadline after the capture, the pulse capped, the step record (review of a89728e, second delta) ---------------------------------
+def test_a_capture_that_returns_after_the_deadline_authorises_no_write():
+    clock = Clock()
+    live = FakeLive(clock, frames("plaza"))
+    real = live.fresh
+
+    def late():
+        clock.t += S.START_DEADLINE_S + 0.1
+        return real()
+    live.fresh = late
+    with pytest.raises(S.StartRefused, match="deadline"):
+        run(live, lambda f: True, clock)
+    assert moves(live) == [] and live.closed
+
+
+def test_each_pulse_is_capped_by_the_time_left(monkeypatch):
+    monkeypatch.setattr(S, "START_DEADLINE_S", 0.2)                   # the deadline falls inside the priming pulse (0.3 s)
+    clock = Clock()
+    live = FakeLive(clock, frames("wall"))
+    with pytest.raises(S.StartRefused, match="deadline"):
+        run(live, lambda f: False, clock)
+    writes = [t for w, t in live.writes if isinstance(w, dict)]
+    assert writes and all(t < 100.2 for t in writes) and live.closed
+
+
+def test_a_confirmation_that_ends_after_the_deadline_is_not_accepted():
+    clock = Clock()
+    live = FakeLive(clock, frames("plaza"))
+    looks = [0]
+
+    def slow_plaza(f):
+        looks[0] += 1
+        if looks[0] == 2:
+            clock.t += S.START_DEADLINE_S                              # the second look's evaluation runs past the deadline
+        return True
+    with pytest.raises(S.StartRefused, match="deadline"):
+        run(live, slow_plaza, clock)
+    assert live.closed
+
+
+def test_every_step_is_recorded_after_it_for_an_accepted_start():
+    clock, steps = Clock(), []
+    live = FakeLive(clock, frames("plaza"))
+    run(live, lambda f: f == "plaza", clock, steps=steps)
+    actions = [r["action"] for r, _ in steps]
+    assert actions[0].startswith("pulse 1 of 7") and actions[1].startswith("delay 2.00 s") and actions[2:] == [
+        "look", "look again", "accepted: plaza view on two distinct fresh frames"]
+    assert all(f is not None for _, f in steps) and [r["n"] for r, _ in steps] == list(range(1, len(steps) + 1))
+    last_write = max(t for w, t in live.writes if isinstance(w, dict))
+    assert steps[0][0]["t"] >= round(last_write - 100.0, 3)            # the pulse's row is written after its writes
+
+
+def test_a_refused_start_keeps_its_steps_and_closes_first():
+    clock, steps = Clock(), []
+    live = FakeLive(clock, frames("wall"))
+    with pytest.raises(S.StartRefused):
+        run(live, lambda f: False, clock, steps=steps)
+    rows = [r for r, _ in steps]
+    assert sum(r["action"].startswith("pulse") for r in rows) == S.START_TURNS and rows[-1]["action"].startswith("refused:")
+    assert sum(f is not None for _, f in steps) <= S.STEP_FRAMES and live.closed
+
+
+def test_a_failing_step_record_never_stops_the_phase_or_the_close():
+    class Broken(list):
+        def append(self, x):
+            raise OSError("disk gone")
+    clock = Clock()
+    live = FakeLive(clock, frames("plaza"))
+    assert run(live, lambda f: f == "plaza", clock, steps=Broken())["turns"] == 1
+    live = FakeLive(clock, frames("wall"))
+    with pytest.raises(S.StartRefused):
+        run(live, lambda f: False, clock, steps=Broken())
+    assert live.closed
+
+
+def test_main_writes_the_steps_of_a_refused_start(monkeypatch):
+    written = []
+
+    def refused():
+        raise S.StartRefused("plaza start view not confirmed: 7 turns taken")
+    code, order, made, io = _main(monkeypatch, refused, written)
+    assert code == 1 and written == [[]]                               # the (stubbed) phase's list, written though it refused
+
+
+def test_the_start_record_names_its_timing_by_its_measured_endpoints(monkeypatch):
+    code, order, made, io = _main(monkeypatch, lambda: {"frames": [("plaza", 1.0), ("plaza", 1.1)], "turns": 1,
+                                                        "ms": {"attached_t_to_first_send_returned": 60.0, "first_send_returned": 50.0}})
+    assert made["start"]["ms"] == {"liveio_return_to_first_send_return": 60.0, "first_send_returned": 50.0}
+    assert "attach_to_first_write" not in str(made["start"])
+
+
+def test_the_step_writer_writes_rows_and_frames(tmp_path):
+    saved = []
+    name = L._write_start_steps(tmp_path, [({"n": 1, "action": "look"}, "frame"), ({"n": 2, "action": "refused: x"}, None)],
+                                lambda n, f: saved.append(n) or f"{n}.png")
+    rows = [__import__("json").loads(x) for x in (tmp_path / name).read_text().splitlines()]
+    assert saved == ["start-step-01"] and rows[0]["frame"] == "start-step-01.png" and rows[1]["frame"] is None
+
+
+def test_the_pulse_sends_nothing_after_a_capture_that_returned_past_its_deadline():
+    clock = Clock()
+    live = FakeLive(clock, frames("range"))
+    real = live.fresh
+
+    def late():
+        clock.t += 1.0
+        return real()
+    live.fresh = late
+    with pytest.raises(S.PulseStopped, match="deadline"):
+        S.camera_pulse(live, 0.3, 0.45, lambda f: True, lambda f: False, clock=clock, sleep=clock.sleep, deadline=clock.t + 0.5)
+    assert moves(live) == [] and live.writes[-1][0] == "neutral"
+
+
+def test_a_pulse_ends_quietly_at_its_deadline_when_that_comes_first():
+    clock = Clock()
+    live = FakeLive(clock, frames("range"))
+    S.camera_pulse(live, 0.3, 0.45, lambda f: True, lambda f: False, clock=clock, sleep=clock.sleep, deadline=clock.t + 0.1)
+    assert moves(live) and all(t < 100.1 for w, t in live.writes if isinstance(w, dict)) and live.writes[-1][0] == "neutral"
+
+
+def test_a_capture_that_returns_past_the_deadline_is_refused_at_the_capture_and_never_judged():
+    clock = Clock()
+    live = FakeLive(clock, frames("wall"))
+    real, judged, late = live.fresh, [], [False]
+
+    def fresh():
+        f = real()
+        if not late[0] and clock.t > 100.0 + S.START_SETTLE_S:         # a frame of the delay after the priming pulse comes back late
+            late[0] = True
+            clock.t += S.START_DEADLINE_S
+        return f
+    live.fresh = fresh
+    with pytest.raises(S.StartRefused, match="during a capture"):
+        run(live, lambda f: judged.append(clock.t) or False, clock)
+    assert judged == []
