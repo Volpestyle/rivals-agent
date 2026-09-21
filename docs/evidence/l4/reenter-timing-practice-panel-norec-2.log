@@ -1,0 +1,54 @@
+START 14:53:56.54  
+reenter: dxcam probe 145 frames in 828 grabs over 2.0 s; first after 28 ms; gap p50 7 ms, max 68 ms
+reenter: timing screen=practice_panel safe_ms=98.7 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=85.4 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=127.9 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=225.7 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=192.6 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=180.2 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=221.1 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=185.7 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=196.1 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=193.2 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=202.0 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=255.1 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=222.6 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=225.1 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=222.5 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=208.7 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=226.6 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=225.5 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=182.1 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=252.2 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=204.8 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=181.1 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=227.3 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=198.5 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=189.6 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=240.2 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=182.0 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=232.1 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=256.2 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=220.9 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=252.7 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=252.9 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=253.7 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=215.9 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=254.8 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=261.2 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=222.4 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=221.2 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=252.8 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=242.5 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=190.9 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=254.6 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=220.1 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=222.9 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=188.5 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=191.1 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=218.2 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=258.9 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=181.7 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing screen=practice_panel safe_ms=223.0 tap_frame_ms=0 tap_gdi_ms=0 tap_classify_ms=0 tap_proof_ms=0 age_ms=nan refused=no proof for A: the cursor ring was not found
+reenter: timing age at the write p50 nan ms, max nan ms (limit 300 ms)
+EXIT 0 14:54:13.49  
