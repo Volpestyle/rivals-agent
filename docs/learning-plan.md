@@ -124,6 +124,10 @@ not waive these gates or automatically promote a source into positive-action
 imitation: forecasting what an expert did can include mistakes, whereas teaching
 the controller to repeat it still needs suitability and execution acceptance.
 
+The first current-patch B0 run remains the reference experiment. The kit-conditioned
+cross-patch pretraining comparison below extends it after the context interface
+and older sources pass their own audits; it does not delay that reference run.
+
 Fit only accepted TRAIN groups from `s10-normal-v0`. The sealed test broadcasts
 remain untouched during development, learning curves and model selection.
 While independent validation is unavailable, use the two train broadcasts as
@@ -511,6 +515,62 @@ learning comparison and retained checkpoint or honest negative result, not just
 an RL library installed or a loss curve going down.
 
 ## Data and labels
+
+### Cross-patch pretraining with explicit kit context
+
+Older demonstrations are eligible pretraining sources, not discarded because of
+age. Pretrain on accepted sources across patches, then fine-tune and evaluate on
+the verified current patch. This can reuse routes, camera motion and decision
+examples; it does not assume tactics are patch-invariant. Damage, movement,
+cancel windows, team-ups, other heroes and map changes can alter good decisions
+as well as cooldowns. A patch token alone cannot repair an unrepresented rule.
+
+Each sample carries a versioned `kit_context`: patch identity (or unknown),
+cooldown regime, per-ability cooldown/recharge seconds and maximum charges,
+plus explicit known/unknown masks. Keep measured current availability in the
+observation separate from these kit limits. Record evidence and provenance with
+each value; missing means unknown, never zero. Known discrete mechanics changes
+use named rule flags where the supervised task depends on them; otherwise exclude
+that task's incompatible labels rather than invent a complete historical simulator.
+Patch identity is categorical metadata, not a numeric chronology to interpolate.
+
+The April-May uploads' measured two-second uppercut does not uniquely identify
+their patch or complete kit. Keep their unresolved fields unknown. They become
+eligible for audited tasks supported by their pixels and labels, not automatically
+accepted training data. Historical casts remain historical facts; old combo
+timings and successful cancels are not relabelled as current-patch executable
+actions. Cooldown-free examples can support motion/visual pretraining while
+remaining excluded from normal-cooldown timing supervision. Suitability, hero,
+event and motion-label gates still apply separately.
+
+Kit features must be available at deployment: use independently established kit
+configuration or causally observed evidence. Do not turn a whole video's future
+countdowns into a time-t input or derive model input normalization from held-out
+footage. Offline measurements may establish audited source provenance and labels;
+their use as policy inputs requires the same availability contract as other features.
+
+Maintain a separate accepted pretraining source list with explicit allowed patch
+and regime combinations. The loader's default refusal to mix stays intact.
+Its iterator has explicit mixing flags, but `load_split` currently enforces one
+patch/regime: this experiment needs an owned interface change, not merely a flag.
+No split, source status or checkpoint is promoted by this design decision.
+Whole match/session identity and duplicate checks span all stages, including
+pretraining; development-held-out and sealed test sessions supply no fitting
+examples, even unlabelled ones. Unresolved-overlap uploads remain excluded.
+
+Compare current-only training with older-source pretraining followed by the same
+current-patch fine-tuning on identical current-patch development folds. Predeclare
+the sampling balance and compute budget, report per-task/session results and
+negative transfer, and retain the simpler baseline if the added data does not
+help. Each fold's held-out session stays out of every pretraining stage. Sealed
+tests are used only after model selection. Record the context schema, source
+patches and current target patch in the checkpoint. The first comparison reuses
+audited footage already held; additional older downloads follow a demonstrated
+coverage need, not an unrestricted archive expansion.
+
+RL still requires the live-patch legality, controller and reward checks. It may
+adapt a valid policy within that environment; it cannot be assumed to discover
+or fix changed readers, invalid actions, missing mechanics or incorrect rewards.
 
 ### Source fidelity: investigate native replay before expanding downloads
 
