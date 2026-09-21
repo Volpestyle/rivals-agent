@@ -218,3 +218,34 @@ def test_tracer_reads_at_native_resolution():
             fn += 1
     assert fp == 0, f"{fp} frames called tagged that are not"
     assert tp / (tp + fn) >= 0.90, f"recall {tp / (tp + fn):.3f}"
+
+
+def test_a_slot_under_chat_reads_unknown_not_a_verdict():
+    """A stream's chat runs straight through the ability row. The availability
+    reader used to commit to True/False on a slot it could not see; those were
+    two of the four wrong events in the Req hand-check. It must say unknown.
+
+    The threshold lives on the layout because the gaps beside a slot are a
+    property of the HUD: the pad row draws its own separators there (up to 0.91
+    ink on clean captures) while the M&K row leaves them empty (0.09 clean,
+    0.22 under chat).
+    """
+    from perception.hud import MK, PAD, read_ability
+
+    clip = ROOT / "data/demos/samples/reqmr-2873352801-1920.mp4"
+    if not clip.exists():
+        return
+    import cv2 as _cv2
+
+    cap = _cv2.VideoCapture(str(clip))
+    try:
+        for seconds, want in ((37.3, None), (37.5, None), (45.9, True)):
+            cap.set(_cv2.CAP_PROP_POS_FRAMES, int(seconds * (cap.get(_cv2.CAP_PROP_FPS) or 60)))
+            ok, frame = cap.read()
+            if not ok:
+                continue
+            got = read_ability(frame, "uppercut", MK)[0]
+            assert got is want, f"{seconds}s: {got!r}, wanted {want!r}"
+    finally:
+        cap.release()
+    assert PAD.slot_spill > MK.slot_spill

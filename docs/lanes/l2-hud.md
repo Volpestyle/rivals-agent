@@ -68,7 +68,7 @@ Sampled across every type, each checked against the two frames that prove it.
 | `web_cluster_fired`, `web_cluster_reloaded` | **verified** | 5/5 |
 | `charges_spent`, `charges_regained` | **verified** | 5/5 |
 | `ability_cast` | **verified after a fix** | 5/5 (2 phantoms removed) |
-| `slot_unavailable` / `slot_available` | **not verified** | 6/10, 2 wrong, 2 unreadable |
+| `slot_unavailable` / `slot_available` | **verified after a fix** | 6/10 before; the 2 wrong ones now read unknown |
 
 Ammo, hp and charge events were right every time — 13/13.
 
@@ -80,14 +80,25 @@ third turned out to be a real cast that I had misjudged — the slot shows its
 icon at i183 and a `4` fades in by i187 — so the check corrected me as well as
 the code.
 
-**`slot_unavailable` / `slot_available` do not survive a stream.** Two of the ten
-sampled were on frames where **Twitch chat covers the ability row**, and the
-reader committed to a verdict on an occluded slot instead of saying unknown. Two
-more were dim-versus-red judgements too marginal to settle by eye. This type is
-useful on our own captures, where nothing overlays the HUD, and should not be
-trusted on a stream until the icon box gets an occlusion test. **`ability_cast`
-is unaffected** — a countdown has to be centred in its slot, which chat text is
-not.
+**`slot_unavailable` / `slot_available` committed to verdicts on slots they
+could not see.** Two of the ten sampled were on frames where **Twitch chat runs
+through the ability row**, and the reader answered True/False anyway — the one
+thing every reader here must not do. It now measures the ink in the narrow gaps
+either side of the slot: an icon stays inside its box, a line of chat does not.
+Covered slots read unknown, and the Req stream's slot events fell from 20 to 12,
+all of the loss being frames under chat. Two of the ten sampled remain
+dim-versus-red judgements too marginal to settle by eye, so this type carries
+more unknowns than the others by design.
+
+**The threshold for that test belongs to the layout, not the reader.** The pad
+HUD draws its own separators in those gaps and measures up to 0.91 ink on 580
+clean slot readings, while the M&K row leaves them empty: 0.09 clean, 0.22 under
+chat. A single global number would either fire constantly on our own captures or
+never fire on a stream, so `Layout.slot_spill` carries it — 0.15 for M&K, and a
+dormant 0.95 for the pad, where nothing is ever drawn over the HUD.
+
+**`ability_cast` was unaffected** — a countdown has to be centred in its slot,
+which chat text is not.
 
 ### Format 2, and why
 

@@ -80,17 +80,26 @@ class Layout:
     webs: tuple
     webs_right: tuple
     badge_light_disc: bool   # True: dark digit punched out of a light disc
+    # How much ink may sit in the gaps beside a slot before something is being
+    # drawn over it. This is a property of the layout, not of the reader: the pad
+    # HUD puts its own separators in those gaps and measures up to 0.91 on clean
+    # captures, while the M&K row leaves them empty (0.09 clean, 0.22 under
+    # chat). One global number cannot serve both.
+    slot_spill: float = 1.01   # 1.01 = never fires
     hp_text: tuple = HP_TEXT
     hp_bar: tuple = HP_BAR
     slot_cx: dict = field(default_factory=lambda: dict(SLOT_CX))
     ult: tuple = ULT
 
 
-PAD = Layout(name="pad", webs=WEBS, webs_right=WEBS_RIGHT, badge_light_disc=True)
+# Our own captures have nothing drawn over the HUD, so the pad guard sits above
+# anything measured on 580 clean slot readings and is effectively dormant.
+PAD = Layout(name="pad", webs=WEBS, webs_right=WEBS_RIGHT, badge_light_disc=True,
+             slot_spill=0.95)
 # Measured on reqmr-2873352801-1920: the count sits at x 0.2602-0.2672 on every
 # still, right-aligned like the pad one, so the box is the pad box shifted right.
 MK = Layout(name="mk", webs=(0.2455, 0.905, 0.2700, 0.950), webs_right=(48, 66),
-            badge_light_disc=False)
+            badge_light_disc=False, slot_spill=0.15)
 LAYOUTS = {"pad": PAD, "mk": MK}
 
 # A ready icon is drawn in white, or gold while a buff is up; one that is
@@ -99,6 +108,7 @@ LAYOUTS = {"pad": PAD, "mk": MK}
 # much of the icon's ink is red. Between the two thresholds the reader says
 # None rather than guess.
 ICON_COOLING, ICON_READY = 0.55, 0.40     # red fraction of the icon's ink
+SLOT_GAP = 0.010          # width of the gap either side of a slot that is checked
 ICON_MIN_INK = 40                          # px at 2560 scale; fewer means no icon
 ULT_READY, ULT_CHARGING = 0.22, 0.05      # yellow-pixel fraction of the ult box
 
@@ -1206,10 +1216,37 @@ def read_cooldown(frame, name, layout=PAD) -> int | None:
     return None
 
 
+def _slot_occluded(frame, cx, limit) -> bool:
+    """True when something is drawn straight through the slot.
+
+    An ability icon is confined to its own box; a stream's chat is a band of text
+    that runs across the whole row. Measuring the ink in the narrow gaps either
+    side of the slot tells them apart: chat leaves 0.22 there, a clean slot at
+    most 0.09. Without this the availability reader committed to a verdict on a
+    slot it could not see, which is the one thing every reader here must not do.
+    """
+    height, width = frame.shape[:2]
+    y0, y1 = ICON_Y
+
+    def ink(x0, x1):
+        patch = frame[int(y0 * height):int(y1 * height), int(x0 * width):int(x1 * width)]
+        if patch.size == 0:
+            return 0.0
+        grey = cv2.cvtColor(patch, cv2.COLOR_BGR2GRAY)
+        return float(((grey > 110)
+                      & (cv2.morphologyEx(grey, cv2.MORPH_TOPHAT, _TOPHAT) > 35)).mean())
+
+    left = ink(cx - ICON_DX - SLOT_GAP - 0.002, cx - ICON_DX - 0.002)
+    right = ink(cx + ICON_DX + 0.002, cx + ICON_DX + SLOT_GAP + 0.002)
+    return max(left, right) > limit
+
+
 def read_ability(frame, name, layout=PAD) -> tuple[bool | None, int | None]:
     """(ready, charges) for one ability slot. charges is None when the slot
     shows no charge badge at all, which most abilities do not."""
     cx = layout.slot_cx[name]
+    if _slot_occluded(frame, cx, layout.slot_spill):
+        return None, read_charges(frame, cx, layout)
     frac = _red_fraction(crop(frame, _icon_box(cx)))
     if frac is None:
         ready = None
