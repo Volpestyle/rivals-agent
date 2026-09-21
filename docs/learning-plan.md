@@ -1047,15 +1047,25 @@ that a detector or inverse-dynamics model already supplies trustworthy labels.
    effects and chevrons. `mixed` means one character has both directly rendered
    parts and x-ray parts: one box encloses their combined visible extent, with
    the two contributions noted; never box only its legs or split it into two
-   characters. Mixed renders are retained but excluded from the first two-class
+   characters. Both contributions must be identifiable at the annotated time:
+   cite a bounded directly rendered part with character texture/shading and a
+   bounded x-ray part belonging to that same character. A coloured rim on a direct
+   body is not x-ray. There is no area-percentage threshold: a recognizable hand
+   can establish direct rendering, but a few unidentifiable edge/compression pixels
+   cannot. If those pixels leave the render mode genuinely unresolved, use
+   `unknown`, not an automatic outline-only assignment. Mixed renders are retained but excluded from the first two-class
    detector loss and scored separately. Keep outline renders as separate labels/classes, never body positives
    or automatically shootable targets. Unknown render mode is not forced into
    either class. A short-window track ID is separate from hero class and survives
    only visually supported continuity.
 
    Allegiance needs a positive, source-calibrated cue. A clearly associated ally
-   nameplate/chevron supports ally; a clearly associated enemy marker or a red-to-pink
-   outline following the body supports enemy on these default-colour sources.
+   nameplate/chevron supports ally. A blue/cyan x-ray silhouette also supports ally
+   on a source whose mapping is calibrated against marker-confirmed allies in
+   that source; no marker is required on every instance. A clearly associated
+   enemy marker or a red-to-pink outline following the body supports enemy on
+   these default-colour sources. Record the cue and its source calibration; a
+   blue glow or isolated blue patch is not a silhouette or an allegiance cue.
    Lack of an ally marker alone proves nothing. A warm effect, reflected light or
    conflicting cues produce unknown; cite native/context evidence rather than
    inferring from colour alone. A different colour configuration needs its own
@@ -1067,7 +1077,15 @@ that a detector or inverse-dynamics model already supplies trustworthy labels.
    are hard negatives when visibly resolved, not automatically ignored areas.
    A prone or airborne pose alone does not prove a corpse. Separate uncertainty
    about **existence**, **extent**, **class** and **allegiance**. An uncertain
-   allegiance does not discard an otherwise supported character box. A supported
+   allegiance does not discard an otherwise supported character box. Character
+   support requires a recognizable anatomical/armoured fragment or silhouette,
+   or context continuity to an identifiable player character. On a truncated
+   direct fragment, coherent limb/surface texture with a rim following its contour
+   is positive evidence; a coloured rim around an otherwise unidentified object
+   alone cannot distinguish a hero from a deployable. Name the native-pixel cue
+   and any continuity evidence. There is no minimum fraction of a body or demand
+   for a visible head; size governs the detector loss, not character existence.
+   A supported
    character with uncertain extent gets a low-confidence visible-extent box,
    clipping at the frame edge, plus extent uncertainty; it is never replaced by
    an ignore region merely because it is truncated. Where needed, record a
@@ -1077,8 +1095,12 @@ that a detector or inverse-dynamics model already supplies trustworthy labels.
    extent cannot support a box, retain an explicit character-presence record and
    mark localization unknown; this remains a localization limitation, not an
    absent character. Distinct supported bodies inside any ignore region are still
-   annotated. Nameplate-only evidence is not a body box; retain unresolved presence
-   where justified and never invent pixels underneath the marker. Audit ignored
+   annotated. A recognizable world-space player nameplate/chevron with no
+   localizable character pixels gets a `marker_only` presence record with its
+   marker location and evidence, never a body box or a guessed body-sized ignore.
+   If a specific adjacent patch may be a character, add a tight unresolved-existence
+   ignore for that patch and state the cue. Kill-feed portraits, scoreboard names
+   and overlay text are HUD, not world-space presence records. Audit ignored
    regions for misses and report their area.
 
    For the first detector experiment, the geometry-positive floor is **40 native
@@ -1167,12 +1189,26 @@ The selector's four declared negatives contain only two genuinely empty scenes,
 both Req; one is pre-round and does not count toward the gameplay-negative quota.
 There is no demonstrated Day negative in this repair set. A negative requires
 a whole-frame and context check for bodies, outlines and sub-floor characters,
-with no unresolved character-presence region. Body-class negatives, below-floor
+with no unresolved character-presence region. Both an unresolved-existence/class
+ignore on a specific candidate patch and a marker-only presence record disqualify
+the strict genuine-negative quota. Marker-only frames remain useful as a
+separately reported hard-negative stratum for a rendered-character detector;
+they do not fill the 20-frame quota. Do not create ignores for arbitrary image
+noise: record a concrete cue such as a contour, figure-shaped patch or associated
+world marker that makes character existence uncertain. A resolved non-character
+object does not disqualify a negative. Scarce qualifying scenes are a sourcing
+gap, not permission to erase supported uncertainty. Body-class negatives, below-floor
 scenes and genuine no-other-character gameplay negatives are separate facts.
 Death, spectating, scoreboard and pre-round screens cannot fill the latter quota.
 The selector records strata provisionally; the blind inventory determines actual
 support. Confirmed corpses require identity continuity plus temporal evidence;
-a kill-feed entry alone cannot identify a particular body.
+a kill-feed entry alone cannot identify a particular body. A continuously
+identified live character followed by the same visibly limp/ragdoll/dissolving
+body, loss of its attached live markers and a matching kill event is sufficient
+even if it leaves view immediately afterward. Later post-death frames are not
+mandatory. Marker loss alone may be occlusion and is insufficient; if identity
+or the death transition is unresolved, retain the uncertainty rather than calling
+it a confirmed corpse.
 
 The next authorized work is a bounded protocol exercise on the existing failed
 truncation/ignore, merged-outline, mixed-render, corpse and sub-floor cases, with
