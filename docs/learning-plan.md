@@ -222,7 +222,17 @@ exposure disqualifies its four Day context judgments from the clean comparison;
 retain the disclosed pass and replace only those windows with a fresh annotator.
 Its four Req windows remain eligible for comparison, subject to the ordinary
 observability and agreement checks. A valid checksum proves preservation, not
-context-first independence or label accuracy.
+context-first independence or label accuracy. The original primary pass also
+fails this boundary in all 24 windows: segment endings and event values confirmed
+after the decision were exposed before context judgments. Preserve that pass as
+hindsight-exposed evidence and exclude it from clean agreement scores. A fresh
+primary pass uses the same phase-filtered packet producer as the independent
+pass, with no full-stream or loader-object access. For sequential windows from
+one source, save each context judgment before opening a later window; release
+outcomes only after the context pass is frozen. Future candidate lists separate
+decision times by at least 15 seconds within a source, in addition to excluding
+pre-round waits. Existing adjacent selections remain disclosed development
+examples, not independent samples.
 Claude assigns the primary annotator and comparison owner; Codex owns
 the second pass and acceptance. This is a measured annotation tranche, not a claim
 that 24 labels suffice to train a tactical policy, and it does not block B0.
