@@ -2,6 +2,7 @@
 
 Needs opencv and numpy (`uv run --group perception pytest tests/test_reenter.py`). No game, no pad, no display.
 """
+import json
 import math
 import random
 import sys
@@ -1626,3 +1627,74 @@ def test_a_run_from_the_fading_in_hero_select_presses_rb_only_after_the_tab_is_r
     taps = [(b, s_) for b, s_, _ in sim.taps()]
     assert taps[:2] == [("RB", "hero_select"), ("RB", "hero_select")] and ("A", "hero_select") in taps
     assert_only_safe_inputs(sim)
+
+
+# --- the arrival log (a record for the live measurement; it must change nothing) -------------------------------------------------------
+ARRIVALS = {
+    "door ahead": lambda: _pose_sim("p_ahead", WALK_OUT),
+    "console": lambda: _pose_sim("p_console", {**WALK_OUT, ("p_console", "rstick"): "p_ahead"}),
+    "first spawn": lambda: _pose_sim("p_first", {**WALK_OUT, ("p_first", "rstick"): "p_ahead"}),
+    "wall": lambda: _pose_sim("p_wall", {**WALK_OUT, ("p_wall", "rstick"): lambda n: "p_console" if n >= 2 else "p_wall",
+                                         ("p_console", "rstick"): "p_ahead"}),
+    "wall, never out": lambda: _pose_sim("p_wall", {}),
+    "glass, never through": lambda: _pose_sim("p_ahead", {}),
+    "turn to the side": lambda: TurnSim(0.15),
+    "HUD gone": lambda: Sim("spawn", {("spawn", "stick"): "blackout"}),
+    "flicker": lambda: Flicker(),
+}
+
+
+def _arrive_inputs(sim, trace):
+    try:
+        R.arrive(sim, R.Safe(sim, log=lambda *_: None), trace)
+        end = "done"
+    except R.Refuse as r:
+        end = r.reason
+    return sim.inputs, sim.t, end
+
+
+class Broken:
+    """A recorder whose every call fails."""
+    def step(self, *a, **k):
+        raise OSError("disk gone")
+
+
+@pytest.mark.parametrize("name", sorted(ARRIVALS))
+def test_the_arrival_log_changes_no_input(name, tmp_path):
+    """The same pad writes, in the same order, at the same (simulated) times, and the same ending, with the log off, on, and failing."""
+    off = _arrive_inputs(ARRIVALS[name](), None)
+    on = _arrive_inputs(ARRIVALS[name](), R.ArrivalLog(tmp_path))
+    unwritable = tmp_path / "a-file"
+    unwritable.write_text("")
+    failing = _arrive_inputs(ARRIVALS[name](), R.ArrivalLog(unwritable))          # its directory cannot be made
+    broken = _arrive_inputs(ARRIVALS[name](), Broken())
+    assert on == off and failing == off and broken == off
+
+
+def test_the_arrival_log_records_each_step_with_its_frame_and_gate(tmp_path):
+    log = R.ArrivalLog(tmp_path)
+    sim = ARRIVALS["console"]()
+    R.arrive(sim, R.Safe(sim, log=lambda *_: None), log)
+    rows = [json.loads(l) for l in (log.dir / "steps.jsonl").read_text().splitlines()]
+    assert [r["n"] for r in rows] == list(range(1, len(rows) + 1)) and log.failed == 0
+    assert rows[0]["action"].startswith("door off centre: turn") and rows[0]["door_x"] < 0.5 and rows[0]["door_px"] >= R.DOOR_MIN_PX
+    assert any(r["action"].startswith("door ahead: walk") for r in rows) and rows[-1]["action"] == "RT pressed once"
+    assert all(r["gate"] == R.ARRIVAL_GATE and (log.dir / r["frame"]).exists() for r in rows)
+    assert all(r["hero_x"] is None or 0.3 < r["hero_x"] < 0.5 for r in rows)
+
+
+def test_a_refused_arrival_is_recorded_and_still_refuses(tmp_path):
+    log = R.ArrivalLog(tmp_path)
+    sim = ARRIVALS["HUD gone"]()
+    with pytest.raises(R.Refuse, match="range HUD is gone"):
+        R.arrive(sim, R.Safe(sim, log=lambda *_: None), log)
+    rows = [json.loads(l) for l in (log.dir / "steps.jsonl").read_text().splitlines()]
+    assert rows[-1]["action"] == "refused: the range HUD is gone"
+
+
+def test_a_failing_log_is_counted_not_raised(tmp_path):
+    f = tmp_path / "a-file"
+    f.write_text("")
+    log = R.ArrivalLog(f)
+    log.step(0.0, frame("arrival-spawn-room"), "walk")
+    assert log.failed == 1 and log.error and "write failures" in log.summary()
