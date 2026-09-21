@@ -500,3 +500,68 @@ def test_a_cancelled_combo_does_not_come_back_through_another_targets_flicker_gr
     for t in (0.6, 0.7):
         got = decide(st(t, [], coasting=()), m)
         assert not isinstance(got, brain.Combo) and m.hold_until == -math.inf, t
+
+
+F2 = (2560, 1440)
+CAM = lambda yaw, pitch=0.0: (yaw, pitch, 930.0)                                # (yaw, pitch, focal px at 2560 wide)
+
+
+def _px(deg):
+    return 930.0 * math.tan(math.radians(deg))
+
+
+def test_a_still_bot_keeps_its_id_through_a_camera_turn():
+    """stall30: the re-aim turned 19 degrees between a bot's last whole-frame box and its first aim-crop box; uncompensated that is 1.5
+    track sizes on screen and a new id. With the camera each frame showed, held boxes are carried through the turn."""
+    tr = Tracker()
+    for k in range(5):
+        tr.update([det(1930, 670, 156, w=96)], k / 60, F2, cam=CAM(0.0))
+    x = 1280 + _px(math.degrees(math.atan2(650, 930)) - 19.0)                 # the same bot after a 19 degree turn right
+    got = tr.update([det(x, 670, 156, w=96)], 0.2, F2, cam=CAM(19.0))
+    assert got[0].track == 1
+    blind = Tracker()
+    for k in range(5):
+        blind.update([det(1930, 670, 156, w=96)], k / 60, F2)
+    assert blind.update([det(x, 670, 156, w=96)], 0.2, F2)[0].track == 2       # the same frames without the camera: a new id
+
+
+def test_a_measurement_older_than_the_last_sighting_names_the_box_but_does_not_move_the_track():
+    tr = Tracker()
+    for k in range(5):
+        tr.update([det(1500, 700, 300)], k / 60, F2, cam=CAM(0.0))
+    tr.update([det(1500, 700, 300)], 0.10, F2, cam=CAM(0.0))
+    old = tr.update([det(1560, 700, 300)], 0.05, F2, cam=CAM(0.0))              # a late whole-frame result, from an older frame
+    held = next(t for t in tr.tracks if t.id == 1)
+    assert old[0].track == 1 and round(held.box[0]) == round(1500 - 300 / 2.4 / 2) and held.seen_t == 0.10
+
+
+CROP = (800, 240, 1760, 1200)
+
+
+def test_a_bot_entering_the_aim_crop_as_a_sliver_at_its_edge_keeps_its_id():
+    """stall30: a bot the whole-frame search saw as 693 x 504 px came into the crop as a 24 x 30 px sliver at its right edge; no size or
+    distance gate matches that, and it got a new id. Cut by the crop's edge and inside the track's predicted box, it is that bot."""
+    tr = Tracker()
+    for k in range(5):
+        tr.update([Detection(ENEMY, (1831.0, 250.0, 2524.0, 754.0), 0.9)], k / 60, F2, cam=CAM(0.0))   # the whole-frame box
+    turned = 7.0                                                                             # the re-aim turns right: the body slides left
+    sliver = Detection(ENEMY, (1736.0, 582.0, 1760.0, 612.0), 0.9)                          # the part of it the crop now shows
+    assert tr.update([sliver], 6 / 60, F2, cam=CAM(turned), clip=CROP)[0].track == 1
+    held = next(t for t in tr.tracks if t.id == 1)
+    assert held.box[0] <= 1736 <= held.box[2] + 1                                           # the track sits where the sliver is
+
+
+def test_a_small_box_not_at_the_crop_edge_or_outside_the_body_is_not_taken_for_it():
+    tr = Tracker()
+    for k in range(5):
+        tr.update([Detection(ENEMY, (1600.0, 250.0, 2293.0, 754.0), 0.9)], k / 60, F2)
+    inside = Detection(ENEMY, (1700.0, 582.0, 1724.0, 612.0), 0.9)                          # inside the body, but not cut by an edge
+    assert tr.update([inside], 5 / 60, F2, clip=CROP)[0].track != 1
+    tr2 = Tracker()
+    for k in range(5):
+        tr2.update([Detection(ENEMY, (1900.0, 250.0, 2524.0, 754.0), 0.9)], k / 60, F2)
+    away = Detection(ENEMY, (1736.0, 1100.0, 1760.0, 1130.0), 0.9)                          # at the edge, below the body
+    assert tr2.update([away], 5 / 60, F2, clip=CROP)[0].track != 1
+    young = Tracker()
+    young.update([Detection(ENEMY, (1600.0, 250.0, 2293.0, 754.0), 0.9)], 0.0, F2)          # seen once: not a confirmed body
+    assert young.update([Detection(ENEMY, (1736.0, 582.0, 1760.0, 612.0), 0.9)], 1 / 60, F2, clip=CROP)[0].track != 1

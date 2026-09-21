@@ -41,6 +41,7 @@ SPLIT_GAP = 0.25     # narrower one's width, are STACKED (apart or overlapping v
 SPLIT_RATIO = 2.5    # standing behind another overlaps it over its whole height), comparable in size, and their union is body-shaped
 BODY_ASPECT = (1.2, 4.5)   # the union's height / width: a bot's box is ~2.4
 PIECE_INSIDE = 0.7   # a box that would start a NEW id is instead a piece of a confirmed body if this share of it lies inside that body's box
+EDGE_PX = 3          # a box within this of the edge of the region it was found in (the aim crop) is cut by it
 PIECE_PAD = 0.10     # (padded by this share of its size): the finder draws a close bot as 2-5 pieces that change every frame, and the aim
                      # crop's edges cut it; on postfreeze30 that made 14 of the engaged bot's new ids (docs/lanes/tracker.md)
 HIST_S = 1.0         # a track remembers the heights it had this long, so one small stray box does not make its real size unrecognisable
@@ -59,6 +60,7 @@ class _Track:
     vx: float = 0.0      # centre velocity, px/s, in the frame the boxes are in
     vy: float = 0.0
     hs: list = None      # (t, height) over the last HIST_S
+    cam: tuple = None    # (yaw, pitch) degrees of the camera the box was last placed in; None = not known
 
     def __post_init__(self):
         self.hs = [(self.seen_t, self.box[3] - self.box[1])]
@@ -79,6 +81,18 @@ def _same_body(a, b):
     u = _union((a, b))
     return (x >= SPLIT_X * min(a[2] - a[0], b[2] - b[0]) and abs(gap) <= SPLIT_GAP * min(ah, bh)
             and BODY_ASPECT[0] <= (u[3] - u[1]) / max(u[2] - u[0], 1e-9) <= BODY_ASPECT[1])
+
+
+def _turned(box, was, now, frame):
+    """`box` as the camera `now` (yaw, pitch, focal px) sees what the camera `was` (yaw, pitch) saw there: a still point's bearing is the
+    camera's plus atan(offset / focal), so turning right moves it left on screen, pitching up moves it down."""
+    (w, h), f = frame, now[2]
+    dyaw, dpitch = (now[0] - was[0] + 180.0) % 360.0 - 180.0, now[1] - was[1]      # a whole turn brings a still point back
+
+    def along(v, half, d):
+        a = math.atan2(v - half, f) + math.radians(d)
+        return half + f * math.tan(max(-1.5, min(1.5, a)))
+    return (along(box[0], w / 2, -dyaw), along(box[1], h / 2, dpitch), along(box[2], w / 2, -dyaw), along(box[3], h / 2, dpitch))
 
 
 def _union(boxes):
@@ -152,15 +166,45 @@ class Tracker:
                 best, share = tr, inside
         return best
 
+    def _entering(self, box, cls, clip, used, t):
+        """Index of the held, confirmed track whose body a box cut by `clip`'s edge is the visible part of, or None. A bot turned into the
+        aim crop enters it as a sliver at the crop's edge (stall30: a 24 x 30 px box, of a bot the whole-frame search saw as 693 x 504),
+        which no size or distance gate matches; lying inside the track's predicted box, where the camera turn put it, it is that bot."""
+        cut = (abs(box[0] - clip[0]) <= EDGE_PX or abs(box[1] - clip[1]) <= EDGE_PX
+               or abs(box[2] - clip[2]) <= EDGE_PX or abs(box[3] - clip[3]) <= EDGE_PX)
+        if not cut:
+            return None
+        best, share = None, PIECE_INSIDE
+        for k, tr in enumerate(self.tracks):
+            if k in used or tr.cls != cls or tr.hits < CONFIRM:
+                continue
+            pb, pad = self._predicted(tr, t), PIECE_PAD * max(tr.size, 1.0)
+            w = max(0.0, min(box[2], pb[2] + pad) - max(box[0], pb[0] - pad))
+            h = max(0.0, min(box[3], pb[3] + pad) - max(box[1], pb[1] - pad))
+            inside = w * h / max((box[2] - box[0]) * (box[3] - box[1]), 1e-9)
+            if inside >= share:
+                best, share = k, inside
+        return best
+
     def _age(self, tr, frame):
         if tr.hits < CONFIRM:
             return NEW_AGE_S
         h = (tr.box[3] - tr.box[1]) / frame[1] if frame else None
         return CLOSE_AGE_S if h is not None and h >= CLOSE_H else SMALL_AGE_S if h is not None and h <= SMALL_H else MAX_AGE_S
 
-    def update(self, dets, t, frame=None):
-        """The same detections with `track` set, in order. Tracks not matched are held (see the module docstring) or dropped. None is []."""
+    def update(self, dets, t, frame=None, cam=None, clip=None):
+        """The same detections with `track` set, in order. Tracks not matched are held (see the module docstring) or dropped. None is [].
+
+        `cam`: (yaw, pitch, focal px) of the camera this frame shows, from the controller's commanded-camera model. Held tracks are moved
+        into it before anything is matched, so a camera turn does not carry a bot past its gate: on stall30 the re-aim turned 19 degrees
+        between a bot's last whole-frame box and its first aim-crop box, 1.5 track sizes on screen, and it got a new id both times.
+        `clip`: (x1, y1, x2, y2) of the region the boxes were found in when it is not the whole frame (the aim crop)."""
         dets = dets or []
+        if cam is not None and frame is not None:
+            for tr in self.tracks:
+                if tr.cam is not None:
+                    tr.box = _turned(tr.box, tr.cam, cam, frame)
+                tr.cam = cam[:2]
         self.tracks = [tr for tr in self.tracks if t - tr.seen_t <= self._age(tr, frame)]   # an expired track cannot claim a box
         groups = self._bodies(dets)
         boxes = [_union([tuple(dets[i].bbox) for i in g]) for g in groups]
@@ -176,6 +220,11 @@ class Tracker:
         for gi, g in enumerate(groups):          # or the footprint chains outward piece by piece and the result depends on the order)
             if gi not in direct and (tr := self._body_of(boxes[gi], dets[g[0]].cls, direct, boxes)) is not None:
                 got[gi] = tr
+        if clip is not None:                     # a box cut by the aim crop's edge: the part of a bot that has come in so far
+            for gi, g in enumerate(groups):
+                if gi not in got and (k := self._entering(boxes[gi], dets[g[0]].cls, clip, used, t)) is not None:
+                    got[gi] = self.tracks[k]
+                    used.add(k)
         parts = {}                               # one update per track: the union of every group it got
         for gi, tr in got.items():
             parts.setdefault(tr.id, []).append(gi)
@@ -186,8 +235,14 @@ class Tracker:
                 ids.update({i: tr.id for i in g})    # a further piece: labelled, the track updated once below with the union
                 continue
             box = boxes[gi] if tr is None else _union([boxes[k] for k in parts[tr.id]])
+            if tr is not None and t < tr.seen_t:
+                # A measurement older than the track's last sighting (the decision worker's whole-frame search lands after newer aim-crop
+                # updates) names the box but does not move the track: on stall30 a 60 ms older box, taken before a turn, replaced the
+                # crop's box of the same bot, and the next frame's box fell outside the gate.
+                ids.update({i: tr.id for i in g})
+                continue
             if tr is None:
-                tr = _Track(self._next, dets[g[0]].cls, box, t)
+                tr = _Track(self._next, dets[g[0]].cls, box, t, cam=cam[:2] if cam is not None else None)
                 self._next += 1
                 self.tracks.append(tr)
             else:

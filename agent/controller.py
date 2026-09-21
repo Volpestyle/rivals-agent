@@ -347,6 +347,7 @@ class Controller:
     next_uppercut_t: float = 0.0
     phase_t: float = 0.0
     wanted: object = None                                   # the brain's target measurement the track was last aimed from
+    wanted_id: int | None = None                            # the tracker id of the brain's target the track follows
 
     # -- primitives: (seconds, pad changes) ---------------------------------
     def _tap(self, **down):
@@ -505,12 +506,17 @@ class Controller:
             self._measured = confirmed
             self.stable = 0   # a new target has to earn its presses again
 
-        if self.track is None:
+        if self.track is None or (wanted.track is not None and wanted.track != self.wanted_id):
+            # No track, or the brain has switched to another target (another tracker id). stall30: kept on the old target's confirmed
+            # track, the new whole-frame target was never re-aimed at (that path is for unconfirmed tracks) and the stale track counted
+            # as lost: 1.1 s with no stick while the brain engaged a bot 650 px to the right.
             seed(wanted, False)   # the brain's target may come from the whole-frame search, outside the aim crop
+            self.wanted = None    # so it is aimed from this measurement below, at its own frame's camera angle
         else:
             if state.t - self.track.seen_t > 0.1:   # coasting on a stale velocity walks the aim off the target
                 self.track.v_yaw = self.track.v_pitch = 0.0
             self.track.predict(dt)
+        self.wanted_id = wanted.track
         if not self.track.confirmed and wanted is not self.wanted:
             # Not yet seen by the aim crop: the brain's target is all there is, and each decision brings a new measurement of it (the
             # whole-frame search). Aim from every one, at the camera angle of the frame it was measured in. Seeded once and never

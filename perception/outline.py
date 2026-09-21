@@ -135,12 +135,13 @@ GREEN_DEAD_ZONES = [
 # top-right is taller or touches the top edge (tagrun0 70, 206, 228, tagrun1 342), and survives. Fractions of the frame.
 KILL_FEED = (0.86, 0.034, 0.96, 0.058)
 
-# The spawn room's lime glass door passes the band at its low edge: 61% of its masked pixels are at hue 54 and 89% at 54-56, while bots
-# centre on 64-65 (Luna's per-box median never below 57). A component whose median hue is under this is dropped. Raising the band's
-# lower bound instead cuts the bots' edge pixels too, splitting outlines into pieces and losing a ground-truth enemy; this keeps every
-# pixel for connectivity and judges the component. Measured (docs/lanes/l3-detector.md): door boxes on postfreeze30 66 -> 4, ground
-# truth count P 0.848 -> 0.931 at R 0.859 unchanged, bar-seen sightings 100 px+ unchanged.
-GREEN_MIN_MEDIAN_HUE = 56
+# The spawn room's lime glass door passes the band at its low edge: from inside, 61% of its masked pixels are at hue 54 and 89% at 54-56;
+# from the plaza side (lit differently) its boxes' median hue is 54-58 (p50 55). Bots centre on 64-65. A component whose median hue is
+# under this is dropped. Raising the band's lower bound instead cuts the bots' edge pixels too, splitting outlines into pieces and losing
+# a ground-truth enemy; this keeps every pixel for connectivity and judges the component. Measured (docs/lanes/l3-detector.md): at 58 the
+# door's boxes on stall30's plaza side 41 -> 13 and postfreeze30's 66 -> 3, bot boxes 100 px+ on three runs 554 -> 553, ground truth
+# count P 0.931 / R 0.859 as at 56.
+GREEN_MIN_MEDIAN_HUE = 58
 
 
 def find_bars(frame_bgr, scale=None):
