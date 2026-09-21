@@ -96,10 +96,10 @@ The four door boxes left are thin slivers of the door's edge, each in a single f
 **The zones are places on the screen.** `find_green` / `find_enemies` take an optional `origin` (the image's top-left in the frame) and
 `frame` (w, h); a whole frame needs neither. The HUD and kill-feed zones are tested in frame terms, so on the 960 px aim crop they cover
 only real HUD (before, they removed 32 aim-crop boxes in 27 of postfreeze30's 273 frames, 16 of them 120 px or taller; now the crop
-finds 25 more boxes there and 12 more on tagrun0, and empties no frame). `agent.loop`'s aim call passes both. The **player zone** stays in
+finds 25 more boxes there and 12 more on tagrun0, and empties no frame). The two aim-crop callers, `agent.loop` and
+`scripts/l4_trial.py`, pass both. The **player zone** stays in
 the image's own fractions: placed in frame terms it covers most of the crop and drops small marks the crop exists to see (17 frames
 emptied on the two runs, Luna's pieces and a bot's bar among them). Where the hero is drawn inside the crop is not measured.
-`scripts/l4_trial.py` still calls the crop without its origin.
 
 **Precision 82%, recall 83%** against hand-checked ground truth — see below.
 

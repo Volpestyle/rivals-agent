@@ -536,8 +536,9 @@ def test_a_recorded_run_replays_identically():
 
 def test_a_target_in_the_crop_is_fought_by_the_scripted_brain_and_the_controller():
     loop, pad, out = run(timeline(3.0, dets=[BOT]), decide=scripted.decide)
-    assert out["intents"] == {"engage:enemy": 180} and out["sources"] == {"scripted": 180}
-    steps = sends(pad)
+    # the first decision has seen the bot once: a new target needs two decisions in a row (brain._pick_target), so 6 ticks search
+    assert out["intents"] == {"search": 6, "engage:enemy": 174} and out["sources"] == {"scripted": 180}
+    steps = sends(pad)[6:]
     assert all(p["ly"] == 1.0 for p in steps[:5])                      # closing in from mid range
     assert any(p["lt"] for p in steps)                                 # web cluster, once the aim has been armed
     assert not any(p["lt"] or p["rt"] or p["buttons"] for p in steps[:4])    # and nothing pressed on the first steps
@@ -600,7 +601,8 @@ def test_the_log_loads_through_agent_demos_as_an_own_recording(tmp_path):
     assert len(clip.inputs) == loop.summary()["ticks"] == 360
     sent = [p for k, p in loop.pad.history if k == "send"]
     assert [i.pad for i in clip.inputs] == [{**p, "buttons": list(p["buttons"])} for p in sent]     # the pad actually sent
-    assert {i.note for i in clip.inputs} == {"engage:enemy"} and {i.extra["source"] for i in clip.inputs} == {"scripted"}
+    assert {i.note for i in clip.inputs} == {"search", "engage:enemy"} and {i.extra["source"] for i in clip.inputs} == {"scripted"}
+    assert [i.note for i in clip.inputs[:7]] == ["search"] * 6 + ["engage:enemy"]   # the new target is taken at the second decision
     names = sorted(f.name for f in run_dir.glob("0*.jpg"))
     assert 58 <= len(names) <= 62 and all((run_dir / i).is_file() for i in names)                  # 10 fps of frames
     samples = list(demos.samples("train", hindsight=True))

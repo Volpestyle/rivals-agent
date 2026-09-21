@@ -76,19 +76,23 @@ from 22.7 s).
 
 | Trace replay | ids | Luna ids / switches of her main box's id | engaged ticks: door / kill feed / Luna / other | held id visible (on Luna) | tracker update p50 / p95 |
 |---|---|---|---|---|---|
-| 36f1eec | 116 | 16 / 20 | 499 / 316 / 535 / 65 | 22% (54%) | 0.002 / 0.05 ms |
-| tracker-live, no kill feed | 103 | 11 / 16 | 499 / 0 / 577 / 123 | 26% (51%) | 0.002 / 0.05 ms |
+| 36f1eec (its brain, finder, tracker) | 116 | 16 / 20 | 499 / 316 / 535 / 65 | 22% (54%) | 0.002 / 0.05 ms |
+| tracker-live, no kill feed | 103 | 11 / 16 | 478 / 0 / 532 / 104 | 28% (53%) | 0.002 / 0.05 ms |
+
+The trace carries the old finder's boxes, so its door count shows only the brain's part: on those dense boxes (the door in 52 frames of
+273) two decisions in a row trims 499 to 478. The finder's part shows in the refind replay.
 
 | Refind replay (finder -> tracker -> brain) | engaged: door / kill feed / Luna / other |
 |---|---|
-| 36f1eec finder and tracker | 9.5 s / 1.1 s / 9.0 s / 5.5 s |
-| tracker-live | 3.6 s / 0 / 12.8 s / 3.9 s |
-| tracker-live, with a hostile targetable only once its id was present at the previous decision too (not built) | 0 / 0 / 12.5 s / 2.9 s |
+| 36f1eec finder, tracker and brain | 9.5 s / 1.1 s / 9.0 s / 5.5 s |
+| tracker-live | **0** / 0 / 12.5 s / 2.9 s |
 
 - **The kill feed and most of the door are gone at the finder** (docs/lanes/l3-detector.md). What is left of the door is four thin slivers
-  of its edge, each in one saved frame; one sighting is enough for the brain to engage, and a combo's ability hold carries it for about
-  3 s. Requiring the id at two consecutive decisions stops it on this replay and delays Luna's first engagement by 0.34 s (0.10 s and 0 on
-  her later appearances). It is a brain rule and is not built.
+  of its edge, each in one saved frame, and one sighting used to be enough for the brain to engage (a combo's ability hold then carried it
+  about 3 s: 3.6 s of door on this replay). **A new target needs its id present at two decisions in a row** (`brain._pick_target`, ~0.1 s
+  at the loop's 10 Hz); the held target keeps its own id path, `LOST_S`, the coast and a playing combo, so one missing decision does not
+  drop it. It stops the door and delays Luna's engagement by 0.35 s, 0.45 s and 0.23 s on her three appearances (15.3, 22.7, 24.9 s).
+  It works at the decision rate, which is the same live; a tracker confirmation count would not (at 50 Hz a sliver gets 3 hits in 60 ms).
 - **A killed bot is released** 0.94 s after its last sighting: the brain keeps a missing target only within `LOST_S` (0.5 s) or while the
   tracker coasts its id (at most `CLOSE_AGE_S`, 1.5 s), plus a combo already playing. Measured gaps while Luna is alive and engaged are
   at most 0.86 s live and 1.31 s on the replay, inside that bound. On release the brain now clears its remembered target, so the loop's

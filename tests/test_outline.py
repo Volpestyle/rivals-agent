@@ -246,3 +246,17 @@ def test_a_component_at_the_bands_low_edge_is_scenery_not_an_enemy():
     k[306:434, 906:974] = 0
     d, = find_enemies(k)
     assert d.bbox[2] - d.bbox[0] >= 78 and d.height >= 138          # the whole outline, the low-hue side included
+
+
+def test_l4_trials_crop_call_passes_where_the_crop_sits_too():
+    import sys
+    from pathlib import Path
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
+    import l4_trial
+    f = np.zeros((1440, 2560, 3), np.uint8)
+    f[300:520, 1640:1720] = GREEN_BGR                       # the crop's top-right corner, mid-screen in the frame
+    f[312:508, 1652:1708] = 0
+    f[600:820, 1100:1180] = GREEN_BGR                       # and a body mid-crop, so the crop is not empty (no whole-frame fallback)
+    f[612:808, 1112:1168] = 0
+    boxes = l4_trial.detect(f)
+    assert len(boxes) == 2 and max(b.bbox[0] for b in boxes) >= 815    # in 1280x720 pixels, where l4_trial reports
