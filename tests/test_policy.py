@@ -48,6 +48,7 @@ def test_our_recordings_from_before_the_baseline_are_the_cooldown_free_regime(tm
     assert {s.cooldowns for s in corpus_mod.runs(tmp_path)} == {corpus_mod.OFF}
 
 
+@pytest.mark.corpus
 def test_guides_never_claim_a_regime_and_match_footage_says_what_its_claim_rests_on():
     sources = corpus_mod.corpus()
     if not sources:
@@ -58,6 +59,7 @@ def test_guides_never_claim_a_regime_and_match_footage_says_what_its_claim_rests
         assert s.cooldowns_evidence, f"{s.id} states a regime with no evidence"
 
 
+@pytest.mark.corpus
 def test_a_full_youtube_upload_is_marked_edited_and_kept_out_of_every_split():
     """An upload id is not an independent session: they are edited and may overlap the Twitch cuts."""
     uploads = [s for s in corpus_mod.corpus() if s.kind == "upload"]
@@ -68,6 +70,7 @@ def test_a_full_youtube_upload_is_marked_edited_and_kept_out_of_every_split():
 
 
 @needs_mlx
+@pytest.mark.corpus
 def test_the_trainer_refuses_a_source_that_is_not_cleared_for_splitting(monkeypatch):
     import policy.train as train
     cleared = [s for s in corpus_mod.corpus(kinds=("run",)) if s.splittable]
@@ -78,6 +81,7 @@ def test_the_trainer_refuses_a_source_that_is_not_cleared_for_splitting(monkeypa
         train.windows(regime="off", recorder=None)
 
 
+@pytest.mark.corpus
 def test_every_source_carries_a_split_group_so_nothing_is_split_within_a_recording():
     for s in corpus_mod.corpus():
         assert s.group and (s.kind == "run" or ":" in s.group)
@@ -118,6 +122,7 @@ def test_the_mask_leaves_most_of_the_scene_and_the_sidecar_can_say_how_much():
 
 @needs_numpy
 @pytest.mark.skipif(not SAMPLES, reason="no sample clip on this machine")
+@pytest.mark.corpus
 def test_decoded_timestamps_come_from_the_media_not_from_a_nominal_grid():
     import numpy as np
 
@@ -160,6 +165,7 @@ def test_thinning_a_run_to_the_cache_rate_never_takes_two_frames_inside_one_peri
 
 @needs_mlx
 @needs_data
+@pytest.mark.corpus
 def test_a_cached_source_is_skipped_and_its_sidecar_says_what_the_pixels_went_through(tmp_path):
     from policy.encode import Encoder, cache_dir, encode_source
     from policy.frames import NORM
@@ -177,6 +183,7 @@ def test_a_cached_source_is_skipped_and_its_sidecar_says_what_the_pixels_went_th
 
 @needs_mlx
 @needs_data
+@pytest.mark.corpus
 def test_the_cache_holds_one_embedding_per_timestamp_and_nothing_later_is_implied(tmp_path):
     import numpy as np
 
@@ -261,6 +268,7 @@ def test_the_two_recorders_notes_map_to_one_vocabulary_without_inventing_equival
 
 @needs_mlx
 @pytest.mark.skipif(not SAMPLES, reason="no sample clip on this machine")
+@pytest.mark.corpus
 def test_the_live_path_reproduces_the_cached_embedding_for_the_same_frame():
     """Train/serve skew: the cache decodes with ffmpeg, the loop resizes with cv2.
 
@@ -290,6 +298,7 @@ def test_the_live_path_reproduces_the_cached_embedding_for_the_same_frame():
 
 @needs_mlx
 @needs_data
+@pytest.mark.corpus
 def test_the_sticky_guess_is_what_was_already_in_force_and_never_the_answer():
     """`prev` must come from an input at or before t, so it is available at decision time."""
     from policy.train import windows
@@ -300,6 +309,7 @@ def test_the_sticky_guess_is_what_was_already_in_force_and_never_the_answer():
 
 
 @needs_mlx
+@pytest.mark.corpus
 def test_l4s_trial_logs_are_a_different_recorder_and_are_not_pooled_with_the_loops_runs():
     runs = {s.id: s.recorder for s in corpus_mod.corpus(kinds=("run",))}
     if not runs:
@@ -425,6 +435,7 @@ def test_a_time_past_the_clip_or_before_its_first_frame_misses(tmp_path):
 
 @needs_mlx
 @needs_data
+@pytest.mark.corpus
 def test_a_window_is_built_only_from_frames_at_or_before_its_decision():
     """Restored for real: the resolution chain windows() uses, checked by timestamps.
 
@@ -536,6 +547,7 @@ def test_a_masked_frame_and_a_cache_miss_are_different_facts():
 # --- the five regression tests the earlier batch claimed and never wrote ----------------------------
 
 @needs_mlx
+@pytest.mark.corpus
 def test_a_source_that_was_never_encoded_fails_the_run_instead_of_training_on_blank_video():
     """A reviewer found a whole held-out fold of 1,500 windows with embedding-present 0.000."""
     import policy.train as train
