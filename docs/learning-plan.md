@@ -278,8 +278,22 @@ must not masquerade as knowledge available at the earlier event time. An observe
 countdown maximum does not establish the full duration of a partly seen timer;
 kit duration and variant need independent evidence or remain unknown. Uppercut's
 short lock is patch-dependent even where its recharge duration is unchanged.
-Neither a lit icon without
-digits nor an earlier cooldown expiry proves present readiness through an
+Durations are explicit inputs from a versioned kit table, keyed by source patch
+and team-up variant; missing mechanics leave that slot's timer inference uncertain.
+Measured countdowns supply contradiction alarms, not modal duration calibration.
+This does not erase independently supported charge-decrement events.
+
+Each event separates occurrence `[t_from, t_to]` from `known_at`, when all evidence
+needed for that committed assertion is available. With identical kit inputs,
+extracting any prefix must give the same events with `known_at` inside that prefix
+as extracting the full sequence, field for field. Future contradiction alarms
+cannot silently rewrite earlier assertions while retaining their old knowledge
+time. The property must also retain the verified control casts and charged second
+uses with finite, evidence-justified knowledge times: empty output, unknown-only
+output or arbitrary end-of-file deferral is not a passing repair. This contract
+does not require a separate streaming service.
+
+Neither a lit icon without digits nor an earlier cooldown expiry proves present readiness through an
 unobserved interval. Update loader fields, removed-kind checks and feature
 semantics together: retain health `cause`, never encode unknown-cause HP loss as
 damage, and do not silently zero renamed event channels. These are semantic
@@ -1335,7 +1349,10 @@ visible at t; a character at +/-0.5 s does not disqualify bare geometry at t.
 Matching screen coordinates across camera/player motion does not establish the
 same world point. If the centre frame has a concrete unresolved presence cue,
 keep it unresolved; do not infer a hidden box from neighbouring frames. Apply
-this rule to existing acceptances and rejections alike.
+this rule to existing acceptances and rejections alike. A completely occluded
+teammate with no rendered outline or marker is background for this detector;
+the label makes no claim that the world contains no teammate. World occupancy
+and target tracking require separate evidence.
 
 Confirmed printed murals, posters and billboards depicting characters are map
 art, not character instances. Retain them as scene-art hard negatives and count
@@ -1343,7 +1360,18 @@ them toward the strict quota when the rest of the frame qualifies. Establish
 their surface-bound depiction from native pixels/context; an unresolved live
 character versus artwork remains uncertain. Report false proposals on scene art
 separately from overlay/HUD hits. Fixed-position Run/Crawl/Stop prompts are HUD,
-not world-space player markers.
+not world-space player markers. Animated depictions on a confirmed in-world
+display follow the same scene-art rule: motion alone does not make a live
+character. Verify the display boundary/surface and depiction in context; unresolved
+display-versus-character remains unknown. An objective marker's attached direction
+arrow belongs to that marker, not an ally chevron; attachment must be supported,
+not assumed for a detached arrow.
+
+The rendered streamer mascot is overlay art regardless of its size or animation.
+It is an overlay hard negative in an unmasked frame, never a character box.
+Report which overlays are masked for a detector run: an excluded mascot region
+cannot count as a successfully rejected false proposal. Do not change the existing
+overlay masks merely to make this audit easier.
 
 The selector records strata provisionally; the blind inventory determines actual
 support. Confirmed corpses require identity continuity plus temporal evidence;
@@ -1356,14 +1384,15 @@ or the death transition is unresolved, retain the uncertainty rather than callin
 it a confirmed corpse.
 
 The exposed protocol exercise establishes no new accuracy. The negative scan in
-`data/demos/annotations/boxes/negative-scan/` has 10 strict candidates (three Day,
-seven Req) and two Day marker-only hard negatives after exhausting its declared
-5-second sample grid. This is grid exhaustion, not proof that every intervening
-frame contains a character. Stop broad rescanning or grid densification. Revisit
-only the six named context-only rejections under the exact-frame rule: Day 172.9;
-Req 549.0, 128.7, 263.4, 80.1 and 79.3. Do not auto-promote them or relax the
-20-second spacing; 79.3 and 80.1 cannot both qualify. Retain prior decisions and
-the reason for each correction. Existing candidates still require valid own-play
+`data/demos/annotations/boxes/negative-scan/` has 15 strict candidates (four Day,
+11 Req) and two Day marker-only hard negatives after the bounded rescan and
+six-frame context-rule correction. Grid exhaustion is not proof that every
+intervening frame contains a character. No broad rescan or grid densification is
+authorized. Req 80.1 is retained over 79.3 as the documented existing choice;
+do not reopen it. For future spacing conflicts, preserve already selected
+candidates and examine newly qualifying candidates in timestamp order, taking
+the earliest that meets the spacing rule; do not use an undefined "cleaner" ranking.
+Retain prior decisions and reasons for corrections. Candidates still require valid own-play
 segments under the repaired reader; a stale segment alone proves no eligibility.
 
 The remaining shortfall authorizes **negative sourcing only** from at most one
@@ -1383,6 +1412,13 @@ marker-only hard negatives separately; they never fill the strict quota. Native
 and context inspection remains required, with all candidates subject to the blind
 inventory. No detector fit or new blind tranche is authorized before the support
 requirements below are met. Keep sourcing shortfalls distinct from annotator accuracy.
+The additional Day probe is rejected for hero/gameplay changes; there is no
+replacement authorization. Req's acquired `840–1740 s` section supplies at most
+the five remaining candidates under this bound. A resulting four-Day/sixteen-Req
+set meets creator presence, not creator balance: report false proposals by creator
+with denominators, without a strong Day-specific accuracy claim. Final support
+depends on corrected segmentation and blind inspection; reaching 20 provisional
+candidates does not itself pass the annotation gate.
 
 Before another blind repair is dispatched, freeze its candidate set and support
 rule: at least 30 resolved >=40 px instances per evaluated class across at least
