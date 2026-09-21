@@ -38,7 +38,9 @@ two inspected pilot clips, nine acquired guides (about 106 minutes), and about
 60 raw minutes from four VOD sessions; raw duration is not accepted training
 duration. The aligned two-window annotation rerun agrees on coarse tactical
 purpose, but exposes event-extractor defects. The HUD lane produces event format
-4; loader support and refreshed event audits govern label acceptance (VUH-1306).
+5 with separate occurrence and evidence-availability clocks; accepted loader and
+policy seams preserve unknowns. Reader findings still qualify individual labels
+(VUH-1306), including HP changes at bonus-maximum transitions.
 The policy lane has an offline DINO encoder / GRU intent-training pipeline;
 on the two multi-intent normal-cooldown sessions it beats the majority baseline
 but not repeating the previous decision. Transition weighting worsens held-out
@@ -477,12 +479,42 @@ to observe purpose: future annotation distinguishes actor eligibility from label
 observability. Claude assigns the primary annotator; Codex owns the second pass,
 comparison and acceptance. This tranche does not block B0.
 
-**Next bounded result: format-5 purpose tranche 2.** Produce 24 new development
-windows (12 per creator) from the same two promoted train sections, with both
-annotators independently labelling all 24. This is a label-quality and coverage
-tranche, not permission to fit a head or restart B0. The prior eight-window audit
-is too small and method-limited to establish the vocabulary across play states;
-full double annotation here measures disagreements before volume expands.
+**Completed audit: format-5 purpose tranche 2.** Both independent passes cover
+24 development windows (12 per creator) from the two promoted train sections.
+Preferred purpose agrees on **17/24**; acceptable sets are identical on **9/24**
+and overlap on **24/24**. Overlap is not correctness or unique intent. Usability
+and actor eligibility each agree on 23/24; preferred agreement is 15/22 where both
+passes call the actor eligible and the window usable. Search and idle have no
+jointly preferred examples. These are sampled, creator/session-confounded
+agreements, not accuracy or prevalence estimates.
+
+The accepted development manifest retains **8 ordinary singleton candidates**
+(all engage, Day 3 / Req 5), **14 set-valued candidates**, one powered-state
+purpose-only window and one frozen/actor-ineligible observation. Alternatives are
+neither one-hot labels nor probability distributions. Selected target identity
+and geometry are not promoted. The report and per-window inclusion reasons are
+in `data/demos/annotations/purpose-tranche-2/adjudication/acceptance/REPORT.md`
+and `adjudicated-manifest.json` beside it. Raw passes stay frozen; native-evidence
+adjudication does not rewrite agreement numbers. The fresh adjudicator shares a
+model family with the primary and is fallible; root's spot checks and exposure
+limitations are disclosed in the report.
+
+**Training implication:** ongoing engagement is the strongest observed purpose.
+Recognizing an existing fight does not establish a policy for deciding to start
+one. Travel retains approach/search/reposition/escape ambiguity; full HP alone
+cannot exclude disengage, and visible enemies cannot exclude information seeking.
+The tranche does not establish a six-class training set, a sufficiently supported
+escape class, or target choice. Accept the audited labels as development evidence;
+no fit or additional tranche follows without a specified task and support gate.
+
+Outcome audits preserve unknown cause at bonus-max-HP transitions: the pt2-12
+500/500 to 250/250 change does not establish the shared stream's claimed 250
+damage. Raw proposals stay intact and that claim is excluded from damage/reward
+supervision. An event's `after` value is an evidence reading, not necessarily a
+value displayed at occurrence `t_to`; later confirmation before `known_at` does
+not by itself contradict the occurrence interval.
+
+The completed tranche uses the following frozen selection and annotation contract.
 
 A separate packet producer freezes the candidate IDs and input fingerprints before
 labelling. For tranche 2, exclude overlap with every prior purpose `[t-5,t+5]`
