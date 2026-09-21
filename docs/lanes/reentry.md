@@ -232,14 +232,22 @@ pins the tab for all three physics and four gains (30 starts each).
 ## Arrival: out of the spawn room
 
 The first live trial ended inside the spawn room facing the green door, which is where the idle drop fires; walking blind for 6 s does
-not leave it (the player is not always facing the door, and a hero re-pick does not respawn him). `arrive` now:
+not leave it (the player is not always facing the door, and a hero re-pick does not respawn him). `arrive` executes, one step at a time,
+what `arrival_step` decides on each fresh frame (a pure function of the frame and `ArrivalMemory`):
 
-1. proves the range HUD and no idle banner on a fresh frame before every step (either one stops it with no further input);
-2. finds the door (`door`) and steers by it: more than 8% of the width off centre, it turns the camera to it with the right stick
-   (`YAW_STICK` 0.45 = 172 deg/s, focal 465 px at 1280 wide, l4's measurements) instead of walking; roughly ahead, it walks a 0.5 s step;
-   **no door in view, it looks around** (a 0.3 s right turn, about 50 deg) and never walks blind;
-3. is done only when `plaza_view` holds on two frames in a row (a second look while standing still);
-4. exits 1 (frame saved) if that is not confirmed within `ARRIVE_S` (14 s), or the HUD is gone, or the idle banner is up; then `RT` once
+1. proves the range HUD and no idle banner on a fresh frame before every step (either one stops it with no further input); every stick
+   still goes through `Safe` on `in_range`, re-proven at the write;
+2. finds the door and steers its pane onto **the hero's column** (`HERO_X` 0.40), not the screen centre: more than `DOOR_TOL` (8% of
+   the width) off it, it turns the camera (`YAW_STICK` 0.45 = 172 deg/s, focal 465 px at 1280 wide) instead of walking; on it, it walks a
+   0.5 s step. Once walking at a door it **keeps that door**: the blob nearest where it should be after our own turn, within `DOOR_KEEP`
+   0.25 of the width, not the biggest (two lime doors can be in view inside); **no door in view, it looks around** (a 0.3 s right turn,
+   about 50 deg) and never walks blind;
+3. **out**: a walk step at a door of `OUT_PX` (20k px at 1280x720) or more followed by a frame with no door is passing through it. From
+   then on no door is steered to or walked at, not even a sliver of its pane, and it only turns LEFT (0.3 s, ~50 deg) up to `OUT_SWEEPS`
+   7 times (~360 deg) looking for the bot; none found is an exit 1 on the plaza;
+4. is done only when `plaza_view` holds on two frames in a row (a second look while standing still): the Luna Snow bot ahead in the open,
+   the door behind (lime under 3% of the upper view);
+5. exits 1 (frame saved) if that is not confirmed within `ARRIVE_S` (14 s), or the HUD is gone, or the idle banner is up; then `RT` once
    and the HUD portrait must be Spider-Man.
 
 **Calibrated on five poses** (native frames, `tests/fixtures/reentry/arrival-*.jpg`): tagrun0 frame 0 (spawn, door at the left edge) and frames
@@ -258,30 +266,43 @@ ended) and `q8` (the central console, two doors to the left). What they showed, 
 
 Confirmation stays strict on purpose: it needs the Enemy Color set to Green (it is) and the Luna Snow bot in view once the door is behind, and it
 exits 1 rather than guess, so a false exit 1 is the failure to expect. Untested live: the turn rate on the spawn room's geometry, which of q8's two
-doors is the exit (it steers to the bigger), and how long the look-around takes to find the door from an arbitrary heading (a full turn is ~2.1 s
+doors is the exit (it steers to the bigger first, then keeps the one it walks at), and how long the look-around takes to find the door from an arbitrary heading (a full turn is ~2.1 s
 at this stick; the budget allows about 20 steps).
 
 **Live: stuck at the door's left frame (four refusals, 2026-09-20 22:34 to 2026-09-21 09:45;
 `docs/evidence/reentry/arrival-refusals-stuck-at-door-frame.jpg`).** Every one ends "could not confirm the spawn room was left within 14
 s". In three the spawn room's glass door is dead ahead (`door` 0.525-0.541, well inside `DOOR_TOL`) and Spider-Man is pressed against the
-dark pillar that is its left frame; in the fourth he is at that pillar with the door's lit opening off to the left. The steering centres
-the door on the screen, but the third-person camera draws the hero left of the centre, so his walking line runs left of the camera's axis
+dark pillar that is its left frame; in the fourth he is at that pillar with the door's lit opening off to the left. The steering then
+centred the door on the screen, but the third-person camera draws the hero left of the centre, so his walking line runs left of the camera's axis
 and, close to the door, into its frame; `plaza_view` then never holds and the budget runs out. Measured on the four refusal frames, the five
 runs' first frames and the five arrival fixtures: the hero's column (median x of his suit's red) is 0.37-0.42 of the width, median 0.395;
 on the refusal frames the door's lime pane spans x 0.49-0.58 and he stands at 0.40, on the dark frame left of it. To put the pane on his
-walking line it has to sit LEFT of centre, at his column (turning right by about 20 deg at the jamb). Not fixed: whether the pane is the
-passable opening and whether that line gets him through needs the character to move and the camera to answer, which no recorded frame
-shows.
+walking line it has to sit LEFT of centre, at his column (turning right by about 20 deg at the jamb): `HERO_X` above. The live log showed
+the pane is the passable opening (he walked through it); whether the column aim keeps him off the jamb is for the supervised arrivals.
 
 **Where the five supervised runs started (postfreeze30, trackerlive30, stall30, handoff30, reach30; `data/l1/<run>/000000.jpg`).** Every one
 starts outside, a few metres from the door on the plaza side, facing back into the spawn room with the bot behind him; `plaza_view` is
-False on all five. `arrive` has no notion of having passed the door: with the bot behind, the look-around (right turns) meets the door
-from outside first, steers to it and walks back toward it until the budget runs out. That sequence fits all five end poses; `arrive` logs no
-steps, so it is not shown.
+False on all five.
+
+**The live arrival with the step log (2026-09-21 12:24; rows `docs/evidence/l4/arrival-20260921-122442-steps.jsonl`, sheets beside them;
+24 steps, the logic before the out state).** Steps 1-5 inside, two lime doors in view and the biggest blob jumping between them (0.44,
+0.17, 0.54, 0.88, 0.47); 6-10 straight at the door; 11-15 the crossing (the pane is passable: he walked through it), the glass filling the
+left of the view, the blob only the saturated strip against the right jamb, the Luna bot in view LEFT at x ~0.22; step 16 no door, the
+plaza-side planter ahead: out. Then the walk-back: 17 walked at a 53 px sliver of the pane from outside, 18-19 looked around, 20 the whole
+pane from outside (87k px), 21-23 walked back at it, 24 the budget ran out beside the housing facing into the spawn room. Step 21 is the
+jamb: pane centred at 0.54, the hero at 0.39 on the dark frame left of it. The out state, the kept door and the hero's column come from
+these rows. Replayed through `arrival_step` (open loop: the frames are the old logic's, so this shows decisions, not where they lead): with
+the live history up to step 15, step 16 sets out and steps 16-23 are all left turns, none toward the sliver or the pane; from a fresh start
+step 2 keeps walking at the door it chose instead of turning to the other one, and the pane is turned onto his column with small right
+turns (0.07-0.17 s) on steps 3, 4, 7, 10-15. Not shown offline: that the column aim gets him through without the jamb, that the out
+signal fires on a closed-loop crossing (the replay turns at step 15 where the live run walked), and that one left turn brings the bot into
+`plaza_view`'s window (0.35-0.95, 0.08-0.6 of the height) from wherever he exits; the three supervised arrivals are the measurement.
 
 **The arrival log.** A real run records every arrival step in `data/reenter/arrive-<time>/`: `steps.jsonl` (time, the action and its
 stick, the door's centre and blob size, the hero's column, `plaza_view`, the gate the input passed) and the frame the step decided on
-(`NNN.jpg`); the last line of the run names the folder and any write failures. Each step is written after its input has gone out, and
+(`NNN.jpg`); the last line of the run names the folder and any write failures. `gate` is constant policy text (it appears on a refused
+row too), not a measured verdict nor the actuator's proving frame; `t` is the logging time AFTER the step's input; the frame is the one
+the step decided on, before its input. Each step is written after its input has gone out, and
 the log sends nothing and never raises into the flow: `test_the_arrival_log_changes_no_input` runs every recorded arrival scenario with
 the log off, on, unwritable and raising, and the pad writes, their times and the ending are identical. It exists to measure, live, what
 the saved frames cannot: whether the walk passes the door, and what the look-around meets outside.

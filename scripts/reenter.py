@@ -68,6 +68,16 @@ DOOR_H, DOOR_MIN_PX, DOOR_TOL = 100, 3000, 0.08   # a tall lime blob (px at 1280
 PLAZA_BOT_H, PLAZA_BOT_X, PLAZA_BOT_Y = (0.08, 0.6), (0.35, 0.95), (0.2, 0.85)   # the Luna Snow bot's box, fractions of the frame
 PLAZA_LIME_MAX, PLAZA_BOX_LIME = 0.03, 0.15   # the door may fill at most this share of the upper view, and this share of a box's surroundings
 SWEEP_S = 0.3                                  # a look-around turn (about 50 deg) when no door is in view
+# The third-person camera draws the hero left of the screen centre (his column, the median x of his suit: 0.37-0.42 on 14 recorded
+# frames); he walks along the camera's axis on that column, so the door's pane is steered onto his column, not the centre: centred, it
+# left him on the dark jamb to its left (four refusals; the live arrival of 2026-09-21 12:24, step 21: pane 0.42-0.63, hero 0.39).
+HERO_X = 0.40
+DOOR_KEEP = 0.25     # once walking at a door, the blob nearest where that door should be now (after our own turn) is it, within this share
+                     # of the width: two lime doors can be in view inside, and the biggest one jumped between them (live, steps 1-5)
+OUT_PX = 20000       # a walk step at a door this big (px at 1280x720), followed by a frame with no door, is passing through it: live, step 15
+                     # (33k, walked) -> step 16 (none, the plaza-side planter ahead); no step before it shows that
+OUT_SWEEPS = 7       # outside, turn LEFT at most this many SWEEP_S steps (~360 deg) looking for the bot: live, from the exit she stood
+                     # 25-45 deg left of the heading he left by (steps 12-15), one step brings her into plaza_view's window
 YAW_STICK, YAW_DEG_S, FOCAL = 0.45, 172.0, 465.0   # the camera: deg/s at that right-stick deflection, and the focal length at 1280 wide (l4)
 # The pad cursor sprite: a small ring (r ~19) with a bright centre dot when it hovers a widget, a plain larger ring (r ~26)
 # otherwise. Both are white, so the search runs on min(B, G, R). l4_menu.find_cursor is not used: it takes the first
@@ -384,12 +394,15 @@ def door(frame):
 
 def door_blob(frame):
     """(centre x 0-1, area px at 1280x720) of the door's blob, or (None, 0): door() and the arrival log read the same one."""
+    blobs = door_blobs(frame)
+    return blobs[0] if blobs else (None, 0)
+
+
+def door_blobs(frame):
+    """Every tall lime blob big enough to be a door, [(centre x 0-1, area px)], biggest first."""
     n, _, st, cen = cv2.connectedComponentsWithStats(_lime(small(frame)), connectivity=8)
-    blobs = [(st[i, 4], cen[i][0]) for i in range(1, n) if st[i, 3] >= DOOR_H and st[i, 4] >= DOOR_MIN_PX]
-    if not blobs:
-        return None, 0
-    px, x = max(blobs)
-    return float(x / 1280.0), int(px)
+    blobs = [(float(cen[i][0] / 1280.0), int(st[i, 4])) for i in range(1, n) if st[i, 3] >= DOOR_H and st[i, 4] >= DOOR_MIN_PX]
+    return sorted(blobs, key=lambda b: -b[1])
 
 
 def hero_column(frame):
@@ -822,6 +835,54 @@ def arrive(io, safe, trace=None):
         raise
 
 
+@dataclass
+class ArrivalMemory:
+    """What arrival_step carries from one frame to the next."""
+    plaza: int = 0                 # frames in a row that showed the plaza
+    chosen: float | None = None    # x of the door being walked at, as the last frame showed it, moved by our own turn since
+    last_px: int = 0               # its size on the last frame
+    walked: bool = False           # the last step walked
+    out: bool = False              # through the door: from here on no door is steered to or walked at
+    sweeps: int = 0                # look-around turns taken outside
+
+
+def arrival_step(f, m):
+    """The arrival's decision on one frame: ("plaza?", why) a second look standing still, ("done", why), ("turn", stick, secs, why),
+    ("walk", secs, why), or ("give up", why). Pure: it reads only the frame and `m`, which it updates; it sends nothing."""
+    if plaza_view(f):
+        m.plaza += 1
+        return ("done", "plaza confirmed on a second frame") if m.plaza >= 2 else ("plaza?", "plaza seen: a second look, standing still")
+    m.plaza = 0
+    blobs = door_blobs(f)
+    if not m.out and not blobs and m.walked and m.last_px >= OUT_PX:
+        m.out = True                                  # walked at a big door, and now none: through it
+    if m.out:                                         # never a door again, not even a sliver of its pane seen from outside (live step 17)
+        m.walked = False
+        if m.sweeps >= OUT_SWEEPS:
+            return ("give up", f"out, but no bot in view after {OUT_SWEEPS} look-around turns")
+        m.sweeps += 1
+        return ("turn", -YAW_STICK, SWEEP_S, f"out: look around left, rstick {-YAW_STICK:+.2f} for {SWEEP_S:.2f} s")
+    if m.chosen is not None and blobs:
+        x, px = min(blobs, key=lambda b: abs(b[0] - m.chosen))
+        if abs(x - m.chosen) > DOOR_KEEP:
+            x, px = blobs[0]
+    else:
+        x, px = blobs[0] if blobs else (None, 0)
+    m.walked = False
+    if x is None:  # nothing to walk toward (a wall, the plaza with no bot in view): look around, do not walk blind
+        m.chosen, m.last_px = None, 0
+        return ("turn", YAW_STICK, SWEEP_S, f"no door: look around, rstick {YAW_STICK:+.2f} for {SWEEP_S:.2f} s")
+    m.last_px = px
+    if abs(x - HERO_X) > DOOR_TOL:  # the pane is off his column: turn it onto his column first, no walking
+        deg = math.degrees(math.atan((x - HERO_X) * 1280.0 / FOCAL))
+        secs = min(0.6, abs(deg) / YAW_DEG_S)
+        m.chosen = x - math.copysign(secs * YAW_DEG_S, deg) * math.pi / 180 * FOCAL / 1280.0   # where our turn moves it
+        return ("turn", math.copysign(YAW_STICK, deg), secs,
+                f"door off his column: turn, rstick {math.copysign(YAW_STICK, deg):+.2f} for {secs:.2f} s")
+    m.chosen, m.walked = x, True
+    return ("walk", WALK_CHUNK_S, f"door on his column: walk, stick forward for {WALK_CHUNK_S:.2f} s")
+
+
 def _arrive(io, safe, note):
     def look():
         f = safe.frame()
@@ -831,34 +892,28 @@ def _arrive(io, safe, note):
             raise Refuse("the idle-kick banner is up: still in the spawn room?", f)
         return f
 
-    f, plaza, spent = look(), 0, 0.0
+    f, m, spent = look(), ArrivalMemory(), 0.0
     while spent < ARRIVE_S:
-        if plaza_view(f):
-            plaza += 1
-            if plaza >= 2:
-                note(f, "plaza confirmed on a second frame", plaza=True)
-                break
-            safe.sleep(0.15)  # a second look, standing still, before believing it
+        x = m.chosen
+        act = arrival_step(f, m)
+        if act[0] == "done":
+            note(f, act[-1], plaza=True)
+            break
+        if act[0] == "give up":
+            note(f, act[-1], plaza=False)
+            raise Refuse(act[-1], f)
+        if act[0] == "plaza?":
+            safe.sleep(0.15)
             spent += 0.15
-            note(f, "plaza seen: a second look, standing still", plaza=True)
-            f = look()
-            continue
-        plaza = 0
-        x = door(f)
-        if x is None:  # nothing to walk toward (a wall, the plaza with no bot in view): look around, do not walk blind
-            safe.rstick(YAW_STICK, 0.0, SWEEP_S, screen="in_range")
-            spent += SWEEP_S + 0.15
-            note(f, f"no door: look around, rstick {YAW_STICK:+.2f} for {SWEEP_S:.2f} s", x, False)
-        elif abs(x - 0.5) > DOOR_TOL:  # the door is off to a side: turn to it first, no walking
-            deg = math.degrees(math.atan((x - 0.5) * 1280.0 / FOCAL))
-            secs = min(0.6, abs(deg) / YAW_DEG_S)
-            safe.rstick(math.copysign(YAW_STICK, deg), 0.0, secs, screen="in_range")
-            spent += secs + 0.15
-            note(f, f"door off centre: turn, rstick {math.copysign(YAW_STICK, deg):+.2f} for {secs:.2f} s", x, False)
+            note(f, act[-1], plaza=True)
+        elif act[0] == "turn":
+            safe.rstick(act[1], 0.0, act[2], screen="in_range")
+            spent += act[2] + 0.15
+            note(f, act[-1], x, False)
         else:
-            safe.stick(0.0, 1.0, WALK_CHUNK_S, screen="in_range")
-            spent += WALK_CHUNK_S + 0.25
-            note(f, f"door ahead: walk, stick forward for {WALK_CHUNK_S:.2f} s", x, False)
+            safe.stick(0.0, 1.0, act[1], screen="in_range")
+            spent += act[1] + 0.25
+            note(f, act[-1], m.chosen, False)
         f = look()
     else:
         raise Refuse(f"could not confirm the spawn room was left within {ARRIVE_S:.0f} s", f)
