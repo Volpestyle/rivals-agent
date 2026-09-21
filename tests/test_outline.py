@@ -260,3 +260,12 @@ def test_l4_trials_crop_call_passes_where_the_crop_sits_too():
     f[612:808, 1112:1168] = 0
     boxes = l4_trial.detect(f)
     assert len(boxes) == 2 and max(b.bbox[0] for b in boxes) >= 815    # in 1280x720 pixels, where l4_trial reports
+
+
+def test_the_door_seen_from_the_plaza_is_under_the_hue_bar_too():
+    """From the plaza side the door's boxes have a median hue of 54-58 (p50 55): a component at 57 is dropped, one at 60 kept."""
+    for hue, kept in ((57, 0), (60, 1)):
+        f = _frame()
+        f[300:440, 900:980] = _hsv_bgr(hue)
+        f[306:434, 906:974] = 0
+        assert len(find_enemies(f)) == kept, hue

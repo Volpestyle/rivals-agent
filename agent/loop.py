@@ -103,6 +103,14 @@ class Perception:
     is_board: Callable | None = None     # frame -> True | False | None: perception.scoreboard.is_scoreboard. BACK is never pressed without it
 
 
+def aim_window(size, crop=CROP):
+    """(x1, y1, x2, y2) of the aim crop in a frame of `size`: a square of `crop` px at 1440p, round the crosshair."""
+    w, h = size
+    side = round(crop * h / 1440)
+    x0, y0 = (w - side) // 2, (h - side) // 2
+    return x0, y0, x0 + side, y0 + side
+
+
 def default_perception(crop=CROP):
     """L2's and L3's readers. Imports live here so agent.loop imports without opencv."""
     sys.path.insert(0, str(ROOT))                       # perception/ is a package at the repo root
@@ -114,10 +122,9 @@ def default_perception(crop=CROP):
 
     def aim(f):
         w, h = size(f)
-        side = round(crop * h / 1440)
-        x0, y0 = (w - side) // 2, (h - side) // 2       # boxes come back in the crop's pixels: add its origin
+        x0, y0, x1, y1 = aim_window((w, h), crop)       # boxes come back in the crop's pixels: add its origin
         return [replace(d, bbox=(d.bbox[0] + x0, d.bbox[1] + y0, d.bbox[2] + x0, d.bbox[3] + y0))
-                for d in find_enemies(f[y0:y0 + side, x0:x0 + side], scale=w / 1280.0, origin=(x0, y0), frame=(w, h))]
+                for d in find_enemies(f[y0:y1, x0:x1], scale=w / 1280.0, origin=(x0, y0), frame=(w, h))]
 
     from perception.scoreboard import is_scoreboard, read_scoreboard
     return Perception(in_range, idle_warning, size, aim, lambda f: find_enemies(f, scale=f.shape[1] / 1280.0),
@@ -128,7 +135,7 @@ class NoTracker:
     """Detections pass through with no identity (`track` stays None): what the loop did before agent.tracker. Same interface."""
     coasting = ()
 
-    def update(self, dets, t, frame=None):
+    def update(self, dets, t, frame=None, cam=None, clip=None):
         return dets
 
 
@@ -359,15 +366,17 @@ class Loop:
         self.source, self.pad, self.p, self.log, self.ctrl = source, pad, percept, log, controller or Controller()
         lock, tracker, self.coasting = threading.Lock(), tracker or Tracker(), ()
 
-        def track(dets, t, size=None):                  # the reflex thread and the decision worker share one tracker
+        def track(dets, t, size=None, clip=None):       # the reflex thread and the decision worker share one tracker
             # Invariant `state.coasting` rests on: the wide finder runs only when the aim crop found nothing, so a decision State
             # carries the crop's boxes (the bot among them) whenever the crop saw it; the whole-frame search never drops a bot the crop held.
+            cam = self.cams.get(t)                      # the camera this frame showed, noted by the reflex tick that took it
             with lock:
-                out = tracker.update(dets, t, size)
+                extra = {k: v for k, v in (("cam", cam), ("clip", clip)) if v is not None}
+                out = tracker.update(dets, t, size, **extra)
                 self.coasting = tuple(getattr(tracker, "coasting", ()))
                 return out
 
-        self.track = track
+        self.track, self.cams = track, {}
         self.decider = Decider(decide, percept, decision_hz, threaded, track, lambda: self.coasting)
         self.reflex_hz, self.max_s, self.keepalive_s, self.warmup = reflex_hz, max_s, keepalive_s, warmup
         self.stale_s, self.scoreboard, self.every, self.brain_name = stale_s, scoreboard, scoreboard_every_s, brain_name
@@ -456,7 +465,8 @@ class Loop:
 
         self.size = size = p.size(frame)
         a0 = time.perf_counter()
-        dets = self.track(p.aim(frame), t, size)
+        self._note_cam(t, size)
+        dets = self.track(p.aim(frame), t, size, clip=aim_window(size))
         self.aim_ms.append((time.perf_counter() - a0) * 1000)
         self.decider.offer(frame, t, size, dets)
         d = self.decider.latest
@@ -477,6 +487,17 @@ class Loop:
             self._scoreboard(t, f"scoreboard-{len(self.boards)}")
             self.last_board = t
         return None
+
+    def _note_cam(self, t, size):
+        """(yaw, pitch, focal px) of the camera frame `t` shows, from the controller's model of what it has commanded (the tracker moves held
+        boxes through a turn with it). The decision worker's whole-frame update uses the same entry: a decision's frame is a reflex frame."""
+        cam_at, cal = getattr(self.ctrl, "_cam_at", None), getattr(self.ctrl, "cal", None)
+        if cam_at is None or cal is None:
+            return
+        yaw, pitch = cam_at(t - cal.latency_s)
+        self.cams[t] = (yaw, pitch, cal.focal_1280 * size[0] / 1280.0)
+        while len(self.cams) > 240:                     # four seconds at 60 Hz: far longer than a decision's lag
+            self.cams.pop(next(iter(self.cams)))
 
     def _keepalive(self, pad, t):
         """Walk, walk back, one RT (what Live.keepalive does), laid over the controller's pad, if nothing has moved or

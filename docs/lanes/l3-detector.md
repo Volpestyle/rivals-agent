@@ -76,11 +76,14 @@ accepts; the fake bar is 2.4 body heights wide, and real, partly hidden bots rea
 separates the door from the Luna Snow bot with margin: "any bar" admits one door track, and rules that reject it (bars spanning at least
 0.3 s) leave Luna targetable on 24 of her 87 saved frames, 3.8 s late on her first approach. No consumer reads `plate` yet.
 
-**The door is the band's low edge, and is judged per component.** 61% of the spawn room door's masked pixels are at hue 54, the band's
+**The door is the band's low edge, and is judged per component (`GREEN_MIN_MEDIAN_HUE` 58).** From the plaza side (stall30 11.6-15.4 s,
+lit differently) the door's boxes have a median hue of 54-58 (p50 55) against the bots' 56-67 (p50 65); at 58 its boxes there fall from 41
+to 13 and postfreeze30's inside ones to 3, bot boxes 100 px+ on three runs 554 -> 553, ground truth unchanged. One component on the
+door's right pane stays above 60 and is not separable by hue, spread or brightness (docs/lanes/tracker.md, residual). 61% of the spawn room door's masked pixels are at hue 54, the band's
 lower bound, and 89% at 54-56; Luna's are centred on 64 (per-box median never below 57), tagrun0's bots on 65. Raising `hue_lo` would cut
 the bots' own edge pixels too: at 57 their outlines split into pieces, a ground-truth enemy is lost (tagrun1 000094) and bar-seen
 sightings 100 px and taller fall 4.6%. So the band keeps every pixel from 54 for connectivity, and a component whose own (pre-closing)
-pixels have a median hue under `GREEN_MIN_MEDIAN_HUE` (56) is dropped:
+pixels have a median hue under `GREEN_MIN_MEDIAN_HUE` is dropped (56 when measured below, now 58):
 
 | | before | median hue >= 56 |
 |---|---|---|

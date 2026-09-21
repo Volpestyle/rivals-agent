@@ -152,6 +152,53 @@ spent standing still; engaged time with the pad doing something does not (tracke
 finder's boxes). postfreeze30's remaining 2.7 s stall at 3.4 s is on the spawn door in the trace's recorded boxes, which the finder no
 longer makes; on the refind replay (the current finder) door and kill feed are 0 s on both runs.
 
+## The hand-off from the whole-frame search to the aim crop (stall30)
+
+On stall30 (the supervised run of the stall fixes) the re-aim works (a whole-frame target 992 px out was inside the crop 0.6 s after the
+pick), but both times a target crossed from the whole-frame search into the crop it got a new id (live 15 -> 19, 71 -> 73) and the held id
+only coasted. Three causes, each fixed; `postfreeze30_replay.py` reports the run's own hand-offs by their recorded boxes
+(`live_handoffs`), and both are kept on the replay (7 -> 7, 66 -> 66; on main 15 -> 19, 71 -> 73):
+
+- **The camera turns under the tracker.** `update(..., cam=(yaw, pitch, focal))` moves every held box into the camera the frame shows
+  before anything is matched (a still point's bearing is the camera's plus atan(offset / focal)); the loop notes, on each reflex tick,
+  the camera the controller's model says that frame shows, and hands the same entry to the decision's whole-frame update. The model is
+  the commanded one and overstates the turn at stick onset (stall30: 17 degrees commanded where the bot moved about 9), so it narrows
+  the gap rather than closing it. The moved boxes are a view for matching only: a track keeps its own box and camera unless this
+  frame's measurement replaces them, so an older frame (an empty whole-frame result landing late, whose camera can put a newer box
+  behind it and clamp it to the frame edge) never rewrites a newer track.
+- **An older measurement replaced a newer one.** The decision worker's whole-frame result lands after newer aim-crop updates; a box from
+  a frame older than a track's last sighting now names the box but does not move the track (it put the bot back where it was before a
+  19 degree turn).
+- **A bot enters the crop as a sliver at its edge.** A box cut by an edge of the region it was found in (`clip`, the aim crop) is a held,
+  confirmed track, whatever its size, when that track's predicted box itself reaches or crosses the same edge and at least 70% of the
+  box lies in the predicted box, unpadded (stall30: 24 x 30 px of a bot seen whole at 693 x 504). A body wholly inside the crop, a box
+  beside the body rather than on it, and an unconfirmed track lend nothing.
+
+The controller also re-seeds when the brain switches to another target id: kept on the previous target's confirmed track it never
+re-aimed at the new one and counted the stale track as lost (1.1 s with no stick while the brain engaged a bot 650 px right). What remains
+of the no-steer time on the live intent sequence (0.3-1.0 s at a time) is the brain waiting on a target that has vanished and is coasting
+(a small far one up to `SMALL_AGE_S`, a knocked-out one up to `CLOSE_AGE_S`), with nothing on screen to steer at; not changed.
+
+| Trace replay | held id visible on the bot | stalls over 0.5 s | engaged on the bot, pad active | tracker update p50 / p95 |
+|---|---|---|---|---|
+| stall30, main | 25% | 2.1 / 0.9 / 0.5 / 1.1 / 1.1 s | 6.83 s | 0.002 / 0.06 ms |
+| stall30, this change | 45% | 1.1 / 0.7 / 1.0 / 0.7 / 1.1 s | 7.33 s | 0.024 / 0.09 ms |
+| trackerlive30, main | 50% | 0.7 / 1.9 / 0.6 / 1.7 s | 11.94 s | |
+| trackerlive30, this change | 51% | 0.7 / 1.1 / 0.6 s | 14.19 s | |
+| postfreeze30, main | 56% | 2.7 / 0.7 / 2.3 / 1.3 s | 9.48 s | |
+| postfreeze30, this change | 69% | 1.1 / 0.6 / 0.7 s | 9.33 s | |
+
+**Residual, not built: a camera-model mismatch can steal an id.** The turn the tracker compensates is the controller's commanded one.
+Where the real turn differs (stall30: 9 degrees against 17 modelled), two bots side by side can each land on the other's moved box: a
+synthetic two-bot case gives ids [2, 3] where [1, 2] held. Not a measured live failure. The replays above count ids kept on a bot; an
+exact id is not proof that the designated target was the one engaged.
+
+**Open residual: the spawn door seen from the plaza.** It does not meet "door 0 s" and so does not meet reliable autonomous episodes. One
+component on the door's right pane, 226 x 572 px, with a median hue above 60 (no hue bar separates it: its hue spread and brightness
+overlap the bots'), is present at two decisions in a row, starts a combo, and the combo holds for 1.2 s while the large box coasts
+(stall30 refind replay, 13.4-14.6 s: door 1.18 s). A real bot flashing white after a hit coasts the same way, so the hold is not cut. It
+is its own item; a world-static classifier for it needs stationary bots as controls, since a bot standing still is also world-static.
+
 ## Coasting: a deliberate trade
 
 A confirmed track (seen `CONFIRM` = 3 times) that goes unseen is held, its id in `state.coasting`, for `MAX_AGE_S` 0.8 s, `SMALL_AGE_S`

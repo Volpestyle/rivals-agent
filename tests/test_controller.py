@@ -192,3 +192,16 @@ def test_the_brains_target_is_placed_at_the_camera_angle_of_the_frame_it_was_mea
     now = c._cam_at(t - c.cal.latency_s)[0]
     assert abs(now - then) > 5.0                                                # the camera really moved in between
     assert abs(c.track.yaw - then) < 0.5                                        # and the target sits where it was, not where we look now
+
+
+def test_when_the_brain_switches_target_the_controller_aims_at_the_new_one_at_once():
+    """stall30: the controller kept the previous target's confirmed track, never re-aimed at the new whole-frame target (that path is for
+    unconfirmed tracks), and counted the stale track as lost: 1.1 s with no stick while the brain engaged a bot 650 px to the right."""
+    c, F = Controller(), (2560, 1440)
+    old = Detection(ENEMY, (1230.0, 520.0, 1330.0, 920.0), 0.9, track=3)          # the last target, confirmed in the crop
+    for k in range(10):
+        c.step(State(t=k / 60, frame=F, detections=[old]), Engage(old), intent_t=k / 60)
+    t = 70 / 60                                                                  # a second later it is gone; the brain picks another
+    new = Detection(ENEMY, (1882.0, 594.0, 1978.0, 750.0), 0.9, track=15)        # 650 px right, only in the whole-frame search
+    pad = c.step(State(t=t, frame=F, detections=[]), Engage(new), intent_t=t - 0.05)
+    assert pad["rx"] > 0.3 and not c.track.confirmed

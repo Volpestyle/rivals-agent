@@ -16,6 +16,7 @@ bot. --no-kill-feed drops that box, which the finder no longer makes (perception
 import collections
 import importlib.util
 import json
+import math
 import sys
 import time
 from pathlib import Path
@@ -27,20 +28,26 @@ from agent.state import ENEMY, Detection, State  # noqa: E402
 RUN = Path("data/l1/postfreeze30")
 # Labels fixed by eye on each run's saved frames (docs/lanes/tracker.md). The kill feed's box is the same place on every run.
 LABELS = {
-    "postfreeze30": dict(door_before=13.8, bot_after=15.3, bot_h=120),   # the spawn door until 13.8 s; the Luna Snow bot from 15.3 s
-    "trackerlive30": dict(door_before=4.6, bot_after=0.0, bot_h=100),   # the spawn room until 4.6 s; after that a box 100 px+ is the bot,
-}                                                                       # a smaller one the downed bot (38 x 43) or a stray (22 x 31)
+    "postfreeze30": dict(door=[(0.0, 13.8)], bot_after=15.3, bot_h=120),  # the spawn door until 13.8 s; the Luna Snow bot from 15.3 s
+    "trackerlive30": dict(door=[(0.0, 4.5)], bot_after=0.0, bot_h=100),   # the spawn room until 4.5 s; then a box 100 px+ is the bot, a
+                                                                          # smaller one the downed bot (38 x 43) or a stray (22 x 31)
+    "stall30": dict(door=[(0.0, 3.5), (11.6, 15.4)], junk=[(22.0, 25.2)], bot_after=3.5, bot_h=60),
+    # the spawn room until 3.5 s (at 3.7 s he is outside, and a bot is in view); the door again from the plaza side 11.6-15.4 s (ids 45 46 48); a lit glass dome in the ceiling 22-25 s
+    # (id 98); otherwise a box 60 px+ is a bot (far ones on the plaza at 4.4-6.8 s are 60-160 px)
+}
 SIZE = (2560, 1440)
 KILL_FEED_BOX = [2319, 128, 2426, 247]
 
 
 def label(t, b):
     cx, cy, h = (b[0] + b[2]) / 2, (b[1] + b[3]) / 2, b[3] - b[1]
-    lab = LABELS.get(RUN.name, dict(door_before=0.0, bot_after=0.0, bot_h=100))
+    lab = LABELS.get(RUN.name, dict(bot_after=0.0, bot_h=100))
     if cx > 2300 and cy < 260:
         return "killfeed"
-    if t < lab["door_before"]:
+    if any(lo <= t < hi for lo, hi in lab.get("door", ())):
         return "door"
+    if any(lo <= t < hi for lo, hi in lab.get("junk", ())):
+        return "other"
     if t >= lab["bot_after"] and h >= lab["bot_h"]:
         return "luna"                                  # the run's real bot
     return "other"
@@ -82,10 +89,17 @@ def replay(mod, no_kill_feed=False):
     ctrl, intent, intent_t, pads = Controller(), None, None, []
     takes_t = "intent_t" in inspect.signature(ctrl.step).parameters
     tr, m, aim, wide, ticks, cost = mod.Tracker(), brain.Memory(), {}, {}, [], []
+    with_cam = "cam" in inspect.signature(tr.update).parameters
+    cams = recorded_camera(rows, ctrl.cal)                  # what the LIVE sticks commanded: the replay's own controller is open loop
     last = {i: n for n, (_, _, _, i) in enumerate(events)}
     for n, (kind, t, boxes, i) in enumerate(events):
         c0 = time.perf_counter()
-        got = tr.update([Detection(ENEMY, tuple(b), 0.9) for b in boxes], t, SIZE)
+        if with_cam:
+            yaw, pitch = camera_at(cams, t - ctrl.cal.latency_s)
+            extra = {"clip": (800, 240, 1760, 1200)} if kind == "aim" and "clip" in inspect.signature(tr.update).parameters else {}
+            got = tr.update([Detection(ENEMY, tuple(b), 0.9) for b in boxes], t, SIZE, cam=(yaw, pitch, ctrl.cal.focal_1280 * SIZE[0] / 1280), **extra)
+        else:
+            got = tr.update([Detection(ENEMY, tuple(b), 0.9) for b in boxes], t, SIZE)
         cost.append((time.perf_counter() - c0) * 1e3)
         (aim if kind == "aim" else wide)[i] = (got, tuple(tr.coasting))
         if last[i] != n:
@@ -109,6 +123,71 @@ def replay(mod, no_kill_feed=False):
                       tgt is not None and any(d.track == tgt.track for d in aim[i][0]), None if tgt is None else tgt.track))
     replay.pads = pads
     return rows, aim, wide, ticks, cost
+
+
+def recorded_camera(rows, cal):
+    """(t, yaw, pitch) per tick, integrating the sticks the run actually sent through the controller's measured maps."""
+    from agent.controller import _interp
+    out, cam, last = [], [0.0, 0.0], None
+    for r in rows:
+        if last is not None:
+            dt = min(0.1, r["t"] - last[0])
+            cam = [cam[0] + math.copysign(_interp(abs(last[1]), cal.yaw_map), last[1]) * dt,
+                   cam[1] + math.copysign(_interp(abs(last[2]), cal.pitch_map), last[2]) * dt]
+        out.append((r["t"], cam[0], cam[1]))
+        last = (r["t"], r["pad"]["rx"], r["pad"]["ry"])
+    return out
+
+
+def camera_at(cams, t):
+    import bisect
+    i = bisect.bisect_left([c[0] for c in cams], t)
+    if i <= 0:
+        return cams[0][1:]
+    if i >= len(cams):
+        return cams[-1][1:]
+    (t0, y0, p0), (t1, y1, p1) = cams[i - 1], cams[i]
+    k = (t - t0) / (t1 - t0) if t1 > t0 else 0.0
+    return y0 + k * (y1 - y0), p0 + k * (p1 - p0)
+
+
+def handoffs(rows, aim, ticks):
+    """One row per hold the aim crop had not seen when it began: (t the crop first shows a bot while it is still held, held id, the crop's
+    bot ids then, kept?). A hold the crop never sees, or that ends first, has no row."""
+    out, held, armed = [], None, False
+    for (t, lab, vis, tid), i in zip(ticks, sorted(aim)):
+        if tid != held:
+            held, armed = tid, tid is not None and lab == "luna" and not vis
+        crop = [d.track for d in aim[i][0] if label(t, d.bbox) == "luna"]
+        if armed and crop:
+            out.append((round(t, 2), held, crop, held in crop))
+            armed = False
+    return out
+
+
+def live_handoffs(rows, aim, wide):
+    """The run's own hand-offs, by its recorded boxes: every time the live brain's target was only in the whole-frame search and the aim
+    crop then saw it under ANOTHER live id. For each: the replay's id of the last whole-frame box and of the first crop box (kept if equal)."""
+    out, held, last_wide = [], None, None
+    for i, r in enumerate(rows):
+        tg = r.get("target")
+        if tg != held:
+            held, last_wide = tg, None
+        if tg is None:
+            continue
+        if "state" in r:
+            box = next((d["bbox"] for d in r["state"]["detections"] if d.get("track") == tg), None)
+            if box is not None and tg not in r["ids"]:
+                last_wide = (i, box)
+        if last_wide is not None and r["ids"] and tg not in r["ids"]:
+            wi, wb = last_wide
+            first = r["dets"][0]
+            rid = lambda got, b: next((d.track for d in got if [round(v) for v in d.bbox] == [round(v) for v in b]), None)   # noqa: E731
+            was = rid(wide.get(wi, ([], ()))[0], wb) or rid(aim.get(wi, ([], ()))[0], wb)
+            now = rid(aim[i][0], first)
+            out.append((round(r["t"], 2), tg, r["ids"][0], was, now, was is not None and was == now))
+            last_wide = None
+    return out
 
 
 def stalls(pads, min_s=0.5):
@@ -156,7 +235,8 @@ def report(path, no_kill_feed=False):
             "update_ms_p50": round(c[len(c) // 2], 4), "update_ms_p95": round(c[int(0.95 * len(c))], 4),
             "engaged_s": {k: round(v, 2) for k, v in engaged_seconds(ticks).items()},
             "engaged_active_s": {k: round(v, 2) for k, v in engaged_seconds(ticks, replay.pads).items()},
-            "stalls_over_0.5s": stalls(replay.pads)}
+            "stalls_over_0.5s": stalls(replay.pads), "handoffs": handoffs(rows, aim, ticks),
+            "live_handoffs(t, live held, live crop id, replay id then, replay id now, kept)": live_handoffs(rows, aim, wide)}
 
 
 def engaged_seconds(ticks, pads=None):

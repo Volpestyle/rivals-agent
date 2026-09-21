@@ -690,7 +690,7 @@ def test_every_detection_list_that_becomes_a_state_passes_one_tracker_under_one_
     inside, seen, states = [], [], []
 
     class Ids:
-        def update(self, dets, t, frame=None):
+        def update(self, dets, t, frame=None, cam=None, clip=None):
             assert not inside, "the tracker was entered twice at once"
             inside.append(1)
             time.sleep(0.0002)
@@ -894,3 +894,27 @@ def test_the_controller_is_told_the_frame_time_of_the_decision_it_acts_on():
     given = [(t, it) for t, it in rec.calls if it is not None]
     assert given and all(it <= t for t, it in given)
     assert {round(it * 10, 6) % 1 for _, it in given} <= {0.0}                   # decisions are at the 10 Hz ticks: 0.0, 0.1, ...
+
+
+def test_the_tracker_is_told_each_frames_camera_and_the_aim_crops_bounds():
+    """The aim-crop update carries the crop's bounds (a box cut by its edge is part of a bot coming in) and the camera that frame showed;
+    the decision's whole-frame update carries the same frame's camera and no bounds."""
+    from agent.loop import aim_window
+
+    class Rec:
+        coasting = ()
+
+        def __init__(self):
+            self.calls = []
+
+        def update(self, dets, t, frame=None, cam=None, clip=None):
+            self.calls.append((t, cam, clip, len(dets)))
+            return dets
+
+    rec = Rec()
+    items = [(F(dets=[BOT] if i < 30 else [], wide=[BOT]), i / HZ) for i in range(60)]
+    Loop(Frames(items), FakePad(), readers(), scripted.decide, tracker=rec, warmup=False, scoreboard=False).run()
+    aimed = [c for c in rec.calls if c[2] is not None]
+    whole = [c for c in rec.calls if c[2] is None]
+    assert aimed and all(c[2] == aim_window(SIZE) and c[1] is not None and len(c[1]) == 3 for c in aimed)
+    assert whole and all(c[1] is not None for c in whole)                     # the whole-frame search of a frame the reflex tick noted
