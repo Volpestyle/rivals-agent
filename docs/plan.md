@@ -68,6 +68,11 @@ only once an outcome can be measured reliably.
   games. They advance on evidence, not footage hours, and are dependencies rather than six
   serial waits. Linear carries assignment: A VUH-1306 and VUH-1319, B VUH-1311, C VUH-1320,
   D VUH-1321, E VUH-1322 (with VUH-1314, VUH-1296), F VUH-1323 (with VUH-1310).
+- **Configurable playstyle (planned, after E and F; VUH-1329).** One policy conditioned on a small
+  preference vector, first aggression and swing conservation, not a model per style. Presets are
+  evaluated before any smooth-slider claim, tactical claims need F's fighting venue, and a
+  preference never bypasses legality, guards or what the executor can do. The executor
+  standardizes on hold-to-swing. Design in [learning-plan.md](learning-plan.md#configurable-playstyle).
 - **The patch is a fact, not a background assumption.** Balance patches change Spider-Man's
   cooldowns, damage and mechanics every few weeks, so footage, measured timings, the scripted
   brain's constants, the baseline score and any trained checkpoint are valid for one patch.
