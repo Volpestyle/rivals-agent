@@ -2,12 +2,64 @@
 
 Linear: VUH-1296. Evidence: `docs/evidence/l4/`. Raw measurements: `C:\rivals-agent\data\l4\` on the PC.
 
-**Live work is frozen (VUH-1325, input-safety review).** The collection batch was stopped after `baseline4`, which
-reached its own `max_time` stop; no run was cut short and nothing was killed. After it: the game is in the Practice Range
-as Spider-Man, standing still on the lower ring beside a jump pad, HUD showing keyboard glyphs, no Xbox 360 device present
-in Windows and no loop or recorder process alive (`batch-stopped-state.jpg`). Another lane's `agent.server` (started
-19:21) is the only python left on the PC. Not to be run live until the review's fixes are re-reviewed:
-`scripts/l4_practice_settings.py`, `scripts/l4_menu.py`, `scripts/l4_trial.py`, unattended loops.
+**The game is on the PLAY lobby** (it idled out while waiting for a reviewed loop commit); lobby navigation is the lead's.
+The PC holds `agent/`, `scripts/` (with `scripts/templates/`) and `perception/` from `git archive e541c49`: all 41 tracked
+files verified by sha256, no other files in those directories. Pre-flight in the PC's desktop session, with no capture, no
+pad and no game input: `python -m agent.loop --help` runs, and `data\l4\preflight.py` imports everything the live loop
+loads (agent.loop / controller / tracker / brain, cv2, numpy, dxcam, vgamepad, record, capture, perception) and runs the
+perception stack on a saved `baseline1` frame and scoreboard (range True / board False, HUD read, scoreboard parsed 23 KOs).
+An earlier attempt at 064c4cf stopped at import (`agent/tracker.py` was not committed); no pad opened.
+
+Owed once the range is back: look first, cooldowns verified from play, face a bot, ONE supervised 30 s
+`python -m agent.loop --live --cooldowns normal`, then the report including the per-tick trace (ids, coasting, target,
+target_px). `scripts/l4_practice_settings.py` on the PC is the committed version, not the offline fix.
+
+Cooldowns: "No Ability Cooldown" was still OFF after the re-entry (`practice-settings-still-off-after-reentry.jpg`); the
+infinity on the HUD is the melee slot, Web Cluster is the 5 beside it. Verified from play through `Live`: ammo 2 after three
+shots, Get Over Here showing 7 (`cooldowns-normal-verified-2.jpg`). `scripts/l4_practice_settings.py cooldowns-off` had its
+first live run since the rewrite: START from a proven range frame, the pause row steered by its lit state, the
+`pause.practice_settings` confirm, then on the page it walked the cursor looking for the long "(Always On)" help title,
+which does not exist when the parent toggle is off, gave up with "never reached the No Ability Cooldown row" without
+pressing anything on the page, and closed back to the range with B from proven screens. Fixed offline, not yet re-run live:
+the script reads the switch first (`toggle_on` returns True / False / None, and None whenever the page is not at rest,
+because a "... Deactivated" toast slides the rows up ~20 px) and returns success with no presses when it is already off;
+an unreadable switch is a Stop. Fixture `tests/fixtures/menus/ps-open-nac-already-off.jpg` is that live frame.
+
+**For the re-entry owner: the spawn room's green door catches him on its LEFT jamb.** Seen twice: by hand today (a
+slightly-left approach walked into the wall left of the door; backing off 0.3 s and strafing right ~0.9 s before walking
+forward cleared it) and in `data\reenter\refuse-20260920-223448.jpg` (pressed against the left jamb from inside, facing out
+at an angle, where the door reads as a narrow tilted band, so its visual centre is not where the opening is). Approach from
+the right of the door's centre, or strafe right ~0.9 s before the walk.
+
+Route note: from the lower ring, the purple jump pad beside the plaza stairs launches him onto the main plaza in front of
+the spawn room's green door, facing the Luna Snow bot.
+
+## Capture fault: dxcam delivers no frames when no monitor is attached
+
+Since 2026-09-20 23:08:24 Desktop Duplication returns nothing: `AcquireNextFrame` times out (`0x887A0027`
+DXGI_ERROR_WAIT_TIMEOUT) even with a 1 s timeout, three times running, on a freshly created and on a recreated dxcam
+camera, while GDI sees ~10 % of the screen's pixels change in 0.3 s. Cause: **no monitor is attached.** Every Monitor PnP
+device reads `Present = False`; the ASUS VG27AQM1A (`DISPLAY\AUS2753\5&2E4F0D5A&0&UID4355`) has
+`LastArrivalDate` 17:39:52 and `LastRemovalDate` 23:08:24. Windows keeps the 2560x1440@240 desktop on `\\.\DISPLAY1`
+(`AttachedToDesktop` true, one adapter, one output, so no index change), the game keeps rendering (windowed/borderless,
+GDI reads it), but with no sink DWM presents nothing to the output, so there is no frame to duplicate. Ruled out: TDR or
+driver reset (no display, nvlddmkm, dxgkrnl or Kernel-Power events 22:30-00:10), an output or adapter change, a mode
+change, exclusive fullscreen, leftover processes. 23:08 is ~15 min after the last keyboard/mouse-class input; the display
+idle-off is 15 min (VIDEOIDLE 0x384) and virtual-pad input does not reset it, so the likeliest trigger is Windows turning
+the display off and the monitor dropping DisplayPort hot-plug in its sleep; a monitor switched off at the panel looks
+identical from here.
+
+- **Detect:** `python scripts/capture.py preflight` (uncommitted): 1 s of dxcam grabs; 0 frames exits non-zero with the
+  cause and the check to run (`Get-PnpDevice -Class Monitor | Where-Object Present`). `tests/test_capture_preflight.py`.
+  Run it before any live tool; `open_capture()`'s silent fall to GDI hides this fault.
+- **Recover without a person:** untested, needs the lead's go-ahead since it is desktop input: wake the display
+  (a real mouse move, or `SendMessage(HWND_BROADCAST, WM_SYSCOMMAND, SC_MONITORPOWER, -1)`), then confirm a Monitor device
+  is Present and the preflight passes. The lead's injected mouse move did not bring the monitor back (no arrival after
+  23:08), which points at the panel being off or in a deep sleep that needs its button.
+- **Prevent:** display idle-off to never while agents run (`powercfg -change -monitor-timeout-ac 0`, reversible), or a
+  DisplayPort/HDMI dummy plug so an output always has a sink. Not done; a power setting and hardware are James's call.
+- **If it needs James:** press the monitor's power button (or wake it from its own standby) so it shows the desktop; leave
+  it on, or fit a dummy plug.
 
 ## Input safety (VUH-1325): this lane's fixes, all offline, awaiting re-review
 

@@ -1,6 +1,7 @@
 """Grab game frames from the primary display on the PC.
 
 Usage: uv run --no-project --with dxcam --with opencv-python --with pillow python capture.py [dxcam|gdi] [secs]
+       ... python capture.py preflight      # non-zero exit, loudly, when Desktop Duplication delivers no frames in 1 s
   Benchmarks the backend for `secs` (default 5), prints measured fps, and writes
   one frame to capture-<backend>.jpg next to this file.
 
@@ -53,9 +54,38 @@ def open_capture():
     return Capture("gdi")
 
 
+NO_FRAMES = """capture preflight FAILED: dxcam (Desktop Duplication) delivered 0 frames in {secs:.0f} s ({calls} grabs).
+Seen 2026-09-20 23:08: the monitor dropped off DisplayPort (display idle-off or switched off at the panel), Windows kept
+the 2560x1440 desktop, GDI kept working, and AcquireNextFrame timed out for ever. Check on the PC:
+  Get-PnpDevice -Class Monitor | Where-Object Present     # empty = no monitor attached: wake the display / switch the monitor on
+Do not start a run: the loop and the menu tools would have no fresh frames."""
+
+
+def frames_in(secs=1.0, cam=None, clock=time.perf_counter):
+    """(frames, grabs) a dxcam camera delivers in `secs`. 0 frames on a live game means Desktop Duplication is dead."""
+    cam = cam or Capture("dxcam")
+    frames = calls = 0
+    t0 = clock()
+    while clock() - t0 < secs:
+        calls += 1
+        frames += cam.grab() is not None
+    return frames, calls
+
+
+def preflight(secs=1.0, cam=None, clock=time.perf_counter):
+    frames, calls = frames_in(secs, cam, clock)
+    if frames == 0:
+        raise SystemExit(NO_FRAMES.format(secs=secs, calls=calls))   # exit status 1 with the message on stderr
+    print(f"capture preflight ok: {frames} dxcam frames in {secs:.0f} s")
+    return frames
+
+
 if __name__ == "__main__":
     import cv2
 
+    if sys.argv[1:2] == ["preflight"]:
+        preflight()
+        sys.exit(0)
     backend = sys.argv[1] if len(sys.argv) > 1 else "dxcam"
     secs = float(sys.argv[2]) if len(sys.argv) > 2 else 5.0
     cap = Capture(backend)
