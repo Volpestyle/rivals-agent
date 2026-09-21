@@ -640,6 +640,18 @@ If access or banner visibility prevents the scan, report that limitation; a
 failed matcher does not prove a broadcast contains no range play. Expansion
 follows inspection of this pair, not an automatic full-archive download.
 
+The first-hour scan is complete: 3,600 sampled frames per broadcast. Its local
+`data/demos/vods/range-scan/handback.md` records only a brief Req opening range
+visit, retained as a 15-second native clip. Independently inspected +1 s and
++2 s stills confirm controlled Spider-Man in the range followed by a Match Found
+overlay; the worker reports loading by +6 s. This is accepted as sourcing and
+banner-calibration evidence, not a sustained mechanics demonstration or accepted
+training window. Cooldown regime stays unknown. Day has no confirmed candidate;
+its strongest matcher result is inspected match footage, not proof of no range
+play elsewhere. Cross-rendition time zero differs, so scan indices cannot label
+native-frame events without alignment. The bounded pass is stopped with no
+training promotion or further acquisition authorized by this result.
+
 All segments retain their parent broadcast's split and patch provenance; new
 range minutes from a training broadcast are not an independent validation session.
 Sealed broadcasts remain unopened, and uploads with unresolved overlap remain
