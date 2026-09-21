@@ -604,3 +604,15 @@ def test_a_body_that_reaches_the_edge_lends_its_id_only_to_a_box_on_the_body_its
         tr.update([Detection(ENEMY, (1500.0, 400.0, 1800.0, 600.0), 0.9)], t, F2, cam=CAM(0.0))   # crosses the crop's right edge
     got = tr.update([Detection(ENEMY, (1736.0, 610.0, 1760.0, 640.0), 0.9)], 0.06, F2, cam=CAM(0.0), clip=CROP)
     assert got[0].track != 1                                                    # 10 px below it: only padding would join them
+
+
+def test_a_new_track_never_takes_the_saved_view_of_an_expired_one():
+    """Review of 061036e: the saved boxes were keyed by object address, which a new track can reuse once an expired one is freed, so the
+    new track was 'restored' to the expired track's box. Repeated because the reuse depends on the allocator."""
+    new = (1250.0, 600.0, 1350.0, 800.0)
+    for _ in range(100):
+        tr = Tracker()
+        tr.update([Detection(ENEMY, b, 0.9) for b in ((200.0, 300.0, 250.0, 400.0), (1000.0, 300.0, 1050.0, 400.0),
+                                                      (2000.0, 300.0, 2050.0, 400.0))], 0.0, F2, cam=CAM(0.0))
+        got = tr.update([Detection(ENEMY, new, 0.9)], 2.0, F2, cam=CAM(0.0))
+        assert got[0].track == 4 and [x.box for x in tr.tracks] == [new]

@@ -207,10 +207,11 @@ class Tracker:
         between a bot's last whole-frame box and its first aim-crop box, 1.5 track sizes on screen, and it got a new id both times.
         `clip`: (x1, y1, x2, y2) of the region the boxes were found in when it is not the whole frame (the aim crop)."""
         dets = dets or []
-        stored = {}                              # each track's own box and camera, put back unless a newer measurement replaces them
+        stored = {}                              # each track's own box and camera, put back unless a newer measurement replaces them;
+                                                 # keyed by track id, never id(): a new track can reuse an expired one's address
         if cam is not None and frame is not None:
             for tr in self.tracks:
-                stored[id(tr)] = (tr.box, tr.cam)
+                stored[tr.id] = (tr.box, tr.cam)
                 if tr.cam is not None:           # matched against a VIEW of the track in this frame's camera: the projection can clamp
                     tr.box = _turned(tr.box, tr.cam, cam, frame)   # (a box behind an older camera), so it is never written back
         moved = set()
@@ -265,13 +266,13 @@ class Tracker:
                     tr.vx = tr.vy = 0.0          # a long gap, or a box that changed size: the old velocity says nothing about where it went
                 tr.box, tr.seen_t, tr.hits = box, max(tr.seen_t, t), tr.hits + 1
                 tr.cam = cam[:2] if cam is not None else tr.cam
-                moved.add(id(tr))
+                moved.add(tr.id)
                 tr.hs = [(tt, h) for tt, h in tr.hs if t - tt <= HIST_S] + [(t, box[3] - box[1])]
             ids.update({i: tr.id for i in g})
         for tr in self.tracks:
-            if id(tr) in stored and id(tr) not in moved:
-                tr.box, tr.cam = stored[id(tr)]
-            elif tr.cam is None and cam is not None and id(tr) not in stored:
+            if tr.id in stored and tr.id not in moved:
+                tr.box, tr.cam = stored[tr.id]
+            elif tr.cam is None and cam is not None and tr.id not in stored:
                 tr.cam = cam[:2]                 # a track born in this update is in this frame's camera
         out = [replace(d, track=ids[i]) for i, d in enumerate(dets)]
         seen = {tr.id for tr in got.values()} | {tr.id for tr in self.tracks if tr.seen_t >= t}
