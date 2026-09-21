@@ -261,7 +261,10 @@ what `arrival_step` decides on each fresh frame (a pure function of the frame an
    still goes through `Safe` on `in_range`, re-proven at the write;
 2. finds the door and steers its pane onto **the hero's column** (`HERO_X` 0.40), not the screen centre: more than `DOOR_TOL` (8% of
    the width) off it, it turns the camera (`YAW_STICK` 0.45 = 172 deg/s, focal 465 px at 1280 wide) instead of walking; on it, it walks a
-   0.5 s step. With no door kept it takes **the door nearest his column**, not the biggest blob (the spawn room has two lime doors; on all
+   0.5 s step. A door blob is at least `DOOR_H` 100 px tall and `DOOR_MIN_PX` 3k px, except at the arrival's FIRST choice, where a blob
+   on his column (within `DOOR_TOL` of `HERO_X`) counts down to `SPAWN_DOOR_H` 60 px, and for the door being kept, matched down to the
+   same height (a known door seen short is an edge or an occlusion). With no door kept it takes **the door nearest his column**, not
+   the biggest blob (the spawn room has two lime doors; on all
    four logged spawns the plaza door sits 0.04 from his column and the other 0.19 off, and the other was the bigger blob in two). Once
    walking at a door it **keeps that door**: the blob nearest where it should be after our own turn, within `DOOR_KEEP` 0.25 of the width;
    **no door in view, it looks around** (a 0.3 s right turn, about 50 deg) and never walks blind;
@@ -350,6 +353,18 @@ the live run later came out through the other door, out is set (steps 10-11). Ar
 at 17 (its two plaza frames read `plaza_view` False on the saved 1280 JPEGs, True live on the native frames). The first logged arrival
 (older logic): the column aim turns where it walked, so out cannot fire on its frames. Not shown offline: that the plaza door is the one
 taken on a live spawn every time, and that out fires on a closed-loop crossing; the three supervised arrivals are the measurement.
+
+**The plaza door half hidden at spawn.** In all 13 logged spawn frame 1s the plaza door stands on his column (x 0.439-0.446, 3.0-6.8k
+px) and the other door at x 0.20-0.21 (5.7-8.9k px, 145-148 px tall); the plaza door is partly behind the spawn room's central column,
+82-145 px tall. In 3 of 13 it is 82 px (on the saved 720p frame), under the 100 px floor: then the other door was the only candidate,
+taken live in two of them (2026-09-21 15:55, round three's third arrival; 17:43, M2's second re-entry; the third, 17:54, read taller
+on the live native frame). A turn or a look does not help: the door is on his column and hidden by the column's parallax, not by his
+heading, which is why the first choice takes a short blob on his column rather than looking around. Short blobs (3k px or more, 60-99
+px tall) elsewhere in the logged arrivals are pieces of a door during the approach and the crossing (22 frames), so the lower floor is
+only for the first choice and the kept door. Replayed through `arrival_step` over all 14 logged arrivals from a fresh memory (open
+loop: decisions only): step 1 of those three changes from a left turn to the other door into a walk at the plaza door (x 0.44-0.45);
+every other decision in every log is unchanged. Not shown offline: that he then walks out through the plaza door from spawn every time;
+the three supervised arrivals are the measurement.
 
 **Second round of three supervised arrivals (2026-09-21 13:38, 13:50, 14:01; `docs/evidence/l4/arrival-door-*`, native recordings in
 `data/video/door{1,2,3}.mp4`).** The plaza door was taken on all three spawns and out fired on both crossings; arrivals 1 and 2 passed
