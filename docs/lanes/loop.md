@@ -83,6 +83,37 @@ them, so its 59 dropped offers are a replay artifact: at 10 Hz the gap is 100 ms
 Dry run over all of `tagrun0`: 609 ticks, no guard tripped (609/609 frames are in range, none shows the idle banner), no
 errors; scripted brain: 287 `search`, 212 `engage:enemy`, 110 `combo:burst` ticks; one keep-alive (the warm-up).
 
+## The start pose, in the loop's own pad session (VUH-1314)
+
+A freshly attached virtual pad turns the camera LEFT at about 25 deg/s from within ~70 ms of attaching, through any number of neutral
+reports, until the first non-neutral report or the disconnect (measured, `docs/lanes/l4-controller.md`; the cause, the game, Steam Input
+or the attach, is not established). The pose re-entry confirmed is therefore not the pose a new pad session starts from, and the loop's
+old 3 s blind wait after attaching was about 75 degrees of it. On a live run (`--live`) `main` now:
+
+1. builds perception and loads `plaza_view` (scripts/reenter.py) BEFORE the pad opens, so nothing slow sits between the attach and
+   the first input;
+2. opens the pad with `LiveIO()`, which constructs `Live(settle_s=0)`: the range HUD is proven before the pad opens, and there is no
+   wait after it attaches;
+3. runs `agent/startup.py` `start_pose` before any decision offer, controller step, brain, log or `Loop`: a fresh frame acquired after
+   the attach is proven (range HUD, no idle banner); ONE priming pulse, right stick rx 0.45 with every other axis, trigger and button
+   neutral, 0.3 s, through `Live.send` / `Live.hold` (proven, whitelisted and leased at every write), sent even if the view already
+   passes; neutral, then 2 s of frames only (`START_SETTLE_S`, the device switch); then two DISTINCT fresh acquisitions with
+   `plaza_view` true; otherwise another right turn (the drift is leftward), a 0.15 s frame-only settle, and again. At most 7 pulses in
+   all, the priming pulse included, and 14 s overall; the range HUD gone, the idle banner, a capture with no new frame, a refused write
+   or any exception closes Live and refuses: "plaza start view not confirmed". `main` then returns 1 with nothing else built (no brain,
+   no log, no `Loop`, so no end-of-run scoreboard), and the process, and the device with it, ends;
+4. on success builds the brain and the log, saves both confirming frames (`start-confirm-1.png`, `start-confirm-2.png`; the second is
+   the accepted start pose), writes the phase into `meta.json` (`start`: turns, the confirming frames' stamps after the attach, the
+   phase's timings including the attach to the first write), and runs the `Loop` with the forced start walk / back / RT off
+   (`warmup=False`), so the episode clock and the controller's and tracker's camera history begin after the pose. The long-idle
+   keep-alive is unchanged, and a replay (`--dry`) keeps the warm-up.
+
+`plaza_view` certifies an enemy box in the open in the middle of the view: not a bot's identity, not navigable ground; seven turns is
+a command budget, not a claim of full coverage. The pulse's effect on the drift is not yet measured: `scripts/padprime_m1.py` is that
+measurement (one session per invocation, the pulse at the earliest guarded send, +0.1 s or +0.3 s after the attach, then 3 s of frames
+only; it reports the constructor return, the first and last non-neutral writes and the release, and leaves the yaw to the recording).
+Tests: `tests/test_startup.py`, `tests/test_padprime_m1.py`.
+
 ## Safety
 
 Every rule is enforced at one choke point (`_tick` and `clean`), and each has a test that fails without it (25 hand-made
