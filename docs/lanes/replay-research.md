@@ -1,0 +1,105 @@
+# Replay system research — can Marvel Rivals' own replay give us better demos?
+
+Research date: 2026-09-20. Live PC game version at time of writing: **Season 10**
+("Ignite" era) — most recent content patch confirmed by first-party source is
+**Version 20260911, "Season 10 Arrives"** (posted 2026-09-09,
+`marvelrivals.com/gameupdate/20260909/41548_1313441.html`); a further
+Version 20260917 patch note page also exists but was not opened. Marvel Rivals
+runs on Unreal Engine 5 (background fact, not separately re-verified here).
+Features below are dated to the patch/season that introduced or touched them;
+replay behavior has changed release to release (Season 3 → Season 7 in
+particular), so re-check against whatever season is live when this is acted on.
+
+No video was downloaded for this research. Nothing below was fabricated — where
+a claim rests only on a search-engine synthesis, a single community post, or an
+AI-generated summary of a page (rather than a directly quoted primary source),
+it is marked UNVERIFIED or flagged with the reliability caveat inline.
+
+## Source table
+
+| Source | Date | First-party? | What it supports |
+|---|---|---|---|
+| [Version 20260320 patch notes — Season 7 Begins](https://www.marvelrivals.com/gameupdate/20260318/41548_1291772.html) | 2026-03-18 | Yes (marvelrivals.com) | Names "Instant Replay & Highlights" as a Season 7 feature under a new in-game Esports System; states some replays may have a "viewing expiration" |
+| [Version 20251106 patch notes](https://www.marvelrivals.com/gameupdate/20251105/41548_1269153.html) | 2025-11-05 | Yes | Bug fix: spectating Daredevil via replay with outline display turned off caused a solid-purple screen; fixed. Confirms a viewer-side outline-display toggle is read and applied while rendering someone else's replay/spectate session |
+| [Version 20250619 patch notes](https://www.marvelrivals.com/gameupdate/20250617/41548_1241163.html) | 2025-06-17 | Yes | Bug fix: Faction icons wrong during pre-match loading "in Replay and Spectate modes" — confirms Replay and Spectate already existed as distinct modes by June 2025 |
+| [Version 20250711 patch notes — Season 3](https://www.marvelrivals.com/gameupdate/20250704/41548_1244963.html) | 2025-07-04 (posted) | Yes | Checked directly: contains **no** replay/spectate/highlights content at all — useful negative data point against the "replay shipped with Season 3" secondary claim |
+| [Version 20260911 patch notes — Season 10 Arrives](https://www.marvelrivals.com/gameupdate/20260909/41548_1313441.html) | 2026-09-09 | Yes | Checked directly: current-version patch notes; only mentions the in-game Esports system for IGNITE tournament info, no replay-specific changes |
+| Marvel Rivals Championship / Ignite tournament rule PDFs on marvelrivals.com (e.g. `Marvel_Rivals_Championship_S7_Tournament_Rules_V1.7_EN.pdf`) | 2025–2026 (various) | Yes | Confirm the game's "User Agreement" is NetEase Games' own Terms of Service (not reproduced on marvelrivals.com itself) |
+| [NetEase account/platform terms](https://protocol.unisdk.easebar.com/release/latest_v487.html) (redirected from `account.neteasegames.com/ucenter/page/agreement.html`) | Page states "last updated 2024-12-15" | Yes, but general NetEase platform ToS, not Marvel-Rivals-specific | Fetched directly: bans hosting/streaming "the Services or Software" itself and bots/cheats/scraping; **no explicit clause found** on recording, screenshotting, or broadcasting personal gameplay footage in the sections retrieved |
+| [fenixbazaar.com — replay feature ahead of Season 3](https://fenixbazaar.com/2025/07/10/marvel-rivals-replay-feature-season-3/) | 2025-07-10 | No | Secondary report, paraphrasing an alleged NetEase confirmation, that a "fully-fledged replay system" was still in final debugging pre-Season-3, no fixed date given |
+| [gameriv.com — Report System 2.0 leak](https://gameriv.com/marvel-rivals-report-system-2-0-adds-notes-replay-codes-and-in-game-mail-updates/) | 2026-09-10 | No (explicitly a leak; article notes official Season 10 patch notes don't mention it) | Describes a not-yet-shipped feature letting players attach a "Match Share Code or Replay ID" as report evidence even with no shared match history |
+| [onlyfarms.gg wiki — Replay Code explained](https://onlyfarms.gg/wiki/marvel-rivals/replay-code-explained) | "Updated 2025-05-02" | No | Describes entering someone else's code via a replay-section input field in the main menu |
+| boosting-ground.com — Competitive Tools: Lobbies & Replays (read via r.jina.ai text proxy; direct fetch 403'd) | Undated | No | Describes free/detached camera, perspective switching to any player (ally or enemy), timeline scrubbing, playback speed, HUD toggle, and post-patch replay breakage; a controller-mapping claim in the same fetch (A/X play-pause, D-pad POV) could not be corroborated elsewhere — treat that specific detail as unverified/low-confidence |
+| Steam Community discussions (`steamcommunity.com/app/2767030/discussions/...`) | Multiple, 2024-05 through 2026-09 | No (Valve-hosted player forum) | Various: replay camera keybind complaints (2025-03-11/13), Season-2 replay-save deadline report (2025-04-12), pre-launch Content Creator ToS discussion (2024-05-12/14), general "replays expire" reports |
+| Twitch: [twitch.tv/daymr](https://www.twitch.tv/daymr); YouTube: [@DayRivals](https://www.youtube.com/@DayRivals), [@reqmr1](https://www.youtube.com/@reqmr1) | Live/current channels | No | Confirms both creators' channels exist and post Spider-Man Marvel Rivals content; no Replay ID/Match Share Code found published on either |
+| Various stat/leaderboard sites (op.gg, rivalsmeta.com, rivalstracker.com, tracker.gg, rivalsdata.com, rivalsheroes.com, atlasforge.gg) | Current | No | Confirm rank/stat leaderboards exist; none of them expose or index Replay IDs |
+| General Twitch/streaming bitrate write-ups (2026 "Enhanced Broadcasting"/Dual-Format coverage) | 2026 | No | Support the Q8 comparison of Twitch ingest caps vs. YouTube upload capability |
+
+## 1. Replay system on PC — where, which modes, how long, does it survive patches
+
+- **VERIFIED (first-party):** Marvel Rivals has an in-client replay feature on PC. The Season 7 patch notes (v20260320, 2026-03-18) name it "Instant Replay & Highlights: Relive finished matches with in-game replays and video highlights," folded into a new integrated Esports System, and explicitly warn "some replays may have a viewing expiration."
+- **VERIFIED (first-party):** A separate "Replay" mode and a separate "Spectate" mode already existed by June 2025 — the v20250619 patch note fixes a bug specific to "Replay and Spectate modes," and v20251106 fixes a replay/spectate-specific Daredevil-outline rendering bug.
+- **UNVERIFIED — timeline is genuinely unclear:** exactly when the full camera-control replay viewer first shipped. A secondary July 2025 article says a "fully-fledged replay system" was still being finalized pre-Season-3 (which began 2025-07-11) with no confirmed date, yet the official Season 3 patch notes (fetched directly) contain no replay content at all, while Steam posts from March–April 2025 already discuss replay camera controls and a "Season 2" replay-save cutoff. Net read: some replay/spectate capability existed since at least Season 2 (~Q1 2025) and was later expanded/rebranded as "Instant Replay & Highlights" for Season 7's esports push (2026-03). Don't trust any single source's claim of an exact ship date.
+- **LIKELY (menu path, community-sourced, not confirmed on any first-party help page):** Career (click your profile icon, top right of main menu) → **History** tab → pick a match → a small Play-button icon opens its replay. Saved/shared replays live under **Favourites → Match Replays** sub-tab.
+- **LIKELY, UNVERIFIED which modes exactly:** Quick Match and Competitive matches get history entries with replays, per every community guide found. Whether **Custom Games** and **Practice vs. AI** matches also get replays was not confirmed or denied by any source — test this directly.
+- **LIKELY (no first-party number given anywhere found):** Replays expire; retention is tied to patches/seasons, not a fixed day count. One Steam post (2025-04-12) reports NetEase announced a hard cutoff to save replays "up to Season 2." No official document states a retention window in days.
+- **LIKELY:** Because replays are widely described (only in secondary sources) as "in-engine recordings" / a "full 3D recreation" rather than baked video, a hero rework, balance change, or map change in a later patch can leave an old replay "unwatchable or bugged." No first-party text says this explicitly beyond the generic "viewing expiration" warning.
+
+## 2. Watching other players' replays, replay IDs, favourites, leaderboard/tournament replays
+
+- **LIKELY:** Every match gets a Match ID / Replay ID, shown under the match scoreboard next to a star icon (star = save to Favourites). To watch someone else's match, paste their code into **Favourites → Match Replays**' search field, or — if you already share match history with them — open their name from your recent-players list, go to their Career, and open their History directly. This is consistent across several independent community guides and a dedicated wiki page (onlyfarms.gg, updated 2025-05-02), but was not found stated on any first-party marvelrivals.com page.
+- **UNVERIFIED:** Any official way to fetch a **top-ranked/leaderboard player's** replay without that player personally handing you their code — nothing found describes this. The Season 7 Esports hub ("watch the action unfold in real-time directly inside the game") reads as a live broadcast/spectate feature for official tournament matches, not a general replay-browsing feature for arbitrary ranked players.
+- **UNVERIFIED, leak-only:** A datamined "Report System 2.0" (reported 2026-09-10, explicitly not in the official Season 10 patch notes) would let a reporting player attach a Match Share Code / Replay ID as evidence against someone they have no shared history with — suggesting codes may become importable independent of prior matches, but this is unshipped and unconfirmed by NetEase.
+
+## 3. What the viewer shows and lets you control
+
+- **LIKELY:** A detached free camera, plus the ability to lock onto and follow any specific player — friend or enemy — in a third-person "follow cam," and a first-person mode that puts the camera at that player's own POV. Consistent across independent community sources; no official keybind list was found (a Steam thread reports the default camera keys are QWERTY-only and non-remappable as of March 2025, without naming the actual keys).
+- **LIKELY:** Playback controls include pause, fast-forward/rewind, a scrubbable timeline (with elimination markers), and a playback-speed control. **UNVERIFIED:** true single-frame stepping — no source, first- or third-party, specifically confirms a frame-advance control.
+- **LIKELY:** When you're riding a specific player's POV, at least their ability cooldowns are visible (per a community synthesis: "you can see players' cooldowns while watching their perspective"), consistent with the replay being an in-engine recreation that would naturally reproduce their full HUD. The fuller claim — that health, ammo, and ultimate charge also render exactly as that player saw them — is a reasonable extrapolation but was not independently confirmed item-by-item; treat as LIKELY, verify in client.
+- **VERIFIED (first-party) that an outline/highlight toggle functions during replay/spectate:** the v20251106 bug fix is specifically about the viewer's own outline-display setting interacting badly with a replay of Daredevil. **UNVERIFIED** whether the killfeed and full scoreboard remain visible/togglable during playback — a "toggle replay controls and HUD" option and an "even turn the UI off to make content" capability are both reported by secondary guides, which at minimum confirms *some* HUD on/off toggle exists, but not exactly what it contains.
+
+## 4. Do the viewer's own settings apply, or are the recorded player's settings baked in? (the key question)
+
+- **LIKELY, not fully VERIFIED:** The strongest piece of evidence is first-party: the v20251106 Daredevil bug only makes sense if the replay/spectate renderer reads and applies the *viewer's own* outline-display setting live, rather than baking in whatever the recorded player had — i.e., turning outline display OFF in your own settings while replaying/spectating someone changed what you saw. That's real evidence the client re-renders locally with the current viewer's display settings rather than replaying a captured video.
+- **UNVERIFIED (the exact settings the user cares about):** No source — first-party or otherwise — explicitly states that **Settings → Accessibility → Custom Colors → Enemy Color** specifically (as opposed to some other "outline display" toggle) is what's being read, nor that **resolution** or **general HUD layout options** are drawn from the viewer's own client rather than fixed at replay time. The "in-engine recording" / "full 3D recreation" framing used across several secondary guides implies local real-time rendering (which would mean yes, your resolution and HUD options apply, since there's no baked video), but this is an inference, not a stated policy. **This needs an in-client test** (see checklist).
+
+## 5. Controller input for the replay viewer; PC vs. console limits
+
+- **LIKELY:** The base game has full native Xbox/PlayStation controller support on PC (multiple secondary sources), and NetEase is reported (PC Gamer) to ban PC players who spoof controller input to farm console-only matchmaking — confirming KBM vs. controller is a real, enforced distinction on PC.
+- **UNVERIFIED, conflicting:** Whether the *replay viewer itself* (camera fly, POV switch, timeline scrub) is controller-drivable. One low-confidence source (an AI summary of a proxied community-guide fetch) claimed specific pad bindings, which could not be corroborated elsewhere and should be treated skeptically. A separate, more concrete Steam thread (2025-03-11/13) about replay camera controls discusses only keyboard-layout (AZERTY/QWERTY) remapping, with no mention of a controller alternative — weak circumstantial evidence the replay camera may be keyboard/mouse-centric, but not conclusive either way.
+- **VERIFIED (first-party), narrow:** at least one PlayStation-specific replay bug existed and was fixed ("players could get stuck and be unable to exit the Highlights screen after watching a replay" on PlayStation) — this only establishes that a console-specific replay bug existed, not an ongoing PC/console capability gap.
+
+## 6. Do DayMR / reqMR / other top Spider-Man players publish Replay IDs anywhere?
+
+- **UNVERIFIED / not found:** No evidence found that DayMR (`twitch.tv/daymr`, YouTube `@DayRivals`) or reqMR (YouTube `@reqmr1`) publish Marvel Rivals Replay IDs or Match Share Codes in video descriptions, on Discord, or on X — targeted searches for their handles plus "replay code" returned nothing. Both channels appear to post finished, edited gameplay videos rather than raw replay codes.
+- **UNVERIFIED / not found:** No community site indexing Replay IDs by hero or rank turned up. The several stat/leaderboard trackers found (op.gg, rivalsmeta.com, rivalstracker.com, tracker.gg, rivalsdata.com, rivalsheroes.com, atlasforge.gg) surface rank/stat leaderboards only, not replay-code repositories.
+- This doesn't rule out codes circulating privately (Discord DMs, private servers) — only that nothing public or indexable was found.
+
+## 7. Terms/restrictions on recording replay footage for personal analysis
+
+- **UNVERIFIED, and the evidence is mixed — flag this clearly rather than picking a side:**
+  - Marvel Rivals' own tournament rule PDFs point to NetEase Games' general Terms of Service as the applicable "User Agreement" without reproducing it.
+  - The actual NetEase platform terms fetched directly (redirected to `protocol.unisdk.easebar.com/release/latest_v487.html`) restrict hosting/streaming "the Services or Software" itself and ban bots/cheats/scraping, but the sections retrieved contained **no explicit clause** about recording, screenshotting, or broadcasting personal gameplay footage.
+  - A separate AI-generated web-search summary asserted NetEase broadly requires "express prior written consent" before recording/streaming/broadcasting gameplay, but this could not be traced to a confirmed Marvel-Rivals-specific source and may be miscited from a different NetEase title's EULA (an Identity V wiki page surfaced in the same search) — treat this specific claim as unverified and likely wrong for this game.
+  - A pre-launch (2024-05) Steam thread quotes a separate "Content Creator" program agreement (opt-in, not the base player ToS) with a non-disparagement clause — unrelated to personal replay capture.
+  - Working against any blanket restriction: marvelrivals.com actively runs a Content Creator Program and markets the replay/highlights feature itself as being for content creation, i.e., recording your own finished matches for personal or sharing use is clearly developer-sanctioned.
+  - **Nobody addresses the actual use case here** — capturing replay footage as training data for a third-party AI agent. That's genuinely uncovered territory; don't assume it's "clearly fine" just because personal replay recording is fine, and don't assume it's "clearly forbidden" either — flag it as an open question if this moves past internal research use.
+
+## 8. Highest-quality public source of these players' gameplay today
+
+- **LIKELY (general platform facts, not Marvel-Rivals-specific):** Twitch, even with 2026's "Enhanced Broadcasting"/Dual-Format rollout (taken out of testing 2026-06-17 per secondary coverage), caps an ordinary live stream at 1080p60 around 6 Mbps; Enhanced Broadcasting can add a second, higher-bitrate rendition (reported up to roughly 1440p/9 Mbps HEVC) for streamers who've opted in, but this is still well below what a native video upload supports. A Twitch VOD inherits whatever the live broadcast was capped at — it is not re-encoded higher after the fact.
+- **LIKELY:** YouTube accepts and serves uploads at up to 4K (and 8K for compatible source files) at bitrates well above Twitch's live-ingest caps, so a creator's own edited YouTube upload of the same gameplay is very likely the higher-fidelity public copy — *if* they captured/exported locally above 1080p60 in the first place; YouTube can't exceed the quality of whatever file was uploaded.
+- **UNVERIFIED (channel-specific):** Whether `@DayRivals` and `@reqmr1` actually upload above 1080p (native higher-res capture/export) versus simply re-uploading their 1080p Twitch stream. This needs a direct look at a recent upload's available quality levels on each channel — not done here, since inspecting/downloading video content was out of scope for this pass.
+
+## What to test in the client (≈10 minutes, game open)
+
+1. Career (profile icon, top right) → **History**: confirm the tab exists as described, and note whether Quick Match, Competitive, Custom Game, and Practice vs. AI matches all show up (or which are missing).
+2. Open a recent match's replay from History; note exactly where the Match ID / Replay ID is shown and confirm the star/Favourite action works.
+3. In **Favourites → Match Replays**, try pasting a Replay ID (e.g., a teammate's, or your own from another account) to confirm the import flow actually works as described.
+4. In the replay viewer: find the free-camera control, a third-person "follow" lock on a specific player, and a first-person POV control; while in someone's POV, check whether their health, ability cooldowns, ammo, and ultimate charge are all visible.
+5. Before entering a replay, go to **Settings → Accessibility → Custom Colors → Enemy Color** and set something distinctive (e.g., neon green). Then open a replay and check whether enemies render in *your* chosen color or in whatever the recorded match originally showed.
+6. Note your current display resolution, then check whether the replay renders at that same native resolution (vs. some fixed/lower resolution) — e.g., by screenshotting and measuring, or checking if a resolution change while a replay is open takes effect.
+7. Check whether the kill feed and a full scoreboard are visible during replay playback, and test whatever "hide HUD" toggle exists.
+8. Test playback speed change, timeline scrubbing, pause, and look specifically for a frame-step/frame-advance control while paused.
+9. Plug in an Xbox controller and, without touching mouse/keyboard, try to open a replay from the Career menu and drive the free camera, POV switch, and playback controls purely on the pad; note anything with no pad equivalent.
+10. Try the reported in-replay clip/record shortcut (community reports say the **T** key, capped around 5 minutes per clip) — confirm it exists, what resolution/format it saves at, and whether it lands at the reported path `%LOCALAPPDATA%\Marvel\Saved\ShareVideos`.
