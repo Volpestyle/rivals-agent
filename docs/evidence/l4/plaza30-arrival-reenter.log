@@ -1,0 +1,22 @@
+START 18:18:08.11  
+reenter: screen lobby
+reenter: A (cursor (1206,384) is on the PRACTICE tab; TRY COMPETITIVE is idle)
+reenter: A written at proof age 57 ms (limit 300): grab 4 ms (dxcam), classify 1, proof 52, checks 0
+reenter: screen practice_panel
+reenter: A (cursor is on the PRACTICE RANGE tile; DOOM MATCH is not)
+reenter: A written at proof age 82 ms (limit 300): grab 29 ms (dxcam), classify 1, proof 51, checks 0
+reenter: screen hero_select
+reenter: RB
+reenter: RB written at proof age 4 ms (limit 300): grab 4 ms (dxcam), classify 1, proof 0, checks 0
+reenter: RB
+reenter: RB written at proof age 4 ms (limit 300): grab 4 ms (dxcam), classify 1, proof 0, checks 0
+reenter: A (the game's tooltip names SPIDER-MAN (match 0.87) beside the cursor at (861,36))
+reenter: A written at proof age 76 ms (limit 300): grab 5 ms (dxcam), classify 1, proof 70, checks 0
+reenter: X
+reenter: X written at proof age 3 ms (limit 300): grab 3 ms (dxcam), classify 1, proof 0, checks 0
+reenter: screen in_range
+reenter: RT
+reenter: RT written at proof age 6 ms (limit 300): grab 4 ms (dxcam), classify 2, proof 0, checks 0
+reenter: 22 arrival steps logged to C:\rivals-agent\data\reenter\arrive-20260921-181812
+reenter: in the Practice Range as Spider-Man
+EXIT 0 18:18:47.27  

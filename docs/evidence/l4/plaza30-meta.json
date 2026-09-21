@@ -1,0 +1,96 @@
+{
+ "stop": "max_time",
+ "brain": "scripted",
+ "cooldowns": "normal",
+ "seconds": 30.002,
+ "ticks": 1545,
+ "reflex_hz": 51.5,
+ "period_ms": {
+  "p50": 18.75,
+  "p95": 25.82,
+  "max": 36.23
+ },
+ "tick_ms": {
+  "p50": 10.29,
+  "p95": 12.86,
+  "max": 18.61
+ },
+ "aim_ms": {
+  "p50": 7.31,
+  "p95": 9.13,
+  "max": 14.26
+ },
+ "over_budget": 7,
+ "budget_ms": 16.67,
+ "decisions": 305,
+ "decision_hz": 10.2,
+ "decide_ms": {
+  "p50": 48.66,
+  "p95": 99.53,
+  "max": 120.77
+ },
+ "decision_lag_ms": {
+  "p50": 50.3,
+  "p95": 121.88,
+  "max": 198.0
+ },
+ "missed_decisions": 3,
+ "sources": {
+  "waiting": 3,
+  "scripted": 1542
+ },
+ "intents": {
+  "idle": 3,
+  "search": 105,
+  "engage:enemy": 1179,
+  "combo:burst": 258
+ },
+ "keepalives": 0,
+ "range_gaps": [],
+ "scoreboards": [
+  {
+   "t": 36.731,
+   "file": "scoreboard-end.png",
+   "size": [
+    2560,
+    1440
+   ],
+   "parsed": {
+    "open": true,
+    "kos": 2,
+    "deaths": 0,
+    "assists": 0,
+    "accuracy": 60,
+    "damage": 550,
+    "damage_blocked": 0,
+    "healing": 0,
+    "web_cluster_accuracy": 50,
+    "spin_kos": 0
+   }
+  }
+ ],
+ "errors": [],
+ "native": [
+  2560,
+  1440
+ ],
+ "start": {
+  "turns": 1,
+  "stamps_s_after_liveio_return": [
+   5.3712,
+   5.4103
+  ],
+  "ms": {
+   "first_send_returned": 14.0,
+   "prime_done": 352.8,
+   "confirmed": 5449.6,
+   "liveio_return_to_first_send_return": 14.0
+  },
+  "liveio_ms": 625.3,
+  "confirm_frames": [
+   "start-confirm-1.png",
+   "start-confirm-2.png"
+  ],
+  "steps_file": "start-steps.jsonl"
+ }
+}
