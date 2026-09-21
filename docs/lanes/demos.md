@@ -1,176 +1,190 @@
-# Demonstrations: dataset format and loader (VUH-1308)
+# Demonstrations: dataset format and loader (VUH-1308, VUH-1326, VUH-1324)
 
-**Built and tested offline.** `agent/demos.py` is one on-disk format and one loader for three kinds of source:
-expert VOD clips (no inputs), the agent's own range recordings (pad state as the input modality), and later human
-annotations. It reads the design in [learning-plan.md](../learning-plan.md) and the "Direction" section of
-[plan.md](../plan.md); it adds no competing schema. Stdlib only: 62 tests in `tests/test_demos.py`, plus two that read the
-real `data/l1/tagrun0` and the Req sample manifest when they are on the machine. Nothing is committed.
+`agent/demos.py` is one on-disk format and one loader for three kinds of source: expert VOD clips (no inputs), the agent's
+own range recordings (pad state as the input modality), and human annotations. It reads the HUD lane's **format 4** event
+files, joins play across short scoreboard taps with the hidden frames masked, carries annotators' per-frame masks into the
+window, and holds each source's provenance (cooldown regime, patch, splittable, edited upload, group) with one authority.
+What it cannot trust it refuses, loudly. Stdlib only. Nothing under `data/` is committed.
 
 ```sh
-uv run python -m agent.demos data/demos/samples data/l1/tagrun0     # one summary line per clip
-uv run pytest tests/test_demos.py
+uv run python -m agent.demos data/demos/vods data/demos/youtube/reqmr     # one line per clip, then usable minutes per patch
+uv run --group perception pytest tests/test_demos.py
 ```
 
 ```python
 from agent.demos import Demos
-demos = Demos.load("data/demos/samples", "data/l1/tagrun0")
-for obs in demos.observations("train"):                 # what a policy may see: nothing after obs.t
+demos = Demos.load("data/demos", "data/l1/<run>")
+for obs in demos.observations("train", patch="Season 10, Version 20260911"):   # what a policy may see: nothing after obs.t
     ...
-for s in demos.samples("val", hindsight=True):          # + labels, and the outcome window after t
+for s in demos.samples("val", hindsight=True):                                  # + labels, and the outcome window after t
     ...
 ```
 
-Media is never copied or re-encoded, and there is no database: a clip is one JSONL manifest beside the media where it
-already lives (`data/demos/samples/<clip>.manifest.jsonl`), and the loader hands back frame references, not pixels.
+Media is never copied or re-encoded, and there is no database: a clip is one JSONL manifest beside its media
+(`<clip>.manifest.jsonl`), and the loader hands back frame references, not pixels.
 
 ## Shape of the data
 
 ```mermaid
 flowchart LR
-  V["VOD clip: mp4 + manifest.jsonl<br/>no inputs"] --> L[Demos.load]
-  R["range run: frames.jsonl + jpgs<br/>loaded as it is, no manifest"] --> L
-  E["events JSONL<br/>(HUD lane, perception/events.py)"] --> V
-  A["annotations JSONL<br/>(later)"] --> V
-  L --> S["splits by group<br/>before any window is cut"]
-  S --> O["observations(split)<br/>past only"]
-  S --> H["samples(split, hindsight=True)<br/>labels + outcome window"]
+  A["acquisition manifest.json<br/>(dates, group, split)"] --> M["clip manifest.jsonl<br/>header: provenance + segments"]
+  E["events JSONL, format 4<br/>(perception/events.py)"] --> M
+  V["context_mask / outcome_mask<br/>(annotators' per-frame visibility)"] --> N["annotations JSONL"]
+  N --> M
+  R["run dir: frames.jsonl + meta.json"] --> L[Demos.load]
+  M --> L
+  L --> S["splits by group; unsplittable -> inspection_only"]
+  S --> G{"one regime and one patch<br/>per split, unless asked"}
+  G --> O["observations(split): past only, masks on frames"]
+  G --> H["samples(split, hindsight=True)"]
 ```
 
-One decision, on the clip's own clock (every `t` is seconds from the start of the media):
+One decision, on the clip's own clock (every `t` is seconds from the first decoded frame of the media):
 
 ```
-clip time   0 ---- 7.8 | gap | 16.7 | 18.1 ------------------------------ 43.2 | gap | 43.8 ---- 60.0
-segments    [ seg 0    ]      [seg 1] [ seg 2                                  ]      [ seg 3       ]
-                                      started_by=hero_returned        ended_by=scoreboard
-decision                                            t=30.0
-observation                               [25.0 .......... 30.0]   frames, events with t_to <= 30.0, inputs
-hindsight                                                (30.0 .......... 35.0]   outcome window, still inside seg 2
+clip time   0 ------- 5.5 |tap| 6.1 --------------------------- 37.6 | death ... | 45.2 ------
+segments    [ seg 0       ]      [ seg 1                          ]              [ seg 2
+                   ended_by=scoreboard, 0.6 s wide: under MAX_BRIDGE_S, so bridged
+decision                              t=8.1
+observation        [3.1 ....... masked 5.7, 5.9 ....... 8.1]      frames; events with t_to <= 8.1 from seg 0 and seg 1
+hindsight                                   (8.1 ........ 13.1]   outcome window, up to the next HARD boundary
 ```
-
-Nothing crosses a boundary: history is clipped to the segment's start, the outcome window to its end, and a window cut by
-the segment says why (`ended_by`, `truncated`). A decision needs a frame proven inside a segment that is at least
-`MIN_SEGMENT_S` long (seg 1 above is not).
 
 ## The manifest
 
-A manifest is JSONL: one `{"type": "clip", ...}` header, then zero or more `{"type": "segment", ...}` lines. Every header
-key below except the last group must be present; a value that does not apply is `null`, never omitted, so absence is never
-silent. Unknown extra keys are kept and ignored.
+A manifest is JSONL: one `{"type": "clip", ...}` header, then `{"type": "segment", ...}` lines. Every header key below except
+the optional group must be present; a value that does not apply is `null`, never omitted. Unknown extra keys are kept and
+ignored (`cooldowns_basis`, `patch_basis`, `pts_origin_s`, `notes` carry the human-readable evidence).
 
 | Key | Meaning |
 |---|---|
-| `id` | unique clip id (`reqmr-2873352801-1920`; runs are `run:<dir name>`) |
+| `id` | unique clip id (`reqmr-2871472478-5400-900s`, `Cf_2goe1snQ`; runs are `run:<dir name>`) |
 | `kind` | `vod` \| `run` \| `human` |
 | `source_url`, `vod_id`, `creator`, `retrieved` | where a VOD came from and when it was fetched (`null` for a run) |
 | `run` | the recorder's run name (`null` for a VOD) |
-| `source_start_s`, `source_end_s` | the clip's start and end on the source's own clock (a VOD's seconds); `source_time(t) = source_start_s + t` |
-| `resolution` | `[width, height]` of the media (`null` if unknown) |
-| `fps` | nominal frame rate (a video clip needs it: frame times snap to its grid) |
-| `hero` | who is played |
-| `overlays` | what covers the screen (list of strings; `[]` for none) |
+| `source_start_s`, `source_end_s` | the clip's start and end on the source's own clock; `source_time(t) = source_start_s + t` |
+| `resolution`, `fps` | `[width, height]` of the media; nominal frame rate (a video clip needs it: frame times snap to its grid) |
+| `hero`, `overlays` | who is played; what covers the screen (list of strings) |
 | `split` | `train` \| `val` \| `test` \| `inspection_only` \| `null` (assign by group) |
-| `media` | `{"kind": "video", "path": ...}` or `{"kind": "frames", "dir": ..., "index": "frames.jsonl"}`; paths are relative to the manifest |
-| `inputs` | `"pad"` or `null`: the input modality this clip has |
+| `media` | `{"kind": "video", "path": ...}` or `{"kind": "frames", "dir": ..., "index": "frames.jsonl"}`, relative to the manifest |
+| `inputs` | `"pad"` or `null` |
 | `events`, `annotations` | relative path of the companion JSONL, or `null` |
-| `segments_from` | who drew the segments: `segmenter` \| `annotator` \| `assumed_whole_run` |
-| `cooldowns` | the resource regime: `off` \| `normal` \| `unknown` (see "Resource regimes") |
-| optional | `group` (split unit, default the VOD id or run name), `duration_s`, `alignment`, `licence`, `notes`, `decisions` (clip times to sample instead of a grid) |
+| `segments_from` | `segmenter` \| `annotator` \| `assumed_whole_run` |
+| **`cooldowns`**, **`cooldowns_from`** | the resource regime (`off` \| `normal` \| `unknown`) and how it was determined |
+| **`patch`**, **`patch_from`** | the game patch (`"Season 10, Version 20260911"`, or `"unknown"`) and how it was determined |
+| **`splittable`** | `false` until the source is shown independent of every other (a cross-source duplicate check): never trained or scored on |
+| **`edited_upload`** | an edited upload: editorial cuts, black openings, outros |
+| optional | `group` (split unit, default the VOD id or run name), `duration_s`, `alignment`, `licence`, `notes`, `decisions` |
 
 **Segments** are the stretches proven usable: `start_t` (first frame proven inside), `end_t` (last frame proven inside),
-`started_by`, `ended_by`. What lies between two segments is unproven, and its width is the boundary's uncertainty: an
-unreadable interval is a gap, never bridged. The reasons are the HUD segmenter's (docs/lanes/l2-hud.md, "Event stream
-format"), plus refinements an annotator may use:
+`started_by`, `ended_by`, in the HUD segmenter's vocabulary (docs/lanes/l2-hud.md, "Event stream format") plus refinements
+an annotator may use:
 
-| Ended by | Meaning |
-|---|---|
-| `run_end` | end of the clip or recording |
-| `death` | hp reached zero |
-| `killcam` | the kill cam is playing |
-| `spectating` | spectating another player |
-| `scoreboard` | the scoreboard overlay is open |
-| `not_our_hero` | the hero played is known not to be ours (refines to `hero_swap`) |
-| `no_hud` | the HUD is gone (refines to `menu`, `brb`, `unreadable_hud`) |
-
-Started by: `run_start`, `respawn`, `killcam_over`, `spectating_over`, `scoreboard_closed`, `hero_returned`, `hud_returned`.
-Any other value is refused when the manifest loads, as are overlapping or out-of-order segments and a segment that
-outlives the clip.
-
-**Slivers.** A segment shorter than `MIN_SEGMENT_S` (1.0 s) is kept in the manifest, because it is what the segmenter proved,
-and events inside it still validate, but no window is ever cut from it: a few frames of play between two scoreboard openings
-hold no decision worth learning from. Every decision that would have fallen in one (grid or explicit) is reported in
-`demos.skipped` as `segment_too_short` (as is each short segment, at its start), `Demos.usable(clip)` lists the segments windows
-may come from, and `summary` prints `(short: n)`. `Demos.load(..., min_segment_s=...)` changes the minimum. On the sample clips
-the slivers run 0.0-0.8 s and the shortest real stretch is 3.3 s, so 1.0 s separates them.
-
-## Resource regimes: `cooldowns` off | normal | unknown
-
-The practice range's Practice Settings has **No Ability Cooldown**. ON gives infinite web ammo, an ultimate relit within seconds and
-no cooldown numbers; it is a different game from normal play, and a learner or an evaluation that mixes the two learns
-neither. Every clip says which it is in its `cooldowns` field (required, one of):
-
-| Value | Meaning | Who gets it |
+| Ended by | Meaning | Started by |
 |---|---|---|
-| `off` | No Ability Cooldown is ON: infinite ammo, ult relit in seconds, no cooldown numbers | own runs recorded before the baseline |
-| `normal` | ammo depletes, cooldown numbers run, the ult charges | own runs after L4 turned the setting off; footage where cooldown numbers and ammo were seen on screen (both sample VODs: `ability_cast` with a cooldown of 8, `web_cluster_fired` 4 to 3; `cooldowns_basis` says so) |
-| `unknown` | nobody saw the HUD's resources | third-party guides and any run whose recorder did not say |
+| `run_end` | end of the clip or recording | `run_start` |
+| `death`, `killcam`, `spectating` | hp reached zero, the kill cam, spectating another player | `respawn`, `killcam_over`, `spectating_over` |
+| `scoreboard` | the scoreboard overlay is open | `scoreboard_closed` |
+| `not_our_hero` (refines to `hero_swap`) | the hero played is known not to be ours | `hero_returned` |
+| `no_hud` (refines to `menu`, `brb`, `unreadable_hud`) | the HUD is gone | `hud_returned` |
+| `hard_cut` | an editorial cut in an edited upload | `after_cut` |
 
-A run directory has no manifest, so its regime is its `meta.json`'s `cooldowns` (the live loop writes it: `--cooldowns`, required with
-`--live`), else **`unknown`**: it is never assumed from the recording's date. Runs recorded before the baseline (`data/l1/tagrun*`,
-`run1`, ...) belong to other lanes and carry no such field; they load as `unknown` until their `meta.json` (`{"cooldowns": "off"}`) or a
-`manifest.jsonl` in the directory says otherwise.
+Any other value is refused when the manifest loads, as are overlapping or out-of-order segments and a segment that outlives
+the clip. A segment shorter than `MIN_SEGMENT_S` (1.0 s) is kept (it is what the segmenter proved; its events still validate)
+but no decision is cut from it; the skip is reported in `demos.skipped` as `segment_too_short`, and `summary` prints `(short: n)`.
 
-`observations(...)` and `samples(...)` take `cooldowns` (one regime, or several) to keep only clips of that regime, and **raise
-`RegimeError` when the clips they would cut from hold more than one regime** unless `mix_regimes=True`; a split of one regime never
-raises, and regimes in different splits never conflict. `Demos.regimes(split)` lists what a split holds, `summary` prints each clip's
-`cooldowns=`. Pinned by `test_a_split_that_mixes_regimes_is_refused_unless_asked`, `test_a_regime_can_be_picked_and_two_of_three_is_still_a_mix`,
-`test_a_run_directory_takes_its_regime_from_its_meta_json_and_is_unknown_without_one`.
+## Provenance: one authority, fail loud
 
-## Events: consumed as the HUD lane writes them
+The clip's own manifest, or a run directory's own `meta.json`, is the **single authority** for its regime and patch.
 
-`perception/events.py` writes one file per clip, `data/demos/events/<clip-stem>.jsonl`, with three line kinds told apart by
-`type` (docs/lanes/l2-hud.md, "Event stream format"): a `meta` line, `segment` lines (`start_i`, `start_t`, `end_i`, `end_t`,
-`started_by`, `ended_by`), then events, which carry no `type`: `kind`, `i_from`, `t_from`, `i_to`, `t_to`, `slot`, `amount`,
-`before`, `after`, `segment`. The loader reads the events and ignores the other two kinds; `events_file_segments(path)` turns the
-segment lines into manifest segments, so a clip's manifest is `write_manifest(path, header, events_file_segments(events_file))`
-with `events` set to the file's path relative to the manifest (`../events/<stem>.jsonl`).
+| Field | Values | `*_from`: how it was determined |
+|---|---|---|
+| `cooldowns` | `off` \| `normal` \| `unknown` | `run_metadata` \| `observed_cooldowns` \| `broadcast_date` \| `upload_date` \| `none` |
+| `patch` | a season/version string \| `unknown` | the same list |
 
-**The loader reads format 2 only** (`"format": 2` in the meta line). Format 1 (no `format`; `ability_used` / `ability_ready`, slot
-`pull`, hp as a net figure) claimed casts that never happened and missed the ones that did, so a format 1 file, a file with no meta
-line, or a format the loader does not know is refused with a `FormatError` naming what to regenerate; so is format 1 vocabulary
-(`ability_used`, `ability_ready`, slot `pull`) inside a format 2 file. Format 2's kinds: `ability_cast` (the only kind that claims a
-cast, proved by a cooldown number or a charge drop; `amount` is the cooldown it started at), `slot_unavailable` / `slot_available` (an
-icon dimmed or restored: a wall climb does that, it is not a cast), `charges_spent`, `charges_regained`, `web_cluster_fired`,
-`web_cluster_reloaded`, `hp_lost`, `hp_gained` (raw steps, never a net), `shield_*`, `max_hp_changed`, `ult_*`, `ko_feed`, `death`,
-`respawn`; slots are `teamup`, `swing`, `get_over_here`, `uppercut`, `ult`. The loader does not check kinds against that list (the HUD lane
-adds kinds without changing the format); it only refuses the removed names. Events are proposals, not ability-use truth, until the HUD
-lane's hand-check says otherwise. Two things matter to the loader:
+- A known value needs a basis and `unknown` has none (`ProvenanceError` otherwise).
+- `cooldowns_from: observed_cooldowns` is checked against the events file: its meta line's `observed` must show running
+  countdowns, and they prove `normal` only. A claim of `off` from countdowns, or of anything with no countdowns seen, is refused.
+- **A run directory** takes `cooldowns` and `patch` from its `meta.json` (`run_metadata`), else `unknown` / `none`: never from a
+  table keyed by the run's name, never from its date. A `manifest.jsonl` inside the run directory that disagrees with its
+  `meta.json` on either is a `ProvenanceError`, not a preference. The live loop writes its gap manifest from
+  `clip_from_run(...).header`, so the two agree by construction.
+- **Splits never mix.** `observations()` / `samples()` raise `RegimeError` when the clips they would cut from hold more than one
+  regime or more than one patch. Pick with `cooldowns=` / `patch=` (one value or several), or pass `mix_regimes=True` /
+  `mix_patches=True` to mix on purpose. `Demos.regimes(split)` and `Demos.patches(split)` list what a split holds.
+- **Unsplittable means never trained or scored on.** A clip with `splittable: false` may only be `inspection_only` (an explicit
+  `train`/`val`/`test` is refused), and a group holding one goes to `inspection_only` whole, so a training iterator
+  (`train`, `val`, `test`) can never yield it. Neither can it yield an `inspection_only` clip: a clip is on exactly one side.
 
-- **An event is an interval, never an instant.** `t_from` is the last frame showing the old value, `t_to` the first showing
-  the new one. There is no press time, and an unreadable stretch simply widens the interval. At decision time `t` an event
-  is *known* only if `t_to <= t`; one with `t_from <= t < t_to` is still pending and belongs to hindsight.
-- **An event lies inside one segment.** The loader assigns it to a segment by time (the file's own `segment` index is only
-  a hint, so editing segments cannot silently mis-assign events) and refuses the file if an event crosses a boundary or
-  sits in a gap.
+Patch by date follows `docs/spiderman-kit.md`, the one place the current patch is stated ("Patch reflected: Season 10, Version
+20260911 ... live 2026-09-11"): a source broadcast on or after the live date is that patch, an earlier one is `unknown` (the kit
+enumerates no older patch). A Twitch VOD's broadcast date is its recording date. **An upload date only bounds the recording
+from above**, so `upload_date` is a weaker basis; the observed fingerprint agrees on every 900 s source here: uppercut's
+countdown mode is 1 s on the Season 10 sources (the four broadcasts, 2026-09-11 to 09-20, and the 9/11 and 9/12 uploads) and 2 s
+on all four April-May uploads (Season 10 cut Amazing Combo 2 -> 1 s).
 
-All `t_*` are clip time, seconds from the first frame of the media on an exact 10 Hz grid; `i_*` index that sampling (`t = i / 10`;
-the sample clips are 60 fps sources).
+### What rivals-policy's corpus code must read
 
-## Annotations (the pilot's fields, one line each)
+`policy/corpus.py` decides regime from the `RUNS` name-keyed table and assumes `normal` for every VOD (VUH-1326 finding 6). It
+must read these instead, and nothing else:
+
+| Need | Read | Never |
+|---|---|---|
+| regime | `clip.cooldowns` (with `clip.header["cooldowns_from"]`) | `corpus.RUNS`, a VOD's kind |
+| patch | `clip.patch` (with `clip.header["patch_from"]`) | a date recomputed outside the manifest |
+| may enter train/val/test | `demos.splits[clip.id] in ("train", "val", "test")` (implies `clip.splittable`) | `windows()` over every split |
+| edited upload | `clip.edited_upload` | the source's directory |
+| split unit | `clip.group` | the upload or VOD id alone |
+| windows | `demos.observations(split, cooldowns=..., patch=...)` | its own boundary or mask logic |
+
+where `demos = Demos.load(...)` and `clip = demos.clips[id]`. Leaving `mix_regimes` / `mix_patches` at `False` is what keeps a
+training set to one regime and one patch.
+
+## Events: format 4, as the HUD lane writes it
+
+`perception/events.py` writes one file per clip (`data/demos/events/<stem>.jsonl`, `sections/`, `youtube/`): a `meta` line,
+`segment` lines, then events without a `type` (`kind`, `i_from`, `t_from`, `i_to`, `t_to`, `slot`, `slot_pos`, `amount`,
+`before`, `after`, `segment`). `events_file_segments(path)` turns the segment lines into manifest segments.
+
+**The loader reads format 4 only.** Any other `format` (a file with no meta line is format 1) is a `FormatError` that names
+the file and both versions, and so is a meta line without `fps`, `layout`, `t_origin`, `slot_mapping` or `slot_mapping_from`
+(`slot_mapping` may be `null`, meaning no mapping was attempted, which differs from `{}`, icons read and none identified). The
+loader keeps the meta line as `clip.events_meta` (`slot_mapping`, `observed` cooldowns and charge counts, `cuts`,
+`pts_origin_s`, `fps`, `layout`, `t_origin`). Format 1 vocabulary (`ability_used`, `ability_ready`, slot `pull`) inside a file
+is refused.
+
+- **An ability is named only from its icon.** `slot` must equal `slot_mapping[slot_pos]`; a position the mapping does not
+  identify, or a file with no mapping, has `slot: null`, and a named slot there is refused as a guess (VUH-1326 finding 7).
+  The ult's position is fixed by the layout and is always `ult`. `Event.slot` stays `None` all the way into a window;
+  `Event.slot_pos` names the position, never the ability.
+- **An event is an interval, never an instant.** At decision time `t` an event is known only if `t_to <= t`; one still
+  pending is hindsight.
+- **An event lies inside one segment.** The loader assigns it by time (the file's `segment` index is only a hint) and refuses
+  one that crosses a boundary or sits in a gap.
+- **No HUD feature is read off a masked frame.** An event whose `t_from` or `t_to` frame an annotator masked for the HUD or
+  for the event's own field (`hp`, `ammo`, the slot) does not enter the window.
+
+## Annotations and their per-frame masks
 
 ```json
 {"type": "annotation", "t": 30.0, "by": "annotator-1", "assisted": false, "situation": "closing on a bot",
  "actions": ["engage"], "target": {"bbox": [900, 400, 940, 470], "frame_t": 30.0}, "evidence": [29.6, 30.0],
- "uncertainty": "low", "unusable": null, "outcome_review": "the attack landed"}
+ "uncertainty": "low", "unusable": null, "outcome_review": "the attack landed",
+ "context_start": 25.0, "masked_context": false, "context_mask": "30-context-visibility.json"}
 ```
 
-`actions` are candidate actions (several are allowed; `["none"]` is a no-engage decision), `target` is a box in the original
-pixels of a stated frame, the string `"unknown"`, or `null` (not stated), and `unusable` carries the reason a window cannot
-be labelled. Several annotators give several labels for one decision; `assisted` marks a model's proposal, which is not
-human ground truth. `outcome_review` is a separate field: it is returned only inside hindsight and never becomes part of a
-label. Two optional fields say what context the annotator judged: `context_start` (a clip time) and `masked_context` (true or
-false); the loader refuses a row whose window it would not reproduce (see "Overlay gaps" below). Other keys a row carries
-(`primitives`, `target_status`, `context_mask`, ...) are kept on disk and not read. Codex's annotation specification owns the
-vocabulary; this is the representation it lands in.
+`actions` are candidate actions (`["none"]` is a no-engage decision), `target` a box in the original pixels of a stated frame,
+`"unknown"`, or `null`; `unusable` is the reason a window cannot be labelled; `assisted` marks a model's proposal. `outcome_review`
+is returned only inside hindsight and never becomes part of a label. Other keys (`primitives`, `target_status`, ...) are kept on
+disk and not read.
+
+**`context_mask` and `outcome_mask`** name an annotator's per-frame visibility file, relative to the annotations file:
+`[{"t": 40.6, "scene": "partial", "player": "unavailable", "hp": "visible", ..., "reasons": ["camera_clips_geometry"]}, ...]`.
+A field that is `visible` or `partial` is not hidden; any other value (`unavailable`, `partial_chat_overlay`, anything
+unrecognised) hides that modality on that frame, whichever window the frame lands in. Two annotators' masks of one frame are
+unioned. `context_start` and `masked_context` are checked when a sample is built: `samples()` raises `AlignmentError` if the
+window starts later than the judged context or disagrees about holding masked frames, so an annotator never judged history the
+policy does not receive.
 
 ## Range recordings load unchanged
 
@@ -187,68 +201,59 @@ hero `spider-man` by convention, resolution read from the first JPEG's header, f
 `manifest.jsonl` inside a run directory replaces the synthesized one, which is how a run gets real segments or an events
 file. Directories that hold only jpgs (`data/l1/run1`, `full`, `trial1`) have no index and are refused.
 
-## Overlay gaps: soft and hard boundaries, masked frames
+## Bridging scoreboard taps: masked frames, hard boundaries
 
-A gap between two segments is **soft** when a known overlay made it: `ended_by = scoreboard` followed by
-`started_by = scoreboard_closed`. The player is alive and the game goes on; the HUD is hidden and the scene only some of the
-time. Every other gap is **hard** (death, killcam, spectating, a hero change, a lost HUD, a reset, and any mismatched pair such
-as `no_hud` then `scoreboard_closed`): nothing ever crosses it. `SOFT_GAPS` in `agent/demos.py` is the table.
+Experts tap the scoreboard mid-fight, so play comes in short segments. A gap is **soft** only when a scoreboard made it
+(`ended_by = scoreboard` then `started_by = scoreboard_closed`) **and** it is no wider than `MAX_BRIDGE_S` (1.0 s;
+`Demos(max_bridge_s=...)` is the knob). A window spans soft gaps by default (`across_overlays=True`): history and outcome run
+to the next hard boundary, events come from every segment the window reaches, and the gap's frames stay in the window,
+`masked`. **Every other gap is hard** and nothing crosses it: death, killcam, spectating, `not_our_hero`, `no_hud`,
+`hard_cut`/`after_cut`, a mismatched pair, and a scoreboard tap wider than the maximum. `across_overlays=False` stops a
+window at every boundary instead (and says so with `truncated_context`).
 
-`observations(...)` and `samples(...)` take `across_overlays`:
+A masked frame is a `FrameRef` with `masked = Mask(reasons, hidden)`. A bridged gap gives `Mask(("scoreboard",), ("hud",
+"scene"))`; an annotator's mask adds its own hidden fields and reasons (`("uppercut", "ult")` for `partial_chat_overlay`,
+`("player",)` for `camera_clips_geometry`). `hidden` names what must not be learned from: `hud` (all of it), `scene`,
+`player`, or one HUD field. A trainer drops or zeroes every hidden modality. `Observation.masked_context` says whether any frame
+is masked; `masked=None` claims only that nothing on record hides anything there.
 
-| | `False` (default) | `True` |
-|---|---|---|
-| history | stops at every boundary, soft included, and says so (`truncated_context`) | spans soft gaps; stops at a hard one |
-| outcome | ends at every boundary | ends at the next hard boundary (`ended_by` is that boundary's) |
-| frames in a soft gap | none: the window ends before it | come back **masked** |
-| events | of the decision's own segment | of every segment the window reaches, still only those confirmed by `t` |
+On the real format 4 sources, at `MAX_BRIDGE_S = 1.0`:
 
-A masked frame is a `FrameRef` with `masked = Mask(reason="scoreboard", hidden=("hud",), uncertain=("scene",))`: the segmenter
-proved the HUD absent, and an overlay hides the scene only sometimes. `masked=None` claims no more than that the segmenter saw
-the HUD there; the scene, the player and single HUD fields can still be hidden (an annotation's own per-frame mask says
-which). `Observation.masked_context` says whether any frame in the window is masked. A trainer must drop or zero the masked
-modalities; the default keeps the old, stricter windows so a caller who never asks never sees an overlay frame.
+| Source | Scoreboard taps | Bridged | Too wide (hard) | Median segment | Median bridged stretch |
+|---|---|---|---|---|---|
+| reqmr-2873352801-1920 (sample, 60 s) | 1 | 1 | 0 | 16.2 s | 41.9 s |
+| daymr-2879354299-21600-60s (sample, 60 s) | 6 | 6 | 0 | 11.4 s | 45.6 s |
+| daymr-2877719252-1800-900s | 37 | 34 | 3 | 7.6 s | 18.8 s |
+| daymr-2879354299-21660-900s | 21 | 17 | 4 | 12.6 s | 15.7 s |
+| reqmr-2871472478-5400-900s | 23 | 17 | 6 | 8.6 s | 19.9 s |
+| reqmr-2873352801-1980-900s | 17 | 12 | 5 | 20.8 s | 27.6 s |
+| d0C8RMBnFfA (upload, 9/11) | 20 | 15 | 5 | 13.4 s | 29.7 s |
+| yjc51uOjKEQ (upload, 9/12) | 18 | 16 | 2 | 18.5 s | 30.2 s |
 
-**An annotation is refused, loudly, when its window is not the annotator's.** A row that declares `context_start` and/or
-`masked_context` (the co-lead's rerun rows do) is checked when its sample is built, and `samples()` raises `AlignmentError`
-if the loader's window starts later than the judged context (a boundary or a shorter `history_s` cut it: the annotator used
-history the policy would not receive), or if `masked_context` disagrees with whether the window holds masked frames. The
-message names the cause and, for a scoreboard, the fix (`across_overlays=True`). Rows that declare neither load as before.
-
-The Codex rerun rows (`data/demos/annotations/codex-rerun/`, learning-plan "Aligned two-window rerun") on the Req clip, at
-10 Hz and `history_s=5`: +30 (context 25-30, inside one segment) loads either way; +45 (context 40-45, scoreboard 43.2-43.8)
-raises on the default and loads with `across_overlays=True`: 51 frames from 40.0, five masked (43.3-43.7), events from both
-sides of the gap, not truncated. Not aligned yet, on purpose: the loader derives masks from the segments only. The rows'
-own per-frame visibility files (`context_mask`) are not read, so the annotator's extra masks (chat over the abilities, camera
-inside geometry) do not reach the window. The one frame where they differ is 43.2: the row's mask marks the scoreboard from 43.2
-(six frames, 43.2-43.7), the loader's starts at 43.3 because 43.2 is the segment's last proven frame. The scoreboard is up through
-frame i437 (43.7) and gone at i438, so the segment starts at 43.8; on the old `-vf fps=10` grid the boundary read 43.7, a source frame off.
+Bridged taps are 0.4-1.0 s wide. The four April-May uploads have no scoreboard taps at all (edited out); their breaks are
+cuts, deaths and spectating.
 
 ## Samples, and why the future cannot leak
 
 | Guarantee | Enforced by | Pinned by |
 |---|---|---|
-| An `Observation` holds nothing later than `t` | every source is cut off at `t` before it is read, and `Observation` refuses to be constructed with a later frame, event or input (`LeakageError`) | `test_an_observation_refuses_to_hold_anything_later_than_t`, `test_no_future_datum_is_reachable_from_an_observation` (rows and events carry their own time, and the whole object graph is walked) |
-| No route from an observation to labels or the outcome | `Observation` has no such field and no reference to the clip; `observations()` never builds hindsight | `test_the_policy_facing_types_have_no_route_to_labels_or_outcomes` |
-| Hindsight is opt-in | `samples(..., hindsight=True)`; the default returns `hindsight=None`, and asking for it changes nothing else | same test, `test_the_outcome_is_strictly_after_t` |
-| An event still pending at `t` is not known at `t` | events filter on `t_to <= t` | `test_events_are_intervals_and_a_pending_one_is_hindsight` |
-| Nothing crosses a hard boundary; a soft one (a scoreboard) only on request | history starts at the boundary before the segment, the outcome ends at the one after it, a decision needs a frame inside a usable segment | `test_nothing_crosses_a_segment_boundary`, `test_a_decision_never_snaps_to_a_frame_outside_its_segment`, `test_no_hard_boundary_is_ever_spanned_even_when_asked_to_span_overlays`, `test_spanning_a_soft_gap_never_lets_the_future_into_a_window` |
-| An annotation is never attached to a window it was not made over | `_aligned` raises `AlignmentError` | `test_an_annotation_over_a_scoreboard_is_refused_until_the_window_matches_what_was_judged`, `test_an_annotation_is_refused_when_the_masked_claim_or_the_history_disagrees` |
-| A label is a target, not an input | recorded-input labels take pad states strictly after `t`; annotation labels are separate objects | `test_a_run_has_pad_inputs_...`, `test_annotations_carry_an_explicit_unknown...` |
-| The split is named and whole recordings stay together | `samples(split)` requires the split; assignment is by group | the split tests below |
+| An `Observation` holds nothing later than `t` | every source is cut off at `t` before it is read, and `Observation` refuses a later frame, event or input (`LeakageError`) | `test_an_observation_refuses_to_hold_anything_later_than_t`, `test_no_future_datum_is_reachable_from_an_observation` |
+| No route from an observation to labels or the outcome | `Observation` has no such field and no reference to the clip | `test_the_policy_facing_types_have_no_route_to_labels_or_outcomes` |
+| Hindsight is opt-in | `samples(..., hindsight=True)` | `test_the_outcome_is_strictly_after_t` |
+| An event pending at `t` is not known at `t` | events filter on `t_to <= t` | `test_events_are_intervals_and_a_pending_one_is_hindsight` |
+| Nothing crosses a hard boundary, a cut included; a tap is bridged only under the maximum | `Clip.soft_gap`, `Clip.stretch` | `test_no_hard_boundary_is_ever_spanned_even_when_asked_to_span_overlays`, `test_a_window_never_crosses_a_hard_cut`, `test_a_scoreboard_tap_wider_than_the_named_maximum_is_a_hard_boundary` |
+| A bridged window keeps the gap's frames masked and reads no HUD feature off a masked frame | `Demos._masked`, `Demos._readable` | `test_a_bridged_window_carries_masked_frames_and_no_hud_feature_from_them` |
+| A null-slot cast stays null | `_slot_guessed` at load; `Event.slot` is never filled | `test_a_cast_at_an_unidentified_position_stays_null_through_every_window`, `test_a_guessed_ability_name_is_refused` |
+| No split mixes regimes or patches unasked | `Demos._clips` | `test_a_split_that_mixes_regimes_is_refused_unless_asked`, `test_a_split_that_mixes_patches_is_refused_unless_asked` |
+| Nothing unsplittable or inspection-only reaches train/val/test | `assign_splits`, `Clip._check_provenance` | `test_a_source_not_shown_independent_is_never_trained_or_scored_on` |
+| An annotation is never attached to a window it was not made over | `_aligned` raises `AlignmentError` | `test_an_annotation_is_refused_when_the_masked_claim_or_the_history_disagrees` |
+| Splits are by whole recording | assignment is by group, hashed on `sha256(seed:group)` | `test_a_recording_is_never_on_both_sides`, `test_no_clip_and_no_group_appears_on_two_sides_over_many_random_fleets` |
 
-What this does not stop: code that asks for hindsight and then feeds `sample.hindsight` to a policy. The type is named for
-what it is and the policy-facing path (`observations()`) has no way to reach it.
+What this does not stop: code that asks for hindsight and feeds `sample.hindsight` to a policy, or a trainer that ignores
+`FrameRef.masked`.
 
-**Missing modalities are explicit, never filled.** `inputs` is `None` for a VOD (and for a run whose manifest says `null`
-even though its rows carry pad states); `events` is `None` when there is no event stream, and `()` only when a stream exists
-and nothing happened in the window; `labels` is `()` when a decision is unlabelled. Frames are always present.
-
-**Splits.** `split` is assigned per *group*, never per window: a group is the VOD id by default, so cuts of one VOD stay
-together; mirrors and re-uploads are given the same `group`. An explicit `split` wins and the rest of its group inherits it;
-an unassigned group is hashed (`sha256(seed:group)`), so the assignment depends only on the group and the seed and does not
-move when other clips are added. `SplitError` refuses a group with two explicit sides or one VOD in two groups, and
-`check_splits` proves no group is on two sides. Windows are cut only after that, from the requested side.
+**Missing modalities are explicit, never filled.** `inputs` is `None` for a VOD; `events` is `None` when there is no event
+stream and `()` when one exists and nothing happened in the window; `labels` is `()` when a decision is unlabelled.
 
 ## Trimming keeps source timestamps
 
@@ -257,97 +262,97 @@ move when other clips are added. `SplitError` refuses a group with two explicit 
 new edge starts as `run_start` or ends as `run_end`. Events and annotations are not rewritten here; whoever cuts the media
 re-cuts them, and the loader refuses events that no longer fit the segments.
 
-## Worked example: the Req sample clip
+## Worked example: a bridged window on a retained section
 
-`data/demos/samples/reqmr-2873352801-1920.manifest.jsonl` (segments from the HUD lane's events file; header abridged):
-
-```json
-{"type": "clip", "id": "reqmr-2873352801-1920", "kind": "vod", "source_url": "https://www.twitch.tv/videos/2873352801",
- "vod_id": "2873352801", "creator": "reqmr", "retrieved": "2026-09-20", "run": null, "source_start_s": 1920, "source_end_s": 1980,
- "resolution": [1920, 1080], "fps": 60, "hero": "spider-man", "overlays": ["chat intermittently covers the rightmost abilities and the ult"],
- "split": "inspection_only", "media": {"kind": "video", "path": "reqmr-2873352801-1920.mp4"}, "inputs": null,
- "events": "../events/reqmr-2873352801-1920.jsonl", "annotations": null, "segments_from": "segmenter", "alignment": "requested",
- "licence": "unverified", "duration_s": 60.083, "decisions": [5, 15, 30, 45], "cooldowns": "normal", "cooldowns_basis": "...", "notes": "..."}
-{"type": "segment", "start_t": 0.0, "end_t": 7.8, "started_by": "run_start", "ended_by": "death"}
-{"type": "segment", "start_t": 16.7, "end_t": 16.7, "started_by": "spectating_over", "ended_by": "scoreboard"}
-{"type": "segment", "start_t": 18.1, "end_t": 43.2, "started_by": "hero_returned", "ended_by": "scoreboard"}
-{"type": "segment", "start_t": 43.8, "end_t": 60.0, "started_by": "scoreboard_closed", "ended_by": "run_end"}
-```
-
-The event lines beside it (`data/demos/events/reqmr-2873352801-1920.jsonl`, format 2, 121 events) that the decision below meets:
+`data/demos/vods/reqmr-2871472478-5400-900s.manifest.jsonl` (header abridged; segments from the format 4 events file):
 
 ```json
-{"kind": "ability_cast", "i_from": 299, "t_from": 29.9, "i_to": 300, "t_to": 30.0, "slot": "get_over_here", "amount": 8, "before": "off", "after": 8, "segment": 2}
-{"kind": "hp_lost", "i_from": 299, "t_from": 29.9, "i_to": 306, "t_to": 30.6, "slot": null, "amount": 45, "before": 250, "after": 205, "segment": 2}
+{"type": "clip", "id": "reqmr-2871472478-5400-900s", "kind": "vod", "vod_id": "2871472478", "creator": "reqmr",
+ "source_start_s": 5400, "fps": 60.0, "split": "inspection_only", "group": "twitch:2871472478",
+ "events": "../events/sections/reqmr-2871472478-5400-900s.jsonl", "cooldowns": "normal", "cooldowns_from": "observed_cooldowns",
+ "patch": "Season 10, Version 20260911", "patch_from": "broadcast_date", "splittable": true, "edited_upload": false}
+{"type": "segment", "start_t": 0.0, "end_t": 5.5, "started_by": "run_start", "ended_by": "scoreboard"}
+{"type": "segment", "start_t": 6.1, "end_t": 37.6, "started_by": "scoreboard_closed", "ended_by": "scoreboard"}
 ```
 
-What the loader returns for the decision at clip time 30.0 (`samples("inspection_only", hindsight=True)`):
+What the loader returns at clip time 8.1 (`samples("inspection_only", hindsight=True, hz=10)`, 5 Hz frames, 5 s history):
 
 ```
-observation  clip reqmr-2873352801-1920, segment 2, t 30.0, context_start 25.0, truncated_context False
-             26 frames: video refs (path + clip time, no pixels) every 0.2 s from t=25.0 to t=30.0, the last at 30.0
-             events web_cluster_fired [25.0, 25.2], web_cluster_reloaded [25.4, 25.6], web_cluster_reloaded [27.4, 27.6],
-                    web_cluster_fired [28.8, 29.1], ability_cast get_over_here 8 [29.9, 30.0], web_cluster_fired [29.8, 30.0]
-                    (the hp_lost [29.9, 30.6] is pending at 30.0: its confirming frame is after the decision)
+observation  segment 1, t 8.1, context_start 3.1, truncated_context False, masked_context True
+             26 frames 3.1 .. 8.1; 5.7 and 5.9 masked (reasons ("scoreboard",), hidden ("hud", "scene")): the 0.6 s tap, bridged
+             events from segment 0, before the tap: slot_unavailable swing [4.8, 4.9], uppercut [4.8, 4.9], get_over_here [4.8, 5.0]
              inputs None (a VOD)
-labels       ()          (nothing annotated)
-outcome      t_end 35.0, 25 frames, 11 events: hp_lost [29.9, 30.6] 250 to 205, ability_cast swing 1 [30.8, 30.9], charges_spent swing
-             [30.7, 31.0], web_cluster_reloaded [30.8, 31.0], web_cluster_fired [31.1, 32.1], web_cluster_reloaded [32.8, 33.1],
-             slot_unavailable swing [34.0, 34.1], web_cluster_fired [33.8, 34.1], slot_available swing [34.1, 34.4],
-             charges_regained swing [31.2, 35.0], web_cluster_reloaded [34.8, 35.0]
-             ended_by None, truncated False
-source_time(30.0) = 1950.0
+outcome      t_end 13.1, 25 frames, no events, ended_by None, truncated False
+source_time(8.1) = 5408.1
 ```
 
-The pilot's decisions are `[5, 15, 30, 45]`. `samples("inspection_only", decisions="manifest")` yields 5, 30 and 45 and skips
-15: it lies in the gap (7.8, 16.7), where the portrait check says the hero is not ours. That is the deliberate spectator
-negative. The skip is reported in `demos.skipped` as `(clip, 15.0, "outside_segments")`, and an annotation saying why
-(`unusable: "spectating another hero"`) is kept on the clip. The 0.0 s segment at 16.7 s is reported as
-`(clip, 16.7, "segment_too_short")` and yields nothing.
+With `across_overlays=False` the same decision's history starts at 6.1 and is truncated.
 
 ## What the real data showed
 
-- **Req.** Four segments, 49.1 s usable in three of them, 248 decision times at 5 Hz, 121 events. One segment is a 0.0 s sliver
-  (16.7 s, between the spectator stretch and the return). +15 s is outside every segment; +5, +30 and +45 s are inside.
-- **Day** (`daymr-2879354299-21600-60s`). Nine segments, 87 events. Four are shorter than 1.0 s (0.5, 0.7, 0.8 and 0.1 s: two of
-  them a few frames of play between consecutive scoreboard openings) and are dropped from windows, leaving 45.3 s usable in five
-  segments and 229 decision times. The breaks are named: `scoreboard` ends six segments, `death`, `killcam` and `run_end` one each.
-- **Both VODs are `cooldowns: normal`:** cooldown numbers (`ability_cast` with an amount of 8) and ammo depletion (`web_cluster_fired`
-  4 to 3, reloads) are in the events, so neither is a No Ability Cooldown recording.
-- **The clips are variable frame rate.** Req has 4082 frames counted in 60.08 s while ffprobe reports 60/1; sampling at 10 fps
-  aligns to the source only to about one source frame (16-50 ms). Manifests carry `alignment: "requested"`: the requested
-  start is not frame-verified, and a video frame reference is a time on the nominal grid, to be decoded by timestamp.
-- **`tagrun0`.** 2070 rows, 609 with frames, 70.0 s, native 2560x1440, 9.21 fps, pad at about 30 Hz, notes Search / stand /
-  Engage / Combo. It loads as one segment and yields 349 decision times at 5 Hz. All five real clips (three runs, two VODs)
-  load in 0.05 s and iterate 1,320 samples with hindsight in 0.09 s.
-- **Two recorders, two row shapes** (above), and three run directories that are jpgs only.
+`uv run python -m agent.demos data/demos/samples data/demos/vods data/demos/youtube/reqmr`: twelve format 4 sources load in
+0.11 s and yield 37,693 observations at 5 Hz in 6.8 s.
 
-## Decisions and what was not built
+| Source | Kind | Patch (basis) | Segments (short) | Usable | Null-slot events |
+|---|---|---|---|---|---|
+| reqmr-2873352801-1920 | Twitch sample, 60 s | Season 10 (broadcast 2026-09-13) | 4 (1) | 49.1 s | 0 |
+| daymr-2879354299-21600-60s | Twitch sample, 60 s | Season 10 (broadcast 2026-09-20) | 9 (4) | 45.3 s | 0 |
+| daymr-2877719252-1800-900s | Twitch section, cuts 7 | Season 10 (broadcast 2026-09-18) | 71 (21) | 567.5 s | 0 |
+| daymr-2879354299-21660-900s | Twitch section, cuts 17 | Season 10 (broadcast 2026-09-20) | 47 (13) | 551.5 s | 0 |
+| reqmr-2871472478-5400-900s | Twitch section, cuts 4 | Season 10 (broadcast 2026-09-11) | 55 (9) | 691.9 s | 0 |
+| reqmr-2873352801-1980-900s | Twitch section, cuts 15 | Season 10 (broadcast 2026-09-13) | 31 (7) | 545.4 s | 0 |
+| d0C8RMBnFfA | edited upload, unsplittable | Season 10 (upload 2026-09-11) | 42 (9) | 629.4 s | 0 |
+| yjc51uOjKEQ | edited upload, unsplittable | Season 10 (upload 2026-09-12) | 48 (9) | 777.7 s | 0 |
+| ftnk5SVycXY | edited upload, unsplittable | unknown (upload 2026-05-10) | 75 (27) | 1215.6 s | 99 |
+| Cf_2goe1snQ | edited upload, unsplittable | unknown (upload 2026-05-09) | 63 (17) | 1008.0 s | 119 |
+| V6iaq9dP8FQ | edited upload, unsplittable | unknown (upload 2026-04-27) | 74 (15) | 764.8 s | 57 |
+| G7HmV8zyEh8 | edited upload, unsplittable | unknown (upload 2026-04-25) | 44 (12) | 650.0 s | 51 |
 
-- **Segments are the proven-usable intervals, not a partition.** The HUD segmenter records the last frame proven inside
-  and the first frame proven inside the next; the frames between are unproven. Keeping that gap, rather than inventing a
-  boundary time, is what "never bridge an unreadable interval" means in a file format.
-- **A sliver is kept and never sampled.** Dropping short segments from the manifest would lose what was proven and make an
-  event inside one look like an event in a gap; flagging them and skipping their windows keeps both true. The minimum is a
-  named constant with a parameter, not a number buried in a loop.
-- **Events belong to segments by time.** The alternative (trusting the file's segment index) breaks silently the first time
-  a person edits a segment.
-- **No decoder, no pixels.** A frame is a reference (a jpg path, or a time in a video). Decoding, resizing, masking
-  overlays and the class balance the plan asks for belong to the training side; this keeps the loader standard-library only.
-- **Run manifests are not written to disk.** The recordings belong to other lanes and are still being appended to; a
-  manifest inside a run directory is opt-in.
-- **`hero: spider-man` for runs is a convention, not a measurement.** The range recorders switch to Spider-Man first and
-  refuse to act off the range HUD.
-- **The spectator negative is a skipped decision, not a sample.** If annotators need the preceding context of a negative
-  presented, an `unusable_context()` view can be added; today its annotation is kept and reported.
-- **Not built:** reading the annotators' per-frame visibility files into a window's masks, video decoding, an annotation tool,
-  event and annotation re-cutting on `trim`, verification of `alignment`,
-  any training or sampling-weight code.
+**Usable minutes the loader reports, per patch** (all `cooldowns=normal`, all `inspection_only`): Season 10, Version 20260911:
+**64.3** (six Twitch sources 40.8, two uploads 23.5); unknown: **60.6** (four April-May uploads). None is in train/val/test yet: every source's acquisition split is `inspection_only`, and the
+uploads stay unsplittable until the cross-source duplicate check runs.
 
-Mutation checks: 49 hand-made breakages of `agent/demos.py` (a guard removed, a pending event counted as known, history or
-outcome crossing a boundary, a filled-in missing modality, a split per clip instead of per group, a lost source clock, an
-outcome review folded into a label, ...) (and, for slivers, the minimum ignored on the grid, ignored for explicit decisions, off by one at the boundary, and unreported;
-for overlays, every gap soft, no gap soft, frames unmasked, a window stopping short of its stretch, the outcome's `ended_by` taken from
-the wrong segment, and each alignment check removed; for regimes, the gate removed, inverted or bypassed for samples, the filter ignored
-or inverted, the value unvalidated or not required, a run directory assuming `off`)
-each fail at least one test; two escaped at first and now have tests.
+- The null-slot events are the April-May uploads' team-up position, whose icon the mapping did not identify: they stay
+  `slot: null`. Cf_2goe1snQ's one null-slot *cast* sits in a 0.5 s sliver between `spectating_over` and `not_our_hero` with a
+  cooldown of 8 (Get Over Here's, not the team-up's 15): kept, named nothing, and no window is cut from it.
+- **A sample clip and its broadcast's sections are one split group** (`twitch:<vod id>`), as the acquisition manifest says;
+  given two groups for one VOD the loader refuses to split at all (`SplitError: one VOD in two groups`).
+- **The Req sample's scoreboard tap, two views.** The segmenter proves 43.2 as the last frame before the tap (segment ends 43.2,
+  next starts 43.8); the codex rerun row's own mask marks 43.2 as scoreboard. In the bridged +45 window 43.2 carries the
+  annotator's mask (scene and every HUD field hidden), 43.3-43.7 the tap's, and no event read off 43.2 enters the window.
+- The guides (`events/guides/`) are format 4 but have no loader manifest: their regime is per-segment (range demonstrations
+  mixed with match clips) and nobody has stated it.
+- A 60 s clip is a thin fingerprint: the Req sample's uppercut countdown mode is 3, from a handful of casts.
+- Loader manifests for the sections and uploads are written beside their media from the acquisition `manifest.json`
+  (dates, group, split) and the events file (segments, `observed`), through `write_manifest`, which validates them by loading.
+
+## What format 4 does not give the loader
+
+- **Where the cuts are.** `cuts` is a count. A cut shows up only as a `hard_cut` segment end, so one inside a scoreboard tap or
+  another gap is invisible: reqmr-2871472478-5400-900s reports 4 cuts and no `hard_cut` end, reqmr-2873352801-1980-900s 15 cuts
+  and 4 ends, daymr-2879354299-21660-900s 17 and 2. A bridged 0.4-1.0 s tap cannot be proven cut-free. Cut times (or `hard_cut` whenever a cut falls in a gap) would
+  close it.
+- **A patch.** `observed` is a fingerprint, not a patch: mapping it to one needs a dated per-patch cooldown table, and the kit
+  states only the current patch. Its countdown histograms also carry misreads (uppercut `120`-`188` on one DayMR section).
+- **The clock offset in the window.** `pts_origin_s` is on the meta line (`clip.events_meta`), but clip time starts at the
+  first decoded frame; mapping to a cache of absolute timestamps is the consumer's job (VUH-1326 finding 1).
+
+## Decisions
+
+- **Bridging is the default.** Play segments are short because of scoreboard taps; a window that stops at every tap loses
+  most of an expert's context. The width limit and the mask keep it honest: nothing is hidden that is not marked hidden.
+- **Hidden means hidden.** A bridged gap hides the HUD and the scene; an annotator's non-visible field hides that field.
+  `partial` is not hidden: every gameplay frame is partially occluded by the world and the hero.
+- **The manifest is the authority and says how it knows.** `*_from` makes every regime and patch claim auditable, and a
+  second record that disagrees is an error. Runs keep `meta.json` as their authority because the recorder writes it.
+- **Unsplittable is a split rule, not a trainer's filter.** Putting it in `assign_splits` means no iterator can yield it.
+- **Segments are proven intervals, not a partition; slivers are kept and never sampled; events belong to segments by time;
+  no decoder, no pixels; run manifests are opt-in.** Unchanged from the first version of this loader.
+- **Not built:** video decoding, an annotation tool, event and annotation re-cutting on `trim`, verification of `alignment`,
+  mapping `observed` to a patch, and sampling-weight code.
+
+Mutation checks: 18 hand-made breakages of the format 4, bridging, mask and provenance code (a guessed slot accepted, the
+fixed ult unrecognised, format 3 accepted, meta keys unchecked, the tap width ignored, a cut made soft, bridging off by
+default, a gap hiding the HUD only, `partial` hiding, annotator masks dropped, events read off masked frames, the regime or
+patch gate off, a basis unchecked, observed countdowns unchecked, an unsplittable clip hashed into a split or allowed an
+explicit one, a run's manifest/meta.json clash ignored) each fail at least one test.

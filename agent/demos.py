@@ -15,7 +15,10 @@ Rules the code enforces (each has a test):
 - Every `t` is CLIP time, seconds from the start of the media. `Clip.source_time(t)` maps it to the VOD's clock, so trimming
   keeps source timestamps (`trim`).
 - A clip is a list of segments: the stretches proven usable, each with the reason it started and ended. Anything between
-  segments is unproven. Nothing (history, events, outcome, label window) crosses a segment boundary.
+  segments is unproven. Nothing crosses a hard boundary (death, killcam, spectating, a cut, a lost HUD, ...); a scoreboard
+  tap no wider than MAX_BRIDGE_S is bridged, its frames kept in the window with the HUD and the scene masked.
+- Provenance (cooldown regime, patch, splittable, edited_upload, group) has one authority, the clip's own manifest or a run's
+  meta.json, and a split never mixes regimes or patches unless the caller asks.
 - Events are intervals (last frame before, first frame after), never an instant. At decision time t an event is known only
   if its confirming frame is at or before t; one still pending is hindsight.
 - An Observation is built from data cut off at t and refuses to be constructed with anything later. Hindsight is a separate
@@ -40,13 +43,19 @@ KINDS = ("vod", "run", "human")
 # The HUD lane's segmenter (perception/events.py, docs/lanes/l2-hud.md "Event stream format") writes the reasons on the
 # first line of each; the second line refines the coarse ones for annotators: not_our_hero -> hero_swap,
 # no_hud -> menu | brb | unreadable_hud.
-STARTED_BY = ("run_start", "respawn", "killcam_over", "spectating_over", "scoreboard_closed", "hero_returned", "hud_returned")
-ENDED_BY = ("run_end", "death", "killcam", "spectating", "scoreboard", "not_our_hero", "no_hud",
+# hard_cut / after_cut are an editorial cut in an edited upload (format 4): always a hard boundary.
+STARTED_BY = ("run_start", "respawn", "killcam_over", "spectating_over", "scoreboard_closed", "hero_returned", "hud_returned",
+              "after_cut")
+ENDED_BY = ("run_end", "death", "killcam", "spectating", "scoreboard", "not_our_hero", "no_hud", "hard_cut",
             "hero_swap", "menu", "brb", "unreadable_hud")
-# The events file the loader reads is the HUD lane's FORMAT 2 (docs/lanes/l2-hud.md, "Event stream format"): its meta line says
-# "format": 2. Format 1 (no meta format; `ability_used` / `ability_ready`, slot `pull`, hp as a net figure) claimed casts that never
-# happened, so it is refused rather than read: a stale file would train on events that are not what they are named.
-EVENT_FORMAT = 2
+# The events file the loader reads is the HUD lane's FORMAT 4 (docs/lanes/l2-hud.md, "Event stream format"): its meta line says
+# "format": 4. Any other format is refused, naming the file and both versions: format 1 claimed casts that never happened, 2 and 3
+# may name an ability by layout position (a guess) and know no editorial cut, so a stale file would train on what it is not.
+EVENT_FORMAT = 4
+# What a format 4 meta line must carry: slot_mapping may be null (no mapping attempted) but must be present.
+META_KEYS = ("fps", "layout", "t_origin", "slot_mapping", "slot_mapping_from")
+# Positions whose ability is fixed by the layout, not read off an icon: the ult is always the ult.
+FIXED_SLOTS = ("ult",)
 REMOVED_KINDS = ("ability_used", "ability_ready")   # replaced by ability_cast and slot_unavailable / slot_available
 REMOVED_SLOTS = ("pull",)                           # renamed get_over_here
 # A gap between two segments is SOFT when a known overlay made it: the player is alive and the game goes on, only the HUD (and,
@@ -54,12 +63,16 @@ REMOVED_SLOTS = ("pull",)                           # renamed get_over_here
 # frames masked. Every other gap (death, killcam, spectating, a hero change, a lost HUD, a reset, a mismatched pair) is HARD:
 # nothing ever crosses it. {(ended_by, next started_by): mask reason}
 SOFT_GAPS = {("scoreboard", "scoreboard_closed"): "scoreboard"}
+# A soft gap wider than this is hard: play segments are joined across a scoreboard tap only when it is short. Experts tap the
+# scoreboard mid-fight (median segment 4-12 s); the Req clip's tap is 0.6 s. A calibration knob: Demos(max_bridge_s=...).
+MAX_BRIDGE_S = 1.0
 # A segment shorter than this is kept in the manifest (it is what the segmenter proved) but no window is ever cut from it:
 # a few frames of play between two scoreboard openings hold no decision worth learning from. The Day sample clip's slivers
 # run 0.1-0.8 s and its shortest real stretch 3.3 s; the Req clip's is 0.0 s and 16 s.
 MIN_SEGMENT_S = 1.0
 REQUIRED = ("id", "kind", "source_url", "run", "vod_id", "creator", "retrieved", "source_start_s", "source_end_s",
-            "resolution", "fps", "hero", "overlays", "split", "media", "inputs", "events", "annotations", "segments_from", "cooldowns")
+            "resolution", "fps", "hero", "overlays", "split", "media", "inputs", "events", "annotations", "segments_from", "cooldowns",
+            "cooldowns_from", "patch", "patch_from", "splittable", "edited_upload")
 SEGMENTS_FROM = ("segmenter", "annotator", "assumed_whole_run")
 # The resource REGIME of a recording, from the practice range's Practice Settings "No Ability Cooldown": ON (infinite ammo, the ult
 # relit in seconds, no cooldown numbers) is `off`; normal play is `normal`; a source nobody saw the HUD of is `unknown`. Own runs
@@ -67,6 +80,11 @@ SEGMENTS_FROM = ("segmenter", "annotator", "assumed_whole_run")
 # cooldown numbers and the ammo were observed on screen. They are different games for a learner: a split that holds more than one
 # is refused unless the caller says so.
 COOLDOWNS = ("off", "normal", "unknown")
+# PROVENANCE: the clip's own manifest (a run's own meta.json) is the single authority on `cooldowns` and `patch` (a season/version
+# string, or "unknown"). `cooldowns_from` / `patch_from` say how each was determined; a known value needs a basis, "unknown" has none.
+# `splittable: false` (not yet shown to be independent of every other source) keeps a clip out of train/val/test for good.
+PATCH_UNKNOWN = "unknown"
+PROVENANCE_FROM = ("run_metadata", "broadcast_date", "upload_date", "observed_cooldowns", "none")
 
 
 class FormatError(ValueError):
@@ -78,7 +96,11 @@ class SplitError(ValueError):
 
 
 class RegimeError(ValueError):
-    """A split would mix resource regimes (cooldowns off, normal, unknown) and the caller did not ask for that."""
+    """A split would mix resource regimes (cooldowns off, normal, unknown) or game patches and the caller did not ask for that."""
+
+
+class ProvenanceError(ValueError):
+    """Two records of one source's provenance disagree, or a claim has no basis: there is one authority, and it is not guessed."""
 
 
 class AlignmentError(ValueError):
@@ -111,21 +133,27 @@ class Event:
     t_to: float              # the first frame showing the new one: the event is known from here on
     i_from: int | None = None
     i_to: int | None = None
-    slot: str | None = None
+    slot: str | None = None      # the ability the icon showed; None when it was not identified. Never filled from slot_pos
     amount: float | None = None
     before: object = None
     after: object = None
     segment: int | None = None   # by time, at load; the file's own index is only a hint
+    slot_pos: str | None = None  # the layout position it fired in: a place, not an ability
 
 
 @dataclass(frozen=True)
 class Mask:
-    """Why a frame in a window cannot be taken at face value: only what the segments prove. `masked=None` on a FrameRef is not
-    a claim that everything is visible, only that the segmenter saw the HUD there: the scene, the player and single HUD fields
-    can still be hidden (an annotation's own per-frame mask says which)."""
-    reason: str                       # "scoreboard"
-    hidden: tuple = ("hud",)          # proven absent: the segmenter found no HUD
-    uncertain: tuple = ("scene",)     # an overlay hides the scene only some of the time
+    """The modalities of a frame that must not be learned from, and why. From the segments (a bridged scoreboard gap hides the
+    HUD and the scene) and from annotators' per-frame context masks (chat over an ability, the camera inside geometry). A trainer
+    drops or zeroes every modality in `hidden`: "hud" (all of it), "scene", "player", or one HUD field ("hp", "ammo", a slot).
+    `masked=None` on a FrameRef claims only that nothing on record hides anything there."""
+    reasons: tuple                    # ("scoreboard",), ("camera_clips_geometry", ...)
+    hidden: tuple = ("hud", "scene")
+
+    def __or__(self, other):
+        if other is None:
+            return self
+        return Mask(tuple(dict.fromkeys(self.reasons + other.reasons)), tuple(dict.fromkeys(self.hidden + other.hidden)))
 
 
 @dataclass(frozen=True)
@@ -265,13 +293,27 @@ def _num(v, where, allow_none=False):
 
 
 def _check_events_format(path, rows):
-    """FormatError unless `rows` (an events file's lines) is format 2. A file with no meta line, or a meta line without `format`, is
-    format 1 by definition."""
+    """The meta line of `rows` (an events file's lines), or FormatError unless it is format 4 and carries META_KEYS. A file with
+    no meta line, or a meta line without `format`, is format 1 by definition."""
     meta = next((r for _, r in rows if r.get("type") == "meta"), None)
     fmt = None if meta is None else meta.get("format")
     if fmt != EVENT_FORMAT:
-        raise FormatError(f"{path}: event stream format {fmt or 1}, this loader reads format {EVENT_FORMAT} (ability_cast, "
-                          f"slot_unavailable/slot_available, get_over_here, raw hp steps): regenerate it with perception.events")
+        raise FormatError(f"{path}: event stream format {fmt or 1}, this loader reads format {EVENT_FORMAT} (ability named from its "
+                          f"icon or null, hard_cut/after_cut, observed cooldowns): regenerate it with perception.events")
+    missing = [k for k in META_KEYS if k not in meta]
+    if missing:
+        raise FormatError(f"{path}: format {EVENT_FORMAT} meta line lacks {missing}")
+    return meta
+
+
+def _slot_guessed(r, mapping):
+    """Why an event's `slot` is not what its icon proved, or None. A position the mapping does not identify (or a file with no
+    mapping) has slot null: a name there would be a guess from the layout position."""
+    pos, slot = r.get("slot_pos"), r.get("slot")
+    if pos is None:
+        return None if slot is None or slot in FIXED_SLOTS else f"slot {slot!r} with no slot_pos"
+    want = pos if pos in FIXED_SLOTS else (mapping or {}).get(pos)
+    return None if slot == want else f"slot {slot!r} at position {pos!r}, where the icon mapping says {want!r}"
 
 
 def _masked_flag(row, rel, n):
@@ -327,9 +369,32 @@ class Clip:
         self._load_media()
         self._load_events()
         self._load_annotations()
+        self._check_provenance()
         end = header.get("duration_s") or (self.frames.last_t if self.frames else None)
         if end is not None and self.segments and self.segments[-1].end_t > end + EPS:
             raise FormatError(f"{self.id}: a segment ends after the clip does ({self.segments[-1].end_t} > {end})")
+
+    def _check_provenance(self):
+        h = self.header
+        self.patch, self.splittable, self.edited_upload = h["patch"], h["splittable"], h["edited_upload"]
+        if not isinstance(self.patch, str) or not self.patch:
+            raise FormatError(f"{self.id}: patch must be a season/version string or {PATCH_UNKNOWN!r}, not {self.patch!r}")
+        for k in ("splittable", "edited_upload"):
+            if not isinstance(h[k], bool):
+                raise FormatError(f"{self.id}: {k} must be true or false, not {h[k]!r}")
+        for field, unknown in (("cooldowns", "unknown"), ("patch", PATCH_UNKNOWN)):
+            basis = h[f"{field}_from"]
+            if basis not in PROVENANCE_FROM:
+                raise FormatError(f"{self.id}: {field}_from {basis!r} is not one of {PROVENANCE_FROM}")
+            if (h[field] == unknown) != (basis == "none"):
+                raise ProvenanceError(f"{self.id}: {field}={h[field]!r} from {basis!r}: a known value needs a basis, and unknown has none")
+        if h["cooldowns_from"] == "observed_cooldowns":
+            seen = {s for s, o in ((self.events_meta or {}).get("observed") or {}).items() if o.get("countdown_mode")}
+            if self.cooldowns != "normal" or not seen:
+                raise ProvenanceError(f"{self.id}: cooldowns={self.cooldowns!r} from observed_cooldowns, but the events meta line shows "
+                                      f"countdowns for {sorted(seen)}: running countdowns prove normal, and only when they were seen")
+        if not self.splittable and self.split not in (None, "inspection_only"):
+            raise ProvenanceError(f"{self.id}: split {self.split!r} but splittable is false: it may only be inspection_only")
 
     # -- time --
     def source_time(self, t):
@@ -337,33 +402,35 @@ class Clip:
         s = self.header["source_start_s"]
         return None if s is None else s + t
 
-    def soft_gap(self, n):
-        """The mask reason when the gap after segment n is a soft one (a scoreboard), else None: a hard one, or no gap."""
+    def soft_gap(self, n, max_gap=MAX_BRIDGE_S):
+        """The mask reason when the gap after segment n is a soft one (a scoreboard no wider than max_gap), else None: a hard one,
+        or no gap."""
         if n < 0 or n + 1 >= len(self.segments):
             return None
-        return SOFT_GAPS.get((self.segments[n].ended_by, self.segments[n + 1].started_by))
+        a, b = self.segments[n], self.segments[n + 1]
+        return SOFT_GAPS.get((a.ended_by, b.started_by)) if b.start_t - a.end_t <= max_gap + EPS else None
 
-    def stretch(self, seg):
-        """(first, last) segments joined to `seg` by soft gaps only: the reach of a window built across overlays."""
+    def stretch(self, seg, max_gap=MAX_BRIDGE_S):
+        """(first, last) segments joined to `seg` by soft gaps only: the reach of a bridged window."""
         a = b = seg.n
-        while self.soft_gap(a - 1):
+        while self.soft_gap(a - 1, max_gap):
             a -= 1
-        while self.soft_gap(b):
+        while self.soft_gap(b, max_gap):
             b += 1
         return self.segments[a], self.segments[b]
 
-    def mask_at(self, t):
+    def mask_at(self, t, max_gap=MAX_BRIDGE_S):
         """The Mask for a time strictly inside a soft gap, else None."""
         for n in range(len(self.segments) - 1):
-            reason = self.soft_gap(n)
+            reason = self.soft_gap(n, max_gap)
             if reason and self.segments[n].end_t + EPS < t < self.segments[n + 1].start_t - EPS:
-                return Mask(reason)
+                return Mask((reason,))
         return None
 
-    def soft_gaps_between(self, lo, hi):
+    def soft_gaps_between(self, lo, hi, max_gap=MAX_BRIDGE_S):
         """The reasons of the soft gaps that overlap [lo, hi]."""
-        return [self.soft_gap(n) for n in range(len(self.segments) - 1)
-                if self.soft_gap(n) and self.segments[n].end_t < hi and self.segments[n + 1].start_t > lo]
+        return [self.soft_gap(n, max_gap) for n in range(len(self.segments) - 1)
+                if self.soft_gap(n, max_gap) and self.segments[n].end_t < hi and self.segments[n + 1].start_t > lo]
 
     def segment_at(self, t):
         i = bisect.bisect_right([s.start_t for s in self.segments], t + EPS) - 1
@@ -393,21 +460,24 @@ class Clip:
             raise FormatError(f"{self.id}: inputs must be 'pad' or null")
 
     def _load_events(self):
-        self.events = None
+        self.events, self.events_meta = None, None
         rel = self.header["events"]
         if rel is None:
             return
         events, rows = [], list(_jsonl(self._resolve(rel)))
-        _check_events_format(rel, rows)
+        self.events_meta = meta = _check_events_format(self._resolve(rel), rows)
         for n, r in rows:
             if r.get("type", "event") != "event":
                 continue  # meta and segment lines share the file; segments are imported by events_file_segments, not read here
             if r.get("kind") in REMOVED_KINDS or r.get("slot") in REMOVED_SLOTS:
                 raise FormatError(f"{rel}:{n}: {r.get('kind')} / slot {r.get('slot')} is format 1 vocabulary inside a format "
                                   f"{EVENT_FORMAT} file")
+            guessed = _slot_guessed(r, meta["slot_mapping"])
+            if guessed:
+                raise FormatError(f"{rel}:{n}: {r.get('kind')} names a guessed ability: {guessed}")
             try:
                 e = Event(r["kind"], _num(r["t_from"], f"{rel}:{n}"), _num(r["t_to"], f"{rel}:{n}"), r.get("i_from"), r.get("i_to"),
-                          r.get("slot"), r.get("amount"), r.get("before"), r.get("after"))
+                          r.get("slot"), r.get("amount"), r.get("before"), r.get("after"), slot_pos=r.get("slot_pos"))
             except KeyError as k:
                 raise FormatError(f"{rel}:{n}: event lacks {k}") from None
             seg = next((s for s in self.segments if s.start_t - EPS <= e.t_from and e.t_to <= s.end_t + EPS), None)
@@ -418,12 +488,16 @@ class Clip:
 
     def _load_annotations(self):
         self.annotations, self.outcome_reviews = {}, {}   # by decision time, rounded to a millisecond
+        self.frame_masks = {}                             # clip time (ms) -> Mask, from annotators' per-frame visibility files
         rel = self.header["annotations"]
         if rel is None:
             return
         for n, r in _jsonl(self._resolve(rel)):
             if r.get("type") != "annotation":
                 raise FormatError(f"{rel}:{n}: expected an annotation line")
+            for k in ("context_mask", "outcome_mask"):   # a frame's visibility is a fact about the frame, whichever window holds it
+                if r.get(k) is not None:
+                    self._load_frame_masks(self._resolve(rel).parent / r[k], f"{rel}:{n} {k}")
             t = round(_num(r.get("t"), f"{rel}:{n}"), 3)
             actions = r.get("actions")
             self.annotations.setdefault(t, []).append(Label(
@@ -433,6 +507,27 @@ class Clip:
                 _num(r.get("context_start"), f"{rel}:{n} context_start", allow_none=True), _masked_flag(r, rel, n)))
             if r.get("outcome_review") is not None:   # a separate field: never folded into the label above
                 self.outcome_reviews.setdefault(t, []).append((r.get("by"), r["outcome_review"]))
+
+
+    def _load_frame_masks(self, path, where):
+        """An annotator's per-frame visibility file: [{"t": s, "<field>": "visible" | "partial" | ..., "reasons": [...]}, ...].
+        A field that is neither visible nor partial (unavailable, partial_chat_overlay, anything unrecognised) is hidden. Two
+        annotators' masks of one frame are unioned: a frame hidden by either is hidden."""
+        try:
+            rows = json.loads(Path(path).read_text(encoding="utf-8"))
+        except (OSError, ValueError) as e:
+            raise FormatError(f"{where}: cannot read {path} ({e})") from None
+        for r in rows:
+            t = round(_num(r.get("t"), f"{where} t"), 3)
+            fields = {k: v for k, v in r.items() if k not in VISIBILITY_META and v not in VISIBLE}
+            if fields:
+                why = tuple(dict.fromkeys([*(r.get("reasons") or ()), *map(str, fields.values())]))
+                self.frame_masks[t] = Mask(why, tuple(fields)) | self.frame_masks.get(t)
+
+
+# An annotator's visibility row: keys that are not modalities, and values that do not hide one.
+VISIBILITY_META = ("t", "pts", "segment", "reasons")
+VISIBLE = ("visible", "partial")
 
 
 class _ImageFrames:
@@ -499,13 +594,13 @@ def clip_from_run(run_dir):
 
     The manifest is synthesized in memory: the run is one segment start to end (the recorders refuse to send input off the
     range HUD, so a run is one continuous performance), hero Spider-Man by convention, inputs = the pad rows. Its resource regime
-    (`cooldowns`) is the run's meta.json's, else `unknown`.
+    (`cooldowns`) and `patch` are the run's meta.json's, else `unknown`: never a table keyed by the run's name, never its date.
     """
     d = Path(run_dir)
     index = d / "frames.jsonl"
     if not index.is_file():
         raise FormatError(f"{d}: no frames.jsonl (is this a recorder's run directory?)")
-    meta = json.loads((d / "meta.json").read_text(encoding="utf-8")) if (d / "meta.json").is_file() else {}
+    meta = run_meta(d)
     rows = [r for _, r in _jsonl(index)]
     if not rows:
         raise FormatError(f"{index}: empty")
@@ -525,9 +620,28 @@ def clip_from_run(run_dir):
         "annotations": "annotations.jsonl" if (d / "annotations.jsonl").is_file() else None,
         "segments_from": "assumed_whole_run", "duration_s": max(ts),
         "cooldowns": meta.get("cooldowns", "unknown"),   # the recorder's word, else nobody's: never assumed from the date
+        "cooldowns_from": "run_metadata" if "cooldowns" in meta else "none",
+        "patch": meta.get("patch", PATCH_UNKNOWN), "patch_from": "run_metadata" if "patch" in meta else "none",
+        "splittable": True, "edited_upload": False,       # a run is its own session, recorded continuously
     }
     seg = {"start_t": min(ts), "end_t": max(ts), "started_by": "run_start", "ended_by": "run_end"}
     return Clip(header, [seg], d, index)
+
+
+def run_meta(d):
+    """A run directory's meta.json as a dict ({} when there is none)."""
+    p = Path(d) / "meta.json"
+    return json.loads(p.read_text(encoding="utf-8")) if p.is_file() else {}
+
+
+def run_manifest(path):
+    """A run directory's own manifest.jsonl, refused where it and the run's meta.json disagree on provenance: two records of one
+    run are one authority only when they agree."""
+    clip, meta = read_manifest(path), run_meta(Path(path).parent)
+    clash = {k: (clip.header[k], meta[k]) for k in ("cooldowns", "patch") if k in meta and meta[k] != clip.header[k]}
+    if clash:
+        raise ProvenanceError(f"{path}: the manifest and meta.json disagree on {clash} (manifest, meta.json): correct one of them")
+    return clip
 
 
 def discover(*paths):
@@ -537,7 +651,7 @@ def discover(*paths):
         if p.is_file():
             out.append(read_manifest(p))
         elif (p / "manifest.jsonl").is_file():
-            out.append(read_manifest(p / "manifest.jsonl"))
+            out.append(run_manifest(p / "manifest.jsonl"))
         elif (p / "frames.jsonl").is_file():
             out.append(clip_from_run(p))
         elif p.is_dir():
@@ -558,7 +672,8 @@ def assign_splits(clips, fractions=(0.8, 0.1, 0.1), seed=0):
     """{clip id: split}. A clip's own split wins; the rest are hashed by GROUP, so a whole recording lands on one side.
 
     Clips of one VOD share a group (default: the vod id); mirrors and re-uploads must be given the same `group`.
-    Raises SplitError if a group holds two different explicit splits, or one VOD sits in two groups.
+    Raises SplitError if a group holds two different explicit splits, or one VOD sits in two groups. A group holding a clip that is
+    not splittable goes to inspection_only whole: nothing not shown independent of every other source is ever trained or scored on.
     """
     by_group, vod_groups = {}, {}
     for c in clips:
@@ -571,6 +686,8 @@ def assign_splits(clips, fractions=(0.8, 0.1, 0.1), seed=0):
     out = {}
     for group, members in by_group.items():
         explicit = {c.split for c in members if c.split}
+        if not all(c.splittable for c in members):
+            explicit.add("inspection_only")
         if len(explicit) > 1:
             raise SplitError(f"group {group!r} has clips in two splits: {sorted(explicit)}")
         if explicit:
@@ -601,11 +718,11 @@ def check_splits(clips, splits):
 
 # --- the loader ------------------------------------------------------------------------------------------------------
 class Demos:
-    def __init__(self, clips, fractions=(0.8, 0.1, 0.1), seed=0, min_segment_s=MIN_SEGMENT_S):
+    def __init__(self, clips, fractions=(0.8, 0.1, 0.1), seed=0, min_segment_s=MIN_SEGMENT_S, max_bridge_s=MAX_BRIDGE_S):
         self.clips = {c.id: c for c in clips}
         self.splits = assign_splits(clips, fractions, seed)
         check_splits(clips, self.splits)
-        self.min_segment_s, self.skipped = min_segment_s, []
+        self.min_segment_s, self.max_bridge_s, self.skipped = min_segment_s, max_bridge_s, []
 
     def _skip(self, clip, t, reason):
         skip = Skipped(clip.id, t, reason)
@@ -629,18 +746,25 @@ class Demos:
         """The resource regimes present in a split, sorted."""
         return sorted({c.cooldowns for c in self.clips_in(split)})
 
-    def _clips(self, split, cooldowns, mix_regimes):
-        """The clips of `split` to cut windows from: only those of the named regime(s), and never a mix unless it was asked for."""
+    def patches(self, split):
+        """The game patches present in a split, sorted."""
+        return sorted({c.patch for c in self.clips_in(split)})
+
+    def _clips(self, split, cooldowns, mix_regimes, patch=None, mix_patches=False):
+        """The clips of `split` to cut windows from: only those of the named regime(s) and patch(es), and never a mix of either
+        unless it was asked for."""
         clips = self.clips_in(split)
-        if cooldowns is not None:
-            want = (cooldowns,) if isinstance(cooldowns, str) else tuple(cooldowns)
-            if not want or any(w not in COOLDOWNS for w in want):
-                raise ValueError(f"cooldowns must be one or more of {COOLDOWNS}, not {cooldowns!r}")
-            clips = [c for c in clips if c.cooldowns in want]
-        seen = sorted({c.cooldowns for c in clips})
-        if len(seen) > 1 and not mix_regimes:
-            raise RegimeError(f"split {split!r} mixes resource regimes {seen}: pass cooldowns=<one of them> to pick, or mix_regimes=True "
-                              f"to train or evaluate across them on purpose")
+        for name, want, allowed, mix in (("cooldowns", cooldowns, COOLDOWNS, mix_regimes), ("patch", patch, None, mix_patches)):
+            if want is not None:
+                want = (want,) if isinstance(want, str) else tuple(want)
+                if not want or (allowed and any(w not in allowed for w in want)):
+                    raise ValueError(f"{name} must be one or more of {allowed or 'the patch strings'}, not {want!r}")
+                clips = [c for c in clips if getattr(c, name) in want]
+            seen = sorted({getattr(c, name) for c in clips})
+            if len(seen) > 1 and not mix:
+                what, flag = ("resource regimes", "mix_regimes") if name == "cooldowns" else ("patches", "mix_patches")
+                raise RegimeError(f"split {split!r} mixes {what} {seen}: pass {name}=<one of them> to pick, or {flag}=True "
+                                  f"to train or evaluate across them on purpose")
         return clips
 
     def _decisions(self, clip, mode, hz):
@@ -672,13 +796,27 @@ class Demos:
 
     def _reach(self, clip, seg, across):
         """(first, last, ids): the segments a window from `seg` may reach: itself, or across soft gaps when asked."""
-        first, last = clip.stretch(seg) if across else (seg, seg)
+        first, last = clip.stretch(seg, self.max_bridge_s) if across else (seg, seg)
         return first, last, set(range(first.n, last.n + 1))
 
-    @staticmethod
-    def _masked(clip, f, across):
-        m = clip.mask_at(f.t) if across else None
+    def _masked(self, clip, f, across):
+        """The frame with every mask on record: the bridged gap's, and annotators' per-frame ones (whatever `across` is)."""
+        m = clip.frame_masks.get(round(f.t, 3))
+        gap = clip.mask_at(f.t, self.max_bridge_s) if across else None
+        m = gap | m if gap else m
         return dataclasses.replace(f, masked=m) if m else f
+
+    @staticmethod
+    def _readable(clip, e):
+        """False when a frame the event was read from (t_from or t_to) is masked for the HUD or the event's own field: no
+        HUD-derived feature comes from a frame that must not be learned from."""
+        field = (e.slot or e.slot_pos) if e.slot_pos or e.slot else \
+            "ammo" if e.kind.startswith("web_cluster") else "hp" if e.kind.split("_")[0] in ("hp", "shield", "max") else None
+        for t in (e.t_from, e.t_to):
+            m = clip.frame_masks.get(round(t, 3))
+            if m and ("hud" in m.hidden or field in m.hidden):
+                return False
+        return True
 
     def _observe(self, clip, seg, t, history_s, frame_hz, across=False):
         """The only place an Observation is built: every source is cut off at t before anything is read from it."""
@@ -691,7 +829,7 @@ class Demos:
             if f is not None and f.t >= lo - EPS and (not frames or frames[-1].t > f.t + EPS):
                 frames.append(self._masked(clip, f, across))
         events = None if clip.events is None else tuple(
-            e for e in clip.events if e.segment in ids and e.t_to <= t + EPS and e.t_from >= start - EPS)
+            e for e in clip.events if e.segment in ids and e.t_to <= t + EPS and e.t_from >= start - EPS and self._readable(clip, e))
         inputs = None if clip.inputs is None else tuple(_span(clip.inputs, start, t, lambda i: i.t))
         return Observation(clip.id, seg.n, t, tuple(reversed(frames)), events, inputs, start,
                            truncated_context=t - history_s < lo - EPS)
@@ -705,7 +843,7 @@ class Demos:
             if f is not None and f.t > t + EPS and (not frames or frames[-1].t < f.t - EPS):
                 frames.append(self._masked(clip, f, across))
         events = None if clip.events is None else tuple(
-            e for e in clip.events if e.segment in ids and t + EPS < e.t_to <= end + EPS)
+            e for e in clip.events if e.segment in ids and t + EPS < e.t_to <= end + EPS and self._readable(clip, e))
         cut = last.end_t < t + outcome_s - EPS
         reviews = tuple(clip.outcome_reviews.get(round(t, 3), ()))
         return Hindsight(Outcome(end, tuple(frames), events, last.ended_by if cut else None, cut), reviews)
@@ -718,7 +856,7 @@ class Demos:
                 continue
             where = f"{clip.id} t={obs.t}: {l.by}'s annotation"
             if l.context_start is not None and obs.context_start > l.context_start + EPS:
-                soft = clip.soft_gaps_between(l.context_start, obs.context_start)
+                soft = clip.soft_gaps_between(l.context_start, obs.context_start, self.max_bridge_s)
                 hint = (f" (a {soft[0]} gap lies in it: build the window with across_overlays=True)" if soft and not obs.masked_context
                         else " (a hard boundary, or history_s shorter than the annotator's context)")
                 raise AlignmentError(f"{where} judged context from {l.context_start} but this window starts at "
@@ -735,22 +873,23 @@ class Demos:
                 labels.append(Label("recorded_inputs", by="recorder", inputs=ahead))
         return tuple(labels)
 
-    def observations(self, split, *, history_s=5.0, frame_hz=5.0, hz=5.0, decisions="grid", across_overlays=False,
-                     cooldowns=None, mix_regimes=False):
+    def observations(self, split, *, history_s=5.0, frame_hz=5.0, hz=5.0, decisions="grid", across_overlays=True,
+                     cooldowns=None, mix_regimes=False, patch=None, mix_patches=False):
         """What a policy may see, one Observation per decision time, from the clips of `split`. Nothing here holds a label,
-        an outcome, or any datum later than the observation's own t. A window ends at every boundary; with `across_overlays` it
-        spans a scoreboard gap instead, whose frames come back `masked`. Death, killcam, spectating and the rest are never spanned.
-        `cooldowns` keeps only clips of that resource regime; several regimes in one split raise RegimeError unless `mix_regimes`."""
-        for clip in self._clips(split, cooldowns, mix_regimes):
+        an outcome, or any datum later than the observation's own t. A window spans a scoreboard gap no wider than max_bridge_s,
+        whose frames come back `masked` (across_overlays=False stops it at every boundary instead); death, killcam, spectating,
+        a cut and the rest are never spanned. `cooldowns` / `patch` keep only clips of that regime / patch; several of either in
+        one split raise RegimeError unless `mix_regimes` / `mix_patches`."""
+        for clip in self._clips(split, cooldowns, mix_regimes, patch, mix_patches):
             for seg, t in self._decisions(clip, decisions, hz):
                 yield self._observe(clip, seg, t, history_s, frame_hz, across_overlays)
 
     def samples(self, split, *, history_s=5.0, frame_hz=5.0, hz=5.0, decisions="grid", outcome_s=5.0, label_s=0.5,
-                hindsight=False, across_overlays=False, cooldowns=None, mix_regimes=False):
+                hindsight=False, across_overlays=True, cooldowns=None, mix_regimes=False, patch=None, mix_patches=False):
         """Observations with their labels, and with `hindsight=True` the outcome window and outcome reviews too. Raises
         AlignmentError for an annotation whose declared context this window would not reproduce (see `_aligned`), and RegimeError
-        for a split that mixes resource regimes unless `cooldowns` picks one or `mix_regimes` allows it."""
-        for clip in self._clips(split, cooldowns, mix_regimes):
+        for a split that mixes resource regimes or patches unless one is picked or the mix is allowed."""
+        for clip in self._clips(split, cooldowns, mix_regimes, patch, mix_patches):
             for seg, t in self._decisions(clip, decisions, hz):
                 obs, labels = self._observe(clip, seg, t, history_s, frame_hz, across_overlays), self._labels(clip, seg, t, label_s)
                 self._aligned(clip, obs, labels)
@@ -765,7 +904,7 @@ def hud_segments(rows):
 
 
 def events_file_segments(path):
-    """Manifest segment dicts from the `{"type": "segment", ...}` lines of a per-clip events file (format 2 only)."""
+    """Manifest segment dicts from the `{"type": "segment", ...}` lines of a per-clip events file (format 4 only)."""
     rows = list(_jsonl(path))
     _check_events_format(path, rows)
     return hud_segments([r for _, r in rows if r.get("type") == "segment"])
@@ -808,14 +947,19 @@ def trim(rows, start_t, end_t, new_id, media_path=None):
 
 # --- a summary, for people --------------------------------------------------------------------------------------------
 def summary(demos, hz=5.0):
-    lines = []
+    lines, minutes = [], {}
     for c in demos.clips.values():
         usable = sum(s.length for s in demos.usable(c))
+        key = (c.patch, c.cooldowns, demos.splits[c.id])
+        minutes[key] = minutes.get(key, 0.0) + usable / 60
         modes = [m for m, on in (("frames", c.frames is not None), ("inputs", c.inputs is not None),
                                  ("events", c.events is not None), ("annotations", bool(c.annotations))) if on]
         lines.append(f"{c.id}: {c.kind} split={demos.splits[c.id]} group={c.group} hero={c.hero} fps={c.fps} "
-                     f"res={c.resolution} cooldowns={c.cooldowns} segments={len(c.segments)} (short: {len(c.segments) - len(demos.usable(c))}) usable={usable:.1f}s "
+                     f"res={c.resolution} cooldowns={c.cooldowns} ({c.header['cooldowns_from']}) patch={c.patch} "
+                     f"({c.header['patch_from']}) splittable={c.splittable} edited={c.edited_upload} "
+                     f"segments={len(c.segments)} (short: {len(c.segments) - len(demos.usable(c))}) usable={usable:.1f}s "
                      f"decisions@{hz:g}Hz={len(demos._decisions(c, 'grid', hz))} has={'+'.join(modes)}")
+    lines += [f"usable minutes: patch={p} cooldowns={r} split={s}: {m:.1f}" for (p, r, s), m in sorted(minutes.items())]
     return lines
 
 
