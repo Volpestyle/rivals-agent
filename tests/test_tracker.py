@@ -394,3 +394,42 @@ def test_an_absorbed_piece_is_never_a_witness_so_the_body_does_not_chain_outward
     assert len({fwd[x] for x in (1240, 1325, 1410, 1495)}) == 4                                     # each outside box its own id
     held = next(t for t in tr.tracks if t.id == body)
     assert held.box[2] <= 1155 + 70 + 1                                              # the body's box reaches no further than its piece
+
+
+def _seen_twice(m, t, dets):
+    decide(st(t - 0.1, dets), m)
+    return decide(st(t, dets), m)
+
+
+def test_a_target_that_stays_outside_the_aim_crop_is_released_after_outside_s_and_not_taken_again():
+    """trackerlive30 stood 4.9 s on a bot only the whole-frame search saw. One that never comes into the crop is released instead."""
+    m = Memory()
+    off = lambda: det(1907, 635, 561, w=302, track=85)                               # centre 627 px right: outside the 480 px half-crop
+    assert _seen_twice(m, 0.0, [off()]) == Engage(off())
+    assert decide(st(brain.OUTSIDE_S - 0.1, [off()]), m) == Engage(off())           # still inside the bound: kept (the turn is on)
+    gone = decide(st(brain.OUTSIDE_S + 0.2, [off()]), m)
+    assert not isinstance(gone, Engage) and m.target is None and 85 in m.barred
+    assert not isinstance(decide(st(brain.OUTSIDE_S + 0.3, [off()]), m), Engage)    # barred: not taken straight back
+    other = det(1280, 720, 400, track=90)
+    decide(st(brain.OUTSIDE_S + 0.4, [off(), other]), m)
+    assert decide(st(brain.OUTSIDE_S + 0.5, [off(), other]), m) == Engage(other)    # the normal choice goes on
+
+
+def test_a_target_brought_into_the_crop_in_time_is_kept():
+    m = Memory()
+    _seen_twice(m, 0.0, [det(1907, 635, 561, w=302, track=85)])
+    decide(st(1.0, [det(1600, 700, 561, w=302, track=85)]), m)                       # turned toward: inside the crop now
+    assert decide(st(brain.OUTSIDE_S + 1.0, [det(1300, 700, 561, w=302, track=85)]), m) == Engage(det(1300, 700, 561, w=302, track=85))
+    assert not m.barred
+
+
+def test_a_combo_committed_on_a_target_that_is_then_gone_does_not_hold_for_its_whole_length():
+    """trackerlive30: a 3 s burst was committed as the bot was knocked out; the controller had nothing to play it on, and the pad sat idle."""
+    m = Memory()
+    a = det(1280, 720, 600, track=1)
+    decide(st(-0.1, [a], abilities={}), m)
+    first = decide(st(0.0, [a], abilities={}), m)
+    m.intent, m.hold_until = brain.Combo(brain.BURST, a), 3.0                      # a burst committed at t 0 for 3 s
+    assert decide(st(0.3, [], coasting=()), m) == brain.Combo(brain.BURST, a)       # briefly missing: the combo runs on
+    later = decide(st(1.0, [], coasting=()), m)                                      # gone past LOST_S, not coasting
+    assert not isinstance(later, brain.Combo) and m.target is None

@@ -69,7 +69,8 @@ of that id in a decision, the brain follows it under the held id, which bypasses
 
 ## Live: postfreeze30 (30 s, ~50 Hz, the first supervised run)
 
-`docs/evidence/l4/postfreeze30_replay.py` replays it two ways, and reproduces every number below.
+`docs/evidence/l4/postfreeze30_replay.py --run data/l1/<run>` replays any run two ways (labels per run in its `LABELS`), and reproduces
+every number below.
 
 - **The trace** (stdlib): the boxes the live finder recorded, through tracker and scripted brain in live order (every aim-crop update per
   tick, the whole-frame search's update when the crop was empty, each decision after its row's updates). It makes 116 ids where the run
@@ -111,6 +112,41 @@ The trace carries the old finder's boxes, so its door count shows only the brain
 - **The camera turning under the tracker** accounts for 19 of 105 new ids (with ego-motion from the commanded stick and the controller's
   measured yaw map, the old box lands inside the gate; without it, it does not). 15 are boxes under 72 px, far bots. Of the rest, one
   is Luna losing her far-range id in a turn at 15.4 s: the brain re-picks her. Compensating it is not built.
+
+## Targets only the whole-frame search sees (trackerlive30)
+
+On trackerlive30 (the supervised run of the merged change, ~55 Hz) the pad sat idle for 4.9 s at the end, engaged on the respawned bot 630
+px right of the crosshair, and for 2.9 s after a bot was knocked out. The trace replay now steps the controller each tick with the brain's
+intent and reports **stalls** (engaged, and no stick, move or press for over 0.5 s); on main it reproduces the live ones (8.6 s: 2.9 s;
+18.5 s: 2.1 s; 28.1 s: 5.1 s, live 4.7 s).
+
+- **The controller aims a whole-frame target from every new measurement.** A target the aim crop has not confirmed is only a bearing, and
+  it used to be seeded once: the turn stopped where the controller's own camera model said it had arrived (the camera had turned about
+  390 of the 630 px), and after 1 s the unconfirmed limit stopped turning. Each decision's measurement now re-aims the track, at the
+  camera angle of the frame it was measured in (`Controller.step`'s `intent_t`, which the loop sets to the decision's frame time), and
+  refreshes its sighting time, so the turn goes on while the brain keeps seeing the bot.
+- **The brain releases a target that stays outside the aim crop.** A target whose box stays outside the crop's window (a third of the
+  frame height either side of the crosshair, the loop's 960 px at 1440p) for `OUTSIDE_S` (1.5 s) is released and its id is not picked
+  again. The one real target on the two runs that started outside the crop took 0.76 s to come in (trackerlive30 id 20); physically a
+  turn to anywhere on screen takes under 0.5 s at the measured rates. It covers a target the turn cannot bring in (the pitch budget, or
+  the crop not seeing what the whole-frame search does) and the downed bot at the frame's edge (a 38 x 43 box held 3 s).
+- **A committed combo does not outlive its target.** A combo holds its intent for `BURST_HOLD_S` (3 s); a bot knocked out as the combo
+  was chosen left nothing to play it on, and the pad sat idle for the rest of the hold. A hold on a hostile now lasts only while that
+  target is here, briefly missing (`LOST_S`) or coasting; the controller never cuts a primitive that is playing, and a search swing to an
+  anchor keeps its hold.
+
+| Trace replay | stalls over 0.5 s | engaged on the bot (with the pad doing something) | held id visible (on the bot) |
+|---|---|---|---|
+| trackerlive30, main | 2.9 / 2.1 / 0.6 / 5.1 s | 21.1 s (11.90 s) | 29% (37%) |
+| trackerlive30, this change | 0.7 / 1.9 / 0.6 / 1.7 s | 15.6 s (11.94 s) | 37% (50%) |
+| postfreeze30, main | 2.7 / 3.8 / 0.5 / 0.7 / 5.5 / 1.5 s | 10.6 s (9.65 s) | 23% (55%) |
+| postfreeze30, this change | 2.7 / 0.7 / 2.3 / 1.3 s | 10.5 s (9.48 s) | 28% (56%) |
+
+The replay is open loop: the recorded camera does not answer the new sticks, so a bot outside the crop never comes in and is released
+after `OUTSIDE_S` (the 5.1 s stall becomes 1.7 s); live, the re-aimed turn brings it in. Engaged time falls by the seconds that were
+spent standing still; engaged time with the pad doing something does not (trackerlive30 +0.04 s; postfreeze30 -0.17 s, on the old
+finder's boxes). postfreeze30's remaining 2.7 s stall at 3.4 s is on the spawn door in the trace's recorded boxes, which the finder no
+longer makes; on the refind replay (the current finder) door and kill feed are 0 s on both runs.
 
 ## Coasting: a deliberate trade
 

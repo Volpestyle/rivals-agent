@@ -346,6 +346,7 @@ class Controller:
     next_shot_t: float = 0.0
     next_uppercut_t: float = 0.0
     phase_t: float = 0.0
+    wanted: object = None                                   # the brain's target measurement the track was last aimed from
 
     # -- primitives: (seconds, pad changes) ---------------------------------
     def _tap(self, **down):
@@ -373,7 +374,9 @@ class Controller:
             self.seq.append((end, changes))
 
     # -- one step -------------------------------------------------------------
-    def step(self, state, intent):
+    def step(self, state, intent, intent_t=None):
+        """`intent_t`: the frame time of the State the brain decided on (the loop's Decision.t), so a target the brain measured is
+        placed at the camera angle of that frame, not of this one. None: the target is placed at this frame's angle."""
         t = state.t
         dt = 0.0 if self.last_t is None else max(0.0, min(0.1, t - self.last_t))
         self.last_t = t
@@ -389,7 +392,7 @@ class Controller:
         wanted = getattr(intent, "target", None) or getattr(intent, "anchor", None)
         if wanted is not None:
             self._measured = False
-            self._follow(state, wanted, dt)
+            self._follow(state, wanted, dt, intent_t)
             on_target = self._aim(state, out, dt)
             ok = self._measured and PLAUSIBLE[0] <= self.track.h / state.frame[1] <= PLAUSIBLE[1]
             if not (not self._measured and t - self.attack_t < HIT_BLIND_S):   # hit flash: stay armed, track coasts (LOST_S)
@@ -484,7 +487,7 @@ class Controller:
                 return y0 + k * (y1 - y0), p0 + k * (p1 - p0)
         return (self.cam_hist[-1][1], self.cam_hist[-1][2]) if self.cam_hist else (0.0, 0.0)
 
-    def _follow(self, state, wanted, dt):
+    def _follow(self, state, wanted, dt, wanted_t=None):
         w, h = state.frame
         f = self.cal.focal_1280 * w / 1280.0
         self._advance(state.t, dt)
@@ -508,6 +511,18 @@ class Controller:
             if state.t - self.track.seen_t > 0.1:   # coasting on a stale velocity walks the aim off the target
                 self.track.v_yaw = self.track.v_pitch = 0.0
             self.track.predict(dt)
+        if not self.track.confirmed and wanted is not self.wanted:
+            # Not yet seen by the aim crop: the brain's target is all there is, and each decision brings a new measurement of it (the
+            # whole-frame search). Aim from every one, at the camera angle of the frame it was measured in. Seeded once and never
+            # corrected, the turn stopped short where the controller's own model said it had arrived, the bot stayed 630 px to the right
+            # and the 1 s unconfirmed limit then stopped turning altogether: 4.9 s standing still on trackerlive30.
+            at = self._cam_at(wanted_t - self.cal.latency_s) if wanted_t is not None else shown
+            cx, cy = wanted.center
+            tr = self.track
+            tr.yaw, tr.pitch = at[0] + math.degrees(math.atan2(cx - w / 2, f)), at[1] - math.degrees(math.atan2(cy - h / 2, f))
+            tr.w, tr.h, tr.v_yaw, tr.v_pitch = wanted.bbox[2] - wanted.bbox[0], wanted.height, 0.0, 0.0
+            tr.seen_t = max(tr.seen_t, wanted_t if wanted_t is not None else state.t)
+        self.wanted = wanted
         if not state.detections:
             return
         # No player-region filter here: perception/outline.py already drops the small marks the hero's own suit

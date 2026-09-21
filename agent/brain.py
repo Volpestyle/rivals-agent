@@ -35,6 +35,9 @@ HP_RETREAT = 0.30     # guess: enter retreat at or below this hp fraction
 HP_RESUME = 0.60      # guess: leave retreat, and re-arm it, at or above this
 RETREAT_MAX_S = 6.0   # guess: leave retreat anyway; the range has no healer, do not hide forever
 LOST_S = 0.5          # guess: ride out detector flicker / dropped frames this long before giving up the target
+AIM_WINDOW = 1 / 3    # the aim crop's half-size, a share of the frame height (agent.loop.CROP: 960 px at 1440p round the crosshair)
+OUTSIDE_S = 1.5       # a target whose box stays outside the aim crop this long is released and not picked again: the controller turns
+                      # a whole-frame target into the crop in 0.76 s at worst on the recorded runs (trackerlive30 id 20)
 SEARCH_SWING_S = 3.0  # guess: searched this long with nothing in view: swing somewhere else
 BURST_HOLD_S = 3.0    # kit: a guide claims the whole burst fits under 3 s (unverified)
 PULL_HOLD_S = 0.8     # guess: 250 ms flight at 20 m plus the drag
@@ -72,6 +75,8 @@ class Memory:
     target_t: float = -math.inf       # last time a hostile was seen
     retreat_armed: bool = True        # re-arms once hp recovers past HP_RESUME
     seen: frozenset = frozenset()     # track ids of the hostiles present at the previous decision (acquisition needs two in a row)
+    out_since: float | None = None    # since when the held target's box has been outside the aim crop
+    barred: set = field(default_factory=set)   # ids released for staying outside the aim crop: never picked again (ids are never reused)
 
 
 def decide(state: State, memory: Memory) -> Intent:
@@ -93,6 +98,10 @@ def gate(state: State, memory: Memory):
     hp = state.hp / state.max_hp if state.hp is not None and state.max_hp else None  # None = unreadable
 
     target = _pick_target(state, memory)
+    if target is not None and _outside_too_long(state, memory, target):
+        memory.barred.add(target.track)
+        memory.target, memory.target_t, memory.out_since = None, -math.inf, None
+        target = _pick_target(state, memory)
     memory.seen = frozenset(d.track for d in state.detections or [] if d.track is not None)
     if target is not None:
         memory.target, memory.target_t = target, t
@@ -110,8 +119,11 @@ def gate(state: State, memory: Memory):
     if memory.mode == RETREAT:
         return commit(memory, Disengage()), target
 
-    if t < memory.hold_until:
-        return memory.intent, target
+    aimed = getattr(memory.intent, "target", None) is not None          # a hold on a hostile (a search swing to an anchor has none)
+    if t < memory.hold_until and (not aimed or target is not None or t - memory.target_t <= LOST_S or _coasting(state, memory)):
+        return memory.intent, target   # a committed sequence runs its course while its target is here or briefly missing; a hold on a
+                                       # target already gone protects nothing (the controller never cuts a primitive that is playing):
+                                       # trackerlive30 held a 3 s burst on a bot knocked out as it was chosen, pressing nothing
 
     if target is None and (t - memory.target_t <= LOST_S or _coasting(state, memory)):
         return memory.intent, None  # flicker, or the tracker still holds the target's id: keep doing what we were doing
@@ -214,7 +226,27 @@ def _pick_target(state, memory):
         if _coasting(state, memory):
             return None
     sticky = last is not None and state.t - memory.target_t <= LOST_S
-    return _nearest(state, HOSTILE, last.center if sticky else crosshair(state), lambda d: d.track is None or d.track in memory.seen)
+    return _nearest(state, HOSTILE, last.center if sticky else crosshair(state), lambda d: _acquirable(state, memory, d))
+
+
+def _acquirable(state, memory, d):
+    """May `d` become a NEW target? Its id present at the previous decision too (a one-frame sliver of the spawn door started a 3 s combo),
+    and not released before for staying outside the aim crop."""
+    return d.track is None or (d.track in memory.seen and d.track not in memory.barred)
+
+
+def _outside_too_long(state, memory, target):
+    """Has the target's box stayed outside the aim crop for OUTSIDE_S? The controller turns toward a target only the whole-frame search
+    sees until the crop confirms it; one that never comes in (the turn cannot reach it, or the crop cannot see what the search does) is
+    released instead of held: trackerlive30 stood 4.9 s on such a target."""
+    cx, cy = target.center
+    w, h = state.frame
+    if abs(cx - w / 2) <= AIM_WINDOW * h and abs(cy - h / 2) <= AIM_WINDOW * h:
+        memory.out_since = None
+        return False
+    if memory.out_since is None or memory.target is None or memory.target.track != target.track:
+        memory.out_since = state.t
+    return target.track is not None and state.t - memory.out_since > OUTSIDE_S
 
 
 def ready(state, name):
