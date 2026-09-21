@@ -266,9 +266,18 @@ at this stick; the budget allows about 20 steps).
 s". In three the spawn room's glass door is dead ahead (`door` 0.525-0.541, well inside `DOOR_TOL`) and Spider-Man is pressed against the
 dark pillar that is its left frame; in the fourth he is at that pillar with the door's lit opening off to the left. The steering centres
 the door on the screen, but the third-person camera draws the hero left of the centre, so his walking line runs left of the camera's axis
-and, close to the door, into its frame; `plaza_view` then never holds and the budget runs out. Not fixed: correcting the walking line
-(aiming the door right of centre by the camera's shoulder offset, or stepping sideways when the door stays centred and nothing changes)
-needs the character to move and the camera to answer, which no recorded frame shows, so it cannot be proven offline.
+and, close to the door, into its frame; `plaza_view` then never holds and the budget runs out. Measured on the four refusal frames, the five
+runs' first frames and the five arrival fixtures: the hero's column (median x of his suit's red) is 0.37-0.42 of the width, median 0.395;
+on the refusal frames the door's lime pane spans x 0.49-0.58 and he stands at 0.40, on the dark frame left of it. To put the pane on his
+walking line it has to sit LEFT of centre, at his column (turning right by about 20 deg at the jamb). Not fixed: whether the pane is the
+passable opening and whether that line gets him through needs the character to move and the camera to answer, which no recorded frame
+shows.
+
+**Where the five supervised runs started (postfreeze30, trackerlive30, stall30, handoff30, reach30; `data/l1/<run>/000000.jpg`).** Every one
+starts outside, a few metres from the door on the plaza side, facing back into the spawn room with the bot behind him; `plaza_view` is
+False on all five. `arrive` has no notion of having passed the door: with the bot behind, the look-around (right turns) meets the door
+from outside first, steers to it and walks back toward it until the budget runs out. That sequence fits all five end poses; `arrive` logs no
+steps, so it is not shown.
 
 ## Not verified: read these first in the live trial
 
