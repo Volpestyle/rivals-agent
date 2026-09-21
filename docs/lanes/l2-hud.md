@@ -1428,6 +1428,83 @@ no alarms, against the frozen stream (`1336262e179c`). Scratch only.
   now one that predates the segment, has its end recorded as history,
   `cooldown_ended` (180.7, 181.0]. Req is identical apart from the writer.
 
+## Bonus maximum health and hp cause (measured, VUH-1306)
+
+Read-only, on the two promoted train sections under writer `21a390f547eb`;
+native frames read by eye. A **bonus pool** is the blue segment on the hp bar:
+maximum health above 250 (the ultimate's +250, a team-up shield). It arrives and
+leaves as hp and max hp moving together.
+
+**Every `max_hp_changed` row, and what the frames show:**
+
+| source | row | frames | verdict |
+|---|---|---|---|
+| Day | (64.5, 65.7] 40 → 400 | 400/400 throughout; "40" read once under a diagonal streak | **misread**: the segment's first max read |
+| Day | (765.9, 766.7] 500 → 250 | 500/500 with a blue segment, then 250/250 | real: the bonus pool ends |
+| Req | (11.9, 13.7] 250 → 500 | 242/250 → 246/250 → 496/500, blue segment appears | real: the bonus arrives |
+| Req | (14.0, 18.7] 500 → 250 | 500/500 → 420/420 → 250/250 | real: the pool shrinks in two steps |
+| Req | (627.6, 628.3] 250 → 500 | 229/250 → 479/500 | real: the bonus arrives |
+| Req | (630.5, 635.3] 500 → 250 | 500/500 with a blue segment, then 250/250 | real: the pool ends |
+| Req | (664.1, 664.7] 25 → 250 | 175/250 throughout; "25" read once under a web overlay | **misread**: the segment's first max read |
+
+**Every hp event beside a max change, and every damage or heal label with hp
+above 250 on either side** (the bonus present), checked on the frames:
+
+| source | event | cause written | frames | right? |
+|---|---|---|---|---|
+| Day | `hp_lost` (765.8, 766.0] 500 → 250 | damage | the pool ends; nothing hit | **no** |
+| Day | `hp_lost` (65.9, 67.2] 400 → 394 | unknown | a bonus pool decaying | yes |
+| Req | `hp_gained` (11.8, 12.1] 242 → 500, 258 | heal | the bonus arrives, with a few hp of healing | **no** |
+| Req | `hp_lost` (14.2, 14.3] 500 → 420 and (14.9, 15.0] 420 → 250 | unknown | the pool shrinking | yes |
+| Req | `hp_gained` (627.7, 627.8] 229 → 479 | unknown | the bonus arrives | yes |
+| Req | `hp_gained` 479 → 491 → 495 → 499 (628.2–629.1) | heal | 4 hp ticks under a steady 500/500, bar glowing green | yes |
+| Req | `hp_lost` (629.9, 630.7] 500 → 250 | damage | the pool ends; nothing hit | **no** |
+
+So **three events are mislabelled**: Day one of its 19 `damage` labels; Req
+one of its 27 `damage` labels and one of its 63 `heal` labels. The other
+bonus arrivals and departures already say cause unknown.
+
+**Why the cause came out known.** `cause` needs max hp read unchanged on each
+side of the change: one read at or before the last frame showing the old hp,
+another after it, no later than the frame confirming the new hp. The after
+side is searched over the frames between the last old hp read and the first new
+one. When hp goes unread there for a frame or more, those frames still show the
+**old** maximum. They are before the change, not after it: Day 765.9 reads
+max 500 with hp unread, Req 630.1–630.6 likewise, and Req 11.9 reads max 250.
+So the rule sees 500 → 500 (or 250 → 250) and writes damage or heal. The shield
+fold (`_merge_shield`) would have caught the two losses, a same-delta
+`max_hp_changed`, but it pairs only within SHIELD_WINDOW = 3 frames of the hp
+event's confirmation, and max hp is confirmed 7 and 8 frames later, after
+unread frames and its two-read hold.
+
+**Why the two maxima are misread.** A channel's first sighting in a segment
+becomes its value at once, without the hold that every later change needs. A
+single misread "40" or "25", the first max read of its segment, becomes the
+`before` of a change that never happened.
+
+### Proposed for the next writer opening (not built)
+
+- **R1, the after-side max read comes from after the change.** Take max hp's
+  after-side read from the frames at or after the first frame reading the new
+  hp, up to that event's settling frame (i_to + HP_SETTLE, already its
+  `known_at`, so nothing is decided later than now), never from the gap before
+  it. An unread or different max there gives cause unknown. All three mislabels
+  become unknown: Day 766.0–766.4 and Req 630.7–631.1 read no max; Req
+  12.1–12.5 read none either, and a 500 there would differ from 250.
+  **Regression frames**: Day 765.8–766.0; Req 629.9–630.7; Req 11.7–12.1.
+  **Controls that must keep their labels**: Req 628.2–629.1, heals, with max
+  500 read at 628.3–628.5 and 628.9; and a damage control with max 250 read
+  after the change, chosen at the opening.
+- **R2, the first sighting needs the hold.** A debounced channel takes its
+  first value only after `hold` agreeing reads, as for a change. That removes
+  both phantom maxima. **Regression frames**: Day 64.5; Req 664.1. It changes
+  every channel with a hold of 2 (charges, webs, max hp, kill feed), so its
+  effect on each is measured at the opening before it is accepted.
+- The alternative to R1, folding a same-delta `max_hp_changed` whose interval
+  overlaps the hp event's (not only within 3 frames), catches the two losses
+  but not the heal (the max change at 11.9 is +250 against +258). R1 is the
+  smaller rule.
+
 ## Retained sections: how much is actually own-Spider-Man play
 
 Four 15-minute 1080p60 expert sections, sampled at an exact 10 Hz and segmented.
