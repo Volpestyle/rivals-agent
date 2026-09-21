@@ -2,9 +2,9 @@
 
 Linear: VUH-1296. Evidence: `docs/evidence/l4/`. Raw measurements: `C:\rivals-agent\data\l4\` on the PC.
 
-The game is in the Practice Range as Spider-Man on the main plaza by the Luna Snow bot, idle, no pad connected
-(`after-postfreeze30.jpg`). The PC holds `agent/`, `scripts/` (with templates) and `perception/` from
-`git archive d5f89ea`, all 41 tracked files verified by sha256.
+The game is on the PLAY lobby, idle, no pad connected. The PC holds `agent/`, `scripts/` (with templates) and
+`perception/` from `git archive 2737e88`: all 41 tracked files verified by sha256, nothing else in those directories;
+`scripts/record.py` is the reviewer-accepted crop-first version (sha256 `f22bfeb4...dbaa904`).
 
 ## Post-freeze supervised run: `C:\rivals-agent\data\l1\postfreeze30\` (30 s, scripted brain, `--cooldowns normal`)
 
@@ -99,7 +99,16 @@ replay capture serving `postfreeze30`'s 273 native frames at 60 Hz (a fresh arra
   on a run frame) in 0.075 ms instead of 1.44 ms. With both predicates at ~0.3 ms all 77 over-budget ticks come back
   under budget, with no change to the reviewed authorization boundary. The shared verdict would then save ~0.3 ms a tick.
 
-### Fix: `record.banner_score` crops before it converts (branch `shared-range-proof`, not deployed, awaiting the input-safety reviewer)
+### `record.banner_score` crops before it converts (accepted by the input-safety reviewer, on main, deployed)
+
+Measured on the PC on live frames, capture only (no pad created, no input, game on the PLAY lobby, 400 dxcam frames at
+2560x1440, the two paths alternated per frame): `in_range` costs **0.19 / 0.27 / 0.40 ms** (median / p95 / max) crop-first
+against 1.20 / 1.53 / 2.85 ms on the old whole-frame path; `banner_score` alone 0.28 / 0.43 / 0.67 against
+1.30 / 1.60 / 3.41 ms. Scores are equal on 400 of 400 frames (max difference 0.0) and so is `in_range`. On the lobby it
+reads not-in-range on every frame (banner score 0.075-0.083 against the 0.55 threshold), so these timings are the
+early-exit path: the banner fails and the health-bar tests never run. In the range `in_range` also runs the bar tests
+(~0.8 ms in the replay profile below); a live in-range timing needs the game in the range.
+
 
 The shared range verdict was NOT built (after this fix it would save ~0.3 ms a tick for a change to the reviewed
 authorization boundary). Only the predicate's internals change; `in_range`'s signature, thresholds, bar tests and every
