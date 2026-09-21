@@ -2,9 +2,44 @@
 
 Linear: VUH-1296. Evidence: `docs/evidence/l4/`. Raw measurements: `C:\rivals-agent\data\l4\` on the PC.
 
-The game is on the PLAY lobby, idle, no pad connected. The PC holds `agent/`, `scripts/` (with templates) and
-`perception/` from `git archive 2737e88`: all 41 tracked files verified by sha256, nothing else in those directories;
-`scripts/record.py` is the reviewer-accepted crop-first version (sha256 `f22bfeb4...dbaa904`).
+The game is in the Practice Range as Spider-Man on the main plaza, beside the Hero Simulation kiosk with the Luna Snow bot
+3-4 m to his right, idle, no pad connected (`after-trackerlive30.jpg`). The PC holds `agent/`, `scripts/` (with templates)
+and `perception/` from `git archive 9e075f5`: all 42 tracked files verified by sha256, nothing else in those directories.
+
+## Supervised run `trackerlive30` (VUH-1314): `data/l1/trackerlive30/` on the PC and the Mac
+
+30 s, scripted brain, `--cooldowns normal` (verified from play before the run: ammo 2 after three shots, Get Over Here
+showing 7, `cooldowns-normal-verified-4.jpg`; `l4_practice_settings.py cooldowns-off` read the switch as already off and
+pressed nothing). Patch not read from the screen; the kit doc's Season 10, version 20260911 stands. Entry was
+`scripts/reenter.py`: every menu press passed its proof; the arrival again stopped with "could not confirm the spawn room
+was left within 14 s" while he stood outside at the door frame. Contact sheet with every box drawn and the held target in
+red: `trackerlive30-sheet.jpg`; metadata `trackerlive30-meta.json`.
+
+| | `trackerlive30` | `postfreeze30` |
+|---|---|---|
+| Stop / guards | `max_time`; no range gap, no error, 1 keep-alive, 0 missed decisions; log clean, 0 python left, 0 Xbox pads present | same |
+| Reflex | 54.6 Hz; tick p50 / p95 / max 9.8 / 12.6 / 18.0 ms; **2 of 1,639 ticks over budget** | 49.9 Hz; 11.4 / 17.9 / 25.7; 80 of 1,499 |
+| Aim finder | 6.7 / 8.9 / 12.8 ms | 6.3 / 10.2 / 16.2 |
+| Decision | 10.1 Hz; 52 / 76 / 92 ms | 40 / 58 / 94 |
+| Scoreboard (parsed) | 2 KOs, 0 deaths, 760 damage, accuracy 72 %, Web-Cluster accuracy 16 % | 2 KOs, 0 deaths, 565 damage |
+
+Target accounting from the per-tick trace (the owner's `postfreeze30_replay.py` has its run path and its by-eye labels
+hard-coded for `postfreeze30`, so it does not score this run; these are trace counts plus what the drawn boxes show):
+
+- **Door and kill feed: 0 engaged seconds.** The lime door was in view for the first ~1.3 s and produced no box; 0 of 1,156
+  reflex boxes fall in the kill-feed corner. Every target box on the 24 sampled frames sits on the Luna Snow bot.
+- First box in the crop at t 4.48 s, first engaging tick at 4.60 s (0.12 s later, inside the expected 0.1-0.5 s).
+- Engaging ticks 1,463 of 1,639 (~26.8 s). The held id was visible on 482 of 1,462 held ticks (**33 %**, was 21 %), coasting
+  on 801, neither on 179. `target_px` while visible p10 / p50 / p90 / max = 35 / 198 / 393 / 500 native px.
+- **9 target ids for one bot in 27 s** (3, 9, 20, 21, 35, 46, 56, 63, 85), 63 ids issued in all (was 14 and 84). Three were
+  never visible to the reflex crop: 46 (3.0 s: a 44x36 px box at the right edge, the downed bot), 63 (1.3 s, one 22x31 px
+  box) and **85 (the last 4.9 s): the respawned bot, seen only by the whole-frame search at x 1756-2526, to the right of the
+  960 px crop.** He stood still for those 4.9 s: the controller turns toward a target the crop has not confirmed for 1 s,
+  then stops, and the brain kept engaging it. No attack was pressed in the last 7 s.
+- Pieces of one body sharing an id: 32 ticks (was 7 ticks of an upper and a lower box carrying the same id by accident).
+- Re-acquisitions after a coast: 15; ten after gaps under 0.3 s; the five longer ones (gap s / `target_px`): 0.90 / 267,
+  0.76 / 206, 0.41 / 301, 0.89 / 54, 4.31 / 107.
+
 
 ## Post-freeze supervised run: `C:\rivals-agent\data\l1\postfreeze30\` (30 s, scripted brain, `--cooldowns normal`)
 
