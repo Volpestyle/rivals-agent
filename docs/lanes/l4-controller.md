@@ -2,9 +2,104 @@
 
 Linear: VUH-1296. Evidence: `docs/evidence/l4/`. Raw measurements: `C:\rivals-agent\data\l4\` on the PC.
 
-The game is in the Practice Range as Spider-Man on the lower ring below the plaza, idle, no pad connected
-(`after-handoff30.jpg`). The PC holds `agent/`, `scripts/` (with templates) and `perception/` from `git archive e337c43`,
-all 42 tracked files verified by sha256.
+The game is in the Practice Range as Spider-Man on the plaza, facing the Luna Snow bot a few metres off, idle, no pad
+connected (`after-reach30.jpg`). The PC holds `agent/`, `scripts/` (with templates) and `perception/` from
+`git archive 619bd62`, all 42 tracked files verified by sha256, nothing of this lane's scratch beside them.
+
+## Supervised run `reach30` (VUH-1314): `data/l1/reach30/` on the PC and the Mac
+
+30 s, scripted brain, `--cooldowns normal` (from play before the run: ammo 2 after three shots, Get Over Here showing 7,
+`cooldowns-normal-verified-7.jpg`; the cooldowns script read the switch as already off and pressed nothing). `meta.json`
+carries `patch: null` (the kit doc is not on the PC); patch not read from the screen, the kit doc's Season 10, Version
+20260911 stands. This run is not certification of no falls or of reliable episodes; it shows what is written here and no more.
+
+Entry, `scripts/reenter.py` (`capture.py preflight` passed first, 107 dxcam frames in 1 s; `--dry-run` read `lobby`):
+hero select and the A proof **passed first time**: `screen hero_select`, `RB`, `RB`,
+`A (the game's tooltip names SPIDER-MAN (match 0.92) beside the cursor at (851,42))`, `X`, `screen in_range`, then the known
+arrival stop (exit 1, `could not confirm the spawn room was left within 14 s`) with him outside on the plaza side of the
+door. No re-invocation was needed, no hand navigation. After the pad connected a throwaway forward / back move went out
+before any turn. The run started facing the door's plaza-side pillar, a few metres from it, the bot behind him.
+
+| | `reach30` | `handoff30` |
+|---|---|---|
+| Stop / guards | `max_time`; no range gap, no error, 1 keep-alive, 0 missed decisions; 0 python left, 0 Xbox pads present | same |
+| Reflex | 55.8 Hz; tick p50 / p95 / max 9.0 / 13.1 / 17.9 ms; 2 of 1,676 ticks over budget | 56.1 Hz; 9.0 / 12.7 / 22.3; 8 of 1,683 |
+| Aim finder | 6.0 / 8.8 / 13.7 ms | 5.9 / 8.6 / 15.5 |
+| Decision | 10.1 Hz; 52 / 67 / 93 ms | 10.0 Hz; 55 / 69 / 83 |
+| Scoreboard (parsed) | **0 KOs**, 0 deaths, 55 damage, accuracy 0 %, Web-Cluster accuracy 0 % | 0 KOs, 0 deaths, 250 damage |
+
+**Engaged seconds by target kind, by eye on the drawn frames** (`reach30-sheet.jpg`: crop white, decision boxes cyan, crop
+boxes yellow, the held target red). Criterion for the reach rule: a box AT OR UNDER THE HEIGHT CUTOFF (`reach_h` = 0.0325 of
+frame height = 47 px at 1440p) versus a target with a MEASURED distance inside / outside the 40 m cap. Engaged total 14.0 s
+(784 ticks).
+
+| Kind | Engaged | Ids |
+|---|---|---|
+| Real bot in reach (the Luna Snow bot; picked at 123-199 px, above the cutoff; no measured distance) | 5.5 s | 11, 16, 44, 67, 68 |
+| Box at or under the height cutoff | **0 s**: none picked. The smallest picked box is 90 px. 33 crop ids of 28-46 px appeared (the small distant boxes through the archway, door slivers) and none was picked | - |
+| Measured out of the cap | **NOT EXERCISED**: none of the 140 decision detections carried a distance, so every reach decision in this run is the height criterion | - |
+| Door from the plaza side (leaf, cross, edge glow, top glow) | 8.5 s | 1, 21, 22, 23, 30, 36, 51, 58 |
+| Door from the spawn-room side | 0 s (the inside was not entered; seen only through the door) | - |
+| Kill feed | 0 s (no box in that corner) | - |
+| Other | 0 s | - |
+
+Of the 5.5 s on the real bot, the held id was measured in the crop on 57 ticks (~1.0 s): id 16 on 17 ticks as a 30-36 px
+sliver clipped by the crop's top edge (not walked at), id 68 on all 40 of its ticks at 137-144 px, where the one burst of
+the run landed (t 32.56, 55 damage). The replay's generic labels call 12.69 s "luna": it counts the door's boxes as
+Luna-sized; the by-eye table above is the accounting.
+
+**Forward-walk episodes** (left stick forward under Engage; the two 0.3 s throwaway moves at t 3.2-3.8 are `Live`'s own):
+
+| t (s) | Toward what (by eye) | Held id / crop box on those ticks | Height, distance | Should the rule have allowed it |
+|---|---|---|---|---|
+| 3.93-4.29 (0.36) | the plaza-side door leaf | 1 / id 1, then id 3 for the last 4 ticks | 249-463 px (clipped by the crop top), none | yes by the rule (above 47 px, no distance). Not a bot: a perception false positive |
+| 14.95-14.97 (2 ticks) | the door's top glow, camera pitched up | 21 / 21 | 89-105 px, none | yes by the rule; door |
+| 15.76-16.31 (0.55) | the door's green cross | 23 / 23 (25 for one tick) | 53-222 px, none | yes by the rule; door |
+| 18.62-19.04 (0.42) | the door's edge, farther off | 30 / ids 31, 32, 29 on 8 of 13 ticks, 30 on 5 | 103-262 px, none | yes by height; on 8 ticks the measured box was not the held id |
+| 19.46-19.67 (5 ticks) | the same door edge | 30 / id 31 only | **49, 50, 55 px**, then 242, 319; none | yes: 49 px is above the 47 px cutoff, by 2 px. The measured box was not the held id |
+| 22.80-22.86 (2 ticks) | the door's edge beside its dark pillar | 36 / 36 | 194-294 px, none | yes by the rule; door |
+| 24.46-24.79 (0.33) | the door's edge, **while the held target was the Luna bot 948 px left of the crosshair (id 44, whole-frame only)** | 44 / id 51 for 11 ticks, then the brain moved to 51 | 61-394 px, none | the height rule allowed it. The box walked at was not the held target: the controller's track, drifted off every box for 0.25 s, re-seeded on the nearest crop box of the same class (full right stick toward the door, away from the bot) and that re-seed counts as measured and confirmed. The association is by bearing; it does not read the tracker id |
+| 28.49-28.66 (0.17) | the door's green cross | 58 / 58 and 57 | 89-219 px, none | yes by the rule; door |
+| 32.27-32.47 (0.20) | **the Luna bot** | 67 then 68 / 68 | 109-144 px, none | yes: a real bot in reach, above the cutoff |
+
+No forward walk happened toward a box at or under the cutoff, and none toward a small distant box.
+
+**Whole-frame -> crop hand-offs (picked outside the crop).** Strips: `reach30-handoffs.jpg`.
+
+| Pick | Id | What, where (native centre, height) | Reached the crop under | Elapsed / ending |
+|---|---|---|---|---|
+| t 7.65 | 11 | Luna bot, (2126,910), 199 px, right of and below the crop | **changed id**: the crop saw her as id 12 (165-168 px) from t 7.92; id 11 never appeared in the crop | held 0.84 s, steered on the pick tick, **released** to Search at t 8.49 with her in the crop as 12 |
+| t 14.86 | 21 | door top glow, (527,866), 105 px | the same id, 21, after 0.09 s | the brain moved to 22 after 0.10 s |
+| t 14.98 | 22 | green glow at the bottom-right corner, (2224,1156), 249 px | never | released after 0.44 s |
+| t 18.57 | 30 | door edge, (765,362), 267 px | the same id, 30, after 0.23 s, on 7 of 75 ticks; ids 29, 31, 32, 34 on the others | held 1.30 s, released |
+| t 23.75 | 44 | Luna bot, (384,1038), 183 px, left of the crop | **never**: steered 0.02 s after the pick (left, 0.43) for ~0.2 s, then no stick; at t 24.46 the controller re-seeded on the door edge (id 51) and turned right | the brain moved to 51 (the door) at t 24.72 |
+| t 32.20 | 67 | Luna bot, (410,458), 185 px, left of the crop | **changed id**: 68 in the crop from t 32.27 (0.07 s) | the brain moved to 68 after 0.17 s; burst at t 32.56; run end at t 33.16 |
+
+Three real-bot cases exercised: none reached the crop under the same id (two changed ids, one never reached it). The two
+door cases that reached the crop kept their id. Replay `live_handoffs`: 7.87 held 11 / crop 13, 18.62 30/31, 22.93 36/41,
+23.86 44/45, 32.27 67/68, all `kept: false`; replay `handoffs` has 16.03 23 -> [23] kept.
+
+**Plaza, falls, end.** He did not leave the plaza and did not fall: the whole run is within a few metres of the plaza-side
+door, and it ends on the plaza facing the Luna bot (`after-reach30.jpg`). One run, 30 s.
+
+**Stalls over 0.5 s** (a target held, pad neutral): 4.46 / 0.60 (id 1, door), 9.05 / 0.64 and 10.02 / 1.45 (id 16: the Luna
+bot in view ABOVE the crop with the camera pitched at the floor, centred in yaw, no pitch stick), 16.42 / 1.83 (id 23, door
+cross, not in the crop), 24.91 / 0.74 (id 51, door), 28.78 / 0.78 (id 58, door). The replay's list (4.46 / 0.73,
+9.05 / 0.66, 10.02 / 1.48, 16.43 / 0.84, 24.91 / 0.75, 28.78 / 0.81) agrees except that it ends the id 23 stall early. No
+tick gap over 0.1 s.
+
+**Search pitch, seen in this run** (`reach30-search-pitch.jpg`): every Search was 2.6-3.4 s long and ended in a door
+engagement. Search's first 2 s undo the aim's pitch at half stick down, and its absolute re-level starts by running up into
+the clamp at 2.0 s; each search was cut off inside that up phase (0.5-1.4 s of full up stick), so the come-down that zeroes
+the pitch account never ran. The pitch account (`pitch_used`, reconstructed from the sent sticks) then read +0.3 to +1.4
+stick-seconds for the rest of the run: at or over the 0.30 budget, so the aim's up pitch was refused from t 8.7 on, and each
+following search pitched down for up to 1.5 s to undo stick-seconds that the game's pitch clamp had partly swallowed. The
+camera looked at the floor at t ~5.4-7.0, 11.6-13.5, 20.1-22.1, 26.0-28.0, 30.2-31.8 and at the ceiling around t 14.4-15.4;
+the id 16 stall is the Luna bot above the crop with the up pitch refused. The first floor look (t 5.4-7.0) comes before any up
+phase, after 0.29 s of full up stick on the door and 0.32 s of half stick down, and is steeper than the pitch map gives for
+those sticks: not explained by this run. Nothing was tuned.
+
+Trace counts: 13 target ids, 71 ids issued by the replay tracker, held id visible 0.162 of held ticks.
 
 ## Supervised run `handoff30` (VUH-1314): `data/l1/handoff30/` on the PC and the Mac
 
