@@ -112,8 +112,8 @@ differences are a plausible cause, not an adjudication of the conflicting facts.
 
 #### Aligned two-window rerun
 
-Redo only Req +30 and +45 before expanding annotation. Preserve the original
-passes. Both annotators use `data/demos/samples/reqmr-2873352801-1920.mp4` and the
+The aligned rerun covers only Req +30 and +45. Preserve the original passes.
+Both annotators use `data/demos/samples/reqmr-2873352801-1920.mp4` and the
 frozen event stream at
 `data/demos/annotations/rerun-inputs/reqmr-2873352801-1920.events.jsonl`, copied
 from `data/demos/events/reqmr-2873352801-1920.jsonl`. This is the MK-layout stream,
@@ -124,6 +124,12 @@ not the older `.events.jsonl` beside the sample video.
    the original frame. Record actual source PTS; choose the frame at or before
    each requested time. Only events confirmed by t are context inputs; retain
    transition intervals rather than inventing instantaneous button presses.
+   Name the extraction method and frame index as well as PTS. On this verified
+   60 fps source, zero-based frame n = 6i (`select='not(mod(n,6))'`) matches
+   accurate seeks pixel for pixel in the Claude annotator's check; plain
+   `-vf fps=10` can differ by one source frame. Codex uses decoded PTS to select
+   the greatest timestamp at or before each request. Other clips need their own
+   PTS check: neither a clean 60 fps grid nor the same sampling phase is assumed.
 2. Derive a **per-frame visibility mask** from the event stream's segments, with
    reasons for gaps. Add observed overlay/player occlusion separately: scene,
    player and individual HUD fields can have different visibility. Do not infer
@@ -152,14 +158,43 @@ not the older `.events.jsonl` beside the sample video.
    proximity alone. Record later corrections separately, without rewriting the
    context judgment. Both passes have prior pilot exposure; this is a protocol
    repair, not a new blinded evaluation.
+6. Keep the **shared stream immutable** as the authoritative record of what the
+   extractor reports for its tracked channels, not as infallible gameplay truth.
+   An annotator may add `observed_not_in_shared_stream` evidence with the slot,
+   before/after values, source frame indices/PTS, interval and confidence. Never
+   delete or silently rewrite a shared event. Flag disputed events and visibility
+   boundaries separately for adjudication; unresolved disputes are excluded from
+   supervision. Additions obey the same decision-time cutoff. The frozen stream
+   does not track team-up use; both the coverage gap and the reported use around
+   +40.8–41.0 remain explicit rather than becoming a negative label.
 
-The lead assigns the Claude rerun; Codex owns its separate rerun. Compare tactical
-labels, primitive labels and outcome facts separately, then adjudicate against
-the same frames. Remaining unobservable distinctions become unknown or leave the
-supervised label set. Two repaired windows can unblock a larger observability
-pilot, not establish label reliability at training scale. The loader owner owns
-representation changes; the shared masks must also constrain eventual training
-observations so annotators cannot use history the policy will not receive.
+The HUD lane owns the requested event-name correction: the shared slot is
+`get_over_here`, while icon availability transitions are `slot_unavailable` /
+`slot_available`. The frozen pilot stream still uses `pull` and `ability_used` /
+`ability_ready`; those legacy names do not establish an untagged pull or a cast.
+Cooldown starts and charge expenditure need separate evidence. The rename is a
+contract change to coordinate with the loader, not permission to rewrite the
+frozen evidence or merge the live Pull/WebStrike execution checks.
+
+The lead's media-backed adjudication finds agreement on tactical purpose in both
+rerun windows: +30 engage and +45 reposition, with residual search/setup ambiguity
+at +45. Selected target and persistent identity remain unknown in both. At +30,
+the +34.0–34.3 frames establish close combat beside a caped, red-marked enemy;
+the first part of the outcome alone cannot describe the whole five seconds.
+At +45, traversal around the pillar followed by combat is supported, but identity
+continuity with the group below is not. This supports the coarse purpose/primitive
+split on these two examples, not reliability at scale or observability of every
+candidate class. Unknown identity here does not imply all VOD target boxes are
+unobservable.
+
+Both passes independently identify missed Get Over Here cooldown starts,
+availability blips misnamed as uses, the scoreboard still visible at +43.7, and
+HP intervals netting damage against healing. **Scaling annotation waits on HUD
+fixes and a hand-checked VOD event sample**, with class-specific precision, recall,
+timing and coverage checks. Remaining unobservable distinctions become unknown or
+leave the supervised label set. The loader owner owns representation changes;
+shared masks must also constrain eventual training observations so annotators
+cannot use history the policy will not receive.
 
 ### VOD perception and normalization
 
@@ -355,6 +390,25 @@ provide the required pixels. Rank claims are not independently verified. The
 only a navigation shell to the reader, so this feasibility pass establishes no
 training licence or permission to redistribute. No full archive or training run
 is performed in this pass.
+
+### Additional raw VOD batch
+
+`data/demos/vods/manifest.json` records four approximately 15-minute 1080p60
+sections from four broadcasts: Day 2879354299 (6:01–6:16) and 2877719252
+(0:30–0:45), Req 2873352801 (0:33–0:48) and 2871472478 (1:30–1:45).
+The batch contains 59.98 minutes of raw video, 2.8 GB; accepted gameplay duration
+is unknown until segmentation. Nine sparse stills per clip confirm Spider-Man
+play alongside scoreboards, death/killcam, hero selection and other exclusions.
+Day's newer section includes a browser co-watch; the older section includes a
+lost match and break screen. Req's sections include low-HP combat and recovery.
+
+All four remain `inspection_only`, without event labels. The two broadcasts
+outside the original pilot are reserved evaluation candidates; keep whole-session
+groups separate and check for duplicated matches before assigning final splits.
+The newer Day cut has nonzero first video PTS (1.616 s); stream-copy source offsets
+are requested, not frame-verified. Construct clip time from decoded PTS before
+extracting temporal labels. Collection continues independently of the HUD-fix /
+hand-checked-event gate; raw acquisition does not pass that gate.
 
 ### Guide demonstrations
 
