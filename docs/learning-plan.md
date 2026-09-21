@@ -210,7 +210,11 @@ recovery evidence, without assigning purpose from those sampling cues. A primary
 vision annotator labels them; Codex independently labels eight preselected windows
 (four per creator) before seeing that pass. Compare and adjudicate those eight
 before expanding the tranche; disagreements remain unknown until resolved against
-media. Claude assigns the primary annotator and comparison owner; Codex owns
+media. A visible HUD and the correct hero do not establish tactical gameplay:
+pre-round spawn-room waits may be marked `unusable: pre_round`. Preserve that
+judgment in the frozen tranche; exclude pre-round windows from future candidate
+lists rather than silently substituting examples after annotation begins.
+Claude assigns the primary annotator and comparison owner; Codex owns
 the second pass and acceptance. This is a measured annotation tranche, not a claim
 that 24 labels suffice to train a tactical policy, and it does not block B0.
 
