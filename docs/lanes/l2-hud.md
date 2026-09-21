@@ -55,7 +55,10 @@ A format change is a cross-lane interface change; this table is the contract.
 loader applies the same staleness rule as `check`. Any edit to any of the three
 re-stales every events file and, with them, the annotation and training inputs
 built on them. **Changes to those files go through the lead first**, are
-batched, and are followed by one `regenerate --all`.
+batched, and are followed by one regeneration: open sources through
+`regenerate` / `from_video`, sources under sealed handling one at a time
+through `scripts/regenerate_sealed.py`, which keeps all job output in a mode-600
+log nobody reads and prints only source, written, format, writer and check.
 
 ### The format itself
 
@@ -507,6 +510,24 @@ into `data/demos/events/`:
   balance patches. Cuts are detected per file so no segment spans an edit; see
   **Edited uploads**. They do not reuse the Twitch footage — see the overlap
   section — and each file's own cooldowns date it, see **Patch fingerprint**.
+
+**All 14 events files are format 5, writer `21a390f547eb`** (645ade3),
+regenerated on 2026-09-21 from their own recipes; the format-4 originals and
+their manifests are kept read-only under
+`data/demos/backups/format4-pre-migration-20260921/`. Each recipe records the
+patch that selected its kit. For the open sources:
+
+| source | patch (from) | kit |
+|---|---|---|
+| `sections/daymr-2879354299-21660-900s` (train) | Season 10, Version 20260911 (manifest) | 20260911 |
+| `sections/reqmr-2873352801-1980-900s` (train) | Season 10, Version 20260911 (manifest) | 20260911 |
+| `daymr-2879354299-21600-60s`, `reqmr-2873352801-1920` (samples) | Season 10, Version 20260911 (manifest) | 20260911 |
+| `youtube/Cf_2goe1snQ`, `ftnk5SVycXY`, `G7HmV8zyEh8`, `V6iaq9dP8FQ` | none recorded | none: every Get Over Here timer uncertain; swing and uppercut casts only where a badge decrement places them |
+| `guides/day-pull-lesson`, `guides/ffame-stack` | none recorded | none |
+
+The two sealed sections and the two YouTube uploads under the same handling
+(`d0C8RMBnFfA`, `yjc51uOjKEQ`) were regenerated through the sealed wrapper;
+nothing about their content is recorded here.
 
 Everything derived from a VOD lives in gitignored `data/` and is never
 committed; `docs/evidence/` holds no VOD frame.
@@ -1316,11 +1337,10 @@ health. Both now say unknown.
   the misread-inside-a-running-timer rule, and the badge fallbacks and their
   chat rule.
 - Tests that read local data honour `RIVALS_DATA`, so from a worktree they
-  run against a checkout's `data/`. One of them, the check that every file under
-  `data/demos/events/` is at the current format and writer, **fails there by
-  design until the regeneration**: every frozen file is format 4. The rest of
-  the suite's failures are the same set as before this work: the loader
-  refusing format 5 (a stage-2 seam) and tests that need `data/` in place.
+  run against a checkout's `data/`. Those that open anything under
+  `data/demos` are marked `corpus` and run only with `--corpus`; one of them
+  checks that every file under `data/demos/events/` is at the current format
+  and writer.
 - Fixtures are numbers (per-frame reads) and small portrait-region crops only;
   whole-frame checks read native frames from `RIVALS_DATA` and skip without it.
 
@@ -1338,12 +1358,11 @@ health. Both now say unknown.
   construction and validation, and each historical policy event-feature step,
   on `known_at`; occurrence bounds `[t_from, t_to]` remain for targets. A
   format-5 file missing `known_at` fails loudly and never falls back to `t_to`.
-  `cause` and the renamed kinds are updated together. At the review of this
-  writer, `agent/demos.py` still documented `t_to` as "known from here on" and
-  selected an observation's events by `t_to <= t`, and `policy/train.py`'s event
-  features selected on `t_to`; under format 5 that backdates every event by
-  the settling lag (1.3 s for a cast). **Regeneration must not land before the
-  loader selects on `known_at`.** Frozen format-4 artifacts stay untouched.
+  `cause` and the renamed kinds are updated together. Selecting on `t_to`
+  would backdate every event by the settling lag (1.3 s for a cast). The
+  loader (9c2169f) and the policy consumers (cafcfc0) do this; the corpus was
+  regenerated after both landed. The format-4 originals stay untouched in the
+  backup.
 - **B0**: censor `ability_uncertain` intervals for their ability; use
   `known_at` for causal inputs and `[t_from, t_to]` only as occurrence; apply
   the observability contract (readiness unknown after `cooldown_ended`); drop or
