@@ -418,8 +418,8 @@ and prohibition cases. New control-loss and KO-medal readers remain separate wor
 manual observations are retained without turning those missing modalities into
 prerequisites for the cast repair.
 
-**Coarse-purpose labels remain the next head.** The next bounded tranche is
-24 new development windows, 12 per creator from accepted train sessions, under
+**Coarse-purpose labels remain the next head.** The completed first tranche uses
+24 development windows, 12 per creator from accepted train sessions, under
 the aligned 10 Hz protocol. Sample across ordinary combat, traversal/search and
 recovery evidence, without assigning purpose from those sampling cues. A primary
 vision annotator labels them; Codex independently labels eight preselected windows
@@ -476,6 +476,47 @@ not a hindsight-corrected current purpose. Control loss also differs from inabil
 to observe purpose: future annotation distinguishes actor eligibility from label
 observability. Claude assigns the primary annotator; Codex owns the second pass,
 comparison and acceptance. This tranche does not block B0.
+
+**Next bounded result: format-5 purpose tranche 2.** Produce 24 new development
+windows (12 per creator) from the same two promoted train sections, with both
+annotators independently labelling all 24. This is a label-quality and coverage
+tranche, not permission to fit a head or restart B0. The prior eight-window audit
+is too small and method-limited to establish the vocabulary across play states;
+full double annotation here measures disagreements before volume expands.
+
+A separate packet producer freezes the candidate IDs and input fingerprints before
+labelling. Exclude earlier purpose decision windows and pre-round waits; retain
+five seconds of preceding context and five seconds of outcome in valid format-5
+own-play segments with no hard cut, and decision spacing at least 15 seconds per
+source. Inventory eligible candidates first; if a creator cannot supply 12, report
+the shortfall rather than relaxing spacing, reusing old examples or sourcing more.
+Use the existing context-only packet producer after checking its format-5 clock:
+events enter context only when `known_at <= t`, with occurrence overlap, and no
+segment-ending or future-derived field is serialized. Shared immutable inputs go
+to both passes. Freeze all contexts before separate outcome release; no outcome
+may revise a context judgment. Inspect all supplied 10 Hz scene cells and HUD
+strips; use native frames for ambiguous evidence, and report what stays illegible.
+
+Sample a reproducible mix of ordinary play and combat/traversal/recovery cues;
+keep cue metadata private from annotators, do not turn it into purpose, and report
+missing strata. The vocabulary stays engage / disengage / reposition / search /
+idle plus unknown or several acceptable; separate observed actions, inferred
+purpose, actor eligibility and label observability. Do not infer damage or healing
+from unknown-cause HP changes. Target identity/geometry stays optional and unknown
+where unsupported; box-audit progress is not a gate for this tranche.
+
+The lead assigns a fresh-context Opus primary and a fresh-context Astra independent
+pass in existing panes; neither sees previous labels, audits, selector cues or
+other-pass output. The separate producer owns packet construction, and Codex owns
+comparison and acceptance. Report exact preferred-label agreement on jointly
+observable contexts, acceptable-set overlap separately, usability and actor-state
+agreement, unknown rates, per-creator/class coverage and each disagreement against
+native evidence. Retain disagreements; do not majority-vote them into certainty.
+Deliver an adjudicated label manifest with inclusion/exclusion reasons and a
+recommendation on which distinctions can support training. Freeze that decision
+before any later fit specification; no head fit or additional tranche follows
+automatically. The box support floor stays unchanged and no box tranche is started
+by this decision. The single-charge no-use probe remains separate follow-up work.
 
 ```mermaid
 flowchart TD
