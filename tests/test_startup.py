@@ -220,3 +220,97 @@ def test_a_refused_start_builds_nothing_and_never_reaches_the_scoreboard(monkeyp
 def test_the_warm_up_stays_on_for_a_replay_and_the_long_idle_keepalive_is_untouched():
     loop = L.Loop(L.FakePad(), L.FakePad(), None, lambda s, m: None)
     assert loop.warmup is True and loop.keepalive_s == L.KEEPALIVE_S
+
+
+# --- the real controller.Live, a fake capture and device: what FakeLive.hold abstracted away (review of a89728e) ------------------------
+import functools  # noqa: E402
+
+from agent.controller import Live  # noqa: E402
+
+
+class Device:
+    """The vgamepad surface Live writes to; `reports` is every update() with the state it carried, in order."""
+    def __init__(self):
+        self.state, self.reports = {}, []
+
+    def reset(self):
+        self.state = {}
+
+    def press_button(self, button):
+        self.state["button"] = button
+
+    def left_joystick_float(self, x, y):
+        self.state.update(lx=x, ly=y)
+
+    def right_joystick_float(self, x, y):
+        self.state.update(rx=x, ry=y)
+
+    def left_trigger_float(self, v):
+        self.state["lt"] = v
+
+    def right_trigger_float(self, v):
+        self.state["rt"] = v
+
+    def update(self):
+        self.reports.append(dict(self.state))
+
+
+class Screen:
+    """A capture whose frames are numbered; frames from `idle_from` on show the idle banner."""
+    def __init__(self, idle_from=None):
+        self.n, self.idle_from = 0, idle_from
+
+    def grab(self):
+        self.n += 1
+        return {"n": self.n, "idle": self.idle_from is not None and self.n >= self.idle_from}
+
+
+def real_live(device, screen):
+    return Live(pad_factory=lambda: device, capture=screen, guard=lambda f: True, settle_s=0)
+
+
+def moving(report):
+    return any(report.get(k) for k in ("lx", "ly", "rx", "ry", "lt", "rt")) or "button" in report
+
+
+def test_a_failing_observer_never_stops_the_write_the_lease_or_the_neutral():
+    device = Device()
+
+    def broken():
+        raise OSError("diagnostic clock failed")
+    rec = S.watch_pad(device, broken)
+    live = real_live(device, Screen())
+    try:
+        live.fresh()
+        live.send(**{**NEUTRAL, "rx": 0.45})                                        # no exception escapes the actuator
+        assert device.reports[-1]["rx"] == 0.45 and live._lease_until is not None   # written, and the lease renewed
+        assert rec["failed"] and "diagnostic clock failed" in rec["failed"]         # timing unavailable, said so
+    finally:
+        live.close()
+    assert not moving(device.reports[-1]) and live._closed.is_set()
+
+
+def test_the_idle_banner_mid_pulse_stops_the_pulse_on_the_real_live():
+    device, screen = Device(), Screen(idle_from=4)                                   # the fourth frame onward shows the banner
+    live = real_live(device, screen)
+    try:
+        with pytest.raises(S.PulseStopped, match="idle banner"):
+            S.camera_pulse(live, 0.3, 0.45, lambda f: True, lambda f: f["idle"])
+    finally:
+        live.close()
+    first_idle = next(i for i, r in enumerate(device.reports) if not moving(r) and i > 0)
+    assert any(moving(r) for r in device.reports[:first_idle])                       # it did pulse before the banner
+    assert not any(moving(r) for r in device.reports[first_idle:])                   # and never after it
+    assert sum(moving(r) for r in device.reports) <= 3                                # one write per frame, frames 1-3 only
+
+
+def test_the_idle_banner_mid_pulse_stops_m1_on_the_real_live():
+    import sys
+    from pathlib import Path
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
+    import padprime_m1 as M
+    device, screen = Device(), Screen(idle_from=4)
+    out = M.run("earliest", live_factory=functools.partial(Live, capture=screen, guard=lambda f: True), make_pad=lambda: device,
+                guard=lambda f: True, idle=lambda f: f["idle"])
+    assert out["outcome"] == "stopped: PulseStopped: the idle banner is up"
+    assert sum(moving(r) for r in device.reports) <= 2 and not moving(device.reports[-1])   # frames 2-3 (1 proved the attach), then neutral

@@ -5,13 +5,16 @@
 
 One pad session per invocation, no retries, no brain. In the Practice Range, from the supervised arrival's end pose, with the native
 screen recording running: controller.Live proves the range HUD before the pad opens; after the attach a fresh frame acquired after it is
-proven (range HUD, no idle banner); at the scheduled time the pulse goes out through Live.send / Live.hold (right stick rx 0.45, every
-other axis, trigger and button neutral, 0.3 s; re-proven, whitelisted and leased at every write), then neutral, then 3 s of frames only,
-then Live.close and the device goes with the process. Any guard failure or refusal ends it with the pad neutral and exit 1.
+proven (range HUD, no idle banner); at the scheduled time the pulse goes out (agent/startup.py camera_pulse: right stick rx 0.45, every
+other axis, trigger and button neutral, 0.3 s; the range HUD and no idle banner on a fresh frame before every write, each write through
+Live.send, proven, whitelisted and leased), then neutral, then 3 s of frames only, then Live.close and the device goes with the process.
+Any guard failure or refusal ends it with the pad neutral and exit 1.
 
 Prints one JSON line: perf_counter and wall-clock times of the constructor start, the attach (VX360Gamepad returned), the post-attach
-proof, the first and last non-neutral writes, the release, the close; the yaw is read from the recording (rivals-l4's method). A nominal
-"earliest" still waits for capture and proof: that latency is what it measures. This script is input-path code: review before live use.
+proof, when the first and last non-neutral pad.update() returned and the first neutral one after (inside Live's lock, including the
+observer's overhead: not the moment the device received the report; "unavailable" if the observation itself failed), the release and
+the close. The yaw is read from the recording (rivals-l4's method). A nominal "earliest" still waits for capture and proof: that latency
+is what it measures. This script is input-path code: review before live use.
 """
 import argparse
 import json
@@ -20,8 +23,8 @@ import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from agent.controller import NEUTRAL, Live  # noqa: E402  (puts scripts/ on sys.path)
-from agent.startup import START_TURN_RX, START_TURN_S, watch_pad  # noqa: E402
+from agent.controller import Live  # noqa: E402  (puts scripts/ on sys.path)
+from agent.startup import START_TURN_RX, START_TURN_S, camera_pulse, watch_pad  # noqa: E402
 
 OBSERVE_S = 3.0
 
@@ -61,9 +64,7 @@ def run(at, live_factory=Live, make_pad=None, clock=time.perf_counter, wall=time
                 sleep(0.001)
         proven_frame(attached)
         stamp("proven")
-        pulse, sent = {**NEUTRAL, "rx": START_TURN_RX}, clock()
-        live.send(**pulse)
-        live.hold(max(0.0, START_TURN_S - (clock() - sent)), **pulse)
+        camera_pulse(live, START_TURN_S, START_TURN_RX, guard, idle, clock=clock, sleep=sleep)   # range + idle before every write
         stamp("released")
         end = clock() + OBSERVE_S
         last = live.frame_t
@@ -77,13 +78,17 @@ def run(at, live_factory=Live, make_pad=None, clock=time.perf_counter, wall=time
     finally:
         live.close()
         stamp("closed")
-    reports = rec.get("reports", [])
+    reports, failed = rec.get("reports", []), rec.get("failed")
     active = [t for t, on in reports if on]
+    after = next((t for t, on in reports if active and t > active[-1] and not on), None)
+    timed = failed is None                                             # a failed observation reports no times, never made-up ones
     return {"at": at, "outcome": outcome, "stamps": stamps,
-            "first_non_neutral_write": round(active[0], 4) if active else None,
-            "last_non_neutral_write": round(active[-1], 4) if active else None,
-            "first_neutral_after": round(next((t for t, on in reports if active and t > active[-1] and not on), 0.0), 4) or None,
-            "reports": len(reports)}
+            "update_timing": "pad.update() returned (inside Live's lock; includes the observer's overhead; not the device's receipt)"
+            if timed else f"unavailable: {failed}",
+            "first_non_neutral_update_returned": round(active[0], 4) if timed and active else None,
+            "last_non_neutral_update_returned": round(active[-1], 4) if timed and active else None,
+            "first_neutral_update_returned_after": round(after, 4) if timed and after is not None else None,
+            "reports": len(reports) if timed else None}
 
 
 def main(argv=None):

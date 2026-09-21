@@ -96,8 +96,9 @@ old 3 s blind wait after attaching was about 75 degrees of it. On a live run (`-
    wait after it attaches;
 3. runs `agent/startup.py` `start_pose` before any decision offer, controller step, brain, log or `Loop`: a fresh frame acquired after
    the attach is proven (range HUD, no idle banner); ONE priming pulse, right stick rx 0.45 with every other axis, trigger and button
-   neutral, 0.3 s, through `Live.send` / `Live.hold` (proven, whitelisted and leased at every write), sent even if the view already
-   passes; neutral, then 2 s of frames only (`START_SETTLE_S`, the device switch); then two DISTINCT fresh acquisitions with
+   neutral, 0.3 s (`camera_pulse`: before EVERY write a fresh frame shows the range HUD and no idle banner, and each write goes through
+   `Live.send`, proven, whitelisted and leased; neutral on every exit; `Live.hold` re-proves the range only), sent even if the view
+   already passes; neutral, then 2 s of frames only (`START_SETTLE_S`, the device switch); then two DISTINCT fresh acquisitions with
    `plaza_view` true; otherwise another right turn (the drift is leftward), a 0.15 s frame-only settle, and again. At most 7 pulses in
    all, the priming pulse included, and 14 s overall; the range HUD gone, the idle banner, a capture with no new frame, a refused write
    or any exception closes Live and refuses: "plaza start view not confirmed". `main` then returns 1 with nothing else built (no brain,
@@ -110,8 +111,11 @@ old 3 s blind wait after attaching was about 75 degrees of it. On a live run (`-
 
 `plaza_view` certifies an enemy box in the open in the middle of the view: not a bot's identity, not navigable ground; seven turns is
 a command budget, not a claim of full coverage. The pulse's effect on the drift is not yet measured: `scripts/padprime_m1.py` is that
-measurement (one session per invocation, the pulse at the earliest guarded send, +0.1 s or +0.3 s after the attach, then 3 s of frames
-only; it reports the constructor return, the first and last non-neutral writes and the release, and leaves the yaw to the recording).
+measurement (one session per invocation, the same `camera_pulse` at the earliest guarded send, +0.1 s or +0.3 s after the attach, then
+3 s of frames only; it reports the constructor return, when the first and last non-neutral `pad.update()` returned inside Live's lock,
+with the observer's overhead and not the device's receipt, or "unavailable" if the observation failed, and the release; the yaw comes
+from the recording). Its observer (`watch_pad`) is best-effort: the real update's result and exceptions pass through, a failure of its
+own bookkeeping never stops the write, the lease renewal or a neutral.
 Tests: `tests/test_startup.py`, `tests/test_padprime_m1.py`.
 
 ## Safety

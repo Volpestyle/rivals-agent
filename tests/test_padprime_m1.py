@@ -81,6 +81,9 @@ def factory(clock, log, fail=False):
             finally:
                 self._write(dict(NEUTRAL))
 
+        def release(self):
+            self._write(dict(NEUTRAL))
+
         def close(self):
             self.closed = True
             self._write(dict(NEUTRAL))
@@ -96,13 +99,13 @@ def test_one_camera_only_pulse_on_the_schedule_then_frames_only(at):
     assert out["outcome"] == "ok" and moved and all(s["rx"] == 0.45 and not any(s[k] for k in ("lx", "ly", "ry", "lt", "rt")) for s in moved)
     assert "button" not in str(log) and log[-1] == {"lx": 0.0, "ly": 0.0, "rx": 0.0, "ry": 0.0, "lt": 0.0, "rt": 0.0}
     delay = 0.0 if at == "earliest" else float(at)
-    assert out["first_non_neutral_write"] >= out["stamps"]["attached"]["perf"] + delay
-    assert out["last_non_neutral_write"] < out["first_neutral_after"] <= out["stamps"]["closed"]["perf"]
+    assert out["first_non_neutral_update_returned"] >= out["stamps"]["attached"]["perf"] + delay
+    assert out["last_non_neutral_update_returned"] < out["first_neutral_update_returned_after"] <= out["stamps"]["closed"]["perf"]
 
 
 def test_a_refused_write_is_reported_once_not_retried():
     clock, log = Clock(), []
     out = M.run("earliest", live_factory=factory(clock, log, fail=True), make_pad=lambda: Device(log), clock=clock, wall=clock,
                 sleep=clock.sleep, guard=lambda f: True, idle=lambda f: False)
-    assert out["outcome"].startswith("stopped: RangeLost") and out["first_non_neutral_write"] is None
+    assert out["outcome"].startswith("stopped: RangeLost") and out["first_non_neutral_update_returned"] is None
     assert all(not any(s.get(k) for k in ("lx", "ly", "rx", "ry", "lt", "rt")) for s in log)
