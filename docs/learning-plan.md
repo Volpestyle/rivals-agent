@@ -75,95 +75,110 @@ its metrics and claims stay separate from scripted-brain distillation. Any
 
 ### B0: auxiliary pretraining by predicting observed ability events
 
-An auxiliary expert-video pretraining experiment forecasts verified HUD events from preceding
-video. It reuses the frozen encoder and temporal training path under VUH-1311;
-it does not require tactical-purpose annotations. Its checkpoint is an offline
-event predictor, not a controller policy or completion of milestone B. It can
-learn sequence regularities and approximate HUD-event timing, but does not establish
-optimal combos, exact button timing, target choice, tactical purpose or range competence.
+The current reference experiment predicts **per-ability event occurrence**, with
+unknown labels masked out. It uses five seconds of causal frames at 10 Hz and a
+fixed one-second future horizon. A shared frozen encoder and temporal head forecast
+`get_over_here`, `swing`, `uppercut`, `web_cluster_fired` and `teamup` independently;
+several may occur in one horizon. This is auxiliary video pretraining under
+VUH-1311, not a controller policy, global first-action ordering or completion of B.
 
-**Inputs and labels.** Use five seconds of causal frame history ending at t,
-sampled at 10 Hz through the loader with the same normalization and visibility
-masks as runtime. The fixed first horizon is k = 1 second; do not tune it on test.
-Predict the next verified event in (t, t+1]: `get_over_here`, `swing`, `uppercut`,
-`web_cluster_fired`, `teamup`, or `no_verified_event`. Only audited event classes
-and known icon-to-ability mappings qualify. `ability_cast` names the ability;
-charge expenditure may corroborate that event but must not duplicate it. A web
-ammo decrement supports the web-shot event, not an invented burst. Exclude
-slot-availability transitions, unknown slots and unverified ult labels.
+**Why independent channels.** The retained global-next-event diagnostic under
+`data/experiments/b0/` has 22 Day and 96 Req eligible windows, all negative, and
+zero eligible positive events. Requiring every channel to be observed across every
+cast discards the positive examples; fitting those constants would teach nothing
+about event choice. The revised task preserves a verified cast on one channel
+without asserting that an obscured different channel had no cast. The failed
+build remains evidence; it is not a trained checkpoint or a completed fit.
 
-Retain each event's [t_from, t_to] interval. An interval crossing t cannot label
-a future action; intervals crossing the horizon or with ambiguous earliest-event
-ordering are omitted from this first experiment, with exclusion counts reported.
-Timing is an auxiliary scalar prediction conditional on the event class: train
-and score its distance outside the observed interval, with zero error inside.
-Report interval widths alongside error so broad uncertainty cannot masquerade as
-precise prediction. Overlapping countdown/charge evidence for one cast counts once.
+**Target contract.** Per ability and horizon `(t, t+1]`, there are three outcomes:
 
-`no_verified_event` means no accepted reader event in a fully observed horizon;
-it is not proof of no button press, a deliberate wait, or the controller's Idle.
-Death, hero change, spectating, cuts, clip ends and unreadable/occluded target HUD
-channels censor the horizon; never turn those gaps into negatives. A scoreboard
-gap in preceding history may be bridged only with its mask and a proven absence
-of a hard cut; any gap in the prediction horizon is censored. Require the full
-five-second context for the first run and report resulting eligible duration.
+- Positive: at least one audited event interval is wholly inside the horizon.
+  Other channels may be unknown. Charge and countdown evidence corroborating the
+  same cast is deduplicated; web-ammo expenditure proves a shot, not a burst.
+- Negative: that channel satisfies the HUD lane's complete observed/stable/no-event
+  rule, including prior-read, confirmation and segment-edge margins. No verified
+  event alone is insufficient. Normal cooldown provenance and known slot identity
+  are required; availability blips do not count as casts.
+- Unknown: neither is established. Exclude that channel from the loss and score,
+  not the whole window when another channel has a supported label. An interval
+  crossing a boundary is not a positive; it prevents a negative unless separate
+  evidence resolves the ambiguity. Do not convert unknown to zero.
 
-The event JSONL does not retain per-frame HUD readability. B0 therefore retains
-raw outputs of the frozen readers for only its accepted training clips under
-`data/experiments/b0/`, using each event file's extraction recipe and clip clock.
-These sidecars supply target eligibility, never model inputs. Apply the HUD lane's
-[per-frame observability contract](lanes/l2-hud.md#per-frame-observability-contract-for-b0)
-with its explicit unknown states and confirmation margins. The next-event task
-requires coverage of every included event channel even for positive windows:
-one visible cast does not prove an earlier cast on an obscured channel was absent.
-Report the resulting exclusions and class support before fitting; do not relax
-unknowns to increase sample count. The 10 Hz observation limit and undetected
-Day overlay contamination remain stated limitations, not proven clean negatives.
+The classifier uses five binary outputs and a per-channel loss mask, not a sixth
+"none" class. A channel with no positive or no negative fitting examples is
+unsupported for fitting and comparison. A model seeing only an unsupported channel
+must not be called trained on that ability. Source gameplay, complete five-second
+history, no hard cuts and a clean future gameplay segment remain required. A
+short cut-free scoreboard gap can appear only in masked preceding context.
 
-Past events are optional inputs and require a causal availability check, not
-merely an event timestamp. The extractor uses temporal cleanup and per-source
-slot mapping; perturbing footage after t must not change input features at t.
-If that cannot yet be demonstrated, B0 starts with frame history only and uses
-offline events solely as targets. Do not feed future-confirmed casts, outcome
-frames, future cooldowns, or whole-session statistics into the observation.
+Timing has its own mask. Train a class-conditional delay only where a unique first
+verified interval within that channel is identifiable, with no potentially earlier
+boundary-crossing interval; multiple/ambiguous evidence may still label occurrence
+positive while leaving timing unknown. Score distance outside `[t_from-t,t_to-t]`,
+zero inside, and report interval widths. These are verified-event intervals, not
+exact button times or a claim that no unobserved cast occurred earlier.
 
-**Gates and split.** The independent VUH-1326 review must accept the two train
-sessions, corrected hero segmentation, PTS alignment, masks and provenance;
-their events must be regenerated with the agreed reader version and its
-class-specific audit. All stream files must satisfy the shared format contract.
-Patch and normal-cooldown provenance remain mandatory. Event prediction does
-not waive these gates or automatically promote a source into positive-action
-imitation: forecasting what an expert did can include mistakes, whereas teaching
-the controller to repeat it still needs suitability and execution acceptance.
+**Observability and bias.** Raw outputs of unchanged frozen readers for the two
+accepted training clips live under `data/experiments/b0/`, using the event file's
+recipe and clip clock. Apply the HUD lane's
+[per-frame contract](lanes/l2-hud.md#per-frame-observability-contract-for-b0).
+Do not infer lockout versus unreadability from a dim icon alone. Any later recovery
+of labels through a measured lockout distinction is a separately checked change.
+The 10 Hz sampling limit and undetected Day icon-overlay contamination remain
+limitations; contamination prevalence is unknown, not zero.
 
-The first current-patch B0 run remains the reference experiment. The kit-conditioned
-cross-patch pretraining comparison below extends it after the context interface
-and older sources pass their own audits; it does not delay that reference run.
+The label mask is **not missing at random**: calm scenes more often supply clean
+negatives, while fights obscure or lock slots. Report positive/negative/unknown
+counts per channel and session, unique positive events, timing support, and the
+same counts split by whether any verified event was confirmed in the preceding
+five seconds (a sampling diagnostic, not a tactical label or model input).
+Scores describe the observed subset, not all gameplay. Keep sample exclusions
+and selection bias visible rather than increasing volume by guessing negatives.
 
-Fit only accepted TRAIN groups from `s10-normal-v0`. The sealed test broadcasts
-remain untouched during development, learning curves and model selection.
-While independent validation is unavailable, use the two train broadcasts as
-two explicitly developmental leave-one-session-out folds, fitting normalization
-and baselines on the fitting session only. This permits a first fit without
-pretending the official validation split is complete. Report each direction
-separately: creator and session effects are confounded. A new independently
-audited Day session can provide provisional Day-only validation; report that
-limitation rather than requiring unavailable Req archives or borrowing the sealed
-test. Final test evaluation follows a frozen model and evaluation protocol.
+**Inputs and comparison.** The reference policy remains frames-only: the shared
+embedding/present/masked feature prefix, with `events=None` and no State or future
+outcome features. Raw HUD observations and offline events supply labels and
+explicitly separate diagnostic baselines, not neural inputs. The event-input
+prefix-causality gate is still unproven; do not add those inputs implicitly.
 
-**Deliverable and acceptance.** Save a reproducible local checkpoint, source and
-reader versions, included classes, exclusion counts, unique casts, session counts,
-normalization, seed, training command and elapsed time. Overlapping windows do
-not multiply the independent cast count. Report event-class macro F1, per-class
-precision/recall/support, the no-event confusion, and conditional timing interval
-error, per session. Compare with always-no-event, training-majority and the most
-recent observed event class; compare timing with the training-only median delay
-per class. An events-only baseline is also required if event history is an input,
-so cooldown arithmetic alone is not described as learned visual game sense.
-Run one predeclared configuration first. A reproducible negative result completes
-the probe; an improvement claim requires beating the strongest applicable class
-baseline on macro F1 and its timing baseline on the same held-out development
-examples, with support and failure cases shown. No live deployment follows B0.
+Fit only the two lead-promoted TRAIN sessions through `Demos.load_split` and
+explicit cache IDs. Run Day-to-Req and Req-to-Day development folds; every learned
+quantity comes from the fitting session alone. Creator and session effects are
+confounded. Sealed evaluation sources and unresolved-overlap uploads stay out of
+all fitting, tuning and evaluation here. Per-source kit/patch and normal cooldown
+provenance, accepted segmentation, masks and reader-version gates remain binding.
+Cross-patch pretraining and the later tactical head do not delay this reference fit.
+
+Compare each channel on identical masked held-out support against always-negative,
+fold-local prior/majority, recent-use persistence and a HUD-resource baseline.
+For the latter, use only raw readings at or before t: known cooldown remaining,
+charges and time since an observed ready transition, with explicit unknowns.
+A small predeclared bucketed predictor fitted on the training session is sufficient;
+no hyperparameter search or unseen-field imputation. Report that it has structured
+HUD information the frames-only model lacks. Any event-derived persistence signal
+retains its unproven online-extractor causality limitation; it is an offline
+reference, not a deployable result. Compare timing with the fitting-only median
+interval midpoint on the exact same class-supported rows.
+
+**Support and acceptance declared before fitting.** A channel needs at least
+20 distinct verified positive events and 20 non-overlapping one-second negative
+horizons in a held-out session for a directional improvement claim. This is a
+screening minimum, not a statistical guarantee. Below it, show descriptive metrics
+and mark that channel inconclusive. Report positive-class precision/recall/F1,
+per-channel confusion and probability error, plus timing error/width/coverage.
+Report all-channel descriptive macro F1 separately from the supported-channel
+comparison; zero-support channels cannot generate a pass. A claim across both
+creators requires support and improvement in both directions.
+
+Use one predeclared configuration, fixed thresholds and the final epoch only;
+no tuning or checkpoint selection on these held-out folds. Save source/reader/cache
+versions, masks, source counts, exclusions, actual fit command and code fingerprints,
+seed, elapsed time, predictions and reloadable checkpoints. Preserve the immutable
+configuration declaration separately from actual execution provenance. A negative
+or inconclusive trained result completes this bounded probe; a zero-positive data
+build does not. Improvement requires beating the strongest applicable baseline on
+supported channels and matching timing comparisons, not just reducing training
+loss. No live deployment or gameplay-competence claim follows B0.
 
 **Coarse-purpose labels remain the next head.** The next bounded tranche is
 24 new development windows, 12 per creator from accepted train sessions, under
