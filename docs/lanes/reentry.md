@@ -1,7 +1,7 @@
 # Re-entry: PLAY lobby to the Practice Range as Spider-Man (VUH-1299)
 
 **Built and tested offline on `tests/fixtures/reentry`; lead-run only.** `scripts/reenter.py` takes the game from the PLAY
-lobby into the Practice Range as Spider-Man and stops at the first thing it cannot verify. 119 tests (`tests/test_reenter.py`)
+lobby into the Practice Range as Spider-Man and stops at the first thing it cannot verify. 161 tests (`tests/test_reenter.py`)
 pass; `--dry-run` classifies a live or saved frame and prints what it would do without opening a pad. The live trials
 (2026-09-20) held the safety rules every time (each refusal pressed nothing and exited 1) and found three defects, all fixed offline
 below and none re-run live: **the steering** (a cursor ring on the PRACTICE tab's lower half was never accepted), **the ring finder**
@@ -71,6 +71,24 @@ plaza frame instead of two, no budget, turning away from the door, never turning
 taps ignored, ...); all 14 are caught; the ring finder and tooltip proof had 8 more (no refinement, a tooltip threshold that accepts anything, no tooltip proof, no
 refusal for another hero's tooltip, `done` ignored or not passed by `run`, no screen check, no tab check), all caught after two gained tests.
 
+## Input safety at the pad (VUH-1325)
+
+An independent review found that this script could authorize an input on a proof that no longer described the screen: on the PLAY lobby
+`X` is START for a live Quick Match. Nothing wrong was sent live; the reviewer reproduced X going out 22 s after the frame that proved it.
+The rules are enforced in `Live`, the lowest layer that touches the pad, not left to its callers; `Safe` is the policy on top and
+`Live` re-checks all of it. Each row has a test built from the reviewer's scenario.
+
+| Defect | Now | Test |
+|---|---|---|
+| `Live.frame()` returned the last frame when capture gave none, with no age limit; a static menu gives no dxcam frame, so a proof from before an input authorized the next | `frame()` is always the current screen: dxcam, else GDI (which reads the screen as it is), and it raises if neither can (fail closed). It never returns an older frame, and stamps `frame_t` | `test_a_static_menu_gives_no_new_frame_and_the_press_reads_the_screen_as_it_is_not_the_last_frame` (the reviewer's 22 s), `test_the_live_frame_is_never_an_older_one`, `test_no_frame_at_all_fails_closed_and_sends_nothing` |
+| a press rested on the frame that proved it | `tap` grabs its OWN frame at the press, requires the screen to be the one proven, re-runs the proof on it, and refuses a frame older than `MAX_PROOF_AGE_S` (0.3 s) at the moment before the pad is written, or taken before the last input settled (`settled_t`) | `test_a_proof_older_than_the_limit_is_refused_at_the_moment_of_the_press`, `test_no_proof_frame_may_predate_the_last_inputs_settling`, `test_a_tap_advances_the_settling_time_so_the_next_proof_must_be_newer`, `test_a_refused_press_or_a_missing_proof_writes_nothing` |
+| `tap` and every hold could leave a button or stick held on an exception or Ctrl-C | every hold is `try`/`finally` ending in `release_all` (`reset()` + `update()`: the whole pad); opening the pad releases even if the settle wait is interrupted; `main` releases in a `finally`, at exit (`atexit`), and on SIGTERM; a release that fails is reported and never masks the stop | `test_an_exception_or_ctrl_c_in_any_hold_still_releases_the_whole_pad`, `test_a_pad_write_that_fails_mid_press_still_ends_neutral`, `test_opening_the_pad_ends_neutral_even_if_the_settle_wait_is_interrupted`, `test_main_releases_the_pad_on_every_way_out`, `test_a_release_that_fails_is_reported_and_never_masks_the_stop` |
+| `steer` and `Safe.stick` jiggled the stick on black or unknown frames, four times, before refusing | a stick moves only on lobby, panel, hero select or the range: `Live` and `Safe` both classify a fresh frame first, and steering, the door search and the turns all send through `Safe`. Unknown sends nothing | `test_a_stick_on_an_unknown_screen_is_never_written`, `test_steering_on_a_black_frame_sends_no_jiggle_at_all`, `test_the_whole_run_sends_no_stick_once_the_screen_goes_unknown_mid_steering`, `test_the_arrivals_turns_are_gated_by_the_screen_too` |
+| `on_spiderman` took a matching tooltip without reconciling a conflicting cursor | the ring must be found, and the tooltip's name text must sit where the tooltip is drawn relative to it (141 x 29 px, +-8): a tooltip alone can linger after the cursor moves. The frame is the pad layer's own, taken after the last input settled | `test_a_tooltip_that_does_not_fit_the_cursor_position_is_not_a_proof`, `test_a_run_on_hero_select_never_presses_on_the_tooltip_alone`, `test_a_run_on_hero_select_presses_when_the_ring_and_the_tooltip_agree` |
+
+`record.in_range` is L4's: it now proves the range by the "PRACTICE RANGE" banner and the HUD bar together, and reenter imports it, never
+defines its own. The scoreboard is not the range there, which is what the loop's BACK hold relies on.
+
 ## What each screen looks like (measured on the fixtures, 1280x720 px)
 
 | Screen | Test | Measured |
@@ -90,7 +108,7 @@ the title requirement fixed it, and a test pins it.
 |---|---|---|
 | lobby | cursor centre inside the drawn PRACTICE tab (rows 377-395, x 1166-1262, slanted, 2 px margin); TRY COMPETITIVE looks idle | tab edges profiled on the frame with no cursor near it and on the live refuse frame (below). Of 22 lobby frames: 17 are identically idle (dark share 0.75-0.76, luminance 78.5-78.6), 2 near-idle where the cursor ring overlaps the banner's corner (0.71-0.72, 80-81), 3 highlighted (0.02-0.06, 111-112; one has a different lobby background). Tolerance 0.12 / 12, both ways |
 | panel | cursor inside the PRACTICE RANGE tile (10 px margin) and not on DOOM MATCH; the range tile dark (< 100), DOOM MATCH bright (> 150) | range tile hovered 43.6-46.4, **un-hovered 223**; DOOM MATCH 232-237 in every panel frame |
-| hero select | duelists tab active, and Spider-Man under the cursor by either proof: the game's tooltip names SPIDER-MAN (`TOOLTIP_MATCH` 0.75), or the ring is inside the top-left portrait slot (6 px margin) and the slot has red in it (`SLOT_RED` 0.03); a tooltip for another hero refuses | red-hue share of the slot: unhovered 0.276, hovered 0.076, another hero 0.005 |
+| hero select | duelists tab active, the cursor ring found, and Spider-Man under it by either proof: the game's tooltip names SPIDER-MAN (`TOOLTIP_MATCH` 0.75) and sits beside the ring, or the ring is inside the top-left portrait slot (6 px margin) and the slot has red in it (`SLOT_RED` 0.03); a tooltip for another hero refuses | red-hue share of the slot: unhovered 0.276, hovered 0.076, another hero 0.005 |
 | range (after) | the HUD hero portrait has red in it (`HUD_RED` 0.10) | 0.247 on Spider-Man, 0 with it blanked |
 
 The lobby fixture `left-of-practice` puts the cursor on the TIMES SQUARE tab's right end (x 1146), so a press there would
@@ -165,11 +183,11 @@ pins it.
 **A second, independent proof for the hero press: the game's own tooltip.** Hovering a portrait shows "Request to Team-Up with <HERO>" in a
 box that follows the cursor; its white name text is Spider-Man's exactly when the cursor is on his portrait. `tooltip_spiderman` matches that
 name against a template cut from the fixture (normalised correlation on the min-of-channels image, 1280x720 scale): 1.00 on its own frame and
-0.92 on the live one (a different icon, JPEG), at most 0.49 on every other frame, THE PUNISHER's tooltip 0.31. `on_spiderman` now passes on
-either proof, and needs no ring for the first: the tooltip names SPIDER-MAN, or the ring is in the top-left slot and the slot is red (as
-before). The reverse also holds: a tooltip that is up and does not name SPIDER-MAN refuses whatever the ring and the colours say (a red hero in that
-slot would have passed the colour check), and no other screen or tab is ever proven. `steer` takes a `done(frame)` predicate, so on hero
-select it stops the moment the tooltip names the hero instead of jiggling for a ring. Limits: the template comes from two frames (one of them the
+0.92 on the live one (a different icon, JPEG), at most 0.49 on every other frame, THE PUNISHER's tooltip 0.31. `on_spiderman` passes on
+either proof, and both need the ring: the tooltip names SPIDER-MAN beside the ring, or the ring is in the top-left slot and the slot is red.
+A tooltip that is up and does not name SPIDER-MAN refuses whatever the ring and the colours say (a red hero in that slot would have passed
+the colour check), and no other screen or tab is ever proven. `steer` takes a `done(frame)` predicate (on hero select, `on_spiderman`
+itself), so it stops as soon as the proof holds. Limits: the template comes from two frames (one of them the
 template's source), the tooltip appears only after the cursor has dwelt on the portrait, and it needs the game's language and UI scale as recorded.
 
 ## Steering
@@ -208,22 +226,31 @@ The first live trial ended inside the spawn room facing the green door, which is
 not leave it (the player is not always facing the door, and a hero re-pick does not respawn him). `arrive` now:
 
 1. proves the range HUD and no idle banner on a fresh frame before every step (either one stops it with no further input);
-2. reads the door (`door`: the biggest tall green panel in the upper 70% of the view) and, when it is more than 6% of the width off
-   centre, turns the camera to it with the right stick (`YAW_STICK` 0.45 = 172 deg/s, focal 465 px at 1280 wide, l4's measurements)
-   instead of walking; otherwise it walks a 0.5 s step;
-3. is done only when `plaza_view` holds on two frames in a row (a second look while standing still): L3's green finder on the NATIVE
-   frame finds an enemy box of plausible size (8-60% of the height) in the middle of the view (x 0.35-0.95). The spawn room's door makes
-   a box too, at x 0.28, which is why the left edge is excluded;
+2. finds the door (`door`) and steers by it: more than 8% of the width off centre, it turns the camera to it with the right stick
+   (`YAW_STICK` 0.45 = 172 deg/s, focal 465 px at 1280 wide, l4's measurements) instead of walking; roughly ahead, it walks a 0.5 s step;
+   **no door in view, it looks around** (a 0.3 s right turn, about 50 deg) and never walks blind;
+3. is done only when `plaza_view` holds on two frames in a row (a second look while standing still);
 4. exits 1 (frame saved) if that is not confirmed within `ARRIVE_S` (14 s), or the HUD is gone, or the idle banner is up; then `RT` once
    and the HUD portrait must be Spider-Man.
 
-**Calibrated on one recording, so strict on purpose.** `tagrun0` frame 0 is the spawn room, frames 4-14 the plaza with the bot ahead, and
-those are the only labelled spawn frames on the Mac (`arrival-spawn-room.jpg`, `arrival-plaza-bot-ahead.jpg`, native, from it). The
-door thresholds (`DOOR_H` 100 px, `DOOR_MIN_PX` 500, `DOOR_TOL` 0.06) come from that one frame, where the door is a small blob at the left
-edge; a frame of the door dead ahead, and one of the wall left of it (the live trial's failure), would calibrate them. The plaza cue needs
-the Enemy Color set to Green (it is, per docs/lanes/l4-controller.md) and the bot in view; with neither it exits 1 rather than guess, so a
-false exit 1 is the failure to expect, not a false success. Untested live: the turn rate on the spawn room's geometry, and whether the
-door is reached from the pose a re-entry lands in.
+**Calibrated on five poses** (native frames, `tests/fixtures/reentry/arrival-*.jpg`): tagrun0 frame 0 (spawn, door at the left edge) and frames
+4-14 (the plaza, bot ahead), and the lead's own re-entries: `re6` (the door DEAD AHEAD), `re7` (the wall left of the door, where a blind walk
+ended) and `q8` (the central console, two doors to the left). What they showed, and what the first version (calibrated on tagrun0 alone) got wrong:
+
+- **The door is lime glass, not the enemy green.** Hue ~46 (S ~110, V ~125), against an enemy outline's ~67 (V ~170); the first version's
+  green band (55-90) never saw it (`door` returned None on re6). It is 76k px dead ahead (`re6`, centre x 0.56), 7.8k for the nearer door in `q8`
+  (0.19), 12k in tagrun0 frame 0 (0.26), and no plaza frame has a blob above 1.7k px, so `DOOR_MIN_PX` is 3000 with a height of 100 px.
+- **The plaza with the bot is visible THROUGH the door.** On `re6` the first `plaza_view` said "plaza" while the player was still in the room:
+  the bot shows through the glass and its glow makes enemy boxes of its own. A box now counts only if the door does not fill the view (lime under
+  3% of the upper 70%) and lime is not all round the box (under 15% of its surroundings). None of the four spawn poses passes; the plaza frames do,
+  and none has a lime blob at all.
+- **Purple walls, sky and the pale floor do not tell the rooms apart** (measured on all five poses and 21 tagrun0 frames), so the confirmation is
+  the bot in the open, nothing else; the lime door is the steering cue and the reason to refuse.
+
+Confirmation stays strict on purpose: it needs the Enemy Color set to Green (it is) and the Luna Snow bot in view once the door is behind, and it
+exits 1 rather than guess, so a false exit 1 is the failure to expect. Untested live: the turn rate on the spawn room's geometry, which of q8's two
+doors is the exit (it steers to the bigger), and how long the look-around takes to find the door from an arbitrary heading (a full turn is ~2.1 s
+at this stick; the budget allows about 20 steps).
 
 ## Not verified: read these first in the live trial
 
@@ -251,9 +278,9 @@ Spider-Man, and the lobby with the pad banner up.
 
 ## Files
 
-`scripts/reenter.py` (the script), `tests/test_reenter.py` (119 tests: classifier, cursor finder, each proof with its
+`scripts/reenter.py` (the script), `tests/test_reenter.py` (161 tests: classifier, cursor finder, each proof with its
 negatives, steering against simulated cursors of three physics, arrival against a simulated spawn room with a door that turns
 with the camera, the whole flow against a simulated game serving the fixtures, dry run, `main`, and `Live` against a fake pad),
-`tests/fixtures/reentry/*.jpg` (the lead's eight frames, the four above, the two live refuse frames, and two native arrival frames from `tagrun0`).
+`tests/fixtures/reentry/*.jpg` (the lead's eight frames, the four above, the two live refuse frames, and five native arrival frames: two from `tagrun0`, three of the lead's spawn-room poses).
 Untouched: L4's files.
 `tests/test_reenter.py` imports opencv, so `tests/conftest.py` skips it in the stdlib-only default run.

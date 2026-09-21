@@ -43,15 +43,19 @@ def fill(f, box, bgr):  # box in 1280x720 px, whatever the frame's size
 
 def spawn_frame(door_x=0.5):
     """The recorded spawn room with the door painted out and a tall green door painted at `door_x` (fraction of the width)."""
+    lime = cv2.cvtColor(np.uint8([[[46, 140, 150]]]), cv2.COLOR_HSV2BGR)[0, 0].tolist()      # the door glass: hue ~46, S ~110-140, V ~125-150
+
     def paint(f):
-        f[:600, :1200] = (60, 50, 55)
+        f[100:600, :1200] = (60, 50, 55)   # rows above 100 hold the "PRACTICE RANGE" banner that record.in_range proves the range by
         x = int(door_x * 2560)
-        f[240:840, max(0, x - 40):x + 40] = (88, 175, 64)
+        f[240:840, max(0, x - 40):x + 40] = lime
     return edited("arrival-spawn-room", paint)
 
 
 BLACK = np.zeros((1440, 2560, 3), np.uint8)
 NOISE = np.random.default_rng(0).integers(0, 255, (1440, 2560, 3), dtype=np.uint8)
+
+POSES = ("arrival-spawn-door-ahead", "arrival-spawn-wall-left-of-door", "arrival-spawn-console-two-doors", "arrival-spawn-room")
 
 SCREENS = {
     "lobby-cursor-far": "lobby", "lobby-cursor-left-of-practice": "lobby", "lobby-cursor-on-practice": "lobby",
@@ -61,6 +65,7 @@ SCREENS = {
     "heroselect-all-tab-black-panther": "hero_select", "heroselect-duelists-cursor-off": "hero_select",
     "heroselect-cursor-on-spiderman": "hero_select", "heroselect-spiderman-tooltip-ring-lost": "hero_select",
     "in-range": "in_range", "arrival-spawn-room": "in_range", "arrival-plaza-bot-ahead": "in_range",
+    "arrival-spawn-door-ahead": "in_range", "arrival-spawn-wall-left-of-door": "in_range", "arrival-spawn-console-two-doors": "in_range",
 }
 
 
@@ -280,12 +285,9 @@ def test_the_tooltip_names_the_hero_under_the_cursor_and_is_a_proof_of_its_own(m
     assert R.tooltip_spiderman(f) > 0.85 and R.tooltip_up(f)                    # "Request to Team-Up with SPIDER-MAN"
     p = R.on_spiderman(f)
     assert p.ok and "tooltip names SPIDER-MAN" in p.reason
-    monkeypatch.setattr(R, "find_cursor", lambda fr: None)                       # the live failure: no ring found
+    monkeypatch.setattr(R, "find_cursor", lambda fr: None)                       # no ring: the tooltip may be lingering where the cursor was
     p = R.on_spiderman(f)
-    assert p.ok and "tooltip names SPIDER-MAN" in p.reason                       # ...and the press is still proven
-    no_tip = edited(LOST, lambda g: fill(g, (850, 60, 1075, 100), (40, 30, 30)))
-    p = R.on_spiderman(no_tip)                                                   # without the tooltip the ring is needed
-    assert not p.ok and "no tooltip names SPIDER-MAN" in p.reason
+    assert not p.ok and "cursor ring was not found" in p.reason
 
 
 def test_the_ring_proof_still_stands_without_a_tooltip_and_a_tooltip_for_another_hero_refuses():
@@ -318,13 +320,20 @@ def test_steering_needs_no_ring_when_the_tooltip_already_says_the_cursor_is_on_s
     assert pos is None and sim.sticks == 0                                           # nothing was sent: no jiggle, no nudge
 
 
-def test_a_run_on_hero_select_carries_on_when_the_ring_is_lost_but_the_tooltip_names_spiderman(monkeypatch):
-    """The live refusal, end to end: no ring anywhere, the tooltip on screen. No jiggle, no nudge: A on the tooltip's proof, then X."""
+def test_a_run_on_hero_select_never_presses_on_the_tooltip_alone(monkeypatch):
+    """VUH-1325 (plausible item): a tooltip names SPIDER-MAN but no ring is found, so nothing says the cursor is still there. No A, no X."""
     monkeypatch.setattr(R, "find_cursor", lambda fr: None)
+    sim = Sim("hero_lost", {("hero_lost", "X"): "loading_range", ("loading_range", "loaded"): "range"}, {"loading_range": 2})
+    with pytest.raises(R.Refuse, match="cursor ring was not found"):
+        R.run(sim)
+    assert sim.taps() == []
+
+
+def test_a_run_on_hero_select_presses_when_the_ring_and_the_tooltip_agree():
     sim = Sim("hero_lost", {("hero_lost", "X"): "loading_range", ("loading_range", "loaded"): "range"}, {"loading_range": 2})
     R.run(sim)
     assert [(b, s_) for b, s_, _ in sim.taps()] == [("A", "hero_select"), ("X", "hero_select"), ("RT", "in_range")]
-    assert [i for i in sim.inputs if i[0] == "stick"] == []                      # nothing was steered: the tooltip said it was there
+    assert [i for i in sim.inputs if i[0] == "stick"] == []                      # nothing was steered: ring and tooltip said it was there
 
 
 def test_the_hero_select_dry_run_reports_the_tooltip(capsys):
@@ -554,8 +563,13 @@ class Sim:
         self.t += secs + 0.15
         self._fire("rstick")
 
-    def tap(self, button):
-        f = self.frame()
+    def tap(self, button, screen=None, proof_fn=None):
+        f = self.frame()                                    # the pad layer's own frame, taken at the press
+        now = R.classify(f)
+        if screen is not None and now != screen:
+            raise R.Refuse(f"the screen changed under the proof: proven on {screen}, now {now}", f)
+        if button not in R.ALLOWED.get(now, ()) or (button == "A" and not (proof_fn and proof_fn(f).ok)):
+            raise R.Refuse(f"{button} refused at the pad on {now}", f)
         self.inputs.append((button, R.classify(f), R.find_cursor(f)))
         self.t += 0.62
         self._fire(button)
@@ -733,6 +747,104 @@ def test_the_plaza_is_told_from_the_spawn_room():
     assert 0.2 < R.door(spawn) < 0.3 and R.door(plaza) is None and R.door(BLACK) is None
 
 
+def test_the_door_and_the_plaza_are_read_correctly_on_every_recorded_spawn_pose():
+    """The lead's re6 / re7 / q8 (native, 2026-09-20) and tagrun0 frame 0: the four ways a re-entry can leave the player in the spawn room."""
+    ahead, wall, console, first = (frame(n) for n in POSES)
+    assert 0.5 - R.DOOR_TOL <= R.door(ahead) <= 0.5 + R.DOOR_TOL          # dead ahead: 76k px of lime, walk
+    assert R.door(wall) is None                                           # the wall left of the door: nothing to walk to
+    assert R.door(console) == pytest.approx(0.19, abs=0.04)               # two doors to the left: the bigger one, turn left
+    assert R.door(first) == pytest.approx(0.26, abs=0.04)                 # the door at the left edge
+    for name in POSES:
+        assert not R.plaza_view(frame(name)), name                        # in re6 the bot shows THROUGH the glass and the glow makes boxes
+    assert R.plaza_view(frame("arrival-plaza-bot-ahead")) and R.door(frame("arrival-plaza-bot-ahead")) is None
+    assert not R.plaza_view(frame("in-range")) and R.door(frame("in-range")) is None
+
+
+def test_the_lime_door_is_told_from_an_enemy_outline():
+    hsv = cv2.cvtColor(R.small(frame("arrival-spawn-door-ahead")), cv2.COLOR_BGR2HSV)[100:300, 480:800].reshape(-1, 3)
+    lime = hsv[(hsv[:, 0] >= 30) & (hsv[:, 0] <= 56) & (hsv[:, 1] > 70) & (hsv[:, 2] > 70)]
+    assert len(lime) > 10000 and 40 <= np.median(lime[:, 0]) <= 50                    # hue ~46, not the outline's ~67
+    outline = np.uint8([[[67, 160, 175]]])                                            # a green enemy outline pixel (docs/lanes/l4-controller.md)
+    assert not (R.LIME["h"][0] <= outline[0, 0, 0] <= R.LIME["h"][1])
+
+
+def _lime_bgr():
+    return cv2.cvtColor(np.uint8([[[46, 140, 150]]]), cv2.COLOR_HSV2BGR)[0, 0].tolist()
+
+
+def test_a_small_lime_patch_is_not_the_door():
+    f = edited("arrival-plaza-bot-ahead", lambda g: g.__setitem__((slice(300, 520), slice(300, 324)), _lime_bgr()))   # 110 x 12 px at 1280 scale: tall enough, far too small
+    assert R.door(f) is None and R.plaza_view(f)
+
+
+def test_a_door_filling_the_view_blocks_the_plaza_even_with_a_clear_bot():
+    big = edited("arrival-plaza-bot-ahead", lambda g: g.__setitem__((slice(0, 900), slice(0, 800)), _lime_bgr()))     # the glass fills the left
+    assert R.door(big) is not None and not R.plaza_view(big)
+
+
+def test_a_bot_ringed_with_lime_is_seen_through_the_glass_not_in_the_open():
+    box = None
+    from perception.outline import find_enemies
+    f = frame("arrival-plaza-bot-ahead")
+    d, = find_enemies(f, scale=2.0)
+    x1, y1, x2, y2 = (int(v) for v in d.bbox)
+    px, py = int(0.25 * (x2 - x1)), int(0.25 * (y2 - y1))
+
+    def glow(g):
+        lime = _lime_bgr()
+        g[max(0, y1 - py - 40):y2 + py + 40, max(0, x1 - px - 40):x2 + px + 40] = lime       # a lime frame round the box (its own box kept clear)
+        g[y1 - py:y2 + py, x1 - px:x2 + px] = f[y1 - py:y2 + py, x1 - px:x2 + px]
+        g[y1 - py:y1 - py + 24, x1 - px:x2 + px] = lime
+        g[y2 + py - 24:y2 + py, x1 - px:x2 + px] = lime
+        g[y1 - py:y2 + py, x1 - px:x1 - px + 24] = lime
+        g[y1 - py:y2 + py, x2 + px - 24:x2 + px] = lime
+    ringed = edited("arrival-plaza-bot-ahead", glow)
+    assert R._lime(R.small(ringed)).mean() < R.PLAZA_LIME_MAX                            # not the share gate that refuses it
+    assert not R.plaza_view(ringed)
+
+
+def _pose_sim(start, table):
+    sim = Sim(start, table)
+    sim.FRAMES = dict(Sim.FRAMES, **{"p_ahead": "arrival-spawn-door-ahead", "p_wall": "arrival-spawn-wall-left-of-door",
+                                     "p_console": "arrival-spawn-console-two-doors", "p_first": "arrival-spawn-room"})
+    return sim
+
+
+WALK_OUT = {("p_ahead", "stick"): lambda n: "range" if n >= 3 else "p_ahead"}
+
+
+@pytest.mark.parametrize("start,table,expected", [
+    ("p_ahead", WALK_OUT, ["stick", "stick", "stick", "RT"]),                                             # door ahead: straight out
+    ("p_console", {**WALK_OUT, ("p_console", "rstick"): "p_ahead"}, ["rstick", "stick", "stick", "stick", "RT"]),
+    ("p_first", {**WALK_OUT, ("p_first", "rstick"): "p_ahead"}, ["rstick", "stick", "stick", "stick", "RT"]),
+    ("p_wall", {**WALK_OUT, ("p_wall", "rstick"): lambda n: "p_console" if n >= 2 else "p_wall", ("p_console", "rstick"): "p_ahead"},
+     ["rstick", "rstick", "rstick", "stick", "stick", "stick", "RT"]),                                    # no door in view: look around, then turn to it
+])
+def test_arrival_from_each_recorded_spawn_pose_gets_out_and_never_walks_toward_nothing(start, table, expected):
+    sim = _pose_sim(start, table)
+    R.arrive(sim, R.Safe(sim, log=lambda *_: None))
+    assert [i[0] for i in sim.inputs] == expected
+    first_turn = next((i for i in sim.inputs if i[0] == "rstick"), None)
+    if start in ("p_console", "p_first"):
+        assert first_turn[1] < 0                                                                             # the doors are on the left: turn left
+    if start == "p_wall":
+        assert first_turn[1] > 0 and sim.inputs[0][0] == "rstick"                                            # nothing to walk to: it looks around first
+
+
+def test_arrival_at_the_wall_only_looks_around_and_then_exits_unconfirmed():
+    sim = _pose_sim("p_wall", {})
+    with pytest.raises(R.Refuse, match="could not confirm the spawn room was left"):
+        R.arrive(sim, R.Safe(sim, log=lambda *_: None))
+    assert all(i[0] == "rstick" for i in sim.inputs) and 15 <= len(sim.inputs) <= 32     # no walking blind, no attack, a bounded budget
+
+
+def test_the_bot_seen_through_the_glass_never_confirms_the_plaza():
+    sim = _pose_sim("p_ahead", {})                                                       # walking at the door but never getting through
+    with pytest.raises(R.Refuse, match="could not confirm"):
+        R.arrive(sim, R.Safe(sim, log=lambda *_: None))
+    assert "RT" not in [i[0] for i in sim.inputs]
+
+
 def test_arrival_stops_walking_once_two_frames_show_the_plaza_then_attacks_once():
     sim = Sim("spawn", {("spawn", "stick"): lambda n: "range" if n >= 4 else "spawn"})
     R.arrive(sim, R.Safe(sim, log=lambda *_: None))
@@ -827,8 +939,8 @@ def test_dry_run_on_a_saved_frame_opens_nothing_and_says_what_it_would_do(capsys
                                               "would jiggle the stick"],
         "heroselect-duelists-cursor-off": ["hero tab: duelists", "already on duelists", "would NOT press A"],
         "heroselect-cursor-on-spiderman": ["proof for A right now: OK", "then A selects the hero, then X confirms"],
-        "in-range": ["screen: in_range", "plaza with the bot ahead: no", "would walk toward the door"],
-        "arrival-spawn-room": ["screen: in_range", "plaza with the bot ahead: no", "green door: centre x 0.2", "exit 1 if the plaza is not confirmed"],
+        "in-range": ["screen: in_range", "plaza with the bot ahead: no", "would turn to the door"],
+        "arrival-spawn-room": ["screen: in_range", "plaza with the bot ahead: no", "glass door: centre x 0.2", "exit 1 if the plaza is not confirmed"],
         "arrival-plaza-bot-ahead": ["screen: in_range", "plaza with the bot ahead: yes"],
         "lobby-cursor-on-practice-tab-lower-half": ["screen: lobby", "proof for A right now: OK", "then A opens the PRACTICE panel"],
     }
@@ -905,25 +1017,356 @@ def fake_vgamepad():
     return mod, calls
 
 
-def test_live_sends_only_the_buttons_it_supports_in_the_right_order(monkeypatch):
+class Clock:
+    """A clock the test moves: `sleep` advances it, so a slow proof, a long hold and a 22 s wait are all just arithmetic."""
+
+    def __init__(self):
+        self.t = 100.0
+
+    def __call__(self):
+        return self.t
+
+    def sleep(self, s):
+        self.t += s
+
+
+class Screen:
+    """A capture source. `frames` is what grab() returns in turn (None = dxcam has nothing new); the last entry repeats.
+    `now` is the frame it returns once `frames` is used up, or None for 'the screen has not changed'."""
+
+    def __init__(self, *frames, after=None, fails=None):
+        self.frames, self.after, self.fails, self.grabs = list(frames), after, fails, 0
+
+    def grab(self):
+        self.grabs += 1
+        if self.fails:
+            raise self.fails
+        return self.frames.pop(0) if self.frames else self.after
+
+
+def make_live(monkeypatch, cap, gdi=None, clock=None):
     mod, calls = fake_vgamepad()
     monkeypatch.setitem(sys.modules, "vgamepad", mod)
-    live = R.Live(FakeCap(None), frame("lobby-cursor-far"), sleep=lambda s: None, settle_s=0)
-    live.tap("A")
-    assert [c[0] for c in calls] == ["press_button", "update", "release_button", "update"] and calls[0][2] == {"button": "A"}
+    clock = clock or Clock()
+    live = R.Live(cap, None, sleep=clock.sleep, settle_s=0, gdi=gdi, clock=clock)
     calls.clear()
-    live.tap("X")
-    live.tap("RB")
-    assert [c[2]["button"] for c in calls if c[0] == "press_button"] == ["X", "RB"]
-    calls.clear()
-    live.stick(0.0, 1.0, 0.5)
-    assert [(c[0], c[1]) for c in calls if c[0] == "left_joystick_float"] == [("left_joystick_float", (0.0, 1.0)),
-                                                                              ("left_joystick_float", (0.0, 0.0))]
-    calls.clear()
-    live.tap("RT")
-    assert [(c[0], c[1]) for c in calls if c[0] == "right_trigger_float"] == [("right_trigger_float", (1.0,)),
-                                                                              ("right_trigger_float", (0.0,))]
+    return live, calls, clock
+
+
+def presses(calls):
+    return [c[2]["button"] for c in calls if c[0] == "press_button"]
+
+
+def touched(calls):
+    """Did anything but a neutral reach the pad?"""
+    return [c for c in calls if c[0] not in ("reset", "update")]
+
+
+def test_live_writes_only_the_buttons_it_supports_each_on_a_frame_taken_at_the_press(monkeypatch):
+    lobby, hero = frame("lobby-cursor-on-practice"), frame("heroselect-cursor-on-spiderman")
+    live, calls, _ = make_live(monkeypatch, Screen(lobby, after=lobby))
+    live.tap("A", screen="lobby", proof_fn=R.on_practice_tab)
+    assert presses(calls) == ["A"] and [c[0] for c in calls][-2:] == ["reset", "update"]          # released in a finally, whole pad
+    hero_live, hero_calls, _ = make_live(monkeypatch, Screen(hero, hero, after=hero))
+    hero_live.tap("X")
+    hero_live.tap("RB")
+    assert presses(hero_calls) == ["X", "RB"]
+    walk, walk_calls, _ = make_live(monkeypatch, Screen(frame("arrival-plaza-bot-ahead"), after=frame("arrival-plaza-bot-ahead")))
+    walk.tap("RT")
+    assert [c for c in walk_calls if c[0] == "right_trigger_float"] == [("right_trigger_float", (1.0,), {})]
     for forbidden in ("START", "UP", "B", "Y", "LB"):
         with pytest.raises(KeyError):
-            live.tap(forbidden)
-    assert live.frame(timeout=0.01) is frame("lobby-cursor-far")  # a static screen: the last frame stands
+            walk.tap(forbidden)
+
+
+def test_a_static_menu_gives_no_new_frame_and_the_press_reads_the_screen_as_it_is_not_the_last_frame(monkeypatch):
+    """VUH-1325 (1): dxcam delivers a frame only when the screen changes. The proving frame was the hero-select screen; 22 s later the screen is
+    the range and dxcam still has nothing new. The old Live.frame() handed back the proving frame, so X was sent; it now reads GDI."""
+    hero, ranged = frame("heroselect-cursor-on-spiderman"), frame("arrival-plaza-bot-ahead")
+    clock = Clock()
+    live, calls, _ = make_live(monkeypatch, Screen(hero, after=None), gdi=Screen(after=ranged), clock=clock)
+    assert R.classify(live.frame()) == "hero_select"                                  # the proof
+    clock.t += 22.0                                                                   # a static menu: nothing new from dxcam for 22 s
+    with pytest.raises(R.Refuse, match="the screen changed under the proof: proven on hero_select, now in_range"):
+        live.tap("X", screen="hero_select")
+    assert touched(calls) == []                                                       # not a button, not a stick, nothing
+
+
+def test_the_live_frame_is_never_an_older_one(monkeypatch):
+    a, b = frame("lobby-cursor-far"), frame("lobby-cursor-on-practice")
+    clock = Clock()
+    live, _, _ = make_live(monkeypatch, Screen(a, after=None), gdi=Screen(b, after=a), clock=clock)
+    assert live.frame() is a
+    first_t = live.frame_t
+    clock.t += 5.0
+    assert live.frame() is b and live.frame_t > first_t                              # no new dxcam frame: GDI, timestamped now
+    assert live.frame() is a                                                          # and again: never a remembered frame
+
+
+def test_no_frame_at_all_fails_closed_and_sends_nothing(monkeypatch):
+    for gdi in (Screen(after=None), Screen(fails=OSError("gdi down"))):
+        live, calls, _ = make_live(monkeypatch, Screen(after=None), gdi=gdi)
+        with pytest.raises(R.Refuse, match="no current frame"):
+            live.tap("X", screen="hero_select")
+        with pytest.raises(R.Refuse, match="no current frame"):
+            live.stick(0.0, 1.0, 0.1)
+        assert touched(calls) == []
+
+
+def test_a_proof_older_than_the_limit_is_refused_at_the_moment_of_the_press(monkeypatch):
+    lobby = frame("lobby-cursor-on-practice")
+    clock = Clock()
+
+    def slow_proof(f):                                                                # the proof takes 2 s: the frame is 2 s old when the pad would be written
+        clock.t += 2.0
+        return R.on_practice_tab(f)
+
+    live, calls, _ = make_live(monkeypatch, Screen(lobby, after=lobby), clock=clock)
+    with pytest.raises(R.Refuse, match=r"the proof is 2\.\d\d s old \(limit 0\.3 s\)"):
+        live.tap("A", screen="lobby", proof_fn=slow_proof)
+    assert touched(calls) == []
+
+
+def test_no_proof_frame_may_predate_the_last_inputs_settling(monkeypatch):
+    lobby = frame("lobby-cursor-on-practice")
+    live, calls, clock = make_live(monkeypatch, Screen(lobby, after=lobby))
+    real_frame = live.frame
+
+    def frame_from_before_the_input():
+        f = real_frame()
+        live.frame_t = live.settled_t - 0.5                                            # a frame taken before the last input finished
+        return f
+
+    live.frame = frame_from_before_the_input
+    with pytest.raises(R.Refuse, match="predates the last input's settling"):
+        live.tap("A", screen="lobby", proof_fn=R.on_practice_tab)
+    assert touched(calls) == []
+    live.frame = real_frame                                                            # and inputs advance the settling time
+    before = live.settled_t
+    live.stick(0.0, 0.0, 0.05)
+    assert live.settled_t > before
+
+
+def test_a_tap_advances_the_settling_time_so_the_next_proof_must_be_newer(monkeypatch):
+    hero = frame("heroselect-cursor-on-spiderman")
+    live, calls, clock = make_live(monkeypatch, Screen(hero, hero, after=hero))
+    before = live.settled_t
+    live.tap("X", screen="hero_select")
+    assert live.settled_t > before and live.settled_t == clock()                       # set when the press and its wait are over
+    stamp = live.frame_t
+    live.frame()
+    assert live.frame_t > stamp and live.frame_t >= live.settled_t                      # and the next frame is taken after it
+
+
+def test_the_arrivals_turns_are_gated_by_the_screen_too():
+    class Io:
+        sticks = []
+
+        def frame(self):
+            return BLACK
+
+        def rstick(self, *a):
+            self.sticks.append(a)
+
+    io = Io()
+    with pytest.raises(R.Refuse, match="the screen is unknown; no stick sent"):
+        R.Safe(io, log=lambda *_: None).rstick(0.45, 0.0, 0.3)
+    assert io.sticks == []
+
+
+def test_a_refused_press_or_a_missing_proof_writes_nothing(monkeypatch):
+    live, calls, _ = make_live(monkeypatch, Screen(frame("lobby-cursor-far"), after=frame("lobby-cursor-far")))
+    with pytest.raises(R.Refuse, match="no proof for A at the moment of the press"):
+        live.tap("A", screen="lobby", proof_fn=R.on_practice_tab)                    # the cursor is nowhere near the tab
+    with pytest.raises(R.Refuse, match="no proof for A"):
+        live.tap("A", screen="lobby")                                                 # no proof supplied at all
+    with pytest.raises(R.Refuse, match="X is not allowed on screen lobby"):
+        live.tap("X", screen="lobby")                                                 # X on the lobby is START for a live match
+    assert touched(calls) == []
+
+
+class Boom(Exception):
+    pass
+
+
+@pytest.mark.parametrize("failure", [Boom("pad died"), KeyboardInterrupt()])
+def test_an_exception_or_ctrl_c_in_any_hold_still_releases_the_whole_pad(monkeypatch, failure):
+    """VUH-1325 (5): every hold ends in a finally."""
+    hero = frame("heroselect-cursor-on-spiderman")
+    for hold in ("tap", "stick", "rstick"):
+        live, calls, clock = make_live(monkeypatch, Screen(hero, after=hero))
+        live.sleep = lambda s: (_ for _ in ()).throw(failure)                          # the sleep during the hold is interrupted
+        with pytest.raises(type(failure)):
+            {"tap": lambda: live.tap("X", screen="hero_select"), "stick": lambda: live.stick(1.0, 0.0, 0.5),
+             "rstick": lambda: live.rstick(1.0, 0.0, 0.5)}[hold]()
+        assert [c[0] for c in calls][-2:] == ["reset", "update"], hold                # neutral was the last thing written
+
+
+def test_a_pad_write_that_fails_mid_press_still_ends_neutral(monkeypatch):
+    hero = frame("heroselect-cursor-on-spiderman")
+    live, calls, _ = make_live(monkeypatch, Screen(hero, after=hero))
+    seen = {"n": 0}
+    orig = live.pad.__class__.__getattr__
+
+    def flaky(self, name):
+        fn = orig(self, name)
+        if name == "update":
+            def upd(*a, **k):
+                seen["n"] += 1
+                if seen["n"] == 1:
+                    raise Boom("update failed after the press")
+                return fn(*a, **k)
+            return upd
+        return fn
+
+    monkeypatch.setattr(live.pad.__class__, "__getattr__", flaky)
+    with pytest.raises(Boom):
+        live.tap("X", screen="hero_select")
+    assert "reset" in [c[0] for c in calls]
+
+
+def test_opening_the_pad_ends_neutral_even_if_the_settle_wait_is_interrupted(monkeypatch):
+    mod, calls = fake_vgamepad()
+    monkeypatch.setitem(sys.modules, "vgamepad", mod)
+
+    def interrupted(s):
+        raise KeyboardInterrupt
+
+    with pytest.raises(KeyboardInterrupt):
+        R.Live(Screen(after=None), None, sleep=interrupted, settle_s=3.0)
+    assert [c[0] for c in calls][-2:] == ["reset", "update"]
+
+
+# --- VUH-1325 (8): unknown sends nothing, sticks included ------------------------------------------------------------------
+@pytest.mark.parametrize("screen_frame", ["black", "noise"])
+def test_a_stick_on_an_unknown_screen_is_never_written(monkeypatch, screen_frame):
+    unknown = BLACK if screen_frame == "black" else NOISE
+    live, calls, _ = make_live(monkeypatch, Screen(unknown, after=unknown))
+    with pytest.raises(R.Refuse, match="the screen is unknown; no stick sent"):
+        live.stick(0.0, 1.0, 0.2)
+    with pytest.raises(R.Refuse, match="no stick sent"):
+        live.rstick(1.0, 0.0, 0.2)
+    assert touched(calls) == []
+
+
+def test_steering_on_a_black_frame_sends_no_jiggle_at_all():
+    """The old steer jiggled the stick four times on any frame with no ring, black ones included, before refusing."""
+    class Io:
+        def __init__(self):
+            self.sticks = []
+
+        def frame(self):
+            return BLACK
+
+        def now(self):
+            return 0.0
+
+        def sleep(self, s):
+            pass
+
+        def stick(self, x, y, secs):
+            self.sticks.append((x, y))
+
+        rstick = stick
+
+    io = Io()
+    safe = R.Safe(io, log=lambda *_: None)
+    with pytest.raises(R.Refuse, match="the screen is unknown; no stick sent"):
+        R.steer(safe, R.PRACTICE_TAB)
+    assert io.sticks == []
+    with pytest.raises(R.Refuse, match="range HUD is gone|no stick sent"):
+        R.arrive(io, safe)                                                             # the arrival never walks or turns on it either
+    assert io.sticks == []
+
+
+def test_the_whole_run_sends_no_stick_once_the_screen_goes_unknown_mid_steering():
+    sim = Sim("lobby_far", {("lobby_far", "stick"): "blackout"})                        # the first nudge lands on a black screen (a load, a crash, an alt-tab)
+    with pytest.raises(R.Refuse, match="no stick sent"):
+        R.run(sim, log=lambda *_: None)
+    assert [i[0] for i in sim.inputs] == ["stick"]                                      # the one nudge that was proven, and not a jiggle more
+
+
+def test_a_lost_ring_on_a_known_screen_still_jiggles_to_find_it():
+    sim = Sim("panel_off", {})                                                         # the panel just opened, cursor faint: a real screen, no ring
+    with pytest.raises(R.Refuse, match="cursor ring was not found"):
+        R.steer(R.Safe(sim, log=lambda *_: None), R.RANGE_TILE)
+    assert len([i for i in sim.inputs if i[0] == "stick"]) == R.MAX_MISSES
+
+
+# --- VUH-1325 (5): the process never exits with anything held ---------------------------------------------------------------
+class Released:
+    """A stand-in for Live in main(): counts release_all and serves the lobby."""
+
+    def __init__(self, fail=None):
+        self.released, self.fail = 0, fail
+
+    def release_all(self):
+        self.released += 1
+
+    def frame(self):
+        return frame("lobby-cursor-far")
+
+    def now(self):
+        return 0.0
+
+    def sleep(self, s):
+        pass
+
+    def stick(self, *a):
+        raise Boom("boom") if self.fail else R.Refuse("stop")
+
+
+@pytest.mark.parametrize("failure", [Boom("boom"), KeyboardInterrupt(), R.Refuse("stop"), SystemExit(3)])
+def test_main_releases_the_pad_on_every_way_out(tmp_path, monkeypatch, failure):
+    monkeypatch.setattr(R, "OUT", tmp_path)
+    io = Released()
+
+    def run_that_ends_badly(io_, log=print):
+        raise failure
+
+    monkeypatch.setattr(R, "run", run_that_ends_badly)
+    outcome = None
+    try:
+        outcome = R.main([], capture=lambda: FakeCap(frame("lobby-cursor-far")), live=lambda cap, first: io)
+    except BaseException as e:  # noqa: BLE001
+        outcome = e
+    assert io.released >= 1 and outcome is not None
+    io2 = Released()
+    monkeypatch.setattr(R, "run", lambda io_, log=print: None)
+    assert R.main([], capture=lambda: FakeCap(frame("lobby-cursor-far")), live=lambda cap, first: io2) == 0
+    assert io2.released >= 1                                                           # and on success
+
+
+def test_a_release_that_fails_is_reported_and_never_masks_the_stop(tmp_path, monkeypatch, capsys):
+    monkeypatch.setattr(R, "OUT", tmp_path)
+
+    class Bad(Released):
+        def release_all(self):
+            raise Boom("pad gone")
+
+    monkeypatch.setattr(R, "run", lambda io_, log=print: (_ for _ in ()).throw(R.Refuse("nothing provable")))
+    assert R.main([], capture=lambda: FakeCap(frame("lobby-cursor-far")), live=lambda cap, first: Bad()) == 1
+    assert "could not release the pad" in capsys.readouterr().err
+
+
+def test_the_first_frame_falls_back_to_gdi_and_no_frame_means_no_pad(monkeypatch):
+    monkeypatch.setitem(sys.modules, "capture", types.SimpleNamespace(Capture=lambda kind: Screen(after=frame("lobby-cursor-far"))))
+    assert R._first_frame(Screen(after=None), timeout=0.0) is frame("lobby-cursor-far")
+
+
+# --- the tooltip must fit the cursor ---------------------------------------------------------------------------------------------
+def test_a_tooltip_that_does_not_fit_the_cursor_position_is_not_a_proof(monkeypatch):
+    f = frame(LOST)
+    _, at = R.tooltip_at(f)
+    assert (at[0] - 860, at[1] - 44) == pytest.approx((R.TIP_DX, R.TIP_DY), abs=2)      # 141 x 29 from the ring's centre, on both recorded frames
+    _, at0 = R.tooltip_at(frame("heroselect-cursor-on-spiderman"))
+    assert (at0[0] - 852, at0[1] - 48) == pytest.approx((R.TIP_DX, R.TIP_DY), abs=2)
+    ok = R.on_spiderman(f)
+    assert ok.ok
+    monkeypatch.setattr(R, "find_cursor", lambda fr: (500.0, 300.0))                    # a ring found somewhere else: two cursors, or a stale tooltip
+    p = R.on_spiderman(f)
+    assert not p.ok and "does not fit the cursor" in p.reason
+    monkeypatch.setattr(R, "find_cursor", lambda fr: (862.0, 46.0))                     # a ring where the tooltip says: fine
+    assert R.on_spiderman(f).ok
+    monkeypatch.setattr(R, "find_cursor", lambda fr: None)                              # no ring: the tooltip alone proves nothing
+    assert not R.on_spiderman(f).ok

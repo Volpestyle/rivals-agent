@@ -39,8 +39,10 @@ from .intents import Idle
 from .jev import pct
 from .replay import label
 from .state import ENEMY, State
+from .tracker import Tracker
 
 ROOT = Path(__file__).resolve().parent.parent
+KIT = ROOT / "docs" / "spiderman-kit.md"
 REFLEX_HZ = 60.0        # L4 tuned the controller at 50-60 Hz (ARM_FRAMES counts steps): frames arriving faster are skipped
 REFLEX_TOL = 0.9        # a frame is a tick once it is this fraction of a period after the last; capture jitters
 DECISION_HZ = 10.0
@@ -54,6 +56,17 @@ ALLOWED = frozenset({"A", "X", "LB", "RB"})    # what Controller emits. Never ST
 ATTACK = frozenset({"X", "RB", "LB"})
 KEEPALIVE = ((0.3, dict(ly=1.0)), (0.3, dict(ly=-1.0)), (0.15, dict(ly=0.0, rt=1.0)), (0.5, dict(rt=0.0)))  # Live.keepalive
 END_SCOREBOARD = ("max_time", "source_end")     # the only stops after which the pad may press BACK
+
+
+def kit_patch(path=KIT):
+    """The patch the kit states it reflects, in the kit's own words ("Season 10, Version 20260911"), or None if it cannot be read: docs/spiderman-kit.md
+    is the single place the current patch is stated, so nothing here restates it."""
+    import re
+    try:
+        m = re.search(r"\*\*Patch reflected: (Season \d+, Version \d+)", Path(path).read_text(encoding="utf-8")[:2000])
+    except OSError:
+        return None
+    return m.group(1) if m else None
 
 
 class ForbiddenInput(RuntimeError):
@@ -87,6 +100,7 @@ class Perception:
     hud: Callable        # frame -> dict             State kwargs (hp, max_hp, webs, abilities); {} when unreadable
     tag: Callable        # (frame, bbox) -> bool | None
     scoreboard: Callable | None = None   # frame -> dict: perception.scoreboard.read_scoreboard, for the end-of-run frame
+    is_board: Callable | None = None     # frame -> True | False | None: perception.scoreboard.is_scoreboard. BACK is never pressed without it
 
 
 def default_perception(crop=CROP):
@@ -105,19 +119,16 @@ def default_perception(crop=CROP):
         return [replace(d, bbox=(d.bbox[0] + x0, d.bbox[1] + y0, d.bbox[2] + x0, d.bbox[3] + y0))
                 for d in find_enemies(f[y0:y0 + side, x0:x0 + side], scale=w / 1280.0)]
 
-    from perception.scoreboard import read_scoreboard
+    from perception.scoreboard import is_scoreboard, read_scoreboard
     return Perception(in_range, idle_warning, size, aim, lambda f: find_enemies(f, scale=f.shape[1] / 1280.0),
-                      lambda f: hud.read(f).state_kwargs(), hud.read_tagged, read_scoreboard)
+                      lambda f: hud.read(f).state_kwargs(), hud.read_tagged, read_scoreboard, is_scoreboard)
 
 
-class Tracker:
-    """The one place detections get identities (VUH-1314). A pass-through until Detection carries a track id.
+class NoTracker:
+    """Detections pass through with no identity (`track` stays None): what the loop did before agent.tracker. Same interface."""
+    coasting = ()
 
-    Every list of detections that becomes a State goes through `update` on this one instance, under one lock: the aim finder's,
-    each reflex tick, for the controller, and the whole-frame search's, each decision tick, for the brain. So both can refer to
-    the same id. Pass another object with the same `update(dets, t) -> dets` as `Loop(tracker=...)`."""
-
-    def update(self, dets, t):
+    def update(self, dets, t, frame=None):
         return dets
 
 
@@ -162,40 +173,36 @@ class FakePad:
 
 class LiveIO:
     """L4's Live as the frame source and the pad. On the PC, in the desktop session; constructing it confirms the
-    range HUD on a fresh frame before any pad opens (Live's own guard)."""
+    range HUD on a fresh frame before any pad opens (Live's own guard).
+
+    Live is the ONLY door to the pad and the lowest layer over it, so every pad rule is Live's and none is copied here (VUH-1325): the
+    whitelist, freshness checked at commit on a frame stamped when its grab started, the neutral-deadline lease (its own watchdog on the
+    real clock, renewed by every proven send, which the loop makes every reflex tick), and the scoreboard's recognised range -> board ->
+    range transitions. This reaches nothing but `fresh`, `send`, `release`, `scoreboard` and `close`."""
 
     def __init__(self, live=None):
         from .controller import Live
-        self.live, self.t0 = live or Live(), time.perf_counter()
+        self.live = live or Live()
+        self.t0 = self.live.frame_t
 
     def next(self):
-        frame = self.live.fresh()
-        if time.perf_counter() - self.live.frame_t > LOST_GRACE_S:      # capture stalled: nothing to confirm the HUD with
-            self.live.release()
+        frame = self.live.fresh()                                       # may block: Live's lease releases the pad if it does
+        if time.perf_counter() - self.live.frame_t > LOST_GRACE_S:      # Live hands back its last frame on a timeout: nothing new to confirm with
+            self.release()
             raise RangeLost("no new frame")
         return frame, self.live.frame_t - self.t0
 
     def send(self, pad):
-        self.live.send(**pad)                                           # Live re-checks its frame: RangeLost on a stale or lobby one
+        self.live.send(**pad)                                           # proven, whitelisted and leased at the write, or RangeLost / Forbidden
 
     def release(self):
         self.live.release()
 
+    def close(self):
+        self.live.close()                                               # neutral, and ends Live's watchdog; Live refuses input from then on
+
     def scoreboard(self, hold_s):
-        """Press BACK, wait, return the NATIVE frame (the reader refuses anything under 1920 wide: upscaled 6 px digits invent
-        shapes), release. The scoreboard covers the HUD, so in_range is false while it is up:
-        the range is confirmed BEFORE the press and never during the hold. Live has no BACK code (L4), so the press goes on
-        its pad directly; the guarded send below is what makes that safe."""
-        self.live.send(**NEUTRAL)
-        self.live.pad.press_button(button=self.live.vg.XUSB_BUTTON.XUSB_GAMEPAD_BACK)
-        self.live.pad.update()
-        try:
-            end, frame = time.perf_counter() + hold_s, None
-            while frame is None or time.perf_counter() < end:
-                frame = self.live.fresh()
-            return frame
-        finally:
-            self.live.release()
+        return self.live.scoreboard(hold_s)                            # a positively recognised board frame, or None; RangeLost on anything else
 
 
 # --- the decision rate ---------------------------------------------------------------------------------------------
@@ -210,6 +217,17 @@ class Decision:
     lag_ms: float        # from the reflex thread handing the frame over to the intent being ready
 
 
+def _readonly(frame):
+    """The frame as a read-only view, for a brain's `see(frame, t)`: it may look but not write into what the finder and the HUD reader also
+    read. The loop keeps no reference to the frame past the tick; `see` must copy what it needs to keep."""
+    try:
+        v = frame.view()
+        v.flags.writeable = False
+        return v
+    except AttributeError:                              # not an ndarray (a test's stand-in frame)
+        return frame
+
+
 def _source(decide):
     trace = getattr(getattr(decide, "stats", None), "trace", None)      # AsyncJev: (t, "gate" | "jev" | "standing" | "scripted")
     return trace[-1][1] if trace else getattr(decide, "source", "scripted")
@@ -219,8 +237,8 @@ class Decider:
     """decide(state, memory) at decision_hz. Threaded, offer() hands the newest frame to a worker and returns at once; a
     frame offered while the worker is busy is dropped (counted). Unthreaded it decides inline, which replays exactly."""
 
-    def __init__(self, decide, percept, hz, threaded, track=lambda dets, t: dets):
-        self.decide, self.p, self.hz, self.memory, self.track = decide, percept, hz, Memory(), track
+    def __init__(self, decide, percept, hz, threaded, track=lambda dets, t, size=None: dets, coasting=lambda: ()):
+        self.decide, self.p, self.hz, self.memory, self.track, self.coasting = decide, percept, hz, Memory(), track, coasting
         self.latest, self.error, self.n, self.last, self.missed, self.ms, self.lag = None, None, 0, -math.inf, 0, [], []
         self.q = queue.Queue(maxsize=1) if threaded else None
         self.worker = threading.Thread(target=self._work, daemon=True) if threaded else None
@@ -252,9 +270,11 @@ class Decider:
     def _decide(self, job):
         frame, t, size, aim, offered = job
         c0 = time.perf_counter()
-        dets = aim or self.track(self.p.wide(frame), t)  # nothing in the crop: look everywhere (aim is tracked already)
+        dets = aim or self.track(self.p.wide(frame), t, size)  # nothing in the crop: look everywhere (aim is tracked already)
         dets = [replace(d, tagged=self.p.tag(frame, d.bbox)) if d.cls == ENEMY else d for d in dets]
-        state = State(t=t, frame=size, detections=dets, **self.p.hud(frame))
+        state = State(t=t, frame=size, detections=dets, coasting=self.coasting(), **self.p.hud(frame))
+        if (see := getattr(self.decide, "see", None)) is not None:
+            see(_readonly(frame), t)                    # a brain that reads pixels gets the frame this State came from: on the worker, read-only
         intent = self.decide(state, self.memory)
         now = time.perf_counter()
         self.n += 1
@@ -313,7 +333,8 @@ class RunLog:
         self.q.put(None)
         self.writer.join(timeout=10.0)
         self.f.close()
-        (self.out / "meta.json").write_text(json.dumps(meta, indent=1))
+        known = {k: v for k, v in meta.items() if not (k in ("cooldowns", "patch") and v in ("unknown", None))}   # "unknown" is the absence of a value
+        (self.out / "meta.json").write_text(json.dumps(known, indent=1))
         if segments and meta["ticks"]:
             from . import demos
             head = demos.clip_from_run(self.out).header
@@ -329,19 +350,23 @@ def spread(xs):
 class Loop:
     def __init__(self, source, pad, percept, decide=scripted.decide, *, log=None, controller=None, threaded=False,
                  reflex_hz=REFLEX_HZ, decision_hz=DECISION_HZ, max_s=MAX_S, keepalive_s=KEEPALIVE_S, warmup=True,
-                 stale_s=STALE_S, scoreboard=True, scoreboard_every_s=None, brain_name="scripted", tracker=None, cooldowns="unknown"):
+                 stale_s=STALE_S, scoreboard=True, scoreboard_every_s=None, brain_name="scripted", tracker=None, cooldowns="unknown",
+                 patch=None):
         if cooldowns not in COOLDOWNS:
             raise ValueError(f"cooldowns must be one of {COOLDOWNS}, not {cooldowns!r}")
+        self.patch = patch if patch is not None else kit_patch()   # the run's own metadata: the kit's current patch, or unknown
         self.cooldowns = cooldowns   # the range's "No Ability Cooldown": off = ON (infinite ammo, no cooldown numbers), normal = OFF
         self.source, self.pad, self.p, self.log, self.ctrl = source, pad, percept, log, controller or Controller()
-        lock, tracker = threading.Lock(), tracker or Tracker()
+        lock, tracker, self.coasting = threading.Lock(), tracker or Tracker(), ()
 
-        def track(dets, t):                             # the reflex thread and the decision worker share one tracker
+        def track(dets, t, size=None):                  # the reflex thread and the decision worker share one tracker
             with lock:
-                return tracker.update(dets, t)
+                out = tracker.update(dets, t, size)
+                self.coasting = tuple(getattr(tracker, "coasting", ()))
+                return out
 
         self.track = track
-        self.decider = Decider(decide, percept, decision_hz, threaded, track)
+        self.decider = Decider(decide, percept, decision_hz, threaded, track, lambda: self.coasting)
         self.reflex_hz, self.max_s, self.keepalive_s, self.warmup = reflex_hz, max_s, keepalive_s, warmup
         self.stale_s, self.scoreboard, self.every, self.brain_name = stale_s, scoreboard, scoreboard_every_s, brain_name
         self.t0 = self.last_t = self.last_ok = self.lost_since = self.ka_t = self.size = self.stop = None
@@ -429,13 +454,13 @@ class Loop:
 
         self.size = size = p.size(frame)
         a0 = time.perf_counter()
-        dets = self.track(p.aim(frame), t)
+        dets = self.track(p.aim(frame), t, size)
         self.aim_ms.append((time.perf_counter() - a0) * 1000)
         self.decider.offer(frame, t, size, dets)
         d = self.decider.latest
         fresh = d is not None and t - d.t <= self.stale_s
         intent, source = (d.intent, d.source) if fresh else (Idle(), "stale" if d else "waiting")
-        pad = clean(self._keepalive(self.ctrl.step(State(t=t, frame=size, detections=dets), intent), t))
+        pad = clean(self._keepalive(self.ctrl.step(State(t=t, frame=size, detections=dets, coasting=self.coasting), intent), t))
         self.pad.send(pad)                              # Live confirms its own frame again: a second, independent guard
         self.sent = pad
         if active(pad):
@@ -472,16 +497,23 @@ class Loop:
             self.sent = dict(NEUTRAL)
 
     def _scoreboard(self, t, name):
-        """Hold BACK, keep the frame, release. Nothing is pressed unless the pad confirms the range first (LiveIO does)."""
+        """Hold BACK, keep the frame, release: Live.scoreboard presses BACK only on a proven range frame, keeps it down only while each new
+        frame is recognised as the board (releasing at once on anything else), and needs the range back after. A frame is stored only if the
+        loop's own recognizer also calls it a board."""
         self._release()
+        skipped = lambda why: self.boards.append({"t": round(t, 3), "file": None, "skipped": why, "parsed": None})   # noqa: E731
+        if self.p.is_board is None:
+            return skipped("no_board_check")                            # BACK is not pressed without a way to know the board opened
         try:
             board = self.pad.scoreboard(SB_HOLD_S)
         except RangeLost:
-            self.boards.append({"t": round(t, 3), "file": None, "skipped": "range_lost", "parsed": None})
-            return
+            return skipped("range_lost")
+        except Exception as e:                                          # noqa: BLE001 - whatever L4's hold refused with: no board, nothing broken
+            return skipped(f"scoreboard_refused: {e!r}")
+        if board is None or self.p.is_board(board) is not True:
+            return skipped("not_a_scoreboard")
         self.boards.append({"t": round(t, 3), "file": self.log.save(name, board) if self.log else None,
-                            "size": list(self.p.size(board)) if board is not None else None,
-                            "parsed": self._read_board(board)})
+                            "size": list(self.p.size(board)), "parsed": self._read_board(board)})
 
     def _read_board(self, board):
         """perception.scoreboard's dict for the captured frame, None where nothing could read it; the frame is kept either way
@@ -521,7 +553,7 @@ class Loop:
         span = (self.last_t - self.t0) if self.t0 is not None and self.last_t is not None else 0.0
         n, dec = len(self.tick_ms), self.decider
         budget = 1000.0 / self.reflex_hz
-        return {"stop": self.stop, "brain": self.brain_name, "cooldowns": self.cooldowns, "seconds": round(span, 3), "ticks": n,
+        return {"stop": self.stop, "brain": self.brain_name, "cooldowns": self.cooldowns, "patch": self.patch, "seconds": round(span, 3), "ticks": n,
                 "reflex_hz": round(n / span, 1) if span else None, "period_ms": spread(self.periods),
                 "tick_ms": spread(self.tick_ms), "aim_ms": spread(self.aim_ms),
                 "over_budget": sum(ms > budget for ms in self.tick_ms), "budget_ms": round(budget, 2),
@@ -537,7 +569,10 @@ def make_brain(name):
     if name == "jev":                                   # scripted gate + policy, with Jev's answers standing: needs JEV_* in .env
         from .jev import AsyncJev
         return AsyncJev()
-    raise ValueError(f"brain {name!r}: scripted or jev")
+    if name == "learned":                               # scripted gate + kit checks, with the learned head choosing
+        from policy.live import LearnedBrain
+        return LearnedBrain()
+    raise ValueError(f"brain {name!r}: scripted, jev or learned")
 
 
 def main(argv=None):
@@ -545,7 +580,7 @@ def main(argv=None):
     mode = ap.add_mutually_exclusive_group(required=True)
     mode.add_argument("--dry", metavar="RUN_DIR", help="offline: replay a recorded run (frames.jsonl + jpgs) through the loop, fake pad")
     mode.add_argument("--live", action="store_true", help="the PC, desktop session, game in the Practice Range, one real pad")
-    ap.add_argument("--brain", choices=("scripted", "jev"), default="scripted")
+    ap.add_argument("--brain", choices=("scripted", "jev", "learned"), default="scripted")
     ap.add_argument("--cooldowns", choices=COOLDOWNS, help="the recording's resource regime: the range's Practice Settings 'No Ability Cooldown' "
                     "ON is `off`, OFF is `normal`. Required with --live, and only off or normal there; written into meta.json and the manifest")
     ap.add_argument("--run", default=time.strftime("%Y%m%d-%H%M%S"), help="live: record to data/l1/<run>")
@@ -569,10 +604,14 @@ def main(argv=None):
     else:
         source, out, save_fps, threaded = RunSource(a.dry, a.limit), a.out, (a.save_fps if a.out else 0), a.threaded
         pad = FakePad(board=source.imread(str(source.items[0][1])) if source.items else None)
-    loop = Loop(source, pad, default_perception(), make_brain(a.brain), threaded=threaded, brain_name=a.brain,
-                log=RunLog(out, save_fps) if out else None, reflex_hz=a.reflex_hz, decision_hz=a.decision_hz, max_s=a.max_s,
-                scoreboard=not a.no_scoreboard, scoreboard_every_s=a.scoreboard_every, cooldowns=a.cooldowns or "unknown")
-    print(json.dumps(loop.run(), indent=1))
+    try:                                                # from the moment the pad is open: a failing brain or log still closes it
+        loop = Loop(source, pad, default_perception(), make_brain(a.brain), threaded=threaded, brain_name=a.brain,
+                    log=RunLog(out, save_fps) if out else None, reflex_hz=a.reflex_hz, decision_hz=a.decision_hz, max_s=a.max_s,
+                    scoreboard=not a.no_scoreboard, scoreboard_every_s=a.scoreboard_every, cooldowns=a.cooldowns or "unknown")
+        print(json.dumps(loop.run(), indent=1))
+    finally:
+        if a.live:
+            source.close()                              # Live.close(): neutral, its lease watchdog ended, no input accepted after
     return 0
 
 

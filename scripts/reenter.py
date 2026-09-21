@@ -10,6 +10,10 @@ Rules (docs/plan.md scope boundary; .agents/skills/rivals-live-game/SKILL.md):
 - Every A is preceded by a fresh frame that proves what the cursor is on: the PRACTICE tab with TRY COMPETITIVE not
   highlighted; then the PRACTICE RANGE tile (and DOOM MATCH not); then the Spider-Man portrait on the duelists tab.
   No proof, no press.
+- The proof is the CURRENT screen (VUH-1325): `Live.frame()` never hands back an older frame (a static menu delivers no dxcam frame; it asks
+  GDI, and fails closed if it cannot), every press re-grabs, re-classifies and re-proves at the pad and refuses a frame older than
+  MAX_PROOF_AGE_S or taken before the last input settled, an unknown screen sends nothing (sticks included), and every hold ends in a
+  `finally` with one neutral written on every exit of the process.
 - X, START and the d-pad are never sent on the lobby. X is sent only on hero select, on a fresh frame classified as
   hero select. RB only on hero select.
 - An unrecognised screen: send nothing and stop. While waiting for a screen to load nothing is sent either.
@@ -23,8 +27,10 @@ Everything that decides is a pure function of one frame (`look`, `on_practice_ta
 `on_spiderman`), tested offline on tests/fixtures/reentry. Coordinates are 1280x720 px; any 16:9 frame is scaled.
 """
 import argparse
+import atexit
 import base64
 import math
+import signal
 import sys
 import time
 from dataclasses import dataclass
@@ -52,11 +58,15 @@ TILE_DARK, TILE_BRIGHT = 100, 150   # panel: the hovered tile darkens (measured 
 SLOT_RED = 0.03         # hero select: red-hue share of Spider-Man's slot. Unhovered 0.276, hovered 0.076, another hero 0.005
 HUD_RED = 0.10          # range: red-hue share of the HUD hero portrait. Spider-Man 0.247
 ARRIVE_S, WALK_CHUNK_S = 14.0, 0.5   # arrival: the whole budget to get out of the spawn room, and one walk step
-# Arrival cues, calibrated on ONE recording (tagrun0: frame 0 is the spawn room, frames 4-14 the plaza) and so, until the lead's own
-# spawn-room frames are added as fixtures, deliberately strict: no confirmation is an exit 1, never a guess.
-PLAZA_BOT_H, PLAZA_BOT_X, PLAZA_BOT_Y = (0.08, 0.6), (0.35, 0.95), (0.2, 0.85)   # the Luna Snow bot's box, fractions of the frame; the spawn
-                                                                                   # room's door makes a box at x 0.28, so x < 0.35 is out
-DOOR_H, DOOR_MIN_PX, DOOR_TOL = 100, 500, 0.06   # a tall green panel (px at 1280x720, area), and how far off-centre it may be
+# Arrival cues, calibrated on five poses: tagrun0 frame 0 (the spawn room, door at the left edge) and frames 4-14 (the plaza with the
+# bot ahead), and the lead's re6 (door DEAD AHEAD), re7 (the wall left of the door, where a blind walk ended) and q8 (the central console,
+# two doors to the left). The spawn room's exit is a glowing LIME glass door (hue ~46, S ~110, V ~125; 6% of the view dead ahead, and the
+# plaza with the bot is visible THROUGH it); an enemy outline is hue ~67, V ~170. Confirmation stays strict: no confirmation is an exit 1.
+LIME = dict(h=(30, 56), s=70, v=70)       # the door glass, in HSV (OpenCV hue 0-179)
+DOOR_H, DOOR_MIN_PX, DOOR_TOL = 100, 3000, 0.08   # a tall lime blob (px at 1280x720, area), and how far off-centre it may be and still be "ahead"
+PLAZA_BOT_H, PLAZA_BOT_X, PLAZA_BOT_Y = (0.08, 0.6), (0.35, 0.95), (0.2, 0.85)   # the Luna Snow bot's box, fractions of the frame
+PLAZA_LIME_MAX, PLAZA_BOX_LIME = 0.03, 0.15   # the door may fill at most this share of the upper view, and this share of a box's surroundings
+SWEEP_S = 0.3                                  # a look-around turn (about 50 deg) when no door is in view
 YAW_STICK, YAW_DEG_S, FOCAL = 0.45, 172.0, 465.0   # the camera: deg/s at that right-stick deflection, and the focal length at 1280 wide (l4)
 # The pad cursor sprite: a small ring (r ~19) with a bright centre dot when it hovers a widget, a plain larger ring (r ~26)
 # otherwise. Both are white, so the search runs on min(B, G, R). l4_menu.find_cursor is not used: it takes the first
@@ -292,13 +302,22 @@ def on_practice_range_tile(frame):
     return Proof(True, "cursor is on the PRACTICE RANGE tile; DOOM MATCH is not")
 
 
-def tooltip_spiderman(frame):
-    """Match (0-1) of the hover tooltip's hero name against SPIDER-MAN: the game's own statement of which portrait is under the cursor."""
+TIP_DX, TIP_DY, TIP_TOL = 141, 29, 8   # the name text sits this far right of and below the cursor ring's centre (both recorded frames: 141 x 29, +-1)
+
+
+def tooltip_at(frame):
+    """(match 0-1, (x, y) of the name text's top-left in 1280x720 px) of the hover tooltip's hero name against SPIDER-MAN."""
     if not _TOOLTIP:
         _TOOLTIP.append(cv2.imdecode(np.frombuffer(base64.b64decode(TOOLTIP_PNG), np.uint8), cv2.IMREAD_GRAYSCALE))
     x0, y0, x1, y1 = TOOLTIP_ROI
     roi = small(frame).min(axis=2)[y0:y1, x0:x1]
-    return float(cv2.matchTemplate(roi, _TOOLTIP[0], cv2.TM_CCOEFF_NORMED).max())
+    _, top, _, (px, py) = cv2.minMaxLoc(cv2.matchTemplate(roi, _TOOLTIP[0], cv2.TM_CCOEFF_NORMED))
+    return float(top), (px + x0, py + y0)
+
+
+def tooltip_spiderman(frame):
+    """Match (0-1) of the hover tooltip's hero name against SPIDER-MAN: the game's own statement of which portrait is under the cursor."""
+    return tooltip_at(frame)[0]
 
 
 def tooltip_up(frame):
@@ -309,21 +328,25 @@ def tooltip_up(frame):
 
 
 def on_spiderman(frame):
-    """Duelists tab, and Spider-Man under the cursor: the game's tooltip names SPIDER-MAN, or the cursor ring is inside the top-left
-    portrait slot and that slot looks like Spider-Man (red). Either alone is enough; the tooltip does not depend on finding the ring."""
+    """Duelists tab, and Spider-Man under the cursor, with the cursor ring FOUND: either the game's tooltip names SPIDER-MAN and sits where
+    it is drawn relative to that ring (a tooltip can linger after the cursor has moved, so on its own it proves nothing), or the ring is
+    inside the top-left portrait slot and that slot looks like Spider-Man (red). The pad layer supplies a frame taken after the cursor settled."""
     lk = look(frame)
     if lk.screen != "hero_select":
         return Proof(False, f"the screen is {lk.screen}, not hero_select")
     tab = hero_tab(frame)
     if tab != "duelists":
         return Proof(False, f"the hero tab is {tab}, not duelists")
-    tip = tooltip_spiderman(frame)
+    if lk.cursor is None:
+        return Proof(False, "the cursor ring was not found")
+    tip, at = tooltip_at(frame)
     if tip >= TOOLTIP_MATCH:
-        return Proof(True, f"the game's tooltip names SPIDER-MAN (match {tip:.2f})")
+        if abs(at[0] - (lk.cursor[0] + TIP_DX)) > TIP_TOL or abs(at[1] - (lk.cursor[1] + TIP_DY)) > TIP_TOL:
+            return Proof(False, f"the tooltip names SPIDER-MAN but sits at ({at[0]},{at[1]}), which does not fit the cursor at "
+                                f"({lk.cursor[0]:.0f},{lk.cursor[1]:.0f}): a stale tooltip or two cursors")
+        return Proof(True, f"the game's tooltip names SPIDER-MAN (match {tip:.2f}) beside the cursor at ({lk.cursor[0]:.0f},{lk.cursor[1]:.0f})")
     if tooltip_up(frame):  # the game names a hero, and it is not Spider-Man: whatever the ring and the colours say, it is not him
         return Proof(False, f"a tooltip is up and does not name SPIDER-MAN (match {tip:.2f})")
-    if lk.cursor is None:
-        return Proof(False, "the cursor ring was not found, and no tooltip names SPIDER-MAN")
     if not SPIDER_SLOT.contains(lk.cursor):
         return Proof(False, f"cursor at ({lk.cursor[0]:.0f},{lk.cursor[1]:.0f}) is not on the Spider-Man portrait")
     red = _red_hue(_box(small(frame), "slot"))
@@ -337,30 +360,42 @@ def hero_is_spiderman(frame):
     return _red_hue(_box(small(frame), "hud_hero")) >= HUD_RED
 
 
-def plaza_view(frame):
-    """The plaza with the Luna Snow bot ahead: an enemy box (L3's green finder, on the NATIVE frame) of a plausible size in the
-    middle of the view. The spawn room has none; its green door does make a box, but at the left edge, which is excluded."""
-    from perception.outline import find_enemies
-    h, w = frame.shape[:2]
-    for d in find_enemies(frame, scale=w / 1280.0):
-        x1, y1, x2, y2 = d.bbox
-        if (PLAZA_BOT_H[0] <= (y2 - y1) / h <= PLAZA_BOT_H[1] and PLAZA_BOT_X[0] <= (x1 + x2) / 2 / w <= PLAZA_BOT_X[1]
-                and PLAZA_BOT_Y[0] <= (y1 + y2) / 2 / h <= PLAZA_BOT_Y[1]):
-            return True
-    return False
+def _lime(s):
+    """Mask (uint8) of the spawn room's lime glass door in a 1280x720 frame's upper 70%, small holes closed."""
+    hsv = cv2.cvtColor(s[:504], cv2.COLOR_BGR2HSV)
+    H, S, V = hsv[..., 0], hsv[..., 1], hsv[..., 2]
+    m = ((H >= LIME["h"][0]) & (H <= LIME["h"][1]) & (S > LIME["s"]) & (V > LIME["v"])).astype(np.uint8)
+    return cv2.morphologyEx(m, cv2.MORPH_CLOSE, np.ones((7, 7), np.uint8))
 
 
 def door(frame):
-    """Centre x (0-1 of the frame width) of the biggest tall green panel in the upper part of the view, or None: the spawn room's
-    green door. The HP bar, the fps readout and the frame's lower third are left out."""
-    s = small(frame)[:504]
-    hsv = cv2.cvtColor(s, cv2.COLOR_BGR2HSV)
-    H, S, V = hsv[..., 0], hsv[..., 1], hsv[..., 2]
-    m = ((H >= 55) & (H <= 90) & (S > 60) & (V > 90)).astype(np.uint8)
-    m[:130, 1180:] = 0
-    n, _, st, _ = cv2.connectedComponentsWithStats(m, connectivity=8)
-    tall = [(st[i, 4], st[i, 0] + st[i, 2] / 2) for i in range(1, n) if st[i, 3] >= DOOR_H and st[i, 4] >= DOOR_MIN_PX]
-    return float(max(tall)[1] / 1280.0) if tall else None
+    """Centre x (0-1 of the width) of the biggest tall lime blob in the upper part of the view, or None: the spawn room's glass door.
+    The plaza has none that big (at most 1.7k px on tagrun0, the door needs 3k); dead ahead it is 76k px."""
+    n, _, st, cen = cv2.connectedComponentsWithStats(_lime(small(frame)), connectivity=8)
+    blobs = [(st[i, 4], cen[i][0]) for i in range(1, n) if st[i, 3] >= DOOR_H and st[i, 4] >= DOOR_MIN_PX]
+    return float(max(blobs)[1] / 1280.0) if blobs else None
+
+
+def plaza_view(frame):
+    """The plaza with the Luna Snow bot ahead, in the open: an enemy box (L3's green finder, on the NATIVE frame) of a plausible size in the
+    middle of the view, that is not the door. Facing the door from inside, the bot shows THROUGH its glass and the glow makes boxes of its
+    own (re6), so a box counts only if lime is not all round it and the door does not fill the view."""
+    from perception.outline import find_enemies
+    lime = _lime(small(frame))
+    if lime.mean() >= PLAZA_LIME_MAX:
+        return False
+    h, w = frame.shape[:2]
+    for d in find_enemies(frame, scale=w / 1280.0):
+        x1, y1, x2, y2 = d.bbox
+        if not (PLAZA_BOT_H[0] <= (y2 - y1) / h <= PLAZA_BOT_H[1] and PLAZA_BOT_X[0] <= (x1 + x2) / 2 / w <= PLAZA_BOT_X[1]
+                and PLAZA_BOT_Y[0] <= (y1 + y2) / 2 / h <= PLAZA_BOT_Y[1]):
+            continue
+        k, pad = 1280.0 / w, 0.25
+        bw, bh = (x2 - x1) * k, (y2 - y1) * k
+        ring = lime[max(0, int(y1 * k - pad * bh)):int(y2 * k + pad * bh), max(0, int(x1 * k - pad * bw)):int(x2 * k + pad * bw)]
+        if ring.size and ring.mean() < PLAZA_BOX_LIME:
+            return True
+    return False
 
 
 def describe(frame):
@@ -373,8 +408,8 @@ def describe(frame):
     if lk.screen == "in_range":
         dr = door(frame)
         return out + [f"plaza with the bot ahead: {'yes' if plaza_view(frame) else 'no'}",
-                      f"green door: {'not in view' if dr is None else f'centre x {dr:.2f} of the width'}",
-                      f"would walk toward the door (camera steered from the frames) until two frames show the plaza, for at most "
+                      f"glass door: {'not in view' if dr is None else f'centre x {dr:.2f} of the width'}",
+                      f"would turn to the door and walk to it (camera steered from the frames; a look-around when none is in view) until two frames show the plaza, for at most "
                       f"{ARRIVE_S:.0f} s, attack once, then check the HUD hero is Spider-Man; exit 1 if the plaza is not confirmed"]
     steps = {"lobby": (PRACTICE_TAB, on_practice_tab, "A opens the PRACTICE panel"),
              "practice_panel": (RANGE_TILE, on_practice_range_tile, "A loads hero select (about 12 s)"),
@@ -388,7 +423,7 @@ def describe(frame):
         n = RB_PRESSES.get(tab)
         out.append("would stop: the tab is not recognised" if n is None else
                    f"would press RB {n}x to reach duelists" if n else "already on duelists")
-    if lk.cursor is None and not (lk.screen == "hero_select" and tooltip_spiderman(frame) >= TOOLTIP_MATCH):
+    if lk.cursor is None:
         out.append(f"would jiggle the stick to find the cursor (at most {MAX_MISSES} tries), then stop")
         return out
     inside = lk.cursor is not None and zone.contains(lk.cursor)
@@ -406,64 +441,135 @@ SPEED, DEADBAND_S = 700.0, 0.035           # px/s at full stick (1280x720), and 
 ALLOWED = {"lobby": {"A"}, "practice_panel": {"A"}, "hero_select": {"A", "RB", "X"}, "in_range": {"RT"}}
 
 
-class Live:
-    """dxcam + one virtual pad held open for the whole run. Built only when input is about to be sent."""
+MAX_PROOF_AGE_S = 0.3   # a proof frame may be this old when the pad is written
+STICK_OK = ("lobby", "practice_panel", "hero_select", "in_range")   # the screens a stick may move on; "unknown" sends nothing, sticks included
 
-    def __init__(self, cap, first_frame, sleep=time.sleep, settle_s=3.0):
+
+class Live:
+    """A capture path and ONE virtual pad held open for the whole run. Built only when input is about to be sent.
+
+    This is the lowest layer that touches the pad, so the rules are enforced here, not left to the callers:
+
+    - `frame()` is always the CURRENT screen, timestamped (`frame_t`). dxcam delivers a frame only when the screen changes, so a static menu
+      gives none, and none is not "unchanged" (a live review got X sent 22 s after the frame that proved it). It falls back to GDI, which
+      reads the screen as it is now, and if neither can produce a frame it raises: fail closed. An older frame is never handed back.
+    - a stick moves only on a screen in STICK_OK; a button only on a screen ALLOWED lists for it, and `tap` grabs its OWN frame at the
+      moment of the press, checks the screen is the one that was proven, re-runs the proof on it, and refuses one older than
+      MAX_PROOF_AGE_S when the pad is written. `settled_t` says when the last input finished and the screen had settled; no proof
+      frame is older than that.
+    - every hold ends in a `finally`: an exception or Ctrl-C can never leave a button or a stick held. `release_all` zeroes the whole pad.
+    """
+
+    def __init__(self, cap, first_frame=None, sleep=time.sleep, settle_s=3.0, gdi=None, clock=time.perf_counter):
         import vgamepad as vg
-        self.sleep, self.vg, self.cap, self.last = sleep, vg, cap, first_frame
+        self.sleep, self.vg, self.cap, self.clock, self._gdi = sleep, vg, cap, clock, gdi
+        self.frame_t, self.settled_t = clock(), -math.inf
         self.pad = vg.VX360Gamepad()
-        self.sleep(settle_s)  # Windows and the game enumerate the pad, and show their banner
+        try:
+            self.sleep(settle_s)  # Windows and the game enumerate the pad, and show their banner
+        finally:
+            self.release_all()
+        self.settled_t = self.clock()
 
     def now(self):
-        return time.perf_counter()
+        return self.clock()
 
-    def frame(self, timeout=0.5):
-        end = self.now() + timeout
+    def gdi(self):
+        if self._gdi is None:
+            from capture import Capture
+            self._gdi = Capture("gdi")
+        return self._gdi
+
+    def frame(self, timeout=0.15):
+        """The screen as it is now. Sets `frame_t` to when this call began, so a frame is never younger than it says."""
+        t0 = self.clock()
         while True:
-            f = self.cap.grab()
+            f = self.cap.grab() if self.cap is not None else None
             if f is not None:
-                self.last = f
+                self.frame_t = t0
                 return f
-            if self.now() > end:
-                return self.last  # a static screen delivers no new frame: the last one is still the truth
+            if self.clock() - t0 > timeout:
+                break
             self.sleep(0.005)
+        try:
+            f = self.gdi().grab()  # the screen right now, changed or not
+        except Exception as e:  # noqa: BLE001 - any capture failure means no proof
+            raise Refuse(f"no current frame from the display ({e!r}); nothing sent") from None
+        if f is None:
+            raise Refuse("no current frame from the display; nothing sent")
+        self.frame_t = t0
+        return f
+
+    def release_all(self):
+        """Every button, trigger and stick to neutral. Safe to call at any time and more than once."""
+        self.pad.reset()
+        self.pad.update()
+
+    def _gate_stick(self):
+        f = self.frame()
+        screen = classify(f)
+        if screen not in STICK_OK:
+            raise Refuse(f"the screen is {screen}; no stick sent", f)
 
     def stick(self, x, y, secs):
-        self.pad.left_joystick_float(x, y)
-        self.pad.update()
-        self.sleep(secs)
-        self.pad.left_joystick_float(0.0, 0.0)
-        self.pad.update()
+        self._gate_stick()
+        try:
+            self.pad.left_joystick_float(x, y)
+            self.pad.update()
+            self.sleep(secs)
+        finally:
+            self.release_all()
         self.sleep(0.25)
+        self.settled_t = self.clock()
 
     def rstick(self, x, y, secs):
-        self.pad.right_joystick_float(x, y)
-        self.pad.update()
-        self.sleep(secs)
-        self.pad.right_joystick_float(0.0, 0.0)
-        self.pad.update()
+        self._gate_stick()
+        try:
+            self.pad.right_joystick_float(x, y)
+            self.pad.update()
+            self.sleep(secs)
+        finally:
+            self.release_all()
         self.sleep(0.15)
+        self.settled_t = self.clock()
 
-    def tap(self, button):
+    def tap(self, button, screen=None, proof_fn=None):
         b = self.vg.XUSB_BUTTON
         codes = {"A": b.XUSB_GAMEPAD_A, "X": b.XUSB_GAMEPAD_X, "RB": b.XUSB_GAMEPAD_RIGHT_SHOULDER}
-        if button == "RT":
-            self.pad.right_trigger_float(1.0)
-            self.pad.update()
-            self.sleep(0.15)
-            self.pad.right_trigger_float(0.0)
-        else:
-            self.pad.press_button(button=codes[button])
-            self.pad.update()
-            self.sleep(0.12)
-            self.pad.release_button(button=codes[button])
-        self.pad.update()
+        if button != "RT" and button not in codes:
+            raise KeyError(button)
+        f = self.frame()                      # the screen NOW, not the one that was proven a moment ago
+        now_screen = classify(f)
+        if screen is not None and now_screen != screen:
+            raise Refuse(f"the screen changed under the proof: proven on {screen}, now {now_screen}; {button} not sent", f)
+        if button not in ALLOWED.get(now_screen, ()):
+            raise Refuse(f"{button} is not allowed on screen {now_screen}", f)
+        if button == "A":
+            proof = proof_fn(f) if proof_fn else Proof(False, "no proof was supplied")
+            if not proof.ok:
+                raise Refuse(f"no proof for A at the moment of the press: {proof.reason}", f)
+        if self.frame_t < self.settled_t:
+            raise Refuse(f"the proof frame predates the last input's settling; {button} not sent", f)
+        age = self.clock() - self.frame_t
+        if age > MAX_PROOF_AGE_S:
+            raise Refuse(f"the proof is {age:.2f} s old (limit {MAX_PROOF_AGE_S} s); {button} not sent", f)
+        try:
+            if button == "RT":
+                self.pad.right_trigger_float(1.0)
+                self.pad.update()
+                self.sleep(0.15)
+            else:
+                self.pad.press_button(button=codes[button])
+                self.pad.update()
+                self.sleep(0.12)
+        finally:
+            self.release_all()
         self.sleep(0.5)
+        self.settled_t = self.clock()
 
 
 class Safe:
-    """Everything the flow sends goes through here: the screen must allow the button, and A needs a proof."""
+    """Everything the flow sends goes through here: the screen must allow the button, and A needs a proof. `Live` re-checks all of it at the pad."""
 
     def __init__(self, io, log=print):
         self.io, self.log = io, log
@@ -471,11 +577,28 @@ class Safe:
     def frame(self):
         return self.io.frame()
 
+    def now(self):
+        return self.io.now()
+
+    def sleep(self, s):
+        self.io.sleep(s)
+
+    def _gate_stick(self):
+        f = self.io.frame()
+        screen = classify(f)
+        if screen not in STICK_OK:
+            raise Refuse(f"the screen is {screen}; no stick sent", f)
+
     def stick(self, x, y, secs):
+        self._gate_stick()
         self.io.stick(x, y, secs)
 
+    def rstick(self, x, y, secs):
+        self._gate_stick()
+        self.io.rstick(x, y, secs)
+
     def press(self, button, proof_fn=None):
-        f = self.io.frame()  # fresh, and re-checked right before the press
+        f = self.io.frame()  # current, and re-taken by the pad layer at the press
         screen = classify(f)
         if button not in ALLOWED.get(screen, ()):
             raise Refuse(f"{button} is not allowed on screen {screen}", f)
@@ -486,7 +609,7 @@ class Safe:
             self.log(f"reenter: A ({proof.reason})")
         else:
             self.log(f"reenter: {button}")
-        self.io.tap(button)
+        self.io.tap(button, screen=screen, proof_fn=proof_fn)
 
 
 class Reach:
@@ -542,7 +665,7 @@ def steer(io, zone, locate=None, done=None):
             misses, prev = misses + 1, None
             if misses > MAX_MISSES:
                 raise Refuse("the cursor ring was not found", f)
-            io.stick(-1.0 if misses % 2 else 0.0, 0.0 if misses % 2 else 1.0, 0.12)
+            io.stick(-1.0 if misses % 2 else 0.0, 0.0 if misses % 2 else 1.0, 0.12)   # (through Safe: an unknown screen sends nothing)
             continue
         if prev:
             axis, sign, secs, before = prev
@@ -581,7 +704,7 @@ def arrive(io, safe):
     when two frames in a row show the plaza (plaza_view); the budget is ARRIVE_S, and a run that cannot confirm exits 1 rather
     than leave the player where the idle drop fires."""
     def look():
-        f = io.frame()
+        f = safe.frame()
         if not in_range(small(f)):
             raise Refuse("the range HUD is gone", f)
         if idle_warning(small(f)):
@@ -594,19 +717,22 @@ def arrive(io, safe):
             plaza += 1
             if plaza >= 2:
                 break
-            io.sleep(0.15)  # a second look, standing still, before believing it
+            safe.sleep(0.15)  # a second look, standing still, before believing it
             spent += 0.15
             f = look()
             continue
         plaza = 0
         x = door(f)
-        if x is not None and abs(x - 0.5) > DOOR_TOL:  # the door is off to a side: turn to it first, no walking
+        if x is None:  # nothing to walk toward (a wall, the plaza with no bot in view): look around, do not walk blind
+            safe.rstick(YAW_STICK, 0.0, SWEEP_S)
+            spent += SWEEP_S + 0.15
+        elif abs(x - 0.5) > DOOR_TOL:  # the door is off to a side: turn to it first, no walking
             deg = math.degrees(math.atan((x - 0.5) * 1280.0 / FOCAL))
             secs = min(0.6, abs(deg) / YAW_DEG_S)
-            io.rstick(math.copysign(YAW_STICK, deg), 0.0, secs)
+            safe.rstick(math.copysign(YAW_STICK, deg), 0.0, secs)
             spent += secs + 0.15
         else:
-            io.stick(0.0, 1.0, WALK_CHUNK_S)
+            safe.stick(0.0, 1.0, WALK_CHUNK_S)
             spent += WALK_CHUNK_S + 0.25
         f = look()
     else:
@@ -633,11 +759,11 @@ def run(io, log=print):
             arrive(io, safe)
             return
         if screen == "lobby":
-            steer(io, PRACTICE_TAB)
+            steer(safe, PRACTICE_TAB)
             safe.press("A", on_practice_tab)
             wait_for(io, {"practice_panel"}, 10)
         elif screen == "practice_panel":
-            steer(io, RANGE_TILE)
+            steer(safe, RANGE_TILE)
             safe.press("A", on_practice_range_tile)
             wait_for(io, {"hero_select", "in_range"}, 40)  # loading screens between are unknown: nothing is sent
         elif screen == "hero_select":
@@ -649,7 +775,7 @@ def run(io, log=print):
             f = io.frame()
             if hero_tab(f) != "duelists":
                 raise Refuse(f"the hero tab is {hero_tab(f)} after RB, not duelists", f)
-            steer(io, SPIDER_SLOT, done=lambda fr: tooltip_spiderman(fr) >= TOOLTIP_MATCH)
+            steer(safe, SPIDER_SLOT, done=lambda fr: on_spiderman(fr).ok)   # the tooltip beside the ring counts; the tooltip alone does not
             safe.press("A", on_spiderman)
             safe.press("X")  # hero select only: Safe re-classifies the frame first
             wait_for(io, {"in_range"}, 40)
@@ -669,10 +795,35 @@ def _dxcam():
 
 
 def _first_frame(cap, timeout=5.0):
-    end, f = time.perf_counter() + timeout, None
+    """The screen now: dxcam if it delivers one (it does not on a static menu), else GDI, else None (and the run stops before any pad opens)."""
+    end, f = time.perf_counter() + timeout / 5, None
     while f is None and time.perf_counter() < end:
         f = cap.grab()
+    if f is None:
+        try:
+            from capture import Capture
+            f = Capture("gdi").grab()
+        except Exception:  # noqa: BLE001 - no frame means no run
+            f = None
     return f
+
+
+def _release(io):
+    """Neutral, whatever happened. Never raises: this runs in a finally and at exit."""
+    try:
+        fn = getattr(io, "release_all", None)
+        if fn:
+            fn()
+    except Exception as e:  # noqa: BLE001
+        print(f"reenter: WARNING: could not release the pad: {e!r}", file=sys.stderr)
+
+
+def _last(io):
+    """A frame for the refuse picture, or a black one if the display gives none: the report must not itself fail."""
+    try:
+        return io.frame()
+    except Exception:  # noqa: BLE001
+        return np.zeros((720, 1280, 3), np.uint8)
 
 
 def main(argv=None, capture=_dxcam, live=Live):
@@ -705,11 +856,20 @@ def main(argv=None, capture=_dxcam, live=Live):
         print(f"reenter: STOP: {why}; no pad opened, nothing sent")
         return 1
     io = live(cap, first)
+    release = getattr(io, "release_all", None)
+    if release:
+        atexit.register(_release, io)       # one unconditional neutral on every exit of the process: a return, an exception, sys.exit
+        try:
+            signal.signal(signal.SIGTERM, lambda *_: sys.exit(143))   # a kill is an exit too
+        except (ValueError, OSError):       # not the main thread, or no such signal here
+            pass
     try:
         run(io)
     except Refuse as r:
-        print(f"reenter: STOP: {r.reason} (frame: {save(r.frame if r.frame is not None else io.frame(), 'refuse')})")
+        print(f"reenter: STOP: {r.reason} (frame: {save(r.frame if r.frame is not None else _last(io), 'refuse')})")
         return 1
+    finally:
+        _release(io)
     print("reenter: in the Practice Range as Spider-Man")
     return 0
 

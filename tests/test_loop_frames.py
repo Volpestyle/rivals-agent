@@ -138,3 +138,26 @@ def test_the_dry_run_prints_tick_times_and_the_intents_chosen(capsys):
     out = json.loads(capsys.readouterr().out)
     assert out["ticks"] == 40 and out["stop"] == "source_end" and set(out["tick_ms"]) == {"p50", "p95", "max"} and out["intents"]
     assert np.isfinite(out["aim_ms"]["p95"]) and out["brain"] == "scripted"
+
+
+@needs_tagrun0
+def test_see_gets_a_read_only_view_of_the_real_frame_and_cannot_write_into_the_finders_pixels():
+    calls = []
+
+    class Brain:
+        def see(self, frame, t):
+            calls.append((frame.flags.writeable, frame.shape, t))
+            try:
+                frame[0, 0, 0] = 255
+            except ValueError:
+                calls.append("write refused")
+
+        def __call__(self, state, memory):
+            from agent.intents import Idle
+            return Idle()
+
+    loop = Loop(RunSource(TAGRUN0, limit=12), FakePad(), default_perception(), Brain(), warmup=False)
+    loop.run()
+    seen = [c for c in calls if c != "write refused"]
+    assert seen and all(w is False and shape == (1440, 2560, 3) for w, shape, _ in seen)
+    assert calls.count("write refused") == len(seen)

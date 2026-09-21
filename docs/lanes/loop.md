@@ -8,7 +8,7 @@ frames with a fake pad and, on the PC, on dxcam and L4's `Live`. Stdlib only at 
 ```sh
 uv run --group perception python -m agent.loop --dry data/l1/tagrun0 [--threaded] [--out DIR] [--limit N]   # offline, fake pad
 python -m agent.loop --live --cooldowns off|normal --run NAME [--brain jev] [--max-s 300]   # the PC, desktop session, game in the range (untested)
-uv run pytest tests/test_loop.py                                       # 46 stdlib tests
+uv run pytest tests/test_loop.py                                       # 62 stdlib tests
 uv run --group perception pytest tests/test_loop_frames.py             # 8 tests on real frames (tagrun0 needs data/)
 ```
 
@@ -99,9 +99,31 @@ breakages of `agent/loop.py` were each caught by `tests/test_loop.py`).
 | Only `A X LB RB` leave `clean`; anything else (START, BACK, d-pad, stick clicks, B, Y) raises `ForbiddenInput` and stops the run | `clean` | `test_a_forbidden_button_never_reaches_the_pad` |
 | Live refusing a send (`RangeLost`) or a stalled capture (no new frame for 0.25 s) ends the run released | `run`, `LiveIO.next` | `test_live_refusing_a_send...`, `test_a_stalled_capture...` |
 | A decision that stops arriving stands the controller down; a dead worker stops the run | `_tick` | `test_a_decision_that_stops_arriving...`, `test_a_worker_that_dies...` |
-| BACK is pressed only by `pad.scoreboard`, and only after a completed run | `_finish` | `test_a_completed_run_holds_back_once_and_keeps_a_slot_for_the_reading`, `test_live_scoreboard_presses_nothing_when_the_range_is_not_confirmed` |
+| BACK is pressed only by `Live.scoreboard`, and only after a completed run | `_finish`, `Live` | `test_a_completed_run_holds_back_once_and_keeps_a_slot_for_the_reading`, the scoreboard rows below |
 
-Two guards check every send: the loop's own on the tick's frame, and `Live.send`'s on the frame it holds.
+Two guards check every send: the loop's own on the tick's frame, and `Live.send`'s at the write.
+
+**Input safety at the pad (VUH-1325).** L4's `Live` is the lowest layer over the pad and the only door to it, so every pad rule is
+enforced there and none is copied into the loop: the whitelist, freshness checked at commit (after every proof, on a frame stamped when its
+grab started), a neutral-deadline **lease** (Live's own watchdog on the real clock, `LEASE_S` 0.25 s, renewed by every proven send, which the
+loop makes every reflex tick), and the scoreboard's recognised transitions. `LiveIO` is a thin adapter that reaches only `fresh`, `send`,
+`release`, `scoreboard` and `close`; it has no thread of its own. `main` calls `Live.close()` on every way out once the pad is open (a
+brain or log that fails to build included), which ends the watchdog; a closed `Live` refuses input, and nothing on the exit path depends on
+a send succeeding. The tests drive the real `controller.Live` with a fake pad and capture:
+
+| Defect | Now | Test |
+|---|---|---|
+| `fresh()`'s timeout was only checked after a blocking grab returned, so a blocked grab left X held past `max_s` | Live's lease returns the pad to neutral while the loop is still stuck in the grab; the late frame is then stale (stamped at grab start) and stops the run | `test_a_blocked_grab_cannot_leave_x_held_lives_lease_releases_the_pad_while_the_loop_is_stuck`, `test_the_loop_has_no_lease_thread_of_its_own_to_depend_on`, `test_every_reflex_tick_renews_the_lease_so_a_running_loop_is_not_cut_off` |
+| a press could land on a 2 s old proof | Live re-proves at the write on a new frame; the lobby there refuses and releases | `test_a_press_on_a_two_second_old_proof_is_refused_at_the_write` |
+| the loop reached `live.pad` / `live.vg` for the scoreboard, and BACK stayed down the full second on lobby frames, which came back as "the board" | `Live.scoreboard(hold_s)`: BACK only on a proven range frame, kept down only while each new frame is the board, released at once on anything else (RangeLost), the range required back after. The loop stores a frame only if its own recognizer also calls it a board, and asks for none without one | `test_a_completed_live_run_takes_the_board_only_through_recognised_transitions`, `test_a_lobby_or_black_frame_under_back_releases_it_at_once_and_is_never_the_board`, `test_the_loop_stores_a_board_only_if_its_own_recognizer_agrees`, `test_the_loop_never_reaches_past_lives_door` |
+| cleanup only released, leaving Live's watchdog and pad alive | `LiveIO.close()` is `Live.close()`; `main` closes in a `finally` that covers building the loop | `test_closing_ends_lives_watchdog_and_a_send_after_it_is_harmless_to_the_exit`, `test_main_closes_live_even_when_the_brain_cannot_be_built` |
+
+The brain's optional `see(frame, t)` hook (rivals-policy: a learned brain that reads pixels) is called in `Decider._decide`, on the decision worker,
+before `decide`, with a **read-only view** of the frame; the loop keeps no reference to the frame past the tick, and `see` must copy what it needs.
+A slow or blocked `see` delays decisions only (offers are dropped and counted, the intent goes stale to `Idle`); it never holds a reflex step; an
+exception in it stops the run with the pad released. Inline (offline replay) it runs in the tick, which is why replays are single-purpose. Tests:
+`test_see_is_called_once_per_decision_with_the_frame_and_its_time_on_the_worker_thread`, `test_a_slow_or_blocked_see_never_holds_a_reflex_step`,
+`test_an_exception_in_see_stops_the_run_with_the_pad_released`, `test_the_loop_keeps_no_reference_to_the_frame_past_the_tick`.
 
 **Keep-alive.** Only a move or an attack resets the range's ~10 minute inactivity timer. The loop tracks the last tick whose
 pad moved the left stick, pulled a trigger or pressed X/RB/LB (`active`); after `keepalive_s` (180) without one it lays
@@ -110,10 +132,11 @@ It never blocks and never touches the right stick, so the controller's camera mo
 pad connects is swallowed by the device switch, so the run opens with that sequence (`warmup`).
 
 **Scoreboard.** At the end of a run that finished (`max_time`, `source_end`; never after a lost range, the idle banner, an
-error or Ctrl-C) the loop calls `pad.scoreboard()`: confirm the range, press BACK, wait 1.0 s, take the frame, release.
-`record.in_range` is **false on the scoreboard** (checked on `docs/evidence/l4/scoreboard-back-native.jpg`), so the range is
-confirmed before the press and never during the hold, and the next tick must see the HUD again. The frame is the native
-2560 wide capture, saved lossless (`scoreboard-end.png`), because `perception.scoreboard` refuses frames under 1920 wide.
+error or Ctrl-C) the loop calls `Live.scoreboard(1.0)` through `LiveIO`: range proven, BACK down, every new frame must be the board
+(`perception.scoreboard.is_scoreboard`) or, while it fades in, still carry the range banner, then release and the range must come back.
+`record.in_range` is **false on the scoreboard** (checked on `docs/evidence/l4/scoreboard-back-native.jpg`). The frame is the native
+2560 wide capture, saved lossless (`scoreboard-end.png`), because `perception.scoreboard` refuses frames under 1920 wide. A refused hold is
+recorded as `{"skipped": "range_lost" | "not_a_scoreboard" | "no_board_check" | "scoreboard_refused: ..."}` with no file.
 `meta.json` holds `{"t", "file", "size", "parsed"}`: `parsed` is `read_scoreboard`'s dict (a `None` value means unread,
 never zero; digits 2, 6, 7, 9 are not learned yet) or `null` with no reader, or `{"error": ...}` if the reader raised. A
 reader failure never breaks the exit. `--scoreboard-every N` repeats the hold every N s (idles the controller for about a
@@ -123,7 +146,8 @@ second each time; unused live).
 
 Every run writes `data/l1/<run>/` in the shape `agent.demos` loads with no manifest, so each run is a labelled
 demonstration: `frames.jsonl` (a row per reflex tick), native `NNNNNN.jpg` at `--save-fps` (10) on a writer thread,
-`scoreboard-*.png`, `meta.json` (with `cooldowns`), and `manifest.jsonl` only when the run had HUD gaps.
+`scoreboard-*.png`, `meta.json` (with `cooldowns`, and `patch`: the kit's current patch read from `docs/spiderman-kit.md`; either key is
+omitted when unknown, never written as a guess), and `manifest.jsonl` only when the run had HUD gaps.
 
 ```jsonc
 {"t": 12.3456, "pad": {"lx": 0.0, "ly": 1.0, "rx": 0.2, "ry": 0.0, "lt": 0.0, "rt": 0.0, "buttons": []},   // the pad actually sent
@@ -153,11 +177,6 @@ segments (`no_hud` ends, `hud_returned` starts), so no training window crosses o
 
 ## Interfaces that did not fit (for the lead to route)
 
-- **L4's `Live` has no BACK.** `Live._apply`'s button table stops at A B X Y LB RB LS RS, so `send(buttons=("BACK",))` raises
-  `KeyError`. `LiveIO.scoreboard` therefore presses BACK on `live.pad` through `live.vg`, after a guarded `live.send(**NEUTRAL)`. That
-  is the one place the loop reaches into `Live`. One entry in `Live._apply` (and a guarded path for it) removes it.
-- `Live.fresh()` returns the last frame again after its timeout. The loop skips a repeated `t` and `LiveIO.next` stops the run
-  when the newest frame is over 0.25 s old.
 - `Live.keepalive()` blocks for 1.25 s, so it is not used; the loop overlays the same sequence instead.
 - `tests/test_scoreboard.py::test_extra_range_frames_when_l4_delivers_them` fails on `docs/evidence/l4/scoreboard/` frames
   (rivals-hud's, in flight); it is not affected by this lane.

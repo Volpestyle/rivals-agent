@@ -26,14 +26,14 @@ BOT = Detection(ENEMY, (1180.0, 570.0, 1380.0, 870.0), 0.9)          # 300 px ta
 class F:
     """What a stub frame shows: the range HUD (ok), the idle banner, the crop's boxes, the whole-frame boxes."""
 
-    def __init__(self, ok=True, idle=False, dets=(), wide=()):
-        self.ok, self.idle, self.dets, self.wide = ok, idle, list(dets), list(wide)
+    def __init__(self, ok=True, idle=False, dets=(), wide=(), board=False):
+        self.ok, self.idle, self.dets, self.wide, self.board = ok, idle, list(dets), list(wide), board
 
 
 def readers(**hud):
     return Perception(in_range=lambda f: f.ok, idle=lambda f: f.idle, size=lambda f: SIZE, aim=lambda f: list(f.dets),
                       wide=lambda f: list(f.wide), hud=lambda f: {"hp": 250, "max_hp": 250, "webs": 5, **hud},
-                      tag=lambda f, b: None)
+                      tag=lambda f, b: None, is_board=lambda f: bool(getattr(f, "board", False)) or f in ("SCOREBOARD", "B"))
 
 
 class Frames:
@@ -266,54 +266,206 @@ def test_the_scoreboard_can_be_turned_off_and_can_repeat():
     assert [k for k, _ in pad.history].count("scoreboard") == 3 and len(out["scoreboards"]) == 3
 
 
-class Lens:
-    """A Live double: a frame stream whose HUD test is `ok`, a pad that logs, and Live.send's refusal on a lobby frame."""
+class Screen:
+    """A capture over a game that is only a name on screen: `screen` is what grab() returns; `blocked` (an Event) makes grab() hang, a
+    stuck dxcam; `after_back` is what shows while BACK is down (the pad's last report says so), one entry per grab, the last repeating."""
 
-    def __init__(self, ok):
-        self.events, self.ok, self.n, self.frame_t = [], ok, 0, 0.0
-        self.pad = SimpleNamespace(press_button=lambda button: self.events.append(f"press {button}"),
-                                   update=lambda: self.events.append("update"))
-        self.vg = SimpleNamespace(XUSB_BUTTON=SimpleNamespace(XUSB_GAMEPAD_BACK="BACK"))
+    def __init__(self, pad, screen="range", after_back=("board",)):
+        self.pad, self.screen, self.after_back, self.blocked, self.held = pad, screen, list(after_back), None, 0
 
-    def fresh(self):
-        self.n += 1
-        self.frame_t = time.perf_counter()
-        return F(ok=self.ok(self.n))
-
-    def send(self, **changes):
-        self.events.append("send")
-        if not self.ok(self.n):
-            self.release()
-            raise RangeLost("range HUD lost; input released")
-
-    def release(self):
-        self.events.append("release")
+    def grab(self):
+        if self.blocked is not None:
+            self.blocked.wait(10.0)
+        if self.pad.reports and "BACK" in self.pad.reports[-1][0]:
+            self.held += 1
+            return self.after_back[min(self.held, len(self.after_back)) - 1]
+        self.held = 0
+        return self.screen
 
 
-def test_live_scoreboard_confirms_the_range_before_the_press_and_never_during_the_hold():
-    # the scoreboard covers the HUD (in_range is False on scoreboard-back-native.jpg), so a guarded hold would abort itself
-    live = Lens(ok=lambda n: n == 0)                                   # ok until the hold's frames arrive
-    io = LiveIO(live)
-    frame = io.scoreboard(0.03)
-    assert live.events[:3] == ["send", "press BACK", "update"] and live.events[-1] == "release"
-    assert live.events.count("send") == 1 and live.n >= 1 and frame.ok is False
+class Pad:
+    """vgamepad's surface, as agent.controller.Live drives it; `reports` is every update() sent to the game."""
+
+    def __init__(self):
+        self.buttons, self.axes, self.reports = set(), {}, []
+
+    def reset(self):
+        self.buttons, self.axes = set(), {}
+
+    def press_button(self, button):
+        self.buttons.add(button)
+
+    def left_joystick_float(self, x, y):
+        self.axes["l"] = (x, y)
+
+    def right_joystick_float(self, x, y):
+        self.axes["r"] = (x, y)
+
+    def left_trigger_float(self, v):
+        self.axes["lt"] = v
+
+    def right_trigger_float(self, v):
+        self.axes["rt"] = v
+
+    def update(self):
+        self.reports.append((frozenset(self.buttons), dict(self.axes)))
+
+    def neutral(self):
+        b, a = self.reports[-1]
+        return not b and not any(a.get(k) for k in ("lt", "rt")) and a.get("l", (0, 0)) == (0, 0) and a.get("r", (0, 0)) == (0, 0)
 
 
-def test_live_scoreboard_presses_nothing_when_the_range_is_not_confirmed():
-    live = Lens(ok=lambda n: False)
+def live_io(**screen):
+    """LiveIO over L4's REAL Live (its lease, its commit-time freshness, its whitelist, its scoreboard), with a fake pad and capture."""
+    from agent.controller import Live
+    pad = Pad()
+    cap = Screen(pad, **screen)
+    live = Live(pad_factory=lambda: pad, capture=cap, settle_s=0, guard=lambda f: f == "range",
+                board_guard=lambda f: f == "board", session_guard=lambda f: f in ("range", "board"))
+    return LiveIO(live), live, cap, pad
+
+
+def held(pad):
+    return {**NEUTRAL, "ly": 1.0, "rt": 1.0, **pad}
+
+
+# --- VUH-1325 (6): the lease under the loop, and proof age at the write: both Live's, the loop's pad ---------------------------------
+def test_a_blocked_grab_cannot_leave_x_held_lives_lease_releases_the_pad_while_the_loop_is_stuck():
+    """The old loop only checked time after a synchronous grab returned: a grab that blocked left X held past max_s."""
+    from agent.controller import LEASE_S
+    io, live, cap, pad = live_io()
+    io.next()
+    io.send(held({"buttons": ("X",)}))
+    assert "X" in pad.reports[-1][0]
+    cap.blocked, after = threading.Event(), []                                       # the loop's next grab never returns
+    hung = threading.Thread(target=lambda: after.append(pytest.raises(RangeLost, io.next)), daemon=True)
+    hung.start()
+    time.sleep(LEASE_S + 0.2)
+    assert hung.is_alive() and pad.neutral()                                         # neutral by itself, the loop still stuck in the grab
+    cap.blocked.set()
+    hung.join(2.0)
+    assert after and "no new frame" in str(after[0].value)                           # and the late frame is stale: stamped when its grab began
+    io.close()
+
+
+def test_the_loop_has_no_lease_thread_of_its_own_to_depend_on():
+    import agent.loop as L
+    assert not hasattr(L, "Lease") and not hasattr(L, "SEND_MAX_AGE_S")
+    before = threading.active_count()
+    io, live, cap, pad = live_io()
+    assert threading.active_count() == before + 1                                    # Live's watchdog, and nothing of the loop's
+    io.close()
+
+
+def test_every_reflex_tick_renews_the_lease_so_a_running_loop_is_not_cut_off():
+    from agent.controller import LEASE_S
+    io, live, cap, pad = live_io()
+    t_end = time.perf_counter() + LEASE_S * 3
+    while time.perf_counter() < t_end:                                               # a loop at 60 Hz sends every tick
+        io.next()
+        io.send(held({}))
+        assert not pad.neutral()
+        time.sleep(1 / 60)
+    io.close()
+    assert pad.neutral()
+
+
+def test_a_press_on_a_two_second_old_proof_is_refused_at_the_write():
+    """VUH-1325 (6): age was compared before, not at, the commit, so a press could land on a 2 s old proof. Live re-proves on a new
+    frame at the write; if the screen is no longer the range by then, nothing is written."""
+    io, live, cap, pad = live_io()
+    io.next()
+    live.frame_t -= 2.0                                                              # the tick's frame is 2 s old at the write
+    cap.screen = "lobby"                                                             # and the screen is now the lobby (X = Quick Match)
     with pytest.raises(RangeLost):
-        LiveIO(live).scoreboard(0.03)
-    assert not any(e.startswith("press") for e in live.events)
+        io.send(held({"buttons": ("X",)}))
+    assert all("X" not in b for b, _ in pad.reports) and pad.neutral()
+    io.close()
 
 
 def test_a_stalled_capture_releases_and_stops():
-    live = Lens(ok=lambda n: True)
-    live.fresh = lambda: F()                                            # the same old frame: frame_t never advances
-    live.frame_t = time.perf_counter() - 1.0
-    io = LiveIO(live)
-    with pytest.raises(RangeLost):
+    io, live, cap, pad = live_io()
+    io.next()
+    io.send(held({}))
+    live.fresh = lambda timeout=None: live.frame                                     # the same old frame: frame_t never advances
+    live.frame_t -= 1.0
+    with pytest.raises(RangeLost, match="no new frame"):
         io.next()
-    assert live.events == ["release"]
+    assert pad.neutral()
+    io.close()
+
+
+def test_closing_ends_lives_watchdog_and_a_send_after_it_is_harmless_to_the_exit():
+    io, live, cap, pad = live_io()
+    io.next()
+    io.send(held({"buttons": ("X",)}))
+    io.close()
+    assert pad.neutral() and live._closed.is_set()
+    try:
+        io.send(held({"buttons": ("X",)}))                                           # L4: a closed Live refuses non-neutral writes
+    except Exception:                                                                # noqa: BLE001 - raising is the expected answer
+        pass
+    assert pad.neutral()
+    io.release()                                                                     # the loop's exit path may still release: harmless
+    assert pad.neutral()
+
+
+def test_main_closes_live_even_when_the_brain_cannot_be_built(monkeypatch):
+    import agent.loop as L
+    made = []
+    monkeypatch.setattr(L, "LiveIO", lambda: made.append(live_io()) or made[-1][0])
+    monkeypatch.setattr(L, "make_brain", lambda name: (_ for _ in ()).throw(RuntimeError("no JEV_KEY")))
+    monkeypatch.setattr(L, "default_perception", lambda: readers())
+    with pytest.raises(RuntimeError, match="no JEV_KEY"):
+        L.main(["--live", "--cooldowns", "off", "--brain", "jev"])
+    _, live, _, pad = made[0]
+    assert live._closed.is_set() and pad.neutral()
+
+
+# --- VUH-1325 (7): the scoreboard goes through Live's recognised transitions, never a blind hold, never the raw pad --------------------------
+def test_the_loop_never_reaches_past_lives_door():
+    import inspect
+
+    import agent.loop as L
+    src = inspect.getsource(L)
+    assert ".pad." not in src.replace("self.pad.", "") and "live.vg" not in src and "live._pad" not in src
+
+
+def board_run(tmp_path, **screen):
+    """A short live run on LiveIO over the real Live, ending in the end-of-run scoreboard. Frames are screen names here."""
+    io, live, cap, pad = live_io(**screen)
+    p = Perception(in_range=lambda f: f == "range", idle=lambda f: False, size=lambda f: SIZE, aim=lambda f: [], wide=lambda f: [],
+                   hud=lambda f: {}, tag=lambda f, b: None, is_board=lambda f: f == "board")
+    out = Loop(io, io, p, idle, warmup=False, max_s=0.3, log=RunLog(tmp_path / "run", 0, imwrite=lambda path, img: None)).run()
+    io.close()
+    return out, pad
+
+
+def test_a_completed_live_run_takes_the_board_only_through_recognised_transitions(tmp_path):
+    out, pad = board_run(tmp_path, after_back=("board",))
+    assert out["stop"] == "max_time" and out["scoreboards"][0]["file"] == "scoreboard-end.png"
+    held_back = [(b, a) for b, a in pad.reports if "BACK" in b]
+    assert held_back and all(b == {"BACK"} for b, _ in held_back) and pad.neutral()
+
+
+@pytest.mark.parametrize("screen", ["lobby", "black"])
+def test_a_lobby_or_black_frame_under_back_releases_it_at_once_and_is_never_the_board(tmp_path, screen):
+    """The reviewer's case: BACK stayed down the full second while every frame showed the lobby, and that frame came back as the board."""
+    out, pad = board_run(tmp_path, after_back=(screen,))
+    held_back = [i for i, (b, _) in enumerate(pad.reports) if "BACK" in b]
+    assert len(held_back) == 1 and not pad.reports[held_back[0] + 1][0]              # one report with BACK, released on the very next
+    assert out["scoreboards"][0]["skipped"] == "range_lost" and out["scoreboards"][0]["file"] is None
+    assert pad.neutral()
+
+
+def test_the_loop_stores_a_board_only_if_its_own_recognizer_agrees():
+    out = Loop(Frames(timeline(1.0)), FakePad(board=F(ok=False)), readers(), idle, warmup=False).run()
+    assert out["scoreboards"][0]["skipped"] == "not_a_scoreboard" and out["scoreboards"][0]["file"] is None
+    p = readers()
+    p.is_board = None                                                                # no way to tell: BACK is not even asked for
+    pad = FakePad(board=F(ok=False, board=True))
+    out = Loop(Frames(timeline(1.0)), pad, p, idle, warmup=False).run()
+    assert out["scoreboards"][0]["skipped"] == "no_board_check" and all(k != "scoreboard" for k, _ in pad.history)
 
 
 # --- two rates ---------------------------------------------------------------------------------------------------------
@@ -493,7 +645,7 @@ def test_every_detection_list_that_becomes_a_state_passes_one_tracker_under_one_
     inside, seen, states = [], [], []
 
     class Ids:
-        def update(self, dets, t):
+        def update(self, dets, t, frame=None):
             assert not inside, "the tracker was entered twice at once"
             inside.append(1)
             time.sleep(0.0002)
@@ -514,14 +666,14 @@ def test_every_detection_list_that_becomes_a_state_passes_one_tracker_under_one_
     assert any(t >= 0.5 for t, n in seen)
 
 
-def test_the_default_tracker_changes_nothing():
-    a, b = go_states(None), go_states(Ident())
-    assert a == b
-
-
-class Ident:
-    def update(self, dets, t):
-        return list(dets)
+def test_the_default_tracker_gives_every_box_a_stable_id_and_a_notracker_changes_nothing():
+    from agent.loop import NoTracker
+    plain, tracked = go_states(NoTracker()), go_states(None)
+    assert all(d["track"] is None for st in plain for d in st["detections"]) and all(not st["coasting"] for st in plain)
+    ids = {d["track"] for st in tracked for d in st["detections"]}
+    assert len(ids) == 1 and None not in ids                                     # one bot, standing still: one id for the whole run
+    strip = lambda sts: [[{**d, "track": None} for d in st["detections"]] for st in sts]      # noqa: E731
+    assert strip(plain) == strip(tracked)                                        # and nothing else about the boxes changed
 
 
 def go_states(tracker):
@@ -556,3 +708,127 @@ def test_the_regime_defaults_to_unknown_is_validated_and_a_live_run_must_name_it
     for argv in (["--live"], ["--live", "--cooldowns", "unknown"]):              # no default, and unknown is for recordings nobody watched
         with pytest.raises(SystemExit):                                          # argparse's error: nothing is opened first
             main(argv)
+
+
+# --- the brain's see(frame, t) hook (rivals-policy): a learned brain gets pixels without the decision seam carrying them ------------------
+class Seeing:
+    """A brain with the duck-typed hook: records where and with what `see` was called, then decides."""
+
+    def __init__(self, delay=0.0, fail=False, gate=None):
+        self.calls, self.delay, self.fail, self.gate = [], delay, fail, gate
+
+    def see(self, frame, t):
+        self.calls.append((threading.current_thread().name, frame, t))
+        if self.gate is not None:
+            self.gate.wait(5.0)
+        if self.fail:
+            raise Boom("see failed")
+        time.sleep(self.delay)
+
+    def __call__(self, state, memory):
+        return Idle()
+
+
+class Boom(Exception):
+    pass
+
+
+def test_see_is_called_once_per_decision_with_the_frame_and_its_time_on_the_worker_thread():
+    brain = Seeing()
+    frames = timeline(1.0)
+    loop = Loop(Frames(frames, lambda i: time.sleep(0.001)), FakePad(), readers(), brain, threaded=True, warmup=False)
+    out = loop.run()
+    assert len(brain.calls) == out["decisions"] >= 2
+    assert all(name != threading.current_thread().name for name, _, _ in brain.calls)              # never on the reflex (this) thread
+    assert all(isinstance(f, F) and t == pytest.approx(round(t * 60) / 60) for _, f, t in brain.calls)
+    inline = Seeing()
+    Loop(Frames(timeline(0.5)), FakePad(), readers(), inline, warmup=False).run()                   # unthreaded (offline): inline, deterministic
+    assert len(inline.calls) >= 1
+
+
+def test_a_slow_or_blocked_see_never_holds_a_reflex_step():
+    gate = threading.Event()
+    brain = Seeing(gate=gate)
+    pad = FakePad()
+    loop = Loop(Frames(timeline(2.0), lambda i: gate.set() if i == 120 else None), pad, readers(), brain, controller=Walker(),
+                threaded=True, warmup=False, stale_s=0.3)
+    t0 = time.perf_counter()
+    out = loop.run()
+    assert out["ticks"] == 120 and time.perf_counter() - t0 < 1.5 and out["sources"] == {"waiting": 120}   # it decided nothing, and nothing waited
+
+
+def test_an_exception_in_see_stops_the_run_with_the_pad_released():
+    pad = FakePad()
+    with pytest.raises(Boom, match="see failed"):
+        Loop(Frames(timeline(3.0), lambda i: time.sleep(0.002)), pad, readers(), Seeing(fail=True), controller=Walker(), threaded=True,
+             warmup=False).run()
+    assert pad.state == NEUTRAL and pad.history[-1] == ("release", None)
+
+
+def test_the_loop_keeps_no_reference_to_the_frame_past_the_tick():
+    import gc
+    import weakref
+
+    class Frame:
+        ok, idle, dets, wide, board = True, False, [], [], False
+
+    seen = []
+
+    class Brain(Seeing):
+        def see(self, frame, t):
+            seen.append(weakref.ref(frame))
+
+    items = [(Frame(), i / HZ) for i in range(30)]
+    refs = [weakref.ref(f) for f, _ in items]
+    loop = Loop(Frames(items), FakePad(), readers(), Brain(), warmup=False)
+    loop.run()
+    items.clear()
+    del loop
+    gc.collect()
+    assert all(r() is None for r in refs)                                                           # nothing in the loop or its Decision outlived the run
+
+
+def test_see_is_handed_a_read_only_view_of_an_array_frame_never_the_frame_itself():
+    class Arr:
+        def __init__(self):
+            self.flags = SimpleNamespace(writeable=True)
+            self.ok, self.idle, self.dets, self.wide, self.board = True, False, [], [], False
+
+        def view(self):
+            return Arr()
+
+    got = []
+
+    class Brain(Seeing):
+        def see(self, frame, t):
+            got.append((frame, frame.flags.writeable))
+
+    originals = [(Arr(), i / HZ) for i in range(20)]
+    Loop(Frames(originals), FakePad(), readers(), Brain(), warmup=False).run()
+    assert got and all(w is False and not any(f is o for o, _ in originals) for f, w in got)
+
+
+# --- provenance written into meta.json for the loader: the run's own metadata is the single authority (rivals-loader) --------------------------------
+def test_meta_json_carries_the_regime_and_the_kits_patch_and_omits_what_is_unknown(tmp_path):
+    from agent.loop import kit_patch
+    assert kit_patch() == "Season 10, Version 20260911"                              # docs/spiderman-kit.md's own words
+    log = RunLog(tmp_path / "known", save_fps=10.0, imwrite=jpeg)
+    Loop(Frames(timeline(2.0, dets=[BOT])), FakePad(), readers(), scripted.decide, log=log, warmup=False, cooldowns="normal").run()
+    meta = json.loads((tmp_path / "known" / "meta.json").read_text())
+    assert meta["cooldowns"] == "normal" and meta["patch"] == "Season 10, Version 20260911"
+    clip, = Demos.load(tmp_path / "known", fractions=(1.0, 0.0, 0.0)).clips.values()
+    assert (clip.cooldowns, clip.header["cooldowns_from"], clip.patch, clip.header["patch_from"]) == \
+        ("normal", "run_metadata", "Season 10, Version 20260911", "run_metadata")
+    unknown = RunLog(tmp_path / "unk", save_fps=10.0, imwrite=jpeg)
+    Loop(Frames(timeline(2.0, dets=[BOT])), FakePad(), readers(), scripted.decide, log=unknown, warmup=False, patch="unknown").run()
+    meta = json.loads((tmp_path / "unk" / "meta.json").read_text())
+    assert "cooldowns" not in meta and "patch" not in meta                           # an unknown value is no key: the loader gives it no basis
+    clip, = Demos.load(tmp_path / "unk", fractions=(1.0, 0.0, 0.0)).clips.values()
+    assert (clip.cooldowns, clip.header["cooldowns_from"], clip.patch, clip.header["patch_from"]) == ("unknown", "none", "unknown", "none")
+
+
+def test_an_unreadable_kit_means_an_unknown_patch_not_a_guess(tmp_path):
+    from agent.loop import kit_patch
+    assert kit_patch(tmp_path / "missing.md") is None
+    (tmp_path / "kit.md").write_text("# kit\nno patch line here\n")
+    assert kit_patch(tmp_path / "kit.md") is None
