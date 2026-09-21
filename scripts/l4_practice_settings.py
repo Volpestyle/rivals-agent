@@ -17,11 +17,8 @@ from pathlib import Path
 import cv2
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from l4_menu import OUT, Menu, Stop, match, on_pause, on_practice_settings, pause_row, small  # noqa: E402
+from l4_menu import OUT, Menu, Stop, help_is_nac, on_pause, on_practice_settings, pause_row, small  # noqa: E402
 from record import in_range  # noqa: E402
-
-HELP_BOX = (806, 130, 1210, 163)
-
 
 def title_w(frame):
     """Width in px of the help panel's title, which names the hovered row: Friendly Fire ~150, No Ability Cooldown and
@@ -29,12 +26,6 @@ def title_w(frame):
     g = cv2.cvtColor(small(frame), cv2.COLOR_BGR2GRAY)[133:160, 808:1210]
     cols = (g > 200).any(axis=0).nonzero()[0]
     return int(cols.max()) if len(cols) else 0
-
-
-def help_is_nac(frame):
-    """Page matched AND its help title reads exactly "No Ability Cooldown" (the template spans the space where
-    "(Always On)" would be, so that row does not match)."""
-    return on_practice_settings(frame) and match(frame, "ps_help_nac", HELP_BOX) >= 0.8
 
 
 def toggle_on(frame, y=127):
@@ -45,10 +36,10 @@ def toggle_on(frame, y=127):
 
 def open_page(menu):
     if in_range(menu.frame):
-        menu.expect(in_range)
+        menu.expect("range")
         menu.send("ls:0,1,0.2"); menu.send("ls:0,-1,0.2")           # the first input after a connect is swallowed
         menu.send("START")                                            # Menu itself refuses START off the range
-    menu.expect(on_pause, timeout=3.0)
+    menu.expect("pause", timeout=3.0)
     for _ in range(12):
         row = pause_row(menu.fresh())
         if row == "practice":
@@ -56,9 +47,8 @@ def open_page(menu):
         if row is None:
             raise Stop("pause menu: no single lit row")
         menu.send("ls:0,-1,0.04" if row == "resume" else "ls:0,1,0.04")
-    menu.expect(lambda f: pause_row(f) == "practice")                 # pause screen matched AND that row lit
-    menu.send("A")
-    menu.expect(on_practice_settings, timeout=3.0)
+    menu.confirm("pause.practice_settings")                           # Menu proves the pause screen AND that row lit, at the press
+    menu.expect("practice_settings", timeout=3.0)
     menu.send("w:1.0")
 
 
@@ -75,9 +65,8 @@ def cooldowns_off(menu, shot):
         raise Stop("never reached the No Ability Cooldown row")
     menu.send("ls:1,0,0.07")                                          # from just left of the switch onto it
     shot()
-    menu.expect(help_is_nac)                                          # page AND row, proven again at the press
     if toggle_on(menu.fresh()):
-        menu.send("A")
+        menu.confirm("practice_settings.no_ability_cooldown")         # Menu proves the page AND the row, at the press
     time.sleep(2.5)                                                   # a "... Deactivated" toast shifts the page while it shows
     shot()
     print(f"ps: No Ability Cooldown on = {toggle_on(menu.fresh())}")
@@ -90,9 +79,9 @@ def close(menu):
         if in_range(frame):
             return True
         if on_practice_settings(frame):
-            menu.expect(on_practice_settings)
+            menu.expect("practice_settings")
         elif on_pause(frame):
-            menu.expect(on_pause)
+            menu.expect("pause")
         else:
             print("ps: unknown screen; nothing sent")
             return False
@@ -104,7 +93,7 @@ def close(menu):
 def main():
     mode = sys.argv[1] if len(sys.argv) > 1 else "look"
     assert mode in ("look", "cooldowns-off"), __doc__
-    menu, n = Menu(lambda f: in_range(f) or on_pause(f)), 0
+    menu, n = Menu(("range", "pause")), 0
 
     def shot():
         nonlocal n

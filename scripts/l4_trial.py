@@ -83,7 +83,7 @@ class Rig:
         self.log.write(json.dumps(row) + "\n")
 
     def close(self):
-        self.live.release()
+        self.live.close()
         self.q.put((None, None))
         time.sleep(0.5)
         self.log.close()
@@ -266,7 +266,8 @@ def scoreboard(rig, rounds):
                 _play(rig, target, 3.6, intent=Combo(BURST, target), save=(out, f"fight{r}"))
         time.sleep(0.4)
         board = rig.live.scoreboard(1.3)          # the one door to BACK: range confirmed first, nothing else held, always released
-        _native(out / f"board{r}.jpg", board)
+        if board is not None:                     # None: the board was never positively recognised
+            _native(out / f"board{r}.jpg", board)
         time.sleep(0.8)
         res.append({"round": r})
     return res

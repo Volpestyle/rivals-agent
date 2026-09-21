@@ -10,8 +10,10 @@ than 100 ms shows the practice-range HUD. On the lobby X is START for a live mat
 and the left stick drives a click cursor, so nothing is ever sent blind.
 """
 import sys
+import threading
 import time
 from pathlib import Path
+from time import monotonic as _real_clock   # the lease clock: never the patchable `time` module
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))  # capture.py, record.py
 
@@ -31,24 +33,44 @@ ALLOWED = frozenset({"A", "X", "LB", "RB"})   # what play needs. START, BACK, B,
 STATE_KEYS = frozenset(NEUTRAL)
 
 
+LEASE_S = 0.25        # a non-neutral pad state lives this long (REAL time) unless a proven send renews it
+START_S = 2.0         # how long to wait for the very first frame
+BOARD_OPEN_S = 0.8    # the scoreboard fades in over 0.3-0.5 s; until it is up, frames must still belong to the range session
+RETURN_S = 1.5        # after releasing BACK the range must be recognised again within this
+
+
 class Live:
     """dxcam + the range guard + one pad held open for the life of the object. The ONLY door to the pad.
 
-    The whitelist lives here, not in the callers: send() refuses any button outside ALLOWED and any unknown key, and the
-    one input outside it, BACK for the scoreboard, is reachable only through scoreboard(), which sends nothing else while
-    it is held. The raw pad is private. Every method that can be interrupted mid-press ends with the pad neutral.
-    `pad_factory` / `capture` / `guard` are injected by the tests; live they are vgamepad, dxcam and record.in_range.
+    Enforced here, under every caller (the loop, scripts/l4_trial.py, anything else), and not weakenable from outside:
+    - Whitelist: send() refuses any button outside ALLOWED and any unknown key. BACK exists only inside scoreboard().
+    - Freshness at COMMIT: a frame is stamped when its acquisition STARTS, and its age is checked after every piece of
+      proof has been computed, immediately before the pad is written. A slow grab or a slow guard cannot hide itself.
+    - Lease: a watchdog thread on the real clock returns the pad to neutral LEASE_S after the last proven send. A
+      blocked capture, a hung guard or a stalled caller therefore cannot leave anything held. Only _apply takes the pad
+      lock, for the few microseconds of a report; the guard and the capture never run under it.
+    - Every method that can be interrupted mid-press ends with the pad neutral.
+    `pad_factory`, `capture` and the guards are injected by the tests; live they are vgamepad, dxcam, record.in_range,
+    perception.scoreboard.is_scoreboard and record.banner_score.
     """
 
-    def __init__(self, pad_factory=None, capture=None, guard=None, settle_s=3.0):
+    def __init__(self, pad_factory=None, capture=None, guard=None, board_guard=None, session_guard=None, settle_s=3.0):
         if guard is None:
-            from record import in_range as guard
+            from record import BANNER_MIN, banner_score, in_range as guard
+            if session_guard is None:
+                session_guard = lambda f: banner_score(f) >= BANNER_MIN   # noqa: E731  the banner stays up under the board
+            if board_guard is None:
+                sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+                from perception.scoreboard import is_scoreboard
+                board_guard = lambda f: is_scoreboard(f) is True          # noqa: E731  None ("not worth a guess") is not proof
         if capture is None:
             from capture import Capture
             capture = Capture("dxcam")
         self._in_range, self.cap = guard, capture
+        self._is_board = board_guard or (lambda f: False)
+        self._in_session = session_guard or (lambda f: False)
         self.frame, self.frame_t = None, 0.0
-        if not self._in_range(self.fresh()):
+        if not self._in_range(self.fresh(START_S)):
             raise RangeLost("range HUD not on screen at start; no pad opened")
         if pad_factory is None:
             import vgamepad as vg
@@ -60,78 +82,124 @@ class Live:
             self._codes = {n: n for n in ("A", "X", "LB", "RB", "BACK")}
             self._pad = pad_factory()
         self.sent = dict(NEUTRAL)
+        self._lock, self._lease_until, self._closed = threading.Lock(), None, threading.Event()
+        threading.Thread(target=self._watchdog, daemon=True).start()
         time.sleep(settle_s)  # enumerate + the "Switching Devices" banner
 
+    # -- frames -----------------------------------------------------------------------------------------------------
     def fresh(self, timeout=FRESH_S):
-        """Newest frame; blocks up to `timeout` for a new one, else returns the last (its age is frame_t)."""
+        """Newest frame, stamped with the time its grab STARTED. Blocks up to `timeout` for a new one, else returns the
+        last (its age is frame_t). With no frame at all after `timeout`, raises RangeLost rather than waiting for ever."""
         deadline = time.perf_counter() + timeout
         while True:
+            t0 = time.perf_counter()
             f = self.cap.grab()
             if f is not None:
-                self.frame, self.frame_t = f, time.perf_counter()
+                self.frame, self.frame_t = f, t0
                 return f
-            if self.frame is not None and time.perf_counter() > deadline:
+            if time.perf_counter() > deadline:
+                if self.frame is None:
+                    raise RangeLost("capture delivered no frame")
                 return self.frame
             time.sleep(0.001)
 
-    def _confirm(self):
-        """A frame under FRESH_S old shows the range, or the pad goes neutral and RangeLost is raised."""
+    # -- the actuator -----------------------------------------------------------------------------------------------
+    def _commit(self, state, proof):
+        """Write `state` if `proof(frame)` holds on a frame that is STILL under FRESH_S old after the proof was computed."""
         if time.perf_counter() - self.frame_t > FRESH_S:
             self.fresh()
-        if time.perf_counter() - self.frame_t > FRESH_S or not self._in_range(self.frame):
+        ok = bool(proof(self.frame))                                   # may be slow: the age check comes after it
+        if not ok or time.perf_counter() - self.frame_t > FRESH_S:
             self.release()
-            raise RangeLost("range HUD lost; input released")
+            raise RangeLost("range proof missing or stale at commit; input released")
+        self._apply(state)
 
     def send(self, **changes):
-        """Apply pad changes: whitelisted buttons only, and only against a fresh in-range frame."""
+        """Apply pad changes: whitelisted buttons only, and only against fresh in-range proof at the moment of writing."""
         state = {**self.sent, **changes}
         bad = (set(changes) - STATE_KEYS) | (set(state["buttons"]) - ALLOWED)
         if bad:
             self.release()
             raise Forbidden(f"refused {sorted(bad)}")
-        self._confirm()
-        self._apply(state)
+        self._commit(state, self._in_range)
 
     def release(self):
         self._apply(dict(NEUTRAL))
 
-    def keepalive(self):
-        """The range removes a player ~10 min after the last move or attack; camera and menu input do not count."""
-        try:
-            for secs, pad in ((0.3, dict(ly=1.0)), (0.3, dict(ly=-1.0)), (0.15, dict(ly=0.0, rt=1.0)), (0.5, dict(rt=0.0))):
-                self.send(**pad)
-                time.sleep(secs)
-        finally:
-            self.release()      # an interrupt mid-step must not leave the stick or the trigger held
+    def close(self):
+        self.release()
+        self._closed.set()
 
-    def scoreboard(self, hold_s=1.0):
-        """Hold View/BACK (the range's scoreboard) and return the newest native frame taken while it is up.
-
-        The one place BACK is pressed. The range is confirmed BEFORE the press, because the board hides the HUD and the
-        guard reads False while it is up; nothing else is sent during the hold, and the pad is neutral on every exit.
-        """
-        self.send(**NEUTRAL)                       # confirms the range on a fresh frame, everything else released
-        shot = None
+    def hold(self, secs, **pad):
+        """Keep `pad` applied for `secs`, re-proving and renewing the lease every 50 ms; neutral on every exit."""
         try:
-            self._apply({**NEUTRAL, "buttons": ("BACK",)})
             t0 = time.perf_counter()
-            while time.perf_counter() - t0 < hold_s:
-                shot = self.fresh()
+            while time.perf_counter() - t0 < secs:
+                self.send(**pad)
+                time.sleep(0.05)
         finally:
             self.release()
+
+    def keepalive(self):
+        """The range removes a player ~10 min after the last move or attack; camera and menu input do not count."""
+        for secs, pad in ((0.3, dict(ly=1.0)), (0.3, dict(ly=-1.0)), (0.15, dict(rt=1.0))):
+            self.hold(secs, **{**NEUTRAL, **pad})
+        time.sleep(0.5)
+
+    def scoreboard(self, hold_s=1.0):
+        """Hold View/BACK and return the newest native frame positively recognised as the scoreboard (None if it never
+        came up). The one place BACK is pressed.
+
+        range (proven, everything else released) -> BACK down -> each new frame must be the scoreboard, or, only during
+        the first BOARD_OPEN_S while it fades in, still carry the range session's banner -> release -> the range must be
+        recognised again within RETURN_S. Any other frame (a lobby, a dialog, a black screen, a stale or missing frame)
+        releases BACK at once and raises RangeLost. BACK is re-applied, and the lease renewed, only by a proven frame.
+        """
+        back, shot = {**NEUTRAL, "buttons": ("BACK",)}, None
+        self.release()
+        self.fresh()                               # BACK is never pressed on a cached frame: the proof is grabbed now
+        self.send(**NEUTRAL)
+        try:
+            self._commit(back, self._in_range)
+            t0 = time.perf_counter()
+            while time.perf_counter() - t0 < hold_s:
+                self.fresh()
+                opening = time.perf_counter() - t0 < BOARD_OPEN_S
+                seen = []
+                self._commit(back, lambda f: seen.append(self._is_board(f)) or seen[-1] or (opening and self._in_session(f)))
+                if seen[-1]:
+                    shot = self.frame
+        finally:
+            self.release()
+        t0 = time.perf_counter()
+        while not self._in_range(self.fresh()):
+            if time.perf_counter() - t0 > RETURN_S:
+                raise RangeLost("the range did not come back after the scoreboard")
+            time.sleep(0.02)
         return shot
 
     def _apply(self, s):
-        pad = self._pad
-        pad.reset()
-        for name in s["buttons"]:
-            pad.press_button(button=self._codes[name])
-        pad.left_joystick_float(s["lx"], s["ly"])
-        pad.right_joystick_float(s["rx"], s["ry"])
-        pad.left_trigger_float(s["lt"])
-        pad.right_trigger_float(s["rt"])
-        pad.update()
-        self.sent = dict(s)
+        with self._lock:                                               # held for one pad report, never across capture or proof
+            pad = self._pad
+            pad.reset()
+            for name in s["buttons"]:
+                pad.press_button(button=self._codes[name])
+            pad.left_joystick_float(s["lx"], s["ly"])
+            pad.right_joystick_float(s["rx"], s["ry"])
+            pad.left_trigger_float(s["lt"])
+            pad.right_trigger_float(s["rt"])
+            pad.update()
+            self.sent = dict(s)
+            neutral = not s["buttons"] and not any(s[k] for k in ("lx", "ly", "rx", "ry", "lt", "rt"))
+            self._lease_until = None if neutral else _real_clock() + LEASE_S
+
+    def _watchdog(self):
+        """Real-time lease: whatever the caller, the capture or the guard is doing, a held input ends LEASE_S after the
+        last proven send. Uses the real clock and its own wait, so a patched or stalled `time` cannot stop it."""
+        while not self._closed.wait(0.02):
+            due = self._lease_until
+            if due is not None and _real_clock() > due:
+                self._apply(dict(NEUTRAL))
 
 
 # ---------------------------------------------------------------------------

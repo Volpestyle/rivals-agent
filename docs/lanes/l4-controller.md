@@ -11,17 +11,25 @@ in Windows and no loop or recorder process alive (`batch-stopped-state.jpg`). An
 
 ## Input safety (VUH-1325): this lane's fixes, all offline, awaiting re-review
 
-Nothing here has been run live; the freeze stands until the co-lead re-runs its fault injections.
+Nothing here has been run live or synced to the PC; the freeze stands until the co-lead re-runs its fault injections.
+Principle: the lowest layer that touches a pad (`agent.controller.Live` in play, `scripts/l4_menu.Menu` in menus)
+enforces freshness at commit, the lease, the whitelist and the confirm allow-list; a caller cannot weaken them.
 
-| # | Defect | Fix | Test |
+| Rule | Where | How | Test |
 |---|---|---|---|
-| 2 | `record.in_range` was "over half of a 240x7 strip is bright": an all-white frame passed, and so did a lobby frame with the strip painted white | Positive identity, same name and signature: the range's "PRACTICE RANGE" banner by template (`scripts/templates/range_banner.png`, normalised correlation >= 0.55; range frames score 0.92-1.0) AND the HUD health bar bright with darker screen under it AND the bar's segment dividers present | `tests/test_in_range.py` (52): 9 range frames pass; lobby x7, hero select x4, practice panel x2, pause menu, Practice Settings, leave dialog and scoreboard fail, and still fail with the strip painted white; flat white / black / grey, bright noise, a thumbnail, `None` fail; a range frame without its bar or without its banner fails. Also 210 of 210 frames sampled from `baseline1` / `baseline3` pass |
-| 3 | `Live.send` accepted BACK, B, Y and stick clicks; the loop reached the raw pad for the scoreboard | The whitelist (`ALLOWED` = A, X, LB, RB; unknown keys refused) is inside `Live.send`; the pad is private (`_pad`); BACK exists only in `Live.scoreboard(hold_s)`, which confirms the range first, holds BACK alone and always releases | `tests/test_live_pad.py` (6) |
-| 3 | `Menu.send('START')` succeeded on a lobby frame (the restriction was an assertion in `main`) | `Menu.send` proves `in_range` on a fresh frame for START whatever check the caller set; X, BACK, Y, the d-pad and unknown tokens are refused inside `Menu` | `tests/test_l4_menu.py` |
-| 4 | `l4_practice_settings.py` confirmed under `not_lobby`, which a black or white frame passes | No negative guards anywhere. Screens are matched by template (`on_pause`, `on_practice_settings`, `on_leave_dialog`); A on the pause menu needs the pause screen AND the PRACTICE SETTINGS row lit; A on the page needs the page title AND the help panel naming the No Ability Cooldown row; closing presses B only from a positively matched page or pause menu, and sends nothing from anything else | `tests/test_l4_menu.py` (32 in all) |
-| 1 | `Menu.fresh()` returned the previous frame when dxcam delivered none, with no age | Frames come from GDI (`Capture("gdi")`, always the current screen) and are time-stamped; every input takes a new grab after the previous input, under 0.35 s old at the press; no grab means Stop | same file |
-| 5 | An interrupt during a tap, `Live.keepalive` or the practice-settings `finally` left inputs held (and that `finally` sent B and movement) | Every press in `Menu` and `Live.keepalive` / `Live.scoreboard` is try/finally reset + update; the script's `finally` only closes through proven screens, then neutralises the pad | both files |
-| 8 | `Menu.goto` jiggled the stick when the cursor was lost | A lost cursor raises Stop and sends nothing | same file |
+| The range guard is positive identity | `scripts/record.in_range` (same name and signature) | The "PRACTICE RANGE" banner by template (`scripts/templates/range_banner.png`, correlation >= 0.55; range frames score 0.92-1.0) AND the HUD health bar bright with darker screen under it AND the bar's segment dividers | `tests/test_in_range.py` (52): range frames pass; lobby, hero select, practice panel, pause menu, Practice Settings, leave dialog and scoreboard fail, and still fail with the health strip painted white; flat, noisy, tiny and `None` frames fail. 210 of 210 frames sampled from `baseline1` / `baseline3` pass |
+| Freshness is judged at commit | `Live._commit`, `Menu._commit` | A frame is stamped when its grab STARTS; all proof is computed; only then is its age checked (0.1 s in play, 0.35 s in menus) and the pad written. A slow grab or a slow guard cannot authorise a press. Menu frames come from GDI, which always returns the current screen, and must postdate the previous input | `test_live_pad.py`, `test_l4_menu.py`: a guard / check that takes 2 s, a grab that takes 0.5 s, a grab that returns nothing |
+| A lease under every actuator path | `Live._watchdog` | A thread on the real clock (`time.monotonic`, not the patchable `time`) returns the pad to neutral 0.25 s after the last proven send. Only `_apply` takes the pad lock, for one report; capture and guards never run under it. No first frame within 2 s is an error, not a wait. `Live.hold()` re-proves every 50 ms for callers that need a longer hold | capture blocked mid-hold, a caller that stops calling, an all-`None` capture |
+| The whitelist is in the wrapper | `Live.send` | A, X, LB, RB and the known state keys only; anything else is refused with the pad neutral. The pad object is private | every other button and an unknown key |
+| BACK has one door, with recognised transitions | `Live.scoreboard(hold_s)` | Range proven on a frame grabbed for the purpose (never a cached one) -> BACK down -> each new frame must be the scoreboard (`perception.scoreboard.is_scoreboard` is True) or, only during the first 0.8 s while it fades in, still carry the range banner -> release -> the range recognised again within 1.5 s. Any other frame, stale proof or missing frame releases at once and raises. Returns the last frame recognised as the scoreboard, or `None` | lobby / dialog / black during the hold, a cached range frame over a lobby, a board that never gives the range back, interrupt mid-hold |
+| Screens are named, never supplied | `Menu` | `Menu(screens)` / `expect(screens)` take names from `SCREENS` (range, pause, practice_settings), each a positive template match; a callable or an unknown name is refused before a pad opens. The leave dialog is recognised (`on_leave_dialog`) but is not a screen input can be sent to | a permissive lambda on a lobby frame, the leave dialog |
+| Confirms go through an allow-list at the actuator | `Menu.confirm`, token `A:<control>` | `CONFIRMABLE` = `pause.practice_settings` (pause screen AND that row lit) and `practice_settings.no_ability_cooldown` (page title AND the help panel naming that row), proven at the press. Plain `A` is not a token. LEAVE GAME, the dialog's CONFIRM, EXIT TO DESKTOP and RESTORE DEFAULTS are not confirmable; this lane ships no entry point for LEAVE GAME | wrong row, wrong page, a control whose screen is not the one on display, unlisted controls |
+| No long holds in menus | `Menu` | `hold:` does not exist; START is a tap that needs a proven range frame whatever screen was named; a stick is held at most 0.6 s and every nudge is proven again; X, BACK, Y and the d-pad are refused; a lost cursor sends nothing | `hold:A,60`, long stick tokens, the refused vocabulary |
+| Neutral on every exit | `Menu._hold`, `Live.hold` / `keepalive` / `scoreboard`, `l4_practice_settings.main` | try/finally reset + update; the practice-settings close presses B only from a positively matched page or pause menu and sends nothing from anything else | KeyboardInterrupt mid-press, closing from lobby / black / white |
+
+The co-lead's reproducer (`/tmp/rivals-controller-rereview.py`) stops at its first assertion now; run one by one, all seven
+of its reproductions are blocked (stale X, stale START, A on the leave dialog, A under a permissive check on the lobby,
+`hold:A,60`, BACK held through lobby frames, X held through a blocked capture).
 
 What `in_range` returns: **True** only on the range's playing screen. **False** on the held-BACK scoreboard (the banner
 stays but the HUD bar does not), the pause menu and its pages (banner dimmed and blurred), hero select, the lobby, a
@@ -29,13 +37,14 @@ desktop or any lost-focus window. Known limit, fails closed: the bar test wants 
 about 50 % hp it reads False and input stops.
 
 **For rivals-brain (their files, not patched):** (a) `agent/loop.py` `LiveIO.scoreboard` presses BACK on
-`self.live.pad`; that attribute no longer exists: call `self.live.scoreboard(hold_s)` and use the frame it returns.
-(b) `tests/test_reenter.py` `spawn_frame()` paints `f[:600, :1200]`, which erases the banner, so 11 re-entry tests now
-see "unknown screen"; painting `f[130:600, :1200]` instead keeps the banner and all of them pass (checked on a
-temporary copy).
+`self.live.pad`, which does not exist: call `self.live.scoreboard(hold_s)`, use the frame it returns (it can be `None`),
+and let `RangeLost` end the run. (b) `tests/test_reenter.py` `spawn_frame()` paints `f[:600, :1200]`, which erases the
+banner, so 11 re-entry tests see "unknown screen"; painting `f[130:600, :1200]` keeps it and they pass (checked on a
+temporary copy). (c) The lease means anything driving `Live` must send at least every 0.25 s while it wants an input
+held; the loop does (60 Hz).
 
-`scripts/l4_trial.py` takes its scoreboard frames through `Live.scoreboard`. `scripts/l4_practice_settings.py` has two
-modes, `look` and `cooldowns-off`.
+`scripts/l4_trial.py` takes its scoreboard frames through `Live.scoreboard`; `scripts/l4_measure.py` holds sticks through
+`Live.hold`. `scripts/l4_practice_settings.py` has two modes, `look` and `cooldowns-off`.
 
 ## Collection batch (scripted brain, cooldowns normal, same code and settings)
 
