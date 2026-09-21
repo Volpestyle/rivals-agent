@@ -2,11 +2,142 @@
 
 Linear: VUH-1296. Evidence: `docs/evidence/l4/`. Raw measurements: `C:\rivals-agent\data\l4\` on the PC.
 
-The game is in the Practice Range as Spider-Man on the plaza beside the spawn room door's planter, facing the Luna Snow bot
-where the M2 replacement session's start phase accepted the view, idle, no pad connected; the range's inactivity drop
-returns it to the lobby by itself. **The PC holds main**: `agent/`, `scripts/` (with templates) and `perception/` from
-`git archive a7fff98`, all 42 tracked files verified by sha256, no extras (the branch-only `agent/startup.py` and
-`scripts/padprime_m1.py` are removed). **The `plaza30` run has not been made**; nothing follows until the lead says so.
+The game is in the Practice Range as Spider-Man on the plaza beside the Luna Snow bot at the Hero Simulation console, where
+`plaza30` ended, idle, no pad connected (`plaza30-after-run.jpg`); the range's inactivity drop returns it to the lobby by
+itself. The PC holds `agent/`, `scripts/` (with templates) and `perception/` from `git archive a592fde` (main), all 44
+tracked files verified by sha256 against `git show a592fde:<path>`, no extras. No second run is authorized.
+
+## Supervised trial `plaza30` (VUH-1314): `data/l1/plaza30/` on the PC and the Mac. A recorded reference start condition
+
+One run, no retry, no tuning, no pose correction, no warm-up. It is a reference start condition for later comparable
+trials: not proof the environment or the bot state is identical, not a trend against the earlier start poses, and no
+reliable-episode, no-fall, door-recognition or identity claim.
+
+**Order as run.** (1) `git archive a592fde`, 44 files, every sha256 equal to `git show a592fde:<path>` and to the PC's copy,
+no extras; `capture.py preflight` 163 dxcam frames in 1 s. (2) After the game's own drop to the lobby, ONE arrival:
+`reenter.py` bare with its whole output to a file; its OWN exit status read from its PC log (`EXIT !errorlevel!`) with no
+filter in between: **0**; by eye on a desktop screenshot he stands on the plaza beside the planter facing the Luna Snow bot
+at x 0.45, no door in view (`plaza30-arrival-endpose.jpg`, `plaza30-arrival-reenter.log`). (3)
+`l4_practice_settings.py cooldowns-off`, own exit 0: `No Ability Cooldown is already off; nothing pressed`,
+`cooldowns off: True`, `back in range: True`; its page shot shows the switch off (`plaza30-practice-settings-page.jpg`); its
+pad and menu closed (0 Xbox pads, range HUD up). That tool's pad session left the view turned left, the spawn door's pane in
+view (`plaza30-pose-after-settings-tool.jpg`); nothing was corrected. (4) The loop, its own single pad, under a native
+recording (`plaza30-launch-run.sh`): `python -m agent.loop --live --cooldowns normal --run plaza30 --max-s 30`, exit 0. No
+other tool connected a pad after the confirmations.
+
+**Start phase** (`plaza30-start-steps.jsonl`, `meta.json` `start`): first send 14.0 ms after `LiveIO` returned; **1 turn: the
+prime alone** (its right turn undid the settings tool's left drift), no search pulse; the 5.0 s delay; `plaza` True on two
+distinct fresh frames stamped 5.371 s and 5.410 s after `LiveIO` returned, that is 5.018 s and 5.057 s after the prime went
+neutral (0.353 s). LIVE values; no replay was made of them.
+
+**The accepted second confirmation frame and the first gameplay frame, kept apart**
+(`plaza30-start-confirm-2-native.jpg`, `plaza30-first-gameplay-frame-native.jpg`, side by side in
+`plaza30-start-confirm-and-first-gameplay.jpg`). On the recording the second confirmation is at 8.544 s and the first
+gameplay frame (`000000.jpg`, trace t 6.729) at 9.585 s: **1.04 s apart** (the brain and the run log are built in between).
+In that gap: no banner (the attach banner is up 3.41-4.35 s of the recording only), **no view motion** (the first frame
+turning faster than 5 deg/s is at 9.685 s, 0.10 s AFTER the first gameplay frame, the loop's own first search pulse), and the
+same visible target: the Luna Snow bot at x 0.47 with her name bar, Hero Simulation console to her left, no door in view.
+The trace clock starts at `LiveIO`'s own first frame, about 0.6 s before the start phase's stamps; the recording is the
+common clock here (frames placed by best match, 1.3 grey levels; the view is static over that stretch, so a placement is
+good to the stamps' own agreement, about 30 ms).
+
+| | `plaza30` |
+|---|---|
+| Stop / guards | `max_time`; no range gap, no error, 0 keep-alives, 3 missed decisions; after it 0 python, 0 Xbox pads |
+| Reflex | 1,545 ticks, 51.5 Hz; tick p50 / p95 / max 10.3 / 12.9 / 18.6 ms; 7 over the 16.67 ms budget |
+| Aim finder / decision | 7.3 / 9.1 / 14.3 ms; 10.2 Hz, decide 48.7 / 99.5 / 120.8 ms |
+| Scoreboard (parsed, `plaza30-scoreboard-end.jpg`) | **2 KOs**, 0 deaths, 0 assists, **550 damage**, accuracy 60 %, Web-Cluster accuracy 50 % |
+| Regime / patch | `cooldowns: normal`; `patch: null` in `meta.json` (the kit doc is not on the PC); patch not read from the screen, the kit doc's Season 10, Version 20260911 stands |
+
+**Normal-cooldown regime.** SETTINGS evidence: step 3 above. OBSERVED in gameplay, by eye on the native HUD
+(`plaza30-hud-cooldowns-observed.jpg`): Web-Cluster ammo 5 -> **4** after the LT at t 7.06 (4 at t 7.29-8.95, 5 again by
+t 20.4, 4 after the LT at t 22.67); the RB slot shows a cooldown number, **8** at t 8.95 and **7** at t 25.85, the X slot **4**
+at t 25.85. The HUD reader's LIVE values agree (webs 5 -> 4 at t 7.29 and 22.86). Both checks exercised.
+
+**Engaged seconds by target kind, by eye on the drawn frames** (`plaza30-sheet.jpg`: crop white, decision boxes cyan, crop
+boxes yellow, held target red). Engaged 27.6 s of 30.0.
+
+| Kind | Engaged | Ids |
+|---|---|---|
+| Real bot in reach (the Luna Snow bot, picked at 114-568 px) | **21.3 s** | 1, 7, 7, 46, 54, 66, 71 |
+| The same bot at point blank, as fragments while the camera looks at the floor beside her respawn pad (picked 656 px, then 97 and 62 px boxes at the hero / bot overlap) | 3.9 s | 37, 44, 45 |
+| Box at or under the 47 px height cutoff | **0 s**: none picked (smallest pick 54 px) | - |
+| Measured out of the distance cap | **NOT EXERCISED**: 0 of 339 decision detections carry a distance | - |
+| Door from the plaza side | **1.2 s** | 70 |
+| Door from the spawn-room side | 0 s (never seen) | - |
+| Kill feed | 0 s (the KO banner is up at t 13.3-16.2 and 25.0-27.3; never picked) | - |
+| Other: a far dummy, 54 px, top right, outside the crop | 1.2 s | 25 |
+
+The scorer with a `plaza30` `LABELS` entry ADDED by this lane (left uncommitted in `postfreeze30_replay.py`; the generic
+labels put the door and the fragments wrong: 22.5 s "luna", 5.0 s "other"): luna 25.17 s, door 1.02 s, other 1.36 s;
+`engage_walk_ticks_on_another_id` **0**; attack press ticks luna 152; `plaza30-replay.json`.
+
+**Forward walks** (10 episodes, 106 ticks). HELD-ID CONSISTENCY: on EVERY walk tick the crop box walked at carries the held
+id; none on another id, none with no crop box. VISUAL designated-target correctness, by eye:
+
+| t (s) | Held id, crop box height | By eye |
+|---|---|---|
+| 6.89-7.15, 9.82-10.34, 13.07-13.14 | 1 (157-168 px), 7 (81-409), 7 (461-466) | the Luna bot: correct |
+| 17.72-17.77, 19.05-19.11 (4 ticks each) | 44 (68-99), 45 (53-58) | **UNKNOWN**: a fragment box at the hero / bot overlap, camera on the floor |
+| 20.80-21.70 (46 ticks) | 46 (110-464) | the Luna bot: correct. This walk, with a full right turn, carries him off the plaza floor onto the raised landing by the spawn door |
+| 24.51-24.55, 24.85-24.96 | 66 (296-308, 91-150) | the Luna bot: correct |
+| 27.12 (1 tick) | 70 (89) | **the plaza-side DOOR: wrong target**, consistent with the id rule |
+| 28.31-28.36 | 71 (470-499) | the respawned Luna bot: correct |
+
+**Attack presses** (13 onsets; by eye every one up to t 24.31 is at the Luna bot):
+
+| Onset t | Press | Note | Held id in the crop on that tick |
+|---|---|---|---|
+| 7.06, 7.18 | LT | engage, then `combo:burst` | yes (1) |
+| 7.51 / 8.26 | RB / X | burst | yes (1) |
+| 8.82 (held to 10.11) | RT | burst, the brain moving 1 -> 7 at 9.82 | **no**: the crop's box is id 7, held 1 coasting; the burst's sequence, armed on id 1 at 7.06-7.18, plays on. By eye the same bot; by id another object for 50 of its 66 ticks |
+| 10.15 / 12.76 | LT / X | engage | yes (7) |
+| 20.46 | X | engage | yes (46) |
+| 22.67 / 22.98 | LT / RB | burst | yes (54) |
+| 23.76 / 24.31 (held to 25.59) | X / RT | burst | **no**: crop ids 64, then 66; held 54 coasting; sequence playing on; by eye the bot |
+| 25.65 | LT | `engage:enemy` | **no, and no crop box at all**: held 66 coasting, 0.7 s after the second KO. **UNKNOWN target**: not a pass |
+
+So no attack is ARMED on another id, but a playing burst keeps pressing while the crop's box carries another id (3 onsets),
+and one LT goes out on a coasting target with nothing measured.
+
+**Whole-frame -> crop hand-offs** (picked outside the crop; any replacement is a heuristic new selection, not an identity):
+id 25 (far dummy, 54 px, top right): steered on the pick tick, **never** reached the crop, released after 1.24 s. id 37 (the
+respawning Luna bot, 656 px, bottom left): in the crop under the SAME id on 1 tick after 0.40 s, then only ids 42-44
+(fragments); the brain re-selected 44 then 45 then 46. id 70 (the door, 318 px, left): the same id on 1 tick after 0.28 s;
+the brain re-selected 71. One real-bot case, kept for one tick.
+
+**Stalls over 0.5 s** (a target held, pad neutral; the scorer lists 10.54 / 1.55, 13.35 / 0.74, 14.57 / 0.88, 27.36 / 0.58,
+28.53 / 8.18):
+- 10.54-12.06 (1.53 s), id 7: after the first burst the camera points at the ceiling; the bot is at the right edge outside
+  the crop (target 970-1060 px off); held id coasting on every tick, no crop box; controller sends nothing. Search follows.
+- 13.35-14.07 (0.72 s), id 7, `combo:burst` with an empty sequence tick: the KO animation, no box.
+- 14.57-15.33 (0.76 s), id 25 (the far dummy), coasting, 854 px off.
+- 16.95-17.70 (0.75 s) and 17.89-19.04 (1.15 s), ids 37, 44: the camera looks straight down at the floor beside the bot;
+  the crop has boxes on every tick but never the held id.
+- 25.67-26.22 (0.55 s), id 66 after the second KO; 27.36-28.02 (0.66 s), id 70, the door, coasting 562 px off.
+- **28.53-36.71 (8.18 s), id 71, to the end of the run**: the respawned Luna bot stands right of and below the crosshair;
+  the held id IS measured in the crop on all 443 ticks (box (1433,680)-(1760,1200), clipped by the crop's right and bottom
+  edges, centre 385 px from the crosshair), it is not coasting, and the controller sends no stick, no walk and no press
+  (`plaza30-final-stall.jpg`). The brain's intent is `engage:enemy` throughout. The pitch account reads +0.31 stick-seconds
+  (over its 0.30 budget), which refuses UP pitch only, and the box is below and to the right, so it does not explain a zero
+  yaw stick. Cause not established in this run; it is an offline replay question for this lane.
+
+**Door.** Engaged once, 1.2 s, from the plaza side: after the second KO the search turned right with the door's pane at
+the left of the view; the whole-frame search boxed it (318 px, centre x 568), the brain picked it (id 70), the controller
+turned left onto it, one walk tick, no attack; the brain left it for the respawned bot. The pane is also in view, never
+picked, at t 15.7-16.4 and 21.5-26.2.
+
+**Plaza, falls, end.** No fall. He left the plaza FLOOR once: the walk at t 20.8-21.7 took him onto the raised landing by
+the spawn door (behind its railing, t 21.7-23.5); the second burst's web strike brought him back to the bot. The run ends
+on the plaza beside the Luna Snow bot at the Hero Simulation console, facing up past her.
+
+Recording: `data/video/plaza30.mp4` (native 2560x1440, 60 fps, 75 s, 514 MB) on the Mac and in
+`C:\rivals-agent\data\video\`. Evidence: `plaza30-sheet.jpg`, `plaza30-final-stall.jpg`,
+`plaza30-start-confirm-{1,2}-native.jpg`, `plaza30-first-gameplay-frame-native.jpg`,
+`plaza30-start-confirm-and-first-gameplay.jpg`, `plaza30-start-steps.jsonl`, `plaza30-meta.json`, `plaza30-replay.json`,
+`plaza30-hud-cooldowns-observed.jpg`, `plaza30-scoreboard-end.jpg`, `plaza30-practice-settings.log` and `-page.jpg`,
+`plaza30-arrival-reenter.log` and `-endpose.jpg`, `plaza30-pose-after-settings-tool.jpg`, `plaza30-after-run.jpg`,
+`plaza30-loop.log`, `plaza30-launch-{arrival,run}.sh`.
 
 ## M2 replacement session `m2-pose-4` at 7668ade (VUH-1314), by the co-lead's explicit authorization: accepted, still, no banner
 
@@ -247,7 +378,7 @@ Recordings (native 2560x1440, 60 fps, 40 s each): `data/video/turn-p1a.mp4` (232
 `turn-p2a.mp4` (185 MB) on the Mac and in `C:\rivals-agent\data\video\`; the timestamped frames are
 `data/l4/turn/{p1a,p1b,p2a}/` on both.
 
-## `plaza30` (VUH-1314): stopped before the run, the start pose does not survive a new pad session
+## The first `plaza30` attempt, 16:03 (VUH-1314): stopped before any run, the start pose does not survive a new pad session
 
 Order followed up to the stop: deployed code unchanged since the hash check (`git diff a7fff98 HEAD -- agent scripts
 perception` is empty), `capture.py preflight` passed (159 dxcam frames in 1 s), `--dry-run` read `in_range` and
