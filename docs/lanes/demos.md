@@ -346,9 +346,11 @@ loader manifest), and the two 60 s samples (not requested; each belongs to a tra
 | test, sealed | `twitch:2877719252` (Day, 09-18), `twitch:2871472478` (Req, 09-11) | Day 9.5, Req 11.5 | **21.0** | 6,345 | 937 (15%) |
 
 Test is the two broadcasts `data/demos/vods/manifest.json` reserves as evaluation (`reserved_evaluation_candidate_new_session`),
-one per player. Train is the two pilot-session broadcasts. The September uploads go to val because their duplicate check across
-sources has not run, and by date they can repeat matches of the sealed 09-11 Req broadcast. On val a duplicate biases model
-selection; on train it would teach the test matches. By date they cannot repeat a train broadcast (09-13, 09-20).
+one per player. Train is the two pilot-session broadcasts. The September uploads are on val with a caveat. rivals-hud's pixel check shows they do not reuse the
+retained 15-minute sections. It cannot rule out the same match from another part of the sealed 09-11 Req broadcast, which is
+not held. So they serve model selection only: never the sealed test, and not train until their source broadcast is
+identified. On val a repeated match biases model selection; on train it would teach the test matches. By date they cannot
+repeat a train broadcast (09-13, 09-20).
 
 Events per type in usable segments:
 
@@ -381,10 +383,9 @@ the split has a null slot.
 - **Maps are not recorded** anywhere (acquisition manifests, events, loader), so balance by map cannot be checked.
 - **Ults are rare**: 10-17 `ult_spent` per side, too few for an ult-use metric on any side.
 
-Promotion is blocked on the VUH-1326 independent re-check, the co-lead's label spec, and the uploads' duplicate check against
-`twitch:2871472478`. The uploads stay `splittable: false` until that check runs, so an `accepted` status is refused while they
-are in the split. A quick event-signature duplicate check could not tell sources apart: it matched a May upload against a
-September broadcast. So it settles nothing either way; the check needs frames.
+Promotion is blocked on the VUH-1326 independent re-check, the co-lead's label spec, and identifying the uploads' source
+broadcast. The uploads stay `splittable: false` until then, so an `accepted` status is refused while they are in the split.
+Event signatures cannot identify a shared match: a quick check matched a May upload against a September broadcast.
 
 ## What format 4 does not give the loader
 
