@@ -113,6 +113,11 @@ def gate(state: State, memory: Memory):
 
     if target is None and (t - memory.target_t <= LOST_S or _coasting(state, memory)):
         return memory.intent, None  # flicker, or the tracker still holds the target's id: keep doing what we were doing
+    if target is None:
+        # Released: past LOST_S and no longer held by the tracker (a coast lasts at most CLOSE_AGE_S, 1.5 s). On postfreeze30 the brain
+        # stops engaging a killed bot 0.94 s after its last sighting; clearing the target makes the loop's trace say so, instead of
+        # naming the dead bot as the target for as long as nothing else is picked. Choice is unaffected: stickiness is within LOST_S.
+        memory.target = None
     return None, target
 
 

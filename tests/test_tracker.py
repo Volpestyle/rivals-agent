@@ -325,3 +325,24 @@ def test_the_mode_bookkeeping_is_unaffected_by_ids():
     near = det(1280, 720, 900, track=4)
     decide(st(0.0, [near]), m)
     assert m.mode == brain.FIGHT
+
+
+def test_a_killed_target_is_released_once_the_tracker_lets_go_and_the_trace_stops_naming_it():
+    """postfreeze30: the brain stopped engaging a killed bot 0.94 s after its last sighting, but kept naming it as the target, so the
+    trace showed the dead bot held for five seconds. Held while its id coasts; released after, target cleared; a new bot is picked as usual."""
+    m = Memory()
+    a = det(1280, 720, 600, track=1)
+    assert decide(st(0.0, [a]), m) == Engage(a)
+    assert decide(st(0.8, [], coasting=(1,)), m) == Engage(a) and m.target.track == 1      # the tracker still holds it: kept
+    released = decide(st(1.6, [], coasting=()), m)                                         # let go, and past LOST_S
+    assert not isinstance(released, Engage) and m.target is None
+    b = det(900, 720, 500, track=2)
+    assert decide(st(2.0, [b]), m) == Engage(b) and m.target.track == 2
+
+
+def test_a_brief_flicker_within_lost_s_keeps_the_target():
+    m = Memory()
+    a = det(1280, 720, 600, track=1)
+    decide(st(0.0, [a]), m)
+    decide(st(brain.LOST_S / 2, [], coasting=()), m)
+    assert m.target is not None and m.target.track == 1

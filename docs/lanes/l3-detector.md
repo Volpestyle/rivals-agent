@@ -76,13 +76,30 @@ accepts; the fake bar is 2.4 body heights wide, and real, partly hidden bots rea
 separates the door from the Luna Snow bot with margin: "any bar" admits one door track, and rules that reject it (bars spanning at least
 0.3 s) leave Luna targetable on 24 of her 87 saved frames, 3.8 s late on her first approach. No consumer reads `plate` yet.
 
-**The door is the band's low edge.** 61% of the door's masked pixels are at hue 54, the band's lower bound, and 89% at 54-56; Luna's are
-centred on 64 (p5 59), tagrun0's bots on 65 (p5 55). Raising `hue_lo` to 57 cuts postfreeze30's door boxes from 66 (in 52 frames) to 9
-(in 8) and moves the ground truth to P 0.880 / R 0.846 (one enemy fewer found); 58 leaves 5 door boxes and costs a second enemy. The
-band stays at the game's swatch (54-70) until that trade is decided.
+**The door is the band's low edge, and is judged per component.** 61% of the spawn room door's masked pixels are at hue 54, the band's
+lower bound, and 89% at 54-56; Luna's are centred on 64 (per-box median never below 57), tagrun0's bots on 65. Raising `hue_lo` would cut
+the bots' own edge pixels too: at 57 their outlines split into pieces, a ground-truth enemy is lost (tagrun1 000094) and bar-seen
+sightings 100 px and taller fall 4.6%. So the band keeps every pixel from 54 for connectivity, and a component whose own (pre-closing)
+pixels have a median hue under `GREEN_MIN_MEDIAN_HUE` (56) is dropped:
 
-**The HUD zones are fractions of the image passed in**, so on the 960 px aim crop they blank parts of the scene, not the HUD: on
-postfreeze30 they remove 32 aim-crop boxes in 27 of 273 saved frames (16 of them 120 px or taller), on tagrun0 16 in 15.
+| | before | median hue >= 56 |
+|---|---|---|
+| ground truth, count P / R | 0.848 / 0.859 | **0.931 / 0.859** (8 false positives fewer, no enemy lost) |
+| postfreeze30 door boxes (aim crop, whole frame when empty) | 66 in 52 frames | 4 in 4 frames |
+| postfreeze30 frames with a Luna box | 83 | 83 |
+| bar-seen sightings 100 px+ (every 4th native frame) | 71 | 71 |
+| Mac cost: aim crop / full frame p50 | 1.39 / 4.42 ms | 1.43 / 4.51 ms |
+
+The four door boxes left are thin slivers of the door's edge, each in a single frame. `tests/test_gt_range_green.py` gates at P 0.88 / R
+0.82 against the count numbers above. The rule applies to the `GREEN` band only.
+
+**The zones are places on the screen.** `find_green` / `find_enemies` take an optional `origin` (the image's top-left in the frame) and
+`frame` (w, h); a whole frame needs neither. The HUD and kill-feed zones are tested in frame terms, so on the 960 px aim crop they cover
+only real HUD (before, they removed 32 aim-crop boxes in 27 of postfreeze30's 273 frames, 16 of them 120 px or taller; now the crop
+finds 25 more boxes there and 12 more on tagrun0, and empties no frame). `agent.loop`'s aim call passes both. The **player zone** stays in
+the image's own fractions: placed in frame terms it covers most of the crop and drops small marks the crop exists to see (17 frames
+emptied on the two runs, Luna's pieces and a bot's bar among them). Where the hero is drawn inside the crop is not measured.
+`scripts/l4_trial.py` still calls the crop without its origin.
 
 **Precision 82%, recall 83%** against hand-checked ground truth — see below.
 

@@ -135,6 +135,13 @@ GREEN_DEAD_ZONES = [
 # top-right is taller or touches the top edge (tagrun0 70, 206, 228, tagrun1 342), and survives. Fractions of the frame.
 KILL_FEED = (0.86, 0.034, 0.96, 0.058)
 
+# The spawn room's lime glass door passes the band at its low edge: 61% of its masked pixels are at hue 54 and 89% at 54-56, while bots
+# centre on 64-65 (Luna's per-box median never below 57). A component whose median hue is under this is dropped. Raising the band's
+# lower bound instead cuts the bots' edge pixels too, splitting outlines into pieces and losing a ground-truth enemy; this keeps every
+# pixel for connectivity and judges the component. Measured (docs/lanes/l3-detector.md): door boxes on postfreeze30 66 -> 4, ground
+# truth count P 0.848 -> 0.931 at R 0.859 unchanged, bar-seen sightings 100 px+ unchanged.
+GREEN_MIN_MEDIAN_HUE = 56
+
 
 def find_bars(frame_bgr, scale=None):
     """Red horizontal bars: (x, y, w, h) per nameplate, largest first.
@@ -169,8 +176,12 @@ def find_bars(frame_bgr, scale=None):
     return sorted(bars, key=lambda b: -b[2])
 
 
-def find_green(frame_bgr, scale=None, band=GREEN):
-    """Enemy marks in the game's green: (x, y, w, h, kind), kind in {'outline', 'bar'}.
+def find_green(frame_bgr, scale=None, band=GREEN, origin=(0, 0), frame=None):
+    """Enemy marks in the game's green: (x, y, w, h, kind), kind in {'outline', 'bar'}, in the pixels of the image passed in.
+
+    `origin` and `frame` say where that image sits in the whole frame: the (x, y) of its top-left corner and the frame's (w, h). The HUD
+    and kill-feed zones are places on the screen, so an aim crop must pass them, or the zones land on the scene inside the crop (on
+    postfreeze30 that removed 32 aim-crop boxes in 27 of 273 frames, 16 of them 120 px or taller). A whole frame needs neither.
 
     `Enemy Color = Green` recolours the enemy marks. Whether that is a contour around
     the body, a health bar, or both is a question for the first recording made with the
@@ -193,25 +204,36 @@ def find_green(frame_bgr, scale=None, band=GREEN):
     # a contour drawn 1-2 px wide breaks into arcs over a body; rejoin them before
     # components are taken, or one bot comes back as eight boxes
     k = max(3, int(GREEN_CLOSE * s))
+    raw = mask if band is GREEN else None           # the band's own pixels, before closing: the hue test below reads only these
     mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, np.ones((k, k), np.uint8))
-    n, _, stats, _ = cv2.connectedComponentsWithStats(mask, 8)
+    n, labels, stats, _ = cv2.connectedComponentsWithStats(mask, 8)
     ih, iw = frame_bgr.shape[:2]
+    ox, oy = origin
+    fw, fh = frame if frame is not None else (iw, ih)
     out = []
     for i in range(1, n):
         x, y, w, h, area = stats[i]
         if area < GREEN_MIN_AREA * s * s:
             continue
-        cx, cy = (x + w / 2) / iw, (y + h / 2) / ih
+        if raw is not None:                             # a component whose own pixels sit at the band's low edge is scenery (the door)
+            hues = hsv[y:y + h, x:x + w, 0][(labels[y:y + h, x:x + w] == i) & (raw[y:y + h, x:x + w] > 0)]
+            if hues.size and float(np.median(hues)) < GREEN_MIN_MEDIAN_HUE:
+                continue
+        cx, cy = (ox + x + w / 2) / fw, (oy + y + h / 2) / fh
         if any(zx1 <= cx <= zx2 and zy1 <= cy <= zy2 for zx1, zy1, zx2, zy2 in GREEN_DEAD_ZONES):
             continue
         kx1, ky1, kx2, ky2 = KILL_FEED
-        if kx1 <= x / iw and (x + w) / iw <= kx2 and ky1 <= y / ih and (y + h) / ih <= ky2:
+        if kx1 <= (ox + x) / fw and (ox + x + w) / fw <= kx2 and ky1 <= (oy + y) / fh and (oy + y + h) / fh <= ky2:
             continue
         # The player's own band. Only enemies are outlined, so nothing here produced a
         # false box in the tagrun footage -- but junk in front of the player is what
         # caused a stray ability press, so small marks are dropped. The height test is
         # the point: a bot at point blank stands exactly here and must survive.
-        if (PLAYER_ZONE[0] <= cx <= PLAYER_ZONE[2] and PLAYER_ZONE[1] <= cy <= PLAYER_ZONE[3]
+        # The player zone stays in the passed image's own fractions, as it always has: placed in frame terms on the aim crop it covers
+        # most of the crop and drops small marks the crop exists to see (postfreeze30 and tagrun0: 17 frames emptied, among them Luna's
+        # pieces in a fight and a bot's bar). Where the hero really is in the crop is an open question (docs/lanes/l3-detector.md).
+        pcx, pcy = (x + w / 2) / iw, (y + h / 2) / ih
+        if (PLAYER_ZONE[0] <= pcx <= PLAYER_ZONE[2] and PLAYER_ZONE[1] <= pcy <= PLAYER_ZONE[3]
                 and h < PLAYER_ZONE_MIN_H * s):
             continue
         if (w / max(h, 1) >= BAR_MIN_ASPECT and BAR_MIN_W * s <= w <= BAR_MAX_W * s
@@ -251,17 +273,17 @@ def _merge(marks, gap):
     return [tuple(b) for b in boxes]
 
 
-def find_enemies(frame_bgr, scale=None, band=GREEN):
+def find_enemies(frame_bgr, scale=None, band=GREEN, origin=(0, 0), frame=None):
     """Enemy boxes from the green marks. An outline box is the silhouette as drawn.
 
     One enemy usually carries both marks -- a contour round the body and a nameplate
     above it -- so a bar whose projected body overlaps an outline is dropped rather
     than counted as a second enemy. A bar on its own is kept: that is an enemy whose
-    body is occluded, which the brain still wants to know about.
+    body is occluded, which the brain still wants to know about. `origin` / `frame`: as for find_green (an aim crop passes both).
     """
     out = []
     outlines = []
-    for x, y, w, h, kind in find_green(frame_bgr, scale, band):
+    for x, y, w, h, kind in find_green(frame_bgr, scale, band, origin, frame):
         if kind == "outline":
             box = (float(x), float(y), float(x + w), float(y + h))
             if not _flat((x, y, x + w, y + h)):

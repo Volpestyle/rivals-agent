@@ -19,11 +19,13 @@ import pytest
 
 GT = Path("perception/gt/range-green.json")
 # Measured 2026-09-20 on this set: precision 82% / recall 83% by eye, per box. Scored
-# by counts as below it reads 85% / 86%, because a false positive and a miss in the
+# by counts as below it read 85% / 86%, because a false positive and a miss in the
 # same frame cancel. The gate is set against the *count* numbers it actually computes.
+# Raised deliberately with the median-hue rule (GREEN_MIN_MEDIAN_HUE, VUH-1314): counts now
+# read P 0.931 / R 0.859 (8 false positives fewer, no enemy lost), so the gate holds that gain.
 # A few points of slack, so ordinary tuning passes and a real regression does not.
-MIN_PRECISION = 0.75
-MIN_RECALL = 0.75
+MIN_PRECISION = 0.88
+MIN_RECALL = 0.82
 
 
 def _load():

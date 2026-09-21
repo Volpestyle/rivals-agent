@@ -209,3 +209,40 @@ def test_native_kill_feed_frames_lose_only_the_kill_feed():
     assert not any(b.bbox[0] > 2200 and b.bbox[1] < 260 for b in boxes)              # nothing at the kill feed
     for p in real:                                                                    # a real bot at the top-right: still found
         assert any(b.bbox[0] > 2100 and b.bbox[1] < 260 for b in find_enemies(cv2.imread(str(p)), scale=2.0)), p
+
+
+def test_an_aim_crop_passes_where_it_sits_so_the_hud_zones_stay_on_the_hud():
+    """HUD zones are places on the screen. Given a crop without its origin they land on the scene inside it (postfreeze30: 32 aim-crop
+    boxes removed, 16 of them 120 px or taller); with the origin they cover only what is really HUD."""
+    crop = np.zeros((480, 480, 3), np.uint8)                   # a 720p-scale crop centred on the crosshair: x 400-880, y 120-600
+    _body(crop, 20, 140, 425, 470)                             # in the crop's own top-right corner: mid-screen in the frame
+    assert find_enemies(crop, scale=1.0) == []                 # the defect: the fps-readout zone applied to the crop
+    assert len(find_enemies(crop, scale=1.0, origin=(400, 120), frame=(1280, 720))) == 1
+    hud = np.zeros((480, 480, 3), np.uint8)                    # a crop that really does sit on the fps readout (top right of the screen)
+    _body(hud, 60, 180, 400, 460)
+    assert find_enemies(hud, scale=1.0, origin=(800, 0), frame=(1280, 720)) == []
+
+
+def _hsv_bgr(h, s=200, v=220):
+    import cv2
+    return tuple(int(c) for c in cv2.cvtColor(np.uint8([[[h, s, v]]]), cv2.COLOR_HSV2BGR)[0, 0])
+
+
+def test_a_component_at_the_bands_low_edge_is_scenery_not_an_enemy():
+    """The spawn room door's glass passes the band at hue 54 (61% of its pixels there); bots centre on 64-65. A component whose median
+    hue is under GREEN_MIN_MEDIAN_HUE is dropped; its pixels still count for connectivity elsewhere."""
+    lime, bot = _hsv_bgr(54), _hsv_bgr(64)
+    f = _frame()
+    f[300:440, 900:980] = lime
+    f[306:434, 906:974] = 0
+    assert find_enemies(f) == []
+    g = _frame()
+    g[300:440, 900:980] = bot
+    g[306:434, 906:974] = 0
+    assert len(find_enemies(g)) == 1
+    k = _frame()                                     # a bot outline with some low-hue edge pixels: still one enemy, whole
+    k[300:440, 900:980] = bot
+    k[300:440, 900:915] = lime
+    k[306:434, 906:974] = 0
+    d, = find_enemies(k)
+    assert d.bbox[2] - d.bbox[0] >= 78 and d.height >= 138          # the whole outline, the low-hue side included

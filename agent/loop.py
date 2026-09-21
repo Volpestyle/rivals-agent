@@ -117,7 +117,7 @@ def default_perception(crop=CROP):
         side = round(crop * h / 1440)
         x0, y0 = (w - side) // 2, (h - side) // 2       # boxes come back in the crop's pixels: add its origin
         return [replace(d, bbox=(d.bbox[0] + x0, d.bbox[1] + y0, d.bbox[2] + x0, d.bbox[3] + y0))
-                for d in find_enemies(f[y0:y0 + side, x0:x0 + side], scale=w / 1280.0)]
+                for d in find_enemies(f[y0:y0 + side, x0:x0 + side], scale=w / 1280.0, origin=(x0, y0), frame=(w, h))]
 
     from perception.scoreboard import is_scoreboard, read_scoreboard
     return Perception(in_range, idle_warning, size, aim, lambda f: find_enemies(f, scale=f.shape[1] / 1280.0),

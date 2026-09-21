@@ -61,37 +61,44 @@ matches a track of its own is never absorbed, so two dummies seen together from 
 
 ## Live: postfreeze30 (30 s, ~50 Hz, the first supervised run)
 
-The trace is replayed through tracker and scripted brain in live order (every aim-crop update per tick, the whole-frame search's update
-when the crop was empty, each decision after its row's updates); the replay makes 116 ids where the run made 112, and puts the target on
-the same things for the same share of the run. Labels are by eye on the saved frames: every box before t 13.8 s is the spawn room's lime
-glass door (its edge stripes, which Spider-Man webs), a box at the kill feed's exact place (2319,128)-(2426,247) is the HUD kill feed,
-and after t 15.3 s a box 120 px or taller is the Luna Snow bot.
+`docs/evidence/l4/postfreeze30_replay.py` replays it two ways, and reproduces every number below.
 
-| Replay | ids | Luna: ids / switches of her main box's id | brain target ticks: door / kill feed / Luna / other | held id visible (on Luna) | update p50 / p95 |
+- **The trace** (stdlib): the boxes the live finder recorded, through tracker and scripted brain in live order (every aim-crop update per
+  tick, the whole-frame search's update when the crop was empty, each decision after its row's updates). It makes 116 ids where the run
+  made 112. It cannot show a finder change; `--no-kill-feed` drops the kill feed's box, which the finder no longer makes.
+- **`--refind`** (perception group): a given finder re-run on the 273 saved frames (~9 Hz; the loop decides at 10 Hz), aim crop and whole
+  frame when the crop is empty, then tracker and brain. This is where a finder change shows.
+
+A tick counts toward a target only while the brain's intent engages (not Search or Idle): that is what the pad acts on. Labels are by eye
+on the saved frames: every box before t 13.8 s is the spawn room's lime glass door, a box at the kill feed's place (2319,128)-(2426,247)
+is the HUD kill feed, and after t 15.3 s a box 120 px or taller is the Luna Snow bot (who is killed at 19.3 s and back below the platform
+from 22.7 s).
+
+| Trace replay | ids | Luna ids / switches of her main box's id | engaged ticks: door / kill feed / Luna / other | held id visible (on Luna) | tracker update p50 / p95 |
 |---|---|---|---|---|---|
-| without pieces | 116 | 16 / 20 | 559 / 322 / 535 / 81 | 20% (54%) | 0.002 / 0.05 ms |
-| with pieces | 105 | 11 / 16 | 559 / 332 / 525 / 81 | 21% (56%) | 0.002 / 0.05 ms |
-| with pieces, no kill feed | 103 | 11 / 16 | 559 / 0 / 799 / 139 | 21% (37%) | 0.002 / 0.05 ms |
+| 36f1eec | 116 | 16 / 20 | 499 / 316 / 535 / 65 | 22% (54%) | 0.002 / 0.05 ms |
+| tracker-live, no kill feed | 103 | 11 / 16 | 499 / 0 / 577 / 123 | 26% (51%) | 0.002 / 0.05 ms |
 
-`python docs/evidence/l4/postfreeze30_replay.py [--no-kill-feed] [TRACKER.py ...]` reproduces each row (stdlib; "no kill feed" drops the
-kill feed's box from the trace, which the finder no longer makes: docs/lanes/l3-detector.md). Without the kill feed the brain holds Luna
-through her death and respawn gap (about 20-25 s) with nothing Luna-sized in the crop, which is why her held-id visibility falls.
+| Refind replay (finder -> tracker -> brain) | engaged: door / kill feed / Luna / other |
+|---|---|
+| 36f1eec finder and tracker | 9.5 s / 1.1 s / 9.0 s / 5.5 s |
+| tracker-live | 3.6 s / 0 / 12.8 s / 3.9 s |
+| tracker-live, with a hostile targetable only once its id was present at the previous decision too (not built) | 0 / 0 / 12.5 s / 2.9 s |
 
-What the ids and the lost targets come from, measured:
-
-- **Most of the run the target is not a bot.** 18 of 30 s the brain engages the door (12 s) or the kill feed (6 s). Both are finder
-  false positives. The kill feed is now dropped by the finder (docs/lanes/l3-detector.md). The door's edge stripes sit at the enemy
-  band's lower hue bound, and nothing downstream tells them from a standing bot: its boxes are body-shaped often enough and move with
-  the camera like a bot, and its name-bar evidence (`Detection.plate`) does not separate it from Luna by any per-track rule with margin
-  (the measurement is in the finder's lane doc). The brain has no "shown its bar" rule for that reason.
+- **The kill feed and most of the door are gone at the finder** (docs/lanes/l3-detector.md). What is left of the door is four thin slivers
+  of its edge, each in one saved frame; one sighting is enough for the brain to engage, and a combo's ability hold carries it for about
+  3 s. Requiring the id at two consecutive decisions stops it on this replay and delays Luna's first engagement by 0.34 s (0.10 s and 0 on
+  her later appearances). It is a brain rule and is not built.
+- **A killed bot is released** 0.94 s after its last sighting: the brain keeps a missing target only within `LOST_S` (0.5 s) or while the
+  tracker coasts its id (at most `CLOSE_AGE_S`, 1.5 s), plus a combo already playing. Measured gaps while Luna is alive and engaged are
+  at most 0.86 s live and 1.31 s on the replay, inside that bound. On release the brain now clears its remembered target, so the loop's
+  trace stops naming the dead bot (it used to, for as long as nothing else was picked).
 - **The engaged bot's own id churn is its pieces**, not the camera: within the gate, yet a new id, because a piece took the old id and
   the others were born. The piece rule above takes the new-born pieces; what remains is two concurrent tracks on pieces that were born
-  apart (legs and torso in a kick), which keep their own ids: with Luna the target, her id is on a visible box on 56% of ticks, another
-  of her pieces carries a different id on 25%, nothing is in the crop on 15%.
+  apart (legs and torso in a kick), which keep their own ids. `Detection.plate` does not separate them from two bots (finder lane doc).
 - **The camera turning under the tracker** accounts for 19 of 105 new ids (with ego-motion from the commanded stick and the controller's
   measured yaw map, the old box lands inside the gate; without it, it does not). 15 are boxes under 72 px, far bots. Of the rest, one
-  is Luna losing her far-range id in a turn at 15.4 s: the brain re-picks her, and the new id (32) is the one it holds for 3.1 s, so the
-  cost is a re-pick, not a wrong target. Compensating it is not built.
+  is Luna losing her far-range id in a turn at 15.4 s: the brain re-picks her. Compensating it is not built.
 
 ## Coasting: a deliberate trade
 
