@@ -521,9 +521,14 @@ consistent with viewer-side rendering. These are reasons to test the route,
 not confirmation of full HUD fidelity, Enemy Color behavior or expert access.
 No publicly posted Day/Req replay IDs were found; absence from that search is not
 proof that none exist. Replay expiry and patch compatibility remain constraints.
-Claude coordinates James's manual in-client check. Further Twitch expansion is
-parked; existing inspected footage remains useful for narration, event-reader
-testing and the auxiliary pretraining probe.
+Claude owns replay feasibility and the safe navigation investigation. James may
+optionally perform the in-client check, but his availability is not a prerequisite
+for existing-footage annotation, auxiliary pretraining or range development.
+An agent-operated replay visit requires its own mapped controls and authorization
+proofs; the current range controller must not be sent there. Further Twitch
+expansion is parked because the proposed eligible source pair is unavailable.
+Existing inspected footage remains useful for narration, event-reader testing,
+audited annotation and the auxiliary pretraining probe.
 
 Separate **viewer capability** from **expert-source availability**. An existing
 accessible match can test the former without proving that Day/Req matches are
@@ -951,9 +956,11 @@ negative frames. Known payloads/overlays also supply hard-negative examples.
 The suggested 60 px proposal floor is an **initial evaluation threshold**, not
 measured detector capability. Report <40, 40-59, 60-99 and >=100 px performance
 before choosing a deployment cutoff on development data. No detector exists from
-this pilot yet. Remaining annotation volume waits on the repair audit and the
-native-replay source decision above; a validated replay path may deserve those
-labels instead. Freeze final detector evaluation groups before training; a pilot
+this pilot yet. Remaining annotation volume requires the repair audit and accepted
+source quality. Replay research runs in parallel: if it yields a validated better
+source, prioritize that source; an unavailable replay check does not block audited
+existing-footage work or lower its acceptance gates. Freeze final detector
+evaluation groups before training; a pilot
 or repair frame is development evidence and cannot become a sealed test frame.
 
 Boxes expose candidate targets; they do not prove which one the expert selected.
@@ -1233,8 +1240,10 @@ Req session required by the proposal. The attempted Day `2876184005` section
 (00:30–00:45) is rejected: all nine worker-inspected stills show another game;
 Codex's independent still check also finds no Rivals gameplay HUD. This classifies
 the sampled section, not the entire broadcast. No new HUD-ready pair or accepted
-validation session exists from this attempt. Acquisition is parked while replay
-feasibility is investigated; existing or sealed sessions are not substitutes.
+validation session exists from this attempt. Acquisition is parked on this source
+shortage while replay feasibility is investigated independently; existing or sealed
+sessions are not substitutes. Resumption needs an eligible source, not an action
+from James.
 
 The initial 18.3 minutes can support a bounded first fit and a learning-curve
 probe after label acceptance. There is no evidence yet that this amount suffices
