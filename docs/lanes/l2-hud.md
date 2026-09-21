@@ -249,8 +249,8 @@ needed: about 10 minutes per 15-minute section on this machine, niced.
 
 #### Addendum: is a lockout distinguishable in the raw reads?
 
-**Not distinguishable — and on these MK clips there is no lockout state to
-distinguish.** Measured read-only on B0's per-frame sidecars
+**Not distinguishable: on these MK clips the raw reads cannot discriminate a
+lockout.** This does not show that no lockout state exists. Measured read-only on B0's per-frame sidecars
 (`data/experiments/b0/visibility/*.json`, writer `1336262e179c`), frames inside
 segments, per slot: its raw state (a) inside its **own** cooldown (from its own
 `ability_cast`, for the countdown it started at), (b) in the second after
@@ -799,6 +799,151 @@ happens on the FFAme window, whose team-up slot is empty throughout.
 Checked against the three sources: Req maps straight through, Day and FFAme both
 have Web-Swing and Get Over Here the other way round, and Req's four known casts
 (29.9, 40.1, 40.9, 48.1 s) keep their names.
+
+## Gap-resumption casts (measurement)
+
+**Some `ability_cast` events in the frozen stream are one continuing cooldown,
+read again after a short gap, and counted as a new cast.** Read-only
+measurement on the two accepted train sources, `daymr-2879354299-21660-900s`
+and `reqmr-2873352801-1980-900s`, writer `1336262e179c`. Script and outputs:
+`data/l2/` (`gap_casts.py`, `gap_sheets.py`, `gap_b0_impact.py`; the sheets
+under `data/l2/sheets/`). No event file, manifest or B0 artifact is changed.
+
+**Mechanism.** The extractor repairs a countdown that drops out for **one**
+frame between two numbers. A dropout of two or more frames becomes the value
+"off", and the number's return reads as `off → N`: an `ability_cast`. On the
+checked frames the countdown is usually visible the whole time, and the reader
+fails to read it: over a bright or red background, on a two-digit "11", with
+Twitch chat bleeding into the slot's edge, or for three frames while DayMR's
+overlay or his translucent scoreboard darkens the slot. The fix belongs in the
+frozen writer and goes through the lead.
+
+### The heuristic, exactly
+
+A cast of slot S, first read as N at frame `i_to`, is **flagged** when both:
+
+- **U, unreadable before it:** within the 10 frames (1.0 s) before `i_to`, at
+  least one frame has S unreadable: `ready is None` for S's position, the HUD
+  absent, or the frame outside every segment.
+- **C, compatible with a continuing countdown:** the last frame within 16 s
+  before `i_to` on which S's countdown was an integer `v_prev` at `t_prev`
+  satisfies `v_prev − Δ − 1.2 ≤ N ≤ v_prev − Δ + 1.2`, where
+  `Δ = t_cast − t_prev`, and `v_prev − Δ > −0.2`.
+
+The tolerance is 1.2 s: the display shows whole seconds, so a read of v means
+anywhere in a one-second band whose rounding direction is unknown (1 s), plus
+one frame's timing either side (0.1 s each). The 16 s lookback is just over the
+longest countdown in these sources (team-up, observed 15 s). The full cooldown
+per slot (`meta.observed` countdown mode: Get Over Here 8, team-up 15,
+uppercut 1) is not part of the flag. It is the evidence a real cast would show:
+**the countdown restarting at its full value** rather than continuing.
+
+A flag is a candidate, never a duplicate.
+
+### Denominator, flags and the visual check
+
+Sampling, fixed seed 20260921: the eight casts the annotator disputed; three
+further flagged casts per source; every C-only cast (C true, U false), up to two
+per source; three unflagged casts per source matched on slot to the flagged
+sample. Each was checked on the native 10 Hz frames: the slot's icon from before
+the prior countdown to 2 s after, and full frames at −0.5, 0 and +0.5 s.
+
+| source | slot | casts | U | C | flagged (U∧C) | checked | duplicate | valid | unknown |
+|---|---|---|---|---|---|---|---|---|---|
+| Day | Get Over Here | 43 | 34 | 11 | 9 | 10 | 8 | 2 | 0 |
+| Day | team-up | 21 | 11 | 7 | 6 | 3 | 2 | 1 | 0 |
+| Day | uppercut | 53 | 33 | 1 | 1 | 0 | — | — | — |
+| Day | swing | 22 | 18 | 0 | 0 | 0 | — | — | — |
+| Req | Get Over Here | 37 | 33 | 9 | 9 | 8 | 5 | 3 | 0 |
+| Req | team-up | 21 | 8 | 6 | 4 | 2 | 2 | 0 | 0 |
+| Req | uppercut | 22 | 19 | 4 | 3 | 1 | 0 | 0 | 1 |
+| Req | swing | 27 | 20 | 0 | 0 | 0 | — | — | — |
+| **total** | | **246** | 176 | **38** | **32** | **24** | **17** | **6** | **1** |
+
+- **All eight disputed casts are confirmed duplicates**: Day Get Over Here at
+  41.7, 63.7, 244.4 and 339.3 s; Day team-up at 337.8; Req Get Over Here at
+  86.9 and 369.3; Req team-up at 600.4. In each, the countdown runs on through
+  the gap (3 → 2 → 1, or 12 → 11 → 10) and never restarts at its full value.
+  Two more facts rule out a real cast: Get Over Here and team-up have one
+  charge and cannot be used while counting down, and at 369.3 s Spider-Man is
+  Frozen.
+- **The six unflagged controls are all valid new casts**: the icon is showing,
+  then a fresh countdown appears at or near its full value.
+- **Req uppercut 52.0 s is unknown.** Its prior "countdown 7" is Twitch chat
+  ("back?") read over the slot, so its C is spurious. Uppercut has two charges,
+  so a continuing countdown would not rule out a real second use either.
+
+**How the heuristic did, against these 24 only** (the disputed eight were
+chosen by the annotator, not at random, so these are not population rates):
+
+| rule | flagged and checked | duplicate among them | duplicates it caught |
+|---|---|---|---|
+| U∧C, as stated | 13 | 13 | **13 of 17** |
+| C alone | 18 | 17 (1 unknown) | **17 of 17** |
+
+**U is the weak half.** Four confirmed duplicates had no unreadable frame at
+all: the digit failed to read while the icon still read "lit". Req team-up
+600.4 is one of them. C alone flagged every duplicate and no valid cast among
+the checked ones. For the one-charge slots (Get Over Here, team-up), a C flag
+is strong evidence; for the charged ones (uppercut, swing) it is not, because a
+real second use continues the running countdown. C flags **38** of 246 casts:
+Day Get Over Here 11, team-up 7, uppercut 1; Req Get Over Here 9, team-up 6,
+uppercut 4. No swing is flagged.
+
+### Impact on B0 (read-only; nothing rebuilt or fitted)
+
+Mapped onto `data/experiments/b0-multilabel-v1/windows.json` by interval.
+"Confirmed" is the 17 visually confirmed duplicates; "suspected" is every C
+flag. Day is the training source of `day-to-req` and the test source of
+`req-to-day`; Req the reverse.
+
+| source | channel | B0 unique positives | confirmed: unique hit / windows / left | suspected (C): unique hit / windows / left | ≥ 20 gate |
+|---|---|---|---|---|---|
+| Day | Get Over Here | 42 | 7 / 29 / 35 | 10 / 42 / 32 | holds either way |
+| Day | team-up | **20** | 1 / 4 / **19** | 6 / 28 / **14** | **falls below on the one confirmed** |
+| Day | uppercut | 54 | 0 / 0 / 54 | 1 / 5 / 53 | holds |
+| Day | swing | 32 | 0 | 0 | holds |
+| Req | Get Over Here | 35 | 5 / 24 / 30 | 9 / 43 / 26 | holds either way |
+| Req | team-up | 17 | 2 / 8 / 15 | 4 / 18 / 13 | already below |
+| Req | uppercut | 23 | 0 / 0 / 23 | 4 / 18 / **19** | falls below only if every suspected one is removed; none is confirmed |
+| Req | swing | 35 | 0 | 0 | holds |
+
+"Windows" counts positive windows that contain an affected interval. On the
+confirmed set every one of them loses all of its positive intervals for that
+channel; on the suspected set all do except 3 of 42 for Day Get Over Here and 4
+of 18 for Req uppercut. Two confirmed duplicates are not B0 positives at all,
+both removed by B0's own 5 s history rule: Day Get Over Here at 63.8 (1.2 s into
+its segment) and Day team-up at 84.8 (see below).
+
+### Three named anomalies
+
+- **Day pt1-04 (context window t 89.3 s): the segmenter should have cut.** From
+  84.3 to 84.8 s a "1s SPECTATING" banner is on screen over a white-haired
+  teammate's HUD (325/325). At 85.2 s a one-to-two-frame black respawn
+  transition, then Spider-Man's own HUD at 85.4 s (250/250). Three gates fail
+  on the same second:
+  - the banner reader returns nothing for the one-second variant (it reads
+    the banner at 79–82.5 s, as it misses "10s SPECTATING" in
+    `ftnk5SVycXY`);
+  - the portrait check reads the teammate as Spider-Man;
+  - the black transition is shorter than the six-frame HUD-absence vote.
+
+  The segment starting at 84.3 s therefore carries three events from the
+  teammate's HUD: team-up cast 84.7–84.8 (also a gap duplicate), hp 325 → 50
+  and 50 → 250. **B0 excludes them as labels**: its 5 s history rule makes
+  89.4 s the segment's first window. It **does not exclude them from history**:
+  the four windows 89.4–90.0 s carry the teammate's frames in their 5 s of context.
+- **Day ~330.0 s `killcam`: correctly not cut.** One frame reads `killcam`
+  while the screen shows ordinary play (Spider-Man inside a shield dome, a
+  stream alert). The three-frame banner vote absorbs it and nothing downstream
+  changes. B0's windows there are unaffected.
+- **Req ~657.7 s scoreboard: the segmenter should have cut, by its own rule.**
+  The board fades in at 657.6, is fully open at 657.7–657.8 and gone at 657.9,
+  about three frames. The detector reads the two fully open frames, one short
+  of the three-frame vote. The HUD never counts as absent because the bar keeps
+  reading, so the segment 656.4–684.0 runs straight through. No event falls in
+  it. **B0 excludes it from labels** (the segment's first window is 661.4 s),
+  but the seven windows 661.4–662.6 s carry it in their history.
 
 ## Retained sections: how much is actually own-Spider-Man play
 
