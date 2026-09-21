@@ -214,6 +214,15 @@ media. A visible HUD and the correct hero do not establish tactical gameplay:
 pre-round spawn-room waits may be marked `unusable: pre_round`. Preserve that
 judgment in the frozen tranche; exclude pre-round windows from future candidate
 lists rather than silently substituting examples after annotation begins.
+Annotators receive phase-filtered observation packets, not full loader objects or
+source event streams: context packets contain only the permitted frames, raw HUD
+rows and events confirmed by the decision time. Freeze context judgments before
+releasing outcome packets. The second pass's accidental full-Day event-stream
+exposure disqualifies its four Day context judgments from the clean comparison;
+retain the disclosed pass and replace only those windows with a fresh annotator.
+Its four Req windows remain eligible for comparison, subject to the ordinary
+observability and agreement checks. A valid checksum proves preservation, not
+context-first independence or label accuracy.
 Claude assigns the primary annotator and comparison owner; Codex owns
 the second pass and acceptance. This is a measured annotation tranche, not a claim
 that 24 labels suffice to train a tactical policy, and it does not block B0.
