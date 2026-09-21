@@ -2,10 +2,75 @@
 
 Linear: VUH-1296. Evidence: `docs/evidence/l4/`. Raw measurements: `C:\rivals-agent\data\l4\` on the PC.
 
-The game is in the Practice Range as Spider-Man on the plaza by the spawn room's door, the view wherever the pad-turn
-measurement left it (turned well away from the Luna Snow bot), idle, no pad connected; the range's inactivity drop returns
-it to the lobby by itself. The PC holds `agent/`, `scripts/` (with templates) and `perception/` from `git archive a7fff98`,
-all 42 tracked files verified by sha256, nothing of this lane's scratch beside them. **The `plaza30` run has not been made.**
+The game is in the Practice Range as Spider-Man on the plaza beside the spawn room door's planter, the view about 50 degrees
+right of the Luna Snow bot where the third M1 pulse left it, idle, no pad connected; the range's inactivity drop returns it
+to the lobby by itself. **The PC holds main again**: `agent/`, `scripts/` (with templates) and `perception/` from
+`git archive a7fff98`, all 42 tracked files verified by sha256, no extras (`agent/startup.py` and `scripts/padprime_m1.py`,
+deployed for M1 only, are removed). **The `plaza30` run has not been made**; nothing follows M1 until the lead says so.
+
+## M1: three supervised camera-only sessions (VUH-1314): one right-stick pulse ends the attach drift in all three
+
+No gameplay, no brain, no loop run, no retries. Nothing was run on the PC but `capture.py preflight`, `scripts/reenter.py`
+and `scripts/padprime_m1.py`.
+
+**Deploy hash checks.** Before: `git archive 7b39016` (branch `pad-turn`), 44 files, every file's sha256 equal to
+`git show 7b39016:<path>` and to the PC's copy, no extras. After: `git archive a7fff98`, 42 files, the same two-way check;
+the first comparison showed the two branch-only files still on the PC (`agent/startup.py`, `scripts/padprime_m1.py`), they
+were removed, and the PC then equals a7fff98 for all 42 files with no extras. `agent/loop.py` on the PC is main's.
+
+**Each session**: `capture.py preflight` once (46 dxcam frames in 1 s); `reenter.py` from the PLAY lobby to its own end,
+exit 0 with the plaza confirmed in all three (16:57:00, 17:08:25, 17:20:01), its pad gone (0 Xbox pads present); the native
+2560x1440 recording started; ONE `padprime_m1.py` invocation. All three returned `outcome: ok`, exit 0, no guard refusal,
+observer never failed (timing available in all three). After each: 0 python left, 0 pads. **M1's start pose** (the
+recording's frames before the attach, `m1-<tag>-frames.jpg`): in all three he stands where the arrival ended, on the plaza
+beside the planter FACING the Luna Snow bot (x 0.46-0.49); `reenter.py`'s own session did not leave the view turned away.
+
+The script's JSON lines, verbatim. Its update stamps are taken after `pad.update()` returned inside `Live`'s lock and
+include the observer's overhead: they are not hardware-write times.
+
+```
+{"at": "earliest", "outcome": "ok", "stamps": {"constructor_start": {"perf": 95760.049, "wall": 1790027884.1815}, "attached": {"perf": 95760.4934, "wall": 1790027884.6255}, "proven": {"perf": 95760.5009, "wall": 1790027884.6335}, "released": {"perf": 95760.8483, "wall": 1790027884.981}, "closed": {"perf": 95763.8699, "wall": 1790027888.0027}}, "update_timing": "pad.update() returned (inside Live's lock; includes the observer's overhead; not the device's receipt)", "first_non_neutral_update_returned": 95760.5056, "last_non_neutral_update_returned": 95760.7976, "first_neutral_update_returned_after": 95760.8483, "reports": 8}
+{"at": "0.1", "outcome": "ok", "stamps": {"constructor_start": {"perf": 96434.6742, "wall": 1790028558.8093}, "attached": {"perf": 96435.1003, "wall": 1790028559.2349}, "proven": {"perf": 96435.2139, "wall": 1790028559.3486}, "released": {"perf": 96435.5733, "wall": 1790028559.7082}, "closed": {"perf": 96438.5773, "wall": 1790028562.7123}}, "update_timing": "pad.update() returned (inside Live's lock; includes the observer's overhead; not the device's receipt)", "first_non_neutral_update_returned": 96435.2234, "last_non_neutral_update_returned": 96435.5227, "first_neutral_update_returned_after": 96435.5733, "reports": 8}
+{"at": "0.3", "outcome": "ok", "stamps": {"constructor_start": {"perf": 97130.9763, "wall": 1790029255.1136}, "attached": {"perf": 97131.4069, "wall": 1790029255.5441}, "proven": {"perf": 97131.7201, "wall": 1790029255.8566}, "released": {"perf": 97132.03, "wall": 1790029256.1672}, "closed": {"perf": 97135.0309, "wall": 1790029259.1681}}, "update_timing": "pad.update() returned (inside Live's lock; includes the observer's overhead; not the device's receipt)", "first_non_neutral_update_returned": 97131.7345, "last_non_neutral_update_returned": 97131.9797, "first_neutral_update_returned_after": 97132.03, "reports": 7}
+```
+
+**Yaw from the recordings** (`m1-vyaw.py`; `m1-<tag>-yaw-table.txt`, `m1-<tag>-yaw-result.json`, `m1-yaw-plots.png`).
+Method and limits: horizontal shift between consecutive 60 fps frames (each reduced to 640x360; phase correlation on a
+narrow band about the view centre, above the hero), `yaw = atan(shift / 232.5 px)` (focal 465 px at 1280 wide), summed,
+right positive. Good to a few percent on a textured scene at the drift's rate; it under-reads on a blank surface at point
+blank; **it breaks down during the pulse** (about 12 px a frame: single frames jump by +16 and -19 degrees), so the pulse's
+size is read by eye from landmarks instead. The recording has no clock: the script's stamps are placed on it by the ONSET OF
+THE PULSE (first frame turning right faster than 60 deg/s = `first_non_neutral_update_returned`), so the 17-20 ms
+pad-to-screen delay sits inside that alignment and times are good to about one frame (17 ms).
+
+| | `--at earliest` | `--at 0.1` | `--at 0.3` |
+|---|---|---|---|
+| attach -> post-attach proof -> first non-neutral update returned | 0 -> 7.5 -> **12.2 ms** | 0 -> 113.6 -> **123.1 ms** | 0 -> 313.2 -> **327.6 ms** |
+| last non-neutral / first neutral after / close, from the attach | 304 / 355 / 3377 ms | 422 / 473 / 3477 ms | 573 / 623 / 3624 ms |
+| reports seen by the observer | 8 | 8 | 7 |
+| yaw over the 2 s before the attach | +0.5 deg (still) | -0.7 deg (still) | +0.5 deg (still) |
+| **residual DRIFT, attach to the pulse's onset** | **0.0 deg** (no frame turns left; the pulse starts inside the same recording frame as the attach) | **-3.4 deg**: left from the second frame after the attach (23 ms), 21-49 deg/s frame by frame | **-7.9 deg**: left from 42 ms after the attach, about 25 deg/s |
+| the pulse (a deliberate right turn, rx 0.45 for 0.3 s) | the bot goes from x 0.46 out of the left edge: more than 52 deg; per-frame sum 48 (unreliable) | the same: more than 52 deg; per-frame sum 69 (unreliable) | the bot goes from x 0.48 to x 0.02: about 50 deg net of the 8 deg drift, so the pulse is about 58 deg; per-frame sum 68 (unreliable) |
+| **the 2.8 s AFTER the pulse, pad still attached and neutral** | **+0.04 deg, largest frame rate 1.4 deg/s: STILL** | **+0.7 deg, largest frame rate 0.7 deg/s: STILL** | **+0.04 deg, largest frame rate 0.4 deg/s: STILL** |
+| the 2 s after the close | -0.1 deg | +0.4 deg | -0.2 deg |
+| `Switching Devices` banner (its two yellow chevrons, in the recording) | up 0.28 s after the attach, for **4.30 s**; still up 1.2 s after the close | up 0.43 s after the attach, for **4.27 s** | up 0.59 s after the attach, for **4.29 s** |
+
+**The point of M1: yes, the view stays still.** In all three schedules one camera-only pulse ends the drift: for the 2.8 s
+after it, with the pad attached and writing neutral, the view moves 0.04-0.7 degrees where the unprimed drift would have
+been about 70. Across the schedules the residual drift is the wait times the drift rate: nothing visible at 12 ms, 3.4
+degrees at 123 ms, 7.9 degrees at 328 ms (about 25 deg/s), and it starts within 23-42 ms of the attach. The earliest guarded
+send already costs nothing measurable: `Live` proves the range HUD before the pad opens and the post-attach proof took
+7.5 ms there (114 ms and 313 ms in the other two are the scheduled waits). The banner appears 0.3-0.6 s after the attach,
+that is AFTER the pulse has begun in every session, and lasts 4.3 s regardless of the schedule; the pulse is not swallowed
+by it (the right turn is on the recording from the first write). Nothing failed and nothing was refused. What M1 does not
+show: whether a pulse on another axis, a shorter or a smaller one does the same; whether the first input after the banner
+is still swallowed (no second input was sent); and the pulse leaves the view 50-60 degrees right of where the arrival left
+it, which a start phase has to account for.
+
+Recordings (native, 60 fps, 30 s each): `data/video/m1-earliest.mp4`, `m1-at01.mp4`, `m1-at03.mp4` on the Mac and in
+`C:\rivals-agent\data\video\`. Evidence: `m1-{earliest,at01,at03}.log` (the script's output), `...-yaw-table.txt`,
+`...-yaw-result.json`, `...-yaw.png`, `...-frames.jpg` (before the attach, the pulse's onset, after the pulse, at the
+close), `m1-yaw-plots.png`, `m1-vyaw.py`.
 
 ## Why a new pad session turns the view (VUH-1314): it turns LEFT from plug-in until the first non-neutral input
 
