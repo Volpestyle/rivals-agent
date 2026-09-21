@@ -108,6 +108,18 @@ gap in preceding history may be bridged only with its mask and a proven absence
 of a hard cut; any gap in the prediction horizon is censored. Require the full
 five-second context for the first run and report resulting eligible duration.
 
+The event JSONL does not retain per-frame HUD readability. B0 therefore retains
+raw outputs of the frozen readers for only its accepted training clips under
+`data/experiments/b0/`, using each event file's extraction recipe and clip clock.
+These sidecars supply target eligibility, never model inputs. Apply the HUD lane's
+[per-frame observability contract](lanes/l2-hud.md#per-frame-observability-contract-for-b0)
+with its explicit unknown states and confirmation margins. The next-event task
+requires coverage of every included event channel even for positive windows:
+one visible cast does not prove an earlier cast on an obscured channel was absent.
+Report the resulting exclusions and class support before fitting; do not relax
+unknowns to increase sample count. The 10 Hz observation limit and undetected
+Day overlay contamination remain stated limitations, not proven clean negatives.
+
 Past events are optional inputs and require a causal availability check, not
 merely an event timestamp. The extractor uses temporal cleanup and per-source
 slot mapping; perturbing footage after t must not change input features at t.
