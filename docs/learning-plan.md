@@ -122,8 +122,11 @@ exact button times or a claim that no unobserved cast occurred earlier.
 accepted training clips live under `data/experiments/b0/`, using the event file's
 recipe and clip clock. Apply the HUD lane's
 [per-frame contract](lanes/l2-hud.md#per-frame-observability-contract-for-b0).
-Do not infer lockout versus unreadability from a dim icon alone. Any later recovery
-of labels through a measured lockout distinction is a separately checked change.
+Do not infer lockout versus unreadability from a dim icon alone. The HUD lane's
+read-only check of these two sources finds no raw state that reliably separates
+lockout from unreadability: dim-without-countdown is not consistently enriched
+after another ability's cast. It supplies no mechanics-based negative labels;
+these cases remain unknown. Any later recovery needs a separately checked signal.
 The 10 Hz sampling limit and undetected Day icon-overlay contamination remain
 limitations; contamination prevalence is unknown, not zero.
 
@@ -1137,6 +1140,18 @@ which regimes, with what error. A range result does not prove transfer to Twitch
 compression, mouse controls or different sensitivity/FOV. A swing cast's camera
 direction is only one feature: anchor, momentum, movement and release also matter;
 charge/cooldown events do not establish continuous button-hold duration.
+
+The bounded probe reports 97–99% direction agreement on held-out ordinary range
+turns at 60 fps, with approximate rate recovery (389 versus the calibrated
+415 degrees/s at full stick). The same fast-turn footage sampled at 10 Hz fits
+only 34% of intervals and reads a median 83 versus 172 degrees/s. The measured
+stick-to-visible-motion offset is 20 ms. These comparisons use the commanded pad
+and calibrated response, not an independent camera-angle measurement. No LB use
+occurs in the 67,000 logged ticks, so swing recovery remains unvalidated.
+The next bounded transfer check uses hand-inspected native 60 fps expert rotation
+segments, excluding swings; confirm actual decoded cadence before sampling. Range
+scores do not transfer to VODs, Day's animated overlays remain unhandled, and
+ability-driven camera rotation must not be relabelled as a stick command.
 
 **Simple versus aimed swing is part of the action contract.** The controller lane
 records Simple Swing OFF and Hold to Swing ON for our client. The narrated guide
