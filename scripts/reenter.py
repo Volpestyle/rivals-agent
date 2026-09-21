@@ -676,11 +676,14 @@ class Live:
         t_proof = self.clock()
         if self.frame_t < self.settled_t:
             raise Refuse(f"the proof frame predates the last input's settling; {button} not sent", f)
-        age = self.clock() - self.frame_t
-        stages = (f"grab {(t_grab - t0) * 1e3:.0f} ms ({getattr(self, 'frame_src', '?')}), classify {(t_classify - t_grab) * 1e3:.0f}, "
-                  f"proof {(t_proof - t_classify) * 1e3:.0f}, checks {(self.clock() - t_proof) * 1e3:.0f}")
+        t_check = self.clock()                # the last sample: nothing but the comparison stands between it and the write
+        age = t_check - self.frame_t
+
+        def stages():                         # built only after the write, or once a refusal is decided: never in between
+            return (f"grab {(t_grab - t0) * 1e3:.0f} ms ({getattr(self, 'frame_src', '?')}), classify {(t_classify - t_grab) * 1e3:.0f}, "
+                    f"proof {(t_proof - t_classify) * 1e3:.0f}, checks {(t_check - t_proof) * 1e3:.0f}")
         if age > MAX_PROOF_AGE_S:
-            raise Refuse(f"the proof is {age:.2f} s old (limit {MAX_PROOF_AGE_S} s); {button} not sent ({stages})", f)
+            raise Refuse(f"the proof is {age:.2f} s old (limit {MAX_PROOF_AGE_S} s); {button} not sent ({stages()})", f)
         try:
             if button == "RT":
                 self.pad.right_trigger_float(1.0)
@@ -694,9 +697,13 @@ class Live:
             self.release_all()
         self.sleep(0.5)
         self.settled_t = self.clock()
-        # After the input and its settle, never between the proof and the write: the age is counted from the start of the grab (frame_t),
-        # so it includes waiting for a new frame; the frame's own content can be up to one display interval older than that.
-        print(f"reenter: {button} written at proof age {age * 1e3:.0f} ms (limit {MAX_PROOF_AGE_S * 1e3:.0f}): {stages}")
+        # After the input and its settle, never between the proof and the write. The age runs from the START of the grab that produced the
+        # frame (frame_t) to the check: an acquisition-start-to-check age, not a measured age of what the sensor saw. A record, not a
+        # control: a failing output (a closed pipe) is dropped, the press is done; an interrupt still propagates.
+        try:
+            print(f"reenter: {button} written at proof age {age * 1e3:.0f} ms (limit {MAX_PROOF_AGE_S * 1e3:.0f}): {stages()}")
+        except Exception:                                               # noqa: BLE001
+            pass
 
 
 class Safe:

@@ -200,11 +200,12 @@ itself), so it stops as soon as the proof holds. Limits: the template is checked
 template's source), the tooltip appears only after the cursor has dwelt on the portrait, and it needs the game's language and UI scale as recorded.
 
 **What the search costs, and the age at the press.** Every A is proven twice on fresh frames (Safe.press, then Live.tap on its own
-frame), and Live.tap refuses unless its frame is at most `MAX_PROOF_AGE_S` 0.3 s old at the write. The age is counted from the START of
-the grab that produced the frame (`frame_t`), so it includes waiting for a new dxcam frame; the frame's own content can be up to one
-display interval older than that (dxcam delivers the newest frame since the last grab; 65-75 frames/s on the PRACTICE panel). What the
-age covers is Live.tap's grab, `classify`, the proof and the two checks; nothing else stands between the proof and the write, and the
-proof has to be on the frame it gates. On the Mac nearly all of a proof is `find_cursor` (classify 0.1-0.3 ms, the tile and tab checks
+frame), and Live.tap refuses unless its frame's age is at most `MAX_PROOF_AGE_S` 0.3 s at the check. That is an acquisition-start-to-check
+limit: the age runs from the START of the grab that produced the frame (`frame_t`), so it includes waiting for a new dxcam frame, to the
+last clock sample before the write, with nothing but the comparison between that sample and the write; it is not a measured age of what
+the sensor saw. That the frame's content is at most about one display interval older than `frame_t` is an ASSUMPTION (dxcam hands over
+the newest frame since the last grab; 65-75 frames/s on the PRACTICE panel does not show there is no buffering), and it adds nothing to
+the limit. What the age covers is Live.tap's grab, `classify`, the proof and the settle check; the proof has to be on the frame it gates. On the Mac nearly all of a proof is `find_cursor` (classify 0.1-0.3 ms, the tile and tab checks
 1-2 ms); on the PC a proof pass measured 85-261 ms (no-input `--timing`), 4-5x the Mac, with the game drawing the menu at 414-471 FPS,
 and two live A presses on the PRACTICE RANGE tile were refused at 0.31 and 0.32 s.
 
@@ -216,7 +217,9 @@ every stored frame (refusal and evidence frames, all logged arrival steps and na
 frames (255), and every ring score bit-identical to the one-centre version, including a built plain ring at its clipped outer window and
 two rings that tie exactly (`tests/test_reenter.py` keeps the old search verbatim as the reference). Not measured: the PC's new proof
 time. Each written press prints, after the input and its settle, `A written at proof age N ms (limit 300): grab N ms (dxcam|GDI),
-classify N, proof N, checks N`, and an age refusal carries the same stages; the next supervised re-entry is that measurement.
+classify N, proof N, checks N` (checks: the proof's end to the final age sample), and an age refusal carries the same stages; the line is
+built only after the write, or once a refusal is decided, and a failing output is dropped (the press is already done; an interrupt still
+propagates). The next supervised re-entry is that measurement; a press that still refuses for age stops it, with no change to the limit.
 
 ## Steering
 

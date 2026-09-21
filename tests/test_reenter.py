@@ -1996,6 +1996,48 @@ def test_a_press_prints_its_age_and_stages_after_the_write(monkeypatch):
     assert not touched(calls)
 
 
+def test_nothing_is_timed_or_built_between_the_age_check_and_the_write(monkeypatch):
+    """Review of 534f88b: the stages string (another clock read) was built after the age was sampled and before the write, so the press
+    went out older than the age that was checked. With a clock that moves 1 ms on every read, the checked age must be the age at the
+    write exactly: no read, no work, in between."""
+    lobby = frame("lobby-cursor-on-practice")
+    live, calls, clock = make_live(monkeypatch, Screen(lobby, after=lobby))
+    raw = live.clock
+
+    def ticking():
+        clock.t += 0.001
+        return raw()
+    live.clock = ticking
+    at_write = []
+    real_update = live.pad.update
+
+    def update():
+        if calls and calls[-1][0] == "press_button":
+            at_write.append(clock.t - live.frame_t)
+        real_update()
+    live.pad.update = update
+    said = []
+    monkeypatch.setattr(R, "print", lambda *a, **k: said.append(" ".join(map(str, a))), raising=False)
+    live.tap("A", screen="lobby", proof_fn=lambda f: (setattr(clock, "t", clock.t + 0.2), R.Proof(True, "proved"))[1])
+    checked = int(re.search(r"proof age (\d+) ms", said[-1]).group(1))
+    assert len(at_write) == 1 and checked == round(at_write[0] * 1e3)
+
+
+def test_a_failing_output_after_the_press_is_dropped_not_raised(monkeypatch):
+    """Review of 534f88b: with stdout closed the print raised out of Live.tap after A had gone out. The press is done; the pad is neutral."""
+    lobby = frame("lobby-cursor-on-practice")
+    live, calls, _ = make_live(monkeypatch, Screen(lobby, after=lobby))
+
+    def broken(*a, **k):
+        raise BrokenPipeError("stdout closed")
+    monkeypatch.setattr(R, "print", broken, raising=False)
+    live.tap("A", screen="lobby", proof_fn=R.on_practice_tab)
+    assert presses(calls) == ["A"] and [c[0] for c in calls][-2:] == ["reset", "update"]
+    monkeypatch.setattr(R, "print", lambda *a, **k: (_ for _ in ()).throw(KeyboardInterrupt()), raising=False)
+    with pytest.raises(KeyboardInterrupt):                                        # an interrupt is not swallowed
+        live.tap("A", screen="lobby", proof_fn=R.on_practice_tab)
+
+
 def test_the_ring_signature_matches_at_its_window_edges_on_a_built_sprite():
     """A plain ring at radius 30, where the outer window is clipped (33-35): random centres on real frames almost never light it."""
     yy, xx = np.mgrid[0:720, 0:1280]
