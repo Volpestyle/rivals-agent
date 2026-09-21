@@ -1,0 +1,72 @@
+{
+ "prime_onset_video_s": 3.013382899628253,
+ "banner_intervals_video_s": [
+  [
+   3.31,
+   4.2,
+   0.89
+  ],
+  [
+   10.65,
+   11.62,
+   0.97
+  ]
+ ],
+ "banner_intervals_after_prime_onset_s": [
+  [
+   0.3,
+   1.19
+  ],
+  [
+   7.63,
+   8.6
+  ]
+ ],
+ "match": {
+  "confirm-1": {
+   "video_s": 8.806,
+   "mad": 8.89,
+   "after_prime_onset_s": 5.792,
+   "banner_up_here": false,
+   "rate_deg_s_min_max_within_5_frames": [
+    -2.2,
+    -0.6
+   ],
+   "yaw_change_5_frames_before_to_5_after_deg": -0.22,
+   "native_mad": 2.62,
+   "native_shift_px": [
+    0.01,
+    0.02
+   ]
+  },
+  "confirm-2": {
+   "video_s": 8.856,
+   "mad": 8.87,
+   "after_prime_onset_s": 5.843,
+   "banner_up_here": false,
+   "rate_deg_s_min_max_within_5_frames": [
+    -2.2,
+    -0.1
+   ],
+   "yaw_change_5_frames_before_to_5_after_deg": -0.21,
+   "native_mad": 2.3,
+   "native_shift_px": [
+    0.0,
+    0.01
+   ]
+  },
+  "step-01": {
+   "video_s": 0.0,
+   "mad": 1.72,
+   "after_prime_onset_s": -3.013,
+   "banner_up_here": false,
+   "rate_deg_s_min_max_within_5_frames": [
+    -0.5,
+    -0.1
+   ],
+   "yaw_change_5_frames_before_to_5_after_deg": -0.03
+  }
+ },
+ "yaw_prime_onset_to_confirm_2_deg(per-frame sum, unreliable across pulses)": -2.7,
+ "yaw_after_confirm_2_next_1s_deg": -0.82
+}

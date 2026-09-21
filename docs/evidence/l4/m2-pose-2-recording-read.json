@@ -1,0 +1,38 @@
+{
+ "prime_onset_video_s": 3.082638888888889,
+ "banner_intervals_video_s": [
+  [
+   3.33,
+   4.27,
+   0.94
+  ],
+  [
+   15.2,
+   16.18,
+   0.99
+  ]
+ ],
+ "banner_intervals_after_prime_onset_s": [
+  [
+   0.25,
+   1.19
+  ],
+  [
+   12.11,
+   13.1
+  ]
+ ],
+ "match": {
+  "step-01": {
+   "video_s": 0.0,
+   "mad": 2.42,
+   "after_prime_onset_s": -3.083,
+   "banner_up_here": false,
+   "rate_deg_s_min_max_within_5_frames": [
+    -0.0,
+    1.4
+   ],
+   "yaw_change_5_frames_before_to_5_after_deg": 0.08
+  }
+ }
+}

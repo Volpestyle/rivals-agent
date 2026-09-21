@@ -1,0 +1,22 @@
+{"n": 1, "t": 0.346, "action": "prime pulse 1 of 7: right stick +0.45 up to 0.3 s, then neutral", "stamp": 0.0, "plaza": null, "turns": 1, "frame": "start-step-01.png"}
+{"n": 2, "t": 5.358, "action": "delay 5.00 s, frames only", "stamp": 5.329, "plaza": null, "turns": 1, "frame": "start-step-02.png"}
+{"n": 3, "t": 5.399, "action": "look", "stamp": 5.3578, "plaza": false, "turns": 1, "frame": "start-step-03.png"}
+{"n": 4, "t": 5.764, "action": "search pulse 2 of 7: right stick -0.45 up to 0.3 s, then neutral", "stamp": 5.3987, "plaza": null, "turns": 2, "frame": "start-step-04.png"}
+{"n": 5, "t": 5.937, "action": "delay 0.15 s, frames only", "stamp": 5.9079, "plaza": null, "turns": 2, "frame": "start-step-05.png"}
+{"n": 6, "t": 5.973, "action": "look", "stamp": 5.9367, "plaza": false, "turns": 2, "frame": "start-step-06.png"}
+{"n": 7, "t": 6.334, "action": "search pulse 3 of 7: right stick -0.45 up to 0.3 s, then neutral", "stamp": 5.9733, "plaza": null, "turns": 3, "frame": "start-step-07.png"}
+{"n": 8, "t": 6.494, "action": "delay 0.15 s, frames only", "stamp": 6.4667, "plaza": null, "turns": 3, "frame": "start-step-08.png"}
+{"n": 9, "t": 6.53, "action": "look", "stamp": 6.4943, "plaza": false, "turns": 3, "frame": "start-step-09.png"}
+{"n": 10, "t": 6.884, "action": "search pulse 4 of 7: right stick -0.45 up to 0.3 s, then neutral", "stamp": 6.5296, "plaza": null, "turns": 4, "frame": "start-step-10.png"}
+{"n": 11, "t": 7.044, "action": "delay 0.15 s, frames only", "stamp": 7.0169, "plaza": null, "turns": 4, "frame": "start-step-11.png"}
+{"n": 12, "t": 7.054, "action": "look", "stamp": 7.0441, "plaza": false, "turns": 4, "frame": "start-step-12.png"}
+{"n": 13, "t": 7.409, "action": "search pulse 5 of 7: right stick -0.45 up to 0.3 s, then neutral", "stamp": 7.0538, "plaza": null, "turns": 5, "frame": "start-step-13.png"}
+{"n": 14, "t": 7.574, "action": "delay 0.15 s, frames only", "stamp": 7.5454, "plaza": null, "turns": 5, "frame": "start-step-14.png"}
+{"n": 15, "t": 7.584, "action": "look", "stamp": 7.5736, "plaza": false, "turns": 5, "frame": "start-step-15.png"}
+{"n": 16, "t": 7.942, "action": "search pulse 6 of 7: right stick -0.45 up to 0.3 s, then neutral", "stamp": 7.5842, "plaza": null, "turns": 6, "frame": "start-step-16.png"}
+{"n": 17, "t": 8.102, "action": "delay 0.15 s, frames only", "stamp": 8.0738, "plaza": null, "turns": 6, "frame": "start-step-17.png"}
+{"n": 18, "t": 8.115, "action": "look", "stamp": 8.1019, "plaza": false, "turns": 6, "frame": "start-step-18.png"}
+{"n": 19, "t": 8.467, "action": "search pulse 7 of 7: right stick -0.45 up to 0.3 s, then neutral", "stamp": 8.1149, "plaza": null, "turns": 7, "frame": "start-step-19.png"}
+{"n": 20, "t": 8.641, "action": "delay 0.15 s, frames only", "stamp": 8.6138, "plaza": null, "turns": 7, "frame": "start-step-20.png"}
+{"n": 21, "t": 8.676, "action": "look", "stamp": 8.6414, "plaza": false, "turns": 7, "frame": "start-step-21.png"}
+{"n": 22, "t": 8.676, "action": "refused: plaza start view not confirmed: 7 turns taken", "stamp": 8.6414, "plaza": null, "turns": 7, "frame": "start-step-22.png"}

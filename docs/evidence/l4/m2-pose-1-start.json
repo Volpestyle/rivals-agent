@@ -1,0 +1,19 @@
+{
+ "turns": 2,
+ "stamps_s_after_liveio_return": [
+  5.9041,
+  5.9468
+ ],
+ "ms": {
+  "first_send_returned": 12.0,
+  "prime_done": 310.4,
+  "confirmed": 5989.2,
+  "liveio_return_to_first_send_return": 12.0
+ },
+ "liveio_ms": 582.3,
+ "confirm_frames": [
+  "start-confirm-1.png",
+  "start-confirm-2.png"
+ ],
+ "steps_file": "start-steps.jsonl"
+}
