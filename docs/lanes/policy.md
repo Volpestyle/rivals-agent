@@ -2,8 +2,13 @@
 
 ## Format-5 policy consumer seam
 
-The policy consumer changes are staged for integration with the separate format-5
-writer and loader branches; neither regeneration nor a corrected-data fit is accepted.
+The format-5 writer/loader and policy consumers are integrated on `a016991`; the
+accepted regenerated two-source corpus uses writer `21a390f547eb`. Fresh raw reads
+and H1/H2 support are complete under `data/experiments/b0-format5/`. The released
+fixed H2 experiment is complete under `data/experiments/b0-multilabel-format5-h2/`;
+both final checkpoints reproduce exactly. WEB occurrence improves over every
+declared baseline, but timing is worse than the fit-median baseline, so the joint
+claim screen is **no_improvement** in both folds. Other claims remain inconclusive.
 `policy/train.py` requires finite `known_at >= t_to` (otherwise `EventEvidenceError`,
 before the loader accessor) and counts events by availability
 at each historical step. The four event columns are verified damage events
@@ -59,11 +64,11 @@ through H2-builder path. The expiry sweep preserves 600/600 valid windows per ho
 mutations target expiry, rounding-boundary tolerance, resets and charge changes.
 The prior ten targeted mutations cover the previously uncovered guards. One additional
 synthetic slice check passes with reads before and after the requested horizon,
-and catches passing the whole timestamp array to the expiry check. No corrected corpus count or fit exists. The default
-checkout still requires integration with the accepted writer/loader before these
-format-5 paths run. Tests in `test_b0_format5.py` explicitly skip on format 4.
+and catches passing the whole timestamp array to the expiry check. Tests in
+`test_b0_format5.py` explicitly skip on format 4. This recount uses the accepted
+pipeline without a broad test rerun or code changes.
 
-After integration and authorized corrected sidecar extraction, the diagnostic commands are:
+The support commands use fresh outputs; existing artifacts must not be overwritten:
 
 ```sh
 python -m policy.b0_support --horizon 1 --out data/experiments/b0-format5/support-h1
@@ -74,6 +79,76 @@ python -m policy.b0_multilabel
 The last command builds without fitting. `--fit` additionally requires support and
 a nonconstant fitting channel. Every output uses a separate format-5 directory;
 archived reproduction requires its recorded code revision.
+
+## Corrected support disposition
+
+Raw extraction is serial/niced: Day 8,985 reads (308.8 s), Req 9,001 (314.3 s),
+with native reader origins 1.616 s and 0 s. The pre-count `run-record.json` records
+actual dedicated-venv commands, revision, fingerprints, unchanged H1 diagnostic/H2
+task and gates. Source and code fingerprints match at recount completion. The
+support-only recount opens no cache arrays and performs no model fit; the separate
+released H2 experiment uses explicitly selected caches for the two accepted IDs.
+
+H2 structural windows: Day 1,764, Req 2,207. In channel order get_over_here, swing,
+uppercut, web_cluster_fired, teamup, conservative distinct-positive lower bounds are
+Day **29/51/50/84/0**, Req **25/52/14/101/0**; nonoverlapping two-second negative
+horizons are Day **18/2/3/58/23**, Req **9/2/0/69/35**. Only **web_cluster_fired**
+clears the 20-positive-lower-bound / 20-negative-horizon held floor in both sessions.
+Day fitting classes are both present for the first four channels; Req fitting
+classes are both present for get_over_here, swing and web_cluster_fired. Req uppercut
+has 99 positive / 0 negative windows. Teamup has zero verified positives in both
+sessions and is unsupported; uncertain evidence is not promoted to positive.
+
+H1 remains diagnostic only: 1,894 Day / 2,299 Req structural windows. Full H1/H2
+per-channel windows, unknown reasons, ambiguous charge pairings, timing support,
+interval widths and fold dispositions are in
+`data/experiments/b0-format5/recount.json` and `support-handback.md`; original support
+reports/windows are in `support-h1/` and `support-h2/`. `support-SHA256SUMS` fingerprints
+the recount, run record and source sidecars. The 10 Hz intersample limit and
+unquantified Day icon-overlay contamination remain limitations. Archived artifacts
+are unchanged; support is not a gameplay or model-performance claim.
+
+## Corrected H2 result
+
+One fixed fit per direction uses the unchanged five-output masked setup, seed 0,
+40 epochs, batch 64 and final-epoch selection. No tuning or restart is performed.
+The actual command and fingerprints are separate from immutable `run-spec.json`
+in `execution-record.json` under `data/experiments/b0-multilabel-format5-h2/`.
+
+| WEB metric | Day fit → Req held | Req fit → Day held |
+|---|---:|---:|
+| Model F1 | 0.730085 | 0.762481 |
+| Always-negative F1 | 0 | 0 |
+| Fit-prior / fit-majority F1 | 0.703043 | 0.722335 |
+| Most-recent-use F1 | 0.400943 | 0.363636 |
+| Raw-HUD resource F1 | 0.703043 | 0.247117 |
+| Model timing interval error (s) | 0.470716 | 0.416854 |
+| Fit-median timing error (s) | 0.291937 | 0.309756 |
+| Timing common-support rows | 524 | 410 |
+| Mean occurrence width (s) | 0.347901 | 0.320000 |
+| Joint claim screen | no_improvement | no_improvement |
+
+WEB fitting P/N is 532/409 for Day and 670/566 for Req. Useful fitting windows are
+1,244 and 1,548; held windows are 2,207 and 1,764. Training elapsed is 13.263 s and
+15.587 s. HUD resource uses extra raw HUD information absent from neural inputs;
+all comparisons use identical observed masks and fitting-side-only statistics.
+Timing compares distance outside retained intervals on common support; wider bands
+are not improved precision. Teamup is excluded from both fits/comparisons; Req-fit
+uppercut is excluded. All non-WEB channel claims remain inconclusive.
+
+`reproduce.py` reloads both actual `model.safetensors` checkpoints and recomputes
+predictions with batch 128 plus natural tails 31 and 100. Both logits and delays
+have max absolute replay error **0.0**. Saved baseline outputs, fitting statistics,
+model/baseline metrics, common-support timing and claim screens reproduce.
+`reproduction.json`, `completion.json`, `README.md` and `SHA256SUMS` retain evidence;
+per-fold `report.json` and `predictions.npz` include full descriptive metrics.
+Exact replay requires the recorded grouping; MLX can differ across batch sizes.
+No verification refit or broad test run is performed.
+
+This negative joint-gate result establishes no combo selection, swinging, tactics,
+live control or generalization beyond two creator/session-confounded development
+folds. Frozen-reader uncertainty, nonrandom masks, 10 Hz gaps and unquantified Day
+overlay contamination remain limitations. The lane is stopped after handback.
 
 ## Archived B0 masked occurrence experiment
 

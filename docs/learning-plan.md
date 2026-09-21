@@ -225,18 +225,17 @@ confirmed duplicates, six valid controls, charged-slot second-use/recharge cases
 the spectating/short-respawn transition and brief scoreboard, while preserving
 the existing false-killcam rejection.
 
-The primary2 outcome pass and eight-window comparison are complete; the writer
-repair may proceed. All frozen event/annotation packets remain unchanged as evidence.
-The HUD owner repairs and versions the writer, runs the regressions and performs
-one coordinated regeneration of approved sources, with manifests kept
-identical to event segments. Inventory the regeneration's source IDs first; sealed
+The primary2 outcome pass, eight-window comparison and format-5 writer repair are
+complete. Accepted writer `21a390f547eb` and regenerated manifests supply the corrected
+experiment; frozen event/annotation packets remain unchanged as evidence. Future
+regeneration keeps manifests identical to event segments. Inventory the regeneration's source IDs first; sealed
 sources are not implicitly authorized by a batch-wide command. Rebuild affected
 reader sidecars and derived windows under the new fingerprints, preserve the
 original artifacts, and independently review provenance, masks and event validity
 before recounting support. No extra upload-wide measurement is needed to establish
 this already reproduced defect.
 
-After that review, recount corrected **one-second support as a diagnostic**;
+The corrected recount includes **one-second support as a diagnostic**;
 the archived one-second fit remains unchanged and no one-second refit is pending.
 The accepted fit already uses **per-channel masks**; the abandoned global
 all-five-known build is not its eligibility rule. Reduced all-channel visibility
@@ -280,7 +279,30 @@ improved timing precision. One-second support remains visible even if unusable.
 This authorization replaces the pending same-horizon refit, not its archived
 results or acceptance claims.
 
-Format 5 requires consumer changes before this repetition. An `ability_uncertain`
+**Corrected H2 result: complete, no joint improvement.** The unchanged five-output
+experiment has two final-epoch checkpoints under
+`data/experiments/b0-multilabel-format5-h2/`. Only web-cluster firing meets the
+held-support floor in both directions: distinct-positive lower bound / independent
+negative horizons is Day 84/58 and Req 101/69. Team-up has no verified positives;
+other channels remain inconclusive. There is no horizon search or further B0 fit
+authorized by this result.
+
+| Supported WEB measure | Day → Req | Req → Day |
+|---|---:|---:|
+| Model F1 / strongest declared baseline F1 | 0.730 / 0.703 | 0.762 / 0.722 |
+| Model / median timing interval error, seconds | 0.471 / 0.292 | 0.417 / 0.310 |
+| Joint improvement gate | not met | not met |
+
+Both saved checkpoints reproduce exactly with the recorded batch grouping, and
+baseline outputs and metrics match. Occurrence F1 is higher on the observed subset;
+timing is worse. This is neither statistical evidence of generalization nor a
+controller ready for deployment: two development sessions confound creator and
+session, masks are nonrandom, and no tactical or gameplay outcome is evaluated.
+[The policy lane](lanes/policy.md#corrected-h2-result) holds full support, timing-width
+and reproduction details. Coarse-purpose imitation remains the main learning
+line; the single-charge no-use measurement below is a separate proposed enabler.
+
+Format-5 consumers enforce the following contract. An `ability_uncertain`
 interval overlapping a horizon or its confirmation margin prevents a negative
 for that channel; it does not discard other channels. An independently verified,
 contained cast can still prove occurrence, but possible earlier casts suppress
