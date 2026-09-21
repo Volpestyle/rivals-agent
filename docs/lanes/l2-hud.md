@@ -406,6 +406,42 @@ accessibility setting and is currently green. Nothing here reads panel colour.
 from both clips and the range run, and picks up anything L4 drops into
 `docs/evidence/l4/scoreboard/` automatically.
 
+## Guide timings: blocked on ability identity, not on timing
+
+The three practice-range guide windows were extracted at an exact 30 Hz
+(`select='not(mod(n,2))'` on a 60 fps source) and the Day window run through the
+extractor. It produced segments and slot events but **zero casts**, and the
+reason is worth more than the timings would have been.
+
+**A slot position is not an ability.** Reading the same four slot centres on
+three sources:
+
+| slot centre | Req | Day | FFAme |
+|---|---|---|---|
+| 0.7516 | team-up | team-up | team-up |
+| 0.7950 | **Web-Swing** | **Get Over Here** | **Get Over Here** |
+| 0.8348 | **Get Over Here** | **Web-Swing** | **Web-Swing** |
+| 0.8723 | uppercut | uppercut | uppercut |
+
+Swing and Get Over Here are **swapped** on both guide sources relative to the
+clip the layout was measured on, because the ability-to-key binding is a player
+setting: Req's row reads C / LSHIFT / R / F, Day's reads C / mouse / LSHIFT / F.
+Any interval reported from these windows now would have attributed half the
+casts to the wrong ability on two of the three sources.
+
+The good news is that only the *naming* is wrong. The slot **positions** are
+stable: detecting the underline beneath each icon finds slots at 0.7948, 0.8346
+and 0.8742 on all three sources, within a pixel of the layout's values. So the
+geometry transfers and the mapping does not.
+
+**The fix is bounded**: identify the icon in each slot once per source by
+matching the four Spider-Man icons — the swinging figure, the arrow, the fist,
+the star — and build the slot mapping from what is actually there, instead of
+assuming an order. That is the same colour-template method already used for the
+hero portrait and the Spider-Tracer, and it also removes the need to hand-pick a
+layout per source for the ability row. Until it exists, `Layout.slot_cx` names
+are only trustworthy on sources whose binding order has been checked by eye.
+
 ## Reading a streamer's HUD (1080p, mouse and keyboard)
 
 Measured against a 60 s 1080p60 Twitch clip of ReqMR on Spider-Man and six
