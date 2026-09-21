@@ -246,7 +246,11 @@ what `arrival_step` decides on each fresh frame (a pure function of the frame an
 3. **no progress**: a walk that moves him changes the view; `STILL_WALKS` 2 walks in a row whose next frame differs from the one they
    were decided on by under `STILL` 8 (mean grey difference of a masked thumbnail, `_scene`: the hero and the key hints blanked) are
    walking into something. It then strafes LEFT for `SIDESTEP_S` 0.4 s (the left stick, through `Safe` like every step, logged as its own
-   action) and carries on; after `SIDESTEP_TRIES` 2 sidesteps a third stall refuses ("walking does not move him");
+   action) and carries on; after `SIDESTEP_TRIES` 2 sidesteps a third stall refuses ("walking does not move him"). Each walk's change is
+   judged once, on the next frame, before anything else; an advancing walk clears the count, and a pause (the plaza's second look) is not
+   a walk. The log's `moved` is the change the decision used (None when the step before was not a walk) and `still` the count it acted
+   on. A small scene change does not identify an obstacle nor prove clear ground to the left: a false stall can still cause bounded
+   sideways movement, two 0.4 s strafes are no guarantee against a fall, and the arrival runs only in the supervised spawn trials;
 4. **out**: a walk step, then a frame with no door, where the kept door's biggest blob over its last `OUT_WALKS` 3 walk steps was
    `OUT_PX` (10k px at 1280x720) or more, is passing through it. The pane shrinks as he reaches it, so the last walk alone is not the
    measure (see the three supervised arrivals below). From then on no door is steered to or walked at, not even a sliver of its pane, and it only turns LEFT (0.3 s, ~50 deg) up to `OUT_SWEEPS`
@@ -336,7 +340,25 @@ What separates walking from walking into something, measured on every walk step 
 masked scene changes by 21-47 on every advancing walk, 11-12 when he brushed the rim and slid off, 2-3 on every stuck step; the door's
 blob size is no measure (it flickers 11.8-26.3k with the pane's animation while stuck, and barely grows walking at the far door from
 spawn). Replayed from a fresh memory over the seven logs (open loop: decisions only): no still walk is counted anywhere in the six
-arrivals that moved; in arrival 3 the second still walk is at step 7 and the sidestep would be step 8. Not shown offline: that 0.4 s
+arrivals that moved; in arrival 3 the second still walk is at step 7 and the sidestep would be step 8.
+
+The same change on native frames (the second round's 2560x1440 recordings, `data/video/door{1,2,3}.mp4`; the frame of the recording that
+best matches each step's saved decision JPEG, `data/reenter/arrive-<time>/native/`):
+
+| Pair | Arrival, steps | 720p step JPEG | Native recording |
+|---|---|---|---|
+| stuck | 3 (14:01), 8 -> 9 | 3.2 | 3.2 |
+| stuck | 3, 20 -> 21 | 3.0 | 3.0 |
+| brushed the rim, slid off | 3, 5 -> 6 | 10.6 | 10.6 |
+| advancing | 1 (13:38), 13 -> 14 | 30.8 | 30.9 |
+| advancing, the crossing | 1, 14 -> 15 | 35.7 | 35.7 |
+| advancing | 2 (13:50), 13 -> 14 | 29.0 | 29.0 |
+| advancing, the crossing | 2, 14 -> 15 | 21.1 | 21.0 |
+
+The frames are aligned by appearance, not by time: each native frame is the recording's best match to the saved JPEG (mean difference
+1.4-2.0 grey levels at 320x180 for the crossings; 4.5 for stuck steps 8 and 9, where the view barely changes and many recording frames
+match about as well). They are recording frames (h264, `-cq 19`), not the tool's own dxcam frames, so the agreement shows the thumbnail
+is insensitive to these two compressions on these pairs, not that live frames read the same; the log's `moved` is the live value. Not shown offline: that 0.4 s
 to the left takes him off the rim and that the walk then carries on; the three supervised arrivals are the measurement.
 
 What the tool's result does and does not say: exit 0 means `plaza_view` held on two frames, not that the acceptance holds (two

@@ -1845,3 +1845,31 @@ def test_only_unchanged_walks_in_a_row_are_no_progress():
     with pytest.raises(R.Refuse, match="could not confirm"):                      # the budget, not no-progress
         R.arrive(sim, R.Safe(sim, log=lambda *_: None))
     assert all(i[1] == 0.0 for i in sim.inputs if i[0] == "stick")               # never a sidestep
+
+
+def test_a_plaza_pause_after_an_advancing_walk_is_neither_a_walk_nor_a_stall(monkeypatch):
+    """Review of cac94bd: walk 1 blocked (unchanged view), walk 2 advanced by 30 onto a plaza-looking frame (a second look, standing
+    still), then the pause's near-identical frame no longer looked like the plaza: the advance had been skipped and the pause counted as a
+    second failed walk, so it sidestepped. Each walk's evidence is used exactly once, and a pause is not a walk."""
+    scenes = iter(np.full((68, 160), v, np.float32) for v in (0, 0, 30, 30))
+    plaza = iter((False, False, True, False))
+    monkeypatch.setattr(R, "_scene", lambda f: next(scenes))
+    monkeypatch.setattr(R, "plaza_view", lambda f: next(plaza))
+    monkeypatch.setattr(R, "door_blobs", lambda f: [(0.40, 6000)])
+    m = R.ArrivalMemory()
+    acts = [R.arrival_step(None, m)[0] for _ in range(4)]
+    assert acts == ["walk", "walk", "plaza?", "walk"] and m.sidesteps == 0
+    assert m.still == 0 and m.moved is None                                     # the advance cleared the stall; the pause was not a walk
+
+
+def test_the_log_records_the_scene_change_the_decision_used(tmp_path):
+    log = R.ArrivalLog(tmp_path)
+    sim = Sim("spawn", {})
+    sim.stuck = True
+    with pytest.raises(R.Refuse):
+        R.arrive(sim, R.Safe(sim, log=lambda *_: None), log)
+    rows = [json.loads(l) for l in (log.dir / "steps.jsonl").read_text().splitlines()]
+    assert rows[0]["moved"] is None and rows[0]["still"] == 0                   # no walk before the first decision
+    assert rows[1]["moved"] is not None and rows[1]["moved"] < R.STILL and rows[1]["still"] == 1
+    assert rows[2]["action"].startswith("no progress: sidestep left") and rows[2]["still"] == R.STILL_WALKS   # what it acted on
+    assert rows[3]["moved"] is None                                             # after a sidestep: not a walk
