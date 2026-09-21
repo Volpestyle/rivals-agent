@@ -355,6 +355,31 @@ returns generic `teamup`, not a partner/variant identity; variant assignment
 needs separately verified per-segment evidence or remains unknown. Retain the
 declared two-second experiment even if accepted glyph evidence improves precision.
 
+**Post-H2 candidate: hindsight no-use evidence for single-charge slots.** The
+current ability-negative rule requires a visible running countdown throughout
+its horizon; it provides no examples of an available ability deliberately left
+unused. The unchanged H2 run finishes before this separate measurement is pursued.
+For a verified single-charge slot, a trusted no-countdown witness at `s` can exclude
+use in `(t,t+H]` only when every such use would necessarily have a visible countdown
+at `s`. The proposed interval `t+H+m <= s <= t+D_min-m` is conditional on verified
+onset/display bounds and a lower bound on effective cooldown duration; `m=0.5 s`
+is a hypothesis to measure, not an accepted constant. Require uninterrupted own-hero
+play and slot/variant identity through `s`, with normal cooldowns, no reset/reduction
+mechanic or edit, and a live HUD. Unknown conditions or conflicting evidence censor.
+
+This is a candidate target certificate, not a readiness certificate at `t` or proof
+of tactical intent. Report independently whether availability at decision time is
+known; do not rename all new negatives "chose not to cast". Glyph matches must use
+the source's accepted slot mapping. First audit native single-charge cast controls
+and proposed negatives, including OCR-missed countdowns, overlays, prohibition
+states and transition delays, with frozen thresholds and an independent reviewer.
+Charge slots are excluded; team-up also requires verified variant identity. No
+writer, label, sidecar or fit change is authorized by this candidate alone. If
+accepted later, record its look-ahead endpoint for target construction and split
+boundaries; future evidence never enters model inputs, baseline inputs or sampling
+features. Preserve the current H2 artifacts and describe selection bias in both
+the old and newly observable subsets.
+
 Neither a lit icon without digits nor an earlier cooldown expiry proves present readiness through an
 unobserved interval. Update loader fields, removed-kind checks and feature
 semantics together: retain health `cause`, never encode unknown-cause HP loss as
