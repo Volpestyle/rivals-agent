@@ -1306,6 +1306,22 @@ object does not disqualify a negative. Scarce qualifying scenes are a sourcing
 gap, not permission to erase supported uncertainty. Body-class negatives, below-floor
 scenes and genuine no-other-character gameplay negatives are separate facts.
 Death, spectating, scoreboard and pre-round screens cannot fill the latter quota.
+The negative label describes the **exact frame at t**, not a character-free
+context window. Context helps resolve a contour, outline or marker actually
+visible at t; a character at +/-0.5 s does not disqualify bare geometry at t.
+Matching screen coordinates across camera/player motion does not establish the
+same world point. If the centre frame has a concrete unresolved presence cue,
+keep it unresolved; do not infer a hidden box from neighbouring frames. Apply
+this rule to existing acceptances and rejections alike.
+
+Confirmed printed murals, posters and billboards depicting characters are map
+art, not character instances. Retain them as scene-art hard negatives and count
+them toward the strict quota when the rest of the frame qualifies. Establish
+their surface-bound depiction from native pixels/context; an unresolved live
+character versus artwork remains uncertain. Report false proposals on scene art
+separately from overlay/HUD hits. Fixed-position Run/Crawl/Stop prompts are HUD,
+not world-space player markers.
+
 The selector records strata provisionally; the blind inventory determines actual
 support. Confirmed corpses require identity continuity plus temporal evidence;
 a kill-feed entry alone cannot identify a particular body. A continuously
@@ -1316,30 +1332,34 @@ mandatory. Marker loss alone may be occlusion and is insufficient; if identity
 or the death transition is unresolved, retain the uncertainty rather than calling
 it a confirmed corpse.
 
-The exposed protocol exercise resolves the known failed cases but establishes
-no new accuracy. The strict negative scan in `data/demos/annotations/boxes/negative-scan/`
-finds three gameplay-negative candidates, all Req, and none from Day. Its pilot/audit
-proximity exclusions leave only 7.9 Day seconds and 159.7 Req seconds, insufficient
-for the 20-negative requirement with the declared spacing. The absence of Day
-negatives under those exclusions is not evidence the whole section lacks them.
+The exposed protocol exercise establishes no new accuracy. The negative scan in
+`data/demos/annotations/boxes/negative-scan/` has 10 strict candidates (three Day,
+seven Req) and two Day marker-only hard negatives after exhausting its declared
+5-second sample grid. This is grid exhaustion, not proof that every intervening
+frame contains a character. Stop broad rescanning or grid densification. Revisit
+only the six named context-only rejections under the exact-frame rule: Day 172.9;
+Req 549.0, 128.7, 263.4, 80.1 and 79.3. Do not auto-promote them or relax the
+20-second spacing; 79.3 and 80.1 cannot both qualify. Retain prior decisions and
+the reason for each correction. Existing candidates still require valid own-play
+segments under the repaired reader; a stale segment alone proves no eligibility.
 
-One bounded negative-only rescan may remove the 30-second pilot and 20-second
-repair-audit proximity exclusions on the same two development-cleared sessions.
-Still exclude every image supplied to the pilot/repair annotators and its supplied
-context interval; preserve the two-second segment margin and 20-second spacing among
-selected negatives. Report these as same-session development examples, not fresh
-independent generalization evidence. Positive-instance exclusions are unchanged.
-Verify each candidate at native resolution with context, including outlines and
-sub-floor characters. Reuse prior rejection evidence and stop at 20 total strict
-negative candidates or exhaustion of the eligible intervals; do not launch a new
-blind annotation tranche yet. Separately retain up to five marker-only hard negatives,
-covering both creators when available, without counting them toward the strict quota.
-The three existing candidates remain candidates pending the blind inventory.
+The remaining shortfall authorizes **negative sourcing only** from at most one
+additional non-overlapping 15-minute section per existing development broadcast:
+Day `2879354299` and Req `2873352801`. Inspect Day first to improve creator balance.
+Check source/game/hero and timestamp identity before full-resolution acquisition;
+reject unsuitable sections without an unbounded replacement search. New sections
+remain inspection-only until segment and patch clearance; retain their parent
+session groups. They cannot supply independent validation. No new broadcast,
+unresolved-origin YouTube upload or sealed media is authorized by this expansion.
 
-This does not lower the 20-negative floor, promote other footage or open sealed
-sessions. If the rescan still cannot supply the floor or a creator, record the
-shortfall once; more development footage needs source/segment clearance before
-another scan. Keep sourcing failures distinct from annotator accuracy.
+Use the same bounded 5-second grid, two-second segment margin and 20-second spacing
+between selected negatives; stop at 20 qualifying candidates in total or the two
+sections' grid exhaustion. Preserve exclusions for previously supplied annotation
+images/context and keep positive-instance exclusions unchanged. Retain up to five
+marker-only hard negatives separately; they never fill the strict quota. Native
+and context inspection remains required, with all candidates subject to the blind
+inventory. No detector fit or new blind tranche is authorized before the support
+requirements below are met. Keep sourcing shortfalls distinct from annotator accuracy.
 
 Before another blind repair is dispatched, freeze its candidate set and support
 rule: at least 30 resolved >=40 px instances per evaluated class across at least
