@@ -1363,7 +1363,12 @@ separately reported hard-negative stratum for a rendered-character detector;
 they do not fill the 20-frame quota. Do not create ignores for arbitrary image
 noise: record a concrete cue such as a contour, figure-shaped patch or associated
 world marker that makes character existence uncertain. A resolved non-character
-object does not disqualify a negative. Scarce qualifying scenes are a sourcing
+object does not disqualify a negative. This includes a confirmed payload's
+through-wall outline: the exclusion concerns **character** outlines, not every
+outlined object. Req `rq-03` at 652.0 s is retained as an objective-outline hard
+negative after native-frame/context review; its silhouette follows the DEFEND
+payload marker. Marker proximity alone cannot excuse a separate character.
+Scarce qualifying scenes are a sourcing
 gap, not permission to erase supported uncertainty. Body-class negatives, below-floor
 scenes and genuine no-other-character gameplay negatives are separate facts.
 Death, spectating, scoreboard and pre-round screens cannot fill the latter quota.
@@ -1408,9 +1413,9 @@ or the death transition is unresolved, retain the uncertainty rather than callin
 it a confirmed corpse.
 
 The exposed protocol exercise establishes no new accuracy. The negative scan in
-`data/demos/annotations/boxes/negative-scan/` has 15 strict candidates (four Day,
-11 Req) and two Day marker-only hard negatives after the bounded rescan and
-six-frame context-rule correction. Grid exhaustion is not proof that every
+`data/demos/annotations/boxes/negative-scan/` has 20 provisional strict candidates
+(four Day, sixteen Req), including five in `req-840/`, plus two Day marker-only
+hard negatives. Sourcing is stopped at its authorized target. Grid exhaustion is not proof that every
 intervening frame contains a character. No broad rescan or grid densification is
 authorized. Req 80.1 is retained over 79.3 as the documented existing choice;
 do not reopen it. For future spacing conflicts, preserve already selected
@@ -1437,12 +1442,18 @@ and context inspection remains required, with all candidates subject to the blin
 inventory. No detector fit or new blind tranche is authorized before the support
 requirements below are met. Keep sourcing shortfalls distinct from annotator accuracy.
 The additional Day probe is rejected for hero/gameplay changes; there is no
-replacement authorization. Req's acquired `840–1740 s` section supplies at most
-the five remaining candidates under this bound. A resulting four-Day/sixteen-Req
+replacement authorization. Req's acquired `840–1740 s` section supplies the five
+remaining candidates under this bound. The four-Day/sixteen-Req
 set meets creator presence, not creator balance: report false proposals by creator
 with denominators, without a strong Day-specific accuracy claim. Final support
 depends on corrected segmentation and blind inspection; reaching 20 provisional
 candidates does not itself pass the annotation gate.
+The new section's visual checks at +/-1 s do not replace the required two-second
+segment margin; verify that margin under accepted segmentation before admission.
+Colour-map/blob-count screens are triage only, never evidence of absence: the
+new section's low-blob-count 852.0 s frame contains a distant enemy caught by
+native inspection and context. Retain whole-frame inspection even for low-score
+candidates; no additional sourcing or blind tranche follows the provisional count.
 
 Before another blind repair is dispatched, freeze its candidate set and support
 rule: at least 30 resolved >=40 px instances per evaluated class across at least
