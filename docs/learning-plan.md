@@ -561,6 +561,42 @@ specific replay limitation. Acceptance of range input guards does not authorize
 an unattended replay-menu visit or a new controller launch surface; the viewer
 remains unmapped until separately verified.
 
+### Expert practice-range segments
+
+Search the existing development broadcasts for Spider-Man warm-ups and drills.
+This is a mechanics source for target order, acquisition, combo execution and swing
+routes, with the same arena geometry as our runtime. It reduces the map and task
+gap; compression, overlays, outline colours, camera settings, input device, patch
+and cooldown settings still differ. It supplies neither exact pad inputs nor
+tactical decisions against opponents who fight back.
+
+The first sourcing pass scans only the first hour of development broadcasts
+Day `2879354299` and Req `2873352801`, using a low-bitrate rendition near 1 fps.
+Calibrate the existing range-banner matcher on streamer pixels before relying on
+it; it proposes spans, not training labels. Inspect native frames to confirm the
+game, arena and controlled hero, then retain at most one three-minute candidate
+per creator at 1080p60, with source timestamps and inspection-only provenance.
+If access or banner visibility prevents the scan, report that limitation; a
+failed matcher does not prove a broadcast contains no range play. Expansion
+follows inspection of this pair, not an automatic full-archive download.
+
+All segments retain their parent broadcast's split and patch provenance; new
+range minutes from a training broadcast are not an independent validation session.
+Sealed broadcasts remain unopened, and uploads with unresolved overlap remain
+excluded. Record cooldown evidence per segment and ability: an observed countdown
+proves that slot has a cooldown, not that every practice override is disabled.
+Missing countdowns alone leave the regime unknown. Demonstrated cooldown-free
+drills may teach motion and visible sequence order, but cannot establish normal
+resource constraints or inter-cast timing from the current event extractor.
+Inspect drill suitability instead of treating all warm-up behavior as exemplary.
+
+A detector trained on our range frames is a candidate transfer experiment. Our
+green finder supplies weak proposals, not perfect labels; audit them and measure
+the detector on separately annotated expert range pixels before trusting boxes.
+The enemy nearest the crosshair remains a target hypothesis, especially during
+camera movement or ability lock-on. Camera and swing labels retain the camera
+probe's observability and held-out error requirements.
+
 | Source | Evidence provided | Missing or uncertain |
 |---|---|---|
 | Expert VODs | Screen history, visible HUD transitions, tactical examples | Exact inputs, private communications, intent, hidden game state |
@@ -1240,10 +1276,11 @@ Req session required by the proposal. The attempted Day `2876184005` section
 (00:30–00:45) is rejected: all nine worker-inspected stills show another game;
 Codex's independent still check also finds no Rivals gameplay HUD. This classifies
 the sampled section, not the entire broadcast. No new HUD-ready pair or accepted
-validation session exists from this attempt. Acquisition is parked on this source
-shortage while replay feasibility is investigated independently; existing or sealed
-sessions are not substitutes. Resumption needs an eligible source, not an action
-from James.
+validation session exists from this attempt. Acquisition of additional independent
+match sessions is parked on this source shortage; existing or sealed sessions are
+not substitutes. The bounded expert practice-range scan uses existing development
+broadcasts for a different purpose, while replay feasibility proceeds independently.
+Neither investigation requires an action from James.
 
 The initial 18.3 minutes can support a bounded first fit and a learning-curve
 probe after label acceptance. There is no evidence yet that this amount suffices
