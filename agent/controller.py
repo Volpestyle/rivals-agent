@@ -406,7 +406,11 @@ class Controller:
             self._measured = False
             self._follow(state, wanted, dt, intent_t)
             on_target = self._aim(state, out, dt)
-            ok = self._measured and PLAUSIBLE[0] <= self.track.h / state.frame[1] <= PLAUSIBLE[1]
+            # Only the held target's own evidence earns anything: a box the tracker knows is another object may be aimed at, but it
+            # neither counts toward arming nor starts an attack nor a walk. Review of d5818cf: WebStrike(id 1, tagged) with only id 2 at
+            # the same bearing pressed RB on steps 4-5: the tag was id 1's, so whether RB pulls or zips at id 2 was unknown.
+            mine = self._measured and (self._measured_as is None or wanted.track is None or self._measured_as == wanted.track)
+            ok = mine and PLAUSIBLE[0] <= self.track.h / state.frame[1] <= PLAUSIBLE[1]
             if not (not self._measured and t - self.attack_t < HIT_BLIND_S):   # hit flash: stay armed, track coasts (LOST_S)
                 self.stable = self.stable + 1 if ok else 0
             # Live bug: coasting used to refresh seen_t, so "on target" stayed true with no box, the attack re-fired, and
@@ -451,8 +455,7 @@ class Controller:
             # dummy ~45 m off and went over the plaza's edge). This does not know the ground: a target in reach across an edge is
             # still walked at.
             far = beyond_reach(self.track, state.frame[1])
-            mine = self._measured_as is None or intent.target.track is None or self._measured_as == intent.target.track
-            out["ly"] = 1.0 if self._measured and self.track.confirmed and mine and not near and not far else 0.0
+            out["ly"] = 1.0 if mine and self.track.confirmed and not near and not far else 0.0
             if not self.seq and on_target:
                 if near and t >= self.next_uppercut_t:
                     self.play("uppercut", t); self.next_uppercut_t = t + 7.0

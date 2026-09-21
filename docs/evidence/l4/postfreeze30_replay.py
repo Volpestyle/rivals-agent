@@ -258,7 +258,14 @@ def report(path, no_kill_feed=False):
             "engage_walk_ticks_by_label": dict(collections.Counter(w[2] for w in replay.walks)),
             "engage_walk_min_crop_h": min((w[1] for w in replay.walks), default=None),
             "engage_walk_ticks_on_another_id": sum(w[3] for w in replay.walks),
+            "attack_press_ticks_by_label": presses(ticks, replay.pads),
             "live_handoffs(t, live held, live crop id, replay id then, replay id now, kept)": live_handoffs(rows, aim, wide)}
+
+
+def presses(ticks, pads):
+    """Ticks on which an attack is held or pressed (a trigger, X or RB), by the label of the target the brain held then."""
+    lab = {t: l for t, l, _, _ in ticks}
+    return dict(collections.Counter(lab.get(t) for t, _, p in pads if p["lt"] or p["rt"] or set(p["buttons"]) & {"X", "RB"}))
 
 
 def engaged_seconds(ticks, pads=None):

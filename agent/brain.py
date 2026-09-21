@@ -250,10 +250,14 @@ def _heir(state, memory, last):
     released to Search. New: absent when the target was last seen, present at the previous decision too, not released, in reach. Only for
     a target last seen OUTSIDE the aim crop, being turned toward: all three lost hand-offs were, and there the camera moves most. One
     inside the crop sits near the crosshair with the camera barely moving, the tracker's id holds, and a new id there is more likely
-    another object: the coasting trade stands ("Coasting: a deliberate trade", docs/lanes/tracker.md)."""
+    another object: the coasting trade stands ("Coasting: a deliberate trade", docs/lanes/tracker.md).
+
+    The successor must itself be INSIDE the aim crop: the turn has brought something there. One still outside is no progress, and a
+    chain of fresh outside ids would reset OUTSIDE_S for ever (review of d5818cf). Admitting it is a new selection by heuristic, not
+    proof it is the same bot: size and newness cannot establish identity (a second bot, or the door, can meet them)."""
     h = last.height
     heirs = [d for d in state.detections or [] if d.cls in HOSTILE and d.conf >= MIN_CONF and d.track is not None
-             and d.track not in memory.beside and d.track != last.track and _acquirable(state, memory, d)
+             and d.track not in memory.beside and d.track != last.track and _acquirable(state, memory, d) and _inside(state, d)
              and h > 0 and max(h, d.height) / max(min(h, d.height), 1e-9) <= HEIR_RATIO]
     return min(heirs, key=lambda d: max(h, d.height) / min(h, d.height), default=None)
 

@@ -375,3 +375,34 @@ def test_a_new_id_of_the_held_targets_size_succeeds_it_while_it_coasts():
     for t in (0.2, 0.3):
         decide(st(t, detections=[enemy(h=190, x=1450, track=12)], coasting=(11,)), m)
     assert m.target.track == 11
+
+
+def _at(track, x, h=200):
+    return enemy(h=h, x=x, track=track)
+
+
+def test_a_successor_still_outside_the_crop_is_not_taken():
+    """Review of d5818cf: id 1 (x 2000) coasting, a fresh id of its size at x 200, on the OPPOSITE side and outside the crop, became the
+    target. The successor must itself be inside the aim crop."""
+    m = Memory()
+    for t in (0.0, 0.1):
+        decide(st(t, detections=[_at(1, 2000)]), m)
+    for t in (0.2, 0.3):
+        decide(st(t, detections=[_at(2, 200)], coasting=(1,)), m)
+    assert m.target.track == 1
+
+
+def test_a_chain_of_fresh_outside_ids_is_never_carried_by_succession():
+    """Review of d5818cf: fresh ids alternating sides, each seen while the previous one coasts, were each taken as its successor, and
+    OUTSIDE_S restarted with every one. None is taken while the target it would succeed is coasting."""
+    m, last = Memory(), _at(1, 2000)
+    for t in (0.0, 0.1):
+        decide(st(t, detections=[last]), m)
+    for k in range(2, 16):
+        nxt, t = _at(k, 200 if k % 2 == 0 else 2000), (k - 1) * 0.2
+        for u in (t, t + 0.1):
+            held = m.target.track if m.target is not None else None
+            decide(st(u, detections=[nxt], coasting=(last.track,)), m)
+            if held == last.track:                                              # the held target coasts: no outside newcomer succeeds it
+                assert m.target is None or m.target.track == held, (k, u)
+        last = nxt

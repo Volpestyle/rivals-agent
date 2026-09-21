@@ -282,3 +282,17 @@ def test_the_held_targets_own_id_is_its_measurement_wherever_the_bearing_put_it(
     moved = replace(held, bbox=(1110, 330, 1170, 400))                         # 500 px right in one step
     c.step(State(t=10 / 60, frame=(1280, 720), detections=[moved]), Engage(held))
     assert c._measured and c._measured_as == 7
+
+
+def test_another_ids_box_never_arms_or_starts_an_attack_for_the_held_target():
+    """Review of d5818cf: WebStrike(id 1, tagged) with only id 2 at the same bearing and size (tag unknown) pressed RB on steps 4-5. The
+    tag is id 1's: whether RB pulls or zips at id 2 is unknown. Another id's box may be aimed at, but earns no arming, no press, no walk."""
+    from agent.intents import WebStrike
+    held, other = Detection(ENEMY, (580, 260, 700, 460), 0.9, track=1, tagged=True), Detection(ENEMY, (580, 260, 700, 460), 0.9, track=2)
+    for intent in (WebStrike(held), Engage(held)):
+        c = Controller()
+        pads = [c.step(State(t=i / 60, frame=(1280, 720), detections=[other]), intent) for i in range(30)]
+        assert not any(_pressed(p) or p["ly"] for p in pads) and c.stable == 0, type(intent).__name__
+    c = Controller()                                                            # the held target's own box: the strike goes out
+    pads = [c.step(State(t=i / 60, frame=(1280, 720), detections=[held]), WebStrike(held)) for i in range(30)]
+    assert any("RB" in p["buttons"] for p in pads)

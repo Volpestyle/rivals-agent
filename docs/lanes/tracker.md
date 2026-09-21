@@ -197,7 +197,9 @@ exact id is not proof that the designated target was the one engaged.
 component on the door's right pane, 226 x 572 px, with a median hue above 60 (no hue bar separates it: its hue spread and brightness
 overlap the bots'), is present at two decisions in a row, starts a combo, and the combo holds for 1.2 s while the large box coasts
 (stall30 refind replay, 13.4-14.6 s: door 1.18 s). A real bot flashing white after a hit coasts the same way, so the hold is not cut. It
-is its own item; what was measured and ruled out for it is under "The plaza-side door" below.
+is its own item; what was measured and ruled out for it is under "The plaza-side door" below. It is not classified: runs are to start on
+the plaza facing away from the door (docs/lanes/reentry.md). That is a restricted start condition, not a classifier and no guarantee the
+door stays out of view, and runs compare only from the same verified start pose.
 
 ## Targets beyond reach, and the walk off the plaza (handoff30)
 
@@ -289,8 +291,10 @@ The controller measures its target from the aim crop's boxes by bearing. On reac
 - With those gone and the track drifted 0.25 s, it re-seeded on the nearest box, the door's edge (id 51), counted it measured and confirmed,
   turned right and walked at it. A drifted track is never re-seeded onto a box whose tracker id differs from the held target's.
 - 8 of 13 ticks walked at the door's edge at 18.6-19.0 s measured another id than the held one. A box carrying the held target's id is its
-  measurement wherever the bearing put it (the tracker has matched it through the turn); another id may still be aimed at and pressed on,
-  but is never walked at. Boxes with no ids keep the bearing rule.
+  measurement wherever the bearing put it (the tracker has matched it through the turn). Another id's box may still be aimed at, but earns
+  nothing for the held target: it does not count toward arming (`stable`), so it starts no attack, no WebStrike (whose bypass reads
+  `stable`) and no walk; a primitive already playing runs its course. Boxes with no ids keep the bearing rule. (Review of d5818cf: a
+  WebStrike on id 1, tagged, pressed RB with only id 2 in view; the tag was id 1's, so whether RB pulls or zips at id 2 was unknown.)
 
 On the trace replays of the five runs (postfreeze30, trackerlive30, stall30, handoff30, reach30; this change with the successor rule
 below), forward-walk ticks on a box that is not the held id go 3 / 73 / 169 / 3 / 46 -> 0 on all five. The cost: walk ticks toward the
@@ -299,6 +303,15 @@ churn); stall runs over 0.5 s go 3 / 3 / 4 / 1 / 6 -> 3 / 3 / 6 / 2 / 7. Engaged
 2.75 -> 9.32 / 15.41 / 6.51 / 4.70 / 2.93 s; on the door 4.96 / 0.32 / 3.32 / 0 / 3.13 -> 4.89 / 0.26 / 3.50 / 0 / 2.95 s. Allowing the walk
 on any in-gate, size-fitting box and refusing only the re-seed keeps more walk toward her but walks at another id on 16-55 ticks a run
 and at the door more. Open loop exaggerates both: live, the walk changes what is seen next.
+
+Attacks: on stall30 the ticks pressing an attack while the bot is the target go 82 -> 7 and on the door 149 -> 0; the other four runs are
+unchanged. Near her the crop often measures her under another id (pieces), and a few sequences started on those boxes (mostly a melee
+combo, ~1.3 s of presses each) made most of her presses. That is the rule's cost: a new selection on the crop's own id, by the brain, is
+the way to earn them back, not a measurement of another object under the held target's intent.
+
+**Residual:** a box carrying the held id bypasses the bearing gate and gets measurement, arming and walk authority subject only to size
+and reach: it trusts the tracker, and inherits the camera-model id steal named above. Nothing here establishes that the engaged object is
+the designated target; that is shown only by supervised runs.
 
 ## Hand-offs lost to the camera model (reach30)
 
@@ -320,8 +333,15 @@ correlation sees no rotation). handoff30's kept case was a turn from level.
 **The brain keeps the target where the id is lost.** While the held target coasts, `_pick_target` returns nobody: on 11 -> 12 it held the
 coasting 11 for 0.8 s with her in view as 12, then searched. For a target last seen OUTSIDE the aim crop (all three were; the camera
 moves most while turning to one), a NEW id (absent when the held target was last seen, present at the previous decision too, not released,
-in reach) within `HEIR_RATIO` 1.5 of its height now succeeds it. Inside the crop the coasting trade below stands. Refind replays: the bot
-5.37 -> 6.15 s on reach30, the other four unchanged; the door unchanged (6.47 s on reach30).
+in reach) within `HEIR_RATIO` 1.5 of its height, and itself INSIDE the aim crop, is taken in its place. One still outside is no progress:
+a chain of fresh outside ids alternating sides would otherwise restart `OUTSIDE_S` with every one. Taking it is a heuristic new selection,
+not proof it is the same bot: size and newness cannot establish identity, and a second bot or the door can meet them. Inside the crop the
+coasting trade below stands. Refind replays: the bot 5.37 -> 6.15 s on reach30, the other four unchanged; the door unchanged (6.47 s on
+reach30).
+
+A chain of fresh outside ids can still hold the brain without `OUTSIDE_S` firing through ordinary acquisition: each is picked on its own
+two sightings once the one before stops coasting, and each starts its own clock (the review's alternating-sides probe ends on id 15 with
+nothing barred, on main before any successor rule exactly as here). Not changed.
 
 **Residual, not built:** keeping the id itself needs a camera model with the pitch clamp and the pitch's coupling, or the camera measured
 from the image with rotation; the controller's calibration is L4's.
