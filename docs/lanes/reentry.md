@@ -187,12 +187,16 @@ pins it.
 
 **A second, independent proof for the hero press: the game's own tooltip.** Hovering a portrait shows "Request to Team-Up with <HERO>" in a
 box that follows the cursor; its white name text is Spider-Man's exactly when the cursor is on his portrait. `tooltip_spiderman` matches that
-name against a template cut from the fixture (normalised correlation on the min-of-channels image, 1280x720 scale): 1.00 on its own frame and
-0.92 on the live one (a different icon, JPEG), at most 0.49 on every other frame, THE PUNISHER's tooltip 0.31. `on_spiderman` passes on
+name against a template cut from the fixture (normalised correlation on the min-of-channels image, 1280x720 scale), the best of three copies
+shifted -0.5, 0 and +0.5 px horizontally: the name follows the cursor, so it lands anywhere between pixels of the downscaled frame, and one
+sharp template read a legible SPIDER-MAN, beside the ring where it belongs, at 0.73 (live refusal 2026-09-21 10:37,
+`heroselect-spiderman-tooltip-between-pixels.jpg`; the re-invocation read 0.92). Shifted: 1.00 on the template's frame, 0.92 and 0.87 on the
+two live ones, THE PUNISHER's tooltip 0.37, every other fixture 0.61 or less (vertical shifts as well lifted those to 0.66 and are not used).
+Waiting or moving the cursor would not have helped: a still cursor keeps the same sub-pixel place. `on_spiderman` passes on
 either proof, and both need the ring: the tooltip names SPIDER-MAN beside the ring, or the ring is in the top-left slot and the slot is red.
 A tooltip that is up and does not name SPIDER-MAN refuses whatever the ring and the colours say (a red hero in that slot would have passed
 the colour check), and no other screen or tab is ever proven. `steer` takes a `done(frame)` predicate (on hero select, `on_spiderman`
-itself), so it stops as soon as the proof holds. Limits: the template comes from two frames (one of them the
+itself), so it stops as soon as the proof holds. Limits: the template is checked on three frames (one of them the
 template's source), the tooltip appears only after the cursor has dwelt on the portrait, and it needs the game's language and UI scale as recorded.
 
 ## Steering

@@ -60,6 +60,9 @@ class Ranges:
     far_m: float = 20.0    # kit: pull and the burst's Web Cluster reach 20 m (the web strike locks out to 24 m)
     near_h: float = 0.325  # measured: 1.30 / 4 m
     far_h: float = 0.065   # measured: 1.30 / 20 m
+    reach_m: float = 40.0  # chosen engagement / approach cap, informed by the kit: Web Cluster is full damage to 20 m and falls to 50% at 40 m
+    reach_h: float = 0.0325  # the cap on the height ruler above (1.30 / 40 m, about +-25%): 47 px at 1440p. The range's robot dummies far
+                             # down the shooting lane are 30-42 px (handoff30); every bot engaged on the recorded runs is 60 px or more
 
 
 RANGES = Ranges()  # replace or edit here; range_of reads it at call time
@@ -236,9 +239,10 @@ def _pick_target(state, memory):
 
 
 def _acquirable(state, memory, d):
-    """May `d` become a NEW target? Its id present at the previous decision too (a one-frame sliver of the spawn door started a 3 s combo),
-    and not released before for staying outside the aim crop."""
-    return d.track is None or (d.track in memory.seen and d.track not in memory.barred)
+    """May `d` become a NEW target? Within the engagement cap (handoff30: five of seven targets were dummies ~45 m away; walking at one
+    took him off the plaza), its id present at the previous decision too (a one-frame sliver of the spawn door started a 3 s combo), and not released
+    before for staying outside the aim crop."""
+    return in_reach(d, state) and (d.track is None or (d.track in memory.seen and d.track not in memory.barred))
 
 
 def _intent_is_for(memory, target):
@@ -308,6 +312,14 @@ def ready(state, name):
     if a.ready is not None:
         return a.ready
     return bool(a.charges)  # icon unreadable but the charge count was
+
+
+def in_reach(det, state, ranges=None):
+    """Is `det` within the engagement cap (RANGES.reach_m / reach_h)? From its distance if it has one, else its box height."""
+    r = ranges or RANGES
+    if det.distance is not None:
+        return det.distance <= r.reach_m
+    return det.height / state.frame[1] > r.reach_h
 
 
 def range_of(det, state, ranges=None):

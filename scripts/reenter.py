@@ -306,12 +306,19 @@ TIP_DX, TIP_DY, TIP_TOL = 141, 29, 8   # the name text sits this far right of an
 
 
 def tooltip_at(frame):
-    """(match 0-1, (x, y) of the name text's top-left in 1280x720 px) of the hover tooltip's hero name against SPIDER-MAN."""
+    """(match 0-1, (x, y) of the name text's top-left in 1280x720 px) of the hover tooltip's hero name against SPIDER-MAN.
+
+    The best of the template at three horizontal half-pixel offsets: the name follows the cursor, so where it lands between pixels of the
+    1280 x 720 frame varies, and one sharp template read a plainly legible SPIDER-MAN at 0.73 (live 2026-09-21 10:37, refused; the same
+    tooltip read 0.92 on the re-invocation). Shifted: 0.87-1.00 on the three real tooltips, another hero's tooltip 0.37, every other
+    fixture 0.61 or less. Vertical offsets as well lifted the non-tooltip frames to 0.66 and are not used."""
     if not _TOOLTIP:
-        _TOOLTIP.append(cv2.imdecode(np.frombuffer(base64.b64decode(TOOLTIP_PNG), np.uint8), cv2.IMREAD_GRAYSCALE))
+        t = cv2.imdecode(np.frombuffer(base64.b64decode(TOOLTIP_PNG), np.uint8), cv2.IMREAD_GRAYSCALE)
+        _TOOLTIP.extend(cv2.warpAffine(t, np.float32([[1, 0, dx], [0, 1, 0]]), t.shape[::-1], flags=cv2.INTER_LINEAR,
+                                       borderMode=cv2.BORDER_REPLICATE) for dx in (-0.5, 0.0, 0.5))
     x0, y0, x1, y1 = TOOLTIP_ROI
     roi = small(frame).min(axis=2)[y0:y1, x0:x1]
-    _, top, _, (px, py) = cv2.minMaxLoc(cv2.matchTemplate(roi, _TOOLTIP[0], cv2.TM_CCOEFF_NORMED))
+    _, top, _, (px, py) = max((cv2.minMaxLoc(cv2.matchTemplate(roi, t, cv2.TM_CCOEFF_NORMED)) for t in _TOOLTIP), key=lambda m: m[1])
     return float(top), (px + x0, py + y0)
 
 

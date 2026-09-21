@@ -34,7 +34,12 @@ LABELS = {
     "stall30": dict(door=[(0.0, 3.5), (11.6, 15.4)], junk=[(22.0, 25.2)], bot_after=3.5, bot_h=60),
     # the spawn room until 3.5 s (at 3.7 s he is outside, and a bot is in view); the door again from the plaza side 11.6-15.4 s (ids 45 46 48); a lit glass dome in the ceiling 22-25 s
     # (id 98); otherwise a box 60 px+ is a bot (far ones on the plaza at 4.4-6.8 s are 60-160 px)
+    "handoff30": dict(door=[(0.0, 3.95)], bot_after=3.95, bot_h=60),
+    # the plaza side of the door at the left until 3.9 s; then a box 60 px+ is a bot; the 30-42 px boxes are robot dummies far down the
+    # shooting lane (native frames 000096 and the small-box sheet), labelled "small" below
 }
+SMALL_H = 47          # px at 1440p: brain.RANGES.reach_h (40 m). A box this size or less outside the door and junk windows is "small": on the
+                      # four runs mostly the lane's dummies ~45 m off, some scenery; past the 40 m engagement cap either way
 SIZE = (2560, 1440)
 KILL_FEED_BOX = [2319, 128, 2426, 247]
 
@@ -50,7 +55,7 @@ def label(t, b):
         return "other"
     if t >= lab["bot_after"] and h >= lab["bot_h"]:
         return "luna"                                  # the run's real bot
-    return "other"
+    return "small" if h <= SMALL_H else "other"
 
 
 def load(no_kill_feed=False):
@@ -86,7 +91,7 @@ def replay(mod, no_kill_feed=False):
     by_t = {r["t"]: i for i, r in enumerate(rows)}
     import inspect
     from agent.controller import Controller
-    ctrl, intent, intent_t, pads = Controller(), None, None, []
+    ctrl, intent, intent_t, pads, walks = Controller(), None, None, [], []
     takes_t = "intent_t" in inspect.signature(ctrl.step).parameters
     tr, m, aim, wide, ticks, cost = mod.Tracker(), brain.Memory(), {}, {}, [], []
     with_cam = "cam" in inspect.signature(tr.update).parameters
@@ -117,11 +122,13 @@ def replay(mod, no_kill_feed=False):
             st = State(t=r["t"], frame=SIZE, detections=list(aim[i][0]), coasting=aim[i][1])
             pad = ctrl.step(st, intent, intent_t=intent_t) if takes_t else ctrl.step(st, intent)
             pads.append((r["t"], type(intent).__name__ not in ("Search", "Idle"), pad))
+            if pad["ly"] > 0 and type(intent).__name__ == "Engage" and ctrl.track is not None:
+                walks.append((r["t"], ctrl.track.h, None if m.target is None else label(m.target_t, m.target.bbox)))
         tgt = m.target
         acting = intent is not None and type(intent).__name__ not in ("Search", "Idle")   # the target is only what the pad acts on while engaging
         ticks.append((r["t"], None if tgt is None or not acting else label(m.target_t, tgt.bbox),
                       tgt is not None and any(d.track == tgt.track for d in aim[i][0]), None if tgt is None else tgt.track))
-    replay.pads = pads
+    replay.pads, replay.walks = pads, walks
     return rows, aim, wide, ticks, cost
 
 
@@ -236,6 +243,8 @@ def report(path, no_kill_feed=False):
             "engaged_s": {k: round(v, 2) for k, v in engaged_seconds(ticks).items()},
             "engaged_active_s": {k: round(v, 2) for k, v in engaged_seconds(ticks, replay.pads).items()},
             "stalls_over_0.5s": stalls(replay.pads), "handoffs": handoffs(rows, aim, ticks),
+            "engage_walk_ticks_by_label": dict(collections.Counter(w[2] for w in replay.walks)),
+            "engage_walk_min_crop_h": min((w[1] for w in replay.walks), default=None),
             "live_handoffs(t, live held, live crop id, replay id then, replay id now, kept)": live_handoffs(rows, aim, wide)}
 
 

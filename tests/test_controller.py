@@ -205,3 +205,33 @@ def test_when_the_brain_switches_target_the_controller_aims_at_the_new_one_at_on
     new = Detection(ENEMY, (1882.0, 594.0, 1978.0, 750.0), 0.9, track=15)        # 650 px right, only in the whole-frame search
     pad = c.step(State(t=t, frame=F, detections=[]), Engage(new), intent_t=t - 0.05)
     assert pad["rx"] > 0.3 and not c.track.confirmed
+
+
+def test_he_never_walks_at_a_box_beyond_the_engagement_cap():
+    """handoff30: a confirmed, crop-measured 36 px dummy ~45 m off (0.025 of the frame) drew 0.8 s of forward walk off the plaza's edge.
+    At the cap (brain.RANGES.reach_h, 40 m on the height ruler) the walk stops; just inside it the walk stands. Not a ground check."""
+    for h, walks in ((18, False), (23, False), (24, True), (70, True)):      # on 720: 23 px = 0.0319, 24 px = 0.0333
+        d, c = Detection(ENEMY, (630, 360 - h / 2, 650, 360 + h / 2), 0.9), Controller()
+        pads = [c.step(State(t=i / 60, frame=(1280, 720), detections=[d]), Engage(d)) for i in range(30)]
+        assert any(p["ly"] == 1.0 for p in pads) is walks, h
+
+
+def test_a_held_target_whose_own_measured_distance_passes_the_cap_is_not_walked_at():
+    """Review of 5aef664: id 4 acquired at 39 m with a 54 px crop box; the next frame the SAME held id reports 41 m. The brain keeps Engage
+    by its id (held targets are not re-acquired), and the walk read only the box height: ly 1.0 at a target known to be past the cap.
+    The cap reads the measured box's own distance when it has one; with none, the height, as before."""
+    from agent.brain import Memory, decide, in_reach
+    m, c, frame = Memory(), Controller(), (2560, 1440)
+    for i in range(3):
+        s = State(t=i / 10, frame=frame, detections=[Detection(ENEMY, (1270, 693, 1290, 747), 0.9, distance=39.0, track=4)])
+        intent = decide(s, m)
+        pad = c.step(s, intent, intent_t=s.t)
+    assert isinstance(intent, Engage) and pad["ly"] == 1.0
+    d = Detection(ENEMY, (1270, 693, 1290, 747), 0.9, distance=41.0, track=4)
+    s = State(t=0.3, frame=frame, detections=[d])
+    intent = decide(s, m)
+    assert not in_reach(d, s) and isinstance(intent, Engage)
+    assert c.step(s, intent, intent_t=s.t)["ly"] == 0.0
+    d = Detection(ENEMY, (1270, 700, 1290, 740), 0.9, distance=20.0, track=4)    # 40 px, under the height line, but measured at 20 m
+    s = State(t=0.4, frame=frame, detections=[d])
+    assert c.step(s, decide(s, m), intent_t=s.t)["ly"] == 1.0
