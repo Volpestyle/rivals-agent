@@ -1,0 +1,47 @@
+[
+ {
+  "t": 0.504,
+  "wall": "16:17:14.862",
+  "step": "range HUD on a fresh frame: True"
+ },
+ {
+  "t": 0.504,
+  "wall": "16:17:14.862",
+  "step": "waiting 3 s, no pad"
+ },
+ {
+  "t": 3.698,
+  "wall": "16:17:18.056",
+  "step": "VX360Gamepad() called"
+ },
+ {
+  "t": 3.7,
+  "wall": "16:17:18.058",
+  "step": "VX360Gamepad() returned (its constructor sends one default report); nothing for 3 s"
+ },
+ {
+  "t": 6.701,
+  "wall": "16:17:21.059",
+  "step": "explicit neutral 1 sent (reset + update); 3 s"
+ },
+ {
+  "t": 9.701,
+  "wall": "16:17:24.059",
+  "step": "explicit neutral 2 sent (reset + update); 3 s"
+ },
+ {
+  "t": 12.702,
+  "wall": "16:17:27.060",
+  "step": "deleting the pad (disconnect)"
+ },
+ {
+  "t": 12.702,
+  "wall": "16:17:27.060",
+  "step": "pad deleted; 3 s"
+ },
+ {
+  "t": 15.702,
+  "wall": "16:17:30.060",
+  "step": "end"
+ }
+]

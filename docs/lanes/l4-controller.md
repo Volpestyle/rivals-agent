@@ -2,11 +2,76 @@
 
 Linear: VUH-1296. Evidence: `docs/evidence/l4/`. Raw measurements: `C:\rivals-agent\data\l4\` on the PC.
 
-The game is in the Practice Range as Spider-Man on the plaza beside the spawn room door's planter, the camera turned
-about a quarter turn LEFT of the Luna Snow bot (he faces the planter and the door's housing, the bot out of view to the
-right), idle, no pad connected (`plaza30-pose-after-cooldowns-script-1607.jpg`); the range's inactivity drop returns it to
-the lobby by itself. The PC holds `agent/`, `scripts/` (with templates) and `perception/` from `git archive a7fff98`, all 42
-tracked files verified by sha256. **The `plaza30` run has not been made**: no `data\l1\plaza30` exists.
+The game is in the Practice Range as Spider-Man on the plaza by the spawn room's door, the view wherever the pad-turn
+measurement left it (turned well away from the Luna Snow bot), idle, no pad connected; the range's inactivity drop returns
+it to the lobby by itself. The PC holds `agent/`, `scripts/` (with templates) and `perception/` from `git archive a7fff98`,
+all 42 tracked files verified by sha256, nothing of this lane's scratch beside them. **The `plaza30` run has not been made.**
+
+## Why a new pad session turns the view (VUH-1314): it turns LEFT from plug-in until the first non-neutral input
+
+No gameplay: no run, no attack, no navigation. The game had dropped to the lobby, so one `scripts/reenter.py` invocation
+(16:15:27, exit 0, every press 4-88 ms proof age, plaza confirmed) put him back on the plaza and let its pad go.
+
+**The PC's pad library**: `vgamepad` 0.1.0. `VX360Gamepad.__init__` is `super().__init__()`, `self.report =
+self.get_default_report()`, `self.update()`: the constructor itself sends one default (all-zero) report. `VGamepad.__init__`
+allocates the target, `vigem_target_add`, and asserts it attached; `__del__` is `vigem_target_remove` + `vigem_target_free`.
+Steam is running and the game runs as Steam app 2767030 (`RunningAppID`); the active Steam user's config holds no per-game
+Steam Input override for it, so Steam's default applies; what that default is was not read (it needs the Steam UI).
+
+**Method.** Each pass confirms the range HUD on a fresh frame (`record.in_range`), runs with the native `ddagrab` ->
+`h264_nvenc` recording on, logs a wall-clock timestamp per step, and saves a 640x360 frame about every 17 ms with the same
+clock. View yaw is the horizontal image shift between consecutive saved frames (phase correlation on a narrow band about
+the view centre, above the hero), `yaw = atan(shift / 232.5 px)` (focal 465 px at 1280 wide), summed; left is negative. It
+is good to a few percent where the scene has texture and reads low on a blank pillar at point blank (pass 1b's first
+seconds). Scripts, step tables, yaw tables, plot: `padturn-pass1-neutral-only.py`, `padturn-pass2-padpy.py`,
+`padturn-yaw.py`, `padturn-{p1a,p1b,p2a}-steps.json`, `...-yaw.txt`, `padturn-yaw-plots.png`, `padturn-p1a-frames.jpg`.
+
+**Pass 1, neutral only** (the script holds no stick, trigger or button value; its only pad calls are the constructor,
+`reset()` + `update()`, and `del`), run twice:
+
+| Step | 1a: t (s), wall | yaw (deg) | 1b: t (s), wall | yaw (deg) |
+|---|---|---|---|---|
+| range HUD confirmed; 3 s with no pad | 0.504, 16:17:14.862 | 0.0 -> -1.0 | 0.504, 16:19:13.626 | 0.0 -> -1.3 |
+| `VX360Gamepad()` returned (plug-in; the constructor's own default report) | 3.700, 16:17:18.058 | -1.0 | 3.694, 16:19:16.816 | -1.3 |
+| **first frame-to-frame shift over 1 px** | **3.766** | the turn starts | **3.745** | the turn starts |
+| explicit neutral 1 (`reset` + `update`) | 6.701, 16:17:21.059 | -80.9 | 6.695, 16:19:19.817 | -31.3 |
+| explicit neutral 2 | 9.701, 16:17:24.059 | -148.8 | 9.695, 16:19:22.817 | -68.2 |
+| pad deleted (disconnect) | 12.702, 16:17:27.060 | -222.7 | 12.697, 16:19:25.819 | -148.0 |
+| **last shift over 1 px** | **12.708** | the turn stops | **12.735** | the turn stops |
+| end, 3 s after the disconnect | 15.702 | -223.9 | 15.697 | -148.4 |
+
+The view turns LEFT, steadily, for as long as the pad exists: it starts 50-70 ms after the plug-in, neither explicit
+neutral update changes it, and it stops with the disconnect. 1a: -220 deg in 8.94 s, 21-28 deg/s second by second. 1b: the
+same start and stop; -146 deg by the estimate, 25-28 deg/s over its last three seconds and lower before that, where the view
+was a blank pillar at point blank and the estimate under-reads. It reproduces. 20-28 deg/s is what this lane's yaw map gives
+for a right stick held about 0.1 left (0.1 -> 18.5 deg/s, 0.2 -> 61.5).
+
+**Pass 2, the first non-neutral input through the existing tool.** `scripts/pad.py "ls:0,1,0.3 ls:0,-1,0.3"`, unmodified,
+launched as a process by a logger that holds no pad code; `pad.py` opens ITS OWN pad (`VX360Gamepad()`, 2.0 s, the tokens,
+0.5 s, neutral, exit), so pass 2 is: recording on, `pad.py` with its usual connect wait, recording off.
+
+| Step | t (s), wall | yaw (deg) |
+|---|---|---|
+| range HUD confirmed; 3 s with no pad | 0.504, 16:19:41.059 | 0.0 |
+| `pad.py` process started | 3.507, 16:19:44.062 | +0.1 |
+| first shift over 1 px (its pad is in, about 0.3 s of Python start-up later) | 3.862 | the turn starts |
+| last shift over 1 px | **5.775** | **-48.9 deg in 1.91 s (25.6 deg/s)**, the turn stops |
+| the walk forward begins (frame difference jumps, no horizontal shift), then the walk back | 5.8-6.2, 6.4-6.8 | -50 |
+| `pad.py` neutral for its last ~1.5 s, pad still connected | 6.8-8.1 | -50, no turn |
+| `pad.py` exited 0 (`pad: sent ls:0,1,0.3 ls:0,-1,0.3`) | 8.106, 16:19:48.661 | -50.7 |
+| end | 11.107 | -49.8 |
+
+**Reading.** The turn lands at PLUG-IN, not at the first neutral update and not at the first move: it begins within 70 ms of
+the device attaching, runs at about 25 deg/s to the left while the pad's only reports are neutral, however many of them,
+and **ends at the first non-neutral report** (here the left stick); after that the same pad's neutral is a still view. With
+no non-neutral report it runs until the pad is removed. So every tool's connect wait is a left turn of about 25 deg/s x the
+wait: 2.0 s in `pad.py` gave -49 deg; a 3 s settle gives about -75, the 'quarter turn' of the earlier reports; and
+`reenter.py` from the range saw its first decision frame about 65 deg off. It is a steady rate for the length of the wait,
+not a snap to a new heading. What produces the rate (the game, Steam Input, or the attach itself) is not established here.
+
+Recordings (native 2560x1440, 60 fps, 40 s each): `data/video/turn-p1a.mp4` (232 MB), `turn-p1b.mp4` (224 MB),
+`turn-p2a.mp4` (185 MB) on the Mac and in `C:\rivals-agent\data\video\`; the timestamped frames are
+`data/l4/turn/{p1a,p1b,p2a}/` on both.
 
 ## `plaza30` (VUH-1314): stopped before the run, the start pose does not survive a new pad session
 

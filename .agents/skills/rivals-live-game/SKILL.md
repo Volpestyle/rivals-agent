@@ -35,6 +35,11 @@ screenshot. Read the screenshot before the next input.
   connect/disconnect toast. A real loop holds ONE pad for the whole session.
   The first input after a pad connects is swallowed by that device switch, even 4 s after
   connecting: send a throwaway move first.
+- In the range, a freshly connected pad TURNS THE CAMERA LEFT at about 25 deg/s from within 70 ms of attaching, through any
+  number of neutral reports, until its first non-neutral report or its disconnect (measured 2026-09-21, vgamepad 0.1.0, whose
+  constructor sends an all-zero report; Steam running). A 2 s connect wait is about 49 degrees, 3 s about 75. So a pose one
+  tool verified does not survive the next tool's pad: another reason a run holds ONE pad, or re-establishes its pose itself.
+  What produces the rate (the game, Steam Input or the attach) is not established.
 - Capture and pad code must run inside the desktop session (a `C:\desk` job that
   `Start-Process`es it). Over plain SSH dxcam fails with `DXGI_ERROR_NOT_CURRENTLY_AVAILABLE`.
 - A monitor that is OFF kills dxcam silently. With the monitor switched off at its power button
