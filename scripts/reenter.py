@@ -191,21 +191,38 @@ _R = np.arange(36)
 _COS, _SIN = np.cos(_TH), np.sin(_TH)
 
 
-def _ring_score(white, x, y):
-    """Contrast of a cursor-sprite signature centred at (x, y), or 0. Needs a ring bright ALL the way round."""
+def _ring_scores(white, x, y):
+    """Contrast of the cursor-sprite signature at many centres at once (arrays x, y), 0 where there is none: a ring bright ALL the way
+    round, with a dot inside for the hover sprite. The refinement scores up to 588 centres a call (2 radii x 6 peaks x 7 x 7); one at a
+    time that was ~60% of the cursor search. Only the radii the signature reads are sampled (_USED), and the short means are summed in
+    index order with exact zeros outside their window, which is what a slice's .mean() does: every score is bit-identical to the
+    one-centre version this replaced (tests/test_reenter.py keeps it as the reference)."""
     h, w = white.shape
-    xs = np.clip((x + _R[:, None] * _COS).round().astype(int), 0, w - 1)
-    ys = np.clip((y + _R[:, None] * _SIN).round().astype(int), 0, h - 1)
-    v = white[ys, xs].astype(float)              # (radius, angle)
-    mean, p20 = v.mean(axis=1), np.percentile(v, 20, axis=1)
-    dot = mean[:3].mean()
-    ra = 16 + int(p20[16:23].argmax())
-    contrast_a = p20[ra] - mean[ra + 4:ra + 8].mean()
-    rb = 23 + int(p20[23:31].argmax())
-    contrast_b = p20[rb] - mean[min(rb + 4, 33):min(rb + 8, 35)].mean()
-    hover = dot >= CURSOR_HOVER["dot"] and p20[ra] >= CURSOR_HOVER["ring"] and contrast_a >= CURSOR_HOVER["contrast"]
-    plain = p20[rb] >= CURSOR_PLAIN["ring"] and contrast_b >= CURSOR_PLAIN["contrast"]
-    return max(contrast_a if hover else 0.0, contrast_b if plain else 0.0)
+    xs = np.clip((x[:, None, None] + _USED[None, :, None] * _COS[None, None, :]).round().astype(int), 0, w - 1)
+    ys = np.clip((y[:, None, None] + _USED[None, :, None] * _SIN[None, None, :]).round().astype(int), 0, h - 1)
+    v = white[ys, xs]                                                 # (centre, radius, angle), uint8: the reductions below are in float64
+    mean, p20 = np.zeros((len(x), len(_R))), np.zeros((len(x), len(_R)))   # only the radii the signature reads are filled
+    mean[:, _USED] = v.mean(axis=2, dtype=np.float64)
+    p20[:, 16:31] = np.percentile(v[:, 3:18], 20, axis=2)             # radii 16-30
+    dot = mean[:, :3].mean(axis=1)
+    n, idx = np.arange(len(x)), np.arange(mean.shape[1])
+
+    def window_mean(lo, hi):
+        inside = (idx[None, :] >= lo[:, None]) & (idx[None, :] < hi[:, None])
+        total = np.zeros(len(x))
+        for j in idx:                                                 # in index order, like the slice's own sum
+            total = total + np.where(inside[:, j], mean[:, j], 0.0)
+        return total / (hi - lo)
+    ra = 16 + p20[:, 16:23].argmax(axis=1)
+    contrast_a = p20[n, ra] - window_mean(ra + 4, ra + 8)
+    rb = 23 + p20[:, 23:31].argmax(axis=1)
+    contrast_b = p20[n, rb] - window_mean(np.minimum(rb + 4, 33), np.minimum(rb + 8, 35))
+    hover = (dot >= CURSOR_HOVER["dot"]) & (p20[n, ra] >= CURSOR_HOVER["ring"]) & (contrast_a >= CURSOR_HOVER["contrast"])
+    plain = (p20[n, rb] >= CURSOR_PLAIN["ring"]) & (contrast_b >= CURSOR_PLAIN["contrast"])
+    return np.maximum(np.where(hover, contrast_a, 0.0), np.where(plain, contrast_b, 0.0))
+
+
+_USED = np.r_[0:3, 16:35]   # the radii _ring_scores reads: the dot (0-2), the rings' 20th percentile (16-30), their outer means (20-34)
 
 
 RING_R, PEAKS, PEAK_MIN, REFINE_PX = (19, 26), 6, 0.2, 3   # sprite ring radii (hover, plain), peaks tried per radius, weakest peak, nudge window
@@ -231,9 +248,9 @@ def find_cursor(frame):
     busy portrait or a slightly noisy frame are other things: the ring was missed one frame in three, and a live run refused on hero
     select with the cursor sitting on Spider-Man."""
     s = small(frame)
-    white = s.min(axis=2)  # bright only where bright in every channel: the sprite, not coloured art
+    white = cv2.min(cv2.min(s[..., 0], s[..., 1]), s[..., 2])  # bright only where bright in every channel: the sprite, not coloured art
     mask = cv2.resize((white > 190).astype(np.float32), None, fx=0.5, fy=0.5, interpolation=cv2.INTER_AREA)
-    best = (0.0, 0, 0)
+    points = []
     for r in RING_R:
         t = _ring_template(r)
         resp = cv2.matchTemplate(mask, t, cv2.TM_CCOEFF_NORMED)
@@ -244,12 +261,14 @@ def find_cursor(frame):
                 break
             cx, cy = 2 * (px + t.shape[1] // 2), 2 * (py + t.shape[0] // 2)   # back to full size
             resp[max(0, py - 6):py + 7, max(0, px - 6):px + 7] = 0
-            for dy in range(-REFINE_PX, REFINE_PX + 1):
-                for dx in range(-REFINE_PX, REFINE_PX + 1):
-                    score = _ring_score(white, cx + dx, cy + dy)
-                    if score > best[0]:
-                        best = (score, cx + dx, cy + dy)
-    return (float(best[1]), float(best[2])) if best[0] > 0 else None
+            points += [(cx + dx, cy + dy) for dy in range(-REFINE_PX, REFINE_PX + 1) for dx in range(-REFINE_PX, REFINE_PX + 1)]
+    if not points:
+        return None
+    pts = np.array(points)
+    uniq, back = np.unique(pts, axis=0, return_inverse=True)   # both radii usually peak on the same centres: score each once
+    scores = _ring_scores(white, uniq[:, 0], uniq[:, 1])[back.ravel()]   # in the order found: the first best wins
+    k = int(np.argmax(scores))
+    return (float(pts[k, 0]), float(pts[k, 1])) if scores[k] > 0 else None
 
 
 def classify(frame):
@@ -579,7 +598,7 @@ class Live:
         while True:
             f = self.cap.grab() if self.cap is not None else None
             if f is not None:
-                self.frame_t = t0
+                self.frame_t, self.frame_src = t0, "dxcam"
                 return f
             if self.clock() - t0 > timeout:
                 break
@@ -591,7 +610,7 @@ class Live:
             raise Refuse(f"no current frame from the display ({e!r}); nothing sent") from None
         if f is None:
             raise Refuse("no current frame from the display; nothing sent")
-        self.frame_t = t_gdi
+        self.frame_t, self.frame_src = t_gdi, "GDI"
         return f
 
     def release_all(self):
@@ -641,8 +660,11 @@ class Live:
         codes = {"A": b.XUSB_GAMEPAD_A, "X": b.XUSB_GAMEPAD_X, "RB": b.XUSB_GAMEPAD_RIGHT_SHOULDER}
         if button != "RT" and button not in codes:
             raise KeyError(button)
+        t0 = self.clock()
         f = self.frame()                      # the screen NOW, not the one that was proven a moment ago
+        t_grab = self.clock()
         now_screen = classify(f)
+        t_classify = self.clock()
         if screen is not None and now_screen != screen:
             raise Refuse(f"the screen changed under the proof: proven on {screen}, now {now_screen}; {button} not sent", f)
         if button not in ALLOWED.get(now_screen, ()):
@@ -651,11 +673,14 @@ class Live:
             proof = proof_fn(f) if proof_fn else Proof(False, "no proof was supplied")
             if not proof.ok:
                 raise Refuse(f"no proof for A at the moment of the press: {proof.reason}", f)
+        t_proof = self.clock()
         if self.frame_t < self.settled_t:
             raise Refuse(f"the proof frame predates the last input's settling; {button} not sent", f)
         age = self.clock() - self.frame_t
+        stages = (f"grab {(t_grab - t0) * 1e3:.0f} ms ({getattr(self, 'frame_src', '?')}), classify {(t_classify - t_grab) * 1e3:.0f}, "
+                  f"proof {(t_proof - t_classify) * 1e3:.0f}, checks {(self.clock() - t_proof) * 1e3:.0f}")
         if age > MAX_PROOF_AGE_S:
-            raise Refuse(f"the proof is {age:.2f} s old (limit {MAX_PROOF_AGE_S} s); {button} not sent", f)
+            raise Refuse(f"the proof is {age:.2f} s old (limit {MAX_PROOF_AGE_S} s); {button} not sent ({stages})", f)
         try:
             if button == "RT":
                 self.pad.right_trigger_float(1.0)
@@ -669,6 +694,9 @@ class Live:
             self.release_all()
         self.sleep(0.5)
         self.settled_t = self.clock()
+        # After the input and its settle, never between the proof and the write: the age is counted from the start of the grab (frame_t),
+        # so it includes waiting for a new frame; the frame's own content can be up to one display interval older than that.
+        print(f"reenter: {button} written at proof age {age * 1e3:.0f} ms (limit {MAX_PROOF_AGE_S * 1e3:.0f}): {stages}")
 
 
 class Safe:
