@@ -3,6 +3,7 @@
 Stdlib-only tests run in the default suite. The ones that need numpy/mlx/ffmpeg or recorded
 media are skipped there and run under `uv run --group policy pytest tests/test_policy.py`.
 """
+import dataclasses
 import json
 import subprocess
 import sys
@@ -63,6 +64,26 @@ def test_guides_never_claim_a_regime_and_match_footage_says_what_its_claim_rests
         if s.kind == "guide":
             assert s.cooldowns == corpus_mod.UNKNOWN
         assert s.cooldowns_evidence, f"{s.id} states a regime with no evidence"
+
+
+def test_a_full_youtube_upload_is_marked_edited_and_kept_out_of_every_split():
+    """An upload id is not an independent session: they are edited and may overlap the Twitch cuts."""
+    uploads = [s for s in corpus_mod.corpus() if s.kind == "upload"]
+    if not uploads:
+        pytest.skip("no YouTube uploads on this machine")
+    for s in uploads:
+        assert s.edited and not s.splittable and s.upload_date
+
+
+@needs_mlx
+def test_the_trainer_refuses_a_source_that_is_not_cleared_for_splitting(monkeypatch):
+    import policy.train as train
+    cleared = [s for s in corpus_mod.corpus(kinds=("run",)) if s.splittable]
+    monkeypatch.setattr(corpus_mod, "corpus", lambda *a, **k: [dataclasses.replace(s, splittable=False)
+                                                               for s in cleared])
+    monkeypatch.setattr(train.corpus_mod, "corpus", corpus_mod.corpus)
+    with pytest.raises(ValueError, match="splittable"):
+        train.windows(regime="off")
 
 
 def test_every_source_carries_a_split_group_so_nothing_is_split_within_a_recording():
@@ -213,3 +234,47 @@ def test_third_party_derived_data_stays_out_of_git():
     ignored = subprocess.run(["git", "check-ignore", "data/embeddings", "data/demos"],
                              cwd=ROOT, capture_output=True, text=True)
     assert "data/embeddings" in ignored.stdout and "data/demos" in ignored.stdout
+
+
+# --- step 2: the temporal head ------------------------------------------------------------
+
+@needs_mlx
+def test_a_missing_modality_is_zero_with_its_bit_clear_never_filled():
+    import numpy as np
+
+    from policy.train import _event_features, _state_features
+    feat, present = _state_features(None)
+    assert not present and not feat.any()
+    feat, present = _event_features(None, 10.0)
+    assert not present and not feat.any()
+
+
+@needs_mlx
+def test_an_unknown_state_field_never_reads_as_a_value():
+    """hp unknown must not arrive as 0.0 hp: the value is zero and its known-bit is clear."""
+    from policy.train import _state_features
+    feat, present = _state_features({"hp": None, "max_hp": 250, "webs": None, "abilities": {}, "detections": None})
+    assert present, "the State itself was there"
+    assert feat[0] == 0.0 and feat[1] == 0.0, "hp unknown must leave its known-bit clear"
+    assert feat[3] == 0.0 and feat[12] == 0.0
+
+
+@needs_mlx
+def test_the_two_recorders_notes_map_to_one_vocabulary_without_inventing_equivalences():
+    from policy.train import vocab_of
+    assert vocab_of("engage:enemy") == vocab_of("Engage") == "engage"
+    assert vocab_of("combo:burst") == "combo"
+    assert vocab_of("stand") != vocab_of("idle"), "a scripted pause and a stood-down loop are not the same label"
+
+
+@needs_mlx
+@needs_data
+def test_a_window_is_built_only_from_frames_at_or_before_its_decision():
+    """The loader enforces this; this pins that the trainer did not reach around it."""
+    from policy.train import windows
+    import numpy as np
+    x, y, sessions, classes = windows(regime="off", decision_hz=1.0)
+    assert len(x) == len(y) == len(sessions) > 0
+    assert x.shape[1] == 51, "5 s of history at 10 Hz, including the decision frame"
+    assert set(classes) <= {"combo", "engage", "search", "stand", "idle", "disengage", "none"}
+    assert not np.isnan(x).any()

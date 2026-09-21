@@ -47,7 +47,7 @@ GUIDE_EVIDENCE = "guide videos mix range demonstrations and match clips; regime 
 class Source:
     """One media file to embed, with the provenance the trainer must keep it separable by."""
     id: str
-    kind: str          # run | sample | vod | guide
+    kind: str          # run | sample | vod | guide | upload
     path: Path         # the media: a run directory, or an mp4
     creator: str       # us | reqmr | daymr | day | req | matchuxd | ...
     group: str         # split unit: whole VOD / whole session. Never split within one
@@ -56,6 +56,9 @@ class Source:
     fps: float | None = None
     duration_s: float | None = None
     index: Path | None = None   # a run's frames.jsonl
+    upload_date: str | None = None
+    edited: bool = False        # an edited upload: cuts across maps, black openings, outros, spectated heroes
+    splittable: bool = True     # False until something establishes it is not a duplicate of another source
 
     @property
     def is_video(self):
@@ -109,6 +112,19 @@ def demos(data=DATA):
             out.append(Source(id=e["id"], kind="vod", path=vods.parent / e["media"], creator=e["creator"].lower(),
                               group=e.get("group") or f"twitch:{e['vod_id']}", cooldowns=NORMAL,
                               cooldowns_evidence=VOD_EVIDENCE, fps=fps, duration_s=duration))
+    # Full YouTube uploads. An upload id is NOT an independent session: these are edited (cuts
+    # across maps, black openings, outros, scoreboards, spectated heroes), the September ones may
+    # overlap the retained Twitch sections, and the April-May ones predate several balance
+    # patches. Embedding them is cheap and fine; `splittable=False` keeps every one of them out of
+    # any train/val/test split until cross-source deduplication has run.
+    uploads = data / "demos" / "youtube"
+    for manifest in sorted(uploads.glob("*/manifest.json")) if uploads.exists() else []:
+        for e in json.loads(manifest.read_text()):
+            fps, duration = _probe(e)
+            out.append(Source(id=e["id"], kind="upload", path=manifest.parent / e["media"],
+                              creator=e["creator"].lower(), group=f"youtube:{e['id']}", cooldowns=NORMAL,
+                              cooldowns_evidence=VOD_EVIDENCE, fps=fps, duration_s=duration,
+                              upload_date=e.get("upload_date"), edited=True, splittable=False))
     guides = data / "demos" / "guides" / "manifest.json"
     if guides.exists():
         for e in json.loads(guides.read_text()):

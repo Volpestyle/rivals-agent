@@ -122,6 +122,7 @@ def encode_source(source, encoder, hz, out_dir):
         "id": source.id, "kind": source.kind, "creator": source.creator, "group": source.group,
         "cooldowns": source.cooldowns, "cooldowns_evidence": source.cooldowns_evidence,
         "media": str(source.path.relative_to(ROOT)), "source_fps": source.fps,
+        "upload_date": source.upload_date, "edited_upload": source.edited, "splittable": source.splittable,
         "encoder": encoder.name, "dim": encoder.dim, "norm": NORM, "size": SIZE, "hz": hz,
         "masks": [list(r) for r in rects(source.creator)], "visible_fraction": round(visible_fraction(source.creator), 4),
         "frames": len(emb), "t_first": float(times[0]) if len(times) else None,

@@ -1,4 +1,4 @@
-# Policy: the learned chooser (step 1, the embedding cache)
+# Policy: the learned chooser (steps 1-2)
 
 **Built and measured offline. Nothing here aims, presses a button, or runs live.** This lane
 replaces *what* the agent decides — today `agent/brain.py`'s hand-written rules — with a model
@@ -16,7 +16,9 @@ uv run --group policy python -m policy.corpus            # what exists, with its
 uv run --group policy python -m policy.encode --bench    # decode and encoder throughput
 uv run --group policy python -m policy.encode --probe    # what the encoders separate (and do not)
 uv run --group policy python -m policy.encode --all      # fill the cache; niced, resumable
-uv run --group policy pytest tests/test_policy.py        # 18 tests (stdlib-only ones also run bare)
+uv run --group policy python -m policy.train             # leave-one-session-out, regime off
+uv run --group policy python -m policy.train --split tail  # the control (see below)
+uv run --group policy pytest tests/test_policy.py        # 24 tests (stdlib-only ones also run bare)
 ```
 
 ```mermaid
@@ -26,7 +28,8 @@ flowchart LR
   N["one recorded normalization<br/>policy/frames.py (NORM n1)<br/>16:9 -> 224, chrome + overlays painted"] --> E
   E["frozen encoder<br/>DINO ViT-S/16, 384-d"] --> C
   C["data/embeddings/&lt;encoder&gt;-&lt;norm&gt;-&lt;hz&gt;/<br/>one .npz + .json per source"]
-  C -.-> T["temporal head (step 2)<br/>not built"]
+  C --> T["temporal head<br/>policy/train.py: 51 steps x 404 features<br/>2-layer GRU, class-weighted"]
+  T --> M["leave-one-session-out<br/>vs majority baseline"]
   C -.-> P["runtime seam (step 3)<br/>not built"]
 ```
 
@@ -144,6 +147,77 @@ becomes 2-5 px. v0 chooses coarse intents from context and a fixed heuristic pic
 this may be enough; if step 2 is blind to engagements, the upgrade is a larger working resolution
 or a second centre-crop stream, both a cache rebuild and no other change.
 
+## Step 2: the temporal head, and the first held-out number
+
+`policy/train.py` reads about 5 s of history at 10 Hz and names the intent the recorder logged
+next. Windows come from `agent/demos.py` — it owns segments, whole-recording splits and the
+leakage guards, and an `Observation` refuses to hold anything later than its own `t` — and each
+`FrameRef` is resolved against the cache by (clip, decoded time). No second schema.
+
+Three channels per timestep, each with its own present bit, **missing never filled**: the 384-d
+embedding; the loop's `State` where a row carried one (hp, ammo, ability readiness, detections,
+crosshair — every unknown is a zero with its known-bit *clear*, never a value); and HUD events
+where a run has a stream. No run has one today, so that channel is absent on every window and is
+wired for the day one exists. 404 features, 51 steps. The head is a 2-layer GRU over a 128-d
+projection, class-weighted so the rare intents are not swamped.
+
+**The number, regime `off` (995 windows, 4 sessions, ~175 s of recording).** Leave-one-session-out:
+
+| Held out | Windows | Accuracy | Train majority | Held-out majority | Macro F1 | Fits its own training set |
+|---|---|---|---|---|---|---|
+| `loop30a` | 150 | 0.787 | 0.793 | 0.793 | 0.440 | 0.993 |
+| `tagrun` | 300 | **0.010** | 0.000 | 0.460 | 0.022 | 0.991 |
+| `tagrun0` | 349 | 0.324 | 0.613 | 0.613 | 0.187 | 0.994 |
+| `tagrun1` | 196 | 0.469 | 0.663 | 0.663 | 0.311 | 1.000 |
+
+**No fold beats its majority baseline, and this is reported as the result.** What it does show:
+the head fits its own training set at 0.99-1.00 in every fold, so the path is wired end to end —
+features reach labels, the model can learn them, the splits hold — and the failure is
+generalization, not plumbing. The `tagrun` fold makes the reason plain: its train-majority
+baseline is **0.000**, because the class the other sessions are mostly made of does not occur in
+it at all. The per-session mix is nearly disjoint:
+
+| Session | combo | engage | search | stand |
+|---|---|---|---|---|
+| `loop30a` | 0 | 31 | 119 | 0 |
+| `tagrun` | 74 | 88 | **0** | 138 |
+| `tagrun0` | 8 | 40 | 214 | 87 |
+| `tagrun1` | 19 | 28 | 130 | 19 |
+
+A `--split tail` control (train on the first 70% of every session, test on each last 30%;
+optimistic, because neighbouring windows overlap) does not rescue it either: two folds are
+single-class at 1.00, and the other two are 0.600 against 0.511 and 0.712 against 0.797. There
+is not enough data here for any split to mean anything.
+
+**So the honest reading: the pipeline is proven and the numbers are not yet worth interpreting.**
+Three 30 s runs and two short trial logs is about 175 seconds of play; tens of minutes per regime
+are needed before held-out agreement says anything about a model. And distilling the scripted
+brain on cooldown-free runs teaches nothing new by construction — a better number here would only
+mean the head had copied its teacher more closely.
+
+**Two recorders, two vocabularies.** L4's trials log `Engage`, `Combo`, `stand`, `Search`; the
+loop logs `engage:enemy`, `search`, `combo:burst`, `idle`. `vocab_of` lowercases and cuts at the
+colon, but **`stand` and `idle` are deliberately kept apart**: one is a scripted pause, the other
+is the loop standing the controller down, and merging them would invent an equivalence. Any fold
+that trains on one recorder and tests on the other is partly measuring that mismatch.
+
+## Sources that may not be split on yet
+
+The six full ReqMR YouTube uploads (104 minutes, `data/demos/youtube/reqmr/`) are embedded —
+cheap, and the cache is per media file — but every one carries `splittable: false` in its
+sidecar, along with its `upload_date` and `edited_upload: true`. An upload id is not an
+independent session: they are edited across maps with black openings, outros, scoreboards and
+spectated heroes; the two September uploads may overlap the retained ReqMR Twitch sections; and
+the four April-May ones predate several balance patches. `policy.train.windows` refuses a source
+that is not `splittable`, and a test pins it.
+
+**Proposed, not built — a dedup signal.** Cosine similarity between cached embeddings across
+sources, restricted to pairs whose HUD state matches, would find re-uploaded stretches cheaply:
+the embeddings already exist, so it is a matrix product over ~100k vectors. Caveats before anyone
+trusts it: an edited upload is re-encoded, so a duplicate is near but not identical; two distinct
+moments on the same map with the same HUD can be near neighbours; and the threshold needs
+hand-checked pairs before it draws a boundary. **Awaiting your go-ahead.**
+
 ## The cache
 
 `data/embeddings/<encoder>-<norm>-<hz>hz/<source>.npz` holds `emb` (float16 `[n, dim]`) and `t`
@@ -187,6 +261,9 @@ scratch directory and the numbers came here instead of the images.
   runs in every environment and fails the moment two `cv2` providers are installed together.
   Green in all three: `uv sync` leaves the stdlib-only env, `--group perception` has
   `cv2 5.0.0` with `numpy 2.5.3` and only the headless distribution, and `--group policy` runs.
-- **Not built:** the temporal head and its training loop (step 2), `--brain learned` and its
-  latency measurement (step 3), the tactical-purpose head (step 4), any live run. Nothing is
-  committed.
+- **The trainer selects sources by regime before any window is cut**, then tells the loader
+  `mix_regimes=True`. The loader reads a run's regime from its `meta.json`, which the recorders do
+  not write yet (rivals-brain is adding a `--cooldowns` flag); `policy/corpus.py` holds the lead's
+  statement meanwhile, and a test pins that the selection is what pins the regime.
+- **Not built:** `--brain learned` and its latency measurement (step 3), the tactical-purpose head
+  (step 4), cross-source deduplication (proposed above), any live run. Nothing is committed.
