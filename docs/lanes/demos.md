@@ -1,7 +1,7 @@
 # Demonstrations: dataset format and loader (VUH-1308, VUH-1326, VUH-1324)
 
 `agent/demos.py` is one on-disk format and one loader for three kinds of source: expert VOD clips (no inputs), the agent's
-own range recordings (pad state as the input modality), and human annotations. It reads the HUD lane's **format 4** event
+own range recordings (pad state as the input modality), and human annotations. It reads the HUD lane's **format 5** event
 files, joins play across short scoreboard taps with the hidden frames masked, carries annotators' per-frame masks into the
 window, and holds each source's provenance (cooldown regime, patch, splittable, edited upload, group) with one authority.
 What it cannot trust it refuses, loudly. Stdlib only. Nothing under `data/` is committed.
@@ -29,7 +29,7 @@ Media is never copied or re-encoded, and there is no database: a clip is one JSO
 ```mermaid
 flowchart LR
   A["acquisition manifest.json<br/>(dates, group, split)"] --> M["clip manifest.jsonl<br/>header: provenance + segments"]
-  E["events JSONL, format 4<br/>(perception/events.py)"] --> M
+  E["events JSONL, format 5<br/>(perception/events.py)"] --> M
   V["context_mask / outcome_mask<br/>(annotators' per-frame visibility)"] --> N["annotations JSONL"]
   N --> M
   R["run dir: frames.jsonl + meta.json"] --> L[Demos.load]
@@ -47,7 +47,7 @@ clip time   0 ------- 5.5 |tap| 6.1 --------------------------- 37.6 | death ...
 segments    [ seg 0       ]      [ seg 1                          ]              [ seg 2
                    ended_by=scoreboard, 0.6 s wide: under MAX_BRIDGE_S, so bridged
 decision                              t=8.1
-observation        [3.1 ....... masked 5.7, 5.9 ....... 8.1]      frames; events with t_to <= 8.1 from seg 0 and seg 1
+observation        [3.1 ....... masked 5.7, 5.9 ....... 8.1]      frames; events with known_at <= 8.1 from seg 0 and seg 1
 hindsight                                   (8.1 ........ 13.1]   outcome window, up to the next HARD boundary
 ```
 
@@ -143,38 +143,71 @@ must read these instead, and nothing else:
 where `demos = Demos.load(...)` and `clip = demos.clips[id]`. Leaving `mix_regimes` / `mix_patches` at `False` is what keeps a
 training set to one regime and one patch.
 
-## Events: format 4, as the HUD lane writes it
+## Events: format 5, as the HUD lane writes it
 
 `perception/events.py` writes one file per clip (`data/demos/events/<stem>.jsonl`, `sections/`, `youtube/`): a `meta` line,
-`segment` lines, then events without a `type` (`kind`, `i_from`, `t_from`, `i_to`, `t_to`, `slot`, `slot_pos`, `amount`,
-`before`, `after`, `segment`). `events_file_segments(path)` turns the segment lines into manifest segments.
+`segment` lines, then events without a `type`. `events_file_segments(path)` turns the segment lines into manifest segments.
 
-**The loader reads format 4 only, and only from the current writer.** Any other `format` (a file with no meta line is format 1)
-is a `FormatError` that names the file and both versions. A format 4 file must also pass **the producer's own staleness verdict**
-(`perception.events.check`):
+**The loader reads format 5 only, and only from the current writer.** Any other `format` (a file with no meta line is format 1;
+every file on disk today is format 4) is a `FormatError` that names the file and both versions. There is no dual-format mode:
+format 4 counted one continuing cooldown as several casts and has no knowledge time. A format 5 file must also pass **the
+producer's own staleness verdict** (`perception.events.check`):
 
 - a non-empty `recipe`;
-- every key of the producer's `REQUIRED_META`;
+- every key of the producer's `REQUIRED_META`, now including `kit` and `timer_lengths`;
 - a `writer` equal to the fingerprint of the producer's `WRITER_FILES` (SHA-256 over `perception/events.py`, `hud.py`,
   `scoreboard.py`).
 
 A stale file is refused by name with the producer's reason and `regenerate it with python -m perception.events regen`.
 `producer_rule()` reads those constants from `perception/events.py` with `ast.literal_eval`, without importing it (it imports
 numpy), so there is no second list to drift. `test_the_loaders_stale_rule_is_the_producers` (perception group) checks that the
-two verdicts agree on every real file. Editing any writer file makes every events file stale until it is regenerated. That is
-the producer's contract, and the loader holds to it.
+two verdicts agree on every real file.
 
-The loader's own keys are `fps`, `layout`, `t_origin`, `slot_mapping` and `slot_mapping_from`. `slot_mapping` may be `null`,
-meaning no mapping was attempted, which differs from `{}`: icons read and none identified. The loader keeps the meta line as
-`clip.events_meta` (`slot_mapping`, `observed` cooldowns and charge counts, `cuts`, `cut_times`, `pts_origin_s`, `fps`, `layout`,
-`t_origin`, `recipe`, `writer`). Format 1 vocabulary (`ability_used`, `ability_ready`, slot `pull`) inside a file is refused.
+The loader's own meta keys are `fps`, `layout`, `t_origin`, `slot_mapping` and `slot_mapping_from`. `slot_mapping` may be
+`null`, meaning no mapping was attempted, which differs from `{}`: icons read and none identified. The loader keeps the meta line
+as `clip.events_meta`, and its **`kit`** record as `clip.kit`. That record holds `patch` and `patch_from` (the patch the writer's
+timers used), `table` (the kit table, `null` for none: every timer event is then `ability_uncertain`), `durations` (per position
+`{length, lock}`, `null` for unknown) and `alarms` (a countdown that ran longer than the kit allowed). `kit.patch` must agree with
+the manifest's `patch`, `null` counting as `unknown`: two records of one source, and a disagreement is a `ProvenanceError`.
 
+Retired vocabulary inside a format 5 file is refused: `ability_used`, `ability_ready`, slot `pull`, and, since format 5,
+`slot_unavailable` / `slot_available`, which the writer renamed `icon_dimmed` / `icon_lit`.
+
+### The loaded `Event`: the written contract
+
+Every event a format 5 file holds is loaded into an `agent.demos.Event` with these fields, as the file wrote them. Nothing is
+filled, repaired or derived except `segment`.
+
+| Field | Meaning |
+|---|---|
+| `kind` | what changed: `ability_cast`, `ability_uncertain`, `cooldown_ended`, `charges_spent`, `charges_regained`, `icon_dimmed`, `icon_lit`, `web_cluster_fired`, `web_cluster_reloaded`, `hp_lost`, `hp_gained`, `shield_*`, `max_hp_changed`, `ult_ready`, `ult_spent`, `ko_feed`, `death`, `respawn` (the loader refuses retired names, not unlisted new ones) |
+| `t_from`, `t_to` | **occurrence**: the earliest and latest the change can have happened, on evidence alone. `t_from <= t_to`. What a **target** is built from |
+| `i_from`, `i_to` | the frame indices of `t_from`, `t_to` at the events file's sampling rate |
+| `known_at` | **availability**: when the evidence the assertion needs is in. Finite, `>= t_to`, always set. The **only** clock for what a window, a validation or a historical feature step may see: an event is visible at `t` iff `known_at <= t` |
+| `known_i` | the frame index of `known_at`, as written (may lie past the last frame read) |
+| `slot` | the ability the icon identified, or `None`: never filled from `slot_pos` |
+| `slot_pos` | the layout position the change fired in: a place, not an ability |
+| `amount`, `before`, `after` | the change's size and the values either side (a timer event's `amount` is its first read value) |
+| `cause` | `hp_lost`: `damage` or `unknown`; `hp_gained`: `heal` or `unknown`; `None` on every other kind. **`unknown` is not damage** (or heal) |
+| `segment` | the manifest segment the event lies in, assigned by time at load |
+
+`ability_uncertain` is a first-class kind with its `slot`, `slot_pos`, `amount` and interval: that ability is **unknown** over
+`[t_from, t_to]`, neither a positive nor a negative. `cooldown_ended` is history, not readiness. `icon_dimmed` / `icon_lit` are
+display state, never availability or a cast.
+
+**Validated at load, each a `KnowledgeError`** (a `FormatError`) naming the file, the line and the event, never a silent repair:
+`known_at` missing, `null`, non-numeric or not finite; `known_at < t_to`, an assertion known before its occurrence could have
+ended; `t_from > t_to`. A `cause` outside the table above is a `FormatError`.
+
+- **Knowledge time is the only availability clock.** An observation at `t` holds the events with `known_at <= t` whose
+  occurrence began inside its history (`t_from >= context_start`), and `Observation` refuses to be built with an event known
+  later, or with no knowledge time (`LeakageError`). An event that occurred by `t` (`t_to <= t`) but is known only after it is
+  not visible at `t`. It arrives at `known_at`, and until then it is hindsight. The outcome window holds every reached event
+  not known by `t` whose occurrence began by the window's end (`known_at > t`, `t_from <= t_end`), in the order the events became
+  known. Nothing anywhere falls back to `t_to`.
 - **An ability is named only from its icon.** `slot` must equal `slot_mapping[slot_pos]`; a position the mapping does not
   identify, or a file with no mapping, has `slot: null`, and a named slot there is refused as a guess (VUH-1326 finding 7).
-  The ult's position is fixed by the layout and is always `ult`. `Event.slot` stays `None` all the way into a window;
-  `Event.slot_pos` names the position, never the ability.
-- **An event is an interval, never an instant.** At decision time `t` an event is known only if `t_to <= t`; one still
-  pending is hindsight.
+  The ult's position is fixed by the layout and is always `ult`.
 - **An event lies inside one segment.** The loader assigns it by time (the file's `segment` index is only a hint) and refuses
   one that crosses a boundary or sits in a gap.
 - **A manifest's segments are its events file's.** A manifest's segment lines must be identical to its events file's, or
@@ -183,8 +216,27 @@ meaning no mapping was attempted, which differs from `{}`: icons read and none i
   every-event-inside-a-segment check never notices that; this comparison does. There is no carve-out: the producer writes one
   segment line per segment, so an events file with none says the clip has none, and a manifest with segments over it is
   refused. The fix is always `write_manifest(path, header, events_file_segments(events))`.
-- **No HUD feature is read off a masked frame.** An event whose `t_from` or `t_to` frame an annotator masked for the HUD or
-  for the event's own field (`hp`, `ammo`, the slot) does not enter the window.
+- **No HUD feature is read off a masked frame.** An event whose `t_from`, `t_to` or `known_at` frame an annotator masked for the
+  HUD or for the event's own field (`hp`, `ammo`, the slot) does not enter the window.
+- **An archived experiment is never an input.** `Demos.load` and `discover` refuse any path inside a `data/experiments/`
+  directory (`data/experiments/b0-multilabel-v1` and its sidecars): those are the outputs of a fit on format 4 events.
+
+### Consumers outside this lane (on branch `loader-format5`, base `writer-fix` at 417f1ad)
+
+These still read format 4 semantics and must change before a format 5 regeneration is promoted. Listed, not edited:
+
+| Where | What it does | Needs |
+|---|---|---|
+| `policy/train.py:62` | `EVENT_KINDS = ("hp_lost", "web_cluster_fired", "slot_unavailable", "slot_available")` | the renamed icon kinds; `hp_lost` only with `cause == "damage"` |
+| `policy/train.py:183` | the historical event feature selects `t - window_s < e.t_to <= t` | select on `known_at`, never `t_to` |
+| `policy/b0.py:77-88` | builds targets from `t_from`/`t_to` (occurrence: right for targets) with no `known_at` and no `ability_uncertain` handling | carry `known_at`; `ability_uncertain` censors a negative, never a positive |
+| `tests/test_policy.py:571` | builds an `hp_lost` `Event` with no `cause` | a `cause` |
+| `tests/test_b0.py:36,42` | builds events by `t_to` only | a `known_at` |
+
+The policy owner's in-flight copies in the main checkout (not on this branch) already select on `known_at`
+(`policy/train.py:177-200` `event_known_at`, `policy/b0.py:80-133`, `policy/b0_multilabel.py:49,162-164`) and map `hp_lost` to
+`damage_taken` only when `cause == "damage"`. The producer's own `tests/test_events.py` reads `t_to` where it tests
+occurrence bounds, and `tests/test_events_sheet.py:69` prints it; both are the HUD lane's and neither selects availability.
 
 ## Annotations and their per-frame masks
 
@@ -272,7 +324,7 @@ cuts, deaths and spectating.
 | An `Observation` holds nothing later than `t` | every source is cut off at `t` before it is read, and `Observation` refuses a later frame, event or input (`LeakageError`) | `test_an_observation_refuses_to_hold_anything_later_than_t`, `test_no_future_datum_is_reachable_from_an_observation` |
 | No route from an observation to labels or the outcome | `Observation` has no such field and no reference to the clip | `test_the_policy_facing_types_have_no_route_to_labels_or_outcomes` |
 | Hindsight is opt-in | `samples(..., hindsight=True)` | `test_the_outcome_is_strictly_after_t` |
-| An event pending at `t` is not known at `t` | events filter on `t_to <= t` | `test_events_are_intervals_and_a_pending_one_is_hindsight` |
+| An event not yet known at `t` is not visible at `t`, whenever it occurred | events filter on `known_at <= t`; `Observation` refuses a later or missing `known_at` | `test_an_event_is_visible_only_from_its_knowledge_time_never_from_its_occurrence`, `test_events_are_intervals_and_a_pending_one_is_hindsight` |
 | Nothing crosses a hard boundary, a cut included; a tap is bridged only under the maximum | `Clip.soft_gap`, `Clip.stretch` | `test_no_hard_boundary_is_ever_spanned_even_when_asked_to_span_overlays`, `test_a_window_never_crosses_a_hard_cut`, `test_a_scoreboard_tap_wider_than_the_named_maximum_is_a_hard_boundary` |
 | A bridged window keeps the gap's frames masked and reads no HUD feature off a masked frame | `Demos._masked`, `Demos._readable` | `test_a_bridged_window_carries_masked_frames_and_no_hud_feature_from_them` |
 | A null-slot cast stays null | `_slot_guessed` at load; `Event.slot` is never filled | `test_a_cast_at_an_unidentified_position_stays_null_through_every_window`, `test_a_guessed_ability_name_is_refused` |
@@ -297,7 +349,7 @@ re-cuts them, and the loader refuses events that no longer fit the segments.
 
 ## Worked example: a bridged window on a retained section
 
-`data/demos/vods/reqmr-2871472478-5400-900s.manifest.jsonl` (header abridged; segments from the format 4 events file):
+`data/demos/vods/reqmr-2871472478-5400-900s.manifest.jsonl` (header abridged; segments from the format 4 events file, measured before format 5):
 
 ```json
 {"type": "clip", "id": "reqmr-2871472478-5400-900s", "kind": "vod", "vod_id": "2871472478", "creator": "reqmr",
@@ -322,6 +374,10 @@ source_time(8.1) = 5408.1
 With `across_overlays=False` the same decision's history starts at 6.1 and is truncated.
 
 ## What the real data showed
+
+**Measured on the format 4 files, by the format 4 loader.** This loader refuses every one of them, and no format 5
+file exists yet: the numbers below and in the worked example and the split report are re-measured when the format 5
+regeneration lands.
 
 Every events file is from the frozen writer `1336262e179c` (`python -m perception.events check`: all format 4, all
 regenerable), and every loader manifest's segments are identical to its events file's.
@@ -439,7 +495,7 @@ slot.
 
 Event signatures cannot identify a shared match: a quick check matched a May upload against a September broadcast.
 
-## What format 4 does not give the loader
+## What the event format does not give the loader
 
 - **A patch.** `observed` is a fingerprint, not a patch: mapping it to one needs a dated per-patch cooldown table, and the kit
   states only the current patch. Its countdown histograms also carry misreads (uppercut `120`-`188` on one DayMR section).
@@ -460,7 +516,7 @@ Event signatures cannot identify a shared match: a quick check matched a May upl
 - **Not built:** video decoding, an annotation tool, event and annotation re-cutting on `trim`, verification of `alignment`,
   mapping `observed` to a patch, and sampling-weight code.
 
-Mutation checks: 46 hand-made breakages of the format 4, bridging, mask and provenance code (a guessed slot accepted, the
+Mutation checks: 65 hand-made breakages of the event format, bridging, mask and provenance code (a guessed slot accepted, the
 fixed ult unrecognised, format 3 accepted, meta keys unchecked, the tap width ignored, a cut made soft, bridging off by
 default, a gap hiding the HUD only, `partial` hiding, annotator masks dropped, events read off masked frames, the regime or
 patch gate off, a basis unchecked, observed countdowns unchecked, an unsplittable clip hashed into a split or allowed an
@@ -470,4 +526,9 @@ not declared pending, a pending side with groups, an unassigned group on a side 
 the writer, the producer's keys or the recipe unchecked, masks looked up by exact millisecond, an unmatched or out-of-clip mask
 row passed silently, events checked against masks with no tolerance; a manifest's segments not compared with its events file's; for sealing and refinements, a sealed side that answers, a sealed
 source answering from another split, `unseal` ignored, sealed names unchecked, the carve-out reopened, a segmenter manifest
-allowed to refine, any reason accepted as a refinement, a refinement allowed to move times) each fail at least one test.
+allowed to refine, any reason accepted as a refinement, a refinement allowed to move times; for format 5, observations, outcomes,
+the leak check or event order selected by `t_to`, a missing knowledge time trusted, `known_at` missing, non-finite, before `t_to`
+or with `t_from > t_to` accepted, `cause` unchecked or dropped, `unknown` counted as damage, `known_i` dropped, the icon renames
+not retired, format 4 accepted, the kit's shape or patch unchecked, `ability_uncertain` dropped, an experiment archive accepted)
+each fail at least one test. One further breakage, a `t_to` fallback at load, cannot change a loaded value: the validation
+before it refuses every event it could apply to.

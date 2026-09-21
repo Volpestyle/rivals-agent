@@ -55,11 +55,11 @@ ENDED_BY = ("run_end", "death", "killcam", "spectating", "scoreboard", "not_our_
 # The only change an annotator may make to the segmenter's segments (segments_from "annotator"): name a coarse ended_by more
 # precisely. Times, started_by and every other reason stay the segmenter's.
 REFINES = {"not_our_hero": ("hero_swap",), "no_hud": ("menu", "brb", "unreadable_hud")}
-# The events file the loader reads is the HUD lane's FORMAT 4 (docs/lanes/l2-hud.md, "Event stream format"): its meta line says
-# "format": 4. Any other format is refused, naming the file and both versions: format 1 claimed casts that never happened, 2 and 3
-# may name an ability by layout position (a guess) and know no editorial cut, so a stale file would train on what it is not.
-EVENT_FORMAT = 4
-# What a format 4 meta line must carry for this loader: slot_mapping may be null (no mapping attempted) but must be present.
+# The events file the loader reads is the HUD lane's FORMAT 5 (docs/lanes/l2-hud.md, "Event stream format"): its meta line says
+# "format": 5. Any other format is refused, naming the file and both versions: format 4 counted one continuing cooldown as several
+# casts and has no knowledge time, 1-3 are older still; there is no dual-format mode.
+EVENT_FORMAT = 5
+# What a format 5 meta line must carry for this loader: slot_mapping may be null (no mapping attempted) but must be present.
 META_KEYS = ("fps", "layout", "t_origin", "slot_mapping", "slot_mapping_from")
 # STALENESS is the producer's own verdict (perception.events.check): the format, a non-empty recipe, every key of its
 # REQUIRED_META, and a `writer` equal to the fingerprint of its WRITER_FILES. Those constants are read from the producer's
@@ -83,7 +83,13 @@ def producer_rule(path=PRODUCER):
     return {"format": consts["FORMAT_VERSION"], "required_meta": tuple(consts["REQUIRED_META"]), "writer": h.hexdigest()[:12]}
 # Positions whose ability is fixed by the layout, not read off an icon: the ult is always the ult.
 FIXED_SLOTS = ("ult",)
-REMOVED_KINDS = ("ability_used", "ability_ready")   # replaced by ability_cast and slot_unavailable / slot_available
+# Vocabulary retired by an earlier format, refused inside a current file: format 2 split ability_used / ability_ready into
+# ability_cast and the icon kinds; format 5 renamed slot_unavailable / slot_available to icon_dimmed / icon_lit (display state only).
+REMOVED_KINDS = ("ability_used", "ability_ready", "slot_unavailable", "slot_available")
+# hp_lost / hp_gained say which way hp moved; `cause` says why, and only these values: "unknown" is not damage (or heal).
+CAUSES = {"hp_lost": ("damage", "unknown"), "hp_gained": ("heal", "unknown")}
+# A format 5 meta line's `kit` record: the durations the writer's timer model used (docs/lanes/l2-hud.md, "Writer fix, format 5").
+KIT_KEYS = ("patch", "patch_from", "table", "durations", "alarms")
 REMOVED_SLOTS = ("pull",)                           # renamed get_over_here
 # A gap between two segments is SOFT when a known overlay made it: the player is alive and the game goes on, only the HUD (and,
 # some of the time, the scene) is hidden. A window may span a soft gap when the caller asks (across_overlays), with the gap's
@@ -142,6 +148,11 @@ class AlignmentError(ValueError):
     """An annotation was made over a context the loader would not give a policy: a label must not be trained on it."""
 
 
+class KnowledgeError(FormatError):
+    """A format 5 event without a finite knowledge time at or after its occurrence: it cannot be placed on the availability clock,
+    and it is never placed by its occurrence time instead."""
+
+
 class LeakageError(ValueError):
     """Something later than the decision time was about to become an observation."""
 
@@ -162,10 +173,13 @@ class Segment:
 
 @dataclass(frozen=True)
 class Event:
-    """One HUD transition. The change happened somewhere in [t_from, t_to]: no field is an instant."""
+    """One HUD transition, as the format 5 file wrote it. [t_from, t_to] is OCCURRENCE: the earliest and latest the change can
+    have happened on evidence alone (what a target is built from). `known_at` is AVAILABILITY: when the evidence the assertion
+    needs is in (what an observation may see). They differ: a use bounded at 2.0 s may be known only at 3.3 s. Nothing ever
+    falls back from one to the other."""
     kind: str
-    t_from: float            # the last frame showing the old value
-    t_to: float              # the first frame showing the new one: the event is known from here on
+    t_from: float            # occurrence, earliest: the last frame showing the old value (a timer: the earliest the use can be)
+    t_to: float              # occurrence, latest: the first frame showing the new value (a timer: the latest the use can be)
     i_from: int | None = None
     i_to: int | None = None
     slot: str | None = None      # the ability the icon showed; None when it was not identified. Never filled from slot_pos
@@ -174,6 +188,9 @@ class Event:
     after: object = None
     segment: int | None = None   # by time, at load; the file's own index is only a hint
     slot_pos: str | None = None  # the layout position it fired in: a place, not an ability
+    known_at: float | None = None  # availability: finite, >= t_to, always set on a loaded event (KnowledgeError otherwise)
+    known_i: int | None = None     # the frame index of known_at, as written
+    cause: str | None = None       # hp_lost: damage | unknown; hp_gained: heal | unknown; null on every other kind
 
 
 @dataclass(frozen=True)
@@ -235,7 +252,7 @@ class Observation:
     segment: int
     t: float
     frames: tuple                # FrameRef, oldest first, last is t
-    events: tuple | None         # confirmed by t (t_to <= t); None when the clip has no event stream
+    events: tuple | None         # known by t (known_at <= t), never selected by t_to; None when the clip has no event stream
     inputs: tuple | None         # pad history up to t; None when the source has no inputs (a VOD)
     context_start: float
     truncated_context: bool      # a hard boundary (or the clip's start) came less than history_s before t
@@ -245,7 +262,8 @@ class Observation:
         return any(f.masked for f in self.frames)
 
     def __post_init__(self):
-        late = [f for f in self.frames if f.t > self.t + EPS] + [e for e in self.events or () if e.t_to > self.t + EPS] \
+        late = [f for f in self.frames if f.t > self.t + EPS] \
+            + [e for e in self.events or () if e.known_at is None or e.known_at > self.t + EPS] \
             + [i for i in self.inputs or () if i.t > self.t + EPS]
         if late or not self.frames:
             raise LeakageError(f"observation at t={self.t} would hold {len(late)} item(s) later than t" if late
@@ -257,7 +275,7 @@ class Outcome:
     """The window after t, up to the next hard boundary. Hindsight."""
     t_end: float
     frames: tuple
-    events: tuple | None          # t_to in (t, t_end], including ones still pending at t
+    events: tuple | None          # not known by t (known_at > t) and begun by t_end (t_from <= t_end): what came to light after t
     ended_by: str | None          # the ended_by of the hard boundary that cut the window short (death is an outcome)
     truncated: bool
 
@@ -434,6 +452,13 @@ class Clip:
                 raise FormatError(f"{self.id}: {field}_from {basis!r} is not one of {PROVENANCE_FROM}")
             if (h[field] == unknown) != (basis == "none"):
                 raise ProvenanceError(f"{self.id}: {field}={h[field]!r} from {basis!r}: a known value needs a basis, and unknown has none")
+        self.kit = None if self.events_meta is None else self.events_meta["kit"]
+        if self.events_meta is not None:
+            if not isinstance(self.kit, dict) or any(k not in self.kit for k in KIT_KEYS):
+                raise FormatError(f"{self.id}: the events meta line's kit must be a record with {list(KIT_KEYS)}, not {self.kit!r}")
+            if (self.kit["patch"] or PATCH_UNKNOWN) != self.patch:
+                raise ProvenanceError(f"{self.id}: the events file's timers used patch {self.kit['patch']!r} "
+                                      f"({self.kit['patch_from']}), the manifest says {self.patch!r}: one of them is wrong")
         if h["cooldowns_from"] == "observed_cooldowns":
             seen = {s for s, o in ((self.events_meta or {}).get("observed") or {}).items() if o.get("countdown_mode")}
             if self.cooldowns != "normal" or not seen:
@@ -529,21 +554,32 @@ class Clip:
             if r.get("type", "event") != "event":
                 continue  # meta and segment lines share the file; segments are imported by events_file_segments, not read here
             if r.get("kind") in REMOVED_KINDS or r.get("slot") in REMOVED_SLOTS:
-                raise FormatError(f"{rel}:{n}: {r.get('kind')} / slot {r.get('slot')} is format 1 vocabulary inside a format "
+                raise FormatError(f"{rel}:{n}: {r.get('kind')} / slot {r.get('slot')} is retired vocabulary inside a format "
                                   f"{EVENT_FORMAT} file")
+            where = f"{rel}:{n}: {r.get('kind')} [{r.get('t_from')}, {r.get('t_to')}] known_at {r.get('known_at')!r}"
+            k, lo, hi = r.get("known_at"), r.get("t_from"), r.get("t_to")
+            if isinstance(k, bool) or not isinstance(k, (int, float)) or not math.isfinite(k):
+                raise KnowledgeError(f"{where}: known_at must be a finite time; it is never taken from t_to")
+            if isinstance(lo, (int, float)) and isinstance(hi, (int, float)) and not lo <= hi <= k + EPS:
+                raise KnowledgeError(f"{where}: needs t_from <= t_to <= known_at (an assertion is not known before its occurrence "
+                                     f"could have ended)")
+            want = CAUSES.get(r.get("kind"), (None,))
+            if r.get("cause") not in want:
+                raise FormatError(f"{where}: cause {r.get('cause')!r} is not one of {list(want)}")
             guessed = _slot_guessed(r, meta["slot_mapping"])
             if guessed:
                 raise FormatError(f"{rel}:{n}: {r.get('kind')} names a guessed ability: {guessed}")
             try:
                 e = Event(r["kind"], _num(r["t_from"], f"{rel}:{n}"), _num(r["t_to"], f"{rel}:{n}"), r.get("i_from"), r.get("i_to"),
-                          r.get("slot"), r.get("amount"), r.get("before"), r.get("after"), slot_pos=r.get("slot_pos"))
+                          r.get("slot"), r.get("amount"), r.get("before"), r.get("after"), slot_pos=r.get("slot_pos"),
+                          known_at=float(r["known_at"]), known_i=r.get("known_i"), cause=r.get("cause"))
             except KeyError as k:
                 raise FormatError(f"{rel}:{n}: event lacks {k}") from None
             seg = next((s for s in self.segments if s.start_t - EPS <= e.t_from and e.t_to <= s.end_t + EPS), None)
             if e.t_to < e.t_from or seg is None:
                 raise FormatError(f"{rel}:{n}: event {e.kind} [{e.t_from}, {e.t_to}] lies outside every segment or crosses a boundary")
             events.append(dataclasses.replace(e, segment=seg.n))
-        self.events = tuple(sorted(events, key=lambda e: (e.t_to, e.kind)))
+        self.events = tuple(sorted(events, key=lambda e: (e.known_at, e.t_to, e.kind)))   # the order they became known
 
     def _load_annotations(self):
         self.annotations, self.outcome_reviews = {}, {}   # by decision time, rounded to a millisecond
@@ -714,9 +750,14 @@ def run_manifest(path):
 
 
 def discover(*paths):
-    """Clips from manifests (`*.manifest.jsonl`), run directories, or directories holding either."""
+    """Clips from manifests (`*.manifest.jsonl`), run directories, or directories holding either. Never from an experiment's
+    archive (a `data/experiments/` directory): those are outputs of a fit on their own event format, never inputs to a new one."""
     out = []
     for p in map(Path, paths):
+        parts = p.resolve().parts
+        if any(a == "data" and b == "experiments" for a, b in zip(parts, parts[1:])):
+            raise FormatError(f"{p}: an archived experiment (data/experiments/) is never a loader input: its windows and events are "
+                              f"the format of the run that made them")
         if p.is_file():
             out.append(read_manifest(p))
         elif (p / "manifest.jsonl").is_file():
@@ -963,12 +1004,12 @@ class Demos:
 
     @staticmethod
     def _readable(clip, e):
-        """False when a frame the event was read from (t_from or t_to) is masked for the HUD or the event's own field: no
-        HUD-derived feature comes from a frame that must not be learned from."""
+        """False when a frame the event rests on (t_from, t_to, or known_at, where its evidence completed) is masked for the HUD or
+        the event's own field: no HUD-derived feature comes from a frame that must not be learned from."""
         field = (e.slot or e.slot_pos) if e.slot_pos or e.slot else \
             "ammo" if e.kind.startswith("web_cluster") else "hp" if e.kind.split("_")[0] in ("hp", "shield", "max") else None
         h = 0.5 / float(clip.events_meta["fps"])       # the events' own grid: the mask rows nearest the frames they were read off
-        for t in (e.t_from, e.t_to):
+        for t in (e.t_from, e.t_to, e.known_at):
             m = clip.masks_near(t, h)
             if m and ("hud" in m.hidden or field in m.hidden):
                 return False
@@ -986,7 +1027,7 @@ class Demos:
                 frames.append(f)
         frames = self._masked(clip, frames, across, 0.5 / frame_hz)
         events = None if clip.events is None else tuple(
-            e for e in clip.events if e.segment in ids and e.t_to <= t + EPS and e.t_from >= start - EPS and self._readable(clip, e))
+            e for e in clip.events if e.segment in ids and e.known_at <= t + EPS and e.t_from >= start - EPS and self._readable(clip, e))
         inputs = None if clip.inputs is None else tuple(_span(clip.inputs, start, t, lambda i: i.t))
         return Observation(clip.id, seg.n, t, tuple(reversed(frames)), events, inputs, start,
                            truncated_context=t - history_s < lo - EPS)
@@ -1001,7 +1042,7 @@ class Demos:
                 frames.append(f)
         frames = self._masked(clip, frames, across, 0.5 / frame_hz)
         events = None if clip.events is None else tuple(
-            e for e in clip.events if e.segment in ids and t + EPS < e.t_to <= end + EPS and self._readable(clip, e))
+            e for e in clip.events if e.segment in ids and e.known_at > t + EPS and e.t_from <= end + EPS and self._readable(clip, e))
         cut = last.end_t < t + outcome_s - EPS
         reviews = tuple(clip.outcome_reviews.get(round(t, 3), ()))
         return Hindsight(Outcome(end, tuple(frames), events, last.ended_by if cut else None, cut), reviews)
