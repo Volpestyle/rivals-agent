@@ -21,6 +21,30 @@ def pytest_ignore_collect(collection_path, config):
 import pytest
 
 
+def pytest_addoption(parser):
+    parser.addoption("--corpus", action="store_true", default=False,
+                     help="also run tests marked `corpus` (they read the demonstration corpus under data/)")
+
+
+def pytest_configure(config):
+    config.addinivalue_line(
+        "markers", "corpus: reads the recorded demonstration corpus under data/; skipped unless --corpus is given")
+
+
+def pytest_collection_modifyitems(config, items):
+    """A test that reads the demonstration corpus runs only when asked for by name of intent.
+
+    The corpus holds sealed sources and files mid-migration, so a whole-file or broad `-k` run must
+    not open it by accident. Mark such a test `@pytest.mark.corpus`; it is skipped without `--corpus`.
+    """
+    if config.getoption("--corpus"):
+        return
+    skip = pytest.mark.skip(reason="reads the demonstration corpus; pass --corpus to run it")
+    for item in items:
+        if "corpus" in item.keywords:
+            item.add_marker(skip)
+
+
 @pytest.fixture(autouse=True)
 def _no_real_dotenv(monkeypatch):
     """The developer's .env (endpoint, keys) never reaches a test."""

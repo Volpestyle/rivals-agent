@@ -46,6 +46,9 @@ from this Mac, usually as a Herdr swarm. `CLAUDE.md` is a symlink to this file.
 - `uv run pytest` runs the stdlib-only offline suite; no network, no game. Tests that import
   `cv2`, `numpy` or `perception` are skipped there and run with `uv run --group perception pytest`
   (`uv sync` afterwards restores the stdlib-only environment). Perception lanes run the second form.
+- A test that reads the demonstration corpus under `data/` carries `@pytest.mark.corpus` and is skipped
+  unless `--corpus` is given, so a whole-file or broad `-k` run never opens sealed or mid-migration files
+  by accident. Each lane marks its own tests.
 - Python via `uv`; standard library first; add a dependency only when a few lines cannot do it.
 - Review is independent of the lane that wrote the code. Code that sends input to the live
   game, and code that decides what enters a training or evaluation set, gets a read-only
