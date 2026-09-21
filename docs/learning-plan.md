@@ -31,8 +31,11 @@ two inspected pilot clips, nine acquired guides (about 106 minutes), and about
 60 raw minutes from four VOD sessions; raw duration is not accepted training
 duration. The aligned two-window annotation rerun agrees on coarse tactical
 purpose, but exposes event-extractor defects. Event format 2 is delivered; its
-30-event Req hand-check is the current annotation gate (VUH-1306). A trained
-gameplay policy and an RL training run are not yet accepted. The next deliverable
+Req hand-check and per-source slot mapping govern label acceptance (VUH-1306).
+The policy lane has an offline DINO encoder / GRU intent-training pipeline;
+its reported held-out results do not beat the majority baseline. This is
+pipeline evidence, not an accepted gameplay policy. RL is not implemented or
+accepted. The next deliverable
 is a small trustworthy training/evaluation set and a first imitation baseline,
 not an exhaustive archive.
 
@@ -107,8 +110,9 @@ or a successful disengagement. Reader failure remains an interruption/unknown,
 not a fabricated adverse gameplay outcome.
 
 Before an RL run, record the exact formula, weights, discount, episode limits and
-reader versions with the experiment. Numeric weights are not accepted yet; tune
-on development episodes, then freeze the evaluation and its success criteria.
+reader versions with the experiment. The first experiment below supplies proposed
+defaults, not validated weights; tune on development episodes, then freeze the
+evaluation and its success criteria.
 Optional shaping must have a bounded contribution so damage farming or repeated
 partial progress cannot outweigh the actual task. Scoreboard checks are a means
 of measurement, not an action deserving positive reward.
@@ -132,8 +136,8 @@ Run that small collection pilot before committing to RL scale: measure usable
 episodes per hour, reset time, invalid-data rate, inference latency and training
 throughput. This is one real game instance, not a simulator supplying thousands
 of parallel matches; rented GPUs accelerate training, not gameplay collection.
-Choose the RL algorithm after fixing the trainable action interface and measuring
-that data budget. Range option learning starts with the motor controller frozen;
+Masked PPO is the first-experiment choice below, contingent on a viable collection
+budget and trainable action interface. Range option learning starts with the motor controller frozen;
 learning sticks and camera is a separate experiment under E.
 
 Each comparison keeps the scenario set, trial budget, perception and executor
@@ -144,6 +148,253 @@ Claim improvement only at the tested scope; inconclusive results call for more
 evidence, not promotion of the highest-return checkpoint. Keep the preceding
 working policy available for rollback. Training stays local first, with the
 approved initial $100 cloud allowance governed by the compute section below.
+
+### First RL experiment: implementation plan
+
+This is the implementation contract for VUH-1321, not a claim that RL is running.
+**VUH-1325's live-input freeze is a hard prerequisite:** the lead must accept
+the integrated input-safety fixes after the independent fault-injection rerun.
+Offline trainer, reward and replay work can proceed while live collection is frozen.
+This gate covers every launch surface, including `agent.server` / `agent.session`
+and external agents requesting a sitting. A token or loopback bind does not prove
+input safety or acquire the single-desktop driver. Those paths belong in the
+integrated re-review; a trainer cannot bypass the freeze by launching through them.
+
+The concrete goal is to improve completion of one bounded, designated-target
+range encounter relative to the same imitation checkpoint and controller.
+The first experiment does not optimize match wins, enemy selection or stick
+trajectories. Those are E/F extensions, not capabilities hidden inside the name RL.
+
+#### Policy, observations and actions
+
+Reuse the policy lane's frozen DINO ViT-S/16 encoder, recorded normalization and
+causal five-second history. The existing two-layer GRU provides the starting
+temporal representation. Add a categorical action head and a scalar value head
+(predicted remaining return); train these and the GRU, initially leaving the
+visual encoder, perception, target selector and motor controller fixed. Reuse
+the audited observation builder; neither cache lookup nor outcome features may
+leak frames or events later than the decision time. Add remaining episode time
+and observed option status with explicit known/missing bits and a versioned
+feature layout. Live event features stay absent until their producer is connected.
+
+Warm-start from an imitation checkpoint validated on the same patch, normal
+cooldown regime and executable action vocabulary. The current cooldown-free
+scripted-brain distillation is not that checkpoint. Expert tactical labels can
+improve initialization, but a range-competent own-play imitation checkpoint is
+sufficient for D; D need not wait for full expert game-sense annotation.
+
+The initial candidate vocabulary is `Idle`, `Search`, `Engage`, `Pull`,
+`WebStrike`, and the verified burst `Combo`. Only actions with measured executable
+preconditions enter the experiment. The fixed selector supplies the designated
+target, and an episode never silently switches that identity after occlusion or
+respawn. `SwingTo` enters E once anchors are executable; menu/navigation buttons
+never enter any learned action space.
+
+At an eligible option boundary, mask invalid actions before sampling, and retain
+that exact mask in the rollout. Use the same mask when evaluating the action's
+old/new probabilities during training. A single legal choice supplies no actor
+learning signal. Neutral `Idle` must actually remain neutral: the existing live
+chooser treats idle-like labels as scripted fallback, which cannot be reused as
+RL action semantics. Preserve hard screen/focus/input guards independently of
+the model. Action masking is a policy constraint, not the input-safety boundary.
+See the [action-masking study](https://arxiv.org/abs/2006.14171).
+
+An RL transition starts when the model's sampled option is accepted, and ends
+at its observed completion/failure, next eligible choice, or episode end. The
+reflex loop keeps running during it. Repeated hold ticks are not new independent
+actions. Accumulate their reward and elapsed time into the originating option.
+Log proposal, actual executed option, target, legal mask, behavior log-probability,
+value estimate, observation times, duration, outcome evidence, policy version
+and whether the gate forced/fell back. A rejected proposal must not be trained
+as though it executed. Exclude forced-only decisions from actor loss; where
+intervention breaks attribution, mark the transition invalid. Report the share
+of actual model choices: a policy permanently bypassed by rules cannot learn.
+
+#### Episode and reward v0
+
+VUH-1319 supplies the episode boundary. A proposed initial task is **defeat the
+designated visible bot within 20 seconds**, beginning from an observed scenario
+bin (location/view, distance band, full target health, own resources, patch and
+normal cooldowns). Start timing only after readiness is verified. If full target
+health or identity cannot be established, do not assert a comparable start.
+The lead reports four five-minute baselines with 21, approximately 4, 20 and 0
+KOs: one stalls looking down beside a close bot, another starts on a bot-free
+ring. Pooling these as noise around a mean would hide start-state and recovery
+failures. A bot-free start fails readiness before the episode; getting stuck
+after a verified start remains a real task failure/timeout. Preserve setup
+failure counts separately, and never discard difficult valid starts afterward.
+Respawn/reset is an observed procedure, not an API that teleports or reseeds the
+game. Record reset time separately. Menu re-entry belongs to the guarded supervisor;
+it is never an exploratory policy action or part of the learning return.
+
+Proposed first-experiment reward, once per episode event:
+
+```text
+r = +1.00 on confirmed designated-target completion
+    -0.25 on the task's 20-second timeout
+    -0.20 * delta_gameplay_seconds / 20 on each transition
+```
+
+Completion at 5 seconds totals +0.95; at 20 seconds +0.80; timeout totals -0.45.
+Each interval contributes elapsed time once, capped at the task horizon; do not
+subtract cumulative elapsed time again on every tick.
+Success by the deadline takes precedence over timeout; never award both. The
+finite task uses discount gamma=1, and remaining time is observable. There is
+no damage shaping in reward v0: this avoids depending on damage attribution or
+rewarding repeatable damage without task completion. Completion requires track
+identity plus associated kill-feed evidence, backed by scoreboard deltas; an
+aggregate KO alone is insufficient. Credit a verified delayed display event to
+the encounter that caused it, before starting another target/reset. An event
+whose occurrence interval straddles the deadline cannot prove a by-deadline
+success; preserve that uncertainty rather than backdating its display timestamp.
+
+Runtime stop reasons and learning terminals are different. Completion and the
+task deadline are genuine terminals. Capture loss, a guard stop, operator stop,
+or ambiguous lost-range is an interruption, not a death/timeout penalty. Stop
+input regardless; exclude incomplete outcome-dependent targets. A clearly
+observed navigation failure may become a separately specified terminal in a
+later task, but must not be inferred from the HUD disappearing. A collector
+batch cut with a valid next observation can bootstrap its value; a genuine
+terminal cannot. Do not bootstrap from an unknown/black next frame.
+This distinction follows [Gymnasium's time-limit guidance](https://gymnasium.farama.org/tutorials/gymnasium_basics/handling_time_limits/).
+
+Keep every interruption in evaluation's attempted-episode denominator and report
+its reason. Otherwise a candidate could appear better by generating unscorable
+runs. Any input-safety violation stops the experiment; reward tuning cannot
+authorize unsafe behavior. Low-HP/death/escape rewards wait for AI opponents
+that actually fight back.
+
+#### Update cycle and algorithm
+
+The first algorithm is **masked PPO with a value baseline**, initialized by
+imitation. It alternates collection under one fixed policy version with a few
+optimization passes on that fresh batch. We choose it for the categorical option
+interface and reuse of actor logits, not because it is proven optimal for this
+game or sample budget. Older expert videos have no behavior probabilities or
+exact executed options; they remain imitation/representation data, not pretend
+PPO trajectories. Algorithm basis: [PPO](https://arxiv.org/abs/1707.06347).
+
+```mermaid
+flowchart LR
+  C[Accepted imitation checkpoint] --> P[Masked option policy]
+  P --> G[Independent input guard and fixed controller]
+  G --> E[One bounded range episode]
+  E --> R[Audited reward and attributed transitions]
+  R --> U[Local PPO actor and value update]
+  U --> V[Offline checks and fixed gameplay evaluation]
+  V -->|accepted candidate| P
+  V -->|regression or uncertainty| K[Keep preceding checkpoint]
+```
+
+The trainer extends the existing MLX head rather than adding a model server.
+Before using game rewards, check the clipped objective and value targets on
+small deterministic examples and a toy task; compare numerical results with
+an independent CPU calculation. The contract requires masked probabilities to
+sum to one, zero probability for invalid actions, initial old/new probability
+ratios of one, correct terminal targets, and exactly-once success reward.
+Then verify a recorded rollout can reproduce its observations/actions/returns.
+These checks prove the learning machinery, not Spider-Man performance.
+
+Initial development defaults: PPO clip 0.2, Adam learning rate 0.0003, four
+optimization epochs per fresh batch, value-loss weight 0.5 and entropy weight
+0.01. Use complete finite-episode returns minus the value baseline for the
+first advantage estimator; this avoids adding a second time-discount scheme
+while option durations vary. Normalize advantages only when variance is nonzero.
+Track policy KL and stop batch updates above a proposed 0.02 threshold; this is
+a diagnostic bound, not a gameplay-safety guarantee. Record all defaults with
+the checkpoint and change them only on development data.
+
+Freeze the behavior policy for collection, keep exact old log-probabilities,
+and recompute model outputs from complete causal windows for training. Deploy a
+candidate only between episodes, with the pad released; never update weights
+while that episode is still generating experience. Check that perception/option
+versions match before consuming rollouts. Historical rollouts can be retained
+for audit or separately justified imitation, but are not endlessly reused as
+fresh on-policy data.
+
+#### First experiment budget and promotion
+
+These are proposed bounded experiment sizes, not a claim that they suffice to
+learn or a lifting of the live freeze:
+
+1. **Collection feasibility (VUH-1319):** ten observed episodes, at most 30 minutes
+   including resets. Hand-check every terminal and every assigned reward; any
+   false success blocks training. Report valid episodes/hour, reset distribution,
+   interruptions, genuine policy-choice count and inference latency. If the cap
+   prevents ten episodes, report that result rather than assuming a faster reset.
+2. **Learning smoke experiment (VUH-1321):** at most 40 valid training episodes,
+   with batches containing at least eight completed episodes and 64 eligible
+   model choices. Allow at most four game-hours including pilot, collection,
+   resets and evaluation. If those minima do not fit, stop and revise the
+   collection/task design; do not run an unbounded job to fill a buffer.
+3. **Evaluation:** initially 20 attempts each for the starting checkpoint and the
+   frozen candidate, over a predeclared mix of starts/distance bins withheld from
+   training. Interleave their order where practical, restore the same resources,
+   retain invalid attempts, and include the fixed scripted controller baseline.
+   Test the deployment action-selection rule, not only stochastic training rollouts.
+   Report completion fraction, timeout/interruption counts, restricted completion
+   time (unsuccessful attempts count as the deadline), and reward components.
+
+Twenty attempts per policy are a smoke comparison, not a generalization promise.
+Select candidates on development scenarios; keep a final evaluation set out of
+checkpoint selection. Predeclare success rate as the primary metric and report
+uncertainty. Promote only with evidence of improvement over the starting policy,
+no input-safety violation and no increased dependence on scripted fallback or
+unscorable stops. An inconclusive interval means more evaluation or no promotion,
+not selecting the best-looking run. If baseline success is already saturated,
+predeclare a time-to-completion objective or a harder safe task before training;
+do not change the metric after seeing results.
+
+Measure cost from the pilot: collection hours = required attempts / observed
+attempts per hour, including resets and rejection. One game instance supplies
+experience at real-time speed. The Mac performs training locally, niced, with
+the small head/encoder workload measured separately from inference. Runtime
+placement must pass PC frame-time and end-to-end latency checks; the known
+Wi-Fi tail rules out assuming a reliable Mac round trip. Cloud rental uses the
+existing initial $100 allowance only when measured trainer throughput justifies
+it; it does not buy more game instances or faster environment time. No rentals
+or live experiments are started by this document change.
+
+If the pilot cannot supply useful choices/rewards, fix observability, resets or
+the task first. If PPO works mechanically but consumes too many episodes, compare
+a discrete replay-based learner under the same measured environment-hour budget;
+that is a deliberate second experiment, not a parallel algorithm sweep. If no
+improvement survives evaluation, retain imitation plus reviewed corrections.
+
+#### Expansion and patch acceptance
+
+E adds one capability at a time: target choice over validated tracks, then spatial
+destination/anchor choice, then motor learning from synchronized inputs. Each
+gets its own task/outcomes before joint optimization. F begins with a verified
+AI-only lobby and opponent behavior, then controlled fights, then objective play
+and complete matches. A starting full-match objective is terminal team win +1,
+loss -1, draw 0; objective-progress shaping is added only after its reader and
+anti-farming behavior are audited. These are later task proposals, not signals
+the current range provides.
+
+The existing brain gate hard-codes low-HP retreat. F must separate such tactical
+heuristics from non-negotiable screen/input guards: while a rule always chooses
+retreat, the policy cannot claim to learn when retreat is appropriate. Expand
+the learner's authority only for the tactical behavior being evaluated; keep
+input authorization and neutralization outside the learned policy.
+
+Every source, rollout, baseline and checkpoint records patch plus cooldown regime
+(VUH-1324). Acceptance is per patch. After a patch, suspend promotion and
+unattended learning until the affected HUD layouts/cast readers, cooldown/charge
+behavior, damage/KO attribution, ability preconditions, option completion and
+combo timing are rechecked; remeasure aim/movement if their response changes.
+Rerun the reward audit and a scripted baseline, then evaluate the frozen policy
+before reuse. Old footage remains tagged; mixing patches is an explicit transfer
+experiment. Unknown patch stays unknown, and observed cooldowns are a drift
+signal rather than unique proof of patch identity.
+
+Claude owns staffing/integration through the existing milestone issues. The
+policy owner implements the actor/value update and rollout probabilities;
+episode/controller owners supply resets, option status and safe collection;
+HUD owners supply auditable outcome evidence; Codex owns this contract and the
+independent acceptance review. The completion of VUH-1321 means a reproducible
+learning comparison and retained checkpoint or honest negative result, not just
+an RL library installed or a loss curve going down.
 
 ## Data and labels
 
@@ -166,8 +417,14 @@ work, but cannot establish normal cooldown timing, resource management or legal
 combo cadence in matches. The upcoming baseline requires the setting OFF and
 observed cooldown/ammo behavior checked before recording. Keep the regimes
 separate in training and evaluation; do not silently pool them. For third-party
-range guides, settings remain unknown unless visible evidence establishes them;
-our local setting does not prove the creator used it.
+range guides, settings remain unknown unless source evidence establishes them;
+our local setting does not prove the creator used it. The HUD lane identifies
+cooldown-free behavior in the inspected Day pull lesson and FFAme Stack windows:
+across 9,510 frames neither supplies countdown/charge evidence of casts.
+Their lockout flashes cannot establish inter-cast timing. Retain their narrated
+technique order and usage advice, with match footage or our normal-cooldown
+recordings supplying measured timing. Do not generalize these two inspected
+windows' regime to every segment of every guide.
 
 Keep originals under gitignored `data/demos/`, with source URL, VOD ID, creator,
 retrieval date, source start/end, resolution, frame timing, hero, visible patch/map
@@ -465,7 +722,11 @@ Mac is the default training environment, niced; James prefers using his local
 hardware wherever practical. Prefer MLX when the selected architecture has a suitable
 implementation, otherwise use PyTorch/MPS. The PC GPU belongs to the live game.
 Runtime placement is measured against latency and game performance before adoption.
-No model family is selected yet.
+The policy lane's current offline baseline uses a frozen DINO ViT-S/16 encoder
+and a two-layer GRU head in MLX; the encoder choice is provisional and its
+reported held-out results do not establish gameplay improvement. Independent
+data-pipeline review and runtime validation remain acceptance gates. The RL
+actor/value plan above extends that baseline rather than choosing a large VLM.
 
 James approves an initial $100 cloud-compute budget (2026-09-20). Local hardware
 is a starting point, not an architectural limit: rent a GPU when measured throughput,
@@ -561,19 +822,34 @@ is performed in this pass.
 `data/demos/vods/manifest.json` records four approximately 15-minute 1080p60
 sections from four broadcasts: Day 2879354299 (6:01–6:16) and 2877719252
 (0:30–0:45), Req 2873352801 (0:33–0:48) and 2871472478 (1:30–1:45).
-The batch contains 59.98 minutes of raw video, 2.8 GB; accepted gameplay duration
-is unknown until segmentation. Nine sparse stills per clip confirm Spider-Man
+The batch contains 59.98 minutes of raw video, 2.8 GB. The HUD lane's fixed-reader
+pass identifies 39.6 minutes of own-Spider-Man play (62–69% per section), 202
+segments and 4,652 events; own-hero play duration is not accepted imitation-label
+duration. Nine sparse stills per clip confirm Spider-Man
 play alongside scoreboards, death/killcam, hero selection and other exclusions.
 Day's newer section includes a browser co-watch; the older section includes a
 lost match and break screen. Req's sections include low-HP combat and recovery.
 
-All four remain `inspection_only`, without event labels. The two broadcasts
+The raw acquisition inventory remains `inspection_only`; event outputs live in
+`data/demos/events/sections/`, keyed to decoded PTS. The two broadcasts
 outside the original pilot are reserved evaluation candidates; keep whole-session
 groups separate and check for duplicated matches before assigning final splits.
 The newer Day cut has nonzero first video PTS (1.616 s); stream-copy source offsets
 are requested, not frame-verified. Construct clip time from decoded PTS before
 extracting temporal labels. Collection continues independently of the HUD-fix /
 hand-checked-event gate; raw acquisition does not pass that gate.
+
+Median play segments span only 3.8–12.1 seconds per section because scoreboard
+checks interrupt fights. Bridging gaps shorter than one second produces 15–31
+runs per section with 7–27 second medians, but the intervening scoreboard frames
+must retain their visibility masks. This is a proposed loader policy, not a
+claim that bridging is implemented or that all gaps are safe to bridge. Never
+bridge death, hero change or editorial cuts. Budget about 0.66 own-play minutes
+per raw minute for these four sections only, and measure accepted causal windows
+after masking/history requirements rather than extrapolating from footage hours.
+The HUD lane's full-rate scene-cut detector provides `hard_cut` / `after_cut`
+boundaries for edited uploads; its measured threshold remains source-dependent
+evidence, not permission to assume every cut in a new upload is detected.
 
 ### Req YouTube gameplay batch
 
