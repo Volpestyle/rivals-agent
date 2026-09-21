@@ -23,7 +23,7 @@ def img(rel):
 
 RANGE, LOBBY = img("reentry/in-range.jpg"), img("reentry/lobby-cursor-far.jpg")
 PAUSE_SET, PAUSE_PS = img("menus/pause-settings-lit.jpg"), img("menus/pause-practice-lit.jpg")
-PS_OPEN, PS_NAC, PS_OFF, PS_CO = (img(f"menus/ps-{n}.jpg") for n in ("open", "on-nac-switch", "nac-off", "on-controller-operation"))
+PS_OPEN, PS_NAC, PS_OFF, PS_CO, PS_ALREADY = (img(f"menus/ps-{n}.jpg") for n in ("open", "on-nac-switch", "nac-off", "on-controller-operation", "open-nac-already-off"))
 LEAVE = img("menus/leave-dialog.jpg")
 BLACK, WHITE = np.zeros((720, 1280, 3), np.uint8), np.full((720, 1280, 3), 255, np.uint8)
 OTHERS = {"lobby": LOBBY, "black": BLACK, "white": WHITE, "hero": img("reentry/heroselect-cursor-on-spiderman.jpg"),
@@ -97,7 +97,10 @@ def test_rows_are_read_only_on_their_own_screen():
     assert M.pause_row(PAUSE_PS) == "practice" and M.pause_row(PAUSE_SET) == "settings"
     assert all(M.pause_row(f) is None for f in (RANGE, PS_OPEN, LEAVE, *OTHERS.values()))
     assert M.help_is_nac(PS_NAC) and not any(M.help_is_nac(f) for f in (PS_OPEN, PS_CO, PAUSE_PS, RANGE, *OTHERS.values()))
-    assert PS.toggle_on(PS_NAC) and not PS.toggle_on(PS_CO)
+    assert PS.toggle_on(PS_NAC) is True and PS.toggle_on(PS_OPEN) is True
+    assert PS.toggle_on(PS_CO) is False and PS.toggle_on(PS_ALREADY) is False
+    assert PS.toggle_on(PS_OFF) is None                               # the toast has slid the page: do not read shifted rows
+    assert all(PS.toggle_on(f) is None for f in (RANGE, PAUSE_PS, LEAVE, *OTHERS.values()))
 
 
 def test_a_caller_cannot_supply_its_own_check():
@@ -259,3 +262,44 @@ def test_closing_sends_nothing_from_an_unknown_screen(label):
 def test_closing_backs_out_of_the_page_and_the_pause_menu():
     m, _, pad = menu("practice_settings", PS_OPEN, PS_OPEN, PS_OPEN, PS_OPEN, PAUSE_PS, PAUSE_PS, PAUSE_PS, RANGE)
     assert PS.close(m) is True and pad.pressed() == ["B", "B"]
+
+
+def test_cooldowns_off_presses_nothing_when_the_switch_is_already_off():
+    # the live frame from the first post-rewrite run: parent off, so the "(Always On)" row the walk steers by is absent
+    m, _, pad = menu("practice_settings", PS_ALREADY)
+    assert PS.cooldowns_off(m, lambda: None) is True and pad.pressed() == []
+
+
+def test_cooldowns_off_refuses_when_the_switch_cannot_be_read(monkeypatch):
+    monkeypatch.setattr(PS, "read_toggle", lambda menu, timeout=4.0: None)
+    m, _, pad = menu("practice_settings", PS_OFF)
+    with pytest.raises(M.Stop, match="cannot read"):
+        PS.cooldowns_off(m, lambda: None)
+    assert pad.pressed() == []
+
+
+def test_cooldowns_off_clicks_the_switch_once_when_it_is_on():
+    # page opens with the cursor low (short title), walks up past the long "(Always On)" title onto the row, clicks, reads off
+    m, _, pad = menu("practice_settings", PS_OPEN, PS_OPEN)
+    frames = [PS_OPEN]                                                 # read_toggle: on
+    m._grab = lambda: frames[0]
+    state = {"w": 150, "clicked": False}
+
+    def fake_title_w(f):
+        return state["w"]
+    real_send, real_confirm = m.send, m.confirm
+
+    def send(tok):
+        state["w"] = {150: 325, 325: 199}.get(state["w"], state["w"]) if tok.startswith("ls:0,1") else state["w"]
+        if tok.startswith("ls:1,0"):
+            frames[0] = PS_NAC                                         # cursor now on the switch: help names the row
+        real_send(tok)
+
+    def confirm(control):
+        real_confirm(control)
+        frames[0] = PS_ALREADY                                         # the game turns it off
+    m.send, m.confirm = send, confirm
+    import unittest.mock as um
+    with um.patch.object(PS, "title_w", fake_title_w):
+        assert PS.cooldowns_off(m, lambda: None) is True
+    assert pad.pressed().count("A") == 1

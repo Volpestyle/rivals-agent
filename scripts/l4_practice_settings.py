@@ -17,7 +17,7 @@ from pathlib import Path
 import cv2
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from l4_menu import OUT, Menu, Stop, help_is_nac, on_pause, on_practice_settings, pause_row, small  # noqa: E402
+from l4_menu import OUT, Menu, Stop, match, on_pause, on_practice_settings, pause_row, small  # noqa: E402
 from record import in_range  # noqa: E402
 
 def title_w(frame):
@@ -29,9 +29,25 @@ def title_w(frame):
 
 
 def toggle_on(frame, y=127):
-    """A switch's knob is the bright half: right = on (check mark), left = off (cross)."""
+    """The No Ability Cooldown switch: True = on (check mark, knob right), False = off (cross, knob left), None = cannot
+    tell. Read only on the Practice Settings page AT REST: while a "... Deactivated" toast shows, the page slides up
+    ~20 px and the fixed row position would read the wrong pixels."""
+    if match(frame, "ps_title", (512, 47, 772, 85), slack=4) < 0.7:
+        return None
     g = cv2.cvtColor(small(frame), cv2.COLOR_BGR2GRAY)
-    return float(g[y - 8:y + 8, 707:763].mean()) > float(g[y - 8:y + 8, 645:701].mean())
+    left, right = float(g[y - 8:y + 8, 645:701].mean()), float(g[y - 8:y + 8, 707:763].mean())
+    if abs(left - right) < 25:
+        return None
+    return right > left
+
+
+def read_toggle(menu, timeout=4.0):
+    t0 = time.perf_counter()
+    while True:
+        state = toggle_on(menu.fresh())
+        if state is not None or time.perf_counter() - t0 > timeout:
+            return state
+        time.sleep(0.2)
 
 
 def open_page(menu):
@@ -53,6 +69,14 @@ def open_page(menu):
 
 
 def cooldowns_off(menu, shot):
+    """True when No Ability Cooldown ends up OFF. Reads the switch first: already off means no presses at all (its
+    "(Always On)" sub-row, which the walk below steers by, only exists while the parent is on)."""
+    state = read_toggle(menu)
+    if state is None:
+        raise Stop("cannot read the No Ability Cooldown switch")
+    if state is False:
+        print("ps: No Ability Cooldown is already off; nothing pressed")
+        return True
     seen_short = seen_long = False
     for _ in range(30):                                               # walk up the rows: short -> long -> medium title
         w = title_w(menu.fresh())
@@ -65,11 +89,11 @@ def cooldowns_off(menu, shot):
         raise Stop("never reached the No Ability Cooldown row")
     menu.send("ls:1,0,0.07")                                          # from just left of the switch onto it
     shot()
-    if toggle_on(menu.fresh()):
-        menu.confirm("practice_settings.no_ability_cooldown")         # Menu proves the page AND the row, at the press
-    time.sleep(2.5)                                                   # a "... Deactivated" toast shifts the page while it shows
+    menu.confirm("practice_settings.no_ability_cooldown")             # Menu proves the page AND the row, at the press
+    state = read_toggle(menu, timeout=6.0)                            # waits out the toast
     shot()
-    print(f"ps: No Ability Cooldown on = {toggle_on(menu.fresh())}")
+    print(f"ps: No Ability Cooldown on = {state}")
+    return state is False
 
 
 def close(menu):
@@ -106,7 +130,7 @@ def main():
         open_page(menu)
         shot()
         if mode == "cooldowns-off":
-            cooldowns_off(menu, shot)
+            print(f"ps: cooldowns off: {cooldowns_off(menu, shot)}")
     except Stop as e:
         print(f"ps: STOP {e}")
     finally:
