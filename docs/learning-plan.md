@@ -236,26 +236,49 @@ original artifacts, and independently review provenance, masks and event validit
 before recounting support. No extra upload-wide measurement is needed to establish
 this already reproduced defect.
 
-After that review and recount, one corrected-label B0 repetition is authorized
-with the same one-second horizon, two session folds, architecture, hyperparameters, seed and final-epoch
-selection. Use a new experiment directory, train-only normalization and the same
-baseline definitions on the corrected identical support. Channels below the
-existing minimum support remain inconclusive; if no channel meets it or fitting
-labels are constant, stop before fitting. Report the corrected result beside the
-archived one as a label repair, not a tuning improvement or sealed evaluation.
-
+After that review, recount corrected **one-second support as a diagnostic**;
+the archived one-second fit remains unchanged and no one-second refit is pending.
 The accepted fit already uses **per-channel masks**; the abandoned global
 all-five-known build is not its eligibility rule. Reduced all-channel visibility
-does not measure corrected B0 support. Keep the per-channel contract and horizon
-fixed through the recount; a longer-horizon task would be a separately declared
-experiment, not a repair that rescues this one's support.
+does not measure corrected B0 support.
+
+**Separate two-second occurrence experiment, declared before corrected support
+counts or model scores.** Whole-second countdown observations have roughly a
+one-second quantization band before sampling/tolerance; requiring that whole band
+inside a one-second target makes many countdown labels structurally ineligible.
+Use exactly `(t,t+2]`, twice the displayed time quantum, for one new experiment
+after writer/consumer acceptance. This predicts casts, not when OCR confirms them.
+Keep the same five-second history, channels, per-channel masks, session folds,
+architecture, hyperparameters, seed, threshold and final-epoch selection. Scale
+the timing output to the two-second horizon and recompute every baseline on the
+identical corrected support, with train-only fitting/normalization. The support
+floor remains 20 distinct verified positives and 20 non-overlapping negative
+horizons per held-out channel; those negative horizons are now two seconds.
+Keep prior-read, confirmation and segment-edge margins. Unsupported channels stay
+inconclusive; no supported channel or constant fitting labels means stop before
+fitting. No further horizon search is authorized.
+
+Save a separate run specification and output directory, identifying this as a
+changed task. Compare models with baselines within that task; its F1/timing scores
+are not directly comparable to the archived one-second results. Report occurrence
+interval widths and coverage with timing errors; a wider zero-error band is not
+improved timing precision. One-second support remains visible even if unusable.
+This authorization replaces the pending same-horizon refit, not its archived
+results or acceptance claims.
 
 Format 5 requires consumer changes before this repetition. An `ability_uncertain`
 interval overlapping a horizon or its confirmation margin prevents a negative
 for that channel; it does not discard other channels. An independently verified,
 contained cast can still prove occurrence, but possible earlier casts suppress
 first-event timing. Preserve event confirmation/availability time separately from
-occurrence bounds for causal inputs and baselines. Neither a lit icon without
+occurrence bounds for causal inputs and baselines. Confirmation delay is not
+irreducible cast-time uncertainty: retain tighter bounds only where timer/charge
+evidence actually proves them. Whole-source calibration and later timer refinement
+must not masquerade as knowledge available at the earlier event time. An observed
+countdown maximum does not establish the full duration of a partly seen timer;
+kit duration and variant need independent evidence or remain unknown. Uppercut's
+short lock is patch-dependent even where its recharge duration is unchanged.
+Neither a lit icon without
 digits nor an earlier cooldown expiry proves present readiness through an
 unobserved interval. Update loader fields, removed-kind checks and feature
 semantics together: retain health `cause`, never encode unknown-cause HP loss as
