@@ -169,3 +169,52 @@ def test_hud_accuracy():
 
 if __name__ == "__main__":
     sys.exit(main())
+
+
+# --- the tracer at native resolution --------------------------------------
+
+TAGGED_DIR = ROOT / "data/l4tag"   # L4's tagged-native frames, pulled from the PC
+
+
+def _tagged_truth(name):
+    """L4 filmed ten untagged frames then 28-29 after a web-cluster hit. The
+    marker is up from 003; it is still up on 028, which the delivered note put
+    at 027 -- checked by eye on t0-b-after-web-cluster-028."""
+    import re
+
+    if "-a-untagged-" in name:
+        return False
+    return 3 <= int(re.search(r"-(\d+)\.jpg", name).group(1)) <= 28
+
+
+def test_tracer_reads_at_native_resolution():
+    """2560-wide frames, the size the game actually renders.
+
+    Guards the bug this test was written for: the marker template was cut from a
+    1280-wide capture and searched at a fixed 0.7-1.5 ladder, so at native it was
+    off the top of the ladder and read_tagged answered False -- confidently
+    wrong -- on every tagged frame. Recall was 0.000 before the ladder was made
+    relative to the frame width.
+    """
+    import glob
+
+    from perception.outline import detect
+
+    paths = sorted(glob.glob(str(TAGGED_DIR / "*.jpg")))
+    if not paths:
+        return
+    tp = fp = fn = 0
+    for path in paths:
+        frame = cv2.imread(path)
+        seen = [read_tagged(frame, d.bbox) for d in detect(frame)]
+        got = True if any(v is True for v in seen) else (
+            None if not seen or all(v is None for v in seen) else False)
+        want = _tagged_truth(Path(path).name)
+        if got is True and want:
+            tp += 1
+        elif got is True and not want:
+            fp += 1
+        elif got is False and want:
+            fn += 1
+    assert fp == 0, f"{fp} frames called tagged that are not"
+    assert tp / (tp + fn) >= 0.90, f"recall {tp / (tp + fn):.3f}"

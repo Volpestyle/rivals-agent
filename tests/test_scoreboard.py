@@ -135,13 +135,101 @@ def test_result_is_a_plain_dict_the_loop_can_store():
     assert set(FIELDS) <= set(got)
 
 
-def test_extra_range_frames_when_l4_delivers_them():
-    """Widens automatically: every frame L4 drops in must read or say it cannot."""
-    for path in sorted(glob.glob(str(EXTRA_RANGE / "*.jpg"))):
-        frame = cv2.imread(path)
+TRUTH = EXTRA_RANGE / "truth.json"
+# truth.json spells three fields its own way; this is the only place that knows.
+TRUTH_KEYS = {"accuracy_pct": "accuracy", "web_cluster_accuracy_pct": "web_cluster_accuracy",
+              "spectacular_spin_kos": "spin_kos"}
+
+
+def _boards():
+    import json
+
+    if not TRUTH.exists():
+        return []
+    boards = json.loads(TRUTH.read_text())["boards"]
+    return [(EXTRA_RANGE / name, {TRUTH_KEYS.get(k, k): v for k, v in values.items()})
+            for name, values in boards.items()]
+
+
+def test_every_l4_board_reads_every_field():
+    """The eight native boards L4 read by eye: every value, no guesses."""
+    boards = _boards()
+    for path, truth in boards:
+        frame = cv2.imread(str(path))
+        assert frame is not None, path
+        got = read_scoreboard(frame)
+        assert got["open"] is True, path.name
+        for field, want in truth.items():
+            assert got[field] == want, f"{path.name} {field}: read {got[field]!r}, truth {want!r}"
+
+
+def test_boards_read_with_their_own_values_held_out():
+    """Leave-one-out: learn the digits from every other board, read this one.
+    The templates come from these same boards, so this is the honest number."""
+    from perception import scoreboard as sb
+
+    frames = [(RANGE_NATIVE, RANGE_TRUTH)] + _boards()
+    if len(frames) < 3:
+        return
+    full = dict(sb.GLYPHS)
+    try:
+        for held, (path, truth) in enumerate(frames):
+            namespace = {}
+            exec(sb.learn([f for j, f in enumerate(frames) if j != held]), {}, namespace)
+            sb.GLYPHS.clear()
+            sb.GLYPHS.update(namespace["GLYPHS"])
+            sb._CACHE.clear()
+            got = read_scoreboard(cv2.imread(str(path)))
+            for field, want in truth.items():
+                assert got[field] in (want, None), f"{path.name} {field}: WRONG {got[field]!r}"
+                assert got[field] == want, f"{path.name} {field}: unread with it held out"
+    finally:
+        sb.GLYPHS.clear()
+        sb.GLYPHS.update(full)
+        sb._CACHE.clear()
+
+
+def test_thousands_are_read_whole():
+    """"1,375": the comma is too small to segment and used to split the number,
+    so damage read as 1. Every board past 999 must read in full."""
+    for path, truth in _boards():
+        if truth["damage"] >= 1000:
+            got = read_scoreboard(cv2.imread(str(path)))
+            assert got["damage"] == truth["damage"], (path.name, got["damage"])
+
+
+# --- kill feed ------------------------------------------------------------
+
+def test_killfeed_frames_are_detected():
+    from perception.scoreboard import is_killfeed
+
+    for name in ("killfeed-a.jpg", "killfeed-b.jpg"):
+        frame = cv2.imread(str(EXTRA_RANGE / name))
         if frame is None:
             continue
-        assert is_scoreboard(frame) is True, path
-        got = read_scoreboard(frame)
-        for field in FIELDS:
-            assert got[field] is None or isinstance(got[field], int), (path, field)
+        assert is_killfeed(frame) is True, name
+
+
+def test_no_killfeed_on_play_or_on_a_board():
+    """Pale sky is colourless too; it is the crisp banner edge that tells them apart."""
+    from perception.scoreboard import is_killfeed
+
+    for path in sorted(glob.glob(str(ROOT / "data/run1/*.jpg")))[::120]:
+        frame = cv2.imread(path)
+        if frame is not None:
+            assert is_killfeed(frame) is False, path
+    for path, _ in _boards():
+        assert is_killfeed(cv2.imread(str(path))) is False, path.name
+
+
+def test_a_killfeed_line_appearing_is_a_ko_event():
+    from perception.events import extract_one
+    from perception.hud import Hud
+
+    blank = Hud(hp=250, max_hp=250, bar_fill=1.0, webs=5, abilities={}, ult_ready=True)
+    reads = [(i, i / 10, blank, feed) for i, feed in
+             enumerate([False, False, False, True, True, True, True, False, False])]
+    kos = [e for e in extract_one(reads) if e.kind == "ko_feed"]
+    assert len(kos) == 1, kos
+    assert kos[0].i_to == 4           # confirmed on its second frame
+    assert kos[0].i_from == 2         # last frame without the line

@@ -245,6 +245,41 @@ which had been reported as a plain `no_hud` break.
 
 The segmenter now names those breaks `scoreboard` / `scoreboard_closed`.
 
+**Widened on L4's eight native boards** (KOs 6–13, Damage 1375–2680) against
+their `truth.json`: **81/81 values correct, 0 wrong, 0 unread**, across all nine
+boards and all nine fields. Leave-one-out — learn the digits from every other
+board, read the held-out one — is also **81/81**, so that is not a training
+number. Digits 2, 6, 7, 9 and the `%` slash are now in the bank; the widening
+path is `scoreboard.learn()`, which labels glyphs positionally against values a
+human read.
+
+Three defects the eight boards exposed, all of which produced **wrong numbers**
+rather than unknowns:
+
+- **Missing digits do not fail safe when the bank is small.** With only six
+  digits learned, a 6 matched the nearest thing to it and read as 8, and a 9 read
+  as 0. The margin rule cannot help when the right answer is absent entirely.
+  Widening is the fix; the lesson is that a partial bank is more dangerous than
+  an empty one.
+- **The thousands separator split the number.** "1,375" — the comma is a 5x8
+  mark, far below glyph size, so it drops out and leaves a gap wide enough to
+  start a new group. Damage read `1`. Stats are now read as *every digit over a
+  label* rather than grouped first.
+- **The percent slash.** Stripping any unnamed trailing glyph turned "12" into
+  "1" whenever the 2 had no template. Only a glyph positively classified `%` is
+  dropped now.
+
+**The kill feed** is the fastest KO signal — it appears as the KO lands, long
+before anyone opens a scoreboard. `is_killfeed(frame)` keys on two things,
+because the banner is semi-transparent and its brightness follows the background
+(V~160 over a dark ceiling, ~230 over sky): its saturation collapses (~80 to
+~20) **and** it is a crisp rectangle. Saturation alone fires on pale sky at 0.61.
+Measured on L4's two kill-feed frames and 115 ordinary ones: the feed scores
+0.88–0.90 and 0.94–0.99, and no ordinary frame clears 0.5 on both. A line
+appearing emits a `ko_feed` event. In the range every line is ours; in a match
+the feed shows everyone's kills and attributing one would mean reading the
+killer's name, which is not done.
+
 **`read_scoreboard(frame)`** reads the **range** scoreboard only and returns a
 plain dict — `kos`, `deaths`, `assists`, `accuracy`, `damage`, `damage_blocked`,
 `healing`, `web_cluster_accuracy`, `spin_kos`, each an int or None, plus `open`.
@@ -306,7 +341,42 @@ still (6 hp) unreadable while its bar still reads 0.138.
 - **No template for the digit `1`.** It appears in neither run: hp only ever
   took 250 and 252–300. An hp of 217 reads `None`, not a wrong number. The
   damage taken in `tagrun` will supply it; one `learn` pass then fixes it.
-- **`read_tagged` is calibrated on one tagging episode** (trial1 frames 71–86,
+### read_tagged at native resolution
+
+Measured on L4's 153 native tagged frames (4 trials, one distance ~3 m), with
+enemy boxes from `outline.detect` — the real pipeline, not hand-placed boxes:
+
+| | |
+|---|---|
+| precision | **1.000** (0 false positives) |
+| recall | **0.970** (97 of 100 tagged frames) |
+| unknown | 1 frame, where the web-shot VFX covers the marker |
+
+**The measurement found a confidently-wrong reader.** The marker template was
+cut from a 1280-wide capture and searched at a fixed 0.7–1.5 size ladder, so on
+a 2560-wide native frame the marker was off the top of the ladder and
+`read_tagged` returned **False** — not None — on every tagged frame. Recall was
+**0.000** before the ladder was made relative to frame width. A reader whose
+whole contract is "unknown rather than wrong" was handing out a wrong boolean at
+a resolution nobody had tested it at. The ladder is now frame-relative, so
+distance still moves the marker within it but resolution no longer does.
+
+One disagreement with the delivered truth, resolved in the frames' favour: the
+note puts the marker on frames 003–027, but it is **still visible on 028** —
+checked by eye on `t0-b-after-web-cluster-028`. Scored as delivered it is
+precision 0.990; scored against what the frame shows, 1.000.
+
+**How it should degrade at range.** The marker is drawn in world space above the
+enemy, so its on-screen size goes roughly as 1/distance. At ~3 m it measures
+about 27x27 px at 2560. The ladder spans 0.7–1.5 of that, which covers roughly
+2 m to 4.3 m. **Past about 4.5 m recall should fall away**, not gradually but
+sharply, because the marker drops below the smallest template. Extending
+`TRACER_SCALES` downward (0.5, 0.35) would cover 6–9 m, but that is arithmetic,
+not measurement — it needs frames at those distances before anyone relies on it.
+The three misses at 3 m are all box placement, not the marker reader: the enemy
+box drifted and the search band went with it.
+
+- **`read_tagged`'s thresholds beyond this distance** (trial1 frames 71–86,
   one bot, one distance). In the 1197 `run1` frames I hold, the web-cluster
   bursts hit scenery rather than bots, so they contain no tagged enemies.
   `tagrun` is being recorded for this; until it lands, the five-scale search

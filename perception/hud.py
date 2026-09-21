@@ -1202,16 +1202,29 @@ TRACER_MATCH, TRACER_CLEAR = 0.60, 0.45   # peak correlation for yes / for no
 TRACER_BAND = (1.6, 0.15)   # search from y1 - 1.6*box_h up to y1 - 0.15*box_h
 TRACER_BAND_PX = 130        # ... but never a band shallower than this
 TRACER_SCALES = (0.7, 0.85, 1.0, 1.2, 1.5)
-_TRACER_CACHE: list = []
+TRACER_HARVEST_WIDTH = 1280   # the frame width the template was cut from
+_TRACER_CACHE: dict = {}
 
 
-def _tracer_templates():
-    if not _TRACER_CACHE:
+def _tracer_templates(frame_width=TRACER_HARVEST_WIDTH):
+    """The marker at the sizes it can appear, for a frame of this width.
+
+    The scales are *relative to the frame*, not absolute. The template was cut
+    from a 1280-wide capture; on a 2560-wide one the marker is twice the size,
+    and a fixed 0.7-1.5 ladder misses it completely -- which made read_tagged
+    answer False, confidently, on native frames where the marker was plainly
+    there. Distance still moves it within the ladder; resolution no longer does.
+    """
+    key = round(frame_width / TRACER_HARVEST_WIDTH, 3)
+    if key not in _TRACER_CACHE:
+        built = []
         base = np.array([[c == "#" for c in r] for r in TRACER], np.float32)
         for s in TRACER_SCALES:
-            h, w = int(round(base.shape[0] * s)), int(round(base.shape[1] * s))
-            _TRACER_CACHE.append(cv2.resize(base, (w, h), interpolation=cv2.INTER_AREA))
-    return _TRACER_CACHE
+            scale = s * key
+            h, w = int(round(base.shape[0] * scale)), int(round(base.shape[1] * scale))
+            built.append(cv2.resize(base, (max(w, 4), max(h, 4)), interpolation=cv2.INTER_AREA))
+        _TRACER_CACHE[key] = built
+    return _TRACER_CACHE[key]
 
 
 def read_tagged(frame, bbox) -> bool | None:
@@ -1243,7 +1256,7 @@ def read_tagged(frame, bbox) -> bool | None:
     band_top, band_bottom = max(0, min(height, band_top)), max(0, min(height, band_bottom))
     band_left, band_right = max(0, min(width, band_left)), max(0, min(width, band_right))
     band = frame[band_top:band_bottom, band_left:band_right]
-    templates = _tracer_templates()
+    templates = _tracer_templates(width)
     if band.size == 0 or any(band.shape[i] < templates[0].shape[i] for i in (0, 1)):
         return None
     ink = (cv2.cvtColor(band, cv2.COLOR_BGR2GRAY) > 200).astype(np.float32)

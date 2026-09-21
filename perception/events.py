@@ -60,7 +60,8 @@ from perception.hud import SLOT_CX, Hud  # noqa: E402
 
 # Frames a new value must hold before it is believed. `ready` is 1 on purpose;
 # see the module docstring.
-DEBOUNCE = {"ready": 1, "charges": 2, "webs": 2, "hp": 2, "max_hp": 2, "ult_ready": 1}
+DEBOUNCE = {"ready": 1, "charges": 2, "webs": 2, "hp": 2, "max_hp": 2, "ult_ready": 1,
+            "killfeed": 2}
 SHIELD_WINDOW = 3   # frames apart that an hp and a max-hp change may still be one shield tick
 ULT = "ult"
 
@@ -504,6 +505,9 @@ def _kind(name, before, after, max_before=None, max_after=None):
         return ("hp_gained" if delta > 0 else "hp_lost"), None, abs(delta)
     if name == "max_hp":
         return "max_hp_changed", None, after - before
+    if name == "killfeed":
+        # Only the appearance is an event. A line fading out means nothing.
+        return ("ko_feed", None, None) if after else None
     return None
 
 
@@ -515,10 +519,14 @@ def extract_one(reads, debounce=None, seg_index=0):
         return holds.get(name.split(":", 1)[0], 2)
 
     channels, events, max_seen = {}, [], {}
-    for i, t, hud in reads:
+    for read in reads:
+        i, t, hud = read[0], read[1], read[2]
         if hud.max_hp is not None:
             max_seen[i] = hud.max_hp
-        for name, value in _signals(hud).items():
+        signals = _signals(hud)
+        if len(read) > 3:                 # optional: is a kill-feed line up?
+            signals["killfeed"] = read[3]
+        for name, value in signals.items():
             ch = channels.get(name)
             if ch is None:
                 ch = channels[name] = _Channel(hold_for(name))
@@ -582,7 +590,7 @@ def extract(reads, debounce=None):
     reset at every boundary, so no event spans one.
     """
     segments = segment(reads)
-    by_i = {r[0]: (r[0], r[1], r[2]) for r in reads}
+    by_i = {r[0]: (r[0], r[1], r[2], r[5] if len(r) > 5 else None) for r in reads}
     events = []
     for n, seg in enumerate(segments):
         inside = [by_i[i] for i in range(seg.start_i, seg.end_i + 1) if i in by_i]
@@ -620,10 +628,12 @@ def read_run(run_dir, limit=None, progress=None, layout=None):
             # covers the HUD for seconds at a time.
             from perception.scoreboard import is_scoreboard
 
+            from perception.scoreboard import is_killfeed
+
             aside = banner_word(frame) or ("scoreboard" if is_scoreboard(frame) is True
                                            else None)
             out.append((row["i"], float(row["t"]), read_hud(frame, layout),
-                        playing_spiderman(frame), aside))
+                        playing_spiderman(frame), aside, is_killfeed(frame)))
         if progress and n % progress == 0:
             print(f"  {n}/{len(rows)} frames", file=sys.stderr)
     return out
