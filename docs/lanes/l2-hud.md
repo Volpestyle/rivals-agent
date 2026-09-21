@@ -133,6 +133,120 @@ Order is meta, then segments in time order, then events in time order.
   practice range *nothing damages the player*, so any `hp_lost` there is a
   shield tick by construction.
 
+### Per-frame observability contract (for B0)
+
+For persisting the frozen readers' per-frame observations of the two train
+media (`daymr-2879354299-21660-900s`, `reqmr-2873352801-1980-900s`, both
+**layout `mk`**) under `data/experiments/b0/`. Writer `1336262e179c`. "Observed"
+below means *an event on that channel, had it happened, would have been
+emitted*. Everything else is **unknown**, never a negative.
+
+**(1) Raw fields that make a channel observable on a frame.** `hud` is
+`perception.hud.read(frame, LAYOUTS["mk"])`. Slot fields are keyed by layout
+**position**; the ability in a position comes only from the file's
+`meta.slot_mapping`.
+
+| channel | events it emits | observed on this frame iff |
+|---|---|---|
+| web ammo | `web_cluster_fired` / `_reloaded` | `hud.webs` is an int |
+| get_over_here, teamup (one charge, a countdown after each use) | `ability_cast` | the position is in `slot_mapping` **and** either `hud.cooldowns[pos]` is an int (on cooldown: no use is possible), or `hud.abilities[pos][0] is True` and `hud.cooldowns[pos] is None` (lit, no number: ready) |
+| swing, uppercut (charges) | `ability_cast` (first use from full), `charges_spent` (a use while recharging) | mapped **and** either lit with no number (full charges; the badge is not drawn at full, so `charges` is `None` here and that is fine), or `cooldowns[pos]` is an int **and** `abilities[pos][1]` is an int (recharging, badge readable) |
+| ult | `ult_spent` / `ult_ready` | `hud.ult_ready is not None` (`False` = charging: no spend possible) |
+
+**(2) Ambiguous raw states.**
+
+- **`ready is False` with `cooldown is None`: not observed.** A dimmed icon with no
+  readable number is either a lockout (wall-climb, mid-swing — no use) or a
+  countdown the reader failed to read — a use that went unseen. It cannot be
+  told apart. The extractor itself turns `cooldown None` into the value `"off"`
+  (and only a one-frame `"off"` between two numbers into unknown), so **"off" in
+  the extractor is not proof that the slot was visible**; use `ready` as above.
+- **A digit read failing**: `webs` / `hp` / `cooldowns[pos]` / `charges` come back
+  `None`. `None` is unknown everywhere except the cooldown case just described.
+  Countdowns of three or more digits are discarded as `None` (chat).
+- **Slot spill** (`abilities[pos][0] is None` because something runs through the
+  slot and its gaps; on `mk` the test is live, threshold 0.15): not observed.
+  `ready is None` from an in-between red fraction: not observed.
+- **Icon identity.** Mapping is voted once per source, not per frame. A position
+  absent from `slot_mapping` is unobservable for every ability, on every frame.
+  No per-frame identity check exists in the extractor; if B0 adds one
+  (`hud.identify_slot`), a mismatch should make that slot unknown. A small
+  overlay covering the icon but not the slot's gaps (DayMR's animated overlays)
+  is **not** caught by the spill test — not provable that such frames are clean.
+- **`charges is None`**: fine at full charges (badge not drawn); not observed for
+  a charged slot whose countdown is running.
+- **HUD absent** (`read` returns an empty `Hud()`: no hp digits and no bar), **not
+  our hero, scoreboard, killcam, spectating, a cut**: the frame is not valid at
+  all — see (3). Do not re-derive these per frame; the segments already encode
+  them with the voting below.
+- **Layout.** Always `meta.layout` (`mk` for both media). `pad` reads different
+  boxes (other slot centres, ammo in the other slot, spill test effectively off at 0.95) and every
+  read would be wrong. Never inferred from a frame.
+
+**(3) Frame validity, before any channel counts.**
+
+- The frame's index `i` lies inside a segment line of the regenerated events
+  file. Segments already require: HUD present (voted over `HUD_HOLD` = 6
+  frames), not a known other hero (`PORTRAIT_HOLD` = 3, now with the negative
+  portraits), no banner or scoreboard (`BANNER_HOLD` = 3), no hp 0, no cut.
+- **What the extractor needs around an event** (10 Hz, all within one segment,
+  because every channel resets at a segment boundary and its first reading in a
+  segment is never an event):
+  - **before:** at least 1 frame with a valid read of the channel, earlier in the
+    same segment;
+  - **after:** the new value on `hold` consecutive valid reads — `webs` 2,
+    `charges` 2, `ready` 1, `cooldown` 1 (plus 1 more frame, because a lone
+    `"off"` needs a neighbour on each side to be judged), `ult_ready` 1.
+- **Edge margin: 6 frames (0.6 s) from each end of the segment.** That is a
+  conservative choice, not a derived requirement: edges fall exactly on vote-run
+  boundaries, but the frames beside a transition (a fade, a scoreboard opening)
+  are the likeliest to be misread, and 6 is the longest vote window.
+
+**(4) Rule for a fully observed negative.** For channel `c` and horizon `(t, t+1 s]`
+= frames `i0+1 … i0+10`:
+
+1. frames `i0 − 1 … i0 + 10 + hold(c)` (+1 for cooldown) all lie inside **one**
+   segment, at least 6 frames from both of its ends;
+2. **every** one of those frames is observed for `c` under (1)–(2) — one unknown
+   frame makes the horizon unknown;
+3. for slot channels: the position is in `slot_mapping`, and the **source's
+   cooldown regime is normal by provenance** (a matchmade game runs normal
+   cooldowns; the practice range and custom games can turn them off). The segment field `cooldowns` does *not*
+   establish this: it says `"normal"` only where a cast happened, so it can
+   never support a negative. With cooldowns off, casts show no countdown and
+   every "negative" would be silent and false — **not provable** for the guides;
+4. the raw value of `c` is constant across those frames (a change that the
+   debounce did not confirm is unknown, not a negative);
+5. the events file has no event of `c` with `i_to` in `(i0, i0 + 10 + hold(c)]`
+   (for a slot: neither `ability_cast` nor `charges_spent` for that ability).
+
+All five → **observed negative**. An event in (5) → **positive**, whatever the
+coverage. Anything else → **unknown**. There is no fourth outcome.
+
+**(5) How to get the raw reads, and what is on disk.**
+
+```python
+import json
+from pathlib import Path
+from perception.events import extract_frames, scene_cuts, read_run
+from perception.hud import LAYOUTS
+
+meta = json.loads(open(events_path).readline())
+r = meta["recipe"]                                   # video, hz, start, duration, layout
+run_dir = Path("data/experiments/b0/frames/<stem>")  # VOD frames stay under data/
+origin = extract_frames(r["video"], run_dir, r["hz"], r["start"], r["duration"])
+(run_dir / "cuts.json").write_text(json.dumps(
+    scene_cuts(r["video"], pts_origin=origin, start=r["start"], duration=r["duration"])))
+reads = read_run(run_dir, layout=LAYOUTS[r["layout"]])
+# reads[k] = (i, t, Hud, playing, aside, killfeed, cut) -- exactly what the extractor saw
+```
+
+`i` and `t` then match the events file (check: `len(reads) == meta["frames"]`,
+`origin == meta["pts_origin_s"]`). **No per-frame reads are retained on disk.**
+`from_video` decodes into a temporary directory under `data/.work/` and
+deletes it; the events file keeps only meta, segments and events. A rerun is
+needed: about 10 minutes per 15-minute section on this machine, niced.
+
 ### Reproducing any of this
 
 `uv run --group perception python -m perception.events ...` — the shared venv's
