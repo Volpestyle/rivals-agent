@@ -55,11 +55,11 @@ ENDED_BY = ("run_end", "death", "killcam", "spectating", "scoreboard", "not_our_
 # The only change an annotator may make to the segmenter's segments (segments_from "annotator"): name a coarse ended_by more
 # precisely. Times, started_by and every other reason stay the segmenter's.
 REFINES = {"not_our_hero": ("hero_swap",), "no_hud": ("menu", "brb", "unreadable_hud")}
-# The events file the loader reads is the HUD lane's FORMAT 4 (docs/lanes/l2-hud.md, "Event stream format"): its meta line says
-# "format": 4. Any other format is refused, naming the file and both versions: format 1 claimed casts that never happened, 2 and 3
-# may name an ability by layout position (a guess) and know no editorial cut, so a stale file would train on what it is not.
-EVENT_FORMAT = 4
-# What a format 4 meta line must carry for this loader: slot_mapping may be null (no mapping attempted) but must be present.
+# The events file the loader reads is the HUD lane's FORMAT 5 (docs/lanes/l2-hud.md, "Event stream format"): its meta line says
+# "format": 5. Any other format is refused, naming the file and both versions: format 4 counted one continuing cooldown as several
+# casts and has no knowledge time, 1-3 are older still; there is no dual-format mode.
+EVENT_FORMAT = 5
+# What a format 5 meta line must carry for this loader: slot_mapping may be null (no mapping attempted) but must be present.
 META_KEYS = ("fps", "layout", "t_origin", "slot_mapping", "slot_mapping_from")
 # STALENESS is the producer's own verdict (perception.events.check): the format, a non-empty recipe, every key of its
 # REQUIRED_META, and a `writer` equal to the fingerprint of its WRITER_FILES. Those constants are read from the producer's
@@ -83,7 +83,19 @@ def producer_rule(path=PRODUCER):
     return {"format": consts["FORMAT_VERSION"], "required_meta": tuple(consts["REQUIRED_META"]), "writer": h.hexdigest()[:12]}
 # Positions whose ability is fixed by the layout, not read off an icon: the ult is always the ult.
 FIXED_SLOTS = ("ult",)
-REMOVED_KINDS = ("ability_used", "ability_ready")   # replaced by ability_cast and slot_unavailable / slot_available
+# Vocabulary retired by an earlier format, refused inside a current file: format 2 split ability_used / ability_ready into
+# ability_cast and the icon kinds; format 5 renamed slot_unavailable / slot_available to icon_dimmed / icon_lit (display state only).
+REMOVED_KINDS = ("ability_used", "ability_ready", "slot_unavailable", "slot_available")
+# Every kind the format 5 writer emits (docs/lanes/l2-hud.md, the kind list; the literals of perception/events.py, pinned by
+# test_the_loaders_kind_vocabulary_is_the_writers). Anything else is refused: a typo like "hp_los" would load, vanish from every
+# downstream kind filter and escape the cause rule.
+EVENT_KINDS = ("ability_cast", "ability_uncertain", "cooldown_ended", "charges_spent", "charges_regained", "icon_dimmed", "icon_lit",
+               "web_cluster_fired", "web_cluster_reloaded", "hp_lost", "hp_gained", "shield_decayed", "shield_gained", "max_hp_changed",
+               "ult_ready", "ult_spent", "ko_feed", "death", "respawn")
+# hp_lost / hp_gained say which way hp moved; `cause` says why, and only these values: "unknown" is not damage (or heal).
+CAUSES = {"hp_lost": ("damage", "unknown"), "hp_gained": ("heal", "unknown")}
+# A format 5 meta line's `kit` record: the durations the writer's timer model used (docs/lanes/l2-hud.md, "Writer fix, format 5").
+KIT_KEYS = ("patch", "patch_from", "table", "durations", "alarms")
 REMOVED_SLOTS = ("pull",)                           # renamed get_over_here
 # A gap between two segments is SOFT when a known overlay made it: the player is alive and the game goes on, only the HUD (and,
 # some of the time, the scene) is hidden. A window may span a soft gap when the caller asks (across_overlays), with the gap's
@@ -142,6 +154,11 @@ class AlignmentError(ValueError):
     """An annotation was made over a context the loader would not give a policy: a label must not be trained on it."""
 
 
+class KnowledgeError(FormatError):
+    """A format 5 event without a finite knowledge time at or after its occurrence: it cannot be placed on the availability clock,
+    and it is never placed by its occurrence time instead."""
+
+
 class LeakageError(ValueError):
     """Something later than the decision time was about to become an observation."""
 
@@ -162,10 +179,13 @@ class Segment:
 
 @dataclass(frozen=True)
 class Event:
-    """One HUD transition. The change happened somewhere in [t_from, t_to]: no field is an instant."""
+    """One HUD transition, as the format 5 file wrote it. [t_from, t_to] is OCCURRENCE: the earliest and latest the change can
+    have happened on evidence alone (what a target is built from). `known_at` is AVAILABILITY: when the evidence the assertion
+    needs is in (what an observation may see). They differ: a use bounded at 2.0 s may be known only at 3.3 s. Nothing ever
+    falls back from one to the other."""
     kind: str
-    t_from: float            # the last frame showing the old value
-    t_to: float              # the first frame showing the new one: the event is known from here on
+    t_from: float            # occurrence, earliest: the last frame showing the old value (a timer: the earliest the use can be)
+    t_to: float              # occurrence, latest: the first frame showing the new value (a timer: the latest the use can be)
     i_from: int | None = None
     i_to: int | None = None
     slot: str | None = None      # the ability the icon showed; None when it was not identified. Never filled from slot_pos
@@ -174,6 +194,9 @@ class Event:
     after: object = None
     segment: int | None = None   # by time, at load; the file's own index is only a hint
     slot_pos: str | None = None  # the layout position it fired in: a place, not an ability
+    known_at: float | None = None  # availability: finite, >= t_to, always set on a loaded event (KnowledgeError otherwise)
+    known_i: int | None = None     # the frame index of known_at, as written
+    cause: str | None = None       # hp_lost: damage | unknown; hp_gained: heal | unknown; null on every other kind
 
 
 @dataclass(frozen=True)
@@ -235,7 +258,7 @@ class Observation:
     segment: int
     t: float
     frames: tuple                # FrameRef, oldest first, last is t
-    events: tuple | None         # confirmed by t (t_to <= t); None when the clip has no event stream
+    events: tuple | None         # known by t (known_at <= t), never selected by t_to; None when the clip has no event stream
     inputs: tuple | None         # pad history up to t; None when the source has no inputs (a VOD)
     context_start: float
     truncated_context: bool      # a hard boundary (or the clip's start) came less than history_s before t
@@ -245,7 +268,8 @@ class Observation:
         return any(f.masked for f in self.frames)
 
     def __post_init__(self):
-        late = [f for f in self.frames if f.t > self.t + EPS] + [e for e in self.events or () if e.t_to > self.t + EPS] \
+        late = [f for f in self.frames if f.t > self.t + EPS] \
+            + [e for e in self.events or () if e.known_at is None or e.known_at > self.t + EPS or e.t_to > self.t + EPS] \
             + [i for i in self.inputs or () if i.t > self.t + EPS]
         if late or not self.frames:
             raise LeakageError(f"observation at t={self.t} would hold {len(late)} item(s) later than t" if late
@@ -257,7 +281,7 @@ class Outcome:
     """The window after t, up to the next hard boundary. Hindsight."""
     t_end: float
     frames: tuple
-    events: tuple | None          # t_to in (t, t_end], including ones still pending at t
+    events: tuple | None          # not known by t (known_at > t) and begun by t_end (t_from <= t_end): what came to light after t
     ended_by: str | None          # the ended_by of the hard boundary that cut the window short (death is an outcome)
     truncated: bool
 
@@ -328,8 +352,8 @@ def _num(v, where, allow_none=False):
 
 
 def _check_events_format(path, rows):
-    """The meta line of `rows` (an events file's lines), or FormatError unless it is format 4 and carries META_KEYS. A file with
-    no meta line, or a meta line without `format`, is format 1 by definition."""
+    """The meta line of `rows` (an events file's lines), or FormatError unless it is EVENT_FORMAT, from the current writer, and
+    carries META_KEYS. A file with no meta line, or a meta line without `format`, is format 1 by definition."""
     meta = next((r for _, r in rows if r.get("type") == "meta"), None)
     fmt = None if meta is None else meta.get("format")
     if fmt != EVENT_FORMAT:
@@ -342,6 +366,9 @@ def _check_events_format(path, rows):
     if not meta.get("recipe"):
         raise FormatError(f"{path}: stale, no recipe, so it cannot be regenerated")
     missing = [k for k in dict.fromkeys(META_KEYS + rule["required_meta"]) if k not in meta]
+    fps = meta.get("fps")
+    if not missing and (isinstance(fps, bool) or not isinstance(fps, (int, float)) or not math.isfinite(fps) or fps <= 0):
+        raise FormatError(f"{path}: meta fps {fps!r} must be a positive finite number: every frame index is counted at it")
     if missing:
         raise FormatError(f"{path}: stale, written by older code: the format {EVENT_FORMAT} meta line lacks {missing}; {regen}")
     if meta["writer"] != rule["writer"]:
@@ -386,7 +413,7 @@ def _segments(rows, where):
 class Clip:
     """One source clip: its header, its segments and its timelines (frames, inputs, events, annotations)."""
 
-    def __init__(self, header, segments, base, path=None):
+    def __init__(self, header, segments, base, path=None, sealed_groups=frozenset()):
         missing = [k for k in REQUIRED if k not in header]
         if missing:
             raise FormatError(f"{path or header.get('id')}: manifest header lacks {missing}")
@@ -406,13 +433,22 @@ class Clip:
             raise FormatError(f"{self.id}: resolution must be [width, height] or null")
         self.split = header["split"]
         self.group = header.get("group") or header["vod_id"] or header["run"] or self.id
+        # A source a split file seals: its events file is read up to its meta and segment lines (every provenance and identity
+        # check still runs) and no further. No event is parsed, and clip.events raises SealedError.
+        self.events_sealed = self.group in sealed_groups
         self.fps, self.resolution = header["fps"], res
         self.segments = _segments(segments, self.id)
         self.decisions = tuple(_num(t, f"{self.id} decisions") for t in header.get("decisions") or ())
         self._load_media()
         self._load_events()
-        self._load_annotations()
+        if self.events_sealed:        # human judgments of a sealed source are sealed with it: not even the file is opened
+            self._annotations = self._outcome_reviews = None
+            self.frame_masks, self._mask_ts = {}, []
+        else:
+            self._load_annotations()
         self._check_provenance()
+        if self.events_sealed and self.events_meta is not None:
+            self._seal_meta()
         end = header.get("duration_s") or (self.frames.last_t if self.frames else None)
         if end is not None and self.segments and self.segments[-1].end_t > end + EPS:
             raise FormatError(f"{self.id}: a segment ends after the clip does ({self.segments[-1].end_t} > {end})")
@@ -434,6 +470,14 @@ class Clip:
                 raise FormatError(f"{self.id}: {field}_from {basis!r} is not one of {PROVENANCE_FROM}")
             if (h[field] == unknown) != (basis == "none"):
                 raise ProvenanceError(f"{self.id}: {field}={h[field]!r} from {basis!r}: a known value needs a basis, and unknown has none")
+        self.kit = None if self.events_meta is None else self.events_meta["kit"]
+        if self.events_meta is not None:
+            if not isinstance(self.kit, dict) or any(k not in self.kit for k in KIT_KEYS) or not _kit_shaped(self.kit):
+                raise FormatError(f"{self.id}: the events meta line's kit must be a record with {list(KIT_KEYS)} (patch and table a "
+                                  f"string or null, durations {{position: {{length, lock}}}}, alarms a record), not {self.kit!r}")
+            if (self.kit["patch"] or PATCH_UNKNOWN) != self.patch:
+                raise ProvenanceError(f"{self.id}: the events file's timers used patch {self.kit['patch']!r} "
+                                      f"({self.kit['patch_from']}), the manifest says {self.patch!r}: one of them is wrong")
         if h["cooldowns_from"] == "observed_cooldowns":
             seen = {s for s, o in ((self.events_meta or {}).get("observed") or {}).items() if o.get("countdown_mode")}
             if self.cooldowns != "normal" or not seen:
@@ -485,7 +529,7 @@ class Clip:
     # -- loading --
     def _resolve(self, rel):
         p = Path(rel)
-        return p if p.is_absolute() else self.base / p
+        return _refuse_archive(p if p.is_absolute() else self.base / p)
 
     def _load_media(self):
         media = self.header["media"]
@@ -505,12 +549,27 @@ class Clip:
         if self.header["inputs"] not in ("pad", None):
             raise FormatError(f"{self.id}: inputs must be 'pad' or null")
 
+    @property
+    def events(self):
+        if self.events_sealed:
+            raise SealedError(f"{self.id}: sealed by a split file; its events were not read. Load it with "
+                              f"Demos.load_split(..., unseal=True), and only for the final, deliberate evaluation")
+        return self._events
+
+    @events.setter
+    def events(self, value):
+        self._events = value
+
     def _load_events(self):
-        self.events, self.events_meta = None, None
+        self._events, self.events_meta = None, None
         rel = self.header["events"]
         if rel is None:
             return
-        events, rows = [], list(_jsonl(self._resolve(rel)))
+        # A sealed clip keeps only its meta and segment lines, wherever they stand in the file: the identity guard below then sees
+        # exactly what an unsealed load sees, and no event line is kept or turned into an Event.
+        rows = [(n, r) for n, r in _jsonl(self._resolve(rel))
+                if not self.events_sealed or r.get("type") in ("meta", "segment")]
+        events = []
         self.events_meta = meta = _check_events_format(self._resolve(rel), rows)
         drawn = hud_segments([r for _, r in rows if r.get("type") == "segment"])
         mine = [dict(start_t=s.start_t, end_t=s.end_t, started_by=s.started_by, ended_by=s.ended_by) for s in self.segments]
@@ -529,21 +588,67 @@ class Clip:
             if r.get("type", "event") != "event":
                 continue  # meta and segment lines share the file; segments are imported by events_file_segments, not read here
             if r.get("kind") in REMOVED_KINDS or r.get("slot") in REMOVED_SLOTS:
-                raise FormatError(f"{rel}:{n}: {r.get('kind')} / slot {r.get('slot')} is format 1 vocabulary inside a format "
+                raise FormatError(f"{rel}:{n}: {r.get('kind')} / slot {r.get('slot')} is retired vocabulary inside a format "
                                   f"{EVENT_FORMAT} file")
+            where = f"{rel}:{n}: {r.get('kind')} [{r.get('t_from')}, {r.get('t_to')}] known_at {r.get('known_at')!r}"
+            k, lo, hi = r.get("known_at"), r.get("t_from"), r.get("t_to")
+            if isinstance(k, bool) or not isinstance(k, (int, float)) or not math.isfinite(k):
+                raise KnowledgeError(f"{where}: known_at must be a finite time; it is never taken from t_to")
+            if isinstance(lo, (int, float)) and isinstance(hi, (int, float)) and not lo <= hi <= k + EPS:
+                raise KnowledgeError(f"{where}: needs t_from <= t_to <= known_at (an assertion is not known before its occurrence "
+                                     f"could have ended)")
+            if r.get("kind") not in EVENT_KINDS:
+                raise FormatError(f"{where}: kind {r.get('kind')!r} is not one the format {EVENT_FORMAT} writer emits")
+            ki = r.get("known_i")
+            if isinstance(ki, bool) or not isinstance(ki, int) or ki < 0 or abs(ki / float(meta["fps"]) - k) > 1 / float(meta["fps"]) + EPS:
+                raise KnowledgeError(f"{where}: known_i {ki!r} must be the non-negative frame index of known_at at the file's "
+                                     f"{meta['fps']} fps")
+            want = CAUSES.get(r.get("kind"), (None,))
+            if r.get("cause") not in want:
+                raise FormatError(f"{where}: cause {r.get('cause')!r} is not one of {list(want)}")
             guessed = _slot_guessed(r, meta["slot_mapping"])
             if guessed:
                 raise FormatError(f"{rel}:{n}: {r.get('kind')} names a guessed ability: {guessed}")
             try:
                 e = Event(r["kind"], _num(r["t_from"], f"{rel}:{n}"), _num(r["t_to"], f"{rel}:{n}"), r.get("i_from"), r.get("i_to"),
-                          r.get("slot"), r.get("amount"), r.get("before"), r.get("after"), slot_pos=r.get("slot_pos"))
+                          r.get("slot"), r.get("amount"), r.get("before"), r.get("after"), slot_pos=r.get("slot_pos"),
+                          known_at=float(r["known_at"]), known_i=r.get("known_i"), cause=r.get("cause"))
             except KeyError as k:
                 raise FormatError(f"{rel}:{n}: event lacks {k}") from None
             seg = next((s for s in self.segments if s.start_t - EPS <= e.t_from and e.t_to <= s.end_t + EPS), None)
             if e.t_to < e.t_from or seg is None:
                 raise FormatError(f"{rel}:{n}: event {e.kind} [{e.t_from}, {e.t_to}] lies outside every segment or crosses a boundary")
             events.append(dataclasses.replace(e, segment=seg.n))
-        self.events = tuple(sorted(events, key=lambda e: (e.t_to, e.kind)))
+        self._events = tuple(sorted(events, key=lambda e: (e.known_at, e.t_to, e.kind)))   # the order they became known
+
+    @property
+    def annotations(self):
+        if self.events_sealed:
+            raise SealedError(f"{self.id}: sealed by a split file; its annotations were not read")
+        return self._annotations
+
+    @annotations.setter
+    def annotations(self, value):
+        self._annotations = value
+
+    @property
+    def outcome_reviews(self):
+        if self.events_sealed:
+            raise SealedError(f"{self.id}: sealed by a split file; its outcome reviews were not read")
+        return self._outcome_reviews
+
+    @outcome_reviews.setter
+    def outcome_reviews(self, value):
+        self._outcome_reviews = value
+
+    def _seal_meta(self):
+        """After every check has run on the full meta line, keep only what those checks and the format rule read: no timestamp, no
+        per-event detail, no count derived from the sealed events (cut_times, kit alarms and durations, timer_lengths, histograms)."""
+        m = self.events_meta
+        self.events_meta = {k: m[k] for k in ("type", "format", "writer", "source") + META_KEYS if k in m}
+        self.events_meta["observed"] = {s: {"countdown_mode": o["countdown_mode"]}
+                                        for s, o in (m.get("observed") or {}).items() if o.get("countdown_mode")}
+        self.kit = self.events_meta["kit"] = {k: self.kit[k] for k in ("patch", "patch_from")}
 
     def _load_annotations(self):
         self.annotations, self.outcome_reviews = {}, {}   # by decision time, rounded to a millisecond
@@ -599,6 +704,25 @@ VISIBILITY_META = ("t", "pts", "segment", "reasons")
 VISIBLE = ("visible", "partial")
 
 
+def _kit_shaped(kit):
+    """The kit record's value types, as the writer's kit_meta makes them."""
+    num = lambda v: v is None or (isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v))
+    return all(kit[k] is None or isinstance(kit[k], str) for k in ("patch", "patch_from", "table")) \
+        and isinstance(kit["alarms"], dict) and isinstance(kit["durations"], dict) \
+        and all(isinstance(d, dict) and set(d) == {"length", "lock"} and num(d["length"]) and num(d["lock"])
+                for d in kit["durations"].values())
+
+
+def _refuse_archive(p):
+    """FormatError for any path inside a data/experiments/ directory: an experiment's archive is the output of a fit on its own event
+    format, never an input to a new one."""
+    parts = Path(p).resolve().parts
+    if any(a == "data" and b == "experiments" for a, b in zip(parts, parts[1:])):
+        raise FormatError(f"{p}: an archived experiment (data/experiments/) is never a loader input: its windows and events are "
+                          f"the format of the run that made them")
+    return p
+
+
 class _ImageFrames:
     """Frames a recorder saved as jpgs, found in frames.jsonl by `file`."""
     kind = "image"
@@ -647,15 +771,15 @@ def _span(items, lo, hi, key):
 
 
 # --- reading a whole clip, or a recorder's run directory as it is -------------------------------------------------
-def read_manifest(path):
-    path = Path(path)
+def read_manifest(path, sealed_groups=frozenset()):
+    path = Path(_refuse_archive(path))
     rows = [r for _, r in _jsonl(path)]
     if not rows or rows[0].get("type") != "clip":
         raise FormatError(f"{path}: the first line must be the clip header ({{\"type\": \"clip\", ...}})")
     bad = [r.get("type") for r in rows[1:] if r.get("type") != "segment"]
     if bad:
         raise FormatError(f"{path}: only segment lines may follow the header, found {bad[:3]}")
-    return Clip(rows[0], rows[1:], path.parent, path)
+    return Clip(rows[0], rows[1:], path.parent, path, sealed_groups)
 
 
 def clip_from_run(run_dir):
@@ -713,12 +837,14 @@ def run_manifest(path):
     return clip
 
 
-def discover(*paths):
-    """Clips from manifests (`*.manifest.jsonl`), run directories, or directories holding either."""
+def discover(*paths, sealed_groups=frozenset()):
+    """Clips from manifests (`*.manifest.jsonl`), run directories, or directories holding either. Never from an experiment's
+    archive (a `data/experiments/` directory): those are outputs of a fit on their own event format, never inputs to a new one."""
     out = []
     for p in map(Path, paths):
+        _refuse_archive(p)
         if p.is_file():
-            out.append(read_manifest(p))
+            out.append(read_manifest(p, sealed_groups))
         elif (p / "manifest.jsonl").is_file():
             out.append(run_manifest(p / "manifest.jsonl"))
         elif (p / "frames.jsonl").is_file():
@@ -727,7 +853,7 @@ def discover(*paths):
             found = sorted(p.rglob("*.manifest.jsonl"))
             if not found:
                 raise FormatError(f"{p}: no manifest and no frames.jsonl below it")
-            out.extend(read_manifest(m) for m in found)
+            out.extend(read_manifest(m, sealed_groups) for m in found)
         else:
             raise FormatError(f"{p}: not found")
     ids = [c.id for c in out]
@@ -793,6 +919,17 @@ class Demos:
         check_splits(clips, self.splits)
         self.min_segment_s, self.max_bridge_s, self.skipped = min_segment_s, max_bridge_s, []
         self.pending = {}   # side -> why it is empty, from a split file (load_split)
+        # An event known only after its segment ends reaches no window's observation (the writer settles segmentation over a lag,
+        # so this is the last ~1-2.5 s of events of a segment): recorded, never silent. known_after_segment_end: after the bridged
+        # stretch too, so in no window of either mode; known_after_segment_end_unbridged: inside the stretch, so visible only in
+        # bridged windows, never with across_overlays=False. A sealed clip's events are not read, so it gives no row.
+        for c in clips:
+            for e in () if c.events_sealed else c.events or ():
+                seg = c.segments[e.segment]
+                if e.known_at > c.stretch(seg, max_bridge_s)[1].end_t + EPS:
+                    self._skip(c, e.t_to, "known_after_segment_end")
+                elif e.known_at > seg.end_t + EPS:
+                    self._skip(c, e.t_to, "known_after_segment_end_unbridged")
         self.sealed = {}    # sealed side -> the clip ids a split file puts on it (load_split)
 
     def _skip(self, clip, t, reason):
@@ -809,7 +946,7 @@ class Demos:
         return cls(discover(*paths), **kw)
 
     @classmethod
-    def load_split(cls, name, root=DEMOS_ROOT, **kw):
+    def load_split(cls, name, root=DEMOS_ROOT, unseal=False, **kw):
         """The dataset split `<root>/splits/<name>.json`: its sources, each whole session group on one side.
 
           {"name": ..., "status": "proposed" | "accepted", "patch": ..., "cooldowns": ..., "sources": [manifest paths under root],
@@ -844,7 +981,9 @@ class Demos:
         held = set(unassigned) & set(side_of)
         if held:
             raise SplitError(f"{path}: {sorted(held)} are unassigned and also on a side")
-        clips = discover(*[Path(root) / s for s in spec["sources"]])
+        # A sealed side's sources are read header, meta and segments only, unless the caller unseals the load itself.
+        sealed_groups = frozenset() if unseal else frozenset(g for s in spec.get("sealed") or () for g in spec["sides"].get(s) or ())
+        clips = discover(*[Path(root) / s for s in spec["sources"]], sealed_groups=sealed_groups)
         for c in clips:
             if c.group in unassigned:
                 raise SplitError(f"{path}: {c.id} is unassigned ({unassigned[c.group]}) but listed among the sources")
@@ -963,16 +1102,35 @@ class Demos:
 
     @staticmethod
     def _readable(clip, e):
-        """False when a frame the event was read from (t_from or t_to) is masked for the HUD or the event's own field: no
-        HUD-derived feature comes from a frame that must not be learned from."""
+        """False when a frame the event rests on (t_from, t_to, or known_at, where its evidence completed) is masked for the HUD or
+        the event's own field: no HUD-derived feature comes from a frame that must not be learned from. ability_uncertain is never
+        dropped: it asserts nothing but "unknown", and a mask can only make a slot less known, so erasing it would turn an unknown
+        into an unblocked negative downstream."""
+        if not isinstance(e.known_at, (int, float)) or isinstance(e.known_at, bool) or not math.isfinite(e.known_at):
+            raise KnowledgeError(f"{clip.id}: {e.kind} [{e.t_from}, {e.t_to}] has known_at {e.known_at!r}: an event without a finite "
+                                 f"knowledge time cannot be placed, and is never placed by t_to")
+        return e.kind == "ability_uncertain" or not Demos._hud_masked(clip, e)
+
+    @staticmethod
+    def window_event(clip, e):
+        """The event as a window may hold it, or None. An event resting on a masked frame is dropped; an ability_uncertain resting on
+        one is kept with its interval and slot (they encode "unknown", the safe direction; the slot comes from the whole-file icon
+        mapping) and its HUD reads blanked: amount, before and after are digit reads off frames that must not be learned from."""
+        if Demos._readable(clip, e) and not Demos._hud_masked(clip, e):
+            return e
+        return dataclasses.replace(e, amount=None, before=None, after=None) if e.kind == "ability_uncertain" else None
+
+    @staticmethod
+    def _hud_masked(clip, e):
+        """True when a frame the event rests on is masked for the HUD or the event's own field."""
         field = (e.slot or e.slot_pos) if e.slot_pos or e.slot else \
             "ammo" if e.kind.startswith("web_cluster") else "hp" if e.kind.split("_")[0] in ("hp", "shield", "max") else None
         h = 0.5 / float(clip.events_meta["fps"])       # the events' own grid: the mask rows nearest the frames they were read off
-        for t in (e.t_from, e.t_to):
+        for t in (e.t_from, e.t_to, e.known_at):
             m = clip.masks_near(t, h)
             if m and ("hud" in m.hidden or field in m.hidden):
-                return False
-        return True
+                return True
+        return False
 
     def _observe(self, clip, seg, t, history_s, frame_hz, across=False):
         """The only place an Observation is built: every source is cut off at t before anything is read from it."""
@@ -986,7 +1144,8 @@ class Demos:
                 frames.append(f)
         frames = self._masked(clip, frames, across, 0.5 / frame_hz)
         events = None if clip.events is None else tuple(
-            e for e in clip.events if e.segment in ids and e.t_to <= t + EPS and e.t_from >= start - EPS and self._readable(clip, e))
+            x for x in (self.window_event(clip, e) for e in clip.events
+                        if e.segment in ids and e.known_at <= t + EPS and e.t_to >= start - EPS) if x is not None)
         inputs = None if clip.inputs is None else tuple(_span(clip.inputs, start, t, lambda i: i.t))
         return Observation(clip.id, seg.n, t, tuple(reversed(frames)), events, inputs, start,
                            truncated_context=t - history_s < lo - EPS)
@@ -1001,7 +1160,8 @@ class Demos:
                 frames.append(f)
         frames = self._masked(clip, frames, across, 0.5 / frame_hz)
         events = None if clip.events is None else tuple(
-            e for e in clip.events if e.segment in ids and t + EPS < e.t_to <= end + EPS and self._readable(clip, e))
+            x for x in (self.window_event(clip, e) for e in clip.events
+                        if e.segment in ids and e.t_to > t + EPS and e.t_from <= end + EPS) if x is not None)
         cut = last.end_t < t + outcome_s - EPS
         reviews = tuple(clip.outcome_reviews.get(round(t, 3), ()))
         return Hindsight(Outcome(end, tuple(frames), events, last.ended_by if cut else None, cut), reviews)
@@ -1064,8 +1224,8 @@ def hud_segments(rows):
 
 
 def events_file_segments(path):
-    """Manifest segment dicts from the `{"type": "segment", ...}` lines of a per-clip events file (format 4 only)."""
-    rows = list(_jsonl(path))
+    """Manifest segment dicts from the `{"type": "segment", ...}` lines of a per-clip events file (EVENT_FORMAT only)."""
+    rows = list(_jsonl(_refuse_archive(path)))
     _check_events_format(path, rows)
     return hud_segments([r for _, r in rows if r.get("type") == "segment"])
 

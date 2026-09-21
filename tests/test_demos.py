@@ -6,6 +6,7 @@ import dataclasses
 import json
 import os
 import random
+import re
 from pathlib import Path
 
 import pytest
@@ -36,16 +37,18 @@ SEGS = [dict(start_t=0.0, end_t=20.0, started_by="run_start", ended_by="death"),
 EVENTS = [dict(kind="hp_lost", t_from=4.0, t_to=4.2, slot=None, amount=75, before=250, after=175),
           dict(kind="ability_cast", t_from=10.0, t_to=10.4, slot="get_over_here", amount=8, before="off", after=8),
           dict(kind="hp_lost", t_from=12.9, t_to=13.3, amount=25, before=175, after=150),      # still pending at t=13.0
-          dict(kind="slot_available", t_from=18.0, t_to=18.2, slot="get_over_here", before=False, after=True),
-          dict(kind="slot_unavailable", t_from=36.0, t_to=36.2, slot="swing", before=True, after=False),
+          dict(kind="icon_lit", t_from=18.0, t_to=18.2, slot="get_over_here", before=False, after=True),
+          dict(kind="icon_dimmed", t_from=36.0, t_to=36.2, slot="swing", before=True, after=False),
           dict(kind="charges_spent", t_from=44.9, t_to=45.1, slot="swing", amount=1, before=3, after=2)]
 
 
 MAPPING = {s: s for s in ("teamup", "swing", "get_over_here", "uppercut")}
-META = dict(type="meta", format=4, source="x", layout="mk", frames=601, fps=10.0, t_origin="first frame of the media", pts_origin_s=0.0,
+META = dict(type="meta", format=5, source="x", layout="mk", frames=601, fps=10.0, t_origin="first frame of the media", pts_origin_s=0.0,
             cuts=0, slot_mapping=MAPPING, slot_mapping_from="ability icon matched by shape, voted over sampled frames",
             observed={"get_over_here": {"casts": 2, "countdown_mode": 8}}, cut_times=[],
-            recipe={"video": "x.mp4", "hz": 10.0, "start": None, "duration": None, "layout": "mk"}, writer=demos.producer_rule()["writer"])
+            recipe={"video": "x.mp4", "hz": 10.0, "start": None, "duration": None, "layout": "mk"}, writer=demos.producer_rule()["writer"],
+            kit={"patch": "Season 10, Version 20260911", "patch_from": "manifest", "table": "Season 10, Version 20260911",
+                 "durations": {"get_over_here": {"length": 8, "lock": None}}, "alarms": {}})
 META.update({k: None for k in demos.producer_rule()["required_meta"] if k not in META})   # whatever else the producer now requires
 
 
@@ -55,8 +58,15 @@ def events_file(path, segs, events=(), meta=None, pos=True):
 
 
 def with_pos(e):
-    """An event as the format 4 extractor writes it: a named slot has the layout position it fired in (identity mapping here)."""
-    return {**e, "slot_pos": e["slot"]} if e.get("slot") and "slot_pos" not in e else e
+    """An event as the format 5 extractor writes it: a named slot has the layout position it fired in (identity mapping here),
+    every event a knowledge time (here, unless the test gives one, the confirming frame: the earliest it can be), and hp events
+    a cause (here damage / heal unless the test says otherwise)."""
+    e = {**e, "slot_pos": e["slot"]} if e.get("slot") and "slot_pos" not in e else dict(e)
+    e.setdefault("known_at", e.get("t_to"))
+    if isinstance(e["known_at"], (int, float)):
+        e.setdefault("known_i", round(e["known_at"] * META["fps"]))     # its frame index at the file's sampling rate
+    e.setdefault("cause", {"hp_lost": "damage", "hp_gained": "heal"}.get(e.get("kind")))
+    return e
 
 
 def jsonl(path, rows):
@@ -163,8 +173,8 @@ def test_the_reasons_the_hud_segmenter_writes_are_all_accepted():
 def test_an_event_that_crosses_a_boundary_or_lies_in_a_gap_is_refused(tmp_path):
     for e in (dict(kind="hp_lost", t_from=19.5, t_to=30.5),       # spans the gap between two segments
               dict(kind="hp_lost", t_from=22.0, t_to=23.0),       # entirely in a gap
-              dict(kind="hp_lost", t_from=5.0, t_to=4.0)):        # backwards
-        with pytest.raises(FormatError, match="outside every segment or crosses a boundary"):
+              dict(kind="hp_lost", t_from=5.0, t_to=4.0)):        # backwards: refused before placement, as t_from > t_to
+        with pytest.raises(FormatError, match="outside every segment or crosses a boundary|needs t_from <= t_to <= known_at"):
             make_vod(tmp_path, events=[e])
 
 
@@ -235,13 +245,20 @@ def test_a_sealed_side_is_read_only_on_purpose(tmp_path):
         with pytest.raises(SealedError, match=r"seals \['test'\]"):
             call()
     assert {c.id for c in d.clips_in("inspection_only", unseal=True)} == {"v0", "v1", "v2"}
-    assert {o.clip for o in d.observations("inspection_only", unseal=True, hz=0.2)} == {"v0", "v1", "v2"}
+    with pytest.raises(SealedError, match="v2: sealed by a split file; its events were not read"):
+        list(d.observations("inspection_only", unseal=True, hz=0.2))       # a routine load never read them
+    full = Demos.load_split("s", root=tmp_path, unseal=True)               # two deliberate steps: load unsealed, then read unsealed
+    with pytest.raises(SealedError, match=r"seals \['test'\]"):
+        list(full.observations("inspection_only"))
+    assert {o.clip for o in full.observations("inspection_only", unseal=True, hz=0.2)} == {"v0", "v1", "v2"}
     d = fresh(tmp_path, "acc")                                            # an accepted split: the test side is populated, still sealed
     split_fleet(d, status="accepted")
     got = Demos.load_split("s", root=d)
     with pytest.raises(SealedError, match=r"would read \['v2'\]"):
         list(got.samples("test"))
-    assert {s.observation.clip for s in got.samples("test", unseal=True, hz=0.2)} == {"v2"}
+    with pytest.raises(SealedError, match="its events were not read"):
+        list(got.samples("test", unseal=True, hz=0.2))
+    assert {s.observation.clip for s in Demos.load_split("s", root=d, unseal=True).samples("test", unseal=True, hz=0.2)} == {"v2"}
     assert {o.clip for o in got.observations("train")} == {"v0"}           # the other sides answer as before
     rewrite(tmp_path, spec, sealed=["holdout"])
     with pytest.raises(FormatError, match="sealed \\['holdout'\\]"):
@@ -271,9 +288,10 @@ def test_the_hud_lanes_event_file_shape_loads_as_written(tmp_path):
     """meta line, then segment lines, then events without a type: the format in docs/lanes/l2-hud.md, verbatim."""
     lines = [dict(META, source="vodC", duration_s=60.0, segments=3, events=2)]
     lines += [dict(type="segment", start_i=int(s["start_t"] * 10), end_i=int(s["end_t"] * 10), **s) for s in SEGS]
-    lines += [dict(kind="hp_lost", i_from=40, t_from=4.0, i_to=42, t_to=4.2, slot=None, amount=75, before=250, after=175, segment=0),
+    lines += [dict(kind="hp_lost", i_from=40, t_from=4.0, i_to=42, t_to=4.2, slot=None, slot_pos=None, amount=75, before=250, after=175,
+                   segment=0, cause="unknown", known_i=42, known_at=4.2),
               dict(kind="ability_cast", i_from=100, t_from=10.0, i_to=104, t_to=10.4, slot="get_over_here", slot_pos="get_over_here",
-                   amount=8, before="off", after=8, segment=0)]
+                   amount=8, before="off", after=8, segment=0, cause=None, known_i=113, known_at=11.3)]
     jsonl(tmp_path / "vodC.events.jsonl", lines)
     segs = demos.events_file_segments(tmp_path / "vodC.events.jsonl")
     clip = demos.write_manifest(tmp_path / "vodC.manifest.jsonl", header(id="vodC", events="vodC.events.jsonl"), segs)
@@ -310,17 +328,19 @@ def test_the_minimum_segment_length_is_named_and_a_segment_of_exactly_that_lengt
     assert {o.segment for o in Demos.load(path, min_segment_s=2.0).observations("train")} == set()
 
 
-def test_every_events_format_but_4_is_refused_naming_the_file_and_both_versions(tmp_path):
-    """Format 1 claimed casts that never happened; 2 and 3 name abilities by layout position and know no cut: refuse, do not read."""
+def test_every_events_format_but_5_is_refused_naming_the_file_and_both_versions(tmp_path):
+    """Format 1 claimed casts that never happened; 2 and 3 name abilities by layout position and know no cut; 4 counted a continuing
+    cooldown as several casts and has no knowledge time: refuse, do not read. No dual-format mode."""
     old = [dict(kind="hp_lost", t_from=4.0, t_to=4.2, amount=75, before=250, after=175)]
     for n, (lines, fmt) in enumerate([(old, 1),                                                     # no meta line at all
                                       ([dict(type="meta", source="x", fps=10.0)] + old, 1),         # a meta line without a format
                                       ([dict(META, format=1)] + old, 1), ([dict(META, format=2)] + old, 2),
-                                      ([dict(META, format=3)] + old, 3),                            # every file the HUD lane wrote before 4
-                                      ([dict(META, format=5)] + old, 5)]):                          # a newer one the loader does not know
+                                      ([dict(META, format=3)] + old, 3),
+                                      ([dict(META, format=4)] + old, 4),                            # every file on disk today
+                                      ([dict(META, format=6)] + old, 6)]):                          # a newer one the loader does not know
         d = fresh(tmp_path, f"f{n}")
         jsonl(d / "v.events.jsonl", lines)
-        with pytest.raises(FormatError, match=rf"v\.events\.jsonl: event stream format {fmt}, this loader reads format 4"):
+        with pytest.raises(FormatError, match=rf"v\.events\.jsonl: event stream format {fmt}, this loader reads format 5"):
             demos.write_manifest(d / "v.manifest.jsonl", header(events="v.events.jsonl"), SEGS)
         with pytest.raises(FormatError, match="format"):
             demos.events_file_segments(d / "v.events.jsonl")
@@ -334,11 +354,13 @@ def test_a_format_4_meta_line_must_say_how_its_slots_were_named(tmp_path):
             demos.events_file_segments(d / "v.events.jsonl")
 
 
-def test_format_1_vocabulary_inside_a_format_4_file_is_refused(tmp_path):
+def test_retired_vocabulary_inside_a_format_5_file_is_refused(tmp_path):
     for e in (dict(kind="ability_used", t_from=4.0, t_to=4.2, slot="swing", before=True, after=False),
               dict(kind="ability_ready", t_from=4.0, t_to=4.2, slot="swing", before=False, after=True),
-              dict(kind="ability_cast", t_from=4.0, t_to=4.2, slot="pull", amount=8, before="off", after=8)):
-        with pytest.raises(FormatError, match="format 1 vocabulary inside a format 4 file"):
+              dict(kind="ability_cast", t_from=4.0, t_to=4.2, slot="pull", amount=8, before="off", after=8),
+              dict(kind="slot_unavailable", t_from=4.0, t_to=4.2, slot="swing", before=True, after=False),   # now icon_dimmed
+              dict(kind="slot_available", t_from=4.0, t_to=4.2, slot="swing", before=False, after=True)):    # now icon_lit
+        with pytest.raises(FormatError, match="retired vocabulary inside a format 5 file"):
             make_vod(fresh(tmp_path, f"v{e['kind']}{e['slot']}"), events=[e])
 
 
@@ -435,7 +457,7 @@ SB = [dict(start_t=0.0, end_t=20.0, started_by="run_start", ended_by="scoreboard
       dict(start_t=22.0, end_t=40.0, started_by="scoreboard_closed", ended_by="death"),       # 20-22 soft, 40-45 hard
       dict(start_t=45.0, end_t=60.0, started_by="respawn", ended_by="run_end")]
 SB_EVENTS = [dict(kind="ability_cast", t_from=19.0, t_to=19.2, slot="get_over_here", amount=8, before="off", after=8),        # before the gap
-             dict(kind="slot_available", t_from=22.5, t_to=22.7, slot="get_over_here", before=False, after=True),      # after it
+             dict(kind="icon_lit", t_from=22.5, t_to=22.7, slot="get_over_here", before=False, after=True),      # after it
              dict(kind="hp_lost", t_from=22.9, t_to=23.3, amount=25, before=250, after=225)]                # pending at 23.0
 MASK = Mask(("scoreboard",))
 
@@ -485,7 +507,7 @@ def test_a_scoreboard_tap_wider_than_the_named_maximum_is_a_hard_boundary():
 def test_a_window_stops_at_a_scoreboard_when_told_not_to_bridge_it(tmp_path):
     obs, = sb_demos(tmp_path, decisions=[23.0]).observations("train", decisions="manifest", across_overlays=False)
     assert obs.context_start == 22.0 and obs.truncated_context and not obs.masked_context and obs.frames[0].t == 22.0
-    assert [e.kind for e in obs.events] == ["slot_available"]                                   # the event before the gap is not seen
+    assert [e.kind for e in obs.events] == ["icon_lit"]                                   # the event before the gap is not seen
 
 
 def test_a_window_spans_a_scoreboard_gap_when_asked_and_the_gap_frames_are_masked(tmp_path):
@@ -496,7 +518,7 @@ def test_a_window_spans_a_scoreboard_gap_when_asked_and_the_gap_frames_are_maske
     assert got == pytest.approx([20.2, 20.4, 20.6, 20.8, 21.0, 21.2, 21.4, 21.6, 21.8])          # strictly inside the gap
     assert all(f.masked == MASK for f in o23.frames if f.masked)
     assert not any(f.masked for f in o23.frames if f.t <= 20.0 or f.t >= 22.0)                # the frames the segmenter proved
-    assert [e.kind for e in o23.events] == ["ability_cast", "slot_available"]                    # both sides of the gap; hp_lost pending
+    assert [e.kind for e in o23.events] == ["ability_cast", "icon_lit"]                    # both sides of the gap; hp_lost pending
     s18, s23, s38 = d.samples("train", decisions="manifest", hindsight=True, across_overlays=True)
     assert s18.hindsight.outcome.ended_by is None and not s18.hindsight.outcome.truncated       # 18 -> 23 spans the gap
     assert [f.t for f in s18.hindsight.outcome.frames if f.masked] == got
@@ -533,7 +555,7 @@ def test_spanning_a_soft_gap_never_lets_the_future_into_a_window(tmp_path):
         assert all(f.t <= o.t + 1e-6 for f in o.frames) and all(e.t_to <= o.t + 1e-6 for e in o.events)
     at = {o.t: o for o in d.observations("train", decisions="manifest", across_overlays=True)}
     assert "hp_lost" not in [e.kind for e in at[23.0].events] and "hp_lost" in [e.kind for e in at[27.0].events]
-    assert "slot_available" not in [e.kind for e in at[19.0].events]                       # a later segment's event, not yet happened
+    assert "icon_lit" not in [e.kind for e in at[19.0].events]                       # a later segment's event, not yet happened
 
 
 def annotation(t, **kw):
@@ -670,7 +692,8 @@ def canary_run(tmp_path):
     """A recorder run whose rows and events carry their own time, so a leak names itself."""
     d = make_l4_run(tmp_path, "canary", seconds=30.0)
     events_file(d / "events.jsonl", [dict(start_t=0.0, end_t=29.95, started_by="run_start", ended_by="run_end")],
-                [dict(kind="hp_lost", t_from=round(t, 2), t_to=round(t + 0.2, 2), before=250, after=f"after@{t + 0.2:.2f}")
+                meta=dict(META, kit=dict(META["kit"], patch=None, patch_from="none", table=None)),   # a run whose patch nobody stated
+                events=[dict(kind="hp_lost", t_from=round(t, 2), t_to=round(t + 0.2, 2), before=250, after=f"after@{t + 0.2:.2f}")
                  for t in (2.0, 9.0, 14.9, 20.0, 27.0)])
     return d
 
@@ -700,12 +723,14 @@ def test_an_observation_refuses_to_hold_anything_later_than_t():
     ok = dict(clip="c", segment=0, t=5.0, frames=(f(4.0), f(5.0)), events=(), inputs=(), context_start=0.0, truncated_context=False)
     Observation(**ok)
     for bad in (dict(frames=(f(4.0), f(5.5))),
-                dict(events=(Event("hp_lost", 4.9, 5.5),)),           # confirmed after t
+                dict(events=(Event("hp_lost", 4.9, 5.5, known_at=5.5),)),   # known after t
+                dict(events=(Event("hp_lost", 4.0, 4.5, known_at=5.2),)),   # occurred by t, known only after it
+                dict(events=(Event("hp_lost", 4.0, 4.5),)),                 # no knowledge time: never assumed to be t_to
                 dict(inputs=(Input(5.2, {}),)),
                 dict(frames=())):
         with pytest.raises(LeakageError):
             Observation(**{**ok, **bad})
-    Observation(**{**ok, "events": (Event("hp_lost", 4.0, 5.0),)})    # confirmed exactly at t: fine
+    Observation(**{**ok, "events": (Event("hp_lost", 4.0, 4.5, known_at=5.0),)})    # known exactly at t: fine
 
 
 def test_the_policy_facing_types_have_no_route_to_labels_or_outcomes(tmp_path):
@@ -982,7 +1007,7 @@ def test_a_cast_at_an_unidentified_position_stays_null_through_every_window(tmp_
 
 
 def test_a_guessed_ability_name_is_refused(tmp_path):
-    cast = dict(kind="ability_cast", t_from=10.0, t_to=10.4, amount=8, before="off", after=8)
+    cast = dict(kind="ability_cast", t_from=10.0, t_to=10.4, amount=8, before="off", after=8, known_at=10.4, known_i=104, cause=None)
     for n, (mapping, extra, why) in enumerate([
             ({"swing": "swing"}, dict(slot="teamup", slot_pos="teamup"), "position 'teamup', where the icon mapping says None"),
             (None, dict(slot="swing", slot_pos="swing"), "position 'swing', where the icon mapping says None"),     # nothing identified
@@ -1131,6 +1156,385 @@ def test_a_run_directorys_manifest_and_meta_json_must_agree(tmp_path):
     assert (c.cooldowns, c.patch, c.header["patch_from"]) == ("unknown", "unknown", "none")    # never from a table, never from the date
 
 
+# --- format 5: knowledge time is the only availability clock ------------------------------------------------------------------
+LATE = [dict(kind="ability_cast", t_from=9.0, t_to=10.0, slot="get_over_here", amount=8, before="off", after=8, known_at=13.3),
+        dict(kind="hp_lost", t_from=12.0, t_to=12.1, amount=25, before=250, after=225, known_at=12.1)]
+
+
+def test_an_event_is_visible_only_from_its_knowledge_time_never_from_its_occurrence(tmp_path):
+    """Availability picks the observation, occurrence picks the outcome. At every decision t the observation holds exactly the
+    events with known_at <= t whose occurrence reaches into the history (t_to >= context_start); the outcome holds exactly those
+    whose occurrence ends after t (t_to > t) and begins by the window's end. An event that occurred by t but is known later is in
+    neither list at t: it arrives in the first observation at or after its known_at, and never becomes a later decision's target."""
+    d = Demos.load(make_vod(tmp_path, events=LATE, split="train"))
+    obs = {round(o.t, 1): o for o in d.observations("train", hz=10.0, frame_hz=5.0, history_s=10.0)}
+    out = {round(s.observation.t, 1): s.hindsight.outcome for s in d.samples("train", hz=10.0, frame_hz=5.0, history_s=10.0,
+                                                                               outcome_s=5.0, hindsight=True)}
+    for t in sorted(obs):
+        if t > 20.0:
+            break
+        seen = {e["kind"] for e in LATE if e["known_at"] <= t + 1e-6 and e["t_to"] >= t - 10.0 - 1e-6}
+        ahead = {e["kind"] for e in LATE if e["t_to"] > t + 1e-6 and e["t_from"] <= t + 5.0 + 1e-6}
+        assert {e.kind for e in obs[t].events} == seen and {e.kind for e in out[t].events} == ahead, t
+        assert not seen & ahead, t                                                  # never both
+        assert all(e.t_to > t for e in out[t].events), t                          # an outcome event's occurrence ends after t
+    assert {e.kind for e in out[9.5].events} == {"ability_cast", "hp_lost"}        # 9.5 straddles the cast: still ahead
+    for t in (10.0, 11.0, 12.0, 13.2):                                              # the cast occurred, is not yet known:
+        assert "ability_cast" not in {e.kind for e in obs[t].events} | {e.kind for e in out[t].events}, t   # in neither list
+    assert [e.kind for e in obs[13.2].events] == ["hp_lost"]
+    assert [e.kind for e in obs[13.3].events] == ["hp_lost", "ability_cast"]      # the order they became known, not occurred
+
+
+def test_damage_that_landed_before_a_decision_is_never_its_outcome(tmp_path):
+    """The review's P1-1 repro: occurrence [1.0, 1.2], known at 2.5. At 1.5, 2.0 and 2.4 it is neither observed nor a target."""
+    hit = dict(kind="hp_lost", t_from=1.0, t_to=1.2, amount=80, before=250, after=170, known_at=2.5)
+    d = Demos.load(make_vod(tmp_path, events=[hit], split="train"))
+    got = {round(s.observation.t, 1): s for s in d.samples("train", hz=10.0, hindsight=True)}
+    for t in (1.5, 2.0, 2.4):
+        assert got[t].hindsight.outcome.events == () and got[t].observation.events == (), t
+    assert [e.kind for e in got[2.5].observation.events] == ["hp_lost"] and got[0.5].hindsight.outcome.events[0].t_to == 1.2
+
+
+def test_a_wide_ability_uncertain_is_handed_to_every_window_it_overlaps(tmp_path):
+    """The review's P1-2 repro: uncertainty over [2.0, 6.0], known at 6.2, 5 s of history. Every window whose history still
+    overlaps the interval carries it, so a consumer can block a negative for that channel; none before it is known."""
+    un = dict(kind="ability_uncertain", t_from=2.0, t_to=6.0, slot="uppercut", amount=6, before=None, after=None, known_at=6.2)
+    d = Demos.load(make_vod(tmp_path, events=[un], split="train"))
+    got = {round(o.t, 1): [e.kind for e in o.events] for o in d.observations("train", hz=10.0, history_s=5.0)}
+    assert all(got[t] == [] for t in (5.0, 6.0, 6.1))                                # not known yet
+    assert all(got[t] == ["ability_uncertain"] for t in (6.2, 7.0, 8.0, 9.0, 10.0, 11.0))
+    assert got[11.1] == []                                                           # the history [6.1, 11.1] no longer overlaps it
+
+
+def test_a_mask_never_erases_an_ability_uncertain(tmp_path):
+    """Masking can only make a slot less known: an uncertainty whose every frame an annotator masked is still handed over."""
+    d = fresh(tmp_path, "m")
+    (d / "m.json").write_text(json.dumps(visibility([2.0, 6.0, 6.2], hud="unavailable", uppercut="unavailable")))
+    un = dict(kind="ability_uncertain", t_from=2.0, t_to=6.0, slot="uppercut", amount=6, before="off", after=6, known_at=6.2)
+    cast = dict(kind="ability_cast", t_from=5.8, t_to=6.0, slot="uppercut", amount=6, before="off", after=6, known_at=6.2)
+    make_vod(d, events=[un, cast], split="train", annotations=[annotation(8.0, context_mask="m.json")], decisions=[8.0])
+    o, = Demos.load(d).observations("train", decisions="manifest")
+    assert [e.kind for e in o.events] == ["ability_uncertain"]                        # the cast read off masked frames is dropped
+    e, = o.events
+    assert (e.t_from, e.t_to, e.slot, e.slot_pos, e.known_at) == (2.0, 6.0, "uppercut", "uppercut", 6.2)   # the unknown, kept
+    assert (e.amount, e.before, e.after) == (None, None, None)                        # its digit reads off masked frames, blanked
+    clip, = Demos.load(d).clips.values()                                              # and the same answers for a caller outside
+    raw = next(x for x in clip.events if x.kind == "ability_uncertain")
+    assert Demos._readable(clip, raw) and Demos.window_event(clip, raw) == e and raw.amount == 6
+    assert Demos.window_event(clip, next(x for x in clip.events if x.kind == "ability_cast")) is None
+    clean, = Demos.load(make_vod(fresh(tmp_path, "clean"), events=[un], split="train", decisions=[8.0])).observations(
+        "train", decisions="manifest")
+    assert clean.events[0].amount == 6                                                # unmasked: as written
+
+
+def test_an_event_whose_evidence_completes_only_at_a_masked_frame_is_dropped(tmp_path):
+    """The known_at frame counts: occurrence frames clean, the frame that completed the evidence masked."""
+    d = fresh(tmp_path, "k")
+    (d / "m.json").write_text(json.dumps(visibility([7.0], get_over_here="unavailable")))
+    cast = dict(kind="ability_cast", t_from=5.0, t_to=5.5, slot="get_over_here", amount=8, before="off", after=8, known_at=7.0)
+    make_vod(d, events=[cast], split="train", annotations=[annotation(8.0, context_mask="m.json")], decisions=[8.0])
+    o, = Demos.load(d).observations("train", decisions="manifest")
+    assert o.events == ()
+
+
+def test_the_outcome_ends_at_its_window(tmp_path):
+    """Occurrence beginning after the outcome window is not in it, however soon after."""
+    ev = [dict(kind="hp_lost", t_from=13.0, t_to=13.2, amount=5, before=250, after=245),
+          dict(kind="hp_lost", t_from=15.2, t_to=15.4, amount=5, before=245, after=240)]
+    s, = Demos.load(make_vod(tmp_path, events=ev, split="train", decisions=[10.0])).samples("train", decisions="manifest",
+                                                                                              hindsight=True, outcome_s=5.0)
+    assert [e.t_from for e in s.hindsight.outcome.events] == [13.0]
+
+
+def test_an_event_known_after_its_segment_ends_is_recorded_as_never_visible(tmp_path):
+    """Evidence completing past the segment's hard boundary reaches no window: a Demos.skipped row, never silence."""
+    ev = [dict(kind="hp_lost", t_from=19.0, t_to=19.5, amount=5, before=250, after=245, known_at=34.0),
+          dict(kind="hp_lost", t_from=10.0, t_to=10.2, amount=5, before=245, after=240, known_at=10.2)]
+    d = Demos.load(make_vod(tmp_path, events=ev, split="train"))
+    assert [(k.t, k.reason) for k in d.skipped] == [(19.5, "known_after_segment_end")]
+    assert not any(e.t_to == 19.5 for o in d.observations("train") for e in o.events)
+
+
+def test_known_i_and_the_hand_built_leak_guard_and_readable_are_checked(tmp_path):
+    base = dict(kind="hp_lost", t_from=4.0, t_to=4.2, amount=25, before=250, after=225, cause="damage", known_at=5.0)
+    for n, ki in enumerate([None, "50", 50.0, True, -5, 99999, 52]):                   # 50 is 5.0 s at 10 fps; 52 is two frames off
+        d = fresh(tmp_path, f"i{n}")
+        events_file(d / "v.events.jsonl", SEGS, [dict(base, known_i=ki)], pos=False)
+        with pytest.raises(demos.KnowledgeError, match=r"known_i .* must be the non-negative frame index of known_at"):
+            demos.write_manifest(d / "v.manifest.jsonl", header(events="v.events.jsonl"), SEGS)
+    d = fresh(tmp_path, "ok")
+    events_file(d / "v.events.jsonl", SEGS, [dict(base, known_i=51)], pos=False)            # within a frame: accepted, kept
+    assert demos.write_manifest(d / "v.manifest.jsonl", header(events="v.events.jsonl"), SEGS).events[0].known_i == 51
+    f = lambda t: FrameRef("c", t, "image", "x.jpg")
+    with pytest.raises(LeakageError):                                                     # occurrence after t, known "before" it
+        Observation(clip="c", segment=0, t=5.0, frames=(f(5.0),), events=(Event("hp_lost", 4.9, 9.9, known_at=4.9),), inputs=(),
+                    context_start=0.0, truncated_context=False)
+    clip = demos.read_manifest(make_vod(fresh(tmp_path, "r"), events=EVENTS))
+    with pytest.raises(demos.KnowledgeError, match="without a finite knowledge time"):
+        Demos._readable(clip, Event("hp_lost", 4.0, 4.2))
+
+
+def test_a_kind_the_writer_never_emits_is_refused(tmp_path):
+    for n, kind in enumerate(("hp_los", "slot_ready", "Ability_cast", "")):
+        with pytest.raises(FormatError, match=f"kind {kind!r} is not one the format 5 writer emits"):
+            make_vod(fresh(tmp_path, f"k{n}"), events=[dict(kind=kind, t_from=4.0, t_to=4.2, amount=1, before=1, after=0)])
+
+
+def writer_kinds(src):
+    """The kind literals of the writer's source, found by where they stand, not by what they are called: passed as kind=, passed
+    to emit(), compared with a .kind, assigned to kind, or first in a returned (kind, ...) tuple, conditional branches included."""
+    import ast
+    def consts(n):
+        if isinstance(n, ast.Constant) and isinstance(n.value, str):
+            return {n.value}
+        if isinstance(n, ast.IfExp):
+            return consts(n.body) | consts(n.orelse)
+        if isinstance(n, (ast.Tuple, ast.Set, ast.List)):
+            return set().union(set(), *map(consts, n.elts))
+        return set()
+    def first(n):                      # a returned (kind, ...) tuple, or a conditional choosing between such tuples
+        if isinstance(n, ast.IfExp):
+            return first(n.body) | first(n.orelse)
+        return consts(n.elts[0]) if isinstance(n, ast.Tuple) and n.elts else set()
+    kindish = lambda n: (isinstance(n, ast.Attribute) and n.attr == "kind") or (isinstance(n, ast.Name) and n.id == "kind")
+    out = set()
+    for n in ast.walk(ast.parse(src)):
+        if isinstance(n, ast.Call):
+            out |= set().union(set(), *(consts(k.value) for k in n.keywords if k.arg == "kind"))
+            if isinstance(n.func, ast.Name) and n.func.id == "emit" and n.args:
+                out |= consts(n.args[0])
+        elif isinstance(n, ast.Compare) and any(map(kindish, [n.left] + n.comparators)):
+            out |= set().union(set(), *(consts(s) for s in [n.left] + n.comparators if not kindish(s)))
+        elif isinstance(n, ast.Assign) and isinstance(n.targets[0], ast.Tuple) and n.targets[0].elts \
+                and kindish(n.targets[0].elts[0]) and isinstance(n.value, ast.Tuple):
+            out |= consts(n.value.elts[0])
+        elif isinstance(n, ast.Assign) and kindish(n.targets[0]):
+            out |= consts(n.value)
+        elif isinstance(n, ast.Return) and n.value is not None:
+            out |= first(n.value)
+    return out
+
+
+def test_the_loaders_kind_vocabulary_is_the_writers():
+    """EVENT_KINDS is exactly the set of kinds perception/events.py emits, found structurally, so a kind with a new prefix is seen."""
+    assert writer_kinds(demos.PRODUCER.read_text()) == set(demos.EVENT_KINDS)
+    probe = 'def f(e):\n    if e.kind == "zeta_new": pass\n    return ("omega_kind" if e else "psi_kind"), 1\n'
+    assert writer_kinds(probe) == {"zeta_new", "omega_kind", "psi_kind"}      # a prefix it has never seen is still found
+
+
+def sealed_fleet(tmp_path, v2_events):
+    """Three clips, one per side, all with event streams; v2 is on the sealed test side."""
+    late = dict(kind="hp_lost", t_from=19.0, t_to=19.5, amount=5, before=250, after=245, known_at=34.0)   # known past its segment
+    for n, (g, ev) in enumerate((("gA", EVENTS + [late]), ("gB", EVENTS), ("gC", v2_events))):
+        make_vod(tmp_path, name=f"v{n}", vod_id=f"7{n}", group=g, split="inspection_only", events=ev)
+    (tmp_path / "splits").mkdir(exist_ok=True)
+    (tmp_path / "splits" / "s.json").write_text(json.dumps(dict(
+        name="s", status="proposed", patch="Season 10, Version 20260911", cooldowns="normal",
+        sources=[f"v{n}.manifest.jsonl" for n in range(3)], sides={"train": ["gA"], "val": ["gB"], "test": ["gC"]}, sealed=["test"])))
+
+
+def test_a_sealed_sources_events_are_never_parsed_by_a_routine_load(tmp_path, monkeypatch):
+    late = dict(kind="hp_lost", t_from=19.0, t_to=19.5, amount=5, before=250, after=245, known_at=34.0)
+    sealed_fleet(tmp_path, EVENTS + [late])
+    built = []
+    real = demos.Event
+    monkeypatch.setattr(demos, "Event", lambda *a, **k: built.append(a[0]) or real(*a, **k))   # every event line the loader parses
+    d = Demos.load_split("s", root=tmp_path)
+    assert len(built) == 2 * len(EVENTS) + 1                                      # v0 and v1 only: nothing of v2's
+    v2 = d.clips["v2"]
+    assert v2.events_sealed and v2.kit == {"patch": META["kit"]["patch"], "patch_from": META["kit"]["patch_from"]}
+    assert len(v2.segments) == len(SEGS) and v2.events_meta["format"] == 5
+    with pytest.raises(SealedError, match="v2: sealed by a split file; its events were not read"):
+        v2.events
+    assert {k.clip for k in d.skipped} == {"v0"}                                  # v0's late event; nothing from sealed v2
+    built.clear()
+    full = Demos.load_split("s", root=tmp_path, unseal=True)                     # unseal restores full loading
+    assert len(built) == 3 * len(EVENTS) + 2 and len(full.clips["v2"].events) == len(EVENTS) + 1
+    assert {k.clip for k in full.skipped} == {"v0", "v2"}
+
+
+def test_a_sealed_sources_annotations_are_sealed_with_it(tmp_path):
+    sealed_fleet(tmp_path, EVENTS)
+    rows = [json.loads(l) for l in (tmp_path / "v2.manifest.jsonl").read_text().splitlines()]
+    rows[0]["annotations"] = "v2.annotations.jsonl"
+    jsonl(tmp_path / "v2.manifest.jsonl", rows)
+    (tmp_path / "v2.annotations.jsonl").write_text("not even JSON\n")          # proof the file is never opened
+    d = Demos.load_split("s", root=tmp_path)
+    v2 = d.clips["v2"]
+    for attr in ("annotations", "outcome_reviews"):
+        with pytest.raises(SealedError, match=f"v2: sealed by a split file; its {attr.replace('_', ' ')} were not read"):
+            getattr(v2, attr)
+    assert v2.frame_masks == {}
+    with pytest.raises(FormatError, match="not JSON"):
+        Demos.load_split("s", root=tmp_path, unseal=True)                       # unsealed, the same file is read (and refused)
+
+
+def test_the_sealed_identity_guard_sees_what_the_unsealed_one_sees_in_any_line_order(tmp_path):
+    """Filter, never stop: a segment line after an event line is still compared, and a line of an unknown type is ignored alike."""
+    for n, (lines, manifest_segs, err) in enumerate([
+            ([META, dict(type="segment", **SEGS[0]), dict(type="segment", **SEGS[1]), with_pos(EVENTS[0]),
+              dict(type="segment", **SEGS[2])], SEGS[:2], ProvenanceError),                 # a third segment after an event
+            ([META, dict(type="segment", **SEGS[0]), dict(type="note", x=1), dict(type="segment", **SEGS[1]),
+              dict(type="segment", **SEGS[2]), with_pos(EVENTS[0])], SEGS, None)]):        # an unknown line among segments
+        d = fresh(tmp_path, f"o{n}")
+        sealed_fleet(d, EVENTS)
+        jsonl(d / "v2.events.jsonl", lines)
+        rows = [json.loads(l) for l in (d / "v2.manifest.jsonl").read_text().splitlines()][:1]
+        jsonl(d / "v2.manifest.jsonl", rows + [dict(type="segment", **s) for s in manifest_segs])
+        for unseal in (False, True):
+            if err:
+                with pytest.raises(err, match="manifest's 2 segments are not its events file's 3"):
+                    Demos.load_split("s", root=d, unseal=unseal)
+            else:
+                assert len(Demos.load_split("s", root=d, unseal=unseal).clips["v2"].segments) == 3
+
+
+def test_a_sealed_clips_meta_line_keeps_only_what_the_checks_read(tmp_path):
+    sealed_fleet(tmp_path, EVENTS)
+    meta = dict(META, cut_times=[12.3, 45.6], timer_lengths={"swing": {"s": 6}}, events=7, cuts=2,
+                observed={"get_over_here": {"casts": 2, "countdown_mode": 8, "countdown": {"8": 2}}},
+                kit=dict(META["kit"], alarms={"swing": {"i": 5, "t": 0.5, "read": 9, "kit": 6}}))
+    events_file(tmp_path / "v2.events.jsonl", SEGS, EVENTS, meta)
+    v2 = Demos.load_split("s", root=tmp_path).clips["v2"]
+    assert set(v2.events_meta) == {"type", "format", "writer", "source", "observed", "kit"} | set(demos.META_KEYS)
+    assert v2.events_meta["observed"] == {"get_over_here": {"countdown_mode": 8}}
+    assert v2.kit == v2.events_meta["kit"] == {"patch": META["kit"]["patch"], "patch_from": META["kit"]["patch_from"]}
+    assert "12.3" not in repr(v2.events_meta) and "alarms" not in repr(v2.events_meta)   # no timestamp, no alarm
+    full = Demos.load_split("s", root=tmp_path, unseal=True).clips["v2"]
+    assert full.events_meta["cut_times"] == [12.3, 45.6] and full.kit["alarms"]           # unsealed: as written
+
+
+def test_a_sealed_source_still_passes_every_provenance_and_identity_check(tmp_path):
+    for n, (seg_lines, kit, cooldowns_from, err, why) in enumerate([
+            (SEGS[:2], META["kit"], "broadcast_date", ProvenanceError, "manifest's 3 segments are not its events file's 2"),
+            (SEGS, dict(META["kit"], patch="Season 9"), "broadcast_date", ProvenanceError, "timers used patch 'Season 9'"),
+            (SEGS, META["kit"], "observed_cooldowns", ProvenanceError, "countdowns for \\[\\]"),
+            (SEGS, dict(META["kit"], durations="junk"), "broadcast_date", FormatError, "kit must be a record")]):
+        d = fresh(tmp_path, f"p{n}")
+        sealed_fleet(d, EVENTS)
+        events_file(d / "v2.events.jsonl", seg_lines, EVENTS, dict(META, kit=kit, observed={}))
+        rows = [json.loads(l) for l in (d / "v2.manifest.jsonl").read_text().splitlines()]
+        rows[0]["cooldowns_from"] = cooldowns_from
+        jsonl(d / "v2.manifest.jsonl", rows)
+        with pytest.raises(err, match=why):
+            Demos.load_split("s", root=d)
+
+
+def test_meta_fps_must_be_a_positive_finite_number(tmp_path):
+    for n, fps in enumerate((0, -10.0, None, "10", float("inf"), float("nan"), True)):
+        d = fresh(tmp_path, f"f{n}")
+        events_file(d / "v.events.jsonl", SEGS, [], dict(META, fps=fps))
+        with pytest.raises(FormatError, match="meta fps .* must be a positive finite number"):
+            demos.events_file_segments(d / "v.events.jsonl")
+
+
+def test_an_event_known_inside_the_bridged_stretch_is_visible_only_when_bridged(tmp_path):
+    """Both window modes are covered: known after its own segment but inside the stretch, it is recorded as unbridged-only."""
+    segs = [dict(start_t=0.0, end_t=20.0, started_by="run_start", ended_by="scoreboard"),
+            dict(start_t=20.6, end_t=40.0, started_by="scoreboard_closed", ended_by="run_end")]
+    ev = [dict(kind="hp_lost", t_from=19.5, t_to=19.8, amount=5, before=250, after=245, known_at=21.0)]
+    d = Demos.load(make_vod(tmp_path, segs=segs, events=ev, duration_s=40.0, split="train", decisions=[22.0]))
+    assert [(k.t, k.reason) for k in d.skipped] == [(19.8, "known_after_segment_end_unbridged")]
+    bridged, = d.observations("train", decisions="manifest")
+    unbridged, = d.observations("train", decisions="manifest", across_overlays=False)
+    assert [e.kind for e in bridged.events] == ["hp_lost"] and unbridged.events == ()
+
+
+def test_every_knowledge_violation_is_a_named_load_error_with_file_line_and_event(tmp_path):
+    base = dict(kind="hp_lost", t_from=4.0, t_to=4.2, amount=25, before=250, after=225, cause="damage")
+    for n, (extra, why) in enumerate([({}, "known_at must be a finite time; it is never taken from t_to"),        # absent
+                                      (dict(known_at=None), "known_at must be a finite time"),
+                                      (dict(known_at=float("nan")), "must be a finite time"), (dict(known_at=float("inf")), "must be a finite time"),
+                                      (dict(known_at="4.2"), "must be a finite time"), (dict(known_at=True), "must be a finite time"),
+                                      (dict(known_at=4.1), r"needs t_from <= t_to <= known_at"),              # known before it ended
+                                      (dict(t_from=4.3, known_at=4.4), r"needs t_from <= t_to <= known_at")]):
+        d = fresh(tmp_path, f"k{n}")
+        events_file(d / "v.events.jsonl", SEGS, [{**base, **extra}], pos=False)
+        with pytest.raises(demos.KnowledgeError, match=rf"v\.events\.jsonl:5: hp_lost \[.*\] known_at .*{why}"):
+            demos.write_manifest(d / "v.manifest.jsonl", header(events="v.events.jsonl"), SEGS)
+    assert issubclass(demos.KnowledgeError, FormatError)
+
+
+def test_cause_survives_load_and_unknown_is_not_damage(tmp_path):
+    ev = [dict(kind="hp_lost", t_from=4.0, t_to=4.2, amount=25, before=250, after=225, cause="damage"),
+          dict(kind="hp_lost", t_from=5.0, t_to=5.2, amount=10, before=225, after=215, cause="unknown"),
+          dict(kind="hp_gained", t_from=6.0, t_to=6.2, amount=10, before=215, after=225, cause="unknown"),
+          dict(kind="hp_gained", t_from=7.0, t_to=7.2, amount=25, before=225, after=250, cause="heal")]
+    clip = demos.read_manifest(make_vod(tmp_path, events=ev))
+    assert [(e.kind, e.cause) for e in clip.events] == [("hp_lost", "damage"), ("hp_lost", "unknown"), ("hp_gained", "unknown"),
+                                                        ("hp_gained", "heal")]
+    assert [e.amount for e in clip.events if e.kind == "hp_lost" and e.cause == "damage"] == [25]   # damage: the one it proves
+    for n, (e, why) in enumerate([(dict(ev[0], cause="heal"), "cause 'heal' is not one of \\['damage', 'unknown'\\]"),
+                                  (dict(ev[3], cause="damage"), "not one of \\['heal', 'unknown'\\]"),
+                                  (dict(ev[0], cause=None), "cause None"),                       # an hp event always says why
+                                  (dict(LATE[0], cause="unknown"), "cause 'unknown' is not one of \\[None\\]")]):
+        with pytest.raises(FormatError, match=why):
+            make_vod(fresh(tmp_path, f"c{n}"), events=[e])
+
+
+def test_ability_uncertain_survives_load_exactly_as_written(tmp_path):
+    """Unknown for that ability over that interval: neither a positive nor a negative, and carried through untouched."""
+    un = dict(kind="ability_uncertain", i_from=30, t_from=3.0, i_to=52, t_to=5.2, slot="uppercut", slot_pos="uppercut", amount=6,
+              before=None, after=None, segment=0, cause=None, known_i=61, known_at=6.1)
+    clip = demos.read_manifest(make_vod(tmp_path, events=[un], split="train"))
+    e, = clip.events
+    assert {f: getattr(e, f) for f in un if f != "segment"} == {f: v for f, v in un.items() if f != "segment"}
+    d = Demos([clip])
+    before, after = [[x.kind for x in o.events] for o in d.observations("train", decisions="grid", hz=10.0) if round(o.t, 1) in (6.0, 6.1)]
+    assert (before, after) == ([], ["ability_uncertain"])
+
+
+def test_a_loaded_event_keeps_every_written_field(tmp_path):
+    """The written contract (docs/lanes/demos.md, "The loaded Event"): these fields, as the file wrote them."""
+    w = dict(kind="ability_cast", i_from=90, t_from=9.0, i_to=100, t_to=10.0, slot="get_over_here", slot_pos="get_over_here",
+             amount=8, before="off", after=8, cause=None, known_i=133, known_at=13.3)
+    e, = demos.read_manifest(make_vod(tmp_path, events=[w])).events
+    assert {f.name for f in dataclasses.fields(Event)} == set(w) | {"segment"}
+    assert all(getattr(e, k) == v for k, v in w.items()) and e.segment == 0
+
+
+def test_the_kit_record_is_carried_and_must_agree_with_the_manifest(tmp_path):
+    clip = demos.read_manifest(make_vod(tmp_path, events=EVENTS))
+    assert clip.kit == META["kit"] and clip.kit["durations"]["get_over_here"]["length"] == 8
+    for n, (kit, err, why) in enumerate([(dict(META["kit"], patch="Season 9"), ProvenanceError, "timers used patch 'Season 9'"),
+                                         (dict(META["kit"], patch=None), ProvenanceError, "timers used patch None"),
+                                         ({k: v for k, v in META["kit"].items() if k != "alarms"}, FormatError, "kit must be a record"),
+                                         (None, FormatError, "kit must be a record"),
+                                         (dict(META["kit"], durations="junk"), FormatError, "kit must be a record"),
+                                         (dict(META["kit"], durations={"swing": {"length": "6"}}), FormatError, "kit must be a record"),
+                                         (dict(META["kit"], alarms=[]), FormatError, "kit must be a record"),
+                                         (dict(META["kit"], table=7), FormatError, "kit must be a record")]):
+        d = fresh(tmp_path, f"kit{n}")
+        events_file(d / "v.events.jsonl", SEGS, EVENTS, dict(META, kit=kit))
+        with pytest.raises(err, match=why):
+            demos.write_manifest(d / "v.manifest.jsonl", header(events="v.events.jsonl"), SEGS)
+
+
+def test_an_archived_experiment_is_never_a_loader_input(tmp_path):
+    exp = tmp_path / "data" / "experiments" / "b0-multilabel-v1"
+    exp.mkdir(parents=True)
+    make_vod(tmp_path, events=EVENTS)
+    with pytest.raises(FormatError, match="archived experiment .* is never a loader input"):
+        make_vod(exp)                                               # nothing can even be built there
+    for f in ("vodA.manifest.jsonl", "vodA.events.jsonl"):
+        (exp / f).write_bytes((tmp_path / f).read_bytes())          # a well-formed manifest and events file inside the archive
+    outside = fresh(tmp_path, "out") / "abs.manifest.jsonl"          # every companion absolute
+    demos.write_manifest(outside, header(media={"kind": "video", "path": str(tmp_path / "vodA.mp4")}), SEGS)
+    (exp / "abs.manifest.jsonl").write_bytes(outside.read_bytes())   # and outside: only the manifest's own path is in the archive
+    with pytest.raises(FormatError, match="archived experiment .* is never a loader input"):
+        demos.read_manifest(exp / "abs.manifest.jsonl")
+    link = tmp_path / "innocent"
+    link.symlink_to(exp)                                            # a symlink elsewhere to the archive resolves into it
+    for call in (lambda: demos.events_file_segments(exp / "vodA.events.jsonl"),
+                 lambda: demos.events_file_segments(link / "vodA.events.jsonl"), lambda: Demos.load(link),
+                 lambda: Demos.load(exp), lambda: Demos.load(exp / "vodA.manifest.jsonl"),
+                 lambda: Demos.load(tmp_path / "data" / "experiments"), lambda: demos.read_manifest(exp / "vodA.manifest.jsonl"),
+                 lambda: demos.write_manifest(tmp_path / "out.manifest.jsonl",           # a manifest outside, pointing in
+                                              header(events=str(exp / "vodA.events.jsonl")), SEGS)):
+        with pytest.raises(FormatError, match="archived experiment .* is never a loader input"):
+            call()
+
+
 # --- stale event files: the producer's own rule, not a weaker copy --------------------------------------------------------------
 def test_an_events_file_the_producer_calls_stale_is_refused_by_name_with_the_reason(tmp_path):
     """Review finding A: format 4 files written before cut_times / recipe loaded silently."""
@@ -1203,10 +1607,16 @@ DEMOS = ROOT / "data" / "demos"
 REAL_RUN = ROOT / "data" / "l1" / "tagrun0"
 REAL_REQ = DEMOS / "samples" / "reqmr-2873352801-1920.manifest.jsonl"
 REAL_DAY = DEMOS / "samples" / "daymr-2879354299-21600-60s.manifest.jsonl"
-REAL_SECTION = DEMOS / "vods" / "reqmr-2871472478-5400-900s.manifest.jsonl"      # a retained Twitch section, with scoreboard taps
+# A TRAIN section with scoreboard taps. Never a sealed one (reqmr-2871472478-5400-900s, daymr-2877719252-1800-900s): a test that
+# reads the sealed test set on every run is a leak by habit.
+REAL_SECTION = DEMOS / "vods" / "reqmr-2873352801-1980-900s.manifest.jsonl"
 REAL_UPLOAD = DEMOS / "youtube" / "reqmr" / "Cf_2goe1snQ.manifest.jsonl"          # an edited upload: hard cuts, an unmapped teamup
 REAL_RERUN = DEMOS / "annotations" / "codex-rerun" / "reqmr-2873352801-1920.jsonl"
 NO_DATA = pytest.mark.skipif(not DEMOS.is_dir(), reason="data/demos is not on this machine")
+# Knowingly red where data/ exists: every events file there is format 4, which this loader refuses by name. Strict, so the marker
+# must come off when the format 5 regeneration lands and these pass; only a FormatError is expected, any other failure is a failure.
+FORMAT5_PENDING = pytest.mark.xfail(raises=FormatError, strict=True,
+                                    reason="data/demos/events is format 4 until the format 5 regeneration; the loader refuses it")
 
 
 def hard_gaps(clip, bridge=demos.MAX_BRIDGE_S):
@@ -1227,14 +1637,16 @@ def assert_windows_hold(d, clip, split="inspection_only", **kw):
 
 
 @NO_DATA
-def test_both_sample_clips_load_under_format_4():
+@FORMAT5_PENDING
+def test_both_sample_clips_load_under_the_current_format():
     for path in (REAL_REQ, REAL_DAY):
         clip = demos.read_manifest(path)                             # a format 3 events file fails here, naming both versions
-        assert clip.events_meta["format"] == 4 and clip.cooldowns == "normal" and clip.header["cooldowns_from"] == "observed_cooldowns"
+        assert clip.events_meta["format"] == demos.EVENT_FORMAT and clip.cooldowns == "normal" and clip.header["cooldowns_from"] == "observed_cooldowns"
         assert clip.patch == "Season 10, Version 20260911" and clip.header["patch_from"] == "broadcast_date"
 
 
 @NO_DATA
+@FORMAT5_PENDING
 def test_the_req_sample_manifest_iterates():
     d = Demos.load(REAL_REQ)
     clip = d.clips["reqmr-2873352801-1920"]
@@ -1248,6 +1660,7 @@ def test_the_req_sample_manifest_iterates():
 
 
 @NO_DATA
+@FORMAT5_PENDING
 def test_the_codex_rerun_rows_load_bridged_with_the_annotators_own_masks(tmp_path):
     real = demos.read_manifest(REAL_REQ)
     head = {k: v for k, v in real.header.items() if k != "type"}
@@ -1277,22 +1690,24 @@ def test_the_codex_rerun_rows_load_bridged_with_the_annotators_own_masks(tmp_pat
 
 
 @NO_DATA
+@FORMAT5_PENDING
 def test_a_retained_section_loads_and_bridges_its_scoreboard_taps():
     d = Demos.load(REAL_SECTION)
     clip, = d.clips.values()
-    assert clip.events_meta["format"] == 4 and clip.events_meta["cuts"] == 4 and clip.header["edited_upload"] is False
-    assert (clip.cooldowns, clip.patch, clip.splittable, d.splits[clip.id]) == ("normal", "Season 10, Version 20260911", True, "inspection_only")
+    assert clip.events_meta["format"] == demos.EVENT_FORMAT and clip.header["edited_upload"] is False
+    assert (clip.cooldowns, clip.patch, clip.splittable, d.splits[clip.id]) == ("normal", "Season 10, Version 20260911", True, "train")
     taps = [n for n in range(len(clip.segments) - 1) if clip.soft_gap(n)]
     assert taps                                                                             # scoreboard taps under the maximum
-    obs = list(d.observations("inspection_only", hz=1.0))
+    obs = list(d.observations("train", hz=1.0))
     bridged = [o for o in obs if any(f.masked and "scoreboard" in f.masked.reasons for f in o.frames)]
     assert bridged and all(not o.truncated_context or o.context_start > o.t - 5.0 for o in bridged)
-    assert assert_windows_hold(d, clip, hz=1.0) == len(obs)
-    for split in ("train", "val", "test"):
+    assert assert_windows_hold(d, clip, "train", hz=1.0) == len(obs)
+    for split in ("val", "test", "inspection_only"):
         assert list(d.observations(split)) == []
 
 
 @NO_DATA
+@FORMAT5_PENDING
 def test_an_edited_upload_loads_never_splittable_and_never_crosses_a_cut():
     d = Demos.load(REAL_UPLOAD)
     clip, = d.clips.values()
@@ -1402,6 +1817,7 @@ def test_a_pending_side_is_declared_empty_and_asking_it_for_anything_is_an_error
 
 
 @NO_DATA
+@FORMAT5_PENDING
 def test_the_first_season_10_split_is_a_proposal_with_the_reserved_sessions_sealed_as_test():
     """Pins the state after the lead promoted the two train sessions in their own manifests (2026-09-20)."""
     d = Demos.load_split("s10-normal-v0")
