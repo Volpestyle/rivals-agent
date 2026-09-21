@@ -6,22 +6,28 @@
 written by `perception/events.py`. Three line kinds, told apart by `type`:
 
 ```jsonc
-{"type": "meta", "format": 2, "source": "reqmr-2873352801-1920", "layout": "mk",
+{"type": "meta", "format": 3, "source": "reqmr-2873352801-1920", "layout": "mk",
  "frames": 601, "fps": 10.0, "t_origin": "first frame of the media",
- "duration_s": 60.0, "segments": 4, "events": 123}
+ "pts_origin_s": 0.0, "duration_s": 60.0, "segments": 4, "events": 106,
+ "slot_mapping": {"teamup": "teamup", "swing": "swing",
+                  "get_over_here": "get_over_here", "uppercut": "uppercut"},
+ "slot_mapping_from": "ability icon matched by shape, voted over sampled frames"}
 
 {"type": "segment", "start_i": 0, "start_t": 0.0, "end_i": 78, "end_t": 7.8,
  "started_by": "run_start", "ended_by": "death"}
 
 {"kind": "ability_cast", "i_from": 299, "t_from": 29.9, "i_to": 300, "t_to": 30.0,
- "slot": "get_over_here", "amount": 8, "before": "off", "after": 8, "segment": 2}
+ "slot": "get_over_here", "slot_pos": "get_over_here", "amount": 8,
+ "before": "off", "after": 8, "segment": 2}
 ```
 
 **Events carry no `type` key**, so readers already consuming them keep working.
 Order is meta, then segments in time order, then events in time order.
 
-- **All `t_*` are seconds from the first frame of the media**, not from the
-  source VOD's start. All `i_*` are frame indices *at the sampling fps in the
+- **All `t_*` are seconds from the first decoded frame of the media**, not from
+  the times a clip was requested at. `pts_origin_s` records what the decoder
+  reported as the source's first video PTS — one retained section starts at
+  1.616 s, not 0 — so a consumer can map back to the original timeline. All `i_*` are frame indices *at the sampling fps in the
   meta line* — not the source video's native frame numbers. The clips here were
   sampled at **10 fps** from 60 fps sources.
 - **An event is an interval, never an instant**: `i_from`/`t_from` is the last
@@ -30,11 +36,15 @@ Order is meta, then segments in time order, then events in time order.
 - `segment` on an event is the index of the segment line it belongs to. **No
   event ever spans a segment boundary**; channels reset at each one.
 - `ended_by` is one of `run_end`, `death`, `killcam`, `spectating`,
-  `scoreboard`, `not_our_hero`, `no_hud`. `started_by` is `run_start`,
-  `respawn`, `killcam_over`, `spectating_over`, `scoreboard_closed`,
-  `hero_returned`, `hud_returned`.
-- **`format` is 2.** Version 1 had `ability_used` / `ability_ready` and called a
-  slot `pull`; anything reading those needs updating. See **Format 2** below.
+  `scoreboard`, `not_our_hero`, `no_hud`, `hard_cut`. `started_by` is
+  `run_start`, `respawn`, `killcam_over`, `spectating_over`,
+  `scoreboard_closed`, `hero_returned`, `hud_returned`, `after_cut`.
+- **`cuts` in the meta line counts the source's editorial cuts**, and is `0` for
+  a continuous capture. `null` means nobody looked, which is not the same thing.
+- **`format` is 3.** Version 1 had `ability_used` / `ability_ready` and called a
+  slot `pull`. Version 2 split those into `ability_cast` and
+  `slot_unavailable` / `slot_available`. Version 3 makes `slot` the ability read
+  off the icon and adds `slot_pos`. See **Format 3** and **Format 2** below.
 - Event `kind` is one of: **`ability_cast`** (with `slot`; `amount` is the
   cooldown it started at), **`slot_unavailable`** / **`slot_available`** (with
   `slot`), `charges_spent`, `charges_regained` (with `slot` and `amount`),
@@ -57,6 +67,22 @@ Order is meta, then segments in time order, then events in time order.
   proper are the ones where both numbers were read and moved together. In the
   practice range *nothing damages the player*, so any `hp_lost` there is a
   shield tick by construction.
+
+### Reproducing any of this
+
+`uv run --group perception python -m perception.events ...` — the shared venv's
+two-opencv clash is fixed.
+
+```sh
+# frames on an exact grid -- never `-vf fps=N`, which lands one source frame off
+ffmpeg -i <clip>.mp4 -vf "select='not(mod(n,6))'" -vsync 0 -q:v 6 out/%06d.jpg   # 10 Hz from 60 fps
+ffmpeg -i <clip>.mp4 -vf "select='not(mod(n,2))'" -vsync 0 -q:v 4 out/%06d.jpg   # 30 Hz from 60 fps
+
+python -m perception.events out/ events.jsonl --layout mk --pts-origin <first decoded PTS>
+```
+
+`--pts-origin` comes from `ffprobe -select_streams v:0 -show_entries stream=start_time`,
+not from the times a clip was cut at.
 
 ### Hand-check, Req clip (30 events, frame by frame)
 
@@ -99,6 +125,17 @@ dormant 0.95 for the pad, where nothing is ever drawn over the HUD.
 
 **`ability_cast` was unaffected** — a countdown has to be centred in its slot,
 which chat text is not.
+
+### Format 3: the ability is read, not assumed
+
+`slot` is now the ability whose icon is in that position, or `null` when the
+icon could not be identified; `slot_pos` keeps the layout position it fired in.
+The meta line carries `slot_mapping` and `slot_mapping_from`.
+
+This exists because **a slot position names no ability**: the ability-to-key
+binding is a player setting, and both guide sources have Web-Swing and Get Over
+Here the other way round from the clip the layout was measured on. See **How the
+slot-to-ability mapping is decided**.
 
 ### Format 2, and why
 
@@ -159,9 +196,17 @@ fixed regions and a template-matched digit classifier. No ML.
 `tests/test_hud.py` passes on 145 hand-checked frames.
 
 Owned here: `perception/hud.py`, `perception/hud_truth.json`,
-`tests/test_hud*.py`, `docs/evidence/l2/`. Tracked as VUH-1294; the offline
+`tests/test_hud*.py`, `docs/evidence/l2/`, plus `perception/events.py`,
+`perception/scoreboard.py`, `perception/replay_states.py`,
+`perception/evalread.py` and their tests. Tracked as VUH-1294; the offline
 integration lane that consumes these readers is `docs/lanes/l6-integration.md`
 (VUH-1298).
+
+**Demonstration corpus, current state.** Four retained 15-minute Twitch sections
+are extracted, segmented and evented (**Retained sections** below). The six
+ReqMR YouTube uploads the co-lead added are running now, with the hard-cut break
+reason described in **Event stream format**. Everything derived from a VOD lives
+in `data/` and is never committed; the evidence directory holds no VOD frame.
 
 ## Results
 
@@ -406,7 +451,73 @@ accessibility setting and is currently green. Nothing here reads panel colour.
 from both clips and the range run, and picks up anything L4 drops into
 `docs/evidence/l4/scoreboard/` automatically.
 
-## Guide timings: blocked on ability identity, not on timing
+## Guide timings
+
+Unblocked by reading the icon in each slot (below), then run over the two 16:9
+practice-range guide windows at an exact 30 Hz. **Neither yields per-ability
+combo timings, for a reason that is worth more than the timings would have
+been.**
+
+| technique | source | ability order observed | intervals | confidence | what the HUD could not show |
+|---|---|---|---|---|---|
+| FFAme Stack | F 20:00–23:50 (`ffame-stack.jsonl`) | 37 lockout flashes over Web-Swing, Get Over Here and one uppercut | see below | **low** — lockouts, not casts | no cooldown numbers at all; no charge changes |
+| Matchu pull lesson | D 01:22–02:49 (`day-pull-lesson.jsonl`) | 9 lockout flashes | too sparse to sequence | **low** | same, plus a facecam that breaks segmentation |
+| Sekkombo | S 00:26–01:21 | not run | — | — | vertical edit, needs its own layout |
+| *(reference)* Req match clip | 60 s, `reqmr-…-1920.jsonl` | **14 casts, cooldown-proved** | table below | **high** | — |
+
+**Both guide sources run with cooldowns off.** Across 6900 FFAme frames and 2610
+Day frames there is not one countdown anywhere in the ability row — the signal
+that proves a cast. That is what a teaching demo looks like: the presenter wants
+to repeat a combo without waiting. It also means the HUD cannot prove a cast in
+either video, so no interval from them can be called a cast interval.
+
+**Lockouts are not a substitute, and the guide footage shows why.** In the FFAme
+window Web-Swing and Get Over Here go unavailable *on the same frame* eleven
+times (t1217.53, t1265.67, t1339.57, t1357.93, t1381.17, t1399.33 …). Two
+abilities are not being cast on one frame; that is a global "cannot act" state —
+mid-swing, mid-animation — dimming every slot at once. A per-slot lockout cannot
+be attributed to that slot's ability.
+
+**Where the narration and the HUD can be compared, they agree but do not
+resolve.** The arsenal doc has the Stack as *"Get Over Here! → uppercut in very
+rapid succession, Get Over Here! first"* (F 20:07–21:30). The one place the HUD
+shows both slots flashing close together is t1305.13–1305.67 (Get Over Here) and
+t1305.17–1305.20 (uppercut) — **within half a second, consistent with "very
+rapid succession"**, but the two event intervals overlap, so at 30 Hz the HUD
+cannot confirm which came first. The narration's ordering claim is neither
+supported nor contradicted.
+
+### Inter-cast intervals that are actually proved
+
+From the Req match clip, where cooldowns are on and every cast is proved by a
+countdown appearing. Each bound is the widest and narrowest gap the two event
+intervals allow:
+
+| from → to | interval |
+|---|---|
+| Get Over Here → Web-Swing | 0.80–1.00 s |
+| Get Over Here → team-up | 0.70–0.90 s |
+| Web-Swing → Get Over Here | 1.80–2.00 s |
+| Web-Swing → Web-Swing | 2.60–2.80 s, 4.60–4.80 s |
+| uppercut → Get Over Here | 1.90–2.10 s |
+| Get Over Here → Get Over Here | 2.30–2.50 s |
+| Get Over Here → uppercut | 2.80–3.00 s |
+| uppercut → uppercut | 4.20–4.40 s |
+
+**Match footage is the source for combo timing, not range demos.** The thing
+that makes a range demo easy to film — no cooldowns — removes the only evidence
+the HUD has that an ability was used. The four retained match sections bear this
+out: they give hundreds of cooldown-proved casts each, where 230 seconds of
+clean range teaching gave none.
+
+**The Sekkombo Short was not run and is not worth its own layout yet.** It is a
+1080x1920 vertical edit with the HUD rescaled and moved (ammo at x 0.091–0.115
+against 0.246–0.270 on a 16:9 M&K HUD). Its HUD is stable across the window, so
+a layout is measurable, but it is a *range demo* — so by the finding above it
+would produce lockouts and no casts, at the cost of a bespoke layout used by one
+video. Worth doing only if someone wants the lockout sequence specifically.
+
+## How the slot-to-ability mapping is decided
 
 The three practice-range guide windows were extracted at an exact 30 Hz
 (`select='not(mod(n,2))'` on a 60 fps source) and the Day window run through the
@@ -434,13 +545,124 @@ stable: detecting the underline beneath each icon finds slots at 0.7948, 0.8346
 and 0.8742 on all three sources, within a pixel of the layout's values. So the
 geometry transfers and the mapping does not.
 
-**The fix is bounded**: identify the icon in each slot once per source by
-matching the four Spider-Man icons — the swinging figure, the arrow, the fist,
-the star — and build the slot mapping from what is actually there, instead of
-assuming an order. That is the same colour-template method already used for the
-hero portrait and the Spider-Tracer, and it also removes the need to hand-pick a
-layout per source for the ability row. Until it exists, `Layout.slot_cx` names
-are only trustworthy on sources whose binding order has been checked by eye.
+**So the icon decides, not the position.** `identify_slot` matches the four
+Spider-Man icons — the swinging figure, the arrow, the fist, the star — as ink
+*shapes*, because the same icon is drawn white normally and gold while a team-up
+buff is up. `slot_mapping` votes over sampled frames, because a slot spends much
+of its time showing a countdown, an overlay or nothing. The result and the method
+go in every events file's meta line as `slot_mapping` / `slot_mapping_from`.
+
+A position whose icon never identifies is **left out of the mapping**, and its
+events carry `slot: null` with `slot_pos` still set — never a guessed name. That
+happens on the FFAme window, whose team-up slot is empty throughout.
+
+Checked against the three sources: Req maps straight through, Day and FFAme both
+have Web-Swing and Get Over Here the other way round, and Req's four known casts
+(29.9, 40.1, 40.9, 48.1 s) keep their names.
+
+## Retained sections: how much is actually own-Spider-Man play
+
+Four 15-minute 1080p60 expert sections, sampled at an exact 10 Hz and segmented.
+The number nobody had: **how much of an expert's recorded session is our hero,
+in our control, with nothing on top of the HUD.**
+
+Per section, `data/demos/events/sections/<id>.jsonl`, same format as the clips
+(format 3) with `pts_origin_s` in the meta line. **Times are keyed to the first
+decoded frame**, and `pts_origin_s` records what the decoder reported as the
+source's first PTS — 1.616 s for `daymr-2879354299-21660-900s`, 0 for the other
+three. The requested cut times are not used for anything.
+
+| section | PTS origin | own-Spider-Man play | share | segments | median / longest | events |
+|---|---|---|---|---|---|---|
+| `reqmr-2871472478-5400-900s` | 0 s | **11.57 min** of 15 | 77% | 55 | 6.5 / 65.8 s | 1669 |
+| `reqmr-2873352801-1980-900s` | 0 s | **9.12 min** of 15 | 61% | 30 | 12.1 / 56.4 s | 912 |
+| `daymr-2879354299-21660-900s` | 1.616 s | **9.28 min** of 15 | 62% | 46 | 4.9 / 68.7 s | 1144 |
+| `daymr-2877719252-1800-900s` | 0 s | **9.62 min** of 15 | 64% | 71 | 3.8 / 84.1 s | 927 |
+| **total** | | **39.6 min** of 60 | **66%** | 202 | | 4652 |
+
+**Two thirds of a retained expert section is usable, and a third is not.** Budget
+on 0.66, not on wall-clock minutes.
+
+Events per section, the types a policy would learn from:
+
+| section | get_over_here | swing | uppercut | team-up | hp_lost | hp_gained | web fired | ko_feed |
+|---|---|---|---|---|---|---|---|---|
+| `reqmr-2871472478-5400-900s` | 55 | 47 | 53 | 30 | 384 | 326 | 183 | 6 |
+| `reqmr-2873352801-1980-900s` | 37 | 27 | 22 | 21 | 134 | 236 | 115 | 6 |
+| `daymr-2879354299-21660-900s` | 49 | 27 | 71 | 21 | 230 | 175 | 96 | 5 |
+| `daymr-2877719252-1800-900s` | 32 | 16 | 45 | 28 | 144 | 147 | 102 | 7 |
+
+Slot mapping came out per source, by icon: Req maps straight through, both Day
+sections have Web-Swing and Get Over Here the other way round. Each section's
+file carries its own `slot_mapping`, so the names are comparable across the table
+above even though the key order was not.
+
+### The play is not in long runs
+
+The median segment is **3.8–12.1 s**, against longest runs of 56–84 s. That is
+not the segmenter being twitchy — it is the players. **ReqMR taps the scoreboard
+on and off inside fights**: at 60.1 s of `reqmr-2871472478` the board is up
+(his row highlighted, 837 damage), at 60.5 s he is mid-swing at 245/250, at
+60.8 s the board is up again. Board frames score 0.97 and play frames 0.06, so
+these are decisive detections a third of a second apart, not threshold flicker.
+
+Two numbers a consumer will want:
+
+| section | segments >= 5 s | play inside them | after bridging gaps < 1 s |
+|---|---|---|---|
+| `reqmr-2871472478-5400-900s` | 34 | 11.1 min | 31 runs, median 16.0 s, longest 68 s |
+| `reqmr-2873352801-1980-900s` | 17 | 8.9 min | 15 runs, median 27.5 s, longest 145 s |
+| `daymr-2879354299-21660-900s` | 22 | 8.8 min | 25 runs, median 15.2 s, longest 82 s |
+| `daymr-2877719252-1800-900s` | 28 | 8.4 min | 31 runs, median 7.1 s, longest 84 s |
+
+Bridging halves the segment count and roughly triples the median run, and it
+costs almost no play time. **It is a loader policy, not a change to this format**
+— the files keep every break, because a bridged run has up to a second of
+scoreboard frames inside it, which must be masked rather than learned from.
+
+What gets removed is as interesting as what is left. In
+`reqmr-2873352801-1980-900s`, **184.7 s — a fifth of the section — is after the
+last play segment**: the DEFEAT and rank screens, the next match's intro, and
+hero select, where the player picks **Jeff the Land Shark**. Spot-checked by eye
+at 720, 760, 820 and 880 s. A pipeline that trained on "15 minutes of expert
+Spider-Man" would have been training partly on a shark.
+
+## Edited uploads: finding the cuts
+
+A Twitch section is one continuous capture, so a segment can only be interrupted
+by something the game did. A YouTube upload is **cut**: the editor splices
+unrelated matches, maps and days together. Two frames either side of a splice
+are unrelated footage, so a segment that spans one is a fiction — hp 250 before
+and 180 after is not 70 damage, it is two different fights.
+
+`scene_cuts()` finds them, and `segment()` breaks on them with
+`hard_cut` / `after_cut`. Two things about how, both of which cost an attempt:
+
+**The cut is invisible at the sampling rate and obvious at the native one.** At
+the 10 Hz grid these files are sampled on, consecutive frames are 100 ms apart,
+and a fast camera whip moves the whole frame as much as a splice does. Measured
+on `yjc51uOjKEQ`, mean absolute difference on a 0–255 scale: median 20.5,
+p99 47.6, and the actual cuts 52–80. **The distributions overlap, so no
+threshold separates them.** At 60 fps adjacent frames barely differ and a splice
+stands out, so the detection runs on the video with ffmpeg's own scene score —
+one `ffprobe` pass, about two minutes for a 15-minute 1080p60 file.
+
+**The threshold has to clear the in-game overlays, not just the noise floor.**
+On that file the scene scores fall in two groups with nothing between them:
+
+| score | what it actually is | count |
+|---|---|---|
+| 0.40–0.45 | the **scoreboard** opening or closing over continuous play | 10 |
+| 0.67–1.00 | genuine edits: ReqMR's lightning-bolt wipe, a glitch transition, the victory/MVP outro | 8 |
+
+An overlay appearing is a real full-frame change and scores like one. Taking the
+obvious "anything above the noise" threshold of 0.4 would have labelled every
+scoreboard peek an edit — and on these players that is dozens per section, each
+one already carrying its own correct break reason. `CUT_SCORE` is **0.55**, in
+the gap. Checked by eye on a before/after sheet of all 18 moments.
+
+A fade is not a cut and must not read as one: it changes the frame gradually, so
+every step scores low and none crosses the threshold. Only an abrupt change does.
 
 ## Reading a streamer's HUD (1080p, mouse and keyboard)
 

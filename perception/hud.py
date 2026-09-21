@@ -1327,6 +1327,111 @@ def _tracer_templates(frame_width=TRACER_HARVEST_WIDTH):
     return _TRACER_CACHE[key]
 
 
+# Ability icons as ink shapes, for working out which slot holds which
+# ability. Shape rather than colour: the same icon is white normally and
+# gold while a team-up buff is up. Harvested from two sources whose slot
+# order was checked by eye -- and which disagree, which is the whole point:
+# the ability-to-key binding is a player setting, so a slot position names
+# nothing on its own.
+ICONS: dict[str, list[str]] = {
+    "get_over_here": [
+        "AAAACAAAAACAAAA4OAAABgeAAADA/AAACB3AAAAHjAAAAPDgAAA+BgAADzAwAAPBAYAP8AAAB//AAA//////AP///+A//gAcAf+AA4AA+AgwAAHhhgAAB7DAAAAfDAAAAHnAAAAD3AAADA/AAABAeAAABgOAAAB8HAAAAADA",
+        "AAAAGAAAA4OAAAA8OAAABw+AAADg+AAACD+AAAAHHAAAAeDgAAA+DgAADzBwAA/hA4AD+AAYD////w//////P////+Af///4AP/AA4AD+AxwAAfhxgAAD/DgAAAfDAAAAPHAAAAHmAAABB+AAADA+AAABgeAAAB4OAAAAGGA",
+    ],
+    "swing": [
+        "AAAAACAOAAAEADgAAMAA4OAYAAf/gQAAf/gwAAP/hgAAHvjgAAHviAAAHn+AAAD88AAADx8AAAD/8AAAH/8+AAH89/AAf57+AB/538AD/7n4AP/3PwA//+PAD//eOAP/wcYA/+A4wA/wA4gA/wDwAAAAAAAAAAHAAAAAPAAA",
+        "AAAAAGADAAAMABwAAcAA+fgYAAf/gYAAf/xwAAP/xwAAH/3gAAH/zAAAD++AAAD/8AAAD/8AAAD//+AAH//+AAH/9/AA/97+AB/538AD/73wAf//vwA///PAD//+OAf/4cYA/+A44A/4B5gAf8BgAAAABgAAAAHgAAAAPAAA",
+    ],
+    "teamup": [
+        "AAAgAAAAAgAAAAgwAAAAQwAAAAB4AAAAB4BAAAB4DAADj/zAAB8DGDEB8DOeHg8D/4D/8B/oAH8D+QAB+D4AAZ4B5AAHgD/AAHgGPAAHwAfgAfwA/wCD+A/48D8B8McP8B4HAf/+IAAfH8AAAgB8AgAAA4AwAAA4AAAAAwAA",
+        "AAAgAAAAAgAAAAgwAAAAhwAAAAh4AAAAD4AAAAD5HAADj//AAD/v3AAB8DufeB8D/+H/8B/wA/8D/ABj8D8wAx4B4gAPgD/AAHgEfAAPgIfgA/wA/gGH+A/48H8B4+AP8D4HAf/8AAB8D8AAAAD8AgAAB4AwAAAwAAAAAwAA",
+    ],
+    "uppercut": [
+        "AAAAwAAAAPwAAAAPwAAAAR4AAAAx4AAAA54AAAA/5AAAA/5gAAA/4gAAA/4gAAA/4wAAAX4wAAAP4gAAAP5AAAA/5AAAB/xAAAH/xAAAf/hAAA//iAAB//CAAB/+AAAB/+GQ8///n88///348///2Y8//32Y8/832Y8+832Y",
+        "AAAB4AAAAf4AAAA/4AAABP+AAAPD+AAAPj+AAAH/+YAAH/+MAAH/+OAAH/+OAAH/+PAAD/+PAAA/+PAAA/8MAAD/8MAAP/8MAA//4MAD//4YA///4YB///gYB///AwD//+BgH//8BAH//4AAP//wAAP//gAA///AAA8gAAAA",
+    ],
+}
+
+ICON_H, ICON_W = 28, 36
+ICON_MATCH = 0.78      # share of cells that must agree with the best icon
+ICON_MARGIN = 0.05     # ... and by this much over the runner-up
+_ICON_CACHE: list = []
+
+
+def _icon_templates():
+    if not _ICON_CACHE:
+        names, rows = [], []
+        for name, packed in ICONS.items():
+            for blob in packed:
+                bits = np.unpackbits(np.frombuffer(base64.b64decode(blob), np.uint8),
+                                     count=ICON_H * ICON_W).astype(bool)
+                names.append(name)
+                rows.append(bits)
+        _ICON_CACHE.append(np.array(rows, bool))
+        _ICON_CACHE.append(np.array(names))
+    return _ICON_CACHE[0], _ICON_CACHE[1]
+
+
+def _icon_shape(frame, cx):
+    """The slot's ink, cropped to it and normalised, or None if the slot is empty."""
+    img = crop(frame, _icon_box(cx))
+    if img.size == 0:
+        return None
+    grey = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    mask = ((grey > 110) & (cv2.morphologyEx(grey, cv2.MORPH_TOPHAT, _TOPHAT) > 30)).astype(np.uint8)
+    ys, xs = np.where(mask)
+    if len(xs) < 30:
+        return None
+    mask = mask[ys.min():ys.max() + 1, xs.min():xs.max() + 1]
+    return cv2.resize(mask * 255, (ICON_W, ICON_H), interpolation=cv2.INTER_AREA) > 110
+
+
+def identify_slot(frame, cx) -> str | None:
+    """Which ability's icon is in this slot, or None when it cannot be told.
+
+    None covers an empty slot, a slot showing a countdown instead of an icon, a
+    slot under an overlay, and a shape that matches nothing well enough. Callers
+    must treat it as unknown, never as a default.
+    """
+    shape = _icon_shape(frame, cx)
+    if shape is None:
+        return None
+    rows, names = _icon_templates()
+    agree = (rows == shape.ravel()).mean(axis=1)
+    best = int(agree.argmax())
+    name = str(names[best])
+    other = agree[names != name]
+    if agree[best] < ICON_MATCH:
+        return None
+    if other.size and agree[best] - other.max() < ICON_MARGIN:
+        return None
+    return name
+
+
+def slot_mapping(frames, layout=None):
+    """{slot position key: ability} for a source, by voting over many frames.
+
+    A slot shows a countdown, an overlay or nothing often enough that one frame
+    cannot decide. Positions whose icon never identifies are left out, and their
+    casts are reported with no ability name rather than a guessed one.
+    """
+    layout = layout or PAD
+    votes = {key: {} for key in layout.slot_cx}
+    for frame in frames:
+        for key, cx in layout.slot_cx.items():
+            name = identify_slot(frame, cx)
+            if name:
+                votes[key][name] = votes[key].get(name, 0) + 1
+    out = {}
+    for key, tally in votes.items():
+        if not tally:
+            continue
+        winner, count = max(tally.items(), key=lambda kv: kv[1])
+        if count >= max(3, 0.6 * sum(tally.values())):
+            out[key] = winner
+    return out
+
+
 def read_tagged(frame, bbox) -> bool | None:
     """Is this enemy carrying a Spider-Tracer?
 

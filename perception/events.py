@@ -47,6 +47,7 @@ from __future__ import annotations
 import argparse
 import base64
 import json
+import subprocess
 import sys
 import zlib
 from dataclasses import asdict, dataclass, field
@@ -72,7 +73,13 @@ SHIELD_WINDOW = 3   # frames apart that an hp and a max-hp change may still be o
 #    down -- proof the ability fired) and slot_unavailable / slot_available (the
 #    icon dimmed, which is a lockout and happens on wall climbs and mid-swing);
 #    slot "pull" renamed get_over_here; hp emits raw steps, never a net.
-FORMAT_VERSION = 2
+# 3: `slot` is the ability the icon says is in that position, or null when the
+#    icon could not be identified; `slot_pos` keeps the layout position. The
+#    meta line carries the mapping and how it was decided. A slot position names
+#    no ability by itself -- the binding is a player setting, and the two guide
+#    sources have Web-Swing and Get Over Here the other way round from the clip
+#    the layout was measured on.
+FORMAT_VERSION = 3
 ULT = "ult"
 
 # --- is Spider-Man the hero being played? ---------------------------------
@@ -357,6 +364,9 @@ def segment(reads):
     where the HUD is gone (menu, BRB, loading, spectating overlay), and where hp
     reaches zero. An unknown portrait verdict does not break it, for the same
     reason an unknown HUD read does not: not knowing is not evidence.
+
+    An edited source breaks on its cuts too: a seventh item in a read marks a
+    frame the editor spliced to, so no segment spans an edit. See `scene_cuts`.
     """
     # Reads are (i, t, hud, playing) and may carry a fifth item: the word in the
     # top-left status banner, when one is up.
@@ -373,12 +383,16 @@ def segment(reads):
         i, t, hud = read[0], read[1], read[2]
         playing = playing_steady[n]
         dead = hud.hp == 0
+        # The cut comes before every game-side reason: it says the two sides of
+        # this boundary are unrelated footage, which is true whatever the HUD
+        # was doing. Nothing else can be trusted across it.
+        cut = len(read) > 6 and read[6]
         # Death first: it is the earlier and more specific fact, and the killcam
         # that follows is then simply outside any segment. The banner comes next
         # because killcam looks exactly like spectating to every other signal --
         # a foreign hero with a perfectly readable HUD -- and the two are
         # different things to anything learning from these labels.
-        broken = (dead and "death") or banners[n] \
+        broken = (cut and "hard_cut") or (dead and "death") or banners[n] \
             or (playing is False and "not_our_hero") \
             or (not hud_steady[n] and "no_hud")
         if broken:
@@ -387,7 +401,8 @@ def segment(reads):
                 start = None
             reason = {"death": "respawn", "not_our_hero": "hero_returned",
                       "killcam": "killcam_over", "spectating": "spectating_over",
-                      "scoreboard": "scoreboard_closed"}.get(broken, "hud_returned")
+                      "scoreboard": "scoreboard_closed",
+                      "hard_cut": "after_cut"}.get(broken, "hud_returned")
             continue
         if start is None:
             start = (i, t)
@@ -408,7 +423,8 @@ class Event:
     t_from: float
     i_to: int         # first frame proving the new value
     t_to: float
-    slot: str | None = None
+    slot: str | None = None       # the ability, or None when the icon is unknown
+    slot_pos: str | None = None   # the layout position it fired in
     amount: float | None = None
     before: object = None
     after: object = None
@@ -569,7 +585,7 @@ def _despike(values, damaged=None, max_hp=None):
     return out
 
 
-def extract_one(reads, debounce=None, seg_index=0):
+def extract_one(reads, debounce=None, seg_index=0, mapping=None):
     """[Event] for a single segment of (i, t, Hud) reads, in time order."""
     holds = {**DEBOUNCE, **(debounce or {})}
 
@@ -616,9 +632,16 @@ def extract_one(reads, debounce=None, seg_index=0):
             if described is None:
                 continue
             kind, slot, amount = described
+            # No mapping means the caller already knows its slot names. A mapping
+            # that omits a position means its icon could not be identified, and
+            # the ability is reported as unknown rather than guessed.
+            if mapping is None or not slot or slot == ULT:
+                named = slot
+            else:
+                named = mapping.get(slot)
             events.append(Event(kind=kind, i_from=from_i, t_from=from_t, i_to=i, t_to=t,
-                                slot=slot, amount=amount, before=before, after=after,
-                                segment=seg_index))
+                                slot=named, slot_pos=slot, amount=amount,
+                                before=before, after=after, segment=seg_index))
     events.sort(key=lambda e: (e.t_to, e.kind))
     return _merge_shield(events)
 
@@ -660,7 +683,7 @@ def _merge_shield(events):
     return out
 
 
-def extract(reads, debounce=None):
+def extract(reads, debounce=None, mapping=None):
     """Segment the run, then pull events inside each segment.
 
     `reads` are (i, t, Hud, playing). Returns (events, segments); channels are
@@ -671,9 +694,53 @@ def extract(reads, debounce=None):
     events = []
     for n, seg in enumerate(segments):
         inside = [by_i[i] for i in range(seg.start_i, seg.end_i + 1) if i in by_i]
-        events.extend(extract_one(inside, debounce, seg_index=n))
+        events.extend(extract_one(inside, debounce, seg_index=n, mapping=mapping))
     events.sort(key=lambda e: (e.t_to, e.kind))
     return events, segments
+
+
+# A cut scores 0.67 and up; the highest thing that is *not* a cut scores 0.45.
+# That gap is where this sits. What lives in the 0.40-0.45 band is the in-game
+# scoreboard opening and closing -- a real full-frame change, but an overlay
+# over continuous footage, and already its own break reason. Calling those cuts
+# would label every scoreboard peek an edit.
+CUT_SCORE = 0.55
+
+
+def scene_cuts(video, threshold=CUT_SCORE, pts_origin=0.0):
+    """[seconds] where the source cuts, from ffmpeg's own scene detection.
+
+    Measured at the source's native frame rate, which is the only place a cut is
+    obvious: adjacent 60 fps frames barely differ, so a splice stands out. At the
+    10 Hz grid these files are sampled on it does not -- a fast camera whip moves
+    as much in 0.1 s as a cut does, and the two distributions overlap so far that
+    no threshold separates them (measured: median 20.5, cuts 52-80 on a 0-255
+    mean absolute difference).
+
+    A fade is not a cut and must not be reported as one: it changes the frame
+    gradually, so every step scores low and none crosses the threshold.
+    """
+    out = subprocess.run(
+        ["ffprobe", "-v", "error", "-f", "lavfi",
+         f"movie={video},select=gt(scene\\,{threshold})",
+         "-show_entries", "frame=pts_time", "-of", "csv=p=0"],
+        capture_output=True, text=True, check=True).stdout
+    times = [float(line.rstrip(",")) - pts_origin
+             for line in out.splitlines() if line.strip()]
+    # A wipe or a flash trips several adjacent frames; they are one edit.
+    return [t for n, t in enumerate(times) if n == 0 or t - times[n - 1] > 0.5]
+
+
+def _cut_flags(cuts, rows):
+    """Which sampled frames are the first on the far side of a cut."""
+    flags, pending = [], list(cuts)
+    for row in rows:
+        hit = False
+        while pending and pending[0] <= float(row["t"]):
+            pending.pop(0)
+            hit = True
+        flags.append(hit)
+    return flags
 
 
 def read_run(run_dir, limit=None, progress=None, layout=None):
@@ -696,6 +763,11 @@ def read_run(run_dir, limit=None, progress=None, layout=None):
     rows = [json.loads(line) for line in index.read_text().splitlines() if line.strip()]
     if limit:
         rows = rows[:limit]
+    # cuts.json is written next to the frames by whoever extracted them, because
+    # the cut can only be seen in the video the frames came from.
+    cuts_file = Path(run_dir) / "cuts.json"
+    cuts = json.loads(cuts_file.read_text()) if cuts_file.exists() else []
+    flags = _cut_flags(cuts, rows)
     out = []
     for n, row in enumerate(rows, 1):
         frame = cv2.imread(str(Path(run_dir) / row["file"]))
@@ -710,7 +782,8 @@ def read_run(run_dir, limit=None, progress=None, layout=None):
             aside = banner_word(frame) or ("scoreboard" if is_scoreboard(frame) is True
                                            else None)
             out.append((row["i"], float(row["t"]), read_hud(frame, layout),
-                        playing_spiderman(frame), aside, is_killfeed(frame)))
+                        playing_spiderman(frame), aside, is_killfeed(frame),
+                        flags[n - 1]))
         if progress and n % progress == 0:
             print(f"  {n}/{len(rows)} frames", file=sys.stderr)
     return out
@@ -724,6 +797,23 @@ def counts(events):
     return dict(sorted(out.items()))
 
 
+def _mapping_for(run_dir, layout, n_frames, sample=60):
+    """Work out which ability is in each slot for this source, once."""
+    import cv2
+
+    from perception.hud import slot_mapping
+
+    index = Path(run_dir) / "frames.jsonl"
+    rows = [json.loads(line) for line in index.read_text().splitlines() if line.strip()]
+    step = max(1, len(rows) // sample)
+    frames = []
+    for row in rows[::step]:
+        frame = cv2.imread(str(Path(run_dir) / row["file"]))
+        if frame is not None:
+            frames.append(frame)
+    return slot_mapping(frames, layout)
+
+
 def sampling_fps(reads):
     """Frames per second the run was sampled at, from the times themselves."""
     times = sorted(r[1] for r in reads)
@@ -733,7 +823,8 @@ def sampling_fps(reads):
     return round(1.0 / gaps[len(gaps) // 2], 3)
 
 
-def dump(events, segments, reads, layout="pad", source=None):
+def dump(events, segments, reads, layout="pad", source=None, mapping=None,
+         pts_origin=None):
     """The per-clip JSONL: one meta line, then a segment line each, then events.
 
     Three line kinds, told apart by `type`, which events omit for the sake of
@@ -755,9 +846,22 @@ def dump(events, segments, reads, layout="pad", source=None):
         "frames": len(reads),
         "fps": sampling_fps(reads),
         "t_origin": "first frame of the media",
+        # Seconds of the source's first *decoded* video PTS. One retained
+        # section starts at 1.616 s, not 0, and its offsets came from a stream
+        # copy that was never frame-verified -- so t here is keyed to what the
+        # decoder produced, and this records what that was.
+        "pts_origin_s": pts_origin,
         "duration_s": round(max(r[1] for r in reads) - min(r[1] for r in reads), 3) if reads else 0.0,
+        # How many editorial cuts were found in this source, and 0 for a
+        # continuous capture. A null says nobody looked, which is not the same.
+        "cuts": sum(1 for r in reads if len(r) > 6 and r[6]) if reads else None,
         "segments": len(segments),
         "events": len(events),
+        # Which ability sits in each layout position, and how that was decided.
+        # Positions missing from this map could not be identified; their events
+        # carry slot: null rather than a guessed ability.
+        "slot_mapping": mapping or {},
+        "slot_mapping_from": "ability icon matched by shape, voted over sampled frames",
     })]
     lines += [json.dumps({"type": "segment", **asdict(s)}) for s in segments]
     lines += [json.dumps(asdict(e)) for e in events]
@@ -778,19 +882,32 @@ def main(argv=None):
     p.add_argument("out")
     p.add_argument("--limit", type=int)
     p.add_argument("--progress", type=int, default=1000)
+    p.add_argument("--pts-origin", type=float, default=None,
+                   help="seconds of the source's first decoded video PTS")
     p.add_argument("--layout", default="pad", choices=("pad", "mk"),
                    help="which HUD the source draws; never guessed from the frames")
+    p.add_argument("--cuts-from", metavar="VIDEO",
+                   help="detect this source's editorial cuts and write cuts.json "
+                        "into run_dir before reading; for edited uploads")
     a = p.parse_args(argv)
     from perception.hud import LAYOUTS
-    reads = read_run(a.run_dir, a.limit, a.progress or None, LAYOUTS[a.layout])
-    events, segments = extract(reads)
+    layout = LAYOUTS[a.layout]
+    if a.cuts_from:
+        cuts = scene_cuts(a.cuts_from, pts_origin=a.pts_origin or 0.0)
+        (Path(a.run_dir) / "cuts.json").write_text(json.dumps(cuts))
+        print(f"  {len(cuts)} cuts at score >= {CUT_SCORE}", file=sys.stderr)
+    reads = read_run(a.run_dir, a.limit, a.progress or None, layout)
+    mapping = _mapping_for(a.run_dir, layout, len(reads))
+    events, segments = extract(reads, mapping=mapping)
     out = Path(a.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     # The clip stem, not the frame directory: that is a scratch path on whoever
     # ran this, and the stem is what a manifest joins on.
-    out.write_text(dump(events, segments, reads, layout=a.layout, source=out.stem))
+    out.write_text(dump(events, segments, reads, layout=a.layout, source=out.stem,
+                        mapping=mapping, pts_origin=a.pts_origin))
     summary = segment_summary(segments)
     print(json.dumps({"run": str(a.run_dir), "layout": a.layout,
+                      "pts_origin_s": a.pts_origin,
                       "frames": len(reads), "events": len(events),
                       "out": a.out, "fps": sampling_fps(reads),
                       "counts": counts(events),

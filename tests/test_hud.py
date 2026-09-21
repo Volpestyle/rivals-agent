@@ -249,3 +249,57 @@ def test_a_slot_under_chat_reads_unknown_not_a_verdict():
     finally:
         cap.release()
     assert PAD.slot_spill > MK.slot_spill
+
+
+# --- which ability is in which slot ---------------------------------------
+
+def test_the_same_slot_holds_different_abilities_on_different_sources():
+    """The finding this machinery exists for: a slot position names no ability.
+
+    Web-Swing and Get Over Here are the other way round on the two guide sources
+    from the clip the layout was measured on, because the ability-to-key binding
+    is a player setting. Reading the icon is the only way to know.
+    """
+    from perception.hud import MK, slot_mapping
+
+    sources = {
+        "reqmr-2873352801-1920.mp4": {"swing": "swing", "get_over_here": "get_over_here"},
+        "guides/yuh5NnzOLvo.mp4": {"swing": "get_over_here", "get_over_here": "swing"},
+    }
+    checked = 0
+    for name, want in sources.items():
+        clip = ROOT / "data/demos" / ("samples/" + name if "/" not in name else name)
+        if not clip.exists():
+            continue
+        import cv2 as _cv2
+
+        cap = _cv2.VideoCapture(str(clip))
+        frames = []
+        try:
+            fps = cap.get(_cv2.CAP_PROP_FPS) or 60
+            start = 90 if "yuh5" in name else 20
+            for k in range(40):
+                cap.set(_cv2.CAP_PROP_POS_FRAMES, int((start + k * 1.2) * fps))
+                ok, frame = cap.read()
+                if ok:
+                    frames.append(frame)
+        finally:
+            cap.release()
+        if not frames:
+            continue
+        got = slot_mapping(frames, MK)
+        checked += 1
+        for position, ability in want.items():
+            assert got.get(position) == ability, f"{name} {position}: {got.get(position)!r}"
+    if checked:
+        assert checked >= 1
+
+
+def test_an_unidentifiable_slot_is_left_out_rather_than_guessed():
+    from perception.hud import MK, identify_slot, slot_mapping
+
+    import numpy as _np
+
+    blank = _np.zeros((1080, 1920, 3), _np.uint8)
+    assert identify_slot(blank, MK.slot_cx["swing"]) is None
+    assert slot_mapping([blank] * 5, MK) == {}

@@ -216,6 +216,45 @@ def test_unknown_hero_does_not_break_a_segment():
     assert len(segment(rs)) == 1
 
 
+def _cut_at(huds, cut_frames):
+    """Reads for an edited source: full tuples with the cut flag last."""
+    return [(i, round(i / 10, 3), h, True, None, False, i in cut_frames)
+            for i, h in enumerate(huds)]
+
+
+def test_an_editorial_cut_ends_a_segment():
+    """An upload is spliced from several matches; no segment may span a splice."""
+    rs = _cut_at([hud(hp=250)] * 5 + [hud(hp=180)] * 5, {5})
+    segs = segment(rs)
+    assert [s.ended_by for s in segs] == ["hard_cut", "run_end"]
+    assert [s.started_by for s in segs] == ["run_start", "after_cut"]
+
+
+def test_no_event_crosses_a_cut():
+    """hp 250 before the splice and 180 after it is not 70 damage."""
+    rs = _cut_at([hud(hp=250)] * 5 + [hud(hp=180)] * 5, {5})
+    events, _ = extract(rs)
+    assert [e.kind for e in events if e.kind.startswith("hp_")] == []
+
+
+def test_a_source_with_no_cuts_segments_exactly_as_before():
+    """The flag is absent on every continuous capture; nothing may change."""
+    huds = [hud(hp=250)] * 4 + [hud(hp=0)] * 3 + [hud(hp=250)] * 4
+    plain = _tagged(huds, [True] * 11)
+    assert [(s.started_by, s.ended_by) for s in segment(plain)] == \
+           [(s.started_by, s.ended_by) for s in segment(_cut_at(huds, set()))]
+
+
+def test_cut_times_land_on_the_first_frame_of_the_new_scene():
+    from perception.events import _cut_flags
+
+    rows = [{"i": i, "t": i / 10} for i in range(10)]
+    # A cut at 0.35 s: frame 3 (0.3) is still the old scene, frame 4 is the new.
+    assert [n for n, f in enumerate(_cut_flags([0.35], rows)) if f] == [4]
+    # Two cuts inside one sampling interval still only break once.
+    assert sum(_cut_flags([0.31, 0.34], rows)) == 1
+
+
 def test_events_are_labelled_with_their_segment():
     rs = _tagged([hud(hp=250)] * 3 + [hud(hp=665)] * 3 + [hud(hp=250), hud(hp=200), hud(hp=200)],
                  [True] * 3 + [False] * 3 + [True] * 3)
@@ -308,3 +347,14 @@ def test_no_event_crosses_a_scoreboard_blackout():
     assert len(segs) == 2
     assert not any(e.kind == "hp_lost" for e in events), \
         "250 before the overlay and 180 after is not a readable 70 damage"
+
+
+def test_an_unmapped_slot_reports_no_ability_rather_than_a_guess():
+    """A mapping that omits a position means its icon could not be identified."""
+    seq = reads(hud(), hud(swing_cd=6), hud(swing_cd=6))
+    named = extract_one(seq, mapping={"swing": "get_over_here"})
+    assert [(e.kind, e.slot, e.slot_pos) for e in named] == \
+        [("ability_cast", "get_over_here", "swing")]
+    blank = extract_one(seq, mapping={})
+    assert [(e.kind, e.slot, e.slot_pos) for e in blank] == \
+        [("ability_cast", None, "swing")]
