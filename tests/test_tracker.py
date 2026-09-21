@@ -152,6 +152,44 @@ def test_two_bots_in_a_line_overlapping_on_screen_keep_two_ids():
     assert all(len(set(i)) == 2 for i, _ in run(Tracker(), touching))
 
 
+def test_a_close_bot_drawn_in_changing_pieces_keeps_one_id():
+    """postfreeze30: at close range the finder returns one bot as 2-5 pieces that change every frame, and the aim crop's edges cut it.
+    A piece that would start a new id, lying inside the body matched in the same update, is that body."""
+    tr = Tracker()
+    run(tr, [[det(1280, 760, 600, w=250)]] * 5)                                     # the bot, whole, confirmed
+    pieces = [[det(1280, 620, 300, w=240), det(1300, 930, 250, w=120)],             # upper and lower body
+              [det(1275, 700, 420, w=250), det(1250, 1000, 120, w=60), det(1320, 480, 90, w=80)],   # three pieces, one cut by the crop edge
+              [det(1285, 770, 610, w=255)]]                                         # and whole again
+    ids = [[d.track for d in tr.update(p, (5 + k) / HZ, FRAME)] for k, p in enumerate(pieces)]
+    assert ids == [[1, 1], [1, 1, 1], [1]]
+
+
+def test_a_piece_needs_its_body_seen_in_the_same_update():
+    tr = Tracker()
+    run(tr, [[det(1280, 760, 600, w=250)]] * 5)
+    got = tr.update([det(1300, 930, 250, w=120)], 5 / HZ, FRAME)                    # only a piece-sized box where the body is merely predicted
+    assert got[0].track == 1                                                        # (matched by the gate as before: close box, ratio 2.4)
+    tr2 = Tracker()
+    run(tr2, [[det(1000, 700, 400)]] * 5)
+    lamp = tr2.update([det(1000, 700, 60)], 5 / HZ, FRAME)                          # a lamp at a merely predicted body: a new id
+    assert lamp[0].track == 2
+
+
+def test_what_is_not_a_piece_of_the_body_gets_its_own_id():
+    tr = Tracker()
+    run(tr, [[det(1280, 760, 600, w=250)]] * 5)
+    beside = tr.update([det(1280, 760, 600, w=250), det(1460, 760, 300, w=125)], 5 / HZ, FRAME)   # a second bot, mostly outside the body
+    assert [d.track for d in beside] == [1, 2]
+    tr = Tracker()
+    run(tr, [[det(1280, 760, 600, w=250)]] * 5)
+    front = tr.update([det(1280, 760, 600, w=250), det(1300, 780, 800, w=330)], 5 / HZ, FRAME)    # a nearer, taller bot passing in front
+    assert [d.track for d in front] == [1, 2]
+    young = Tracker()
+    run(young, [[det(1280, 760, 600, w=250)]] * 2)                                  # seen twice: not yet a confirmed body
+    got = young.update([det(1275, 700, 420, w=250), det(1320, 480, 90, w=80)], 2 / HZ, FRAME)   # torso, and a head piece (not stacked)
+    assert len({d.track for d in got}) == 2                                         # it takes no pieces
+
+
 def test_none_is_no_detections():
     tr = Tracker()
     run(tr, [[det(1000, 700, 300)]] * 5)

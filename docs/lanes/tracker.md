@@ -52,6 +52,43 @@ overlap over their whole height and keep two ids. The hole that remains: two sep
 width under about 1.9, within a quarter height vertically and overlapping 0.6 of the width, still merge (two 250 x 200 boxes 10 px
 apart become one id); no realistic pair of bots at different depths built in review merged.
 
+**Pieces of a body already seen.** Live, at close range, the finder returns one bot as 2-5 pieces that change every frame, and the aim
+crop's edges (y 240 and 1200 at 1440p) cut it. A box that would start a new id is instead given the id of a confirmed track matched in
+the same update if at least `PIECE_INSIDE` (0.7) of it lies inside that body's box (last update's and this one's), padded by `PIECE_PAD`
+(0.1 of its size), and it is no taller than the body; the body's box becomes the union of its pieces. Only a body matched in the same
+update takes pieces: a small box where a body is merely predicted stays its own (a lamp at a coasting bot's place is a lamp). A box that
+matches a track of its own is never absorbed, so two dummies seen together from the start keep two ids.
+
+## Live: postfreeze30 (30 s, ~50 Hz, the first supervised run)
+
+The trace is replayed through tracker and scripted brain in live order (every aim-crop update per tick, the whole-frame search's update
+when the crop was empty, each decision after its row's updates); the replay makes 116 ids where the run made 112, and puts the target on
+the same things for the same share of the run. Labels are by eye on the saved frames: every box before t 13.8 s is the spawn room's lime
+glass door (its edge stripes, which Spider-Man webs), a box at the kill feed's exact place (2319,128)-(2426,247) is the HUD kill feed,
+and after t 15.3 s a box 120 px or taller is the Luna Snow bot.
+
+| Replay | ids | Luna: ids / switches of her main box's id | brain target ticks: door / kill feed / Luna / other | held id visible (on Luna) | update p50 / p95 |
+|---|---|---|---|---|---|
+| without pieces | 116 | 16 / 20 | 559 / 322 / 535 / 81 | 20% (54%) | 0.002 / 0.08 ms |
+| with pieces | 105 | 11 / 16 | 559 / 332 / 525 / 81 | 21% (56%) | 0.003 / 0.09 ms |
+
+What the ids and the lost targets come from, measured:
+
+- **Most of the run the target is not a bot.** 18 of 30 s the brain engages the door (12 s) or the kill feed (6 s). Both are finder
+  false positives: the door's edge stripes pass the enemy green band, and the kill feed's green "LUNA SNOW" name text sits above the
+  finder's top-right dead zone (which starts at 6% of the height), so it becomes a name bar with a projected body (conf 0.812), a box
+  identical to the pixel in all 68 sightings. The tracker has no signal that tells either from a standing bot: the door's boxes are
+  body-shaped often enough (19% have height / width >= 1.2) and move with the camera like a bot. The finder does see a bot's name bar:
+  on the saved frames 32% of Luna's outlines carry one and 4% of the door's; `Detection` does not carry it.
+- **The engaged bot's own id churn is its pieces**, not the camera: within the gate, yet a new id, because a piece took the old id and
+  the others were born. The piece rule above takes the new-born pieces; what remains is two concurrent tracks on pieces that were born
+  apart (legs and torso in a kick), which keep their own ids: with Luna the target, her id is on a visible box on 56% of ticks, another
+  of her pieces carries a different id on 25%, nothing is in the crop on 15%.
+- **The camera turning under the tracker** accounts for 19 of 105 new ids (with ego-motion from the commanded stick and the controller's
+  measured yaw map, the old box lands inside the gate; without it, it does not). 15 are boxes under 72 px, far bots. Of the rest, one
+  is Luna losing her far-range id in a turn at 15.4 s: the brain re-picks her, and the new id (32) is the one it holds for 3.1 s, so the
+  cost is a re-pick, not a wrong target. Compensating it is not built.
+
 ## Coasting: a deliberate trade
 
 A confirmed track (seen `CONFIRM` = 3 times) that goes unseen is held, its id in `state.coasting`, for `MAX_AGE_S` 0.8 s, `SMALL_AGE_S`

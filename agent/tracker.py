@@ -40,6 +40,9 @@ SPLIT_X = 0.6        # two boxes of one frame are one body drawn in pieces (the 
 SPLIT_GAP = 0.25     # narrower one's width, are STACKED (apart or overlapping vertically by at most this share of the shorter one's height; a bot
 SPLIT_RATIO = 2.5    # standing behind another overlaps it over its whole height), comparable in size, and their union is body-shaped
 BODY_ASPECT = (1.2, 4.5)   # the union's height / width: a bot's box is ~2.4
+PIECE_INSIDE = 0.7   # a box that would start a NEW id is instead a piece of a confirmed body if this share of it lies inside that body's box
+PIECE_PAD = 0.10     # (padded by this share of its size): the finder draws a close bot as 2-5 pieces that change every frame, and the aim
+                     # crop's edges cut it; on postfreeze30 that made 14 of the engaged bot's new ids (docs/lanes/tracker.md)
 HIST_S = 1.0         # a track remembers the heights it had this long, so one small stray box does not make its real size unrecognisable
 STEADY = 1.6         # a velocity is only learned between boxes of similar height: a box cut by the frame edge jumps in size and centre
 SMOOTH = 0.5         # weight kept from the old velocity
@@ -130,6 +133,25 @@ class Tracker:
             groups = [g for g in groups if g not in hit] + [merged]
         return sorted(groups, key=min)
 
+    @staticmethod
+    def _body_of(box, cls, got, boxes):
+        """The confirmed track whose body `box` is a piece of, or None. Only a body matched in this same update can take pieces (a lone
+        small box where a body is merely predicted is not that body: a lamp at a coasting bot's place stays a lamp). Most of the box must
+        lie inside the body's box (last update's and the one it matched now), padded, and the box be no taller than the body."""
+        best, share = None, PIECE_INSIDE
+        for gi, tr in got.items():
+            if tr.cls != cls or tr.hits < CONFIRM:
+                continue
+            body, pad = _union([tr.box, boxes[gi]]), PIECE_PAD * max(tr.size, 1.0)   # where it was, and the box it matched now
+            if box[3] - box[1] > body[3] - body[1] + pad:
+                continue
+            w = max(0.0, min(box[2], body[2] + pad) - max(box[0], body[0] - pad))
+            h = max(0.0, min(box[3], body[3] + pad) - max(box[1], body[1] - pad))
+            inside = w * h / max((box[2] - box[0]) * (box[3] - box[1]), 1e-9)
+            if inside >= share:
+                best, share = tr, inside
+        return best
+
     def _age(self, tr, frame):
         if tr.hits < CONFIRM:
             return NEW_AGE_S
@@ -150,9 +172,19 @@ class Tracker:
                 continue
             got[gi] = self.tracks[k]
             used.add(k)
+        for gi, g in enumerate(groups):          # a box that would start a new id: a piece of a confirmed body already here?
+            if gi not in got and (tr := self._body_of(boxes[gi], dets[g[0]].cls, dict(got), boxes)) is not None:
+                got[gi] = tr
+        parts = {}                               # one update per track: the union of every group it got
+        for gi, tr in got.items():
+            parts.setdefault(tr.id, []).append(gi)
         ids = {}
         for gi, g in enumerate(groups):
-            box, tr = boxes[gi], got.get(gi)
+            tr = got.get(gi)
+            if tr is not None and parts[tr.id][0] != gi:
+                ids.update({i: tr.id for i in g})    # a further piece: labelled, the track updated once below with the union
+                continue
+            box = boxes[gi] if tr is None else _union([boxes[k] for k in parts[tr.id]])
             if tr is None:
                 tr = _Track(self._next, dets[g[0]].cls, box, t)
                 self._next += 1
