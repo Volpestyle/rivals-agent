@@ -247,8 +247,9 @@ what `arrival_step` decides on each fresh frame (a pure function of the frame an
    were decided on by under `STILL` 8 (mean grey difference of a masked thumbnail, `_scene`: the hero and the key hints blanked) are
    walking into something. It then strafes LEFT for `SIDESTEP_S` 0.4 s (the left stick, through `Safe` like every step, logged as its own
    action) and carries on; after `SIDESTEP_TRIES` 2 sidesteps a third stall refuses ("walking does not move him"). Each walk's change is
-   judged once, on the next frame, before anything else; an advancing walk clears the count, and a pause (the plaza's second look) is not
-   a walk. The log's `moved` is the change the decision used (None when the step before was not a walk) and `still` the count it acted
+   judged once, on the next frame, before anything else, and so is its crossing (step 4): a crossing frame that looks like the plaza
+   latches out and still returns the plaza's second look first; an advancing walk clears the count, and a pause (the plaza's second
+   look) is not a walk. The log's `moved` is the change the decision used (None when the step before was not a walk) and `still` the count it acted
    on. A small scene change does not identify an obstacle nor prove clear ground to the left: a false stall can still cause bounded
    sideways movement, two 0.4 s strafes are no guarantee against a fall, and the arrival runs only in the supervised spawn trials;
 4. **out**: a walk step, then a frame with no door, where the kept door's biggest blob over its last `OUT_WALKS` 3 walk steps was

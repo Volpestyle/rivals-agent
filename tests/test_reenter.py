@@ -1873,3 +1873,27 @@ def test_the_log_records_the_scene_change_the_decision_used(tmp_path):
     assert rows[1]["moved"] is not None and rows[1]["moved"] < R.STILL and rows[1]["still"] == 1
     assert rows[2]["action"].startswith("no progress: sidestep left") and rows[2]["still"] == R.STILL_WALKS   # what it acted on
     assert rows[3]["moved"] is None                                             # after a sidestep: not a walk
+
+
+def _scripted(monkeypatch, scenes, plazas, blobs):
+    scenes, plazas, blobs = iter(scenes), iter(plazas), iter(blobs)
+    monkeypatch.setattr(R, "_scene", lambda f: np.full((68, 160), next(scenes), np.float32))
+    monkeypatch.setattr(R, "plaza_view", lambda f: next(plazas))
+    monkeypatch.setattr(R, "door_blobs", lambda f: next(blobs))
+
+
+def test_a_crossing_frame_that_looks_like_the_plaza_still_latches_out(monkeypatch):
+    """Review of bc6f8b4: walk at a 20k door; the next frame has no door and looks like the plaza (a second look); the one after has no
+    door and no plaza. The plaza's early return had dropped the crossing, so it searched right and walked at the pane's returning sliver:
+    the walk-back the out state exists to prevent. The crossing is latched before the plaza returns; the plaza still acts first."""
+    _scripted(monkeypatch, (0, 30, 30, 40), (False, True, False, False), ([(0.40, 20000)], [], [(0.40, 4000)]))
+    m = R.ArrivalMemory()
+    acts = [R.arrival_step(None, m) for _ in range(4)]
+    assert [a[0] for a in acts[:2]] == ["walk", "plaza?"] and m.out
+    assert [a[:2] for a in acts[2:]] == [("turn", -R.YAW_STICK)] * 2                # left, never back at the sliver
+
+
+def test_a_crossing_frame_that_is_the_plaza_confirms_on_the_next_frame(monkeypatch):
+    _scripted(monkeypatch, (0, 30, 30), (False, True, True), ([(0.40, 20000)], []))
+    m = R.ArrivalMemory()
+    assert [R.arrival_step(None, m)[0] for _ in range(3)] == ["walk", "plaza?", "done"] and m.out

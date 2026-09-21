@@ -882,13 +882,15 @@ def arrival_step(f, m):
     if m.moved is not None:
         m.still = m.still + 1 if m.moved < STILL else 0
     m.still_seen = m.still                            # what this decision acts on (the log's `still`), before a sidestep resets it
+    # Its crossing evidence is latched here too, before the plaza can return: a crossing frame that looks like the plaza once must not
+    # lose it, or the walk-back comes back (review of bc6f8b4). The plaza still comes first among the actions.
+    blobs = door_blobs(f) if walked and not m.out else None
+    if blobs == [] and max(m.walks[-OUT_WALKS:], default=0) >= OUT_PX:
+        m.out = True                                  # walked at a big door, and now none: through it
     if plaza_view(f):
         m.plaza += 1
         return ("done", "plaza confirmed on a second frame") if m.plaza >= 2 else ("plaza?", "plaza seen: a second look, standing still")
     m.plaza = 0
-    blobs = door_blobs(f)
-    if not m.out and not blobs and walked and max(m.walks[-OUT_WALKS:], default=0) >= OUT_PX:
-        m.out = True                                  # walked at a big door, and now none: through it
     if m.out:                                         # never a door again, not even a sliver of its pane seen from outside (live step 17)
         if m.sweeps >= OUT_SWEEPS:
             return ("give up", f"out, but no bot in view after {OUT_SWEEPS} look-around turns")
@@ -900,6 +902,7 @@ def arrival_step(f, m):
             return ("give up", f"walking does not move him, after {SIDESTEP_TRIES} sidesteps")
         m.sidesteps += 1
         return ("strafe", -1.0, SIDESTEP_S, f"no progress: sidestep left, stick -1.00 for {SIDESTEP_S:.2f} s ({m.sidesteps} of {SIDESTEP_TRIES})")
+    blobs = door_blobs(f) if blobs is None else blobs
     kept = min(blobs, key=lambda b: abs(b[0] - m.chosen)) if m.chosen is not None and blobs else None
     if kept is not None and abs(kept[0] - m.chosen) <= DOOR_KEEP:
         x, px = kept
