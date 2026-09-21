@@ -2,11 +2,38 @@
 
 Linear: VUH-1296. Evidence: `docs/evidence/l4/`. Raw measurements: `C:\rivals-agent\data\l4\` on the PC.
 
-The game is in the Practice Range as Spider-Man where the third `arrival-door` arrival ends: INSIDE the spawn room, pressed
-against the rim of its central console, facing the plaza door across it, idle, no pad connected
-(`arrival-door-3-20260921-140151-endpose.jpg`); the range's inactivity drop returns it to the lobby by itself. The PC holds
-`agent/`, `scripts/` (with templates) and `perception/` from `git archive 90aaeb0`, all 42 tracked files verified by sha256,
-nothing of this lane's scratch beside them. No gameplay run follows until the lead says so.
+The game is on the lobby's PRACTICE panel (DOOM MATCH and PRACTICE RANGE tiles), the cursor last proven on the PRACTICE
+RANGE tile, no pad connected, nothing pressed since (`arrival-stuck-1-refused-practice-panel-state.jpg`). It is there
+because `reenter.py` refused its own A on that panel twice; this lane does not navigate the lobby, so the panel is the
+lead's to leave. The PC holds `agent/`, `scripts/` (with templates) and `perception/` from `git archive 6f2e44e`, all 42
+tracked files verified by sha256, nothing of this lane's scratch beside them. No gameplay run follows until the lead says so.
+
+## Third round of supervised arrivals at 6f2e44e (VUH-1299): stopped at a refusal before the range, no arrival ran
+
+Deploy at 6f2e44e hash-verified (42 files), `capture.py preflight` passed (98 dxcam frames in 1 s), `--dry-run` read `lobby`.
+Attempt 1, with the native recorder started just before it as in the second round:
+
+| Invocation | What it logged | Exit / wall |
+|---|---|---|
+| 1 (14:47:30) | `screen lobby`, `A (cursor (1223,392) is on the PRACTICE tab; TRY COMPETITIVE is idle)`, `screen practice_panel`, `A (cursor is on the PRACTICE RANGE tile; DOOM MATCH is not)`, then `STOP: the proof is 0.31 s old (limit 0.3 s); A not sent` | 1 / 17.3 s |
+| `--dry-run` after it | `screen: practice_panel`, a recognised screen, so the one pre-authorized re-invocation ran | - |
+| 1b (14:49:07), the one re-invocation | `screen practice_panel`, `A (cursor is on the PRACTICE RANGE tile; DOOM MATCH is not)`, then `STOP: the proof is 0.32 s old (limit 0.3 s); A not sent` | 1 / 6.7 s |
+
+No third invocation. **Attempts 2 and 3 did not run and a-e are NOT EXERCISED for the whole round**: the no-progress test and
+the sidestep never ran live. The reasons to stop rather than go on: the same guard refused the same press twice, 10-20 ms
+over its limit, which is not a one-off; and the game is on the PRACTICE panel, not the PLAY lobby the order starts from,
+and leaving it is lobby navigation. The guard did its job: no A went out on a proof older than the limit, and nothing else
+was sent. After each invocation: 0 python left, 0 Xbox pads present.
+
+Facts for the re-entry owner (the cause is not established here):
+- The refused press is the A on the PRACTICE RANGE tile; the lobby's A, one step earlier in the same invocation, passed.
+- The same press passed 6 of 6 times in the first two rounds today (the second round with the same recorder running).
+- `git diff 90aaeb0 6f2e44e` touches only the arrival (`_scene`, `STILL`, the sidestep); the menu proof path is unchanged.
+- The panel is a static screen. With no input and no recorder running the PC read 61 % CPU load, the game taking 15.9
+  CPU-seconds in 3 s, its own counter at 467-540 FPS on this menu.
+- Recordings of both invocations (native, `ddagrab` -> `h264_nvenc`): `data/video/stuck1.mp4` (57 MB) and
+  `data/video/stuck1b.mp4` (12 MB) on the Mac and in `C:\rivals-agent\data\video\`. Refusal frames:
+  `arrival-stuck-1-refuse-20260921-144747.jpg`, `arrival-stuck-1b-refuse-20260921-144913.jpg` (originals in `data/reenter/`).
 
 ## Three supervised arrivals from spawn at 90aaeb0, second round (VUH-1299): `data/reenter/arrive-20260921-{133804,135001,140151}/`
 
