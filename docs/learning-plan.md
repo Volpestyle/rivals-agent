@@ -978,6 +978,41 @@ The HUD lane's full-rate scene-cut detector provides `hard_cut` / `after_cut`
 boundaries for edited uploads; its measured threshold remains source-dependent
 evidence, not permission to assume every cut in a new upload is detected.
 
+### First split and bounded collection decision
+
+`data/demos/splits/s10-normal-v0.json` is a proposal, not a training authorization.
+Its initial counts are 18.3 usable minutes from the two pilot broadcasts for train,
+23.5 minutes from the September Req uploads for validation, and 21.0 minutes from
+the two reserved broadcasts for test. These counts remain provisional while the
+HUD lane corrects the newer Day section's Doctor Strange false-positive interval.
+Overlapping windows are not independent examples; report session counts as well
+as window counts. All sources remain `inspection_only` until their gates pass.
+
+**The proposed validation assignment is not accepted.** Pixel checks exclude
+duplication of the retained Twitch sections, but not another part of the reserved
+Req broadcast. Validation influences checkpoint and hyperparameter selection, so
+an unresolved shared session also compromises a sealed test when assigned to
+validation. Keep those uploads inspection-only until provenance resolves the
+overlap; the exception is not made safe by keeping them out of gradient updates.
+The two reserved broadcasts remain untouched final evaluation candidates.
+
+The next acquisition batch is bounded at four 15-minute sections from four
+additional current-patch broadcasts: two per creator, one per creator assigned
+to train and one to validation before fitting. Exclude existing and reserved
+session groups. Record normal cooldowns, own-Spider-Man visibility, source dates
+and observable map identity (otherwise unknown). Spot-check the first two sections
+with the HUD lane before completing the batch. Expected usable duration is a
+collection estimate, not an acceptance threshold. More sessions address the
+current creator/editing imbalance and session dominance; more minutes from the
+same sessions do not establish independent validation.
+
+The initial 18.3 minutes can support a bounded first fit and a learning-curve
+probe after label acceptance. There is no evidence yet that this amount suffices
+for generalization, or that a particular larger duration will. Acquisition does
+not delay a ready pipeline experiment or waive the event/label audit. Compare
+majority and repeat-previous baselines, report transitions and per-session results,
+and select models only on an independent validation set.
+
 ### Req YouTube gameplay batch
 
 `data/demos/youtube/reqmr/manifest.json` inventories six complete uploads from
