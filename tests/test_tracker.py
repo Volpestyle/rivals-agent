@@ -487,3 +487,16 @@ def test_a_combo_whose_own_target_is_coasting_holds_even_with_another_enemy_in_v
     _seen_twice(m, 0.0, [a, b])
     m.intent, m.hold_until = brain.Combo(brain.BURST, a), 3.0
     assert decide(st(1.2, [b], coasting=(1,)), m) == brain.Combo(brain.BURST, a) and m.hold_until == 3.0   # the hold itself stands
+
+
+def test_a_cancelled_combo_does_not_come_back_through_another_targets_flicker_grace():
+    """Review: A and B known, Combo(A) committed; B alone briefly visible made B the target; with both gone the hold on A was cancelled
+    but the flicker grace (B seen 0.3 s ago) returned Combo(A) at 0.6 and 0.7 s. Nothing but the normal choice after the cancel."""
+    m = Memory()
+    a, b = det(1280, 720, 600, track=1), det(1500, 700, 500, track=2)
+    _seen_twice(m, 0.0, [a, b])
+    brain.commit(m, brain.Combo(brain.BURST, a), 3.0)
+    assert decide(st(0.3, [b], coasting=()), m) == brain.Combo(brain.BURST, a)      # A briefly missing: its own hold stands
+    for t in (0.6, 0.7):
+        got = decide(st(t, [], coasting=()), m)
+        assert not isinstance(got, brain.Combo) and m.hold_until == -math.inf, t

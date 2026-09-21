@@ -130,7 +130,7 @@ def gate(state: State, memory: Memory):
         # retreat's Disengage cut one), and the choice below goes through the normal rules.
         memory.hold_until = -math.inf
 
-    if target is None and (t - memory.target_t <= LOST_S or _coasting(state, memory)):
+    if target is None and (t - memory.target_t <= LOST_S or _coasting(state, memory)) and _intent_is_for(memory, memory.target):
         return memory.intent, None  # flicker, or the tracker still holds the target's id: keep doing what we were doing
     if target is None:
         # Released: past LOST_S and no longer held by the tracker (a coast lasts at most CLOSE_AGE_S, 1.5 s). On postfreeze30 the brain
@@ -239,6 +239,18 @@ def _acquirable(state, memory, d):
     """May `d` become a NEW target? Its id present at the previous decision too (a one-frame sliver of the spawn door started a 3 s combo),
     and not released before for staying outside the aim crop."""
     return d.track is None or (d.track in memory.seen and d.track not in memory.barred)
+
+
+def _intent_is_for(memory, target):
+    """Is the remembered intent about `target` (or about no hostile)? The flicker grace keeps doing what we were doing for THIS target;
+    an intent left over for another one (a combo whose own target is gone, cancelled above) must not come back through it. Review case:
+    A and B known, Combo(A); B briefly visible made B the target; with both gone, B's grace returned Combo(A) for another 0.2 s."""
+    held = getattr(memory.intent, "target", None)
+    if held is None or target is None:
+        return True
+    if held.track is not None and target.track is not None:
+        return held.track == target.track
+    return held is target or held == target
 
 
 def _hold_stands(state, memory, target):
