@@ -100,6 +100,14 @@ class Rig:
             if det is None and target is None:
                 self.act(self.ctrl.step(state, Search()), frame, small, state, "search")
                 continue
+            if det is None and self.ctrl.track is not None and state.t - self.ctrl.track.seen_t > 0.8:
+                target, self.ctrl.track, held = None, None, 0.0      # it was junk or it is gone: search again
+                continue
+            if det is not None and det.height < 24:                  # too small to be worth a trial
+                det = None
+                if target is None:
+                    self.act(self.ctrl.step(state, Search()), frame, small, state, "search")
+                    continue
             target = det or target
             pad, on = self.ctrl.aim_only(state, target)
             self.act(pad, frame, small, state, "pre-aim")
@@ -287,11 +295,48 @@ def tagged(rig, n):
     return res
 
 
+def tagrb(rig, n):
+    """Kit check: Web Cluster tag, then RB. Does RB on a TAGGED target pull it to us, or zip us to it? Frames tell."""
+    res = []
+    for i in range(n):
+        target = rig.acquire(10.0)
+        if target is None:
+            res.append({"trial": i, "error": "no bot acquired"})
+            continue
+        c, t0, fired, rb, hs = rig.ctrl, None, False, False, []
+        while True:
+            frame, small, state = rig.see()
+            t0 = state.t if t0 is None else t0
+            t = state.t - t0
+            pad, _ = c.aim_only(state, target)
+            if not fired:
+                c.play("web_cluster", state.t); fired = True
+            if t >= 0.7 and not rb:                      # the tag lasts 3 s; 0.7 s leaves the projectile time to land
+                c.play("pull", state.t); rb = True       # the primitive is just an RB tap
+            while c.seq and state.t >= c.seq[0][0]:
+                c.seq.pop(0)
+            if c.seq:
+                pad.update(c.seq[0][1])
+            rig.act(pad, frame, small, state, f"tagrb{i}")
+            det = rig.nearest(state)
+            if det is not None:
+                hs.append((round(t, 2), round(det.height), round(936.0 / max(det.height, 1), 1)))   # (t, box h at 720p, metres by L3's rule)
+            if t > 3.2:
+                break
+        rig.live.release()
+        res.append({"trial": i, "range_m_before": round(936.0 / max(target.height, 1), 1), "t_h_m": hs[::5]})
+        rig.hold(4.0, "rest")
+    return res
+
+
 if __name__ == "__main__":
     what = sys.argv[1]
     if what == "tagrun":
         rig = Rig(ROOT / "data" / "l1" / "tagrun", native=True, fps=10.0)
         run = lambda: tagrun(rig, float(sys.argv[2]) if len(sys.argv) > 2 else 60.0)  # noqa: E731
+    elif what == "tagrb":
+        rig = Rig(ROOT / "data" / "l4" / (sys.argv[3] if len(sys.argv) > 3 else "tagrb"))
+        run = lambda: tagrb(rig, int(sys.argv[2]) if len(sys.argv) > 2 else 2)  # noqa: E731
     elif what in ("scoreboard", "tagged"):
         rig = Rig(ROOT / "data" / "l4" / {"scoreboard": "scoreboard", "tagged": "tagged-native"}[what])
         n = int(sys.argv[2]) if len(sys.argv) > 2 else 6

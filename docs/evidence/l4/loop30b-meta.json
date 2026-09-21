@@ -1,0 +1,75 @@
+{
+ "stop": "max_time",
+ "brain": "scripted",
+ "seconds": 30.017,
+ "ticks": 1724,
+ "reflex_hz": 57.4,
+ "period_ms": {
+  "p50": 16.94,
+  "p95": 21.16,
+  "max": 27.48
+ },
+ "tick_ms": {
+  "p50": 6.68,
+  "p95": 10.15,
+  "max": 14.3
+ },
+ "aim_ms": {
+  "p50": 5.37,
+  "p95": 8.57,
+  "max": 13.12
+ },
+ "over_budget": 0,
+ "budget_ms": 16.67,
+ "decisions": 299,
+ "decision_hz": 10.0,
+ "decide_ms": {
+  "p50": 26.71,
+  "p95": 39.34,
+  "max": 60.5
+ },
+ "decision_lag_ms": {
+  "p50": 27.52,
+  "p95": 40.1,
+  "max": 60.96
+ },
+ "missed_decisions": 0,
+ "sources": {
+  "waiting": 4,
+  "scripted": 1720
+ },
+ "intents": {
+  "idle": 4,
+  "engage:enemy": 503,
+  "search": 1217
+ },
+ "keepalives": 1,
+ "range_gaps": [],
+ "scoreboards": [
+  {
+   "t": 30.035,
+   "file": "scoreboard-end.png",
+   "size": [
+    2560,
+    1440
+   ],
+   "parsed": {
+    "open": true,
+    "kos": 1,
+    "deaths": 0,
+    "assists": 0,
+    "accuracy": 10,
+    "damage": 275,
+    "damage_blocked": 0,
+    "healing": 0,
+    "web_cluster_accuracy": 100,
+    "spin_kos": 0
+   }
+  }
+ ],
+ "errors": [],
+ "native": [
+  2560,
+  1440
+ ]
+}

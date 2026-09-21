@@ -106,3 +106,25 @@ def test_a_blackout_with_no_attack_behind_it_disarms():
     _run(c, [(i, [d]) for i in range(30)], d)
     _run(c, [(i, []) for i in range(30, 42)], d)
     assert c.stable == 0
+
+
+def test_search_relevels_the_camera_and_engage_does_not_walk_blind():
+    from agent.intents import Search
+    c, ry = Controller(), []
+    for i in range(60 * 6):
+        ry.append(c.step(State(t=i / 60, frame=(1280, 720), detections=[]), Search())["ry"])
+    assert max(ry) == 1.0 and min(ry) == -0.5 and ry[-1] == 0.0          # up into the clamp, measured way down, then still
+    c, d = Controller(), Detection(ENEMY, (610, 330, 670, 400), 0.9)
+    pads = [c.step(State(t=i / 60, frame=(1280, 720), detections=[d] if i < 10 else []), Engage(d)) for i in range(120)]
+    assert pads[5]["ly"] == 1.0 and pads[-1]["ly"] == 0.0
+
+
+def test_a_target_only_the_brain_saw_is_turned_toward_but_never_walked_at():
+    from agent.intents import Search
+    c, far_left = Controller(), Detection(ENEMY, (60, 330, 110, 400), 0.9)     # outside the aim crop: reflex dets stay empty
+    pads = []
+    for i in range(180):                                                        # the brain flips Search / Engage, as it did live
+        intent = Search() if (i // 12) % 4 == 3 else Engage(far_left)
+        pads.append(c.step(State(t=i / 60, frame=(1280, 720), detections=[]), intent))
+    assert all(p["ly"] == 0.0 for p in pads) and not any(_pressed(p) for p in pads)
+    assert pads[1]["rx"] < 0                                                    # but it does turn toward it

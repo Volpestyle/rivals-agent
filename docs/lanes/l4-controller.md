@@ -2,12 +2,58 @@
 
 Linear: VUH-1296. Evidence: `docs/evidence/l4/`. Raw measurements: `C:\rivals-agent\data\l4\` on the PC.
 
-**The game is on the PLAY lobby** (`dropped-to-lobby-5.jpg`), idle, not queueing, no pad connected. It left the range between
-18:44:21 and ~18:44:50 with the pause menu open and the cursor resting on PRACTICE SETTINGS
-(`pause-menu-practice-settings-hover.jpg`); nothing had been pressed in the menu, the last in-range attack was at
-18:42:20 (so not the ~10 min inactivity rule), and the pad had just disconnected. Cause unknown; candidates are a
-range session time limit (about 80 minutes since the last entry) or the pad disconnecting while the pause menu is up.
-The menu tool refused to open a pad on the lobby.
+The game is in the Practice Range as Spider-Man, idle, no pad connected, **standing in a rock garden below the map's
+platforms** (the second live loop run walked him off an edge; `loop30b-sheet.jpg`). No bots there and no mapped route
+back: the five-minute baseline needs a fresh entry (spawn), then a walk to the plaza or courtyard.
+
+## Live loop (VUH-1300), first two runs
+
+`python -m agent.loop --live --run <name> --max-s 30`, launched like `l4_trial.py`. `agent/` and `perception/` on the PC
+match commit 140e31c by sha256 (19 files), plus this lane's working `agent/controller.py`.
+
+| | `loop30a` (plaza, Luna Snow) | `loop30b` (open platform) |
+|---|---|---|
+| Stop / guards | `max_time`; no range gap, no error, 1 keep-alive | same |
+| Reflex | 56.7 Hz, tick p50 / p95 / max 7.5 / 11.4 / 15.8 ms, period p50 / p95 16.9 / 22.1 ms, 0 over the 16.7 ms budget | 57.4 Hz, 6.7 / 10.2 / 14.3 ms, 0 over |
+| Aim finder (960 px crop) | 6.0 / 9.5 / 14.2 ms | 5.4 / 8.6 / 13.1 ms |
+| Decision | 10.0 Hz, 32 / 46 / 63 ms, lag 33 / 47 / 63 ms, 0 missed | 27 / 39 / 61 ms, 0 missed |
+| Intents (ticks) | engage 354, search 1344, idle 4 | engage 503, search 1217, idle 4 |
+| End scoreboard (parsed by `perception/scoreboard.py`) | 1 KO, 275 damage, accuracy 11 %, Web-Cluster accuracy 100 % | unchanged: 1 KO, 275 (no damage dealt) |
+
+Rates hold with the game running. Capture-to-input total is not separately logged; the reflex tick (capture hand-off to
+`pad.send`) is the 7 ms above, on top of dxcam's delivery.
+
+What went wrong, and whose it is:
+
+- **Controller (mine, fixed, tests added):** (1) the hit-flash coast refreshed `seen_t`, so "on target" stayed true with
+  no box, the attack re-fired and renewed the coast for ever: run a marched forward 5 s at nothing after the KO. A press
+  now needs a box measured on that very step. (2) `Search` levelled the camera from a model of our own stick, but the
+  game pitches the camera itself (web strike, uppercut, falls): run a searched the floor for 23 s. `Search` now runs the
+  pitch into its upper clamp and comes down a measured 1.8 s at half stick (= level), 2 s into a search and every 12 s;
+  seen working in run b. (3) The brain engages targets that only the whole-frame search sees (outside the aim crop).
+  Each Search / Engage flip (10 in the first 5 s of run b) re-seeded the track from the brain's target and walked 0.6 s
+  with no reflex detection, off the platform edge. A target the aim crop has not measured is now turned toward and
+  nothing else. Fix (3) is untested live.
+- **For rivals-brain / L3, not patched:** in run b the brain's Engage targets came from whole-frame detections on an
+  open platform with no bot in sight (ferns and cypresses are the only green there); the reflex crop saw a box on
+  only a few ticks (e.g. native [1242,477,1308,538]). Worth checking the whole-frame finder on `data\l1\loop30b`.
+
+## Sekkombo check: RB on a TAGGED target
+
+Settled live on the Luna Snow bot, contact sheets `sekkombo-tagrb-trial0.jpg` (from ~10 m) and `-trial1.jpg` (from
+~3.4 m): Web Cluster (tracer icon visible), then RB 0.7 s later. **Both times Spider-Man zips to the bot and kicks it
+(a web strike); the bot is not pulled to him.** At 10 m he crosses the gap in ~0.5 s; at 3.4 m he still flips through
+the strike and the bot is knocked back a few metres. The kit note stands; the "pull after tag" reading is not what the
+default binding does. (The separate "Get Over Here Targeting" binding row is still untested.)
+
+## Practice Settings (Pause > PRACTICE SETTINGS, `practice-settings.jpg`)
+
+The whole page: **No Ability Cooldown** (on), **No Ability Cooldown (Always On)** (on), **Friendly Fire** (off), and a
+Test Tools row **Controller Operation** [START] ("can record controller input and calibration status"). Y restores
+defaults, B goes back. **There is no option for bot movement, bot attacks, respawn or placement.** Bot behaviour in the
+range is set at the in-world kiosks (Hero Simulation by the spawn, the Galacta courtyard consoles), not here; those are
+not explored. A red-glowing bot at the far end of the courtyard has not been tested for attacks. So far no range bot
+has dealt damage.
 
 ## State
 

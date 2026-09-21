@@ -47,7 +47,9 @@ class Live:
             if f is not None:
                 self.frame, self.frame_t = f, time.perf_counter()
                 return f
-            if self.frame is not None and time.perf_counter() > deadline:
+            if time.perf_counter() > deadline:
+                if self.frame is None:
+                    raise RangeLost("capture produced no initial frame; no pad opened")
                 return self.frame
             time.sleep(0.001)
 
@@ -165,6 +167,7 @@ class Track:
     ex: float = 0.0         # last measured screen error from the crosshair, px
     ey: float = 0.0
     seen_t: float = 0.0
+    confirmed: bool = False  # measured by the reflex sensor at least once (a seed from the brain's target is only a bearing)
 
     def predict(self, dt):
         self.yaw += self.v_yaw * dt
@@ -245,10 +248,11 @@ class Controller:
             self._follow(state, wanted, dt)
             on_target = self._aim(state, out, dt)
             ok = self._measured and PLAUSIBLE[0] <= self.track.h / state.frame[1] <= PLAUSIBLE[1]
-            if not self._measured and t - self.attack_t < HIT_BLIND_S:
-                self.track.seen_t = t          # hit flash: coast on the predicted bearing, stay armed
-            else:
+            if not (not self._measured and t - self.attack_t < HIT_BLIND_S):   # hit flash: stay armed, track coasts (LOST_S)
                 self.stable = self.stable + 1 if ok else 0
+            # Live bug: coasting used to refresh seen_t, so "on target" stayed true with no box, the attack re-fired, and
+            # that renewed the coast for ever (a 5 s blind march). A press now needs a box measured on this very step.
+            on_target = on_target and self._measured
             # Junk-box guard: a stray X was once pressed on the first step of a run, on a false box. Nothing is
             # pressed until the same target has been re-measured ARM_FRAMES steps running (so never on step one).
             on_target = on_target and self.stable >= ARM_FRAMES
@@ -258,8 +262,19 @@ class Controller:
             on_target = False
 
         if isinstance(intent, Search):
-            out["rx"] = 0.45
-            out["ry"] = -math.copysign(0.5, self.pitch_used) if abs(self.pitch_used) > 0.03 else 0.0  # re-level
+            # Stop-and-look: outlines smear out during a 172 deg/s pan and the finder saw nothing for a full turn (live).
+            out["rx"] = 0.45 if (t - self.phase_t) % 0.5 < 0.3 else 0.0
+            # Absolute re-level. The game pitches the camera itself (web strike, uppercut, falls), which no model of our
+            # own stick sees: the first live loop run searched the floor for 23 s. Run the pitch into its upper clamp, then
+            # come down a measured 1.8 s at half stick (live: that is level). Once 2 s into a search, then every 12 s.
+            cyc = (t - self.phase_t) % 12.0
+            if 2.0 <= cyc < 3.8:
+                out["ry"] = 1.0
+            elif 3.8 <= cyc < 5.6:
+                out["ry"] = -0.5
+                self.pitch_used = 0.0
+            else:
+                out["ry"] = -math.copysign(0.5, self.pitch_used) if abs(self.pitch_used) > 0.03 else 0.0
         elif isinstance(intent, Disengage):
             turn_s = 180.0 / self.cal.yaw_map[-1][1]
             if t - self.phase_t < turn_s:
@@ -270,7 +285,11 @@ class Controller:
                     out["buttons"] = ("A",)
         elif isinstance(intent, Engage) and self.track is not None:
             near = self.track.h / state.frame[1] >= near_h()
-            out["ly"] = 0.0 if near else 1.0
+            # Live: the brain engaged targets only the whole-frame search could see; each Search/Engage flip re-seeded the
+            # track and walked 0.6 s at nothing, off the platform edge. Walk only toward a target the aim crop has measured;
+            # an unconfirmed one is turned toward (so it enters the crop) and nothing else.
+            seen = self.track.confirmed and t - self.track.seen_t < LOST_S
+            out["ly"] = 1.0 if seen and not near else 0.0   # never walk on blind: a live run marched 5 s at nothing
             if not self.seq and on_target:
                 if near and t >= self.next_uppercut_t:
                     self.play("uppercut", t); self.next_uppercut_t = t + 7.0
@@ -332,14 +351,16 @@ class Controller:
             cx, cy = det.center
             return (shown[0] + math.degrees(math.atan2(cx - w / 2, f)), shown[1] - math.degrees(math.atan2(cy - h / 2, f)))
 
-        def seed(det):
+        def seed(det, confirmed):
             yaw, pitch = bearing(det)
             self.track = Track(yaw, pitch, seen_t=state.t)
             self._measure(det, state)
+            self.track.confirmed = confirmed
+            self._measured = confirmed
             self.stable = 0   # a new target has to earn its presses again
 
         if self.track is None:
-            seed(wanted)
+            seed(wanted, False)   # the brain's target may come from the whole-frame search, outside the aim crop
         else:
             if state.t - self.track.seen_t > 0.1:   # coasting on a stale velocity walks the aim off the target
                 self.track.v_yaw = self.track.v_pitch = 0.0
@@ -357,8 +378,9 @@ class Controller:
         if math.hypot(by - self.track.yaw, bp - self.track.pitch) <= gate:
             self.track.correct(by, bp, max(dt, 1 / 120))
             self._measure(best, state)
+            self.track.confirmed = True
         elif state.t - self.track.seen_t > 0.25 and not self._behind_hero(state, shown, f):
-            seed(best)   # the track has drifted off every box, and the target is not just hidden behind the hero
+            seed(best, True)   # the track has drifted off every box, and the target is not just hidden behind the hero
 
     def _behind_hero(self, state, shown, f):
         """Third person: a target left of the crosshair passes behind the player's own body as we turn onto it.
@@ -378,6 +400,7 @@ class Controller:
     def _aim(self, state, out, dt):
         tr = self.track
         lost_s = CLOSE_LOST_S if tr.h / state.frame[1] >= 0.6 * near_h() else LOST_S
+        lost_s = lost_s if tr.confirmed else 1.0   # time to turn a whole-frame target into the crop
         if state.t - tr.seen_t > lost_s:         # lost: stop turning rather than chase a ghost
             return False
         lead = self.cal.latency_s
@@ -390,5 +413,5 @@ class Controller:
             rates[1] = 0.0   # a close bot's nameplate sits overhead: chasing it ran the camera into the ceiling
         out["rx"] = stick_for(rates[0], self.cal.yaw_map)
         out["ry"] = stick_for(rates[1], self.cal.pitch_map)
-        fresh = state.t - tr.seen_t < 0.1   # seen_t is also advanced while coasting through a hit flash
+        fresh = state.t - tr.seen_t < 0.1
         return fresh and abs(tr.ex) <= max(4.0, 0.5 * tr.w) and abs(tr.ey) <= max(4.0, 0.5 * tr.h)
