@@ -80,6 +80,12 @@ OUT_PX = 10000       # passing through a door: a walk step at it, then a frame w
 OUT_WALKS = 3        # OUT_WALKS walk steps at least this (px at 1280x720). The pane shrinks as he reaches it (the last walk before it vanished
                      # was 3.4-33k on the five logged crossings), but its peak over the last three walks was 16-54k; a sliver of the pane
                      # walked at from outside after a look-around was 3.8k
+STILL = 8.0          # a walk that moved him changes the view: the mean grey difference of the masked scene (_scene) between the frame a
+STILL_WALKS = 2      # walk decided on and the next is 21-47 on every advancing walk of the seven logged arrivals, 11-12 when he brushed the
+                     # console's rim and slid off it, and 2-3 on every step walked into it (2026-09-21 14:01, steps 6-20: 16 walks, no
+                     # advance). This many walks in a row under STILL is no progress.
+SIDESTEP_S, SIDESTEP_TRIES = 0.4, 2   # then strafe LEFT this long, at most this many times: the rim he walks into lies ahead of him to his
+                     # right (the door beyond it, up to the left), so left is the side it is clear; after the last try, no progress refuses
 OUT_SWEEPS = 7       # outside, turn LEFT at most this many SWEEP_S steps (~360 deg) looking for the bot: live, from the exit she stood
                      # 25-45 deg left of the heading he left by (steps 12-15), one step brings her into plaza_view's window
 YAW_STICK, YAW_DEG_S, FOCAL = 0.45, 172.0, 465.0   # the camera: deg/s at that right-stick deflection, and the focal length at 1280 wide (l4)
@@ -847,12 +853,27 @@ class ArrivalMemory:
     walks: list = field(default_factory=list)   # its size on the walk steps taken at it (a new or lost door starts it again)
     walked: bool = False           # the last step walked
     out: bool = False              # through the door: from here on no door is steered to or walked at
+    scene: object = None           # the masked scene of the last frame decided on (_scene)
+    still: int = 0                 # walks in a row that did not change the view
+    sidesteps: int = 0             # strafes taken to get off something walked into
     sweeps: int = 0                # look-around turns taken outside
+
+
+def _scene(f):
+    """The view as a small grey thumbnail, the hero and the key hints blanked: what a walk that moves him changes."""
+    g = cv2.cvtColor(small(f), cv2.COLOR_BGR2GRAY)[60:600].astype(np.float32)
+    g[140:, 330:610] = 0                              # the hero, drawn around x 0.40 in the lower part
+    g[:60, :300] = 0                                  # the key hints, top left
+    return cv2.resize(g, (160, 68), interpolation=cv2.INTER_AREA)
 
 
 def arrival_step(f, m):
     """The arrival's decision on one frame: ("plaza?", why) a second look standing still, ("done", why), ("turn", stick, secs, why),
-    ("walk", secs, why), or ("give up", why). Pure: it reads only the frame and `m`, which it updates; it sends nothing."""
+    ("walk", secs, why), ("strafe", stick x, secs, why) sideways off something walked into, or ("give up", why). Pure: it reads only the
+    frame and `m`, which it updates; it sends nothing."""
+    scene = _scene(f)
+    moved = None if (m.scene is None or not m.walked) else float(np.mean(np.abs(scene - m.scene)))
+    m.scene = scene
     if plaza_view(f):
         m.plaza += 1
         return ("done", "plaza confirmed on a second frame") if m.plaza >= 2 else ("plaza?", "plaza seen: a second look, standing still")
@@ -866,6 +887,14 @@ def arrival_step(f, m):
             return ("give up", f"out, but no bot in view after {OUT_SWEEPS} look-around turns")
         m.sweeps += 1
         return ("turn", -YAW_STICK, SWEEP_S, f"out: look around left, rstick {-YAW_STICK:+.2f} for {SWEEP_S:.2f} s")
+    if moved is not None:
+        m.still = m.still + 1 if moved < STILL else 0
+    if m.still >= STILL_WALKS:                        # walking into something: the view does not change
+        m.still, m.walked = 0, False
+        if m.sidesteps >= SIDESTEP_TRIES:
+            return ("give up", f"walking does not move him, after {SIDESTEP_TRIES} sidesteps")
+        m.sidesteps += 1
+        return ("strafe", -1.0, SIDESTEP_S, f"no progress: sidestep left, stick -1.00 for {SIDESTEP_S:.2f} s ({m.sidesteps} of {SIDESTEP_TRIES})")
     kept = min(blobs, key=lambda b: abs(b[0] - m.chosen)) if m.chosen is not None and blobs else None
     if kept is not None and abs(kept[0] - m.chosen) <= DOOR_KEEP:
         x, px = kept
@@ -913,6 +942,10 @@ def _arrive(io, safe, note):
         elif act[0] == "turn":
             safe.rstick(act[1], 0.0, act[2], screen="in_range")
             spent += act[2] + 0.15
+            note(f, act[-1], x, False)
+        elif act[0] == "strafe":
+            safe.stick(act[1], 0.0, act[2], screen="in_range")
+            spent += act[2] + 0.25
             note(f, act[-1], x, False)
         else:
             safe.stick(0.0, 1.0, act[1], screen="in_range")

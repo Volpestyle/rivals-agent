@@ -243,13 +243,17 @@ what `arrival_step` decides on each fresh frame (a pure function of the frame an
    four logged spawns the plaza door sits 0.04 from his column and the other 0.19 off, and the other was the bigger blob in two). Once
    walking at a door it **keeps that door**: the blob nearest where it should be after our own turn, within `DOOR_KEEP` 0.25 of the width;
    **no door in view, it looks around** (a 0.3 s right turn, about 50 deg) and never walks blind;
-3. **out**: a walk step, then a frame with no door, where the kept door's biggest blob over its last `OUT_WALKS` 3 walk steps was
+3. **no progress**: a walk that moves him changes the view; `STILL_WALKS` 2 walks in a row whose next frame differs from the one they
+   were decided on by under `STILL` 8 (mean grey difference of a masked thumbnail, `_scene`: the hero and the key hints blanked) are
+   walking into something. It then strafes LEFT for `SIDESTEP_S` 0.4 s (the left stick, through `Safe` like every step, logged as its own
+   action) and carries on; after `SIDESTEP_TRIES` 2 sidesteps a third stall refuses ("walking does not move him");
+4. **out**: a walk step, then a frame with no door, where the kept door's biggest blob over its last `OUT_WALKS` 3 walk steps was
    `OUT_PX` (10k px at 1280x720) or more, is passing through it. The pane shrinks as he reaches it, so the last walk alone is not the
    measure (see the three supervised arrivals below). From then on no door is steered to or walked at, not even a sliver of its pane, and it only turns LEFT (0.3 s, ~50 deg) up to `OUT_SWEEPS`
    7 times (~360 deg) looking for the bot; none found is an exit 1 on the plaza;
-4. is done only when `plaza_view` holds on two frames in a row (a second look while standing still): the Luna Snow bot ahead in the open,
+5. is done only when `plaza_view` holds on two frames in a row (a second look while standing still): the Luna Snow bot ahead in the open,
    the door behind (lime under 3% of the upper view);
-5. exits 1 (frame saved) if that is not confirmed within `ARRIVE_S` (14 s), or the HUD is gone, or the idle banner is up; then `RT` once
+6. exits 1 (frame saved) if that is not confirmed within `ARRIVE_S` (14 s), or the HUD is gone, or the idle banner is up; then `RT` once
    and the HUD portrait must be Spider-Man.
 
 **Calibrated on five poses** (native frames, `tests/fixtures/reentry/arrival-*.jpg`): tagrun0 frame 0 (spawn, door at the left edge) and frames
@@ -319,6 +323,21 @@ the live run later came out through the other door, out is set (steps 10-11). Ar
 at 17 (its two plaza frames read `plaza_view` False on the saved 1280 JPEGs, True live on the native frames). The first logged arrival
 (older logic): the column aim turns where it walked, so out cannot fire on its frames. Not shown offline: that the plaza door is the one
 taken on a live spawn every time, and that out fires on a closed-loop crossing; the three supervised arrivals are the measurement.
+
+**Second round of three supervised arrivals (2026-09-21 13:38, 13:50, 14:01; `docs/evidence/l4/arrival-door-*`, native recordings in
+`data/video/door{1,2,3}.mp4`).** The plaza door was taken on all three spawns and out fired on both crossings; arrivals 1 and 2 passed
+(11.48 s and 11.42 s, ending on the plaza facing the Luna Snow bot). The native frames reproduce the live `plaza_view` readings; the 720p
+step JPEGs read False on all four confirmations, so saved JPEGs are no test of `plaza_view`. Arrival 3 never reached the door: from step 5
+he walked 16 times into the raised rim of the central console, the door on his column (0.37-0.39) throughout. The rim lies ahead of him to
+his RIGHT, the door beyond it up to the left; in arrivals 1 and 2 he brushed the same rim on steps 5-6 and slid off. The pane sat at 0.381,
+0.380 and 0.372 at step 5: three samples 10 px apart do not show an approach line that avoids the rim, so the aim is unchanged.
+
+What separates walking from walking into something, measured on every walk step of the seven logged arrivals (720p step JPEGs): the
+masked scene changes by 21-47 on every advancing walk, 11-12 when he brushed the rim and slid off, 2-3 on every stuck step; the door's
+blob size is no measure (it flickers 11.8-26.3k with the pane's animation while stuck, and barely grows walking at the far door from
+spawn). Replayed from a fresh memory over the seven logs (open loop: decisions only): no still walk is counted anywhere in the six
+arrivals that moved; in arrival 3 the second still walk is at step 7 and the sidestep would be step 8. Not shown offline: that 0.4 s
+to the left takes him off the rim and that the walk then carries on; the three supervised arrivals are the measurement.
 
 What the tool's result does and does not say: exit 0 means `plaza_view` held on two frames, not that the acceptance holds (two
 plaza-looking frames end it with out still False); `ARRIVE_S` is a budget of scheduled actions, not a wall-clock deadline (the three ran
