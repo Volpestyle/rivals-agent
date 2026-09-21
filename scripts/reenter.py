@@ -80,6 +80,12 @@ OUT_PX = 10000       # passing through a door: a walk step at it, then a frame w
 OUT_WALKS = 3        # OUT_WALKS walk steps at least this (px at 1280x720). The pane shrinks as he reaches it (the last walk before it vanished
                      # was 3.4-33k on the five logged crossings), but its peak over the last three walks was 16-54k; a sliver of the pane
                      # walked at from outside after a look-around was 3.8k
+STILL = 8.0          # a walk that moved him changes the view: the mean grey difference of the masked scene (_scene) between the frame a
+STILL_WALKS = 2      # walk decided on and the next is 21-47 on every advancing walk of the seven logged arrivals, 11-12 when he brushed the
+                     # console's rim and slid off it, and 2-3 on every step walked into it (2026-09-21 14:01, steps 6-20: 16 walks, no
+                     # advance). This many walks in a row under STILL is no progress.
+SIDESTEP_S, SIDESTEP_TRIES = 0.4, 2   # then strafe LEFT this long, at most this many times: the rim he walks into lies ahead of him to his
+                     # right (the door beyond it, up to the left), so left is the side it is clear; after the last try, no progress refuses
 OUT_SWEEPS = 7       # outside, turn LEFT at most this many SWEEP_S steps (~360 deg) looking for the bot: live, from the exit she stood
                      # 25-45 deg left of the heading he left by (steps 12-15), one step brings her into plaza_view's window
 YAW_STICK, YAW_DEG_S, FOCAL = 0.45, 172.0, 465.0   # the camera: deg/s at that right-stick deflection, and the focal length at 1280 wide (l4)
@@ -441,7 +447,7 @@ class ArrivalLog:
         self.failed += 1
         self.error = self.error or repr(e)
 
-    def step(self, t, frame, action, door_x=None, plaza=None):
+    def step(self, t, frame, action, door_x=None, plaza=None, moved=None, still=None):
         try:
             self.n += 1
             self.dir.mkdir(parents=True, exist_ok=True)
@@ -451,7 +457,7 @@ class ArrivalLog:
             x, px = door_blob(frame)
             rec = {"n": self.n, "t": round(float(t), 3), "action": action, "door_x": None if door_x is None else round(door_x, 3),
                    "door_blob_x": None if x is None else round(x, 3), "door_px": px, "hero_x": hero_column(frame),
-                   "plaza_view": plaza, "gate": ARRIVAL_GATE, "frame": name}
+                   "plaza_view": plaza, "moved": moved, "still": still, "gate": ARRIVAL_GATE, "frame": name}
             with open(self.dir / "steps.jsonl", "a") as fh:
                 fh.write(json.dumps(rec) + "\n")
         except Exception as e:                                          # noqa: BLE001
@@ -824,10 +830,10 @@ def arrive(io, safe, trace=None):
     recorded AFTER its input has gone out, so no record ever sits between a proof frame and the write it gates, and a record that fails
     is swallowed here as well as inside it."""
     trace = getattr(io, "arrival_log", None) if trace is None else trace
-    def note(f, action, x=None, plaza=None):
+    def note(f, action, x=None, plaza=None, m=None):
         if trace is not None:
-            try:
-                trace.step(io.now(), f, action, x, plaza)
+            try:                                                        # `moved` and `still`: what THIS decision used, not recomputed
+                trace.step(io.now(), f, action, x, plaza, None if m is None else m.moved, None if m is None else m.still_seen)
             except Exception:                                           # noqa: BLE001 - a record must never change the flow
                 pass
 
@@ -847,32 +853,62 @@ class ArrivalMemory:
     walks: list = field(default_factory=list)   # its size on the walk steps taken at it (a new or lost door starts it again)
     walked: bool = False           # the last step walked
     out: bool = False              # through the door: from here on no door is steered to or walked at
+    scene: object = None           # the masked scene of the last frame decided on (_scene)
+    still: int = 0                 # walks in a row that did not change the view
+    sidesteps: int = 0             # strafes taken to get off something walked into
+    moved: float | None = None     # what the last completed walk changed in the view (None: the last step was not a walk)
+    still_seen: int = 0            # the still count this decision acted on
     sweeps: int = 0                # look-around turns taken outside
+
+
+def _scene(f):
+    """The view as a small grey thumbnail, the hero and the key hints blanked: what a walk that moves him changes."""
+    g = cv2.cvtColor(small(f), cv2.COLOR_BGR2GRAY)[60:600].astype(np.float32)
+    g[140:, 330:610] = 0                              # the hero, drawn around x 0.40 in the lower part
+    g[:60, :300] = 0                                  # the key hints, top left
+    return cv2.resize(g, (160, 68), interpolation=cv2.INTER_AREA)
 
 
 def arrival_step(f, m):
     """The arrival's decision on one frame: ("plaza?", why) a second look standing still, ("done", why), ("turn", stick, secs, why),
-    ("walk", secs, why), or ("give up", why). Pure: it reads only the frame and `m`, which it updates; it sends nothing."""
+    ("walk", secs, why), ("strafe", stick x, secs, why) sideways off something walked into, or ("give up", why). Pure: it reads only the
+    frame and `m`, which it updates; it sends nothing."""
+    # The last step's walk is judged here, once, before anything can return: what it changed in the view counts toward (or clears) the
+    # stall, and the step is marked done, so a pause that follows (the plaza's second look) is never taken for a walk. Review of cac94bd:
+    # an advancing walk seen on a plaza-looking frame was skipped, and the 0.15 s pause after it counted as a second failed walk.
+    scene, walked = _scene(f), m.walked
+    m.moved = None if (m.scene is None or not walked) else round(float(np.mean(np.abs(scene - m.scene))), 2)
+    m.scene, m.walked = scene, False
+    if m.moved is not None:
+        m.still = m.still + 1 if m.moved < STILL else 0
+    m.still_seen = m.still                            # what this decision acts on (the log's `still`), before a sidestep resets it
+    # Its crossing evidence is latched here too, before the plaza can return: a crossing frame that looks like the plaza once must not
+    # lose it, or the walk-back comes back (review of bc6f8b4). The plaza still comes first among the actions.
+    blobs = door_blobs(f) if walked and not m.out else None
+    if blobs == [] and max(m.walks[-OUT_WALKS:], default=0) >= OUT_PX:
+        m.out = True                                  # walked at a big door, and now none: through it
     if plaza_view(f):
         m.plaza += 1
         return ("done", "plaza confirmed on a second frame") if m.plaza >= 2 else ("plaza?", "plaza seen: a second look, standing still")
     m.plaza = 0
-    blobs = door_blobs(f)
-    if not m.out and not blobs and m.walked and max(m.walks[-OUT_WALKS:], default=0) >= OUT_PX:
-        m.out = True                                  # walked at a big door, and now none: through it
     if m.out:                                         # never a door again, not even a sliver of its pane seen from outside (live step 17)
-        m.walked = False
         if m.sweeps >= OUT_SWEEPS:
             return ("give up", f"out, but no bot in view after {OUT_SWEEPS} look-around turns")
         m.sweeps += 1
         return ("turn", -YAW_STICK, SWEEP_S, f"out: look around left, rstick {-YAW_STICK:+.2f} for {SWEEP_S:.2f} s")
+    if m.still >= STILL_WALKS:                        # walking into something: the view does not change
+        m.still = 0
+        if m.sidesteps >= SIDESTEP_TRIES:
+            return ("give up", f"walking does not move him, after {SIDESTEP_TRIES} sidesteps")
+        m.sidesteps += 1
+        return ("strafe", -1.0, SIDESTEP_S, f"no progress: sidestep left, stick -1.00 for {SIDESTEP_S:.2f} s ({m.sidesteps} of {SIDESTEP_TRIES})")
+    blobs = door_blobs(f) if blobs is None else blobs
     kept = min(blobs, key=lambda b: abs(b[0] - m.chosen)) if m.chosen is not None and blobs else None
     if kept is not None and abs(kept[0] - m.chosen) <= DOOR_KEEP:
         x, px = kept
     else:                                             # nothing kept (or it is gone): the door nearest his column, not the biggest
         x, px = min(blobs, key=lambda b: abs(b[0] - HERO_X)) if blobs else (None, 0)
         m.walks = []
-    m.walked = False
     if x is None:  # nothing to walk toward (a wall, the plaza with no bot in view): look around, do not walk blind
         m.chosen = None
         return ("turn", YAW_STICK, SWEEP_S, f"no door: look around, rstick {YAW_STICK:+.2f} for {SWEEP_S:.2f} s")
@@ -901,23 +937,27 @@ def _arrive(io, safe, note):
         x = m.chosen
         act = arrival_step(f, m)
         if act[0] == "done":
-            note(f, act[-1], plaza=True)
+            note(f, act[-1], plaza=True, m=m)
             break
         if act[0] == "give up":
-            note(f, act[-1], plaza=False)
+            note(f, act[-1], plaza=False, m=m)
             raise Refuse(act[-1], f)
         if act[0] == "plaza?":
             safe.sleep(0.15)
             spent += 0.15
-            note(f, act[-1], plaza=True)
+            note(f, act[-1], plaza=True, m=m)
         elif act[0] == "turn":
             safe.rstick(act[1], 0.0, act[2], screen="in_range")
             spent += act[2] + 0.15
-            note(f, act[-1], x, False)
+            note(f, act[-1], x, False, m)
+        elif act[0] == "strafe":
+            safe.stick(act[1], 0.0, act[2], screen="in_range")
+            spent += act[2] + 0.25
+            note(f, act[-1], x, False, m)
         else:
             safe.stick(0.0, 1.0, act[1], screen="in_range")
             spent += act[1] + 0.25
-            note(f, act[-1], m.chosen, False)
+            note(f, act[-1], m.chosen, False, m)
         f = look()
     else:
         raise Refuse(f"could not confirm the spawn room was left within {ARRIVE_S:.0f} s", f)

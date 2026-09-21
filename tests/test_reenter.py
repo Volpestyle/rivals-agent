@@ -540,6 +540,15 @@ class Sim:
     def __init__(self, start, table, loading=None):
         self.state, self.table, self.t, self.inputs, self.n = start, table, 0.0, [], {}
         self.loading = dict(loading or {})  # state -> frames of black before the next state
+        self.walked, self.stuck = 0, False  # walks taken; stuck: walking changes nothing in the view (a wall, the console's rim)
+
+    def moving(self, f):
+        """A walk changes what he sees: a grey block off the door, the HUD and the hero alternates with each walk (unless stuck)."""
+        if self.stuck or f is BLACK or not (self.state == "spawn" or self.state.startswith("p_")):   # the spawn room only, not menus
+            return f
+        g = f.copy()
+        g[300:800, 1800:2500] = 255 * (self.walked % 2)
+        return g
 
     FRAMES = {
         "lobby_far": "lobby-cursor-far", "lobby_left": "lobby-cursor-left-of-practice", "lobby_on": "lobby-cursor-on-practice",
@@ -568,7 +577,7 @@ class Sim:
         if self.state not in self.FRAMES:
             return BLACK
         v = self.FRAMES[self.state]
-        return v() if callable(v) else frame(v)
+        return self.moving(v() if callable(v) else frame(v))
 
     def _fire(self, event):
         key = (self.state, event)
@@ -579,6 +588,7 @@ class Sim:
 
     def stick(self, x, y, secs, screen=None):
         self.inputs.append(("stick", x, y))
+        self.walked += 1
         self.t += secs + 0.25
         self._fire("stick")
 
@@ -906,7 +916,7 @@ class TurnSim(Sim):
     def frame(self):
         if self.walks >= 3:
             return frame("arrival-plaza-bot-ahead")
-        return spawn_frame(self.door_x)
+        return self.moving(spawn_frame(self.door_x))
 
     def rstick(self, x, y, secs, screen=None):
         super().rstick(x, y, secs)
@@ -936,7 +946,7 @@ class Flicker(Sim):
         self.seq = [spawn_frame(), frame("arrival-plaza-bot-ahead")] + [spawn_frame()] * 200
 
     def frame(self):
-        return self.seq.pop(0) if len(self.seq) > 1 else self.seq[0]
+        return self.moving(self.seq.pop(0) if len(self.seq) > 1 else self.seq[0])
 
 
 def test_a_single_plaza_looking_frame_is_not_enough_to_believe_the_spawn_room_was_left():
@@ -1773,3 +1783,117 @@ def test_out_is_the_panes_peak_over_its_last_walks_not_its_last_size():
     m = R.ArrivalMemory(walked=True, walks=[50000, 3000, 3000, 3000])
     R.arrival_step(through, m)
     assert not m.out
+
+
+# --- a walk that does not move him (2026-09-21 14:01: 16 walks into the central console's rim, the door on his column throughout) ------
+def _moved(a, b):
+    return float(np.mean(np.abs(R._scene(frame(b)) - R._scene(frame(a)))))
+
+
+def test_a_walk_into_the_rim_changes_nothing_a_walk_that_advances_or_slides_off_does():
+    assert _moved("arrival-live-rim-a", "arrival-live-rim-b") < R.STILL / 2                    # 3 on the stuck steps
+    assert _moved("arrival-live-brush-a", "arrival-live-brush-b") > R.STILL                    # brushed the rim, slid off: 11
+    assert _moved("arrival-live-advance-a", "arrival-live-advance-b") > 2 * R.STILL            # advancing: 21-47 on the seven logs
+
+
+def test_walking_into_something_sidesteps_left_a_bounded_number_of_times_then_refuses():
+    sim = Sim("spawn", {})
+    sim.stuck = True
+    with pytest.raises(R.Refuse, match="walking does not move him"):
+        R.arrive(sim, R.Safe(sim, log=lambda *_: None))
+    walk, left = ("stick", 0.0, 1.0), ("stick", -1.0, 0.0)
+    assert sim.inputs == [walk, walk, left, walk, walk, left, walk, walk]         # two walks unchanged, a sidestep; twice; then stop
+
+
+class RimSim(Sim):
+    """Stuck on the rim until a sidestep left; then walking moves him, and three walks take him out."""
+
+    def __init__(self):
+        super().__init__("spawn", {})
+        self.stuck, self.after = True, 0
+
+    def stick(self, x, y, secs, screen=None):
+        super().stick(x, y, secs)
+        if x < 0:
+            self.stuck = False
+        elif not self.stuck:
+            self.after += 1
+            if self.after >= 3:
+                self.state = "range"
+
+
+def test_a_sidestep_off_the_rim_lets_the_walk_carry_on_out():
+    sim = RimSim()
+    R.arrive(sim, R.Safe(sim, log=lambda *_: None))
+    sticks = [(i[1], i[2]) for i in sim.inputs if i[0] == "stick"]
+    assert sticks == [(0.0, 1.0), (0.0, 1.0), (-1.0, 0.0), (0.0, 1.0), (0.0, 1.0), (0.0, 1.0)] and sim.inputs[-1][0] == "RT"
+
+
+class HalfStuckSim(Sim):
+    """Every other walk moves him (a scuff, then a step): never two unchanged walks in a row."""
+
+    def moving(self, f):
+        if f is BLACK or self.state != "spawn":
+            return f
+        g = f.copy()
+        g[300:800, 1800:2500] = 255 * ((self.walked // 2) % 2)
+        return g
+
+
+def test_only_unchanged_walks_in_a_row_are_no_progress():
+    sim = HalfStuckSim("spawn", {})
+    with pytest.raises(R.Refuse, match="could not confirm"):                      # the budget, not no-progress
+        R.arrive(sim, R.Safe(sim, log=lambda *_: None))
+    assert all(i[1] == 0.0 for i in sim.inputs if i[0] == "stick")               # never a sidestep
+
+
+def test_a_plaza_pause_after_an_advancing_walk_is_neither_a_walk_nor_a_stall(monkeypatch):
+    """Review of cac94bd: walk 1 blocked (unchanged view), walk 2 advanced by 30 onto a plaza-looking frame (a second look, standing
+    still), then the pause's near-identical frame no longer looked like the plaza: the advance had been skipped and the pause counted as a
+    second failed walk, so it sidestepped. Each walk's evidence is used exactly once, and a pause is not a walk."""
+    scenes = iter(np.full((68, 160), v, np.float32) for v in (0, 0, 30, 30))
+    plaza = iter((False, False, True, False))
+    monkeypatch.setattr(R, "_scene", lambda f: next(scenes))
+    monkeypatch.setattr(R, "plaza_view", lambda f: next(plaza))
+    monkeypatch.setattr(R, "door_blobs", lambda f: [(0.40, 6000)])
+    m = R.ArrivalMemory()
+    acts = [R.arrival_step(None, m)[0] for _ in range(4)]
+    assert acts == ["walk", "walk", "plaza?", "walk"] and m.sidesteps == 0
+    assert m.still == 0 and m.moved is None                                     # the advance cleared the stall; the pause was not a walk
+
+
+def test_the_log_records_the_scene_change_the_decision_used(tmp_path):
+    log = R.ArrivalLog(tmp_path)
+    sim = Sim("spawn", {})
+    sim.stuck = True
+    with pytest.raises(R.Refuse):
+        R.arrive(sim, R.Safe(sim, log=lambda *_: None), log)
+    rows = [json.loads(l) for l in (log.dir / "steps.jsonl").read_text().splitlines()]
+    assert rows[0]["moved"] is None and rows[0]["still"] == 0                   # no walk before the first decision
+    assert rows[1]["moved"] is not None and rows[1]["moved"] < R.STILL and rows[1]["still"] == 1
+    assert rows[2]["action"].startswith("no progress: sidestep left") and rows[2]["still"] == R.STILL_WALKS   # what it acted on
+    assert rows[3]["moved"] is None                                             # after a sidestep: not a walk
+
+
+def _scripted(monkeypatch, scenes, plazas, blobs):
+    scenes, plazas, blobs = iter(scenes), iter(plazas), iter(blobs)
+    monkeypatch.setattr(R, "_scene", lambda f: np.full((68, 160), next(scenes), np.float32))
+    monkeypatch.setattr(R, "plaza_view", lambda f: next(plazas))
+    monkeypatch.setattr(R, "door_blobs", lambda f: next(blobs))
+
+
+def test_a_crossing_frame_that_looks_like_the_plaza_still_latches_out(monkeypatch):
+    """Review of bc6f8b4: walk at a 20k door; the next frame has no door and looks like the plaza (a second look); the one after has no
+    door and no plaza. The plaza's early return had dropped the crossing, so it searched right and walked at the pane's returning sliver:
+    the walk-back the out state exists to prevent. The crossing is latched before the plaza returns; the plaza still acts first."""
+    _scripted(monkeypatch, (0, 30, 30, 40), (False, True, False, False), ([(0.40, 20000)], [], [(0.40, 4000)]))
+    m = R.ArrivalMemory()
+    acts = [R.arrival_step(None, m) for _ in range(4)]
+    assert [a[0] for a in acts[:2]] == ["walk", "plaza?"] and m.out
+    assert [a[:2] for a in acts[2:]] == [("turn", -R.YAW_STICK)] * 2                # left, never back at the sliver
+
+
+def test_a_crossing_frame_that_is_the_plaza_confirms_on_the_next_frame(monkeypatch):
+    _scripted(monkeypatch, (0, 30, 30), (False, True, True), ([(0.40, 20000)], []))
+    m = R.ArrivalMemory()
+    assert [R.arrival_step(None, m)[0] for _ in range(3)] == ["walk", "plaza?", "done"] and m.out
