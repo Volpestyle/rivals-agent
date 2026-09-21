@@ -75,6 +75,11 @@ only once an outcome can be measured reliably.
   run records its patch next to its cooldown regime; splits never mix patches silently; and
   because casts are proved by cooldown countdowns, each source's observed cooldowns are checked
   against the kit, which also tells us when the live game has changed under us (VUH-1324).
+  Separation is for measurement, not a ban on older footage: audited sources from other patches
+  may pretrain with an explicit kit-context input (patch, regime, per-ability cooldown, recharge
+  and charges, each with a known bit), while fine-tuning, evaluation, sealed tests and every
+  reported number stay on the current patch, and a current-only run on the same folds is the
+  control that shows whether the older footage helped or hurt.
 - **Compute budget.** James approved an initial $100 for rented cloud compute (2026-09-20).
   Training is local first; renting is chosen from a measured local-versus-rental comparison,
   spend is tracked, and the figure is revisited before it is exceeded. It is an experiment
