@@ -60,6 +60,7 @@ POSES = ("arrival-spawn-door-ahead", "arrival-spawn-wall-left-of-door", "arrival
 SCREENS = {
     "lobby-cursor-far": "lobby", "lobby-cursor-left-of-practice": "lobby", "lobby-cursor-on-practice": "lobby",
     "lobby-cursor-on-try-competitive": "lobby", "lobby-cursor-at-try-competitive-corner": "lobby",
+    "heroselect-all-tab-fading-in": "hero_select", "heroselect-all-tab-settled": "hero_select",
     "lobby-cursor-below-practice-tab": "lobby", "lobby-cursor-on-practice-tab-lower-half": "lobby",
     "panel-cursor-on-practice-range": "practice_panel", "panel-cursor-off-tiles": "practice_panel",
     "heroselect-all-tab-black-panther": "hero_select", "heroselect-duelists-cursor-off": "hero_select",
@@ -527,6 +528,7 @@ class Sim:
         "hero_duel": "heroselect-duelists-cursor-off", "hero_spider": "heroselect-cursor-on-spiderman",
         "spawn": lambda: spawn_frame(0.5), "range": "arrival-plaza-bot-ahead",
         "hero_lost": "heroselect-spiderman-tooltip-ring-lost",
+        "hero_fading": "heroselect-all-tab-fading-in", "hero_settled": "heroselect-all-tab-settled",
         "lobby_try": "lobby-cursor-on-try-competitive", "lobby_corner": "lobby-cursor-at-try-competitive-corner",
         "lobby_below": "lobby-cursor-below-practice-tab", "panel_off": "panel-cursor-off-tiles",
     }
@@ -1551,3 +1553,60 @@ def test_the_timing_dry_run_through_main_times_and_opens_no_pad(monkeypatch, cap
                   live=lambda *a, **k: (_ for _ in ()).throw(ReachedPad())) == 0
     out = capsys.readouterr().out
     assert "dxcam probe stub" in out and out.count("reenter: timing screen=lobby") == 2 and "limit 300 ms" in out
+
+
+
+# --- live 2026-09-21 09:41: the first hero-select frame refused, "hero tab None" (the screen was fading in) -------------------------------
+def test_the_active_tab_is_unreadable_while_the_screen_fades_in_and_readable_once_settled():
+    """The saved live frame: the active tab's white reads 192 of 255 at game clock 00:02 against 250 settled; the pad's LB / RB glyphs sit
+    outside the tab boxes. The reader stays strict; the flow waits instead."""
+    assert R.classify(frame("heroselect-all-tab-fading-in")) == "hero_select" and R.hero_tab(frame("heroselect-all-tab-fading-in")) is None
+    assert R.hero_tab(frame("heroselect-all-tab-settled")) == "all"
+
+
+class Fading(Sim):
+    """Hero select opening: `dim` fresh frames of the fading-in screen, then the settled one."""
+
+    def __init__(self, dim, table=None, after="hero_settled"):
+        super().__init__("hero_fading", table or {}, {})
+        self.dim, self.after = dim, after
+
+    def frame(self):
+        if self.state == "hero_fading":
+            if self.dim <= 0:
+                self.state = self.after
+            self.dim -= 1
+        return super().frame()
+
+
+def test_settle_looks_again_on_fresh_frames_sending_nothing_and_reads_the_tab_once_it_is_drawn():
+    sim = Fading(dim=5)
+    f, tab = R.settle(sim, "hero_select", R.hero_tab)
+    assert tab == "all" and sim.inputs == [] and sim.t <= R.SETTLE_S
+
+
+def test_settle_gives_up_after_its_bound_and_the_run_still_refuses_with_nothing_sent():
+    sim = Fading(dim=10 ** 6)                                          # never readable
+    with pytest.raises(R.Refuse, match="hero tab None is not recognised"):
+        R.run(sim, log=lambda *_: None)
+    assert sim.inputs == [] and R.SETTLE_S <= sim.t <= R.SETTLE_S + 1.0
+    assert R.SETTLE_S <= 3.0                                           # the look is bounded, not a new way to wait on an unreadable screen
+
+
+def test_settle_refuses_if_the_screen_changes_while_it_looks():
+    sim = Fading(dim=3, after="lobby_far")
+    with pytest.raises(R.Refuse, match="screen changed to lobby"):
+        R.settle(sim, "hero_select", R.hero_tab)
+    assert sim.inputs == []
+
+
+def test_a_run_from_the_fading_in_hero_select_presses_rb_only_after_the_tab_is_read():
+    sim = Fading(dim=4, table={("hero_settled", "RB"): lambda n: "hero_duel" if n >= 2 else "hero_settled",
+                               ("hero_duel", "stick"): "hero_spider", ("hero_spider", "X"): "loading_range",
+                               ("loading_range", "loaded"): "spawn",
+                               ("spawn", "stick"): lambda n: "range" if n >= 3 else "spawn"})
+    sim.loading = {"loading_range": 2}
+    R.run(sim, log=lambda *_: None)
+    taps = [(b, s_) for b, s_, _ in sim.taps()]
+    assert taps[:2] == [("RB", "hero_select"), ("RB", "hero_select")] and ("A", "hero_select") in taps
+    assert_only_safe_inputs(sim)

@@ -1,7 +1,7 @@
 # Re-entry: PLAY lobby to the Practice Range as Spider-Man (VUH-1299)
 
 **Built and tested offline on `tests/fixtures/reentry`; lead-run only.** `scripts/reenter.py` takes the game from the PLAY
-lobby into the Practice Range as Spider-Man and stops at the first thing it cannot verify. 181 tests (`tests/test_reenter.py`)
+lobby into the Practice Range as Spider-Man and stops at the first thing it cannot verify. 190 tests (`tests/test_reenter.py`)
 pass; `--dry-run` classifies a live or saved frame and prints what it would do without opening a pad. The live trials
 (2026-09-20) held the safety rules every time (each refusal pressed nothing and exited 1) and found three defects, all fixed offline
 below and none re-run live: **the steering** (a cursor ring on the PRACTICE tab's lower half was never accepted), **the ring finder**
@@ -64,6 +64,7 @@ or the panel. A screen visited more than twice means a press did nothing: STOP, 
 | `X`, `START`, d-pad never on the lobby; `X` only on hero select | `ALLOWED` per classified screen | `test_forbidden_buttons_are_refused_wherever_they_are_asked_for` |
 | Unknown screen: send nothing, stop | `run` refuses `unknown`; a real run opens no pad on an unknown first frame | `test_an_unknown_screen_sends_nothing`, `test_a_run_stops_before_opening_a_pad_on_an_unknown_first_frame` |
 | Loading is not "unknown screen": nothing is sent while waiting | `wait_for` (only classifies, never sends) | `test_a_screen_that_never_loads_stops_without_sending_anything_while_it_waits` |
+| A just-opened screen that cannot be read yet is looked at again, nothing sent, for at most `SETTLE_S` (3 s); still unreadable, or the screen changes, and it stops as before | `settle` (the hero tab, on arrival and after RB) | `test_settle_looks_again_on_fresh_frames_sending_nothing_and_reads_the_tab_once_it_is_drawn`, `test_settle_gives_up_after_its_bound_and_the_run_still_refuses_with_nothing_sent`, `test_settle_refuses_if_the_screen_changes_while_it_looks`, `test_a_run_from_the_fading_in_hero_select_presses_rb_only_after_the_tab_is_read` |
 | Bounded | `MAX_STEPS` 30 nudges, `MAX_MISSES` 4 jiggles, 10 / 40 / 40 s waits, a screen may be visited twice | `test_steering_is_bounded_when_the_cursor_never_moves`, `test_a_press_that_does_nothing_is_not_repeated_forever` |
 | Arrival: out of the spawn room, verified, or exit 1 | `arrive`: a fresh frame before every step; the range HUD gone or the idle banner up stops it with no further input; done only when two frames in a row show the plaza with the bot ahead; 14 s budget; only then `RT` once, and the HUD portrait must be Spider-Man | `test_arrival_stops_input_the_moment_the_range_hud_is_gone`, `test_arrival_stops_at_once_on_the_idle_banner`, `test_arrival_that_cannot_confirm_the_plaza_exits_after_its_budget_without_attacking`, `test_a_single_plaza_looking_frame_is_not_enough_to_believe_the_spawn_room_was_left`, `test_arriving_as_another_hero_is_reported_not_hidden` |
 
@@ -101,7 +102,7 @@ defines its own. The scoreboard is not the range there, which is what the loop's
 | hero select | yellow CONFIRM button (`CONFIRM_YELLOW` 0.5) | 0.86 on the three hero-select frames, 0.00 on every other |
 | practice panel | dimmed band luminance < 40, above and below < 60, **and** the white "PRACTICE" title (`PANEL_TITLE` 0.15) | band 15.6 (lobby 85-87, hero select 140-143, range 118); title 0.326 (every other frame <= 0.036) |
 | range | `record.in_range` (unchanged) | true only on `in-range.jpg` |
-| active hero tab | white diamond over a tab icon (`TAB_WHITE` 0.4) | active 0.65-0.69, inactive <= 0.08. `all` and `duelists` are seen; `tab2` (RB once from `all`) is inferred from the skill |
+| active hero tab | white diamond over a tab icon (`TAB_WHITE` 0.4) | active 0.65-0.69, inactive <= 0.08. `all` and `duelists` are seen; `tab2` (RB once from `all`) is inferred from the skill. While the screen fades in the active tab's white reads 192 of 255 (0.02 share over 200) against 250 settled (live, 2026-09-21 09:41, game clock 00:02: `heroselect-all-tab-fading-in`); the pad's LB / RB glyphs sit outside the tab boxes. The reader stays strict and the flow waits (`settle`) |
 
 A first version identified the panel by darkness alone. A black frame (a loading screen) then classified as the panel;
 the title requirement fixed it, and a test pins it.
@@ -256,6 +257,15 @@ exits 1 rather than guess, so a false exit 1 is the failure to expect. Untested 
 doors is the exit (it steers to the bigger), and how long the look-around takes to find the door from an arbitrary heading (a full turn is ~2.1 s
 at this stick; the budget allows about 20 steps).
 
+**Live: stuck at the door's left frame (four refusals, 2026-09-20 22:34 to 2026-09-21 09:45;
+`docs/evidence/reentry/arrival-refusals-stuck-at-door-frame.jpg`).** Every one ends "could not confirm the spawn room was left within 14
+s". In three the spawn room's glass door is dead ahead (`door` 0.525-0.541, well inside `DOOR_TOL`) and Spider-Man is pressed against the
+dark pillar that is its left frame; in the fourth he is at that pillar with the door's lit opening off to the left. The steering centres
+the door on the screen, but the third-person camera draws the hero left of the centre, so his walking line runs left of the camera's axis
+and, close to the door, into its frame; `plaza_view` then never holds and the budget runs out. Not fixed: correcting the walking line
+(aiming the door right of centre by the camera's shoulder offset, or stepping sideways when the door stays centred and nothing changes)
+needs the character to move and the camera to answer, which no recorded frame shows, so it cannot be proven offline.
+
 ## Not verified: read these first in the live trial
 
 1. ~~TRY COMPETITIVE highlighted~~ and ~~the un-hovered PRACTICE RANGE tile~~: closed with real frames (above).
@@ -282,9 +292,9 @@ Spider-Man, and the lobby with the pad banner up.
 
 ## Files
 
-`scripts/reenter.py` (the script), `tests/test_reenter.py` (181 tests: classifier, cursor finder, each proof with its
+`scripts/reenter.py` (the script), `tests/test_reenter.py` (190 tests: classifier, cursor finder, each proof with its
 negatives, steering against simulated cursors of three physics, arrival against a simulated spawn room with a door that turns
 with the camera, the whole flow against a simulated game serving the fixtures, dry run, `main`, and `Live` against a fake pad),
-`tests/fixtures/reentry/*.jpg` (the lead's eight frames, the four above, the two live refuse frames, and five native arrival frames: two from `tagrun0`, three of the lead's spawn-room poses).
+`tests/fixtures/reentry/*.jpg` (the lead's eight frames, the four above, the two live refuse frames, the hero-select screen fading in and settled (live, 2026-09-21), and five native arrival frames: two from `tagrun0`, three of the lead's spawn-room poses).
 Untouched: L4's files.
 `tests/test_reenter.py` imports opencv, so `tests/conftest.py` skips it in the stdlib-only default run.
