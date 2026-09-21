@@ -237,12 +237,31 @@ before recounting support. No extra upload-wide measurement is needed to establi
 this already reproduced defect.
 
 After that review and recount, one corrected-label B0 repetition is authorized
-with the same two session folds, architecture, hyperparameters, seed and final-epoch
+with the same one-second horizon, two session folds, architecture, hyperparameters, seed and final-epoch
 selection. Use a new experiment directory, train-only normalization and the same
 baseline definitions on the corrected identical support. Channels below the
 existing minimum support remain inconclusive; if no channel meets it or fitting
 labels are constant, stop before fitting. Report the corrected result beside the
 archived one as a label repair, not a tuning improvement or sealed evaluation.
+
+The accepted fit already uses **per-channel masks**; the abandoned global
+all-five-known build is not its eligibility rule. Reduced all-channel visibility
+does not measure corrected B0 support. Keep the per-channel contract and horizon
+fixed through the recount; a longer-horizon task would be a separately declared
+experiment, not a repair that rescues this one's support.
+
+Format 5 requires consumer changes before this repetition. An `ability_uncertain`
+interval overlapping a horizon or its confirmation margin prevents a negative
+for that channel; it does not discard other channels. An independently verified,
+contained cast can still prove occurrence, but possible earlier casts suppress
+first-event timing. Preserve event confirmation/availability time separately from
+occurrence bounds for causal inputs and baselines. Neither a lit icon without
+digits nor an earlier cooldown expiry proves present readiness through an
+unobserved interval. Update loader fields, removed-kind checks and feature
+semantics together: retain health `cause`, never encode unknown-cause HP loss as
+damage, and do not silently zero renamed event channels. These are semantic
+repairs under the fixed experiment, not hyperparameter changes.
+
 Purpose annotation retains its immutable proposals and recorded disagreements;
 comparison does not promote disputed event labels to truth. The regeneration also
 corrects existing health-transition and icon-state semantics: HP gain/loss alone
@@ -675,12 +694,26 @@ as well as cooldowns. A patch token alone cannot repair an unrepresented rule.
 
 Each sample carries a versioned `kit_context`: patch identity (or unknown),
 cooldown regime, per-ability cooldown/recharge seconds and maximum charges,
-plus explicit known/unknown masks. Keep measured current availability in the
+team-up variant, plus explicit known/unknown masks. Keep measured current availability in the
 observation separate from these kit limits. Record evidence and provenance with
 each value; missing means unknown, never zero. Known discrete mechanics changes
 use named rule flags where the supervised task depends on them; otherwise exclude
 that task's incompatible labels rather than invent a complete historical simulator.
 Patch identity is categorical metadata, not a numeric chronology to interpolate.
+
+Team-up cooldown fingerprints require **ability identity**. The official
+[Version 20260911 balance note](https://www.marvelrivals.com/20260908/41525_1313334.html)
+changes Peni Parker's **Parker Power-Up** from 15 to 10 seconds; the
+[hero reference](https://www.marvelrivals.com/m/20241123/41360_1195680.html)
+lists **Symbiote Bond** separately at 15 seconds. Native train-frame spot checks
+match the latter's distinct radial-burst icon: Day `003309.jpg` and Req
+`000828.jpg` under their respective `data/experiments/b0/frames/<clip-id>/`
+directories. Day also shows its black-spike effect. Thus generic `teamup=15`
+does not contradict the date-derived patch labels on these sources. The checks
+identify those windows, not every segment: retain unknown elsewhere until
+verified, allow variant changes, and never apply Parker's 10-second rule to all
+team-up events. Dated patch notes take precedence over stale numerical entries
+on the general hero page.
 
 The April-May uploads' measured two-second uppercut does not uniquely identify
 their patch or complete kit. Keep their unresolved fields unknown. They become
