@@ -217,6 +217,11 @@ designated visible bot within 20 seconds**, beginning from an observed scenario
 bin (location/view, distance band, full target health, own resources, patch and
 normal cooldowns). Start timing only after readiness is verified. If full target
 health or identity cannot be established, do not assert a comparable start.
+The lead reports an observable full-health cue in this arena: an undamaged bot
+shows its name without a health bar; the bar appears after first damage. Validate
+that cue on the visible designated bot during the collection pilot. A missing
+bar alone (for example, with an unreadable name or occluded bot) is not proof of
+full health.
 The lead reports four five-minute baselines with 21, approximately 4, 20 and 0
 KOs: one stalls looking down beside a close bot, another starts on a bot-free
 ring. Pooling these as noise around a mean would hide start-state and recovery
@@ -226,6 +231,15 @@ failure counts separately, and never discard difficult valid starts afterward.
 Respawn/reset is an observed procedure, not an API that teleports or reseeds the
 game. Record reset time separately. Menu re-entry belongs to the guarded supervisor;
 it is never an exploratory policy action or part of the learning return.
+
+The lead reports a burst kills these bots in roughly 2–3 seconds, with about
+seven seconds of dead time after each KO in the baseline. The first useful
+learning signal is therefore expected around approach, acquisition/reacquisition
+and recovery from stalled options, rather than a long fight. Measure these
+durations separately from burst execution. Episode v0 starts with a verified
+visible target: post-KO search/reset outside that episode is collection overhead,
+not behavior its reward can improve. Learning the next-target acquisition cycle
+requires a separately defined continuation task; do not claim it from v0 results.
 
 Proposed first-experiment reward, once per episode event:
 
