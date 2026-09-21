@@ -127,13 +127,16 @@ intent and reports **stalls** (engaged, and no stick, move or press for over 0.5
   refreshes its sighting time, so the turn goes on while the brain keeps seeing the bot.
 - **The brain releases a target that stays outside the aim crop.** A target whose box stays outside the crop's window (a third of the
   frame height either side of the crosshair, the loop's 960 px at 1440p) for `OUTSIDE_S` (1.5 s) is released and its id is not picked
-  again. The one real target on the two runs that started outside the crop took 0.76 s to come in (trackerlive30 id 20); physically a
+  again while it stays outside; once its box is inside the crop it may be picked again (through the usual two decisions), and a released id
+  unseen for `BARRED_S` (2 s) is forgotten, so the tracker keeping the id never starves the bot. The one real target on the two runs
+  that started outside the crop took 0.76 s to come in (trackerlive30 id 20); physically a
   turn to anywhere on screen takes under 0.5 s at the measured rates. It covers a target the turn cannot bring in (the pitch budget, or
   the crop not seeing what the whole-frame search does) and the downed bot at the frame's edge (a 38 x 43 box held 3 s).
 - **A committed combo does not outlive its target.** A combo holds its intent for `BURST_HOLD_S` (3 s); a bot knocked out as the combo
   was chosen left nothing to play it on, and the pad sat idle for the rest of the hold. A hold on a hostile now lasts only while that
-  target is here, briefly missing (`LOST_S`) or coasting; the controller never cuts a primitive that is playing, and a search swing to an
-  anchor keeps its hold.
+  intent's OWN target is here by id, coasting, or last seen within `LOST_S`, and not released; another enemy in view is not that target.
+  A cancelled hold does not cut a primitive the controller is already playing (only `Idle` and the retreat's `Disengage` cut one), and a
+  search swing to an anchor keeps its hold.
 
 | Trace replay | stalls over 0.5 s | engaged on the bot (with the pad doing something) | held id visible (on the bot) |
 |---|---|---|---|
@@ -143,7 +146,8 @@ intent and reports **stalls** (engaged, and no stick, move or press for over 0.5
 | postfreeze30, this change | 2.7 / 0.7 / 2.3 / 1.3 s | 10.5 s (9.48 s) | 28% (56%) |
 
 The replay is open loop: the recorded camera does not answer the new sticks, so a bot outside the crop never comes in and is released
-after `OUTSIDE_S` (the 5.1 s stall becomes 1.7 s); live, the re-aimed turn brings it in. Engaged time falls by the seconds that were
+after `OUTSIDE_S` (the 5.1 s stall becomes 1.7 s). Whether the re-aimed turn brings such a bot into the crop live is not shown by an
+open-loop replay; it is pending the next live measurement. Engaged time falls by the seconds that were
 spent standing still; engaged time with the pad doing something does not (trackerlive30 +0.04 s; postfreeze30 -0.17 s, on the old
 finder's boxes). postfreeze30's remaining 2.7 s stall at 3.4 s is on the spawn door in the trace's recorded boxes, which the finder no
 longer makes; on the refind replay (the current finder) door and kill feed are 0 s on both runs.

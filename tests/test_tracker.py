@@ -433,3 +433,57 @@ def test_a_combo_committed_on_a_target_that_is_then_gone_does_not_hold_for_its_w
     assert decide(st(0.3, [], coasting=()), m) == brain.Combo(brain.BURST, a)       # briefly missing: the combo runs on
     later = decide(st(1.0, [], coasting=()), m)                                      # gone past LOST_S, not coasting
     assert not isinstance(later, brain.Combo) and m.target is None
+
+
+def _released_85(m):
+    off = lambda: det(1907, 635, 561, w=302, track=85)
+    _seen_twice(m, 0.0, [off()])
+    decide(st(brain.OUTSIDE_S + 0.2, [off()]), m)
+    assert 85 in m.barred
+    return off
+
+
+def test_a_released_id_recovers_once_its_box_is_inside_the_crop():
+    """Review: the tracker keeping the id made the bar permanent; the bot centred at 1.8, 2, 3 and 10 s and was never taken again."""
+    m = Memory()
+    off = _released_85(m)
+    assert not isinstance(decide(st(brain.OUTSIDE_S + 0.3, [off()]), m), Engage)      # still outside: no immediate retry
+    centred = det(1280, 700, 561, w=302, track=85)
+    got = decide(st(brain.OUTSIDE_S + 0.4, [centred]), m)
+    assert got == Engage(centred) and 85 not in m.barred
+
+
+def test_the_released_set_forgets_an_id_it_no_longer_sees():
+    m = Memory()
+    _released_85(m)
+    decide(st(brain.OUTSIDE_S + 0.2 + brain.BARRED_S + 0.1, []), m)
+    assert m.barred == {}
+
+
+def test_a_held_combo_does_not_survive_on_a_replacement_target():
+    """Review: the outside timeout released 85 and picked 90, and the Combo held on 85 was still issued while the target was 90."""
+    m = Memory()
+    a, b = det(1907, 635, 561, w=302, track=85), det(1280, 700, 561, w=302, track=90)
+    _seen_twice(m, 0.0, [a])
+    m.intent, m.hold_until = brain.Combo(brain.BURST, a), 3.0
+    decide(st(1.4, [a, b]), m)
+    got = decide(st(brain.OUTSIDE_S + 0.2, [a, b]), m)
+    assert not isinstance(got, brain.Combo) and got == Engage(b) and m.target.track == 90
+
+
+def test_a_combo_on_a_dead_target_ends_even_with_another_enemy_in_view():
+    m = Memory()
+    a, b = det(1280, 720, 600, track=1), det(1500, 700, 500, track=2)
+    _seen_twice(m, 0.0, [a, b])
+    m.intent, m.hold_until = brain.Combo(brain.BURST, a), 3.0
+    assert decide(st(0.3, [b], coasting=()), m) == brain.Combo(brain.BURST, a)      # its target briefly missing: the combo runs on
+    got = decide(st(0.8, [b], coasting=()), m)                                       # gone past LOST_S, not coasting
+    assert not isinstance(got, brain.Combo) and got == Engage(b)
+
+
+def test_a_combo_whose_own_target_is_coasting_holds_even_with_another_enemy_in_view():
+    m = Memory()
+    a, b = det(1280, 720, 600, track=1), det(1500, 700, 500, track=2)
+    _seen_twice(m, 0.0, [a, b])
+    m.intent, m.hold_until = brain.Combo(brain.BURST, a), 3.0
+    assert decide(st(1.2, [b], coasting=(1,)), m) == brain.Combo(brain.BURST, a) and m.hold_until == 3.0   # the hold itself stands
