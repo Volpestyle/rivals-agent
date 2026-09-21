@@ -293,6 +293,30 @@ uses with finite, evidence-justified knowledge times: empty output, unknown-only
 output or arbitrary end-of-file deferral is not a passing repair. This contract
 does not require a separate streaming service.
 
+**Positive glyph evidence is admissible for measurement, not yet certified.**
+An explicit per-frame match to the expected ability glyph is different from
+"lit, no digit". Keep it as a named, switchable observation with reader/version
+provenance; absence of a match is unknown. Validate against native-frame labels
+per creator and slot, including visible countdowns that digit OCR misses, chat,
+dark scenes, effects and prohibition states. Zero matches on OCR-readable
+countdowns alone does not measure false positives on the unreadable cases this
+signal is meant to recover. Record denominators, false matches and unknowns;
+freeze thresholds before the audit and retain conflicting glyph/digit evidence
+as unknown. Enabling it for labels requires the measurement's acceptance.
+
+Its immediate claim is **glyph displayed / no countdown drawn**, not ready or
+no cast. The native review reports Day uppercut charges dropping at 46.7 s while
+the glyph still identifies at 46.8, before the lock appears at 46.9. Putting the
+cast after the last glyph would exclude that real use. Fix the MK charge reader
+against the seven legible badge transitions and retain charge evidence as the
+primary timing witness there. A glyph-to-countdown transition may tighten cast
+bounds only with a verified ability-specific onset relationship, including any
+display delay; otherwise it bounds countdown appearance. It does not alone
+certify B0 negatives or readiness through missing frames. The existing matcher
+returns generic `teamup`, not a partner/variant identity; variant assignment
+needs separately verified per-segment evidence or remains unknown. Retain the
+declared two-second experiment even if accepted glyph evidence improves precision.
+
 Neither a lit icon without digits nor an earlier cooldown expiry proves present readiness through an
 unobserved interval. Update loader fields, removed-kind checks and feature
 semantics together: retain health `cause`, never encode unknown-cause HP loss as
