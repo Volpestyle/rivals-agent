@@ -46,9 +46,10 @@ Order is meta, then segments in time order, then events in time order.
 - **`ability_cast` is the only kind that claims an ability fired.**
   `slot_unavailable` means the icon dimmed, which also happens on a wall climb
   or mid-swing, and is not a cast.
-- **Event proposals are not ability-use truth on a VOD.** They are what the HUD
-  showed. No hand-checked VOD sample exists yet; until 30 events on one clip have
-  been checked frame by frame, treat this stream as a proposal, not a label.
+- **Verified on match footage, per type.** 30 events on the Req clip were checked
+  frame by frame against their own before/after crops. What passed, and what did
+  not, is in **Hand-check, Req clip** below. Types not marked verified there are
+  proposals, not labels.
 - **`hp_lost` is damage only when hp is below max.** Where max hp could not be
   read, a shield tick still surfaces under this name: 68 of run1's 903 events
   (7.5%) are shield movement wearing an `hp_lost` / `hp_gained` /
@@ -56,6 +57,37 @@ Order is meta, then segments in time order, then events in time order.
   proper are the ones where both numbers were read and moved together. In the
   practice range *nothing damages the player*, so any `hp_lost` there is a
   shield tick by construction.
+
+### Hand-check, Req clip (30 events, frame by frame)
+
+Sampled across every type, each checked against the two frames that prove it.
+
+| type | verdict | n |
+|---|---|---|
+| `hp_lost`, `hp_gained` | **verified** | 3/3 |
+| `web_cluster_fired`, `web_cluster_reloaded` | **verified** | 5/5 |
+| `charges_spent`, `charges_regained` | **verified** | 5/5 |
+| `ability_cast` | **verified after a fix** | 5/5 (2 phantoms removed) |
+| `slot_unavailable` / `slot_available` | **not verified** | 6/10, 2 wrong, 2 unreadable |
+
+Ammo, hp and charge events were right every time — 13/13.
+
+**`ability_cast` had phantoms, now fixed.** Three of seven sampled casts were not
+casts: the countdown blinked "off" for a single frame and came back, and the
+return read as a fresh cast. A countdown dropout is now treated as unknown
+rather than as the ability being cast again, which removed two of them. The
+third turned out to be a real cast that I had misjudged — the slot shows its
+icon at i183 and a `4` fades in by i187 — so the check corrected me as well as
+the code.
+
+**`slot_unavailable` / `slot_available` do not survive a stream.** Two of the ten
+sampled were on frames where **Twitch chat covers the ability row**, and the
+reader committed to a verdict on an occluded slot instead of saying unknown. Two
+more were dim-versus-red judgements too marginal to settle by eye. This type is
+useful on our own captures, where nothing overlays the HUD, and should not be
+trusted on a stream until the icon box gets an occlusion test. **`ability_cast`
+is unaffected** — a countdown has to be centred in its slot, which chat text is
+not.
 
 ### Format 2, and why
 

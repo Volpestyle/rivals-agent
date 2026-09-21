@@ -577,6 +577,19 @@ def extract_one(reads, debounce=None, seg_index=0):
         return holds.get(name.split(":", 1)[0], 2)
 
     channels, events, max_seen = {}, [], {}
+    # A countdown that blinks "off" for one frame and comes back is the reader
+    # losing it, not the ability being cast twice. Hand-checking 30 events found
+    # three phantom casts from exactly this, all of them mid-countdown.
+    slots = sorted({s for r in reads for s in (r[2].cooldowns or {})})
+    cd_clean = {}
+    for slot in slots:
+        seq = [(r[2].cooldowns or {}).get(slot) for r in reads]
+        seq = ["off" if v is None else v for v in seq]
+        fixed = list(seq)
+        for k in range(1, len(seq) - 1):
+            if seq[k] == "off" and seq[k - 1] != "off" and seq[k + 1] != "off":
+                fixed[k] = None          # unknown: no transition either way
+        cd_clean[slot] = fixed
     hp_clean = _despike([r[2].hp for r in reads],
                         [(r[2].bar_damage or 0) > DAMAGE_STRIPE for r in reads],
                         [r[2].max_hp for r in reads])
@@ -586,6 +599,8 @@ def extract_one(reads, debounce=None, seg_index=0):
             max_seen[i] = hud.max_hp
         signals = _signals(hud)
         signals["hp"] = hp_clean[n]
+        for slot, value in cd_clean.items():
+            signals[f"cooldown:{slot}"] = value[n]
         if len(read) > 3:                 # optional: is a kill-feed line up?
             signals["killfeed"] = read[3]
         for name, value in signals.items():
