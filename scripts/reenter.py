@@ -698,6 +698,25 @@ def steer(io, zone, screen, locate=None, done=None):
     raise Refuse(f"the cursor did not reach the {zone.name} in {MAX_STEPS} nudges", io.frame())
 
 
+SETTLE_S = 3.0   # a just-opened screen may take this long to be readable: live, hero select's active tab read 192 of 255 on the first frame
+                 # (the screen fading in, game clock 00:02) against 250 settled, under TAB_WHITE's bar; 30 s later it read "all"
+
+
+def settle(io, screen, read, timeout=SETTLE_S, poll=0.1):
+    """(frame, value) once `read(frame)` is not None on a fresh frame that still shows `screen`. Sends nothing while it looks; the screen
+    changing, or nothing readable within `timeout`, is a Refuse, as an unreadable screen always was."""
+    end = io.now() + timeout
+    while True:
+        f = io.frame()
+        now = classify(f)
+        if now != screen:
+            raise Refuse(f"the screen changed to {now} while waiting to read {screen}", f)
+        value = read(f)
+        if value is not None or io.now() >= end:
+            return f, value
+        io.sleep(poll)
+
+
 def wait_for(io, screens, timeout, poll=0.3):
     """Send nothing until the frame classifies as one of `screens`; Refuse after `timeout` seconds."""
     end, f = io.now() + timeout, None
@@ -779,14 +798,15 @@ def run(io, log=print):
             safe.press("A", on_practice_range_tile)
             wait_for(io, {"hero_select", "in_range"}, 40)  # loading screens between are unknown: nothing is sent
         elif screen == "hero_select":
-            n = RB_PRESSES.get(hero_tab(f))
+            f, tab = settle(io, "hero_select", hero_tab)          # the screen fades in: its active tab is dim for the first moments
+            n = RB_PRESSES.get(tab)
             if n is None:
-                raise Refuse(f"hero tab {hero_tab(f)} is not recognised", f)
+                raise Refuse(f"hero tab {tab} is not recognised", f)
             for _ in range(n):
                 safe.press("RB")
-            f = io.frame()
-            if hero_tab(f) != "duelists":
-                raise Refuse(f"the hero tab is {hero_tab(f)} after RB, not duelists", f)
+            f, tab = settle(io, "hero_select", hero_tab)
+            if tab != "duelists":
+                raise Refuse(f"the hero tab is {tab} after RB, not duelists", f)
             steer(safe, SPIDER_SLOT, "hero_select", done=lambda fr: on_spiderman(fr).ok)   # the tooltip beside the ring counts; the tooltip alone does not
             safe.press("A", on_spiderman)
             safe.press("X")  # hero select only: Safe re-classifies the frame first
