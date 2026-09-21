@@ -1137,6 +1137,11 @@ def _badge_mask(frame, cx, layout=PAD):
     # itself rather than a hole in it.
     if not layout.badge_light_disc:
         return _ring_badge(img)
+    return _disc_badge(img)
+
+
+def _disc_badge(img):
+    """(mask, disc height) for a badge drawn as a dark digit in a light disc."""
     disc = (img.min(axis=2) > 150).astype(np.uint8)
     n, lab, stats, _ = cv2.connectedComponentsWithStats(disc, connectivity=8)
     if n < 2:
@@ -1176,8 +1181,66 @@ def _ring_badge(img):
     return inner[ry:ry + rh, rx:rx + rw], int(rh)
 
 
+def _lone_badge_digit(img):
+    """(mask, disc height) for an M&K badge whose ring is too faint to find: one
+    bright digit, centred, on the badge's dark centre. Day uppercut draws its
+    "1" this way at 46.7, 241.0, 321.0, 613.0, 721.5, 749.0 and 759.1 s."""
+    ink = (img.max(axis=2) > 170).astype(np.uint8)
+    n, lab, stats, _ = cv2.connectedComponentsWithStats(ink, connectivity=8)
+    H, W = ink.shape
+    found = []
+    for i in range(1, n):
+        x, y, w, h, area = stats[i]
+        cxr = (x + w / 2) / W
+        if area < 25 or not 0.3 * H <= h <= 0.55 * H or not 0.4 <= cxr <= 0.75:
+            continue
+        pad = max(3, h // 3)
+        ring = img[max(0, y - pad):y + h + pad, max(0, x - pad):x + w + pad].max(axis=2)
+        around = ring[(lab[max(0, y - pad):y + h + pad, max(0, x - pad):x + w + pad] != i)]
+        if around.size and float(np.median(around)) < LONE_DIGIT_DARK:
+            found.append(i)
+    # Chat text over the badge is bright letters on dark too (Req 163.9-167.2:
+    # "for some 1v1s"). A badge digit is the only digit-sized shape there; its
+    # progress arc is not digit-sized.
+    sized = [i for i in range(1, n) if stats[i][4] >= 25 and 0.3 * H <= stats[i][3] <= 0.55 * H]
+    if len(found) != 1 or len(sized) != 1:
+        return None
+    x, y, w, h, _ = stats[found[0]]
+    return (lab == found[0]).astype(np.uint8), int(h / 0.6)
+
+
+LONE_DIGIT_DARK = 110    # the badge's dark centre around a lone digit, max channel
+
+
 def read_charges(frame, cx, layout=PAD) -> int | None:
+    """The charge badge's number, or None. On M&K the badge is drawn in two
+    styles -- a light ring and digit around a dark centre, or a light disc
+    with a dark digit -- and the ring is sometimes too faint to find; each is
+    tried in turn, the ring first, and only when the one before reads nothing."""
     found = _badge_mask(frame, cx, layout)
+    n = _badge_number(found)
+    if n is not None or layout.badge_light_disc:
+        return n
+    img = crop(frame, _badge_box(cx))
+    s = _scale(frame)
+    if s != 1.0:
+        img = cv2.resize(img, None, fx=s, fy=s, interpolation=cv2.INTER_CUBIC)
+    for other in (_disc_badge, _lone_badge_digit):
+        n = _badge_number(other(img), max_aspect=DIGIT_MAX_ASPECT)
+        if n is not None:
+            return n
+    return None
+
+
+# A badge digit is 9-12 px wide against 18-19 high. A wider blob in a fallback
+# read is the digit merged with something bright beside it: a Twitch emote band
+# abutting the badge read a "2" as "1" on all 37 Req uppercut disc reads of "1"
+# (237.5-240.1, 250.7, 443.0-444.5). The census of every fallback read: this
+# rejects those 37 and one correct "2" (Day 807.7, a badge fading in).
+DIGIT_MAX_ASPECT = 0.75
+
+
+def _badge_number(found, max_aspect=None):
     if found is None:
         return None
     mask, disc_h = found
@@ -1185,41 +1248,135 @@ def read_charges(frame, cx, layout=PAD) -> int | None:
     # the ring that survived, not a glyph, and must not be read as one.
     glyphs = [g for g in _glyphs(mask, BADGE_SIZE, min_area=25)
               if g[0][3] >= 0.45 * disc_h]
+    if max_aspect is not None and any(g[0][2] > max_aspect * g[0][3] for g in glyphs):
+        return None
     return _number(glyphs) if glyphs else None
 
 
-def read_cooldown(frame, name, layout=PAD) -> int | None:
-    """Seconds left on this slot's cooldown, or None when no number is drawn.
+# Countdown digits that the template margin cannot tell apart are told apart by
+# topology instead. A countdown 6 and 8 differ only at the 6's open top-right,
+# and normalising to 16x24 smears that gap: every visible countdown the reader
+# returned nothing for on the two train sections was a 6 within 0.04 of an 8, or
+# a 9 within 0.04 of an 8. Holes, counted on the glyph before normalising, do
+# not smear: a 6 has one hole in its lower half, a 9 one in its upper half, an 8
+# one in each, a 0 one tall one. Used only to choose between candidates the
+# templates already rank close -- never to override a confident template read.
+_TOPOLOGY = {"6": "low", "9": "high", "8": "both", "0": "tall"}
+HOLE_MIN_AREA = 6          # px; smaller "holes" are JPEG speckle
 
-    This is the signal that a cast actually happened. An icon going dim or red
-    only says the slot is unusable -- which also happens while climbing a wall,
-    mid-swing, or during any other lockout -- but the countdown appears only
-    when the ability itself went on cooldown.
+
+def _holes(mask, box):
+    """Shape of the glyph's holes: "none", "low", "high", "both", "tall" or "other"."""
+    x, y, w, h = box
+    g = cv2.copyMakeBorder(mask[y:y + h, x:x + w].astype(np.uint8), 1, 1, 1, 1,
+                           cv2.BORDER_CONSTANT, value=0)
+    contours, hier = cv2.findContours(g, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
+    if hier is None:
+        return "none"
+    spans = []
+    for c, link in zip(contours, hier[0]):
+        if link[3] != -1 and cv2.contourArea(c) >= HOLE_MIN_AREA:   # an inner contour
+            _, cy, _, ch = cv2.boundingRect(c)
+            spans.append(((cy - 1) / h, (cy - 1 + ch) / h))
+    if not spans:
+        return "none"
+    if len(spans) == 2:
+        (a0, a1), (b0, b1) = sorted(spans)
+        return "both" if a1 <= 0.55 and b0 >= 0.45 else "other"
+    if len(spans) > 2:
+        return "other"
+    top, bottom = spans[0]
+    if bottom - top >= 0.45:
+        return "tall"
+    centre = (top + bottom) / 2
+    return "low" if centre >= 0.55 else ("high" if centre <= 0.45 else "other")
+
+
+def _countdown_char(mask, box):
+    """classify(), with the topology tie-break for close 0/6/8/9 candidates."""
+    glyph = _normalise(mask, box)
+    ch = classify(glyph)
+    if ch is not None:
+        return ch
+    rows, chars = _flat_templates()
+    dist = (rows != glyph.ravel()).sum(axis=1) / glyph.size
+    close = {str(c) for c, d in zip(chars, dist) if d <= MAX_DIST and d - dist.min() < MIN_MARGIN}
+    if not close or not close <= set(_TOPOLOGY):
+        return None
+    shape = _holes(mask, box)
+    fits = [c for c in close if _TOPOLOGY[c] == shape]
+    return fits[0] if len(fits) == 1 else None
+
+
+def _countdown_boxes(mask):
+    """Countdown glyph boxes; a pair of digits drawn touching is split in two.
+
+    A countdown's two 1s in "11" are set close enough to merge into one
+    component twice a digit's width, which the size window then throws away:
+    team-up's 11 was never read. Such a component is cut at its ink valley.
+    """
+    min_h, max_h, min_w, max_w = COOLDOWN_SIZE
+    wide = _segment(mask, (min_h, max_h, max_w + 1, 2 * max_w + 4))
+    out = list(_segment(mask, COOLDOWN_SIZE))
+    for x, y, w, h in wide:
+        cols = mask[y:y + h, x:x + w].sum(axis=0)
+        lo, hi = int(w * 0.35), int(w * 0.65)
+        cut = lo + int(np.argmin(cols[lo:hi]))
+        out += [(x, y, cut, h), (x + cut, y, w - cut, h)]
+    return sorted(b for b in out if b[2] >= min_w)
+
+
+def read_cooldown(frame, name, layout=PAD) -> int | None:
+    """Seconds left on this slot's cooldown, or None when no number is read.
+
+    None is *not* "no countdown": it is also a countdown the reader could not
+    read. The event logic keeps a cooldown's identity through such frames (see
+    perception.events), and never treats a None as the cooldown having ended.
     """
     cx = layout.slot_cx[name]
-    for mask in _masks(frame, _icon_box(cx), 115, contrasts=(55, 30)):
-        middle = mask.shape[1] / 2
+    masks = list(_masks(frame, _icon_box(cx), 115, contrasts=(55, 30)))
+    # Templates first, exactly as before: the first pass that reads wins, so
+    # every countdown this reader already read comes out the same.
+    for m in masks:
+        value = _countdown_in(m, False)
+        if value is not None:
+            return value
+    # Only where that read nothing, the topology tie-break -- and only when every
+    # pass agrees on it. A real
+    # 6 or 8 shows the same holes in the same places on all six passes; a 9
+    # whose tail has half-closed over a busy background grows a second "hole"
+    # on some passes and not others, and one such pass would otherwise read 8.
+    tied = [_countdown_in(m, True) for m in masks]
+    return tied[0] if tied and tied[0] is not None and len(set(tied)) == 1 else None
+
+
+def _countdown_in(mask, tiebreak) -> int | None:
+    """The centred countdown one threshold pass shows, or None."""
+    middle = mask.shape[1] / 2
+    if tiebreak:
+        glyphs = [(b, _countdown_char(mask, b)) for b in _countdown_boxes(mask) if b[2] <= b[3]]
+    else:                                 # exactly the reader as it was
         glyphs = [(b, classify(_normalise(mask, b)))
                   for b in _segment(mask, COOLDOWN_SIZE) if b[2] <= b[3]]
-        for group in _groups(glyphs):
-            # A countdown is at most two digits: the slot draws whole seconds
-            # and the longest cooldown in the kit is 15 s. Three digits is never
-            # a countdown, and letting them through cost real data -- chat that
-            # happened to sit centred in the slot read as 120..188 and each one
-            # became a phantom cast, about twenty of them in one 15 min section.
-            if len(group) > 2:
-                continue
-            value = _number(group)
-            if value is None:
-                continue
-            # A countdown is centred in its slot. On a stream, chat scrolls
-            # across the ability row and its letters are the right size to read
-            # as digits -- that is where eight uppercut "casts" in 2.6 seconds
-            # came from, on a 7 second cooldown. Off-centre text is not ours.
-            first, last = group[0][0], group[-1][0]
-            centre = (first[0] + last[0] + last[2]) / 2
-            if abs(centre - middle) <= COOLDOWN_CENTRE * mask.shape[1]:
-                return value
+    for group in _groups(glyphs):
+        # A countdown is at most two digits: the slot draws whole seconds
+        # and the longest cooldown in the kit is 15 s. Three digits is never
+        # a countdown, and letting them through cost real data -- chat that
+        # happened to sit centred in the slot read as 120..188 and each one
+        # became a phantom cast, about twenty of them in one 15 min section.
+        if len(group) > 2:
+            continue
+        value = _number(group)
+        if value is None:
+            continue
+        # A countdown is centred in its slot. On a stream, chat scrolls
+        # across the ability row and its letters are the right size to read
+        # as digits -- that is where eight uppercut "casts" in 2.6 seconds
+        # came from, on a 7 second cooldown. Off-centre text is not ours.
+        first, last = group[0][0], group[-1][0]
+        centre = (first[0] + last[0] + last[2]) / 2
+        if abs(centre - middle) <= COOLDOWN_CENTRE * mask.shape[1]:
+            return value
     return None
 
 
@@ -1413,6 +1570,29 @@ def identify_slot(frame, cx) -> str | None:
     if other.size and agree[best] - other.max() < ICON_MARGIN:
         return None
     return name
+
+
+# --- glyph evidence: measured, not used --------------------------------------
+# A running countdown replaces the ability's icon glyph, so a frame whose slot
+# matches the EXPECTED glyph is a candidate witness that no countdown is drawn
+# there. Admitted only as this named, switchable, per-frame observation, to be
+# measured (docs/learning-plan.md, glyph contract): it bounds when a countdown
+# appears, never when the ability was used -- Day uppercut's badge drops at
+# 46.7 s while the glyph still matches at 46.8 and the lock reads at 46.9 --
+# and it certifies neither readiness nor no-cast. Nothing in the event logic
+# reads it. The thresholds are identify_slot's (ICON_MATCH, ICON_MARGIN), frozen
+# for the audit at GLYPH_READER.
+GLYPH_READER = "identify_slot/ICON_MATCH+ICON_MARGIN/1"
+
+
+def glyph_evidence(frame, slot, layout=None) -> bool | None:
+    """True when `slot`'s own glyph is matched in its position; None otherwise.
+
+    One-sided: no match is unknown, never "a countdown is drawn". The team-up
+    template is generic, so a match there says nothing about which team-up.
+    """
+    layout = layout or PAD
+    return True if identify_slot(frame, layout.slot_cx[slot]) == slot else None
 
 
 def slot_mapping(frames, layout=None):

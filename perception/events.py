@@ -57,7 +57,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))  # repo root, for `agent`
 
-from perception.hud import SLOT_CX, Hud  # noqa: E402
+from perception.hud import PAD as PAD_LAYOUT, SLOT_CX, Hud  # noqa: E402
 
 # Frames a new value must hold before it is believed. `ready` is 1 on purpose;
 # see the module docstring.
@@ -90,9 +90,23 @@ SHIELD_WINDOW = 3   # frames apart that an hp and a max-hp change may still be o
 #    marking both sides with the existing hard_cut / after_cut values -- which
 #    only ever makes a reader more conservative. `check` finds files written
 #    before them by the keys they lack (REQUIRED_META), not by a version bump.
-FORMAT_VERSION = 4
+# 5: cooldowns are timers identified by expiry, so a countdown read again after
+#    unread frames is the same cooldown, not a new cast. Every event gains
+#    `known_i` / `known_at`, when the evidence it needs is available; [t_from,
+#    t_to] is occurrence only. Durations are inputs, from a kit table keyed by the
+#    source's patch (meta `kit`). New kinds `ability_uncertain` (a
+#    timer this segment may or may not have started) and `cooldown_ended` (a
+#    timer watched into its last seconds ran out; it certifies no readiness).
+#    The icon events are display state, renamed `icon_dimmed` / `icon_lit` from
+#    slot_unavailable / slot_available; the ult's icon too, unless its meter
+#    proves a spend or a refill. hp_lost / hp_gained carry `cause`: damage / heal
+#    only with max hp read unchanged on each side of the change, else unknown.
+#    The meta line gains `kit` and `timer_lengths` (observed tops, a report),
+#    and its `recipe` the resolved `patch` and `patch_from`; segment lines gain
+#    `hero_weak_frames`.
+FORMAT_VERSION = 5
 REQUIRED_META = ("recipe", "cut_times", "observed", "slot_mapping", "writer",
-                 "container_start_s", "stream_start_s")
+                 "container_start_s", "stream_start_s", "timer_lengths", "kit")
 # The code whose behaviour decides what an events file contains.
 WRITER_FILES = ("perception/events.py", "perception/hud.py", "perception/scoreboard.py")
 
@@ -131,6 +145,19 @@ PORTRAIT_MATCH, PORTRAIT_CLEAR = 0.34, 0.31
 # lane notes -- and hp cannot back it up: Spider-Man in his ultimate with a
 # shield reads 650/650, exactly Strange's base maximum.
 PORTRAIT_OTHER = 0.75
+# A known limit: the negatives are the heroes seen so far, and the own-hero
+# bar is a one-class match the two spectated teammates passed at 0.36-0.38. A
+# teammate not yet among the negatives in that band passes as own play. The
+# SPECTATING banner would generalise and is not read. So a match this weak is
+# counted per segment (`hero_weak_frames`) for a consumer to see, rather than
+# being plain "playing".
+# Measured on every 15th own-play frame of both train sections (692): own
+# scores have median 0.41, 5th percentile 0.396, max 0.44; the teammates that
+# passed scored 0.36-0.38.
+PORTRAIT_WEAK = 0.39
+# Per-frame glyph evidence (hud.glyph_evidence) is recorded as a read's ninth
+# item only when this is on. Off: it is under measurement, and nothing reads it.
+GLYPH_EVIDENCE = False
 # The verdict gets the same debounce treatment as any other channel. Without it
 # the spectating stretch of the sample VOD, where the portrait sits near the
 # boundary, shatters into ten two-frame segments instead of one.
@@ -251,50 +278,141 @@ _PORTRAITS_B64 = (
 
 
 # Other heroes' portraits, same 40x30 BGR layout, one per hero found passing as
-# ours. Doctor Strange: DayMR, daymr-2879354299 at 830 s.
+# ours: Doctor Strange (DayMR playing him, daymr-2879354299 at 830 s), then the
+# two teammates DayMR spectates in that section -- a bearded hero (80.5 s) and a
+# white-haired one (84.3 s). Each teammate passed the one-class match at
+# 0.36-0.38 and was kept as own play in several stretches (around 81, 85, 201,
+# 363, 693 and 718 s). Measured on 391 real Spider-Man frames from every source
+# and both train sections, the highest score against these three is 0.705; the
+# teammates themselves score 0.72-0.99, and the one frame under the bar is
+# absorbed by PORTRAIT_HOLD.
 _OTHER_HEROES_B64 = (
-    "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"
+    "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"
+    "6s4whaQ7Y0one1pyD2zfGecI1Qu9RvGWSMvR3Ruqsw53lhV0l5W0FBTU5hTUFtS01fZ2NI92dEwOjV0eP31vfP7B2MI74xfe"
+    "H5p/t3XstdLWK+kl0/uPDu060JW4tz1xb/exwnPvP7jXVVu2Nz7SoxducClzkjYO1RQtDvddGxuebmtuycksPniovqCio7ar"
+    "u+l4d9vJsdErp2ZePTX35uTZd6YW3j959oORmXd7x99sG7jb3HW7ueNWW9fttu5Xmzve+NXTDxcX5spyj+xZby45EHO+u+LJ"
+    "+ZmPLl98fWpytrG69vDO3MT46a6e8baB2f7pyZ65cxO3z5y4uzD11uzEm2emH585/f7szJPp6Xenpp9MzTyZPPX4xIlHQ0Nv"
+    "1dbdefrrz15/+Nrs1EBBWkxbwfobg8W/vjb751dvfLx4+lxrcdGu0NR4+2Rb/VBN01hD72BV/3zf4lTHpdM9SzO9r8wM3J8c"
+    "uD/e9+pI753jfXcGel/pbL/ZWLdYUjgfF1P/5Tf/8esvP7//+vmmuoRjycraVMebUzXfPJj/9Prxcz1p2fu1+zYrGvMOVR9N"
+    "b8svb89vGCgf6i4eGamdP9F8eazl6lDT5a66C82VZ2pKp4vzxjPSBvYntW2Lb1BBRz7/6o//+c2fPnl6b2wkbesG+hYv6mJf"
+    "0p/e7P/4Zt2547vzM1VJCdKKzB3Fh/Y35xW05FXVZ9Q2HGsfrDo1VHfmeMPCQMNCe/VcbfHJwqzBlANtO7ZVxkXnhTlzot21"
+    "N+4++uLpb7/6/IOly63ZKbp4r3/9MdXd2f2PLmecH9tWkqU+sBNurzjYU5XfUVpYm5XfkF3VUdzZVznSXzN5vPHMYNPZztrZ"
+    "+tITBcd6D+9v2BZfFBOe6XEc2xjZWll74sLUK2/fvPfha/OLJzOy9ooSIv0bcxUvn9l9dXJPbZY9JUFdn7dzpKW4r6aoqSCv"
+    "vbhmoKant7JvoG5ssOFUX/1UV92ppsrx0rz+jCPNexMrtm8s2hBVHG4rjd5w7GhyU2tJ9xuXzr3/ynh/7YZ4L25fPGWqd93t"
+    "2ayRqt15u0IPb7VXZe083lwy3dvWWlTcXlLbWdbaVdHVXt7bXjnYXjPSUjNSWzZUktuTfbQ943Br6r6OpM2dnnUpUdEZCRsz"
+    "Oyqb3roxf2Wq+tB2pduwOvuA9vJY0WJ3bXPanqQ4w6GEkM6q9Eun+iszU4tT0ioz84tTckvTS6pz6+tL25sqexsrB2pKByqL"
+    "ByuLjlcVTdTkn8lp7Nmb3Ri/N+dw2rGb1849fnBhsCNt5yZ1erLn/FjNrRODYzXF2fsiDyc6ClPje+tycvYlHN25PXVn4sEt"
+    "O4/s2J+5Pz0/taAku6oiv7GioK2qqLu2ZLC+fKK36dKrv/lw/sk7PTeujC1dvP72rXc+fvWTT+4+fDBz81r3vRvjb92a/+XL"
+    "5167PnzjbOvUQElzyeHcA9uSN69NiI7Y5PVuCovYHBm7NWbjjg0JSVv3H0hMS9mbk5FcknW4tr9l/pMf/vzw+y9vfv3h0teP"
+    "Xv36jXe+evDlt+/95dt3vv7qzm8/u/HuG2fuLA5M9GX3NBwsy9x8cIt7Y6g23IA4VTKbXGZVwGY5YoQRnUyhk2kMiMmscNg1"
+    "Xo8pNvtwxYf/9Z9P//s/n37/x8c/PH7jv2+/+e3Nz/76+lffvfbp52eXrtR112/P2GeOczEjzHS7kqgVoOUslJyFVXDIKvCb"
+    "SsOz8CgWAcMhEYUMJiKQGeRGl9ETbot26j0X3n7y5u+++PSvv3/n+3sPv7/0zvdX3v/uyltPTy7M51flODe6MGbxcyGKAAuM"
+    "MkhRGh5KxUbBDJSUFiSioLjENUy8PwPrT0cH0NBBDCyBRaALKTwRQwgxxTX9F87f+uV7v/n87S9vP/7uwnvfLtz/ePjsxaLO"
+    "mo3Htsu2W9eESX6m4/xMyXlRxVmtYAUgjAAJ1V9A9OPgVwkoAUJ6kICG4tEwPAqOSyJyiBQukc4l0ZV8YeLRtoauy5dffvz4"
+    "12+994dr9x6NjI1lVuXGHtumS/ZwkqyUeA3OKUOZJGg9H61iBkLUAAlptZC4mk9cJWUEyrk4lZCslTINsMAsl1qVCrtKY1Wo"
+    "ZGyGd3v6xiPt5X2Xbz9+75X7V072VhfuWnvApdljlG2Vs+IRejREdkpxZgnOwMepWSiYtkZM9OPinmehfy4gr5YGB8FcrFJM"
+    "NSA8hwYJMxtiHCHrPe5929fFrN/jiMk6lDd2YvZmX2d3VmLCRjkcx+dtkoijeaxIIStUTDeLiGYJ2SSi6PlEmIHmYl8kr/o5"
+    "7hc/Cw5cxcGuDkatYgSuYgStZmIC+USChEZDWAyzgteWWdFVPnNq4O6Dlz98+84bZwb7y/fv2WYyhYulYWKxnc9SB5Po/r+g"
+    "BTxPDXietuYXjMDnmEEvsFGrOag1AhxWhCUK0SRuIF6AIimoHCWNrecIjCKeVkqeLiq/M3rj7uzDLz/807dfffOrR2+faG3Y"
+    "ExVpF0lNfIETkUYYNRtDnRs9zg1e+zqPZa1TF2lRenSIUwlruVyEwoRJLDGaKgwiIUSaCI2T4LFSapBWhhvJPfDO+Wu/fvjJ"
+    "f339Xz9889cnb7xek5cdZbXqRRIVj2OChXa1zKlWuDQqr14ZblZF2ZUxIaq4EG1ciD7arAnTKt1y2CLkGngMm5Sl4xP1AqxW"
+    "FKSFApuPRnzyxtXv/vj777/97pMn7w22tkXbHRCTJedw5HymVsoyIXydiK8T8NS8YCWXquCRlAKCVkTSiyl2OcejFcVY5Fu9"
+    "hiPbwyqzEiqzt5YfW5eb6t2xRXZkM+3e1fZv//L0u69/c+3MXMr2nXq+SEQk6wTcKKt2c4R1vdukF/L0PL6Wx1IBM4cAMYOk"
+    "dH8xdbWCDe4djFFMiDDwUna4+xuPTA/lzY3mTQwd6uqOry+WtTVFfv7p4qfv3h6or4p3uMxcsZHD2+ZxthVldpRm7F8fbhEJ"
+    "LGKxVSqyQnwrDB7S6EYJ1SAmG0REFTtIERxgk5GTN9lHW7NuzrW+frXv1estr71Wf+XS2tR02qXLuRdn63P3bg2FYCtbEKNS"
+    "Vxzce228b6KhZJvT6FHAbjniVsKhKplXK4swyGIsSJxNGWtC3AjXxKOESFj7Y0MnmsoeXpz63dtLX374ym8+uHrppreuU1ZU"
+    "qa4ojN7iURmZNAeXl+Rx16cmd+cdzYqPdYnZEeAW0Mij9Mq1Vs3GEMM2jyUxMiQpOnR3hDveaoyUIxGw/EBEzGhZ7Zunz//5"
+    "0ZPvP/vtNx9/PjoLj5+zHc0PTtjC8mqpdiEtQi7dFxl6bPu61PWR+8NcCSGmPTGuXbGuvXGhyRu8hzZFpMRHp2yKSdkYc2ht"
+    "9B6Pd7s1ZIfFk7l2x/G8hvvji1+/+vHfnnz1w9Pv+sdEHaNQa59xQywm2kqNd8DbnPrECNuRzRHlh3b1F+UNleW3FhxuzN9f"
+    "l51UdXRn2ZGEkgPbCpK25CVuztken75h/ZGouNTITQUb9/emVb/Sf/H31z/+y/3ff//kz0O9mv5B40CvO3WXOHOHOW9nxLHt"
+    "Udm74irTdw3XFl4f6b91YuBES/54e85YS85wXWZvRWpH4aHWvANtOQdbjh2sPrinMGFbzsYtxVv2dKWU3Oic/fTCoz/c+vgP"
+    "d56O1IaeaI862bGpv2TjeMWBnqyk2kPbmrOSRhvyrox1PLow+/jK7OJ43dWphhvTLVdONMz3l0225U00Z59syR2tzezKT649"
+    "nFCSGF+2c3tn6rFLrUNPTt/88Nzd+cah4fxNp2p3zDXvv3O8/NWh+uM5yQ0Htg4UHTnbU3HrZMcbc8MPF0aXZlvvXeh5++rI"
+    "G4uDN6dbzg2Vz/UWzvUWzPXkTTQd7S/Z15a5syklsTcr7VxT092Rk0tDJzLXbTmekTxVlrZQn/ObS9OfnZs8lZfWm5Z0pqlo"
+    "abz13lTng5meh/P9S9OtDxaHPrg99cHL0w8uDl6fbDg/WHKmL2dhMHeuJ2Oi8cBQ2Z7u3MTurL1jJVlTVaXDhbklidsGsrIn"
+    "K4oXmip/e2Xhs7MzJ3PTh7NSFjtqbg43vzzadH+i5fWZzqXJ1jcvjn56f+EPj659ev/825dHbk83LY6ULI7mXxjOPtuXMdue"
+    "OlF3aLT8yETFsROl2V3pB/N3rO0pL51orj7b0/Sra+c/Oj97sjj3ZGn+5d6WK4Mtt0aa74wBf+MrJzvfuTz1x0e3f/ji8Q9f"
+    "vPOnx0sfLU29fq7z+njp+YFj53ozznSmTzWlnqhMnSg/Npyf0XokqTZl63BjzamuJvD48t7i2bdnJ4dyMofzs8821Z5trgbJ"
+    "L7aUna7Pv39q4INrZ//6wcMf/vK7H/72xx+++ug/3r31q9unHpxrf3mq+uZE2ZXhovnO7FN1Rycq0gfzDjce2d5ZuOv/AciG"
+    "Tyk="
 )
 
 
@@ -334,16 +452,22 @@ def portrait_score(frame, templates=None) -> float:
     return best
 
 
-def playing_spiderman(frame) -> bool | None:
-    """True, False, or None when the portrait slot is too ambiguous to call."""
+def hero_read(frame) -> tuple[bool | None, float | None]:
+    """(playing_spiderman, own-portrait score); the score is None when a known
+    other hero decided it."""
     if portrait_score(frame, _others()) >= PORTRAIT_OTHER:
-        return False
+        return False, None
     score = portrait_score(frame)
     if score >= PORTRAIT_MATCH:
-        return True
+        return True, score
     if score <= PORTRAIT_CLEAR:
-        return False
-    return None
+        return False, score
+    return None, score
+
+
+def playing_spiderman(frame) -> bool | None:
+    """True, False, or None when the portrait slot is too ambiguous to call."""
+    return hero_read(frame)[0]
 
 
 
@@ -359,6 +483,17 @@ BANNER_WORDS = ("killcam", "spectating")   # order matches the packed templates
 BANNER_MATCH = 0.55        # agreement with the better word
 BANNER_MARGIN = 0.03       # ... and by this much over the other one
 BANNER_HOLD = 3            # frames the banner must persist to be believed
+SCOREBOARD_HOLD = 2        # a scoreboard tap: see segment()
+# The game area's brightest channel, averaged, on a respawn or loading black is
+# 0-5; on every other frame of the two train sections it is 22 or more.
+BLACK_LEVEL = 8.0
+BLACK_AREA = (0.2, 0.2, 0.8, 0.75)     # the game area, clear of overlays at the edges
+
+
+def is_black(frame) -> bool:
+    x0, y0, x1, y1 = BLACK_AREA
+    h, w = frame.shape[:2]
+    return float(frame[int(y0 * h):int(y1 * h), int(x0 * w):int(x1 * w)].max(axis=2).mean()) < BLACK_LEVEL
 _BANNER_B64 = (
     "eNrtmEkWgzAMQ6X7X7oL0uAhDdgE6MLalIbhvwz2swyUSiUnrtAf80qlUunmDNou+0DPdNsAvj/9f7uZyGbyu5Jjxxtm"
     "u2g3E+lzT7l6XvzJ4y08vMKD3T+67YvzYHj7NkHwqHn63QSPgocJj5qXCIcBD2d5XMDjAU9uKZENv2MeJE8/e4EHcyxl"
@@ -415,6 +550,9 @@ class Segment:
     # What the HUD proves about cooldowns here: "normal" once a countdown was
     # seen, "unknown" otherwise. Never "off" -- the HUD cannot prove an absence.
     cooldowns: str = "unknown"
+    # Frames kept as own play on an own-portrait match under PORTRAIT_WEAK:
+    # low confidence that the hero is ours. None when no scores were recorded.
+    hero_weak_frames: int | None = None
 
     @property
     def frames(self):
@@ -425,6 +563,9 @@ def _hud_present(hud):
     return hud.hp is not None or hud.bar_fill is not None
 
 
+LOOKAHEAD = 6     # frames; HUD_HOLD. With the longest hold, SEG_LAG = 2 * LOOKAHEAD
+
+
 def _steady(verdicts, hold):
     """Per-frame verdicts with brief blips absorbed into their surroundings.
 
@@ -433,6 +574,11 @@ def _steady(verdicts, hold):
     run that sits between two *different* values, or at either end of the clip,
     is a real change caught briefly and is kept. None always inherits whatever
     was last believed.
+
+    The value that follows a short run is looked for only within LOOKAHEAD
+    frames of its end, and a clip's leading unknowns take the first value only
+    when it comes that soon, so a frame's verdict is settled at most SEG_LAG
+    frames after it: what makes a prefix of the reads segment as the whole did.
     """
     runs, start = [], 0
     for i in range(1, len(verdicts) + 1):
@@ -449,14 +595,14 @@ def _steady(verdicts, hold):
             before = next((runs[m][2] for m in range(n - 1, -1, -1)
                            if runs[m][2] is not None), None)
             after = next((runs[m][2] for m in range(n + 1, len(runs))
-                          if runs[m][2] is not None), None)
+                          if runs[m][2] is not None and runs[m][0] - end < LOOKAHEAD), None)
             resolved.append(None if before is not None and before == after else value)
     steady, believed = [], None
     for (begin, end, _), value in zip(runs, resolved):
         if value is not None:
             believed = value
         steady.extend([believed] * (end - begin))
-    first = next((v for v in steady if v is not None), None)
+    first = next((v for v in steady[:LOOKAHEAD] if v is not None), None)
     return [first if v is None else v for v in steady]
 
 
@@ -475,7 +621,17 @@ def segment(reads):
     # top-left status banner, when one is up.
     # "" rather than None for "no banner": absence here is a real reading, not an
     # unknown, and _steady carries unknowns forward from the last belief.
-    banners = _steady([(r[4] if len(r) > 4 else None) or "" for r in reads], BANNER_HOLD)
+    asides = [(r[4] if len(r) > 4 else None) or "" for r in reads]
+    banners = _steady([a if a in BANNER_WORDS else "" for a in asides], BANNER_HOLD)
+    # The scoreboard votes on its own, shorter hold. A player tapping the board
+    # holds it up for two or three frames at 10 Hz, one of them a fade the
+    # detector does not score; three frames of agreement missed those taps, and
+    # a countdown unreadable behind the board then came back as a new cast.
+    boards = _steady([a == "scoreboard" for a in asides], SCOREBOARD_HOLD)
+    # A black game area is a screen transition -- respawn, a loading cut -- and
+    # breaks at once: it is one or two frames long, far shorter than HUD_HOLD,
+    # and the HUD on its far side may belong to a different life.
+    black = [a == "black" for a in asides]
     playing_steady = _steady([r[3] for r in reads], PORTRAIT_HOLD)
     # The HUD gets the same treatment. A handful of frames where neither the hp
     # digits nor the bar could be read is the readers struggling, not a menu:
@@ -496,7 +652,8 @@ def segment(reads):
         # because killcam looks exactly like spectating to every other signal --
         # a foreign hero with a perfectly readable HUD -- and the two are
         # different things to anything learning from these labels.
-        broken = (cut and "hard_cut") or (dead and "death") or banners[n] \
+        broken = (cut and "hard_cut") or (dead and "death") \
+            or (black[n] and "no_hud") or banners[n] or (boards[n] and "scoreboard") \
             or (playing is False and "not_our_hero") \
             or (not hud_steady[n] and "no_hud")
         if broken:
@@ -528,12 +685,17 @@ def segment(reads):
 
 @dataclass(frozen=True)
 class Event:
-    """One transition. The press happened somewhere in [t_from, t_to]."""
+    """One transition. The press happened somewhere in [t_from, t_to].
+
+    [t_from, t_to] bounds when it happened; `known_at` is when it is known.
+    Select by known_at <= now, never by t_to: a timer's use is bounded well
+    before the read that confirms it.
+    """
 
     kind: str
-    i_from: int       # last frame proving the old value
+    i_from: int       # last frame proving the old value (timers: the earliest the use can be)
     t_from: float
-    i_to: int         # first frame proving the new value
+    i_to: int         # first frame proving the new value (timers: the latest the use can be)
     t_to: float
     slot: str | None = None       # the ability, or None when the icon is unknown
     slot_pos: str | None = None   # the layout position it fired in
@@ -541,6 +703,17 @@ class Event:
     before: object = None
     after: object = None
     segment: int = 0  # index into the segment list this event belongs to
+    # hp_lost / hp_gained only: "damage" / "heal" when max hp was read unchanged
+    # on each side of the change, else "unknown". A change in hp alone does not say why.
+    cause: str | None = None
+    # The frame after which no later read can change this event -- its
+    # existence, kind or bounds -- and its time. A prefix of the reads yields
+    # exactly the events of the whole with known_i inside it. May lie past the
+    # last frame read (an event still pending when the reads end).
+    known_i: int | None = None
+    known_at: float | None = None
+
+
 class _Channel:
     """One signal through time, with debounce and None-means-nothing."""
 
@@ -585,52 +758,61 @@ class _Missing:
 _MISSING = _Missing()
 
 
-def _signals(hud: Hud):
+def charge_evidence(hud: Hud, pos, maxes=None):
+    """The charge count a frame's badge gives as evidence: the raw read, or
+    None when it exceeds the kit's maximum for that position -- the one place
+    both charges_* events and cast placement take charge counts from. The raw
+    read in the Hud is kept as it was; nothing is clamped. Without a known
+    maximum, a read is taken as read."""
+    charges = ((hud.abilities or {}).get(pos) or (None, None))[1]
+    top = (maxes or {}).get(pos)
+    return None if isinstance(charges, int) and top is not None and charges > top else charges
+
+
+def charge_maxima(kit, mapping):
+    """{position: the kit's maximum charges} where known."""
+    return {pos: spec["charges"] for pos, ability in (mapping or {}).items()
+            for spec in [((kit or {}).get(ability) or {})] if spec.get("charges") is not None}
+
+
+def _signals(hud: Hud, maxes=None):
     """The channels one frame contributes, as {name: value or None}."""
     out = {"hp": hud.hp, "max_hp": hud.max_hp, "webs": hud.webs, "ult_ready": hud.ult_ready}
     for slot in hud.abilities or SLOT_CX:
-        ready, charges = hud.abilities.get(slot, (None, None))
+        ready, _ = hud.abilities.get(slot, (None, None))
         out[f"ready:{slot}"] = ready
-        out[f"charges:{slot}"] = charges
-        # "off" rather than None, so a countdown ending is a transition and not
-        # an unknown. None here would mean "could not read the slot at all".
-        cd = (hud.cooldowns or {}).get(slot, None)
-        out[f"cooldown:{slot}"] = "off" if cd is None else cd
+        out[f"charges:{slot}"] = charge_evidence(hud, slot, maxes)
+    # Countdowns are not a channel: they are timers, handled by _timer_events.
     return out
 
 
-def _near(known, i, span=4):
-    """The nearest recorded value within `span` frames of `i`, or None.
+def _near(known, i, span=4, after=None):
+    """The latest recorded value at or before frame `i`, within `span` frames and
+    later than frame `after`, or None.
 
-    max hp is unreadable on a few per cent of frames and its debounce coalesces
-    consecutive shield ticks, so asking for its value at one exact frame misses
-    more often than it should.
+    max hp is unreadable on a few per cent of frames, so asking for its value at
+    one exact frame misses more often than it should. Only earlier frames: a
+    value from after `i` is not known when the event is.
     """
-    for d in range(span + 1):
-        for j in (i - d, i + d):
-            if j in known:
-                return known[j]
-    return None
+    stop = i - span - 1 if after is None else max(i - span - 1, after)
+    return next((known[j] for j in range(i, stop, -1) if j in known), None)
 
 
 def _kind(name, before, after, max_before=None, max_after=None):
     """(kind, slot, amount) for a confirmed transition, or None to emit nothing."""
     if name == "ult_ready":
+        # Provisional: _ult_events keeps these only where the meter backs them.
         return ("ult_ready" if after else "ult_spent"), ULT, None
     if name.startswith("ready:"):
         slot = name.split(":", 1)[1]
         if slot == ULT:                    # the ult has its own channel above
             return None
-        # An icon going dim or red only says the slot cannot be used right now.
-        # It happens while climbing a wall, mid-swing, and through any other
-        # lockout, and it is *not* a cast: on this clip every one of these lasted
-        # 0.1-1.4 s with the charge count unchanged.
-        return ("slot_available" if after else "slot_unavailable"), slot, None
-    if name.startswith("cooldown:"):
-        slot = name.split(":", 1)[1]
-        if before == "off" and after != "off":
-            return "ability_cast", slot, after    # amount = the cooldown it started
-        return None                               # a countdown ticking or ending
+        # What the icon looks like, and nothing more. It dims or shows a red
+        # prohibition mark while crawling, wall-running, charmed, mid-swing --
+        # and on a stream HUD it stays lit through much of its own cooldown. It
+        # certifies neither a cast nor availability: only a countdown (ability_
+        # cast, cooldown_ended) or a charge change (charges_*) does that.
+        return ("icon_lit" if after else "icon_dimmed"), slot, None
     if name.startswith("charges:"):
         slot = name.split(":", 1)[1]
         delta = after - before
@@ -653,7 +835,16 @@ def _kind(name, before, after, max_before=None, max_after=None):
         if max_before is not None and max_after is not None \
                 and before >= max_before and after >= max_after:
             return ("shield_gained" if delta > 0 else "shield_decayed"), None, abs(delta)
-        return ("hp_gained" if delta > 0 else "hp_lost"), None, abs(delta)
+        # A change in hp alone is not damage or healing. Bonus health -- a
+        # team-up shield decaying, an ultimate's +250 -- moves hp too, and moves
+        # max hp with it. Only with max hp read, and unchanged, on each side --
+        # one read at or before the last old frame, another after it -- is the
+        # cause known; one read serving both sides proves nothing about the other. Unreadable max hp is common exactly there (Day
+        # 63-70 s: ten "damage" events that were a shield decaying; 342 s: a
+        # "heal" of 255 that was an ultimate), so the rest say so.
+        known = max_before is not None and max_after is not None and max_before == max_after
+        cause = ("heal" if delta > 0 else "damage") if known else "unknown"
+        return ("hp_gained" if delta > 0 else "hp_lost"), None, abs(delta), cause
     if name == "max_hp":
         return "max_hp_changed", None, after - before
     if name == "killfeed":
@@ -684,10 +875,17 @@ def _despike(values, damaged=None, max_hp=None):
     heal frame between two hits, which erased the second hit as well.
     """
     out = list(values)
-    ceiling = max((v for v in (max_hp or []) if v), default=None) or 250
+    # The largest max hp read so far, up to the frame that decides this one --
+    # never a later one: a larger max read further on once kept a 200 hp drop
+    # (Req 621.7) that a prefix ending there had removed.
+    seen, running = None, []
+    for v in (max_hp or [None] * len(out)):
+        seen = max(seen, v) if (v and seen) else (v or seen)
+        running.append(seen)
     for i in range(1, len(out) - 1):
         if out[i] is None or out[i - 1] is None or out[i + 1] is None:
             continue
+        ceiling = running[i + 1] or 250
         if out[i] == out[i - 1] or out[i + 1] != out[i - 1]:
             continue
         if damaged and damaged[i]:
@@ -697,27 +895,25 @@ def _despike(values, damaged=None, max_hp=None):
     return out
 
 
-def extract_one(reads, debounce=None, seg_index=0, mapping=None):
-    """[Event] for a single segment of (i, t, Hud) reads, in time order."""
+def extract_one(reads, debounce=None, seg_index=0, mapping=None, timers=None, locks=None,
+                alarm=None, lag=0, clock=None, closed_i=None, tops=None, maxes=None, variants=None):
+    """[Event] for a single segment of (i, t, Hud) reads, in time order.
+
+    `timers` is {position: full cooldown (one-charge) or recharge (charged)}
+    and `locks` {position: between-cast lock}, both inputs (see durations);
+    a position without one has an unknown length. `alarm` is shared across a
+    source's segments (see _timer_events). The rest is extract's: `lag`
+    frames are added to every known_i for the segmentation to settle, `clock`
+    maps a frame index to (index, t) past the segment, and `closed_i` is the
+    frame that ended the segment when a real boundary did, so decisions
+    waiting for the segment's end can be made there.
+    """
     holds = {**DEBOUNCE, **(debounce or {})}
 
     def hold_for(name):
         return holds.get(name.split(":", 1)[0], 2)
 
     channels, events, max_seen = {}, [], {}
-    # A countdown that blinks "off" for one frame and comes back is the reader
-    # losing it, not the ability being cast twice. Hand-checking 30 events found
-    # three phantom casts from exactly this, all of them mid-countdown.
-    slots = sorted({s for r in reads for s in (r[2].cooldowns or {})})
-    cd_clean = {}
-    for slot in slots:
-        seq = [(r[2].cooldowns or {}).get(slot) for r in reads]
-        seq = ["off" if v is None else v for v in seq]
-        fixed = list(seq)
-        for k in range(1, len(seq) - 1):
-            if seq[k] == "off" and seq[k - 1] != "off" and seq[k + 1] != "off":
-                fixed[k] = None          # unknown: no transition either way
-        cd_clean[slot] = fixed
     hp_clean = _despike([r[2].hp for r in reads],
                         [(r[2].bar_damage or 0) > DAMAGE_STRIPE for r in reads],
                         [r[2].max_hp for r in reads])
@@ -725,10 +921,8 @@ def extract_one(reads, debounce=None, seg_index=0, mapping=None):
         i, t, hud = read[0], read[1], read[2]
         if hud.max_hp is not None:
             max_seen[i] = hud.max_hp
-        signals = _signals(hud)
+        signals = _signals(hud, maxes)
         signals["hp"] = hp_clean[n]
-        for slot, value in cd_clean.items():
-            signals[f"cooldown:{slot}"] = value[n]
         if len(read) > 3:                 # optional: is a kill-feed line up?
             signals["killfeed"] = read[3]
         for name, value in signals.items():
@@ -740,10 +934,11 @@ def extract_one(reads, debounce=None, seg_index=0, mapping=None):
                 continue
             before, after, from_i, from_t = moved
             described = _kind(name, before, after,
-                              _near(max_seen, from_i), _near(max_seen, i))
+                              _near(max_seen, from_i), _near(max_seen, i, after=from_i))
             if described is None:
                 continue
-            kind, slot, amount = described
+            kind, slot, amount, *rest = described
+            cause = rest[0] if rest else None
             # `slot` here is the layout POSITION. Turning it into an ability
             # name needs the icon mapping, and without one the name is unknown:
             # the position order differs per player, so copying the position
@@ -757,9 +952,483 @@ def extract_one(reads, debounce=None, seg_index=0, mapping=None):
                 named = mapping.get(slot) if mapping else None
             events.append(Event(kind=kind, i_from=from_i, t_from=from_t, i_to=i, t_to=t,
                                 slot=named, slot_pos=slot, amount=amount,
-                                before=before, after=after, segment=seg_index))
-    events.sort(key=lambda e: (e.t_to, e.kind))
-    return _merge_shield(events)
+                                before=before, after=after, segment=seg_index, cause=cause))
+    events = _ult_events(events, reads, closed_i)
+    positions = sorted({p for r in reads for p in (r[2].cooldowns or {})})
+    for pos in positions:
+        ability = mapping.get(pos) if mapping else None
+        events.extend(_timer_events(reads, pos, ability, (timers or {}).get(pos), seg_index,
+                                    (locks or {}).get(pos), alarm, (tops or {}).get(pos), maxes,
+                                    (variants or {}).get(pos)))
+    events = _merge_shield(events)
+    clock = clock or _clock(reads)
+    out = []
+    for e in events:
+        # hp is despiked one frame ahead and paired with max hp up to
+        # SHIELD_WINDOW frames away, so those kinds settle that much later.
+        base = e.known_i if e.known_i is not None else \
+            e.i_to + (HP_SETTLE if e.kind in HP_KINDS else 0)
+        ki, kt = clock(base + lag)
+        out.append(replace(e, known_i=ki, known_at=kt))
+    out.sort(key=lambda e: (e.t_to, e.kind))
+    return out
+
+
+HP_SETTLE = SHIELD_WINDOW + 1
+HP_KINDS = {"hp_lost", "hp_gained", "shield_decayed", "shield_gained", "max_hp_changed",
+            "death", "respawn"}
+
+
+def _clock(reads):
+    """frame index -> (the first read frame at or after it, its t); past the last
+    read, the index itself and a t extrapolated at the median frame step."""
+    idx = [r[0] for r in reads]
+    ts = [r[1] for r in reads]
+    steps = sorted(b - a for a, b in zip(ts, ts[1:]) if b > a)
+    dt = steps[len(steps) // 2] if steps else 0.1
+
+    def at(i):
+        import bisect
+        n = bisect.bisect_left(idx, i)
+        if n < len(idx):
+            return idx[n], ts[n]
+        return i, round(ts[-1] + (i - idx[-1]) * dt, 3)
+    return at
+
+
+def _ult_events(events, reads, closed_i=None):
+    """Keep ult_spent / ult_ready only where the meter shows them.
+
+    The ult icon going dark is not the ult spent: a prohibition mark darkens it
+    and it comes straight back full. A spend is proved by the meter seen part-
+    charged -- refilling -- before it is next lit, and is known from that read;
+    a return by a part-charged meter seen since it last went dark. Anything else
+    is what the icon showed: icon_dimmed / icon_lit.
+    """
+    partial = [(r[0], r[1]) for r in reads
+               if r[2].ult_charge is not None and 0 < r[2].ult_charge < 1]
+    ult = [e for e in events if e.kind in ("ult_ready", "ult_spent")]
+    out = [e for e in events if e.kind not in ("ult_ready", "ult_spent")]
+    for n, e in enumerate(ult):
+        if e.kind == "ult_spent":
+            until = ult[n + 1].i_to if n + 1 < len(ult) else float("inf")
+            seen = next(((i, t) for i, t in partial if e.i_to <= i < until), None)
+            if seen:                               # known from the refill read
+                out.append(replace(e, i_to=seen[0], t_to=seen[1], known_i=seen[0]))
+            elif n + 1 < len(ult) or closed_i is not None:
+                # Known not to be a spend once the icon lit again, or the
+                # segment really ended, without a refill seen; still pending
+                # at the end of the reads otherwise.
+                out.append(replace(e, kind="icon_dimmed",
+                                   known_i=ult[n + 1].i_to if n + 1 < len(ult) else closed_i))
+        else:
+            since = ult[n - 1].i_to if n else float("-inf")
+            seen = any(since <= i <= e.i_to for i, _ in partial)
+            out.append(e if seen else replace(e, kind="icon_lit"))
+    return out
+
+
+# --- countdown timers --------------------------------------------------------
+# A countdown is a timer, and a timer is identified by when it will expire. The
+# slot draws whole seconds rounded up, so a read of N at time t says the timer
+# expires in (t + N - 1, t + N]. Two reads whose expiry windows overlap are the
+# same timer, however many frames between them went unread. That is the whole
+# fix for "a continuing cooldown re-read as a new cast": the old channel treated
+# a countdown it failed to read for two frames as ended ("off"), and its return
+# as a fresh one. A missing read now changes nothing -- it is never taken as the
+# cooldown ending (it is also every visible digit the reader could not read).
+# The countdown is drawn in whole seconds rounded up: a read of N says the
+# timer expires in (t + N - ROUND_S, t + N]. TIMER_EPS widens that by frame
+# timing at 10 Hz. These two constants are the whole rounding band.
+ROUND_S = 1.0
+TIMER_EPS = 0.15        # s of slack on an expiry window: frame timing
+TIMER_CONFIRM = 2       # reads that must agree before a new timer is believed
+BLIND_LOOKBACK = 3.0    # s before a charged slot's new timer that must have been observable
+# Slots that hold charges. A use while a recharge runs does not restart it (the
+# charge count drops instead, a separate channel), and a finished recharge
+# starts the next at once. Hero structure, not a balance value.
+CHARGED = {"swing", "uppercut"}
+TIMER_MIN_SPAN = 1.5    # s a timer must be seen ticking to count as ticking
+ENDED_WITHIN = 2        # a timer's last read must be this close to zero for its end to be recorded
+
+# --- durations are inputs ------------------------------------------------------
+# The writer never infers a cooldown from footage: an observed maximum is a
+# lower bound on the full length, never the length (a use a second before the
+# first readable digit looks exactly like a shorter cooldown). Durations come
+# from this table, keyed by the source's recorded patch, sourced from
+# docs/spiderman-kit.md. Per ability: `full` (one-charge cooldown), `recharge`
+# (per charge), `lock` (between-cast lock drawn as a countdown), `charges`;
+# None = not known. Team-up depends on which team-up the slot holds (its
+# variant), which is not identified per segment, so its length is unknown
+# unless a caller supplies it.
+TEAMUP_VARIANTS_20260911 = {"symbiote_bond": 15.0, "parker_power_up": 10.0}
+KITS = {
+    "Season 10, Version 20260911": {
+        "get_over_here": {"full": 8.0},
+        "swing": {"recharge": 6.0, "lock": None, "charges": 3},
+        "uppercut": {"recharge": 6.0, "lock": 1.0, "charges": 2},
+        "teamup": {"full": None, "variants": TEAMUP_VARIANTS_20260911, "variants_complete": True},
+    },
+    # The balance post for 20260911 changed only Amazing Combo's lock 2 -> 1 s
+    # and Parker Power-Up 15 -> 10 s; 20260903 changed nothing for Spider-Man.
+    "Season 10, Version 20260903": {
+        "get_over_here": {"full": 8.0},
+        "swing": {"recharge": 6.0, "lock": None, "charges": 3},
+        "uppercut": {"recharge": 6.0, "lock": 2.0, "charges": 2},
+        "teamup": {"full": None, "variants": {"symbiote_bond": 15.0, "parker_power_up": 15.0},
+                   "variants_complete": True},
+    },
+}
+KIT_REFERENCE = "Season 10, Version 20260911"   # the patch docs/spiderman-kit.md describes
+
+
+def kit_for(patch):
+    """The kit table for a recorded patch string, or None when it is not known."""
+    return KITS.get(patch) if patch else None
+
+
+def durations(kit, mapping):
+    """{position: (length, lock)} from a kit table and the slot mapping: the
+    full cooldown for a one-charge slot, the recharge for a charged one; None
+    where the kit, the ability or the value is unknown."""
+    out = {}
+    for pos, ability in (mapping or {}).items():
+        spec = (kit or {}).get(ability) or {}
+        out[pos] = (spec.get("recharge" if ability in CHARGED else "full"), spec.get("lock"))
+    return out
+
+
+def variant_sets(kit, mapping):
+    """{position: the candidate full lengths} for a one-charge slot whose length
+    depends on an unidentified variant -- only where the kit is known and its
+    variant set is complete (Spider-Man's team-ups: Symbiote Bond with Venom,
+    Parker Power-Up with Peni Parker, docs/spiderman-kit.md)."""
+    out = {}
+    for pos, ability in (mapping or {}).items():
+        spec = (kit or {}).get(ability) or {}
+        if spec.get("full") is None and spec.get("variants") and spec.get("variants_complete"):
+            out[pos] = sorted(set(spec["variants"].values()))
+    return out
+
+
+def ceilings(kit, mapping):
+    """{position: the longest countdown the kit allows there}: the length, or
+    for a slot whose variant is unknown the longest variant's. A read above it
+    is not this slot's countdown (chat over the slot)."""
+    out = {}
+    for pos, ability in (mapping or {}).items():
+        spec = (kit or {}).get(ability) or {}
+        top = spec.get("recharge" if ability in CHARGED else "full") or \
+            max((spec.get("variants") or {}).values(), default=None)
+        if top is not None:
+            out[pos] = top
+    return out
+
+
+def timer_lengths(reads, detail=False):
+    """{position: the most common top of ticking timers}, as observed.
+
+    A report, never a duration the event logic uses: a timer first read late
+    tops out below its full length, so this is a lower-bound summary of what
+    the footage showed. Each timer's top counts values read on TIMER_CONFIRM
+    reads only; a number that sits still (chat) never ticks and never counts.
+    """
+    by_pos = {}
+    for r in reads:
+        for pos, v in ((r[2].cooldowns or {}).items() if len(r) > 2 else ()):
+            if isinstance(v, int) and 0 < v <= 30:
+                by_pos.setdefault(pos, []).append((r[1], v))
+    out = {}
+    for pos, seq in by_pos.items():
+        timers = []
+        for t, v in seq:
+            lo, hi = t + v - ROUND_S - TIMER_EPS, t + v + TIMER_EPS
+            tm = next((x for x in reversed(timers[-4:]) if lo <= x["hi"] and hi >= x["lo"]), None)
+            if tm is None:
+                timers.append({"lo": lo, "hi": hi, "t0": t, "t1": t, "vals": [v]})
+            else:
+                tm["lo"], tm["hi"] = max(tm["lo"], lo), min(tm["hi"], hi)
+                tm["t1"] = t
+                tm["vals"].append(v)
+        tops = [max(v for v in set(x["vals"]) if x["vals"].count(v) >= TIMER_CONFIRM)
+                for x in timers if x["t1"] - x["t0"] >= TIMER_MIN_SPAN
+                and len({v for v in x["vals"] if x["vals"].count(v) >= TIMER_CONFIRM}) >= 2]
+        if tops:
+            s = max(set(tops), key=lambda v: (tops.count(v), v))
+            out[pos] = ({"s": s, "timers": len(tops), "agree": tops.count(s), "max": max(tops)}
+                        if detail else s)
+    return out
+
+
+def _eligible(reads, segments):
+    """The reads inside segments: own play."""
+    inside = {i for s in segments for i in range(s.start_i, s.end_i + 1)}
+    return [r for r in reads if r[0] in inside]
+
+
+def _timer_events(reads, pos, ability, full, seg_index, lock=None, alarm=None, ceiling=None,
+                  maxes=None, variants=None):
+    """ability_cast / ability_uncertain / cooldown_ended for one slot over one segment.
+
+    One forward pass over the frames, deciding each event at the first frame
+    where it is final and never revisiting it, so a prefix of the reads yields
+    exactly the events of the whole that were known by its end. Three times per
+    event, never conflated:
+
+      t_from, t_to  when the use can have happened, on evidence alone: for a
+                    one-charge slot with a known full length F, a timer whose
+                    expiry lies in (lo, hi] started in (lo - F, hi - F], and no
+                    later than its first read; a charged slot's use came after
+                    the recharge now showing began, the previous timer ended, the
+                    last charge decrement, or the last badge read less the lock
+                    -- whichever of those are known -- and before its first read.
+                    Never a frame with the slot lit and no number, nor an unread
+                    frame: a stream HUD shows both through a running cooldown.
+      known_i/_at   the frame that decided it (set here; extract adds the
+                    segmentation's settling lag).
+
+    `full` is the slot's full cooldown (one-charge) or recharge (charged), and
+    `lock` a charged slot's between-cast lock, from the kit; None = unknown,
+    and then only evidence that needs no duration (a previous timer's end, a
+    charge decrement) can make a cast. `alarm` is a dict shared across a
+    source's segments: a ticking countdown longer than `full` contradicts the
+    kit, and from that frame on this slot writes only uncertainty.
+    """
+    seg_start = reads[0][1]
+    alarm = {} if alarm is None else alarm
+    timers, shadows, out = [], [], []
+    seq = []
+
+    def emit(kind, lower, upper, tm, k, amount=None, before=None):
+        lo_s = [s for s in seq if s[1] <= lower + 1e-9][-1:] or seq[:1]
+        up_s = next((s for s in seq if s[1] >= upper - 1e-9), seq[k])
+        i, t = seq[k][0], seq[k][1]
+        out.append(Event(kind=kind, i_from=lo_s[0][0], t_from=lo_s[0][1], i_to=up_s[0], t_to=up_s[1],
+                         slot=ability, slot_pos=pos, amount=amount, before=before, after=amount,
+                         segment=seg_index, known_i=i, known_at=t))
+
+    def merge(pool, t, v):
+        lo, hi = t + v - ROUND_S - TIMER_EPS, t + v + TIMER_EPS
+        match = next((tm for tm in reversed(pool) if not tm["closed"]
+                      and lo <= tm["hi"] and hi >= tm["lo"]), None)
+        if match is None:
+            match = {"lo": lo, "hi": hi, "k": len(seq) - 1, "t": t, "v": v, "n": 0, "vals": [],
+                     "done": False, "closed": False, "kind": None, "last": None}
+            pool.append(match)
+        else:
+            match["lo"], match["hi"] = max(match["lo"], lo), min(match["hi"], hi)   # they overlap
+        match["n"] += 1
+        match["vals"].append(v)
+        match["last"] = len(seq) - 1
+        return match
+
+    for r in reads:
+        cds = r[2].cooldowns or {}
+        charges = charge_evidence(r[2], pos, maxes)
+        v = cds.get(pos)
+        top = full if full is not None else (ceiling if ceiling is not None else 30)
+        valid = isinstance(v, int) and v > 0 and v <= top
+        # A number the kit cannot produce here is unobservable (chat over the
+        # slot), unless it ticks -- then the kit is wrong, which is the alarm.
+        oob = isinstance(v, int) and full is not None and full < v <= 30
+        seq.append((r[0], r[1], v if valid else None, oob, charges))
+        k, (i, t) = len(seq) - 1, (r[0], r[1])
+        # 1. Timers whose expiry has passed by this frame are closed: decided now.
+        for tm in timers:
+            if tm["closed"] or t < tm["hi"]:
+                continue
+            tm["closed"] = True
+            if tm["done"]:
+                last = seq[tm["last"]]
+                if ability not in CHARGED and tm["kind"] != "ability_uncertain" \
+                        and last[2] is not None and last[2] <= ENDED_WITHIN:
+                    # History only: a recast the reader missed can start the
+                    # instant it ends, so the slot after it stays unknown.
+                    out.append(Event(kind="cooldown_ended", i_from=last[0], t_from=last[1],
+                                     i_to=i, t_to=t, slot=ability, slot_pos=pos, amount=None,
+                                     before=last[2], after=None, segment=seg_index,
+                                     known_i=i, known_at=t))
+                continue
+            # A single read that never confirmed: a real between-cast "1" and a
+            # misread cannot be told apart -- unless a confirmed timer was
+            # running across it, when the kit rules a new use out.
+            running = any(o["done"] and o["t"] < tm["t"] and o["lo"] > tm["t"] for o in timers)
+            if running or (full is not None and ability not in CHARGED
+                           and tm["hi"] - full < seg_start - TIMER_EPS):
+                continue
+            lower = max(seg_start, tm["lo"] - full) if full is not None else seg_start
+            emit("ability_uncertain", lower, tm["t"], tm, k, amount=tm["v"])
+        for sh in shadows:
+            if not sh["closed"] and t >= sh["hi"]:
+                sh["closed"] = True
+        # 2. This frame's read.
+        if oob:
+            sh = merge(shadows, t, v)
+            confirmed = {x for x in sh["vals"] if sh["vals"].count(x) >= TIMER_CONFIRM}
+            # Ticking, as timer_lengths means it: two values each read twice,
+            # across at least TIMER_MIN_SPAN -- a misread pair is not a timer.
+            if len(confirmed) >= 2 and t - sh["t"] >= TIMER_MIN_SPAN and pos not in alarm:
+                alarm[pos] = {"i": i, "t": t, "read": max(confirmed), "kit": full}
+        if not valid:
+            continue
+        tm = merge(timers, t, v)
+        if tm["n"] >= TIMER_CONFIRM and not tm["done"]:
+            tm["done"] = True
+            earlier = [o for o in timers if o is not tm and o["done"] and o["t"] < tm["t"]]
+            # The previous timer is the confirmed one expiring latest -- the one
+            # still running -- not the latest made: two chat reads of "1" once
+            # formed a timer of their own and let two misread 8s pass as a
+            # team-up cast while the real countdown ran (Day 101.8-109.9).
+            prev = max(earlier, key=lambda o: o["lo"]) if earlier else None
+            if pos in alarm:
+                kind, lower, upper = "ability_uncertain", seg_start, tm["t"]
+            elif ability in CHARGED:
+                kind, lower, upper = _classify_charged(tm, prev, seq, full, lock, seg_start)
+            elif full is None and variants:
+                kind, lower, upper = _classify_variants(tm, prev, variants, seg_start)
+            else:
+                kind, lower, upper = _classify_timer(tm, prev, full, seg_start)
+                # A timer the kit cannot produce, first read while the previous
+                # one provably still runs, is a misread of that one: nothing,
+                # not an uncertain stretch censoring a known cooldown (Day
+                # team-up 109.9: 8s read over a running 6).
+                if kind == "ability_uncertain" and prev is not None and prev["lo"] > tm["t"]:
+                    kind = None
+            tm["kind"] = kind
+            if kind:
+                emit(kind, lower, upper, tm, k, amount=tm["v"])
+    return out
+
+
+def _exact(tm):
+    """A timer's expiry window from its digits alone, (lo, hi]: TIMER_EPS widens
+    the windows reads are matched with, and is taken off again here, unless the
+    reads disagree by frame jitter and the exact windows do not meet."""
+    lo, hi = tm["lo"] + TIMER_EPS, tm["hi"] - TIMER_EPS
+    return (lo, hi) if lo <= hi else (tm["lo"], tm["hi"])
+
+
+def _classify_timer(tm, prev, full, seg_start):
+    """(kind, lower, upper) for a one-charge slot's newly confirmed timer; kind
+    None for one this segment certainly did not start."""
+    # The lower side from the digits exactly; the upper keeps the frame-timing
+    # slack (conservative) and is capped by the first read in any case, so a
+    # timer first read at its full value at t gives (t - 1, t].
+    lo = _exact(tm)[0]
+    upper = tm["t"] if full is None else min(tm["t"], tm["hi"] - full)
+    if full is not None and tm["hi"] - full < seg_start - TIMER_EPS:
+        return None, None, None                     # if a cast at all, one before the segment opened
+    start = lo - full if full is not None else None
+    lower = max(seg_start, start if start is not None else seg_start)
+    if prev is not None:
+        if tm["lo"] <= prev["hi"]:
+            return "ability_uncertain", lower, tm["t"]      # earlier expiry: the kit has no way to do that
+        lower = max(lower, prev["lo"])                      # after the last one ended
+    if full is None or start < seg_start - TIMER_EPS:
+        # No length: the kit, the variant or the value is unknown, and timer
+        # inference is not attempted. Or it may have started before the
+        # segment opened.
+        return "ability_uncertain", lower, tm["t"]
+    if lower > upper + TIMER_EPS:
+        # The evidence does not agree: a start before the last timer ended,
+        # which the kit has no way to do.
+        return "ability_uncertain", seg_start, tm["t"]
+    return "ability_cast", lower, max(lower, upper)
+
+
+def _classify_variants(tm, prev, variants, seg_start):
+    """(kind, lower, upper) for a one-charge timer whose length is one of
+    `variants`, which one unknown. Each candidate is evaluated on its own and
+    the in-segment occurrence intervals kept are UNIONED (their enclosing
+    interval): never intersected, never the shortest taken. A candidate is
+    dropped when the timer's own value excludes it -- a countdown never shows
+    more than its length, so a read of 15 (or 11) rules out 10 s -- or when it
+    would start before the previous timer ended. The kind stays ability_uncertain
+    whatever remains: the variant is not identified. With no candidate
+    placing a use in the segment -- each starts before it, or is the running
+    one continuing -- nothing; with every candidate excluded by the data, the
+    broad interval, as for an unknown length."""
+    lo, t = _exact(tm)[0], tm["t"]
+    kept, elsewhere = [], False
+    for f in variants:
+        if f < tm["v"] - TIMER_EPS:
+            continue                                        # a countdown never shows more than its length
+        # (The value check is also what excludes a candidate by the timer's own
+        # reads: a start after the first read needs f < v - 1.)
+        s_lo, s_hi = lo - f, min(t, tm["hi"] - f)
+        if s_hi < seg_start - TIMER_EPS:
+            elsewhere = True                                # started before the segment
+            continue
+        if prev is not None and s_hi < prev["lo"] - TIMER_EPS:
+            elsewhere = True                                # the running cooldown continuing
+            continue
+        kept.append((max(s_lo, seg_start, prev["lo"] if prev else seg_start), s_hi))
+    if kept:
+        # Each window's lower end clamped to its upper: TIMER_EPS of slack never
+        # puts a bound after the frame where the timer was already running.
+        return "ability_uncertain", min(min(a, b) for a, b in kept), max(b for _, b in kept)
+    if elsewhere:
+        return None, None, None
+    broad = max(seg_start, prev["lo"]) if prev is not None else seg_start
+    return "ability_uncertain", broad, t
+
+
+def _classify_charged(tm, prev, seq, full, lock, seg_start):
+    """A charged slot's newly visible countdown: (kind, lower, upper).
+
+    A charged slot draws its big countdown only while it has no charges left
+    (Day swing 48-52 s, frame by frame), and uppercut also for its short
+    between-cast lock. So a countdown becoming visible means a use -- even the
+    next recharge in a chain, which is exactly when a second use lands -- no
+    later than the first read. Where it was, each a lower bound that holds on
+    its own, used only when its duration is known:
+      - after the recharge now showing began: expiry - recharge (`full`);
+      - after the previous timer in this segment ran out (no duration needed);
+      - after the last confirmed charge decrement began (no duration needed):
+        every use takes a charge, so the countdown's use is no earlier;
+      - after the last badge read >= 1 with no number, less the lock (`lock`),
+        which shows with a charge left.
+    The latest of them inside the segment makes a cast; otherwise uncertain,
+    never silence, since the countdown still says a use happened. A countdown
+    first seen part-way right after a number the slot cannot show (chat) is
+    uncertain: Req uppercut 52.0.
+    """
+    k = tm["k"]
+    after = prev["last"] + 1 if prev else 0
+    bounds = []
+    if full is not None:
+        bounds.append(_exact(tm)[0] - full)
+    # The previous timer's end bounds the use only through the recharge it
+    # implies; with the recharge unknown, only an independent charge drop does.
+    if prev is not None and full is not None:
+        bounds.append(prev["lo"])
+    runs = []                                    # (value, first t, last t, reads) of the badge
+    for sv in seq[:tm["last"] + 1]:
+        if isinstance(sv[4], int):
+            if runs and runs[-1][0] == sv[4]:
+                runs[-1][2], runs[-1][3] = sv[1], runs[-1][3] + 1
+            else:
+                runs.append([sv[4], sv[1], sv[1], 1])
+    steady = [x for x in runs if x[3] >= TIMER_CONFIRM]
+    # A decrement counts once confirmed by the classification frame -- the
+    # runs are built from frames up to it, so that holds by construction --
+    # provided its last pre-drop read came before the countdown's first: the
+    # badge still showing the old count then means the countdown's use had not
+    # happened yet.
+    drops = [a[2] for a, b in zip(steady, steady[1:]) if b[0] < a[0] and a[2] < tm["t"]]
+    if drops:
+        bounds.append(drops[-1])
+    if lock is not None:
+        badge = [sv[1] for sv in seq[after:k] if sv[2] is None and isinstance(sv[4], int) and sv[4] >= 1]
+        if badge:
+            bounds.append(badge[-1] - lock)
+    upper = tm["t"]
+    recent = [sv for sv in seq[:k] if tm["t"] - BLIND_LOOKBACK <= sv[1]]
+    if full is not None and 1 < tm["v"] < full and any(sv[3] for sv in recent):
+        return "ability_uncertain", max([seg_start] + bounds), upper
+    if not bounds or max(bounds) < seg_start - TIMER_EPS or max(bounds) > upper:
+        return "ability_uncertain", seg_start, upper
+    return "ability_cast", max(seg_start, max(bounds)), upper
 
 
 def _merge_shield(events):
@@ -799,21 +1468,44 @@ def _merge_shield(events):
     return out
 
 
-def extract(reads, debounce=None, mapping=None):
+SEG_LAG = 12   # frames: the longest a frame's segment membership can still change (see _steady)
+
+
+def extract(reads, debounce=None, mapping=None, kit=None, alarm=None, used=None):
     """Segment the run, then pull events inside each segment.
 
     `reads` are (i, t, Hud, playing). Returns (events, segments); channels are
     reset at every boundary, so no event spans one.
     """
     segments = segment(reads)
+    # Durations are inputs: the kit for the source's patch, supplied by the
+    # caller. None -- the default -- is unknown mechanics: every timer-derived
+    # event is uncertain, and charge counts are taken as read.
+    spans = durations(kit, mapping)
+    timers = {p: f for p, (f, _) in spans.items() if f is not None}
+    locks = {p: l for p, (_, l) in spans.items() if l is not None}
+    alarm = {} if alarm is None else alarm     # filled with kit contradictions, for the caller
+    if used is not None:                       # what drove this run, for the meta line (dump)
+        used.update(kit=kit, alarms=alarm)
+    clock = _clock(reads)
     by_i = {r[0]: (r[0], r[1], r[2], r[5] if len(r) > 5 else None) for r in reads}
+    order = [r[0] for r in reads]
     events = []
     for n, seg in enumerate(segments):
         inside = [by_i[i] for i in range(seg.start_i, seg.end_i + 1) if i in by_i]
-        events.extend(extract_one(inside, debounce, seg_index=n, mapping=mapping))
+        after = next((i for i in order if i > seg.end_i), None)
+        events.extend(extract_one(inside, debounce, seg_index=n, mapping=mapping, timers=timers,
+                                  locks=locks, alarm=alarm, lag=SEG_LAG, clock=clock,
+                                  tops=ceilings(kit, mapping), maxes=charge_maxima(kit, mapping),
+                                  variants=variant_sets(kit, mapping),
+                                  closed_i=after if seg.ended_by != "run_end" else None))
     events.sort(key=lambda e: (e.t_to, e.kind))
     counted = {e.segment for e in events if e.kind == "ability_cast"}
-    segments = [replace(s, cooldowns="normal" if n in counted else "unknown")
+    scored = any(len(r) > 7 for r in reads)
+    segments = [replace(s, cooldowns="normal" if n in counted else "unknown",
+                        hero_weak_frames=sum(1 for r in reads if len(r) > 7 and r[7] is not None
+                                             and s.start_i <= r[0] <= s.end_i
+                                             and r[7] < PORTRAIT_WEAK) if scored else None)
                 for n, s in enumerate(segments)]
     return events, segments
 
@@ -920,11 +1612,15 @@ def read_run(run_dir, limit=None, progress=None, layout=None):
 
             from perception.scoreboard import is_killfeed
 
-            aside = banner_word(frame) or ("scoreboard" if is_scoreboard(frame) is True
-                                           else None)
-            out.append((row["i"], float(row["t"]), read_hud(frame, layout),
-                        playing_spiderman(frame), aside, is_killfeed(frame),
-                        flags[n - 1]))
+            aside = ("black" if is_black(frame) else None) or banner_word(frame) \
+                or ("scoreboard" if is_scoreboard(frame) is True else None)
+            playing, score = hero_read(frame)
+            row_out = (row["i"], float(row["t"]), read_hud(frame, layout),
+                       playing, aside, is_killfeed(frame), flags[n - 1], score)
+            if GLYPH_EVIDENCE:                # recorded for measurement only; see hud.glyph_evidence
+                from perception.hud import glyph_evidence
+                row_out += ({s: glyph_evidence(frame, s, layout) for s in (layout or PAD_LAYOUT).slot_cx},)
+            out.append(row_out)
         if progress and n % progress == 0:
             print(f"  {n}/{len(rows)} frames", file=sys.stderr)
     return out
@@ -982,7 +1678,7 @@ def observed(events):
                       so the mode is the full value and the tail sits below it.
       countdown       every number seen, and how often -- so the mode can be
                       judged rather than trusted
-      relock_s        median seconds from a cast to the slot being usable again
+      relock_s        median seconds from a cast to its cooldown running out
       recast_s        p10 and median gap between consecutive casts, as support
       charges         the highest charge count the badge ever showed. **This
                       reads one below the true maximum**, because the badge is
@@ -1007,7 +1703,7 @@ def observed(events):
     for slot in sorted(s for s in by_slot if s is not None):
         evs = by_slot[slot]
         casts = [e for e in evs if e.kind == "ability_cast"]
-        available = [e for e in evs if e.kind == "slot_available"]
+        available = [e for e in evs if e.kind == "cooldown_ended"]
         row = {"casts": len(casts)}
         numbers = [int(e.amount) for e in casts if e.amount is not None]
         if numbers:
@@ -1040,7 +1736,7 @@ def observed(events):
 
 
 def dump(events, segments, reads, layout="pad", source=None, mapping=None,
-         pts_origin=None, recipe=None, starts=None):
+         pts_origin=None, recipe=None, starts=None, kit=None):
     """The per-clip JSONL: one meta line, then a segment line each, then events.
 
     Three line kinds, told apart by `type`, which events omit for the sake of
@@ -1102,6 +1798,15 @@ def dump(events, segments, reads, layout="pad", source=None, mapping=None,
         # again: source video, sampling rate, window, layout. null for a file
         # built from a frame directory, which only its recorder can rebuild.
         "recipe": recipe,
+        # The durations the timer model used, and why: the source's recorded
+        # patch, the kit table it selected (null: none, and every timer event
+        # is uncertain), per position (length, lock) with null for unknown,
+        # and each kit contradiction the footage raised, from when.
+        "kit": kit,
+        # What the footage's own ticking timers topped out at, in own-play
+        # segments. A report only: a late first read tops out below the full
+        # length, so this is never used as one (see timer_lengths).
+        "timer_lengths": timer_lengths(_eligible(reads, segments), detail=True),
     })]
     lines += [json.dumps({"type": "segment", **asdict(s)}) for s in segments]
     lines += [json.dumps(asdict(e)) for e in events]
@@ -1160,8 +1865,52 @@ def extract_frames(video, run_dir, hz=10.0, start=None, duration=None):
     return round(origin, 3)
 
 
+def patch_for(video):
+    """The patch a source's manifest records (`<stem>.manifest.jsonl` beside the
+    video, first line), or None when there is no manifest or it says unknown."""
+    path = Path(video).with_suffix(".manifest.jsonl")
+    if not path.exists():
+        return None
+    patch = json.loads(path.read_text().splitlines()[0]).get("patch")
+    return None if patch in (None, "unknown") else patch
+
+
+def resolve_patch(video, patch=None, patch_from=None):
+    """{patch, patch_from, manifest_patch}: the one resolution of which patch
+    decides a source's mechanics. An explicit `patch` overrides the manifest
+    ("argument"); else the manifest's ("manifest"); else none ("none"). A
+    recorded resolution replayed by regenerate passes `patch_from` too, and is
+    taken as recorded -- the manifest is not consulted again, so editing it
+    cannot silently change a rebuilt file."""
+    manifest = patch_for(video)
+    if patch_from is not None:
+        return {"patch": patch, "patch_from": patch_from, "manifest_patch": manifest}
+    if patch is not None:
+        return {"patch": patch, "patch_from": "argument", "manifest_patch": manifest}
+    return {"patch": manifest, "patch_from": "manifest" if manifest else "none",
+            "manifest_patch": manifest}
+
+
+def kit_meta(resolved, used, mapping):
+    """The meta line's `kit` record, from the resolution and the kit extract()
+    actually used, and a loud warning when there was none."""
+    kit, alarm = used.get("kit"), used.get("alarms") or {}
+    table = next((name for name, k in KITS.items() if k is kit), None)
+    patch, patch_from = resolved.get("patch"), resolved.get("patch_from")
+    if kit is None:
+        print(f"  WARNING: no kit for patch {patch!r} ({patch_from}): every timer-derived "
+              "event is written ability_uncertain", file=sys.stderr)
+    for pos, a in alarm.items():
+        print(f"  WARNING: {pos}'s countdown read {a['read']} ticking at t={a['t']}, longer "
+              f"than the kit's {a['kit']}: from there its uses are uncertain", file=sys.stderr)
+    return {"patch": patch, "patch_from": patch_from, "manifest_patch": resolved.get("manifest_patch"),
+            "table": table,
+            "durations": {p: {"length": f, "lock": l} for p, (f, l) in durations(kit, mapping).items()},
+            "alarms": alarm}
+
+
 def from_video(video, out, hz=10.0, start=None, duration=None, layout="mk",
-               workdir=None, progress=None):
+               workdir=None, progress=None, patch=None, patch_from=None):
     """A video (or a window of one) to an events file, recording its recipe.
 
     This is the one path demonstration files are made by. Everything needed to
@@ -1169,6 +1918,10 @@ def from_video(video, out, hz=10.0, start=None, duration=None, layout="mk",
     after a format change without anybody remembering how it was cut. Cuts are
     always detected: a continuous capture then records a verified 0 rather than
     a null nobody checked.
+
+    The durations come from the kit for the source's patch: `patch`, or else
+    the one its manifest records (patch_for). Neither: every timer-derived
+    event is uncertain, and it says so.
     """
     import shutil
     import tempfile
@@ -1188,13 +1941,18 @@ def from_video(video, out, hz=10.0, start=None, duration=None, layout="mk",
         lay = LAYOUTS[layout]
         reads = read_run(run_dir, progress=progress, layout=lay)
         mapping = _mapping_for(run_dir, lay, len(reads))
-        events, segments = extract(reads, mapping=mapping)
+        resolved = resolve_patch(video, patch, patch_from)
+        used = {}
+        events, segments = extract(reads, mapping=mapping, kit=kit_for(resolved["patch"]), used=used)
+        # The resolved patch is part of the recipe: regenerate replays it as
+        # recorded, override and all.
         recipe = {"video": str(video), "hz": hz, "start": start,
-                  "duration": duration, "layout": layout}
+                  "duration": duration, "layout": layout,
+                  "patch": resolved["patch"], "patch_from": resolved["patch_from"]}
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(dump(events, segments, reads, layout=layout, source=out.stem,
                             mapping=mapping, pts_origin=origin, recipe=recipe,
-                            starts=probe_starts(video)))
+                            starts=probe_starts(video), kit=kit_meta(resolved, used, mapping)))
     finally:
         shutil.rmtree(run_dir, ignore_errors=True)
     return {"out": str(out), "frames": len(reads), "events": len(events),
@@ -1242,8 +2000,11 @@ def regenerate(root=EVENTS_DIR, everything=False, progress=None):
             orphans.append(str(path))
             continue
         print(f"  regenerating {path}", file=sys.stderr)
+        # A recipe that recorded its patch is replayed exactly; one from before
+        # patches were recorded resolves afresh (and records the result).
         done.append(from_video(recipe["video"], path, recipe["hz"], recipe.get("start"),
-                               recipe.get("duration"), recipe["layout"], progress=progress))
+                               recipe.get("duration"), recipe["layout"], progress=progress,
+                               patch=recipe.get("patch"), patch_from=recipe.get("patch_from")))
     return {"regenerated": done, "no_recipe": orphans}
 
 
@@ -1297,6 +2058,8 @@ def main(argv=None):
                    help="seconds of the source's first decoded video PTS")
     p.add_argument("--layout", default="pad", choices=("pad", "mk"),
                    help="which HUD the source draws; never guessed from the frames")
+    p.add_argument("--patch", help="the source's recorded patch, e.g. 'Season 10, Version "
+                   "20260911', selecting the kit table; without it every timer event is uncertain")
     p.add_argument("--cuts-from", metavar="VIDEO",
                    help="detect this source's editorial cuts and write cuts.json "
                         "into run_dir before reading; for edited uploads")
@@ -1309,13 +2072,16 @@ def main(argv=None):
         print(f"  {len(cuts)} cuts at score >= {CUT_SCORE}", file=sys.stderr)
     reads = read_run(a.run_dir, a.limit, a.progress or None, layout)
     mapping = _mapping_for(a.run_dir, layout, len(reads))
-    events, segments = extract(reads, mapping=mapping)
+    used = {}
+    events, segments = extract(reads, mapping=mapping, kit=kit_for(a.patch), used=used)
     out = Path(a.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     # The clip stem, not the frame directory: that is a scratch path on whoever
     # ran this, and the stem is what a manifest joins on.
     out.write_text(dump(events, segments, reads, layout=a.layout, source=out.stem,
-                        mapping=mapping, pts_origin=a.pts_origin))
+                        mapping=mapping, pts_origin=a.pts_origin,
+                        kit=kit_meta({"patch": a.patch, "patch_from": "argument" if a.patch else "none"},
+                                     used, mapping)))
     summary = segment_summary(segments)
     print(json.dumps({"run": str(a.run_dir), "layout": a.layout,
                       "pts_origin_s": a.pts_origin,
