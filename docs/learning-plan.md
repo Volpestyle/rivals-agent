@@ -485,8 +485,11 @@ is too small and method-limited to establish the vocabulary across play states;
 full double annotation here measures disagreements before volume expands.
 
 A separate packet producer freezes the candidate IDs and input fingerprints before
-labelling. Exclude earlier purpose decision windows and pre-round waits; retain
-five seconds of preceding context and five seconds of outcome in valid format-5
+labelling. For tranche 2, exclude overlap with every prior purpose `[t-5,t+5]`
+evidence footprint, including touching endpoints, as well as pre-round waits. The
+frozen inventory supplies 12 windows per creator under this stronger exclusion;
+retain it without resampling. Retain five seconds of preceding context and five
+seconds of outcome in valid format-5
 own-play segments with no hard cut, and decision spacing at least 15 seconds per
 source. Inventory eligible candidates first; if a creator cannot supply 12, report
 the shortfall rather than relaxing spacing, reusing old examples or sourcing more.
