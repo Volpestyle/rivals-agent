@@ -203,6 +203,49 @@ recorded evaluation batch size of 128. Artifacts and the reproducible command
 live under `data/experiments/b0-multilabel-v1/`; implementation and provenance
 are described in [the policy lane](lanes/policy.md).
 
+**The archived B0 labels contain confirmed duplicate casts.** The read-only
+[HUD measurement](lanes/l2-hud.md#gap-resumption-casts-measurement) finds 17
+duplicates, six valid casts and one unknown in 24 inspected cases from 246 casts
+across the two train sources; this targeted sample is not a population error
+estimate. A two-frame-or-longer digit dropout becomes `off`, so the same countdown's
+return is emitted as a new cast. Removing confirmed duplicates alone takes Day
+team-up from 20 to 19 distinct positives, below the declared support gate; Req
+team-up is already below it. The table above retains its original support
+definition and numbers, not a corrected supported-channel comparison. Both model
+labels and the HUD-resource baseline are affected. Four Day histories contain
+spectated-HUD frames and seven Req histories contain an unmasked brief scoreboard.
+
+The repair belongs in the extractor: unknown readouts do not establish readiness,
+and a continuing cooldown remains the same cooldown through missing observations.
+New casts require valid transition evidence under the source's kit and charge
+rules, not simply a reappearing numeral. On multi-charge abilities, another use
+can occur during recharge; continuing countdowns alone neither prove nor disprove
+that use. Ambiguous gaps remain unknown. Regression evidence includes the 17
+confirmed duplicates, six valid controls, charged-slot second-use/recharge cases,
+the spectating/short-respawn transition and brief scoreboard, while preserving
+the existing false-killcam rejection.
+
+The frozen writer and all current event/annotation packets remain unchanged until
+primary2's outcome pass is frozen and the eight-window comparison is complete.
+Then the HUD owner repairs and versions the writer, runs the regressions and
+performs one coordinated regeneration of approved sources, with manifests kept
+identical to event segments. Inventory the regeneration's source IDs first; sealed
+sources are not implicitly authorized by a batch-wide command. Rebuild affected
+reader sidecars and derived windows under the new fingerprints, preserve the
+original artifacts, and independently review provenance, masks and event validity
+before recounting support. No extra upload-wide measurement is needed to establish
+this already reproduced defect.
+
+After that review and recount, one corrected-label B0 repetition is authorized
+with the same two session folds, architecture, hyperparameters, seed and final-epoch
+selection. Use a new experiment directory, train-only normalization and the same
+baseline definitions on the corrected identical support. Channels below the
+existing minimum support remain inconclusive; if no channel meets it or fitting
+labels are constant, stop before fitting. Report the corrected result beside the
+archived one as a label repair, not a tuning improvement or sealed evaluation.
+Purpose annotation continues on its immutable proposals, with disagreements
+recorded; comparison does not promote disputed event labels to truth.
+
 **Coarse-purpose labels remain the next head.** The next bounded tranche is
 24 new development windows, 12 per creator from accepted train sessions, under
 the aligned 10 Hz protocol. Sample across ordinary combat, traversal/search and
@@ -236,6 +279,13 @@ outcomes only after the context pass is frozen. Future candidate lists separate
 decision times by at least 15 seconds within a source, in addition to excluding
 pre-round waits. Existing adjacent selections remain disclosed development
 examples, not independent samples.
+The frozen `primary2/context/NOTES.md` reports scene-sheet inspection and mostly
+one native decision frame per window, with one HUD sheet for pt1-00, rather than
+all supplied 10 Hz native HUD strips. Its reported temporal isolation is distinct
+from this inspection-method deviation. Preserve the locked contexts; compare
+coarse purpose with that limitation stated, not as full aligned-protocol compliance
+or detailed HUD-event agreement. The outcome pass inspects all supplied scene
+cells and HUD strips. The separate native-evidence audit resolves cast disputes.
 Claude assigns the primary annotator and comparison owner; Codex owns
 the second pass and acceptance. This is a measured annotation tranche, not a claim
 that 24 labels suffice to train a tactical policy, and it does not block B0.
