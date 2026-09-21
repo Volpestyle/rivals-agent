@@ -1341,9 +1341,9 @@ def _classify_variants(tm, prev, variants, seg_start):
     `variants`, which one unknown. Each candidate is evaluated on its own and
     the in-segment occurrence intervals kept are UNIONED (their enclosing
     interval): never intersected, never the shortest taken. A candidate is
-    dropped when the timer's own confirmed reads exclude it -- a read of 15
-    puts the start after the first read for a 10 s variant -- or when it would
-    start before the previous timer ended. The kind stays ability_uncertain
+    dropped when the timer's own value excludes it -- a countdown never shows
+    more than its length, so a read of 15 (or 11) rules out 10 s -- or when it
+    would start before the previous timer ended. The kind stays ability_uncertain
     whatever remains: the variant is not identified. With no candidate
     placing a use in the segment -- each starts before it, or is the running
     one continuing -- nothing; with every candidate excluded by the data, the
@@ -1351,9 +1351,11 @@ def _classify_variants(tm, prev, variants, seg_start):
     lo, t = _exact(tm)[0], tm["t"]
     kept, elsewhere = [], False
     for f in variants:
+        if f < tm["v"] - TIMER_EPS:
+            continue                                        # a countdown never shows more than its length
+        # (The value check is also what excludes a candidate by the timer's own
+        # reads: a start after the first read needs f < v - 1.)
         s_lo, s_hi = lo - f, min(t, tm["hi"] - f)
-        if s_lo > s_hi + TIMER_EPS:
-            continue                                        # excluded by its own reads
         if s_hi < seg_start - TIMER_EPS:
             elsewhere = True                                # started before the segment
             continue
@@ -1362,7 +1364,9 @@ def _classify_variants(tm, prev, variants, seg_start):
             continue
         kept.append((max(s_lo, seg_start, prev["lo"] if prev else seg_start), s_hi))
     if kept:
-        return "ability_uncertain", min(a for a, _ in kept), max(max(a, b) for a, b in kept)
+        # Each window's lower end clamped to its upper: TIMER_EPS of slack never
+        # puts a bound after the frame where the timer was already running.
+        return "ability_uncertain", min(min(a, b) for a, b in kept), max(b for _, b in kept)
     if elsewhere:
         return None, None, None
     broad = max(seg_start, prev["lo"]) if prev is not None else seg_start
@@ -1406,11 +1410,12 @@ def _classify_charged(tm, prev, seq, full, lock, seg_start):
             else:
                 runs.append([sv[4], sv[1], sv[1], 1])
     steady = [x for x in runs if x[3] >= TIMER_CONFIRM]
-    # A decrement counts once confirmed by the classification frame, provided
-    # its last pre-drop read came before the countdown's first: the badge still
-    # full then means the countdown's use had not happened yet.
-    drops = [a[2] for a, b in zip(steady, steady[1:])
-             if b[0] < a[0] and a[2] < tm["t"] and b[1] <= seq[tm["last"]][1]]
+    # A decrement counts once confirmed by the classification frame -- the
+    # runs are built from frames up to it, so that holds by construction --
+    # provided its last pre-drop read came before the countdown's first: the
+    # badge still showing the old count then means the countdown's use had not
+    # happened yet.
+    drops = [a[2] for a, b in zip(steady, steady[1:]) if b[0] < a[0] and a[2] < tm["t"]]
     if drops:
         bounds.append(drops[-1])
     if lock is not None:

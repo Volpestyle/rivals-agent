@@ -1785,6 +1785,19 @@ def test_the_written_file_records_the_kit_it_used_and_regeneration_keeps_it(tmp_
         # The manifest changes after the file was written; the rebuild must not follow it.
         v.with_suffix(".manifest.jsonl").write_text(_json.dumps({"type": "clip", "patch": old}) + "\n")
     regenerate(out, everything=True)
+    # The meta line records the kit extract() used, not the one the patch names:
+    # with no kit resolved from it, the record says so though the patch is known.
+    import perception.events as events_module
+
+    real = events_module.kit_for
+    events_module.kit_for = lambda patch: None
+    try:
+        v = video("patched", KIT_REFERENCE)
+        from_video(v, tmp_path / "patched.jsonl", hz=10, layout="mk", workdir=tmp_path / "w")
+    finally:
+        events_module.kit_for = real
+    k = meta(tmp_path / "patched.jsonl")["kit"]
+    assert (k["patch"], k["table"], k["durations"]) == (KIT_REFERENCE, None, {}), k
     for name, (manifest, arg, patch, how, table) in cases.items():
         m = meta(out / f"{name}.jsonl")
         assert (m["kit"]["patch"], m["kit"]["patch_from"], m["kit"]["table"]) == (patch, how, table), \
@@ -1852,3 +1865,22 @@ def test_an_incomplete_variant_set_bounds_nothing():
     es, _ = extract([(*r, True) for r in _slot_reads(vals, slot="teamup")], mapping={"teamup": "teamup"}, kit=kit)
     (e,) = [e for e in es if e.kind.startswith("ability_")]
     assert e.kind == "ability_uncertain" and e.t_from == 0.0, e
+
+
+
+def test_a_variant_shorter_than_the_countdown_it_shows_is_excluded():
+    """Day team-up 170.5: the first frame of a segment reads 11. A 10 s variant
+    can never show 11; the 15 s one started before the segment. Nothing --
+    not a zero-width use pinned after the frame the timer already ran on."""
+    vals = [11, 11] + [None] * 60
+    es, _ = extract([(*r, True) for r in _slot_reads(vals, slot="teamup")], mapping={"teamup": "teamup"}, kit=KIT)
+    assert not [e for e in es if e.kind.startswith("ability_")], es
+
+
+def test_one_unconfirmed_team_up_digit_never_narrows_the_interval():
+    """Narrowing by the variant set needs a confirmed timer. A single read that
+    never confirms keeps the broad interval (Req (111.3, 136.9] stays 25.6 s)."""
+    vals = [None] * 120 + [15] + [None] * 200
+    es, _ = extract([(*r, True) for r in _slot_reads(vals, slot="teamup")], mapping={"teamup": "teamup"}, kit=KIT)
+    (e,) = [e for e in es if e.kind.startswith("ability_")]
+    assert e.kind == "ability_uncertain" and e.t_from == 0.0 and e.t_to == 12.0, e

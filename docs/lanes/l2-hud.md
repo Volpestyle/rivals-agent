@@ -1154,14 +1154,18 @@ source cut at tenths).
   complete (Symbiote Bond 15 s, Parker Power-Up 10 s), each candidate length is
   evaluated on its own against the confirmed timer, and the event's interval is
   the **union** (enclosing interval) of the in-segment start windows the
-  candidates allow — never their intersection, never the shortest. A
-  candidate is excluded only by the timer's own confirmed reads (a 15 read
-  twice puts a 10 s variant's start after the first read) or by starting before
-  the previous timer ended; one that starts before the segment, or would be
-  the running cooldown continuing, places no in-segment use. The kind stays
-  `ability_uncertain` whatever remains. Unknown patch, an incomplete set, or
-  every candidate excluded: the broad interval, from the segment start or the
-  previous timer's end. Req [610.9, 642.5] becomes (641.6, 642.5].
+  candidates allow — never their intersection, never the shortest; each
+  window's lower end is clamped to its upper. A candidate is excluded only by
+  the timer's own confirmed value (a countdown never shows more than its
+  length, so a read of 15 or 11 rules out 10 s) or by starting before the
+  previous timer ended; one that starts before the segment, or would be the
+  running cooldown continuing, places no in-segment use, and when no candidate
+  does, there is no event (Day 170.5: a segment's first frame reads 11). The
+  kind stays `ability_uncertain` whatever remains. **Only a confirmed timer
+  narrows**: a single unconfirmed read keeps the broad interval (Req
+  (111.3, 136.9]). Unknown patch, an incomplete set, or every candidate
+  excluded: the broad interval, from the segment start or the previous timer's
+  end. Req [610.9, 642.5] becomes (641.6, 642.5].
 - **Reads the kit cannot produce** — above the length, or above the longest
   variant where the variant is unknown (team-up: 15) — are not countdowns.
 - **`cooldown_ended`**: a timer read in its last two seconds ran out. History
@@ -1285,10 +1289,19 @@ health. Both now say unknown.
   out as casts with finite bounds, width ≤ 2.5 s and `known_at − t_to` ≤ 1.5 s
   (measured 0.9–2.3 s and 0.1–1.1 s, from extract_one, without the segment
   lag); every prefix test also asserts a minimum count of known casts.
-- **Mutations in a scratch copy: 68 of 68 killed**, among them the disc
+- **Mutations in a scratch copy: 71 of 72 killed.** The survivor is the
+  union's lower-end clamp, an equivalent mutant: with the value check, a
+  window's lower end can exceed its upper only by less than TIMER_EPS, at the
+  segment start or the previous timer's end, and frame snapping maps both to
+  the same frame. (An earlier count here, 68 of 68, named the "meta `table`
+  from the resolved patch" mutant as killed; it survived then, and a case with
+  the kit resolver returning nothing now kills it and the two-site variant.)
+  Among the killed: the disc
   fallback accepting a wide blob, the file-writing path using the reference kit
   or an unknown patch defaulting to it, regenerate dropping the recorded patch,
-  the meta `table` taken from the patch instead of the kit used, a later or the
+  the meta `table` taken from the patch instead of the kit used, extraction with
+  no kit while the meta claims the patch, a variant shorter than its countdown
+  kept, one unconfirmed digit narrowed by the variants, a later or the
   earliest decrement placing a use, and the variant union intersected, reduced
   to the shortest, used without a complete set, or promoted to a cast; restoring a
   default kit, letting the previous timer bound a use with the recharge
@@ -1340,14 +1353,14 @@ health. Both now say unknown.
 
 ### Dry run on the two train sections (read-only; no event file changed)
 
-The whole pipeline from the VODs, writer `1141e804b50d`, kit resolved from
+The whole pipeline from the VODs, writer `21a390f547eb`, kit resolved from
 each source's manifest (Season 10, Version 20260911, recorded in the recipe),
 no alarms, against the frozen stream (`1336262e179c`). Scratch only.
 
 | source | slot | casts: frozen → **now** | `ability_uncertain` |
 |---|---|---|---|
 | Day | Get Over Here | 43 → **30** | 1 |
-| Day | team-up | 21 → **0** | 15 |
+| Day | team-up | 21 → **0** | 14 |
 | Day | uppercut | 53 → **53** | 6 |
 | Day | swing | 22 → **21** | 4 |
 | Req | Get Over Here | 37 → **27** | 0 |
@@ -1384,8 +1397,12 @@ no alarms, against the frozen stream (`1336262e179c`). Scratch only.
 - **`known_at − t_to`** for casts: median 1.3 s, max 2.1 s; 1.2 s of it is
   SEG_LAG, an upper bound on when membership settles (it needs at most 10
   frames), the rest confirmation.
-- **`cooldown_ended`**: Day 32, Req 27 (28 and 25 before the variant union
-  gave team-up timers placed in the segment). **Segments**: Day 48, Req 32.
+- **`cooldown_ended`**: Day 33, Req 27. **Segments**: Day 48, Req 32.
+- **Against bdc145b**, exactly two lines differ, both Day team-up: the
+  zero-width `ability_uncertain` at (170.6, 170.6] is gone (the 10 s variant
+  cannot show 11; the 15 s one started before the segment), and that timer,
+  now one that predates the segment, has its end recorded as history,
+  `cooldown_ended` (180.7, 181.0]. Req is identical apart from the writer.
 
 ## Retained sections: how much is actually own-Spider-Man play
 
