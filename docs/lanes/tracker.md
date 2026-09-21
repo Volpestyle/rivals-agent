@@ -58,8 +58,10 @@ the same update if at least `PIECE_INSIDE` (0.7) of it lies inside that body's b
 (0.1 of its size), and it is no taller than the body; the body's box becomes the union of its pieces. Only a body matched in the same
 update takes pieces: a small box where a body is merely predicted stays its own (a lamp at a coasting bot's place is a lamp). A box that
 matches a track of its own is never absorbed, so two dummies seen together from the start keep two ids. Only bodies matched on their
-own are witnesses: a piece taken this update never vouches for the next box, so the body cannot chain outward piece by piece, and the
-result does not depend on the order of the boxes.
+own are witnesses: a piece taken this update never vouches for the next box, so the body cannot chain outward piece by piece, and which
+boxes join a body as its pieces does not depend on the order of the boxes. That holds for piece membership against the directly matched
+bodies only: the numbers given to new ids follow the order of the boxes, and the greedy matching of boxes to tracks is not claimed to be
+order-invariant.
 
 **Residual: a new, smaller bot appearing inside a confirmed near bot's box while that bot is still visible is taken as its piece.**
 Geometry cannot tell it from a piece (a 300 px bot at x 1030 inside a 600 px bot at x 1000 gets the near bot's id). If it is the first box
@@ -128,4 +130,5 @@ age limits above; after that the target is gone and the nearest hostile is picke
   nearest box of its class within `MATCH_FRAC`.
 - **The controller does not.** `Controller._follow` keeps its own `Track` and re-associates it by bearing each step; it never reads
   `Detection.track`. Brain identity is not actuator identity: the pad steers to whichever box lies at the tracked bearing, so brain and
-  controller can disagree for a step about which box is the target when two bots are close.
+  controller can disagree about which box is the target when two bots are close, and the disagreement can persist for as long as the
+  bearing re-association stays on the other bot.
