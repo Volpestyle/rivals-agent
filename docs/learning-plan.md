@@ -830,9 +830,45 @@ that a detector or inverse-dynamics model already supplies trustworthy labels.
    rate; neighboring frames may clarify identity but may not fill an invisible
    body with a guessed box. Store visible-extent `xyxy` in original pixels,
    `self/other/unknown`, `enemy/ally/unknown`, optional hero identity, occlusion,
-   uncertainty and evidence PTS. Exclude health bars from body boxes. Record
-   unresolved regions as ignored, not empty background. A short-window track ID
-   is separate from hero class and survives only visually supported continuity.
+   uncertainty and evidence PTS. `render_mode` is mandatory: `body`,
+   `outline_only`, or `unknown`. A normally rendered character with a coloured
+   rim is `body`; a character revealed only by an x-ray silhouette through
+   geometry is `outline_only`. Box only the rendered extent of either, including
+   visibly attached equipment, excluding nameplates, health bars and detached
+   effects. Keep outline renders as separate labels/classes, never body positives
+   or automatically shootable targets. Unknown render mode is not forced into
+   either class. A short-window track ID is separate from hero class and survives
+   only visually supported continuity.
+
+   Allegiance needs a positive, source-calibrated cue. A clearly associated ally
+   nameplate/chevron supports ally; a clearly associated enemy marker or a red-to-pink
+   outline following the body supports enemy on these default-colour sources.
+   Lack of an ally marker alone proves nothing. A warm effect, reflected light or
+   conflicting cues produce unknown; cite native/context evidence rather than
+   inferring from colour alone. A different colour configuration needs its own
+   cue mapping. Quadrupedal or transformed playable heroes still count: anatomy
+   is not a rule for excluding a hero.
+
+   Confirmed objective vehicles, non-player NPCs, summons and dead bodies are
+   outside this player-character label set; record the exclusion reason. They
+   are hard negatives when visibly resolved, not automatically ignored areas.
+   A prone or airborne pose alone does not prove a corpse. Separate uncertainty
+   about **existence**, **extent**, **class** and **allegiance**. An uncertain
+   allegiance does not discard an otherwise supported character box. Regions
+   with unresolved existence/extent/class carry a tight ignore region and reason,
+   not an empty-background label. Distinct supported bodies inside such a region
+   are still annotated. Audit ignored regions for misses and report their area.
+
+   For the first detector experiment, the geometry-positive floor is **40 native
+   pixels on the longest side at 1920x1080**, scaled with source resolution before
+   any model resize. Retain smaller supported instances as existence/optional-box
+   annotations with `below_size_floor`; use them as ignore regions in this loss,
+   not as negative background. Preserve their counts and original pilot scores:
+   narrowing the detector's scope does not retroactively erase misses. The
+   exporter/trainer must actually honor ignore regions or omit affected frames;
+   silently dropping ignore metadata into ordinary YOLO negatives is forbidden.
+   The VOD proposal detector uses separate `body` and `outline_only` detection
+   classes; role and allegiance remain annotated attributes for visual confirmation.
 4. **Audit before volume.** Start with 30 frames: ten from each available
    creator/regime group, selected outside the sealed final evaluation set. The
    annotators do not see each other's proposals. Adjudicate against original pixels,
@@ -842,6 +878,10 @@ that a detector or inverse-dynamics model already supplies trustworthy labels.
    reaches at least 90% precision and recall against adjudicated visible instances,
    matching at IoU >= 0.5; report denominators and median IoU separately. If either
    fails, repair the protocol and repeat only failed categories before scaling.
+   Report non-self bodies and outline-only instances separately; the large own-hero
+   boxes cannot carry the gate. Independent passes use different model families
+   with the same input packet and no shared labels. Forks within one pass do not
+   provide additional independent votes.
 5. **Splits and detector experiment.** Freeze source-session groups before training;
    approximately 60/30/30 current-regime frames go to train/development/sealed test,
    subject to whole-session integrity rather than exact quotas. Keep both creators
@@ -855,6 +895,46 @@ that a detector or inverse-dynamics model already supplies trustworthy labels.
    set; with this small sample it authorizes assisted annotation, not autonomous
    target selection. Keep human/model visual confirmation of proposals. A failure
    means more targeted labels or a revised detector experiment, not blind scaling.
+
+**Pilot decision: protocol repair is authorized; volume expansion is pending.**
+The local adjudication report records 79 matched pairs (mean IoU 0.843), with
+Claude precision/recall 95.5/87.6 and Codex 98.9/96.9 against a 97-instance
+union-derived reference. Codex's direct-view-enemy result is 22/22; Claude's is
+19/22 recall. The original requirement that both passes reach 90/90 is not met.
+The reference cannot reveal jointly missed characters; its high recall estimates
+are conditional on that incomplete reference. One error among 22 changes the
+percentage by 4.5 points, which is not a +/-5-point confidence interval. These
+numbers establish neither universal annotator accuracy nor detector performance.
+
+Retain the 30-frame pilot and both original passes unchanged. A fresh cross-family
+pair first applies the revised rules to the failed outline, allegiance, extent
+and payload cases as a **protocol exercise**, explicitly exposed to adjudication.
+Then audit 12 new development frames blind, six per creator, counted within the
+150-frame cap: four crowded/effect-heavy frames, four with small characters or
+outline-only instances, and four genuine no-other-character gameplay negatives
+(two per creator). Avoid adjacent frames from the pilot and use only session groups
+cleared for development; the uncertain-origin September uploads stay inspection-only.
+If the eligible sources cannot supply a stratum, report the gap rather than
+quietly substituting it.
+
+Before the adjudicator sees either proposal set, it sweeps **all 12 full frames**
+with context and records its own candidate inventory, including ignored areas.
+Then reconcile the inventories against pixels, preserving unresolved instances
+and reporting sensitivity to their inclusion. This adds a way to discover shared
+misses; a third model is still a fallible reference. Apply the revised 90/90 gate
+to the declared >=40 px non-self body/outline classes separately, report smaller
+instances separately, and report false proposals per negative frame. If a class
+has too few supported examples, its result remains inconclusive rather than a
+zero-denominator pass. The full set still needs at least 20 current-regime genuine
+negative frames. Known payloads/overlays also supply hard-negative examples.
+
+The suggested 60 px proposal floor is an **initial evaluation threshold**, not
+measured detector capability. Report <40, 40-59, 60-99 and >=100 px performance
+before choosing a deployment cutoff on development data. No detector exists from
+this pilot yet. Remaining annotation volume waits on the repair audit and the
+native-replay source decision above; a validated replay path may deserve those
+labels instead. Freeze final detector evaluation groups before training; a pilot
+or repair frame is development evidence and cannot become a sealed test frame.
 
 Boxes expose candidate targets; they do not prove which one the expert selected.
 The enemy nearest the crosshair is a **candidate heuristic to audit**, especially
