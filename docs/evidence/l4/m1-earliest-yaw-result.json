@@ -1,0 +1,33 @@
+{
+ "at": "earliest",
+ "outcome": "ok",
+ "pulse_onset_video_s": 3.015,
+ "video_times": {
+  "constructor_start": 2.558,
+  "attached": 3.003,
+  "proven": 3.01,
+  "first_non_neutral": 3.015,
+  "last_non_neutral": 3.307,
+  "first_neutral_after": 3.358,
+  "released": 3.358,
+  "closed": 6.379
+ },
+ "attach_to_first_non_neutral_ms": 12.2,
+ "yaw_2s_before_attach_deg": 0.51,
+ "drift_first_frame_video_s": null,
+ "drift_attach_to_pulse_onset_deg": 0.0,
+ "pulse_right_turn_deg_by_landmarks(n)": [
+  null,
+  0
+ ],
+ "pulse_per_frame_sum_deg(unreliable at this rate)": 47.8,
+ "after_pulse_pad_attached_neutral_deg": 0.04,
+ "after_pulse_window_s": 2.82,
+ "after_pulse_max_abs_rate_deg_s": 1.4,
+ "switching_devices_banner_video_s": [
+  3.28,
+  7.59,
+  4.3
+ ],
+ "after_close_2s_deg": -0.1
+}

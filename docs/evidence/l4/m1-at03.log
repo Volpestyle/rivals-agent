@@ -1,0 +1,3 @@
+START 17:20:54.38  
+{"at": "0.3", "outcome": "ok", "stamps": {"constructor_start": {"perf": 97130.9763, "wall": 1790029255.1136}, "attached": {"perf": 97131.4069, "wall": 1790029255.5441}, "proven": {"perf": 97131.7201, "wall": 1790029255.8566}, "released": {"perf": 97132.03, "wall": 1790029256.1672}, "closed": {"perf": 97135.0309, "wall": 1790029259.1681}}, "update_timing": "pad.update() returned (inside Live's lock; includes the observer's overhead; not the device's receipt)", "first_non_neutral_update_returned": 97131.7345, "last_non_neutral_update_returned": 97131.9797, "first_neutral_update_returned_after": 97132.03, "reports": 7}
+EXIT 0 17:20:59.98  
