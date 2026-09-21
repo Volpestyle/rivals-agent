@@ -47,5 +47,10 @@ from this Mac, usually as a Herdr swarm. `CLAUDE.md` is a symlink to this file.
   `cv2`, `numpy` or `perception` are skipped there and run with `uv run --group perception pytest`
   (`uv sync` afterwards restores the stdlib-only environment). Perception lanes run the second form.
 - Python via `uv`; standard library first; add a dependency only when a few lines cannot do it.
+- Review is independent of the lane that wrote the code. Code that sends input to the live
+  game, and code that decides what enters a training or evaluation set, gets a read-only
+  review by an agent outside the lane (preferably another model family) before it is relied
+  on; the lead verifies each finding before dispatching a fix to the owning lane. A lane's
+  own tests and report are evidence, not a review.
 - Several agents often share this checkout. Edit only the paths your brief names, and
   load the `shared-checkout` skill before committing.
