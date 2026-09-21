@@ -34,7 +34,7 @@ import math
 import signal
 import sys
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 import cv2
@@ -73,9 +73,13 @@ SWEEP_S = 0.3                                  # a look-around turn (about 50 de
 # left him on the dark jamb to its left (four refusals; the live arrival of 2026-09-21 12:24, step 21: pane 0.42-0.63, hero 0.39).
 HERO_X = 0.40
 DOOR_KEEP = 0.25     # once walking at a door, the blob nearest where that door should be now (after our own turn) is it, within this share
-                     # of the width: two lime doors can be in view inside, and the biggest one jumped between them (live, steps 1-5)
-OUT_PX = 20000       # a walk step at a door this big (px at 1280x720), followed by a frame with no door, is passing through it: live, step 15
-                     # (33k, walked) -> step 16 (none, the plaza-side planter ahead); no step before it shows that
+                     # of the width: two lime doors can be in view inside, and the biggest one jumped between them (live, steps 1-5).
+                     # With none kept, the door nearest his column is chosen, not the biggest: on all four logged spawns the plaza door sits
+                     # 0.04 from his column (x 0.44) and the other door 0.19 off (x 0.21), and the other one was the bigger blob in two
+OUT_PX = 10000       # passing through a door: a walk step at it, then a frame with no door, and the door's biggest blob over its last
+OUT_WALKS = 3        # OUT_WALKS walk steps at least this (px at 1280x720). The pane shrinks as he reaches it (the last walk before it vanished
+                     # was 3.4-33k on the five logged crossings), but its peak over the last three walks was 16-54k; a sliver of the pane
+                     # walked at from outside after a look-around was 3.8k
 OUT_SWEEPS = 7       # outside, turn LEFT at most this many SWEEP_S steps (~360 deg) looking for the bot: live, from the exit she stood
                      # 25-45 deg left of the heading he left by (steps 12-15), one step brings her into plaza_view's window
 YAW_STICK, YAW_DEG_S, FOCAL = 0.45, 172.0, 465.0   # the camera: deg/s at that right-stick deflection, and the focal length at 1280 wide (l4)
@@ -840,7 +844,7 @@ class ArrivalMemory:
     """What arrival_step carries from one frame to the next."""
     plaza: int = 0                 # frames in a row that showed the plaza
     chosen: float | None = None    # x of the door being walked at, as the last frame showed it, moved by our own turn since
-    last_px: int = 0               # its size on the last frame
+    walks: list = field(default_factory=list)   # its size on the walk steps taken at it (a new or lost door starts it again)
     walked: bool = False           # the last step walked
     out: bool = False              # through the door: from here on no door is steered to or walked at
     sweeps: int = 0                # look-around turns taken outside
@@ -854,7 +858,7 @@ def arrival_step(f, m):
         return ("done", "plaza confirmed on a second frame") if m.plaza >= 2 else ("plaza?", "plaza seen: a second look, standing still")
     m.plaza = 0
     blobs = door_blobs(f)
-    if not m.out and not blobs and m.walked and m.last_px >= OUT_PX:
+    if not m.out and not blobs and m.walked and max(m.walks[-OUT_WALKS:], default=0) >= OUT_PX:
         m.out = True                                  # walked at a big door, and now none: through it
     if m.out:                                         # never a door again, not even a sliver of its pane seen from outside (live step 17)
         m.walked = False
@@ -862,17 +866,16 @@ def arrival_step(f, m):
             return ("give up", f"out, but no bot in view after {OUT_SWEEPS} look-around turns")
         m.sweeps += 1
         return ("turn", -YAW_STICK, SWEEP_S, f"out: look around left, rstick {-YAW_STICK:+.2f} for {SWEEP_S:.2f} s")
-    if m.chosen is not None and blobs:
-        x, px = min(blobs, key=lambda b: abs(b[0] - m.chosen))
-        if abs(x - m.chosen) > DOOR_KEEP:
-            x, px = blobs[0]
-    else:
-        x, px = blobs[0] if blobs else (None, 0)
+    kept = min(blobs, key=lambda b: abs(b[0] - m.chosen)) if m.chosen is not None and blobs else None
+    if kept is not None and abs(kept[0] - m.chosen) <= DOOR_KEEP:
+        x, px = kept
+    else:                                             # nothing kept (or it is gone): the door nearest his column, not the biggest
+        x, px = min(blobs, key=lambda b: abs(b[0] - HERO_X)) if blobs else (None, 0)
+        m.walks = []
     m.walked = False
     if x is None:  # nothing to walk toward (a wall, the plaza with no bot in view): look around, do not walk blind
-        m.chosen, m.last_px = None, 0
+        m.chosen = None
         return ("turn", YAW_STICK, SWEEP_S, f"no door: look around, rstick {YAW_STICK:+.2f} for {SWEEP_S:.2f} s")
-    m.last_px = px
     if abs(x - HERO_X) > DOOR_TOL:  # the pane is off his column: turn it onto his column first, no walking
         deg = math.degrees(math.atan((x - HERO_X) * 1280.0 / FOCAL))
         secs = min(0.6, abs(deg) / YAW_DEG_S)
@@ -880,6 +883,7 @@ def arrival_step(f, m):
         return ("turn", math.copysign(YAW_STICK, deg), secs,
                 f"door off his column: turn, rstick {math.copysign(YAW_STICK, deg):+.2f} for {secs:.2f} s")
     m.chosen, m.walked = x, True
+    m.walks.append(px)
     return ("walk", WALK_CHUNK_S, f"door on his column: walk, stick forward for {WALK_CHUNK_S:.2f} s")
 
 
