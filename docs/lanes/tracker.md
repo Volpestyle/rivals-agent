@@ -69,17 +69,21 @@ and after t 15.3 s a box 120 px or taller is the Luna Snow bot.
 
 | Replay | ids | Luna: ids / switches of her main box's id | brain target ticks: door / kill feed / Luna / other | held id visible (on Luna) | update p50 / p95 |
 |---|---|---|---|---|---|
-| without pieces | 116 | 16 / 20 | 559 / 322 / 535 / 81 | 20% (54%) | 0.002 / 0.08 ms |
-| with pieces | 105 | 11 / 16 | 559 / 332 / 525 / 81 | 21% (56%) | 0.003 / 0.09 ms |
+| without pieces | 116 | 16 / 20 | 559 / 322 / 535 / 81 | 20% (54%) | 0.002 / 0.05 ms |
+| with pieces | 105 | 11 / 16 | 559 / 332 / 525 / 81 | 21% (56%) | 0.002 / 0.05 ms |
+| with pieces, no kill feed | 103 | 11 / 16 | 559 / 0 / 799 / 139 | 21% (37%) | 0.002 / 0.05 ms |
+
+`python docs/evidence/l4/postfreeze30_replay.py [--no-kill-feed] [TRACKER.py ...]` reproduces each row (stdlib; "no kill feed" drops the
+kill feed's box from the trace, which the finder no longer makes: docs/lanes/l3-detector.md). Without the kill feed the brain holds Luna
+through her death and respawn gap (about 20-25 s) with nothing Luna-sized in the crop, which is why her held-id visibility falls.
 
 What the ids and the lost targets come from, measured:
 
 - **Most of the run the target is not a bot.** 18 of 30 s the brain engages the door (12 s) or the kill feed (6 s). Both are finder
-  false positives: the door's edge stripes pass the enemy green band, and the kill feed's green "LUNA SNOW" name text sits above the
-  finder's top-right dead zone (which starts at 6% of the height), so it becomes a name bar with a projected body (conf 0.812), a box
-  identical to the pixel in all 68 sightings. The tracker has no signal that tells either from a standing bot: the door's boxes are
-  body-shaped often enough (19% have height / width >= 1.2) and move with the camera like a bot. The finder does see a bot's name bar:
-  on the saved frames 32% of Luna's outlines carry one and 4% of the door's; `Detection` does not carry it.
+  false positives. The kill feed is now dropped by the finder (docs/lanes/l3-detector.md). The door's edge stripes sit at the enemy
+  band's lower hue bound, and nothing downstream tells them from a standing bot: its boxes are body-shaped often enough and move with
+  the camera like a bot, and its name-bar evidence (`Detection.plate`) does not separate it from Luna by any per-track rule with margin
+  (the measurement is in the finder's lane doc). The brain has no "shown its bar" rule for that reason.
 - **The engaged bot's own id churn is its pieces**, not the camera: within the gate, yet a new id, because a piece took the old id and
   the others were born. The piece rule above takes the new-born pieces; what remains is two concurrent tracks on pieces that were born
   apart (legs and torso in a kick), which keep their own ids: with Luna the target, her id is on a visible box on 56% of ticks, another

@@ -4,6 +4,7 @@ Run with `uv run --group perception pytest`; a bare `uv run pytest` skips this f
 (see tests/conftest.py). Synthetic frames only — no recorded data needed.
 """
 import numpy as np
+import pytest
 
 from agent.state import ENEMY
 from perception.outline import GREEN, detect, find_bars, find_enemies, find_green
@@ -154,3 +155,57 @@ def test_a_band_can_wrap_hue_zero():
     f[304:416, 604:656] = 0
     assert len(find_enemies(f, band=RED)) == 1
     assert find_enemies(f) == []          # and the green band must not see it
+
+
+# --- the kill feed, and whether a box's name bar was seen (VUH-1314, postfreeze30) ------------------------------------------------------
+def _body(f, y1, y2, x1, x2):
+    f[y1:y2, x1:x2] = GREEN_BGR
+    f[y1 + 6:y2 - 6, x1 + 6:x2 - 6] = 0
+
+
+def test_the_kill_feed_name_is_never_an_enemy_but_a_real_bar_at_the_top_right_is():
+    """The kill feed's victim name is one enemy-green text line at a fixed place (720p: y 30-37, x ~1160-1215). Dropped only when the
+    mark lies wholly in that band: a real bot's bar at the top-right is taller or touches the top edge, and stays."""
+    f = _frame()
+    f[30:37, 1160:1210] = GREEN_BGR                  # the kill feed's "LUNA SNOW"
+    assert find_enemies(f) == []
+    g = _frame()
+    g[24:52, 1140:1275] = GREEN_BGR                  # a real name-and-health bar, taller than the kill feed's line (tagrun0 000070)
+    assert len(find_enemies(g)) == 1
+    h = _frame()
+    h[0:10, 1075:1155] = GREEN_BGR                   # a bar cut by the top edge (tagrun1 000342)
+    assert len(find_enemies(h)) == 1
+
+
+def test_a_body_records_whether_its_name_bar_was_seen():
+    f = _frame()                                     # right of the player zone, whose small marks are dropped as the hero's own
+    f[250:262, 900:1000] = GREEN_BGR                 # its bar
+    _body(f, 320, 460, 910, 990)
+    assert [d.plate for d in find_enemies(f)] == [True]
+    g = _frame()
+    _body(g, 320, 460, 910, 990)                     # no bar anywhere: seen to have none
+    assert [d.plate for d in find_enemies(g)] == [False]
+    h = _frame()
+    _body(h, 60, 200, 910, 990)                      # where its bar would float is above the image: not seen, not "none"
+    assert [d.plate for d in find_enemies(h)] == [None]
+
+
+def test_a_bar_with_no_body_is_no_evidence_of_a_bar():
+    """A lone bar is what green scenery fakes (the spawn room door's flat glass edges): the projected box says nothing either way."""
+    f = _frame()
+    f[120:130, 900:1000] = GREEN_BGR
+    d, = find_enemies(f)
+    assert d.plate is None
+
+
+def test_native_kill_feed_frames_lose_only_the_kill_feed():
+    import cv2
+    from pathlib import Path
+    kill = Path("data/l1/postfreeze30/000150.jpg")
+    real = [Path("data/l1/tagrun0/000206.jpg"), Path("data/l1/tagrun0/000228.jpg"), Path("data/l1/tagrun1/000342.jpg")]
+    if not kill.exists() or not all(p.exists() for p in real):
+        pytest.skip("native frames not on this machine")
+    boxes = find_enemies(cv2.imread(str(kill)), scale=2.0)
+    assert not any(b.bbox[0] > 2200 and b.bbox[1] < 260 for b in boxes)              # nothing at the kill feed
+    for p in real:                                                                    # a real bot at the top-right: still found
+        assert any(b.bbox[0] > 2100 and b.bbox[1] < 260 for b in find_enemies(cv2.imread(str(p)), scale=2.0)), p

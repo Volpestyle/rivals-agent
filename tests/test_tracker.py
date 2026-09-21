@@ -249,9 +249,10 @@ def test_a_track_seen_long_ago_at_a_similar_place_is_a_new_bot():
 
 # --- State, the brain and Jev follow the id -------------------------------------------------------------------------------------
 def test_state_round_trips_track_ids_and_the_coasting_list_and_old_lines_still_load():
-    st = State(t=1.0, frame=FRAME, detections=[det(500, 500, 200, track=7)], coasting=(3, 5))
+    st = State(t=1.0, frame=FRAME, detections=[det(500, 500, 200, track=7, plate=True), det(900, 500, 200, plate=None)], coasting=(3, 5))
     back = State.from_dict(st.to_dict())
     assert back == st and back.detections[0].track == 7 and back.coasting == (3, 5)
+    assert [d.plate for d in back.detections] == [True, None]                        # unknown stays None, never False
     old = {"t": 1.0, "frame": [2560, 1440], "detections": [{"cls": "enemy", "bbox": [1, 2, 3, 4], "conf": 0.9}]}
     loaded = State.from_dict(old)
     assert loaded.detections[0].track is None and loaded.coasting == ()

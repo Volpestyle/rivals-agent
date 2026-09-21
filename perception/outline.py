@@ -129,6 +129,13 @@ GREEN_DEAD_ZONES = [
 ]
 
 
+# The kill feed's first row, above that readout: the victim's name is drawn in enemy green, one text line at a fixed place (every one of
+# 18 marks on loop30a and postfreeze30: y 59-75 native, 12-16 px tall, ending at x 2416-2433). It became a name bar with a projected body,
+# the brain's target for 6 s of postfreeze30. A mark is dropped only if it lies WHOLLY inside this band: a real bot's name bar at the
+# top-right is taller or touches the top edge (tagrun0 70, 206, 228, tagrun1 342), and survives. Fractions of the frame.
+KILL_FEED = (0.86, 0.034, 0.96, 0.058)
+
+
 def find_bars(frame_bgr, scale=None):
     """Red horizontal bars: (x, y, w, h) per nameplate, largest first.
 
@@ -196,6 +203,9 @@ def find_green(frame_bgr, scale=None, band=GREEN):
             continue
         cx, cy = (x + w / 2) / iw, (y + h / 2) / ih
         if any(zx1 <= cx <= zx2 and zy1 <= cy <= zy2 for zx1, zy1, zx2, zy2 in GREEN_DEAD_ZONES):
+            continue
+        kx1, ky1, kx2, ky2 = KILL_FEED
+        if kx1 <= x / iw and (x + w) / iw <= kx2 and ky1 <= y / ih and (y + h) / ih <= ky2:
             continue
         # The player's own band. Only enemies are outlined, so nothing here produced a
         # false box in the tagrun footage -- but junk in front of the player is what
@@ -272,9 +282,21 @@ def find_enemies(frame_bgr, scale=None, band=GREEN):
     # Testing flatness rather than the 'bar' label matters: when the plate is tall enough
     # to miss the bar thresholds it is labelled an outline, and a label-based test then
     # reports it as a second enemy.
-    keep = [(k, b, c) for k, b, c, raw in out
+    plates = [raw for _k, _b, _c, raw in out if _flat(raw)]
+    keep = [(k, b, c, raw) for k, b, c, raw in out
             if not (_flat(raw) and any(_belongs_to(raw, o) for o in outlines))]
-    return [Detection(cls=ENEMY, bbox=tuple(round(v, 1) for v in b), conf=c) for _k, b, c in keep]
+    return [Detection(cls=ENEMY, bbox=tuple(round(v, 1) for v in b), conf=c, plate=_plate(k, raw, plates)) for k, b, c, raw in keep]
+
+
+def _plate(kind, raw, plates):
+    """Was this box's name-and-health bar seen ON its body? An outline: True if a bar belongs to it, None if where the bar would float is
+    above the image (cut off, so not seen either way), else False. A bar with no body (a projected box) is None: a bar alone is exactly what
+    green scenery fakes (the spawn room door's flat glass edges read as bars on 18-23% of its sightings), so it is no evidence either way."""
+    if kind != "outline" or _flat(raw):
+        return None
+    if any(_belongs_to(p, raw) for p in plates):
+        return True
+    return None if raw[1] - BAR_ABOVE * (raw[3] - raw[1]) < 0 else False
 
 
 def _flat(rect):
