@@ -155,7 +155,7 @@ def test_every_event_kind():
         ("ult_ready", "ult"): (_refilling(), hud(ult=True), hud(ult=True)),
     }
     for want, huds in cases.items():
-        got = kinds(extract_one(reads(*huds), mapping=IDENTITY))
+        got = kinds(extract_one(reads(*huds), mapping=IDENTITY, timers={"swing": 6}))
         assert want in got, f"{want} not in {got}"
 
 
@@ -497,7 +497,7 @@ def test_check_lists_old_formats_and_files_nobody_can_rebuild(tmp_path):
 
     full = {"recipe": recipe, "cut_times": [], "observed": {}, "slot_mapping": {},
             "writer": writer_version(), "container_start_s": 0.0, "stream_start_s": 0.0,
-            "timer_lengths": {}}
+            "timer_lengths": {}, "kit": None}
     _write(tmp_path / "good.jsonl", {"format": FORMAT_VERSION, **full})
     _write(tmp_path / "sub" / "old.jsonl", {"format": FORMAT_VERSION - 1, **full})
     _write(tmp_path / "orphan.jsonl", {"format": FORMAT_VERSION, **full, "recipe": None})
@@ -706,7 +706,17 @@ def _run_case(case):
     rs = [(i, t, Hud(hp=250, max_hp=250, bar_fill=1.0, abilities={slot: (ready, charges)},
                      cooldowns={slot: cd}))
           for i, t, cd, ready, charges in case["frames"]]
-    return extract_one(rs, mapping={slot: slot}, timers={slot: case["full"]} if case["full"] else None)
+    # Durations are inputs: the reference kit for the charged slots (a recorded
+    # `full` there is the old calibration's), the case's own for the rest --
+    # team-up 15 is Symbiote Bond, the icon both train sources show.
+    from perception.events import KITS, KIT_REFERENCE, durations
+
+    if slot in ("swing", "uppercut"):
+        full, lock = durations(KITS[KIT_REFERENCE], {slot: slot})[slot]
+    else:
+        full, lock = case["full"], None
+    return extract_one(rs, mapping={slot: slot}, timers={slot: full} if full else None,
+                       locks={slot: lock} if lock else None)
 
 
 def _near_event(events, kind, case, tol=0.35):
@@ -721,8 +731,16 @@ def test_a_countdown_read_again_after_a_gap_is_not_a_new_cast(case):
 
 @pytest.mark.parametrize("case", _gap_cases("cast"), ids=lambda c: f"{c['source'][:5]}-{c['slot']}-{c['t_event']}")
 def test_a_real_cast_is_still_a_cast(case):
-    """The controls: a fresh countdown after the icon was up. Must survive the fix."""
-    assert _near_event(_run_case(case), "ability_cast", case, tol=1.2)
+    """The controls and the charged second uses, verified on the frames: still
+    casts, with finite bounds the evidence justifies, known soon after. An
+    empty, unknown-only or deferred output fails here."""
+    import math
+
+    (cast,) = _near_event(_run_case(case), "ability_cast", case, tol=1.2)
+    assert all(math.isfinite(x) for x in (cast.t_from, cast.t_to, cast.known_at)), cast
+    assert cast.t_from <= cast.t_to <= cast.known_at, cast
+    assert cast.t_to - cast.t_from <= 2.5, cast        # measured: 1.1-2.3 s
+    assert cast.known_at - cast.t_to <= 1.5, cast      # measured: 0.1-1.1 s
 
 
 def test_a_case_that_cannot_be_told_stays_unknown():
@@ -761,8 +779,9 @@ def test_a_recharge_completing_is_not_a_cast_and_the_next_use_is():
     vals = [None] * 5 + [2] * 10 + [1] * 8 + [None] * 12 + [5] * 10
     chg = [1] * 5 + [0] * 18 + [1] * 12 + [0] * 10
     events = extract_one(_slot_reads(vals, charges=chg, ready=[True] * 45), mapping={"swing": "swing"})
-    casts = [e.t_to for e in events if e.kind == "ability_cast"]
-    assert casts == [0.6, 3.6], casts
+    casts = [e for e in events if e.kind == "ability_cast"]
+    assert [e.t_to for e in casts] == [0.5, 3.5], casts          # no later than the first read
+    assert [e.known_at for e in casts] == [0.6, 3.6], casts      # known on the confirming one
     assert [e.kind for e in events if e.kind == "charges_regained"] == ["charges_regained"]
 
 
@@ -782,8 +801,9 @@ def test_a_restart_at_full_value_after_the_cooldown_is_a_cast():
                          mapping={"get_over_here": "get_over_here"}, timers={"get_over_here": 8})
     casts = [e for e in events if e.kind == "ability_cast"]
     assert len(casts) == 1 and casts[0].amount == 8
-    assert abs(casts[0].t_to - 3.1) < 0.05, "known on the confirming read, not the first"
-    assert casts[0].t_from <= 1.9, "no earlier than the last timer's end allows, and no later"
+    assert abs(casts[0].known_at - 3.1) < 0.05, "known on the confirming read, not the first"
+    assert casts[0].t_to <= 3.0
+    assert 1.9 <= casts[0].t_from <= 2.1, "after the last timer's end; two reads of 8 bound it from below"
 
 
 def test_a_timer_the_kit_cannot_produce_is_uncertain_not_a_cast():
@@ -1019,9 +1039,9 @@ def test_an_uppercut_between_cast_lock_is_a_use_only_with_evidence_placing_it():
     events = extract_one(_slot_reads(vals, slot="uppercut", ready=[True] * 33), mapping={"uppercut": "uppercut"})
     assert [e.kind for e in events if e.kind.startswith("ability_")] == ["ability_uncertain"]
     events = extract_one(_slot_reads(vals, slot="uppercut", charges=[1] * 33, ready=[True] * 33),
-                         mapping={"uppercut": "uppercut"})
+                         mapping={"uppercut": "uppercut"}, timers={"uppercut": 6}, locks={"uppercut": 1})
     (cast,) = [e for e in events if e.kind.startswith("ability_")]
-    assert cast.kind == "ability_cast" and cast.t_from <= 0.4 and cast.t_to == 1.6
+    assert cast.kind == "ability_cast" and cast.t_from <= 0.4 and cast.t_to == 1.5 and cast.known_at == 1.6
 
 
 def test_an_unread_frame_is_no_evidence_either_way_for_a_charged_use():
@@ -1031,13 +1051,14 @@ def test_an_unread_frame_is_no_evidence_either_way_for_a_charged_use():
     out-of-kit read beside it makes it uncertain."""
     vals = [None] * 10 + [4] * 10 + [3] * 10
     ready = [None] * 10 + [True] * 20
-    events = extract_one(_slot_reads(vals, slot="swing", ready=ready), mapping={"swing": "swing"})
+    kit = {"mapping": {"swing": "swing"}, "timers": {"swing": 6}}
+    events = extract_one(_slot_reads(vals, slot="swing", ready=ready), **kit)
     assert [e.kind for e in events if e.kind.startswith("ability_")] == ["ability_uncertain"]
     badge = [1] * 10 + [0] * 20
-    events = extract_one(_slot_reads(vals, slot="swing", charges=badge, ready=ready), mapping={"swing": "swing"})
+    events = extract_one(_slot_reads(vals, slot="swing", charges=badge, ready=ready), **kit)
     assert [e.kind for e in events if e.kind.startswith("ability_")] == ["ability_cast"]
     vals[5] = 9                                               # a number swing cannot show
-    events = extract_one(_slot_reads(vals, slot="swing", charges=badge, ready=ready), mapping={"swing": "swing"})
+    events = extract_one(_slot_reads(vals, slot="swing", charges=badge, ready=ready), **kit)
     assert [e.kind for e in events if e.kind.startswith("ability_")] == ["ability_uncertain"]
 
 
@@ -1092,9 +1113,12 @@ def test_probe_number_dropout_does_not_narrow_event_interval():
 
 def test_probe_confirmation_cannot_be_visible_in_an_earlier_prefix():
     # First 8 at 2.0; confirming 7 at 3.0. At 2.0 no confirmed event exists.
+    # Restated on known_at: the review's copy selected by t_to, which was the
+    # known-by time then and is now the occurrence bound (the use was no later
+    # than 2.0, and that is known only at 3.0).
     rs = _probe_rows([None] * 20 + [8] + [None] * 9 + [7], ready=None)
-    short = [e for e in _probe_events(rs[:21]) if e.t_to <= 2.0]
-    long = [e for e in _probe_events(rs) if e.t_to <= 2.0]
+    short = [e for e in _probe_events(rs[:21]) if e.known_at <= 2.0]
+    long = [e for e in _probe_events(rs) if e.known_at <= 2.0]
     assert short == long, long
 
 
@@ -1166,7 +1190,9 @@ def test_the_previous_timer_is_the_one_still_running_not_the_latest_made():
           for i, t, cd, r, c in fx["frames"]]
     events = extract_one(rs, mapping={"teamup": "teamup"}, timers={"teamup": 15})
     assert not [e for e in events if e.kind == "ability_cast" and 101.6 <= e.t_to <= 115.5]
-    assert [e.kind for e in events if abs(e.t_to - 110.0) <= 0.2] == ["ability_uncertain"]
+    # Nor an uncertain stretch: the 8s were read while the 6 provably ran, so
+    # they are a misread of it, and censoring 8 s of known cooldown helps nobody.
+    assert not [e for e in events if e.kind.startswith("ability_") and 101.6 <= e.known_at <= 115.5]
 
 
 def test_a_single_read_is_uncertain_once_its_expiry_passes():
@@ -1176,9 +1202,9 @@ def test_a_single_read_is_uncertain_once_its_expiry_passes():
     vals = [None] * 20 + [1] + [None] * 20
     events = extract_one(_slot_reads(vals, slot="uppercut"), mapping={"uppercut": "uppercut"})
     (e,) = [e for e in events if e.kind.startswith("ability_")]
-    assert e.kind == "ability_uncertain" and e.t_to >= 3.15 and e.t_from <= 2.0
+    assert e.kind == "ability_uncertain" and e.known_at >= 3.15 and e.t_to == 2.0
     early = extract_one(_slot_reads(vals[:30], slot="uppercut"), mapping={"uppercut": "uppercut"})
-    assert [x for x in early if x.t_to <= 3.0] == [x for x in events if x.t_to <= 3.0]
+    assert [x for x in early if x.known_at <= 3.0] == [x for x in events if x.known_at <= 3.0]
 
 
 def test_a_single_misread_inside_a_running_cooldown_is_nothing():
@@ -1186,26 +1212,46 @@ def test_a_single_misread_inside_a_running_cooldown_is_nothing():
     events = extract_one(_slot_reads(vals, slot="get_over_here"), mapping={"get_over_here": "get_over_here"},
                          timers={"get_over_here": 8})
     assert [e.kind for e in events if e.kind.startswith("ability_")] == ["ability_cast"]
+    # A charged slot: a countdown on screen means no charge to use.
+    vals = [None] * 12 + [5] * 10 + [2] + [4] * 10 + [3] * 10 + [2] * 10 + [1] * 10
+    events = extract_one(_slot_reads(vals, charges=[1] * 12 + [0] * 51), mapping={"swing": "swing"},
+                         timers={"swing": 6})
+    assert [e.kind for e in events if e.kind.startswith("ability_")] == ["ability_cast"]
 
 
-def test_a_charged_slot_whose_timers_outrun_the_kit_writes_only_uncertainty():
-    """RECHARGE_S is the one length not measured. A patch that lengthened it
-    must not degrade silently: its own ticking timers above the kit contradict
-    it, and every use of that slot is then uncertain."""
-    from perception.events import kit_contradicted, timer_lengths
-
-    long = _slot_reads([None] * 12 + [9] * 10 + [8] * 10 + [7] * 10 + [None] * 20, charges=[1] * 12 + [0] * 50)
-    measured = timer_lengths(long, detail=True)
-    assert kit_contradicted(measured, {"swing": "swing"}) == {"swing"}
-    rs = [(*r, True) for r in long]
-    events, _ = extract(rs, mapping={"swing": "swing"})
-    assert [e.kind for e in events if e.kind.startswith("ability_")] == ["ability_uncertain"]
-    fits = _slot_reads([None] * 12 + [6] * 10 + [5] * 10 + [4] * 10, charges=[1] * 12 + [0] * 30)
-    assert kit_contradicted(timer_lengths(fits, detail=True), {"swing": "swing"}) == set()
+def test_a_countdown_longer_than_the_kit_raises_the_alarm_and_stops_casts():
+    """Measured lengths are an alarm, never a calibration: a charged slot's
+    countdown ticking above the kit's recharge contradicts the kit, and from
+    then on the slot writes only uncertainty. Before it, casts stand: the
+    alarm is causal, so a prefix still yields what the whole did."""
+    ok = [None] * 12 + [5] * 10 + [4] * 10 + [None] * 30
+    long = [9] * 10 + [8] * 10 + [7] * 10 + [None] * 30 + [5] * 10 + [4] * 10
+    rs = [(*r, True) for r in _slot_reads(ok + long, charges=[1] * 12 + [0] * 20 + [1] * 30 + [0] * 90)]
+    alarm = {}
+    events, _ = extract(rs, mapping={"swing": "swing"}, alarm=alarm)
+    assert alarm["swing"]["read"] == 9 and alarm["swing"]["kit"] == 6.0, alarm
+    kinds_ = [(e.kind, e.t_to) for e in events if e.kind.startswith("ability_")]
+    assert kinds_[0][0] == "ability_cast" and all(k == "ability_uncertain" for k, _ in kinds_[1:]), kinds_
     # Day swing 152.5: one misread "8" inside a 6-5 recharge is not a longer timer.
-    one = _slot_reads([None] * 2 + [8] + [None] * 9 + [6] * 10 + [5] * 10 + [4] * 10,
-                      charges=[1] * 12 + [0] * 30)
-    assert kit_contradicted(timer_lengths(one, detail=True), {"swing": "swing"}) == set()
+    one = [None] * 2 + [8] + [None] * 9 + [6] * 10 + [5] * 10 + [4] * 10
+    alarm = {}
+    extract([(*r, True) for r in _slot_reads(one)], mapping={"swing": "swing"}, alarm=alarm)
+    assert alarm == {}
+    # Three lone reads that happen to tick, 9, 8, 7 a second apart: none confirmed.
+    alarm = {}
+    sparse = [None] * 12 + [9] + [None] * 9 + [8] + [None] * 9 + [7] + [None] * 20
+    extract([(*r, True) for r in _slot_reads(sparse)], mapping={"swing": "swing"}, alarm=alarm)
+    assert alarm == {}
+    # Chat parked over the slot for three seconds: one value, never ticking.
+    alarm = {}
+    extract([(*r, True) for r in _slot_reads([None] * 12 + [9] * 30 + [None] * 10)],
+            mapping={"swing": "swing"}, alarm=alarm)
+    assert alarm == {}
+    # Day uppercut 155.0: "8 8 7 7" inside half a second is a misread pair, not a timer.
+    pair = [None] * 12 + [8, 8, 7, 7] + [None] * 30
+    alarm = {}
+    extract([(*r, True) for r in _slot_reads(pair, slot="uppercut")], mapping={"uppercut": "uppercut"}, alarm=alarm)
+    assert alarm == {}
 
 
 def test_black_level_boundaries():
@@ -1238,7 +1284,7 @@ def test_hp_cause_needs_max_hp_unchanged_not_merely_read():
 def test_a_cast_interval_starts_no_earlier_than_its_timer_allows():
     """The lower bound is expiry - full length, not the segment start."""
     (e,) = _casts(_probe_events(_probe_rows([None] * 50 + [8] * 2)))
-    assert 3.7 <= e.t_from <= 3.9 and e.t_to == 5.1, e
+    assert e.t_from == 4.1 and e.t_to == 5.0 and e.known_at == 5.1, e   # two 8s: start in (4.1, 5.0]
 
 
 def test_a_weak_own_hero_match_is_visible_on_the_segment():
@@ -1250,12 +1296,13 @@ def test_a_weak_own_hero_match_is_visible_on_the_segment():
     assert [s.hero_weak_frames for s in segs] == [None]
 
 
-def test_a_timer_expiring_before_the_running_one_is_uncertain():
-    """A one-charge slot cannot start a second timer while one runs."""
+def test_a_timer_expiring_before_the_running_one_is_nothing():
+    """A one-charge slot cannot start a second timer while one runs: read while
+    the first provably runs, it is a misread of that one, and emits nothing."""
     vals = [None] * 40 + [8] * 10 + [5] * 2 + [7] * 10
     events = extract_one(_slot_reads(vals, slot="get_over_here"), mapping={"get_over_here": "get_over_here"},
                          timers={"get_over_here": 8})
-    assert [e.kind for e in events if e.kind.startswith("ability_")] == ["ability_cast", "ability_uncertain"]
+    assert [e.kind for e in events if e.kind.startswith("ability_")] == ["ability_cast"]
 
 
 def test_without_a_length_a_first_timer_cannot_be_placed():
@@ -1279,3 +1326,315 @@ def test_a_segment_whose_timer_outruns_the_source_length_gets_no_length():
     events, segs = extract(rs, mapping={"teamup": "teamup"})
     last = [e.kind for e in events if e.segment == len(segs) - 1 and e.kind.startswith("ability_")]
     assert last == ["ability_uncertain"], last
+
+
+# --- round two review (eb69a63): durations are inputs; known_at is causal ------
+# The five probes, verbatim. They select by t_to as the review wrote them; the
+# prefix property below states the contract on known_at, for every event.
+
+def _r2_rows(values, slot='get_over_here', charges=None):
+    return [(i, round(i / 10, 3), Hud(hp=250, max_hp=250, bar_fill=1.,
+        abilities={slot: (None, charges[i] if charges else None)},
+        cooldowns={slot: v}), True) for i, v in enumerate(values)]
+
+
+def _r2_timer_events(rs, full=8):
+    return extract_one(rs, mapping={'get_over_here': 'get_over_here'},
+                       timers={'get_over_here': full})
+
+
+def _r2_at(es, t):
+    return [e for e in es if e.t_to <= t and e.kind in
+            ('ability_cast', 'ability_uncertain', 'cooldown_ended')]
+
+
+def test_r2_late_first_read_does_not_establish_full_cooldown():
+    # Physical history: 8 s cast at -1, expiry 7; digits hidden until t=2.
+    # Same visible sequence also fits a 5 s cast at 2. No observed restart.
+    rs = _r2_rows([None] * 20 + [5] * 10 + [4] * 10 + [3] * 10)
+    es, _ = extract(rs, mapping={'get_over_here': 'get_over_here'})
+    assert not [e for e in es if e.kind == 'ability_cast'], es
+
+
+def test_r2_future_confirmation_does_not_erase_past_uncertainty():
+    vals = [None] * 42
+    vals[10] = 4   # not yet a confirmed timer
+    vals[20] = 1   # isolated, its expiry passes by 3.2
+    vals[40] = 1   # confirms the first timer only at 4.0
+    short = _r2_at(_r2_timer_events(_r2_rows(vals[:33])), 3.2)
+    long = _r2_at(_r2_timer_events(_r2_rows(vals)), 3.2)
+    assert short == long, (short, long)
+
+
+def test_r2_future_timer_read_does_not_move_an_already_known_expiry():
+    vals = [None] * 35
+    vals[20] = 1
+    vals[21] = 1
+    vals[33] = 1
+    short = _r2_at(_r2_timer_events(_r2_rows(vals[:33])), 3.2)
+    long = _r2_at(_r2_timer_events(_r2_rows(vals)), 3.2)
+    assert short == long, (short, long)
+
+
+def test_r2_old_two_second_uppercut_lock_does_not_move_cast_later():
+    # Old-patch uppercut at 2.2, lock expires 4.2. One charge remains;
+    # hidden countdown plus badge 1 at 3.8, then 1 at 3.9 and 4.0.
+    vals = [None] * 41
+    vals[39] = vals[40] = 1
+    rs = _r2_rows(vals, slot='uppercut', charges=[2] * 22 + [1] * 19)
+    es = extract_one(rs, mapping={'uppercut': 'uppercut'})
+    casts = [e for e in es if e.kind == 'ability_cast']
+    assert casts, es
+    assert casts[0].t_from <= 2.2, casts
+
+
+def test_r2_later_own_play_does_not_reclassify_earlier_event():
+    first = [None] * 20 + [8] * 10 + [7] * 10 + [6] * 10 + [None] * 120
+    later = ([None] * 20 + [6] * 10 + [5] * 10 + [4] * 10 + [None] * 120) * 3
+    short, _ = extract(_r2_rows(first), mapping={'get_over_here': 'get_over_here'})
+    long, _ = extract(_r2_rows(first + later), mapping={'get_over_here': 'get_over_here'})
+    assert _r2_at(short, len(first) / 10) == _r2_at(long, len(first) / 10)
+
+
+def test_the_old_patch_kit_places_the_old_lock():
+    """The same reads under the previous patch's kit (a 2 s lock): the badge
+    bound allows the use at 2.2. Under the current kit the lock is 1 s and the
+    bound is later -- which is why the kit is keyed by the recorded patch."""
+    from perception.events import KITS, durations
+
+    vals = [None] * 41
+    vals[39] = vals[40] = 1
+    rs = _r2_rows(vals, slot='uppercut', charges=[2] * 22 + [1] * 19)
+    full, lock = durations(KITS["Season 10, Version 20260903"], {"uppercut": "uppercut"})["uppercut"]
+    (cast,) = [e for e in extract_one(rs, mapping={'uppercut': 'uppercut'}, timers={'uppercut': full},
+                                      locks={'uppercut': lock}) if e.kind == 'ability_cast']
+    assert cast.t_from <= 2.2, cast
+
+
+def test_no_kit_means_every_timer_event_is_uncertain():
+    rs = _r2_rows([None] * 20 + [8] * 10 + [7] * 10 + [6] * 10)
+    es, _ = extract(rs, mapping={'get_over_here': 'get_over_here'}, kit=None)
+    assert [e.kind for e in es if e.kind.startswith("ability_")] == ["ability_uncertain"]
+
+
+def test_team_up_has_no_length_without_its_variant():
+    """Symbiote Bond is 15 s, Parker Power-Up 10 s: the slot's length depends on
+    which it holds, which is not identified per segment."""
+    from perception.events import KITS, KIT_REFERENCE, durations
+
+    assert durations(KITS[KIT_REFERENCE], {"teamup": "teamup"})["teamup"] == (None, None)
+
+
+# --- the prefix invariant -----------------------------------------------------
+
+def _prefix_invariant(run, rs, min_casts=0):
+    """For every prefix, the events with known_i inside it equal the whole's --
+    `run` fixes the kit, so the prefix and the whole get identical inputs --
+    and the whole is not vacuous: at least `min_casts` casts, all known inside
+    the reads rather than deferred past their end."""
+    full = run(rs)
+    assert all(e.known_i is not None and e.known_at is not None for e in full)
+    known = [e for e in full if e.kind == "ability_cast" and e.known_i <= rs[-1][0]]
+    assert len(known) >= min_casts, (len(known), min_casts)
+    for n in range(1, len(rs) + 1):
+        last = rs[n - 1][0]
+        short = sorted(repr(e) for e in run(rs[:n]) if e.known_i <= last)
+        whole = sorted(repr(e) for e in full if e.known_i <= last)
+        assert short == whole, (n, last, set(short) ^ set(whole))
+
+
+def _gap_reads(case):
+    slot = case["slot"]
+    return [(i, t, Hud(hp=250, max_hp=250, bar_fill=1.0, abilities={slot: (ready, charges)},
+                       cooldowns={slot: cd})) for i, t, cd, ready, charges in case["frames"]]
+
+
+@pytest.mark.parametrize("case", _json.loads(GAP_FIXTURE.read_text())["cases"],
+                         ids=lambda c: f"{c['source'][:5]}-{c['slot']}-{c['t_event']}")
+def test_prefix_invariant_on_native_reads(case):
+    rs = _gap_reads(case)
+    _prefix_invariant(lambda x: _run_case({**case, "frames": [
+        (r[0], r[1], r[2].cooldowns[case["slot"]], *r[2].abilities[case["slot"]]) for r in x]}), rs,
+        min_casts=1 if case["expect"] == "cast" else 0)
+
+
+def test_prefix_invariant_on_the_team_up_fixture_and_hp_windows():
+    fx = _json.loads((ROOT / "tests/fixtures/teamup_prev.json").read_text())
+    rs = [(i, t, Hud(hp=250, max_hp=250, bar_fill=1.0, abilities={"teamup": (r, c)}, cooldowns={"teamup": cd}))
+          for i, t, cd, r, c in fx["frames"]]
+    _prefix_invariant(lambda x: extract_one(x, mapping={"teamup": "teamup"}, timers={"teamup": 15}), rs,
+                      min_casts=1)
+    for name in ("decay", "ultimate"):
+        _prefix_invariant(extract_one, _hp_window(name))
+
+
+def test_prefix_invariant_on_the_review_probe_sequences():
+    vals = [None] * 42
+    vals[10], vals[20], vals[40] = 4, 1, 1
+    _prefix_invariant(_r2_timer_events, _r2_rows(vals))
+    vals = [None] * 35
+    vals[20] = vals[21] = vals[33] = 1
+    _prefix_invariant(_r2_timer_events, _r2_rows(vals))
+    vals = [None] * 41
+    vals[39] = vals[40] = 1
+    _prefix_invariant(lambda x: extract_one(x, mapping={'uppercut': 'uppercut'}),
+                      _r2_rows(vals, slot='uppercut', charges=[2] * 22 + [1] * 19))
+    first = [None] * 20 + [8] * 10 + [7] * 10 + [6] * 10 + [None] * 40
+    later = [None] * 20 + [6] * 10 + [5] * 10 + [4] * 10 + [None] * 30
+    _prefix_invariant(lambda x: extract(x, mapping={'get_over_here': 'get_over_here'})[0],
+                      _r2_rows(first + later), min_casts=1)
+
+
+def test_prefix_invariant_across_segment_breaks():
+    """extract() over a run with a death, a scoreboard tap, a one-frame portrait
+    blip, hp steps, a shield tick and the ult: segment membership settles
+    within SEG_LAG, and every event's known_i carries it."""
+    huds, asides, playing = [], [], []
+
+    def add(h, n, aside=None, play=True):
+        huds.extend([h] * n)
+        asides.extend([aside] * n)
+        playing.extend([play] * n)
+    add(hud(), 15)
+    for v in (8, 8, 7, 7, 6, 6):
+        add(hud(get_over_here_cd=v), 1)
+    add(hud(hp=200), 3)
+    add(hud(hp=200), 1, play=False)                       # a one-frame blip: absorbed
+    add(hud(hp=200, ult=False), 2)
+    add(replace(hud(hp=200, ult=False), ult_charge=0.5), 3)
+    add(hud(hp=0), 3)                                     # death
+    add(hud(hp=250, max_hp=300), 20)
+    add(hud(hp=240, max_hp=290), 4)                       # a shield tick
+    add(hud(hp=240, max_hp=290), 2, aside="scoreboard")   # a tap
+    add(hud(hp=240, max_hp=290, swing_cd=5, swing_charges=0), 4)
+    add(hud(hp=240, max_hp=290), 20)
+    rs = [(i, round(i / 10, 3), h, p, a, False, False) for i, (h, a, p) in enumerate(zip(huds, asides, playing))]
+    _prefix_invariant(lambda x: extract(x, mapping=IDENTITY)[0], rs, min_casts=1)
+
+
+
+def test_a_timer_that_ran_out_does_not_swallow_the_next_one():
+    """Once a timer's expiry has passed it is closed: a countdown read just
+    after, though within the rounding band of the old expiry, is a new one."""
+    vals = [None] * 20 + [1, 1] + [None] * 10 + [1, 1] + [None] * 20
+    events = extract_one(_slot_reads(vals, slot="uppercut", charges=[1] * 54), mapping={"uppercut": "uppercut"},
+                         timers={"uppercut": 6}, locks={"uppercut": 1})
+    assert len([e for e in events if e.kind.startswith("ability_")]) == 2
+
+
+def test_prefix_invariant_where_segmentation_and_hp_look_ahead():
+    """The places a later frame can still change an earlier one: a portrait
+    blip on the very frame hp changes; a blip followed by two seconds of
+    unknown portrait; a one-frame hp spike; a shield tick whose max hp lands a
+    frame late; the ult going dark with its refill seen later."""
+    huds, playing = [], []
+
+    def add(h, n, play=True):
+        huds.extend([h] * n)
+        playing.extend([play] * n)
+    add(hud(), 15)
+    add(hud(hp=200, swing_ready=False), 1, play=False)    # blip on the change; the icon settles at once
+    add(hud(hp=200), 15)
+    add(hud(hp=200), 1, play=False)                       # blip, then unknown
+    add(hud(hp=200), 5, play=None)
+    add(hud(hp=200, uppercut_ready=False), 5, play=None)  # an icon change inside the unknown run
+    add(hud(hp=200), 10, play=None)
+    add(hud(hp=200), 15)
+    add(hud(hp=40), 1)                                    # a spike
+    add(hud(hp=200), 10)
+    add(hud(hp=300, max_hp=300), 10)
+    add(hud(hp=298, max_hp=300), 1)                       # max hp a frame late
+    add(hud(hp=298, max_hp=298), 10)
+    add(hud(hp=298, max_hp=298, ult=False), 8)
+    add(replace(hud(hp=298, max_hp=298, ult=False), ult_charge=0.5), 5)
+    add(hud(hp=298, max_hp=298), 20)
+    rs = [(i, round(i / 10, 3), h, p, None, False, False) for i, (h, p) in enumerate(zip(huds, playing))]
+    _prefix_invariant(lambda x: extract(x, mapping=IDENTITY)[0], rs)
+    _prefix_invariant(lambda x: extract_one([r[:3] for r in x], mapping=IDENTITY), rs)
+
+
+def test_native_mk_charge_badges_read_across_the_uppercut_decrements():
+    """Day uppercut: the badge steps 2 -> 1 a frame or two before the "1" lock.
+    The "2" is a light disc with a dark digit, the "1" a light digit on a dark
+    centre whose ring is too faint to find; the M&K reader read neither."""
+    from perception import hud
+
+    mk = hud.LAYOUTS["mk"]
+    src = "daymr-2879354299-21660-900s"
+    for two, one in ((46.6, 46.7), (240.9, 241.0), (320.9, 321.0), (612.9, 613.0),
+                     (721.4, 721.8), (748.9, 749.0), (759.0, 759.1)):
+        assert hud.read_charges(_native(src, two), mk.slot_cx["uppercut"], mk) == 2, two
+        assert hud.read_charges(_native(src, one), mk.slot_cx["uppercut"], mk) == 1, one
+    # Chat over the badge ("for some 1v1s") is not a charge count.
+    assert hud.read_charges(_native("reqmr-2873352801-1980-900s", 165.0), mk.slot_cx["uppercut"], mk) is None
+
+
+
+def test_a_restart_is_a_cast_only_where_its_start_fits_the_last_expiry():
+    """Compatibility of intervals, not a tolerance: "3" read at 2.0 and 2.1 puts
+    the previous expiry in (4.1, 5.0]; a restart first read 8, 8 at T starts in
+    (T - 0.9, T]. They must meet, up to TIMER_EPS of frame timing."""
+    def run(k):
+        vals = [None] * 20 + [3, 3] + [None] * (k - 22) + [8, 8] + [None] * 30
+        es = extract_one(_slot_reads(vals, slot="get_over_here"),
+                         mapping={"get_over_here": "get_over_here"}, timers={"get_over_here": 8})
+        return [e.kind for e in es if e.kind.startswith("ability_")]
+    assert run(50) == ["ability_cast"]       # T 5.0: start (4.1, 5.0] meets the expiry
+    assert run(40) == ["ability_cast"]       # T 4.0: 0.1 s short, one frame of timing
+    assert run(30) == []                     # T 3.0: a second early, while the 3 provably runs
+
+
+def _native_reads(src):
+    """A train section's per-frame reads, from B0's sidecars (local only)."""
+    root = Path(_os.environ.get("RIVALS_DATA", ROOT / "data"))
+    vis = root / f"experiments/b0/visibility/{src}.json"
+    meta = root / f"demos/events/sections/{src}.jsonl"
+    if not vis.exists() or not meta.exists():
+        pytest.skip("B0 sidecars not on this machine")
+    mapping = _json.loads(meta.read_text().splitlines()[0])["slot_mapping"]
+    rows = []
+    for f in _json.loads(vis.read_text())["frames"]:
+        h = dict(f.get("hud") or {})
+        h["abilities"] = {k: tuple(v) for k, v in (h.get("abilities") or {}).items()}
+        rows.append((f["i"], f["t"], Hud(**h), f["playing"], f["aside"], f["killfeed"], f["cut"]))
+    return rows, mapping
+
+
+@pytest.mark.parametrize("src", ["daymr-2879354299-21660-900s", "reqmr-2873352801-1980-900s"])
+def test_prefix_invariant_on_every_real_segment(src):
+    """Every prefix of every own-play segment of both train sections, and the
+    whole source cut at tenths: the events known inside a prefix are the
+    whole's, field for field, with the reference kit on both sides."""
+    from perception.events import KITS, KIT_REFERENCE, ceilings, durations
+
+    rows, mapping = _native_reads(src)
+    spans = durations(KITS[KIT_REFERENCE], mapping)
+    kw = dict(mapping=mapping, timers={p: f for p, (f, _) in spans.items() if f},
+              locks={p: l for p, (_, l) in spans.items() if l}, tops=ceilings(KITS[KIT_REFERENCE], mapping))
+    by_i = {r[0]: (r[0], r[1], r[2], r[5]) for r in rows}
+    casts = 0
+    for seg in segment(rows):
+        inside = [by_i[i] for i in range(seg.start_i, seg.end_i + 1) if i in by_i]
+        full = extract_one(inside, **kw)
+        casts += sum(1 for e in full if e.kind == "ability_cast")
+        for n in range(2, len(inside) + 1):
+            last = inside[n - 1][0]
+            assert sorted(map(repr, (e for e in extract_one(inside[:n], **kw) if e.known_i <= last))) == \
+                sorted(map(repr, (e for e in full if e.known_i <= last))), (src, seg.start_t, n)
+    assert casts >= 50, casts                      # not vacuous: the sections' casts are there
+    whole, _ = extract(rows, mapping=mapping)
+    for k in range(1, 10):
+        cut = rows[: len(rows) * k // 10]
+        last = cut[-1][0]
+        part, _ = extract(cut, mapping=mapping)
+        assert sorted(map(repr, (e for e in part if e.known_i <= last))) == \
+            sorted(map(repr, (e for e in whole if e.known_i <= last))), (src, k)
+
+
+
+def test_a_team_up_read_above_every_variant_is_not_a_countdown():
+    """With the variant unknown the length is, but not the ceiling: no team-up
+    counts down from more than its longest variant, 15 s."""
+    rs = [(*r, True) for r in _slot_reads([None] * 12 + [20] * 2 + [None] * 30, slot="teamup")]
+    events, _ = extract(rs, mapping={"teamup": "teamup"})
+    assert not [e for e in events if e.kind.startswith("ability_")]

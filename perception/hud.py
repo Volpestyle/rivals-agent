@@ -1137,6 +1137,11 @@ def _badge_mask(frame, cx, layout=PAD):
     # itself rather than a hole in it.
     if not layout.badge_light_disc:
         return _ring_badge(img)
+    return _disc_badge(img)
+
+
+def _disc_badge(img):
+    """(mask, disc height) for a badge drawn as a dark digit in a light disc."""
     disc = (img.min(axis=2) > 150).astype(np.uint8)
     n, lab, stats, _ = cv2.connectedComponentsWithStats(disc, connectivity=8)
     if n < 2:
@@ -1176,8 +1181,58 @@ def _ring_badge(img):
     return inner[ry:ry + rh, rx:rx + rw], int(rh)
 
 
+def _lone_badge_digit(img):
+    """(mask, disc height) for an M&K badge whose ring is too faint to find: one
+    bright digit, centred, on the badge's dark centre. Day uppercut draws its
+    "1" this way at 46.7, 241.0, 321.0, 613.0, 721.5, 749.0 and 759.1 s."""
+    ink = (img.max(axis=2) > 170).astype(np.uint8)
+    n, lab, stats, _ = cv2.connectedComponentsWithStats(ink, connectivity=8)
+    H, W = ink.shape
+    found = []
+    for i in range(1, n):
+        x, y, w, h, area = stats[i]
+        cxr = (x + w / 2) / W
+        if area < 25 or not 0.3 * H <= h <= 0.55 * H or not 0.4 <= cxr <= 0.75:
+            continue
+        pad = max(3, h // 3)
+        ring = img[max(0, y - pad):y + h + pad, max(0, x - pad):x + w + pad].max(axis=2)
+        around = ring[(lab[max(0, y - pad):y + h + pad, max(0, x - pad):x + w + pad] != i)]
+        if around.size and float(np.median(around)) < LONE_DIGIT_DARK:
+            found.append(i)
+    # Chat text over the badge is bright letters on dark too (Req 163.9-167.2:
+    # "for some 1v1s"). A badge digit is the only digit-sized shape there; its
+    # progress arc is not digit-sized.
+    sized = [i for i in range(1, n) if stats[i][4] >= 25 and 0.3 * H <= stats[i][3] <= 0.55 * H]
+    if len(found) != 1 or len(sized) != 1:
+        return None
+    x, y, w, h, _ = stats[found[0]]
+    return (lab == found[0]).astype(np.uint8), int(h / 0.6)
+
+
+LONE_DIGIT_DARK = 110    # the badge's dark centre around a lone digit, max channel
+
+
 def read_charges(frame, cx, layout=PAD) -> int | None:
+    """The charge badge's number, or None. On M&K the badge is drawn in two
+    styles -- a light ring and digit around a dark centre, or a light disc
+    with a dark digit -- and the ring is sometimes too faint to find; each is
+    tried in turn, the ring first, and only when the one before reads nothing."""
     found = _badge_mask(frame, cx, layout)
+    n = _badge_number(found)
+    if n is not None or layout.badge_light_disc:
+        return n
+    img = crop(frame, _badge_box(cx))
+    s = _scale(frame)
+    if s != 1.0:
+        img = cv2.resize(img, None, fx=s, fy=s, interpolation=cv2.INTER_CUBIC)
+    for other in (_disc_badge, _lone_badge_digit):
+        n = _badge_number(other(img))
+        if n is not None:
+            return n
+    return None
+
+
+def _badge_number(found):
     if found is None:
         return None
     mask, disc_h = found
@@ -1505,6 +1560,29 @@ def identify_slot(frame, cx) -> str | None:
     if other.size and agree[best] - other.max() < ICON_MARGIN:
         return None
     return name
+
+
+# --- glyph evidence: measured, not used --------------------------------------
+# A running countdown replaces the ability's icon glyph, so a frame whose slot
+# matches the EXPECTED glyph is a candidate witness that no countdown is drawn
+# there. Admitted only as this named, switchable, per-frame observation, to be
+# measured (docs/learning-plan.md, glyph contract): it bounds when a countdown
+# appears, never when the ability was used -- Day uppercut's badge drops at
+# 46.7 s while the glyph still matches at 46.8 and the lock reads at 46.9 --
+# and it certifies neither readiness nor no-cast. Nothing in the event logic
+# reads it. The thresholds are identify_slot's (ICON_MATCH, ICON_MARGIN), frozen
+# for the audit at GLYPH_READER.
+GLYPH_READER = "identify_slot/ICON_MATCH+ICON_MARGIN/1"
+
+
+def glyph_evidence(frame, slot, layout=None) -> bool | None:
+    """True when `slot`'s own glyph is matched in its position; None otherwise.
+
+    One-sided: no match is unknown, never "a countdown is drawn". The team-up
+    template is generic, so a match there says nothing about which team-up.
+    """
+    layout = layout or PAD
+    return True if identify_slot(frame, layout.slot_cx[slot]) == slot else None
 
 
 def slot_mapping(frames, layout=None):

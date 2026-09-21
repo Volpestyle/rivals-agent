@@ -57,7 +57,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))  # repo root, for `agent`
 
-from perception.hud import SLOT_CX, Hud  # noqa: E402
+from perception.hud import PAD as PAD_LAYOUT, SLOT_CX, Hud  # noqa: E402
 
 # Frames a new value must hold before it is believed. `ready` is 1 on purpose;
 # see the module docstring.
@@ -91,19 +91,21 @@ SHIELD_WINDOW = 3   # frames apart that an hp and a max-hp change may still be o
 #    only ever makes a reader more conservative. `check` finds files written
 #    before them by the keys they lack (REQUIRED_META), not by a version bump.
 # 5: cooldowns are timers identified by expiry, so a countdown read again after
-#    unread frames is the same cooldown, not a new cast. A timer event's `t_to`
-#    is when the stream knows it (the confirming read), `t_from` the earliest the
-#    cast could have been on evidence alone. New kinds `ability_uncertain` (a
+#    unread frames is the same cooldown, not a new cast. Every event gains
+#    `known_i` / `known_at`, when the evidence it needs is available; [t_from,
+#    t_to] is occurrence only. Durations are inputs, from a kit table keyed by the
+#    source's patch (meta `kit`). New kinds `ability_uncertain` (a
 #    timer this segment may or may not have started) and `cooldown_ended` (a
 #    timer watched into its last seconds ran out; it certifies no readiness).
 #    The icon events are display state, renamed `icon_dimmed` / `icon_lit` from
 #    slot_unavailable / slot_available; the ult's icon too, unless its meter
 #    proves a spend or a refill. hp_lost / hp_gained carry `cause`: damage / heal
 #    only with max hp read unchanged on each side of the change, else unknown.
-#    The meta line gains `timer_lengths`, each length with its provenance.
+#    The meta line gains `kit` and `timer_lengths` (observed tops, a report);
+#    segment lines gain `hero_weak_frames`.
 FORMAT_VERSION = 5
 REQUIRED_META = ("recipe", "cut_times", "observed", "slot_mapping", "writer",
-                 "container_start_s", "stream_start_s", "timer_lengths")
+                 "container_start_s", "stream_start_s", "timer_lengths", "kit")
 # The code whose behaviour decides what an events file contains.
 WRITER_FILES = ("perception/events.py", "perception/hud.py", "perception/scoreboard.py")
 
@@ -152,6 +154,9 @@ PORTRAIT_OTHER = 0.75
 # scores have median 0.41, 5th percentile 0.396, max 0.44; the teammates that
 # passed scored 0.36-0.38.
 PORTRAIT_WEAK = 0.39
+# Per-frame glyph evidence (hud.glyph_evidence) is recorded as a read's ninth
+# item only when this is on. Off: it is under measurement, and nothing reads it.
+GLYPH_EVIDENCE = False
 # The verdict gets the same debounce treatment as any other channel. Without it
 # the spectating stretch of the sample VOD, where the portrait sits near the
 # boundary, shatters into ten two-frame segments instead of one.
@@ -557,6 +562,9 @@ def _hud_present(hud):
     return hud.hp is not None or hud.bar_fill is not None
 
 
+LOOKAHEAD = 6     # frames; HUD_HOLD. With the longest hold, SEG_LAG = 2 * LOOKAHEAD
+
+
 def _steady(verdicts, hold):
     """Per-frame verdicts with brief blips absorbed into their surroundings.
 
@@ -565,6 +573,11 @@ def _steady(verdicts, hold):
     run that sits between two *different* values, or at either end of the clip,
     is a real change caught briefly and is kept. None always inherits whatever
     was last believed.
+
+    The value that follows a short run is looked for only within LOOKAHEAD
+    frames of its end, and a clip's leading unknowns take the first value only
+    when it comes that soon, so a frame's verdict is settled at most SEG_LAG
+    frames after it: what makes a prefix of the reads segment as the whole did.
     """
     runs, start = [], 0
     for i in range(1, len(verdicts) + 1):
@@ -581,14 +594,14 @@ def _steady(verdicts, hold):
             before = next((runs[m][2] for m in range(n - 1, -1, -1)
                            if runs[m][2] is not None), None)
             after = next((runs[m][2] for m in range(n + 1, len(runs))
-                          if runs[m][2] is not None), None)
+                          if runs[m][2] is not None and runs[m][0] - end < LOOKAHEAD), None)
             resolved.append(None if before is not None and before == after else value)
     steady, believed = [], None
     for (begin, end, _), value in zip(runs, resolved):
         if value is not None:
             believed = value
         steady.extend([believed] * (end - begin))
-    first = next((v for v in steady if v is not None), None)
+    first = next((v for v in steady[:LOOKAHEAD] if v is not None), None)
     return [first if v is None else v for v in steady]
 
 
@@ -673,14 +686,15 @@ def segment(reads):
 class Event:
     """One transition. The press happened somewhere in [t_from, t_to].
 
-    `t_to` is also when the event is known: nothing after it is needed to emit
-    it, so a consumer may select events by t_to <= now.
+    [t_from, t_to] bounds when it happened; `known_at` is when it is known.
+    Select by known_at <= now, never by t_to: a timer's use is bounded well
+    before the read that confirms it.
     """
 
     kind: str
-    i_from: int       # last frame proving the old value (timers: the earliest the cast can be)
+    i_from: int       # last frame proving the old value (timers: the earliest the use can be)
     t_from: float
-    i_to: int         # first frame proving the new value (timers: the confirming read)
+    i_to: int         # first frame proving the new value (timers: the latest the use can be)
     t_to: float
     slot: str | None = None       # the ability, or None when the icon is unknown
     slot_pos: str | None = None   # the layout position it fired in
@@ -691,6 +705,12 @@ class Event:
     # hp_lost / hp_gained only: "damage" / "heal" when max hp was read unchanged
     # on each side of the change, else "unknown". A change in hp alone does not say why.
     cause: str | None = None
+    # The frame after which no later read can change this event -- its
+    # existence, kind or bounds -- and its time. A prefix of the reads yields
+    # exactly the events of the whole with known_i inside it. May lie past the
+    # last frame read (an event still pending when the reads end).
+    known_i: int | None = None
+    known_at: float | None = None
 
 
 class _Channel:
@@ -837,10 +857,17 @@ def _despike(values, damaged=None, max_hp=None):
     heal frame between two hits, which erased the second hit as well.
     """
     out = list(values)
-    ceiling = max((v for v in (max_hp or []) if v), default=None) or 250
+    # The largest max hp read so far, up to the frame that decides this one --
+    # never a later one: a larger max read further on once kept a 200 hp drop
+    # (Req 621.7) that a prefix ending there had removed.
+    seen, running = None, []
+    for v in (max_hp or [None] * len(out)):
+        seen = max(seen, v) if (v and seen) else (v or seen)
+        running.append(seen)
     for i in range(1, len(out) - 1):
         if out[i] is None or out[i - 1] is None or out[i + 1] is None:
             continue
+        ceiling = running[i + 1] or 250
         if out[i] == out[i - 1] or out[i + 1] != out[i - 1]:
             continue
         if damaged and damaged[i]:
@@ -850,11 +877,18 @@ def _despike(values, damaged=None, max_hp=None):
     return out
 
 
-def extract_one(reads, debounce=None, seg_index=0, mapping=None, timers=None, contradicted=()):
+def extract_one(reads, debounce=None, seg_index=0, mapping=None, timers=None, locks=None,
+                alarm=None, lag=0, clock=None, closed_i=None, tops=None):
     """[Event] for a single segment of (i, t, Hud) reads, in time order.
 
-    `timers` is {position: full countdown length in s} for this source (see
-    timer_lengths); without it casts are still found, with fewer kit checks.
+    `timers` is {position: full cooldown (one-charge) or recharge (charged)}
+    and `locks` {position: between-cast lock}, both inputs (see durations);
+    a position without one has an unknown length. `alarm` is shared across a
+    source's segments (see _timer_events). The rest is extract's: `lag`
+    frames are added to every known_i for the segmentation to settle, `clock`
+    maps a frame index to (index, t) past the segment, and `closed_i` is the
+    frame that ended the segment when a real boundary did, so decisions
+    waiting for the segment's end can be made there.
     """
     holds = {**DEBOUNCE, **(debounce or {})}
 
@@ -901,17 +935,49 @@ def extract_one(reads, debounce=None, seg_index=0, mapping=None, timers=None, co
             events.append(Event(kind=kind, i_from=from_i, t_from=from_t, i_to=i, t_to=t,
                                 slot=named, slot_pos=slot, amount=amount,
                                 before=before, after=after, segment=seg_index, cause=cause))
-    events = _ult_events(events, reads)
+    events = _ult_events(events, reads, closed_i)
     positions = sorted({p for r in reads for p in (r[2].cooldowns or {})})
     for pos in positions:
         ability = mapping.get(pos) if mapping else None
         events.extend(_timer_events(reads, pos, ability, (timers or {}).get(pos), seg_index,
-                                    pos in contradicted))
-    events.sort(key=lambda e: (e.t_to, e.kind))
-    return _merge_shield(events)
+                                    (locks or {}).get(pos), alarm, (tops or {}).get(pos)))
+    events = _merge_shield(events)
+    clock = clock or _clock(reads)
+    out = []
+    for e in events:
+        # hp is despiked one frame ahead and paired with max hp up to
+        # SHIELD_WINDOW frames away, so those kinds settle that much later.
+        base = e.known_i if e.known_i is not None else \
+            e.i_to + (HP_SETTLE if e.kind in HP_KINDS else 0)
+        ki, kt = clock(base + lag)
+        out.append(replace(e, known_i=ki, known_at=kt))
+    out.sort(key=lambda e: (e.t_to, e.kind))
+    return out
 
 
-def _ult_events(events, reads):
+HP_SETTLE = SHIELD_WINDOW + 1
+HP_KINDS = {"hp_lost", "hp_gained", "shield_decayed", "shield_gained", "max_hp_changed",
+            "death", "respawn"}
+
+
+def _clock(reads):
+    """frame index -> (the first read frame at or after it, its t); past the last
+    read, the index itself and a t extrapolated at the median frame step."""
+    idx = [r[0] for r in reads]
+    ts = [r[1] for r in reads]
+    steps = sorted(b - a for a, b in zip(ts, ts[1:]) if b > a)
+    dt = steps[len(steps) // 2] if steps else 0.1
+
+    def at(i):
+        import bisect
+        n = bisect.bisect_left(idx, i)
+        if n < len(idx):
+            return idx[n], ts[n]
+        return i, round(ts[-1] + (i - idx[-1]) * dt, 3)
+    return at
+
+
+def _ult_events(events, reads, closed_i=None):
     """Keep ult_spent / ult_ready only where the meter shows them.
 
     The ult icon going dark is not the ult spent: a prohibition mark darkens it
@@ -928,8 +994,14 @@ def _ult_events(events, reads):
         if e.kind == "ult_spent":
             until = ult[n + 1].i_to if n + 1 < len(ult) else float("inf")
             seen = next(((i, t) for i, t in partial if e.i_to <= i < until), None)
-            out.append(replace(e, i_to=seen[0], t_to=seen[1]) if seen else
-                       replace(e, kind="icon_dimmed"))
+            if seen:                               # known from the refill read
+                out.append(replace(e, i_to=seen[0], t_to=seen[1], known_i=seen[0]))
+            elif n + 1 < len(ult) or closed_i is not None:
+                # Known not to be a spend once the icon lit again, or the
+                # segment really ended, without a refill seen; still pending
+                # at the end of the reads otherwise.
+                out.append(replace(e, kind="icon_dimmed",
+                                   known_i=ult[n + 1].i_to if n + 1 < len(ult) else closed_i))
         else:
             since = ult[n - 1].i_to if n else float("-inf")
             seen = any(since <= i <= e.i_to for i, _ in partial)
@@ -946,51 +1018,87 @@ def _ult_events(events, reads):
 # a countdown it failed to read for two frames as ended ("off"), and its return
 # as a fresh one. A missing read now changes nothing -- it is never taken as the
 # cooldown ending (it is also every visible digit the reader could not read).
-TIMER_EPS = 0.15        # s of slack on an expiry window: frame timing and rounding
+# The countdown is drawn in whole seconds rounded up: a read of N says the
+# timer expires in (t + N - ROUND_S, t + N]. TIMER_EPS widens that by frame
+# timing at 10 Hz. These two constants are the whole rounding band.
+ROUND_S = 1.0
+TIMER_EPS = 0.15        # s of slack on an expiry window: frame timing
 TIMER_CONFIRM = 2       # reads that must agree before a new timer is believed
-KIT_TOL = 0.6           # s: how early a restart may look and still fit the kit
 BLIND_LOOKBACK = 3.0    # s before a charged slot's new timer that must have been observable
 # Slots that hold charges. A use while a recharge runs does not restart it (the
 # charge count drops instead, a separate channel), and a finished recharge
-# starts the next at once. Hero structure from docs/spiderman-kit.md, not a
-# balance value: charge counts and lengths vary by patch, which charges do not.
+# starts the next at once. Hero structure, not a balance value.
 CHARGED = {"swing", "uppercut"}
-# A charged slot's timer is the recharge of its next charge, and it is rarely
-# first seen full, so its length cannot be measured the way a one-charge slot's
-# can (timer_lengths gives 3-5 for these on the train sections). It comes from
-# the kit instead: 6 s per charge for both, in docs/spiderman-kit.md, and the
-# same on both patches in its balance history (Season 10 moved only Amazing
-# Combo's 2 s -> 1 s between-cast time, which this model does not use).
-RECHARGE_S = {"swing": 6.0, "uppercut": 6.0}
-TIMER_MIN_SPAN = 1.5    # s a timer must be seen ticking to count towards a full length
-
-
+TIMER_MIN_SPAN = 1.5    # s a timer must be seen ticking to count as ticking
 ENDED_WITHIN = 2        # a timer's last read must be this close to zero for its end to be recorded
-# Uppercut draws a short between-cast lock as a countdown even with a charge
-# left (Amazing Combo, 1 s since Season 10, docs/spiderman-kit.md), so a charge
-# badge read does not put its use after that frame: up to this much before it.
-LOCKOUT_S = {"uppercut": 1.0}
+
+# --- durations are inputs ------------------------------------------------------
+# The writer never infers a cooldown from footage: an observed maximum is a
+# lower bound on the full length, never the length (a use a second before the
+# first readable digit looks exactly like a shorter cooldown). Durations come
+# from this table, keyed by the source's recorded patch, sourced from
+# docs/spiderman-kit.md. Per ability: `full` (one-charge cooldown), `recharge`
+# (per charge), `lock` (between-cast lock drawn as a countdown), `charges`;
+# None = not known. Team-up depends on which team-up the slot holds (its
+# variant), which is not identified per segment, so its length is unknown
+# unless a caller supplies it.
+TEAMUP_VARIANTS_20260911 = {"symbiote_bond": 15.0, "parker_power_up": 10.0}
+KITS = {
+    "Season 10, Version 20260911": {
+        "get_over_here": {"full": 8.0},
+        "swing": {"recharge": 6.0, "lock": None, "charges": 3},
+        "uppercut": {"recharge": 6.0, "lock": 1.0, "charges": 2},
+        "teamup": {"full": None, "variants": TEAMUP_VARIANTS_20260911},
+    },
+    # The balance post for 20260911 changed only Amazing Combo's lock 2 -> 1 s
+    # and Parker Power-Up 15 -> 10 s; 20260903 changed nothing for Spider-Man.
+    "Season 10, Version 20260903": {
+        "get_over_here": {"full": 8.0},
+        "swing": {"recharge": 6.0, "lock": None, "charges": 3},
+        "uppercut": {"recharge": 6.0, "lock": 2.0, "charges": 2},
+        "teamup": {"full": None, "variants": {"symbiote_bond": 15.0, "parker_power_up": 15.0}},
+    },
+}
+KIT_REFERENCE = "Season 10, Version 20260911"   # extract()'s library default; see extract
+
+
+def kit_for(patch):
+    """The kit table for a recorded patch string, or None when it is not known."""
+    return KITS.get(patch) if patch else None
+
+
+def durations(kit, mapping):
+    """{position: (length, lock)} from a kit table and the slot mapping: the
+    full cooldown for a one-charge slot, the recharge for a charged one; None
+    where the kit, the ability or the value is unknown."""
+    out = {}
+    for pos, ability in (mapping or {}).items():
+        spec = (kit or {}).get(ability) or {}
+        out[pos] = (spec.get("recharge" if ability in CHARGED else "full"), spec.get("lock"))
+    return out
+
+
+def ceilings(kit, mapping):
+    """{position: the longest countdown the kit allows there}: the length, or
+    for a slot whose variant is unknown the longest variant's. A read above it
+    is not this slot's countdown (chat over the slot)."""
+    out = {}
+    for pos, ability in (mapping or {}).items():
+        spec = (kit or {}).get(ability) or {}
+        top = spec.get("recharge" if ability in CHARGED else "full") or \
+            max((spec.get("variants") or {}).values(), default=None)
+        if top is not None:
+            out[pos] = top
+    return out
 
 
 def timer_lengths(reads, detail=False):
-    """{position: full countdown length}, measured from `reads`.
+    """{position: the most common top of ticking timers}, as observed.
 
-    Pass only eligible reads -- own play, inside segments (see extract): a
-    spectated hero's or a killcam's timers are someone else's kit, and three
-    of them once outvoted our own and reclassified our casts.
-
-    Taken from real timers only: reads grouped by a shared expiry that tick --
-    span at least TIMER_MIN_SPAN seconds and show at least two values. Each
-    timer's largest value is how full it was when first seen; a timer seen from
-    its start shows the full length, so the most common largest value is it.
-    A number that merely sits in the slot (Twitch chat read as "12" on Req, for
-    long enough to look like the largest common value) never ticks, and so
-    never counts. Measured, not tabled, so a patch that moves a cooldown cannot
-    silently break the timer model. With `detail`, each length comes with its
-    support: {"s": length, "timers": ticking timers seen, "agree": how many
-    of them topped out at it, "max": the largest any showed}, which the meta
-    line records. "max" above a charged slot's kit recharge contradicts the kit
-    (see kit_contradicted).
+    A report, never a duration the event logic uses: a timer first read late
+    tops out below its full length, so this is a lower-bound summary of what
+    the footage showed. Each timer's top counts values read on TIMER_CONFIRM
+    reads only; a number that sits still (chat) never ticks and never counts.
     """
     by_pos = {}
     for r in reads:
@@ -1001,7 +1109,7 @@ def timer_lengths(reads, detail=False):
     for pos, seq in by_pos.items():
         timers = []
         for t, v in seq:
-            lo, hi = t + v - 1 - TIMER_EPS, t + v + TIMER_EPS
+            lo, hi = t + v - ROUND_S - TIMER_EPS, t + v + TIMER_EPS
             tm = next((x for x in reversed(timers[-4:]) if lo <= x["hi"] and hi >= x["lo"]), None)
             if tm is None:
                 timers.append({"lo": lo, "hi": hi, "t0": t, "t1": t, "vals": [v]})
@@ -1009,9 +1117,6 @@ def timer_lengths(reads, detail=False):
                 tm["lo"], tm["hi"] = max(tm["lo"], lo), min(tm["hi"], hi)
                 tm["t1"] = t
                 tm["vals"].append(v)
-        # A value counts towards a timer's top only on TIMER_CONFIRM reads, as a
-        # timer itself does: one misread "8" inside a swing recharge and one
-        # "7" in an uppercut one each made the kit look contradicted.
         tops = [max(v for v in set(x["vals"]) if x["vals"].count(v) >= TIMER_CONFIRM)
                 for x in timers if x["t1"] - x["t0"] >= TIMER_MIN_SPAN
                 and len({v for v in x["vals"] if x["vals"].count(v) >= TIMER_CONFIRM}) >= 2]
@@ -1023,192 +1128,227 @@ def timer_lengths(reads, detail=False):
 
 
 def _eligible(reads, segments):
-    """The reads inside segments: own play, the only reads a length may come from."""
+    """The reads inside segments: own play."""
     inside = {i for s in segments for i in range(s.start_i, s.end_i + 1)}
     return [r for r in reads if r[0] in inside]
 
 
-def kit_contradicted(measured, mapping):
-    """Positions of charged slots whose own ticking timers ran longer than the
-    kit's recharge. RECHARGE_S is the one length not measured per source (a
-    charged timer is rarely first seen full), so a patch that lengthened it
-    would otherwise degrade silently: reads above it discarded as chat, starts
-    placed too late. `measured` is timer_lengths(..., detail=True)."""
-    return {p for p, m in measured.items()
-            if mapping and mapping.get(p) in CHARGED and m["max"] > RECHARGE_S[mapping[p]]}
-
-
-def _timer_events(reads, pos, ability, full, seg_index, contradicted=False):
+def _timer_events(reads, pos, ability, full, seg_index, lock=None, alarm=None, ceiling=None):
     """ability_cast / ability_uncertain / cooldown_ended for one slot over one segment.
 
-    One model for every slot: an event is placed by evidence alone, is emitted
-    when the stream knows it, and where the evidence cannot place it inside the
-    segment it is `ability_uncertain` -- its own event, so that a consumer
-    treats that stretch as unknown rather than reading silence as "no cast".
+    One forward pass over the frames, deciding each event at the first frame
+    where it is final and never revisiting it, so a prefix of the reads yields
+    exactly the events of the whole that were known by its end. Three times per
+    event, never conflated:
 
-      evidence   a timer's expiry, from its reads; the previous timer in this
-                 segment; a charge badge read. Never a frame with the slot lit
-                 and no number: a stream HUD shows that through most of a
-                 running cooldown whose digits it failed to read.
-      interval   t_from is the earliest the cast can have been on that
-                 evidence (a one-charge timer started at expiry - full length;
-                 a charged slot's use came after its recharge began); t_to is
-                 the TIMER_CONFIRM-th read, when the stream first knows it.
-      unknown    a timer that may have started before the segment opened is
-                 uncertain, not a cast; one that certainly did is nothing.
+      t_from, t_to  when the use can have happened, on evidence alone: for a
+                    one-charge slot with a known full length F, a timer whose
+                    expiry lies in (lo, hi] started in (lo - F, hi - F], and no
+                    later than its first read; a charged slot's use came after
+                    the recharge now showing began, the previous timer ended, the
+                    last charge decrement, or the last badge read less the lock
+                    -- whichever of those are known -- and before its first read.
+                    Never a frame with the slot lit and no number, nor an unread
+                    frame: a stream HUD shows both through a running cooldown.
+      known_i/_at   the frame that decided it (set here; extract adds the
+                    segmentation's settling lag).
 
-    A timer is confirmed on TIMER_CONFIRM reads with one expiry and classified
-    then, once (_classify_timer). A single read that never confirms is not
-    silence either: once its expiry has passed it is `ability_uncertain` -- a
-    real between-cast "1" and a misread cannot be told apart (Req uppercut 89.7,
-    98.5) -- unless a confirmed timer was running across it, when the kit rules
-    a new use out and it is a misread (Day 339.0's 6 read as 8).
-
-    `contradicted`: this charged slot's own timers ran longer than the kit's
-    recharge (kit_contradicted); every use is then uncertain, since the kit
-    length is what places it.
+    `full` is the slot's full cooldown (one-charge) or recharge (charged), and
+    `lock` a charged slot's between-cast lock, from the kit; None = unknown,
+    and then only evidence that needs no duration (a previous timer's end, a
+    charge decrement) can make a cast. `alarm` is a dict shared across a
+    source's segments: a ticking countdown longer than `full` contradicts the
+    kit, and from that frame on this slot writes only uncertainty.
     """
     seg_start = reads[0][1]
-    if ability in CHARGED:
-        # see RECHARGE_S: not measurable per source; a contradicted kit bounds nothing
-        full = None if contradicted else RECHARGE_S[ability]
+    alarm = {} if alarm is None else alarm
+    timers, shadows, out = [], [], []
     seq = []
+
+    def emit(kind, lower, upper, tm, k, amount=None, before=None):
+        lo_s = [s for s in seq if s[1] <= lower + 1e-9][-1:] or seq[:1]
+        up_s = next((s for s in seq if s[1] >= upper - 1e-9), seq[k])
+        i, t = seq[k][0], seq[k][1]
+        out.append(Event(kind=kind, i_from=lo_s[0][0], t_from=lo_s[0][1], i_to=up_s[0], t_to=up_s[1],
+                         slot=ability, slot_pos=pos, amount=amount, before=before, after=amount,
+                         segment=seg_index, known_i=i, known_at=t))
+
+    def merge(pool, t, v):
+        lo, hi = t + v - ROUND_S - TIMER_EPS, t + v + TIMER_EPS
+        match = next((tm for tm in reversed(pool) if not tm["closed"]
+                      and lo <= tm["hi"] and hi >= tm["lo"]), None)
+        if match is None:
+            match = {"lo": lo, "hi": hi, "k": len(seq) - 1, "t": t, "v": v, "n": 0, "vals": [],
+                     "done": False, "closed": False, "kind": None, "last": None}
+            pool.append(match)
+        else:
+            match["lo"], match["hi"] = max(match["lo"], lo), min(match["hi"], hi)   # they overlap
+        match["n"] += 1
+        match["vals"].append(v)
+        match["last"] = len(seq) - 1
+        return match
+
     for r in reads:
         cds = r[2].cooldowns or {}
         charges = ((r[2].abilities or {}).get(pos) or (None, None))[1]
         v = cds.get(pos)
-        valid = isinstance(v, int) and v > 0 and (full is None or v <= full)
+        top = full if full is not None else (ceiling if ceiling is not None else 30)
+        valid = isinstance(v, int) and v > 0 and v <= top
         # A number the kit cannot produce here is unobservable (chat over the
-        # slot read as a countdown), not a timer.
-        seq.append((r[0], r[1], v if valid else None, v is not None and not valid, charges))
-    timers, out = [], []
-    for k, (i, t, v, *_) in enumerate(seq):
-        if v is None:
-            continue
-        lo, hi = t + v - 1 - TIMER_EPS, t + v + TIMER_EPS
-        match = next((tm for tm in reversed(timers) if lo <= tm["hi"] and hi >= tm["lo"]), None)
-        if match is not None:
-            match["lo"], match["hi"] = max(match["lo"], lo), min(match["hi"], hi)  # they overlap
-            match["n"] += 1
-            match["last"] = k
-        else:
-            match = {"lo": lo, "hi": hi, "k": k, "t": t, "v": v, "n": 1, "done": False,
-                     "last": k, "kind": None}
-            timers.append(match)
-        if match["n"] >= TIMER_CONFIRM and not match["done"]:
-            match["done"] = True
-            # The previous timer is the confirmed one expiring latest -- the one
-            # still running -- not the latest created: two chat reads of "1"
-            # once formed a timer of their own and let two misread 8s pass as a
-            # team-up cast while the real countdown ran (Day 101.8-109.9).
-            earlier = [o for o in timers if o is not match and o["done"] and o["t"] < match["t"]]
-            prev = max(earlier, key=lambda o: o["lo"]) if earlier else None
-            if contradicted:
-                kind, lower = "ability_uncertain", seg_start
-            else:
-                kind, lower = _classify_timer(match, prev, seq, ability, full, seg_start)
-            match["kind"] = kind
-            if kind:
-                src = [s for s in seq if s[1] <= lower][-1:] or seq[:1]
-                out.append(Event(kind=kind, i_from=src[0][0], t_from=src[0][1], i_to=i, t_to=t,
-                                 slot=ability, slot_pos=pos, amount=match["v"],
-                                 before=None, after=match["v"], segment=seg_index))
-    for tm in timers:
-        if tm["n"] >= TIMER_CONFIRM:
-            continue
-        running = any(o["done"] and o["t"] < tm["t"] and o["lo"] > tm["t"] for o in timers)
-        known = next((sv for sv in seq[tm["k"] + 1:] if sv[1] >= tm["hi"]), None)
-        if running or known is None:
-            continue                          # a misread in a watched cooldown; or not yet known
-        lower = max(seg_start, tm["lo"] - full) if full is not None else seg_start
-        src = [s for s in seq if s[1] <= lower][-1:] or seq[:1]
-        out.append(Event(kind="ability_uncertain", i_from=src[0][0], t_from=src[0][1],
-                         i_to=known[0], t_to=known[1], slot=ability, slot_pos=pos,
-                         amount=tm["v"], before=None, after=tm["v"], segment=seg_index))
-    # A timer that ran out, by its own clock, after being read in its last
-    # seconds. History, not readiness: a recast the reader missed can start the
-    # instant it ends, so the slot's state after it is unknown until the next
-    # timer. One-charge slots only; a charged slot's return is charges_regained.
-    if ability not in CHARGED:
+        # slot), unless it ticks -- then the kit is wrong, which is the alarm.
+        oob = isinstance(v, int) and full is not None and full < v <= 30
+        seq.append((r[0], r[1], v if valid else None, oob, charges))
+        k, (i, t) = len(seq) - 1, (r[0], r[1])
+        # 1. Timers whose expiry has passed by this frame are closed: decided now.
         for tm in timers:
-            last = seq[tm["last"]]
-            if not tm["done"] or tm["kind"] == "ability_uncertain" or last[2] > ENDED_WITHIN:
+            if tm["closed"] or t < tm["hi"]:
                 continue
-            after = next((sv for sv in seq[tm["last"] + 1:] if sv[1] >= tm["hi"]), None)
-            if after is None:
-                continue                  # the segment ended first
-            out.append(Event(kind="cooldown_ended", i_from=last[0], t_from=last[1],
-                             i_to=after[0], t_to=after[1], slot=ability, slot_pos=pos,
-                             amount=None, before=last[2], after=None, segment=seg_index))
+            tm["closed"] = True
+            if tm["done"]:
+                last = seq[tm["last"]]
+                if ability not in CHARGED and tm["kind"] != "ability_uncertain" \
+                        and last[2] is not None and last[2] <= ENDED_WITHIN:
+                    # History only: a recast the reader missed can start the
+                    # instant it ends, so the slot after it stays unknown.
+                    out.append(Event(kind="cooldown_ended", i_from=last[0], t_from=last[1],
+                                     i_to=i, t_to=t, slot=ability, slot_pos=pos, amount=None,
+                                     before=last[2], after=None, segment=seg_index,
+                                     known_i=i, known_at=t))
+                continue
+            # A single read that never confirmed: a real between-cast "1" and a
+            # misread cannot be told apart -- unless a confirmed timer was
+            # running across it, when the kit rules a new use out.
+            running = any(o["done"] and o["t"] < tm["t"] and o["lo"] > tm["t"] for o in timers)
+            if running or (full is not None and ability not in CHARGED
+                           and tm["hi"] - full < seg_start - TIMER_EPS):
+                continue
+            lower = max(seg_start, tm["lo"] - full) if full is not None else seg_start
+            emit("ability_uncertain", lower, tm["t"], tm, k, amount=tm["v"])
+        for sh in shadows:
+            if not sh["closed"] and t >= sh["hi"]:
+                sh["closed"] = True
+        # 2. This frame's read.
+        if oob:
+            sh = merge(shadows, t, v)
+            confirmed = {x for x in sh["vals"] if sh["vals"].count(x) >= TIMER_CONFIRM}
+            # Ticking, as timer_lengths means it: two values each read twice,
+            # across at least TIMER_MIN_SPAN -- a misread pair is not a timer.
+            if len(confirmed) >= 2 and t - sh["t"] >= TIMER_MIN_SPAN and pos not in alarm:
+                alarm[pos] = {"i": i, "t": t, "read": max(confirmed), "kit": full}
+        if not valid:
+            continue
+        tm = merge(timers, t, v)
+        if tm["n"] >= TIMER_CONFIRM and not tm["done"]:
+            tm["done"] = True
+            earlier = [o for o in timers if o is not tm and o["done"] and o["t"] < tm["t"]]
+            # The previous timer is the confirmed one expiring latest -- the one
+            # still running -- not the latest made: two chat reads of "1" once
+            # formed a timer of their own and let two misread 8s pass as a
+            # team-up cast while the real countdown ran (Day 101.8-109.9).
+            prev = max(earlier, key=lambda o: o["lo"]) if earlier else None
+            if pos in alarm:
+                kind, lower, upper = "ability_uncertain", seg_start, tm["t"]
+            elif ability in CHARGED:
+                kind, lower, upper = _classify_charged(tm, prev, seq, full, lock, seg_start)
+            else:
+                kind, lower, upper = _classify_timer(tm, prev, full, seg_start)
+                # A timer the kit cannot produce, first read while the previous
+                # one provably still runs, is a misread of that one: nothing,
+                # not an uncertain stretch censoring a known cooldown (Day
+                # team-up 109.9: 8s read over a running 6).
+                if kind == "ability_uncertain" and prev is not None and prev["lo"] > tm["t"]:
+                    kind = None
+            tm["kind"] = kind
+            if kind:
+                emit(kind, lower, upper, tm, k, amount=tm["v"])
     return out
 
 
-def _classify_timer(tm, prev, seq, ability, full, seg_start):
-    """(kind, lower) for a newly confirmed timer: kind None for one this segment
-    certainly did not start; lower the earliest the cast can have been."""
-    if ability in CHARGED:
-        return _classify_charged(tm, prev, seq, ability, full, seg_start)
-    # One-charge slot (Get Over Here, team-up): only a cast starts a timer, and
-    # it starts at expiry - full length.
-    start = tm["lo"] - full if full is not None else None
-    lower = max(seg_start, start if start is not None else seg_start)
+def _exact(tm):
+    """A timer's expiry window from its digits alone, (lo, hi]: TIMER_EPS widens
+    the windows reads are matched with, and is taken off again here, unless the
+    reads disagree by frame jitter and the exact windows do not meet."""
+    lo, hi = tm["lo"] + TIMER_EPS, tm["hi"] - TIMER_EPS
+    return (lo, hi) if lo <= hi else (tm["lo"], tm["hi"])
+
+
+def _classify_timer(tm, prev, full, seg_start):
+    """(kind, lower, upper) for a one-charge slot's newly confirmed timer; kind
+    None for one this segment certainly did not start."""
+    # The lower side from the digits exactly; the upper keeps the frame-timing
+    # slack (conservative) and is capped by the first read in any case, so a
+    # timer first read at its full value at t gives (t - 1, t].
+    lo = _exact(tm)[0]
+    upper = tm["t"] if full is None else min(tm["t"], tm["hi"] - full)
     if full is not None and tm["hi"] - full < seg_start - TIMER_EPS:
-        return None, None                           # if a cast at all, one before the segment opened
+        return None, None, None                     # if a cast at all, one before the segment opened
+    start = lo - full if full is not None else None
+    lower = max(seg_start, start if start is not None else seg_start)
     if prev is not None:
         if tm["lo"] <= prev["hi"]:
-            return "ability_uncertain", lower       # earlier expiry: the kit has no way to do that
-        if full is not None and tm["hi"] - full < prev["lo"] - KIT_TOL:
-            return "ability_uncertain", lower       # would start before the last one ended
-    if full is None:
-        # Without the length the start cannot be placed; only a previous timer
-        # seen in this segment bounds it -- the cast came after that one ended.
-        return ("ability_cast", max(lower, prev["lo"])) if prev else ("ability_uncertain", lower)
-    if start < seg_start - TIMER_EPS:
-        return "ability_uncertain", lower           # may have started before it
-    return "ability_cast", max(lower, prev["lo"]) if prev else lower
+            return "ability_uncertain", lower, tm["t"]      # earlier expiry: the kit has no way to do that
+        lower = max(lower, prev["lo"])                      # after the last one ended
+    if full is None or start < seg_start - TIMER_EPS:
+        # No length: the kit, the variant or the value is unknown, and timer
+        # inference is not attempted. Or it may have started before the
+        # segment opened.
+        return "ability_uncertain", lower, tm["t"]
+    if lower > upper + TIMER_EPS:
+        # The evidence does not agree: a start before the last timer ended,
+        # which the kit has no way to do.
+        return "ability_uncertain", seg_start, tm["t"]
+    return "ability_cast", lower, max(lower, upper)
 
 
-def _classify_charged(tm, prev, seq, ability, full, seg_start):
-    """A charged slot's newly visible countdown.
+def _classify_charged(tm, prev, seq, full, lock, seg_start):
+    """A charged slot's newly visible countdown: (kind, lower, upper).
 
     A charged slot draws its big countdown only while it has no charges left
-    (checked frame by frame on Day swing 48-52 s: badge 1 and no number; a use,
-    badge 0 and "2"; the recharge completes, badge 1 and the number gone; a
-    second use, badge 0 and "5"), and uppercut also for its short between-cast
-    lock. So a countdown becoming visible means a use -- even when it is the
-    next recharge in a chain, which is exactly when a second use lands. A
-    recharge completing shows the other way round: the number disappears and
-    charges_regained fires.
-
-    Where the use was, each a lower bound that holds on its own:
-      - after the recharge now showing began: expiry - RECHARGE_S;
-      - after the previous timer in this segment ran out;
-      - after the last charge badge read >= 1 with no number since that timer
-        (less the between-cast lock, which shows with a charge left).
-    The latest of them inside the segment makes it a cast. Otherwise the use may
-    be from before the segment opened: uncertain, never silence, since the
-    countdown on screen still says a use happened.
-
-    A timer first seen part-way through right after the slot showed a number it
-    cannot show (chat over it) is uncertain: a use that just emptied the slot
-    and a timer becoming readable cannot be told apart. Req uppercut 52.0: chat
-    read as "7" 2.5 s before a "5".
+    (Day swing 48-52 s, frame by frame), and uppercut also for its short
+    between-cast lock. So a countdown becoming visible means a use -- even the
+    next recharge in a chain, which is exactly when a second use lands -- no
+    later than the first read. Where it was, each a lower bound that holds on
+    its own, used only when its duration is known:
+      - after the recharge now showing began: expiry - recharge (`full`);
+      - after the previous timer in this segment ran out (no duration needed);
+      - after the last confirmed charge decrement began (no duration needed):
+        every use takes a charge, so the countdown's use is no earlier;
+      - after the last badge read >= 1 with no number, less the lock (`lock`),
+        which shows with a charge left.
+    The latest of them inside the segment makes a cast; otherwise uncertain,
+    never silence, since the countdown still says a use happened. A countdown
+    first seen part-way right after a number the slot cannot show (chat) is
+    uncertain: Req uppercut 52.0.
     """
     k = tm["k"]
-    bounds = [tm["lo"] - full]
     after = prev["last"] + 1 if prev else 0
+    bounds = []
+    if full is not None:
+        bounds.append(_exact(tm)[0] - full)
     if prev is not None:
         bounds.append(prev["lo"])
-    badge = [sv[1] for sv in seq[after:k] if sv[2] is None and isinstance(sv[4], int) and sv[4] >= 1]
-    if badge:
-        bounds.append(badge[-1] - LOCKOUT_S.get(ability, 0.0) - TIMER_EPS)
-    lower = max(bounds)
+    runs = []                                    # (value, first t, last t, reads) of the badge
+    for sv in seq[:tm["last"] + 1]:
+        if isinstance(sv[4], int):
+            if runs and runs[-1][0] == sv[4]:
+                runs[-1][2], runs[-1][3] = sv[1], runs[-1][3] + 1
+            else:
+                runs.append([sv[4], sv[1], sv[1], 1])
+    steady = [x for x in runs if x[3] >= TIMER_CONFIRM]
+    drops = [a[2] for a, b in zip(steady, steady[1:]) if b[0] < a[0] and b[1] <= tm["t"]]
+    if drops:
+        bounds.append(drops[-1])
+    if lock is not None:
+        badge = [sv[1] for sv in seq[after:k] if sv[2] is None and isinstance(sv[4], int) and sv[4] >= 1]
+        if badge:
+            bounds.append(badge[-1] - lock)
+    upper = tm["t"]
     recent = [sv for sv in seq[:k] if tm["t"] - BLIND_LOOKBACK <= sv[1]]
-    if 1 < tm["v"] < full and any(sv[3] for sv in recent):
-        return "ability_uncertain", max(seg_start, lower)
-    if lower < seg_start - TIMER_EPS:
-        return "ability_uncertain", seg_start
-    return "ability_cast", max(seg_start, lower)
+    if full is not None and 1 < tm["v"] < full and any(sv[3] for sv in recent):
+        return "ability_uncertain", max([seg_start] + bounds), upper
+    if not bounds or max(bounds) < seg_start - TIMER_EPS or max(bounds) > upper:
+        return "ability_uncertain", seg_start, upper
+    return "ability_cast", max(seg_start, max(bounds)), upper
 
 
 def _merge_shield(events):
@@ -1248,31 +1388,34 @@ def _merge_shield(events):
     return out
 
 
-def extract(reads, debounce=None, mapping=None):
+SEG_LAG = 12   # frames: the longest a frame's segment membership can still change (see _steady)
+
+
+def extract(reads, debounce=None, mapping=None, kit=KITS[KIT_REFERENCE], alarm=None):
     """Segment the run, then pull events inside each segment.
 
     `reads` are (i, t, Hud, playing). Returns (events, segments); channels are
     reset at every boundary, so no event spans one.
     """
     segments = segment(reads)
-    measured = timer_lengths(_eligible(reads, segments), detail=True)
-    timers = {p: m["s"] for p, m in measured.items()}
-    contradicted = kit_contradicted(measured, mapping)
+    # Durations are inputs: the kit for the source's patch. The library default
+    # is the reference patch's; the file-writing path (from_video) passes the
+    # source's own, or None -- and then every timer event is uncertain.
+    spans = durations(kit, mapping)
+    timers = {p: f for p, (f, _) in spans.items() if f is not None}
+    locks = {p: l for p, (_, l) in spans.items() if l is not None}
+    alarm = {} if alarm is None else alarm     # filled with kit contradictions, for the caller
+    clock = _clock(reads)
     by_i = {r[0]: (r[0], r[1], r[2], r[5] if len(r) > 5 else None) for r in reads}
+    order = [r[0] for r in reads]
     events = []
     for n, seg in enumerate(segments):
         inside = [by_i[i] for i in range(seg.start_i, seg.end_i + 1) if i in by_i]
-        # One length per slot per source is an assumption: a partner hero
-        # changing mid-match changes the team-up ability and its length
-        # (Symbiote Bond 15 s, Parker Power-Up 10 s). Too long is the safe
-        # direction -- starts are placed earlier, so more is uncertain. Too
-        # short shows as a timer here ticking above it, and then this segment
-        # has no length for that slot rather than a wrong one.
-        seg = timer_lengths(inside, detail=True)
-        over = {p for p, m in seg.items() if p in timers and m["max"] > timers[p]}
-        events.extend(extract_one(inside, debounce, seg_index=n, mapping=mapping,
-                                  timers={p: v for p, v in timers.items() if p not in over},
-                                  contradicted=contradicted | kit_contradicted(seg, mapping)))
+        after = next((i for i in order if i > seg.end_i), None)
+        events.extend(extract_one(inside, debounce, seg_index=n, mapping=mapping, timers=timers,
+                                  locks=locks, alarm=alarm, lag=SEG_LAG, clock=clock,
+                                  tops=ceilings(kit, mapping),
+                                  closed_i=after if seg.ended_by != "run_end" else None))
     events.sort(key=lambda e: (e.t_to, e.kind))
     counted = {e.segment for e in events if e.kind == "ability_cast"}
     scored = any(len(r) > 7 for r in reads)
@@ -1389,8 +1532,12 @@ def read_run(run_dir, limit=None, progress=None, layout=None):
             aside = ("black" if is_black(frame) else None) or banner_word(frame) \
                 or ("scoreboard" if is_scoreboard(frame) is True else None)
             playing, score = hero_read(frame)
-            out.append((row["i"], float(row["t"]), read_hud(frame, layout),
-                        playing, aside, is_killfeed(frame), flags[n - 1], score))
+            row_out = (row["i"], float(row["t"]), read_hud(frame, layout),
+                       playing, aside, is_killfeed(frame), flags[n - 1], score)
+            if GLYPH_EVIDENCE:                # recorded for measurement only; see hud.glyph_evidence
+                from perception.hud import glyph_evidence
+                row_out += ({s: glyph_evidence(frame, s, layout) for s in (layout or PAD_LAYOUT).slot_cx},)
+            out.append(row_out)
         if progress and n % progress == 0:
             print(f"  {n}/{len(rows)} frames", file=sys.stderr)
     return out
@@ -1506,7 +1653,7 @@ def observed(events):
 
 
 def dump(events, segments, reads, layout="pad", source=None, mapping=None,
-         pts_origin=None, recipe=None, starts=None):
+         pts_origin=None, recipe=None, starts=None, kit=None):
     """The per-clip JSONL: one meta line, then a segment line each, then events.
 
     Three line kinds, told apart by `type`, which events omit for the sake of
@@ -1568,18 +1715,15 @@ def dump(events, segments, reads, layout="pad", source=None, mapping=None,
         # again: source video, sampling rate, window, layout. null for a file
         # built from a frame directory, which only its recorder can rebuild.
         "recipe": recipe,
-        # The full countdown length the timer model used per layout position,
-        # and where it came from: "segments" -- measured from this source's
-        # ticking timers in own-play segment reads, with how many timers were
-        # seen and how many agree -- or "kit", the recharge of a charged slot
-        # (see timer_lengths, RECHARGE_S).
-        # A charged slot's entry keeps its measured "max": above the kit's
-        # recharge it contradicts the kit, and "contradicted" says its uses
-        # were all written as ability_uncertain (see kit_contradicted).
-        "timer_lengths": {p: ({"s": RECHARGE_S[mapping[p]], "from": "kit", "max": v["max"],
-                               "contradicted": p in kit_contradicted({p: v}, mapping)}
-                              if mapping and mapping.get(p) in CHARGED else {**v, "from": "segments"})
-                          for p, v in timer_lengths(_eligible(reads, segments), detail=True).items()},
+        # The durations the timer model used, and why: the source's recorded
+        # patch, the kit table it selected (null: none, and every timer event
+        # is uncertain), per position (length, lock) with null for unknown,
+        # and each kit contradiction the footage raised, from when.
+        "kit": kit,
+        # What the footage's own ticking timers topped out at, in own-play
+        # segments. A report only: a late first read tops out below the full
+        # length, so this is never used as one (see timer_lengths).
+        "timer_lengths": timer_lengths(_eligible(reads, segments), detail=True),
     })]
     lines += [json.dumps({"type": "segment", **asdict(s)}) for s in segments]
     lines += [json.dumps(asdict(e)) for e in events]
@@ -1638,8 +1782,31 @@ def extract_frames(video, run_dir, hz=10.0, start=None, duration=None):
     return round(origin, 3)
 
 
+def patch_for(video):
+    """The patch a source's manifest records (`<stem>.manifest.jsonl` beside the
+    video, first line), or None when there is no manifest or it says unknown."""
+    path = Path(video).with_suffix(".manifest.jsonl")
+    if not path.exists():
+        return None
+    patch = json.loads(path.read_text().splitlines()[0]).get("patch")
+    return None if patch in (None, "unknown") else patch
+
+
+def kit_meta(patch, kit, mapping, alarm, patch_from):
+    """The meta line's `kit` record, and a loud warning when there is none."""
+    if kit is None:
+        print(f"  WARNING: no kit for patch {patch!r} ({patch_from}): every timer-derived "
+              "event is written ability_uncertain", file=sys.stderr)
+    for pos, a in alarm.items():
+        print(f"  WARNING: {pos}'s countdown read {a['read']} ticking at t={a['t']}, longer "
+              f"than the kit's {a['kit']}: from there its uses are uncertain", file=sys.stderr)
+    return {"patch": patch, "patch_from": patch_from, "table": patch if kit is not None else None,
+            "durations": {p: {"length": f, "lock": l} for p, (f, l) in durations(kit, mapping).items()},
+            "alarms": alarm}
+
+
 def from_video(video, out, hz=10.0, start=None, duration=None, layout="mk",
-               workdir=None, progress=None):
+               workdir=None, progress=None, patch=None):
     """A video (or a window of one) to an events file, recording its recipe.
 
     This is the one path demonstration files are made by. Everything needed to
@@ -1647,6 +1814,10 @@ def from_video(video, out, hz=10.0, start=None, duration=None, layout="mk",
     after a format change without anybody remembering how it was cut. Cuts are
     always detected: a continuous capture then records a verified 0 rather than
     a null nobody checked.
+
+    The durations come from the kit for the source's patch: `patch`, or else
+    the one its manifest records (patch_for). Neither: every timer-derived
+    event is uncertain, and it says so.
     """
     import shutil
     import tempfile
@@ -1666,13 +1837,17 @@ def from_video(video, out, hz=10.0, start=None, duration=None, layout="mk",
         lay = LAYOUTS[layout]
         reads = read_run(run_dir, progress=progress, layout=lay)
         mapping = _mapping_for(run_dir, lay, len(reads))
-        events, segments = extract(reads, mapping=mapping)
+        patch_from = "argument" if patch else "manifest"
+        patch = patch or patch_for(video)
+        kit, alarm = kit_for(patch), {}
+        events, segments = extract(reads, mapping=mapping, kit=kit, alarm=alarm)
         recipe = {"video": str(video), "hz": hz, "start": start,
                   "duration": duration, "layout": layout}
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(dump(events, segments, reads, layout=layout, source=out.stem,
                             mapping=mapping, pts_origin=origin, recipe=recipe,
-                            starts=probe_starts(video)))
+                            starts=probe_starts(video),
+                            kit=kit_meta(patch, kit, mapping, alarm, patch_from)))
     finally:
         shutil.rmtree(run_dir, ignore_errors=True)
     return {"out": str(out), "frames": len(reads), "events": len(events),
@@ -1775,6 +1950,8 @@ def main(argv=None):
                    help="seconds of the source's first decoded video PTS")
     p.add_argument("--layout", default="pad", choices=("pad", "mk"),
                    help="which HUD the source draws; never guessed from the frames")
+    p.add_argument("--patch", help="the source's recorded patch, e.g. 'Season 10, Version "
+                   "20260911', selecting the kit table; without it every timer event is uncertain")
     p.add_argument("--cuts-from", metavar="VIDEO",
                    help="detect this source's editorial cuts and write cuts.json "
                         "into run_dir before reading; for edited uploads")
@@ -1787,13 +1964,15 @@ def main(argv=None):
         print(f"  {len(cuts)} cuts at score >= {CUT_SCORE}", file=sys.stderr)
     reads = read_run(a.run_dir, a.limit, a.progress or None, layout)
     mapping = _mapping_for(a.run_dir, layout, len(reads))
-    events, segments = extract(reads, mapping=mapping)
+    kit, alarm = kit_for(a.patch), {}
+    events, segments = extract(reads, mapping=mapping, kit=kit, alarm=alarm)
     out = Path(a.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     # The clip stem, not the frame directory: that is a scratch path on whoever
     # ran this, and the stem is what a manifest joins on.
     out.write_text(dump(events, segments, reads, layout=a.layout, source=out.stem,
-                        mapping=mapping, pts_origin=a.pts_origin))
+                        mapping=mapping, pts_origin=a.pts_origin,
+                        kit=kit_meta(a.patch, kit, mapping, alarm, "argument")))
     summary = segment_summary(segments)
     print(json.dumps({"run": str(a.run_dir), "layout": a.layout,
                       "pts_origin_s": a.pts_origin,
