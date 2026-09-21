@@ -8,6 +8,41 @@ because `reenter.py` refused its own A on that panel twice; this lane does not n
 lead's to leave. The PC holds `agent/`, `scripts/` (with templates) and `perception/` from `git archive 6f2e44e`, all 42
 tracked files verified by sha256, nothing of this lane's scratch beside them. No gameplay run follows until the lead says so.
 
+## No-input timing of the re-entry proof on the PRACTICE panel (VUH-1299): the age at the write is NOT MEASURABLE there with no pad
+
+`scripts/reenter.py --dry-run --timing 50` on the screen the game is on (`practice_panel`), at 6f2e44e, nothing changed, no
+pad created, nothing pressed, no navigation. After each run: 0 python left, 0 Xbox pads present. Logs:
+`reenter-timing-practice-panel-{norec-1,norec-2,recorder}.log`.
+
+**All 150 rounds stop before the age check: `refused=no proof for A: the cursor ring was not found`, `age_ms=nan`,
+`tap_frame_ms`, `tap_gdi_ms`, `tap_classify_ms`, `tap_proof_ms` all 0.** With no pad connected the game draws no click cursor
+on this panel (its hints are the keyboard's), so `Safe.press` refuses at its own proof and `Live.tap`, where the age is
+compared with the 0.3 s limit, is never entered. The distribution of the proof's age at the write, and how many of 50 would
+have been refused for age, cannot be had from this mode on this screen without a pad and a stick move, which this
+measurement does not allow. The mode times one screen's path only, the screen it is on: it says nothing about the lobby's A.
+It prints no settle stage.
+
+What it does measure, per condition (`safe_ms` = `Safe.press`'s own frame, classify and one proof attempt, here a
+`find_cursor` that finds no ring):
+
+| Condition | `safe_ms` min / p50 / p95 / max (n = 50) | dxcam probe (2 s) | Game's FPS counter | PC CPU load samples |
+|---|---|---|---|---|
+| 1. no recorder, first run | 92 / 208 / 255 / 259 | 151 frames in 746 grabs; first after 47 ms; gap p50 8 ms, max 45 ms | not read | not sampled (a wrapper bug of this lane's lost the samples) |
+| 1. no recorder, second run | 85 / 221 / 256 / 261 | 145 frames in 828 grabs; first after 28 ms; gap p50 7 ms, max 68 ms | 471 | 62, 56, 58 % |
+| 2. native recorder running as for the arrivals (`ddagrab` -> `h264_nvenc`, 60 fps, `-cq 19`) | 171 / 219 / 259 / 260 | 129 frames in 884 grabs; first after 62 ms; gap p50 10 ms, max 68 ms | 414 | 49, 51, 55, 68 % |
+
+Read plainly: the recorder does not move `safe_ms`'s p50, p95 or max (its min rises from ~90 to 171 ms); the panel is not a
+static screen to dxcam (65-75 frames/s arrive); one frame + classify + one proof attempt costs up to 261 ms on the PC against
+a 300 ms age limit, and a real press runs the proof twice (`Safe.press`, then `Live.tap` on its own frame). Whether `tap`'s
+pass costs the same when the ring IS there is not measured here.
+
+**Lobby A against tile A: not measurable with `--timing`** (one screen, and not past `Safe` here). Offline only, on the
+Mac, not the PC, over stored frames (30 repeats each): `find_cursor` 45-47 ms whether or not a ring is present; `on_practice_tab`
+45-48 ms; `on_practice_range_tile` 46-48 ms (its two checks, cursor on the tile and DOOM MATCH not highlighted, add 1-2 ms
+to the cursor search); `classify` 0.1-0.3 ms. On the Mac the two proofs cost the same to within 2 ms and almost all of it
+is the cursor search; the PC's `safe_ms` is about 4-5 times the Mac's proof time, with the game at 414-471 FPS taking
+half the CPU.
+
 ## Third round of supervised arrivals at 6f2e44e (VUH-1299): stopped at a refusal before the range, no arrival ran
 
 Deploy at 6f2e44e hash-verified (42 files), `capture.py preflight` passed (98 dxcam frames in 1 s), `--dry-run` read `lobby`.
