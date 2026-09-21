@@ -2,11 +2,79 @@
 
 Linear: VUH-1296. Evidence: `docs/evidence/l4/`. Raw measurements: `C:\rivals-agent\data\l4\` on the PC.
 
-The game is in the Practice Range as Spider-Man on the plaza beside the spawn room door's planter, the view about 50 degrees
-right of the Luna Snow bot where the third M1 pulse left it, idle, no pad connected; the range's inactivity drop returns it
-to the lobby by itself. **The PC holds main again**: `agent/`, `scripts/` (with templates) and `perception/` from
-`git archive a7fff98`, all 42 tracked files verified by sha256, no extras (`agent/startup.py` and `scripts/padprime_m1.py`,
-deployed for M1 only, are removed). **The `plaza30` run has not been made**; nothing follows M1 until the lead says so.
+The game is in the Practice Range as Spider-Man on the plaza beside the spawn room door's planter, facing the Luna Snow bot
+where the third M2 start phase accepted the view, idle, no pad connected; the range's inactivity drop returns it to the
+lobby by itself. **The PC holds main**: `agent/`, `scripts/` (with templates) and `perception/` from `git archive a7fff98`,
+all 42 tracked files verified by sha256, no extras (the branch-only `agent/startup.py` and `scripts/padprime_m1.py` are
+removed). **The `plaza30` run has not been made**; nothing follows M2 until the lead says so.
+
+## M2: three supervised pose-only sessions at 7668ade (VUH-1314): 2 accepted with a still view and no banner; 1 is invalid
+
+No gameplay, no brain, no `Loop.run`. `agent.loop --live` was never run without `--pose-only`.
+
+**Deploy hash checks.** Before: `git archive 7668ade` (branch `pad-turn`), 44 files, every file's sha256 equal to
+`git show 7668ade:<path>` and to the PC's copy, no extras. After: `git archive a7fff98`, 42 files, the same check; the first
+comparison listed the two branch-only files still on the PC, they were removed, and the PC equals a7fff98 for all 42 files
+with no extras. `capture.py preflight` passed (191 dxcam frames in 1 s).
+
+**This lane's error in session 2, stated plainly.** `reenter.py` exited **1** there (`STOP: out, but no bot in view after 7
+look-around turns`): in frame 1 it took the room's OTHER door, went out through it and swept left seven times outside that
+door, where no bot is. The order is that the arrival must exit 0 with the plaza confirmed before the pose-only invocation.
+The launch line chained the two with `&&` behind a `grep` filter, whose exit status replaced `reenter.py`'s, so
+`m2-pose-2` RAN from that wrong place. It sent only the start phase's guarded camera pulses (he did not move), but it was
+not an authorized session and is not evidence about the plaza start. Session 3 ran behind a gate that reads `reenter.py`'s
+own `EXIT 0` and success line. Exactly three attempts were made; none was repeated or replaced.
+
+| | Session 1 `m2-pose-1` (17:32:35) | Session 2 `m2-pose-2` (17:44:06) INVALID | Session 3 `m2-pose-3` (17:55:20) |
+|---|---|---|---|
+| Arrival (`reenter.py`) | exit 0, plaza confirmed, pad gone | **exit 1**, through the other door, no bot in view | exit 0, plaza confirmed, pad gone |
+| Exit code / last line | **0**, `loop: pose only: plaza start view confirmed after 2 turns` (`start: ... (5.99 s)`) | **1**, `loop: STOP: plaza start view not confirmed: 7 turns taken` | **0**, `... confirmed after 2 turns` (`start: ... (5.95 s)`) |
+| Prime / search pulses | 1 prime + **1** search | 1 prime + **6** searches (all 7 turns) | 1 prime + **1** search |
+| First send returned after `LiveIO` returned; `LiveIO` itself | 12.0 ms; 582 ms | not recorded (no `start.json`) | 34.0 ms; 596 ms |
+| Prime neutral -> first / second plaza confirmation | **5.594 s / 5.636 s** (prime done 0.310 s, confirming frames stamped 5.904 s and 5.947 s after `LiveIO` returned) | none | **5.539 s / 5.577 s** (0.323 s; 5.861 s and 5.900 s) |
+| Start pose (first frame, before the attach) | on the plaza beside the planter, FACING the Luna Snow bot at x 0.43, Hero Simulation console to her left, stairs right; no door in view | outside the spawn room's OTHER door at its jamb, facing a corridor archway; no bot, not the plaza | the same as session 1, the bot at x 0.44 |
+| After the prime (the first `look`, LIVE `plaza` False) | the planter and the door's dark housing fill the view; the bot is out of the left edge (she was at x 0.43, so more than 50 degrees) | the other door's housing | the same as session 1 |
+| END pose | facing the Luna Snow bot (name bar readable) at x **0.50**, console to her left, stairs right, planter's rim bottom right; **no door in view**; the hero drawn faded | facing the other door's housing edge-on, the spawn room behind it; no bot | facing the Luna Snow bot at x **0.47**; the same view; no door in view |
+| Banner at the confirmations (recording) | **GONE**: `Switching Devices` is up from 0.29 to 1.19 s after the prime's onset only; the confirmations are 5.91 and 5.94 s after it (checked by eye on the native strip, `m2-pose-1-banner-strip-...png`) | - | **GONE**: up 0.30-1.19 s; confirmations at 5.79 and 5.84 s |
+| View at the confirmations (recording) | **STILL**: the search pulse's turn ends at 8.89-8.94 s of the recording, the confirmations are at 9.003 and 9.037 s (70-100 ms later); frame-to-frame rate within 5 frames either side -0.1 to +0.4 deg/s; the two confirming NATIVE frames differ by 0.01 px of scene shift (0.001 deg) and are distinct files | - | **STILL**: turn ends 8.69-8.74 s, confirmations 8.806 and 8.856 s; rate 0.0 to 0.2 deg/s around them; the two native frames differ by 0.01 px |
+| Acceptance | **PASS** | **NOT A SESSION** (wrong start, this lane's error); as an observation: the start phase's refusal path ran to its 7-turn limit and closed the pad, exit 1, in 8.68 s | **PASS** |
+| Retained files, all opened | `start.json`, `start-steps.jsonl` (8 rows), 8 step PNGs, both confirming PNGs: all present and readable | `start-steps.jsonl` (22 rows), 22 step PNGs, all readable; **`start.json` is MISSING** (the refusal path at 7668ade writes the step rows and frames only) and there are no confirming frames (none happened) | `start.json`, 8 rows, 8 step PNGs, both confirming PNGs: all present and readable |
+
+**Search turns against the MEASURED displacement.** After the prime the bot was out of view to the left (more than 50
+degrees, from x 0.43-0.44). ONE left search pulse brought her back to x 0.50 / 0.47, that is 11 and 4 degrees LEFT of where
+the view started (scene shift start frame -> accepted frame +178 and +58 native px; the phase-correlation response there is
+weak, 0.06-0.17, and the bot's own x agrees: 0.43 -> 0.50 and 0.44 -> 0.47). So the left pulse turns slightly MORE than the
+prime (by 4-11 degrees) and one search turn matches the displacement the prime made. The prime is what takes the view off
+the bot; without it no search would be needed.
+
+**LIVE `plaza` values and replays, kept apart.** LIVE (the step rows): False on the look after the prime, True on the two
+confirming looks (sessions 1 and 3); False on all seven looks of session 2. REPLAY of `plaza_view` on the stored native
+step PNGs (main's `reenter.py`, nothing changed): the same values on every look row of all three.
+
+**Yaw method and limits** (`m2-read.py`, `m2-pose-N-recording-read.json`, `m2-pose-N-yaw.png`): per-frame horizontal shift
+on a narrow centre band of each 60 fps recording frame reduced to 640x360, `atan(shift / 232.5 px)`, right positive; good
+at small rates, unreliable DURING a 172 deg/s pulse, under-reads on a blank surface. The recording has no clock; each
+confirming frame is placed on it as the recording frame that matches it best (native mean abs difference 2.1-2.6 grey
+levels, scene shift 0.0 px), which is good to one frame (17 ms). 'Still' above is therefore a statement about the 60 fps
+recording around those frames plus the direct comparison of the two native confirming frames.
+
+**A correction to M1's banner figure.** M1 reported one `Switching Devices` banner of 4.3 s. It is TWO banners of about
+0.9 s each: one 0.3-0.6 s after the attach (lasting 0.87-0.94 s), and a second about 0.3 s after the pad is REMOVED (the
+game switching back to the keyboard); the 4.3 s was the span from the first's start to the second's end, merged by this
+lane's reader. In M2 the second banner comes 7.6-8.6 s after the prime's onset, after the close, and the first is gone 1.2 s
+after the prime's onset. The 5.0 s delay was sized to the wrong figure: by these recordings the attach banner is gone about
+4 s before the delay ends. Whether an input sent while it is up is swallowed is not measured here.
+
+Also seen: a small `Controller Connected / Xbox 360 Controller` toast sits at the bottom right in the confirming frames
+(not the banner; it does not cover the view's centre). In session 3 the view creeps 1.0 degree left over the 1.4 s AFTER
+the acceptance (0.04 in session 1), with the pad still attached while the PNGs are written; cause not established, and it
+is after both confirmations.
+
+Recordings (native, 60 fps, 45 s each): `data/video/m2-pose-1.mp4` (241 MB), `m2-pose-2.mp4` (155 MB), `m2-pose-3.mp4`
+(242 MB) on the Mac and in `C:\rivals-agent\data\video\`; the runs' own files are `data/l1/m2-pose-{1,2,3}/` on both.
+Evidence: `m2-pose-N-start-steps.jsonl`, `m2-pose-{1,3}-start.json`, `m2-pose-N.log`, `m2-pose-{1,3}-confirm-{1,2}-native.jpg`,
+`m2-pose-N-frames.jpg`, `m2-pose-N-recording-read.json`, `m2-pose-{1,3}-yaw.png`, `m2-read.py`,
+`m2-session2-reenter-refused-steps.jsonl`, `m2-session2-reenter-refuse-20260921-174351.jpg`, `m2-session3-reenter.log`.
 
 ## M1: three supervised camera-only sessions (VUH-1314): one right-stick pulse ends the attach drift in all three
 
@@ -53,7 +121,7 @@ pad-to-screen delay sits inside that alignment and times are good to about one f
 | the pulse (a deliberate right turn, rx 0.45 for 0.3 s) | the bot goes from x 0.46 out of the left edge: more than 52 deg; per-frame sum 48 (unreliable) | the same: more than 52 deg; per-frame sum 69 (unreliable) | the bot goes from x 0.48 to x 0.02: about 50 deg net of the 8 deg drift, so the pulse is about 58 deg; per-frame sum 68 (unreliable) |
 | **the 2.8 s AFTER the pulse, pad still attached and neutral** | **+0.04 deg, largest frame rate 1.4 deg/s: STILL** | **+0.7 deg, largest frame rate 0.7 deg/s: STILL** | **+0.04 deg, largest frame rate 0.4 deg/s: STILL** |
 | the 2 s after the close | -0.1 deg | +0.4 deg | -0.2 deg |
-| `Switching Devices` banner (its two yellow chevrons, in the recording) | up 0.28 s after the attach, for **4.30 s**; still up 1.2 s after the close | up 0.43 s after the attach, for **4.27 s** | up 0.59 s after the attach, for **4.29 s** |
+| `Switching Devices` banner (its two yellow chevrons, in the recording) | up 0.28 s after the attach for 0.92 s; a second one 0.29 s after the close, 0.92 s | up 0.43 s after the attach for 0.89 s; a second 0.34 s after the close | up 0.60 s after the attach for 0.94 s; a second 0.30 s after the close |
 
 **The point of M1: yes, the view stays still.** In all three schedules one camera-only pulse ends the drift: for the 2.8 s
 after it, with the pad attached and writing neutral, the view moves 0.04-0.7 degrees where the unprimed drift would have
@@ -61,7 +129,7 @@ been about 70. Across the schedules the residual drift is the wait times the dri
 degrees at 123 ms, 7.9 degrees at 328 ms (about 25 deg/s), and it starts within 23-42 ms of the attach. The earliest guarded
 send already costs nothing measurable: `Live` proves the range HUD before the pad opens and the post-attach proof took
 7.5 ms there (114 ms and 313 ms in the other two are the scheduled waits). The banner appears 0.3-0.6 s after the attach,
-that is AFTER the pulse has begun in every session, and lasts 4.3 s regardless of the schedule; the pulse is not swallowed
+that is AFTER the pulse has begun in every session, and lasts about 0.9 s (a second one follows the pad's removal); the pulse is not swallowed
 by it (the right turn is on the recording from the first write). Nothing failed and nothing was refused. What M1 does not
 show: whether a pulse on another axis, a shorter or a smaller one does the same; whether the first input after the banner
 is still swallowed (no second input was sent); and the pulse leaves the view 50-60 degrees right of where the arrival left
