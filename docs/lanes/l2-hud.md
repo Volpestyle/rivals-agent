@@ -1484,6 +1484,8 @@ single misread "40" or "25", the first max read of its segment, becomes the
 
 ### Proposed for the next writer opening (not built)
 
+Recorded for a future writer opening; none is being implemented now.
+
 - **R1, the after-side max read comes from after the change.** Take max hp's
   after-side read from the frames at or after the first frame reading the new
   hp, up to that event's settling frame (i_to + HP_SETTLE, already its
@@ -1513,12 +1515,14 @@ where no countdown was read. The two icons: Symbiote Bond (Venom) a jagged
 radial burst, 15 s; Parker Power-Up (Peni Parker) a bomb, 10 s on this patch
 (`docs/spiderman-kit.md`).
 
-**The variant never changes within either session.** Every segment where the
-icon is legible shows Symbiote Bond: DayMR 37 of 48 segments (one more, seg 18,
-shows only its countdown), ReqMR 21 of 32. No bomb appears on either source. The
-rest are short stretches (1 to 23 icon frames) where no team-up icon is legible:
-another screen, another hero's ability row kept as own play for a few frames,
-or a blur.
+**Coverage.** Three tiles per segment were inspected. Every legible one shows
+Symbiote Bond: DayMR in 37 of 48 segments (seg 18 shows only its countdown),
+ReqMR in 21 of 32. No bomb appears in any inspected frame: no contrary
+evidence. The other segments have **unknown** identity: short stretches (1 to
+23 icon frames) of another screen, another hero's ability row kept as own play
+for a few frames, or a blur. Sampled points do not show that the variant never
+changes in the frames between them or in the segments with no legible icon;
+identity is supported only where it was seen.
 
 | source | seg | t | variant seen | sure | frame (middle tile) |
 |---|---|---|---|---|---|
@@ -1603,36 +1607,84 @@ or a blur.
 | Req | 30 | 690.1–692.0 | none legible (another hero's ability icon) | — | `reqmr-2873352801-1980-900s/006919.jpg` |
 | Req | 31 | 714.1–715.3 | none legible (another screen) | — | `reqmr-2873352801-1980-900s/007148.jpg` |
 
+**Supported identity, per team-up timer.** For each of the 29 team-up timers,
+the three frames immediately before its first countdown read were inspected:
+the icon on screen at or just before the use. All 29 show the Symbiote Bond
+burst (often lit yellow on the use). These frames, and the sampled tiles in the
+table above, are the intervals with supported identity:
+
+| source | event (now `ability_uncertain`) | seg | icon frames inspected | icon | first countdown read |
+|---|---|---|---|---|---|
+| Day | (99.5, 100.4] | 7 | 100.1–100.3 | Symbiote Bond | 100.4 |
+| Day | (120.9, 121.8] | 8 | 121.5–121.7 | Symbiote Bond | 121.8 |
+| Day | (164.9, 165.8] | 12 | 165.5–165.7 | Symbiote Bond | 165.8 |
+| Day | (186.5, 187.4] | 13 | 187.1–187.3 | Symbiote Bond | 187.4 |
+| Day | (225.7, 226.6] | 15 | 226.3–226.5 | Symbiote Bond | 226.6 |
+| Day | (245.0, 245.9] | 16 | 245.6–245.8 | Symbiote Bond | 245.9 |
+| Day | (296.5, 297.4] | 17 | 297.1–297.3 | Symbiote Bond | 297.4 |
+| Day | (330.4, 331.3] | 21 | 331.0–331.2 | Symbiote Bond | 331.3 |
+| Day | (348.9, 349.8] | 21 | 349.5–349.7 | Symbiote Bond | 349.8 |
+| Day | (626.6, 627.5] | 30 | 627.2–627.4 | Symbiote Bond | 627.5 |
+| Day | (676.9, 677.8] | 32 | 677.5–677.7 | Symbiote Bond | 677.8 |
+| Day | (702.9, 703.8] | 34 | 703.5–703.7 | Symbiote Bond | 703.8 |
+| Day | (726.4, 727.2] | 35 | 726.9–727.1 | Symbiote Bond | 727.2 |
+| Day | (799.2, 800.1] | 46 | 799.8–800.0 | Symbiote Bond | 800.1 |
+| Req | (7.2, 7.8] | 1 | 7.5–7.7 | Symbiote Bond | 7.8 |
+| Req | (27.7, 28.6] | 1 | 28.3–28.5 | Symbiote Bond | 28.6 |
+| Req | (46.2, 47.1] | 1 | 46.8–47.0 | Symbiote Bond | 47.1 |
+| Req | (85.1, 86.0] | 4 | 85.7–85.9 | Symbiote Bond | 86.0 |
+| Req | (111.3, 136.9] | 5 | 136.6–136.8 | Symbiote Bond | 136.9 |
+| Req | (136.1, 137.0] | 5 | 136.6–136.8 | Symbiote Bond | 136.9 |
+| Req | (251.3, 252.2] | 9 | 251.9–252.1 | Symbiote Bond | 252.2 |
+| Req | (299.5, 300.4] | 12 | 300.1–300.3 | Symbiote Bond | 300.4 |
+| Req | (375.5, 376.4] | 17 | 376.1–376.3 | Symbiote Bond | 376.4 |
+| Req | (484.7, 485.6] | 22 | 485.3–485.5 | Symbiote Bond | 485.6 |
+| Req | (514.3, 515.2] | 22 | 514.9–515.1 | Symbiote Bond | 515.2 |
+| Req | (555.0, 555.9] | 25 | 555.6–555.8 | Symbiote Bond | 555.9 |
+| Req | (595.3, 596.2] | 26 | 595.9–596.1 | Symbiote Bond | 596.2 |
+| Req | (641.6, 642.5] | 26 | 642.2–642.4 | Symbiote Bond | 642.5 |
+| Req | (676.1, 677.0] | 28 | 676.7–676.9 | Symbiote Bond | 677.0 |
+
+Req (111.3, 136.9] is a single "1" read at 136.9, the frame on which the next
+timer's "15" appears; its icon evidence is that timer's.
+
 **A reader is not needed for these two sources.** The icon matcher
 (`identify_slot`) has one generic `teamup` template and cannot separate the two
 by construction; a per-variant template was not built, because a declaration
 covers both sessions. It becomes necessary for a source whose partner changes
 mid-match, which neither of these does.
 
-**What the variant changes** (current reader, each segment's team-up events
-extracted as now and with Symbiote Bond's 15 s declared):
+**What a known variant would change** (current reader, each segment's team-up
+events extracted as now and with Symbiote Bond's 15 s supplied). Recovered
+identity alone certifies nothing: the accepted occurrence rules still decide.
+"Eligible" below means the event would be written `ability_cast` under them — a
+confirmed timer, a start window inside its segment, no running or continuing
+cooldown it conflicts with. Nothing is promoted; no writer, kit or manifest
+change is made.
 
-| source | now: `ability_uncertain` | declared: `ability_cast` | declared: still uncertain |
+| source | now: `ability_uncertain` | eligible as `ability_cast` with 15 s known | still uncertain |
 |---|---|---|---|
 | Day | 14 | 14 (first read 15 on all; width 0.8–0.9 s) | 0 |
 | Req | 15 | 13 (first read 15 on all; width 0.9 s) | 2 |
 
 The intervals do not move: a confirmed first read of 15 already excludes the
 10 s variant, so the union bounds are the 15 s ones. Declaring the variant
-changes the kind, not the width. Req's two that stay uncertain: (7.2, 7.8], the
+changes eligibility, not the width. Req's two that stay uncertain: (7.2, 7.8], the
 segment opening at 7.2 with the first "15" at 7.8, so the start window
 (6.8, 7.8] crosses the segment start; and (121.7, 136.9], a single "1" that never
 confirms (single reads never narrow).
 
-- **R3, a declared team-up variant.** A source's recipe may carry a team-up
-  variant declaration with its provenance (by-eye audit, frames named) and the
-  time ranges it covers. Within them the kit uses that variant's length and
+- **R3, a declared team-up variant (one possible outcome, not decided).** A
+  source's recipe may carry a team-up variant declaration with its provenance
+  (by-eye audit, frames named) and only the time ranges with supported
+  identity; a per-source declaration covering unobserved stretches is a
+  judgment the plan owner makes, not something these samples prove. Within them the kit uses that variant's length and
   team-up timers classify as for any known length; outside them, or with no
   declaration, the variant stays unknown and the union rule applies. No
   declaration is inferred. A source whose partner changes gets one range per
   partner, or a per-variant icon reader measured before use.
-  **Regression frames**: Day team-up 297.4 (becomes a cast, (296.5, 297.4]);
-  Req 642.5 (a cast, (641.6, 642.5]); Req 7.2–7.8 (stays uncertain: crosses the
+  **Regression frames**: Day team-up 297.4 (becomes eligible as a cast,
+  (296.5, 297.4]); Req 642.5 (eligible, (641.6, 642.5]); Req 7.2–7.8 (stays uncertain: crosses the
   segment start); Req 121.7–136.9 (stays uncertain: one unconfirmed read); and
   a source with no declaration, whose team-up events are unchanged.
 
