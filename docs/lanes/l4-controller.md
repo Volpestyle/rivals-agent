@@ -2,9 +2,61 @@
 
 Linear: VUH-1296. Evidence: `docs/evidence/l4/`. Raw measurements: `C:\rivals-agent\data\l4\` on the PC.
 
-The game is in the Practice Range as Spider-Man on the lower ring below the plaza, camera pitched down, idle, no pad
-connected (`after-stall30.jpg`). The PC holds `agent/`, `scripts/` (with templates) and `perception/` from
-`git archive 259bdd2`, all 42 tracked files verified by sha256.
+The game is in the Practice Range as Spider-Man on the lower ring below the plaza, idle, no pad connected
+(`after-handoff30.jpg`). The PC holds `agent/`, `scripts/` (with templates) and `perception/` from `git archive e337c43`,
+all 42 tracked files verified by sha256.
+
+## Supervised run `handoff30` (VUH-1314): `data/l1/handoff30/` on the PC and the Mac
+
+30 s, scripted brain, `--cooldowns normal` (from play before the run: ammo 2 after three shots, Get Over Here showing 7,
+`cooldowns-normal-verified-6.jpg`; the cooldowns script read the switch as already off and pressed nothing). Patch not read
+from the screen; the kit doc's Season 10, version 20260911 stands.
+
+Entry, `scripts/reenter.py` (`capture.py preflight` passed first, 47 dxcam frames in 1 s; `--dry-run` read `lobby`):
+- The just-opened hero select was read first time: `screen hero_select`, then `RB`, `RB` with no "looking again" line and no
+  refusal there. How long it looked is not in its output.
+- It then **refused at the A**: `no proof for A: a tooltip is up and does not name SPIDER-MAN (match 0.73)`, exit 1
+  (`reenter-refuse-tooltip-20260921-1037.jpg`). The tooltip beside the Spider-Man portrait read "Request to Team-Up with
+  SPIDER-MAN / Remove from Strike Squad" (Peni Parker was the highlighted hero), not the tooltip the tool knows.
+- Its `--dry-run` then read `hero_select`, `hero tab: duelists`, cursor found, so the one pre-authorized re-invocation ran:
+  `A (the game's tooltip names SPIDER-MAN (match 0.92) beside the cursor at (888,36))`, `X`, `in_range`, then the known
+  arrival stop (exit 1) with him outside on the plaza side of the door. No third attempt, no hand navigation.
+- The start pose was not the one asked for: turns sent right after a pad connects were swallowed twice, so the run started
+  facing the door's plaza side and the loop's own search brought the bot in from the edge of the view.
+
+| | `handoff30` | `stall30` |
+|---|---|---|
+| Stop / guards | `max_time`; no range gap, no error, 1 keep-alive, 0 missed decisions; 0 python left, 0 Xbox pads present | same |
+| Reflex | 56.1 Hz; tick p50 / p95 / max 9.0 / 12.7 / 22.3 ms; 8 of 1,683 ticks over budget | 55.6 Hz; 9.1 / 12.1 / 18.7; 6 of 1,667 |
+| Aim finder | 5.9 / 8.6 / 15.5 ms | 6.1 / 8.5 / 14.9 |
+| Decision | 10.0 Hz; 55 / 69 / 83 ms | 51 / 73 / 104 |
+| Scoreboard (parsed) | **0 KOs**, 0 deaths, 250 damage, accuracy 50 %, Web-Cluster accuracy 20 % | 1 KO, 0 deaths, 445 damage |
+
+**The acceptance question: whole-frame -> crop cases (a target known only to the whole-frame search when picked). Exercised
+twice.** Strips with the crop, decision boxes (held target red) and crop boxes: `handoff30-wholeframe-target15.jpg`,
+`handoff30-wholeframe-target71.jpg`.
+
+| Pick | Id | Box (native) | From the crosshair | Steering | Reached the crop under | Elapsed / ending |
+|---|---|---|---|---|---|---|
+| t 5.38 s | 15 | (1988,617)-(2128,817), the Luna Snow bot right of the crop | 778 px | full stick on the pick tick (no gap) | **the SAME id, 15.** One tick at t 5.43 shows a 10 px sliver at the crop's right edge as id 17; from t 5.45 the body is id 15, at 11 px by t 5.76, when the burst starts | in the crop 0.07 s after the pick; held 2.31 s. After the web strike and uppercut at point blank (t 6.85 on) the crop's boxes become ids 27 / 28 and the brain moves to 28 at t 7.70: an id change at close range after hits, not at the hand-off. No release |
+| t 9.59 s | 71 | (1379,92)-(1415,132), a 36x40 px box above the crop: one of a pair of small distant squares, not the Luna bot | 619 px | stick on the pick tick (no gap) | **the SAME id, 71**, from t 9.66 (0.07 s) to t 9.73; after that the boxes there are ids 72, 74, 75, 76 | held 1.45 s, **released** at t 11.04 to Search |
+
+No-steer gap after a pick: none (0.00 s in both cases; 1.1 s in `stall30`).
+
+`postfreeze30_replay.py --run data/l1/handoff30` (generic labels, no `LABELS` entry added): stalls over 0.5 s (start s /
+length s) 4.66 / 0.63, 12.19 / 0.59, 14.29 / 1.28; engaged 3.38 s "luna" + 7.42 s "other"; held id visible 0.173; ids 111;
+`handoffs` [[5.45, 15, [15], true]]; `live_handoffs` lists eight moments where the crop's id differed from the held id, all
+`kept: false` (5.43 held 15 crop 17, the one-tick sliver; 5.92 15/22; 6.83 and 6.85 15/27; 8.70 28/45; 9.78 71/72;
+11.56 78/79; 12.96 92/94).
+
+By eye on the drawn frames (`handoff30-sheet.jpg`):
+- Real bot: ids 15 and 28, ~4.2 s engaged, 250 damage, no KO. The last attack is at t 8.75.
+- Door: **0 engaged seconds from either side.** The plaza-side door filled the view for the first second and was never
+  targeted; the inside of the spawn room was not seen in this run. Kill feed: 0 (0 reflex boxes in that corner).
+- Other: ids 5, 71, 78, 92, 101 (~6.6 s), all 33-40 px boxes: small distant squares across the range, usually in pairs.
+- **He left the plaza at t ~14:** the controller walked forward for 0.8 s toward id 92, one of those distant squares, measured
+  in the crop, and he went over the plaza's edge to the lower ring. The last 17.6 s are Search with nothing in view.
+- Trace counts: 7 target ids, 98 ids issued, held id visible on 109 of 589 held ticks (19 %).
 
 ## Supervised run `stall30` (VUH-1314): `data/l1/stall30/` on the PC and the Mac
 
