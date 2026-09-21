@@ -304,17 +304,19 @@ class Head(nn.Module):
         return self.out(h[:, -1])
 
 
-def _fit_model(xtr, ytr, n_classes, epochs=40, batch=64, lr=1e-3, seed=0):
+def _fit_model(xtr, ytr, n_classes, epochs=40, batch=64, lr=1e-3, seed=0, extra=None):
     """Train and return the model itself (what `save` keeps); `fit` wraps this to predict."""
     mx.random.seed(seed)
     model = Head(xtr.shape[-1], n_classes)
     counts = np.bincount(ytr, minlength=n_classes).astype(np.float32)
-    weights = mx.array(np.where(counts > 0, len(ytr) / (n_classes * np.maximum(counts, 1)), 0.0))
+    weights = np.where(counts > 0, len(ytr) / (n_classes * np.maximum(counts, 1)), 0.0).astype(np.float32)
+    # `extra` multiplies the per-window weight (the transition curriculum); ones by default.
+    per_window = mx.array(weights[ytr] * (np.ones(len(ytr), np.float32) if extra is None else extra))
     opt = optim.Adam(learning_rate=lr)
 
-    def loss_fn(m, xb, yb):
+    def loss_fn(m, xb, yb, wb):
         logits = m(xb)
-        return (nn.losses.cross_entropy(logits, yb, reduction="none") * weights[yb]).mean()
+        return (nn.losses.cross_entropy(logits, yb, reduction="none") * wb).mean()
 
     step = nn.value_and_grad(model, loss_fn)
     order = np.arange(len(xtr))
@@ -322,40 +324,21 @@ def _fit_model(xtr, ytr, n_classes, epochs=40, batch=64, lr=1e-3, seed=0):
         np.random.default_rng(seed + epoch).shuffle(order)
         for start in range(0, len(order), batch):
             idx = order[start:start + batch]
-            loss, grads = step(model, mx.array(xtr[idx]), mx.array(ytr[idx]))
+            loss, grads = step(model, mx.array(xtr[idx]), mx.array(ytr[idx]), per_window[mx.array(idx)])
             opt.update(model, grads)
             mx.eval(model.parameters(), opt.state)
     model.eval()
     return model
 
 
-def fit(xtr, ytr, xte, n_classes, epochs=40, batch=64, lr=1e-3, seed=0):
+def fit(xtr, ytr, xte, n_classes, epochs=40, batch=64, lr=1e-3, seed=0, extra=None):
     """Train with a class-weighted loss (rare intents must not be swamped); predict xte and xtr.
 
     The training-set prediction is the diagnostic that tells a thin dataset apart from a broken
     pipeline: a head that cannot even fit what it was shown has a wiring fault, while one that
     fits and then fails held out is being asked to generalize from too little.
     """
-    mx.random.seed(seed)
-    model = Head(xtr.shape[-1], n_classes)
-    counts = np.bincount(ytr, minlength=n_classes).astype(np.float32)
-    weights = mx.array(np.where(counts > 0, len(ytr) / (n_classes * np.maximum(counts, 1)), 0.0))
-    opt = optim.Adam(learning_rate=lr)
-
-    def loss_fn(m, xb, yb):
-        logits = m(xb)
-        return (nn.losses.cross_entropy(logits, yb, reduction="none") * weights[yb]).mean()
-
-    step = nn.value_and_grad(model, loss_fn)
-    order = np.arange(len(xtr))
-    for epoch in range(epochs):
-        np.random.default_rng(seed + epoch).shuffle(order)
-        for start in range(0, len(order), batch):
-            idx = order[start:start + batch]
-            loss, grads = step(model, mx.array(xtr[idx]), mx.array(ytr[idx]))
-            opt.update(model, grads)
-            mx.eval(model.parameters(), opt.state)
-    model.eval()
+    model = _fit_model(xtr, ytr, n_classes, epochs, batch, lr, seed, extra)
 
     def predict(x):
         out = []
@@ -415,8 +398,9 @@ def save(path, regime="off", **kw):
     return path
 
 
-def leave_one_session_out(regime="off", mode="session", **kw):
+def leave_one_session_out(regime="off", mode="session", transition_weight=1.0, k=3, **kw):
     x, y, sessions, prev, classes = windows(regime=regime, **kw)
+    upcoming = near_change(y, sessions, k)
     print(f"regime {regime}: {len(x)} windows, {x.shape[1]} steps x {x.shape[2]} features, "
           f"{len(set(sessions))} sessions, classes {classes}, split by {mode}")
     print(f"  {'session':<16}" + "".join(f"{c:>10}" for c in classes))
@@ -427,7 +411,8 @@ def leave_one_session_out(regime="off", mode="session", **kw):
     for held, tr, te in folds(sessions, y, mode):
         if not tr.any() or not te.any():
             continue
-        pred, pred_tr = fit(x[tr], y[tr], x[te], len(classes))
+        extra = None if transition_weight == 1.0 else np.where(upcoming[tr], transition_weight, 1.0).astype(np.float32)
+        pred, pred_tr = fit(x[tr], y[tr], x[te], len(classes), extra=extra)
         truth, fit_acc = y[te], float((pred_tr == y[tr]).mean())
         majority = np.bincount(y[tr], minlength=len(classes)).argmax()
         acc, base = float((pred == truth).mean()), float((truth == majority).mean())
@@ -444,6 +429,8 @@ def leave_one_session_out(regime="off", mode="session", **kw):
                         "train_majority_baseline": round(base, 3), "held_out_majority": round(seen, 3),
                         "sticky_baseline": round(sticky, 3), "changes": int(changed.sum()),
                         "accuracy_on_changes": None if changed_acc is None else round(changed_acc, 3),
+                        "recall_on_changes": _recall(truth[changed], pred[changed], classes),
+                        "transition_weight": transition_weight, "k": k,
                         "macro_f1": round(_macro_f1(truth, pred, len(classes)), 3),
                         "confusion": _confusion(truth, pred, classes)}
         print(f"\nheld out {held}: {int(te.sum())} windows  accuracy {acc:.3f}  "
@@ -451,8 +438,37 @@ def leave_one_session_out(regime="off", mode="session", **kw):
               f"macro F1 {report[held]['macro_f1']:.3f}  [fits its own training set {fit_acc:.3f}]")
         print(f"    on the {int(changed.sum())} windows where the intent CHANGES: "
               + ("no change in this session" if changed_acc is None else f"{changed_acc:.3f} (sticky scores 0 there)"))
+        if changed.any():
+            print("    per-class recall there: " + ", ".join(
+                f"{n} {v:.2f} (n={c})" for n, (v, c) in sorted(_recall(truth[changed], pred[changed], classes).items())))
         _print_confusion(truth, pred, classes)
     return report, classes
+
+
+def near_change(y, sessions, k):
+    """Windows whose label changes within the next `k` decisions of the same session.
+
+    A training-time curriculum over the LABELS, which are targets: nothing here enters an
+    observation, and evaluation is untouched. Within a session the rows are already in time order.
+    """
+    flag = np.zeros(len(y), bool)
+    for name in set(sessions.tolist()):
+        where = np.flatnonzero(sessions == name)
+        for j, i in enumerate(where):
+            ahead = where[j + 1: j + 1 + k]
+            if len(ahead) and (y[ahead] != y[i]).any():
+                flag[i] = True
+    return flag
+
+
+def _recall(truth, pred, classes):
+    """Per-class recall, only for classes actually present."""
+    out = {}
+    for c, name in enumerate(classes):
+        n = int((truth == c).sum())
+        if n:
+            out[name] = (round(float(((pred == c) & (truth == c)).sum() / n), 3), n)
+    return out
 
 
 def _macro_f1(truth, pred, n):
@@ -481,6 +497,9 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--regime", default="normal", choices=("off", "normal", "unknown"))
     ap.add_argument("--patch", help="only runs on this balance patch (default: refuse to mix two)")
+    ap.add_argument("--transition-weight", type=float, default=1.0,
+                    help="multiply the training weight of windows whose label changes within --k decisions")
+    ap.add_argument("--k", type=int, default=3)
     ap.add_argument("--recorder", default="loop", choices=("loop", "trial", "any"),
                     help="loop: agent/loop.py's runs (the default). trial: L4's own four-symbol logs")
     ap.add_argument("--encoder", default=DEFAULT)
@@ -497,8 +516,8 @@ def main(argv=None):
              recorder=None if a.recorder == 'any' else a.recorder, patch=a.patch)
         print(f"\n{time.perf_counter() - started:.0f}s")
         return 0
-    report, classes = leave_one_session_out(a.regime, a.split, encoder=a.encoder, hz=a.hz,
-                                            decision_hz=a.decision_hz,
+    report, classes = leave_one_session_out(a.regime, a.split, a.transition_weight, a.k,
+                                            encoder=a.encoder, hz=a.hz, decision_hz=a.decision_hz,
                                             recorder=None if a.recorder == 'any' else a.recorder, patch=a.patch)
     if a.out:
         Path(a.out).write_text(json.dumps({"regime": a.regime, "split": a.split, "recorder": a.recorder,

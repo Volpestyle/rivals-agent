@@ -200,6 +200,33 @@ loop logs `engage:enemy`, `search`, `combo:burst`, `webstrike:enemy`, `pull:enem
 apart**: one is a scripted pause, the other is the loop standing the controller down. The trial
 logs are excluded from training entirely (`recorder="loop"`), so the two never pool.
 
+**Per-class recall on the change windows** (the only windows where beating sticky is possible):
+
+| Held out | combo | engage | pull | search | webstrike |
+|---|---|---|---|---|---|
+| `baseline1` (138 changes) | 0.37 (38) | 0.72 (61) | 0.00 (4) | 0.05 (21) | 0.07 (14) |
+| `baseline3` (59 changes) | 0.95 (20) | 0.41 (29) | – | 0.00 (8) | 0.00 (2) |
+
+The head finds transitions into `engage` and `combo` and almost never into `search`, `pull` or
+`webstrike` — the classes with 2-21 change examples each.
+
+**Transition weighting does not help; it hurts.** The cheapest thing aimed at transitions:
+multiply the training weight of windows whose label changes within the next 3 decisions by 8
+(542 of 6,000, 9%), evaluated identically:
+
+| Held out | Accuracy | On changes | Fits own training set |
+|---|---|---|---|
+| `baseline1` | 0.547 → 0.529 | 0.435 → **0.355** | 0.978 → 0.896 |
+| `baseline3` | 0.792 → **0.300** | 0.525 → **0.373** | 0.922 → 0.489 |
+
+Worse on the change windows in both usable sessions, and `baseline3` falls below its majority
+baseline. Up-weighting a few hundred near-duplicate windows makes fitting unstable (training fit
+drops to 0.489) without adding a single new transition to learn from. The two single-intent runs
+move only on 1 and 5 change windows, which is noise. **More weight on the same 203 transitions is
+not a substitute for more transitions**; short verified-start episodes are. (A first attempt at
+this run silently trained unweighted — the flag never reached the trainer and the result matched
+the baseline digit for digit. A test now pins that the flag arrives.)
+
 ## Step 3: the learned chooser behind the loop's seam
 
 `policy/live.py` gives `LearnedBrain`, which has `brain.decide`'s signature, so

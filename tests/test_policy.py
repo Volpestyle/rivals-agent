@@ -337,3 +337,29 @@ def test_a_masked_frame_and_a_cache_miss_are_different_facts():
     from policy.train import layout
     at = layout(384)
     assert at["emb_present"] != at["scene_masked"], "one bit cannot say both"
+
+
+@needs_mlx
+def test_the_transition_weight_on_the_command_line_reaches_the_trainer(monkeypatch):
+    """It once did not: a weighted run recorded weight 1.0 and matched the unweighted one exactly."""
+    import policy.train as train
+    seen = {}
+
+    def spy(regime, mode, transition_weight=1.0, k=3, **kw):
+        seen.update(transition_weight=transition_weight, k=k)
+        return {}, []
+    monkeypatch.setattr(train, "leave_one_session_out", spy)
+    train.main(["--regime", "normal", "--transition-weight", "8", "--k", "5"])
+    assert seen == {"transition_weight": 8.0, "k": 5}
+
+
+@needs_mlx
+def test_near_change_marks_only_windows_whose_label_changes_ahead_in_the_same_session():
+    import numpy as np
+
+    from policy.train import near_change
+    y = np.array([0, 0, 0, 1, 1, 2, 2])
+    sessions = np.array(["a", "a", "a", "a", "b", "b", "b"])
+    flag = near_change(y, sessions, k=1)
+    assert flag.tolist() == [False, False, True, False, True, False, False], \
+        "a change must be seen only inside its own session, never across the boundary"
