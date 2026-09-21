@@ -1084,9 +1084,9 @@ source cut at tenths).
     `--patch`. `regenerate` goes through `from_video`, so it finds the manifest
     the same way. **Absent**: no kit, every timer-derived event uncertain, a
     `WARNING` on stderr, and `kit.table: null` in the meta line.
-  - `extract()` called as a library defaults to the reference kit (20260911):
-    a verbatim round-one probe requires casts from `extract()` without one. The
-    file-writing path never relies on that default.
+  - `extract()` takes the kit as an argument and defaults to `None`: an
+    omitted patch is not evidence of the current one. Tests and fixtures with
+    known mechanics pass the kit explicitly.
 - **Measured lengths are an alarm, never a calibration.** An observed maximum
   is a lower bound on a full length (a use a second before the first readable
   digit looks exactly like a shorter cooldown), so it cannot shorten a kit
@@ -1103,8 +1103,15 @@ source cut at tenths).
   V as well. Charged: the use came after the recharge on screen began
   (expiry − recharge), after the previous timer ran out, after the last
   confirmed badge decrement began, and after the last badge read ≥ 1 less the
-  lock where the lock is known; no later than the first read. The badge
-  decrement needs no duration, so it still places a use when the kit is unknown.
+  lock where the lock is known; no later than the first read. With the
+  recharge unknown, the previous timer bounds nothing — its end implies a
+  returned charge only through the recharge — and **only an independent badge
+  decrement places a use**; it needs no duration.
+- **Charge evidence is validated against the kit's maximum** (swing 3,
+  uppercut 2): a badge read above it is unknown, in the one derivation
+  (`charge_evidence`) that both `charges_*` events and cast placement read. The
+  raw read in the Hud stays as read, never clamped; without a known maximum a
+  read is taken as read.
 - **Unknown, and nothing.** A timer that may have started before the segment
   opened is uncertain; one that certainly did is nothing. A single read that
   never confirms is uncertain once its expiry passes (Req uppercut 89.7, 98.5).
@@ -1217,8 +1224,9 @@ health. Both now say unknown.
 
 ### Checks
 
-- **Review probes as regressions**: the first review's eight and the second
-  round's five, verbatim, all passing. One of the eight is restated on
+- **Review probes as regressions**: the first review's eight, the second
+  round's five and the third round's six (three findings, three positive
+  controls), verbatim, all passing; the three findings fail on a63a510. One of the eight is restated on
   `known_at`: it selected by `t_to`, which was the knowledge time then and is
   occurrence now. The native reviews' findings each have a regression,
   including the seven M&K badge decrements, Req chat over a badge, and the
@@ -1235,7 +1243,9 @@ health. Both now say unknown.
   out as casts with finite bounds, width ≤ 2.5 s and `known_at − t_to` ≤ 1.5 s
   (measured 0.9–2.3 s and 0.1–1.1 s, from extract_one, without the segment
   lag); every prefix test also asserts a minimum count of known casts.
-- **Mutations in a scratch copy: 49 of 49 killed**, among them removing the
+- **Mutations in a scratch copy: 56 of 56 killed**, among them restoring a
+  default kit, letting the previous timer bound a use with the recharge
+  unknown, dropping or clamping the charge maximum in either path, removing the
   segmentation lag, the hp settling, the bounded lookahead, the causal spike
   ceiling, closed timers, the alarm's confirmation and span, the kit ceiling,
   the misread-inside-a-running-timer rule, and the badge fallbacks and their
@@ -1272,7 +1282,7 @@ health. Both now say unknown.
 
 ### Dry run on the two train sections (read-only; no event file changed)
 
-The whole pipeline from the VODs, writer `f1f180ed166e`, kit from each
+The whole pipeline from the VODs, writer `3e2a58f07aab`, kit from each
 source's manifest (Season 10, Version 20260911), no alarms, against the frozen
 stream (`1336262e179c`) and the first fix (b6ae015). Scratch only.
 
@@ -1314,6 +1324,10 @@ stream (`1336262e179c`) and the first fix (b6ae015). Scratch only.
 - **`charges_spent`**: Day 133, Req 105 (was 39 and 33), from the M&K badge
   reads.
 - **`cooldown_ended`**: Day 28, Req 25. **Segments** unchanged: Day 48, Req 32.
+- **Charge validation** makes 7 of 4,209 Day uppercut own-play badge reads
+  unknown — the "3" discs at 315.8–316.4, which a two-charge slot cannot show —
+  and none of Day swing's 4,145, Req swing's 4,776 or Req uppercut's 2,143. No
+  `charges_*` event and no timer event changes.
 
 ## Retained sections: how much is actually own-Spider-Man play
 

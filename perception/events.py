@@ -757,13 +757,30 @@ class _Missing:
 _MISSING = _Missing()
 
 
-def _signals(hud: Hud):
+def charge_evidence(hud: Hud, pos, maxes=None):
+    """The charge count a frame's badge gives as evidence: the raw read, or
+    None when it exceeds the kit's maximum for that position -- the one place
+    both charges_* events and cast placement take charge counts from. The raw
+    read in the Hud is kept as it was; nothing is clamped. Without a known
+    maximum, a read is taken as read."""
+    charges = ((hud.abilities or {}).get(pos) or (None, None))[1]
+    top = (maxes or {}).get(pos)
+    return None if isinstance(charges, int) and top is not None and charges > top else charges
+
+
+def charge_maxima(kit, mapping):
+    """{position: the kit's maximum charges} where known."""
+    return {pos: spec["charges"] for pos, ability in (mapping or {}).items()
+            for spec in [((kit or {}).get(ability) or {})] if spec.get("charges") is not None}
+
+
+def _signals(hud: Hud, maxes=None):
     """The channels one frame contributes, as {name: value or None}."""
     out = {"hp": hud.hp, "max_hp": hud.max_hp, "webs": hud.webs, "ult_ready": hud.ult_ready}
     for slot in hud.abilities or SLOT_CX:
-        ready, charges = hud.abilities.get(slot, (None, None))
+        ready, _ = hud.abilities.get(slot, (None, None))
         out[f"ready:{slot}"] = ready
-        out[f"charges:{slot}"] = charges
+        out[f"charges:{slot}"] = charge_evidence(hud, slot, maxes)
     # Countdowns are not a channel: they are timers, handled by _timer_events.
     return out
 
@@ -878,7 +895,7 @@ def _despike(values, damaged=None, max_hp=None):
 
 
 def extract_one(reads, debounce=None, seg_index=0, mapping=None, timers=None, locks=None,
-                alarm=None, lag=0, clock=None, closed_i=None, tops=None):
+                alarm=None, lag=0, clock=None, closed_i=None, tops=None, maxes=None):
     """[Event] for a single segment of (i, t, Hud) reads, in time order.
 
     `timers` is {position: full cooldown (one-charge) or recharge (charged)}
@@ -903,7 +920,7 @@ def extract_one(reads, debounce=None, seg_index=0, mapping=None, timers=None, lo
         i, t, hud = read[0], read[1], read[2]
         if hud.max_hp is not None:
             max_seen[i] = hud.max_hp
-        signals = _signals(hud)
+        signals = _signals(hud, maxes)
         signals["hp"] = hp_clean[n]
         if len(read) > 3:                 # optional: is a kill-feed line up?
             signals["killfeed"] = read[3]
@@ -940,7 +957,7 @@ def extract_one(reads, debounce=None, seg_index=0, mapping=None, timers=None, lo
     for pos in positions:
         ability = mapping.get(pos) if mapping else None
         events.extend(_timer_events(reads, pos, ability, (timers or {}).get(pos), seg_index,
-                                    (locks or {}).get(pos), alarm, (tops or {}).get(pos)))
+                                    (locks or {}).get(pos), alarm, (tops or {}).get(pos), maxes))
     events = _merge_shield(events)
     clock = clock or _clock(reads)
     out = []
@@ -1059,7 +1076,7 @@ KITS = {
         "teamup": {"full": None, "variants": {"symbiote_bond": 15.0, "parker_power_up": 15.0}},
     },
 }
-KIT_REFERENCE = "Season 10, Version 20260911"   # extract()'s library default; see extract
+KIT_REFERENCE = "Season 10, Version 20260911"   # the patch docs/spiderman-kit.md describes
 
 
 def kit_for(patch):
@@ -1133,7 +1150,8 @@ def _eligible(reads, segments):
     return [r for r in reads if r[0] in inside]
 
 
-def _timer_events(reads, pos, ability, full, seg_index, lock=None, alarm=None, ceiling=None):
+def _timer_events(reads, pos, ability, full, seg_index, lock=None, alarm=None, ceiling=None,
+                  maxes=None):
     """ability_cast / ability_uncertain / cooldown_ended for one slot over one segment.
 
     One forward pass over the frames, deciding each event at the first frame
@@ -1190,7 +1208,7 @@ def _timer_events(reads, pos, ability, full, seg_index, lock=None, alarm=None, c
 
     for r in reads:
         cds = r[2].cooldowns or {}
-        charges = ((r[2].abilities or {}).get(pos) or (None, None))[1]
+        charges = charge_evidence(r[2], pos, maxes)
         v = cds.get(pos)
         top = full if full is not None else (ceiling if ceiling is not None else 30)
         valid = isinstance(v, int) and v > 0 and v <= top
@@ -1325,7 +1343,9 @@ def _classify_charged(tm, prev, seq, full, lock, seg_start):
     bounds = []
     if full is not None:
         bounds.append(_exact(tm)[0] - full)
-    if prev is not None:
+    # The previous timer's end bounds the use only through the recharge it
+    # implies; with the recharge unknown, only an independent charge drop does.
+    if prev is not None and full is not None:
         bounds.append(prev["lo"])
     runs = []                                    # (value, first t, last t, reads) of the badge
     for sv in seq[:tm["last"] + 1]:
@@ -1391,16 +1411,16 @@ def _merge_shield(events):
 SEG_LAG = 12   # frames: the longest a frame's segment membership can still change (see _steady)
 
 
-def extract(reads, debounce=None, mapping=None, kit=KITS[KIT_REFERENCE], alarm=None):
+def extract(reads, debounce=None, mapping=None, kit=None, alarm=None):
     """Segment the run, then pull events inside each segment.
 
     `reads` are (i, t, Hud, playing). Returns (events, segments); channels are
     reset at every boundary, so no event spans one.
     """
     segments = segment(reads)
-    # Durations are inputs: the kit for the source's patch. The library default
-    # is the reference patch's; the file-writing path (from_video) passes the
-    # source's own, or None -- and then every timer event is uncertain.
+    # Durations are inputs: the kit for the source's patch, supplied by the
+    # caller. None -- the default -- is unknown mechanics: every timer-derived
+    # event is uncertain, and charge counts are taken as read.
     spans = durations(kit, mapping)
     timers = {p: f for p, (f, _) in spans.items() if f is not None}
     locks = {p: l for p, (_, l) in spans.items() if l is not None}
@@ -1414,7 +1434,7 @@ def extract(reads, debounce=None, mapping=None, kit=KITS[KIT_REFERENCE], alarm=N
         after = next((i for i in order if i > seg.end_i), None)
         events.extend(extract_one(inside, debounce, seg_index=n, mapping=mapping, timers=timers,
                                   locks=locks, alarm=alarm, lag=SEG_LAG, clock=clock,
-                                  tops=ceilings(kit, mapping),
+                                  tops=ceilings(kit, mapping), maxes=charge_maxima(kit, mapping),
                                   closed_i=after if seg.ended_by != "run_end" else None))
     events.sort(key=lambda e: (e.t_to, e.kind))
     counted = {e.segment for e in events if e.kind == "ability_cast"}
