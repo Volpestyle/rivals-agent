@@ -265,18 +265,10 @@ def scoreboard(rig, rounds):
             if target is not None:
                 _play(rig, target, 3.6, intent=Combo(BURST, target), save=(out, f"fight{r}"))
         time.sleep(0.4)
-        rig.live.fresh()
-        rig.live.send(buttons=("BACK",))          # the board dims the HUD, so no guarded send until it is released
-        t0, lum = time.perf_counter(), []
-        while time.perf_counter() - t0 < 1.3:
-            f = rig.live.fresh()
-            ms = round((time.perf_counter() - t0) * 1000)
-            lum.append((ms, round(float(f[::8, ::8].mean()), 1)))
-            if len(lum) % 6 == 0:
-                _native(out / f"board{r}-{ms:04d}ms.jpg", f)
-        rig.live.release()
+        board = rig.live.scoreboard(1.3)          # the one door to BACK: range confirmed first, nothing else held, always released
+        _native(out / f"board{r}.jpg", board)
         time.sleep(0.8)
-        res.append({"round": r, "lum_ms": lum[::5]})
+        res.append({"round": r})
     return res
 
 

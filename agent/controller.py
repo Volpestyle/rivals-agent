@@ -23,21 +23,44 @@ class RangeLost(RuntimeError):
     """The practice-range HUD is not on screen: input has been released and must stay off."""
 
 
-class Live:
-    """dxcam + the HUD guard + one pad held open for the life of the object."""
+class Forbidden(RuntimeError):
+    """Something asked the pad for an input that is never sent from play; nothing was sent and the pad is neutral."""
 
-    def __init__(self):
-        import vgamepad as vg
-        from capture import Capture
-        from record import in_range
-        self._in_range = in_range
-        self.cap = Capture("dxcam")
+
+ALLOWED = frozenset({"A", "X", "LB", "RB"})   # what play needs. START, BACK, B, Y, the d-pad and stick clicks never leave send()
+STATE_KEYS = frozenset(NEUTRAL)
+
+
+class Live:
+    """dxcam + the range guard + one pad held open for the life of the object. The ONLY door to the pad.
+
+    The whitelist lives here, not in the callers: send() refuses any button outside ALLOWED and any unknown key, and the
+    one input outside it, BACK for the scoreboard, is reachable only through scoreboard(), which sends nothing else while
+    it is held. The raw pad is private. Every method that can be interrupted mid-press ends with the pad neutral.
+    `pad_factory` / `capture` / `guard` are injected by the tests; live they are vgamepad, dxcam and record.in_range.
+    """
+
+    def __init__(self, pad_factory=None, capture=None, guard=None, settle_s=3.0):
+        if guard is None:
+            from record import in_range as guard
+        if capture is None:
+            from capture import Capture
+            capture = Capture("dxcam")
+        self._in_range, self.cap = guard, capture
         self.frame, self.frame_t = None, 0.0
         if not self._in_range(self.fresh()):
             raise RangeLost("range HUD not on screen at start; no pad opened")
-        self.vg, self.pad = vg, vg.VX360Gamepad()
+        if pad_factory is None:
+            import vgamepad as vg
+            self._codes = {n: getattr(vg.XUSB_BUTTON, c) for n, c in (
+                ("A", "XUSB_GAMEPAD_A"), ("X", "XUSB_GAMEPAD_X"), ("LB", "XUSB_GAMEPAD_LEFT_SHOULDER"),
+                ("RB", "XUSB_GAMEPAD_RIGHT_SHOULDER"), ("BACK", "XUSB_GAMEPAD_BACK"))}
+            self._pad = vg.VX360Gamepad()
+        else:
+            self._codes = {n: n for n in ("A", "X", "LB", "RB", "BACK")}
+            self._pad = pad_factory()
         self.sent = dict(NEUTRAL)
-        time.sleep(3.0)  # enumerate + the "Switching Devices" banner
+        time.sleep(settle_s)  # enumerate + the "Switching Devices" banner
 
     def fresh(self, timeout=FRESH_S):
         """Newest frame; blocks up to `timeout` for a new one, else returns the last (its age is frame_t)."""
@@ -47,45 +70,68 @@ class Live:
             if f is not None:
                 self.frame, self.frame_t = f, time.perf_counter()
                 return f
-            if time.perf_counter() > deadline:
-                if self.frame is None:
-                    raise RangeLost("capture produced no initial frame; no pad opened")
+            if self.frame is not None and time.perf_counter() > deadline:
                 return self.frame
             time.sleep(0.001)
 
-    def send(self, **changes):
-        """Apply pad changes, but only against a fresh in-range frame."""
+    def _confirm(self):
+        """A frame under FRESH_S old shows the range, or the pad goes neutral and RangeLost is raised."""
         if time.perf_counter() - self.frame_t > FRESH_S:
             self.fresh()
         if time.perf_counter() - self.frame_t > FRESH_S or not self._in_range(self.frame):
             self.release()
             raise RangeLost("range HUD lost; input released")
-        self._apply({**self.sent, **changes})
+
+    def send(self, **changes):
+        """Apply pad changes: whitelisted buttons only, and only against a fresh in-range frame."""
+        state = {**self.sent, **changes}
+        bad = (set(changes) - STATE_KEYS) | (set(state["buttons"]) - ALLOWED)
+        if bad:
+            self.release()
+            raise Forbidden(f"refused {sorted(bad)}")
+        self._confirm()
+        self._apply(state)
 
     def release(self):
         self._apply(dict(NEUTRAL))
 
     def keepalive(self):
         """The range removes a player ~10 min after the last move or attack; camera and menu input do not count."""
-        for secs, pad in ((0.3, dict(ly=1.0)), (0.3, dict(ly=-1.0)), (0.15, dict(ly=0.0, rt=1.0)), (0.5, dict(rt=0.0))):
-            self.send(**pad)
-            time.sleep(secs)
+        try:
+            for secs, pad in ((0.3, dict(ly=1.0)), (0.3, dict(ly=-1.0)), (0.15, dict(ly=0.0, rt=1.0)), (0.5, dict(rt=0.0))):
+                self.send(**pad)
+                time.sleep(secs)
+        finally:
+            self.release()      # an interrupt mid-step must not leave the stick or the trigger held
+
+    def scoreboard(self, hold_s=1.0):
+        """Hold View/BACK (the range's scoreboard) and return the newest native frame taken while it is up.
+
+        The one place BACK is pressed. The range is confirmed BEFORE the press, because the board hides the HUD and the
+        guard reads False while it is up; nothing else is sent during the hold, and the pad is neutral on every exit.
+        """
+        self.send(**NEUTRAL)                       # confirms the range on a fresh frame, everything else released
+        shot = None
+        try:
+            self._apply({**NEUTRAL, "buttons": ("BACK",)})
+            t0 = time.perf_counter()
+            while time.perf_counter() - t0 < hold_s:
+                shot = self.fresh()
+        finally:
+            self.release()
+        return shot
 
     def _apply(self, s):
-        b = self.vg.XUSB_BUTTON
-        codes = {"A": b.XUSB_GAMEPAD_A, "B": b.XUSB_GAMEPAD_B, "X": b.XUSB_GAMEPAD_X, "Y": b.XUSB_GAMEPAD_Y,
-                 "LB": b.XUSB_GAMEPAD_LEFT_SHOULDER, "RB": b.XUSB_GAMEPAD_RIGHT_SHOULDER,
-                 "LS": b.XUSB_GAMEPAD_LEFT_THUMB, "RS": b.XUSB_GAMEPAD_RIGHT_THUMB,
-                 "BACK": b.XUSB_GAMEPAD_BACK}   # View/BACK held = scoreboard in the range
-        self.pad.reset()
+        pad = self._pad
+        pad.reset()
         for name in s["buttons"]:
-            self.pad.press_button(button=codes[name])
-        self.pad.left_joystick_float(s["lx"], s["ly"])
-        self.pad.right_joystick_float(s["rx"], s["ry"])
-        self.pad.left_trigger_float(s["lt"])
-        self.pad.right_trigger_float(s["rt"])
-        self.pad.update()
-        self.sent = s
+            pad.press_button(button=self._codes[name])
+        pad.left_joystick_float(s["lx"], s["ly"])
+        pad.right_joystick_float(s["rx"], s["ry"])
+        pad.left_trigger_float(s["lt"])
+        pad.right_trigger_float(s["rt"])
+        pad.update()
+        self.sent = dict(s)
 
 
 # ---------------------------------------------------------------------------

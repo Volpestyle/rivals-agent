@@ -7,7 +7,35 @@ reached its own `max_time` stop; no run was cut short and nothing was killed. Af
 as Spider-Man, standing still on the lower ring beside a jump pad, HUD showing keyboard glyphs, no Xbox 360 device present
 in Windows and no loop or recorder process alive (`batch-stopped-state.jpg`). Another lane's `agent.server` (started
 19:21) is the only python left on the PC. Not to be run live until the review's fixes are re-reviewed:
-`scripts/l4_practice_settings.py`, `scripts/l4_menu.py`, `scripts/l4_leave.py`, `scripts/l4_swatch.py`, unattended loops.
+`scripts/l4_practice_settings.py`, `scripts/l4_menu.py`, `scripts/l4_trial.py`, unattended loops.
+
+## Input safety (VUH-1325): this lane's fixes, all offline, awaiting re-review
+
+Nothing here has been run live; the freeze stands until the co-lead re-runs its fault injections.
+
+| # | Defect | Fix | Test |
+|---|---|---|---|
+| 2 | `record.in_range` was "over half of a 240x7 strip is bright": an all-white frame passed, and so did a lobby frame with the strip painted white | Positive identity, same name and signature: the range's "PRACTICE RANGE" banner by template (`scripts/templates/range_banner.png`, normalised correlation >= 0.55; range frames score 0.92-1.0) AND the HUD health bar bright with darker screen under it AND the bar's segment dividers present | `tests/test_in_range.py` (52): 9 range frames pass; lobby x7, hero select x4, practice panel x2, pause menu, Practice Settings, leave dialog and scoreboard fail, and still fail with the strip painted white; flat white / black / grey, bright noise, a thumbnail, `None` fail; a range frame without its bar or without its banner fails. Also 210 of 210 frames sampled from `baseline1` / `baseline3` pass |
+| 3 | `Live.send` accepted BACK, B, Y and stick clicks; the loop reached the raw pad for the scoreboard | The whitelist (`ALLOWED` = A, X, LB, RB; unknown keys refused) is inside `Live.send`; the pad is private (`_pad`); BACK exists only in `Live.scoreboard(hold_s)`, which confirms the range first, holds BACK alone and always releases | `tests/test_live_pad.py` (6) |
+| 3 | `Menu.send('START')` succeeded on a lobby frame (the restriction was an assertion in `main`) | `Menu.send` proves `in_range` on a fresh frame for START whatever check the caller set; X, BACK, Y, the d-pad and unknown tokens are refused inside `Menu` | `tests/test_l4_menu.py` |
+| 4 | `l4_practice_settings.py` confirmed under `not_lobby`, which a black or white frame passes | No negative guards anywhere. Screens are matched by template (`on_pause`, `on_practice_settings`, `on_leave_dialog`); A on the pause menu needs the pause screen AND the PRACTICE SETTINGS row lit; A on the page needs the page title AND the help panel naming the No Ability Cooldown row; closing presses B only from a positively matched page or pause menu, and sends nothing from anything else | `tests/test_l4_menu.py` (32 in all) |
+| 1 | `Menu.fresh()` returned the previous frame when dxcam delivered none, with no age | Frames come from GDI (`Capture("gdi")`, always the current screen) and are time-stamped; every input takes a new grab after the previous input, under 0.35 s old at the press; no grab means Stop | same file |
+| 5 | An interrupt during a tap, `Live.keepalive` or the practice-settings `finally` left inputs held (and that `finally` sent B and movement) | Every press in `Menu` and `Live.keepalive` / `Live.scoreboard` is try/finally reset + update; the script's `finally` only closes through proven screens, then neutralises the pad | both files |
+| 8 | `Menu.goto` jiggled the stick when the cursor was lost | A lost cursor raises Stop and sends nothing | same file |
+
+What `in_range` returns: **True** only on the range's playing screen. **False** on the held-BACK scoreboard (the banner
+stays but the HUD bar does not), the pause menu and its pages (banner dimmed and blurred), hero select, the lobby, a
+desktop or any lost-focus window. Known limit, fails closed: the bar test wants over half the strip bright, so under
+about 50 % hp it reads False and input stops.
+
+**For rivals-brain (their files, not patched):** (a) `agent/loop.py` `LiveIO.scoreboard` presses BACK on
+`self.live.pad`; that attribute no longer exists: call `self.live.scoreboard(hold_s)` and use the frame it returns.
+(b) `tests/test_reenter.py` `spawn_frame()` paints `f[:600, :1200]`, which erases the banner, so 11 re-entry tests now
+see "unknown screen"; painting `f[130:600, :1200]` instead keeps the banner and all of them pass (checked on a
+temporary copy).
+
+`scripts/l4_trial.py` takes its scoreboard frames through `Live.scoreboard`. `scripts/l4_practice_settings.py` has two
+modes, `look` and `cooldowns-off`.
 
 ## Collection batch (scripted brain, cooldowns normal, same code and settings)
 
@@ -210,7 +238,7 @@ hp stayed 250/250 in all of them: neither the Luna Snow bot nor these Galacta bo
 
 ## Enemy Color swatch sweep (PC, `C:\rivals-agent\data\l1\swatch-<spot>-<name>\`)
 
-`scripts/l4_swatch.py <spot> [turn_s pitch_s]`: one pad, sets each swatch through the screen-checked menu, records 50
+Each set was recorded by setting the swatch through the game's menu and saving 50
 native frames (JPEG q90, 10 fps) per swatch with the camera untouched between them, verifies the Enemy Color header
 after each change, and leaves the game on Green. A full sweep takes about 2.5 minutes. Swatches: Green, Blue-Green,
 Yellow-Green, Default.

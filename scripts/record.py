@@ -63,15 +63,56 @@ def _region(frame, x0, y0, x1, y1):
     return frame[int(y0 * k):int(y1 * k), int(x0 * k):int(x1 * k)]
 
 
-def in_range(frame):
-    """True while the range HUD health bar (white/green, bottom centre) is drawn.
+_BANNER = None
+BANNER_BOX = (24, 12, 208, 41)       # the "PRACTICE RANGE" banner, top left, in 1280x720 px
+BANNER_MIN = 0.55                    # normalised correlation with scripts/templates/range_banner.png; range frames score 0.8-1.0
 
-    ponytail: one fixed-region brightness test, calibrated on 250/250 HP frames.
-    A bright scene behind an empty bar also passes (harmless, still in the range).
-    Upgrade to a template match of the HUD frame if a non-range screen ever passes.
+
+def _small_gray(frame):
+    g = frame if frame.ndim == 2 else cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    return g if g.shape[1] == 1280 else cv2.resize(g, (1280, 720), interpolation=cv2.INTER_AREA)
+
+
+def banner_score(frame):
+    """How well the top-left corner matches the range's own "PRACTICE RANGE" banner (-1..1; 0 for a flat image)."""
+    global _BANNER
+    if _BANNER is None:
+        _BANNER = cv2.imread(str(Path(__file__).parent / "templates" / "range_banner.png"), cv2.IMREAD_GRAYSCALE)
+        assert _BANNER is not None, "scripts/templates/range_banner.png is missing"
+    x0, y0, x1, y1 = BANNER_BOX
+    win = _small_gray(frame)[y0 - 4:y1 + 4, x0 - 4:x1 + 4]           # +-4 px of slack
+    if float(win.std()) < 5.0:                                       # flat (all white, all black): correlation is undefined
+        return 0.0
+    score = float(cv2.minMaxLoc(cv2.matchTemplate(win, _BANNER, cv2.TM_CCOEFF_NORMED))[1])
+    return score if score == score and abs(score) <= 1.0 else 0.0   # NaN / inf from a degenerate window -> no match
+
+
+def in_range(frame):
+    """True only on positive proof of the practice range's playing screen. Everything that sends input calls this.
+
+    Both must hold: (1) the range's "PRACTICE RANGE" banner is drawn top left (template match: identity, not
+    brightness), and (2) the HUD health bar is drawn bottom centre with darker screen under it (so a white or washed-out
+    screen is not a HUD). False on the lobby, hero select, the pause menu and its pages (the banner is dimmed and blurred
+    there), the held-BACK scoreboard (it keeps the banner but has no HUD bar), a desktop or any non-game window, an all-white or all-black frame, and on a lobby
+    frame with the health-bar strip painted white (the review's reproduction of the old brightness-only test).
+
+    ponytail: the bar test wants over half the strip bright, calibrated at full health; under ~50 % hp it reads False
+    (fails closed: input stops). No range bot deals damage yet. Upgrade: match the bar's frame, not its fill.
     """
-    bar = _region(frame, 520, 672, 760, 679)
-    return float((bar.max(axis=2) > 190).mean()) > 0.5
+    if frame is None or frame.ndim != 3 or frame.shape[0] < 360:
+        return False
+    if banner_score(frame) < BANNER_MIN:
+        return False
+    bar = _region(frame, 520, 672, 760, 679).max(axis=2)
+    under = _region(frame, 520, 688, 760, 700).max(axis=2)
+    if float((bar > 190).mean()) <= 0.5 or float((under > 190).mean()) >= 0.3:
+        return False
+    # The bar is segmented (a dark divider every 25 hp: 10 at native resolution, 2-9 after a 720p JPEG). A slab of
+    # white painted over the strip has none, which is what separates the held-BACK scoreboard (it keeps the banner)
+    # with a bright strip from a real HUD.
+    col = cv2.resize(bar.mean(axis=0)[None, :].astype("float32"), (240, 1))[0]
+    return any(col[i] < min(col[i - 2], col[i + 2]) - 25 and col[i] <= col[i - 1] and col[i] <= col[i + 1]
+               for i in range(2, 238))
 
 
 def idle_warning(frame):
