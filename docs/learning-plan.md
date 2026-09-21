@@ -515,10 +515,29 @@ an RL library installed or a loss curve going down.
 ### Source fidelity: investigate native replay before expanding downloads
 
 The game's replay system is a candidate source, not a verified acquisition path.
-Claude's replay-research lane owns public documentation research and a bounded
-in-client checklist. Further Twitch expansion waits for that result; the current
-bounded acquisition attempt may finish. Existing inspected footage remains useful
-for narration, event-reader testing and the auxiliary pretraining probe.
+[Replay research](lanes/replay-research.md) finds community support for shared IDs,
+player POV and cooldown visibility, plus a first-party outline-setting bug fix
+consistent with viewer-side rendering. These are reasons to test the route,
+not confirmation of full HUD fidelity, Enemy Color behavior or expert access.
+No publicly posted Day/Req replay IDs were found; absence from that search is not
+proof that none exist. Replay expiry and patch compatibility remain constraints.
+Claude coordinates James's manual in-client check. Further Twitch expansion is
+parked; existing inspected footage remains useful for narration, event-reader
+testing and the auxiliary pretraining probe.
+
+Separate **viewer capability** from **expert-source availability**. An existing
+accessible match can test the former without proving that Day/Req matches are
+obtainable. Record the client build, replay match ID/date/patch, POV mode, relevant
+settings and a short native capture with HUD. Prioritize locked player POV, visible
+HP/ammo/cooldowns/ult and outline behavior; compare timing at normal playback speed.
+Pad-only navigation, frame stepping and the built-in clip exporter are conveniences,
+not prerequisites if manual navigation and our existing screen capture work. Do
+not create or enter a human match to test replay availability.
+
+The lead's channel check reports a 1080p60 maximum for the inspected Req YouTube
+uploads. That rules out a higher-resolution rendition of those uploads, not all
+fidelity improvement: bitrate, re-encoding and original capture quality can differ
+at the same dimensions. Keep source-quality claims tied to inspected pixels.
 
 Replay adoption requires an accessible expert match ID with patch/session
 provenance; recorded-player POV and HUD; checked camera, cooldown and event timing
@@ -533,8 +552,9 @@ If these checks pass, prioritize replay-derived demonstrations and retain one
 match/session identity across replay and VOD versions to prevent split leakage.
 Merge the live/demo perception paths only after a measured entity/observation
 contract supports it. Otherwise retain the two-domain design and document the
-specific replay limitation. The live-input freeze still applies: research does
-not authorize an unattended replay-menu visit or a new controller launch surface.
+specific replay limitation. Acceptance of range input guards does not authorize
+an unattended replay-menu visit or a new controller launch surface; the viewer
+remains unmapped until separately verified.
 
 | Source | Evidence provided | Missing or uncertain |
 |---|---|---|
