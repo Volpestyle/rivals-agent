@@ -33,8 +33,10 @@ duration. The aligned two-window annotation rerun agrees on coarse tactical
 purpose, but exposes event-extractor defects. The HUD lane produces event format
 4; loader support and refreshed event audits govern label acceptance (VUH-1306).
 The policy lane has an offline DINO encoder / GRU intent-training pipeline;
-its reported held-out results do not beat the majority baseline. This is
-pipeline evidence, not an accepted gameplay policy. RL is not implemented or
+on the two multi-intent normal-cooldown sessions it beats the majority baseline
+but not repeating the previous decision. Transition weighting worsens held-out
+change accuracy; further tuning waits for better examples. This is scripted-brain
+distillation evidence, not an accepted gameplay policy. RL is not implemented or
 accepted. The next deliverable
 is a small trustworthy training/evaluation set and a first imitation baseline,
 not an exhaustive archive.
