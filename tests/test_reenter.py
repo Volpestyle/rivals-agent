@@ -1856,7 +1856,7 @@ def test_a_plaza_pause_after_an_advancing_walk_is_neither_a_walk_nor_a_stall(mon
     plaza = iter((False, False, True, False))
     monkeypatch.setattr(R, "_scene", lambda f: next(scenes))
     monkeypatch.setattr(R, "plaza_view", lambda f: next(plaza))
-    monkeypatch.setattr(R, "door_blobs", lambda f: [(0.40, 6000)])
+    monkeypatch.setattr(R, "door_blobs", lambda f, min_h=None: [(0.40, 6000)])
     m = R.ArrivalMemory()
     acts = [R.arrival_step(None, m)[0] for _ in range(4)]
     assert acts == ["walk", "walk", "plaza?", "walk"] and m.sidesteps == 0
@@ -1880,7 +1880,13 @@ def _scripted(monkeypatch, scenes, plazas, blobs):
     scenes, plazas, blobs = iter(scenes), iter(plazas), iter(blobs)
     monkeypatch.setattr(R, "_scene", lambda f: np.full((68, 160), next(scenes), np.float32))
     monkeypatch.setattr(R, "plaza_view", lambda f: next(plazas))
-    monkeypatch.setattr(R, "door_blobs", lambda f: next(blobs))
+    last = [[]]
+
+    def door_blobs(f, min_h=R.DOOR_H):                                           # one scene per step: a lower floor sees the same blobs
+        if min_h == R.DOOR_H:
+            last[0] = next(blobs)
+        return last[0]
+    monkeypatch.setattr(R, "door_blobs", door_blobs)
 
 
 def test_a_crossing_frame_that_looks_like_the_plaza_still_latches_out(monkeypatch):
@@ -2060,3 +2066,38 @@ def test_two_equally_good_rings_resolve_to_the_same_one_as_before():
     white = f.min(axis=2)
     assert _ref_ring_score(white, cx, cy) == _ref_ring_score(white, x, y) > 0                    # a real tie
     assert R.find_cursor(f) == _ref_find_cursor(f)
+
+
+# --- the plaza door half hidden at spawn (2026-09-21 15:55 and 17:43: the other door taken from frame 1) ------------------------------
+SHORT_SPAWNS = ("arrival-live-spawn-plaza-door-short-1", "arrival-live-spawn-plaza-door-short-2")
+
+
+@pytest.mark.parametrize("name", SHORT_SPAWNS)
+def test_at_spawn_a_half_hidden_door_on_his_column_is_taken_over_the_only_tall_one(name):
+    """The plaza door stands on his column in every logged frame 1 but can be half hidden behind the central column: 82 px tall here,
+    under DOOR_H, so the other door (x 0.20) was the only candidate and was taken. The first choice takes the short one on his column."""
+    f = frame(name)
+    assert [round(x, 1) for x, _ in R.door_blobs(f)] == [0.2]                     # at the normal floor, only the other door
+    m = R.ArrivalMemory()
+    act = R.arrival_step(f, m)
+    assert act[0] == "walk" and abs(m.chosen - 0.44) < 0.02
+
+
+@pytest.mark.parametrize("name", SHORT_SPAWNS)
+def test_the_lower_floor_is_for_the_first_choice_and_the_kept_door_only(name):
+    f = frame(name)
+    later = R.ArrivalMemory(started=True)                                         # a door was chosen before and lost: the normal floor
+    assert R.arrival_step(f, later)[:2] == ("turn", -R.YAW_STICK) and later.chosen < 0.4
+    kept = R.ArrivalMemory(started=True, chosen=0.44)                             # the plaza door being kept, seen short: still it
+    assert R.arrival_step(f, kept)[0] == "walk" and abs(kept.chosen - 0.44) < 0.02
+
+
+@pytest.mark.parametrize("name", SHORT_SPAWNS)
+def test_a_lost_door_is_re_chosen_at_the_normal_floor_after_the_first_choice(name):
+    f = frame(name)
+    lost = R.ArrivalMemory(started=True, chosen=0.9)                              # the kept door is nowhere near: lost
+    assert R.arrival_step(f, lost)[:2] == ("turn", -R.YAW_STICK) and lost.chosen < 0.4
+    m = R.ArrivalMemory()
+    assert R.arrival_step(frame("arrival-spawn-door-ahead"), m)[0] == "turn" and m.started   # a real first choice (a tall door)
+    m.chosen = None                                                                # then that door is lost
+    assert R.arrival_step(f, m)[:2] == ("turn", -R.YAW_STICK)                      # re-chosen at the normal floor: not the short one

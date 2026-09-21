@@ -76,6 +76,10 @@ DOOR_KEEP = 0.25     # once walking at a door, the blob nearest where that door 
                      # of the width: two lime doors can be in view inside, and the biggest one jumped between them (live, steps 1-5).
                      # With none kept, the door nearest his column is chosen, not the biggest: on all four logged spawns the plaza door sits
                      # 0.04 from his column (x 0.44) and the other door 0.19 off (x 0.21), and the other one was the bigger blob in two
+SPAWN_DOOR_H = 60   # px at 720p. At spawn the plaza door stands on his column (x 0.439-0.446 in all 13 logged frame 1s, 3.0-6.8k px) but
+                    # half hidden behind the central column: 82-145 px tall, under DOOR_H in 3 of 13, and then the other door (0.20, 147 px)
+                    # was the only candidate and was taken (2026-09-21 15:55, 17:43). So the arrival's FIRST choice takes a blob on his
+                    # column down to this height, and a door being kept is matched down to it; everything else keeps DOOR_H
 OUT_PX = 10000       # passing through a door: a walk step at it, then a frame with no door, and the door's biggest blob over its last
 OUT_WALKS = 3        # OUT_WALKS walk steps at least this (px at 1280x720). The pane shrinks as he reaches it (the last walk before it vanished
                      # was 3.4-33k on the five logged crossings), but its peak over the last three walks was 16-54k; a sliver of the pane
@@ -427,10 +431,10 @@ def door_blob(frame):
     return blobs[0] if blobs else (None, 0)
 
 
-def door_blobs(frame):
-    """Every tall lime blob big enough to be a door, [(centre x 0-1, area px)], biggest first."""
+def door_blobs(frame, min_h=DOOR_H):
+    """Every lime blob at least `min_h` tall and big enough to be a door, [(centre x 0-1, area px)], biggest first."""
     n, _, st, cen = cv2.connectedComponentsWithStats(_lime(small(frame)), connectivity=8)
-    blobs = [(float(cen[i][0] / 1280.0), int(st[i, 4])) for i in range(1, n) if st[i, 3] >= DOOR_H and st[i, 4] >= DOOR_MIN_PX]
+    blobs = [(float(cen[i][0] / 1280.0), int(st[i, 4])) for i in range(1, n) if st[i, 3] >= min_h and st[i, 4] >= DOOR_MIN_PX]
     return sorted(blobs, key=lambda b: -b[1])
 
 
@@ -894,6 +898,7 @@ class ArrivalMemory:
     moved: float | None = None     # what the last completed walk changed in the view (None: the last step was not a walk)
     still_seen: int = 0            # the still count this decision acted on
     sweeps: int = 0                # look-around turns taken outside
+    started: bool = False          # a door has been chosen in this arrival (the first choice is over)
 
 
 def _scene(f):
@@ -938,12 +943,18 @@ def arrival_step(f, m):
         m.sidesteps += 1
         return ("strafe", -1.0, SIDESTEP_S, f"no progress: sidestep left, stick -1.00 for {SIDESTEP_S:.2f} s ({m.sidesteps} of {SIDESTEP_TRIES})")
     blobs = door_blobs(f) if blobs is None else blobs
-    kept = min(blobs, key=lambda b: abs(b[0] - m.chosen)) if m.chosen is not None and blobs else None
+    short = door_blobs(f, SPAWN_DOOR_H) if (m.chosen is not None or not m.started) else blobs   # down to SPAWN_DOOR_H tall
+    kept = min(short, key=lambda b: abs(b[0] - m.chosen)) if m.chosen is not None and short else None
+    on_column = [b for b in short if abs(b[0] - HERO_X) <= DOOR_TOL] if not m.started else []
     if kept is not None and abs(kept[0] - m.chosen) <= DOOR_KEEP:
-        x, px = kept
+        x, px = kept                                  # the door being kept, even where it shows short (an edge, an occlusion)
+    elif on_column:                                   # the first choice: a door on his column, even half hidden
+        x, px = min(on_column, key=lambda b: abs(b[0] - HERO_X))
+        m.walks = []
     else:                                             # nothing kept (or it is gone): the door nearest his column, not the biggest
         x, px = min(blobs, key=lambda b: abs(b[0] - HERO_X)) if blobs else (None, 0)
         m.walks = []
+    m.started = m.started or x is not None
     if x is None:  # nothing to walk toward (a wall, the plaza with no bot in view): look around, do not walk blind
         m.chosen = None
         return ("turn", YAW_STICK, SWEEP_S, f"no door: look around, rstick {YAW_STICK:+.2f} for {SWEEP_S:.2f} s")
