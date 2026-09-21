@@ -57,7 +57,13 @@ crop's edges (y 240 and 1200 at 1440p) cut it. A box that would start a new id i
 the same update if at least `PIECE_INSIDE` (0.7) of it lies inside that body's box (last update's and this one's), padded by `PIECE_PAD`
 (0.1 of its size), and it is no taller than the body; the body's box becomes the union of its pieces. Only a body matched in the same
 update takes pieces: a small box where a body is merely predicted stays its own (a lamp at a coasting bot's place is a lamp). A box that
-matches a track of its own is never absorbed, so two dummies seen together from the start keep two ids.
+matches a track of its own is never absorbed, so two dummies seen together from the start keep two ids. Only bodies matched on their
+own are witnesses: a piece taken this update never vouches for the next box, so the body cannot chain outward piece by piece, and the
+result does not depend on the order of the boxes.
+
+**Residual: a new, smaller bot appearing inside a confirmed near bot's box while that bot is still visible is taken as its piece.**
+Geometry cannot tell it from a piece (a 300 px bot at x 1030 inside a 600 px bot at x 1000 gets the near bot's id). If it is the first box
+of that id in a decision, the brain follows it under the held id, which bypasses two-decision acquisition. Nothing seen live has done this.
 
 ## Live: postfreeze30 (30 s, ~50 Hz, the first supervised run)
 
@@ -116,9 +122,10 @@ age limits above; after that the target is gone and the nearest hostile is picke
 
 ## Who reads the id
 
-- `brain._pick_target` follows the target by id (a hostile class at `MIN_CONF` or above only), and treats a coasting id as "briefly
-  missing", not gone.
+- `brain._pick_target` follows the target by id (a hostile class at `MIN_CONF` or above only), treats a coasting id as "briefly
+  missing", not gone, and takes a new target only once its id was present at the previous decision too.
 - `jev.reassociate` follows an answered target by id and class, returns it as-is while it coasts, and otherwise falls back to the
   nearest box of its class within `MATCH_FRAC`.
 - **The controller does not.** `Controller._follow` keeps its own `Track` and re-associates it by bearing each step; it never reads
-  `Detection.track`. Brain and controller can therefore still disagree for a step about which box is the target when two bots are close.
+  `Detection.track`. Brain identity is not actuator identity: the pad steers to whichever box lies at the tracked bearing, so brain and
+  controller can disagree for a step about which box is the target when two bots are close.

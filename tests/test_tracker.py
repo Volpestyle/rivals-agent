@@ -373,3 +373,24 @@ def test_a_held_target_survives_a_single_missing_decision_and_is_taken_back_by_i
     assert decide(st(0.1, [], coasting=()), m) == Engage(a)                      # one decision without it (not even coasting): kept, LOST_S
     back = det(1300, 720, 600, track=1)                                          # back, a little moved: its own id, no two-in-a-row needed
     assert decide(st(0.2, [back]), m) == Engage(back) and m.target is back
+
+
+def _chain(reverse):
+    tr = Tracker()
+    run(tr, [[det(1000, 700, 600, w=250)]] * 5)
+    pieces = [det(x, 700, 80, w=140) for x in (1155, 1240, 1325, 1410, 1495)]      # only the first lies inside the body
+    got = tr.update([det(1000, 700, 600, w=250)] + (pieces[::-1] if reverse else pieces), 5 / HZ, FRAME)
+    by_x = {round((d.bbox[0] + d.bbox[2]) / 2): d.track for d in got[1:]}
+    return got[0].track, by_x, tr
+
+
+def test_an_absorbed_piece_is_never_a_witness_so_the_body_does_not_chain_outward():
+    """Input-path review: absorbed groups were witnesses for the next, growing the footprint box by box, and the result depended on the
+    order (HEAD [1,1,1,1,1,1] forward, [1,2,3,4,5,1] reversed). Only bodies matched on their own are witnesses."""
+    body, fwd, tr = _chain(False)
+    _, rev, _ = _chain(True)
+    assert fwd[1155] == body and all(fwd[x] != body for x in (1240, 1325, 1410, 1495))
+    assert {x: t == body for x, t in fwd.items()} == {x: t == body for x, t in rev.items()}        # the same partition either way
+    assert len({fwd[x] for x in (1240, 1325, 1410, 1495)}) == 4                                     # each outside box its own id
+    held = next(t for t in tr.tracks if t.id == body)
+    assert held.box[2] <= 1155 + 70 + 1                                              # the body's box reaches no further than its piece

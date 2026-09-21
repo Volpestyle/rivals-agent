@@ -172,8 +172,9 @@ class Tracker:
                 continue
             got[gi] = self.tracks[k]
             used.add(k)
-        for gi, g in enumerate(groups):          # a box that would start a new id: a piece of a confirmed body already here?
-            if gi not in got and (tr := self._body_of(boxes[gi], dets[g[0]].cls, dict(got), boxes)) is not None:
+        direct = dict(got)                       # the bodies matched on their own: the only witnesses (an absorbed piece is never one,
+        for gi, g in enumerate(groups):          # or the footprint chains outward piece by piece and the result depends on the order)
+            if gi not in direct and (tr := self._body_of(boxes[gi], dets[g[0]].cls, direct, boxes)) is not None:
                 got[gi] = tr
         parts = {}                               # one update per track: the union of every group it got
         for gi, tr in got.items():
