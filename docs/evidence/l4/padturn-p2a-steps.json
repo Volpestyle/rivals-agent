@@ -1,0 +1,27 @@
+[
+ {
+  "t": 0.504,
+  "wall": "16:19:41.059",
+  "step": "range HUD on a fresh frame: True"
+ },
+ {
+  "t": 0.504,
+  "wall": "16:19:41.059",
+  "step": "waiting 3 s, no pad"
+ },
+ {
+  "t": 3.507,
+  "wall": "16:19:44.062",
+  "step": "starting scripts/pad.py \"ls:0,1,0.3 ls:0,-1,0.3\" (it opens its own pad, waits 2.0 s, then the two tokens)"
+ },
+ {
+  "t": 8.106,
+  "wall": "16:19:48.661",
+  "step": "pad.py exited 0 (its pad is gone): pad: sent ls:0,1,0.3 ls:0,-1,0.3"
+ },
+ {
+  "t": 11.107,
+  "wall": "16:19:51.662",
+  "step": "end"
+ }
+]

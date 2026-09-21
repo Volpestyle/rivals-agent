@@ -1,0 +1,21 @@
+  0.504 16:17:14.862  yaw    -0.1  range HUD on a fresh frame: True
+  0.504 16:17:14.862  yaw    -0.1  waiting 3 s, no pad
+  3.698 16:17:18.056  yaw    -1.0  VX360Gamepad() called
+  3.700 16:17:18.058  yaw    -1.0  VX360Gamepad() returned (its constructor sends one default report); nothing for 3 s
+  6.701 16:17:21.059  yaw   -80.9  explicit neutral 1 sent (reset + update); 3 s
+  9.701 16:17:24.059  yaw  -148.8  explicit neutral 2 sent (reset + update); 3 s
+ 12.702 16:17:27.060  yaw  -222.7  deleting the pad (disconnect)
+ 12.702 16:17:27.060  yaw  -222.7  pad deleted; 3 s
+ 15.702 16:17:30.060  yaw  -223.9  end
+frames with |shift| > 1 px: first 3.766 last 12.708 n 265 | final yaw -223.9
+turn from 3.766 s to 12.708 s: -220.3 deg in 8.94 s = -24.6 deg/s
+      3-4 s:   -7.6 deg/s
+      4-5 s:  -27.6 deg/s
+      5-6 s:  -27.8 deg/s
+      6-7 s:  -24.3 deg/s
+      7-8 s:  -23.7 deg/s
+      8-9 s:  -21.3 deg/s
+      9-10 s:  -22.6 deg/s
+     10-11 s:  -25.4 deg/s
+     11-12 s:  -24.1 deg/s
+     12-13 s:  -17.6 deg/s
