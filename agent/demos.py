@@ -366,6 +366,9 @@ def _check_events_format(path, rows):
     if not meta.get("recipe"):
         raise FormatError(f"{path}: stale, no recipe, so it cannot be regenerated")
     missing = [k for k in dict.fromkeys(META_KEYS + rule["required_meta"]) if k not in meta]
+    fps = meta.get("fps")
+    if not missing and (isinstance(fps, bool) or not isinstance(fps, (int, float)) or not math.isfinite(fps) or fps <= 0):
+        raise FormatError(f"{path}: meta fps {fps!r} must be a positive finite number: every frame index is counted at it")
     if missing:
         raise FormatError(f"{path}: stale, written by older code: the format {EVENT_FORMAT} meta line lacks {missing}; {regen}")
     if meta["writer"] != rule["writer"]:
@@ -410,7 +413,7 @@ def _segments(rows, where):
 class Clip:
     """One source clip: its header, its segments and its timelines (frames, inputs, events, annotations)."""
 
-    def __init__(self, header, segments, base, path=None):
+    def __init__(self, header, segments, base, path=None, sealed_groups=frozenset()):
         missing = [k for k in REQUIRED if k not in header]
         if missing:
             raise FormatError(f"{path or header.get('id')}: manifest header lacks {missing}")
@@ -430,6 +433,9 @@ class Clip:
             raise FormatError(f"{self.id}: resolution must be [width, height] or null")
         self.split = header["split"]
         self.group = header.get("group") or header["vod_id"] or header["run"] or self.id
+        # A source a split file seals: its events file is read up to its meta and segment lines (every provenance and identity
+        # check still runs) and no further. No event is parsed, and clip.events raises SealedError.
+        self.events_sealed = self.group in sealed_groups
         self.fps, self.resolution = header["fps"], res
         self.segments = _segments(segments, self.id)
         self.decisions = tuple(_num(t, f"{self.id} decisions") for t in header.get("decisions") or ())
@@ -537,12 +543,28 @@ class Clip:
         if self.header["inputs"] not in ("pad", None):
             raise FormatError(f"{self.id}: inputs must be 'pad' or null")
 
+    @property
+    def events(self):
+        if self.events_sealed:
+            raise SealedError(f"{self.id}: sealed by a split file; its events were not read. Load it with "
+                              f"Demos.load_split(..., unseal=True), and only for the final, deliberate evaluation")
+        return self._events
+
+    @events.setter
+    def events(self, value):
+        self._events = value
+
     def _load_events(self):
-        self.events, self.events_meta = None, None
+        self._events, self.events_meta = None, None
         rel = self.header["events"]
         if rel is None:
             return
-        events, rows = [], list(_jsonl(self._resolve(rel)))
+        rows = []
+        for n, r in _jsonl(self._resolve(rel)):
+            if self.events_sealed and r.get("type") not in ("meta", "segment"):
+                break                                  # the first event line: a sealed clip reads no further
+            rows.append((n, r))
+        events = []
         self.events_meta = meta = _check_events_format(self._resolve(rel), rows)
         drawn = hud_segments([r for _, r in rows if r.get("type") == "segment"])
         mine = [dict(start_t=s.start_t, end_t=s.end_t, started_by=s.started_by, ended_by=s.ended_by) for s in self.segments]
@@ -592,7 +614,7 @@ class Clip:
             if e.t_to < e.t_from or seg is None:
                 raise FormatError(f"{rel}:{n}: event {e.kind} [{e.t_from}, {e.t_to}] lies outside every segment or crosses a boundary")
             events.append(dataclasses.replace(e, segment=seg.n))
-        self.events = tuple(sorted(events, key=lambda e: (e.known_at, e.t_to, e.kind)))   # the order they became known
+        self._events = tuple(sorted(events, key=lambda e: (e.known_at, e.t_to, e.kind)))   # the order they became known
 
     def _load_annotations(self):
         self.annotations, self.outcome_reviews = {}, {}   # by decision time, rounded to a millisecond
@@ -715,7 +737,7 @@ def _span(items, lo, hi, key):
 
 
 # --- reading a whole clip, or a recorder's run directory as it is -------------------------------------------------
-def read_manifest(path):
+def read_manifest(path, sealed_groups=frozenset()):
     path = Path(_refuse_archive(path))
     rows = [r for _, r in _jsonl(path)]
     if not rows or rows[0].get("type") != "clip":
@@ -723,7 +745,7 @@ def read_manifest(path):
     bad = [r.get("type") for r in rows[1:] if r.get("type") != "segment"]
     if bad:
         raise FormatError(f"{path}: only segment lines may follow the header, found {bad[:3]}")
-    return Clip(rows[0], rows[1:], path.parent, path)
+    return Clip(rows[0], rows[1:], path.parent, path, sealed_groups)
 
 
 def clip_from_run(run_dir):
@@ -781,14 +803,14 @@ def run_manifest(path):
     return clip
 
 
-def discover(*paths):
+def discover(*paths, sealed_groups=frozenset()):
     """Clips from manifests (`*.manifest.jsonl`), run directories, or directories holding either. Never from an experiment's
     archive (a `data/experiments/` directory): those are outputs of a fit on their own event format, never inputs to a new one."""
     out = []
     for p in map(Path, paths):
         _refuse_archive(p)
         if p.is_file():
-            out.append(read_manifest(p))
+            out.append(read_manifest(p, sealed_groups))
         elif (p / "manifest.jsonl").is_file():
             out.append(run_manifest(p / "manifest.jsonl"))
         elif (p / "frames.jsonl").is_file():
@@ -797,7 +819,7 @@ def discover(*paths):
             found = sorted(p.rglob("*.manifest.jsonl"))
             if not found:
                 raise FormatError(f"{p}: no manifest and no frames.jsonl below it")
-            out.extend(read_manifest(m) for m in found)
+            out.extend(read_manifest(m, sealed_groups) for m in found)
         else:
             raise FormatError(f"{p}: not found")
     ids = [c.id for c in out]
@@ -863,13 +885,17 @@ class Demos:
         check_splits(clips, self.splits)
         self.min_segment_s, self.max_bridge_s, self.skipped = min_segment_s, max_bridge_s, []
         self.pending = {}   # side -> why it is empty, from a split file (load_split)
-        # An event known only after the stretch its segment belongs to has ended (the writer settles segmentation over a lag, so this
-        # is the last ~1-2.5 s of events of a segment) reaches no window's observation: recorded, never silent.
+        # An event known only after its segment ends reaches no window's observation (the writer settles segmentation over a lag,
+        # so this is the last ~1-2.5 s of events of a segment): recorded, never silent. known_after_segment_end: after the bridged
+        # stretch too, so in no window of either mode; known_after_segment_end_unbridged: inside the stretch, so visible only in
+        # bridged windows, never with across_overlays=False. A sealed clip's events are not read, so it gives no row.
         for c in clips:
-            for e in c.events or ():
-                last = c.stretch(c.segments[e.segment], max_bridge_s)[1]
-                if e.known_at > last.end_t + EPS:
+            for e in () if c.events_sealed else c.events or ():
+                seg = c.segments[e.segment]
+                if e.known_at > c.stretch(seg, max_bridge_s)[1].end_t + EPS:
                     self._skip(c, e.t_to, "known_after_segment_end")
+                elif e.known_at > seg.end_t + EPS:
+                    self._skip(c, e.t_to, "known_after_segment_end_unbridged")
         self.sealed = {}    # sealed side -> the clip ids a split file puts on it (load_split)
 
     def _skip(self, clip, t, reason):
@@ -886,7 +912,7 @@ class Demos:
         return cls(discover(*paths), **kw)
 
     @classmethod
-    def load_split(cls, name, root=DEMOS_ROOT, **kw):
+    def load_split(cls, name, root=DEMOS_ROOT, unseal=False, **kw):
         """The dataset split `<root>/splits/<name>.json`: its sources, each whole session group on one side.
 
           {"name": ..., "status": "proposed" | "accepted", "patch": ..., "cooldowns": ..., "sources": [manifest paths under root],
@@ -921,7 +947,9 @@ class Demos:
         held = set(unassigned) & set(side_of)
         if held:
             raise SplitError(f"{path}: {sorted(held)} are unassigned and also on a side")
-        clips = discover(*[Path(root) / s for s in spec["sources"]])
+        # A sealed side's sources are read header, meta and segments only, unless the caller unseals the load itself.
+        sealed_groups = frozenset() if unseal else frozenset(g for s in spec.get("sealed") or () for g in spec["sides"].get(s) or ())
+        clips = discover(*[Path(root) / s for s in spec["sources"]], sealed_groups=sealed_groups)
         for c in clips:
             if c.group in unassigned:
                 raise SplitError(f"{path}: {c.id} is unassigned ({unassigned[c.group]}) but listed among the sources")
@@ -1047,16 +1075,28 @@ class Demos:
         if not isinstance(e.known_at, (int, float)) or isinstance(e.known_at, bool) or not math.isfinite(e.known_at):
             raise KnowledgeError(f"{clip.id}: {e.kind} [{e.t_from}, {e.t_to}] has known_at {e.known_at!r}: an event without a finite "
                                  f"knowledge time cannot be placed, and is never placed by t_to")
-        if e.kind == "ability_uncertain":
-            return True
+        return e.kind == "ability_uncertain" or not Demos._hud_masked(clip, e)
+
+    @staticmethod
+    def window_event(clip, e):
+        """The event as a window may hold it, or None. An event resting on a masked frame is dropped; an ability_uncertain resting on
+        one is kept with its interval and slot (they encode "unknown", the safe direction; the slot comes from the whole-file icon
+        mapping) and its HUD reads blanked: amount, before and after are digit reads off frames that must not be learned from."""
+        if Demos._readable(clip, e) and not Demos._hud_masked(clip, e):
+            return e
+        return dataclasses.replace(e, amount=None, before=None, after=None) if e.kind == "ability_uncertain" else None
+
+    @staticmethod
+    def _hud_masked(clip, e):
+        """True when a frame the event rests on is masked for the HUD or the event's own field."""
         field = (e.slot or e.slot_pos) if e.slot_pos or e.slot else \
             "ammo" if e.kind.startswith("web_cluster") else "hp" if e.kind.split("_")[0] in ("hp", "shield", "max") else None
         h = 0.5 / float(clip.events_meta["fps"])       # the events' own grid: the mask rows nearest the frames they were read off
         for t in (e.t_from, e.t_to, e.known_at):
             m = clip.masks_near(t, h)
             if m and ("hud" in m.hidden or field in m.hidden):
-                return False
-        return True
+                return True
+        return False
 
     def _observe(self, clip, seg, t, history_s, frame_hz, across=False):
         """The only place an Observation is built: every source is cut off at t before anything is read from it."""
@@ -1070,7 +1110,8 @@ class Demos:
                 frames.append(f)
         frames = self._masked(clip, frames, across, 0.5 / frame_hz)
         events = None if clip.events is None else tuple(
-            e for e in clip.events if e.segment in ids and e.known_at <= t + EPS and e.t_to >= start - EPS and self._readable(clip, e))
+            x for x in (self.window_event(clip, e) for e in clip.events
+                        if e.segment in ids and e.known_at <= t + EPS and e.t_to >= start - EPS) if x is not None)
         inputs = None if clip.inputs is None else tuple(_span(clip.inputs, start, t, lambda i: i.t))
         return Observation(clip.id, seg.n, t, tuple(reversed(frames)), events, inputs, start,
                            truncated_context=t - history_s < lo - EPS)
@@ -1085,7 +1126,8 @@ class Demos:
                 frames.append(f)
         frames = self._masked(clip, frames, across, 0.5 / frame_hz)
         events = None if clip.events is None else tuple(
-            e for e in clip.events if e.segment in ids and e.t_to > t + EPS and e.t_from <= end + EPS and self._readable(clip, e))
+            x for x in (self.window_event(clip, e) for e in clip.events
+                        if e.segment in ids and e.t_to > t + EPS and e.t_from <= end + EPS) if x is not None)
         cut = last.end_t < t + outcome_s - EPS
         reviews = tuple(clip.outcome_reviews.get(round(t, 3), ()))
         return Hindsight(Outcome(end, tuple(frames), events, last.ended_by if cut else None, cut), reviews)
@@ -1149,7 +1191,7 @@ def hud_segments(rows):
 
 def events_file_segments(path):
     """Manifest segment dicts from the `{"type": "segment", ...}` lines of a per-clip events file (EVENT_FORMAT only)."""
-    rows = list(_jsonl(path))
+    rows = list(_jsonl(_refuse_archive(path)))
     _check_events_format(path, rows)
     return hud_segments([r for _, r in rows if r.get("type") == "segment"])
 

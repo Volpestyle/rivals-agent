@@ -245,13 +245,20 @@ def test_a_sealed_side_is_read_only_on_purpose(tmp_path):
         with pytest.raises(SealedError, match=r"seals \['test'\]"):
             call()
     assert {c.id for c in d.clips_in("inspection_only", unseal=True)} == {"v0", "v1", "v2"}
-    assert {o.clip for o in d.observations("inspection_only", unseal=True, hz=0.2)} == {"v0", "v1", "v2"}
+    with pytest.raises(SealedError, match="v2: sealed by a split file; its events were not read"):
+        list(d.observations("inspection_only", unseal=True, hz=0.2))       # a routine load never read them
+    full = Demos.load_split("s", root=tmp_path, unseal=True)               # two deliberate steps: load unsealed, then read unsealed
+    with pytest.raises(SealedError, match=r"seals \['test'\]"):
+        list(full.observations("inspection_only"))
+    assert {o.clip for o in full.observations("inspection_only", unseal=True, hz=0.2)} == {"v0", "v1", "v2"}
     d = fresh(tmp_path, "acc")                                            # an accepted split: the test side is populated, still sealed
     split_fleet(d, status="accepted")
     got = Demos.load_split("s", root=d)
     with pytest.raises(SealedError, match=r"would read \['v2'\]"):
         list(got.samples("test"))
-    assert {s.observation.clip for s in got.samples("test", unseal=True, hz=0.2)} == {"v2"}
+    with pytest.raises(SealedError, match="its events were not read"):
+        list(got.samples("test", unseal=True, hz=0.2))
+    assert {s.observation.clip for s in Demos.load_split("s", root=d, unseal=True).samples("test", unseal=True, hz=0.2)} == {"v2"}
     assert {o.clip for o in got.observations("train")} == {"v0"}           # the other sides answer as before
     rewrite(tmp_path, spec, sealed=["holdout"])
     with pytest.raises(FormatError, match="sealed \\['holdout'\\]"):
@@ -1203,11 +1210,21 @@ def test_a_mask_never_erases_an_ability_uncertain(tmp_path):
     """Masking can only make a slot less known: an uncertainty whose every frame an annotator masked is still handed over."""
     d = fresh(tmp_path, "m")
     (d / "m.json").write_text(json.dumps(visibility([2.0, 6.0, 6.2], hud="unavailable", uppercut="unavailable")))
-    un = dict(kind="ability_uncertain", t_from=2.0, t_to=6.0, slot="uppercut", amount=6, before=None, after=None, known_at=6.2)
+    un = dict(kind="ability_uncertain", t_from=2.0, t_to=6.0, slot="uppercut", amount=6, before="off", after=6, known_at=6.2)
     cast = dict(kind="ability_cast", t_from=5.8, t_to=6.0, slot="uppercut", amount=6, before="off", after=6, known_at=6.2)
     make_vod(d, events=[un, cast], split="train", annotations=[annotation(8.0, context_mask="m.json")], decisions=[8.0])
     o, = Demos.load(d).observations("train", decisions="manifest")
     assert [e.kind for e in o.events] == ["ability_uncertain"]                        # the cast read off masked frames is dropped
+    e, = o.events
+    assert (e.t_from, e.t_to, e.slot, e.slot_pos, e.known_at) == (2.0, 6.0, "uppercut", "uppercut", 6.2)   # the unknown, kept
+    assert (e.amount, e.before, e.after) == (None, None, None)                        # its digit reads off masked frames, blanked
+    clip, = Demos.load(d).clips.values()                                              # and the same answers for a caller outside
+    raw = next(x for x in clip.events if x.kind == "ability_uncertain")
+    assert Demos._readable(clip, raw) and Demos.window_event(clip, raw) == e and raw.amount == 6
+    assert Demos.window_event(clip, next(x for x in clip.events if x.kind == "ability_cast")) is None
+    clean, = Demos.load(make_vod(fresh(tmp_path, "clean"), events=[un], split="train", decisions=[8.0])).observations(
+        "train", decisions="manifest")
+    assert clean.events[0].amount == 6                                                # unmasked: as written
 
 
 def test_an_event_whose_evidence_completes_only_at_a_masked_frame_is_dropped(tmp_path):
@@ -1263,12 +1280,112 @@ def test_a_kind_the_writer_never_emits_is_refused(tmp_path):
             make_vod(fresh(tmp_path, f"k{n}"), events=[dict(kind=kind, t_from=4.0, t_to=4.2, amount=1, before=1, after=0)])
 
 
+def writer_kinds(src):
+    """The kind literals of the writer's source, found by where they stand, not by what they are called: passed as kind=, passed
+    to emit(), compared with a .kind, assigned to kind, or first in a returned (kind, ...) tuple, conditional branches included."""
+    import ast
+    def consts(n):
+        if isinstance(n, ast.Constant) and isinstance(n.value, str):
+            return {n.value}
+        if isinstance(n, ast.IfExp):
+            return consts(n.body) | consts(n.orelse)
+        if isinstance(n, (ast.Tuple, ast.Set, ast.List)):
+            return set().union(set(), *map(consts, n.elts))
+        return set()
+    def first(n):                      # a returned (kind, ...) tuple, or a conditional choosing between such tuples
+        if isinstance(n, ast.IfExp):
+            return first(n.body) | first(n.orelse)
+        return consts(n.elts[0]) if isinstance(n, ast.Tuple) and n.elts else set()
+    kindish = lambda n: (isinstance(n, ast.Attribute) and n.attr == "kind") or (isinstance(n, ast.Name) and n.id == "kind")
+    out = set()
+    for n in ast.walk(ast.parse(src)):
+        if isinstance(n, ast.Call):
+            out |= set().union(set(), *(consts(k.value) for k in n.keywords if k.arg == "kind"))
+            if isinstance(n.func, ast.Name) and n.func.id == "emit" and n.args:
+                out |= consts(n.args[0])
+        elif isinstance(n, ast.Compare) and any(map(kindish, [n.left] + n.comparators)):
+            out |= set().union(set(), *(consts(s) for s in [n.left] + n.comparators if not kindish(s)))
+        elif isinstance(n, ast.Assign) and isinstance(n.targets[0], ast.Tuple) and n.targets[0].elts \
+                and kindish(n.targets[0].elts[0]) and isinstance(n.value, ast.Tuple):
+            out |= consts(n.value.elts[0])
+        elif isinstance(n, ast.Assign) and kindish(n.targets[0]):
+            out |= consts(n.value)
+        elif isinstance(n, ast.Return) and n.value is not None:
+            out |= first(n.value)
+    return out
+
+
 def test_the_loaders_kind_vocabulary_is_the_writers():
-    """Every kind literal perception/events.py emits is in EVENT_KINDS, and every EVENT_KINDS entry is one it emits."""
-    src = demos.PRODUCER.read_text()
-    kinds = set(re.findall(r'"((?:ability|charges|icon|web_cluster|hp|shield|ult)_[a-z_]+|max_hp_changed|ko_feed|death|respawn|'
-                           r'cooldown_ended)"', src))
-    assert kinds == set(demos.EVENT_KINDS)
+    """EVENT_KINDS is exactly the set of kinds perception/events.py emits, found structurally, so a kind with a new prefix is seen."""
+    assert writer_kinds(demos.PRODUCER.read_text()) == set(demos.EVENT_KINDS)
+    probe = 'def f(e):\n    if e.kind == "zeta_new": pass\n    return ("omega_kind" if e else "psi_kind"), 1\n'
+    assert writer_kinds(probe) == {"zeta_new", "omega_kind", "psi_kind"}      # a prefix it has never seen is still found
+
+
+def sealed_fleet(tmp_path, v2_events):
+    """Three clips, one per side, all with event streams; v2 is on the sealed test side."""
+    late = dict(kind="hp_lost", t_from=19.0, t_to=19.5, amount=5, before=250, after=245, known_at=34.0)   # known past its segment
+    for n, (g, ev) in enumerate((("gA", EVENTS + [late]), ("gB", EVENTS), ("gC", v2_events))):
+        make_vod(tmp_path, name=f"v{n}", vod_id=f"7{n}", group=g, split="inspection_only", events=ev)
+    (tmp_path / "splits").mkdir(exist_ok=True)
+    (tmp_path / "splits" / "s.json").write_text(json.dumps(dict(
+        name="s", status="proposed", patch="Season 10, Version 20260911", cooldowns="normal",
+        sources=[f"v{n}.manifest.jsonl" for n in range(3)], sides={"train": ["gA"], "val": ["gB"], "test": ["gC"]}, sealed=["test"])))
+
+
+def test_a_sealed_sources_events_are_never_parsed_by_a_routine_load(tmp_path, monkeypatch):
+    late = dict(kind="hp_lost", t_from=19.0, t_to=19.5, amount=5, before=250, after=245, known_at=34.0)
+    sealed_fleet(tmp_path, EVENTS + [late])
+    built = []
+    real = demos.Event
+    monkeypatch.setattr(demos, "Event", lambda *a, **k: built.append(a[0]) or real(*a, **k))   # every event line the loader parses
+    d = Demos.load_split("s", root=tmp_path)
+    assert len(built) == 2 * len(EVENTS) + 1                                      # v0 and v1 only: nothing of v2's
+    v2 = d.clips["v2"]
+    assert v2.events_sealed and v2.kit == META["kit"] and len(v2.segments) == len(SEGS) and v2.events_meta["format"] == 5
+    with pytest.raises(SealedError, match="v2: sealed by a split file; its events were not read"):
+        v2.events
+    assert {k.clip for k in d.skipped} == {"v0"}                                  # v0's late event; nothing from sealed v2
+    built.clear()
+    full = Demos.load_split("s", root=tmp_path, unseal=True)                     # unseal restores full loading
+    assert len(built) == 3 * len(EVENTS) + 2 and len(full.clips["v2"].events) == len(EVENTS) + 1
+    assert {k.clip for k in full.skipped} == {"v0", "v2"}
+
+
+def test_a_sealed_source_still_passes_every_provenance_and_identity_check(tmp_path):
+    for n, (seg_lines, kit, cooldowns_from, err, why) in enumerate([
+            (SEGS[:2], META["kit"], "broadcast_date", ProvenanceError, "manifest's 3 segments are not its events file's 2"),
+            (SEGS, dict(META["kit"], patch="Season 9"), "broadcast_date", ProvenanceError, "timers used patch 'Season 9'"),
+            (SEGS, META["kit"], "observed_cooldowns", ProvenanceError, "countdowns for \\[\\]"),
+            (SEGS, dict(META["kit"], durations="junk"), "broadcast_date", FormatError, "kit must be a record")]):
+        d = fresh(tmp_path, f"p{n}")
+        sealed_fleet(d, EVENTS)
+        events_file(d / "v2.events.jsonl", seg_lines, EVENTS, dict(META, kit=kit, observed={}))
+        rows = [json.loads(l) for l in (d / "v2.manifest.jsonl").read_text().splitlines()]
+        rows[0]["cooldowns_from"] = cooldowns_from
+        jsonl(d / "v2.manifest.jsonl", rows)
+        with pytest.raises(err, match=why):
+            Demos.load_split("s", root=d)
+
+
+def test_meta_fps_must_be_a_positive_finite_number(tmp_path):
+    for n, fps in enumerate((0, -10.0, None, "10", float("inf"), float("nan"), True)):
+        d = fresh(tmp_path, f"f{n}")
+        events_file(d / "v.events.jsonl", SEGS, [], dict(META, fps=fps))
+        with pytest.raises(FormatError, match="meta fps .* must be a positive finite number"):
+            demos.events_file_segments(d / "v.events.jsonl")
+
+
+def test_an_event_known_inside_the_bridged_stretch_is_visible_only_when_bridged(tmp_path):
+    """Both window modes are covered: known after its own segment but inside the stretch, it is recorded as unbridged-only."""
+    segs = [dict(start_t=0.0, end_t=20.0, started_by="run_start", ended_by="scoreboard"),
+            dict(start_t=20.6, end_t=40.0, started_by="scoreboard_closed", ended_by="run_end")]
+    ev = [dict(kind="hp_lost", t_from=19.5, t_to=19.8, amount=5, before=250, after=245, known_at=21.0)]
+    d = Demos.load(make_vod(tmp_path, segs=segs, events=ev, duration_s=40.0, split="train", decisions=[22.0]))
+    assert [(k.t, k.reason) for k in d.skipped] == [(19.8, "known_after_segment_end_unbridged")]
+    bridged, = d.observations("train", decisions="manifest")
+    unbridged, = d.observations("train", decisions="manifest", across_overlays=False)
+    assert [e.kind for e in bridged.events] == ["hp_lost"] and unbridged.events == ()
 
 
 def test_every_knowledge_violation_is_a_named_load_error_with_file_line_and_event(tmp_path):
@@ -1354,7 +1471,11 @@ def test_an_archived_experiment_is_never_a_loader_input(tmp_path):
     (exp / "abs.manifest.jsonl").write_bytes(outside.read_bytes())   # and outside: only the manifest's own path is in the archive
     with pytest.raises(FormatError, match="archived experiment .* is never a loader input"):
         demos.read_manifest(exp / "abs.manifest.jsonl")
-    for call in (lambda: Demos.load(exp), lambda: Demos.load(exp / "vodA.manifest.jsonl"),
+    link = tmp_path / "innocent"
+    link.symlink_to(exp)                                            # a symlink elsewhere to the archive resolves into it
+    for call in (lambda: demos.events_file_segments(exp / "vodA.events.jsonl"),
+                 lambda: demos.events_file_segments(link / "vodA.events.jsonl"), lambda: Demos.load(link),
+                 lambda: Demos.load(exp), lambda: Demos.load(exp / "vodA.manifest.jsonl"),
                  lambda: Demos.load(tmp_path / "data" / "experiments"), lambda: demos.read_manifest(exp / "vodA.manifest.jsonl"),
                  lambda: demos.write_manifest(tmp_path / "out.manifest.jsonl",           # a manifest outside, pointing in
                                               header(events=str(exp / "vodA.events.jsonl")), SEGS)):
