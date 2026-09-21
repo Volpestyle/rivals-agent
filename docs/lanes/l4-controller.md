@@ -3,10 +3,51 @@
 Linear: VUH-1296. Evidence: `docs/evidence/l4/`. Raw measurements: `C:\rivals-agent\data\l4\` on the PC.
 
 The game is in the Practice Range as Spider-Man on the plaza beside the spawn room door's planter, facing the Luna Snow bot
-where the third M2 start phase accepted the view, idle, no pad connected; the range's inactivity drop returns it to the
-lobby by itself. **The PC holds main**: `agent/`, `scripts/` (with templates) and `perception/` from `git archive a7fff98`,
-all 42 tracked files verified by sha256, no extras (the branch-only `agent/startup.py` and `scripts/padprime_m1.py` are
-removed). **The `plaza30` run has not been made**; nothing follows M2 until the lead says so.
+where the M2 replacement session's start phase accepted the view, idle, no pad connected; the range's inactivity drop
+returns it to the lobby by itself. **The PC holds main**: `agent/`, `scripts/` (with templates) and `perception/` from
+`git archive a7fff98`, all 42 tracked files verified by sha256, no extras (the branch-only `agent/startup.py` and
+`scripts/padprime_m1.py` are removed). **The `plaza30` run has not been made**; nothing follows until the lead says so.
+
+## M2 replacement session `m2-pose-4` at 7668ade (VUH-1314), by the co-lead's explicit authorization: accepted, still, no banner
+
+One arrival attempt, one pose-only invocation, no retry. Session 2 (`m2-pose-2`) stays on the record below as a
+PROTOCOL-INVALID START (its precondition, an exit 0 arrival on the plaza, was violated by this lane's launch line); it is
+neither a valid M2 pass nor a valid-start failure, and this session does not erase or replace it.
+
+**Deploy hash checks.** Before: `git archive 7668ade`, 44 files, every sha256 equal to `git show 7668ade:<path>` and to the
+PC's copy, no extras; `capture.py preflight` passed (165 dxcam frames in 1 s). After: `git archive a7fff98`, 42 files; the
+first comparison listed the two branch-only files still on the PC, they were removed, and the PC equals a7fff98 for all 42
+files with no extras.
+
+**The gate** (`m2-pose-4-launch-gate.txt`, with the two launch scripts `m2-pose-4-launch-arrival.sh` and
+`m2-pose-4-launch-pose-only.sh`, exactly as run): the game was let drop to the lobby by itself; `reenter.py` ran bare with
+its whole output to a file; its OWN exit status, written by `cmd` as `EXIT !errorlevel!` on the PC, was read straight from
+that log with no filter in between: **0**. Corroboration only: its line `in the Practice Range as Spider-Man`, every press
+at 3-92 ms proof age, and the end pose by eye on a desktop screenshot (`m2-pose-4-arrival-endpose.jpg`): on the plaza
+beside the planter, facing the Luna Snow bot at x 0.45, Hero Simulation console to her left, stairs right, no door in view.
+Only then the pose-only invocation.
+
+| | `m2-pose-4` (18:07:48) |
+|---|---|
+| Exit code / last line | **0**, `start: plaza view confirmed after 2 turns (5.93 s)`, `loop: pose only: plaza start view confirmed after 2 turns` |
+| Prime / search pulses | 1 prime + **1** search |
+| First send returned after `LiveIO` returned; `LiveIO` itself | 11.8 ms; 594 ms |
+| Prime neutral -> first / second plaza confirmation | **5.541 s / 5.581 s** (prime done 0.310 s; confirming frames stamped 5.852 s and 5.891 s after `LiveIO` returned) |
+| Start pose (first frame) | on the plaza beside the planter, facing the Luna Snow bot at x 0.45; no door in view |
+| After the prime (first `look`, LIVE `plaza` False) | the planter and the door's dark housing; the bot out of the left edge (more than 50 degrees) |
+| END pose | facing the Luna Snow bot (name bar readable) at x 0.44, console to her left, stairs right, planter's rim bottom right; **no door in view**; 1.9 degrees RIGHT of the start view (scene shift -31 native px, response 0.43), so here the left search pulse turned slightly LESS than the prime (sessions 1 and 3: 11 and 4 degrees more) |
+| Banner at the confirmations (recording) | **GONE**: up 0.28-1.19 s after the prime's onset only; confirmations at 5.83 and 5.86 s (the second banner, after the pad's removal, is at 7.64-8.58 s) |
+| View at the confirmations (recording) | **STILL**: the search turn's last moving frame is at 8.78 s of the recording, the confirmations at 8.930 and 8.963 s (about 0.1 s later); rate within 5 frames either side -0.2 to +0.2 deg/s; the two confirming NATIVE frames differ by 0.00-0.01 px and are distinct files; 0.08 degrees over the second after the acceptance |
+| LIVE `plaza` / REPLAY on the stored native step PNGs (kept apart) | LIVE: False, True, True on the three look rows. REPLAY (main's `plaza_view`, nothing changed): the same |
+| Retained files, all opened | `start.json`, `start-steps.jsonl` (8 rows), 8 step PNGs, both confirming native PNGs: all present and readable |
+| Acceptance | **PASS** |
+
+With sessions 1 and 3 that is three valid accepted measurements: in each, prime + one left search, both confirmations
+5.54-5.64 s after the prime went neutral, banner gone, view still, no door in view, the bot at x 0.44-0.50. Yaw method and
+its limits as in the M2 section below (`m2-read.py`). Recording: `data/video/m2-pose-4.mp4` (native, 60 fps, 45 s) on the
+Mac and in `C:\rivals-agent\data\video\`; the run's files are `data/l1/m2-pose-4/` on both. Evidence:
+`m2-pose-4-start.json`, `...-start-steps.jsonl`, `...log`, `...-confirm-{1,2}-native.jpg`, `...-frames.jpg`,
+`...-recording-read.json`, `...-yaw.png`, `...-arrival-reenter.log`, `...-arrival-endpose.jpg`, the gate and launch files.
 
 ## M2: three supervised pose-only sessions at 7668ade (VUH-1314): 2 accepted with a still view and no banner; 1 is invalid
 
