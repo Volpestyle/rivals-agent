@@ -6,6 +6,7 @@ import dataclasses
 import json
 import os
 import random
+import re
 from pathlib import Path
 
 import pytest
@@ -62,6 +63,8 @@ def with_pos(e):
     a cause (here damage / heal unless the test says otherwise)."""
     e = {**e, "slot_pos": e["slot"]} if e.get("slot") and "slot_pos" not in e else dict(e)
     e.setdefault("known_at", e.get("t_to"))
+    if isinstance(e["known_at"], (int, float)):
+        e.setdefault("known_i", round(e["known_at"] * META["fps"]))     # its frame index at the file's sampling rate
     e.setdefault("cause", {"hp_lost": "damage", "hp_gained": "heal"}.get(e.get("kind")))
     return e
 
@@ -997,7 +1000,7 @@ def test_a_cast_at_an_unidentified_position_stays_null_through_every_window(tmp_
 
 
 def test_a_guessed_ability_name_is_refused(tmp_path):
-    cast = dict(kind="ability_cast", t_from=10.0, t_to=10.4, amount=8, before="off", after=8, known_at=10.4, cause=None)
+    cast = dict(kind="ability_cast", t_from=10.0, t_to=10.4, amount=8, before="off", after=8, known_at=10.4, known_i=104, cause=None)
     for n, (mapping, extra, why) in enumerate([
             ({"swing": "swing"}, dict(slot="teamup", slot_pos="teamup"), "position 'teamup', where the icon mapping says None"),
             (None, dict(slot="swing", slot_pos="swing"), "position 'swing', where the icon mapping says None"),     # nothing identified
@@ -1152,20 +1155,120 @@ LATE = [dict(kind="ability_cast", t_from=9.0, t_to=10.0, slot="get_over_here", a
 
 
 def test_an_event_is_visible_only_from_its_knowledge_time_never_from_its_occurrence(tmp_path):
-    """Prefix property: at every decision t the window holds exactly the events with known_at <= t, and an event that occurred by
-    t (t_to <= t) but is known later (t < known_at) is not visible; it arrives at known_at, and meanwhile it is hindsight."""
+    """Availability picks the observation, occurrence picks the outcome. At every decision t the observation holds exactly the
+    events with known_at <= t whose occurrence reaches into the history (t_to >= context_start); the outcome holds exactly those
+    whose occurrence ends after t (t_to > t) and begins by the window's end. An event that occurred by t but is known later is in
+    neither list at t: it arrives in the first observation at or after its known_at, and never becomes a later decision's target."""
     d = Demos.load(make_vod(tmp_path, events=LATE, split="train"))
-    got = {round(o.t, 1): o for o in d.observations("train", hz=10.0, frame_hz=5.0, history_s=10.0)}
-    for t, o in got.items():
+    obs = {round(o.t, 1): o for o in d.observations("train", hz=10.0, frame_hz=5.0, history_s=10.0)}
+    out = {round(s.observation.t, 1): s.hindsight.outcome for s in d.samples("train", hz=10.0, frame_hz=5.0, history_s=10.0,
+                                                                               outcome_s=5.0, hindsight=True)}
+    for t in sorted(obs):
         if t > 20.0:
             break
-        want = {e["kind"] for e in LATE if e["known_at"] <= t + 1e-6 and e["t_from"] >= t - 10.0 - 1e-6}   # known, and in the history
-        assert {e.kind for e in o.events} == want, t
-    assert [e.kind for e in got[12.0].events] == [] and [e.kind for e in got[13.2].events] == ["hp_lost"]   # 10.0 <= 13.2 < 13.3
-    assert sorted(e.kind for e in got[13.3].events) == ["ability_cast", "hp_lost"]
-    s, = [s for s in d.samples("train", hz=10.0, hindsight=True) if round(s.observation.t, 1) == 11.0]
-    assert [e.kind for e in s.hindsight.outcome.events] == ["hp_lost", "ability_cast"]   # not known at 11.0: both are hindsight
-    assert [e.known_at for e in s.hindsight.outcome.events] == [12.1, 13.3]              # in the order they became known
+        seen = {e["kind"] for e in LATE if e["known_at"] <= t + 1e-6 and e["t_to"] >= t - 10.0 - 1e-6}
+        ahead = {e["kind"] for e in LATE if e["t_to"] > t + 1e-6 and e["t_from"] <= t + 5.0 + 1e-6}
+        assert {e.kind for e in obs[t].events} == seen and {e.kind for e in out[t].events} == ahead, t
+        assert not seen & ahead, t                                                  # never both
+        assert all(e.t_to > t for e in out[t].events), t                          # an outcome event's occurrence ends after t
+    assert {e.kind for e in out[9.5].events} == {"ability_cast", "hp_lost"}        # 9.5 straddles the cast: still ahead
+    for t in (10.0, 11.0, 12.0, 13.2):                                              # the cast occurred, is not yet known:
+        assert "ability_cast" not in {e.kind for e in obs[t].events} | {e.kind for e in out[t].events}, t   # in neither list
+    assert [e.kind for e in obs[13.2].events] == ["hp_lost"]
+    assert [e.kind for e in obs[13.3].events] == ["hp_lost", "ability_cast"]      # the order they became known, not occurred
+
+
+def test_damage_that_landed_before_a_decision_is_never_its_outcome(tmp_path):
+    """The review's P1-1 repro: occurrence [1.0, 1.2], known at 2.5. At 1.5, 2.0 and 2.4 it is neither observed nor a target."""
+    hit = dict(kind="hp_lost", t_from=1.0, t_to=1.2, amount=80, before=250, after=170, known_at=2.5)
+    d = Demos.load(make_vod(tmp_path, events=[hit], split="train"))
+    got = {round(s.observation.t, 1): s for s in d.samples("train", hz=10.0, hindsight=True)}
+    for t in (1.5, 2.0, 2.4):
+        assert got[t].hindsight.outcome.events == () and got[t].observation.events == (), t
+    assert [e.kind for e in got[2.5].observation.events] == ["hp_lost"] and got[0.5].hindsight.outcome.events[0].t_to == 1.2
+
+
+def test_a_wide_ability_uncertain_is_handed_to_every_window_it_overlaps(tmp_path):
+    """The review's P1-2 repro: uncertainty over [2.0, 6.0], known at 6.2, 5 s of history. Every window whose history still
+    overlaps the interval carries it, so a consumer can block a negative for that channel; none before it is known."""
+    un = dict(kind="ability_uncertain", t_from=2.0, t_to=6.0, slot="uppercut", amount=6, before=None, after=None, known_at=6.2)
+    d = Demos.load(make_vod(tmp_path, events=[un], split="train"))
+    got = {round(o.t, 1): [e.kind for e in o.events] for o in d.observations("train", hz=10.0, history_s=5.0)}
+    assert all(got[t] == [] for t in (5.0, 6.0, 6.1))                                # not known yet
+    assert all(got[t] == ["ability_uncertain"] for t in (6.2, 7.0, 8.0, 9.0, 10.0, 11.0))
+    assert got[11.1] == []                                                           # the history [6.1, 11.1] no longer overlaps it
+
+
+def test_a_mask_never_erases_an_ability_uncertain(tmp_path):
+    """Masking can only make a slot less known: an uncertainty whose every frame an annotator masked is still handed over."""
+    d = fresh(tmp_path, "m")
+    (d / "m.json").write_text(json.dumps(visibility([2.0, 6.0, 6.2], hud="unavailable", uppercut="unavailable")))
+    un = dict(kind="ability_uncertain", t_from=2.0, t_to=6.0, slot="uppercut", amount=6, before=None, after=None, known_at=6.2)
+    cast = dict(kind="ability_cast", t_from=5.8, t_to=6.0, slot="uppercut", amount=6, before="off", after=6, known_at=6.2)
+    make_vod(d, events=[un, cast], split="train", annotations=[annotation(8.0, context_mask="m.json")], decisions=[8.0])
+    o, = Demos.load(d).observations("train", decisions="manifest")
+    assert [e.kind for e in o.events] == ["ability_uncertain"]                        # the cast read off masked frames is dropped
+
+
+def test_an_event_whose_evidence_completes_only_at_a_masked_frame_is_dropped(tmp_path):
+    """The known_at frame counts: occurrence frames clean, the frame that completed the evidence masked."""
+    d = fresh(tmp_path, "k")
+    (d / "m.json").write_text(json.dumps(visibility([7.0], get_over_here="unavailable")))
+    cast = dict(kind="ability_cast", t_from=5.0, t_to=5.5, slot="get_over_here", amount=8, before="off", after=8, known_at=7.0)
+    make_vod(d, events=[cast], split="train", annotations=[annotation(8.0, context_mask="m.json")], decisions=[8.0])
+    o, = Demos.load(d).observations("train", decisions="manifest")
+    assert o.events == ()
+
+
+def test_the_outcome_ends_at_its_window(tmp_path):
+    """Occurrence beginning after the outcome window is not in it, however soon after."""
+    ev = [dict(kind="hp_lost", t_from=13.0, t_to=13.2, amount=5, before=250, after=245),
+          dict(kind="hp_lost", t_from=15.2, t_to=15.4, amount=5, before=245, after=240)]
+    s, = Demos.load(make_vod(tmp_path, events=ev, split="train", decisions=[10.0])).samples("train", decisions="manifest",
+                                                                                              hindsight=True, outcome_s=5.0)
+    assert [e.t_from for e in s.hindsight.outcome.events] == [13.0]
+
+
+def test_an_event_known_after_its_segment_ends_is_recorded_as_never_visible(tmp_path):
+    """Evidence completing past the segment's hard boundary reaches no window: a Demos.skipped row, never silence."""
+    ev = [dict(kind="hp_lost", t_from=19.0, t_to=19.5, amount=5, before=250, after=245, known_at=34.0),
+          dict(kind="hp_lost", t_from=10.0, t_to=10.2, amount=5, before=245, after=240, known_at=10.2)]
+    d = Demos.load(make_vod(tmp_path, events=ev, split="train"))
+    assert [(k.t, k.reason) for k in d.skipped] == [(19.5, "known_after_segment_end")]
+    assert not any(e.t_to == 19.5 for o in d.observations("train") for e in o.events)
+
+
+def test_known_i_and_the_hand_built_leak_guard_and_readable_are_checked(tmp_path):
+    base = dict(kind="hp_lost", t_from=4.0, t_to=4.2, amount=25, before=250, after=225, cause="damage", known_at=5.0)
+    for n, ki in enumerate([None, "50", 50.0, True, -5, 99999, 52]):                   # 50 is 5.0 s at 10 fps; 52 is two frames off
+        d = fresh(tmp_path, f"i{n}")
+        events_file(d / "v.events.jsonl", SEGS, [dict(base, known_i=ki)], pos=False)
+        with pytest.raises(demos.KnowledgeError, match=r"known_i .* must be the non-negative frame index of known_at"):
+            demos.write_manifest(d / "v.manifest.jsonl", header(events="v.events.jsonl"), SEGS)
+    d = fresh(tmp_path, "ok")
+    events_file(d / "v.events.jsonl", SEGS, [dict(base, known_i=51)], pos=False)            # within a frame: accepted, kept
+    assert demos.write_manifest(d / "v.manifest.jsonl", header(events="v.events.jsonl"), SEGS).events[0].known_i == 51
+    f = lambda t: FrameRef("c", t, "image", "x.jpg")
+    with pytest.raises(LeakageError):                                                     # occurrence after t, known "before" it
+        Observation(clip="c", segment=0, t=5.0, frames=(f(5.0),), events=(Event("hp_lost", 4.9, 9.9, known_at=4.9),), inputs=(),
+                    context_start=0.0, truncated_context=False)
+    clip = demos.read_manifest(make_vod(fresh(tmp_path, "r"), events=EVENTS))
+    with pytest.raises(demos.KnowledgeError, match="without a finite knowledge time"):
+        Demos._readable(clip, Event("hp_lost", 4.0, 4.2))
+
+
+def test_a_kind_the_writer_never_emits_is_refused(tmp_path):
+    for n, kind in enumerate(("hp_los", "slot_ready", "Ability_cast", "")):
+        with pytest.raises(FormatError, match=f"kind {kind!r} is not one the format 5 writer emits"):
+            make_vod(fresh(tmp_path, f"k{n}"), events=[dict(kind=kind, t_from=4.0, t_to=4.2, amount=1, before=1, after=0)])
+
+
+def test_the_loaders_kind_vocabulary_is_the_writers():
+    """Every kind literal perception/events.py emits is in EVENT_KINDS, and every EVENT_KINDS entry is one it emits."""
+    src = demos.PRODUCER.read_text()
+    kinds = set(re.findall(r'"((?:ability|charges|icon|web_cluster|hp|shield|ult)_[a-z_]+|max_hp_changed|ko_feed|death|respawn|'
+                           r'cooldown_ended)"', src))
+    assert kinds == set(demos.EVENT_KINDS)
 
 
 def test_every_knowledge_violation_is_a_named_load_error_with_file_line_and_event(tmp_path):
@@ -1227,7 +1330,11 @@ def test_the_kit_record_is_carried_and_must_agree_with_the_manifest(tmp_path):
     for n, (kit, err, why) in enumerate([(dict(META["kit"], patch="Season 9"), ProvenanceError, "timers used patch 'Season 9'"),
                                          (dict(META["kit"], patch=None), ProvenanceError, "timers used patch None"),
                                          ({k: v for k, v in META["kit"].items() if k != "alarms"}, FormatError, "kit must be a record"),
-                                         (None, FormatError, "kit must be a record")]):
+                                         (None, FormatError, "kit must be a record"),
+                                         (dict(META["kit"], durations="junk"), FormatError, "kit must be a record"),
+                                         (dict(META["kit"], durations={"swing": {"length": "6"}}), FormatError, "kit must be a record"),
+                                         (dict(META["kit"], alarms=[]), FormatError, "kit must be a record"),
+                                         (dict(META["kit"], table=7), FormatError, "kit must be a record")]):
         d = fresh(tmp_path, f"kit{n}")
         events_file(d / "v.events.jsonl", SEGS, EVENTS, dict(META, kit=kit))
         with pytest.raises(err, match=why):
@@ -1237,10 +1344,22 @@ def test_the_kit_record_is_carried_and_must_agree_with_the_manifest(tmp_path):
 def test_an_archived_experiment_is_never_a_loader_input(tmp_path):
     exp = tmp_path / "data" / "experiments" / "b0-multilabel-v1"
     exp.mkdir(parents=True)
-    make_vod(exp)                                                   # even a well-formed manifest there
-    for p in (exp, exp / "vodA.manifest.jsonl", tmp_path / "data" / "experiments"):
+    make_vod(tmp_path, events=EVENTS)
+    with pytest.raises(FormatError, match="archived experiment .* is never a loader input"):
+        make_vod(exp)                                               # nothing can even be built there
+    for f in ("vodA.manifest.jsonl", "vodA.events.jsonl"):
+        (exp / f).write_bytes((tmp_path / f).read_bytes())          # a well-formed manifest and events file inside the archive
+    outside = fresh(tmp_path, "out") / "abs.manifest.jsonl"          # every companion absolute
+    demos.write_manifest(outside, header(media={"kind": "video", "path": str(tmp_path / "vodA.mp4")}), SEGS)
+    (exp / "abs.manifest.jsonl").write_bytes(outside.read_bytes())   # and outside: only the manifest's own path is in the archive
+    with pytest.raises(FormatError, match="archived experiment .* is never a loader input"):
+        demos.read_manifest(exp / "abs.manifest.jsonl")
+    for call in (lambda: Demos.load(exp), lambda: Demos.load(exp / "vodA.manifest.jsonl"),
+                 lambda: Demos.load(tmp_path / "data" / "experiments"), lambda: demos.read_manifest(exp / "vodA.manifest.jsonl"),
+                 lambda: demos.write_manifest(tmp_path / "out.manifest.jsonl",           # a manifest outside, pointing in
+                                              header(events=str(exp / "vodA.events.jsonl")), SEGS)):
         with pytest.raises(FormatError, match="archived experiment .* is never a loader input"):
-            Demos.load(p)
+            call()
 
 
 # --- stale event files: the producer's own rule, not a weaker copy --------------------------------------------------------------
@@ -1315,10 +1434,16 @@ DEMOS = ROOT / "data" / "demos"
 REAL_RUN = ROOT / "data" / "l1" / "tagrun0"
 REAL_REQ = DEMOS / "samples" / "reqmr-2873352801-1920.manifest.jsonl"
 REAL_DAY = DEMOS / "samples" / "daymr-2879354299-21600-60s.manifest.jsonl"
-REAL_SECTION = DEMOS / "vods" / "reqmr-2871472478-5400-900s.manifest.jsonl"      # a retained Twitch section, with scoreboard taps
+# A TRAIN section with scoreboard taps. Never a sealed one (reqmr-2871472478-5400-900s, daymr-2877719252-1800-900s): a test that
+# reads the sealed test set on every run is a leak by habit.
+REAL_SECTION = DEMOS / "vods" / "reqmr-2873352801-1980-900s.manifest.jsonl"
 REAL_UPLOAD = DEMOS / "youtube" / "reqmr" / "Cf_2goe1snQ.manifest.jsonl"          # an edited upload: hard cuts, an unmapped teamup
 REAL_RERUN = DEMOS / "annotations" / "codex-rerun" / "reqmr-2873352801-1920.jsonl"
 NO_DATA = pytest.mark.skipif(not DEMOS.is_dir(), reason="data/demos is not on this machine")
+# Knowingly red where data/ exists: every events file there is format 4, which this loader refuses by name. Strict, so the marker
+# must come off when the format 5 regeneration lands and these pass; only a FormatError is expected, any other failure is a failure.
+FORMAT5_PENDING = pytest.mark.xfail(raises=FormatError, strict=True,
+                                    reason="data/demos/events is format 4 until the format 5 regeneration; the loader refuses it")
 
 
 def hard_gaps(clip, bridge=demos.MAX_BRIDGE_S):
@@ -1339,6 +1464,7 @@ def assert_windows_hold(d, clip, split="inspection_only", **kw):
 
 
 @NO_DATA
+@FORMAT5_PENDING
 def test_both_sample_clips_load_under_the_current_format():
     for path in (REAL_REQ, REAL_DAY):
         clip = demos.read_manifest(path)                             # a format 3 events file fails here, naming both versions
@@ -1347,6 +1473,7 @@ def test_both_sample_clips_load_under_the_current_format():
 
 
 @NO_DATA
+@FORMAT5_PENDING
 def test_the_req_sample_manifest_iterates():
     d = Demos.load(REAL_REQ)
     clip = d.clips["reqmr-2873352801-1920"]
@@ -1360,6 +1487,7 @@ def test_the_req_sample_manifest_iterates():
 
 
 @NO_DATA
+@FORMAT5_PENDING
 def test_the_codex_rerun_rows_load_bridged_with_the_annotators_own_masks(tmp_path):
     real = demos.read_manifest(REAL_REQ)
     head = {k: v for k, v in real.header.items() if k != "type"}
@@ -1389,22 +1517,24 @@ def test_the_codex_rerun_rows_load_bridged_with_the_annotators_own_masks(tmp_pat
 
 
 @NO_DATA
+@FORMAT5_PENDING
 def test_a_retained_section_loads_and_bridges_its_scoreboard_taps():
     d = Demos.load(REAL_SECTION)
     clip, = d.clips.values()
-    assert clip.events_meta["format"] == demos.EVENT_FORMAT and clip.events_meta["cuts"] == 4 and clip.header["edited_upload"] is False
-    assert (clip.cooldowns, clip.patch, clip.splittable, d.splits[clip.id]) == ("normal", "Season 10, Version 20260911", True, "inspection_only")
+    assert clip.events_meta["format"] == demos.EVENT_FORMAT and clip.header["edited_upload"] is False
+    assert (clip.cooldowns, clip.patch, clip.splittable, d.splits[clip.id]) == ("normal", "Season 10, Version 20260911", True, "train")
     taps = [n for n in range(len(clip.segments) - 1) if clip.soft_gap(n)]
     assert taps                                                                             # scoreboard taps under the maximum
-    obs = list(d.observations("inspection_only", hz=1.0))
+    obs = list(d.observations("train", hz=1.0))
     bridged = [o for o in obs if any(f.masked and "scoreboard" in f.masked.reasons for f in o.frames)]
     assert bridged and all(not o.truncated_context or o.context_start > o.t - 5.0 for o in bridged)
-    assert assert_windows_hold(d, clip, hz=1.0) == len(obs)
-    for split in ("train", "val", "test"):
+    assert assert_windows_hold(d, clip, "train", hz=1.0) == len(obs)
+    for split in ("val", "test", "inspection_only"):
         assert list(d.observations(split)) == []
 
 
 @NO_DATA
+@FORMAT5_PENDING
 def test_an_edited_upload_loads_never_splittable_and_never_crosses_a_cut():
     d = Demos.load(REAL_UPLOAD)
     clip, = d.clips.values()
@@ -1514,6 +1644,7 @@ def test_a_pending_side_is_declared_empty_and_asking_it_for_anything_is_an_error
 
 
 @NO_DATA
+@FORMAT5_PENDING
 def test_the_first_season_10_split_is_a_proposal_with_the_reserved_sessions_sealed_as_test():
     """Pins the state after the lead promoted the two train sessions in their own manifests (2026-09-20)."""
     d = Demos.load_split("s10-normal-v0")

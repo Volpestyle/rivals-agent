@@ -86,6 +86,12 @@ FIXED_SLOTS = ("ult",)
 # Vocabulary retired by an earlier format, refused inside a current file: format 2 split ability_used / ability_ready into
 # ability_cast and the icon kinds; format 5 renamed slot_unavailable / slot_available to icon_dimmed / icon_lit (display state only).
 REMOVED_KINDS = ("ability_used", "ability_ready", "slot_unavailable", "slot_available")
+# Every kind the format 5 writer emits (docs/lanes/l2-hud.md, the kind list; the literals of perception/events.py, pinned by
+# test_the_loaders_kind_vocabulary_is_the_writers). Anything else is refused: a typo like "hp_los" would load, vanish from every
+# downstream kind filter and escape the cause rule.
+EVENT_KINDS = ("ability_cast", "ability_uncertain", "cooldown_ended", "charges_spent", "charges_regained", "icon_dimmed", "icon_lit",
+               "web_cluster_fired", "web_cluster_reloaded", "hp_lost", "hp_gained", "shield_decayed", "shield_gained", "max_hp_changed",
+               "ult_ready", "ult_spent", "ko_feed", "death", "respawn")
 # hp_lost / hp_gained say which way hp moved; `cause` says why, and only these values: "unknown" is not damage (or heal).
 CAUSES = {"hp_lost": ("damage", "unknown"), "hp_gained": ("heal", "unknown")}
 # A format 5 meta line's `kit` record: the durations the writer's timer model used (docs/lanes/l2-hud.md, "Writer fix, format 5").
@@ -263,7 +269,7 @@ class Observation:
 
     def __post_init__(self):
         late = [f for f in self.frames if f.t > self.t + EPS] \
-            + [e for e in self.events or () if e.known_at is None or e.known_at > self.t + EPS] \
+            + [e for e in self.events or () if e.known_at is None or e.known_at > self.t + EPS or e.t_to > self.t + EPS] \
             + [i for i in self.inputs or () if i.t > self.t + EPS]
         if late or not self.frames:
             raise LeakageError(f"observation at t={self.t} would hold {len(late)} item(s) later than t" if late
@@ -346,8 +352,8 @@ def _num(v, where, allow_none=False):
 
 
 def _check_events_format(path, rows):
-    """The meta line of `rows` (an events file's lines), or FormatError unless it is format 4 and carries META_KEYS. A file with
-    no meta line, or a meta line without `format`, is format 1 by definition."""
+    """The meta line of `rows` (an events file's lines), or FormatError unless it is EVENT_FORMAT, from the current writer, and
+    carries META_KEYS. A file with no meta line, or a meta line without `format`, is format 1 by definition."""
     meta = next((r for _, r in rows if r.get("type") == "meta"), None)
     fmt = None if meta is None else meta.get("format")
     if fmt != EVENT_FORMAT:
@@ -454,8 +460,9 @@ class Clip:
                 raise ProvenanceError(f"{self.id}: {field}={h[field]!r} from {basis!r}: a known value needs a basis, and unknown has none")
         self.kit = None if self.events_meta is None else self.events_meta["kit"]
         if self.events_meta is not None:
-            if not isinstance(self.kit, dict) or any(k not in self.kit for k in KIT_KEYS):
-                raise FormatError(f"{self.id}: the events meta line's kit must be a record with {list(KIT_KEYS)}, not {self.kit!r}")
+            if not isinstance(self.kit, dict) or any(k not in self.kit for k in KIT_KEYS) or not _kit_shaped(self.kit):
+                raise FormatError(f"{self.id}: the events meta line's kit must be a record with {list(KIT_KEYS)} (patch and table a "
+                                  f"string or null, durations {{position: {{length, lock}}}}, alarms a record), not {self.kit!r}")
             if (self.kit["patch"] or PATCH_UNKNOWN) != self.patch:
                 raise ProvenanceError(f"{self.id}: the events file's timers used patch {self.kit['patch']!r} "
                                       f"({self.kit['patch_from']}), the manifest says {self.patch!r}: one of them is wrong")
@@ -510,7 +517,7 @@ class Clip:
     # -- loading --
     def _resolve(self, rel):
         p = Path(rel)
-        return p if p.is_absolute() else self.base / p
+        return _refuse_archive(p if p.is_absolute() else self.base / p)
 
     def _load_media(self):
         media = self.header["media"]
@@ -563,6 +570,12 @@ class Clip:
             if isinstance(lo, (int, float)) and isinstance(hi, (int, float)) and not lo <= hi <= k + EPS:
                 raise KnowledgeError(f"{where}: needs t_from <= t_to <= known_at (an assertion is not known before its occurrence "
                                      f"could have ended)")
+            if r.get("kind") not in EVENT_KINDS:
+                raise FormatError(f"{where}: kind {r.get('kind')!r} is not one the format {EVENT_FORMAT} writer emits")
+            ki = r.get("known_i")
+            if isinstance(ki, bool) or not isinstance(ki, int) or ki < 0 or abs(ki / float(meta["fps"]) - k) > 1 / float(meta["fps"]) + EPS:
+                raise KnowledgeError(f"{where}: known_i {ki!r} must be the non-negative frame index of known_at at the file's "
+                                     f"{meta['fps']} fps")
             want = CAUSES.get(r.get("kind"), (None,))
             if r.get("cause") not in want:
                 raise FormatError(f"{where}: cause {r.get('cause')!r} is not one of {list(want)}")
@@ -635,6 +648,25 @@ VISIBILITY_META = ("t", "pts", "segment", "reasons")
 VISIBLE = ("visible", "partial")
 
 
+def _kit_shaped(kit):
+    """The kit record's value types, as the writer's kit_meta makes them."""
+    num = lambda v: v is None or (isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v))
+    return all(kit[k] is None or isinstance(kit[k], str) for k in ("patch", "patch_from", "table")) \
+        and isinstance(kit["alarms"], dict) and isinstance(kit["durations"], dict) \
+        and all(isinstance(d, dict) and set(d) == {"length", "lock"} and num(d["length"]) and num(d["lock"])
+                for d in kit["durations"].values())
+
+
+def _refuse_archive(p):
+    """FormatError for any path inside a data/experiments/ directory: an experiment's archive is the output of a fit on its own event
+    format, never an input to a new one."""
+    parts = Path(p).resolve().parts
+    if any(a == "data" and b == "experiments" for a, b in zip(parts, parts[1:])):
+        raise FormatError(f"{p}: an archived experiment (data/experiments/) is never a loader input: its windows and events are "
+                          f"the format of the run that made them")
+    return p
+
+
 class _ImageFrames:
     """Frames a recorder saved as jpgs, found in frames.jsonl by `file`."""
     kind = "image"
@@ -684,7 +716,7 @@ def _span(items, lo, hi, key):
 
 # --- reading a whole clip, or a recorder's run directory as it is -------------------------------------------------
 def read_manifest(path):
-    path = Path(path)
+    path = Path(_refuse_archive(path))
     rows = [r for _, r in _jsonl(path)]
     if not rows or rows[0].get("type") != "clip":
         raise FormatError(f"{path}: the first line must be the clip header ({{\"type\": \"clip\", ...}})")
@@ -754,10 +786,7 @@ def discover(*paths):
     archive (a `data/experiments/` directory): those are outputs of a fit on their own event format, never inputs to a new one."""
     out = []
     for p in map(Path, paths):
-        parts = p.resolve().parts
-        if any(a == "data" and b == "experiments" for a, b in zip(parts, parts[1:])):
-            raise FormatError(f"{p}: an archived experiment (data/experiments/) is never a loader input: its windows and events are "
-                              f"the format of the run that made them")
+        _refuse_archive(p)
         if p.is_file():
             out.append(read_manifest(p))
         elif (p / "manifest.jsonl").is_file():
@@ -834,6 +863,13 @@ class Demos:
         check_splits(clips, self.splits)
         self.min_segment_s, self.max_bridge_s, self.skipped = min_segment_s, max_bridge_s, []
         self.pending = {}   # side -> why it is empty, from a split file (load_split)
+        # An event known only after the stretch its segment belongs to has ended (the writer settles segmentation over a lag, so this
+        # is the last ~1-2.5 s of events of a segment) reaches no window's observation: recorded, never silent.
+        for c in clips:
+            for e in c.events or ():
+                last = c.stretch(c.segments[e.segment], max_bridge_s)[1]
+                if e.known_at > last.end_t + EPS:
+                    self._skip(c, e.t_to, "known_after_segment_end")
         self.sealed = {}    # sealed side -> the clip ids a split file puts on it (load_split)
 
     def _skip(self, clip, t, reason):
@@ -1005,7 +1041,14 @@ class Demos:
     @staticmethod
     def _readable(clip, e):
         """False when a frame the event rests on (t_from, t_to, or known_at, where its evidence completed) is masked for the HUD or
-        the event's own field: no HUD-derived feature comes from a frame that must not be learned from."""
+        the event's own field: no HUD-derived feature comes from a frame that must not be learned from. ability_uncertain is never
+        dropped: it asserts nothing but "unknown", and a mask can only make a slot less known, so erasing it would turn an unknown
+        into an unblocked negative downstream."""
+        if not isinstance(e.known_at, (int, float)) or isinstance(e.known_at, bool) or not math.isfinite(e.known_at):
+            raise KnowledgeError(f"{clip.id}: {e.kind} [{e.t_from}, {e.t_to}] has known_at {e.known_at!r}: an event without a finite "
+                                 f"knowledge time cannot be placed, and is never placed by t_to")
+        if e.kind == "ability_uncertain":
+            return True
         field = (e.slot or e.slot_pos) if e.slot_pos or e.slot else \
             "ammo" if e.kind.startswith("web_cluster") else "hp" if e.kind.split("_")[0] in ("hp", "shield", "max") else None
         h = 0.5 / float(clip.events_meta["fps"])       # the events' own grid: the mask rows nearest the frames they were read off
@@ -1027,7 +1070,7 @@ class Demos:
                 frames.append(f)
         frames = self._masked(clip, frames, across, 0.5 / frame_hz)
         events = None if clip.events is None else tuple(
-            e for e in clip.events if e.segment in ids and e.known_at <= t + EPS and e.t_from >= start - EPS and self._readable(clip, e))
+            e for e in clip.events if e.segment in ids and e.known_at <= t + EPS and e.t_to >= start - EPS and self._readable(clip, e))
         inputs = None if clip.inputs is None else tuple(_span(clip.inputs, start, t, lambda i: i.t))
         return Observation(clip.id, seg.n, t, tuple(reversed(frames)), events, inputs, start,
                            truncated_context=t - history_s < lo - EPS)
@@ -1042,7 +1085,7 @@ class Demos:
                 frames.append(f)
         frames = self._masked(clip, frames, across, 0.5 / frame_hz)
         events = None if clip.events is None else tuple(
-            e for e in clip.events if e.segment in ids and e.known_at > t + EPS and e.t_from <= end + EPS and self._readable(clip, e))
+            e for e in clip.events if e.segment in ids and e.t_to > t + EPS and e.t_from <= end + EPS and self._readable(clip, e))
         cut = last.end_t < t + outcome_s - EPS
         reviews = tuple(clip.outcome_reviews.get(round(t, 3), ()))
         return Hindsight(Outcome(end, tuple(frames), events, last.ended_by if cut else None, cut), reviews)
@@ -1105,7 +1148,7 @@ def hud_segments(rows):
 
 
 def events_file_segments(path):
-    """Manifest segment dicts from the `{"type": "segment", ...}` lines of a per-clip events file (format 4 only)."""
+    """Manifest segment dicts from the `{"type": "segment", ...}` lines of a per-clip events file (EVENT_FORMAT only)."""
     rows = list(_jsonl(path))
     _check_events_format(path, rows)
     return hud_segments([r for _, r in rows if r.get("type") == "segment"])
