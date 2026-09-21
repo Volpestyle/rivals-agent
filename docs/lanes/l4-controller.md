@@ -2,11 +2,69 @@
 
 Linear: VUH-1296. Evidence: `docs/evidence/l4/`. Raw measurements: `C:\rivals-agent\data\l4\` on the PC.
 
-The game is in the Practice Range as Spider-Man where the third `arrival-out` arrival ends: outside the spawn room on the
-plaza side of its door, facing the door's dark housing edge-on, idle, no pad connected
-(`arrival-out-3-20260921-131747-endpose.jpg`); the range's inactivity drop returns it to the lobby about 10 min after the
-last movement. The PC holds `agent/`, `scripts/` (with templates) and `perception/` from `git archive 8c5f800`, all 42
-tracked files verified by sha256, nothing of this lane's scratch beside them.
+The game is in the Practice Range as Spider-Man where the third `arrival-door` arrival ends: INSIDE the spawn room, pressed
+against the rim of its central console, facing the plaza door across it, idle, no pad connected
+(`arrival-door-3-20260921-140151-endpose.jpg`); the range's inactivity drop returns it to the lobby by itself. The PC holds
+`agent/`, `scripts/` (with templates) and `perception/` from `git archive 90aaeb0`, all 42 tracked files verified by sha256,
+nothing of this lane's scratch beside them. No gameplay run follows until the lead says so.
+
+## Three supervised arrivals from spawn at 90aaeb0, second round (VUH-1299): `data/reenter/arrive-20260921-{133804,135001,140151}/`
+
+Three full `scripts/reenter.py` invocations from the PLAY lobby, each left to its own end: no strafe, no help, no other
+input, no 30 s run. `capture.py preflight` passed (145 dxcam frames in 1 s). Between arrivals the game went back to the lobby
+by its own inactivity drop (polled with `--dry-run`, which holds no pad): lobby by 13:49:46 and by 14:01:37. Every menu step
+passed first time in all three (tooltip match 0.92, 1.00, 1.00); no refusal before the range, no re-invocation. After each:
+0 python left, 0 Xbox pads present.
+
+**Native evidence.** A native 2560x1440 60 fps screen recording (`ffmpeg`, `ddagrab` straight into `h264_nvenc`, `-cq 19`,
+85 s, started just before each invocation) covers every arrival whole: `data/video/door{1,2,3}.mp4` on the Mac and
+`C:\rivals-agent\data\video\` on the PC (432, 432, 384 MB; gitignored). For the crossing and the final two plaza
+confirmations the recording's frame that best matches each step's saved decision JPEG (mean abs difference 1.4-2.0 grey
+levels at 320x180) is kept as a native PNG: `data/reenter/arrive-<time>/native/stepNN-native-v<video s>.png` (steps 13-18 for
+arrivals 1 and 2; steps 4, 5, 6, 12, 20, 21 for arrival 3, which has no crossing). These are frames of the recording, within
+one 60 fps frame of the decision frame by appearance; they are not the tool's own proving frames.
+
+**Live predicate results and replays, kept apart.** LIVE is what `reenter.py` logged at the time. REPLAY is `plaza_view` run
+afterwards on a stored image, nothing changed in it (`arrival-door-N-...-replay.jsonl`).
+
+| Step | LIVE `plaza_view` | REPLAY on the native recording frame | REPLAY on the saved 720p JPEG |
+|---|---|---|---|
+| Arrival 1, steps 13, 14 (walks at the door), 15 (out) | False, False, False | False, False, False | False, False, False |
+| Arrival 1, steps 16, 17 (the two confirmations) | **True, True** | True, True | **False, False** |
+| Arrival 2, steps 13, 14, 15 | False, False, False | False, False, False | False, False, False |
+| Arrival 2, steps 16, 17 | **True, True** | True, True | **False, False** |
+| Arrival 3, steps 4, 5, 6, 12, 20 | False throughout | False | False |
+
+The 720p JPEGs do not reproduce the live True; the native recording frames do, on all four confirmations.
+
+Verdicts are by eye on the retained frames, not from the exit code or the row fields (`door_blob_x` / `door_px` are the
+largest current blob, a turn's `door_x` the prior or predicted door, `gate` constant policy text, `t` the logging time after
+the action). Arrival elapsed is first row's log to last row's log (it leaves out the first step); `ARRIVE_S` is scheduled
+action time, not a wall-clock deadline. Invocation wall time is `START` to `EXIT` of the whole `reenter.py` process.
+
+| | Arrival 1 (13:38:00) | Arrival 2 (13:49:57) | Arrival 3 (14:01:47) |
+|---|---|---|---|
+| Exit code / last line | **0**, `RT`, `in the Practice Range as Spider-Man` | **0**, same | **1**, `could not confirm the spawn room was left within 14 s` |
+| Rows / arrival elapsed / invocation wall | 18 / **11.48 s** / 46.5 s | 18 / **11.42 s** / 41.9 s | 21 / **15.01 s** / 49.0 s |
+| Door taken in frame 1 | the PLAZA door, nearest his column (0.442; the other door 0.17, the larger blob in frames 2-3) | the PLAZA door (0.442; the other door at 0.20 is the larger blob in frames 1-2: 8.4k against the plaza door's smaller one) | the PLAZA door (0.441; the other door at 0.20 the larger blob in frames 1-2) |
+| Kept door lost and re-chosen mid-walk | no: no `no door` row before OUT, largest step-to-step move of the selected pane 0.09 | no: largest move 0.09 | no: the selected pane stays at 0.37-0.39 for 16 walks. 'Nearest his column' from a changed pose is NOT EXERCISED in any of the three |
+| a. pane over his column on the step before the door vanishes, and it is the plaza door | **PASS**: step 14 (native), pane 0.34-0.50, hero 0.414; step 13, 0.37-0.51. The plaza door: the planter, the stairs and the Luna bot are beyond it | **PASS**: step 14 (native), pane 0.41-0.54, hero 0.417 (12 px inside the pane's left edge); step 13, 0.36-0.54 | **NOT EXERCISED**: he never reaches the door |
+| b. OUT set, no step onto the door frame | **PASS**: walks at 23.8k and 16.6k, then no door, `out: look around left` (step 15). No jamb snag: the pane shrinks steadily 40k -> 37k -> 24k -> 17k over steps 11-14 | **PASS**: walks at 30.3k and 30.2k, then no door, OUT on step 15. No snag (88k -> 47k -> 37k -> 30k) | **NOT EXERCISED** |
+| c. after OUT: no steer toward and no walk at any door blob | **PASS, weakly exercised**: one post-OUT step, a left turn, on a frame with no lime blob (native replay: no blobs on steps 15-18) | **PASS, weakly exercised**: the same, one left turn, no lime blob in view | **NOT EXERCISED** |
+| d. the end: plaza_view twice, no door in view, a bot ahead | **PASS**: LIVE True on steps 16 and 17, no lime in view. He stands on the plaza beside the door's planter and faces the Luna Snow bot (name bar readable) at x ~0.54, mid distance, the Hero Simulation console to her left, the stairs to the right. RT pressed once | **PASS**: LIVE True on steps 16 and 17, no lime in view. Same place and heading: the Luna Snow bot ahead at x ~0.59, the console to her left. The hero is drawn faded (the camera is pushed up against him by the planter behind; `hero_x` reads 0.98, not his column) | **FAIL**: `plaza_view` False throughout. He ends INSIDE the spawn room, stuck against the central console's rim, facing the plaza door (23k px at 0.37) across it; no bot in view |
+
+Arrival 3, what the frames show: steps 1-4 are the same as in arrivals 1 and 2 (three walks, a 0.08 s right turn). From
+step 5 on every frame is the same view: 16 walk steps into the raised rim of the room's central console, the plaza door on
+his column at 0.37-0.39 the whole time, its blob flickering between 11.8k and 26.3k px with the pane's own animation, no
+advance (`arrival-door-3-native-stuck-at-console.jpg`). In arrivals 1 and 2 the same rim is brushed on steps 5-6 and he
+slides off it (pane 24k -> 31k -> 38k and 21k -> 15k -> 27k -> 41k); in arrival 3 he does not (18k -> 16k -> 20k -> 26k ->
+24k). At step 5 the selected pane sits at 0.381, 0.380 and 0.372 in the three: about 10 px of heading between sliding past
+and sticking (`arrival-door-steps4-6-compared.jpg`). Nothing in the arrival notices a walk that does not move him.
+
+Evidence: `arrival-door-{1,2,3}-20260921-<time>-sheet.jpg` (one contact sheet per arrival: door blobs yellow, the row's
+`door_x` cyan, hero column red, target column ticks white), `...-steps.jsonl`, `...-replay.jsonl`, `...-endpose.jpg`
+(desktop screenshot after each end, no input), `arrival-door-{1,2}-native-crossing-out-plaza-end.jpg` (native steps 14, 15,
+the confirmation and the end pose), `arrival-door-3-native-stuck-at-console.jpg`, `arrival-door-steps4-6-compared.jpg`.
 
 ## Three supervised arrivals from spawn at 8c5f800 (VUH-1299): `data/reenter/arrive-20260921-{125409,130539,131747}/`
 
