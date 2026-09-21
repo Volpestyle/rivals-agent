@@ -6,13 +6,15 @@ previous tool confirmed is not the pose this session starts from. `start_pose` e
 then confirms the start view in THIS session:
 
 1. right after the pad attaches, a fresh frame is proven (range HUD, no idle banner, a frame acquired after the attach);
-2. ONE priming pulse: right stick rx 0.45, everything else neutral, 0.3 s (camera_pulse: a fresh frame with the range HUD and no idle
-   banner before every write, each write through Live.send, proven, whitelisted and leased). It is also the first of at most
-   START_TURNS right turns;
+2. ONE priming pulse: right stick rx +0.45, everything else neutral, 0.3 s (camera_pulse: a fresh frame with the range HUD and no idle
+   banner before every write, each write through Live.send, proven, whitelisted and leased). It ends the attach drift (M1) and itself
+   turns the view about 52-58 deg right; it is also the first of at most START_TURNS pulses;
 3. neutral, then a frame-only DELAY (START_SETTLE_S): no input, the guards checked on every frame. It does not test that the device
    switch cleared or that the view stopped moving: it is a supervised delay, to be set from M1, and M2 accepts the pose by eye;
 4. two DISTINCT fresh acquisitions with plaza_view true, after the last pulse ended: done, and the second is the accepted start pose.
-   Otherwise another right turn (the drift is always leftward, so the bot is to the right), a short frame-only settle, and again;
+   Otherwise a search pulse to the LEFT (rx -0.45, 0.3 s: toward where the prime moved the view from), a short frame-only delay, and
+   again. A bounded search in the direction of the measured displacement: it neither cancels the prime exactly nor keeps a target's
+   identity;
 5. at most START_TURNS pulses in all and START_DEADLINE_S overall, checked after each capture and its guards, before every write (each
    pulse capped by the time left) and before acceptance; the range HUD gone, the idle banner, a capture that delivers no new frame, a
    refused write or any exception ends it: Live is closed (neutral, no input accepted after) and StartRefused is raised.
@@ -30,10 +32,13 @@ import time
 from .controller import NEUTRAL, Forbidden, RangeLost
 
 START_TURNS = 7                 # right-stick pulses in all, the priming pulse included
-START_TURN_S, START_TURN_RX = 0.3, 0.45
-START_SETTLE_S = 2.0            # frame-only DELAYS, not tests: nothing checks that the device switch cleared or that the view is still.
-TURN_SETTLE_S = 0.15            # Supervised delays, to be informed by M1 (how long the drift and the "Switching Devices" banner last after
-                                # the pulse); M2's acceptance of the pose is by eye, a still view included
+START_TURN_S, START_TURN_RX = 0.3, 0.45   # the prime: right stick +0.45 for 0.3 s at the earliest guarded send (M1 measured THIS pulse)
+SEARCH_TURN_RX = -0.45          # every later pulse turns LEFT: M1 found the prime itself turns the view 52-58 deg right, leaving the
+                                # bot about 50 deg to the left; a bounded search that way, not a claim that it cancels the prime
+START_SETTLE_S = 5.0            # frame-only DELAYS, not tests: nothing checks that the device switch cleared or that the view is still.
+TURN_SETTLE_S = 0.15            # START_SETTLE_S: M1's "Switching Devices" banner ended 4.2-4.3 s after the pulse went neutral; 5 s is a
+                                # modest margin, and M2 checks clearance and stillness by eye (a banner still up or a moving view fails it).
+                                # TURN_SETTLE_S is unmeasured, pending M2
 STEP_FRAMES = 24                # decision frames kept for the step record: at most 7 pulses x (1 proof + 2 looks), and the last frame
 START_DEADLINE_S = 14.0         # the arrival's budget (scripts/reenter.py ARRIVE_S)
 REFUSAL = "plaza start view not confirmed"
@@ -173,6 +178,7 @@ def start_pose(live, in_range, idle, plaza_view, *, attached_t=None, steps=None,
         if turns >= START_TURNS:
             raise StartRefused(f"{REFUSAL}: {START_TURNS} turns taken")
         proof = frame()                                                # proven after the attach / the last delay, before any write
+        rx = START_TURN_RX if turns == 0 else SEARCH_TURN_RX           # the prime, then the search the other way
         turns += 1
 
         def sent(t):
@@ -180,9 +186,9 @@ def start_pose(live, in_range, idle, plaza_view, *, attached_t=None, steps=None,
                 timing["first_send_returned"] = t - t0
                 if attached_t is not None:
                     timing["attached_t_to_first_send_returned"] = t - attached_t
-        what = f"pulse {turns} of {START_TURNS}: right stick {START_TURN_RX:+.2f} up to {START_TURN_S:.1f} s"
+        what = f"{'prime' if turns == 1 else 'search'} pulse {turns} of {START_TURNS}: right stick {rx:+.2f} up to {START_TURN_S:.1f} s"
         try:
-            camera_pulse(live, START_TURN_S, START_TURN_RX, in_range, idle, clock=clock, sleep=sleep, on_write=sent, deadline=deadline,
+            camera_pulse(live, START_TURN_S, rx, in_range, idle, clock=clock, sleep=sleep, on_write=sent, deadline=deadline,
                          on_frame=seen)
         except BaseException as e:                                     # neutral already (camera_pulse's finally, or Live's refusal)
             note(f"{what}: INTERRUPTED ({e}), neutral", latest)

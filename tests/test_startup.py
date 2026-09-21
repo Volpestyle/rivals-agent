@@ -362,7 +362,7 @@ def test_every_step_is_recorded_after_it_for_an_accepted_start():
     live = FakeLive(clock, frames("plaza"))
     run(live, lambda f: f == "plaza", clock, steps=steps)
     actions = [r["action"] for r, _ in steps]
-    assert actions[0].startswith("pulse 1 of 7") and actions[1].startswith("delay 2.00 s") and actions[2:] == [
+    assert actions[0].startswith("prime pulse 1 of 7") and actions[1].startswith(f"delay {S.START_SETTLE_S:.2f} s") and actions[2:] == [
         "look", "look again", "accepted: plaza view on two distinct fresh frames"]
     assert all(f is not None for _, f in steps) and [r["n"] for r, _ in steps] == list(range(1, len(steps) + 1))
     last_write = max(t for w, t in live.writes if isinstance(w, dict))
@@ -375,7 +375,7 @@ def test_a_refused_start_keeps_its_steps_and_closes_first():
     with pytest.raises(S.StartRefused):
         run(live, lambda f: False, clock, steps=steps)
     rows = [r for r, _ in steps]
-    assert sum(r["action"].startswith("pulse") for r in rows) == S.START_TURNS and rows[-1]["action"].startswith("refused:")
+    assert sum(" pulse " in f" {r['action']}" for r in rows) == S.START_TURNS and rows[-1]["action"].startswith("refused:")
     assert sum(f is not None for _, f in steps) <= S.STEP_FRAMES and live.closed
 
 
@@ -461,7 +461,7 @@ def test_a_pulse_refused_mid_way_is_recorded_as_interrupted_with_its_latest_fram
     with pytest.raises(S.StartRefused):
         run(live, lambda f: False, clock, steps=steps)
     rows = [r for r, _ in steps]
-    assert rows[0]["action"].startswith("pulse 1 of 7") and "INTERRUPTED" in rows[0]["action"]
+    assert rows[0]["action"].startswith("prime pulse 1 of 7") and "INTERRUPTED" in rows[0]["action"]
     assert not any(r["action"].endswith("then neutral") and "INTERRUPTED" not in r["action"] for r in rows)   # never "completed"
     assert rows[-1]["action"].startswith("refused:") and all(f == "range" for _, f in steps)
     assert live.closed and live.writes[-1][0] == "closed"
@@ -571,3 +571,47 @@ def test_pose_only_saves_both_native_frames_every_step_and_its_record(tmp_path):
     names = sorted(p.name for p in tmp_path.iterdir())
     assert names == ["start-confirm-1.png", "start-confirm-2.png", "start-step-01.png", "start-steps.jsonl", "start.json"]
     assert __import__("json").loads((tmp_path / "start.json").read_text())["confirm_frames"] == ["start-confirm-1.png", "start-confirm-2.png"]
+
+
+# --- the prime turns right, the search turns left (M1: the prime itself turns the view 52-58 deg right) --------------------------------
+def pulse_directions(live):
+    """The rx of each pulse, one entry per pulse (a pulse is a run of writes with the same rx between neutrals)."""
+    out, prev = [], None
+    for w, _ in live.writes:
+        rx = w["rx"] if isinstance(w, dict) else None
+        if rx is not None and rx != prev:
+            out.append(rx)
+        prev = rx
+    return out
+
+
+def test_one_right_prime_then_only_left_search_pulses_seven_in_all():
+    clock = Clock()
+    live = FakeLive(clock, frames("wall"))
+    with pytest.raises(S.StartRefused, match=f"{S.START_TURNS} turns taken"):          # the turn budget, not the unchanged deadline
+        run(live, lambda f: False, clock)
+    assert pulse_directions(live) == [S.START_TURN_RX] + [S.SEARCH_TURN_RX] * (S.START_TURNS - 1)
+    assert S.START_TURN_RX == 0.45 and S.SEARCH_TURN_RX == -0.45 and S.START_DEADLINE_S == 14.0
+    assert all(not any(m[k] for k in ("lx", "ly", "ry", "lt", "rt")) and not m["buttons"] for m in moves(live))   # no LS, no RT
+    assert clock.t - 100.0 < S.START_DEADLINE_S and live.closed
+
+
+def test_no_search_after_an_immediate_two_frame_confirmation():
+    clock = Clock()
+    live = FakeLive(clock, frames("plaza"))
+    assert run(live, lambda f: f == "plaza", clock)["turns"] == 1 and pulse_directions(live) == [S.START_TURN_RX]
+
+
+def test_a_search_only_follows_a_failed_two_frame_check():
+    clock = Clock()
+    answers = iter([False, True, True])                                  # after the prime: not yet; after one left pulse: twice
+    live = FakeLive(clock, frames("plaza"))
+    assert run(live, lambda f: next(answers), clock)["turns"] == 2 and pulse_directions(live) == [S.START_TURN_RX, S.SEARCH_TURN_RX]
+
+
+def test_the_delay_after_the_prime_is_five_seconds_of_frames_only():
+    clock = Clock()
+    live = FakeLive(clock, frames("plaza"))
+    run(live, lambda f: f == "plaza", clock)
+    last_write = max(t for w, t in live.writes if isinstance(w, dict))
+    assert S.START_SETTLE_S == 5.0 and clock.t - last_write >= 5.0
