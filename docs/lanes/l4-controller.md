@@ -2,17 +2,54 @@
 
 Linear: VUH-1296. Evidence: `docs/evidence/l4/`. Raw measurements: `C:\rivals-agent\data\l4\` on the PC.
 
-**The game is on the PLAY lobby** (it idled out while waiting for a reviewed loop commit); lobby navigation is the lead's.
-The PC holds `agent/`, `scripts/` (with `scripts/templates/`) and `perception/` from `git archive e541c49`: all 41 tracked
-files verified by sha256, no other files in those directories. Pre-flight in the PC's desktop session, with no capture, no
-pad and no game input: `python -m agent.loop --help` runs, and `data\l4\preflight.py` imports everything the live loop
-loads (agent.loop / controller / tracker / brain, cv2, numpy, dxcam, vgamepad, record, capture, perception) and runs the
-perception stack on a saved `baseline1` frame and scoreboard (range True / board False, HUD read, scoreboard parsed 23 KOs).
-An earlier attempt at 064c4cf stopped at import (`agent/tracker.py` was not committed); no pad opened.
+The game is in the Practice Range as Spider-Man on the main plaza by the Luna Snow bot, idle, no pad connected
+(`after-postfreeze30.jpg`). The PC holds `agent/`, `scripts/` (with templates) and `perception/` from
+`git archive d5f89ea`, all 41 tracked files verified by sha256.
 
-Owed once the range is back: look first, cooldowns verified from play, face a bot, ONE supervised 30 s
-`python -m agent.loop --live --cooldowns normal`, then the report including the per-tick trace (ids, coasting, target,
-target_px). `scripts/l4_practice_settings.py` on the PC is the committed version, not the offline fix.
+## Post-freeze supervised run: `C:\rivals-agent\data\l1\postfreeze30\` (30 s, scripted brain, `--cooldowns normal`)
+
+Before it: `capture.py preflight` passed (222 dxcam frames in 1 s); cooldowns verified from play through `Live`
+(ammo 2 after three shots, Get Over Here showing 7, `cooldowns-normal-verified-3.jpg`), so the practice-settings script was
+not needed. Contact sheet `postfreeze30-sheet.jpg`, metadata `postfreeze30-meta.json`.
+
+| | `postfreeze30` | before the safety work (`loop30c`) |
+|---|---|---|
+| Stop / guards | `max_time`; no range gap, no error, 1 keep-alive, 0 missed decisions | same |
+| Clean close | log ends `EXIT 0`; 0 python / uv processes; 0 Xbox 360 devices present | |
+| Reflex | 49.9 Hz; tick p50 / p95 / max 11.4 / 17.9 / 25.7 ms; **80 of 1,499 ticks over the 16.7 ms budget** | 57.6 Hz; 6.9 / 9.7 / 15.8; 0 over |
+| Aim finder | 6.3 / 10.2 / 16.2 ms | 5.6 / 7.5 / 14.5 |
+| Decision | 10.1 Hz; 39.5 / 57.7 / 93.8 ms | 26 / 40 / 60 |
+| End scoreboard (parsed) | 2 KOs, 565 damage, 0 deaths, accuracy 69 %, Web-Cluster accuracy 25 % (a fresh range session, so these are the run's own) | |
+
+Cost of the safety layer: about +4.5 ms per reflex tick at the median (aim finder +0.7 ms; the rest is the positive range
+identity, a banner template match plus the bar tests, run by the loop's guard and again by `Live` at every commit, and the
+tracker). 79 of the 80 over-budget ticks had no box in the crop, 74 of them under Engage: the expensive tick is the
+no-detection one, not the fight. The obvious saving is proving the range once per frame and sharing the verdict, which
+is a change to the reviewed boundary, so it needs the reviewer.
+
+Id trace (`ids`, `coasting`, `target`, `target_px`; native px from the crosshair):
+
+- The brain held a target id on 1,497 of 1,499 ticks, but that id was **visible on only 313 ticks (21 %)**, coasting on
+  1,019 and neither on 165. While visible, `target_px` p10 / p50 / p90 / max = 27 / 161 / 409 / 520; 12 % of visible
+  ticks within 30 px, 23 % within 60, 43 % within 120.
+- **14 target ids in 30 s** (1, 2, 7, 3, 4, 17, 21, 29, 31, 48, 55, 57, 88, 110) and **84 distinct ids** issued on a plaza
+  with one bot: identity does not persist. Ids 1-4 (t 3-12 s) were the spawn room's green health door and its cross, the
+  known false positive: he stood facing it for the first ~9 s and fired a Web Cluster at it (sheet frames 19-77), until
+  Search turned him to Luna Snow. Ids 55 (5 s) and 110 were never visible at all.
+- **Re-acquisitions after a coast: 20.** Gap and `target_px` at re-acquisition: 0.07 s / 174; 8.44 / 231; 0.25 / 96;
+  0.05 / 68; 0.06 / 104; 0.05 / 183; 1.73 / 520; 1.33 / 273; 0.02 / 23; 0.47 / 471; 0.77 / 373; 0.86 / 355; 5.79 / 422;
+  0.07 / 464; 0.04 / 410; 0.32 / 223; 0.92 / 346; 0.02 / 186; 0.04 / 22; 0.02 / 199. After any gap over 0.3 s the target
+  comes back 220-520 px off the crosshair.
+- **Did an id move onto a different box: yes, within a tick.** On 7 ticks the same id sat on two boxes at once (id 31 at
+  16.78 and 16.81 s, id 48 at 19.28 s, id 57 at 28.68 and 28.70 s, ...): at close range the outline splits into an upper and
+  a lower box and both get the target's id, which shows up as same-id jumps of 150-280 px between consecutive ticks (21 of
+  them). No case of a held id hopping to a different bot was seen; there was only one bot.
+
+For the re-entry owner, `data\reenter\refuse-20260921-051559.jpg`: he is **outside** the spawn room, on the plaza side,
+standing at the door frame's outer left edge and facing the frame edge-on, so the view is the dark jamb with the plaza
+planter to its right and the room's curved wall and second door to its left; the plaza and the Luna Snow bot are behind
+him. The walk did leave the room; the confirmation looks the wrong way. Turning 180 deg from that pose shows the plaza with
+the bot ahead.
 
 Cooldowns: "No Ability Cooldown" was still OFF after the re-entry (`practice-settings-still-off-after-reentry.jpg`); the
 infinity on the HUD is the melee slot, Web Cluster is the 5 beside it. Verified from play through `Live`: ammo 2 after three
