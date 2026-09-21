@@ -182,10 +182,27 @@ def test_a_manifest_must_start_with_its_header_and_hold_only_segments_after_it(t
         demos.read_manifest(p)
 
 
-def test_segment_lines_inside_an_events_file_are_ignored_by_the_loader(tmp_path):
-    seg_line = dict(type="segment", start_t=0.0, end_t=20.0, started_by="run_start", ended_by="death", n=0)
-    clip = demos.read_manifest(make_vod(tmp_path, events=[seg_line, dict(type="event", **EVENTS[0])]))
-    assert len(clip.events) == 1
+def test_a_manifest_whose_segments_are_a_stale_superset_of_its_events_files_is_refused(tmp_path):
+    """VUH-1326 final re-check: a manifest written before the events file was regenerated kept a stretch the new segmenter drops
+    (another hero), and loaded silently because every event still lay inside some segment."""
+    now = [dict(start_t=0.0, end_t=20.0, started_by="run_start", ended_by="death"),
+           dict(start_t=30.0, end_t=40.0, started_by="respawn", ended_by="not_our_hero")]
+    stale = now + [dict(start_t=45.0, end_t=50.0, started_by="hero_returned", ended_by="run_end")]   # the dropped stretch
+    lines = [META] + [dict(type="segment", **s) for s in now] + [with_pos(EVENTS[0])]
+    jsonl(tmp_path / "v.events.jsonl", lines)
+    for segs, why in [(stale, r"manifest's 3 segments are not its events file's 2 .*segment 2: manifest \{'start_t': 45.0"),
+                      ([now[0], dict(now[1], ended_by="no_hud")], r"segment 1: manifest .*'no_hud'.* events .*'not_our_hero'")]:
+        with pytest.raises(ProvenanceError, match=why):
+            demos.write_manifest(tmp_path / "v.manifest.jsonl", header(events="v.events.jsonl", duration_s=60.0), segs)
+
+
+def test_a_manifest_regenerated_from_its_events_file_loads(tmp_path):
+    lines = [META] + [dict(type="segment", start_i=0, end_i=0, **s) for s in SEGS] + [with_pos(e) for e in EVENTS]
+    jsonl(tmp_path / "v.events.jsonl", lines)
+    clip = demos.write_manifest(tmp_path / "v.manifest.jsonl", header(events="v.events.jsonl"),
+                                demos.events_file_segments(tmp_path / "v.events.jsonl"))
+    assert len(clip.segments) == 3 and len(clip.events) == len(EVENTS)
+    assert len(demos.read_manifest(tmp_path / "v.manifest.jsonl").segments) == 3
 
 
 def test_a_per_clip_events_file_that_carries_its_segments_becomes_a_manifest(tmp_path):

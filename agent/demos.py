@@ -505,6 +505,16 @@ class Clip:
             return
         events, rows = [], list(_jsonl(self._resolve(rel)))
         self.events_meta = meta = _check_events_format(self._resolve(rel), rows)
+        drawn = hud_segments([r for _, r in rows if r.get("type") == "segment"])
+        mine = [dict(start_t=s.start_t, end_t=s.end_t, started_by=s.started_by, ended_by=s.ended_by) for s in self.segments]
+        if drawn and drawn != mine:
+            # A manifest copied from an older events file can hold a superset of today's segments, and then every event still lies
+            # inside one: only comparing the two records catches it.
+            n = next((n for n, (a, b) in enumerate(zip(mine, drawn)) if a != b), min(len(mine), len(drawn)))
+            at = lambda s: s[n] if n < len(s) else None
+            raise ProvenanceError(f"{self.id}: the manifest's {len(mine)} segments are not its events file's {len(drawn)} ({rel}); first "
+                                  f"difference at segment {n}: manifest {at(mine)}, events {at(drawn)}. Rewrite the manifest with "
+                                  f"write_manifest(path, header, events_file_segments(events))")
         for n, r in rows:
             if r.get("type", "event") != "event":
                 continue  # meta and segment lines share the file; segments are imported by events_file_segments, not read here

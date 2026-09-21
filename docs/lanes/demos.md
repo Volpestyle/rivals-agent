@@ -175,6 +175,10 @@ meaning no mapping was attempted, which differs from `{}`: icons read and none i
   pending is hindsight.
 - **An event lies inside one segment.** The loader assigns it by time (the file's `segment` index is only a hint) and refuses
   one that crosses a boundary or sits in a gap.
+- **A manifest's segments are its events file's.** When the events file carries segment lines, the manifest's segment lines
+  must be identical to them, or loading raises `ProvenanceError` naming the first difference. A manifest written before its
+  events file was regenerated can hold a superset of today's segments. The every-event-inside-a-segment check never notices
+  that; this comparison does. The fix is always `write_manifest(path, header, events_file_segments(events))`.
 - **No HUD feature is read off a masked frame.** An event whose `t_from` or `t_to` frame an annotator masked for the HUD or
   for the event's own field (`hp`, `ammo`, the slot) does not enter the window.
 
@@ -247,8 +251,8 @@ On the real format 4 sources, at `MAX_BRIDGE_S = 1.0`:
 |---|---|---|---|---|---|
 | reqmr-2873352801-1920 (sample, 60 s) | 1 | 1 | 0 | 16.2 s | 41.9 s |
 | daymr-2879354299-21600-60s (sample, 60 s) | 6 | 6 | 0 | 11.4 s | 45.6 s |
-| daymr-2877719252-1800-900s | 37 | 34 | 3 | 7.6 s | 18.8 s |
-| daymr-2879354299-21660-900s | 21 | 17 | 4 | 12.6 s | 15.7 s |
+| daymr-2877719252-1800-900s | 37 | 34 | 3 | 7.6 s | 23.5 s |
+| daymr-2879354299-21660-900s | 20 | 16 | 4 | 12.6 s | 15.7 s |
 | reqmr-2871472478-5400-900s | 23 | 17 | 6 | 8.6 s | 19.9 s |
 | reqmr-2873352801-1980-900s | 17 | 12 | 5 | 20.8 s | 27.6 s |
 | d0C8RMBnFfA (upload, 9/11) | 20 | 15 | 5 | 13.4 s | 29.7 s |
@@ -314,31 +318,28 @@ With `across_overlays=False` the same decision's history starts at 6.1 and is tr
 
 ## What the real data showed
 
-**Every events file on disk is stale at the moment** (12 of 14 by the producer's own `check`: none carries `cut_times`,
-`writer`, `container_start_s` or `stream_start_s`), so the loader refuses them all and the real-data tests fail until
-`python -m perception.events regen` runs. The numbers below were measured on the same files before the staleness rule, and are
-re-measured after regeneration.
-
+Every events file is from the frozen writer `1336262e179c` (`python -m perception.events check`: all format 4, all
+regenerable), and every loader manifest's segments are identical to its events file's.
 `uv run python -m agent.demos data/demos/samples data/demos/vods data/demos/youtube/reqmr`: twelve format 4 sources load in
-0.11 s and yield 37,693 observations at 5 Hz in 6.8 s.
+0.08 s and yield 37,358 observations at 5 Hz in 5.1 s.
 
 | Source | Kind | Patch (basis) | Segments (short) | Usable | Null-slot events |
 |---|---|---|---|---|---|
 | reqmr-2873352801-1920 | Twitch sample, 60 s | Season 10 (broadcast 2026-09-13) | 4 (1) | 49.1 s | 0 |
-| daymr-2879354299-21600-60s | Twitch sample, 60 s | Season 10 (broadcast 2026-09-20) | 9 (4) | 45.3 s | 0 |
-| daymr-2877719252-1800-900s | Twitch section, cuts 7 | Season 10 (broadcast 2026-09-18) | 71 (21) | 567.5 s | 0 |
-| daymr-2879354299-21660-900s | Twitch section, cuts 17 | Season 10 (broadcast 2026-09-20) | 47 (13) | 551.5 s | 0 |
+| daymr-2879354299-21600-60s | Twitch sample, 60 s | Season 10 (broadcast 2026-09-20) | 9 (4) | 44.3 s | 0 |
+| daymr-2877719252-1800-900s | Twitch section, cuts 7 | Season 10 (broadcast 2026-09-18) | 69 (20) | 566.3 s | 0 |
+| daymr-2879354299-21660-900s | Twitch section, cuts 17 | Season 10 (broadcast 2026-09-20) | 43 (12) | 488.4 s | 0 |
 | reqmr-2871472478-5400-900s | Twitch section, cuts 4 | Season 10 (broadcast 2026-09-11) | 55 (9) | 691.9 s | 0 |
 | reqmr-2873352801-1980-900s | Twitch section, cuts 15 | Season 10 (broadcast 2026-09-13) | 31 (7) | 545.4 s | 0 |
 | d0C8RMBnFfA | edited upload, unsplittable | Season 10 (upload 2026-09-11) | 42 (9) | 629.4 s | 0 |
 | yjc51uOjKEQ | edited upload, unsplittable | Season 10 (upload 2026-09-12) | 48 (9) | 777.7 s | 0 |
 | ftnk5SVycXY | edited upload, unsplittable | unknown (upload 2026-05-10) | 75 (27) | 1215.6 s | 99 |
-| Cf_2goe1snQ | edited upload, unsplittable | unknown (upload 2026-05-09) | 63 (17) | 1008.0 s | 119 |
+| Cf_2goe1snQ | edited upload, unsplittable | unknown (upload 2026-05-09) | 58 (13) | 1006.6 s | 118 |
 | V6iaq9dP8FQ | edited upload, unsplittable | unknown (upload 2026-04-27) | 74 (15) | 764.8 s | 57 |
 | G7HmV8zyEh8 | edited upload, unsplittable | unknown (upload 2026-04-25) | 44 (12) | 650.0 s | 51 |
 
 **Usable minutes the loader reports, per patch** (all `cooldowns=normal`, all `inspection_only`): Season 10, Version 20260911:
-**64.3** (six Twitch sources 40.8, two uploads 23.5); unknown: **60.6** (four April-May uploads). None is in train/val/test yet: every source's acquisition split is `inspection_only`, and the
+**63.2** (six Twitch sources 39.8, two uploads 23.5); unknown: **60.6** (four April-May uploads). None is in train/val/test yet: every source's acquisition split is `inspection_only`, and the
 uploads stay unsplittable until the cross-source duplicate check runs.
 
 - The null-slot events are the April-May uploads' team-up position, whose icon the mapping did not identify: they stay
@@ -377,9 +378,9 @@ loader manifest), and the two 60 s samples (not requested; each belongs to a tra
 
 | Side | Session groups | Creator | Usable minutes | Windows (5 Hz) | Windows with bridged masked frames |
 |---|---|---|---|---|---|
-| train | `twitch:2879354299` (Day, broadcast 09-20), `twitch:2873352801` (Req, 09-13) | Day 9.2, Req 9.1 | **18.3** | 5,515 | 513 (9%) |
+| train | `twitch:2879354299` (Day, broadcast 09-20), `twitch:2873352801` (Req, 09-13) | Day 8.1, Req 9.1 | **17.2** | 5,199 | 488 (9%) |
 | val | **pending**: four new current-patch 15-minute sections from four additional distinct broadcasts, two per player, one per player preassigned to train and one to val (the co-lead is acquiring them) | | 0 | 0 | |
-| test, sealed | `twitch:2877719252` (Day, 09-18), `twitch:2871472478` (Req, 09-11) | Day 9.5, Req 11.5 | **21.0** | 6,345 | 937 (15%) |
+| test, sealed | `twitch:2877719252` (Day, 09-18), `twitch:2871472478` (Req, 09-11) | Day 9.4, Req 11.5 | **21.0** | 6,339 | 937 (15%) |
 | unassigned | `youtube:d0C8RMBnFfA` (uploaded 09-11), `youtube:yjc51uOjKEQ` (09-12) | Req | (23.5) | | |
 
 Test is the two broadcasts `data/demos/vods/manifest.json` reserves as evaluation (`reserved_evaluation_candidate_new_session`),
@@ -396,26 +397,26 @@ Events per type in usable segments:
 
 | Kind | train | test |
 |---|---|---|
-| `ability_cast` | 264 | 303 |
+| `ability_cast` | 246 | 302 |
 | `charges_spent` / `charges_regained` | 73 / 54 | 82 / 49 |
-| `slot_unavailable` / `slot_available` | 219 / 224 | 291 / 287 |
-| `hp_lost` / `hp_gained` | 358 / 410 | 527 / 469 |
-| `shield_gained` / `shield_decayed` / `max_hp_changed` | 2 / 3 / 9 | 10 / 4 / 16 |
+| `slot_unavailable` / `slot_available` | 199 / 202 | 291 / 287 |
+| `hp_lost` / `hp_gained` | 316 / 366 | 525 / 469 |
+| `shield_gained` / `shield_decayed` / `max_hp_changed` | 2 / 3 / 6 | 10 / 4 / 16 |
 | `web_cluster_fired` / `web_cluster_reloaded` | 211 / 176 | 284 / 220 |
-| `ult_ready` / `ult_spent` | 10 / 10 | 15 / 17 |
-| `ko_feed` | 11 | 13 |
+| `ult_ready` / `ult_spent` | 8 / 8 | 15 / 17 |
+| `ko_feed` | 10 | 13 |
 
-Casts per slot: train get_over_here 86, uppercut 82, swing 54, teamup 42; test 87, 96, 62, 58. No cast in the split has a null
+Casts per slot: train get_over_here 80, uppercut 75, swing 49, teamup 42; test 86, 96, 62, 58. No cast in the split has a null
 slot.
 
 **What makes it lopsided:**
 
-- **Train is smaller than the sealed test**: 18.3 against 21.0 minutes, and there is no validation yet.
-- **One session carries most of a side's casts**: on test, `twitch:2871472478` has 185 of 303 (61%); on train,
-  `twitch:2879354299` has 157 of 264 (59%).
-- **Test has more bridged windows** (15% against 9%): its sessions tap the scoreboard more (37 and 23 taps against 21 and 17).
+- **Train is smaller than the sealed test**: 17.2 against 21.0 minutes, and there is no validation yet.
+- **One session carries most of a side's casts**: on test, `twitch:2871472478` has 185 of 302 (61%); on train,
+  `twitch:2879354299` has 139 of 246 (57%).
+- **Test has more bridged windows** (15% against 9%): its sessions tap the scoreboard more (37 and 23 taps against 20 and 17).
 - **Maps are not recorded** anywhere (acquisition manifests, events, loader), so balance by map cannot be checked.
-- **Ults are rare**: 10 and 17 `ult_spent`, too few for an ult-use metric.
+- **Ults are rare**: 8 and 17 `ult_spent`, too few for an ult-use metric.
 
 Promotion is blocked on:
 
@@ -428,9 +429,6 @@ Event signatures cannot identify a shared match: a quick check matched a May upl
 
 ## What format 4 does not give the loader
 
-- **Where the cuts are, in the files on disk.** The current writer records `cut_times` and marks a cut inside a gap with
-  `hard_cut` / `after_cut` on both sides, so a bridged tap is cut-free by construction. Until the stale files are regenerated,
-  none of them carries `cut_times`, and the loader refuses them.
 - **A patch.** `observed` is a fingerprint, not a patch: mapping it to one needs a dated per-patch cooldown table, and the kit
   states only the current patch. Its countdown histograms also carry misreads (uppercut `120`-`188` on one DayMR section).
 - **The clock offset in the window.** `pts_origin_s` is on the meta line (`clip.events_meta`), but clip time starts at the
@@ -450,7 +448,7 @@ Event signatures cannot identify a shared match: a quick check matched a May upl
 - **Not built:** video decoding, an annotation tool, event and annotation re-cutting on `trim`, verification of `alignment`,
   mapping `observed` to a patch, and sampling-weight code.
 
-Mutation checks: 37 hand-made breakages of the format 4, bridging, mask and provenance code (a guessed slot accepted, the
+Mutation checks: 38 hand-made breakages of the format 4, bridging, mask and provenance code (a guessed slot accepted, the
 fixed ult unrecognised, format 3 accepted, meta keys unchecked, the tap width ignored, a cut made soft, bridging off by
 default, a gap hiding the HUD only, `partial` hiding, annotator masks dropped, events read off masked frames, the regime or
 patch gate off, a basis unchecked, observed countdowns unchecked, an unsplittable clip hashed into a split or allowed an
@@ -458,4 +456,4 @@ explicit one, a run's manifest/meta.json clash ignored; for splits, a proposal t
 unchecked, a group on two sides, on none or with no source, the status unchecked, a pending side that answers, an empty side
 not declared pending, a pending side with groups, an unassigned group on a side or among the sources; for staleness and masks,
 the writer, the producer's keys or the recipe unchecked, masks looked up by exact millisecond, an unmatched or out-of-clip mask
-row passed silently, events checked against masks with no tolerance) each fail at least one test.
+row passed silently, events checked against masks with no tolerance; a manifest's segments not compared with its events file's) each fail at least one test.
