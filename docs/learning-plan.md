@@ -24,6 +24,97 @@ stay in the practice range or custom games against AI. Matchmade human gameplay 
 an offline demonstration source only. The current range guard does not authorize
 custom-lobby input; verified lobby navigation and an appropriate guard are prerequisites.
 
+## Roadmap and advancement gates
+
+The roadmap advances on evidence, not footage hours. Current evidence includes
+two inspected pilot clips, nine acquired guides (about 106 minutes), and about
+60 raw minutes from four VOD sessions; raw duration is not accepted training
+duration. The aligned two-window annotation rerun agrees on coarse tactical
+purpose, but exposes event-extractor defects. A trained gameplay policy and an
+RL training run are not yet delivered. The next deliverable is a small trustworthy
+training/evaluation set and a first imitation baseline, not an exhaustive archive.
+
+| Milestone | Concrete result | Gate before advancing |
+|---|---|---|
+| A. Trust the examples and measurements | Corrected HUD events, per-frame visibility, reviewed imitation suitability, whole-session splits; repeatable range episodes and synchronized pad/video recordings | Hand-check VOD event classes and timing; preserve unknowns. Demonstrate start, terminal outcome, interruption and reset alignment on recorded episodes. Data quality gates imitation; episode/reward quality separately gates RL. |
+| B. First imitation policy | A locally trained temporal intent policy, using the fixed live target selector and existing controller | Beat a majority-label baseline on held-out sessions without hiding rare-action failures; compare the scripted policy where inputs are comparable. Measure runtime latency and inspect range transfer failures. Offline agreement alone does not establish gameplay improvement. |
+| C. Corrections from our own play | Reviewed examples of the agent recovering, retreating and correcting its own mistakes; a retrained imitation checkpoint | Compare against B on untouched evaluation sessions and bounded live scenarios. Accept demonstrated improvement; ambiguous failures stay out of positive imitation labels. This loop continues alongside later milestones. |
+| D. First reinforcement-learning experiment | Fine-tune a trainable option policy on one bounded range encounter, starting from an imitation checkpoint with demonstrated range competence | Reward audit below passes; reset and episode recording work; freeze perception/controller/target selector for comparison. Retain the RL checkpoint only if held-out encounter outcomes improve over its starting checkpoint, not merely its training return. |
+| E. Learned target choice, positioning and swinging | Observable target/anchor outputs with a working executor; later, learned swing execution from synchronized video/input demonstrations | Evaluate target choices separately from intent, and swing destination success, time, charge use and collisions separately from combat. Demonstrate transfer to new starts/routes. Guide narration alone cannot supply stick trajectories. |
+| F. Tactical learning in AI-only custom games | Imitation and then RL for approach, target choice, engage/escape and objective play in a fighting environment | Verified AI-only lobby navigation/guard, episode/reset flow and outcome readers; comparable live/demo entities for learned target outputs. Compare frozen baselines on match wins and objective outcomes across repeated games, with uncertainty reported. |
+
+These are dependencies, not six serial waits. Reward measurement starts during A;
+E's recorder and controller work also starts now. D can test narrow range learning
+without waiting for expert-level swinging. An initial F intent-only trial can use
+the fixed selector, but cannot claim E's target-choice or positioning capabilities.
+
+```mermaid
+flowchart TD
+  A[Audited demonstration labels] --> B[Imitation v0]
+  B --> C[Own-play corrections and retraining]
+  C --> B
+  R[Repeatable episodes and audited rewards] --> D[Bounded range RL]
+  B --> D
+  S[Synchronized pad video and executable anchors] --> E[Learned targets and movement]
+  B --> E
+  B --> F[AI-only tactical evaluation and learning]
+  E --> F
+  G[AI-only guard, resets and match outcomes] --> F
+  D -. RL experience informs later experiments .-> F
+```
+
+Codex owns the learning specification, curation criteria and reward/evaluation
+design. Claude owns dispatch, integration and Linear, assigning implementation
+to the existing dataset, HUD and controller owners or a named training owner.
+Existing dependencies include VUH-1306 (events), VUH-1309 (paired recording),
+VUH-1310 (AI-only lobby), VUH-1314 (tracks) and VUH-1315 (observed option status).
+This roadmap defines acceptance; Linear remains the record of assignment and
+completion. James is not required to supply inputs or hand-label at volume.
+
+### Reward contract before reinforcement learning
+
+Imitation learns reviewed choices without a reward function. RL learns from the
+agent's own actions and subsequent outcomes; downloaded videos alone do not
+provide an interactive training environment. Reward design is a current design
+task, while RL execution remains gated.
+
+| Task | Primary objective | Supporting signals and limits |
+|---|---|---|
+| Bounded range encounter | Confirmed designated-target completion; distinguish death, task failure and timeout | Small elapsed-time cost; optional validated damage contribution. Aggregate KO counters alone cannot identify which target died. |
+| Swing/navigation skill | Reach a specified visible destination or region | Time, resource use and observed collision/fall failures. Do not reward simply pressing swing, travelling far or staying airborne. |
+| AI-only match | Team victory and verified objective progress | Combat contributions and avoidable death may support learning only if measured and shown not to encourage kill chasing or hiding. A useful trade ending in death is not automatically a bad decision. |
+
+Before an RL run, record the exact formula, weights, discount, episode limits and
+reader versions with the experiment. Numeric weights are not accepted yet; tune
+on development episodes, then freeze the evaluation and its success criteria.
+Optional shaping must have a bounded contribution so damage farming or repeated
+partial progress cannot outweigh the actual task. Scoreboard checks are a means
+of measurement, not an action deserving positive reward.
+
+Audit reward extraction against hand-checked recordings of success, death,
+timeout, interruption and reset. Each reward component retains its observation
+source and validity; unknown does not become zero. Exclude episodes or learning
+targets whose required outcome is unobservable. Treat a capture/lobby interruption
+as an interruption rather than inventing a gameplay death. Check that repeated
+scoreboard reads cannot award the same KO twice, resets cannot produce reward
+from counter jumps, and healing/shield decay cannot masquerade as damage.
+
+Run a small collection pilot before committing to RL scale: measure usable
+episodes per hour, reset time, invalid-data rate, inference latency and training
+throughput. This is one real game instance, not a simulator supplying thousands
+of parallel matches; rented GPUs accelerate training, not gameplay collection.
+Choose the RL algorithm after fixing the trainable action interface and measuring
+that data budget. Range option learning starts with the motor controller frozen;
+learning sticks and camera is a separate experiment under E.
+
+Each comparison keeps the scenario set, trial budget, perception and executor
+fixed, retains failures, and reports raw success/death/timeout counts and elapsed
+time as well as return. In custom games, report wins and objective outcomes.
+Claim improvement only at the tested scope; inconclusive results call for more
+evidence, not promotion of the highest-return checkpoint. Keep the preceding
+working policy available for rollback. Training stays local first, with the
+approved initial $100 cloud allowance governed by the compute section below.
+
 ## Data and labels
 
 | Source | Evidence provided | Missing or uncertain |
@@ -50,6 +141,25 @@ Curate contiguous engagements with preceding context and aftermath, including fa
 attacks, retreats, no-engage decisions and recovery. Reject menus, other heroes,
 spectator views, edits and obscured HUD regions from labels that depend on them.
 Do not select only kills or highlight compilations.
+
+Retention, observability and suitability for imitation are separate decisions.
+An accurately labelled expert mistake is not automatically a positive action
+example. Before policy training, review demonstrated choices for suitability:
+accepted examples may enter the action-imitation loss; rejected or unresolved
+choices remain available for failure analysis but are excluded from that loss.
+This is an acceptance requirement, not an implemented training filter. Codex owns
+the review criteria; the dataset/training owner implements the representation.
+Model-assisted quality judgments need an audit and do not establish optimality.
+
+Review the decision and its context, not simply whether a death follows. A useful
+trade may end in death, and a good escape attempt can follow an earlier mistake.
+Preserve successful recovery and retreat examples from losing encounters; do not
+label an entire life or match bad. Conversely, survival or a kill does not prove
+a good choice. Outcome evidence may guide curation but never becomes a future
+policy input. Retaining a failure does not itself teach avoidance: that requires
+a justified corrected action, a reviewed preference, or a later outcome-learning
+objective. When no better action is supported, keep it unknown rather than invent
+a counterfactual target label.
 
 HUD transitions are **inferred event labels**, not ground-truth button presses.
 Cooldown changes may lag input; charges regenerate; death, reset, hero changes and
@@ -292,6 +402,14 @@ as learned from VODs merely because a model chooses that option. Restoring learn
 target choice, spatial setup/escape choices and finer execution requires observable
 labels, an executable interface and separate evaluation. The narrow v0 measures
 intent selection; it does not satisfy the full game-sense objective.
+
+Swing execution is part of that limitation. VODs and guides show routes, momentum
+setups, release/cancel sequences and their visible results, but supply no exact
+stick/camera/button labels. In v0, the controller executes swings; watching more
+VODs does not train its trajectory control. Learned swing timing/anchor choice
+needs a spatial output contract and executable anchors. Later motor learning needs
+synchronized video plus pad inputs from our recordings (James's play is optional),
+with demonstrated response checked, before testing transfer from expert video.
 
 HUD events provide relatively cheap supervision for ability use and observable
 outcomes. They do not prove engage, disengage, no-engage or a complete combo choice:

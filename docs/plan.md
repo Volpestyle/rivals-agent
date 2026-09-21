@@ -61,6 +61,13 @@ only once an outcome can be measured reliably.
   continue or escape, with bounded tests that say what they do not show.
 - **Jev** is frozen as a baseline and a possible label assistant. Its inference path does
   not learn from experience, and agreement with it is not gameplay quality.
+- **Roadmap.** Six gated milestones in [learning-plan.md](learning-plan.md#roadmap-and-advancement-gates):
+  A audited examples and repeatable episodes, B first imitation policy, C corrections from the
+  agent's own play, D a bounded range reinforcement-learning experiment started from an imitation
+  checkpoint, E learned targets, positioning and swinging, F tactical learning in AI-only custom
+  games. They advance on evidence, not footage hours, and are dependencies rather than six
+  serial waits. Linear carries assignment: A VUH-1306 and VUH-1319, B VUH-1311, C VUH-1320,
+  D VUH-1321, E VUH-1322 (with VUH-1314, VUH-1296), F VUH-1323 (with VUH-1310).
 - **Compute budget.** James approved an initial $100 for rented cloud compute (2026-09-20).
   Training is local first; renting is chosen from a measured local-versus-rental comparison,
   spend is tracked, and the figure is revisited before it is exceeded. It is an experiment
