@@ -149,7 +149,7 @@ training set to one regime and one patch.
 `segment` lines, then events without a `type`. `events_file_segments(path)` turns the segment lines into manifest segments.
 
 **The loader reads format 5 only, and only from the current writer.** Any other `format` (a file with no meta line is format 1;
-every file on disk today is format 4) is a `FormatError` that names the file and both versions. There is no dual-format mode:
+every file on disk before 2026-09-21 was format 4) is a `FormatError` that names the file and both versions. There is no dual-format mode:
 format 4 counted one continuing cooldown as several casts and has no knowledge time. A format 5 file must also pass **the
 producer's own staleness verdict** (`perception.events.check`):
 
@@ -243,22 +243,13 @@ also names: a `kind` outside `EVENT_KINDS`, a `cause` outside the table above, a
   (`data/experiments/b0-multilabel-v1` and its sidecars): those are the outputs of a fit on format 4 events. Paths are resolved
   first, so a symlink to the archive is refused too. A copy of it outside any `data/experiments/` directory is not recognised.
 
-### Consumers outside this lane (on branch `loader-format5`, base `writer-fix` at 417f1ad)
+### Consumers outside this lane
 
-These still read format 4 semantics and must change before a format 5 regeneration is promoted. Listed, not edited:
-
-| Where | What it does | Needs |
-|---|---|---|
-| `policy/train.py:62` | `EVENT_KINDS = ("hp_lost", "web_cluster_fired", "slot_unavailable", "slot_available")` | the renamed icon kinds; `hp_lost` only with `cause == "damage"` |
-| `policy/train.py:183` | the historical event feature selects `t - window_s < e.t_to <= t` | select on `known_at`, never `t_to` |
-| `policy/b0.py:77-88` | builds targets from `t_from`/`t_to` (occurrence: right for targets) with no `known_at` and no `ability_uncertain` handling; calls `Demos._readable` (now a `KnowledgeError` on a missing `known_at`), which lets a masked `ability_uncertain` through with its reads | carry `known_at`; `ability_uncertain` censors a negative, never a positive; take events through `Demos.window_event` |
-| `tests/test_policy.py:571` | builds an `hp_lost` `Event` with no `cause` | a `cause` |
-| `tests/test_b0.py:36,42` | builds events by `t_to` only | a `known_at` |
-
-The policy owner's in-flight copies in the main checkout (not on this branch) already select on `known_at`
-(`policy/train.py:177-200` `event_known_at`, `policy/b0.py:80-133`, `policy/b0_multilabel.py:49,162-164`) and map `hp_lost` to
-`damage_taken` only when `cause == "damage"`. The producer's own `tests/test_events.py` reads `t_to` where it tests
-occurrence bounds, and `tests/test_events_sheet.py:69` prints it; both are the HUD lane's and neither selects availability.
+The policy consumers read format 5 (`cafcfc0`): `policy/train.py` gates every historical event feature on `known_at`
+(`event_known_at`, refusing a missing one) and counts `hp_lost` as `damage_taken` only when `cause == "damage"`;
+`policy/b0.py` takes events through `Demos.window_event`. `policy/b0_multilabel.py:178` counts events that occurred by `t` but
+are not yet known (`t_to <= t`), a diagnostic of the knowledge lag, not a feature. The producer's own `tests/test_events.py`
+reads `t_to` where it tests occurrence bounds.
 
 ## Annotations and their per-frame masks
 
@@ -323,129 +314,97 @@ A masked frame is a `FrameRef` with `masked = Mask(reasons, hidden)`. A bridged 
 `player`, or one HUD field. A trainer drops or zeroes every hidden modality. `Observation.masked_context` says whether any frame
 is masked; `masked=None` claims only that nothing on record hides anything there.
 
-On the real format 4 sources, at `MAX_BRIDGE_S = 1.0`:
+On the open format 5 sources, at `MAX_BRIDGE_S = 1.0` (the two sealed test sections and the two September uploads held out of every side are under sealed handling, and no per-source figure is reported for them):
 
 | Source | Scoreboard taps | Bridged | Too wide (hard) | Median segment | Median bridged stretch |
 |---|---|---|---|---|---|
 | reqmr-2873352801-1920 (sample, 60 s) | 1 | 1 | 0 | 16.2 s | 41.9 s |
-| daymr-2879354299-21600-60s (sample, 60 s) | 6 | 6 | 0 | 11.4 s | 45.6 s |
-| daymr-2877719252-1800-900s | 37 | 34 | 3 | 7.6 s | 23.5 s |
-| daymr-2879354299-21660-900s | 20 | 16 | 4 | 12.6 s | 15.7 s |
-| reqmr-2871472478-5400-900s | 23 | 17 | 6 | 8.6 s | 19.9 s |
-| reqmr-2873352801-1980-900s | 17 | 12 | 5 | 20.8 s | 27.6 s |
-| d0C8RMBnFfA (upload, 9/11) | 20 | 15 | 5 | 13.4 s | 29.7 s |
-| yjc51uOjKEQ (upload, 9/12) | 18 | 16 | 2 | 18.5 s | 30.2 s |
+| daymr-2879354299-21600-60s (sample, 60 s) | 7 | 7 | 0 | 11.4 s | 45.6 s |
+| daymr-2879354299-21660-900s (train) | 30 | 24 | 6 | 11.2 s | 15.7 s |
+| reqmr-2873352801-1980-900s (train) | 19 | 14 | 5 | 18.4 s | 27.6 s |
 
 Bridged taps are 0.4-1.0 s wide. The four April-May uploads have no scoreboard taps at all (edited out); their breaks are
 cuts, deaths and spectating.
 
-## Samples, and why the future cannot leak
+## Worked example: a bridged window on a train section
 
-| Guarantee | Enforced by | Pinned by |
-|---|---|---|
-| An `Observation` holds nothing later than `t` | every source is cut off at `t` before it is read, and `Observation` refuses a later frame, event or input (`LeakageError`) | `test_an_observation_refuses_to_hold_anything_later_than_t`, `test_no_future_datum_is_reachable_from_an_observation` |
-| No route from an observation to labels or the outcome | `Observation` has no such field and no reference to the clip | `test_the_policy_facing_types_have_no_route_to_labels_or_outcomes` |
-| Hindsight is opt-in | `samples(..., hindsight=True)` | `test_the_outcome_is_strictly_after_t` |
-| An event not yet known at `t` is not visible at `t`, whenever it occurred; a target is only what occurs after `t` | observations filter on `known_at <= t`, outcomes on `t_to > t`; `Observation` refuses a later or missing `known_at` or a later `t_to` | `test_an_event_is_visible_only_from_its_knowledge_time_never_from_its_occurrence`, `test_damage_that_landed_before_a_decision_is_never_its_outcome`, `test_a_wide_ability_uncertain_is_handed_to_every_window_it_overlaps` |
-| Nothing crosses a hard boundary, a cut included; a tap is bridged only under the maximum | `Clip.soft_gap`, `Clip.stretch` | `test_no_hard_boundary_is_ever_spanned_even_when_asked_to_span_overlays`, `test_a_window_never_crosses_a_hard_cut`, `test_a_scoreboard_tap_wider_than_the_named_maximum_is_a_hard_boundary` |
-| A bridged window keeps the gap's frames masked and reads no HUD feature off a masked frame | `Demos._masked`, `Demos._readable` | `test_a_bridged_window_carries_masked_frames_and_no_hud_feature_from_them` |
-| A null-slot cast stays null | `_slot_guessed` at load; `Event.slot` is never filled | `test_a_cast_at_an_unidentified_position_stays_null_through_every_window`, `test_a_guessed_ability_name_is_refused` |
-| No split mixes regimes or patches unasked | `Demos._clips` | `test_a_split_that_mixes_regimes_is_refused_unless_asked`, `test_a_split_that_mixes_patches_is_refused_unless_asked` |
-| Nothing unsplittable or inspection-only reaches train/val/test | `assign_splits`, `Clip._check_provenance` | `test_a_source_not_shown_independent_is_never_trained_or_scored_on` |
-| A sealed side is read only on purpose | `Demos.clips_in` raises `SealedError` without `unseal=True` | `test_a_sealed_side_is_read_only_on_purpose` |
-| An annotation is never attached to a window it was not made over | `_aligned` raises `AlignmentError` | `test_an_annotation_is_refused_when_the_masked_claim_or_the_history_disagrees` |
-| Splits are by whole recording | assignment is by group, hashed on `sha256(seed:group)` | `test_a_recording_is_never_on_both_sides`, `test_no_clip_and_no_group_appears_on_two_sides_over_many_random_fleets` |
-
-What this does not stop: code that asks for hindsight and feeds `sample.hindsight` to a policy, or a trainer that ignores
-`FrameRef.masked`.
-
-**Missing modalities are explicit, never filled.** `inputs` is `None` for a VOD; `events` is `None` when there is no event
-stream and `()` when one exists and nothing happened in the window; `labels` is `()` when a decision is unlabelled.
-
-## Trimming keeps source timestamps
-
-`trim(rows, start_t, end_t, new_id, media_path)` returns the manifest rows for a sub-clip: times are re-based,
-`source_start_s` moves forward by `start_t` so `source_time` still names the same moment of the VOD, and a segment cut at the
-new edge starts as `run_start` or ends as `run_end`. Events and annotations are not rewritten here; whoever cuts the media
-re-cuts them, and the loader refuses events that no longer fit the segments.
-
-## Worked example: a bridged window on a retained section
-
-`data/demos/vods/reqmr-2871472478-5400-900s.manifest.jsonl` (header abridged; segments from the format 4 events file, measured before format 5):
+`data/demos/vods/reqmr-2873352801-1980-900s.manifest.jsonl` (header abridged; segments from its format 5 events file):
 
 ```json
-{"type": "clip", "id": "reqmr-2871472478-5400-900s", "kind": "vod", "vod_id": "2871472478", "creator": "reqmr",
- "source_start_s": 5400, "fps": 60.0, "split": "inspection_only", "group": "twitch:2871472478",
- "events": "../events/sections/reqmr-2871472478-5400-900s.jsonl", "cooldowns": "normal", "cooldowns_from": "observed_cooldowns",
+{"type": "clip", "id": "reqmr-2873352801-1980-900s", "kind": "vod", "vod_id": "2873352801", "creator": "reqmr",
+ "source_start_s": 1980, "fps": 60.0, "split": "train", "group": "twitch:2873352801",
+ "events": "../events/sections/reqmr-2873352801-1980-900s.jsonl", "cooldowns": "normal", "cooldowns_from": "observed_cooldowns",
  "patch": "Season 10, Version 20260911", "patch_from": "broadcast_date", "splittable": true, "edited_upload": false}
-{"type": "segment", "start_t": 0.0, "end_t": 5.5, "started_by": "run_start", "ended_by": "scoreboard"}
-{"type": "segment", "start_t": 6.1, "end_t": 37.6, "started_by": "scoreboard_closed", "ended_by": "scoreboard"}
+{"type": "segment", "start_t": 58.5, "end_t": 72.0, "started_by": "scoreboard_closed", "ended_by": "scoreboard"}
+{"type": "segment", "start_t": 72.7, "end_t": 110.6, "started_by": "scoreboard_closed", "ended_by": "scoreboard"}
 ```
 
-What the loader returns at clip time 8.1 (`samples("inspection_only", hindsight=True, hz=10)`, 5 Hz frames, 5 s history):
+What the loader returns at clip time 74.7 (`samples("train", hindsight=True, hz=10)`, 5 Hz frames, 5 s history):
 
 ```
-observation  segment 1, t 8.1, context_start 3.1, truncated_context False, masked_context True
-             26 frames 3.1 .. 8.1; 5.7 and 5.9 masked (reasons ("scoreboard",), hidden ("hud", "scene")): the 0.6 s tap, bridged
-             events from segment 0, before the tap: slot_unavailable swing [4.8, 4.9], uppercut [4.8, 4.9], get_over_here [4.8, 5.0]
-             (format 4 output; format 5 names these icon_dimmed and selects them by known_at)
+observation  segment 4, t 74.7, context_start 69.7, truncated_context False, masked_context True
+             26 frames 69.7 .. 74.7; 72.1, 72.3, 72.5 masked (reasons ("scoreboard",), hidden ("hud", "scene")): the 0.7 s tap
+             events, each known by 74.7 (occurrence, then known_at):
+               segment 3, before the tap: web_cluster_reloaded [69.8, 70.1] known 71.3; hp_gained [69.1, 70.0] known 71.6
+               cause unknown; hp_gained [70.0, 70.1] known 71.7 cause heal; hp_gained [70.1, 70.2] known 71.8 cause unknown;
+               hp_gained [70.5, 70.6] known 72.2 cause unknown; hp_gained [70.6, 70.7] known 72.3 cause heal (known after its
+               own segment ended at 72.0: visible only because the window is bridged)
+               segment 4: ability_uncertain swing [72.7, 72.7] known 74.0; charges_regained swing [73.2, 73.4] known 74.6
              inputs None (a VOD)
-outcome      t_end 13.1, 25 frames, no events, ended_by None, truncated False
-source_time(8.1) = 5408.1
+outcome      t_end 79.7, 25 frames, ended_by None, truncated False; every event's occurrence ends after 74.7:
+             icon_dimmed swing and get_over_here [75.5, 75.6], icon_lit swing [77.3, 78.0], icon_dimmed swing [78.3, 79.4],
+             charges_regained swing [79.3, 79.5]
+source_time(74.7) = 2054.7
 ```
 
-With `across_overlays=False` the same decision's history starts at 6.1 and is truncated.
+With `across_overlays=False` the history starts at 72.7, is truncated, and the hp_gained known at 72.3 is recorded in
+`Demos.skipped` as `known_after_segment_end_unbridged`.
 
 ## What the real data showed
 
-**Measured on the format 4 files, by the format 4 loader.** This loader refuses every one of them, and no format 5
-file exists yet: the numbers below and in the worked example and the split report are re-measured when the format 5
-regeneration lands.
+Every events file is format 5 from writer `21a390f547eb` (`python -m perception.events check` passes;
+`tests/test_events.py::test_the_demonstration_directory_holds_one_format_throughout` passes). On 2026-09-21 every loader
+manifest's segment lines were rewritten from its regenerated events file through `write_manifest`, with headers (group, split,
+promotion, provenance) byte-for-byte unchanged and the identity guard passing on all twelve. The four sealed-handling sources
+(the two sealed test sections, `d0C8RMBnFfA`, `yjc51uOjKEQ`) were rewritten with all output to 600-mode logs under
+`data/demos/migration-format5/sealed-logs/`, and only "written, guard pass" was reported.
 
-The six real-data tests that read these event files are marked `xfail(raises=FormatError, strict=True)`
-(`FORMAT5_PENDING` in `tests/test_demos.py`). Where `data/` exists they are expected to fail on the format 4 refusal and
-on nothing else, and the marker must come off when the format 5 regeneration makes them pass. The retained-section test
-reads the train section `reqmr-2873352801-1980-900s`: no test reads a sealed section's windows. The split test loads
-`s10-normal-v0` sealed: of the sealed sections it reads the manifests and the events files' meta and segment lines, to check
-their placement, and no event, annotation or window.
+The open sources, loaded through the loader (`Demos.load` per source group; 23,872 observations at 5 Hz in 3.4 s):
 
-Every events file is from the frozen writer `1336262e179c` (`python -m perception.events check`: all format 4, all
-regenerable), and every loader manifest's segments are identical to its events file's.
-`uv run python -m agent.demos data/demos/samples data/demos/vods data/demos/youtube/reqmr`: twelve format 4 sources load in
-0.08 s and yield 37,358 observations at 5 Hz in 5.1 s.
+| Source | Kind | Patch (basis) | Segments (short) | Usable | Events | Null-slot events |
+|---|---|---|---|---|---|---|
+| reqmr-2873352801-1920 | Twitch sample, 60 s | Season 10 (broadcast 2026-09-13) | 3 (0) | 49.1 s | 125 | 0 |
+| daymr-2879354299-21600-60s | Twitch sample, 60 s | Season 10 (broadcast 2026-09-20) | 11 (6) | 43.4 s | 90 | 0 |
+| daymr-2879354299-21660-900s | Twitch section (train), cuts 17 | Season 10 (broadcast 2026-09-20) | 48 (13) | 478.4 s | 1,161 | 0 |
+| reqmr-2873352801-1980-900s | Twitch section (train), cuts 15 | Season 10 (broadcast 2026-09-13) | 32 (6) | 544.8 s | 1,048 | 0 |
+| ftnk5SVycXY | edited upload, unsplittable | unknown (upload 2026-05-10) | 76 (29) | 1212.8 s | 3,028 | 99 |
+| Cf_2goe1snQ | edited upload, unsplittable | unknown (upload 2026-05-09) | 58 (13) | 1006.6 s | 3,065 | 117 |
+| V6iaq9dP8FQ | edited upload, unsplittable | unknown (upload 2026-04-27) | 67 (8) | 764.8 s | 2,107 | 56 |
+| G7HmV8zyEh8 | edited upload, unsplittable | unknown (upload 2026-04-25) | 45 (13) | 649.0 s | 1,685 | 51 |
 
-| Source | Kind | Patch (basis) | Segments (short) | Usable | Null-slot events |
-|---|---|---|---|---|---|
-| reqmr-2873352801-1920 | Twitch sample, 60 s | Season 10 (broadcast 2026-09-13) | 4 (1) | 49.1 s | 0 |
-| daymr-2879354299-21600-60s | Twitch sample, 60 s | Season 10 (broadcast 2026-09-20) | 9 (4) | 44.3 s | 0 |
-| daymr-2877719252-1800-900s | Twitch section, cuts 7 | Season 10 (broadcast 2026-09-18) | 69 (20) | 566.3 s | 0 |
-| daymr-2879354299-21660-900s | Twitch section, cuts 17 | Season 10 (broadcast 2026-09-20) | 43 (12) | 488.4 s | 0 |
-| reqmr-2871472478-5400-900s | Twitch section, cuts 4 | Season 10 (broadcast 2026-09-11) | 55 (9) | 691.9 s | 0 |
-| reqmr-2873352801-1980-900s | Twitch section, cuts 15 | Season 10 (broadcast 2026-09-13) | 31 (7) | 545.4 s | 0 |
-| d0C8RMBnFfA | edited upload, unsplittable | Season 10 (upload 2026-09-11) | 42 (9) | 629.4 s | 0 |
-| yjc51uOjKEQ | edited upload, unsplittable | Season 10 (upload 2026-09-12) | 48 (9) | 777.7 s | 0 |
-| ftnk5SVycXY | edited upload, unsplittable | unknown (upload 2026-05-10) | 75 (27) | 1215.6 s | 99 |
-| Cf_2goe1snQ | edited upload, unsplittable | unknown (upload 2026-05-09) | 58 (13) | 1006.6 s | 118 |
-| V6iaq9dP8FQ | edited upload, unsplittable | unknown (upload 2026-04-27) | 74 (15) | 764.8 s | 57 |
-| G7HmV8zyEh8 | edited upload, unsplittable | unknown (upload 2026-04-25) | 44 (12) | 650.0 s | 51 |
+**Usable minutes of the open sources, per patch** (all `cooldowns=normal`): Season 10, Version 20260911: **17.1** on the train
+side and **1.5** in the two samples; unknown: **60.6** (four April-May uploads). No figure sums them with a sealed-handling source.
 
-**Usable minutes the loader reports, per patch** (all `cooldowns=normal`, all `inspection_only`): Season 10, Version 20260911:
-**63.2** (six Twitch sources 39.8, two uploads 23.5); unknown: **60.6** (four April-May uploads). None is in train/val/test yet: every source's acquisition split is `inspection_only`, and the
-uploads stay unsplittable until the cross-source duplicate check runs.
-
-- The null-slot events are the April-May uploads' team-up position, whose icon the mapping did not identify: they stay
-  `slot: null`. Cf_2goe1snQ's one null-slot *cast* sits in a 0.5 s sliver between `spectating_over` and `not_our_hero` with a
-  cooldown of 8 (Get Over Here's, not the team-up's 15): kept, named nothing, and no window is cut from it.
-- **A sample clip and its broadcast's sections are one split group** (`twitch:<vod id>`), as the acquisition manifest says;
-  given two groups for one VOD the loader refuses to split at all (`SplitError: one VOD in two groups`).
-- **The Req sample's scoreboard tap, two views.** The segmenter proves 43.2 as the last frame before the tap (segment ends 43.2,
-  next starts 43.8); the codex rerun row's own mask marks 43.2 as scoreboard. In the bridged +45 window 43.2 carries the
-  annotator's mask (scene and every HUD field hidden), 43.3-43.7 the tap's, and no event read off 43.2 enters the window.
-- The guides (`events/guides/`) are format 4 but have no loader manifest: their regime is per-segment (range demonstrations
+- **Known after their segment ends.** The train sections record 73 and 36 `known_after_segment_end` rows (Day, Req) and 34 and
+  14 `known_after_segment_end_unbridged`: the writer's settling lag leaves the last events of many segments known only after
+  the segment. They are never historical features, and are targets of the decisions before them.
+- **Team-up is never a cast.** Its length depends on the partner's variant, which nothing identifies, so on the train side it
+  has 0 `ability_cast` and 29 `ability_uncertain`. The April-May uploads' unidentified team-up position yields only
+  `icon_dimmed` / `icon_lit` with `slot: null` (Cf_2goe1snQ: 60 and 57), never a cast.
+- **Most hp changes have no proven cause.** In the train side's usable segments 46 of 315 `hp_lost` are `cause: damage`, 82 of
+  366 `hp_gained` are `cause: heal`; the rest are `unknown`, which is not damage.
+- **A sample clip and its broadcast's sections are one split group** (`twitch:<vod id>`). The train sections were promoted to
+  `split: train` in their manifests, while the samples in the same groups remain `inspection_only`; loading a sample together
+  with its section is therefore refused (`SplitError: group ... has clips in two splits`). They load separately.
+- **The Req sample's scoreboard tap, two views.** The segmenter proves 43.2 as the last frame before the tap (next segment starts
+  43.8); the codex rerun row's own mask marks 43.2 as scoreboard. In the bridged +45 window 43.2 carries the annotator's mask
+  (scene and every HUD field hidden), 43.3-43.7 the tap's, and no event read off 43.2 enters the window.
+- The guides (`events/guides/`) are format 5 but have no loader manifest: their regime is per-segment (range demonstrations
   mixed with match clips) and nobody has stated it.
-- A 60 s clip is a thin fingerprint: the Req sample's uppercut countdown mode is 3, from a handful of casts.
-- Loader manifests for the sections and uploads are written beside their media from the acquisition `manifest.json`
-  (dates, group, split) and the events file (segments, `observed`), through `write_manifest`, which validates them by loading.
+- **Corpus tests run by node id.** The real-data tests are marked `corpus` and skipped without `--corpus`. All six that touch
+  open sources, or sealed ones only through the placement-only `load_split`, pass by node id.
+  `test_the_loaders_stale_rule_is_the_producers` opens every events file, sealed-handling ones included, so it stays out of
+  every corpus run while those sources are sealed.
 
 ## The first dataset split: `s10-normal-v0` (proposed)
 
@@ -497,10 +456,10 @@ loader manifest), and the two 60 s samples (not requested; each belongs to a tra
 
 | Side | Session groups | Creator | Usable minutes | Windows (5 Hz) | Windows with bridged masked frames |
 |---|---|---|---|---|---|
-| train | `twitch:2879354299` (Day, broadcast 09-20), `twitch:2873352801` (Req, 09-13) | Day 8.1, Req 9.1 | **17.2** | 5,199 | 488 (9%) |
+| train | `twitch:2879354299` (Day, broadcast 09-20), `twitch:2873352801` (Req, 09-13) | Day 8.0, Req 9.1 | **17.1** | 5,150 | 698 (14%) |
 | val | **pending**: four new current-patch 15-minute sections from four additional distinct broadcasts, two per player, one per player preassigned to train and one to val (the co-lead is acquiring them) | | 0 | 0 | |
-| test, sealed | `twitch:2877719252` (Day, 09-18), `twitch:2871472478` (Req, 09-11) | Day 9.4, Req 11.5 | **21.0** | 6,339 | 937 (15%) |
-| unassigned | `youtube:d0C8RMBnFfA` (uploaded 09-11), `youtube:yjc51uOjKEQ` (09-12) | Req | (23.5) | | |
+| test, sealed | `twitch:2877719252` (Day, 09-18), `twitch:2871472478` (Req, 09-11) | Day, Req | sealed: not reported | | |
+| unassigned | `youtube:d0C8RMBnFfA` (uploaded 09-11), `youtube:yjc51uOjKEQ` (09-12) | Req | sealed handling: not reported | | |
 
 Test is the two broadcasts `data/demos/vods/manifest.json` reserves as evaluation (`reserved_evaluation_candidate_new_session`),
 one per player. Train is the two pilot-session broadcasts.
@@ -512,30 +471,29 @@ but the full broadcast is not held, so the same match from another part of it ca
 is identified they are held out of every side, validation included (the learning-plan owner's ruling). Validation stays empty
 and declared pending until the new broadcasts arrive, rather than being filled with sources that could compromise the test.
 
-Events per type in usable segments:
+Events per type in the train side's usable segments (the sealed side is not reported):
 
-| Kind | train | test |
-|---|---|---|
-| `ability_cast` | 246 | 302 |
-| `charges_spent` / `charges_regained` | 73 / 54 | 82 / 49 |
-| `slot_unavailable` / `slot_available` | 199 / 202 | 291 / 287 |
-| `hp_lost` / `hp_gained` | 316 / 366 | 525 / 469 |
-| `shield_gained` / `shield_decayed` / `max_hp_changed` | 2 / 3 / 6 | 10 / 4 / 16 |
-| `web_cluster_fired` / `web_cluster_reloaded` | 211 / 176 | 284 / 220 |
-| `ult_ready` / `ult_spent` | 8 / 8 | 15 / 17 |
-| `ko_feed` | 10 | 13 |
+| Kind | train |
+|---|---|
+| `ability_cast` / `ability_uncertain` / `cooldown_ended` | 170 / 43 / 60 |
+| `charges_spent` / `charges_regained` | 236 / 193 |
+| `icon_dimmed` / `icon_lit` | 199 / 205 |
+| `hp_lost` (damage / unknown) / `hp_gained` (heal / unknown) | 315 (46 / 269) / 366 (82 / 284) |
+| `shield_gained` / `max_hp_changed` | 1 / 7 |
+| `web_cluster_fired` / `web_cluster_reloaded` | 210 / 174 |
+| `ult_ready` / `ult_spent` | 5 / 5 |
+| `ko_feed` | 9 |
 
-Casts per slot: train get_over_here 80, uppercut 75, swing 49, teamup 42; test 86, 96, 62, 58. No cast in the split has a null
-slot.
+Casts per slot on the train side: uppercut 65, get_over_here 57, swing 48, teamup 0 (29 `ability_uncertain` instead). No cast
+has a null slot.
 
-**What makes it lopsided:**
+**What makes it lopsided** (the train side, open sources only):
 
-- **Train is smaller than the sealed test**: 17.2 against 21.0 minutes, and there is no validation yet.
-- **One session carries most of a side's casts**: on test, `twitch:2871472478` has 185 of 302 (61%); on train,
-  `twitch:2879354299` has 139 of 246 (57%).
-- **Test has more bridged windows** (15% against 9%): its sessions tap the scoreboard more (37 and 23 taps against 20 and 17).
+- **Train is small**: 17.1 minutes, and there is no validation yet.
+- **One session carries most of the casts**: `twitch:2879354299` (Day) has 104 of 170 (61%), and 53 of Day's are uppercut.
+- **Team-up is unobservable as a cast** (above), so no team-up label can be learned from it.
 - **Maps are not recorded** anywhere (acquisition manifests, events, loader), so balance by map cannot be checked.
-- **Ults are rare**: 8 and 17 `ult_spent`, too few for an ult-use metric.
+- **Ults are rare**: 5 `ult_spent`, too few for an ult-use metric.
 
 `status: accepted` waits on:
 

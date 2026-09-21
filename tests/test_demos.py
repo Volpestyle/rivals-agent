@@ -1614,10 +1614,6 @@ REAL_SECTION = DEMOS / "vods" / "reqmr-2873352801-1980-900s.manifest.jsonl"
 REAL_UPLOAD = DEMOS / "youtube" / "reqmr" / "Cf_2goe1snQ.manifest.jsonl"          # an edited upload: hard cuts, an unmapped teamup
 REAL_RERUN = DEMOS / "annotations" / "codex-rerun" / "reqmr-2873352801-1920.jsonl"
 NO_DATA = pytest.mark.skipif(not DEMOS.is_dir(), reason="data/demos is not on this machine")
-# Knowingly red where data/ exists: every events file there is format 4, which this loader refuses by name. Strict, so the marker
-# must come off when the format 5 regeneration lands and these pass; only a FormatError is expected, any other failure is a failure.
-FORMAT5_PENDING = pytest.mark.xfail(raises=FormatError, strict=True,
-                                    reason="data/demos/events is format 4 until the format 5 regeneration; the loader refuses it")
 
 
 def hard_gaps(clip, bridge=demos.MAX_BRIDGE_S):
@@ -1639,7 +1635,6 @@ def assert_windows_hold(d, clip, split="inspection_only", **kw):
 
 @pytest.mark.corpus
 @NO_DATA
-@FORMAT5_PENDING
 def test_both_sample_clips_load_under_the_current_format():
     for path in (REAL_REQ, REAL_DAY):
         clip = demos.read_manifest(path)                             # a format 3 events file fails here, naming both versions
@@ -1649,7 +1644,6 @@ def test_both_sample_clips_load_under_the_current_format():
 
 @pytest.mark.corpus
 @NO_DATA
-@FORMAT5_PENDING
 def test_the_req_sample_manifest_iterates():
     d = Demos.load(REAL_REQ)
     clip = d.clips["reqmr-2873352801-1920"]
@@ -1664,7 +1658,6 @@ def test_the_req_sample_manifest_iterates():
 
 @pytest.mark.corpus
 @NO_DATA
-@FORMAT5_PENDING
 def test_the_codex_rerun_rows_load_bridged_with_the_annotators_own_masks(tmp_path):
     real = demos.read_manifest(REAL_REQ)
     head = {k: v for k, v in real.header.items() if k != "type"}
@@ -1695,7 +1688,6 @@ def test_the_codex_rerun_rows_load_bridged_with_the_annotators_own_masks(tmp_pat
 
 @pytest.mark.corpus
 @NO_DATA
-@FORMAT5_PENDING
 def test_a_retained_section_loads_and_bridges_its_scoreboard_taps():
     d = Demos.load(REAL_SECTION)
     clip, = d.clips.values()
@@ -1713,18 +1705,18 @@ def test_a_retained_section_loads_and_bridges_its_scoreboard_taps():
 
 @pytest.mark.corpus
 @NO_DATA
-@FORMAT5_PENDING
 def test_an_edited_upload_loads_never_splittable_and_never_crosses_a_cut():
     d = Demos.load(REAL_UPLOAD)
     clip, = d.clips.values()
     assert (clip.edited_upload, clip.splittable, d.splits[clip.id], clip.patch) == (True, False, "inspection_only", "unknown")
     assert clip.events_meta["cuts"] == 55 and any(s.ended_by == "hard_cut" for s in clip.segments)
-    null = [e for e in clip.events if e.kind == "ability_cast" and e.slot is None]
-    assert null and all(e.slot_pos == "teamup" for e in null) and "teamup" not in clip.events_meta["slot_mapping"]
-    # Its one null cast sits in a 0.5 s sliver between spectating and another hero: kept, named nothing, and no window is cut from it
-    # (the synthetic test_a_cast_at_an_unidentified_position_stays_null_through_every_window covers a null cast inside a window).
-    assert all(clip.segments[e.segment].length < demos.MIN_SEGMENT_S for e in null)
-    assert not [e for o in d.observations("inspection_only", hz=1.0) for e in o.events if e in null]
+    # Its team-up position is unidentified: format 5 writes it only display state there (icon_dimmed / icon_lit, 60 and 57 on the
+    # 2026-09-21 regeneration), never a cast, and every one keeps slot null, in the clip and in every window.
+    null = [e for e in clip.events if e.slot is None and e.slot_pos]
+    assert null and {e.slot_pos for e in null} == {"teamup"} and "teamup" not in clip.events_meta["slot_mapping"]
+    assert {e.kind for e in null} == {"icon_dimmed", "icon_lit"} and not [e for e in clip.events if e.slot_pos == "teamup" and e.slot]
+    seen = [e for o in d.observations("inspection_only", hz=1.0) for e in o.events if e.slot_pos == "teamup"]
+    assert seen and all(e.slot is None for e in seen)
     assert assert_windows_hold(d, clip, hz=1.0) > 500
 
 
@@ -1824,7 +1816,6 @@ def test_a_pending_side_is_declared_empty_and_asking_it_for_anything_is_an_error
 
 @pytest.mark.corpus
 @NO_DATA
-@FORMAT5_PENDING
 def test_the_first_season_10_split_is_a_proposal_with_the_reserved_sessions_sealed_as_test():
     """Pins the state after the lead promoted the two train sessions in their own manifests (2026-09-20)."""
     d = Demos.load_split("s10-normal-v0")
