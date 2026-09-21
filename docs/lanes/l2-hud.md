@@ -715,15 +715,15 @@ the only place the patch is stated — **no patch value lives in `perception/`**
 | four Twitch sections | Season 10 | **8** (37–55 casts) | **1** (22–71) | 15 (21–30) |
 | `yjc51uOjKEQ` | Sep 12 | **8** (76) | **1** (67) | 15 (32) |
 | `d0C8RMBnFfA` | Sep 11 | **8** (46) | **1** (60) | 15 (34) |
-| `ftnk5SVycXY` | May 10 | *measuring* | *measuring* | — |
+| `ftnk5SVycXY` | May 10 | **8** (120) | **2** (103) | — |
 | `Cf_2goe1snQ` | May 9 | **8** (104) | **2** (111) | — |
 | `V6iaq9dP8FQ` | Apr 27 | **8** (105) | **2** (56) | — |
 | `G7HmV8zyEh8` | Apr 25 | **8** (65) | **2** (68) | — |
 | *kit, Season 10* | | 8 s | 1 s (**was 2 s**) | — |
 
 **It works, and it separates the two patches perfectly.** Every Season 10 source
-reads Amazing Combo at **1**; all three April–May uploads measured so far read
-**2**, the pre-Season-10 value — 46 of 56 casts on one of them with not a single
+reads Amazing Combo at **1**; all four April–May uploads read **2**, the
+pre-Season-10 value — on `V6iaq9dP8FQ` that is 46 of 56 casts with not a single
 cast reading 1. Get Over Here reads 8 on both sides, which is right: that patch
 touched only Amazing Combo and Parker Power-Up. **A source can now be placed
 against the balance history from its own footage**, with no date needed.
@@ -731,10 +731,10 @@ against the balance history from its own footage**, with no date needed.
 The same check on our own live runs is the drift alarm: if a capture stops
 matching the kit, the game patched.
 
-Two incidental observations from the same table: the **April–May uploads have no
-identifiable team-up icon at all** (a three-entry mapping, no team-up casts),
-while both September uploads identify all four slots; and **`slot: null` fires on
-real data** exactly as intended rather than guessing an ability.
+One incidental observation from the same table: **none of the four April–May
+uploads has an identifiable team-up icon** — each gets a three-entry mapping and
+emits no team-up casts — while both September uploads identify all four slots.
+So `slot: null` fires on real data exactly as intended, rather than guessing.
 
 Two things that look like disagreements and are not:
 
@@ -790,6 +790,32 @@ the gap. Checked by eye on a before/after sheet of all 18 moments.
 
 A fade is not a cut and must not read as one: it changes the frame gradually, so
 every step scores low and none crosses the threshold. Only an abrupt change does.
+
+### What the six uploads actually contain
+
+| upload | date | raw | usable play | share | cuts | breaking play | segments | events |
+|---|---|---|---|---|---|---|---|---|
+| `G7HmV8zyEh8` | Apr 25 | 14.1 min | **10.91 min** | 77% | 10 | 4 | 44 | 1496 |
+| `V6iaq9dP8FQ` | Apr 27 | 16.2 min | **12.83 min** | 79% | 76 | 21 | 74 | 1946 |
+| `Cf_2goe1snQ` | May 9 | 20.9 min | **16.90 min** | 81% | 55 | 10 | 63 | 2800 |
+| `ftnk5SVycXY` | May 10 | 25.4 min | **20.39 min** | 80% | 7 | 1 | 75 | 2697 |
+| `d0C8RMBnFfA` | Sep 11 | 12.8 min | **10.56 min** | 83% | 6 | 2 | 42 | 1594 |
+| `yjc51uOjKEQ` | Sep 12 | 14.7 min | **13.00 min** | 89% | 8 | 1 | 48 | 2075 |
+| **total** | | **104.1 min** | **84.6 min** | **81%** | 162 | 39 | | 12608 |
+
+**An edited upload is the richer source per raw minute: 81% usable against the
+retained sections' 66%.** The editor has already cut the queueing, the hero
+select and the post-match screens that eat a third of a live broadcast. Budget
+on 0.8 for an upload and 0.66 for a raw section.
+
+**Edit density is a property of the upload, not of the era** — 7 cuts in one May
+upload and 76 in an April one. So the cut pass cannot be skipped for any file on
+the grounds that its neighbours were lightly cut.
+
+**Most cuts fall where the HUD already knows something changed**, at match
+boundaries and in outros: only 39 of 162 land inside a play segment. Those 39
+are the whole point — each is a place where a segment would otherwise have
+spanned two unrelated fights, and `V6iaq9dP8FQ` alone accounts for 21.
 
 ## Reading a streamer's HUD (1080p, mouse and keyboard)
 
