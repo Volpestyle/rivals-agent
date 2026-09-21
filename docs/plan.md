@@ -68,6 +68,14 @@ only once an outcome can be measured reliably.
   games. They advance on evidence, not footage hours, and are dependencies rather than six
   serial waits. Linear carries assignment: A VUH-1306 and VUH-1319, B VUH-1311, C VUH-1320,
   D VUH-1321, E VUH-1322 (with VUH-1314, VUH-1296), F VUH-1323 (with VUH-1310).
+- **Sealed test data.** The two reserved broadcasts are sealed: the loader loads them placement-only
+  (manifest header, events meta line and segment lines, so provenance, kit-patch and identity checks still
+  run; no event, annotation or window is ever built; `SealedError` on access; `unseal=True` is a deliberate
+  second step). Their derived event files are migrated between event formats by machine only, under the
+  ruling on VUH-1326: the frozen writer, no inspection, a wrapper that reports only written, format,
+  fingerprint and check pass or fail, originals preserved, no per-source numbers, no sidecars, embeddings,
+  support counts or fitting. A migration is not an evaluation; a final evaluation is a separately
+  authorized, recorded event. Tests that open `data/` are opt-in, so a bare test run is synthetic.
 - **Configurable playstyle (planned, after E and F; VUH-1329).** One policy conditioned on a small
   preference vector, first aggression and swing conservation, not a model per style. Presets are
   evaluated before any smooth-slider claim, tactical claims need F's fighting venue, and a
