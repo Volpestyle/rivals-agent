@@ -240,6 +240,7 @@ from dataclasses import dataclass, field  # noqa: E402
 
 from .intents import BURST, Combo, Disengage, Engage, Idle, Pull, Search, SwingTo, WebStrike  # noqa: E402
 from .state import ANCHOR, ENEMY, TARGET  # noqa: E402
+from .tracker import CLOSE_H, CLOSE_RATIO, SIZE_RATIO  # noqa: E402
 
 
 @dataclass
@@ -351,6 +352,7 @@ class Controller:
     stable: int = 0                                         # consecutive steps the target was re-measured, plausibly
     attack_t: float = -1e9                                  # last step on which we pressed an attack
     _measured: bool = False
+    _measured_as: int | None = None                         # tracker id of the box measured last (None: the box had none)
     integ: list = field(default_factory=lambda: [0.0, 0.0])
     next_shot_t: float = 0.0
     next_uppercut_t: float = 0.0
@@ -443,12 +445,14 @@ class Controller:
         elif isinstance(intent, Engage) and self.track is not None:
             near = self.track.h / state.frame[1] >= near_h()
             # Forward movement needs a box measured by the aim sensor ON THIS STEP: none on a coast, a hit flash, a lost track, or a
-            # target only the brain's whole-frame search has seen (that one is turned toward, nothing else); a live run walked blind
-            # off a platform. Search never moves. Nor toward a box past the engagement cap (handoff30: he walked 0.8 s at a 36 px
+            # target only the brain's whole-frame search has seen (that one is turned toward, nothing else), nor a box the tracker knows
+            # is another object than the held target (reach30: 8 of 13 ticks walked at the door's edge were not the held id); a live
+            # run walked blind off a platform. Search never moves. Nor toward a box past the engagement cap (handoff30: he walked 0.8 s at a 36 px
             # dummy ~45 m off and went over the plaza's edge). This does not know the ground: a target in reach across an edge is
             # still walked at.
             far = beyond_reach(self.track, state.frame[1])
-            out["ly"] = 1.0 if self._measured and self.track.confirmed and not near and not far else 0.0
+            mine = self._measured_as is None or intent.target.track is None or self._measured_as == intent.target.track
+            out["ly"] = 1.0 if self._measured and self.track.confirmed and mine and not near and not far else 0.0
             if not self.seq and on_target:
                 if near and t >= self.next_uppercut_t:
                     self.play("uppercut", t); self.next_uppercut_t = t + 7.0
@@ -545,18 +549,37 @@ class Controller:
             return
         # No player-region filter here: perception/outline.py already drops the small marks the hero's own suit
         # makes, and a real bot is often drawn behind the hero (third person), which is exactly when it needs aiming at.
-        cands = [d for d in state.detections if d.cls == wanted.cls]
+        # A box carrying the target's own tracker id is its measurement (the tracker has already matched it through the camera's turn).
+        # Otherwise the nearest box by bearing, of a size the target can have: reach30's whole-frame bot (183 px) was taken over by the
+        # 30-40 px distant boxes that crossed its bearing, and the aim followed them away from her.
+        cands = [d for d in state.detections if d.cls == wanted.cls and self._fits(d, state.frame[1])]
+        own = [d for d in cands if wanted.track is not None and d.track == wanted.track]
         if not cands:
             return
         gate = math.degrees(math.atan2(max(60.0, 2.0 * max(self.track.w, self.track.h)) * w / 1280.0, f))
-        best = min(cands, key=lambda d: math.hypot(bearing(d)[0] - self.track.yaw, bearing(d)[1] - self.track.pitch))
+        best = min(own or cands, key=lambda d: math.hypot(bearing(d)[0] - self.track.yaw, bearing(d)[1] - self.track.pitch))
         by, bp = bearing(best)
-        if math.hypot(by - self.track.yaw, bp - self.track.pitch) <= gate:
+        if own or math.hypot(by - self.track.yaw, bp - self.track.pitch) <= gate:
             self.track.correct(by, bp, max(dt, 1 / 120))
             self._measure(best, state)
             self.track.confirmed = True
-        elif state.t - self.track.seen_t > 0.25 and not self._behind_hero(state, shown, f):
-            seed(best, True)   # the track has drifted off every box, and the target is not just hidden behind the hero
+        elif state.t - self.track.seen_t > 0.25 and not self._behind_hero(state, shown, f) and not self._other(best, wanted):
+            # The track has drifted off every box, and the target is not just hidden behind the hero. Never onto a box the tracker knows
+            # is another object: reach30 re-seeded a whole-frame target 948 px left onto the door's edge (id 51), counted it as measured
+            # and confirmed, turned right and walked at it.
+            seed(best, True)
+
+    @staticmethod
+    def _other(det, wanted):
+        """Is `det` known to be another object than `wanted`: both carry tracker ids, and they differ."""
+        return det.track is not None and wanted.track is not None and det.track != wanted.track
+
+    def _fits(self, det, frame_h):
+        """Can `det` be the tracked target by size? The tracker's own ratios: at most SIZE_RATIO apart, CLOSE_RATIO once either is close."""
+        a, b = self.track.h, det.height
+        if min(a, b) <= 0:
+            return a <= 0
+        return max(a, b) / min(a, b) <= (CLOSE_RATIO if max(a, b) >= CLOSE_H * frame_h else SIZE_RATIO)
 
     def _behind_hero(self, state, shown, f):
         """Third person: a target left of the crosshair passes behind the player's own body as we turn onto it.
@@ -568,7 +591,7 @@ class Controller:
         return state.t - self.track.seen_t < 0.5 and HERO_BOX[0] * w <= x <= HERO_BOX[2] * w
 
     def _measure(self, det, state):
-        self._measured = True
+        self._measured, self._measured_as = True, det.track
         tr = self.track
         tr.w, tr.h, tr.seen_t, tr.distance = det.bbox[2] - det.bbox[0], det.height, state.t, det.distance
         tr.ex, tr.ey = det.center[0] - state.frame[0] / 2, det.center[1] - state.frame[1] / 2

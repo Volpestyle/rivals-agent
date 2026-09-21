@@ -347,3 +347,31 @@ def test_the_engagement_cap_reads_distance_when_it_has_one():
     s = st(0)
     assert in_reach(enemy(h=20, distance=39.0), s) and not in_reach(enemy(h=600, distance=41.0), s)
     assert in_reach(enemy(h=47), s) and not in_reach(enemy(h=46), s)       # 47 / 1440 = 0.0326 > reach_h 0.0325
+
+
+def test_a_new_id_of_the_held_targets_size_succeeds_it_while_it_coasts():
+    """reach30 11 -> 12: the tracker gave the bot a new id across a fast turn; the brain held the coasting 11 for 0.8 s while she stood in
+    view as 12, then searched. For a target last seen outside the aim crop, a NEW id (absent when it was last seen) of its size, present
+    at two decisions, takes its place."""
+    m = Memory()
+    for t in (0.0, 0.1):
+        decide(st(t, detections=[enemy(h=200, x=1900, track=11), enemy(h=190, x=200, track=3)]), m)
+    assert m.target.track == 11                                               # x 1900: outside the crop (800-1760 at 1440p)
+    her = enemy(h=173, x=1700, track=12)
+    wall = enemy(h=190, x=200, track=3)                                        # present beside 11, and nearer its size: never its successor
+    decide(st(0.2, detections=[her, wall], coasting=(11,)), m)                 # first sighting: not yet
+    assert m.target.track == 11
+    decide(st(0.3, detections=[her, wall], coasting=(11,)), m)
+    assert m.target.track == 12
+    m = Memory()
+    for t in (0.0, 0.1):
+        decide(st(t, detections=[enemy(h=200, x=1900, track=11)]), m)
+    for t in (0.2, 0.3):
+        decide(st(t, detections=[enemy(h=90, x=1700, track=12)], coasting=(11,)), m)   # another size: not her
+    assert m.target.track == 11
+    m = Memory()
+    for t in (0.0, 0.1):
+        decide(st(t, detections=[enemy(h=200, x=1400, track=11)]), m)         # inside the crop: the coasting trade stands
+    for t in (0.2, 0.3):
+        decide(st(t, detections=[enemy(h=190, x=1450, track=12)], coasting=(11,)), m)
+    assert m.target.track == 11

@@ -38,6 +38,7 @@ LOST_S = 0.5          # guess: ride out detector flicker / dropped frames this l
 AIM_WINDOW = 1 / 3    # the aim crop's half-size, a share of the frame height (agent.loop.CROP: 960 px at 1440p round the crosshair)
 OUTSIDE_S = 1.5       # a target whose box stays outside the aim crop this long is released, and not re-picked while it stays outside: the
                       # controller turns a whole-frame target into the crop in 0.76 s at worst on the recorded runs (trackerlive30 id 20)
+HEIR_RATIO = 1.5      # a new id succeeds a held, coasting target within this height ratio: reach30's three lost hand-offs were 1.11-1.27 apart
 BARRED_S = 2.0        # a released id unseen this long is forgotten (the tracker drops an unseen id within CLOSE_AGE_S, 1.5 s)
 SEARCH_SWING_S = 3.0  # guess: searched this long with nothing in view: swing somewhere else
 BURST_HOLD_S = 3.0    # kit: a guide claims the whole burst fits under 3 s (unverified)
@@ -82,6 +83,7 @@ class Memory:
     out_since: float | None = None    # since when the held target's box has been outside the aim crop
     barred: dict = field(default_factory=dict)  # id -> last seen: released for staying outside the aim crop, not re-picked while outside
     held_seen_t: float = -math.inf    # last decision on which the held intent's own target was present
+    beside: frozenset = frozenset()   # track ids present when the target was last seen: none of them can be its successor
 
 
 def decide(state: State, memory: Memory) -> Intent:
@@ -108,7 +110,10 @@ def gate(state: State, memory: Memory):
         memory.barred[target.track] = t
         memory.target, memory.target_t, memory.out_since = None, -math.inf, None
         target = _pick_target(state, memory)
-    memory.seen = frozenset(d.track for d in state.detections or [] if d.track is not None)
+    ids = frozenset(d.track for d in state.detections or [] if d.track is not None)
+    if target is not None and target.track in ids:
+        memory.beside = ids
+    memory.seen = ids
     if target is not None:
         memory.target, memory.target_t = target, t
 
@@ -233,9 +238,24 @@ def _pick_target(state, memory):
         if same is not None:
             return same
         if _coasting(state, memory):
-            return None
+            return None if _inside(state, last) else _heir(state, memory, last)
     sticky = last is not None and state.t - memory.target_t <= LOST_S
     return _nearest(state, HOSTILE, last.center if sticky else crosshair(state), lambda d: _acquirable(state, memory, d))
+
+
+def _heir(state, memory, last):
+    """While the held target coasts, a NEW id of its size takes its place: the same bot seen again under another id, which the tracker
+    gives when its camera model misses a fast turn (reach30: 11 -> 12, 44 -> 50, 67 -> 68, the commanded turn 2-7x the real one, or of the
+    wrong sign, around a stick reversal while pitched). Holding the coasting id instead ignored her standing in view for 0.8 s, then
+    released to Search. New: absent when the target was last seen, present at the previous decision too, not released, in reach. Only for
+    a target last seen OUTSIDE the aim crop, being turned toward: all three lost hand-offs were, and there the camera moves most. One
+    inside the crop sits near the crosshair with the camera barely moving, the tracker's id holds, and a new id there is more likely
+    another object: the coasting trade stands ("Coasting: a deliberate trade", docs/lanes/tracker.md)."""
+    h = last.height
+    heirs = [d for d in state.detections or [] if d.cls in HOSTILE and d.conf >= MIN_CONF and d.track is not None
+             and d.track not in memory.beside and d.track != last.track and _acquirable(state, memory, d)
+             and h > 0 and max(h, d.height) / max(min(h, d.height), 1e-9) <= HEIR_RATIO]
+    return min(heirs, key=lambda d: max(h, d.height) / min(h, d.height), default=None)
 
 
 def _acquirable(state, memory, d):

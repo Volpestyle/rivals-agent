@@ -197,7 +197,7 @@ exact id is not proof that the designated target was the one engaged.
 component on the door's right pane, 226 x 572 px, with a median hue above 60 (no hue bar separates it: its hue spread and brightness
 overlap the bots'), is present at two decisions in a row, starts a combo, and the combo holds for 1.2 s while the large box coasts
 (stall30 refind replay, 13.4-14.6 s: door 1.18 s). A real bot flashing white after a hit coasts the same way, so the hold is not cut. It
-is its own item; a world-static classifier for it needs stationary bots as controls, since a bot standing still is also world-static.
+is its own item; what was measured and ruled out for it is under "The plaza-side door" below.
 
 ## Targets beyond reach, and the walk off the plaza (handoff30)
 
@@ -260,6 +260,71 @@ residual. Kill feed is 0 everywhere; the door is unchanged (the plaza-side door 
 **Residuals, not built.** The forward walk walks toward a target inside the cap with no notion of the ground ahead: approaching one across
 the plaza's edge walks off it the same way, and a supervised run with this filter is not evidence that he cannot fall. Once off the plaza, nothing brings him back: Search pans an empty corridor until the run ends. With only dummies in
 view (all past the cap), he searches rather than engages.
+
+## The plaza-side door: what does not separate it (reach30)
+
+On reach30 the door seen from the plaza is the brain's target for 8.5 s (live, by eye) and 6.47 s on the refind replay. Measured on every
+finder box over 47 px in the saved frames of the five runs (1,158 boxes, labelled roughly by the door and bot windows, both sides of each
+cut checked by eye; `docs/evidence/l3/door_appearance_*.py`, sheets `door-ruledout-*.jpg`):
+
+| Measure | Door | Bots | Why it does not separate |
+|---|---|---|---|
+| Stroke width, fill of the band's raw pixels | sw95 median 5.5 px, inner fill 0.12 | median 2.7 px, tail to 47 px | the Luna Snow bot's costume is in the band, and every bot's name-plate bar is a filled green bar: the thickest boxes on all five runs are her plate |
+| Hue and value of the band's pixels | median hue 60, value 149 | 65, 200 | the best cut removes ~60% of the door's boxes at 5-7 bot boxes; beyond it bots go fast |
+| Lime-yellow glass (hue 30-53) in and around the box | median 0.18 in, 0.15 around | p95 0.028 in, 0.013 around | removes the bot standing in front of the glass door (stall30 18-19 s) and a gold-glowing one, and misses the door seen through dark glass (reach30 3.9-4.3 s) |
+
+**A plate release does not separate it either.** A held target whose plate reads False over N decisions (None counting as no evidence) would
+be released. On the refind replays of the five runs (`door_plate_release.py`) the door gives almost no evidence: its slabs run off the top
+of the image, so the bar's place is out of view (None), or no whole-frame box matches the crop box; reach30's door is no evidence on 51 of
+60 readings, and its longest run of False is 4 decisions (0.41 s). Real bots give longer runs: 9 (0.97 s), 7, 7, 6 (2.1 s), 6 and five of 4-5
+among 37 episodes (pieces, hit flashes, the bar behind scenery or off the plate's place). Any N that releases the door releases bots first.
+
+## Walks and aims only on the held target (reach30)
+
+The controller measures its target from the aim crop's boxes by bearing. On reach30 that took three wrong objects for the held one:
+
+- The whole-frame bot (id 44, 183 px, 948 px left) had its track taken over by the 30-40 px distant boxes that crossed its bearing during
+  the turn, and the aim followed them right. A box counts only if its height is within the tracker's own ratios of the track's
+  (`SIZE_RATIO` 2.5, `CLOSE_RATIO` 4.5 once close).
+- With those gone and the track drifted 0.25 s, it re-seeded on the nearest box, the door's edge (id 51), counted it measured and confirmed,
+  turned right and walked at it. A drifted track is never re-seeded onto a box whose tracker id differs from the held target's.
+- 8 of 13 ticks walked at the door's edge at 18.6-19.0 s measured another id than the held one. A box carrying the held target's id is its
+  measurement wherever the bearing put it (the tracker has matched it through the turn); another id may still be aimed at and pressed on,
+  but is never walked at. Boxes with no ids keep the bearing rule.
+
+On the trace replays of the five runs (postfreeze30, trackerlive30, stall30, handoff30, reach30; this change with the successor rule
+below), forward-walk ticks on a box that is not the held id go 3 / 73 / 169 / 3 / 46 -> 0 on all five. The cost: walk ticks toward the
+bot go 118 / 172 / 102 / 51 / 24 -> 118 / 101 / 71 / 49 / 15, because near her the crop often measures her under another id (pieces,
+churn); stall runs over 0.5 s go 3 / 3 / 4 / 1 / 6 -> 3 / 3 / 6 / 2 / 7. Engaged on the bot with the pad active: 9.33 / 14.89 / 6.51 / 4.92 /
+2.75 -> 9.32 / 15.41 / 6.51 / 4.70 / 2.93 s; on the door 4.96 / 0.32 / 3.32 / 0 / 3.13 -> 4.89 / 0.26 / 3.50 / 0 / 2.95 s. Allowing the walk
+on any in-gate, size-fitting box and refusing only the re-seed keeps more walk toward her but walks at another id on 16-55 ticks a run
+and at the door more. Open loop exaggerates both: live, the walk changes what is seen next.
+
+## Hand-offs lost to the camera model (reach30)
+
+All three real-bot hand-offs on reach30 lost the id at the tracker's gate: the held box, moved into the new frame's camera, lands 1.9, 3.0
+and 4.5 box sizes from where she is (gate 1.3), at height ratios 1.11-1.27. Not a stale measurement, not a sliver. Each pick came during
+Search, with the pan (rx 0.45) and the pitch re-level (ry 1.0, into the pitch clamp) running, and the stick then reversed to full:
+
+| Hand-off | Commanded yaw / pitch between the two sightings | Implied by her screen shift (if she stood still) |
+|---|---|---|
+| 11 -> 12 (below right) | +30 / -5 deg | +11 / -16 deg |
+| 44 -> 50 (left; the finder lost her 0.3 s in the turn's smear) | -30 / -13 deg | -4 / -21 deg |
+| 67 -> 68 (left) | +14 / +10 deg | -9 / +12 deg |
+
+Three things the model does not have: the pitch clamp (the re-level commands 178 deg up; the camera stops ~77 deg above level, the 1.8 s at 43 deg/s that brings it back), the pitch's effect on a
+turn (pitched steeply, a yaw turn rotates the image about the view point instead of sliding it: a saved pair at 20.6 s shows it), and the
+bot's own movement (the hero-simulation bot moves). Measuring the real response from the frames failed for the same reason (phase
+correlation sees no rotation). handoff30's kept case was a turn from level.
+
+**The brain keeps the target where the id is lost.** While the held target coasts, `_pick_target` returns nobody: on 11 -> 12 it held the
+coasting 11 for 0.8 s with her in view as 12, then searched. For a target last seen OUTSIDE the aim crop (all three were; the camera
+moves most while turning to one), a NEW id (absent when the held target was last seen, present at the previous decision too, not released,
+in reach) within `HEIR_RATIO` 1.5 of its height now succeeds it. Inside the crop the coasting trade below stands. Refind replays: the bot
+5.37 -> 6.15 s on reach30, the other four unchanged; the door unchanged (6.47 s on reach30).
+
+**Residual, not built:** keeping the id itself needs a camera model with the pitch clamp and the pitch's coupling, or the camera measured
+from the image with rotation; the controller's calibration is L4's.
 
 ## Coasting: a deliberate trade
 
