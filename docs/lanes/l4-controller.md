@@ -2,11 +2,53 @@
 
 Linear: VUH-1296. Evidence: `docs/evidence/l4/`. Raw measurements: `C:\rivals-agent\data\l4\` on the PC.
 
-The game is in the Practice Range as Spider-Man where the third `cursor-cost` arrival ends: on the plaza beside the spawn
-room door's planter, facing the Luna Snow bot, RT pressed once, idle, no pad connected
-(`arrival-cost-3-20260921-155528-endpose.jpg`); the range's inactivity drop returns it to the lobby by itself. The PC holds
-`agent/`, `scripts/` (with templates) and `perception/` from `git archive a7fff98`, all 42 tracked files verified by sha256,
-nothing of this lane's scratch beside them. No gameplay run follows until the lead says so.
+The game is in the Practice Range as Spider-Man on the plaza beside the spawn room door's planter, the camera turned
+about a quarter turn LEFT of the Luna Snow bot (he faces the planter and the door's housing, the bot out of view to the
+right), idle, no pad connected (`plaza30-pose-after-cooldowns-script-1607.jpg`); the range's inactivity drop returns it to
+the lobby by itself. The PC holds `agent/`, `scripts/` (with templates) and `perception/` from `git archive a7fff98`, all 42
+tracked files verified by sha256. **The `plaza30` run has not been made**: no `data\l1\plaza30` exists.
+
+## `plaza30` (VUH-1314): stopped before the run, the start pose does not survive a new pad session
+
+Order followed up to the stop: deployed code unchanged since the hash check (`git diff a7fff98 HEAD -- agent scripts
+perception` is empty), `capture.py preflight` passed (159 dxcam frames in 1 s), `--dry-run` read `in_range` and
+`plaza with the bot ahead: yes` (he still stood where the third arrival ended, 7 min earlier).
+
+**`scripts/reenter.py`, one invocation (16:03:27), exit 0**, `RT written at proof age 6 ms`, `19 arrival steps logged`,
+`in the Practice Range as Spider-Man` (`plaza30-reenter-20260921-160331.log`, `...-steps.jsonl`, `...-sheet.jpg`). It did not
+confirm the plaza at once. Its FIRST decision frame, after its pad connected, has the view turned about 65 degrees LEFT of
+where the dry run had just read the plaza: the spawn door's pane at x 0.21 (37k px), the Luna bot at the right edge
+(`plaza30-reenter-first-frame-door-in-view.jpg`; the game's `Switching Devices` banner is up in frames 2-3). From there:
+- steps 1-7: a left turn onto the door and six walks AT THE DOOR FROM OUTSIDE, up to its housing (not through it; every
+  walk moved 18.5-38.0);
+- step 8: no door, look-around right; steps 9-10: a lime blob ON THE PLANTER'S PLANT (10k, then 19.6k) taken for a door
+  and walked at once; then no blob, and OUT latches (peak 19.6k over its last walks): a false OUT on a plant, with him
+  already outside;
+- steps 11-16: six left look-arounds, a full sweep past the door's pane (10k, 37k, 49k blobs in view on steps 13-15)
+  with NO steer toward it and NO walk at it: rule (c) exercised for real here, and it held;
+- steps 17-19: `plaza_view` True twice LIVE, RT.
+End (`plaza30-pose-after-reenter-1604.jpg`, desktop screenshot, no input): on the plaza beside the planter (its rim at the
+bottom left), facing the Luna Snow bot (name bar readable) at x ~0.58, mid distance, Hero Simulation console to her left, a
+Galacta bot's label at the far right. By the order's test (exit 0, plaza confirmed, on the plaza facing a bot) the gate
+passed.
+
+**`scripts/l4_practice_settings.py cooldowns-off`** read the switch as already off and pressed nothing beyond opening and
+closing the pause menu (`cooldowns off: True`, `back in range: True`). The desktop screenshot right after it
+(`plaza30-pose-after-cooldowns-script-1607.jpg`): **the view has turned about a quarter turn left again**: he faces the
+planter and the door's housing, the plaza runs off to the right, no bot in view.
+
+**Stopped there and handed back: no verification shots, no run.** The order is no run from a wrong start pose and no
+steering him into place, and two more pad sessions were still to come (the cooldown check from play, then the loop), each
+of which turns the view again.
+
+What is established about the turn: a new pad session leaves the camera turned left by roughly 65-90 degrees before that
+session's first frame. Seen four ways today: the `reach30` preparation (each `nav.py` session began a quarter turn left of
+where the last one ended, measured against 89-degree turns); this invocation's first frame against the dry run's reading
+seconds earlier (a dry run holds no pad); the cooldowns script's menu pad; and every spawn arrival's end-pose screenshot,
+taken after the pad was gone, still faces the bot, so the disconnect does not do it. Not established: whether the connect
+itself or the first input after it turns the view, and why the `reach30` loop session started on the heading the last
+`nav.py` session left. It follows that the pose `reenter.py` confirms is not the pose the loop's own pad session starts
+from, with or without the cooldowns step in between.
 
 ## Three supervised arrivals from spawn at a7fff98 (VUH-1299): `data/reenter/arrive-20260921-{153213,154347,155528}/`
 
