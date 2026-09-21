@@ -329,3 +329,27 @@ def _try(lv):
         lv.send(buttons=("X",), rt=1.0)
     except RangeLost:
         pass
+
+
+@pytest.mark.parametrize("error", [KeyboardInterrupt, RuntimeError])
+def test_a_constructor_that_fails_after_the_pad_exists_cleans_up_itself(monkeypatch, error):
+    import threading
+    import agent.controller as C
+    started, made, pads = threading.Event(), [], []
+
+    class Observed(Live):
+        def _watchdog(self):
+            made.append(self)
+            started.set()
+            super()._watchdog()
+
+    def factory():
+        pads.append(FakePad())
+        return pads[-1]
+    monkeypatch.setattr(C.time, "sleep", lambda s: (_ for _ in ()).throw(error()))   # interrupted during enumeration
+    with pytest.raises(error):
+        Observed(pad_factory=factory, capture=Cap(), settle_s=3, **GUARDS)           # the caller never gets an object to close
+    assert started.wait(1)
+    lv = made[0]
+    assert lv._closed.is_set() and lv._dead and lv._pad is None and pads[0].neutral()
+    lv.close(); lv.close()                                                            # still idempotent with the device dropped

@@ -42,10 +42,13 @@ def sample(live, secs, **pad):
             live.send(rx=0.0, ry=0.0); state, t_off = "off", time.perf_counter() - t0
         elif state == "off" and now >= 0.15 + secs + 0.5:
             return rows, t_on, t_off
+        t_grab = time.perf_counter()
         f = live.cap.grab()
         if f is not None:
-            live.frame, live.frame_t = f, time.perf_counter()
+            live.frame, live.frame_t = f, t_grab
             rows.append((live.frame_t - t0, band(f)))
+            if state == "on":
+                live.send(**pad)      # Live's lease drops a held stick after 0.25 s unless a proven send renews it
 
 
 def shifts(rows, axis=0):
@@ -173,11 +176,7 @@ def shift_of(a, b, box):
 
 
 def pulse(live, secs, **pad):
-    live.send(**pad)
-    t0 = time.perf_counter()
-    while time.perf_counter() - t0 < secs:
-        live.fresh(0.004)
-    live.send(rx=0.0, ry=0.0)
+    live.hold(secs, **pad)            # re-proves and renews Live's lease every 50 ms, neutral on exit
 
 
 YAW_BOX = (820, 130, 1180, 400)   # right of the hero, clear of the HUD: a right turn carries it left across the view
@@ -275,14 +274,19 @@ def period(live):
     return {"period_s": round(p, 3), "match": round(best, 3), "rate_deg_s": round(360 / p, 1)}
 
 
-if __name__ == "__main__":
-    what = sys.argv[1]
-    live = Live()
-    live.keepalive()
-    try:
-        result = {"yaw": yaw, "yawmap": yawmap, "yawleft": yawleft, "period": period, "press": press}[what](live)
+def main(argv, live_factory=Live):
+    what = argv[0]
+    run = {"yaw": yaw, "yawmap": yawmap, "yawleft": yawleft, "period": period, "press": press}[what]
+    live = live_factory()
+    try:                               # everything after the pad opens, keepalive included
+        live.keepalive()
+        result = run(live)
     finally:
-        live.release()
+        live.close()                   # close, not release: it owns the lease watchdog and refuses any later write
     OUT.mkdir(parents=True, exist_ok=True)
     (OUT / f"{what}.json").write_text(json.dumps(result, indent=1))
     print(json.dumps(result))
+
+
+if __name__ == "__main__":
+    main(sys.argv[1:])

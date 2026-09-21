@@ -83,8 +83,13 @@ class Live:
             self._pad = pad_factory()
         self.sent = dict(NEUTRAL)
         self._lock, self._lease_until, self._closed, self._dead = threading.Lock(), None, threading.Event(), False
-        threading.Thread(target=self._watchdog, daemon=True).start()
-        time.sleep(settle_s)  # enumerate + the "Switching Devices" banner
+        try:                     # the pad exists from here, and the caller has no object to close if __init__ fails:
+            threading.Thread(target=self._watchdog, daemon=True).start()
+            time.sleep(settle_s)  # enumerate + the "Switching Devices" banner
+        except BaseException:    # KeyboardInterrupt during enumeration included
+            self.close()         # neutral, watchdog stopped (it would otherwise keep this object and its pad alive)
+            self._pad = None     # drop the device
+            raise
 
     # -- frames -----------------------------------------------------------------------------------------------------
     def fresh(self, timeout=FRESH_S):
@@ -132,7 +137,8 @@ class Live:
         """Neutral, for good: after this every non-neutral write is refused. Idempotent."""
         with self._lock:                                               # serialised with any commit at the actuator
             self._dead = True
-            self._write(dict(NEUTRAL))
+            if self._pad is not None:
+                self._write(dict(NEUTRAL))
         self._closed.set()
 
     def hold(self, secs, **pad):

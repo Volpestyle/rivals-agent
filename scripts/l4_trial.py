@@ -46,15 +46,19 @@ FRAME = (1280, 720)
 class Rig:
     """Live + perception + a frame/log writer thread (JPEG encoding must not stall the 60 Hz loop)."""
 
-    def __init__(self, out, native=False, fps=15.0):
+    def __init__(self, out, native=False, fps=15.0, live_factory=Live):
         self.out, self.native, self.period = Path(out), native, 1.0 / fps
         self.out.mkdir(parents=True, exist_ok=True)
-        self.live, self.ctrl = Live(), Controller()
-        self.live.keepalive()
-        self.t0, self.saved, self.next_save = time.perf_counter(), 0, 0.0
-        self.q = queue.Queue(maxsize=64)
-        self.log = open(self.out / ("frames.jsonl" if native else "log.jsonl"), "w", encoding="utf-8")
-        threading.Thread(target=self._writer, daemon=True).start()
+        self.q, self.log = queue.Queue(maxsize=64), None
+        self.live, self.ctrl = live_factory(), Controller()
+        try:                           # from here the pad is open: any failure closes it before it propagates
+            self.live.keepalive()
+            self.t0, self.saved, self.next_save = time.perf_counter(), 0, 0.0
+            self.log = open(self.out / ("frames.jsonl" if native else "log.jsonl"), "w", encoding="utf-8")
+            threading.Thread(target=self._writer, daemon=True).start()
+        except BaseException:
+            self.live.close()
+            raise
 
     def _writer(self):
         while True:
@@ -83,10 +87,13 @@ class Rig:
         self.log.write(json.dumps(row) + "\n")
 
     def close(self):
-        self.live.close()
-        self.q.put((None, None))
-        time.sleep(0.5)
-        self.log.close()
+        try:
+            self.live.close()          # first, and whatever else fails: close owns the lease watchdog
+        finally:
+            self.q.put((None, None))
+            time.sleep(0.5)
+            if self.log is not None:
+                self.log.close()
 
     def nearest(self, state):
         return min(state.detections, key=lambda d: abs(d.center[0] - 640) + abs(d.center[1] - 360), default=None)
@@ -322,27 +329,27 @@ def tagrb(rig, n):
     return res
 
 
-if __name__ == "__main__":
-    what = sys.argv[1]
+def main(argv, live_factory=Live):
+    what, n = argv[0], (lambda i, d: type(d)(argv[i]) if len(argv) > i else d)
+    data = ROOT / "data"
     if what == "tagrun":
-        rig = Rig(ROOT / "data" / "l1" / "tagrun", native=True, fps=10.0)
-        run = lambda: tagrun(rig, float(sys.argv[2]) if len(sys.argv) > 2 else 60.0)  # noqa: E731
+        rig, run = Rig(data / "l1" / "tagrun", native=True, fps=10.0, live_factory=live_factory), lambda: tagrun(rig, n(1, 60.0))
     elif what == "tagrb":
-        rig = Rig(ROOT / "data" / "l4" / (sys.argv[3] if len(sys.argv) > 3 else "tagrb"))
-        run = lambda: tagrb(rig, int(sys.argv[2]) if len(sys.argv) > 2 else 2)  # noqa: E731
+        rig, run = Rig(data / "l4" / n(2, "tagrb"), live_factory=live_factory), lambda: tagrb(rig, n(1, 2))
     elif what in ("scoreboard", "tagged"):
-        rig = Rig(ROOT / "data" / "l4" / {"scoreboard": "scoreboard", "tagged": "tagged-native"}[what])
-        n = int(sys.argv[2]) if len(sys.argv) > 2 else 6
-        run = (lambda: scoreboard(rig, n)) if what == "scoreboard" else (lambda: tagged(rig, n))  # noqa: E731
+        rig = Rig(data / "l4" / {"scoreboard": "scoreboard", "tagged": "tagged-native"}[what], live_factory=live_factory)
+        run = (lambda: scoreboard(rig, n(1, 6))) if what == "scoreboard" else (lambda: tagged(rig, n(1, 6)))
     elif what == "aim":
-        rig = Rig(ROOT / "data" / "l4" / "aim")
-        run = lambda: aim(rig, int(sys.argv[2]) if len(sys.argv) > 2 else 10)  # noqa: E731
+        rig, run = Rig(data / "l4" / "aim", live_factory=live_factory), lambda: aim(rig, n(1, 10))
     else:
-        rig = Rig(ROOT / "data" / "l4" / sys.argv[2])
-        run = lambda: prim(rig, sys.argv[2], int(sys.argv[3]) if len(sys.argv) > 3 else 5)  # noqa: E731
+        rig, run = Rig(data / "l4" / argv[1], live_factory=live_factory), lambda: prim(rig, argv[1], n(2, 5))
     try:
         result = run()
     finally:
-        rig.close()
+        rig.close()                    # Rig.close() closes Live first, on every exit path
     (rig.out / "result.json").write_text(json.dumps(result, indent=1))
     print(json.dumps(result))
+
+
+if __name__ == "__main__":
+    main(sys.argv[1:])
