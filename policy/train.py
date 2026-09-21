@@ -24,8 +24,10 @@ Three input channels per timestep, **missing never filled**:
               detections, crosshair. Every unknown reads as a zero **with its known-bit clear**,
               never as a value. L4's trial runs carry no `State`, so the channel is absent there
   events      the HUD event stream where a run has one, counted over (t - 1 s, t] at each step.
-              `agent/demos.py` reads event format 2 while the HUD lane now writes format 3, so no
-              real events file loads today and this channel is absent on every window
+              The loader validates current format-4 streams. This range-intent trainer can count
+              their past events; frames-only B0 passes events=None and uses only columns 0-385.
+              Event-input prefix causality is unproven, so B0 uses events only for targets and
+              explicitly separate offline diagnostic baselines.
 
 Clocks, regimes, splits and patches are each pinned by one authority:
 
@@ -192,9 +194,10 @@ class Cache:
     source with an offset origin cannot silently miss on every frame.
     """
 
-    def __init__(self, out_dir):
+    def __init__(self, out_dir, *, ids):
         self.by_clip, self.dim = {}, None
-        for meta, emb, t in load(out_dir):
+        ids = frozenset(ids)
+        for meta, emb, t in load(out_dir, want=lambda m: m["id"] in ids):
             self.by_clip[meta["id"]] = (np.asarray(t) - float(meta.get("t_origin") or 0.0), emb.astype(np.float32))
             self.dim = meta["dim"]
         if self.dim is None:
@@ -261,7 +264,7 @@ def windows(regime="off", encoder=DEFAULT, hz=HZ, decision_hz=DECISION_HZ, data=
         raise ValueError(f"no run states cooldowns={regime!r} in its own metadata "
                          f"(the corpus.RUNS fallback does not qualify a run for training)")
 
-    cache = Cache(cache_dir(_Tag(encoder), hz))
+    cache = Cache(cache_dir(_Tag(encoder), hz), ids={s.id for s in sources})
     # A source with no cached embeddings would contribute windows of blank video that look exactly
     # like a fully masked scene. Refuse the run and name it, rather than train on nothing.
     missing = [s.id for s in sources if not cache.has(s.id)]

@@ -1,5 +1,122 @@
 # Policy: the learned chooser (steps 1-3)
 
+## B0 masked occurrence experiment
+
+`policy/b0_multilabel.py` implements the reference task in
+[learning-plan.md](../learning-plan.md#b0-auxiliary-pretraining-by-predicting-observed-ability-events):
+five independent event-occurrence outputs and five class-conditional timing outputs.
+Unknown labels are masked independently; timing has a separate mask. The original
+global-next-event build under `data/experiments/b0/` is retained: **22 Day and 96 Req
+windows, all negative, zero eligible positive events, no fit or checkpoint**.
+`policy/b0_support.py` records the support diagnostic that establishes the revised task.
+
+Both real local development folds are complete. The fixed configuration is two
+128-wide GRUs, 51 causal steps at 10 Hz, five-second history, one-second horizon,
+5 Hz decisions, Adam 0.001, batch 64, 40 epochs, seed 0, threshold 0.5, final epoch
+only. Inputs are frozen DINO `n1` embeddings and masks, shared layout columns 0–385;
+`step_row` receives `state=None, events=None`. Classification is balanced masked
+binary cross-entropy. Conditional timing loss is distance outside the verified interval.
+Normalization is fixed; class weights, priors, resource buckets and median interval
+midpoint delays are fitted only on the fitting session.
+
+### Results and support
+
+Metrics describe the observed subset, not all gameplay. Positive-class macro F1:
+
+| Predictor | Day → Req, all five | Day → Req, supported four | Req → Day, all five supported |
+|---|---:|---:|---:|
+| Frames-only GRU | 0.477 | 0.512 | 0.554 |
+| Always negative | 0.000 | 0.000 | 0.000 |
+| Fitting prior / majority | 0.232 | 0.290 | 0.000 |
+| Recent-use persistence | 0.181 | 0.226 | 0.110 |
+| Raw-HUD resource buckets | 0.535 | 0.597 | 0.390 |
+
+The resource baseline uses causal raw cooldown, charges/ammo and time since an
+observed ready transition, with unknown buckets, Laplace(1,1) smoothing and a
+fitting-prior fallback for unseen buckets. It has structured HUD information absent
+from the neural input. Persistence means an accepted same-channel event confirmed
+in `(t−1,t]`; extractor prefix causality is unproven, so it is an offline reference.
+All comparisons use identical observed masks. Brier error, log loss, precision,
+recall, F1 and confusion for every channel are in each fold's report.
+
+Timing error on identical timing-supported rows is **0.178 s model / 0.132 s median**
+for Day → Req and **0.193 s / 0.148 s** for Req → Day. Per-channel interval widths,
+timing coverage and errors are retained. The model does not beat the timing baseline
+on any channel. **No channel passes the combined classification-and-timing improvement
+gate.** Req team-up is additionally inconclusive under the predeclared support floor.
+This is a completed negative/inconclusive probe, with no gameplay competence claim.
+
+The support floor is 20 distinct positive events and 20 non-overlapping one-second
+negative horizons in the held session. Counts are unique events / non-overlapping
+negative horizons, not overlapping-window counts:
+
+| Channel | Day | Req |
+|---|---:|---:|
+| Get Over Here | 42 / 24 | 35 / 81 |
+| Swing | 32 / 30 | 35 / 127 |
+| Uppercut | 54 / 38 | 23 / 94 |
+| Web Cluster | 80 / 165 | 93 / 197 |
+| Team-up | 20 / 153 | 17 / 239 |
+
+The dataset has 1,937 Day and 2,305 Req structurally eligible windows; 403 contain
+loader-masked past scene steps. Training uses 1,414 Day and 1,836 Req windows with
+at least one supported observed label. Reports include positive/negative/unknown
+counts per channel/session and split by whether an accepted ability/ammo event was
+confirmed in the preceding five seconds. That context-event proxy is a sampling
+diagnostic, not a tactical label or neural input. Masks are not missing at random:
+calm scenes more often provide clean negatives. The two sessions confound creator
+and session; 10 Hz sampling cannot establish intersample visibility; Day's small
+icon-overlay contamination prevalence is unknown, not zero. Dim icons without
+countdowns remain unknown; the HUD lockout probe supplies no new negative labels.
+
+### Artifacts, reproducibility and checks
+
+`data/experiments/b0-multilabel-v1/` holds the immutable `run-spec.json`,
+`dataset-report.json`, `dataset.npz`, `windows.json`, `report.json`, `fit.log` and
+`verification.json`. Each `day-to-req/` and `req-to-day/` directory contains:
+`model.safetensors`, `report.json`, `predictions.npz`, `windows.json`, and
+`resource-tables.json`. The declaration is distinct from actual execution commands
+and code fingerprints in completed reports. Raw reads remain referenced in
+`data/experiments/b0/visibility/`; they are neither copied nor re-extracted.
+
+```sh
+nice -n 10 uv run --no-sync --group policy --group perception python -m policy.b0_multilabel --fit
+uv run --no-sync --group policy --group perception pytest tests/test_b0.py tests/test_policy.py -q -k 'b0 or every_cached_source_resolves or source_whose_origin or time_past_the_clip'
+```
+
+The command refuses before rebuilding any dataset artifact when a final checkpoint exists. Retain completed artifacts
+before intentionally repeating the experiment. Training took 15.41 s Day → Req and
+18.66 s Req → Day. Both actual saved checkpoints reproduce logits exactly (maximum
+absolute error 0); all saved classification, baseline and common-support timing
+metrics reproduce with evaluation batches of 128 (including the natural final short
+batch). The co-lead independently reproduces complete folds with maximum logit and
+delay error 0.0. Regrouping 17 spread samples into a different batch gives up to
+0.00713 logit difference for the final Day → Req row, which originally ran in a
+one-row final batch. Preserve the recorded batch grouping for exact replay; this
+batch-size numerical sensitivity is not a checkpoint mismatch. **17 focused checks pass**: 14 B0 and three synthetic legacy
+clock checks. An independent co-lead review finds no blocking core issue and
+independently reproduces the 13 B0 checks and all ten negative support counts.
+
+`Demos.load_split("s10-normal-v0")` and `clips_in("train")` are the entry point.
+Before payloads, B0 requires exactly the promoted Day/Req IDs and groups. The split
+remains proposed; no test/inspection-only side is requested or unsealed by B0.
+`Cache` requires explicit keyword `ids`; the range trainer passes its selected run
+IDs, B0 passes its two train IDs, and legacy clock tests use synthetic payloads.
+The co-lead reports that an earlier legacy-test run may have opened sealed embedding
+arrays before this hardening; none entered B0 fitting, metrics or model selection.
+Do not describe the entire multi-agent session as having opened no sealed payload.
+
+`policy/b0_reads.py` persists unchanged frozen-reader raw fields and fingerprints.
+Day's native origin 1.616 s and cached origin 0.027 s differ by the container start
+1.589 s; their relative clocks agree. `Cache.index_at` uses its own recorded origin.
+Native cuts are projected through `_cut_flags` onto sampled-frame timestamps before
+comparison with the accepted event metadata. The post-fit `policy/train.py` header
+cleanup only describes the current format-4 loader and frames-only B0 distinction;
+completed report fingerprints preserve the source present during the fits.
+
+The preexisting machinery handoff below is retained verbatim; the current B0 task,
+split status and results are documented above.
+
 ## B0 handoff
 
 For the worker taking B0 (next-event prediction, auxiliary pretraining only) and the current-only

@@ -361,10 +361,16 @@ def test_near_change_marks_only_windows_whose_label_changes_ahead_in_the_same_se
 
 # --- review re-check (VUH-1326): Cache.at, masks, and the regression tests that never landed ----------
 
-def _cache():
-    from policy.encode import DEFAULT, cache_dir
-    from policy.train import Cache, _Tag
-    return Cache(cache_dir(_Tag(DEFAULT), 10.0))
+def _cache(tmp_path):
+    """Synthetic clocks: a clock regression must never open evaluation payloads."""
+    import numpy as np
+    from policy.train import Cache
+    ids = {f'synthetic-{i}' for i in range(6)}
+    for i, name in enumerate(sorted(ids)):
+        origin = .027 if i % 2 else 1.616
+        (tmp_path / f'{name}.json').write_text(json.dumps({'id': name, 'dim': 2, 't_origin': origin}))
+        np.savez(tmp_path / f'{name}.npz', emb=np.ones((401, 2)), t=np.arange(401) / 10 + origin)
+    return Cache(tmp_path, ids=ids)
 
 
 def _probes(times):
@@ -377,15 +383,14 @@ def _probes(times):
 
 
 @needs_mlx
-@needs_data
-def test_every_cached_source_resolves_at_or_before_and_within_one_step():
+def test_every_cached_source_resolves_at_or_before_and_within_one_step(tmp_path):
     """Finding 1 lived in a gap no test covered: argmin(|t - times|) returned a frame 27 ms AFTER t.
 
-    On every real cached source, video and run, on and between the grid: the resolved row's time
+    On six synthetic source clocks, on and between the grid: the resolved row's time
     is at or before the moment asked for, and no staler than one step plus jitter (MATCH_S).
     """
     from policy.train import MATCH_S
-    cache = _cache()
+    cache = _cache(tmp_path)
     checked = 0
     for clip, (times, _) in cache.by_clip.items():
         if len(times) < 5:
@@ -400,32 +405,18 @@ def test_every_cached_source_resolves_at_or_before_and_within_one_step():
 
 
 @needs_mlx
-@needs_data
-def test_the_source_whose_origin_is_not_zero_resolves_on_the_loaders_clock():
-    """The reviewer's reproduction: on daymr-2879354299-21660-900s every decoded PTS is grid + 27 ms,
-    and at(src, 30.0) returned the 30.027 s frame. Rebased by t_origin it must resolve to +0 ms."""
-    import json
-
-    from policy.encode import DEFAULT, cache_dir
-    from policy.train import _Tag
-    out = cache_dir(_Tag(DEFAULT), 10.0)
-    side = out / "daymr-2879354299-21660-900s.json"
-    if not side.exists():
-        pytest.skip("that section is not cached on this machine")
-    meta = json.loads(side.read_text())
-    assert meta["clock"] == "media_pts" and meta["t_origin"] > 0.02, "the reproduction needs its nonzero origin"
-    cache = _cache()
-    times, _ = cache.by_clip[meta["id"]]
-    i = cache.index_at(meta["id"], 30.0)
-    assert i is not None, "an offset origin must not make every lookup miss"
-    assert abs(times[i] - 30.0) < 1e-6, f"30.0 must resolve to the frame AT 30.0, got {times[i]:.4f}"
-    assert cache.index_at(meta["id"], 29.999) == i - 1, "just before a frame must give the one before it"
+def test_the_source_whose_origin_is_not_zero_resolves_on_the_loaders_clock(tmp_path):
+    cache = _cache(tmp_path)
+    clip = 'synthetic-1'
+    times, _ = cache.by_clip[clip]
+    i = cache.index_at(clip, 30.0)
+    assert i is not None and abs(times[i] - 30.0) < 1e-6
+    assert cache.index_at(clip, 29.999) == i - 1
 
 
 @needs_mlx
-@needs_data
-def test_a_time_past_the_clip_or_before_its_first_frame_misses():
-    cache = _cache()
+def test_a_time_past_the_clip_or_before_its_first_frame_misses(tmp_path):
+    cache = _cache(tmp_path)
     for clip, (times, _) in list(cache.by_clip.items())[:8]:
         assert cache.index_at(clip, times[-1] + 1.0) is None, f"{clip}: 1 s past the last frame must miss"
         assert cache.index_at(clip, times[0] - 0.05) is None, f"{clip}: before the first frame must miss"
@@ -446,7 +437,10 @@ def test_a_window_is_built_only_from_frames_at_or_before_its_decision():
             and s.cooldowns_source == "metadata"][:2]
     if not runs:
         pytest.skip("no normal-regime run with its own metadata on this machine")
-    cache, demos = _cache(), Demos.load(*[str(s.path) for s in runs])
+    from policy.encode import DEFAULT, cache_dir
+    from policy.train import Cache, _Tag
+    cache = Cache(cache_dir(_Tag(DEFAULT), 10.0), ids={s.id for s in runs})
+    demos = Demos.load(*[str(s.path) for s in runs])
     checked = 0
     for split in TRAINABLE:
         if split not in set(demos.splits.values()):
