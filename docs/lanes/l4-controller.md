@@ -71,6 +71,34 @@ the right of the door's centre, or strafe right ~0.9 s before the walk.
 Route note: from the lower ring, the purple jump pad beside the plaza stairs launches him onto the main plaza in front of
 the spawn room's green door, facing the Luna Snow bot.
 
+## Tick-budget regression: profile (offline, no pad, 2026-09-21)
+
+Harness `docs/evidence/l4/tick-profile-harness.py`, result `tick-profile-postfreeze30-replay.json`: the real `Loop`,
+`default_perception`, `Tracker`, `Controller`, threaded `Decider`, `RunLog` and `Live` commit path, with a fake pad and a
+replay capture serving `postfreeze30`'s 273 native frames at 60 Hz (a fresh array per grab), run on the PC with the game up
+(on the lobby, ~480 fps, so GPU load is not the range's). It reproduces the run: 52.2 Hz, tick p50 / p95 / max
+11.1 / 17.0 / 22.0 ms, 77 of 1,372 ticks over 16.7 ms (live: 49.9 Hz, 11.4 / 17.9 / 25.7, 80 of 1,499).
+
+| Component (per tick) | p50 | p95 | max ms |
+|---|---|---|---|
+| aim finder (960 px crop) | 5.9 | 9.3 | 14.2 |
+| range proof inside `Live._commit` | 2.3 | 4.5 | 35.1 |
+| loop's early `in_range` guard | 2.0 | 2.7 | 6.9 |
+| loop's `idle_warning` guard | 0.6 | 0.8 | 4.0 |
+| `_log` (outside `tick_ms`; frame copy for the JPEG writer) | 0.1 | 4.1 | 25.9 |
+| controller step / tracker update / `decider.offer` / `Live._apply` (fake pad) | 0.06 / 0.03 / 0.00 / 0.01 | | |
+| capture: not comparable on replay. A delivered live dxcam grab measured 23.5 ms p50 on the lobby (GPU saturated at 480 fps); in the range the loop's period was 17-19 ms. The real pad write is not measured (no pad opened); before the safety work the whole tick, pad write included, was 6.9 ms | | | |
+
+- The regression is the positive range predicate run twice: 2.0 + 2.3 = 4.3 ms of the +4.5 ms. The tracker costs 0.03 ms.
+- Over-budget ticks: 76 of 77 had no box in the aim crop, and 76 of 77 overlapped the decision worker's whole-frame finder
+  (which only runs when the crop is empty; it takes 31 ms p50 on the worker here against 14.6 ms alone). In 56 the largest
+  excess was the aim finder (+5 ms mean: the two finders contend), in 21 one of the two predicates.
+- Removing only `Live`'s duplicate evaluation would bring 61 of the 77 back under budget.
+- **The predicate itself is the waste:** `record.banner_score` converts the whole 2560x1440 frame to grey (0.9 ms) and
+  resizes it (1.2 ms) to look at a 184x29 px corner. Cropping the banner window first gives the same score (0.981 vs 0.981
+  on a run frame) in 0.075 ms instead of 1.44 ms. With both predicates at ~0.3 ms all 77 over-budget ticks come back
+  under budget, with no change to the reviewed authorization boundary. The shared verdict would then save ~0.3 ms a tick.
+
 ## Capture fault: dxcam delivers no frames when no monitor is attached
 
 Since 2026-09-20 23:08:24 Desktop Duplication returns nothing: `AcquireNextFrame` times out (`0x887A0027`
