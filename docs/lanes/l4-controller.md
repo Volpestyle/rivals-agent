@@ -2,11 +2,75 @@
 
 Linear: VUH-1296. Evidence: `docs/evidence/l4/`. Raw measurements: `C:\rivals-agent\data\l4\` on the PC.
 
-The game is on the lobby's PRACTICE panel (DOOM MATCH and PRACTICE RANGE tiles), the cursor last proven on the PRACTICE
-RANGE tile, no pad connected, nothing pressed since (`arrival-stuck-1-refused-practice-panel-state.jpg`). It is there
-because `reenter.py` refused its own A on that panel twice; this lane does not navigate the lobby, so the panel is the
-lead's to leave. The PC holds `agent/`, `scripts/` (with templates) and `perception/` from `git archive 6f2e44e`, all 42
-tracked files verified by sha256, nothing of this lane's scratch beside them. No gameplay run follows until the lead says so.
+The game is in the Practice Range as Spider-Man where the third `cursor-cost` arrival ends: on the plaza beside the spawn
+room door's planter, facing the Luna Snow bot, RT pressed once, idle, no pad connected
+(`arrival-cost-3-20260921-155528-endpose.jpg`); the range's inactivity drop returns it to the lobby by itself. The PC holds
+`agent/`, `scripts/` (with templates) and `perception/` from `git archive a7fff98`, all 42 tracked files verified by sha256,
+nothing of this lane's scratch beside them. No gameplay run follows until the lead says so.
+
+## Three supervised arrivals from spawn at a7fff98 (VUH-1299): `data/reenter/arrive-20260921-{153213,154347,155528}/`
+
+Three full `scripts/reenter.py` invocations, each left to its own end: no strafe, no help, no other input, no 30 s run.
+`capture.py preflight` passed (47 dxcam frames in 1 s); `--dry-run` read `practice_panel`, so invocation 1 starts from the
+PRACTICE panel and 2 and 3 from the PLAY lobby after the game's own inactivity drop (lobby by 15:43:32 and 15:55:12, polled
+with `--dry-run`). No refusal of any kind, no re-invocation. After each: 0 python left, 0 Xbox pads present.
+
+**Every written press and its proof age** (the tool's own lines; limit 300 ms, acquisition start to check; no age refusal):
+
+| Press | Invocation 1 | Invocation 2 | Invocation 3 |
+|---|---|---|---|
+| A, PRACTICE tab (lobby) | - (started on the panel) | **137 ms**: grab 77 (dxcam), classify 1, proof 59, checks 0 | **56 ms**: grab 4 (dxcam), classify 1, proof 51, checks 0 |
+| A, PRACTICE RANGE tile (the press refused at 310-320 ms at 6f2e44e) | **68 ms**: grab 17 (dxcam), classify 1, proof 50, checks 0 | **152 ms**: grab 91 (dxcam), classify 1, proof 59, checks 0 | **120 ms**: grab 67 (dxcam), classify 1, proof 51, checks 0 |
+| RB | 5 ms: grab 4, classify 1, proof 0, checks 0 | 17 ms: grab 16, classify 1 | 11 ms: grab 10, classify 1 |
+| RB | 5 ms: grab 4, classify 1 | 13 ms: grab 12, classify 1 | 5 ms: grab 4, classify 1 |
+| A, Spider-Man (tooltip match 0.94 / 1.00 / 0.92) | **76 ms**: grab 5, classify 1, proof 70, checks 0 | **92 ms**: grab 7, classify 1, proof 83, checks 0 | **88 ms**: grab 4, classify 1, proof 83, checks 0 |
+| X | 5 ms: grab 4, classify 1 | 5 ms: grab 4, classify 1 | 4 ms: grab 3, classify 1 |
+| RT (in the range) | 9 ms: grab 7, classify 2 | 14 ms: grab 12, classify 2 | 5 ms: grab 4, classify 2 |
+
+On the PC the cursor proof is 50-59 ms and the tooltip proof 70-83 ms; the largest age is 152 ms, and what varies is the
+grab (4-91 ms, all dxcam, no GDI grab on any press). Full tool output: `arrival-cost-N-...-reenter.log`.
+
+**Native evidence.** A native 2560x1440 60 fps recording (`ddagrab` -> `h264_nvenc`, `-cq 19`, 85 s, started just before
+each invocation): `data/video/cost{1,2,3}.mp4` on the Mac and in `C:\rivals-agent\data\video\` (497, 480, 496 MB;
+gitignored). Native PNGs of the recording frame best matching each step's decision JPEG (mean abs difference 1.3-2.0 grey
+levels at 320x180): `data/reenter/arrive-<time>/native/` (steps 15-20 for arrivals 1 and 2; steps 1-6 and 16-21 for arrival
+3). They are frames of the recording, not the tool's proving frames. No sidestep fired, so there are no sidestep frames.
+
+**LIVE `plaza_view` and replays, kept apart** (`arrival-cost-N-...-replay.jsonl`): LIVE is True on exactly the two
+confirmation steps of each arrival (18-19, 18-19, 19-20) and False on every other action row. REPLAY on the native recording
+frames: True on all six confirmations, False on the walk and OUT frames. REPLAY on the saved 720p JPEGs: False on all six.
+
+| | Arrival 1 (15:32:09) | Arrival 2 (15:43:43) | Arrival 3 (15:55:24) |
+|---|---|---|---|
+| Exit code / last line | **0**, `in the Practice Range as Spider-Man` | **0**, same | **0**, same |
+| Rows / arrival elapsed (first row's log to last) / invocation wall (`START` to `EXIT`) | 20 / **12.36 s** / 31.5 s (from the panel) | 20 / **12.34 s** / 43.5 s | 21 / **12.69 s** / 42.9 s |
+| Door taken in frame 1 | the PLAZA door (0.443; the other door at 0.21 the larger blob) | the PLAZA door (0.444; the other door at 0.20 the larger) | **the OTHER door**: step 1 is a 0.17 s LEFT turn, the turn for a door at 0.20, then two walks at it (steps 2-3, selected pane 0.473, 0.472). The plaza door is in view at ~0.44, half hidden behind the central column, 3.5k px on the recording frame (REPLAY) and under the 3k floor on the saved JPEG; LIVE it was not selected |
+| Kept door lost and re-chosen mid-walk | no (largest step-to-step move of the selected pane 0.10) | no (0.10) | **yes, once, at step 5**: after the 0.08 s right turn the other door's blob is gone (REPLAY: the only blob is the plaza door, 23.9k at 0.665, 0.26 from the predicted 0.402, past `DOOR_KEEP` 0.25), and the re-choice takes the plaza door, a 0.21 s right turn, then walks at it to the end. It was the ONLY blob: 'nearest his column' between TWO doors from a changed pose is still NOT EXERCISED |
+| a. pane over his column on the step before the door vanishes, and it is the plaza door | **PASS**: native step 16, pane 0.26-0.47, hero 0.417; step 15, 0.32-0.51. Planter, stairs and plaza beyond it | **PASS**: native step 16, pane 0.27-0.47, hero 0.418; step 15, 0.25-0.50 | **PASS**: native step 17, pane 0.27-0.47, hero 0.418; step 16, 0.30-0.51. The plaza door |
+| b. OUT set, no step onto the door frame | **PASS**: walks at 37.5k, 36.6k, 17.1k, then no door, `out: look around left` (step 17). No snag: every walk moved 23.8-35.3 | **PASS**: walks at 37.0k, 47.2k, 23.1k, OUT on step 17. No snag (moved 21.4, 28.9, 19.4) | **PASS**: walks at 36.7k, 37.6k, 14.8k, OUT on step 18. No snag (moved 22.1, 29.1, 36.8) |
+| c. after OUT: no steer toward and no walk at any door blob | **PASS, weakly exercised**: one left turn on a frame with no lime blob | **PASS, weakly exercised**: the same | **PASS, weakly exercised**: the same |
+| d. the end: plaza_view twice LIVE, no door in view, a bot ahead | **PASS**: LIVE True on steps 18, 19; no lime in view. On the plaza beside the door's planter, facing the Luna Snow bot (name bar readable) at x ~0.40, mid distance, the Hero Simulation console to her left, the stairs to the right; the hero drawn faded, the camera pushed up to him by the planter | **PASS**: LIVE True on steps 18, 19; same place, the bot at x ~0.43 | **PASS**: LIVE True on steps 19, 20; same place, the bot at x ~0.42 |
+| e. no-progress | **NOT EXERCISED**: no stall, no sidestep | **NOT EXERCISED**: no stall, no sidestep | **NOT EXERCISED**: no stall, no sidestep |
+
+**(e) Every completed walk, LIVE `moved` / `still`** (read on the row after the walk; `still` is 0 on every row of all three):
+- Arrival 1, walks at steps 1, 2, 3, 5, 6, 7, 8, 9, 11, 12, 14, 15, 16: moved 25.2, 27.1, 27.7, 25.2, 30.0, 44.3, 40.9, 34.5,
+  33.6, 37.3, 23.8, 30.9, 35.3.
+- Arrival 2, the same steps: 26.3, 27.2, 24.2, 25.7, 34.8, 40.9, 42.1, 36.0, 33.1, 35.0, 21.4, 28.9, 19.4.
+- Arrival 3, walks at steps 2, 3, 6, 7, 8, 9, 11, 12, 13, 15, 16, 17: 25.9, 31.9, 30.5, 29.4, 41.2, 43.9, 32.1, 33.7, 35.3,
+  22.1, 29.1, 36.8.
+The smallest is 19.4 (arrival 2's last walk, through the door), against the 8.0 stall line. No stall was detected and none
+happened by eye: no walk into the console's rim in any of the three (the step-5 brush of the second round does not show;
+those walks moved 25-30). **No sidestep fired, so no false stall either.** The recovery is not exercised; none was provoked.
+
+Seen in all three, not part of a-e: the first plaza confirmation is taken while the view is still moving. Between the two
+confirmation frames (0.2 s apart on the recording) the Luna bot moves from x ~0.80 to x ~0.40-0.43 of the frame: the 0.3 s
+left look-around has not finished turning when the 'second look, standing still' frame is judged. Both frames read True
+LIVE in every arrival.
+
+Evidence: `arrival-cost-{1,2,3}-20260921-<time>-sheet.jpg` (contact sheet per arrival: door blobs yellow, the row's
+`door_x` cyan, hero column red, target ticks white), `...-steps.jsonl`, `...-reenter.log`, `...-replay.jsonl`,
+`...-endpose.jpg` (desktop screenshot after each end, no input), `arrival-cost-{1,2,3}-native-frames.jpg` (native crossing,
+OUT, the confirmations and the end pose; arrival 3's also has steps 1 and 5).
 
 ## No-input timing of the re-entry proof on the PRACTICE panel (VUH-1299): the age at the write is NOT MEASURABLE there with no pad
 
