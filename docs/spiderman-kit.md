@@ -167,7 +167,16 @@ of the last Web Cluster hit; Spider-Power chains at 0.37 s then 0.82 s; Amazing 
 
 The Venom suit-expulsion step in the older guides (#2 in marvelrivals.gg, 2025) refers to the
 pre-Season 9 team-up and is dropped here. Symbiote Bond and Parker Power-Up now sit on Y and need
-the partner hero, so they are out of scope.
+the partner hero, so they are out of scope for the agent's own play.
+
+They are two different abilities with different cooldowns, which matters when reading expert
+footage: **Symbiote Bond (Venom) is 15 s** ([official hero reference](https://www.marvelrivals.com/m/20241123/41360_1195680.html)),
+and **Parker Power-Up (Peni Parker) is 10 s since Version 20260911, 15 s before** (the dated
+balance post above wins over the general hero page, whose Parker numbers are stale). A team-up
+countdown that starts at 15 is therefore compatible with Symbiote Bond on the current patch and
+is not evidence of an older patch. The HUD icons differ (Symbiote Bond: a jagged radial burst;
+Parker Power-Up: a bomb), so which team-up a source shows is identified per segment from the
+icon, or left unknown; it is never assumed for a whole clip.
 
 Exact millisecond windows between inputs are not published anywhere reliable. The controller lane
 should measure them on video, not assume them (see Open verifications).
