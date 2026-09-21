@@ -55,7 +55,7 @@ from .frames import NORM
 HISTORY_S = 5.0
 FRAME_HZ = 10.0          # the cache's rate: one embedding per step
 DECISION_HZ = 5.0        # windows per second of recording
-MATCH_S = 0.12           # how stale the at-or-before cache row may be: a little over one 10 Hz period
+MATCH_S = 0.12           # how stale the at-or-before row may be: one 10 Hz step (0.1 s) plus 20 ms of PTS jitter
 STATE_F, EVENT_F = 13, 4
 EVENT_KINDS = ("hp_lost", "web_cluster_fired", "slot_unavailable", "slot_available")
 ROOT = Path(__file__).resolve().parent.parent
@@ -81,6 +81,47 @@ def layout(emb_dim):
 def emb_dim_of(width):
     """The embedding dimension a window of this width was built with."""
     return width - (2 + STATE_F + 1 + EVENT_F + 1)
+
+
+# What each field a Mask can hide owns in the state channel (value and known-bit columns), per
+# agent/demos.py's Mask: "hud" (all of it), "scene", "player", or one HUD field ("hp", "ammo", a
+# slot). A hidden field is zeroed WITH its known-bit, so the head reads "not available", never a value.
+STATE_COLS = {"hp": (0, 1), "ammo": (2, 3), "swing": (4, 5), "get_over_here": (6, 7), "pull": (6, 7),
+              "uppercut": (8, 9)}
+HUD_FIELDS = ("hp", "ammo", "swing", "get_over_here", "uppercut")
+SCENE_DERIVED = (10, 11, 12)   # detection count and crosshair-on-target come from the scene's pixels
+
+
+def step_row(emb_dim, vec, mask, state, events, t):
+    """One timestep's features, masking exactly what `mask.hidden` says and nothing more.
+
+    `vec` is the cache lookup (None: the cache has no row here); `mask` is the loader's Mask or None.
+      scene            the embedding is dropped and `scene_masked` is set; scene-derived state too
+      hud              every HUD field's state columns are dropped; the scene is left alone
+      hp, ammo, slot   only that field's columns are dropped
+      player           nothing here is player-specific, so nothing more is dropped
+    Returns (row, has_embedding, scene_hidden). A step with neither an embedding nor a hidden scene
+    is a cache MISS, which the caller must not let pass as blank video.
+    """
+    at = layout(emb_dim)
+    row = np.zeros(at["width"], np.float32)
+    hidden = set(mask.hidden) if mask else set()
+    if "hud" in hidden:
+        hidden |= set(HUD_FIELDS)
+    scene_hidden = "scene" in hidden
+    if scene_hidden:
+        row[at["scene_masked"]] = 1.0
+    elif vec is not None:
+        row[:emb_dim], row[at["emb_present"]] = vec, 1.0
+    s_feat, s_ok = _state_features(state)
+    for field in hidden:
+        s_feat[list(STATE_COLS.get(field, ()))] = 0.0
+    if scene_hidden:
+        s_feat[list(SCENE_DERIVED)] = 0.0
+    row[at["state"]:at["state"] + STATE_F], row[at["state_present"]] = s_feat, float(s_ok)
+    e_feat, e_ok = _event_features(events, t)
+    row[at["events"]:at["events"] + EVENT_F], row[at["events_present"]] = e_feat, float(e_ok)
+    return row, (vec is not None and not scene_hidden), scene_hidden
 
 
 class CacheMiss(ValueError):
@@ -157,26 +198,33 @@ class Cache:
             self.by_clip[meta["id"]] = (np.asarray(t) - float(meta.get("t_origin") or 0.0), emb.astype(np.float32))
             self.dim = meta["dim"]
         if self.dim is None:
-            raise FileNotFoundError(f"{out_dir}: nothing cached; run policy.encode --all first")
+            # The same failure as one missing run, and the same type: training has nothing to read.
+            raise CacheMiss(f"{out_dir}: nothing cached; run policy.encode --all first")
 
     def has(self, clip):
         return clip in self.by_clip
 
-    def at(self, clip, t, tolerance=MATCH_S):
-        """The embedding of the latest frame AT OR BEFORE clip time `t`, else None.
+    def index_at(self, clip, t, tolerance=MATCH_S):
+        """The row of the latest frame AT OR BEFORE clip time `t`, else None.
 
         Never the nearest: the nearest frame to a decision can be after it, which would put a
         future frame inside the observation. `tolerance` bounds how stale an at-or-before frame
-        may be before the cache is treated as not holding that moment.
+        may be before the cache is treated as not holding that moment, so a time past the end of
+        the clip, or before its first frame, misses.
         """
         found = self.by_clip.get(clip)
         if found is None:
             return None
-        times, emb = found
+        times = found[0]
         i = int(np.searchsorted(times, t + 1e-9, side="right")) - 1
         if i < 0 or t - times[i] > tolerance:
             return None
-        return emb[i]
+        return i
+
+    def at(self, clip, t, tolerance=MATCH_S):
+        """The embedding at `index_at`, else None."""
+        i = self.index_at(clip, t, tolerance)
+        return None if i is None else self.by_clip[clip][1][i]
 
 
 def windows(regime="off", encoder=DEFAULT, hz=HZ, decision_hz=DECISION_HZ, data=corpus_mod.DATA, recorder="loop",
@@ -223,8 +271,7 @@ def windows(regime="off", encoder=DEFAULT, hz=HZ, decision_hz=DECISION_HZ, data=
 
     demos = Demos.load(*[str(s.path) for s in sources])
     steps = int(round(HISTORY_S * FRAME_HZ)) + 1
-    at_col = layout(cache.dim)
-    width = at_col["width"]
+    width = layout(cache.dim)["width"]
     rows, labels, sessions, at_t = [], [], [], []
     blank = 0
     for split in TRAINABLE:                  # an allow-list: inspection_only never yields a row
@@ -237,27 +284,15 @@ def windows(regime="off", encoder=DEFAULT, hz=HZ, decision_hz=DECISION_HZ, data=
                 continue
             obs = sample.observation
             block = np.zeros((steps, width), np.float32)
-            found = 0
+            accounted = 0      # steps that hold an embedding, or whose scene a mask proves hidden
             for k, frame in enumerate(obs.frames[-steps:]):
                 at = steps - min(len(obs.frames), steps) + k
-                if frame.masked:
-                    # The segmenter proved something is hidden here (a scoreboard over the scene).
-                    # That is a fact about the frame, not a missing file, and the head is told which.
-                    block[at, at_col["scene_masked"]] = 1.0
-                else:
-                    vec = cache.at(obs.clip, frame.t)
-                    if vec is not None:
-                        block[at, :cache.dim], block[at, at_col["emb_present"]] = vec, 1.0
-                        found += 1
                 state = next((i.extra.get("state") for i in (obs.inputs or ()) if abs(i.t - frame.t) <= MATCH_S
                               and i.extra.get("state")), None)
-                s_feat, s_ok = _state_features(state)
-                block[at, at_col["state"]:at_col["state"] + STATE_F] = s_feat
-                block[at, at_col["state_present"]] = float(s_ok)
-                e_feat, e_ok = _event_features(obs.events, frame.t)
-                block[at, at_col["events"]:at_col["events"] + EVENT_F] = e_feat
-                block[at, at_col["events_present"]] = float(e_ok)
-            blank += not found
+                block[at], has_emb, scene_hidden = step_row(cache.dim, cache.at(obs.clip, frame.t),
+                                                            frame.masked, state, obs.events, frame.t)
+                accounted += has_emb or scene_hidden
+            blank += not accounted
             rows.append(block)
             labels.append(vocab_of(note))
             sessions.append(obs.clip)

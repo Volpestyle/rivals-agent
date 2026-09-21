@@ -19,7 +19,7 @@ uv run --group policy python -m policy.encode --all      # fill the cache; niced
 uv run --group policy python -m policy.train             # leave-one-session-out, regime off
 uv run --group policy python -m policy.train --split tail  # the control (see below)
 uv run --group policy python -m policy.live --bench       # step 3 latency on this Mac
-uv run --group policy pytest tests/test_policy.py        # 28 tests (stdlib-only ones also run bare)
+uv run --group policy pytest tests/test_policy.py        # 42 tests (stdlib-only ones also run bare)
 ```
 
 ```mermaid
@@ -285,17 +285,21 @@ hand-checked pairs before it draws a boundary. **Awaiting your go-ahead.**
 ## What an independent review found, and what changed (VUH-1326)
 
 A reviewer outside every lane reproduced these by running the code. Each fix has a test built
-from that reproduction, so the defect cannot come back quietly.
+from that reproduction, and each original defect, reintroduced by hand, makes at least one of
+them fail (nearest-instead-of-at-or-before, the unrebased origin, any mask dropping the scene, no
+staleness bound).
 
 | # | Defect | Fix |
 |---|---|---|
 | 1 | `Cache.at` took the **nearest** row within 60 ms, so a decision could resolve to a frame *after* it (every PTS on one section is grid + 27 ms). Two clocks were never reconciled: the cache records absolute decoded PTS, `agent/demos.py` speaks clip time from the first frame, so a source with an offset origin missed on *every* frame | The sidecar records `clock` and `t_origin`; `Cache` converts once, then `searchsorted` takes the latest row **at or before** the step, never the nearest |
-| 2 | A cache miss left the block zero, indistinguishable from blank video. **baseline3 contributed a full 1,500-window held-out fold with embedding-present 0.000** | A source not in the cache raises `CacheMiss` naming it; a window with no embedding at all raises. A *masked* frame is now a separate bit, so "hidden scene" and "missing file" are different facts |
+| 2 | A cache miss left the block zero, indistinguishable from blank video. **baseline3 contributed a full 1,500-window held-out fold with embedding-present 0.000** | A source not in the cache, or an empty cache, raises `CacheMiss` naming it; a window whose every step is a miss raises. A step whose scene a mask proves hidden is accounted for by its own bit, so "hidden scene" and "missing file" are different facts |
 | 3 | `windows()` iterated every split the loader assigned, so an `inspection_only` source could yield training rows | `TRAINABLE = ("train", "val", "test")`, an allow-list |
 | 5 | `_event_features` had no upper bound: an early step counted events confirmed seconds later | Counted over `(t - 1 s, t]` at each step, and the docstring says so |
 | 6 | `mix_regimes=True` was passed unconditionally, switching off the loader's guard, while `corpus.py` and the loader disagreed about who owns a run's regime | The run's own metadata is the authority; `corpus.RUNS` is a documented legacy fallback that **cannot qualify a run for training**; disagreement raises `RegimeConflict`; the loader's guard stays on (`cooldowns=regime`) |
 | 8 | `encode.py` skipped a source when both files existed, freezing sidecars (21 of 27 had `splittable: null`) | A cached source now has its sidecar rewritten from current provenance on every run, decoding nothing. `sidecar_version` marks the shape |
-| 9 | The test named "only from frames at or before its decision" compared no timestamps — finding 1 lived in that gap | It now compares them, on every cached source, on and between the grid |
+| 9 | The test named "only from frames at or before its decision" compared no timestamps — finding 1 lived in that gap | `Cache.index_at` exposes the resolved row, and the tests check it by time on every real cached source, video and run, on and between the grid: at or before `t`, within one step, the nonzero-origin section resolving to +0 ms, and a time past the clip missing. The window test walks the same loader-to-cache chain `windows()` uses |
+| C | Any mask set `scene_masked` and dropped the whole embedding, ignoring `Mask.hidden`: a mask hiding one HUD slot (`hidden=("swing",)`, chat over the icon) discarded a fully visible scene | `step_row` masks exactly what `hidden` says: `scene` drops the embedding and the scene-derived state (detections, crosshair); `hud` drops every HUD field; one field drops only its own value and known-bit |
+| E | Nothing tested `Cache.at` | See 9: `index_at` is tested by time on real sources |
 | — | *(found while fixing 2)* the runtime derived the feature layout a second time and, once a bit was added, fed the head a vector one column out of step | `layout()` in `policy/train.py` is the only place the offsets are written; `policy/live.py` reads it |
 | 10 | The headline numbers here were stale against the code | Regenerated below |
 

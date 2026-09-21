@@ -331,12 +331,6 @@ def test_the_runtime_and_the_trainer_read_one_feature_layout():
     assert emb_dim_of(at["width"]) == 384
 
 
-@needs_mlx
-def test_a_masked_frame_and_a_cache_miss_are_different_facts():
-    """Finding 2: blank video must not be able to pass as a hidden scene."""
-    from policy.train import layout
-    at = layout(384)
-    assert at["emb_present"] != at["scene_masked"], "one bit cannot say both"
 
 
 @needs_mlx
@@ -363,3 +357,243 @@ def test_near_change_marks_only_windows_whose_label_changes_ahead_in_the_same_se
     flag = near_change(y, sessions, k=1)
     assert flag.tolist() == [False, False, True, False, True, False, False], \
         "a change must be seen only inside its own session, never across the boundary"
+
+
+# --- review re-check (VUH-1326): Cache.at, masks, and the regression tests that never landed ----------
+
+def _cache():
+    from policy.encode import DEFAULT, cache_dir
+    from policy.train import Cache, _Tag
+    return Cache(cache_dir(_Tag(DEFAULT), 10.0))
+
+
+def _probes(times):
+    """On the grid and between it, at the start, middle and end of a source."""
+    picks = [0, 1, len(times) // 2, len(times) - 2, len(times) - 1]
+    out = []
+    for i in picks:
+        out += [times[i], times[i] + 0.001, times[i] + 0.027, times[i] + 0.05, times[i] + 0.099]
+    return out
+
+
+@needs_mlx
+@needs_data
+def test_every_cached_source_resolves_at_or_before_and_within_one_step():
+    """Finding 1 lived in a gap no test covered: argmin(|t - times|) returned a frame 27 ms AFTER t.
+
+    On every real cached source, video and run, on and between the grid: the resolved row's time
+    is at or before the moment asked for, and no staler than one step plus jitter (MATCH_S).
+    """
+    from policy.train import MATCH_S
+    cache = _cache()
+    checked = 0
+    for clip, (times, _) in cache.by_clip.items():
+        if len(times) < 5:
+            continue
+        for want in _probes(times):
+            i = cache.index_at(clip, want)
+            assert i is not None, f"{clip}: {want:.3f} lies inside the clip and must resolve"
+            assert times[i] <= want + 1e-9, f"{clip}: asked {want:.3f}, got a frame at {times[i]:.3f}, AFTER it"
+            assert want - times[i] <= MATCH_S, f"{clip}: asked {want:.3f}, got {times[i]:.3f}, staler than a step"
+            checked += 1
+    assert checked > 100, f"only {checked} lookups exercised"
+
+
+@needs_mlx
+@needs_data
+def test_the_source_whose_origin_is_not_zero_resolves_on_the_loaders_clock():
+    """The reviewer's reproduction: on daymr-2879354299-21660-900s every decoded PTS is grid + 27 ms,
+    and at(src, 30.0) returned the 30.027 s frame. Rebased by t_origin it must resolve to +0 ms."""
+    import json
+
+    from policy.encode import DEFAULT, cache_dir
+    from policy.train import _Tag
+    out = cache_dir(_Tag(DEFAULT), 10.0)
+    side = out / "daymr-2879354299-21660-900s.json"
+    if not side.exists():
+        pytest.skip("that section is not cached on this machine")
+    meta = json.loads(side.read_text())
+    assert meta["clock"] == "media_pts" and meta["t_origin"] > 0.02, "the reproduction needs its nonzero origin"
+    cache = _cache()
+    times, _ = cache.by_clip[meta["id"]]
+    i = cache.index_at(meta["id"], 30.0)
+    assert i is not None, "an offset origin must not make every lookup miss"
+    assert abs(times[i] - 30.0) < 1e-6, f"30.0 must resolve to the frame AT 30.0, got {times[i]:.4f}"
+    assert cache.index_at(meta["id"], 29.999) == i - 1, "just before a frame must give the one before it"
+
+
+@needs_mlx
+@needs_data
+def test_a_time_past_the_clip_or_before_its_first_frame_misses():
+    cache = _cache()
+    for clip, (times, _) in list(cache.by_clip.items())[:8]:
+        assert cache.index_at(clip, times[-1] + 1.0) is None, f"{clip}: 1 s past the last frame must miss"
+        assert cache.index_at(clip, times[0] - 0.05) is None, f"{clip}: before the first frame must miss"
+        assert cache.at("not-a-cached-clip", times[0]) is None
+
+
+@needs_mlx
+@needs_data
+def test_a_window_is_built_only_from_frames_at_or_before_its_decision():
+    """Restored for real: the resolution chain windows() uses, checked by timestamps.
+
+    Every frame the loader puts in an observation is at or before the decision, and the cache row it
+    resolves to is at or before that frame and within one step of it.
+    """
+    from agent.demos import Demos
+    from policy.train import FRAME_HZ, HISTORY_S, MATCH_S, TRAINABLE
+    runs = [s for s in corpus_mod.corpus(kinds=("run",)) if s.cooldowns == "normal"
+            and s.cooldowns_source == "metadata"][:2]
+    if not runs:
+        pytest.skip("no normal-regime run with its own metadata on this machine")
+    cache, demos = _cache(), Demos.load(*[str(s.path) for s in runs])
+    checked = 0
+    for split in TRAINABLE:
+        if split not in set(demos.splits.values()):
+            continue
+        for sample in demos.samples(split, history_s=HISTORY_S, frame_hz=FRAME_HZ, hz=1.0, label_s=0.5,
+                                    cooldowns="normal"):
+            obs = sample.observation
+            times = cache.by_clip[obs.clip][0]
+            for frame in obs.frames:
+                assert frame.t <= obs.t + 1e-9, f"{obs.clip}: a frame at {frame.t} inside a window decided at {obs.t}"
+                i = cache.index_at(obs.clip, frame.t)
+                if i is None:
+                    continue
+                assert times[i] <= frame.t + 1e-9, f"{obs.clip}: frame {frame.t} resolved to a later row {times[i]}"
+                assert frame.t - times[i] <= MATCH_S
+                checked += 1
+    assert checked > 500, f"only {checked} frame lookups exercised"
+
+
+@needs_mlx
+def test_a_mask_hiding_one_hud_slot_keeps_the_scene_and_drops_only_that_slot():
+    """The reviewer's reproduction for finding C: a mask hiding ONE HUD slot threw away the whole
+    384-d embedding of a frame whose scene was fully visible, and told the head the scene was hidden."""
+    import numpy as np
+
+    from agent.demos import Mask
+    from policy.train import STATE_COLS, layout, step_row
+    at = layout(384)
+    vec = np.full(384, 0.5, np.float32)
+    state = {"hp": 200, "max_hp": 250, "webs": 4,
+             "abilities": {"swing": {"ready": True}, "pull": {"ready": True}, "uppercut": {"ready": False}}}
+    mask = Mask(reasons=("chat", "partial_chat_overlay"), hidden=("swing",))
+    row, has_emb, scene_hidden = step_row(384, vec, mask, state, None, 10.0)
+    assert has_emb and not scene_hidden, "a hidden slot is not a hidden scene"
+    assert row[at["emb_present"]] == 1.0 and row[at["scene_masked"]] == 0.0
+    assert (row[:384] == 0.5).all(), "the scene's embedding must survive"
+    s = at["state"]
+    for c in STATE_COLS["swing"]:
+        assert row[s + c] == 0.0, "the hidden slot's value and known-bit are both cleared"
+    assert row[s + STATE_COLS["pull"][1]] == 1.0, "an unhidden slot keeps its known-bit"
+    assert row[s + STATE_COLS["hp"][1]] == 1.0 and row[s + STATE_COLS["ammo"][1]] == 1.0
+
+
+@needs_mlx
+def test_a_mask_hiding_the_scene_drops_the_embedding_and_scene_derived_state():
+    import numpy as np
+
+    from agent.demos import Mask
+    from policy.train import SCENE_DERIVED, STATE_COLS, layout, step_row
+    at = layout(384)
+    state = {"hp": 200, "max_hp": 250, "detections": [{}], "on_target": True, "abilities": {}}
+    row, has_emb, scene_hidden = step_row(384, np.ones(384, np.float32), Mask(reasons=("scoreboard",),
+                                                                              hidden=("scene",)), state, None, 1.0)
+    assert scene_hidden and not has_emb
+    assert row[at["scene_masked"]] == 1.0 and row[at["emb_present"]] == 0.0 and not row[:384].any()
+    for c in SCENE_DERIVED:
+        assert row[at["state"] + c] == 0.0, "detections and crosshair come from the hidden pixels"
+    assert row[at["state"] + STATE_COLS["hp"][1]] == 1.0, "hiding the scene alone leaves the HUD readable"
+
+
+@needs_mlx
+def test_a_mask_hiding_the_whole_hud_drops_every_hud_field_but_not_the_scene():
+    import numpy as np
+
+    from agent.demos import Mask
+    from policy.train import HUD_FIELDS, STATE_COLS, layout, step_row
+    at = layout(384)
+    state = {"hp": 200, "max_hp": 250, "webs": 4, "on_target": True,
+             "abilities": {"swing": {"ready": True}, "pull": {"ready": True}, "uppercut": {"ready": True}}}
+    row, has_emb, scene_hidden = step_row(384, np.ones(384, np.float32), Mask(reasons=("x",), hidden=("hud",)),
+                                          state, None, 1.0)
+    assert has_emb and not scene_hidden
+    for field in HUD_FIELDS:
+        for c in STATE_COLS[field]:
+            assert row[at["state"] + c] == 0.0, f"{field} survived a hidden HUD"
+    assert row[at["state"] + 12] == 1.0, "the crosshair reading is scene-derived and stays"
+
+
+@needs_mlx
+def test_a_masked_frame_and_a_cache_miss_are_different_facts():
+    """Finding 2, by behaviour: a hidden scene is accounted for; a miss is neither present nor masked."""
+    from agent.demos import Mask
+    from policy.train import layout, step_row
+    at = layout(384)
+    masked, has_emb, scene_hidden = step_row(384, None, Mask(reasons=("scoreboard",), hidden=("hud", "scene")),
+                                             None, None, 1.0)
+    assert scene_hidden and not has_emb and masked[at["scene_masked"]] == 1.0
+    miss, has_emb, scene_hidden = step_row(384, None, None, None, None, 1.0)
+    assert not scene_hidden and not has_emb
+    assert miss[at["scene_masked"]] == 0.0 and miss[at["emb_present"]] == 0.0, "a miss must not look masked"
+
+
+# --- the five regression tests the earlier batch claimed and never wrote ----------------------------
+
+@needs_mlx
+def test_a_source_that_was_never_encoded_fails_the_run_instead_of_training_on_blank_video():
+    """A reviewer found a whole held-out fold of 1,500 windows with embedding-present 0.000."""
+    import policy.train as train
+    real = [s for s in corpus_mod.corpus(kinds=("run",)) if s.cooldowns == "normal" and s.cooldowns_source == "metadata"]
+    if not real:
+        pytest.skip("no normal-regime run on this machine")
+    # The realistic case: the cache exists and holds other runs, but not this one (baseline3 then).
+    ghost = dataclasses.replace(real[0], id="run:never-encoded")
+    with pytest.raises(train.CacheMiss, match="not in the embedding cache: run:never-encoded"):
+        _windows_with(train, real + [ghost])
+    with pytest.raises(train.CacheMiss, match="nothing cached"):
+        train.windows(regime="normal", encoder="a-model-nobody-cached")
+
+
+def _windows_with(train, sources):
+    """windows() over exactly these sources."""
+    import unittest.mock as mock
+    with mock.patch.object(train.corpus_mod, "corpus", lambda *a, **k: sources):
+        return train.windows(regime="normal")
+
+
+@needs_mlx
+def test_inspection_only_can_never_yield_a_training_row():
+    import policy.train as train
+    assert train.TRAINABLE == ("train", "val", "test"), "an allow-list, not a deny-list"
+
+
+@needs_mlx
+def test_an_event_is_counted_only_once_the_step_itself_could_know_it():
+    """A reviewer found no upper bound: an early step counted events confirmed seconds later."""
+    from agent.demos import Event
+    from policy.train import _event_features
+    later = Event(kind="hp_lost", t_from=9.0, t_to=10.0, amount=1)
+    feat, present = _event_features([later], t=6.0)
+    assert present and not feat.any(), "a step at t=6 must not see an event confirmed at t=10"
+    feat, _ = _event_features([later], t=10.0)
+    assert feat.any(), "the step that can know it must count it"
+    feat, _ = _event_features([later], t=11.5)
+    assert not feat.any(), "and it leaves the one-second window again"
+
+
+def test_the_runs_own_metadata_outranks_the_legacy_name_table(tmp_path):
+    (tmp_path / "l1" / "tagrun0").mkdir(parents=True)
+    (tmp_path / "l1" / "tagrun0" / "frames.jsonl").write_text('{"t": 0.0, "file": "000000.jpg"}\n')
+    (tmp_path / "l1" / "tagrun0" / "meta.json").write_text(json.dumps({"cooldowns": "off", "brain": "scripted"}))
+    source, = corpus_mod.runs(tmp_path)
+    assert source.cooldowns == "off" and source.cooldowns_source == "metadata"
+
+
+def test_metadata_and_the_legacy_table_disagreeing_is_an_error(tmp_path):
+    (tmp_path / "l1" / "tagrun0").mkdir(parents=True)
+    (tmp_path / "l1" / "tagrun0" / "frames.jsonl").write_text('{"t": 0.0, "file": "000000.jpg"}\n')
+    (tmp_path / "l1" / "tagrun0" / "meta.json").write_text(json.dumps({"cooldowns": "normal"}))
+    with pytest.raises(corpus_mod.RegimeConflict):
+        corpus_mod.runs(tmp_path)
