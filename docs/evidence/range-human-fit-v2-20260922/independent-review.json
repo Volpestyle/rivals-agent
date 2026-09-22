@@ -1,0 +1,58 @@
+{
+  "kind": "attributed_independent_admission_review_receipt",
+  "issue": "VUH-1309",
+  "reviewer": {
+    "agent": "admission-review",
+    "pane": "w2:pG",
+    "session": "01a0c9c2-a27c-7cf3-9a86-4ac78cc2b78f",
+    "model_effort_displayed": "gpt-6-astra high"
+  },
+  "completed_local": "2026-09-22 13:17 America/Chicago",
+  "completion_precision": "Minute, displayed in reviewer final and confirmed by lead",
+  "source": "Final substantive recommendation read once directly via herdr agent read admission-review --source recent-unwrapped --lines 220 for this materialization. Structured attributed transcription, not a new image review by corpus owner.",
+  "persisted_by": "human-admission, corpus owner",
+  "candidate_path": "data/human/skill-event-candidates/032454-support-v2",
+  "candidate_rows_sha256": "c61cb27f0368b8e263e47519a687331597335708d24233282113898b96ceda33",
+  "artifact_manifest_sha256": "e74a7b3e4d69e3d76e346f3a4dec5bafc24eb751004d8112501ef00b4e4994dc",
+  "producer_findings_sha256": "0359c8328bfe7a5361d2556c58326bbfaceeb2d8a558580b737426869c6ae062",
+  "recommendation": "Accept all four proposed support-v2 labels for the named TRAIN-ONLY numerical diagnostic. No additional visual evidence needed for that scope. Lead admission remained separate at report time.",
+  "row_findings": {
+    "137": "No-new-start supported: visible approach/rise and ongoing wrist pose throughout full exposure without a new launch; same selected named Luna, ammo3.",
+    "141": "Keep unknown: overlapping bodies and impact do not establish sufficiently distinct web-cast identity. Unchanged ammo cannot establish a negative.",
+    "142": "Start supported: native14.313 withdrawn wrist;14.321 itself new forward firing pose and white emission toward the selected Luna, with ammo depletion/damage corroboration.14.329 supplies expanded impact confirmation.",
+    "143": "Stays unknown. No grid shift or use of14.329 as onset.",
+    "144": "No-new-start supported: existing impact continues while wrist withdraws and player rises/repositions. Actual selected box covers Luna lower body; correspondence remains clear. Ammo3.",
+    "185": "Keep unknown: occluded target fragment does not establish action/recipient correspondence. Reader ammo unknown retained despite visually readable HUD2.",
+    "206": "No-new-start supported under window-reset construction only: extended wrist/recovery continues through falling movement without new launch. Selected nearby Galacta remains identifiable; ammo1."
+  },
+  "accepted_onset_bracket": {
+    "grid_index": 142,
+    "label_clock": "actual relative composition seconds",
+    "last_not_started_t": 14.291666095,
+    "first_started_t": 14.299999428,
+    "confirmation_t": 14.308332761,
+    "horizon": [14.2, 14.3],
+    "margin_ns": 572,
+    "meaning": "Margin follows accepted composition-clock labeling contract, not physical-input timing precision. Native14.321 establishes onset independently of expanded14.329 impact."
+  },
+  "independently_reported_verification": {
+    "artifact_hashes_and_sizes": 259,
+    "dense_sequences_inspected": 6,
+    "replayed_complete_causal_observations": 30,
+    "exact_feature_scalars_and_known_bits": 780,
+    "native_callback_frames_per_exposure": 14,
+    "exposure": "Every selected exposure contains consecutive native callback frames through first frame after its horizon.",
+    "construction": "Actual clocks/source identity unchanged; pinned core hashes and baseline factory/aim AST matched; six event_window checks and108 field sets/masks passed."
+  },
+  "purge_footprints_t": {
+    "137": [13.299999468, 13.808332781],
+    "142": [13.799999448, 14.308332761],
+    "144": [13.999999440, 14.508332753],
+    "206": [20.199999192, 20.708332505]
+  },
+  "inherited_dependencies": "Earlier source-owned HUD calibration and same-evening TRAIN grouping remain required.",
+  "resource_support": "n137 and n142 have identical five-snapshot ammo histories, all3, but opposite observed outcomes. Stronger source contrast than v1 ammo-only separation; no learned timing/generalization/live equivalence claim.",
+  "continuous_tracking_limit": "Five new selected anchor boxes agree with separate continuous replay, but continuous selector has no target at n206. Historical n199/n200 differences do not revise v1 admission. Numeric target IDs remain window-local.",
+  "target_scope": "Luna Snow is a distinctly named visual semantic source, not designated Galacta benchmark evidence or a target substitution.",
+  "review_boundary": "Reviewer performed no artifact edits, admission, training or new decoding. Recommendation calls for lead disposition and genuine review-bound coordinate merge, preserving unknowns and v1 authority rather than concatenating overlapping grids."
+}

@@ -1,0 +1,3223 @@
+{
+  "rule": {
+    "key": [
+      "session",
+      "continuous_id",
+      "grid_origin_t",
+      "grid_index"
+    ],
+    "indices": [
+      114,
+      221
+    ],
+    "count": 108,
+    "precedence": "Use exact support-v2 row at137/141/142/144/185/206; exact admitted-v1 row at every other coordinate. Preserve supplemental v2 grid survey/evidence references for all coordinates. No disjoint observed-row conflict exists.",
+    "overlay_indices": [
+      137,
+      141,
+      142,
+      144,
+      185,
+      206
+    ],
+    "retained_v1_observed_indices": [
+      198,
+      199,
+      200,
+      219
+    ],
+    "protected_unknown_indices": [
+      141,
+      143,
+      185,
+      198,
+      219
+    ],
+    "only_changes_to_chosen_rows": [
+      "review_sha256 -> SHA256 of this genuine combined decision",
+      "origin -> reviewed_human (already identical for retained v1 rows)"
+    ],
+    "evidence_resolution": "Each unchanged row evidence string resolves against its selected source directory in coordinate-map.json; no global-base assumption."
+  },
+  "conflicting_observed_coordinates": [],
+  "coordinates": [
+    {
+      "grid_index": 114,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "d6d71cff90dfef081da0197444fcf463afdb2a5332d9412eed3f60a7072f75a4",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#114",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#114",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 115,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "7ad8f5076f3deba4bf3c49211afe67c83fe74d4417a786b8f4ffbe6fcbee8ea5",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#115",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#115",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 116,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "c67bee5b74661a188cbca746217fc90cfa5f3a411e6fc6d03ae38b8922ceb56c",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#116",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#116",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 117,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "03429fe978bccec3646ad99512161f9c9002f3d5ea84eb3a9d45f19340bb270a",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#117",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#117",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 118,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "331fdd25aee39701aa17ea6ac3fe4b4a138852c58751273712baaba36d67e116",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#118",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#118",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 119,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "ac1090b7634bec2786b17409de517cda1ed0b3cb5537cec1a4098d0d52bd0c48",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#119",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#119",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 120,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "76de3dd7c0485a64cd7c718947616c423564eef6164f206fe2bfaf48d6d885ad",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#120",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#120",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 121,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "2787dca56e082f5fdcb04a075ffebb71a7ca13fb5e5988f21595811e9dd70360",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#121",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#121",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 122,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "bb28422c128fc8fd0a5ca34a20ea923116c6866d6f5379f7dcfc986b278c8fcd",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#122",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#122",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 123,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "62ef52cd14b83f0ad325ac0fa3444e8b0a48c2d1412a8cfea525a106e4db097b",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#123",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#123",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 124,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "ac30a95048071128a2c5745d8010f7470c1c6797a29fab396d3ed959941bb1da",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#124",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#124",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 125,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "42a7b2dc510213a34d4ee8fd786f7d77d81296dccd34b9cdc0961e5f4bf9e29e",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#125",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#125",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 126,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "472853cbf1a9b826c031d71c2f7e76416a184b866438cb3cb800cb58cc033a2b",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#126",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#126",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 127,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "e159f32adc102dc5799e52ad33911226658b7cf28c2a74e7799e1d1771a4d2b6",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#127",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#127",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 128,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "8816695e9853ff1814be519de1aa0d1244da26273de8197bcd8b0e61fde4bdbf",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#128",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#128",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 129,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "dbc7704cb74410676921a06887bb26445472aa5f930f91c3b15124c81e86fd50",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#129",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#129",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 130,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "62318f7e0cc8b707241e8e9c6b362887ef0dff8c7091eee599a05811028fdfa2",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#130",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#130",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 131,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "aead4b30fe6b6284742b76bcda3e3a660ced4b237daf91aebe93c9096bfee015",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#131",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#131",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 132,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "6680f5dbe71a758c40e46c217e178acb7f786da5473eab3e9aa867b49eb58b63",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#132",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#132",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 133,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "2bd829907e856f93240df421368ef991e592d1e786b5ebf706e1d6c7656da2e3",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#133",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#133",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 134,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "4289807d2c7f8e0223506fcafd3ab51c4f1740755212e29201f9a4cfb624beea",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#134",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#134",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 135,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "fdceceb49677c8142c4986cbd94774e3ae37bed2cf31baa5f5dbedc39165142e",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#135",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#135",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 136,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "23eabccef6fc2b1ea6bac8f214543ccb30b64eba04cb49fd9ba776298190d425",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#136",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#136",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 137,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "support_v2",
+      "selected_source_artifact": {
+        "path": "data/human/skill-event-candidates/032454-support-v2/candidate-rows.json",
+        "sha256": "c61cb27f0368b8e263e47519a687331597335708d24233282113898b96ceda33"
+      },
+      "selected_row_digest": "bddacda53e16f42e8b0d494e85ee4d8e4ebda8ad413d8d986b57b314d1db49de",
+      "evidence_base_directory": "data/human/skill-event-candidates/032454-support-v2",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/032454-support-v2/visual-annotations.json#137",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.support-v2-independent-review.json",
+        "sha256": "9b6567143fe58810eb4ae4cbf3a5585fafee112b2fc1ad6315315a6982b240bd"
+      },
+      "prior_admission_authority": null,
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#137",
+      "changes_to_selected_row": [
+        "review_sha256",
+        "origin"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256",
+        "evidence",
+        "history",
+        "exposure_start_t",
+        "exposure_end_t",
+        "confirmation_t",
+        "label",
+        "label_known",
+        "reason",
+        "anchor_target_track",
+        "target_agreed"
+      ]
+    },
+    {
+      "grid_index": 138,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "f4160e992bf4a87d6259bd7f289b0ee573895a9776b12956d76f2aad66d63891",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#138",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#138",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 139,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "c517bce29c6084578b569818ed87f94ce67699b2179cbd3bc92b397bb8632929",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#139",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#139",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 140,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "e4916c74ba55fce9b70c7b8ed2284246ed2de7473e204dba3ea1564ddc10bac1",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#140",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#140",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 141,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "support_v2",
+      "selected_source_artifact": {
+        "path": "data/human/skill-event-candidates/032454-support-v2/candidate-rows.json",
+        "sha256": "c61cb27f0368b8e263e47519a687331597335708d24233282113898b96ceda33"
+      },
+      "selected_row_digest": "0899f24a55ab86ebd39dd7fbe3c21e56ceffd043b7abd6549c581e5f9b64adb4",
+      "evidence_base_directory": "data/human/skill-event-candidates/032454-support-v2",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/032454-support-v2/visual-annotations.json#141",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.support-v2-independent-review.json",
+        "sha256": "9b6567143fe58810eb4ae4cbf3a5585fafee112b2fc1ad6315315a6982b240bd"
+      },
+      "prior_admission_authority": null,
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#141",
+      "changes_to_selected_row": [
+        "review_sha256",
+        "origin"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256",
+        "evidence",
+        "history",
+        "exposure_start_t",
+        "exposure_end_t",
+        "confirmation_t",
+        "reason",
+        "anchor_target_track",
+        "target_agreed"
+      ]
+    },
+    {
+      "grid_index": 142,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "support_v2",
+      "selected_source_artifact": {
+        "path": "data/human/skill-event-candidates/032454-support-v2/candidate-rows.json",
+        "sha256": "c61cb27f0368b8e263e47519a687331597335708d24233282113898b96ceda33"
+      },
+      "selected_row_digest": "e59eead54e355f5b1b0c51526c5eec333b240f97fd56453d0c463dc0012c2583",
+      "evidence_base_directory": "data/human/skill-event-candidates/032454-support-v2",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/032454-support-v2/visual-annotations.json#142",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.support-v2-independent-review.json",
+        "sha256": "9b6567143fe58810eb4ae4cbf3a5585fafee112b2fc1ad6315315a6982b240bd"
+      },
+      "prior_admission_authority": null,
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#142",
+      "changes_to_selected_row": [
+        "review_sha256",
+        "origin"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256",
+        "evidence",
+        "history",
+        "exposure_start_t",
+        "exposure_end_t",
+        "confirmation_t",
+        "label",
+        "label_known",
+        "reason",
+        "anchor_target_track",
+        "target_agreed",
+        "event_id",
+        "last_not_started_t",
+        "first_started_t"
+      ]
+    },
+    {
+      "grid_index": 143,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "e3756369d8beabc38caefdfbb03b7b0576c04bb400dd8f3bdd78f5fef3586daf",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#143",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#143",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 144,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "support_v2",
+      "selected_source_artifact": {
+        "path": "data/human/skill-event-candidates/032454-support-v2/candidate-rows.json",
+        "sha256": "c61cb27f0368b8e263e47519a687331597335708d24233282113898b96ceda33"
+      },
+      "selected_row_digest": "d4a01fb9f096e56dd982c69bf0ecabb920704846df2c5ba0b15c61dc8d39b70c",
+      "evidence_base_directory": "data/human/skill-event-candidates/032454-support-v2",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/032454-support-v2/visual-annotations.json#144",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.support-v2-independent-review.json",
+        "sha256": "9b6567143fe58810eb4ae4cbf3a5585fafee112b2fc1ad6315315a6982b240bd"
+      },
+      "prior_admission_authority": null,
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#144",
+      "changes_to_selected_row": [
+        "review_sha256",
+        "origin"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256",
+        "evidence",
+        "history",
+        "exposure_start_t",
+        "exposure_end_t",
+        "confirmation_t",
+        "label",
+        "label_known",
+        "reason",
+        "anchor_target_track",
+        "target_agreed"
+      ]
+    },
+    {
+      "grid_index": 145,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "6777bb72f2275dc2cbc6593d8039266acd61b694a22eeeb7cd81ac74c05a9ddb",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#145",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#145",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 146,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "9be4d2518709f3cb5ac6a057b0e5c68bd076fc2c7eb093cc61025fa7a2cbbea2",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#146",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#146",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 147,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "94117aa3f9c59cf4e84beca27fdb469910bacb9aa85709a92c241a89147d25b4",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#147",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#147",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 148,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "2ee96b61b72129ef342d301855f54ef2d71993e48a4e4a4749070165c187c4f0",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#148",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#148",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 149,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "c639ae5fa02264b0cb3ae67ec14e40e220862db44d64b033d146576eab33addb",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#149",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#149",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 150,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "7efa967be766aa47ec494979d7cde61e29f7c620ae8269bc0a96f833bef3b25f",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#150",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#150",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 151,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "02b244b6611bb4c5d6174d3043ceab118c623db723955993ae47855c3737f53a",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#151",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#151",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 152,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "7ba3117b58bee8fa819518832553daa88d3a452de0462be138442853258c1547",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#152",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#152",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 153,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "a632e2f43f8220a88429b60c62f9d9e6d1dd680028c2081ac0f879586076a41b",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#153",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#153",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 154,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "cabf5f0da49d39b50829d6c47204079acad28430108608b499c9424512aa295c",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#154",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#154",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 155,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "0c5fb249ed490227d14ebf00dd2956053a703122b10f36eca2da1f9bf304ca15",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#155",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#155",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 156,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "aeebf880ce2b544af5204a431a4accc555da60132ceaafce132f99b1db0c5746",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#156",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#156",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 157,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "cadf2182f6cbd353f3b0f2a82f835fc0fc003d809b48567e83aa7f6ec284dee4",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#157",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#157",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 158,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "ee6c92f9b6ae837ab6bb8a105620256460f58578980fcedbaaaa6480d79c8e9f",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#158",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#158",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 159,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "ce5fed71684d917a935a1a30a6128b5eba5f454382009326cfbda602cd95e176",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#159",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#159",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 160,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "d8a04fd002376d93fda7a0a54a8c0f1f1f83a8c10b1f1102371b01abcb6bede2",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#160",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#160",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 161,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "9413146c3be5d05edab42244d95a7ecd52b4ed844e75d144f9a8c8671244cf11",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#161",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#161",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 162,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "f14f05becdd1356219e1a6ef506593f4d383cf25d3c2cae5e197824f4d28be3a",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#162",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#162",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 163,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "c6f20279bb7f878d9a4216b8e5534c918db2c5cdfd4fe6be62a36dca0f308a55",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#163",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#163",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 164,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "d37df50b2c2429b482f4bb3d27eabca9eee4dd238c735d2d15c2e9438c1eca48",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#164",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#164",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 165,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "7d63eb8f36e4e20a1ef7f31a91787356e28d0b80782801db6e570f2bc3b5c4ee",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#165",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#165",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 166,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "91beeba3acbe52893840461a44278d7061896b1e5653fcada94871a63450b673",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#166",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#166",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 167,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "1a52fc7b54ace65ff204a23e7f2d49669ce5b87e44f86963bedec7e1c07b5d14",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#167",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#167",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 168,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "cafb130920e3dfa3e9606a91b46bf55d30525a90a39f0df16759b6a7b4b7f7e8",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#168",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#168",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 169,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "d2aed2b4e7b9e6527bc812a2365a7aabf4075a992612c181c4778ae124a5e5e5",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#169",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#169",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 170,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "62f52441c5d6095d4f4eefbfdcf4e212d94dff61cacfa086b53e574cc7e2423d",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#170",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#170",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 171,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "7d5df63671f545cc758248a95cfc074bba51d4ce6e2a62764087afffd66ca7cc",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#171",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#171",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 172,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "c1f858fbf59038015b3f706b53828ef262cbcbb9675acd3049d381125ac7b98d",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#172",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#172",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 173,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "87d80eee81dda5b8ac93616c6ff9657b5a2958459d8853cab51680f23e2e7a8f",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#173",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#173",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 174,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "cd0ba20f5c119d11aa8ab3c8191e4099f1290896cac214ee24aca4a1e267244b",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#174",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#174",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 175,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "5b35ed70fd92014aa1b244fcc1e82368a34ccda3cd4962fcab8f7ab26ab84480",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#175",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#175",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 176,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "15e9d229e236632b3e8c47504f6bf6dcb884822d869b503ae5780c831ca43b5c",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#176",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#176",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 177,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "f0cea66c8a4a94eb4e88e0d1a55ea09372f8ea09edebe07904e316185b4856ce",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#177",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#177",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 178,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "defa01e1f8f56406e0d1beea9fb48668ab11adc4dc000dbbc4eb2e29edd04d13",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#178",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#178",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 179,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "47378c2ace32ca8f4eb102eea52b1a16bbede130a9e609b97cfeb253d100d54d",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#179",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#179",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 180,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "f40d6ad480db0447f163db0727fe4c68d052bf8f1165a480aa61a4cbae07e581",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#180",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#180",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 181,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "3d90ecf1a91afc9827f885816fadca8c2bb598b268d208e65f2e61d11016ae16",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#181",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#181",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 182,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "5c4a052427041805902d4258dab3f0d4771e167580e4c9db6b1603c50536f572",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#182",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#182",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 183,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "d60d643059ebc4872677860030e0e32c9dfd6a2ed0e3d8b2db2ad6d4b3451f60",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#183",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#183",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 184,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "6428e57321072a52d0a4da85ce9efce291b166b5683416639afaeda4dda0fc7e",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#184",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#184",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 185,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "support_v2",
+      "selected_source_artifact": {
+        "path": "data/human/skill-event-candidates/032454-support-v2/candidate-rows.json",
+        "sha256": "c61cb27f0368b8e263e47519a687331597335708d24233282113898b96ceda33"
+      },
+      "selected_row_digest": "54e160011ad02149ab3fc1f5497bfba9773c529a7643ed2b06339f9e8a21780c",
+      "evidence_base_directory": "data/human/skill-event-candidates/032454-support-v2",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/032454-support-v2/visual-annotations.json#185",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.support-v2-independent-review.json",
+        "sha256": "9b6567143fe58810eb4ae4cbf3a5585fafee112b2fc1ad6315315a6982b240bd"
+      },
+      "prior_admission_authority": null,
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#185",
+      "changes_to_selected_row": [
+        "review_sha256",
+        "origin"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256",
+        "evidence",
+        "history",
+        "exposure_start_t",
+        "exposure_end_t",
+        "confirmation_t",
+        "reason",
+        "anchor_target_track"
+      ]
+    },
+    {
+      "grid_index": 186,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "0a80b0ea4e7782ec9105baa102504dcc3a4fb8d73d158de3f9ed971c7c12e4fc",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#186",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#186",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 187,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "d8c110fa2a28c88adf6278901efa7e2cc7d1688163de7ba16b0f31abab429d86",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#187",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#187",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 188,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "0518f90893bb885ee9e010b4634757838a255c56f3bc5a11cb032b97b9ea06d9",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#188",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#188",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 189,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "3c38377552597111c286b1536304e4c54a347516753d58e18694b98f5164a0bf",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#189",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#189",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 190,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "75025e79773e7bfc5d2ca4ad21ebfb48e003154e7caca1fdac697dfb20b9bf8c",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#190",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#190",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 191,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "f67ba08635f7138278e17883885a5a99a4158952a66378f9268181dac4c58517",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#191",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#191",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 192,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "bee7dba456227f77ea196acbf7ee67601c99694e32b9747a87a64f0d88ab6523",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#192",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#192",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 193,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "793dc975dfb6dd1563f7e6fbb9d30e13d76064ac4a8741cb97365935a4fd6b05",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#193",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#193",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 194,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "aa51f55fcaa2343fa92141f4f7b5c4301fa651b4fbc4990c4f48887991841133",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#194",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#194",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 195,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "8fe62ff1d4005a0a05cd0e8910710166083c8f998b6e781dab16675fa7485547",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#195",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#195",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 196,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "afe0d022494e69d7fb010ed792e514ced538676009749d5755fad0e2c3188f61",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#196",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#196",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 197,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "4893982807ef6e1a67a50e39132b996ce5801b48488b32791b9ea2d1d90887f7",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#197",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#197",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 198,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "499f6fed3a4658cecbe17840faf6cadde0216b95be2f0af6006377221b6e7321",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/visual-annotations.json#198",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#198",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 199,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "345fac4073cfe1eeb6eb867e73fefae741d988913aae435082b2e548d42060eb",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/visual-annotations.json#199",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#199",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 200,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "8bbac86fd6212617390ebe34f8be8200879ee01726f922e3614365be8b654d07",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/visual-annotations.json#200",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#200",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 201,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "2df3a9582dc2d579da27ef73d8219307a86c58ebef6a3b657f2ef8edd2b19cf8",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#201",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#201",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 202,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "ff71cff73ff928bed1298919cc44cf2a753ef92dd4be9bda52a73cf8e573875c",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#202",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#202",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 203,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "bf5999609c33e4e8b1a52fff1aaecb5c0ec06600003f131447f16d808da5f88d",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#203",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#203",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 204,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "39f302ec6c697168965e2b96d25bd6dcc5b93c92bf709641d9750a049a056649",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#204",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#204",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 205,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "eaffc9d0503d25880e7dc0d0e2d70a98914aec65c5924c0e5e79e50171bf994b",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#205",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#205",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 206,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "support_v2",
+      "selected_source_artifact": {
+        "path": "data/human/skill-event-candidates/032454-support-v2/candidate-rows.json",
+        "sha256": "c61cb27f0368b8e263e47519a687331597335708d24233282113898b96ceda33"
+      },
+      "selected_row_digest": "0dbb4f5c32a39b83e37f7c82a4923a7d9ae3e7c33964627a522ab85bcf82c2fd",
+      "evidence_base_directory": "data/human/skill-event-candidates/032454-support-v2",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/032454-support-v2/visual-annotations.json#206",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.support-v2-independent-review.json",
+        "sha256": "9b6567143fe58810eb4ae4cbf3a5585fafee112b2fc1ad6315315a6982b240bd"
+      },
+      "prior_admission_authority": null,
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#206",
+      "changes_to_selected_row": [
+        "review_sha256",
+        "origin"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256",
+        "evidence",
+        "history",
+        "exposure_start_t",
+        "exposure_end_t",
+        "confirmation_t",
+        "label",
+        "label_known",
+        "reason",
+        "anchor_target_track",
+        "target_agreed"
+      ]
+    },
+    {
+      "grid_index": 207,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "6a4dd52e70a8f4794f13c3a62ee169da8440af2bc5b08fbb9150a5136028751b",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#207",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#207",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 208,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "45455a586cc172b4cc04074cfd7bb97e470ec83331de99d3b5f422050ac01926",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#208",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#208",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 209,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "739962ccb21a059af634519657b17d6fb2ff315af23d1426cfb0002cd7236519",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#209",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#209",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 210,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "59fa52560e262bc54cd07e4cd6f242aa2e1ec46629226a9b081fdd2522f3af79",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#210",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#210",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 211,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "3b65e6dceefa6c0e198bab10652e74d7e1745778f7c84467210e80887d29469b",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#211",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#211",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 212,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "7bf26142b9e46e7b15678c48112b349970fa2e55f823e7785abdb263f6210f2a",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#212",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#212",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 213,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "f509fd36ea581750f928ec2da66657304189bbe24c4d95a52341805a16993536",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#213",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#213",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 214,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "be68e3d04b19ea4e0999d676b41ffa6e21f3f744dc9a08bc9a5f4b379e5075c4",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#214",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#214",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 215,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "fbcce3ab95625f02d147f4234d5596dfdcdbabe3b223a4a03a36981ff98b27f9",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#215",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#215",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 216,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "1be11ba6e73431c0e62e9932194558166c68fcf9a0b2e5db5bd2758fa6d61fe6",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#216",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#216",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 217,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "355d50db391578a96175a2b4a4bba5a31dd4849f8336a1c394004a0f43a4d30c",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#217",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#217",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 218,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "46e1097d9654c7398888594e70ef9899ba5ca223f83cb3507a418849a7de3f7a",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#218",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#218",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 219,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "c96a28e6afb4fe5e9918986ea2bb68479c1e9ff42a4d470464b500c7ecf0a8ad",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/visual-annotations.json#219",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#219",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 220,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "0431f0f7db30fe4b317cea33032f33c456dbc0254a3e4059c91da0f69997ccba",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#220",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#220",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    },
+    {
+      "grid_index": 221,
+      "session": "20260922T032454-642Z-24328-1",
+      "continuous_id": "032454-normal-pre-menu-11.000-22.250",
+      "grid_origin_t": 0.0,
+      "selected_source": "admitted_v1",
+      "selected_source_artifact": {
+        "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+        "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+      },
+      "selected_row_digest": "09dcd6915403c29386bd864161034388bf204ac9184270d6a08fb8601b75bc01",
+      "evidence_base_directory": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+      "resolved_primary_evidence": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/coverage.json#221",
+      "independent_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+        "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+      },
+      "prior_admission_authority": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+        "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+      },
+      "supplemental_v2_anchor_coverage": "data/human/skill-event-candidates/032454-support-v2/coverage.json#221",
+      "changes_to_selected_row": [
+        "review_sha256"
+      ],
+      "changed_fields_from_v1": [
+        "review_sha256"
+      ]
+    }
+  ]
+}

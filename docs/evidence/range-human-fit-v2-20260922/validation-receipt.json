@@ -1,0 +1,1153 @@
+{
+  "kind": "coordinate_merge_materialization_validation_not_new_native_review",
+  "artifact": {
+    "path": "data/human/skill-events/032454-train-diagnostic-v2/examples.json",
+    "sha256": "b12f7013b24482b505e44468eb723245a03d1e5a56bb46ab9d282cdf3e1001d5"
+  },
+  "coordinate_map": {
+    "path": "data/human/skill-events/032454-train-diagnostic-v2/coordinate-map.json",
+    "sha256": "dc18a2a8ab3d1a33a8d7f9e75df58b4336e5dcdfcfaeae6e0ba93f908039e7e1"
+  },
+  "combined_review_and_lead_decision": {
+    "path": "data/human/reviews/20260922T032454-642Z-24328-1.train-diagnostic-v2-merge-decision.json",
+    "sha256": "f552499c2c786c1a765b89c83bd47b5bdbab2581dacd4384904dc7f82cbe4e58"
+  },
+  "new_independent_review": {
+    "path": "data/human/reviews/20260922T032454-642Z-24328-1.support-v2-independent-review.json",
+    "sha256": "9b6567143fe58810eb4ae4cbf3a5585fafee112b2fc1ad6315315a6982b240bd"
+  },
+  "policy_sha256": "582e3f08cba512d65cb58fc60de5e4498a26ad8766eda4fb66dde8d731580ed1",
+  "constructors": [
+    "State.from_dict",
+    "Detection",
+    "Snapshot",
+    "SourceIdentity",
+    "EventExample"
+  ],
+  "cohort": "passed108uniquecoordinates",
+  "row_validation": "passed108",
+  "coverage_report": {
+    "grid_rows": 108,
+    "known_rows": 6,
+    "masked_rows": 102,
+    "masked_reasons": {
+      "uninspected_missing_history": 98,
+      "Masked: close player/target overlap partly obscures action; impact identity insufficient to exclude or bracket a web cast.": 1,
+      "Masked: causal selected fragment/action recipient correspondence insufficient. Reader ammo remains unknown although visual HUD shows2.": 1,
+      "target_disagreement_distant_selector_nearby_action": 1,
+      "selected_bot_body_not_established_despite_observed_moving_no_cast_ammo1": 1
+    },
+    "bin_support": [
+      4,
+      2
+    ],
+    "unique_events": 2,
+    "ammo_positive_visible_nononsets": 3,
+    "complete_label_coverage": false,
+    "sampling": "full_grid_masked"
+  },
+  "typed_evidence_digest": "871f6bcaef37f405a87660eac4eeb9962a360ba608f4e122ef678666cff89191",
+  "json_roundtrip_exact": true,
+  "all_selected_fields_preserved_except_review_origin": true,
+  "coordinate_checks": [
+    {
+      "grid_index": 114,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 115,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 116,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 117,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 118,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 119,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 120,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 121,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 122,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 123,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 124,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 125,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 126,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 127,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 128,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 129,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 130,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 131,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 132,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 133,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 134,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 135,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 136,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 137,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256",
+        "origin"
+      ],
+      "snapshots": 5,
+      "purge_footprint": [
+        13.299999468,
+        13.808332781
+      ]
+    },
+    {
+      "grid_index": 138,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 139,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 140,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 141,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256",
+        "origin"
+      ],
+      "snapshots": 5,
+      "purge_footprint": [
+        13.699999452,
+        14.208332765
+      ]
+    },
+    {
+      "grid_index": 142,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256",
+        "origin"
+      ],
+      "snapshots": 5,
+      "purge_footprint": [
+        13.799999448,
+        14.308332761
+      ]
+    },
+    {
+      "grid_index": 143,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 144,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256",
+        "origin"
+      ],
+      "snapshots": 5,
+      "purge_footprint": [
+        13.99999944,
+        14.508332753
+      ]
+    },
+    {
+      "grid_index": 145,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 146,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 147,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 148,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 149,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 150,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 151,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 152,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 153,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 154,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 155,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 156,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 157,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 158,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 159,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 160,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 161,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 162,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 163,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 164,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 165,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 166,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 167,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 168,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 169,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 170,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 171,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 172,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 173,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 174,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 175,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 176,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 177,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 178,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 179,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 180,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 181,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 182,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 183,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 184,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 185,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256",
+        "origin"
+      ],
+      "snapshots": 5,
+      "purge_footprint": [
+        18.099999276,
+        18.608332589
+      ]
+    },
+    {
+      "grid_index": 186,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 187,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 188,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 189,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 190,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 191,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 192,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 193,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 194,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 195,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 196,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 197,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 198,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 5,
+      "purge_footprint": [
+        19.399999224,
+        19.908332537
+      ]
+    },
+    {
+      "grid_index": 199,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 5,
+      "purge_footprint": [
+        19.49999922,
+        20.058332531
+      ]
+    },
+    {
+      "grid_index": 200,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 5,
+      "purge_footprint": [
+        19.599999216,
+        20.108332529
+      ]
+    },
+    {
+      "grid_index": 201,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 202,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 203,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 204,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 205,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 206,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256",
+        "origin"
+      ],
+      "snapshots": 5,
+      "purge_footprint": [
+        20.199999192,
+        20.708332505
+      ]
+    },
+    {
+      "grid_index": 207,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 208,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 209,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 210,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 211,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 212,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 213,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 214,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 215,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 216,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 217,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 218,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 219,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 5,
+      "purge_footprint": [
+        21.49999914,
+        22.008332453
+      ]
+    },
+    {
+      "grid_index": 220,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    },
+    {
+      "grid_index": 221,
+      "exact_selected_row_except_acceptance": true,
+      "changed_fields": [
+        "review_sha256"
+      ],
+      "snapshots": 0,
+      "purge_footprint": null
+    }
+  ],
+  "exact_feature_scalars_and_known_bits": 1300,
+  "feature_snapshots": 50,
+  "inherited_calibration_dependencies_exact": true,
+  "purge_footprints_all_observed_t": {
+    "137": [
+      13.299999468,
+      13.808332781
+    ],
+    "141": [
+      13.699999452,
+      14.208332765
+    ],
+    "142": [
+      13.799999448,
+      14.308332761
+    ],
+    "144": [
+      13.99999944,
+      14.508332753
+    ],
+    "185": [
+      18.099999276,
+      18.608332589
+    ],
+    "198": [
+      19.399999224,
+      19.908332537
+    ],
+    "199": [
+      19.49999922,
+      20.058332531
+    ],
+    "200": [
+      19.599999216,
+      20.108332529
+    ],
+    "206": [
+      20.199999192,
+      20.708332505
+    ],
+    "219": [
+      21.49999914,
+      22.008332453
+    ]
+  },
+  "conflicting_coordinates": [],
+  "source_identity": {
+    "patch": "1.1.3870120/build25364676",
+    "cooldown_regime": "normal",
+    "source_profile_sha256": "05f85d97152fd17a60eeaacd9bcfce0f0d30ca46d9e71d52d9e66ed1df789162",
+    "perception_sha256": "e9d40f7a12442335866df16edaa8ceea7116177ab8546b3267ac096c1c616798",
+    "selector_sha256": "ddf1428a61c54805ce06164ef0daa7dfa1302fdf1735990336fdcab939ae098d",
+    "semantic_revision": "web-cluster-onset-v1",
+    "feature_revision": "masked-state-grid-causal-v1"
+  },
+  "original_input_hashes_unchanged": [
+    {
+      "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+      "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+    },
+    {
+      "path": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/candidate-rows.json",
+      "sha256": "c343a4aa1296ac4131c840fa1284201f6cc1197e85882b9be6ccb9d7a47a27ac"
+    },
+    {
+      "path": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/artifact-hashes.json",
+      "sha256": "bfe4d5f75fe4baaf2f1281ef0a90f522dd54e9e8057e79d10e795167a67568e1"
+    },
+    {
+      "path": "data/human/skill-event-candidates/032454-support-v2/candidate-rows.json",
+      "sha256": "c61cb27f0368b8e263e47519a687331597335708d24233282113898b96ceda33"
+    },
+    {
+      "path": "data/human/skill-event-candidates/032454-support-v2/artifact-hashes.json",
+      "sha256": "e74a7b3e4d69e3d76e346f3a4dec5bafc24eb751004d8112501ef00b4e4994dc"
+    },
+    {
+      "path": "data/human/skill-event-candidates/032454-support-v2/inspection-findings.md",
+      "sha256": "0359c8328bfe7a5361d2556c58326bbfaceeb2d8a558580b737426869c6ae062"
+    },
+    {
+      "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+      "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+    },
+    {
+      "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+      "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+    }
+  ],
+  "new_decoding": false,
+  "training": false
+}

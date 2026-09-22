@@ -52,9 +52,15 @@ Checkpoint SHA-256:
 `7f6f9dafc14e3459e6e7835707b177c3c7fd6357574fc13969a3db25ead1cdc8`.
 The [retained result](../evidence/range-first-human-fit-20260922/README.md) contains
 actual reports, commands, admission receipts and the limited interpretation.
-The next source task inspects at most six new bins from the same authorized span
-for target-agreed starts and ammo-available non-starts. This does not expand
-admission, rewrite the first packet or request standing-idle footage.
+The bounded six-bin follow-up has since completed independent review and lead
+admission. Its coordinate merge adds four known labels while retaining the
+first packet's observed rows and all remaining unknowns. The
+[second fit](../evidence/range-human-fit-v2-20260922/README.md) trained on MPS in
+1.043 seconds: model 6/6 training labels, ammo-positive baseline 3/6, never-start
+4/6. Windows CPU reproduces its predictions and event metrics within 2.329e-9
+probability difference. This remains two unique casts from one evening, with
+Luna explicitly named and window-reset/continuous tracking limitations retained;
+no independent validation or live binding was created.
 
 ## Accepted scripted cast probe seam
 
@@ -72,9 +78,8 @@ This is a one-field trace clarification with no change to pulse execution.
 Root reproduced the entry/cadence/duration failures before repair, then the
 inappropriate model-receipt case. Focused tests pass (26, four unchanged Torch
 cases skipped); the adjacent controller/Live/Loop suite passed 223 before adding
-the last receipt and cross-mode controls. Same range-review must review these
-three source/test files separately from the producer's bounded probe. Independent
-review accepted the frozen seam: 14 delta tests plus actual temporary RunLog
+the last receipt and cross-mode controls. Independent review accepted the frozen
+seam separately from the producer's bounded probe: 14 delta tests plus actual temporary RunLog
 start/non-start/invalid-legacy-intent cases. A producer whose policy property
 raises still runs this scripted entry, while falsy model receipts and invalid
 duration/cadence refuse. Root adopts the narrow software acceptance. The separate
@@ -243,8 +248,9 @@ the causal selector on a distant Galacta bot; that bot is not proven scenery.
 Green squad chat is a distinct false positive. VUH-1294 and VUH-1314 own these
 bounded repairs; frozen candidate outputs are not overwritten or auto-admitted.
 
-VUH-1349 requests a short train-only Galacta recording with genuine grounded
-waits for resources and ordinary attacks. The existing cuts are retained.
+The former VUH-1349 staged-wait request was canceled when James clarified the
+fluid execution task. The existing cuts are retained; event supervision uses
+observed starts and moving non-starts rather than requiring grounded waits.
 VUH-1347 remains a separate validation recording. VUH-1348 asks only about the
 later original's resource overrides. No new timing calibration or DPI check is
 required by the failed packet's disposition.

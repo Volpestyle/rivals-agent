@@ -1,0 +1,110 @@
+{
+  "scope": "Windows CPU reload of exact admitted-human MPS checkpoint; train only",
+  "git_commit": "cb10887fb428cf1c8929a961a952ca3c32868001",
+  "torch": "2.14.0+cpu",
+  "device": "cpu",
+  "checkpoint_sha256": "da29a97f0542210e6c69bc7dfa488afec97c33668a27deea98e3177919834987",
+  "source_identity": {
+    "patch": "1.1.3870120/build25364676",
+    "cooldown_regime": "normal",
+    "source_profile_sha256": "05f85d97152fd17a60eeaacd9bcfce0f0d30ca46d9e71d52d9e66ed1df789162",
+    "perception_sha256": "e9d40f7a12442335866df16edaa8ceea7116177ab8546b3267ac096c1c616798",
+    "selector_sha256": "ddf1428a61c54805ce06164ef0daa7dfa1302fdf1735990336fdcab939ae098d",
+    "semantic_revision": "web-cluster-onset-v1",
+    "feature_revision": "masked-state-grid-causal-v1"
+  },
+  "code_checks": {
+    "policy/range_skill_policy.py": {
+      "windows_raw_sha256": "582e3f08cba512d65cb58fc60de5e4498a26ad8766eda4fb66dde8d731580ed1",
+      "mac_and_git_blob_sha256": "582e3f08cba512d65cb58fc60de5e4498a26ad8766eda4fb66dde8d731580ed1",
+      "crlf_only_difference": false
+    },
+    "policy/range_policy.py": {
+      "windows_raw_sha256": "c46e7d8a6523892107c8a878532505d020896e5b32e9df6179c049d6aa3410bb",
+      "mac_and_git_blob_sha256": "c46e7d8a6523892107c8a878532505d020896e5b32e9df6179c049d6aa3410bb",
+      "crlf_only_difference": false
+    },
+    "agent/state.py": {
+      "windows_raw_sha256": "83983c59f0ea39772686b9ce8e002aab86d312c5e75937bc2b9e6a21eddb8f5a",
+      "mac_and_git_blob_sha256": "7ee6b826c38090d28d44b598d77ddeabf22f4593cf64ea45012b461a2377c149",
+      "crlf_only_difference": true
+    }
+  },
+  "evidence_digest": "871f6bcaef37f405a87660eac4eeb9962a360ba608f4e122ef678666cff89191",
+  "metrics_equal_to_mac_cpu": true,
+  "max_probability_delta_from_mac_cpu": 2.3283064365386963e-09,
+  "train_metrics": {
+    "true_positive": 2,
+    "false_positive": 0,
+    "false_negative": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "mean_request_to_bracket_s": 0.07499931500000123,
+    "confusion": [
+      [
+        4,
+        0
+      ],
+      [
+        0,
+        2
+      ]
+    ],
+    "refusals": 0,
+    "scored_bins": 6,
+    "masked_bins": 102
+  },
+  "known_rows": [
+    {
+      "grid_index": 137,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.9953486323356628,
+        0.004651444498449564
+      ]
+    },
+    {
+      "grid_index": 142,
+      "prediction": "start",
+      "probabilities": [
+        0.006028297357261181,
+        0.9939716458320618
+      ]
+    },
+    {
+      "grid_index": 144,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.9956385493278503,
+        0.004361423198133707
+      ]
+    },
+    {
+      "grid_index": 199,
+      "prediction": "start",
+      "probabilities": [
+        0.005383600015193224,
+        0.9946164488792419
+      ]
+    },
+    {
+      "grid_index": 200,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.9960780739784241,
+        0.003921914380043745
+      ]
+    },
+    {
+      "grid_index": 206,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.9924740195274353,
+        0.0075259730219841
+      ]
+    }
+  ],
+  "validation": null,
+  "deployment_binding": null,
+  "live_io_imported": false
+}

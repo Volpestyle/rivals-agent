@@ -1,4 +1,57 @@
-# VUH-1309 current disposition: two event labels accepted for train-only plumbing
+# VUH-1309 current disposition: six labels merged for TRAIN-only numerical diagnostic
+
+Lead accepted support-v2's n137/n142/n144/n206 after admission-review's independent
+final at13:17 CDT on September22. The corpus owner persisted that attributed
+report once and materialized the authorized coordinate merge. No additional
+media, independent re-review, training, input, source edit or Linear write occurred.
+
+New artifact: `data/human/skill-events/032454-train-diagnostic-v2/examples.json`,
+SHA256 `b12f7013b24482b505e44468eb723245a03d1e5a56bb46ab9d282cdf3e1001d5`.
+Its README contains the standard-type construction recipe for root's Mac fit.
+Typed constructors/validate/cohort and exact JSON roundtrip pass **108 coordinates,
+known6, unknown102, support[4 no_new_start,2 start],2 unique events**. All50 saved
+snapshots/1300 feature values and known bits match their selected frozen sources.
+Typed evidence digest:
+`871f6bcaef37f405a87660eac4eeb9962a360ba608f4e122ef678666cff89191`.
+
+`coordinate-map.json` gives source/authority and exact field comparisons for every
+coordinate. Six support-v2 rows137/141/142/144/185/206 replace previously
+uninspected v1 rows. All others retain v1, including observed masked198/219,
+accepted199/200 and unknown143. There is no conflicting observed coordinate.
+The v2 anchor survey remains supplemental evidence for all108 coordinates. No
+overlapping grids were concatenated; only review_sha256/origin change relative
+to each selected source row. Prior candidates, v1 admission/checkpoint/fit remain
+immutable, and v1 accepted label authority travels through the new combined receipt.
+
+New attributed review receipt:
+`data/human/reviews/20260922T032454-642Z-24328-1.support-v2-independent-review.json`,
+SHA256 `9b6567143fe58810eb4ae4cbf3a5585fafee112b2fc1ad6315315a6982b240bd`.
+New lead decision binding both independent review authorities and original packets:
+`data/human/reviews/20260922T032454-642Z-24328-1.train-diagnostic-v2-merge-decision.json`,
+SHA256 `f552499c2c786c1a765b89c83bd47b5bdbab2581dacd4384904dc7f82cbe4e58`.
+Every merged row pins that genuine receipt. Exact merge checks and all10 observed
+purge footprints are in the new artifact's validation receipt; inherited HUD
+calibration dependencies remain explicit in the combined decision.
+
+n137/n144 are no-new-starts toward named Luna with ammo3; n142 is a start toward
+the same Luna. n137/n142 have identical all3 five-frame ammo histories but opposite
+outcomes. n206 is an ammo1 no-new-start toward nearby Galacta under window-reset
+construction only. n141/185 remain unknown. Luna is a named visual semantic
+source, not Galacta benchmark substitution. This is stronger source contrast,
+not useful learned timing, performance, generalization or live evidence.
+
+Independent review and lead accept native14.321 itself as new firing pose/white
+emission after withdrawn wrist14.313;14.329 is expanded impact confirmation.
+The unchanged composition bracket(14.291666095,14.299999428] fits n142; its572ns
+margin is composition-label precision, not physical-input timing. No bin shift.
+
+Actual source identity, unknown earlier motor settings, local/reset tracker IDs
+and james-2026-09-21-evening TRAIN-only grouping persist. Continuous replay has no
+target at206 and distant selection at199/200; no live/reset equivalence. Root
+alone transfers, fits, lands and updates Linear. No additional independent
+native re-review is required for the accepted labels.
+
+## Previous v1 admission (immutable history)
 
 Lead accepted n199=start and n200=no_new_start following independent
 admission-review's final recommendation completed September22 at12:38 CDT.

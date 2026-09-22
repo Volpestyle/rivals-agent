@@ -1,0 +1,363 @@
+{
+  "kind": "lead_authorized_coordinate_merge_with_both_independent_review_authorities",
+  "issue": "VUH-1309",
+  "decision_authority": "lead w2:p1; explicit user-delivered LEAD DECISION authorizes support-v2 acceptance and corpus-owner coordinate merge",
+  "decision_date_local": "2026-09-22 America/Chicago",
+  "decision": "accept_six_known_rows_for_train_only_numerical_diagnostic",
+  "lead_disposition": "Accept support-v2 n137/n142/n144/n206, retain n141/n185/n143 unknown, carry v1 accepted n199/n200 authority unchanged, merge original grid coordinates rather than concatenate. No additional media or independent rereview required. Root alone fits/transfers/lands/updates Linear.",
+  "prior_independent_review": {
+    "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+    "sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+  },
+  "prior_lead_admission": {
+    "path": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json",
+    "sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74"
+  },
+  "prior_admitted_artifact": {
+    "path": "data/human/skill-events/032454-train-diagnostic-v1/examples.json",
+    "sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab"
+  },
+  "new_attributed_independent_review": {
+    "path": "data/human/reviews/20260922T032454-642Z-24328-1.support-v2-independent-review.json",
+    "sha256": "9b6567143fe58810eb4ae4cbf3a5585fafee112b2fc1ad6315315a6982b240bd"
+  },
+  "original_packets": {
+    "v1": {
+      "candidate": {
+        "path": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/candidate-rows.json",
+        "sha256": "c343a4aa1296ac4131c840fa1284201f6cc1197e85882b9be6ccb9d7a47a27ac"
+      },
+      "manifest": {
+        "path": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/artifact-hashes.json",
+        "sha256": "bfe4d5f75fe4baaf2f1281ef0a90f522dd54e9e8057e79d10e795167a67568e1"
+      }
+    },
+    "support_v2": {
+      "candidate": {
+        "path": "data/human/skill-event-candidates/032454-support-v2/candidate-rows.json",
+        "sha256": "c61cb27f0368b8e263e47519a687331597335708d24233282113898b96ceda33"
+      },
+      "manifest": {
+        "path": "data/human/skill-event-candidates/032454-support-v2/artifact-hashes.json",
+        "sha256": "e74a7b3e4d69e3d76e346f3a4dec5bafc24eb751004d8112501ef00b4e4994dc"
+      },
+      "findings": {
+        "path": "data/human/skill-event-candidates/032454-support-v2/inspection-findings.md",
+        "sha256": "0359c8328bfe7a5361d2556c58326bbfaceeb2d8a558580b737426869c6ae062"
+      }
+    }
+  },
+  "coordinate_contract": {
+    "key": [
+      "session",
+      "continuous_id",
+      "grid_origin_t",
+      "grid_index"
+    ],
+    "indices": [
+      114,
+      221
+    ],
+    "count": 108,
+    "precedence": "Use exact support-v2 row at137/141/142/144/185/206; exact admitted-v1 row at every other coordinate. Preserve supplemental v2 grid survey/evidence references for all coordinates. No disjoint observed-row conflict exists.",
+    "overlay_indices": [
+      137,
+      141,
+      142,
+      144,
+      185,
+      206
+    ],
+    "retained_v1_observed_indices": [
+      198,
+      199,
+      200,
+      219
+    ],
+    "protected_unknown_indices": [
+      141,
+      143,
+      185,
+      198,
+      219
+    ],
+    "only_changes_to_chosen_rows": [
+      "review_sha256 -> SHA256 of this genuine combined decision",
+      "origin -> reviewed_human (already identical for retained v1 rows)"
+    ],
+    "evidence_resolution": "Each unchanged row evidence string resolves against its selected source directory in coordinate-map.json; no global-base assumption."
+  },
+  "accepted_known_rows": {
+    "137": "no_new_start",
+    "142": "start",
+    "144": "no_new_start",
+    "199": "start",
+    "200": "no_new_start",
+    "206": "no_new_start"
+  },
+  "unknown_coverage_rows": 102,
+  "bin_support_no_new_start_start": [
+    4,
+    2
+  ],
+  "unique_events": 2,
+  "group": "james-2026-09-21-evening",
+  "split": "train",
+  "source_identity": {
+    "patch": "1.1.3870120/build25364676",
+    "cooldown_regime": "normal",
+    "source_profile_sha256": "05f85d97152fd17a60eeaacd9bcfce0f0d30ca46d9e71d52d9e66ed1df789162",
+    "perception_sha256": "e9d40f7a12442335866df16edaa8ceea7116177ab8546b3267ac096c1c616798",
+    "selector_sha256": "ddf1428a61c54805ce06164ef0daa7dfa1302fdf1735990336fdcab939ae098d",
+    "semantic_revision": "web-cluster-onset-v1",
+    "feature_revision": "masked-state-grid-causal-v1"
+  },
+  "purge_footprints_all_observed_t": {
+    "137": [
+      13.299999468,
+      13.808332781
+    ],
+    "141": [
+      13.699999452,
+      14.208332765
+    ],
+    "142": [
+      13.799999448,
+      14.308332761
+    ],
+    "144": [
+      13.99999944,
+      14.508332753
+    ],
+    "185": [
+      18.099999276,
+      18.608332589
+    ],
+    "198": [
+      19.399999224,
+      19.908332537
+    ],
+    "199": [
+      19.49999922,
+      20.058332531
+    ],
+    "200": [
+      19.599999216,
+      20.108332529
+    ],
+    "206": [
+      20.199999192,
+      20.708332505
+    ],
+    "219": [
+      21.49999914,
+      22.008332453
+    ]
+  },
+  "inherited_hud_calibration_dependencies_exact": {
+    "198": {
+      "calibration_dependency_t": [
+        13.099999476,
+        13.199999472,
+        13.299999468,
+        13.399999464,
+        13.49999946
+      ],
+      "full_dependency_footprint_t": [
+        13.099999476,
+        19.908332537
+      ]
+    },
+    "199": {
+      "calibration_dependency_t": [
+        13.099999476,
+        13.199999472,
+        13.299999468,
+        13.399999464,
+        13.49999946
+      ],
+      "full_dependency_footprint_t": [
+        13.099999476,
+        20.058332531
+      ]
+    },
+    "200": {
+      "calibration_dependency_t": [
+        13.099999476,
+        13.199999472,
+        13.299999468,
+        13.399999464,
+        13.49999946
+      ],
+      "full_dependency_footprint_t": [
+        13.099999476,
+        20.108332529
+      ]
+    },
+    "219": {
+      "calibration_dependency_t": [
+        13.099999476,
+        13.199999472,
+        13.299999468,
+        13.399999464,
+        13.49999946
+      ],
+      "full_dependency_footprint_t": [
+        13.099999476,
+        22.008332453
+      ]
+    }
+  },
+  "hud_calibration_dependencies_all_observed": {
+    "137": {
+      "calibration_dependency_t": [
+        13.099999476,
+        13.199999472,
+        13.299999468,
+        13.399999464,
+        13.49999946
+      ],
+      "full_dependency_footprint_t": [
+        13.099999476,
+        13.808332781
+      ]
+    },
+    "141": {
+      "calibration_dependency_t": [
+        13.099999476,
+        13.199999472,
+        13.299999468,
+        13.399999464,
+        13.49999946
+      ],
+      "full_dependency_footprint_t": [
+        13.099999476,
+        14.208332765
+      ]
+    },
+    "142": {
+      "calibration_dependency_t": [
+        13.099999476,
+        13.199999472,
+        13.299999468,
+        13.399999464,
+        13.49999946
+      ],
+      "full_dependency_footprint_t": [
+        13.099999476,
+        14.308332761
+      ]
+    },
+    "144": {
+      "calibration_dependency_t": [
+        13.099999476,
+        13.199999472,
+        13.299999468,
+        13.399999464,
+        13.49999946
+      ],
+      "full_dependency_footprint_t": [
+        13.099999476,
+        14.508332753
+      ]
+    },
+    "185": {
+      "calibration_dependency_t": [
+        13.099999476,
+        13.199999472,
+        13.299999468,
+        13.399999464,
+        13.49999946
+      ],
+      "full_dependency_footprint_t": [
+        13.099999476,
+        18.608332589
+      ]
+    },
+    "198": {
+      "calibration_dependency_t": [
+        13.099999476,
+        13.199999472,
+        13.299999468,
+        13.399999464,
+        13.49999946
+      ],
+      "full_dependency_footprint_t": [
+        13.099999476,
+        19.908332537
+      ]
+    },
+    "199": {
+      "calibration_dependency_t": [
+        13.099999476,
+        13.199999472,
+        13.299999468,
+        13.399999464,
+        13.49999946
+      ],
+      "full_dependency_footprint_t": [
+        13.099999476,
+        20.058332531
+      ]
+    },
+    "200": {
+      "calibration_dependency_t": [
+        13.099999476,
+        13.199999472,
+        13.299999468,
+        13.399999464,
+        13.49999946
+      ],
+      "full_dependency_footprint_t": [
+        13.099999476,
+        20.108332529
+      ]
+    },
+    "206": {
+      "calibration_dependency_t": [
+        13.099999476,
+        13.199999472,
+        13.299999468,
+        13.399999464,
+        13.49999946
+      ],
+      "full_dependency_footprint_t": [
+        13.099999476,
+        20.708332505
+      ]
+    },
+    "219": {
+      "calibration_dependency_t": [
+        13.099999476,
+        13.199999472,
+        13.299999468,
+        13.399999464,
+        13.49999946
+      ],
+      "full_dependency_footprint_t": [
+        13.099999476,
+        22.008332453
+      ]
+    }
+  },
+  "n142_onset": {
+    "last_not_started_t": 14.291666095,
+    "first_started_t": 14.299999428,
+    "confirmation_t": 14.308332761,
+    "first_started_native_file_ms": 14321,
+    "margin_ns": 572,
+    "interpretation": "14.321 itself is accepted first-started evidence;14.329 only later impact confirmation, no shifted bin or physical-input precision claim."
+  },
+  "resource_contrast": "n137 and n142 have identical five-snapshot all3 ammo histories and opposite outcomes; source support only, not useful learned timing.",
+  "limitations": [
+    "TRAIN-only numerical diagnostic, no useful timing/performance/generalization/live authority",
+    "Fresh Tracker/Memory per five-frame window; numeric target IDs are window-local",
+    "Continuous selector has no target at206 and picks distant rather than nearby Galacta at historical199/200; no reset/live equivalence",
+    "Luna Snow is named visual semantic source, not Galacta benchmark substitution",
+    "Earlier motor settings and physical input latency unknown; visual source profile is not complete KBM or runtime pad calibration",
+    "n142572ns boundary margin belongs to accepted composition-label clock, not physical-input timing precision",
+    "Overlapping observations and calibration dependencies share one evening TRAIN group; no independent validation",
+    "No training, new imagery, candidate/v1/checkpoint mutations or source edits by corpus owner"
+  ],
+  "policy_schema_sha256": "582e3f08cba512d65cb58fc60de5e4498a26ad8766eda4fb66dde8d731580ed1"
+}
