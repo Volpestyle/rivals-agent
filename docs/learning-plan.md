@@ -75,16 +75,24 @@ unique received request, not independent validation or learned gameplay. No
 additional footage, stationary waits, guessed motor profile or live binding was
 used to reach this numerical result. The prior visual artifacts stay unchanged.
 
-The exact request model has now controlled Spider-Man in one independently
-audited exploratory run: **one web cast hit Luna, no KO**. Its 8.615-second
-learned phase used reviewed code, a genuine bounded runtime binding and fresh
-normal-resource/PAD setup. A later request expired during the input proof;
-terminal releases returned. [Original video, counts, receipts and native audit](evidence/range-request-runtime-20260922/README.md)
-retain both owned requests, the final missing decision trace and measured
-history/scheduling failures. Repair the caller timing and failed-send evidence
-before another measurement. The confidence, observation tolerance and input
-deadlines remain unchanged. Independent validation and the ten-trial bot-kill
-comparison remain open; this single Luna hit satisfies neither.
+The exact request model has now run in three retained exploratory measurements,
+each with reviewed code, a distinct consumed runtime binding and fresh
+normal-resource/PAD setup. The [first run](evidence/range-request-runtime-20260922/README.md)
+hit Luna once and stopped at 8.615 seconds; its final trace gap remains historical.
+After trace and phase-scheduling repairs, the [second run](evidence/range-request-timing-runtime-20260922/README.md)
+retained every decision but sent no web input before a request expired at 4.751 seconds.
+
+The [third run](evidence/range-request-efficiency-runtime-20260922/README.md)
+completed its 10-second phase with **one independently confirmed web hit, no KO**.
+Reviewed HUD mask reuse preserves decoded values; reviewed request-expiry handling
+requires confirmed, recorded neutral cancellation before continuing. Two expired
+requests stayed consumed while fresh decisions continued. All 90 decisions survived,
+with zero invalid-history refusals; Luna remained alive. Actual HUD/coasting median
+was 22.941 ms and acquisition-to-consumption 71.261 ms, so perception and pre-offer
+work remain latency priorities. The whole consumer took about 1 ms on model events.
+Do not infer a causal speedup from different scenes or relax the 100 ms authority,
+33 ms pulse, confidence threshold or history tolerance to hide processing delays.
+Independent validation and the ten-trial bot-kill comparison remain open.
 
 The first executable experiment now learns **Web-Cluster start timing**, using
 five causal observations at 10 Hz. `start_web_cluster` requests one bounded pulse;
