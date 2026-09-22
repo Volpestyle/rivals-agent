@@ -32,6 +32,46 @@ stay in the practice range or custom games against AI. Matchmade human gameplay 
 an offline demonstration source only. The current range guard does not authorize
 custom-lobby input; verified lobby navigation and an appropriate guard are prerequisites.
 
+## First visible learned range milestone (2026-09-22)
+
+The refactor is merged on main at `77d5032`. Synthetic MPS training on the Mac,
+exact checkpoint reload and Windows loading are verified; real human admission
+and learned gameplay are not yet accepted. Linear now carries the active goal:
+[VUH-1311](https://linear.app/vuhlp/issue/VUH-1311).
+
+The first executable experiment learns **Idle/Engage delegation timing** from
+reviewed human examples using five causal observations at 10 Hz. The fixed target
+selector and calibrated controller still supply aim, approach and combos. This
+is a narrow experiment on the path to James's execution quality; it does not
+claim learned motor control, target choice, swinging or full-match competence.
+Those capabilities remain E/F below. KBM labels never become pad values by fiat.
+
+Admission (VUH-1309) must establish timing, control/settings provenance and
+interval suitability, then separately review the semantic projection and causal
+target correspondence needed by VUH-1346. Offensive button presence alone cannot
+label Engage; movement, swing, retreat and unknown controls cannot label Idle.
+James's existing two selections share one session group. VUH-1347 requests a
+separate validation session; a train-only diagnostic can precede it, but cannot
+establish generalization or authorize live reliance.
+
+Predeclared first pilot: **ten scheduled trials**, each with a verified ready
+start and a 20-second deadline, at least eight audited designated-bot completions
+and zero scope breaches. Keep all ten in the primary denominator, including
+setup failures, interruptions and unknown outcomes. VUH-1319 records target
+incarnation, reset epoch, observable KO evidence, all failure reasons and timing.
+Run matched scripted trials over the same declared scenario bins and settings;
+retain original videos, checkpoint/controller hashes and uncertainty. Compare
+James's reference only where starts and outcomes are comparable. This is a
+feasibility threshold, not professional-level parity.
+
+The initial consumer runs on Windows CPU; measure acquisition-to-input latency
+and game cost before accepting placement. Train on Mac MPS. Each episode starts
+with fresh policy history, retains the existing range/focus/watchdog guards and
+disables scripted warmup/idle keep-alive attacks. Model refusal stays neutral.
+New admission and live-input behavior require independent review. The old eight
+input findings (VUH-1325) were already fixed and independently accepted; they are
+not a continuing blanket freeze on unchanged reviewed paths.
+
 ## Paired human execution: current work
 
 James's new demonstrations change the data bottleneck, not the historical results.

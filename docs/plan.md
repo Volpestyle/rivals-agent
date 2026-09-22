@@ -60,8 +60,12 @@ only once an outcome can be measured reliably.
 - **Where it can be tested.** Execution in the practice range; tactics in custom games
   against AI with no human in the lobby. Neither establishes performance against humans,
   and scope item 3 keeps the agent out of every mode where that could be tested.
-- **First milestone.** Recognize a suitable engagement opportunity, execute it, then
-  continue or escape, with bounded tests that say what they do not show.
+- **First visible learned milestone (2026-09-22).** Learn Idle/Engage delegation
+  timing from reviewed human demonstrations, then defeat the designated bot in at
+  least eight of ten scheduled 20-second practice-range trials, with all failures
+  retained, matched scripted trials and original video. Target selection, aim and
+  combos remain scripted in this first experiment; learned mechanics and escape
+  remain later capabilities. See the [pilot contract](learning-plan.md#first-visible-learned-range-milestone-2026-09-22).
 - **Human execution refactor (2026-09-21).** Retain this repository. Import explicitly
   reviewed OBS sessions, align actual decoded frames to logged packet timestamps, and
   train a temporal action-chunk baseline from causal frame history and native controls.
@@ -76,7 +80,8 @@ only once an outcome can be measured reliably.
   agent's own play, D a bounded range reinforcement-learning experiment started from an imitation
   checkpoint, E learned targets, positioning and swinging, F tactical learning in AI-only custom
   games. They advance on evidence, not footage hours, and are dependencies rather than six
-  serial waits. Linear carries assignment: A VUH-1306 and VUH-1319, B VUH-1311, C VUH-1320,
+  serial waits. Linear carries assignment: A VUH-1309/VUH-1347, VUH-1306 and VUH-1319;
+  B VUH-1346 and VUH-1311; C VUH-1320,
   D VUH-1321, E VUH-1322 (with VUH-1314, VUH-1296), F VUH-1323 (with VUH-1310).
 - **Sealed test data.** The two reserved broadcasts are sealed: the loader loads them placement-only
   (manifest header, events meta line and segment lines, so provenance, kit-patch and identity checks still
@@ -305,9 +310,14 @@ shape, client behaviour and measurements: [lanes/jev.md](lanes/jev.md).
 
 ## Human-only tasks
 
-- Wake and unlock the PC; keep Steam signed in; install Marvel Rivals; accept its
-  launcher/EULA prompts.
-- Accept the account risk: automation likely breaches the game's ToS even in the
-  practice range. Use an account that can be lost.
-- Join the TypeSafe waitlist or create an OpenRouter key if Jev is wanted for L5.
-- Spot-check auto-labels in L3 (minutes, not hours).
+Current human actions live in Linear and are assigned to and mention James
+(`@volpestyle`). [VUH-1347](https://linear.app/vuhlp/issue/VUH-1347) requests an
+independent 5-10 minute KBM validation session with original OBS sidecars, visible
+normal-cooldown verification and settings/version evidence. Existing clips remain
+useful; unknown DPI does not require re-recording.
+
+The lead reports other blockers on their existing issues, including those agents
+can resolve. James authorized opening Steam/Rivals and guarded practice-range
+work while away on September 22. Request a human step only for something the
+agent cannot complete, such as a physically powered-off monitor or a new human
+demonstration. Preserve the scope boundary and independent review requirements.
