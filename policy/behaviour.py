@@ -5,6 +5,7 @@ Default: validate admission and report support without opening embedding payload
 The normalized export contract is documented in docs/lanes/policy.md.
 """
 import argparse
+from decimal import Decimal
 import json
 import math
 import os
@@ -27,6 +28,7 @@ TASK = "expert-next-behaviour-v1"
 NAMES = ("approaching_visible_enemy", "attacking", "moving_away", "traversing_without_visible_enemy")
 STATES = ("present", "absent", "unknown")
 ORIGINS = dict(zip(ALLOWED, (1.616, 0.0)))
+CACHE_ORIGINS = dict(zip(ALLOWED, (0.027, 0.0)))
 CODE = ("policy/behaviour.py", "policy/train.py", "policy/encode.py", "policy/frames.py",
         "policy/b0.py", "agent/demos.py", "perception/events.py", "perception/hud.py",
         "perception/scoreboard.py")
@@ -47,6 +49,30 @@ def require(ok, message):
 def number(value):
     require(type(value) in (int, float) and math.isfinite(value), "finite numeric timestamp required")
     return value
+
+
+def grid_time(t, step=50, offset=0):
+    """Declared decimal 10 Hz grid; convert once, after adding the clock offset."""
+    return float(Decimal(str(t))-5+Decimal(step)/10+Decimal(str(offset)))
+
+
+def validate_cache_times(times, sid):
+    require(times.ndim == 1 and len(times) > 0 and np.isfinite(times).all()
+            and (np.diff(times) > 0).all(), "malformed cache timestamps")
+    require(times[0] == CACHE_ORIGINS[sid] and times[-1] <= grid_time(900, offset=CACHE_ORIGINS[sid]),
+            "cache timestamps outside source")
+
+
+def context_index(times, row, step):
+    origin = CACHE_ORIGINS[row["source"]]
+    cutoff = grid_time(row["t"], step, origin)
+    lower = grid_time(row["evidence_from"], offset=origin)
+    j = int(np.searchsorted(times, cutoff, side="right"))-1
+    if j >= 0 and lower <= float(times[j]) <= cutoff and cutoff-float(times[j]) <= MATCH_S:
+        # The observation mask describes this exact inspected grid frame, not its predecessor.
+        if float(times[j]) == cutoff:
+            return j
+    return None
 
 
 def fields(obj, names):
@@ -154,7 +180,7 @@ def admit(path, cache_dir):
         for i, frame in enumerate(r["context"]):
             fields(frame, "scene_masked evidence")
             require(type(frame["scene_masked"]) is bool, "observation mask must be boolean")
-            step = t-5+i/10
+            step = grid_time(t, i)
             lo, hi = evidence(frame["evidence"], r, step)
             require(lo <= step == hi, "observation evidence must cover step")
         fields(r["channels"], " ".join(NAMES))
@@ -202,8 +228,10 @@ def admit(path, cache_dir):
         require(isinstance(header.get("events"), str)
                 and Path(os.path.abspath(manifest.parent / header["events"])) == events, "manifest/event evidence mismatch")
         media = ROOT / f"data/demos/vods/{sid}.mp4"
-        require(isinstance(header.get("media"), str)
-                and Path(os.path.abspath(manifest.parent / header["media"])) == media, "manifest media identity mismatch")
+        video = header.get("media")
+        require(isinstance(video, dict) and video.get("kind") == "video"
+                and isinstance(video.get("path"), str)
+                and Path(os.path.abspath(manifest.parent / video["path"])) == media, "manifest media identity mismatch")
         checked_file(src["events"])
         with events.open() as f:
             meta = json.loads(f.readline())
@@ -213,13 +241,18 @@ def admit(path, cache_dir):
         side = cache_dir / f"{sid}.json"
         require(digest(side) == src["cache_sidecar_sha256"], "stale cache sidecar")
         m = read_json(side)
+        cache_origin = CACHE_ORIGINS[sid]
+        require(Decimal(str(number(meta.get("pts_origin_s"))))
+                - Decimal(str(number(meta.get("container_start_s")))) == Decimal(str(cache_origin))
+                and number(m.get("t_origin")) == number(m.get("t_first")) == cache_origin,
+                "cache/writer/container clock mismatch")
         creator = "daymr" if sid.startswith("day") else "reqmr"
         require(m.get("id") == sid and m.get("group") == ALLOWED[sid] and m.get("splittable") is True
                 and m.get("cooldowns") == "normal" and m.get("patch") == header["patch"]
                 and m.get("encoder") == DEFAULT and m.get("norm") == NORM and m.get("size") == SIZE
                 and m.get("dim") == 384 and m.get("hz") == 10 and m.get("clock") == "media_pts"
                 and m.get("sidecar_version") == SIDECAR_VERSION
-                and number(m.get("t_origin")) == ORIGINS[sid]
+                and number(m.get("t_origin")) == cache_origin
                 and m.get("masks") == [list(x) for x in rects(creator)], "cache provenance/clock mismatch")
         require(isinstance(m.get("media"), str) and Path(os.path.abspath(ROOT / m["media"])) == media,
                 "cache/manifest media identity mismatch")
@@ -243,21 +276,17 @@ def histories(export, cache_dir):
         require(digest(path) == src["cache_sha256"], "stale embedding payload")
         with np.load(path, allow_pickle=False) as z:
             t, emb = z["t"], z["emb"]
-        require(t.ndim == 1 and emb.shape == (len(t), 384) and len(t) > 0
-                and np.isfinite(t).all() and np.isfinite(emb).all() and (np.diff(t) > 0).all(), "malformed cache arrays")
-        require(t[0] == ORIGINS[sid] and t[-1] <= 900+ORIGINS[sid], "cache timestamps outside source")
+        validate_cache_times(t, sid)
+        require(emb.shape == (len(t), 384) and np.isfinite(emb).all(), "malformed cache arrays")
         cached[sid] = (t, emb)
     blocks = []
     for r in export["rows"]:
         times, emb = cached[r["source"]]
         block = []
         for i, frame in enumerate(r["context"]):
-            t = r["t"]-5+i/10
-            cutoff = t + ORIGINS[r["source"]]
-            # Strictly at-or-before: a future row even one ULP away is not an input.
-            j = int(np.searchsorted(times, cutoff, side="right"))-1
-            vec = emb[j] if (j >= 0 and times[j] <= cutoff and cutoff-times[j] <= MATCH_S
-                            and times[j] >= r["evidence_from"]+ORIGINS[r["source"]]) else None
+            t = grid_time(r["t"], i)
+            j = context_index(times, r, i)
+            vec = emb[j] if j is not None else None
             if frame["scene_masked"]:
                 row = np.zeros(386, np.float32)
                 row[-1] = 1

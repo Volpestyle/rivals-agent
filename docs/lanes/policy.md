@@ -2,25 +2,40 @@
 
 ## Expert future-behaviour offline consumer (VUH-1311)
 
-`policy/behaviour.py` implements the proposed offline consumer, **pending independent
-data-integrity review**. It forecasts the four compatible channels in
-`data/experiments/purpose-task-v1/BEHAVIOUR-DRAFT.md` from causal `[t-5,t]` visual
-history for `(t,t+2]`. The bounded native canary acceptance permits label-method
-continuation, not fitting; its `training_authorized: false` comparison is refused.
-No corpus fit, cache/embedding read, pixel inspection or live adapter accompanies
-this implementation. The existing in-flight lane sections below remain unchanged.
+`policy/behaviour.py` implements the offline consumer independently accepted at
+`d97de93`; the same reviewer also accepts the actual video-header correction and
+faithful normalization. The same reviewer accepts the separate writer/cache clocks
+and exact inspected-frame lookup. Metadata/support admission passes for the 15 accepted rows (8 Day, 7 Req),
+and the timestamp-only integration probe selects all 765 inspected context indices
+exactly. `data/experiments/next-behaviour-v1/NORMALIZATION.md` retains both initial
+preflight failures and current evidence. Real fitting awaits explicit lead authority;
+no real embedding array, media or PC access accompanies this correction.
+The consumer forecasts four compatible channels from causal `[t-5,t]` history for
+`(t,t+2]`; raw comparison artifacts remain training-unauthorized. The earlier lane
+sections below remain unchanged.
 
 The runner reuses the frozen DINO cache format, `train.step_row`'s visual prefix
 and `train.Head` (projection + two GRUs). Exact cache paths replace the existing
 directory-wide cache scan at the admission boundary. Inputs have 386 columns:
 384 embeddings, embedding-present and scene-masked. There are no event, State,
 label-mask, onset, outcome, source-time or annotation columns in the neural input.
-Scene-mask evidence must be available at each historical step. Source time converts
-to native PTS once: Day +1.616 s, Req +0 s; lookup is strictly at-or-before each
-10 Hz step, with the existing .12 s maximum age. Cache times stay in native PTS;
-only `(t-5+i/10) + pts_offset` is converted, once per step. Both native
-`cache_time <= cutoff` and age are checked without tolerance. Selected frames must
-also lie inside the evidence reservation. An unmasked miss fails.
+Scene-mask evidence is available at each historical step. The packet/event writer
+uses copyts origins Day **1.616 s** / Req **0 s**; the encoder/cache is rebased to
+Day **0.027 s** / Req **0 s**. Decimal metadata arithmetic requires
+`cache_origin = writer_origin - container_start` (Day container start **1.589 s**),
+and sidecar `t_first == t_origin == cache_origin`; cache timestamp validation also
+requires the actual first array timestamp to equal that origin. Unknown or mismatched
+container/origin metadata is refused. The legacy `media_pts` tag alone does not
+identify which extraction clock is used.
+
+`grid_time(t, i, offset)` forms `Decimal(str(t))-5+Decimal(i)/10+Decimal(str(offset))`
+and converts to float once. Consumer evidence validation and normalization use
+zero offset; lookup uses the separately validated cache offset. Reservation endpoints
+use the same conversion. Cache arrays remain unchanged. Search is strict native
+at-or-before with the .12 s age and reservation guards; the chosen timestamp must
+also equal the declared inspected grid point. An earlier frame is not substituted
+for the observation mask's frame. No epsilon, nearest-frame selection or array
+rounding is used. An unmasked missing exact frame fails.
 
 ```mermaid
 flowchart LR
@@ -55,7 +70,10 @@ JSON booleans, and every source/row is checked before cache payload access.
   with exact `<id>.json` and `<id>.npz` files. All bindings, including symlink
   checks on files and ancestors, pass before any artifact is read or hashed;
   the complete check runs again before cache payload reads. Manifest event/media
-  links and sidecar media identity must match those fixed bindings. No caller
+  links and sidecar media identity must match those fixed bindings. Manifest `media`
+  has the loader’s `{kind: "video", path: "<id>.mp4"}` shape; `path` is a string
+  resolved against the manifest directory. Other kinds and redirects are refused.
+  Sidecar `media` remains a repository-relative string. No caller
   override or directory scan exists. Hashes then establish freshness; manifest
   promotion/patch, frozen event writer, cache encoder/masks and clocks are checked.
   This enforces source scope, not cryptographic approval or protection against
@@ -77,7 +95,7 @@ JSON booleans, and every source/row is checked before cache payload access.
   normalization must not bridge gaps, crop early evidence or invent timestamps.
   Unknown assertions have null evidence, and stay unknown if these bounds cannot
   be retained. Evidence bounds establish the declared contract, not annotation truth.
-- `context` is exactly 51 records ordered at `s = t-5+i/10`:
+- `context` is exactly 51 records ordered at `s = grid_time(t,i)` (declared decimal 10 Hz):
   `{scene_masked: bool, evidence: {from, to, known_at}}`. Evidence covers s and is
   available by s (`from <= to == known_at == s`). These are observation masks,
   **not** aggregate annotation/loss masks. A wholly hidden history is refused.
@@ -160,12 +178,20 @@ PYTHONDONTWRITEBYTECODE=1 nice -n 10 /tmp/rivals-policy-format5-venv/bin/python 
   -p no:cacheprovider tests/test_behaviour.py
 ```
 
-The 59 synthetic checks cover the original 30 cases plus complete canonical binding
+The synthetic suite covers the original 30 cases plus complete canonical binding
 before hashing (including second-source and cache-read rechecks), symlink redirects,
 actual sidecar-producer compatibility, nonzero/zero-offset nextafter controls and
 maximum age, evidence points/span starts/lookbacks, per-assertion negative coverage,
 conditional contradictions, valid positive onset and unknown exclusion, and output
-preservation. The reviewer’s four demonstrated defects are encoded as regressions;
+preservation. The header correction adds seven malformed-kind/path and redirect
+controls against a fixture using the actual loader shape. The clock correction uses
+rebased cache fixtures, six container/origin/first-timestamp refusals and exact
+pt2-02/04 first-frame regressions with pt2-05 as control. All **75 synthetic checks**
+pass, including the explicitly allowed tiny synthetic optimization/reload check.
+The separate real integration probe opens only hash-bound `t.npy` members, selects
+all **765/765** inspected context indices and excludes nextafter futures at every
+cutoff; it does not load embeddings or run histories.
+The reviewer’s four demonstrated defects are encoded as regressions;
 no additional skill/rule change is needed. Actual data prerequisites are lead-normalized
 accepted labels with explicit fitting authorization and fresh matching source/cache
 fingerprints; independent review of this delta precedes relying on the consumer.

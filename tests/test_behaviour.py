@@ -37,18 +37,19 @@ def fixture_export(tmp_path):
         manifest = tmp_path / f"data/demos/vods/{sid}.manifest.jsonl"
         events.parent.mkdir(parents=True, exist_ok=True)
         manifest.parent.mkdir(parents=True, exist_ok=True)
-        events.write_text(json.dumps(dict(type="meta", format=5, writer="21a390f547eb", pts_origin_s=b.ORIGINS[sid]))+"\n")
+        events.write_text(json.dumps(dict(type="meta", format=5, writer="21a390f547eb", pts_origin_s=b.ORIGINS[sid],
+                                               container_start_s=1.589 if n == 0 else 0.0))+"\n")
         manifest.write_text(json.dumps(dict(type="clip", id=sid, group=group, split="train", splittable=True,
                                            cooldowns="normal", patch="synthetic", events=f"../events/sections/{sid}.jsonl",
-                                           media=f"{sid}.mp4"))+"\n")
-        times = np.arange(601, dtype=np.float64)/10 + b.ORIGINS[sid]
+                                           media=dict(kind="video", path=f"{sid}.mp4")))+"\n")
+        times = np.array([b.grid_time(0, i+50, b.CACHE_ORIGINS[sid]) for i in range(601)], np.float64)
         emb = np.random.default_rng(n).normal(n*30, 1, (len(times), 384)).astype(np.float32)
         np.savez(cache / f"{sid}.npz", t=times, emb=emb)
         creator = "daymr" if n == 0 else "reqmr"
         side = cache / f"{sid}.json"
         side.write_text(json.dumps(dict(id=sid, group=group, splittable=True, cooldowns="normal", patch="synthetic",
                                         encoder=b.DEFAULT, norm=b.NORM, size=b.SIZE, dim=384, hz=10,
-                                        clock="media_pts", t_origin=b.ORIGINS[sid], masks=b.rects(creator),
+                                        clock="media_pts", t_origin=b.CACHE_ORIGINS[sid], t_first=b.CACHE_ORIGINS[sid], masks=b.rects(creator),
                                         sidecar_version=b.SIDECAR_VERSION, media=f"data/demos/vods/{sid}.mp4")))
         export["sources"][sid] = dict(group=group, pts_offset=b.ORIGINS[sid],
                                      manifest=dict(path=str(manifest.relative_to(tmp_path)), sha256=b.digest(manifest)),
@@ -76,7 +77,7 @@ def fixture_export(tmp_path):
                 label_evidence(c, t)
             export["rows"].append(dict(id=f"synthetic-{n}-{j}", source=sid, t=t, eligible=True,
                                        training_authorized=True, evidence_from=t-5, evidence_to=t+5, label_known_at=t+2,
-                                       context=[dict(scene_masked=False, evidence=bounds(t-5+i/10)) for i in range(51)],
+                                       context=[dict(scene_masked=False, evidence=bounds(b.grid_time(t, i))) for i in range(51)],
                                        channels=channels, recent_attack=[dict(present=None, evidence=None)]*2))
     path = tmp_path / "export.json"
     path.write_text(json.dumps(export))
@@ -137,7 +138,7 @@ def test_causal_clock_future_append_and_label_invariance(tmp_path):
         with np.load(payload) as z:
             t, emb = z["t"], z["emb"]
         # All appended frames are later than every decision; their values must not matter.
-        np.savez(payload, t=np.append(t, 70+b.ORIGINS[sid]), emb=np.vstack((emb, np.full((1, 384), 1e6))))
+        np.savez(payload, t=np.append(t, b.grid_time(70, offset=b.CACHE_ORIGINS[sid])), emb=np.vstack((emb, np.full((1, 384), 1e6))))
         e["sources"][sid]["cache_sha256"] = b.digest(payload)
     e["rows"][0]["channels"]["attacking"]["accepted_state"] = "present"
     e["rows"][0]["channels"]["attacking"]["onset"] = "unknown"
@@ -149,7 +150,7 @@ def test_causal_clock_future_append_and_label_invariance(tmp_path):
     for i, r in enumerate(e["rows"]):
         with np.load(cache / f'{r["source"]}.npz') as z:
             times = z["t"]
-            idx = np.searchsorted(times, r["t"]+b.ORIGINS[r["source"]], side="right")-1
+            idx = np.searchsorted(times, b.grid_time(r["t"], offset=b.CACHE_ORIGINS[r["source"]]), side="right")-1
             np.testing.assert_array_equal(after[i, -1, :384], z["emb"][idx])
         assert (after[i, :, 384:] == [1, 0]).all()
 
@@ -318,13 +319,11 @@ def test_native_cutoff_nextafter_and_maximum_age(tmp_path, sid):
     payload = cache / f"{sid}.npz"
     with np.load(payload) as z:
         times, emb = z["t"], z["emb"]
-    cutoff = 4.0+b.ORIGINS[sid]
+    cutoff = b.grid_time(4.0, offset=b.CACHE_ORIGINS[sid])
     exact = np.flatnonzero(times == cutoff)[0]
     np.testing.assert_array_equal(before[row, 30, :384], emb[exact])
     future = np.nextafter(cutoff, np.inf)
     assert future > cutoff
-    if b.ORIGINS[sid]:
-        assert future-b.ORIGINS[sid] == 4.0  # Pins the nonzero-offset rounding defect.
     times = np.append(times, future)
     emb = np.vstack((emb, np.full((1, 384), 777, np.float32)))
     order = np.argsort(times)
@@ -455,3 +454,75 @@ def test_actual_sidecar_producer_and_rehashed_bad_masks(tmp_path, monkeypatch):
     monkeypatch.setattr(np, "load", lambda *a, **k: pytest.fail("bad sidecar opened arrays"))
     with pytest.raises(ValueError, match="cache provenance"):
         b.admit(path, cache)
+
+
+@pytest.mark.parametrize("mutation", ["string", "missing_kind", "wrong_kind", "missing_path", "null_path",
+                                     "number_path", "redirect"])
+def test_manifest_video_header_shape_and_identity(tmp_path, monkeypatch, mutation):
+    path, cache, e = fixture_export(tmp_path)
+    b.admit(path, cache)  # The loader's actual {kind: video, path: ...} shape is accepted.
+    sid = next(iter(b.ALLOWED))
+    manifest = tmp_path / e["sources"][sid]["manifest"]["path"]
+    header = b.read_json(manifest)
+    media = header["media"]
+    if mutation == "string": header["media"] = media["path"]
+    elif mutation == "missing_kind": del media["kind"]
+    elif mutation == "wrong_kind": media["kind"] = "frames"
+    elif mutation == "missing_path": del media["path"]
+    elif mutation == "null_path": media["path"] = None
+    elif mutation == "number_path": media["path"] = 12
+    elif mutation == "redirect": media["path"] = "unapproved.mp4"
+    manifest.write_text(json.dumps(header)+"\n")
+    e["sources"][sid]["manifest"]["sha256"] = b.digest(manifest)
+    path.write_text(json.dumps(e))
+    original_digest = b.digest
+    def guard(p):
+        assert p == manifest or not p.is_relative_to(tmp_path), "content read after malformed media header"
+        return original_digest(p)
+    monkeypatch.setattr(b, "digest", guard)
+    monkeypatch.setattr(np, "load", lambda *a, **k: pytest.fail("bad media header opened arrays"))
+    with pytest.raises(ValueError, match="manifest media identity mismatch"):
+        b.admit(path, cache)
+
+
+@pytest.mark.parametrize("mutation", ["missing_container", "unknown_container", "wrong_container", "side_origin", "side_first", "array_first"])
+def test_rebased_clock_contract(tmp_path, mutation):
+    path, cache, e = fixture_export(tmp_path)
+    b.admit(path, cache)
+    sid = next(iter(b.ALLOWED))
+    if mutation in ("missing_container", "unknown_container", "wrong_container"):
+        file = tmp_path / e["sources"][sid]["events"]["path"]
+        meta = b.read_json(file)
+        if mutation == "missing_container": del meta["container_start_s"]
+        else: meta["container_start_s"] = None if mutation == "unknown_container" else 0.0
+        file.write_text(json.dumps(meta)+"\n")
+        e["sources"][sid]["events"]["sha256"] = b.digest(file)
+    elif mutation in ("side_origin", "side_first"):
+        file = cache / f"{sid}.json"
+        side = b.read_json(file)
+        side["t_origin" if mutation == "side_origin" else "t_first"] = b.ORIGINS[sid]
+        file.write_text(json.dumps(side))
+        e["sources"][sid]["cache_sidecar_sha256"] = b.digest(file)
+    else:
+        file = cache / f"{sid}.npz"
+        with np.load(file) as z: times, emb = z["t"], z["emb"]
+        times[0] = np.nextafter(times[0], np.inf)
+        np.savez(file, t=times, emb=emb)
+        e["sources"][sid]["cache_sha256"] = b.digest(file)
+    path.write_text(json.dumps(e))
+    with pytest.raises(ValueError, match="timestamp|clock"):
+        b.histories(b.admit(path, cache), cache)
+
+
+@pytest.mark.parametrize("decision,previous_bug", [(135.2, True), (177.7, True), (208.3, False)])
+def test_declared_grid_first_frame_and_no_substitution(decision, previous_bug):
+    sid = next(iter(b.ALLOWED))
+    row = dict(source=sid, t=decision, evidence_from=decision-5)
+    origin = b.CACHE_ORIGINS[sid]
+    times = np.array([b.grid_time(decision, i, origin) for i in (-1, 0, 1)])
+    old = int(np.searchsorted(times, decision-5+origin, side="right"))-1
+    assert (old == 0) == previous_bug  # pt2-02/04 failures and pt2-05 valid control.
+    assert b.context_index(times, row, 0) == 1
+    assert b.context_index(times, row, 1) == 2
+    assert b.context_index(times[:2], row, 1) is None  # In-reservation predecessor is uninspected for this step.
+    assert b.grid_time(decision, 0) == float(str(decision-5))
