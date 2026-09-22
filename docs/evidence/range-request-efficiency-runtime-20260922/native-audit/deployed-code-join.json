@@ -1,0 +1,142 @@
+[
+  {
+    "manifest": "controller-deployed.json",
+    "file": "agent/controller.py",
+    "actual_sha256": "54238de584df15b8ccddd7848ab1eee2722411dbdcdadf3a259a7da7e824e0e0",
+    "accepted_commit": "23af8c5dba09476cfc79c8a5776e509fecb26b68",
+    "LF_equal": true
+  },
+  {
+    "manifest": "controller-deployed.json",
+    "file": "agent/loop.py",
+    "actual_sha256": "dd79b1212cdaa10812490da01eed946721ecc66306784aac60db0078341646e5",
+    "accepted_commit": "23af8c5dba09476cfc79c8a5776e509fecb26b68",
+    "LF_equal": true
+  },
+  {
+    "manifest": "controller-deployed.json",
+    "file": "agent/intents.py",
+    "actual_sha256": "836692b7c241df0d2a57c109230f8047b1c4d0a4392782bfb652f883c6f50cf3",
+    "accepted_commit": "23af8c5dba09476cfc79c8a5776e509fecb26b68",
+    "LF_equal": true
+  },
+  {
+    "manifest": "controller-deployed.json",
+    "file": "agent/state.py",
+    "actual_sha256": "83983c59f0ea39772686b9ce8e002aab86d312c5e75937bc2b9e6a21eddb8f5a",
+    "accepted_commit": "23af8c5dba09476cfc79c8a5776e509fecb26b68",
+    "LF_equal": true
+  },
+  {
+    "manifest": "controller-deployed.json",
+    "file": "agent/brain.py",
+    "actual_sha256": "0deaafb77cae4fa4a15fc8c8abe6d49c09821de7a1ab5810b096788117b30c00",
+    "accepted_commit": "23af8c5dba09476cfc79c8a5776e509fecb26b68",
+    "LF_equal": true
+  },
+  {
+    "manifest": "controller-deployed.json",
+    "file": "agent/tracker.py",
+    "actual_sha256": "56fa3012391b22a0c4a3dbe3f5414f275faba4e038bfebdbe6b8f579bc72c892",
+    "accepted_commit": "23af8c5dba09476cfc79c8a5776e509fecb26b68",
+    "LF_equal": true
+  },
+  {
+    "manifest": "controller-deployed.json",
+    "file": "agent/learned_range_skill.py",
+    "actual_sha256": "77e4b7f19d4796737356b71d058d7c33688570940083cc82edb21d7c3e5c89ba",
+    "accepted_commit": "23af8c5dba09476cfc79c8a5776e509fecb26b68",
+    "LF_equal": true
+  },
+  {
+    "manifest": "controller-deployed.json",
+    "file": "agent/startup.py",
+    "actual_sha256": "d664ca4bd1ffac599a8020c61d843a186c9e608dfee6071ade2d1274c0ff908c",
+    "accepted_commit": "23af8c5dba09476cfc79c8a5776e509fecb26b68",
+    "LF_equal": true
+  },
+  {
+    "manifest": "controller-deployed.json",
+    "file": "policy/range_skill_policy.py",
+    "actual_sha256": "5109def43fe6d84a90a048431481d1ab56a429f2c4e9c804adee2413047d6a82",
+    "accepted_commit": "23af8c5dba09476cfc79c8a5776e509fecb26b68",
+    "LF_equal": true
+  },
+  {
+    "manifest": "controller-deployed.json",
+    "file": "policy/range_policy.py",
+    "actual_sha256": "c46e7d8a6523892107c8a878532505d020896e5b32e9df6179c049d6aa3410bb",
+    "accepted_commit": "23af8c5dba09476cfc79c8a5776e509fecb26b68",
+    "LF_equal": true
+  },
+  {
+    "manifest": "controller-deployed.json",
+    "file": "policy/execution.py",
+    "actual_sha256": "84dbec833e4378f94be8678b16ff5ff3b3f582838391e7d73ef23ed305481038",
+    "accepted_commit": "23af8c5dba09476cfc79c8a5776e509fecb26b68",
+    "LF_equal": true
+  },
+  {
+    "manifest": "controller-deployed.json",
+    "file": "scripts/capture.py",
+    "actual_sha256": "b98f310616cf0569375d3e24cbb564d7702872c4ffaa888523ac6b52f96fb547",
+    "accepted_commit": "23af8c5dba09476cfc79c8a5776e509fecb26b68",
+    "LF_equal": true
+  },
+  {
+    "manifest": "controller-deployed.json",
+    "file": "scripts/record.py",
+    "actual_sha256": "714346a2ac3672e02ea568b628d2413de2096486c3ba6930502e86694fc175ea",
+    "accepted_commit": "23af8c5dba09476cfc79c8a5776e509fecb26b68",
+    "LF_equal": true
+  },
+  {
+    "manifest": "perception-deployed.json",
+    "file": "perception/hud.py",
+    "actual_sha256": "af3b75483f20043802f4e47b64765f7e762e6d2a4ed110545a990e3563669f45",
+    "accepted_commit": "23af8c5dba09476cfc79c8a5776e509fecb26b68",
+    "LF_equal": true
+  },
+  {
+    "manifest": "perception-deployed.json",
+    "file": "perception/outline.py",
+    "actual_sha256": "fded81b150bb873c738e34fb3fc7d8f0a263a7cf9121e3325991bcdda4acd4f8",
+    "accepted_commit": "23af8c5dba09476cfc79c8a5776e509fecb26b68",
+    "LF_equal": true
+  },
+  {
+    "manifest": "perception-deployed.json",
+    "file": "agent/loop.py",
+    "actual_sha256": "dd79b1212cdaa10812490da01eed946721ecc66306784aac60db0078341646e5",
+    "accepted_commit": "23af8c5dba09476cfc79c8a5776e509fecb26b68",
+    "LF_equal": true
+  },
+  {
+    "manifest": "perception-deployed.json",
+    "file": "agent/state.py",
+    "actual_sha256": "83983c59f0ea39772686b9ce8e002aab86d312c5e75937bc2b9e6a21eddb8f5a",
+    "accepted_commit": "23af8c5dba09476cfc79c8a5776e509fecb26b68",
+    "LF_equal": true
+  },
+  {
+    "manifest": "perception-deployed.json",
+    "file": "agent/tracker.py",
+    "actual_sha256": "56fa3012391b22a0c4a3dbe3f5414f275faba4e038bfebdbe6b8f579bc72c892",
+    "accepted_commit": "23af8c5dba09476cfc79c8a5776e509fecb26b68",
+    "LF_equal": true
+  },
+  {
+    "manifest": "perception-deployed.json",
+    "file": "policy/range_policy.py",
+    "actual_sha256": "c46e7d8a6523892107c8a878532505d020896e5b32e9df6179c049d6aa3410bb",
+    "accepted_commit": "23af8c5dba09476cfc79c8a5776e509fecb26b68",
+    "LF_equal": true
+  },
+  {
+    "manifest": "perception-deployed.json",
+    "file": "policy/range_skill_policy.py",
+    "actual_sha256": "5109def43fe6d84a90a048431481d1ab56a429f2c4e9c804adee2413047d6a82",
+    "accepted_commit": "23af8c5dba09476cfc79c8a5776e509fecb26b68",
+    "LF_equal": true
+  }
+]

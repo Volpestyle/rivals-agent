@@ -1,0 +1,27 @@
+{
+  "dense_near_cast_usable_ids": [
+    9,
+    10,
+    11,
+    12,
+    13,
+    14
+  ],
+  "best_match_offset_range_seconds": [
+    2.7554632666617795,
+    2.773915266656937
+  ],
+  "video_frame_spacing_seconds": 0.016666666666666666,
+  "excluded_high_error_ids": [
+    7,
+    8
+  ],
+  "stationary_scene_ambiguous_ids": [
+    54,
+    88
+  ],
+  "coarse_match_only_ids": [
+    66
+  ],
+  "scope": "local empirical visual alignment, not a calibrated render clock; stationary best matches are not temporal anchors"
+}

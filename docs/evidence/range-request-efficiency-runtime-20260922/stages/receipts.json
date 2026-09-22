@@ -1,0 +1,39 @@
+{
+  "inputs_before_after": [
+    {
+      "path": "data/l1/range-request-efficiency-20260922-1/meta.json",
+      "sha256": "f186a7890e5efbe783988c3ceee4e4bde22e8029dba1c522d2fcf9f0e1138356",
+      "bytes": 93314
+    },
+    {
+      "path": "data/l1/range-request-efficiency-20260922-1/frames.jsonl",
+      "sha256": "da7fae8c4eb3ff69f368d6bea502f328a043f4c95aeb4d04dc74914fc17dc2a1",
+      "bytes": 574178
+    },
+    {
+      "path": "data/runtime/range-request-efficiency-preflight-20260922/actual-thread-settings.json",
+      "sha256": "05d413bb30d6a37ab0227ba4d2ac375d5ec8127f5f66775e16a3bf1667ab1cdc",
+      "bytes": 392
+    },
+    {
+      "path": "data/runtime/range-request-efficiency-preflight-20260922/launch-result.json",
+      "sha256": "da13363feaa0714b77f4d659c4074475a4f65d09c52817d94bb393c019fe7dce",
+      "bytes": 215
+    },
+    {
+      "path": "data/diagnostics/range-request-stage-cost-20260922/report.json",
+      "sha256": "d6b656f9169a7f6dca14b48f6aa516f83dc6aacfd7c8eae94989d2458804a059",
+      "bytes": 107774
+    }
+  ],
+  "inspected_source": {
+    "path": "agent/loop.py",
+    "sha256": "0316aecb16aae2e913297403f8c3dca908515784f4eab3904c825458a5ab30a0",
+    "bytes": 68670
+  },
+  "analyzer": {
+    "path": "data/diagnostics/range-request-efficiency-stage-20260922/analyze.py",
+    "sha256": "266c41710215ac3de42f61c42b19c06d2ec8e1deeb4e7fa7f50b9ef50a407926",
+    "bytes": 13428
+  }
+}

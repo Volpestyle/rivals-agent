@@ -1,0 +1,20 @@
+{
+  "input_domain": "virtual_pad",
+  "saved_values": {
+    "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-efficiency-preflight-20260922\\saved-settings.json",
+    "sha256": "fbb743765508f266ce41052adc4053676170c037d8c29858d2be3f3b3426bff5"
+  },
+  "effective_setup": {
+    "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-efficiency-preflight-20260922\\effective-setup.json",
+    "sha256": "34dcfab122294d770c2e2447ad4aabe13309ed842f67e7354aa71f7d4d9dce45"
+  },
+  "limits": [
+    "Persisted values and a current client lobby, not proof of all effective in-memory settings.",
+    "Unspecified vertical sensitivity, deadzones and complete/default pad bindings remain unspecified.",
+    "NoCDSaved is retained without encoding interpretation; current range menu must independently confirm normal cooldown setup.",
+    "Client/build does not prove a server hotfix or marketing patch label.",
+    "D supports historical primitive calibration; current runtime is not approved by this receipt.",
+    "No human source motor settings are backdated from these runtime fields."
+  ],
+  "no_source_motor_conversion": true
+}

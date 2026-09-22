@@ -1,0 +1,65 @@
+{
+  "root_ready_for_one_diagnostic": true,
+  "observed_utc": "2026-09-22T23:11:45.879650+00:00",
+  "observer": "root, direct new entry/menu/PAD frame inspection",
+  "observed": {
+    "normal_cooldown_menu": true,
+    "spiderman": true,
+    "pad_web_layout": true,
+    "luna_setup": true,
+    "range": true
+  },
+  "game_pid": 48460,
+  "frame": [
+    2560,
+    1440
+  ],
+  "observations": [
+    "Fresh entry-after names Luna Snow at Hero Simulation, Spider-Man250 health, five web ammo. Single-Luna setup, generic selector not named-target enforcement.",
+    "New ps-0 visibly shows No Ability Cooldown X/off and Friendly Fire X/off; helper reported already off, no toggle.",
+    "New native settings video11.8s shows LT web projectile/ammo5, RT infinity melee, LB swing3, RB pull, X uppercut2.",
+    "Settings attach rotated view toward spawn; same-device camera startup must reacquire plaza. Actual guarded caller rechecks foreground48460, range and clocks.",
+    "Current persisted selected client/build/PAD/display values equal prior post-D receipt. New exact-output HUD work and request cancellation independently reviewed; no model/threshold/thread change."
+  ],
+  "limits": [
+    "Setup entry includes accepted helper RT priming, not learned action.",
+    "Historical two-cast D primitive reused for unchanged nominal33ms LT; no exact physical or human press timing claim.",
+    "One third named software experiment, max10s learned plus14s camera startup under24s absolute authorization. Expired request consumed, later fresh decisions allowed only after returned and recorded neutral.",
+    "No generic-selector identity guarantee, independent-session quality, repeated-kill or throughput improvement claimed before measurement.",
+    "Unspecified motor defaults and server hotfixes remain unknown."
+  ],
+  "evidence": [
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-efficiency-preflight-20260922\\practice-settings\\ps-0.jpg",
+      "sha256": "7dd1c754024d286ca4519a4497acbd08dad170567da3125d3c2051c38241632a"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-efficiency-preflight-20260922\\settings-11p8s.png",
+      "sha256": "79e7909c8a62dcf9c29195af24628df53d7578b7078f81e29f3603c592dde0f8"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-efficiency-preflight-20260922\\settings-native.mp4",
+      "sha256": "cadf7a7202768515223ab4d2ae8b6ad3a430e55b55561c5eb43861883f2ffce8"
+    },
+    {
+      "path": "C:\\desk\\out\\range-request-efficiency-entry-after.png",
+      "sha256": "beda8e94b253a0df14cc32f4bd5df47e781fb7545c8cf9d1e379857e9f9a65b9"
+    },
+    {
+      "path": "C:\\desk\\out\\range-request-efficiency-settings-after.png",
+      "sha256": "8e9c9b26bdf92726336e40136aa49a35595bba5e0aa8b6b1a8de5dbb2cab13e2"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-efficiency-preflight-20260922\\settings.log",
+      "sha256": "98df43fefe1bf7ab14d6bfea9f29617738a09a743690606aa950ada66142674b"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-efficiency-preflight-20260922\\capture-preflight.txt",
+      "sha256": "4907254faef2bac585f7276b5b9592ea932a15066c8849803a6aa02417f18d3b"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-efficiency-preflight-20260922\\saved-settings.json",
+      "sha256": "fbb743765508f266ce41052adc4053676170c037d8c29858d2be3f3b3426bff5"
+    }
+  ]
+}

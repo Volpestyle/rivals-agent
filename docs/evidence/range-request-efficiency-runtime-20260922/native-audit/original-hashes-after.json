@@ -1,0 +1,21 @@
+{
+  "data\\l1\\range-request-efficiency-20260922-1\\meta.json": "f186a7890e5efbe783988c3ceee4e4bde22e8029dba1c522d2fcf9f0e1138356",
+  "data\\l1\\range-request-efficiency-20260922-1\\frames.jsonl": "da7fae8c4eb3ff69f368d6bea502f328a043f4c95aeb4d04dc74914fc17dc2a1",
+  "data\\runtime\\range-request-efficiency-preflight-20260922\\source-identity.json": "72bf5e2be3db2e11e1820bd4a3d6fc73aabe3263e3778957de151bb66e27ef43",
+  "data\\runtime\\range-request-efficiency-preflight-20260922\\runtime-identity.json": "0e5a600c5d265ab563799ffa990b03f1193470074e1489e549d9d9f66b49f25d",
+  "data\\runtime\\range-request-efficiency-preflight-20260922\\deployment-binding.json": "92ab6f0d40084a493a3cc2ddf30d6520cc3b2573e6c742cf7d4a5f3358c26d7d",
+  "data\\runtime\\range-request-efficiency-preflight-20260922\\deployment-review.json": "e6d03e6c61b6daaa524321afd7973814ebb7426eb7e0ff5aaacd89225d4b9c41",
+  "data\\runtime\\range-request-efficiency-preflight-20260922\\runtime-semantic-review.json": "faebbe8e62984b04706409ae7a7b9d7e01bfd41684a8389f8c68a85de69c29df",
+  "data\\runtime\\range-request-efficiency-preflight-20260922\\controller-deployed.json": "7cb52b42963b1a351cfa25f4183cd6010e7773566309322636473d6d0aa2705b",
+  "data\\runtime\\range-request-efficiency-preflight-20260922\\perception-deployed.json": "7548c882b1ed0c6773cf65215a06e7c7dd975f81941dd261facb694df3cd4559",
+  "data\\runtime\\range-request-efficiency-preflight-20260922\\effective-setup.json": "34dcfab122294d770c2e2447ad4aabe13309ed842f67e7354aa71f7d4d9dce45",
+  "data\\runtime\\range-request-efficiency-preflight-20260922\\actual-thread-settings.json": "05d413bb30d6a37ab0227ba4d2ac375d5ec8127f5f66775e16a3bf1667ab1cdc",
+  "data\\runtime\\range-request-efficiency-preflight-20260922\\launch-result.json": "da13363feaa0714b77f4d659c4074475a4f65d09c52817d94bb393c019fe7dce",
+  "data\\runtime\\range-request-efficiency-preflight-20260922\\learned-recorder.json": "078dfbf21c0b0bbd4aa04c7e76de5b628491d5b69d36a54f8f19f2dc52a7cad1",
+  "data\\runtime\\range-request-efficiency-preflight-20260922\\runtime-settings.json": "8457987506843af8921847ea65e9674c2d75810aebeec38dc3c28e32ce16d3b0",
+  "data\\runtime\\range-request-efficiency-preflight-20260922\\run_instrumented.py": "d20bb27fbd3ce537e8dc66f3b82d431bfc8af53145c21df4f62a61c332234830",
+  "data\\runtime\\range-request-efficiency-preflight-20260922\\binding-consumed.json": "f79bcaeea08767c7db2353627b538ee42884d3f2bd22fa8990028967acef835d",
+  "data\\runtime\\range-request-efficiency-preflight-20260922\\loader-preflight.json": "7f7044bbeb308f50ace2b3ea15108044fb0428138f11c49534590f6211fe31d3",
+  "data\\runtime\\range-request-efficiency-preflight-20260922\\launch.ps1": "fc4ac93738bb3e862074bacbd1d045c13a4402bff40353205b6d15b874545076",
+  "data\\runtime\\range-request-efficiency-preflight-20260922\\learned-native.mp4": "4b46be83069ee79f586c95ff3304dd19f9298733324eee3c9fdb3cb990bab8ff"
+}

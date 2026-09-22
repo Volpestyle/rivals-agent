@@ -1,0 +1,67 @@
+{
+  "decision": "lead_accepts_one_exploratory_runtime_diagnostic",
+  "at_utc": "2026-09-22T23:11:46.818959+00:00",
+  "authority": "Root lead under James authorized practice-range goal; independent semantic and caller reviews retained",
+  "independent_semantic_review": {
+    "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-efficiency-preflight-20260922\\semantic-review.md",
+    "sha256": "d552bea1d4d98e49b1ee1b78e4ddd743a382c009bd1058acb6ad38814e656e52"
+  },
+  "independent_caller_review": {
+    "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-efficiency-preflight-20260922\\caller-review.md",
+    "sha256": "79f7228e052c55ec12526041628fea63c7de894aebefcb79bfb26ac35f3e8297"
+  },
+  "launcher": {
+    "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-efficiency-preflight-20260922\\run_instrumented.py",
+    "sha256": "d20bb27fbd3ce537e8dc66f3b82d431bfc8af53145c21df4f62a61c332234830"
+  },
+  "experiment_question": "Measure exact-output HUD work reduction and request-expiry cancellation across one bounded episode, preserving every failed request without model/thread tuning",
+  "source": {
+    "patch": "1.1.3870120/build25364676",
+    "cooldown_regime": "normal",
+    "source_profile_sha256": "9f413b81dabc71518359c28a6e506b1a1accbae5654bbf006967652332e3208f",
+    "perception_sha256": "e9d40f7a12442335866df16edaa8ceea7116177ab8546b3267ac096c1c616798",
+    "selector_sha256": "ddf1428a61c54805ce06164ef0daa7dfa1302fdf1735990336fdcab939ae098d",
+    "semantic_revision": "web-cluster-request-v1",
+    "feature_revision": "masked-state-grid-causal-v1"
+  },
+  "checkpoint": {
+    "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\diagnostics\\range-request-human-fit-20260922\\run-1\\model.pt",
+    "sha256": "6ee388070599e3df042ea73876e391340bf228a9e626cc212c60875d8191aeef"
+  },
+  "controller": {
+    "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-efficiency-preflight-20260922\\controller-deployed.json",
+    "sha256": "7cb52b42963b1a351cfa25f4183cd6010e7773566309322636473d6d0aa2705b"
+  },
+  "perception": {
+    "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-efficiency-preflight-20260922\\perception-deployed.json",
+    "sha256": "7548c882b1ed0c6773cf65215a06e7c7dd975f81941dd261facb694df3cd4559"
+  },
+  "runtime_settings": {
+    "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-efficiency-preflight-20260922\\runtime-settings.json",
+    "sha256": "8457987506843af8921847ea65e9674c2d75810aebeec38dc3c28e32ce16d3b0"
+  },
+  "calibration": {
+    "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-diagnostic-20260922\\calibration-manifest.json",
+    "sha256": "7e1ab360fcf5fe074160a1b8a0564554249b77315fb72648642ec609d5b1f1d5"
+  },
+  "scope": {
+    "run_name": "range-request-efficiency-20260922-1",
+    "run_count": 1,
+    "learned_phase_max_s": 10,
+    "startup_max_s": 14,
+    "absolute_authorization_budget_s": 24,
+    "confidence": 0.7,
+    "scoreboard": false,
+    "cooldown_regime": "normal",
+    "scenario": "Luna setup; generic continuous selector, not named-target lock"
+  },
+  "interpretation": "future received-request forecast -> immediate guarded nominal33ms LT within acquisition+100ms; no exact human97.984ms delay or visible completion guarantee",
+  "limits": [
+    "One source event/four negative labels; TRAIN-only fit, independent quality unknown",
+    "MK/PAD and reset-window/continuous differences are exploratory uncertainties",
+    "Third named software diagnostic after reviewed HUD compute and request-cancellation changes; not an independent quality trial or a retry of either consumed prior binding",
+    "One named run, no rerun/tuning to select success; expired request consumed, later fresh decisions permitted only after successful neutral release; all failures retained; no scripted offensive fallback",
+    "Proof freshness/watchdog limits remain; no physical-write/process-exit precision claim",
+    "Not independent validation, designated Galacta completion, pro parity or ten-trial acceptance"
+  ]
+}

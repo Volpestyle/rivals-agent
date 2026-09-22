@@ -1,0 +1,169 @@
+{
+  "status": "preflight_saved_settings_evidence_not_runtime_binding",
+  "input_domain": "virtual_pad",
+  "observed_utc": "2026-09-22T23:09:16.960526+00:00",
+  "source_receipts": [
+    {
+      "path": "C:\\Users\\volpe\\AppData\\Local\\Marvel\\Saved\\Saved\\Config\\1295996384\\MarvelUserSetting.json",
+      "sha256": "90fdfb94eedaea7c8148700a51b96dd365616bd4b36be215722e84db1e95c381",
+      "mtime_utc": "2026-09-22T22:35:33.080062+00:00",
+      "size": 16532
+    },
+    {
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\MarvelRivals\\MarvelGame\\version.json",
+      "sha256": "7e41c4f0724d036953576312c9ae2b6d48e0b89d5184b8bc2d15a589188028a4",
+      "mtime_utc": "2026-09-17T17:16:28.017550+00:00",
+      "size": 101713
+    },
+    {
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\appmanifest_2767030.acf",
+      "sha256": "a831923f25a0d83df49eef8219f496ea867e07fa223732df8911043026783816",
+      "mtime_utc": "2026-09-22T15:49:04.730580+00:00",
+      "size": 1010
+    },
+    {
+      "path": "C:\\Users\\volpe\\AppData\\Local\\Marvel\\Saved\\Config\\Windows\\GameUserSettings.ini",
+      "sha256": "998151290a3778bdec9f846d833a3d6df91595c2c6c020dcd733fb1d4b81c967",
+      "mtime_utc": "2026-09-22T22:48:14.642319+00:00",
+      "size": 1749
+    }
+  ],
+  "installed_client": {
+    "version": "1.1.3870120",
+    "changelist": 3870120,
+    "BaseVersion": "1.1.3848703",
+    "BasePakVersion": "1.1.3848703"
+  },
+  "steam_build_id": "25364676",
+  "display_saved": {
+    "busedynamicresolution": "True",
+    "resolutionsizex": "2560",
+    "resolutionsizey": "1440",
+    "fullscreenmode": "1"
+  },
+  "controller_saved_profiles": {
+    "0": {
+      "GamepadHorizontalSensitivity": 265.0,
+      "GamepadSensitivityCurveType": 3,
+      "GamepadAimAssetIntensity": 0.0,
+      "GamepadAimAssistType": 0,
+      "AbilityUserSettingList": [
+        {
+          "SettingType": 1,
+          "Key": "WakandaUp",
+          "AbilityID": 200401,
+          "bIsGamepad": true,
+          "bIsDirty": false,
+          "Value": false
+        }
+      ],
+      "declared_gamepad_mapping_keys": []
+    },
+    "1036": {
+      "AbilityUserSettingList": [
+        {
+          "SettingType": 2,
+          "Key": "SelectSensitivity",
+          "AbilityID": 103614,
+          "bIsGamepad": true,
+          "bIsDirty": false,
+          "Value": 100.0,
+          "SettingNote": 0
+        },
+        {
+          "SettingType": 1,
+          "Key": "bIsHoldAbility",
+          "AbilityID": 103641,
+          "bIsGamepad": true,
+          "bIsDirty": false,
+          "Value": true
+        },
+        {
+          "SettingType": 1,
+          "Key": "UseSimpleSwing",
+          "AbilityID": 103641,
+          "bIsGamepad": true,
+          "bIsDirty": false,
+          "Value": false
+        },
+        {
+          "SettingType": 1,
+          "Key": "bIsHoldAbility",
+          "AbilityID": 103671,
+          "bIsGamepad": true,
+          "bIsDirty": false,
+          "Value": false
+        },
+        {
+          "SettingType": 1,
+          "Key": "bIsHoldSprint",
+          "AbilityID": 103671,
+          "bIsGamepad": true,
+          "bIsDirty": false,
+          "Value": false
+        },
+        {
+          "SettingType": 0,
+          "Key": "WallRunMode",
+          "AbilityID": 103671,
+          "bIsGamepad": true,
+          "bIsDirty": false,
+          "Value": "TowardUp"
+        },
+        {
+          "SettingType": 1,
+          "Key": "bIsMeleeAttackHighlightOn",
+          "AbilityID": 0,
+          "bIsGamepad": true,
+          "bIsDirty": false,
+          "Value": true
+        },
+        {
+          "SettingType": 1,
+          "Key": "WakandaUp",
+          "AbilityID": 200401,
+          "bIsGamepad": true,
+          "bIsDirty": false,
+          "Value": false
+        }
+      ],
+      "declared_gamepad_mapping_keys": []
+    }
+  },
+  "enemy_color_saved_raw": 9,
+  "NoCDSaved_raw": 0,
+  "previous_receipt": {
+    "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-skill-candidate-20260922\\current-saved-settings.json",
+    "sha256": "26b48957c1c8cfaa2f9ab846ef097183786f5f7f879926106066de6a6e3575c9",
+    "mtime_utc": "2026-09-22T19:57:49.725671+00:00",
+    "size": 4834
+  },
+  "comparison_to_post_D_selected_values": {
+    "installed_client": true,
+    "steam_build_id": true,
+    "display_saved": true,
+    "controller_saved_profiles": true,
+    "enemy_color_saved_raw": true,
+    "NoCDSaved_raw": true
+  },
+  "game_process": {
+    "pid": 48460,
+    "start_local": "2026-09-22T10:49:03-05:00",
+    "source": "root Get-Process Marvel-Win64-Shipping"
+  },
+  "screen": {
+    "path": "C:\\desk\\out\\range-request-efficiency-preflight.png",
+    "sha256": "9d8633de804d5070292cd844d2977aca3a27fa3f5d111d82d9b8ee2730a8e537",
+    "mtime_utc": "2026-09-22T23:08:51.249331+00:00",
+    "size": 4932389,
+    "root_inspection": "Fresh preflight screenshot; interpretation retained in separate root effective-setup record. This saved-value receipt does not establish range or effective settings."
+  },
+  "limits": [
+    "Persisted values and a current client lobby, not proof of all effective in-memory settings.",
+    "Unspecified vertical sensitivity, deadzones and complete/default pad bindings remain unspecified.",
+    "NoCDSaved is retained without encoding interpretation; current range menu must independently confirm normal cooldown setup.",
+    "Client/build does not prove a server hotfix or marketing patch label.",
+    "D supports historical primitive calibration; current runtime is not approved by this receipt.",
+    "No human source motor settings are backdated from these runtime fields."
+  ]
+}

@@ -1,0 +1,788 @@
+[
+  {
+    "t": 7.5928,
+    "note": "rangeskill:enemy",
+    "source": "range_skill_model",
+    "dets": [
+      [
+        1243,
+        636,
+        1323,
+        794
+      ]
+    ],
+    "ms": 12.44,
+    "pad": {
+      "lx": 0.0,
+      "ly": 1.0,
+      "rx": -0.0721721007238646,
+      "ry": 0.0,
+      "lt": 1.0,
+      "rt": 0,
+      "buttons": []
+    },
+    "ids": [
+      1
+    ],
+    "coasting": [],
+    "target": 1,
+    "target_px": 5.8,
+    "observation_t": 7.592809000023408,
+    "proposed_pad": {
+      "lx": 0.0,
+      "ly": 1.0,
+      "rx": -0.0721721007238646,
+      "ry": 0.0,
+      "lt": 1.0,
+      "rt": 0,
+      "buttons": []
+    },
+    "range_skill_trace": {
+      "t": 7.592809000023408,
+      "observation_t": 7.592809000023408,
+      "execution_t": 7.619198500004131,
+      "execution_clock_valid": true,
+      "event": "step",
+      "decision_id": 10,
+      "target_id": 1,
+      "proposal": "start",
+      "valid_until": 7.663431800022954,
+      "resources": {
+        "webs": 5,
+        "observed_t": 7.563431800022954
+      },
+      "accepted": true,
+      "reason": "accepted",
+      "cancel_reason": null,
+      "pulse_decision_id": 10,
+      "pulse_target_id": 1,
+      "pulse_press_until": 7.652198500004132,
+      "pulse_valid_until": 7.663431800022954,
+      "pulse_phase": "press",
+      "lt_down": true,
+      "press_edge": true,
+      "release_edge": false,
+      "movement_source": "scripted_range_approach_aim",
+      "ended_pulse_decision_id": null,
+      "pulse_outcome": null,
+      "offense_source": "accepted_range_skill_request",
+      "pad": {
+        "lx": 0.0,
+        "ly": 1.0,
+        "rx": -0.0721721007238646,
+        "ry": 0.0,
+        "lt": 1.0,
+        "rt": 0.0,
+        "buttons": []
+      }
+    },
+    "d": 10,
+    "state": {
+      "t": 7.563431800022954,
+      "frame": [
+        2560,
+        1440
+      ],
+      "hp": 250,
+      "max_hp": 250,
+      "abilities": {
+        "teamup": {
+          "ready": true,
+          "charges": null
+        },
+        "swing": {
+          "ready": true,
+          "charges": 3
+        },
+        "pull": {
+          "ready": true,
+          "charges": null
+        },
+        "uppercut": {
+          "ready": true,
+          "charges": 2
+        },
+        "ult": {
+          "ready": false,
+          "charges": null
+        }
+      },
+      "webs": 5,
+      "detections": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1240.0,
+            646.0,
+            1321.0,
+            801.0
+          ],
+          "conf": 0.9,
+          "distance": null,
+          "tagged": false,
+          "track": 1,
+          "plate": false
+        }
+      ],
+      "on_target": null,
+      "coasting": []
+    },
+    "ms_decide": 26.97,
+    "decision_timing": {
+      "d": 10,
+      "processing_clock": "perf_counter_seconds",
+      "observation_clock": "loop_seconds",
+      "acquisition_t": 7.563431800022954,
+      "slot": 10,
+      "phase_t": 7.544668100017589,
+      "offer_perf": 186619.3808114,
+      "worker_start_perf": 186619.3820341,
+      "detection_tag_complete_perf": 186619.3843911,
+      "hud_complete_perf": 186619.4073997,
+      "brain_call_start_perf": 186619.4074057,
+      "brain_call_complete_perf": 186619.4090027,
+      "ready_publication_perf": 186619.4090264,
+      "first_reflex_consumption_perf": 186619.4101067,
+      "reflex_acquisition_t": 7.592809000023408
+    },
+    "decision_trace": {
+      "t": 7.563431800022954,
+      "decision_id": 10,
+      "source": "range_skill_model",
+      "reason": "model_event",
+      "probabilities": [
+        0.023687012493610382,
+        0.9763129949569702
+      ],
+      "intent": "RangeSkill",
+      "target": 1,
+      "web_cluster_request": "start",
+      "valid_until": 7.663431800022954,
+      "resources": {
+        "webs": 5,
+        "observed_t": 7.563431800022954
+      },
+      "selector_source": "scripted_brain_gate",
+      "movement_source": "scripted_controller"
+    },
+    "send_result": {
+      "observation_t": 7.592809000023408,
+      "attempted_t": 7.619487200019648,
+      "status": "returned",
+      "not_after": 7.630431800022953,
+      "release_at": 7.652198500004132,
+      "returned_t": 7.620983400003752
+    }
+  },
+  {
+    "t": 7.6212,
+    "note": "rangeskill:enemy",
+    "source": "range_skill_model",
+    "dets": [
+      [
+        1242,
+        634,
+        1320,
+        790
+      ],
+      [
+        854,
+        417,
+        890,
+        456
+      ]
+    ],
+    "ms": 10.72,
+    "pad": {
+      "lx": 0.0,
+      "ly": 1.0,
+      "rx": -0.05755832210188632,
+      "ry": 0.0,
+      "lt": 1.0,
+      "rt": 0,
+      "buttons": []
+    },
+    "ids": [
+      1,
+      2
+    ],
+    "coasting": [],
+    "target": 1,
+    "target_px": 8.1,
+    "observation_t": 7.621178000001237,
+    "proposed_pad": {
+      "lx": 0.0,
+      "ly": 1.0,
+      "rx": -0.05755832210188632,
+      "ry": 0.0,
+      "lt": 1.0,
+      "rt": 0,
+      "buttons": []
+    },
+    "range_skill_trace": {
+      "t": 7.621178000001237,
+      "observation_t": 7.621178000001237,
+      "execution_t": 7.641184300009627,
+      "execution_clock_valid": true,
+      "event": "step",
+      "decision_id": 10,
+      "target_id": 1,
+      "proposal": "start",
+      "valid_until": 7.663431800022954,
+      "resources": {
+        "webs": 5,
+        "observed_t": 7.563431800022954
+      },
+      "accepted": false,
+      "reason": "duplicate_accepted",
+      "cancel_reason": null,
+      "pulse_decision_id": 10,
+      "pulse_target_id": 1,
+      "pulse_press_until": 7.652198500004132,
+      "pulse_valid_until": 7.663431800022954,
+      "pulse_phase": "press",
+      "lt_down": true,
+      "press_edge": false,
+      "release_edge": false,
+      "movement_source": "scripted_range_approach_aim",
+      "ended_pulse_decision_id": null,
+      "pulse_outcome": null,
+      "offense_source": "accepted_range_skill_request",
+      "pad": {
+        "lx": 0.0,
+        "ly": 1.0,
+        "rx": -0.05755832210188632,
+        "ry": 0.0,
+        "lt": 1.0,
+        "rt": 0.0,
+        "buttons": []
+      }
+    },
+    "d": 10,
+    "send_result": {
+      "observation_t": 7.621178000001237,
+      "attempted_t": 7.641367800009903,
+      "status": "returned",
+      "not_after": 7.652198500004132,
+      "release_at": 7.652198500004132,
+      "returned_t": 7.642608800000744
+    }
+  },
+  {
+    "t": 12.617050800006837,
+    "type": "executor_release",
+    "reason": "send_failed",
+    "observation_t": 12.600140499998815,
+    "range_skill_trace": {
+      "t": 12.600140499998815,
+      "observation_t": 12.600140499998815,
+      "execution_t": 12.617050800006837,
+      "execution_clock_valid": true,
+      "event": "cancel",
+      "decision_id": null,
+      "target_id": null,
+      "proposal": null,
+      "valid_until": null,
+      "resources": null,
+      "accepted": false,
+      "reason": "send_failed",
+      "cancel_reason": "send_failed",
+      "pulse_decision_id": 54,
+      "pulse_target_id": 1,
+      "pulse_press_until": 12.648498700004536,
+      "pulse_valid_until": 12.649702400021487,
+      "pulse_phase": "none",
+      "lt_down": false,
+      "press_edge": false,
+      "release_edge": true,
+      "movement_source": "external_cancel",
+      "ended_pulse_decision_id": 54,
+      "pulse_outcome": "truncated",
+      "offense_source": null,
+      "pad": {
+        "lx": 0.0,
+        "ly": 0.0,
+        "rx": 0.0,
+        "ry": 0.0,
+        "lt": 0.0,
+        "rt": 0.0,
+        "buttons": []
+      }
+    },
+    "release_attempts": [
+      {
+        "attempted_t": 12.617091400024947,
+        "status": "returned",
+        "returned_t": 12.617112200008705
+      }
+    ],
+    "neutral_requested": true,
+    "preceding_send_result": {
+      "observation_t": 12.600140499998815,
+      "attempted_t": 12.615837300021667,
+      "status": "failed",
+      "not_after": 12.616702400021488,
+      "release_at": 12.648498700004536,
+      "returned_t": 12.617044400016312,
+      "error": "InputExpired('guarded input deadline expired at the actuator; input released')"
+    },
+    "release_returned": true
+  },
+  {
+    "t": 12.6001,
+    "note": "rangeskill:enemy",
+    "source": "range_skill_model",
+    "dets": [
+      [
+        1142,
+        461,
+        1439,
+        985
+      ]
+    ],
+    "ms": 12.83,
+    "type": "executor_send_failure",
+    "reason": "send_failed",
+    "ids": [
+      1
+    ],
+    "coasting": [],
+    "target": 1,
+    "target_px": 10.9,
+    "observation_t": 12.600140499998815,
+    "proposed_pad": {
+      "lx": 0.0,
+      "ly": 0.0,
+      "rx": 0.06259504269504067,
+      "ry": 0.0,
+      "lt": 1.0,
+      "rt": 0,
+      "buttons": []
+    },
+    "range_skill_trace": {
+      "t": 12.600140499998815,
+      "observation_t": 12.600140499998815,
+      "execution_t": 12.615498700004537,
+      "execution_clock_valid": true,
+      "event": "step",
+      "decision_id": 54,
+      "target_id": 1,
+      "proposal": "start",
+      "valid_until": 12.649702400021487,
+      "resources": {
+        "webs": 5,
+        "observed_t": 12.549702400021488
+      },
+      "accepted": true,
+      "reason": "accepted",
+      "cancel_reason": null,
+      "pulse_decision_id": 54,
+      "pulse_target_id": 1,
+      "pulse_press_until": 12.648498700004536,
+      "pulse_valid_until": 12.649702400021487,
+      "pulse_phase": "press",
+      "lt_down": true,
+      "press_edge": true,
+      "release_edge": false,
+      "movement_source": "scripted_range_approach_aim",
+      "ended_pulse_decision_id": null,
+      "pulse_outcome": null,
+      "offense_source": "accepted_range_skill_request",
+      "pad": {
+        "lx": 0.0,
+        "ly": 0.0,
+        "rx": 0.06259504269504067,
+        "ry": 0.0,
+        "lt": 1.0,
+        "rt": 0.0,
+        "buttons": []
+      }
+    },
+    "d": 54,
+    "state": {
+      "t": 12.549702400021488,
+      "frame": [
+        2560,
+        1440
+      ],
+      "hp": null,
+      "max_hp": null,
+      "abilities": {
+        "teamup": {
+          "ready": true,
+          "charges": null
+        },
+        "swing": {
+          "ready": true,
+          "charges": 3
+        },
+        "pull": {
+          "ready": true,
+          "charges": null
+        },
+        "uppercut": {
+          "ready": true,
+          "charges": 2
+        },
+        "ult": {
+          "ready": false,
+          "charges": null
+        }
+      },
+      "webs": 5,
+      "detections": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1146.0,
+            464.0,
+            1438.0,
+            985.0
+          ],
+          "conf": 0.9,
+          "distance": null,
+          "tagged": false,
+          "track": 1,
+          "plate": true
+        }
+      ],
+      "on_target": null,
+      "coasting": []
+    },
+    "ms_decide": 37.91,
+    "decision_timing": {
+      "d": 54,
+      "processing_clock": "perf_counter_seconds",
+      "observation_clock": "loop_seconds",
+      "acquisition_t": 12.549702400021488,
+      "slot": 60,
+      "phase_t": 12.544668100017589,
+      "offer_perf": 186624.3622484,
+      "worker_start_perf": 186624.3636294,
+      "detection_tag_complete_perf": 186624.3755278,
+      "hud_complete_perf": 186624.3996095,
+      "brain_call_start_perf": 186624.3996147,
+      "brain_call_complete_perf": 186624.4015417,
+      "ready_publication_perf": 186624.4015653,
+      "first_reflex_consumption_perf": 186624.4064066,
+      "reflex_acquisition_t": 12.600140499998815
+    },
+    "decision_trace": {
+      "t": 12.549702400021488,
+      "decision_id": 54,
+      "source": "range_skill_model",
+      "reason": "model_event",
+      "probabilities": [
+        0.004693707451224327,
+        0.9953063130378723
+      ],
+      "intent": "RangeSkill",
+      "target": 1,
+      "web_cluster_request": "start",
+      "valid_until": 12.649702400021487,
+      "resources": {
+        "webs": 5,
+        "observed_t": 12.549702400021488
+      },
+      "selector_source": "scripted_brain_gate",
+      "movement_source": "scripted_controller"
+    },
+    "send_result": {
+      "observation_t": 12.600140499998815,
+      "attempted_t": 12.615837300021667,
+      "status": "failed",
+      "not_after": 12.616702400021488,
+      "release_at": 12.648498700004536,
+      "returned_t": 12.617044400016312,
+      "error": "InputExpired('guarded input deadline expired at the actuator; input released')"
+    },
+    "file": "000054.jpg",
+    "i": 54
+  },
+  {
+    "t": 13.936009000026388,
+    "type": "executor_release",
+    "reason": "send_failed",
+    "observation_t": 13.908490900008474,
+    "range_skill_trace": {
+      "t": 13.908490900008474,
+      "observation_t": 13.908490900008474,
+      "execution_t": 13.936009000026388,
+      "execution_clock_valid": true,
+      "event": "cancel",
+      "decision_id": null,
+      "target_id": null,
+      "proposal": null,
+      "valid_until": null,
+      "resources": null,
+      "accepted": false,
+      "reason": "send_failed",
+      "cancel_reason": "send_failed",
+      "pulse_decision_id": 66,
+      "pulse_target_id": 1,
+      "pulse_press_until": 13.967440900018671,
+      "pulse_valid_until": 13.968078300001798,
+      "pulse_phase": "none",
+      "lt_down": false,
+      "press_edge": false,
+      "release_edge": true,
+      "movement_source": "external_cancel",
+      "ended_pulse_decision_id": 66,
+      "pulse_outcome": "truncated",
+      "offense_source": null,
+      "pad": {
+        "lx": 0.0,
+        "ly": 0.0,
+        "rx": 0.0,
+        "ry": 0.0,
+        "lt": 0.0,
+        "rt": 0.0,
+        "buttons": []
+      }
+    },
+    "release_attempts": [
+      {
+        "attempted_t": 13.936052500008373,
+        "status": "returned",
+        "returned_t": 13.936073100019712
+      }
+    ],
+    "neutral_requested": true,
+    "preceding_send_result": {
+      "observation_t": 13.908490900008474,
+      "attempted_t": 13.934779500006698,
+      "status": "failed",
+      "not_after": 13.935078300001798,
+      "release_at": 13.967440900018671,
+      "returned_t": 13.93600260000676,
+      "error": "InputExpired('guarded input deadline expired at the actuator; input released')"
+    },
+    "release_returned": true
+  },
+  {
+    "t": 13.9085,
+    "note": "rangeskill:enemy",
+    "source": "range_skill_model",
+    "dets": [
+      [
+        1132,
+        457,
+        1393,
+        985
+      ]
+    ],
+    "ms": 14.85,
+    "type": "executor_send_failure",
+    "reason": "send_failed",
+    "ids": [
+      1
+    ],
+    "coasting": [],
+    "target": 1,
+    "target_px": 17.5,
+    "observation_t": 13.908490900008474,
+    "proposed_pad": {
+      "lx": 0.0,
+      "ly": 0.0,
+      "rx": -0.08078261275056987,
+      "ry": 0.0,
+      "lt": 1.0,
+      "rt": 0,
+      "buttons": []
+    },
+    "range_skill_trace": {
+      "t": 13.908490900008474,
+      "observation_t": 13.908490900008474,
+      "execution_t": 13.934440900018672,
+      "execution_clock_valid": true,
+      "event": "step",
+      "decision_id": 66,
+      "target_id": 1,
+      "proposal": "start",
+      "valid_until": 13.968078300001798,
+      "resources": {
+        "webs": 5,
+        "observed_t": 13.868078300001798
+      },
+      "accepted": true,
+      "reason": "accepted",
+      "cancel_reason": null,
+      "pulse_decision_id": 66,
+      "pulse_target_id": 1,
+      "pulse_press_until": 13.967440900018671,
+      "pulse_valid_until": 13.968078300001798,
+      "pulse_phase": "press",
+      "lt_down": true,
+      "press_edge": true,
+      "release_edge": false,
+      "movement_source": "scripted_range_approach_aim",
+      "ended_pulse_decision_id": null,
+      "pulse_outcome": null,
+      "offense_source": "accepted_range_skill_request",
+      "pad": {
+        "lx": 0.0,
+        "ly": 0.0,
+        "rx": -0.08078261275056987,
+        "ry": 0.0,
+        "lt": 1.0,
+        "rt": 0.0,
+        "buttons": []
+      }
+    },
+    "d": 66,
+    "state": {
+      "t": 13.868078300001798,
+      "frame": [
+        2560,
+        1440
+      ],
+      "hp": null,
+      "max_hp": null,
+      "abilities": {
+        "teamup": {
+          "ready": true,
+          "charges": null
+        },
+        "swing": {
+          "ready": true,
+          "charges": 3
+        },
+        "pull": {
+          "ready": true,
+          "charges": null
+        },
+        "uppercut": {
+          "ready": true,
+          "charges": 2
+        },
+        "ult": {
+          "ready": false,
+          "charges": null
+        }
+      },
+      "webs": 5,
+      "detections": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1126.0,
+            458.0,
+            1391.0,
+            985.0
+          ],
+          "conf": 0.9,
+          "distance": null,
+          "tagged": false,
+          "track": 1,
+          "plate": true
+        }
+      ],
+      "on_target": null,
+      "coasting": []
+    },
+    "ms_decide": 38.43,
+    "decision_timing": {
+      "d": 66,
+      "processing_clock": "perf_counter_seconds",
+      "observation_clock": "loop_seconds",
+      "acquisition_t": 13.868078300001798,
+      "slot": 73,
+      "phase_t": 13.84466810001759,
+      "offer_perf": 186625.6772916,
+      "worker_start_perf": 186625.6786173,
+      "detection_tag_complete_perf": 186625.6928944,
+      "hud_complete_perf": 186625.715986,
+      "brain_call_start_perf": 186625.7159915,
+      "brain_call_complete_perf": 186625.717043,
+      "ready_publication_perf": 186625.7170658,
+      "first_reflex_consumption_perf": 186625.7253486,
+      "reflex_acquisition_t": 13.908490900008474
+    },
+    "decision_trace": {
+      "t": 13.868078300001798,
+      "decision_id": 66,
+      "source": "range_skill_model",
+      "reason": "model_event",
+      "probabilities": [
+        0.004699799232184887,
+        0.9953001737594604
+      ],
+      "intent": "RangeSkill",
+      "target": 1,
+      "web_cluster_request": "start",
+      "valid_until": 13.968078300001798,
+      "resources": {
+        "webs": 5,
+        "observed_t": 13.868078300001798
+      },
+      "selector_source": "scripted_brain_gate",
+      "movement_source": "scripted_controller"
+    },
+    "send_result": {
+      "observation_t": 13.908490900008474,
+      "attempted_t": 13.934779500006698,
+      "status": "failed",
+      "not_after": 13.935078300001798,
+      "release_at": 13.967440900018671,
+      "returned_t": 13.93600260000676,
+      "error": "InputExpired('guarded input deadline expired at the actuator; input released')"
+    }
+  },
+  {
+    "t": 16.56003810002585,
+    "type": "executor_release",
+    "reason": "max_time",
+    "observation_t": 16.554688400006853,
+    "range_skill_trace": {
+      "t": 16.530347400024766,
+      "observation_t": 16.530347400024766,
+      "execution_t": 16.56003810002585,
+      "execution_clock_valid": true,
+      "event": "cancel",
+      "decision_id": null,
+      "target_id": null,
+      "proposal": null,
+      "valid_until": null,
+      "resources": null,
+      "accepted": false,
+      "reason": "max_time",
+      "cancel_reason": "max_time",
+      "pulse_decision_id": null,
+      "pulse_target_id": null,
+      "pulse_press_until": null,
+      "pulse_valid_until": null,
+      "pulse_phase": "none",
+      "lt_down": false,
+      "press_edge": false,
+      "release_edge": false,
+      "movement_source": "external_cancel",
+      "ended_pulse_decision_id": null,
+      "pulse_outcome": null,
+      "offense_source": null,
+      "pad": {
+        "lx": 0.0,
+        "ly": 0.0,
+        "rx": 0.0,
+        "ry": 0.0,
+        "lt": 0.0,
+        "rt": 0.0,
+        "buttons": []
+      }
+    },
+    "release_attempts": [
+      {
+        "attempted_t": 16.560105300013674,
+        "status": "returned",
+        "returned_t": 16.56021470000269
+      }
+    ],
+    "neutral_requested": true,
+    "preceding_send_result": {
+      "observation_t": 16.530347400024766,
+      "attempted_t": 16.553263700014213,
+      "status": "returned",
+      "returned_t": 16.55453120000311
+    },
+    "release_returned": true
+  }
+]

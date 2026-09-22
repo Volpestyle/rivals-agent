@@ -1,0 +1,28 @@
+{
+  "rows": 405,
+  "normal_returned_rows": 400,
+  "metadata_ticks": 402,
+  "failed_send_origins": 2,
+  "executor_releases": 3,
+  "decisions": 90,
+  "start": 35,
+  "no_new_start": 18,
+  "refusals": 37,
+  "controller_accepted_ids": [
+    10,
+    54,
+    66
+  ],
+  "returned_LT_owner_ids": [
+    10,
+    10
+  ],
+  "failed_owners": [
+    54,
+    66
+  ],
+  "schedule_reasons": {
+    "offered": 90,
+    "first_acquisition_late": 10
+  }
+}

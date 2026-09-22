@@ -1,0 +1,200 @@
+[
+  {
+    "saved": "000007.jpg",
+    "observation_t": 7.321084000024712,
+    "nearest": [
+      {
+        "mad": 18.477080459770114,
+        "pts": 10.1,
+        "file": "cast-007.jpg",
+        "pts_minus_observation": 2.778915999975288
+      },
+      {
+        "mad": 24.896850574712644,
+        "pts": 10.083333333333334,
+        "file": "cast-006.jpg",
+        "pts_minus_observation": 2.762249333308622
+      }
+    ]
+  },
+  {
+    "saved": "000008.jpg",
+    "observation_t": 7.422216000006301,
+    "nearest": [
+      {
+        "mad": 9.274574712643679,
+        "pts": 10.2,
+        "file": "cast-013.jpg",
+        "pts_minus_observation": 2.777783999993698
+      },
+      {
+        "mad": 19.325632183908045,
+        "pts": 10.183333333333334,
+        "file": "cast-012.jpg",
+        "pts_minus_observation": 2.7611173333270322
+      }
+    ]
+  },
+  {
+    "saved": "000009.jpg",
+    "observation_t": 7.533058100001654,
+    "nearest": [
+      {
+        "mad": 0.4555402298850575,
+        "pts": 10.3,
+        "file": "cast-019.jpg",
+        "pts_minus_observation": 2.766941899998347
+      },
+      {
+        "mad": 15.90016091954023,
+        "pts": 10.316666666666666,
+        "file": "cast-020.jpg",
+        "pts_minus_observation": 2.7836085666650128
+      }
+    ]
+  },
+  {
+    "saved": "000010.jpg",
+    "observation_t": 7.642751400009729,
+    "nearest": [
+      {
+        "mad": 0.6151264367816092,
+        "pts": 10.416666666666666,
+        "file": "cast-026.jpg",
+        "pts_minus_observation": 2.773915266656937
+      },
+      {
+        "mad": 6.831264367816092,
+        "pts": 10.4,
+        "file": "cast-025.jpg",
+        "pts_minus_observation": 2.7572485999902714
+      }
+    ]
+  },
+  {
+    "saved": "000011.jpg",
+    "observation_t": 7.77198380001937,
+    "nearest": [
+      {
+        "mad": 3.769080459770115,
+        "pts": 10.533333333333333,
+        "file": "cast-033.jpg",
+        "pts_minus_observation": 2.761349533313963
+      },
+      {
+        "mad": 7.381632183908046,
+        "pts": 10.55,
+        "file": "cast-034.jpg",
+        "pts_minus_observation": 2.7780161999806303
+      }
+    ]
+  },
+  {
+    "saved": "000012.jpg",
+    "observation_t": 7.880140699999174,
+    "nearest": [
+      {
+        "mad": 0.5819080459770115,
+        "pts": 10.65,
+        "file": "cast-040.jpg",
+        "pts_minus_observation": 2.7698593000008263
+      },
+      {
+        "mad": 6.060183908045977,
+        "pts": 10.666666666666666,
+        "file": "cast-041.jpg",
+        "pts_minus_observation": 2.786525966667492
+      }
+    ]
+  },
+  {
+    "saved": "000013.jpg",
+    "observation_t": 8.011203400004888,
+    "nearest": [
+      {
+        "mad": 1.793793103448276,
+        "pts": 10.766666666666667,
+        "file": "cast-047.jpg",
+        "pts_minus_observation": 2.7554632666617795
+      },
+      {
+        "mad": 3.0554942528735634,
+        "pts": 10.783333333333333,
+        "file": "cast-048.jpg",
+        "pts_minus_observation": 2.7721299333284453
+      }
+    ]
+  },
+  {
+    "saved": "000014.jpg",
+    "observation_t": 8.117208400013624,
+    "nearest": [
+      {
+        "mad": 1.3859540229885057,
+        "pts": 10.883333333333333,
+        "file": "cast-054.jpg",
+        "pts_minus_observation": 2.766124933319709
+      },
+      {
+        "mad": 2.239632183908046,
+        "pts": 10.9,
+        "file": "cast-055.jpg",
+        "pts_minus_observation": 2.7827915999863766
+      }
+    ]
+  },
+  {
+    "saved": "000054.jpg",
+    "observation_t": 12.600140499998815,
+    "nearest": [
+      {
+        "mad": 2.946896551724138,
+        "pts": 19.4,
+        "file": "end-002.jpg",
+        "pts_minus_observation": 6.799859500001183
+      },
+      {
+        "mad": 3.3706896551724137,
+        "pts": 19.5,
+        "file": "end-003.jpg",
+        "pts_minus_observation": 6.899859500001185
+      }
+    ]
+  },
+  {
+    "saved": "000066.jpg",
+    "observation_t": 13.93639900002745,
+    "nearest": [
+      {
+        "mad": 5.610758620689655,
+        "pts": 16.7,
+        "file": "failed-017.jpg",
+        "pts_minus_observation": 2.7636009999725495
+      },
+      {
+        "mad": 9.684045977011495,
+        "pts": 16.8,
+        "file": "failed-018.jpg",
+        "pts_minus_observation": 2.863600999972551
+      }
+    ]
+  },
+  {
+    "saved": "000088.jpg",
+    "observation_t": 16.432990800007246,
+    "nearest": [
+      {
+        "mad": 9.052666666666667,
+        "pts": 15.3,
+        "file": "failed-003.jpg",
+        "pts_minus_observation": -1.1329908000072457
+      },
+      {
+        "mad": 10.775701149425288,
+        "pts": 19.3,
+        "file": "end-001.jpg",
+        "pts_minus_observation": 2.8670091999927543
+      }
+    ]
+  }
+]
