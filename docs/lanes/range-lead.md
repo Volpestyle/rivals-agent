@@ -56,6 +56,32 @@ The next source task inspects at most six new bins from the same authorized span
 for target-agreed starts and ammo-available non-starts. This does not expand
 admission, rewrite the first packet or request standing-idle footage.
 
+## Accepted scripted cast probe seam
+
+The probe calls `Loop(..., brain_name="range-cast-probe", decision_hz=10,
+max_s<=10)` without a model or checkpoint. It shares the reviewed event executor,
+expiry/refusal/release records and disabled warmup/keepalive behavior. Its cadence
+is explicitly 100 ms; the constructor refuses a learned `range_receipt` on this
+scripted entry. Model-only CLI routes and receipt requirements remain unchanged.
+
+The Controller trace now calls its own authorization `accepted_range_skill_request`;
+the caller's brain/decision source records whether the producer is learned or a
+scripted calibration schedule. The executor alone cannot certify that provenance.
+This is a one-field trace clarification with no change to pulse execution.
+
+Root reproduced the entry/cadence/duration failures before repair, then the
+inappropriate model-receipt case. Focused tests pass (26, four unchanged Torch
+cases skipped); the adjacent controller/Live/Loop suite passed 223 before adding
+the last receipt and cross-mode controls. Same range-review must review these
+three source/test files separately from the producer's bounded probe. Independent
+review accepted the frozen seam: 14 delta tests plus actual temporary RunLog
+start/non-start/invalid-legacy-intent cases. A producer whose policy property
+raises still runs this scripted entry, while falsy model receipts and invalid
+duration/cadence refuse. Root adopts the narrow software acceptance. The separate
+probe caller, its schedule and startup remain unaccepted pending their handoff;
+no calibration input is authorized by this seam alone. The first human fit
+remains numerical-only and has no deployment binding.
+
 ## Event policy and caller acceptance, 2026-09-22
 
 Independent same-reviewer acceptance covers the new event policy/consumer,

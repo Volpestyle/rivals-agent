@@ -647,7 +647,7 @@ class Controller:
             "movement_source": "external_cancel" if event == "cancel" else "scripted_range_approach_aim" if intent is not None else "legacy_mode",
             "ended_pulse_decision_id": ended.decision_id if ended else None,
             "pulse_outcome": outcome,
-            "offense_source": "accepted_learned_web_start" if pulse else None,
+            "offense_source": "accepted_range_skill_request" if pulse else None,
             "pad": dict(out),
         }
         self._range_lt = down

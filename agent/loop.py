@@ -381,15 +381,19 @@ class Loop:
                  reflex_hz=REFLEX_HZ, decision_hz=DECISION_HZ, max_s=MAX_S, keepalive_s=KEEPALIVE_S, warmup=True,
                  stale_s=STALE_S, scoreboard=True, scoreboard_every_s=None, brain_name="scripted", tracker=None, cooldowns="unknown",
                  patch=None, start=None, range_receipt=None, execution_clock=None):
-        self.range_skill_mode = brain_name == "range-skill"
-        if brain_name in RANGE_BRAINS:
-            # A model's neutral decision must not become the scripted warmup/idle attack.
+        probe = brain_name == "range-cast-probe"
+        if probe and range_receipt is not None:
+            raise ValueError("scripted cast calibration cannot carry a learned model receipt")
+        self.range_skill_mode = brain_name == "range-skill" or probe
+        if brain_name in RANGE_BRAINS or probe:
+            # Neither model refusal nor a calibration non-start permits fallback attacks.
             warmup, keepalive_s = False, None
-            period = decide.policy.spec.period_s
+            period = .1 if probe else decide.policy.spec.period_s
             if not math.isclose(decision_hz * period, 1.0, abs_tol=1e-9):
-                raise ValueError("range policy decision cadence differs from checkpoint")
-            if not math.isfinite(max_s) or not 0 < max_s <= 20:
-                raise ValueError("range policy pilot requires a duration in (0, 20] seconds")
+                raise ValueError("range decision cadence differs from its declared period")
+            limit = 10 if probe else 20
+            if not math.isfinite(max_s) or not 0 < max_s <= limit:
+                raise ValueError(f"range execution requires a duration in (0, {limit}] seconds")
         if cooldowns not in COOLDOWNS:
             raise ValueError(f"cooldowns must be one of {COOLDOWNS}, not {cooldowns!r}")
         self.patch = patch if patch is not None else kit_patch()   # the run's own metadata: the kit's current patch, or unknown

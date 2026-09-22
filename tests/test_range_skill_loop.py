@@ -32,6 +32,46 @@ class EventBrain:
         return RangeSkill(target, self.request, self.n, state.t + .1, resources)
 
 
+class ScriptedProbeBrain:
+    """A plain callable with no model, checkpoint, policy or binding."""
+    source = "scripted_calibration_schedule"
+
+    def __init__(self):
+        self.n = 0
+
+    def __call__(self, state, memory):
+        self.n += 1
+        if not state.detections:
+            return Idle()
+        return RangeSkill(state.detections[0], "start", self.n, state.t + .1,
+                          RangeSkillResources(state.webs, state.t))
+
+
+def test_scripted_probe_uses_guarded_executor_without_model_provenance(tmp_path):
+    out = tmp_path / "probe"
+    pad = FakePad()
+    run = runtime.Loop(Frames(timeline(.65, dets=[BOT])), pad, readers(), ScriptedProbeBrain(),
+                       brain_name="range-cast-probe", max_s=1, keepalive_s=.01,
+                       scoreboard=False, log=RunLog(out, save_fps=0, imwrite=jpeg))
+    result = run.run()
+    rows = [json.loads(s) for s in (out / "frames.jsonl").read_text().splitlines()]
+    traces = [r["range_skill_trace"] for r in rows if "range_skill_trace" in r]
+    assert run.range_skill_mode and not run.warmup and result["keepalives"] == 0
+    assert result["brain"] == "range-cast-probe" and result.get("range_receipt") is None
+    assert any(t["accepted"] for t in traces)
+    assert {t["offense_source"] for t in traces if t["offense_source"]} == {"accepted_range_skill_request"}
+    assert all(not p["rt"] and not p["buttons"] for p in sends(pad))
+    assert result["executor_events"] and pad.state == runtime.NEUTRAL
+
+
+@pytest.mark.parametrize("kwargs", [{"max_s": 10.01}, {"decision_hz": 5},
+                                   {"range_receipt": {"checkpoint_sha256": "fake"}}])
+def test_scripted_probe_enforces_own_duration_and_cadence_without_policy(kwargs):
+    with pytest.raises(ValueError):
+        runtime.Loop(Frames([]), FakePad(), readers(), ScriptedProbeBrain(),
+                     brain_name="range-cast-probe", **{"max_s": 1, **kwargs})
+
+
 def event_loop(brain, **kwargs):
     pad = FakePad()
     return runtime.Loop(Frames(timeline(.65, dets=[BOT])), pad, readers(), brain,
@@ -81,10 +121,11 @@ def test_old_offensive_gate_intent_is_refused_in_new_mode():
     assert all(p == runtime.NEUTRAL for p in sends(pad))
 
 
-def test_range_gap_ends_event_episode_without_resuming_request():
+@pytest.mark.parametrize("mode", ["range-skill", "range-cast-probe"])
+def test_range_gap_ends_event_episode_without_resuming_request(mode):
     pad = FakePad()
     run = runtime.Loop(Frames(timeline(.65, dets=[BOT], ok=lambda t: t != .25)), pad,
-                       readers(), EventBrain("start"), brain_name="range-skill",
+                       readers(), EventBrain("start"), brain_name=mode,
                        max_s=1, scoreboard=False)
     result = run.run()
     assert result["stop"] == "range_lost" and run.last_t == .25
@@ -162,7 +203,7 @@ def test_actual_decider_latency_does_not_burn_every_fresh_start(threaded):
     assert pad.state == runtime.NEUTRAL
 
 
-def delayed_event_run(*, decision_delay=0, after_controller_delay=0, pad=None, gap=False):
+def delayed_event_run(*, decision_delay=0, after_controller_delay=0, pad=None, gap=False, mode="range-skill"):
     clock = [0.0]
 
     class Source:
@@ -195,13 +236,14 @@ def delayed_event_run(*, decision_delay=0, after_controller_delay=0, pad=None, g
 
     log, pad = MemoryLog(), pad or FakePad()
     run = runtime.Loop(Source(), pad, readers(), Brain(), controller=Controller(), log=log,
-                       brain_name="range-skill", max_s=1, scoreboard=False)
+                       brain_name=mode, max_s=1, scoreboard=False)
     return run, pad, log
 
 
 @pytest.mark.parametrize("delay, expected_attack", [(0, True), (.05, True), (.08, False), (.15, False)])
-def test_execution_clock_accounts_for_decision_work_without_retiming_observations(delay, expected_attack):
-    run, pad, log = delayed_event_run(decision_delay=delay)
+@pytest.mark.parametrize("mode", ["range-skill", "range-cast-probe"])
+def test_execution_clock_accounts_for_decision_work_without_retiming_observations(delay, expected_attack, mode):
+    run, pad, log = delayed_event_run(decision_delay=delay, mode=mode)
     run.run()
     assert any(p["lt"] for p in sends(pad)) is expected_attack
     decision = run.decider.latest
