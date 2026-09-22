@@ -3,6 +3,19 @@
 Lead: w2:p1. Technical plan: [learning-plan.md](../learning-plan.md).
 Acceptance/results: VUH-1311, VUH-1346 and VUH-1319 in Linear.
 
+## Current direction: fluid execution, 2026-09-22
+
+James rejected standing Idle as the default contrast for Spider-Man play.
+VUH-1349 is canceled. The legacy binary policy and failed visual packet below
+retain their historical meaning; no labels or checkpoint classes are remapped.
+The next experiment learns individual web starts while aim/movement run
+independently, under [the event contract](range-policy-reframe.md). Its changed
+consumer/controller and event labels still require independent review.
+Priorities are mechanics, useful picks, escape, fluent swings/momentum/bhops and
+teammate support. Imitation initializes the agent; later bounded RL may improve
+outcomes and learn new techniques as the action space expands. The caller
+contract below describes the delivered legacy mode, not a new deployment receipt.
+
 ## Accepted software delta, 2026-09-22
 
 Independent `range-review` examined the policy, typed consumer, loop, controller

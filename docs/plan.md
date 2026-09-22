@@ -60,12 +60,17 @@ only once an outcome can be measured reliably.
 - **Where it can be tested.** Execution in the practice range; tactics in custom games
   against AI with no human in the lobby. Neither establishes performance against humans,
   and scope item 3 keeps the agent out of every mode where that could be tested.
-- **First visible learned milestone (2026-09-22).** Learn Idle/Engage delegation
-  timing from reviewed human demonstrations, then defeat the designated bot in at
+- **First visible learned milestone (2026-09-22, revised).** Learn individual
+  Web-Cluster start timing during natural moving gameplay, then defeat the designated bot in at
   least eight of ten scheduled 20-second practice-range trials, with all failures
-  retained, matched scripted trials and original video. Target selection, aim and
-  combos remain scripted in this first experiment; learned mechanics and escape
-  remain later capabilities. See the [pilot contract](learning-plan.md#first-visible-learned-range-milestone-2026-09-22).
+  retained, matched scripted trials and original video. Target selection, aim,
+  guarded approach and bounded pulse delivery remain scripted initially; each
+  offensive start must come from the learned policy. No-new-cast is independent
+  of movement and is not standing Idle. The staged-wait recording request is
+  canceled. Full mechanics, valuable picks, injured escape, fluent swings/bhops
+  and teammate assistance remain explicit capabilities. Demonstrations initialize
+  behavior; later outcome-driven experiments can discover better execution once
+  those controls are learnable. See the [pilot contract](learning-plan.md#first-visible-learned-range-milestone-2026-09-22).
 - **Human execution refactor (2026-09-21).** Retain this repository. Import explicitly
   reviewed OBS sessions, align actual decoded frames to logged packet timestamps, and
   train a temporal action-chunk baseline from causal frame history and native controls.

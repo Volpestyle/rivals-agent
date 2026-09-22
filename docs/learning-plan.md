@@ -7,12 +7,18 @@ target selection, positioning, engagement, ability sequences, retreat and recove
 DayMR and ReqMR are James's selected expert sources. Their rank is not independently
 verified; channel titles are claims, not leaderboard evidence.
 
-The first learned policy chooses an intent from recent frame and event history;
-a fixed visible-target selector supplies its target initially. The existing
-calibrated controller executes it. This preserves the useful
-capture, perception, replay and control work while making the tactical decisions
-trainable. Jev is an optional baseline or annotation assistant, not the learning
-mechanism. Inference calls do not update its weights from outcomes.
+James's September 22 priorities are mechanical execution, finding valuable picks,
+escaping effectively, fluent traversal and helping teammates. Traversal means
+smooth swings, momentum, bhops and movement transitions, not only route selection.
+These behaviors overlap: a player can move and scan while firing or deciding to
+help an ally. The policy must not collapse normal play into attack versus standing
+still. Neutral output remains a fault/refusal response, not a required human class.
+
+The first mechanical policy learns individual Web-Cluster starts from recent
+causal observations, with a fixed visible-target selector and independently
+updated scripted aim/movement. The larger policy will learn execution and
+movement as well as tactical choices. Jev remains an optional baseline or
+annotation assistant; inference alone does not update its weights from outcomes.
 
 Public VODs do not supply exact motor labels. James has now offered expert-level
 technical execution demonstrations on keyboard and mouse, so paired motor learning
@@ -39,30 +45,36 @@ exact checkpoint reload and Windows loading are verified; real human admission
 and learned gameplay are not yet accepted. Linear now carries the active goal:
 [VUH-1311](https://linear.app/vuhlp/issue/VUH-1311).
 
-The first executable experiment learns **Idle/Engage delegation timing** from
-reviewed human examples using five causal observations at 10 Hz. The fixed target
-selector and calibrated controller still supply aim, approach and combos. This
-is a narrow experiment on the path to James's execution quality; it does not
-claim learned motor control, target choice, swinging or full-match competence.
-Those capabilities remain E/F below. KBM labels never become pad values by fiat.
+The first executable experiment now learns **Web-Cluster start timing**, using
+five causal observations at 10 Hz. `start_web_cluster` requests one bounded pulse;
+`no_new_web_cluster` requests no new pulse while aim/movement continue independently.
+An ongoing pulse can finish normally. No-new-cast examples can contain scanning,
+traversal, recovery or another ability. The controller supplies aim, guarded
+approach and pulse delivery; it must not script an offensive fallback. This
+experiment does not yet learn full combos, swing control, target value or team play.
+The [event contract](lanes/range-policy-reframe.md) names the new version and the
+controller boundary that must be implemented and independently reviewed.
 
-Admission (VUH-1309) must establish timing, control/settings provenance and
-interval suitability, then separately review the semantic projection and causal
-target correspondence needed by VUH-1346. Offensive button presence alone cannot
-label Engage; movement, swing, retreat and unknown controls cannot label Idle.
-James's existing two selections share one session group. VUH-1347 requests a
-separate validation session; a train-only diagnostic can precede it, but cannot
-establish generalization or authorize live reliance.
+The prior Idle/Engage head is a legacy synthetic diagnostic. Its frozen four-row
+[visual candidate contract](visual-range-supervision.md) remains historical
+evidence: four unknown labels and zero admitted Examples, unchanged. That failed
+experiment exposed real perception errors and a poor task definition. It does
+not establish that normal moving gameplay lacks useful supervision. VUH-1349's
+staged-wait recording request is canceled; stationary neutral support is no longer
+a training prerequisite. Old checkpoint classes are never silently reinterpreted.
 
-The earlier 22:24:54 physical recording now supplies inspected normal-resource
-gameplay before its settings menu. A bounded
-[visual-supervision candidate](visual-range-supervision.md) can use that source
-without assigning abilities from raw controls or backdating the later recording's
-motor settings. It retains unknowns, actual causal perception/target output,
-independent example review and the existing runtime gates. A reconstruction-only
-schema expansion is parked. The concrete support question is whether any true
-neutral future intervals exist alongside usable offensive examples; traversals
-and action recovery do not qualify. Both recordings share the evening group.
+VUH-1309 next reviews a small event-onset/non-onset packet from the already
+authorized earlier 22:24:54 normal-resource pre-menu span. Require observed cast
+identity, bracketed onset, full label-interval coverage and the same causal
+selected target; retain unknowns. Resource changes are evidence to inspect, not
+automatic ability or intent labels. Use independently accepted perception, the
+original's accepted timing/build evidence and explicit unknown earlier motor
+settings. The unchanged native KBM importer and runtime pad binding remain
+separate authorities. A reconstruction-only schema expansion stays parked.
+
+Both recordings share the evening group. A train-only diagnostic may start once
+its event examples are reviewed; VUH-1347 remains independent-session validation
+for generalization and accepted live reliance, not a prerequisite to the first fit.
 
 Predeclared first pilot: **ten scheduled trials**, each with a verified ready
 start and a 20-second deadline, at least eight audited designated-bot completions
@@ -130,6 +142,22 @@ bidirectional SSH, checked relocation of original recordings and checkpoint retu
 
 ## Roadmap and advancement gates
 
+Demonstrations initialize behavior; they do not limit what the agent may learn.
+After a competent bounded imitation policy and measured outcomes exist, permit
+reward-driven exploration of its executable choices. Keep improvements only
+when they transfer to untouched starts or encounters. The first web head can
+discover timing changes, but cannot discover swing or bhop techniques while
+those controls are fixed. E therefore expands learned execution and movement
+parameters; F adds ally/threat/objective context. Avoid a permanent library of
+fixed combos masquerading as learned mechanics, and avoid rewards for novelty,
+constant movement or damage farming in place of useful outcomes.
+
+This imitation-to-RL direction has precedent in [VPT](https://arxiv.org/abs/2206.11795);
+combining reference behavior with task objectives is also demonstrated by
+[DeepMimic](https://arxiv.org/abs/1804.02717). These inform the design, not a claim
+that their results or data efficiency transfer to this game. Measure usable
+episodes per hour on our real game instance before choosing the RL algorithm or scale.
+
 The roadmap advances on evidence, not footage hours. Current evidence includes
 two inspected pilot clips, nine acquired guides (about 106 minutes), and about
 60 raw minutes from four VOD sessions; raw duration is not accepted training
@@ -150,11 +178,11 @@ not an exhaustive archive.
 | Milestone | Concrete result | Gate before advancing |
 |---|---|---|
 | A. Trust the examples and measurements | Corrected HUD events, per-frame visibility, reviewed imitation suitability, whole-session splits; paired human keyboard/mouse demonstrations and repeatable range episodes | Hand-check VOD event classes and timing; preserve unknowns. Verify human input/video alignment, focus continuity and recorded settings. Demonstrate start, terminal outcome, interruption and reset alignment on recorded episodes. Data quality gates imitation; episode/reward quality separately gates RL. |
-| B. First imitation policy | A locally trained temporal intent policy, using the fixed live target selector and existing controller | Beat a majority-label baseline on held-out sessions without hiding rare-action failures; compare the scripted policy where inputs are comparable. Measure runtime latency and inspect range transfer failures. Offline agreement alone does not establish gameplay improvement. |
+| B. First imitation policy | A temporal mechanical event policy, initially learning web starts alongside independently running aim/movement | Compare supported starts/non-starts, onset timing and rare-event behavior with never/always-start and comparable scripted baselines on held-out sessions. Measure runtime latency and actual range outcomes. No standing-idle class requirement. |
 | C. Corrections from our own play | Reviewed execution/navigation corrections and a retrained imitation checkpoint; combat retreat/recovery examples require F's fighting environment | Compare against B on untouched evaluation sessions and bounded live scenarios. Accept demonstrated improvement; ambiguous failures stay out of positive imitation labels. This loop continues alongside later milestones. |
 | D. First reinforcement-learning experiment | Fine-tune a trainable option policy on one bounded range encounter, starting from an imitation checkpoint with demonstrated range competence | Reward audit below passes; reset and episode recording work; freeze perception/controller/target selector for comparison. Retain the RL checkpoint only if held-out encounter outcomes improve over its starting checkpoint, not merely its training return. |
-| E. Learned target choice, positioning and swinging | Observable target/anchor outputs with a working executor; later, learned swing execution from synchronized video/input demonstrations | Evaluate target choices separately from intent, and swing destination success, time, charge use and collisions separately from combat. Demonstrate transfer to new starts/routes. Guide narration alone cannot supply stick trajectories. |
-| F. Tactical learning in AI-only custom games | Imitation and then RL for approach, target choice, engage/escape and objective play in a fighting environment | Verified AI-only lobby navigation/guard, episode/reset flow and outcome readers; comparable live/demo entities for learned target outputs. Compare frozen baselines on match wins and objective outcomes across repeated games, with uncertainty reported. |
+| E. Learned execution, target choice and fluent traversal | Trainable ability sequencing, aim/movement, swing release/jump timing and bhop transitions through measured executors; observable targets/destinations | Evaluate each learned output separately, including smooth transitions, observed momentum retention, arrival, time, charge use and collisions/falls. Transfer to new starts. Explore better execution within that controllable space; guide narration cannot supply motor labels. |
+| F. Tactical learning in AI-only custom games | Opportunity selection, pick commitment, injured escape/re-entry, teammate assistance and objectives through imitation then RL | Verified AI-only lobby/guard and episode/outcome flow; observed ally/threat context. Evaluate peel/protection and missed support, survival and objectives alongside wins. Kill counts alone cannot certify team value. |
 
 These are dependencies, not six serial waits. Reward measurement starts during A;
 E's recorder and controller work also starts now. D can test narrow range learning
@@ -862,14 +890,15 @@ approved initial $100 cloud allowance governed by the compute section below.
 
 ### First RL experiment: implementation plan
 
-This is the implementation contract for VUH-1321, not a claim that RL is running.
-**VUH-1325's live-input freeze is a hard prerequisite:** the lead must accept
-the integrated input-safety fixes after the independent fault-injection rerun.
-Offline trainer, reward and replay work can proceed while live collection is frozen.
-This gate covers every launch surface, including `agent.server` / `agent.session`
-and external agents requesting a sitting. A token or loopback bind does not prove
-input safety or acquire the single-desktop driver. Those paths belong in the
-integrated re-review; a trainer cannot bypass the freeze by launching through them.
+The detailed option-PPO design below is a historical proposal, not implemented RL
+or the current action contract. September 22's event reframe supersedes its fixed
+Idle/Search/Engage vocabulary and encoder/history assumptions. Before implementing
+D, bind the actual competent imitation checkpoint, reviewed executable outputs
+and measured collection budget; retain the reward/reset/credit audit below.
+VUH-1325's original input findings are fixed and independently accepted. There is
+no blanket freeze on unchanged reviewed paths; changed live boundaries still
+require review and the single desktop driver. No alternative launch path bypasses
+those constraints. Algorithm selection remains contingent on measured throughput.
 
 The concrete goal is to improve completion of one bounded, designated-target
 range encounter relative to the same imitation checkpoint and controller.
