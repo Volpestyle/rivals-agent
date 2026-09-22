@@ -476,8 +476,8 @@ Keep observed movement/attack separate from inferred purpose; ambiguous travel
 retains alternatives or unknown. A future-action forecast is a distinct label,
 not a hindsight-corrected current purpose. Control loss also differs from inability
 to observe purpose: future annotation distinguishes actor eligibility from label
-observability. Claude assigns the primary annotator; Codex owns the second pass,
-comparison and acceptance. This tranche does not block B0.
+observability. The lead assigns independent annotator seats and owns comparison
+and acceptance. This tranche does not block B0.
 
 **Completed audit: format-5 purpose tranche 2.** Both independent passes cover
 24 development windows (12 per creator) from the two promoted train sections.
@@ -499,13 +499,33 @@ adjudication does not rewrite agreement numbers. The fresh adjudicator shares a
 model family with the primary and is fallible; root's spot checks and exposure
 limitations are disclosed in the report.
 
-**Training implication:** ongoing engagement is the strongest observed purpose.
-Recognizing an existing fight does not establish a policy for deciding to start
-one. Travel retains approach/search/reposition/escape ambiguity; full HP alone
-cannot exclude disengage, and visible enemies cannot exclude information seeking.
-The tranche does not establish a six-class training set, a sufficiently supported
-escape class, or target choice. Accept the audited labels as development evidence;
-no fit or additional tranche follows without a specified task and support gate.
+**Training implication:** ongoing engagement is the strongest supported label in
+this sampled set. Recognizing an existing fight does not establish a policy for
+deciding to start one. Observable approach toward visible enemies, tracking and
+preparation to attack can support an engagement inference before an exchange
+begins; they must not be discarded merely because repositioning is also occurring.
+Keep compatible behaviour labels separate from inferred purpose and retain unknowns
+where the evidence is ambiguous. The tranche does not establish a six-class
+training set, a sufficiently supported escape class, or target choice. No fit
+follows without a specified task and support gate.
+
+**Option R is accepted as a bounded activity requalification.** The two fresh
+context-only passes agree on 15/17 activity judgments. Controls add no examples.
+Pt2-05 gains settled-noncombat support and pt2-22 gains ongoing-exchange support;
+ordinary support is **Day 4 positive / 1 negative, Req 6 / 0**. At 22 the shared
+opponent-directed shot supports the label while incoming-fire attribution remains
+unresolved. At 05 settled local traversal does not mean idle intent or no enemies
+elsewhere. Pt2-04's special state and 08/13's activity disagreements stay unresolved.
+Prior purpose sets and frozen source judgments remain unchanged. The additive
+acceptance is `data/experiments/purpose-task-v1/requalification/acceptance/`;
+training remains unauthorized and neither gate passes.
+
+The next task specification retains observable, compatible behaviours rather than
+forcing exclusive purpose classes. Context-only judgments and any later
+hindsight-corroborated targets remain distinct; future evidence never enters model
+inputs, and split purging includes label look-ahead. Existing open Day/Req footage
+is inventoried before further acquisition. The two-section capacity ceiling is
+not a claim that the held footage or the creators' full archives are exhausted.
 
 Outcome audits preserve unknown cause at bonus-max-HP transitions: the pt2-12
 500/500 to 250/250 change does not establish the shared stream's claimed 250
