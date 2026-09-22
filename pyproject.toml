@@ -10,6 +10,8 @@ perception = ["opencv-python-headless>=4.10", "numpy>=2.0"]
 # The learned chooser: MLX on this Mac's GPU, mlx-image for the pretrained frame encoders.
 # ffmpeg (homebrew, not a Python package) decodes and scales; nothing here imports opencv.
 policy = ["numpy>=2.0", "mlx-image>=0.1.10"]  # mlx-image pins mlx==0.24.2
+# Paired human execution: same checkpoint on Windows CUDA, Apple MPS and CPU.
+execution = ["torch>=2.6", "torchvision>=0.21"]
 
 [tool.uv]
 package = false

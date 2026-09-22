@@ -2,6 +2,8 @@
 
 A vision-based agent that plays Spider-Man in the Marvel Rivals **practice range**
 (and custom lobbies vs AI), running on `supedupsilly` (RTX 4080 SUPER, 2560x1440).
+The [machine contract](machines.md) assigns gameplay, recording and the live loop
+to Windows, and offline preparation, training and evaluation to the M5 Max Mac.
 
 ## Scope boundary
 
@@ -31,10 +33,11 @@ included (target choice, engage or retreat, positioning, setup and recovery), no
 button sequences. Order: imitation first, human correction next, reinforcement learning
 only once an outcome can be measured reliably.
 
-- **Sources.** Full VODs of top Spider-Man players (candidates DayMR and ReqMR; identity,
-  rank and availability are being verified) are the expert source. The agent's own pad
-  recordings, which are perfectly labelled, supply input-labelled video. James's own play
-  with synchronized inputs is optional and not planned.
+- **Sources.** Full VODs from James's selected sources DayMR and ReqMR supply tactical
+  evidence; their rank is not independently verified. James's expert-level
+  technical demonstrations now supply paired video and **keyboard/mouse** inputs through
+  the OBS recorder. Human execution learning is a first-class workstream. Scripted pad
+  recordings remain a separate baseline; commanded input is not proof of game response.
 - **Labels without input logs.** The HUD readers turn cooldown, charge, ammo and hp
   transitions into a timestamped event stream, so ability timing and combo order are read
   off any video whose HUD is visible. Camera and movement labels for third-party video need
@@ -59,6 +62,13 @@ only once an outcome can be measured reliably.
   and scope item 3 keeps the agent out of every mode where that could be tested.
 - **First milestone.** Recognize a suitable engagement opportunity, execute it, then
   continue or escape, with bounded tests that say what they do not show.
+- **Human execution refactor (2026-09-21).** Retain this repository. Import explicitly
+  reviewed OBS sessions, align actual decoded frames to logged packet timestamps, and
+  train a temporal action-chunk baseline from causal frame history and native controls.
+  Preserve capture-delay uncertainty, focus/pause boundaries, whole-session splits and
+  unknown input states. See [the current learning decision](learning-plan.md#paired-human-execution-current-work).
+  Keyboard/mouse checkpoints are offline artifacts: there is no validated conversion to
+  the accepted virtual-pad executor, and the rejected synthetic-mouse path stays closed.
 - **Jev** is frozen as a baseline and a possible label assistant. Its inference path does
   not learn from experience, and agreement with it is not gameplay quality.
 - **Roadmap.** Six gated milestones in [learning-plan.md](learning-plan.md#roadmap-and-advancement-gates):
@@ -192,7 +202,7 @@ then L4 takes the game while L2 and L3 run offline on the L1 footage, then L5.
 | Swing anchors | Geometry, not a detector class; owned by the controller lane, emitted as `Detection(cls="anchor")` | An open-vocabulary labeller cannot label "swingable surface"; the brain only swings on an anchor detection |
 | Spider-Tracer `tagged` | An L2 reader, `read_tagged(frame, bbox)`, over the region just above each enemy box; `None` when it cannot tell | A small fixed glyph suits a template or colour read, not a box regressor at ~30 px |
 | Enemy health bars | Not built | The brain does not use them |
-| Training hardware | This Mac (MPS), niced. The PC GPU stays with the live game | L4 holds the game |
+| Training hardware | M5 Max Mac (MPS), niced; native environments and transfer rules in `docs/machines.md`. The PC GPU stays with the live game | L4 holds the game |
 
 ## Decision layer
 

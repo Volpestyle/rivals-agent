@@ -14,10 +14,11 @@ capture, perception, replay and control work while making the tactical decisions
 trainable. Jev is an optional baseline or annotation assistant, not the learning
 mechanism. Inference calls do not update its weights from outcomes.
 
-Alternatives: a raw pixels-to-sticks policy also has to learn camera response and
-button execution, with no exact input labels in public VODs. It is not the first
-experiment. A policy restricted to the current `State` loses positioning and temporal
-context; raw frame history remains available alongside structured observations.
+Public VODs do not supply exact motor labels. James has now offered expert-level
+technical execution demonstrations on keyboard and mouse, so paired motor learning
+starts alongside tactical learning. It must keep its action domain separate from the
+virtual-pad executor. A policy restricted to the current `State` loses positioning
+and temporal context; raw frame history remains available alongside structured observations.
 
 **Quality governs the order of work.** James prioritizes the best-supported path
 to capable gameplay over reaching a nominal training milestone sooner. Source
@@ -30,6 +31,52 @@ This plan follows [the scope boundary](plan.md#scope-boundary): autonomous trial
 stay in the practice range or custom games against AI. Matchmade human gameplay is
 an offline demonstration source only. The current range guard does not authorize
 custom-lobby input; verified lobby navigation and an appropriate guard are prerequisites.
+
+## Paired human execution: current work
+
+James's new demonstrations change the data bottleneck, not the historical results.
+Keep the audited DayMR/ReqMR tactical pipeline, recorded experiments, range guards,
+tracker and virtual-pad controller. Add a native keyboard/mouse execution path:
+
+1. Record with the OBS input logger: original video plus raw key/button transitions,
+   relative mouse counts, monotonic input times and per-packet composition times.
+   The recorder lives separately in `obs-input-logger`; it does not choose examples.
+2. Import one finalized session explicitly, with reviewed gameplay intervals, patch,
+   cooldown regime, sensitivity/DPI/bindings and a session-group split registry.
+   Review imitation suitability separately for each interval: accepted, rejected or
+   unresolved, with a reason. Only accepted intervals supply training samples;
+   visible gameplay alone does not establish that an action should be imitated.
+   Match decoded video PTS to packet PTS. OBS can log stop-tail packets the muxer
+   never writes, even when B-frames place their PTS among earlier packets.
+   Verify timing against an independently recorded muxer-offset anchor; fitting an
+   offset to the same frames is inspection evidence and cannot establish identity.
+3. Build causal frame/input history and distinct future action bins. Focus loss,
+   pauses, raw-input errors and missing timing do not become neutral controls.
+   OBS composition is not the player's observation clock: any alignment assumption
+   or measured bound is recorded. A passed importer does not prove reaction latency.
+4. Fit a small temporal execution baseline and compare on separate recording sessions
+   against held-input persistence and fitting-set action statistics. Report held
+   controls, press/release edges and mouse error separately, including unsupported
+   controls. A short successful fit checks plumbing; it does not prove gameplay.
+5. Inspect transfer failures before connecting learned execution to the existing
+   guarded loop. A keyboard/mouse checkpoint cannot drive a virtual pad. Reusing
+   learned visual features or semantic skill supervision across domains is a later
+   measured experiment; copying mouse counts into stick axes is not an adapter.
+
+The immediate software contract is in [human-demo-schema.md](human-demo-schema.md).
+This advances A and E in parallel with B. It does not wait for every VOD HUD negative
+to become observable. The existing four future-behaviour forecasts remain auxiliary
+signals, not executable actions or an already-trained tactical controller. Whole-match
+autonomy still needs learned target/position decisions, corrections, reliable episodes,
+AI-only custom-game guards and the outcome evaluations in F.
+
+Use PyTorch for the new execution consumer so the same checkpoint can be exercised on
+the Windows RTX 4080 SUPER and the M5 Max (128 GB) through CUDA/MPS/CPU. The historical
+MLX experiments retain their implementation and fingerprints. Train on the Mac while
+the game uses the PC GPU; use the PC for training only when it is free. Choose live
+inference placement from measured capture-to-action latency and game frame-rate cost.
+The durable [machine contract](machines.md) covers each machine's responsibilities,
+bidirectional SSH, checked relocation of original recordings and checkpoint return.
 
 ## Roadmap and advancement gates
 
@@ -52,7 +99,7 @@ not an exhaustive archive.
 
 | Milestone | Concrete result | Gate before advancing |
 |---|---|---|
-| A. Trust the examples and measurements | Corrected HUD events, per-frame visibility, reviewed imitation suitability, whole-session splits; repeatable range episodes and synchronized pad/video recordings | Hand-check VOD event classes and timing; preserve unknowns. Demonstrate start, terminal outcome, interruption and reset alignment on recorded episodes. Data quality gates imitation; episode/reward quality separately gates RL. |
+| A. Trust the examples and measurements | Corrected HUD events, per-frame visibility, reviewed imitation suitability, whole-session splits; paired human keyboard/mouse demonstrations and repeatable range episodes | Hand-check VOD event classes and timing; preserve unknowns. Verify human input/video alignment, focus continuity and recorded settings. Demonstrate start, terminal outcome, interruption and reset alignment on recorded episodes. Data quality gates imitation; episode/reward quality separately gates RL. |
 | B. First imitation policy | A locally trained temporal intent policy, using the fixed live target selector and existing controller | Beat a majority-label baseline on held-out sessions without hiding rare-action failures; compare the scripted policy where inputs are comparable. Measure runtime latency and inspect range transfer failures. Offline agreement alone does not establish gameplay improvement. |
 | C. Corrections from our own play | Reviewed execution/navigation corrections and a retrained imitation checkpoint; combat retreat/recovery examples require F's fighting environment | Compare against B on untouched evaluation sessions and bounded live scenarios. Accept demonstrated improvement; ambiguous failures stay out of positive imitation labels. This loop continues alongside later milestones. |
 | D. First reinforcement-learning experiment | Fine-tune a trainable option policy on one bounded range encounter, starting from an imitation checkpoint with demonstrated range competence | Reward audit below passes; reset and episode recording work; freeze perception/controller/target selector for comparison. Retain the RL checkpoint only if held-out encounter outcomes improve over its starting checkpoint, not merely its training return. |
@@ -1200,9 +1247,10 @@ probe's observability and held-out error requirements.
 | Scripted pad recordings | Exact commanded pad inputs and frames; initial paired data for a later inverse-dynamics experiment | Commands may be ignored; scripted actions are not expert demonstrations |
 | Human annotations | Target/intent judgments, observable outcomes | Ambiguous decisions require unknown labels or multiple acceptable choices |
 
-Expert VODs are the first data source. James recording inputs is optional, not a
-prerequisite for VOD acquisition or tactical policy training. Low-level input
-imitation is deferred when exact action labels are absent.
+Expert VODs and James's keyboard/mouse demonstrations are complementary first-class
+sources. VOD acquisition and tactical training can proceed independently; paired
+execution imitation uses the human recorder's native controls and reviewed alignment.
+The absence of exact inputs in a VOD never authorizes invented motor labels.
 
 All our range recordings preceding the real-cooldown baseline have Practice
 Settings' default **No Ability Cooldown ON**: infinite ammo, no cooldown numbers
@@ -1888,7 +1936,9 @@ behavior without implementing a user-facing release-style switch.
 ```mermaid
 flowchart LR
     V[Expert VODs] --> D[Temporal demonstrations]
-    H[Optional human video and inputs] --> D
+    H[Human video and keyboard/mouse inputs] --> X[Paired execution training]
+    X --> K[Offline keyboard/mouse action chunks]
+    K --> A[Domain and transfer validation before live use]
     D --> L[Reviewed intent and target labels]
     L --> T[Imitation training locally or on rented GPU]
     T --> P[Learned temporal policy]
@@ -1933,8 +1983,9 @@ setups, release/cancel sequences and their visible results, but supply no exact
 stick/camera/button labels. In v0, the controller executes swings; watching more
 VODs does not train its trajectory control. Learned swing timing/anchor choice
 needs a spatial output contract and executable anchors. Later motor learning needs
-synchronized video plus pad inputs from our recordings (James's play is optional),
-with demonstrated response checked, before testing transfer from expert video.
+synchronized video and native input labels, with demonstrated response checked.
+James's keyboard/mouse recordings now supply this motor-learning source; transfer to
+the virtual-pad controller remains unproven and is not inferred from expert video.
 
 HUD events provide relatively cheap supervision for ability use and observable
 outcomes. They do not prove engage, disengage, no-engage or a complete combo choice:
@@ -1946,8 +1997,10 @@ Behavioral cloning predicts reviewed demonstrated choices; it needs no reward fu
 Class imbalance matters: constant movement or idle frames must not swamp rare retreat
 and engagement decisions. Measure a simple baseline before choosing model size. The
 Mac is the default training environment, niced; James prefers using his local
-hardware wherever practical. Prefer MLX when the selected architecture has a suitable
-implementation, otherwise use PyTorch/MPS. The PC GPU belongs to the live game.
+hardware wherever practical. The existing tactical experiments prefer MLX when the
+selected architecture has a suitable implementation, otherwise PyTorch/MPS. New paired
+execution training uses PyTorch across Windows and Mac, as specified above. The PC GPU
+belongs to the live game.
 Runtime placement is measured against latency and game performance before adoption.
 The policy lane's current offline baseline uses a frozen DINO ViT-S/16 encoder
 and a two-layer GRU head in MLX; the encoder choice is provisional and its
@@ -1987,6 +2040,17 @@ Mechanical execution is the first measurable slice, not the whole goal.
    controller, start conditions and budget. Inspect actual successes and failures.
 5. Evaluate richer tactical choices in AI-only custom games once navigation and guards
    work. These results do not establish expert-level play against human opponents.
+
+The first complete engage-to-outcome evaluation is a bounded AI-only encounter set,
+preregistered before trials begin: start positions, opponent composition, patch,
+cooldown regime, encounter time limit, trial cap and held-out starts. Include both
+appropriate-engage and no-engage situations, followed by continuation or escape under
+threat. Compare the learned policy with frozen scripted and simple fixed-choice
+baselines using the same perception, executor and guards. Score engage/no-engage
+choices separately from attack execution and continuation/escape outcomes; report
+failures, interruptions, unknown outcomes and uncertainty across repeated trials.
+This is a planned acceptance experiment. Verified AI-only lobby guards, reproducible
+resets and observable outcomes are prerequisites; range damage alone cannot pass it.
 
 Gameplay outcomes remain separate from imitation agreement. A different action is
 not necessarily worse, and a copied expert action is not necessarily appropriate for
