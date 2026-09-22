@@ -107,7 +107,9 @@ check fails before launching Python. Bridge deployment and restart await the lea
 
 `Get-ScheduledTask -TaskName rivals-clankie-bridge` inspects the task, including
 `Settings.Enabled`. Disabling prevents future launches but does not stop an
-existing instance. The current instance reports `session: null` and remains idle;
-it has not been force-killed. An idle bridge owns no capture or pad. Do not use
-forced task termination as a pad-release mechanism. Replay integration evidence
+existing instance. The bridge is stopped: its uv/Python processes are absent and
+no address listens on port 4330. `Stop-ScheduledTask` can leave these children
+alive; verify both process and listener absence, not only task state. Terminate
+only identified bridge children after confirming no sitting is active; forced
+termination is not a pad-release mechanism. Replay integration evidence
 does not establish that the underlying range guard or input lifetime is safe.
