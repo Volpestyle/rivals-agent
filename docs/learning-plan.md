@@ -1955,6 +1955,11 @@ Manually adjudicated evaluation is valid while automatic outcome readers are inc
 
 ## Sources
 
+**Conditional source candidate: Falores.** James recommends Falores as a strong
+Spider-Man player. Identity, channel, footage and suitability are unverified. Revisit
+only if already-held footage leaves a named coverage or independent-session gap;
+this recommendation does not authorize acquisition or change the current source scope.
+
 ### Acquisition evidence, 2026-09-20
 
 Installed `yt-dlp` lists recent videos for both Twitch channels and downloads
