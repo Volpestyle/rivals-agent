@@ -2,7 +2,8 @@
 import json
 import threading
 import time
-from dataclasses import asdict
+from dataclasses import asdict, replace
+from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
@@ -292,22 +293,23 @@ def test_failed_terminal_release_is_not_reported_as_success():
     assert result["errors"] and run.ctrl._range_pulse is None
 
 
-@pytest.fixture
-def synthetic_event_checkpoint(tmp_path):
+@pytest.fixture(params=["visual", "request"])
+def synthetic_event_checkpoint(tmp_path, request):
     torch = pytest.importorskip("torch")
     from policy.range_skill_policy import train, save_checkpoint
-    from tests.test_range_skill_policy import SOURCE, SPEC, packet
-    rows = packet()
+    from tests.test_range_skill_policy import SPEC, packet, request_packet
+    rows = request_packet() if request.param == "request" else packet()
+    source = rows[0].source
     policy = train(rows, spec=SPEC, epochs=1)
     # Deliberately force a synthetic proposal to exercise dispatch, not fit quality.
     with torch.no_grad():
         policy.model.head.weight.zero_()
         policy.model.head.bias.copy_(torch.tensor([-8., 8.]))
-    path = tmp_path / "synthetic-event.pt"
+    path = tmp_path / f"synthetic-{request.param}.pt"
     sha = save_checkpoint(path, policy, rows, code_sha256="1" * 64,
                           training_config={"synthetic_dispatch_fixture": True})
     identity = tmp_path / "source.json"
-    identity.write_text(json.dumps(asdict(SOURCE)))
+    identity.write_text(json.dumps(asdict(source)))
     return ["--brain", "range-skill", "--range-checkpoint", str(path), "--range-sha256", sha,
             "--range-identity", str(identity), "--cooldowns", "normal", "--max-s", "1"]
 
@@ -341,6 +343,8 @@ def test_actual_event_checkpoint_main_consumer_controller_and_recording(monkeypa
     rows = [json.loads(s) for s in (out / "frames.jsonl").read_text().splitlines()]
     assert meta["range_policy"]["origin"] == "synthetic"
     assert meta["range_policy"]["runtime"] is None
+    identity_path = synthetic_event_checkpoint[synthetic_event_checkpoint.index("--range-identity") + 1]
+    assert meta["range_policy"]["source_identity"] == json.loads(Path(identity_path).read_text())
     assert any(r.get("decision_trace", {}).get("source") == "range_skill_model" for r in rows)
     assert any(r.get("range_skill_trace", {}).get("accepted") for r in rows)
     assert any(r.get("pad", {}).get("lt") for r in rows)
@@ -350,17 +354,19 @@ def test_actual_event_checkpoint_main_consumer_controller_and_recording(monkeypa
 
 @pytest.mark.parametrize("fault", ["synthetic_origin", "wrong_digest", "missing_runtime"])
 def test_actual_new_live_loader_refuses_before_perception_or_pad(monkeypatch, tmp_path, synthetic_event_checkpoint, fault):
-    from tests.test_range_skill_policy import RUNTIME, SOURCE
-    from policy.range_skill_policy import SkillDeploymentBinding, digest
+    from tests.test_range_skill_policy import RUNTIME
+    from policy.range_skill_policy import SourceIdentity, SkillDeploymentBinding, digest
     def hardware():
         pytest.fail("unapproved candidate reached hardware/perception")
     monkeypatch.setattr(runtime, "LiveIO", hardware)
     monkeypatch.setattr(runtime, "default_perception", hardware)
     args = list(synthetic_event_checkpoint)
     sha = args[args.index("--range-sha256") + 1]
+    source = SourceIdentity(**json.loads(Path(args[args.index("--range-identity") + 1]).read_text()))
+    runtime_identity = replace(RUNTIME, semantic_revision=source.semantic_revision)
     profile, binding = tmp_path / "runtime.json", tmp_path / "deployment.json"
-    profile.write_text(json.dumps(asdict(RUNTIME)))
-    binding.write_text(json.dumps(asdict(SkillDeploymentBinding(sha, digest(asdict(SOURCE)), RUNTIME, "9" * 64))))
+    profile.write_text(json.dumps(asdict(runtime_identity)))
+    binding.write_text(json.dumps(asdict(SkillDeploymentBinding(sha, digest(asdict(source)), runtime_identity, "9" * 64))))
     if fault != "missing_runtime":
         args += ["--range-runtime", str(profile), "--range-deployment", str(binding)]
     if fault == "wrong_digest":

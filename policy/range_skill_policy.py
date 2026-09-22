@@ -18,8 +18,18 @@ FORMAT = "rivals-range-skill-events-v1"
 HEAD = "web_cluster_start"
 OUTCOMES = ("no_new_start", "start")
 SEMANTIC_REVISION = "web-cluster-onset-v1"
+REQUEST_FORMAT = "rivals-range-skill-requests-v1"
+REQUEST_HEAD = "web_cluster_request"
+REQUEST_SEMANTIC_REVISION = "web-cluster-request-v1"
 FEATURE_REVISION = "masked-state-grid-causal-v1"
 SAMPLING = "full_grid_masked"
+
+
+def semantic_contract(revision):
+    if revision == SEMANTIC_REVISION:
+        return FORMAT, HEAD
+    require(revision == REQUEST_SEMANTIC_REVISION, "unsupported skill semantics")
+    return REQUEST_FORMAT, REQUEST_HEAD
 
 
 @dataclass(frozen=True)
@@ -47,7 +57,8 @@ class SourceIdentity:
         require(self.cooldown_regime in ("normal", "off"), "known source resource regime required")
         require(all(sha256(v) for v in (self.source_profile_sha256, self.perception_sha256,
                                        self.selector_sha256)), "visual source/profile hashes required")
-        require(self.semantic_revision == SEMANTIC_REVISION and self.feature_revision == FEATURE_REVISION,
+        semantic_contract(self.semantic_revision)
+        require(self.feature_revision == FEATURE_REVISION,
                 "incompatible source event semantics/features")
 
 
@@ -60,7 +71,8 @@ class SkillRuntimeIdentity(RuntimeIdentity):
     def validate(self):
         super().validate()
         require(sha256(self.selector_sha256), "runtime selector hash required")
-        require(self.semantic_revision == SEMANTIC_REVISION and self.feature_revision == FEATURE_REVISION,
+        semantic_contract(self.semantic_revision)
+        require(self.feature_revision == FEATURE_REVISION,
                 "incompatible runtime event semantics/features")
 
 
@@ -83,6 +95,8 @@ class SkillDeploymentBinding:
         require(self.checkpoint_sha256 == checkpoint_sha256, "deployment checkpoint binding mismatch")
         require(self.source_identity_sha256 == digest(asdict(source_identity)), "deployment source binding mismatch")
         require(self.runtime == expected_runtime, "deployment runtime profile mismatch")
+        require((self.runtime.semantic_revision, self.runtime.feature_revision) ==
+                (source_identity.semantic_revision, source_identity.feature_revision), "deployment semantic/feature mismatch")
         require((self.runtime.patch, self.runtime.cooldown_regime, self.runtime.selector_sha256) ==
                 (source_identity.patch, source_identity.cooldown_regime, source_identity.selector_sha256),
                 "source/runtime kit or fixed selector mismatch")
@@ -120,7 +134,7 @@ def event_window(history, anchor_t, spec=Spec(), *, sampling="grid"):
 
 
 @dataclass(frozen=True)
-class EventExample:
+class _ExampleBase:
     """Admission supplies reviewed evidence; this class never infers a human label.
 
     One row per eligible grid tick in each declared continuous segment. An
@@ -150,12 +164,6 @@ class EventExample:
     reason: str
     anchor_target_track: int | None
     target_agreed: bool
-    event_id: str | None = None
-    last_not_started_t: float | None = None
-    first_started_t: float | None = None
-    head: str = HEAD
-    semantic_revision: str = SEMANTIC_REVISION
-    origin: str = "reviewed_human"
 
     def grid_bounds(self, spec=Spec()):
         first = math.ceil((self.segment_start_t - self.grid_origin_t) / spec.period_s - 1e-8) + spec.steps - 1
@@ -165,10 +173,10 @@ class EventExample:
     def purge_footprint(self, spec=Spec()):
         start = min((s.state.t for s in self.history), default=self.anchor_t - (spec.steps - 1) * spec.period_s)
         end = max(self.anchor_t + spec.period_s, self.exposure_end_t or self.anchor_t,
-                  self.confirmation_t or self.anchor_t, self.first_started_t or self.anchor_t)
+                  self.confirmation_t or self.anchor_t, self.event_end_t or self.anchor_t)
         return start, end
 
-    def validate(self, spec=Spec()):
+    def _validate_common(self, spec, revision):
         spec.validate()
         require(type(self.source) is SourceIdentity, "event SourceIdentity required")
         self.source.validate()
@@ -178,7 +186,8 @@ class EventExample:
                     (self.session, self.group, self.continuous_id, self.evidence, self.reason)),
                 "coverage/evidence identity and reason required")
         require(sha256(self.media_sha256) and sha256(self.review_sha256), "media/review hashes required")
-        require(self.head == HEAD and self.semantic_revision == SEMANTIC_REVISION, "incompatible event head/semantics")
+        require(self.head == semantic_contract(revision)[1] and self.semantic_revision == revision
+                and self.source.semantic_revision == revision, "incompatible event head/semantics")
         require(all(finite(v) for v in (self.segment_start_t, self.segment_end_t, self.grid_origin_t, self.anchor_t))
                 and self.segment_end_t > self.segment_start_t, "invalid segment clocks")
         require(type(self.grid_index) is int and abs(self.anchor_t - self.grid_origin_t - self.grid_index * spec.period_s) < 1e-8,
@@ -195,14 +204,6 @@ class EventExample:
             require(all(v is not None for v in clocks), "partial exposure clocks")
             require(self.segment_start_t <= self.exposure_start_t <= self.exposure_end_t <= self.confirmation_t <= self.segment_end_t,
                     "exposure/confirmation outside continuous segment")
-        bracket = (self.event_id, self.last_not_started_t, self.first_started_t)
-        if any(v is not None for v in bracket):
-            require(isinstance(self.event_id, str) and self.event_id.strip()
-                    and finite(self.last_not_started_t) and finite(self.first_started_t)
-                    and self.segment_start_t <= self.last_not_started_t < self.first_started_t <= self.segment_end_t,
-                    "event identity and positive onset bracket required")
-            require(self.confirmation_t is not None and self.confirmation_t >= self.first_started_t,
-                    "latest event confirmation required")
         rows = event_window(self.history, self.anchor_t, spec) if self.history else None
         if self.history:
             require(self.history[0].state.t >= self.segment_start_t, "actual history crosses segment boundary")
@@ -218,6 +219,35 @@ class EventExample:
                 and target.track not in self.history[-1].state.coasting,
                 "known row needs reviewed causal anchor target correspondence")
         require(all(s.state.detections is not None for s in self.history), "known row has detector failure")
+        return rows
+
+
+@dataclass(frozen=True)
+class EventExample(_ExampleBase):
+    """Historical visible-onset bracket. Constructor and semantics stay unchanged."""
+    event_id: str | None = None
+    last_not_started_t: float | None = None
+    first_started_t: float | None = None
+    head: str = HEAD
+    semantic_revision: str = SEMANTIC_REVISION
+    origin: str = "reviewed_human"
+
+    @property
+    def event_end_t(self):
+        return self.first_started_t
+
+    def validate(self, spec=Spec()):
+        rows = self._validate_common(spec, SEMANTIC_REVISION)
+        bracket = (self.event_id, self.last_not_started_t, self.first_started_t)
+        if any(v is not None for v in bracket):
+            require(isinstance(self.event_id, str) and self.event_id.strip()
+                    and finite(self.last_not_started_t) and finite(self.first_started_t)
+                    and self.segment_start_t <= self.last_not_started_t < self.first_started_t <= self.segment_end_t,
+                    "event identity and positive onset bracket required")
+            require(self.confirmation_t is not None and self.confirmation_t >= self.first_started_t,
+                    "latest event confirmation required")
+        if not self.label_known:
+            return None
         if self.label == "start":
             require(self.event_id is not None and self.last_not_started_t >= self.anchor_t - 1e-9
                     and self.first_started_t <= self.anchor_t + spec.period_s + 1e-9,
@@ -225,6 +255,112 @@ class EventExample:
         else:
             require(self.event_id is None, "nononset cannot own an onset event")
         return rows
+
+
+@dataclass(frozen=True)
+class RequestExample(_ExampleBase):
+    """Received native RMB point event, associated by admission with a visual cast.
+
+    Not a physical press timestamp. Unknown statuses never manufacture negatives.
+    Cast times are evidence/confirmation only, never substituted for request_t.
+    """
+    request_id: str | None = None
+    request_t: float | None = None
+    raw_input_sha256: str | None = None
+    raw_device: int | None = None
+    request_seq: int | None = None
+    prior_up_seq: int | None = None
+    prior_up_t: float | None = None
+    raw_continuity_start_t: float | None = None
+    raw_continuity_end_t: float | None = None
+    raw_continuity_known: bool = False
+    request_status: str = "unknown"
+    raw_evidence: str = ""
+    cast_id: str | None = None
+    cast_last_not_started_t: float | None = None
+    cast_first_started_t: float | None = None
+    association_agreed: bool = False
+    association_evidence: str = ""
+    head: str = REQUEST_HEAD
+    semantic_revision: str = REQUEST_SEMANTIC_REVISION
+    origin: str = "reviewed_human"
+
+    @property
+    def event_id(self):
+        return self.request_id
+
+    @property
+    def event_end_t(self):
+        return self.request_t
+
+    def purge_footprint(self, spec=Spec()):
+        start, end = super().purge_footprint(spec)
+        # Received-state carry-in/focus may precede gameplay. This extends only
+        # evidence dependence, never the segment or its actual feature clocks.
+        return (min(start, self.raw_continuity_start_t) if self.raw_continuity_start_t is not None else start,
+                max(end, self.raw_continuity_end_t) if self.raw_continuity_end_t is not None else end)
+
+    def validate(self, spec=Spec()):
+        rows = self._validate_common(spec, REQUEST_SEMANTIC_REVISION)
+        require(self.request_status in ("fresh_rise", "no_fresh_rise", "held", "repeated_down", "unknown", "association_conflict"),
+                "unknown received-request status")
+        require(type(self.raw_continuity_known) is bool and type(self.association_agreed) is bool,
+                "explicit raw continuity/association masks required")
+        require(self.raw_input_sha256 is None or sha256(self.raw_input_sha256), "invalid raw input hash")
+        continuity = (self.raw_continuity_start_t, self.raw_continuity_end_t)
+        if any(v is not None for v in continuity):
+            require(all(finite(v) for v in continuity) and self.raw_continuity_start_t <= self.raw_continuity_end_t,
+                    "invalid raw continuity clocks")
+        point = (self.request_id, self.request_t, self.raw_device, self.request_seq)
+        if any(v is not None for v in point):
+            require(isinstance(self.request_id, str) and self.request_id.strip() and finite(self.request_t)
+                    and type(self.raw_device) is int and self.raw_device >= 0
+                    and type(self.request_seq) is int and self.request_seq >= 0
+                    and self.segment_start_t <= self.request_t <= self.segment_end_t,
+                    "complete received request point identity required")
+        prior = (self.prior_up_seq, self.prior_up_t)
+        if any(v is not None for v in prior):
+            require(self.request_t is not None and type(self.prior_up_seq) is int
+                    and 0 <= self.prior_up_seq < self.request_seq and finite(self.prior_up_t)
+                    and self.prior_up_t < self.request_t, "invalid preceding received up")
+        cast = (self.cast_id, self.cast_last_not_started_t, self.cast_first_started_t)
+        if any(v is not None for v in cast):
+            require(isinstance(self.cast_id, str) and self.cast_id.strip()
+                    and finite(self.cast_last_not_started_t) and finite(self.cast_first_started_t)
+                    and self.segment_start_t <= self.cast_last_not_started_t < self.cast_first_started_t <= self.segment_end_t
+                    and self.confirmation_t is not None and self.confirmation_t >= self.cast_first_started_t,
+                    "separately observed cast bracket and latest confirmation required")
+        if not self.label_known:
+            return None
+        require(self.raw_continuity_known and sha256(self.raw_input_sha256)
+                and isinstance(self.raw_evidence, str) and self.raw_evidence.strip()
+                and all(finite(v) for v in continuity)
+                and self.raw_continuity_start_t <= self.anchor_t
+                and self.anchor_t + spec.period_s <= self.raw_continuity_end_t <= self.confirmation_t,
+                "known request label needs full raw interval continuity and evidence")
+        if self.label == "start":
+            require(self.request_status == "fresh_rise" and self.request_id is not None
+                    and self.anchor_t < self.request_t <= self.anchor_t + spec.period_s,
+                    "positive received request must be a fresh rise inside the next bin")
+            require(self.prior_up_t is not None and self.raw_continuity_start_t <= self.prior_up_t,
+                    "fresh rise needs preceding up and continuous received-state evidence")
+            require(all(s.state.t < self.request_t and s.available_t < self.request_t for s in self.history),
+                    "all actual features must precede the received request")
+            require(self.association_agreed and self.cast_id is not None and self.cast_first_started_t > self.request_t
+                    and isinstance(self.association_evidence, str) and self.association_evidence.strip(),
+                    "fresh request needs reviewed unique cast association")
+        else:
+            require(self.request_status == "no_fresh_rise" and all(v is None for v in (*point, *prior, *cast))
+                    and not self.association_agreed, "non-request needs reviewed no_fresh_rise continuity, not an invented event")
+        return rows
+
+
+def _event_contains(e, anchor_t, spec, *, overlap=False):
+    if isinstance(e, RequestExample):
+        return anchor_t < e.request_t <= anchor_t + spec.period_s
+    if overlap:
+        return anchor_t < e.first_started_t - 1e-9 and anchor_t + spec.period_s > e.last_not_started_t + 1e-9
+    return e.last_not_started_t >= anchor_t - 1e-9 and e.first_started_t <= anchor_t + spec.period_s + 1e-9
 
 
 def cohort(examples, spec=Spec()):
@@ -245,21 +381,41 @@ def _validate_cohort(examples, spec, *, evaluation):
     require(bool(examples), "no coverage rows")
     source, origin = examples[0].source, examples[0].origin
     segments, placements, events, profiles = defaultdict(list), {}, {}, {}
+    raw_requests, casts, raw_sources = {}, {}, {}
     for e in examples:
+        require(type(e) in (EventExample, RequestExample), "explicit visual or request example required")
         e.validate(spec)
         compatible = same_event_domain(e.source, source) if evaluation else e.source == source
         require(compatible and e.origin == origin, "mixed source identity or supervision origin")
         for kind, key in (("media", e.media_sha256), ("session", e.session)):
             require(profiles.setdefault((kind, key), e.source) == e.source,
                     f"inconsistent source identity within {kind}")
-        for kind, key, placement in (("group", e.group, e.split), ("session", e.session, (e.group, e.split)),
-                                      ("media", e.media_sha256, (e.session, e.group, e.split))):
+        placement_keys = [("group", e.group, e.split), ("session", e.session, (e.group, e.split)),
+                          ("media", e.media_sha256, (e.session, e.group, e.split))]
+        if isinstance(e, RequestExample) and e.raw_input_sha256 is not None:
+            # Carry-in/continuity evidence belongs to its canonical session even
+            # when a row is negative or masked and owns no request event.
+            placement_keys.append(("raw_input", e.raw_input_sha256, (e.session, e.group, e.split)))
+        for kind, key, placement in placement_keys:
             old = placements.setdefault((kind, key), placement)
             require(old == placement, "session/media/group split leakage")
         segments[(e.session, e.continuous_id)].append(e)
+        if isinstance(e, RequestExample) and e.raw_input_sha256 is not None:
+            require(raw_sources.setdefault(e.media_sha256, e.raw_input_sha256) == e.raw_input_sha256,
+                    "inconsistent raw input source for immutable media")
         if e.event_id is not None:
-            identity = (e.continuous_id, e.last_not_started_t, e.first_started_t)
-            key = (e.session, e.event_id)
+            if isinstance(e, RequestExample):
+                identity = (e.continuous_id, e.request_t, e.raw_device, e.request_seq, e.raw_input_sha256,
+                            e.prior_up_seq, e.prior_up_t, e.cast_id, e.cast_last_not_started_t, e.cast_first_started_t)
+                key = (e.media_sha256, e.request_id)
+                raw_key = (e.raw_input_sha256, e.raw_device, e.request_seq)
+                require(raw_requests.setdefault(raw_key, key) == key, "raw request cannot gain event credit under another ID/media")
+                if e.cast_id is not None:
+                    require(casts.setdefault((e.media_sha256, e.cast_id), raw_key) == raw_key,
+                            "one observed cast cannot supervise multiple requests")
+            else:
+                identity = (e.continuous_id, e.last_not_started_t, e.first_started_t)
+                key = (e.session, e.event_id)
             require(events.setdefault(key, identity) == identity, "event ID reused with different bracket")
     for rows in segments.values():
         first = rows[0]
@@ -276,8 +432,7 @@ def _validate_cohort(examples, spec, *, evaluation):
             if e.event_id is None:
                 continue
             for other in rows:
-                overlaps = (other.anchor_t < e.first_started_t - 1e-9
-                            and other.anchor_t + spec.period_s > e.last_not_started_t + 1e-9)
+                overlaps = _event_contains(e, other.anchor_t, spec, overlap=True)
                 if overlaps and other.label_known:
                     require(e.label_known and other.event_id == e.event_id and other.label == "start",
                             "uncertain/cross-bin event overlaps a known label")
@@ -319,6 +474,8 @@ class RangeSkillPolicy:
                 and training_report.get("unique_events") == support[1]
                 and training_report.get("sampling") == SAMPLING, "inconsistent training report")
         self.model, self.spec, self.identity = model.eval(), spec, identity
+        self.format, self.head = semantic_contract(identity.semantic_revision)
+        self.semantic_revision = identity.semantic_revision
         self.support, self.origin, self.data_sha256 = tuple(support), origin, data_sha256
         self.training_report, self.device = training_report, device
 
@@ -344,14 +501,21 @@ def train(examples, *, spec=Spec(), epochs=20, batch_size=32, lr=.001, device="c
     return RangeSkillPolicy(model, spec, source, report["bin_support"], origin, evidence_digest(examples), report, device)
 
 
-def event_metrics(examples, predictions, spec=Spec()):
+def event_metrics(examples, predictions, spec=Spec(), *, semantic_revision=None):
     """One request at the anchor predicts a start in its next 100 ms bin.
 
-    One-to-one bracket matching, scoped to the same session/segment. Unknown
-    bins are unscored. Timing is distance from request to bracket, not an
-    invented precise human onset. Repeated requests count as false positives.
+    One-to-one matching within the same session/segment; unknown bins unscored.
+    Visual heads retain bracket timing. Request heads measure anchor-to-received
+    point lead, not physical delivery or cast latency. Extra starts are false
+    positives. Explicit revision preserves the timing key for empty strata.
     """
     require(len(examples) == len(predictions), "prediction count mismatch")
+    revisions = {e.semantic_revision for e in examples}
+    if semantic_revision is not None:
+        semantic_contract(semantic_revision)
+        revisions.add(semantic_revision)
+    require(len(revisions) <= 1, "mixed metric semantics")
+    is_request = revisions == {REQUEST_SEMANTIC_REVISION}
     known = [(e, p) for e, p in zip(examples, predictions) if e.label_known]
     require(all(p in (*OUTCOMES, None) for _, p in known), "invalid prediction")
     truth = {(e.session, e.continuous_id, e.event_id): e for e, _ in known if e.label == "start"}
@@ -361,12 +525,11 @@ def event_metrics(examples, predictions, spec=Spec()):
             continue
         eligible = [(key, target) for key, target in truth.items() if key not in matched
                     and key[:2] == (e.session, e.continuous_id)
-                    and target.last_not_started_t >= e.anchor_t - 1e-9
-                    and target.first_started_t <= e.anchor_t + spec.period_s + 1e-9]
+                    and _event_contains(target, e.anchor_t, spec)]
         if eligible:
-            key, target = min(eligible, key=lambda item: item[1].first_started_t)
+            key, target = min(eligible, key=lambda item: item[1].event_end_t)
             matched.add(key)
-            timing.append(max(0., target.last_not_started_t - e.anchor_t))
+            timing.append(max(0., (target.request_t if is_request else target.last_not_started_t) - e.anchor_t))
         else:
             fp += 1
     tp, fn = len(matched), len(truth) - len(matched)
@@ -374,7 +537,7 @@ def event_metrics(examples, predictions, spec=Spec()):
     return {"true_positive": tp, "false_positive": fp, "false_negative": fn,
             "precision": tp / (tp + fp) if tp + fp else None,
             "recall": tp / (tp + fn) if tp + fn else None,
-            "mean_request_to_bracket_s": sum(timing) / len(timing) if timing else None,
+            ("mean_request_lead_s" if is_request else "mean_request_to_bracket_s"): sum(timing) / len(timing) if timing else None,
             "confusion": [[sum(e.label == a and p == b for e, p in scored) for b in OUTCOMES] for a in OUTCOMES],
             "refusals": sum(p is None for _, p in known), "scored_bins": len(scored),
             "masked_bins": len(examples) - len(known)}
@@ -403,7 +566,7 @@ def evaluate(policy, train_examples, validation, *, complete_evaluation=False):
     for e in validation:
         prior = [p for p in validation if p.session == e.session and p.continuous_id == e.continuous_id
                  and p.label_known and p.label == "start" and p.confirmation_t <= e.anchor_t
-                 and e.anchor_t - p.first_started_t <= 1.]
+                 and e.anchor_t - p.event_end_t <= 1.]
         recent.append("start" if prior else "no_new_start")
     resource = [None if not e.history or e.history[-1].state.webs is None else
                 ("start" if e.history[-1].state.webs > 0 else "no_new_start") for e in validation]
@@ -412,6 +575,8 @@ def evaluate(policy, train_examples, validation, *, complete_evaluation=False):
                   "always_start": ["start"] * len(validation), "training_rate": rate_prediction,
                   "recent_confirmed_event": recent, "ammo_positive": resource}
     return {"scope": "complete_independent_evaluation" if complete_evaluation else "partial_observed_diagnostic",
+            "format": semantic_contract(source.semantic_revision)[0],
+            "head": semantic_contract(source.semantic_revision)[1], "semantic_revision": source.semantic_revision,
             "training_source": asdict(source),
             "validation_sources": [asdict(identity) for identity in
                                    sorted({e.source for e in validation}, key=lambda identity: digest(asdict(identity)))],
@@ -425,12 +590,14 @@ def evaluate(policy, train_examples, validation, *, complete_evaluation=False):
                 "Confidence filtering does not simulate runtime history resets, retreat, current-target gates, or controller acceptance.",
                 "Aim, resources, pulse ownership, expiry, execution and delivery require separate live/controller traces."],
             "coverage": coverage, "training_rate": train_rate, "probabilities": probabilities,
-            "metrics": {name: event_metrics(validation, values, policy.spec) for name, values in candidates.items()},
+            "metrics": {name: event_metrics(validation, values, policy.spec,
+                                             semantic_revision=source.semantic_revision) for name, values in candidates.items()},
             "ammo_positive_visible_nononsets": {
                 name: event_metrics([e for e in validation if e.label_known and e.label == "no_new_start"
                                      and e.history[-1].state.webs is not None and e.history[-1].state.webs > 0],
                                     [p for e, p in zip(validation, values) if e.label_known and e.label == "no_new_start"
-                                     and e.history[-1].state.webs is not None and e.history[-1].state.webs > 0], policy.spec)
+                                     and e.history[-1].state.webs is not None and e.history[-1].state.webs > 0], policy.spec,
+                                    semantic_revision=source.semantic_revision)
                 for name, values in candidates.items()}}
 
 
@@ -440,9 +607,10 @@ def save_checkpoint(path, policy, examples, *, code_sha256, training_config):
             and evidence_digest(examples) == policy.data_sha256, "checkpoint training provenance mismatch")
     require(sha256(code_sha256), "code hash required")
     canonical(training_config)
-    return save_portable(path, {"format": FORMAT, "head": HEAD, "outcomes": list(OUTCOMES),
+    format_name, head = semantic_contract(source.semantic_revision)
+    return save_portable(path, {"format": format_name, "head": head, "outcomes": list(OUTCOMES),
         "features": list(FEATURES), "spec": asdict(policy.spec), "source": asdict(source),
-        "semantic_revision": SEMANTIC_REVISION, "feature_revision": FEATURE_REVISION,
+        "semantic_revision": source.semantic_revision, "feature_revision": FEATURE_REVISION,
         "origin": origin, "support": list(policy.support), "data_sha256": policy.data_sha256,
         "training_report": policy.training_report, "code_sha256": code_sha256, "training_config": training_config,
         "reviews": sorted({e.review_sha256 for e in examples}), "groups": sorted({e.group for e in examples}),
@@ -453,12 +621,13 @@ def load_checkpoint(path, *, expected_sha256, expected_identity, expected_runtim
                     deployment_binding=None, device="cpu", offline=False):
     require(type(expected_identity) is SourceIdentity, "explicit event SourceIdentity required")
     expected_identity.validate()
+    format_name, head = semantic_contract(expected_identity.semantic_revision)
     require(device in ("cpu", "mps"), "event v1 supports CPU/MPS only")
     payload = load_portable(path, expected_sha256)
-    require(isinstance(payload, dict) and payload.get("format") == FORMAT and payload.get("head") == HEAD,
+    require(isinstance(payload, dict) and payload.get("format") == format_name and payload.get("head") == head,
             "incompatible event checkpoint")
     require(payload.get("outcomes") == list(OUTCOMES) and payload.get("features") == list(FEATURES)
-            and payload.get("semantic_revision") == SEMANTIC_REVISION and payload.get("feature_revision") == FEATURE_REVISION,
+            and payload.get("semantic_revision") == expected_identity.semantic_revision and payload.get("feature_revision") == FEATURE_REVISION,
             "incompatible event vocabulary/features/revision")
     identity, spec = SourceIdentity(**payload["source"]), Spec(**payload["spec"])
     spec.validate()

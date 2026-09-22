@@ -14,7 +14,8 @@ from policy import range_policy as legacy
 from policy.range_skill_policy import (FEATURE_REVISION, FORMAT, HEAD, OUTCOMES, SEMANTIC_REVISION,
     EventExample, SkillDeploymentBinding, SkillRuntimeIdentity, SourceIdentity, Snapshot, Spec,
     cohort, coverage_report, digest, evaluate, event_metrics, event_window, evidence_digest,
-    load_checkpoint, save_checkpoint, train, same_event_domain, RangeSkillPolicy)
+    load_checkpoint, save_checkpoint, train, same_event_domain, RangeSkillPolicy,
+    REQUEST_FORMAT, REQUEST_HEAD, REQUEST_SEMANTIC_REVISION, RequestExample)
 
 SOURCE = SourceIdentity("synthetic-patch", "normal", "a" * 64, "b" * 64, "c" * 64)
 RUNTIME = SkillRuntimeIdentity("synthetic-patch", "normal", "1" * 64, "2" * 64, "3" * 64,
@@ -637,3 +638,348 @@ def test_fit_requires_both_semantic_outcomes_without_an_idle_class():
     assert OUTCOMES == ("no_new_start", "start") and HEAD == "web_cluster_start"
     assert FORMAT != legacy.FORMAT
     assert SOURCE.semantic_revision == SEMANTIC_REVISION and SOURCE.feature_revision == FEATURE_REVISION
+
+
+REQUEST_SOURCE = replace(SOURCE, semantic_revision=REQUEST_SEMANTIC_REVISION)
+REQUEST_RUNTIME = replace(RUNTIME, semantic_revision=REQUEST_SEMANTIC_REVISION)
+
+
+def request_example(index=4, label="start", *, split="train"):
+    old = example(index, label, split=split)
+    # Fixture construction only: no real visual row or label is converted.
+    common = {name: getattr(old, name) for name in old.__dataclass_fields__
+              if name not in ("event_id", "last_not_started_t", "first_started_t", "head", "semantic_revision")}
+    common["source"] = REQUEST_SOURCE
+    positive = label == "start"
+    return RequestExample(**common, request_id="request-1" if positive else None,
+        request_t=old.anchor_t + .05 if positive else None,
+        raw_input_sha256=("1" if split == "train" else "2") * 64,
+        raw_device=7 if positive else None, request_seq=12 if positive else None,
+        prior_up_seq=10 if positive else None, prior_up_t=old.anchor_t - .01 if positive else None,
+        raw_continuity_start_t=old.anchor_t - .02, raw_continuity_end_t=old.anchor_t + .1,
+        raw_continuity_known=label is not None,
+        request_status="fresh_rise" if positive else "no_fresh_rise" if label else "unknown",
+        raw_evidence="synthetic received RMB interval, displayed source-local web binding",
+        cast_id="cast-1" if positive else None,
+        cast_last_not_started_t=old.anchor_t + .07 if positive else None,
+        cast_first_started_t=old.anchor_t + .09 if positive else None,
+        association_agreed=positive, association_evidence="synthetic same-target cast association" if positive else "")
+
+
+def request_packet(split="train"):
+    return [request_example(4, "start", split=split), request_example(5, "no_new_start", split=split),
+            *(request_example(i, None, split=split) for i in range(6, 9))]
+
+
+def test_request_point_is_separate_from_visual_bracket_and_old_constructor():
+    row = request_example()
+    assert len(row.validate(SPEC)) == 5
+    assert row.event_id == row.request_id and row.event_end_t == row.request_t
+    assert "event_id" not in asdict(row) and "last_not_started_t" not in asdict(row)
+    with pytest.raises(TypeError):
+        replace(row, last_not_started_t=.44)
+    with pytest.raises(DemoError, match="head/semantics"):
+        replace(example(), source=REQUEST_SOURCE, head=REQUEST_HEAD,
+                semantic_revision=REQUEST_SEMANTIC_REVISION).validate()
+    with pytest.raises(DemoError, match="head/semantics"):
+        replace(row, source=SOURCE).validate()
+
+
+@pytest.mark.parametrize("time", [.4, .399, .500001])
+def test_request_point_must_be_strictly_after_anchor_and_within_horizon(time):
+    row = replace(request_example(), request_t=time, cast_first_started_t=.58, confirmation_t=.59)
+    with pytest.raises(DemoError, match="next bin"):
+        row.validate()
+
+
+def test_request_at_right_boundary_and_later_cast_are_valid():
+    row = replace(request_example(), request_t=.5, cast_last_not_started_t=.57,
+                  cast_first_started_t=.59, confirmation_t=.684998151)
+    row.validate()
+    assert row.purge_footprint()[1] == .684998151  # latest used overlap release, not a feature
+    rows = request_packet()
+    rows[0] = row
+    cohort(rows)  # later visual cast overlaps next known non-request; it is not a second request
+    metrics = event_metrics(rows, ["start", "no_new_start", None, None, None])
+    assert metrics["true_positive"] == 1
+    assert metrics["mean_request_lead_s"] == pytest.approx(.1)
+    assert "mean_request_to_bracket_s" not in metrics
+
+
+@pytest.mark.parametrize("clock", ["state", "available"])
+def test_request_features_cannot_contain_future_or_post_request_observations(clock):
+    row = request_example()
+    final = row.history[-1]
+    # Ordinary future snapshot and the old grid validator's sub-nanosecond epsilon.
+    for request_t, feature_t in ((.45, .46), (.4000000001, .4000000002)):
+        final_state = replace(final.state, t=feature_t) if clock == "state" else final.state
+        final_snapshot = Snapshot(final_state, final.target, feature_t)
+        with pytest.raises(DemoError):
+            replace(row, request_t=request_t, history=(*row.history[:-1], final_snapshot)).validate()
+
+
+def test_received_held_continuation_and_release_can_be_known_nonrequest():
+    row = replace(request_example(5, "no_new_start"),
+                  raw_evidence="Synthetic full RMB interval: held at anchor, release .56; no fresh rise; other bindings unknown")
+    assert len(row.validate()) == 5
+    assert row.request_id is None and row.request_t is None
+    assert coverage_report([row])["bin_support"] == [1, 0]
+    # 'held' alone is an incomplete annotation, not a negative by default.
+    assert replace(request_example(5, None), request_status="held").validate() is None
+    with pytest.raises(DemoError, match="no_fresh_rise"):
+        replace(row, request_status="held").validate()
+
+
+@pytest.mark.parametrize("status", ["held", "repeated_down", "unknown", "association_conflict"])
+def test_uncertain_request_status_is_masked_not_credited(status):
+    row = replace(request_example(), request_status=status, label=None, label_known=False,
+                  reason="synthetic ambiguity", association_agreed=False)
+    assert row.validate() is None
+    assert coverage_report([row])["unique_events"] == 0
+    assert event_metrics([row], ["start"])["scored_bins"] == 0
+    with pytest.raises(DemoError):
+        replace(row, label="start", label_known=True).validate()
+
+
+@pytest.mark.parametrize("changes", [
+    {"raw_input_sha256": None}, {"raw_evidence": ""}, {"raw_continuity_known": False},
+    {"raw_continuity_start_t": .401}, {"raw_continuity_end_t": .499}, {"raw_continuity_end_t": .7},
+    {"request_t": None}, {"raw_device": None}, {"request_seq": True},
+    {"prior_up_seq": None, "prior_up_t": None}, {"prior_up_seq": 12}, {"prior_up_t": .451},
+    {"raw_continuity_start_t": .395}, {"association_agreed": False}, {"association_evidence": ""},
+    {"cast_id": None}, {"cast_last_not_started_t": .43, "cast_first_started_t": .44},
+    {"confirmation_t": .48}, {"target_agreed": False},
+])
+def test_known_request_requires_raw_continuity_rise_and_cast_evidence(changes):
+    with pytest.raises(DemoError):
+        replace(request_example(), **changes).validate()
+
+
+@pytest.mark.parametrize("changes", [
+    {"raw_input_sha256": None}, {"raw_continuity_known": False}, {"raw_evidence": ""},
+    {"raw_continuity_start_t": .501}, {"raw_continuity_end_t": .599}, {"raw_continuity_end_t": .7},
+    {"request_status": "repeated_down"}, {"target_agreed": False},
+])
+def test_known_nonrequest_needs_full_interval_and_target_evidence(changes):
+    with pytest.raises(DemoError):
+        replace(request_example(5, "no_new_start"), **changes).validate()
+
+
+def test_request_coverage_and_uncertain_point_overlap_cannot_create_negatives():
+    rows = request_packet()
+    with pytest.raises(DemoError, match="missing grid"):
+        cohort(rows[:-1])
+    rows[2] = replace(request_example(6, None), request_id="ambiguous-2", request_t=.55,
+                      raw_device=7, request_seq=20, request_status="association_conflict")
+    with pytest.raises(DemoError, match="overlaps a known"):
+        cohort(rows)
+
+
+@pytest.mark.parametrize("failure", ["media_alias", "raw_alias", "request_id", "cast", "raw_source"])
+def test_request_canonical_media_and_one_event_credit(failure):
+    rows = request_packet()
+    if failure == "media_alias":
+        rows += [replace(e, session="alias") for e in rows]
+    elif failure == "raw_alias":
+        rows += [replace(e, session="other", media_sha256="8" * 64,
+                         request_id="request-alias" if e.request_id else None) for e in rows]
+    elif failure in ("request_id", "cast"):
+        rows[1] = replace(request_example(5), request_seq=22, prior_up_seq=20,
+                          request_id="request-2" if failure == "cast" else "request-1")
+    else:
+        rows[1] = replace(rows[1], raw_input_sha256="8" * 64)
+    with pytest.raises(DemoError):
+        cohort(rows)
+
+
+def test_distinct_media_same_group_is_valid_with_distinct_requests():
+    rows = request_packet()
+    other = [replace(e, session="other", media_sha256="8" * 64, raw_input_sha256="9" * 64) for e in rows]
+    cohort(rows + other)
+    assert coverage_report(rows + other)["unique_events"] == 2
+    assert coverage_report(rows + other)["bin_support"] == [2, 2]
+
+
+def test_request_metrics_use_point_not_delayed_cast_and_one_to_one_credit():
+    rows = request_packet()
+    rows[0] = replace(rows[0], cast_last_not_started_t=.57, cast_first_started_t=.59, confirmation_t=.7)
+    cohort(rows)
+    metrics = event_metrics(rows, ["start", "start", None, None, None])
+    assert (metrics["true_positive"], metrics["false_positive"], metrics["false_negative"]) == (1, 1, 0)
+    assert metrics["mean_request_lead_s"] == pytest.approx(.05)
+    late = event_metrics(rows, ["no_new_start", "start", None, None, None])
+    assert (late["true_positive"], late["false_positive"], late["false_negative"]) == (0, 1, 1)
+
+
+@pytest.fixture
+def request_fitted():
+    torch = pytest.importorskip("torch")
+    torch.set_num_threads(1)
+    rows = request_packet()
+    return train(rows, spec=SPEC, epochs=2, batch_size=2), rows
+
+
+def test_request_train_portable_load_eval_and_actual_consumer(request_fitted, tmp_path):
+    policy, rows = request_fitted
+    assert (policy.format, policy.head, policy.semantic_revision) == (REQUEST_FORMAT, REQUEST_HEAD, REQUEST_SEMANTIC_REVISION)
+    assert policy.support == (1, 1)
+    path = tmp_path / "requests.pt"
+    sha = save_checkpoint(path, policy, rows, code_sha256="9" * 64, training_config={"epochs": 2})
+    loaded = load_checkpoint(path, expected_sha256=sha, expected_identity=REQUEST_SOURCE, offline=True)
+    assert loaded.probabilities(rows[0].history, .4) == policy.probabilities(rows[0].history, .4)
+    validation = [replace(e, source=replace(REQUEST_SOURCE, source_profile_sha256="7" * 64)) for e in request_packet("val")]
+    report = evaluate(loaded, rows, validation)
+    assert (report["format"], report["head"], report["semantic_revision"]) == (REQUEST_FORMAT, REQUEST_HEAD, REQUEST_SEMANTIC_REVISION)
+    assert report["training_source"]["source_profile_sha256"] != report["validation_sources"][0]["source_profile_sha256"]
+    assert report["probabilities"][2:] == [None] * 3
+    assert not report["confidence_filter"]["consumer_acceptance_measured"]
+    consumer = LearnedRangeSkillBrain.from_checkpoint(path, expected_sha256=sha, expected_identity=REQUEST_SOURCE, offline=True)
+    memory = Memory()
+    for t in (0., .1, .2, .3, .4, .5):
+        intent = consumer(state(t), memory)
+    assert consumer.policy.identity == REQUEST_SOURCE and consumer.policy.head == REQUEST_HEAD
+    assert consumer.last["probabilities"] is not None  # actual gate + actual unmodified model, no executor
+    assert type(intent) in (Idle, RangeSkill)  # tiny fit is not a confidence/performance claim
+    with pytest.raises(DemoError, match="synthetic checkpoint"):
+        load_checkpoint(path, expected_sha256=sha, expected_identity=REQUEST_SOURCE)
+
+
+def test_cross_semantic_cohort_training_and_evaluation_refuse_before_inference():
+    with pytest.raises(DemoError, match="mixed source"):
+        cohort(packet() + request_packet("val"))
+    with pytest.raises(DemoError, match="mixed source"):
+        train(packet() + request_packet("val"), epochs=1)
+    policy, rows, _, calls = evaluation_fixture()
+    with pytest.raises(DemoError, match="mixed source"):
+        evaluate(policy, rows, request_packet("val"))
+    assert not calls
+
+
+def test_cross_semantic_checkpoints_and_deployment_never_coerce_classes(request_fitted, fitted, tmp_path):
+    for policy, rows, expected, wrong in ((*request_fitted, REQUEST_SOURCE, SOURCE), (*fitted, SOURCE, REQUEST_SOURCE)):
+        path = tmp_path / (policy.format + ".pt")
+        sha = save_checkpoint(path, policy, rows, code_sha256="9" * 64, training_config={})
+        with pytest.raises(DemoError, match="incompatible event checkpoint"):
+            load_checkpoint(path, expected_sha256=sha, expected_identity=wrong, offline=True)
+        with pytest.raises(DemoError):
+            save_checkpoint(tmp_path / "wrong.pt", policy, packet() if expected == REQUEST_SOURCE else request_packet(),
+                            code_sha256="9" * 64, training_config={})
+        runtime = RUNTIME if expected == REQUEST_SOURCE else REQUEST_RUNTIME
+        binding = SkillDeploymentBinding(sha, digest(asdict(expected)), runtime, "8" * 64)
+        with pytest.raises(DemoError, match="semantic/feature mismatch"):
+            load_checkpoint(path, expected_sha256=sha, expected_identity=expected, offline=True,
+                            expected_runtime=runtime, deployment_binding=binding)
+    policy, rows = request_fitted
+    path = tmp_path / "request-bound.pt"
+    sha = save_checkpoint(path, policy, rows, code_sha256="9" * 64, training_config={})
+    binding = SkillDeploymentBinding(sha, digest(asdict(REQUEST_SOURCE)), REQUEST_RUNTIME, "8" * 64)
+    assert load_checkpoint(path, expected_sha256=sha, expected_identity=REQUEST_SOURCE, offline=True,
+                           expected_runtime=REQUEST_RUNTIME, deployment_binding=binding).identity == REQUEST_SOURCE
+
+
+@pytest.mark.parametrize("field,value", [("format", FORMAT), ("head", HEAD), ("semantic_revision", SEMANTIC_REVISION)])
+def test_request_loader_rejects_mixed_portable_headers(request_fitted, tmp_path, field, value):
+    policy, rows = request_fitted
+    torch = pytest.importorskip("torch")
+    path = tmp_path / "original.pt"
+    save_checkpoint(path, policy, rows, code_sha256="9" * 64, training_config={})
+    payload = torch.load(path, weights_only=True)
+    payload[field] = value
+    wrong = tmp_path / "mixed.pt"
+    torch.save(payload, wrong)
+    with pytest.raises(DemoError, match="incompatible event"):
+        load_checkpoint(wrong, expected_sha256=legacy.fingerprint(wrong), expected_identity=REQUEST_SOURCE, offline=True)
+
+
+def test_received_state_prehistory_extends_only_evidence_purge_not_gameplay():
+    # Synthetic clock control using the lead-supplied dependency boundary. No
+    # source artifact/adapter read, real label, or admitted evidence is implied.
+    row = replace(request_example(141), segment_start_t=11., segment_end_t=22.25,
+                  raw_continuity_start_t=.421919351, prior_up_t=10.415016051,
+                  request_t=14.197983651, cast_last_not_started_t=14.29,
+                  cast_first_started_t=14.31, confirmation_t=14.384998151)
+    original_history = row.history
+    row.validate()
+    assert row.purge_footprint() == (.421919351, 14.384998151)
+    assert row.history == original_history
+    assert all(11. <= s.state.t <= row.anchor_t for s in row.history)
+    assert row.exposure_start_t >= 11. and row.exposure_end_t <= 22.25
+    negative = replace(request_example(137, "no_new_start"), segment_start_t=11., segment_end_t=22.25,
+                       raw_continuity_start_t=.421919351,
+                       raw_evidence="Synthetic focus and held-state carry-in before gameplay, no fresh rise in bin")
+    negative.validate()
+    assert negative.purge_footprint()[0] == .421919351
+    for changes in ({"raw_continuity_start_t": 14.11}, {"raw_continuity_end_t": 14.19},
+                    {"raw_continuity_end_t": 14.4}, {"raw_continuity_start_t": float("nan")},
+                    {"raw_continuity_end_t": float("inf")}, {"raw_continuity_start_t": 15.},
+                    {"raw_continuity_start_t": 10.42}):
+        with pytest.raises(DemoError):
+            replace(row, **changes).validate()
+    # Carry-in evidence does not authorize historical gameplay feature padding.
+    bad_history = (replace(row.history[0], state=replace(row.history[0].state, t=10.9)), *row.history[1:])
+    with pytest.raises(DemoError):
+        replace(row, history=bad_history).validate()
+
+
+def test_empty_request_metric_stratum_retains_explicit_request_semantics():
+    metrics = event_metrics([], [], semantic_revision=REQUEST_SEMANTIC_REVISION)
+    assert metrics["mean_request_lead_s"] is None
+    assert "mean_request_to_bracket_s" not in metrics
+    with pytest.raises(DemoError, match="mixed metric semantics"):
+        event_metrics(packet(), [None] * 5, semantic_revision=REQUEST_SEMANTIC_REVISION)
+
+
+def request_evaluation_fixture():
+    policy, _, _, calls = evaluation_fixture()  # fixed scorer, no fit or model construction
+    rows, validation = request_packet(), request_packet("val")
+    policy.identity, policy.data_sha256 = REQUEST_SOURCE, evidence_digest(rows)
+    return policy, rows, validation, calls
+
+
+@pytest.mark.parametrize("coverage", ["nonrequest", "masked_only", "positive"])
+def test_raw_ledger_alias_rejects_before_inference_for_every_label_mask(coverage):
+    policy, rows, validation, calls = request_evaluation_fixture()
+    if coverage == "nonrequest":
+        validation[0] = request_example(4, None, split="val")
+        assert (validation[1].raw_continuity_start_t, validation[1].raw_continuity_end_t) == (.48, .6)
+    elif coverage == "masked_only":
+        validation = [request_example(i, None, split="val") for i in range(4, 9)]
+    validation = [replace(e, raw_input_sha256="1" * 64) for e in validation]
+    try:
+        evaluate(policy, rows, validation)
+    except DemoError:
+        assert not calls
+    else:
+        pytest.fail(f"shared raw ledger accepted across placement: coverage={coverage}, scorer anchors={calls}")
+
+
+@pytest.mark.parametrize("coverage", ["nonrequest", "masked_only", "positive"])
+def test_independent_raw_ledger_preserves_each_coverage_control(coverage):
+    policy, rows, validation, calls = request_evaluation_fixture()
+    if coverage == "nonrequest":
+        validation[0] = request_example(4, None, split="val")
+    elif coverage == "masked_only":
+        validation = [request_example(i, None, split="val") for i in range(4, 9)]
+    assert all(e.raw_input_sha256 == "2" * 64 for e in validation)
+    report = evaluate(policy, rows, validation)
+    assert calls == ({"nonrequest": [.5], "masked_only": [], "positive": [.4, .5]}[coverage])
+    assert report["coverage"]["grid_rows"] == 5
+
+
+def test_masked_only_supplied_ledger_cannot_alias_session_even_without_split_change():
+    rows = request_packet()
+    other = [replace(request_example(i, None), session="alias", media_sha256="8" * 64,
+                     raw_input_sha256="1" * 64 if i == 8 else None) for i in range(4, 9)]
+    assert all(e.label is None and e.request_id is None for e in other)
+    with pytest.raises(DemoError, match="leakage"):
+        cohort(rows + other)
+
+
+def test_raw_ledger_can_support_distinct_media_in_same_canonical_session_group():
+    rows = request_packet()
+    other = [replace(request_example(i, "no_new_start" if i == 15 else None),
+                     media_sha256="8" * 64, continuous_id="continuous-2",
+                     segment_start_t=.975, segment_end_t=1.9) for i in range(14, 19)]
+    assert all(e.raw_input_sha256 == "1" * 64 and e.session == "train" and e.group == "train" for e in other)
+    cohort(rows + other)
+    assert coverage_report(rows + other)["bin_support"] == [2, 1]

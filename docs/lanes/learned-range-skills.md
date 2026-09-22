@@ -1,5 +1,8 @@
 # Learned range skill events — implementation handoff
 
+Current request-timing delta: see **Versioned received-request head** below.
+The visual-onset API and accepted historical results retain their original meaning.
+
 2026-09-22. VUH-1346. Owner: learned-range; independent changed-boundary review:
 range-review; integration/acceptance: root. Implementation is review-ready,
 **synthetic plumbing only**, not admitted human training or deployment approval.
@@ -391,3 +394,181 @@ Frozen evaluation-only delta SHA-256:
 | --- | --- |
 | `policy/range_skill_policy.py` | `3fb99790514eec159789ce5f8b155239a8ab6da359f825720b89a50def931f8d` |
 | `tests/test_range_skill_policy.py` | `17480913cb27c43852ce2621b3b4cdc41a7861c34af1c6effe272066a9ab355f` |
+
+## Versioned received-request head
+
+2026-09-22, VUH-1346. Review-ready synthetic implementation; independent
+range-review and root acceptance remain pending. The accepted timing interpretation
+at `dddf760` is documented in
+[`range-request-timing-20260922`](../evidence/range-request-timing-20260922/README.md)
+and its [independent review](../evidence/range-request-timing-20260922/independent-review.md).
+Both historical positive anchors followed received RMB. Their visible-onset labels,
+checkpoints and artifacts remain unchanged; they are not relabeled request models.
+
+The separately discriminated API in `policy/range_skill_policy.py` is:
+
+```python
+REQUEST_FORMAT = "rivals-range-skill-requests-v1"
+REQUEST_HEAD = "web_cluster_request"
+REQUEST_SEMANTIC_REVISION = "web-cluster-request-v1"
+
+RequestExample(
+    session, group, split, continuous_id, media_sha256, review_sha256,
+    evidence, source,
+    segment_start_t, segment_end_t, grid_origin_t, grid_index,
+    history, anchor_t,
+    exposure_start_t, exposure_end_t, confirmation_t,
+    label, label_known, reason, anchor_target_track, target_agreed,
+    request_id=None, request_t=None,
+    raw_input_sha256=None, raw_device=None, request_seq=None,
+    prior_up_seq=None, prior_up_t=None,
+    raw_continuity_start_t=None, raw_continuity_end_t=None,
+    raw_continuity_known=False, request_status="unknown", raw_evidence="",
+    cast_id=None, cast_last_not_started_t=None, cast_first_started_t=None,
+    association_agreed=False, association_evidence="",
+    head=REQUEST_HEAD, semantic_revision=REQUEST_SEMANTIC_REVISION,
+    origin="reviewed_human",
+)
+```
+
+The required common fields and their masks have the same types as `EventExample`.
+`raw_device`, `request_seq` and `prior_up_seq` are nonnegative native integer
+identities; request/prior times and continuity endpoints use the original source
+clock. Request IDs are stable within immutable media. No visual `event_id`,
+`last_not_started_t` or `first_started_t` constructor aliases exist for this type.
+Internal event properties permit reuse of the existing cohort/metrics machinery.
+
+Admission supplies the source-local displayed RMB web binding, received-state
+continuity including focus/carry-in dependencies, and target/cast association in
+the existing reviewed evidence. `raw_input_sha256` pins the raw stream;
+`raw_evidence` references its reviewed device/sequence/state interpretation.
+`association_evidence` and the cast ID/bracket identify the separately observed
+response. The existing `review_sha256`/`evidence` and training evidence digest bind
+these fields together. Hashes and nonempty references do not establish review by
+themselves. This module has no raw reader, human-label adapter or admission power.
+
+| Known outcome | Required evidence and meaning |
+| --- | --- |
+| `start` | `request_status="fresh_rise"`; exact received RMB `request_t` in `(anchor_t, anchor_t+.1]`; request ID/device/sequence and preceding received-up sequence/time; reviewed same-target association to a separately observed cast. Every actual feature's `State.t` and `available_t` strictly precedes the point. No fabricated request onset bracket. |
+| `no_new_start` | `request_status="no_fresh_rise"`; complete received-state interval establishes no fresh RMB rise under the source-local displayed binding. A fully observed held continuation and release is valid. It does not assert no alternate binding fired, no visual emission, no movement, or agent Idle. Request/prior/cast point fields remain `None`; held evidence belongs in `raw_evidence`. |
+| Masked | `label=None`, `label_known=False`, explicit reason. Status `held` alone, `repeated_down`, `unknown` or `association_conflict` does not create a known negative/positive. Unknown rows may retain actual evidence or omit histories entirely. No negative subsampling or retrospective target substitution. |
+
+Both known outcomes require full horizon exposure, reviewed causal anchor-target
+agreement and raw continuity spanning the entire forecast interval. In symbols,
+`raw_continuity_start_t <= anchor_t` and
+`anchor_t+.1 <= raw_continuity_end_t <= confirmation_t`. A positive additionally
+requires continuity reaching its preceding received-up state, an ordered sequence,
+and agreed cast confirmation after the received request. This expresses received
+native input timing; it makes no physical-press, game-consumption or delivery claim.
+
+The observed cast bracket may fall **after** the request horizon. It affects
+association and purge, never feature construction or point-bin assignment.
+`confirmation_t` includes the latest evidence actually used, including overlap
+release when supplied. `RequestExample.purge_footprint()` includes the earlier of
+actual gameplay history and `raw_continuity_start_t`, and the latest horizon,
+exposure, request, confirmation and raw continuity end. Focus/held-state carry-in
+may predate `segment_start_t`; it is evidence dependence, not pre-game gameplay.
+All five feature snapshots and label exposure remain inside the gameplay segment.
+Synthetic supplied-clock controls validate dependency start `0.421919351` with
+gameplay `11..22.25` and confirmation `14.384998151`, without padding or retiming.
+This is a bookkeeping test, not a read or admission of the corresponding source.
+
+The same `_ExampleBase` and single cohort validator retain fixed 10 Hz/five actual
+causal snapshots, original clocks, full grid masks, source identity, canonical
+session/media/group/split placement, segment separation and support rules.
+Request credit is additionally pinned to `(raw_input_sha256, raw_device,
+request_seq)`: changing its ID or media cannot gain another event credit. Within
+media, one raw input source is retained and one observed cast cannot supervise
+multiple requests. Distinct media in the same group remain supported. Uncertain
+points prevent known labels in their overlapping request bin; later cast evidence
+does not turn later no-request intervals into positive request bins.
+
+`train`, `save_checkpoint`, `load_checkpoint`, `evaluate`, `RangeSkillPolicy`, and
+`LearnedRangeSkillBrain.from_checkpoint` keep their existing names/arguments.
+Use `SourceIdentity(..., semantic_revision=REQUEST_SEMANTIC_REVISION)` explicitly;
+runtime identities must explicitly name the same revision if supplied. Defaults
+remain historical visual semantics. The checkpoint header, source identity,
+runtime binding and expected identity must agree on the exact head/revision;
+mixed cohorts and cross-semantic loads/deployment bindings reject. No class index
+coercion occurs. Save remains unapproved; no runtime or deployment binding was
+issued. Consumer code is unchanged and can use the shared typed `RangeSkill`
+output through its actual loader; selection, aim, movement and execution remain
+scripted and subject to existing gates.
+
+The accepted evaluation-only profile compatibility rule also applies to the new
+head: validation retains its own truthful source hash while the six structural
+domain fields and original supervision origin must agree. Public cohort,
+training, save, load and deployment retain exact source identity checks. Reports
+now include format/head/revision. New event metrics match the received point
+one-to-one and report `mean_request_lead_s` (request point minus prediction anchor),
+not visual latency. `event_metrics(..., semantic_revision=...)` preserves this
+key in empty strata. Historical visual metrics retain their original bracket key
+and numeric behavior. Baselines remain never/always/rate/recent-confirmed/ammo;
+recent-confirmed cannot use a late association before its confirmation clock.
+Offline confidence filtering still measures neither consumer nor executor
+acceptance. Partial diagnostic coverage is not complete evaluation or live approval.
+
+Verification (cached isolated CPU dependencies, no Controller/Loop/native import):
+
+```powershell
+$env:PYTHONDONTWRITEBYTECODE='1'
+uv run --offline --no-project --with torch --with pytest python -m pytest tests/test_range_skill_policy.py -k 'not model_request_crosses_real_pure_controller_boundary' -q
+```
+
+**150 passed, 1 deselected.** The exclusion is the existing Controller join.
+New checks exercise the actual two-row synthetic fit/save/load/evaluate and
+consumer, point boundaries, strict pre-request features, held/release negatives,
+late cast/release purge, pre-game raw carry-in, missing/future/invalid continuity,
+masked uncertainty, canonical request credit, and mixed-format/source/runtime
+refusal. All prior visual, RSP and evaluation-compatibility controls pass. This
+does not establish human performance; no human artifacts/media/raw inputs were
+read, no real fit ran, and no input, shared installation, commit or Linear write
+occurred. Root owns independent review, integration and any further reliance.
+
+### RT1: canonical raw-ledger placement correction
+
+The first request-head freeze remains unaccepted pending the same independent
+range-review. Root reproduced a missed evidence boundary: request-event dedup
+ran only when an event ID existed. A validation negative or masked row could
+therefore reuse the training raw ledger under different media/session/group
+identities without triggering it.
+
+The exact synthetic red regression used `train=request_packet()` and
+`validation=request_packet("val")`, replaced validation index 4 with
+`request_example(4, None, split="val")`, then set every validation
+`raw_input_sha256` to the training ledger (`"1" * 64`). Actual `evaluate()`
+accepted and invoked the fixed scorer at **0.5** on the known negative with raw
+continuity **[0.48, 0.6]**. All-masked validation reuse also passed, as did a
+same-split session alias with the ledger supplied only by its last masked row.
+The focused red run yielded **3 failed, 5 passed**; independent-ledger,
+positive-alias refusal and legitimate same-session reuse controls already passed.
+
+The correction adds every supplied request `raw_input_sha256` to the existing
+placement loop as `(raw_input, hash) -> (session, group, split)`, independently
+of label mask or event ID. This also connects raw evidence to the existing
+full-source-identity consistency within canonical sessions. No new provenance
+framework or label inference was added. Existing per-media raw-source consistency
+and per-event dedup remain in place. A canonical session/group may still use its
+ledger across distinct media and nonoverlapping gameplay segments; independent
+validation retains its distinct ledger (`"2" * 64`). Unspecified raw hashes in
+unknown coverage rows remain unspecified, never fabricated.
+
+Green focused result: **8 passed**, including all three previous failures, the
+positive alias, independent positive/negative/masked controls, and legitimate
+same-session multi-media use. Aliases reject before inference; the independent
+negative still calls the scorer at **0.5** with all five grid rows retained.
+
+Broader synthetic regression, with every numerical-fit test and the Controller
+join excluded for this repair:
+
+```powershell
+$env:PYTHONDONTWRITEBYTECODE='1'
+uv run --offline --no-project --with torch --with pytest python -m pytest tests/test_range_skill_policy.py -k 'not model_request_crosses_real_pure_controller_boundary and not two_observed_rows_fit_reload and not checkpoint_pins_new_semantics and not request_train_portable and not cross_semantic_checkpoints and not request_loader_rejects_mixed and not fit_requires_both' -q
+```
+
+**150 passed, 9 deselected.** Earlier numerical/checkpoint evidence is reused;
+no optimization/training ran for RT1. Only this document, the policy module and
+its owned test file changed in this repair. Root's `tests/test_range_skill_loop.py`
+was neither edited nor run. No Controller/Loop/native import, corpus access,
+input, shared installation, commit or Linear write. This correction is frozen
+for the same reviewer; root owns acceptance and the admission-module handoff.
