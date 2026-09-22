@@ -1,0 +1,19 @@
+{
+  "data/diagnostics/range-hud-countdown-performance-20260922/after.json": "777a876e778c322126dc6e371f3635648547552b76ade4d82efc8af062703dcc",
+  "data/diagnostics/range-hud-countdown-performance-20260922/baseline_hud.py": "5f865e5567f16cf72962cb5148e2e7342272229ec59f54fe5082df90d9b0d3e2",
+  "data/diagnostics/range-hud-countdown-performance-20260922/before.json": "110e4cc04499948ec67e96a79cf59d09f57a3e48d05a35e1e62cb9b08a479f95",
+  "data/diagnostics/range-hud-countdown-performance-20260922/freeze.py": "22cd6ffc5aa3a7408ce8405c297441491923029433bace73900c340338150f11",
+  "data/diagnostics/range-hud-countdown-performance-20260922/measure.py": "87f187e1c2c61162c7686c0f863d3e687f7b3f40bdf979ddbd3d8640ea233b27",
+  "data/diagnostics/range-hud-countdown-performance-20260922/README.md": "6c80ab3129f00d2ecc72a7f641e59bb504c09953e83c5b8099e8fa2569acaccf",
+  "data/diagnostics/range-hud-countdown-performance-20260922/summarize.py": "ad1d150a50be61d6b00c21726e782a7722bcbf8663cbe3911a29237957643047",
+  "data/diagnostics/range-hud-countdown-performance-20260922/summary.json": "40a82134468bce47411937ae864e6d46098a2610a19b970a17fb2a3240f59adf",
+  "data/diagnostics/range-hud-countdown-performance-20260922/timed-000000.jpg-baseline.json": "0be0425df6e7c395b49c6136014afe65abb82d99393702fd9c194958d0f31159",
+  "data/diagnostics/range-hud-countdown-performance-20260922/timed-000000.jpg-candidate.json": "da59a6f79d5c8d5348466af8b56771b6ff37a09ac0d3ffa3e564240aa6b1ba48",
+  "data/diagnostics/range-hud-countdown-performance-20260922/timed-000012.jpg-baseline.json": "4f3ce5d9b6361fef6b401745e522f5ea629f2398345e39b00b7b0867b6619bd4",
+  "data/diagnostics/range-hud-countdown-performance-20260922/timed-000012.jpg-candidate.json": "a94f6f3158a111d8198c9033e536d106075ca47b988bccdea06f24272fb3e50e",
+  "data/diagnostics/range-hud-countdown-performance-20260922/timed-000054.jpg-baseline.json": "4cef371918b6ff796d9d634b4d55918ddd380d0dc17268d9bb40a371bfea94e1",
+  "data/diagnostics/range-hud-countdown-performance-20260922/timed-000054.jpg-candidate.json": "005d9714c830365d4ce142bd09984625e9842c1fd6fd3e43f5cec249d92b5d0c",
+  "docs/lanes/range-hud-countdown-performance.md": "c8b427dd1b0c5fedb171f1e06e2388a94f73be74d5a6d85af64684d1b1e5dbff",
+  "perception/hud.py": "b5c15cfe8e8d3b11003cd74d2d69c76f34d37591894124f5dfd70e5b32249acc",
+  "tests/test_hud_countdown_performance.py": "7396cfb9a207cce5d0fb8e3704064557a858d63f740b13b3988cec88d7b3f959"
+}

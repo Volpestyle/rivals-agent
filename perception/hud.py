@@ -1308,7 +1308,12 @@ def _countdown_char(mask, box):
         return ch
     rows, chars = _flat_templates()
     dist = (rows != glyph.ravel()).sum(axis=1) / glyph.size
-    close = {str(c) for c, d in zip(chars, dist) if d <= MAX_DIST and d - dist.min() < MIN_MARGIN}
+    # Preserve zip's prefix and short-circuit: no min/subtraction without an
+    # eligible candidate, and the minimum still spans the entire distance bank.
+    candidates = np.flatnonzero(dist[:len(chars)] <= MAX_DIST)
+    if candidates.size:
+        candidates = candidates[dist[candidates] - dist.min() < MIN_MARGIN]
+    close = {str(chars[i]) for i in candidates}
     if not close or not close <= set(_TOPOLOGY):
         return None
     shape = _holes(mask, box)

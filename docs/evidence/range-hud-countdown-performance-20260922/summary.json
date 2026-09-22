@@ -1,0 +1,343 @@
+{
+  "before_hud_sha256": "5f865e5567f16cf72962cb5148e2e7342272229ec59f54fe5082df90d9b0d3e2",
+  "after_hud_sha256": "b5c15cfe8e8d3b11003cd74d2d69c76f34d37591894124f5dfd70e5b32249acc",
+  "complete_native_output_equal": 23,
+  "boundaries": [
+    "read_cooldown",
+    "read",
+    "state_kwargs -> State"
+  ],
+  "before_edit_reproduction": {
+    "test": "test_repeated_reduction_is_removed",
+    "observed_min_calls": [
+      1024,
+      1024
+    ],
+    "expected": [
+      1024,
+      1
+    ],
+    "result": "1 failed, 29 deselected"
+  },
+  "after_edit_checks": {
+    "new_tests": "30 passed including 23-frame native equivalence",
+    "accepted_readiness_controls": "22 passed, 6 deselected"
+  },
+  "timing_order": [
+    "000000: old/new",
+    "000012: new/old",
+    "000054: old/new"
+  ],
+  "timing": [
+    {
+      "name": "000000.jpg",
+      "old_ms": 24.48789999471046,
+      "new_ms": 24.12779998849146,
+      "exact_output": true,
+      "difference_ms": 0.3601000062189996,
+      "old_profile": [
+        {
+          "file": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\diagnostics\\range-hud-countdown-performance-20260922\\baseline_hud.py",
+          "line": 1303,
+          "function": "_countdown_char",
+          "calls": 30,
+          "primitive": 30,
+          "self_ms": 0.5963,
+          "cumulative_ms": 6.9682
+        },
+        {
+          "file": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\diagnostics\\range-hud-countdown-performance-20260922\\baseline_hud.py",
+          "line": 912,
+          "function": "_classify",
+          "calls": 30,
+          "primitive": 30,
+          "self_ms": 0.9399000000000001,
+          "cumulative_ms": 6.2505
+        },
+        {
+          "file": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\diagnostics\\range-hud-countdown-performance-20260922\\baseline_hud.py",
+          "line": 1337,
+          "function": "read_cooldown",
+          "calls": 4,
+          "primitive": 4,
+          "self_ms": 0.0293,
+          "cumulative_ms": 10.207
+        },
+        {
+          "file": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\diagnostics\\range-hud-countdown-performance-20260922\\baseline_hud.py",
+          "line": 1311,
+          "function": "<setcomp>",
+          "calls": 23,
+          "primitive": 23,
+          "self_ms": 2.4245,
+          "cumulative_ms": 2.432
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'min' of 'numpy.ndarray' objects>",
+          "calls": 32,
+          "primitive": 32,
+          "self_ms": 0.0191,
+          "cumulative_ms": 0.7943000000000001
+        }
+      ],
+      "new_profile": [
+        {
+          "file": "C:\\Users\\volpe\\repos\\rivals-agent\\perception\\hud.py",
+          "line": 1303,
+          "function": "_countdown_char",
+          "calls": 30,
+          "primitive": 30,
+          "self_ms": 0.6691,
+          "cumulative_ms": 4.5847999999999995
+        },
+        {
+          "file": "C:\\Users\\volpe\\repos\\rivals-agent\\perception\\hud.py",
+          "line": 912,
+          "function": "_classify",
+          "calls": 30,
+          "primitive": 30,
+          "self_ms": 0.9539000000000001,
+          "cumulative_ms": 6.4383
+        },
+        {
+          "file": "C:\\Users\\volpe\\repos\\rivals-agent\\perception\\hud.py",
+          "line": 1342,
+          "function": "read_cooldown",
+          "calls": 4,
+          "primitive": 4,
+          "self_ms": 0.028900000000000002,
+          "cumulative_ms": 7.714300000000001
+        },
+        {
+          "file": "C:\\Users\\volpe\\repos\\rivals-agent\\perception\\hud.py",
+          "line": 1316,
+          "function": "<setcomp>",
+          "calls": 23,
+          "primitive": 23,
+          "self_ms": 0.0297,
+          "cumulative_ms": 0.0297
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'min' of 'numpy.ndarray' objects>",
+          "calls": 32,
+          "primitive": 32,
+          "self_ms": 0.0198,
+          "cumulative_ms": 0.8575
+        }
+      ]
+    },
+    {
+      "name": "000012.jpg",
+      "old_ms": 25.047200004337355,
+      "new_ms": 21.496100001968443,
+      "exact_output": true,
+      "difference_ms": 3.551100002368912,
+      "old_profile": [
+        {
+          "file": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\diagnostics\\range-hud-countdown-performance-20260922\\baseline_hud.py",
+          "line": 1303,
+          "function": "_countdown_char",
+          "calls": 30,
+          "primitive": 30,
+          "self_ms": 0.4338,
+          "cumulative_ms": 6.920100000000001
+        },
+        {
+          "file": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\diagnostics\\range-hud-countdown-performance-20260922\\baseline_hud.py",
+          "line": 912,
+          "function": "_classify",
+          "calls": 27,
+          "primitive": 27,
+          "self_ms": 0.8498000000000001,
+          "cumulative_ms": 5.6936
+        },
+        {
+          "file": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\diagnostics\\range-hud-countdown-performance-20260922\\baseline_hud.py",
+          "line": 1337,
+          "function": "read_cooldown",
+          "calls": 4,
+          "primitive": 4,
+          "self_ms": 0.032100000000000004,
+          "cumulative_ms": 10.2775
+        },
+        {
+          "file": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\diagnostics\\range-hud-countdown-performance-20260922\\baseline_hud.py",
+          "line": 1311,
+          "function": "<setcomp>",
+          "calls": 22,
+          "primitive": 22,
+          "self_ms": 2.3452,
+          "cumulative_ms": 2.3452
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'min' of 'numpy.ndarray' objects>",
+          "calls": 25,
+          "primitive": 25,
+          "self_ms": 0.015300000000000003,
+          "cumulative_ms": 0.7859
+        }
+      ],
+      "new_profile": [
+        {
+          "file": "C:\\Users\\volpe\\repos\\rivals-agent\\perception\\hud.py",
+          "line": 1303,
+          "function": "_countdown_char",
+          "calls": 30,
+          "primitive": 30,
+          "self_ms": 0.6332,
+          "cumulative_ms": 5.3051
+        },
+        {
+          "file": "C:\\Users\\volpe\\repos\\rivals-agent\\perception\\hud.py",
+          "line": 912,
+          "function": "_classify",
+          "calls": 27,
+          "primitive": 27,
+          "self_ms": 0.9368000000000001,
+          "cumulative_ms": 6.7616000000000005
+        },
+        {
+          "file": "C:\\Users\\volpe\\repos\\rivals-agent\\perception\\hud.py",
+          "line": 1342,
+          "function": "read_cooldown",
+          "calls": 4,
+          "primitive": 4,
+          "self_ms": 0.0456,
+          "cumulative_ms": 9.397
+        },
+        {
+          "file": "C:\\Users\\volpe\\repos\\rivals-agent\\perception\\hud.py",
+          "line": 1316,
+          "function": "<setcomp>",
+          "calls": 22,
+          "primitive": 22,
+          "self_ms": 0.0275,
+          "cumulative_ms": 0.0275
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'min' of 'numpy.ndarray' objects>",
+          "calls": 25,
+          "primitive": 25,
+          "self_ms": 0.019700000000000002,
+          "cumulative_ms": 0.8186000000000001
+        }
+      ]
+    },
+    {
+      "name": "000054.jpg",
+      "old_ms": 23.574099992401898,
+      "new_ms": 21.658499987097457,
+      "exact_output": true,
+      "difference_ms": 1.9156000053044409,
+      "old_profile": [
+        {
+          "file": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\diagnostics\\range-hud-countdown-performance-20260922\\baseline_hud.py",
+          "line": 1303,
+          "function": "_countdown_char",
+          "calls": 30,
+          "primitive": 30,
+          "self_ms": 0.48130000000000006,
+          "cumulative_ms": 8.985700000000001
+        },
+        {
+          "file": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\diagnostics\\range-hud-countdown-performance-20260922\\baseline_hud.py",
+          "line": 912,
+          "function": "_classify",
+          "calls": 32,
+          "primitive": 32,
+          "self_ms": 1.1718,
+          "cumulative_ms": 7.4212
+        },
+        {
+          "file": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\diagnostics\\range-hud-countdown-performance-20260922\\baseline_hud.py",
+          "line": 1337,
+          "function": "read_cooldown",
+          "calls": 4,
+          "primitive": 4,
+          "self_ms": 0.031,
+          "cumulative_ms": 13.3503
+        },
+        {
+          "file": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\diagnostics\\range-hud-countdown-performance-20260922\\baseline_hud.py",
+          "line": 1311,
+          "function": "<setcomp>",
+          "calls": 22,
+          "primitive": 22,
+          "self_ms": 2.6511,
+          "cumulative_ms": 2.6511
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'min' of 'numpy.ndarray' objects>",
+          "calls": 22,
+          "primitive": 22,
+          "self_ms": 0.0166,
+          "cumulative_ms": 0.7403000000000001
+        }
+      ],
+      "new_profile": [
+        {
+          "file": "C:\\Users\\volpe\\repos\\rivals-agent\\perception\\hud.py",
+          "line": 912,
+          "function": "_classify",
+          "calls": 32,
+          "primitive": 32,
+          "self_ms": 1.0559,
+          "cumulative_ms": 6.774700000000001
+        },
+        {
+          "file": "C:\\Users\\volpe\\repos\\rivals-agent\\perception\\hud.py",
+          "line": 1303,
+          "function": "_countdown_char",
+          "calls": 30,
+          "primitive": 30,
+          "self_ms": 0.5711,
+          "cumulative_ms": 5.7815
+        },
+        {
+          "file": "C:\\Users\\volpe\\repos\\rivals-agent\\perception\\hud.py",
+          "line": 1342,
+          "function": "read_cooldown",
+          "calls": 4,
+          "primitive": 4,
+          "self_ms": 0.039700000000000006,
+          "cumulative_ms": 9.3237
+        },
+        {
+          "file": "C:\\Users\\volpe\\repos\\rivals-agent\\perception\\hud.py",
+          "line": 1316,
+          "function": "<setcomp>",
+          "calls": 22,
+          "primitive": 22,
+          "self_ms": 0.024900000000000002,
+          "cumulative_ms": 0.024900000000000002
+        },
+        {
+          "file": "~",
+          "line": 0,
+          "function": "<method 'min' of 'numpy.ndarray' objects>",
+          "calls": 22,
+          "primitive": 22,
+          "self_ms": 0.0174,
+          "cumulative_ms": 0.8495000000000001
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "One fresh child per version/frame, three pairs; no statistical speedup estimate.",
+    "Each child has one separate cache-cleared profiled call; nested profile times overlap.",
+    "Saved-JPEG reader cost excludes capture/decode/import/State construction.",
+    "Unknown outputs are retained exactly; equality is not a new correctness label.",
+    "No claim about native loop cost, event deadlines or visible casts."
+  ]
+}
