@@ -1523,14 +1523,28 @@ def test_an_archived_experiment_is_never_a_loader_input(tmp_path):
     (exp / "abs.manifest.jsonl").write_bytes(outside.read_bytes())   # and outside: only the manifest's own path is in the archive
     with pytest.raises(FormatError, match="archived experiment .* is never a loader input"):
         demos.read_manifest(exp / "abs.manifest.jsonl")
-    link = tmp_path / "innocent"
-    link.symlink_to(exp)                                            # a symlink elsewhere to the archive resolves into it
     for call in (lambda: demos.events_file_segments(exp / "vodA.events.jsonl"),
-                 lambda: demos.events_file_segments(link / "vodA.events.jsonl"), lambda: Demos.load(link),
                  lambda: Demos.load(exp), lambda: Demos.load(exp / "vodA.manifest.jsonl"),
                  lambda: Demos.load(tmp_path / "data" / "experiments"), lambda: demos.read_manifest(exp / "vodA.manifest.jsonl"),
                  lambda: demos.write_manifest(tmp_path / "out.manifest.jsonl",           # a manifest outside, pointing in
                                               header(events=str(exp / "vodA.events.jsonl")), SEGS)):
+        with pytest.raises(FormatError, match="archived experiment .* is never a loader input"):
+            call()
+
+
+def test_an_archive_symlink_is_never_a_loader_input(tmp_path):
+    """Keep the portable archive checks above running without Windows symlink privilege."""
+    exp = tmp_path / "data" / "experiments" / "old"
+    exp.mkdir(parents=True)
+    link = tmp_path / "innocent"
+    try:
+        link.symlink_to(exp, target_is_directory=True)
+    except OSError as exc:
+        if getattr(exc, "winerror", None) == 1314:
+            pytest.skip("Windows account lacks symlink privilege")
+        raise
+    for call in (lambda: demos.events_file_segments(link / "vodA.events.jsonl"),
+                 lambda: Demos.load(link)):
         with pytest.raises(FormatError, match="archived experiment .* is never a loader input"):
             call()
 

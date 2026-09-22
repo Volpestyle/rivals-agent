@@ -31,10 +31,11 @@ included (target choice, engage or retreat, positioning, setup and recovery), no
 button sequences. Order: imitation first, human correction next, reinforcement learning
 only once an outcome can be measured reliably.
 
-- **Sources.** Full VODs of top Spider-Man players (candidates DayMR and ReqMR; identity,
-  rank and availability are being verified) are the expert source. The agent's own pad
-  recordings, which are perfectly labelled, supply input-labelled video. James's own play
-  with synchronized inputs is optional and not planned.
+- **Sources.** Full VODs from James's selected sources DayMR and ReqMR supply tactical
+  evidence; their rank is not independently verified. James's expert-level
+  technical demonstrations now supply paired video and **keyboard/mouse** inputs through
+  the OBS recorder. Human execution learning is a first-class workstream. Scripted pad
+  recordings remain a separate baseline; commanded input is not proof of game response.
 - **Labels without input logs.** The HUD readers turn cooldown, charge, ammo and hp
   transitions into a timestamped event stream, so ability timing and combo order are read
   off any video whose HUD is visible. Camera and movement labels for third-party video need
@@ -59,6 +60,13 @@ only once an outcome can be measured reliably.
   and scope item 3 keeps the agent out of every mode where that could be tested.
 - **First milestone.** Recognize a suitable engagement opportunity, execute it, then
   continue or escape, with bounded tests that say what they do not show.
+- **Human execution refactor (2026-09-21).** Retain this repository. Import explicitly
+  reviewed OBS sessions, align actual decoded frames to logged packet timestamps, and
+  train a temporal action-chunk baseline from causal frame history and native controls.
+  Preserve capture-delay uncertainty, focus/pause boundaries, whole-session splits and
+  unknown input states. See [the current learning decision](learning-plan.md#paired-human-execution-current-work).
+  Keyboard/mouse checkpoints are offline artifacts: there is no validated conversion to
+  the accepted virtual-pad executor, and the rejected synthetic-mouse path stays closed.
 - **Jev** is frozen as a baseline and a possible label assistant. Its inference path does
   not learn from experience, and agreement with it is not gameplay quality.
 - **Roadmap.** Six gated milestones in [learning-plan.md](learning-plan.md#roadmap-and-advancement-gates):
