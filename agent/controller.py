@@ -26,6 +26,14 @@ class RangeLost(RuntimeError):
     """The practice-range HUD is not on screen: input has been released and must stay off."""
 
 
+class InputExpired(RangeLost):
+    """This guarded request expired after valid proof; its neutral write returned.
+
+    Subclassing RangeLost preserves stop behavior for callers without explicit
+    request-cancellation handling. It does not authorize retrying the request.
+    """
+
+
 class Forbidden(RuntimeError):
     """Something asked the pad for an input that is never sent from play; nothing was sent and the pad is neutral."""
 
@@ -122,9 +130,8 @@ class Live:
         if not ok or time.perf_counter() - proof_t > FRESH_S:
             self.release()
             raise RangeLost("range proof missing or stale at commit; input released")
-        if not_after is not None and (time.perf_counter() >= not_after or time.perf_counter() >= release_at):
-            self.release()
-            raise RangeLost("guarded input deadline expired after proof; input released")
+        # _apply checks closed/stale proof before request expiry under the same
+        # lock as the neutral write. Only a request-specific refusal can recover.
         self._apply(state, proof_t, not_after=not_after, release_at=release_at)
 
     def send(self, **changes):
@@ -234,19 +241,21 @@ class Live:
             # waiting on proof, the lock or the device write to the deadline.
             lease_now = _real_clock() if release_at is not None else None
             now = time.perf_counter()
+            error_type = RangeLost
             if self._dead:
                 refusal = "Live is closed; input refused"
             elif proof_t is None or now - proof_t > FRESH_S:
                 refusal = "range proof stale at the actuator; input released"
             elif not_after is not None and (now >= not_after or now >= release_at):
                 refusal = "guarded input deadline expired at the actuator; input released"
+                error_type = InputExpired
             else:
                 lease_until = None if release_at is None else lease_now + min(LEASE_S, release_at - now)
                 self._write(s)
                 self._lease_until = _real_clock() + LEASE_S if lease_until is None else lease_until
                 return
             self._write(dict(NEUTRAL))
-        raise RangeLost(refusal)
+        raise error_type(refusal)
 
     def _write(self, s):                                               # caller holds the lock
         pad = self._pad

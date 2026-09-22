@@ -34,7 +34,7 @@ from typing import Callable
 
 from . import brain as scripted
 from .brain import Memory
-from .controller import NEUTRAL, Controller, RangeLost
+from .controller import NEUTRAL, Controller, InputExpired, RangeLost
 from .demos import COOLDOWNS
 from .intents import Disengage, Idle, RangeSkill
 from .jev import pct
@@ -703,6 +703,11 @@ class Loop:
                 except Exception as e:
                     self.errors.append(f"failed-send log: {e!r}")
                 raise
+            if pad is None:                            # consumed expiry, confirmed release; await fresh decisions
+                self.tick_ms.append((time.perf_counter() - c0) * 1000)
+                self._log(t, None, label(intent), source, frame, dets,
+                          self.tick_ms[-1], d, origin=origin, event="executor_send_failure")
+                return None
         else:
             self.pad.send(pad)                          # Live confirms its own frame again: a second, independent guard
         self.sent = pad
@@ -758,7 +763,8 @@ class Loop:
             if not math.isfinite(now) or now >= not_after:
                 self.last_send = {"observation_t": observation_t, "checked_t": now, "status": "not_sent",
                                   "reason": "authorization_expired", **limits}
-                self._release("send_deadline", force=True)
+                if not self._release("send_deadline", force=True):
+                    raise RangeLost("request expired and cancellation could not be confirmed")
                 return dict(NEUTRAL)
         self.last_send = {"observation_t": observation_t, "attempted_t": now, "status": "attempted", **limits}
         try:
@@ -768,7 +774,9 @@ class Loop:
                 self.pad.send(pad)
         except Exception as e:
             self.last_send.update(status="failed", returned_t=self._execution_now(), error=repr(e))
-            self._release("send_failed", force=True)
+            released = self._release("send_failed", force=True)
+            if isinstance(e, InputExpired) and self.brain_name == "range-skill" and released:
+                return None
             raise
         self.last_send.update(status="returned", returned_t=self._execution_now())
         return pad
@@ -809,6 +817,8 @@ class Loop:
                     self.log.write(deepcopy(event))
                 except Exception as e:
                     self.errors.append(f"release log: {e!r}")
+                    return False                     # cancellation must be recorded before recovery
+            return event["release_returned"]
 
     def _scoreboard(self, t, name):
         """Hold BACK, keep the frame, release: Live.scoreboard presses BACK only on a proven range frame, keeps it down only while each new
