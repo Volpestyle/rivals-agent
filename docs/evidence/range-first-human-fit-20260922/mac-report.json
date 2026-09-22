@@ -1,0 +1,187 @@
+{
+  "scope": "admitted_human_train_only_numerical_fit_reload",
+  "not_generalization_or_live_clearance": true,
+  "git_commit": "8f78ae9f98f2d40c7aff0f53a7c4f7a6185e5b75",
+  "torch": "2.14.0",
+  "training_device": "mps:0",
+  "fit_seconds": 2.615122042000621,
+  "config": {
+    "epochs": 100,
+    "batch_size": 2,
+    "lr": 0.01,
+    "device": "mps",
+    "seed": 7
+  },
+  "spec": {
+    "steps": 5,
+    "period_s": 0.1,
+    "tolerance_s": 0.025,
+    "hidden": 8,
+    "confidence": 0.7
+  },
+  "code_sha256": {
+    "policy/range_skill_policy.py": "582e3f08cba512d65cb58fc60de5e4498a26ad8766eda4fb66dde8d731580ed1",
+    "policy/range_policy.py": "c46e7d8a6523892107c8a878532505d020896e5b32e9df6179c049d6aa3410bb",
+    "agent/state.py": "7ee6b826c38090d28d44b598d77ddeabf22f4593cf64ea45012b461a2377c149"
+  },
+  "input_artifacts": {
+    "data/human/skill-events/032454-train-diagnostic-v1/examples.json": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab",
+    "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74",
+    "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076"
+  },
+  "source_identity": {
+    "patch": "1.1.3870120/build25364676",
+    "cooldown_regime": "normal",
+    "source_profile_sha256": "05f85d97152fd17a60eeaacd9bcfce0f0d30ca46d9e71d52d9e66ed1df789162",
+    "perception_sha256": "e9d40f7a12442335866df16edaa8ceea7116177ab8546b3267ac096c1c616798",
+    "selector_sha256": "ddf1428a61c54805ce06164ef0daa7dfa1302fdf1735990336fdcab939ae098d",
+    "semantic_revision": "web-cluster-onset-v1",
+    "feature_revision": "masked-state-grid-causal-v1"
+  },
+  "evidence_digest": "5e540cd76b10e56b1742e8f9dbf7065b2a339a09b56be00836e215f933ef709a",
+  "checkpoint_sha256": "7f6f9dafc14e3459e6e7835707b177c3c7fd6357574fc13969a3db25ead1cdc8",
+  "coverage": {
+    "grid_rows": 108,
+    "known_rows": 2,
+    "masked_rows": 106,
+    "masked_reasons": {
+      "uninspected_missing_history": 104,
+      "target_disagreement_distant_selector_nearby_action": 1,
+      "selected_bot_body_not_established_despite_observed_moving_no_cast_ammo1": 1
+    },
+    "bin_support": [
+      1,
+      1
+    ],
+    "unique_events": 1,
+    "ammo_positive_visible_nononsets": 0,
+    "complete_label_coverage": false,
+    "sampling": "full_grid_masked"
+  },
+  "model_train_metrics": {
+    "true_positive": 1,
+    "false_positive": 0,
+    "false_negative": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "mean_request_to_bracket_s": 0.058332535000001684,
+    "confusion": [
+      [
+        1,
+        0
+      ],
+      [
+        0,
+        1
+      ]
+    ],
+    "refusals": 0,
+    "scored_bins": 2,
+    "masked_bins": 106
+  },
+  "cpu_reload_train_metrics": {
+    "true_positive": 1,
+    "false_positive": 0,
+    "false_negative": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "mean_request_to_bracket_s": 0.058332535000001684,
+    "confusion": [
+      [
+        1,
+        0
+      ],
+      [
+        0,
+        1
+      ]
+    ],
+    "refusals": 0,
+    "scored_bins": 2,
+    "masked_bins": 106
+  },
+  "cpu_reload_max_probability_delta": 6.984919309616089e-10,
+  "ammo_baseline_train_metrics": {
+    "true_positive": 1,
+    "false_positive": 0,
+    "false_negative": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "mean_request_to_bracket_s": 0.058332535000001684,
+    "confusion": [
+      [
+        1,
+        0
+      ],
+      [
+        0,
+        1
+      ]
+    ],
+    "refusals": 0,
+    "scored_bins": 2,
+    "masked_bins": 106
+  },
+  "never_start_train_metrics": {
+    "true_positive": 0,
+    "false_positive": 0,
+    "false_negative": 1,
+    "precision": null,
+    "recall": 0.0,
+    "mean_request_to_bracket_s": null,
+    "confusion": [
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "refusals": 0,
+    "scored_bins": 2,
+    "masked_bins": 106
+  },
+  "known_rows": [
+    {
+      "grid_index": 199,
+      "label": "start",
+      "ammo": 1,
+      "probabilities": [
+        0.0012450863141566515,
+        0.9987548589706421
+      ],
+      "cpu_probabilities": [
+        0.0012450863141566515,
+        0.9987548589706421
+      ],
+      "prediction": "start"
+    },
+    {
+      "grid_index": 200,
+      "label": "no_new_start",
+      "ammo": 0,
+      "probabilities": [
+        0.9987441301345825,
+        0.00125587685033679
+      ],
+      "cpu_probabilities": [
+        0.9987441301345825,
+        0.0012558761518448591
+      ],
+      "prediction": "no_new_start"
+    }
+  ],
+  "validation": null,
+  "deployment_binding": null,
+  "limits": [
+    "Ammo separates labels; no useful timing/performance claim",
+    "No resource-legal target-agreed nonstart established",
+    "No continuous/live selector equivalence",
+    "No validation, deployment or live authority",
+    "No training performed by corpus owner",
+    "Fit is on two overlapping rows; ammunition alone separates them.",
+    "No native media opened by this training job."
+  ]
+}

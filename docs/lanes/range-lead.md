@@ -38,7 +38,23 @@ event packet, and lead accepts those two labels solely for a TRAIN-only fit/relo
 diagnostic. The other 106 grid coordinates remain unknown. The non-start has zero
 ammo, and tracks are constructed per window; no useful timing, persistent live
 selector equivalence, validation performance or gameplay claim follows. Corpus
-owner is persisting the genuine receipt without changing the frozen candidate.
+owner persisted the genuine receipt without changing the frozen candidate.
+
+## First admitted human fit, 2026-09-22
+
+The reviewed event software is pushed on main in `8f78ae9`. The first two admitted
+human rows have now trained on Mac MPS and reloaded on Windows CPU, with exact
+Mac-CPU/Windows-CPU probability equality. The actual MPS fit took 2.615 seconds;
+the GRU predicted both training labels, as did the simple ammo baseline. All 106
+unknown bins remain masked. No validation or deployment binding was created.
+
+Checkpoint SHA-256:
+`7f6f9dafc14e3459e6e7835707b177c3c7fd6357574fc13969a3db25ead1cdc8`.
+The [retained result](../evidence/range-first-human-fit-20260922/README.md) contains
+actual reports, commands, admission receipts and the limited interpretation.
+The next source task inspects at most six new bins from the same authorized span
+for target-agreed starts and ammo-available non-starts. This does not expand
+admission, rewrite the first packet or request standing-idle footage.
 
 ## Event policy and caller acceptance, 2026-09-22
 

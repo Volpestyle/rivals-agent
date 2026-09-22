@@ -1,4 +1,84 @@
-# VUH-1309 current disposition: accepted failed diagnostic
+# VUH-1309 current disposition: two event labels accepted for train-only plumbing
+
+Lead accepted n199=start and n200=no_new_start following independent
+admission-review's final recommendation completed September22 at12:38 CDT.
+Only numerical fit/reload plumbing is authorized; all106 other coverage rows
+remain unknown. No training was performed in this lane. Root alone trains,
+lands and updates Linear; no new evidence comment was posted for this disposition.
+
+Accepted artifact: `data/human/skill-events/032454-train-diagnostic-v1/examples.json`,
+SHA256 `582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab`.
+Its README contains the small standard-type construction snippet for root's Mac
+fit. Real EventExample.validate/cohort under frozen RSP
+`582e3f08cba512d65cb58fc60de5e4498a26ad8766eda4fb66dde8d731580ed1`
+pass all108 rows: known2, unknown106, support[1,1], unique event1. JSON typed
+roundtrip and all520 feature scalars/known bits remain exact.
+
+Independent report receipt:
+`data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json`,
+SHA256 `1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076`.
+Combined lead decision and review binding:
+`data/human/reviews/20260922T032454-642Z-24328-1.skill-event-train-diagnostic-decision.json`,
+SHA256 `ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74`.
+Each row changes only origin to reviewed_human and review_sha256 to this decision
+digest. The candidate and historical failed packet remain immutable; the independent
+report is attributed persistence, not a claim this lane repeated its image audit.
+
+Fresh Tracker/Memory per window is accepted for this diagnostic, with track4 for
+n199 and track2 for n200 explicitly local. There is no continuous/live selector
+equivalence. Preserve n199 purge[19.499999220,20.058332531] and
+n200[19.599999216,20.108332529], earlier HUD calibration dependencies, unknown
+motor settings and james-2026-09-21-evening TRAIN-only grouping. Ammo separates
+the labels. No useful timing, performance, generalization, validation or live
+authority follows. The validation receipt is stored beside the accepted artifact.
+
+## Frozen candidate handoff (retained history)
+
+The new authorized event task is separate from the immutable failed Idle/Engage
+diagnostic below. James accepts movement, scanning, other abilities and recovery
+as possible **no new Web-Cluster** futures; stationary Idle and VUH-1349 are no
+longer prerequisites. Reconstruction remains parked.
+
+New owned packet: `data/human/skill-event-candidates/20260922T032454-642Z-24328-1/`.
+Bounded native inspection has proposed one unique start (fixed grid n199), one
+continuation non-start (n200), and two masked bins (n198 target disagreement;
+n219 selected body not established). Grid n114..221 has 108 bins, 104 uninspected.
+The extra moving ammo-1 window did not establish a resource-legal target-agreed
+non-start. This limitation is explicit; movement is not its exclusion.
+
+Actual five-frame default perception/selector histories use accepted HUD5ec7e109
+and outline369994b2 with source-owned mapped MK layout. File PTS grid and actual
+callback CTS are retained separately. Label clock is relative composition time;
+fixed ticks do not retimestamp State/resources. Full exposure and later impact
+confirmation are included in evidence/purge. Earlier motor settings stay unknown.
+
+Native audit is bounded and complete for these four windows. Real new-module
+SourceIdentity and event_window checks pass, preserving exact20x26 values/known
+bits at fixed ticks with actual CTS. All108 constructor field sets are recorded;
+review_sha256/origin remain null pending independent admission provenance, as
+explicitly directed by lead. Frozen against policy-owner review snapshot
+`9938df94ee777d1e5bce6297271b491c79b4d43b62e592ac2634a5980d22aeac`.
+No adapter, feature padding, import, training or admission is authorized. Independent admission-review
+remains reviewer and lead decides. See the new `inspection-findings.md` for the
+bracket, target exclusions and per-window tracker reset limitation. All old packet
+files, labels, hashes and failed decision remain unchanged.
+
+New candidate rows SHA256:
+`c343a4aa1296ac4131c840fa1284201f6cc1197e85882b9be6ccb9d7a47a27ac`.
+New artifact manifest SHA256:
+`bfe4d5f75fe4baaf2f1281ef0a90f522dd54e9e8057e79d10e795167a67568e1`.
+`freeze-receipt.json` verifies referenced native hashes and the three old frozen
+packet hashes. The new packet is ready for the same independent admission-review
+owner via root. Proposed onset bracket is file(19.979,20.013], with same-bot impact
+confirmation20.079, transformed to actual CTS; no physical-button-time claim.
+Only explicit later lead disposition with genuine independent review provenance
+may authorize constructing admitted Examples. No further native expansion.
+Published once after the frozen Herdr handoff:
+[VUH-1309 evidence comment](https://linear.app/vuhlp/issue/VUH-1309#comment-5414439d-37b9-4d84-84ed-ff0202659095).
+Publication metadata is separate from the frozen manifest; root owns status and
+description changes.
+
+## Previous accepted failed Idle/Engage diagnostic (immutable history)
 
 Lead accepted the frozen032454 visual packet **as a failed-candidate diagnostic
 only**, following independent admission-review delivered to root at11:32 on

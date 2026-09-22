@@ -1,0 +1,57 @@
+{
+  "kind": "attributed_independent_admission_review_receipt",
+  "issue": "VUH-1309",
+  "reviewer": {
+    "agent": "admission-review",
+    "pane": "w2:pG",
+    "session": "01a0c9c2-a27c-7cf3-9a86-4ac78cc2b78f",
+    "model_effort_displayed": "gpt-6-astra high"
+  },
+  "completed_local": "2026-09-22 12:38 America/Chicago",
+  "completion_precision": "minute, as displayed in reviewer final pane and supplied by lead",
+  "source": "Final substantive recommendation read once via herdr agent read admission-review --source recent-unwrapped --lines190; normalized structured transcription below.",
+  "persisted_by": "human-admission; reviewer findings are attributed, not a claim this persistence step repeated the review",
+  "candidate_path": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+  "candidate_rows_sha256": "c343a4aa1296ac4131c840fa1284201f6cc1197e85882b9be6ccb9d7a47a27ac",
+  "artifact_manifest_sha256": "bfe4d5f75fe4baaf2f1281ef0a90f522dd54e9e8057e79d10e795167a67568e1",
+  "reviewed_event_schema_sha256": "9938df94ee777d1e5bce6297271b491c79b4d43b62e592ac2634a5980d22aeac",
+  "recommendation": "Accept n199 and n200 for narrowly scoped TRAIN-ONLY plumbing fit; no evidence failure blocking that use. Lead admission was outstanding at report time.",
+  "row_findings": {
+    "199": "Start supported: wrist retraction, extension and new white projectile bracket one cast at file PTS(19.979,20.013], wholly inside its fixed bin. Travel/impact20.079 confirms same nearby Galacta selected causally at anchor; ammo1->0 corroborates.",
+    "200": "No-new-start supported: full exposure shows that projectile continuation/impact and arm recovery without another launch; anchor selects same visible bot; ammo already0.",
+    "198": "Keep unknown: distant causal selection versus nearby human action.",
+    "219": "Keep unknown: selected box above portal badges does not establish visible bot body; movement itself is not excluded."
+  },
+  "independently_reported_verification": {
+    "manifest_entries": 32,
+    "referenced_native_image_hashes": 65,
+    "replayed_histories": 4,
+    "states_targets_gates": 20,
+    "exact_feature_scalars_and_known_bits": 520,
+    "actual_clocks": "Composition clocks unchanged; all snapshots satisfy scheduled causal ticks under event_window.",
+    "source_delta": "Subsequent shared-checkout changes did not alter inspected perception factory/aim geometry or reproduced outputs.",
+    "exposure": "Consecutive native callback frames through first frame after each horizon; n199 includes every frame through impact confirmation."
+  },
+  "purge_footprints_t": {
+    "199": [
+      19.49999922,
+      20.058332531
+    ],
+    "200": [
+      19.599999216,
+      20.108332529
+    ]
+  },
+  "retained_dependencies": "Recorded earlier HUD calibration dependencies; james-2026-09-21-evening train group; overlapping rows are not independent validation.",
+  "selector_construction": "Fresh Tracker/Memory per window is causal/reproducible and acceptable for plumbing only. IDs4(n199)/2(n200) are window-local. Overlapping windows may select differently; no persistent live tracking equivalence or generalization.",
+  "coverage": {
+    "grid_rows": 108,
+    "unique_positive_events": 1,
+    "observed_nonstarts": 1,
+    "inspected_unknowns": 2,
+    "uninspected_unknowns": 104,
+    "n200": "continuation reference, not second event"
+  },
+  "limitation": "Ammo alone separates labels. Fit cannot demonstrate learned timing or restraint with ammunition available. No additional recording, stationary Idle or quantity threshold required for this plumbing experiment.",
+  "review_boundary": "No further visual evidence needed for narrow recommendation. Genuine receipt and lead disposition required. Reviewer performed no admission, Example construction, training or edits."
+}

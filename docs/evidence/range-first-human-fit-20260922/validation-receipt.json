@@ -1,0 +1,45 @@
+{
+  "artifact_sha256": "582440d076a952773b0872b2b58451751308f4830f2aeeaa30c2a305482952ab",
+  "review_decision_sha256": "ccb54491ca44359aa9491f839252cd9e478acdc31baa91317469c052876a6e74",
+  "independent_review_receipt_sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076",
+  "policy_module_sha256": "582e3f08cba512d65cb58fc60de5e4498a26ad8766eda4fb66dde8d731580ed1",
+  "construction": "State.from_dict, Detection(tuple bbox), Snapshot, SourceIdentity, EventExample; real validate on108rows and cohort passed",
+  "coverage": {
+    "grid_rows": 108,
+    "known_rows": 2,
+    "masked_rows": 106,
+    "masked_reasons": {
+      "uninspected_missing_history": 104,
+      "target_disagreement_distant_selector_nearby_action": 1,
+      "selected_bot_body_not_established_despite_observed_moving_no_cast_ammo1": 1
+    },
+    "bin_support": [
+      1,
+      1
+    ],
+    "unique_events": 1,
+    "ammo_positive_visible_nononsets": 0,
+    "complete_label_coverage": false,
+    "sampling": "full_grid_masked"
+  },
+  "only_changed_row_fields": [
+    "origin",
+    "review_sha256"
+  ],
+  "exact_feature_scalars_and_known_bits_preserved": 520,
+  "known_purge_footprints_t": {
+    "199": [
+      19.49999922,
+      20.058332531
+    ],
+    "200": [
+      19.599999216,
+      20.108332529
+    ]
+  },
+  "typed_evidence_digest": "5e540cd76b10e56b1742e8f9dbf7065b2a339a09b56be00836e215f933ef709a",
+  "JSON_roundtrip_typed_cohort": "passed; evidence digest exact",
+  "frozen_candidate_files_unchanged": 32,
+  "training_performed": false,
+  "code_acceptance_scope": "Schema-compatible frozen RSP bytes supplied by lead; admission validation does not grant code/deployment acceptance."
+}

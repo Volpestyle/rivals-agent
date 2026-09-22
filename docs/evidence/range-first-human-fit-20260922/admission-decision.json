@@ -1,0 +1,99 @@
+{
+  "kind": "lead_admission_decision_with_independent_review",
+  "issue": "VUH-1309",
+  "decision_authority": "lead w2:p1, explicit user-delivered LEAD ADMISSION DECISION",
+  "decision": "accept_train_only_numerical_fit_reload_plumbing",
+  "independent_review_receipt": "data/human/reviews/20260922T032454-642Z-24328-1.skill-event-independent-review.json",
+  "independent_review_sha256": "1e8e4d9f3af7ea405f0998afbc9761f9ee2aeca5a23a395fd6e0c77977c3e076",
+  "candidate_path": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1",
+  "candidate_rows_sha256": "c343a4aa1296ac4131c840fa1284201f6cc1197e85882b9be6ccb9d7a47a27ac",
+  "artifact_manifest_sha256": "bfe4d5f75fe4baaf2f1281ef0a90f522dd54e9e8057e79d10e795167a67568e1",
+  "accepted_known_rows": {
+    "199": "start",
+    "200": "no_new_start"
+  },
+  "unknown_coverage_rows": 106,
+  "permitted_row_changes": [
+    "review_sha256: null -> SHA256 of this combined lead/independent-review decision receipt",
+    "origin: null -> reviewed_human"
+  ],
+  "unchanged": "All labels, masks, clocks, features/history, IDs, source identities and other fields from108 original candidate field sets.",
+  "group": "james-2026-09-21-evening",
+  "split": "train",
+  "selector": "Fresh Tracker/Memory per window accepted for this diagnostic only; n199 track4, n200 track2 are local IDs, not continuous/live identity.",
+  "purge_footprints_t": {
+    "199": [
+      19.49999922,
+      20.058332531
+    ],
+    "200": [
+      19.599999216,
+      20.108332529
+    ]
+  },
+  "hud_calibration_dependencies": {
+    "198": {
+      "calibration_dependency_t": [
+        13.099999476,
+        13.199999472,
+        13.299999468,
+        13.399999464,
+        13.49999946
+      ],
+      "full_dependency_footprint_t": [
+        13.099999476,
+        19.908332537
+      ]
+    },
+    "199": {
+      "calibration_dependency_t": [
+        13.099999476,
+        13.199999472,
+        13.299999468,
+        13.399999464,
+        13.49999946
+      ],
+      "full_dependency_footprint_t": [
+        13.099999476,
+        20.058332531
+      ]
+    },
+    "200": {
+      "calibration_dependency_t": [
+        13.099999476,
+        13.199999472,
+        13.299999468,
+        13.399999464,
+        13.49999946
+      ],
+      "full_dependency_footprint_t": [
+        13.099999476,
+        20.108332529
+      ]
+    },
+    "219": {
+      "calibration_dependency_t": [
+        13.099999476,
+        13.199999472,
+        13.299999468,
+        13.399999464,
+        13.49999946
+      ],
+      "full_dependency_footprint_t": [
+        13.099999476,
+        22.008332453
+      ]
+    }
+  },
+  "source_uncertainty": "Earlier motor settings remain unknown. Visual source-profile digest is not complete KBM settings or runtime pad calibration.",
+  "limitations": [
+    "Ammo separates labels; no useful timing/performance claim",
+    "No resource-legal target-agreed nonstart established",
+    "No continuous/live selector equivalence",
+    "No validation, deployment or live authority",
+    "No training performed by corpus owner"
+  ],
+  "frozen_policy_schema_compatible_rsp_sha256": "582e3f08cba512d65cb58fc60de5e4498a26ad8766eda4fb66dde8d731580ed1",
+  "lead_visual_check": "Lead reported inspecting n199/n200 action sheets and frozen findings.",
+  "construction_authorization": "Corpus owner may create actual EventExamples using genuine review receipt and real standard types/cohort/validate; root alone trains, lands and updates Linear status. No new evidence comment."
+}

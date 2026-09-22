@@ -40,9 +40,12 @@ custom-lobby input; verified lobby navigation and an appropriate guard are prere
 
 ## First visible learned range milestone (2026-09-22)
 
-The refactor is merged on main at `77d5032`. Synthetic MPS training on the Mac,
-exact checkpoint reload and Windows loading are verified; real human admission
-and learned gameplay are not yet accepted. Linear now carries the active goal:
+The refactor is merged on main at `77d5032`, and reviewed event-policy integration
+at `8f78ae9`. The first two reviewed human event rows have trained on Mac MPS and
+reloaded on Windows CPU. This is a train-only numerical diagnostic: ammo alone
+separates its labels. Independent validation and learned gameplay remain pending.
+The [fit report](evidence/range-first-human-fit-20260922/README.md) records the exact
+checkpoint and limits. Linear carries the active goal:
 [VUH-1311](https://linear.app/vuhlp/issue/VUH-1311).
 
 The first executable experiment now learns **Web-Cluster start timing**, using
@@ -63,8 +66,9 @@ not establish that normal moving gameplay lacks useful supervision. VUH-1349's
 staged-wait recording request is canceled; stationary neutral support is no longer
 a training prerequisite. Old checkpoint classes are never silently reinterpreted.
 
-VUH-1309 next reviews a small event-onset/non-onset packet from the already
-authorized earlier 22:24:54 normal-resource pre-menu span. Require observed cast
+VUH-1309 admitted the first two event rows from the already-authorized earlier
+22:24:54 normal-resource pre-menu span for this numerical diagnostic. Its next
+bounded inspection seeks additional starts and ammo-available non-starts. Require observed cast
 identity, bracketed onset, full label-interval coverage and the same causal
 selected target; retain unknowns. Resource changes are evidence to inspect, not
 automatic ability or intent labels. Use independently accepted perception, the
