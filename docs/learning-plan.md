@@ -550,12 +550,31 @@ runnable check are `data/experiments/next-behaviour-v1/admission/`.
 
 The independently reviewed offline consumer is `policy/behaviour.py`. It reuses the
 existing frozen visual encoder and temporal head with exact canonical two-source
-bindings, native causal cache cutoffs and per-assertion evidence. One fixed smoke
-fit is permitted after the separately normalized export passes admission review:
-seed 0, 40 epochs, batch 64, Adam .001, hidden 128, final checkpoint, whole-session
-folds and unchanged four outputs. It establishes training and checkpoint plumbing;
-the 20-positive/20-negative performance support gates remain unmet. Ten-Hz labels
-do not certify behavior between samples. No learned deployment is authorized.
+bindings and per-assertion evidence. Writer and encoder timestamps have separately
+validated origins; exact decimal-grid lookup selects all 765 inspected history frames
+without future samples or preceding-frame substitution.
+
+The first expert future-behaviour smoke fit is complete under
+`data/experiments/next-behaviour-v1/smoke-01/`: seed 0, 40 epochs, batch 64,
+Adam .001, hidden 128, final checkpoint, whole-session folds and unchanged four
+outputs. Both saved temporal checkpoints reproduce their held predictions exactly.
+Attack is the only channel with both fitting classes in both directions.
+
+| Fit → held session | Held attack P / N | Temporal balanced accuracy | Decision-frame baseline | Privileged context persistence |
+|---|---|---|---|---|
+| Day → Req | 5 / 1 | 0.900 | 0.700 | 0.700 |
+| Req → Day | 4 / 4 | 0.625 | 0.500 | 0.625 |
+
+These tiny-sample numbers establish an executable pipeline, not accepted performance.
+The Req result has only one negative; the reverse direction ties persistence.
+Onset and continuation subsets are reported separately, applying the occurrence
+forecast rather than separate heads. Event-rule baselines have unknown evidence and
+use the declared fit-majority fallback. Unsupported channels remain excluded, and
+single-class held subsets do not earn balanced accuracy. The unchanged 20-positive /
+20-negative support gates remain unmet; `performance_claim` is false. Ten-Hz labels
+do not certify behavior between samples. More admitted behaviour examples from held
+footage, including supported contrasts, are the next data dependency; this smoke
+result does not authorize tuning, new acquisition or learned deployment.
 Existing `Engage` bundles movement and attack: the proposed joint mapping still has
 no fully supported executable example and is not accepted learned control.
 Scripted fallback performance is never credited to the model.

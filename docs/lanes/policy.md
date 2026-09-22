@@ -8,8 +8,11 @@ faithful normalization. The same reviewer accepts the separate writer/cache cloc
 and exact inspected-frame lookup. Metadata/support admission passes for the 15 accepted rows (8 Day, 7 Req),
 and the timestamp-only integration probe selects all 765 inspected context indices
 exactly. `data/experiments/next-behaviour-v1/NORMALIZATION.md` retains both initial
-preflight failures and current evidence. Real fitting awaits explicit lead authority;
-no real embedding array, media or PC access accompanies this correction.
+preflight failures and current evidence. The explicitly authorized `smoke-01` run
+completes once on landed `f16f4b2`, using only the two admitted embedding arrays.
+Both temporal checkpoints reload to exactly equal saved predictions. This is an
+offline pipeline result with `performance_claim: false`; no media or PC access,
+live adapter, restart or tuning accompanies it.
 The consumer forecasts four compatible channels from causal `[t-5,t]` history for
 `(t,t+2]`; raw comparison artifacts remain training-unauthorized. The earlier lane
 sections below remain unchanged.
@@ -133,22 +136,38 @@ rule for shared groups. There is no within-session calibration split in this run
 
 ### Fixed smoke recipe and checks
 
-After a separately authorized accepted export exists, the proposed command is:
+The single completed, explicitly authorized invocation is recorded below;
+`smoke-01` contains the original artifacts and is not a fresh rerun destination:
 
 ```sh
-nice -n 10 /tmp/rivals-policy-format5-venv/bin/python -m policy.behaviour \
+PYTHONDONTWRITEBYTECODE=1 nice -n 10 /tmp/rivals-policy-format5-venv/bin/python -m policy.behaviour \
   --export data/experiments/next-behaviour-v1/accepted-export.json \
   --cache data/embeddings/vit_small_patch16_224-dino-n1-10hz \
   --out data/experiments/next-behaviour-v1/smoke-01 --smoke-fit
 ```
 
-These are proposed artifact paths, not existing admitted data or an executed fit.
 Without `--smoke-fit`, admission and support reporting read only metadata/evidence
 and cache sidecars, not embedding arrays. The output directory must be new.
 Unsupported folds are explicitly skipped before payload reads if no fold is usable.
 For usable smoke folds, payload validation precedes output creation, so admission
 and payload refusals preserve existing outputs and create no partial run directory.
 The only fitting mode is `pipeline_smoke_only`; it cannot emit a performance pass.
+
+The [smoke result](../../data/experiments/next-behaviour-v1/smoke-01/README.md)
+retains pre-run pins, execution, both fold reports, checkpoint paths and artifact
+hashes. Code/export/source/cache fingerprints match before and after. Fit Req →
+held Day supports only attacking (held4P/4N); fit Day → held Req supports approach,
+attacking and traversal (held3P/0N,5P/1N/1U,0P/7N respectively). Away lacks fitting
+negatives in both folds. Unknown masks and both whole-source folds remain unchanged.
+
+Attack occurrence balanced accuracy is **0.625 held Day / 0.900 held Req**, versus
+strongest listed baseline **0.625 / 0.700**; onset BA is **0.667 / 0.833**.
+Continuation has only1 positive and no negatives per fold. All attack-event baseline
+evidence is null, so those controls use fit-majority fallback. No channel reaches
+the20P/20N support gate; Day also misses the recall/BA and baseline-improvement
+gates, and no positive paired-cluster confidence bound is claimed. These results
+establish the first expert future-behaviour smoke pipeline, not performance
+acceptance or learned gameplay. The lead owns acceptance and any next experiment.
 
 The H2 recipe is fixed: seed 0, 40 epochs, batch 64, Adam .001, hidden width 128,
 balanced masked BCE and final-epoch checkpoint. Unknown channels and ineligible rows
@@ -192,9 +211,9 @@ The separate real integration probe opens only hash-bound `t.npy` members, selec
 all **765/765** inspected context indices and excludes nextafter futures at every
 cutoff; it does not load embeddings or run histories.
 The reviewer’s four demonstrated defects are encoded as regressions;
-no additional skill/rule change is needed. Actual data prerequisites are lead-normalized
-accepted labels with explicit fitting authorization and fresh matching source/cache
-fingerprints; independent review of this delta precedes relying on the consumer.
+no additional skill/rule change is needed. The implementation, normalization and
+clock delta have independent acceptance. The recorded smoke outcome remains a
+pipeline result under the explicit one-run authorization.
 
 ## Format-5 policy consumer seam
 
