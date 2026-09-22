@@ -537,13 +537,28 @@ prior high-level label exposure for 05/22; this is a method check, not blind acc
 The frozen comparison and runnable check are under
 `data/experiments/purpose-task-v1/next-behaviour-canary/comparison/`.
 
-The same task continues on the remaining 20 original packet pairs; no canary
-replacement or label-driven selection occurs. The offline consumer uses the existing
-visual encoder/temporal-head path and synthetic verification before corpus use.
-No expert fit or deployment is authorized yet. Existing `Engage` bundles movement
-and attack: its proposed joint mapping has no fully supported canary example and
-is not accepted learned control. Scripted fallback performance is never credited
-to the model.
+The full 24-window pass is accepted for a bounded pipeline smoke experiment.
+The seats agree on 81/96 channel states, including all 24 attack states; agreement
+includes unknowns and does not establish accuracy. Fifteen contexts share ordinary
+control eligibility over both input and future (Day 8, Req 7). Their attack support
+is Day 4 positive / 4 negative and Req 5 / 1, with one Req unknown. Across all four
+channels there are 20 positive and 19 negative supervised cells, not 39 independent
+examples. Nine contexts are excluded, including pt2-01 after both seats disclose
+unnecessary post-target event-metadata exposure. No replacements occur. Raw purpose,
+Option R and context judgments stay frozen. The comparison, exclusions, support and
+runnable check are `data/experiments/next-behaviour-v1/admission/`.
+
+The independently reviewed offline consumer is `policy/behaviour.py`. It reuses the
+existing frozen visual encoder and temporal head with exact canonical two-source
+bindings, native causal cache cutoffs and per-assertion evidence. One fixed smoke
+fit is permitted after the separately normalized export passes admission review:
+seed 0, 40 epochs, batch 64, Adam .001, hidden 128, final checkpoint, whole-session
+folds and unchanged four outputs. It establishes training and checkpoint plumbing;
+the 20-positive/20-negative performance support gates remain unmet. Ten-Hz labels
+do not certify behavior between samples. No learned deployment is authorized.
+Existing `Engage` bundles movement and attack: the proposed joint mapping still has
+no fully supported executable example and is not accepted learned control.
+Scripted fallback performance is never credited to the model.
 
 The held-footage inventory contains four open Req uploads totaling 76.65 raw minutes.
 Both bounded screening passes find own-play candidates mixed with pre-round, replay,
