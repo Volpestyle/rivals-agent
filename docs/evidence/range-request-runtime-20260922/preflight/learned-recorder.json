@@ -1,0 +1,11 @@
+{
+    "record_pid":  26692,
+    "video_loop_mapping_known":  false,
+    "command":  "ddagrab=framerate=60 -\u003e h264_nvenc -cq20 -t60",
+    "video":  "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-preflight-20260922\\learned-native.mp4",
+    "stopwatch_after":  1807873495068,
+    "stopwatch_frequency":  10000000,
+    "launch_utc_after":  "2026-09-22T21:35:11.8145812Z",
+    "stopwatch_before":  1807873320718,
+    "launch_utc_before":  "2026-09-22T21:35:11.7970309Z"
+}

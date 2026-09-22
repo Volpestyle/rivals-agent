@@ -1,0 +1,13 @@
+{
+  "original": "data/runtime/range-request-preflight-20260922/learned-native.mp4",
+  "original_sha256": "05545fd867cf8947b427dfafed8ab5455a020e37a6a7091b13649c30fc9ce960",
+  "clip": "data\\runtime\\range-request-preflight-20260922\\learned-range-excerpt.mp4",
+  "sha256": "75838e0108bbfd19f63fc6cfd4333e0b0ac6ba8750195920b1c5706c3ab6673c",
+  "bytes": 9378363,
+  "original_start_pts_s": 10,
+  "duration_s": 13,
+  "retimed": false,
+  "video": "1920x1080 H.264, 775 frames",
+  "command": "ffmpeg -hide_banner -loglevel error -n -ss 10 -i learned-native.mp4 -t 13 -map 0:v:0 -an -vf scale=1920:-2 -c:v libx264 -preset veryfast -crf 20 -movflags +faststart learned-range-excerpt.mp4",
+  "inspection": "Original native key sheet and excerpt at9.5s inspected; native auditor inspected original cast sequence."
+}

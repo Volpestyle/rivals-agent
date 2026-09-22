@@ -39,32 +39,29 @@ and unknown rows, is pushed as `7feee7b`. One Mac MPS fit took 1.895 seconds;
 model 5/5 training labels, ammo-positive 2/5, never-start 4/5. Windows CPU loaded
 the exact checkpoint and matched predictions/event metrics, maximum probability
 delta 1.630e-9 against Mac CPU. [Actual reports and receipts](../evidence/range-request-human-fit-20260922/README.md)
-retain the one-event TRAIN-only scope. There is no independent validation or
-deployment binding, and no human-trained checkpoint has controlled the game.
+retain the one-event TRAIN-only scope. Independent validation remains pending.
 
-D's two observed scripted pulse-to-cast correspondences remain accepted primitive
-evidence; their uncertain timing does not guarantee visible emission inside a
-request's 100 ms authorization window. Independent-session evaluation and a
-genuine request-semantic runtime binding remain next before learned-live reliance.
+The first actual human-trained request-policy run is now independently audited:
+one Web-Cluster cast visibly hit Luna, ammo 5 to 4, no KO. Reviewed caller
+`a43911a`, exact checkpoint `6ee38807`, confidence 0.7 and a genuine one-run
+runtime binding were used after fresh normal-resource/PAD/Luna checks. The
+8.615-second learned phase ended on request-send expiry during the guard proof,
+before the overall 24-second authorization deadline. Both terminal releases
+returned; the binding is consumed and no repeat was attempted.
 
-The lead has separated independent quality acceptance from a first exploratory
-runtime measurement in the [pilot plan](../learning-plan.md#first-visible-learned-range-milestone-2026-09-22).
-The proposed single diagnostic has at most ten seconds of learned play in the
-Luna setup, at most fourteen seconds of camera-only startup and an absolute
-24-second input-authorization deadline under existing proof/watchdog limits.
-The selector remains generic. It uses the
-unchanged request checkpoint/threshold, normal resources, original video and
-complete refused/accepted/send/release evidence. Independent runtime/semantic
-acceptance is still required before its input; no binding has been issued yet.
-It cannot count toward the designated Galacta benchmark or replace VUH-1347.
+[Original-run evidence and independent audit](../evidence/range-request-runtime-20260922/README.md)
+preserve two owned requests (75 and 84), two returned LT calls for the same
+75 pulse, and the failed 84 send. Only 83 of metadata's 84 decisions were fully
+logged: failed send skipped the final decision row. This logging defect and
+six measured history-drift resets are the next caller work. No timestamp,
+tolerance, pulse length, expiry or threshold is relaxed to turn the failure
+into success. The generic selector, aim, approach and pulse remain scripted.
 
-The foreground-PID and shared startup/play deadline caller is independently
-accepted ([boundary and checks](range-live-focus.md)): 28 focused checks and nine
-saved-checkpoint/refusal/dry joins, plus delayed-attachment and constructor-failure
-controls. It preserves future 20-second trials; this diagnostic explicitly uses
-10. The runtime semantic review accepts immediate guarded dispatch as the scoped
-interpretation of a received-request forecast. Final deployed manifests and fresh
-effective normal-resource/PAD/Luna setup remain before the first learned input.
+This diagnostic does not count toward the designated Galacta benchmark or
+replace VUH-1347. The [accepted focus/deadline caller](range-live-focus.md)
+preserves future 20-second trials; this run used explicit 10-second learned
+phase plus at most 14 seconds of startup. Input authorization is not an exact
+physical timing or visible-completion guarantee.
 
 ## Event execution acceptance, 2026-09-22 12:39 CDT
 

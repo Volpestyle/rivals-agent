@@ -1,0 +1,44 @@
+{
+  "status": "candidate_code_identity_proof_not_behavior_equivalence",
+  "recipe_receipt": {
+    "path": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/compatibility-receipt.json",
+    "sha256": "bc5e98ce360d7179f109b8d506120300b5df6b87ab958ac8d687434edd5a35e6"
+  },
+  "recipe": "sha256(UTF8 json.dumps(path_to_raw_sha256, sort_keys=True, separators=(',',':'), allow_nan=False))",
+  "inputs": {
+    "agent/brain.py": "0deaafb77cae4fa4a15fc8c8abe6d49c09821de7a1ab5810b096788117b30c00",
+    "agent/tracker.py": "56fa3012391b22a0c4a3dbe3f5414f275faba4e038bfebdbe6b8f579bc72c892"
+  },
+  "recomputed_selector_sha256": "ddf1428a61c54805ce06164ef0daa7dfa1302fdf1735990336fdcab939ae098d",
+  "raw_constituents_equal_to_original": true,
+  "configuration": {
+    "MIN_CONF": 0.4,
+    "HP_RETREAT": 0.3,
+    "HP_RESUME": 0.6,
+    "LOST_S": 0.5,
+    "OUTSIDE_S": 1.5,
+    "HEIR_RATIO": 1.5,
+    "BARRED_S": 2.0
+  },
+  "ranges": {
+    "near_m": 4.0,
+    "far_m": 20.0,
+    "near_h": 0.325,
+    "far_h": 0.065,
+    "reach_m": 40.0,
+    "reach_h": 0.0325
+  },
+  "tracker": {
+    "MAX_AGE_S": 0.8,
+    "CLOSE_AGE_S": 1.5,
+    "SMALL_AGE_S": 1.2,
+    "NEW_AGE_S": 0.3,
+    "CONFIRM": 3,
+    "GATE": 1.3,
+    "SIZE_RATIO": 2.5,
+    "CLOSE_RATIO": 4.5
+  },
+  "source_initialization": "fresh Tracker/Memory per five-snapshot source window",
+  "proposed_runtime_initialization": "one fresh Tracker/Memory for the episode; continuous reflex/decision history",
+  "limits": "Equal code hashes do not erase reset/continuous target differences. IDs are local, not named identity. Luna is a scenario target, not a classifier-enforced identity lock."
+}

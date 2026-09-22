@@ -1,0 +1,303 @@
+{
+  "exact_copies": [
+    {
+      "archived": "preflight/caller-review.md",
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-preflight-20260922\\caller-review.md",
+      "sha256": "2b4a01d6c42b46259277ac50075e1f86dbac03932f75cc21846b72fc48eafe47",
+      "bytes": 2803
+    },
+    {
+      "archived": "preflight/semantic-review.md",
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-preflight-20260922\\semantic-review.md",
+      "sha256": "d552bea1d4d98e49b1ee1b78e4ddd743a382c009bd1058acb6ad38814e656e52",
+      "bytes": 4472
+    },
+    {
+      "archived": "preflight/controller-deployed.json",
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-preflight-20260922\\controller-deployed.json",
+      "sha256": "463cc91f5aa9e2363f2bb0ab7e6c41cc20e83bfb0258a652c680b59b59ea75b3",
+      "bytes": 7194
+    },
+    {
+      "archived": "preflight/perception-deployed.json",
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-preflight-20260922\\perception-deployed.json",
+      "sha256": "eec81481931085a547b677d6a1be8bb1787ba5a41a974b59079de8cfd0805c24",
+      "bytes": 6283
+    },
+    {
+      "archived": "preflight/deployment-check.json",
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-preflight-20260922\\deployment-check.json",
+      "sha256": "02cbb8586598c70c10d99e39022e4f8a3a9ffd173623e1c26c64b35aa8ba990e",
+      "bytes": 653
+    },
+    {
+      "archived": "preflight/effective-setup.json",
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-preflight-20260922\\effective-setup.json",
+      "sha256": "a28efd61ea2d9d1f8ea0af91adc47e81646e48471c49267c95ca6270dced2631",
+      "bytes": 3567
+    },
+    {
+      "archived": "preflight/runtime-settings.json",
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-preflight-20260922\\runtime-settings.json",
+      "sha256": "086c29d8113d1a027540ea5b3a71308e0b9ba137419806dd861ca18c277ce8ff",
+      "bytes": 1146
+    },
+    {
+      "archived": "preflight/runtime-semantic-review.json",
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-preflight-20260922\\runtime-semantic-review.json",
+      "sha256": "1b370c7c851fb24f046ccc15346d345a1f11392d40134b1bf5d32c6b4c4d1426",
+      "bytes": 3378
+    },
+    {
+      "archived": "preflight/runtime-identity.json",
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-preflight-20260922\\runtime-identity.json",
+      "sha256": "0177c04a2719822f84b6decdb634e7583d5c4f0dbf971c05f0ce645f932c74d7",
+      "bytes": 770
+    },
+    {
+      "archived": "preflight/deployment-review.json",
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-preflight-20260922\\deployment-review.json",
+      "sha256": "8ac0f800139ee0d091647c120b441cdce728beaa3f9af68ad9d5cdd9deaeba33",
+      "bytes": 1646
+    },
+    {
+      "archived": "preflight/deployment-binding.json",
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-preflight-20260922\\deployment-binding.json",
+      "sha256": "25127cfe9fc9c39cad11029bc0018a3039970573c72e2f111f7b4fa13da4b859",
+      "bytes": 1085
+    },
+    {
+      "archived": "preflight/source-identity.json",
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-preflight-20260922\\source-identity.json",
+      "sha256": "72bf5e2be3db2e11e1820bd4a3d6fc73aabe3263e3778957de151bb66e27ef43",
+      "bytes": 451
+    },
+    {
+      "archived": "preflight/loader-preflight.json",
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-preflight-20260922\\loader-preflight.json",
+      "sha256": "7f7044bbeb308f50ace2b3ea15108044fb0428138f11c49534590f6211fe31d3",
+      "bytes": 303
+    },
+    {
+      "archived": "preflight/binding-consumed.json",
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-preflight-20260922\\binding-consumed.json",
+      "sha256": "710e7aa926012bced454fc68564e7ac0478a8c8a05b794cd999d55d7ed277550",
+      "bytes": 396
+    },
+    {
+      "archived": "preflight/launch-result.json",
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-preflight-20260922\\launch-result.json",
+      "sha256": "67f4478a817bc055776d5417c34a7ba7d5ba14b620468892920f716e84ae463b",
+      "bytes": 215
+    },
+    {
+      "archived": "preflight/launch.ps1",
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-preflight-20260922\\launch.ps1",
+      "sha256": "1c606324a9d360e37228d992c533f150366747f11b60d431ba21c498206667f9",
+      "bytes": 4192
+    },
+    {
+      "archived": "preflight/learned-recorder.json",
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-preflight-20260922\\learned-recorder.json",
+      "sha256": "4295ab46ffa18f0e05637f493aeff0209bd571c4ca16006b670133b6d3cd5308",
+      "bytes": 506
+    },
+    {
+      "archived": "preflight/learned.log",
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-preflight-20260922\\learned.log",
+      "sha256": "7d2d681ba93118b1c0118c189859735051a613ac8b46be56e58b73ca006fcf1e",
+      "bytes": 7654
+    },
+    {
+      "archived": "preflight/learned.err",
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-preflight-20260922\\learned.err",
+      "sha256": "90a4a06a9d3f7225aa235e39a82e45ab855b4e99270fb433cc25addb09e47d0c",
+      "bytes": 791
+    },
+    {
+      "archived": "preflight/learned-record.log",
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-preflight-20260922\\learned-record.log",
+      "sha256": "3a14728fddc6e539fb2a60097ebeda7f430d25c454c400ecc5c5b3e7b1fa74ad",
+      "bytes": 14941
+    },
+    {
+      "archived": "preflight/saved-settings.json",
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-preflight-20260922\\saved-settings.json",
+      "sha256": "8305e2b9592491db6e338bcda53ae396f143dc8ebd7bdf8355be63602bf72db2",
+      "bytes": 5541
+    },
+    {
+      "archived": "preflight/log-accounting.json",
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-preflight-20260922\\log-accounting.json",
+      "sha256": "790d618e71900dca02ac9163191e990357910ba967c78dc432f56fa7f850fc34",
+      "bytes": 9593
+    },
+    {
+      "archived": "preflight/settings-8s.png",
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-preflight-20260922\\settings-8s.png",
+      "sha256": "fa17bb9f5bb5336883956c8ca55192e60d9afa69785645b9f6295e3bab88aff8",
+      "bytes": 412461
+    },
+    {
+      "archived": "preflight/settings-11p8s.png",
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-preflight-20260922\\settings-11p8s.png",
+      "sha256": "4367e25bad6d5b80475f2a776718b190bc19c0dc708d783364b7692c1a9a8c0c",
+      "bytes": 2936789
+    },
+    {
+      "archived": "run/meta.json",
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\range-request-diagnostic-20260922-1\\meta.json",
+      "sha256": "4d50f241fd42c653e39b8aad4c72a9bb8eb6669160495f5aecb22795ec58b613",
+      "bytes": 7600
+    },
+    {
+      "archived": "run/frames.jsonl",
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\range-request-diagnostic-20260922-1\\frames.jsonl",
+      "sha256": "f735585c44b1657569da4a4a2447c3b5605f12411728cc122f1618287ace47ec",
+      "bytes": 406705
+    },
+    {
+      "archived": "run/start-steps.jsonl",
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\range-request-diagnostic-20260922-1\\start-steps.jsonl",
+      "sha256": "f00bd6ffbd558308f9db8a01084a99826ea0328c6b28fcf1821fadeb8a23891c",
+      "bytes": 698
+    },
+    {
+      "archived": "native-audit/independent-audit.md",
+      "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\request-native-audit-4d0389ec\\independent-audit.md",
+      "sha256": "429fa49f01aab348c5e299d8678c7a58dc0abb65290e70786ddc77f63a18459c",
+      "bytes": 11129
+    },
+    {
+      "archived": "native-audit/cast-key.jpg",
+      "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\request-native-audit-4d0389ec\\cast-key.jpg",
+      "sha256": "a58db6cb7031c30879f21d45b11bd17c94350e1bb8ccc723956f9046c39ef9f2",
+      "bytes": 849589
+    },
+    {
+      "archived": "native-audit/coarse-sheet.jpg",
+      "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\request-native-audit-4d0389ec\\coarse-sheet.jpg",
+      "sha256": "618d5f75383c642ac54a0898fd5b884cf5c1815d230c9af5978d3d8940e6abba",
+      "bytes": 1192438
+    },
+    {
+      "archived": "native-audit/dense-index.json",
+      "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\request-native-audit-4d0389ec\\dense-index.json",
+      "sha256": "df92c9edb7de47b78e8fdefb44651e59cf8c1118feb988b24b933af5fc6f57b1",
+      "bytes": 9734
+    },
+    {
+      "archived": "native-audit/correspondence.json",
+      "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\request-native-audit-4d0389ec\\correspondence.json",
+      "sha256": "8b8cea6429083b718c935ae65bc5b3394e55891cc9dcbb5e7693820645b5778a",
+      "bytes": 3479
+    },
+    {
+      "archived": "native-audit/original-hashes.json",
+      "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\request-native-audit-4d0389ec\\original-hashes.json",
+      "sha256": "e7a9668fa42fc779a1df6c7c1c519109dff756c862e30c252be7e5f8c6cd1c8d",
+      "bytes": 1440
+    },
+    {
+      "archived": "native-audit/dense-sheet-0.jpg",
+      "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\request-native-audit-4d0389ec\\dense-sheet-0.jpg",
+      "sha256": "3bac8baf5b921deec808327701a4300f1e85d2c22cded703bfa394377ea03b31",
+      "bytes": 898777
+    },
+    {
+      "archived": "native-audit/dense-sheet-1.jpg",
+      "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\request-native-audit-4d0389ec\\dense-sheet-1.jpg",
+      "sha256": "67d591cb7ed098b7e37065562052641d48f8cb2ce6bee213c3453bc782149466",
+      "bytes": 920954
+    },
+    {
+      "archived": "native-audit/dense-sheet-2.jpg",
+      "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\request-native-audit-4d0389ec\\dense-sheet-2.jpg",
+      "sha256": "da84ce7e185f5b6e9f2851d4d5fe0e0622f9e7da51efc029f8a14bfbe684a16d",
+      "bytes": 927891
+    },
+    {
+      "archived": "native-audit/dense-sheet-3.jpg",
+      "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\request-native-audit-4d0389ec\\dense-sheet-3.jpg",
+      "sha256": "a7babd6b4ecf400d4c34974a020b2373ef4bee1bac626803cf9bf4846a0d4dff",
+      "bytes": 916158
+    },
+    {
+      "archived": "native-audit/dense-sheet-4.jpg",
+      "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\request-native-audit-4d0389ec\\dense-sheet-4.jpg",
+      "sha256": "b7315e3eb9f4e5b7a56b1ca2d64ccdd0b062d4c15967265bfcc6f1019e83814d",
+      "bytes": 923522
+    },
+    {
+      "archived": "native-audit/dense-sheet-5.jpg",
+      "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\request-native-audit-4d0389ec\\dense-sheet-5.jpg",
+      "sha256": "b4e4d0b2830fffb8f5f2f8c07b90e6a898d56f99b9d4a185c064c00fa651ed8a",
+      "bytes": 852402
+    },
+    {
+      "archived": "timing/README.md",
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\diagnostics\\range-request-runtime-timing-20260922\\README.md",
+      "sha256": "0faf365ce743aa612b7cb518ac13f5b80acb01d19e772668181057d1a67ff4de",
+      "bytes": 11001
+    },
+    {
+      "archived": "timing/report.json",
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\diagnostics\\range-request-runtime-timing-20260922\\report.json",
+      "sha256": "3fb964328f70bb7e5f320704928607dc24e92006ca2184eabf548a142150ed95",
+      "bytes": 76849
+    },
+    {
+      "archived": "timing/diagnose.py",
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\diagnostics\\range-request-runtime-timing-20260922\\diagnose.py",
+      "sha256": "809cd565f5ae769ec7b04e64e55adc8e9be46c114b91866d4ecec3aa1047a1a9",
+      "bytes": 10758
+    },
+    {
+      "archived": "timing/schedule-clocks.json",
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\diagnostics\\range-request-runtime-timing-20260922\\schedule-clocks.json",
+      "sha256": "b07890f96c147e18b0091db91524e662f11a8d562afbb6813ea6dd5206a4b56f",
+      "bytes": 4430
+    },
+    {
+      "archived": "timing/schedule_clocks.py",
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\diagnostics\\range-request-runtime-timing-20260922\\schedule_clocks.py",
+      "sha256": "847ee97baa5075b95405aab4555cb01343eee0e5b04c2dd68780d5d663fb341e",
+      "bytes": 2694
+    },
+    {
+      "archived": "summarize_run.py",
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-preflight-20260922\\summarize_run.py",
+      "sha256": "3b063779cdfa1e4e34af29a9c320f2e92bf868fc7ba28063df5ecc3481e1def5",
+      "bytes": 4121
+    },
+    {
+      "archived": "runtime-baseline/calibration-manifest.json",
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-diagnostic-20260922\\calibration-manifest.json",
+      "sha256": "7e1ab360fcf5fe074160a1b8a0564554249b77315fb72648642ec609d5b1f1d5",
+      "bytes": 2592
+    },
+    {
+      "archived": "runtime-baseline/selector-manifest.json",
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-diagnostic-20260922\\selector-manifest.json",
+      "sha256": "ef64d787d610157879714c9cf80684e7b570eef7a334d8f75d37a2f2c44fa253",
+      "bytes": 1642
+    }
+  ],
+  "retained_originals": [
+    {
+      "source": "data\\runtime\\range-request-preflight-20260922\\learned-native.mp4",
+      "sha256": "05545fd867cf8947b427dfafed8ab5455a020e37a6a7091b13649c30fc9ce960",
+      "bytes": 298627261
+    },
+    {
+      "source": "data\\runtime\\range-request-preflight-20260922\\settings-native.mp4",
+      "sha256": "c9d13ae79b442b69e42d2fe3e8fcac8e8fb12c2e001a18276b7a4607349e90fe",
+      "bytes": 97574692
+    },
+    {
+      "source": "data\\diagnostics\\range-request-human-fit-20260922\\run-1\\model.pt",
+      "sha256": "6ee388070599e3df042ea73876e391340bf228a9e626cc212c60875d8191aeef",
+      "bytes": 8597
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "patch": "1.1.3870120/build25364676",
+  "cooldown_regime": "normal",
+  "source_profile_sha256": "9f413b81dabc71518359c28a6e506b1a1accbae5654bbf006967652332e3208f",
+  "perception_sha256": "e9d40f7a12442335866df16edaa8ceea7116177ab8546b3267ac096c1c616798",
+  "selector_sha256": "ddf1428a61c54805ce06164ef0daa7dfa1302fdf1735990336fdcab939ae098d",
+  "semantic_revision": "web-cluster-request-v1",
+  "feature_revision": "masked-state-grid-causal-v1"
+}

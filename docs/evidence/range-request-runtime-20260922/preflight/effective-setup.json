@@ -1,0 +1,63 @@
+{
+  "root_ready_for_one_diagnostic": true,
+  "observed_utc": "2026-09-22T21:33:34.294702+00:00",
+  "observer": "root lead, direct native screenshots and two bounded native video frames inspected",
+  "observed": {
+    "normal_cooldown_menu": true,
+    "spiderman": true,
+    "pad_web_layout": true,
+    "luna_setup": true,
+    "range": true
+  },
+  "game_pid": 48460,
+  "frame": [
+    2560,
+    1440
+  ],
+  "observations": [
+    "Practice Settings shows No Ability Cooldown X/off; helper reports already off, no toggle sent. Friendly Fire also off.",
+    "Settings video11.8s shows actual PAD layout: LT beneath web projectile/ammo5 at left, RT beneath infinite melee, LB swing3, RB pull, X uppercut2; range HUD and Spider-Man visible.",
+    "Entry screenshot visibly identifies green Luna Snow Hero Simulation on spawn-exit landing. Settings visit changed facing toward door; reviewed same-device camera startup must establish plaza view again. Generic selector, no named-target enforcement.",
+    "Client/build and relevant persisted fields were compared previously; same game PID remains. Fresh OS focus/range and original observation clocks are checked by the accepted actual caller on entry and input proof.",
+    "No fresh attack calibration performed here. Current normal menu plus unchanged settings/primitive mapping supports this narrow experiment; live depletion/launch/outcome still measured results."
+  ],
+  "limits": [
+    "Does not prove every in-memory/default motor setting or server hotfix.",
+    "PAD HUD can revert on disconnect; learned path uses accepted same-device camera startup and unknown-ammo refusal.",
+    "Navigation, its one RT priming report and settings helper are setup, not learned-phase actions. First lobby entry failed; bounded cursor relocation preceded successful second entry. Both preserved."
+  ],
+  "evidence": [
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-preflight-20260922\\practice-settings\\ps-0.jpg",
+      "sha256": "eb0d4f5ff6fff4e7ec1fbc973c406ffec834c3167588c8ee995fdfa0ed055ea8"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-preflight-20260922\\settings-8s.png",
+      "sha256": "fa17bb9f5bb5336883956c8ca55192e60d9afa69785645b9f6295e3bab88aff8"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-preflight-20260922\\settings-11p8s.png",
+      "sha256": "4367e25bad6d5b80475f2a776718b190bc19c0dc708d783364b7692c1a9a8c0c"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-preflight-20260922\\settings-native.mp4",
+      "sha256": "c9d13ae79b442b69e42d2fe3e8fcac8e8fb12c2e001a18276b7a4607349e90fe"
+    },
+    {
+      "path": "C:\\desk\\out\\range-request-entry2-after.png",
+      "sha256": "3063624caf7e2931a929063992cac43a24cf16485f0e9d29fbe0eb02da656ee0"
+    },
+    {
+      "path": "C:\\desk\\out\\range-request-settings-after.png",
+      "sha256": "520880d744c2d87d0e065757caa286a15ba6465f939cde95efdf5a2f7965148b"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-preflight-20260922\\settings.log",
+      "sha256": "98df43fefe1bf7ab14d6bfea9f29617738a09a743690606aa950ada66142674b"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-preflight-20260922\\capture-preflight.txt",
+      "sha256": "cfc4e89f810d5291ffbdb3369dd10d54aff4375879a533fc46ac27c72b4b0709"
+    }
+  ]
+}

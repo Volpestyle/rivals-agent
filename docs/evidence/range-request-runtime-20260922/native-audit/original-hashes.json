@@ -1,0 +1,12 @@
+{
+  "data\\l1\\range-request-diagnostic-20260922-1\\meta.json": "4d50f241fd42c653e39b8aad4c72a9bb8eb6669160495f5aecb22795ec58b613",
+  "data\\l1\\range-request-diagnostic-20260922-1\\frames.jsonl": "f735585c44b1657569da4a4a2447c3b5605f12411728cc122f1618287ace47ec",
+  "data\\runtime\\range-request-preflight-20260922\\learned-native.mp4": "05545fd867cf8947b427dfafed8ab5455a020e37a6a7091b13649c30fc9ce960",
+  "data\\runtime\\range-request-preflight-20260922\\deployment-binding.json": "25127cfe9fc9c39cad11029bc0018a3039970573c72e2f111f7b4fa13da4b859",
+  "data\\runtime\\range-request-preflight-20260922\\controller-deployed.json": "463cc91f5aa9e2363f2bb0ab7e6c41cc20e83bfb0258a652c680b59b59ea75b3",
+  "data\\runtime\\range-request-preflight-20260922\\perception-deployed.json": "eec81481931085a547b677d6a1be8bb1787ba5a41a974b59079de8cfd0805c24",
+  "data\\runtime\\range-request-preflight-20260922\\effective-setup.json": "a28efd61ea2d9d1f8ea0af91adc47e81646e48471c49267c95ca6270dced2631",
+  "data\\runtime\\range-request-preflight-20260922\\runtime-settings.json": "086c29d8113d1a027540ea5b3a71308e0b9ba137419806dd861ca18c277ce8ff",
+  "data\\runtime\\range-request-preflight-20260922\\runtime-semantic-review.json": "1b370c7c851fb24f046ccc15346d345a1f11392d40134b1bf5d32c6b4c4d1426",
+  "data\\runtime\\range-request-preflight-20260922\\deployment-review.json": "8ac0f800139ee0d091647c120b441cdce728beaa3f9af68ad9d5cdd9deaeba33"
+}

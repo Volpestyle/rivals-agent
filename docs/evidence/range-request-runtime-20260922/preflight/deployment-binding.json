@@ -1,0 +1,18 @@
+{
+  "checkpoint_sha256": "6ee388070599e3df042ea73876e391340bf228a9e626cc212c60875d8191aeef",
+  "source_identity_sha256": "082535863ad7773de498b872eccbacc21753da99966f2f64ff953d1871c5995e",
+  "runtime": {
+    "patch": "1.1.3870120/build25364676",
+    "cooldown_regime": "normal",
+    "runtime_settings_sha256": "086c29d8113d1a027540ea5b3a71308e0b9ba137419806dd861ca18c277ce8ff",
+    "calibration_sha256": "7e1ab360fcf5fe074160a1b8a0564554249b77315fb72648642ec609d5b1f1d5",
+    "controller_code_sha256": "463cc91f5aa9e2363f2bb0ab7e6c41cc20e83bfb0258a652c680b59b59ea75b3",
+    "perception_sha256": "eec81481931085a547b677d6a1be8bb1787ba5a41a974b59079de8cfd0805c24",
+    "semantic_review_sha256": "1b370c7c851fb24f046ccc15346d345a1f11392d40134b1bf5d32c6b4c4d1426",
+    "input_domain": "virtual_pad",
+    "selector_sha256": "ddf1428a61c54805ce06164ef0daa7dfa1302fdf1735990336fdcab939ae098d",
+    "semantic_revision": "web-cluster-request-v1",
+    "feature_revision": "masked-state-grid-causal-v1"
+  },
+  "review_sha256": "8ac0f800139ee0d091647c120b441cdce728beaa3f9af68ad9d5cdd9deaeba33"
+}

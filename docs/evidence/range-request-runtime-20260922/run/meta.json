@@ -1,0 +1,252 @@
+{
+ "stop": "range_lost",
+ "brain": "range-skill",
+ "cooldowns": "normal",
+ "patch": "1.1.3870120/build25364676",
+ "seconds": 8.615,
+ "ticks": 369,
+ "reflex_hz": 42.8,
+ "period_ms": {
+  "p50": 23.04,
+  "p95": 32.03,
+  "max": 43.82
+ },
+ "tick_ms": {
+  "p50": 10.32,
+  "p95": 12.49,
+  "max": 13.65
+ },
+ "aim_ms": {
+  "p50": 6.94,
+  "p95": 8.98,
+  "max": 10.56
+ },
+ "over_budget": 0,
+ "budget_ms": 16.67,
+ "decisions": 84,
+ "decision_hz": 9.8,
+ "decide_ms": {
+  "p50": 30.13,
+  "p95": 45.88,
+  "max": 47.65
+ },
+ "decision_lag_ms": {
+  "p50": 31.02,
+  "p95": 46.84,
+  "max": 48.67
+ },
+ "missed_decisions": 0,
+ "sources": {
+  "waiting": 2,
+  "range_skill_refusal": 177,
+  "range_skill_model": 190
+ },
+ "intents": {
+  "idle": 179,
+  "rangeskill:enemy": 190
+ },
+ "keepalives": 0,
+ "range_gaps": [],
+ "scoreboards": [],
+ "errors": [],
+ "native": [
+  2560,
+  1440
+ ],
+ "start": {
+  "turns": 1,
+  "stamps_s_after_liveio_return": [
+   5.3383,
+   5.3845
+  ],
+  "ms": {
+   "first_send_returned": 11.9,
+   "prime_done": 311.1,
+   "confirmed": 5418.2,
+   "liveio_return_to_first_send_return": 11.9
+  },
+  "liveio_ms": 567.0,
+  "live_scope": {
+   "game_pid": 48460,
+   "focus_method": "GetForegroundWindow/GetWindowThreadProcessId, read-only",
+   "loop_perf_origin": 180792.5577127,
+   "not_after_perf": 180816.0341501,
+   "not_after_t": 23.47643739997875,
+   "startup_max_s": 14.0,
+   "phase_max_s": 10.0,
+   "combined_max_s": 24.0
+  },
+  "confirm_frames": [
+   "start-confirm-1.png",
+   "start-confirm-2.png"
+  ],
+  "steps_file": "start-steps.jsonl"
+ },
+ "executor_events": [
+  {
+   "t": 15.137814699992305,
+   "type": "executor_release",
+   "reason": "send_failed",
+   "observation_t": 15.117033699993044,
+   "range_skill_trace": {
+    "t": 15.117033699993044,
+    "observation_t": 15.117033699993044,
+    "execution_t": 15.137814699992305,
+    "execution_clock_valid": true,
+    "event": "cancel",
+    "decision_id": null,
+    "target_id": null,
+    "proposal": null,
+    "valid_until": null,
+    "resources": null,
+    "accepted": false,
+    "reason": "send_failed",
+    "cancel_reason": "send_failed",
+    "pulse_decision_id": 84,
+    "pulse_target_id": 1,
+    "pulse_press_until": 15.169202899971976,
+    "pulse_valid_until": 15.170279799983836,
+    "pulse_phase": "none",
+    "lt_down": false,
+    "press_edge": false,
+    "release_edge": true,
+    "movement_source": "external_cancel",
+    "ended_pulse_decision_id": 84,
+    "pulse_outcome": "truncated",
+    "offense_source": null,
+    "pad": {
+     "lx": 0.0,
+     "ly": 0.0,
+     "rx": 0.0,
+     "ry": 0.0,
+     "lt": 0.0,
+     "rt": 0.0,
+     "buttons": []
+    }
+   },
+   "release_attempts": [
+    {
+     "attempted_t": 15.137861399998656,
+     "status": "returned",
+     "returned_t": 15.137881599977845
+    }
+   ],
+   "neutral_requested": true,
+   "preceding_send_result": {
+    "observation_t": 15.117033699993044,
+    "attempted_t": 15.136467799980892,
+    "status": "failed",
+    "not_after": 15.137279799983837,
+    "release_at": 15.169202899971976,
+    "returned_t": 15.137805899983505,
+    "error": "RangeLost('guarded input deadline expired after proof; input released')"
+   },
+   "release_returned": true
+  },
+  {
+   "t": 15.138767199998256,
+   "type": "executor_release",
+   "reason": "range_lost",
+   "observation_t": 15.117033699993044,
+   "range_skill_trace": {
+    "t": 15.117033699993044,
+    "observation_t": 15.117033699993044,
+    "execution_t": 15.138767199998256,
+    "execution_clock_valid": true,
+    "event": "cancel",
+    "decision_id": null,
+    "target_id": null,
+    "proposal": null,
+    "valid_until": null,
+    "resources": null,
+    "accepted": false,
+    "reason": "range_lost",
+    "cancel_reason": "range_lost",
+    "pulse_decision_id": null,
+    "pulse_target_id": null,
+    "pulse_press_until": null,
+    "pulse_valid_until": null,
+    "pulse_phase": "none",
+    "lt_down": false,
+    "press_edge": false,
+    "release_edge": false,
+    "movement_source": "external_cancel",
+    "ended_pulse_decision_id": null,
+    "pulse_outcome": null,
+    "offense_source": null,
+    "pad": {
+     "lx": 0.0,
+     "ly": 0.0,
+     "rx": 0.0,
+     "ry": 0.0,
+     "lt": 0.0,
+     "rt": 0.0,
+     "buttons": []
+    }
+   },
+   "release_attempts": [
+    {
+     "attempted_t": 15.138807399984216,
+     "status": "returned",
+     "returned_t": 15.138839699997334
+    }
+   ],
+   "neutral_requested": true,
+   "preceding_send_result": {
+    "observation_t": 15.117033699993044,
+    "attempted_t": 15.136467799980892,
+    "status": "failed",
+    "not_after": 15.137279799983837,
+    "release_at": 15.169202899971976,
+    "returned_t": 15.137805899983505,
+    "error": "RangeLost('guarded input deadline expired after proof; input released')"
+   },
+   "release_returned": true
+  }
+ ],
+ "range_policy": {
+  "checkpoint_sha256": "6ee388070599e3df042ea73876e391340bf228a9e626cc212c60875d8191aeef",
+  "source_identity": {
+   "patch": "1.1.3870120/build25364676",
+   "cooldown_regime": "normal",
+   "source_profile_sha256": "9f413b81dabc71518359c28a6e506b1a1accbae5654bbf006967652332e3208f",
+   "perception_sha256": "e9d40f7a12442335866df16edaa8ceea7116177ab8546b3267ac096c1c616798",
+   "selector_sha256": "ddf1428a61c54805ce06164ef0daa7dfa1302fdf1735990336fdcab939ae098d",
+   "semantic_revision": "web-cluster-request-v1",
+   "feature_revision": "masked-state-grid-causal-v1"
+  },
+  "runtime": {
+   "patch": "1.1.3870120/build25364676",
+   "cooldown_regime": "normal",
+   "runtime_settings_sha256": "086c29d8113d1a027540ea5b3a71308e0b9ba137419806dd861ca18c277ce8ff",
+   "calibration_sha256": "7e1ab360fcf5fe074160a1b8a0564554249b77315fb72648642ec609d5b1f1d5",
+   "controller_code_sha256": "463cc91f5aa9e2363f2bb0ab7e6c41cc20e83bfb0258a652c680b59b59ea75b3",
+   "perception_sha256": "eec81481931085a547b677d6a1be8bb1787ba5a41a974b59079de8cfd0805c24",
+   "semantic_review_sha256": "1b370c7c851fb24f046ccc15346d345a1f11392d40134b1bf5d32c6b4c4d1426",
+   "input_domain": "virtual_pad",
+   "selector_sha256": "ddf1428a61c54805ce06164ef0daa7dfa1302fdf1735990336fdcab939ae098d",
+   "semantic_revision": "web-cluster-request-v1",
+   "feature_revision": "masked-state-grid-causal-v1"
+  },
+  "deployment": {
+   "checkpoint_sha256": "6ee388070599e3df042ea73876e391340bf228a9e626cc212c60875d8191aeef",
+   "source_identity_sha256": "082535863ad7773de498b872eccbacc21753da99966f2f64ff953d1871c5995e",
+   "runtime": {
+    "patch": "1.1.3870120/build25364676",
+    "cooldown_regime": "normal",
+    "runtime_settings_sha256": "086c29d8113d1a027540ea5b3a71308e0b9ba137419806dd861ca18c277ce8ff",
+    "calibration_sha256": "7e1ab360fcf5fe074160a1b8a0564554249b77315fb72648642ec609d5b1f1d5",
+    "controller_code_sha256": "463cc91f5aa9e2363f2bb0ab7e6c41cc20e83bfb0258a652c680b59b59ea75b3",
+    "perception_sha256": "eec81481931085a547b677d6a1be8bb1787ba5a41a974b59079de8cfd0805c24",
+    "semantic_review_sha256": "1b370c7c851fb24f046ccc15346d345a1f11392d40134b1bf5d32c6b4c4d1426",
+    "input_domain": "virtual_pad",
+    "selector_sha256": "ddf1428a61c54805ce06164ef0daa7dfa1302fdf1735990336fdcab939ae098d",
+    "semantic_revision": "web-cluster-request-v1",
+    "feature_revision": "masked-state-grid-causal-v1"
+   },
+   "review_sha256": "8ac0f800139ee0d091647c120b441cdce728beaa3f9af68ad9d5cdd9deaeba33"
+  },
+  "origin": "reviewed_human",
+  "scope": "learned_web_start_timing_scripted_target_aim_movement_pulse"
+ }
+}

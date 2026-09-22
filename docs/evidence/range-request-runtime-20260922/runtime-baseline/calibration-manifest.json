@@ -1,0 +1,106 @@
+{
+  "status": "candidate_default_calibration_and_reused_D_evidence_not_fresh_measurement",
+  "controller_file": {
+    "sha256": "f477b7cf32b524a1d788be6b6a9a0aecedf60a852d45a25a1eb2b9ff4ac12131",
+    "LF_normalized_sha256": "268527c0137943597092a5cbc61486ec5a85b56e3070a099d29839cf2e678c43"
+  },
+  "Cal_defaults": {
+    "focal_1280": 465.0,
+    "yaw_map": [
+      [
+        0.0,
+        0.0
+      ],
+      [
+        0.1,
+        18.5
+      ],
+      [
+        0.2,
+        61.5
+      ],
+      [
+        0.3,
+        110.0
+      ],
+      [
+        0.45,
+        172.0
+      ],
+      [
+        0.6,
+        241.0
+      ],
+      [
+        0.8,
+        320.0
+      ],
+      [
+        1.0,
+        415.0
+      ]
+    ],
+    "pitch_map": [
+      [
+        0.0,
+        0.0
+      ],
+      [
+        0.5,
+        43.0
+      ],
+      [
+        1.0,
+        99.0
+      ]
+    ],
+    "latency_s": 0.045,
+    "press_s": 0.033
+  },
+  "gates": {
+    "FRESH_S": 0.1,
+    "LEASE_S": 0.25,
+    "AIM_DONE_DEG": 0.4,
+    "ARM_FRAMES": 5,
+    "PLAUSIBLE": [
+      0.008,
+      0.9
+    ],
+    "RANGE_SKILL_VALID_S": 0.1
+  },
+  "minimum_repeat_spacing_s": 0.34,
+  "D_evidence": [
+    {
+      "path": "docs/evidence/range-cast-calibration-d-20260922/README.md",
+      "sha256": "870b240052c0fa03038e3e808b273a28b65abdb60c78bcacb5a99856ce570b6d"
+    },
+    {
+      "path": "docs/evidence/range-cast-calibration-d-20260922/audit-results.json",
+      "sha256": "cb1b39920be3ae3156976c81a0ce0b79606894867e9554cff935127b0e633b19"
+    },
+    {
+      "path": "docs/evidence/range-cast-calibration-d-20260922/execution-diagnosis.json",
+      "sha256": "5036ce619bb754df1edccb166451de668d584c1274077620f02651cf603c28eb"
+    },
+    {
+      "path": "docs/evidence/range-cast-calibration-d-20260922/code-receipt.json",
+      "sha256": "b87330523bb336d6c39dc302deeef607aff2b2685c91d0feb510b5475c4fd4e1"
+    }
+  ],
+  "D_result": "two owned LT pulses, two separate Web-Cluster casts/impacts on Luna; third refused; not universal reliability",
+  "prior_timing_calculation": {
+    "path": "data/runtime/range-skill-candidate-20260922/results.json",
+    "sha256": "2a4d1a49b41909eabdd8259a2369dc332ca344bb3909030358ac7280a8099d53"
+  },
+  "first_LT_attempt_to_emission_ms_empirical": [
+    [
+      87.4690999911243,
+      158.3757999929203
+    ],
+    [
+      82.70333332609425,
+      153.61003332789025
+    ]
+  ],
+  "limits": "33ms is nominal software press. API returns/watchdog are not physical delivery. Cal.latency_s is old control tuning, not a new timing guarantee. Current effective sensitivity/settings pending root evidence."
+}

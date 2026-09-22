@@ -45,7 +45,7 @@ at `8f78ae9`. Six reviewed human event rows have now trained on Mac MPS and
 reloaded on Windows CPU. The model reproduces six training labels, compared with
 three for an ammo-positive baseline and four for never-start. These two unique
 casts and four non-starts remain a tiny, same-recording numerical diagnostic;
-independent validation and learned gameplay are pending. The
+that historical fit established neither independent validation nor gameplay. The
 [fit report](evidence/range-human-fit-v2-20260922/README.md) records exact artifacts
 and tracking limitations. Linear carries the active goal:
 [VUH-1311](https://linear.app/vuhlp/issue/VUH-1311).
@@ -74,6 +74,17 @@ never-start; Windows predictions and event metrics match Mac CPU. This is one
 unique received request, not independent validation or learned gameplay. No
 additional footage, stationary waits, guessed motor profile or live binding was
 used to reach this numerical result. The prior visual artifacts stay unchanged.
+
+The exact request model has now controlled Spider-Man in one independently
+audited exploratory run: **one web cast hit Luna, no KO**. Its 8.615-second
+learned phase used reviewed code, a genuine bounded runtime binding and fresh
+normal-resource/PAD setup. A later request expired during the input proof;
+terminal releases returned. [Original video, counts, receipts and native audit](evidence/range-request-runtime-20260922/README.md)
+retain both owned requests, the final missing decision trace and measured
+history/scheduling failures. Repair the caller timing and failed-send evidence
+before another measurement. The confidence, observation tolerance and input
+deadlines remain unchanged. Independent validation and the ten-trial bot-kill
+comparison remain open; this single Luna hit satisfies neither.
 
 The first executable experiment now learns **Web-Cluster start timing**, using
 five causal observations at 10 Hz. `start_web_cluster` requests one bounded pulse;

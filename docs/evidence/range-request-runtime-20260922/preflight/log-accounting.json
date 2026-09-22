@@ -1,0 +1,309 @@
+{
+  "scope": "read_only_logged_execution_accounting_not_gameplay_scoring",
+  "run": "range-request-diagnostic-20260922-1",
+  "source_sha256": {
+    "data\\l1\\range-request-diagnostic-20260922-1\\meta.json": "4d50f241fd42c653e39b8aad4c72a9bb8eb6669160495f5aecb22795ec58b613",
+    "data\\l1\\range-request-diagnostic-20260922-1\\frames.jsonl": "f735585c44b1657569da4a4a2447c3b5605f12411728cc122f1618287ace47ec",
+    "data\\runtime\\range-request-preflight-20260922\\deployment-binding.json": "25127cfe9fc9c39cad11029bc0018a3039970573c72e2f111f7b4fa13da4b859",
+    "data\\runtime\\range-request-preflight-20260922\\binding-consumed.json": "710e7aa926012bced454fc68564e7ac0478a8c8a05b794cd999d55d7ed277550"
+  },
+  "receipt_matches_issued_source_runtime_binding_checkpoint": true,
+  "origin": "reviewed_human",
+  "semantic_revision": "web-cluster-request-v1",
+  "stop": "range_lost",
+  "learned_phase_s": 8.615,
+  "decision_counter": 84,
+  "persisted_decisions": 83,
+  "missing_decision_ids": [
+    84
+  ],
+  "persisted_decision_reasons": {
+    "target_unobserved": 1,
+    "warming_up": 31,
+    "invalid_history": 6,
+    "model_event": 44,
+    "low_confidence": 1
+  },
+  "persisted_proposals": {
+    "no_new_start": 29,
+    "start": 15
+  },
+  "persisted_step_acceptance_ids": [
+    75
+  ],
+  "observed_owned_pulse_ids": [
+    75,
+    84
+  ],
+  "returned_lt_calls": [
+    {
+      "step": {
+        "t": 14.224710799986497,
+        "observation_t": 14.224710799986497,
+        "execution_t": 14.24169919997803,
+        "execution_clock_valid": true,
+        "event": "step",
+        "decision_id": 75,
+        "target_id": 1,
+        "proposal": "start",
+        "valid_until": 14.27610829998739,
+        "resources": {
+          "webs": 5,
+          "observed_t": 14.17610829998739
+        },
+        "accepted": true,
+        "reason": "accepted",
+        "cancel_reason": null,
+        "pulse_decision_id": 75,
+        "pulse_target_id": 1,
+        "pulse_press_until": 14.274699199978029,
+        "pulse_valid_until": 14.27610829998739,
+        "pulse_phase": "press",
+        "lt_down": true,
+        "press_edge": true,
+        "release_edge": false,
+        "movement_source": "scripted_range_approach_aim",
+        "ended_pulse_decision_id": null,
+        "pulse_outcome": null,
+        "offense_source": "accepted_range_skill_request",
+        "pad": {
+          "lx": 0.0,
+          "ly": 0.0,
+          "rx": 0.0,
+          "ry": 0.0,
+          "lt": 1.0,
+          "rt": 0.0,
+          "buttons": []
+        }
+      },
+      "send": {
+        "observation_t": 14.224710799986497,
+        "attempted_t": 14.241902199981268,
+        "status": "returned",
+        "not_after": 14.24310829998739,
+        "release_at": 14.274699199978029,
+        "returned_t": 14.243093899975065
+      }
+    },
+    {
+      "step": {
+        "t": 14.246958499978064,
+        "observation_t": 14.246958499978064,
+        "execution_t": 14.269332299998496,
+        "execution_clock_valid": true,
+        "event": "step",
+        "decision_id": 75,
+        "target_id": 1,
+        "proposal": "start",
+        "valid_until": 14.27610829998739,
+        "resources": {
+          "webs": 5,
+          "observed_t": 14.17610829998739
+        },
+        "accepted": false,
+        "reason": "duplicate_accepted",
+        "cancel_reason": null,
+        "pulse_decision_id": 75,
+        "pulse_target_id": 1,
+        "pulse_press_until": 14.274699199978029,
+        "pulse_valid_until": 14.27610829998739,
+        "pulse_phase": "press",
+        "lt_down": true,
+        "press_edge": false,
+        "release_edge": false,
+        "movement_source": "scripted_range_approach_aim",
+        "ended_pulse_decision_id": null,
+        "pulse_outcome": null,
+        "offense_source": "accepted_range_skill_request",
+        "pad": {
+          "lx": 0.0,
+          "ly": 0.0,
+          "rx": 0.0,
+          "ry": 0.0,
+          "lt": 1.0,
+          "rt": 0.0,
+          "buttons": []
+        }
+      },
+      "send": {
+        "observation_t": 14.246958499978064,
+        "attempted_t": 14.269473599997582,
+        "status": "returned",
+        "not_after": 14.274699199978029,
+        "release_at": 14.274699199978029,
+        "returned_t": 14.270714299986139
+      }
+    }
+  ],
+  "returned_rt_calls": 0,
+  "terminal_events": [
+    {
+      "t": 15.137814699992305,
+      "type": "executor_release",
+      "reason": "send_failed",
+      "observation_t": 15.117033699993044,
+      "range_skill_trace": {
+        "t": 15.117033699993044,
+        "observation_t": 15.117033699993044,
+        "execution_t": 15.137814699992305,
+        "execution_clock_valid": true,
+        "event": "cancel",
+        "decision_id": null,
+        "target_id": null,
+        "proposal": null,
+        "valid_until": null,
+        "resources": null,
+        "accepted": false,
+        "reason": "send_failed",
+        "cancel_reason": "send_failed",
+        "pulse_decision_id": 84,
+        "pulse_target_id": 1,
+        "pulse_press_until": 15.169202899971976,
+        "pulse_valid_until": 15.170279799983836,
+        "pulse_phase": "none",
+        "lt_down": false,
+        "press_edge": false,
+        "release_edge": true,
+        "movement_source": "external_cancel",
+        "ended_pulse_decision_id": 84,
+        "pulse_outcome": "truncated",
+        "offense_source": null,
+        "pad": {
+          "lx": 0.0,
+          "ly": 0.0,
+          "rx": 0.0,
+          "ry": 0.0,
+          "lt": 0.0,
+          "rt": 0.0,
+          "buttons": []
+        }
+      },
+      "release_attempts": [
+        {
+          "attempted_t": 15.137861399998656,
+          "status": "returned",
+          "returned_t": 15.137881599977845
+        }
+      ],
+      "neutral_requested": true,
+      "preceding_send_result": {
+        "observation_t": 15.117033699993044,
+        "attempted_t": 15.136467799980892,
+        "status": "failed",
+        "not_after": 15.137279799983837,
+        "release_at": 15.169202899971976,
+        "returned_t": 15.137805899983505,
+        "error": "RangeLost('guarded input deadline expired after proof; input released')"
+      },
+      "release_returned": true
+    },
+    {
+      "t": 15.138767199998256,
+      "type": "executor_release",
+      "reason": "range_lost",
+      "observation_t": 15.117033699993044,
+      "range_skill_trace": {
+        "t": 15.117033699993044,
+        "observation_t": 15.117033699993044,
+        "execution_t": 15.138767199998256,
+        "execution_clock_valid": true,
+        "event": "cancel",
+        "decision_id": null,
+        "target_id": null,
+        "proposal": null,
+        "valid_until": null,
+        "resources": null,
+        "accepted": false,
+        "reason": "range_lost",
+        "cancel_reason": "range_lost",
+        "pulse_decision_id": null,
+        "pulse_target_id": null,
+        "pulse_press_until": null,
+        "pulse_valid_until": null,
+        "pulse_phase": "none",
+        "lt_down": false,
+        "press_edge": false,
+        "release_edge": false,
+        "movement_source": "external_cancel",
+        "ended_pulse_decision_id": null,
+        "pulse_outcome": null,
+        "offense_source": null,
+        "pad": {
+          "lx": 0.0,
+          "ly": 0.0,
+          "rx": 0.0,
+          "ry": 0.0,
+          "lt": 0.0,
+          "rt": 0.0,
+          "buttons": []
+        }
+      },
+      "release_attempts": [
+        {
+          "attempted_t": 15.138807399984216,
+          "status": "returned",
+          "returned_t": 15.138839699997334
+        }
+      ],
+      "neutral_requested": true,
+      "preceding_send_result": {
+        "observation_t": 15.117033699993044,
+        "attempted_t": 15.136467799980892,
+        "status": "failed",
+        "not_after": 15.137279799983837,
+        "release_at": 15.169202899971976,
+        "returned_t": 15.137805899983505,
+        "error": "RangeLost('guarded input deadline expired after proof; input released')"
+      },
+      "release_returned": true
+    }
+  ],
+  "run_statistics": {
+    "ticks": 369,
+    "reflex_hz": 42.8,
+    "period_ms": {
+      "p50": 23.04,
+      "p95": 32.03,
+      "max": 43.82
+    },
+    "tick_ms": {
+      "p50": 10.32,
+      "p95": 12.49,
+      "max": 13.65
+    },
+    "aim_ms": {
+      "p50": 6.94,
+      "p95": 8.98,
+      "max": 10.56
+    },
+    "decision_hz": 9.8,
+    "decide_ms": {
+      "p50": 30.13,
+      "p95": 45.88,
+      "max": 47.65
+    },
+    "decision_lag_ms": {
+      "p50": 31.02,
+      "p95": 46.84,
+      "max": 48.67
+    },
+    "range_gaps": [],
+    "errors": []
+  },
+  "live_scope": {
+    "game_pid": 48460,
+    "focus_method": "GetForegroundWindow/GetWindowThreadProcessId, read-only",
+    "loop_perf_origin": 180792.5577127,
+    "not_after_perf": 180816.0341501,
+    "not_after_t": 23.47643739997875,
+    "startup_max_s": 14.0,
+    "phase_max_s": 10.0,
+    "combined_max_s": 24.0
+  },
+  "limitations": [
+    "The failed final send omitted decision/step 84; cancellation proves its pulse ownership, not its absent State/probabilities.",
+    "Returned LT calls are software delivery reports, not a physical button-duration measurement.",
+    "Visible cast/impact attribution requires the separate native-video audit.",
+    "One exploratory Luna run does not count toward the designated Galacta benchmark or independent-session validation."
+  ]
+}
