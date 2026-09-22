@@ -1406,11 +1406,18 @@ def _slot_occluded(frame, cx, limit) -> bool:
 
 
 def read_ability(frame, name, layout=PAD) -> tuple[bool | None, int | None]:
-    """(ready, charges) for one ability slot. charges is None when the slot
-    shows no charge badge at all, which most abilities do not."""
+    """(ready, charges), reconciling icon, badge and readable countdown.
+
+    None charges means an absent or unreadable badge, never zero charges.
+    """
+    return _read_ability(frame, name, layout, read_cooldown(frame, name, layout))
+
+
+def _read_ability(frame, name, layout, countdown):
     cx = layout.slot_cx[name]
+    charges = read_charges(frame, cx, layout)
     if _slot_occluded(frame, cx, layout.slot_spill):
-        return None, read_charges(frame, cx, layout)
+        return None, charges
     frac = _red_fraction(crop(frame, _icon_box(cx)))
     if frac is None:
         ready = None
@@ -1420,7 +1427,21 @@ def read_ability(frame, name, layout=PAD) -> tuple[bool | None, int | None]:
         ready = False
     else:
         ready = None
-    return ready, read_charges(frame, cx, layout)
+    # White countdown ink is not a ready icon. Swing and uppercut can recharge
+    # one charge while another remains usable; a missing badge cannot establish
+    # that a spare exists. Preserve independent red/uncertain icon evidence.
+    if charges == 0:
+        ready = False
+    elif countdown is not None:
+        if name in ("swing", "uppercut"):
+            if charges is None and ready is True:
+                ready = None
+        elif countdown > 0:
+            ready = False
+        elif ready is True:
+            # A zero countdown at the transition is not proof of a ready icon.
+            ready = None
+    return ready, charges
 
 
 def read_ult(frame, layout=PAD) -> tuple[bool | None, float | None]:
@@ -1673,8 +1694,8 @@ class Hud:
     abilities: dict[str, tuple[bool | None, int | None]] = field(default_factory=dict)
     ult_ready: bool | None = None
     ult_charge: float | None = None
-    # Seconds left per slot, or None where no countdown is drawn. A number here
-    # is the only proof on this HUD that an ability was actually cast.
+    # Seconds left per slot, or None when absent or unreadable. Readiness has
+    # already been reconciled with these values before conversion to State.
     cooldowns: dict[str, int | None] = field(default_factory=dict)
     bar_damage: float | None = None   # red stripe on the hp bar: damage just taken
 
@@ -1700,14 +1721,15 @@ def read(frame, layout=PAD) -> Hud:
         # The ability row would otherwise read as "not ready", which is a guess.
         return Hud()
     ult_ready, ult_charge = read_ult(frame, layout)
+    cooldowns = {n: read_cooldown(frame, n, layout) for n in layout.slot_cx}
     return Hud(
         hp=hp,
         max_hp=max_hp,
         bar_fill=bar,
         bar_damage=read_damage_segment(frame),
         webs=read_webs(frame, layout),
-        abilities={n: read_ability(frame, n, layout) for n in layout.slot_cx},
-        cooldowns={n: read_cooldown(frame, n, layout) for n in layout.slot_cx},
+        abilities={n: _read_ability(frame, n, layout, cooldowns[n]) for n in layout.slot_cx},
+        cooldowns=cooldowns,
         ult_ready=ult_ready,
         ult_charge=ult_charge,
     )

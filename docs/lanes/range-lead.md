@@ -179,3 +179,23 @@ The 26-second excerpt covers original seconds 5 to 31, with initial setup and
 idle tail cut; SHA-256:
 `337c370cefda80ffdb79527f54536b1451512ff94bf5fdaecf3bc522a0c0f040`.
 [Inspected video and limits on VUH-1319](https://linear.app/vuhlp/issue/VUH-1319#comment-c32af3ab-b495-44b6-9036-6ced4952c53b).
+
+## Accepted HUD reconciliation
+
+Independent review accepted `perception/hud.py` SHA-256
+`5ec7e109f168aeb05978724540eca1dace96fda981fea2861dc16ae3de2a5f58`
+and `tests/test_hud.py` SHA-256
+`9a3563c597654fcbc179f8af717f4dda7099ea2dd07ee86ea4791561f6787f98`.
+It reproduced 22 selected tests and the 19 native source readiness corrections,
+with all charges/countdowns unchanged and existing occlusion unknowns retained.
+Three original PAD controls were unchanged; six new native PAD frames from the
+scripted diagnostic additionally verified actual countdown behavior through
+`read -> state_kwargs -> State` (RB7/5/3/1 False, X4/2 unknown when the badge
+cannot be read). Root inspected the actual delta and matching frozen hashes.
+
+Standalone and aggregate reads reconcile the same evidence without changing
+State or source layouts. No future images or labels enter the reader. Unknown
+badges/countdowns and gold in-use icon semantics remain limitations; a positive
+countdown with spare charges has controlled-contract coverage, not new native
+proof. This accepts the observed reader repair, not a human cohort or live result
+with the repaired code. Native source/target remeasurement remains separate.

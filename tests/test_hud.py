@@ -306,3 +306,143 @@ def test_an_unidentifiable_slot_is_left_out_rather_than_guessed():
     blank = _np.zeros((1080, 1920, 3), _np.uint8)
     assert identify_slot(blank, MK.slot_cx["swing"]) is None
     assert slot_mapping([blank] * 5, MK) == {}
+
+
+@pytest.mark.parametrize("name,red,charges,countdown,occluded,want", [
+    ("uppercut", 0., 0, 3, False, False),
+    ("get_over_here", 0., None, 6, False, False),
+    ("swing", 0., 0, None, False, False),
+    ("uppercut", 0., 1, 3, False, True),
+    ("swing", 0., 2, 3, False, True),
+    ("swing", 1., 1, 3, False, False),
+    ("swing", None, 1, 3, False, None),
+    ("uppercut", 0., None, 3, False, None),
+    ("swing", 1., None, 3, False, False),
+    ("get_over_here", 0., None, 0, False, None),
+    ("uppercut", 0., 0, 1, True, None),
+    ("get_over_here", 0., None, 6, True, None),
+    ("swing", 0., 3, None, False, True),
+    ("uppercut", 1., 1, None, False, False),
+    ("get_over_here", None, None, None, False, None),
+    ("swing", .47, 1, None, False, None),
+])
+def test_readiness_reconciliation_reaches_state(monkeypatch, name, red, charges,
+                                                countdown, occluded, want):
+    """Reader contracts through the real aggregate and State conversion.
+
+    Positive countdown with spare charges is a contract control, not native
+    evidence of availability. Red/blank/occluded icons still veto readiness.
+    """
+    from dataclasses import replace
+    import numpy as np
+    from perception import hud
+    from agent.state import State
+
+    frame = np.zeros((1440, 2560, 3), np.uint8)
+    layout = replace(hud.PAD, slot_cx={name: hud.PAD.slot_cx[name]})
+    monkeypatch.setattr(hud, "read_hp", lambda f: (250, 250))
+    monkeypatch.setattr(hud, "read_bar_fill", lambda f: 1.)
+    monkeypatch.setattr(hud, "read_damage_segment", lambda f: None)
+    monkeypatch.setattr(hud, "read_webs", lambda f, l: 5)
+    monkeypatch.setattr(hud, "read_ult", lambda f, l: (False, .5))
+    monkeypatch.setattr(hud, "_slot_occluded", lambda *a: occluded)
+    monkeypatch.setattr(hud, "_red_fraction", lambda *a: red)
+    monkeypatch.setattr(hud, "read_charges", lambda *a: charges)
+    calls = []
+    def cooldown(*args):
+        calls.append(args[1])
+        return countdown
+    monkeypatch.setattr(hud, "read_cooldown", cooldown)
+    reading = hud.read(frame, layout)
+    assert calls == [name], "aggregate must read each countdown only once"
+    state = State(t=0, frame=(2560, 1440), **reading.state_kwargs())
+    ability = state.abilities["pull" if name == "get_over_here" else name]
+    assert ability.ready is want
+    assert ability.charges == charges
+    assert reading.cooldowns == {name: countdown}
+    assert hud.read_ability(frame, name, layout) == (want, charges)
+
+
+@pytest.mark.corpus
+def test_readiness_reconciliation_native_mapped_countdowns():
+    """Only the 17 expressly authorized causal frames, no corpus discovery."""
+    from dataclasses import replace, asdict
+    import hashlib
+    from perception import hud
+    from agent.state import State
+
+    path = ROOT / "data/diagnostics/range-perception-20260922/diagnosis.json"
+    if not path.exists():
+        pytest.skip("authorized local diagnosis unavailable")
+    diagnosis = json.loads(path.read_text())
+    expected_pts = set(range(13121, 13522, 100)) | set(range(19421, 20022, 100)) | set(range(21521, 21922, 100))
+    assert len(diagnosis["frames"]) == 17
+    assert {r["pts_ms"] for r in diagnosis["frames"]} == expected_pts
+    frames = {}
+    for row in diagnosis["frames"]:
+        source = ROOT / row["source"]["image"]
+        assert hashlib.sha256(source.read_bytes()).hexdigest() == row["source"]["image_sha256"]
+        frame = cv2.imread(str(source))
+        assert frame.shape[:2] == (1440, 2560)
+        frames[row["pts_ms"]] = frame
+    defaults = asdict(hud.PAD), asdict(hud.MK)
+    mapping = hud.slot_mapping([frames[t] for t in range(13121, 13522, 100)], hud.MK)
+    assert mapping == {"swing": "swing", "get_over_here": "uppercut", "uppercut": "get_over_here"}
+    layout = replace(hud.MK, slot_cx={ability: hud.MK.slot_cx[position] for position, ability in mapping.items()})
+    for t, frame in frames.items():
+        reading = hud.read(frame, layout)
+        state = State(t=t / 1000, frame=(2560, 1440), **reading.state_kwargs())
+        if 19421 <= t <= 20021:
+            assert reading.cooldowns["uppercut"] == 3
+            assert (state.abilities["uppercut"].ready, state.abilities["uppercut"].charges) == (False, 0)
+        if t >= 21521:
+            assert state.abilities["pull"].ready is False
+            assert reading.cooldowns["get_over_here"] == (6 if t == 21921 else 7)
+            assert state.abilities["swing"].ready is (None if t >= 21821 else False)
+            assert state.abilities["uppercut"].ready is (None if t == 21921 else False)
+        if t <= 13521:
+            assert state.abilities["uppercut"].ready is True
+            assert state.abilities["uppercut"].charges == 2
+            assert state.abilities["pull"].ready is True
+            assert state.abilities["swing"].ready is (False if t == 13221 else True)
+    assert defaults == (asdict(hud.PAD), asdict(hud.MK))
+
+
+@pytest.mark.corpus
+@pytest.mark.parametrize("name,sha256", [
+    ("t0-a-untagged-000.jpg", "95d98b19d860e3ced9037733c28a8cacbd6722846540926ebdb1f7ddcaad2549"),
+    ("t0-b-after-web-cluster-003.jpg", "61aaca45d4d1a1ecf2bb2ef011258201640d0edd8ded8fc8d7e1ac47dccb876f"),
+    ("t0-b-after-web-cluster-028.jpg", "4c46d2632dabb57707b971665b51d7be7928a5768c847623b3f68d6b76648cbe"),
+])
+def test_readiness_reconciliation_native_pad_controls(name, sha256):
+    """Named relocated native controls; never enumerate their directory."""
+    import hashlib
+    from perception import hud
+    from agent.state import State
+
+    path = Path("C:/rivals-agent/l2tag") / name
+    if not path.exists():
+        pytest.skip("authorized native PAD control unavailable")
+    assert hashlib.sha256(path.read_bytes()).hexdigest() == sha256
+    frame = cv2.imread(str(path))
+    assert frame.shape[:2] == (1440, 2560)
+    reading = hud.read(frame, hud.PAD)
+    state = State(t=0, frame=(2560, 1440), **reading.state_kwargs())
+    assert (state.hp, state.max_hp, state.webs) == (250, 250, 5)
+    for name, charges in (("swing", 3), ("uppercut", 2), ("pull", None), ("teamup", None)):
+        assert state.abilities[name].ready is True
+        assert state.abilities[name].charges == charges
+    assert all(cd is None for cd in reading.cooldowns.values())
+
+
+def test_readiness_reconciliation_blank_frame_stays_unknown():
+    import numpy as np
+    from perception import hud
+    from agent.state import State
+
+    reading = hud.read(np.zeros((1440, 2560, 3), np.uint8))
+    state = State(t=0, frame=(2560, 1440), **reading.state_kwargs())
+    assert state.hp is None
+    assert reading.abilities == {}
+    assert reading.cooldowns == {}
+    assert state.abilities["ult"].ready is None
