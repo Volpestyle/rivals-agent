@@ -11,6 +11,7 @@ import pytest
 from agent import loop as runtime
 from agent.intents import Engage, Idle, RangeSkill, RangeSkillResources
 from tests.test_loop import BOT, F, Frames, FakePad, RunLog, jpeg, readers, sends, timeline
+from tests.test_range_cast_probe import native_entry
 
 
 class EventBrain:
@@ -390,3 +391,292 @@ def test_actual_liveio_guarded_clock_translation_and_expired_write():
         assert device.neutral() and live.sent == runtime.NEUTRAL
     finally:
         io.close()
+
+
+@pytest.fixture
+def live_cli(native_entry, monkeypatch, tmp_path):
+    """Actual CLI/startup/LiveIO/Live/Loop; loader alone is a policy stub.
+
+    Synthetic pixel readers, capture/device and file writer come from native_entry;
+    no checkpoint quality or deployment approval is inferred by this harness.
+    """
+    import agent.controller as actuator
+    from agent.learned_range_skill import LearnedRangeSkillBrain
+    from agent.startup import start_pose
+    from tests.test_range_skill_policy import SOURCE, RUNTIME
+    from policy.range_skill_policy import SkillDeploymentBinding, digest
+    h = native_entry
+    h.loader_error = None
+    h.focus_lost_at = None
+    h.brain = EventBrain()
+    h.brain.policy = SimpleNamespace(spec=SimpleNamespace(period_s=.1), origin="synthetic_caller_fixture")
+    def load(*args, **kwargs):
+        h.events.append("loader")
+        if h.loader_error:
+            raise ValueError(h.loader_error)
+        return h.brain
+    monkeypatch.setattr(LearnedRangeSkillBrain, "from_checkpoint", load)
+    monkeypatch.setattr(runtime, "ROOT", tmp_path)
+    monkeypatch.setattr(runtime, "RunLog", lambda out, fps=0: RunLog(out, fps, imwrite=jpeg))
+    monkeypatch.setattr(runtime, "_png", lambda out: lambda name, f: None)
+    monkeypatch.setattr(runtime, "start_pose", lambda *a, **k: start_pose(*a, **k,
+                        clock=runtime.time.perf_counter, sleep=runtime.time.sleep))
+    def focused():
+        if h.fault == "post_start" and h.events.count("plaza_checked") >= 2:
+            if not hasattr(h, "focus_cutoff"):
+                h.focus_cutoff = h.t + .2
+            if h.t >= h.focus_cutoff:
+                h.focus = False
+        if not h.focus and h.focus_lost_at is None:
+            h.focus_lost_at = h.t
+        return h.focus
+    monkeypatch.setattr(runtime, "foreground_pid_guard", lambda pid: focused)
+    read_factory, plaza_factory = runtime.default_perception, runtime._plaza_view
+    def load_readers():
+        p = read_factory()
+        original = p.in_range
+        def in_range(frame):
+            if h.fault == "initialization" and "live_open" in h.events and "attached" not in h.events:
+                h.focus = False  # Actual Live's initialization proof sees this change.
+            return original(frame)
+        p.in_range = in_range
+        p.is_board = lambda f: getattr(f, "board", False)
+        return p
+    def load_plaza():
+        result = plaza_factory()
+        if h.fault == "preload":
+            h.focus = False
+        return result
+    monkeypatch.setattr(runtime, "default_perception", load_readers)
+    monkeypatch.setattr(runtime, "_plaza_view", load_plaza)
+    def board_readers():
+        h.events.append("board_readers_loaded")
+        def board(frame):
+            h.events.append("board_read")
+            if h.fault == "board_focus":
+                h.focus = False
+            return getattr(frame, "board", False)
+        def session(frame):
+            h.events.append("session_read")
+            return getattr(frame, "session", True)
+        return board, session
+    monkeypatch.setattr(runtime, "_scoreboard_readers", board_readers)
+    runtime.time.strftime = lambda fmt: "synthetic"
+    factory = actuator.Live
+    def live(**kwargs):
+        # Stand in only for the default native pixel readers when old main()
+        # supplies none. The actual Live proof/actuator executes unchanged.
+        kwargs.setdefault("guard", lambda f: f.ok)
+        kwargs.setdefault("board_guard", lambda f: getattr(f, "board", False))
+        kwargs.setdefault("session_guard", lambda f: getattr(f, "session", True))
+        obj = factory(**kwargs)
+        if h.fault == "attached":
+            h.focus = False
+        grab = obj.cap.grab
+        def paced():
+            time.sleep(.001)  # Yield to the REAL threaded Decider; not a mock.
+            if h.fault == "expiry" and h.events.count("plaza_checked") >= 2 and not hasattr(h, "expired_at"):
+                h.t += 20.
+                h.expired_at = h.t
+            frame = grab()
+            if "BACK" in h.device.buttons:
+                h.board_frames = getattr(h, "board_frames", 0) + 1
+                return SimpleNamespace(ok=False, board=h.board_frames > 2, session=True)
+            return frame
+        obj.cap.grab = paced
+        return obj
+    monkeypatch.setattr(actuator, "Live", live)
+    for name, value in (("source", SOURCE), ("runtime", RUNTIME),
+                        ("binding", SkillDeploymentBinding("d" * 64, digest(asdict(SOURCE)), RUNTIME, "e" * 64))):
+        (tmp_path / (name + ".json")).write_text(json.dumps(asdict(value)))
+    h.argv = ["--live", "--brain", "range-skill", "--range-checkpoint", "synthetic-loader-only",
+              "--range-sha256", "d" * 64, "--range-identity", str(tmp_path / "source.json"),
+              "--range-runtime", str(tmp_path / "runtime.json"), "--range-deployment", str(tmp_path / "binding.json"),
+              "--cooldowns", "normal", "--max-s", "1", "--save-fps", "0", "--no-scoreboard", "--run", "focus-test",
+              "--game-pid", "123"]
+    h.out = tmp_path / "data/l1/focus-test"
+    return h
+
+
+@pytest.mark.parametrize("proposal", ["no_new_start", "start"])
+def test_live_cli_valid_actual_joined_stack_and_scope_metadata(live_cli, proposal):
+    h = live_cli
+    h.brain.request = proposal
+    assert runtime.main(h.argv) == 0
+    assert h.events[:6] == ["loader", "readers_loaded", "plaza_loaded", "board_readers_loaded", "live_open", "attached"]
+    assert len(h.lives) == 1 and h.lives[0]._dead and h.device.neutral()
+    meta = json.loads((h.out / "meta.json").read_text())
+    scope = meta["start"]["live_scope"]
+    assert scope["game_pid"] == 123 and scope["combined_max_s"] == 15
+    assert scope["startup_max_s"] == 14 and scope["phase_max_s"] == 1
+    assert scope["loop_perf_origin"] == h.origin < h.attached_t
+    assert scope["not_after_perf"] - 15 < h.attached_t
+    assert scope["not_after_t"] == scope["not_after_perf"] - h.origin
+    records = [json.loads(s) for s in (h.out / "frames.jsonl").read_text().splitlines()]
+    assert meta["decisions"] > 0 and any(r.get("pad", {}).get("ly") for r in records)
+    assert any(r.get("pad", {}).get("lt") for r in records) is (proposal == "start")
+    for r in records:
+        if r.get("range_skill_trace", {}).get("resources"):
+            assert r["range_skill_trace"]["resources"]["observed_t"] > 5
+            assert r["range_skill_trace"]["observation_t"] <= r["range_skill_trace"]["execution_t"]
+    assert records[-1]["type"] == "executor_release" and records[-1]["release_returned"]
+
+
+@pytest.mark.parametrize("pid", [None, "0", "-1", "4294967296", "not-a-pid", "1.2"])
+def test_live_cli_missing_or_bad_pid_refuses_before_perception_capture_pad(live_cli, pid):
+    h = live_cli
+    args = h.argv[:-2] + (["--game-pid", pid] if pid is not None else [])
+    with pytest.raises(SystemExit) as error:
+        runtime.main(args)
+    assert error.value.code == 2
+    assert "readers_loaded" not in h.events and not h.frames and not h.lives
+
+
+def test_live_cli_already_unfocused_refuses_before_perception_capture_pad(live_cli):
+    h = live_cli
+    h.focus = False
+    with pytest.raises(SystemExit) as error:
+        runtime.main(h.argv)
+    assert error.value.code == 2 and h.events == ["loader"]
+    assert not h.frames and not h.lives
+
+
+def test_live_cli_checkpoint_failure_still_precedes_focus_readers_and_hardware(live_cli, monkeypatch):
+    h = live_cli
+    h.loader_error = "synthetic loader rejection"
+    monkeypatch.setattr(runtime, "foreground_pid_guard", lambda pid: pytest.fail("invalid checkpoint reached focus factory"))
+    with pytest.raises(SystemExit) as error:
+        runtime.main(h.argv)
+    assert error.value.code == 2 and h.events == ["loader"] and not h.frames
+
+
+def test_live_cli_preload_focus_loss_refuses_before_capture(live_cli):
+    h = live_cli
+    h.fault = "preload"
+    with pytest.raises(SystemExit) as error:
+        runtime.main(h.argv)
+    assert error.value.code == 2 and "plaza_loaded" in h.events
+    assert not h.frames and not h.lives
+
+
+def test_live_cli_focus_loss_inside_actual_live_initialization_prevents_attach(live_cli):
+    h = live_cli
+    h.fault = "initialization"
+    with pytest.raises(runtime.RangeLost, match="no pad opened"):
+        runtime.main(h.argv)
+    assert h.frames and "live_open" in h.events and "attached" not in h.events
+    assert not h.device.reports
+
+
+def test_live_cli_focus_loss_after_attach_refuses_startup_without_camera_input(live_cli):
+    h = live_cli
+    h.fault = "attached"
+    assert runtime.main(h.argv) == 1
+    assert len(h.lives) == 1 and h.lives[0]._dead and h.device.neutral()
+    assert all(not b and a["l"] == a["r"] == (0., 0.) and a["lt"] == a["rt"] == 0 for b, a in h.device.reports)
+    assert "refused" in (h.out / "start-steps.jsonl").read_text()
+
+
+@pytest.mark.parametrize("fault", ["post_start", "expiry"])
+def test_live_cli_post_start_scope_loss_releases_actual_device(live_cli, fault):
+    h = live_cli
+    h.fault = fault
+    assert runtime.main(h.argv) == 0
+    meta = json.loads((h.out / "meta.json").read_text())
+    assert meta["stop"] == "range_lost"
+    cutoff = h.focus_lost_at if fault == "post_start" else h.expired_at
+    assert cutoff is not None
+    assert all(not b and a["l"] == a["r"] == (0., 0.) and a["lt"] == a["rt"] == 0
+               for t, (b, a) in h.reports if t >= cutoff)
+    assert meta["executor_events"][-1]["release_returned"] and h.device.neutral()
+
+
+@pytest.mark.parametrize("fault", [None, "board_focus"])
+def test_live_cli_preserves_real_scoreboard_and_opening_session_proofs(live_cli, fault):
+    h = live_cli
+    h.fault = fault
+    assert runtime.main([a for a in h.argv if a != "--no-scoreboard"]) == 0
+    meta = json.loads((h.out / "meta.json").read_text())
+    assert any("BACK" in b for b, _ in h.device.reports)
+    assert "board_read" in h.events
+    if fault is None:
+        assert "session_read" in h.events
+        assert meta["scoreboards"][-1].get("file")
+        assert meta["scoreboards"][-1]["capture_interval"][1] >= meta["scoreboards"][-1]["capture_interval"][0]
+    else:
+        assert meta["scoreboards"][-1]["skipped"] == "range_lost"
+        assert h.focus_lost_at is not None
+        assert all(not b for t, (b, a) in h.reports if t >= h.focus_lost_at)
+    assert h.device.neutral()
+
+
+def test_live_cli_legacy_pose_only_retains_no_pid_requirement(live_cli):
+    h = live_cli
+    assert runtime.main(["--live", "--pose-only", "--run", "focus-test", "--save-fps", "0"]) == 0
+    assert "loader" not in h.events and "board_readers_loaded" not in h.events
+    assert len(h.lives) == 1 and h.device.neutral()
+
+
+@pytest.mark.parametrize("seconds", ["20.01", "nan", "0", "-1"])
+def test_live_cli_phase_cap_refuses_before_loading(live_cli, seconds):
+    args = list(live_cli.argv)
+    args[args.index("--max-s") + 1] = seconds
+    with pytest.raises(SystemExit) as error:
+        runtime.main(args)
+    assert error.value.code == 2 and not live_cli.events
+
+
+def test_scope_proof_rechecks_expiry_after_reader(monkeypatch):
+    clock = SimpleNamespace(t=1.)
+    monkeypatch.setattr(runtime, "time", SimpleNamespace(perf_counter=lambda: clock.t))
+    def slow(frame):
+        clock.t = 2.
+        return True
+    assert runtime._live_scope_proof(slow, lambda: True, 2.)(object()) is False
+
+
+@pytest.mark.parametrize("seconds,phase,combined", [("10", 10, 24), ("20", 20, 34), (None, 20, 34)])
+def test_live_cli_explicit_diagnostic_and_existing_default_keep_matching_scope(live_cli, seconds, phase, combined):
+    h = live_cli
+    args = list(h.argv)
+    i = args.index("--max-s")
+    if seconds is None:
+        del args[i:i + 2]
+    else:
+        args[i + 1] = seconds
+    assert runtime.main(args) == 0
+    meta = json.loads((h.out / "meta.json").read_text())
+    scope = meta["start"]["live_scope"]
+    assert scope["phase_max_s"] == phase
+    assert scope["combined_max_s"] == combined
+    assert scope["not_after_perf"] - combined < h.attached_t
+    assert meta["stop"] == "max_time" and h.device.neutral()
+
+
+def test_probe_reexports_one_foreground_guard_and_rejects_bad_pid_before_win32():
+    from scripts import range_cast_probe
+    assert range_cast_probe.foreground_pid_guard is runtime.foreground_pid_guard
+    for pid in (None, True, 0, -1, 2**32, 1.5):
+        with pytest.raises(ValueError):
+            runtime.foreground_pid_guard(pid)
+
+
+def test_shared_foreground_guard_compares_actual_api_pid_result_without_focusing(monkeypatch):
+    import ctypes
+    state = SimpleNamespace(window=42, pid=123, thread=7)
+    def window():
+        return state.window
+    def owner(hwnd, pointer):
+        assert hwnd == 42
+        pointer._obj.value = state.pid
+        return state.thread
+    fake = SimpleNamespace(GetForegroundWindow=window, GetWindowThreadProcessId=owner)
+    monkeypatch.setattr(ctypes, "WinDLL", lambda *a, **k: fake, raising=False)
+    guard = runtime.foreground_pid_guard(123)
+    assert guard() is True
+    state.pid = 456
+    assert guard() is False
+    state.pid, state.thread = 123, 0
+    assert guard() is False
+    state.window = 0
+    assert guard() is False

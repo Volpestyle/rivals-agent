@@ -13,6 +13,7 @@ from pathlib import Path
 import time
 
 from agent.intents import Idle, RangeSkill, RangeSkillResources
+from agent.loop import foreground_pid_guard  # Shared implementation; public probe alias retained.
 from agent.state import Detection, ENEMY, TARGET
 
 MODE = "range-cast-probe"
@@ -317,21 +318,6 @@ def run_probe(source, pad, percept, out, *, roi, focused, live=False,
         report(out, schedule, run.summary(), io.stop_reason)
         raise
     return report(out, schedule, summary, io.stop_reason)
-
-
-def foreground_pid_guard(pid):
-    """Read-only Win32 foreground identity; never focus or navigate a window."""
-    import ctypes
-    from ctypes import wintypes
-    user32 = ctypes.WinDLL("user32", use_last_error=True)
-    user32.GetForegroundWindow.restype = wintypes.HWND
-    user32.GetWindowThreadProcessId.argtypes = [wintypes.HWND, ctypes.POINTER(wintypes.DWORD)]
-    user32.GetWindowThreadProcessId.restype = wintypes.DWORD
-    def focused():
-        window = user32.GetForegroundWindow()
-        current = wintypes.DWORD()
-        return bool(window and user32.GetWindowThreadProcessId(window, ctypes.byref(current)) and current.value == pid)
-    return focused
 
 
 def live_probe(args, *, save_fps=20, start_save=None):

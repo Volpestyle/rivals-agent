@@ -109,6 +109,25 @@ Both recordings share the evening group. A train-only diagnostic may start once
 its event examples are reviewed; VUH-1347 remains independent-session validation
 for generalization and accepted live reliance, not a prerequisite to the first fit.
 
+**Exploratory runtime diagnostic, lead decision September 22.** Independent-session
+quality acceptance is separate from collecting the first model-controlled runtime
+evidence. Before VUH-1347 arrives, the lead may conduct one practice-range
+diagnostic with at most 10 seconds of learned play after at most 14 seconds of
+camera-only startup, with a shared absolute 24-second input-authorization deadline.
+Existing proof freshness and watchdog resolution still bound delivery; this is
+not a hard process-exit or physical-device timing guarantee. The Luna
+simulation is the setup restriction, not code-enforced named-target recognition.
+This proceeds only after
+independent acceptance of the actual request-semantic/runtime binding and existing
+guarded caller. Use the exact admitted request checkpoint, normal resources,
+contemporaneous client/settings evidence, original video, complete proposal/send/
+release traces, and the original confidence threshold. No learned input follows
+from a fit alone. Preserve all refusals and failures; no scripted offensive fallback,
+threshold tuning or retries to select a successful result. This run supplies
+exploratory runtime evidence, not independent validation, Galacta completion,
+professional imitation or the ten-trial benchmark. Those final acceptance
+requirements remain unchanged.
+
 Predeclared first pilot: **ten scheduled trials**, each with a verified ready
 start and a 20-second deadline, at least eight audited designated-bot completions
 and zero scope breaches. Keep all ten in the primary denominator, including

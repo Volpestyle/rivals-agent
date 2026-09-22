@@ -47,6 +47,25 @@ evidence; their uncertain timing does not guarantee visible emission inside a
 request's 100 ms authorization window. Independent-session evaluation and a
 genuine request-semantic runtime binding remain next before learned-live reliance.
 
+The lead has separated independent quality acceptance from a first exploratory
+runtime measurement in the [pilot plan](../learning-plan.md#first-visible-learned-range-milestone-2026-09-22).
+The proposed single diagnostic has at most ten seconds of learned play in the
+Luna setup, at most fourteen seconds of camera-only startup and an absolute
+24-second input-authorization deadline under existing proof/watchdog limits.
+The selector remains generic. It uses the
+unchanged request checkpoint/threshold, normal resources, original video and
+complete refused/accepted/send/release evidence. Independent runtime/semantic
+acceptance is still required before its input; no binding has been issued yet.
+It cannot count toward the designated Galacta benchmark or replace VUH-1347.
+
+The foreground-PID and shared startup/play deadline caller is independently
+accepted ([boundary and checks](range-live-focus.md)): 28 focused checks and nine
+saved-checkpoint/refusal/dry joins, plus delayed-attachment and constructor-failure
+controls. It preserves future 20-second trials; this diagnostic explicitly uses
+10. The runtime semantic review accepts immediate guarded dispatch as the scoped
+interpretation of a received-request forecast. Final deployed manifests and fresh
+effective normal-resource/PAD/Luna setup remain before the first learned input.
+
 ## Event execution acceptance, 2026-09-22 12:39 CDT
 
 Lead accepts the independently reviewed `RangeSkill` controller and guarded Live

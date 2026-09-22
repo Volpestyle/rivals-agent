@@ -40,7 +40,7 @@ from .intents import Disengage, Idle, RangeSkill
 from .jev import pct
 from .replay import label
 from .state import ENEMY, State
-from .startup import StartRefused, start_pose
+from .startup import StartRefused, start_pose, START_DEADLINE_S
 from .tracker import Tracker
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -794,6 +794,42 @@ def _plaza_view():
     return plaza_view
 
 
+def foreground_pid_guard(pid):
+    """Read-only Win32 foreground identity; never focus or navigate a window."""
+    if type(pid) is not int or not 0 < pid <= 0xffffffff:
+        raise ValueError("game PID must be a positive DWORD integer")
+    import ctypes
+    from ctypes import wintypes
+    user32 = ctypes.WinDLL("user32", use_last_error=True)
+    user32.GetForegroundWindow.restype = wintypes.HWND
+    user32.GetWindowThreadProcessId.argtypes = [wintypes.HWND, ctypes.POINTER(wintypes.DWORD)]
+    user32.GetWindowThreadProcessId.restype = wintypes.DWORD
+    def focused():
+        window = user32.GetForegroundWindow()
+        current = wintypes.DWORD()
+        return bool(window and user32.GetWindowThreadProcessId(window, ctypes.byref(current)) and current.value == pid)
+    return focused
+
+
+def _scoreboard_readers():
+    """Preload the same board/banner readers used by default Live, before attach."""
+    from record import BANNER_MIN, banner_score
+    from perception.scoreboard import is_scoreboard
+    return (lambda f: is_scoreboard(f) is True), (lambda f: banner_score(f) >= BANNER_MIN)
+
+
+def _live_scope_proof(reader, focused, not_after):
+    """Compose scope with a pixel proof, including after a potentially slow reader.
+
+    False goes through Live's existing refusal/release path. This cannot certify
+    focus during a later device/lock delay; existing freshness/lease limits remain.
+    """
+    def proof(frame):
+        return (focused() is True and time.perf_counter() < not_after and bool(reader(frame))
+                and focused() is True and time.perf_counter() < not_after)
+    return proof
+
+
 def make_brain(name):
     if name == "scripted":
         return scripted.decide
@@ -817,6 +853,7 @@ def main(argv=None):
     ap.add_argument("--range-identity", help="range: JSON identity from reviewed experiment configuration; never inferred from weights")
     ap.add_argument("--range-runtime", help="range: separate observed pad/settings/calibration/controller profile JSON")
     ap.add_argument("--range-deployment", help="range: reviewed checkpoint-to-runtime deployment binding JSON")
+    ap.add_argument("--game-pid", type=int, help="live range-skill: required foreground game process PID; no focus changes")
     ap.add_argument("--cooldowns", choices=COOLDOWNS, help="the recording's resource regime: the range's Practice Settings 'No Ability Cooldown' "
                     "ON is `off`, OFF is `normal`. Required with --live, and only off or normal there; written into meta.json and the manifest")
     ap.add_argument("--run", default=time.strftime("%Y%m%d-%H%M%S"), help="live: record to data/l1/<run>")
@@ -889,15 +926,44 @@ def main(argv=None):
                          "scope": ("learned_web_start_timing_scripted_target_aim_movement_pulse"
                                    if a.brain == "range-skill" else "legacy_idle_engage_offline_diagnostic")}
 
+    focused = None
+    if a.live and a.brain == "range-skill":
+        if a.game_pid is None or not 0 < a.game_pid <= 0xffffffff:
+            ap.error("live range-skill requires --game-pid as a positive DWORD integer")
+        focused = foreground_pid_guard(a.game_pid)
+        if focused() is not True:
+            ap.error("configured game process is not foreground; no perception, capture or pad opened")
+
     start = percept = None
     if a.live:
         percept, plaza = default_perception(), _plaza_view()   # everything slow BEFORE the pad opens: the attach drift runs until priming
+        board, session = _scoreboard_readers() if focused is not None else (None, None)
+        if focused is not None and focused() is not True:
+            ap.error("configured game process lost foreground during preload; no capture or pad opened")
         t_open = time.perf_counter()
-        source = pad = LiveIO()                         # confirms the range HUD before the pad opens; no blind wait after it attaches
+        start_guard = percept.in_range
+        scope = None
+        if focused is not None:
+            from .controller import Live
+            deadline = t_open + START_DEADLINE_S + a.max_s
+            start_guard = _live_scope_proof(percept.in_range, focused, deadline)
+            native = Live(guard=start_guard, board_guard=_live_scope_proof(board, focused, deadline),
+                          session_guard=_live_scope_proof(session, focused, deadline), settle_s=0)
+            try:
+                source = pad = LiveIO(native)
+            except BaseException:
+                native.close()
+                raise
+            scope = {"game_pid": a.game_pid, "focus_method": "GetForegroundWindow/GetWindowThreadProcessId, read-only",
+                     "loop_perf_origin": source.t0, "not_after_perf": deadline,
+                     "not_after_t": deadline - source.t0, "startup_max_s": START_DEADLINE_S,
+                     "phase_max_s": a.max_s, "combined_max_s": START_DEADLINE_S + a.max_s}
+        else:
+            source = pad = LiveIO()                     # legacy caller/proofs unchanged
         opened = time.perf_counter()                    # LiveIO has returned: the pad attached before this
         steps = []
         try:
-            start = start_pose(source.live, percept.in_range, percept.idle, plaza, attached_t=opened, steps=steps)
+            start = start_pose(source.live, start_guard, percept.idle, plaza, attached_t=opened, steps=steps)
         except StartRefused as e:                       # Live is closed and nothing else was built; the process ends, and the device with it
             _write_start_steps(ROOT / "data" / "l1" / a.run, steps)   # the evidence first: the message below may fail
             _say(f"loop: STOP: {e}")
@@ -910,6 +976,8 @@ def main(argv=None):
             ms["liveio_return_to_first_send_return"] = ms.pop("attached_t_to_first_send_returned")
         start = {"turns": start["turns"], "stamps_s_after_liveio_return": [round(t - opened, 4) for _, t in start["frames"]], "ms": ms,
                  "liveio_ms": round((opened - t_open) * 1e3, 1), "frames": start["frames"], "steps": steps}
+        if scope is not None:
+            start["live_scope"] = scope
         out, save_fps, threaded = ROOT / "data" / "l1" / a.run, a.save_fps, True
         if a.pose_only:                                 # M2: exactly the start phase, then stop; nothing below is reached
             try:
