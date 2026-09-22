@@ -1,0 +1,42 @@
+{
+  "source-diagnose.py": {
+    "source": "data/diagnostics/human-cast-request-timing-20260922/diagnose.py",
+    "sha256": "85ca2b9bf2e3e4be029467a963be056af9a313fd9544a6c5769e6b151610ad59",
+    "bytes": 15710
+  },
+  "source-report.md": {
+    "source": "data/diagnostics/human-cast-request-timing-20260922/report.md",
+    "sha256": "413c1d0d6a22d3a342889e249daf4ef0e0b8d5e6dc9a4c65d1035109b45468a5",
+    "bytes": 4020
+  },
+  "source-report.json": {
+    "source": "data/diagnostics/human-cast-request-timing-20260922/report.json",
+    "sha256": "0901921272b9d498077423f52897736ccbaf4691f7201b7545df8094c5d2eb80",
+    "bytes": 59000
+  },
+  "semantic-comparison.md": {
+    "source": "data/runtime/range-skill-candidate-20260922/semantic-comparison.md",
+    "sha256": "58b5e65811d29478fc46cfb161adf196878d9375aa2a1d5d7d05bd10778224a7",
+    "bytes": 14204
+  },
+  "calculation.py": {
+    "source": "data/runtime/range-skill-candidate-20260922/calculation.py",
+    "sha256": "38d48f4fe3d4d9a45e50fd085ea0c7af826aff6ca4289f956ad45cd537c1f39b",
+    "bytes": 5257
+  },
+  "results.json": {
+    "source": "data/runtime/range-skill-candidate-20260922/results.json",
+    "sha256": "2a4d1a49b41909eabdd8259a2369dc332ca344bb3909030358ac7280a8099d53",
+    "bytes": 11267
+  },
+  "current-saved-settings.json": {
+    "source": "data/runtime/range-skill-candidate-20260922/current-saved-settings.json",
+    "sha256": "26b48957c1c8cfaa2f9ab846ef097183786f5f7f879926106066de6a6e3575c9",
+    "bytes": 4834
+  },
+  "independent-review.md": {
+    "source": "data/diagnostics/human-cast-request-timing-20260922/independent-review.md",
+    "sha256": "f69a07bc3e1674f6114034415719ff4a7f0081b8f067ec43b0d62dd73528c377",
+    "bytes": 9072
+  }
+}

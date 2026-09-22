@@ -50,6 +50,18 @@ independent validation and learned gameplay are pending. The
 and tracking limitations. Linear carries the active goal:
 [VUH-1311](https://linear.app/vuhlp/issue/VUH-1311).
 
+The subsequent [request-timing diagnosis](evidence/range-request-timing-20260922/README.md)
+finds both positive anchors after received right-mouse downs: by 2.016 ms and
+24.012 ms. The preceding four observations are before receipt, but the last is
+after it. These visual-onset examples can forecast an already-requested cast;
+they do not establish when to initiate one. Preserve the six-label artifact and
+checkpoint as a numerical visual forecast. Do not call its fit learned command
+timing or silently shift its labels. The next bounded source inspection checks
+the preceding fixed-grid bins against actual received requests, causal target
+agreement and the separately observed casts. A request-timing head needs its own
+reviewed semantic revision; no new stationary footage or guessed motor settings
+are required for this inspection.
+
 The first executable experiment now learns **Web-Cluster start timing**, using
 five causal observations at 10 Hz. `start_web_cluster` requests one bounded pulse;
 `no_new_web_cluster` requests no new pulse while aim/movement continue independently.

@@ -1,0 +1,280 @@
+{
+  "scope": "report_only_arithmetic_and_read_only_code_identity_comparison",
+  "formula": "emission PTS = acquisition-clock coordinate + offset; broad elapsed envelope = (PTS_lo-offset_hi-reference, PTS_hi-offset_lo-reference]",
+  "offset": {
+    "samples": 23,
+    "formula": "video_pts approximately acquisition_t + offset",
+    "median_offset_seconds": 4.249945300025866,
+    "best_match_offset_range_seconds": [
+      4.238110400009335,
+      4.25901710001113
+    ],
+    "residual_range_ms": [
+      -11.83490001653098,
+      9.071799985264306
+    ],
+    "one_frame_expanded_empirical_envelope_seconds": [
+      4.221443733342668,
+      4.275683766677797
+    ],
+    "limitations": "Nearest visual correspondence, adjacent-frame near ties, asynchronous lossy captures; not physical-input precision, a confidence interval, or an independently calibrated clock transform."
+  },
+  "events": [
+    {
+      "decision": 13,
+      "native_emission_bracket": [
+        11.916666666666666,
+        11.933333333333334
+      ],
+      "mapped_emission_empirical_envelope": [
+        7.640982899988869,
+        7.711889599990665
+      ],
+      "elapsed": {
+        "decision_acquisition": {
+          "reference_t": 7.512911500001792,
+          "median_offset_bracket_ms": [
+            153.80986663900842,
+            170.4765333056759
+          ],
+          "broad_empirical_envelope_ms": [
+            128.0713999870775,
+            198.9780999888735
+          ]
+        },
+        "controller_press_edge": {
+          "reference_t": 7.553301799984183,
+          "median_offset_bracket_ms": [
+            113.41956665661712,
+            130.0862333232846
+          ],
+          "broad_empirical_envelope_ms": [
+            87.68110000468621,
+            158.5878000064822
+          ]
+        },
+        "first_LT_attempt": {
+          "reference_t": 7.553513799997745,
+          "median_offset_bracket_ms": [
+            113.2075666430552,
+            129.87423330972268
+          ],
+          "broad_empirical_envelope_ms": [
+            87.4690999911243,
+            158.3757999929203
+          ]
+        },
+        "first_LT_return": {
+          "reference_t": 7.554831899993587,
+          "median_offset_bracket_ms": [
+            111.889466647213,
+            128.55613331388048
+          ],
+          "broad_empirical_envelope_ms": [
+            86.15099999528209,
+            157.0576999970781
+          ]
+        },
+        "decision_acquisition_plus_100ms": {
+          "reference_t": 7.6129115000017915,
+          "median_offset_bracket_ms": [
+            53.809866639008774,
+            70.47653330567627
+          ],
+          "broad_empirical_envelope_ms": [
+            28.07139998707786,
+            98.97809998887385
+          ]
+        },
+        "actual_D_request_deadline": {
+          "reference_t": 7.6129115000017915,
+          "median_offset_bracket_ms": [
+            53.809866639008774,
+            70.47653330567627
+          ],
+          "broad_empirical_envelope_ms": [
+            28.07139998707786,
+            98.97809998887385
+          ]
+        }
+      },
+      "first_LT_attempt_to_return_ms": 1.3180999958422035,
+      "acquisition_to_first_LT_attempt_ms": 40.60229999595322
+    },
+    {
+      "decision": 28,
+      "native_emission_bracket": [
+        13.45,
+        13.466666666666667
+      ],
+      "mapped_emission_empirical_envelope": [
+        9.174316233322202,
+        9.245222933323998
+      ],
+      "elapsed": {
+        "decision_acquisition": {
+          "reference_t": 9.039462699991418,
+          "median_offset_bracket_ms": [
+            160.59199998271544,
+            177.25866664938295
+          ],
+          "broad_empirical_envelope_ms": [
+            134.85353333078365,
+            205.76023333257965
+          ]
+        },
+        "controller_press_edge": {
+          "reference_t": 9.091414299997268,
+          "median_offset_bracket_ms": [
+            108.64039997686525,
+            125.30706664353275
+          ],
+          "broad_empirical_envelope_ms": [
+            82.90193332493345,
+            153.80863332672945
+          ]
+        },
+        "first_LT_attempt": {
+          "reference_t": 9.091612899996107,
+          "median_offset_bracket_ms": [
+            108.44179997802605,
+            125.10846664469355
+          ],
+          "broad_empirical_envelope_ms": [
+            82.70333332609425,
+            153.61003332789025
+          ]
+        },
+        "first_LT_return": {
+          "reference_t": 9.092822299979161,
+          "median_offset_bracket_ms": [
+            107.23239999497203,
+            123.89906666163952
+          ],
+          "broad_empirical_envelope_ms": [
+            81.49393334304023,
+            152.40063334483622
+          ]
+        },
+        "decision_acquisition_plus_100ms": {
+          "reference_t": 9.139462699991418,
+          "median_offset_bracket_ms": [
+            60.591999982715805,
+            77.2586666493833
+          ],
+          "broad_empirical_envelope_ms": [
+            34.853533330784,
+            105.76023333258
+          ]
+        },
+        "actual_D_request_deadline": {
+          "reference_t": 9.128666999976849,
+          "median_offset_bracket_ms": [
+            71.38769999728467,
+            88.05436666395217
+          ],
+          "broad_empirical_envelope_ms": [
+            45.64923334535287,
+            116.55593334714887
+          ]
+        }
+      },
+      "first_LT_attempt_to_return_ms": 1.209399983054027,
+      "acquisition_to_first_LT_attempt_ms": 52.150200004689395
+    }
+  ],
+  "source_identity": {
+    "patch": "1.1.3870120/build25364676",
+    "cooldown_regime": "normal",
+    "source_profile_sha256": "05f85d97152fd17a60eeaacd9bcfce0f0d30ca46d9e71d52d9e66ed1df789162",
+    "perception_sha256": "e9d40f7a12442335866df16edaa8ceea7116177ab8546b3267ac096c1c616798",
+    "selector_sha256": "ddf1428a61c54805ce06164ef0daa7dfa1302fdf1735990336fdcab939ae098d",
+    "semantic_revision": "web-cluster-onset-v1",
+    "feature_revision": "masked-state-grid-causal-v1"
+  },
+  "source_spec": {
+    "steps": 5,
+    "period_s": 0.1,
+    "tolerance_s": 0.025,
+    "hidden": 8,
+    "confidence": 0.7
+  },
+  "shadow_executed_code_hashes": {
+    "agent/learned_range_skill.py": "77e4b7f19d4796737356b71d058d7c33688570940083cc82edb21d7c3e5c89ba",
+    "agent/brain.py": "0deaafb77cae4fa4a15fc8c8abe6d49c09821de7a1ab5810b096788117b30c00",
+    "agent/state.py": "83983c59f0ea39772686b9ce8e002aab86d312c5e75937bc2b9e6a21eddb8f5a",
+    "policy/range_skill_policy.py": "3fb99790514eec159789ce5f8b155239a8ab6da359f825720b89a50def931f8d",
+    "policy/range_policy.py": "c46e7d8a6523892107c8a878532505d020896e5b32e9df6179c049d6aa3410bb"
+  },
+  "current_saved_settings_sha256": "26b48957c1c8cfaa2f9ab846ef097183786f5f7f879926106066de6a6e3575c9",
+  "current_client": "1.1.3870120/build25364676",
+  "settings_observed_utc": "2026-09-22T19:57:49.725165+00:00",
+  "code": {
+    "policy/range_policy.py": {
+      "current_bytes_sha256": "c46e7d8a6523892107c8a878532505d020896e5b32e9df6179c049d6aa3410bb",
+      "LF_normalized_sha256": "c46e7d8a6523892107c8a878532505d020896e5b32e9df6179c049d6aa3410bb"
+    },
+    "policy/range_skill_policy.py": {
+      "current_bytes_sha256": "3fb99790514eec159789ce5f8b155239a8ab6da359f825720b89a50def931f8d",
+      "LF_normalized_sha256": "3fb99790514eec159789ce5f8b155239a8ab6da359f825720b89a50def931f8d"
+    },
+    "agent/learned_range_skill.py": {
+      "current_bytes_sha256": "77e4b7f19d4796737356b71d058d7c33688570940083cc82edb21d7c3e5c89ba",
+      "LF_normalized_sha256": "77e4b7f19d4796737356b71d058d7c33688570940083cc82edb21d7c3e5c89ba"
+    },
+    "agent/brain.py": {
+      "current_bytes_sha256": "0deaafb77cae4fa4a15fc8c8abe6d49c09821de7a1ab5810b096788117b30c00",
+      "LF_normalized_sha256": "71165c51a98df3f7bc170eb71d86e3db117dd084f57c788ec96ca1560ccffaec"
+    },
+    "agent/tracker.py": {
+      "current_bytes_sha256": "56fa3012391b22a0c4a3dbe3f5414f275faba4e038bfebdbe6b8f579bc72c892",
+      "LF_normalized_sha256": "775231bbe4bfe0e2eee6f50601d2c7dbb3f7a068e5b0461d8973d47fd050963c"
+    },
+    "agent/state.py": {
+      "current_bytes_sha256": "83983c59f0ea39772686b9ce8e002aab86d312c5e75937bc2b9e6a21eddb8f5a",
+      "LF_normalized_sha256": "7ee6b826c38090d28d44b598d77ddeabf22f4593cf64ea45012b461a2377c149"
+    },
+    "agent/controller.py": {
+      "current_bytes_sha256": "f477b7cf32b524a1d788be6b6a9a0aecedf60a852d45a25a1eb2b9ff4ac12131",
+      "LF_normalized_sha256": "268527c0137943597092a5cbc61486ec5a85b56e3070a099d29839cf2e678c43",
+      "D_deployed_sha256": "268527c0137943597092a5cbc61486ec5a85b56e3070a099d29839cf2e678c43",
+      "exact_match_to_D_deployed": false
+    },
+    "agent/loop.py": {
+      "current_bytes_sha256": "8b54632c3a1ea1027d02ad87b882de9d38c801b7a3cc4936cfe60fdbf7d452fc",
+      "LF_normalized_sha256": "c345ec61b92c4eec7406da54f0977439fefeb2347d925b61f28a060536c2e5c3",
+      "D_deployed_sha256": "c345ec61b92c4eec7406da54f0977439fefeb2347d925b61f28a060536c2e5c3",
+      "exact_match_to_D_deployed": false
+    },
+    "agent/intents.py": {
+      "current_bytes_sha256": "a28cc40c42a44b2e352d9a48b8bc8d06d78b1792a568effde16bde8f66b3a653",
+      "LF_normalized_sha256": "836692b7c241df0d2a57c109230f8047b1c4d0a4392782bfb652f883c6f50cf3",
+      "D_deployed_sha256": "836692b7c241df0d2a57c109230f8047b1c4d0a4392782bfb652f883c6f50cf3",
+      "exact_match_to_D_deployed": false
+    },
+    "perception/hud.py": {
+      "current_bytes_sha256": "5ec7e109f168aeb05978724540eca1dace96fda981fea2861dc16ae3de2a5f58",
+      "LF_normalized_sha256": "c34e9d071490179a20186ccee0ab6a69cb1c5c7be08f5d57a94b728b53df4661",
+      "D_deployed_sha256": "c34e9d071490179a20186ccee0ab6a69cb1c5c7be08f5d57a94b728b53df4661",
+      "exact_match_to_D_deployed": false
+    },
+    "perception/outline.py": {
+      "current_bytes_sha256": "369994b22c895c0248b8089a1ca37c9a30f3e5dd9cb653ad2cc3e59bfb17dd55",
+      "LF_normalized_sha256": "fded81b150bb873c738e34fb3fc7d8f0a263a7cf9121e3325991bcdda4acd4f8",
+      "D_deployed_sha256": "fded81b150bb873c738e34fb3fc7d8f0a263a7cf9121e3325991bcdda4acd4f8",
+      "exact_match_to_D_deployed": false
+    }
+  },
+  "report_hashes": {
+    "audit-results.json": "cb1b39920be3ae3156976c81a0ce0b79606894867e9554cff935127b0e633b19",
+    "execution-diagnosis.json": "5036ce619bb754df1edccb166451de668d584c1274077620f02651cf603c28eb",
+    "code-receipt.json": "b87330523bb336d6c39dc302deeef607aff2b2685c91d0feb510b5475c4fd4e1",
+    "shadow-report.json": "de2d396e38039dfbf900c3ee4b21cc1aca7aa4d271ddcdc29336b3677dfb5477"
+  },
+  "limits": [
+    "The empirical visual-offset envelope is not a guaranteed bound, confidence interval or physical input clock.",
+    "An LT API attempt/return is not a measured physical press. No media was decoded or inspected here.",
+    "Post-D persisted settings are not backdated to D and do not prove all active/default settings.",
+    "No new runtime/deployment identity, semantic review, inference, training or input is issued by this arithmetic."
+  ]
+}

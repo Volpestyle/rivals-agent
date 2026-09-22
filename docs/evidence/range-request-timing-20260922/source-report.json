@@ -1,0 +1,1908 @@
+{
+  "kind": "read_only_two_positive_anchor_received_input_timing_diagnosis",
+  "session": "20260922T032454-642Z-24328-1",
+  "original_media_sha256": "2df73a79377e316e28f9e53947ee203dda95f949772f7fd68d1f864dbe960c51",
+  "script_sha256": "85ca2b9bf2e3e4be029467a963be056af9a313fd9544a6c5769e6b151610ad59",
+  "sources": [
+    {
+      "path": "C:\\Users\\volpe\\Videos\\RivalsInput\\20260922T032454-642Z-24328-1\\metadata.json",
+      "sha256": "9514a75db9bde99963a17dd9168144e7c9ee321d48d407ace81ab2922ae4e43f"
+    },
+    {
+      "path": "C:\\Users\\volpe\\Videos\\RivalsInput\\20260922T032454-642Z-24328-1\\inputs.jsonl",
+      "sha256": "1fa110de0f1a293e5fe17ccf94f6e0175451952b5a412de6faef1e9c0c51b9ca"
+    },
+    {
+      "path": "C:\\Users\\volpe\\Videos\\RivalsInput\\20260922T032454-642Z-24328-1\\frames.csv",
+      "sha256": "f4252e9273e07f7895c4bea7c35a93b0acf89bdc399c0c1bc10442ae3e6a184c"
+    },
+    {
+      "path": "C:\\Users\\volpe\\obs-input-logger\\SCHEMA.md",
+      "sha256": "211923723130aacd24f3d5ecb154beabbe2c8c285f11edc6503bb4c18c7b0106"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\skill-events\\032454-train-diagnostic-v2\\examples.json",
+      "sha256": "b12f7013b24482b505e44468eb723245a03d1e5a56bb46ab9d282cdf3e1001d5"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\skill-event-candidates\\032454-support-v2\\visual-annotations.json",
+      "sha256": "229d39c0b945e3458de33d4f8fc3088fe4cf67b405832d2c400068bb16ec7b94"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\skill-event-candidates\\20260922T032454-642Z-24328-1\\visual-annotations.json",
+      "sha256": "dcb211d67c3c33ed6ce4a9f0399260bf955072bfd3871cf1d6983a53f6396d21"
+    }
+  ],
+  "clock": {
+    "origin_composition_ns": 115370505348149,
+    "shared_clock": "OBS os_gettime_ns; monotonic nanoseconds",
+    "input_semantics": "WM_INPUT received by logger thread, not device hardware time",
+    "video_semantics": "OBS encoder_packet_time.cts, not original game render time",
+    "accepted_original_mux_offset_ms": 21,
+    "formula": "relative_t=(event.t_ns-FIRST)/1e9; grid_anchor_ns=FIRST+n*100000000. Frame CTS comes directly from CSV; callback receipt/order not used as frame time.",
+    "capture_latency_calibrated": false
+  },
+  "state_reconstruction_scope": "Inputs file read to preserve received held states across +/-0.6s boundaries. Only two requested event windows reported; earlier transitions only retained as carry-in state provenance. No other media/session scan.",
+  "windows": [
+    {
+      "grid_index": 142,
+      "target": "named Luna Snow hero simulation",
+      "accepted_event_id": "032454-web-file14313-14321-luna",
+      "accepted_review_sha256": "f552499c2c786c1a765b89c83bd47b5bdbab2581dacd4384904dc7f82cbe4e58",
+      "scope_relative_s": [
+        13.6,
+        14.8
+      ],
+      "scope_absolute_ns": [
+        115384105348149,
+        115385305348149
+      ],
+      "anchor_t": 14.2,
+      "anchor_ns": 115384705348149,
+      "actual_causal_history": [
+        {
+          "composition_relative_t": 13.799999448,
+          "composition_ns": 115384305347597,
+          "callback_event_seq": 2693,
+          "callback_packet_index": 1657,
+          "callback_pts": 1656,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "original_file_pts_ms": 13821,
+          "frozen_image_evidence": {
+            "id": "file-pts-13821ms",
+            "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0029.png",
+            "image_sha256": "f3e09e54de7f150893e3b03f6bec63a143e1ec207b249d2a802684a8886a7539",
+            "file_pts_num": 13821,
+            "file_pts_den": 1000,
+            "callback_packet_index": 1657,
+            "callback_pts": 1656,
+            "callback_timebase": [
+              1,
+              120
+            ],
+            "composition_ns": 115384305347597,
+            "composition_t": 13.799999448,
+            "mux_residual_ms": 0.0
+          }
+        },
+        {
+          "composition_relative_t": 13.899999444,
+          "composition_ns": 115384405347593,
+          "callback_event_seq": 2719,
+          "callback_packet_index": 1669,
+          "callback_pts": 1668,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "original_file_pts_ms": 13921,
+          "frozen_image_evidence": {
+            "id": "file-pts-13921ms",
+            "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0030.png",
+            "image_sha256": "3a7f19e8d7564869dbe2c51f8ace68b84aa8a7bdb644e2fc82629d0992fb413c",
+            "file_pts_num": 13921,
+            "file_pts_den": 1000,
+            "callback_packet_index": 1669,
+            "callback_pts": 1668,
+            "callback_timebase": [
+              1,
+              120
+            ],
+            "composition_ns": 115384405347593,
+            "composition_t": 13.899999444,
+            "mux_residual_ms": 0.0
+          }
+        },
+        {
+          "composition_relative_t": 13.99999944,
+          "composition_ns": 115384505347589,
+          "callback_event_seq": 2737,
+          "callback_packet_index": 1678,
+          "callback_pts": 1680,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "original_file_pts_ms": 14021,
+          "frozen_image_evidence": {
+            "id": "file-pts-14021ms",
+            "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0031.png",
+            "image_sha256": "d1f18e0042188638a30ff18d63913bdb23c7914676dc326a7789f3453e0c5c74",
+            "file_pts_num": 14021,
+            "file_pts_den": 1000,
+            "callback_packet_index": 1678,
+            "callback_pts": 1680,
+            "callback_timebase": [
+              1,
+              120
+            ],
+            "composition_ns": 115384505347589,
+            "composition_t": 13.99999944,
+            "mux_residual_ms": 0.0
+          }
+        },
+        {
+          "composition_relative_t": 14.099999436,
+          "composition_ns": 115384605347585,
+          "callback_event_seq": 2770,
+          "callback_packet_index": 1693,
+          "callback_pts": 1692,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "original_file_pts_ms": 14121,
+          "frozen_image_evidence": {
+            "id": "file-pts-14121ms",
+            "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0032.png",
+            "image_sha256": "bf515dc341c3aa087620dff701ed90f68600d9a8676c5b7b10f0fe4461716441",
+            "file_pts_num": 14121,
+            "file_pts_den": 1000,
+            "callback_packet_index": 1693,
+            "callback_pts": 1692,
+            "callback_timebase": [
+              1,
+              120
+            ],
+            "composition_ns": 115384605347585,
+            "composition_t": 14.099999436,
+            "mux_residual_ms": 0.0
+          }
+        },
+        {
+          "composition_relative_t": 14.199999432,
+          "composition_ns": 115384705347581,
+          "callback_event_seq": 2792,
+          "callback_packet_index": 1705,
+          "callback_pts": 1704,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "original_file_pts_ms": 14221,
+          "frozen_image_evidence": {
+            "id": "file-pts-14221ms",
+            "image": "data/human/skill-event-candidates/032454-support-v2/bin-142/frame-0001.png",
+            "image_sha256": "0a272b3bdd5547790b12fed7abf8be06cd20213c4125a9224520ed6335c50c2c",
+            "file_pts_num": 14221,
+            "file_pts_den": 1000,
+            "callback_packet_index": 1705,
+            "callback_pts": 1704,
+            "callback_timebase": [
+              1,
+              120
+            ],
+            "composition_ns": 115384705347581,
+            "composition_t": 14.199999432,
+            "mux_residual_ms": 0.0
+          }
+        }
+      ],
+      "right_mouse_down": {
+        "raw": {
+          "seq": 2757,
+          "t_ns": 115384703331800,
+          "type": "mouse",
+          "device": 65618,
+          "dx": 4,
+          "dy": 1,
+          "motion_flags": 0,
+          "button_flags": 4,
+          "wheel_data": 0,
+          "relative": true,
+          "buttons_down": [
+            2
+          ],
+          "buttons_up": [],
+          "wheel_vertical": 0,
+          "wheel_horizontal": 0
+        },
+        "composition_relative_t": 14.197983651,
+        "offset_from_anchor_ns": -2016349,
+        "offset_from_anchor_ms": -2.016349
+      },
+      "right_mouse_up": {
+        "raw": {
+          "seq": 2791,
+          "t_ns": 115384843336500,
+          "type": "mouse",
+          "device": 65618,
+          "dx": 0,
+          "dy": 0,
+          "motion_flags": 0,
+          "button_flags": 8,
+          "wheel_data": 0,
+          "relative": true,
+          "buttons_down": [],
+          "buttons_up": [
+            2
+          ],
+          "wheel_vertical": 0,
+          "wheel_horizontal": 0
+        },
+        "composition_relative_t": 14.337988351,
+        "offset_from_anchor_ns": 137988351,
+        "offset_from_anchor_ms": 137.988351
+      },
+      "right_hold_duration_ms": 140.0047,
+      "anchor_after_right_receipt_ms": 2.016349,
+      "final_history_after_right_receipt_ms": 2.015781,
+      "history_frames_before_receipt": 4,
+      "history_frames_after_receipt": 1,
+      "accepted_visual_last_not_started": {
+        "composition_relative_t": 14.291666095,
+        "composition_ns": 115384797014244,
+        "callback_event_seq": 2808,
+        "callback_packet_index": 1716,
+        "callback_pts": 1715,
+        "callback_timebase": [
+          1,
+          120
+        ],
+        "original_file_pts_ms": 14313,
+        "frozen_image_evidence": {
+          "id": "file-pts-14313ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/bin-142/frame-0012.png",
+          "image_sha256": "731c99327d052075edc4e01f60eec4d4b3879f9373d0939f3e69c38315315f7f",
+          "file_pts_num": 14313,
+          "file_pts_den": 1000,
+          "callback_packet_index": 1716,
+          "callback_pts": 1715,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115384797014244,
+          "composition_t": 14.291666095,
+          "mux_residual_ms": 0.3333333333333333
+        }
+      },
+      "accepted_visual_first_started": {
+        "composition_relative_t": 14.299999428,
+        "composition_ns": 115384805347577,
+        "callback_event_seq": 2807,
+        "callback_packet_index": 1715,
+        "callback_pts": 1716,
+        "callback_timebase": [
+          1,
+          120
+        ],
+        "original_file_pts_ms": 14321,
+        "frozen_image_evidence": {
+          "id": "file-pts-14321ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/bin-142/frame-0013.png",
+          "image_sha256": "dace541ce2baeb662a96a0d68467c9f67080327447e0dd29233a052c270ce3a5",
+          "file_pts_num": 14321,
+          "file_pts_den": 1000,
+          "callback_packet_index": 1715,
+          "callback_pts": 1716,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115384805347577,
+          "composition_t": 14.299999428,
+          "mux_residual_ms": 0.0
+        }
+      },
+      "accepted_confirmation": {
+        "composition_relative_t": 14.308332761,
+        "composition_ns": 115384813680910,
+        "callback_event_seq": 2810,
+        "callback_packet_index": 1718,
+        "callback_pts": 1717,
+        "callback_timebase": [
+          1,
+          120
+        ],
+        "original_file_pts_ms": 14329,
+        "frozen_image_evidence": {
+          "id": "file-pts-14329ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/bin-142/frame-0014.png",
+          "image_sha256": "9aeb652b3d6ceb21eb58db328d8b30b9b513b8b83d860b86cb0182aa7e7a768e",
+          "file_pts_num": 14329,
+          "file_pts_den": 1000,
+          "callback_packet_index": 1718,
+          "callback_pts": 1717,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115384813680910,
+          "composition_t": 14.308332761,
+          "mux_residual_ms": -0.3333333333333333
+        }
+      },
+      "visual_onset_after_receipt_ms": [
+        93.682444,
+        102.015777
+      ],
+      "confirmation_after_receipt_ms": 110.34911,
+      "all_control_transitions": [
+        {
+          "raw": {
+            "seq": 2605,
+            "t_ns": 115384113515500,
+            "type": "key",
+            "device": 75235887,
+            "vk": 83,
+            "scan": 31,
+            "flags": 0,
+            "down": true
+          },
+          "composition_relative_t": 13.608167351,
+          "offset_from_anchor_ns": -591832649,
+          "offset_from_anchor_ms": -591.832649
+        },
+        {
+          "raw": {
+            "seq": 2607,
+            "t_ns": 115384115520500,
+            "type": "key",
+            "device": 75235887,
+            "vk": 32,
+            "scan": 57,
+            "flags": 0,
+            "down": true
+          },
+          "composition_relative_t": 13.610172351,
+          "offset_from_anchor_ns": -589827649,
+          "offset_from_anchor_ms": -589.827649
+        },
+        {
+          "raw": {
+            "seq": 2651,
+            "t_ns": 115384295816000,
+            "type": "key",
+            "device": 75235887,
+            "vk": 32,
+            "scan": 57,
+            "flags": 1,
+            "down": false
+          },
+          "composition_relative_t": 13.790467851,
+          "offset_from_anchor_ns": -409532149,
+          "offset_from_anchor_ms": -409.532149
+        },
+        {
+          "raw": {
+            "seq": 2660,
+            "t_ns": 115384326498900,
+            "type": "key",
+            "device": 75235887,
+            "vk": 68,
+            "scan": 32,
+            "flags": 0,
+            "down": true
+          },
+          "composition_relative_t": 13.821150751,
+          "offset_from_anchor_ns": -378849249,
+          "offset_from_anchor_ms": -378.849249
+        },
+        {
+          "raw": {
+            "seq": 2692,
+            "t_ns": 115384450339300,
+            "type": "mouse",
+            "device": 65618,
+            "dx": 9,
+            "dy": 3,
+            "motion_flags": 0,
+            "button_flags": 1,
+            "wheel_data": 0,
+            "relative": true,
+            "buttons_down": [
+              1
+            ],
+            "buttons_up": [],
+            "wheel_vertical": 0,
+            "wheel_horizontal": 0
+          },
+          "composition_relative_t": 13.944991151,
+          "offset_from_anchor_ns": -255008849,
+          "offset_from_anchor_ms": -255.008849
+        },
+        {
+          "raw": {
+            "seq": 2712,
+            "t_ns": 115384526589700,
+            "type": "key",
+            "device": 75235887,
+            "vk": 68,
+            "scan": 32,
+            "flags": 1,
+            "down": false
+          },
+          "composition_relative_t": 14.021241551,
+          "offset_from_anchor_ns": -178758449,
+          "offset_from_anchor_ms": -178.758449
+        },
+        {
+          "raw": {
+            "seq": 2728,
+            "t_ns": 115384588597200,
+            "type": "key",
+            "device": 75235887,
+            "vk": 83,
+            "scan": 31,
+            "flags": 1,
+            "down": false
+          },
+          "composition_relative_t": 14.083249051,
+          "offset_from_anchor_ns": -116750949,
+          "offset_from_anchor_ms": -116.750949
+        },
+        {
+          "raw": {
+            "seq": 2757,
+            "t_ns": 115384703331800,
+            "type": "mouse",
+            "device": 65618,
+            "dx": 4,
+            "dy": 1,
+            "motion_flags": 0,
+            "button_flags": 4,
+            "wheel_data": 0,
+            "relative": true,
+            "buttons_down": [
+              2
+            ],
+            "buttons_up": [],
+            "wheel_vertical": 0,
+            "wheel_horizontal": 0
+          },
+          "composition_relative_t": 14.197983651,
+          "offset_from_anchor_ns": -2016349,
+          "offset_from_anchor_ms": -2.016349
+        },
+        {
+          "raw": {
+            "seq": 2786,
+            "t_ns": 115384827548100,
+            "type": "key",
+            "device": 75235887,
+            "vk": 87,
+            "scan": 17,
+            "flags": 0,
+            "down": true
+          },
+          "composition_relative_t": 14.322199951,
+          "offset_from_anchor_ns": 122199951,
+          "offset_from_anchor_ms": 122.199951
+        },
+        {
+          "raw": {
+            "seq": 2791,
+            "t_ns": 115384843336500,
+            "type": "mouse",
+            "device": 65618,
+            "dx": 0,
+            "dy": 0,
+            "motion_flags": 0,
+            "button_flags": 8,
+            "wheel_data": 0,
+            "relative": true,
+            "buttons_down": [],
+            "buttons_up": [
+              2
+            ],
+            "wheel_vertical": 0,
+            "wheel_horizontal": 0
+          },
+          "composition_relative_t": 14.337988351,
+          "offset_from_anchor_ns": 137988351,
+          "offset_from_anchor_ms": 137.988351
+        },
+        {
+          "raw": {
+            "seq": 2798,
+            "t_ns": 115384890346300,
+            "type": "mouse",
+            "device": 65618,
+            "dx": 0,
+            "dy": 0,
+            "motion_flags": 0,
+            "button_flags": 2,
+            "wheel_data": 0,
+            "relative": true,
+            "buttons_down": [],
+            "buttons_up": [
+              1
+            ],
+            "wheel_vertical": 0,
+            "wheel_horizontal": 0
+          },
+          "composition_relative_t": 14.384998151,
+          "offset_from_anchor_ns": 184998151,
+          "offset_from_anchor_ms": 184.998151
+        },
+        {
+          "raw": {
+            "seq": 2801,
+            "t_ns": 115384904544800,
+            "type": "key",
+            "device": 75235887,
+            "vk": 32,
+            "scan": 57,
+            "flags": 0,
+            "down": true
+          },
+          "composition_relative_t": 14.399196651,
+          "offset_from_anchor_ns": 199196651,
+          "offset_from_anchor_ms": 199.196651
+        },
+        {
+          "raw": {
+            "seq": 2804,
+            "t_ns": 115384921525400,
+            "type": "key",
+            "device": 75235887,
+            "vk": 69,
+            "scan": 18,
+            "flags": 0,
+            "down": true
+          },
+          "composition_relative_t": 14.416177251,
+          "offset_from_anchor_ns": 216177251,
+          "offset_from_anchor_ms": 216.177251
+        },
+        {
+          "raw": {
+            "seq": 2806,
+            "t_ns": 115384931510700,
+            "type": "key",
+            "device": 75235887,
+            "vk": 65,
+            "scan": 30,
+            "flags": 0,
+            "down": true
+          },
+          "composition_relative_t": 14.426162551,
+          "offset_from_anchor_ns": 226162551,
+          "offset_from_anchor_ms": 226.162551
+        },
+        {
+          "raw": {
+            "seq": 2812,
+            "t_ns": 115384974553600,
+            "type": "key",
+            "device": 75235887,
+            "vk": 65,
+            "scan": 30,
+            "flags": 1,
+            "down": false
+          },
+          "composition_relative_t": 14.469205451,
+          "offset_from_anchor_ns": 269205451,
+          "offset_from_anchor_ms": 269.205451
+        },
+        {
+          "raw": {
+            "seq": 2826,
+            "t_ns": 115385075515600,
+            "type": "key",
+            "device": 75235887,
+            "vk": 87,
+            "scan": 17,
+            "flags": 1,
+            "down": false
+          },
+          "composition_relative_t": 14.570167451,
+          "offset_from_anchor_ns": 370167451,
+          "offset_from_anchor_ms": 370.167451
+        },
+        {
+          "raw": {
+            "seq": 2829,
+            "t_ns": 115385095569700,
+            "type": "key",
+            "device": 75235887,
+            "vk": 32,
+            "scan": 57,
+            "flags": 1,
+            "down": false
+          },
+          "composition_relative_t": 14.590221551,
+          "offset_from_anchor_ns": 390221551,
+          "offset_from_anchor_ms": 390.221551
+        },
+        {
+          "raw": {
+            "seq": 2831,
+            "t_ns": 115385103570600,
+            "type": "key",
+            "device": 75235887,
+            "vk": 69,
+            "scan": 18,
+            "flags": 1,
+            "down": false
+          },
+          "composition_relative_t": 14.598222451,
+          "offset_from_anchor_ns": 398222451,
+          "offset_from_anchor_ms": 398.222451
+        }
+      ],
+      "state_at_window_start": {
+        "at_ns": 115384105348149,
+        "composition_relative_t": 13.6,
+        "latest_focus": {
+          "seq": 37,
+          "t_ns": 115370927267500,
+          "type": "focus",
+          "active": true,
+          "held_vk": [
+            1
+          ]
+        },
+        "observed_held_controls": [],
+        "mouse_button_latest": [
+          {
+            "control": [
+              "mouse",
+              65618,
+              1
+            ],
+            "down": false,
+            "raw": {
+              "seq": 1930,
+              "t_ns": 115380920364200,
+              "type": "mouse",
+              "device": 65618,
+              "dx": 0,
+              "dy": 0,
+              "motion_flags": 0,
+              "button_flags": 2,
+              "wheel_data": 0,
+              "relative": true,
+              "buttons_down": [],
+              "buttons_up": [
+                1
+              ],
+              "wheel_vertical": 0,
+              "wheel_horizontal": 0
+            }
+          },
+          {
+            "control": [
+              "mouse",
+              65618,
+              2
+            ],
+            "down": false,
+            "raw": {
+              "seq": 2528,
+              "t_ns": 115383807310500,
+              "type": "mouse",
+              "device": 65618,
+              "dx": 1,
+              "dy": 0,
+              "motion_flags": 0,
+              "button_flags": 8,
+              "wheel_data": 0,
+              "relative": true,
+              "buttons_down": [],
+              "buttons_up": [
+                2
+              ],
+              "wheel_vertical": 0,
+              "wheel_horizontal": 0
+            }
+          }
+        ],
+        "repeated_down_event_ids": [],
+        "last_continuity_boundary": {
+          "seq": 37,
+          "t_ns": 115370927267500,
+          "type": "focus",
+          "active": true,
+          "held_vk": [
+            1
+          ]
+        },
+        "scope": "Received device-local transitions since latest focus/reset. Focus held_vk is aggregate snapshot, not device attribution. Physical delivery/bindings remain unknown."
+      },
+      "state_at_anchor": {
+        "at_ns": 115384705348149,
+        "composition_relative_t": 14.2,
+        "latest_focus": {
+          "seq": 37,
+          "t_ns": 115370927267500,
+          "type": "focus",
+          "active": true,
+          "held_vk": [
+            1
+          ]
+        },
+        "observed_held_controls": [
+          {
+            "control": [
+              "mouse",
+              65618,
+              1
+            ],
+            "down_event": {
+              "seq": 2692,
+              "t_ns": 115384450339300,
+              "type": "mouse",
+              "device": 65618,
+              "dx": 9,
+              "dy": 3,
+              "motion_flags": 0,
+              "button_flags": 1,
+              "wheel_data": 0,
+              "relative": true,
+              "buttons_down": [
+                1
+              ],
+              "buttons_up": [],
+              "wheel_vertical": 0,
+              "wheel_horizontal": 0
+            }
+          },
+          {
+            "control": [
+              "mouse",
+              65618,
+              2
+            ],
+            "down_event": {
+              "seq": 2757,
+              "t_ns": 115384703331800,
+              "type": "mouse",
+              "device": 65618,
+              "dx": 4,
+              "dy": 1,
+              "motion_flags": 0,
+              "button_flags": 4,
+              "wheel_data": 0,
+              "relative": true,
+              "buttons_down": [
+                2
+              ],
+              "buttons_up": [],
+              "wheel_vertical": 0,
+              "wheel_horizontal": 0
+            }
+          }
+        ],
+        "mouse_button_latest": [
+          {
+            "control": [
+              "mouse",
+              65618,
+              1
+            ],
+            "down": true,
+            "raw": {
+              "seq": 2692,
+              "t_ns": 115384450339300,
+              "type": "mouse",
+              "device": 65618,
+              "dx": 9,
+              "dy": 3,
+              "motion_flags": 0,
+              "button_flags": 1,
+              "wheel_data": 0,
+              "relative": true,
+              "buttons_down": [
+                1
+              ],
+              "buttons_up": [],
+              "wheel_vertical": 0,
+              "wheel_horizontal": 0
+            }
+          },
+          {
+            "control": [
+              "mouse",
+              65618,
+              2
+            ],
+            "down": true,
+            "raw": {
+              "seq": 2757,
+              "t_ns": 115384703331800,
+              "type": "mouse",
+              "device": 65618,
+              "dx": 4,
+              "dy": 1,
+              "motion_flags": 0,
+              "button_flags": 4,
+              "wheel_data": 0,
+              "relative": true,
+              "buttons_down": [
+                2
+              ],
+              "buttons_up": [],
+              "wheel_vertical": 0,
+              "wheel_horizontal": 0
+            }
+          }
+        ],
+        "repeated_down_event_ids": [],
+        "last_continuity_boundary": {
+          "seq": 37,
+          "t_ns": 115370927267500,
+          "type": "focus",
+          "active": true,
+          "held_vk": [
+            1
+          ]
+        },
+        "scope": "Received device-local transitions since latest focus/reset. Focus held_vk is aggregate snapshot, not device attribution. Physical delivery/bindings remain unknown."
+      },
+      "state_at_emission": {
+        "at_ns": 115384805347577,
+        "composition_relative_t": 14.299999428,
+        "latest_focus": {
+          "seq": 37,
+          "t_ns": 115370927267500,
+          "type": "focus",
+          "active": true,
+          "held_vk": [
+            1
+          ]
+        },
+        "observed_held_controls": [
+          {
+            "control": [
+              "mouse",
+              65618,
+              1
+            ],
+            "down_event": {
+              "seq": 2692,
+              "t_ns": 115384450339300,
+              "type": "mouse",
+              "device": 65618,
+              "dx": 9,
+              "dy": 3,
+              "motion_flags": 0,
+              "button_flags": 1,
+              "wheel_data": 0,
+              "relative": true,
+              "buttons_down": [
+                1
+              ],
+              "buttons_up": [],
+              "wheel_vertical": 0,
+              "wheel_horizontal": 0
+            }
+          },
+          {
+            "control": [
+              "mouse",
+              65618,
+              2
+            ],
+            "down_event": {
+              "seq": 2757,
+              "t_ns": 115384703331800,
+              "type": "mouse",
+              "device": 65618,
+              "dx": 4,
+              "dy": 1,
+              "motion_flags": 0,
+              "button_flags": 4,
+              "wheel_data": 0,
+              "relative": true,
+              "buttons_down": [
+                2
+              ],
+              "buttons_up": [],
+              "wheel_vertical": 0,
+              "wheel_horizontal": 0
+            }
+          }
+        ],
+        "mouse_button_latest": [
+          {
+            "control": [
+              "mouse",
+              65618,
+              1
+            ],
+            "down": true,
+            "raw": {
+              "seq": 2692,
+              "t_ns": 115384450339300,
+              "type": "mouse",
+              "device": 65618,
+              "dx": 9,
+              "dy": 3,
+              "motion_flags": 0,
+              "button_flags": 1,
+              "wheel_data": 0,
+              "relative": true,
+              "buttons_down": [
+                1
+              ],
+              "buttons_up": [],
+              "wheel_vertical": 0,
+              "wheel_horizontal": 0
+            }
+          },
+          {
+            "control": [
+              "mouse",
+              65618,
+              2
+            ],
+            "down": true,
+            "raw": {
+              "seq": 2757,
+              "t_ns": 115384703331800,
+              "type": "mouse",
+              "device": 65618,
+              "dx": 4,
+              "dy": 1,
+              "motion_flags": 0,
+              "button_flags": 4,
+              "wheel_data": 0,
+              "relative": true,
+              "buttons_down": [
+                2
+              ],
+              "buttons_up": [],
+              "wheel_vertical": 0,
+              "wheel_horizontal": 0
+            }
+          }
+        ],
+        "repeated_down_event_ids": [],
+        "last_continuity_boundary": {
+          "seq": 37,
+          "t_ns": 115370927267500,
+          "type": "focus",
+          "active": true,
+          "held_vk": [
+            1
+          ]
+        },
+        "scope": "Received device-local transitions since latest focus/reset. Focus held_vk is aggregate snapshot, not device attribution. Physical delivery/bindings remain unknown."
+      },
+      "state_at_window_end": {
+        "at_ns": 115385305348149,
+        "composition_relative_t": 14.8,
+        "latest_focus": {
+          "seq": 37,
+          "t_ns": 115370927267500,
+          "type": "focus",
+          "active": true,
+          "held_vk": [
+            1
+          ]
+        },
+        "observed_held_controls": [],
+        "mouse_button_latest": [
+          {
+            "control": [
+              "mouse",
+              65618,
+              1
+            ],
+            "down": false,
+            "raw": {
+              "seq": 2798,
+              "t_ns": 115384890346300,
+              "type": "mouse",
+              "device": 65618,
+              "dx": 0,
+              "dy": 0,
+              "motion_flags": 0,
+              "button_flags": 2,
+              "wheel_data": 0,
+              "relative": true,
+              "buttons_down": [],
+              "buttons_up": [
+                1
+              ],
+              "wheel_vertical": 0,
+              "wheel_horizontal": 0
+            }
+          },
+          {
+            "control": [
+              "mouse",
+              65618,
+              2
+            ],
+            "down": false,
+            "raw": {
+              "seq": 2791,
+              "t_ns": 115384843336500,
+              "type": "mouse",
+              "device": 65618,
+              "dx": 0,
+              "dy": 0,
+              "motion_flags": 0,
+              "button_flags": 8,
+              "wheel_data": 0,
+              "relative": true,
+              "buttons_down": [],
+              "buttons_up": [
+                2
+              ],
+              "wheel_vertical": 0,
+              "wheel_horizontal": 0
+            }
+          }
+        ],
+        "repeated_down_event_ids": [],
+        "last_continuity_boundary": {
+          "seq": 37,
+          "t_ns": 115370927267500,
+          "type": "focus",
+          "active": true,
+          "held_vk": [
+            1
+          ]
+        },
+        "scope": "Received device-local transitions since latest focus/reset. Focus held_vk is aggregate snapshot, not device attribution. Physical delivery/bindings remain unknown."
+      },
+      "mouse_motion_summary": {
+        "packets": 99,
+        "relative_packets": 99,
+        "nonzero_motion_packets": 96,
+        "interpretation": "Raw motion retained in button-transition packets; other motion summarized, not converted to aim or inferred ability."
+      },
+      "conflicting_control_note": "Left button down seq2692 at13.944991151 stays held through anchor/emission until up2798 at14.384998151.",
+      "interpretation": "The received right-mouse down precedes anchor and final causal frame; correspondence to this cast is plausible temporal evidence, not proven source binding or physical-input delivery time."
+    },
+    {
+      "grid_index": 199,
+      "target": "nearby Galacta",
+      "accepted_event_id": "2df73a79377e316e28f9e53947ee203dda95f949772f7fd68d1f864dbe960c51:web-cluster:grid199",
+      "accepted_review_sha256": "f552499c2c786c1a765b89c83bd47b5bdbab2581dacd4384904dc7f82cbe4e58",
+      "scope_relative_s": [
+        19.3,
+        20.5
+      ],
+      "scope_absolute_ns": [
+        115389805348149,
+        115391005348149
+      ],
+      "anchor_t": 19.9,
+      "anchor_ns": 115390405348149,
+      "actual_causal_history": [
+        {
+          "composition_relative_t": 19.49999922,
+          "composition_ns": 115390005347369,
+          "callback_event_seq": 3922,
+          "callback_packet_index": 2341,
+          "callback_pts": 2340,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "original_file_pts_ms": 19521,
+          "frozen_image_evidence": null
+        },
+        {
+          "composition_relative_t": 19.599999216,
+          "composition_ns": 115390105347365,
+          "callback_event_seq": 3948,
+          "callback_packet_index": 2353,
+          "callback_pts": 2352,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "original_file_pts_ms": 19621,
+          "frozen_image_evidence": null
+        },
+        {
+          "composition_relative_t": 19.699999212,
+          "composition_ns": 115390205347361,
+          "callback_event_seq": 3974,
+          "callback_packet_index": 2365,
+          "callback_pts": 2364,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "original_file_pts_ms": 19721,
+          "frozen_image_evidence": null
+        },
+        {
+          "composition_relative_t": 19.799999208,
+          "composition_ns": 115390305347357,
+          "callback_event_seq": 3999,
+          "callback_packet_index": 2377,
+          "callback_pts": 2376,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "original_file_pts_ms": 19821,
+          "frozen_image_evidence": null
+        },
+        {
+          "composition_relative_t": 19.899999204,
+          "composition_ns": 115390405347353,
+          "callback_event_seq": 4025,
+          "callback_packet_index": 2389,
+          "callback_pts": 2388,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "original_file_pts_ms": 19921,
+          "frozen_image_evidence": {
+            "id": "file-pts-19921ms",
+            "image": "data/human/semantic-candidates/20260922T032454-642Z-24328-1/candidate-20021/frame-0037.png",
+            "image_sha256": "05d89f0fe3635aad1c04e395b37038ebe6d9f18e297c3278458f4cea054bfd3c",
+            "file_pts_num": 19921,
+            "file_pts_den": 1000,
+            "callback_packet_index": 2389,
+            "callback_pts": 2388,
+            "callback_timebase": [
+              1,
+              120
+            ],
+            "composition_ns": 115390405347353,
+            "composition_t": 19.899999204,
+            "mux_residual_ms": 0.0
+          }
+        }
+      ],
+      "right_mouse_down": {
+        "raw": {
+          "seq": 3983,
+          "t_ns": 115390381336000,
+          "type": "mouse",
+          "device": 65618,
+          "dx": 0,
+          "dy": -1,
+          "motion_flags": 0,
+          "button_flags": 4,
+          "wheel_data": 0,
+          "relative": true,
+          "buttons_down": [
+            2
+          ],
+          "buttons_up": [],
+          "wheel_vertical": 0,
+          "wheel_horizontal": 0
+        },
+        "composition_relative_t": 19.875987851,
+        "offset_from_anchor_ns": -24012149,
+        "offset_from_anchor_ms": -24.012149
+      },
+      "right_mouse_up": {
+        "raw": {
+          "seq": 4018,
+          "t_ns": 115390521444300,
+          "type": "mouse",
+          "device": 65618,
+          "dx": 1,
+          "dy": 0,
+          "motion_flags": 0,
+          "button_flags": 8,
+          "wheel_data": 0,
+          "relative": true,
+          "buttons_down": [],
+          "buttons_up": [
+            2
+          ],
+          "wheel_vertical": 0,
+          "wheel_horizontal": 0
+        },
+        "composition_relative_t": 20.016096151,
+        "offset_from_anchor_ns": 116096151,
+        "offset_from_anchor_ms": 116.096151
+      },
+      "right_hold_duration_ms": 140.1083,
+      "anchor_after_right_receipt_ms": 24.012149,
+      "final_history_after_right_receipt_ms": 24.011353,
+      "history_frames_before_receipt": 4,
+      "history_frames_after_receipt": 1,
+      "accepted_visual_last_not_started": {
+        "composition_relative_t": 19.958332535,
+        "composition_ns": 115390463680684,
+        "callback_event_seq": 4034,
+        "callback_packet_index": 2393,
+        "callback_pts": 2395,
+        "callback_timebase": [
+          1,
+          120
+        ],
+        "original_file_pts_ms": 19979,
+        "frozen_image_evidence": {
+          "id": "file-pts-19979ms",
+          "image": "data/human/semantic-candidates/20260922T032454-642Z-24328-1/candidate-20021/frame-0044.png",
+          "image_sha256": "ff345004a3c447b5b512c9519d830354831b8281925d99b8f1b2d8358b6d507a",
+          "file_pts_num": 19979,
+          "file_pts_den": 1000,
+          "callback_packet_index": 2393,
+          "callback_pts": 2395,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115390463680684,
+          "composition_t": 19.958332535,
+          "mux_residual_ms": -0.3333333333333333
+        }
+      },
+      "accepted_visual_first_started": {
+        "composition_relative_t": 19.991665867,
+        "composition_ns": 115390497014016,
+        "callback_event_seq": 4048,
+        "callback_packet_index": 2400,
+        "callback_pts": 2399,
+        "callback_timebase": [
+          1,
+          120
+        ],
+        "original_file_pts_ms": 20013,
+        "frozen_image_evidence": {
+          "id": "file-pts-20013ms",
+          "image": "data/human/semantic-candidates/20260922T032454-642Z-24328-1/candidate-20021/frame-0048.png",
+          "image_sha256": "82bcd816f8a7412358400d89eebe801b4badac0c21ce3a5869e8f9481104ee94",
+          "file_pts_num": 20013,
+          "file_pts_den": 1000,
+          "callback_packet_index": 2400,
+          "callback_pts": 2399,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115390497014016,
+          "composition_t": 19.991665867,
+          "mux_residual_ms": 0.3333333333333333
+        }
+      },
+      "accepted_confirmation": {
+        "composition_relative_t": 20.058332531,
+        "composition_ns": 115390563680680,
+        "callback_event_seq": 4058,
+        "callback_packet_index": 2405,
+        "callback_pts": 2407,
+        "callback_timebase": [
+          1,
+          120
+        ],
+        "original_file_pts_ms": 20079,
+        "frozen_image_evidence": {
+          "id": "file-pts-20079ms",
+          "image": "data/human/semantic-candidates/20260922T032454-642Z-24328-1/candidate-20021/frame-0056.png",
+          "image_sha256": "a8a4cf630489ce3ad0bc25a3e160fd19fcdbecc51393d45d1aef78a5c2ea43a9",
+          "file_pts_num": 20079,
+          "file_pts_den": 1000,
+          "callback_packet_index": 2405,
+          "callback_pts": 2407,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115390563680680,
+          "composition_t": 20.058332531,
+          "mux_residual_ms": -0.3333333333333333
+        }
+      },
+      "visual_onset_after_receipt_ms": [
+        82.344684,
+        115.678016
+      ],
+      "confirmation_after_receipt_ms": 182.34468,
+      "all_control_transitions": [
+        {
+          "raw": {
+            "seq": 3845,
+            "t_ns": 115389839662800,
+            "type": "key",
+            "device": 75235887,
+            "vk": 65,
+            "scan": 30,
+            "flags": 1,
+            "down": false
+          },
+          "composition_relative_t": 19.334314651,
+          "offset_from_anchor_ns": -565685349,
+          "offset_from_anchor_ms": -565.685349
+        },
+        {
+          "raw": {
+            "seq": 3872,
+            "t_ns": 115389946557600,
+            "type": "key",
+            "device": 75235887,
+            "vk": 32,
+            "scan": 57,
+            "flags": 1,
+            "down": false
+          },
+          "composition_relative_t": 19.441209451,
+          "offset_from_anchor_ns": -458790549,
+          "offset_from_anchor_ms": -458.790549
+        },
+        {
+          "raw": {
+            "seq": 3954,
+            "t_ns": 115390273627000,
+            "type": "key",
+            "device": 75235887,
+            "vk": 87,
+            "scan": 17,
+            "flags": 1,
+            "down": false
+          },
+          "composition_relative_t": 19.768278851,
+          "offset_from_anchor_ns": -131721149,
+          "offset_from_anchor_ms": -131.721149
+        },
+        {
+          "raw": {
+            "seq": 3983,
+            "t_ns": 115390381336000,
+            "type": "mouse",
+            "device": 65618,
+            "dx": 0,
+            "dy": -1,
+            "motion_flags": 0,
+            "button_flags": 4,
+            "wheel_data": 0,
+            "relative": true,
+            "buttons_down": [
+              2
+            ],
+            "buttons_up": [],
+            "wheel_vertical": 0,
+            "wheel_horizontal": 0
+          },
+          "composition_relative_t": 19.875987851,
+          "offset_from_anchor_ns": -24012149,
+          "offset_from_anchor_ms": -24.012149
+        },
+        {
+          "raw": {
+            "seq": 4018,
+            "t_ns": 115390521444300,
+            "type": "mouse",
+            "device": 65618,
+            "dx": 1,
+            "dy": 0,
+            "motion_flags": 0,
+            "button_flags": 8,
+            "wheel_data": 0,
+            "relative": true,
+            "buttons_down": [],
+            "buttons_up": [
+              2
+            ],
+            "wheel_vertical": 0,
+            "wheel_horizontal": 0
+          },
+          "composition_relative_t": 20.016096151,
+          "offset_from_anchor_ns": 116096151,
+          "offset_from_anchor_ms": 116.096151
+        },
+        {
+          "raw": {
+            "seq": 4033,
+            "t_ns": 115390576579700,
+            "type": "key",
+            "device": 75235887,
+            "vk": 69,
+            "scan": 18,
+            "flags": 0,
+            "down": true
+          },
+          "composition_relative_t": 20.071231551,
+          "offset_from_anchor_ns": 171231551,
+          "offset_from_anchor_ms": 171.231551
+        },
+        {
+          "raw": {
+            "seq": 4066,
+            "t_ns": 115390715497600,
+            "type": "key",
+            "device": 75235887,
+            "vk": 69,
+            "scan": 18,
+            "flags": 1,
+            "down": false
+          },
+          "composition_relative_t": 20.210149451,
+          "offset_from_anchor_ns": 310149451,
+          "offset_from_anchor_ms": 310.149451
+        },
+        {
+          "raw": {
+            "seq": 4114,
+            "t_ns": 115390907532200,
+            "type": "key",
+            "device": 75235887,
+            "vk": 16,
+            "scan": 42,
+            "flags": 0,
+            "down": true
+          },
+          "composition_relative_t": 20.402184051,
+          "offset_from_anchor_ns": 502184051,
+          "offset_from_anchor_ms": 502.184051
+        }
+      ],
+      "state_at_window_start": {
+        "at_ns": 115389805348149,
+        "composition_relative_t": 19.3,
+        "latest_focus": {
+          "seq": 37,
+          "t_ns": 115370927267500,
+          "type": "focus",
+          "active": true,
+          "held_vk": [
+            1
+          ]
+        },
+        "observed_held_controls": [
+          {
+            "control": [
+              "key",
+              75235887,
+              17,
+              0
+            ],
+            "down_event": {
+              "seq": 3823,
+              "t_ns": 115389751553900,
+              "type": "key",
+              "device": 75235887,
+              "vk": 87,
+              "scan": 17,
+              "flags": 0,
+              "down": true
+            }
+          },
+          {
+            "control": [
+              "key",
+              75235887,
+              30,
+              0
+            ],
+            "down_event": {
+              "seq": 3778,
+              "t_ns": 115389573596600,
+              "type": "key",
+              "device": 75235887,
+              "vk": 65,
+              "scan": 30,
+              "flags": 0,
+              "down": true
+            }
+          },
+          {
+            "control": [
+              "key",
+              75235887,
+              57,
+              0
+            ],
+            "down_event": {
+              "seq": 3818,
+              "t_ns": 115389739534000,
+              "type": "key",
+              "device": 75235887,
+              "vk": 32,
+              "scan": 57,
+              "flags": 0,
+              "down": true
+            }
+          }
+        ],
+        "mouse_button_latest": [
+          {
+            "control": [
+              "mouse",
+              65618,
+              1
+            ],
+            "down": false,
+            "raw": {
+              "seq": 2798,
+              "t_ns": 115384890346300,
+              "type": "mouse",
+              "device": 65618,
+              "dx": 0,
+              "dy": 0,
+              "motion_flags": 0,
+              "button_flags": 2,
+              "wheel_data": 0,
+              "relative": true,
+              "buttons_down": [],
+              "buttons_up": [
+                1
+              ],
+              "wheel_vertical": 0,
+              "wheel_horizontal": 0
+            }
+          },
+          {
+            "control": [
+              "mouse",
+              65618,
+              2
+            ],
+            "down": false,
+            "raw": {
+              "seq": 3718,
+              "t_ns": 115389339383000,
+              "type": "mouse",
+              "device": 65618,
+              "dx": 5,
+              "dy": -1,
+              "motion_flags": 0,
+              "button_flags": 8,
+              "wheel_data": 0,
+              "relative": true,
+              "buttons_down": [],
+              "buttons_up": [
+                2
+              ],
+              "wheel_vertical": 0,
+              "wheel_horizontal": 0
+            }
+          }
+        ],
+        "repeated_down_event_ids": [],
+        "last_continuity_boundary": {
+          "seq": 37,
+          "t_ns": 115370927267500,
+          "type": "focus",
+          "active": true,
+          "held_vk": [
+            1
+          ]
+        },
+        "scope": "Received device-local transitions since latest focus/reset. Focus held_vk is aggregate snapshot, not device attribution. Physical delivery/bindings remain unknown."
+      },
+      "state_at_anchor": {
+        "at_ns": 115390405348149,
+        "composition_relative_t": 19.9,
+        "latest_focus": {
+          "seq": 37,
+          "t_ns": 115370927267500,
+          "type": "focus",
+          "active": true,
+          "held_vk": [
+            1
+          ]
+        },
+        "observed_held_controls": [
+          {
+            "control": [
+              "mouse",
+              65618,
+              2
+            ],
+            "down_event": {
+              "seq": 3983,
+              "t_ns": 115390381336000,
+              "type": "mouse",
+              "device": 65618,
+              "dx": 0,
+              "dy": -1,
+              "motion_flags": 0,
+              "button_flags": 4,
+              "wheel_data": 0,
+              "relative": true,
+              "buttons_down": [
+                2
+              ],
+              "buttons_up": [],
+              "wheel_vertical": 0,
+              "wheel_horizontal": 0
+            }
+          }
+        ],
+        "mouse_button_latest": [
+          {
+            "control": [
+              "mouse",
+              65618,
+              1
+            ],
+            "down": false,
+            "raw": {
+              "seq": 2798,
+              "t_ns": 115384890346300,
+              "type": "mouse",
+              "device": 65618,
+              "dx": 0,
+              "dy": 0,
+              "motion_flags": 0,
+              "button_flags": 2,
+              "wheel_data": 0,
+              "relative": true,
+              "buttons_down": [],
+              "buttons_up": [
+                1
+              ],
+              "wheel_vertical": 0,
+              "wheel_horizontal": 0
+            }
+          },
+          {
+            "control": [
+              "mouse",
+              65618,
+              2
+            ],
+            "down": true,
+            "raw": {
+              "seq": 3983,
+              "t_ns": 115390381336000,
+              "type": "mouse",
+              "device": 65618,
+              "dx": 0,
+              "dy": -1,
+              "motion_flags": 0,
+              "button_flags": 4,
+              "wheel_data": 0,
+              "relative": true,
+              "buttons_down": [
+                2
+              ],
+              "buttons_up": [],
+              "wheel_vertical": 0,
+              "wheel_horizontal": 0
+            }
+          }
+        ],
+        "repeated_down_event_ids": [],
+        "last_continuity_boundary": {
+          "seq": 37,
+          "t_ns": 115370927267500,
+          "type": "focus",
+          "active": true,
+          "held_vk": [
+            1
+          ]
+        },
+        "scope": "Received device-local transitions since latest focus/reset. Focus held_vk is aggregate snapshot, not device attribution. Physical delivery/bindings remain unknown."
+      },
+      "state_at_emission": {
+        "at_ns": 115390497014016,
+        "composition_relative_t": 19.991665867,
+        "latest_focus": {
+          "seq": 37,
+          "t_ns": 115370927267500,
+          "type": "focus",
+          "active": true,
+          "held_vk": [
+            1
+          ]
+        },
+        "observed_held_controls": [
+          {
+            "control": [
+              "mouse",
+              65618,
+              2
+            ],
+            "down_event": {
+              "seq": 3983,
+              "t_ns": 115390381336000,
+              "type": "mouse",
+              "device": 65618,
+              "dx": 0,
+              "dy": -1,
+              "motion_flags": 0,
+              "button_flags": 4,
+              "wheel_data": 0,
+              "relative": true,
+              "buttons_down": [
+                2
+              ],
+              "buttons_up": [],
+              "wheel_vertical": 0,
+              "wheel_horizontal": 0
+            }
+          }
+        ],
+        "mouse_button_latest": [
+          {
+            "control": [
+              "mouse",
+              65618,
+              1
+            ],
+            "down": false,
+            "raw": {
+              "seq": 2798,
+              "t_ns": 115384890346300,
+              "type": "mouse",
+              "device": 65618,
+              "dx": 0,
+              "dy": 0,
+              "motion_flags": 0,
+              "button_flags": 2,
+              "wheel_data": 0,
+              "relative": true,
+              "buttons_down": [],
+              "buttons_up": [
+                1
+              ],
+              "wheel_vertical": 0,
+              "wheel_horizontal": 0
+            }
+          },
+          {
+            "control": [
+              "mouse",
+              65618,
+              2
+            ],
+            "down": true,
+            "raw": {
+              "seq": 3983,
+              "t_ns": 115390381336000,
+              "type": "mouse",
+              "device": 65618,
+              "dx": 0,
+              "dy": -1,
+              "motion_flags": 0,
+              "button_flags": 4,
+              "wheel_data": 0,
+              "relative": true,
+              "buttons_down": [
+                2
+              ],
+              "buttons_up": [],
+              "wheel_vertical": 0,
+              "wheel_horizontal": 0
+            }
+          }
+        ],
+        "repeated_down_event_ids": [],
+        "last_continuity_boundary": {
+          "seq": 37,
+          "t_ns": 115370927267500,
+          "type": "focus",
+          "active": true,
+          "held_vk": [
+            1
+          ]
+        },
+        "scope": "Received device-local transitions since latest focus/reset. Focus held_vk is aggregate snapshot, not device attribution. Physical delivery/bindings remain unknown."
+      },
+      "state_at_window_end": {
+        "at_ns": 115391005348149,
+        "composition_relative_t": 20.5,
+        "latest_focus": {
+          "seq": 37,
+          "t_ns": 115370927267500,
+          "type": "focus",
+          "active": true,
+          "held_vk": [
+            1
+          ]
+        },
+        "observed_held_controls": [
+          {
+            "control": [
+              "key",
+              75235887,
+              42,
+              0
+            ],
+            "down_event": {
+              "seq": 4114,
+              "t_ns": 115390907532200,
+              "type": "key",
+              "device": 75235887,
+              "vk": 16,
+              "scan": 42,
+              "flags": 0,
+              "down": true
+            }
+          }
+        ],
+        "mouse_button_latest": [
+          {
+            "control": [
+              "mouse",
+              65618,
+              1
+            ],
+            "down": false,
+            "raw": {
+              "seq": 2798,
+              "t_ns": 115384890346300,
+              "type": "mouse",
+              "device": 65618,
+              "dx": 0,
+              "dy": 0,
+              "motion_flags": 0,
+              "button_flags": 2,
+              "wheel_data": 0,
+              "relative": true,
+              "buttons_down": [],
+              "buttons_up": [
+                1
+              ],
+              "wheel_vertical": 0,
+              "wheel_horizontal": 0
+            }
+          },
+          {
+            "control": [
+              "mouse",
+              65618,
+              2
+            ],
+            "down": false,
+            "raw": {
+              "seq": 4018,
+              "t_ns": 115390521444300,
+              "type": "mouse",
+              "device": 65618,
+              "dx": 1,
+              "dy": 0,
+              "motion_flags": 0,
+              "button_flags": 8,
+              "wheel_data": 0,
+              "relative": true,
+              "buttons_down": [],
+              "buttons_up": [
+                2
+              ],
+              "wheel_vertical": 0,
+              "wheel_horizontal": 0
+            }
+          }
+        ],
+        "repeated_down_event_ids": [],
+        "last_continuity_boundary": {
+          "seq": 37,
+          "t_ns": 115370927267500,
+          "type": "focus",
+          "active": true,
+          "held_vk": [
+            1
+          ]
+        },
+        "scope": "Received device-local transitions since latest focus/reset. Focus held_vk is aggregate snapshot, not device attribution. Physical delivery/bindings remain unknown."
+      },
+      "mouse_motion_summary": {
+        "packets": 152,
+        "relative_packets": 152,
+        "nonzero_motion_packets": 151,
+        "interpretation": "Raw motion retained in button-transition packets; other motion summarized, not converted to aim or inferred ability."
+      },
+      "conflicting_control_note": "No other mouse transition within the window; no other control inferred to be a web binding.",
+      "interpretation": "The received right-mouse down precedes anchor and final causal frame; correspondence to this cast is plausible temporal evidence, not proven source binding or physical-input delivery time."
+    }
+  ],
+  "conclusions": [
+    "Both positive anchors follow one received right-mouse down and precede its up; first four history frames precede receipt, fifth follows it.",
+    "If those right-mouse presses initiated the visually accepted casts, these anchors forecast already-requested actions rather than necessarily choosing a fresh request. Temporal association alone does not prove that condition.",
+    "Measured receipt-to-visible-first-started intervals are about102.016ms and115.678ms. These are compatible in scale with the lead-reported pad calibrationD delay, but this script neither opens nor independently validates D and does not equate KBM/pad paths.",
+    "No source binding inferred from button presence, no physical delivery/game-render/player-view latency inferred, no horizon/labels/features/admission/model changes. Root decides any semantic implication."
+  ]
+}

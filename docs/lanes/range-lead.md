@@ -17,6 +17,23 @@ teammate support. Imitation initializes the agent; later bounded RL may improve
 outcomes and learn new techniques as the action space expands. The caller
 contract below describes the delivered legacy mode, not a new deployment receipt.
 
+## Request timing, September 22
+
+The actual human-checkpoint shadow replay is complete: 52 recorded decision States,
+48 inferences, five start proposals, 40 no-new proposals and seven refusals. None
+was sent. Its accepted two positive training anchors follow received right-mouse
+downs by 2.016 ms and 24.012 ms; this checkpoint has not demonstrated pre-request
+decision imitation. The original examples, predictions and numerical fit remain
+unchanged. [Exact timing and the lead decision](../evidence/range-request-timing-20260922/README.md)
+separate this observation from physical delivery or a proven source binding.
+
+The next source check uses the preceding fixed-grid bins, preserving actual
+causal features and target correspondence. No production semantic change,
+retraining or live binding is authorized by the diagnosis. D's two observed
+scripted pulse-to-cast correspondences remain accepted primitive evidence;
+their uncertain timing does not guarantee visible emission inside a request's
+100 ms authorization window.
+
 ## Event execution acceptance, 2026-09-22 12:39 CDT
 
 Lead accepts the independently reviewed `RangeSkill` controller and guarded Live
