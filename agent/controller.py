@@ -581,9 +581,12 @@ class Controller:
             # held id 37 of a 585 px bot 300 px away), and the size check refuses it while the track is fresh. Never onto a box the
             # tracker knows is another object: reach30 re-seeded a whole-frame target 948 px left onto the door's edge (id 51), counted
             # it as measured and confirmed, turned right and walked at it.
+            # The held id at another size is aimed at only: the old measurement's age says nothing about the new box, and one frame of
+            # it is no evidence (review of ec7359a: the 16.836 stray after a 0.28 s blind gap was walked at on its first frame). It is
+            # confirmed, measured and walkable once the crop measures the held id at that size again.
             again = min(held, key=off) if held else best
             if not self._other(again, wanted):
-                seed(again, True)
+                seed(again, not held)
 
     @staticmethod
     def _other(det, wanted):

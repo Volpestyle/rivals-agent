@@ -320,22 +320,22 @@ def test_the_held_ids_whole_box_is_taken_back_after_a_fragment_set_the_tracks_si
     """plaza30 t 28.385-36.71: the track's size came from a 107 px fragment of id 71, and the id's own 631 px box was then refused as another
     size (5.9x, over CLOSE_RATIO) on every tick for 8.3 s: nothing measured, the frozen track inside AIM_DONE_DEG and then lost, the pad
     neutral while the brain held Engage(71) with the bot 316 px right of the crosshair. Once the track has gone unmeasured past the re-seed
-    delay (0.25 s) it re-seeds onto the held id's own box whatever its size: measured again, turned toward, arming restarted from zero."""
+    delay (0.25 s) it re-seeds onto the held id's own box whatever its size, aim-only; the next frame of the id at that size measures and
+    confirms it. Arming restarts from zero."""
     c = Controller()
     out = _plaza30_71(c)
     assert [m for t, _, m in out if t <= 28.364] == [True] * 5
-    gap = [t for t, _, m in out if t > 28.364 and not m]
-    assert gap and max(gap) - 28.364 <= 0.26                               # refused only while the track was fresh
-    back = [(t, p) for t, p, m in out if t > 28.364 and m]
-    assert back and back[0][1]["rx"] > 0.3                                 # the correction goes out, toward the bot on the right
-    assert all(m for t, _, m in out if t >= back[0][0]) and c.track.h > 400  # and it is measured, at its own size, on every tick after
+    after = [(t, p, m) for t, p, m in out if t > 28.364]
+    turn = next(i for i, (t, p, _) in enumerate(after) if p["rx"] > 0.3 and t - 28.364 > 0.25)
+    assert after[turn][0] - 28.364 <= 0.27 and not after[turn][2]          # re-seeded on the first tick past the delay: turned toward, aim-only
+    assert all(m for _, _, m in after[turn + 1:]) and c.track.h > 400 and c.track.confirmed   # measured, at its own size, from the next
     assert not any(_pressed(p) for t, p, _ in out if t > 28.364)          # off-centre: turned toward, nothing pressed
 
 
 def test_a_held_id_box_of_another_size_is_refused_while_the_track_is_fresh_and_other_boxes_never_re_seed():
     """plaza30 t 16.836: an 89 px crop box took the held id 37 for one frame, 300 px from the 585 px bot that carried it; the size check
-    refused it. It still does while the track is fresh. Past the re-seed delay, a box of another size with another id or no id is not
-    taken either: only the held id's own box is re-seeded onto whatever its size."""
+    refused it. It still does while the track is fresh. After a blind gap past the re-seed delay the held id's box is aimed at only: one
+    frame of it measures, arms and walks nothing. A box of another size with another id or no id is not taken at all."""
     F = (2560, 1440)
     held = Detection(ENEMY, (1180, 400, 1380, 985), 0.9, track=37)            # 585 px, on the crosshair
     c = Controller()
@@ -345,6 +345,15 @@ def test_a_held_id_box_of_another_size_is_refused_while_the_track_is_fresh_and_o
     stray = Detection(ENEMY, (1520, 700, 1560, 789), 0.9, track=37)           # 89 px, the held id, one frame
     pad = c.step(State(t=t, frame=F, detections=[stray]), Engage(held), intent_t=t)
     assert not c._measured and pad["ly"] == 0.0 and c.track.h == 585
+    c = Controller()                                                           # review of ec7359a: the stray after a blind gap
+    for t in (0.0, 0.02, 0.04):
+        c.step(State(t=t, frame=F, detections=[held]), Engage(held), intent_t=t)
+    for t in (0.1, 0.2, 0.3):
+        c.step(State(t=t, frame=F, detections=[]), Engage(held), intent_t=t)
+    pad = c.step(State(t=0.32, frame=F, detections=[stray]), Engage(held), intent_t=0.32)
+    assert pad["rx"] > 0.3 and pad["ly"] == 0.0 and not c._measured and c.stable == 0 and not c.track.confirmed
+    pads = [c.step(State(t=0.34 + k / 50, frame=F, detections=[]), Engage(held), intent_t=0.34 + k / 50) for k in range(20)]
+    assert not any(p["ly"] or _pressed(p) for p in pads)                     # it never came back: nothing but the turn
     for box in (replace(stray, track=38), replace(stray, track=None)):
         c = Controller()
         for k in range(8):

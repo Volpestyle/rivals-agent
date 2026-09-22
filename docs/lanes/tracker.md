@@ -327,13 +327,16 @@ refused. Nothing re-measured the track after that, so it froze, and every leg we
 | walk | `mine` is False: `_measured` False | the own-id box h 490-521 on every tick |
 | attack | `on_target` needs `_measured`; `stable` 0 < `ARM_FRAMES` | `stable` 0 from 28.385 |
 
-Once a track has gone unmeasured past the re-seed delay (0.25 s), it re-seeds onto the held id's own box, whatever its size. It is not
-taken sooner, because one frame's id can be wrong: at 16.836 an 89 px box carried the held id 37 of a 585 px bot 300 px away, and the size
-check refused it. A re-seed restarts arming from zero, and boxes with another id or no id still need the size ratio.
+Once a track has gone unmeasured past the re-seed delay (0.25 s), it re-seeds onto the held id's own box, whatever its size, but only
+to aim at it. The re-seeded track is unconfirmed: it has no measurement, no arming and no walk. The next crop frame that has the held id
+at that size measures and confirms it; any other box of another size is still refused. One frame of an id can be wrong: at 16.836 an
+89 px box carried the held id 37 of a 585 px bot 300 px away. The age of the old measurement says nothing about the new box, so after a
+blind gap such a stray is turned toward and never walked at. An id stolen for two frames or more is still taken, so persistent id-steal
+remains a residual. A re-seed restarts arming from zero, and boxes with another id or no id still need the size ratio.
 
 On the plaza30 replay through the controller, the pad is identical to the recording through 28.607. At 28.626 (0.262 s after the last
-measurement) it re-seeds onto id 71's 517 px box and sends rx +0.92, ry −1.00: down is allowed, since `pitch_used` is +0.31 up. Nothing
-changes elsewhere in the run.
+measurement) it re-seeds onto id 71's 517 px box, aim-only, and sends rx +0.92, ry −1.00: down is allowed, since `pitch_used` is +0.31
+up. From 28.645 it is measured and confirmed. Nothing changes elsewhere in the run.
 
 A primitive already playing runs its course across intent changes; only Idle and Disengage preempt it. plaza30's LT at 25.651 (no crop
 box, Engage(66), after the second KO) is the last tap of the burst armed at 22.668 on Combo(54). That burst was armed on the held id's
