@@ -15,7 +15,7 @@ from tests.test_range_cast_probe import native_entry
 
 
 class EventBrain:
-    policy = SimpleNamespace(spec=SimpleNamespace(period_s=.1))
+    policy = SimpleNamespace(spec=SimpleNamespace(period_s=.1, tolerance_s=.025))
     source = "range_skill_learned"
 
     def __init__(self, request="no_new_start", stale_resources=False):
@@ -409,7 +409,7 @@ def live_cli(native_entry, monkeypatch, tmp_path):
     h.loader_error = None
     h.focus_lost_at = None
     h.brain = EventBrain()
-    h.brain.policy = SimpleNamespace(spec=SimpleNamespace(period_s=.1), origin="synthetic_caller_fixture")
+    h.brain.policy = SimpleNamespace(spec=SimpleNamespace(period_s=.1, tolerance_s=.025), origin="synthetic_caller_fixture")
     def load(*args, **kwargs):
         h.events.append("loader")
         if h.loader_error:
@@ -892,3 +892,405 @@ def test_close_log_failure_without_a_send_error_still_propagates(tmp_path):
     with pytest.raises(OSError, match="synthetic close writer failure"):
         h.run.run()
     assert h.pad.state == runtime.NEUTRAL and "close" in h.events
+
+
+# The diagnostic contains clocks only. No recording, State, media or model is opened.
+PHASE_REPORT = Path(__file__).resolve().parents[1] / "data/diagnostics/range-request-runtime-timing-20260922/phase-band/report.json"
+
+
+def clock_history_counts(clocks):
+    """Independent clock-only geometry audit; not an inference/gameplay replay."""
+    from collections import Counter, deque
+    counts, history, previous = Counter(), deque(maxlen=5), None
+    for t in clocks:
+        if previous is not None and abs(t - previous - .1) > .025 + 1e-9:
+            counts["adjacent_resets"] += 1
+            history.clear()
+        previous = t
+        history.append(t)
+        if len(history) < 5:
+            counts["clock_warmup"] += 1
+        elif any(abs(s - (t - (4 - i) * .1)) > .025 + 1e-9 for i, s in enumerate(history)):
+            counts["clock_invalid_history"] += 1
+            history.clear()
+        else:
+            counts["clock_usable"] += 1
+    return counts
+
+
+def test_recorded_first_phase_acquisitions_match_82_4_62_without_retiming():
+    report = json.loads(PHASE_REPORT.read_text())
+    # These 86 first acquisitions were selected from 369 clocks by the frozen
+    # diagnostic. Later acquisitions in each retired slot cannot affect this rule.
+    clocks = [r["t"] for r in report["variants"]["naive_after"]["selected"]]
+    log, pad = MemoryLog(), FakePad()
+    run = runtime.Loop(Frames([(F(dets=[BOT]), t) for t in clocks]), pad, readers(), EventBrain(),
+                       brain_name="range-skill", max_s=10, scoreboard=False, log=log)
+    result = run.run()
+    rows = [r for r in log.rows if "decision_timing" in r]
+    expected = report["variants"]["band_after"]
+    assert [r["state"]["t"] for r in rows] == [r["t"] for r in expected["selected"]]
+    assert result["decisions"] == expected["eligible_acquisitions"] == 82
+    missed = [r for r in result["decision_schedule"]["slots"] if r["reason"] != "offered"]
+    assert [r["slot"] for r in missed] == [4, 62, 68, 80]
+    counts = clock_history_counts([r["state"]["t"] for r in rows])
+    assert dict(counts) == expected["clock_history"]["counts"]
+    assert counts["clock_usable"] == 62 and counts["clock_invalid_history"] == 0
+    current = report["variants"]["current_relative90"]
+    assert clock_history_counts([r["t"] for r in current["selected"]])["clock_usable"] == 46
+    assert result["decision_schedule"]["origin_t"] == report["phase_origin_t"]
+    for row in rows:
+        timing = row["decision_timing"]
+        assert timing["acquisition_t"] == row["state"]["t"] == row["decision_trace"]["t"]
+        assert row["range_skill_trace"]["resources"]["observed_t"] == row["state"]["t"]
+    assert not any(p["lt"] for p in sends(pad))
+
+
+@pytest.mark.parametrize("offset,reason", [(0., "eligible"), (.025, "eligible"),
+                                           (.0250001, "first_acquisition_late")])
+def test_phase_band_boundaries_and_same_slot_no_retry(offset, reason):
+    slots = runtime.RangeDecisionSlots(.025, 1)
+    assert slots.acquire(0)["slot"] == 0
+    assert slots.acquire(.0999999) is None
+    row = slots.acquire(.1 + offset)
+    assert slots.events[-1]["reason"] == reason
+    assert (row is not None) == (reason == "eligible")
+    assert slots.acquire(.1 + offset + .001) is None
+    assert slots.acquire(.2)["slot"] == 2
+
+
+def test_phase_stalls_retire_intervening_slots_and_bound_trace():
+    slots = runtime.RangeDecisionSlots(.025, 20)
+    slots.acquire(0)
+    assert slots.acquire(.531) is None
+    assert slots.events[1] == {"slot": 1, "through_slot": 4, "reason": "no_acquisition_in_slot", "observed_at_t": .531}
+    assert slots.events[2]["slot"] == 5 and slots.events[2]["reason"] == "first_acquisition_late"
+    assert slots.acquire(.61)["slot"] == 6
+    assert slots.acquire(1e12) is None
+    assert slots.events[-1]["through_slot"] == 199 and len(slots.events) == 5
+    for t in (1e12 + 1, float("nan"), float("inf"), .6):
+        assert slots.acquire(t) is None
+    assert len(slots.events) == 5 and slots.invalid_acquisitions == 3
+
+
+def test_phase_alternating_band_edges_preserve_history_and_gap_resets():
+    clocks = [i * .1 + (.025 if i % 2 else 0) for i in range(10)]
+    slots = runtime.RangeDecisionSlots(.025, 2)
+    admitted = [t for t in clocks if slots.acquire(t) is not None]
+    assert admitted == clocks
+    assert clock_history_counts(admitted) == {"clock_warmup": 4, "clock_usable": 6}
+    assert clock_history_counts(admitted[:5] + admitted[6:]) == {
+        "clock_warmup": 8, "clock_usable": 1, "adjacent_resets": 1}
+
+
+@pytest.mark.parametrize("mode", ["scripted", "range", "range-cast-probe"])
+def test_phase_change_leaves_relative_legacy_and_probe_offer_rule(mode):
+    log = MemoryLog()
+    clocks = [0, .091, .182, .273, .364]
+    brain = ScriptedProbeBrain() if mode == "range-cast-probe" else EventBrain()
+    run = runtime.Loop(Frames([(F(dets=[BOT]), t) for t in clocks]), FakePad(), readers(), brain,
+                       brain_name=mode, max_s=1, scoreboard=False, log=log, warmup=False)
+    result = run.run()
+    assert [r["state"]["t"] for r in log.rows if "state" in r] == clocks
+    assert "decision_schedule" not in result and "decision_timings" not in result
+    assert all("decision_timing" not in r for r in log.rows)
+
+
+def test_source_throttled_acquisition_does_not_retire_reflex_opportunity():
+    log = MemoryLog()
+    # .1 is outside the processed reflex stream. The actual .12 acquisition is
+    # the first eligible tick for slot 1; neither frame nor timestamp is buffered.
+    clocks = [0, .099, .1, .12, .2]
+    run = runtime.Loop(Frames([(F(dets=[BOT]), t) for t in clocks]), FakePad(), readers(), EventBrain(),
+                       brain_name="range-skill", max_s=1, scoreboard=False, log=log)
+    result = run.run()
+    assert [r["state"]["t"] for r in log.rows if "state" in r] == [0, .12, .2]
+    slot = result["decision_schedule"]["slots"][1]
+    assert slot["reason"] == "offered" and slot["acquisition_t"] == .12
+    assert slot["phase_t"] == .1 and result["decision_schedule"]["origin_t"] == 0
+
+
+@pytest.mark.parametrize("hz", [60, 90, 120, 144, 240])
+def test_healthy_source_rates_select_first_reflex_acquisition_without_cadence_change(hz):
+    log, pad = MemoryLog(), FakePad()
+    items = timeline(4, hz=hz, dets=[BOT])
+    run = runtime.Loop(Frames(items), pad, readers(), EventBrain(), brain_name="range-skill",
+                       log=log, max_s=4, scoreboard=False)
+    result = run.run()
+    clocks = [r["state"]["t"] for r in log.rows if "state" in r]
+    # Independently apply the existing reflex cadence, without phase scheduling.
+    reflex_clocks = []
+    for _, t in items:
+        if not reflex_clocks or t - reflex_clocks[-1] >= runtime.REFLEX_TOL / runtime.REFLEX_HZ:
+            reflex_clocks.append(t)
+    assert result["ticks"] == len(sends(pad)) == len(reflex_clocks)
+    expected = [next(t for t in reflex_clocks if t >= slot * .1) for slot in range(40)]
+    assert clocks == expected
+    assert result["decisions"] == len(clocks) == 40
+    assert clock_history_counts(clocks) == {"clock_warmup": 4, "clock_usable": 36}
+    schedule = result["decision_schedule"]
+    assert schedule["rule"] == "first_reflex_acquisition_after_phase"
+    assert schedule["selection_domain"] == "reflex_eligible_acquisitions"
+    assert schedule["origin_t"] == items[0][1]
+    assert len(schedule["slots"]) == 40
+    assert all(r["reason"] == "offered" for r in schedule["slots"])
+    assert all(0 <= r["offset_s"] <= .025 for r in schedule["slots"])
+    assert all(not p["lt"] and not p["rt"] and not p["buttons"] for p in sends(pad))
+
+
+@pytest.mark.parametrize("first_tick,offered", [(.125, True), (.1250001, False)])
+def test_first_processed_tick_keeps_band_boundary_without_buffering_source_frame(first_tick, offered):
+    log = MemoryLog()
+    clocks = [0, .099, .1, first_tick, .15, .2]
+    run = runtime.Loop(Frames([(F(dets=[BOT]), t) for t in clocks]), FakePad(), readers(), EventBrain(),
+                       brain_name="range-skill", max_s=1, scoreboard=False, log=log)
+    result = run.run()
+    selected = [r["state"]["t"] for r in log.rows if "state" in r]
+    assert selected == ([0, first_tick, .2] if offered else [0, .2])
+    slot = result["decision_schedule"]["slots"][1]
+    assert slot["acquisition_t"] == first_tick and slot["phase_t"] == .1
+    assert slot["reason"] == ("offered" if offered else "first_acquisition_late")
+    assert len(result["decision_schedule"]["slots"]) == 3
+
+
+def test_guard_refusal_on_selected_reflex_tick_remains_terminal():
+    run = runtime.Loop(Frames([(F(dets=[BOT]), 0), (F(dets=[BOT]), .099),
+                              (F(dets=[BOT]), .1), (F(ok=False), .12), (F(dets=[BOT]), .2)]),
+                       FakePad(), readers(), EventBrain(), brain_name="range-skill", max_s=1,
+                       scoreboard=False)
+    result = run.run()
+    assert result["stop"] == "range_lost" and result["decisions"] == 1
+    slot = result["decision_schedule"]["slots"][1]
+    assert slot["acquisition_t"] == .12 and slot["reason"] == "guard_refused"
+    assert run.pad.state == runtime.NEUTRAL
+
+
+def test_model_tolerance_is_used_without_widening_band():
+    brain = EventBrain()
+    brain.policy = SimpleNamespace(spec=SimpleNamespace(period_s=.1, tolerance_s=.01))
+    run, _ = event_loop(brain)
+    slots = run.decision_slots
+    slots.acquire(0)
+    assert slots.acquire(.115) is None
+    assert slots.events[-1]["reason"] == "first_acquisition_late"
+    brain.policy.spec.tolerance_s = .026
+    with pytest.raises(ValueError, match="tolerance"):
+        event_loop(brain)
+
+
+def wait_until(predicate):
+    deadline = time.perf_counter() + 2
+    while not predicate() and time.perf_counter() < deadline:
+        time.sleep(.001)
+    assert predicate()
+
+
+def test_threaded_busy_slots_are_terminal_with_no_queued_catchup():
+    entered, finish, final_finish = threading.Event(), threading.Event(), threading.Event()
+    class Brain(EventBrain):
+        def __call__(self, state, memory):
+            if self.n == 0:
+                entered.set()
+                assert finish.wait(2)
+            else:
+                assert final_finish.wait(2)
+            return super().__call__(state, memory)
+    log, brain = MemoryLog(), Brain()
+    source = Frames([(F(dets=[BOT]), t) for t in [0, .1, .2, .22, .31]])
+    run = runtime.Loop(source, FakePad(), readers(), brain, brain_name="range-skill", max_s=1,
+                       scoreboard=False, log=log, threaded=True)
+    def hook(i):
+        if i == 1:
+            assert entered.wait(2)
+        if i == 3:
+            assert run.decider.q.empty() and run.decider.missed == 2
+            finish.set()
+            wait_until(lambda: run.decider.latest is not None and not run.decider.busy.is_set())
+        if i == 5:
+            final_finish.set()
+    source.hook = hook
+    try:
+        result = run.run()
+    finally:
+        finish.set()
+        final_finish.set()
+    assert [(r["slot"], r["reason"]) for r in result["decision_schedule"]["slots"]] == [
+        (0, "offered"), (1, "worker_busy"), (2, "worker_busy"), (3, "offered")]
+    assert [t.acquisition_t for _, t in run.decider.timings] == [0, .31]
+    assert result["decisions"] == 2
+    assert result["decision_timings"][1]["first_reflex_consumption_perf"] is None
+
+
+def test_full_worker_slot_is_retired_not_retried():
+    # The queue-full fallback is independently exercised at the real offer API.
+    dec = runtime.Decider(EventBrain(), readers(), 10, False, phased=True)
+    dec.q = runtime.queue.Queue(maxsize=1)
+    dec.q.put_nowait("occupied")
+    slots = runtime.RangeDecisionSlots(.025, 1)
+    row = slots.acquire(0)
+    row["reason"] = dec.offer(F(dets=[BOT]), 0, (2560, 1440), [BOT], slot=row)
+    assert row["reason"] == "worker_full" and dec.n == 0 and dec.missed == 1
+    dec.q.get_nowait()
+    assert slots.acquire(.02) is None
+    assert dec.q.empty() and not dec.busy.is_set()
+
+
+@pytest.mark.parametrize("threaded", [False, True])
+def test_actual_stage_publication_and_consumption_use_detached_perf_times(threaded):
+    observed = {}
+    finish = threading.Event()
+    def boundary(name, result):
+        observed[name] = time.perf_counter()
+        return result
+    class Brain(EventBrain):
+        def __call__(self, state, memory):
+            if threaded:
+                assert finish.wait(2)
+            value = super().__call__(state, memory)
+            return boundary("brain_return", value)
+    p = readers()
+    p.tag = lambda f, b: boundary("tag_return", None)
+    p.hud = lambda f: boundary("hud_return", {"webs": 5})
+    log = MemoryLog()
+    source = Frames([(F(dets=[BOT]), t) for t in [4., 4.02, 4.04]])
+    run = runtime.Loop(source, FakePad(), p, Brain(), brain_name="range-skill", max_s=1,
+                       scoreboard=False, threaded=threaded, log=log)
+    published = []
+    def hook(i):
+        if i == 1:
+            finish.set()
+            wait_until(lambda: run.decider.latest is not None)
+            published.append(run.decider.latest)
+            observed["publication_seen"] = time.perf_counter()
+    source.hook = hook
+    before = time.perf_counter()
+    try:
+        result = run.run()
+    finally:
+        finish.set()
+    after = time.perf_counter()
+    timing = result["decision_timings"][0]
+    keys = ["offer_perf", "worker_start_perf", "detection_tag_complete_perf", "hud_complete_perf",
+            "brain_call_start_perf", "brain_call_complete_perf", "ready_publication_perf", "first_reflex_consumption_perf"]
+    values = [timing[k] for k in keys]
+    assert before <= values[0] <= values[-1] <= after and values == sorted(values)
+    assert timing["worker_start_perf"] <= observed["tag_return"] <= timing["detection_tag_complete_perf"]
+    assert timing["detection_tag_complete_perf"] <= observed["hud_return"] <= timing["hud_complete_perf"]
+    assert timing["brain_call_start_perf"] <= observed["brain_return"] <= timing["brain_call_complete_perf"]
+    assert timing["ready_publication_perf"] <= observed["publication_seen"]
+    assert timing["acquisition_t"] == published[0].state.t == published[0].intent.resources.observed_t == 4.
+    assert timing["reflex_acquisition_t"] == (4.02 if threaded else 4.)
+    assert published[0] is run.decider.latest
+    assert not hasattr(published[0].timing, "first_reflex_consumption_perf")
+    assert [r["decision_timing"] for r in log.rows if "decision_timing" in r] == [timing]
+    assert timing["processing_clock"] == "perf_counter_seconds" and timing["observation_clock"] == "loop_seconds"
+
+
+@pytest.mark.parametrize("failure", ["failed", "not_sent"])
+def test_failed_send_origin_and_summary_retain_first_consumption_timing(tmp_path, failure):
+    if failure == "failed":
+        h = failing_send_run(tmp_path)
+        run = h.run
+        with pytest.raises(OSError):
+            run.run()
+        row = next(r for r in trace_rows(h) if r.get("type") == "executor_send_failure")
+    else:
+        run, _, log = delayed_event_run(after_controller_delay=.15)
+        run.run()
+        row = next(r for r in log.rows if r.get("send_result", {}).get("status") == "not_sent")
+    timing = row["decision_timing"]
+    assert timing == next(t for t in run.summary()["decision_timings"] if t["d"] == row["d"])
+    assert timing["acquisition_t"] == row["state"]["t"] == .1
+    assert timing["first_reflex_consumption_perf"] >= timing["ready_publication_perf"]
+    event = next(e for e in run.executor_events if e["type"] in ("executor_send_failure", "executor_send_refusal"))
+    assert event["decision_timing"] == timing and event["send_result"]["status"] == failure
+
+
+def test_joined_live_cli_stage_clocks_use_existing_exact_origin(live_cli):
+    h = live_cli
+    assert runtime.main(h.argv) == 0
+    meta = json.loads((h.out / "meta.json").read_text())
+    origin = meta["start"]["live_scope"]["loop_perf_origin"]
+    assert origin == h.origin
+    assert meta["decision_schedule"]["origin_t"] > 5  # camera startup did not reset the observation clock
+    assert meta["decision_timings"]
+    for timing in meta["decision_timings"]:
+        assert timing["offer_perf"] >= origin + timing["acquisition_t"]
+        assert timing["ready_publication_perf"] >= timing["brain_call_complete_perf"]
+        consumed = timing["first_reflex_consumption_perf"]
+        if consumed is not None:
+            assert consumed >= timing["ready_publication_perf"]
+            assert consumed >= origin + timing["reflex_acquisition_t"]
+    assert h.device.neutral() and len(h.lives) == 1
+
+
+def test_inline_worker_failure_keeps_actual_offer_without_fake_publication():
+    class Broken(EventBrain):
+        def __call__(self, state, memory):
+            raise RuntimeError("synthetic brain failure")
+    run, pad = event_loop(Broken())
+    with pytest.raises(RuntimeError, match="synthetic brain failure"):
+        run.run()
+    result = run.summary()
+    assert result["decision_schedule"]["slots"][0]["reason"] == "offered"
+    assert result["decision_schedule"]["slots"][0]["offer_attempt_perf"] > 0
+    assert result["decision_timings"] == [] and result["decisions"] == 0
+    assert pad.state == runtime.NEUTRAL
+
+
+@pytest.mark.parametrize("period,tolerance", [(.1, .04), (.2, .025)])
+def test_live_phase_spec_refused_before_focus_readers_hardware_or_log(live_cli, monkeypatch, period, tolerance):
+    h = live_cli
+    h.brain.policy.spec = SimpleNamespace(period_s=period, tolerance_s=tolerance)
+    logs = []
+    factory = runtime.RunLog
+    def tracked_log(*args, **kwargs):
+        log = factory(*args, **kwargs)
+        logs.append(log)
+        return log
+    def focus(pid):
+        h.events.append("focus_factory")
+        return lambda: True
+    monkeypatch.setattr(runtime, "RunLog", tracked_log)
+    monkeypatch.setattr(runtime, "foreground_pid_guard", focus)
+    try:
+        with pytest.raises(SystemExit) as error:
+            runtime.main(h.argv + ["--decision-hz", str(1 / period)])
+        assert error.value.code == 2
+        assert h.events == ["loader"]
+        assert not h.frames and not h.lives and not h.reports
+        assert not logs and not h.out.exists()
+    finally:
+        # A regression must report the caller failure, not leak the old
+        # constructor-error RunLog and mask it with Windows temp cleanup errors.
+        for log in logs:
+            if not log.f.closed:
+                log.q.put(None)
+                log.writer.join(timeout=2)
+                log.f.close()
+
+
+@pytest.mark.parametrize("tolerance", [.025, .01])
+def test_live_phase_spec_valid_controls_reach_joined_execution(live_cli, tolerance):
+    h = live_cli
+    h.brain.policy.spec = SimpleNamespace(period_s=.1, tolerance_s=tolerance)
+    assert runtime.main(h.argv) == 0
+    meta = json.loads((h.out / "meta.json").read_text())
+    assert meta["decision_schedule"]["tolerance_s"] == tolerance
+    assert meta["decision_schedule"]["period_s"] == .1
+    assert meta["decisions"] > 0 and h.device.neutral()
+    assert h.lives[0]._dead
+
+
+@pytest.mark.parametrize("period,tolerance,valid", [(.1, .025, True), (.1, .01, True),
+                                                   (.1, .04, False), (.2, .025, False)])
+def test_direct_loop_uses_same_phase_spec_preflight(period, tolerance, valid):
+    brain = EventBrain()
+    brain.policy = SimpleNamespace(spec=SimpleNamespace(period_s=period, tolerance_s=tolerance))
+    if valid:
+        run, _ = event_loop(brain, decision_hz=1 / period)
+        assert run.decision_slots.tolerance_s == tolerance
+        run.decider.close()
+    else:
+        with pytest.raises(ValueError, match="range-skill phase"):
+            event_loop(brain, decision_hz=1 / period)

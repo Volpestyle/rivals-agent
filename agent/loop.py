@@ -232,6 +232,76 @@ class LiveIO:
 
 
 # --- the decision rate ---------------------------------------------------------------------------------------------
+@dataclass(frozen=True)
+class DecisionTiming:
+    """Processing boundaries are perf_counter seconds; acquisition/phase are loop seconds."""
+    acquisition_t: float
+    slot: int
+    phase_t: float
+    offer_perf: float
+    worker_start_perf: float
+    detection_tag_complete_perf: float
+    hud_complete_perf: float
+    brain_call_start_perf: float
+    brain_call_complete_perf: float
+    ready_publication_perf: float | None = None
+
+
+class RangeDecisionSlots:
+    """First reflex-eligible acquisition in [phase, phase+tolerance], once per slot.
+
+    Only the reflex thread owns this record. Missing spans occupy one trace row,
+    and the episode duration bounds terminal slot rows, even after a long stall.
+    """
+    period_s = .1
+
+    @classmethod
+    def validate_timing(cls, period_s, tolerance_s):
+        """Caller eligibility, shared by CLI preflight and direct construction."""
+        if period_s != cls.period_s:
+            raise ValueError("range-skill phase selection requires a .1 second model period")
+        if not math.isfinite(tolerance_s) or not 0 <= tolerance_s <= .025:
+            raise ValueError("range-skill phase tolerance must be in [0, .025] seconds")
+
+    def __init__(self, tolerance_s, max_s):
+        self.validate_timing(self.period_s, tolerance_s)
+        self.tolerance_s, self.max_s = tolerance_s, max_s
+        self.origin = self.previous = None
+        self.next_slot = 0
+        self.events = []
+        self.invalid_acquisitions = 0
+
+    def acquire(self, t):
+        if not math.isfinite(t) or (self.previous is not None and t <= self.previous):
+            self.invalid_acquisitions += 1
+            return None
+        self.previous = t
+        if self.origin is None:
+            self.origin = t
+        # Compare with constructed phases as well as the quotient: floating point
+        # division must not move an exact phase into the previous slot.
+        slot = math.floor((min(t, self.origin + self.max_s) - self.origin) / self.period_s)
+        while self.origin + slot * self.period_s > t:
+            slot -= 1
+        while self.origin + (slot + 1) * self.period_s <= t and (slot + 1) * self.period_s < self.max_s:
+            slot += 1
+        end_slot = math.ceil(self.max_s / self.period_s)
+        slot = end_slot if t >= self.origin + self.max_s else min(slot, end_slot - 1)
+        if slot < self.next_slot:
+            return None
+        if slot > self.next_slot:
+            self.events.append({"slot": self.next_slot, "through_slot": slot - 1,
+                                "reason": "no_acquisition_in_slot", "observed_at_t": t})
+        self.next_slot = slot + 1
+        if t >= self.origin + self.max_s:
+            return None
+        phase = self.origin + slot * self.period_s
+        row = {"slot": slot, "phase_t": phase, "acquisition_t": t, "offset_s": t - phase,
+               "reason": "eligible" if t <= phase + self.tolerance_s else "first_acquisition_late"}
+        self.events.append(row)
+        return row if row["reason"] == "eligible" else None
+
+
 @dataclass
 class Decision:
     n: int
@@ -242,6 +312,7 @@ class Decision:
     ms: float            # compute time of this decision
     lag_ms: float        # from the reflex thread handing the frame over to the intent being ready
     trace: dict | None = None  # captured on the decision thread, never read from a moving brain later
+    timing: DecisionTiming | None = None
 
 
 def _readonly(frame):
@@ -261,47 +332,83 @@ def _source(decide):
 
 
 class Decider:
-    """decide(state, memory) at decision_hz. Threaded, offer() hands the newest frame to a worker and returns at once; a
-    frame offered while the worker is busy is dropped (counted). Unthreaded it decides inline, which replays exactly."""
+    """decide(state, memory) at decision_hz; unthreaded it decides inline.
 
-    def __init__(self, decide, percept, hz, threaded, track=lambda dets, t, size=None: dets, coasting=lambda: ()):
+    Legacy threading permits one pending job. Phased range-skill threading
+    reserves the worker at offer and drops busy/full slots without a backlog.
+    """
+
+    def __init__(self, decide, percept, hz, threaded, track=lambda dets, t, size=None: dets, coasting=lambda: (), *, phased=False):
         self.decide, self.p, self.hz, self.memory, self.track, self.coasting = decide, percept, hz, Memory(), track, coasting
         self.latest, self.error, self.n, self.last, self.missed, self.ms, self.lag = None, None, 0, -math.inf, 0, [], []
         self.q = queue.Queue(maxsize=1) if threaded else None
+        self.phased = phased
+        self.busy = threading.Event()
+        self.timings = []                         # immutable published records; never patched by the reflex thread
         self.worker = threading.Thread(target=self._work, daemon=True) if threaded else None
         if self.worker:
             self.worker.start()
 
-    def offer(self, frame, t, size, aim):
-        if t - self.last < REFLEX_TOL / self.hz:
+    def offer(self, frame, t, size, aim, *, slot=None):
+        if self.phased and slot is None:
+            return "no_slot"
+        if not self.phased and t - self.last < REFLEX_TOL / self.hz:
             return
-        job = (frame, t, size, aim, time.perf_counter())
+        if self.phased and self.busy.is_set():
+            self.missed += 1
+            return "worker_busy"
+        job = (frame, t, size, aim, time.perf_counter(),
+               (slot["slot"], slot["phase_t"]) if slot is not None else None)
+        if slot is not None:
+            slot["offer_attempt_perf"] = job[4]
         if self.q is None:
             self.last = t
-            self.latest = self._decide(job)
-            return
+            if slot is not None:
+                slot["reason"] = "offered"         # inline reader/brain failure still followed an actual offer
+            self._publish(self._decide(job))
+            return "offered"
         try:
+            if self.phased:
+                self.busy.set()                   # reserve before enqueue; never keep a job behind an active worker
             self.q.put_nowait(job)
             self.last = t
+            return "offered"
         except queue.Full:
+            if self.phased:
+                self.busy.clear()
             self.missed += 1
+            return "worker_full"
 
     def _work(self):
         while (job := self.q.get()) is not None:
             try:
-                self.latest = self._decide(job)
+                self._publish(self._decide(job))
             except BaseException as e:                  # a dead worker is a frozen intent: the loop re-raises it
                 self.error = e
                 return
+            finally:
+                self.busy.clear()
+
+    def _publish(self, decision):
+        if decision.timing is not None:
+            timing = replace(decision.timing, ready_publication_perf=time.perf_counter())
+            decision = replace(decision, timing=timing)
+            self.timings.append((decision.n, timing))
+        self.latest = decision
 
     def _decide(self, job):
-        frame, t, size, aim, offered = job
+        frame, t, size, aim, offered, slot = job
         c0 = time.perf_counter()
         dets = aim or self.track(self.p.wide(frame), t, size)  # nothing in the crop: look everywhere (aim is tracked already)
         dets = [replace(d, tagged=self.p.tag(frame, d.bbox)) if d.cls == ENEMY else d for d in dets]
-        state = State(t=t, frame=size, detections=dets, coasting=self.coasting(), **self.p.hud(frame))
+        tagged = time.perf_counter() if self.phased else None
+        coasting = self.coasting()
+        hud = self.p.hud(frame)
+        hud_done = time.perf_counter() if self.phased else None
+        state = State(t=t, frame=size, detections=dets, coasting=coasting, **hud)
         if (see := getattr(self.decide, "see", None)) is not None:
             see(_readonly(frame), t)                    # a brain that reads pixels gets the frame this State came from: on the worker, read-only
+        brain_start = time.perf_counter() if self.phased else None
         intent = self.decide(state, self.memory)
         now = time.perf_counter()
         self.n += 1
@@ -309,7 +416,9 @@ class Decider:
         self.lag.append((now - offered) * 1000)
         trace = getattr(self.decide, "last", None)
         trace = deepcopy(trace) if isinstance(trace, dict) else None
-        return Decision(self.n, t, intent, _source(self.decide), state, self.ms[-1], self.lag[-1], trace)
+        timing = (DecisionTiming(t, *slot, offered, c0, tagged, hud_done, brain_start, now)
+                  if self.phased else None)
+        return Decision(self.n, t, intent, _source(self.decide), state, self.ms[-1], self.lag[-1], trace, timing)
 
     def close(self):
         if self.worker:
@@ -385,6 +494,9 @@ class Loop:
         if probe and range_receipt is not None:
             raise ValueError("scripted cast calibration cannot carry a learned model receipt")
         self.range_skill_mode = brain_name == "range-skill" or probe
+        self.decision_slots = None
+        self._decision_slot = None
+        self.decision_consumptions = {}           # reflex-owned; published Decisions are never mutated
         if brain_name in RANGE_BRAINS or probe:
             # Neither model refusal nor a calibration non-start permits fallback attacks.
             warmup, keepalive_s = False, None
@@ -394,6 +506,9 @@ class Loop:
             limit = 10 if probe else 20
             if not math.isfinite(max_s) or not 0 < max_s <= limit:
                 raise ValueError(f"range execution requires a duration in (0, {limit}] seconds")
+            if brain_name == "range-skill":
+                RangeDecisionSlots.validate_timing(period, decide.policy.spec.tolerance_s)
+                self.decision_slots = RangeDecisionSlots(decide.policy.spec.tolerance_s, max_s)
         if cooldowns not in COOLDOWNS:
             raise ValueError(f"cooldowns must be one of {COOLDOWNS}, not {cooldowns!r}")
         self.patch = patch if patch is not None else kit_patch()   # the run's own metadata: the kit's current patch, or unknown
@@ -418,7 +533,8 @@ class Loop:
                 return out
 
         self.track, self.cams = track, {}
-        self.decider = Decider(decide, percept, decision_hz, threaded, track, lambda: self.coasting)
+        self.decider = Decider(decide, percept, decision_hz, threaded, track, lambda: self.coasting,
+                               phased=self.decision_slots is not None)
         self.reflex_hz, self.max_s, self.keepalive_s, self.warmup = reflex_hz, max_s, keepalive_s, warmup
         self.stale_s, self.scoreboard, self.every, self.brain_name = stale_s, scoreboard, scoreboard_every_s, brain_name
         self.t0 = self.last_t = self.last_ok = self.lost_since = self.ka_t = self.size = self.stop = None
@@ -455,6 +571,11 @@ class Loop:
         self.last_active = -math.inf if self.warmup else t     # the first input after a pad connects is swallowed: warm up
         while True:
             if self.last_t is None or t - self.last_t >= REFLEX_TOL / self.reflex_hz:
+                # The first source acquisition is always reflex-eligible, fixing
+                # the origin. Source frames skipped by this cadence do not enter
+                # the decision stream or consume any slot.
+                if self.decision_slots is not None:
+                    self._decision_slot = self.decision_slots.acquire(t)
                 if why := self._tick(frame, t):
                     return why
             nxt = self.source.next()
@@ -507,6 +628,8 @@ class Loop:
     # -- one reflex tick ------------------------------------------------------------------------------------------------
     def _tick(self, frame, t):
         p, c0 = self.p, time.perf_counter()
+        if self._decision_slot is not None:
+            self._decision_slot["reason"] = "guard_refused"
         if self.last_t is not None:
             self.periods.append((t - self.last_t) * 1000)
         self.last_t = t
@@ -536,8 +659,14 @@ class Loop:
         self._note_cam(t, size)
         dets = self.track(p.aim(frame), t, size, clip=aim_window(size))
         self.aim_ms.append((time.perf_counter() - a0) * 1000)
-        self.decider.offer(frame, t, size, dets)
+        if self.decision_slots is None:
+            self.decider.offer(frame, t, size, dets)
+        elif self._decision_slot is not None:
+            self._decision_slot["reason"] = self.decider.offer(frame, t, size, dets, slot=self._decision_slot)
         d = self.decider.latest
+        if d is not None and d.timing is not None and d.n not in self.decision_consumptions:
+            self.decision_consumptions[d.n] = {"first_reflex_consumption_perf": time.perf_counter(),
+                                                "reflex_acquisition_t": t}
         fresh = d is not None and t - d.t <= self.stale_s
         intent, source = (d.intent, d.source) if fresh else (Idle(), "stale" if d else "waiting")
         if self.range_skill_mode and not isinstance(intent, (RangeSkill, Idle, Disengage)):
@@ -558,6 +687,8 @@ class Loop:
                     origin["d"] = d.n
                     if d.n != self.last_d:
                         origin.update(state=d.state.to_dict(), ms_decide=round(d.ms, 2))
+                        if d.timing is not None:
+                            origin["decision_timing"] = self._decision_timing(d.n, d.timing)
                         if d.trace is not None:
                             origin["decision_trace"] = deepcopy(d.trace)
             try:
@@ -774,6 +905,11 @@ class Loop:
             start, by = r(hi), "hud_returned"
         return segs + [{"start_t": start, "end_t": r(self.last_t), "started_by": by, "ended_by": "run_end"}]
 
+    def _decision_timing(self, n, timing):
+        return {"d": n, "processing_clock": "perf_counter_seconds", "observation_clock": "loop_seconds",
+                **asdict(timing), "first_reflex_consumption_perf": None, "reflex_acquisition_t": None,
+                **self.decision_consumptions.get(n, {})}
+
     def summary(self):
         span = (self.last_t - self.t0) if self.t0 is not None and self.last_t is not None else 0.0
         n, dec = len(self.tick_ms), self.decider
@@ -788,6 +924,14 @@ class Loop:
                 "scoreboards": self.boards, "errors": self.errors, "native": list(self.size) if self.size else None,
                 **({"start": self.start} if self.start is not None else {}),
                 **({"executor_events": deepcopy(self.executor_events)} if self.range_skill_mode else {}),
+                **({"decision_schedule": {"rule": "first_reflex_acquisition_after_phase", "clock": "loop_seconds",
+                                          "selection_domain": "reflex_eligible_acquisitions",
+                                          "processing_clock": "perf_counter_seconds", "origin_t": self.decision_slots.origin,
+                                          "period_s": .1, "tolerance_s": self.decision_slots.tolerance_s,
+                                          "invalid_acquisitions": self.decision_slots.invalid_acquisitions,
+                                          "slots": deepcopy(self.decision_slots.events)},
+                    "decision_timings": [self._decision_timing(n, timing) for n, timing in dec.timings]}
+                   if self.decision_slots is not None else {}),
                 **({"range_policy": self.range_receipt} if self.range_receipt is not None else {})}
 
 
@@ -963,6 +1107,8 @@ def main(argv=None):
             range_brain = CandidateBrain.from_checkpoint(a.range_checkpoint, expected_sha256=a.range_sha256,
                             expected_identity=range_identity, expected_runtime=range_runtime,
                             deployment_binding=range_binding, device="cpu", offline=not a.live)
+            if a.brain == "range-skill":
+                RangeDecisionSlots.validate_timing(range_brain.policy.spec.period_s, range_brain.policy.spec.tolerance_s)
             if not math.isclose(a.decision_hz * range_brain.policy.spec.period_s, 1.0, abs_tol=1e-9):
                 ap.error("--decision-hz must match the checkpoint cadence")
         except (OSError, ValueError, TypeError, KeyError, DemoError, RuntimeError) as e:
