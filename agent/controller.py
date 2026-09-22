@@ -555,22 +555,38 @@ class Controller:
         # A box carrying the target's own tracker id is its measurement (the tracker has already matched it through the camera's turn).
         # Otherwise the nearest box by bearing, of a size the target can have: reach30's whole-frame bot (183 px) was taken over by the
         # 30-40 px distant boxes that crossed its bearing, and the aim followed them away from her.
-        cands = [d for d in state.detections if d.cls == wanted.cls and self._fits(d, state.frame[1])]
+        same = [d for d in state.detections if d.cls == wanted.cls]
+        cands = [d for d in same if self._fits(d, state.frame[1])]
         own = [d for d in cands if wanted.track is not None and d.track == wanted.track]
-        if not cands:
+        held = [d for d in same if wanted.track is not None and d.track == wanted.track]
+        if not (cands or held):
             return
+
+        def off(d):
+            by, bp = bearing(d)
+            return math.hypot(by - self.track.yaw, bp - self.track.pitch)
+
         gate = math.degrees(math.atan2(max(60.0, 2.0 * max(self.track.w, self.track.h)) * w / 1280.0, f))
-        best = min(own or cands, key=lambda d: math.hypot(bearing(d)[0] - self.track.yaw, bearing(d)[1] - self.track.pitch))
-        by, bp = bearing(best)
-        if own or math.hypot(by - self.track.yaw, bp - self.track.pitch) <= gate:
+        best = min(own or cands, key=off) if cands else None
+        if best is not None and (own or off(best) <= gate):
+            by, bp = bearing(best)
             self.track.correct(by, bp, max(dt, 1 / 120))
             self._measure(best, state)
             self.track.confirmed = True
-        elif state.t - self.track.seen_t > 0.25 and not self._behind_hero(state, shown, f) and not self._other(best, wanted):
-            # The track has drifted off every box, and the target is not just hidden behind the hero. Never onto a box the tracker knows
-            # is another object: reach30 re-seeded a whole-frame target 948 px left onto the door's edge (id 51), counted it as measured
-            # and confirmed, turned right and walked at it.
-            seed(best, True)
+        elif state.t - self.track.seen_t > 0.25 and not self._behind_hero(state, shown, f):
+            # The track has drifted off every box, and the target is not just hidden behind the hero. The held id's own box first,
+            # whatever its size: plaza30 measured a 107 px fragment of id 71 at the crop's edge (the same frame had its 499 px piece),
+            # then refused the id's whole 631 px box as the wrong size for 8.3 s while the frozen track sat inside AIM_DONE_DEG and
+            # then counted as lost: nothing was sent. Not sooner: one frame's id can be wrong (plaza30 16.836: an 89 px box took the
+            # held id 37 of a 585 px bot 300 px away), and the size check refuses it while the track is fresh. Never onto a box the
+            # tracker knows is another object: reach30 re-seeded a whole-frame target 948 px left onto the door's edge (id 51), counted
+            # it as measured and confirmed, turned right and walked at it.
+            # The held id at another size is aimed at only: the old measurement's age says nothing about the new box, and one frame of
+            # it is no evidence (review of ec7359a: the 16.836 stray after a 0.28 s blind gap was walked at on its first frame). It is
+            # confirmed, measured and walkable once the crop measures the held id at that size again.
+            again = min(held, key=off) if held else best
+            if not self._other(again, wanted):
+                seed(again, not held)
 
     @staticmethod
     def _other(det, wanted):

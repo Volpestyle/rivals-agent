@@ -296,3 +296,98 @@ def test_another_ids_box_never_arms_or_starts_an_attack_for_the_held_target():
     c = Controller()                                                            # the held target's own box: the strike goes out
     pads = [c.step(State(t=i / 60, frame=(1280, 720), detections=[held]), WebStrike(held)) for i in range(30)]
     assert any("RB" in p["buttons"] for p in pads)
+
+
+def _plaza30_71(c):
+    """plaza30 t 28.286-28.403, recorded crop boxes (2560x1440; every one cut by the crop's right edge at x 1760): the tracker gave the
+    point-blank Luna bot's outline fragments one id, 71; the nearest by bearing was the upper piece, 200 -> 114 -> 107 px."""
+    F, E = (2560, 1440), lambda b, i=71: Detection(ENEMY, b, 0.9, track=i)
+    rows = [(28.286, [E((1532, 240, 1760, 716)), E((1537, 757, 1727, 840), 73), E((1725, 865, 1760, 954), 74)]),
+            (28.310, [E((1544, 519, 1760, 1018)), E((1546, 282, 1760, 488))]),
+            (28.330, [E((1544, 557, 1760, 1033)), E((1552, 319, 1760, 519))]),
+            (28.347, [E((1542, 590, 1760, 1060)), E((1722, 439, 1760, 553))]),
+            (28.364, [E((1538, 623, 1760, 1122)), E((1726, 480, 1760, 587))]),
+            (28.385, [E((1525, 528, 1760, 1159))]),                         # from here only the whole box: 631, then ~520 px
+            (28.403, [E((1509, 563, 1760, 1200))])]
+    rows += [(28.42 + k * 0.02, [E((1538, 582, 1760, 1102))]) for k in range(30)]
+    held, out = rows[0][1][0], []
+    for t, dets in rows:
+        out.append((t, c.step(State(t=t, frame=F, detections=dets), Engage(held), intent_t=t), c._measured))
+    return out
+
+
+def test_the_held_ids_whole_box_is_taken_back_after_a_fragment_set_the_tracks_size():
+    """plaza30 t 28.385-36.71: the track's size came from a 107 px fragment of id 71, and the id's own 631 px box was then refused as another
+    size (5.9x, over CLOSE_RATIO) on every tick for 8.3 s: nothing measured, the frozen track inside AIM_DONE_DEG and then lost, the pad
+    neutral while the brain held Engage(71) with the bot 316 px right of the crosshair. Once the track has gone unmeasured past the re-seed
+    delay (0.25 s) it re-seeds onto the held id's own box whatever its size, aim-only; the next frame of the id at that size measures and
+    confirms it. Arming restarts from zero."""
+    c = Controller()
+    out = _plaza30_71(c)
+    assert [m for t, _, m in out if t <= 28.364] == [True] * 5
+    after = [(t, p, m) for t, p, m in out if t > 28.364]
+    turn = next(i for i, (t, p, _) in enumerate(after) if p["rx"] > 0.3 and t - 28.364 > 0.25)
+    assert after[turn][0] - 28.364 <= 0.27 and not after[turn][2]          # re-seeded on the first tick past the delay: turned toward, aim-only
+    assert all(m for _, _, m in after[turn + 1:]) and c.track.h > 400 and c.track.confirmed   # measured, at its own size, from the next
+    assert not any(_pressed(p) for t, p, _ in out if t > 28.364)          # off-centre: turned toward, nothing pressed
+
+
+def test_a_held_id_box_of_another_size_is_refused_while_the_track_is_fresh_and_other_boxes_never_re_seed():
+    """plaza30 t 16.836: an 89 px crop box took the held id 37 for one frame, 300 px from the 585 px bot that carried it; the size check
+    refused it. It still does while the track is fresh. After a blind gap past the re-seed delay the held id's box is aimed at only: one
+    frame of it measures, arms and walks nothing. A box of another size with another id or no id is not taken at all."""
+    F = (2560, 1440)
+    held = Detection(ENEMY, (1180, 400, 1380, 985), 0.9, track=37)            # 585 px, on the crosshair
+    c = Controller()
+    for k in range(8):
+        c.step(State(t=k / 50, frame=F, detections=[held]), Engage(held), intent_t=k / 50)
+    t = 8 / 50
+    stray = Detection(ENEMY, (1520, 700, 1560, 789), 0.9, track=37)           # 89 px, the held id, one frame
+    pad = c.step(State(t=t, frame=F, detections=[stray]), Engage(held), intent_t=t)
+    assert not c._measured and pad["ly"] == 0.0 and c.track.h == 585
+    c = Controller()                                                           # review of ec7359a: the stray after a blind gap
+    for t in (0.0, 0.02, 0.04):
+        c.step(State(t=t, frame=F, detections=[held]), Engage(held), intent_t=t)
+    for t in (0.1, 0.2, 0.3):
+        c.step(State(t=t, frame=F, detections=[]), Engage(held), intent_t=t)
+    pad = c.step(State(t=0.32, frame=F, detections=[stray]), Engage(held), intent_t=0.32)
+    assert pad["rx"] > 0.3 and pad["ly"] == 0.0 and not c._measured and c.stable == 0 and not c.track.confirmed
+    pads = [c.step(State(t=0.34 + k / 50, frame=F, detections=[]), Engage(held), intent_t=0.34 + k / 50) for k in range(20)]
+    assert not any(p["ly"] or _pressed(p) for p in pads)                     # it never came back: nothing but the turn
+    for box in (replace(stray, track=38), replace(stray, track=None)):
+        c = Controller()
+        for k in range(8):
+            c.step(State(t=k / 50, frame=F, detections=[held]), Engage(held), intent_t=k / 50)
+        pads = [c.step(State(t=(8 + k) / 50, frame=F, detections=[box]), Engage(held), intent_t=(8 + k) / 50) for k in range(40)]
+        assert not c._measured and c.track.h == 585 and not any(p["ly"] or _pressed(p) for p in pads), box.track
+
+
+def test_a_playing_burst_finishes_its_own_sequence_after_the_target_changes_and_nothing_new_is_armed():
+    """plaza30 t 25.651: the LT went out with no crop box, under Engage(66), 0.7 s after the second KO. It is the burst's own last tap: armed
+    at 22.668 on Combo(54) on the held id's own box (5 steps measured), sequence end fixed then at +3.032 s (25.700), the LT at +2.983 s.
+    Only Idle and Disengage preempt a playing primitive. Nothing is armed on the coast: no play() while no box is measured, and no press
+    once the sequence has ended."""
+    F = (1280, 720)
+    held = Detection(ENEMY, (630, 340, 650, 380), 0.9, track=54)
+    c, t, armed = Controller(), 0.0, None
+    while armed is None:
+        c.step(State(t=t, frame=F, detections=[held]), Combo(BURST, held))
+        armed = t if c.seq else None
+        t += 1 / 60
+    end = c.seq[-1][0]
+    assert c.seq_name == "burst" and abs(end - armed - 3.032) < 1e-6
+    while t < armed + 1.79:                                                  # LT, RB, X on the held box; the RT is playing (24.459)
+        c.step(State(t=t, frame=F, detections=[held]), Combo(BURST, held))
+        t += 1 / 60
+    plays, play = [], c.play
+    c.play = lambda name, when: (plays.append((name, when)), play(name, when))
+    succ = Engage(Detection(ENEMY, (900, 300, 930, 380), 0.9, track=66))      # the brain moves on; its box never reaches the crop
+    lts = []
+    while t < end + 2.0:
+        pad = c.step(State(t=t, frame=F, detections=[]), succ)
+        if pad["lt"]:
+            lts.append(t)
+            assert c.seq_name == "burst"
+        assert t < end or not _pressed(pad)
+        t += 1 / 60
+    assert plays == [] and lts and all(armed + 2.95 <= x < end for x in lts)
