@@ -70,6 +70,7 @@ class Live:
         self._is_board = board_guard or (lambda f: False)
         self._in_session = session_guard or (lambda f: False)
         self.frame, self.frame_t = None, 0.0
+        self.frame_received_t = self.scoreboard_frame_interval = None
         if not self._in_range(self.fresh(START_S)):
             raise RangeLost("range HUD not on screen at start; no pad opened")
         if pad_factory is None:
@@ -101,6 +102,7 @@ class Live:
             f = self.cap.grab()
             if f is not None:
                 self.frame, self.frame_t = f, t0
+                self.frame_received_t = time.perf_counter()
                 return f
             if time.perf_counter() > deadline:
                 if self.frame is None:
@@ -167,6 +169,7 @@ class Live:
         releases BACK at once and raises RangeLost. BACK is re-applied, and the lease renewed, only by a proven frame.
         """
         back, shot = {**NEUTRAL, "buttons": ("BACK",)}, None
+        self.scoreboard_frame_interval = None
         self.release()
         self.fresh()                               # BACK is never pressed on a cached frame: the proof is grabbed now
         self.send(**NEUTRAL)
@@ -180,6 +183,7 @@ class Live:
                 self._commit(back, lambda f: seen.append(self._is_board(f)) or seen[-1] or (opening and self._in_session(f)))
                 if seen[-1]:
                     shot = self.frame
+                    self.scoreboard_frame_interval = (self.frame_t, self.frame_received_t)
         finally:
             self.release()
         t0 = time.perf_counter()

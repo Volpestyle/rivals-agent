@@ -27,7 +27,8 @@ import sys
 import threading
 import time
 from collections import Counter
-from dataclasses import dataclass, replace
+from copy import deepcopy
+from dataclasses import asdict, dataclass, replace
 from pathlib import Path
 from typing import Callable
 
@@ -210,7 +211,12 @@ class LiveIO:
         self.live.close()                                               # neutral, and ends Live's watchdog; Live refuses input from then on
 
     def scoreboard(self, hold_s):
-        return self.live.scoreboard(hold_s)                            # a positively recognised board frame, or None; RangeLost on anything else
+        self.board_capture_interval = None
+        board = self.live.scoreboard(hold_s)
+        interval = getattr(self.live, "scoreboard_frame_interval", None)
+        if board is not None and interval is not None:
+            self.board_capture_interval = tuple(t - self.t0 for t in interval)
+        return board
 
 
 # --- the decision rate ---------------------------------------------------------------------------------------------
@@ -223,6 +229,7 @@ class Decision:
     state: State
     ms: float            # compute time of this decision
     lag_ms: float        # from the reflex thread handing the frame over to the intent being ready
+    trace: dict | None = None  # captured on the decision thread, never read from a moving brain later
 
 
 def _readonly(frame):
@@ -288,7 +295,9 @@ class Decider:
         self.n += 1
         self.ms.append((now - c0) * 1000)
         self.lag.append((now - offered) * 1000)
-        return Decision(self.n, t, intent, _source(self.decide), state, self.ms[-1], self.lag[-1])
+        trace = getattr(self.decide, "last", None)
+        trace = deepcopy(trace) if isinstance(trace, dict) else None
+        return Decision(self.n, t, intent, _source(self.decide), state, self.ms[-1], self.lag[-1], trace)
 
     def close(self):
         if self.worker:
@@ -359,11 +368,20 @@ class Loop:
     def __init__(self, source, pad, percept, decide=scripted.decide, *, log=None, controller=None, threaded=False,
                  reflex_hz=REFLEX_HZ, decision_hz=DECISION_HZ, max_s=MAX_S, keepalive_s=KEEPALIVE_S, warmup=True,
                  stale_s=STALE_S, scoreboard=True, scoreboard_every_s=None, brain_name="scripted", tracker=None, cooldowns="unknown",
-                 patch=None, start=None):
+                 patch=None, start=None, range_receipt=None):
+        if brain_name == "range":
+            # A model's neutral decision must not become the scripted warmup/idle attack.
+            warmup, keepalive_s = False, None
+            period = decide.policy.spec.period_s
+            if not math.isclose(decision_hz * period, 1.0, abs_tol=1e-9):
+                raise ValueError("range policy decision cadence differs from checkpoint")
+            if not math.isfinite(max_s) or not 0 < max_s <= 20:
+                raise ValueError("range policy pilot requires a duration in (0, 20] seconds")
         if cooldowns not in COOLDOWNS:
             raise ValueError(f"cooldowns must be one of {COOLDOWNS}, not {cooldowns!r}")
         self.patch = patch if patch is not None else kit_patch()   # the run's own metadata: the kit's current patch, or unknown
         self.start = start           # the live start phase's record (agent/startup.py): the accepted start pose, its turns and timings
+        self.range_receipt = deepcopy(range_receipt)
         self.cooldowns = cooldowns   # the range's "No Ability Cooldown": off = ON (infinite ammo, no cooldown numbers), normal = OFF
         self.source, self.pad, self.p, self.log, self.ctrl = source, pad, percept, log, controller or Controller()
         lock, tracker, self.coasting = threading.Lock(), tracker or Tracker(), ()
@@ -538,7 +556,14 @@ class Loop:
             return skipped(f"scoreboard_refused: {e!r}")
         if board is None or self.p.is_board(board) is not True:
             return skipped("not_a_scoreboard")
-        self.boards.append({"t": round(t, 3), "file": self.log.save(name, board) if self.log else None,
+        interval = getattr(self.pad, "board_capture_interval", None)
+        valid_interval = (isinstance(interval, (tuple, list)) and len(interval) == 2
+                          and all(type(x) in (int, float) and math.isfinite(x) for x in interval)
+                          and t <= interval[0] <= interval[1])
+        timing = {"captured_t": interval[1], "capture_interval": list(interval),
+                  "capture_clock": "grab_start_to_return_loop_seconds"} if valid_interval else {}
+        self.boards.append({"t": round(t, 3), **timing,
+                            "file": self.log.save(name, board) if self.log else None,
                             "size": list(self.p.size(board)), "parsed": self._read_board(board)})
 
     def _read_board(self, board):
@@ -571,6 +596,8 @@ class Loop:
             row["d"] = d.n
             if d.n != self.last_d:                      # the row a decision first stood on carries its State
                 row["state"], row["ms_decide"], self.last_d = d.state.to_dict(), round(d.ms, 2), d.n
+                if d.trace is not None:
+                    row["decision_trace"] = d.trace
         self.log.write(row, frame)
 
     def _segments(self):
@@ -598,7 +625,8 @@ class Loop:
                 "decision_lag_ms": spread(dec.lag), "missed_decisions": dec.missed, "sources": dict(self.sources),
                 "intents": dict(self.intents), "keepalives": self.keepalives, "range_gaps": self.gaps,
                 "scoreboards": self.boards, "errors": self.errors, "native": list(self.size) if self.size else None,
-                **({"start": self.start} if self.start is not None else {})}
+                **({"start": self.start} if self.start is not None else {}),
+                **({"range_policy": self.range_receipt} if self.range_receipt is not None else {})}
 
 
 def _png(out):
@@ -669,14 +697,19 @@ def main(argv=None):
     mode = ap.add_mutually_exclusive_group(required=True)
     mode.add_argument("--dry", metavar="RUN_DIR", help="offline: replay a recorded run (frames.jsonl + jpgs) through the loop, fake pad")
     mode.add_argument("--live", action="store_true", help="the PC, desktop session, game in the Practice Range, one real pad")
-    ap.add_argument("--brain", choices=("scripted", "jev", "learned"), default="scripted")
+    ap.add_argument("--brain", choices=("scripted", "jev", "learned", "range"), default="scripted")
+    ap.add_argument("--range-checkpoint", help="range: explicitly selected reviewed checkpoint")
+    ap.add_argument("--range-sha256", help="range: externally pinned checkpoint SHA-256")
+    ap.add_argument("--range-identity", help="range: JSON identity from reviewed experiment configuration; never inferred from weights")
+    ap.add_argument("--range-runtime", help="range: separate observed pad/settings/calibration/controller profile JSON")
+    ap.add_argument("--range-deployment", help="range: reviewed checkpoint-to-runtime deployment binding JSON")
     ap.add_argument("--cooldowns", choices=COOLDOWNS, help="the recording's resource regime: the range's Practice Settings 'No Ability Cooldown' "
                     "ON is `off`, OFF is `normal`. Required with --live, and only off or normal there; written into meta.json and the manifest")
     ap.add_argument("--run", default=time.strftime("%Y%m%d-%H%M%S"), help="live: record to data/l1/<run>")
     ap.add_argument("--out", help="dry: also write the recording here")
     ap.add_argument("--limit", type=int, help="dry: only the first N frames")
     ap.add_argument("--threaded", action="store_true", help="dry: decide on a worker thread, as --live does")
-    ap.add_argument("--max-s", type=float, default=MAX_S)
+    ap.add_argument("--max-s", type=float, help="duration; default 20 s for range policy, 300 s otherwise")
     ap.add_argument("--reflex-hz", type=float, default=REFLEX_HZ)
     ap.add_argument("--decision-hz", type=float, default=DECISION_HZ)
     ap.add_argument("--save-fps", type=float, default=10.0, help="native frames kept per second in the recording (0: none)")
@@ -686,11 +719,53 @@ def main(argv=None):
                     "confirming frames saved to data/l1/<run>, the pad closed; exit 0 on a confirmed start pose, 1 on a refusal. No brain, "
                     "no log, no loop, no scoreboard")
     a = ap.parse_args(argv)
+    if a.max_s is None:
+        a.max_s = 20.0 if a.brain == "range" else MAX_S
     if a.pose_only and not a.live:
         ap.error("--pose-only needs --live")
     if a.live and not a.pose_only and a.cooldowns not in ("off", "normal"):
         ap.error("--live needs --cooldowns off|normal (no default): a recording made with No Ability Cooldown ON is a different regime, "
                  "and a live run is one the operator can see")
+
+    range_brain = range_identity = range_runtime = range_binding = range_receipt = None
+    range_args = (a.range_checkpoint, a.range_sha256, a.range_identity, a.range_runtime, a.range_deployment)
+    if a.brain != "range" and any(range_args):
+        ap.error("--range-* arguments require --brain range")
+    if a.brain == "range":
+        if a.pose_only or not all(range_args[:3]):
+            ap.error("range needs checkpoint, SHA-256 and identity; it is not a pose-only operation")
+        if bool(a.range_runtime) != bool(a.range_deployment) or (a.live and not a.range_runtime):
+            ap.error("live range needs separate --range-runtime and --range-deployment profiles")
+        if not math.isfinite(a.max_s) or not 0 < a.max_s <= 20:
+            ap.error("range policy pilot requires --max-s in (0, 20]")
+        # Validate/load before constructing LiveIO: even pad attachment changes the camera.
+        from .learned_range import LearnedRangeBrain
+        from .human_demos import DemoError
+        from policy.range_policy import DeploymentBinding, Identity, RuntimeIdentity
+        try:
+            identity_data = json.loads(Path(a.range_identity).read_text(encoding="utf-8"))
+            range_identity = Identity(**identity_data)
+            if a.range_runtime:
+                range_runtime = RuntimeIdentity(**json.loads(Path(a.range_runtime).read_text(encoding="utf-8")))
+                binding_data = json.loads(Path(a.range_deployment).read_text(encoding="utf-8"))
+                binding_data["runtime"] = RuntimeIdentity(**binding_data["runtime"])
+                range_binding = DeploymentBinding(**binding_data)
+            if a.cooldowns != range_identity.cooldown_regime:
+                ap.error("--cooldowns must match the reviewed range identity")
+            if a.live and a.cooldowns != "normal":
+                ap.error("range policy pilot requires normal cooldowns")
+            range_brain = LearnedRangeBrain.from_checkpoint(a.range_checkpoint, expected_sha256=a.range_sha256,
+                            expected_identity=range_identity, expected_runtime=range_runtime,
+                            deployment_binding=range_binding, device="cpu", offline=not a.live)
+            if not math.isclose(a.decision_hz * range_brain.policy.spec.period_s, 1.0, abs_tol=1e-9):
+                ap.error("--decision-hz must match the checkpoint cadence")
+        except (OSError, ValueError, TypeError, KeyError, DemoError, RuntimeError) as e:
+            ap.error(f"range checkpoint refused: {e}")
+        range_receipt = {"checkpoint_sha256": a.range_sha256, "source_identity": identity_data,
+                         "runtime": asdict(range_runtime) if range_runtime else None,
+                         "deployment": asdict(range_binding) if range_binding else None,
+                         "origin": range_brain.policy.origin,
+                         "scope": "learned_idle_engage_timing_scripted_target_and_mechanics"}
 
     start = percept = None
     if a.live:
@@ -725,7 +800,7 @@ def main(argv=None):
         source, out, save_fps, threaded = RunSource(a.dry, a.limit), a.out, (a.save_fps if a.out else 0), a.threaded
         pad = FakePad(board=source.imread(str(source.items[0][1])) if source.items else None)
     try:                                                # from the moment the pad is open: a failing brain or log still closes it
-        brain = make_brain(a.brain)                     # before the log: a brain that cannot be built leaves no run directory
+        brain = range_brain if range_brain is not None else make_brain(a.brain)
         log = RunLog(out, save_fps) if out else None
         if start is not None:                           # the two confirming frames: the second is the accepted start pose
             frames = start.pop("frames")
@@ -734,7 +809,9 @@ def main(argv=None):
         loop = Loop(source, pad, percept or default_perception(), brain, threaded=threaded, brain_name=a.brain,
                     log=log, reflex_hz=a.reflex_hz, decision_hz=a.decision_hz, max_s=a.max_s,
                     scoreboard=not a.no_scoreboard, scoreboard_every_s=a.scoreboard_every, cooldowns=a.cooldowns or "unknown",
-                    warmup=not a.live, start=start)     # live: no forced walk / back / RT at the start: it would move off the confirmed pose
+                    warmup=not a.live, start=start,
+                    patch=range_runtime.patch if range_runtime else range_identity.patch if range_identity else None,
+                    range_receipt=range_receipt)
         print(json.dumps(loop.run(), indent=1))
     finally:
         if a.live:
