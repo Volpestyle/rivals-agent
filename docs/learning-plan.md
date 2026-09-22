@@ -520,12 +520,39 @@ Prior purpose sets and frozen source judgments remain unchanged. The additive
 acceptance is `data/experiments/purpose-task-v1/requalification/acceptance/`;
 training remains unauthorized and neither gate passes.
 
-The next task specification retains observable, compatible behaviours rather than
-forcing exclusive purpose classes. Context-only judgments and any later
-hindsight-corroborated targets remain distinct; future evidence never enters model
-inputs, and split purging includes label look-ahead. Existing open Day/Req footage
-is inventoried before further acquisition. The two-section capacity ceiling is
-not a claim that the held footage or the creators' full archives are exhausted.
+**The next expert task forecasts compatible behaviours in `(t,t+2]` from causal
+`[t-5,t]` frames.** Approach, attack, moving away and traversal without a visible
+enemy have independent present/absent/unknown labels. Context state is frozen before
+outcomes; onset and continuation are reported separately. Purpose sets remain intact,
+and purging includes the full input, label and confirmation footprint. This is expert
+future-behaviour imitation, not another required current-engagement recognition fit.
+
+The four-window native canary has 14/16 channel-state agreement across independent
+passes. Three windows share eligibility, contributing four positive and four negative
+channel cells, including two attack onsets and a no-attack traversal control. Those
+are not eight independent examples. Approach at pt2-10 and moving-away at pt2-05
+remain unknown; pt2-22's disputed future eligibility masks its imitation labels
+without changing its earlier context-only Option R acceptance. Seat B declares
+prior high-level label exposure for 05/22; this is a method check, not blind accuracy.
+The frozen comparison and runnable check are under
+`data/experiments/purpose-task-v1/next-behaviour-canary/comparison/`.
+
+The same task continues on the remaining 20 original packet pairs; no canary
+replacement or label-driven selection occurs. The offline consumer uses the existing
+visual encoder/temporal-head path and synthetic verification before corpus use.
+No expert fit or deployment is authorized yet. Existing `Engage` bundles movement
+and attack: its proposed joint mapping has no fully supported canary example and
+is not accepted learned control. Scripted fallback performance is never credited
+to the model.
+
+The held-footage inventory contains four open Req uploads totaling 76.65 raw minutes.
+Both bounded screening passes find own-play candidates mixed with pre-round, replay,
+spectator, death and scoreboard material; sampled endpoints establish no continuous
+usable duration. Older patches and underlying-session independence remain unresolved.
+The new Day extraction stays inspection-only after independent review confirms actor
+and scoreboard admissions; visibility masks alone do not certify eligibility. The
+two-section capacity ceiling is not exhaustion of held footage or creator archives.
+Acquisition remains parked while accepted packets and held candidates are used first.
 
 Outcome audits preserve unknown cause at bonus-max-HP transitions: the pt2-12
 500/500 to 250/250 change does not establish the shared stream's claimed 250
