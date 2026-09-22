@@ -1,5 +1,175 @@
 # Policy: the learned chooser (steps 1-3)
 
+## Expert future-behaviour offline consumer (VUH-1311)
+
+`policy/behaviour.py` implements the proposed offline consumer, **pending independent
+data-integrity review**. It forecasts the four compatible channels in
+`data/experiments/purpose-task-v1/BEHAVIOUR-DRAFT.md` from causal `[t-5,t]` visual
+history for `(t,t+2]`. The bounded native canary acceptance permits label-method
+continuation, not fitting; its `training_authorized: false` comparison is refused.
+No corpus fit, cache/embedding read, pixel inspection or live adapter accompanies
+this implementation. The existing in-flight lane sections below remain unchanged.
+
+The runner reuses the frozen DINO cache format, `train.step_row`'s visual prefix
+and `train.Head` (projection + two GRUs). Exact cache paths replace the existing
+directory-wide cache scan at the admission boundary. Inputs have 386 columns:
+384 embeddings, embedding-present and scene-masked. There are no event, State,
+label-mask, onset, outcome, source-time or annotation columns in the neural input.
+Scene-mask evidence must be available at each historical step. Source time converts
+to native PTS once: Day +1.616 s, Req +0 s; lookup is strictly at-or-before each
+10 Hz step, with the existing .12 s maximum age. Cache times stay in native PTS;
+only `(t-5+i/10) + pts_offset` is converted, once per step. Both native
+`cache_time <= cutoff` and age are checked without tolerance. Selected frames must
+also lie inside the evidence reservation. An unmasked miss fails.
+
+```mermaid
+flowchart LR
+  A[Lead-normalized authorized export] --> V[Admission and freshness checks]
+  V --> S[Support-only report]
+  V --> C[Exact two authorized caches]
+  C --> H[Causal visual histories]
+  H --> F[Whole-session masked smoke fit]
+  F --> R[Saved forecasts, baselines and exact reload check]
+```
+
+### Normalized export v1
+
+The lead owns normalization/admission, not this runner. Supply one JSON object;
+private annotator formats and the raw canary comparison are not adapters. Unknown
+fields are rejected. All timestamps are finite source seconds, booleans are actual
+JSON booleans, and every source/row is checked before cache payload access.
+
+- Header: `task: "expert-next-behaviour-v1"`, `training_authorized: true`,
+  `clock: "source_seconds"`, `history_s: 5`, `horizon_s: 2`, `frame_hz: 10`,
+  `code_sha256`, `sources`, `rows`. `code_sha256` is exactly the fixed path-to-SHA256
+  mapping returned by `policy.behaviour.code_versions()` after review.
+- `sources` keys are exactly `daymr-2879354299-21660-900s` and
+  `reqmr-2873352801-1980-900s`. Each value has `group` (respectively
+  `twitch:2879354299` / `twitch:2873352801`), `pts_offset` (1.616 / 0),
+  `manifest` and `events` (each `{path, sha256}`), `cache_sidecar_sha256`,
+  `cache_sha256`. Export paths are exact **repository-root-relative** strings:
+  `data/demos/vods/<id>.manifest.jsonl` and
+  `data/demos/events/sections/<id>.jsonl`. Media identity is fixed to
+  `data/demos/vods/<id>.mp4`; media is never opened. `--cache` must name
+  `data/embeddings/vit_small_patch16_224-dino-n1-10hz` under the repository,
+  with exact `<id>.json` and `<id>.npz` files. All bindings, including symlink
+  checks on files and ancestors, pass before any artifact is read or hashed;
+  the complete check runs again before cache payload reads. Manifest event/media
+  links and sidecar media identity must match those fixed bindings. No caller
+  override or directory scan exists. Hashes then establish freshness; manifest
+  promotion/patch, frozen event writer, cache encoder/masks and clocks are checked.
+  This enforces source scope, not cryptographic approval or protection against
+  hostile concurrent replacement. Tests substitute only an in-memory repository
+  root containing synthetic artifacts.
+- Each row: unique `id`, `source`, `t`, boolean `eligible`,
+  `training_authorized: true`, `evidence_from`, `evidence_to`, `label_known_at`,
+  `context`, `channels`, `recent_attack`. Eligibility includes accepted suitability
+  for this imitation task. The reservation includes at least `[t-5,t+5]`, stays
+  inside the retained 900 seconds and includes **every** consumed evidence point,
+  span start and availability time, including any earlier selected cache frame.
+  `label_known_at` is only an upper bound on future-label availability, never a
+  substitute for an assertion's own coverage.
+- Every concrete assertion's evidence is exactly `{from, to, known_at}` in source
+  seconds. `from/to` retain the entire inspected span (a point uses equal bounds);
+  `known_at` retains when the assertion becomes available. Require
+  `evidence_from <= from <= to <= known_at <= evidence_to`. A negative's span
+  certifies complete inspected coverage, not merely two endpoint observations;
+  normalization must not bridge gaps, crop early evidence or invent timestamps.
+  Unknown assertions have null evidence, and stay unknown if these bounds cannot
+  be retained. Evidence bounds establish the declared contract, not annotation truth.
+- `context` is exactly 51 records ordered at `s = t-5+i/10`:
+  `{scene_masked: bool, evidence: {from, to, known_at}}`. Evidence covers s and is
+  available by s (`from <= to == known_at == s`). These are observation masks,
+  **not** aggregate annotation/loss masks. A wholly hidden history is refused.
+- `channels` has exactly `approaching_visible_enemy`, `attacking`, `moving_away`,
+  `traversing_without_visible_enemy`. Each has `accepted_state`, `imitation_mask`,
+  `onset`, `onset_bounds`, `continuation`, `context_state`, plus `accepted_evidence`,
+  `onset_evidence`, `continuation_evidence`, `context_evidence`. State fields use
+  `present/absent/unknown`; each evidence field is the bound object above or null
+  for its unknown state. `imitation_mask` equals eligible AND accepted-state-known;
+  ineligible descriptive judgments remain loss-masked but retain valid evidence.
+  Concrete context evidence covers t and is available by t. Each future assertion
+  has its own evidence available by `label_known_at`. Presence requires a span
+  intersecting `(t,t+2]`; **every absence** requires its own full `[t,t+2]` coverage.
+  Onset is known only with absent context; continuation only with present context.
+  Known conditional states must agree with occurrence. In this bounded consumer,
+  future presence with an unresolved transition (including a possible restart)
+  keeps that conditional state unknown, rather than supplying an absence target.
+  A positive onset has `onset_bounds: [lo,hi]` denoting `(lo,hi]`, with
+  `t <= lo < hi <= t+2`, fully contained in its own evidence span. Otherwise bounds
+  are null. Positive continuation evidence crosses t into the future.
+- `recent_attack` is two `{present: bool-or-null, evidence: object-or-null}` records,
+  respectively confirmed offensive-event rules over `(t-1,t]` and `(t-5,t]`.
+  A concrete baseline retains evidence covering the entire corresponding lookback
+  and available by t (`from <= t-lookback`, `to == known_at == t`). This conservative
+  contract applies to positive and negative controls. Missing/partial coverage
+  remains null and uses fit-majority fallback, not a negative. Baseline evidence
+  is never a neural input.
+
+Full evidence footprints form connected overlap clusters including endpoint contact.
+Support reports raw positive/negative cells, eligible unknowns, ineligible rows,
+onset/continuation states and independent homogeneous clusters. A mixed positive/
+negative cluster earns neither independent class count. Whole-session folds keep
+each broadcast intact; the split helper retains the full-footprint + 5 s purge
+rule for shared groups. There is no within-session calibration split in this runner.
+
+### Fixed smoke recipe and checks
+
+After a separately authorized accepted export exists, the proposed command is:
+
+```sh
+nice -n 10 /tmp/rivals-policy-format5-venv/bin/python -m policy.behaviour \
+  --export data/experiments/next-behaviour-v1/accepted-export.json \
+  --cache data/embeddings/vit_small_patch16_224-dino-n1-10hz \
+  --out data/experiments/next-behaviour-v1/smoke-01 --smoke-fit
+```
+
+These are proposed artifact paths, not existing admitted data or an executed fit.
+Without `--smoke-fit`, admission and support reporting read only metadata/evidence
+and cache sidecars, not embedding arrays. The output directory must be new.
+Unsupported folds are explicitly skipped before payload reads if no fold is usable.
+For usable smoke folds, payload validation precedes output creation, so admission
+and payload refusals preserve existing outputs and create no partial run directory.
+The only fitting mode is `pipeline_smoke_only`; it cannot emit a performance pass.
+
+The H2 recipe is fixed: seed 0, 40 epochs, batch 64, Adam .001, hidden width 128,
+balanced masked BCE and final-epoch checkpoint. Unknown channels and ineligible rows
+contribute no loss; channels missing either fitting class are unsupported. Embedding
+mean/scale are fitted only on observed frames in useful fitting rows, saved, and
+applied unchanged to held data; observation bits remain unchanged. No encoder fit,
+hyperparameter search, restarts or held-data normalization occurs.
+
+Comparisons use identical supported held rows: constant positive/negative,
+fit-majority, privileged locked-context persistence, decision-frame-only head,
+fit-only source-time/mask-fraction ridge nuisance control, and 1 s / 5 s attack-event
+rules (other channels use majority for those rules). Occurrence, onset and
+continuation reports stay separate: onset is conditional on known-absent context,
+continuation on known-present context. They apply occurrence forecasts to their
+own supported targets, not a separately trained onset head. Smoke results
+do not satisfy the predeclared 20/20 support, per-fold recall/balanced-accuracy,
+baseline-improvement and cluster-interval performance gates. Two sessions cannot
+establish creator-independent skill. No forecast is converted into pad input.
+
+Artifacts retain the admitted export and fingerprints, recipe, support, per-fold
+checkpoint/normalization, baseline predictions, label masks and metrics. Reload uses
+the recorded 128-row evaluation grouping and must match saved probabilities exactly.
+Synthetic-only verification (including a tiny test-only one-epoch optimization):
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 nice -n 10 /tmp/rivals-policy-format5-venv/bin/python -m pytest -q \
+  -p no:cacheprovider tests/test_behaviour.py
+```
+
+The 59 synthetic checks cover the original 30 cases plus complete canonical binding
+before hashing (including second-source and cache-read rechecks), symlink redirects,
+actual sidecar-producer compatibility, nonzero/zero-offset nextafter controls and
+maximum age, evidence points/span starts/lookbacks, per-assertion negative coverage,
+conditional contradictions, valid positive onset and unknown exclusion, and output
+preservation. The reviewer’s four demonstrated defects are encoded as regressions;
+no additional skill/rule change is needed. Actual data prerequisites are lead-normalized
+accepted labels with explicit fitting authorization and fresh matching source/cache
+fingerprints; independent review of this delta precedes relying on the consumer.
+
 ## Format-5 policy consumer seam
 
 The format-5 writer/loader and policy consumers are integrated on `a016991`; the
