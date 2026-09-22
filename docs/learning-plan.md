@@ -54,6 +54,16 @@ James's existing two selections share one session group. VUH-1347 requests a
 separate validation session; a train-only diagnostic can precede it, but cannot
 establish generalization or authorize live reliance.
 
+The earlier 22:24:54 physical recording now supplies inspected normal-resource
+gameplay before its settings menu. A bounded
+[visual-supervision candidate](visual-range-supervision.md) can use that source
+without assigning abilities from raw controls or backdating the later recording's
+motor settings. It retains unknowns, actual causal perception/target output,
+independent example review and the existing runtime gates. A reconstruction-only
+schema expansion is parked. The concrete support question is whether any true
+neutral future intervals exist alongside usable offensive examples; traversals
+and action recovery do not qualify. Both recordings share the evening group.
+
 Predeclared first pilot: **ten scheduled trials**, each with a verified ready
 start and a 20-second deadline, at least eight audited designated-bot completions
 and zero scope breaches. Keep all ten in the primary denominator, including
