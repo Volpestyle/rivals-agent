@@ -14,7 +14,7 @@ from policy import range_policy as legacy
 from policy.range_skill_policy import (FEATURE_REVISION, FORMAT, HEAD, OUTCOMES, SEMANTIC_REVISION,
     EventExample, SkillDeploymentBinding, SkillRuntimeIdentity, SourceIdentity, Snapshot, Spec,
     cohort, coverage_report, digest, evaluate, event_metrics, event_window, evidence_digest,
-    load_checkpoint, save_checkpoint, train)
+    load_checkpoint, save_checkpoint, train, same_event_domain, RangeSkillPolicy)
 
 SOURCE = SourceIdentity("synthetic-patch", "normal", "a" * 64, "b" * 64, "c" * 64)
 RUNTIME = SkillRuntimeIdentity("synthetic-patch", "normal", "1" * 64, "2" * 64, "3" * 64,
@@ -47,6 +47,164 @@ def example(index=4, label="start", *, split="train"):
 def packet(split="train"):
     return [example(4, "start", split=split), example(5, "no_new_start", split=split),
             *(example(i, None, split=split) for i in range(6, 9))]
+
+
+def evaluation_fixture():
+    """Fixed synthetic scorer, not a trained model or human supervision."""
+    rows = packet()
+    validation_source = replace(SOURCE, source_profile_sha256="7" * 64)
+    validation = [replace(e, source=validation_source) for e in packet("val")]
+    calls = []
+
+    def probabilities(history, anchor_t):
+        event_window(history, anchor_t, SPEC)
+        calls.append(anchor_t)
+        return (.01, .99) if anchor_t < .45 else (.99, .01)
+
+    policy = SimpleNamespace(spec=SPEC, identity=SOURCE, origin="synthetic", support=(1, 1),
+                             data_sha256=evidence_digest(rows), probabilities=probabilities)
+    return policy, rows, validation, calls
+
+
+def test_evaluation_preserves_distinct_independent_source_profiles():
+    policy, rows, validation, calls = evaluation_fixture()
+    before = evidence_digest(validation)
+    cohort(rows)
+    cohort(validation)
+    report = evaluate(policy, rows, validation)
+    assert len(calls) == 2
+    assert report["metrics"]["confidence_filtered"]["true_positive"] == 1
+    assert report["metrics"]["confidence_filtered"]["false_positive"] == 0
+    assert report["training_source"] == asdict(SOURCE)
+    assert report["validation_sources"] == [asdict(validation[0].source)]
+    assert report["training_source"]["source_profile_sha256"] != report["validation_sources"][0]["source_profile_sha256"]
+    assert report["domain_compatibility"] == "structural_only_not_review_admission_or_live_approval"
+    assert evidence_digest(validation) == before
+
+
+@pytest.mark.parametrize("field,value", [
+    ("patch", "other-patch"), ("cooldown_regime", "off"),
+    ("perception_sha256", "8" * 64), ("selector_sha256", "8" * 64),
+    ("semantic_revision", "other-semantics"), ("feature_revision", "other-features"),
+])
+def test_evaluation_rejects_each_domain_difference_before_inference(field, value):
+    policy, rows, validation, calls = evaluation_fixture()
+    different = replace(validation[0].source, **{field: value})
+    assert not same_event_domain(SOURCE, different)
+    with pytest.raises(DemoError):
+        evaluate(policy, rows, [replace(e, source=different) for e in validation])
+    assert not calls
+
+
+@pytest.mark.parametrize("mismatch", ["validation_origin", "policy_origin", "policy_identity", "evidence", "support"])
+def test_evaluation_rejects_provenance_or_support_mismatch_before_inference(mismatch):
+    policy, rows, validation, calls = evaluation_fixture()
+    if mismatch == "validation_origin":
+        validation = [replace(e, origin="reviewed_human") for e in validation]
+    elif mismatch == "policy_origin":
+        policy.origin = "reviewed_human"
+    elif mismatch == "policy_identity":
+        policy.identity = validation[0].source  # compatible domain is insufficient for training provenance
+    elif mismatch == "evidence":
+        policy.data_sha256 = "8" * 64
+    else:
+        policy.support = (2, 2)
+    with pytest.raises(DemoError):
+        evaluate(policy, rows, validation)
+    assert not calls
+
+
+@pytest.mark.parametrize("key,value", [("group", "train"), ("session", "train"), ("media_sha256", "d" * 64)])
+def test_evaluation_rejects_joint_split_leakage_before_inference(key, value):
+    policy, rows, validation, calls = evaluation_fixture()
+    # Same-profile control isolates the unchanged placement rule.
+    validation = [replace(e, source=SOURCE, **{key: value}) for e in validation]
+    with pytest.raises(DemoError, match="split leakage"):
+        evaluate(policy, rows, validation)
+    assert not calls
+
+
+def test_evaluation_rejects_same_source_session_alias_before_inference():
+    policy, rows, validation, calls = evaluation_fixture()
+    alias = [replace(e, session="val-alias") for e in validation]
+    with pytest.raises(DemoError, match="split leakage"):
+        evaluate(policy, rows, [*validation, *alias])
+    assert not calls
+
+
+@pytest.mark.parametrize("kind", ["media", "session"])
+def test_evaluation_requires_full_profile_consistency_within_media_and_session(kind):
+    policy, rows, validation, calls = evaluation_fixture()
+    different = replace(validation[1].source, source_profile_sha256="6" * 64)
+    validation[1] = replace(validation[1], source=different,
+                            media_sha256="8" * 64 if kind == "session" else validation[1].media_sha256)
+    with pytest.raises(DemoError, match=f"inconsistent source identity within {kind}"):
+        evaluate(policy, rows, validation)
+    assert not calls
+
+
+@pytest.mark.parametrize("failure", ["missing_grid", "duplicate_grid", "event_id", "bracket", "purge", "uncertain_overlap"])
+def test_evaluation_reuses_coverage_event_and_purge_rules_before_inference(failure):
+    policy, rows, validation, calls = evaluation_fixture()
+    if failure == "missing_grid":
+        validation.pop()
+    elif failure == "duplicate_grid":
+        validation.append(validation[-1])
+    elif failure == "event_id":
+        validation[1] = replace(example(5, "start", split="val"), source=validation[0].source)
+    elif failure == "bracket":
+        validation[0] = replace(validation[0], first_started_t=.501)
+    elif failure == "purge":
+        validation[0] = replace(validation[0], confirmation_t=.901)
+    else:
+        validation[0] = replace(validation[0], label=None, label_known=False, reason="cross_bin",
+                                last_not_started_t=.48, first_started_t=.52, confirmation_t=.53)
+    with pytest.raises(DemoError):
+        evaluate(policy, rows, validation)
+    assert not calls
+
+
+def test_evaluation_retains_multiple_independent_validation_profiles():
+    policy, rows, validation, calls = evaluation_fixture()
+    third_source = replace(SOURCE, source_profile_sha256="6" * 64)
+    third = [replace(e, session="val-third", group="third", media_sha256="8" * 64, source=third_source)
+             for e in validation]
+    report = evaluate(policy, rows, [*validation, *third])
+    assert len(calls) == 4
+    assert {s["source_profile_sha256"] for s in report["validation_sources"]} == {"6" * 64, "7" * 64}
+    assert report["training_source"] == asdict(SOURCE)
+
+
+def test_public_cohort_train_and_save_still_require_exact_source_identity(tmp_path):
+    policy, rows, validation, calls = evaluation_fixture()
+    distinct_train = [replace(e, split="train") for e in validation]
+    assert same_event_domain(SOURCE, distinct_train[0].source)
+    with pytest.raises(DemoError, match="mixed source identity"):
+        cohort([*rows, *distinct_train])
+    # Fails before the numeric fitter; this test performs no training.
+    with pytest.raises(DemoError, match="mixed source identity"):
+        train([*rows, *distinct_train], epochs=1)
+    with pytest.raises(DemoError, match="checkpoint training provenance mismatch"):
+        save_checkpoint(tmp_path / "refused.pt", policy, distinct_train,
+                        code_sha256="9" * 64, training_config={})
+    assert not (tmp_path / "refused.pt").exists() and not calls
+
+
+def test_load_and_deployment_still_require_exact_source_profile(tmp_path):
+    pytest.importorskip("torch")
+    rows = packet()
+    # Fresh random weights only: no training job or optimization.
+    policy = RangeSkillPolicy(legacy.make_model(SPEC), SPEC, SOURCE, (1, 1), "synthetic",
+                              evidence_digest(rows), coverage_report(rows))
+    path = tmp_path / "synthetic-untrained.pt"
+    sha = save_checkpoint(path, policy, rows, code_sha256="9" * 64, training_config={"untrained_test": True})
+    different = replace(SOURCE, source_profile_sha256="7" * 64)
+    assert same_event_domain(SOURCE, different)
+    with pytest.raises(DemoError, match="source identity mismatch"):
+        load_checkpoint(path, expected_sha256=sha, expected_identity=different, offline=True)
+    receipt = SkillDeploymentBinding(sha, digest(asdict(SOURCE)), RUNTIME, "8" * 64)
+    with pytest.raises(DemoError, match="deployment source binding mismatch"):
+        receipt.validate(checkpoint_sha256=sha, source_identity=different, expected_runtime=RUNTIME)
 
 
 def test_grid_uses_actual_cts_and_preserves_resource_clock():

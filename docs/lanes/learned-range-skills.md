@@ -153,6 +153,18 @@ Reports distinguish grid bins, unique events, masked reasons and ammo-positive
 visible nononsets. Ammo-positive is a measured stratum, **not proof of every
 physical start condition**. Unknown rows are neither inferred nor scored.
 Validation must be independently grouped and match the exact training evidence.
+Evaluation alone permits independent source-profile hashes when
+`same_event_domain(a, b)` matches patch, cooldown regime, perception hash,
+selector hash, semantic revision and feature revision. Original supervision
+origins must agree. Complete source identity still stays consistent within each
+immutable media and session; joint split/coverage/event validation is shared
+with the exact public `cohort()` path. Training source identity, evidence digest
+and support must match the policy exactly. No source profile is copied or erased.
+Reports retain full `training_source` and `validation_sources` dictionaries and
+state `domain_compatibility="structural_only_not_review_admission_or_live_approval"`.
+This comparison supplies no new review, admission, compatibility receipt or live
+approval. Public `cohort`, training, saving, loading and deployment bindings keep
+their exact source-identity contract.
 Partial observed diagnostics are explicitly named; full evaluation additionally
 requires `complete_evaluation=True` and known coverage for every declared bin.
 Completeness applies to declared segments, not an uninspected whole recording.
@@ -312,3 +324,70 @@ Frozen RSP delta SHA-256:
 | `policy/range_skill_policy.py` | `582e3f08cba512d65cb58fc60de5e4498a26ad8766eda4fb66dde8d731580ed1` |
 | `agent/learned_range_skill.py` | `77e4b7f19d4796737356b71d058d7c33688570940083cc82edb21d7c3e5c89ba` |
 | `tests/test_range_skill_policy.py` | `3422e8968f157a41304d0a8d0e04d159a281b4cb5cdc6c02f5a011b03efb3947` |
+
+## Evaluation-only independent-profile correction
+
+Root accepted/landed the preceding RSP and joined implementation at `8f78ae9`;
+the real six-label diagnostic fit/report work is separate and remains accepted.
+This correction neither reopens that result nor blocks active native calibration.
+It changes only this doc, `policy/range_skill_policy.py` and its owned test file.
+
+The red regression used two fully valid synthetic packets with distinct
+session/group/media identities and a difference only in `source_profile_sha256`.
+Both passed public `cohort()` independently; actual `evaluate()` failed with
+`mixed source identity or supervision origin` before inference. Root's read-only
+diagnosis established that real profile hashes identify source-specific provenance,
+not a shared event domain. Reusing the training recording's hash would falsify it.
+
+The correction extracts the existing rules into **one** `_validate_cohort`
+implementation. Public `cohort()` remains exact; only evaluation requests domain
+comparison. Media/session full-profile consistency, canonical placements, full
+grids, event identity/brackets, continuous boundaries and confirmation/purge
+checks still apply jointly across training and validation rows. The exact
+training cohort, policy identity/origin, evidence digest and bin support are
+checked before any prediction. No separate divergent validator was introduced.
+
+The green regression calls actual `evaluate()`: two predictions, TP=1, FP=0,
+with both original profile hashes retained and validation evidence digest
+unchanged. This is a fixed synthetic scorer, not a trained model or performance
+claim. A further control retains multiple distinct validation profiles.
+
+Negative controls reject **before inference** for each of the six domain fields,
+supervision-origin mismatch, incorrect policy training identity/origin/evidence
+or support, shared group/media/session across splits, a same-source session alias,
+inconsistent full profile within media or session, missing/duplicate coordinates,
+reused event ID, invalid onset bracket, crossed purge boundary and uncertain-event
+overlap. Public cohort/train and save still reject mismatched source identities.
+Actual save/load of freshly initialized synthetic weights and deployment receipt
+validation prove that a domain-compatible but different source hash still fails
+the exact checkpoint/deployment boundary. No optimization or training ran.
+
+Verification, cached isolated dependencies, no Controller/Loop/probe import or
+real artifact access:
+
+```powershell
+$env:PYTHONDONTWRITEBYTECODE='1'
+uv run --offline --no-project --with torch --with pytest python -m pytest tests/test_range_skill_policy.py -k 'not model_request_crosses_real_pure_controller_boundary and not two_observed_rows_fit_reload and not checkpoint_pins_new_semantics' -q
+```
+
+**93 passed, 3 deselected.** The deselections are the Controller join and two
+previously accepted tests that perform a numerical fit. The numeric fitter,
+weights behavior, consumer, schema/constants, old checkpoints and six-label
+artifacts are unchanged. `policy/range_policy.py` remains `c46e7d8a...3410bb`;
+the consumer remains `77e4b7f1...5c89ba`. No real-data reads, labels, training,
+input/capture, shared installs, commits or Linear edits were performed.
+
+Lead accepts the independently reviewed evaluation-only delta for landing.
+The same reviewer passed 93 tests with the three documented exclusions and
+verified complete evaluation across two original validation profiles, retaining
+both identities and unchanged evidence. Conflicting profiles even in unknown
+coverage rows reject before inference. Native/runtime modules were not imported;
+unchanged numerical and controller evidence was reused. New human validation
+keeps its own truthful provenance and existing review/admission authority.
+
+Frozen evaluation-only delta SHA-256:
+
+| File | SHA-256 |
+| --- | --- |
+| `policy/range_skill_policy.py` | `3fb99790514eec159789ce5f8b155239a8ab6da359f825720b89a50def931f8d` |
+| `tests/test_range_skill_policy.py` | `17480913cb27c43852ce2621b3b4cdc41a7861c34af1c6effe272066a9ab355f` |

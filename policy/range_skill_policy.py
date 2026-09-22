@@ -228,12 +228,30 @@ class EventExample:
 
 
 def cohort(examples, spec=Spec()):
+    """Exact source identity for public cohort, training and checkpoint callers."""
+    return _validate_cohort(examples, spec, evaluation=False)
+
+
+def same_event_domain(a, b):
+    """Structural evaluation compatibility only; never review or live approval."""
+    fields = ("patch", "cooldown_regime", "perception_sha256", "selector_sha256",
+              "semantic_revision", "feature_revision")
+    return (type(a) is SourceIdentity and type(b) is SourceIdentity
+            and all(getattr(a, name) == getattr(b, name) for name in fields))
+
+
+def _validate_cohort(examples, spec, *, evaluation):
+    """One placement/coverage/event validator; only evaluate permits distinct profiles."""
     require(bool(examples), "no coverage rows")
     source, origin = examples[0].source, examples[0].origin
-    segments, placements, events = defaultdict(list), {}, {}
+    segments, placements, events, profiles = defaultdict(list), {}, {}, {}
     for e in examples:
         e.validate(spec)
-        require(e.source == source and e.origin == origin, "mixed source identity or supervision origin")
+        compatible = same_event_domain(e.source, source) if evaluation else e.source == source
+        require(compatible and e.origin == origin, "mixed source identity or supervision origin")
+        for kind, key in (("media", e.media_sha256), ("session", e.session)):
+            require(profiles.setdefault((kind, key), e.source) == e.source,
+                    f"inconsistent source identity within {kind}")
         for kind, key, placement in (("group", e.group, e.split), ("session", e.session, (e.group, e.split)),
                                       ("media", e.media_sha256, (e.session, e.group, e.split))):
             old = placements.setdefault((kind, key), placement)
@@ -363,11 +381,13 @@ def event_metrics(examples, predictions, spec=Spec()):
 
 
 def evaluate(policy, train_examples, validation, *, complete_evaluation=False):
-    source, origin = cohort([*train_examples, *validation], policy.spec)
-    require(source == policy.identity and origin == policy.origin, "evaluation identity mismatch")
     require(train_examples and validation and all(e.split == "train" for e in train_examples)
             and all(e.split == "val" for e in validation), "independent train/val required")
+    source, origin = cohort(train_examples, policy.spec)
+    require(source == policy.identity and origin == policy.origin, "evaluation identity mismatch")
+    _validate_cohort([*train_examples, *validation], policy.spec, evaluation=True)
     require(evidence_digest(train_examples) == policy.data_sha256, "training evidence mismatch")
+    require(tuple(coverage_report(train_examples)["bin_support"]) == tuple(policy.support), "training support mismatch")
     coverage = coverage_report(validation)
     require(type(complete_evaluation) is bool, "explicit evaluation coverage declaration required")
     require(not complete_evaluation or coverage["complete_label_coverage"], "full evaluation requires complete observed coverage")
@@ -392,6 +412,10 @@ def evaluate(policy, train_examples, validation, *, complete_evaluation=False):
                   "always_start": ["start"] * len(validation), "training_rate": rate_prediction,
                   "recent_confirmed_event": recent, "ammo_positive": resource}
     return {"scope": "complete_independent_evaluation" if complete_evaluation else "partial_observed_diagnostic",
+            "training_source": asdict(source),
+            "validation_sources": [asdict(identity) for identity in
+                                   sorted({e.source for e in validation}, key=lambda identity: digest(asdict(identity)))],
+            "domain_compatibility": "structural_only_not_review_admission_or_live_approval",
             "prediction_boundary": "offline_model_proposals",
             "confidence_filter": {"threshold": policy.spec.confidence, "consumer_acceptance_measured": False,
                                   "executor_acceptance_measured": False},
