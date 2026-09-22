@@ -83,9 +83,13 @@ seam separately from the producer's bounded probe: 14 delta tests plus actual te
 start/non-start/invalid-legacy-intent cases. A producer whose policy property
 raises still runs this scripted entry, while falsy model receipts and invalid
 duration/cadence refuse. Root adopts the narrow software acceptance. The separate
-probe caller, its schedule and startup remain unaccepted pending their handoff;
-no calibration input is authorized by this seam alone. The first human fit
-remains numerical-only and has no deployment binding.
+probe caller now also has independent acceptance after RCP1: a brief target loss
+between decisions latches from the actual reflex trace, so same-ID recovery
+cannot authorize later scheduled attempts. The reviewer passed 26 caller tests
+and its original joined healthy/brief-loss/sustained-loss controls (3/3, 1/1,
+1/1 proposals/acceptances). Root verified the frozen hashes and adopts the
+bounded scripted caller for a recorded native calibration. The human fits remain
+numerical-only and have no deployment binding.
 
 ## Event policy and caller acceptance, 2026-09-22
 
