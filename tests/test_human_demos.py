@@ -4,6 +4,7 @@ import csv
 from dataclasses import FrozenInstanceError, asdict
 from fractions import Fraction
 import json
+import hashlib
 import os
 from pathlib import Path
 
@@ -11,6 +12,22 @@ import pytest
 
 from agent import human_demos as hd
 from scripts.import_human_demo import main
+
+
+def relocated_fixture(tmp_path, split="train"):
+    data = payload(tmp_path)
+    original = Path(data["metadata"]["video_path"])
+    digest = hashlib.sha256(original.read_bytes()).hexdigest()
+    local = tmp_path / "transferred.mkv"
+    local.write_bytes(original.read_bytes())
+    original.unlink()  # The import must never fall back to the recorder's path.
+    data["metadata"]["video_path"] = r"Z:\OBS Captures\Spider Man\recording.mkv"
+    session, review, registry = write_session(tmp_path, data, split=split)
+    doc = json.loads(registry.read_text())
+    doc["sessions"][0].update(video_path=local.name,
+        recorded_video_path=data["metadata"]["video_path"], expected_media_sha256=digest)
+    registry.write_text(json.dumps(doc))
+    return data, session, review, registry, local
 
 
 BASE = 10**17 + 123  # Above IEEE754's exact integer range.
@@ -111,6 +128,171 @@ def test_immutable_exact_ns_and_separate_future_bins(tmp_path):
         sample.anchor_ns = 0
     sample.future[0].events[0].payload["scan"] = 99
     assert sample.future[0].events[0].payload["scan"] == 17
+
+
+def test_explicit_relocation_round_trip_preserves_recorder_metadata(tmp_path, monkeypatch):
+    data, session, review, registry, local = relocated_fixture(tmp_path)
+    immutable = (session / "metadata.json").read_bytes()
+    calls = []
+    real_hash = hd._sha256
+    def hash_file(path):
+        calls.append("hash")
+        assert Path(path) == local
+        return real_hash(path)
+    def probe(path, **kwargs):
+        assert calls == ["hash"]
+        assert Path(path) == local
+        calls.append("probe")
+        return data["decoded"]
+    monkeypatch.setattr(hd, "_sha256", hash_file)
+    monkeypatch.setattr(hd, "probe_video", probe)
+    artifact = tmp_path / "relocated.jsonl"
+    assert main(["import", "--session", str(session), "--review", str(review),
+        "--splits", str(registry), "--output", str(artifact)]) == 0
+    loaded = hd.load_dataset(artifact, splits=registry)
+    assert calls == ["hash", "probe", "hash"]
+    assert (session / "metadata.json").read_bytes() == immutable
+    assert json.loads(loaded.metadata_json) == data["metadata"]
+    assert loaded.placement.recorded_video_path == data["metadata"]["video_path"]
+    assert loaded.placement.video_path == str(local.resolve())
+    assert loaded.placement.expected_media_sha256 == loaded.media_sha256
+    assert all(frame.video_path == str(local.resolve()) for frame in loaded.frames)
+    assert list(loaded.samples(**OPTIONS))
+    header, body = map(json.loads, artifact.read_text().splitlines())
+    assert header["recorded_video_path"] == data["metadata"]["video_path"]
+    assert header["expected_media_sha256"] == loaded.media_sha256
+    assert body["metadata"] == data["metadata"]
+
+
+@pytest.mark.parametrize("field,value,match", [
+    ("recorded_video_path", "Z:/OBS Captures/Spider Man/recording.mkv", "recorded_video_path"),
+    ("expected_media_sha256", "0" * 64, "expected_media_sha256"),
+])
+def test_relocation_rejects_wrong_source_identity_before_probe(tmp_path, monkeypatch, field, value, match):
+    _, session, review, registry, _ = relocated_fixture(tmp_path)
+    doc = json.loads(registry.read_text())
+    doc["sessions"][0][field] = value
+    registry.write_text(json.dumps(doc))
+    monkeypatch.setattr(hd, "probe_video", lambda *a, **k: pytest.fail("probed rejected relocation"))
+    output = tmp_path / "rejected.jsonl"
+    with pytest.raises(hd.DemoError, match=match):
+        hd.import_session(session, review=review, splits=registry, output=output)
+    assert not output.exists()
+
+
+@pytest.mark.parametrize("update,remove,match", [
+    ({}, "recorded_video_path", "both"),
+    ({}, "expected_media_sha256", "both"),
+    ({"recorded_video_path": None}, None, "recorded_video_path"),
+    ({"expected_media_sha256": None}, None, "expected_media_sha256"),
+    ({"expected_media_sha256": "A" * 64}, None, "lowercase"),
+    ({"expected_media_sha256": "ab"}, None, "64"),
+    ({"expected_media_sha256": "z" * 64}, None, "hexadecimal"),
+])
+def test_relocation_requires_explicit_complete_fields(tmp_path, monkeypatch, update, remove, match):
+    _, session, review, registry, _ = relocated_fixture(tmp_path)
+    doc = json.loads(registry.read_text())
+    doc["sessions"][0].update(update)
+    if remove:
+        del doc["sessions"][0][remove]
+    registry.write_text(json.dumps(doc))
+    monkeypatch.setattr(hd, "_sha256", lambda *a: pytest.fail("hashed incomplete relocation"))
+    monkeypatch.setattr(hd, "probe_video", lambda *a, **k: pytest.fail("probed incomplete relocation"))
+    with pytest.raises(hd.DemoError, match=match):
+        hd.import_session(session, review=review, splits=registry, output=tmp_path / "out")
+
+
+@pytest.mark.parametrize("field,value", [
+    ("recorded_video_path", r"Z:\different.mkv"),
+    ("expected_media_sha256", "0" * 64),
+    ("video_path", "other-local.mkv"),
+    ("both", None),
+])
+def test_relocation_registry_changes_refused_before_payload_media_load(tmp_path, monkeypatch, field, value):
+    data, session, review, registry, _ = relocated_fixture(tmp_path)
+    monkeypatch.setattr(hd, "probe_video", lambda *a, **k: data["decoded"])
+    artifact = tmp_path / "imported.jsonl"
+    hd.import_session(session, review=review, splits=registry, output=artifact)
+    doc = json.loads(registry.read_text())
+    if field == "both":
+        del doc["sessions"][0]["recorded_video_path"]
+        del doc["sessions"][0]["expected_media_sha256"]
+    else:
+        doc["sessions"][0][field] = value
+    registry.write_text(json.dumps(doc))
+    header = artifact.read_text().splitlines()[0]
+    artifact.write_text(header + "\nPOISON PAYLOAD")
+    monkeypatch.setattr(hd, "_sha256", lambda *a: pytest.fail("hashed stale registry media"))
+    with pytest.raises(hd.DemoError, match="registry/artifact mismatch"):
+        hd.load_dataset(artifact, splits=registry)
+
+
+def test_relocated_sealed_refusal_before_session_payload_or_media(tmp_path, monkeypatch):
+    _, _, review, registry, local = relocated_fixture(tmp_path, split="test")
+    local.unlink()
+    monkeypatch.setattr(hd, "_sha256", lambda *a: pytest.fail("hashed sealed media"))
+    monkeypatch.setattr(hd, "probe_video", lambda *a, **k: pytest.fail("probed sealed media"))
+    with pytest.raises(hd.SealedError):
+        hd.import_session(tmp_path / "ABSENT", review=review, splits=registry, output=tmp_path / "out")
+    artifact = tmp_path / "sealed.jsonl"
+    artifact.write_text(json.dumps(dict(format=hd.FORMAT, session_id="s1", split="test", sealed=True)) +
+                        "\nPOISON PAYLOAD")
+    with pytest.raises(hd.SealedError):
+        hd.load_dataset(artifact, splits=registry)
+
+
+def test_source_hash_cannot_be_relocated_across_split_groups(tmp_path):
+    _, _, _, registry, _ = relocated_fixture(tmp_path)
+    doc = json.loads(registry.read_text())
+    doc["sessions"].append({**doc["sessions"][0], "session_id": "s2", "session_group": "other",
+                             "split": "val", "video_path": "another-copy.mkv"})
+    registry.write_text(json.dumps(doc))
+    with pytest.raises(hd.DemoError, match="relocated source media split leakage"):
+        hd.read_splits(registry)
+
+
+def test_relocation_is_not_inferred_when_both_fields_absent(tmp_path, monkeypatch):
+    _, session, review, registry, _ = relocated_fixture(tmp_path)
+    doc = json.loads(registry.read_text())
+    for field in ("recorded_video_path", "expected_media_sha256"):
+        del doc["sessions"][0][field]
+    registry.write_text(json.dumps(doc))
+    monkeypatch.setattr(hd, "_sha256", lambda *a: pytest.fail("hashed implicit relocation"))
+    with pytest.raises(hd.DemoError, match="media path identity"):
+        hd.import_session(session, review=review, splits=registry, output=tmp_path / "out")
+
+
+def test_relocated_load_rechecks_media_and_preserved_metadata_identity(tmp_path, monkeypatch):
+    data, session, review, registry, local = relocated_fixture(tmp_path)
+    monkeypatch.setattr(hd, "probe_video", lambda *a, **k: data["decoded"])
+    artifact = tmp_path / "relocated.jsonl"
+    hd.import_session(session, review=review, splits=registry, output=artifact)
+    original = local.read_bytes()
+    local.write_bytes(b"changed transferred bytes")
+    with pytest.raises(hd.DemoError, match="original media fingerprint changed"):
+        hd.load_dataset(artifact, splits=registry)
+    local.write_bytes(original)
+    header, body = map(json.loads, artifact.read_text().splitlines())
+    body["metadata"]["video_path"] = str(local)
+    encoded = hd._json(body)
+    header["payload_sha256"] = hashlib.sha256(encoded.encode()).hexdigest()
+    artifact.write_text(hd._json(header) + "\n" + encoded + "\n")
+    with pytest.raises(hd.DemoError, match="recorded_video_path"):
+        hd.load_dataset(artifact, splits=registry)
+
+
+def test_legacy_artifact_without_relocation_header_still_loads(tmp_path, monkeypatch):
+    data = payload(tmp_path)
+    session, review, registry = write_session(tmp_path, data)
+    monkeypatch.setattr(hd, "probe_video", lambda *a, **k: data["decoded"])
+    artifact = tmp_path / "legacy.jsonl"
+    hd.import_session(session, review=review, splits=registry, output=artifact)
+    header, body = artifact.read_text().splitlines()
+    header = json.loads(header)
+    del header["recorded_video_path"]
+    del header["expected_media_sha256"]
+    artifact.write_text(json.dumps(header) + "\n" + body + "\n")
+    assert hd.load_dataset(artifact, splits=registry).placement.recorded_video_path is None
 
 
 def test_b_frame_tail_is_callback_suffix_not_pts_suffix():

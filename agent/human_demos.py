@@ -165,6 +165,8 @@ class Placement:
     session_group: str
     split: str
     video_path: str
+    recorded_video_path: str | None = None
+    expected_media_sha256: str | None = None
 
 
 def read_splits(path) -> tuple[Placement, ...]:
@@ -174,7 +176,7 @@ def read_splits(path) -> tuple[Placement, ...]:
     _require(doc.get("schema_version") == 1, "unsupported split registry schema")
     rows = doc.get("sessions")
     _require(isinstance(rows, list) and rows, "split registry needs sessions")
-    result, ids, groups, media = [], set(), {}, {}
+    result, ids, groups, media, source_media = [], set(), {}, {}, {}
     for row in rows:
         sid = _text(row.get("session_id"), "session_id")
         group = _text(row.get("session_group"), "session_group")
@@ -185,12 +187,25 @@ def read_splits(path) -> tuple[Placement, ...]:
         video = Path(_text(row.get("video_path"), "video_path"))
         video = str((path.parent / video).resolve())
         _require(video not in media or media[video] == (group, split), "media split leakage")
+        relocation_fields = ("recorded_video_path", "expected_media_sha256")
+        present = [key in row for key in relocation_fields]
+        _require(all(present) or not any(present), "relocation requires both recorded_video_path and expected_media_sha256")
+        recorded_path, expected_hash = None, None
+        if all(present):
+            # Foreign-platform paths are provenance strings, never local Paths.
+            recorded_path = _text(row["recorded_video_path"], "recorded_video_path")
+            expected_hash = _text(row["expected_media_sha256"], "expected_media_sha256")
+            _require(len(expected_hash) == 64 and all(c in "0123456789abcdef" for c in expected_hash),
+                     "expected_media_sha256 must be 64 lowercase hexadecimal characters")
+            _require(expected_hash not in source_media or source_media[expected_hash] == (group, split),
+                     "relocated source media split leakage")
+            source_media[expected_hash] = (group, split)
         if "sealed" in row:
             _require(row["sealed"] is (split == "test"), "test must be sealed; train/val unsealed")
         ids.add(sid)
         groups[group] = split
         media[video] = (group, split)
-        result.append(Placement(sid, group, split, video))
+        result.append(Placement(sid, group, split, video, recorded_path, expected_hash))
     return tuple(result)
 
 
@@ -577,10 +592,22 @@ class HumanDataset:
                         state_at(anchor), tuple(future))
 
 
+def _media_identity(meta, placement, fingerprint=None):
+    if placement.recorded_video_path is None:
+        _require(str(Path(meta.get("video_path", "")).resolve()) == placement.video_path,
+                 "media path identity mismatch")
+    else:
+        _require(meta.get("video_path") == placement.recorded_video_path,
+                 "recorded_video_path differs from immutable recorder metadata")
+        if fingerprint is not None:
+            _require(fingerprint == placement.expected_media_sha256,
+                     "relocated media differs from expected_media_sha256")
+
+
 def _build(payload, placement, media_sha256):
     meta, review = payload["metadata"], payload["review"]
     _require(meta.get("session_id") == placement.session_id, "metadata session identity mismatch")
-    _require(str(Path(meta.get("video_path", "")).resolve()) == placement.video_path, "media path identity mismatch")
+    _media_identity(meta, placement, media_sha256)
     events = tuple(_event(row) for row in payload["events"])
     for kind in ("key", "mouse"):
         devices = {event.payload["device"] for event in events
@@ -612,7 +639,7 @@ def import_session(session, *, review, splits, output, unseal=False, ffprobe="ff
     session = Path(session)
     meta = _read_json(session / "metadata.json")
     _require(meta.get("session_id") == placement.session_id, "session identity mismatch")
-    _require(str(Path(meta.get("video_path", "")).resolve()) == placement.video_path, "video_path differs from registry")
+    _media_identity(meta, placement)
     try:
         with (session / "inputs.jsonl").open(encoding="utf-8") as handle:
             events = [json.loads(line) for line in handle]
@@ -627,8 +654,9 @@ def import_session(session, *, review, splits, output, unseal=False, ffprobe="ff
     _review(reviewed, placement.session_id, start, end)
     video = Path(placement.video_path)
     _require(video.is_file(), "original video is missing")
-    fingerprint = _sha256(video)
     before_decode = video.stat()
+    fingerprint = _sha256(video)
+    _media_identity(meta, placement, fingerprint)  # Verify transferred bytes before probing.
     decoded = probe_video(video, ffprobe=ffprobe)
     after_decode = video.stat()
     _require((before_decode.st_size, before_decode.st_mtime_ns) ==

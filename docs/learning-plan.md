@@ -75,6 +75,8 @@ the Windows RTX 4080 SUPER and the M5 Max (128 GB) through CUDA/MPS/CPU. The his
 MLX experiments retain their implementation and fingerprints. Train on the Mac while
 the game uses the PC GPU; use the PC for training only when it is free. Choose live
 inference placement from measured capture-to-action latency and game frame-rate cost.
+The durable [machine contract](machines.md) covers each machine's responsibilities,
+bidirectional SSH, checked relocation of original recordings and checkpoint return.
 
 ## Roadmap and advancement gates
 

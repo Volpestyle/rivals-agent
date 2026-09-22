@@ -10,7 +10,7 @@ competence. Independent admission review remains required before using real data
 
 First follow [the importer contract](human-demo-schema.md): finalize a session,
 review its gameplay and imitation suitability, record bindings/settings (including
-DPI and sensitivity), patch/cooldown regime, single-device scope, independent PTS
+DPI when known and sensitivity), patch/cooldown regime, single-device scope, independent PTS
 anchor and explicit capture-latency assumption/bound. Import each named recording
 using one shared session-group split registry. Only accepted segments are sampled.
 Keep original media in the registered paths. This consumer accepts the imported
@@ -20,6 +20,8 @@ Install the `execution` dependency group (PyTorch and torchvision), plus ffmpeg
 and ffprobe on PATH. The module imports PyTorch lazily; `--help` works without it.
 Use CPU explicitly for a first smoke run. The PC GPU belongs to the running game;
 use MPS on the Mac or CUDA only when the PC is available for training.
+See [machine responsibilities](machines.md) for checked Windows-to-Mac recording
+relocation, native environments and the artifact return path.
 
 ```powershell
 uv run --group execution python -m policy.execution fit --train data/human/imported/train-a.json --val data/human/imported/val-b.json --splits data/human/session-splits.json --checkpoint data/human/run-01.pt --report data/human/run-01.json --encoder small --device cpu --epochs 2 --max-samples-per-session 100

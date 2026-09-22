@@ -2,6 +2,8 @@
 
 A vision-based agent that plays Spider-Man in the Marvel Rivals **practice range**
 (and custom lobbies vs AI), running on `supedupsilly` (RTX 4080 SUPER, 2560x1440).
+The [machine contract](machines.md) assigns gameplay, recording and the live loop
+to Windows, and offline preparation, training and evaluation to the M5 Max Mac.
 
 ## Scope boundary
 
@@ -200,7 +202,7 @@ then L4 takes the game while L2 and L3 run offline on the L1 footage, then L5.
 | Swing anchors | Geometry, not a detector class; owned by the controller lane, emitted as `Detection(cls="anchor")` | An open-vocabulary labeller cannot label "swingable surface"; the brain only swings on an anchor detection |
 | Spider-Tracer `tagged` | An L2 reader, `read_tagged(frame, bbox)`, over the region just above each enemy box; `None` when it cannot tell | A small fixed glyph suits a template or colour read, not a box regressor at ~30 px |
 | Enemy health bars | Not built | The brain does not use them |
-| Training hardware | This Mac (MPS), niced. The PC GPU stays with the live game | L4 holds the game |
+| Training hardware | M5 Max Mac (MPS), niced; native environments and transfer rules in `docs/machines.md`. The PC GPU stays with the live game | L4 holds the game |
 
 ## Decision layer
 

@@ -29,7 +29,8 @@ def main(argv=None):
     export.add_argument("--inspection-only", action="store_true",
                         help="Allow uncalibrated inspection/evaluation; not training authorization")
     for command in (ingest, export):
-        command.add_argument("--splits", type=Path, required=True)
+        command.add_argument("--splits", type=Path, required=True,
+                             help="Shared registry; relocation pairs recorded_video_path with expected_media_sha256")
         command.add_argument("--output", type=Path, required=True)
         command.add_argument("--unseal-test", action="store_true",
                              help="Explicit test payload access (requires separate project authorization)")

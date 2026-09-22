@@ -1,8 +1,9 @@
 # rivals-agent
 
 A vision-based agent that plays Spider-Man in the Marvel Rivals **practice range** on a
-virtual Xbox 360 pad. The game runs on the Windows PC `supedupsilly`; development runs
-from this Mac, usually as a Herdr swarm. `CLAUDE.md` is a symlink to this file.
+virtual Xbox 360 pad. Windows `supedupsilly` owns gameplay, recording and the live
+agent loop; the M5 Max Mac owns offline preparation, training and evaluation.
+Development can run on either machine. `CLAUDE.md` is a symlink to this file.
 
 ## Read before doing anything
 
@@ -13,12 +14,15 @@ from this Mac, usually as a Herdr swarm. `CLAUDE.md` is a symlink to this file.
    On the PLAY lobby the pad's `X` starts a live Quick Match.
 3. Linear project **Rivals Agent** (team Vuhlp): what is done, in progress and blocked.
    Accepted results and evidence go on the issue; working notes stay in `docs/lanes/`.
+4. `docs/machines.md` before moving code, data or jobs between machines: ownership,
+   SSH directions, immutable recording relocation and checkpoint boundaries.
 
 ## Where things live
 
 | Path | Holds |
 |---|---|
 | `docs/plan.md` | Lead-only. One writer, because a shared edit lost sections once |
+| `docs/machines.md` | Mac/PC responsibilities, remote access and transfer procedure |
 | `docs/lanes/<lane>.md` | Each lane's present-state notes and measured facts; the lane's owner is its only writer |
 | `docs/spiderman-kit.md` | Sourced controller bindings, cooldowns, tracer rule, combos, settings |
 | `docs/evidence/` | Inspected screenshots and contact sheets per lane |
@@ -38,7 +42,10 @@ from this Mac, usually as a Herdr swarm. `CLAUDE.md` is a symlink to this file.
 - Detections inside the player's own screen region are ignored before aiming: a labeller
   once boxed Spider-Man's arm as an enemy.
 - Capture and pad code run inside the PC's desktop session, not plain SSH.
-- The PC's GPU belongs to the game while it is running. Train on the Mac (MPS), niced.
+- The PC's GPU belongs to the game while it is running. Train on the Mac (MPS), niced;
+  CUDA training is an explicit exception while the game and recording are stopped.
+- Capture, perception, safety and latency-sensitive control stay on the PC. SSH moves
+  jobs and artifacts; a Mac round trip is not the default live action path.
 - One agent drives the PC desktop at a time.
 
 ## Agent delivery protocol

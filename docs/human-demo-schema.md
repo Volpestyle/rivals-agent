@@ -135,6 +135,58 @@ Choosing `test` seals the session even when `sealed` is absent. Changing the
 registry after import invalidates the artifact's placement, rather than
 silently moving samples. The registry itself opens no session or video.
 
+### Importing unchanged Windows recordings on another machine
+
+The recorder's `metadata.json` is immutable, including its Windows `video_path`.
+Copy the finalized session's metadata, input log, frame log and original video
+without rewriting metadata or remuxing/re-encoding media. Compute SHA-256 on the
+finalized source video on Windows; in PowerShell:
+
+```powershell
+(Get-FileHash -LiteralPath 'C:\Users\volpe\Videos\recording.mkv' -Algorithm SHA256).Hash.ToLowerInvariant()
+```
+
+In the destination machine's registry, use a local `video_path` and add both
+`recorded_video_path` and `expected_media_sha256`. For example, this one session
+row points to a Mac-local path relative to the registry (replace the illustrative
+hash with the digest computed on the source machine):
+
+```json
+{
+  "session_id": "replace-with-recorder-session-id",
+  "session_group": "human-play-session-001",
+  "split": "train",
+  "video_path": "media/recording.mkv",
+  "recorded_video_path": "C:\\Users\\volpe\\Videos\\recording.mkv",
+  "expected_media_sha256": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+}
+```
+
+`recorded_video_path` must exactly equal the JSON string in recorder metadata,
+including slash style and case. It is an opaque source identity, never resolved
+as a local path or opened on the destination. The expected digest must contain
+64 lowercase hexadecimal characters. The two relocation fields are optional
+only as a pair: omit both for the original same-machine path-identity behavior;
+providing one, null, or malformed values is an error. There is no path fallback
+and no command-line relocation override.
+
+Use the existing import command with this registry. Import first checks sealed
+placement, then literal source identity, then the transferred video's hash before
+ffprobe runs. Decoded `FrameRef.video_path` values point to the destination media;
+the complete recorder metadata remains unchanged in the artifact payload.
+Session identity, group and split retain their existing meaning. A source digest
+cannot be assigned to different groups/splits under different local filenames.
+
+Both relocation fields are saved in the artifact placement header and sample
+export. Loading requires the same local path, source literal and expected digest
+in the supplied registry, checks the current local media bytes, and rechecks
+the preserved metadata identity. Changing or removing relocation fields invalidates
+the saved artifact; relocating again requires a new explicit import from the raw
+session. Older same-machine artifacts with no relocation header fields still load.
+Sealed refusal still precedes session metadata, artifact payload and media access.
+This transfer mechanism does not supply missing reviews or authorize corpus
+admission, training, or test access.
+
 A separate explicit human review, `review.json` (values below are illustrative,
 not accepted settings or timing):
 
@@ -236,7 +288,8 @@ The imported artifact has exactly two JSONL lines:
 
 1. Placement header: `format:"rivals-human-demo-v1"`, `session_id`,
    `session_group`, `split`, `video_path`, `sealed`, `media_sha256`,
-   `payload_sha256`.
+   `payload_sha256`, plus `recorded_video_path` and `expected_media_sha256`
+   (both null for a new same-machine artifact; absent in older artifacts).
 2. Integrity payload: complete `metadata`, explicit `review`, raw `events`,
    callback `packets`, and `decoded` integer PTS, timebase and dimensions.
 
@@ -313,6 +366,11 @@ completion/CTS, focus-held unknowns, physical extended keys and repeats, mouse
 edges/holds/wheels/absolute motion, focus/pause boundaries, prefix causality,
 integer precision, causal frame flooring, alignment gates, split leakage,
 sealed refusal, media mutation and import/load/export CLI round trips.
+Relocation regressions also cover exact foreign-path identity, source hash
+verification before probing, immutable metadata, required paired fields, stale
+registry refusal before payload/media reads, copied-source split leakage and
+legacy same-machine artifact compatibility. These tests use generated synthetic
+files only; they do not transfer or admit a real recording.
 After the final review fixes: **66 synthetic tests passed**, with the blank-fixture
 test skipped by default. The authorized fixture previously passed separately.
 CLI import help and the import/export round trips passed.
