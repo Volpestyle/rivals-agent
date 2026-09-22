@@ -289,3 +289,169 @@ def test_source_end_during_press_has_original_owner_and_successful_release(harne
     assert terminal["range_skill_trace"]["pulse_outcome"] == "truncated"
     assert terminal["release_returned"] is True
     assert harness.device.neutral()
+
+
+@pytest.fixture
+def native_entry(monkeypatch, tmp_path):
+    """Native caller + real startup/Live/LiveIO/Loop, with synthetic device/readers.
+
+    No native factories or image libraries: constructor dependencies and the
+    startup image writer are injected. Neither startup nor execution is stubbed.
+    """
+    import agent.controller as controller
+    import agent.loop as loop
+    h = SimpleNamespace(t=100., events=[], reports=[], frames=[], lives=[], fault=None,
+                        attached_t=None, focus=True, save_delay=0.)
+    def clock():
+        h.t += .000001  # Distinct acquisition STARTs even without a real CPU delay.
+        return h.t
+    def sleep(seconds):
+        h.t += seconds
+    fake_time = SimpleNamespace(perf_counter=clock, sleep=sleep, time_ns=lambda: 1234567890)
+    for module in (controller, loop, probe):
+        monkeypatch.setattr(module, "time", fake_time)
+    h.device = FakePad()
+    update = h.device.update
+    def updated():
+        update()
+        h.reports.append((h.t, h.device.reports[-1]))
+    h.device.update = updated
+    def grab():
+        h.t += 1 / 60
+        since_attach = 0. if h.attached_t is None else h.t - h.attached_t
+        if h.fault == "focus" and since_attach > .12:
+            h.focus = False
+        if h.fault == "slow_capture":
+            h.t += 1.
+        switched = any(axes["r"] != (0., 0.) for _, axes in h.device.reports)
+        frame = probe.DryFrame(webs=5 if switched else None,
+                               ok=not (h.fault == "range" and since_attach > .12))
+        h.frames.append((h.t, frame))
+        return frame
+    p = Perception(lambda f: f.ok, lambda f: h.fault == "idle" and h.t - h.attached_t > .12,
+                   lambda f: (1280, 720), lambda f: list(f.detections), lambda f: list(f.detections),
+                   lambda f: {"webs": f.webs}, lambda f, box: None)
+    def readers():
+        h.events.append("readers_loaded")
+        return p
+    def plaza_loader():
+        h.events.append("plaza_loaded")
+        def plaza(frame):
+            h.events.append("plaza_checked")
+            if h.fault == "plaza_exception":
+                raise RuntimeError("injected plaza reader failure")
+            return h.fault != "no_plaza"
+        return plaza
+    def attach():
+        h.events.append("attached")
+        h.attached_t = h.t
+        return h.device
+    def live_factory(**kwargs):
+        h.events.append("live_open")
+        native = Live(pad_factory=attach, capture=SimpleNamespace(grab=grab), **kwargs)
+        h.origin = native.frame_t
+        h.lives.append(native)
+        return native
+    monkeypatch.setattr(loop, "default_perception", readers)
+    monkeypatch.setattr(loop, "_plaza_view", plaza_loader)
+    monkeypatch.setattr(controller, "Live", live_factory)
+    monkeypatch.setattr(probe, "foreground_pid_guard", lambda pid: lambda: h.focus)
+    def save(name, frame):
+        h.t += h.save_delay
+        # This is an explicitly fake frame artifact, not native-image evidence.
+        path = h.args.out / (name + ".fake.json")
+        path.write_text(json.dumps({"webs": frame.webs, "ok": frame.ok}))
+        return path.name
+    h.args = SimpleNamespace(game_pid=123, out=tmp_path / "probe", target_roi=(.45, .35, .55, .65),
+                             normal_cooldowns_note="synthetic test only", setup_note="synthetic test only")
+    h.run = lambda: probe.live_probe(h.args, save_fps=0, start_save=save)
+    yield h
+    for native in h.lives:
+        native.close()
+
+
+def test_native_entry_reuses_real_start_pose_same_device_and_continuous_clock(native_entry, tmp_path):
+    h = native_entry
+    result = h.run()
+    assert h.events[:4] == ["readers_loaded", "plaza_loaded", "live_open", "attached"]
+    assert len(h.lives) == 1 and h.lives[0]._dead
+    startup = result["startup"]
+    assert startup["status"] == "accepted" and startup["turns"] == 1
+    assert startup["max_s"] == 14 and startup["combined_max_s"] == 22
+    assert result["start_proposals"] == result["controller_acceptances"] == 3
+    config = json.loads((h.args.out / "probe-config.json").read_text())
+    origin = config["clock_evidence"]["loop_perf_origin"]
+    assert origin == h.origin and origin < h.attached_t
+    assert startup["confirm_observation_t"][1] > startup["confirm_observation_t"][0] > startup["attached_by_t"]
+    assert result["setup_t"] > startup["finished_t"] > 5
+    assert h.frames[0][1].webs is None
+    assert all(r["state"]["webs"] == 5 and r["state"]["t"] > startup["finished_t"]
+               for r in rows(tmp_path) if "state" in r)
+    for slot in result["slots"]:
+        assert slot["resources"]["observed_t"] == slot["observed_t"] > startup["finished_t"]
+    before_probe = [report for t, report in h.reports if t - origin <= startup["finished_t"]]
+    assert before_probe and any(axes["r"] == (.45, 0.) for _, axes in before_probe)
+    assert all(not buttons and axes["l"] == (0., 0.) and axes["lt"] == axes["rt"] == 0
+               and axes["r"] in ((0., 0.), (.45, 0.)) for buttons, axes in before_probe)
+    steps = [json.loads(s) for s in (h.args.out / "start-steps.jsonl").read_text().splitlines()]
+    assert "accepted" in steps[-1]["action"]
+    assert all((h.args.out / s["frame"]).exists() for s in steps if s["frame"])
+    assert result["terminal_releases"][-1]["release_returned"] is True
+    assert h.device.neutral()
+
+
+@pytest.mark.parametrize("fault", ["no_plaza", "focus", "range", "idle", "slow_capture"])
+def test_native_startup_refusal_records_steps_and_all_slots_without_deciding(native_entry, monkeypatch, fault):
+    h = native_entry
+    h.fault = fault
+    monkeypatch.setattr(probe.CastSchedule, "__call__", lambda *args: pytest.fail("refused startup called schedule"))
+    result = h.run()
+    assert result["startup"]["status"] == "refused"
+    assert result["probe_stop"] == "startup_refused"
+    assert result["scheduled_opportunities"] == 3
+    assert result["start_proposals"] == result["controller_acceptances"] == result["lt_send_attempts"] == 0
+    assert all(s["status"] == "not_reached" and s["reason"] == "startup_refused" for s in result["slots"])
+    assert all(s["decision_id"] is None and s["scheduled_t"] is None for s in result["slots"])
+    assert result["terminal_releases"] == []  # Startup close is not a Loop release event.
+    records = [json.loads(s) for s in (h.args.out / "frames.jsonl").read_text().splitlines()]
+    assert len(records) == 1 and records[0]["type"] == "startup_refused"
+    meta = json.loads((h.args.out / "meta.json").read_text())
+    assert meta["ticks"] == meta["decisions"] == 0
+    steps = [json.loads(s) for s in (h.args.out / "start-steps.jsonl").read_text().splitlines()]
+    assert "refused" in steps[-1]["action"]
+    assert all(not b and a["l"] == (0., 0.) and a["lt"] == a["rt"] == 0
+               and a["r"] in ((0., 0.), (.45, 0.), (-.45, 0.)) for b, a in h.device.reports)
+    if fault == "focus":
+        assert "foreground" in result["startup"]["error"]
+    assert len(h.lives) == 1 and h.lives[0]._dead and h.device.neutral()
+
+
+def test_native_startup_unexpected_failure_keeps_evidence_then_reraises(native_entry, monkeypatch):
+    h = native_entry
+    h.fault = "plaza_exception"
+    monkeypatch.setattr(probe.CastSchedule, "__call__", lambda *args: pytest.fail("refused startup called schedule"))
+    with pytest.raises(RuntimeError, match="injected plaza reader failure"):
+        h.run()
+    report = json.loads((h.args.out / "probe-report.json").read_text())
+    assert report["scheduled_opportunities"] == 3 and report["start_proposals"] == 0
+    assert (h.args.out / "start-steps.jsonl").exists()
+    assert h.lives[0]._dead and h.device.neutral()
+
+
+def test_native_entry_focus_missing_before_attach_opens_nothing(native_entry):
+    h = native_entry
+    h.focus = False
+    with pytest.raises(RangeLost, match="not foreground"):
+        h.run()
+    assert h.events == [] and not h.lives and not h.args.out.exists()
+
+
+def test_combined_deadline_refuses_after_slow_start_evidence_write(native_entry):
+    h = native_entry
+    h.save_delay = 5.
+    result = h.run()
+    assert result["startup"]["status"] == "accepted"
+    assert result["start_proposals"] == result["lt_send_attempts"] == 0
+    assert result["scheduled_opportunities"] == 3
+    assert result["terminal_releases"][-1]["release_returned"] is True
+    assert h.device.neutral()

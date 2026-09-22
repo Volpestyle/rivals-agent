@@ -91,6 +91,32 @@ and its original joined healthy/brief-loss/sustained-loss controls (3/3, 1/1,
 bounded scripted caller for a recorded native calibration. The human fits remain
 numerical-only and have no deployment binding.
 
+### Native calibration attempt A: setup failure
+
+The actual `1118814` caller ran on September 22 with native video retained at
+`data/live-readiness/20260922-cast-probe/probe-a-native.mp4` and original logs at
+`data/l1/range-cast-probe-20260922-a/`. Setup timed out after 2.09 seconds.
+All three opportunities remain unattempted: zero start proposals, controller
+acceptances or LT sends. Terminal neutral release returned successfully.
+
+All 21 decision observations had unknown ammo. The first, middle and last saved
+native frames visibly retain the keyboard/mouse HUD; the actual PAD reader
+returns unknown while the existing MK reader returns five on all three. The
+neutral-only attachment also moves Luna out of the configured right-side region,
+consistent with the already measured attachment drift. The exact checks and
+input hashes are in `startup-diagnosis.json`; no ammo was substituted at runtime.
+
+This is a native startup handoff failure, not a cast or learning result. The
+minimal next delta reuses the accepted camera-only `start_pose` on the same
+device before the unchanged three-opportunity probe, retaining its separate
+startup budget and failure evidence. Independent changed-caller review now
+accepts the delta: 35 tests pass, including the actual helper joined to fake
+Live devices. Separate controls prove focus loss before attachment sends
+nothing, startup precedes all offense, and delayed device opening does not
+restart the combined deadline. Lead adopts these bytes for native measurement;
+HUD switching, final pose and actual casts remain to be observed. No additional
+human recording is required for this repair.
+
 ## Event policy and caller acceptance, 2026-09-22
 
 Independent same-reviewer acceptance covers the new event policy/consumer,

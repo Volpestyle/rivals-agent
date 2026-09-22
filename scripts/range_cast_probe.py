@@ -259,6 +259,7 @@ def report(out, schedule, summary, stop_reason):
               "slots": slots, "setup_t": schedule.setup_t, "target_id": schedule.target_id,
               "reflex_latch": schedule.reflex_latch,
               "stop": summary["stop"], "probe_stop": stop_reason, "terminal_releases": releases,
+              "startup": summary.get("start", {}).get("scripted_calibration", {}).get("startup"),
               "visual_casts": None, "video_clock_mapping": None,
               "limits": "Requested/sent pulses are not proof of a game-visible cast; native video and ammo audit remain required."}
     (Path(out) / "probe-report.json").write_text(json.dumps(result, indent=2) + "\n")
@@ -266,7 +267,8 @@ def report(out, schedule, summary, stop_reason):
 
 
 def run_probe(source, pad, percept, out, *, roi, focused, live=False,
-              normal_cooldowns_note=None, setup_note=None, save_fps=0, clock_evidence=None):
+              normal_cooldowns_note=None, setup_note=None, save_fps=0, clock_evidence=None,
+              startup=None, start_steps=None, start_save=None):
     """Run the genuine Loop/Controller/RunLog with constructor-injected IO only."""
     from agent.loop import Loop, RunLog
     if live and (not isinstance(normal_cooldowns_note, str) or not normal_cooldowns_note.strip()
@@ -277,12 +279,25 @@ def run_probe(source, pad, percept, out, *, roi, focused, live=False,
     schedule = CastSchedule(roi, source.now)
     io = ProbeIO(source, pad, schedule, focused)
     log = RunLog(out, save_fps=save_fps)
+    if startup is not None:
+        from agent.loop import _write_start_steps
+        startup = dict(startup, steps_file=_write_start_steps(out, start_steps or [], start_save or log.save))
     config = {"mode": "SCRIPTED CALIBRATION", "source": SOURCE, "live": live,
               "target_roi": list(schedule.roi), "slot_offsets_s": list(SLOT_OFFSETS),
               "max_total_s": MAX_S, "max_after_setup_s": AFTER_SETUP_S,
               "normal_cooldowns_note": normal_cooldowns_note, "setup_note": setup_note,
               "clock_evidence": clock_evidence, "video_clock_mapping": None}
+    if startup is not None:
+        config["startup"] = startup
     (Path(out) / "probe-config.json").write_text(json.dumps(config, indent=2) + "\n")
+    if startup is not None and startup["status"] != "accepted":
+        # A refused arrival never constructs a Loop or calls the schedule. Its
+        # real startup evidence and all three unattempted slots still survive.
+        summary = {"brain": MODE, "stop": "startup_refused", "ticks": 0, "decisions": 0,
+                   "start": {"scripted_calibration": config}}
+        log.write({"type": "startup_refused", "t": source.now(), "startup": startup})
+        log.close(summary, [])
+        return report(out, schedule, summary, "startup_refused")
     run = Loop(io, io, percept, schedule, log=log, brain_name=MODE, decision_hz=10,
                max_s=MAX_S, threaded=False, warmup=False, keepalive_s=None,
                scoreboard=False, scoreboard_every_s=None, cooldowns="normal" if live else "unknown",
@@ -311,30 +326,59 @@ def foreground_pid_guard(pid):
     return focused
 
 
-def live_probe(args):
+def live_probe(args, *, save_fps=20, start_save=None):
     """Only the explicit --live branch may import/open native infrastructure."""
     from agent.controller import Live, RangeLost
-    from agent.loop import LiveIO, default_perception
+    from agent.loop import LiveIO, default_perception, _plaza_view
+    from agent.startup import start_pose, StartRefused, START_DEADLINE_S
     focused = foreground_pid_guard(args.game_pid)
     if not focused():
         raise RangeLost("configured game process is not foreground; no capture or pad opened")
-    p = default_perception()
+    p, plaza = default_perception(), _plaza_view()  # Slow imports before attach/drift.
+    lo = time.perf_counter()
+    wall = time.time_ns()
+    hi = time.perf_counter()
+    session_deadline = hi + START_DEADLINE_S + MAX_S
+    def range_focus(frame):
+        ok = p.in_range(frame)
+        if focused() is not True:
+            raise RangeLost("configured game process lost foreground")
+        if time.perf_counter() >= session_deadline:
+            raise RangeLost("camera startup plus probe deadline passed")
+        return ok
     # Focus composes into Live's existing proof, including its post-proof/lock checks.
-    native = Live(guard=lambda frame: p.in_range(frame) and focused(), settle_s=0)
-    io = LiveIO(native)
+    native = Live(guard=range_focus, settle_s=0)
     try:
-        native.release()
-        lo = time.perf_counter()
-        wall = time.time_ns()
-        hi = time.perf_counter()
-        return run_probe(io, io, p, args.out, roi=args.target_roi, focused=focused, live=True,
+        io = LiveIO(native)
+        opened = time.perf_counter()
+        steps, failure = [], None
+        startup = {"mode": "GUARDED CAMERA-ONLY STARTUP", "helper": "agent.startup.start_pose",
+                   "max_s": START_DEADLINE_S, "combined_max_s": START_DEADLINE_S + MAX_S,
+                   "session_deadline_t": session_deadline - io.t0,
+                   "attached_by_t": opened - io.t0, "started_t": io.now(),
+                   "steps_t_clock": "seconds since start_pose entry",
+                   "steps_stamp_clock": "acquisition START seconds after attached_by_t"}
+        try:
+            pose = start_pose(native, range_focus, p.idle, plaza, attached_t=opened, steps=steps,
+                              clock=time.perf_counter, sleep=time.sleep)
+            startup.update(status="accepted", turns=pose["turns"], ms=pose["ms"],
+                           confirm_observation_t=[stamp - io.t0 for _, stamp in pose["frames"]])
+        except BaseException as e:
+            failure = e
+            startup.update(status="refused", error=repr(e))
+        startup["finished_t"] = io.now()
+        result = run_probe(io, io, p, args.out, roi=args.target_roi, focused=focused, live=True,
                          normal_cooldowns_note=args.normal_cooldowns_note, setup_note=args.setup_note,
-                         save_fps=20, clock_evidence={"loop_perf_origin": io.t0,
+                         save_fps=save_fps, startup=startup, start_steps=steps, start_save=start_save,
+                         clock_evidence={"loop_perf_origin": io.t0,
                          "focus_game_pid": args.game_pid,
                          "focus_method": "GetForegroundWindow/GetWindowThreadProcessId, read-only",
                          "wall_time_ns": wall, "perf_counter_bracket": [lo, hi],
                          "observation_clock": "Live.fresh grab START relative to loop_perf_origin",
                          "render_time_known": False})
+        if failure is not None and not isinstance(failure, StartRefused):
+            raise failure
+        return result
     finally:
         native.close()
 
@@ -400,7 +444,7 @@ def main(argv=None):
         source, pad, p = dry_io()
         result = run_probe(source, pad, p, args.out, roi=args.target_roi, focused=lambda: True)
     print(json.dumps(result, indent=2))
-    return 0
+    return 1 if result.get("probe_stop") == "startup_refused" else 0
 
 
 if __name__ == "__main__":
