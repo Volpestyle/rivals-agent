@@ -74,3 +74,40 @@ Re-run the changed boundary without game input:
 ```powershell
 uv run --offline --no-project --with torch --with opencv-python-headless --with numpy --with pytest python -m pytest tests/test_range_policy.py tests/test_learned_range_loop.py tests/test_loop.py tests/test_live_pad.py -q
 ```
+
+## Mac training / Windows loading check
+
+Both Mac checkouts were clean before fast-forwarding the main checkout and moving
+the dedicated offline worktree to accepted revision `7670e3f`. The new range GRU
+trained on the M5 Max using PyTorch 2.14.0, `mps:0`, under `nice -n 10`: eight
+synthetic training examples, four separate synthetic validation examples, 80
+epochs. It classified 4/4 versus the majority baseline's 2/4; these deliberately
+simple fixtures establish execution only. Reloading the saved weights on Mac CPU
+gave identical probabilities. The identical file was copied to Windows and the
+actual loader and evaluator again classified 4/4 on CPU, with origin `synthetic`
+and `offline=True`. It has no deployment binding and must never run live.
+
+Checkpoint SHA-256:
+`668e6c5c5a22d7d66d8924db9560d0c3c29c88f32a9ed49e70767d659e647053`.
+Local reports and checkpoint are under `data/diagnostics/range-mps-20260922/`;
+the Mac source directory is
+`/var/folders/sq/lm465hcj1c97b3wysf7f40h40000gn/T/rivals-range-mps-synthetic-6r8dqp93`.
+No human media was read for this check and the Windows GPU stayed with the game.
+
+## Accepted offline episode scorer
+
+Independent review accepted the four-file VUH-1319 delta after fixing reset
+history across trials, range loss/recovery at readiness, actual executed-baseline
+evidence and joint scenario/settings counts. Pre-ready or cross-reset boards
+cannot award a kill. Unknown deadlines do not fabricate observed duration.
+Acquisition intervals remain separate from rendered kill occurrence.
+
+The lead verified the frozen hashes and joined the scorer with the accepted
+policy, controller and loop: **261 passed** in isolated CPU Torch/perception.
+The full stdlib suite passed **683 tests, 44 skipped**; no shared environment
+change or real corpus read. Independent scorer review passed 88 pure tests with
+four unchanged pixel skips and reused the accepted native-reader evidence.
+
+This accepts offline software and the observation interface. VUH-1319 remains
+open for real audited readiness/target/outcome observations and measured
+reset/respawn/throughput. No real feasibility gate has passed.
