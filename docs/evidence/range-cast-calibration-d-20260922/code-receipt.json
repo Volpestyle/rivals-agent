@@ -1,0 +1,55 @@
+{
+  "commit": "cb677ef881e3fc96ca1cf4822507f5dc2451ebb5",
+  "scope": "Post-run exact deployed code check for scripted D; no human checkpoint or deployment binding",
+  "paths": {
+    "scripts/range_cast_probe.py": {
+      "sha256": "28873faf416881d9f8d41a601670829512add555dfe0e5f4c88dce43fa7d2767",
+      "git_blob_sha256": "28873faf416881d9f8d41a601670829512add555dfe0e5f4c88dce43fa7d2767",
+      "exact_bytes": true,
+      "only_crlf_difference": false
+    },
+    "agent/startup.py": {
+      "sha256": "d664ca4bd1ffac599a8020c61d843a186c9e608dfee6071ade2d1274c0ff908c",
+      "git_blob_sha256": "1d89d1b48506e8978265812bd54908780b455543881738ed5aa0f02a0786f03c",
+      "exact_bytes": false,
+      "only_crlf_difference": true
+    },
+    "agent/controller.py": {
+      "sha256": "268527c0137943597092a5cbc61486ec5a85b56e3070a099d29839cf2e678c43",
+      "git_blob_sha256": "268527c0137943597092a5cbc61486ec5a85b56e3070a099d29839cf2e678c43",
+      "exact_bytes": true,
+      "only_crlf_difference": false
+    },
+    "agent/loop.py": {
+      "sha256": "c345ec61b92c4eec7406da54f0977439fefeb2347d925b61f28a060536c2e5c3",
+      "git_blob_sha256": "c345ec61b92c4eec7406da54f0977439fefeb2347d925b61f28a060536c2e5c3",
+      "exact_bytes": true,
+      "only_crlf_difference": false
+    },
+    "agent/intents.py": {
+      "sha256": "836692b7c241df0d2a57c109230f8047b1c4d0a4392782bfb652f883c6f50cf3",
+      "git_blob_sha256": "836692b7c241df0d2a57c109230f8047b1c4d0a4392782bfb652f883c6f50cf3",
+      "exact_bytes": true,
+      "only_crlf_difference": false
+    },
+    "perception/hud.py": {
+      "sha256": "c34e9d071490179a20186ccee0ab6a69cb1c5c7be08f5d57a94b728b53df4661",
+      "git_blob_sha256": "c34e9d071490179a20186ccee0ab6a69cb1c5c7be08f5d57a94b728b53df4661",
+      "exact_bytes": true,
+      "only_crlf_difference": false
+    },
+    "perception/outline.py": {
+      "sha256": "fded81b150bb873c738e34fb3fc7d8f0a263a7cf9121e3325991bcdda4acd4f8",
+      "git_blob_sha256": "fded81b150bb873c738e34fb3fc7d8f0a263a7cf9121e3325991bcdda4acd4f8",
+      "exact_bytes": true,
+      "only_crlf_difference": false
+    },
+    "scripts/reenter.py": {
+      "sha256": "b97c157b243b00406e9081638154a14000a948c95bb0cb2aaaf8ec7be6876d80",
+      "git_blob_sha256": "836ab1e9bf9135246bb60a5fadce861f2390304d75ed9298bf8b1759929ac2ae",
+      "exact_bytes": false,
+      "only_crlf_difference": true
+    }
+  },
+  "all_code_matches_allowing_only_CRLF": true
+}

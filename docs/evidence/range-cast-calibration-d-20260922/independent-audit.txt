@@ -1,0 +1,41 @@
+# VUH-1346 probe D: independent native-evidence audit
+
+Reviewer: independent Codex reviewer, separate from the calibration producer and lead disposition. Date: 2026-09-22. This is a native-meaning audit of finalized SCRIPTED calibration D, not human-corpus admission or controller/code review.
+
+Recommendation: accept the narrow measurement of **two distinct visible Web-Cluster launches reaching Luna Snow**, corresponding by bounded same-run visual evidence to owned decisions 13 and 28. Retain decision 43 as the logged `insufficient_press_time` failure with no LT sends and no observed launch in its inspected window. Four returned LT send calls are not four casts. Lead owns integration and final disposition.
+
+## Native observations
+
+All times below are presentation timestamps in the original `probe-d-native.mp4`, not wall time, acquisition time, or inferred physical input time. Parentheses exclude the earlier observed frame; brackets include the first confirming frame. Emission means visible projectile/burst, not the first wind-up pose.
+
+| Owned decision correspondence | Visible emission bracket, seconds | Recipient and confirmation | Native ammo |
+|---|---|---|---|
+| 13 | (11.916667, 11.933333] | White web travels from the extended wrist to the named Luna simulation; contact confirmed by 11.966667. Impact, damage-bar change and overhead web tag clear by 12.116667. | 5 at 11.900000; 4 at 11.916667. |
+| 28 | (13.450000, 13.466667] | A separate wind-up/extension and new white burst reach the same Luna's lower leg. New damage-bar reduction and contact effects clear by 13.550000. | 4 at 13.450000; 3 at 13.466667. |
+| 43 | No launch observed across 14.550000?15.283333 | Recovery/ready sway with Luna still in view; no new projectile, impact or depletion. | 4 throughout. |
+
+The broader pre-extension-to-emission intervals are (11.900000, 11.933333] and (13.416667, 13.466667]. Do not substitute these visual intervals for physical button-down times. Follow-through and persistent white contact effects belong to their existing cast. Luna's overhead tag already exists before cast two, so that persistent tag alone is not evidence of another hit; the second launch, new depletion and additional damage are.
+
+The second sequence contains a real **4?3?4**: replenishment occurs between 13.916667 (3) and 13.933333 (4). This is consistent with regeneration, but the timer/mechanism is not established here. It explains why request snapshots showing ammo 5 then 4 then 4 miss the second depletion. The settings image visibly shows No Ability Cooldown off. Startup and scripted approach are not counted as offensive events.
+
+Key native crops: first [last pre-emission](first/action-026.jpg), [emission](first/action-027.jpg), [contact](first/action-029.jpg), [damage/tag](first/action-038.jpg); second [pre-extension](second/action-023.jpg), [last pre-emission](second/action-025.jpg), [emission](second/action-026.jpg), [damage/contact](second/action-031.jpg); third [near rejected request](third/action-019.jpg). Full HUD progressions: [first](first/ammo-sheet.jpg), [second including replenishment](second/ammo-sheet.jpg), [third](third/ammo-sheet.jpg).
+
+## Same-run JPG correspondence
+
+Compared 23 explicitly referenced saved JPGs around these three windows with the bounded original-video frames. Resized both to 640?360 and ranked mean absolute BGR error over world/player ROI x=50:575, y=75:320. This avoids most HUD text. Six paired comparisons were also visually inspected: 000016, 000020, 000024, 000038, 000041 and 000056. They agree in camera geometry, player pose, Luna and action phase. See [paired sheet](correspondence-sheet.jpg) and [all best/runner-up scores](jpg-correspondence.json).
+
+`video PTS ? saved acquisition_t + 4.249945 s` across acquisition times 7.409593?10.949484. Best-match offsets span **4.238110?4.259017 s**, residuals **?11.835 to +9.072 ms** about the median. Some adjacent frames are near ties, especially during little movement: 000039, 000042/43 and 000057?59. Allowing one neighboring frame expands the empirical correspondence envelope to **4.221444?4.275684 s**. This is an observed visual envelope, not a confidence interval or guaranteed synchronization bound.
+
+This correspondence supports associating the separated launch windows with owned pulses 13/28 and places the failed third evaluation near video 14.85 s. It does not establish exact input-to-photon latency, render time, clock drift outside this short span, or a physical input timestamp. JPEG/H.264 compression, different resize filters, asynchronous acquisition and frame quantization remain. The recorder explicitly leaves its loop/video mapping unknown; process-launch clock brackets do not supply first-frame acquisition time. No OBS offset or wall-clock equality was imported.
+
+## Bounded coverage and provenance
+
+The original is 2560?1440 H.264, 35 seconds, 2077 frames, native time base 1/15360. Original SHA-256: `a0ec11c760ac358c5f33e5616d41e416d9c479aefabe1a8a176f0c7da4f828b2`.
+
+CPU FFmpeg bounded seeking with preserved timestamps produced 164 dense frames: 63 over 11.500000?12.533333, 56 over 13.050000?13.983333, and 45 over 14.550000?15.283333. Inspected every frame through sequence sheets plus decisive native crops and every ammo crop. A 26-frame locator sheet covers 10.5?16.783333 at roughly 4 fps; it is not continuous exposure. There was no full 35-second extraction or claim of an exhaustive recording-wide event count.
+
+Within these windows all consecutive PTS steps are 16.667 ms except **13.800000?13.833333**, a 33.333 ms gap during recovery after the second confirmed hit. This gap does not obscure either launch bracket; it limits claims about unseen transients during recovery. Global recorder completion reports 2077 frames, dup=0/drop=1; that log counter is not proof of gap-free acquisition.
+
+Native action crops preserve pixel scale at x=600,y=250,w=1200,h=1000. HUD crops preserve pixel scale at x=180,y=1260,w=340,h=120. Full-view thumbnails are 640?360. Crop output is JPEG; original video stays authoritative. Decode logs retain original integer PTS/checksums; [frame index](frame-index.json) binds every dense crop and overview to those PTS. [Source hashes](source-hashes.json) bind the exact original, receipts, settings, logs and 23 matched JPGs. [Structured result](audit-results.json) preserves measurements; artifact-hashes.json covers audit outputs except itself.
+
+Usable result: two native confirmed casts/impacts on the named Luna simulation in scripted calibration, a retained failed third request, and bounded JPG/video correspondence. No new evidence is needed for that narrow result. Physical input timing and caller/send/release correctness remain outside this audit with the lead. This supplies no learned-live authority, designated Galacta evidence, or training/admission decision. Only this new audit-d directory was written.

@@ -146,7 +146,7 @@ delay, preserving its tight send deadline. Lead adopts these bytes. All nine A/B
 opportunities remain failed or unattempted in their original reports; these
 runs establish neither a visible cast nor learned gameplay.
 
-### Native calibration D: two returned pulse requests
+### Native calibration D: two confirmed casts
 
 The corrected caller ran from the clean, detached `cb677ef` live worktree.
 Root inspected fresh No Ability Cooldown X/off evidence after range re-entry;
@@ -161,8 +161,12 @@ the original metadata reports `range_lost` with no range gaps or errors. Both
 terminal neutral release calls returned. Loop release edges and watchdog lease
 bounds do not measure physical held duration. The second pulse's trace ends
 `cancelled_after_press`; preserve that execution label independently of visible
-game response. Native cast interpretation and video/acquisition correspondence
-are undergoing a separate bounded audit; no deployment binding is issued.
+game response. Independent native review now confirms one separate Web-Cluster
+launch/impact for each accepted request, at video PTS (11.916667,11.933333] and
+(13.450000,13.466667]. No launch was observed around the refused third request.
+Lead accepts this narrow calibration measurement; no deployment binding is issued.
+Twenty-three saved-JPG matches establish bounded visual correspondence, with
+adjacent-frame ambiguity retained, not exact physical input timing.
 
 Original video: `data/live-readiness/20260922-cast-probe/probe-d-native.mp4`,
 35 seconds, 2077 container-reported video frames, SHA-256
@@ -174,6 +178,16 @@ records exact Git bytes or only CRLF differences, without relaxing source hashes
 The [short scripted clip](https://uploads.linear.app/75f1d1f0-542b-4095-9967-fd7b27093472/9350542a-e952-48d1-9948-af3995ec28fa/1a0cbbeb-38a1-4097-bdfa-f983a303ffa5)
 covers original seconds 8–19; its SHA-256 is
 `7cbe90e453fffe02ef2d04768e7923799543a2e79d7516655541796e8599b41b`.
+The [retained audit and reports](../evidence/range-cast-calibration-d-20260922/README.md)
+include exact independent observations, source hashes and inspected hit images.
+
+One offline replay of the original human checkpoint on all 52 D decision States
+reached inference 48 times with no cadence resets: five start proposals, 40
+no-new proposals, and seven neutral refusals (one target, three warmup, three
+confidence). No input was sent or threshold changed. Root inspected the actual
+script/report and verified retained hashes/counts. This establishes observational
+consumer support on the scripted trajectory, not correctness or counterfactual
+gameplay; independent human validation and runtime review remain outstanding.
 
 ## Event policy and caller acceptance, 2026-09-22
 

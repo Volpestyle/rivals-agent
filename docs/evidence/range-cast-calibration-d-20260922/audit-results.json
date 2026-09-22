@@ -1,0 +1,112 @@
+{
+  "reviewer": "Independent Codex native-evidence reviewer for VUH-1346; separate from producer and lead disposition",
+  "scope": "Finalized probe D; SCRIPTED calibration only",
+  "native_cast_count_in_inspected_windows": 2,
+  "recipient": "LUNA SNOW hero simulation",
+  "time_basis": "Original MP4 presentation timestamps; time_base 1/15360",
+  "events": [
+    {
+      "owned_decision": 13,
+      "observed_casts": 1,
+      "projectile_emission_bracket_open_closed": [
+        11.916666666666666,
+        11.933333333333334
+      ],
+      "preextension_to_emission_bracket_open_closed": [
+        11.9,
+        11.933333333333334
+      ],
+      "impact_confirmed_by_pts": 11.966666666666667,
+      "damage_and_web_tag_confirmed_by_pts": 12.116666666666667,
+      "ammo_transition": {
+        "from": 5,
+        "to": 4,
+        "bracket_open_closed": [
+          11.9,
+          11.916666666666666
+        ]
+      }
+    },
+    {
+      "owned_decision": 28,
+      "observed_casts": 1,
+      "projectile_emission_bracket_open_closed": [
+        13.45,
+        13.466666666666667
+      ],
+      "preextension_to_emission_bracket_open_closed": [
+        13.416666666666666,
+        13.466666666666667
+      ],
+      "damage_confirmed_by_pts": 13.55,
+      "ammo_transition": {
+        "from": 4,
+        "to": 3,
+        "bracket_open_closed": [
+          13.45,
+          13.466666666666667
+        ]
+      }
+    },
+    {
+      "owned_decision": 43,
+      "observed_casts": 0,
+      "inspected_pts_closed": [
+        14.55,
+        15.283333333333333
+      ],
+      "logged_failure": "insufficient_press_time",
+      "logged_LT_sends": 0,
+      "visible_ammo": 4
+    }
+  ],
+  "replenishment": {
+    "from": 3,
+    "to": 4,
+    "bracket_open_closed": [
+      13.916666666666666,
+      13.933333333333334
+    ],
+    "interpretation": "Visible replenishment consistent with regeneration; mechanism/timer not established."
+  },
+  "jpg_video_correspondence": {
+    "samples": 23,
+    "formula": "video_pts approximately acquisition_t + offset",
+    "median_offset_seconds": 4.249945300025866,
+    "best_match_offset_range_seconds": [
+      4.238110400009335,
+      4.25901710001113
+    ],
+    "residual_range_ms": [
+      -11.83490001653098,
+      9.071799985264306
+    ],
+    "one_frame_expanded_empirical_envelope_seconds": [
+      4.221443733342668,
+      4.275683766677797
+    ],
+    "limitations": "Nearest visual correspondence, adjacent-frame near ties, asynchronous lossy captures; not physical-input precision, a confidence interval, or an independently calibrated clock transform."
+  },
+  "native_windows": {
+    "first": {
+      "frames": 63,
+      "start_pts": 11.5,
+      "end_pts": 12.533333333333333
+    },
+    "second": {
+      "frames": 56,
+      "start_pts": 13.05,
+      "end_pts": 13.983333333333333
+    },
+    "third": {
+      "frames": 45,
+      "start_pts": 14.55,
+      "end_pts": 15.283333333333333
+    }
+  },
+  "second_window_gap_seconds": [
+    13.8,
+    13.833333333333334
+  ],
+  "disposition_recommendation": "Accept narrow native calibration measurement: two visible launches/impacts on Luna corresponding to owned pulses 13 and 28; failed third request and no observed third launch in bounded window. Lead decides integration; no corpus or learned-live admission."
+}

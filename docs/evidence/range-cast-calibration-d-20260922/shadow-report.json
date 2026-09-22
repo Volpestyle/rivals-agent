@@ -1,0 +1,5036 @@
+{
+  "scope": "offline_off_policy_posthoc_observational_support_dispatch_only",
+  "created_utc": "2026-09-22T19:45:38.757666+00:00",
+  "replay_passes": 1,
+  "checkpoint": {
+    "path": "data\\diagnostics\\range-event-human-fit-v2-20260922\\run-1\\model.pt",
+    "before_after_sha256": [
+      "da29a97f0542210e6c69bc7dfa488afec97c33668a27deea98e3177919834987",
+      "da29a97f0542210e6c69bc7dfa488afec97c33668a27deea98e3177919834987"
+    ],
+    "original_source_identity": {
+      "patch": "1.1.3870120/build25364676",
+      "cooldown_regime": "normal",
+      "source_profile_sha256": "05f85d97152fd17a60eeaacd9bcfce0f0d30ca46d9e71d52d9e66ed1df789162",
+      "perception_sha256": "e9d40f7a12442335866df16edaa8ceea7116177ab8546b3267ac096c1c616798",
+      "selector_sha256": "ddf1428a61c54805ce06164ef0daa7dfa1302fdf1735990336fdcab939ae098d",
+      "semantic_revision": "web-cluster-onset-v1",
+      "feature_revision": "masked-state-grid-causal-v1"
+    },
+    "original_evidence_digest": "871f6bcaef37f405a87660eac4eeb9962a360ba608f4e122ef678666cff89191",
+    "spec": {
+      "steps": 5,
+      "period_s": 0.1,
+      "tolerance_s": 0.025,
+      "hidden": 8,
+      "confidence": 0.7
+    },
+    "support": [
+      4,
+      2
+    ],
+    "origin": "reviewed_human",
+    "load_mode": "offline=True",
+    "runtime_identity": null,
+    "deployment_binding": null
+  },
+  "recorded_input": {
+    "path": "data\\l1\\range-cast-probe-20260922-d\\frames.jsonl",
+    "before_after_sha256": [
+      "7ec2d278e57878220ef0615db7a2f4bdb5d0fbf7e9d1ec4209d15a798b04c690",
+      "7ec2d278e57878220ef0615db7a2f4bdb5d0fbf7e9d1ec4209d15a798b04c690"
+    ],
+    "log_rows": 161,
+    "state_rows": 52,
+    "unique_decision_states": 52,
+    "first_t": 6.321923799987417,
+    "last_t": 11.457038399996236,
+    "timestamps_values_unchanged": true,
+    "selection": "chronological recorded States, fresh actual consumer/Memory, no scripted-intent injection"
+  },
+  "counts": {
+    "inference_calls": 48,
+    "refusals": 7,
+    "refusal_reasons": {
+      "target_unobserved": 1,
+      "warming_up": 3,
+      "low_confidence": 3
+    },
+    "emitted_requests": {
+      "no_new_start": 40,
+      "start": 5
+    },
+    "argmax_predictions": {
+      "no_new_start": 42,
+      "start": 6
+    },
+    "sources": {
+      "range_skill_refusal": 7,
+      "range_skill_model": 45
+    },
+    "cadence_reset_intervals": 0,
+    "selected_target_ids": {
+      "1": 51
+    },
+    "original_webs": {
+      "5": 14,
+      "4": 33,
+      "3": 5
+    }
+  },
+  "timing": {
+    "cpu_only": true,
+    "torch_threads": 1,
+    "torch_interop_threads": 1,
+    "torch_version": "2.14.0+cpu",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "checkpoint_load_ms": 12.625800009118393,
+    "actual_decision_interval_ms": {
+      "n": 51,
+      "min": 90.59909998904914,
+      "median": 100.74570000870153,
+      "p95_nearest_rank": 111.92220001248643,
+      "max": 116.2901000061538
+    },
+    "offline_probability_call_ms": {
+      "n": 48,
+      "min": 0.1517999917268753,
+      "median": 0.20485000277403742,
+      "p95_nearest_rank": 0.46309997560456395,
+      "max": 1.2595999869517982
+    },
+    "offline_consumer_call_ms": {
+      "n": 52,
+      "min": 0.0585000088904053,
+      "median": 0.32165001903194934,
+      "p95_nearest_rank": 0.6478999857790768,
+      "max": 1.3979999930597842
+    },
+    "first_probability_call_ms": 1.2595999869517982,
+    "later_probability_call_ms": {
+      "n": 47,
+      "min": 0.1517999917268753,
+      "median": 0.20420001237653196,
+      "p95_nearest_rank": 0.38690000656060874,
+      "max": 0.7680999988224357
+    },
+    "confidence": {
+      "n": 48,
+      "min": 0.5386888980865479,
+      "median": 0.9953629076480865,
+      "p95_nearest_rank": 0.9962180256843567,
+      "max": 0.9966880679130554
+    },
+    "cost_boundary": "Local perf_counter wall time on CPU, not hardware CPU-cycle measurement; no capture/perception/scheduling/input. First inference includes cold-call overhead."
+  },
+  "recorded_live_context_not_remeasured": {
+    "mode": "SCRIPTED CALIBRATION",
+    "source": "scripted_calibration_web_pulse",
+    "patch": "unverified",
+    "cooldowns": "normal",
+    "clock_evidence": {
+      "loop_perf_origin": 173460.756247,
+      "focus_game_pid": 48460,
+      "focus_method": "GetForegroundWindow/GetWindowThreadProcessId, read-only",
+      "wall_time_ns": 1790105584770292000,
+      "perf_counter_bracket": [
+        173460.3742274,
+        173460.3742282
+      ],
+      "observation_clock": "Live.fresh grab START relative to loop_perf_origin",
+      "render_time_known": false
+    },
+    "normal_cooldowns_note": "New range entry arrive-20260922-142635: practice-settings-d/ps-0.jpg independently inspected No Ability Cooldown X/off; helper reported already off and made no toggle. Actual depletion remains for this recorded audit.",
+    "setup_note": "Root observed Spider-Man grounded on the spawn exit landing by the planter, with Luna simulation nearby. The reviewed camera-only same-device startup must establish its pose before the three-slot calibration. Luna is not the designated Galacta benchmark.",
+    "decide_ms": {
+      "p50": 32.42,
+      "p95": 39.96,
+      "max": 41.72
+    },
+    "decision_lag_ms": {
+      "p50": 32.42,
+      "p95": 39.96,
+      "max": 41.72
+    },
+    "tick_ms": {
+      "p50": 13.32,
+      "p95": 50.27,
+      "max": 54.88
+    },
+    "aim_ms": {
+      "p50": 9.4,
+      "p95": 10.83,
+      "max": 11.65
+    }
+  },
+  "input_metadata_hashes": {
+    "docs\\evidence\\range-human-fit-v2-20260922\\mac-report.json": "5cd1e957975cd2842f53866ac7e97b30796e7ba2434a98b6242c47a9cb479bcc",
+    "data\\l1\\range-cast-probe-20260922-d\\probe-config.json": "952f83d14f584035b4531df1e5cd1905fec8b037815996e3faebe52f86512cd5",
+    "data\\l1\\range-cast-probe-20260922-d\\meta.json": "596460fde6786ba8dc3100700cc5a67cceaf1d247cc665852e94758f6ffea6e7",
+    "data\\l1\\range-cast-probe-20260922-d\\probe-report.json": "9ebc54dd2df74445472357ee09b02e01ae52b407d2f15f71704fc414e1aa3adb"
+  },
+  "code_hashes": {
+    "agent/learned_range_skill.py": "77e4b7f19d4796737356b71d058d7c33688570940083cc82edb21d7c3e5c89ba",
+    "agent/brain.py": "0deaafb77cae4fa4a15fc8c8abe6d49c09821de7a1ab5810b096788117b30c00",
+    "agent/state.py": "83983c59f0ea39772686b9ce8e002aab86d312c5e75937bc2b9e6a21eddb8f5a",
+    "policy/range_skill_policy.py": "3fb99790514eec159789ce5f8b155239a8ab6da359f825720b89a50def931f8d",
+    "policy/range_policy.py": "c46e7d8a6523892107c8a878532505d020896e5b32e9df6179c049d6aa3410bb"
+  },
+  "replay_script_sha256": "ae6120006f9416ca382be9b633f226cfd83effc4a1bbea8a433eecc4038697bc",
+  "forbidden_imports": [],
+  "limits": [
+    "D is scripted calibration, not independent human validation; scripted decisions are not truth labels.",
+    "No scoring, admission, runtime binding, live approval, counterfactual kills or pulse-success claim.",
+    "Different learned actions would alter later scenes; later D observations remain off-policy.",
+    "Human checkpoint provenance remains original; D patch is unverified and its runtime/perception equivalence is unapproved.",
+    "Training used window-reset tracking; this replay uses continuous recorded detections and fresh continuous consumer Memory.",
+    "Recorded States already contain perceived fields. No source media, native frames, perception, Controller or Loop was imported or executed.",
+    "No retiming, interpolation, padding, threshold/model change, fitting, repeated replay or input occurred.",
+    "Recorded observation clock is grab START; render time is unknown. Offline CPU timings cannot substitute for live pipeline latency."
+  ],
+  "decisions": [
+    {
+      "log_line": 1,
+      "recorded_decision_id": 1,
+      "state_t": 6.321923799987417,
+      "state_sha256": "7a00c3f865fab5ad0002b33a4fedd60e355eeba2253a35f1ba2bd01a6e86596d",
+      "dt_s": null,
+      "cadence_reset": false,
+      "history_before": 0,
+      "history_after": 1,
+      "inference_called": false,
+      "inference_ms": null,
+      "consumer_ms": 0.09560000034980476,
+      "trace": {
+        "t": 6.321923799987417,
+        "decision_id": 1,
+        "source": "range_skill_refusal",
+        "reason": "target_unobserved",
+        "probabilities": null,
+        "intent": "Idle",
+        "target": null,
+        "web_cluster_request": null,
+        "valid_until": null,
+        "resources": null,
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": null,
+      "confidence": null,
+      "observed_resources": {
+        "webs": 5,
+        "observed_t": 6.321923799987417
+      },
+      "emitted_resources": null,
+      "selected_target": null,
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": null,
+      "recorded_live_decide_ms_context_only": 39.39
+    },
+    {
+      "log_line": 4,
+      "recorded_decision_id": 2,
+      "state_t": 6.424507299991092,
+      "state_sha256": "416874ef1beb195a3b5fc7653dc914a4292e60bda70c290a7cf7aaa58051044c",
+      "dt_s": 0.102583500003675,
+      "cadence_reset": false,
+      "history_before": 1,
+      "history_after": 2,
+      "inference_called": false,
+      "inference_ms": null,
+      "consumer_ms": 0.0974999857135117,
+      "trace": {
+        "t": 6.424507299991092,
+        "decision_id": 2,
+        "source": "range_skill_refusal",
+        "reason": "warming_up",
+        "probabilities": null,
+        "intent": "Idle",
+        "target": null,
+        "web_cluster_request": null,
+        "valid_until": null,
+        "resources": null,
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": null,
+      "confidence": null,
+      "observed_resources": {
+        "webs": 5,
+        "observed_t": 6.424507299991092
+      },
+      "emitted_resources": null,
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1048.0,
+          592.0,
+          1133.0,
+          748.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": false,
+        "track": 1,
+        "plate": true
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": null,
+      "recorded_live_decide_ms_context_only": 29.18
+    },
+    {
+      "log_line": 8,
+      "recorded_decision_id": 3,
+      "state_t": 6.528666999976849,
+      "state_sha256": "6f23ebba15bd7bf33fbfd6cc5d3d004945407b89716aa92de910f465f6f3499e",
+      "dt_s": 0.10415969998575747,
+      "cadence_reset": false,
+      "history_before": 2,
+      "history_after": 3,
+      "inference_called": false,
+      "inference_ms": null,
+      "consumer_ms": 0.0585000088904053,
+      "trace": {
+        "t": 6.528666999976849,
+        "decision_id": 3,
+        "source": "range_skill_refusal",
+        "reason": "warming_up",
+        "probabilities": null,
+        "intent": "Idle",
+        "target": null,
+        "web_cluster_request": null,
+        "valid_until": null,
+        "resources": null,
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": null,
+      "confidence": null,
+      "observed_resources": {
+        "webs": 5,
+        "observed_t": 6.528666999976849
+      },
+      "emitted_resources": null,
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1043.0,
+          592.0,
+          1135.0,
+          750.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": false,
+        "track": 1,
+        "plate": true
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 29.52
+    },
+    {
+      "log_line": 11,
+      "recorded_decision_id": 4,
+      "state_t": 6.622928500000853,
+      "state_sha256": "f230852a25ba777d1fedb700e395cb9850b761e18eb31cf431de1ed19bcf796b",
+      "dt_s": 0.09426150002400391,
+      "cadence_reset": false,
+      "history_before": 3,
+      "history_after": 4,
+      "inference_called": false,
+      "inference_ms": null,
+      "consumer_ms": 0.060900027165189385,
+      "trace": {
+        "t": 6.622928500000853,
+        "decision_id": 4,
+        "source": "range_skill_refusal",
+        "reason": "warming_up",
+        "probabilities": null,
+        "intent": "Idle",
+        "target": null,
+        "web_cluster_request": null,
+        "valid_until": null,
+        "resources": null,
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": null,
+      "confidence": null,
+      "observed_resources": {
+        "webs": 5,
+        "observed_t": 6.622928500000853
+      },
+      "emitted_resources": null,
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1083.0,
+          643.0,
+          1177.0,
+          802.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": false,
+        "track": 1,
+        "plate": false
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 29.04
+    },
+    {
+      "log_line": 14,
+      "recorded_decision_id": 5,
+      "state_t": 6.7151363999873865,
+      "state_sha256": "7cbc5798f14383b8649d00cc541676d3d4a2079578dcc915f39f6ddf300d3885",
+      "dt_s": 0.09220789998653345,
+      "cadence_reset": false,
+      "history_before": 4,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 1.2595999869517982,
+      "consumer_ms": 1.3979999930597842,
+      "trace": {
+        "t": 6.7151363999873865,
+        "decision_id": 5,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.9883991479873657,
+          0.011600861325860023
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "no_new_start",
+        "valid_until": 6.815136399987386,
+        "resources": {
+          "webs": 5,
+          "observed_t": 6.7151363999873865
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "no_new_start",
+      "confidence": 0.9883991479873657,
+      "observed_resources": {
+        "webs": 5,
+        "observed_t": 6.7151363999873865
+      },
+      "emitted_resources": {
+        "webs": 5,
+        "observed_t": 6.7151363999873865
+      },
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1194.0,
+          627.0,
+          1288.0,
+          787.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": false,
+        "track": 1,
+        "plate": false
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 32.42
+    },
+    {
+      "log_line": 18,
+      "recorded_decision_id": 6,
+      "state_t": 6.823108299984597,
+      "state_sha256": "d2d748ecb9917958aee8786fe0bdd6350659da3ea1c901e9298b0d745ed3894f",
+      "dt_s": 0.10797189999721013,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.3318000235594809,
+      "consumer_ms": 0.5153999954927713,
+      "trace": {
+        "t": 6.823108299984597,
+        "decision_id": 6,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.9786595702171326,
+          0.021340372040867805
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "no_new_start",
+        "valid_until": 6.923108299984596,
+        "resources": {
+          "webs": 5,
+          "observed_t": 6.823108299984597
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "no_new_start",
+      "confidence": 0.9786595702171326,
+      "observed_resources": {
+        "webs": 5,
+        "observed_t": 6.823108299984597
+      },
+      "emitted_resources": {
+        "webs": 5,
+        "observed_t": 6.823108299984597
+      },
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1258.0,
+          651.0,
+          1350.0,
+          813.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": false,
+        "track": 1,
+        "plate": false
+      },
+      "recorded_detection_ids": [
+        1,
+        3
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 34.0
+    },
+    {
+      "log_line": 21,
+      "recorded_decision_id": 7,
+      "state_t": 6.919623399997363,
+      "state_sha256": "495b5b0fb450e96b7c4588dfd0590d525ba8a69b3e37ca277f27ba9e66bb474a",
+      "dt_s": 0.0965151000127662,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.1956000050995499,
+      "consumer_ms": 0.3228000132367015,
+      "trace": {
+        "t": 6.919623399997363,
+        "decision_id": 7,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.9775011539459229,
+          0.022498900070786476
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "no_new_start",
+        "valid_until": 7.0196233999973625,
+        "resources": {
+          "webs": 5,
+          "observed_t": 6.919623399997363
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "no_new_start",
+      "confidence": 0.9775011539459229,
+      "observed_resources": {
+        "webs": 5,
+        "observed_t": 6.919623399997363
+      },
+      "emitted_resources": {
+        "webs": 5,
+        "observed_t": 6.919623399997363
+      },
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1274.0,
+          639.0,
+          1358.0,
+          797.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": false,
+        "track": 1,
+        "plate": false
+      },
+      "recorded_detection_ids": [
+        1,
+        3
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 31.84
+    },
+    {
+      "log_line": 25,
+      "recorded_decision_id": 8,
+      "state_t": 7.023191899992526,
+      "state_sha256": "da5a38353efe50bc7334f8f6e35d513e5c12259df8a46c782b43fd1a08b868f7",
+      "dt_s": 0.10356849999516271,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.26369999977760017,
+      "consumer_ms": 0.40339998668059707,
+      "trace": {
+        "t": 7.023191899992526,
+        "decision_id": 8,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.983200192451477,
+          0.016799770295619965
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "no_new_start",
+        "valid_until": 7.123191899992525,
+        "resources": {
+          "webs": 5,
+          "observed_t": 7.023191899992526
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "no_new_start",
+      "confidence": 0.983200192451477,
+      "observed_resources": {
+        "webs": 5,
+        "observed_t": 7.023191899992526
+      },
+      "emitted_resources": {
+        "webs": 5,
+        "observed_t": 7.023191899992526
+      },
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1245.0,
+          640.0,
+          1332.0,
+          798.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": false,
+        "track": 1,
+        "plate": false
+      },
+      "recorded_detection_ids": [
+        1,
+        3
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 25.75
+    },
+    {
+      "log_line": 28,
+      "recorded_decision_id": 9,
+      "state_t": 7.114358699996956,
+      "state_sha256": "b09ac5bdaca148a908dde8f7509405e85523ba797e1e5ae00e0de88c9cfab859",
+      "dt_s": 0.09116680000443012,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.2798000059556216,
+      "consumer_ms": 0.3932999970857054,
+      "trace": {
+        "t": 7.114358699996956,
+        "decision_id": 9,
+        "source": "range_skill_refusal",
+        "reason": "low_confidence",
+        "probabilities": [
+          0.4613111615180969,
+          0.5386888980865479
+        ],
+        "intent": "Idle",
+        "target": null,
+        "web_cluster_request": null,
+        "valid_until": null,
+        "resources": null,
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "start",
+      "confidence": 0.5386888980865479,
+      "observed_resources": {
+        "webs": 5,
+        "observed_t": 7.114358699996956
+      },
+      "emitted_resources": null,
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1242.0,
+          642.0,
+          1325.0,
+          798.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": false,
+        "track": 1,
+        "plate": false
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 24.15
+    },
+    {
+      "log_line": 31,
+      "recorded_decision_id": 10,
+      "state_t": 7.211057099979371,
+      "state_sha256": "2b33fce0310e680e86280149468a05e2e86cf90a832b3713aafae41ef97d6770",
+      "dt_s": 0.09669839998241514,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.20549999317154288,
+      "consumer_ms": 0.32550000469200313,
+      "trace": {
+        "t": 7.211057099979371,
+        "decision_id": 10,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.9944979548454285,
+          0.005502097308635712
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "no_new_start",
+        "valid_until": 7.3110570999793705,
+        "resources": {
+          "webs": 5,
+          "observed_t": 7.211057099979371
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "no_new_start",
+      "confidence": 0.9944979548454285,
+      "observed_resources": {
+        "webs": 5,
+        "observed_t": 7.211057099979371
+      },
+      "emitted_resources": {
+        "webs": 5,
+        "observed_t": 7.211057099979371
+      },
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1234.0,
+          641.0,
+          1322.0,
+          803.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": false,
+        "track": 1,
+        "plate": false
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 24.35
+    },
+    {
+      "log_line": 35,
+      "recorded_decision_id": 11,
+      "state_t": 7.314292700000806,
+      "state_sha256": "eb79acd95eeb34a175ecd4d420acc13a9bd5434cb98f8be580a867018f264d27",
+      "dt_s": 0.10323560002143495,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.16689999029040337,
+      "consumer_ms": 0.27320001390762627,
+      "trace": {
+        "t": 7.314292700000806,
+        "decision_id": 11,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.9357360601425171,
+          0.06426393985748291
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "no_new_start",
+        "valid_until": 7.414292700000805,
+        "resources": {
+          "webs": 5,
+          "observed_t": 7.314292700000806
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "no_new_start",
+      "confidence": 0.9357360601425171,
+      "observed_resources": {
+        "webs": 5,
+        "observed_t": 7.314292700000806
+      },
+      "emitted_resources": {
+        "webs": 5,
+        "observed_t": 7.314292700000806
+      },
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1233.0,
+          640.0,
+          1324.0,
+          811.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": false,
+        "track": 1,
+        "plate": false
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 25.02
+    },
+    {
+      "log_line": 39,
+      "recorded_decision_id": 12,
+      "state_t": 7.409593299991684,
+      "state_sha256": "9b9283f2b9cd77542f8c0a3fab84041d8096182252c5d06f1053151b22248994",
+      "dt_s": 0.09530059999087825,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.23099998361431062,
+      "consumer_ms": 0.4158999945502728,
+      "trace": {
+        "t": 7.409593299991684,
+        "decision_id": 12,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.9946531057357788,
+          0.005346865858882666
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "no_new_start",
+        "valid_until": 7.509593299991684,
+        "resources": {
+          "webs": 5,
+          "observed_t": 7.409593299991684
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "no_new_start",
+      "confidence": 0.9946531057357788,
+      "observed_resources": {
+        "webs": 5,
+        "observed_t": 7.409593299991684
+      },
+      "emitted_resources": {
+        "webs": 5,
+        "observed_t": 7.409593299991684
+      },
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1229.0,
+          633.0,
+          1325.0,
+          812.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": false,
+        "track": 1,
+        "plate": false
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 27.2
+    },
+    {
+      "log_line": 43,
+      "recorded_decision_id": 13,
+      "state_t": 7.512911500001792,
+      "state_sha256": "b98b869a72e2a9ee3ba10697e9462daef0eb3dd8388d4606f9dcd8d310431e2d",
+      "dt_s": 0.10331820001010783,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.2655999851413071,
+      "consumer_ms": 0.42699999175965786,
+      "trace": {
+        "t": 7.512911500001792,
+        "decision_id": 13,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.9946735501289368,
+          0.005326480139046907
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "no_new_start",
+        "valid_until": 7.6129115000017915,
+        "resources": {
+          "webs": 5,
+          "observed_t": 7.512911500001792
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "no_new_start",
+      "confidence": 0.9946735501289368,
+      "observed_resources": {
+        "webs": 5,
+        "observed_t": 7.512911500001792
+      },
+      "emitted_resources": {
+        "webs": 5,
+        "observed_t": 7.512911500001792
+      },
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1223.0,
+          631.0,
+          1326.0,
+          818.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": false,
+        "track": 1,
+        "plate": false
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 25.51
+    },
+    {
+      "log_line": 47,
+      "recorded_decision_id": 14,
+      "state_t": 7.61017499997979,
+      "state_sha256": "e3f6f3e0dc756c7e0eff020a08829d0f5659155272565a5f0d288069b8053e51",
+      "dt_s": 0.09726349997799844,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.17419998766854405,
+      "consumer_ms": 0.2840000088326633,
+      "trace": {
+        "t": 7.61017499997979,
+        "decision_id": 14,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.9821420907974243,
+          0.017857953906059265
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "no_new_start",
+        "valid_until": 7.71017499997979,
+        "resources": {
+          "webs": 5,
+          "observed_t": 7.61017499997979
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "no_new_start",
+      "confidence": 0.9821420907974243,
+      "observed_resources": {
+        "webs": 5,
+        "observed_t": 7.61017499997979
+      },
+      "emitted_resources": {
+        "webs": 5,
+        "observed_t": 7.61017499997979
+      },
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1216.0,
+          623.0,
+          1323.0,
+          834.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": false,
+        "track": 1,
+        "plate": false
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 25.68
+    },
+    {
+      "log_line": 50,
+      "recorded_decision_id": 15,
+      "state_t": 7.712049900001148,
+      "state_sha256": "08786efdf60f6cd8e3bccbb486189dd89d710d762991b4020900bf37f4971358",
+      "dt_s": 0.10187490002135746,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.15720000374130905,
+      "consumer_ms": 0.25770001229830086,
+      "trace": {
+        "t": 7.712049900001148,
+        "decision_id": 15,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.9966880679130554,
+          0.003311963053420186
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "no_new_start",
+        "valid_until": 7.812049900001147,
+        "resources": {
+          "webs": 4,
+          "observed_t": 7.712049900001148
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "no_new_start",
+      "confidence": 0.9966880679130554,
+      "observed_resources": {
+        "webs": 4,
+        "observed_t": 7.712049900001148
+      },
+      "emitted_resources": {
+        "webs": 4,
+        "observed_t": 7.712049900001148
+      },
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1212.0,
+          617.0,
+          1321.0,
+          842.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": false,
+        "track": 1,
+        "plate": false
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 30.25
+    },
+    {
+      "log_line": 53,
+      "recorded_decision_id": 16,
+      "state_t": 7.8147844999912195,
+      "state_sha256": "5cb1cab4782359599ce8d71b893963ef9f5fc097c290e8ea8e6a77dd176ae349",
+      "dt_s": 0.10273459999007173,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.23520001559518278,
+      "consumer_ms": 0.3266999847255647,
+      "trace": {
+        "t": 7.8147844999912195,
+        "decision_id": 16,
+        "source": "range_skill_refusal",
+        "reason": "low_confidence",
+        "probabilities": [
+          0.570605456829071,
+          0.42939451336860657
+        ],
+        "intent": "Idle",
+        "target": null,
+        "web_cluster_request": null,
+        "valid_until": null,
+        "resources": null,
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "no_new_start",
+      "confidence": 0.570605456829071,
+      "observed_resources": {
+        "webs": 4,
+        "observed_t": 7.8147844999912195
+      },
+      "emitted_resources": null,
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1218.0,
+          598.0,
+          1331.0,
+          842.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": true,
+        "track": 1,
+        "plate": true
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 26.26
+    },
+    {
+      "log_line": 57,
+      "recorded_decision_id": 17,
+      "state_t": 7.924315899988869,
+      "state_sha256": "c1f58c24104cf51a1f4ae5101183828f1118e21a8fb5cde5b793731f7912a405",
+      "dt_s": 0.10953139999764971,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.20390001009218395,
+      "consumer_ms": 0.3205000248271972,
+      "trace": {
+        "t": 7.924315899988869,
+        "decision_id": 17,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.9958642721176147,
+          0.004135676193982363
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "no_new_start",
+        "valid_until": 8.024315899988869,
+        "resources": {
+          "webs": 4,
+          "observed_t": 7.924315899988869
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "no_new_start",
+      "confidence": 0.9958642721176147,
+      "observed_resources": {
+        "webs": 4,
+        "observed_t": 7.924315899988869
+      },
+      "emitted_resources": {
+        "webs": 4,
+        "observed_t": 7.924315899988869
+      },
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1217.0,
+          630.0,
+          1338.0,
+          881.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": true,
+        "track": 1,
+        "plate": true
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 27.45
+    },
+    {
+      "log_line": 60,
+      "recorded_decision_id": 18,
+      "state_t": 8.026718699984485,
+      "state_sha256": "345d878d01ca6118bba1c29e2a1868ba1c6a93709800413e0c6bfc21118cdc1f",
+      "dt_s": 0.10240279999561608,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.22079999325796962,
+      "consumer_ms": 0.3321000258438289,
+      "trace": {
+        "t": 8.026718699984485,
+        "decision_id": 18,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.8144127726554871,
+          0.18558719754219055
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "no_new_start",
+        "valid_until": 8.126718699984485,
+        "resources": {
+          "webs": 4,
+          "observed_t": 8.026718699984485
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "no_new_start",
+      "confidence": 0.8144127726554871,
+      "observed_resources": {
+        "webs": 4,
+        "observed_t": 8.026718699984485
+      },
+      "emitted_resources": {
+        "webs": 4,
+        "observed_t": 8.026718699984485
+      },
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1210.0,
+          564.0,
+          1343.0,
+          849.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": true,
+        "track": 1,
+        "plate": true
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 28.4
+    },
+    {
+      "log_line": 63,
+      "recorded_decision_id": 19,
+      "state_t": 8.131090599985328,
+      "state_sha256": "c7cca79b0e54e615f8a6f276bef6c53d1b0c6cb6b441d71bc6e0b13ec86eb14f",
+      "dt_s": 0.10437190000084229,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.18989999080076814,
+      "consumer_ms": 0.2963000151794404,
+      "trace": {
+        "t": 8.131090599985328,
+        "decision_id": 19,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.9959889054298401,
+          0.004011152777820826
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "no_new_start",
+        "valid_until": 8.231090599985327,
+        "resources": {
+          "webs": 4,
+          "observed_t": 8.131090599985328
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "no_new_start",
+      "confidence": 0.9959889054298401,
+      "observed_resources": {
+        "webs": 4,
+        "observed_t": 8.131090599985328
+      },
+      "emitted_resources": {
+        "webs": 4,
+        "observed_t": 8.131090599985328
+      },
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1206.0,
+          562.0,
+          1352.0,
+          870.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": true,
+        "track": 1,
+        "plate": true
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 28.06
+    },
+    {
+      "log_line": 66,
+      "recorded_decision_id": 20,
+      "state_t": 8.228195999981835,
+      "state_sha256": "d1808dee2b4ec2ae9ef9c63f69f94a2f60a230073e70f7f2ada85f45c64d991a",
+      "dt_s": 0.09710539999650791,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.17220000154338777,
+      "consumer_ms": 0.2834000042639673,
+      "trace": {
+        "t": 8.228195999981835,
+        "decision_id": 20,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.9961806535720825,
+          0.0038193075451999903
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "no_new_start",
+        "valid_until": 8.328195999981835,
+        "resources": {
+          "webs": 4,
+          "observed_t": 8.228195999981835
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "no_new_start",
+      "confidence": 0.9961806535720825,
+      "observed_resources": {
+        "webs": 4,
+        "observed_t": 8.228195999981835
+      },
+      "emitted_resources": {
+        "webs": 4,
+        "observed_t": 8.228195999981835
+      },
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1204.0,
+          563.0,
+          1360.0,
+          890.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": true,
+        "track": 1,
+        "plate": true
+      },
+      "recorded_detection_ids": [
+        1,
+        4
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 30.97
+    },
+    {
+      "log_line": 70,
+      "recorded_decision_id": 21,
+      "state_t": 8.340118199994322,
+      "state_sha256": "6dbcc1641d760a9c113200718b02747257b8f9ea5205957600e3f3977153fdbf",
+      "dt_s": 0.11192220001248643,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.19809999503195286,
+      "consumer_ms": 0.30449999030679464,
+      "trace": {
+        "t": 8.340118199994322,
+        "decision_id": 21,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.9961729645729065,
+          0.003827053355053067
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "no_new_start",
+        "valid_until": 8.440118199994322,
+        "resources": {
+          "webs": 4,
+          "observed_t": 8.340118199994322
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "no_new_start",
+      "confidence": 0.9961729645729065,
+      "observed_resources": {
+        "webs": 4,
+        "observed_t": 8.340118199994322
+      },
+      "emitted_resources": {
+        "webs": 4,
+        "observed_t": 8.340118199994322
+      },
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1199.0,
+          555.0,
+          1370.0,
+          909.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": true,
+        "track": 1,
+        "plate": true
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 29.72
+    },
+    {
+      "log_line": 73,
+      "recorded_decision_id": 22,
+      "state_t": 8.44399989998783,
+      "state_sha256": "f9d799e83305eee4b22819c3adfe8f67e6cdd1170558fce70a3e96fb1cc885f5",
+      "dt_s": 0.10388169999350794,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.2573999809101224,
+      "consumer_ms": 0.42630001553334296,
+      "trace": {
+        "t": 8.44399989998783,
+        "decision_id": 22,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.9962020516395569,
+          0.003798008430749178
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "no_new_start",
+        "valid_until": 8.54399989998783,
+        "resources": {
+          "webs": 4,
+          "observed_t": 8.44399989998783
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "no_new_start",
+      "confidence": 0.9962020516395569,
+      "observed_resources": {
+        "webs": 4,
+        "observed_t": 8.44399989998783
+      },
+      "emitted_resources": {
+        "webs": 4,
+        "observed_t": 8.44399989998783
+      },
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1190.0,
+          542.0,
+          1384.0,
+          932.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": true,
+        "track": 1,
+        "plate": true
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 31.04
+    },
+    {
+      "log_line": 76,
+      "recorded_decision_id": 23,
+      "state_t": 8.544745599996531,
+      "state_sha256": "e56db0b812be847faff6f1f64fdac4518e315c1ba161063091c860f437f1baad",
+      "dt_s": 0.10074570000870153,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.16720002167858183,
+      "consumer_ms": 0.2728000108618289,
+      "trace": {
+        "t": 8.544745599996531,
+        "decision_id": 23,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.9962126016616821,
+          0.003787403693422675
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "no_new_start",
+        "valid_until": 8.644745599996531,
+        "resources": {
+          "webs": 4,
+          "observed_t": 8.544745599996531
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "no_new_start",
+      "confidence": 0.9962126016616821,
+      "observed_resources": {
+        "webs": 4,
+        "observed_t": 8.544745599996531
+      },
+      "emitted_resources": {
+        "webs": 4,
+        "observed_t": 8.544745599996531
+      },
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1177.0,
+          524.0,
+          1395.0,
+          960.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": true,
+        "track": 1,
+        "plate": true
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 30.75
+    },
+    {
+      "log_line": 80,
+      "recorded_decision_id": 24,
+      "state_t": 8.648514599975897,
+      "state_sha256": "ad839f315efad50633ba2878d40d0cf6e54f0ba1f51b298537bc3262e0e2c41e",
+      "dt_s": 0.10376899997936562,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.19570000586099923,
+      "consumer_ms": 0.35579997347667813,
+      "trace": {
+        "t": 8.648514599975897,
+        "decision_id": 24,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.9962232112884521,
+          0.003776724450290203
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "no_new_start",
+        "valid_until": 8.748514599975897,
+        "resources": {
+          "webs": 4,
+          "observed_t": 8.648514599975897
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "no_new_start",
+      "confidence": 0.9962232112884521,
+      "observed_resources": {
+        "webs": 4,
+        "observed_t": 8.648514599975897
+      },
+      "emitted_resources": {
+        "webs": 4,
+        "observed_t": 8.648514599975897
+      },
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1152.0,
+          505.0,
+          1399.0,
+          996.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": true,
+        "track": 1,
+        "plate": true
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 31.75
+    },
+    {
+      "log_line": 83,
+      "recorded_decision_id": 25,
+      "state_t": 8.748853099998087,
+      "state_sha256": "40c3c86468f6a290ae0c7d20e17d3cf1f5ebd6b1562a4af4231921abb7a1b0b0",
+      "dt_s": 0.10033850002218969,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.27630000840872526,
+      "consumer_ms": 0.38079998921602964,
+      "trace": {
+        "t": 8.748853099998087,
+        "decision_id": 25,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.9962180256843567,
+          0.003782021114602685
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "no_new_start",
+        "valid_until": 8.848853099998086,
+        "resources": {
+          "webs": 4,
+          "observed_t": 8.748853099998087
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "no_new_start",
+      "confidence": 0.9962180256843567,
+      "observed_resources": {
+        "webs": 4,
+        "observed_t": 8.748853099998087
+      },
+      "emitted_resources": {
+        "webs": 4,
+        "observed_t": 8.748853099998087
+      },
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1133.0,
+          487.0,
+          1391.0,
+          997.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": true,
+        "track": 1,
+        "plate": true
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 35.28
+    },
+    {
+      "log_line": 86,
+      "recorded_decision_id": 26,
+      "state_t": 8.849046499992255,
+      "state_sha256": "133e70a86c36a0759bf0b0eee88e732c447b71fd388f96c2fd6231f416b4651f",
+      "dt_s": 0.10019339999416843,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.17839999054558575,
+      "consumer_ms": 0.28080001357011497,
+      "trace": {
+        "t": 8.849046499992255,
+        "decision_id": 26,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.9961973428726196,
+          0.0038027020636945963
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "no_new_start",
+        "valid_until": 8.949046499992255,
+        "resources": {
+          "webs": 4,
+          "observed_t": 8.849046499992255
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "no_new_start",
+      "confidence": 0.9961973428726196,
+      "observed_resources": {
+        "webs": 4,
+        "observed_t": 8.849046499992255
+      },
+      "emitted_resources": {
+        "webs": 4,
+        "observed_t": 8.849046499992255
+      },
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1127.0,
+          464.0,
+          1384.0,
+          978.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": true,
+        "track": 1,
+        "plate": true
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 33.57
+    },
+    {
+      "log_line": 89,
+      "recorded_decision_id": 27,
+      "state_t": 8.948863600002369,
+      "state_sha256": "344a7e101f0ec6cb506ee260dbcc6deff07e651c08db55e96175415009caf657",
+      "dt_s": 0.09981710001011379,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.1714999962132424,
+      "consumer_ms": 0.29910000739619136,
+      "trace": {
+        "t": 8.948863600002369,
+        "decision_id": 27,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.9962024092674255,
+          0.003797629615291953
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "no_new_start",
+        "valid_until": 9.048863600002369,
+        "resources": {
+          "webs": 4,
+          "observed_t": 8.948863600002369
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "no_new_start",
+      "confidence": 0.9962024092674255,
+      "observed_resources": {
+        "webs": 4,
+        "observed_t": 8.948863600002369
+      },
+      "emitted_resources": {
+        "webs": 4,
+        "observed_t": 8.948863600002369
+      },
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1134.0,
+          451.0,
+          1396.0,
+          964.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": true,
+        "track": 1,
+        "plate": true
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 32.05
+    },
+    {
+      "log_line": 92,
+      "recorded_decision_id": 28,
+      "state_t": 9.039462699991418,
+      "state_sha256": "0ac4c5f1da7bdced05877b022bfad4554782e1d1e48f0bb0f7a7fe37ed54afda",
+      "dt_s": 0.09059909998904914,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.38690000656060874,
+      "consumer_ms": 0.5124000017531216,
+      "trace": {
+        "t": 9.039462699991418,
+        "decision_id": 28,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.9962030053138733,
+          0.0037970487028360367
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "no_new_start",
+        "valid_until": 9.139462699991418,
+        "resources": {
+          "webs": 4,
+          "observed_t": 9.039462699991418
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "no_new_start",
+      "confidence": 0.9962030053138733,
+      "observed_resources": {
+        "webs": 4,
+        "observed_t": 9.039462699991418
+      },
+      "emitted_resources": {
+        "webs": 4,
+        "observed_t": 9.039462699991418
+      },
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1142.0,
+          449.0,
+          1412.0,
+          965.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": true,
+        "track": 1,
+        "plate": true
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 34.99
+    },
+    {
+      "log_line": 95,
+      "recorded_decision_id": 29,
+      "state_t": 9.137639099993976,
+      "state_sha256": "c61064383768f96a62e5f24245289050a7a98b5db58c16646682fd6dbbe0702e",
+      "dt_s": 0.09817640000255778,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.22969997371546924,
+      "consumer_ms": 0.4040999920107424,
+      "trace": {
+        "t": 9.137639099993976,
+        "decision_id": 29,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.9579752683639526,
+          0.04202469438314438
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "no_new_start",
+        "valid_until": 9.237639099993975,
+        "resources": {
+          "webs": 4,
+          "observed_t": 9.137639099993976
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "no_new_start",
+      "confidence": 0.9579752683639526,
+      "observed_resources": {
+        "webs": 4,
+        "observed_t": 9.137639099993976
+      },
+      "emitted_resources": {
+        "webs": 4,
+        "observed_t": 9.137639099993976
+      },
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1138.0,
+          443.0,
+          1416.0,
+          968.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": true,
+        "track": 1,
+        "plate": true
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 41.72
+    },
+    {
+      "log_line": 97,
+      "recorded_decision_id": 30,
+      "state_t": 9.236088099976769,
+      "state_sha256": "ce16a31363f139c3ec23126a7785fe0dc92021a2116abc1dae6097313f63cc8f",
+      "dt_s": 0.09844899998279288,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.16689999029040337,
+      "consumer_ms": 0.2722000062931329,
+      "trace": {
+        "t": 9.236088099976769,
+        "decision_id": 30,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.9948615431785583,
+          0.0051384358666837215
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "no_new_start",
+        "valid_until": 9.336088099976768,
+        "resources": {
+          "webs": 3,
+          "observed_t": 9.236088099976769
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "no_new_start",
+      "confidence": 0.9948615431785583,
+      "observed_resources": {
+        "webs": 3,
+        "observed_t": 9.236088099976769
+      },
+      "emitted_resources": {
+        "webs": 3,
+        "observed_t": 9.236088099976769
+      },
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1124.0,
+          429.0,
+          1422.0,
+          984.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": true,
+        "track": 1,
+        "plate": true
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 36.83
+    },
+    {
+      "log_line": 100,
+      "recorded_decision_id": 31,
+      "state_t": 9.339895299985074,
+      "state_sha256": "a87492cb9a8ee5aa7655b7d5cfad913e5b85cf398edcb4cac0a0e1ee45b6a0e4",
+      "dt_s": 0.10380720000830479,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.20870001753792167,
+      "consumer_ms": 0.3620999923441559,
+      "trace": {
+        "t": 9.339895299985074,
+        "decision_id": 31,
+        "source": "range_skill_refusal",
+        "reason": "low_confidence",
+        "probabilities": [
+          0.6533545851707458,
+          0.34664544463157654
+        ],
+        "intent": "Idle",
+        "target": null,
+        "web_cluster_request": null,
+        "valid_until": null,
+        "resources": null,
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "no_new_start",
+      "confidence": 0.6533545851707458,
+      "observed_resources": {
+        "webs": 3,
+        "observed_t": 9.339895299985074
+      },
+      "emitted_resources": null,
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1146.0,
+          449.0,
+          1431.0,
+          990.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": null,
+        "track": 1,
+        "plate": true
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 39.96
+    },
+    {
+      "log_line": 102,
+      "recorded_decision_id": 32,
+      "state_t": 9.432958999997936,
+      "state_sha256": "228eb19d97c318098b6c8810ef236da7676f52d20ce53a2a2742b0690cee5a6f",
+      "dt_s": 0.09306370001286268,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.2686000079847872,
+      "consumer_ms": 0.3960999893024564,
+      "trace": {
+        "t": 9.432958999997936,
+        "decision_id": 32,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.9869318604469299,
+          0.013068177737295628
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "no_new_start",
+        "valid_until": 9.532958999997936,
+        "resources": {
+          "webs": 3,
+          "observed_t": 9.432958999997936
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "no_new_start",
+      "confidence": 0.9869318604469299,
+      "observed_resources": {
+        "webs": 3,
+        "observed_t": 9.432958999997936
+      },
+      "emitted_resources": {
+        "webs": 3,
+        "observed_t": 9.432958999997936
+      },
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1153.0,
+          460.0,
+          1432.0,
+          992.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": null,
+        "track": 1,
+        "plate": true
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 40.14
+    },
+    {
+      "log_line": 105,
+      "recorded_decision_id": 33,
+      "state_t": 9.53986689998419,
+      "state_sha256": "aea8dfc2b90dafaf5271b2b552d0691e45fcbd739c40722be848eb2a219fd905",
+      "dt_s": 0.10690789998625405,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.1610000035725534,
+      "consumer_ms": 0.2632999967318028,
+      "trace": {
+        "t": 9.53986689998419,
+        "decision_id": 33,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.08973277360200882,
+          0.9102672338485718
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "start",
+        "valid_until": 9.63986689998419,
+        "resources": {
+          "webs": 3,
+          "observed_t": 9.53986689998419
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "start",
+      "confidence": 0.9102672338485718,
+      "observed_resources": {
+        "webs": 3,
+        "observed_t": 9.53986689998419
+      },
+      "emitted_resources": {
+        "webs": 3,
+        "observed_t": 9.53986689998419
+      },
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1134.0,
+          433.0,
+          1430.0,
+          992.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": null,
+        "track": 1,
+        "plate": true
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 35.59
+    },
+    {
+      "log_line": 108,
+      "recorded_decision_id": 34,
+      "state_t": 9.636450299993157,
+      "state_sha256": "4734208117c440e802547054aafb49a18d0b2c25f5a07c3d2a632debdc356973",
+      "dt_s": 0.09658340000896715,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.15860001440159976,
+      "consumer_ms": 0.2576000115368515,
+      "trace": {
+        "t": 9.636450299993157,
+        "decision_id": 34,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.7781147956848145,
+          0.22188521921634674
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "no_new_start",
+        "valid_until": 9.736450299993157,
+        "resources": {
+          "webs": 3,
+          "observed_t": 9.636450299993157
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "no_new_start",
+      "confidence": 0.7781147956848145,
+      "observed_resources": {
+        "webs": 3,
+        "observed_t": 9.636450299993157
+      },
+      "emitted_resources": {
+        "webs": 3,
+        "observed_t": 9.636450299993157
+      },
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1146.0,
+          438.0,
+          1433.0,
+          981.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": null,
+        "track": 1,
+        "plate": true
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 35.28
+    },
+    {
+      "log_line": 111,
+      "recorded_decision_id": 35,
+      "state_t": 9.731437799986452,
+      "state_sha256": "53d6c06a5e5f39b943e7fe2b0e487feea0a08694ac549464adaefe4e5c92cb9c",
+      "dt_s": 0.09498749999329448,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.46309997560456395,
+      "consumer_ms": 0.6478999857790768,
+      "trace": {
+        "t": 9.731437799986452,
+        "decision_id": 35,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.14163602888584137,
+          0.858363926410675
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "start",
+        "valid_until": 9.831437799986452,
+        "resources": {
+          "webs": 4,
+          "observed_t": 9.731437799986452
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "start",
+      "confidence": 0.858363926410675,
+      "observed_resources": {
+        "webs": 4,
+        "observed_t": 9.731437799986452
+      },
+      "emitted_resources": {
+        "webs": 4,
+        "observed_t": 9.731437799986452
+      },
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1158.0,
+          452.0,
+          1433.0,
+          976.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": true,
+        "track": 1,
+        "plate": true
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 36.52
+    },
+    {
+      "log_line": 114,
+      "recorded_decision_id": 36,
+      "state_t": 9.839935299998615,
+      "state_sha256": "9bb490a4504f235f63fad76719ace6580a048030b93c9a2928f6f675603c0839",
+      "dt_s": 0.10849750001216307,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.20420001237653196,
+      "consumer_ms": 0.31079998007044196,
+      "trace": {
+        "t": 9.839935299998615,
+        "decision_id": 36,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.06386936455965042,
+          0.936130702495575
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "start",
+        "valid_until": 9.939935299998615,
+        "resources": {
+          "webs": 4,
+          "observed_t": 9.839935299998615
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "start",
+      "confidence": 0.936130702495575,
+      "observed_resources": {
+        "webs": 4,
+        "observed_t": 9.839935299998615
+      },
+      "emitted_resources": {
+        "webs": 4,
+        "observed_t": 9.839935299998615
+      },
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1172.0,
+          462.0,
+          1431.0,
+          982.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": true,
+        "track": 1,
+        "plate": true
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 39.81
+    },
+    {
+      "log_line": 117,
+      "recorded_decision_id": 37,
+      "state_t": 9.955409899994265,
+      "state_sha256": "b4a2e532927fb0362e636c7c56e68d13b45314a184180b924db6c761aa296b83",
+      "dt_s": 0.11547459999565035,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.16820000018924475,
+      "consumer_ms": 0.26920001255348325,
+      "trace": {
+        "t": 9.955409899994265,
+        "decision_id": 37,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.7565661072731018,
+          0.243433877825737
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "no_new_start",
+        "valid_until": 10.055409899994265,
+        "resources": {
+          "webs": 4,
+          "observed_t": 9.955409899994265
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "no_new_start",
+      "confidence": 0.7565661072731018,
+      "observed_resources": {
+        "webs": 4,
+        "observed_t": 9.955409899994265
+      },
+      "emitted_resources": {
+        "webs": 4,
+        "observed_t": 9.955409899994265
+      },
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1170.0,
+          462.0,
+          1426.0,
+          980.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": true,
+        "track": 1,
+        "plate": true
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 31.9
+    },
+    {
+      "log_line": 119,
+      "recorded_decision_id": 38,
+      "state_t": 10.048067700001411,
+      "state_sha256": "81ca5686a8b25377a92f234f53d805f0504599c98b66fd929727908107e33521",
+      "dt_s": 0.09265780000714585,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.22650000755675137,
+      "consumer_ms": 0.33229999826289713,
+      "trace": {
+        "t": 10.048067700001411,
+        "decision_id": 38,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.011608556844294071,
+          0.9883914589881897
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "start",
+        "valid_until": 10.14806770000141,
+        "resources": {
+          "webs": 4,
+          "observed_t": 10.048067700001411
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "start",
+      "confidence": 0.9883914589881897,
+      "observed_resources": {
+        "webs": 4,
+        "observed_t": 10.048067700001411
+      },
+      "emitted_resources": {
+        "webs": 4,
+        "observed_t": 10.048067700001411
+      },
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1162.0,
+          461.0,
+          1423.0,
+          979.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": true,
+        "track": 1,
+        "plate": true
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 33.41
+    },
+    {
+      "log_line": 122,
+      "recorded_decision_id": 39,
+      "state_t": 10.150109699985478,
+      "state_sha256": "889eb675d6e4d8f5bfbcdd2f037cc046e6a1c7d7cd918072ff5125510938cd3a",
+      "dt_s": 0.10204199998406693,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.28589999419637024,
+      "consumer_ms": 0.4030000127386302,
+      "trace": {
+        "t": 10.150109699985478,
+        "decision_id": 39,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.9897056818008423,
+          0.010294254869222641
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "no_new_start",
+        "valid_until": 10.250109699985478,
+        "resources": {
+          "webs": 4,
+          "observed_t": 10.150109699985478
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "no_new_start",
+      "confidence": 0.9897056818008423,
+      "observed_resources": {
+        "webs": 4,
+        "observed_t": 10.150109699985478
+      },
+      "emitted_resources": {
+        "webs": 4,
+        "observed_t": 10.150109699985478
+      },
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1159.0,
+          460.0,
+          1427.0,
+          979.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": true,
+        "track": 1,
+        "plate": true
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 33.21
+    },
+    {
+      "log_line": 125,
+      "recorded_decision_id": 40,
+      "state_t": 10.24578759999713,
+      "state_sha256": "c4889db6126ecf72fbbfe6f1a92688857d42986740d023437231e6b2f4d2a487",
+      "dt_s": 0.09567790001165122,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.18350000027567148,
+      "consumer_ms": 0.29109997558407485,
+      "trace": {
+        "t": 10.24578759999713,
+        "decision_id": 40,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.29481497406959534,
+          0.7051849961280823
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "start",
+        "valid_until": 10.345787599997129,
+        "resources": {
+          "webs": 4,
+          "observed_t": 10.24578759999713
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "start",
+      "confidence": 0.7051849961280823,
+      "observed_resources": {
+        "webs": 4,
+        "observed_t": 10.24578759999713
+      },
+      "emitted_resources": {
+        "webs": 4,
+        "observed_t": 10.24578759999713
+      },
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1153.0,
+          465.0,
+          1425.0,
+          978.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": true,
+        "track": 1,
+        "plate": true
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 33.19
+    },
+    {
+      "log_line": 128,
+      "recorded_decision_id": 41,
+      "state_t": 10.349203099991428,
+      "state_sha256": "4ee5352f92fc70ecc856be494e4175515e72369d861dd069428741764ceb5557",
+      "dt_s": 0.10341549999429844,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.22399998852051795,
+      "consumer_ms": 0.36249999538995326,
+      "trace": {
+        "t": 10.349203099991428,
+        "decision_id": 41,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.9961953163146973,
+          0.0038047258276492357
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "no_new_start",
+        "valid_until": 10.449203099991427,
+        "resources": {
+          "webs": 4,
+          "observed_t": 10.349203099991428
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "no_new_start",
+      "confidence": 0.9961953163146973,
+      "observed_resources": {
+        "webs": 4,
+        "observed_t": 10.349203099991428
+      },
+      "emitted_resources": {
+        "webs": 4,
+        "observed_t": 10.349203099991428
+      },
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1150.0,
+          469.0,
+          1430.0,
+          978.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": true,
+        "track": 1,
+        "plate": true
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 34.56
+    },
+    {
+      "log_line": 131,
+      "recorded_decision_id": 42,
+      "state_t": 10.442615099978866,
+      "state_sha256": "8b714fefb99982e3b420200fef32d2bf319b15567860ab2d34eb288987cd4664",
+      "dt_s": 0.09341199998743832,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.21120000747032464,
+      "consumer_ms": 0.3902000025846064,
+      "trace": {
+        "t": 10.442615099978866,
+        "decision_id": 42,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.9961979985237122,
+          0.0038019465282559395
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "no_new_start",
+        "valid_until": 10.542615099978866,
+        "resources": {
+          "webs": 4,
+          "observed_t": 10.442615099978866
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "no_new_start",
+      "confidence": 0.9961979985237122,
+      "observed_resources": {
+        "webs": 4,
+        "observed_t": 10.442615099978866
+      },
+      "emitted_resources": {
+        "webs": 4,
+        "observed_t": 10.442615099978866
+      },
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1146.0,
+          469.0,
+          1431.0,
+          978.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": true,
+        "track": 1,
+        "plate": true
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 32.98
+    },
+    {
+      "log_line": 134,
+      "recorded_decision_id": 43,
+      "state_t": 10.547340999997687,
+      "state_sha256": "c85a17d8b941b123884086f98696384116adba62ec7755dcae6753ea1fe789a3",
+      "dt_s": 0.10472590001882054,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.2297000028192997,
+      "consumer_ms": 0.3355000226292759,
+      "trace": {
+        "t": 10.547340999997687,
+        "decision_id": 43,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.9962001442909241,
+          0.003799811005592346
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "no_new_start",
+        "valid_until": 10.647340999997686,
+        "resources": {
+          "webs": 4,
+          "observed_t": 10.547340999997687
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "no_new_start",
+      "confidence": 0.9962001442909241,
+      "observed_resources": {
+        "webs": 4,
+        "observed_t": 10.547340999997687
+      },
+      "emitted_resources": {
+        "webs": 4,
+        "observed_t": 10.547340999997687
+      },
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1144.0,
+          466.0,
+          1436.0,
+          978.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": true,
+        "track": 1,
+        "plate": true
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 36.61
+    },
+    {
+      "log_line": 137,
+      "recorded_decision_id": 44,
+      "state_t": 10.649851499998476,
+      "state_sha256": "292a2c206959f13ce4a5d83d6ccae370bb03ba95fe8800ae577327b4dd45d602",
+      "dt_s": 0.10251050000078976,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.16709999181330204,
+      "consumer_ms": 0.2702999918255955,
+      "trace": {
+        "t": 10.649851499998476,
+        "decision_id": 44,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.9962018132209778,
+          0.003798235673457384
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "no_new_start",
+        "valid_until": 10.749851499998476,
+        "resources": {
+          "webs": 4,
+          "observed_t": 10.649851499998476
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "no_new_start",
+      "confidence": 0.9962018132209778,
+      "observed_resources": {
+        "webs": 4,
+        "observed_t": 10.649851499998476
+      },
+      "emitted_resources": {
+        "webs": 4,
+        "observed_t": 10.649851499998476
+      },
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1140.0,
+          465.0,
+          1436.0,
+          978.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": true,
+        "track": 1,
+        "plate": true
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 37.24
+    },
+    {
+      "log_line": 139,
+      "recorded_decision_id": 45,
+      "state_t": 10.742315499985125,
+      "state_sha256": "cce90f9bdb40342d4f6c3f441e3ee2d67f6d8ef6867d067144e1640d9392b742",
+      "dt_s": 0.09246399998664856,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.15849998453631997,
+      "consumer_ms": 0.2570000069681555,
+      "trace": {
+        "t": 10.742315499985125,
+        "decision_id": 45,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.996199905872345,
+          0.0038001341745257378
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "no_new_start",
+        "valid_until": 10.842315499985125,
+        "resources": {
+          "webs": 4,
+          "observed_t": 10.742315499985125
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "no_new_start",
+      "confidence": 0.996199905872345,
+      "observed_resources": {
+        "webs": 4,
+        "observed_t": 10.742315499985125
+      },
+      "emitted_resources": {
+        "webs": 4,
+        "observed_t": 10.742315499985125
+      },
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1138.0,
+          464.0,
+          1433.0,
+          978.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": true,
+        "track": 1,
+        "plate": true
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 37.99
+    },
+    {
+      "log_line": 141,
+      "recorded_decision_id": 46,
+      "state_t": 10.833194299979368,
+      "state_sha256": "b9c1280bab6c11d12f1a7ef76bc4422dd301947673b60c6630dc22519a5dccb7",
+      "dt_s": 0.09087879999424331,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.16709999181330204,
+      "consumer_ms": 0.27050002245232463,
+      "trace": {
+        "t": 10.833194299979368,
+        "decision_id": 46,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.9962005019187927,
+          0.0037994952872395515
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "no_new_start",
+        "valid_until": 10.933194299979368,
+        "resources": {
+          "webs": 4,
+          "observed_t": 10.833194299979368
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "no_new_start",
+      "confidence": 0.9962005019187927,
+      "observed_resources": {
+        "webs": 4,
+        "observed_t": 10.833194299979368
+      },
+      "emitted_resources": {
+        "webs": 4,
+        "observed_t": 10.833194299979368
+      },
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1138.0,
+          462.0,
+          1430.0,
+          977.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": true,
+        "track": 1,
+        "plate": true
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 37.16
+    },
+    {
+      "log_line": 144,
+      "recorded_decision_id": 47,
+      "state_t": 10.949484399985522,
+      "state_sha256": "b2b29b17b058533efe00cc1e2a97b3301a778498444fbd7779d97f8c2ae3af75",
+      "dt_s": 0.11629010000615381,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.7680999988224357,
+      "consumer_ms": 0.8948000031523407,
+      "trace": {
+        "t": 10.949484399985522,
+        "decision_id": 47,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.9961993098258972,
+          0.0038006918039172888
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "no_new_start",
+        "valid_until": 11.049484399985522,
+        "resources": {
+          "webs": 4,
+          "observed_t": 10.949484399985522
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "no_new_start",
+      "confidence": 0.9961993098258972,
+      "observed_resources": {
+        "webs": 4,
+        "observed_t": 10.949484399985522
+      },
+      "emitted_resources": {
+        "webs": 4,
+        "observed_t": 10.949484399985522
+      },
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1135.0,
+          465.0,
+          1419.0,
+          977.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": true,
+        "track": 1,
+        "plate": true
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 35.48
+    },
+    {
+      "log_line": 147,
+      "recorded_decision_id": 48,
+      "state_t": 11.053610899980413,
+      "state_sha256": "bc69e4d59e5471ee0ad98fff39d110e955feef0f1f29decffcec05dabc26a14b",
+      "dt_s": 0.10412649999489076,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.21250001736916602,
+      "consumer_ms": 0.36479998379945755,
+      "trace": {
+        "t": 11.053610899980413,
+        "decision_id": 48,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.9961973428726196,
+          0.003802680177614093
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "no_new_start",
+        "valid_until": 11.153610899980412,
+        "resources": {
+          "webs": 4,
+          "observed_t": 11.053610899980413
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "no_new_start",
+      "confidence": 0.9961973428726196,
+      "observed_resources": {
+        "webs": 4,
+        "observed_t": 11.053610899980413
+      },
+      "emitted_resources": {
+        "webs": 4,
+        "observed_t": 11.053610899980413
+      },
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1134.0,
+          464.0,
+          1414.0,
+          977.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": true,
+        "track": 1,
+        "plate": true
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 34.92
+    },
+    {
+      "log_line": 150,
+      "recorded_decision_id": 49,
+      "state_t": 11.152543499978492,
+      "state_sha256": "9f0bd85ef590ed22a6e046517dce2c794e981a11a4a82e23373aba3ceae5767d",
+      "dt_s": 0.09893259999807924,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.21619998733513057,
+      "consumer_ms": 0.32380002085119486,
+      "trace": {
+        "t": 11.152543499978492,
+        "decision_id": 49,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.9962010979652405,
+          0.0037988596595823765
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "no_new_start",
+        "valid_until": 11.252543499978492,
+        "resources": {
+          "webs": 4,
+          "observed_t": 11.152543499978492
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "no_new_start",
+      "confidence": 0.9962010979652405,
+      "observed_resources": {
+        "webs": 4,
+        "observed_t": 11.152543499978492
+      },
+      "emitted_resources": {
+        "webs": 4,
+        "observed_t": 11.152543499978492
+      },
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1134.0,
+          461.0,
+          1410.0,
+          977.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": true,
+        "track": 1,
+        "plate": true
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 34.59
+    },
+    {
+      "log_line": 153,
+      "recorded_decision_id": 50,
+      "state_t": 11.253235399984987,
+      "state_sha256": "c2ea5e72e91ff86e353add419990c7a5eb16433c8bff89a2506d88cc98a37ca1",
+      "dt_s": 0.10069190000649542,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.16599998343735933,
+      "consumer_ms": 0.27019999106414616,
+      "trace": {
+        "t": 11.253235399984987,
+        "decision_id": 50,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.9962021708488464,
+          0.0037977879401296377
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "no_new_start",
+        "valid_until": 11.353235399984987,
+        "resources": {
+          "webs": 4,
+          "observed_t": 11.253235399984987
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "no_new_start",
+      "confidence": 0.9962021708488464,
+      "observed_resources": {
+        "webs": 4,
+        "observed_t": 11.253235399984987
+      },
+      "emitted_resources": {
+        "webs": 4,
+        "observed_t": 11.253235399984987
+      },
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1134.0,
+          459.0,
+          1407.0,
+          977.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": true,
+        "track": 1,
+        "plate": true
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 31.94
+    },
+    {
+      "log_line": 156,
+      "recorded_decision_id": 51,
+      "state_t": 11.360513299994636,
+      "state_sha256": "f45101c16d97895201b15fb7d2f30fed0b79973a6beb3d36a783b54bcde1d9fb",
+      "dt_s": 0.10727790000964887,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.1517999917268753,
+      "consumer_ms": 0.24919997667893767,
+      "trace": {
+        "t": 11.360513299994636,
+        "decision_id": 51,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.9962025284767151,
+          0.003797461511567235
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "no_new_start",
+        "valid_until": 11.460513299994636,
+        "resources": {
+          "webs": 4,
+          "observed_t": 11.360513299994636
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "no_new_start",
+      "confidence": 0.9962025284767151,
+      "observed_resources": {
+        "webs": 4,
+        "observed_t": 11.360513299994636
+      },
+      "emitted_resources": {
+        "webs": 4,
+        "observed_t": 11.360513299994636
+      },
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1135.0,
+          457.0,
+          1406.0,
+          977.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": true,
+        "track": 1,
+        "plate": true
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 33.04
+    },
+    {
+      "log_line": 159,
+      "recorded_decision_id": 52,
+      "state_t": 11.457038399996236,
+      "state_sha256": "96ca6d7fc9c0e3d5253019001ddb92f504dea6d3f50b1102d87b74fadbd5715b",
+      "dt_s": 0.09652510000159964,
+      "cadence_reset": false,
+      "history_before": 5,
+      "history_after": 5,
+      "inference_called": true,
+      "inference_ms": 0.18510001245886087,
+      "consumer_ms": 0.28810001094825566,
+      "trace": {
+        "t": 11.457038399996236,
+        "decision_id": 52,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.9962024092674255,
+          0.0037975681480020285
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "no_new_start",
+        "valid_until": 11.557038399996236,
+        "resources": {
+          "webs": 4,
+          "observed_t": 11.457038399996236
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "argmax_prediction": "no_new_start",
+      "confidence": 0.9962024092674255,
+      "observed_resources": {
+        "webs": 4,
+        "observed_t": 11.457038399996236
+      },
+      "emitted_resources": {
+        "webs": 4,
+        "observed_t": 11.457038399996236
+      },
+      "selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1130.0,
+          457.0,
+          1403.0,
+          977.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": true,
+        "track": 1,
+        "plate": true
+      },
+      "recorded_detection_ids": [
+        1
+      ],
+      "recorded_scripted_target_id_context_only": 1,
+      "recorded_live_decide_ms_context_only": 30.34
+    }
+  ],
+  "inferences": [
+    {
+      "anchor_t": 6.7151363999873865,
+      "ms": 1.2595999869517982,
+      "probabilities": [
+        0.9883991479873657,
+        0.011600861325860023
+      ],
+      "history": [
+        {
+          "t": 6.321923799987417,
+          "available_t": 6.321923799987417,
+          "target_id": null
+        },
+        {
+          "t": 6.424507299991092,
+          "available_t": 6.424507299991092,
+          "target_id": 1
+        },
+        {
+          "t": 6.528666999976849,
+          "available_t": 6.528666999976849,
+          "target_id": 1
+        },
+        {
+          "t": 6.622928500000853,
+          "available_t": 6.622928500000853,
+          "target_id": 1
+        },
+        {
+          "t": 6.7151363999873865,
+          "available_t": 6.7151363999873865,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 6.823108299984597,
+      "ms": 0.3318000235594809,
+      "probabilities": [
+        0.9786595702171326,
+        0.021340372040867805
+      ],
+      "history": [
+        {
+          "t": 6.424507299991092,
+          "available_t": 6.424507299991092,
+          "target_id": 1
+        },
+        {
+          "t": 6.528666999976849,
+          "available_t": 6.528666999976849,
+          "target_id": 1
+        },
+        {
+          "t": 6.622928500000853,
+          "available_t": 6.622928500000853,
+          "target_id": 1
+        },
+        {
+          "t": 6.7151363999873865,
+          "available_t": 6.7151363999873865,
+          "target_id": 1
+        },
+        {
+          "t": 6.823108299984597,
+          "available_t": 6.823108299984597,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 6.919623399997363,
+      "ms": 0.1956000050995499,
+      "probabilities": [
+        0.9775011539459229,
+        0.022498900070786476
+      ],
+      "history": [
+        {
+          "t": 6.528666999976849,
+          "available_t": 6.528666999976849,
+          "target_id": 1
+        },
+        {
+          "t": 6.622928500000853,
+          "available_t": 6.622928500000853,
+          "target_id": 1
+        },
+        {
+          "t": 6.7151363999873865,
+          "available_t": 6.7151363999873865,
+          "target_id": 1
+        },
+        {
+          "t": 6.823108299984597,
+          "available_t": 6.823108299984597,
+          "target_id": 1
+        },
+        {
+          "t": 6.919623399997363,
+          "available_t": 6.919623399997363,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 7.023191899992526,
+      "ms": 0.26369999977760017,
+      "probabilities": [
+        0.983200192451477,
+        0.016799770295619965
+      ],
+      "history": [
+        {
+          "t": 6.622928500000853,
+          "available_t": 6.622928500000853,
+          "target_id": 1
+        },
+        {
+          "t": 6.7151363999873865,
+          "available_t": 6.7151363999873865,
+          "target_id": 1
+        },
+        {
+          "t": 6.823108299984597,
+          "available_t": 6.823108299984597,
+          "target_id": 1
+        },
+        {
+          "t": 6.919623399997363,
+          "available_t": 6.919623399997363,
+          "target_id": 1
+        },
+        {
+          "t": 7.023191899992526,
+          "available_t": 7.023191899992526,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 7.114358699996956,
+      "ms": 0.2798000059556216,
+      "probabilities": [
+        0.4613111615180969,
+        0.5386888980865479
+      ],
+      "history": [
+        {
+          "t": 6.7151363999873865,
+          "available_t": 6.7151363999873865,
+          "target_id": 1
+        },
+        {
+          "t": 6.823108299984597,
+          "available_t": 6.823108299984597,
+          "target_id": 1
+        },
+        {
+          "t": 6.919623399997363,
+          "available_t": 6.919623399997363,
+          "target_id": 1
+        },
+        {
+          "t": 7.023191899992526,
+          "available_t": 7.023191899992526,
+          "target_id": 1
+        },
+        {
+          "t": 7.114358699996956,
+          "available_t": 7.114358699996956,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 7.211057099979371,
+      "ms": 0.20549999317154288,
+      "probabilities": [
+        0.9944979548454285,
+        0.005502097308635712
+      ],
+      "history": [
+        {
+          "t": 6.823108299984597,
+          "available_t": 6.823108299984597,
+          "target_id": 1
+        },
+        {
+          "t": 6.919623399997363,
+          "available_t": 6.919623399997363,
+          "target_id": 1
+        },
+        {
+          "t": 7.023191899992526,
+          "available_t": 7.023191899992526,
+          "target_id": 1
+        },
+        {
+          "t": 7.114358699996956,
+          "available_t": 7.114358699996956,
+          "target_id": 1
+        },
+        {
+          "t": 7.211057099979371,
+          "available_t": 7.211057099979371,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 7.314292700000806,
+      "ms": 0.16689999029040337,
+      "probabilities": [
+        0.9357360601425171,
+        0.06426393985748291
+      ],
+      "history": [
+        {
+          "t": 6.919623399997363,
+          "available_t": 6.919623399997363,
+          "target_id": 1
+        },
+        {
+          "t": 7.023191899992526,
+          "available_t": 7.023191899992526,
+          "target_id": 1
+        },
+        {
+          "t": 7.114358699996956,
+          "available_t": 7.114358699996956,
+          "target_id": 1
+        },
+        {
+          "t": 7.211057099979371,
+          "available_t": 7.211057099979371,
+          "target_id": 1
+        },
+        {
+          "t": 7.314292700000806,
+          "available_t": 7.314292700000806,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 7.409593299991684,
+      "ms": 0.23099998361431062,
+      "probabilities": [
+        0.9946531057357788,
+        0.005346865858882666
+      ],
+      "history": [
+        {
+          "t": 7.023191899992526,
+          "available_t": 7.023191899992526,
+          "target_id": 1
+        },
+        {
+          "t": 7.114358699996956,
+          "available_t": 7.114358699996956,
+          "target_id": 1
+        },
+        {
+          "t": 7.211057099979371,
+          "available_t": 7.211057099979371,
+          "target_id": 1
+        },
+        {
+          "t": 7.314292700000806,
+          "available_t": 7.314292700000806,
+          "target_id": 1
+        },
+        {
+          "t": 7.409593299991684,
+          "available_t": 7.409593299991684,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 7.512911500001792,
+      "ms": 0.2655999851413071,
+      "probabilities": [
+        0.9946735501289368,
+        0.005326480139046907
+      ],
+      "history": [
+        {
+          "t": 7.114358699996956,
+          "available_t": 7.114358699996956,
+          "target_id": 1
+        },
+        {
+          "t": 7.211057099979371,
+          "available_t": 7.211057099979371,
+          "target_id": 1
+        },
+        {
+          "t": 7.314292700000806,
+          "available_t": 7.314292700000806,
+          "target_id": 1
+        },
+        {
+          "t": 7.409593299991684,
+          "available_t": 7.409593299991684,
+          "target_id": 1
+        },
+        {
+          "t": 7.512911500001792,
+          "available_t": 7.512911500001792,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 7.61017499997979,
+      "ms": 0.17419998766854405,
+      "probabilities": [
+        0.9821420907974243,
+        0.017857953906059265
+      ],
+      "history": [
+        {
+          "t": 7.211057099979371,
+          "available_t": 7.211057099979371,
+          "target_id": 1
+        },
+        {
+          "t": 7.314292700000806,
+          "available_t": 7.314292700000806,
+          "target_id": 1
+        },
+        {
+          "t": 7.409593299991684,
+          "available_t": 7.409593299991684,
+          "target_id": 1
+        },
+        {
+          "t": 7.512911500001792,
+          "available_t": 7.512911500001792,
+          "target_id": 1
+        },
+        {
+          "t": 7.61017499997979,
+          "available_t": 7.61017499997979,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 7.712049900001148,
+      "ms": 0.15720000374130905,
+      "probabilities": [
+        0.9966880679130554,
+        0.003311963053420186
+      ],
+      "history": [
+        {
+          "t": 7.314292700000806,
+          "available_t": 7.314292700000806,
+          "target_id": 1
+        },
+        {
+          "t": 7.409593299991684,
+          "available_t": 7.409593299991684,
+          "target_id": 1
+        },
+        {
+          "t": 7.512911500001792,
+          "available_t": 7.512911500001792,
+          "target_id": 1
+        },
+        {
+          "t": 7.61017499997979,
+          "available_t": 7.61017499997979,
+          "target_id": 1
+        },
+        {
+          "t": 7.712049900001148,
+          "available_t": 7.712049900001148,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 7.8147844999912195,
+      "ms": 0.23520001559518278,
+      "probabilities": [
+        0.570605456829071,
+        0.42939451336860657
+      ],
+      "history": [
+        {
+          "t": 7.409593299991684,
+          "available_t": 7.409593299991684,
+          "target_id": 1
+        },
+        {
+          "t": 7.512911500001792,
+          "available_t": 7.512911500001792,
+          "target_id": 1
+        },
+        {
+          "t": 7.61017499997979,
+          "available_t": 7.61017499997979,
+          "target_id": 1
+        },
+        {
+          "t": 7.712049900001148,
+          "available_t": 7.712049900001148,
+          "target_id": 1
+        },
+        {
+          "t": 7.8147844999912195,
+          "available_t": 7.8147844999912195,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 7.924315899988869,
+      "ms": 0.20390001009218395,
+      "probabilities": [
+        0.9958642721176147,
+        0.004135676193982363
+      ],
+      "history": [
+        {
+          "t": 7.512911500001792,
+          "available_t": 7.512911500001792,
+          "target_id": 1
+        },
+        {
+          "t": 7.61017499997979,
+          "available_t": 7.61017499997979,
+          "target_id": 1
+        },
+        {
+          "t": 7.712049900001148,
+          "available_t": 7.712049900001148,
+          "target_id": 1
+        },
+        {
+          "t": 7.8147844999912195,
+          "available_t": 7.8147844999912195,
+          "target_id": 1
+        },
+        {
+          "t": 7.924315899988869,
+          "available_t": 7.924315899988869,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 8.026718699984485,
+      "ms": 0.22079999325796962,
+      "probabilities": [
+        0.8144127726554871,
+        0.18558719754219055
+      ],
+      "history": [
+        {
+          "t": 7.61017499997979,
+          "available_t": 7.61017499997979,
+          "target_id": 1
+        },
+        {
+          "t": 7.712049900001148,
+          "available_t": 7.712049900001148,
+          "target_id": 1
+        },
+        {
+          "t": 7.8147844999912195,
+          "available_t": 7.8147844999912195,
+          "target_id": 1
+        },
+        {
+          "t": 7.924315899988869,
+          "available_t": 7.924315899988869,
+          "target_id": 1
+        },
+        {
+          "t": 8.026718699984485,
+          "available_t": 8.026718699984485,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 8.131090599985328,
+      "ms": 0.18989999080076814,
+      "probabilities": [
+        0.9959889054298401,
+        0.004011152777820826
+      ],
+      "history": [
+        {
+          "t": 7.712049900001148,
+          "available_t": 7.712049900001148,
+          "target_id": 1
+        },
+        {
+          "t": 7.8147844999912195,
+          "available_t": 7.8147844999912195,
+          "target_id": 1
+        },
+        {
+          "t": 7.924315899988869,
+          "available_t": 7.924315899988869,
+          "target_id": 1
+        },
+        {
+          "t": 8.026718699984485,
+          "available_t": 8.026718699984485,
+          "target_id": 1
+        },
+        {
+          "t": 8.131090599985328,
+          "available_t": 8.131090599985328,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 8.228195999981835,
+      "ms": 0.17220000154338777,
+      "probabilities": [
+        0.9961806535720825,
+        0.0038193075451999903
+      ],
+      "history": [
+        {
+          "t": 7.8147844999912195,
+          "available_t": 7.8147844999912195,
+          "target_id": 1
+        },
+        {
+          "t": 7.924315899988869,
+          "available_t": 7.924315899988869,
+          "target_id": 1
+        },
+        {
+          "t": 8.026718699984485,
+          "available_t": 8.026718699984485,
+          "target_id": 1
+        },
+        {
+          "t": 8.131090599985328,
+          "available_t": 8.131090599985328,
+          "target_id": 1
+        },
+        {
+          "t": 8.228195999981835,
+          "available_t": 8.228195999981835,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 8.340118199994322,
+      "ms": 0.19809999503195286,
+      "probabilities": [
+        0.9961729645729065,
+        0.003827053355053067
+      ],
+      "history": [
+        {
+          "t": 7.924315899988869,
+          "available_t": 7.924315899988869,
+          "target_id": 1
+        },
+        {
+          "t": 8.026718699984485,
+          "available_t": 8.026718699984485,
+          "target_id": 1
+        },
+        {
+          "t": 8.131090599985328,
+          "available_t": 8.131090599985328,
+          "target_id": 1
+        },
+        {
+          "t": 8.228195999981835,
+          "available_t": 8.228195999981835,
+          "target_id": 1
+        },
+        {
+          "t": 8.340118199994322,
+          "available_t": 8.340118199994322,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 8.44399989998783,
+      "ms": 0.2573999809101224,
+      "probabilities": [
+        0.9962020516395569,
+        0.003798008430749178
+      ],
+      "history": [
+        {
+          "t": 8.026718699984485,
+          "available_t": 8.026718699984485,
+          "target_id": 1
+        },
+        {
+          "t": 8.131090599985328,
+          "available_t": 8.131090599985328,
+          "target_id": 1
+        },
+        {
+          "t": 8.228195999981835,
+          "available_t": 8.228195999981835,
+          "target_id": 1
+        },
+        {
+          "t": 8.340118199994322,
+          "available_t": 8.340118199994322,
+          "target_id": 1
+        },
+        {
+          "t": 8.44399989998783,
+          "available_t": 8.44399989998783,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 8.544745599996531,
+      "ms": 0.16720002167858183,
+      "probabilities": [
+        0.9962126016616821,
+        0.003787403693422675
+      ],
+      "history": [
+        {
+          "t": 8.131090599985328,
+          "available_t": 8.131090599985328,
+          "target_id": 1
+        },
+        {
+          "t": 8.228195999981835,
+          "available_t": 8.228195999981835,
+          "target_id": 1
+        },
+        {
+          "t": 8.340118199994322,
+          "available_t": 8.340118199994322,
+          "target_id": 1
+        },
+        {
+          "t": 8.44399989998783,
+          "available_t": 8.44399989998783,
+          "target_id": 1
+        },
+        {
+          "t": 8.544745599996531,
+          "available_t": 8.544745599996531,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 8.648514599975897,
+      "ms": 0.19570000586099923,
+      "probabilities": [
+        0.9962232112884521,
+        0.003776724450290203
+      ],
+      "history": [
+        {
+          "t": 8.228195999981835,
+          "available_t": 8.228195999981835,
+          "target_id": 1
+        },
+        {
+          "t": 8.340118199994322,
+          "available_t": 8.340118199994322,
+          "target_id": 1
+        },
+        {
+          "t": 8.44399989998783,
+          "available_t": 8.44399989998783,
+          "target_id": 1
+        },
+        {
+          "t": 8.544745599996531,
+          "available_t": 8.544745599996531,
+          "target_id": 1
+        },
+        {
+          "t": 8.648514599975897,
+          "available_t": 8.648514599975897,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 8.748853099998087,
+      "ms": 0.27630000840872526,
+      "probabilities": [
+        0.9962180256843567,
+        0.003782021114602685
+      ],
+      "history": [
+        {
+          "t": 8.340118199994322,
+          "available_t": 8.340118199994322,
+          "target_id": 1
+        },
+        {
+          "t": 8.44399989998783,
+          "available_t": 8.44399989998783,
+          "target_id": 1
+        },
+        {
+          "t": 8.544745599996531,
+          "available_t": 8.544745599996531,
+          "target_id": 1
+        },
+        {
+          "t": 8.648514599975897,
+          "available_t": 8.648514599975897,
+          "target_id": 1
+        },
+        {
+          "t": 8.748853099998087,
+          "available_t": 8.748853099998087,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 8.849046499992255,
+      "ms": 0.17839999054558575,
+      "probabilities": [
+        0.9961973428726196,
+        0.0038027020636945963
+      ],
+      "history": [
+        {
+          "t": 8.44399989998783,
+          "available_t": 8.44399989998783,
+          "target_id": 1
+        },
+        {
+          "t": 8.544745599996531,
+          "available_t": 8.544745599996531,
+          "target_id": 1
+        },
+        {
+          "t": 8.648514599975897,
+          "available_t": 8.648514599975897,
+          "target_id": 1
+        },
+        {
+          "t": 8.748853099998087,
+          "available_t": 8.748853099998087,
+          "target_id": 1
+        },
+        {
+          "t": 8.849046499992255,
+          "available_t": 8.849046499992255,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 8.948863600002369,
+      "ms": 0.1714999962132424,
+      "probabilities": [
+        0.9962024092674255,
+        0.003797629615291953
+      ],
+      "history": [
+        {
+          "t": 8.544745599996531,
+          "available_t": 8.544745599996531,
+          "target_id": 1
+        },
+        {
+          "t": 8.648514599975897,
+          "available_t": 8.648514599975897,
+          "target_id": 1
+        },
+        {
+          "t": 8.748853099998087,
+          "available_t": 8.748853099998087,
+          "target_id": 1
+        },
+        {
+          "t": 8.849046499992255,
+          "available_t": 8.849046499992255,
+          "target_id": 1
+        },
+        {
+          "t": 8.948863600002369,
+          "available_t": 8.948863600002369,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 9.039462699991418,
+      "ms": 0.38690000656060874,
+      "probabilities": [
+        0.9962030053138733,
+        0.0037970487028360367
+      ],
+      "history": [
+        {
+          "t": 8.648514599975897,
+          "available_t": 8.648514599975897,
+          "target_id": 1
+        },
+        {
+          "t": 8.748853099998087,
+          "available_t": 8.748853099998087,
+          "target_id": 1
+        },
+        {
+          "t": 8.849046499992255,
+          "available_t": 8.849046499992255,
+          "target_id": 1
+        },
+        {
+          "t": 8.948863600002369,
+          "available_t": 8.948863600002369,
+          "target_id": 1
+        },
+        {
+          "t": 9.039462699991418,
+          "available_t": 9.039462699991418,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 9.137639099993976,
+      "ms": 0.22969997371546924,
+      "probabilities": [
+        0.9579752683639526,
+        0.04202469438314438
+      ],
+      "history": [
+        {
+          "t": 8.748853099998087,
+          "available_t": 8.748853099998087,
+          "target_id": 1
+        },
+        {
+          "t": 8.849046499992255,
+          "available_t": 8.849046499992255,
+          "target_id": 1
+        },
+        {
+          "t": 8.948863600002369,
+          "available_t": 8.948863600002369,
+          "target_id": 1
+        },
+        {
+          "t": 9.039462699991418,
+          "available_t": 9.039462699991418,
+          "target_id": 1
+        },
+        {
+          "t": 9.137639099993976,
+          "available_t": 9.137639099993976,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 9.236088099976769,
+      "ms": 0.16689999029040337,
+      "probabilities": [
+        0.9948615431785583,
+        0.0051384358666837215
+      ],
+      "history": [
+        {
+          "t": 8.849046499992255,
+          "available_t": 8.849046499992255,
+          "target_id": 1
+        },
+        {
+          "t": 8.948863600002369,
+          "available_t": 8.948863600002369,
+          "target_id": 1
+        },
+        {
+          "t": 9.039462699991418,
+          "available_t": 9.039462699991418,
+          "target_id": 1
+        },
+        {
+          "t": 9.137639099993976,
+          "available_t": 9.137639099993976,
+          "target_id": 1
+        },
+        {
+          "t": 9.236088099976769,
+          "available_t": 9.236088099976769,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 9.339895299985074,
+      "ms": 0.20870001753792167,
+      "probabilities": [
+        0.6533545851707458,
+        0.34664544463157654
+      ],
+      "history": [
+        {
+          "t": 8.948863600002369,
+          "available_t": 8.948863600002369,
+          "target_id": 1
+        },
+        {
+          "t": 9.039462699991418,
+          "available_t": 9.039462699991418,
+          "target_id": 1
+        },
+        {
+          "t": 9.137639099993976,
+          "available_t": 9.137639099993976,
+          "target_id": 1
+        },
+        {
+          "t": 9.236088099976769,
+          "available_t": 9.236088099976769,
+          "target_id": 1
+        },
+        {
+          "t": 9.339895299985074,
+          "available_t": 9.339895299985074,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 9.432958999997936,
+      "ms": 0.2686000079847872,
+      "probabilities": [
+        0.9869318604469299,
+        0.013068177737295628
+      ],
+      "history": [
+        {
+          "t": 9.039462699991418,
+          "available_t": 9.039462699991418,
+          "target_id": 1
+        },
+        {
+          "t": 9.137639099993976,
+          "available_t": 9.137639099993976,
+          "target_id": 1
+        },
+        {
+          "t": 9.236088099976769,
+          "available_t": 9.236088099976769,
+          "target_id": 1
+        },
+        {
+          "t": 9.339895299985074,
+          "available_t": 9.339895299985074,
+          "target_id": 1
+        },
+        {
+          "t": 9.432958999997936,
+          "available_t": 9.432958999997936,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 9.53986689998419,
+      "ms": 0.1610000035725534,
+      "probabilities": [
+        0.08973277360200882,
+        0.9102672338485718
+      ],
+      "history": [
+        {
+          "t": 9.137639099993976,
+          "available_t": 9.137639099993976,
+          "target_id": 1
+        },
+        {
+          "t": 9.236088099976769,
+          "available_t": 9.236088099976769,
+          "target_id": 1
+        },
+        {
+          "t": 9.339895299985074,
+          "available_t": 9.339895299985074,
+          "target_id": 1
+        },
+        {
+          "t": 9.432958999997936,
+          "available_t": 9.432958999997936,
+          "target_id": 1
+        },
+        {
+          "t": 9.53986689998419,
+          "available_t": 9.53986689998419,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 9.636450299993157,
+      "ms": 0.15860001440159976,
+      "probabilities": [
+        0.7781147956848145,
+        0.22188521921634674
+      ],
+      "history": [
+        {
+          "t": 9.236088099976769,
+          "available_t": 9.236088099976769,
+          "target_id": 1
+        },
+        {
+          "t": 9.339895299985074,
+          "available_t": 9.339895299985074,
+          "target_id": 1
+        },
+        {
+          "t": 9.432958999997936,
+          "available_t": 9.432958999997936,
+          "target_id": 1
+        },
+        {
+          "t": 9.53986689998419,
+          "available_t": 9.53986689998419,
+          "target_id": 1
+        },
+        {
+          "t": 9.636450299993157,
+          "available_t": 9.636450299993157,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 9.731437799986452,
+      "ms": 0.46309997560456395,
+      "probabilities": [
+        0.14163602888584137,
+        0.858363926410675
+      ],
+      "history": [
+        {
+          "t": 9.339895299985074,
+          "available_t": 9.339895299985074,
+          "target_id": 1
+        },
+        {
+          "t": 9.432958999997936,
+          "available_t": 9.432958999997936,
+          "target_id": 1
+        },
+        {
+          "t": 9.53986689998419,
+          "available_t": 9.53986689998419,
+          "target_id": 1
+        },
+        {
+          "t": 9.636450299993157,
+          "available_t": 9.636450299993157,
+          "target_id": 1
+        },
+        {
+          "t": 9.731437799986452,
+          "available_t": 9.731437799986452,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 9.839935299998615,
+      "ms": 0.20420001237653196,
+      "probabilities": [
+        0.06386936455965042,
+        0.936130702495575
+      ],
+      "history": [
+        {
+          "t": 9.432958999997936,
+          "available_t": 9.432958999997936,
+          "target_id": 1
+        },
+        {
+          "t": 9.53986689998419,
+          "available_t": 9.53986689998419,
+          "target_id": 1
+        },
+        {
+          "t": 9.636450299993157,
+          "available_t": 9.636450299993157,
+          "target_id": 1
+        },
+        {
+          "t": 9.731437799986452,
+          "available_t": 9.731437799986452,
+          "target_id": 1
+        },
+        {
+          "t": 9.839935299998615,
+          "available_t": 9.839935299998615,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 9.955409899994265,
+      "ms": 0.16820000018924475,
+      "probabilities": [
+        0.7565661072731018,
+        0.243433877825737
+      ],
+      "history": [
+        {
+          "t": 9.53986689998419,
+          "available_t": 9.53986689998419,
+          "target_id": 1
+        },
+        {
+          "t": 9.636450299993157,
+          "available_t": 9.636450299993157,
+          "target_id": 1
+        },
+        {
+          "t": 9.731437799986452,
+          "available_t": 9.731437799986452,
+          "target_id": 1
+        },
+        {
+          "t": 9.839935299998615,
+          "available_t": 9.839935299998615,
+          "target_id": 1
+        },
+        {
+          "t": 9.955409899994265,
+          "available_t": 9.955409899994265,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 10.048067700001411,
+      "ms": 0.22650000755675137,
+      "probabilities": [
+        0.011608556844294071,
+        0.9883914589881897
+      ],
+      "history": [
+        {
+          "t": 9.636450299993157,
+          "available_t": 9.636450299993157,
+          "target_id": 1
+        },
+        {
+          "t": 9.731437799986452,
+          "available_t": 9.731437799986452,
+          "target_id": 1
+        },
+        {
+          "t": 9.839935299998615,
+          "available_t": 9.839935299998615,
+          "target_id": 1
+        },
+        {
+          "t": 9.955409899994265,
+          "available_t": 9.955409899994265,
+          "target_id": 1
+        },
+        {
+          "t": 10.048067700001411,
+          "available_t": 10.048067700001411,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 10.150109699985478,
+      "ms": 0.28589999419637024,
+      "probabilities": [
+        0.9897056818008423,
+        0.010294254869222641
+      ],
+      "history": [
+        {
+          "t": 9.731437799986452,
+          "available_t": 9.731437799986452,
+          "target_id": 1
+        },
+        {
+          "t": 9.839935299998615,
+          "available_t": 9.839935299998615,
+          "target_id": 1
+        },
+        {
+          "t": 9.955409899994265,
+          "available_t": 9.955409899994265,
+          "target_id": 1
+        },
+        {
+          "t": 10.048067700001411,
+          "available_t": 10.048067700001411,
+          "target_id": 1
+        },
+        {
+          "t": 10.150109699985478,
+          "available_t": 10.150109699985478,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 10.24578759999713,
+      "ms": 0.18350000027567148,
+      "probabilities": [
+        0.29481497406959534,
+        0.7051849961280823
+      ],
+      "history": [
+        {
+          "t": 9.839935299998615,
+          "available_t": 9.839935299998615,
+          "target_id": 1
+        },
+        {
+          "t": 9.955409899994265,
+          "available_t": 9.955409899994265,
+          "target_id": 1
+        },
+        {
+          "t": 10.048067700001411,
+          "available_t": 10.048067700001411,
+          "target_id": 1
+        },
+        {
+          "t": 10.150109699985478,
+          "available_t": 10.150109699985478,
+          "target_id": 1
+        },
+        {
+          "t": 10.24578759999713,
+          "available_t": 10.24578759999713,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 10.349203099991428,
+      "ms": 0.22399998852051795,
+      "probabilities": [
+        0.9961953163146973,
+        0.0038047258276492357
+      ],
+      "history": [
+        {
+          "t": 9.955409899994265,
+          "available_t": 9.955409899994265,
+          "target_id": 1
+        },
+        {
+          "t": 10.048067700001411,
+          "available_t": 10.048067700001411,
+          "target_id": 1
+        },
+        {
+          "t": 10.150109699985478,
+          "available_t": 10.150109699985478,
+          "target_id": 1
+        },
+        {
+          "t": 10.24578759999713,
+          "available_t": 10.24578759999713,
+          "target_id": 1
+        },
+        {
+          "t": 10.349203099991428,
+          "available_t": 10.349203099991428,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 10.442615099978866,
+      "ms": 0.21120000747032464,
+      "probabilities": [
+        0.9961979985237122,
+        0.0038019465282559395
+      ],
+      "history": [
+        {
+          "t": 10.048067700001411,
+          "available_t": 10.048067700001411,
+          "target_id": 1
+        },
+        {
+          "t": 10.150109699985478,
+          "available_t": 10.150109699985478,
+          "target_id": 1
+        },
+        {
+          "t": 10.24578759999713,
+          "available_t": 10.24578759999713,
+          "target_id": 1
+        },
+        {
+          "t": 10.349203099991428,
+          "available_t": 10.349203099991428,
+          "target_id": 1
+        },
+        {
+          "t": 10.442615099978866,
+          "available_t": 10.442615099978866,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 10.547340999997687,
+      "ms": 0.2297000028192997,
+      "probabilities": [
+        0.9962001442909241,
+        0.003799811005592346
+      ],
+      "history": [
+        {
+          "t": 10.150109699985478,
+          "available_t": 10.150109699985478,
+          "target_id": 1
+        },
+        {
+          "t": 10.24578759999713,
+          "available_t": 10.24578759999713,
+          "target_id": 1
+        },
+        {
+          "t": 10.349203099991428,
+          "available_t": 10.349203099991428,
+          "target_id": 1
+        },
+        {
+          "t": 10.442615099978866,
+          "available_t": 10.442615099978866,
+          "target_id": 1
+        },
+        {
+          "t": 10.547340999997687,
+          "available_t": 10.547340999997687,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 10.649851499998476,
+      "ms": 0.16709999181330204,
+      "probabilities": [
+        0.9962018132209778,
+        0.003798235673457384
+      ],
+      "history": [
+        {
+          "t": 10.24578759999713,
+          "available_t": 10.24578759999713,
+          "target_id": 1
+        },
+        {
+          "t": 10.349203099991428,
+          "available_t": 10.349203099991428,
+          "target_id": 1
+        },
+        {
+          "t": 10.442615099978866,
+          "available_t": 10.442615099978866,
+          "target_id": 1
+        },
+        {
+          "t": 10.547340999997687,
+          "available_t": 10.547340999997687,
+          "target_id": 1
+        },
+        {
+          "t": 10.649851499998476,
+          "available_t": 10.649851499998476,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 10.742315499985125,
+      "ms": 0.15849998453631997,
+      "probabilities": [
+        0.996199905872345,
+        0.0038001341745257378
+      ],
+      "history": [
+        {
+          "t": 10.349203099991428,
+          "available_t": 10.349203099991428,
+          "target_id": 1
+        },
+        {
+          "t": 10.442615099978866,
+          "available_t": 10.442615099978866,
+          "target_id": 1
+        },
+        {
+          "t": 10.547340999997687,
+          "available_t": 10.547340999997687,
+          "target_id": 1
+        },
+        {
+          "t": 10.649851499998476,
+          "available_t": 10.649851499998476,
+          "target_id": 1
+        },
+        {
+          "t": 10.742315499985125,
+          "available_t": 10.742315499985125,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 10.833194299979368,
+      "ms": 0.16709999181330204,
+      "probabilities": [
+        0.9962005019187927,
+        0.0037994952872395515
+      ],
+      "history": [
+        {
+          "t": 10.442615099978866,
+          "available_t": 10.442615099978866,
+          "target_id": 1
+        },
+        {
+          "t": 10.547340999997687,
+          "available_t": 10.547340999997687,
+          "target_id": 1
+        },
+        {
+          "t": 10.649851499998476,
+          "available_t": 10.649851499998476,
+          "target_id": 1
+        },
+        {
+          "t": 10.742315499985125,
+          "available_t": 10.742315499985125,
+          "target_id": 1
+        },
+        {
+          "t": 10.833194299979368,
+          "available_t": 10.833194299979368,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 10.949484399985522,
+      "ms": 0.7680999988224357,
+      "probabilities": [
+        0.9961993098258972,
+        0.0038006918039172888
+      ],
+      "history": [
+        {
+          "t": 10.547340999997687,
+          "available_t": 10.547340999997687,
+          "target_id": 1
+        },
+        {
+          "t": 10.649851499998476,
+          "available_t": 10.649851499998476,
+          "target_id": 1
+        },
+        {
+          "t": 10.742315499985125,
+          "available_t": 10.742315499985125,
+          "target_id": 1
+        },
+        {
+          "t": 10.833194299979368,
+          "available_t": 10.833194299979368,
+          "target_id": 1
+        },
+        {
+          "t": 10.949484399985522,
+          "available_t": 10.949484399985522,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 11.053610899980413,
+      "ms": 0.21250001736916602,
+      "probabilities": [
+        0.9961973428726196,
+        0.003802680177614093
+      ],
+      "history": [
+        {
+          "t": 10.649851499998476,
+          "available_t": 10.649851499998476,
+          "target_id": 1
+        },
+        {
+          "t": 10.742315499985125,
+          "available_t": 10.742315499985125,
+          "target_id": 1
+        },
+        {
+          "t": 10.833194299979368,
+          "available_t": 10.833194299979368,
+          "target_id": 1
+        },
+        {
+          "t": 10.949484399985522,
+          "available_t": 10.949484399985522,
+          "target_id": 1
+        },
+        {
+          "t": 11.053610899980413,
+          "available_t": 11.053610899980413,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 11.152543499978492,
+      "ms": 0.21619998733513057,
+      "probabilities": [
+        0.9962010979652405,
+        0.0037988596595823765
+      ],
+      "history": [
+        {
+          "t": 10.742315499985125,
+          "available_t": 10.742315499985125,
+          "target_id": 1
+        },
+        {
+          "t": 10.833194299979368,
+          "available_t": 10.833194299979368,
+          "target_id": 1
+        },
+        {
+          "t": 10.949484399985522,
+          "available_t": 10.949484399985522,
+          "target_id": 1
+        },
+        {
+          "t": 11.053610899980413,
+          "available_t": 11.053610899980413,
+          "target_id": 1
+        },
+        {
+          "t": 11.152543499978492,
+          "available_t": 11.152543499978492,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 11.253235399984987,
+      "ms": 0.16599998343735933,
+      "probabilities": [
+        0.9962021708488464,
+        0.0037977879401296377
+      ],
+      "history": [
+        {
+          "t": 10.833194299979368,
+          "available_t": 10.833194299979368,
+          "target_id": 1
+        },
+        {
+          "t": 10.949484399985522,
+          "available_t": 10.949484399985522,
+          "target_id": 1
+        },
+        {
+          "t": 11.053610899980413,
+          "available_t": 11.053610899980413,
+          "target_id": 1
+        },
+        {
+          "t": 11.152543499978492,
+          "available_t": 11.152543499978492,
+          "target_id": 1
+        },
+        {
+          "t": 11.253235399984987,
+          "available_t": 11.253235399984987,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 11.360513299994636,
+      "ms": 0.1517999917268753,
+      "probabilities": [
+        0.9962025284767151,
+        0.003797461511567235
+      ],
+      "history": [
+        {
+          "t": 10.949484399985522,
+          "available_t": 10.949484399985522,
+          "target_id": 1
+        },
+        {
+          "t": 11.053610899980413,
+          "available_t": 11.053610899980413,
+          "target_id": 1
+        },
+        {
+          "t": 11.152543499978492,
+          "available_t": 11.152543499978492,
+          "target_id": 1
+        },
+        {
+          "t": 11.253235399984987,
+          "available_t": 11.253235399984987,
+          "target_id": 1
+        },
+        {
+          "t": 11.360513299994636,
+          "available_t": 11.360513299994636,
+          "target_id": 1
+        }
+      ]
+    },
+    {
+      "anchor_t": 11.457038399996236,
+      "ms": 0.18510001245886087,
+      "probabilities": [
+        0.9962024092674255,
+        0.0037975681480020285
+      ],
+      "history": [
+        {
+          "t": 11.053610899980413,
+          "available_t": 11.053610899980413,
+          "target_id": 1
+        },
+        {
+          "t": 11.152543499978492,
+          "available_t": 11.152543499978492,
+          "target_id": 1
+        },
+        {
+          "t": 11.253235399984987,
+          "available_t": 11.253235399984987,
+          "target_id": 1
+        },
+        {
+          "t": 11.360513299994636,
+          "available_t": 11.360513299994636,
+          "target_id": 1
+        },
+        {
+          "t": 11.457038399996236,
+          "available_t": 11.457038399996236,
+          "target_id": 1
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,279 @@
+{
+  "mode": "SCRIPTED CALIBRATION",
+  "revision": "cb677ef881e3fc96ca1cf4822507f5dc2451ebb5",
+  "source_hashes": {
+    "data/l1/range-cast-probe-20260922-d/probe-config.json": "952f83d14f584035b4531df1e5cd1905fec8b037815996e3faebe52f86512cd5",
+    "data/l1/range-cast-probe-20260922-d/probe-report.json": "9ebc54dd2df74445472357ee09b02e01ae52b407d2f15f71704fc414e1aa3adb",
+    "data/l1/range-cast-probe-20260922-d/frames.jsonl": "7ec2d278e57878220ef0615db7a2f4bdb5d0fbf7e9d1ec4209d15a798b04c690",
+    "data/l1/range-cast-probe-20260922-d/meta.json": "596460fde6786ba8dc3100700cc5a67cceaf1d247cc665852e94758f6ffea6e7",
+    "data/live-readiness/20260922-cast-probe/probe-d-native.mp4": "a0ec11c760ac358c5f33e5616d41e416d9c479aefabe1a8a176f0c7da4f828b2",
+    "data/live-readiness/20260922-cast-probe/probe-d-recorder.json": "9c09d6e727bedfa3401478bf4bc72631fbe548762bb3412c2d188cd3bd68b89e",
+    "data/live-readiness/20260922-cast-probe/probe-d-record.log": "7350fb58f8dcd0a3c2a99b20f504bd00740c930fedecd3283896305ce1a6e7ee",
+    "data/live-readiness/20260922-cast-probe/code-receipt-d.json": "b87330523bb336d6c39dc302deeef607aff2b2685c91d0feb510b5475c4fd4e1",
+    "data/live-readiness/20260922-cast-probe/practice-settings-d/ps-0.jpg": "26a1716be58460dcdd16a852eaa3e6c7674a3e265190a263b8fd3b19000100a4"
+  },
+  "counts": {
+    "start_proposals": 3,
+    "controller_acceptances": 2,
+    "lt_send_attempts": 4,
+    "lt_send_returns": 4,
+    "lt_send_failures": 0
+  },
+  "slots": [
+    {
+      "slot": 1,
+      "offset_s": 1.0,
+      "scheduled_t": 7.528666999976849,
+      "deadline": 7.628666999976849,
+      "status": "proposed",
+      "decision_id": 13,
+      "request_valid_until": 7.6129115000017915,
+      "reason": "scheduled_start",
+      "observed_t": 7.512911500001792,
+      "evaluated_t": 7.553253899997799,
+      "target_id": 1,
+      "resources": {
+        "webs": 5,
+        "observed_t": 7.512911500001792
+      },
+      "controller_accepted": true,
+      "controller_reason": "accepted",
+      "lt_sends": [
+        {
+          "observation_t": 7.512911500001792,
+          "attempted_t": 7.553513799997745,
+          "status": "returned",
+          "not_after": 7.579911500001791,
+          "release_at": 7.5863017999841835,
+          "returned_t": 7.554831899993587,
+          "pulse_decision_id": 13
+        },
+        {
+          "observation_t": 7.5551128999795765,
+          "attempted_t": 7.570309399976395,
+          "status": "returned",
+          "not_after": 7.5863017999841835,
+          "release_at": 7.5863017999841835,
+          "returned_t": 7.57161859999178,
+          "pulse_decision_id": 13
+        }
+      ]
+    },
+    {
+      "slot": 2,
+      "offset_s": 2.5,
+      "scheduled_t": 9.02866699997685,
+      "deadline": 9.128666999976849,
+      "status": "proposed",
+      "decision_id": 28,
+      "request_valid_until": 9.128666999976849,
+      "reason": "scheduled_start",
+      "observed_t": 9.039462699991418,
+      "evaluated_t": 9.0913647999987,
+      "target_id": 1,
+      "resources": {
+        "webs": 4,
+        "observed_t": 9.039462699991418
+      },
+      "controller_accepted": true,
+      "controller_reason": "accepted",
+      "lt_sends": [
+        {
+          "observation_t": 9.039462699991418,
+          "attempted_t": 9.091612899996107,
+          "status": "returned",
+          "not_after": 9.09566699997685,
+          "release_at": 9.124414299997268,
+          "returned_t": 9.092822299979161,
+          "pulse_decision_id": 28
+        },
+        {
+          "observation_t": 9.093107799999416,
+          "attempted_t": 9.113847499975236,
+          "status": "returned",
+          "not_after": 9.124414299997268,
+          "release_at": 9.124414299997268,
+          "returned_t": 9.115242100000614,
+          "pulse_decision_id": 28
+        }
+      ]
+    },
+    {
+      "slot": 3,
+      "offset_s": 4.0,
+      "scheduled_t": 10.52866699997685,
+      "deadline": 10.628666999976849,
+      "status": "proposed",
+      "decision_id": 43,
+      "request_valid_until": 10.628666999976849,
+      "reason": "scheduled_start",
+      "observed_t": 10.547340999997687,
+      "evaluated_t": 10.600729099998716,
+      "target_id": 1,
+      "resources": {
+        "webs": 4,
+        "observed_t": 10.547340999997687
+      },
+      "controller_accepted": false,
+      "controller_reason": "insufficient_press_time",
+      "lt_sends": []
+    }
+  ],
+  "observed_ammo_changes": [
+    {
+      "observation_t": 6.321923799987417,
+      "webs": 5,
+      "file": "000000.jpg"
+    },
+    {
+      "observation_t": 7.712049900001148,
+      "webs": 4,
+      "file": null
+    },
+    {
+      "observation_t": 9.236088099976769,
+      "webs": 3,
+      "file": null
+    },
+    {
+      "observation_t": 9.731437799986452,
+      "webs": 4,
+      "file": null
+    }
+  ],
+  "execution_edges": [
+    {
+      "observation_t": 7.512911500001792,
+      "execution_t": 7.553301799984183,
+      "decision_id": 13,
+      "pulse_id": 13,
+      "ended_pulse_id": null,
+      "phase": "press",
+      "outcome": null,
+      "press_edge": true,
+      "release_edge": false,
+      "send_result": {
+        "observation_t": 7.512911500001792,
+        "attempted_t": 7.553513799997745,
+        "status": "returned",
+        "not_after": 7.579911500001791,
+        "release_at": 7.5863017999841835,
+        "returned_t": 7.554831899993587
+      }
+    },
+    {
+      "observation_t": 7.5760843999742065,
+      "execution_t": 7.5918594999820925,
+      "decision_id": 13,
+      "pulse_id": 13,
+      "ended_pulse_id": null,
+      "phase": "release",
+      "outcome": null,
+      "press_edge": false,
+      "release_edge": true,
+      "send_result": {
+        "observation_t": 7.5760843999742065,
+        "attempted_t": 7.592004699981771,
+        "status": "returned",
+        "returned_t": 7.593195900000865
+      }
+    },
+    {
+      "observation_t": 7.61017499997979,
+      "execution_t": 7.656037699984154,
+      "decision_id": 14,
+      "pulse_id": 13,
+      "ended_pulse_id": 13,
+      "phase": "none",
+      "outcome": "cancelled_after_press",
+      "press_edge": false,
+      "release_edge": false,
+      "send_result": {
+        "observation_t": 7.61017499997979,
+        "attempted_t": 7.6562229999981355,
+        "status": "returned",
+        "returned_t": 7.657437199988635
+      }
+    },
+    {
+      "observation_t": 9.039462699991418,
+      "execution_t": 9.091414299997268,
+      "decision_id": 28,
+      "pulse_id": 28,
+      "ended_pulse_id": null,
+      "phase": "press",
+      "outcome": null,
+      "press_edge": true,
+      "release_edge": false,
+      "send_result": {
+        "observation_t": 9.039462699991418,
+        "attempted_t": 9.091612899996107,
+        "status": "returned",
+        "not_after": 9.09566699997685,
+        "release_at": 9.124414299997268,
+        "returned_t": 9.092822299979161
+      }
+    },
+    {
+      "observation_t": 9.119853199983481,
+      "execution_t": 9.13586199999554,
+      "decision_id": 28,
+      "pulse_id": 28,
+      "ended_pulse_id": 28,
+      "phase": "none",
+      "outcome": "cancelled_after_press",
+      "press_edge": false,
+      "release_edge": true,
+      "send_result": {
+        "observation_t": 9.119853199983481,
+        "attempted_t": 9.136003399995388,
+        "status": "returned",
+        "returned_t": 9.137463099992601
+      }
+    }
+  ],
+  "terminal": {
+    "stop": "range_lost",
+    "range_gaps": [],
+    "errors": [],
+    "release_attempts": [
+      {
+        "reason": "send_failed",
+        "preceding_send_result": {
+          "observation_t": 11.51937269998598,
+          "attempted_t": 11.534152699983679,
+          "status": "failed",
+          "returned_t": 11.534219499997562,
+          "error": "RangeLost('probe_complete')"
+        },
+        "release_attempts": [
+          {
+            "attempted_t": 11.534260999993421,
+            "status": "returned",
+            "returned_t": 11.534362799982773
+          }
+        ],
+        "release_returned": true
+      },
+      {
+        "reason": "range_lost",
+        "preceding_send_result": {
+          "observation_t": 11.51937269998598,
+          "attempted_t": 11.534152699983679,
+          "status": "failed",
+          "returned_t": 11.534219499997562,
+          "error": "RangeLost('probe_complete')"
+        },
+        "release_attempts": [
+          {
+            "attempted_t": 11.535522099991795,
+            "status": "returned",
+            "returned_t": 11.535554699978093
+          }
+        ],
+        "release_returned": true
+      }
+    ]
+  },
+  "interpretation": "Two software-owned pulses returned LT writes. Each has two LT send calls, not two casts. The third slot was refused for insufficient press time. No human model loaded. Observed ammo values are reader outputs pending native audit. RangeLost(probe_complete) ended the bounded episode; range gaps were empty. Release API returned. No exact physical pulse duration or video/input latency is inferred; watchdog release is not timestamped by this log."
+}
