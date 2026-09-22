@@ -1,0 +1,29 @@
+{
+  "rows": 199,
+  "normal_ticks": 196,
+  "decisions": 45,
+  "proposals": {
+    "None": 16,
+    "start": 11,
+    "no_new_start": 18
+  },
+  "reasons": {
+    "target_unobserved": 1,
+    "warming_up": 13,
+    "model_event": 29,
+    "low_confidence": 2
+  },
+  "schedule": {
+    "offered": 45,
+    "first_acquisition_late": 3
+  },
+  "late_slots": [
+    13,
+    16,
+    30
+  ],
+  "accepted_requests": 1,
+  "returned_LT_calls": 0,
+  "failed_send_events": 1,
+  "returned_release_calls": 2
+}

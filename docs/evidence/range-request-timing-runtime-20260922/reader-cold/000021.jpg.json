@@ -1,0 +1,164 @@
+{
+  "scope": "cold_and_repeated_saved_JPEG_function_costs_not_original_native_values_or_stages",
+  "file": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\range-request-timing-20260922-1\\000021.jpg",
+  "sha256": "7fc8b34f77f4544803a5e960b1a7d2e75ccbfce0a051396e74bb05ede7d6f6d3",
+  "hud_sha256": "5ec7e109f168aeb05978724540eca1dace96fda981fea2861dc16ae3de2a5f58",
+  "opencv_threads": 32,
+  "results": [
+    {
+      "kind": "cold",
+      "elapsed_ms": 27.827100013382733,
+      "seen_before": 0,
+      "seen_after": 35,
+      "subcalls": {
+        "_mask": {
+          "count": 27,
+          "sum_ms": 3.3610999525990337
+        },
+        "_segment": {
+          "count": 76,
+          "sum_ms": 10.447300039231777
+        },
+        "_classify": {
+          "count": 35,
+          "sum_ms": 6.2942999065853655
+        },
+        "classify": {
+          "count": 46,
+          "sum_ms": 6.5395000274293125
+        },
+        "read_hp": {
+          "count": 1,
+          "sum_ms": 10.536900022998452
+        },
+        "_countdown_in": {
+          "count": 48,
+          "sum_ms": 10.455999989062548
+        },
+        "_countdown_char": {
+          "count": 30,
+          "sum_ms": 7.802500011166558
+        },
+        "read_cooldown": {
+          "count": 4,
+          "sum_ms": 13.0175000813324
+        },
+        "read_charges": {
+          "count": 4,
+          "sum_ms": 0.8410000300500542
+        },
+        "_read_ability": {
+          "count": 4,
+          "sum_ms": 1.6850999963935465
+        }
+      },
+      "hud": {
+        "hp": 250,
+        "max_hp": 250,
+        "webs": 5,
+        "abilities": {
+          "teamup": [
+            true,
+            null
+          ],
+          "swing": [
+            true,
+            3
+          ],
+          "get_over_here": [
+            true,
+            null
+          ],
+          "uppercut": [
+            true,
+            2
+          ]
+        },
+        "cooldowns": {
+          "teamup": null,
+          "swing": null,
+          "get_over_here": null,
+          "uppercut": null
+        }
+      }
+    },
+    {
+      "kind": "same_pixels_warm",
+      "elapsed_ms": 13.064600003417581,
+      "seen_before": 35,
+      "seen_after": 35,
+      "subcalls": {
+        "_mask": {
+          "count": 27,
+          "sum_ms": 3.251399932196364
+        },
+        "_segment": {
+          "count": 76,
+          "sum_ms": 1.9201000686734915
+        },
+        "classify": {
+          "count": 46,
+          "sum_ms": 0.12789995525963604
+        },
+        "read_hp": {
+          "count": 1,
+          "sum_ms": 1.0271999926771969
+        },
+        "_countdown_in": {
+          "count": 48,
+          "sum_ms": 7.60970008559525
+        },
+        "_countdown_char": {
+          "count": 30,
+          "sum_ms": 5.632799991872162
+        },
+        "read_cooldown": {
+          "count": 4,
+          "sum_ms": 10.037100000772625
+        },
+        "read_charges": {
+          "count": 4,
+          "sum_ms": 0.4183000128250569
+        },
+        "_read_ability": {
+          "count": 4,
+          "sum_ms": 1.1941000120714307
+        }
+      },
+      "hud": {
+        "hp": 250,
+        "max_hp": 250,
+        "webs": 5,
+        "abilities": {
+          "teamup": [
+            true,
+            null
+          ],
+          "swing": [
+            true,
+            3
+          ],
+          "get_over_here": [
+            true,
+            null
+          ],
+          "uppercut": [
+            true,
+            2
+          ]
+        },
+        "cooldowns": {
+          "teamup": null,
+          "swing": null,
+          "get_over_here": null,
+          "uppercut": null
+        }
+      }
+    }
+  ],
+  "limits": [
+    "Nested function costs overlap; do not sum them as disjoint stages.",
+    "JPEG pixels differ from original acquisition.",
+    "Wrapped timing adds Python overhead and is not a native live benchmark."
+  ]
+}

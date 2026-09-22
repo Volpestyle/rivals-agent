@@ -1,0 +1,13 @@
+{
+  "resource_t": 11.256737499992596,
+  "reflex_observation_t": 11.298026099975687,
+  "controller_execution_t": 11.322548599971924,
+  "valid_until": 11.356737499992596,
+  "planned_press_until": 11.355548599971923,
+  "send_attempt_t": 11.322863599983975,
+  "send_not_after": 11.323737499992596,
+  "send_failure_return_t": 11.324030399991898,
+  "attempt_headroom_ms": 0.8739000086208648,
+  "failure_return_after_deadline_ms": 0.29289999930171007,
+  "overall_authorization_deadline_t": 23.650085899978876
+}

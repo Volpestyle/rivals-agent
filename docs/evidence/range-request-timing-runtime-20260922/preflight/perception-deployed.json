@@ -1,0 +1,182 @@
+{
+  "status": "deployed_code_pins_matching_independent_review",
+  "files": {
+    "perception/hud.py": {
+      "sha256": "c34e9d071490179a20186ccee0ab6a69cb1c5c7be08f5d57a94b728b53df4661",
+      "LF_normalized_sha256": "c34e9d071490179a20186ccee0ab6a69cb1c5c7be08f5d57a94b728b53df4661",
+      "reviewed_main_raw_sha256": "5ec7e109f168aeb05978724540eca1dace96fda981fea2861dc16ae3de2a5f58",
+      "difference_from_main_is_CRLF_only": true
+    },
+    "perception/outline.py": {
+      "sha256": "fded81b150bb873c738e34fb3fc7d8f0a263a7cf9121e3325991bcdda4acd4f8",
+      "LF_normalized_sha256": "fded81b150bb873c738e34fb3fc7d8f0a263a7cf9121e3325991bcdda4acd4f8",
+      "reviewed_main_raw_sha256": "369994b22c895c0248b8089a1ca37c9a30f3e5dd9cb653ad2cc3e59bfb17dd55",
+      "difference_from_main_is_CRLF_only": true
+    },
+    "agent/loop.py": {
+      "sha256": "7bdb126336036fb6f3cf27c60e1e44c8696a2b90d24cbf66fc3a5c29f7cb8c9d",
+      "LF_normalized_sha256": "085349bbc21094b544cde683aed1ac79263fa3351af3356355e18c73f2295741",
+      "reviewed_main_raw_sha256": "2077909fdd47f4d6bce4ae62e6796844ec0941e5cb45fad4475ad9d2ddbba1e6",
+      "difference_from_main_is_CRLF_only": true
+    },
+    "agent/state.py": {
+      "sha256": "83983c59f0ea39772686b9ce8e002aab86d312c5e75937bc2b9e6a21eddb8f5a",
+      "LF_normalized_sha256": "7ee6b826c38090d28d44b598d77ddeabf22f4593cf64ea45012b461a2377c149",
+      "reviewed_main_raw_sha256": "83983c59f0ea39772686b9ce8e002aab86d312c5e75937bc2b9e6a21eddb8f5a",
+      "difference_from_main_is_CRLF_only": false
+    },
+    "agent/tracker.py": {
+      "sha256": "56fa3012391b22a0c4a3dbe3f5414f275faba4e038bfebdbe6b8f579bc72c892",
+      "LF_normalized_sha256": "775231bbe4bfe0e2eee6f50601d2c7dbb3f7a068e5b0461d8973d47fd050963c",
+      "reviewed_main_raw_sha256": "56fa3012391b22a0c4a3dbe3f5414f275faba4e038bfebdbe6b8f579bc72c892",
+      "difference_from_main_is_CRLF_only": false
+    },
+    "policy/range_policy.py": {
+      "sha256": "c46e7d8a6523892107c8a878532505d020896e5b32e9df6179c049d6aa3410bb",
+      "LF_normalized_sha256": "c46e7d8a6523892107c8a878532505d020896e5b32e9df6179c049d6aa3410bb",
+      "reviewed_main_raw_sha256": "c46e7d8a6523892107c8a878532505d020896e5b32e9df6179c049d6aa3410bb",
+      "difference_from_main_is_CRLF_only": false
+    },
+    "policy/range_skill_policy.py": {
+      "sha256": "5109def43fe6d84a90a048431481d1ab56a429f2c4e9c804adee2413047d6a82",
+      "LF_normalized_sha256": "d6b62274434cd0b960da817e3d072f933bf6baa6e03055305c120a1e1baa760c",
+      "reviewed_main_raw_sha256": "d6b62274434cd0b960da817e3d072f933bf6baa6e03055305c120a1e1baa760c",
+      "difference_from_main_is_CRLF_only": true
+    }
+  },
+  "PAD": {
+    "HP_TEXT": [
+      0.44,
+      0.896,
+      0.56,
+      0.9315
+    ],
+    "HP_BAR": [
+      0.4055,
+      0.9335,
+      0.5945,
+      0.9425
+    ],
+    "WEBS": [
+      0.162,
+      0.905,
+      0.179,
+      0.95
+    ],
+    "WEBS_RIGHT": [
+      24,
+      38
+    ],
+    "SLOT_CX": {
+      "teamup": 0.7516,
+      "swing": 0.795,
+      "get_over_here": 0.8348,
+      "uppercut": 0.8723
+    },
+    "ULT": [
+      0.902,
+      0.872,
+      0.972,
+      0.95
+    ],
+    "badge_light_disc": true,
+    "slot_spill": 0.95,
+    "entrypoint": "hud.read(frame) default PAD; embedded glyph/tag templates in hashed module"
+  },
+  "source_mapped_MK": {
+    "name": "mk",
+    "webs": [
+      0.2455,
+      0.905,
+      0.27,
+      0.95
+    ],
+    "webs_right": [
+      48,
+      66
+    ],
+    "badge_light_disc": false,
+    "slot_spill": 0.15,
+    "hp_text": [
+      0.44,
+      0.896,
+      0.56,
+      0.9315
+    ],
+    "hp_bar": [
+      0.4055,
+      0.9335,
+      0.5945,
+      0.9425
+    ],
+    "slot_cx": {
+      "swing": 0.795,
+      "uppercut": 0.8348,
+      "get_over_here": 0.8723
+    },
+    "ult": [
+      0.902,
+      0.872,
+      0.972,
+      0.95
+    ]
+  },
+  "crop": {
+    "base_square_px_at_1440h": 960,
+    "side": "round(960 * actual_height / 1440)",
+    "native_2560x1440_example": [
+      800,
+      240,
+      1760,
+      1200
+    ],
+    "detector_scale": "actual_width/1280",
+    "coordinates": "crop origin and full frame passed into finder; bbox translated to actual frame pixels",
+    "fallback": "full-frame only when decision crop empty; same episode Tracker; no RGB resize assumed"
+  },
+  "enemy_channel": "find_enemies default GREEN; player/HUD exclusions retained",
+  "tag": "hud.read_tagged(frame,bbox)",
+  "selector_sha256": "ddf1428a61c54805ce06164ef0daa7dfa1302fdf1735990336fdcab939ae098d",
+  "selector_manifest_sha256": "ef64d787d610157879714c9cf80684e7b570eef7a334d8f75d37a2f2c44fa253",
+  "features": {
+    "revision": "masked-state-grid-causal-v1",
+    "spec": {
+      "steps": 5,
+      "period_s": 0.1,
+      "tolerance_s": 0.025,
+      "hidden": 8,
+      "confidence": 0.7
+    },
+    "fields": [
+      "hp_fraction",
+      "webs",
+      "pull_ready",
+      "uppercut_ready",
+      "swing_ready",
+      "on_target",
+      "detector",
+      "target",
+      "target_x",
+      "target_y",
+      "target_height",
+      "target_distance",
+      "target_tagged"
+    ],
+    "representation": "13 value/known pairs; original State.t/resource time; unknown stays masked",
+    "source_sampling": "causal actual decoded CTS at/before fixed ticks within25ms; offline available_t=State.t",
+    "runtime_sampling": "five actual acquisition anchors,100ms cadence +/-25ms; detector/malformed/cadence faults reset; current target required"
+  },
+  "remaining_difference": "mapped MK versus PAD slot/ammo/badge layout; crop and continuous selection may change actual inputs; code/config manifests are not observed feature equivalence",
+  "checkout": "C:\\Users\\volpe\\repos\\rivals-agent-live",
+  "git_commit": "3dc4d459cdb4e6a3f3c9583432b96da8205a47f2",
+  "frozen_utc": "2026-09-22T22:35:10.521617+00:00",
+  "baseline_manifest_sha256": "183f4cb3e79680c6387a43318e2b1f4bbd0e02ae62b7fd83db4c15672357dc45",
+  "caller_review_sha256": "cfbe28cd3168459a78946e1bbd72d197b4f4f8787a9ea2afe44cc0088b8de149",
+  "run_limit_s": 10,
+  "startup_limit_s": 14,
+  "combined_authorization_s": 24,
+  "budget_limit": "proof authorization under existing freshness/watchdog limits; not hard process/physical timing",
+  "run_count": 1,
+  "scoreboard": false,
+  "target_scope": "single Luna setup; generic continuous selector"
+}

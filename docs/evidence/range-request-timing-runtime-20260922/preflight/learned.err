@@ -1,0 +1,7 @@
+[ WARN:0@5.895] global loadsave.cpp:1140 cv::imwrite_ An unsupported key(1) was specified and has been ignored.
+[ WARN:0@6.045] global loadsave.cpp:1140 cv::imwrite_ An unsupported key(1) was specified and has been ignored.
+[ WARN:0@6.192] global loadsave.cpp:1140 cv::imwrite_ An unsupported key(1) was specified and has been ignored.
+[ WARN:0@6.337] global loadsave.cpp:1140 cv::imwrite_ An unsupported key(1) was specified and has been ignored.
+[ WARN:0@6.483] global loadsave.cpp:1140 cv::imwrite_ An unsupported key(1) was specified and has been ignored.
+[ WARN:0@6.631] global loadsave.cpp:1140 cv::imwrite_ An unsupported key(1) was specified and has been ignored.
+[ WARN:0@6.777] global loadsave.cpp:1140 cv::imwrite_ An unsupported key(1) was specified and has been ignored.

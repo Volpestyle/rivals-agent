@@ -1,0 +1,169 @@
+{
+  "t": 11.298,
+  "note": "rangeskill:enemy",
+  "source": "range_skill_model",
+  "dets": [
+    [
+      1145,
+      457,
+      1414,
+      988
+    ]
+  ],
+  "ms": 13.45,
+  "type": "executor_send_failure",
+  "reason": "send_failed",
+  "ids": [
+    1
+  ],
+  "coasting": [],
+  "target": 1,
+  "target_px": 2.5,
+  "observation_t": 11.298026099975687,
+  "proposed_pad": {
+    "lx": 0.0,
+    "ly": 0.0,
+    "rx": 0.0,
+    "ry": 0.0,
+    "lt": 1.0,
+    "rt": 0,
+    "buttons": []
+  },
+  "range_skill_trace": {
+    "t": 11.298026099975687,
+    "observation_t": 11.298026099975687,
+    "execution_t": 11.322548599971924,
+    "execution_clock_valid": true,
+    "event": "step",
+    "decision_id": 45,
+    "target_id": 1,
+    "proposal": "start",
+    "valid_until": 11.356737499992596,
+    "resources": {
+      "webs": 5,
+      "observed_t": 11.256737499992596
+    },
+    "accepted": true,
+    "reason": "accepted",
+    "cancel_reason": null,
+    "pulse_decision_id": 45,
+    "pulse_target_id": 1,
+    "pulse_press_until": 11.355548599971923,
+    "pulse_valid_until": 11.356737499992596,
+    "pulse_phase": "press",
+    "lt_down": true,
+    "press_edge": true,
+    "release_edge": false,
+    "movement_source": "scripted_range_approach_aim",
+    "ended_pulse_decision_id": null,
+    "pulse_outcome": null,
+    "offense_source": "accepted_range_skill_request",
+    "pad": {
+      "lx": 0.0,
+      "ly": 0.0,
+      "rx": 0.0,
+      "ry": 0.0,
+      "lt": 1.0,
+      "rt": 0.0,
+      "buttons": []
+    }
+  },
+  "d": 45,
+  "state": {
+    "t": 11.256737499992596,
+    "frame": [
+      2560,
+      1440
+    ],
+    "hp": null,
+    "max_hp": null,
+    "abilities": {
+      "teamup": {
+        "ready": true,
+        "charges": null
+      },
+      "swing": {
+        "ready": true,
+        "charges": 3
+      },
+      "pull": {
+        "ready": true,
+        "charges": null
+      },
+      "uppercut": {
+        "ready": true,
+        "charges": 2
+      },
+      "ult": {
+        "ready": false,
+        "charges": null
+      }
+    },
+    "webs": 5,
+    "detections": [
+      {
+        "cls": "enemy",
+        "bbox": [
+          1144.0,
+          457.0,
+          1412.0,
+          988.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": false,
+        "track": 1,
+        "plate": true
+      }
+    ],
+    "on_target": null,
+    "coasting": []
+  },
+  "ms_decide": 44.1,
+  "decision_timing": {
+    "d": 45,
+    "processing_clock": "perf_counter_seconds",
+    "observation_clock": "loop_seconds",
+    "acquisition_t": 11.256737499992596,
+    "slot": 47,
+    "phase_t": 11.247168999997665,
+    "offer_perf": 184550.0473576,
+    "worker_start_perf": 184550.048618,
+    "detection_tag_complete_perf": 184550.0608669,
+    "hud_complete_perf": 184550.091857,
+    "brain_call_start_perf": 184550.0918622,
+    "brain_call_complete_perf": 184550.0927176,
+    "ready_publication_perf": 184550.0927395,
+    "first_reflex_consumption_perf": 184550.0941574,
+    "reflex_acquisition_t": 11.298026099975687
+  },
+  "decision_trace": {
+    "t": 11.256737499992596,
+    "decision_id": 45,
+    "source": "range_skill_model",
+    "reason": "model_event",
+    "probabilities": [
+      0.004700417630374432,
+      0.9952995777130127
+    ],
+    "intent": "RangeSkill",
+    "target": 1,
+    "web_cluster_request": "start",
+    "valid_until": 11.356737499992596,
+    "resources": {
+      "webs": 5,
+      "observed_t": 11.256737499992596
+    },
+    "selector_source": "scripted_brain_gate",
+    "movement_source": "scripted_controller"
+  },
+  "send_result": {
+    "observation_t": 11.298026099975687,
+    "attempted_t": 11.322863599983975,
+    "status": "failed",
+    "not_after": 11.323737499992596,
+    "release_at": 11.355548599971923,
+    "returned_t": 11.324030399991898,
+    "error": "RangeLost('guarded input deadline expired after proof; input released')"
+  }
+}

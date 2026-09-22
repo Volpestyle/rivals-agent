@@ -1,0 +1,299 @@
+{
+  "exact_copies": [
+    {
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\range-request-timing-20260922-1\\meta.json",
+      "archived": "run/meta.json",
+      "sha256": "a8f6912b16cc7899ab25940faa39535f6c8d102eafe8c8228e8fec8e20d4be8e"
+    },
+    {
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\range-request-timing-20260922-1\\frames.jsonl",
+      "archived": "run/frames.jsonl",
+      "sha256": "e0b49c055a8a8342ad756c2107a2b27f6ff55c6d27005aa8c5dbce73614f7bfe"
+    },
+    {
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\range-request-timing-20260922-1\\start-steps.jsonl",
+      "archived": "run/start-steps.jsonl",
+      "sha256": "82cd96c3c9414e251be865576ce20338d3770ef53e58cb5420c9e79dbba6ca47"
+    },
+    {
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-timing-preflight-20260922\\source-identity.json",
+      "archived": "preflight/source-identity.json",
+      "sha256": "72bf5e2be3db2e11e1820bd4a3d6fc73aabe3263e3778957de151bb66e27ef43"
+    },
+    {
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-timing-preflight-20260922\\runtime-identity.json",
+      "archived": "preflight/runtime-identity.json",
+      "sha256": "81f3c1dc28b8ba05c16c7359026946898963848cf36c062f0a4acbc887b29da0"
+    },
+    {
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-timing-preflight-20260922\\deployment-binding.json",
+      "archived": "preflight/deployment-binding.json",
+      "sha256": "d87b0aca09c9925d17bfaab229e767d4f23993a52500700a808c5983d5c8cb64"
+    },
+    {
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-timing-preflight-20260922\\deployment-review.json",
+      "archived": "preflight/deployment-review.json",
+      "sha256": "1e6f1155075e01ae9550473731c584f42bfd5f762555e65fba656d67c1ae52c3"
+    },
+    {
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-timing-preflight-20260922\\runtime-semantic-review.json",
+      "archived": "preflight/runtime-semantic-review.json",
+      "sha256": "6f8085123a5a13a2c5b69538613242dae4f60580995763351d706524363d2f40"
+    },
+    {
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-timing-preflight-20260922\\controller-deployed.json",
+      "archived": "preflight/controller-deployed.json",
+      "sha256": "d0d1923c8271453b6907a9e54da2eed4928870c0c920bcc44a2481a3c13eb2e9"
+    },
+    {
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-timing-preflight-20260922\\perception-deployed.json",
+      "archived": "preflight/perception-deployed.json",
+      "sha256": "957896cbfca4e5a7e7c35b419a31cb6cad0822106aaf6970286b6f3864c9f1a9"
+    },
+    {
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-timing-preflight-20260922\\deployment-check.json",
+      "archived": "preflight/deployment-check.json",
+      "sha256": "ad23c88b7141686c6331088327dc305f36730f144c01b12561ddb26e46a529e8"
+    },
+    {
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-timing-preflight-20260922\\effective-setup.json",
+      "archived": "preflight/effective-setup.json",
+      "sha256": "8ac28d58f58d87c4a5802fecf54f546da7e7cfdb8ab808b82ba44b6ca9662f1d"
+    },
+    {
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-timing-preflight-20260922\\runtime-settings.json",
+      "archived": "preflight/runtime-settings.json",
+      "sha256": "fbb57a10dc8c7d67fb777675889955cc8196366c11879b43da3c7e9e8dcf2f9e"
+    },
+    {
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-timing-preflight-20260922\\saved-settings.json",
+      "archived": "preflight/saved-settings.json",
+      "sha256": "ec857952f86abe394d4071197db0373356131b303ec086b67bbd9d6bd96048b6"
+    },
+    {
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-timing-preflight-20260922\\actual-thread-settings.json",
+      "archived": "preflight/actual-thread-settings.json",
+      "sha256": "8785fbbea4253142faaaf8be888fc64351625e99619f9a953a326a3305a4c01e"
+    },
+    {
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-timing-preflight-20260922\\launch-result.json",
+      "archived": "preflight/launch-result.json",
+      "sha256": "23ffc34ac60977f159197b548bbc1a1ccde82459cd24457771fea919b63c0973"
+    },
+    {
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-timing-preflight-20260922\\loader-preflight.json",
+      "archived": "preflight/loader-preflight.json",
+      "sha256": "7f7044bbeb308f50ace2b3ea15108044fb0428138f11c49534590f6211fe31d3"
+    },
+    {
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-timing-preflight-20260922\\binding-consumed.json",
+      "archived": "preflight/binding-consumed.json",
+      "sha256": "19ff6ec077096ebfbb38cf8a8a80ab8ce165210c2b5d90eb1cfac68887f48422"
+    },
+    {
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-timing-preflight-20260922\\learned-recorder.json",
+      "archived": "preflight/learned-recorder.json",
+      "sha256": "9a05d19ffabaf685c71ff471fbfc6b37dade4b5a62773a192c895583c2b5af22"
+    },
+    {
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-timing-preflight-20260922\\caller-review.md",
+      "archived": "preflight/caller-review.md",
+      "sha256": "cfbe28cd3168459a78946e1bbd72d197b4f4f8787a9ea2afe44cc0088b8de149"
+    },
+    {
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-timing-preflight-20260922\\semantic-review.md",
+      "archived": "preflight/semantic-review.md",
+      "sha256": "d552bea1d4d98e49b1ee1b78e4ddd743a382c009bd1058acb6ad38814e656e52"
+    },
+    {
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-timing-preflight-20260922\\run_instrumented.py",
+      "archived": "preflight/run_instrumented.py",
+      "sha256": "d20bb27fbd3ce537e8dc66f3b82d431bfc8af53145c21df4f62a61c332234830"
+    },
+    {
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-timing-preflight-20260922\\launch.ps1",
+      "archived": "preflight/launch.ps1",
+      "sha256": "a765f0376cda46c30827282b779b0863d2c9105657e22e67ffcb2e3b194ac860"
+    },
+    {
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-timing-preflight-20260922\\learned.err",
+      "archived": "preflight/learned.err",
+      "sha256": "1a0c79d78109935f7bc7dfbcd737fe9d8e962cfabe4854dc4205573dc8cd1f84"
+    },
+    {
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-timing-preflight-20260922\\capture-preflight.txt",
+      "archived": "preflight/capture-preflight.txt",
+      "sha256": "9a8e0fb88db60c3145b46f79cb21610b72f86a1c161b29b65e2b806bdd451d7a"
+    },
+    {
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-timing-preflight-20260922\\settings.log",
+      "archived": "preflight/settings.log",
+      "sha256": "98df43fefe1bf7ab14d6bfea9f29617738a09a743690606aa950ada66142674b"
+    },
+    {
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-timing-preflight-20260922\\settings-11p8s.png",
+      "archived": "preflight/settings-11p8s.png",
+      "sha256": "3e861e517912f9ce459093b399de93defaecfdddc2b116fbf0f771fd24f18532"
+    },
+    {
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-timing-preflight-20260922\\practice-settings\\ps-0.jpg",
+      "archived": "preflight/practice-settings/ps-0.jpg",
+      "sha256": "75c2c7f9b23f3dfcce9c2a4fae418661ed79238a511e664573f8aa8d62b8d5c9"
+    },
+    {
+      "source": "C:\\desk\\out\\range-request-timing-entry-after.png",
+      "archived": "preflight/entry-after.png",
+      "sha256": "be0aaa84586c716dd76a8a382d1440ab096378599b9c4c6fd2d3f52bc32d5f49"
+    },
+    {
+      "source": "C:\\desk\\out\\range-request-timing-after.png",
+      "archived": "preflight/after.png",
+      "sha256": "ca229dca61f88390726d23d39c97da02f3d934fc19e6d690f70e9d1e417bfa4f"
+    },
+    {
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\diagnostics\\range-request-hud-cold-cost-20260922\\profile.py",
+      "archived": "reader-cold/profile.py",
+      "sha256": "0cb9cf5177ad8ed936743657fa76cdad266e8101d52fcbed05eb946114bdcd87"
+    },
+    {
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\diagnostics\\range-request-hud-cold-cost-20260922\\000000.jpg.json",
+      "archived": "reader-cold/000000.jpg.json",
+      "sha256": "5b763b8041d946d563a6ed6c19972185c37d1027d6b80c2c2488575dd06a925b"
+    },
+    {
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\diagnostics\\range-request-hud-cold-cost-20260922\\000021.jpg.json",
+      "archived": "reader-cold/000021.jpg.json",
+      "sha256": "ade77bc7877f0326a56899ff9a68ee3747ba822d1b2fd9518b0adfc6267f9e28"
+    },
+    {
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\diagnostics\\range-request-hud-cold-cost-20260922\\000041.jpg.json",
+      "archived": "reader-cold/000041.jpg.json",
+      "sha256": "59288c3a1e66986e81d145de80807539bfdc950656bc3ce520b957b6deba7974"
+    },
+    {
+      "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\range-timing-native-audit-ylkeiiih\\independent-audit.md",
+      "archived": "native-audit/independent-audit.md",
+      "sha256": "cd8f81dd7d85f985a222662d9041adc56db917455adb44e5585d6c0adbcfb81a"
+    },
+    {
+      "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\range-timing-native-audit-ylkeiiih\\coarse-sheet.jpg",
+      "archived": "native-audit/coarse-sheet.jpg",
+      "sha256": "21b013d0af9d637914cc9819e3c16c756a77d28daf970f021204155d26fbebe2"
+    },
+    {
+      "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\range-timing-native-audit-ylkeiiih\\end-sheet.jpg",
+      "archived": "native-audit/end-sheet.jpg",
+      "sha256": "53ce1a31ede8c0787ecabae07475abdf77409a12549a02f5c4ef446e4c47e2dd"
+    },
+    {
+      "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\range-timing-native-audit-ylkeiiih\\end-index.json",
+      "archived": "native-audit/end-index.json",
+      "sha256": "2a2eebff9e0b7f21c1afa867302449ce047e7831d8d6403b399eddb299b6ce0f"
+    },
+    {
+      "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\range-timing-native-audit-ylkeiiih\\counts.json",
+      "archived": "native-audit/counts.json",
+      "sha256": "b465dc0d472f9d60ec13495eae1cfcece825b1344794e7b155b951286daad67a"
+    },
+    {
+      "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\range-timing-native-audit-ylkeiiih\\terminal-clocks.json",
+      "archived": "native-audit/terminal-clocks.json",
+      "sha256": "22734eaa3b822dfc61b9d128a6f2f48aaf8380c42a90a7ea8d5476b05f15dfce"
+    },
+    {
+      "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\range-timing-native-audit-ylkeiiih\\failed-origin.json",
+      "archived": "native-audit/failed-origin.json",
+      "sha256": "36977303a5bc221e3d0c2f78bdb50293e7fb39e6a1315d1d76760231fddc3634"
+    },
+    {
+      "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\range-timing-native-audit-ylkeiiih\\original-hashes.json",
+      "archived": "native-audit/original-hashes.json",
+      "sha256": "8aa788916738fe086837937c457bfa10c3be476dbf9c48292b53c197bdbe16fa"
+    },
+    {
+      "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\range-timing-native-audit-ylkeiiih\\deployed-code-join.json",
+      "archived": "native-audit/deployed-code-join.json",
+      "sha256": "e0ee0bdb1410897d266b1646c90f82a901fb85b77562b8bda167caddee1b0792"
+    },
+    {
+      "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\range-timing-native-audit-ylkeiiih\\audit-artifact-hashes.json",
+      "archived": "native-audit/audit-artifact-hashes.json",
+      "sha256": "e20a6ac24ee90f7beb151f3749a590e093c4684f34241dece6cd83065c3599cd"
+    },
+    {
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\diagnostics\\range-request-stage-cost-20260922\\README.md",
+      "archived": "stages/README.md",
+      "sha256": "5f9e501f4005632c56f6c9eded0fe0e9e27a824245350008e9f3c396e646f7f9"
+    },
+    {
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\diagnostics\\range-request-stage-cost-20260922\\analyze.py",
+      "archived": "stages/analyze.py",
+      "sha256": "5b842b3fef7ac0372c93c830f577da617c03973f469f65b11431376947acb253"
+    },
+    {
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\diagnostics\\range-request-stage-cost-20260922\\report.json",
+      "archived": "stages/report.json",
+      "sha256": "d6b656f9169a7f6dca14b48f6aa516f83dc6aacfd7c8eae94989d2458804a059"
+    },
+    {
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\diagnostics\\range-request-stage-cost-20260922\\receipts.json",
+      "archived": "stages/receipts.json",
+      "sha256": "fe183f818b58649e677d0cc3c60402f40a57fcd6411a48797b9980d1c57f73a7"
+    },
+    {
+      "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\range-timing-native-audit-ylkeiiih\\end-01.jpg",
+      "archived": "native-audit/end-01.jpg",
+      "sha256": "cdfb7d7444b0fa94805334e952580042e8efa15060f64aee8ff0a3576e2b71a8"
+    },
+    {
+      "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\range-timing-native-audit-ylkeiiih\\end-02.jpg",
+      "archived": "native-audit/end-02.jpg",
+      "sha256": "365609dea436008b67686af1ff8d08187318fa9b9678bd8cfb6f322d15027db7"
+    },
+    {
+      "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\range-timing-native-audit-ylkeiiih\\end-03.jpg",
+      "archived": "native-audit/end-03.jpg",
+      "sha256": "f29734aca02364c1a38cba05123997ac4fbdd01d87f3b1d3babfe237174bf18c"
+    },
+    {
+      "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\range-timing-native-audit-ylkeiiih\\end-04.jpg",
+      "archived": "native-audit/end-04.jpg",
+      "sha256": "a1fb3a8ab387d4914f55dae6e6e19bc0dc68493788333505e2bb900c6f0c09f0"
+    },
+    {
+      "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\range-timing-native-audit-ylkeiiih\\end-05.jpg",
+      "archived": "native-audit/end-05.jpg",
+      "sha256": "dc14698d8780f8997311dd903080f12fa17fb071e1742a6505f4d4292f7f785f"
+    },
+    {
+      "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\range-timing-native-audit-ylkeiiih\\end-06.jpg",
+      "archived": "native-audit/end-06.jpg",
+      "sha256": "543265555d1268c3bab68ddcbabb2499bafd00ceb221940842e8c85bbfd3e8fb"
+    },
+    {
+      "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\range-timing-native-audit-ylkeiiih\\end-07.jpg",
+      "archived": "native-audit/end-07.jpg",
+      "sha256": "44078cd0d6138d45ed41f6016fd4a83b430d6f4baeeabcd83b3ce4810a872a04"
+    },
+    {
+      "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\range-timing-native-audit-ylkeiiih\\end-08.jpg",
+      "archived": "native-audit/end-08.jpg",
+      "sha256": "fdb091c677f634c09d735d67274747168aaa68abf09631fa42a887673ec24d00"
+    },
+    {
+      "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\range-timing-native-audit-ylkeiiih\\end-09.jpg",
+      "archived": "native-audit/end-09.jpg",
+      "sha256": "298154fb945a1e5ad091977918170f0de8aa0f05d72753009f9b50125e01115e"
+    },
+    {
+      "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\range-timing-native-audit-ylkeiiih\\end-10.jpg",
+      "archived": "native-audit/end-10.jpg",
+      "sha256": "21c21d6309853c0c9bda921f2d5a06f446ab5a38c3c84116cc730465c0833e25"
+    }
+  ],
+  "retained_video": {
+    "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-timing-preflight-20260922\\learned-native.mp4",
+    "sha256": "826e046d7a804390762aa934fd280c66684e607ec0a1ff13095ec532f1c27d30"
+  },
+  "scope": "finalized second software timing diagnostic, not training or independent validation"
+}
