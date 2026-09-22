@@ -1,0 +1,46 @@
+{
+  "fit.py": {
+    "source": "data/diagnostics/range-request-human-fit-20260922/fit.py",
+    "sha256": "6a3ff6b27bdc7bbdb4cb92ba3cec7fe2d69e6bf9def1618d137ed1fda5756ddf"
+  },
+  "verify_windows.py": {
+    "source": "data/diagnostics/range-request-human-fit-20260922/verify_windows.py",
+    "sha256": "637bb6aae737c3e00b0a22e4f5531d846eb86dd58361a326a1a0b36c5563fc4f"
+  },
+  "mac-report.json": {
+    "source": "data/diagnostics/range-request-human-fit-20260922/run-1/mac-report.json",
+    "sha256": "9d763f7c8e2c26e61174ff950fdc5ddefd268f3e22df8d900e11ce17f9b47638"
+  },
+  "windows-report.json": {
+    "source": "data/diagnostics/range-request-human-fit-20260922/run-1/windows-report.json",
+    "sha256": "ec9f51dc595f3c3a1741e2349a6fc689b0e7be62925a3867fbf679c6106ae0c4"
+  },
+  "software-review.json": {
+    "source": "data/diagnostics/range-request-human-fit-20260922/software-review.json",
+    "sha256": "0a62e355bda793f3d18450a0581e37543929e97437f7849fe633a3d663fd80ab"
+  },
+  "validation-receipt.json": {
+    "source": "data/human/skill-events/032454-request-diagnostic-v1/validation-receipt.json",
+    "sha256": "c83c75ae50c15ab7f39891e7c5177b4cb2bc6331e17a0fb2b7c7b2c9f5676f08"
+  },
+  "source-profile.json": {
+    "source": "data/human/skill-events/032454-request-diagnostic-v1/source-profile.json",
+    "sha256": "9f413b81dabc71518359c28a6e506b1a1accbae5654bbf006967652332e3208f"
+  },
+  "dependencies.json": {
+    "source": "data/human/skill-events/032454-request-diagnostic-v1/dependencies.json",
+    "sha256": "064004558aee7556fe5548117d968efcc61340bb4f8667ef2b9ba8b9b88cbe72"
+  },
+  "admission-decision.json": {
+    "source": "data/human/reviews/20260922T032454-642Z-24328-1.request-diagnostic-train-decision.json",
+    "sha256": "52423a3c96504b446d825da6fce9511b1e6572f7d42b0ef4057a46a3959333a1"
+  },
+  "independent-receipt.json": {
+    "source": "data/human/reviews/20260922T032454-642Z-24328-1.request-diagnostic-independent-review-receipt.json",
+    "sha256": "c4a95505b3f0d217ace001cfe9b4838433cd1c3c745e883fe8737f4a42763d07"
+  },
+  "independent-review.md": {
+    "source": "data/human/reviews/20260922T032454-642Z-24328-1.request-timing-independent-review.md",
+    "sha256": "12ad3514dc99bce8c4686cd029e495776eaceb02ab3bdc6e17916e694f9272b3"
+  }
+}

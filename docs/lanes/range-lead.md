@@ -27,12 +27,25 @@ decision imitation. The original examples, predictions and numerical fit remain
 unchanged. [Exact timing and the lead decision](../evidence/range-request-timing-20260922/README.md)
 separate this observation from physical delivery or a proven source binding.
 
-The next source check uses the preceding fixed-grid bins, preserving actual
-causal features and target correspondence. No production semantic change,
-retraining or live binding is authorized by the diagnosis. D's two observed
-scripted pulse-to-cast correspondences remain accepted primitive evidence;
-their uncertain timing does not guarantee visible emission inside a request's
-100 ms authorization window.
+The following source check and independent software review are complete. New
+`web-cluster-request-v1` examples use the preceding fixed-grid bin: n141 requests
+a web, n137/144/200/206 contain no new request, and 103 coordinates remain unknown.
+All five n141 observations precede the received edge. Native displayed binding,
+causal target and later cast association were reviewed; raw continuity dependencies
+extend to the retained focus snapshot without padding gameplay features.
+
+The reviewed software, including RT1's canonical raw-log placement for negative
+and unknown rows, is pushed as `7feee7b`. One Mac MPS fit took 1.895 seconds;
+model 5/5 training labels, ammo-positive 2/5, never-start 4/5. Windows CPU loaded
+the exact checkpoint and matched predictions/event metrics, maximum probability
+delta 1.630e-9 against Mac CPU. [Actual reports and receipts](../evidence/range-request-human-fit-20260922/README.md)
+retain the one-event TRAIN-only scope. There is no independent validation or
+deployment binding, and no human-trained checkpoint has controlled the game.
+
+D's two observed scripted pulse-to-cast correspondences remain accepted primitive
+evidence; their uncertain timing does not guarantee visible emission inside a
+request's 100 ms authorization window. Independent-session evaluation and a
+genuine request-semantic runtime binding remain next before learned-live reliance.
 
 ## Event execution acceptance, 2026-09-22 12:39 CDT
 

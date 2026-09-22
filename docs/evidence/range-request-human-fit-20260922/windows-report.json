@@ -1,0 +1,102 @@
+{
+  "scope": "Windows CPU reload of exact admitted-human MPS checkpoint; train only",
+  "git_commit": "7feee7b603d874ce831b866aacdc19d27565b654",
+  "torch": "2.14.0+cpu",
+  "device": "cpu",
+  "checkpoint_sha256": "6ee388070599e3df042ea73876e391340bf228a9e626cc212c60875d8191aeef",
+  "source_identity": {
+    "patch": "1.1.3870120/build25364676",
+    "cooldown_regime": "normal",
+    "source_profile_sha256": "9f413b81dabc71518359c28a6e506b1a1accbae5654bbf006967652332e3208f",
+    "perception_sha256": "e9d40f7a12442335866df16edaa8ceea7116177ab8546b3267ac096c1c616798",
+    "selector_sha256": "ddf1428a61c54805ce06164ef0daa7dfa1302fdf1735990336fdcab939ae098d",
+    "semantic_revision": "web-cluster-request-v1",
+    "feature_revision": "masked-state-grid-causal-v1"
+  },
+  "code_checks": {
+    "policy/range_skill_policy.py": {
+      "windows_raw_sha256": "d6b62274434cd0b960da817e3d072f933bf6baa6e03055305c120a1e1baa760c",
+      "mac_and_git_blob_sha256": "d6b62274434cd0b960da817e3d072f933bf6baa6e03055305c120a1e1baa760c",
+      "crlf_only_difference": false
+    },
+    "policy/range_policy.py": {
+      "windows_raw_sha256": "c46e7d8a6523892107c8a878532505d020896e5b32e9df6179c049d6aa3410bb",
+      "mac_and_git_blob_sha256": "c46e7d8a6523892107c8a878532505d020896e5b32e9df6179c049d6aa3410bb",
+      "crlf_only_difference": false
+    },
+    "agent/state.py": {
+      "windows_raw_sha256": "83983c59f0ea39772686b9ce8e002aab86d312c5e75937bc2b9e6a21eddb8f5a",
+      "mac_and_git_blob_sha256": "7ee6b826c38090d28d44b598d77ddeabf22f4593cf64ea45012b461a2377c149",
+      "crlf_only_difference": true
+    }
+  },
+  "evidence_digest": "736496a3ecdff0db286bec51c6c9da9b27076e41f8b64608de51d3cf5b6a9968",
+  "metrics_equal_to_mac_cpu": true,
+  "max_probability_delta_from_mac_cpu": 1.6298145055770874e-09,
+  "train_metrics": {
+    "true_positive": 1,
+    "false_positive": 0,
+    "false_negative": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "mean_request_lead_s": 0.09798365099999984,
+    "confusion": [
+      [
+        4,
+        0
+      ],
+      [
+        0,
+        1
+      ]
+    ],
+    "refusals": 0,
+    "scored_bins": 5,
+    "masked_bins": 103
+  },
+  "known_rows": [
+    {
+      "grid_index": 137,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.9968507885932922,
+        0.0031492426060140133
+      ]
+    },
+    {
+      "grid_index": 141,
+      "prediction": "start",
+      "probabilities": [
+        0.004736712668091059,
+        0.9952632188796997
+      ]
+    },
+    {
+      "grid_index": 144,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.9967717528343201,
+        0.0032282699830830097
+      ]
+    },
+    {
+      "grid_index": 200,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.9984421133995056,
+        0.0015578944003209472
+      ]
+    },
+    {
+      "grid_index": 206,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.9985283613204956,
+        0.0014715937431901693
+      ]
+    }
+  ],
+  "validation": null,
+  "deployment_binding": null,
+  "live_io_imported": false
+}

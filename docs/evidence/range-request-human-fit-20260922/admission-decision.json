@@ -1,0 +1,67 @@
+{
+  "kind": "lead_admission_of_request_labels_with_corrected_dependencies",
+  "issue": "VUH-1309",
+  "authority": "Lead w2:p1 explicit root disposition in user message; corpus-owner materialization authorized after final software freeze",
+  "decision": "accept_five_received_request_labels_for_train_only_numerical_use_after_derived_bookkeeping",
+  "independent_report": {
+    "path": "data/human/reviews/20260922T032454-642Z-24328-1.request-timing-independent-review.md",
+    "sha256": "12ad3514dc99bce8c4686cd029e495776eaceb02ab3bdc6e17916e694f9272b3"
+  },
+  "independent_receipt": {
+    "path": "data/human/reviews/20260922T032454-642Z-24328-1.request-diagnostic-independent-review-receipt.json",
+    "sha256": "c4a95505b3f0d217ace001cfe9b4838433cd1c3c745e883fe8737f4a42763d07"
+  },
+  "frozen_candidate": {
+    "path": "data/human/skill-event-candidates/032454-request-timing-v1/candidate-rows.json",
+    "sha256": "4e85b6fd8af84db8a2f99d4b076861f834b83b343ae76167d9650182d2d4e8fc"
+  },
+  "frozen_manifest": {
+    "path": "data/human/skill-event-candidates/032454-request-timing-v1/artifact-hashes.json",
+    "sha256": "41d937720e8d37a1a6eca21008d1764b3e5f6b7b16af819123131a64a5741f00"
+  },
+  "frozen_request_evidence": {
+    "path": "data/human/skill-event-candidates/032454-request-timing-v1/request-evidence.json",
+    "sha256": "513738c2552c02d36e94768e2a79dc0eaa28ccb12a1d827dd18f6f7acf89556a"
+  },
+  "new_source_profile": {
+    "path": "data/human/skill-events/032454-request-diagnostic-v1/source-profile.json",
+    "sha256": "9f413b81dabc71518359c28a6e506b1a1accbae5654bbf006967652332e3208f"
+  },
+  "corrected_dependencies": {
+    "path": "data/human/skill-events/032454-request-diagnostic-v1/dependencies.json",
+    "sha256": "064004558aee7556fe5548117d968efcc61340bb4f8667ef2b9ba8b9b88cbe72"
+  },
+  "known_labels": {
+    "137": "no_new_start",
+    "141": "start",
+    "144": "no_new_start",
+    "200": "no_new_start",
+    "206": "no_new_start"
+  },
+  "grid_coordinates": [
+    114,
+    221
+  ],
+  "grid_rows": 108,
+  "unknown_rows": 103,
+  "protected_unknown": [
+    198
+  ],
+  "label_mapping": {
+    "start_request": "start",
+    "no_new_request": "no_new_start",
+    "unknown": null
+  },
+  "mapping_scope": "Only NEW REQUEST_FORMAT rivals-range-skill-requests-v1 / REQUEST_HEAD web_cluster_request / semantic web-cluster-request-v1. No reinterpretation of admitted visual-onset format.",
+  "dependency_correction": "Separate focus37 session dependency and conservative0.421919351..latest evidence for all six observed rows. Includes retained LMB1930 at10.415016051. Actual gameplay segment10.979..22.229 and all histories unchanged.",
+  "construction_condition": "Final request software hash must be supplied and pinned before policy import, real RequestExample validation/cohort and final artifact freeze. This receipt authorizes label materialization but does not claim software validation already occurred.",
+  "limits": [
+    "One target-agreed received request, four no-new-RMB-initiation controls; not physical device/delivery timestamps",
+    "Negative no_fresh_rise includes observed held continuation200; not absence of other abilities or alternate bindings",
+    "Left hold overlap and later releases preserved; no complete motor settings or pad equivalence",
+    "Luna named visual source, not Galacta benchmark substitution",
+    "Window-local IDs/reset selector; continuous200/206 differences retained and198 stays target-disagreement unknown",
+    "james-2026-09-21-evening TRAIN only; no generalization, validation, performance or live authority",
+    "No new media/native review, training, old artifact/source/lane edits or input by corpus owner"
+  ]
+}

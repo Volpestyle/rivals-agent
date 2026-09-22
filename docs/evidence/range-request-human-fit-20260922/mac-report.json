@@ -1,0 +1,242 @@
+{
+  "scope": "admitted_human_received_request_train_only_numerical_fit_reload",
+  "not_generalization_or_live_clearance": true,
+  "git_commit": "7feee7b603d874ce831b866aacdc19d27565b654",
+  "torch": "2.14.0",
+  "training_device": "mps:0",
+  "fit_seconds": 1.8953047920003883,
+  "config": {
+    "epochs": 100,
+    "batch_size": 2,
+    "lr": 0.01,
+    "device": "mps",
+    "seed": 7
+  },
+  "spec": {
+    "steps": 5,
+    "period_s": 0.1,
+    "tolerance_s": 0.025,
+    "hidden": 8,
+    "confidence": 0.7
+  },
+  "code_sha256": {
+    "policy/range_skill_policy.py": "d6b62274434cd0b960da817e3d072f933bf6baa6e03055305c120a1e1baa760c",
+    "policy/range_policy.py": "c46e7d8a6523892107c8a878532505d020896e5b32e9df6179c049d6aa3410bb",
+    "agent/state.py": "7ee6b826c38090d28d44b598d77ddeabf22f4593cf64ea45012b461a2377c149"
+  },
+  "input_artifacts": {
+    "data/human/skill-events/032454-request-diagnostic-v1/examples.json": "bd6cf4cb298379ac1a63fd226652e517ad6773ed6b4cead92dfb790abca91570",
+    "data/human/reviews/20260922T032454-642Z-24328-1.request-diagnostic-train-decision.json": "52423a3c96504b446d825da6fce9511b1e6572f7d42b0ef4057a46a3959333a1",
+    "data/human/reviews/20260922T032454-642Z-24328-1.request-diagnostic-independent-review-receipt.json": "c4a95505b3f0d217ace001cfe9b4838433cd1c3c745e883fe8737f4a42763d07",
+    "data/human/reviews/20260922T032454-642Z-24328-1.request-timing-independent-review.md": "12ad3514dc99bce8c4686cd029e495776eaceb02ab3bdc6e17916e694f9272b3",
+    "data/human/skill-events/032454-request-diagnostic-v1/source-profile.json": "9f413b81dabc71518359c28a6e506b1a1accbae5654bbf006967652332e3208f",
+    "data/human/skill-events/032454-request-diagnostic-v1/dependencies.json": "064004558aee7556fe5548117d968efcc61340bb4f8667ef2b9ba8b9b88cbe72",
+    "data/human/skill-events/032454-request-diagnostic-v1/validation-receipt.json": "c83c75ae50c15ab7f39891e7c5177b4cb2bc6331e17a0fb2b7c7b2c9f5676f08",
+    "policy/range_skill_policy.py": "d6b62274434cd0b960da817e3d072f933bf6baa6e03055305c120a1e1baa760c"
+  },
+  "source_identity": {
+    "patch": "1.1.3870120/build25364676",
+    "cooldown_regime": "normal",
+    "source_profile_sha256": "9f413b81dabc71518359c28a6e506b1a1accbae5654bbf006967652332e3208f",
+    "perception_sha256": "e9d40f7a12442335866df16edaa8ceea7116177ab8546b3267ac096c1c616798",
+    "selector_sha256": "ddf1428a61c54805ce06164ef0daa7dfa1302fdf1735990336fdcab939ae098d",
+    "semantic_revision": "web-cluster-request-v1",
+    "feature_revision": "masked-state-grid-causal-v1"
+  },
+  "evidence_digest": "736496a3ecdff0db286bec51c6c9da9b27076e41f8b64608de51d3cf5b6a9968",
+  "checkpoint_sha256": "6ee388070599e3df042ea73876e391340bf228a9e626cc212c60875d8191aeef",
+  "coverage": {
+    "grid_rows": 108,
+    "known_rows": 5,
+    "masked_rows": 103,
+    "masked_reasons": {
+      "Request semantics not inspected; historical visual labels do not transfer.": 102,
+      "RMB rising edge3983 is linked to eventual nearby Galacta cast, but actual causal selector chooses distant Galacta; target disagreement stays unknown.": 1
+    },
+    "bin_support": [
+      4,
+      1
+    ],
+    "unique_events": 1,
+    "ammo_positive_visible_nononsets": 3,
+    "complete_label_coverage": false,
+    "sampling": "full_grid_masked"
+  },
+  "model_train_metrics": {
+    "true_positive": 1,
+    "false_positive": 0,
+    "false_negative": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "mean_request_lead_s": 0.09798365099999984,
+    "confusion": [
+      [
+        4,
+        0
+      ],
+      [
+        0,
+        1
+      ]
+    ],
+    "refusals": 0,
+    "scored_bins": 5,
+    "masked_bins": 103
+  },
+  "cpu_reload_train_metrics": {
+    "true_positive": 1,
+    "false_positive": 0,
+    "false_negative": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "mean_request_lead_s": 0.09798365099999984,
+    "confusion": [
+      [
+        4,
+        0
+      ],
+      [
+        0,
+        1
+      ]
+    ],
+    "refusals": 0,
+    "scored_bins": 5,
+    "masked_bins": 103
+  },
+  "cpu_reload_max_probability_delta": 2.3283064365386963e-09,
+  "ammo_baseline_train_metrics": {
+    "true_positive": 1,
+    "false_positive": 3,
+    "false_negative": 0,
+    "precision": 0.25,
+    "recall": 1.0,
+    "mean_request_lead_s": 0.09798365099999984,
+    "confusion": [
+      [
+        1,
+        3
+      ],
+      [
+        0,
+        1
+      ]
+    ],
+    "refusals": 0,
+    "scored_bins": 5,
+    "masked_bins": 103
+  },
+  "never_start_train_metrics": {
+    "true_positive": 0,
+    "false_positive": 0,
+    "false_negative": 1,
+    "precision": null,
+    "recall": 0.0,
+    "mean_request_lead_s": null,
+    "confusion": [
+      [
+        4,
+        0
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "refusals": 0,
+    "scored_bins": 5,
+    "masked_bins": 103
+  },
+  "known_rows": [
+    {
+      "grid_index": 137,
+      "label": "no_new_start",
+      "ammo": 3,
+      "probabilities": [
+        0.9968507885932922,
+        0.003149244235828519
+      ],
+      "cpu_probabilities": [
+        0.9968507885932922,
+        0.003149244235828519
+      ],
+      "prediction": "no_new_start"
+    },
+    {
+      "grid_index": 141,
+      "label": "start",
+      "ammo": 3,
+      "probabilities": [
+        0.004736714996397495,
+        0.9952632188796997
+      ],
+      "cpu_probabilities": [
+        0.004736712668091059,
+        0.9952632188796997
+      ],
+      "prediction": "start"
+    },
+    {
+      "grid_index": 144,
+      "label": "no_new_start",
+      "ammo": 3,
+      "probabilities": [
+        0.9967717528343201,
+        0.0032282699830830097
+      ],
+      "cpu_probabilities": [
+        0.9967717528343201,
+        0.003228268353268504
+      ],
+      "prediction": "no_new_start"
+    },
+    {
+      "grid_index": 200,
+      "label": "no_new_start",
+      "ammo": 0,
+      "probabilities": [
+        0.9984421133995056,
+        0.0015578928869217634
+      ],
+      "cpu_probabilities": [
+        0.9984421133995056,
+        0.0015578944003209472
+      ],
+      "prediction": "no_new_start"
+    },
+    {
+      "grid_index": 206,
+      "label": "no_new_start",
+      "ammo": 1,
+      "probabilities": [
+        0.9985283613204956,
+        0.0014715938596054912
+      ],
+      "cpu_probabilities": [
+        0.9985283613204956,
+        0.0014715937431901693
+      ],
+      "prediction": "no_new_start"
+    }
+  ],
+  "validation": null,
+  "deployment_binding": null,
+  "live_io_imported": false,
+  "same_ammo_contrast_bins": [
+    137,
+    141
+  ],
+  "limits": [
+    "One target-agreed received request, four no-new-RMB-initiation controls; not physical device/delivery timestamps",
+    "Negative no_fresh_rise includes observed held continuation200; not absence of other abilities or alternate bindings",
+    "Left hold overlap and later releases preserved; no complete motor settings or pad equivalence",
+    "Luna named visual source, not Galacta benchmark substitution",
+    "Window-local IDs/reset selector; continuous200/206 differences retained and198 stays target-disagreement unknown",
+    "james-2026-09-21-evening TRAIN only; no generalization, validation, performance or live authority",
+    "No new media/native review, training, old artifact/source/lane edits or input by corpus owner",
+    "Five training bins contain one unique received request from one same-evening source group; this is not validation.",
+    "Bins 137 and 141 have identical five-step ammo histories but opposite labels.",
+    "Window-reset tracking is not proven equivalent to continuous live selection.",
+    "No native media opened by this training job."
+  ]
+}

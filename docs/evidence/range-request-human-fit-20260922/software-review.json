@@ -1,0 +1,30 @@
+{
+  "kind": "lead_record_of_independent_software_review",
+  "reviewer": "range-review (same independent owner)",
+  "delivery": "VUH-1346 same-reviewer RT1 repair + final request-head software join: ACCEPTED, received by root 2026-09-22",
+  "scope": "Frozen request-head software, RT1 data-placement correction and synthetic actual loader/main integration; no data admission or live authority",
+  "landed_commit": "7feee7b603d874ce831b866aacdc19d27565b654",
+  "files": {
+    "policy/range_skill_policy.py": "d6b62274434cd0b960da817e3d072f933bf6baa6e03055305c120a1e1baa760c",
+    "tests/test_range_skill_policy.py": "1a68579660c2500dfef24a0f7753ee03f6024d56799246d8240d2c561e1b48e1",
+    "docs/lanes/learned-range-skills.md": "8a8a868bc30b1c7e99e0ada7cbe2ddb902a56a25affcb27c9e0558bda17717fa",
+    "tests/test_range_skill_loop.py": "e970439d9b5af627b51c124226eba1422d9072ccd4dabfca15a3f2d63d7735b3"
+  },
+  "reported_independent_checks": {
+    "no_fit_suite": {
+      "passed": 150,
+      "deselected": 9
+    },
+    "actual_visual_request_checkpoint_main_and_live_refusal_joins": {
+      "passed": 8
+    },
+    "RT1": "Independent ledger negative accepted with one inference at .5; shared ledger refused before inference; positive/negative/unknown alias and legitimate same-session media controls passed"
+  },
+  "root_verified": "Matched all four frozen hashes, inspected placement change, independently reproduced original red/green pair, previously ran eight joined tests, verified exact commit/push.",
+  "not_claimed": [
+    "human performance",
+    "native input/cast timing",
+    "independent-session validation",
+    "runtime deployment approval"
+  ]
+}

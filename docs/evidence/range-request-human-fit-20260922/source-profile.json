@@ -1,0 +1,153 @@
+{
+  "kind": "received_request_source_profile",
+  "semantic_revision": "web-cluster-request-v1",
+  "session": "20260922T032454-642Z-24328-1",
+  "group": "james-2026-09-21-evening",
+  "split": "train",
+  "media_path": "C:/Users/volpe/Videos/2026-09-21 22-24-54.mkv",
+  "media_sha256": "2df73a79377e316e28f9e53947ee203dda95f949772f7fd68d1f864dbe960c51",
+  "original_visual_source_profile": {
+    "path": "data/human/skill-event-candidates/20260922T032454-642Z-24328-1/source-profile.json",
+    "sha256": "05f85d97152fd17a60eeaacd9bcfce0f0d30ca46d9e71d52d9e66ed1df789162"
+  },
+  "original_feature_source_identity": {
+    "patch": "1.1.3870120/build25364676",
+    "cooldown_regime": "normal",
+    "source_profile_sha256": "05f85d97152fd17a60eeaacd9bcfce0f0d30ca46d9e71d52d9e66ed1df789162",
+    "perception_sha256": "e9d40f7a12442335866df16edaa8ceea7116177ab8546b3267ac096c1c616798",
+    "selector_sha256": "ddf1428a61c54805ce06164ef0daa7dfa1302fdf1735990336fdcab939ae098d",
+    "semantic_revision": "web-cluster-onset-v1",
+    "feature_revision": "masked-state-grid-causal-v1"
+  },
+  "patch": {
+    "client": "1.1.3870120",
+    "steam_build": "25364676"
+  },
+  "cooldown_regime": "normal",
+  "regime_scope": "Observed depleting/recharging pre-menu11..22.25 only, not all kit timing calibration.",
+  "motor_settings": {
+    "sensitivity": null,
+    "dpi": null,
+    "bindings": null,
+    "swing_mode": null,
+    "mouse_response_flags": null,
+    "known_complete": false,
+    "note": "Later033319 user report does not establish earlier032454 settings; unused as motor labels."
+  },
+  "timing": {
+    "kind": "independent_muxer_offset",
+    "offset_num": 21,
+    "offset_den": 1000,
+    "source": "Independent admission-review exact-original delta delivered to root and adopted by root; pinned derivation at data/human/inspection/20260922T033319-205Z-24328-2/independent-review-resolution.md, with own output applicability below.",
+    "own_applicability": {
+      "obs_log_lines": "197-217, 2026-09-21 22-19-52.txt",
+      "obs": "32.0.1",
+      "fresh_aac_hz": 48000,
+      "simple_output": "MKV",
+      "custom_mux_options": false,
+      "ffmpeg_pin": "db69d06eeeab4f46da15030a80d539efb4503ca8",
+      "container_tag": "Lavf61.7.100",
+      "bounded_predictions_match": "11/11 video among16 total packets; no fitting",
+      "predicted_and_observed_ms": [
+        21,
+        46,
+        29,
+        38,
+        71,
+        54,
+        63,
+        96,
+        79,
+        88,
+        121
+      ],
+      "audio_first_ms": [
+        0,
+        21,
+        42,
+        64,
+        85
+      ]
+    },
+    "first_composition_ns": 115370505348149,
+    "alignment_assumption": "Offline OBS composition clock; available_t=State.t. Game render/display/input delivery/player observation and live perception latency uncalibrated.",
+    "latency_ns": null,
+    "existing_integrity": "3609 decoded frames,3610 callbacks,one discarded stop tail; reused not redecoded"
+  },
+  "devices": {
+    "keyboard": 75235887,
+    "keyboard_packets": 115,
+    "contributing_mouse": 65618,
+    "control_affecting_mouse_packets": 2483,
+    "total_mouse_packets": 2501,
+    "physical_human_attestation": null,
+    "basis": "Independent exact-session delta accepted by root; focus0.442919-29.134738 file-time, no selected break. No semantic controls inferred."
+  },
+  "mapped_mk_layout": {
+    "name": "mk",
+    "webs": [
+      0.2455,
+      0.905,
+      0.27,
+      0.95
+    ],
+    "webs_right": [
+      48,
+      66
+    ],
+    "badge_light_disc": false,
+    "slot_spill": 0.15,
+    "hp_text": [
+      0.44,
+      0.896,
+      0.56,
+      0.9315
+    ],
+    "hp_bar": [
+      0.4055,
+      0.9335,
+      0.5945,
+      0.9425
+    ],
+    "slot_cx": {
+      "swing": 0.795,
+      "uppercut": 0.8348,
+      "get_over_here": 0.8723
+    },
+    "ult": [
+      0.902,
+      0.872,
+      0.972,
+      0.95
+    ]
+  },
+  "displayed_control_association": {
+    "observed": "Highlighted right mouse half under projectile/web-ammo slot; left half under infinite melee slot",
+    "scope": "Only these inspected displayed native controls in the authorized original; not full/alternate bindings, live key-state, physical delivery, or pad equivalence.",
+    "native_crop_provenance": {
+      "path": "data/human/skill-event-candidates/032454-request-timing-v1/crop-receipt.json",
+      "sha256": "b755c4b40de263101d1f8028c13193a2740a54ddfe21d99a7d46f26c0cbcf803"
+    },
+    "association_report": {
+      "path": "data/human/reviews/20260922T032454-642Z-24328-1.request-timing-independent-review.md",
+      "sha256": "12ad3514dc99bce8c4686cd029e495776eaceb02ab3bdc6e17916e694f9272b3"
+    },
+    "known_complete_bindings": false,
+    "pad_equivalence": false,
+    "unique_reviewed_request": {
+      "seq": 2757,
+      "raw_device": 65618,
+      "request_t": 14.197983651,
+      "causal_target": "named Luna",
+      "linked_visual_cast": "032454-web-file14313-14321-luna",
+      "left_hold_overlap_retained": true
+    }
+  },
+  "corrected_dependencies": {
+    "path": "data/human/skill-events/032454-request-diagnostic-v1/dependencies.json",
+    "sha256": "064004558aee7556fe5548117d968efcc61340bb4f8667ef2b9ba8b9b88cbe72"
+  },
+  "feature_provenance": "Original feature/source identities are retained verbatim above; new profile hash identifies this source-specific inspected request association and corrected dependency statement, not known complete KBM or runtime pad settings.",
+  "selector_limit": "Fresh local/reset Tracker/Memory per window; continuous200 distant target and206 missing target remain limits,198 is unknown target disagreement.",
+  "no_live_authority": true
+}

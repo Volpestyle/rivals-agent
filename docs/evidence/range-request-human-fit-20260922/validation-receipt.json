@@ -1,0 +1,202 @@
+{
+  "kind": "request_diagnostic_typed_materialization_validation",
+  "status": "passed",
+  "policy_schema": {
+    "path": "policy/range_skill_policy.py",
+    "sha256": "d6b62274434cd0b960da817e3d072f933bf6baa6e03055305c120a1e1baa760c"
+  },
+  "software_acceptance_authority": "Root user instruction: independent range-review ACCEPTED, RT1 closed, actual eight visual/request main joins passed. Corpus owner verifies pinned bytes and performs artifact checks only; does not claim rerunning software review.",
+  "review_receipt": {
+    "path": "data/human/reviews/20260922T032454-642Z-24328-1.request-diagnostic-train-decision.json",
+    "sha256": "52423a3c96504b446d825da6fce9511b1e6572f7d42b0ef4057a46a3959333a1"
+  },
+  "examples": {
+    "path": "data/human/skill-events/032454-request-diagnostic-v1/examples.json",
+    "sha256": "bd6cf4cb298379ac1a63fd226652e517ad6773ed6b4cead92dfb790abca91570"
+  },
+  "mapping": {
+    "path": "data/human/skill-events/032454-request-diagnostic-v1/mapping-ready.json",
+    "sha256": "a683012c0aca3cbcb8f0aaf4eaab6df44926b153f85526983452d9011260d734"
+  },
+  "review_and_input_pins_verified": [
+    {
+      "path": "data/human/reviews/20260922T032454-642Z-24328-1.request-timing-independent-review.md",
+      "sha256": "12ad3514dc99bce8c4686cd029e495776eaceb02ab3bdc6e17916e694f9272b3"
+    },
+    {
+      "path": "data/human/reviews/20260922T032454-642Z-24328-1.request-diagnostic-independent-review-receipt.json",
+      "sha256": "c4a95505b3f0d217ace001cfe9b4838433cd1c3c745e883fe8737f4a42763d07"
+    },
+    {
+      "path": "data/human/skill-event-candidates/032454-request-timing-v1/candidate-rows.json",
+      "sha256": "4e85b6fd8af84db8a2f99d4b076861f834b83b343ae76167d9650182d2d4e8fc"
+    },
+    {
+      "path": "data/human/skill-event-candidates/032454-request-timing-v1/artifact-hashes.json",
+      "sha256": "41d937720e8d37a1a6eca21008d1764b3e5f6b7b16af819123131a64a5741f00"
+    },
+    {
+      "path": "data/human/skill-event-candidates/032454-request-timing-v1/request-evidence.json",
+      "sha256": "513738c2552c02d36e94768e2a79dc0eaa28ccb12a1d827dd18f6f7acf89556a"
+    },
+    {
+      "path": "data/human/skill-events/032454-request-diagnostic-v1/source-profile.json",
+      "sha256": "9f413b81dabc71518359c28a6e506b1a1accbae5654bbf006967652332e3208f"
+    },
+    {
+      "path": "data/human/skill-events/032454-request-diagnostic-v1/dependencies.json",
+      "sha256": "064004558aee7556fe5548117d968efcc61340bb4f8667ef2b9ba8b9b88cbe72"
+    }
+  ],
+  "request_constructor_field_count": 42,
+  "all108_exact_constructor_field_sets": true,
+  "no_visual_event_constructor_fields": true,
+  "all108_validate_and_cohort_pass": true,
+  "all108_typed_json_roundtrip_exact": true,
+  "final_rows_identical_to_prepared_mapping": true,
+  "all_unknown_masks_retained": true,
+  "source_identity": {
+    "patch": "1.1.3870120/build25364676",
+    "cooldown_regime": "normal",
+    "source_profile_sha256": "9f413b81dabc71518359c28a6e506b1a1accbae5654bbf006967652332e3208f",
+    "perception_sha256": "e9d40f7a12442335866df16edaa8ceea7116177ab8546b3267ac096c1c616798",
+    "selector_sha256": "ddf1428a61c54805ce06164ef0daa7dfa1302fdf1735990336fdcab939ae098d",
+    "semantic_revision": "web-cluster-request-v1",
+    "feature_revision": "masked-state-grid-causal-v1"
+  },
+  "origin": "reviewed_human",
+  "coverage": {
+    "grid_rows": 108,
+    "known_rows": 5,
+    "masked_rows": 103,
+    "masked_reasons": {
+      "Request semantics not inspected; historical visual labels do not transfer.": 102,
+      "RMB rising edge3983 is linked to eventual nearby Galacta cast, but actual causal selector chooses distant Galacta; target disagreement stays unknown.": 1
+    },
+    "bin_support": [
+      4,
+      1
+    ],
+    "unique_events": 1,
+    "ammo_positive_visible_nononsets": 3,
+    "complete_label_coverage": false,
+    "sampling": "full_grid_masked"
+  },
+  "evidence_digest": "736496a3ecdff0db286bec51c6c9da9b27076e41f8b64608de51d3cf5b6a9968",
+  "actual_snapshot_count": 30,
+  "exact_feature_value_and_known_bit_count": 780,
+  "comparison_normalization": "Tuple/list container normalization only for JSON roundtrip and feature vectors; values compared exactly, no numerical tolerance.",
+  "observed_rows": [
+    {
+      "grid_index": 137,
+      "history_exact": true,
+      "feature_values_and_known_bits_exact": true,
+      "snapshots": 5,
+      "purge_footprint": [
+        0.421919351,
+        13.808332781
+      ],
+      "latest_confirmation_exact": true,
+      "calibration_dependencies_retained": [
+        13.099999476,
+        13.199999472,
+        13.299999468,
+        13.399999464,
+        13.49999946
+      ]
+    },
+    {
+      "grid_index": 141,
+      "history_exact": true,
+      "feature_values_and_known_bits_exact": true,
+      "snapshots": 5,
+      "purge_footprint": [
+        0.421919351,
+        14.384998151
+      ],
+      "latest_confirmation_exact": true,
+      "calibration_dependencies_retained": [
+        13.099999476,
+        13.199999472,
+        13.299999468,
+        13.399999464,
+        13.49999946
+      ]
+    },
+    {
+      "grid_index": 144,
+      "history_exact": true,
+      "feature_values_and_known_bits_exact": true,
+      "snapshots": 5,
+      "purge_footprint": [
+        0.421919351,
+        14.508332753
+      ],
+      "latest_confirmation_exact": true,
+      "calibration_dependencies_retained": [
+        13.099999476,
+        13.199999472,
+        13.299999468,
+        13.399999464,
+        13.49999946
+      ]
+    },
+    {
+      "grid_index": 198,
+      "history_exact": true,
+      "feature_values_and_known_bits_exact": true,
+      "snapshots": 5,
+      "purge_footprint": [
+        0.421919351,
+        20.058332531
+      ],
+      "latest_confirmation_exact": true,
+      "calibration_dependencies_retained": [
+        13.099999476,
+        13.199999472,
+        13.299999468,
+        13.399999464,
+        13.49999946
+      ]
+    },
+    {
+      "grid_index": 200,
+      "history_exact": true,
+      "feature_values_and_known_bits_exact": true,
+      "snapshots": 5,
+      "purge_footprint": [
+        0.421919351,
+        20.108332529
+      ],
+      "latest_confirmation_exact": true,
+      "calibration_dependencies_retained": [
+        13.099999476,
+        13.199999472,
+        13.299999468,
+        13.399999464,
+        13.49999946
+      ]
+    },
+    {
+      "grid_index": 206,
+      "history_exact": true,
+      "feature_values_and_known_bits_exact": true,
+      "snapshots": 5,
+      "purge_footprint": [
+        0.421919351,
+        20.708332505
+      ],
+      "latest_confirmation_exact": true,
+      "calibration_dependencies_retained": [
+        13.099999476,
+        13.199999472,
+        13.299999468,
+        13.399999464,
+        13.49999946
+      ]
+    }
+  ],
+  "unknown_coverage_count_without_history": 102,
+  "scope": "No media read/decode, perception replay, training, input, source or prior artifact mutation. Final recipe constructs standard types from numerical JSON.",
+  "construction_condition_satisfied": "Policy hash verified before import and after validation; explicit final root freeze received."
+}

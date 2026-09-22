@@ -1,0 +1,30 @@
+{
+  "kind": "reference_to_genuine_independently_authored_request_review",
+  "issue": "VUH-1309",
+  "review_owner": "admission-review",
+  "original_report": {
+    "path": "data/human/reviews/20260922T032454-642Z-24328-1.request-timing-independent-review.md",
+    "sha256": "12ad3514dc99bce8c4686cd029e495776eaceb02ab3bdc6e17916e694f9272b3"
+  },
+  "attribution": "Independent reviewer report read directly in full; report remains immutable. This receipt references its actual bytes rather than substituting producer findings.",
+  "frozen_candidate": {
+    "path": "data/human/skill-event-candidates/032454-request-timing-v1/candidate-rows.json",
+    "sha256": "4e85b6fd8af84db8a2f99d4b076861f834b83b343ae76167d9650182d2d4e8fc"
+  },
+  "frozen_manifest": {
+    "path": "data/human/skill-event-candidates/032454-request-timing-v1/artifact-hashes.json",
+    "sha256": "41d937720e8d37a1a6eca21008d1764b3e5f6b7b16af819123131a64a5741f00"
+  },
+  "known_labels": {
+    "141": "start_request",
+    "137": "no_new_request",
+    "144": "no_new_request",
+    "200": "no_new_request",
+    "206": "no_new_request"
+  },
+  "unknown": [
+    198
+  ],
+  "required_derived_correction": "Original claimed full footprints omit retained LMB1930 at10.415016051 and focus37 at0.421919351. Keep packet frozen; record separate session continuity and conservative all-evidence start0.421919351 for all six observed rows.",
+  "review_scope": "TRAIN-only numerical request semantics/association; unchanged native labels need no additional review after bookkeeping correction. No runtime, full-binding or physical delivery authority."
+}

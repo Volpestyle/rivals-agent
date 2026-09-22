@@ -56,11 +56,24 @@ finds both positive anchors after received right-mouse downs: by 2.016 ms and
 after it. These visual-onset examples can forecast an already-requested cast;
 they do not establish when to initiate one. Preserve the six-label artifact and
 checkpoint as a numerical visual forecast. Do not call its fit learned command
-timing or silently shift its labels. The next bounded source inspection checks
-the preceding fixed-grid bins against actual received requests, causal target
-agreement and the separately observed casts. A request-timing head needs its own
-reviewed semantic revision; no new stationary footage or guessed motor settings
-are required for this inspection.
+timing or silently shift its labels.
+
+That inspection has now produced the separately reviewed `web-cluster-request-v1`
+head and five admitted request labels. All five positive-history observations
+precede received RMB-down; native control association and a separate cast toward
+the causal Luna target support the positive. Four no-new-request controls include
+movement and held continuation. The 108-coordinate grid retains 103 unknowns.
+Canonical raw-log placement now prevents negative or masked evidence from leaking
+between partitions through media/session aliases. Software and actual synthetic
+loader/Loop joins are independently accepted and pushed in `7feee7b`.
+
+The [request fit](evidence/range-request-human-fit-20260922/README.md) ran once on
+Mac MPS in 1.895 seconds and reloaded on Windows CPU. It reproduced all five
+training labels, compared with two for an ammo-positive rule and four for
+never-start; Windows predictions and event metrics match Mac CPU. This is one
+unique received request, not independent validation or learned gameplay. No
+additional footage, stationary waits, guessed motor profile or live binding was
+used to reach this numerical result. The prior visual artifacts stay unchanged.
 
 The first executable experiment now learns **Web-Cluster start timing**, using
 five causal observations at 10 Hz. `start_web_cluster` requests one bounded pulse;
@@ -69,8 +82,9 @@ An ongoing pulse can finish normally. No-new-cast examples can contain scanning,
 traversal, recovery or another ability. The controller supplies aim, guarded
 approach and pulse delivery; it must not script an offensive fallback. This
 experiment does not yet learn full combos, swing control, target value or team play.
-The [event contract](lanes/range-policy-reframe.md) names the new version and the
-controller boundary that must be implemented and independently reviewed.
+The [event contract](lanes/range-policy-reframe.md) records the controller boundary;
+the [implemented policy contract](lanes/learned-range-skills.md) distinguishes
+received-request and historical visual-onset versions.
 
 The prior Idle/Engage head is a legacy synthetic diagnostic. Its frozen four-row
 [visual candidate contract](visual-range-supervision.md) remains historical

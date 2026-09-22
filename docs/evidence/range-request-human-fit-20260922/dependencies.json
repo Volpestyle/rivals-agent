@@ -1,0 +1,608 @@
+{
+  "kind": "derived_dependency_correction_not_frozen_packet_rewrite",
+  "session_continuity_anchor": {
+    "seq": 37,
+    "t_ns": 115370927267500,
+    "type": "focus",
+    "active": true,
+    "held_vk": [
+      1
+    ]
+  },
+  "session_continuity_start_t": 0.421919351,
+  "gameplay_segment_t": [
+    10.979,
+    22.229
+  ],
+  "unknown_uninspected_rows": "No fabricated raw continuity or history. Same TRAIN session grouping retained.",
+  "rows": [
+    {
+      "grid_index": 137,
+      "original_frozen_evidence": {
+        "path": "data/human/skill-event-candidates/032454-request-timing-v1/request-evidence.json",
+        "sha256": "513738c2552c02d36e94768e2a79dc0eaa28ccb12a1d827dd18f6f7acf89556a"
+      },
+      "fragment": "137",
+      "session_continuity_dependency": {
+        "focus_event": {
+          "seq": 37,
+          "t_ns": 115370927267500,
+          "type": "focus",
+          "active": true,
+          "held_vk": [
+            1
+          ]
+        },
+        "composition_relative_t": 0.421919351,
+        "scope": "Received-state continuity, separate from gameplay feature segment"
+      },
+      "retained_lmb_carry_in": {
+        "held": false,
+        "last_transition": {
+          "seq": 1930,
+          "t_ns": 115380920364200,
+          "type": "mouse",
+          "device": 65618,
+          "dx": 0,
+          "dy": 0,
+          "motion_flags": 0,
+          "button_flags": 2,
+          "wheel_data": 0,
+          "relative": true,
+          "buttons_down": [],
+          "buttons_up": [
+            1
+          ],
+          "wheel_vertical": 0,
+          "wheel_horizontal": 0
+        },
+        "relative_t": 10.415016051
+      },
+      "retained_rmb_carry_in": {
+        "held": false,
+        "last_transition": {
+          "seq": 2528,
+          "t_ns": 115383807310500,
+          "type": "mouse",
+          "device": 65618,
+          "dx": 1,
+          "dy": 0,
+          "motion_flags": 0,
+          "button_flags": 8,
+          "wheel_data": 0,
+          "relative": true,
+          "buttons_down": [],
+          "buttons_up": [
+            2
+          ],
+          "wheel_vertical": 0,
+          "wheel_horizontal": 0
+        },
+        "relative_t": 13.301962351
+      },
+      "original_claimed_full_footprint": [
+        13.099999476,
+        13.808332781
+      ],
+      "original_claim_not_all_inclusive": true,
+      "corrected_all_evidence_interval": [
+        0.421919351,
+        13.808332781
+      ],
+      "retained_raw_event_time_min": 0.421919351,
+      "retained_raw_event_time_max": 13.790467851,
+      "raw_continuity_start_t": 0.421919351,
+      "raw_continuity_end_t": 13.808332781,
+      "gameplay_segment_t": [
+        10.979,
+        22.229
+      ],
+      "actual_causal_history_times": [
+        13.299999468,
+        13.399999464,
+        13.49999946,
+        13.599999456,
+        13.699999452
+      ],
+      "calibration_dependency_t": [
+        13.099999476,
+        13.199999472,
+        13.299999468,
+        13.399999464,
+        13.49999946
+      ],
+      "later_confirmation_and_overlap_end_t": 13.808332781,
+      "explanation": "Conservative all-evidence interval includes focus37, all retained LMB/RMB carry-in, original calibration and subsequent confirmation/releases. Gameplay segment/history are not extended or padded."
+    },
+    {
+      "grid_index": 141,
+      "original_frozen_evidence": {
+        "path": "data/human/skill-event-candidates/032454-request-timing-v1/request-evidence.json",
+        "sha256": "513738c2552c02d36e94768e2a79dc0eaa28ccb12a1d827dd18f6f7acf89556a"
+      },
+      "fragment": "141",
+      "session_continuity_dependency": {
+        "focus_event": {
+          "seq": 37,
+          "t_ns": 115370927267500,
+          "type": "focus",
+          "active": true,
+          "held_vk": [
+            1
+          ]
+        },
+        "composition_relative_t": 0.421919351,
+        "scope": "Received-state continuity, separate from gameplay feature segment"
+      },
+      "retained_lmb_carry_in": {
+        "held": true,
+        "last_transition": {
+          "seq": 2692,
+          "t_ns": 115384450339300,
+          "type": "mouse",
+          "device": 65618,
+          "dx": 9,
+          "dy": 3,
+          "motion_flags": 0,
+          "button_flags": 1,
+          "wheel_data": 0,
+          "relative": true,
+          "buttons_down": [
+            1
+          ],
+          "buttons_up": [],
+          "wheel_vertical": 0,
+          "wheel_horizontal": 0
+        },
+        "relative_t": 13.944991151
+      },
+      "retained_rmb_carry_in": {
+        "held": false,
+        "last_transition": {
+          "seq": 2528,
+          "t_ns": 115383807310500,
+          "type": "mouse",
+          "device": 65618,
+          "dx": 1,
+          "dy": 0,
+          "motion_flags": 0,
+          "button_flags": 8,
+          "wheel_data": 0,
+          "relative": true,
+          "buttons_down": [],
+          "buttons_up": [
+            2
+          ],
+          "wheel_vertical": 0,
+          "wheel_horizontal": 0
+        },
+        "relative_t": 13.301962351
+      },
+      "original_claimed_full_footprint": [
+        13.099999476,
+        14.384998151
+      ],
+      "original_claim_not_all_inclusive": true,
+      "corrected_all_evidence_interval": [
+        0.421919351,
+        14.384998151
+      ],
+      "retained_raw_event_time_min": 0.421919351,
+      "retained_raw_event_time_max": 14.384998151,
+      "raw_continuity_start_t": 0.421919351,
+      "raw_continuity_end_t": 14.384998151,
+      "gameplay_segment_t": [
+        10.979,
+        22.229
+      ],
+      "actual_causal_history_times": [
+        13.699999452,
+        13.799999448,
+        13.899999444,
+        13.99999944,
+        14.099999436
+      ],
+      "calibration_dependency_t": [
+        13.099999476,
+        13.199999472,
+        13.299999468,
+        13.399999464,
+        13.49999946
+      ],
+      "later_confirmation_and_overlap_end_t": 14.384998151,
+      "explanation": "Conservative all-evidence interval includes focus37, all retained LMB/RMB carry-in, original calibration and subsequent confirmation/releases. Gameplay segment/history are not extended or padded."
+    },
+    {
+      "grid_index": 144,
+      "original_frozen_evidence": {
+        "path": "data/human/skill-event-candidates/032454-request-timing-v1/request-evidence.json",
+        "sha256": "513738c2552c02d36e94768e2a79dc0eaa28ccb12a1d827dd18f6f7acf89556a"
+      },
+      "fragment": "144",
+      "session_continuity_dependency": {
+        "focus_event": {
+          "seq": 37,
+          "t_ns": 115370927267500,
+          "type": "focus",
+          "active": true,
+          "held_vk": [
+            1
+          ]
+        },
+        "composition_relative_t": 0.421919351,
+        "scope": "Received-state continuity, separate from gameplay feature segment"
+      },
+      "retained_lmb_carry_in": {
+        "held": false,
+        "last_transition": {
+          "seq": 2798,
+          "t_ns": 115384890346300,
+          "type": "mouse",
+          "device": 65618,
+          "dx": 0,
+          "dy": 0,
+          "motion_flags": 0,
+          "button_flags": 2,
+          "wheel_data": 0,
+          "relative": true,
+          "buttons_down": [],
+          "buttons_up": [
+            1
+          ],
+          "wheel_vertical": 0,
+          "wheel_horizontal": 0
+        },
+        "relative_t": 14.384998151
+      },
+      "retained_rmb_carry_in": {
+        "held": false,
+        "last_transition": {
+          "seq": 2791,
+          "t_ns": 115384843336500,
+          "type": "mouse",
+          "device": 65618,
+          "dx": 0,
+          "dy": 0,
+          "motion_flags": 0,
+          "button_flags": 8,
+          "wheel_data": 0,
+          "relative": true,
+          "buttons_down": [],
+          "buttons_up": [
+            2
+          ],
+          "wheel_vertical": 0,
+          "wheel_horizontal": 0
+        },
+        "relative_t": 14.337988351
+      },
+      "original_claimed_full_footprint": [
+        13.099999476,
+        14.508332753
+      ],
+      "original_claim_not_all_inclusive": true,
+      "corrected_all_evidence_interval": [
+        0.421919351,
+        14.508332753
+      ],
+      "retained_raw_event_time_min": 0.421919351,
+      "retained_raw_event_time_max": 14.469205451,
+      "raw_continuity_start_t": 0.421919351,
+      "raw_continuity_end_t": 14.508332753,
+      "gameplay_segment_t": [
+        10.979,
+        22.229
+      ],
+      "actual_causal_history_times": [
+        13.99999944,
+        14.099999436,
+        14.199999432,
+        14.299999428,
+        14.399999424
+      ],
+      "calibration_dependency_t": [
+        13.099999476,
+        13.199999472,
+        13.299999468,
+        13.399999464,
+        13.49999946
+      ],
+      "later_confirmation_and_overlap_end_t": 14.508332753,
+      "explanation": "Conservative all-evidence interval includes focus37, all retained LMB/RMB carry-in, original calibration and subsequent confirmation/releases. Gameplay segment/history are not extended or padded."
+    },
+    {
+      "grid_index": 198,
+      "original_frozen_evidence": {
+        "path": "data/human/skill-event-candidates/032454-request-timing-v1/request-evidence.json",
+        "sha256": "513738c2552c02d36e94768e2a79dc0eaa28ccb12a1d827dd18f6f7acf89556a"
+      },
+      "fragment": "198",
+      "session_continuity_dependency": {
+        "focus_event": {
+          "seq": 37,
+          "t_ns": 115370927267500,
+          "type": "focus",
+          "active": true,
+          "held_vk": [
+            1
+          ]
+        },
+        "composition_relative_t": 0.421919351,
+        "scope": "Received-state continuity, separate from gameplay feature segment"
+      },
+      "retained_lmb_carry_in": {
+        "held": false,
+        "last_transition": {
+          "seq": 2798,
+          "t_ns": 115384890346300,
+          "type": "mouse",
+          "device": 65618,
+          "dx": 0,
+          "dy": 0,
+          "motion_flags": 0,
+          "button_flags": 2,
+          "wheel_data": 0,
+          "relative": true,
+          "buttons_down": [],
+          "buttons_up": [
+            1
+          ],
+          "wheel_vertical": 0,
+          "wheel_horizontal": 0
+        },
+        "relative_t": 14.384998151
+      },
+      "retained_rmb_carry_in": {
+        "held": false,
+        "last_transition": {
+          "seq": 3718,
+          "t_ns": 115389339383000,
+          "type": "mouse",
+          "device": 65618,
+          "dx": 5,
+          "dy": -1,
+          "motion_flags": 0,
+          "button_flags": 8,
+          "wheel_data": 0,
+          "relative": true,
+          "buttons_down": [],
+          "buttons_up": [
+            2
+          ],
+          "wheel_vertical": 0,
+          "wheel_horizontal": 0
+        },
+        "relative_t": 18.834034851
+      },
+      "original_claimed_full_footprint": [
+        13.099999476,
+        20.058332531
+      ],
+      "original_claim_not_all_inclusive": true,
+      "corrected_all_evidence_interval": [
+        0.421919351,
+        20.058332531
+      ],
+      "retained_raw_event_time_min": 0.421919351,
+      "retained_raw_event_time_max": 20.016096151,
+      "raw_continuity_start_t": 0.421919351,
+      "raw_continuity_end_t": 20.058332531,
+      "gameplay_segment_t": [
+        10.979,
+        22.229
+      ],
+      "actual_causal_history_times": [
+        19.399999224,
+        19.49999922,
+        19.599999216,
+        19.699999212,
+        19.799999208
+      ],
+      "calibration_dependency_t": [
+        13.099999476,
+        13.199999472,
+        13.299999468,
+        13.399999464,
+        13.49999946
+      ],
+      "later_confirmation_and_overlap_end_t": 20.058332531,
+      "explanation": "Conservative all-evidence interval includes focus37, all retained LMB/RMB carry-in, original calibration and subsequent confirmation/releases. Gameplay segment/history are not extended or padded."
+    },
+    {
+      "grid_index": 200,
+      "original_frozen_evidence": {
+        "path": "data/human/skill-event-candidates/032454-request-timing-v1/request-evidence.json",
+        "sha256": "513738c2552c02d36e94768e2a79dc0eaa28ccb12a1d827dd18f6f7acf89556a"
+      },
+      "fragment": "200",
+      "session_continuity_dependency": {
+        "focus_event": {
+          "seq": 37,
+          "t_ns": 115370927267500,
+          "type": "focus",
+          "active": true,
+          "held_vk": [
+            1
+          ]
+        },
+        "composition_relative_t": 0.421919351,
+        "scope": "Received-state continuity, separate from gameplay feature segment"
+      },
+      "retained_lmb_carry_in": {
+        "held": false,
+        "last_transition": {
+          "seq": 2798,
+          "t_ns": 115384890346300,
+          "type": "mouse",
+          "device": 65618,
+          "dx": 0,
+          "dy": 0,
+          "motion_flags": 0,
+          "button_flags": 2,
+          "wheel_data": 0,
+          "relative": true,
+          "buttons_down": [],
+          "buttons_up": [
+            1
+          ],
+          "wheel_vertical": 0,
+          "wheel_horizontal": 0
+        },
+        "relative_t": 14.384998151
+      },
+      "retained_rmb_carry_in": {
+        "held": true,
+        "last_transition": {
+          "seq": 3983,
+          "t_ns": 115390381336000,
+          "type": "mouse",
+          "device": 65618,
+          "dx": 0,
+          "dy": -1,
+          "motion_flags": 0,
+          "button_flags": 4,
+          "wheel_data": 0,
+          "relative": true,
+          "buttons_down": [
+            2
+          ],
+          "buttons_up": [],
+          "wheel_vertical": 0,
+          "wheel_horizontal": 0
+        },
+        "relative_t": 19.875987851
+      },
+      "original_claimed_full_footprint": [
+        13.099999476,
+        20.108332529
+      ],
+      "original_claim_not_all_inclusive": true,
+      "corrected_all_evidence_interval": [
+        0.421919351,
+        20.108332529
+      ],
+      "retained_raw_event_time_min": 0.421919351,
+      "retained_raw_event_time_max": 20.071231551,
+      "raw_continuity_start_t": 0.421919351,
+      "raw_continuity_end_t": 20.108332529,
+      "gameplay_segment_t": [
+        10.979,
+        22.229
+      ],
+      "actual_causal_history_times": [
+        19.599999216,
+        19.699999212,
+        19.799999208,
+        19.899999204,
+        19.9999992
+      ],
+      "calibration_dependency_t": [
+        13.099999476,
+        13.199999472,
+        13.299999468,
+        13.399999464,
+        13.49999946
+      ],
+      "later_confirmation_and_overlap_end_t": 20.108332529,
+      "explanation": "Conservative all-evidence interval includes focus37, all retained LMB/RMB carry-in, original calibration and subsequent confirmation/releases. Gameplay segment/history are not extended or padded."
+    },
+    {
+      "grid_index": 206,
+      "original_frozen_evidence": {
+        "path": "data/human/skill-event-candidates/032454-request-timing-v1/request-evidence.json",
+        "sha256": "513738c2552c02d36e94768e2a79dc0eaa28ccb12a1d827dd18f6f7acf89556a"
+      },
+      "fragment": "206",
+      "session_continuity_dependency": {
+        "focus_event": {
+          "seq": 37,
+          "t_ns": 115370927267500,
+          "type": "focus",
+          "active": true,
+          "held_vk": [
+            1
+          ]
+        },
+        "composition_relative_t": 0.421919351,
+        "scope": "Received-state continuity, separate from gameplay feature segment"
+      },
+      "retained_lmb_carry_in": {
+        "held": false,
+        "last_transition": {
+          "seq": 2798,
+          "t_ns": 115384890346300,
+          "type": "mouse",
+          "device": 65618,
+          "dx": 0,
+          "dy": 0,
+          "motion_flags": 0,
+          "button_flags": 2,
+          "wheel_data": 0,
+          "relative": true,
+          "buttons_down": [],
+          "buttons_up": [
+            1
+          ],
+          "wheel_vertical": 0,
+          "wheel_horizontal": 0
+        },
+        "relative_t": 14.384998151
+      },
+      "retained_rmb_carry_in": {
+        "held": false,
+        "last_transition": {
+          "seq": 4018,
+          "t_ns": 115390521444300,
+          "type": "mouse",
+          "device": 65618,
+          "dx": 1,
+          "dy": 0,
+          "motion_flags": 0,
+          "button_flags": 8,
+          "wheel_data": 0,
+          "relative": true,
+          "buttons_down": [],
+          "buttons_up": [
+            2
+          ],
+          "wheel_vertical": 0,
+          "wheel_horizontal": 0
+        },
+        "relative_t": 20.016096151
+      },
+      "original_claimed_full_footprint": [
+        13.099999476,
+        20.708332505
+      ],
+      "original_claim_not_all_inclusive": true,
+      "corrected_all_evidence_interval": [
+        0.421919351,
+        20.708332505
+      ],
+      "retained_raw_event_time_min": 0.421919351,
+      "retained_raw_event_time_max": 20.668156251,
+      "raw_continuity_start_t": 0.421919351,
+      "raw_continuity_end_t": 20.708332505,
+      "gameplay_segment_t": [
+        10.979,
+        22.229
+      ],
+      "actual_causal_history_times": [
+        20.199999192,
+        20.299999188,
+        20.399999184,
+        20.49999918,
+        20.599999176
+      ],
+      "calibration_dependency_t": [
+        13.099999476,
+        13.199999472,
+        13.299999468,
+        13.399999464,
+        13.49999946
+      ],
+      "later_confirmation_and_overlap_end_t": 20.708332505,
+      "explanation": "Conservative all-evidence interval includes focus37, all retained LMB/RMB carry-in, original calibration and subsequent confirmation/releases. Gameplay segment/history are not extended or padded."
+    }
+  ]
+}
