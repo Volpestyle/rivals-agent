@@ -239,21 +239,60 @@ def cohort(examples, spec):
     return identity, origin
 
 
-def make_model(spec):
+def make_model(spec, *, feature_count=len(FEATURES), output_count=len(ACTIONS)):
     spec.validate()
     torch = torch_module()
 
     class RangeModel(torch.nn.Module):
         def __init__(self):
             super().__init__()
-            self.temporal = torch.nn.GRU(len(FEATURES), spec.hidden, batch_first=True)
-            self.head = torch.nn.Linear(spec.hidden, len(ACTIONS))
+            self.temporal = torch.nn.GRU(feature_count, spec.hidden, batch_first=True)
+            self.head = torch.nn.Linear(spec.hidden, output_count)
 
         def forward(self, x):
             _, hidden = self.temporal(x)
             return self.head(hidden[-1])
 
     return RangeModel()
+
+
+def fit_classifier(rows, labels, spec, *, output_count, epochs, batch_size, lr, device, seed):
+    """Shared numeric fit only; callers own vocabulary, evidence and masks."""
+    require(type(epochs) is int and 1 <= epochs <= 10000 and type(batch_size) is int and batch_size > 0
+            and finite(lr) and lr > 0, "invalid fit configuration")
+    require(rows and len(rows) == len(labels), "empty or mismatched fit tensors")
+    support = [labels.count(i) for i in range(output_count)]
+    require(all(support) and sum(support) == len(labels), "every output needs training support")
+    torch = torch_module()
+    torch.manual_seed(seed)
+    model = make_model(spec, feature_count=len(rows[0][0]), output_count=output_count).to(device)
+    x = torch.tensor(rows, dtype=torch.float32, device=device)
+    y = torch.tensor(labels, dtype=torch.long, device=device)
+    weights = torch.tensor([len(labels) / (output_count * n) for n in support], dtype=torch.float32, device=device)
+    optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+    for _ in range(epochs):
+        model.train()
+        order = torch.randperm(len(labels)).tolist()
+        for start in range(0, len(order), batch_size):
+            index = order[start:start + batch_size]
+            optimizer.zero_grad()
+            loss = torch.nn.functional.cross_entropy(model(x[index]), y[index], weight=weights)
+            require(bool(torch.isfinite(loss)), "nonfinite training loss")
+            loss.backward()
+            optimizer.step()
+    return model
+
+
+def save_portable(path, payload):
+    """Exclusive artifact creation; caller supplies its versioned metadata."""
+    with Path(path).open("xb") as stream:
+        torch_module().save(payload, stream)
+    return fingerprint(path)
+
+
+def load_portable(path, expected_sha256):
+    require(sha256(expected_sha256) and fingerprint(path) == expected_sha256, "checkpoint digest mismatch")
+    return torch_module().load(path, map_location="cpu", weights_only=True)
 
 
 class RangePolicy:
@@ -285,23 +324,9 @@ def train(examples, *, spec=Spec(), epochs=20, batch_size=32, lr=.001, device="c
     known = [e for e in examples if e.label is not None]
     support = [sum(e.label == action for e in known) for action in ACTIONS]
     require(all(support), "both actions need training support")
-    torch = torch_module()
-    torch.manual_seed(seed)
-    model = make_model(spec).to(device)
-    x = torch.tensor([e.validate(spec) for e in known], dtype=torch.float32, device=device)
-    y = torch.tensor([ACTIONS.index(e.label) for e in known], dtype=torch.long, device=device)
-    weights = torch.tensor([len(known) / (len(ACTIONS) * n) for n in support], device=device)
-    optimizer = torch.optim.Adam(model.parameters(), lr=lr)
-    for _ in range(epochs):
-        model.train()
-        order = torch.randperm(len(known)).tolist()
-        for start in range(0, len(order), batch_size):
-            index = order[start:start + batch_size]
-            optimizer.zero_grad()
-            loss = torch.nn.functional.cross_entropy(model(x[index]), y[index], weight=weights)
-            require(bool(torch.isfinite(loss)), "nonfinite training loss")
-            loss.backward()
-            optimizer.step()
+    model = fit_classifier([e.validate(spec) for e in known], [ACTIONS.index(e.label) for e in known],
+                           spec, output_count=len(ACTIONS), epochs=epochs, batch_size=batch_size,
+                           lr=lr, device=device, seed=seed)
     return RangePolicy(model, spec, identity, support, origin, evidence_digest(examples), device)
 
 
@@ -362,9 +387,7 @@ def save_checkpoint(path, policy, examples, *, code_sha256, training_config):
                "reviews": sorted({e.review_sha256 for e in examples}),
                "groups": sorted({e.group for e in examples}),
                "weights": {k: v.detach().cpu() for k, v in policy.model.state_dict().items()}}
-    with Path(path).open("xb") as stream:
-        torch_module().save(payload, stream)
-    return fingerprint(path)
+    return save_portable(path, payload)
 
 
 def load_checkpoint(path, *, expected_sha256, expected_identity, expected_runtime=None,
@@ -375,9 +398,8 @@ def load_checkpoint(path, *, expected_sha256, expected_identity, expected_runtim
     independently pinned runtime profile. Train/save never grant live approval.
     """
     expected_identity.validate()
-    require(sha256(expected_sha256) and fingerprint(path) == expected_sha256, "checkpoint digest mismatch")
     torch = torch_module()
-    payload = torch.load(path, map_location="cpu", weights_only=True)
+    payload = load_portable(path, expected_sha256)
     require(isinstance(payload, dict) and payload.get("format") == FORMAT, "incompatible range checkpoint")
     require(payload.get("actions") == list(ACTIONS) and payload.get("features") == list(FEATURES),
             "incompatible vocabulary/features")

@@ -36,7 +36,7 @@ from . import brain as scripted
 from .brain import Memory
 from .controller import NEUTRAL, Controller, RangeLost
 from .demos import COOLDOWNS
-from .intents import Idle
+from .intents import Disengage, Idle, RangeSkill
 from .jev import pct
 from .replay import label
 from .state import ENEMY, State
@@ -52,6 +52,7 @@ MAX_S = 300.0
 KEEPALIVE_S = 180.0     # the range removes a player ~10 min after the last move or attack
 LOST_GRACE_S = 0.25     # scripts/record.py's grace: one false "HUD gone" frame (camera straight up) must not end a run
 STALE_S = 1.0           # no decision this fresh: stand down (Idle)
+RANGE_BRAINS = frozenset({"range", "range-skill"})
 CROP = 960              # native px square at 1440p round the crosshair: L3's aim sensor, 4.4 ms on the PC
 SB_HOLD_S = 1.0         # BACK held this long before the scoreboard frame is taken
 ALLOWED = frozenset({"A", "X", "LB", "RB"})    # what Controller emits. Never START, BACK, the d-pad or a stick click
@@ -157,8 +158,13 @@ class RunSource:
             self.i += 1
             frame = self.imread(str(path))
             if frame is not None:                       # a listed frame that is missing is skipped, as replay_states does
+                self.current_t = t
                 return frame, t
         return None
+
+    def now(self):
+        """Replay execution uses its recorded clock, independently of decode speed."""
+        return getattr(self, "current_t", 0.0)
 
 
 class FakePad:
@@ -203,6 +209,12 @@ class LiveIO:
 
     def send(self, pad):
         self.live.send(**pad)                                           # proven, whitelisted and leased at the write, or RangeLost / Forbidden
+
+    def now(self):
+        return time.perf_counter() - self.t0
+
+    def send_guarded(self, pad, *, not_after, release_at):
+        return self.live.send_guarded(pad, not_after=self.t0 + not_after, release_at=self.t0 + release_at)
 
     def release(self):
         self.live.release()
@@ -368,8 +380,9 @@ class Loop:
     def __init__(self, source, pad, percept, decide=scripted.decide, *, log=None, controller=None, threaded=False,
                  reflex_hz=REFLEX_HZ, decision_hz=DECISION_HZ, max_s=MAX_S, keepalive_s=KEEPALIVE_S, warmup=True,
                  stale_s=STALE_S, scoreboard=True, scoreboard_every_s=None, brain_name="scripted", tracker=None, cooldowns="unknown",
-                 patch=None, start=None, range_receipt=None):
-        if brain_name == "range":
+                 patch=None, start=None, range_receipt=None, execution_clock=None):
+        self.range_skill_mode = brain_name == "range-skill"
+        if brain_name in RANGE_BRAINS:
             # A model's neutral decision must not become the scripted warmup/idle attack.
             warmup, keepalive_s = False, None
             period = decide.policy.spec.period_s
@@ -384,6 +397,10 @@ class Loop:
         self.range_receipt = deepcopy(range_receipt)
         self.cooldowns = cooldowns   # the range's "No Ability Cooldown": off = ON (infinite ammo, no cooldown numbers), normal = OFF
         self.source, self.pad, self.p, self.log, self.ctrl = source, pad, percept, log, controller or Controller()
+        self.execution_clock = execution_clock or getattr(source, "now", None)
+        self._frame_clock = None
+        self.last_send = None
+        self.executor_events = []
         lock, tracker, self.coasting = threading.Lock(), tracker or Tracker(), ()
 
         def track(dets, t, size=None, clip=None):       # the reflex thread and the decision worker share one tracker
@@ -425,6 +442,7 @@ class Loop:
         if first is None:
             return "source_end"
         frame, t = first
+        self._frame_clock = (t, time.perf_counter())
         if not self.p.in_range(frame):                  # before ANY input, on a fresh frame
             return "no_range_hud_at_start"
         self.t0 = self.last_ok = self.last_board = t
@@ -437,14 +455,31 @@ class Loop:
             if nxt is None:
                 return "source_end"
             frame, t = nxt
+            self._frame_clock = (t, time.perf_counter())
+
+    def _execution_now(self):
+        """Execution clock, never a replacement for a frame/resource timestamp.
+
+        LiveIO supplies its exact monotonic origin; RunSource supplies replay time.
+        Other sources measure elapsed work since returning the current frame.
+        """
+        if self.execution_clock is not None:
+            return self.execution_clock()
+        if self._frame_clock is None:
+            return 0.0
+        observed, returned = self._frame_clock
+        return observed + time.perf_counter() - returned
 
     def _finish(self, reason):
-        for _ in range(2):                              # every exit path ends with neutral sticks and released buttons
-            try:
-                self.pad.release()
-                break
-            except Exception as e:                      # noqa: BLE001 - cleanup must not mask the reason for stopping
-                self.errors.append(f"release: {e!r}")
+        if self.range_skill_mode:
+            self._release(reason, force=True)           # records cancellation and actual release separately
+        else:
+            for _ in range(2):                         # preserve the legacy cleanup/retry contract
+                try:
+                    self.pad.release()
+                    break
+                except Exception as e:
+                    self.errors.append(f"release: {e!r}")
         self.decider.close()
         if self.scoreboard and reason in END_SCOREBOARD and self.t0 is not None:
             try:
@@ -469,16 +504,18 @@ class Loop:
         if self.decider.error:
             raise self.decider.error
         if p.idle(frame):                               # the keep-alive failed, or we are somewhere idle: stop, do not escape
-            self._release()
+            self._release("idle_warning")
             self._log(t, NEUTRAL, "idle_warning", "guard", frame)
             return "idle_warning"
         if not p.in_range(frame):
-            self._release()                             # the moment it is gone
+            self._release("range_lost")                 # the moment it is gone
             if self.lost_since is None:
                 self.lost_since = t
                 self.gaps.append([self.last_ok, None])
             self._log(t, NEUTRAL, "range_lost", "guard", frame)
-            return "range_lost" if t - self.lost_since > LOST_GRACE_S else None
+            # The first skill pilot ends on a range gap: an old event proposal
+            # must never resume after an out-of-range release.
+            return "range_lost" if self.range_skill_mode or t - self.lost_since > LOST_GRACE_S else None
         if self.lost_since is not None:
             self.gaps[-1][1], self.lost_since = t, None
         self.last_ok = t
@@ -492,9 +529,15 @@ class Loop:
         d = self.decider.latest
         fresh = d is not None and t - d.t <= self.stale_s
         intent, source = (d.intent, d.source) if fresh else (Idle(), "stale" if d else "waiting")
+        if self.range_skill_mode and not isinstance(intent, (RangeSkill, Idle, Disengage)):
+            intent, source = Idle(), "range_skill_invalid_intent"
+        execution = {"execution_t": self._execution_now()} if self.range_skill_mode else {}
         pad = clean(self._keepalive(self.ctrl.step(State(t=t, frame=size, detections=dets, coasting=self.coasting), intent,
-                                                   intent_t=d.t if fresh else None), t))
-        self.pad.send(pad)                              # Live confirms its own frame again: a second, independent guard
+                                                   intent_t=d.t if fresh else None, **execution), t))
+        if self.range_skill_mode:
+            pad = self._send_skill(pad, t)
+        else:
+            self.pad.send(pad)                          # Live confirms its own frame again: a second, independent guard
         self.sent = pad
         if active(pad):
             self.last_active = t
@@ -535,16 +578,76 @@ class Loop:
             self.ka_t = None
         return pad
 
-    def _release(self):
-        if self.sent != NEUTRAL:
-            self.pad.release()
-            self.sent = dict(NEUTRAL)
+    def _send_skill(self, pad, observation_t):
+        trace = self.ctrl.range_skill_trace
+        now = self._execution_now()
+        limits = {}
+        if pad["lt"]:
+            release_at = min(trace["pulse_press_until"], trace["pulse_valid_until"])
+            not_after = release_at
+            if trace["press_edge"]:
+                not_after = min(not_after, trace["pulse_valid_until"] - self.ctrl.cal.press_s)
+            limits = {"not_after": not_after, "release_at": release_at}
+            if not math.isfinite(now) or now >= not_after:
+                self.last_send = {"observation_t": observation_t, "checked_t": now, "status": "not_sent",
+                                  "reason": "authorization_expired", **limits}
+                self._release("send_deadline", force=True)
+                return dict(NEUTRAL)
+        self.last_send = {"observation_t": observation_t, "attempted_t": now, "status": "attempted", **limits}
+        try:
+            if limits and hasattr(self.pad, "send_guarded"):
+                self.pad.send_guarded(pad, **limits)
+            else:
+                self.pad.send(pad)
+        except Exception as e:
+            self.last_send.update(status="failed", returned_t=self._execution_now(), error=repr(e))
+            self._release("send_failed", force=True)
+            raise
+        self.last_send.update(status="returned", returned_t=self._execution_now())
+        return pad
+
+    def _release(self, reason="explicit_release", *, force=False):
+        if not self.range_skill_mode:
+            if self.sent != NEUTRAL:
+                self.pad.release()
+                self.sent = dict(NEUTRAL)
+            return
+        trace = None
+        now = self._execution_now() if self.range_skill_mode else None
+        if self.range_skill_mode:
+            self.ctrl.cancel_range_skill(now, reason)
+            trace = self.ctrl.range_skill_trace
+        attempts = []
+        for _ in range(2):
+            attempt = {"attempted_t": self._execution_now() if self.range_skill_mode else None}
+            try:
+                self.pad.release()
+                self.sent = dict(NEUTRAL)
+                attempt.update(status="returned", returned_t=self._execution_now() if self.range_skill_mode else None)
+                attempts.append(attempt)
+                break
+            except Exception as e:                      # cleanup must not hide the original stop
+                attempt.update(status="failed", error=repr(e), returned_t=self._execution_now() if self.range_skill_mode else None)
+                attempts.append(attempt)
+                self.errors.append(f"release: {e!r}")
+        if self.range_skill_mode:
+            event = {"t": now, "type": "executor_release", "reason": reason,
+                     "observation_t": self.last_t, "range_skill_trace": trace,
+                     "release_attempts": attempts, "neutral_requested": True,
+                     "preceding_send_result": deepcopy(self.last_send),
+                     "release_returned": attempts[-1]["status"] == "returned"}
+            self.executor_events.append(event)
+            if self.log:
+                try:
+                    self.log.write(deepcopy(event))
+                except Exception as e:
+                    self.errors.append(f"release log: {e!r}")
 
     def _scoreboard(self, t, name):
         """Hold BACK, keep the frame, release: Live.scoreboard presses BACK only on a proven range frame, keeps it down only while each new
         frame is recognised as the board (releasing at once on anything else), and needs the range back after. A frame is stored only if the
         loop's own recognizer also calls it a board."""
-        self._release()
+        self._release("scoreboard")
         skipped = lambda why: self.boards.append({"t": round(t, 3), "file": None, "skipped": why, "parsed": None})   # noqa: E731
         if self.p.is_board is None:
             return skipped("no_board_check")                            # BACK is not pressed without a way to know the board opened
@@ -598,6 +701,12 @@ class Loop:
                 row["state"], row["ms_decide"], self.last_d = d.state.to_dict(), round(d.ms, 2), d.n
                 if d.trace is not None:
                     row["decision_trace"] = d.trace
+        if self.range_skill_mode:
+            trace = getattr(self.ctrl, "range_skill_trace", None)
+            if trace is not None and trace.get("t") == t:
+                row["range_skill_trace"] = deepcopy(trace)
+            if self.last_send is not None and self.last_send["observation_t"] == t:
+                row["send_result"] = deepcopy(self.last_send)
         self.log.write(row, frame)
 
     def _segments(self):
@@ -626,6 +735,7 @@ class Loop:
                 "intents": dict(self.intents), "keepalives": self.keepalives, "range_gaps": self.gaps,
                 "scoreboards": self.boards, "errors": self.errors, "native": list(self.size) if self.size else None,
                 **({"start": self.start} if self.start is not None else {}),
+                **({"executor_events": deepcopy(self.executor_events)} if self.range_skill_mode else {}),
                 **({"range_policy": self.range_receipt} if self.range_receipt is not None else {})}
 
 
@@ -697,7 +807,7 @@ def main(argv=None):
     mode = ap.add_mutually_exclusive_group(required=True)
     mode.add_argument("--dry", metavar="RUN_DIR", help="offline: replay a recorded run (frames.jsonl + jpgs) through the loop, fake pad")
     mode.add_argument("--live", action="store_true", help="the PC, desktop session, game in the Practice Range, one real pad")
-    ap.add_argument("--brain", choices=("scripted", "jev", "learned", "range"), default="scripted")
+    ap.add_argument("--brain", choices=("scripted", "jev", "learned", "range", "range-skill"), default="scripted")
     ap.add_argument("--range-checkpoint", help="range: explicitly selected reviewed checkpoint")
     ap.add_argument("--range-sha256", help="range: externally pinned checkpoint SHA-256")
     ap.add_argument("--range-identity", help="range: JSON identity from reviewed experiment configuration; never inferred from weights")
@@ -720,7 +830,7 @@ def main(argv=None):
                     "no log, no loop, no scoreboard")
     a = ap.parse_args(argv)
     if a.max_s is None:
-        a.max_s = 20.0 if a.brain == "range" else MAX_S
+        a.max_s = 20.0 if a.brain in RANGE_BRAINS else MAX_S
     if a.pose_only and not a.live:
         ap.error("--pose-only needs --live")
     if a.live and not a.pose_only and a.cooldowns not in ("off", "normal"):
@@ -728,10 +838,12 @@ def main(argv=None):
                  "and a live run is one the operator can see")
 
     range_brain = range_identity = range_runtime = range_binding = range_receipt = None
+    if a.live and a.brain == "range":
+        ap.error("legacy range Idle/Engage mode is offline only; new skill events require --brain range-skill")
     range_args = (a.range_checkpoint, a.range_sha256, a.range_identity, a.range_runtime, a.range_deployment)
-    if a.brain != "range" and any(range_args):
-        ap.error("--range-* arguments require --brain range")
-    if a.brain == "range":
+    if a.brain not in RANGE_BRAINS and any(range_args):
+        ap.error("--range-* arguments require --brain range or range-skill")
+    if a.brain in RANGE_BRAINS:
         if a.pose_only or not all(range_args[:3]):
             ap.error("range needs checkpoint, SHA-256 and identity; it is not a pose-only operation")
         if bool(a.range_runtime) != bool(a.range_deployment) or (a.live and not a.range_runtime):
@@ -739,9 +851,14 @@ def main(argv=None):
         if not math.isfinite(a.max_s) or not 0 < a.max_s <= 20:
             ap.error("range policy pilot requires --max-s in (0, 20]")
         # Validate/load before constructing LiveIO: even pad attachment changes the camera.
-        from .learned_range import LearnedRangeBrain
         from .human_demos import DemoError
-        from policy.range_policy import DeploymentBinding, Identity, RuntimeIdentity
+        if a.brain == "range-skill":
+            from .learned_range_skill import LearnedRangeSkillBrain as CandidateBrain
+            from policy.range_skill_policy import (SkillDeploymentBinding as DeploymentBinding,
+                                                   SourceIdentity as Identity, SkillRuntimeIdentity as RuntimeIdentity)
+        else:
+            from .learned_range import LearnedRangeBrain as CandidateBrain
+            from policy.range_policy import DeploymentBinding, Identity, RuntimeIdentity
         try:
             identity_data = json.loads(Path(a.range_identity).read_text(encoding="utf-8"))
             range_identity = Identity(**identity_data)
@@ -754,7 +871,7 @@ def main(argv=None):
                 ap.error("--cooldowns must match the reviewed range identity")
             if a.live and a.cooldowns != "normal":
                 ap.error("range policy pilot requires normal cooldowns")
-            range_brain = LearnedRangeBrain.from_checkpoint(a.range_checkpoint, expected_sha256=a.range_sha256,
+            range_brain = CandidateBrain.from_checkpoint(a.range_checkpoint, expected_sha256=a.range_sha256,
                             expected_identity=range_identity, expected_runtime=range_runtime,
                             deployment_binding=range_binding, device="cpu", offline=not a.live)
             if not math.isclose(a.decision_hz * range_brain.policy.spec.period_s, 1.0, abs_tol=1e-9):
@@ -765,7 +882,8 @@ def main(argv=None):
                          "runtime": asdict(range_runtime) if range_runtime else None,
                          "deployment": asdict(range_binding) if range_binding else None,
                          "origin": range_brain.policy.origin,
-                         "scope": "learned_idle_engage_timing_scripted_target_and_mechanics"}
+                         "scope": ("learned_web_start_timing_scripted_target_aim_movement_pulse"
+                                   if a.brain == "range-skill" else "legacy_idle_engage_offline_diagnostic")}
 
     start = percept = None
     if a.live:

@@ -10,8 +10,8 @@ VUH-1349 is canceled. The legacy binary policy and failed visual packet below
 retain their historical meaning; no labels or checkpoint classes are remapped.
 The next experiment learns individual web starts while aim/movement run
 independently, under [the event contract](range-policy-reframe.md). Its changed
-consumer and final model integration are under review. The event controller and
-the first two source labels have the bounded acceptances recorded below.
+consumer, final model integration, controller and first two source labels have
+the bounded acceptances recorded below.
 Priorities are mechanics, useful picks, escape, fluent swings/momentum/bhops and
 teammate support. Imitation initializes the agent; later bounded RL may improve
 outcomes and learn new techniques as the action space expands. The caller
@@ -30,9 +30,8 @@ not an independently measured game-visible pulse duration.
 
 Root reproduced all three original failures before repair. Independent delta
 review passed 220 tests, excluding four changing policy-dependent cases. Root's
-integrated synthetic suite passed 237 checks; the final saved-model integration
-still awaits the event-policy delta review. Controller and Live can land as a
-separable accepted slice; the new CLI lands with its policy module.
+integrated synthetic suite passed 237 checks. The controller and Live actuator
+landed separately in `33303c0`; final event-policy integration is accepted below.
 
 Independent admission review supports n199/n200 of the frozen earlier-session
 event packet, and lead accepts those two labels solely for a TRAIN-only fit/reload
@@ -40,6 +39,31 @@ diagnostic. The other 106 grid coordinates remain unknown. The non-start has zer
 ammo, and tracks are constructed per window; no useful timing, persistent live
 selector equivalence, validation performance or gameplay claim follows. Corpus
 owner is persisting the genuine receipt without changing the frozen candidate.
+
+## Event policy and caller acceptance, 2026-09-22
+
+Independent same-reviewer acceptance covers the new event policy/consumer,
+legacy numeric-helper extraction and final frozen Loop join. Immutable media
+cannot be duplicated by session aliases. Valid causal observations with no
+selected target stay in history, so first acquisition may infer without invented
+earlier targets; an unsupported current target still refuses. Reports call their
+confidence filter `confidence_filtered` and do not imply executor acceptance.
+
+The reviewer ran 69 event-policy tests and the four saved-checkpoint caller tests
+previously deferred. Actual synthetic checkpoint -> CLI -> consumer -> Decider ->
+Loop -> Controller -> fake pad -> on-disk RunLog passed. Additional independently
+executed no-new, low-confidence and unknown-ammo cases verified movement, neutral
+refusal and resource rejection. Synthetic metadata stayed synthetic throughout;
+the real live loader rejects it before hardware. No extra unchanged RSC audit was
+needed. Root adopts this software acceptance for landing.
+
+The new caller is `python -m agent.loop --brain range-skill`, with explicit
+`--range-checkpoint`, `--range-sha256`, `--range-identity`, normal cooldowns and
+at most 20 seconds. `--live` additionally requires `--range-runtime` and
+`--range-deployment`; source identity, selector/feature semantics and the separate
+runtime receipt are validated before capture or pad attachment. Legacy
+`--brain range` is offline only. A numerical fit and portable checkpoint do not
+supply physical cast calibration, independent validation or deployment approval.
 
 ## Accepted software delta, 2026-09-22
 
