@@ -100,8 +100,10 @@ only once an outcome can be measured reliably.
 - **Third-party footage** stays under `data/` (gitignored). Frames from it are never
   committed or published to Linear.
 
-Co-led by the Claude lead (dispatch, integration, this file, Linear) and a Codex co-lead
-(`docs/learning-plan.md`, demonstration sourcing, independent review).
+The Codex lead owns dispatch, shared integration, this plan and `docs/learning-plan.md`.
+Existing specialist lanes own their named artifacts; review is independent of the
+producer. Accepted results belong on the existing Linear issues when the direct
+workspace connector is available. The retired Claude lead receives no new work.
 
 ## Gate status (L0, 2026-09-20)
 

@@ -588,6 +588,26 @@ and scoreboard admissions; visibility masks alone do not certify eligibility. Th
 two-section capacity ceiling is not exhaustion of held footage or creator archives.
 Acquisition remains parked while accepted packets and held candidates are used first.
 
+
+The authorized next collection qualifies complete `[t-5,t+5]` footprints in the
+held Req840 section and newDay section before annotation. It reuses existing
+screening and immutable reader segments, with up to 40 candidates per source;
+counts are a processing cap, not promised eligible examples or class support.
+New decisions are at least 11 seconds apart, leaving disjoint 10-second evidence
+footprints; the earlier purpose-tranche's 15-second selections remain frozen.
+This changes sampling density without changing full-footprint clustering, purge,
+unknown handling or source-group isolation. Req840 and Req1980 share one broadcast
+and cannot straddle a fold. NewDay remains inspection-only until window admission;
+its date-derived patch and unresolved sealed re-air possibility remain explicit,
+with no claimed test independence and no access to sealed material.
+
+The collection contract is
+`data/experiments/next-behaviour-v2/CONTRACT.md`. Qualified frames supply identical,
+frames-only annotation packets, with context locked before future inspection.
+Reader event objects, candidate-selection reasons and prior labels are omitted.
+Independent admission/packet review precedes annotation reliance, and support is
+recounted before fitting. The model and its support/performance gates stay fixed.
+
 Outcome audits preserve unknown cause at bonus-max-HP transitions: the pt2-12
 500/500 to 250/250 change does not establish the shared stream's claimed 250
 damage. Raw proposals stay intact and that claim is excluded from damage/reward
