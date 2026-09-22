@@ -146,6 +146,35 @@ delay, preserving its tight send deadline. Lead adopts these bytes. All nine A/B
 opportunities remain failed or unattempted in their original reports; these
 runs establish neither a visible cast nor learned gameplay.
 
+### Native calibration D: two returned pulse requests
+
+The corrected caller ran from the clean, detached `cb677ef` live worktree.
+Root inspected fresh No Ability Cooldown X/off evidence after range re-entry;
+same-device startup and the configured single-Luna region then passed. Three
+fixed opportunities produced two accepted requests (IDs 13 and 28), each with
+two returned LT sends. The third (ID 43) was refused for insufficient press time.
+Ammo reader values changed 5 -> 4 -> 3 -> 4, including recharge. These are two
+software-owned pulses, not four casts or a learned policy run.
+
+`RangeLost('probe_complete')` ended the planned five-second post-setup phase;
+the original metadata reports `range_lost` with no range gaps or errors. Both
+terminal neutral release calls returned. Loop release edges and watchdog lease
+bounds do not measure physical held duration. The second pulse's trace ends
+`cancelled_after_press`; preserve that execution label independently of visible
+game response. Native cast interpretation and video/acquisition correspondence
+are undergoing a separate bounded audit; no deployment binding is issued.
+
+Original video: `data/live-readiness/20260922-cast-probe/probe-d-native.mp4`,
+35 seconds, 2077 container-reported video frames, SHA-256
+`a0ec11c760ac358c5f33e5616d41e416d9c479aefabe1a8a176f0c7da4f828b2`.
+The container uses a 1/15360 timebase; nominal 60 fps capture does not make every
+frame interval uniform. Exact original logs and root's execution diagnosis are
+under `data/l1/range-cast-probe-20260922-d/`. The post-run deployed-code receipt
+records exact Git bytes or only CRLF differences, without relaxing source hashes.
+The [short scripted clip](https://uploads.linear.app/75f1d1f0-542b-4095-9967-fd7b27093472/9350542a-e952-48d1-9948-af3995ec28fa/1a0cbbeb-38a1-4097-bdfa-f983a303ffa5)
+covers original seconds 8–19; its SHA-256 is
+`7cbe90e453fffe02ef2d04768e7923799543a2e79d7516655541796e8599b41b`.
+
 ## Event policy and caller acceptance, 2026-09-22
 
 Independent same-reviewer acceptance covers the new event policy/consumer,
@@ -170,6 +199,15 @@ at most 20 seconds. `--live` additionally requires `--range-runtime` and
 runtime receipt are validated before capture or pad attachment. Legacy
 `--brain range` is offline only. A numerical fit and portable checkpoint do not
 supply physical cast calibration, independent validation or deployment approval.
+
+The evaluation-only correction is independently accepted and pushed in
+`d02c182`. Each independent recording may retain its own complete source-profile
+hash when the six gameplay/event-domain fields agree. One shared validator
+preserves joint media/session/group/split isolation, coverage and event checks,
+including full source identity in unknown rows. Train/cohort/checkpoint/runtime
+identities remain exact. Independent review passed 93 tests and additional
+multi-profile/unknown-row controls without native imports or training. This
+structural compatibility does not admit a recording or prove model performance.
 
 ## Accepted software delta, 2026-09-22
 
