@@ -53,7 +53,8 @@ class CastSchedule:
         self.failure, self.last = None, None
         self.reflex_latch = None
         self.slots = [{"slot": n, "offset_s": offset, "scheduled_t": None,
-                       "deadline": None, "status": "pending", "decision_id": None}
+                       "deadline": None, "status": "pending", "decision_id": None,
+                       "request_valid_until": None}
                       for n, offset in enumerate(SLOT_OFFSETS, 1)]
 
     def observe_executor(self, trace, observation_t):
@@ -98,11 +99,12 @@ class CastSchedule:
         if (not finite(now) or not finite(state.t) or now < state.t
                 or (self.last_t is not None and state.t <= self.last_t)):
             self.failure = "invalid_observation_clock"
-        self.last_t = state.t
+        if finite(state.t):
+            self.last_t = state.t
         target = self._target(state, initial=self.setup_t is None)
         ammo = type(state.webs) is int and 1 <= state.webs <= 5
         if self.setup_t is None:
-            if target is not None and ammo and now - state.t < PERIOD_S and not self.failure:
+            if not self.failure and target is not None and ammo and now - state.t < PERIOD_S:
                 self.stable = self.stable + 1 if target.track == self.candidate_id else 1
                 self.candidate_id = target.track
                 if self.stable >= SETUP_OBSERVATIONS:
@@ -112,29 +114,34 @@ class CastSchedule:
                         slot["deadline"] = slot["scheduled_t"] + PERIOD_S
             else:
                 self.stable = 0
-            if now - self.first_t >= SETUP_S and self.setup_t is None:
+            if not self.failure and now - self.first_t >= SETUP_S and self.setup_t is None:
                 self.failure = "setup_timeout"
         elif target is None:
             # Never bind a replacement target, even if it re-enters the ROI.
             self.failure = self.failure or "target_identity_lost"
 
         request, slot_id, reason = "no_new_start", None, self.failure or "tracking"
+        request_valid_until = None
         if self.setup_t is not None:
             for slot in self.slots:
-                if slot["status"] != "pending" or now < slot["scheduled_t"]:
+                if slot["status"] != "pending" or not finite(now) or now < slot["scheduled_t"]:
                     continue
                 slot_id = slot["slot"]
                 if self.failure:
                     reason = self.failure
-                elif now >= slot["deadline"] or state.t < slot["scheduled_t"]:
+                elif now >= slot["deadline"]:
                     reason = "late_opportunity"
+                elif now >= state.t + PERIOD_S:
+                    reason = "stale_observation"
                 elif not ammo:
                     reason = "unknown_or_empty_ammo"
                 else:
                     request, reason = "start", "scheduled_start"
                     slot["decision_id"] = self.n
+                    request_valid_until = min(slot["deadline"], state.t + PERIOD_S)
                 slot.update(status="proposed" if request == "start" else "refused", reason=reason,
                             observed_t=state.t, evaluated_t=now, target_id=self.target_id,
+                            request_valid_until=request_valid_until,
                             resources={"webs": state.webs, "observed_t": state.t})
                 # Missed older slots are all retained; only a current slot can propose.
                 if request == "start":
@@ -142,11 +149,12 @@ class CastSchedule:
         self.last = {"mode": "SCRIPTED CALIBRATION", "source": SOURCE, "t": state.t,
                      "decision_id": self.n, "proposal": request, "slot": slot_id,
                      "target_id": self.target_id, "reason": reason, "setup_t": self.setup_t,
+                     "request_valid_until": request_valid_until,
                      "reflex_latch": self.reflex_latch}
         if self.setup_t is None or self.failure or target is None:
             return Idle()
         memory.target = target
-        until = next(s["deadline"] for s in self.slots if s["decision_id"] == self.n) if request == "start" else state.t + PERIOD_S
+        until = request_valid_until if request == "start" else state.t + PERIOD_S
         return RangeSkill(target, request, self.n, until, RangeSkillResources(state.webs, state.t))
 
 

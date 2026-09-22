@@ -1,9 +1,9 @@
 # VUH-1346: scripted Web-Cluster calibration probe
 
-2026-09-22. Native-startup integration independently reviewed and accepted. The
-previous caller, including RCP1, was accepted on main `1118814`; root's native
-attempt A then exposed the missing same-device camera startup. RCP1 is not reopened.
-**Lead adopts the bounded startup delta for native measurement.** This lane sent no
+2026-09-22. Proposal-clock eligibility correction independently reviewed;
+**lead adopts this scheduler delta for native measurement.** Startup remains
+accepted/pushed `3a1165f`, with root reporting that it worked in B/C. RCP1 and
+the startup/controller/actuator boundaries are unchanged. This lane sent no
 native input and performed no native capture. Owned:
 `scripts/range_cast_probe.py`, `tests/test_range_cast_probe.py`, this note.
 
@@ -49,8 +49,11 @@ Bounded constants, with no CLI overrides:
   aim calibration; root must verify the visible same-platform setup beforehand.
 
 The decision uses genuine `RangeSkill` and frozen `RangeSkillResources(webs,
-observed_t=State.t)`. A start's deadline is the scheduled slot deadline, not a
-fresh timestamp invented after slow work. Observation time remains acquisition
+observed_t=State.t)`. Proposal time must be inside the fixed slot. An original
+fresh causal observation may precede the slot, with the request deadline equal
+to `min(slot.deadline, State.t + PERIOD_S)`. `request_valid_until` records that
+actual start authority in the slot report and decision trace; it is null for
+non-proposals. The fixed `deadline` remains the slot end. Observation time remains acquisition
 START; execution time comes from the same LiveIO origin. Controller and guarded
 actuator checks are unchanged. Decisions run synchronously for this small script;
 slow HUD work can refuse a slot rather than move it later.
@@ -180,7 +183,8 @@ This probe does not certify a full deployment, target correctness or policy fit.
 uv run --no-sync python -m pytest tests/test_range_cast_probe.py -q
 ```
 
-**35 passed in 1.51 s.** All previous 26 tests remain. The main harness constructs actual Live with an injected
+**54 passed, 1 skipped in 1.75 s**, plus the explicitly selected frozen-C JSON
+test **1 passed in 0.10 s**. All previous 35 tests remain. The main harness constructs actual Live with an injected
 fake device/capture, actual LiveIO, actual Loop/Controller and actual RunLog.
 Tests show three proposals/acceptances on the healthy synthetic schedule,
 non-start movement, distinct late-proposal and late-controller refusal, unknown
@@ -265,9 +269,54 @@ Independent review accepted this startup delta. Root alone
 integrates, runs the probe, pairs video and accepts the visual audit. Synthetic
 checks do not establish a HUD switch, stopped drift or a game-visible cast.
 
+### C proposal-clock correction
+
+Before editing, actual `CastSchedule` reproduced C's first two `late_opportunity`
+refusals from its saved States and slot `evaluated_t`, despite evaluation inside
+the slot and observation ages 53.898 ms / 64.150 ms. The scheduler now checks the
+actual proposal time against the fixed slot and the original observation expiry.
+It never stamps either the State, intent anchor or ammo snapshot with that later
+time. Stale observations refuse as `stale_observation`; future/invalid clocks
+remain refused. Slots are terminal once proposed/refused, with no retry or requeue.
+
+| Saved C slot | New request valid_until | Remaining at saved proposal | Offline controller, synthetically armed |
+|---|---|---|---|
+| 1 | 8.485428100009448 | 46.102 ms | accepted; fake LiveIO guarded send returned |
+| 2 | 9.953198800003156 | 35.850 ms | accepted; fake LiveIO guarded send returned |
+| 3 | 11.513327899994328 | 26.967 ms | insufficient_press_time; no LT |
+
+Those are isolated counterfactual software checks of actual saved States, not
+historical gameplay results. **All three original C slots remain failed; original
+C has zero acceptances and zero LT sends.** Neither B nor C was modified. Only
+C's config/report/frames JSON was read for this delta; no native images or video.
+
+The ordinary synthetic suite adds early-before-slot, exact/after-slot expiry,
+fresh-before-slot, stale/exact observation expiry, future/invalid clocks, unknown/
+empty resources, both deadline minima and one-time slot consumption. A joined
+real Loop/Controller/LiveIO/Live run uses 94 ms acquisitions with processing phase
+crossing slot starts: 64 ms HUD work yields 3 proposals/3 accepts; 74 ms yields
+3 proposals/0 accepts, all full-press refusals. Observation/resource clocks remain
+original, and terminal release is checked. The separate recorded-JSON test uses
+actual C States and fake LiveIO, with each Controller synthetically armed to
+isolate the request boundary; it reads only these hash-pinned files:
+
+| C file | Immutable SHA-256 |
+|---|---|
+| probe-config.json | `4b8db2ed2657c02272779d7de14e67383dd6c578ee9f31c68e8543cb704d6a31` |
+| probe-report.json | `3249a82ef06725493f2e4021708f1a67f6313fdc9bbc6438549dafb438eb67f8` |
+| frames.jsonl | `09003eb6df9a0342cdb2dca89836bda3a58b856d271d221280262d90dd4eee67` |
+
+```powershell
+uv run --no-sync python -m pytest tests/test_range_cast_probe.py::test_frozen_c_states_keep_original_clocks_through_controller_and_fake_liveio --corpus -q
+```
+
+That test is skipped by default; `--corpus` above selects only the authorized C
+case. It verifies file hashes before and after. The same reviewer accepted this
+scheduler delta; root owns landing and the next native attempt.
+
 Frozen raw SHA-256:
 
 | File | SHA-256 |
 |---|---|
-| scripts/range_cast_probe.py | `f09cdfa9efec8b52eaaf67e4edd24a87b4094e10eca584598fba8a3469b32eae` |
-| tests/test_range_cast_probe.py | `625d7d79dbc691c1cf6f3821a523ff63b2e6690077ee8f02090d99dbbde3bc94` |
+| scripts/range_cast_probe.py | `28873faf416881d9f8d41a601670829512add555dfe0e5f4c88dce43fa7d2767` |
+| tests/test_range_cast_probe.py | `fdac894952e23b0fcb81341ec1de1bf452030322689a847cc12bdbdfefdf955a` |

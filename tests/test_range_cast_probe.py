@@ -2,12 +2,14 @@
 import json
 import sys
 from dataclasses import replace
+from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
 
 from agent.controller import Live, NEUTRAL, RangeLost
 from agent.loop import LiveIO, Perception
+from agent.state import State
 from scripts import range_cast_probe as probe
 from tests.test_live_pad import FakePad
 
@@ -455,3 +457,154 @@ def test_combined_deadline_refuses_after_slow_start_evidence_write(native_entry)
     assert result["scheduled_opportunities"] == 3
     assert result["terminal_releases"][-1]["release_returned"] is True
     assert h.device.neutral()
+
+
+def established_schedule():
+    clock, memory = SimpleNamespace(t=0.), SimpleNamespace(target=None)
+    schedule = probe.CastSchedule((.45, .35, .55, .65), lambda: clock.t)
+    bot = replace(probe.DryFrame().detections[0], track=1)
+    for t in (0., .1, .2):
+        clock.t = t
+        schedule(State(t, (1280, 720), webs=5, detections=[bot]), memory)
+    assert schedule.setup_t == .2
+    return schedule, clock, memory, bot
+
+
+@pytest.mark.parametrize("observed,now,webs,reason", [
+    (1.15, 1.19, 5, None),  # Before slot: no proposal, no consumption.
+    (1.18, 1.22, 5, "scheduled_start"),  # Fresh acquisition precedes slot.
+    (1.22, 1.24, 5, "scheduled_start"),  # Slot bound is tighter.
+    (1.1, 1.21, 5, "stale_observation"),
+    (1.125, 1.125 + .1, 5, "stale_observation"),  # Exact observation expiry.
+    (1.23, 1.22, 5, "invalid_observation_clock"),
+    (float("nan"), 1.22, 5, "invalid_observation_clock"),
+    (None, 1.22, 5, "invalid_observation_clock"),
+    ("bad", 1.22, 5, "invalid_observation_clock"),
+    (1.18, 1.22, None, "unknown_or_empty_ammo"),
+    (1.18, 1.22, 0, "unknown_or_empty_ammo"),
+    (1.25, 1.3, 5, "late_opportunity"),  # Exact slot expiry.
+    (1.26, 1.31, 5, "late_opportunity"),
+])
+def test_slot_eligibility_uses_proposal_clock_and_preserves_both_deadlines(observed, now, webs, reason):
+    schedule, clock, memory, bot = established_schedule()
+    clock.t = now
+    intent = schedule(State(observed, (1280, 720), webs=webs, detections=[bot]), memory)
+    slot = dict(schedule.slots[0])
+    assert slot.get("reason") == reason
+    assert len(schedule.slots) == 3
+    if reason == "scheduled_start":
+        assert intent.web_cluster_request == "start"
+        assert intent.valid_until == slot["request_valid_until"] == min(slot["deadline"], observed + probe.PERIOD_S)
+        assert schedule.last["request_valid_until"] == intent.valid_until
+        assert intent.resources.observed_t == slot["observed_t"] == observed
+    else:
+        assert getattr(intent, "web_cluster_request", None) != "start"
+        assert slot["request_valid_until"] is None
+    # The original slot stays terminal even if a repaired/current observation
+    # arrives in its window; an early call alone must leave it available.
+    clock.t = now + .005
+    follow = schedule(State(clock.t, (1280, 720), webs=5, detections=[bot]), memory)
+    assert isinstance(follow, probe.Idle) or follow.web_cluster_request == "no_new_start"
+    assert schedule.slots[0] == slot
+    if reason is None:
+        clock.t = 1.22
+        later = schedule(State(1.20, (1280, 720), webs=5, detections=[bot]), memory)
+        assert later.web_cluster_request == "start" and schedule.slots[0]["status"] == "proposed"
+
+
+@pytest.mark.parametrize("bad", [float("nan"), float("inf"), None, "bad"])
+def test_invalid_evaluation_clock_cannot_open_a_slot(bad):
+    schedule, clock, memory, bot = established_schedule()
+    clock.t = bad
+    intent = schedule(State(1.18, (1280, 720), webs=5, detections=[bot]), memory)
+    assert isinstance(intent, probe.Idle)
+    assert all(s["status"] == "pending" and s["request_valid_until"] is None for s in schedule.slots)
+
+
+@pytest.mark.parametrize("latency,accepts", [(.064, 3), (.074, 0)])
+def test_real_joined_loop_processing_latency_crosses_slot_start_without_retiming(harness, tmp_path, latency, accepts):
+    # 94 ms acquisitions put original observations just BEFORE each fixed slot;
+    # HUD work completes inside it. Real Loop/Controller/LiveIO/Live do the rest.
+    n = 0
+    def next_frame():
+        nonlocal n
+        harness.clock.t = harness.io.t0 + n * .094
+        n += 1
+        harness.live.frame = probe.DryFrame()
+        harness.live.frame_t = harness.clock.t
+        return harness.live.frame, harness.source.now()
+    def hud(frame):
+        harness.clock.t += latency
+        return {"webs": frame.webs}
+    harness.source.next, harness.p.hud = next_frame, hud
+    result = run(harness, tmp_path)
+    assert result["start_proposals"] == result["scheduled_opportunities"] == 3
+    assert result["controller_acceptances"] == accepts
+    for slot in result["slots"]:
+        assert slot["observed_t"] < slot["scheduled_t"] <= slot["evaluated_t"] < slot["deadline"]
+        assert slot["request_valid_until"] == slot["observed_t"] + .1
+        assert slot["resources"]["observed_t"] == slot["observed_t"]
+        assert slot["controller_reason"] == ("accepted" if accepts else "insufficient_press_time")
+    assert (result["lt_send_returns"] > 0) is bool(accepts)
+    assert result["terminal_releases"][-1]["release_returned"] is True
+    assert harness.device.neutral()
+
+
+@pytest.mark.corpus
+def test_frozen_c_states_keep_original_clocks_through_controller_and_fake_liveio(harness):
+    """Explicitly authorized C JSON only; no images or other recordings.
+
+    Each controller is synthetically armed to isolate this request boundary.
+    These counterfactual software checks do not relabel C's failed native slots.
+    """
+    import hashlib
+    from agent.controller import ARM_FRAMES, Controller
+    from agent.intents import RangeSkill, RangeSkillResources
+    out = Path(__file__).resolve().parents[1] / "data/l1/range-cast-probe-20260922-c"
+    if not out.exists():
+        pytest.skip("authorized attempt C is not present on this machine")
+    pins = {"probe-config.json": "4b8db2ed2657c02272779d7de14e67383dd6c578ee9f31c68e8543cb704d6a31",
+            "probe-report.json": "3249a82ef06725493f2e4021708f1a67f6313fdc9bbc6438549dafb438eb67f8",
+            "frames.jsonl": "09003eb6df9a0342cdb2dca89836bda3a58b856d271d221280262d90dd4eee67"}
+    raw = {name: (out / name).read_bytes() for name in pins}
+    assert {name: hashlib.sha256(data).hexdigest() for name, data in raw.items()} == pins
+    config, original = json.loads(raw["probe-config.json"]), json.loads(raw["probe-report.json"])
+    records = [json.loads(line) for line in raw["frames.jsonl"].splitlines()]
+    assert original["controller_acceptances"] == original["lt_send_attempts"] == 0
+    for slot in original["slots"]:
+        state = State.from_dict(next(r["state"] for r in records if r.get("state", {}).get("t") == slot["observed_t"]))
+        before = state.to_dict()
+        bot = next(d for d in state.detections if d.track == original["target_id"])
+        ctrl = Controller()
+        for i in range(ARM_FRAMES):
+            t = state.t - (ARM_FRAMES - i) * .02
+            ctrl.step(replace(state, t=t), RangeSkill(bot, "no_new_start", i, t + .1, RangeSkillResources(state.webs, t)),
+                      intent_t=t, execution_t=t)
+        schedule = probe.CastSchedule(config["target_roi"], lambda: slot["evaluated_t"])
+        schedule.n, schedule.setup_t, schedule.target_id = ARM_FRAMES, original["setup_t"], bot.track
+        for s in schedule.slots:
+            s["scheduled_t"] = schedule.setup_t + s["offset_s"]
+            s["deadline"] = s["scheduled_t"] + .1
+            if s["slot"] < slot["slot"]:
+                s["status"] = "refused"
+        intent = schedule(state, SimpleNamespace(target=None))
+        assert intent.web_cluster_request == "start"
+        assert intent.valid_until == min(slot["deadline"], state.t + .1)
+        assert intent.resources.observed_t == state.t
+        pad = ctrl.step(state, intent, intent_t=state.t, execution_t=slot["evaluated_t"])
+        trace = ctrl.range_skill_trace
+        assert trace["reason"] == ("accepted" if slot["slot"] < 3 else "insufficient_press_time")
+        assert state.to_dict() == before
+        harness.clock.t = harness.io.t0 + slot["evaluated_t"]
+        harness.live.frame_t = harness.io.t0 + state.t
+        harness.live.frame = probe.DryFrame()
+        if pad["lt"]:
+            release_at = min(trace["pulse_press_until"], intent.valid_until)
+            harness.io.send_guarded(pad, not_after=min(intent.valid_until - ctrl.cal.press_s, release_at), release_at=release_at)
+            assert harness.device.reports[-1][1]["lt"] == 1
+        else:
+            harness.io.send(pad)
+            assert harness.device.reports[-1][1]["lt"] == 0
+        harness.io.release()
+        assert harness.device.neutral()
+    assert {name: hashlib.sha256((out / name).read_bytes()).hexdigest() for name in pins} == pins

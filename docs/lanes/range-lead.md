@@ -117,6 +117,35 @@ restart the combined deadline. Lead adopts these bytes for native measurement;
 HUD switching, final pose and actual casts remain to be observed. No additional
 human recording is required for this repair.
 
+### Native calibration attempts B/C: startup works, scheduling needs repair
+
+Both attempts ran the accepted `3a1165f` caller with their own native recordings
+and retained logs. B confirmed startup after one camera pulse; all 13 decision
+ammo readings were five, and the inspected native frame has PAD prompts. Its
+configured ROI included Luna plus two distant bots, so setup correctly refused.
+C narrowed that existing parameter to `.48,.30,.75,.65`, acquired Luna, and
+visibly approached/aimed through the scripted executor. No source or threshold
+change separated B and C. Both retained successful terminal neutral returns.
+
+C evaluated all three scheduled slots but sent no LT. The first two observations
+preceded their slot boundaries by 27.90/60.13 ms; processing finished inside each
+slot, with observations only 53.90/64.15 ms old. The caller nevertheless consumed
+them as `late_opportunity`. Their original observation-plus-100ms authority still
+had 46.10/35.85 ms remaining. The third was proposed but correctly refused by the
+Controller with only 26.97 ms available for a 33 ms requested press.
+
+Root reproduced the first two classifications from C's exact saved State and
+clock values. The scoped repair permits an original fresh observation acquired
+before a scripted slot, once the actual proposal time enters that slot. Request
+expiry must be the minimum of slot deadline and observation plus 100 ms. Resource
+times, fixed slots, consumption, full-press refusal and actuator limits remain.
+Independent changed-caller review accepts the correction: 54 tests pass, plus
+the selected C JSON boundary test and 56 separate eligibility controls. A real
+guarded fake-device check refuses C's second request after an additional 4 ms
+delay, preserving its tight send deadline. Lead adopts these bytes. All nine A/B/C
+opportunities remain failed or unattempted in their original reports; these
+runs establish neither a visible cast nor learned gameplay.
+
 ## Event policy and caller acceptance, 2026-09-22
 
 Independent same-reviewer acceptance covers the new event policy/consumer,
