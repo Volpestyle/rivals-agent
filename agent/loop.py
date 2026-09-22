@@ -429,16 +429,18 @@ class Loop:
     # -- the run, and its one exit ------------------------------------------------------------------------------------
     def run(self):
         reason = "error"
+        propagating_error = False
         try:
             reason = self._loop()
         except RangeLost:                               # Live refused a send: it has already released
             reason = "range_lost"
         except BaseException as e:
+            propagating_error = True
             reason = f"error: {type(e).__name__}: {e}"
             raise
         finally:
             self.stop = reason
-            self._finish(reason)
+            self._finish(reason, preserve_error=propagating_error and self.range_skill_mode)
         return self.summary()
 
     def _loop(self):
@@ -474,7 +476,7 @@ class Loop:
         observed, returned = self._frame_clock
         return observed + time.perf_counter() - returned
 
-    def _finish(self, reason):
+    def _finish(self, reason, *, preserve_error=False):
         if self.range_skill_mode:
             self._release(reason, force=True)           # records cancellation and actual release separately
         else:
@@ -495,7 +497,12 @@ class Loop:
             except Exception as e:                      # noqa: BLE001
                 self.errors.append(f"release: {e!r}")
         if self.log:
-            self.log.close(self.summary(), self._segments())
+            try:
+                self.log.close(self.summary(), self._segments())
+            except Exception as e:
+                self.errors.append(f"close log: {e!r}")
+                if not preserve_error:
+                    raise
 
     # -- one reflex tick ------------------------------------------------------------------------------------------------
     def _tick(self, frame, t):
@@ -538,8 +545,33 @@ class Loop:
         execution = {"execution_t": self._execution_now()} if self.range_skill_mode else {}
         pad = clean(self._keepalive(self.ctrl.step(State(t=t, frame=size, detections=dets, coasting=self.coasting), intent,
                                                    intent_t=d.t if fresh else None, **execution), t))
+        origin = None
         if self.range_skill_mode:
-            pad = self._send_skill(pad, t)
+            # In-memory only, before send/cancellation can replace the step.
+            # No writer runs until the actuator's send or release attempt returns.
+            if self.log:
+                origin = {"observation_t": t, "proposed_pad": deepcopy(pad)}
+                trace = self.ctrl.range_skill_trace
+                if trace is not None:
+                    origin["range_skill_trace"] = trace
+                if d is not None:
+                    origin["d"] = d.n
+                    if d.n != self.last_d:
+                        origin.update(state=d.state.to_dict(), ms_decide=round(d.ms, 2))
+                        if d.trace is not None:
+                            origin["decision_trace"] = deepcopy(d.trace)
+            try:
+                pad = self._send_skill(pad, t)
+            except Exception:
+                # _send_skill has already attempted release. Retain the original
+                # exception even if this diagnostic writer also fails.
+                try:
+                    self._log(t, None, label(intent), source, frame, dets,
+                              (time.perf_counter() - c0) * 1000, d, origin=origin,
+                              event="executor_send_failure")
+                except Exception as e:
+                    self.errors.append(f"failed-send log: {e!r}")
+                raise
         else:
             self.pad.send(pad)                          # Live confirms its own frame again: a second, independent guard
         self.sent = pad
@@ -549,7 +581,7 @@ class Loop:
         self.sources[source] += 1
         self.intents[note] += 1
         self.tick_ms.append((time.perf_counter() - c0) * 1000)
-        self._log(t, pad, note, source, frame, dets, self.tick_ms[-1], d)
+        self._log(t, pad, note, source, frame, dets, self.tick_ms[-1], d, origin=origin)
         if self.every and t - self.last_board >= self.every:
             self._scoreboard(t, f"scoreboard-{len(self.boards)}")
             self.last_board = t
@@ -683,11 +715,16 @@ class Loop:
         except Exception as e:                          # noqa: BLE001
             return {"error": repr(e)}
 
-    def _log(self, t, pad, note, source, frame, dets=(), ms=0.0, d=None):
+    def _log(self, t, pad, note, source, frame, dets=(), ms=0.0, d=None, *, origin=None, event=None):
         if not self.log:
             return
-        row = {"t": round(t, 4), "pad": {**pad, "buttons": list(pad["buttons"])}, "note": note, "source": source,
+        row = {"t": round(t, 4), "note": note, "source": source,
                "dets": [[round(v) for v in x.bbox] for x in dets], "ms": round(ms, 2)}
+        if pad is not None:
+            row["pad"] = {**pad, "buttons": list(pad["buttons"])}
+        if event is not None:
+            row["type"] = event
+            row["reason"] = "send_failed"
         try:                                            # the id trace (a steal is visible per tick): logging only, never raises into the tick
             row["ids"] = [x.track for x in dets]        # parallel to "dets"
             row["coasting"] = list(self.coasting)
@@ -699,19 +736,30 @@ class Loop:
                                 if box is not None and self.size else None)
         except Exception:                               # noqa: BLE001 - a trace field is never worth a tick
             pass
-        if d is not None:
+        if origin is not None:
+            row.update(origin)
+        elif d is not None:
             row["d"] = d.n
             if d.n != self.last_d:                      # the row a decision first stood on carries its State
-                row["state"], row["ms_decide"], self.last_d = d.state.to_dict(), round(d.ms, 2), d.n
+                row["state"], row["ms_decide"] = d.state.to_dict(), round(d.ms, 2)
                 if d.trace is not None:
                     row["decision_trace"] = d.trace
         if self.range_skill_mode:
-            trace = getattr(self.ctrl, "range_skill_trace", None)
-            if trace is not None and trace.get("t") == t:
-                row["range_skill_trace"] = deepcopy(trace)
+            if origin is None:
+                trace = getattr(self.ctrl, "range_skill_trace", None)
+                if trace is not None and trace.get("t") == t:
+                    row["range_skill_trace"] = deepcopy(trace)
             if self.last_send is not None and self.last_send["observation_t"] == t:
                 row["send_result"] = deepcopy(self.last_send)
+            if origin is not None and row.get("send_result", {}).get("status") in ("failed", "not_sent"):
+                # Mirror refusal evidence in summary even if the frame writer
+                # fails. This is the SAME send event, not another attempt.
+                self.executor_events.append(deepcopy({**row,
+                    "type": event or "executor_send_refusal",
+                    "reason": "send_failed" if event else "send_deadline"}))
         self.log.write(row, frame)
+        if "state" in row:
+            self.last_d = row["d"]                      # dedup only after the writer returns
 
     def _segments(self):
         """Proven stretches: the run cut at every HUD gap. A run that ends inside a gap ends by no_hud."""

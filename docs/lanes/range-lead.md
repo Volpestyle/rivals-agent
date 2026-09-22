@@ -63,6 +63,14 @@ preserves future 20-second trials; this run used explicit 10-second learned
 phase plus at most 14 seconds of startup. Input authorization is not an exact
 physical timing or visible-completion guarantee.
 
+The resulting failed-send trace repair is independently accepted: future rows
+retain the original decision/resources, accepting step and proposed pad alongside
+failed/refused delivery and actual release. Release precedes diagnostic writing;
+metadata mirrors do not create extra attempts. The original 84 trace remains
+missing. [Review and frozen pins](../evidence/range-request-runtime-20260922/failed-send-software-review.md).
+Next caller work is bounded phase scheduling and per-stage latency timestamps;
+the current observation tolerance and execution deadlines remain in force.
+
 ## Event execution acceptance, 2026-09-22 12:39 CDT
 
 Lead accepts the independently reviewed `RangeSkill` controller and guarded Live

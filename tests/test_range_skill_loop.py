@@ -680,3 +680,215 @@ def test_shared_foreground_guard_compares_actual_api_pid_result_without_focusing
     assert guard() is False
     state.window = 0
     assert guard() is False
+
+
+def failing_send_run(tmp_path, *, fail_at=1, release_fails=False, write_fails=False,
+                     close_fails=False, mutate=False, send_error=None):
+    """Real Loop/Controller/FakePad/RunLog, with faulting device/writer methods."""
+    events = []
+    error = send_error or OSError("synthetic guarded send failure")
+    class Pad(FakePad):
+        calls, failed = 0, False
+        def send_guarded(self, value, **limits):
+            self.calls += 1
+            events.append("send")
+            if self.calls == fail_at:
+                self.failed = True
+                if mutate:
+                    value["lt"] = 0
+                    run.decider.latest.state.webs = None
+                    run.decider.latest.trace["proposal"] = "mutated after step"
+                raise error
+            self.send(value)
+        def release(self):
+            events.append("release")
+            if self.failed and release_fails:
+                raise OSError("synthetic release failure")
+            super().release()
+    pad = Pad()
+    class Log(RunLog):
+        def write(self, row, frame=None):
+            events.append("log:" + row.get("type", "tick"))
+            if pad.failed and write_fails:
+                raise OSError("synthetic frame writer failure")
+            super().write(row, frame)
+        def close(self, meta, segments):
+            events.append("close")
+            super().close(meta, segments)
+            if close_fails:
+                raise OSError("synthetic close writer failure")
+    out = tmp_path / "send-trace"
+    source = Frames(timeline(.65, dets=[BOT]))
+    run = runtime.Loop(source, pad, readers(), EventBrain("start"),
+                       brain_name="range-skill", max_s=1, scoreboard=False, log=Log(out, save_fps=0),
+                       execution_clock=lambda: source.items[max(0, source.i - 1)][1])
+    return SimpleNamespace(run=run, pad=pad, out=out, events=events, error=error)
+
+
+def trace_rows(h):
+    return [json.loads(s) for s in (h.out / "frames.jsonl").read_text().splitlines()]
+
+
+@pytest.mark.parametrize("range_lost", [False, True])
+def test_failed_send_preserves_origin_after_release_without_claiming_delivery(tmp_path, range_lost):
+    error = runtime.RangeLost("synthetic focus refusal") if range_lost else OSError("synthetic device failure")
+    h = failing_send_run(tmp_path, send_error=error, mutate=True)
+    if range_lost:
+        assert h.run.run()["stop"] == "range_lost"
+    else:
+        with pytest.raises(OSError) as caught:
+            h.run.run()
+        assert caught.value is error
+    records = trace_rows(h)
+    origin = next(r for r in records if r.get("type") == "executor_send_failure")
+    release = next(r for r in records if r.get("type") == "executor_release" and r["reason"] == "send_failed")
+    assert records.index(release) < records.index(origin)
+    assert "pad" not in origin and origin["proposed_pad"]["lt"] == 1
+    assert origin["range_skill_trace"]["event"] == "step"
+    assert origin["range_skill_trace"]["accepted"] is True
+    assert origin["range_skill_trace"]["pulse_decision_id"] == origin["d"] == 2
+    assert origin["range_skill_trace"]["resources"] == {"webs": 5, "observed_t": .1}
+    assert origin["state"]["webs"] == 5 and origin["state"]["t"] == .1
+    assert origin["decision_trace"]["proposal"] == "start"
+    assert origin["decision_trace"]["t"] == origin["observation_t"] == .1
+    assert origin["send_result"]["status"] == "failed"
+    assert origin["send_result"] == release["preceding_send_result"]
+    assert release["range_skill_trace"]["event"] == "cancel" and release["release_returned"]
+    assert len([r for r in records if "decision_trace" in r]) == h.run.decider.n == 2
+    assert not any(p["lt"] for p in sends(h.pad)) and h.pad.state == runtime.NEUTRAL
+    meta = json.loads((h.out / "meta.json").read_text())
+    assert next(e for e in meta["executor_events"] if e["type"] == "executor_send_failure") == origin
+
+
+def test_pre_send_deadline_refusal_keeps_step_and_original_decision(tmp_path):
+    run, pad, _ = delayed_event_run(after_controller_delay=.15)
+    out = tmp_path / "deadline"
+    run.log = RunLog(out, save_fps=0)
+    run.run()
+    records = [json.loads(s) for s in (out / "frames.jsonl").read_text().splitlines()]
+    row = next(r for r in records if r.get("send_result", {}).get("status") == "not_sent")
+    assert row["range_skill_trace"]["event"] == "step" and row["range_skill_trace"]["accepted"]
+    assert row["proposed_pad"]["lt"] == 1 and row["pad"]["lt"] == 0
+    assert row["observation_t"] == row["state"]["t"] == row["decision_trace"]["t"] == .1
+    assert row["range_skill_trace"]["resources"]["observed_t"] == .1
+    assert row["range_skill_trace"]["execution_t"] == .1
+    assert row["send_result"]["checked_t"] == .25
+    release = next(r for r in records if r.get("reason") == "send_deadline")
+    assert release["type"] == "executor_release" and release["release_returned"]
+    assert records.index(release) < records.index(row)
+    mirror = next(e for e in run.executor_events if e["type"] == "executor_send_refusal")
+    assert json.loads(json.dumps(mirror["range_skill_trace"])) == row["range_skill_trace"]
+    assert mirror["send_result"] == row["send_result"]
+    assert not any(p["lt"] for p in sends(pad))
+
+
+@pytest.mark.parametrize("write_fails,close_fails,release_fails", [
+    (False, False, True), (True, False, False), (False, True, False), (True, True, True),
+])
+def test_failed_send_release_and_log_faults_preserve_original_error_and_memory_evidence(
+        tmp_path, write_fails, close_fails, release_fails):
+    h = failing_send_run(tmp_path, write_fails=write_fails, close_fails=close_fails, release_fails=release_fails)
+    with pytest.raises(OSError) as caught:
+        h.run.run()
+    assert caught.value is h.error
+    i = h.events.index("send")
+    assert h.events[i + 1] == "release"
+    if release_fails:
+        assert h.events[i + 2] == "release"
+    assert h.events.index("log:executor_send_failure") > h.events.index("release")
+    release = next(e for e in h.run.executor_events if e["type"] == "executor_release" and e["reason"] == "send_failed")
+    assert release["release_returned"] is (not release_fails)
+    assert len(release["release_attempts"]) == (2 if release_fails else 1)
+    origin = next(e for e in h.run.executor_events if e["type"] == "executor_send_failure")
+    assert origin["range_skill_trace"]["accepted"] and origin["state"]["webs"] == 5
+    assert origin["send_result"]["status"] == "failed" and "pad" not in origin
+    assert h.run.errors and h.run.ctrl._range_pulse is None
+    if write_fails:
+        assert any("failed-send log" in e for e in h.run.errors)
+        assert not any(r.get("type") == "executor_send_failure" for r in trace_rows(h))
+    meta = json.loads((h.out / "meta.json").read_text())
+    assert next(e for e in meta["executor_events"] if e["type"] == "executor_send_failure") == json.loads(json.dumps(origin))
+
+
+def test_failed_repeated_send_does_not_duplicate_the_original_decision(tmp_path):
+    h = failing_send_run(tmp_path, fail_at=2)
+    with pytest.raises(OSError):
+        h.run.run()
+    records = trace_rows(h)
+    failure = next(r for r in records if r.get("type") == "executor_send_failure")
+    first = next(r for r in records if r.get("range_skill_trace", {}).get("accepted"))
+    assert first["send_result"]["status"] == "returned" and first["pad"]["lt"] == 1
+    assert failure["d"] == first["d"] == 2
+    assert failure["range_skill_trace"]["accepted"] is False
+    assert failure["range_skill_trace"]["pulse_decision_id"] == 2
+    assert "state" not in failure and "decision_trace" not in failure
+    assert len([r for r in records if r.get("d") == 2 and "decision_trace" in r]) == 1
+    assert failure["range_skill_trace"]["resources"] == first["range_skill_trace"]["resources"]
+
+
+def test_successful_sends_keep_one_decision_trace_and_no_failure_events(tmp_path):
+    h = failing_send_run(tmp_path, fail_at=None)
+    result = h.run.run()
+    records = trace_rows(h)
+    assert len([r for r in records if "decision_trace" in r]) == result["decisions"]
+    assert len({r["d"] for r in records if "decision_trace" in r}) == result["decisions"]
+    assert all(e["type"] == "executor_release" for e in result["executor_events"])
+    for row in records:
+        if "proposed_pad" in row:
+            assert row["proposed_pad"] == row["pad"]
+            assert row["send_result"]["status"] == "returned"
+    assert any(p["lt"] for p in sends(h.pad)) and h.pad.state == runtime.NEUTRAL
+
+
+def test_logging_failure_after_successful_send_still_releases_before_close(tmp_path):
+    events = []
+    error = OSError("tick writer failed after successful send")
+    class Pad(FakePad):
+        def release(self):
+            events.append("release")
+            super().release()
+    pad = Pad()
+    class Log(RunLog):
+        def write(self, row, frame=None):
+            if row.get("pad", {}).get("lt"):
+                events.append("log_failure")
+                raise error
+            super().write(row, frame)
+        def close(self, meta, segments):
+            events.append("close")
+            super().close(meta, segments)
+    run = runtime.Loop(Frames(timeline(.65, dets=[BOT])), pad, readers(), EventBrain("start"),
+                       brain_name="range-skill", max_s=1, scoreboard=False,
+                       log=Log(tmp_path / "log-failure", save_fps=0))
+    with pytest.raises(OSError) as caught:
+        run.run()
+    assert caught.value is error and events.index("log_failure") < events.index("release") < events.index("close")
+    assert pad.state == runtime.NEUTRAL
+
+
+def test_deadline_refusal_survives_frame_log_failure_after_release(tmp_path):
+    run, pad, _ = delayed_event_run(after_controller_delay=.15)
+    error = OSError("deadline frame writer failed")
+    class Log(RunLog):
+        def write(self, row, frame=None):
+            if row.get("send_result", {}).get("status") == "not_sent":
+                assert pad.history[-1][0] == "release"
+                raise error
+            super().write(row, frame)
+    out = tmp_path / "deadline-log-failure"
+    run.log = Log(out, save_fps=0)
+    with pytest.raises(OSError) as caught:
+        run.run()
+    assert caught.value is error and pad.state == runtime.NEUTRAL
+    meta = json.loads((out / "meta.json").read_text())
+    origin = next(e for e in meta["executor_events"] if e["type"] == "executor_send_refusal")
+    assert origin["send_result"]["status"] == "not_sent"
+    assert origin["state"]["t"] == .1 and origin["range_skill_trace"]["accepted"]
+    assert run.last_d == 1  # Unsuccessful frame write did not claim decision 2 was logged.
+
+
+def test_close_log_failure_without_a_send_error_still_propagates(tmp_path):
+    h = failing_send_run(tmp_path, fail_at=None, close_fails=True)
+    with pytest.raises(OSError, match="synthetic close writer failure"):
+        h.run.run()
+    assert h.pad.state == runtime.NEUTRAL and "close" in h.events
