@@ -10,11 +10,36 @@ VUH-1349 is canceled. The legacy binary policy and failed visual packet below
 retain their historical meaning; no labels or checkpoint classes are remapped.
 The next experiment learns individual web starts while aim/movement run
 independently, under [the event contract](range-policy-reframe.md). Its changed
-consumer/controller and event labels still require independent review.
+consumer and final model integration are under review. The event controller and
+the first two source labels have the bounded acceptances recorded below.
 Priorities are mechanics, useful picks, escape, fluent swings/momentum/bhops and
 teammate support. Imitation initializes the agent; later bounded RL may improve
 outcomes and learn new techniques as the action space expands. The caller
 contract below describes the delivered legacy mode, not a new deployment receipt.
+
+## Event execution acceptance, 2026-09-22 12:39 CDT
+
+Lead accepts the independently reviewed `RangeSkill` controller and guarded Live
+actuator. A web-start request is consumed once; no-new-start leaves scripted
+movement/aim independent. Observation and execution clocks remain distinct.
+Expiry stops offensive authorization without discarding valid current tracking;
+slow processing/proof/lock acquisition cannot authorize an expired write. Terminal
+records retain the original pulse owner and actual release attempts, including
+failures. The existing watchdog bounds held requests at its documented resolution,
+not an independently measured game-visible pulse duration.
+
+Root reproduced all three original failures before repair. Independent delta
+review passed 220 tests, excluding four changing policy-dependent cases. Root's
+integrated synthetic suite passed 237 checks; the final saved-model integration
+still awaits the event-policy delta review. Controller and Live can land as a
+separable accepted slice; the new CLI lands with its policy module.
+
+Independent admission review supports n199/n200 of the frozen earlier-session
+event packet, and lead accepts those two labels solely for a TRAIN-only fit/reload
+diagnostic. The other 106 grid coordinates remain unknown. The non-start has zero
+ammo, and tracks are constructed per window; no useful timing, persistent live
+selector equivalence, validation performance or gameplay claim follows. Corpus
+owner is persisting the genuine receipt without changing the frozen candidate.
 
 ## Accepted software delta, 2026-09-22
 

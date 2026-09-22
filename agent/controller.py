@@ -2,13 +2,14 @@
 
 Two layers, kept apart so the logic runs offline:
 
-  Controller.step(state, intent) -> pad dict   pure: no capture, no pad, no clock but state.t
+  Controller.step(state, intent, ...) -> pad dict   pure: explicit observation/execution clocks, no capture or pad
   Live                                         the PC side: dxcam frames, the range-HUD guard, ONE pad
 
 Safety (docs/plan.md scope boundary): Live.send() refuses unless a frame younger
 than 100 ms shows the practice-range HUD. On the lobby X is START for a live match
 and the left stick drives a click cursor, so nothing is ever sent blind.
 """
+import math
 import sys
 import threading
 import time
@@ -111,7 +112,7 @@ class Live:
             time.sleep(0.001)
 
     # -- the actuator -----------------------------------------------------------------------------------------------
-    def _commit(self, state, proof):
+    def _commit(self, state, proof, *, not_after=None, release_at=None):
         """Write `state` if `proof(frame)` holds. The age of THAT frame is judged twice: here, after the proof has been
         computed, and again at the actuator, inside the pad lock, immediately before the write (see _apply)."""
         if time.perf_counter() - self.frame_t > FRESH_S:
@@ -121,7 +122,10 @@ class Live:
         if not ok or time.perf_counter() - proof_t > FRESH_S:
             self.release()
             raise RangeLost("range proof missing or stale at commit; input released")
-        self._apply(state, proof_t)
+        if not_after is not None and (time.perf_counter() >= not_after or time.perf_counter() >= release_at):
+            self.release()
+            raise RangeLost("guarded input deadline expired after proof; input released")
+        self._apply(state, proof_t, not_after=not_after, release_at=release_at)
 
     def send(self, **changes):
         """Apply pad changes: whitelisted buttons only, and only against fresh in-range proof at the moment of writing."""
@@ -131,6 +135,30 @@ class Live:
             self.release()
             raise Forbidden(f"refused {sorted(bad)}")
         self._commit(state, self._in_range)
+
+    def send_guarded(self, pad, *, not_after, release_at):
+        """Commit a pad snapshot within absolute perf_counter deadlines.
+
+        Expiry is checked after proof and again inside the actuator lock. The
+        watchdog lease is capped to release_at on its separate monotonic clock.
+        This bounds requests at existing watchdog resolution, not device delivery.
+        """
+        try:
+            valid = all(type(t) in (int, float) and math.isfinite(t) for t in (not_after, release_at))
+        except OverflowError:
+            valid = False
+        if not valid or not_after > release_at:
+            self.release()
+            raise Forbidden("invalid guarded input deadlines; input released")
+        state = {**NEUTRAL, **pad}
+        bad = (set(pad) - STATE_KEYS) | (set(state["buttons"]) - ALLOWED)
+        if bad:
+            self.release()
+            raise Forbidden(f"refused {sorted(bad)}")
+        if not state["buttons"] and not any(state[k] for k in ("lx", "ly", "rx", "ry", "lt", "rt")):
+            self.release()
+            return
+        self._commit(state, self._in_range, not_after=not_after, release_at=release_at)
 
     def release(self):
         self._apply(dict(NEUTRAL))
@@ -193,7 +221,7 @@ class Live:
             time.sleep(0.02)
         return shot
 
-    def _apply(self, s, proof_t=None):
+    def _apply(self, s, proof_t=None, *, not_after=None, release_at=None):
         """The actuator. A neutral state is always written. A non-neutral one needs the timestamp of the frame that
         proved it, and is checked HERE, inside the lock, immediately before the write: not closed, and the proof still
         under FRESH_S old (a wait for the lock cannot hide a stale proof). Capture and proof never run under this lock."""
@@ -202,13 +230,20 @@ class Live:
             if neutral:
                 self._write(s)
                 return
+            # Sample the lease clock first so conversion cannot add time spent
+            # waiting on proof, the lock or the device write to the deadline.
+            lease_now = _real_clock() if release_at is not None else None
+            now = time.perf_counter()
             if self._dead:
                 refusal = "Live is closed; input refused"
-            elif proof_t is None or time.perf_counter() - proof_t > FRESH_S:
+            elif proof_t is None or now - proof_t > FRESH_S:
                 refusal = "range proof stale at the actuator; input released"
+            elif not_after is not None and (now >= not_after or now >= release_at):
+                refusal = "guarded input deadline expired at the actuator; input released"
             else:
+                lease_until = None if release_at is None else lease_now + min(LEASE_S, release_at - now)
                 self._write(s)
-                self._lease_until = _real_clock() + LEASE_S
+                self._lease_until = _real_clock() + LEASE_S if lease_until is None else lease_until
                 return
             self._write(dict(NEUTRAL))
         raise RangeLost(refusal)
@@ -239,11 +274,11 @@ class Live:
 # ---------------------------------------------------------------------------
 # Pure controller: State + Intent -> pad dict. No capture, no pad, no wall clock.
 # ---------------------------------------------------------------------------
-import math  # noqa: E402
-from dataclasses import dataclass, field  # noqa: E402
+from dataclasses import dataclass, field, replace  # noqa: E402
+from copy import deepcopy  # noqa: E402
 
-from .intents import BURST, Combo, Disengage, Engage, Idle, Pull, Search, SwingTo, WebStrike  # noqa: E402
-from .state import ANCHOR, ENEMY, TARGET  # noqa: E402
+from .intents import BURST, Combo, Disengage, Engage, Idle, Pull, RangeSkill, RangeSkillResources, Search, SwingTo, WebStrike  # noqa: E402
+from .state import ANCHOR, ENEMY, TARGET, Detection  # noqa: E402
 from .tracker import CLOSE_H, CLOSE_RATIO, SIZE_RATIO  # noqa: E402
 
 
@@ -339,6 +374,18 @@ class Track:
         self.v_pitch += beta * rp / max(dt, 1e-3)
 
 
+RANGE_SKILL_VALID_S = 0.1
+
+
+@dataclass
+class _RangePulse:
+    decision_id: int
+    target_id: int
+    valid_until: float
+    press_until: float
+    steps: list
+
+
 @dataclass
 class Controller:
     cal: Cal = field(default_factory=Cal)
@@ -363,6 +410,13 @@ class Controller:
     phase_t: float = 0.0
     wanted: object = None                                   # the brain's target measurement the track was last aimed from
     wanted_id: int | None = None                            # the tracker id of the brain's target the track follows
+    _range_pulse: _RangePulse | None = None
+    _range_seen_id: int = -1
+    _range_seen_request: object = None
+    _range_seen_result: str = "none"
+    _range_trace: dict | None = None
+    _range_lt: bool = False
+    _range_execution_t: float | None = None
 
     # -- primitives: (seconds, pad changes) ---------------------------------
     def _tap(self, **down):
@@ -390,9 +444,23 @@ class Controller:
             self.seq.append((end, changes))
 
     # -- one step -------------------------------------------------------------
-    def step(self, state, intent, intent_t=None):
+    def step(self, state, intent, intent_t=None, execution_t=None):
         """`intent_t`: the frame time of the State the brain decided on (the loop's Decision.t), so a target the brain measured is
-        placed at the camera angle of that frame, not of this one. None: the target is placed at this frame's angle."""
+        placed at the camera angle of that frame, not of this one. None: the target is placed at this frame's angle.
+        `execution_t`: range-mode authorization/actuation clock, in the same domain; defaults to State.t for replay.
+        Observations are never re-stamped with execution time."""
+        execution_t = state.t if execution_t is None else execution_t
+        if isinstance(intent, RangeSkill):
+            return self._range_step(state, intent, intent_t, execution_t)
+        range_exit = self.intent_key == ("RangeSkill", None)
+        old_pulse = self._range_pulse
+        if range_exit:
+            if not self._range_execution_valid(execution_t, state.t):
+                return self.cancel_range_skill(execution_t, "invalid_execution_time")
+            self._range_execution_t = execution_t
+            self._range_cancel()
+        else:
+            self._range_trace = None
         t = state.t
         dt = 0.0 if self.last_t is None else max(0.0, min(0.1, t - self.last_t))
         self.last_t = t
@@ -479,7 +547,265 @@ class Controller:
         if out["lt"] or out["rt"] or set(out["buttons"]) & {"X", "RB"}:
             self.attack_t = t
         self.stick = (out["rx"], out["ry"])
+        if range_exit:
+            self._range_record(state.t, None, out, "mode_exit", False, old_pulse, "mode_exit", execution_t=execution_t)
         return out
+
+    @property
+    def range_skill_trace(self):
+        """Detached snapshot for this step; pad requests, not proof of delivery.
+
+        None outside this mode, except its first exit step records cancellation.
+        Root joins this to decision provenance/masks and the actual send result.
+        """
+        return deepcopy(self._range_trace)
+
+    def _range_cancel(self):
+        self._range_pulse = None
+        self.seq, self.seq_name, self.played = [], "", None
+        self.stable = 0
+
+    def cancel_range_skill(self, execution_t, reason):
+        """Return a neutral request and record external cancellation of the owned pulse.
+
+        No new observation/decision is invented and consumed IDs are retained.
+        The caller must attempt physical release and log its actual result/time.
+        Invalid cancellation clocks still cancel, without claiming elapsed press.
+        """
+        previous = self._range_pulse
+        valid_clock = self._range_execution_valid(execution_t, self.last_t)
+        self._range_cancel()
+        self.track, self.wanted, self.wanted_id = None, None, None
+        if valid_clock:
+            self._range_execution_t = execution_t
+        return self._range_record(self.last_t, None, dict(NEUTRAL), reason, False, previous, reason,
+                                  execution_t=execution_t, event="cancel", valid_execution=valid_clock)
+
+    def _range_execution_valid(self, execution_t, observation_t):
+        return (self._range_number(execution_t)
+                and (observation_t is None or (self._range_number(observation_t) and execution_t >= observation_t))
+                and (self._range_execution_t is None or execution_t >= self._range_execution_t))
+
+    @staticmethod
+    def _range_number(value):
+        try:
+            return type(value) in (int, float) and math.isfinite(value)
+        except OverflowError:
+            return False
+
+    @classmethod
+    def _range_detection(cls, det, frame):
+        if not isinstance(det, Detection) or det.cls not in (ENEMY, TARGET):
+            return False
+        if type(det.track) is not int or det.track < 0:
+            return False
+        if not cls._range_number(det.conf) or not .4 <= det.conf <= 1:
+            return False
+        if not isinstance(det.bbox, (tuple, list)) or len(det.bbox) != 4:
+            return False
+        if not all(cls._range_number(x) for x in det.bbox):
+            return False
+        x1, y1, x2, y2 = det.bbox
+        return (0 <= x1 < x2 <= frame[0] and 0 <= y1 < y2 <= frame[1]
+                and (det.distance is None or (cls._range_number(det.distance) and det.distance >= 0)))
+
+    def _range_record(self, observation_t, intent, out, reason, accepted, previous, cancel=None,
+                      *, execution_t, event="step", valid_execution=True):
+        pulse = self._range_pulse
+        down = bool(out["lt"])
+        release = self._range_lt and not down
+        ended = previous if previous is not None and pulse is not previous else None
+        outcome = None
+        if ended:
+            if cancel:
+                outcome = "truncated" if not valid_execution or not self._range_number(execution_t) or execution_t < ended.press_until else "cancelled_after_press"
+            else:
+                outcome = "completed"
+        owner = pulse or ended
+        resources = getattr(intent, "resources", None)
+        def scalar(value):
+            # Fault evidence must still fit strict JSON; don't leak NaN or an
+            # arbitrary malformed object into the caller's atomic tick log.
+            return value if value is None or type(value) in (str, bool) or self._range_number(value) else None
+        self._range_trace = {
+            "t": scalar(observation_t), "observation_t": scalar(observation_t),
+            "execution_t": scalar(execution_t), "execution_clock_valid": valid_execution, "event": event,
+            "decision_id": scalar(getattr(intent, "decision_id", None)),
+            "target_id": scalar(getattr(getattr(intent, "target", None), "track", None)),
+            "proposal": scalar(getattr(intent, "web_cluster_request", None)),
+            "valid_until": scalar(getattr(intent, "valid_until", None)),
+            "resources": {"webs": scalar(resources.webs), "observed_t": scalar(resources.observed_t)}
+            if isinstance(resources, RangeSkillResources) else None,
+            "accepted": accepted, "reason": reason, "cancel_reason": cancel,
+            "pulse_decision_id": owner.decision_id if owner else None,
+            "pulse_target_id": owner.target_id if owner else None,
+            "pulse_press_until": owner.press_until if owner else None,
+            "pulse_valid_until": owner.valid_until if owner else None,
+            "pulse_phase": ("press" if down else "release") if pulse else "none",
+            "lt_down": down, "press_edge": down and not self._range_lt,
+            "release_edge": release,
+            "movement_source": "external_cancel" if event == "cancel" else "scripted_range_approach_aim" if intent is not None else "legacy_mode",
+            "ended_pulse_decision_id": ended.decision_id if ended else None,
+            "pulse_outcome": outcome,
+            "offense_source": "accepted_learned_web_start" if pulse else None,
+            "pad": dict(out),
+        }
+        self._range_lt = down
+        self.stick = (out["rx"], out["ry"])
+        return out
+
+    def _range_step(self, state, intent, intent_t, execution_t):
+        """One-shot authorization is separate from continuously updated movement.
+
+        No rejected request is buffered. This branch never reaches legacy seq or
+        Engage selection. History support and model provenance belong to caller.
+        """
+        out, previous = dict(NEUTRAL), self._range_pulse
+        entering = self.intent_key != ("RangeSkill", None)
+        if entering:
+            self._range_cancel()
+            self.track, self.wanted, self.wanted_id = None, None, None
+            self.integ = [0.0, 0.0]
+            self.intent_key = ("RangeSkill", None)
+
+        # Burn each well-formed ID even when its payload/guards fail. A caller
+        # cannot repair an old rejected start and replay it later as fresh.
+        fresh = type(intent.decision_id) is int and intent.decision_id > self._range_seen_id
+        request = (intent, intent_t)
+        conflict = not fresh and request != self._range_seen_request
+        if fresh:
+            self._range_seen_id = intent.decision_id
+            self._range_seen_request = deepcopy(request)
+            self._range_seen_result = "rejected"
+
+        def refuse(reason):
+            self._range_cancel()
+            self.track, self.wanted, self.wanted_id = None, None, None
+            if fresh:
+                self._range_seen_result = reason
+            return self._range_record(state.t, intent, dict(NEUTRAL), reason, False, previous, reason,
+                                      execution_t=execution_t,
+                                      valid_execution=self._range_execution_valid(execution_t, state.t))
+
+        t = state.t
+        if not self._range_number(t) or (self.last_t is not None and t <= self.last_t):
+            return refuse("invalid_state_time")
+        dt = 0.0 if self.last_t is None else min(.1, t - self.last_t)
+        self.last_t = t
+        if not self._range_execution_valid(execution_t, t):
+            return refuse("invalid_execution_time")
+        self._range_execution_t = execution_t
+        if type(intent.decision_id) is not int or intent.decision_id < 0:
+            return refuse("invalid_decision_id")
+        if conflict:
+            return refuse("decision_reused_or_reordered")
+        if intent.web_cluster_request not in ("start", "no_new_start"):
+            return refuse("invalid_request")
+        if not self._range_number(intent_t) or not self._range_number(intent.valid_until):
+            return refuse("invalid_decision_time")
+        if not intent_t <= t or not 0 < intent.valid_until - intent_t <= RANGE_SKILL_VALID_S + 1e-9:
+            return refuse("decision_expired_or_invalid")
+        expired = execution_t >= intent.valid_until
+        ammo_reason = self._range_ammo_reason(intent.resources, intent_t, execution_t)
+        if ammo_reason in ("invalid_resources", "invalid_resource_time", "future_resources"):
+            return refuse(ammo_reason)
+        if (not isinstance(state.frame, (tuple, list)) or len(state.frame) != 2
+                or not all(self._range_number(v) and v > 0 for v in state.frame)):
+            return refuse("invalid_frame")
+        if not self._range_detection(intent.target, state.frame):
+            return refuse("invalid_target")
+        if self.seq:
+            return refuse("foreign_sequence")
+        if not isinstance(state.detections, (list, tuple)):
+            return refuse("unknown_detector")
+        if not isinstance(state.coasting, (list, tuple)) or intent.target.track in state.coasting:
+            return refuse("target_coasting")
+        held = [d for d in state.detections if isinstance(d, Detection) and d.track == intent.target.track]
+        if len(held) != 1 or held[0].cls != intent.target.cls or not self._range_detection(held[0], state.frame):
+            return refuse("target_missing_or_ambiguous")
+        cancel = None
+        if self.wanted_id is not None and self.wanted_id != intent.target.track:
+            self._range_cancel()
+            cancel = "target_switch"
+        # Refuse coasting even when legacy hit-flash logic would stay armed.
+        self._measured = False
+        self._follow(replace(state, detections=held), intent.target, dt, intent_t)
+        mine = self._measured and self._measured_as == intent.target.track
+        plausible = mine and PLAUSIBLE[0] <= self.track.h / state.frame[1] <= PLAUSIBLE[1]
+        if not plausible:
+            return refuse("target_not_measured")
+        self.stable += 1
+        aligned = self._aim(state, out, dt)
+        armed = self.stable >= ARM_FRAMES
+        far = beyond_reach(self.track, state.frame[1])
+        near = self.track.h / state.frame[1] >= near_h()
+        out["ly"] = 1.0 if armed and self.track.confirmed and not near and not far else 0.0
+
+        pulse = self._range_pulse
+        if expired:
+            # An old offensive decision cannot fire or keep a pulse alive, but
+            # current same-target observations still earn tracking/arming.
+            self._range_pulse = None
+            cancel = "decision_expired"
+        elif pulse and execution_t >= pulse.valid_until:
+            self._range_pulse = None
+            cancel = "pulse_expired"
+        elif pulse:
+            while pulse.steps and execution_t >= pulse.steps[0][0]:
+                pulse.steps.pop(0)
+            if not pulse.steps:
+                self._range_pulse = None
+
+        accepted = False
+        reason = "duplicate_" + self._range_seen_result if not fresh else "no_new_start"
+        if expired:
+            reason = "decision_expired"
+        elif fresh and intent.web_cluster_request == "start":
+            if self._range_pulse:
+                reason = "pulse_busy"
+            elif not armed:
+                reason = "unstable_target"
+            elif not aligned:
+                reason = "unaligned_target"
+            elif far:
+                reason = "outside_reach"
+            elif ammo_reason:
+                reason = ammo_reason
+            elif execution_t < self.next_shot_t:
+                reason = "shot_spacing"
+            elif not self._range_number(self.cal.press_s) or self.cal.press_s <= 0:
+                return refuse("invalid_press_calibration")
+            elif execution_t + self.cal.press_s > intent.valid_until:
+                reason = "insufficient_press_time"
+            else:
+                steps, end = [], execution_t
+                for seconds, changes in self.primitive("web_cluster"):
+                    end += seconds
+                    steps.append((end, changes))
+                self._range_pulse = _RangePulse(intent.decision_id, intent.target.track,
+                                                intent.valid_until, execution_t + self.cal.press_s, steps)
+                self.next_shot_t = execution_t + .34
+                accepted, reason = True, "accepted"
+        if fresh:
+            self._range_seen_result = reason
+        if self._range_pulse:
+            out.update(self._range_pulse.steps[0][1])
+        if out["lt"]:
+            self.attack_t = execution_t
+        return self._range_record(state.t, intent, out, reason, accepted, previous, cancel, execution_t=execution_t)
+
+    def _range_ammo_reason(self, resources, intent_t, t):
+        if not isinstance(resources, RangeSkillResources):
+            return "invalid_resources"
+        if not self._range_number(resources.observed_t):
+            return "invalid_resource_time"
+        if resources.observed_t > intent_t:
+            return "future_resources"
+        if t - resources.observed_t > RANGE_SKILL_VALID_S:
+            return "stale_resources"
+        if type(resources.webs) is not int or not 1 <= resources.webs <= 5:
+            return "unsupported_or_empty_ammo"
+        return None
 
     def aim_only(self, state, target):
         """Track `target` and return (pad, on_target) without moving or pressing anything: aim trials and pre-aim."""

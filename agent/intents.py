@@ -5,6 +5,7 @@ names the primitives it may play; the controller does the aiming and timing.
 
   Idle, Search        no primitive: stand down / sweep the camera
   Engage(target)      web_cluster, melee_combo, uppercut: aim, close in, fight
+  RangeSkill(...)     one requested web_cluster start; independent scripted aim/approach
   SwingTo(anchor)     swing_start(anchor) / web_zip(point)
   Pull(target)        pull       RB on an UNTAGGED enemy: they come TO YOU
   WebStrike(target)   web_strike RB on a TAGGED enemy:   YOU GO to them
@@ -20,6 +21,7 @@ holds the Detection as seen at decision time. The controller runs faster than
 the brain and re-associates it with the nearest current detection each frame.
 """
 from dataclasses import dataclass
+from typing import Literal
 
 from .state import Detection
 
@@ -41,6 +43,31 @@ class Search:
 class Engage:
     """Aim at the target, close in, and fight with web_cluster, melee_combo and uppercut."""
     target: Detection
+
+
+@dataclass(frozen=True)
+class RangeSkillResources:
+    """Ammo observed on the decision frame's clock, never re-stamped by reflex."""
+    webs: int | None
+    observed_t: float
+
+
+@dataclass(frozen=True)
+class RangeSkill:
+    """Accepted learned event proposal plus independently scripted aim/movement.
+
+    IDs increase within one Controller lifetime, including no-new-start decisions.
+    The caller validates learned history/provenance and supplies intent_t to step;
+    invalid history must become Idle, never an offensive scripted fallback.
+    valid_until and intent_t use the State loop clock, with at most 100 ms validity.
+    Explicit step execution_t checks that authority at actuation time without
+    changing State.t or the original resources.observed_t observation clocks.
+    """
+    target: Detection
+    web_cluster_request: Literal["start", "no_new_start"]
+    decision_id: int
+    valid_until: float
+    resources: RangeSkillResources
 
 
 @dataclass(frozen=True)
@@ -72,4 +99,4 @@ class Disengage:
     """Break line of sight and get away until told otherwise."""
 
 
-Intent = Idle | Search | Engage | SwingTo | Pull | WebStrike | Combo | Disengage
+Intent = Idle | Search | Engage | RangeSkill | SwingTo | Pull | WebStrike | Combo | Disengage
