@@ -1,0 +1,120 @@
+{
+  "scope": "one_fresh_process_per_configuration_synthetic_untrained_cpu_cost_only",
+  "inter_op_design": "unchanged fresh-process default in all arms; isolates intra-op thread setting; no inter-op tuning",
+  "seed": 7,
+  "warmup": 32,
+  "repeats": 200,
+  "order": [
+    "default",
+    "1",
+    "4"
+  ],
+  "contextual_reference_from_root_not_remeasured": {
+    "HUD_ms": [
+      13.3,
+      13.6
+    ],
+    "tag_ms": [
+      6.9,
+      7.2
+    ]
+  },
+  "comparison": [
+    {
+      "mode": "default",
+      "threads": {
+        "intra": 24,
+        "inter": 24
+      },
+      "cold_ms": 1.4814,
+      "probability_path": {
+        "n": 200,
+        "min_ms": 0.1353,
+        "median_ms": 0.1529,
+        "p95_nearest_rank_ms": 0.3838,
+        "max_ms": 0.5552,
+        "mean_ms": 0.1930225
+      },
+      "conversion": {
+        "n": 200,
+        "min_ms": 0.0274,
+        "median_ms": 0.029150000000000002,
+        "p95_nearest_rank_ms": 0.0739,
+        "max_ms": 0.1528,
+        "mean_ms": 0.0391505
+      }
+    },
+    {
+      "mode": "1",
+      "threads": {
+        "intra": 1,
+        "inter": 24
+      },
+      "cold_ms": 1.2444,
+      "probability_path": {
+        "n": 200,
+        "min_ms": 0.1304,
+        "median_ms": 0.14984999999999998,
+        "p95_nearest_rank_ms": 0.3238,
+        "max_ms": 0.5512,
+        "mean_ms": 0.1806615
+      },
+      "conversion": {
+        "n": 200,
+        "min_ms": 0.0272,
+        "median_ms": 0.0288,
+        "p95_nearest_rank_ms": 0.0646,
+        "max_ms": 0.2631,
+        "mean_ms": 0.035413
+      }
+    },
+    {
+      "mode": "4",
+      "threads": {
+        "intra": 4,
+        "inter": 24
+      },
+      "cold_ms": 1.3736,
+      "probability_path": {
+        "n": 200,
+        "min_ms": 0.1332,
+        "median_ms": 0.14645,
+        "p95_nearest_rank_ms": 0.2835,
+        "max_ms": 0.3844,
+        "mean_ms": 0.166919
+      },
+      "conversion": {
+        "n": 200,
+        "min_ms": 0.0273,
+        "median_ms": 0.028650000000000002,
+        "p95_nearest_rank_ms": 0.033,
+        "max_ms": 0.1055,
+        "mean_ms": 0.030069
+      }
+    }
+  ],
+  "equality": {
+    "weights_exact": true,
+    "input_float32_exact": true,
+    "synthetic_fixture_exact": true,
+    "probability_atol": 1e-07,
+    "probability_rtol": 1e-06,
+    "max_absolute_probability_delta": {
+      "default": 0.0,
+      "1": 0.0,
+      "4": 0.0
+    }
+  },
+  "worker_reports": {
+    "default.json": "69db1220f34db0adad5417aa1428e40f73189d4a391839c77362b9e817c2eb52",
+    "1.json": "3d869277d82b9ab9013193919caa45802c4dd567c1b775b065c344eee2b66c3f",
+    "4.json": "6c645ad0d892389e125555e477cd4cde5f4fba2f5dc694493395ea5568cd5416"
+  },
+  "limits": [
+    "Original live Torch thread counts unrecorded; these are current fresh-process defaults only.",
+    "No human checkpoint/rows, model replay, training, native JPGs or cv2 imports.",
+    "Synthetic probabilities test numeric dispatch only, not trained policy behavior.",
+    "Sequential bounded microbenchmark with uncontrolled background load; no live contention or stage attribution.",
+    "Root HUD/tag measurements are context, not combined with this into a measured live budget."
+  ]
+}

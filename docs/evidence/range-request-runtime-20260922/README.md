@@ -56,7 +56,7 @@ failure precedes the normal row write. Its terminal pulse ownership proves an
 additional accepted request, but its absent probability/State/resource object
 must not be reconstructed as recorded evidence. The two cleanup rows reference
 the same failed send. This is a concrete logging defect, retained in the original
-[frames.jsonl](run/frames.jsonl), with a separate repair underway.
+[frames.jsonl](run/frames.jsonl), with the repair independently accepted and landed in `46624f0` for future runs.
 
 ID 75's first LT call entered with 1.2061 ms remaining for full-press admission;
 the API returned only 0.0144 ms before that deadline. ID 84 entered with 0.812 ms
@@ -74,11 +74,27 @@ inference. Six invalid histories arose from cumulative sample-time drift; a
 separate adjacent gap explains another reset. These account for all 31 warmups.
 Ten fully logged starts lacked enough remaining authority for the 33 ms pulse.
 
-The next changes address failed-send trace retention and decision scheduling /
-measured stage costs. The 25 ms observation tolerance, 100 ms authorization,
+Failed-send trace retention is independently accepted and landed in `46624f0`.
+The next change addresses decision scheduling and measured stage costs. The 25 ms observation tolerance, 100 ms authorization,
 33 ms pulse and confidence threshold remain unchanged. A naive phase timer still
 fails four measured clock windows, so it is not claimed as a complete repair.
 No more footage or staged Idle examples are needed for these software fixes.
+
+The later [bounded phase comparison](phase-band/README.md) retains only actual
+acquisitions within 25 ms after each fixed phase. On the original clock stream it
+provides 62 clock-usable histories versus 46 for the old caller, with four missed
+slots and no invalid complete window. This is not a replay of model predictions
+or a guarantee that new actions would preserve that clock stream.
+
+The [synthetic CPU comparison](cpu-cost/README.md) finds about 0.15 ms median
+for the actual numerical path at default, one and four intra-op threads; its
+0.00645 ms median spread does not justify changing production thread settings.
+[Unchanged reader profiling](reader-cost/README.md) takes about 13.3–13.6 ms for
+HUD and 6.9–7.2 ms for tag reads on three saved JPEGs. These separate offline
+measurements do not reproduce original live contention or attribute its full
+decision cost. Actual per-stage timestamps remain the next measurement.
+[Exact followup copies](timing-followup-receipt.json) preserve those results;
+their reproduction commands reference the original retained diagnostic paths.
 
 ## Video and artifact preservation
 

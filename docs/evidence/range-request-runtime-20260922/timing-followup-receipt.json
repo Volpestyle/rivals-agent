@@ -1,0 +1,65 @@
+{
+  "exact_copies": [
+    {
+      "source": "data/diagnostics/range-request-runtime-timing-20260922/phase-band/README.md",
+      "archived": "phase-band/README.md",
+      "sha256": "59b629101ad291d363dbf09d5207e5060a1ca87c755be00e3e25fee64423af7e"
+    },
+    {
+      "source": "data/diagnostics/range-request-runtime-timing-20260922/phase-band/compare.py",
+      "archived": "phase-band/compare.py",
+      "sha256": "d38c285164375f281785a8c90a6843f59d627346f3afd342a24917b9162f4b39"
+    },
+    {
+      "source": "data/diagnostics/range-request-runtime-timing-20260922/phase-band/report.json",
+      "archived": "phase-band/report.json",
+      "sha256": "c19c8f14783d168564fee911b0c696acfd036101db01bdaf0f7e41e1c8f61cde"
+    },
+    {
+      "source": "data/diagnostics/range-request-cpu-cost-20260922/README.md",
+      "archived": "cpu-cost/README.md",
+      "sha256": "e105aae68d02a0a94764659c1aef583667d5a91fed61871fe6725291e594d863"
+    },
+    {
+      "source": "data/diagnostics/range-request-cpu-cost-20260922/compare.py",
+      "archived": "cpu-cost/compare.py",
+      "sha256": "380290f3110242c60e4a8904cf718cd2d4316bb79ccfed310007f42b6185afb0"
+    },
+    {
+      "source": "data/diagnostics/range-request-cpu-cost-20260922/report.json",
+      "archived": "cpu-cost/report.json",
+      "sha256": "2fae4c40b08936b424891b0289c0723d42b53dcdf71e414b401f66e9a5f095a8"
+    },
+    {
+      "source": "data/diagnostics/range-request-cpu-cost-20260922/default.json",
+      "archived": "cpu-cost/default.json",
+      "sha256": "69db1220f34db0adad5417aa1428e40f73189d4a391839c77362b9e817c2eb52"
+    },
+    {
+      "source": "data/diagnostics/range-request-cpu-cost-20260922/1.json",
+      "archived": "cpu-cost/1.json",
+      "sha256": "3d869277d82b9ab9013193919caa45802c4dd567c1b775b065c344eee2b66c3f"
+    },
+    {
+      "source": "data/diagnostics/range-request-cpu-cost-20260922/4.json",
+      "archived": "cpu-cost/4.json",
+      "sha256": "6c645ad0d892389e125555e477cd4cde5f4fba2f5dc694493395ea5568cd5416"
+    },
+    {
+      "source": "data/diagnostics/range-request-reader-cost-20260922/README.md",
+      "archived": "reader-cost/README.md",
+      "sha256": "7791a12079139f8ab56e82c62dd148efc4cbecac7b6a299a5c8ded325705d134"
+    },
+    {
+      "source": "data/diagnostics/range-request-reader-cost-20260922/profile_readers.py",
+      "archived": "reader-cost/profile_readers.py",
+      "sha256": "793033c6dc04548afcba2bcf96504a0776ed105b429d6159220c1c29a5b163a4"
+    },
+    {
+      "source": "data/diagnostics/range-request-reader-cost-20260922/report.json",
+      "archived": "reader-cost/report.json",
+      "sha256": "95b93b01b0ff54032f81a87ba23c6a4b921c2a17ef88b629305a7ba2cb860b10"
+    }
+  ],
+  "scope": "post-run clock and CPU diagnostics only; no original evidence altered"
+}
