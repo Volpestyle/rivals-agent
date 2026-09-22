@@ -111,3 +111,71 @@ four unchanged pixel skips and reused the accepted native-reader evidence.
 This accepts offline software and the observation interface. VUH-1319 remains
 open for real audited readiness/target/outcome observations and measured
 reset/respawn/throughput. No real feasibility gate has passed.
+
+## Accepted failed visual candidate and next training source
+
+Lead accepted the frozen `20260922T032454-642Z-24328-1` packet as failed
+candidate diagnostic evidence only. Independent admission review reproduced all
+20 causal snapshots (17 unique native frames), State/target/gate results, all
+26 features and known bits, and default five-step window validation. Native
+target disagreements and all eleven sampled neutral exclusions were inspected.
+The four labels stay null: **0 Idle / 0 target-agreed Engage / 4 unknown** and
+**zero admitted Examples**. This is a bounded finding about those rows and
+locators, not an exhaustive claim about every original frame.
+
+Frozen `candidate-rows.json` SHA-256:
+`1f7e730de59ca88bb92695448ef982a6a274ef68d8750228087c5e6290c753b4`.
+Frozen `artifact-hashes.json` SHA-256:
+`0c590472e75dc3c9764ffc6a00222cac415f773b7c90a1479cca5c8df8c0645d`.
+Source-profile document SHA-256:
+`85c8afc43ddc29308155ae7ed7ab7d7d3460c8c7ca76b3e95388ce63b136f5f2`.
+The profile explicitly preserves unknown earlier motor settings. Its digest is
+not a claim of complete known settings or current pad calibration.
+
+The default PAD profile assigns source E/F to the wrong abilities. Existing MK
+and visual slot mapping repair identity/ammo, but the mapped reader still calls
+zero-charge/countdown slots ready. A separate nearby-body filter failure leaves
+the causal selector on a distant Galacta bot; that bot is not proven scenery.
+Green squad chat is a distinct false positive. VUH-1294 and VUH-1314 own these
+bounded repairs; frozen candidate outputs are not overwritten or auto-admitted.
+
+VUH-1349 requests a short train-only Galacta recording with genuine grounded
+waits for resources and ordinary attacks. The existing cuts are retained.
+VUH-1347 remains a separate validation recording. VUH-1348 asks only about the
+later original's resource overrides. No new timing calibration or DPI check is
+required by the failed packet's disposition.
+
+## Fresh scripted live diagnostic, September 22
+
+Reviewed revision `87f34a3` ran from the lead-owned detached
+`C:/Users/volpe/repos/rivals-agent-live` worktree, isolating the run from pending
+perception edits. Its data junction points to this checkout's retained evidence.
+Guarded re-entry reached Spider-Man in the range. A practice-settings screenshot
+at `data/live-readiness/20260922-1124/practice-settings/ps-0.jpg` shows No Ability
+Cooldown off; the tool read it without toggling. Gameplay corroborates normal
+resource behavior: web ammo 5 to 4, uppercut charges 2 to 0 with countdowns, and
+pull countdown 7 to 1. Current motor settings/calibration are not certified.
+
+`data/l1/scripted-diagnostic-20260922-1130/` contains the 20.014-second scripted
+loop, 200 decisions, 968 reflex ticks, no range gaps, no reported errors and
+successful neutral shutdown. Measured rates were 48.4 Hz reflex and 10 Hz
+decisions; decision-lag p95 78.91 ms. These software costs are not calibrated
+capture/display/input latency. The final scoreboard was acquired over loop
+seconds [27.6021449000109, 27.607298499991884], independently of legacy pre-hold
+`t=26.589`.
+
+The inspected native ending board shows **3 KOs / 825 damage / 0 deaths**.
+Scene/feed evidence identifies Luna Hero Simulation respawns. There was no
+audited initial counter baseline or designated Galacta readiness/incarnation, so
+this is an unscored scripted reference diagnostic, not the learned pilot or a
+passing episode benchmark. Fragment-recovery acceptance remains NOT EXERCISED.
+The legacy metadata's `Season 10, Version 20260911` is a kit default, not
+independently observed current patch evidence.
+
+Original native 60 fps video and inspected HUD/overview sheets are under
+`data/live-readiness/20260922-1130/`. Original `scripted-native.mp4` SHA-256:
+`8a29e34e864f22915f363f27c6505d09370b086a2c7afc32fb96f3a673a420ba`.
+The 26-second excerpt covers original seconds 5 to 31, with initial setup and
+idle tail cut; SHA-256:
+`337c370cefda80ffdb79527f54536b1451512ff94bf5fdaecf3bc522a0c0f040`.
+[Inspected video and limits on VUH-1319](https://linear.app/vuhlp/issue/VUH-1319#comment-c32af3ab-b495-44b6-9036-6ced4952c53b).

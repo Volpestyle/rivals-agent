@@ -2,9 +2,10 @@
 
 Owner: range benchmark lane. Base inspected: `77d50324881bc723a827d0f7202063f7b96e8e94`.
 Owned files: `agent/episodes.py`, `scripts/range_benchmark.py`,
-`tests/test_episodes.py`, this note. Original R1-R4 and scoreboard timestamp controls
-pass; rereview found R1b/R3b/R2b. This second delta awaits re-review and root
-integration. No live input, capture attachment, desktop focus, pad
+`tests/test_episodes.py`, this note. Original R1-R4, scoreboard timestamp controls
+and the R1b/R3b/R2b delta were independently accepted and landed on main at
+`f841527`. This is offline software; real gameplay evidence remains open.
+No live input, capture attachment, desktop focus, pad
 creation, corpus access, human-admission edits or commits were performed.
 
 ## Decision and delivery boundary
@@ -19,8 +20,8 @@ bins and settings must match. This is feasibility, not pro-level parity.
 
 The module prepares offline scoring for a real run. It neither supplies a learned
 policy nor runs gameplay. The current logs cannot establish the gate alone.
-Independent read-only review and lead integration precede relying on this scorer
-for evaluation admission. Desktop ownership stays with the lead.
+The scorer is independently accepted and integrated at `f841527`; root owns
+runtime scoring integration and actual evaluation evidence. Desktop ownership stays with the lead.
 
 VUH-1325's body is stale: comments accept the eight findings at `a7f3445`, the
 supervised safety run at `3a378ea`, and crop-first proof at `6c9a940`. Target
@@ -371,10 +372,10 @@ cases); six valid controls passed. Fixes are limited to these four owned files.
 Scoreboard adaptation and pixel readers were not changed in this delta. The
 accepted acquisition-interval behavior remains covered by existing pure tests.
 
-Remaining blockers: independent re-review of this delta, root integration,
-and actual audited ready/target/terminal observations for a live pilot. Root owns
+Remaining blockers: root-owned runtime scoring integration and actual audited
+ready/target/terminal observations for a live pilot. Root owns
 issue blocker tagging; this lane did not add another Linear comment.
 
-Pending delivery boundary: independent re-review, root integration and runtime/audit
-adapter handoff. No live pilot, reset/respawn measurement, current patch proof,
+Accepted offline software boundary: independent review and main integration at
+`f841527`; root owns the runtime/audit adapter handoff. No live pilot, reset/respawn measurement, current patch proof,
 human reference comparison or learned-policy performance is claimed.
