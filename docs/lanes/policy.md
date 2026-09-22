@@ -215,6 +215,43 @@ no additional skill/rule change is needed. The implementation, normalization and
 clock delta have independent acceptance. The recorded smoke outcome remains a
 pipeline result under the explicit one-run authorization.
 
+## GOH hindsight no-use feasibility audit (VUH-1311)
+
+The bounded discovery and one independent Claude review are frozen under
+`data/experiments/no-use-audit-v1/`. `HANDOFF.md` is the entry point and
+`REVIEW-DISPOSITION.md` carries the combined result and corrections. Seed0 selects
+48 episodes (24 per creator) from exactly the promoted Day and Req train sources;
+format5 writer `21a390f547eb`, glyph thresholds and GLYPH_EVIDENCE remain unchanged.
+The latter stays off. All proposal rows are training-unauthorized.
+
+The owner conclusion is **NOT SUPPORTED**; the reviewer concludes **FALSIFIED**.
+Both reject minting negatives. Native Req cast7/8 scene effects support conservative
+>.7/>.6s effect-to-countdown lag, defeating the proposed m=.5 onset premise.
+The review additionally calls Day witness5 a complete false H=2 certificate using
+first gold759.4 as use evidence, before horizon end759.5 and witness s760.0.
+The pixels and positive glyph match are verified; gold-implies-use semantics remain
+disputed. The accepted kit does not establish that meaning, and the frozen reader
+also describes gold as a possible buff state. The accepted disposition is
+NOT SUPPORTED, with the stronger conditional falsification disputed. No alternative
+m/D_min is independently justified.
+
+`EVIDENCE.md` and `evidence.json` retain one producer table per episode, separate
+no-use/causal-availability fields, unknowns and full look-ahead footprints.
+`REVIEW-DISPOSITION.md` supersedes two producer timestamp cells and records both
+accepted and unsupported reviewer timing corrections against original native frames.
+Four proposed witnesses have countdowns at t; later glyphs cannot prove availability.
+Observed digit-to-icon-return ranges (Day7.1–8.0s, Req7.0–8.0s) are display measurements,
+not universal input-to-expiry bounds. Prohibition, scoreboard gaps, pre-round waiting,
+death and frozen round-end timers remain controls; native category shortages are
+not replaced. Media-derived artifacts stay local under data.
+
+`PRODUCER-FREEZE.json` and `review/SHA256SUMS` preserve the producer and independent
+20-case review; `FINAL-FREEZE.json` fingerprints the combined packet. The bounded
+`check.py` passes source/frame integrity,48-table and no-authorization checks.
+Gold-state attribution remains unresolved; no stronger falsification claim follows.
+Any mechanics study or validation is separately scoped;
+no extraction, tuning, fit or rule change follows automatically.
+
 ## Format-5 policy consumer seam
 
 The format-5 writer/loader and policy consumers are integrated on `a016991`; the

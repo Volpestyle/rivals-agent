@@ -379,10 +379,14 @@ returns generic `teamup`, not a partner/variant identity; variant assignment
 needs separately verified per-segment evidence or remains unknown. Retain the
 declared two-second experiment even if accepted glyph evidence improves precision.
 
-**Post-H2 candidate: hindsight no-use evidence for single-charge slots.** The
+**Post-H2 no-use audit: not supported for training.** The
 current ability-negative rule requires a visible running countdown throughout
 its horizon; it provides no examples of an available ability deliberately left
-unused. The unchanged H2 run finishes before this separate measurement is pursued.
+unused. The completed H2 run remains unchanged. The frozen audit rejects the
+proposed H=2, m=0.5 certificate; no new negatives or glyph-reader activation are
+authorized. The stronger gold-state counterexample remains disputed, as recorded
+in [the policy lane](lanes/policy.md#goh-hindsight-no-use-feasibility-audit-vuh-1311).
+The audited candidate is defined below for interpreting that result.
 For a verified single-charge slot, a trusted no-countdown witness at `s` can exclude
 use in `(t,t+H]` only when every such use would necessarily have a visible countdown
 at `s`. The proposed interval `t+H+m <= s <= t+D_min-m` is conditional on verified
