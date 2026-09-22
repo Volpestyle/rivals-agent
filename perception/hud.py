@@ -168,9 +168,17 @@ def _masks(frame, box, floor=115, contrasts=CONTRASTS):
     if scale != 1.0:
         crop_img = cv2.resize(crop_img, None, fx=scale, fy=scale,
                               interpolation=cv2.INTER_CUBIC)
+    mn, bright, tops = None, None, {}
     for c in contrasts:
-        for k in KERNELS:
-            yield _mask(crop_img, 1.0, floor, k, c)[0]
+        for i, k in enumerate(KERNELS):
+            if mn is None:
+                mn = crop_img.min(axis=2)
+                bright = mn > floor
+            if i not in tops:
+                tops[i] = cv2.morphologyEx(mn, cv2.MORPH_TOPHAT, k)
+            # Only this invocation reuses intermediates. Later kernels remain
+            # lazy; every contrast still yields its own fresh mask, in order.
+            yield ((tops[i] > c) & bright).astype(np.uint8)
 
 
 # Digit sizes at 2560 wide: current hp and the ammo count are ~20x32, max hp is

@@ -1,0 +1,224 @@
+{
+  "scope": "five_fresh_processes_per_variant_frame_balanced_order_saved_JPEG_not_live",
+  "timed_boundary": "hud.read_only_state_export_excluded",
+  "rows": [
+    {
+      "name": "000000.jpg",
+      "kind": "process_cold",
+      "baseline": {
+        "n": 5,
+        "median_ms": 30.07499998784624,
+        "min_ms": 28.75659998971969,
+        "max_ms": 33.638900000369176,
+        "values_ms": [
+          33.638900000369176,
+          31.161600025370717,
+          28.75659998971969,
+          29.552599997259676,
+          30.07499998784624
+        ]
+      },
+      "candidate": {
+        "n": 5,
+        "median_ms": 27.013499988242984,
+        "min_ms": 24.068099999567494,
+        "max_ms": 27.879799978109077,
+        "values_ms": [
+          24.068099999567494,
+          25.795499997911975,
+          27.013499988242984,
+          27.58619998348877,
+          27.879799978109077
+        ]
+      },
+      "median_reduction_percent": 10.17955112498904
+    },
+    {
+      "name": "000000.jpg",
+      "kind": "identical_pixels_warm",
+      "baseline": {
+        "n": 5,
+        "median_ms": 14.060899993637577,
+        "min_ms": 13.012100011110306,
+        "max_ms": 14.542400022037327,
+        "values_ms": [
+          13.012100011110306,
+          14.542400022037327,
+          13.719200011109933,
+          14.060899993637577,
+          14.277000009315088
+        ]
+      },
+      "candidate": {
+        "n": 5,
+        "median_ms": 10.805500001879409,
+        "min_ms": 10.423400002764538,
+        "max_ms": 11.792600009357557,
+        "values_ms": [
+          10.423400002764538,
+          11.792600009357557,
+          10.832600004505366,
+          10.805500001879409,
+          10.63340000109747
+        ]
+      },
+      "median_reduction_percent": 23.15214526261623
+    },
+    {
+      "name": "000021.jpg",
+      "kind": "process_cold",
+      "baseline": {
+        "n": 5,
+        "median_ms": 25.908399984473363,
+        "min_ms": 24.293599999509752,
+        "max_ms": 26.909400010481477,
+        "values_ms": [
+          24.293599999509752,
+          26.33679998689331,
+          26.909400010481477,
+          24.564699997426942,
+          25.908399984473363
+        ]
+      },
+      "candidate": {
+        "n": 5,
+        "median_ms": 25.171399989631027,
+        "min_ms": 24.18870001565665,
+        "max_ms": 26.988300000084564,
+        "values_ms": [
+          24.97539998148568,
+          26.988300000084564,
+          24.18870001565665,
+          25.171399989631027,
+          25.47309998772107
+        ]
+      },
+      "median_reduction_percent": 2.844637242299841
+    },
+    {
+      "name": "000021.jpg",
+      "kind": "identical_pixels_warm",
+      "baseline": {
+        "n": 5,
+        "median_ms": 11.750999983632937,
+        "min_ms": 11.21860000421293,
+        "max_ms": 13.127300015185028,
+        "values_ms": [
+          11.21860000421293,
+          11.76980001037009,
+          13.127300015185028,
+          11.750999983632937,
+          11.58910000231117
+        ]
+      },
+      "candidate": {
+        "n": 5,
+        "median_ms": 9.646399994380772,
+        "min_ms": 8.791100000962615,
+        "max_ms": 9.997199987992644,
+        "values_ms": [
+          9.997199987992644,
+          9.646399994380772,
+          8.791100000962615,
+          9.801000007428229,
+          8.810200000880286
+        ]
+      },
+      "median_reduction_percent": 17.909965042834653
+    },
+    {
+      "name": "000041.jpg",
+      "kind": "process_cold",
+      "baseline": {
+        "n": 5,
+        "median_ms": 29.13010001066141,
+        "min_ms": 28.261300001759082,
+        "max_ms": 30.312499991850927,
+        "values_ms": [
+          29.13010001066141,
+          30.312499991850927,
+          28.63929999875836,
+          29.158899997128174,
+          28.261300001759082
+        ]
+      },
+      "candidate": {
+        "n": 5,
+        "median_ms": 25.382099993294105,
+        "min_ms": 24.451700010104105,
+        "max_ms": 25.634199992055073,
+        "values_ms": [
+          25.611999997636303,
+          25.634199992055073,
+          24.906499980716035,
+          24.451700010104105,
+          25.382099993294105
+        ]
+      },
+      "median_reduction_percent": 12.866416579399187
+    },
+    {
+      "name": "000041.jpg",
+      "kind": "identical_pixels_warm",
+      "baseline": {
+        "n": 5,
+        "median_ms": 13.920800003688782,
+        "min_ms": 13.362099998630583,
+        "max_ms": 15.135099994949996,
+        "values_ms": [
+          15.007400012109429,
+          15.135099994949996,
+          13.795999984722584,
+          13.362099998630583,
+          13.920800003688782
+        ]
+      },
+      "candidate": {
+        "n": 5,
+        "median_ms": 10.02009998774156,
+        "min_ms": 9.544100001221523,
+        "max_ms": 10.816599999088794,
+        "values_ms": [
+          10.471499990671873,
+          10.816599999088794,
+          9.544100001221523,
+          10.02009998774156,
+          9.827000001678243
+        ]
+      },
+      "median_reduction_percent": 28.020659839331085
+    }
+  ],
+  "child_reports": [
+    "hud-only-0-baseline-000000.jpg.json",
+    "hud-only-0-candidate-000000.jpg.json",
+    "hud-only-0-baseline-000021.jpg.json",
+    "hud-only-0-candidate-000021.jpg.json",
+    "hud-only-0-baseline-000041.jpg.json",
+    "hud-only-0-candidate-000041.jpg.json",
+    "hud-only-1-candidate-000000.jpg.json",
+    "hud-only-1-baseline-000000.jpg.json",
+    "hud-only-1-candidate-000021.jpg.json",
+    "hud-only-1-baseline-000021.jpg.json",
+    "hud-only-1-candidate-000041.jpg.json",
+    "hud-only-1-baseline-000041.jpg.json",
+    "hud-only-2-baseline-000000.jpg.json",
+    "hud-only-2-candidate-000000.jpg.json",
+    "hud-only-2-baseline-000021.jpg.json",
+    "hud-only-2-candidate-000021.jpg.json",
+    "hud-only-2-baseline-000041.jpg.json",
+    "hud-only-2-candidate-000041.jpg.json",
+    "hud-only-3-candidate-000000.jpg.json",
+    "hud-only-3-baseline-000000.jpg.json",
+    "hud-only-3-candidate-000021.jpg.json",
+    "hud-only-3-baseline-000021.jpg.json",
+    "hud-only-3-candidate-000041.jpg.json",
+    "hud-only-3-baseline-000041.jpg.json",
+    "hud-only-4-baseline-000000.jpg.json",
+    "hud-only-4-candidate-000000.jpg.json",
+    "hud-only-4-baseline-000021.jpg.json",
+    "hud-only-4-candidate-000021.jpg.json",
+    "hud-only-4-baseline-000041.jpg.json",
+    "hud-only-4-candidate-000041.jpg.json"
+  ]
+}

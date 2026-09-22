@@ -1,0 +1,167 @@
+{
+  "name": "000021.jpg",
+  "source_sha256": "7fc8b34f77f4544803a5e960b1a7d2e75ccbfce0a051396e74bb05ede7d6f6d3",
+  "hud_sha256": "5f865e5567f16cf72962cb5148e2e7342272229ec59f54fe5082df90d9b0d3e2",
+  "opencv_threads": 32,
+  "results": [
+    {
+      "kind": "process_cold",
+      "elapsed_ms": 26.332300010835752,
+      "calls": {
+        "morphologyEx": 27,
+        "_segment": 76,
+        "connectedComponentsWithStats": 80,
+        "resize": 46,
+        "classify": 46,
+        "_classify": 35
+      },
+      "hud": {
+        "hp": 250,
+        "max_hp": 250,
+        "bar_fill": 1.0,
+        "webs": 5,
+        "abilities": {
+          "teamup": [
+            true,
+            null
+          ],
+          "swing": [
+            true,
+            3
+          ],
+          "get_over_here": [
+            true,
+            null
+          ],
+          "uppercut": [
+            true,
+            2
+          ]
+        },
+        "ult_ready": false,
+        "ult_charge": 0.0,
+        "cooldowns": {
+          "teamup": null,
+          "swing": null,
+          "get_over_here": null,
+          "uppercut": null
+        },
+        "bar_damage": 0.0
+      },
+      "state": {
+        "t": 0,
+        "frame": [
+          2560,
+          1440
+        ],
+        "hp": 250,
+        "max_hp": 250,
+        "abilities": {
+          "teamup": {
+            "ready": true,
+            "charges": null
+          },
+          "swing": {
+            "ready": true,
+            "charges": 3
+          },
+          "pull": {
+            "ready": true,
+            "charges": null
+          },
+          "uppercut": {
+            "ready": true,
+            "charges": 2
+          },
+          "ult": {
+            "ready": false,
+            "charges": null
+          }
+        },
+        "webs": 5,
+        "detections": null,
+        "on_target": null,
+        "coasting": []
+      }
+    },
+    {
+      "kind": "identical_pixels_warm",
+      "elapsed_ms": 9.512500022538006,
+      "calls": {
+        "morphologyEx": 27,
+        "_segment": 76,
+        "connectedComponentsWithStats": 80,
+        "resize": 46,
+        "classify": 46
+      },
+      "hud": {
+        "hp": 250,
+        "max_hp": 250,
+        "bar_fill": 1.0,
+        "webs": 5,
+        "abilities": {
+          "teamup": [
+            true,
+            null
+          ],
+          "swing": [
+            true,
+            3
+          ],
+          "get_over_here": [
+            true,
+            null
+          ],
+          "uppercut": [
+            true,
+            2
+          ]
+        },
+        "ult_ready": false,
+        "ult_charge": 0.0,
+        "cooldowns": {
+          "teamup": null,
+          "swing": null,
+          "get_over_here": null,
+          "uppercut": null
+        },
+        "bar_damage": 0.0
+      },
+      "state": {
+        "t": 0,
+        "frame": [
+          2560,
+          1440
+        ],
+        "hp": 250,
+        "max_hp": 250,
+        "abilities": {
+          "teamup": {
+            "ready": true,
+            "charges": null
+          },
+          "swing": {
+            "ready": true,
+            "charges": 3
+          },
+          "pull": {
+            "ready": true,
+            "charges": null
+          },
+          "uppercut": {
+            "ready": true,
+            "charges": 2
+          },
+          "ult": {
+            "ready": false,
+            "charges": null
+          }
+        },
+        "webs": 5,
+        "detections": null,
+        "on_target": null,
+        "coasting": []
+      }
+    }
+  ]
+}

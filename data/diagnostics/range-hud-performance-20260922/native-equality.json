@@ -1,0 +1,101 @@
+{
+  "frames": 23,
+  "masks": 864,
+  "mismatches": [],
+  "baseline_hud_sha256": "5ec7e109f168aeb05978724540eca1dace96fda981fea2861dc16ae3de2a5f58",
+  "candidate_hud_sha256": "5f865e5567f16cf72962cb5148e2e7342272229ec59f54fe5082df90d9b0d3e2",
+  "input_files": [
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\range-request-timing-20260922-1\\000000.jpg",
+      "sha256": "f639384f12d18a16354f1d887c7edf20759f94cc7b0651fd60734281bf3edbcc"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\range-request-timing-20260922-1\\000021.jpg",
+      "sha256": "7fc8b34f77f4544803a5e960b1a7d2e75ccbfce0a051396e74bb05ede7d6f6d3"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\range-request-timing-20260922-1\\000041.jpg",
+      "sha256": "fd8a95847f549ce88791929dbf078c01b2171706e6d9a0b682c849ebb398db77"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-13521\\frame-0001.png",
+      "sha256": "32cee9ae496b5125dbd122090612810281b49caf04b026dae754d8e7f05fb0bb"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-13521\\frame-0013.png",
+      "sha256": "bb2324678611413f47009995b9efbe98e285c93bd0a783b7a7fc7c03da3ac0cc"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-13521\\frame-0025.png",
+      "sha256": "89d66b6c851c6d7d17bc6c8579e4411fcd2dc9a75410d7bf96d20380396ed246"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-13521\\frame-0037.png",
+      "sha256": "b55c162bedf0209d5a6eab15fcb68328efa25a18bd666155cfe229fe792075b7"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-13521\\frame-0049.png",
+      "sha256": "b8f369a9b0dc3fcfdf0df792ef1c87ec3cb8e3d5a1443d7c76d39420876910fc"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-19821\\frame-0001.png",
+      "sha256": "a475632ddfbe4c70976ff884270511eed1ff8975cd2a0a6c747245940c12b7cb"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-19821\\frame-0013.png",
+      "sha256": "1eeb0167b7e3d8c73383b60ffbe26e7f1fbd105fea96f502653f134e68dae66e"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-20021\\frame-0001.png",
+      "sha256": "c62f578ac6f82354c3d38fea04970e236d6c9ce38344476cb55ac3c9673c3320"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-20021\\frame-0013.png",
+      "sha256": "718183798033c975647a7a81923370f860f366a78d061e4649c07d5e5fe9606a"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-20021\\frame-0025.png",
+      "sha256": "5fc3db35988afa268dd5e230d3b5c4e321a98bb6a36b497f735bcc041e02ac26"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-20021\\frame-0037.png",
+      "sha256": "05d89f0fe3635aad1c04e395b37038ebe6d9f18e297c3278458f4cea054bfd3c"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-20021\\frame-0049.png",
+      "sha256": "b8280a6bde010bdccab609edd74b8034985d20e44b53280f0cf53bc985dd59a2"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-21921\\frame-0001.png",
+      "sha256": "00eae794a3131fd52225e3a7363a1fc342a31067e3015485a6baee4f6092f77b"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-21921\\frame-0013.png",
+      "sha256": "5a9b546b968609bd91bb06a02fb6a15dc902d9b17f6f553f37a5188eadedfd41"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-21921\\frame-0025.png",
+      "sha256": "63e4245f5cb1dde143e7085c8247466870875c228e45902510793e973f8d58ca"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-21921\\frame-0037.png",
+      "sha256": "7fa34b48c19e9b3a3e0395ffbae09d440c19bc4d47aa491565a61476d1429c91"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-21921\\frame-0049.png",
+      "sha256": "b2b2c299825bede1279835acfcdb2c7f87196e5d42af75eee6e78dea75db0e2a"
+    },
+    {
+      "path": "C:\\rivals-agent\\l2tag\\t0-a-untagged-000.jpg",
+      "sha256": "95d98b19d860e3ced9037733c28a8cacbd6722846540926ebdb1f7ddcaad2549"
+    },
+    {
+      "path": "C:\\rivals-agent\\l2tag\\t0-b-after-web-cluster-003.jpg",
+      "sha256": "61aaca45d4d1a1ecf2bb2ef011258201640d0edd8ded8fc8d7e1ac47dccb876f"
+    },
+    {
+      "path": "C:\\rivals-agent\\l2tag\\t0-b-after-web-cluster-028.jpg",
+      "sha256": "4c46d2632dabb57707b971665b51d7be7928a5768c847623b3f68d6b76648cbe"
+    }
+  ]
+}

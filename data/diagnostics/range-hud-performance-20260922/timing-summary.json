@@ -1,0 +1,223 @@
+{
+  "scope": "five_fresh_processes_per_variant_frame_balanced_order_saved_JPEG_not_live",
+  "rows": [
+    {
+      "name": "000000.jpg",
+      "kind": "process_cold",
+      "baseline": {
+        "n": 5,
+        "median_ms": 32.359100005123764,
+        "min_ms": 31.3095000165049,
+        "max_ms": 34.45510001620278,
+        "values_ms": [
+          32.88529999554157,
+          31.3095000165049,
+          32.09439999773167,
+          34.45510001620278,
+          32.359100005123764
+        ]
+      },
+      "candidate": {
+        "n": 5,
+        "median_ms": 29.03039997909218,
+        "min_ms": 28.447999997297302,
+        "max_ms": 29.934000020148233,
+        "values_ms": [
+          29.03039997909218,
+          28.861099999630824,
+          28.447999997297302,
+          29.282900010002777,
+          29.934000020148233
+        ]
+      },
+      "median_reduction_percent": 10.286750946424695
+    },
+    {
+      "name": "000000.jpg",
+      "kind": "identical_pixels_warm",
+      "baseline": {
+        "n": 5,
+        "median_ms": 14.12269999855198,
+        "min_ms": 14.04110001749359,
+        "max_ms": 15.135199995711446,
+        "values_ms": [
+          14.567800011718646,
+          14.04110001749359,
+          14.051799982553348,
+          15.135199995711446,
+          14.12269999855198
+        ]
+      },
+      "candidate": {
+        "n": 5,
+        "median_ms": 10.582899994915351,
+        "min_ms": 10.385199973825365,
+        "max_ms": 11.0452999942936,
+        "values_ms": [
+          10.582899994915351,
+          11.0452999942936,
+          10.385199973825365,
+          10.511300002690405,
+          10.838899994269013
+        ]
+      },
+      "median_reduction_percent": 25.064612319171044
+    },
+    {
+      "name": "000021.jpg",
+      "kind": "process_cold",
+      "baseline": {
+        "n": 5,
+        "median_ms": 29.294600011780858,
+        "min_ms": 27.95360001618974,
+        "max_ms": 31.614200008334592,
+        "values_ms": [
+          29.397100006463006,
+          28.892000002088025,
+          27.95360001618974,
+          31.614200008334592,
+          29.294600011780858
+        ]
+      },
+      "candidate": {
+        "n": 5,
+        "median_ms": 27.00380000169389,
+        "min_ms": 25.869699980830774,
+        "max_ms": 28.485899994848296,
+        "values_ms": [
+          28.485899994848296,
+          27.555699984077364,
+          25.869699980830774,
+          27.00380000169389,
+          26.332300010835752
+        ]
+      },
+      "median_reduction_percent": 7.819871270356038
+    },
+    {
+      "name": "000021.jpg",
+      "kind": "identical_pixels_warm",
+      "baseline": {
+        "n": 5,
+        "median_ms": 11.68550000875257,
+        "min_ms": 10.85999998031184,
+        "max_ms": 12.325299991061911,
+        "values_ms": [
+          12.325299991061911,
+          11.134599975775927,
+          11.68550000875257,
+          10.85999998031184,
+          12.165699998149648
+        ]
+      },
+      "candidate": {
+        "n": 5,
+        "median_ms": 9.512500022538006,
+        "min_ms": 9.299700002884492,
+        "max_ms": 10.354600002756342,
+        "values_ms": [
+          10.354600002756342,
+          9.547300025587901,
+          9.47200000518933,
+          9.299700002884492,
+          9.512500022538006
+        ]
+      },
+      "median_reduction_percent": 18.59569538819017
+    },
+    {
+      "name": "000041.jpg",
+      "kind": "process_cold",
+      "baseline": {
+        "n": 5,
+        "median_ms": 32.19259998877533,
+        "min_ms": 29.617600026540458,
+        "max_ms": 33.027299999957904,
+        "values_ms": [
+          33.027299999957904,
+          33.02229999098927,
+          31.50199999799952,
+          32.19259998877533,
+          29.617600026540458
+        ]
+      },
+      "candidate": {
+        "n": 5,
+        "median_ms": 28.379800001857802,
+        "min_ms": 27.90429999004118,
+        "max_ms": 28.865700005553663,
+        "values_ms": [
+          28.379800001857802,
+          28.049400018062443,
+          28.865700005553663,
+          27.90429999004118,
+          28.419200010830536
+        ]
+      },
+      "median_reduction_percent": 11.84371560000418
+    },
+    {
+      "name": "000041.jpg",
+      "kind": "identical_pixels_warm",
+      "baseline": {
+        "n": 5,
+        "median_ms": 14.20999999390915,
+        "min_ms": 13.265399989904836,
+        "max_ms": 14.71819999278523,
+        "values_ms": [
+          14.71819999278523,
+          14.20999999390915,
+          14.23080000677146,
+          13.265399989904836,
+          13.499699998646975
+        ]
+      },
+      "candidate": {
+        "n": 5,
+        "median_ms": 10.189299995545298,
+        "min_ms": 9.793000004719943,
+        "max_ms": 10.936800012132153,
+        "values_ms": [
+          10.52519999211654,
+          10.936800012132153,
+          10.189299995545298,
+          10.161400015931576,
+          9.793000004719943
+        ]
+      },
+      "median_reduction_percent": 28.294862773309294
+    }
+  ],
+  "child_reports": [
+    "paired-0-baseline-000000.jpg.json",
+    "paired-0-candidate-000000.jpg.json",
+    "paired-0-baseline-000021.jpg.json",
+    "paired-0-candidate-000021.jpg.json",
+    "paired-0-baseline-000041.jpg.json",
+    "paired-0-candidate-000041.jpg.json",
+    "paired-1-candidate-000000.jpg.json",
+    "paired-1-baseline-000000.jpg.json",
+    "paired-1-candidate-000021.jpg.json",
+    "paired-1-baseline-000021.jpg.json",
+    "paired-1-candidate-000041.jpg.json",
+    "paired-1-baseline-000041.jpg.json",
+    "paired-2-baseline-000000.jpg.json",
+    "paired-2-candidate-000000.jpg.json",
+    "paired-2-baseline-000021.jpg.json",
+    "paired-2-candidate-000021.jpg.json",
+    "paired-2-baseline-000041.jpg.json",
+    "paired-2-candidate-000041.jpg.json",
+    "paired-3-candidate-000000.jpg.json",
+    "paired-3-baseline-000000.jpg.json",
+    "paired-3-candidate-000021.jpg.json",
+    "paired-3-baseline-000021.jpg.json",
+    "paired-3-candidate-000041.jpg.json",
+    "paired-3-baseline-000041.jpg.json",
+    "paired-4-baseline-000000.jpg.json",
+    "paired-4-candidate-000000.jpg.json",
+    "paired-4-baseline-000021.jpg.json",
+    "paired-4-candidate-000021.jpg.json",
+    "paired-4-baseline-000041.jpg.json",
+    "paired-4-candidate-000041.jpg.json"
+  ]
+}

@@ -1,0 +1,2755 @@
+{
+  "hud_sha256": "5ec7e109f168aeb05978724540eca1dace96fda981fea2861dc16ae3de2a5f58",
+  "rows": [
+    {
+      "name": "000000.jpg",
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\range-request-timing-20260922-1\\000000.jpg",
+      "sha256": "f639384f12d18a16354f1d887c7edf20759f94cc7b0651fd60734281bf3edbcc",
+      "layout": "pad",
+      "t": 0,
+      "hud": {
+        "hp": 250,
+        "max_hp": null,
+        "bar_fill": 1.0,
+        "webs": 5,
+        "abilities": {
+          "teamup": [
+            true,
+            null
+          ],
+          "swing": [
+            true,
+            3
+          ],
+          "get_over_here": [
+            true,
+            null
+          ],
+          "uppercut": [
+            true,
+            2
+          ]
+        },
+        "ult_ready": false,
+        "ult_charge": 0.0,
+        "cooldowns": {
+          "teamup": null,
+          "swing": null,
+          "get_over_here": null,
+          "uppercut": null
+        },
+        "bar_damage": 0.0
+      },
+      "state": {
+        "t": 0,
+        "frame": [
+          2560,
+          1440
+        ],
+        "hp": 250,
+        "max_hp": null,
+        "abilities": {
+          "teamup": {
+            "ready": true,
+            "charges": null
+          },
+          "swing": {
+            "ready": true,
+            "charges": 3
+          },
+          "pull": {
+            "ready": true,
+            "charges": null
+          },
+          "uppercut": {
+            "ready": true,
+            "charges": 2
+          },
+          "ult": {
+            "ready": false,
+            "charges": null
+          }
+        },
+        "webs": 5,
+        "detections": null,
+        "on_target": null,
+        "coasting": []
+      },
+      "elapsed_ms_not_benchmark": 33.14919999684207,
+      "masks": [
+        [
+          "8e586578ee747febce4f0b8e815a0ccb2be26f7bdd94e5f032a85ed18ad6ef60",
+          "a7e9fb815502d67453f2a6e3cd0079233dd3fa54f658e087d581a25bf3a2f2f1",
+          "e2271f192937668042cd56c6a4eca483f1d1667307e05ebb4b83de3beffd33e8",
+          "dab1acd3b2eaf7436f1d56c3c66b18adc40b8f20a62612c4ada403170cb8bc55",
+          "dab1acd3b2eaf7436f1d56c3c66b18adc40b8f20a62612c4ada403170cb8bc55",
+          "b45a358ea1c324a4371b5036cb469772f4e90b3061d76cbff263f7d9e217c4f6",
+          "dab1acd3b2eaf7436f1d56c3c66b18adc40b8f20a62612c4ada403170cb8bc55",
+          "dab1acd3b2eaf7436f1d56c3c66b18adc40b8f20a62612c4ada403170cb8bc55",
+          "b70892734721bfcb8ac523b191a57583ab0540b9145b24c6ef02a61ca592aa2c"
+        ],
+        [
+          "52c282644071bea294b8b0d67feadc0dfcfdf358233f1bd03ae77fa02f326eb7",
+          "52c282644071bea294b8b0d67feadc0dfcfdf358233f1bd03ae77fa02f326eb7",
+          "52c282644071bea294b8b0d67feadc0dfcfdf358233f1bd03ae77fa02f326eb7",
+          "52c282644071bea294b8b0d67feadc0dfcfdf358233f1bd03ae77fa02f326eb7",
+          "52c282644071bea294b8b0d67feadc0dfcfdf358233f1bd03ae77fa02f326eb7",
+          "52c282644071bea294b8b0d67feadc0dfcfdf358233f1bd03ae77fa02f326eb7",
+          "52c282644071bea294b8b0d67feadc0dfcfdf358233f1bd03ae77fa02f326eb7",
+          "52c282644071bea294b8b0d67feadc0dfcfdf358233f1bd03ae77fa02f326eb7",
+          "52c282644071bea294b8b0d67feadc0dfcfdf358233f1bd03ae77fa02f326eb7"
+        ],
+        [
+          "3958bc27bf236200158a12139b294651454fbffe39645838a22ceb13b0d3c811",
+          "3958bc27bf236200158a12139b294651454fbffe39645838a22ceb13b0d3c811",
+          "beff4cc40c7f7dc28c4280c56ad4af7c46d7879246a8b1eec4290ccea13cb8cf",
+          "3958bc27bf236200158a12139b294651454fbffe39645838a22ceb13b0d3c811",
+          "3958bc27bf236200158a12139b294651454fbffe39645838a22ceb13b0d3c811",
+          "2a0a3ef32d73f2022474de802577b9183b8d65f182879daa5500e3e7947dfdb0"
+        ],
+        [
+          "1092a32d2969ea603b23630b79f3d025a11161bbe91115112fa377c6fb09027f",
+          "5d17e36ce2e27ea0b04dad5b68fc082c300edfad5f961b77dad77535ac84b5a9",
+          "e96a5cfe182fd7858e1b78d198bb723a484c07be04a7df1f65c0d4909fa90757",
+          "1092a32d2969ea603b23630b79f3d025a11161bbe91115112fa377c6fb09027f",
+          "1092a32d2969ea603b23630b79f3d025a11161bbe91115112fa377c6fb09027f",
+          "48fc1d285a529f6483dae8e4b199e6d7c5ea2b1878172dfd02d62488a1759e14"
+        ],
+        [
+          "23601481449fdf02f089f552428c6b007b3d6efa7d57682134eb19bb1b6eca1a",
+          "fa009172a98c2d5371515a219f5ed6607f97f351d8b9c48ca5347ebb4def5db9",
+          "b28320331dd662e9499587e289b6836a268f53a6120018f70f3c20e5adc5574d",
+          "23601481449fdf02f089f552428c6b007b3d6efa7d57682134eb19bb1b6eca1a",
+          "23601481449fdf02f089f552428c6b007b3d6efa7d57682134eb19bb1b6eca1a",
+          "08ad3d8066f00b3c988e45730d6e92f5959808317391f5bd89882a4e28f5a94a"
+        ],
+        [
+          "60fe5c4164acd9411c682e5966fb1ec4ee2725555363c8bc23cb5169b98e37df",
+          "4ce417226d4496da71744ed4f7fe5bec5c409599fc4cf766516ad4bcf14dc3c2",
+          "7e56a5b00399c6667abbf821883292184958588534090557147cc02cad96dddb",
+          "60fe5c4164acd9411c682e5966fb1ec4ee2725555363c8bc23cb5169b98e37df",
+          "9df6053c56e6e1508308402746bc9adc65e48bbbd1a83ca2ea60a9754ae1920b",
+          "6232a9fece44d92c6c6114810ee890482bcb113856df58b2bb89e6ae4ed810c5"
+        ]
+      ]
+    },
+    {
+      "name": "000021.jpg",
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\range-request-timing-20260922-1\\000021.jpg",
+      "sha256": "7fc8b34f77f4544803a5e960b1a7d2e75ccbfce0a051396e74bb05ede7d6f6d3",
+      "layout": "pad",
+      "t": 0,
+      "hud": {
+        "hp": 250,
+        "max_hp": 250,
+        "bar_fill": 1.0,
+        "webs": 5,
+        "abilities": {
+          "teamup": [
+            true,
+            null
+          ],
+          "swing": [
+            true,
+            3
+          ],
+          "get_over_here": [
+            true,
+            null
+          ],
+          "uppercut": [
+            true,
+            2
+          ]
+        },
+        "ult_ready": false,
+        "ult_charge": 0.0,
+        "cooldowns": {
+          "teamup": null,
+          "swing": null,
+          "get_over_here": null,
+          "uppercut": null
+        },
+        "bar_damage": 0.0
+      },
+      "state": {
+        "t": 0,
+        "frame": [
+          2560,
+          1440
+        ],
+        "hp": 250,
+        "max_hp": 250,
+        "abilities": {
+          "teamup": {
+            "ready": true,
+            "charges": null
+          },
+          "swing": {
+            "ready": true,
+            "charges": 3
+          },
+          "pull": {
+            "ready": true,
+            "charges": null
+          },
+          "uppercut": {
+            "ready": true,
+            "charges": 2
+          },
+          "ult": {
+            "ready": false,
+            "charges": null
+          }
+        },
+        "webs": 5,
+        "detections": null,
+        "on_target": null,
+        "coasting": []
+      },
+      "elapsed_ms_not_benchmark": 17.835100006777793,
+      "masks": [
+        [
+          "1dc5041910f532eac757c2e5c01d9a32e08e31e5a5ed6205234ad08bdb5f67b5",
+          "0accd6e0d31f24de08757dd1eab66a2eaedd0de574427a466ea9bd53d85e0895",
+          "bb2d95ae93ad90ca5840daad86868affafdaf7af03fdaf0433263f986bb320de",
+          "e197bd70ff5ccdf6ed4fb7aa296712cc41e2dee1476a583fa923947fd04d96ab",
+          "f5aeb756b730b308930be646bbc41c488b0a427d2f4c7ef584a034e2273b4e67",
+          "991209600ef78f4025bbd2317a5c13a7d3f26040636ff0af75a8b8f8323ab14a",
+          "754795eee53c8420cdef091e8b912187b69fe3bc19db19b2b6efcb96ae0b8a0e",
+          "708144c4dd536923a1657ec447e8f0739f5ff7a72429749bfb41d9b7f455fffa",
+          "ac73b0930c20287d65e1a75d1528d752914d844eb8f1af815bd1779f3813ee37"
+        ],
+        [
+          "4fda8a1a3190977c056d3b57ad871020755f9349b0a20c7f231ac427afd45aae",
+          "4fda8a1a3190977c056d3b57ad871020755f9349b0a20c7f231ac427afd45aae",
+          "c4d853a78e80221a261e9f42ab3c065ae24c264c4db191a05d1c39af432608f2",
+          "4fda8a1a3190977c056d3b57ad871020755f9349b0a20c7f231ac427afd45aae",
+          "4fda8a1a3190977c056d3b57ad871020755f9349b0a20c7f231ac427afd45aae",
+          "4fda8a1a3190977c056d3b57ad871020755f9349b0a20c7f231ac427afd45aae",
+          "4fda8a1a3190977c056d3b57ad871020755f9349b0a20c7f231ac427afd45aae",
+          "4fda8a1a3190977c056d3b57ad871020755f9349b0a20c7f231ac427afd45aae",
+          "4fda8a1a3190977c056d3b57ad871020755f9349b0a20c7f231ac427afd45aae"
+        ],
+        [
+          "c9891ca1537ce3cd177cd2d52b8546fb65559e5516a86d5d5cb05d78f513b87e",
+          "c3cb31716d5d6f26ba3800f7b2dd957436f2e53db6d19c7e00bce0625f1dafa1",
+          "7c11d13bfc928ad0cc4c3b8016640d3f48c21c03c6b6ae080aa6fe3870ab6a82",
+          "d2133266f22944ffa1d17c14854f6f95a6db770df69a7130e6c8f5495a35e745",
+          "d2133266f22944ffa1d17c14854f6f95a6db770df69a7130e6c8f5495a35e745",
+          "efd23f34243c46dbff89e6236637d7c89b9fec5e396bc41c7bad1b8ef59c984a"
+        ],
+        [
+          "5377f47e5df447cc6437995048e88c20ee0efce13dfa7365d8f65de04fe0aa8f",
+          "9e7d667971c128f9957b6b1d631129d77e6124c4a128b0f2c9ba2d41f87c80fa",
+          "238ad4bcc4f4179b0c986456e7a3f1eb4507d0ad22a369ed19f8554d040ccda1",
+          "eda5e3112316b6330d619446b106e436931a5105aa8f258fccf7819b863722c0",
+          "98fd62fc3e2e3dfd3438ebaad13aa8c04e638e69ca1183b7f35226c3856bbf55",
+          "86ceb84785030c8147d10a19640de625b8ba3d91fbd1216c2dda2bbbfb284a0b"
+        ],
+        [
+          "229af1e32127ad398f265a204ea92e9d79809b01755d93761faefe899595d550",
+          "c39f796d4f6052801c4964c4cfc796854061673b174d9dbd2627274451ca97e7",
+          "17d95d47ac59161df96c3ec691b47963ce5b73a89abd4d89972c5d0a584c814f",
+          "ebb485bea57abe617467bd2a72cc258b575b085cbe6b06b5edf3c9b9792493a9",
+          "a6cad3e54c40446124d37e2eae7838ddb163c1b2226c7412ba03172379c62e04",
+          "d68283868cd370e0d1e9b4dfea06e1c64b02920e27baba9abebebdb0cae426c1"
+        ],
+        [
+          "4d17b8928a88d5e8847efd402197730664aa99c96a09e0e1c66c2886294357ed",
+          "0006e46a956e051035afa48d2dec8c9abbd9460ec7d494e041c4b27ecd8f2988",
+          "fff051da5d2f8230f3d68ecfffbda909367a8728bcb50582663ed11d0775a9f4",
+          "1af253d7df94c141f25f73ef3a83bb019b810bdcafceff744c6421a925562421",
+          "1e7f61d8ea9294f846b6bfabcebeede405a85341ab0de3d518754b9c3427768a",
+          "a76ab3cb629aa24d24c383426567497f5a679522d9f07c79ff804746b6a038ff"
+        ]
+      ]
+    },
+    {
+      "name": "000041.jpg",
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\range-request-timing-20260922-1\\000041.jpg",
+      "sha256": "fd8a95847f549ce88791929dbf078c01b2171706e6d9a0b682c849ebb398db77",
+      "layout": "pad",
+      "t": 0,
+      "hud": {
+        "hp": null,
+        "max_hp": null,
+        "bar_fill": 1.0,
+        "webs": 5,
+        "abilities": {
+          "teamup": [
+            true,
+            null
+          ],
+          "swing": [
+            true,
+            3
+          ],
+          "get_over_here": [
+            true,
+            null
+          ],
+          "uppercut": [
+            true,
+            2
+          ]
+        },
+        "ult_ready": false,
+        "ult_charge": 0.0,
+        "cooldowns": {
+          "teamup": null,
+          "swing": null,
+          "get_over_here": null,
+          "uppercut": null
+        },
+        "bar_damage": 0.0
+      },
+      "state": {
+        "t": 0,
+        "frame": [
+          2560,
+          1440
+        ],
+        "hp": null,
+        "max_hp": null,
+        "abilities": {
+          "teamup": {
+            "ready": true,
+            "charges": null
+          },
+          "swing": {
+            "ready": true,
+            "charges": 3
+          },
+          "pull": {
+            "ready": true,
+            "charges": null
+          },
+          "uppercut": {
+            "ready": true,
+            "charges": 2
+          },
+          "ult": {
+            "ready": false,
+            "charges": null
+          }
+        },
+        "webs": 5,
+        "detections": null,
+        "on_target": null,
+        "coasting": []
+      },
+      "elapsed_ms_not_benchmark": 19.62959999218583,
+      "masks": [
+        [
+          "4710936636171bbfd5077ca067fb07a92faba0812414e1ea5c05a153f93ffd9e",
+          "74654f16f8bfa77e58b262c02fa4c8f713d9343bd3e7c10bbda3f767ea85c128",
+          "c6f5358016d09028d21771d2cc95cd9e7eda4228c11a1b7ed3ae910ec7f51f60",
+          "0f679aa3a04c675f665ff814d8319404762e7841111d9db91cf339aa884e75e4",
+          "fdb656ec3c6c6f6bb26b5567201fcce8038c125c14c5649cc0fb845ee9dc7328",
+          "d2157f8155b705460c2741f65d92c7c3dbb8f614840e312a89944c9b68205ea8",
+          "179e55a946517d71dda587def6a0e19a518c29facd4698b6bfad449ea3ff5778",
+          "a7a1336e3719098f7958aadeba43c668dd8a21fe62a3aff2acedc45b59a2717b",
+          "46998c186a2ff2f6921b73ebe6987d3167cd63b59bcb10f3223dc2cd0ea749cf"
+        ],
+        [
+          "a311e7ad794cb699ecf597c603fdfdc9964ac25f5f7dab23e4e071a03ad64d05",
+          "a311e7ad794cb699ecf597c603fdfdc9964ac25f5f7dab23e4e071a03ad64d05",
+          "a311e7ad794cb699ecf597c603fdfdc9964ac25f5f7dab23e4e071a03ad64d05",
+          "a311e7ad794cb699ecf597c603fdfdc9964ac25f5f7dab23e4e071a03ad64d05",
+          "a311e7ad794cb699ecf597c603fdfdc9964ac25f5f7dab23e4e071a03ad64d05",
+          "a311e7ad794cb699ecf597c603fdfdc9964ac25f5f7dab23e4e071a03ad64d05",
+          "a311e7ad794cb699ecf597c603fdfdc9964ac25f5f7dab23e4e071a03ad64d05",
+          "a311e7ad794cb699ecf597c603fdfdc9964ac25f5f7dab23e4e071a03ad64d05",
+          "a311e7ad794cb699ecf597c603fdfdc9964ac25f5f7dab23e4e071a03ad64d05"
+        ],
+        [
+          "0dbfdffd7c136a4a722b538c90d170ea3a8f753524f23a8556e6b4183d6af49c",
+          "21320656be303de166f4a36e1f7994c4a596ea39216273d932dcaa118c14813c",
+          "7394bf806dd4d8b72a34a20fb0c12b66c626875400c5c41e810399cac283b2a5",
+          "3f079cc413d0ab9a3310650fefcdb9312d32c6e17ea1397c6ce1ebb7b5e9bb74",
+          "3f079cc413d0ab9a3310650fefcdb9312d32c6e17ea1397c6ce1ebb7b5e9bb74",
+          "5c2f51aacaeb9e349de8933092a6e7659590c3f44b5a9e029e821be8a4e59cc4"
+        ],
+        [
+          "b442774a11470ef29858bc594a4b4ceeec6695c34f1812d17d11ad56c5b98919",
+          "2cce0f99f224ac3472d0591764433fcf17c3d075347b4ac285b17d206c615a68",
+          "e91bb1ba6d0c9665449947a201372725d23603993db59e9681bc34f194844a14",
+          "daa7d10fefb0027af7b04f24b5595c2bc27948068abba4b79ae19a3181786830",
+          "2dc51c3686089ac830d88dd0c9512d676e6a442394bed32e9a508553e0aa0c15",
+          "907d4ff6824713e6195436db1f6a4cce91de4a1b06f8225fee9fc5f3329b281e"
+        ],
+        [
+          "f52f7740a47bcfa794ea93f24f7da6e7488b225295f270fc9ed00b0add4dbdc1",
+          "ff9ca5dcba751d6b6acf03064fa93a19e9af8756fa00743aedc3ba4e4c514ac9",
+          "2776ae6054d38b192ea6c373c86f4d004df88045b9cc4ccdecf2636cb3c0b2f3",
+          "00163349a8e36d5eba4b471b239a87a86cd941a63cbfc0da4685a3510d50dd0d",
+          "a11965d5ae5cc34cade3942b69cd3d8a79ce850ff8b6980d7d54a480e96af9f6",
+          "13adb1dddf2cb5d20f25de9c54b81a83a4dd7e03d5c6107c1532a619ebe60d91"
+        ],
+        [
+          "9654d825d0c90b312c10c900f1d39fcbb07a0b731905289e87db464b54a41971",
+          "7a0b938be8abb14d4729fe0296fe9d873a2fe6d5dc4c447ac7d8b9ff02f0f3c0",
+          "754f295e132a3116933b56821899b61b3099152c25d896b7d355662d0dfc92ef",
+          "f7189959c750493b203844b65fcf2bb7332a2e28f18a06cea0dc6134dba3daf9",
+          "f97d52db68829c8e45689707df742b89bc03124d798165d55245bc14b4b7ee3b",
+          "c6c35b563856435150cf67240079ab891a1b8aad24ef6d7e07e7bab5576bc063"
+        ]
+      ]
+    },
+    {
+      "name": "source-13121",
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-13521\\frame-0001.png",
+      "sha256": "32cee9ae496b5125dbd122090612810281b49caf04b026dae754d8e7f05fb0bb",
+      "layout": "mapped",
+      "t": 13.121,
+      "hud": {
+        "hp": 250,
+        "max_hp": 250,
+        "bar_fill": 1.0,
+        "webs": 4,
+        "abilities": {
+          "swing": [
+            true,
+            2
+          ],
+          "uppercut": [
+            true,
+            2
+          ],
+          "get_over_here": [
+            true,
+            null
+          ]
+        },
+        "ult_ready": false,
+        "ult_charge": 0.0,
+        "cooldowns": {
+          "swing": null,
+          "uppercut": null,
+          "get_over_here": null
+        },
+        "bar_damage": 0.0
+      },
+      "state": {
+        "t": 13.121,
+        "frame": [
+          2560,
+          1440
+        ],
+        "hp": 250,
+        "max_hp": 250,
+        "abilities": {
+          "swing": {
+            "ready": true,
+            "charges": 2
+          },
+          "uppercut": {
+            "ready": true,
+            "charges": 2
+          },
+          "pull": {
+            "ready": true,
+            "charges": null
+          },
+          "ult": {
+            "ready": false,
+            "charges": null
+          }
+        },
+        "webs": 4,
+        "detections": null,
+        "on_target": null,
+        "coasting": []
+      },
+      "elapsed_ms_not_benchmark": 14.030299993464723,
+      "masks": [
+        [
+          "d96b7b0ee50ebae9ba254c9ae5b5d4698fdff6bccb4608e2946c324a7cbc09fc",
+          "d96b7b0ee50ebae9ba254c9ae5b5d4698fdff6bccb4608e2946c324a7cbc09fc",
+          "d96b7b0ee50ebae9ba254c9ae5b5d4698fdff6bccb4608e2946c324a7cbc09fc",
+          "d96b7b0ee50ebae9ba254c9ae5b5d4698fdff6bccb4608e2946c324a7cbc09fc",
+          "d96b7b0ee50ebae9ba254c9ae5b5d4698fdff6bccb4608e2946c324a7cbc09fc",
+          "d96b7b0ee50ebae9ba254c9ae5b5d4698fdff6bccb4608e2946c324a7cbc09fc",
+          "d96b7b0ee50ebae9ba254c9ae5b5d4698fdff6bccb4608e2946c324a7cbc09fc",
+          "d96b7b0ee50ebae9ba254c9ae5b5d4698fdff6bccb4608e2946c324a7cbc09fc",
+          "d96b7b0ee50ebae9ba254c9ae5b5d4698fdff6bccb4608e2946c324a7cbc09fc"
+        ],
+        [
+          "4d37c67fb267e67448767f350803a3c2b1e0cbd286379fa6870cbcc8fa865dc4",
+          "a0c97c1e0fc4aa947d8a11bda947fde548624ab0da936aff12c1ba8504de6415",
+          "d8415a75a314c0204032d0f95f79e30d7f43435f9eeb3548b33b9589548d7cad",
+          "4d37c67fb267e67448767f350803a3c2b1e0cbd286379fa6870cbcc8fa865dc4",
+          "51b3c3a7730af2e70d1b2246b0f3ef64187303bddeaba57d71361d63ec5f8907",
+          "4374fee26af748e67fbdcd7f069c7bc5a2a045b4dde62c621881749f6f5aba6d",
+          "4d37c67fb267e67448767f350803a3c2b1e0cbd286379fa6870cbcc8fa865dc4",
+          "24e93ce5b997467682052eea6744a228a90236346c3bcaf9bc14df392ffeedba",
+          "0ddd9518cc14a70082abb4f8ee82e95bd2853475d71f3f721cccd5af4f3a7560"
+        ],
+        [
+          "2a8d55e6f0d77599b72332f37840038371657db1d97f34bdfbd171aab069f240",
+          "2a8d55e6f0d77599b72332f37840038371657db1d97f34bdfbd171aab069f240",
+          "2a8d55e6f0d77599b72332f37840038371657db1d97f34bdfbd171aab069f240",
+          "2a8d55e6f0d77599b72332f37840038371657db1d97f34bdfbd171aab069f240",
+          "2a8d55e6f0d77599b72332f37840038371657db1d97f34bdfbd171aab069f240",
+          "2a8d55e6f0d77599b72332f37840038371657db1d97f34bdfbd171aab069f240"
+        ],
+        [
+          "c739eecd84e33901a901d92a345cdcf20e7a2f789c52ac2174dd380b08e7d0d4",
+          "810e128892847adf763cccf37d0c139eeaee993ca5a36ef77c51054ed7c22ce6",
+          "dd57f37dc05c86d5ff6b74d273a1a589cd97cb4cc82066755c28b6a26c0fc610",
+          "c739eecd84e33901a901d92a345cdcf20e7a2f789c52ac2174dd380b08e7d0d4",
+          "6863a09ed5686f1f6362cbec4fe398f31d1301d3ba470b67affb360db74bc34d",
+          "74cc6be6ec26a90437be2ca053350d4a681a92e38136e21da032797e096b7132"
+        ],
+        [
+          "4258b77afb13a45c390cae956912c42236430d046f7ffb42a6d2865f6e11aa9f",
+          "e5735320c240e8d8af064d90e78413fc72dc9ce3d43fa9cdb891fe5b66d88653",
+          "560803ac29d835f6972a65c2aedfa476fcbfa529e8167120770a82ccd3d9c469",
+          "4258b77afb13a45c390cae956912c42236430d046f7ffb42a6d2865f6e11aa9f",
+          "4258b77afb13a45c390cae956912c42236430d046f7ffb42a6d2865f6e11aa9f",
+          "1b657af4deb9d5494b54c03a0d8d78da64268d4d58deb2fe1ea30a98a7fcc1ff"
+        ]
+      ]
+    },
+    {
+      "name": "source-13221",
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-13521\\frame-0013.png",
+      "sha256": "bb2324678611413f47009995b9efbe98e285c93bd0a783b7a7fc7c03da3ac0cc",
+      "layout": "mapped",
+      "t": 13.221,
+      "hud": {
+        "hp": 250,
+        "max_hp": 250,
+        "bar_fill": 1.0,
+        "webs": 4,
+        "abilities": {
+          "swing": [
+            false,
+            1
+          ],
+          "uppercut": [
+            true,
+            2
+          ],
+          "get_over_here": [
+            true,
+            null
+          ]
+        },
+        "ult_ready": false,
+        "ult_charge": 0.0,
+        "cooldowns": {
+          "swing": null,
+          "uppercut": null,
+          "get_over_here": null
+        },
+        "bar_damage": 0.0
+      },
+      "state": {
+        "t": 13.221,
+        "frame": [
+          2560,
+          1440
+        ],
+        "hp": 250,
+        "max_hp": 250,
+        "abilities": {
+          "swing": {
+            "ready": false,
+            "charges": 1
+          },
+          "uppercut": {
+            "ready": true,
+            "charges": 2
+          },
+          "pull": {
+            "ready": true,
+            "charges": null
+          },
+          "ult": {
+            "ready": false,
+            "charges": null
+          }
+        },
+        "webs": 4,
+        "detections": null,
+        "on_target": null,
+        "coasting": []
+      },
+      "elapsed_ms_not_benchmark": 14.324900024803355,
+      "masks": [
+        [
+          "81d73a2919750e58fdf10b7a19ac609a354e0317da2b75d13f921fcc8e64c7e0",
+          "ec610dd9e6bf70586f9106e8fa0f9f11ef52c0b44070e51a37d72466eb9add1e",
+          "4c09b1bcf5138d60ae88428632fe785c595236f478c9c27b62d01a017007757e",
+          "4575fe879587595e338dcf51a10c565423682134cd3d658b23c92e230a4e3788",
+          "8acf3dfd5bfbbe9c5e3da6065c2ddd3354644dbbf51ca8cc94096caa014b0f7d",
+          "33b8b72c873fbbb78b6feef78b88b5307654c0b817ee84914ffc831890b9dfce",
+          "40b456cc2ad38ac310ed5c7616866e4b494249f5b87079e8510d7eb295dabac3",
+          "40b456cc2ad38ac310ed5c7616866e4b494249f5b87079e8510d7eb295dabac3",
+          "4defb5a23fcc391cbe2e365ab6200c754f129399441f853b295e36aa62f73982"
+        ],
+        [
+          "5dc01f5f0369a8e188f5d7abf876947f8a233c434f7d16c3a3afcca0ebc1d2f9",
+          "169c897d6b08c3ab6736543136c80ff6b76068b803c5a1d40604fa5b0e5a5f65",
+          "ace6d384da29d122030b1cec82c7438f9d67e8c222296656e41b44e271ffbf4b",
+          "5dc01f5f0369a8e188f5d7abf876947f8a233c434f7d16c3a3afcca0ebc1d2f9",
+          "3319082ca094590d582a69758358f643e9bda5a06fed4d9345ced2c7f17ed27b",
+          "6db377f5c1414c9c8f78483920e077e76324d3579209899a454480b9dacb4921",
+          "5dc01f5f0369a8e188f5d7abf876947f8a233c434f7d16c3a3afcca0ebc1d2f9",
+          "3e16ee3fea14173eab710f5d40cd490ff96ffaa56ec5015ddc45a413bab9933b",
+          "b76591000fd01b0d1c3fef25bc142a22eada5c059f2cc2ebebfb4d020b693c5b"
+        ],
+        [
+          "8506b6212673345b17b42f224344348353c8f52b0c0878d6e030036fe168c8a6",
+          "8506b6212673345b17b42f224344348353c8f52b0c0878d6e030036fe168c8a6",
+          "8506b6212673345b17b42f224344348353c8f52b0c0878d6e030036fe168c8a6",
+          "8506b6212673345b17b42f224344348353c8f52b0c0878d6e030036fe168c8a6",
+          "8506b6212673345b17b42f224344348353c8f52b0c0878d6e030036fe168c8a6",
+          "8506b6212673345b17b42f224344348353c8f52b0c0878d6e030036fe168c8a6"
+        ],
+        [
+          "5e79b242750998e710f07248347099be986aa9db1805c101c08255545b2cfaaa",
+          "72ceea8708c8b7993ea353e0d82ba03ce6865472fa94f3b2c49704d60755c2fc",
+          "4a1efca8f27d40bfb4d6beb0ec09d597be72239797ad4648a8309b89d883cb12",
+          "5e79b242750998e710f07248347099be986aa9db1805c101c08255545b2cfaaa",
+          "281c2b78a5b8cf8043fcfb64b8b147619c5fc2d53e3092a4d38b29a2685ef54d",
+          "8d2e66ded9350c654496d4f686a412c5a7ad9c27f2fe9581058d4b5de339a963"
+        ],
+        [
+          "a1916da0724d00d63455f208a7c6e412d1c668b59f99e6204079d7f0336d8b0b",
+          "aacbeca20e7f876e2a6e534f88bcbc352d5ff2bcf4ae45636b3999e2594e63c2",
+          "c9ff39a6e9acd1c75f6ffd6bbc0df6f72ccc2525e9163d69a54ec965381f8c67",
+          "a1916da0724d00d63455f208a7c6e412d1c668b59f99e6204079d7f0336d8b0b",
+          "a1916da0724d00d63455f208a7c6e412d1c668b59f99e6204079d7f0336d8b0b",
+          "c3f479204a470f2f5cea0a1e3ab1cef089d7e23bd00d4e7905a0aa2c780b867a"
+        ]
+      ]
+    },
+    {
+      "name": "source-13321",
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-13521\\frame-0025.png",
+      "sha256": "89d66b6c851c6d7d17bc6c8579e4411fcd2dc9a75410d7bf96d20380396ed246",
+      "layout": "mapped",
+      "t": 13.321,
+      "hud": {
+        "hp": 250,
+        "max_hp": 250,
+        "bar_fill": 1.0,
+        "webs": 3,
+        "abilities": {
+          "swing": [
+            true,
+            1
+          ],
+          "uppercut": [
+            true,
+            2
+          ],
+          "get_over_here": [
+            true,
+            null
+          ]
+        },
+        "ult_ready": false,
+        "ult_charge": 0.0,
+        "cooldowns": {
+          "swing": null,
+          "uppercut": null,
+          "get_over_here": null
+        },
+        "bar_damage": 0.0
+      },
+      "state": {
+        "t": 13.321,
+        "frame": [
+          2560,
+          1440
+        ],
+        "hp": 250,
+        "max_hp": 250,
+        "abilities": {
+          "swing": {
+            "ready": true,
+            "charges": 1
+          },
+          "uppercut": {
+            "ready": true,
+            "charges": 2
+          },
+          "pull": {
+            "ready": true,
+            "charges": null
+          },
+          "ult": {
+            "ready": false,
+            "charges": null
+          }
+        },
+        "webs": 3,
+        "detections": null,
+        "on_target": null,
+        "coasting": []
+      },
+      "elapsed_ms_not_benchmark": 13.38329998543486,
+      "masks": [
+        [
+          "dab6700c0da036d554c459b427a4a7a32b4018e5225fd1f7fb6fe1d635edd060",
+          "1f18408e49d23f74e1dc124d415cce757c4ae5c31692f26711cc3b6e69485624",
+          "65abebe650d7b7129be9d936a0898807503e911145a12dbbe01c0ec4e3bd656c",
+          "3f5a0a605aec581e3dbe34c8e5f674412432d9f77a1c8ea7386b075a5cee86ae",
+          "c7c4c410c25d1dd82697555c56c1b5c4250eb61418cca90f2b93ca3a41cfce4c",
+          "9fbd5abbc41a810d93dcfabf7934bf05f34e06bc9ad377cb3326f50a45f4b267",
+          "f617a926625f0126cf54cdfee36882be86f4a556916846be87acfe8a389f0f2e",
+          "cde69eb7cab02ffdc539fca384375640c5070f1512f142237d8c4fc510213221",
+          "e59dc3d168b2ec8349c91d695bdbcd6ad439c1837909289f67dbf7ed8a6cb2e7"
+        ],
+        [
+          "f3e7c7508590e7c746df43e92fc3b2ef3d3b109d462cb254ca6d656ba9b3b98f",
+          "af1ccccd91d93243e93c6d74a031809fe27cff760ac76541fb79864705bd2b08",
+          "2bb6487015c38e41a071d7232c360a8141a929261aca44f709d0de7239d99101",
+          "f3e7c7508590e7c746df43e92fc3b2ef3d3b109d462cb254ca6d656ba9b3b98f",
+          "e1f99277a4e6466f8711501e5964067260eae448588bae7af7a36470c33f2239",
+          "e7b7adbd06de9a65f04192c6248a935246a2aef782fa09ddcdbbe98b6dc5aace",
+          "f3e7c7508590e7c746df43e92fc3b2ef3d3b109d462cb254ca6d656ba9b3b98f",
+          "181550e0f617080e401505cb8f510c407ee9436913e0f1e95cd888bb590f81d8",
+          "0e604deff90949b12bbdbcc1d893d3b0bc93f2ea27f629ef982e7f7aef51cc08"
+        ],
+        [
+          "2314ec26e5f76d60b3e63591412657bd964ee20b5acfacc63dbd75fdac28788a",
+          "bdad3d434b43b9c2d588510b81cdc3328db83a2537b1e9174e2d14c6b6f2eb0b",
+          "64919a2b6ea9259074f00df00327485572c4aac9872572df8c3e2234a9ba9646",
+          "2314ec26e5f76d60b3e63591412657bd964ee20b5acfacc63dbd75fdac28788a",
+          "944b66dde751af8de1ad17a550083f1df78d1d094a63e509ac9aa04226e40d92",
+          "d2c6233210fbbf5c0bd587bf53b566ee02dc876f70354a2c8439228baddabe66"
+        ],
+        [
+          "d6ce07a7b07fceeb54f45bea6076e72d830d4dfd29d4311dc5ee83924f4cefed",
+          "18d11eeb00e46b521b3c023d3c1c15ac0b4b1420d0301d170bd029ddd34958cb",
+          "2d805e88ec12b3d00fbf091ae34b02b0a5376993e1310de5feb30a66748b2150",
+          "d6ce07a7b07fceeb54f45bea6076e72d830d4dfd29d4311dc5ee83924f4cefed",
+          "8c7a8595c61286c0bc56a89a62948c0f9bdc9098ee8b1172486b96c617a559c5",
+          "5a3de1befc102adfe73eea573d5e2fc865733ed69eb7a916313a07f3f6df3aa0"
+        ],
+        [
+          "50aaa65282fd11b53bb943026eddea2a17f5ea76c289f836fb6475ebecb158b9",
+          "c9deaffa759ba4973c52277b4cada00eb1ba927c3f6db0febd842baaa9bdaeb8",
+          "59c9b0f6895803e34b3d9cde638e433d70555d60e0b00ae8153784d9bd1900c5",
+          "50aaa65282fd11b53bb943026eddea2a17f5ea76c289f836fb6475ebecb158b9",
+          "50aaa65282fd11b53bb943026eddea2a17f5ea76c289f836fb6475ebecb158b9",
+          "978769175e58dab3e83390b7196312f70421806b31abee9f32790a198c833f91"
+        ]
+      ]
+    },
+    {
+      "name": "source-13421",
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-13521\\frame-0037.png",
+      "sha256": "b55c162bedf0209d5a6eab15fcb68328efa25a18bd666155cfe229fe792075b7",
+      "layout": "mapped",
+      "t": 13.421,
+      "hud": {
+        "hp": 250,
+        "max_hp": 250,
+        "bar_fill": 1.0,
+        "webs": 3,
+        "abilities": {
+          "swing": [
+            true,
+            1
+          ],
+          "uppercut": [
+            true,
+            2
+          ],
+          "get_over_here": [
+            true,
+            null
+          ]
+        },
+        "ult_ready": false,
+        "ult_charge": 0.0,
+        "cooldowns": {
+          "swing": null,
+          "uppercut": null,
+          "get_over_here": null
+        },
+        "bar_damage": 0.0
+      },
+      "state": {
+        "t": 13.421,
+        "frame": [
+          2560,
+          1440
+        ],
+        "hp": 250,
+        "max_hp": 250,
+        "abilities": {
+          "swing": {
+            "ready": true,
+            "charges": 1
+          },
+          "uppercut": {
+            "ready": true,
+            "charges": 2
+          },
+          "pull": {
+            "ready": true,
+            "charges": null
+          },
+          "ult": {
+            "ready": false,
+            "charges": null
+          }
+        },
+        "webs": 3,
+        "detections": null,
+        "on_target": null,
+        "coasting": []
+      },
+      "elapsed_ms_not_benchmark": 15.202000009594485,
+      "masks": [
+        [
+          "0bb75f5f261fb7e8436bd5c83c5bc24f43131bed5c354e9aff96d4dcd1c91da5",
+          "c07752a5150ea5d3272c067f6a71b911d5b2c105003ce9ecaaffb4e1ded4dad3",
+          "51b83fed0eb24ef3d9ae0aa932b7d8387b722e2ea4b87661dd4b3bbbb91a2487",
+          "f00b0bb6dba0f94708b52865d1aee28c2a3d49079d7d4113a432d363dae85738",
+          "c34540a88a3020bc9cfbd9acf44f34b28a6d939af24168fb6d4155d7d2bcbd29",
+          "2f4feedbb149c148eb3288a247b73c12eb530a2feb4e4a6dbe62fe1f95bda97f",
+          "53df6cef962d6ed903b9da6f82eefe7cd40f34ca8a0ae66694618ebac24b5aa6",
+          "0a1fec86ba187af892656ac6f3a6c6a59a992b13fbd5a27da8eef9f927010f7b",
+          "6a45957e74148866e18e728eb9436e840dacea8637a268d5dd62df2b9364dc49"
+        ],
+        [
+          "469135568f30dc78d5cef335c6210232515c0a18e3f0441b0386d62d24a9e962",
+          "735913e9aabd5ff07207dd3fdcfcafe0fc01e4a4980d4b977e6f8734cf0a7579",
+          "44b134f9195e663b11a08ae0a3bd749ce6b3cd3c7586fb2e1c83a20f40bdb242",
+          "469135568f30dc78d5cef335c6210232515c0a18e3f0441b0386d62d24a9e962",
+          "476264c0df6bc8374c669a62de6662be6a14e237dd1ad9148b0e29b487476c01",
+          "067416c3fdcc6cf79103882d43c6a7b0c0182ab987938efc2a520ca6c1e76fd0",
+          "469135568f30dc78d5cef335c6210232515c0a18e3f0441b0386d62d24a9e962",
+          "c17a1f36d0d4b1e8c1ef8f31d99f09ecd8bf95b2d0c47431a904563cb568731d",
+          "61a813caed53d4868c975aafce353052ed35713f980b9e04bea4ee42ac4f296b"
+        ],
+        [
+          "4aa6dd6c02dc432c7fbfcb00c98ccadb29874b9385699f7935ca9f76baee60d4",
+          "293eb0cf8742040fcb6055a215c6bdcb6595a4ef44b70f542ccb84436dfabbbb",
+          "2fab829282eb72595f54f1efa3e2961db9cfed4a3e9ef02963575c259926b196",
+          "4aa6dd6c02dc432c7fbfcb00c98ccadb29874b9385699f7935ca9f76baee60d4",
+          "4aa6dd6c02dc432c7fbfcb00c98ccadb29874b9385699f7935ca9f76baee60d4",
+          "4c5ccedb620c355d96354e364873bdd52844edd8d19b585388cd3ca6ce3ca65a"
+        ],
+        [
+          "a4d3b909e1e0fbec789a91b5ccbd7595277f1dc34c0b7dfaf7a1b886dabdf1a9",
+          "011d09133727e40e87de77b6d9926a32177d0502c5272bb7a5914c03c638774b",
+          "e92ca2e4a354070a9aec7edc92cc13fad4d38e4fb9e4569148de97ce6b8150af",
+          "a4d3b909e1e0fbec789a91b5ccbd7595277f1dc34c0b7dfaf7a1b886dabdf1a9",
+          "ebcee47e5bb7a6c13b8307024fb72d1526998d55987462b4c0ebd2d8c244917e",
+          "0d5c848298848ad369e1760a681fef671bf436675c3d803a3e19b0efcfa538b6"
+        ],
+        [
+          "0cb3b37b425d14eecde7e3efaa58b4e15e9ad323d1c467ec7e6e1a14a39fc93d",
+          "5ec3eb73b07b115acb844be4555bc68cd7ab02c5467c5a545d297a9ca0e9d68e",
+          "ac72b515c74b722d0e09b0c6fd60d17edb3054e35fd7fb1dd838ff1177b2c166",
+          "0cb3b37b425d14eecde7e3efaa58b4e15e9ad323d1c467ec7e6e1a14a39fc93d",
+          "0cb3b37b425d14eecde7e3efaa58b4e15e9ad323d1c467ec7e6e1a14a39fc93d",
+          "5568767004cfc5050eb3f994215db3014f26495f748851cd0b720338833c20e2"
+        ]
+      ]
+    },
+    {
+      "name": "source-13521",
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-13521\\frame-0049.png",
+      "sha256": "b8f369a9b0dc3fcfdf0df792ef1c87ec3cb8e3d5a1443d7c76d39420876910fc",
+      "layout": "mapped",
+      "t": 13.521,
+      "hud": {
+        "hp": 250,
+        "max_hp": 250,
+        "bar_fill": 1.0,
+        "webs": 3,
+        "abilities": {
+          "swing": [
+            true,
+            null
+          ],
+          "uppercut": [
+            true,
+            2
+          ],
+          "get_over_here": [
+            true,
+            null
+          ]
+        },
+        "ult_ready": false,
+        "ult_charge": 0.0,
+        "cooldowns": {
+          "swing": null,
+          "uppercut": null,
+          "get_over_here": null
+        },
+        "bar_damage": 0.0
+      },
+      "state": {
+        "t": 13.521,
+        "frame": [
+          2560,
+          1440
+        ],
+        "hp": 250,
+        "max_hp": 250,
+        "abilities": {
+          "swing": {
+            "ready": true,
+            "charges": null
+          },
+          "uppercut": {
+            "ready": true,
+            "charges": 2
+          },
+          "pull": {
+            "ready": true,
+            "charges": null
+          },
+          "ult": {
+            "ready": false,
+            "charges": null
+          }
+        },
+        "webs": 3,
+        "detections": null,
+        "on_target": null,
+        "coasting": []
+      },
+      "elapsed_ms_not_benchmark": 13.42039997689426,
+      "masks": [
+        [
+          "fc3caea7a3b0bedf2e9934318a67bcee484402b78c29d9afafee0d1400b01ebf",
+          "09bbb5c209f7137ef801698a55e6aba84dc5d71bf4145ec5b411647ab35d1346",
+          "502d86ac65a1e30b4c67bbf33041d821dee9d66ab7e1448c0833d4d5aecf9818",
+          "9cec3b4308096a833dae01b1534d705e4a154e1742a0c371021ad6ba5d4abf56",
+          "457eb147efa211e3afce346186da12aa5ac3c76cbeb1ebe919f61fd6e9414de7",
+          "0aff47f89f101627c13f0cc3d14f39bbd3f48ee0c02373efe33b18aedb86f118",
+          "bf78e7ac24bf51aed0b2e1d3b3711fe0a7b8dfa722976d0f8125fb36db11dd2f",
+          "bf78e7ac24bf51aed0b2e1d3b3711fe0a7b8dfa722976d0f8125fb36db11dd2f",
+          "bf78e7ac24bf51aed0b2e1d3b3711fe0a7b8dfa722976d0f8125fb36db11dd2f"
+        ],
+        [
+          "b390fc59f3a60144528e652c0d8fc77c66b168c6e34bd020c48765f336f14ad3",
+          "adfc3ede4e35857bd7b6212eb886a1fee33410dc85cb42de4c9dc66d2d686e00",
+          "566974d85f204230624387e9371bcc13a2d6d920f6611fc4e185f4b09659b304",
+          "b390fc59f3a60144528e652c0d8fc77c66b168c6e34bd020c48765f336f14ad3",
+          "580361db431783bcdae9dafad15f88a0bb21c4958ef4e393f05d07e3e3320e98",
+          "bc53fd18e594665c769aa4e852e25e3a509f11a3e4d1c90a0fd5d3c1c2d0cdc2",
+          "b390fc59f3a60144528e652c0d8fc77c66b168c6e34bd020c48765f336f14ad3",
+          "7f1632f8104fce35725179170ad04ceff6c9244bbc77f20677fb282aa54145fb",
+          "823a14c229fa70e5c98914a7831d997124b6f0f791771c271da8a2688db933cf"
+        ],
+        [
+          "54046c39ef42c7088a61858f45c49a2959fafed9b1d185ce8afb8bb8d14607c6",
+          "ecf3596bbb5140f560686838e0354b528c5d18d318bd3bf6cabb9a5c5f8875fa",
+          "a8797ba067c8dc8afce3cd34fdf24013ab7fbbe2fc12f56ffe74159a06056903",
+          "676a023d7a0159799eac69a9d5f794450f3d29ad7e68862f42b0c2636aaed978",
+          "aad470e814abefbb492bcbe2fe985306aa92b3454db9170dddb44f2ebf6fa894",
+          "d175a78c0aefd798f9a0beda29bc8245e0004b014263629e9823ce8f475a65cc"
+        ],
+        [
+          "ee6acc702ec90e706d32a179f1339d8f423064a5ca74d07f71a7c0e139d7a499",
+          "f2496146376d9bd3aaa71063d184673b6b99895a993b10f7cda254d4b2aa4dab",
+          "efb274e60900c3122eb00a0ac987bb3f356ef77d176187124d3b189f610d6139",
+          "34010a8273106665aea5e30cdd416c01801b493bb176fe8d4da956357bf95bf9",
+          "46a5d78493a6a905154372953bcf19d499f28dc59c4462e29db1b6125f39d5aa",
+          "7ec3ca6660631cc69686a430595d4db7e18831dfac50e08f18798927d6c7ea96"
+        ],
+        [
+          "93eca210b5eea879cff46cf29c216aafbd584058162232aea2244ac3beb3f053",
+          "e379d278752f9dd466cbb70871051a10637d0a923baca14679b7934da09d0287",
+          "19aa4da6dc1700fa2e9104ebee9c45d37d4fe16cfebe6c171717a8298da531eb",
+          "8030e22572d9166b563847c4e1c00058edf1091c7c9c5f88ee24fe47934330a3",
+          "9447338dc4f6ad8503a0c14e3399a750f3f0ec0af2eb3f7547f0ea0646dac355",
+          "9c1a6e5423614df9f835c675c99d94f43e102251a8c71a75d6db8199fcc532a9"
+        ]
+      ]
+    },
+    {
+      "name": "source-19421",
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-19821\\frame-0001.png",
+      "sha256": "a475632ddfbe4c70976ff884270511eed1ff8975cd2a0a6c747245940c12b7cb",
+      "layout": "mapped",
+      "t": 19.421,
+      "hud": {
+        "hp": 250,
+        "max_hp": 250,
+        "bar_fill": 1.0,
+        "webs": 1,
+        "abilities": {
+          "swing": [
+            true,
+            1
+          ],
+          "uppercut": [
+            false,
+            0
+          ],
+          "get_over_here": [
+            true,
+            null
+          ]
+        },
+        "ult_ready": false,
+        "ult_charge": 0.0,
+        "cooldowns": {
+          "swing": null,
+          "uppercut": 3,
+          "get_over_here": null
+        },
+        "bar_damage": 0.0
+      },
+      "state": {
+        "t": 19.421,
+        "frame": [
+          2560,
+          1440
+        ],
+        "hp": 250,
+        "max_hp": 250,
+        "abilities": {
+          "swing": {
+            "ready": true,
+            "charges": 1
+          },
+          "uppercut": {
+            "ready": false,
+            "charges": 0
+          },
+          "pull": {
+            "ready": true,
+            "charges": null
+          },
+          "ult": {
+            "ready": false,
+            "charges": null
+          }
+        },
+        "webs": 1,
+        "detections": null,
+        "on_target": null,
+        "coasting": []
+      },
+      "elapsed_ms_not_benchmark": 8.105400018393993,
+      "masks": [
+        [
+          "d2126206b8d5c76a53f93918b2462de944ecc196cc5b094953729804da73b838",
+          "d2126206b8d5c76a53f93918b2462de944ecc196cc5b094953729804da73b838",
+          "d2126206b8d5c76a53f93918b2462de944ecc196cc5b094953729804da73b838",
+          "d2126206b8d5c76a53f93918b2462de944ecc196cc5b094953729804da73b838",
+          "d2126206b8d5c76a53f93918b2462de944ecc196cc5b094953729804da73b838",
+          "d2126206b8d5c76a53f93918b2462de944ecc196cc5b094953729804da73b838",
+          "d2126206b8d5c76a53f93918b2462de944ecc196cc5b094953729804da73b838",
+          "d2126206b8d5c76a53f93918b2462de944ecc196cc5b094953729804da73b838",
+          "d2126206b8d5c76a53f93918b2462de944ecc196cc5b094953729804da73b838"
+        ],
+        [
+          "29559ae367ed2ab6eba039c1da6e68bdbf23ebde1ffc553a42de4bf6c07f051d",
+          "3fd2551b1ccf71b9f4a2e3ba016a40da449e87c47c2a4de6b0d45b514a3c89b8",
+          "e32a96b495a36d2c74a2b2ad8a61ebf448b863f7f44fd06d0b14e7695a0d7a5f",
+          "29559ae367ed2ab6eba039c1da6e68bdbf23ebde1ffc553a42de4bf6c07f051d",
+          "80f5273c891594dc0b68dbea90e3bec291840849f1caa8d0a4927757e10d9b81",
+          "5da0e60d9194a264951de9f9a7e44c85573ab458d173ac5d06fb152d7333e3d9",
+          "29559ae367ed2ab6eba039c1da6e68bdbf23ebde1ffc553a42de4bf6c07f051d",
+          "80f5273c891594dc0b68dbea90e3bec291840849f1caa8d0a4927757e10d9b81",
+          "1cb315a791465b954cd3f86b49511f2cd2b87a9d86db75833018d762f39e86a5"
+        ],
+        [
+          "3daad75a6bd27f20979c4cee91005d4728ae8f8619f7d16e07cb886fac1a7ac0",
+          "3daad75a6bd27f20979c4cee91005d4728ae8f8619f7d16e07cb886fac1a7ac0",
+          "428c74633ba3239cc6c3ca6ea44e2fdc21b4118e54cb0eded1242f88a22c0cfa",
+          "3daad75a6bd27f20979c4cee91005d4728ae8f8619f7d16e07cb886fac1a7ac0",
+          "3daad75a6bd27f20979c4cee91005d4728ae8f8619f7d16e07cb886fac1a7ac0",
+          "c645c3522172e9ee4c0af36f5a2cd565155ee6fe32c8683ce7f33f4800cd67f8"
+        ],
+        [
+          "d609eb4a2651f025b626b22c0fdaef0274dec8ac58bc4f32f5e1b141e872d23b",
+          "c37003dd9a4b3c949232ebdea2d534ee680f94d97f6e87fa4a7335244950b5d8",
+          "3bbfbc7f3db91f4f1d379640eae867e928affeffc71b22b7ed63888d46cd92a4",
+          "cfdf6cc8444a473bc38a65e771e6ddb1de14566e339bf15981cb708587e34817",
+          "cbd61ff7656be8f073a296051165b6d22cbc8f0791b360a400157e468a598c4f",
+          "d609eb4a2651f025b626b22c0fdaef0274dec8ac58bc4f32f5e1b141e872d23b"
+        ],
+        [
+          "eb7ce85f45877ce405688c9224b69b326ec8108d400e54b3adc196daff5fac62",
+          "eb7ce85f45877ce405688c9224b69b326ec8108d400e54b3adc196daff5fac62",
+          "eb7ce85f45877ce405688c9224b69b326ec8108d400e54b3adc196daff5fac62",
+          "eb7ce85f45877ce405688c9224b69b326ec8108d400e54b3adc196daff5fac62",
+          "eb7ce85f45877ce405688c9224b69b326ec8108d400e54b3adc196daff5fac62",
+          "eb7ce85f45877ce405688c9224b69b326ec8108d400e54b3adc196daff5fac62"
+        ]
+      ]
+    },
+    {
+      "name": "source-19521",
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-19821\\frame-0013.png",
+      "sha256": "1eeb0167b7e3d8c73383b60ffbe26e7f1fbd105fea96f502653f134e68dae66e",
+      "layout": "mapped",
+      "t": 19.521,
+      "hud": {
+        "hp": 250,
+        "max_hp": 250,
+        "bar_fill": 1.0,
+        "webs": 1,
+        "abilities": {
+          "swing": [
+            true,
+            1
+          ],
+          "uppercut": [
+            false,
+            0
+          ],
+          "get_over_here": [
+            true,
+            null
+          ]
+        },
+        "ult_ready": false,
+        "ult_charge": 0.0,
+        "cooldowns": {
+          "swing": null,
+          "uppercut": 3,
+          "get_over_here": null
+        },
+        "bar_damage": 0.0
+      },
+      "state": {
+        "t": 19.521,
+        "frame": [
+          2560,
+          1440
+        ],
+        "hp": 250,
+        "max_hp": 250,
+        "abilities": {
+          "swing": {
+            "ready": true,
+            "charges": 1
+          },
+          "uppercut": {
+            "ready": false,
+            "charges": 0
+          },
+          "pull": {
+            "ready": true,
+            "charges": null
+          },
+          "ult": {
+            "ready": false,
+            "charges": null
+          }
+        },
+        "webs": 1,
+        "detections": null,
+        "on_target": null,
+        "coasting": []
+      },
+      "elapsed_ms_not_benchmark": 10.304900002665818,
+      "masks": [
+        [
+          "2b4edfca4d576be96cb2fd25a65ac24432aacda8c29b0b6c24feb305a2de17bc",
+          "2b4edfca4d576be96cb2fd25a65ac24432aacda8c29b0b6c24feb305a2de17bc",
+          "2b4edfca4d576be96cb2fd25a65ac24432aacda8c29b0b6c24feb305a2de17bc",
+          "2b4edfca4d576be96cb2fd25a65ac24432aacda8c29b0b6c24feb305a2de17bc",
+          "2b4edfca4d576be96cb2fd25a65ac24432aacda8c29b0b6c24feb305a2de17bc",
+          "2b4edfca4d576be96cb2fd25a65ac24432aacda8c29b0b6c24feb305a2de17bc",
+          "2b4edfca4d576be96cb2fd25a65ac24432aacda8c29b0b6c24feb305a2de17bc",
+          "2b4edfca4d576be96cb2fd25a65ac24432aacda8c29b0b6c24feb305a2de17bc",
+          "2b4edfca4d576be96cb2fd25a65ac24432aacda8c29b0b6c24feb305a2de17bc"
+        ],
+        [
+          "29559ae367ed2ab6eba039c1da6e68bdbf23ebde1ffc553a42de4bf6c07f051d",
+          "3fd2551b1ccf71b9f4a2e3ba016a40da449e87c47c2a4de6b0d45b514a3c89b8",
+          "e32a96b495a36d2c74a2b2ad8a61ebf448b863f7f44fd06d0b14e7695a0d7a5f",
+          "29559ae367ed2ab6eba039c1da6e68bdbf23ebde1ffc553a42de4bf6c07f051d",
+          "80f5273c891594dc0b68dbea90e3bec291840849f1caa8d0a4927757e10d9b81",
+          "5da0e60d9194a264951de9f9a7e44c85573ab458d173ac5d06fb152d7333e3d9",
+          "29559ae367ed2ab6eba039c1da6e68bdbf23ebde1ffc553a42de4bf6c07f051d",
+          "80f5273c891594dc0b68dbea90e3bec291840849f1caa8d0a4927757e10d9b81",
+          "1cb315a791465b954cd3f86b49511f2cd2b87a9d86db75833018d762f39e86a5"
+        ],
+        [
+          "e646fb9b86825d61f1cb2d8fe7358abbd8af364869ca1871602ed55ec9dd585a",
+          "e646fb9b86825d61f1cb2d8fe7358abbd8af364869ca1871602ed55ec9dd585a",
+          "d0dd11afbeefd3d400ee3e4a54d29e88d2d3495c3e195c9d1ddc2a409f51a0a7",
+          "e646fb9b86825d61f1cb2d8fe7358abbd8af364869ca1871602ed55ec9dd585a",
+          "e646fb9b86825d61f1cb2d8fe7358abbd8af364869ca1871602ed55ec9dd585a",
+          "77053a365d4d973d2e084d86b9259bc30f8c8583d91cf07dc3a83cf4dd97a977"
+        ],
+        [
+          "d609eb4a2651f025b626b22c0fdaef0274dec8ac58bc4f32f5e1b141e872d23b",
+          "3bbfbc7f3db91f4f1d379640eae867e928affeffc71b22b7ed63888d46cd92a4",
+          "3bbfbc7f3db91f4f1d379640eae867e928affeffc71b22b7ed63888d46cd92a4",
+          "651fb13a9790e55f922822ac514adc75187a528ac842cffbadc7c94e4005b086",
+          "8b63375d25d8a19655f6d654c257b2202492b3c8110113619372b83f9e2ccea6",
+          "cbd61ff7656be8f073a296051165b6d22cbc8f0791b360a400157e468a598c4f"
+        ],
+        [
+          "e7f0418e24ee2e639171ed37d56690715d4cb3ab69e137a349f7eb6e1b31823c",
+          "e7f0418e24ee2e639171ed37d56690715d4cb3ab69e137a349f7eb6e1b31823c",
+          "e7f0418e24ee2e639171ed37d56690715d4cb3ab69e137a349f7eb6e1b31823c",
+          "e7f0418e24ee2e639171ed37d56690715d4cb3ab69e137a349f7eb6e1b31823c",
+          "e7f0418e24ee2e639171ed37d56690715d4cb3ab69e137a349f7eb6e1b31823c",
+          "e7f0418e24ee2e639171ed37d56690715d4cb3ab69e137a349f7eb6e1b31823c"
+        ]
+      ]
+    },
+    {
+      "name": "source-19621",
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-20021\\frame-0001.png",
+      "sha256": "c62f578ac6f82354c3d38fea04970e236d6c9ce38344476cb55ac3c9673c3320",
+      "layout": "mapped",
+      "t": 19.621,
+      "hud": {
+        "hp": 250,
+        "max_hp": 250,
+        "bar_fill": 1.0,
+        "webs": 1,
+        "abilities": {
+          "swing": [
+            true,
+            null
+          ],
+          "uppercut": [
+            false,
+            0
+          ],
+          "get_over_here": [
+            true,
+            null
+          ]
+        },
+        "ult_ready": false,
+        "ult_charge": 0.0,
+        "cooldowns": {
+          "swing": null,
+          "uppercut": 3,
+          "get_over_here": null
+        },
+        "bar_damage": 0.0
+      },
+      "state": {
+        "t": 19.621,
+        "frame": [
+          2560,
+          1440
+        ],
+        "hp": 250,
+        "max_hp": 250,
+        "abilities": {
+          "swing": {
+            "ready": true,
+            "charges": null
+          },
+          "uppercut": {
+            "ready": false,
+            "charges": 0
+          },
+          "pull": {
+            "ready": true,
+            "charges": null
+          },
+          "ult": {
+            "ready": false,
+            "charges": null
+          }
+        },
+        "webs": 1,
+        "detections": null,
+        "on_target": null,
+        "coasting": []
+      },
+      "elapsed_ms_not_benchmark": 9.269200003473088,
+      "masks": [
+        [
+          "50e940b9bcbab082812e5b0193e8fdc28bc45cc6eec2c991834f9e542a28dd99",
+          "50e940b9bcbab082812e5b0193e8fdc28bc45cc6eec2c991834f9e542a28dd99",
+          "50e940b9bcbab082812e5b0193e8fdc28bc45cc6eec2c991834f9e542a28dd99",
+          "50e940b9bcbab082812e5b0193e8fdc28bc45cc6eec2c991834f9e542a28dd99",
+          "50e940b9bcbab082812e5b0193e8fdc28bc45cc6eec2c991834f9e542a28dd99",
+          "50e940b9bcbab082812e5b0193e8fdc28bc45cc6eec2c991834f9e542a28dd99",
+          "50e940b9bcbab082812e5b0193e8fdc28bc45cc6eec2c991834f9e542a28dd99",
+          "50e940b9bcbab082812e5b0193e8fdc28bc45cc6eec2c991834f9e542a28dd99",
+          "50e940b9bcbab082812e5b0193e8fdc28bc45cc6eec2c991834f9e542a28dd99"
+        ],
+        [
+          "85f6cf213f7c5acc9ed2497355491a358505919164196b24c3b84bc63ce8b7e3",
+          "843a4d93b2742b03587123904a6906a73663e4d3edd2c77c3ff2abffe3ee7695",
+          "8a07fa058605f95f617a30948213ef9d189e860861ad6c2787f1cb3ebaae5284",
+          "85f6cf213f7c5acc9ed2497355491a358505919164196b24c3b84bc63ce8b7e3",
+          "8211e3c2272e4a1cf6260402f4ef573bf9bcee1d47bae5dc6dbc009ae22d64c6",
+          "30f8a7ac91deb30a468d7f19410eda5f67c9d8d609a6c1c9382f976e74ccd4c0",
+          "85f6cf213f7c5acc9ed2497355491a358505919164196b24c3b84bc63ce8b7e3",
+          "8211e3c2272e4a1cf6260402f4ef573bf9bcee1d47bae5dc6dbc009ae22d64c6",
+          "25f3f706f3cf43fa6c1281bc139ade44d449167abc1e968cdf5cfd0c2bf5068e"
+        ],
+        [
+          "e646fb9b86825d61f1cb2d8fe7358abbd8af364869ca1871602ed55ec9dd585a",
+          "e646fb9b86825d61f1cb2d8fe7358abbd8af364869ca1871602ed55ec9dd585a",
+          "fb0a7ad68463aec1fdf676b4305352146d83a8634985f52cb910ef6dfaf29419",
+          "e646fb9b86825d61f1cb2d8fe7358abbd8af364869ca1871602ed55ec9dd585a",
+          "e646fb9b86825d61f1cb2d8fe7358abbd8af364869ca1871602ed55ec9dd585a",
+          "d2e6ecd0436cd8eccb2b8f8a8e2fb844e99f9308c7212423f317ee745185f17f"
+        ],
+        [
+          "d609eb4a2651f025b626b22c0fdaef0274dec8ac58bc4f32f5e1b141e872d23b",
+          "d302e39b0a6b4d1c714212904932df5e3005e251b777a88d937a0729487325f5",
+          "d302e39b0a6b4d1c714212904932df5e3005e251b777a88d937a0729487325f5",
+          "31d38fa667bf3602cbb7422eff6f68bf7b7f489808f56ca936e445a2c5a03b15",
+          "5b79455d48fa01db43f0ffaa0491f7078cbfe6a8765e511df03e6f38c1a625b0",
+          "d609eb4a2651f025b626b22c0fdaef0274dec8ac58bc4f32f5e1b141e872d23b"
+        ],
+        [
+          "a5c0f1d41c7df6a3ba733602dbfe414805992dc1c4d9b2abb8cefae1b4478fed",
+          "a5c0f1d41c7df6a3ba733602dbfe414805992dc1c4d9b2abb8cefae1b4478fed",
+          "a5c0f1d41c7df6a3ba733602dbfe414805992dc1c4d9b2abb8cefae1b4478fed",
+          "a5c0f1d41c7df6a3ba733602dbfe414805992dc1c4d9b2abb8cefae1b4478fed",
+          "a5c0f1d41c7df6a3ba733602dbfe414805992dc1c4d9b2abb8cefae1b4478fed",
+          "a5c0f1d41c7df6a3ba733602dbfe414805992dc1c4d9b2abb8cefae1b4478fed"
+        ]
+      ]
+    },
+    {
+      "name": "source-19721",
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-20021\\frame-0013.png",
+      "sha256": "718183798033c975647a7a81923370f860f366a78d061e4649c07d5e5fe9606a",
+      "layout": "mapped",
+      "t": 19.721,
+      "hud": {
+        "hp": 250,
+        "max_hp": 250,
+        "bar_fill": 1.0,
+        "webs": 1,
+        "abilities": {
+          "swing": [
+            true,
+            null
+          ],
+          "uppercut": [
+            false,
+            0
+          ],
+          "get_over_here": [
+            true,
+            null
+          ]
+        },
+        "ult_ready": false,
+        "ult_charge": 0.0,
+        "cooldowns": {
+          "swing": null,
+          "uppercut": 3,
+          "get_over_here": null
+        },
+        "bar_damage": 0.0
+      },
+      "state": {
+        "t": 19.721,
+        "frame": [
+          2560,
+          1440
+        ],
+        "hp": 250,
+        "max_hp": 250,
+        "abilities": {
+          "swing": {
+            "ready": true,
+            "charges": null
+          },
+          "uppercut": {
+            "ready": false,
+            "charges": 0
+          },
+          "pull": {
+            "ready": true,
+            "charges": null
+          },
+          "ult": {
+            "ready": false,
+            "charges": null
+          }
+        },
+        "webs": 1,
+        "detections": null,
+        "on_target": null,
+        "coasting": []
+      },
+      "elapsed_ms_not_benchmark": 9.547599998768419,
+      "masks": [
+        [
+          "152606ae3a998ce2d3c252d9041fd4ea31564403ce1fa70494a30c2475627d91",
+          "152606ae3a998ce2d3c252d9041fd4ea31564403ce1fa70494a30c2475627d91",
+          "152606ae3a998ce2d3c252d9041fd4ea31564403ce1fa70494a30c2475627d91",
+          "152606ae3a998ce2d3c252d9041fd4ea31564403ce1fa70494a30c2475627d91",
+          "152606ae3a998ce2d3c252d9041fd4ea31564403ce1fa70494a30c2475627d91",
+          "152606ae3a998ce2d3c252d9041fd4ea31564403ce1fa70494a30c2475627d91",
+          "152606ae3a998ce2d3c252d9041fd4ea31564403ce1fa70494a30c2475627d91",
+          "152606ae3a998ce2d3c252d9041fd4ea31564403ce1fa70494a30c2475627d91",
+          "152606ae3a998ce2d3c252d9041fd4ea31564403ce1fa70494a30c2475627d91"
+        ],
+        [
+          "85f6cf213f7c5acc9ed2497355491a358505919164196b24c3b84bc63ce8b7e3",
+          "843a4d93b2742b03587123904a6906a73663e4d3edd2c77c3ff2abffe3ee7695",
+          "8a07fa058605f95f617a30948213ef9d189e860861ad6c2787f1cb3ebaae5284",
+          "85f6cf213f7c5acc9ed2497355491a358505919164196b24c3b84bc63ce8b7e3",
+          "8211e3c2272e4a1cf6260402f4ef573bf9bcee1d47bae5dc6dbc009ae22d64c6",
+          "30f8a7ac91deb30a468d7f19410eda5f67c9d8d609a6c1c9382f976e74ccd4c0",
+          "85f6cf213f7c5acc9ed2497355491a358505919164196b24c3b84bc63ce8b7e3",
+          "e3513004647348ea3c170aecefe1d06f68522795f3729f9517659cfd75817c29",
+          "25f3f706f3cf43fa6c1281bc139ade44d449167abc1e968cdf5cfd0c2bf5068e"
+        ],
+        [
+          "079e09005678ab06bafaa4bbb8c587b71c32faf47790a4916e43ace86873ec09",
+          "079e09005678ab06bafaa4bbb8c587b71c32faf47790a4916e43ace86873ec09",
+          "7203b116e8957b2580c2ef22593a3ad705163f2b94ae30da6bf8cb48fe560e16",
+          "079e09005678ab06bafaa4bbb8c587b71c32faf47790a4916e43ace86873ec09",
+          "079e09005678ab06bafaa4bbb8c587b71c32faf47790a4916e43ace86873ec09",
+          "6d73269528fecb81a574c648f921b0631b337a1461a634115894c0288ac08f07"
+        ],
+        [
+          "d609eb4a2651f025b626b22c0fdaef0274dec8ac58bc4f32f5e1b141e872d23b",
+          "d302e39b0a6b4d1c714212904932df5e3005e251b777a88d937a0729487325f5",
+          "d302e39b0a6b4d1c714212904932df5e3005e251b777a88d937a0729487325f5",
+          "31d38fa667bf3602cbb7422eff6f68bf7b7f489808f56ca936e445a2c5a03b15",
+          "d609eb4a2651f025b626b22c0fdaef0274dec8ac58bc4f32f5e1b141e872d23b",
+          "d609eb4a2651f025b626b22c0fdaef0274dec8ac58bc4f32f5e1b141e872d23b"
+        ],
+        [
+          "a5c0f1d41c7df6a3ba733602dbfe414805992dc1c4d9b2abb8cefae1b4478fed",
+          "a5c0f1d41c7df6a3ba733602dbfe414805992dc1c4d9b2abb8cefae1b4478fed",
+          "a5c0f1d41c7df6a3ba733602dbfe414805992dc1c4d9b2abb8cefae1b4478fed",
+          "a5c0f1d41c7df6a3ba733602dbfe414805992dc1c4d9b2abb8cefae1b4478fed",
+          "a5c0f1d41c7df6a3ba733602dbfe414805992dc1c4d9b2abb8cefae1b4478fed",
+          "a5c0f1d41c7df6a3ba733602dbfe414805992dc1c4d9b2abb8cefae1b4478fed"
+        ]
+      ]
+    },
+    {
+      "name": "source-19821",
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-20021\\frame-0025.png",
+      "sha256": "5fc3db35988afa268dd5e230d3b5c4e321a98bb6a36b497f735bcc041e02ac26",
+      "layout": "mapped",
+      "t": 19.821,
+      "hud": {
+        "hp": 250,
+        "max_hp": 250,
+        "bar_fill": 1.0,
+        "webs": 1,
+        "abilities": {
+          "swing": [
+            true,
+            null
+          ],
+          "uppercut": [
+            false,
+            0
+          ],
+          "get_over_here": [
+            true,
+            null
+          ]
+        },
+        "ult_ready": false,
+        "ult_charge": 0.0,
+        "cooldowns": {
+          "swing": null,
+          "uppercut": 3,
+          "get_over_here": null
+        },
+        "bar_damage": 0.0
+      },
+      "state": {
+        "t": 19.821,
+        "frame": [
+          2560,
+          1440
+        ],
+        "hp": 250,
+        "max_hp": 250,
+        "abilities": {
+          "swing": {
+            "ready": true,
+            "charges": null
+          },
+          "uppercut": {
+            "ready": false,
+            "charges": 0
+          },
+          "pull": {
+            "ready": true,
+            "charges": null
+          },
+          "ult": {
+            "ready": false,
+            "charges": null
+          }
+        },
+        "webs": 1,
+        "detections": null,
+        "on_target": null,
+        "coasting": []
+      },
+      "elapsed_ms_not_benchmark": 8.777500013820827,
+      "masks": [
+        [
+          "152606ae3a998ce2d3c252d9041fd4ea31564403ce1fa70494a30c2475627d91",
+          "152606ae3a998ce2d3c252d9041fd4ea31564403ce1fa70494a30c2475627d91",
+          "152606ae3a998ce2d3c252d9041fd4ea31564403ce1fa70494a30c2475627d91",
+          "152606ae3a998ce2d3c252d9041fd4ea31564403ce1fa70494a30c2475627d91",
+          "152606ae3a998ce2d3c252d9041fd4ea31564403ce1fa70494a30c2475627d91",
+          "152606ae3a998ce2d3c252d9041fd4ea31564403ce1fa70494a30c2475627d91",
+          "152606ae3a998ce2d3c252d9041fd4ea31564403ce1fa70494a30c2475627d91",
+          "152606ae3a998ce2d3c252d9041fd4ea31564403ce1fa70494a30c2475627d91",
+          "152606ae3a998ce2d3c252d9041fd4ea31564403ce1fa70494a30c2475627d91"
+        ],
+        [
+          "85f6cf213f7c5acc9ed2497355491a358505919164196b24c3b84bc63ce8b7e3",
+          "843a4d93b2742b03587123904a6906a73663e4d3edd2c77c3ff2abffe3ee7695",
+          "8a07fa058605f95f617a30948213ef9d189e860861ad6c2787f1cb3ebaae5284",
+          "85f6cf213f7c5acc9ed2497355491a358505919164196b24c3b84bc63ce8b7e3",
+          "8211e3c2272e4a1cf6260402f4ef573bf9bcee1d47bae5dc6dbc009ae22d64c6",
+          "30f8a7ac91deb30a468d7f19410eda5f67c9d8d609a6c1c9382f976e74ccd4c0",
+          "85f6cf213f7c5acc9ed2497355491a358505919164196b24c3b84bc63ce8b7e3",
+          "e3513004647348ea3c170aecefe1d06f68522795f3729f9517659cfd75817c29",
+          "25f3f706f3cf43fa6c1281bc139ade44d449167abc1e968cdf5cfd0c2bf5068e"
+        ],
+        [
+          "62cfdc40da07ccf61d43a4850c8a2a35775924cc7d45b886cd69edc6f26f52ae",
+          "62cfdc40da07ccf61d43a4850c8a2a35775924cc7d45b886cd69edc6f26f52ae",
+          "888a8145b0003c1a82aa4de597e8fc570dec8d499d00597c1541fad529f8e853",
+          "62cfdc40da07ccf61d43a4850c8a2a35775924cc7d45b886cd69edc6f26f52ae",
+          "62cfdc40da07ccf61d43a4850c8a2a35775924cc7d45b886cd69edc6f26f52ae",
+          "6a4f36aeb09a516ec3bfb784f114d6d362e835a989ad84e776a911e5234c828e"
+        ],
+        [
+          "d609eb4a2651f025b626b22c0fdaef0274dec8ac58bc4f32f5e1b141e872d23b",
+          "99150a0f0f0034109f0331ccc7239b9f40912b50e944a960441e425d23fd0c61",
+          "99150a0f0f0034109f0331ccc7239b9f40912b50e944a960441e425d23fd0c61",
+          "36053ff6e5c575290af0e8085110309d434583f614797e0ab328ca4570c2a603",
+          "623368da6d6a2d5e2f58a8e6cce0d25117fe5ec87a365e9a80274bd623491fbb",
+          "d609eb4a2651f025b626b22c0fdaef0274dec8ac58bc4f32f5e1b141e872d23b"
+        ],
+        [
+          "a5c0f1d41c7df6a3ba733602dbfe414805992dc1c4d9b2abb8cefae1b4478fed",
+          "a5c0f1d41c7df6a3ba733602dbfe414805992dc1c4d9b2abb8cefae1b4478fed",
+          "a5c0f1d41c7df6a3ba733602dbfe414805992dc1c4d9b2abb8cefae1b4478fed",
+          "a5c0f1d41c7df6a3ba733602dbfe414805992dc1c4d9b2abb8cefae1b4478fed",
+          "a5c0f1d41c7df6a3ba733602dbfe414805992dc1c4d9b2abb8cefae1b4478fed",
+          "a5c0f1d41c7df6a3ba733602dbfe414805992dc1c4d9b2abb8cefae1b4478fed"
+        ]
+      ]
+    },
+    {
+      "name": "source-19921",
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-20021\\frame-0037.png",
+      "sha256": "05d89f0fe3635aad1c04e395b37038ebe6d9f18e297c3278458f4cea054bfd3c",
+      "layout": "mapped",
+      "t": 19.921,
+      "hud": {
+        "hp": 250,
+        "max_hp": 250,
+        "bar_fill": 1.0,
+        "webs": 1,
+        "abilities": {
+          "swing": [
+            false,
+            null
+          ],
+          "uppercut": [
+            false,
+            0
+          ],
+          "get_over_here": [
+            true,
+            null
+          ]
+        },
+        "ult_ready": false,
+        "ult_charge": 0.0,
+        "cooldowns": {
+          "swing": null,
+          "uppercut": 3,
+          "get_over_here": null
+        },
+        "bar_damage": 0.0
+      },
+      "state": {
+        "t": 19.921,
+        "frame": [
+          2560,
+          1440
+        ],
+        "hp": 250,
+        "max_hp": 250,
+        "abilities": {
+          "swing": {
+            "ready": false,
+            "charges": null
+          },
+          "uppercut": {
+            "ready": false,
+            "charges": 0
+          },
+          "pull": {
+            "ready": true,
+            "charges": null
+          },
+          "ult": {
+            "ready": false,
+            "charges": null
+          }
+        },
+        "webs": 1,
+        "detections": null,
+        "on_target": null,
+        "coasting": []
+      },
+      "elapsed_ms_not_benchmark": 8.072900003753603,
+      "masks": [
+        [
+          "152606ae3a998ce2d3c252d9041fd4ea31564403ce1fa70494a30c2475627d91",
+          "152606ae3a998ce2d3c252d9041fd4ea31564403ce1fa70494a30c2475627d91",
+          "152606ae3a998ce2d3c252d9041fd4ea31564403ce1fa70494a30c2475627d91",
+          "152606ae3a998ce2d3c252d9041fd4ea31564403ce1fa70494a30c2475627d91",
+          "152606ae3a998ce2d3c252d9041fd4ea31564403ce1fa70494a30c2475627d91",
+          "152606ae3a998ce2d3c252d9041fd4ea31564403ce1fa70494a30c2475627d91",
+          "152606ae3a998ce2d3c252d9041fd4ea31564403ce1fa70494a30c2475627d91",
+          "152606ae3a998ce2d3c252d9041fd4ea31564403ce1fa70494a30c2475627d91",
+          "152606ae3a998ce2d3c252d9041fd4ea31564403ce1fa70494a30c2475627d91"
+        ],
+        [
+          "85f6cf213f7c5acc9ed2497355491a358505919164196b24c3b84bc63ce8b7e3",
+          "843a4d93b2742b03587123904a6906a73663e4d3edd2c77c3ff2abffe3ee7695",
+          "8a07fa058605f95f617a30948213ef9d189e860861ad6c2787f1cb3ebaae5284",
+          "85f6cf213f7c5acc9ed2497355491a358505919164196b24c3b84bc63ce8b7e3",
+          "8211e3c2272e4a1cf6260402f4ef573bf9bcee1d47bae5dc6dbc009ae22d64c6",
+          "30f8a7ac91deb30a468d7f19410eda5f67c9d8d609a6c1c9382f976e74ccd4c0",
+          "85f6cf213f7c5acc9ed2497355491a358505919164196b24c3b84bc63ce8b7e3",
+          "e3513004647348ea3c170aecefe1d06f68522795f3729f9517659cfd75817c29",
+          "25f3f706f3cf43fa6c1281bc139ade44d449167abc1e968cdf5cfd0c2bf5068e"
+        ],
+        [
+          "8506b6212673345b17b42f224344348353c8f52b0c0878d6e030036fe168c8a6",
+          "8506b6212673345b17b42f224344348353c8f52b0c0878d6e030036fe168c8a6",
+          "8506b6212673345b17b42f224344348353c8f52b0c0878d6e030036fe168c8a6",
+          "8506b6212673345b17b42f224344348353c8f52b0c0878d6e030036fe168c8a6",
+          "8506b6212673345b17b42f224344348353c8f52b0c0878d6e030036fe168c8a6",
+          "8506b6212673345b17b42f224344348353c8f52b0c0878d6e030036fe168c8a6"
+        ],
+        [
+          "d609eb4a2651f025b626b22c0fdaef0274dec8ac58bc4f32f5e1b141e872d23b",
+          "99150a0f0f0034109f0331ccc7239b9f40912b50e944a960441e425d23fd0c61",
+          "99150a0f0f0034109f0331ccc7239b9f40912b50e944a960441e425d23fd0c61",
+          "36053ff6e5c575290af0e8085110309d434583f614797e0ab328ca4570c2a603",
+          "623368da6d6a2d5e2f58a8e6cce0d25117fe5ec87a365e9a80274bd623491fbb",
+          "d609eb4a2651f025b626b22c0fdaef0274dec8ac58bc4f32f5e1b141e872d23b"
+        ],
+        [
+          "a5c0f1d41c7df6a3ba733602dbfe414805992dc1c4d9b2abb8cefae1b4478fed",
+          "a5c0f1d41c7df6a3ba733602dbfe414805992dc1c4d9b2abb8cefae1b4478fed",
+          "a5c0f1d41c7df6a3ba733602dbfe414805992dc1c4d9b2abb8cefae1b4478fed",
+          "a5c0f1d41c7df6a3ba733602dbfe414805992dc1c4d9b2abb8cefae1b4478fed",
+          "a5c0f1d41c7df6a3ba733602dbfe414805992dc1c4d9b2abb8cefae1b4478fed",
+          "a5c0f1d41c7df6a3ba733602dbfe414805992dc1c4d9b2abb8cefae1b4478fed"
+        ]
+      ]
+    },
+    {
+      "name": "source-20021",
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-20021\\frame-0049.png",
+      "sha256": "b8280a6bde010bdccab609edd74b8034985d20e44b53280f0cf53bc985dd59a2",
+      "layout": "mapped",
+      "t": 20.021,
+      "hud": {
+        "hp": 250,
+        "max_hp": 250,
+        "bar_fill": 1.0,
+        "webs": 0,
+        "abilities": {
+          "swing": [
+            true,
+            null
+          ],
+          "uppercut": [
+            false,
+            0
+          ],
+          "get_over_here": [
+            true,
+            null
+          ]
+        },
+        "ult_ready": false,
+        "ult_charge": 0.0,
+        "cooldowns": {
+          "swing": null,
+          "uppercut": 3,
+          "get_over_here": null
+        },
+        "bar_damage": 0.0
+      },
+      "state": {
+        "t": 20.021,
+        "frame": [
+          2560,
+          1440
+        ],
+        "hp": 250,
+        "max_hp": 250,
+        "abilities": {
+          "swing": {
+            "ready": true,
+            "charges": null
+          },
+          "uppercut": {
+            "ready": false,
+            "charges": 0
+          },
+          "pull": {
+            "ready": true,
+            "charges": null
+          },
+          "ult": {
+            "ready": false,
+            "charges": null
+          }
+        },
+        "webs": 0,
+        "detections": null,
+        "on_target": null,
+        "coasting": []
+      },
+      "elapsed_ms_not_benchmark": 7.860900019295514,
+      "masks": [
+        [
+          "cba02f25139840825b195e8b90bdd1d54a071844526de8152e6704d25aa5f1d5",
+          "cba02f25139840825b195e8b90bdd1d54a071844526de8152e6704d25aa5f1d5",
+          "cba02f25139840825b195e8b90bdd1d54a071844526de8152e6704d25aa5f1d5",
+          "cba02f25139840825b195e8b90bdd1d54a071844526de8152e6704d25aa5f1d5",
+          "cba02f25139840825b195e8b90bdd1d54a071844526de8152e6704d25aa5f1d5",
+          "cba02f25139840825b195e8b90bdd1d54a071844526de8152e6704d25aa5f1d5",
+          "cba02f25139840825b195e8b90bdd1d54a071844526de8152e6704d25aa5f1d5",
+          "cba02f25139840825b195e8b90bdd1d54a071844526de8152e6704d25aa5f1d5",
+          "cba02f25139840825b195e8b90bdd1d54a071844526de8152e6704d25aa5f1d5"
+        ],
+        [
+          "9f9240a2211b761b3ecfd9b007270e1a2c0bbbdf978848a69e1216373a7339cf",
+          "7fcac80bc5399d7318df4232bcc0819df382b7ab7e2253882584f9ed6b5fbd9a",
+          "f889dfacd9325f5a0fdd7843182ff3e5be0edfd73e3bd5b3b8298b94cf5633cd",
+          "9f9240a2211b761b3ecfd9b007270e1a2c0bbbdf978848a69e1216373a7339cf",
+          "64d733a6ce8ad4d1c2852870cdf8792e82463229e8c1743268314b4b1c287d80",
+          "8f9f6da73861a8f6fe12ff74ce216c5adcb19ab0a440d10afc7f3a10bdb260a4",
+          "9f9240a2211b761b3ecfd9b007270e1a2c0bbbdf978848a69e1216373a7339cf",
+          "2cd0b4f4880722821ac8a642f7859782eb29bade1d0a97c61427f10f51becfb4",
+          "a0f1e8e737ff4d8b0b8e8b803688b9bc78b48e711b3f59442a4613d1575809b3"
+        ],
+        [
+          "22497c98dcda9bed64911decf38388bad559b59d52c7d4104572b6a9fce0b752",
+          "22497c98dcda9bed64911decf38388bad559b59d52c7d4104572b6a9fce0b752",
+          "97877517ec494cc39a9b21fa2e4d711fa6fcd3a16778d6f1e0107217c2263750",
+          "22497c98dcda9bed64911decf38388bad559b59d52c7d4104572b6a9fce0b752",
+          "22497c98dcda9bed64911decf38388bad559b59d52c7d4104572b6a9fce0b752",
+          "9f9cf0ef96a972298c96cfa553bb570007737191df82b330e884374ced0e387f"
+        ],
+        [
+          "d609eb4a2651f025b626b22c0fdaef0274dec8ac58bc4f32f5e1b141e872d23b",
+          "40a7609794313b6afe38a1ebc7d42c228828bb70d92036b2f91b3477494e2bbd",
+          "40a7609794313b6afe38a1ebc7d42c228828bb70d92036b2f91b3477494e2bbd",
+          "6b82d0967fad8d90f5988625e0fed6506cef88a3cf47d88e81cbe032834d688f",
+          "623368da6d6a2d5e2f58a8e6cce0d25117fe5ec87a365e9a80274bd623491fbb",
+          "d609eb4a2651f025b626b22c0fdaef0274dec8ac58bc4f32f5e1b141e872d23b"
+        ],
+        [
+          "a5c0f1d41c7df6a3ba733602dbfe414805992dc1c4d9b2abb8cefae1b4478fed",
+          "a5c0f1d41c7df6a3ba733602dbfe414805992dc1c4d9b2abb8cefae1b4478fed",
+          "a5c0f1d41c7df6a3ba733602dbfe414805992dc1c4d9b2abb8cefae1b4478fed",
+          "a5c0f1d41c7df6a3ba733602dbfe414805992dc1c4d9b2abb8cefae1b4478fed",
+          "a5c0f1d41c7df6a3ba733602dbfe414805992dc1c4d9b2abb8cefae1b4478fed",
+          "a5c0f1d41c7df6a3ba733602dbfe414805992dc1c4d9b2abb8cefae1b4478fed"
+        ]
+      ]
+    },
+    {
+      "name": "source-21521",
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-21921\\frame-0001.png",
+      "sha256": "00eae794a3131fd52225e3a7363a1fc342a31067e3015485a6baee4f6092f77b",
+      "layout": "mapped",
+      "t": 21.521,
+      "hud": {
+        "hp": 250,
+        "max_hp": 250,
+        "bar_fill": 1.0,
+        "webs": 1,
+        "abilities": {
+          "swing": [
+            false,
+            0
+          ],
+          "uppercut": [
+            false,
+            0
+          ],
+          "get_over_here": [
+            false,
+            null
+          ]
+        },
+        "ult_ready": false,
+        "ult_charge": 0.0,
+        "cooldowns": {
+          "swing": 3,
+          "uppercut": 1,
+          "get_over_here": 7
+        },
+        "bar_damage": 0.0
+      },
+      "state": {
+        "t": 21.521,
+        "frame": [
+          2560,
+          1440
+        ],
+        "hp": 250,
+        "max_hp": 250,
+        "abilities": {
+          "swing": {
+            "ready": false,
+            "charges": 0
+          },
+          "uppercut": {
+            "ready": false,
+            "charges": 0
+          },
+          "pull": {
+            "ready": false,
+            "charges": null
+          },
+          "ult": {
+            "ready": false,
+            "charges": null
+          }
+        },
+        "webs": 1,
+        "detections": null,
+        "on_target": null,
+        "coasting": []
+      },
+      "elapsed_ms_not_benchmark": 7.73099999059923,
+      "masks": [
+        [
+          "76bd73a85d00b1fbaa785842b28c720abae2120c332f535606c286c19dc32948",
+          "76bd73a85d00b1fbaa785842b28c720abae2120c332f535606c286c19dc32948",
+          "76bd73a85d00b1fbaa785842b28c720abae2120c332f535606c286c19dc32948",
+          "76bd73a85d00b1fbaa785842b28c720abae2120c332f535606c286c19dc32948",
+          "76bd73a85d00b1fbaa785842b28c720abae2120c332f535606c286c19dc32948",
+          "76bd73a85d00b1fbaa785842b28c720abae2120c332f535606c286c19dc32948",
+          "76bd73a85d00b1fbaa785842b28c720abae2120c332f535606c286c19dc32948",
+          "76bd73a85d00b1fbaa785842b28c720abae2120c332f535606c286c19dc32948",
+          "76bd73a85d00b1fbaa785842b28c720abae2120c332f535606c286c19dc32948"
+        ],
+        [
+          "a3ea1d0e90da5b237f26311253e75fcdc3235b841a2467580f964ad468067642",
+          "eb78f02052b5a819190c0f2fe4c04e57faae4af49c30eb3838188fc9d3ccbec8",
+          "a1873860b2e86f77a55a7a3baa1a148de59dcdacdf12f20411329755f770b367",
+          "a3ea1d0e90da5b237f26311253e75fcdc3235b841a2467580f964ad468067642",
+          "6e72442c96ce290b2f3f5c3be56e126c0ca81e90a40fc13c238db3751def2f76",
+          "bf18d2d0a7c0500d7f3a52cdd48d2eb687e35ddc271357b389ddb03beb06933a",
+          "a3ea1d0e90da5b237f26311253e75fcdc3235b841a2467580f964ad468067642",
+          "f920e2cb2c7c0ca3dd43b8af2557337d1e924ca610c92dddb2ad460ef80fb146",
+          "ac49acda1814db92b14424d841614cb9fbe8ad02274211beb128451e96342ba6"
+        ],
+        [
+          "b5d445187d5cf1e0981f9928dc35584d1cb1a7185f238622986585bf527ecf9c",
+          "734f41a61efd1e1ae2a944240f7e32d4a2bdb9880f5e68a3280ed97ab9cba4fa",
+          "734f41a61efd1e1ae2a944240f7e32d4a2bdb9880f5e68a3280ed97ab9cba4fa",
+          "cbd0c9a1b0a839ba69865fb04597ebb9775a1d1e4f70c6bdd0f23afe015d9f69",
+          "dce7c1e4dddacfefa53d78637111fb61b10b1b02f33f00bc435d6958f5b4ef36",
+          "dce7c1e4dddacfefa53d78637111fb61b10b1b02f33f00bc435d6958f5b4ef36"
+        ],
+        [
+          "a4a6d6aec55c4de4bcb5ffad563afa7ef462c1ea3d9475cc65ab417086f6dd56",
+          "fcc9240eed13ab0a3f59da500b3330ab3c36f87ae33763e48b104ba7eb232ee4",
+          "4319bf81b4fe27a1e84ede3aa81d32da2b3b8a956ba32a1c718a66103fe5830a",
+          "1eecf990dfcb752164b2cf5ee659aaedae000a1d79a8836c7b0c8f8f0372c425",
+          "28fd6495521b69594de39adbe58dc56fc60e3d16f88df172c12970f9a8ecd973",
+          "e9ff6210bf0690295615bb5c96760b196d1f4b76bca0c3602b52ff2ff689389f"
+        ],
+        [
+          "fba237d841a5f1f506fa0b73c072c5ae72c43cf954eb190a81214e0c4be8bf4d",
+          "5a5b2714d481ee5c7b5ae0e2b2e961c2e861797929a6b7ccb849017e534528ae",
+          "67aa7cefebecc9da5d984f0dae13e5d16d1e1ff84cabca3e91d34bfc2d3712b7",
+          "fba237d841a5f1f506fa0b73c072c5ae72c43cf954eb190a81214e0c4be8bf4d",
+          "fba237d841a5f1f506fa0b73c072c5ae72c43cf954eb190a81214e0c4be8bf4d",
+          "f625fb450460c4e2f80d950a9c74247691ea0fddbccbe0060af1cfe8320ee562"
+        ]
+      ]
+    },
+    {
+      "name": "source-21621",
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-21921\\frame-0013.png",
+      "sha256": "5a9b546b968609bd91bb06a02fb6a15dc902d9b17f6f553f37a5188eadedfd41",
+      "layout": "mapped",
+      "t": 21.621,
+      "hud": {
+        "hp": 250,
+        "max_hp": 250,
+        "bar_fill": 1.0,
+        "webs": 1,
+        "abilities": {
+          "swing": [
+            false,
+            0
+          ],
+          "uppercut": [
+            false,
+            0
+          ],
+          "get_over_here": [
+            false,
+            null
+          ]
+        },
+        "ult_ready": false,
+        "ult_charge": 0.0,
+        "cooldowns": {
+          "swing": 3,
+          "uppercut": 1,
+          "get_over_here": 7
+        },
+        "bar_damage": 0.0
+      },
+      "state": {
+        "t": 21.621,
+        "frame": [
+          2560,
+          1440
+        ],
+        "hp": 250,
+        "max_hp": 250,
+        "abilities": {
+          "swing": {
+            "ready": false,
+            "charges": 0
+          },
+          "uppercut": {
+            "ready": false,
+            "charges": 0
+          },
+          "pull": {
+            "ready": false,
+            "charges": null
+          },
+          "ult": {
+            "ready": false,
+            "charges": null
+          }
+        },
+        "webs": 1,
+        "detections": null,
+        "on_target": null,
+        "coasting": []
+      },
+      "elapsed_ms_not_benchmark": 8.22600000537932,
+      "masks": [
+        [
+          "502cd837240c0eb13acb0a5eefb4b6780f05239b7c043c8ff83c4d0d50a570d1",
+          "502cd837240c0eb13acb0a5eefb4b6780f05239b7c043c8ff83c4d0d50a570d1",
+          "502cd837240c0eb13acb0a5eefb4b6780f05239b7c043c8ff83c4d0d50a570d1",
+          "502cd837240c0eb13acb0a5eefb4b6780f05239b7c043c8ff83c4d0d50a570d1",
+          "502cd837240c0eb13acb0a5eefb4b6780f05239b7c043c8ff83c4d0d50a570d1",
+          "502cd837240c0eb13acb0a5eefb4b6780f05239b7c043c8ff83c4d0d50a570d1",
+          "502cd837240c0eb13acb0a5eefb4b6780f05239b7c043c8ff83c4d0d50a570d1",
+          "502cd837240c0eb13acb0a5eefb4b6780f05239b7c043c8ff83c4d0d50a570d1",
+          "502cd837240c0eb13acb0a5eefb4b6780f05239b7c043c8ff83c4d0d50a570d1"
+        ],
+        [
+          "a3ea1d0e90da5b237f26311253e75fcdc3235b841a2467580f964ad468067642",
+          "eb78f02052b5a819190c0f2fe4c04e57faae4af49c30eb3838188fc9d3ccbec8",
+          "a1873860b2e86f77a55a7a3baa1a148de59dcdacdf12f20411329755f770b367",
+          "a3ea1d0e90da5b237f26311253e75fcdc3235b841a2467580f964ad468067642",
+          "6e72442c96ce290b2f3f5c3be56e126c0ca81e90a40fc13c238db3751def2f76",
+          "bf18d2d0a7c0500d7f3a52cdd48d2eb687e35ddc271357b389ddb03beb06933a",
+          "a3ea1d0e90da5b237f26311253e75fcdc3235b841a2467580f964ad468067642",
+          "f920e2cb2c7c0ca3dd43b8af2557337d1e924ca610c92dddb2ad460ef80fb146",
+          "ac49acda1814db92b14424d841614cb9fbe8ad02274211beb128451e96342ba6"
+        ],
+        [
+          "d2689b9cf7cd0cde6841790a1284bb1ecd4e431e20fba4b9c8763c74eba100e7",
+          "79254b1812548dbd8896b588bfb30e822ee6cc8aafaf5b45022422bfa5f332e5",
+          "79254b1812548dbd8896b588bfb30e822ee6cc8aafaf5b45022422bfa5f332e5",
+          "de75ea3635d9bc33333052e9f14ecc510c80ab11fbad841459e0ca6844eb08da",
+          "4fffaaf4e3bfef85c2a747b018a33ee006b30786d802e72603477d21fc1b5015",
+          "4fffaaf4e3bfef85c2a747b018a33ee006b30786d802e72603477d21fc1b5015"
+        ],
+        [
+          "a4a6d6aec55c4de4bcb5ffad563afa7ef462c1ea3d9475cc65ab417086f6dd56",
+          "fcc9240eed13ab0a3f59da500b3330ab3c36f87ae33763e48b104ba7eb232ee4",
+          "4319bf81b4fe27a1e84ede3aa81d32da2b3b8a956ba32a1c718a66103fe5830a",
+          "225e60233b3296e26a88e113e99f4b4ca0f268e063a6502af9cd2ce5dbc102cf",
+          "93cfaa284d9a930ea738ab648103bf1f9259abe756be8bf9ef7e0df248321e64",
+          "5fc9a7bcc35640e0941c857e7a51cd7d4ab44db85c45ca586996f9747e76c887"
+        ],
+        [
+          "5a5b2714d481ee5c7b5ae0e2b2e961c2e861797929a6b7ccb849017e534528ae",
+          "5a5b2714d481ee5c7b5ae0e2b2e961c2e861797929a6b7ccb849017e534528ae",
+          "67aa7cefebecc9da5d984f0dae13e5d16d1e1ff84cabca3e91d34bfc2d3712b7",
+          "5a5b2714d481ee5c7b5ae0e2b2e961c2e861797929a6b7ccb849017e534528ae",
+          "5a5b2714d481ee5c7b5ae0e2b2e961c2e861797929a6b7ccb849017e534528ae",
+          "1324189c31549246f5c2e345a1912f6cf2caafb99e83fe424f9c8f04535694da"
+        ]
+      ]
+    },
+    {
+      "name": "source-21721",
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-21921\\frame-0025.png",
+      "sha256": "63e4245f5cb1dde143e7085c8247466870875c228e45902510793e973f8d58ca",
+      "layout": "mapped",
+      "t": 21.721,
+      "hud": {
+        "hp": 250,
+        "max_hp": 250,
+        "bar_fill": 1.0,
+        "webs": 1,
+        "abilities": {
+          "swing": [
+            false,
+            0
+          ],
+          "uppercut": [
+            false,
+            0
+          ],
+          "get_over_here": [
+            false,
+            null
+          ]
+        },
+        "ult_ready": false,
+        "ult_charge": 0.0,
+        "cooldowns": {
+          "swing": 3,
+          "uppercut": 1,
+          "get_over_here": 7
+        },
+        "bar_damage": 0.0
+      },
+      "state": {
+        "t": 21.721,
+        "frame": [
+          2560,
+          1440
+        ],
+        "hp": 250,
+        "max_hp": 250,
+        "abilities": {
+          "swing": {
+            "ready": false,
+            "charges": 0
+          },
+          "uppercut": {
+            "ready": false,
+            "charges": 0
+          },
+          "pull": {
+            "ready": false,
+            "charges": null
+          },
+          "ult": {
+            "ready": false,
+            "charges": null
+          }
+        },
+        "webs": 1,
+        "detections": null,
+        "on_target": null,
+        "coasting": []
+      },
+      "elapsed_ms_not_benchmark": 7.945299992570654,
+      "masks": [
+        [
+          "5260b6b516d8161908c9a4b6a27a4e05a2c96575b0e964f9fabe1efdec166598",
+          "5260b6b516d8161908c9a4b6a27a4e05a2c96575b0e964f9fabe1efdec166598",
+          "5260b6b516d8161908c9a4b6a27a4e05a2c96575b0e964f9fabe1efdec166598",
+          "5260b6b516d8161908c9a4b6a27a4e05a2c96575b0e964f9fabe1efdec166598",
+          "5260b6b516d8161908c9a4b6a27a4e05a2c96575b0e964f9fabe1efdec166598",
+          "5260b6b516d8161908c9a4b6a27a4e05a2c96575b0e964f9fabe1efdec166598",
+          "5260b6b516d8161908c9a4b6a27a4e05a2c96575b0e964f9fabe1efdec166598",
+          "5260b6b516d8161908c9a4b6a27a4e05a2c96575b0e964f9fabe1efdec166598",
+          "5260b6b516d8161908c9a4b6a27a4e05a2c96575b0e964f9fabe1efdec166598"
+        ],
+        [
+          "a3ea1d0e90da5b237f26311253e75fcdc3235b841a2467580f964ad468067642",
+          "eb78f02052b5a819190c0f2fe4c04e57faae4af49c30eb3838188fc9d3ccbec8",
+          "a1873860b2e86f77a55a7a3baa1a148de59dcdacdf12f20411329755f770b367",
+          "a3ea1d0e90da5b237f26311253e75fcdc3235b841a2467580f964ad468067642",
+          "6e72442c96ce290b2f3f5c3be56e126c0ca81e90a40fc13c238db3751def2f76",
+          "bf18d2d0a7c0500d7f3a52cdd48d2eb687e35ddc271357b389ddb03beb06933a",
+          "a3ea1d0e90da5b237f26311253e75fcdc3235b841a2467580f964ad468067642",
+          "f920e2cb2c7c0ca3dd43b8af2557337d1e924ca610c92dddb2ad460ef80fb146",
+          "ac49acda1814db92b14424d841614cb9fbe8ad02274211beb128451e96342ba6"
+        ],
+        [
+          "d2689b9cf7cd0cde6841790a1284bb1ecd4e431e20fba4b9c8763c74eba100e7",
+          "f2497c24b4e012ae82c6265c145e0449bb444db2647f8a68694f86513e9b6b2f",
+          "f2497c24b4e012ae82c6265c145e0449bb444db2647f8a68694f86513e9b6b2f",
+          "dd52bcc48d42aded81895de284555855d2bfa1f6775066c8dddeb7f75ba8628b",
+          "70e7b60d1804abc1230a093c352c01b44cfbbf255fca2c4897067b97bd98597c",
+          "be2cb3eb3df0926760562521a5d6c6d0538f23a504a11c975bbf3a8a25869532"
+        ],
+        [
+          "e9b12a9baa718ce766520d967b08f5c06d176d57062e37427020ad51135322a1",
+          "a4a6d6aec55c4de4bcb5ffad563afa7ef462c1ea3d9475cc65ab417086f6dd56",
+          "eefa621956ba17f418c3b6023a582a0509a59f6e40ef5062f5bb671aa3954c87",
+          "90c6c6d0e5f105ccc8b87faf8bae8e287313f1c00ed475ef6a97948d497e85fd",
+          "df4270ea85d5c0a9620b8c698e0b20c406d5f42fb34b196c91f3283833cb1836",
+          "8fea4159dde7e5067417297414b82ed32672ad75d4ca1a5c3b51b5d913c7aa9b"
+        ],
+        [
+          "bf718e5cfc9ec95928f488a96e1f5bcd926489e8bae0654b67f4ca7ac651eb89",
+          "bdf4f9702b8251828c93d1a82fcca1a1a1f6dd74fda1e031ae65d0755a1d2743",
+          "fab5d340b69de4e30c761ca621ca76729da82ec1d744ceb7b6969acd43e41834",
+          "bf718e5cfc9ec95928f488a96e1f5bcd926489e8bae0654b67f4ca7ac651eb89",
+          "bf718e5cfc9ec95928f488a96e1f5bcd926489e8bae0654b67f4ca7ac651eb89",
+          "53ead9d74d8680f939bd3805a802f8c6c8f9171640ecb4e964b105807346e2e7"
+        ]
+      ]
+    },
+    {
+      "name": "source-21821",
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-21921\\frame-0037.png",
+      "sha256": "7fa34b48c19e9b3a3e0395ffbae09d440c19bc4d47aa491565a61476d1429c91",
+      "layout": "mapped",
+      "t": 21.821,
+      "hud": {
+        "hp": 250,
+        "max_hp": 250,
+        "bar_fill": 1.0,
+        "webs": 1,
+        "abilities": {
+          "swing": [
+            null,
+            0
+          ],
+          "uppercut": [
+            false,
+            0
+          ],
+          "get_over_here": [
+            false,
+            null
+          ]
+        },
+        "ult_ready": false,
+        "ult_charge": 0.0,
+        "cooldowns": {
+          "swing": 3,
+          "uppercut": 1,
+          "get_over_here": 7
+        },
+        "bar_damage": 0.0
+      },
+      "state": {
+        "t": 21.821,
+        "frame": [
+          2560,
+          1440
+        ],
+        "hp": 250,
+        "max_hp": 250,
+        "abilities": {
+          "swing": {
+            "ready": null,
+            "charges": 0
+          },
+          "uppercut": {
+            "ready": false,
+            "charges": 0
+          },
+          "pull": {
+            "ready": false,
+            "charges": null
+          },
+          "ult": {
+            "ready": false,
+            "charges": null
+          }
+        },
+        "webs": 1,
+        "detections": null,
+        "on_target": null,
+        "coasting": []
+      },
+      "elapsed_ms_not_benchmark": 7.800399995176122,
+      "masks": [
+        [
+          "cd02a6b366bc2a27dc3550545ad4aea12b789ffcc42ea2e1fc8701ed510545fb",
+          "cd02a6b366bc2a27dc3550545ad4aea12b789ffcc42ea2e1fc8701ed510545fb",
+          "cd02a6b366bc2a27dc3550545ad4aea12b789ffcc42ea2e1fc8701ed510545fb",
+          "cd02a6b366bc2a27dc3550545ad4aea12b789ffcc42ea2e1fc8701ed510545fb",
+          "cd02a6b366bc2a27dc3550545ad4aea12b789ffcc42ea2e1fc8701ed510545fb",
+          "cd02a6b366bc2a27dc3550545ad4aea12b789ffcc42ea2e1fc8701ed510545fb",
+          "cd02a6b366bc2a27dc3550545ad4aea12b789ffcc42ea2e1fc8701ed510545fb",
+          "cd02a6b366bc2a27dc3550545ad4aea12b789ffcc42ea2e1fc8701ed510545fb",
+          "cd02a6b366bc2a27dc3550545ad4aea12b789ffcc42ea2e1fc8701ed510545fb"
+        ],
+        [
+          "a3ea1d0e90da5b237f26311253e75fcdc3235b841a2467580f964ad468067642",
+          "eb78f02052b5a819190c0f2fe4c04e57faae4af49c30eb3838188fc9d3ccbec8",
+          "a1873860b2e86f77a55a7a3baa1a148de59dcdacdf12f20411329755f770b367",
+          "a3ea1d0e90da5b237f26311253e75fcdc3235b841a2467580f964ad468067642",
+          "6e72442c96ce290b2f3f5c3be56e126c0ca81e90a40fc13c238db3751def2f76",
+          "bf18d2d0a7c0500d7f3a52cdd48d2eb687e35ddc271357b389ddb03beb06933a",
+          "a3ea1d0e90da5b237f26311253e75fcdc3235b841a2467580f964ad468067642",
+          "f920e2cb2c7c0ca3dd43b8af2557337d1e924ca610c92dddb2ad460ef80fb146",
+          "ac49acda1814db92b14424d841614cb9fbe8ad02274211beb128451e96342ba6"
+        ],
+        [
+          "d2689b9cf7cd0cde6841790a1284bb1ecd4e431e20fba4b9c8763c74eba100e7",
+          "f2497c24b4e012ae82c6265c145e0449bb444db2647f8a68694f86513e9b6b2f",
+          "f2497c24b4e012ae82c6265c145e0449bb444db2647f8a68694f86513e9b6b2f",
+          "6243d5c88189beb1aa4ef689acc5afb3c2077d6777c730351819c7de4009aa75",
+          "2013553799131f54cd0b625a45a980750a9fb4396c84ec6fa64eea6e93366491",
+          "a5bf2dd4e9ba090d436cc95cfc9df677dd25cfff9a78e3f19f8b13d4c9a8215f"
+        ],
+        [
+          "481652ca17768c61eab3d7b9d47365336172af295ccae44497e5f2798feb6fde",
+          "ea2309aaeeb760891ce6bff75529fb3bfb860e86128ece77fa739853b33210a8",
+          "bee6cf89dc015c5398001fd78330cadf3ac327b85327434b0d0a30ae7860da5b",
+          "a50c78826fdb56f9a81fd19d3ba7d299667aa96fd104b8b7ede8c49e4b4427bf",
+          "1c08680701ec9187107072c0a84bef0c33b55f5f9e37d7b3e9517ac3f313e4a9",
+          "4f944ad522c02a3a353a7bea9104d8b6a37fdd6724098c43616964cfc3809b92"
+        ],
+        [
+          "cb9c818059aef6732835682ea00f12fdcef543076a3f29c52d64e76a1a2a97f4",
+          "cb9c818059aef6732835682ea00f12fdcef543076a3f29c52d64e76a1a2a97f4",
+          "72e3dd53191ca5b9709b6b79fd2d7f1777d1478b4272d91d099a1b15a147866e",
+          "cb9c818059aef6732835682ea00f12fdcef543076a3f29c52d64e76a1a2a97f4",
+          "cb9c818059aef6732835682ea00f12fdcef543076a3f29c52d64e76a1a2a97f4",
+          "b06a836b7e83949f0a3d43c61c4b26d3996a51af67c0c45ac4f5a6d3b050e897"
+        ]
+      ]
+    },
+    {
+      "name": "source-21921",
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-21921\\frame-0049.png",
+      "sha256": "b2b2c299825bede1279835acfcdb2c7f87196e5d42af75eee6e78dea75db0e2a",
+      "layout": "mapped",
+      "t": 21.921,
+      "hud": {
+        "hp": 250,
+        "max_hp": 250,
+        "bar_fill": 1.0,
+        "webs": 1,
+        "abilities": {
+          "swing": [
+            null,
+            null
+          ],
+          "uppercut": [
+            null,
+            0
+          ],
+          "get_over_here": [
+            false,
+            null
+          ]
+        },
+        "ult_ready": false,
+        "ult_charge": 0.0049438868838680965,
+        "cooldowns": {
+          "swing": 3,
+          "uppercut": 1,
+          "get_over_here": 6
+        },
+        "bar_damage": 0.0
+      },
+      "state": {
+        "t": 21.921,
+        "frame": [
+          2560,
+          1440
+        ],
+        "hp": 250,
+        "max_hp": 250,
+        "abilities": {
+          "swing": {
+            "ready": null,
+            "charges": null
+          },
+          "uppercut": {
+            "ready": null,
+            "charges": 0
+          },
+          "pull": {
+            "ready": false,
+            "charges": null
+          },
+          "ult": {
+            "ready": false,
+            "charges": null
+          }
+        },
+        "webs": 1,
+        "detections": null,
+        "on_target": null,
+        "coasting": []
+      },
+      "elapsed_ms_not_benchmark": 10.307299991836771,
+      "masks": [
+        [
+          "aab6d98646af96f32add69392b2c17bf9da1b6613d7a74d72e47d38a7a7ec465",
+          "f15030c1063d531b8e01f71cef684e9acfeda235e226e957c561114bc005534d",
+          "a5bc1feaf4b8afa72c5330a6948385c9f52fe4be5043540acd2ac517ff0ff94e",
+          "6ca3ccc0d15bb67a8eb556aad9c19c20cce6e512c4f9aa0673ac48aa1aa99a64",
+          "ec3019b15c2456196683a178229dd6b58b9c923a6efdcca89aef7ae5ead62684",
+          "c6299c437c6ea9933a2bcdfe3cf1329d5e262d9da978a61deae3a89b7f6304b5",
+          "6ca3ccc0d15bb67a8eb556aad9c19c20cce6e512c4f9aa0673ac48aa1aa99a64",
+          "fdc2a1e8a0474b1a532a6c15815b24c4f93a740d6b15dcde44c93409a33ef00b",
+          "1a2b6cfa9ee3a5ecf5d865df55abf0cef3acf3c00e22a4ebd40f55a5c742bf52"
+        ],
+        [
+          "6f5b30713ad72b20da33a7cb6fda58b6294a42e6059d8e59a7473688155ef84f",
+          "3ebdf2ba77d044f4ac552d445d9461b360f96960a4b3110924e9cacc3ce308fa",
+          "42d0722ef85b11309583a7f537ea385f20922dc263853015c65101caeba8e167",
+          "6f5b30713ad72b20da33a7cb6fda58b6294a42e6059d8e59a7473688155ef84f",
+          "9232d79c31d87d2b50fabe9fb7e1b9eb87c5235204580eb6ece8c16b24fd1383",
+          "07f60f0bd6bd43c2013dc231f11db19bdb2138640cfbeb25588de6f4929da9b4",
+          "6f5b30713ad72b20da33a7cb6fda58b6294a42e6059d8e59a7473688155ef84f",
+          "df5efb9b6bb66871f0ba02663fdbc6bd528fb05e61432721accc0e58c5292bc4",
+          "384dea58e63297de2b090cb22b32971ccd3865362882e5b35b33c6be7f672126"
+        ],
+        [
+          "972c55db8b55bb7262054551e53ff819493df7be2057a1b9c0a095d26b27d07c",
+          "d8f77b66275c389c84c24d3b1de82e2f608a1907a07e20e46363631f711aa22a",
+          "ffebd27a68743ab14095fe061657d3d1324596057ce54b23e46488efb1fca4c7",
+          "0871141ee7396e0fad340754aad3b08dbe5ac2af9f7374109f914fae4c60e970",
+          "3c7e880dc743cec47cb4aec581e14b9604494ddbd4e19438cbb164bac7a05155",
+          "50635e9e5aa8f7563916a764dc742476cd0497660180a82b0096a64dc2840f95"
+        ],
+        [
+          "f8c710e0b4c726cfd6b9886b1f919c8fdf32baaf9e646bc2d8798668487260da",
+          "a2cbf118a0270cc5138ffab3f52e8f408e5a0ffd6a2158e268e44eadef81119f",
+          "3c9e85d02fbeb7316b6f3bbfd48448bf0c0b4e614c01159f58b5a3dcf2c28959",
+          "8fbb0490b0fd9f852fd6f9fdc38532c3d0e8f11fdc13c2d10c09c2414ddcdc6e",
+          "135fe929993ddf9882bcb88759e01a51a3a1805d2d76bd26250184c678ea5447",
+          "9d95b4cbe3c00669ae023e56b4599256015a4bd3555bb4079ef542e4474da261"
+        ],
+        [
+          "154596879ed3a995aa28f899ab25c7849332bb0923b575b7211589e9d3ff40d1",
+          "9ba5e51dae6c5eb7680480d33f48c770d8abea0b6a2082607123465721843028",
+          "9c7c534edb29d50067e591737c0ef35a2da767da11d3c8ad3df07639d08b7cbd",
+          "d3305484f93556e60f8b2e397f66f6da2a99e9aedef6be36a34f66d354c9bab7",
+          "4f9efce027382bcb11650fbf105a19ff6129162d8cd861a329c23fc3c8b46b1e",
+          "f186c1638c3e0148a00b51788fdb355214d15f11ff12fe30e18c001f99697993"
+        ]
+      ]
+    },
+    {
+      "name": "t0-a-untagged-000.jpg",
+      "path": "C:\\rivals-agent\\l2tag\\t0-a-untagged-000.jpg",
+      "sha256": "95d98b19d860e3ced9037733c28a8cacbd6722846540926ebdb1f7ddcaad2549",
+      "layout": "pad",
+      "t": 0,
+      "hud": {
+        "hp": 250,
+        "max_hp": 250,
+        "bar_fill": 1.0,
+        "webs": 5,
+        "abilities": {
+          "teamup": [
+            true,
+            null
+          ],
+          "swing": [
+            true,
+            3
+          ],
+          "get_over_here": [
+            true,
+            null
+          ],
+          "uppercut": [
+            true,
+            2
+          ]
+        },
+        "ult_ready": null,
+        "ult_charge": 0.7734935751942722,
+        "cooldowns": {
+          "teamup": null,
+          "swing": null,
+          "get_over_here": null,
+          "uppercut": null
+        },
+        "bar_damage": 0.0
+      },
+      "state": {
+        "t": 0,
+        "frame": [
+          2560,
+          1440
+        ],
+        "hp": 250,
+        "max_hp": 250,
+        "abilities": {
+          "teamup": {
+            "ready": true,
+            "charges": null
+          },
+          "swing": {
+            "ready": true,
+            "charges": 3
+          },
+          "pull": {
+            "ready": true,
+            "charges": null
+          },
+          "uppercut": {
+            "ready": true,
+            "charges": 2
+          },
+          "ult": {
+            "ready": null,
+            "charges": null
+          }
+        },
+        "webs": 5,
+        "detections": null,
+        "on_target": null,
+        "coasting": []
+      },
+      "elapsed_ms_not_benchmark": 19.622699997853488,
+      "masks": [
+        [
+          "28630132f8265dacce7ed5331af1bfe0ecb530b306747700340db75fff9c9bcc",
+          "28630132f8265dacce7ed5331af1bfe0ecb530b306747700340db75fff9c9bcc",
+          "28630132f8265dacce7ed5331af1bfe0ecb530b306747700340db75fff9c9bcc",
+          "28630132f8265dacce7ed5331af1bfe0ecb530b306747700340db75fff9c9bcc",
+          "28630132f8265dacce7ed5331af1bfe0ecb530b306747700340db75fff9c9bcc",
+          "28630132f8265dacce7ed5331af1bfe0ecb530b306747700340db75fff9c9bcc",
+          "28630132f8265dacce7ed5331af1bfe0ecb530b306747700340db75fff9c9bcc",
+          "28630132f8265dacce7ed5331af1bfe0ecb530b306747700340db75fff9c9bcc",
+          "28630132f8265dacce7ed5331af1bfe0ecb530b306747700340db75fff9c9bcc"
+        ],
+        [
+          "1ba6d6655a698e899862433f7406436fdec4ac2985fcba4c5378b2d698b1cef8",
+          "1ba6d6655a698e899862433f7406436fdec4ac2985fcba4c5378b2d698b1cef8",
+          "1ba6d6655a698e899862433f7406436fdec4ac2985fcba4c5378b2d698b1cef8",
+          "1ba6d6655a698e899862433f7406436fdec4ac2985fcba4c5378b2d698b1cef8",
+          "1ba6d6655a698e899862433f7406436fdec4ac2985fcba4c5378b2d698b1cef8",
+          "1ba6d6655a698e899862433f7406436fdec4ac2985fcba4c5378b2d698b1cef8",
+          "1ba6d6655a698e899862433f7406436fdec4ac2985fcba4c5378b2d698b1cef8",
+          "1ba6d6655a698e899862433f7406436fdec4ac2985fcba4c5378b2d698b1cef8",
+          "1ba6d6655a698e899862433f7406436fdec4ac2985fcba4c5378b2d698b1cef8"
+        ],
+        [
+          "c5c7beffb24230b89eed25924577232a6f02892284116fcf204f13f2e9acbc50",
+          "c5c7beffb24230b89eed25924577232a6f02892284116fcf204f13f2e9acbc50",
+          "b55118bc94bbe5f23da52e084dce22d9c47c9047919bd038401426001f8da00b",
+          "c5c7beffb24230b89eed25924577232a6f02892284116fcf204f13f2e9acbc50",
+          "c5c7beffb24230b89eed25924577232a6f02892284116fcf204f13f2e9acbc50",
+          "48dac63442a9b5b1eca0029db1382f75366fb89231bd9ce4b5335ec5c71b4161"
+        ],
+        [
+          "7ae73d50d4e69887c93cd7a43787c9770b83d7333c6664efa05f77cf1bde43ae",
+          "7ae73d50d4e69887c93cd7a43787c9770b83d7333c6664efa05f77cf1bde43ae",
+          "53e33025c0aa66c8902a6c50d9689f0d5832964956264defbf2897a1327b87af",
+          "7ae73d50d4e69887c93cd7a43787c9770b83d7333c6664efa05f77cf1bde43ae",
+          "7ae73d50d4e69887c93cd7a43787c9770b83d7333c6664efa05f77cf1bde43ae",
+          "72a4c8e9981a71f157b278134b360fa0d3fea5cba3c1c3a88cd1143eb47e81c9"
+        ],
+        [
+          "df53f4751c203eeddb8f7fb02d6308c7e00dc8d17b92464eee8a0a55b5ca8023",
+          "079f2f00d9421074b385d6e14e3c3fd6df81e85d05b95fd5a1d87d38aefcd985",
+          "08f3dd8265dd0112f07fb8bc52b6a31fa65a5d930c07635ec5e3662a5b186fa5",
+          "df53f4751c203eeddb8f7fb02d6308c7e00dc8d17b92464eee8a0a55b5ca8023",
+          "df53f4751c203eeddb8f7fb02d6308c7e00dc8d17b92464eee8a0a55b5ca8023",
+          "6836c87bb498669d5dd07a6ea490d5feed1fdb174d2edf18898b5f030903d1e5"
+        ],
+        [
+          "2381d038c7e2e84be5db670bbe24ed6c2724c8da3a223e70887172b099d8d904",
+          "bf547bc18b0c3b715be0d8be05c34c6452fa3b752543435788d556969a5ef9a4",
+          "09be3b4e71f2a084aaac9be7884242f41da0607f4ba3d3f1ca8dd8d389b6663f",
+          "2381d038c7e2e84be5db670bbe24ed6c2724c8da3a223e70887172b099d8d904",
+          "b7b0e0d33ab3ca47aec763fbeed94744be6c6af90fbdcb73fe6e3d85f347130d",
+          "e68207e2cebbfb20c546e8a6c53a59aa4382557b4e89fd98882e788d125fefae"
+        ]
+      ]
+    },
+    {
+      "name": "t0-b-after-web-cluster-003.jpg",
+      "path": "C:\\rivals-agent\\l2tag\\t0-b-after-web-cluster-003.jpg",
+      "sha256": "61aaca45d4d1a1ecf2bb2ef011258201640d0edd8ded8fc8d7e1ac47dccb876f",
+      "layout": "pad",
+      "t": 0,
+      "hud": {
+        "hp": 250,
+        "max_hp": 250,
+        "bar_fill": 1.0,
+        "webs": 5,
+        "abilities": {
+          "teamup": [
+            true,
+            null
+          ],
+          "swing": [
+            true,
+            3
+          ],
+          "get_over_here": [
+            true,
+            null
+          ],
+          "uppercut": [
+            true,
+            2
+          ]
+        },
+        "ult_ready": null,
+        "ult_charge": 0.7265266497975253,
+        "cooldowns": {
+          "teamup": null,
+          "swing": null,
+          "get_over_here": null,
+          "uppercut": null
+        },
+        "bar_damage": 0.0
+      },
+      "state": {
+        "t": 0,
+        "frame": [
+          2560,
+          1440
+        ],
+        "hp": 250,
+        "max_hp": 250,
+        "abilities": {
+          "teamup": {
+            "ready": true,
+            "charges": null
+          },
+          "swing": {
+            "ready": true,
+            "charges": 3
+          },
+          "pull": {
+            "ready": true,
+            "charges": null
+          },
+          "uppercut": {
+            "ready": true,
+            "charges": 2
+          },
+          "ult": {
+            "ready": null,
+            "charges": null
+          }
+        },
+        "webs": 5,
+        "detections": null,
+        "on_target": null,
+        "coasting": []
+      },
+      "elapsed_ms_not_benchmark": 16.17630000691861,
+      "masks": [
+        [
+          "6a5b250154c1e2db249ce5dda585310164280a37df81408dcd11759a7d98c80c",
+          "6a5b250154c1e2db249ce5dda585310164280a37df81408dcd11759a7d98c80c",
+          "6a5b250154c1e2db249ce5dda585310164280a37df81408dcd11759a7d98c80c",
+          "6a5b250154c1e2db249ce5dda585310164280a37df81408dcd11759a7d98c80c",
+          "6a5b250154c1e2db249ce5dda585310164280a37df81408dcd11759a7d98c80c",
+          "6a5b250154c1e2db249ce5dda585310164280a37df81408dcd11759a7d98c80c",
+          "6a5b250154c1e2db249ce5dda585310164280a37df81408dcd11759a7d98c80c",
+          "6a5b250154c1e2db249ce5dda585310164280a37df81408dcd11759a7d98c80c",
+          "6a5b250154c1e2db249ce5dda585310164280a37df81408dcd11759a7d98c80c"
+        ],
+        [
+          "cc826e264d16a93778cc9c8400396d27736a8fdfb6f27b201b9698ae98f8293e",
+          "cc826e264d16a93778cc9c8400396d27736a8fdfb6f27b201b9698ae98f8293e",
+          "cc826e264d16a93778cc9c8400396d27736a8fdfb6f27b201b9698ae98f8293e",
+          "cc826e264d16a93778cc9c8400396d27736a8fdfb6f27b201b9698ae98f8293e",
+          "cc826e264d16a93778cc9c8400396d27736a8fdfb6f27b201b9698ae98f8293e",
+          "cc826e264d16a93778cc9c8400396d27736a8fdfb6f27b201b9698ae98f8293e",
+          "cc826e264d16a93778cc9c8400396d27736a8fdfb6f27b201b9698ae98f8293e",
+          "cc826e264d16a93778cc9c8400396d27736a8fdfb6f27b201b9698ae98f8293e",
+          "cc826e264d16a93778cc9c8400396d27736a8fdfb6f27b201b9698ae98f8293e"
+        ],
+        [
+          "65f351d0009c3896a4466acdf779b4f1d5606b204f9b7bf54320a048772b43a1",
+          "65f351d0009c3896a4466acdf779b4f1d5606b204f9b7bf54320a048772b43a1",
+          "00b5645cda648edce7b341217e1e0720003ba9ee8b29f81b09eb15292e8d419f",
+          "65f351d0009c3896a4466acdf779b4f1d5606b204f9b7bf54320a048772b43a1",
+          "65f351d0009c3896a4466acdf779b4f1d5606b204f9b7bf54320a048772b43a1",
+          "2df7fb9bc58e35aa531a4801e58220b6d76083f929afbb377bc16ed3cd981ed4"
+        ],
+        [
+          "7878d9f2f1b7c8bfebe0deeeb77a75797886959a602270dd840b5496f3a00697",
+          "7878d9f2f1b7c8bfebe0deeeb77a75797886959a602270dd840b5496f3a00697",
+          "08f4e876348fdd80f0b77525a4e4f86e1ae09801e4c9fda1f3eb81d9150116ec",
+          "7878d9f2f1b7c8bfebe0deeeb77a75797886959a602270dd840b5496f3a00697",
+          "7878d9f2f1b7c8bfebe0deeeb77a75797886959a602270dd840b5496f3a00697",
+          "b82187173394f4f7e524c44761380d4a59c7dcdb373943e8a8bc869ec0ac4bda"
+        ],
+        [
+          "996528d382d88bc864411b7b2051f1a2ed9720e2b3d08d7d9de25f1e4eb19e6f",
+          "079f2f00d9421074b385d6e14e3c3fd6df81e85d05b95fd5a1d87d38aefcd985",
+          "de498c2770a01167f3044a9146c47be1fb0eca2e36fb819f830bf071dbbcec95",
+          "996528d382d88bc864411b7b2051f1a2ed9720e2b3d08d7d9de25f1e4eb19e6f",
+          "996528d382d88bc864411b7b2051f1a2ed9720e2b3d08d7d9de25f1e4eb19e6f",
+          "6836c87bb498669d5dd07a6ea490d5feed1fdb174d2edf18898b5f030903d1e5"
+        ],
+        [
+          "0a219a24914f83f7134a9458d8e77b8df242f20815307361d3238a8a0aab4f63",
+          "61659f3b5337ccc9e3706d8be1ce5abc80906662666cda39e5519264f618c38c",
+          "09be3b4e71f2a084aaac9be7884242f41da0607f4ba3d3f1ca8dd8d389b6663f",
+          "0a219a24914f83f7134a9458d8e77b8df242f20815307361d3238a8a0aab4f63",
+          "4cb5af89e08598ccda89b5677a76b6f174a20df756330b2a163da4beba07f513",
+          "8e8795ded3942d64d4f2319a78846b9e17e140c13f9fb64c2eab935b53c2938a"
+        ]
+      ]
+    },
+    {
+      "name": "t0-b-after-web-cluster-028.jpg",
+      "path": "C:\\rivals-agent\\l2tag\\t0-b-after-web-cluster-028.jpg",
+      "sha256": "4c46d2632dabb57707b971665b51d7be7928a5768c847623b3f68d6b76648cbe",
+      "layout": "pad",
+      "t": 0,
+      "hud": {
+        "hp": 250,
+        "max_hp": 250,
+        "bar_fill": 1.0,
+        "webs": 5,
+        "abilities": {
+          "teamup": [
+            true,
+            null
+          ],
+          "swing": [
+            true,
+            3
+          ],
+          "get_over_here": [
+            true,
+            null
+          ],
+          "uppercut": [
+            true,
+            2
+          ]
+        },
+        "ult_ready": true,
+        "ult_charge": 1.0,
+        "cooldowns": {
+          "teamup": null,
+          "swing": null,
+          "get_over_here": null,
+          "uppercut": null
+        },
+        "bar_damage": 0.0
+      },
+      "state": {
+        "t": 0,
+        "frame": [
+          2560,
+          1440
+        ],
+        "hp": 250,
+        "max_hp": 250,
+        "abilities": {
+          "teamup": {
+            "ready": true,
+            "charges": null
+          },
+          "swing": {
+            "ready": true,
+            "charges": 3
+          },
+          "pull": {
+            "ready": true,
+            "charges": null
+          },
+          "uppercut": {
+            "ready": true,
+            "charges": 2
+          },
+          "ult": {
+            "ready": true,
+            "charges": null
+          }
+        },
+        "webs": 5,
+        "detections": null,
+        "on_target": null,
+        "coasting": []
+      },
+      "elapsed_ms_not_benchmark": 15.15089999884367,
+      "masks": [
+        [
+          "ab2894d41cd2ebd7d3e7f7bb91bb0c261c58456c2a75d74f6552082273cb69e6",
+          "ab2894d41cd2ebd7d3e7f7bb91bb0c261c58456c2a75d74f6552082273cb69e6",
+          "ab2894d41cd2ebd7d3e7f7bb91bb0c261c58456c2a75d74f6552082273cb69e6",
+          "ab2894d41cd2ebd7d3e7f7bb91bb0c261c58456c2a75d74f6552082273cb69e6",
+          "ab2894d41cd2ebd7d3e7f7bb91bb0c261c58456c2a75d74f6552082273cb69e6",
+          "ab2894d41cd2ebd7d3e7f7bb91bb0c261c58456c2a75d74f6552082273cb69e6",
+          "ab2894d41cd2ebd7d3e7f7bb91bb0c261c58456c2a75d74f6552082273cb69e6",
+          "ab2894d41cd2ebd7d3e7f7bb91bb0c261c58456c2a75d74f6552082273cb69e6",
+          "ab2894d41cd2ebd7d3e7f7bb91bb0c261c58456c2a75d74f6552082273cb69e6"
+        ],
+        [
+          "a0f773110ddab31fa15926ce148405ecc8139565b4f4d2306139610cc9747ae5",
+          "a0f773110ddab31fa15926ce148405ecc8139565b4f4d2306139610cc9747ae5",
+          "a0f773110ddab31fa15926ce148405ecc8139565b4f4d2306139610cc9747ae5",
+          "a0f773110ddab31fa15926ce148405ecc8139565b4f4d2306139610cc9747ae5",
+          "a0f773110ddab31fa15926ce148405ecc8139565b4f4d2306139610cc9747ae5",
+          "a0f773110ddab31fa15926ce148405ecc8139565b4f4d2306139610cc9747ae5",
+          "a0f773110ddab31fa15926ce148405ecc8139565b4f4d2306139610cc9747ae5",
+          "a0f773110ddab31fa15926ce148405ecc8139565b4f4d2306139610cc9747ae5",
+          "a0f773110ddab31fa15926ce148405ecc8139565b4f4d2306139610cc9747ae5"
+        ],
+        [
+          "df3e7a92bb813c513ede3e74763f16b4b6b838f9e687b0d73d2b7592bbaa4c88",
+          "df3e7a92bb813c513ede3e74763f16b4b6b838f9e687b0d73d2b7592bbaa4c88",
+          "39fb046d4e69ffeeed69254aaa1c733ea4f5ee35c3d8cb041b1405725b8326f4",
+          "df3e7a92bb813c513ede3e74763f16b4b6b838f9e687b0d73d2b7592bbaa4c88",
+          "df3e7a92bb813c513ede3e74763f16b4b6b838f9e687b0d73d2b7592bbaa4c88",
+          "5421da42a886202c48913089536b42c16cd0547420fe0e3eb531772d15f6b266"
+        ],
+        [
+          "b43fd3c30e7fb083d89b513561dfce23ef68f77413e1f8260100fc7a82ecb54a",
+          "b43fd3c30e7fb083d89b513561dfce23ef68f77413e1f8260100fc7a82ecb54a",
+          "3c8f4a7d1ea69981c0cce21b214472545c7c3bbfaab4fd6fb99fb1121dd210a3",
+          "b43fd3c30e7fb083d89b513561dfce23ef68f77413e1f8260100fc7a82ecb54a",
+          "b43fd3c30e7fb083d89b513561dfce23ef68f77413e1f8260100fc7a82ecb54a",
+          "ade0adaff3516f707237a54b06e35ad82ed9cbb71d358072272e803ca36bd7ec"
+        ],
+        [
+          "df53f4751c203eeddb8f7fb02d6308c7e00dc8d17b92464eee8a0a55b5ca8023",
+          "996528d382d88bc864411b7b2051f1a2ed9720e2b3d08d7d9de25f1e4eb19e6f",
+          "db9a871e17166d1e498ee4571179059a9a3d746550e9a746e1589d81a3b2384c",
+          "df53f4751c203eeddb8f7fb02d6308c7e00dc8d17b92464eee8a0a55b5ca8023",
+          "df53f4751c203eeddb8f7fb02d6308c7e00dc8d17b92464eee8a0a55b5ca8023",
+          "6836c87bb498669d5dd07a6ea490d5feed1fdb174d2edf18898b5f030903d1e5"
+        ],
+        [
+          "0a219a24914f83f7134a9458d8e77b8df242f20815307361d3238a8a0aab4f63",
+          "cb1c6080c70d454b0daa7eb77cbefc4d6552ea2e3c4469dc59aab010c6abd6ab",
+          "09be3b4e71f2a084aaac9be7884242f41da0607f4ba3d3f1ca8dd8d389b6663f",
+          "0a219a24914f83f7134a9458d8e77b8df242f20815307361d3238a8a0aab4f63",
+          "4cb5af89e08598ccda89b5677a76b6f174a20df756330b2a163da4beba07f513",
+          "8e8795ded3942d64d4f2319a78846b9e17e140c13f9fb64c2eab935b53c2938a"
+        ]
+      ]
+    }
+  ],
+  "opencv": "4.13.0",
+  "numpy": "2.3.5",
+  "opencv_threads": 32
+}
