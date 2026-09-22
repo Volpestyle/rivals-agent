@@ -134,6 +134,9 @@ GREEN_DEAD_ZONES = [
 # the brain's target for 6 s of postfreeze30. A mark is dropped only if it lies WHOLLY inside this band: a real bot's name bar at the
 # top-right is taller or touches the top edge (tagrun0 70, 206, 228, tagrun1 342), and survives. Fractions of the frame.
 KILL_FEED = (0.86, 0.034, 0.96, 0.058)
+# Squad chat can use enemy green. In this HUD area a flat text-only mark needs
+# a health strip or an associated body; a sender name alone is not an enemy.
+CHAT = (0.00, 0.55, 0.35, 0.88)
 
 # The spawn room's lime glass door passes the band at its low edge: from inside, 61% of its masked pixels are at hue 54 and 89% at 54-56;
 # from the plaza side (lit differently) its boxes' median hue is 54-58 (p50 55). Bots centre on 64-65. A component whose median hue is
@@ -205,13 +208,14 @@ def find_green(frame_bgr, scale=None, band=GREEN, origin=(0, 0), frame=None):
     # a contour drawn 1-2 px wide breaks into arcs over a body; rejoin them before
     # components are taken, or one bot comes back as eight boxes
     k = max(3, int(GREEN_CLOSE * s))
+    pixels = mask
     raw = mask if band is GREEN else None           # the band's own pixels, before closing: the hue test below reads only these
     mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, np.ones((k, k), np.uint8))
     n, labels, stats, _ = cv2.connectedComponentsWithStats(mask, 8)
     ih, iw = frame_bgr.shape[:2]
     ox, oy = origin
     fw, fh = frame if frame is not None else (iw, ih)
-    out = []
+    out, guarded, components = [], set(), {}
     for i in range(1, n):
         x, y, w, h, area = stats[i]
         if area < GREEN_MIN_AREA * s * s:
@@ -234,15 +238,89 @@ def find_green(frame_bgr, scale=None, band=GREEN, origin=(0, 0), frame=None):
         # most of the crop and drops small marks the crop exists to see (postfreeze30 and tagrun0: 17 frames emptied, among them Luna's
         # pieces in a fight and a bot's bar). Where the hero really is in the crop is an open question (docs/lanes/l3-detector.md).
         pcx, pcy = (x + w / 2) / iw, (y + h / 2) / ih
-        if (PLAYER_ZONE[0] <= pcx <= PLAYER_ZONE[2] and PLAYER_ZONE[1] <= pcy <= PLAYER_ZONE[3]
-                and h < PLAYER_ZONE_MIN_H * s):
-            continue
+        player = (PLAYER_ZONE[0] <= pcx <= PLAYER_ZONE[2] and PLAYER_ZONE[1] <= pcy <= PLAYER_ZONE[3]
+                  and h < PLAYER_ZONE_MIN_H * s)
         if (w / max(h, 1) >= BAR_MIN_ASPECT and BAR_MIN_W * s <= w <= BAR_MAX_W * s
                 and BAR_MIN_H * s <= h <= GREEN_BAR_MAX_H * s):
             out.append((int(x), int(y), int(w), int(h), "bar"))
         elif h >= GREEN_MIN_H * s and area / (w * h) <= GREEN_FILL_MAX:
             out.append((int(x), int(y), int(w), int(h), "outline"))
-    return sorted(_merge(out, GREEN_MERGE_GAP * s), key=lambda b: -b[2] * b[3])
+        else:
+            continue
+        components[out[-1]] = i
+        if player:
+            guarded.add(out[-1])
+    # Associate evidence before dropping partial outlines. A bar and body can
+    # close into one component, or the body can remain in several small arcs.
+    # Merging alone NEVER releases the player guard: each original mark still
+    # needs positive evidence when it was too small on its own.
+    # Inspect only marks that passed color/HUD checks, before their pixels were
+    # closed into contours. This also avoids another whole-frame component pass.
+    health_strips = []
+    for mark in out:
+        x, y, w, h, _ = mark
+        # A bbox can enclose another, rejected component. Only this accepted
+        # component's original pixels may supply its strip evidence.
+        owned = np.where(labels[y:y+h,x:x+w] == components[mark], pixels[y:y+h,x:x+w], 0)
+        health_strips.extend((mark, (a+x, b+y, c+x, d+y))
+                             for a,b,c,d in _health_strips(owned, s))
+    supported = set()
+    for owner, strip in health_strips:
+        # Each original body arc must overlap this strip horizontally BEFORE
+        # merging. An adjacent object's bbox must not inherit an exemption from
+        # a supported body's enlarged merged rectangle. Retain member identity
+        # so a split body's common vertical extent can still justify its arcs.
+        aligned = [m for m in out if not _flat(_rect(m))
+                   and strip[0] < m[0] + m[2] and m[0] < strip[2]]
+        for merged, members in _merge_groups(aligned, GREEN_MERGE_GAP * s):
+            body = _rect(merged)
+            if _belongs_to(strip, body) and strip[3] <= body[3] - GREEN_MIN_H * s:
+                supported.update(members)
+                supported.add(owner)
+    keep = []
+    for mark in out:
+        rect = _rect(mark)
+        body_evidence = mark in supported
+        if mark in guarded and not body_evidence:
+            continue
+        cx1, cy1, cx2, cy2 = CHAT
+        in_chat = (cx1 <= (ox + rect[0]) / fw and (ox + rect[2]) / fw <= cx2
+                   and cy1 <= (oy + rect[1]) / fh and (oy + rect[3]) / fh <= cy2)
+        if (in_chat and _flat(rect) and not body_evidence
+                and not any(owner == mark for owner, _ in health_strips)):
+            continue
+        keep.append(mark)
+    return sorted(_merge(keep, GREEN_MERGE_GAP * s), key=lambda b: -b[2] * b[3])
+
+
+def _health_strips(mask, scale):
+    """Positive filled health-strip evidence, before body-closing joins text/arcs.
+
+    Use the existing bar thickness/aspect and horizontal gap closing. A partially
+    occluded strip need not have a whole nameplate's width, but must contain a
+    filled 4:1 rectangle, and leave a separate body-height extent underneath.
+    Hollow contours and text alone must not release the player guard.
+    """
+    horizontal = cv2.morphologyEx(mask, cv2.MORPH_CLOSE,
+                                np.ones((1, max(3, int(9 * scale))), np.uint8))
+    height = max(1, int(BAR_MIN_H * scale))
+    width = max(1, int(BAR_MIN_ASPECT * height))
+    filled = cv2.erode(horizontal, np.ones((height, width), np.uint8),
+                       borderType=cv2.BORDER_CONSTANT, borderValue=0)
+    # Horizontal closing can turn tightly spaced letters into a solid patch.
+    # Require an uninterrupted line in the ORIGINAL pixels as well.
+    line = cv2.erode(mask, np.ones((1, width), np.uint8),
+                    borderType=cv2.BORDER_CONSTANT, borderValue=0)
+    _, labels, stats, _ = cv2.connectedComponentsWithStats(horizontal, 8)
+    solid = set(np.unique(labels[filled > 0])) & set(np.unique(labels[line > 0])) - {0}
+    return [(int(x), int(y), int(x + w), int(y + h))
+            for i, (x, y, w, h, _) in enumerate(stats)
+            if i in solid and h <= BAR_MAX_H * scale and w <= BAR_MAX_W * scale]
+
+
+def _rect(mark):
+    x, y, w, h = mark[:4]
+    return (x, y, x + w, y + h)
 
 
 def _merge(marks, gap):
@@ -253,7 +331,13 @@ def _merge(marks, gap):
     cheaper half of the fix; the risk is two enemies standing shoulder to shoulder
     becoming one, which is why the gap is small relative to a body.
     """
+    return [mark for mark, _ in _merge_groups(marks, gap)]
+
+
+def _merge_groups(marks, gap):
+    """Same geometry as _merge, retaining the exact original marks in each group."""
     boxes = [list(m) for m in marks]
+    members = [(m,) for m in marks]
     changed = True
     while changed:
         changed = False
@@ -267,11 +351,12 @@ def _merge(marks, gap):
                     kind = "outline" if "outline" in (a[4], b[4]) else "bar"
                     boxes[i] = [x1, y1, x2 - x1, y2 - y1, kind]
                     boxes.pop(j)
+                    members[i] += members.pop(j)
                     changed = True
                     break
             if changed:
                 break
-    return [tuple(b) for b in boxes]
+    return [(tuple(b), group) for b, group in zip(boxes, members)]
 
 
 def find_enemies(frame_bgr, scale=None, band=GREEN, origin=(0, 0), frame=None):

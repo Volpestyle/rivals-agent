@@ -198,13 +198,19 @@ def test_a_bar_with_no_body_is_no_evidence_of_a_bar():
     assert d.plate is None
 
 
+@pytest.mark.corpus
 def test_native_kill_feed_frames_lose_only_the_kill_feed():
     import cv2
     from pathlib import Path
-    kill = Path("data/l1/postfreeze30/000150.jpg")
-    real = [Path("data/l1/tagrun0/000206.jpg"), Path("data/l1/tagrun0/000228.jpg"), Path("data/l1/tagrun1/000342.jpg")]
-    if not kill.exists() or not all(p.exists() for p in real):
-        pytest.skip("native frames not on this machine")
+    def fixture(name):
+        # The same four reviewed PAD fixtures, also present in the PC runtime
+        # checkout. No directory enumeration or alternative corpus search.
+        for root in (Path("data/l1"), Path("C:/rivals-agent/data/l1")):
+            if (root / name).is_file():
+                return root / name
+        pytest.skip(f"native fixture missing: {name}")
+    kill = fixture("postfreeze30/000150.jpg")
+    real = [fixture(name) for name in ("tagrun0/000206.jpg", "tagrun0/000228.jpg", "tagrun1/000342.jpg")]
     boxes = find_enemies(cv2.imread(str(kill)), scale=2.0)
     assert not any(b.bbox[0] > 2200 and b.bbox[1] < 260 for b in boxes)              # nothing at the kill feed
     for p in real:                                                                    # a real bot at the top-right: still found
@@ -269,3 +275,163 @@ def test_the_door_seen_from_the_plaza_is_under_the_hue_bar_too():
         f[300:440, 900:980] = _hsv_bgr(hue)
         f[306:434, 906:974] = 0
         assert len(find_enemies(f)) == kept, hue
+
+
+@pytest.mark.parametrize("scale", [1, 2])
+@pytest.mark.parametrize("gap", [10, 22])
+def test_partial_player_zone_body_needs_its_own_filled_health_strip(scale, gap):
+    """Same partial body, with/without a health strip; merged and separate marks."""
+    import cv2
+    base = _frame()
+    top = 308 + gap
+    _body(base, top, top + 40, 590, 620)
+    bare = cv2.resize(base, None, fx=scale, fy=scale, interpolation=cv2.INTER_NEAREST)
+    assert find_enemies(bare, scale=scale) == []
+    base[300:308, 560:640] = GREEN_BGR
+    paired = cv2.resize(base, None, fx=scale, fy=scale, interpolation=cv2.INTER_NEAREST)
+    wide = find_enemies(paired, scale=scale)
+    assert len(wide) == 1 and wide[0].bbox[3] >= (top + 38) * scale
+    x,y = 400*scale,120*scale
+    crop = paired[y:600*scale, x:880*scale]
+    close = find_enemies(crop, scale=scale, origin=(x,y), frame=(1280*scale,720*scale))
+    assert len(close) == 1
+    assert np.allclose(close[0].bbox, np.array(wide[0].bbox) - (x,y,x,y))
+
+
+@pytest.mark.parametrize("placement", ["none", "far_above", "below", "beside", "hud"])
+def test_partial_player_junk_cannot_borrow_an_unrelated_or_hud_bar(placement):
+    f = _frame()
+    _body(f, 360, 400, 590, 630)  # even thick hollow edges are not a separate bar
+    locations = {"far_above":(560,200), "below":(560,410), "beside":(750,330), "hud":(30,90)}
+    if placement in locations:
+        x,y = locations[placement]
+        f[y:y+8,x:x+80] = GREEN_BGR
+    assert not any(570 < d.center[0] < 650 and 340 < d.center[1] < 430 for d in find_enemies(f))
+
+
+def test_chat_region_keeps_a_real_health_bar_but_not_sender_text_in_full_or_crop():
+    import cv2
+    f = _frame()
+    cv2.putText(f, "[Squad] player:", (25, 450), cv2.FONT_HERSHEY_SIMPLEX, .5, GREEN_BGR, 1)
+    assert find_enemies(f) == []
+    assert find_enemies(f[380:500,:400], scale=1, origin=(0,380),frame=(1280,720)) == []
+    # A real enemy in the same screen area, with a filled strip, must survive.
+    f = _frame()
+    f[430:438,25:125] = GREEN_BGR
+    assert len(find_enemies(f)) == 1
+    assert len(find_enemies(f[380:500,:400], scale=1, origin=(0,380),frame=(1280,720))) == 1
+
+
+_CANDIDATE_20021 = (
+    ("0001", "c62f578ac6f82354c3d38fea04970e236d6c9ce38344476cb55ac3c9673c3320"),
+    ("0013", "718183798033c975647a7a81923370f860f366a78d061e4649c07d5e5fe9606a"),
+    ("0025", "5fc3db35988afa268dd5e230d3b5c4e321a98bb6a36b497f735bcc041e02ac26"),
+    ("0037", "05d89f0fe3635aad1c04e395b37038ebe6d9f18e297c3278458f4cea054bfd3c"),
+    ("0049", "b8280a6bde010bdccab609edd74b8034985d20e44b53280f0cf53bc985dd59a2"),
+)
+
+
+def _candidate_frame(candidate, number, digest):
+    """Only explicitly reviewed diagnostic native frames; not admitted labels."""
+    import hashlib
+    from pathlib import Path
+    import cv2
+    path = Path("data/human/semantic-candidates/20260922T032454-642Z-24328-1") / candidate / f"frame-{number}.png"
+    if not path.is_file():
+        pytest.skip(f"diagnostic native frame missing: {path}")
+    assert hashlib.sha256(path.read_bytes()).hexdigest() == digest
+    frame = cv2.imread(str(path))
+    assert frame is not None and frame.shape == (1440,2560,3)
+    return frame
+
+
+@pytest.mark.corpus
+def test_native_candidate20021_partial_target_and_causal_track_correspondence():
+    """Observed development replay, not a human target/admission annotation."""
+    from dataclasses import replace
+    from agent import brain
+    from agent.state import State
+    from agent.tracker import Tracker
+    memory, tracker, selected = brain.Memory(), Tracker(), []
+    for i,(number,digest) in enumerate(_CANDIDATE_20021):
+        f = _candidate_frame("candidate-20021",number,digest)
+        wide = find_enemies(f, scale=2)
+        aim = [replace(d,bbox=(d.bbox[0]+800,d.bbox[1]+240,d.bbox[2]+800,d.bbox[3]+240))
+               for d in find_enemies(f[240:1200,800:1760],scale=2,origin=(800,240),frame=(2560,1440))]
+        # Nearby partial body is observed from the second causal frame onward.
+        near = lambda ds: [d for d in ds if 1100 < d.center[0] < 1350 and 550 < d.center[1] < 820]
+        if i >= 1:
+            assert len(near(wide)) == len(near(aim)) == 1
+            assert near(wide)[0].bbox == near(aim)[0].bbox
+        t=19.621+i*.1
+        ds=tracker.update(aim or wide,t,frame=(2560,1440),clip=(800,240,1760,1200) if aim else None)
+        _,target=brain.gate(State(t=t,frame=(2560,1440),detections=ds,coasting=tracker.coasting),memory)
+        if i >= 2:
+            assert target in near(ds)
+            selected.append(target.track)
+    assert len(set(selected)) == 1
+    assert target.bbox == (1243.,708.,1305.,795.) and target.plate is True
+
+
+@pytest.mark.corpus
+def test_native_squad_chat_removed_while_nearby_luna_survives():
+    f = _candidate_frame("candidate-13521","0049","b8f369a9b0dc3fcfdf0df792ef1c87ec3cb8e3d5a1443d7c76d39420876910fc")
+    ds=find_enemies(f,scale=2)
+    assert any(d.bbox == (1276.,555.,1371.,754.) and d.plate is True for d in ds)
+    assert not any(d.bbox[0] < 300 and d.bbox[1] > 800 for d in ds)
+    assert find_enemies(f[800:1040,:800],scale=2,origin=(0,800),frame=(2560,1440)) == []
+
+
+@pytest.mark.corpus
+def test_same_native_partial_body_without_its_health_strip_stays_guarded():
+    number,digest = _CANDIDATE_20021[-1]
+    original = _candidate_frame("candidate-20021",number,digest)
+    no_bar = original.copy()
+    no_bar[630:685,1140:1340] = 0  # remove only the separate name/health mark
+    assert np.array_equal(no_bar[708:795,1243:1305], original[708:795,1243:1305])
+    for image,origin in ((no_bar,(0,0)), (no_bar[240:1200,800:1760],(800,240))):
+        ds=find_enemies(image,scale=2,origin=origin,frame=(2560,1440))
+        assert not any(1200 < d.center[0]+origin[0] < 1350 and
+                       690 < d.center[1]+origin[1] < 820 for d in ds)
+        assert any(1490 < d.bbox[0]+origin[0] < 1510 for d in ds)  # distant bot preserved
+
+
+@pytest.mark.parametrize("scale", [1, 2])
+@pytest.mark.parametrize("crop", [False, True])
+def test_rejected_component_inside_body_bbox_cannot_supply_health_evidence(scale, crop):
+    import cv2
+    f = _frame()
+    f[350:406,560:700] = _hsv_bgr(65,200,200)
+    f[352:404,562:698] = 0
+    f[373:379,590:625] = _hsv_bgr(55,200,200)  # separately rejected scenery component
+    f = cv2.resize(f,None,fx=scale,fy=scale,interpolation=cv2.INTER_NEAREST)
+    if crop:
+        ds = find_enemies(f[120*scale:600*scale,400*scale:880*scale],scale=scale,
+                          origin=(400*scale,120*scale),frame=(1280*scale,720*scale))
+    else:
+        ds = detect(f,scale=scale,mode="green")
+    assert ds == []
+
+
+@pytest.mark.parametrize("scale", [1, 2])
+@pytest.mark.parametrize("crop", [False, True])
+def test_supported_body_cannot_transfer_strip_evidence_to_adjacent_junk(scale, crop):
+    import cv2
+    f = _frame()
+    color = _hsv_bgr(65,200,200)
+    f[300:420,500:550] = color
+    f[304:416,504:546] = 0
+    f[260:268,490:555] = color
+    f[430:470,560:595] = color  # no horizontal overlap with the health strip
+    f[434:466,564:591] = 0
+    f = cv2.resize(f,None,fx=scale,fy=scale,interpolation=cv2.INTER_NEAREST)
+    if crop:
+        ds = find_enemies(f[120*scale:600*scale,400*scale:880*scale],scale=scale,
+                          origin=(400*scale,120*scale),frame=(1280*scale,720*scale))
+        offset=(400*scale,120*scale,400*scale,120*scale)
+    else:
+        ds = detect(f,scale=scale,mode="green")
+        offset=(0,0,0,0)
+    assert len(ds) == 1
+    assert np.allclose(np.array(ds[0].bbox)+offset,
+                       np.array((500,300,550,420))*scale+1)
