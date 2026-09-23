@@ -1,0 +1,78 @@
+[
+  {
+    "observation_t": 8.3628,
+    "d": null,
+    "note": "idle",
+    "target": null,
+    "lt": 0,
+    "rt": 0,
+    "buttons": []
+  },
+  {
+    "observation_t": 8.6103,
+    "d": 2,
+    "note": "combo:burst",
+    "target": 1,
+    "lt": 1.0,
+    "rt": 0,
+    "buttons": []
+  },
+  {
+    "observation_t": 8.6493,
+    "d": 3,
+    "note": "combo:burst",
+    "target": 1,
+    "lt": 0,
+    "rt": 0,
+    "buttons": []
+  },
+  {
+    "observation_t": 8.933,
+    "d": 6,
+    "note": "combo:burst",
+    "target": 1,
+    "lt": 0,
+    "rt": 0,
+    "buttons": [
+      "RB"
+    ]
+  },
+  {
+    "observation_t": 8.9767,
+    "d": 6,
+    "note": "combo:burst",
+    "target": 1,
+    "lt": 0,
+    "rt": 0,
+    "buttons": []
+  },
+  {
+    "observation_t": 9.6871,
+    "d": 13,
+    "note": "combo:burst",
+    "target": 1,
+    "lt": 0,
+    "rt": 0,
+    "buttons": [
+      "X"
+    ]
+  },
+  {
+    "observation_t": 9.7289,
+    "d": 13,
+    "note": "combo:burst",
+    "target": 1,
+    "lt": 0,
+    "rt": 0,
+    "buttons": []
+  },
+  {
+    "observation_t": 10.2604,
+    "d": 19,
+    "note": "combo:burst",
+    "target": 1,
+    "lt": 0,
+    "rt": 1.0,
+    "buttons": []
+  }
+]

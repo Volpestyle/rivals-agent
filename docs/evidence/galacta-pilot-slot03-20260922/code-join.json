@@ -1,0 +1,102 @@
+[
+  {
+    "path": "agent/controller.py",
+    "sha256": "fc5bd0e000e7c6b718d4e974be22577247205475a07b1821da4a973a0fc8d44c",
+    "accepted_e5511c5_LF_equal": true
+  },
+  {
+    "path": "agent/loop.py",
+    "sha256": "65b09606751b73d6e437e03a089a2a3776d96892b616d286e5b7772d93ffbae2",
+    "accepted_e5511c5_LF_equal": true
+  },
+  {
+    "path": "agent/intents.py",
+    "sha256": "836692b7c241df0d2a57c109230f8047b1c4d0a4392782bfb652f883c6f50cf3",
+    "accepted_e5511c5_LF_equal": true
+  },
+  {
+    "path": "agent/state.py",
+    "sha256": "83983c59f0ea39772686b9ce8e002aab86d312c5e75937bc2b9e6a21eddb8f5a",
+    "accepted_e5511c5_LF_equal": true
+  },
+  {
+    "path": "agent/brain.py",
+    "sha256": "0deaafb77cae4fa4a15fc8c8abe6d49c09821de7a1ab5810b096788117b30c00",
+    "accepted_e5511c5_LF_equal": true
+  },
+  {
+    "path": "agent/tracker.py",
+    "sha256": "56fa3012391b22a0c4a3dbe3f5414f275faba4e038bfebdbe6b8f579bc72c892",
+    "accepted_e5511c5_LF_equal": true
+  },
+  {
+    "path": "agent/learned_range_skill.py",
+    "sha256": "77e4b7f19d4796737356b71d058d7c33688570940083cc82edb21d7c3e5c89ba",
+    "accepted_e5511c5_LF_equal": true
+  },
+  {
+    "path": "agent/startup.py",
+    "sha256": "d664ca4bd1ffac599a8020c61d843a186c9e608dfee6071ade2d1274c0ff908c",
+    "accepted_e5511c5_LF_equal": true
+  },
+  {
+    "path": "policy/range_skill_policy.py",
+    "sha256": "5109def43fe6d84a90a048431481d1ab56a429f2c4e9c804adee2413047d6a82",
+    "accepted_e5511c5_LF_equal": true
+  },
+  {
+    "path": "policy/range_policy.py",
+    "sha256": "c46e7d8a6523892107c8a878532505d020896e5b32e9df6179c049d6aa3410bb",
+    "accepted_e5511c5_LF_equal": true
+  },
+  {
+    "path": "policy/execution.py",
+    "sha256": "84dbec833e4378f94be8678b16ff5ff3b3f582838391e7d73ef23ed305481038",
+    "accepted_e5511c5_LF_equal": true
+  },
+  {
+    "path": "scripts/capture.py",
+    "sha256": "b98f310616cf0569375d3e24cbb564d7702872c4ffaa888523ac6b52f96fb547",
+    "accepted_e5511c5_LF_equal": true
+  },
+  {
+    "path": "scripts/record.py",
+    "sha256": "714346a2ac3672e02ea568b628d2413de2096486c3ba6930502e86694fc175ea",
+    "accepted_e5511c5_LF_equal": true
+  },
+  {
+    "path": "perception/hud.py",
+    "sha256": "aa2dc58575e9f9c405ad3e430d9ed0d046f0f9b2f3fcba3884e7fb204e3c1969",
+    "accepted_e5511c5_LF_equal": true
+  },
+  {
+    "path": "perception/outline.py",
+    "sha256": "fded81b150bb873c738e34fb3fc7d8f0a263a7cf9121e3325991bcdda4acd4f8",
+    "accepted_e5511c5_LF_equal": true
+  },
+  {
+    "path": "agent/loop.py",
+    "sha256": "65b09606751b73d6e437e03a089a2a3776d96892b616d286e5b7772d93ffbae2",
+    "accepted_e5511c5_LF_equal": true
+  },
+  {
+    "path": "agent/state.py",
+    "sha256": "83983c59f0ea39772686b9ce8e002aab86d312c5e75937bc2b9e6a21eddb8f5a",
+    "accepted_e5511c5_LF_equal": true
+  },
+  {
+    "path": "agent/tracker.py",
+    "sha256": "56fa3012391b22a0c4a3dbe3f5414f275faba4e038bfebdbe6b8f579bc72c892",
+    "accepted_e5511c5_LF_equal": true
+  },
+  {
+    "path": "policy/range_policy.py",
+    "sha256": "c46e7d8a6523892107c8a878532505d020896e5b32e9df6179c049d6aa3410bb",
+    "accepted_e5511c5_LF_equal": true
+  },
+  {
+    "path": "policy/range_skill_policy.py",
+    "sha256": "5109def43fe6d84a90a048431481d1ab56a429f2c4e9c804adee2413047d6a82",
+    "accepted_e5511c5_LF_equal": true
+  }
+]

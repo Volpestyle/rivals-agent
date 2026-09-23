@@ -1,0 +1,151 @@
+{
+  "original_count": 31,
+  "all_originals_unchanged": true,
+  "saved_frame_count": 27,
+  "all_saved_unchanged": true,
+  "normal_rows": 144,
+  "release_rows": 4,
+  "meta_completed_decisions": 29,
+  "distinct_consumed_first_state_records": 28,
+  "lt_positive_post_send_rows": 2,
+  "rt_positive_post_send_rows": 49,
+  "button_rows": {
+    "[]": 140,
+    "['RB']": 2,
+    "['X']": 2
+  },
+  "first_phase": 8.36284339998383,
+  "candidate_observation": 11.233432099979836,
+  "candidate_phase_age": 2.8705886999960057,
+  "first_bbox": [
+    1218,
+    642,
+    1363,
+    784
+  ],
+  "first_height_ratio": 0.09861111111111111,
+  "board_records": [
+    {
+      "t": 7.237,
+      "captured_t": 8.254173699999228,
+      "capture_interval": [
+        8.249872499989579,
+        8.254173699999228
+      ],
+      "capture_clock": "grab_start_to_return_loop_seconds",
+      "file": "scoreboard-baseline.png",
+      "size": [
+        2560,
+        1440
+      ],
+      "parsed": {
+        "open": true,
+        "kos": 0,
+        "deaths": 0,
+        "assists": 0,
+        "accuracy": 0,
+        "damage": 0,
+        "damage_blocked": 0,
+        "healing": 0,
+        "web_cluster_accuracy": 0,
+        "spin_kos": 0
+      }
+    },
+    {
+      "t": 11.233,
+      "captured_t": 12.360500699986005,
+      "capture_interval": [
+        12.355543299985584,
+        12.360500699986005
+      ],
+      "capture_clock": "grab_start_to_return_loop_seconds",
+      "file": "scoreboard-end.png",
+      "size": [
+        2560,
+        1440
+      ],
+      "parsed": {
+        "open": true,
+        "kos": 1,
+        "deaths": 0,
+        "assists": 0,
+        "accuracy": 66,
+        "damage": 250,
+        "damage_blocked": 0,
+        "healing": 0,
+        "web_cluster_accuracy": 100,
+        "spin_kos": 0
+      }
+    }
+  ],
+  "release_events": [
+    {
+      "t": 7.244145699980436,
+      "type": "executor_release",
+      "reason": "scoreboard",
+      "observation_t": null,
+      "range_skill_trace": null,
+      "release_attempts": [
+        {
+          "attempted_t": 7.244149299978744,
+          "status": "returned",
+          "returned_t": 7.244209900003625
+        }
+      ],
+      "neutral_requested": true,
+      "preceding_send_result": null,
+      "release_returned": true
+    },
+    {
+      "t": 11.243395199999213,
+      "type": "executor_release",
+      "reason": "candidate_feed",
+      "observation_t": 11.233432099979836,
+      "range_skill_trace": null,
+      "release_attempts": [
+        {
+          "attempted_t": 11.243397399986861,
+          "status": "returned",
+          "returned_t": 11.243524499994237
+        }
+      ],
+      "neutral_requested": true,
+      "preceding_send_result": null,
+      "release_returned": true
+    },
+    {
+      "t": 11.35597589999088,
+      "type": "executor_release",
+      "reason": "candidate_feed",
+      "observation_t": 11.233432099979836,
+      "range_skill_trace": null,
+      "release_attempts": [
+        {
+          "attempted_t": 11.355979999992996,
+          "status": "returned",
+          "returned_t": 11.356028399983188
+        }
+      ],
+      "neutral_requested": true,
+      "preceding_send_result": null,
+      "release_returned": true
+    },
+    {
+      "t": 11.357044499978656,
+      "type": "executor_release",
+      "reason": "scoreboard",
+      "observation_t": 11.233432099979836,
+      "range_skill_trace": null,
+      "release_attempts": [
+        {
+          "attempted_t": 11.357048699981533,
+          "status": "returned",
+          "returned_t": 11.357101400004467
+        }
+      ],
+      "neutral_requested": true,
+      "preceding_send_result": null,
+      "release_returned": true
+    }
+  ]
+}

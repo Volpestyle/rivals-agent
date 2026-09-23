@@ -1,0 +1,37 @@
+[
+  {
+    "file": "000024.jpg",
+    "t": 10.9487,
+    "sha256": "aa78c845ccbed4f9b3fc2d583ab6eadd7eaf4ac7717cc5bcfef4d7f1589f312f",
+    "match": "kill-011.jpg",
+    "original_pts": 11.616667,
+    "mad": 7.5136094674556215,
+    "offset": 0.6679669999999991
+  },
+  {
+    "file": "000025.jpg",
+    "t": 11.0489,
+    "sha256": "466e50c683dab85d16d52b711b028261a214d49f55e2b9462317ecb646b61858",
+    "match": "kill-016.jpg",
+    "original_pts": 11.7,
+    "mad": 0.526508875739645,
+    "offset": 0.6510999999999996
+  },
+  {
+    "file": "000026.jpg",
+    "t": 11.161,
+    "sha256": "776a0c97f6197c5b0f000fa4b329046ec7d5bffbc0c727dddb17a546e7442a49",
+    "match": "kill-023.jpg",
+    "original_pts": 11.816666999999999,
+    "mad": 8.996153846153845,
+    "offset": 0.6556669999999993
+  },
+  {
+    "file": "episode-candidate-feed.png",
+    "t": 11.233432099979836,
+    "match": "kill-028.jpg",
+    "original_pts": 11.899999999999999,
+    "mad": 0.5259763313609468,
+    "offset": 0.6665679000201621
+  }
+]

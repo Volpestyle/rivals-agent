@@ -1,0 +1,47 @@
+[
+  {
+    "file": "000007.jpg",
+    "t": 9.1367,
+    "sha256": "efbde9cb3e35672c30aa1ae828d24e74a4165b42f7ccbc61e071706a4fa4befc",
+    "match": "sequence-018.jpg",
+    "approx_pts": 9.7,
+    "mad": 9.60073309801792,
+    "offset": 0.5632999999999999
+  },
+  {
+    "file": "000011.jpg",
+    "t": 9.5769,
+    "sha256": "dacfb55905a135b9ae7c536df136e55b73f3084df79fb5219c5b48cefe6bdeb6",
+    "match": "sequence-023.jpg",
+    "approx_pts": 10.2,
+    "mad": 14.180559326635894,
+    "offset": 0.6230999999999991
+  },
+  {
+    "file": "000015.jpg",
+    "t": 9.9976,
+    "sha256": "ff38d5d1af19be9037e2906a7e5ee23250e4109820faf50df3a1201b8af64a10",
+    "match": "sequence-027.jpg",
+    "approx_pts": 10.6,
+    "mad": 18.562177572631008,
+    "offset": 0.6023999999999994
+  },
+  {
+    "file": "000019.jpg",
+    "t": 10.4264,
+    "sha256": "d7a27f41271d9d505fa162a629abba1b16070aeb7a7dfe5fb4b474311baf1839",
+    "match": "sequence-032.jpg",
+    "approx_pts": 11.1,
+    "mad": 24.01629106706489,
+    "offset": 0.6736000000000004
+  },
+  {
+    "file": "000023.jpg",
+    "t": 10.8464,
+    "sha256": "37fdcd3c8b202d49c57c92619d899fcc9515a9e6ebacad02fe432725124247cd",
+    "match": "sequence-036.jpg",
+    "approx_pts": 11.5,
+    "mad": 16.79894108064078,
+    "offset": 0.6536000000000008
+  }
+]
