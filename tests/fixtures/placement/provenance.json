@@ -1,7 +1,7 @@
 {
- "kind": "placement fixture provenance",
+ "kind": "placement fixture provenance", "pin_form": "sha256 of the LF-normalised bytes (CRLF -> LF), as the repo pins text elsewhere; the labelled_json pin was first taken on a CRLF copy and is restated in LF form (2026-09-23)",
  "labelled_json": "tests/fixtures/placement/labelled.json: 81 mined candidate pairs, labelled by eye from contact sheets (2026-09-23); 22 are duplicates by image hash of other rows",
- "labelled_json_sha256": "eb9be7067acb42842d35c094c4c3f7707c9e069756cfcd0bc7f9c07fb27e992a",
+ "labelled_json_sha256": "7d921a5e9642801f690b1b72ea27aa1f57c3c8e839f623d7b9614c6c24a66ead",
  "frames_json_sha256": "a3dc4478ae410527a723d87cf4af7599aa7c6f2b8ce6023a0fe6c51b503c05ac",
  "builder": "tests/fixtures/placement/build_frames.py tests/fixtures/placement/labelled.json (PC; reads the images)",
  "in_sample": "the classifier thresholds were set on these frames; a held-out check on the supervised-look frames and James's next sessions is required before gating live input"

@@ -700,6 +700,15 @@ def _run_dir(prefix=""):
     return d
 
 
+def _pad_side():
+    """The pad, the loop's readers and the idle banner reader: imported only once a gate has passed, so a refusal
+    needs neither opencv nor a pad (and the stdlib test suite can exercise every refusal)."""
+    from agent.controller import Live
+    from agent.loop import default_perception
+    from record import idle_warning
+    return Live, default_perception, idle_warning
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     mode = ap.add_mutually_exclusive_group(required=True)
@@ -743,13 +752,10 @@ def main(argv=None):
             imwrite=cv2.imwrite)
         return 0
 
-    from agent.controller import Live
-    from agent.loop import default_perception
-    from record import idle_warning
-
     if a.measure_pitch or a.reset_check:
-        # Right stick only (the hold refuses any other key), in James's supervised session. No declaration: these are
-        # part of the look the declaration records. The PID and focus are still proven before the pad opens.
+        # Right stick only (the hold refuses any other key), in James's supervised session, behind their own
+        # measurement declaration (review D1). The PID and focus are proven before anything that can open a pad
+        # is even imported.
         mode = "measure-pitch" if a.measure_pitch else "reset-check"
         try:
             if a.reset_check and (a.spot is None or PITCH_DOWN_S is None or PITCH_UP_S is None):
@@ -760,6 +766,7 @@ def main(argv=None):
             print(f"REFUSED: {e}")
             return 2
         import cv2
+        Live, default_perception, idle_warning = _pad_side()
         perception = default_perception()
         run_dir = _run_dir("pitch-" if a.measure_pitch else f"reset-{a.spot}-")
         (run_dir / "declaration.json").write_text(json.dumps(decl, indent=2) + "\n", encoding="utf-8")
@@ -795,6 +802,7 @@ def main(argv=None):
     except Refused as e:
         print(f"REFUSED: {e}")
         return 2
+    Live, default_perception, idle_warning = _pad_side()
     perception = default_perception()
     run_dir = _run_dir()
     (run_dir / "declaration.json").write_text(json.dumps(decl, indent=2) + "\n", encoding="utf-8")

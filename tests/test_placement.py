@@ -37,11 +37,15 @@ def classify(row, pitch_ref):
 
 # --- Provenance (review F6) ----------------------------------------------------------------------------------------
 
+def _lf_sha256(path):
+    """The pin form of a text fixture: CRLF normalised to LF, so a checkout under core.autocrlf still matches."""
+    return hashlib.sha256(path.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
+
+
 def test_labels_are_committed_and_pinned():
     prov = json.loads((FIX / "provenance.json").read_text(encoding="utf-8"))
-    raw = (FIX / "labelled.json").read_bytes()
-    assert hashlib.sha256(raw).hexdigest() == prov["labelled_json_sha256"]
-    assert hashlib.sha256((FIX / "frames.json").read_bytes()).hexdigest() == prov["frames_json_sha256"]
+    assert _lf_sha256(FIX / "labelled.json") == prov["labelled_json_sha256"]
+    assert _lf_sha256(FIX / "frames.json") == prov["frames_json_sha256"]
     assert all(r["label"] in ("PAIR", "NOT_PAIR", "LOST", "NEAR_ONE") for r in FRAMES)
     assert all(r["label_source"].startswith("operator") for r in FRAMES)
     assert "label or got" not in (FIX / "build_frames.py").read_text(encoding="utf-8")

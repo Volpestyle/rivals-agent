@@ -32,8 +32,10 @@ def test_slot_archive_replays_without_a_move_lacking_a_pose(run, perception):
     folder = ROOT / run
     if not folder.is_dir():
         pytest.skip(f"run folder absent on this machine: {run}")
-    report = place.replay(place.records_from_images(place.image_paths([folder]), perception, cv2.imread), "mid",
-                          allow_none=True)
+    images = place.image_paths([folder])
+    if not images:                         # a fresh checkout has the run's tracked index and PNGs, not its frames
+        pytest.skip(f"the run's frame images are not on this machine (only its tracked files are): {run}")
+    report = place.replay(place.records_from_images(images, perception, cv2.imread), "mid", allow_none=True)
     # frames of unknown pitch: never a pose, so never a move and nothing to compare (review D2: said, not implied)
     assert report["decisions"] > 0 and report["ok"] and report["compared"] == 0, report["mismatches"][:3]
 
