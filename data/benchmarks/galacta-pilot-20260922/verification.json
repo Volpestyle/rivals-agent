@@ -1,0 +1,53 @@
+{
+  "kind": "unexecuted_schedule_cli_verification_not_gameplay",
+  "exit_code": 0,
+  "command": [
+    "C:\\Users\\volpe\\repos\\rivals-agent\\.venv\\Scripts\\python.exe",
+    "-m",
+    "scripts.range_benchmark",
+    "score",
+    "C:\\Users\\volpe\\repos\\rivals-agent\\data\\benchmarks\\galacta-pilot-20260922\\schedule.json"
+  ],
+  "stderr": "",
+  "python": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+  "code_revision": "cdf3a7ab1011dc27a785fae2e02f31f93b002bb4",
+  "source_sha256": {
+    "agent/episodes.py": "295d0301b666ddd0e5f771ce8fc79358592601003aecc8bf8d8039ff05e625a2",
+    "scripts/range_benchmark.py": "0305525c492d92b084aac3df77f17c7d5eca90139b8ec724f7cc25c7ca610786",
+    "agent/brain.py": "0deaafb77cae4fa4a15fc8c8abe6d49c09821de7a1ab5810b096788117b30c00",
+    "agent/controller.py": "052a2a12819ed11a2a42fff599fb90f1344f8de7787d61088fdfca23c0cd93da",
+    "agent/loop.py": "48fcc336d4ccc58521899d76321e3b439cb6326ea5a3c00a8368c41695203d58",
+    "agent/startup.py": "d664ca4bd1ffac599a8020c61d843a186c9e608dfee6071ade2d1274c0ff908c",
+    "agent/state.py": "83983c59f0ea39772686b9ce8e002aab86d312c5e75937bc2b9e6a21eddb8f5a",
+    "perception/hud.py": "b5c15cfe8e8d3b11003cd74d2d69c76f34d37591894124f5dfd70e5b32249acc",
+    "perception/outline.py": "369994b22c895c0248b8089a1ca37c9a30f3e5dd9cb653ad2cc3e59bfb17dd55"
+  },
+  "schedule_sha256": "a69edd5ad6af7e00dc7c32a5e81045743a91c49d6043aff6752f655b710d0d1d",
+  "height_boundary_checks": [
+    {
+      "ratio": 0.325,
+      "range_of": "near"
+    },
+    {
+      "ratio": 0.324,
+      "range_of": "mid"
+    },
+    {
+      "ratio": 0.066,
+      "range_of": "mid"
+    },
+    {
+      "ratio": 0.065,
+      "range_of": "far"
+    }
+  ],
+  "scheduled": 20,
+  "executed": 0,
+  "result": "20 retained setup failures, zero attempts, comparison/gates false; no evidence fabricated",
+  "imports_excluded": [
+    "torch",
+    "cv2",
+    "vgamepad",
+    "dxcam"
+  ]
+}
