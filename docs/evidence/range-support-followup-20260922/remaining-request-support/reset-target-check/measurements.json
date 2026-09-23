@@ -1,0 +1,874 @@
+{
+  "status": "two_saved_reset_windows_measured",
+  "bins": [
+    154,
+    211
+  ],
+  "actual_frames_processed": 10,
+  "cv2_threads": 4,
+  "code_sha256": {
+    "agent/loop.py": "2365b4fb75cb0c012fa6713f061eb14623e0f3b35bf5497f322eb908e8dbda0e",
+    "agent/brain.py": "0deaafb77cae4fa4a15fc8c8abe6d49c09821de7a1ab5810b096788117b30c00",
+    "agent/tracker.py": "56fa3012391b22a0c4a3dbe3f5414f275faba4e038bfebdbe6b8f579bc72c892",
+    "agent/state.py": "83983c59f0ea39772686b9ce8e002aab86d312c5e75937bc2b9e6a21eddb8f5a",
+    "perception/hud.py": "b5c15cfe8e8d3b11003cd74d2d69c76f34d37591894124f5dfd70e5b32249acc",
+    "perception/outline.py": "369994b22c895c0248b8089a1ca37c9a30f3e5dd9cb653ad2cc3e59bfb17dd55",
+    "scripts/record.py": "714346a2ac3672e02ea568b628d2413de2096486c3ba6930502e86694fc175ea"
+  },
+  "survey_sha256": "5e427e9f950e474911693e5c52b8a022d8561c2f7782f82c26dd96e2432bbd25",
+  "source_layout": {
+    "name": "mk",
+    "webs": [
+      0.2455,
+      0.905,
+      0.27,
+      0.95
+    ],
+    "webs_right": [
+      48,
+      66
+    ],
+    "badge_light_disc": false,
+    "slot_spill": 0.15,
+    "hp_text": [
+      0.44,
+      0.896,
+      0.56,
+      0.9315
+    ],
+    "hp_bar": [
+      0.4055,
+      0.9335,
+      0.5945,
+      0.9425
+    ],
+    "slot_cx": {
+      "swing": 0.795,
+      "uppercut": 0.8348,
+      "get_over_here": 0.8723
+    },
+    "ult": [
+      0.902,
+      0.872,
+      0.972,
+      0.95
+    ]
+  },
+  "method": "Fresh Tracker/Memory per window, actual saved composition times, default aim then wide fallback, mapped source HUD, brain.gate only. No policy/model call, controller, pad, decode or future frame.",
+  "hud_note": "Current accepted HUD bytes include landed mask/countdown optimizations; original source-owned mapped MK geometry retained. No old feature/source identity rewritten.",
+  "results": [
+    {
+      "grid_index": 154,
+      "anchor_t": 15.4,
+      "history": [
+        {
+          "grid_index": 150,
+          "grid_tick_t": 15.0,
+          "frame": {
+            "id": "file-pts-15021ms",
+            "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0041.png",
+            "image_sha256": "ca7a074ba9f8db8ddb6619f42c55ae0f44301ccb0949c1ae00f2ed5df5d0b94b",
+            "file_pts_num": 15021,
+            "file_pts_den": 1000,
+            "callback_packet_index": 1801,
+            "callback_pts": 1800,
+            "callback_timebase": [
+              1,
+              120
+            ],
+            "composition_ns": 115385505347549,
+            "composition_t": 14.9999994,
+            "mux_residual_ms": 0.0
+          },
+          "state": {
+            "t": 14.9999994,
+            "frame": [
+              2560,
+              1440
+            ],
+            "hp": 250,
+            "max_hp": 250,
+            "abilities": {
+              "swing": {
+                "ready": true,
+                "charges": 1
+              },
+              "uppercut": {
+                "ready": true,
+                "charges": 1
+              },
+              "pull": {
+                "ready": false,
+                "charges": null
+              },
+              "ult": {
+                "ready": false,
+                "charges": null
+              }
+            },
+            "webs": 3,
+            "detections": [
+              {
+                "cls": "enemy",
+                "bbox": [
+                  1385.0,
+                  799.0,
+                  1587.0,
+                  867.0
+                ],
+                "conf": 0.9,
+                "distance": null,
+                "tagged": false,
+                "track": 1,
+                "plate": false
+              }
+            ],
+            "on_target": null,
+            "coasting": []
+          },
+          "available_t": 14.9999994,
+          "selected_target": null,
+          "gate": null,
+          "in_range": true
+        },
+        {
+          "grid_index": 151,
+          "grid_tick_t": 15.1,
+          "frame": {
+            "id": "file-pts-15121ms",
+            "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0042.png",
+            "image_sha256": "0610b4838a105847baa461f18e4087c697a11e5e4291db98300c386d0d2a48db",
+            "file_pts_num": 15121,
+            "file_pts_den": 1000,
+            "callback_packet_index": 1813,
+            "callback_pts": 1812,
+            "callback_timebase": [
+              1,
+              120
+            ],
+            "composition_ns": 115385605347545,
+            "composition_t": 15.099999396,
+            "mux_residual_ms": 0.0
+          },
+          "state": {
+            "t": 15.099999396,
+            "frame": [
+              2560,
+              1440
+            ],
+            "hp": 250,
+            "max_hp": null,
+            "abilities": {
+              "swing": {
+                "ready": true,
+                "charges": 1
+              },
+              "uppercut": {
+                "ready": true,
+                "charges": 1
+              },
+              "pull": {
+                "ready": false,
+                "charges": null
+              },
+              "ult": {
+                "ready": false,
+                "charges": null
+              }
+            },
+            "webs": 3,
+            "detections": [
+              {
+                "cls": "enemy",
+                "bbox": [
+                  1444.0,
+                  754.0,
+                  1679.0,
+                  855.0
+                ],
+                "conf": 0.9,
+                "distance": null,
+                "tagged": false,
+                "track": 1,
+                "plate": false
+              }
+            ],
+            "on_target": null,
+            "coasting": []
+          },
+          "available_t": 15.099999396,
+          "selected_target": {
+            "cls": "enemy",
+            "bbox": [
+              1444.0,
+              754.0,
+              1679.0,
+              855.0
+            ],
+            "conf": 0.9,
+            "distance": null,
+            "tagged": false,
+            "track": 1,
+            "plate": false
+          },
+          "gate": null,
+          "in_range": true
+        },
+        {
+          "grid_index": 152,
+          "grid_tick_t": 15.2,
+          "frame": {
+            "id": "file-pts-15221ms",
+            "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0043.png",
+            "image_sha256": "a50712673cb2a59a72aadedede37af4c048c6688e1bf1c7503aaaaea6ebb79be",
+            "file_pts_num": 15221,
+            "file_pts_den": 1000,
+            "callback_packet_index": 1825,
+            "callback_pts": 1824,
+            "callback_timebase": [
+              1,
+              120
+            ],
+            "composition_ns": 115385705347541,
+            "composition_t": 15.199999392,
+            "mux_residual_ms": 0.0
+          },
+          "state": {
+            "t": 15.199999392,
+            "frame": [
+              2560,
+              1440
+            ],
+            "hp": 250,
+            "max_hp": null,
+            "abilities": {
+              "swing": {
+                "ready": true,
+                "charges": 1
+              },
+              "uppercut": {
+                "ready": true,
+                "charges": 1
+              },
+              "pull": {
+                "ready": false,
+                "charges": null
+              },
+              "ult": {
+                "ready": false,
+                "charges": null
+              }
+            },
+            "webs": 3,
+            "detections": [
+              {
+                "cls": "enemy",
+                "bbox": [
+                  1519.0,
+                  637.0,
+                  1760.0,
+                  811.0
+                ],
+                "conf": 0.9,
+                "distance": null,
+                "tagged": false,
+                "track": 1,
+                "plate": false
+              }
+            ],
+            "on_target": null,
+            "coasting": []
+          },
+          "available_t": 15.199999392,
+          "selected_target": {
+            "cls": "enemy",
+            "bbox": [
+              1519.0,
+              637.0,
+              1760.0,
+              811.0
+            ],
+            "conf": 0.9,
+            "distance": null,
+            "tagged": false,
+            "track": 1,
+            "plate": false
+          },
+          "gate": null,
+          "in_range": true
+        },
+        {
+          "grid_index": 153,
+          "grid_tick_t": 15.3,
+          "frame": {
+            "id": "file-pts-15321ms",
+            "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0044.png",
+            "image_sha256": "147c60ea62fa63d40b7d86bc067b164e9b561d224120e72ef386863d55693c8f",
+            "file_pts_num": 15321,
+            "file_pts_den": 1000,
+            "callback_packet_index": 1837,
+            "callback_pts": 1836,
+            "callback_timebase": [
+              1,
+              120
+            ],
+            "composition_ns": 115385805347537,
+            "composition_t": 15.299999388,
+            "mux_residual_ms": 0.0
+          },
+          "state": {
+            "t": 15.299999388,
+            "frame": [
+              2560,
+              1440
+            ],
+            "hp": 250,
+            "max_hp": 250,
+            "abilities": {
+              "swing": {
+                "ready": true,
+                "charges": 1
+              },
+              "uppercut": {
+                "ready": true,
+                "charges": 1
+              },
+              "pull": {
+                "ready": null,
+                "charges": null
+              },
+              "ult": {
+                "ready": false,
+                "charges": null
+              }
+            },
+            "webs": 3,
+            "detections": [
+              {
+                "cls": "enemy",
+                "bbox": [
+                  1477.0,
+                  599.0,
+                  1719.0,
+                  755.0
+                ],
+                "conf": 0.9,
+                "distance": null,
+                "tagged": false,
+                "track": 1,
+                "plate": false
+              }
+            ],
+            "on_target": null,
+            "coasting": []
+          },
+          "available_t": 15.299999388,
+          "selected_target": {
+            "cls": "enemy",
+            "bbox": [
+              1477.0,
+              599.0,
+              1719.0,
+              755.0
+            ],
+            "conf": 0.9,
+            "distance": null,
+            "tagged": false,
+            "track": 1,
+            "plate": false
+          },
+          "gate": null,
+          "in_range": true
+        },
+        {
+          "grid_index": 154,
+          "grid_tick_t": 15.4,
+          "frame": {
+            "id": "file-pts-15421ms",
+            "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0045.png",
+            "image_sha256": "3a98ca1631708e4bbac4fec306b412f14a9b9edbb21b842d1e30d1c59271ac2c",
+            "file_pts_num": 15421,
+            "file_pts_den": 1000,
+            "callback_packet_index": 1849,
+            "callback_pts": 1848,
+            "callback_timebase": [
+              1,
+              120
+            ],
+            "composition_ns": 115385905347533,
+            "composition_t": 15.399999384,
+            "mux_residual_ms": 0.0
+          },
+          "state": {
+            "t": 15.399999384,
+            "frame": [
+              2560,
+              1440
+            ],
+            "hp": 250,
+            "max_hp": 250,
+            "abilities": {
+              "swing": {
+                "ready": true,
+                "charges": 1
+              },
+              "uppercut": {
+                "ready": true,
+                "charges": 1
+              },
+              "pull": {
+                "ready": true,
+                "charges": null
+              },
+              "ult": {
+                "ready": false,
+                "charges": null
+              }
+            },
+            "webs": 3,
+            "detections": [
+              {
+                "cls": "enemy",
+                "bbox": [
+                  2495.0,
+                  15.0,
+                  2533.0,
+                  49.0
+                ],
+                "conf": 0.9,
+                "distance": null,
+                "tagged": null,
+                "track": 2,
+                "plate": null
+              }
+            ],
+            "on_target": null,
+            "coasting": [
+              1
+            ]
+          },
+          "available_t": 15.399999384,
+          "selected_target": null,
+          "gate": "Idle",
+          "in_range": true
+        }
+      ],
+      "final_selected_target": null,
+      "prior_continuous_selected_target": null,
+      "label": null,
+      "status": "target_check_only_not_label_or_admission"
+    },
+    {
+      "grid_index": 211,
+      "anchor_t": 21.1,
+      "history": [
+        {
+          "grid_index": 207,
+          "grid_tick_t": 20.7,
+          "frame": {
+            "id": "file-pts-20721ms",
+            "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0098.png",
+            "image_sha256": "dfe44df7e3ca2420ca82f39b716ec43bb17c9f8adb6ded7169633e26dce62e1a",
+            "file_pts_num": 20721,
+            "file_pts_den": 1000,
+            "callback_packet_index": 2485,
+            "callback_pts": 2484,
+            "callback_timebase": [
+              1,
+              120
+            ],
+            "composition_ns": 115391205347321,
+            "composition_t": 20.699999172,
+            "mux_residual_ms": 0.0
+          },
+          "state": {
+            "t": 20.699999172,
+            "frame": [
+              2560,
+              1440
+            ],
+            "hp": 250,
+            "max_hp": 250,
+            "abilities": {
+              "swing": {
+                "ready": true,
+                "charges": 1
+              },
+              "uppercut": {
+                "ready": false,
+                "charges": 0
+              },
+              "pull": {
+                "ready": false,
+                "charges": null
+              },
+              "ult": {
+                "ready": false,
+                "charges": null
+              }
+            },
+            "webs": 1,
+            "detections": [
+              {
+                "cls": "enemy",
+                "bbox": [
+                  905.0,
+                  240.0,
+                  1153.0,
+                  421.0
+                ],
+                "conf": 0.9,
+                "distance": null,
+                "tagged": false,
+                "track": 1,
+                "plate": null
+              }
+            ],
+            "on_target": null,
+            "coasting": []
+          },
+          "available_t": 20.699999172,
+          "selected_target": null,
+          "gate": null,
+          "in_range": true
+        },
+        {
+          "grid_index": 208,
+          "grid_tick_t": 20.8,
+          "frame": {
+            "id": "file-pts-20821ms",
+            "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0099.png",
+            "image_sha256": "0504546681877ea779abfb016de08b99fed507aefda6a9682be71d869f07fb4d",
+            "file_pts_num": 20821,
+            "file_pts_den": 1000,
+            "callback_packet_index": 2497,
+            "callback_pts": 2496,
+            "callback_timebase": [
+              1,
+              120
+            ],
+            "composition_ns": 115391305347317,
+            "composition_t": 20.799999168,
+            "mux_residual_ms": 0.0
+          },
+          "state": {
+            "t": 20.799999168,
+            "frame": [
+              2560,
+              1440
+            ],
+            "hp": 250,
+            "max_hp": 250,
+            "abilities": {
+              "swing": {
+                "ready": null,
+                "charges": 1
+              },
+              "uppercut": {
+                "ready": false,
+                "charges": 0
+              },
+              "pull": {
+                "ready": false,
+                "charges": null
+              },
+              "ult": {
+                "ready": false,
+                "charges": null
+              }
+            },
+            "webs": 1,
+            "detections": [
+              {
+                "cls": "enemy",
+                "bbox": [
+                  800.0,
+                  255.0,
+                  1137.0,
+                  451.0
+                ],
+                "conf": 0.9,
+                "distance": null,
+                "tagged": false,
+                "track": 1,
+                "plate": null
+              }
+            ],
+            "on_target": null,
+            "coasting": []
+          },
+          "available_t": 20.799999168,
+          "selected_target": {
+            "cls": "enemy",
+            "bbox": [
+              800.0,
+              255.0,
+              1137.0,
+              451.0
+            ],
+            "conf": 0.9,
+            "distance": null,
+            "tagged": false,
+            "track": 1,
+            "plate": null
+          },
+          "gate": null,
+          "in_range": true
+        },
+        {
+          "grid_index": 209,
+          "grid_tick_t": 20.9,
+          "frame": {
+            "id": "file-pts-20921ms",
+            "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0100.png",
+            "image_sha256": "cbd6b9ddfb9150074755b4a393a423aed87dd692025e7981830c61f58ccacc3f",
+            "file_pts_num": 20921,
+            "file_pts_den": 1000,
+            "callback_packet_index": 2506,
+            "callback_pts": 2508,
+            "callback_timebase": [
+              1,
+              120
+            ],
+            "composition_ns": 115391405347313,
+            "composition_t": 20.899999164,
+            "mux_residual_ms": 0.0
+          },
+          "state": {
+            "t": 20.899999164,
+            "frame": [
+              2560,
+              1440
+            ],
+            "hp": 250,
+            "max_hp": 250,
+            "abilities": {
+              "swing": {
+                "ready": null,
+                "charges": 1
+              },
+              "uppercut": {
+                "ready": false,
+                "charges": 0
+              },
+              "pull": {
+                "ready": false,
+                "charges": null
+              },
+              "ult": {
+                "ready": false,
+                "charges": null
+              }
+            },
+            "webs": 1,
+            "detections": [
+              {
+                "cls": "enemy",
+                "bbox": [
+                  881.0,
+                  423.0,
+                  1011.0,
+                  478.0
+                ],
+                "conf": 0.9,
+                "distance": null,
+                "tagged": false,
+                "track": 2,
+                "plate": false
+              }
+            ],
+            "on_target": null,
+            "coasting": []
+          },
+          "available_t": 20.899999164,
+          "selected_target": null,
+          "gate": "Idle",
+          "in_range": true
+        },
+        {
+          "grid_index": 210,
+          "grid_tick_t": 21.0,
+          "frame": {
+            "id": "file-pts-21021ms",
+            "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0101.png",
+            "image_sha256": "df6f58ace722ac1956e01592c99f0f3010313a042d28d8c22e86dbc1bfef2831",
+            "file_pts_num": 21021,
+            "file_pts_den": 1000,
+            "callback_packet_index": 2518,
+            "callback_pts": 2520,
+            "callback_timebase": [
+              1,
+              120
+            ],
+            "composition_ns": 115391505347309,
+            "composition_t": 20.99999916,
+            "mux_residual_ms": 0.0
+          },
+          "state": {
+            "t": 20.99999916,
+            "frame": [
+              2560,
+              1440
+            ],
+            "hp": 250,
+            "max_hp": null,
+            "abilities": {
+              "swing": {
+                "ready": null,
+                "charges": 1
+              },
+              "uppercut": {
+                "ready": false,
+                "charges": 0
+              },
+              "pull": {
+                "ready": false,
+                "charges": null
+              },
+              "ult": {
+                "ready": false,
+                "charges": null
+              }
+            },
+            "webs": 1,
+            "detections": [
+              {
+                "cls": "enemy",
+                "bbox": [
+                  913.0,
+                  353.0,
+                  1033.0,
+                  405.0
+                ],
+                "conf": 0.9,
+                "distance": null,
+                "tagged": false,
+                "track": 2,
+                "plate": false
+              }
+            ],
+            "on_target": null,
+            "coasting": []
+          },
+          "available_t": 20.99999916,
+          "selected_target": {
+            "cls": "enemy",
+            "bbox": [
+              913.0,
+              353.0,
+              1033.0,
+              405.0
+            ],
+            "conf": 0.9,
+            "distance": null,
+            "tagged": false,
+            "track": 2,
+            "plate": false
+          },
+          "gate": null,
+          "in_range": true
+        },
+        {
+          "grid_index": 211,
+          "grid_tick_t": 21.1,
+          "frame": {
+            "id": "file-pts-21121ms",
+            "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0102.png",
+            "image_sha256": "7642c04548ab5f14e0375530770c2280248c54f8d5da6203d98887d19b79615c",
+            "file_pts_num": 21121,
+            "file_pts_den": 1000,
+            "callback_packet_index": 2530,
+            "callback_pts": 2532,
+            "callback_timebase": [
+              1,
+              120
+            ],
+            "composition_ns": 115391605347305,
+            "composition_t": 21.099999156,
+            "mux_residual_ms": 0.0
+          },
+          "state": {
+            "t": 21.099999156,
+            "frame": [
+              2560,
+              1440
+            ],
+            "hp": 250,
+            "max_hp": 250,
+            "abilities": {
+              "swing": {
+                "ready": null,
+                "charges": 1
+              },
+              "uppercut": {
+                "ready": false,
+                "charges": 0
+              },
+              "pull": {
+                "ready": false,
+                "charges": null
+              },
+              "ult": {
+                "ready": false,
+                "charges": null
+              }
+            },
+            "webs": 1,
+            "detections": [
+              {
+                "cls": "enemy",
+                "bbox": [
+                  1019.0,
+                  301.0,
+                  1107.0,
+                  336.0
+                ],
+                "conf": 0.9,
+                "distance": null,
+                "tagged": false,
+                "track": 2,
+                "plate": false
+              }
+            ],
+            "on_target": null,
+            "coasting": []
+          },
+          "available_t": 21.099999156,
+          "selected_target": {
+            "cls": "enemy",
+            "bbox": [
+              1019.0,
+              301.0,
+              1107.0,
+              336.0
+            ],
+            "conf": 0.9,
+            "distance": null,
+            "tagged": false,
+            "track": 2,
+            "plate": false
+          },
+          "gate": null,
+          "in_range": true
+        }
+      ],
+      "final_selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1019.0,
+          301.0,
+          1107.0,
+          336.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": false,
+        "track": 2,
+        "plate": false
+      },
+      "prior_continuous_selected_target": null,
+      "label": null,
+      "status": "target_check_only_not_label_or_admission"
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "status": "bounded_search_closed_no_qualifying_anchor",
+  "measurements": {
+    "path": "data/human/inspection/20260922T032454-642Z-24328-1/remaining-request-support/reset-target-check/measurements.json",
+    "sha256": "8b23e01bb30f2a0f9341440fe03c14a7cccb5f19e90f51a66b0d5abf50063c7c"
+  },
+  "scope": "Two reset windows, ten saved causal PNGs only. Two final anchor images inspected at original2560x1440. No video decode, learned model, policy call, labels, admission, training, input, source or prior-artifact changes.",
+  "results": [
+    {
+      "grid_index": 154,
+      "anchor_t": 15.4,
+      "actual_anchor_t": 15.399999384,
+      "file_pts_s": 15.421,
+      "final_selected_target": null,
+      "anchor_image": {
+        "id": "file-pts-15421ms",
+        "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0045.png",
+        "image_sha256": "3a98ca1631708e4bbac4fec306b412f14a9b9edbb21b842d1e30d1c59271ac2c",
+        "file_pts_num": 15421,
+        "file_pts_den": 1000,
+        "callback_packet_index": 1849,
+        "callback_pts": 1848,
+        "callback_timebase": [
+          1,
+          120
+        ],
+        "composition_ns": 115385905347533,
+        "composition_t": 15.399999384,
+        "mux_residual_ms": 0.0
+      },
+      "visual_assessment": "Named Luna Snow is visible near the center, but the actual final selector returns None. Earlier local-track1 selections are retained and cannot be carried forward as an invented final target.",
+      "clearly_target_agreed": false,
+      "additional_cast_association_span": null
+    },
+    {
+      "grid_index": 211,
+      "anchor_t": 21.1,
+      "actual_anchor_t": 21.099999156,
+      "file_pts_s": 21.121,
+      "final_selected_target": {
+        "cls": "enemy",
+        "bbox": [
+          1019.0,
+          301.0,
+          1107.0,
+          336.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": false,
+        "track": 2,
+        "plate": false
+      },
+      "anchor_image": {
+        "id": "file-pts-21121ms",
+        "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0102.png",
+        "image_sha256": "7642c04548ab5f14e0375530770c2280248c54f8d5da6203d98887d19b79615c",
+        "file_pts_num": 21121,
+        "file_pts_den": 1000,
+        "callback_packet_index": 2530,
+        "callback_pts": 2532,
+        "callback_timebase": [
+          1,
+          120
+        ],
+        "composition_ns": 115391605347305,
+        "composition_t": 21.099999156,
+        "mux_residual_ms": 0.0
+      },
+      "visual_assessment": "Native box[1019,301,1107,336] covers horizontal health-bar/nameplate pixels in the overlapping distant entity UI area; it does not enclose an identifiable bot body. Cannot establish which physical bot this selection denotes or its correspondence to a future cast. Do not substitute the visible Galacta body elsewhere.",
+      "clearly_target_agreed": false,
+      "additional_cast_association_span": null
+    }
+  ],
+  "continuous_limitation": "Saved continuous selector was None at both anchors. Reset211 now selects local track2, but this nameplate-region selection does not establish target agreement and does not repair continuous/runtime selection.",
+  "next_action": "None within this bounded support search; close with these concrete failures. Root owns any separate scope decision. No human request or cast-association decode warranted by these checks."
+}

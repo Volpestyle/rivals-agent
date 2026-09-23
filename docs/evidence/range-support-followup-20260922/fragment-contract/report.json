@@ -1,0 +1,553 @@
+{
+  "status": "reproduced_contract_mismatch_no_production_change",
+  "source": {
+    "path": "data/l1/galacta-pilot-20260922-04-learned/frames.jsonl",
+    "sha256": "1eadcb5efba274883e103ebfae5e5f62c4f720008c75c3ea5ec226baf9e071a6"
+  },
+  "code": [
+    {
+      "path": "agent/tracker.py",
+      "sha256": "56fa3012391b22a0c4a3dbe3f5414f275faba4e038bfebdbe6b8f579bc72c892"
+    },
+    {
+      "path": "agent/controller.py",
+      "sha256": "052a2a12819ed11a2a42fff599fb90f1344f8de7787d61088fdfca23c0cd93da"
+    },
+    {
+      "path": "agent/state.py",
+      "sha256": "83983c59f0ea39772686b9ce8e002aab86d312c5e75937bc2b9e6a21eddb8f5a"
+    },
+    {
+      "path": "agent/brain.py",
+      "sha256": "0deaafb77cae4fa4a15fc8c8abe6d49c09821de7a1ab5810b096788117b30c00"
+    }
+  ],
+  "synthetic_start_pair": {
+    "whole": {
+      "ids": [
+        1
+      ],
+      "pad_request": {
+        "lx": 0.0,
+        "ly": 1.0,
+        "rx": 0.0,
+        "ry": 0.0,
+        "lt": 1.0,
+        "rt": 0.0,
+        "buttons": []
+      },
+      "reason": "accepted",
+      "stable": 6
+    },
+    "split": {
+      "ids": [
+        1,
+        1
+      ],
+      "pad_request": {
+        "lx": 0.0,
+        "ly": 0.0,
+        "rx": 0.0,
+        "ry": 0.0,
+        "lt": 0.0,
+        "rt": 0.0,
+        "buttons": []
+      },
+      "reason": "target_missing_or_ambiguous",
+      "stable": 0
+    }
+  },
+  "synthetic_no_new_pair": {
+    "whole": {
+      "ids": [
+        1
+      ],
+      "pad_request": {
+        "lx": 0.0,
+        "ly": 1.0,
+        "rx": 0.0,
+        "ry": 0.0,
+        "lt": 0.0,
+        "rt": 0.0,
+        "buttons": []
+      },
+      "reason": "no_new_start",
+      "stable": 6
+    },
+    "split": {
+      "ids": [
+        1,
+        1
+      ],
+      "pad_request": {
+        "lx": 0.0,
+        "ly": 0.0,
+        "rx": 0.0,
+        "ry": 0.0,
+        "lt": 0.0,
+        "rt": 0.0,
+        "buttons": []
+      },
+      "reason": "target_missing_or_ambiguous",
+      "stable": 0
+    }
+  },
+  "native_geometry_control": {
+    "ids": [
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "synthetic_time_and_preconditioning": true
+  },
+  "recorded_first_consumed_ambiguous_decisions": [
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    155,
+    156,
+    157,
+    158,
+    159,
+    160
+  ],
+  "all_ambiguous_decisions_already_proposed_no_new_start": true,
+  "samples": [
+    {
+      "d": 52,
+      "state": {
+        "t": 13.558558399992762,
+        "frame": [
+          2560,
+          1440
+        ],
+        "hp": 250,
+        "max_hp": 250,
+        "abilities": {
+          "teamup": {
+            "ready": true,
+            "charges": null
+          },
+          "swing": {
+            "ready": true,
+            "charges": 3
+          },
+          "pull": {
+            "ready": true,
+            "charges": null
+          },
+          "uppercut": {
+            "ready": true,
+            "charges": 2
+          },
+          "ult": {
+            "ready": true,
+            "charges": null
+          }
+        },
+        "webs": 5,
+        "detections": [
+          {
+            "cls": "enemy",
+            "bbox": [
+              1048.0,
+              564.0,
+              1521.0,
+              1089.0
+            ],
+            "conf": 0.9,
+            "distance": null,
+            "tagged": false,
+            "track": 1,
+            "plate": true
+          }
+        ],
+        "on_target": null,
+        "coasting": []
+      },
+      "decision_trace": {
+        "t": 13.558558399992762,
+        "decision_id": 52,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.8629375100135803,
+          0.13706248998641968
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "no_new_start",
+        "valid_until": 13.658558399992762,
+        "resources": {
+          "webs": 5,
+          "observed_t": 13.558558399992762
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "first_consumed_observation_t": 13.594848999986425,
+      "reflex_boxes": [
+        [
+          1047,
+          564,
+          1521,
+          1090
+        ]
+      ],
+      "reflex_ids": [
+        1
+      ],
+      "controller_reason": "no_new_start",
+      "context_image": {
+        "path": "data/l1/galacta-pilot-20260922-04-learned/000048.jpg",
+        "sha256": "36641790d263930770d40df8bd5620ca3862e7f11ff34b0d222910df81c30db1"
+      },
+      "context_image_observation_t": 13.57552320000832,
+      "context_image_minus_decision_s": 0.016964800015557557,
+      "context_image_boxes": [
+        [
+          1047,
+          564,
+          1521,
+          1090
+        ]
+      ],
+      "context_image_ids": [
+        1
+      ],
+      "image_limit": "Nearby saved reflex frame, not proven exact decision pixels."
+    },
+    {
+      "d": 53,
+      "state": {
+        "t": 13.671968600014225,
+        "frame": [
+          2560,
+          1440
+        ],
+        "hp": 250,
+        "max_hp": 250,
+        "abilities": {
+          "teamup": {
+            "ready": true,
+            "charges": null
+          },
+          "swing": {
+            "ready": true,
+            "charges": 3
+          },
+          "pull": {
+            "ready": true,
+            "charges": null
+          },
+          "uppercut": {
+            "ready": true,
+            "charges": 2
+          },
+          "ult": {
+            "ready": true,
+            "charges": null
+          }
+        },
+        "webs": 5,
+        "detections": [
+          {
+            "cls": "enemy",
+            "bbox": [
+              1140.0,
+              610.0,
+              1223.0,
+              815.0
+            ],
+            "conf": 0.9,
+            "distance": null,
+            "tagged": false,
+            "track": 1,
+            "plate": true
+          },
+          {
+            "cls": "enemy",
+            "bbox": [
+              1160.0,
+              892.0,
+              1235.0,
+              1060.0
+            ],
+            "conf": 0.9,
+            "distance": null,
+            "tagged": false,
+            "track": 1,
+            "plate": false
+          },
+          {
+            "cls": "enemy",
+            "bbox": [
+              1376.0,
+              649.0,
+              1492.0,
+              748.0
+            ],
+            "conf": 0.9,
+            "distance": null,
+            "tagged": false,
+            "track": 1,
+            "plate": false
+          },
+          {
+            "cls": "enemy",
+            "bbox": [
+              1450.0,
+              791.0,
+              1510.0,
+              856.0
+            ],
+            "conf": 0.9,
+            "distance": null,
+            "tagged": false,
+            "track": 1,
+            "plate": false
+          },
+          {
+            "cls": "enemy",
+            "bbox": [
+              1451.0,
+              931.0,
+              1521.0,
+              969.0
+            ],
+            "conf": 0.9,
+            "distance": null,
+            "tagged": false,
+            "track": 1,
+            "plate": false
+          }
+        ],
+        "on_target": null,
+        "coasting": []
+      },
+      "decision_trace": {
+        "t": 13.671968600014225,
+        "decision_id": 53,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.8834831714630127,
+          0.1165168434381485
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "no_new_start",
+        "valid_until": 13.771968600014224,
+        "resources": {
+          "webs": 5,
+          "observed_t": 13.671968600014225
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "first_consumed_observation_t": 13.710455799999181,
+      "reflex_boxes": [
+        [
+          1376,
+          650,
+          1509,
+          858
+        ],
+        [
+          1140,
+          610,
+          1223,
+          817
+        ],
+        [
+          1154,
+          892,
+          1234,
+          1091
+        ],
+        [
+          1451,
+          931,
+          1521,
+          969
+        ]
+      ],
+      "reflex_ids": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "controller_reason": "target_missing_or_ambiguous",
+      "context_image": {
+        "path": "data/l1/galacta-pilot-20260922-04-learned/000049.jpg",
+        "sha256": "f4980de392ff82046e53d20e4bd0b6100c481ef1b183504c81e347c69149cf77"
+      },
+      "context_image_observation_t": 13.687141100002918,
+      "context_image_minus_decision_s": 0.015172499988693744,
+      "context_image_boxes": [
+        [
+          1140,
+          610,
+          1223,
+          815
+        ],
+        [
+          1156,
+          892,
+          1235,
+          1091
+        ],
+        [
+          1376,
+          650,
+          1479,
+          731
+        ],
+        [
+          1450,
+          762,
+          1509,
+          859
+        ],
+        [
+          1451,
+          931,
+          1521,
+          969
+        ]
+      ],
+      "context_image_ids": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "image_limit": "Nearby saved reflex frame, not proven exact decision pixels."
+    },
+    {
+      "d": 59,
+      "state": {
+        "t": 14.263750399986748,
+        "frame": [
+          2560,
+          1440
+        ],
+        "hp": 250,
+        "max_hp": 250,
+        "abilities": {
+          "teamup": {
+            "ready": true,
+            "charges": null
+          },
+          "swing": {
+            "ready": true,
+            "charges": 3
+          },
+          "pull": {
+            "ready": true,
+            "charges": null
+          },
+          "uppercut": {
+            "ready": true,
+            "charges": 2
+          },
+          "ult": {
+            "ready": true,
+            "charges": null
+          }
+        },
+        "webs": 5,
+        "detections": [
+          {
+            "cls": "enemy",
+            "bbox": [
+              1044.0,
+              554.0,
+              1513.0,
+              1089.0
+            ],
+            "conf": 0.9,
+            "distance": null,
+            "tagged": false,
+            "track": 1,
+            "plate": true
+          }
+        ],
+        "on_target": null,
+        "coasting": []
+      },
+      "decision_trace": {
+        "t": 14.263750399986748,
+        "decision_id": 59,
+        "source": "range_skill_model",
+        "reason": "model_event",
+        "probabilities": [
+          0.9648079872131348,
+          0.03519202768802643
+        ],
+        "intent": "RangeSkill",
+        "target": 1,
+        "web_cluster_request": "no_new_start",
+        "valid_until": 14.363750399986747,
+        "resources": {
+          "webs": 5,
+          "observed_t": 14.263750399986748
+        },
+        "selector_source": "scripted_brain_gate",
+        "movement_source": "scripted_controller"
+      },
+      "first_consumed_observation_t": 14.319527100014966,
+      "reflex_boxes": [
+        [
+          1040,
+          548,
+          1507,
+          1085
+        ]
+      ],
+      "reflex_ids": [
+        1
+      ],
+      "controller_reason": "no_new_start",
+      "context_image": {
+        "path": "data/l1/galacta-pilot-20260922-04-learned/000054.jpg",
+        "sha256": "179aaea30cc729a47894893da3aacf2141245130d70c17af65f904ec0557fddb"
+      },
+      "context_image_observation_t": 14.24336220000987,
+      "context_image_minus_decision_s": -0.02038819997687824,
+      "context_image_boxes": [
+        [
+          1044,
+          580,
+          1276,
+          1091
+        ],
+        [
+          1327,
+          588,
+          1514,
+          963
+        ]
+      ],
+      "context_image_ids": [
+        1,
+        1
+      ],
+      "image_limit": "Nearby saved reflex frame, not proven exact decision pixels."
+    }
+  ],
+  "limits": [
+    "No inference, new labels, deployment or native input.",
+    "Fragment sharing is intentional Tracker.update behavior; duplicate ID allocation is not demonstrated.",
+    "The pure example proves a producer/consumer contract mismatch, not safe arbitrary duplicate union.",
+    "This refusal is not the cause of the pilot's zero learned start proposals.",
+    "Native target identity uses inspected nearby saved frames and the accepted slot 4 audit; no exact decision pixel claim."
+  ]
+}

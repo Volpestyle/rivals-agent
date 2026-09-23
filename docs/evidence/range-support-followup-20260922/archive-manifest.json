@@ -1,0 +1,75 @@
+{
+  "status": "diagnostics_only_no_new_admissions_or_production_edits",
+  "copies": [
+    {
+      "source": "data/human/inspection/20260922T032454-642Z-24328-1/remaining-request-support/audit.py",
+      "archive": "remaining-request-support/audit.py",
+      "sha256": "4ef1cd6dff2f905827d941d7ae4765b23c4c96282911e98955df94199e020109"
+    },
+    {
+      "source": "data/human/inspection/20260922T032454-642Z-24328-1/remaining-request-support/report.json",
+      "archive": "remaining-request-support/report.json",
+      "sha256": "f6c6a664d8aa9f278862743e0171784718857bb5fe463b37a87e69c1c8c0272d"
+    },
+    {
+      "source": "data/human/inspection/20260922T032454-642Z-24328-1/remaining-request-support/README.md",
+      "archive": "remaining-request-support/README.md",
+      "sha256": "ff361eef375aae92f6261ee12d81e3aa04d083bd55681b7ca001efd53174e403"
+    },
+    {
+      "source": "data/human/inspection/20260922T032454-642Z-24328-1/remaining-request-support/artifact-hashes.json",
+      "archive": "remaining-request-support/artifact-hashes.json",
+      "sha256": "8ff88b6bf49f39ffdca07c9e8a9cfafd3c37e65e45efd003270d98cf9392bfe4"
+    },
+    {
+      "source": "data/human/inspection/20260922T032454-642Z-24328-1/remaining-request-support/reset-target-check/check.py",
+      "archive": "remaining-request-support/reset-target-check/check.py",
+      "sha256": "79fb1dbc499c24884e1157c5b764bdfb3b8ff0dfeae8725b027a8d8a35f25578"
+    },
+    {
+      "source": "data/human/inspection/20260922T032454-642Z-24328-1/remaining-request-support/reset-target-check/measurements.json",
+      "archive": "remaining-request-support/reset-target-check/measurements.json",
+      "sha256": "8b23e01bb30f2a0f9341440fe03c14a7cccb5f19e90f51a66b0d5abf50063c7c"
+    },
+    {
+      "source": "data/human/inspection/20260922T032454-642Z-24328-1/remaining-request-support/reset-target-check/findings.json",
+      "archive": "remaining-request-support/reset-target-check/findings.json",
+      "sha256": "3f41e2ddc8623be96f003a17d924fdecba926b7f7b6375dfc315dcce912e8cde"
+    },
+    {
+      "source": "data/human/inspection/20260922T032454-642Z-24328-1/remaining-request-support/reset-target-check/README.md",
+      "archive": "remaining-request-support/reset-target-check/README.md",
+      "sha256": "356697ad3a0af7db00d3816c5550a7a4268d0c0e443a13111a3888dd6629c4e9"
+    },
+    {
+      "source": "data/human/inspection/20260922T032454-642Z-24328-1/remaining-request-support/reset-target-check/artifact-hashes.json",
+      "archive": "remaining-request-support/reset-target-check/artifact-hashes.json",
+      "sha256": "47cbc4e02468f465e9005bffe145d4785adbb194f1f88b9c91645423bbbb1c1f"
+    },
+    {
+      "source": "data/diagnostics/range-fragment-contract-20260922/diagnose.py",
+      "archive": "fragment-contract/diagnose.py",
+      "sha256": "08ac06449da4834a4b8c14eabbbd5c32c083f576cd5a9575d4c405b60aae3b88"
+    },
+    {
+      "source": "data/diagnostics/range-fragment-contract-20260922/report.json",
+      "archive": "fragment-contract/report.json",
+      "sha256": "3aff249fd0e07ca3435af1c890df611698a53a41ff00d48280a39dc8c9dabd9a"
+    },
+    {
+      "source": "data/l1/galacta-pilot-20260922-04-learned/000048.jpg",
+      "archive": "fragment-contract/000048.jpg",
+      "sha256": "36641790d263930770d40df8bd5620ca3862e7f11ff34b0d222910df81c30db1"
+    },
+    {
+      "source": "data/l1/galacta-pilot-20260922-04-learned/000049.jpg",
+      "archive": "fragment-contract/000049.jpg",
+      "sha256": "f4980de392ff82046e53d20e4bd0b6100c481ef1b183504c81e347c69149cf77"
+    },
+    {
+      "source": "data/l1/galacta-pilot-20260922-04-learned/000054.jpg",
+      "archive": "fragment-contract/000054.jpg",
+      "sha256": "179aaea30cc729a47894893da3aacf2141245130d70c17af65f904ec0557fddb"
+    }
+  ]
+}

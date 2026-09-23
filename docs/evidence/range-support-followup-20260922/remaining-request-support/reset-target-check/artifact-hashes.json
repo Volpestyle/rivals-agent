@@ -1,0 +1,21 @@
+{
+  "status": "bounded_search_closed_no_qualifying_anchor",
+  "files": [
+    {
+      "path": "data/human/inspection/20260922T032454-642Z-24328-1/remaining-request-support/reset-target-check/check.py",
+      "sha256": "79fb1dbc499c24884e1157c5b764bdfb3b8ff0dfeae8725b027a8d8a35f25578"
+    },
+    {
+      "path": "data/human/inspection/20260922T032454-642Z-24328-1/remaining-request-support/reset-target-check/measurements.json",
+      "sha256": "8b23e01bb30f2a0f9341440fe03c14a7cccb5f19e90f51a66b0d5abf50063c7c"
+    },
+    {
+      "path": "data/human/inspection/20260922T032454-642Z-24328-1/remaining-request-support/reset-target-check/findings.json",
+      "sha256": "3f41e2ddc8623be96f003a17d924fdecba926b7f7b6375dfc315dcce912e8cde"
+    },
+    {
+      "path": "data/human/inspection/20260922T032454-642Z-24328-1/remaining-request-support/reset-target-check/README.md",
+      "sha256": "356697ad3a0af7db00d3816c5550a7a4268d0c0e443a13111a3888dd6629c4e9"
+    }
+  ]
+}

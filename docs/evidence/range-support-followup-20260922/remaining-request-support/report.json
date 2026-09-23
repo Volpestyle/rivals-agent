@@ -1,0 +1,1672 @@
+{
+  "status": "bounded_support_audit_only_no_labels_or_admission",
+  "source_refs": [
+    {
+      "path": "C:/Users/volpe/Videos/RivalsInput/20260922T032454-642Z-24328-1/metadata.json",
+      "sha256": "9514a75db9bde99963a17dd9168144e7c9ee321d48d407ace81ab2922ae4e43f"
+    },
+    {
+      "path": "C:/Users/volpe/Videos/RivalsInput/20260922T032454-642Z-24328-1/inputs.jsonl",
+      "sha256": "1fa110de0f1a293e5fe17ccf94f6e0175451952b5a412de6faef1e9c0c51b9ca"
+    },
+    {
+      "path": "C:/Users/volpe/Videos/RivalsInput/20260922T032454-642Z-24328-1/frames.csv",
+      "sha256": "f4252e9273e07f7895c4bea7c35a93b0acf89bdc399c0c1bc10442ae3e6a184c"
+    },
+    {
+      "path": "data/human/skill-events/032454-request-diagnostic-v1/examples.json",
+      "sha256": "bd6cf4cb298379ac1a63fd226652e517ad6773ed6b4cead92dfb790abca91570"
+    },
+    {
+      "path": "data/human/skill-event-candidates/032454-support-v2/continuous-survey.json",
+      "sha256": "5e427e9f950e474911693e5c52b8a022d8561c2f7782f82c26dd96e2432bbd25"
+    }
+  ],
+  "source_video_path_metadata_only": "C:/Users/volpe/Videos/2026-09-21 22-24-54.mkv",
+  "video_opened": false,
+  "clock": {
+    "composition_origin_ns": 115370505348149,
+    "file_mux_offset_s": 0.021,
+    "file_scope_s": [
+      11,
+      22.25
+    ],
+    "composition_segment_s": [
+      10.979,
+      22.229
+    ],
+    "grid_origin": 0,
+    "period_s": 0.1,
+    "steps": 5,
+    "eligible_indices": [
+      114,
+      221
+    ]
+  },
+  "input_semantics": "WM_INPUT received by logger thread, not device hardware time",
+  "continuity_controls_before_scope_end": [
+    {
+      "seq": 0,
+      "t_ns": 115370408604500,
+      "type": "raw_input_status",
+      "ok": true
+    },
+    {
+      "seq": 1,
+      "t_ns": 115370408622400,
+      "type": "focus",
+      "active": false,
+      "held_vk": []
+    },
+    {
+      "seq": 37,
+      "t_ns": 115370927267500,
+      "type": "focus",
+      "active": true,
+      "held_vk": [
+        1
+      ]
+    }
+  ],
+  "rows": [
+    {
+      "grid_index": 122,
+      "anchor_t": 12.2,
+      "horizon_end_t": 12.3,
+      "received_t": 12.248978551,
+      "raw_event": {
+        "seq": 2297,
+        "t_ns": 115382754326700,
+        "type": "mouse",
+        "device": 65618,
+        "dx": -1,
+        "dy": -1,
+        "motion_flags": 0,
+        "button_flags": 4,
+        "wheel_data": 0,
+        "relative": true,
+        "buttons_down": [
+          2
+        ],
+        "buttons_up": [],
+        "wheel_vertical": 0,
+        "wheel_horizontal": 0
+      },
+      "prior_rmb_held": false,
+      "fresh_rise_under_received_continuity": true,
+      "preceding_raw_up": null,
+      "focus_dependency": {
+        "seq": 37,
+        "t_ns": 115370927267500,
+        "type": "focus",
+        "active": true,
+        "held_vk": [
+          1
+        ]
+      },
+      "clock_history_eligible": true,
+      "history_saved": [
+        {
+          "id": "file-pts-11821ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0009.png",
+          "image_sha256": "fa4253c1d8bbe150facfb0e2ce483966b23c835d941c46d6a2cd883cfbdb9bde",
+          "file_pts_num": 11821,
+          "file_pts_den": 1000,
+          "callback_packet_index": 1414,
+          "callback_pts": 1416,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115382305347677,
+          "composition_t": 11.799999528,
+          "mux_residual_ms": 0.0
+        },
+        {
+          "id": "file-pts-11921ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0010.png",
+          "image_sha256": "5f65bcd136295a8fc60cc0d0fc0e3b2de77dc5d86e1c143db41caec4860059ac",
+          "file_pts_num": 11921,
+          "file_pts_den": 1000,
+          "callback_packet_index": 1426,
+          "callback_pts": 1428,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115382405347673,
+          "composition_t": 11.899999524,
+          "mux_residual_ms": 0.0
+        },
+        {
+          "id": "file-pts-12021ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0011.png",
+          "image_sha256": "0a5f48f5053aee3ec41d774fdda66f609b5295eed9855f70837eeec82ade63c0",
+          "file_pts_num": 12021,
+          "file_pts_den": 1000,
+          "callback_packet_index": 1438,
+          "callback_pts": 1440,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115382505347669,
+          "composition_t": 11.99999952,
+          "mux_residual_ms": 0.0
+        },
+        {
+          "id": "file-pts-12121ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0012.png",
+          "image_sha256": "54a0b594b5afea43a4114ab111c6e7ecbfaa40f7dcd266357d8cc0b0a8b5691f",
+          "file_pts_num": 12121,
+          "file_pts_den": 1000,
+          "callback_packet_index": 1450,
+          "callback_pts": 1452,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115382605347665,
+          "composition_t": 12.099999516,
+          "mux_residual_ms": 0.0
+        },
+        {
+          "id": "file-pts-12221ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0013.png",
+          "image_sha256": "a8aa212628f5ee3ae462968190fbf477a071a9fb32c427f0c0ddbf7bbafe8132",
+          "file_pts_num": 12221,
+          "file_pts_den": 1000,
+          "callback_packet_index": 1462,
+          "callback_pts": 1464,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115382705347661,
+          "composition_t": 12.199999512,
+          "mux_residual_ms": 0.0
+        }
+      ],
+      "actual_history_t": [
+        11.799999528,
+        11.899999524,
+        11.99999952,
+        12.099999516,
+        12.199999512
+      ],
+      "actual_available_t": [
+        11.799999528,
+        11.899999524,
+        11.99999952,
+        12.099999516,
+        12.199999512
+      ],
+      "saved_continuous_ammo_history": [
+        5,
+        5,
+        5,
+        5,
+        5
+      ],
+      "saved_continuous_target": null,
+      "saved_continuous_detections": [],
+      "saved_continuous_coasting": [],
+      "reset_window_evidence": "unknown; no saved reset window in selected candidate rows",
+      "existing_request_disposition": "unknown",
+      "audit_semantic_label": null,
+      "prior_up_requirement": "focus snapshot establishes up; no preceding received RMB-up exists in this session before rise",
+      "new_anchor_inspection": "Native saved anchor shows full ammo5, airborne approach through doorway, small green humanoid visible. Saved detector has no detections/target. No target agreement or cast association established."
+    },
+    {
+      "grid_index": 131,
+      "anchor_t": 13.1,
+      "horizon_end_t": 13.2,
+      "received_t": 13.173929451,
+      "raw_event": {
+        "seq": 2498,
+        "t_ns": 115383679277600,
+        "type": "mouse",
+        "device": 65618,
+        "dx": 1,
+        "dy": -1,
+        "motion_flags": 0,
+        "button_flags": 4,
+        "wheel_data": 0,
+        "relative": true,
+        "buttons_down": [
+          2
+        ],
+        "buttons_up": [],
+        "wheel_vertical": 0,
+        "wheel_horizontal": 0
+      },
+      "prior_rmb_held": false,
+      "fresh_rise_under_received_continuity": true,
+      "preceding_raw_up": {
+        "seq": 2325,
+        "t_ns": 115382862446000,
+        "type": "mouse",
+        "device": 65618,
+        "dx": 0,
+        "dy": -1,
+        "motion_flags": 0,
+        "button_flags": 8,
+        "wheel_data": 0,
+        "relative": true,
+        "buttons_down": [],
+        "buttons_up": [
+          2
+        ],
+        "wheel_vertical": 0,
+        "wheel_horizontal": 0
+      },
+      "focus_dependency": {
+        "seq": 37,
+        "t_ns": 115370927267500,
+        "type": "focus",
+        "active": true,
+        "held_vk": [
+          1
+        ]
+      },
+      "clock_history_eligible": true,
+      "history_saved": [
+        {
+          "id": "file-pts-12721ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0018.png",
+          "image_sha256": "274c73e39eda18f100672742044d2f9580ba216261c86f5854a8332b5a908fcd",
+          "file_pts_num": 12721,
+          "file_pts_den": 1000,
+          "callback_packet_index": 1525,
+          "callback_pts": 1524,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115383205347641,
+          "composition_t": 12.699999492,
+          "mux_residual_ms": 0.0
+        },
+        {
+          "id": "file-pts-12821ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0019.png",
+          "image_sha256": "c9d2d2469110a61e801163dd5b5359dad3ea7a198b0cb2be8f27478718815502",
+          "file_pts_num": 12821,
+          "file_pts_den": 1000,
+          "callback_packet_index": 1537,
+          "callback_pts": 1536,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115383305347637,
+          "composition_t": 12.799999488,
+          "mux_residual_ms": 0.0
+        },
+        {
+          "id": "file-pts-12921ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0020.png",
+          "image_sha256": "a76916550a3f5c54260c8dde91dc37ba8f9a68d78c6a14dea11df7aa5a4df5a8",
+          "file_pts_num": 12921,
+          "file_pts_den": 1000,
+          "callback_packet_index": 1549,
+          "callback_pts": 1548,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115383405347633,
+          "composition_t": 12.899999484,
+          "mux_residual_ms": 0.0
+        },
+        {
+          "id": "file-pts-13021ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0021.png",
+          "image_sha256": "c642ef0d205395ba43afd04b5edd8d1c844b8c2bff8510a9931aaf15ef9d9fa1",
+          "file_pts_num": 13021,
+          "file_pts_den": 1000,
+          "callback_packet_index": 1561,
+          "callback_pts": 1560,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115383505347629,
+          "composition_t": 12.99999948,
+          "mux_residual_ms": 0.0
+        },
+        {
+          "id": "file-pts-13121ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0022.png",
+          "image_sha256": "32cee9ae496b5125dbd122090612810281b49caf04b026dae754d8e7f05fb0bb",
+          "file_pts_num": 13121,
+          "file_pts_den": 1000,
+          "callback_packet_index": 1573,
+          "callback_pts": 1572,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115383605347625,
+          "composition_t": 13.099999476,
+          "mux_residual_ms": 0.0
+        }
+      ],
+      "actual_history_t": [
+        12.699999492,
+        12.799999488,
+        12.899999484,
+        12.99999948,
+        13.099999476
+      ],
+      "actual_available_t": [
+        12.699999492,
+        12.799999488,
+        12.899999484,
+        12.99999948,
+        13.099999476
+      ],
+      "saved_continuous_ammo_history": [
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "saved_continuous_target": null,
+      "saved_continuous_detections": [],
+      "saved_continuous_coasting": [],
+      "reset_window_evidence": "unknown; no saved reset window in selected candidate rows",
+      "existing_request_disposition": "unknown",
+      "audit_semantic_label": null,
+      "prior_up_requirement": "received raw release available",
+      "new_anchor_inspection": "Native saved anchor shows ammo4 and humanoid at hero-simulation platform through doorway. Saved detector has no detections/target. Not full ammo."
+    },
+    {
+      "grid_index": 141,
+      "anchor_t": 14.1,
+      "horizon_end_t": 14.2,
+      "received_t": 14.197983651,
+      "raw_event": {
+        "seq": 2757,
+        "t_ns": 115384703331800,
+        "type": "mouse",
+        "device": 65618,
+        "dx": 4,
+        "dy": 1,
+        "motion_flags": 0,
+        "button_flags": 4,
+        "wheel_data": 0,
+        "relative": true,
+        "buttons_down": [
+          2
+        ],
+        "buttons_up": [],
+        "wheel_vertical": 0,
+        "wheel_horizontal": 0
+      },
+      "prior_rmb_held": false,
+      "fresh_rise_under_received_continuity": true,
+      "preceding_raw_up": {
+        "seq": 2528,
+        "t_ns": 115383807310500,
+        "type": "mouse",
+        "device": 65618,
+        "dx": 1,
+        "dy": 0,
+        "motion_flags": 0,
+        "button_flags": 8,
+        "wheel_data": 0,
+        "relative": true,
+        "buttons_down": [],
+        "buttons_up": [
+          2
+        ],
+        "wheel_vertical": 0,
+        "wheel_horizontal": 0
+      },
+      "focus_dependency": {
+        "seq": 37,
+        "t_ns": 115370927267500,
+        "type": "focus",
+        "active": true,
+        "held_vk": [
+          1
+        ]
+      },
+      "clock_history_eligible": true,
+      "history_saved": [
+        {
+          "id": "file-pts-13721ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0028.png",
+          "image_sha256": "78c62f352599b748c28a571b8b01eee11f0995b3f4347ce4adbbf4b56af42959",
+          "file_pts_num": 13721,
+          "file_pts_den": 1000,
+          "callback_packet_index": 1645,
+          "callback_pts": 1644,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115384205347601,
+          "composition_t": 13.699999452,
+          "mux_residual_ms": 0.0
+        },
+        {
+          "id": "file-pts-13821ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0029.png",
+          "image_sha256": "f3e09e54de7f150893e3b03f6bec63a143e1ec207b249d2a802684a8886a7539",
+          "file_pts_num": 13821,
+          "file_pts_den": 1000,
+          "callback_packet_index": 1657,
+          "callback_pts": 1656,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115384305347597,
+          "composition_t": 13.799999448,
+          "mux_residual_ms": 0.0
+        },
+        {
+          "id": "file-pts-13921ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0030.png",
+          "image_sha256": "3a7f19e8d7564869dbe2c51f8ace68b84aa8a7bdb644e2fc82629d0992fb413c",
+          "file_pts_num": 13921,
+          "file_pts_den": 1000,
+          "callback_packet_index": 1669,
+          "callback_pts": 1668,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115384405347593,
+          "composition_t": 13.899999444,
+          "mux_residual_ms": 0.0
+        },
+        {
+          "id": "file-pts-14021ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0031.png",
+          "image_sha256": "d1f18e0042188638a30ff18d63913bdb23c7914676dc326a7789f3453e0c5c74",
+          "file_pts_num": 14021,
+          "file_pts_den": 1000,
+          "callback_packet_index": 1678,
+          "callback_pts": 1680,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115384505347589,
+          "composition_t": 13.99999944,
+          "mux_residual_ms": 0.0
+        },
+        {
+          "id": "file-pts-14121ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0032.png",
+          "image_sha256": "bf515dc341c3aa087620dff701ed90f68600d9a8676c5b7b10f0fe4461716441",
+          "file_pts_num": 14121,
+          "file_pts_den": 1000,
+          "callback_packet_index": 1693,
+          "callback_pts": 1692,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115384605347585,
+          "composition_t": 14.099999436,
+          "mux_residual_ms": 0.0
+        }
+      ],
+      "actual_history_t": [
+        13.699999452,
+        13.799999448,
+        13.899999444,
+        13.99999944,
+        14.099999436
+      ],
+      "actual_available_t": [
+        13.699999452,
+        13.799999448,
+        13.899999444,
+        13.99999944,
+        14.099999436
+      ],
+      "saved_continuous_ammo_history": [
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      "saved_continuous_target": {
+        "cls": "enemy",
+        "bbox": [
+          1093.0,
+          729.0,
+          1287.0,
+          1019.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": true,
+        "track": 3,
+        "plate": true
+      },
+      "saved_continuous_detections": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1093.0,
+            729.0,
+            1287.0,
+            1019.0
+          ],
+          "conf": 0.9,
+          "distance": null,
+          "tagged": true,
+          "track": 3,
+          "plate": true
+        }
+      ],
+      "saved_continuous_coasting": [],
+      "reset_window_evidence": "accepted existing row",
+      "existing_request_disposition": "start",
+      "audit_semantic_label": null,
+      "prior_up_requirement": "received raw release available",
+      "new_anchor_inspection": "No new image inspection; existing accepted/adjudicated request evidence reused."
+    },
+    {
+      "grid_index": 154,
+      "anchor_t": 15.4,
+      "horizon_end_t": 15.5,
+      "received_t": 15.435013151,
+      "raw_event": {
+        "seq": 3000,
+        "t_ns": 115385940361300,
+        "type": "mouse",
+        "device": 65618,
+        "dx": 3,
+        "dy": -2,
+        "motion_flags": 0,
+        "button_flags": 4,
+        "wheel_data": 0,
+        "relative": true,
+        "buttons_down": [
+          2
+        ],
+        "buttons_up": [],
+        "wheel_vertical": 0,
+        "wheel_horizontal": 0
+      },
+      "prior_rmb_held": false,
+      "fresh_rise_under_received_continuity": true,
+      "preceding_raw_up": {
+        "seq": 2791,
+        "t_ns": 115384843336500,
+        "type": "mouse",
+        "device": 65618,
+        "dx": 0,
+        "dy": 0,
+        "motion_flags": 0,
+        "button_flags": 8,
+        "wheel_data": 0,
+        "relative": true,
+        "buttons_down": [],
+        "buttons_up": [
+          2
+        ],
+        "wheel_vertical": 0,
+        "wheel_horizontal": 0
+      },
+      "focus_dependency": {
+        "seq": 37,
+        "t_ns": 115370927267500,
+        "type": "focus",
+        "active": true,
+        "held_vk": [
+          1
+        ]
+      },
+      "clock_history_eligible": true,
+      "history_saved": [
+        {
+          "id": "file-pts-15021ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0041.png",
+          "image_sha256": "ca7a074ba9f8db8ddb6619f42c55ae0f44301ccb0949c1ae00f2ed5df5d0b94b",
+          "file_pts_num": 15021,
+          "file_pts_den": 1000,
+          "callback_packet_index": 1801,
+          "callback_pts": 1800,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115385505347549,
+          "composition_t": 14.9999994,
+          "mux_residual_ms": 0.0
+        },
+        {
+          "id": "file-pts-15121ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0042.png",
+          "image_sha256": "0610b4838a105847baa461f18e4087c697a11e5e4291db98300c386d0d2a48db",
+          "file_pts_num": 15121,
+          "file_pts_den": 1000,
+          "callback_packet_index": 1813,
+          "callback_pts": 1812,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115385605347545,
+          "composition_t": 15.099999396,
+          "mux_residual_ms": 0.0
+        },
+        {
+          "id": "file-pts-15221ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0043.png",
+          "image_sha256": "a50712673cb2a59a72aadedede37af4c048c6688e1bf1c7503aaaaea6ebb79be",
+          "file_pts_num": 15221,
+          "file_pts_den": 1000,
+          "callback_packet_index": 1825,
+          "callback_pts": 1824,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115385705347541,
+          "composition_t": 15.199999392,
+          "mux_residual_ms": 0.0
+        },
+        {
+          "id": "file-pts-15321ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0044.png",
+          "image_sha256": "147c60ea62fa63d40b7d86bc067b164e9b561d224120e72ef386863d55693c8f",
+          "file_pts_num": 15321,
+          "file_pts_den": 1000,
+          "callback_packet_index": 1837,
+          "callback_pts": 1836,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115385805347537,
+          "composition_t": 15.299999388,
+          "mux_residual_ms": 0.0
+        },
+        {
+          "id": "file-pts-15421ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0045.png",
+          "image_sha256": "3a98ca1631708e4bbac4fec306b412f14a9b9edbb21b842d1e30d1c59271ac2c",
+          "file_pts_num": 15421,
+          "file_pts_den": 1000,
+          "callback_packet_index": 1849,
+          "callback_pts": 1848,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115385905347533,
+          "composition_t": 15.399999384,
+          "mux_residual_ms": 0.0
+        }
+      ],
+      "actual_history_t": [
+        14.9999994,
+        15.099999396,
+        15.199999392,
+        15.299999388,
+        15.399999384
+      ],
+      "actual_available_t": [
+        14.9999994,
+        15.099999396,
+        15.199999392,
+        15.299999388,
+        15.399999384
+      ],
+      "saved_continuous_ammo_history": [
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      "saved_continuous_target": null,
+      "saved_continuous_detections": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            2495.0,
+            15.0,
+            2533.0,
+            49.0
+          ],
+          "conf": 0.9,
+          "distance": null,
+          "tagged": null,
+          "track": 6,
+          "plate": null
+        }
+      ],
+      "saved_continuous_coasting": [
+        3,
+        5
+      ],
+      "reset_window_evidence": "unknown; no saved reset window in selected candidate rows",
+      "existing_request_disposition": "unknown",
+      "audit_semantic_label": null,
+      "prior_up_requirement": "received raw release available",
+      "new_anchor_inspection": "Native saved anchor names Luna Snow; ammo3; player airborne above her. Saved detector has only far upper-right fragment, not visible Luna; selector null."
+    },
+    {
+      "grid_index": 158,
+      "anchor_t": 15.8,
+      "horizon_end_t": 15.9,
+      "received_t": 15.876104451,
+      "raw_event": {
+        "seq": 3117,
+        "t_ns": 115386381452600,
+        "type": "mouse",
+        "device": 65618,
+        "dx": 1,
+        "dy": 0,
+        "motion_flags": 0,
+        "button_flags": 4,
+        "wheel_data": 0,
+        "relative": true,
+        "buttons_down": [
+          2
+        ],
+        "buttons_up": [],
+        "wheel_vertical": 0,
+        "wheel_horizontal": 0
+      },
+      "prior_rmb_held": false,
+      "fresh_rise_under_received_continuity": true,
+      "preceding_raw_up": {
+        "seq": 3043,
+        "t_ns": 115386101403600,
+        "type": "mouse",
+        "device": 65618,
+        "dx": -1,
+        "dy": 0,
+        "motion_flags": 0,
+        "button_flags": 8,
+        "wheel_data": 0,
+        "relative": true,
+        "buttons_down": [],
+        "buttons_up": [
+          2
+        ],
+        "wheel_vertical": 0,
+        "wheel_horizontal": 0
+      },
+      "focus_dependency": {
+        "seq": 37,
+        "t_ns": 115370927267500,
+        "type": "focus",
+        "active": true,
+        "held_vk": [
+          1
+        ]
+      },
+      "clock_history_eligible": true,
+      "history_saved": [
+        {
+          "id": "file-pts-15421ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0045.png",
+          "image_sha256": "3a98ca1631708e4bbac4fec306b412f14a9b9edbb21b842d1e30d1c59271ac2c",
+          "file_pts_num": 15421,
+          "file_pts_den": 1000,
+          "callback_packet_index": 1849,
+          "callback_pts": 1848,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115385905347533,
+          "composition_t": 15.399999384,
+          "mux_residual_ms": 0.0
+        },
+        {
+          "id": "file-pts-15521ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0046.png",
+          "image_sha256": "34af6713631b874c226e3d8466976d6bfa5a20748ce565953e98437302a3018f",
+          "file_pts_num": 15521,
+          "file_pts_den": 1000,
+          "callback_packet_index": 1861,
+          "callback_pts": 1860,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115386005347529,
+          "composition_t": 15.49999938,
+          "mux_residual_ms": 0.0
+        },
+        {
+          "id": "file-pts-15621ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0047.png",
+          "image_sha256": "f4d928f667bf5b440a8b3d3a007671fb1cc669cd11976268e2175f2e01868dee",
+          "file_pts_num": 15621,
+          "file_pts_den": 1000,
+          "callback_packet_index": 1873,
+          "callback_pts": 1872,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115386105347525,
+          "composition_t": 15.599999376,
+          "mux_residual_ms": 0.0
+        },
+        {
+          "id": "file-pts-15721ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0048.png",
+          "image_sha256": "8c31f35a2451aa32dda2225f408689d4a44d9025ad8add311940e6cdf9bb696c",
+          "file_pts_num": 15721,
+          "file_pts_den": 1000,
+          "callback_packet_index": 1885,
+          "callback_pts": 1884,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115386205347521,
+          "composition_t": 15.699999372,
+          "mux_residual_ms": 0.0
+        },
+        {
+          "id": "file-pts-15821ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0049.png",
+          "image_sha256": "a5d4771617935ae4ea9c7623fd2d9a2295d35e3298bb33f252c03c77e73dc8be",
+          "file_pts_num": 15821,
+          "file_pts_den": 1000,
+          "callback_packet_index": 1897,
+          "callback_pts": 1896,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115386305347517,
+          "composition_t": 15.799999368,
+          "mux_residual_ms": 0.0
+        }
+      ],
+      "actual_history_t": [
+        15.399999384,
+        15.49999938,
+        15.599999376,
+        15.699999372,
+        15.799999368
+      ],
+      "actual_available_t": [
+        15.399999384,
+        15.49999938,
+        15.599999376,
+        15.699999372,
+        15.799999368
+      ],
+      "saved_continuous_ammo_history": [
+        3,
+        3,
+        2,
+        2,
+        null
+      ],
+      "saved_continuous_target": null,
+      "saved_continuous_detections": [],
+      "saved_continuous_coasting": [
+        3,
+        5
+      ],
+      "reset_window_evidence": "unknown; no saved reset window in selected candidate rows",
+      "existing_request_disposition": "unknown",
+      "audit_semantic_label": null,
+      "prior_up_requirement": "received raw release available",
+      "new_anchor_inspection": "Native saved anchor shows Luna KO/killfeed and ammo2; causal reader ammo unknown remains unknown. No selected target; do not infer valid cast from another RMB rise."
+    },
+    {
+      "grid_index": 174,
+      "anchor_t": 17.4,
+      "horizon_end_t": 17.5,
+      "received_t": 17.455033451,
+      "raw_event": {
+        "seq": 3451,
+        "t_ns": 115387960381600,
+        "type": "mouse",
+        "device": 65618,
+        "dx": 0,
+        "dy": 0,
+        "motion_flags": 0,
+        "button_flags": 4,
+        "wheel_data": 0,
+        "relative": true,
+        "buttons_down": [
+          2
+        ],
+        "buttons_up": [],
+        "wheel_vertical": 0,
+        "wheel_horizontal": 0
+      },
+      "prior_rmb_held": false,
+      "fresh_rise_under_received_continuity": true,
+      "preceding_raw_up": {
+        "seq": 3152,
+        "t_ns": 115386513431900,
+        "type": "mouse",
+        "device": 65618,
+        "dx": 1,
+        "dy": -2,
+        "motion_flags": 0,
+        "button_flags": 8,
+        "wheel_data": 0,
+        "relative": true,
+        "buttons_down": [],
+        "buttons_up": [
+          2
+        ],
+        "wheel_vertical": 0,
+        "wheel_horizontal": 0
+      },
+      "focus_dependency": {
+        "seq": 37,
+        "t_ns": 115370927267500,
+        "type": "focus",
+        "active": true,
+        "held_vk": [
+          1
+        ]
+      },
+      "clock_history_eligible": true,
+      "history_saved": [
+        {
+          "id": "file-pts-17021ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0061.png",
+          "image_sha256": "0eae4df21b71314e0e56154c3dc9d0c7fd651201d7529c687e1cda3cb7c2029a",
+          "file_pts_num": 17021,
+          "file_pts_den": 1000,
+          "callback_packet_index": 2038,
+          "callback_pts": 2040,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115387505347469,
+          "composition_t": 16.99999932,
+          "mux_residual_ms": 0.0
+        },
+        {
+          "id": "file-pts-17121ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0062.png",
+          "image_sha256": "692221a5ce56a3064953fc97106e875ece5e0661d3e16b57874e4bbb5ae48d99",
+          "file_pts_num": 17121,
+          "file_pts_den": 1000,
+          "callback_packet_index": 2050,
+          "callback_pts": 2052,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115387605347465,
+          "composition_t": 17.099999316,
+          "mux_residual_ms": 0.0
+        },
+        {
+          "id": "file-pts-17221ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0063.png",
+          "image_sha256": "a02052faf4a14445177c3476ea4498f1bb3e42c8ce0a5954671968f07e6f97a6",
+          "file_pts_num": 17221,
+          "file_pts_den": 1000,
+          "callback_packet_index": 2064,
+          "callback_pts": 2064,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115387705347461,
+          "composition_t": 17.199999312,
+          "mux_residual_ms": 0.0
+        },
+        {
+          "id": "file-pts-17321ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0064.png",
+          "image_sha256": "fac6adb937a2968c616193eae5823a0d506ff66822b0ed150cec590046022b06",
+          "file_pts_num": 17321,
+          "file_pts_den": 1000,
+          "callback_packet_index": 2074,
+          "callback_pts": 2076,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115387805347457,
+          "composition_t": 17.299999308,
+          "mux_residual_ms": 0.0
+        },
+        {
+          "id": "file-pts-17421ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0065.png",
+          "image_sha256": "5e2c6101c54d358e86abdde7e93610692422cb032c864fcfa75f91b93f242d8a",
+          "file_pts_num": 17421,
+          "file_pts_den": 1000,
+          "callback_packet_index": 2089,
+          "callback_pts": 2088,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115387905347453,
+          "composition_t": 17.399999304,
+          "mux_residual_ms": 0.0
+        }
+      ],
+      "actual_history_t": [
+        16.99999932,
+        17.099999316,
+        17.199999312,
+        17.299999308,
+        17.399999304
+      ],
+      "actual_available_t": [
+        16.99999932,
+        17.099999316,
+        17.199999312,
+        17.299999308,
+        17.399999304
+      ],
+      "saved_continuous_ammo_history": [
+        null,
+        2,
+        2,
+        2,
+        2
+      ],
+      "saved_continuous_target": null,
+      "saved_continuous_detections": [],
+      "saved_continuous_coasting": [
+        11
+      ],
+      "reset_window_evidence": "unknown; no saved reset window in selected candidate rows",
+      "existing_request_disposition": "unknown",
+      "audit_semantic_label": null,
+      "prior_up_requirement": "received raw release available",
+      "new_anchor_inspection": "Native saved anchor shows swing/fall away from downed Luna toward distant Galacta, ammo2. No selected target; recipient/association unknown."
+    },
+    {
+      "grid_index": 186,
+      "anchor_t": 18.6,
+      "horizon_end_t": 18.7,
+      "received_t": 18.653031751,
+      "raw_event": {
+        "seq": 3671,
+        "t_ns": 115389158379900,
+        "type": "mouse",
+        "device": 65618,
+        "dx": 2,
+        "dy": 1,
+        "motion_flags": 0,
+        "button_flags": 4,
+        "wheel_data": 0,
+        "relative": true,
+        "buttons_down": [
+          2
+        ],
+        "buttons_up": [],
+        "wheel_vertical": 0,
+        "wheel_horizontal": 0
+      },
+      "prior_rmb_held": false,
+      "fresh_rise_under_received_continuity": true,
+      "preceding_raw_up": {
+        "seq": 3470,
+        "t_ns": 115388090356000,
+        "type": "mouse",
+        "device": 65618,
+        "dx": 0,
+        "dy": 0,
+        "motion_flags": 0,
+        "button_flags": 8,
+        "wheel_data": 0,
+        "relative": true,
+        "buttons_down": [],
+        "buttons_up": [
+          2
+        ],
+        "wheel_vertical": 0,
+        "wheel_horizontal": 0
+      },
+      "focus_dependency": {
+        "seq": 37,
+        "t_ns": 115370927267500,
+        "type": "focus",
+        "active": true,
+        "held_vk": [
+          1
+        ]
+      },
+      "clock_history_eligible": true,
+      "history_saved": [
+        {
+          "id": "file-pts-18221ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0073.png",
+          "image_sha256": "d46b6e22d23c6fc6eb33a24e3a3c906a66a165c1b7140aedd97da68530ab6bca",
+          "file_pts_num": 18221,
+          "file_pts_den": 1000,
+          "callback_packet_index": 2184,
+          "callback_pts": 2184,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115388705347421,
+          "composition_t": 18.199999272,
+          "mux_residual_ms": 0.0
+        },
+        {
+          "id": "file-pts-18321ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0074.png",
+          "image_sha256": "5a0be85eeb8d3d4c27a23fff3107f06f7e7d8a143f042c3f0b25b23567e42035",
+          "file_pts_num": 18321,
+          "file_pts_den": 1000,
+          "callback_packet_index": 2194,
+          "callback_pts": 2196,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115388805347417,
+          "composition_t": 18.299999268,
+          "mux_residual_ms": 0.0
+        },
+        {
+          "id": "file-pts-18421ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0075.png",
+          "image_sha256": "54280122fc65eac511eba86e7db407228e5edf34e5e0bbef8e6ecb428d3af2ee",
+          "file_pts_num": 18421,
+          "file_pts_den": 1000,
+          "callback_packet_index": 2206,
+          "callback_pts": 2208,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115388905347413,
+          "composition_t": 18.399999264,
+          "mux_residual_ms": 0.0
+        },
+        {
+          "id": "file-pts-18521ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0076.png",
+          "image_sha256": "b74e99d61c4ac068fb7a3333f550b9681fd85b04f303fd66dd0903c96f6fe997",
+          "file_pts_num": 18521,
+          "file_pts_den": 1000,
+          "callback_packet_index": 2218,
+          "callback_pts": 2220,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115389005347409,
+          "composition_t": 18.49999926,
+          "mux_residual_ms": 0.0
+        },
+        {
+          "id": "file-pts-18621ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0077.png",
+          "image_sha256": "ed4b8236747125c6d0a59bde7650188423e87561d220be2eb9c1a9c396fdf051",
+          "file_pts_num": 18621,
+          "file_pts_den": 1000,
+          "callback_packet_index": 2230,
+          "callback_pts": 2232,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115389105347405,
+          "composition_t": 18.599999256,
+          "mux_residual_ms": 0.0
+        }
+      ],
+      "actual_history_t": [
+        18.199999272,
+        18.299999268,
+        18.399999264,
+        18.49999926,
+        18.599999256
+      ],
+      "actual_available_t": [
+        18.199999272,
+        18.299999268,
+        18.399999264,
+        18.49999926,
+        18.599999256
+      ],
+      "saved_continuous_ammo_history": [
+        1,
+        1,
+        null,
+        null,
+        null
+      ],
+      "saved_continuous_target": null,
+      "saved_continuous_detections": [],
+      "saved_continuous_coasting": [
+        19
+      ],
+      "reset_window_evidence": "unknown; no saved reset window in selected candidate rows",
+      "existing_request_disposition": "unknown",
+      "audit_semantic_label": null,
+      "prior_up_requirement": "received raw release available",
+      "new_anchor_inspection": "Native saved anchor shows two nearby Galacta, nearer body partly occluded by player; visual ammo2 while saved reader unknown. No detections/selected target; neither future recipient nor reset target established."
+    },
+    {
+      "grid_index": 198,
+      "anchor_t": 19.8,
+      "horizon_end_t": 19.9,
+      "received_t": 19.875987851,
+      "raw_event": {
+        "seq": 3983,
+        "t_ns": 115390381336000,
+        "type": "mouse",
+        "device": 65618,
+        "dx": 0,
+        "dy": -1,
+        "motion_flags": 0,
+        "button_flags": 4,
+        "wheel_data": 0,
+        "relative": true,
+        "buttons_down": [
+          2
+        ],
+        "buttons_up": [],
+        "wheel_vertical": 0,
+        "wheel_horizontal": 0
+      },
+      "prior_rmb_held": false,
+      "fresh_rise_under_received_continuity": true,
+      "preceding_raw_up": {
+        "seq": 3718,
+        "t_ns": 115389339383000,
+        "type": "mouse",
+        "device": 65618,
+        "dx": 5,
+        "dy": -1,
+        "motion_flags": 0,
+        "button_flags": 8,
+        "wheel_data": 0,
+        "relative": true,
+        "buttons_down": [],
+        "buttons_up": [
+          2
+        ],
+        "wheel_vertical": 0,
+        "wheel_horizontal": 0
+      },
+      "focus_dependency": {
+        "seq": 37,
+        "t_ns": 115370927267500,
+        "type": "focus",
+        "active": true,
+        "held_vk": [
+          1
+        ]
+      },
+      "clock_history_eligible": true,
+      "history_saved": [
+        {
+          "id": "file-pts-19421ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0085.png",
+          "image_sha256": "a475632ddfbe4c70976ff884270511eed1ff8975cd2a0a6c747245940c12b7cb",
+          "file_pts_num": 19421,
+          "file_pts_den": 1000,
+          "callback_packet_index": 2329,
+          "callback_pts": 2328,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115389905347373,
+          "composition_t": 19.399999224,
+          "mux_residual_ms": 0.0
+        },
+        {
+          "id": "file-pts-19521ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0086.png",
+          "image_sha256": "1eeb0167b7e3d8c73383b60ffbe26e7f1fbd105fea96f502653f134e68dae66e",
+          "file_pts_num": 19521,
+          "file_pts_den": 1000,
+          "callback_packet_index": 2341,
+          "callback_pts": 2340,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115390005347369,
+          "composition_t": 19.49999922,
+          "mux_residual_ms": 0.0
+        },
+        {
+          "id": "file-pts-19621ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0087.png",
+          "image_sha256": "c62f578ac6f82354c3d38fea04970e236d6c9ce38344476cb55ac3c9673c3320",
+          "file_pts_num": 19621,
+          "file_pts_den": 1000,
+          "callback_packet_index": 2353,
+          "callback_pts": 2352,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115390105347365,
+          "composition_t": 19.599999216,
+          "mux_residual_ms": 0.0
+        },
+        {
+          "id": "file-pts-19721ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0088.png",
+          "image_sha256": "718183798033c975647a7a81923370f860f366a78d061e4649c07d5e5fe9606a",
+          "file_pts_num": 19721,
+          "file_pts_den": 1000,
+          "callback_packet_index": 2365,
+          "callback_pts": 2364,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115390205347361,
+          "composition_t": 19.699999212,
+          "mux_residual_ms": 0.0
+        },
+        {
+          "id": "file-pts-19821ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0089.png",
+          "image_sha256": "5fc3db35988afa268dd5e230d3b5c4e321a98bb6a36b497f735bcc041e02ac26",
+          "file_pts_num": 19821,
+          "file_pts_den": 1000,
+          "callback_packet_index": 2377,
+          "callback_pts": 2376,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115390305347357,
+          "composition_t": 19.799999208,
+          "mux_residual_ms": 0.0
+        }
+      ],
+      "actual_history_t": [
+        19.399999224,
+        19.49999922,
+        19.599999216,
+        19.699999212,
+        19.799999208
+      ],
+      "actual_available_t": [
+        19.399999224,
+        19.49999922,
+        19.599999216,
+        19.699999212,
+        19.799999208
+      ],
+      "saved_continuous_ammo_history": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "saved_continuous_target": {
+        "cls": "enemy",
+        "bbox": [
+          1525.0,
+          261.0,
+          1593.0,
+          343.0
+        ],
+        "conf": 0.9,
+        "distance": null,
+        "tagged": false,
+        "track": 28,
+        "plate": null
+      },
+      "saved_continuous_detections": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1151.0,
+            585.0,
+            1276.0,
+            669.0
+          ],
+          "conf": 0.9,
+          "distance": null,
+          "tagged": false,
+          "track": 30,
+          "plate": false
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            1525.0,
+            261.0,
+            1593.0,
+            343.0
+          ],
+          "conf": 0.9,
+          "distance": null,
+          "tagged": false,
+          "track": 28,
+          "plate": null
+        }
+      ],
+      "saved_continuous_coasting": [],
+      "reset_window_evidence": "accepted existing row",
+      "existing_request_disposition": "unknown",
+      "audit_semantic_label": null,
+      "prior_up_requirement": "received raw release available",
+      "new_anchor_inspection": "No new image inspection; existing accepted/adjudicated request evidence reused."
+    },
+    {
+      "grid_index": 211,
+      "anchor_t": 21.1,
+      "horizon_end_t": 21.2,
+      "received_t": 21.156998051,
+      "raw_event": {
+        "seq": 4296,
+        "t_ns": 115391662346200,
+        "type": "mouse",
+        "device": 65618,
+        "dx": -1,
+        "dy": 0,
+        "motion_flags": 0,
+        "button_flags": 4,
+        "wheel_data": 0,
+        "relative": true,
+        "buttons_down": [
+          2
+        ],
+        "buttons_up": [],
+        "wheel_vertical": 0,
+        "wheel_horizontal": 0
+      },
+      "prior_rmb_held": false,
+      "fresh_rise_under_received_continuity": true,
+      "preceding_raw_up": {
+        "seq": 4018,
+        "t_ns": 115390521444300,
+        "type": "mouse",
+        "device": 65618,
+        "dx": 1,
+        "dy": 0,
+        "motion_flags": 0,
+        "button_flags": 8,
+        "wheel_data": 0,
+        "relative": true,
+        "buttons_down": [],
+        "buttons_up": [
+          2
+        ],
+        "wheel_vertical": 0,
+        "wheel_horizontal": 0
+      },
+      "focus_dependency": {
+        "seq": 37,
+        "t_ns": 115370927267500,
+        "type": "focus",
+        "active": true,
+        "held_vk": [
+          1
+        ]
+      },
+      "clock_history_eligible": true,
+      "history_saved": [
+        {
+          "id": "file-pts-20721ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0098.png",
+          "image_sha256": "dfe44df7e3ca2420ca82f39b716ec43bb17c9f8adb6ded7169633e26dce62e1a",
+          "file_pts_num": 20721,
+          "file_pts_den": 1000,
+          "callback_packet_index": 2485,
+          "callback_pts": 2484,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115391205347321,
+          "composition_t": 20.699999172,
+          "mux_residual_ms": 0.0
+        },
+        {
+          "id": "file-pts-20821ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0099.png",
+          "image_sha256": "0504546681877ea779abfb016de08b99fed507aefda6a9682be71d869f07fb4d",
+          "file_pts_num": 20821,
+          "file_pts_den": 1000,
+          "callback_packet_index": 2497,
+          "callback_pts": 2496,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115391305347317,
+          "composition_t": 20.799999168,
+          "mux_residual_ms": 0.0
+        },
+        {
+          "id": "file-pts-20921ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0100.png",
+          "image_sha256": "cbd6b9ddfb9150074755b4a393a423aed87dd692025e7981830c61f58ccacc3f",
+          "file_pts_num": 20921,
+          "file_pts_den": 1000,
+          "callback_packet_index": 2506,
+          "callback_pts": 2508,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115391405347313,
+          "composition_t": 20.899999164,
+          "mux_residual_ms": 0.0
+        },
+        {
+          "id": "file-pts-21021ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0101.png",
+          "image_sha256": "df6f58ace722ac1956e01592c99f0f3010313a042d28d8c22e86dbc1bfef2831",
+          "file_pts_num": 21021,
+          "file_pts_den": 1000,
+          "callback_packet_index": 2518,
+          "callback_pts": 2520,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115391505347309,
+          "composition_t": 20.99999916,
+          "mux_residual_ms": 0.0
+        },
+        {
+          "id": "file-pts-21121ms",
+          "image": "data/human/skill-event-candidates/032454-support-v2/anchors/frame-0102.png",
+          "image_sha256": "7642c04548ab5f14e0375530770c2280248c54f8d5da6203d98887d19b79615c",
+          "file_pts_num": 21121,
+          "file_pts_den": 1000,
+          "callback_packet_index": 2530,
+          "callback_pts": 2532,
+          "callback_timebase": [
+            1,
+            120
+          ],
+          "composition_ns": 115391605347305,
+          "composition_t": 21.099999156,
+          "mux_residual_ms": 0.0
+        }
+      ],
+      "actual_history_t": [
+        20.699999172,
+        20.799999168,
+        20.899999164,
+        20.99999916,
+        21.099999156
+      ],
+      "actual_available_t": [
+        20.699999172,
+        20.799999168,
+        20.899999164,
+        20.99999916,
+        21.099999156
+      ],
+      "saved_continuous_ammo_history": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "saved_continuous_target": null,
+      "saved_continuous_detections": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1019.0,
+            301.0,
+            1107.0,
+            336.0
+          ],
+          "conf": 0.9,
+          "distance": null,
+          "tagged": false,
+          "track": 30,
+          "plate": false
+        }
+      ],
+      "saved_continuous_coasting": [
+        28
+      ],
+      "reset_window_evidence": "unknown; no saved reset window in selected candidate rows",
+      "existing_request_disposition": "unknown",
+      "audit_semantic_label": null,
+      "prior_up_requirement": "received raw release available",
+      "new_anchor_inspection": "Native saved anchor shows falling below ledge, ammo1, distant Galacta/plates above. Saved selector null despite one small detection. Recipient/association unknown."
+    }
+  ],
+  "additional_clock_eligible_bins": [
+    122,
+    131,
+    154,
+    158,
+    174,
+    186,
+    211
+  ],
+  "additional_semantically_established_requests": 0,
+  "full_ammo_result": "n122 is the earliest rise, all five saved causal ammo values are5 and history11.799999528..12.199999512 is fully inside gameplay. It does NOT precede complete history. No target selected in saved continuous replay; no prior received raw up, only focus37 up snapshot. Not recoverable as an unchanged accepted-contract positive from present evidence.",
+  "limits": [
+    "Fresh received RMB rises are locators, not web request labels.",
+    "Saved continuous replay outputs are not substituted for accepted reset-window features.",
+    "Seven saved anchors inspected; no new video decode, inference, policy imports, training or reset replay.",
+    "Game telemetry packet loss is not recorder loss; no dense cast progression audited here.",
+    "No full-ammo Galacta target-agreed request is established. All unknowns retained."
+  ],
+  "minimal_followup_if_root_authorizes": "First resolve causal target eligibility from existing five saved frames only: reset-window replay for n154 (visible Luna) and/or n211 (Galacta region), preserving null/mismatched selections. For Galacta locator n186, saved anchor detector is empty, so no basis to promise recovery. Only after an actual same-target causal selection is established would bounded native cast association inspection be useful: n154 file15.421..15.721 or n211 file21.121..21.471, including raw overlap/releases. These spans are proposed followup, not inspected/authorized here. No need to decode missing history; all five saved images already exist. n122 additionally lacks the existing schema-required preceding raw-up event, which footage cannot supply."
+}
