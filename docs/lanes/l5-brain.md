@@ -99,6 +99,117 @@ Rules the reflex controller (L4) can rely on:
   a guide's claim, unmeasured). Every other threshold at the top of `brain.py` is a
   labelled guess to tune by replaying L1 footage.
 
+## Observed option status (VUH-1315): design, 2026-09-23
+
+**Design only, awaiting the lead's check; nothing implemented.** Today `policy` commits `Combo`, `Pull`, `WebStrike` and
+`SwingTo` with a hold of 3.0 / 0.8 / 0.8 / 1.2 s from the decision, and `gate` repeats the intent until the hold lapses or
+`_hold_stands` finds its own target gone. Here those four intents become **options** whose end is decided from observations,
+and each constant becomes the option's named upper bound. `Engage`, `Search`, `Idle` and `Disengage` are re-decided every
+tick and are not options; the retreat already ends on evidence (hp read >= 60%) under its 6 s cap.
+
+**Structure, in `brain.py`.** One function decides status; `gate` repeats the intent only while it reads `running`.
+
+```python
+@dataclass(frozen=True)
+class Evidence:
+    observation: str   # ko_feed | arrival | track_lost | released | retreat | superseded | upper_bound
+    t: float           # State.t of the State whose reading decided it
+    detail: str        # e.g. "feed False 24.850, True 24.957, 25.075; victim not read"
+
+@dataclass(frozen=True)
+class OptionStatus:
+    intent: Intent
+    start_t: float                     # State.t of the decision that committed it
+    bound_t: float                     # start_t + OPTIONS[kind].max_s
+    status: str = "running"            # running | completed | failed | interrupted
+    evidence: Evidence | None = None   # what ended it
+    waiting_on: tuple[str, ...] = ()   # while running: completion observations unreadable on the latest State
+```
+
+`Memory.option` replaces `Memory.hold_until` and holds the latest option's status, running or ended. `commit(memory, intent, t)`
+starts one for an option kind, with its bound from the one table `OPTIONS` (kind -> `max_s`, completion observations, source).
+`option_status(state, memory)` is the only place that moves it. `jev.adopt` and `AsyncJev`'s launch guard read the same
+table and field; `jev.HOLD_S` goes.
+
+**Evidence, checked in this order on each decision State; the first that holds decides.**
+
+| Option | completed | interrupted | failed | Upper bound: constant, value, source |
+|---|---|---|---|---|
+| `Combo(burst)` | KO: kill-feed onset | retreat; own target lost or released (today's `_hold_stands`, thresholds unchanged); superseded by another commit | bound reached, the kill feed read, no onset | `BURST_MAX_S` 3.0 s. Historical: a guide's "under 3 s", unverified. Measured: the controller's burst sequence lasts 3.032 s from its first press (`Cal`; plaza30 armed 22.668, ended 25.700); burst trial 0's KO showed 1.64 s after its LT |
+| `WebStrike` | KO; arrival: the held target's own box on this State is `near` by `range_of`, the ruler that makes the next choice `Engage` | same | bound reached, the held target measured, not near | `STRIKE_MAX_S` 0.8 s. Measured once: RB to arrival 0.65-0.86 s from ~12 m (burst trial 0, l4-controller.md). The bound runs from the decision, before arming, so it is tighter than that; kept, not retuned |
+| `Pull` | KO; arrival: the target pulled into near | same | as `WebStrike` | `PULL_MAX_S` 0.8 s. Historical guess (250 ms flight at 20 m plus the drag); unmeasured |
+| `SwingTo` | nothing observable: no anchor producer, arrival unmeasured | retreat; superseded | none | `SWING_MAX_S` 1.2 s. Historical guess |
+
+At the bound, `failed` needs the completion observation readable on that State. Otherwise the status is `interrupted`, evidence
+`upper_bound`, and the detail names what could not be read: reader failure stays an interruption, as the reward contract in
+`learning-plan.md` requires. Every `SwingTo` therefore ends `interrupted`.
+
+**The KO.** A new `State.kill_feed: bool | None` (a kill-feed line on screen; `None` = not read) is filled on the decision
+worker by `perception.scoreboard.is_killfeed` through a new `Perception.killfeed`. The brain keeps the last False read and
+the True reads since it; `None` neither counts nor resets. An onset is confirmed on the second True read after a False, the
+event extractor's `killfeed` debounce. The evidence carries the interval (last False, first True), because the feed's display
+delay is unmeasured. In the range every line is ours; which bot died is not read.
+
+**The controller.** Today a playing primitive runs to its fixed end across intent changes, and only `Idle` and `Disengage`
+cut it. Proposed: a `completed` option stops its own primitive through a new `stop=` on `Controller.step` (legacy path only).
+It clears `seq` only while `played is` that intent and `seq_name` is that intent's primitive, so a repeat is a no-op. `failed`
+and `interrupted` stop nothing, as today. One extension comes from plaza30. There, both brain-chosen bursts lost their option
+to an id change at point blank before the KO: 1 -> 7 at 9.82 s, and 54 -> 66 at 24.46 s, the same bot by eye. Their primitives
+played on. The second KO's feed reads True at 24.957 s (False at 24.850 s), while the burst armed at 22.668 s held RT to 25.61 s
+and tapped LT at 25.65 s. So a confirmed KO also stops **the latest option's** primitive while it still plays, whatever that
+option's status. Track loss alone never stops a primitive. That is the id churn above, and the reason the tracker lane lets a
+cancelled hold's primitive finish.
+
+**Identical where no ending evidence exists.** The bounds keep their values and start at the decision, and the loss
+thresholds are unchanged. A lapsed bound still lets the flicker grace re-issue the intent, as today. On the decision where a
+KO ends an option, the flicker grace is skipped, so the ended burst is not re-issued. A replay of a run recorded without the
+kill-feed bit therefore differs only where arrival fires.
+
+**Range-skill mode.** `RangeSkill` is not an option kind, and `learned_range_skill` commits without a start time. So
+`Memory.option` stays `None` and `gate` returns what it does today. The loop reads the kill feed only outside range-skill
+mode and passes no `stop`. The one byte difference there: logged decision `state` dicts gain `"kill_feed": null`. The proof is
+`tests/test_tracked_body_execution.py`, `tests/test_range_skill_loop.py` and the slot-4 replay
+(`docs/evidence/range-fragment-repair-20260922/run.py`, reasons and pads identical). The `range` brain (`LearnedRangeBrain`,
+through `jev.adopt`) is a legacy intent path and gets options like the scripted brain.
+
+**What stays unknown:**
+
+- **Victim identity.** Designated-target completion still needs VUH-1314's tracks plus feed association.
+- **A second KO while an earlier line still shows.** It makes no onset, so the option runs to its bound. Lines stay up ~4.9 s
+  on plaza30 (13.35-18.23 s with one `None` at 16.16 s; 24.96-29.81 s).
+- **KO time versus display time.**
+- **Arrival at point blank.** The outline runs off the frame and the box coasts. Burst trial 0's arrival box was 168 of
+  720 px, 0.23 < `near_h` 0.325, so arrival would not have fired there.
+- **Casts (HUD cooldown and charge transitions).** They end nothing. In the cooldowns-off regime they never occur, and State
+  carries no regime, so their absence is not evidence. A cast is also not the completion of any of the four options.
+- **SwingTo completion.**
+- **A KO'd bot's downed box being picked again.** That happens today after every hold, and now ~1 s sooner. There is no
+  corpse bar in this change.
+
+**Replays for acceptance 4.** Inputs are read in place, never copied, and their sha256 is recorded.
+
+1. **The issue's burst.** This is `C:\rivals-agent\data\l4\burst`, trial 0 (l4-controller.md, "Durations seen in burst
+   trial 0"). A pad script started it, not the brain. The replay commits the `Combo` through `brain.commit` at its first LT
+   (0.471 s). It then runs the recorded boxes -> Tracker -> brain -> Controller, with the feed read from each saved 720p frame.
+   - Already read: the feed is False through 1.935 s, `None` at 2.034 s and True from 2.111 s. The bot's last box is at 1.935 s.
+   - Expected: `completed` (`ko_feed`) at 2.195 s, with RT released there.
+   - Today, the option runs to 3.47 s and the sequence to 3.48 s.
+2. **plaza30** (`C:\rivals-agent\data\l1\plaza30`). The bursts here are brain-chosen, and the replay uses
+   `postfreeze30_replay.py`'s order, with the feed from the saved native frames.
+   - The first KO is confirmed on the second True read (13.459 s on saved frames). Today, `Combo(7)` is chosen at 13.16 s and
+     no box follows it, so it is never armed and the brain only leaves it at 14.09 s by track loss. Expected: it ends at the KO.
+   - The second KO is confirmed ~25.075 s. Expected: the playing burst stops there instead of at 25.700 s.
+   - Expected: pads identical to today's replay everywhere else.
+
+**For the lead to check:**
+
+- (a) The KO stop of the latest option's primitive after its option was interrupted. Without it, the KO cuts nothing on
+  either plaza30 burst.
+- (b) Bound expiry with unreadable completion reads `interrupted`, not `failed`.
+- (c) No corpse bar in this change.
+- (d) `WebStrike` keeps 0.8 s, although that is tighter than the one measurement.
+- (e) The new `State.kill_feed` field and its loop wiring, since the brain reads only State.
+
 ## Jev
 
 `typesafe/jev-1.13` through OpenRouter. `decide_jev(state, memory)` has `decide`'s
