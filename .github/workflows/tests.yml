@@ -1,4 +1,4 @@
-# Offline suites on every push. No game, no pad, no network in the tests; recordings under data/ are
+# Offline suites on push and pull request. No game, no pad, no network in the tests; recordings under data/ are
 # gitignored, so the tests that read them are xfail(strict=False) here only (.github/ci/missing_data.py).
 name: tests
 
@@ -8,10 +8,15 @@ on:
       - "**"
       - "!docs/lanes/**"
       - "!docs/recording-*.md"
-  workflow_dispatch:
+  pull_request:
+    paths:
+      - "**"
+      - "!docs/lanes/**"
+      - "!docs/recording-*.md"
+  workflow_dispatch:              # the only trigger for stdlib-macos
 
 concurrency:
-  group: tests-${{ github.ref }}
+  group: tests-${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
@@ -22,12 +27,22 @@ env:
   PYTHONDONTWRITEBYTECODE: "1"
 
 jobs:
-  stdlib:
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [windows-latest, macos-latest]
-    runs-on: ${{ matrix.os }}
+  stdlib-windows:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.11"
+      - run: uv run pytest -p missing_data -p no:cacheprovider -q
+
+  # Manual only (Actions > tests > Run workflow). macOS runner minutes bill at 10x on a private repo, and the Mac
+  # already runs this suite before its own fits; run it here when a change touches Mac-side code or before a merge
+  # that the lead wants checked on both platforms.
+  stdlib-macos:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: macos-latest
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
@@ -37,7 +52,7 @@ jobs:
       - run: uv run pytest -p missing_data -p no:cacheprovider -q
 
   perception:
-    runs-on: windows-latest       # the PC runs perception live; add macos-latest here if the Mac replays need it (10x minutes)
+    runs-on: windows-latest       # the PC runs perception live
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
