@@ -1,0 +1,22 @@
+[
+  {
+    "file": "000008.jpg",
+    "observation_t": 8.297541600011755,
+    "sha256": "d8f713a3a87f468aa7b92b782f2f703d7938005c51ba392fe0d860f0bdd2f640"
+  },
+  {
+    "file": "000009.jpg",
+    "observation_t": 8.398411800008034,
+    "sha256": "6fd77bae488389b80ed5bd66f2073399c3ba588144014d1bd7c80bf4448ac31a"
+  },
+  {
+    "file": "000010.jpg",
+    "observation_t": 8.508766600018134,
+    "sha256": "4f2d9c92b37df4e4c178840e92ad4c497710c8ff3a4deb5c8b3d4bef0b356a81"
+  },
+  {
+    "file": "000011.jpg",
+    "observation_t": 8.626205300010042,
+    "sha256": "8333c76a4e3b52fdca770393fbd62b6baf890f7083f32928e180f2c4eb290ccc"
+  }
+]

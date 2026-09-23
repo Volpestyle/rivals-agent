@@ -1,0 +1,30 @@
+{
+  "unique_decisions": 199,
+  "learned_no_new_start": 194,
+  "warmup": 4,
+  "initial_target_unobserved": 1,
+  "start_proposals": 0,
+  "accepted_pulses": 0,
+  "returned_LT": 0,
+  "returned_RT": 0,
+  "offensive_buttons": 0,
+  "returned_send_rows": 1104,
+  "phase_origin": 7.422207499999786,
+  "phase_deadline": 27.422207499999786,
+  "last_send_return": 27.418071299995063,
+  "absolute_deadline": 33.67088760001934,
+  "errors": [],
+  "range_gaps": [],
+  "track_for_all_model_decisions": 1,
+  "original_first_bbox": [
+    1113,
+    674,
+    1523,
+    1200
+  ],
+  "logged_height_ratio": 0.36527777777777776,
+  "model_start_probability_range": [
+    0.022575680166482925,
+    0.19276395440101624
+  ]
+}

@@ -1,0 +1,42 @@
+[
+  {
+    "file": "000001.jpg",
+    "observation_t": 7.557558500004234,
+    "sha256": "748a1e21924f1d1070eb505e1ef29a1e01ad9604ce2ac5e0948e4840bdeeb35a"
+  },
+  {
+    "file": "000005.jpg",
+    "observation_t": 7.982772799994564,
+    "sha256": "5b0b7e4ed528449205eaf884b938715c57d83c73827d59ae222261ac2db5131b"
+  },
+  {
+    "file": "000014.jpg",
+    "observation_t": 8.956157100008568,
+    "sha256": "4cb2d9bbfc03efbc8ecc5a49b2604a8e5bbcaf59ede4ed4331da69fe503d0dfb"
+  },
+  {
+    "file": "000042.jpg",
+    "observation_t": 11.98982660000911,
+    "sha256": "27531a9443a1e963e54eaf3a619b8f0fbfd8d9bf4e9ec25cc7c8217559124c5c"
+  },
+  {
+    "file": "000079.jpg",
+    "observation_t": 15.990495800011558,
+    "sha256": "78cc4b657de1d7275627fedfc9a0705bc08230c803a9aac014411b37e9a1b3ae"
+  },
+  {
+    "file": "000116.jpg",
+    "observation_t": 20.023522200004663,
+    "sha256": "46495964352207a5463e21f21d390deaf3860e366581d957aa5da0bccf9b7523"
+  },
+  {
+    "file": "000153.jpg",
+    "observation_t": 24.01921110000694,
+    "sha256": "99536cf36a712798f09516729313864413f8f651957f6c3721283311843ef79e"
+  },
+  {
+    "file": "000180.jpg",
+    "observation_t": 26.968759800016414,
+    "sha256": "9d4bc0a8f293515457c99928c3037c0ff4e24be9b938e4cbb7b1bcf771de7b04"
+  }
+]
