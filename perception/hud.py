@@ -961,8 +961,36 @@ def _glyphs(mask, size=TEXT_SIZE, **kw):
     out = []
     for b in _segment(mask, size, **kw):
         if b[2] <= b[3]:  # width <= height
-            out.append((b, classify(_normalise(mask, b))))
+            out.append((b, _checked_char(mask, b)))
     return out
+
+
+def _checked_char(mask, box):
+    """classify(), but a 0, 6, 8 or 9 with another of the four close behind it
+    must also have that digit's holes (_TOPOLOGY), or it is unknown.
+
+    A small 8 loses its waist: on a 2560 frame taken down to 1280, the 8 of
+    "228" matched a 0 at 0.049 with the 8 at 0.057, inside STRONG, and hp read
+    220. Holes do not smear the way bitmaps do.
+    """
+    glyph = _normalise(mask, box)
+    ch = classify(glyph)
+    if ch not in _TOPOLOGY:
+        return ch
+    key = np.packbits(glyph.ravel()).tobytes()
+    if key not in _RIVALLED:
+        rows, chars = _flat_templates()
+        dist = (rows != glyph.ravel()).sum(axis=1) / glyph.size
+        rival = (chars != ch) & np.isin(chars, list(_TOPOLOGY)) & (dist - dist.min() < MIN_MARGIN)
+        if len(_RIVALLED) > 20000:
+            _RIVALLED.clear()
+        _RIVALLED[key] = bool(rival.any())
+    if not _RIVALLED[key]:
+        return ch
+    return ch if _holes(mask, box) == _TOPOLOGY[ch] else None
+
+
+_RIVALLED: dict[bytes, bool] = {}  # glyph bits -> another of 0/6/8/9 is close
 
 
 def _number(group) -> int | None:
@@ -1503,6 +1531,78 @@ TRACER_SCALES = (0.7, 0.85, 1.0, 1.2, 1.5)
 TRACER_HARVEST_WIDTH = 1280   # the frame width the template was cut from
 _TRACER_CACHE: dict = {}
 
+# "No tracer" needs a witness: the enemy's own plate. The marker is drawn at a
+# fixed screen size (36x42 at 2560, the 1.0 rung, at every distance measured)
+# directly above the enemy's plate -- a health bar whose fill is left-aligned,
+# and under it the name, centred on the marker. An empty band above a box says
+# nothing when the box is a leg, an arm, or a body whose plate floats higher:
+# on the 2026-09-23 calibration take that is what made read_tagged answer
+# False on 20 tagged boxes. So False is only answered where THIS box's plate is
+# in view and the place its marker would be drawn is clear.
+#
+# A witness is a plate by shape and by place, never any run of the colour: a red
+# beam and the red TIMED PRACTICE banner stood in on the take, and a beam or bar
+# of either colour across a tagged fragment made it read False in constructed
+# cases (hud-review, 2026-09-23). Measured under markers on that take and on the
+# recorded range runs (docs/evidence/hud-calibration-20260923), px at 2560:
+#   shape  a name run that is text (5+ letter glyphs, almost no column inked top
+#          to bottom), 100-200 wide unless covered; once the enemy is hit, a
+#          solid bar run over it, the name's top 26-36 below the bar's, the bar's
+#          left end 97-160 left of the name's centre; marker bottom 12-33 over
+#          the bar, 48-61 over the name
+#   place  (A) the outline took in the plate: its top at the box top (bar or,
+#          unhit, name: within 2 px), name 0.55-1.05 of the box's width; or (B)
+#          a body with the plate over it: name top 0.11-0.56 box heights above
+#          the box, name 0.24-1.1 box heights wide. Name centred on the box
+#          within 0.2 of its width on both. A fragment whose plate floats far
+#          above it, or off to one side, falls outside both.
+# Not excluded by any of this: another bot's name sitting exactly where this
+# box's own plate would be.
+# The plate is drawn in the enemy colour, the one the caller's finder looked
+# for: Accessibility > Enemy Color = Green (perception.outline.GREEN, what
+# find_enemies uses) unless the caller says the default red.
+PLATE_COLOURS = {"green": (54, 70), "red": (168, 6)}   # OpenCV hue (lo, hi); lo > hi wraps 0
+PLATE_SAT, PLATE_VAL = 90, 120
+PLATE_CLOSE = 15            # px at 2560: joins a name's letters, never bar to name
+BAR_H, BAR_FILL, BAR_MIN_W = (15, 27), 0.8, 8
+NAME_H, NAME_W, NAME_FILL = (11, 25), (95, 215), (0.35, 0.9)
+# Share of a run's columns inked over SOLID_COLUMN of its height: names 0.00-0.10
+# (75 under markers), bars 0.20-0.99 (69), a beam-crossed bar 0.90.
+SOLID_COLUMN, NAME_SOLID, BAR_SOLID = 0.8, 0.15, 0.2
+# Glyphs half the run's height or more, counted at 1280: names 5-13 on 69 of 71
+# under markers (1 and 2 on the rest), a beam posing as a name 1-2.
+NAME_LETTERS = 5
+NAME_UNDER_BAR = (24, 37)
+BAR_LEFT_OF_NAME = (95, 165)
+# An enemy not yet hit is drawn with its name alone, no bar. Off (the lead's
+# call, 2026-09-23): such a name, text by the letter test and at its own place,
+# is a witness. Both settings read nothing wrong on every check measured; with
+# the bar required only 14 of 89 untagged boxes on the take read False and 114
+# of 122 known-untagged runtime anchors went unknown, against 39 and 48 without.
+# Before the letter test, a beam of the enemy colour crossing a bar posed as a
+# name here in 8 of 1113 placements over tagged boxes; with it, 0.
+PLATE_NEEDS_BAR = False
+PLATE_CENTRE = (0.2, 10)    # |name centre - box centre| <= 0.2 * box width + 10 px
+AT_TOP = (-6, 6)            # (A) bar top - box top, px
+AT_TOP_WIDTH = (0.55, 1.05)  # (A) name width / box width
+ABOVE = (0.1, 0.6, 10)      # (B) box top - name top, in box heights, +- px
+ABOVE_SIZE = (0.2, 1.25)    # (B) name width / box height
+PLATE_SEARCH_WIDTH = 1280
+# HUD drawn in the same green, as frame fractions, as perception.outline's
+# GREEN_DEAD_ZONES and KILL_FEED: the fps/ping readout and the kill feed (which
+# stood in as "plates" on the take), the bottom strip with our own hp bar, the
+# top-left key hints, and squad chat.
+PLATE_DEAD_ZONES = ((0.86, 0.06, 1.00, 0.32), (0.86, 0.034, 0.96, 0.058),
+                    (0.00, 0.88, 1.00, 1.00), (0.00, 0.00, 0.26, 0.20),
+                    (0.00, 0.55, 0.35, 0.88))
+NAME_UNDER_MARKER = (47, 61)
+BAR_UNDER_MARKER = (12, 33)
+BAR_FULL_W = (190, 306)
+TRACER_W, TRACER_H = 36, 42
+PLATE_SLACK = 8
+NAME_SHIFT = 12             # narrow: the name's centre against the marker's
+WIDE_SHIFT = 40             # wide: where a marker could be that the narrow misses
+
 
 def _tracer_templates(frame_width=TRACER_HARVEST_WIDTH):
     """The marker at the sizes it can appear, for a frame of this width.
@@ -1653,49 +1753,195 @@ def slot_mapping(frames, layout=None):
     return out
 
 
-def read_tagged(frame, bbox) -> bool | None:
+def read_tagged(frame, bbox, colour="green") -> bool | None:
     """Is this enemy carrying a Spider-Tracer?
 
     `bbox` is an agent.state.Detection box, (x1, y1, x2, y2) in pixels of this
     frame. The marker is drawn above the enemy, over the world rather than at a
     fixed place on screen, so the search follows the box: a band above its top,
-    centred on it and wide enough for the marker to drift within.
+    centred on it and wide enough for the marker to drift within. A marker found
+    there, or over this box's own plate, is True.
 
-    Returns True, False, or None. None means the band could not be searched —
-    the enemy is against the top of the screen, or the box is too small to place
-    the band — which is not the same as "no tracer".
+    False needs more than an empty band: this box's own plate must be in view
+    and the place its marker would be drawn clear (see PLATE_COLOURS). A box
+    that is a fragment of a body -- a leg, a head -- has no plate of its own and
+    reads None, whatever else of the enemy colour lies across it.
+
+    `colour` is the enemy colour the caller's finder looked for: "green"
+    (perception.outline.find_enemies, and the live loop) or "red" (the default
+    red nameplate path).
+
+    Returns True, False, or None. None means the enemy could not be judged — the
+    band or the marker's place is off the screen, no plate of its own is in
+    view, or the evidence is mixed — which is not the same as "no tracer".
     """
     x1, y1, x2, y2 = (float(v) for v in bbox)
-    height, width = frame.shape[:2]
     # The marker sits above the enemy's health bar and name, which is most of a
     # box height clear of the box itself, and the whole stack rides up and down
     # with distance -- so the band is sized from the box, with a pixel floor for
     # a far-off enemy whose box is tiny.
     box_h = y2 - y1
-    band_top = int(y1 - max(TRACER_BAND_PX, TRACER_BAND[0] * box_h))
-    band_bottom = int(y1 - max(8.0, TRACER_BAND[1] * box_h))
+    band_top = y1 - max(TRACER_BAND_PX, TRACER_BAND[0] * box_h)
     half = max(36.0, 0.5 * (x2 - x1))
-    band_left, band_right = int((x1 + x2) / 2 - half), int((x1 + x2) / 2 + half)
+    best = _tracer_peak(frame, (x1 + x2) / 2 - half, band_top, (x1 + x2) / 2 + half,
+                        y1 - max(8.0, TRACER_BAND[1] * box_h))
+    if best is None:
+        return None
+    if best >= TRACER_MATCH:
+        return True
+    # Nothing in the band. That is "no tracer" only if this box's own plate is in
+    # view and everywhere its marker could be drawn is clear too (PLATE_COLOURS).
+    plates = _own_plates(frame, (x1, y1, x2, y2), PLATE_COLOURS[colour])
+    seen = [_tracer_peak(frame, *wide, within=(narrow[0], narrow[2])) for narrow, wide in plates]
+    if not plates or any(s is None or s[1] is None for s in seen):
+        return None
+    if all(at >= TRACER_MATCH for _, at in seen):
+        return True
+    # A marker's place cut by the edge of the screen is not seen to be clear.
+    height, width = frame.shape[:2]
+    on_screen = all(w[0] >= 0 and w[1] >= 0 and w[2] <= width and w[3] <= height for _, w in plates)
+    if on_screen and best <= TRACER_CLEAR and all(around <= TRACER_CLEAR for around, _ in seen):
+        return False
+    return None
+
+
+def _tracer_peak(frame, x0, y0, x1, y1, within=None):
+    """Best correlation with the marker inside a region of the frame, or None
+    when the region, clamped to the frame, cannot hold the smallest template.
+
+    With `within` = (left, right) columns it answers (region best, best where
+    the whole template lies between those columns), the second None when it
+    cannot fit there -- one pass for a window nested in another.
+    """
+    height, width = frame.shape[:2]
     # Clamp both ends into the frame. Letting a negative index through here
     # turns "the enemy is at the top of the screen" into a search of almost the
     # whole frame, which finds a tracer belonging to somebody else.
-    band_top, band_bottom = max(0, min(height, band_top)), max(0, min(height, band_bottom))
-    band_left, band_right = max(0, min(width, band_left)), max(0, min(width, band_right))
-    band = frame[band_top:band_bottom, band_left:band_right]
+    x0, x1 = max(0, min(width, int(x0))), max(0, min(width, int(x1)))
+    y0, y1 = max(0, min(height, int(y0))), max(0, min(height, int(y1)))
+    band = frame[y0:y1, x0:x1]
     templates = _tracer_templates(width)
     if band.size == 0 or any(band.shape[i] < templates[0].shape[i] for i in (0, 1)):
         return None
     ink = (cv2.cvtColor(band, cv2.COLOR_BGR2GRAY) > 200).astype(np.float32)
-    best = 0.0
+    best, inner = 0.0, None
     for tpl in templates:
         if tpl.shape[0] > ink.shape[0] or tpl.shape[1] > ink.shape[1]:
             continue
-        best = max(best, float(cv2.matchTemplate(ink, tpl, cv2.TM_CCOEFF_NORMED).max()))
-    if best >= TRACER_MATCH:
-        return True
-    if best <= TRACER_CLEAR:
-        return False
-    return None
+        found = cv2.matchTemplate(ink, tpl, cv2.TM_CCOEFF_NORMED)
+        best = max(best, float(found.max()))
+        if within is not None:
+            j0, j1 = max(0, int(within[0]) - x0), int(within[1]) - x0 - tpl.shape[1] + 1
+            if j1 > j0:
+                inner = max(inner or 0.0, float(found[:, j0:j1].max()))
+    return best if within is None else (best, inner)
+
+
+def _own_plates(frame, bbox, hue):
+    """Where this box's marker would be drawn: per plate of its own in view, a
+    (narrow, wide) pair of (x0, y0, x1, y1) windows in frame pixels.
+
+    A plate is a name run of the enemy colour, with its bar stacked over it when
+    the enemy has been hit (PLATE_NEEDS_BAR), in the shape and at a place
+    measured for a box's own plate (PLATE_COLOURS): at the box's top, or over a
+    body at a height and size that go with the box. Anything
+    else of that colour across the box -- a beam, another bot's plate, HUD text,
+    the outline -- is not a witness. Narrow is where the marker sits over the
+    plate: a marker found there is this enemy's. Wide adds the slack the
+    measurement allows: only that clear is "no marker". A run cut by the edge of
+    the searched region has unknown extent and is not used.
+    """
+    x1, y1, x2, y2 = bbox
+    height, width = frame.shape[:2]
+    s = width / 2560
+    bw, bh, cx = x2 - x1, y2 - y1, (x1 + x2) / 2
+    reach = PLATE_CENTRE[0] * bw + (PLATE_CENTRE[1] + BAR_LEFT_OF_NAME[1] + 20) * s
+    rx0, rx1 = max(0, int(cx - reach)), min(width, int(cx + reach))
+    ry0 = max(0, int(y1 - ABOVE[1] * bh - (ABOVE[2] + NAME_UNDER_BAR[1] + 10) * s))
+    ry1 = min(height, int(y1 + (AT_TOP[1] + NAME_UNDER_BAR[1] + NAME_H[1] + 12) * s))
+    region = frame[ry0:ry1, rx0:rx1]
+    if region.size == 0:
+        return []
+    # Looked for at 1280 wide at most: a plate's runs are 11+ px tall at 2560,
+    # and this is most of read_tagged's time at full size.
+    f = min(1.0, PLATE_SEARCH_WIDTH / width)
+    if f < 1.0:
+        region = cv2.resize(region, None, fx=f, fy=f, interpolation=cv2.INTER_NEAREST)
+    u = s * f   # this image's pixels per 2560-scale pixel
+    hsv = cv2.cvtColor(region, cv2.COLOR_BGR2HSV)
+    lo, hi = hue
+    raw = np.zeros(hsv.shape[:2], np.uint8)
+    for a, b in ((lo, hi),) if lo <= hi else ((lo, 179), (0, hi)):
+        raw |= cv2.inRange(hsv, (a, PLATE_SAT, PLATE_VAL), (b, 255, 255))
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (max(1, round(PLATE_CLOSE * u)), 1))
+    mask = cv2.morphologyEx(raw, cv2.MORPH_CLOSE, kernel)
+    n, _, stats, _ = cv2.connectedComponentsWithStats(mask, connectivity=8)
+    rh, rw = mask.shape
+    bars, names = [], []
+    for i in range(1, n):
+        x, y, w, h, ink = (int(v) for v in stats[i])
+        if x == 0 or y == 0 or x + w == rw or y + h == rh:
+            continue
+        fill = ink / (w * h)
+        # Text or bar: letters leave almost no column inked top to bottom, a bar
+        # (ticks, a beam across it and all) leaves most of them.
+        solid = float(((raw[y:y + h, x:x + w] > 0).sum(axis=0) >= SOLID_COLUMN * h).mean())
+        run = (rx0 + x / f, ry0 + y / f, w / f)   # left, top, width in frame px
+        if (BAR_H[0] * u <= h <= BAR_H[1] * u and fill >= BAR_FILL and w >= BAR_MIN_W * u
+                and solid >= BAR_SOLID):
+            bars.append(run)
+        if (NAME_H[0] * u <= h <= NAME_H[1] * u and NAME_W[0] * u <= w <= NAME_W[1] * u
+                and NAME_FILL[0] <= fill <= NAME_FILL[1] and solid <= NAME_SOLID
+                and _letters(raw[y:y + h, x:x + w]) >= NAME_LETTERS):
+            names.append(run)
+    plates = []
+    for nx, ntop, nw in names:
+        ncx = nx + nw / 2
+        if any(zx0 <= ncx / width <= zx1 and zy0 <= ntop / height <= zy1
+               for zx0, zy0, zx1, zy1 in PLATE_DEAD_ZONES):
+            continue
+        if abs(ncx - cx) > PLATE_CENTRE[0] * bw + PLATE_CENTRE[1] * s:
+            continue
+        over = [(bx, btop, bwid) for bx, btop, bwid in bars
+                if NAME_UNDER_BAR[0] * s <= ntop - btop <= NAME_UNDER_BAR[1] * s]
+        stacked = [(bx, btop) for bx, btop, bwid in over
+                   if BAR_LEFT_OF_NAME[0] * s <= ncx - bx <= BAR_LEFT_OF_NAME[1] * s
+                   and bx + bwid - ncx <= BAR_LEFT_OF_NAME[1] * s]
+        if over and not stacked:
+            continue   # a bar-like run sits over the name but not as its bar: not a plate
+        if not stacked:
+            if PLATE_NEEDS_BAR:
+                continue
+            stacked = [(None, None)]   # an enemy not yet hit: the game draws the name alone
+        for bx, btop in stacked:
+            top = ntop if btop is None else btop   # what the box's top edge meets
+            at_top = (AT_TOP[0] * s <= top - y1 <= AT_TOP[1] * s
+                      and AT_TOP_WIDTH[0] <= nw / bw <= AT_TOP_WIDTH[1])
+            above = (ABOVE[0] * bh - ABOVE[2] * s <= y1 - ntop <= ABOVE[1] * bh + ABOVE[2] * s
+                     and ABOVE_SIZE[0] <= nw / bh <= ABOVE_SIZE[1])
+            if not (at_top or above):
+                continue
+            y0 = ntop - (NAME_UNDER_MARKER[1] + TRACER_H + PLATE_SLACK) * s
+            y1_ = ntop - (NAME_UNDER_MARKER[0] - PLATE_SLACK) * s
+            if btop is not None:
+                y0 = min(y0, btop - (BAR_UNDER_MARKER[1] + TRACER_H + PLATE_SLACK) * s)
+                y1_ = max(y1_, btop - (BAR_UNDER_MARKER[0] - PLATE_SLACK) * s)
+            half = (TRACER_W / 2 + PLATE_SLACK) * s
+            narrow = (ncx - half - NAME_SHIFT * s, y0, ncx + half + NAME_SHIFT * s, y1_)
+            wide = (ncx - half - WIDE_SHIFT * s, y0, ncx + half + WIDE_SHIFT * s, y1_)
+            if bx is not None:
+                # The marker is over the middle of the full bar, which starts at bx.
+                wide = (min(wide[0], bx + BAR_FULL_W[0] * s / 2 - half), y0,
+                        max(wide[2], bx + BAR_FULL_W[1] * s / 2 + half), y1_)
+            plates.append((narrow, wide))
+            break
+    return plates
+
+
+def _letters(run):
+    """Glyphs at least half the run's height inside a name run, before closing."""
+    n, _, stats, _ = cv2.connectedComponentsWithStats(run, connectivity=8)
+    return int((stats[1:, 3] >= 0.5 * run.shape[0]).sum())
 
 
 @dataclass

@@ -484,11 +484,14 @@ This format is stable within a version. Anything added will be a new key or a ne
 
 ## Status
 
-**Done and accepted.** Waiting on one thing only: a run of deliberate
-bot-tagging at varied distances, plus damage taken, at
-`C:\rivals-agent\data\l1\tagrun\` on the PC (L4 is recording it, the lead will
-say when it lands). That widens `read_tagged`'s calibration and supplies the
-one missing digit template. Nothing depends on it.
+**Done and accepted**, except the 2026-09-23 calibration delta below, which
+is back with hud-review after its required fixes (F1-F4). James's
+tagging-and-damage take landed (`C:\Users\volpe\Videos\2026-09-23 00-39-29.mkv`);
+measured in `docs/evidence/hud-calibration-20260923/`. It found `read_tagged`
+answering False on 20 of 53 tagged boxes; the reader now answers False only
+from the box's own plate, its name (with its bar, once hit) at a measured place
+(see **read_tagged: False needs a witness**). The digit `1` was already learned
+(2026-09-20) and reads right.
 
 `perception/hud.py` reads Spider-Man's practice-range HUD from one frame with
 fixed regions and a template-matched digit classifier. No ML.
@@ -551,9 +554,23 @@ declined. **Wrong** is the share it answered incorrectly — zero on every field
 which is the property the readers are built for and the one the check asserts.
 
 `read` costs **~4.3 ms** per frame measured quiet, `read_tagged` **~0.6 ms**;
-both spread to tens of ms when several lanes load this Mac at once. Regions are
-fractions of the frame and give identical answers at 960, 1280, 1920 and 2560
-wide.
+both spread to tens of ms when several lanes load this Mac at once. Since the
+2026-09-23 change `read_tagged` costs +0.6 ms per box at the median (1.58 to
+2.18 ms on the PC with the game running); the plate search and its window
+cost ~1 ms when they run. Regions are fractions of the
+frame, but answers are not identical across widths: on the calibration take's
+124 hp frames, resized to 1920, 20 hp reads go unknown, and at 1280 an 8 read
+as a 0 until the 0/6/8/9 hole check (below).
+
+Calibration take, 2026-09-23 (M&K, native 2560, hand-labelled; hit / unknown /
+wrong):
+
+| field | n | reads |
+|---|---|---|
+| `read_tagged`, tagged boxes | 53 | 36 / 17 / 0 (was 33 / 0 / 20) |
+| `read_tagged`, untagged boxes | 89 | 39 / 50 / 0 (was 87 / 2 / 0; 14 / 75 / 0 with the bar required) |
+| hp | 124 | 117 / 7 / 0 (53 frames with a `1`: 52 right) |
+| max hp (250 and 500) | 124 | 113 / 11 / 0 |
 
 Full method, region table and annotated crops: `docs/evidence/l2/README.md`.
 
@@ -566,10 +583,22 @@ Full method, region table and annotated crops: `docs/evidence/l2/README.md`.
   `State`** — the brain does not use them (lead's call). They are still read and
   still available to anything that wants them; `state_kwargs()` simply does not
   pass them on.
-- **`read_tagged(frame, bbox)`** takes an `agent.state.Detection` box and
-  answers whether that enemy carries a Spider-Tracer: `True`, `False`, or
-  `None` when the band above the box falls outside the frame. It does not need
-  the detector to be accurate to the pixel — the band is sized from the box.
+- **`read_tagged(frame, bbox, colour="green")`** takes an
+  `agent.state.Detection` box and answers whether that enemy carries a
+  Spider-Tracer: `True`, `False`, or `None`. `colour` is the enemy colour the
+  caller's finder used (`"red"` for the default-red nameplate path). Since
+  2026-09-23 **False needs this box's own plate**: its name (text, 5+
+  letters), with its bar stacked over it once the enemy has been hit, centred
+  on the box, at its top or just over it, sized for it, with the marker's
+  place over it clear. A fragment, a bot too far off for a plate, and a plate
+  at the screen edge read `None`. Expect far more `None`s: 50 of 89 untagged
+  boxes on the calibration take, and on the recorded runtime runs 48 of the
+  122 known-untagged model anchors (39%; 37 of 90 on the Galacta pilots)
+  become `None`. No wrong answers (0 of 142). The red path yields no False at
+  all. The tracker's consensus already makes a None member None.
+- **`Hud.max_hp` can read 500.** During Spider-Man's ultimate the HUD draws
+  `x / 500` over a blue bar (34.4-37.2 s on the calibration take, from a Q at
+  33.9 s). It is what the HUD shows, not a misread.
 - **Slot 1 is the team-up ability, not the Spider-Tracer.** Pressing Y turns the
   other icons gold and raises max hp by 50, which then decays back to 250 over
   about a minute. The tracer is a mark on an enemy, read by `read_tagged`. The
@@ -586,6 +615,8 @@ Full method, region table and annotated crops: `docs/evidence/l2/README.md`.
   32 of them with an enemy box over screen centre, with 1507 plain white dots and
   no red ones at all. No reader was built. `agent.brain.aimed_at` already falls
   back to crosshair-in-bbox geometry when the field is None, which is right.
+  The M&K reticle (a white ring) is the same: on 8 frames with it on a bot's
+  body it stays white (2026-09-23 evidence, `crosshair.jpg`).
 
 ## Decisions
 
@@ -2238,9 +2269,70 @@ still (6 hp) unreadable while its bar still reads 0.138.
 
 ## Open
 
-- **No template for the digit `1`.** It appears in neither run: hp only ever
-  took 250 and 252–300. An hp of 217 reads `None`, not a wrong number. The
-  damage taken in `tagrun` will supply it; one `learn` pass then fixes it.
+- **`read_tagged` coverage of False.** An enemy's name alone is its witness
+  (`PLATE_NEEDS_BAR = False`, the lead's call): 39 of 89 untagged boxes on the
+  take read False, and 74 of 122 known-untagged runtime anchors stay False.
+  Requiring the bar (`True`) gives 14 and 8, since an enemy not yet hit has no
+  bar. Both training packets are re-measured under the final bytes before the
+  next fit.
+- **Another bot's own name sitting exactly where this box's plate would sit** is
+  not excluded by geometry alone and would be read as this box's plate. Not seen
+  on the take or the runtime frames. The fix is to read the tag once per tracked
+  body (the tracker already unions fragments), deferred by the lead.
+- **The red path gives no False.** The red name is too dim for the name test,
+  and at 1280 a red bar and name fuse into one run too tall for either
+  (hud-review F4, `data/l2/000123.jpg`). Coverage only.
+- **The tracer rungs.** Every marker on the calibration take matched the `1.0`
+  rung (36x42 at 2560); 0.7, 0.85, 1.2 and 1.5 never did. Dropping them would
+  save most of the band search's time. Not done: no miss demonstrated it, and
+  one take is one take.
+- **The ammo box is cropped tight enough that a two-digit count would clip.**
+  Fine for Spider-Man's Web-Cluster; another hero may need the box widened.
+
+### read_tagged: False needs a witness (2026-09-23, VUH-1294)
+
+Measured on James's calibration take: 75 native M&K frames, 142 scored live
+boxes from `find_enemies`, labelled by eye, far to close (full tables, crops and
+limits: `docs/evidence/hud-calibration-20260923/README.md`).
+
+**The marker is drawn at one size at every distance**: all 102 markers found on
+the take matched 36x42 at 2560, 20+ m out to melee. The expectation below that
+it shrinks as 1/distance does not hold. It sits directly over the enemy's
+plate: bottom edge 12-33 px above the bar, 50-61 px above the name, centred on
+the name. It is also drawn, with no plate, over a tagged bot out of sight.
+
+**The old reader was confidently wrong on 20 of 53 tagged boxes**, all False,
+all geometry: 13 fragments of a tagged bot (the band over a leg is empty; its
+plate floats far higher), 7 whole or plate boxes whose band cut the marker off
+(its bottom edge `y1 - 0.15*h` sits above a marker 15-35 px over the box top).
+
+Now an empty band is not False. The reader finds this box's own plate, in the
+colour the caller's finder used: a name run that is text (5+ letter glyphs,
+almost no column inked top to bottom), with the enemy's bar stacked over it once
+it has been hit, the name centred on the box, the plate at the box's top or the
+name 0.1-0.6 box heights over it, sized for the box, outside the green HUD dead
+zones. A marker over that plate is True; False only if every place it could be
+drawn is clear and on screen; else None. The shape and place bands are the
+union of this take and the recorded range runs (Luna and Galacta), each
+measured under 43-53 markers. Tagged 36 / 17 / 0 (hit / unknown / wrong, was
+33 / 0 / 20); untagged 39 / 50 / 0 (was 87 / 2 / 0). No wrong answer on the
+truth set, hud-review's held-out 30 boxes, all 339 live boxes of the take, 91
+red-beam and 1113 green-beam placements over tagged boxes, or the named PAD
+controls.
+
+**Why a name alone** (lead, 2026-09-23): the game draws an enemy nobody has hit
+with its name and no bar, and most untagged bots are unhit. Both settings of
+`PLATE_NEEDS_BAR` are zero-wrong on every check. With the letter test the
+name-only witness held on all 1113 beam placements (8 read False before the
+test). And 39% of known-untagged runtime anchors going unknown keeps the
+untagged feature usable, where the 93% of requiring the bar would not. The
+tests run under both settings.
+
+The first version (reviewed 2026-09-23) took any flat run of either hue across
+the box as its plate. A red laser beam and the red TIMED PRACTICE banner were
+the only witness for 4 False reads on the take, and the same beam pasted across
+a tagged fragment read False in 91 of 198 placements (hud-review F1).
+
 ### read_tagged at native resolution
 
 Measured on L4's 153 native tagged frames (4 trials, one distance ~3 m), with
@@ -2259,29 +2351,17 @@ a 2560-wide native frame the marker was off the top of the ladder and
 **0.000** before the ladder was made relative to frame width. A reader whose
 whole contract is "unknown rather than wrong" was handing out a wrong boolean at
 a resolution nobody had tested it at. The ladder is now frame-relative, so
-distance still moves the marker within it but resolution no longer does.
+resolution no longer moves the marker off it.
 
 One disagreement with the delivered truth, resolved in the frames' favour: the
 note puts the marker on frames 003–027, but it is **still visible on 028** —
 checked by eye on `t0-b-after-web-cluster-028`. Scored as delivered it is
 precision 0.990; scored against what the frame shows, 1.000.
 
-**How it should degrade at range.** The marker is drawn in world space above the
-enemy, so its on-screen size goes roughly as 1/distance. At ~3 m it measures
-about 27x27 px at 2560. The ladder spans 0.7–1.5 of that, which covers roughly
-2 m to 4.3 m. **Past about 4.5 m recall should fall away**, not gradually but
-sharply, because the marker drops below the smallest template. Extending
-`TRACER_SCALES` downward (0.5, 0.35) would cover 6–9 m, but that is arithmetic,
-not measurement — it needs frames at those distances before anyone relies on it.
-The three misses at 3 m are all box placement, not the marker reader: the enemy
-box drifted and the search band went with it.
-
-- **`read_tagged`'s thresholds beyond this distance** (trial1 frames 71–86,
-  one bot, one distance). In the 1197 `run1` frames I hold, the web-cluster
-  bursts hit scenery rather than bots, so they contain no tagged enemies.
-  `tagrun` is being recorded for this; until it lands, the five-scale search
-  covers other distances on reasoning rather than measurement. The large web-splat VFX scores 0.45–0.53 against
-  the tracer template, below the 0.60 match threshold, so it yields `None` or
-  `False` — never a false `True`.
-- **The ammo box is cropped tight enough that a two-digit count would clip.**
-  Fine for Spider-Man's Web-Cluster; another hero may need the box widened.
+~~How it should degrade at range: the marker is drawn in world space, so its
+size goes as 1/distance and recall falls away past about 4.5 m.~~ Refuted on
+2026-09-23: the marker is a fixed screen size (above). The three misses at 3 m
+are all box placement, not the marker reader: the enemy box drifted and the
+search band went with it. The large web-splat VFX scores 0.45–0.53 against the
+tracer template, below the 0.60 match threshold, so it yields `None` or
+`False` — never a false `True`.

@@ -1,0 +1,879 @@
+{
+ "source": {
+  "video": "C:/Users/volpe/Videos/2026-09-23 00-39-29.mkv",
+  "logger_session": "C:/Users/volpe/Videos/RivalsInput/20260923T053929-795Z-33696-3",
+  "recipe": "ffmpeg -threads 2 -i <video> -map 0:v:0 -vf \"select='not(mod(n,24))',showinfo\" -fps_mode passthrough -q:v 2 frames5/%04d.jpg  (every 24th decoded frame of 120 fps = 5 Hz)",
+  "layout": "mk (keyboard_mouse logger session); Enemy Color = Green; Timed Practice, 20m Basic Combat, Luna Snow bots"
+ },
+ "labels": "hp / max_hp read by eye off HP_TEXT crops with the reader's answers not drawn; one frame per change in the reader's output plus 18 from steady stretches; null/null = no HUD (loading). Frames 0173-0187 show x/500 over a blue bar, from ~0.5 s after the Q (ultimate) press at 33.93 s until 37.2 s; the HUD draws it, so it is the truth.",
+ "frames": [
+  {
+   "path": "data/hud/calib-20260923/frames5/0001.jpg",
+   "sha256": "41548cb22ab030f200e690d8ee9cd0f696bdb716f2358a7b0d12a606e1ee156d",
+   "source_pts": 0.021,
+   "hp": null,
+   "max_hp": null
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0002.jpg",
+   "sha256": "005d1147352dd16cadfb84682780e5f4b22d0a8c9e2a5dac5548e6f59794db12",
+   "source_pts": 0.221,
+   "hp": null,
+   "max_hp": null
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0003.jpg",
+   "sha256": "3b19cbd8de51baa51164b9e32280787c72d650b66962ade3486ebfcc67ed2e4a",
+   "source_pts": 0.421,
+   "hp": null,
+   "max_hp": null
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0004.jpg",
+   "sha256": "ddc0b12487aca8fa09d7bcb32a9187c95e494493d415e3815ef7c087743863da",
+   "source_pts": 0.621,
+   "hp": null,
+   "max_hp": null
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0005.jpg",
+   "sha256": "95c0b699d3444719c19822d2598e91c7125d1c04292dbc020b63316dfba52183",
+   "source_pts": 0.821,
+   "hp": 250,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0010.jpg",
+   "sha256": "5b90f2b7bced967a930d7a64887b0d4f77f781951b158a37a01c450780f63e2f",
+   "source_pts": 1.821,
+   "hp": 250,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0020.jpg",
+   "sha256": "31f304f143add434a99b2f794a5d5ef8a838eb3e19c346213c840d39c3290f0d",
+   "source_pts": 3.821,
+   "hp": 250,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0032.jpg",
+   "sha256": "e543fd813615556225e46ec49be28499888663b1a21db645362ae96d3aba8875",
+   "source_pts": 6.221,
+   "hp": 250,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0033.jpg",
+   "sha256": "600abd054d8dcb18a21e42cc37e2888cf1a471e734fc439b1a56ba158c32e8a8",
+   "source_pts": 6.421,
+   "hp": 250,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0034.jpg",
+   "sha256": "4075bb567b3ead1957f1bbd89bd099775a530d48845f40c71c08f898d5bc3185",
+   "source_pts": 6.621,
+   "hp": 250,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0038.jpg",
+   "sha256": "cdc6468ec56ffae479c06cf3111e9aa34eb36684f430eb08cab1efe5be8f0217",
+   "source_pts": 7.421,
+   "hp": 250,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0039.jpg",
+   "sha256": "af21579400f85c3ab89fafdb19d865af0c43ef100d60fdbf38e2a074f1206411",
+   "source_pts": 7.621,
+   "hp": 250,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0040.jpg",
+   "sha256": "74157dfaa9838548d6d012dbc3f449dfd28535690b6b6b93d90b88173d84f1d3",
+   "source_pts": 7.821,
+   "hp": 250,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0042.jpg",
+   "sha256": "6db4531a9f5ae2605d8d197c9c79a4d9eaf3483d7c26c3ed85756d7736603920",
+   "source_pts": 8.221,
+   "hp": 250,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0043.jpg",
+   "sha256": "398d38730cc212ec84cd1015794620e29f1c99648b7ace091a2c3d92bab5378c",
+   "source_pts": 8.421,
+   "hp": 250,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0044.jpg",
+   "sha256": "7258b8e6df3302bd21a1560b57bee05a8da374e837d0296dbedb3dbc0ac7687a",
+   "source_pts": 8.621,
+   "hp": 250,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0045.jpg",
+   "sha256": "bfbbee34139ff4f0347d6eb3987050d5fef6e24b3efc7f2c9ae8b1c169958887",
+   "source_pts": 8.821,
+   "hp": 250,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0046.jpg",
+   "sha256": "115ce9f8aa8f57f9cde895dea246499937d80b9867e4355b89f47896acb5648d",
+   "source_pts": 9.021,
+   "hp": 250,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0063.jpg",
+   "sha256": "5954ed49db8d796ac73bfe43f1a1f99bc01c79effe77b5cb7cf3ea3c03bda65d",
+   "source_pts": 12.421,
+   "hp": 200,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0065.jpg",
+   "sha256": "da30e87023db76e7ab855fe5302995eeee9dbbb6b0be16a8fbd824f2552f7a27",
+   "source_pts": 12.821,
+   "hp": 200,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0066.jpg",
+   "sha256": "97c5205f538e94a35d7247ef1eb3ae280ed83eca7d166dd2618989c7a4046b01",
+   "source_pts": 13.021,
+   "hp": 200,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0067.jpg",
+   "sha256": "f7349725c68c8d4dde2efd681ff54722b2590487324d96aa0d9a16c86fca6412",
+   "source_pts": 13.221,
+   "hp": 200,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0068.jpg",
+   "sha256": "c5adcef4ee589c27068846e22a5d53e3c64552cef6703cf1ab17b1bdd196c268",
+   "source_pts": 13.421,
+   "hp": 200,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0069.jpg",
+   "sha256": "105cc4a4b180427232cb7436f9d29892f7978893b138f3ce0f47c3d24a06ef29",
+   "source_pts": 13.621,
+   "hp": 200,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0072.jpg",
+   "sha256": "4c885d3e42af5e9b74cb946c76a483cf64abae7952b7dfd87a1a0eda16ead87d",
+   "source_pts": 14.221,
+   "hp": 200,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0073.jpg",
+   "sha256": "da59c1104fcc8fd95b7fd78690db418da4fb370a726d1d6b73c26e5889e6934c",
+   "source_pts": 14.421,
+   "hp": 200,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0074.jpg",
+   "sha256": "281a1fbf470565a9e7fe4e5430ef3eee3df80dd4f696e3eb6c8022841ac77bdd",
+   "source_pts": 14.621,
+   "hp": 200,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0075.jpg",
+   "sha256": "ca6eb8a14a41ce418ceb85bc8245c3383eb321561a40989abad20ab7463f5066",
+   "source_pts": 14.821,
+   "hp": 200,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0080.jpg",
+   "sha256": "cb76a722fdf46e267ed54edb8a4a7a1bf8a3b5d46842067c5e3f17c7b582ccf5",
+   "source_pts": 15.821,
+   "hp": 200,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0089.jpg",
+   "sha256": "08583223a1566d864bc789a5c851543b4c1d1f48bafd47407ea97103b4ff8fd6",
+   "source_pts": 17.621,
+   "hp": 204,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0090.jpg",
+   "sha256": "af3e4080267d75ca335c3940052f3ad2d4ea73d6e08523c472944bf686488825",
+   "source_pts": 17.821,
+   "hp": 208,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0091.jpg",
+   "sha256": "18c1726b32452648c60944a9d515b1bd9eaf22832476edd55de158b994399bce",
+   "source_pts": 18.021,
+   "hp": 212,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0092.jpg",
+   "sha256": "27bb98151c5d608f04a796f1c27f051d41cf8f6b6d3c6db7aee01e1527c8453d",
+   "source_pts": 18.221,
+   "hp": 169,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0093.jpg",
+   "sha256": "a45549295d1d46448c5d2e83655e0a944ad5d867bdd64c2cc9124cb10f1dc350",
+   "source_pts": 18.421,
+   "hp": 149,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0100.jpg",
+   "sha256": "11160be85c8008a2775396d1de734d17de745d1f22414ddb5ff9e679ffa490a1",
+   "source_pts": 19.821,
+   "hp": 149,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0101.jpg",
+   "sha256": "5af23880b6c52b76b82f2920188a75bc618c135b048fa04410edce3a9cc556aa",
+   "source_pts": 20.021,
+   "hp": 149,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0102.jpg",
+   "sha256": "a286c728978d129efd4901caf56199a0c5073892e26322aeb4c7fcefb101ea04",
+   "source_pts": 20.221,
+   "hp": 149,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0110.jpg",
+   "sha256": "35ebda787125a6dfc6353fe5d856c0b3ede85d5e751ea52e3c02188e067ed5d6",
+   "source_pts": 21.821,
+   "hp": 149,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0118.jpg",
+   "sha256": "b9dbb39a6ed0645832d5d0970bc29ffe2f434d2386fee5085824c88766058233",
+   "source_pts": 23.421,
+   "hp": 153,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0119.jpg",
+   "sha256": "28a1f4ee02fbdd9e91ce3cd9771cf16e3eddb64f0aa2c8a7f6263e14ab8f72fa",
+   "source_pts": 23.621,
+   "hp": 157,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0120.jpg",
+   "sha256": "286b974399c328c74c5c1751525b6c36d47f593f4f15646015ca5e297fde9312",
+   "source_pts": 23.821,
+   "hp": 122,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0130.jpg",
+   "sha256": "f2c77ad2d714694804b65f0f19b04c402d6af223154728562f02eaaed7f60793",
+   "source_pts": 25.821,
+   "hp": 122,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0145.jpg",
+   "sha256": "44c35a8fc8d06da082c5078b66aecdf16e4c58f6ab2c1f1ae1f7259c4112947a",
+   "source_pts": 28.821,
+   "hp": 126,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0146.jpg",
+   "sha256": "4e17d6deadf627c54e118c82c4eaa706eb32f374ca1c44d2f401d02ac722ebe5",
+   "source_pts": 29.021,
+   "hp": 130,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0147.jpg",
+   "sha256": "cb97cef162a6cd9641c8dcb8a039cce4caef438ec87784dc4cb406b70fbf7fc0",
+   "source_pts": 29.221,
+   "hp": 59,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0150.jpg",
+   "sha256": "b44cf7c6dff0c4a13c1318ae235028c0075d9545d0b9dae87023b33d73d001a2",
+   "source_pts": 29.821,
+   "hp": 59,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0160.jpg",
+   "sha256": "e54442241cddbfa6df793a926cb495d1887d6b1982b05ae6afc519a3f0565908",
+   "source_pts": 31.821,
+   "hp": 59,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0172.jpg",
+   "sha256": "91ef1dd70083dde2fdd01eb3875a1e80bac9d4054b3e2373ed31c4d57875a32d",
+   "source_pts": 34.221,
+   "hp": 63,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0173.jpg",
+   "sha256": "b77143578936d54f63f349ca544c92a9ba6a1ef7b2a3d72068350b85c7fab8d4",
+   "source_pts": 34.421,
+   "hp": 317,
+   "max_hp": 500
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0174.jpg",
+   "sha256": "78db8322b72719378a7802f2957f1eed410e22b16cc9311cb20a2fb602812143",
+   "source_pts": 34.621,
+   "hp": 321,
+   "max_hp": 500
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0175.jpg",
+   "sha256": "23b0c51d161dd6744b963e7fc43993fb881257986fdb705300ffce7b34353dae",
+   "source_pts": 34.821,
+   "hp": 325,
+   "max_hp": 500
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0176.jpg",
+   "sha256": "27a554ae3ce5ef97dc0562045d206bfec0cb5424c17e295351733e7d38196acd",
+   "source_pts": 35.021,
+   "hp": 329,
+   "max_hp": 500
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0177.jpg",
+   "sha256": "21171c87e8219239509cec8edabedd78af8e8d75e5027faece8bae7584198edf",
+   "source_pts": 35.221,
+   "hp": 333,
+   "max_hp": 500
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0178.jpg",
+   "sha256": "0f62f815466fcc63df24eacca0949160f2672d5009272215d289a13a71668195",
+   "source_pts": 35.421,
+   "hp": 337,
+   "max_hp": 500
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0179.jpg",
+   "sha256": "8e2560fd7a8fd4eacd3c65d5b657b660dc5bbc9e628b591f6aa91009fb0c2e15",
+   "source_pts": 35.621,
+   "hp": 341,
+   "max_hp": 500
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0180.jpg",
+   "sha256": "5e7320c9902e5640e71ef63c23cbcaa310d7ea5b239982c159f8276262403d2e",
+   "source_pts": 35.821,
+   "hp": 345,
+   "max_hp": 500
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0181.jpg",
+   "sha256": "e96bfe13cea72a1ce4a3dbb59ad5d3761caa357e6d289e3314540d5d61b9a503",
+   "source_pts": 36.021,
+   "hp": 349,
+   "max_hp": 500
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0182.jpg",
+   "sha256": "b8e6dd92c0cabb775bfa35d59cff54d995eb885df1bcf6e87eaad4f873e9518b",
+   "source_pts": 36.221,
+   "hp": 353,
+   "max_hp": 500
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0183.jpg",
+   "sha256": "3553e0f4ca5612eb8289430b1681f47e0bfb85a18574c6a009552945f86981ff",
+   "source_pts": 36.421,
+   "hp": 357,
+   "max_hp": 500
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0184.jpg",
+   "sha256": "b46154f5efac8abeda344906827ffc19326dde3fd29e8e611c7c9e8f86f7577b",
+   "source_pts": 36.621,
+   "hp": 361,
+   "max_hp": 500
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0185.jpg",
+   "sha256": "29893018fd6553ae856fdf5795b13be539d059d0d34dd1475b46d7b66f74db66",
+   "source_pts": 36.821,
+   "hp": 365,
+   "max_hp": 500
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0186.jpg",
+   "sha256": "3d9cae3d5097bf0b82df87dbcaa387989a1d445597f07a7498c98c8e6024f1c4",
+   "source_pts": 37.021,
+   "hp": 369,
+   "max_hp": 500
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0187.jpg",
+   "sha256": "6c9991d260c72fc04e73a6d8022737b760d0ecb8427b4dc3eb2209da5f0d92c3",
+   "source_pts": 37.221,
+   "hp": 373,
+   "max_hp": 500
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0188.jpg",
+   "sha256": "96b0e3d8ff3ad105d1350662179e8ad8e1ae33d02d5d35a2927d405e17dda119",
+   "source_pts": 37.421,
+   "hp": 127,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0189.jpg",
+   "sha256": "2c45fbaddcf89210470f8da7b35eae3e0ad6f795691b588a3deff1765b884941",
+   "source_pts": 37.621,
+   "hp": 131,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0190.jpg",
+   "sha256": "12db216014bb32f866f6b7b3fc2437b1dfc430032bf65423e907253b3e39f2a7",
+   "source_pts": 37.821,
+   "hp": 135,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0191.jpg",
+   "sha256": "1191fa482bc5c8ab5b295bcffed84a7b370e47f6616f4ac8b30e5c3999a6abce",
+   "source_pts": 38.021,
+   "hp": 139,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0192.jpg",
+   "sha256": "3653e288776655fce3ce6abccf63f7aced4acedea64194f6fbf32095ee7f3061",
+   "source_pts": 38.221,
+   "hp": 143,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0193.jpg",
+   "sha256": "a46829d2e18233e6e5c42e4dccdad2a440322bdc96fa81f6f62f1e88f2f55d4a",
+   "source_pts": 38.421,
+   "hp": 147,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0194.jpg",
+   "sha256": "a759e2ee384a08d84bf2349b50af9ad0f47ee6ee45139e2cf0f4dfa0ecd9b206",
+   "source_pts": 38.621,
+   "hp": 151,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0195.jpg",
+   "sha256": "57c796158c0bc31e03a165ba0dbdd024af959acd8ab8f5f94eab4122f4798011",
+   "source_pts": 38.821,
+   "hp": 155,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0196.jpg",
+   "sha256": "33c07744013fb166f18c30071927e8c2f2d366240b41fee09c28f97b305d2ae9",
+   "source_pts": 39.021,
+   "hp": 159,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0200.jpg",
+   "sha256": "ce683a371c192c0e493e152b40eca3e7261158f4ede549e3cd754bce0050a317",
+   "source_pts": 39.821,
+   "hp": 159,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0210.jpg",
+   "sha256": "73242992151dd8f1cdad8921ab48cbd995c4ec6c1bd78a7ed328fbbfa4999e0c",
+   "source_pts": 41.821,
+   "hp": 159,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0220.jpg",
+   "sha256": "64fd89129ddd7d2ee97b9df15b05225cbccc11f10b14991675a843371546dbf9",
+   "source_pts": 43.821,
+   "hp": 159,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0224.jpg",
+   "sha256": "94bda58bef3d6fa916c212b985152d1ab5580a9332c904570ac5d4fbae70653a",
+   "source_pts": 44.621,
+   "hp": 109,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0227.jpg",
+   "sha256": "79fae857462fb392b2b4ffd67a40361d1a2763a8599085ccb3871f2800f1af74",
+   "source_pts": 45.221,
+   "hp": 59,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0230.jpg",
+   "sha256": "a24d4a3f934a3f2fa7a61cd92cc2737589b330d64e7097ed1df786dfaf0a650c",
+   "source_pts": 45.821,
+   "hp": 0,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0235.jpg",
+   "sha256": "bd869acfe63db126554e3c976d666bc1f41004c62cdf69dc42e47faf5194dbd2",
+   "source_pts": 46.821,
+   "hp": 250,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0238.jpg",
+   "sha256": "a1b4b0afff7ab8435297644d0dd8bc9c106aefc303fdd9b38d21a62db9eb759c",
+   "source_pts": 47.421,
+   "hp": 200,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0250.jpg",
+   "sha256": "faa1a9d9f7cda2b5911cf2402395b0d1bfdbeff0c92cd046e831dbcb4203c5d5",
+   "source_pts": 49.821,
+   "hp": 200,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0260.jpg",
+   "sha256": "efd7a4f2c5e31e82264c0cbef63a4028b92e54c8479cee7787d5a7d013ae38c2",
+   "source_pts": 51.821,
+   "hp": 200,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0263.jpg",
+   "sha256": "6f9cc1b5429dc574b76c6e3769e4dc8316d215f40f7251b53e2d123595484ca6",
+   "source_pts": 52.421,
+   "hp": 204,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0264.jpg",
+   "sha256": "802b4f54fad646ae5d27c563f5d091a9aef5a5fc4528e1a11a711685a098c63d",
+   "source_pts": 52.621,
+   "hp": 208,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0265.jpg",
+   "sha256": "41cd051d75617e7ca4baed5a0ef37ac5b9cc82b4f2b4f18609d33ea5774ee355",
+   "source_pts": 52.821,
+   "hp": 212,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0266.jpg",
+   "sha256": "a985e79d4c4a88123aae309e5f4c4aaa7553e628183edd1d50b34125fa8a9ede",
+   "source_pts": 53.021,
+   "hp": 216,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0267.jpg",
+   "sha256": "4fe76740ae415d5b7fd59f6ec63b8f5a0c0195c732a008a1e9d9e74e667485cb",
+   "source_pts": 53.221,
+   "hp": 220,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0268.jpg",
+   "sha256": "fc6ef2cca68fae14886298ad0a7faab3b5d386cf87b558ce3f1b6d4eb4c1d5c5",
+   "source_pts": 53.421,
+   "hp": 224,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0269.jpg",
+   "sha256": "bc060f3dacef79fad437a43c5fdfff4cbae648d8ecd3d8343c841b52ad979cc9",
+   "source_pts": 53.621,
+   "hp": 228,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0270.jpg",
+   "sha256": "1fc2d1c343ce3ca976e9e90a752a3dd364b49f535efff4140cd8b3d29c58d742",
+   "source_pts": 53.821,
+   "hp": 232,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0271.jpg",
+   "sha256": "6200005017de9158f7e1638f1d176f24aa429f3ec176b2da6fc677ac26b392bc",
+   "source_pts": 54.021,
+   "hp": 236,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0272.jpg",
+   "sha256": "b602d54d24effa53fd754a26d4fca0b8b0a5d50a61a549f3eafc9afb98c05524",
+   "source_pts": 54.221,
+   "hp": 240,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0273.jpg",
+   "sha256": "471fddef9e318286ea4c2e26b48ec7a38b921321f852bb31d25e34c7e88d1cce",
+   "source_pts": 54.421,
+   "hp": 244,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0274.jpg",
+   "sha256": "f5121835158c2e50187b97e01791cd7d4fce057cfd7e8faf850d33045003d83d",
+   "source_pts": 54.621,
+   "hp": 248,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0275.jpg",
+   "sha256": "9d36b1d25e1660ce271e0ffbaa032d22e3cab76989d61013c7bc5c7f224b8ca8",
+   "source_pts": 54.821,
+   "hp": 250,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0283.jpg",
+   "sha256": "f4a12b6ac45436eeeee9ef736e347f277e124429963d7d2200647a8d373cabb7",
+   "source_pts": 56.421,
+   "hp": 226,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0290.jpg",
+   "sha256": "69d05a4d2c154f7b07e9328a86f5fad1271e8b2b98c4b77e9895a7d7ddfbeb33",
+   "source_pts": 57.821,
+   "hp": 226,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0298.jpg",
+   "sha256": "0f905374f47f8b282970605e204bbbcef13b7e04b5afd15d0824af25e9c7ff78",
+   "source_pts": 59.421,
+   "hp": 172,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0300.jpg",
+   "sha256": "179543c8002ef47e801cc644b0fe97cfed169d58e54a9e46af35d1f49728873c",
+   "source_pts": 59.821,
+   "hp": 172,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0305.jpg",
+   "sha256": "49ade314ae4b6a7d1cc7e6cb54e6a926999b94dbbdb140e5bde8e1c87bce0449",
+   "source_pts": 60.821,
+   "hp": 136,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0306.jpg",
+   "sha256": "d855894b061df006d4cc15e971c699c87f9c10de0a49df1a1cdd3bc391d8567d",
+   "source_pts": 61.021,
+   "hp": 118,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0307.jpg",
+   "sha256": "a48a461a4ab108ef06edb29653df1f502e5818d7978d12c959faf96ba8461928",
+   "source_pts": 61.221,
+   "hp": 118,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0320.jpg",
+   "sha256": "37ba0c6f47f61445876e6ffef987ce825e1145c4402a48c1ccb416c83ccda71f",
+   "source_pts": 63.821,
+   "hp": 118,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0331.jpg",
+   "sha256": "698b62ca6d14c02588d5da41d22814514fb5fad75408076798c8611c93553c94",
+   "source_pts": 66.021,
+   "hp": 122,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0332.jpg",
+   "sha256": "1900a6185c5f2228c1c08c476726f1686273c8bb76c4a2b04a03ff90f3267046",
+   "source_pts": 66.221,
+   "hp": 126,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0333.jpg",
+   "sha256": "7e725bc104a968a6aa99727642bcb82f9afe65445c43736d703b0bbfd4340542",
+   "source_pts": 66.421,
+   "hp": 130,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0334.jpg",
+   "sha256": "ca8f95040e6ce16a841988d8f97aa95d958c6e348f8e54ea4e1ddcd38c0d516f",
+   "source_pts": 66.621,
+   "hp": 134,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0335.jpg",
+   "sha256": "c13c9ec3b82e57c36bf98f0d28f29655e555fb60f7f4a17ec72014a225c4c736",
+   "source_pts": 66.821,
+   "hp": 138,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0336.jpg",
+   "sha256": "2e26ba52d4b8b1cd357865e62abbefec009fedba8304f90ff3661c7f98c4d9d2",
+   "source_pts": 67.021,
+   "hp": 142,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0337.jpg",
+   "sha256": "79a1a5dbcc738753b94b1f1ad9a2cc7ea434150dd1538aad2829795ca61fcce0",
+   "source_pts": 67.221,
+   "hp": 146,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0338.jpg",
+   "sha256": "7fab86da48f426847037ff00ed1fbf7a64f31259ba3ce5e001d01896103a54d5",
+   "source_pts": 67.421,
+   "hp": 150,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0339.jpg",
+   "sha256": "1441bd97f7adaef9ee825722b78cf7c3cfae0c97bb54758dc1da304546ea848e",
+   "source_pts": 67.621,
+   "hp": 89,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0340.jpg",
+   "sha256": "49c3ca6389962caa43c0dbe02b800e6bafd75645c5329d6b779fc1bad66d4f22",
+   "source_pts": 67.821,
+   "hp": 89,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0350.jpg",
+   "sha256": "022f4460a959169b14136086d88c4a85850c13ee554b252fcde7aff5dde4b7ed",
+   "source_pts": 69.821,
+   "hp": 89,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0360.jpg",
+   "sha256": "6ef25219b8503b0557f1425eefef58ee3703cfaa3e03df465f541d67b50f86c9",
+   "source_pts": 71.821,
+   "hp": 89,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0365.jpg",
+   "sha256": "4aac931c05174ef7b7d8058f3ff0c13b0ffe55fe55cb697dfc0e4b7aaee0e5d4",
+   "source_pts": 72.821,
+   "hp": 93,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0366.jpg",
+   "sha256": "b1d318a44b4acc11f5c9912fba043bdfff12f4511f1bfce60f5e9ab9e375f157",
+   "source_pts": 73.021,
+   "hp": 97,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0367.jpg",
+   "sha256": "a539ffc807b6b8d343be88e436f9cd75b5967ea4e5b6ececdec8cdc181b97466",
+   "source_pts": 73.221,
+   "hp": 101,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0368.jpg",
+   "sha256": "6d751b7d0684ae94c7ea487ed97a9a9e6a018fd2ca9629bd17bdc53d6a348b3f",
+   "source_pts": 73.421,
+   "hp": 105,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0369.jpg",
+   "sha256": "38cff60a82fd43d5b691057cc6898254057453949894d5908bc4c6e70fea9a4e",
+   "source_pts": 73.621,
+   "hp": 109,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0370.jpg",
+   "sha256": "a2b7fbdd10338d7578b7e772b148080c1fb5eec8f5e3043971baeef5c1daab7f",
+   "source_pts": 73.821,
+   "hp": 113,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0371.jpg",
+   "sha256": "187f5cd32e25804c46d346aa69e26d7a50ca14c4a8a597f335add3be8e64b3da",
+   "source_pts": 74.021,
+   "hp": 117,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0372.jpg",
+   "sha256": "16a292869827b764f8d9c3784ca3777a8cf5770ae18ed005e301035ea3d93938",
+   "source_pts": 74.221,
+   "hp": 121,
+   "max_hp": 250
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0373.jpg",
+   "sha256": "b0713ebdeb18ea5a4999ba88ca4997493599e7de4ffaa1103a0369944aec0586",
+   "source_pts": 74.421,
+   "hp": 125,
+   "max_hp": 250
+  }
+ ]
+}

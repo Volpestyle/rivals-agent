@@ -143,7 +143,10 @@ def main():
 # The Spider-Tracer lands on the bot at frame 71 of run trial1 and the camera
 # has drifted off this box by frame 87. The box is the bot's, read off the
 # frame by hand; the point of the check is the flip, and that nothing before
-# the hit reports a tracer.
+# the hit reports a tracer. trial1 predates Enemy Color = Green, so its plates
+# are the default red. Before the hit the bot has not been damaged and the game
+# draws its name without a bar; since 2026-09-23 False needs that name to pass
+# as the enemy's own plate, which it does on 63 and 65 and not on 69 (unknown).
 TAGGED_BOX = (645, 342, 695, 442)
 TAGGED = {63: False, 65: False, 69: False, 71: True, 75: True, 85: True}
 
@@ -153,8 +156,11 @@ def test_read_tagged():
         frame = cv2.imread(str(ROOT / f"data/l2/{i:06d}.jpg"))
         if frame is None:
             continue
-        got = read_tagged(frame, TAGGED_BOX)
-        assert got is want, f"frame {i}: read_tagged {got!r}, truth {want!r}"
+        got = read_tagged(frame, TAGGED_BOX, colour="red")
+        if want:
+            assert got is True, f"frame {i}: read_tagged {got!r}, truth tagged"
+        else:
+            assert got is not True, f"frame {i}: read_tagged {got!r}, truth untagged"
 
 
 def test_tagged_band_off_screen_is_unknown():
@@ -188,6 +194,7 @@ def _tagged_truth(name):
     return 3 <= int(re.search(r"-(\d+)\.jpg", name).group(1)) <= 28
 
 
+@pytest.mark.corpus
 def test_tracer_reads_at_native_resolution():
     """2560-wide frames, the size the game actually renders.
 
@@ -203,7 +210,7 @@ def test_tracer_reads_at_native_resolution():
 
     paths = sorted(glob.glob(str(TAGGED_DIR / "*.jpg")))
     if not paths:
-        return
+        pytest.skip(f"L4's native tagged frames are not on this machine ({TAGGED_DIR})")
     tp = fp = fn = 0
     for path in paths:
         frame = cv2.imread(path)
@@ -218,7 +225,7 @@ def test_tracer_reads_at_native_resolution():
         elif got is False and want:
             fn += 1
     assert fp == 0, f"{fp} frames called tagged that are not"
-    assert tp / (tp + fn) >= 0.90, f"recall {tp / (tp + fn):.3f}"
+    assert tp + fn and tp / (tp + fn) >= 0.90, f"recall {tp}/{tp + fn}"
 
 
 @pytest.mark.corpus
@@ -433,6 +440,27 @@ def test_readiness_reconciliation_native_pad_controls(name, sha256):
         assert state.abilities[name].ready is True
         assert state.abilities[name].charges == charges
     assert all(cd is None for cd in reading.cooldowns.values())
+
+
+@pytest.mark.corpus
+@pytest.mark.parametrize("name,sha256,box,tagged", [
+    ("t0-a-untagged-000.jpg", "95d98b19d860e3ced9037733c28a8cacbd6722846540926ebdb1f7ddcaad2549",
+     (983, 537, 1533, 958), False),
+    ("t0-b-after-web-cluster-003.jpg", "61aaca45d4d1a1ecf2bb2ef011258201640d0edd8ded8fc8d7e1ac47dccb876f",
+     (1054, 486, 1571, 941), True),
+    ("t0-b-after-web-cluster-028.jpg", "4c46d2632dabb57707b971665b51d7be7928a5768c847623b3f68d6b76648cbe",
+     (1154, 550, 1395, 820), True),
+])
+def test_read_tagged_native_pad_controls(name, sha256, box, tagged):
+    """The same named controls, for the tracer: a close Galacta bot before and
+    after a Web-Cluster hit, boxed by find_enemies. Never enumerate the directory."""
+    import hashlib
+
+    path = Path("C:/rivals-agent/l2tag") / name
+    if not path.exists():
+        pytest.skip("authorized native PAD control unavailable")
+    assert hashlib.sha256(path.read_bytes()).hexdigest() == sha256
+    assert read_tagged(cv2.imread(str(path)), box) is tagged
 
 
 def test_readiness_reconciliation_blank_frame_stays_unknown():

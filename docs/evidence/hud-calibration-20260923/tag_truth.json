@@ -1,0 +1,2132 @@
+{
+ "source": {
+  "video": "C:/Users/volpe/Videos/2026-09-23 00-39-29.mkv",
+  "logger_session": "C:/Users/volpe/Videos/RivalsInput/20260923T053929-795Z-33696-3",
+  "recipe": "ffmpeg -threads 2 -i <video> -map 0:v:0 -vf \"select='not(mod(n,24))',showinfo\" -fps_mode passthrough -q:v 2 frames5/%04d.jpg  (every 24th decoded frame of 120 fps = 5 Hz)",
+  "layout": "mk (keyboard_mouse logger session); Enemy Color = Green; Timed Practice, 20m Basic Combat, Luna Snow bots"
+ },
+ "boxes_from": "perception.outline.find_enemies(frame, scale=w/1280) as agent/loop.py calls it, stored so the score does not move when the finder does",
+ "labels": "by eye from contact sheets; kind whole|plate|frag|projected|merged|junk; tagged null = ambiguous truth (a box merging a tagged and an untagged bot), not scored; distance far|mid|close by body height (<~150 px, ~150-350, >~350 at 1440), null for junk",
+ "frames": [
+  {
+   "path": "data/hud/calib-20260923/frames5/0050.jpg",
+   "sha256": "624e0b4f260da8f2566fc6875f040dac92be79717f2622e5ebf7f0d9d66951c5",
+   "source_pts": 9.821,
+   "boxes": [
+    {
+     "bbox": [
+      976,
+      69,
+      1008,
+      146
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "far"
+    },
+    {
+     "bbox": [
+      1257,
+      77,
+      1281,
+      106
+     ],
+     "kind": "junk",
+     "tagged": false,
+     "distance": null
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0053.jpg",
+   "sha256": "477cd8fabcd6f7f04435200be1514d4f2b9f30474ec3e6e507fa04ffa4ca48e1",
+   "source_pts": 10.421,
+   "boxes": [
+    {
+     "bbox": [
+      861,
+      410,
+      893,
+      485
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "far"
+    },
+    {
+     "bbox": [
+      1052,
+      410,
+      1091,
+      465
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "far"
+    },
+    {
+     "bbox": [
+      1197,
+      434,
+      1233,
+      488
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "far"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0068.jpg",
+   "sha256": "c5adcef4ee589c27068846e22a5d53e3c64552cef6703cf1ab17b1bdd196c268",
+   "source_pts": 13.421,
+   "boxes": [
+    {
+     "bbox": [
+      1363,
+      607,
+      1434,
+      709
+     ],
+     "kind": "frag",
+     "tagged": true,
+     "distance": "far"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0069.jpg",
+   "sha256": "105cc4a4b180427232cb7436f9d29892f7978893b138f3ce0f47c3d24a06ef29",
+   "source_pts": 13.621,
+   "boxes": [
+    {
+     "bbox": [
+      1291,
+      610,
+      1437,
+      669
+     ],
+     "kind": "whole",
+     "tagged": true,
+     "distance": "far"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0085.jpg",
+   "sha256": "4a04192fe07cfaa2d1710360e7490b67431fd10b73a872d5389804f899719d2c",
+   "source_pts": 16.821,
+   "boxes": [
+    {
+     "bbox": [
+      796,
+      653,
+      1018,
+      749
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "far"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0087.jpg",
+   "sha256": "44cd3ea2a3fa7b1436ecc90059c3aad2cc238145037fecec99688d97be7e31ee",
+   "source_pts": 17.221,
+   "boxes": [
+    {
+     "bbox": [
+      543,
+      809,
+      732,
+      1020
+     ],
+     "kind": "projected",
+     "tagged": false,
+     "distance": "mid"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0092.jpg",
+   "sha256": "27bb98151c5d608f04a796f1c27f051d41cf8f6b6d3c6db7aee01e1527c8453d",
+   "source_pts": 18.221,
+   "boxes": [
+    {
+     "bbox": [
+      1317,
+      577,
+      1513,
+      680
+     ],
+     "kind": "whole",
+     "tagged": true,
+     "distance": "far"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0093.jpg",
+   "sha256": "a45549295d1d46448c5d2e83655e0a944ad5d867bdd64c2cc9124cb10f1dc350",
+   "source_pts": 18.421,
+   "boxes": [
+    {
+     "bbox": [
+      1410,
+      646,
+      1603,
+      750
+     ],
+     "kind": "whole",
+     "tagged": true,
+     "distance": "far"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0106.jpg",
+   "sha256": "ee7375a40724f479e97072b697277cb1206d973f9337aee9c64c9989d7a569a1",
+   "source_pts": 21.021,
+   "boxes": [
+    {
+     "bbox": [
+      1313,
+      750,
+      1525,
+      851
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "far"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0110.jpg",
+   "sha256": "35ebda787125a6dfc6353fe5d856c0b3ede85d5e751ea52e3c02188e067ed5d6",
+   "source_pts": 21.821,
+   "boxes": [
+    {
+     "bbox": [
+      1627,
+      865,
+      1839,
+      948
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "far"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0113.jpg",
+   "sha256": "f7fd575e84e91f65ecf03bbea307f31eaed355d9f2fc9990e0989f4369c1efd5",
+   "source_pts": 22.421,
+   "boxes": [
+    {
+     "bbox": [
+      1922,
+      713,
+      2133,
+      851
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "far"
+    },
+    {
+     "bbox": [
+      1152,
+      540,
+      1357,
+      654
+     ],
+     "kind": "whole",
+     "tagged": true,
+     "distance": "far"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0114.jpg",
+   "sha256": "7e869cafa6eac0314762c7702afde8134170d57af3cc91c2fee92ed04a612338",
+   "source_pts": 22.621,
+   "boxes": [
+    {
+     "bbox": [
+      2089,
+      634,
+      2300,
+      760
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "far"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0117.jpg",
+   "sha256": "7f493100163e9604c1871731a9c414fadd234ff32387b3098ce46406af1b8a42",
+   "source_pts": 23.221,
+   "boxes": [
+    {
+     "bbox": [
+      1193,
+      627,
+      1397,
+      731
+     ],
+     "kind": "whole",
+     "tagged": true,
+     "distance": "far"
+    },
+    {
+     "bbox": [
+      2378,
+      766,
+      2469,
+      854
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "far"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0121.jpg",
+   "sha256": "67b8d4c2cab9247e3689f471bb5421007a1fa85d9ef67f37033119e695c469cf",
+   "source_pts": 24.021,
+   "boxes": [
+    {
+     "bbox": [
+      1139,
+      507,
+      1367,
+      600
+     ],
+     "kind": "plate",
+     "tagged": true,
+     "distance": "mid"
+    },
+    {
+     "bbox": [
+      1521,
+      412,
+      1665,
+      556
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "far"
+    },
+    {
+     "bbox": [
+      1202,
+      640,
+      1299,
+      809
+     ],
+     "kind": "whole",
+     "tagged": true,
+     "distance": "mid"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0122.jpg",
+   "sha256": "1ed3ad167eb4fec6de2a0614113851e7852c23e5a28b996b5d7d13d1a67e7c95",
+   "source_pts": 24.221,
+   "boxes": [
+    {
+     "bbox": [
+      1265,
+      556,
+      1469,
+      648
+     ],
+     "kind": "plate",
+     "tagged": true,
+     "distance": "mid"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0123.jpg",
+   "sha256": "fbd57b9bd2d3c09d5ebe01ff0b313756138e94619023960f3f365da8722abc9e",
+   "source_pts": 24.421,
+   "boxes": [
+    {
+     "bbox": [
+      1189,
+      556,
+      1418,
+      785
+     ],
+     "kind": "whole",
+     "tagged": true,
+     "distance": "mid"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0125.jpg",
+   "sha256": "de9bb8dc36016b3379e2ed281f3d15e6d265527dca7417f80ff433843d831a07",
+   "source_pts": 24.821,
+   "boxes": [
+    {
+     "bbox": [
+      1241,
+      466,
+      1434,
+      648
+     ],
+     "kind": "whole",
+     "tagged": true,
+     "distance": "mid"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0127.jpg",
+   "sha256": "12680e6c7e6ffcf7320eb6f7dbf520de66cc6ad918621fb51a263d017171bb4c",
+   "source_pts": 25.221,
+   "boxes": [
+    {
+     "bbox": [
+      1174,
+      555,
+      1275,
+      732
+     ],
+     "kind": "frag",
+     "tagged": true,
+     "distance": "mid"
+    },
+    {
+     "bbox": [
+      461,
+      681,
+      607,
+      770
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "far"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0128.jpg",
+   "sha256": "0189e8d900717e0a89c15b67de91e796966497a65c08e042e275486fb1529924",
+   "source_pts": 25.421,
+   "boxes": [
+    {
+     "bbox": [
+      585,
+      541,
+      729,
+      665
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "far"
+    },
+    {
+     "bbox": [
+      1362,
+      561,
+      1455,
+      702
+     ],
+     "kind": "whole",
+     "tagged": true,
+     "distance": "far"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0130.jpg",
+   "sha256": "f2c77ad2d714694804b65f0f19b04c402d6af223154728562f02eaaed7f60793",
+   "source_pts": 25.821,
+   "boxes": [
+    {
+     "bbox": [
+      1313,
+      411,
+      1500,
+      495
+     ],
+     "kind": "whole",
+     "tagged": true,
+     "distance": "far"
+    },
+    {
+     "bbox": [
+      655,
+      420,
+      816,
+      492
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "far"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0131.jpg",
+   "sha256": "6ece6737791627839f5dea63d8e6d2c8a9420085f94664fc8511ff84a32f06aa",
+   "source_pts": 26.021,
+   "boxes": [
+    {
+     "bbox": [
+      821,
+      231,
+      966,
+      287
+     ],
+     "kind": "plate",
+     "tagged": false,
+     "distance": "far"
+    },
+    {
+     "bbox": [
+      1178,
+      795,
+      1233,
+      930
+     ],
+     "kind": "frag",
+     "tagged": true,
+     "distance": "close"
+    },
+    {
+     "bbox": [
+      1262,
+      791,
+      1293,
+      925
+     ],
+     "kind": "frag",
+     "tagged": true,
+     "distance": "close"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0132.jpg",
+   "sha256": "e9305b208ab7917498cb0d993d1675030a1792c06faface9e052ec3fab916529",
+   "source_pts": 26.221,
+   "boxes": [
+    {
+     "bbox": [
+      1135,
+      788,
+      1252,
+      1082
+     ],
+     "kind": "whole",
+     "tagged": true,
+     "distance": "close"
+    },
+    {
+     "bbox": [
+      1485,
+      31,
+      1533,
+      61
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "far"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0134.jpg",
+   "sha256": "89c8173be29a4dccdc091ab2fc78a3500ce8cd344f908ce872c00e2f9397c2e8",
+   "source_pts": 26.621,
+   "boxes": [
+    {
+     "bbox": [
+      1462,
+      1024,
+      1687,
+      1267
+     ],
+     "kind": "whole",
+     "tagged": true,
+     "distance": "mid"
+    },
+    {
+     "bbox": [
+      1410,
+      144,
+      1467,
+      270
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "far"
+    },
+    {
+     "bbox": [
+      1576,
+      314,
+      1638,
+      398
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "far"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0135.jpg",
+   "sha256": "a2b33651a87008b5f0e5beec247cc190cbb56f88285833159c0e4a2a12531290",
+   "source_pts": 26.821,
+   "boxes": [
+    {
+     "bbox": [
+      521,
+      299,
+      680,
+      464
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "far"
+    },
+    {
+     "bbox": [
+      901,
+      339,
+      962,
+      457
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "far"
+    },
+    {
+     "bbox": [
+      1580,
+      1028,
+      1632,
+      1152
+     ],
+     "kind": "frag",
+     "tagged": false,
+     "distance": "mid"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0147.jpg",
+   "sha256": "cb97cef162a6cd9641c8dcb8a039cce4caef438ec87784dc4cb406b70fbf7fc0",
+   "source_pts": 29.221,
+   "boxes": [
+    {
+     "bbox": [
+      472,
+      326,
+      523,
+      393
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "far"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0159.jpg",
+   "sha256": "094488612190b201c105aec40e65e528482387f6c4dbd5c8b6333bf6e541ca36",
+   "source_pts": 31.621,
+   "boxes": [
+    {
+     "bbox": [
+      767,
+      671,
+      951,
+      815
+     ],
+     "kind": "frag",
+     "tagged": false,
+     "distance": "mid"
+    },
+    {
+     "bbox": [
+      761,
+      537,
+      913,
+      706
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "mid"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0163.jpg",
+   "sha256": "d4d9d2aab6d076fce994b4210694172c018ba7ceee3e3420c588b8b9efb40121",
+   "source_pts": 32.421,
+   "boxes": [
+    {
+     "bbox": [
+      1786,
+      603,
+      1929,
+      782
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "mid"
+    },
+    {
+     "bbox": [
+      2029,
+      857,
+      2104,
+      988
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "mid"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0164.jpg",
+   "sha256": "cf532b375dfd88fae6b538ee31b3402ce2546fc3a2e1d4dbf6b5d3d105d03b88",
+   "source_pts": 32.621,
+   "boxes": [
+    {
+     "bbox": [
+      1725,
+      566,
+      1926,
+      658
+     ],
+     "kind": "plate",
+     "tagged": false,
+     "distance": "far"
+    },
+    {
+     "bbox": [
+      1083,
+      463,
+      1269,
+      536
+     ],
+     "kind": "plate",
+     "tagged": true,
+     "distance": "far"
+    },
+    {
+     "bbox": [
+      1769,
+      756,
+      1856,
+      808
+     ],
+     "kind": "frag",
+     "tagged": false,
+     "distance": "far"
+    },
+    {
+     "bbox": [
+      1809,
+      691,
+      1848,
+      720
+     ],
+     "kind": "frag",
+     "tagged": false,
+     "distance": "far"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0166.jpg",
+   "sha256": "bacea1af645a66697a35e756ec607fd754fdf33375c2279de4cd79eaa897fb35",
+   "source_pts": 33.021,
+   "boxes": [
+    {
+     "bbox": [
+      1609,
+      584,
+      1796,
+      740
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "far"
+    },
+    {
+     "bbox": [
+      1152,
+      514,
+      1339,
+      611
+     ],
+     "kind": "plate",
+     "tagged": true,
+     "distance": "far"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0167.jpg",
+   "sha256": "1df1736d58cb61337215f4d8609b9c20e2911ab8fd675bf406b8b6a65a34e929",
+   "source_pts": 33.221,
+   "boxes": [
+    {
+     "bbox": [
+      1575,
+      509,
+      1886,
+      700
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "far"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0170.jpg",
+   "sha256": "cf006cf2c132383eb918a7297a20a24da99b0b21b8cbb71a8eb45fed78b196f3",
+   "source_pts": 33.821,
+   "boxes": [
+    {
+     "bbox": [
+      1817,
+      405,
+      2123,
+      609
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "far"
+    },
+    {
+     "bbox": [
+      1132,
+      582,
+      1328,
+      800
+     ],
+     "kind": "frag",
+     "tagged": true,
+     "distance": "mid"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0171.jpg",
+   "sha256": "9dad2a6a4671aff0c93151997c3f5b14ab9d3fdd0f6ea250fc40b59edf03b182",
+   "source_pts": 34.021,
+   "boxes": [
+    {
+     "bbox": [
+      562,
+      544,
+      822,
+      834
+     ],
+     "kind": "whole",
+     "tagged": true,
+     "distance": "close"
+    },
+    {
+     "bbox": [
+      560,
+      733,
+      683,
+      796
+     ],
+     "kind": "frag",
+     "tagged": true,
+     "distance": "close"
+    },
+    {
+     "bbox": [
+      659,
+      599,
+      750,
+      682
+     ],
+     "kind": "frag",
+     "tagged": true,
+     "distance": "close"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0172.jpg",
+   "sha256": "91ef1dd70083dde2fdd01eb3875a1e80bac9d4054b3e2373ed31c4d57875a32d",
+   "source_pts": 34.221,
+   "boxes": [
+    {
+     "bbox": [
+      1937,
+      665,
+      2073,
+      745
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "mid"
+    },
+    {
+     "bbox": [
+      2002,
+      452,
+      2077,
+      535
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "mid"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0175.jpg",
+   "sha256": "23b0c51d161dd6744b963e7fc43993fb881257986fdb705300ffce7b34353dae",
+   "source_pts": 34.821,
+   "boxes": [
+    {
+     "bbox": [
+      1991,
+      1081,
+      2122,
+      1305
+     ],
+     "kind": "whole",
+     "tagged": true,
+     "distance": "mid"
+    },
+    {
+     "bbox": [
+      1420,
+      535,
+      1478,
+      659
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "far"
+    },
+    {
+     "bbox": [
+      1050,
+      526,
+      1172,
+      663
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "far"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0176.jpg",
+   "sha256": "27a554ae3ce5ef97dc0562045d206bfec0cb5424c17e295351733e7d38196acd",
+   "source_pts": 35.021,
+   "boxes": [
+    {
+     "bbox": [
+      1008,
+      582,
+      1194,
+      791
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "mid"
+    },
+    {
+     "bbox": [
+      2137,
+      827,
+      2295,
+      1004
+     ],
+     "kind": "whole",
+     "tagged": true,
+     "distance": "mid"
+    },
+    {
+     "bbox": [
+      1327,
+      537,
+      1484,
+      712
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "mid"
+    },
+    {
+     "bbox": [
+      2193,
+      901,
+      2205,
+      980
+     ],
+     "kind": "frag",
+     "tagged": true,
+     "distance": "mid"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0177.jpg",
+   "sha256": "21171c87e8219239509cec8edabedd78af8e8d75e5027faece8bae7584198edf",
+   "source_pts": 35.221,
+   "boxes": [
+    {
+     "bbox": [
+      975,
+      545,
+      1043,
+      660
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "mid"
+    },
+    {
+     "bbox": [
+      1220,
+      502,
+      1378,
+      679
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "mid"
+    },
+    {
+     "bbox": [
+      1999,
+      711,
+      2086,
+      775
+     ],
+     "kind": "frag",
+     "tagged": true,
+     "distance": "mid"
+    },
+    {
+     "bbox": [
+      2008,
+      812,
+      2030,
+      861
+     ],
+     "kind": "frag",
+     "tagged": true,
+     "distance": "mid"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0178.jpg",
+   "sha256": "0f62f815466fcc63df24eacca0949160f2672d5009272215d289a13a71668195",
+   "source_pts": 35.421,
+   "boxes": [
+    {
+     "bbox": [
+      1921,
+      564,
+      2107,
+      631
+     ],
+     "kind": "plate",
+     "tagged": true,
+     "distance": "far"
+    },
+    {
+     "bbox": [
+      1159,
+      550,
+      1316,
+      726
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "mid"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0181.jpg",
+   "sha256": "e96bfe13cea72a1ce4a3dbb59ad5d3761caa357e6d289e3314540d5d61b9a503",
+   "source_pts": 36.021,
+   "boxes": [
+    {
+     "bbox": [
+      1791,
+      555,
+      1948,
+      730
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "mid"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0188.jpg",
+   "sha256": "96b0e3d8ff3ad105d1350662179e8ad8e1ae33d02d5d35a2927d405e17dda119",
+   "source_pts": 37.421,
+   "boxes": [
+    {
+     "bbox": [
+      1049,
+      445,
+      1234,
+      600
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "mid"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0192.jpg",
+   "sha256": "3653e288776655fce3ce6abccf63f7aced4acedea64194f6fbf32095ee7f3061",
+   "source_pts": 38.221,
+   "boxes": [
+    {
+     "bbox": [
+      1163,
+      562,
+      1351,
+      638
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "far"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0198.jpg",
+   "sha256": "dd8f0caa030532ab9ffe49263e4090c78a4a66d514c52e97de6f9840c600a617",
+   "source_pts": 39.421,
+   "boxes": [
+    {
+     "bbox": [
+      1191,
+      622,
+      1376,
+      810
+     ],
+     "kind": "whole",
+     "tagged": true,
+     "distance": "mid"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0199.jpg",
+   "sha256": "83ae1602a4d24d596eba1aacd1ebb50eb80bcdfc212a0400c4862cb34a0c1d75",
+   "source_pts": 39.621,
+   "boxes": [
+    {
+     "bbox": [
+      1202,
+      633,
+      1319,
+      764
+     ],
+     "kind": "whole",
+     "tagged": true,
+     "distance": "far"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0200.jpg",
+   "sha256": "ce683a371c192c0e493e152b40eca3e7261158f4ede549e3cd754bce0050a317",
+   "source_pts": 39.821,
+   "boxes": [
+    {
+     "bbox": [
+      2458,
+      439,
+      2497,
+      498
+     ],
+     "kind": "junk",
+     "tagged": false,
+     "distance": null
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0202.jpg",
+   "sha256": "53cfb8fe86cec8f1816483e590e92f0c3af79948d3a6a715a31d8c57c040c6ae",
+   "source_pts": 40.221,
+   "boxes": [
+    {
+     "bbox": [
+      901,
+      392,
+      1121,
+      638
+     ],
+     "kind": "whole",
+     "tagged": true,
+     "distance": "close"
+    },
+    {
+     "bbox": [
+      995,
+      398,
+      1037,
+      451
+     ],
+     "kind": "frag",
+     "tagged": true,
+     "distance": "close"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0204.jpg",
+   "sha256": "79db48d122c1bf566ef5e221b69b398daf784ba481d154f6e7708d0a0a8c5571",
+   "source_pts": 40.621,
+   "boxes": [
+    {
+     "bbox": [
+      1091,
+      1104,
+      1277,
+      1404
+     ],
+     "kind": "whole",
+     "tagged": true,
+     "distance": "close"
+    },
+    {
+     "bbox": [
+      281,
+      721,
+      426,
+      817
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "mid"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0210.jpg",
+   "sha256": "73242992151dd8f1cdad8921ab48cbd995c4ec6c1bd78a7ed328fbbfa4999e0c",
+   "source_pts": 41.821,
+   "boxes": [
+    {
+     "bbox": [
+      471,
+      753,
+      586,
+      800
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "far"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0212.jpg",
+   "sha256": "25866766b68316fe25ec508d4cb91a49f4c88dbd38b530fce4fb622f6ac532c8",
+   "source_pts": 42.221,
+   "boxes": [
+    {
+     "bbox": [
+      380,
+      658,
+      502,
+      794
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "far"
+    },
+    {
+     "bbox": [
+      432,
+      691,
+      473,
+      738
+     ],
+     "kind": "frag",
+     "tagged": false,
+     "distance": "far"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0213.jpg",
+   "sha256": "dbc8144fc55f12d1940ce305f4487f089b64a28a5d2b3d2e5cd7b867f6276872",
+   "source_pts": 42.421,
+   "boxes": [
+    {
+     "bbox": [
+      1334,
+      515,
+      1520,
+      724
+     ],
+     "kind": "projected",
+     "tagged": true,
+     "distance": "far"
+    },
+    {
+     "bbox": [
+      554,
+      457,
+      608,
+      543
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "far"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0215.jpg",
+   "sha256": "480a0fd8a6ad9855a076714e73b190d0564ba8c5d5c0f5df4d493ca85ceaa1ab",
+   "source_pts": 42.821,
+   "boxes": [
+    {
+     "bbox": [
+      593,
+      337,
+      737,
+      476
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "far"
+    },
+    {
+     "bbox": [
+      1300,
+      445,
+      1473,
+      638
+     ],
+     "kind": "whole",
+     "tagged": true,
+     "distance": "mid"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0219.jpg",
+   "sha256": "2eb094b87177de9b5d398c99c0c10e127c4954d6c7dca56aa71a9991b1234077",
+   "source_pts": 43.621,
+   "boxes": [
+    {
+     "bbox": [
+      955,
+      553,
+      1037,
+      644
+     ],
+     "kind": "frag",
+     "tagged": false,
+     "distance": "close"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0221.jpg",
+   "sha256": "559dd498376aa0f65dfbbb9966ff3722548326b81369e4a4d85d5ff8c95b280a",
+   "source_pts": 44.021,
+   "boxes": [
+    {
+     "bbox": [
+      1086,
+      601,
+      1323,
+      1036
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "close"
+    },
+    {
+     "bbox": [
+      374,
+      234,
+      473,
+      416
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "mid"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0223.jpg",
+   "sha256": "2f2ca99361acad3507c0c8e94d37417cb3f31f847dece76229281736bcb09bb6",
+   "source_pts": 44.421,
+   "boxes": [
+    {
+     "bbox": [
+      421,
+      402,
+      609,
+      565
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "mid"
+    },
+    {
+     "bbox": [
+      1169,
+      823,
+      1305,
+      897
+     ],
+     "kind": "plate",
+     "tagged": true,
+     "distance": "mid"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0225.jpg",
+   "sha256": "d14bb0fdc39af3cc981f28b32b1fe81a847e53f093682b7fbf06fe96ca432505",
+   "source_pts": 44.821,
+   "boxes": [
+    {
+     "bbox": [
+      281,
+      505,
+      480,
+      656
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "mid"
+    },
+    {
+     "bbox": [
+      1178,
+      926,
+      1274,
+      994
+     ],
+     "kind": "plate",
+     "tagged": true,
+     "distance": "mid"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0228.jpg",
+   "sha256": "04be3b393bed5c4873616e2a9eb41a853b81c6864da5a714d526f2b8a8b2fe4a",
+   "source_pts": 45.421,
+   "boxes": [
+    {
+     "bbox": [
+      309,
+      499,
+      591,
+      704
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "close"
+    },
+    {
+     "bbox": [
+      644,
+      490,
+      836,
+      695
+     ],
+     "kind": "frag",
+     "tagged": false,
+     "distance": "close"
+    },
+    {
+     "bbox": [
+      662,
+      727,
+      747,
+      838
+     ],
+     "kind": "frag",
+     "tagged": false,
+     "distance": "close"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0238.jpg",
+   "sha256": "a1b4b0afff7ab8435297644d0dd8bc9c106aefc303fdd9b38d21a62db9eb759c",
+   "source_pts": 47.421,
+   "boxes": [
+    {
+     "bbox": [
+      2114,
+      880,
+      2306,
+      1291
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "close"
+    },
+    {
+     "bbox": [
+      1746,
+      463,
+      1903,
+      647
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "mid"
+    },
+    {
+     "bbox": [
+      2209,
+      715,
+      2359,
+      841
+     ],
+     "kind": "frag",
+     "tagged": false,
+     "distance": "close"
+    },
+    {
+     "bbox": [
+      2349,
+      903,
+      2397,
+      1015
+     ],
+     "kind": "frag",
+     "tagged": false,
+     "distance": "close"
+    },
+    {
+     "bbox": [
+      2021,
+      173,
+      2218,
+      392
+     ],
+     "kind": "junk",
+     "tagged": false,
+     "distance": null
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0241.jpg",
+   "sha256": "136bc0aacb546757cf14aa68bcaa662756fb60ca6fa24be1bc1a44d5092b73a7",
+   "source_pts": 48.021,
+   "boxes": [
+    {
+     "bbox": [
+      1174,
+      525,
+      1405,
+      711
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "mid"
+    },
+    {
+     "bbox": [
+      1662,
+      369,
+      1754,
+      460
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "far"
+    },
+    {
+     "bbox": [
+      2022,
+      174,
+      2218,
+      392
+     ],
+     "kind": "junk",
+     "tagged": false,
+     "distance": null
+    },
+    {
+     "bbox": [
+      256,
+      341,
+      314,
+      417
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "far"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0244.jpg",
+   "sha256": "91bca46dbbd9b48c955b4c9d788f3082f89e62e3b05ab318210af6ca7405b7c8",
+   "source_pts": 48.621,
+   "boxes": [
+    {
+     "bbox": [
+      938,
+      455,
+      1138,
+      656
+     ],
+     "kind": "whole",
+     "tagged": true,
+     "distance": "mid"
+    },
+    {
+     "bbox": [
+      623,
+      274,
+      768,
+      408
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "far"
+    },
+    {
+     "bbox": [
+      2021,
+      179,
+      2228,
+      410
+     ],
+     "kind": "junk",
+     "tagged": false,
+     "distance": null
+    },
+    {
+     "bbox": [
+      1526,
+      501,
+      1647,
+      637
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "mid"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0247.jpg",
+   "sha256": "60cbaac97eb2d87217f8336a6f27932cf55fa50c1b5bcc7e19ebf0a6b2190bc3",
+   "source_pts": 49.221,
+   "boxes": [
+    {
+     "bbox": [
+      991,
+      346,
+      1261,
+      457
+     ],
+     "kind": "merged",
+     "tagged": null,
+     "distance": "far"
+    },
+    {
+     "bbox": [
+      1659,
+      269,
+      1804,
+      451
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "far"
+    },
+    {
+     "bbox": [
+      2021,
+      174,
+      2217,
+      392
+     ],
+     "kind": "junk",
+     "tagged": false,
+     "distance": null
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0248.jpg",
+   "sha256": "d1e01a9ba37aef6dc88517a2680591f1995e5f225e6e6b3cbb2cae6249ee3fa7",
+   "source_pts": 49.421,
+   "boxes": [
+    {
+     "bbox": [
+      1401,
+      423,
+      1545,
+      574
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "far"
+    },
+    {
+     "bbox": [
+      2033,
+      173,
+      2228,
+      391
+     ],
+     "kind": "junk",
+     "tagged": false,
+     "distance": null
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0250.jpg",
+   "sha256": "faa1a9d9f7cda2b5911cf2402395b0d1bfdbeff0c92cd046e831dbcb4203c5d5",
+   "source_pts": 49.821,
+   "boxes": [
+    {
+     "bbox": [
+      2014,
+      138,
+      2141,
+      279
+     ],
+     "kind": "junk",
+     "tagged": false,
+     "distance": null
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0251.jpg",
+   "sha256": "3dfb5339216982300a9f93b9396716db77e82c85e880f472c16a7be392bbb32d",
+   "source_pts": 50.021,
+   "boxes": [
+    {
+     "bbox": [
+      901,
+      465,
+      1108,
+      561
+     ],
+     "kind": "whole",
+     "tagged": true,
+     "distance": "far"
+    },
+    {
+     "bbox": [
+      2021,
+      176,
+      2222,
+      401
+     ],
+     "kind": "junk",
+     "tagged": false,
+     "distance": null
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0253.jpg",
+   "sha256": "485ff0c9b5340a5a756d84ee6a8e16cea1a4ed5409c423a913bd80b21c850b73",
+   "source_pts": 50.421,
+   "boxes": [
+    {
+     "bbox": [
+      915,
+      457,
+      1144,
+      554
+     ],
+     "kind": "whole",
+     "tagged": true,
+     "distance": "far"
+    },
+    {
+     "bbox": [
+      2021,
+      178,
+      2227,
+      408
+     ],
+     "kind": "junk",
+     "tagged": false,
+     "distance": null
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0255.jpg",
+   "sha256": "5d32e79a26f66402f143a12603542a61d1ee6ae83b8dfa7dbaa75d72105c2403",
+   "source_pts": 50.821,
+   "boxes": [
+    {
+     "bbox": [
+      579,
+      766,
+      813,
+      894
+     ],
+     "kind": "merged",
+     "tagged": null,
+     "distance": "far"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0257.jpg",
+   "sha256": "b4f4f94753158402ca0cdf28ba34439ce035bd166ca0d16d58b89a371865cbc1",
+   "source_pts": 51.221,
+   "boxes": [
+    {
+     "bbox": [
+      1098,
+      380,
+      1379,
+      445
+     ],
+     "kind": "merged",
+     "tagged": null,
+     "distance": "far"
+    },
+    {
+     "bbox": [
+      1582,
+      449,
+      1614,
+      498
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "far"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0260.jpg",
+   "sha256": "efd7a4f2c5e31e82264c0cbef63a4028b92e54c8479cee7787d5a7d013ae38c2",
+   "source_pts": 51.821,
+   "boxes": [
+    {
+     "bbox": [
+      1769,
+      431,
+      1913,
+      554
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "far"
+    },
+    {
+     "bbox": [
+      1269,
+      714,
+      1343,
+      818
+     ],
+     "kind": "frag",
+     "tagged": false,
+     "distance": "mid"
+    },
+    {
+     "bbox": [
+      993,
+      415,
+      1137,
+      452
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "far"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0264.jpg",
+   "sha256": "802b4f54fad646ae5d27c563f5d091a9aef5a5fc4528e1a11a711685a098c63d",
+   "source_pts": 52.621,
+   "boxes": [
+    {
+     "bbox": [
+      1025,
+      423,
+      1289,
+      696
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "close"
+    },
+    {
+     "bbox": [
+      1370,
+      151,
+      1428,
+      297
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "far"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0265.jpg",
+   "sha256": "41cd051d75617e7ca4baed5a0ef37ac5b9cc82b4f2b4f18609d33ea5774ee355",
+   "source_pts": 52.821,
+   "boxes": [
+    {
+     "bbox": [
+      1321,
+      819,
+      1585,
+      1232
+     ],
+     "kind": "whole",
+     "tagged": true,
+     "distance": "close"
+    },
+    {
+     "bbox": [
+      1525,
+      215,
+      1625,
+      339
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "far"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0266.jpg",
+   "sha256": "a985e79d4c4a88123aae309e5f4c4aaa7553e628183edd1d50b34125fa8a9ede",
+   "source_pts": 53.021,
+   "boxes": [
+    {
+     "bbox": [
+      1862,
+      1057,
+      2133,
+      1201
+     ],
+     "kind": "whole",
+     "tagged": true,
+     "distance": "close"
+    },
+    {
+     "bbox": [
+      736,
+      167,
+      858,
+      319
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "far"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0273.jpg",
+   "sha256": "471fddef9e318286ea4c2e26b48ec7a38b921321f852bb31d25e34c7e88d1cce",
+   "source_pts": 54.421,
+   "boxes": [
+    {
+     "bbox": [
+      1279,
+      745,
+      1360,
+      884
+     ],
+     "kind": "whole",
+     "tagged": true,
+     "distance": "far"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0274.jpg",
+   "sha256": "f5121835158c2e50187b97e01791cd7d4fce057cfd7e8faf850d33045003d83d",
+   "source_pts": 54.621,
+   "boxes": [
+    {
+     "bbox": [
+      1849,
+      1080,
+      1937,
+      1136
+     ],
+     "kind": "frag",
+     "tagged": true,
+     "distance": "far"
+    },
+    {
+     "bbox": [
+      1881,
+      1165,
+      1926,
+      1222
+     ],
+     "kind": "frag",
+     "tagged": true,
+     "distance": "far"
+    },
+    {
+     "bbox": [
+      1838,
+      1090,
+      1960,
+      1227
+     ],
+     "kind": "whole",
+     "tagged": true,
+     "distance": "far"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0275.jpg",
+   "sha256": "9d36b1d25e1660ce271e0ffbaa032d22e3cab76989d61013c7bc5c7f224b8ca8",
+   "source_pts": 54.821,
+   "boxes": [
+    {
+     "bbox": [
+      133,
+      710,
+      321,
+      1035
+     ],
+     "kind": "whole",
+     "tagged": false,
+     "distance": "close"
+    },
+    {
+     "bbox": [
+      1957,
+      1055,
+      2007,
+      1168
+     ],
+     "kind": "frag",
+     "tagged": true,
+     "distance": "far"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0277.jpg",
+   "sha256": "39a2bc621801a6c5f75986bd382fee048a85755c5285c90549ba05811e0fb846",
+   "source_pts": 55.221,
+   "boxes": [
+    {
+     "bbox": [
+      1275,
+      772,
+      1344,
+      913
+     ],
+     "kind": "whole",
+     "tagged": true,
+     "distance": "far"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0279.jpg",
+   "sha256": "4d998bb79bc320e989022d3a642d8cd6b035187a24905568ecef8f7f4e4d4d93",
+   "source_pts": 55.621,
+   "boxes": [
+    {
+     "bbox": [
+      1151,
+      831,
+      1337,
+      1095
+     ],
+     "kind": "whole",
+     "tagged": true,
+     "distance": "mid"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0342.jpg",
+   "sha256": "f990f79eb9ec46446a380bd0ac99b7e61a13b8ebb168588453cc4079b3e22ac6",
+   "source_pts": 68.221,
+   "boxes": [
+    {
+     "bbox": [
+      1087,
+      620,
+      1301,
+      736
+     ],
+     "kind": "whole",
+     "tagged": true,
+     "distance": "far"
+    }
+   ]
+  },
+  {
+   "path": "data/hud/calib-20260923/frames5/0343.jpg",
+   "sha256": "813fe117f70489a2f5a0e5ae971da57849c14747ac0948c932040bf07dcb3e30",
+   "source_pts": 68.421,
+   "boxes": [
+    {
+     "bbox": [
+      1044,
+      635,
+      1257,
+      749
+     ],
+     "kind": "whole",
+     "tagged": true,
+     "distance": "far"
+    }
+   ]
+  }
+ ]
+}
