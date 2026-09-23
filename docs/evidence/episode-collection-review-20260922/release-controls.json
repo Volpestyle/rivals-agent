@@ -1,0 +1,58 @@
+[
+  {
+    "mode": "scripted",
+    "fault": "first_phase_no_file",
+    "passed": true,
+    "candidate_save_state": []
+  },
+  {
+    "mode": "scripted",
+    "fault": "release_first_attempt_fails",
+    "passed": true,
+    "candidate_save_state": [
+      {
+        "attempts": 2,
+        "release_returned": true
+      }
+    ]
+  },
+  {
+    "mode": "scripted",
+    "fault": "release_all_fail",
+    "passed": true,
+    "candidate_save_state": [
+      {
+        "attempts": 2,
+        "release_returned": false
+      }
+    ]
+  },
+  {
+    "mode": "range-skill",
+    "fault": "first_phase_no_file",
+    "passed": true,
+    "candidate_save_state": []
+  },
+  {
+    "mode": "range-skill",
+    "fault": "release_first_attempt_fails",
+    "passed": true,
+    "candidate_save_state": [
+      {
+        "attempts": 2,
+        "release_returned": true
+      }
+    ]
+  },
+  {
+    "mode": "range-skill",
+    "fault": "release_all_fail",
+    "passed": true,
+    "candidate_save_state": [
+      {
+        "attempts": 2,
+        "release_returned": false
+      }
+    ]
+  }
+]

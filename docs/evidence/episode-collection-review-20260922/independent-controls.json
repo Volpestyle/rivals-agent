@@ -1,0 +1,78 @@
+[
+  {
+    "mode": "scripted",
+    "fault": "valid",
+    "stop": "max_time",
+    "neutral": true,
+    "passed": true
+  },
+  {
+    "mode": "scripted",
+    "fault": "focus_at_offense",
+    "stop": "range_lost",
+    "neutral": true,
+    "passed": true
+  },
+  {
+    "mode": "scripted",
+    "fault": "terminal_save_error",
+    "stop": "max_time",
+    "neutral": true,
+    "passed": true
+  },
+  {
+    "mode": "scripted",
+    "fault": "feed_reader_error",
+    "stop": "error: RuntimeError: independent feed reader error",
+    "neutral": true,
+    "passed": true
+  },
+  {
+    "mode": "range-skill",
+    "fault": "valid",
+    "stop": "max_time",
+    "neutral": true,
+    "passed": true
+  },
+  {
+    "mode": "range-skill",
+    "fault": "focus_at_offense",
+    "stop": "range_lost",
+    "neutral": true,
+    "passed": true
+  },
+  {
+    "mode": "range-skill",
+    "fault": "terminal_save_error",
+    "stop": "max_time",
+    "neutral": true,
+    "passed": true
+  },
+  {
+    "mode": "range-skill",
+    "fault": "feed_reader_error",
+    "stop": "error: RuntimeError: independent feed reader error",
+    "neutral": true,
+    "passed": true
+  },
+  {
+    "fault": "writer_no_file",
+    "passed": true,
+    "stop": "error: OSError: required collection frame was not saved: scoreboard-baseline.png"
+  },
+  {
+    "fault": "writer_false_with_file",
+    "passed": true,
+    "stop": "error: OSError: required collection frame was not saved: scoreboard-baseline.png"
+  },
+  {
+    "fault": "missing_phase",
+    "passed": true,
+    "stop": "collection_no_phase_frame"
+  },
+  {
+    "fault": "unknown_mid_feed",
+    "passed": true,
+    "stop": "max_time"
+  }
+]

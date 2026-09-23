@@ -459,13 +459,16 @@ class RunLog:
             self.saved, self.next_save = self.saved + 1, row["t"] + 1.0 / self.save_fps
         self.f.write(json.dumps(row) + "\n")
 
-    def save(self, name, frame):
+    def save(self, name, frame, *, required=False):
         if frame is None:
             return None
         if self.imwrite is None:
             import cv2
             self.imwrite = lambda path, img: cv2.imwrite(str(path), img, [cv2.IMWRITE_JPEG_QUALITY, 90])
-        self.imwrite(self.out / f"{name}.png", frame)   # native and lossless: 6 px digits do not survive a lossy copy
+        path = self.out / f"{name}.png"
+        written = self.imwrite(path, frame)   # native and lossless: 6 px digits do not survive a lossy copy
+        if required and (written is False or not path.is_file()):
+            raise OSError(f"required collection frame was not saved: {path.name}")
         return f"{name}.png"
 
     def close(self, meta, segments):
@@ -490,7 +493,19 @@ class Loop:
     def __init__(self, source, pad, percept, decide=scripted.decide, *, log=None, controller=None, threaded=False,
                  reflex_hz=REFLEX_HZ, decision_hz=DECISION_HZ, max_s=MAX_S, keepalive_s=KEEPALIVE_S, warmup=True,
                  stale_s=STALE_S, scoreboard=True, scoreboard_every_s=None, brain_name="scripted", tracker=None, cooldowns="unknown",
-                 patch=None, start=None, range_receipt=None, execution_clock=None, scope_not_after=None):
+                 patch=None, start=None, range_receipt=None, execution_clock=None, scope_not_after=None,
+                 collect_episode=False, candidate_feed=None):
+        if candidate_feed is not None and not collect_episode:
+            raise ValueError("candidate feed stopping requires episode collection")
+        if collect_episode:
+            if (brain_name not in {"scripted", "range-skill"} or log is None or not scoreboard
+                    or scoreboard_every_s is not None or not math.isfinite(max_s) or not 0 < max_s <= 20):
+                raise ValueError("episode collection needs scripted/range-skill, a log, end scoreboard and duration <=20s")
+            warmup, keepalive_s = False, None
+        self.collect_episode, self.candidate_feed = collect_episode, candidate_feed
+        self.collection = ({"status": "baseline_pending", "clock": "loop_seconds",
+                            "readiness_accepted": None, "designated_completion": None,
+                            "first_phase": None, "candidate_feed": None} if collect_episode else None)
         if scope_not_after is not None and (type(scope_not_after) not in (int, float) or not math.isfinite(scope_not_after)):
             raise ValueError("scope_not_after must be a finite loop-clock timestamp")
         self.scope_not_after = scope_not_after
@@ -560,7 +575,9 @@ class Loop:
             raise
         finally:
             self.stop = reason
-            self._finish(reason, preserve_error=propagating_error and self.range_skill_mode)
+            if self.collect_episode and self.collection["status"] != "phase_started":
+                self.collection.update(status="refused", reason=reason)
+            self._finish(reason, preserve_error=propagating_error and (self.range_skill_mode or self.collect_episode))
         return self.summary()
 
     def _loop(self):
@@ -571,6 +588,11 @@ class Loop:
         self._frame_clock = (t, time.perf_counter())
         if not self.p.in_range(frame):                  # before ANY input, on a fresh frame
             return "no_range_hud_at_start"
+        if self.collect_episode:
+            prepared = self._prepare_episode(frame, t)
+            if isinstance(prepared, str):
+                return prepared
+            frame, t = prepared
         self.t0 = self.last_ok = self.last_board = t
         self.last_active = -math.inf if self.warmup else t     # the first input after a pad connects is swallowed: warm up
         while True:
@@ -588,6 +610,46 @@ class Loop:
             frame, t = nxt
             self._frame_clock = (t, time.perf_counter())
 
+    def _prepare_episode(self, frame, t):
+        """Collect evidence before any decision; no readiness or target-health inference."""
+        if self.p.idle(frame):
+            return "collection_idle_at_start"
+        self._scoreboard(t, "scoreboard-baseline")
+        board = self.boards[-1]
+        self.collection["baseline"] = deepcopy(board)
+        parsed = board.get("parsed") or {}
+        if (not board.get("file") or board.get("capture_interval") is None
+                or parsed.get("open") is not True or type(parsed.get("kos")) is not int or parsed["kos"] < 0):
+            return "collection_baseline_refused"
+        requested = self._execution_now()
+        self.collection["reacquire_requested_t"] = requested
+        first = self.source.next()
+        if first is None:
+            return "collection_no_phase_frame"
+        frame, t = first
+        self._frame_clock = (t, time.perf_counter())
+        now = self._execution_now()
+        if (not math.isfinite(t) or t < requested or t <= board["captured_t"]
+                or now < t or now - t > LOST_GRACE_S):
+            return "collection_phase_frame_not_fresh"
+        if (self.scope_not_after is not None and now >= self.scope_not_after) or not self.p.in_range(frame):
+            return "collection_phase_guard_refused"
+        if self.p.idle(frame):
+            return "collection_idle_at_start"
+        evidence = {"t": t, "file": None, "size": list(self.p.size(frame)),
+                    "feed_present": self.candidate_feed(frame) if self.candidate_feed else None}
+        self.collection["first_phase"] = evidence
+        evidence["file"] = self.log.save("episode-first-phase", frame, required=True)
+        if self.candidate_feed and evidence["feed_present"] is not False:
+            return "collection_start_feed_not_absent"
+        # Saving evidence consumes the original budget; it cannot renew the frame.
+        if self._execution_now() - t > LOST_GRACE_S:
+            return "collection_phase_frame_not_fresh"
+        if self.scope_not_after is not None and self._execution_now() >= self.scope_not_after:
+            return "collection_phase_guard_refused"
+        self.collection["status"] = "phase_started"
+        return frame, t
+
     def _execution_now(self):
         """Execution clock, never a replacement for a frame/resource timestamp.
 
@@ -602,7 +664,7 @@ class Loop:
         return observed + time.perf_counter() - returned
 
     def _finish(self, reason, *, preserve_error=False):
-        if self.range_skill_mode:
+        if self.range_skill_mode or self.collect_episode:
             self._release(reason, force=True)           # records cancellation and actual release separately
         else:
             for _ in range(2):                         # preserve the legacy cleanup/retry contract
@@ -612,7 +674,7 @@ class Loop:
                 except Exception as e:
                     self.errors.append(f"release: {e!r}")
         self.decider.close()
-        if self.scoreboard and reason in END_SCOREBOARD and self.t0 is not None:
+        if self.scoreboard and (reason in END_SCOREBOARD or (self.collect_episode and reason == "candidate_feed")) and self.t0 is not None:
             try:
                 self._scoreboard(self.last_t, "scoreboard-end")
             except Exception as e:                      # noqa: BLE001
@@ -639,7 +701,7 @@ class Loop:
         self.last_t = t
         if t - self.t0 >= self.max_s:
             return "max_time"
-        if self.brain_name == "range-skill":
+        if self.brain_name == "range-skill" or self.collect_episode:
             now = self._execution_now()
             if self.scope_not_after is not None and now >= self.scope_not_after:
                 return "range_lost"
@@ -659,10 +721,17 @@ class Loop:
             self._log(t, NEUTRAL, "range_lost", "guard", frame)
             # The first skill pilot ends on a range gap: an old event proposal
             # must never resume after an out-of-range release.
-            return "range_lost" if self.range_skill_mode or t - self.lost_since > LOST_GRACE_S else None
+            return "range_lost" if self.range_skill_mode or self.collect_episode or t - self.lost_since > LOST_GRACE_S else None
         if self.lost_since is not None:
             self.gaps[-1][1], self.lost_since = t, None
         self.last_ok = t
+
+        if self.candidate_feed and t > self.t0 and self.candidate_feed(frame) is True:
+            self._release("candidate_feed", force=True)  # neutral before image encoding or logging
+            candidate = {"t": t, "file": None, "feed_present": True, "designated_completion": None}
+            self.collection["candidate_feed"] = candidate
+            candidate["file"] = self.log.save("episode-candidate-feed", frame, required=True)
+            return "candidate_feed"
 
         self.size = size = p.size(frame)
         a0 = time.perf_counter()
@@ -718,6 +787,11 @@ class Loop:
                 self._log(t, None, label(intent), source, frame, dets,
                           self.tick_ms[-1], d, origin=origin, event=self._send_event())
                 return None
+        elif self.collect_episode:
+            deadline = min(self.t0 + self.max_s, self.scope_not_after) if self.scope_not_after is not None else self.t0 + self.max_s
+            if self._execution_now() >= deadline:
+                return "max_time" if deadline == self.t0 + self.max_s else "range_lost"
+            self.pad.send_guarded(pad, not_after=deadline, release_at=deadline, scope_not_after=self.scope_not_after)
         else:
             self.pad.send(pad)                          # Live confirms its own frame again: a second, independent guard
         self.sent = pad
@@ -826,30 +900,30 @@ class Loop:
         return pad
 
     def _release(self, reason="explicit_release", *, force=False):
-        if not self.range_skill_mode:
+        if not self.range_skill_mode and not self.collect_episode:
             if self.sent != NEUTRAL:
                 self.pad.release()
                 self.sent = dict(NEUTRAL)
             return
         trace = None
-        now = self._execution_now() if self.range_skill_mode else None
+        now = self._execution_now()
         if self.range_skill_mode:
             self.ctrl.cancel_range_skill(now, reason)
             trace = self.ctrl.range_skill_trace
         attempts = []
         for _ in range(2):
-            attempt = {"attempted_t": self._execution_now() if self.range_skill_mode else None}
+            attempt = {"attempted_t": self._execution_now()}
             try:
                 self.pad.release()
                 self.sent = dict(NEUTRAL)
-                attempt.update(status="returned", returned_t=self._execution_now() if self.range_skill_mode else None)
+                attempt.update(status="returned", returned_t=self._execution_now())
                 attempts.append(attempt)
                 break
             except Exception as e:                      # cleanup must not hide the original stop
-                attempt.update(status="failed", error=repr(e), returned_t=self._execution_now() if self.range_skill_mode else None)
+                attempt.update(status="failed", error=repr(e), returned_t=self._execution_now())
                 attempts.append(attempt)
                 self.errors.append(f"release: {e!r}")
-        if self.range_skill_mode:
+        if self.range_skill_mode or self.collect_episode:
             event = {"t": now, "type": "executor_release", "reason": reason,
                      "observation_t": self.last_t, "range_skill_trace": trace,
                      "release_attempts": attempts, "neutral_requested": True,
@@ -868,7 +942,7 @@ class Loop:
         """Hold BACK, keep the frame, release: Live.scoreboard presses BACK only on a proven range frame, keeps it down only while each new
         frame is recognised as the board (releasing at once on anything else), and needs the range back after. A frame is stored only if the
         loop's own recognizer also calls it a board."""
-        self._release("scoreboard")
+        self._release("scoreboard", force=self.collect_episode)
         skipped = lambda why: self.boards.append({"t": round(t, 3), "file": None, "skipped": why, "parsed": None})   # noqa: E731
         if self.p.is_board is None:
             return skipped("no_board_check")                            # BACK is not pressed without a way to know the board opened
@@ -886,6 +960,12 @@ class Loop:
                           and t <= interval[0] <= interval[1])
         timing = {"captured_t": interval[1], "capture_interval": list(interval),
                   "capture_clock": "grab_start_to_return_loop_seconds"} if valid_interval else {}
+        if self.collect_episode:
+            record = {"t": round(t, 3), **timing, "file": None,
+                      "size": list(self.p.size(board)), "parsed": self._read_board(board)}
+            self.boards.append(record)                  # retain acquisition/parse even if the save fails
+            record["file"] = self.log.save(name, board, required=True)
+            return
         self.boards.append({"t": round(t, 3), **timing,
                             "file": self.log.save(name, board) if self.log else None,
                             "size": list(self.p.size(board)), "parsed": self._read_board(board)})
@@ -978,7 +1058,8 @@ class Loop:
                 "intents": dict(self.intents), "keepalives": self.keepalives, "range_gaps": self.gaps,
                 "scoreboards": self.boards, "errors": self.errors, "native": list(self.size) if self.size else None,
                 **({"start": self.start} if self.start is not None else {}),
-                **({"executor_events": deepcopy(self.executor_events)} if self.range_skill_mode else {}),
+                **({"executor_events": deepcopy(self.executor_events)} if self.range_skill_mode or self.collect_episode else {}),
+                **({"episode_collection": deepcopy(self.collection)} if self.collect_episode else {}),
                 **({"decision_schedule": {"rule": "first_reflex_acquisition_after_phase", "clock": "loop_seconds",
                                           "selection_domain": "reflex_eligible_acquisitions",
                                           "processing_clock": "perf_counter_seconds", "origin_t": self.decision_slots.origin,
@@ -1065,6 +1146,11 @@ def _scoreboard_readers():
     return (lambda f: is_scoreboard(f) is True), (lambda f: banner_score(f) >= BANNER_MIN)
 
 
+def _killfeed_reader():
+    from perception.scoreboard import is_killfeed
+    return is_killfeed
+
+
 def _live_scope_proof(reader, focused, not_after):
     """Compose scope with a pixel proof, including after a potentially slow reader.
 
@@ -1100,7 +1186,9 @@ def main(argv=None):
     ap.add_argument("--range-identity", help="range: JSON identity from reviewed experiment configuration; never inferred from weights")
     ap.add_argument("--range-runtime", help="range: separate observed pad/settings/calibration/controller profile JSON")
     ap.add_argument("--range-deployment", help="range: reviewed checkpoint-to-runtime deployment binding JSON")
-    ap.add_argument("--game-pid", type=int, help="live range-skill: required foreground game process PID; no focus changes")
+    ap.add_argument("--game-pid", type=int, help="live range-skill or episode collection: required foreground game PID; no focus changes")
+    ap.add_argument("--collect-episode", action="store_true", help="live scripted/range-skill: require native baseline board, then record a fresh phase-origin frame for audit")
+    ap.add_argument("--stop-on-feed", action="store_true", help="collection only: stop on feed presence after a no-feed start; candidate evidence, not designated KO credit")
     ap.add_argument("--cooldowns", choices=COOLDOWNS, help="the recording's resource regime: the range's Practice Settings 'No Ability Cooldown' "
                     "ON is `off`, OFF is `normal`. Required with --live, and only off or normal there; written into meta.json and the manifest")
     ap.add_argument("--run", default=time.strftime("%Y%m%d-%H%M%S"), help="live: record to data/l1/<run>")
@@ -1118,7 +1206,13 @@ def main(argv=None):
                     "no log, no loop, no scoreboard")
     a = ap.parse_args(argv)
     if a.max_s is None:
-        a.max_s = 20.0 if a.brain in RANGE_BRAINS else MAX_S
+        a.max_s = 20.0 if a.brain in RANGE_BRAINS or a.collect_episode else MAX_S
+    if a.stop_on_feed and not a.collect_episode:
+        ap.error("--stop-on-feed requires --collect-episode")
+    if a.collect_episode and (not a.live or a.pose_only or a.brain not in {"scripted", "range-skill"}
+                             or a.no_scoreboard or a.scoreboard_every is not None
+                             or a.cooldowns != "normal" or not math.isfinite(a.max_s) or not 0 < a.max_s <= 20):
+        ap.error("episode collection requires live scripted/range-skill, normal cooldowns, end scoreboard and --max-s in (0,20]")
     if a.pose_only and not a.live:
         ap.error("--pose-only needs --live")
     if a.live and not a.pose_only and a.cooldowns not in ("off", "normal"):
@@ -1176,17 +1270,18 @@ def main(argv=None):
                                    if a.brain == "range-skill" else "legacy_idle_engage_offline_diagnostic")}
 
     focused = None
-    if a.live and a.brain == "range-skill":
+    if a.live and (a.brain == "range-skill" or a.collect_episode):
         if a.game_pid is None or not 0 < a.game_pid <= 0xffffffff:
-            ap.error("live range-skill requires --game-pid as a positive DWORD integer")
+            ap.error("live range-skill/collection requires --game-pid as a positive DWORD integer")
         focused = foreground_pid_guard(a.game_pid)
         if focused() is not True:
             ap.error("configured game process is not foreground; no perception, capture or pad opened")
 
-    start = percept = scope = None
+    start = percept = scope = candidate_feed = None
     if a.live:
         percept, plaza = default_perception(), _plaza_view()   # everything slow BEFORE the pad opens: the attach drift runs until priming
         board, session = _scoreboard_readers() if focused is not None else (None, None)
+        candidate_feed = _killfeed_reader() if a.stop_on_feed else None
         if focused is not None and focused() is not True:
             ap.error("configured game process lost foreground during preload; no capture or pad opened")
         t_open = time.perf_counter()
@@ -1196,6 +1291,8 @@ def main(argv=None):
             from .controller import Live
             deadline = t_open + START_DEADLINE_S + a.max_s
             start_guard = _live_scope_proof(percept.in_range, focused, deadline)
+            if a.collect_episode:
+                percept = replace(percept, in_range=start_guard)
             native = Live(guard=start_guard, board_guard=_live_scope_proof(board, focused, deadline),
                           session_guard=_live_scope_proof(session, focused, deadline), settle_s=0)
             try:
@@ -1250,8 +1347,12 @@ def main(argv=None):
                     scoreboard=not a.no_scoreboard, scoreboard_every_s=a.scoreboard_every, cooldowns=a.cooldowns or "unknown",
                     warmup=not a.live, start=start,
                     patch=range_runtime.patch if range_runtime else range_identity.patch if range_identity else None,
-                    range_receipt=range_receipt, scope_not_after=scope["not_after_t"] if scope else None)
-        print(json.dumps(loop.run(), indent=1))
+                    range_receipt=range_receipt, scope_not_after=scope["not_after_t"] if scope else None,
+                    collect_episode=a.collect_episode, candidate_feed=candidate_feed)
+        result = loop.run()
+        print(json.dumps(result, indent=1))
+        if a.collect_episode and result["episode_collection"]["status"] == "refused":
+            return 1
     finally:
         if a.live:
             source.close()                              # Live.close(): neutral, its lease watchdog ended, no input accepted after
