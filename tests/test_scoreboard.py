@@ -12,6 +12,7 @@ The reader is checked only on the range scoreboard, which is all it claims.
 from __future__ import annotations
 
 import glob
+import hashlib
 import sys
 from pathlib import Path
 
@@ -190,6 +191,56 @@ def test_boards_read_with_their_own_values_held_out():
         sb.GLYPHS.clear()
         sb.GLYPHS.update(full)
         sb._CACHE.clear()
+
+
+def test_the_labelled_boards_still_learn_the_checked_in_glyphs():
+    """_gold_mask's edge gate must not move a pixel of a board the templates were
+    learned from; if it did, GLYPHS would be stale and have to be learned again."""
+    from perception import scoreboard as sb
+
+    if not _boards():
+        return
+    namespace = {}
+    exec(sb.learn([(RANGE_NATIVE, RANGE_TRUTH)] + _boards()), {}, namespace)
+    assert namespace["GLYPHS"] == sb.GLYPHS
+
+
+# The Galacta pilots' boards (local-only, data/l1/), KOs/deaths/assists read by
+# eye. Pinned by hash, so the value checked is the value a human read off that file.
+# The 09-23 slot-2 baseline is a pale board whose 13 read unknown before the edge
+# gate and refused the pilot's baseline (VUH-1319); the others are its controls.
+PILOT = ROOT / "data/l1"
+PILOT_BOARDS = {
+    "galacta-pilot-20260923-02-scripted/scoreboard-baseline.png":
+        ("1a51967ae8919fed286e2726bd7d2d99bb95f66c3ce32630508b416d5b8d86d3", (13, 0, 0)),
+    "galacta-pilot-20260923-01-learned/scoreboard-baseline.png":
+        ("3774a4cfac720e8b54e33e0612844d12948b141b91fdaee6d10d1f4464e70365", (12, 0, 0)),
+    "galacta-pilot-20260923-01-learned/scoreboard-end.png":
+        ("9ad822e4ad98745ecd1cd39e97a1c9775b88f5eec3d0e6c4c160fde7399492cf", (12, 0, 0)),
+    "galacta-pilot-20260922-01-learned/scoreboard-baseline.png":
+        ("e35e7acf12b1f71d839a1036ebfde675d113fed0e27527269401ed127b07ce78", (0, 0, 0)),
+    "galacta-pilot-20260922-01-learned/scoreboard-end.png":
+        ("b9a1a237a58fdaf82772c2b58b8ba545058aa4e7f11a60a05760bca07971cee8", (0, 0, 0)),
+    "galacta-pilot-20260922-03-scripted/scoreboard-baseline.png":
+        ("b37d1fb24bea2515843536d059dbafeb3cf7b586a7c5bb6838e1743d2b1c0858", (0, 0, 0)),
+    "galacta-pilot-20260922-03-scripted/scoreboard-end.png":
+        ("b6f6c50898dcc3a5678aa295ad2cdbf6472951ed3bd2ed7042bd44bc9984d457", (1, 0, 0)),
+    "galacta-pilot-20260922-04-learned/scoreboard-baseline.png":
+        ("b5ad122feb47e648db3c0663ecfcb9115063dfdefd80f17d09f3299c7e1ba852", (0, 0, 0)),
+}
+
+
+@pytest.mark.corpus
+@pytest.mark.parametrize("name", sorted(PILOT_BOARDS))
+def test_pilot_boards_read_their_tallies(name):
+    path = PILOT / name
+    if not path.exists():
+        pytest.skip(f"{name} is local to the machine that ran the pilot")
+    digest, want = PILOT_BOARDS[name]
+    assert hashlib.sha256(path.read_bytes()).hexdigest() == digest, f"{name} is not the frame read by eye"
+    got = read_scoreboard(cv2.imread(str(path)))
+    assert got["open"] is True
+    assert (got["kos"], got["deaths"], got["assists"]) == want, (name, got)
 
 
 def test_thousands_are_read_whole():

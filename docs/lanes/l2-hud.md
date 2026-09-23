@@ -806,6 +806,30 @@ accessibility setting and is currently green. Nothing here reads panel colour.
 from both clips and the range run, and picks up anything L4 drops into
 `docs/evidence/l4/scoreboard/` automatically.
 
+2026-09-23, a pale board's 13 read unknown (VUH-1319). The Galacta pilot's slot-2
+baseline (`data/l1/galacta-pilot-20260923-02-scripted/scoreboard-baseline.png`) read
+`kos: None` on a board showing 13 and refused the episode baseline. Segmentation was
+fine; the 3 was not a shape the bank holds. The board is semi-transparent and sat over
+a pale scene (max channel ~90 behind the digits against ~50–70 on the boards the bank
+was learned from), so the digits' third-covered anti-aliased edges landed at 140–149
+rather than 120–139 and crossed `_gold_mask`'s fixed `mx > 140` floor: the 3 came out
+12×23 with four-pixel strokes instead of 11×22, 0.138 from both 3 and 9, so unknown and
+not wrong. `_gold_mask` now also requires an edge pixel to rise `GOLD_EDGE` = 1/3 of the
+crop's peak tophat; it only ever removes pixels. It moves no pixel on the nine labelled
+boards (the first moves at 0.375), so `learn()` still returns the checked-in `GLYPHS`
+byte for byte; 0.30 is the least that reads the 13. On seventeen native boards (the
+nine labelled and the eight pilot boards, KO/D/A read by eye) every field reads as
+before except that `kos` goes from None to 13; the tightest runner-up margin among
+inexact glyphs rises from 0.000 to 0.055, and the 09-22 slot-3 baseline's zeros,
+fattened the same way, go from 0.076 to exact. Tests:
+`test_the_labelled_boards_still_learn_the_checked_in_glyphs` and the hash-pinned,
+corpus-marked `test_pilot_boards_read_their_tallies`. A read of the failing frame takes
+3.34 ms at the median, against 3.36 ms before. The reader is scorer evidence, outside
+the range-skill checkpoint identity (`perception_sha256` hashes `hud.py`, `outline.py`
+and `agent/loop.py`), but it is in
+the events writer fingerprint (`perception/events.py` `WRITER_FILES`) and in
+`policy/behaviour.py` `CODE`, so this edit re-stales both until they are regenerated.
+
 ## Guide timings
 
 Unblocked by reading the icon in each slot (below), then run over the two 16:9

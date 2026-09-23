@@ -242,6 +242,18 @@ PERCENTAGES = ("accuracy", "web_cluster_accuracy")
 FIELDS = tuple(KDA_X) + tuple(STATS_CX)
 
 
+# The scoreboard is semi-transparent, so the gold digits' anti-aliased edges take
+# the scene's brightness: an edge pixel a third covered is ~130 over the dark
+# panels the templates were learned on, but ~145 over a pale one, where the fixed
+# floor alone let it in. That fattened glyph is a pixel wider and taller than any
+# template; the "3" of a pale board's 13 sat 0.138 from both 3 and 9, so KOs read
+# unknown. An edge pixel must also rise a third of the crop's peak contrast above
+# the background. Over the nine labelled boards this changes not one pixel (the
+# first moves at 0.375), so `learn()` gives the same templates; 0.30 is the least
+# that reads that 13.
+GOLD_EDGE = 1 / 3
+
+
 def _gold_mask(img, scale):
     """Gold text off the strongest channel. The tallies are drawn in gold and a
     min-channel mask -- what reads the rest of the HUD -- sees nothing there."""
@@ -250,7 +262,8 @@ def _gold_mask(img, scale):
     mx = img.max(axis=2)
     top = cv2.morphologyEx(mx, cv2.MORPH_TOPHAT,
                            cv2.getStructuringElement(cv2.MORPH_RECT, (25, 25)))
-    return ((top > 40) & (mx > 140)).astype(np.uint8)
+    edge = GOLD_EDGE * int(top.max())
+    return ((top > 40) & (mx > 140) & (top > edge)).astype(np.uint8)
 
 
 def _read_tally(frame, box):
