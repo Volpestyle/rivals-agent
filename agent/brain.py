@@ -1,7 +1,7 @@
 """Decision layer: decide(state, memory) -> intent, called at 5-10 Hz.
 
 A scripted state machine. It picks *what* to do; the reflex controller (L4)
-does the aiming and button timing. decide() is gate() (retreat, holds, flicker:
+does the aiming and button timing. decide() is gate() (retreat, running options, flicker:
 no choice needed) then policy() (the choice). agent/jev.py replaces policy() with a
 model call and keeps gate(); keep decide()'s signature.
 
@@ -17,9 +17,14 @@ the tag state does not matter.
 Unknown fields (None in State) are never read as a value: unknown hp does not
 trigger a retreat, an unknown ability is not spent, an unknown tag does not
 press RB, an unknown detector frame is not "nothing there".
+
+Combo, Pull, WebStrike and SwingTo are options (VUH-1315): once committed they are
+repeated until an observation ends them (option_status: a KO on the kill feed, the
+target's arrival, its loss, a retreat) or their named upper bound passes. Memory.option
+is the status the brain reads, with the evidence that decided it.
 """
 import math
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 
 from .intents import BURST, Combo, Disengage, Engage, Idle, Intent, Pull, Search, SwingTo, WebStrike
 from .state import ANCHOR, ENEMY, PULL, SWING, TARGET, UPPERCUT, Detection, State
@@ -41,10 +46,65 @@ OUTSIDE_S = 1.5       # a target whose box stays outside the aim crop this long 
 HEIR_RATIO = 1.5      # a new id succeeds a held, coasting target within this height ratio: reach30's three lost hand-offs were 1.11-1.27 apart
 BARRED_S = 2.0        # a released id unseen this long is forgotten (the tracker drops an unseen id within CLOSE_AGE_S, 1.5 s)
 SEARCH_SWING_S = 3.0  # guess: searched this long with nothing in view: swing somewhere else
-BURST_HOLD_S = 3.0    # kit: a guide claims the whole burst fits under 3 s (unverified)
-PULL_HOLD_S = 0.8     # guess: 250 ms flight at 20 m plus the drag
-STRIKE_HOLD_S = 0.8   # guess: travel time is unmeasured
-SWING_HOLD_S = 1.2    # guess
+
+# Options end on evidence (option_status). These only cap one whose end is never observed, counted from the decision that committed it.
+BURST_MAX_S = 3.0     # historical: a guide claims the whole burst fits under 3 s (unverified). Measured: the controller's burst sequence lasts
+                      # 3.032 s from its first press (Controller.primitive; plaza30 armed 22.668, ended 25.700); burst trial 0's KO showed 1.64 s
+                      # after its LT (docs/lanes/l5-brain.md, "Observed option status")
+STRIKE_MAX_S = 0.8    # measured once: RB to arrival 0.65-0.86 s from ~12 m (burst trial 0, docs/lanes/l4-controller.md). It runs from the
+                      # decision, before the controller arms, so it is tighter than that: kept, not retuned
+PULL_MAX_S = 0.8      # historical guess: 250 ms flight at 20 m plus the drag; unmeasured
+SWING_MAX_S = 1.2     # historical guess; unmeasured
+FEED_CONFIRM = 2      # kill-feed True reads after a False that confirm a KO: the HUD event extractor's killfeed debounce (perception/events.py)
+
+# An option's status, and the observations that decide it (Evidence.observation).
+RUNNING, COMPLETED, FAILED, INTERRUPTED = "running", "completed", "failed", "interrupted"
+KO_FEED, ARRIVAL, TRACK_LOST, RELEASED, RETREAT_HP, SUPERSEDED, UPPER_BOUND = (
+    "ko_feed", "arrival", "track_lost", "released", "retreat", "superseded", "upper_bound")
+
+
+@dataclass(frozen=True)
+class OptionKind:
+    max_s: float                      # the named upper bound
+    completes_on: tuple = ()          # the observations that complete it: KO_FEED, ARRIVAL
+
+
+OPTIONS = {                           # the one table of option kinds: an intent committed with a time and listed here is an option
+    Combo: OptionKind(BURST_MAX_S, (KO_FEED,)),
+    WebStrike: OptionKind(STRIKE_MAX_S, (KO_FEED, ARRIVAL)),
+    Pull: OptionKind(PULL_MAX_S, (KO_FEED, ARRIVAL)),
+    SwingTo: OptionKind(SWING_MAX_S),  # nothing observes a swing's arrival: there is no anchor producer
+}
+
+
+@dataclass(frozen=True)
+class Evidence:
+    """The observation that decided an option's status: what was read, on the State of which time."""
+    observation: str                  # KO_FEED | ARRIVAL | TRACK_LOST | RELEASED | RETREAT_HP | SUPERSEDED | UPPER_BOUND
+    t: float                          # State.t of the State whose reading decided it
+    detail: str = ""
+
+
+@dataclass(frozen=True)
+class OptionStatus:
+    """A committed option and how it stands. Only option_status moves a running one; commit starts one and supersedes it."""
+    intent: Intent
+    start_t: float                    # State.t of the decision that committed it
+    bound_t: float                    # start_t + its OptionKind.max_s
+    status: str = RUNNING             # RUNNING | COMPLETED | FAILED | INTERRUPTED
+    evidence: Evidence | None = None  # what ended it; None while running
+    waiting_on: tuple = ()            # while running: the completion observations this State could not read
+
+    def end(self, status, evidence):
+        return replace(self, status=status, evidence=evidence, waiting_on=())
+
+    def to_dict(self):
+        """For a run log: the intent by kind and target id, never the Detection."""
+        held = getattr(self.intent, "target", None)
+        return {"kind": type(self.intent).__name__, "target": getattr(held, "track", None), "start_t": self.start_t,
+                "bound_t": self.bound_t, "status": self.status, "waiting_on": list(self.waiting_on),
+                "evidence": None if self.evidence is None else
+                {"observation": self.evidence.observation, "t": self.evidence.t, "detail": self.evidence.detail}}
 
 
 @dataclass(frozen=True)
@@ -75,7 +135,11 @@ class Memory:
     mode: str = SEARCH
     mode_t: float | None = None       # when the current mode was entered; set on the first tick
     intent: Intent = field(default_factory=Idle)
-    hold_until: float = -math.inf     # an ability sequence is playing; do not interrupt before this
+    option: OptionStatus | None = None  # the latest option, running or ended: repeated while it reads RUNNING
+    stop: Intent | None = None        # on this decision: the option whose playing primitive the controller stops (Controller.step(stop=))
+    t: float | None = None            # State.t of the latest decision
+    feed_off_t: float | None = None   # State.t the kill feed last read False
+    feed_on: tuple = ()               # State.t of each True read since then
     target: Detection | None = None
     target_t: float = -math.inf       # last time a hostile was seen
     retreat_armed: bool = True        # re-arms once hp recovers past HP_RESUME
@@ -92,7 +156,7 @@ def decide(state: State, memory: Memory) -> Intent:
 
 
 def gate(state: State, memory: Memory):
-    """The rules that need no choice: retreat, a playing hold, a target flickering out.
+    """The rules that need no choice: retreat, a running option, a target flickering out.
 
     Returns (intent, target). intent is None when the caller should choose one for
     `target` (None when no hostile is in view). A model-driven decide keeps this
@@ -101,6 +165,8 @@ def gate(state: State, memory: Memory):
     t = state.t
     if memory.mode_t is None:
         memory.mode_t = t
+    memory.t, memory.stop = t, None
+    ko = _ko(state, memory)
 
     hp = state.hp / state.max_hp if state.hp is not None and state.max_hp else None  # None = unreadable
 
@@ -125,20 +191,25 @@ def gate(state: State, memory: Memory):
             _enter(memory, SEARCH, t)
     elif hp is not None and hp <= HP_RETREAT and memory.retreat_armed:
         memory.retreat_armed = False
-        memory.hold_until = -math.inf
+        if running(memory):
+            memory.option = memory.option.end(INTERRUPTED, Evidence(RETREAT_HP, t, f"hp {hp:.2f} <= HP_RETREAT {HP_RETREAT}"))
         _enter(memory, RETREAT, t)
+    completed = False
+    if running(memory):
+        # The one place an option ends (option_status). While it runs, it is repeated: ITS OWN target here or briefly missing. A target
+        # gone or released ends it (trackerlive30 held a 3 s burst on a bot knocked out as it was chosen, pressing nothing); a primitive
+        # the controller is already playing still finishes then (only Idle, the retreat's Disengage and a stop cut one).
+        memory.option = option_status(state, memory, target, ko)
+        if memory.option.status == RUNNING:
+            return memory.intent, target
+        completed = memory.option.status == COMPLETED
+    if memory.option is not None and (completed or (ko is not None and KO_FEED in _kind(memory.option).completes_on)):
+        memory.stop = memory.option.intent   # a completed option stops its own primitive; a KO stops the latest attack's, however it ended
     if memory.mode == RETREAT:
         return commit(memory, Disengage()), target
 
-    if t < memory.hold_until and _hold_stands(state, memory, target):
-        return memory.intent, target   # a committed sequence runs its course while ITS OWN target is here or briefly missing
-    if t < memory.hold_until:
-        # A hold on a target that is gone or released protects nothing: trackerlive30 held a 3 s burst on a bot knocked out as it was
-        # chosen, pressing nothing. Cancelled here; a primitive the controller is already playing still finishes (only Idle and the
-        # retreat's Disengage cut one), and the choice below goes through the normal rules.
-        memory.hold_until = -math.inf
-
-    if target is None and (t - memory.target_t <= LOST_S or _coasting(state, memory)) and _intent_is_for(memory, memory.target):
+    if target is None and not completed and (t - memory.target_t <= LOST_S or _coasting(state, memory)) \
+            and _intent_is_for(memory, memory.target):
         return memory.intent, None  # flicker, or the tracker still holds the target's id: keep doing what we were doing
     if target is None:
         # Released: past LOST_S and no longer held by the tracker (a coast lasts at most CLOSE_AGE_S, 1.5 s). On postfreeze30 the brain
@@ -171,7 +242,7 @@ def policy(state: State, memory: Memory, target):
         anchor = _nearest(state, (ANCHOR,), crosshair(state))
         if anchor and ready(state, SWING) and t - memory.mode_t >= SEARCH_SWING_S:
             memory.mode_t = t  # restart the search clock
-            return commit(memory, SwingTo(anchor), t + SWING_HOLD_S)
+            return commit(memory, SwingTo(anchor), t)
         return commit(memory, Search())
 
     rng = range_of(target, state)
@@ -182,19 +253,19 @@ def policy(state: State, memory: Memory, target):
     if rng == "far":
         anchor = _nearest(state, (ANCHOR,), target.center)
         if anchor and ready(state, SWING):
-            return commit(memory, SwingTo(anchor), t + SWING_HOLD_S)
+            return commit(memory, SwingTo(anchor), t)
         return commit(memory, Engage(target))
 
     # Mid range: close the gap with Get Over Here! according to the tag.
     if ready(state, PULL):
         if target.tagged is True:
             # Auto-locks, so no aim check (kit: how close the crosshair must be is unverified).
-            return commit(memory, WebStrike(target), t + STRIKE_HOLD_S)
+            return commit(memory, WebStrike(target), t)
         if aimed_at(state, target):
             if state.webs and ready(state, UPPERCUT):
-                return commit(memory, Combo(BURST, target), t + BURST_HOLD_S)  # tags first: tag state is moot
+                return commit(memory, Combo(BURST, target), t)  # tags first: tag state is moot
             if target.tagged is False:
-                return commit(memory, Pull(target), t + PULL_HOLD_S)
+                return commit(memory, Pull(target), t)
             # tag unknown and no burst: RB could pull or zip, so do not press it blind
     return commit(memory, Engage(target))  # web_cluster from Engage tags it for the next tick
 
@@ -204,10 +275,80 @@ def _enter(memory, mode, t):
         memory.mode, memory.mode_t = mode, t
 
 
-def commit(memory, intent, hold_until=-math.inf):
-    memory.intent, memory.hold_until = intent, hold_until
+def commit(memory, intent, t=None):
+    """Issue `intent`. Given `t`, the State.t it was chosen on, an option kind (OPTIONS) starts running to its upper bound. A running option
+    it replaces is interrupted, superseded."""
+    if running(memory):
+        memory.option = memory.option.end(INTERRUPTED, Evidence(SUPERSEDED, t if t is not None else memory.t,
+                                                                f"{type(intent).__name__} committed"))
+    kind = OPTIONS.get(type(intent)) if t is not None else None
+    if kind is not None:
+        memory.option = OptionStatus(intent, t, t + kind.max_s)
+    memory.intent = intent
     memory.held_seen_t = memory.target_t      # the intent's target was chosen on this decision
     return intent
+
+
+def running(memory):
+    return memory.option is not None and memory.option.status == RUNNING
+
+
+def _kind(option):
+    """Its OptionKind; an intent not in OPTIONS (only ever set by hand) has no completion observation and keeps its own bound."""
+    return OPTIONS.get(type(option.intent), OptionKind(option.bound_t - option.start_t))
+
+
+def _ko(state, memory):
+    """Evidence of a KO confirmed on this State, else None: the kill feed read True FEED_CONFIRM times since it last read False. None neither
+    counts nor resets, and a line already up when first read is no onset. The feed names no victim; in the range every line is ours."""
+    if state.kill_feed is False:
+        memory.feed_off_t, memory.feed_on = state.t, ()
+    elif state.kill_feed is True and memory.feed_off_t is not None:
+        memory.feed_on += (state.t,)
+        if len(memory.feed_on) == FEED_CONFIRM:
+            reads = ", ".join(f"{x:.3f}" for x in memory.feed_on)
+            return Evidence(KO_FEED, state.t, f"kill feed False at {memory.feed_off_t:.3f}, True at {reads}; which bot is not read")
+    return None
+
+
+def _own_box(state, memory, held, target):
+    """The held target's box on this State: by its track id; untracked, the target in hand stands for it (as in _hold_stands)."""
+    if held is None:
+        return None
+    if held.track is None:
+        return target
+    return next((d for d in state.detections or [] if d.track == held.track and d.cls in HOSTILE), None)
+
+
+def option_status(state, memory, target, ko=None):
+    """The running option's status on this State: the one place one ends. The first of these that holds decides.
+
+    completed  a KO (`ko`, confirmed on this State; not SwingTo), or for Pull and WebStrike arrival: the held target's own box is near.
+    at the bound: failed when every completion observation was read on this State, else interrupted (evidence UPPER_BOUND): an unread
+               observation is not a failure, and a SwingTo, which none observes, always ends so.
+    interrupted  its own target lost or released: _hold_stands, thresholds unchanged. A tracked target is lost once the tracker holds
+               its id neither seen nor coasting (and LOST_S has passed since the brain last saw it).
+    Otherwise it is running, and names the observations this State could not read."""
+    op, t = memory.option, state.t
+    kind = _kind(op)
+    held = getattr(op.intent, "target", None)
+    if ko is not None and KO_FEED in kind.completes_on:
+        return op.end(COMPLETED, ko)
+    box = _own_box(state, memory, held, target)
+    if ARRIVAL in kind.completes_on and box is not None and range_of(box, state) == "near":
+        return op.end(COMPLETED, Evidence(ARRIVAL, t, f"target {held.track} box {box.height / state.frame[1]:.3f} of the frame high: near"))
+    unread = tuple(o for o in kind.completes_on if (o == KO_FEED and state.kill_feed is not False) or (o == ARRIVAL and box is None))
+    if t >= op.bound_t:
+        if kind.completes_on and not unread:
+            return op.end(FAILED, Evidence(UPPER_BOUND, t, f"{kind.max_s} s bound: no {' or '.join(kind.completes_on)}"))
+        why = f"{', '.join(unread)} not read" if unread else "no observation completes it"
+        return op.end(INTERRUPTED, Evidence(UPPER_BOUND, t, f"{kind.max_s} s bound: {why}"))
+    if not _hold_stands(state, memory, target):
+        if held.track in memory.barred:
+            return op.end(INTERRUPTED, Evidence(RELEASED, t, f"target {held.track} released: outside the aim crop {OUTSIDE_S} s"))
+        return op.end(INTERRUPTED, Evidence(TRACK_LOST, t, f"target {held.track}: not seen since {memory.held_seen_t:.3f}, not coasting"
+                                            if held.track is not None else f"untracked target unseen over LOST_S {LOST_S} s"))
+    return replace(op, waiting_on=unread)
 
 
 def crosshair(state):

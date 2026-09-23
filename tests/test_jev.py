@@ -10,7 +10,7 @@ import pytest
 from agent import brain, jev
 
 REAL_DOTENV = jev._dotenv  # bound at import, before conftest stubs it per test
-from agent.brain import BURST_HOLD_S, PULL_HOLD_S, STRIKE_HOLD_S, SWING_HOLD_S, Memory
+from agent.brain import BURST_MAX_S, PULL_MAX_S, STRIKE_MAX_S, SWING_MAX_S, Memory
 from agent.intents import BURST, Combo, Disengage, Engage, Idle, Pull, Search, SwingTo, WebStrike
 from agent.jev import HttpTransport, Jev, TransportError
 from agent.replay import synthetic
@@ -69,14 +69,14 @@ def scene():
 
 # --- mapping ----------------------------------------------------------------
 
-def test_every_intent_maps_back_with_its_hold():
+def test_every_intent_maps_back_with_its_option_bound():
     d0, d1 = enemy(1280, tagged=False), enemy(1700, tagged=True)
     cases = [
         (reply("engage", target=0), Engage(d0), None),
-        (reply("pull", target=0), Pull(d0), PULL_HOLD_S),
-        (reply("web_strike", target=1), WebStrike(d1), STRIKE_HOLD_S),
-        (reply(BURST, target=0), Combo(BURST, d0), BURST_HOLD_S),
-        (reply("swing_to", anchor=0), SwingTo(ANCH), SWING_HOLD_S),
+        (reply("pull", target=0), Pull(d0), PULL_MAX_S),
+        (reply("web_strike", target=1), WebStrike(d1), STRIKE_MAX_S),
+        (reply(BURST, target=0), Combo(BURST, d0), BURST_MAX_S),
+        (reply("swing_to", anchor=0), SwingTo(ANCH), SWING_MAX_S),
         (reply("search"), Search(), None),
         (reply("idle"), Idle(), None),
         (reply("disengage"), Disengage(), None),
@@ -87,9 +87,9 @@ def test_every_intent_maps_back_with_its_hold():
         assert got == expected
         assert m.intent == expected
         if hold is None:
-            assert m.hold_until == float("-inf")
+            assert m.option is None
         else:
-            assert m.hold_until == pytest.approx(hold)
+            assert m.option.status == "running" and m.option.intent is got and m.option.bound_t == pytest.approx(hold)
 
 
 def test_target_is_the_most_probable_one_among_those_the_intent_allows():
@@ -197,7 +197,7 @@ def test_every_failure_falls_back_to_the_scripted_choice_and_is_counted():
         j = Jev(Stub(bad))
         m = Memory()
         assert j(s, m) == expected, bad
-        assert m.hold_until == pytest.approx(BURST_HOLD_S)  # the scripted policy's own bookkeeping ran
+        assert m.option.status == "running" and m.option.bound_t == pytest.approx(BURST_MAX_S)  # the scripted policy's own bookkeeping ran
         assert j.stats.fallbacks == Counter({reason: 1}) and j.stats.calls == 1 and j.stats.fallback_rate == 1.0, bad
 
 

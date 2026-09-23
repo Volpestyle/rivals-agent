@@ -4,7 +4,7 @@ from dataclasses import replace
 
 import pytest
 
-from agent.brain import BURST_HOLD_S, FIGHT, LOST_S, RETREAT_MAX_S, STRIKE_HOLD_S, Memory, decide
+from agent.brain import BURST_MAX_S, FIGHT, LOST_S, RETREAT_MAX_S, STRIKE_MAX_S, Memory, decide
 from agent.intents import BURST, MACROS, Combo, Disengage, Engage, Idle, Pull, Search, SwingTo, WebStrike
 from agent.state import ANCHOR, ENEMY, PULL, SWING, TARGET, UPPERCUT, Ability, Detection, State
 
@@ -262,23 +262,23 @@ def test_retreat_survives_unreadable_hp_until_timeout():
 
 # --- holds ------------------------------------------------------------------
 
-def test_burst_is_not_reconsidered_until_its_hold_expires():
+def test_burst_without_ending_evidence_is_not_reconsidered_until_its_upper_bound():
     m = Memory()
     first = decide(st(0, detections=[enemy(300)]), m)
     assert first == Combo(BURST, enemy(300))
     moved = enemy(300, x=1400)
     assert decide(st(0.5, detections=[moved]), m) is first
-    assert decide(st(BURST_HOLD_S - 0.1, detections=[moved]), m) is first
-    assert decide(st(BURST_HOLD_S + 0.1, detections=[moved]), m).target == moved
+    assert decide(st(BURST_MAX_S - 0.1, detections=[moved]), m) is first
+    assert decide(st(BURST_MAX_S + 0.1, detections=[moved]), m).target == moved
 
 
-def test_web_strike_hold_ends_and_the_next_tick_sees_the_new_range():
+def test_web_strike_bound_ends_it_and_the_next_tick_sees_the_new_range():
     m = Memory()
     first = decide(st(0, detections=[enemy(300, tagged=True)]), m)
     assert isinstance(first, WebStrike)
-    landed = enemy(600, tagged=True)  # the strike closed the gap
-    assert decide(st(STRIKE_HOLD_S - 0.1, detections=[landed]), m) is first
-    assert decide(st(STRIKE_HOLD_S + 0.1, detections=[landed]), m) == Engage(landed)
+    assert decide(st(STRIKE_MAX_S - 0.1, detections=[enemy(300, tagged=True)]), m) is first  # no arrival seen: it runs on
+    landed = enemy(600, tagged=True)  # the strike closed the gap (seen only now; seen earlier, it ends then: tests/test_options.py)
+    assert decide(st(STRIKE_MAX_S + 0.1, detections=[landed]), m) == Engage(landed)
 
 
 def test_retreat_preempts_a_playing_combo():

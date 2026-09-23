@@ -429,7 +429,8 @@ def test_a_combo_committed_on_a_target_that_is_then_gone_does_not_hold_for_its_w
     a = det(1280, 720, 600, track=1)
     decide(st(-0.1, [a], abilities={}), m)
     first = decide(st(0.0, [a], abilities={}), m)
-    m.intent, m.hold_until = brain.Combo(brain.BURST, a), 3.0                      # a burst committed at t 0 for 3 s
+    m.intent = brain.Combo(brain.BURST, a)                                          # a burst committed at t 0, bound 3 s
+    m.option = brain.OptionStatus(m.intent, 0.0, 3.0)
     assert decide(st(0.3, [], coasting=()), m) == brain.Combo(brain.BURST, a)       # briefly missing: the combo runs on
     later = decide(st(1.0, [], coasting=()), m)                                      # gone past LOST_S, not coasting
     assert not isinstance(later, brain.Combo) and m.target is None
@@ -465,7 +466,8 @@ def test_a_held_combo_does_not_survive_on_a_replacement_target():
     m = Memory()
     a, b = det(1907, 635, 561, w=302, track=85), det(1280, 700, 561, w=302, track=90)
     _seen_twice(m, 0.0, [a])
-    m.intent, m.hold_until = brain.Combo(brain.BURST, a), 3.0
+    m.intent = brain.Combo(brain.BURST, a)
+    m.option = brain.OptionStatus(m.intent, 0.0, 3.0)
     decide(st(1.4, [a, b]), m)
     got = decide(st(brain.OUTSIDE_S + 0.2, [a, b]), m)
     assert not isinstance(got, brain.Combo) and got == Engage(b) and m.target.track == 90
@@ -475,7 +477,8 @@ def test_a_combo_on_a_dead_target_ends_even_with_another_enemy_in_view():
     m = Memory()
     a, b = det(1280, 720, 600, track=1), det(1500, 700, 500, track=2)
     _seen_twice(m, 0.0, [a, b])
-    m.intent, m.hold_until = brain.Combo(brain.BURST, a), 3.0
+    m.intent = brain.Combo(brain.BURST, a)
+    m.option = brain.OptionStatus(m.intent, 0.0, 3.0)
     assert decide(st(0.3, [b], coasting=()), m) == brain.Combo(brain.BURST, a)      # its target briefly missing: the combo runs on
     got = decide(st(0.8, [b], coasting=()), m)                                       # gone past LOST_S, not coasting
     assert not isinstance(got, brain.Combo) and got == Engage(b)
@@ -485,8 +488,9 @@ def test_a_combo_whose_own_target_is_coasting_holds_even_with_another_enemy_in_v
     m = Memory()
     a, b = det(1280, 720, 600, track=1), det(1500, 700, 500, track=2)
     _seen_twice(m, 0.0, [a, b])
-    m.intent, m.hold_until = brain.Combo(brain.BURST, a), 3.0
-    assert decide(st(1.2, [b], coasting=(1,)), m) == brain.Combo(brain.BURST, a) and m.hold_until == 3.0   # the hold itself stands
+    m.intent = brain.Combo(brain.BURST, a)
+    m.option = brain.OptionStatus(m.intent, 0.0, 3.0)
+    assert decide(st(1.2, [b], coasting=(1,)), m) == brain.Combo(brain.BURST, a) and brain.running(m) and m.option.bound_t == 3.0   # the option itself stands
 
 
 def test_a_cancelled_combo_does_not_come_back_through_another_targets_flicker_grace():
@@ -495,11 +499,11 @@ def test_a_cancelled_combo_does_not_come_back_through_another_targets_flicker_gr
     m = Memory()
     a, b = det(1280, 720, 600, track=1), det(1500, 700, 500, track=2)
     _seen_twice(m, 0.0, [a, b])
-    brain.commit(m, brain.Combo(brain.BURST, a), 3.0)
+    brain.commit(m, brain.Combo(brain.BURST, a), 0.0)                               # committed at 0: bound 3.0
     assert decide(st(0.3, [b], coasting=()), m) == brain.Combo(brain.BURST, a)      # A briefly missing: its own hold stands
     for t in (0.6, 0.7):
         got = decide(st(t, [], coasting=()), m)
-        assert not isinstance(got, brain.Combo) and m.hold_until == -math.inf, t
+        assert not isinstance(got, brain.Combo) and not brain.running(m), t
 
 
 F2 = (2560, 1440)

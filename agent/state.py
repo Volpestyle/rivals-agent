@@ -63,6 +63,7 @@ class State:
     detections: list[Detection] | None = None  # None = detector did not run; [] = ran, saw nothing
     on_target: bool | None = None  # crosshair over a hostile
     coasting: tuple[int, ...] = ()  # track ids the tracker still holds but did not see this frame (hit flash, occlusion, off the edge)
+    kill_feed: bool | None = None  # a kill-feed line is on screen (perception.scoreboard.is_killfeed); None = not read. Names no victim
 
     def to_dict(self):
         return asdict(self)
@@ -81,4 +82,5 @@ class State:
             detections=None if dets is None else [Detection(**{**x, "bbox": tuple(x["bbox"])}) for x in dets],
             on_target=d.get("on_target"),
             coasting=tuple(d.get("coasting") or ()),
+            kill_feed=d.get("kill_feed"),
         )

@@ -104,6 +104,7 @@ class Perception:
     tag: Callable        # (frame, bbox) -> bool | None
     scoreboard: Callable | None = None   # frame -> dict: perception.scoreboard.read_scoreboard, for the end-of-run frame
     is_board: Callable | None = None     # frame -> True | False | None: perception.scoreboard.is_scoreboard. BACK is never pressed without it
+    killfeed: Callable | None = None     # frame -> True | False | None: perception.scoreboard.is_killfeed, State.kill_feed (not in range-skill mode)
 
 
 def aim_window(size, crop=CROP):
@@ -129,9 +130,9 @@ def default_perception(crop=CROP):
         return [replace(d, bbox=(d.bbox[0] + x0, d.bbox[1] + y0, d.bbox[2] + x0, d.bbox[3] + y0))
                 for d in find_enemies(f[y0:y1, x0:x1], scale=w / 1280.0, origin=(x0, y0), frame=(w, h))]
 
-    from perception.scoreboard import is_scoreboard, read_scoreboard
+    from perception.scoreboard import is_killfeed, is_scoreboard, read_scoreboard
     return Perception(in_range, idle_warning, size, aim, lambda f: find_enemies(f, scale=f.shape[1] / 1280.0),
-                      lambda f: hud.read(f).state_kwargs(), hud.read_tagged, read_scoreboard, is_scoreboard)
+                      lambda f: hud.read(f).state_kwargs(), hud.read_tagged, read_scoreboard, is_scoreboard, is_killfeed)
 
 
 class NoTracker:
@@ -314,6 +315,8 @@ class Decision:
     lag_ms: float        # from the reflex thread handing the frame over to the intent being ready
     trace: dict | None = None  # captured on the decision thread, never read from a moving brain later
     timing: DecisionTiming | None = None
+    option: object = None      # brain.Memory.option after this decision: the latest option's status (frozen)
+    stop: object = None        # brain.Memory.stop: the option intent whose playing primitive the controller stops
 
 
 def _readonly(frame):
@@ -339,11 +342,13 @@ class Decider:
     reserves the worker at offer and drops busy/full slots without a backlog.
     """
 
-    def __init__(self, decide, percept, hz, threaded, track=lambda dets, t, size=None: dets, coasting=lambda: (), *, phased=False):
+    def __init__(self, decide, percept, hz, threaded, track=lambda dets, t, size=None: dets, coasting=lambda: (), *, phased=False,
+                 feed=True):
         self.decide, self.p, self.hz, self.memory, self.track, self.coasting = decide, percept, hz, Memory(), track, coasting
         self.latest, self.error, self.n, self.last, self.missed, self.ms, self.lag = None, None, 0, -math.inf, 0, [], []
         self.q = queue.Queue(maxsize=1) if threaded else None
         self.phased = phased
+        self.feed = feed and getattr(percept, "killfeed", None) is not None   # range-skill mode reads nothing new
         self.busy = threading.Event()
         self.timings = []                         # immutable published records; never patched by the reflex thread
         self.worker = threading.Thread(target=self._work, daemon=True) if threaded else None
@@ -407,6 +412,8 @@ class Decider:
         hud = self.p.hud(frame)
         hud_done = time.perf_counter() if self.phased else None
         state = State(t=t, frame=size, detections=dets, coasting=coasting, **hud)
+        if self.feed:
+            state.kill_feed = self.p.killfeed(frame)
         if (see := getattr(self.decide, "see", None)) is not None:
             see(_readonly(frame), t)                    # a brain that reads pixels gets the frame this State came from: on the worker, read-only
         brain_start = time.perf_counter() if self.phased else None
@@ -419,7 +426,8 @@ class Decider:
         trace = deepcopy(trace) if isinstance(trace, dict) else None
         timing = (DecisionTiming(t, *slot, offered, c0, tagged, hud_done, brain_start, now)
                   if self.phased else None)
-        return Decision(self.n, t, intent, _source(self.decide), state, self.ms[-1], self.lag[-1], trace, timing)
+        return Decision(self.n, t, intent, _source(self.decide), state, self.ms[-1], self.lag[-1], trace, timing,
+                        getattr(self.memory, "option", None), getattr(self.memory, "stop", None))
 
     def close(self):
         if self.worker:
@@ -557,7 +565,7 @@ class Loop:
 
         self.track, self.cams = track, {}
         self.decider = Decider(decide, percept, decision_hz, threaded, track, lambda: self.coasting,
-                               phased=self.decision_slots is not None)
+                               phased=self.decision_slots is not None, feed=not self.range_skill_mode)
         self.reflex_hz, self.max_s, self.keepalive_s, self.warmup = reflex_hz, max_s, keepalive_s, warmup
         self.stale_s, self.scoreboard, self.every, self.brain_name = stale_s, scoreboard, scoreboard_every_s, brain_name
         self.t0 = self.last_t = self.last_ok = self.lost_since = self.ka_t = self.size = self.stop = None
@@ -761,6 +769,8 @@ class Loop:
         execution = {"execution_t": self._execution_now()} if self.range_skill_mode else {}
         if tracking_observation is not None:
             execution["tracking_observation"] = tracking_observation
+        if fresh and not self.range_skill_mode and d.stop is not None:
+            execution["stop"] = d.stop                   # a KO or an arrival ended that option: its primitive stops
         coasting = reflex_coasting if self.range_skill_mode else self.coasting   # legacy: read at step time, as before
         pad = clean(self._keepalive(self.ctrl.step(State(t=t, frame=size, detections=dets, coasting=coasting), intent,
                                                    intent_t=d.t if fresh else None, **execution), t))
@@ -1020,6 +1030,8 @@ class Loop:
                 row["state"], row["ms_decide"] = d.state.to_dict(), round(d.ms, 2)
                 if d.trace is not None:
                     row["decision_trace"] = d.trace
+                if d.option is not None and not self.range_skill_mode:
+                    row["option"] = {**d.option.to_dict(), "stop": d.stop is not None}
         if self.range_skill_mode:
             if origin is None:
                 trace = getattr(self.ctrl, "range_skill_trace", None)

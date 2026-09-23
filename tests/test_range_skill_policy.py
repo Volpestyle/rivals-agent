@@ -460,7 +460,7 @@ def test_consumer_start_and_no_new_use_resource_observation_and_unique_ids():
 @pytest.mark.parametrize("failure", ["detector", "gap", "coast", "empty", "backwards", "malformed"])
 def test_faults_cannot_refresh_old_attack(legacy_intent, failure):
     consumer, memory, _ = warmed()
-    memory.intent, memory.hold_until = legacy_intent, 9.
+    memory.intent, memory.option = legacy_intent, scripted_brain.OptionStatus(legacy_intent, 0., 9.)
     before = consumer.policy.calls
     current = state(.6)
     if failure == "detector":
@@ -482,11 +482,12 @@ def test_faults_cannot_refresh_old_attack(legacy_intent, failure):
 
 def test_valid_legacy_hold_is_never_adopted_but_model_can_make_fresh_request():
     consumer, memory, _ = warmed()
-    memory.intent, memory.hold_until = Combo("burst", TARGET), 9.
+    memory.intent = Combo("burst", TARGET)
+    memory.option = scripted_brain.OptionStatus(memory.intent, 0., 9.)
     intent = consumer(state(.6), memory)
     assert type(intent) is RangeSkill
     assert consumer.source == "range_skill_model"
-    assert memory.hold_until == -float("inf")
+    assert memory.option.status == scripted_brain.INTERRUPTED and memory.option.evidence.observation == scripted_brain.SUPERSEDED
 
 
 def test_low_hp_retreat_is_scripted_and_detector_failure_preempts_it():

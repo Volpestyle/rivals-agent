@@ -390,6 +390,11 @@ class Track:
         self.v_pitch += beta * rp / max(dt, 1e-3)
 
 
+def _option_primitive(intent):
+    """The primitive an option intent plays (Combo: the kit's one macro)."""
+    return {"Pull": "pull", "WebStrike": "web_strike", "SwingTo": "swing"}.get(type(intent).__name__, BURST)
+
+
 RANGE_SKILL_VALID_S = 0.1
 RANGE_SKILL_EXECUTION_INTERPRETATION = "request-start-owned-pulse-v1"
 
@@ -463,12 +468,14 @@ class Controller:
             self.seq.append((end, changes))
 
     # -- one step -------------------------------------------------------------
-    def step(self, state, intent, intent_t=None, execution_t=None, *, tracking_observation=None):
+    def step(self, state, intent, intent_t=None, execution_t=None, *, tracking_observation=None, stop=None):
         """`intent_t`: the frame time of the State the brain decided on (the loop's Decision.t), so a target the brain measured is
         placed at the camera angle of that frame, not of this one. None: the target is placed at this frame's angle.
         `execution_t`: range-mode authorization/actuation clock, in the same domain; defaults to State.t for replay.
         Observations are never re-stamped with execution time. `tracking_observation`
-        is an optional current tracker body witness, used only by RangeSkill."""
+        is an optional current tracker body witness, used only by RangeSkill.
+        `stop`: an option intent the brain ended on evidence (brain.Memory.stop): the primitive played for THAT intent stops now, if
+        it is still playing; anything else plays on. Not read in range mode."""
         self._range_body = None
         execution_t = state.t if execution_t is None else execution_t
         if isinstance(intent, RangeSkill):
@@ -486,6 +493,8 @@ class Controller:
         dt = 0.0 if self.last_t is None else max(0.0, min(0.1, t - self.last_t))
         self.last_t = t
         out = dict(NEUTRAL)
+        if stop is not None and self.played is stop and self.seq and self.seq_name == _option_primitive(stop):
+            self.seq, self.seq_name = [], ""   # a KO or an arrival ended it: its remaining presses and holds are not sent
         key = (type(intent).__name__, getattr(intent, "name", None))
         if key != self.intent_key:
             self.intent_key, self.phase_t, self.integ = key, t, [0.0, 0.0]
@@ -557,7 +566,7 @@ class Controller:
                 elif t >= self.next_shot_t:
                     self.play("web_cluster", t); self.next_shot_t = t + 0.34
         elif isinstance(intent, (Pull, WebStrike, Combo, SwingTo)) and not self.seq and self.played is not intent:
-            name = {"Pull": "pull", "WebStrike": "web_strike", "SwingTo": "swing"}.get(key[0], BURST)
+            name = _option_primitive(intent)
             if on_target or (isinstance(intent, WebStrike) and self.stable >= ARM_FRAMES):   # the strike auto-locks
                 self.play(name, t)
                 self.played = intent                         # one play per intent the brain issues

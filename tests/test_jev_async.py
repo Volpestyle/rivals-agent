@@ -5,7 +5,7 @@ from concurrent.futures import Future
 import pytest
 
 from agent import brain, jev
-from agent.brain import BURST_HOLD_S, Memory
+from agent.brain import BURST_MAX_S, Memory
 from agent.intents import BURST, Combo, Engage, Idle, Search
 from agent.jev import AsyncJev, TransportError, legal, name_of, story_loop
 from agent.state import ANCHOR, ENEMY, PULL, SWING, UPPERCUT, Ability, Detection, State
@@ -108,7 +108,7 @@ def test_adopted_hold_intents_keep_their_hold():
     j, m, air, intents = asked_then(near(0.0), reply("burst", target=0), near(0.1))
     assert intents[1] == Combo(BURST, enemy(tagged=False, h=600)) and j.stats.sources["jev"] == 1
     assert j.stats.chosen == Counter(burst=1)
-    assert m.hold_until == pytest.approx(0.1 + BURST_HOLD_S)
+    assert m.option.status == "running" and m.option.bound_t == pytest.approx(0.1 + BURST_MAX_S)
 
 
 def test_adopted_answer_without_a_target():
@@ -156,7 +156,7 @@ def test_no_request_is_sent_on_a_tick_that_starts_a_hold_and_one_goes_out_when_i
     for i in range(1, 30):
         j(aimed(i / 10), m)
     assert air.futures == []  # nothing in flight, nothing sent: the gate held the whole time
-    j(mid_unaimed(BURST_HOLD_S + 0.1), m)
+    j(mid_unaimed(BURST_MAX_S + 0.1), m)
     assert len(air.futures) == 1
 
 

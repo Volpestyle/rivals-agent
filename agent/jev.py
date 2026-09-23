@@ -1,7 +1,7 @@
 """Jev (TypeSafe System One) behind the brain's function boundary.
 
 decide_jev(state, memory) -> Intent has brain.decide's signature. The scripted
-gate (retreat, playing holds, a flickering target) always runs first, so those
+gate (retreat, running options, a flickering target) always runs first, so those
 rules never wait on the network; Jev replaces only the choice, brain.policy.
 
 Two ways to ask, both counted in Jev.stats and both logging per tick which source
@@ -48,7 +48,7 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 from . import brain
-from .brain import (BURST_HOLD_S, HOSTILE, HP_RESUME, HP_RETREAT, MIN_CONF, PULL_HOLD_S, STRIKE_HOLD_S, SWING_HOLD_S,
+from .brain import (HOSTILE, HP_RESUME, HP_RETREAT, MIN_CONF,
                     Memory, aimed_at, crosshair, range_of, ready)
 from .intents import BURST, MACROS, Combo, Disengage, Engage, Idle, Pull, Search, SwingTo, WebStrike
 from .state import ANCHOR, PULL, SWING, UPPERCUT, State
@@ -78,7 +78,6 @@ INTENTS = {
     "disengage": "Break line of sight and get away, for a fight that is going badly",
 }
 TARGETED = ("engage", "pull", "web_strike", BURST)  # intents that act on one hostile from the `target` answer
-HOLD_S = {"pull": PULL_HOLD_S, "web_strike": STRIKE_HOLD_S, BURST: BURST_HOLD_S, "swing_to": SWING_HOLD_S}
 KIND = {"engage": Engage, "pull": Pull, "web_strike": WebStrike, "swing_to": SwingTo,
         "search": Search, "idle": Idle, "disengage": Disengage}  # everything except the macros
 NAME = {kind: name for name, kind in KIND.items()}
@@ -404,9 +403,9 @@ class Jev:
 
 
 def adopt(state, memory, target, name, det):
-    """Make a chosen (name, detection) the intent for this tick, with the same hold and mode bookkeeping brain.policy does."""
+    """Make a chosen (name, detection) the intent for this tick, with the same option and mode bookkeeping brain.policy does."""
     brain.track_mode(state, memory, target)
-    return brain.commit(memory, build(name, det), state.t + HOLD_S[name] if name in HOLD_S else -math.inf)
+    return brain.commit(memory, build(name, det), state.t)
 
 
 @dataclass
@@ -433,7 +432,7 @@ class AsyncJev(Jev):
     answer if it has landed; adopt it if it is still valid, else drop it (counted). An
     adopted answer stands: on later ticks it is the choice for as long as it stays valid
     for the State (see the module docstring). brain.policy decides only when no answer
-    is standing. If nothing is in flight, the gate let a choice through and no hold was
+    is standing. If nothing is in flight, the gate let a choice through and no option was
     just started, a new request goes out about the current State. The transport needs `submit(body) -> Future`.
     A hung request holds the slot until the socket cap (SOCKET_CAP_S); brain.policy
     answers meanwhile.
@@ -449,7 +448,7 @@ class AsyncJev(Jev):
         landed = self._land()
         if early is not None:
             if landed:
-                self.stats.drops["gated"] += 1  # a hold or a retreat is playing: not the moment for a new choice
+                self.stats.drops["gated"] += 1  # an option or a retreat is running: not the moment for a new choice
             return self._done(state, "gate", early)
         intent = self._adopt(landed, state, memory, target) if landed else None
         source = "jev"
@@ -457,8 +456,8 @@ class AsyncJev(Jev):
             intent, source = self._stand(state, memory, target), "standing"
         if intent is None:
             intent, source = brain.policy(state, memory, target), "scripted"
-        if self._flight is None and memory.hold_until <= state.t and not (target is None and state.detections is None):
-            self._launch(state, target)  # not on a tick that started a hold: its answer would land inside it and be gated
+        if self._flight is None and not brain.running(memory) and not (target is None and state.detections is None):
+            self._launch(state, target)  # not on a tick that started an option: its answer would land inside it and be gated
         return self._done(state, source, intent)
 
     def _launch(self, state, target):
