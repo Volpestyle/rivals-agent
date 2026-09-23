@@ -25,6 +25,7 @@ technical execution demonstrations on keyboard and mouse, so paired motor learni
 starts alongside tactical learning. It must keep its action domain separate from the
 virtual-pad executor. A policy restricted to the current `State` loses positioning
 and temporal context; raw frame history remains available alongside structured observations.
+*Superseded 2026-09-23: semantic actions + degrees through the pad, see [docs/lanes/end-to-end-fit.md](lanes/end-to-end-fit.md).*
 
 **Quality governs the order of work.** James prioritizes the best-supported path
 to capable gameplay over reaching a nominal training milestone sooner. Source
@@ -242,6 +243,7 @@ tracker and virtual-pad controller. Add a native keyboard/mouse execution path:
    guarded loop. A keyboard/mouse checkpoint cannot drive a virtual pad. Reusing
    learned visual features or semantic skill supervision across domains is a later
    measured experiment; copying mouse counts into stick axes is not an adapter.
+   *Superseded 2026-09-23: semantic actions + degrees through the pad, see [docs/lanes/end-to-end-fit.md](lanes/end-to-end-fit.md).*
 
 The immediate software contract is in [human-demo-schema.md](human-demo-schema.md).
 This advances A and E in parallel with B. It does not wait for every VOD HUD negative

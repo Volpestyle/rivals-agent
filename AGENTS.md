@@ -10,11 +10,15 @@ Development can run on either machine. `CLAUDE.md` is a symlink to this file.
 1. `docs/plan.md`: scope boundary, gate results, architecture, perception decisions. The
    scope boundary is binding: pixels only, no anti-cheat evasion, no matchmade modes, and
    a path the game rejects stays closed. Stop and report instead of working around it.
-2. The `rivals-live-game` skill (`.agents/skills/`) before sending any input to the game.
+2. `docs/recording-protocol.md` and `docs/recording-log.md`: the current direction, set by James on
+   2026-09-23. It is whole-session keyboard/mouse recordings for one end-to-end policy that outputs
+   semantic actions plus camera degrees, executed by the pad. The log is the ledger of every take.
+   `docs/learning-plan.md` is the canonical plan and holds the advancement gates.
+3. The `rivals-live-game` skill (`.agents/skills/`) before sending any input to the game.
    On the PLAY lobby the pad's `X` starts a live Quick Match.
-3. Linear project **Rivals Agent** (team Vuhlp): what is done, in progress and blocked.
+4. Linear project **Rivals Agent** (team Vuhlp): what is done, in progress and blocked.
    Accepted results and evidence go on the issue; working notes stay in `docs/lanes/`.
-4. `docs/machines.md` before moving code, data or jobs between machines: ownership,
+5. `docs/machines.md` before moving code, data or jobs between machines: ownership,
    SSH directions, immutable recording relocation and checkpoint boundaries.
 
 ## Where things live

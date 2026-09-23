@@ -130,6 +130,7 @@ offline. Its checkpoint is not a gamepad controller and has no approved live inp
 adapter. Returning weights to Windows does not authorize deployment. The existing
 virtual-pad harness and any future learned controller must pass the plan's input,
 range-only, recovery, latency and evaluation gates before a gameplay claim.
+*Superseded 2026-09-23: semantic actions + degrees through the pad, see [docs/lanes/end-to-end-fit.md](lanes/end-to-end-fit.md).*
 
 ## Verified on 2026-09-22 UTC
 
