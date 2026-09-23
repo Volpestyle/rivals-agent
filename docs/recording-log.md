@@ -29,3 +29,4 @@ Total logged range play with inputs: about 17 trainable minutes before the campa
   and a 360° turn take are still requested to pin counts/inch and counts/degree from the logger itself.
 - 2026-09-23: **C = Team-Up ability (default binding)**, per James; in the solo practice range it has no effect, so C presses are a known no-effect key (structurally unsupported action, never a training positive).
 - 2026-09-23: **Alt does nothing in game** (unbound), per James; Alt presses are Alt-Tab only and stay UI-key cuts.
+- 2026-09-23: **Swing bindings**, per James: normal Web-Swing on the default key (Shift) with default swing settings; **Simple Swing bound to Caps Lock** as a separate key. Caps Lock (VK 20) presses, if any, are simple-swing actions, not UI keys.
