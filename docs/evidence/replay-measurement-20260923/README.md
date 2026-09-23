@@ -79,8 +79,9 @@ enemies through walls that the player did not see live.
 
 ## Recording-procedure facts (draft route map)
 
-- **Follow resets.** The viewer follows Team A slot 1 after every load (3 of 3), at every round setup (3 of 3), and after a
-  seek into another round (2 of 2). Seeks within a round kept the follow (2 of 2).
+- **Follow resets.** The viewer follows Team A slot 1 at every round setup (3 of 3) and after a seek into another round
+  (2 of 2). Seeks within a round kept the follow (2 of 2). After a load the follow was also on A1 (3 of 3), but every load was
+  followed by a seek from pre-select, so a load default and a seek reset are confounded (route-map review, F2).
   - **To switch back:** click TOGGLE POV (x 0.820–0.879, y 0.962–0.979, on the timeline), then the target's row in the
     panel: Team B at x ≈ 0.871, Team A at x ≈ 0.742, row *i* at y = 0.717 + 0.0315 (*i* − 1). The follow changes within
     0.25 s. Keys F1–F12 are labelled on the panel but were never used.
@@ -92,9 +93,11 @@ enemies through walls that the player did not see live.
   - The viewer's pause menu puts **EXIT TO DESKTOP** 139 px below EXIT REPLAY.
   - EXIT REPLAY returns to the Career scoreboard, not the range.
   - Enter opens chat whenever no text box has focus.
-- **Colour rule.** For a Team B target, the viewer's colours must be swapped before recording: Ally Color to Green and
-  Enemy Color to a non-green swatch. That Team A takes the Ally Color is an inference. The Custom Colors page is not in the
-  footage; it needs one supervised look.
+- **Colour rule.** Decide the swap from the target's observed name-tag or header colour, not from the team letter: green
+  means swap (Ally Color to Green, Enemy Color to a non-green swatch), blue means no swap, and the result is verified on screen
+  after swapping. "Team B takes the Enemy Color" is confounded with "the career owner's team takes the Ally Color", since
+  scoreboards colour relative to the owner (route-map review, F8). The Custom Colors page is not in the footage; it needs one
+  supervised look.
 - **Timeline overlay.** Hide it with N after every load (it reappears on each load), and log its visible seconds for masking.
 
 ## Fixes before this source can feed training
