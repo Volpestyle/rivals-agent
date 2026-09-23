@@ -26,6 +26,11 @@ replaces event-only recording (VUH-1351) with whole-session recording.
    - other bots and areas of the range too, once the Galacta pair is well covered;
    - resource variety: sometimes web-empty, sometimes ult ready, sometimes nothing.
    Do not stand still for more than about a minute; the game's idle kick ends the session.
+   Cooldowns on for most sessions: that is where the decisions live (two webs left, wait
+   for uppercut or commit). No Ability Cooldown ON sessions are welcome as extra
+   mechanics reps (aim, combo execution) if you say so when you drop the path; the
+   regime scan separates them from normal-regime rows automatically. Roughly two hours
+   on to one hour off.
 5. Afterwards, drop the video path in chat. The logger folder is matched by time in
    `C:\Users\volpe\Videos\RivalsInput\`. Nothing else is needed from you.
 
