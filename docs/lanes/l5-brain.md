@@ -101,9 +101,17 @@ Rules the reflex controller (L4) can rely on:
 
 ## Observed option status (VUH-1315), 2026-09-23
 
-**Implemented on branch `vuh-1315-observed-option-status`; awaiting independent review.** The branch lands after the next
-candidate's pilot, because `brain.py` and `loop.py` feed the checkpoint's selector and perception identity hashes. Evidence:
+**Implemented on branch `vuh-1315-observed-option-status`. The independent review approved it with required fixes, and
+those fixes are in.** The branch lands after the next candidate's pilot, because `brain.py` and `loop.py` feed the checkpoint's
+selector and perception identity hashes. Evidence:
 [docs/evidence/option-status-20260923/](../evidence/option-status-20260923/README.md).
+
+**The invariant.** The ending option's own remaining presses are removed; later choices may start sooner. It is not "only cut
+or shorten" (review F1):
+- An option that ends on evidence reopens the choice on that decision.
+- That choice can start the next attack sooner, or re-commit a burst on a target still boxed.
+- `tests/test_options.py` pins both, as observed and accepted.
+- Neither recording has a row where the branch sends an attack input the base does not.
 
 `Combo`, `Pull`, `WebStrike` and `SwingTo` are **options**. Committed with the State time they were chosen on, each is repeated
 while it reads `running`, and observations decide its end. Each old hold constant is now the option's named upper bound.
@@ -118,29 +126,37 @@ while it reads `running`, and observations decide its end. Each old hold constan
 - `commit(memory, intent, t)` starts an option. Its kind and bound come from the one table `OPTIONS`. A running option that
   another commit replaces is interrupted, `superseded`.
 - `option_status(state, memory, target, ko)` is the only function that ends a running one.
-- `Memory.stop` names, on one decision, the option whose playing primitive the controller stops. The loop passes it as
-  `Controller.step(stop=)`.
+- `Memory.stop` names, on the decision a KO is confirmed, the latest burst, whose playing primitive the controller stops. The
+  loop passes it as `Controller.step(stop=)`.
+  - Only a kind with `stops_on_ko` (the burst) is stopped, because only the rest of its primitive holds presses.
+  - A pull's or a web strike's rest is a wait, so stopping it would only let the next attack start sooner. It is not stopped, on
+    a KO or on arrival.
 - `jev.adopt` commits with the State time (`jev.HOLD_S` is gone), and `AsyncJev` launches only while no option runs.
 
 **Evidence, in the order checked; the first that holds decides.**
 
-| Option | completed (stops its primitive) | at the bound | interrupted (primitive plays on) | Upper bound, source |
+| Option | completed | at the bound | interrupted (primitive plays on) | Upper bound, source |
 |---|---|---|---|---|
-| `Combo(burst)` | `ko_feed` | `failed` if the kill feed read False; else `interrupted`, "ko_feed not read" | `track_lost`, `released` (`_hold_stands`, thresholds unchanged), `retreat`, `superseded` | `BURST_MAX_S` 3.0 s. Historical: a guide's "under 3 s". Measured: the controller's burst lasts 3.032 s from its first press; burst trial 0's KO showed 1.64 s after its LT |
+| `Combo(burst)` | `ko_feed` (stops its primitive) | `failed` if the kill feed read False; else `interrupted`, "ko_feed not read" | `track_lost`, `released` (`_hold_stands`, thresholds unchanged), `retreat`, `superseded` | `BURST_MAX_S` 3.0 s. Historical: a guide's "under 3 s". Measured: the controller's burst lasts 3.032 s from its first press; burst trial 0's KO showed 1.64 s after its LT |
 | `WebStrike` | `ko_feed`; `arrival`: the held target's own box is `near` by `range_of` | `failed` if the box was measured and the feed read; else `interrupted` | same | `STRIKE_MAX_S` 0.8 s. Measured once: RB to arrival 0.65-0.86 s from ~12 m (burst trial 0). The bound runs from the decision, before arming, so it is tighter than that; kept, not retuned |
 | `Pull` | `ko_feed`; `arrival` | as `WebStrike` | same | `PULL_MAX_S` 0.8 s. Historical guess (250 ms flight at 20 m plus the drag) |
 | `SwingTo` | nothing observes it | always `interrupted`, "no observation completes it" | `retreat`, `superseded` | `SWING_MAX_S` 1.2 s. Historical guess |
 
 - **The KO.** `State.kill_feed: bool | None` (default `None`) is filled on the decision worker by `Perception.killfeed`
   (`perception.scoreboard.is_killfeed`), outside range-skill mode only.
-  - `brain._ko` keeps the last False read and the True reads since it. `None` neither counts nor resets, and a line already up
-    when first read makes no onset.
-  - A KO is confirmed on the second True read after a False (`FEED_CONFIRM`, the event extractor's debounce). Its evidence
-    carries the interval, "kill feed False at a, True at b, c". Which bot died is not read.
-  - A KO also stops **the latest attack option's** primitive after that option was interrupted. On plaza30 an id change at
-    point blank ended both bursts' options before their KOs, while their primitives played on. Track loss alone never stops a
-    primitive: that is the id churn.
-  - A KO does not stop a swing.
+  - `brain._ko` debounces it as the event extractor's `_Channel` does (`perception/events.py`,
+    `DEBOUNCE["killfeed"]` = `FEED_CONFIRM` = 2):
+    - The first read sets the value, so a line already up is no onset.
+    - A change needs two reads of the new value in a row, and a read of the confirmed value restarts the count.
+    - `None` neither counts nor breaks the count.
+    - A KO is a confirmed False -> True. After one, two Falses in a row re-arm it, so one misread False inside a ~4.9 s line
+      makes no second KO.
+    - `tests/test_options_extractor.py` runs both on the same reads.
+  - The KO's evidence carries the interval, "kill feed False at a, True at b, c". Which bot died is not read.
+  - A KO also stops **the latest burst's** primitive after that option was interrupted. On plaza30 an id change at point blank
+    ended both bursts' options before their KOs, while their primitives played on. Track loss alone never stops a primitive:
+    that is the id churn.
+  - A KO stops no swing, pull or web strike.
 - **The controller** (`stop=`, legacy path only) clears `seq` only while `played is` that intent and `seq_name` is its primitive.
   Said again, or said about an intent that equals it but is another object, it does nothing. `Idle` and `Disengage` still cut
   any primitive.
@@ -151,14 +167,18 @@ while it reads `running`, and observations decide its end. Each old hold constan
 
 | | Base (holds) | Options |
 |---|---|---|
-| Burst trial 0 (`C:\rivals-agent\data\l4\burst`, the issue's burst) | held to 3.400; RT 2.275-3.375 and LT 3.450 after the KO | completed, `ko_feed`, at 2.234; no press after it |
+| Burst trial 0 (`C:\rivals-agent\data\l4\burst`, the issue's burst) | hold cancelled on track loss at 2.348; the burst primitive played on: RT 2.275-3.375 and LT 3.450 after the KO | completed, `ko_feed`, at 2.234; the stop removes those presses |
 | plaza30 `Combo(23)` (never armed) | held to 13.926 | completed, `ko_feed`, at 13.526 |
-| plaza30 `Combo(56)` | held to 25.531, re-issued to 25.866; RT to 25.585, LT at 25.651 | completed, `ko_feed`, at 25.075; stop on the row it stood on (25.155) |
+| plaza30 `Combo(56)` | held to its bound (lapsed at 25.570), re-issued to 25.866; RT to 25.585, LT at 25.651 | completed, `ko_feed`, at 25.075; stop on the row it stood on (25.155) |
 | plaza30 without the kill-feed bit | | identical to the base on 1542/1542 pad rows and every intent |
 
 - The kill-feed read costs 0.957 / 1.407 / 1.786 ms (p50 / p95 / max) per decision on native frames, against a 100 ms period.
-- `tests/test_options.py` pins every acceptance point. 12 of 12 mutants of the rules are killed
-  (`docs/evidence/option-status-20260923/mutation.py`).
+- On trial 0 the gain is the stop, not the option's end: the base's option had already ended, one decision later, while its
+  burst played on to 3.45 s.
+- `tests/test_options.py` pins every acceptance point and the accepted behaviors: a burst re-committed on the KO's decision; arrival
+  leaving the web strike's wait to play out; a KO on the commit tick.
+- `docs/evidence/option-status-20260923/mutation.py` kills 28 of 29 mutants: this lane's 15 and 13 of the review's 14. The survivor,
+  `loop_stop_when_stale`, is equivalent.
 - Range-skill mode:
   - The slot-4 replay (1068 range steps) equals the base in both modes and in the review scenarios (a corpus test).
   - The loop never calls a raising kill-feed reader there and never passes `stop`.
@@ -172,7 +192,11 @@ while it reads `running`, and observations decide its end. Each old hold constan
 - **A second KO while an earlier line still shows.** It makes no onset, so the option runs to its bound. Lines stayed up
   ~4.9 s on plaza30.
 - **KO time versus display time** is unmeasured.
-- **The replay reads the feed late.** It takes the feed from the latest saved frame, up to 0.12 s before the decision's own.
+- **The replay reads the feed late.** It takes the feed from the latest saved frame, up to 0.10 s before the decision's own.
+  32 of plaza30's 304 decisions read the previous decision's frame, so a replayed KO can rest on one image read twice. Neither
+  plaza30 KO does (review F5): each is confirmed from two frames.
+- **A KO re-opens the choice** on a target that may be the one just KO'd (a downed body still boxed) or a live one after another
+  bot's KO. With RB and uppercut ready, the burst restarts on it (review F1(b), accepted and pinned).
 - **Arrival at point blank.** The outline runs off the frame and the box coasts. Burst trial 0's arrival box was 168 of
   720 px, 0.23 < `near_h`, so arrival would not have fired there. No arrival fired on plaza30.
 - **Casts (HUD cooldown and charge transitions)** end nothing. In the cooldowns-off regime they never occur, and State carries

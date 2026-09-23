@@ -79,27 +79,39 @@ def options(decisions):
 
 
 def holds(decisions):
-    """The base's holds: each one's start (the decision that set it), its hold_until, and the decision on which it was last repeated."""
+    """The base's holds: each one's start (the decision that set it), its hold_until, the last decision that repeated it, and the decision on
+    which it ended: `cancelled` (its target lost or released, or a retreat: hold_until cleared before it came), or `lapsed` (hold_until
+    reached). The base leaves a lapsed hold_until set until the next commit, so a decision at or past it is not a held one."""
     out = []
     for d in decisions:
-        if d["hold_until"] is None or d["t"] >= d["hold_until"]:   # cancelled, or lapsed (the base leaves hold_until set until the next commit)
+        held = d["hold_until"] is not None and d["t"] < d["hold_until"]
+        if out and out[-1]["ended_t"] is None and not (held and round(d["hold_until"], 4) == out[-1]["hold_until"]):
+            out[-1]["ended_t"] = round(d["t"], 4)
+            out[-1]["ended"] = "lapsed" if d["hold_until"] is not None and d["t"] >= d["hold_until"] else "cancelled"
+        if not held:
             continue
         if not out or out[-1]["hold_until"] != round(d["hold_until"], 4):
-            out.append({"held": d["held"], "start_t": round(d["t"], 4), "hold_until": round(d["hold_until"], 4), "last_t": round(d["t"], 4)})
+            out.append({"held": d["held"], "start_t": round(d["t"], 4), "hold_until": round(d["hold_until"], 4), "last_t": round(d["t"], 4),
+                        "ended_t": None, "ended": None})
         out[-1]["last_t"] = round(d["t"], 4)
     return out
 
 
 def kos(decisions):
-    """The decisions on which this tree confirmed a KO (the kill feed's second True read after a False)."""
-    out, off, on = [], False, 0
+    """The KOs this tree confirmed, as brain._ko debounces the reads: {decision t: the saved frames its confirming True reads were taken
+    from}. One frame named twice is one image read on two decisions: that KO does not exercise the two-frame debounce."""
+    out, value, cand = {}, None, []
     for d in decisions:
-        if d["feed"] is False:
-            off, on = True, 0
-        elif d["feed"] is True and off:
-            on += 1
-            if on == 2:
-                out.append(round(d["t"], 4))
+        if d["feed"] is None:
+            continue
+        if value is None or d["feed"] == value:
+            value, cand = d["feed"], []
+            continue
+        cand.append(d["feed_frame"])
+        if len(cand) == 2:
+            if d["feed"] is True:
+                out[round(d["t"], 4)] = cand
+            value, cand = d["feed"], []
     return out
 
 
@@ -138,10 +150,14 @@ def main():
                "kill_feed_read_ms": {k: {"size": feeds[k]["size"], **feeds[k]["read_ms"]} for k in LOGS}}
     for which in LOGS:
         base, tree = runs[which, "base"], runs[which, "tree"]
-        ko = kos(tree["decisions"])
+        ko_frames = kos(tree["decisions"])
+        ko = list(ko_frames)
         first = ko[0] if ko else None
         summary[which] = {
             "kos_confirmed_t": ko,
+            "ko_confirming_frames": {str(k): v for k, v in ko_frames.items()},
+            "decisions_reusing_the_previous_decisions_frame": sum(a["feed_frame"] is not None and a["feed_frame"] == b["feed_frame"]
+                                                                  for a, b in zip(tree["decisions"][1:], tree["decisions"])),
             "base_holds": holds(base["decisions"]),
             "tree_options": options(tree["decisions"]),
             "base_presses_after_each_ko": {str(k): spans([p[0] for p in presses(base["pads"], k)]) for k in ko},
@@ -149,6 +165,8 @@ def main():
             "last_press_t": {"base": presses(base["pads"])[-1][0] if presses(base["pads"]) else None,
                              "tree": presses(tree["pads"])[-1][0] if presses(tree["pads"]) else None},
             "pads_differing_tree_vs_base": differing(tree["pads"], base["pads"]),
+            "attack_rows_tree_only": sum(pressed(x["pad"]) and not pressed(y["pad"]) for x, y in zip(tree["pads"], base["pads"])),
+            "attack_rows_base_only": sum(pressed(y["pad"]) and not pressed(x["pad"]) for x, y in zip(tree["pads"], base["pads"])),
             "pads_identical_before_first_ko": first is None or all(x["pad"] == y["pad"] for x, y in zip(tree["pads"], base["pads"])
                                                                   if x["t"] < first),
             "base_replay_fidelity": {"rows": len(base["pads"]),

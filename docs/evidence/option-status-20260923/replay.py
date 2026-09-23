@@ -37,13 +37,14 @@ TRIAL0 = Path(r"C:\rivals-agent\data\l4\burst")
 
 def feed_reader():
     if feed_path == "none":
-        return lambda t: None
+        return lambda t: (None, None)
     reads = json.loads(Path(feed_path).read_text())["reads"]
     ts = [r[0] for r in reads]
 
     def at(t):
-        i = bisect.bisect_right(ts, t + 1e-9) - 1
-        return reads[i][2] if i >= 0 else None
+        i = bisect.bisect_right(ts, round(t, 4) + 1e-9) - 1   # rows log t to 4 places: a decision's own saved frame can read as
+                                                             # later than it (25.0754 against 25.075384) and must still be its own
+        return (reads[i][2], reads[i][1]) if i >= 0 else (None, None)   # the read, and the saved frame it was read on
     return at
 
 
@@ -59,7 +60,7 @@ def state(t, size, dets, coasting, feed, **hud):
 
 
 def record(m, t, intent, feed):
-    row = {"t": t, "intent": label(intent), "feed": feed}
+    row = {"t": t, "intent": label(intent), "feed": feed[0], "feed_frame": feed[1]}
     if OPTIONS:
         row["option"] = m.option.to_dict() if m.option is not None else None
         row["stop"] = label(m.stop) if m.stop is not None else None
@@ -128,7 +129,7 @@ def plaza30():
             use = wide[i] if i in wide else aim.get(by_t.get(round(s["t"], 4)), ([], tuple(tr.coasting)))
             base = State.from_dict({**s, "detections": []})
             f = feed(s["t"])
-            intent = brain.decide(state(base.t, base.frame, use[0], use[1], f, hp=base.hp, max_hp=base.max_hp, webs=base.webs,
+            intent = brain.decide(state(base.t, base.frame, use[0], use[1], f[0], hp=base.hp, max_hp=base.max_hp, webs=base.webs,
                                         abilities=base.abilities), m)
             intent_t, stop = base.t, getattr(m, "stop", None)
             decisions.append({"row": i, **record(m, base.t, intent, f)})
@@ -152,7 +153,7 @@ def trial0():
         coasting = tuple(tr.coasting)
         if r["t"] - last_d >= 0.09:                                # the loop's 10 Hz: REFLEX_TOL / DECISION_HZ
             last_d, f = r["t"], feed(r["t"])
-            st = state(r["t"], size, got, coasting, f)
+            st = state(r["t"], size, got, coasting, f[0])
             decided = brain.decide(st, m)
             if intent is None and r["t"] >= 0.4:                  # the trial's burst phase: the pad script started it, so commit it
                 target = next(d for d in got if d.track is not None)

@@ -16,8 +16,8 @@
    }
   },
   "code_lf_sha256": {
-   "agent/brain.py": "8e078c085002607c3c6eaf69e5c5b8188fe9092cdd536a2acd301877d9aaf425",
-   "agent/controller.py": "c5525b8ec2fb7b73fddc982956720fdfc48f6e87b32ed06a8df90ec8fa70aed5",
+   "agent/brain.py": "7edd1afd527130c4c1754d5f10746ec97a65b58e9d2560534277dc9b44d63c71",
+   "agent/controller.py": "ee48214307e1007cc7b60c5ae8fa21f2159140f7d95ace9421a17d0f24a1e490",
    "agent/loop.py": "85ad52438f69828575d26108f8ce1048eb15e48809eae2774ea184f1b5091b46",
    "agent/state.py": "521d7c4a6278c7477932af130056cc57a80b1f8b3f0e6102326dc1c5672d7931",
    "agent/jev.py": "e59dfff3dc562d9a6d2ea97bf45f7751fbbcb6a272ccf36c772a064c7a9c9c32",
@@ -26,8 +26,8 @@
   },
   "scripts_lf_sha256": {
    "feed.py": "80bf0e1d038eb721a829fcd6f38bb3c5c90a141e7af2564cca336047a1b06794",
-   "replay.py": "d12a6894f4cbdf514c2c7704970accb5a81995e58a29ba8aa404494307d9fe1c",
-   "run.py": "80a789a78a41f9377432b79179ce868b64fc947ffa6dd1b857f99bbc74c4998f"
+   "replay.py": "e9bea7656b2bbd3ae74444946aec5afc04cd2190bea3722d3663c34faf9fe422",
+   "run.py": "2d9d4ba63c69dfa4cced867fd7980c9e7bbbfe75c66909bbf98e0c4bc2e7efba"
   }
  },
  "kill_feed_read_ms": {
@@ -54,12 +54,21 @@
   "kos_confirmed_t": [
    2.2338
   ],
+  "ko_confirming_frames": {
+   "2.2338": [
+    "000027.jpg",
+    "000028.jpg"
+   ]
+  },
+  "decisions_reusing_the_previous_decisions_frame": 0,
   "base_holds": [
    {
     "held": "Combo:1",
     "start_t": 0.4001,
     "hold_until": 3.4001,
-    "last_t": 2.2338
+    "last_t": 2.2338,
+    "ended_t": 2.3477,
+    "ended": "cancelled"
    }
   ],
   "tree_options": [
@@ -117,6 +126,8 @@
     ]
    ]
   },
+  "attack_rows_tree_only": 0,
+  "attack_rows_base_only": 33,
   "pads_identical_before_first_ko": true,
   "base_replay_fidelity": {
    "rows": 138,
@@ -132,24 +143,41 @@
    13.5255,
    25.0754
   ],
+  "ko_confirming_frames": {
+   "13.5255": [
+    "000060.jpg",
+    "000061.jpg"
+   ],
+   "25.0754": [
+    "000165.jpg",
+    "000166.jpg"
+   ]
+  },
+  "decisions_reusing_the_previous_decisions_frame": 32,
   "base_holds": [
    {
     "held": "Combo:1",
     "start_t": 7.1278,
     "hold_until": 10.1278,
-    "last_t": 9.6953
+    "last_t": 9.6953,
+    "ended_t": 9.7868,
+    "ended": "cancelled"
    },
    {
     "held": "Combo:23",
     "start_t": 13.1123,
     "hold_until": 16.1123,
-    "last_t": 13.9263
+    "last_t": 13.9263,
+    "ended_t": 14.0361,
+    "ended": "cancelled"
    },
    {
     "held": "Combo:56",
     "start_t": 22.531,
     "hold_until": 25.531,
-    "last_t": 25.4716
+    "last_t": 25.4716,
+    "ended_t": 25.5697,
+    "ended": "lapsed"
    }
   ],
   "tree_options": [
@@ -542,6 +570,8 @@
     ]
    ]
   },
+  "attack_rows_tree_only": 0,
+  "attack_rows_base_only": 24,
   "pads_identical_before_first_ko": true,
   "base_replay_fidelity": {
    "rows": 1542,

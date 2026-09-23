@@ -83,7 +83,7 @@ def test_every_ending_names_its_observation_and_the_state_time(case):
     elif case == "arrival":
         assert isinstance(chosen(m, 0.0, [bot(tagged=True)]), WebStrike)
         assert decide(st(0.3, [bot(600, tagged=True)]), m) == Engage(bot(600, tagged=True))
-        assert ended(m) == (COMPLETED, ARRIVAL, 0.3)
+        assert ended(m) == (COMPLETED, ARRIVAL, 0.3) and m.stop is None
     elif case == "lost":
         burst(m)
         decide(st(0.6, [], coasting=()), m)
@@ -136,22 +136,28 @@ def test_a_ko_ends_the_burst_at_once_and_stops_its_primitive():
     assert decide(st(0.3, [], feed=True, coasting=(1,)), m) == Search() and m.stop is None   # the stop is said once
 
 
-@pytest.mark.parametrize("feeds, ko_at", [
-    ((False, True, True), 2),
-    ((False, True, None, True), 3),         # None neither counts nor resets
-    ((False, True, False, True), None),     # a False read resets the count
-    ((True, True, True), None),             # a line already up when first read is no onset
-    ((None, None, True, True), None),
-    ((False, True, True, True, True), 2),   # one onset is one KO
-])
-def test_a_ko_is_two_true_reads_after_a_false(feeds, ko_at):
-    m, kos = Memory(), []
+KO_CASES = [   # (kill-feed reads, the reads on which a KO is confirmed): the same as perception/events.py's _Channel, tests/test_options_extractor.py
+    ((False, True, True), [2]),
+    ((False, None, True, None, True), [4]),                # None neither counts nor breaks the count
+    ((False, True, None, True), [3]),
+    ((False, True, False, True), []),                      # a flicker: a False read restarts the count
+    ((True, True, True, True), []),                        # a line already up when first read is no onset
+    ((None, None, True, True), []),
+    ((False, True, True, True, True), [2]),                # one onset is one KO
+    ((False, True, True, True, False, True, True), [2]),   # one misread False inside a line is no second KO
+    ((False, True, True, False, False, True, True), [2, 6]),   # two Falses in a row confirm the line gone: the next line is a KO
+]
+
+
+@pytest.mark.parametrize("feeds, kos", KO_CASES)
+def test_a_ko_is_a_debounced_false_to_true(feeds, kos):
+    m, got = Memory(), []
     for i, feed in enumerate(feeds):
         ev = brain._ko(st(i / 10, feed=feed), m)
         if ev is not None:
-            kos.append(i)
+            got.append(i)
             assert ev.observation == KO_FEED and ev.t == i / 10
-    assert kos == ([] if ko_at is None else [ko_at])
+    assert got == kos
 
 
 def test_a_ko_stops_the_latest_attacks_primitive_even_after_its_option_was_interrupted():
@@ -171,6 +177,27 @@ def test_a_ko_stops_no_swing():
     decide(st(0.1, [bot(90), ANCH], feed=True), m)
     decide(st(0.2, [bot(90), ANCH], feed=True), m)
     assert m.option.status == RUNNING and m.stop is None
+
+
+def test_a_ko_after_a_swing_has_ended_stops_nothing():
+    """Review F4: a KO names the latest option, and a swing's primitive is travel, not presses; the running case above never reaches it."""
+    m = Memory()
+    assert chosen(m, 0.0, [bot(90), ANCH]) == SwingTo(ANCH)
+    decide(st(SWING_MAX_S, [bot(90), ANCH], feed=False, abilities={}), m)       # the bound ends it; no swing charge: Engage next
+    assert ended(m) == (INTERRUPTED, UPPER_BOUND, SWING_MAX_S)
+    decide(st(SWING_MAX_S + 0.1, [bot(90), ANCH], feed=True, abilities={}), m)
+    decide(st(SWING_MAX_S + 0.2, [bot(90), ANCH], feed=True, abilities={}), m)
+    assert m.option.intent == SwingTo(ANCH) and m.stop is None
+
+
+def test_a_ko_completes_a_web_strike_but_stops_nothing():
+    """Review F1: the rest of a web strike's primitive is a wait. Stopping it would remove no press, only let the next attack start sooner."""
+    m = Memory()
+    w = chosen(m, 0.0, [bot(tagged=True)])
+    assert isinstance(w, WebStrike)
+    decide(st(0.1, [bot(tagged=True)], feed=True), m)
+    decide(st(0.2, [], feed=True, coasting=(1,)), m)
+    assert ended(m) == (COMPLETED, KO_FEED, 0.2) and m.option.intent is w and m.stop is None
 
 
 def test_a_lost_target_ends_the_option_at_once():
@@ -197,7 +224,20 @@ def test_a_pull_completes_when_its_target_is_pulled_into_near_range():
     assert p == Pull(bot(tagged=False))
     assert decide(st(0.2, [bot(tagged=False)], webs=0), m) is p
     assert decide(st(0.4, [bot(600, tagged=False)], webs=0), m) == Engage(bot(600, tagged=False))
-    assert ended(m) == (COMPLETED, ARRIVAL, 0.4) and m.stop is p
+    assert ended(m) == (COMPLETED, ARRIVAL, 0.4) and m.stop is None         # arrival stops nothing: the rest of a pull is a wait
+
+
+def test_arrival_is_read_on_the_held_targets_own_box_not_on_its_successor():
+    """Review F4: a WebStrike on id 1, outside the aim crop and now coasting; a near box of a new id in the crop becomes the brain's target
+    (brain._heir). It is not the held id, so it is no arrival: the option keeps running on id 1's coast."""
+    m = Memory()
+    held = bot(320, x=1907, tagged=True)                                   # mid range, outside the crop
+    w = chosen(m, 0.0, [held])
+    assert isinstance(w, WebStrike)
+    heir = bot(470, track=2, tagged=True)                                  # 0.326 of the frame: near; 1.47x the held box
+    decide(st(0.1, [heir], coasting=(1,)), m)
+    assert decide(st(0.2, [heir], coasting=(1,)), m) is w and m.target == heir
+    assert m.option.status == RUNNING and m.option.waiting_on == (KO_FEED, ARRIVAL)
 
 
 # --- 3. the hold constants are gone; each option has its named upper bound --------------------------------------------------------
@@ -234,10 +274,75 @@ def test_the_recorded_burst_trial_ends_at_its_ko_not_at_its_bound():
         if t == 2.195:
             assert got is not c and m.stop is c
     assert ended(m) == (COMPLETED, KO_FEED, 2.195)
-    assert m.option.bound_t == pytest.approx(0.455 + BURST_MAX_S)   # the hold would have run to 3.455 s
+    assert m.option.bound_t == pytest.approx(0.455 + BURST_MAX_S)
+    # Here the tracker holds id 1 throughout. On the recorded replay (docs/evidence/option-status-20260923) the base's hold ended on track
+    # loss at 2.348 and its burst primitive played on to 3.45 s: the gain there is the stop at the KO.
 
 
 # --- the controller: a stop cuts only the primitive played for that intent -----------------------------------------------------------
+
+def drive(boxes, feed, seconds, **hud):
+    """The scripted brain at 10 Hz and the controller at 60 Hz on synthetic States: `boxes(t)` and `feed(t)` say what each shows. Returns the
+    attack presses as [t, what] each time what is pressed changes (review-1315's probes), the decisions as (t, intent, memory.stop), and
+    the Memory."""
+    m, ctrl, presses, decisions = Memory(), Controller(), [], []
+    intent = stop = decided_t = None
+    for i in range(round(seconds * 60)):
+        t = round(-0.1 + i / 60, 4)
+        if decided_t is None or t - decided_t >= 0.099:
+            decided_t = t
+            intent = decide(st(t, boxes(t), feed=feed(t), **hud), m)
+            stop = m.stop
+            decisions.append((t, intent, stop))
+        pad = ctrl.step(State(t=t, frame=FRAME, detections=boxes(t)), intent, intent_t=decided_t, stop=stop)
+        what = ("LT" if pad["lt"] else "") + ("RT" if pad["rt"] else "") + "".join(pad["buttons"])
+        if what and (not presses or presses[-1][1] != what or t - presses[-1][2] > 0.02):
+            presses.append([round(t, 3), what, t])
+        elif what:
+            presses[-1][2] = t
+    return [p[:2] for p in presses], decisions, m
+
+
+def test_a_ko_reopens_the_choice_and_a_burst_on_a_target_still_boxed_restarts():
+    """Accepted behavior (review F1(b), lead's decision): a KO removes the ending burst's remaining presses; the choice reopens on the same
+    decision, and a target still boxed with RB and uppercut reading ready (cooldowns off, or a KO before the burst's RB) is burst again. The
+    KO names no victim, so this restarts a burst on a downed A that keeps its box, or on A after another bot's KO. Observed: an LT the base
+    never presses at 0.300, and the burst restarting 0.233 s late (the base: RB 0.383, X 1.150)."""
+    presses, decisions, _ = drive(lambda t: [bot()], lambda t: t >= 0.15, 1.6)
+    assert presses == [[0.067, "LT"], [0.3, "LT"], [0.617, "RB"], [1.383, "X"]]
+    t, intent, stop = next(d for d in decisions if d[2] is not None)
+    assert t == 0.3 and isinstance(intent, Combo) and stop == intent and stop is not intent   # a new Combo on the tick the old one stops
+
+
+def test_arrival_ends_a_web_strike_but_its_primitive_plays_out():
+    """Accepted behavior (review F1(a), lead's decision): arrival completes the option and stops nothing, so the web strike's wait holds the
+    next attack exactly as the base did (review-1315 probe_arrival, base: RB 0.067, X 0.850, RT 1.433). The restated invariant: the ending
+    option's own remaining presses are removed, and later choices may start sooner (here Engage is chosen at 0.500, its X waits)."""
+    presses, decisions, m = drive(lambda t: [bot(600 if t >= 0.067 + 0.35 else 300, tagged=True)], lambda t: False, 2.0, webs=0)
+    assert presses == [[0.067, "RB"], [0.85, "X"], [1.433, "RT"]]
+    assert m.option.evidence.observation == ARRIVAL and m.option.evidence.t == 0.5 and all(s is None for _, _, s in decisions)
+    assert [type(i).__name__ for t, i, _ in decisions if 0.45 < t < 0.55] == ["Engage"]
+
+
+def test_a_ko_on_the_commit_tick_is_consumed_before_the_choice():
+    """Pinned (review F4). A KO confirmed on the decision that commits a burst was read by the gate before the choice: nothing was running,
+    so nothing ends and the new burst runs on. A KO whose first True read is on the commit tick is confirmed on the next decision, and ends
+    that burst: a new one is chosen on the same decision (the re-commit above)."""
+    a = bot()
+    m = Memory()
+    for t, feed, dets in ((-0.2, False, []), (-0.1, True, [a]), (0.0, True, [a])):
+        got = decide(st(t, dets, feed=feed), m)
+    assert isinstance(got, Combo) and m.option.status == RUNNING and m.option.start_t == 0.0 and m.stop is None
+    decide(st(0.1, [a], feed=True), m)
+    assert m.option.status == RUNNING and m.option.start_t == 0.0
+
+    m = Memory()
+    for t, feed in ((-0.2, False), (-0.1, False), (0.0, True)):
+        first = decide(st(t, [a], feed=feed), m)
+    assert isinstance(first, Combo) and m.option.start_t == -0.1
+    again = decide(st(0.1, [a], feed=True), m)
+    assert m.stop is first and again is not first and m.option.start_t == 0.1 and m.option.status == RUNNING
+
 
 def playing_burst(c):
     ctrl = Controller()

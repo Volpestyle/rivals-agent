@@ -55,7 +55,8 @@ STRIKE_MAX_S = 0.8    # measured once: RB to arrival 0.65-0.86 s from ~12 m (bur
                       # decision, before the controller arms, so it is tighter than that: kept, not retuned
 PULL_MAX_S = 0.8      # historical guess: 250 ms flight at 20 m plus the drag; unmeasured
 SWING_MAX_S = 1.2     # historical guess; unmeasured
-FEED_CONFIRM = 2      # kill-feed True reads after a False that confirm a KO: the HUD event extractor's killfeed debounce (perception/events.py)
+FEED_CONFIRM = 2      # consecutive kill-feed reads that confirm a change, either way: the HUD event extractor's killfeed debounce
+                      # (perception/events.py DEBOUNCE, _Channel). A KO is a confirmed False -> True
 
 # An option's status, and the observations that decide it (Evidence.observation).
 RUNNING, COMPLETED, FAILED, INTERRUPTED = "running", "completed", "failed", "interrupted"
@@ -67,10 +68,12 @@ KO_FEED, ARRIVAL, TRACK_LOST, RELEASED, RETREAT_HP, SUPERSEDED, UPPER_BOUND = (
 class OptionKind:
     max_s: float                      # the named upper bound
     completes_on: tuple = ()          # the observations that complete it: KO_FEED, ARRIVAL
+    stops_on_ko: bool = False         # a KO stops its primitive: the rest of it holds presses. A pull's or a web strike's rest is a wait,
+                                      # and stopping that would only let the next attack start sooner
 
 
 OPTIONS = {                           # the one table of option kinds: an intent committed with a time and listed here is an option
-    Combo: OptionKind(BURST_MAX_S, (KO_FEED,)),
+    Combo: OptionKind(BURST_MAX_S, (KO_FEED,), stops_on_ko=True),
     WebStrike: OptionKind(STRIKE_MAX_S, (KO_FEED, ARRIVAL)),
     Pull: OptionKind(PULL_MAX_S, (KO_FEED, ARRIVAL)),
     SwingTo: OptionKind(SWING_MAX_S),  # nothing observes a swing's arrival: there is no anchor producer
@@ -138,8 +141,9 @@ class Memory:
     option: OptionStatus | None = None  # the latest option, running or ended: repeated while it reads RUNNING
     stop: Intent | None = None        # on this decision: the option whose playing primitive the controller stops (Controller.step(stop=))
     t: float | None = None            # State.t of the latest decision
-    feed_off_t: float | None = None   # State.t the kill feed last read False
-    feed_on: tuple = ()               # State.t of each True read since then
+    feed: bool | None = None          # the kill feed's confirmed value (_ko); None until it is first read
+    feed_t: float | None = None       # State.t of the latest read of that value
+    feed_cand: tuple = ()             # State.t of each read of the other value since: FEED_CONFIRM of them confirm the change
     target: Detection | None = None
     target_t: float = -math.inf       # last time a hostile was seen
     retreat_armed: bool = True        # re-arms once hp recovers past HP_RESUME
@@ -203,8 +207,8 @@ def gate(state: State, memory: Memory):
         if memory.option.status == RUNNING:
             return memory.intent, target
         completed = memory.option.status == COMPLETED
-    if memory.option is not None and (completed or (ko is not None and KO_FEED in _kind(memory.option).completes_on)):
-        memory.stop = memory.option.intent   # a completed option stops its own primitive; a KO stops the latest attack's, however it ended
+    if ko is not None and memory.option is not None and _kind(memory.option).stops_on_ko:
+        memory.stop = memory.option.intent   # a KO removes the latest burst's remaining presses, however its option ended
     if memory.mode == RETREAT:
         return commit(memory, Disengage()), target
 
@@ -299,15 +303,23 @@ def _kind(option):
 
 
 def _ko(state, memory):
-    """Evidence of a KO confirmed on this State, else None: the kill feed read True FEED_CONFIRM times since it last read False. None neither
-    counts nor resets, and a line already up when first read is no onset. The feed names no victim; in the range every line is ours."""
-    if state.kill_feed is False:
-        memory.feed_off_t, memory.feed_on = state.t, ()
-    elif state.kill_feed is True and memory.feed_off_t is not None:
-        memory.feed_on += (state.t,)
-        if len(memory.feed_on) == FEED_CONFIRM:
-            reads = ", ".join(f"{x:.3f}" for x in memory.feed_on)
-            return Evidence(KO_FEED, state.t, f"kill feed False at {memory.feed_off_t:.3f}, True at {reads}; which bot is not read")
+    """Evidence of a KO confirmed on this State, else None. The kill feed is debounced as the HUD event extractor's _Channel does it: the first
+    read sets the value (a line already up is no onset), a change needs FEED_CONFIRM reads of the new value in a row, a read of the confirmed
+    value restarts that count, and None neither counts nor breaks it. A KO is a confirmed False -> True, so after one the feed must read
+    False FEED_CONFIRM times before the next: one misread False inside a line is no second KO. The feed names no victim."""
+    v = state.kill_feed
+    if v is None:
+        return None
+    if memory.feed is None or v == memory.feed:
+        memory.feed, memory.feed_t, memory.feed_cand = v, state.t, ()
+        return None
+    memory.feed_cand += (state.t,)
+    if len(memory.feed_cand) < FEED_CONFIRM:
+        return None
+    was_t, reads = memory.feed_t, ", ".join(f"{x:.3f}" for x in memory.feed_cand)
+    memory.feed, memory.feed_t, memory.feed_cand = v, state.t, ()
+    if v is True:
+        return Evidence(KO_FEED, state.t, f"kill feed False at {was_t:.3f}, True at {reads}; which bot is not read")
     return None
 
 

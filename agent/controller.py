@@ -474,8 +474,8 @@ class Controller:
         `execution_t`: range-mode authorization/actuation clock, in the same domain; defaults to State.t for replay.
         Observations are never re-stamped with execution time. `tracking_observation`
         is an optional current tracker body witness, used only by RangeSkill.
-        `stop`: an option intent the brain ended on evidence (brain.Memory.stop): the primitive played for THAT intent stops now, if
-        it is still playing; anything else plays on. Not read in range mode."""
+        `stop`: an option intent whose remaining presses a KO removes (brain.Memory.stop): the primitive played for THAT intent stops
+        now, if it is still playing; anything else plays on. Not read in range mode."""
         self._range_body = None
         execution_t = state.t if execution_t is None else execution_t
         if isinstance(intent, RangeSkill):
@@ -494,7 +494,7 @@ class Controller:
         self.last_t = t
         out = dict(NEUTRAL)
         if stop is not None and self.played is stop and self.seq and self.seq_name == _option_primitive(stop):
-            self.seq, self.seq_name = [], ""   # a KO or an arrival ended it: its remaining presses and holds are not sent
+            self.seq, self.seq_name = [], ""   # a KO ended it: its remaining presses and holds are not sent
         key = (type(intent).__name__, getattr(intent, "name", None))
         if key != self.intent_key:
             self.intent_key, self.phase_t, self.integ = key, t, [0.0, 0.0]
