@@ -114,3 +114,11 @@ co-leads route scope decisions through that lead. A status request alone creates
   own tests and report are evidence, not a review.
 - Several agents often share this checkout. Edit only the paths your brief names, and
   load the `shared-checkout` skill before committing.
+- **Frozen review packets.** A lane note whose current bytes are pinned by a review receipt or a freeze
+  manifest is never edited or moved, not even to fix a link or a stale "not yet accepted" line; the receipt
+  that pins it records its acceptance. `docs/lanes/range-lead.md` lists the pinned range notes and states
+  their present status, and `docs/evidence/README.md` does the same for evidence, which follows the same
+  rule. Before editing a lane note, search `docs/evidence/` and `data/` for its sha256 (both the LF and CRLF
+  forms). Code has an equivalent: editing any file of a deployment freeze (for checkpoint `698d8831`, the 16
+  files hashed in `data/runtime/galacta-pilot-20260923-preflight/*-deployed.json`) forces a re-freeze before
+  that checkpoint runs again.
