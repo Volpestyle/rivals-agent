@@ -1,0 +1,64 @@
+{
+  "root_ready_for_one_diagnostic": true,
+  "observed_utc": "2026-09-23T00:29:49.525507+00:00",
+  "observer": "root, direct fresh entry scene, native PAD layout and practice menu inspection",
+  "observed": {
+    "normal_cooldown_menu": true,
+    "spiderman": true,
+    "pad_web_layout": true,
+    "luna_setup": true,
+    "range": true
+  },
+  "game_pid": 48460,
+  "frame": [
+    2560,
+    1440
+  ],
+  "observations": [
+    "Fresh lobby-to-range entry exited0; new session entry names Luna Snow at Hero Simulation, undamaged name display instead of prior depleted health bar; Spider-Man250/250 and5 webs. No continuation against the previous damaged target.",
+    "Fresh ps-0 No Ability Cooldown X/off and Friendly Fire X/off; helper already-off, did not toggle.",
+    "Native settings4s shows LT projectile5, RT infinite melee, LB swing3, RB pull and X uppercut2; same PAD appearance.",
+    "Setup attachment turns camera toward spawn; accepted same-device camera startup must reacquire plaza; foreground PID and fresh range proof remain actual entry guards.",
+    "Saved selected client/build/PAD/display values equal post-D; unspecified defaults remain unknown."
+  ],
+  "limits": [
+    "One new20-second exploratory duration measurement, startup<=14s/absolute34s; unchanged6ee38807,.7,threads,reviewed676f99a.",
+    "Fresh entry/undamaged target appearance, not a numeric target-health reader or designated-bot benchmark.",
+    "Returned pulses are not cast evidence; native outcome reviewed afterward. Source/window/selector uncertainties remain.",
+    "Entry priming is setup, not learned offense; no retry of this binding."
+  ],
+  "evidence": [
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-20s-preflight-20260922\\practice-settings\\ps-0.jpg",
+      "sha256": "04bf5f4e4e1a9b349808a66768fe03838a5fabaeb7ddf2921102c2696b288643"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-20s-preflight-20260922\\settings-4s.png",
+      "sha256": "168aabd26e75db4758d555ceae3eada73fdf6a00f12ea493ccc3bbe07e92accd"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-20s-preflight-20260922\\settings-native.mp4",
+      "sha256": "06f4cc063d7b1b00911da235e370f3c0d14b7c8b0d0cb10bffca634a5aea65c2"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-20s-preflight-20260922\\settings.log",
+      "sha256": "98df43fefe1bf7ab14d6bfea9f29617738a09a743690606aa950ada66142674b"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-20s-preflight-20260922\\capture-preflight.txt",
+      "sha256": "a3da7b2475377ec1665d9fccfb1a738a5d4b73e3a04aef44b1d0a836b3ad6aee"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-20s-preflight-20260922\\saved-settings.json",
+      "sha256": "69f27d6894764f922406ddf54197e4ffd82e805104a12f277a6f2151b2d621d5"
+    },
+    {
+      "path": "C:\\desk\\out\\range-request-20s-entry-after.png",
+      "sha256": "6fe024f6bf438949cf430e43090622dea3889d53a0aeec419e28bce549ade89b"
+    },
+    {
+      "path": "C:\\desk\\out\\range-request-20s-settings-after.png",
+      "sha256": "016f7d89043ab184ddce2e052a0f65eff5544dce289dcd7e9d358fef9ad61f01"
+    }
+  ]
+}

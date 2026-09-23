@@ -1,0 +1,135 @@
+[
+  {
+    "file": "000023.jpg",
+    "observation_t": 9.152110600000015,
+    "sha256": "a8d111721d80239c96ee17829a547447039e3d7086924c1bf084f553de19682a",
+    "matches": [
+      {
+        "file": "native-0001.jpg",
+        "pts": 12.0,
+        "mad": 25.42465625,
+        "offset": 2.8478893999999855
+      },
+      {
+        "file": "native-0002.jpg",
+        "pts": 12.016667,
+        "mad": 27.0795625,
+        "offset": 2.8645563999999855
+      }
+    ]
+  },
+  {
+    "file": "000024.jpg",
+    "observation_t": 9.2604704000114,
+    "sha256": "23a4eb08dd9ec05ecf88e5933cb201db019b7a4805c1d5ce9bcfbabb2c7d98b2",
+    "matches": [
+      {
+        "file": "native-0003.jpg",
+        "pts": 12.033333,
+        "mad": 1.51346875,
+        "offset": 2.772862599988601
+      },
+      {
+        "file": "native-0004.jpg",
+        "pts": 12.05,
+        "mad": 2.51771875,
+        "offset": 2.789529599988601
+      }
+    ]
+  },
+  {
+    "file": "000025.jpg",
+    "observation_t": 9.385837500012713,
+    "sha256": "b065cb56fbebb5246be7b9e4da56b9db759be63cb62f8bbfc0a710c8b7b5d66c",
+    "matches": [
+      {
+        "file": "native-0011.jpg",
+        "pts": 12.166667,
+        "mad": 1.1963125,
+        "offset": 2.780829499987288
+      },
+      {
+        "file": "native-0012.jpg",
+        "pts": 12.183333,
+        "mad": 1.79009375,
+        "offset": 2.7974954999872867
+      }
+    ]
+  },
+  {
+    "file": "000026.jpg",
+    "observation_t": 9.486162200017134,
+    "sha256": "8e34b7dfeb58fc6dba0cd21b152e2adeb2439ed637030802a0f47adeebee63e8",
+    "matches": [
+      {
+        "file": "native-0017.jpg",
+        "pts": 12.266667,
+        "mad": 4.79690625,
+        "offset": 2.7805047999828663
+      },
+      {
+        "file": "native-0018.jpg",
+        "pts": 12.283333,
+        "mad": 5.0935,
+        "offset": 2.797170799982867
+      }
+    ]
+  },
+  {
+    "file": "000027.jpg",
+    "observation_t": 9.590137200022582,
+    "sha256": "491dc828f9b0ba47eae68937cebbdb2f9d3e83dd1d4094b0feb5c2d7495ce11f",
+    "matches": [
+      {
+        "file": "native-0023.jpg",
+        "pts": 12.366667,
+        "mad": 0.56584375,
+        "offset": 2.7765297999774177
+      },
+      {
+        "file": "native-0022.jpg",
+        "pts": 12.35,
+        "mad": 7.6941875,
+        "offset": 2.7598627999774177
+      }
+    ]
+  },
+  {
+    "file": "000028.jpg",
+    "observation_t": 9.703375800017966,
+    "sha256": "4ec15db69ba8e2575457065592f41cffa35f276440f395e97dc5e726652a89ee",
+    "matches": [
+      {
+        "file": "native-0030.jpg",
+        "pts": 12.483333,
+        "mad": 1.0251875,
+        "offset": 2.779957199982034
+      },
+      {
+        "file": "native-0031.jpg",
+        "pts": 12.5,
+        "mad": 1.65340625,
+        "offset": 2.796624199982034
+      }
+    ]
+  },
+  {
+    "file": "000029.jpg",
+    "observation_t": 9.81290240000817,
+    "sha256": "6891249f4b534d2d72c7f5ded7c61e9a56f047360061c42fbbd8535c6b95a8c0",
+    "matches": [
+      {
+        "file": "native-0036.jpg",
+        "pts": 12.583333,
+        "mad": 3.27709375,
+        "offset": 2.7704305999918297
+      },
+      {
+        "file": "native-0037.jpg",
+        "pts": 12.6,
+        "mad": 3.37665625,
+        "offset": 2.7870975999918297
+      }
+    ]
+  }
+]

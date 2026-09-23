@@ -75,7 +75,7 @@ unique received request, not independent validation or learned gameplay. No
 additional footage, stationary waits, guessed motor profile or live binding was
 used to reach this numerical result. The prior visual artifacts stay unchanged.
 
-The exact request model has now run in four retained exploratory measurements,
+The exact request model has now run in five retained exploratory measurements,
 each with reviewed code, a distinct consumed runtime binding and fresh
 normal-resource/PAD setup. The [first run](evidence/range-request-runtime-20260922/README.md)
 hit Luna once and stopped at 8.615 seconds; its final trace gap remains historical.
@@ -111,9 +111,25 @@ impacts on Luna, no KO**. Ten owned requests produced twenty returned LT calls;
 two owners had no separate visible cast. All 95 decisions survived, with zero
 invalid-history refusals or failed sends. Two same-owner continuations actually
 ran after their request deadlines and before their fixed pulse ends. Luna retained
-a small amount of health. A fresh 20-second exploratory trial with the unchanged
-model is the next measurement, using the existing caller cap and a new binding.
-This result does not count toward the designated-bot comparison.
+a small amount of health. This result does not count toward the designated-bot
+comparison.
+
+The [fifth run](evidence/range-request-20s-runtime-20260922/README.md) completed
+the configured 20-second phase and achieved **one independently confirmed Luna KO,
+followed by respawn and a further hit**. Eleven distinct web emissions/impacts
+are visible: ten through the lethal hit and one on the second life. Thirteen
+Controller owners produced 25 returned LT calls; two owners had no separate
+visible emission. One continuation expired, was released and stayed consumed;
+fresh decisions continued normally. All 196 decisions survived, with no
+invalid-history refusals. The model, threshold and reviewed runtime were unchanged.
+Target selection, aim, approach and pulse delivery remain scripted.
+
+This establishes the first exploratory learned-request kill, not repeatability
+or the designated-Galacta benchmark. Next, join the existing range setup and
+controller to the specified near/mid scenarios with audited readiness, reset and
+outcome evidence, then run the scheduled learned/scripted comparison with every
+failure retained. James's independent validation remains separate; the current
+single-event fit and this stationary Luna attempt do not establish generalization.
 
 The first executable experiment now learns **Web-Cluster start timing**, using
 five causal observations at 10 Hz. `start_web_cluster` requests one bounded pulse;

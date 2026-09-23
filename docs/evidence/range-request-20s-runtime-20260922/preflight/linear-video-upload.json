@@ -1,0 +1,14 @@
+{
+  "asset_url": "https://uploads.linear.app/75f1d1f0-542b-4095-9967-fd7b27093472/1050b2c0-a444-4bfc-bc56-7ca0cd94ce74/432aff95-bc5f-408c-935a-0bf9a5e586b1",
+  "attachment_id": "736f7af9-60ab-4c7e-b5b6-48867abfbf89",
+  "issue": "VUH-1346",
+  "excerpt_file": "inspection-8-35.mp4",
+  "original_start_s": 8,
+  "original_end_s": 35,
+  "duration_s": 27,
+  "size_bytes": 43759983,
+  "sha256": "9a9e8ee652c344fa0169d3ba02323935a430972d36203f22ce78464c9aebd6d2",
+  "transform": "1920x1080 H.264 NVENC export; no audio; original retained",
+  "upload_http_status": 200,
+  "finalized": true
+}

@@ -1,0 +1,5 @@
+* -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+native-audit/independent-audit.md whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+# Keep the original ffmpeg progress-line whitespace in byte-pinned logs.
+native-audit/native-decode.log -whitespace
+native-audit/offense-decode.log -whitespace

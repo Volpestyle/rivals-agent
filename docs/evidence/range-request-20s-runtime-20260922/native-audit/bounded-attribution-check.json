@@ -1,0 +1,12 @@
+{
+  "exact_meta_receipt_equalities": true,
+  "accepted_start_count": 13,
+  "accepted_start_return_before_original_deadlines": true,
+  "nominal_press_s": 0.033,
+  "returned_lt_calls": 25,
+  "all_returned_lt_before_recorded_end_and_scope": true,
+  "phase_deadline_t": 26.543811100011226,
+  "session_deadline_t": 33.63733789999969,
+  "interpretation": "request-start-owned-pulse-v1",
+  "no_game_render_or_physical_duration_inference": true
+}

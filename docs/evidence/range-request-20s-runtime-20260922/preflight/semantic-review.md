@@ -1,0 +1,9 @@
+# Lead decision: one fresh20-second Luna diagnostic
+
+The fourth independently audited run completed10s with eight visible Web-Cluster casts/impacts and Luna alive, ten accepted requests/twenty returned LT calls, no failedsend. This next single experiment tests a complete kill using the unchanged6ee38807 request model, confidence.7, current accepted676f99a code, same normal-resource/PAD scenario and request-start-owned-pulse-v1. It is a new declared duration experiment, not a retry/tuning search or a continuation against the damaged target.
+
+At most20s learned phase plus14s camera-only startup shares one absolute34s authorization. Use no scoreboard. All ordinary refusal, original request/resource deadlines, fixed owner acceptance+33ms pulse end, same-owner continuation, target loss and phase/session final-lock/watchdog rules remain. No physical-duration or exact cast latency claim is inherited. Source label and received100ms forecast are unchanged.
+
+Historical primitive and fourth-run native evidence support visible LT/Web-Cluster association in this setup. Actual cast/hit/KO outcomes still need native review; returned calls alone cannot prove them. Root must inspect fresh effective normal-resource menu, PAD layout, range/Spider-Man and an undamaged Luna before binding. Reenter a fresh range session if the prior target has not reset. Generic selector is not a named-Luna lock.
+
+Every decision/refusal/acceptance/send/release and original video is retained. No model or thread changes, retries of this binding, synthetic source settings or substitution of a scripted attack fallback. Source MK/PAD and per-window/continuous target differences stay explicit. This is exploratory Luna, not designated-Galacta eight-of-ten acceptance, independent human validation or generalization. After the single outcome, stop native work for audit and decide the next step from evidence.

@@ -1,0 +1,7 @@
+{
+    "run":  "range-request-20s-20260922-1",
+    "binding_sha256":  "5e21c2ee7fe665689f2fab7f691a25575dfcf7db5cecf2ce33b7bff223ad137b",
+    "consumed_utc":  "2026-09-23T00:30:12.8052113Z",
+    "reason":  "one authorized exploratory launch; preserve failure; do not rerun this binding",
+    "checkpoint_sha256":  "6ee388070599e3df042ea73876e391340bf228a9e626cc212c60875d8191aeef"
+}

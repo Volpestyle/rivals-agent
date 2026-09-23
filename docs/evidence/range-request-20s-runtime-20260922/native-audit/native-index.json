@@ -1,0 +1,478 @@
+[
+  {
+    "file": "native-0001.jpg",
+    "pts": 12.0
+  },
+  {
+    "file": "native-0002.jpg",
+    "pts": 12.016667
+  },
+  {
+    "file": "native-0003.jpg",
+    "pts": 12.033333
+  },
+  {
+    "file": "native-0004.jpg",
+    "pts": 12.05
+  },
+  {
+    "file": "native-0005.jpg",
+    "pts": 12.066667
+  },
+  {
+    "file": "native-0006.jpg",
+    "pts": 12.083333
+  },
+  {
+    "file": "native-0007.jpg",
+    "pts": 12.1
+  },
+  {
+    "file": "native-0008.jpg",
+    "pts": 12.116667
+  },
+  {
+    "file": "native-0009.jpg",
+    "pts": 12.133333
+  },
+  {
+    "file": "native-0010.jpg",
+    "pts": 12.15
+  },
+  {
+    "file": "native-0011.jpg",
+    "pts": 12.166667
+  },
+  {
+    "file": "native-0012.jpg",
+    "pts": 12.183333
+  },
+  {
+    "file": "native-0013.jpg",
+    "pts": 12.2
+  },
+  {
+    "file": "native-0014.jpg",
+    "pts": 12.216667
+  },
+  {
+    "file": "native-0015.jpg",
+    "pts": 12.233333
+  },
+  {
+    "file": "native-0016.jpg",
+    "pts": 12.25
+  },
+  {
+    "file": "native-0017.jpg",
+    "pts": 12.266667
+  },
+  {
+    "file": "native-0018.jpg",
+    "pts": 12.283333
+  },
+  {
+    "file": "native-0019.jpg",
+    "pts": 12.3
+  },
+  {
+    "file": "native-0020.jpg",
+    "pts": 12.316667
+  },
+  {
+    "file": "native-0021.jpg",
+    "pts": 12.333333
+  },
+  {
+    "file": "native-0022.jpg",
+    "pts": 12.35
+  },
+  {
+    "file": "native-0023.jpg",
+    "pts": 12.366667
+  },
+  {
+    "file": "native-0024.jpg",
+    "pts": 12.383333
+  },
+  {
+    "file": "native-0025.jpg",
+    "pts": 12.4
+  },
+  {
+    "file": "native-0026.jpg",
+    "pts": 12.416667
+  },
+  {
+    "file": "native-0027.jpg",
+    "pts": 12.433333
+  },
+  {
+    "file": "native-0028.jpg",
+    "pts": 12.45
+  },
+  {
+    "file": "native-0029.jpg",
+    "pts": 12.466667
+  },
+  {
+    "file": "native-0030.jpg",
+    "pts": 12.483333
+  },
+  {
+    "file": "native-0031.jpg",
+    "pts": 12.5
+  },
+  {
+    "file": "native-0032.jpg",
+    "pts": 12.516667
+  },
+  {
+    "file": "native-0033.jpg",
+    "pts": 12.533333
+  },
+  {
+    "file": "native-0034.jpg",
+    "pts": 12.55
+  },
+  {
+    "file": "native-0035.jpg",
+    "pts": 12.566667
+  },
+  {
+    "file": "native-0036.jpg",
+    "pts": 12.583333
+  },
+  {
+    "file": "native-0037.jpg",
+    "pts": 12.6
+  },
+  {
+    "file": "native-0038.jpg",
+    "pts": 12.616667
+  },
+  {
+    "file": "native-0039.jpg",
+    "pts": 12.633333
+  },
+  {
+    "file": "native-0040.jpg",
+    "pts": 12.65
+  },
+  {
+    "file": "native-0041.jpg",
+    "pts": 12.666667
+  },
+  {
+    "file": "native-0042.jpg",
+    "pts": 12.683333
+  },
+  {
+    "file": "native-0043.jpg",
+    "pts": 12.7
+  },
+  {
+    "file": "native-0044.jpg",
+    "pts": 12.716667
+  },
+  {
+    "file": "native-0045.jpg",
+    "pts": 12.733333
+  },
+  {
+    "file": "native-0046.jpg",
+    "pts": 12.75
+  },
+  {
+    "file": "native-0047.jpg",
+    "pts": 12.766667
+  },
+  {
+    "file": "native-0048.jpg",
+    "pts": 12.783333
+  },
+  {
+    "file": "native-0049.jpg",
+    "pts": 12.8
+  },
+  {
+    "file": "native-0050.jpg",
+    "pts": 22.3
+  },
+  {
+    "file": "native-0051.jpg",
+    "pts": 22.316667
+  },
+  {
+    "file": "native-0052.jpg",
+    "pts": 22.333333
+  },
+  {
+    "file": "native-0053.jpg",
+    "pts": 22.35
+  },
+  {
+    "file": "native-0054.jpg",
+    "pts": 22.366667
+  },
+  {
+    "file": "native-0055.jpg",
+    "pts": 22.383333
+  },
+  {
+    "file": "native-0056.jpg",
+    "pts": 22.4
+  },
+  {
+    "file": "native-0057.jpg",
+    "pts": 22.416667
+  },
+  {
+    "file": "native-0058.jpg",
+    "pts": 22.433333
+  },
+  {
+    "file": "native-0059.jpg",
+    "pts": 22.45
+  },
+  {
+    "file": "native-0060.jpg",
+    "pts": 22.466667
+  },
+  {
+    "file": "native-0061.jpg",
+    "pts": 22.483333
+  },
+  {
+    "file": "native-0062.jpg",
+    "pts": 22.5
+  },
+  {
+    "file": "native-0063.jpg",
+    "pts": 22.516667
+  },
+  {
+    "file": "native-0064.jpg",
+    "pts": 22.533333
+  },
+  {
+    "file": "native-0065.jpg",
+    "pts": 22.55
+  },
+  {
+    "file": "native-0066.jpg",
+    "pts": 22.566667
+  },
+  {
+    "file": "native-0067.jpg",
+    "pts": 22.583333
+  },
+  {
+    "file": "native-0068.jpg",
+    "pts": 22.6
+  },
+  {
+    "file": "native-0069.jpg",
+    "pts": 22.616667
+  },
+  {
+    "file": "native-0070.jpg",
+    "pts": 22.633333
+  },
+  {
+    "file": "native-0071.jpg",
+    "pts": 22.65
+  },
+  {
+    "file": "native-0072.jpg",
+    "pts": 22.666667
+  },
+  {
+    "file": "native-0073.jpg",
+    "pts": 22.683333
+  },
+  {
+    "file": "native-0074.jpg",
+    "pts": 22.7
+  },
+  {
+    "file": "native-0075.jpg",
+    "pts": 22.716667
+  },
+  {
+    "file": "native-0076.jpg",
+    "pts": 22.733333
+  },
+  {
+    "file": "native-0077.jpg",
+    "pts": 22.75
+  },
+  {
+    "file": "native-0078.jpg",
+    "pts": 22.766667
+  },
+  {
+    "file": "native-0079.jpg",
+    "pts": 22.783333
+  },
+  {
+    "file": "native-0080.jpg",
+    "pts": 22.8
+  },
+  {
+    "file": "native-0081.jpg",
+    "pts": 22.816667
+  },
+  {
+    "file": "native-0082.jpg",
+    "pts": 22.833333
+  },
+  {
+    "file": "native-0083.jpg",
+    "pts": 22.85
+  },
+  {
+    "file": "native-0084.jpg",
+    "pts": 22.866667
+  },
+  {
+    "file": "native-0085.jpg",
+    "pts": 22.883333
+  },
+  {
+    "file": "native-0086.jpg",
+    "pts": 22.9
+  },
+  {
+    "file": "native-0087.jpg",
+    "pts": 22.916667
+  },
+  {
+    "file": "native-0088.jpg",
+    "pts": 22.933333
+  },
+  {
+    "file": "native-0089.jpg",
+    "pts": 22.95
+  },
+  {
+    "file": "native-0090.jpg",
+    "pts": 22.966667
+  },
+  {
+    "file": "native-0091.jpg",
+    "pts": 22.983333
+  },
+  {
+    "file": "native-0092.jpg",
+    "pts": 23.0
+  },
+  {
+    "file": "native-0093.jpg",
+    "pts": 23.016667
+  },
+  {
+    "file": "native-0094.jpg",
+    "pts": 23.033333
+  },
+  {
+    "file": "native-0095.jpg",
+    "pts": 23.05
+  },
+  {
+    "file": "native-0096.jpg",
+    "pts": 23.066667
+  },
+  {
+    "file": "native-0097.jpg",
+    "pts": 23.083333
+  },
+  {
+    "file": "native-0098.jpg",
+    "pts": 23.1
+  },
+  {
+    "file": "native-0099.jpg",
+    "pts": 23.116667
+  },
+  {
+    "file": "native-0100.jpg",
+    "pts": 23.133333
+  },
+  {
+    "file": "native-0101.jpg",
+    "pts": 23.15
+  },
+  {
+    "file": "native-0102.jpg",
+    "pts": 23.166667
+  },
+  {
+    "file": "native-0103.jpg",
+    "pts": 23.183333
+  },
+  {
+    "file": "native-0104.jpg",
+    "pts": 23.2
+  },
+  {
+    "file": "native-0105.jpg",
+    "pts": 23.216667
+  },
+  {
+    "file": "native-0106.jpg",
+    "pts": 23.233333
+  },
+  {
+    "file": "native-0107.jpg",
+    "pts": 23.25
+  },
+  {
+    "file": "native-0108.jpg",
+    "pts": 23.266667
+  },
+  {
+    "file": "native-0109.jpg",
+    "pts": 23.283333
+  },
+  {
+    "file": "native-0110.jpg",
+    "pts": 23.3
+  },
+  {
+    "file": "native-0111.jpg",
+    "pts": 25.233333
+  },
+  {
+    "file": "native-0112.jpg",
+    "pts": 25.333333
+  },
+  {
+    "file": "native-0113.jpg",
+    "pts": 25.433333
+  },
+  {
+    "file": "native-0114.jpg",
+    "pts": 25.533333
+  },
+  {
+    "file": "native-0115.jpg",
+    "pts": 25.633333
+  },
+  {
+    "file": "native-0116.jpg",
+    "pts": 25.733333
+  },
+  {
+    "file": "native-0117.jpg",
+    "pts": 25.833333
+  },
+  {
+    "file": "native-0118.jpg",
+    "pts": 25.933333
+  },
+  {
+    "file": "native-0119.jpg",
+    "pts": 26.033333
+  }
+]

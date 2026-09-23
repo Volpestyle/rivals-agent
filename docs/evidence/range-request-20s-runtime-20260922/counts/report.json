@@ -1,0 +1,2805 @@
+{
+  "scope": "20s finalized JSON counts/locators; no native outcome adjudication",
+  "checkpoint_sha256_recorded": "6ee388070599e3df042ea73876e391340bf228a9e626cc212c60875d8191aeef",
+  "execution_interpretation": "request-start-owned-pulse-v1",
+  "stop": "max_time",
+  "duration": {
+    "phase0": 6.543811100011226,
+    "phase_end": 26.543811100011226,
+    "absolute_session_end": 33.63733789999969,
+    "startup_budget_s": 14.0,
+    "phase_budget_s": 20.0,
+    "combined_budget_s": 34.0,
+    "reported_seconds": 19.99,
+    "terminal_observation_t": 26.533776600001147,
+    "terminal_observation_age_s": 19.98996549998992,
+    "release_call_age_s": 20.000981099990895,
+    "release_return_age_s": 20.001105300005293,
+    "last_processed_observation_age_s": 19.972172899986617,
+    "last_send_return_age_s": 19.989806099998532
+  },
+  "normal_rows": 835,
+  "failed_send_rows": 1,
+  "meta_ticks": 836,
+  "retained_unique_decisions": 196,
+  "decision_reasons": {
+    "target_unobserved": 30,
+    "warming_up": 19,
+    "model_event": 141,
+    "low_confidence": 5,
+    "scripted_low_hp_retreat": 1
+  },
+  "probability_vectors_recorded": 146,
+  "proposal_support": {
+    "start": {
+      "unique_decisions": 84,
+      "ids": [
+        28,
+        29,
+        30,
+        31,
+        36,
+        37,
+        38,
+        39,
+        40,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        90,
+        91,
+        92,
+        97,
+        98,
+        99,
+        100,
+        101,
+        102,
+        103,
+        104,
+        105,
+        106,
+        107,
+        108,
+        109,
+        110,
+        111,
+        112,
+        113,
+        114,
+        115,
+        116,
+        117,
+        118,
+        119,
+        120,
+        129,
+        130,
+        131,
+        132,
+        133,
+        171,
+        172,
+        177
+      ],
+      "first_controller_reasons": {
+        "unstable_target": 7,
+        "accepted": 13,
+        "shot_spacing": 24,
+        "pulse_busy": 1,
+        "decision_expired": 1,
+        "unsupported_or_empty_ammo": 35,
+        "unaligned_target": 3
+      }
+    },
+    "no_new_start": {
+      "unique_decisions": 57,
+      "ids": [
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        85,
+        86,
+        87,
+        122,
+        123,
+        124,
+        125,
+        126,
+        127,
+        128,
+        163,
+        164,
+        169,
+        170,
+        175,
+        176,
+        178,
+        179,
+        180,
+        181,
+        182,
+        183,
+        184,
+        185,
+        186,
+        187,
+        188,
+        189,
+        190,
+        191,
+        192,
+        193,
+        194,
+        195,
+        196
+      ],
+      "first_controller_reasons": {
+        "no_new_start": 57
+      }
+    }
+  },
+  "accepted_owners": [
+    29,
+    38,
+    46,
+    50,
+    54,
+    58,
+    62,
+    66,
+    70,
+    91,
+    109,
+    129,
+    171
+  ],
+  "returned_LT_calls": 25,
+  "first_LT_returns": 13,
+  "continued_LT_returns": 12,
+  "pulse_outcomes": {
+    "completed": 12,
+    "cancelled_after_press": 1
+  },
+  "pulses": [
+    {
+      "owner": 29,
+      "target_id": 1,
+      "anchor_t": 9.359347799996613,
+      "first_state_line": 116,
+      "accepted_locator": {
+        "jsonl_line": 116,
+        "decision": 29,
+        "loop_observation_t": 9.40868190000765,
+        "phase_observation_s": 2.8648707999964245,
+        "frame_reference": null,
+        "frame_index": null
+      },
+      "A": 9.430337800004054,
+      "E": 9.463337800004053,
+      "D": 9.459347799996612,
+      "phase_A_s": 2.886526699992828,
+      "resources": {
+        "webs": 5,
+        "observed_t": 9.359347799996613
+      },
+      "resource_age_at_A_ms": 70.99000000744127,
+      "sends": [
+        {
+          "jsonl_line": 116,
+          "decision": 29,
+          "loop_observation_t": 9.40868190000765,
+          "phase_observation_s": 2.8648707999964245,
+          "frame_reference": null,
+          "frame_index": null,
+          "first": true,
+          "accepted": true,
+          "send": {
+            "observation_t": 9.40868190000765,
+            "attempted_t": 9.430723099998431,
+            "status": "returned",
+            "not_after": 9.459347799996612,
+            "release_at": 9.463337800004053,
+            "scope_not_after": 26.543811100011226,
+            "pulse_accepted_t": 9.430337800004054,
+            "pulse_press_until": 9.463337800004053,
+            "request_valid_until": 9.459347799996612,
+            "returned_t": 9.432118299999274
+          },
+          "request_slack_at_entry_ms": 28.624699998180958,
+          "pulse_slack_at_entry_ms": 32.614700005622055,
+          "applicable_slack_at_return_ms": 27.229499997337925,
+          "after_D_entry": false
+        },
+        {
+          "jsonl_line": 117,
+          "decision": 29,
+          "loop_observation_t": 9.432315400015796,
+          "phase_observation_s": 2.88850430000457,
+          "frame_reference": null,
+          "frame_index": null,
+          "first": false,
+          "accepted": false,
+          "send": {
+            "observation_t": 9.432315400015796,
+            "attempted_t": 9.452207199996337,
+            "status": "returned",
+            "not_after": 9.463337800004053,
+            "release_at": 9.463337800004053,
+            "scope_not_after": 26.543811100011226,
+            "pulse_accepted_t": 9.430337800004054,
+            "pulse_press_until": 9.463337800004053,
+            "request_valid_until": 9.459347799996612,
+            "returned_t": 9.453405500011286
+          },
+          "request_slack_at_entry_ms": 7.140600000274944,
+          "pulse_slack_at_entry_ms": 11.13060000771604,
+          "applicable_slack_at_return_ms": 9.932299992767568,
+          "after_D_entry": false
+        }
+      ],
+      "returned_LT_calls": 2,
+      "failed_calls": 0,
+      "ended_locator": {
+        "jsonl_line": 119,
+        "decision": 29,
+        "loop_observation_t": 9.486162200017134,
+        "phase_observation_s": 2.942351100005908,
+        "frame_reference": "000026.jpg",
+        "frame_index": 26
+      },
+      "ended_execution_t": 9.505427500000224,
+      "outcome": "completed"
+    },
+    {
+      "owner": 38,
+      "target_id": 1,
+      "anchor_t": 10.358055600023363,
+      "first_state_line": 153,
+      "accepted_locator": {
+        "jsonl_line": 153,
+        "decision": 38,
+        "loop_observation_t": 10.407436800014693,
+        "phase_observation_s": 3.8636257000034675,
+        "frame_reference": null,
+        "frame_index": null
+      },
+      "A": 10.436719899997115,
+      "E": 10.469719899997115,
+      "D": 10.458055600023362,
+      "phase_A_s": 3.8929087999858893,
+      "resources": {
+        "webs": 4,
+        "observed_t": 10.358055600023363
+      },
+      "resource_age_at_A_ms": 78.66429997375235,
+      "sends": [
+        {
+          "jsonl_line": 153,
+          "decision": 38,
+          "loop_observation_t": 10.407436800014693,
+          "phase_observation_s": 3.8636257000034675,
+          "frame_reference": null,
+          "frame_index": null,
+          "first": true,
+          "accepted": true,
+          "send": {
+            "observation_t": 10.407436800014693,
+            "attempted_t": 10.43703950001509,
+            "status": "returned",
+            "not_after": 10.458055600023362,
+            "release_at": 10.469719899997115,
+            "scope_not_after": 26.543811100011226,
+            "pulse_accepted_t": 10.436719899997115,
+            "pulse_press_until": 10.469719899997115,
+            "request_valid_until": 10.458055600023362,
+            "returned_t": 10.438315500010503
+          },
+          "request_slack_at_entry_ms": 21.016100008273142,
+          "pulse_slack_at_entry_ms": 32.68039998202532,
+          "applicable_slack_at_return_ms": 19.740100012858974,
+          "after_D_entry": false
+        },
+        {
+          "jsonl_line": 154,
+          "decision": 38,
+          "loop_observation_t": 10.43851320000249,
+          "phase_observation_s": 3.894702099991264,
+          "frame_reference": null,
+          "frame_index": null,
+          "first": false,
+          "accepted": false,
+          "send": {
+            "observation_t": 10.43851320000249,
+            "attempted_t": 10.459683799999766,
+            "status": "returned",
+            "not_after": 10.469719899997115,
+            "release_at": 10.469719899997115,
+            "scope_not_after": 26.543811100011226,
+            "pulse_accepted_t": 10.436719899997115,
+            "pulse_press_until": 10.469719899997115,
+            "request_valid_until": 10.458055600023362,
+            "returned_t": 10.461064300005091
+          },
+          "request_slack_at_entry_ms": -1.6281999764036215,
+          "pulse_slack_at_entry_ms": 10.036099997348558,
+          "applicable_slack_at_return_ms": 8.655599992023255,
+          "after_D_entry": true
+        }
+      ],
+      "returned_LT_calls": 2,
+      "failed_calls": 0,
+      "ended_locator": {
+        "jsonl_line": 156,
+        "decision": 38,
+        "loop_observation_t": 10.491264800017234,
+        "phase_observation_s": 3.947453700006008,
+        "frame_reference": null,
+        "frame_index": null
+      },
+      "ended_execution_t": 10.509302300022682,
+      "outcome": "completed"
+    },
+    {
+      "owner": 46,
+      "target_id": 1,
+      "anchor_t": 11.259081700001843,
+      "first_state_line": 188,
+      "accepted_locator": {
+        "jsonl_line": 188,
+        "decision": 46,
+        "loop_observation_t": 11.307559900014894,
+        "phase_observation_s": 4.763748800003668,
+        "frame_reference": "000043.jpg",
+        "frame_index": 43
+      },
+      "A": 11.335121200012509,
+      "E": 11.368121200012508,
+      "D": 11.359081700001843,
+      "phase_A_s": 4.791310100001283,
+      "resources": {
+        "webs": 3,
+        "observed_t": 11.259081700001843
+      },
+      "resource_age_at_A_ms": 76.0395000106655,
+      "sends": [
+        {
+          "jsonl_line": 188,
+          "decision": 46,
+          "loop_observation_t": 11.307559900014894,
+          "phase_observation_s": 4.763748800003668,
+          "frame_reference": "000043.jpg",
+          "frame_index": 43,
+          "first": true,
+          "accepted": true,
+          "send": {
+            "observation_t": 11.307559900014894,
+            "attempted_t": 11.33545040001627,
+            "status": "returned",
+            "not_after": 11.359081700001843,
+            "release_at": 11.368121200012508,
+            "scope_not_after": 26.543811100011226,
+            "pulse_accepted_t": 11.335121200012509,
+            "pulse_press_until": 11.368121200012508,
+            "request_valid_until": 11.359081700001843,
+            "returned_t": 11.336753000010503
+          },
+          "request_slack_at_entry_ms": 23.63129998557234,
+          "pulse_slack_at_entry_ms": 32.670799996237676,
+          "applicable_slack_at_return_ms": 22.328699991339462,
+          "after_D_entry": false
+        },
+        {
+          "jsonl_line": 189,
+          "decision": 46,
+          "loop_observation_t": 11.341654800024116,
+          "phase_observation_s": 4.797843700012891,
+          "frame_reference": null,
+          "frame_index": null,
+          "first": false,
+          "accepted": false,
+          "send": {
+            "observation_t": 11.341654800024116,
+            "attempted_t": 11.357828800013522,
+            "status": "returned",
+            "not_after": 11.368121200012508,
+            "release_at": 11.368121200012508,
+            "scope_not_after": 26.543811100011226,
+            "pulse_accepted_t": 11.335121200012509,
+            "pulse_press_until": 11.368121200012508,
+            "request_valid_until": 11.359081700001843,
+            "returned_t": 11.358984000020428
+          },
+          "request_slack_at_entry_ms": 1.2528999883212322,
+          "pulse_slack_at_entry_ms": 10.292399998986568,
+          "applicable_slack_at_return_ms": 9.137199992080625,
+          "after_D_entry": false
+        }
+      ],
+      "returned_LT_calls": 2,
+      "failed_calls": 0,
+      "ended_locator": {
+        "jsonl_line": 191,
+        "decision": 46,
+        "loop_observation_t": 11.386498100007884,
+        "phase_observation_s": 4.842686999996658,
+        "frame_reference": null,
+        "frame_index": null
+      },
+      "ended_execution_t": 11.409928100008983,
+      "outcome": "completed"
+    },
+    {
+      "owner": 50,
+      "target_id": 1,
+      "anchor_t": 11.667341499996837,
+      "first_state_line": 204,
+      "accepted_locator": {
+        "jsonl_line": 204,
+        "decision": 50,
+        "loop_observation_t": 11.714886100002332,
+        "phase_observation_s": 5.171074999991106,
+        "frame_reference": null,
+        "frame_index": null
+      },
+      "A": 11.742723900009878,
+      "E": 11.775723900009877,
+      "D": 11.767341499996837,
+      "phase_A_s": 5.198912799998652,
+      "resources": {
+        "webs": 3,
+        "observed_t": 11.667341499996837
+      },
+      "resource_age_at_A_ms": 75.38240001304075,
+      "sends": [
+        {
+          "jsonl_line": 204,
+          "decision": 50,
+          "loop_observation_t": 11.714886100002332,
+          "phase_observation_s": 5.171074999991106,
+          "frame_reference": null,
+          "frame_index": null,
+          "first": true,
+          "accepted": true,
+          "send": {
+            "observation_t": 11.714886100002332,
+            "attempted_t": 11.74306219999562,
+            "status": "returned",
+            "not_after": 11.767341499996837,
+            "release_at": 11.775723900009877,
+            "scope_not_after": 26.543811100011226,
+            "pulse_accepted_t": 11.742723900009878,
+            "pulse_press_until": 11.775723900009877,
+            "request_valid_until": 11.767341499996837,
+            "returned_t": 11.744257500016829
+          },
+          "request_slack_at_entry_ms": 24.279300001216697,
+          "pulse_slack_at_entry_ms": 32.66170001425728,
+          "applicable_slack_at_return_ms": 23.083999980007874,
+          "after_D_entry": false
+        },
+        {
+          "jsonl_line": 205,
+          "decision": 50,
+          "loop_observation_t": 11.744515400001546,
+          "phase_observation_s": 5.200704299990321,
+          "frame_reference": "000047.jpg",
+          "frame_index": 47,
+          "first": false,
+          "accepted": false,
+          "send": {
+            "observation_t": 11.744515400001546,
+            "attempted_t": 11.76164150002296,
+            "status": "returned",
+            "not_after": 11.775723900009877,
+            "release_at": 11.775723900009877,
+            "scope_not_after": 26.543811100011226,
+            "pulse_accepted_t": 11.742723900009878,
+            "pulse_press_until": 11.775723900009877,
+            "request_valid_until": 11.767341499996837,
+            "returned_t": 11.763958900002763
+          },
+          "request_slack_at_entry_ms": 5.6999999738760465,
+          "pulse_slack_at_entry_ms": 14.082399986916627,
+          "applicable_slack_at_return_ms": 11.765000007114779,
+          "after_D_entry": false
+        }
+      ],
+      "returned_LT_calls": 2,
+      "failed_calls": 0,
+      "ended_locator": {
+        "jsonl_line": 207,
+        "decision": 51,
+        "loop_observation_t": 11.801224900002126,
+        "phase_observation_s": 5.2574137999909,
+        "frame_reference": null,
+        "frame_index": null
+      },
+      "ended_execution_t": 11.823093800019706,
+      "outcome": "completed"
+    },
+    {
+      "owner": 54,
+      "target_id": 1,
+      "anchor_t": 12.056183500011684,
+      "first_state_line": 218,
+      "accepted_locator": {
+        "jsonl_line": 218,
+        "decision": 54,
+        "loop_observation_t": 12.107468900008826,
+        "phase_observation_s": 5.5636577999976,
+        "frame_reference": null,
+        "frame_index": null
+      },
+      "A": 12.134803100023419,
+      "E": 12.167803100023418,
+      "D": 12.156183500011684,
+      "phase_A_s": 5.590992000012193,
+      "resources": {
+        "webs": 2,
+        "observed_t": 12.056183500011684
+      },
+      "resource_age_at_A_ms": 78.61960001173429,
+      "sends": [
+        {
+          "jsonl_line": 218,
+          "decision": 54,
+          "loop_observation_t": 12.107468900008826,
+          "phase_observation_s": 5.5636577999976,
+          "frame_reference": null,
+          "frame_index": null,
+          "first": true,
+          "accepted": true,
+          "send": {
+            "observation_t": 12.107468900008826,
+            "attempted_t": 12.135170000023209,
+            "status": "returned",
+            "not_after": 12.156183500011684,
+            "release_at": 12.167803100023418,
+            "scope_not_after": 26.543811100011226,
+            "pulse_accepted_t": 12.134803100023419,
+            "pulse_press_until": 12.167803100023418,
+            "request_valid_until": 12.156183500011684,
+            "returned_t": 12.136465700023109
+          },
+          "request_slack_at_entry_ms": 21.01349998847546,
+          "pulse_slack_at_entry_ms": 32.63310000020958,
+          "applicable_slack_at_return_ms": 19.717799988574924,
+          "after_D_entry": false
+        },
+        {
+          "jsonl_line": 219,
+          "decision": 54,
+          "loop_observation_t": 12.136714000022039,
+          "phase_observation_s": 5.592902900010813,
+          "frame_reference": null,
+          "frame_index": null,
+          "first": false,
+          "accepted": false,
+          "send": {
+            "observation_t": 12.136714000022039,
+            "attempted_t": 12.160366900003282,
+            "status": "returned",
+            "not_after": 12.167803100023418,
+            "release_at": 12.167803100023418,
+            "scope_not_after": 26.543811100011226,
+            "pulse_accepted_t": 12.134803100023419,
+            "pulse_press_until": 12.167803100023418,
+            "request_valid_until": 12.156183500011684,
+            "returned_t": 12.161568500014255
+          },
+          "request_slack_at_entry_ms": -4.1833999915983355,
+          "pulse_slack_at_entry_ms": 7.436200020135786,
+          "applicable_slack_at_return_ms": 6.234600009163316,
+          "after_D_entry": true
+        }
+      ],
+      "returned_LT_calls": 2,
+      "failed_calls": 0,
+      "ended_locator": {
+        "jsonl_line": 221,
+        "decision": 54,
+        "loop_observation_t": 12.182558700005757,
+        "phase_observation_s": 5.638747599994531,
+        "frame_reference": null,
+        "frame_index": null
+      },
+      "ended_execution_t": 12.203629299998283,
+      "outcome": "completed"
+    },
+    {
+      "owner": 58,
+      "target_id": 1,
+      "anchor_t": 12.453311699995538,
+      "first_state_line": 234,
+      "accepted_locator": {
+        "jsonl_line": 234,
+        "decision": 58,
+        "loop_observation_t": 12.511767700023483,
+        "phase_observation_s": 5.967956600012258,
+        "frame_reference": null,
+        "frame_index": null
+      },
+      "A": 12.5317658999993,
+      "E": 12.5647658999993,
+      "D": 12.553311699995538,
+      "phase_A_s": 5.987954799988074,
+      "resources": {
+        "webs": 2,
+        "observed_t": 12.453311699995538
+      },
+      "resource_age_at_A_ms": 78.4542000037618,
+      "sends": [
+        {
+          "jsonl_line": 234,
+          "decision": 58,
+          "loop_observation_t": 12.511767700023483,
+          "phase_observation_s": 5.967956600012258,
+          "frame_reference": null,
+          "frame_index": null,
+          "first": true,
+          "accepted": true,
+          "send": {
+            "observation_t": 12.511767700023483,
+            "attempted_t": 12.532109300023876,
+            "status": "returned",
+            "not_after": 12.553311699995538,
+            "release_at": 12.5647658999993,
+            "scope_not_after": 26.543811100011226,
+            "pulse_accepted_t": 12.5317658999993,
+            "pulse_press_until": 12.5647658999993,
+            "request_valid_until": 12.553311699995538,
+            "returned_t": 12.53345350001473
+          },
+          "request_slack_at_entry_ms": 21.202399971661734,
+          "pulse_slack_at_entry_ms": 32.65659997542336,
+          "applicable_slack_at_return_ms": 19.858199980808067,
+          "after_D_entry": false
+        },
+        {
+          "jsonl_line": 235,
+          "decision": 58,
+          "loop_observation_t": 12.533663900016109,
+          "phase_observation_s": 5.989852800004883,
+          "frame_reference": "000054.jpg",
+          "frame_index": 54,
+          "first": false,
+          "accepted": false,
+          "send": {
+            "observation_t": 12.533663900016109,
+            "attempted_t": 12.549654600006761,
+            "status": "returned",
+            "not_after": 12.5647658999993,
+            "release_at": 12.5647658999993,
+            "scope_not_after": 26.543811100011226,
+            "pulse_accepted_t": 12.5317658999993,
+            "pulse_press_until": 12.5647658999993,
+            "request_valid_until": 12.553311699995538,
+            "returned_t": 12.550992200005567
+          },
+          "request_slack_at_entry_ms": 3.657099988776835,
+          "pulse_slack_at_entry_ms": 15.111299992538463,
+          "applicable_slack_at_return_ms": 13.77369999373279,
+          "after_D_entry": false
+        }
+      ],
+      "returned_LT_calls": 2,
+      "failed_calls": 0,
+      "ended_locator": {
+        "jsonl_line": 237,
+        "decision": 58,
+        "loop_observation_t": 12.58413100001053,
+        "phase_observation_s": 6.040319899999304,
+        "frame_reference": null,
+        "frame_index": null
+      },
+      "ended_execution_t": 12.6055086000124,
+      "outcome": "completed"
+    },
+    {
+      "owner": 62,
+      "target_id": 1,
+      "anchor_t": 12.863176000013482,
+      "first_state_line": 249,
+      "accepted_locator": {
+        "jsonl_line": 249,
+        "decision": 62,
+        "loop_observation_t": 12.910450700001093,
+        "phase_observation_s": 6.366639599989867,
+        "frame_reference": null,
+        "frame_index": null
+      },
+      "A": 12.929042300005676,
+      "E": 12.962042300005676,
+      "D": 12.963176000013481,
+      "phase_A_s": 6.38523119999445,
+      "resources": {
+        "webs": 1,
+        "observed_t": 12.863176000013482
+      },
+      "resource_age_at_A_ms": 65.8662999921944,
+      "sends": [
+        {
+          "jsonl_line": 249,
+          "decision": 62,
+          "loop_observation_t": 12.910450700001093,
+          "phase_observation_s": 6.366639599989867,
+          "frame_reference": null,
+          "frame_index": null,
+          "first": true,
+          "accepted": true,
+          "send": {
+            "observation_t": 12.910450700001093,
+            "attempted_t": 12.929421400011051,
+            "status": "returned",
+            "not_after": 12.962042300005676,
+            "release_at": 12.962042300005676,
+            "scope_not_after": 26.543811100011226,
+            "pulse_accepted_t": 12.929042300005676,
+            "pulse_press_until": 12.962042300005676,
+            "request_valid_until": 12.963176000013481,
+            "returned_t": 12.930637400015257
+          },
+          "request_slack_at_entry_ms": 33.754600002430024,
+          "pulse_slack_at_entry_ms": 32.62089999462425,
+          "applicable_slack_at_return_ms": 31.4048999904184,
+          "after_D_entry": false
+        },
+        {
+          "jsonl_line": 251,
+          "decision": 62,
+          "loop_observation_t": 12.930827200005297,
+          "phase_observation_s": 6.387016099994071,
+          "frame_reference": null,
+          "frame_index": null,
+          "first": false,
+          "accepted": false,
+          "send": {
+            "observation_t": 12.930827200005297,
+            "attempted_t": 12.961412700009532,
+            "status": "failed",
+            "not_after": 12.962042300005676,
+            "release_at": 12.962042300005676,
+            "scope_not_after": 26.543811100011226,
+            "pulse_accepted_t": 12.929042300005676,
+            "pulse_press_until": 12.962042300005676,
+            "request_valid_until": 12.963176000013481,
+            "returned_t": 12.962660000019241,
+            "error": "InputExpired('guarded input deadline expired at the actuator; input released')"
+          },
+          "request_slack_at_entry_ms": 1.7633000039491975,
+          "pulse_slack_at_entry_ms": 0.6295999961434262,
+          "applicable_slack_at_return_ms": -0.6177000135654254,
+          "after_D_entry": false
+        }
+      ],
+      "returned_LT_calls": 1,
+      "failed_calls": 1,
+      "ended_locator": {
+        "jsonl_line": 250,
+        "decision": null,
+        "loop_observation_t": 12.930827200005297,
+        "phase_observation_s": 6.387016099994071,
+        "frame_reference": null,
+        "frame_index": null
+      },
+      "ended_execution_t": 12.962667100015096,
+      "outcome": "cancelled_after_press"
+    },
+    {
+      "owner": 66,
+      "target_id": 1,
+      "anchor_t": 13.245222199999262,
+      "first_state_line": 265,
+      "accepted_locator": {
+        "jsonl_line": 265,
+        "decision": 66,
+        "loop_observation_t": 13.289398499997333,
+        "phase_observation_s": 6.745587399986107,
+        "frame_reference": null,
+        "frame_index": null
+      },
+      "A": 13.314344500016887,
+      "E": 13.347344500016886,
+      "D": 13.345222199999261,
+      "phase_A_s": 6.770533400005661,
+      "resources": {
+        "webs": 1,
+        "observed_t": 13.245222199999262
+      },
+      "resource_age_at_A_ms": 69.1223000176251,
+      "sends": [
+        {
+          "jsonl_line": 265,
+          "decision": 66,
+          "loop_observation_t": 13.289398499997333,
+          "phase_observation_s": 6.745587399986107,
+          "frame_reference": null,
+          "frame_index": null,
+          "first": true,
+          "accepted": true,
+          "send": {
+            "observation_t": 13.289398499997333,
+            "attempted_t": 13.314661400014302,
+            "status": "returned",
+            "not_after": 13.345222199999261,
+            "release_at": 13.347344500016886,
+            "scope_not_after": 26.543811100011226,
+            "pulse_accepted_t": 13.314344500016887,
+            "pulse_press_until": 13.347344500016886,
+            "request_valid_until": 13.345222199999261,
+            "returned_t": 13.315923600021051
+          },
+          "request_slack_at_entry_ms": 30.56079998495953,
+          "pulse_slack_at_entry_ms": 32.68310000258445,
+          "applicable_slack_at_return_ms": 29.29859997821005,
+          "after_D_entry": false
+        },
+        {
+          "jsonl_line": 266,
+          "decision": 66,
+          "loop_observation_t": 13.316123500000685,
+          "phase_observation_s": 6.77231239998946,
+          "frame_reference": "000061.jpg",
+          "frame_index": 61,
+          "first": false,
+          "accepted": false,
+          "send": {
+            "observation_t": 13.316123500000685,
+            "attempted_t": 13.336627600016072,
+            "status": "returned",
+            "not_after": 13.347344500016886,
+            "release_at": 13.347344500016886,
+            "scope_not_after": 26.543811100011226,
+            "pulse_accepted_t": 13.314344500016887,
+            "pulse_press_until": 13.347344500016886,
+            "request_valid_until": 13.345222199999261,
+            "returned_t": 13.337803300004452
+          },
+          "request_slack_at_entry_ms": 8.5945999831889,
+          "pulse_slack_at_entry_ms": 10.716900000813823,
+          "applicable_slack_at_return_ms": 9.541200012433748,
+          "after_D_entry": false
+        }
+      ],
+      "returned_LT_calls": 2,
+      "failed_calls": 0,
+      "ended_locator": {
+        "jsonl_line": 268,
+        "decision": 66,
+        "loop_observation_t": 13.365486099995906,
+        "phase_observation_s": 6.82167499998468,
+        "frame_reference": null,
+        "frame_index": null
+      },
+      "ended_execution_t": 13.386433200008469,
+      "outcome": "completed"
+    },
+    {
+      "owner": 70,
+      "target_id": 1,
+      "anchor_t": 13.659703300014371,
+      "first_state_line": 282,
+      "accepted_locator": {
+        "jsonl_line": 282,
+        "decision": 70,
+        "loop_observation_t": 13.71128519999911,
+        "phase_observation_s": 7.167474099987885,
+        "frame_reference": null,
+        "frame_index": null
+      },
+      "A": 13.730613499996252,
+      "E": 13.763613499996252,
+      "D": 13.75970330001437,
+      "phase_A_s": 7.186802399985027,
+      "resources": {
+        "webs": 1,
+        "observed_t": 13.659703300014371
+      },
+      "resource_age_at_A_ms": 70.9101999818813,
+      "sends": [
+        {
+          "jsonl_line": 282,
+          "decision": 70,
+          "loop_observation_t": 13.71128519999911,
+          "phase_observation_s": 7.167474099987885,
+          "frame_reference": null,
+          "frame_index": null,
+          "first": true,
+          "accepted": true,
+          "send": {
+            "observation_t": 13.71128519999911,
+            "attempted_t": 13.730918900022516,
+            "status": "returned",
+            "not_after": 13.75970330001437,
+            "release_at": 13.763613499996252,
+            "scope_not_after": 26.543811100011226,
+            "pulse_accepted_t": 13.730613499996252,
+            "pulse_press_until": 13.763613499996252,
+            "request_valid_until": 13.75970330001437,
+            "returned_t": 13.732370400015498
+          },
+          "request_slack_at_entry_ms": 28.78439999185467,
+          "pulse_slack_at_entry_ms": 32.694599973735805,
+          "applicable_slack_at_return_ms": 27.332899998873117,
+          "after_D_entry": false
+        },
+        {
+          "jsonl_line": 283,
+          "decision": 70,
+          "loop_observation_t": 13.7325797000085,
+          "phase_observation_s": 7.188768599997275,
+          "frame_reference": null,
+          "frame_index": null,
+          "first": false,
+          "accepted": false,
+          "send": {
+            "observation_t": 13.7325797000085,
+            "attempted_t": 13.756559900008142,
+            "status": "returned",
+            "not_after": 13.763613499996252,
+            "release_at": 13.763613499996252,
+            "scope_not_after": 26.543811100011226,
+            "pulse_accepted_t": 13.730613499996252,
+            "pulse_press_until": 13.763613499996252,
+            "request_valid_until": 13.75970330001437,
+            "returned_t": 13.757926100020995
+          },
+          "request_slack_at_entry_ms": 3.1434000062287026,
+          "pulse_slack_at_entry_ms": 7.053599988109838,
+          "applicable_slack_at_return_ms": 5.687399975256469,
+          "after_D_entry": false
+        }
+      ],
+      "returned_LT_calls": 2,
+      "failed_calls": 0,
+      "ended_locator": {
+        "jsonl_line": 285,
+        "decision": 70,
+        "loop_observation_t": 13.785553199995775,
+        "phase_observation_s": 7.241742099984549,
+        "frame_reference": "000065.jpg",
+        "frame_index": 65
+      },
+      "ended_execution_t": 13.806535600015195,
+      "outcome": "completed"
+    },
+    {
+      "owner": 91,
+      "target_id": 1,
+      "anchor_t": 15.745231300010346,
+      "first_state_line": 369,
+      "accepted_locator": {
+        "jsonl_line": 369,
+        "decision": 91,
+        "loop_observation_t": 15.798979800019879,
+        "phase_observation_s": 9.255168700008653,
+        "frame_reference": null,
+        "frame_index": null
+      },
+      "A": 15.822545600007288,
+      "E": 15.855545600007288,
+      "D": 15.845231300010346,
+      "phase_A_s": 9.278734499996062,
+      "resources": {
+        "webs": 1,
+        "observed_t": 15.745231300010346
+      },
+      "resource_age_at_A_ms": 77.31429999694228,
+      "sends": [
+        {
+          "jsonl_line": 369,
+          "decision": 91,
+          "loop_observation_t": 15.798979800019879,
+          "phase_observation_s": 9.255168700008653,
+          "frame_reference": null,
+          "frame_index": null,
+          "first": true,
+          "accepted": true,
+          "send": {
+            "observation_t": 15.798979800019879,
+            "attempted_t": 15.822892600001069,
+            "status": "returned",
+            "not_after": 15.845231300010346,
+            "release_at": 15.855545600007288,
+            "scope_not_after": 26.543811100011226,
+            "pulse_accepted_t": 15.822545600007288,
+            "pulse_press_until": 15.855545600007288,
+            "request_valid_until": 15.845231300010346,
+            "returned_t": 15.824177500006044
+          },
+          "request_slack_at_entry_ms": 22.338700009276735,
+          "pulse_slack_at_entry_ms": 32.653000006218846,
+          "applicable_slack_at_return_ms": 21.053800004301237,
+          "after_D_entry": false
+        },
+        {
+          "jsonl_line": 370,
+          "decision": 91,
+          "loop_observation_t": 15.824404400016647,
+          "phase_observation_s": 9.280593300005421,
+          "frame_reference": "000083.jpg",
+          "frame_index": 83,
+          "first": false,
+          "accepted": false,
+          "send": {
+            "observation_t": 15.824404400016647,
+            "attempted_t": 15.839733700006036,
+            "status": "returned",
+            "not_after": 15.855545600007288,
+            "release_at": 15.855545600007288,
+            "scope_not_after": 26.543811100011226,
+            "pulse_accepted_t": 15.822545600007288,
+            "pulse_press_until": 15.855545600007288,
+            "request_valid_until": 15.845231300010346,
+            "returned_t": 15.841050000017276
+          },
+          "request_slack_at_entry_ms": 5.497600004309433,
+          "pulse_slack_at_entry_ms": 15.811900001251544,
+          "applicable_slack_at_return_ms": 14.495599990011598,
+          "after_D_entry": false
+        }
+      ],
+      "returned_LT_calls": 2,
+      "failed_calls": 0,
+      "ended_locator": {
+        "jsonl_line": 373,
+        "decision": 92,
+        "loop_observation_t": 15.88258110001334,
+        "phase_observation_s": 9.338770000002114,
+        "frame_reference": null,
+        "frame_index": null
+      },
+      "ended_execution_t": 15.910992899996927,
+      "outcome": "completed"
+    },
+    {
+      "owner": 109,
+      "target_id": 1,
+      "anchor_t": 17.646753700013505,
+      "first_state_line": 444,
+      "accepted_locator": {
+        "jsonl_line": 444,
+        "decision": 109,
+        "loop_observation_t": 17.696093900012784,
+        "phase_observation_s": 11.152282800001558,
+        "frame_reference": null,
+        "frame_index": null
+      },
+      "A": 17.715688900003443,
+      "E": 17.748688900003444,
+      "D": 17.746753700013507,
+      "phase_A_s": 11.171877799992217,
+      "resources": {
+        "webs": 1,
+        "observed_t": 17.646753700013505
+      },
+      "resource_age_at_A_ms": 68.93519998993725,
+      "sends": [
+        {
+          "jsonl_line": 444,
+          "decision": 109,
+          "loop_observation_t": 17.696093900012784,
+          "phase_observation_s": 11.152282800001558,
+          "frame_reference": null,
+          "frame_index": null,
+          "first": true,
+          "accepted": true,
+          "send": {
+            "observation_t": 17.696093900012784,
+            "attempted_t": 17.716013700002804,
+            "status": "returned",
+            "not_after": 17.746753700013507,
+            "release_at": 17.748688900003444,
+            "scope_not_after": 26.543811100011226,
+            "pulse_accepted_t": 17.715688900003443,
+            "pulse_press_until": 17.748688900003444,
+            "request_valid_until": 17.746753700013507,
+            "returned_t": 17.71727200000896
+          },
+          "request_slack_at_entry_ms": 30.740000010702317,
+          "pulse_slack_at_entry_ms": 32.67520000063939,
+          "applicable_slack_at_return_ms": 29.48170000454553,
+          "after_D_entry": false
+        },
+        {
+          "jsonl_line": 445,
+          "decision": 109,
+          "loop_observation_t": 17.71744890001719,
+          "phase_observation_s": 11.173637800005963,
+          "frame_reference": null,
+          "frame_index": null,
+          "first": false,
+          "accepted": false,
+          "send": {
+            "observation_t": 17.71744890001719,
+            "attempted_t": 17.741168400010793,
+            "status": "returned",
+            "not_after": 17.748688900003444,
+            "release_at": 17.748688900003444,
+            "scope_not_after": 26.543811100011226,
+            "pulse_accepted_t": 17.715688900003443,
+            "pulse_press_until": 17.748688900003444,
+            "request_valid_until": 17.746753700013507,
+            "returned_t": 17.742488899995806
+          },
+          "request_slack_at_entry_ms": 5.5853000027141775,
+          "pulse_slack_at_entry_ms": 7.520499992651253,
+          "applicable_slack_at_return_ms": 6.200000007638096,
+          "after_D_entry": false
+        }
+      ],
+      "returned_LT_calls": 2,
+      "failed_calls": 0,
+      "ended_locator": {
+        "jsonl_line": 447,
+        "decision": 109,
+        "loop_observation_t": 17.766633100021863,
+        "phase_observation_s": 11.222822000010638,
+        "frame_reference": null,
+        "frame_index": null
+      },
+      "ended_execution_t": 17.783623900002567,
+      "outcome": "completed"
+    },
+    {
+      "owner": 129,
+      "target_id": 1,
+      "anchor_t": 19.660546600003727,
+      "first_state_line": 526,
+      "accepted_locator": {
+        "jsonl_line": 526,
+        "decision": 129,
+        "loop_observation_t": 19.714965899998788,
+        "phase_observation_s": 13.171154799987562,
+        "frame_reference": "000118.jpg",
+        "frame_index": 118
+      },
+      "A": 19.740094400011003,
+      "E": 19.773094400011004,
+      "D": 19.760546600003728,
+      "phase_A_s": 13.196283299999777,
+      "resources": {
+        "webs": 1,
+        "observed_t": 19.660546600003727
+      },
+      "resource_age_at_A_ms": 79.54780000727624,
+      "sends": [
+        {
+          "jsonl_line": 526,
+          "decision": 129,
+          "loop_observation_t": 19.714965899998788,
+          "phase_observation_s": 13.171154799987562,
+          "frame_reference": "000118.jpg",
+          "frame_index": 118,
+          "first": true,
+          "accepted": true,
+          "send": {
+            "observation_t": 19.714965899998788,
+            "attempted_t": 19.74043210002128,
+            "status": "returned",
+            "not_after": 19.760546600003728,
+            "release_at": 19.773094400011004,
+            "scope_not_after": 26.543811100011226,
+            "pulse_accepted_t": 19.740094400011003,
+            "pulse_press_until": 19.773094400011004,
+            "request_valid_until": 19.760546600003728,
+            "returned_t": 19.74158550001448
+          },
+          "request_slack_at_entry_ms": 20.114499982447853,
+          "pulse_slack_at_entry_ms": 32.66229998972392,
+          "applicable_slack_at_return_ms": 18.961099989247998,
+          "after_D_entry": false
+        },
+        {
+          "jsonl_line": 527,
+          "decision": 129,
+          "loop_observation_t": 19.746102800010704,
+          "phase_observation_s": 13.202291699999478,
+          "frame_reference": null,
+          "frame_index": null,
+          "first": false,
+          "accepted": false,
+          "send": {
+            "observation_t": 19.746102800010704,
+            "attempted_t": 19.763594999996712,
+            "status": "returned",
+            "not_after": 19.773094400011004,
+            "release_at": 19.773094400011004,
+            "scope_not_after": 26.543811100011226,
+            "pulse_accepted_t": 19.740094400011003,
+            "pulse_press_until": 19.773094400011004,
+            "request_valid_until": 19.760546600003728,
+            "returned_t": 19.76619809999829
+          },
+          "request_slack_at_entry_ms": -3.04839999298423,
+          "pulse_slack_at_entry_ms": 9.499400014291837,
+          "applicable_slack_at_return_ms": 6.896300012712686,
+          "after_D_entry": true
+        }
+      ],
+      "returned_LT_calls": 2,
+      "failed_calls": 0,
+      "ended_locator": {
+        "jsonl_line": 529,
+        "decision": 130,
+        "loop_observation_t": 19.788819500012323,
+        "phase_observation_s": 13.245008400001097,
+        "frame_reference": null,
+        "frame_index": null
+      },
+      "ended_execution_t": 19.81729790000827,
+      "outcome": "completed"
+    },
+    {
+      "owner": 171,
+      "target_id": 11,
+      "anchor_t": 23.94617810001364,
+      "first_state_line": 724,
+      "accepted_locator": {
+        "jsonl_line": 724,
+        "decision": 171,
+        "loop_observation_t": 23.98838950000936,
+        "phase_observation_s": 17.444578399998136,
+        "frame_reference": "000156.jpg",
+        "frame_index": 156
+      },
+      "A": 24.004630700015696,
+      "E": 24.037630700015697,
+      "D": 24.04617810001364,
+      "phase_A_s": 17.46081960000447,
+      "resources": {
+        "webs": 2,
+        "observed_t": 23.94617810001364
+      },
+      "resource_age_at_A_ms": 58.45260000205599,
+      "sends": [
+        {
+          "jsonl_line": 724,
+          "decision": 171,
+          "loop_observation_t": 23.98838950000936,
+          "phase_observation_s": 17.444578399998136,
+          "frame_reference": "000156.jpg",
+          "frame_index": 156,
+          "first": true,
+          "accepted": true,
+          "send": {
+            "observation_t": 23.98838950000936,
+            "attempted_t": 24.00504099999671,
+            "status": "returned",
+            "not_after": 24.037630700015697,
+            "release_at": 24.037630700015697,
+            "scope_not_after": 26.543811100011226,
+            "pulse_accepted_t": 24.004630700015696,
+            "pulse_press_until": 24.037630700015697,
+            "request_valid_until": 24.04617810001364,
+            "returned_t": 24.00631580001209
+          },
+          "request_slack_at_entry_ms": 41.13710001693249,
+          "pulse_slack_at_entry_ms": 32.58970001898831,
+          "applicable_slack_at_return_ms": 31.314900003607704,
+          "after_D_entry": false
+        },
+        {
+          "jsonl_line": 725,
+          "decision": 171,
+          "loop_observation_t": 24.01067650000914,
+          "phase_observation_s": 17.466865399997914,
+          "frame_reference": null,
+          "frame_index": null,
+          "first": false,
+          "accepted": false,
+          "send": {
+            "observation_t": 24.01067650000914,
+            "attempted_t": 24.031283400021493,
+            "status": "returned",
+            "not_after": 24.037630700015697,
+            "release_at": 24.037630700015697,
+            "scope_not_after": 26.543811100011226,
+            "pulse_accepted_t": 24.004630700015696,
+            "pulse_press_until": 24.037630700015697,
+            "request_valid_until": 24.04617810001364,
+            "returned_t": 24.032539200008614
+          },
+          "request_slack_at_entry_ms": 14.894699992147764,
+          "pulse_slack_at_entry_ms": 6.347299994203581,
+          "applicable_slack_at_return_ms": 5.091500007083027,
+          "after_D_entry": false
+        }
+      ],
+      "returned_LT_calls": 2,
+      "failed_calls": 0,
+      "ended_locator": {
+        "jsonl_line": 727,
+        "decision": 171,
+        "loop_observation_t": 24.05449080001563,
+        "phase_observation_s": 17.510679700004403,
+        "frame_reference": null,
+        "frame_index": null
+      },
+      "ended_execution_t": 24.073627500009025,
+      "outcome": "completed"
+    }
+  ],
+  "recovery": {
+    "failed_locator": {
+      "jsonl_line": 251,
+      "decision": 62,
+      "loop_observation_t": 12.930827200005297,
+      "phase_observation_s": 6.387016099994071,
+      "frame_reference": null,
+      "frame_index": null
+    },
+    "failure": {
+      "t": 12.9308,
+      "note": "rangeskill:enemy",
+      "source": "range_skill_model",
+      "dets": [
+        [
+          1128,
+          436,
+          1404,
+          997
+        ]
+      ],
+      "ms": 12.68,
+      "type": "executor_send_failure",
+      "reason": "send_failed",
+      "ids": [
+        1
+      ],
+      "coasting": [],
+      "target": 1,
+      "target_px": 14.4,
+      "observation_t": 12.930827200005297,
+      "proposed_pad": {
+        "lx": 0.0,
+        "ly": 0.0,
+        "rx": -0.06681323665750372,
+        "ry": 0.0,
+        "lt": 1.0,
+        "rt": 0,
+        "buttons": []
+      },
+      "range_skill_trace": {
+        "t": 12.930827200005297,
+        "observation_t": 12.930827200005297,
+        "execution_t": 12.961236700008158,
+        "execution_clock_valid": true,
+        "event": "step",
+        "execution_interpretation": "request-start-owned-pulse-v1",
+        "decision_id": 62,
+        "target_id": 1,
+        "proposal": "start",
+        "valid_until": 12.963176000013481,
+        "resources": {
+          "webs": 1,
+          "observed_t": 12.863176000013482
+        },
+        "accepted": false,
+        "reason": "duplicate_accepted",
+        "cancel_reason": null,
+        "pulse_decision_id": 62,
+        "pulse_target_id": 1,
+        "pulse_press_until": 12.962042300005676,
+        "pulse_accepted_t": 12.929042300005676,
+        "pulse_valid_until": 12.963176000013481,
+        "pulse_phase": "press",
+        "lt_down": true,
+        "press_edge": false,
+        "release_edge": false,
+        "movement_source": "scripted_range_approach_aim",
+        "ended_pulse_decision_id": null,
+        "pulse_outcome": null,
+        "offense_source": "accepted_range_skill_request",
+        "pad": {
+          "lx": 0.0,
+          "ly": 0.0,
+          "rx": -0.06681323665750372,
+          "ry": 0.0,
+          "lt": 1.0,
+          "rt": 0.0,
+          "buttons": []
+        }
+      },
+      "d": 62,
+      "send_result": {
+        "observation_t": 12.930827200005297,
+        "attempted_t": 12.961412700009532,
+        "status": "failed",
+        "not_after": 12.962042300005676,
+        "release_at": 12.962042300005676,
+        "scope_not_after": 26.543811100011226,
+        "pulse_accepted_t": 12.929042300005676,
+        "pulse_press_until": 12.962042300005676,
+        "request_valid_until": 12.963176000013481,
+        "returned_t": 12.962660000019241,
+        "error": "InputExpired('guarded input deadline expired at the actuator; input released')"
+      }
+    },
+    "release_locator": {
+      "jsonl_line": 250,
+      "decision": null,
+      "loop_observation_t": 12.930827200005297,
+      "phase_observation_s": 6.387016099994071,
+      "frame_reference": null,
+      "frame_index": null
+    },
+    "release": {
+      "t": 12.962667100015096,
+      "type": "executor_release",
+      "reason": "send_failed",
+      "observation_t": 12.930827200005297,
+      "range_skill_trace": {
+        "t": 12.930827200005297,
+        "observation_t": 12.930827200005297,
+        "execution_t": 12.962667100015096,
+        "execution_clock_valid": true,
+        "event": "cancel",
+        "execution_interpretation": "request-start-owned-pulse-v1",
+        "decision_id": null,
+        "target_id": null,
+        "proposal": null,
+        "valid_until": null,
+        "resources": null,
+        "accepted": false,
+        "reason": "send_failed",
+        "cancel_reason": "send_failed",
+        "pulse_decision_id": 62,
+        "pulse_target_id": 1,
+        "pulse_press_until": 12.962042300005676,
+        "pulse_accepted_t": 12.929042300005676,
+        "pulse_valid_until": 12.963176000013481,
+        "pulse_phase": "none",
+        "lt_down": false,
+        "press_edge": false,
+        "release_edge": true,
+        "movement_source": "external_cancel",
+        "ended_pulse_decision_id": 62,
+        "pulse_outcome": "cancelled_after_press",
+        "offense_source": null,
+        "pad": {
+          "lx": 0.0,
+          "ly": 0.0,
+          "rx": 0.0,
+          "ry": 0.0,
+          "lt": 0.0,
+          "rt": 0.0,
+          "buttons": []
+        }
+      },
+      "release_attempts": [
+        {
+          "attempted_t": 12.962713900022209,
+          "status": "returned",
+          "returned_t": 12.962736700021196
+        }
+      ],
+      "neutral_requested": true,
+      "preceding_send_result": {
+        "observation_t": 12.930827200005297,
+        "attempted_t": 12.961412700009532,
+        "status": "failed",
+        "not_after": 12.962042300005676,
+        "release_at": 12.962042300005676,
+        "scope_not_after": 26.543811100011226,
+        "pulse_accepted_t": 12.929042300005676,
+        "pulse_press_until": 12.962042300005676,
+        "request_valid_until": 12.963176000013481,
+        "returned_t": 12.962660000019241,
+        "error": "InputExpired('guarded input deadline expired at the actuator; input released')"
+      },
+      "release_returned": true
+    },
+    "original_decision_locator": {
+      "jsonl_line": 249,
+      "decision": 62,
+      "loop_observation_t": 12.910450700001093,
+      "phase_observation_s": 6.366639599989867,
+      "frame_reference": null,
+      "frame_index": null
+    },
+    "original_state": {
+      "t": 12.863176000013482,
+      "frame": [
+        2560,
+        1440
+      ],
+      "hp": null,
+      "max_hp": null,
+      "abilities": {
+        "teamup": {
+          "ready": true,
+          "charges": null
+        },
+        "swing": {
+          "ready": true,
+          "charges": 3
+        },
+        "pull": {
+          "ready": true,
+          "charges": null
+        },
+        "uppercut": {
+          "ready": true,
+          "charges": 2
+        },
+        "ult": {
+          "ready": false,
+          "charges": null
+        }
+      },
+      "webs": 1,
+      "detections": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1137.0,
+            465.0,
+            1406.0,
+            1003.0
+          ],
+          "conf": 0.9,
+          "distance": null,
+          "tagged": true,
+          "track": 1,
+          "plate": true
+        }
+      ],
+      "on_target": null,
+      "coasting": []
+    },
+    "later_decisions": 134,
+    "later_accepted_owners": [
+      66,
+      70,
+      91,
+      109,
+      129,
+      171
+    ],
+    "same_ID_reaccepted_or_LT": false
+  },
+  "after_D_LT_returns": [
+    {
+      "owner": 38,
+      "jsonl_line": 154,
+      "decision": 38,
+      "loop_observation_t": 10.43851320000249,
+      "phase_observation_s": 3.894702099991264,
+      "frame_reference": null,
+      "frame_index": null,
+      "first": false,
+      "accepted": false,
+      "send": {
+        "observation_t": 10.43851320000249,
+        "attempted_t": 10.459683799999766,
+        "status": "returned",
+        "not_after": 10.469719899997115,
+        "release_at": 10.469719899997115,
+        "scope_not_after": 26.543811100011226,
+        "pulse_accepted_t": 10.436719899997115,
+        "pulse_press_until": 10.469719899997115,
+        "request_valid_until": 10.458055600023362,
+        "returned_t": 10.461064300005091
+      },
+      "request_slack_at_entry_ms": -1.6281999764036215,
+      "pulse_slack_at_entry_ms": 10.036099997348558,
+      "applicable_slack_at_return_ms": 8.655599992023255,
+      "after_D_entry": true
+    },
+    {
+      "owner": 54,
+      "jsonl_line": 219,
+      "decision": 54,
+      "loop_observation_t": 12.136714000022039,
+      "phase_observation_s": 5.592902900010813,
+      "frame_reference": null,
+      "frame_index": null,
+      "first": false,
+      "accepted": false,
+      "send": {
+        "observation_t": 12.136714000022039,
+        "attempted_t": 12.160366900003282,
+        "status": "returned",
+        "not_after": 12.167803100023418,
+        "release_at": 12.167803100023418,
+        "scope_not_after": 26.543811100011226,
+        "pulse_accepted_t": 12.134803100023419,
+        "pulse_press_until": 12.167803100023418,
+        "request_valid_until": 12.156183500011684,
+        "returned_t": 12.161568500014255
+      },
+      "request_slack_at_entry_ms": -4.1833999915983355,
+      "pulse_slack_at_entry_ms": 7.436200020135786,
+      "applicable_slack_at_return_ms": 6.234600009163316,
+      "after_D_entry": true
+    },
+    {
+      "owner": 129,
+      "jsonl_line": 527,
+      "decision": 129,
+      "loop_observation_t": 19.746102800010704,
+      "phase_observation_s": 13.202291699999478,
+      "frame_reference": null,
+      "frame_index": null,
+      "first": false,
+      "accepted": false,
+      "send": {
+        "observation_t": 19.746102800010704,
+        "attempted_t": 19.763594999996712,
+        "status": "returned",
+        "not_after": 19.773094400011004,
+        "release_at": 19.773094400011004,
+        "scope_not_after": 26.543811100011226,
+        "pulse_accepted_t": 19.740094400011003,
+        "pulse_press_until": 19.773094400011004,
+        "request_valid_until": 19.760546600003728,
+        "returned_t": 19.76619809999829
+      },
+      "request_slack_at_entry_ms": -3.04839999298423,
+      "pulse_slack_at_entry_ms": 9.499400014291837,
+      "applicable_slack_at_return_ms": 6.896300012712686,
+      "after_D_entry": true
+    }
+  ],
+  "returned_release_events": 2,
+  "disengage": {
+    "original_decision_locator": {
+      "jsonl_line": 733,
+      "decision": 173,
+      "loop_observation_t": 24.190062000008766,
+      "phase_observation_s": 17.64625089999754,
+      "frame_reference": null,
+      "frame_index": null
+    },
+    "original_state": {
+      "t": 24.147567700012587,
+      "frame": [
+        2560,
+        1440
+      ],
+      "hp": 50,
+      "max_hp": 250,
+      "abilities": {
+        "teamup": {
+          "ready": true,
+          "charges": null
+        },
+        "swing": {
+          "ready": true,
+          "charges": 3
+        },
+        "pull": {
+          "ready": true,
+          "charges": null
+        },
+        "uppercut": {
+          "ready": true,
+          "charges": 2
+        },
+        "ult": {
+          "ready": false,
+          "charges": null
+        }
+      },
+      "webs": 1,
+      "detections": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1113.0,
+            435.0,
+            1445.0,
+            998.0
+          ],
+          "conf": 0.9,
+          "distance": null,
+          "tagged": false,
+          "track": 11,
+          "plate": true
+        }
+      ],
+      "on_target": null,
+      "coasting": [
+        12
+      ]
+    },
+    "original_decision_trace": {
+      "t": 24.147567700012587,
+      "decision_id": 173,
+      "source": "range_skill_gate",
+      "reason": "scripted_low_hp_retreat",
+      "probabilities": null,
+      "intent": "Disengage",
+      "target": null,
+      "web_cluster_request": null,
+      "valid_until": null,
+      "resources": null,
+      "selector_source": "scripted_brain_gate",
+      "movement_source": "scripted_controller"
+    },
+    "ticks": [
+      {
+        "jsonl_line": 733,
+        "decision": 173,
+        "loop_observation_t": 24.190062000008766,
+        "phase_observation_s": 17.64625089999754,
+        "frame_reference": null,
+        "frame_index": null,
+        "send": {
+          "observation_t": 24.190062000008766,
+          "attempted_t": 24.21428090002155,
+          "status": "returned",
+          "not_after": 26.543811100011226,
+          "release_at": 26.543811100011226,
+          "scope_not_after": 26.543811100011226,
+          "returned_t": 24.215641600021627
+        },
+        "pad": {
+          "lx": 0.0,
+          "ly": 0.0,
+          "rx": 1.0,
+          "ry": 0.0,
+          "lt": 0,
+          "rt": 0,
+          "buttons": []
+        },
+        "ids": [
+          11
+        ],
+        "coasting": [
+          12
+        ]
+      },
+      {
+        "jsonl_line": 734,
+        "decision": 173,
+        "loop_observation_t": 24.21582599999965,
+        "phase_observation_s": 17.672014899988426,
+        "frame_reference": "000158.jpg",
+        "frame_index": 158,
+        "send": {
+          "observation_t": 24.21582599999965,
+          "attempted_t": 24.23865760001354,
+          "status": "returned",
+          "not_after": 26.543811100011226,
+          "release_at": 26.543811100011226,
+          "scope_not_after": 26.543811100011226,
+          "returned_t": 24.239884800015716
+        },
+        "pad": {
+          "lx": 0.0,
+          "ly": 0.0,
+          "rx": 1.0,
+          "ry": 0.0,
+          "lt": 0,
+          "rt": 0,
+          "buttons": []
+        },
+        "ids": [
+          11
+        ],
+        "coasting": [
+          12
+        ]
+      },
+      {
+        "jsonl_line": 735,
+        "decision": 173,
+        "loop_observation_t": 24.244251500000246,
+        "phase_observation_s": 17.70044039998902,
+        "frame_reference": null,
+        "frame_index": null,
+        "send": {
+          "observation_t": 24.244251500000246,
+          "attempted_t": 24.263811300013913,
+          "status": "returned",
+          "not_after": 26.543811100011226,
+          "release_at": 26.543811100011226,
+          "scope_not_after": 26.543811100011226,
+          "returned_t": 24.266215100011323
+        },
+        "pad": {
+          "lx": 0.0,
+          "ly": 0.0,
+          "rx": 1.0,
+          "ry": 0.0,
+          "lt": 0,
+          "rt": 0,
+          "buttons": []
+        },
+        "ids": [
+          11
+        ],
+        "coasting": [
+          12
+        ]
+      },
+      {
+        "jsonl_line": 736,
+        "decision": 173,
+        "loop_observation_t": 24.266350200021407,
+        "phase_observation_s": 17.72253910001018,
+        "frame_reference": null,
+        "frame_index": null,
+        "send": {
+          "observation_t": 24.266350200021407,
+          "attempted_t": 24.285690899996553,
+          "status": "returned",
+          "not_after": 26.543811100011226,
+          "release_at": 26.543811100011226,
+          "scope_not_after": 26.543811100011226,
+          "returned_t": 24.287064300006023
+        },
+        "pad": {
+          "lx": 0.0,
+          "ly": 0.0,
+          "rx": 1.0,
+          "ry": 0.0,
+          "lt": 0,
+          "rt": 0,
+          "buttons": []
+        },
+        "ids": [
+          11
+        ],
+        "coasting": [
+          12
+        ]
+      },
+      {
+        "jsonl_line": 737,
+        "decision": 173,
+        "loop_observation_t": 24.287194900010945,
+        "phase_observation_s": 17.74338379999972,
+        "frame_reference": null,
+        "frame_index": null,
+        "send": {
+          "observation_t": 24.287194900010945,
+          "attempted_t": 24.30324219999602,
+          "status": "returned",
+          "not_after": 26.543811100011226,
+          "release_at": 26.543811100011226,
+          "scope_not_after": 26.543811100011226,
+          "returned_t": 24.304467400012072
+        },
+        "pad": {
+          "lx": 0.0,
+          "ly": 0.0,
+          "rx": 1.0,
+          "ry": 0.0,
+          "lt": 0,
+          "rt": 0,
+          "buttons": []
+        },
+        "ids": [
+          11
+        ],
+        "coasting": [
+          12
+        ]
+      }
+    ],
+    "neighbors": [
+      {
+        "decision": 171,
+        "t": 23.94617810001364,
+        "hp": 250,
+        "max_hp": 250,
+        "reason": "model_event",
+        "locator": {
+          "jsonl_line": 724,
+          "decision": 171,
+          "loop_observation_t": 23.98838950000936,
+          "phase_observation_s": 17.444578399998136,
+          "frame_reference": "000156.jpg",
+          "frame_index": 156
+        }
+      },
+      {
+        "decision": 172,
+        "t": 24.05449080001563,
+        "hp": 250,
+        "max_hp": 250,
+        "reason": "model_event",
+        "locator": {
+          "jsonl_line": 729,
+          "decision": 172,
+          "loop_observation_t": 24.09782660001656,
+          "phase_observation_s": 17.554015500005335,
+          "frame_reference": "000157.jpg",
+          "frame_index": 157
+        }
+      },
+      {
+        "decision": 174,
+        "t": 24.244251500000246,
+        "hp": 250,
+        "max_hp": 250,
+        "reason": "low_confidence",
+        "locator": {
+          "jsonl_line": 738,
+          "decision": 174,
+          "loop_observation_t": 24.30459939999855,
+          "phase_observation_s": 17.760788299987325,
+          "frame_reference": null,
+          "frame_index": null
+        }
+      },
+      {
+        "decision": 175,
+        "t": 24.34664650002378,
+        "hp": 250,
+        "max_hp": 250,
+        "reason": "model_event",
+        "locator": {
+          "jsonl_line": 743,
+          "decision": 175,
+          "loop_observation_t": 24.399597600015113,
+          "phase_observation_s": 17.855786500003887,
+          "frame_reference": null,
+          "frame_index": null
+        }
+      }
+    ]
+  },
+  "selected_target_transitions": [
+    {
+      "jsonl_line": 19,
+      "decision": 5,
+      "loop_observation_t": 6.973504299996421,
+      "phase_observation_s": 0.42969319998519495,
+      "frame_reference": "000004.jpg",
+      "frame_index": 4,
+      "anchor_t": 6.956431300000986,
+      "phase_anchor_s": 0.4126201999897603,
+      "from_last_nonnull": null,
+      "to_target": 1
+    },
+    {
+      "jsonl_line": 689,
+      "decision": 163,
+      "loop_observation_t": 23.131517800007714,
+      "phase_observation_s": 16.587706699996488,
+      "frame_reference": null,
+      "frame_index": null,
+      "anchor_t": 23.067741600010777,
+      "phase_anchor_s": 16.52393049999955,
+      "from_last_nonnull": 1,
+      "to_target": 11
+    }
+  ],
+  "model_target_counts": {
+    "1": 113,
+    "11": 28
+  },
+  "accepted_target_counts": {
+    "1": 12,
+    "11": 1
+  },
+  "target_loss_locators": [
+    {
+      "jsonl_line": 542,
+      "decision": 133,
+      "loop_observation_t": 20.12312100001145,
+      "phase_observation_s": 13.579309900000226,
+      "frame_reference": "000122.jpg",
+      "frame_index": 122,
+      "reason": "target_coasting",
+      "ids": [
+        7
+      ],
+      "coasting": [
+        1
+      ],
+      "proposed_target": 1,
+      "send": {
+        "observation_t": 20.12312100001145,
+        "attempted_t": 20.14133480002056,
+        "status": "returned",
+        "not_after": 26.543811100011226,
+        "release_at": 26.543811100011226,
+        "scope_not_after": 26.543811100011226,
+        "returned_t": 20.141560000018217
+      }
+    },
+    {
+      "jsonl_line": 543,
+      "decision": 133,
+      "loop_observation_t": 20.14609720002045,
+      "phase_observation_s": 13.602286100009223,
+      "frame_reference": null,
+      "frame_index": null,
+      "reason": "target_coasting",
+      "ids": [
+        7
+      ],
+      "coasting": [
+        1
+      ],
+      "proposed_target": 1,
+      "send": {
+        "observation_t": 20.14609720002045,
+        "attempted_t": 20.163082800019765,
+        "status": "returned",
+        "not_after": 26.543811100011226,
+        "release_at": 26.543811100011226,
+        "scope_not_after": 26.543811100011226,
+        "returned_t": 20.164174200006528
+      }
+    },
+    {
+      "jsonl_line": 754,
+      "decision": 177,
+      "loop_observation_t": 24.641100300010294,
+      "phase_observation_s": 18.097289199999068,
+      "frame_reference": null,
+      "frame_index": null,
+      "reason": "target_missing_or_ambiguous",
+      "ids": [
+        11,
+        13,
+        11
+      ],
+      "coasting": [],
+      "proposed_target": 11,
+      "send": {
+        "observation_t": 24.641100300010294,
+        "attempted_t": 24.6579356000002,
+        "status": "returned",
+        "not_after": 26.543811100011226,
+        "release_at": 26.543811100011226,
+        "scope_not_after": 26.543811100011226,
+        "returned_t": 24.658054700004868
+      }
+    },
+    {
+      "jsonl_line": 755,
+      "decision": 177,
+      "loop_observation_t": 24.658193500014022,
+      "phase_observation_s": 18.114382400002796,
+      "frame_reference": null,
+      "frame_index": null,
+      "reason": "target_missing_or_ambiguous",
+      "ids": [
+        11,
+        13,
+        11
+      ],
+      "coasting": [],
+      "proposed_target": 11,
+      "send": {
+        "observation_t": 24.658193500014022,
+        "attempted_t": 24.678292900003726,
+        "status": "returned",
+        "not_after": 26.543811100011226,
+        "release_at": 26.543811100011226,
+        "scope_not_after": 26.543811100011226,
+        "returned_t": 24.679475200013258
+      }
+    },
+    {
+      "jsonl_line": 758,
+      "decision": 178,
+      "loop_observation_t": 24.75003419999848,
+      "phase_observation_s": 18.206223099987255,
+      "frame_reference": null,
+      "frame_index": null,
+      "reason": "target_missing_or_ambiguous",
+      "ids": [
+        11,
+        13,
+        13,
+        11
+      ],
+      "coasting": [],
+      "proposed_target": 11,
+      "send": {
+        "observation_t": 24.75003419999848,
+        "attempted_t": 24.76905230002012,
+        "status": "returned",
+        "not_after": 26.543811100011226,
+        "release_at": 26.543811100011226,
+        "scope_not_after": 26.543811100011226,
+        "returned_t": 24.770156500017038
+      }
+    }
+  ],
+  "target_unobserved_locators": [
+    {
+      "jsonl_line": 3,
+      "decision": 1,
+      "loop_observation_t": 6.584220400021877,
+      "phase_observation_s": 0.04040930001065135,
+      "frame_reference": null,
+      "frame_index": null,
+      "anchor_t": 6.543811100011226,
+      "phase_anchor_s": 0.0,
+      "detection_ids": [
+        1,
+        2
+      ],
+      "coasting": []
+    },
+    {
+      "jsonl_line": 544,
+      "decision": 134,
+      "loop_observation_t": 20.16435200002161,
+      "phase_observation_s": 13.620540900010383,
+      "frame_reference": null,
+      "frame_index": null,
+      "anchor_t": 20.14609720002045,
+      "phase_anchor_s": 13.602286100009223,
+      "detection_ids": [
+        7
+      ],
+      "coasting": [
+        1
+      ]
+    },
+    {
+      "jsonl_line": 553,
+      "decision": 135,
+      "loop_observation_t": 20.336000200011767,
+      "phase_observation_s": 13.792189100000542,
+      "frame_reference": null,
+      "frame_index": null,
+      "anchor_t": 20.25712600001134,
+      "phase_anchor_s": 13.713314900000114,
+      "detection_ids": [
+        8,
+        9
+      ],
+      "coasting": [
+        1,
+        7
+      ]
+    },
+    {
+      "jsonl_line": 558,
+      "decision": 136,
+      "loop_observation_t": 20.44494129999657,
+      "phase_observation_s": 13.901130199985346,
+      "frame_reference": null,
+      "frame_index": null,
+      "anchor_t": 20.35373130001244,
+      "phase_anchor_s": 13.809920200001216,
+      "detection_ids": [
+        8,
+        9
+      ],
+      "coasting": [
+        1,
+        7
+      ]
+    },
+    {
+      "jsonl_line": 560,
+      "decision": 137,
+      "loop_observation_t": 20.488017800002126,
+      "phase_observation_s": 13.9442066999909,
+      "frame_reference": null,
+      "frame_index": null,
+      "anchor_t": 20.44494129999657,
+      "phase_anchor_s": 13.901130199985346,
+      "detection_ids": [
+        10
+      ],
+      "coasting": [
+        1,
+        7
+      ]
+    },
+    {
+      "jsonl_line": 565,
+      "decision": 138,
+      "loop_observation_t": 20.587217399996007,
+      "phase_observation_s": 14.043406299984781,
+      "frame_reference": null,
+      "frame_index": null,
+      "anchor_t": 20.54390499999863,
+      "phase_anchor_s": 14.000093899987405,
+      "detection_ids": [
+        10
+      ],
+      "coasting": [
+        1,
+        7
+      ]
+    },
+    {
+      "jsonl_line": 571,
+      "decision": 139,
+      "loop_observation_t": 20.729362500016578,
+      "phase_observation_s": 14.185551400005352,
+      "frame_reference": null,
+      "frame_index": null,
+      "anchor_t": 20.64629380000406,
+      "phase_anchor_s": 14.102482699992834,
+      "detection_ids": [
+        8,
+        9
+      ],
+      "coasting": [
+        1,
+        7,
+        10
+      ]
+    },
+    {
+      "jsonl_line": 574,
+      "decision": 140,
+      "loop_observation_t": 20.787154899997404,
+      "phase_observation_s": 14.243343799986178,
+      "frame_reference": "000128.jpg",
+      "frame_index": 128,
+      "anchor_t": 20.753687999997055,
+      "phase_anchor_s": 14.20987689998583,
+      "detection_ids": [
+        10
+      ],
+      "coasting": [
+        1,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "jsonl_line": 579,
+      "decision": 141,
+      "loop_observation_t": 20.88130269999965,
+      "phase_observation_s": 14.337491599988425,
+      "frame_reference": null,
+      "frame_index": null,
+      "anchor_t": 20.845302400004584,
+      "phase_anchor_s": 14.301491299993359,
+      "detection_ids": [
+        10
+      ],
+      "coasting": [
+        1,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "jsonl_line": 586,
+      "decision": 142,
+      "loop_observation_t": 21.03285760001745,
+      "phase_observation_s": 14.489046500006225,
+      "frame_reference": null,
+      "frame_index": null,
+      "anchor_t": 20.961025299999164,
+      "phase_anchor_s": 14.417214199987939,
+      "detection_ids": [
+        8,
+        9
+      ],
+      "coasting": [
+        1,
+        7,
+        10
+      ]
+    },
+    {
+      "jsonl_line": 589,
+      "decision": 143,
+      "loop_observation_t": 21.090373700018972,
+      "phase_observation_s": 14.546562600007746,
+      "frame_reference": null,
+      "frame_index": null,
+      "anchor_t": 21.053556099999696,
+      "phase_anchor_s": 14.50974499998847,
+      "detection_ids": [
+        10
+      ],
+      "coasting": [
+        1,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "jsonl_line": 594,
+      "decision": 144,
+      "loop_observation_t": 21.18637199999648,
+      "phase_observation_s": 14.642560899985256,
+      "frame_reference": null,
+      "frame_index": null,
+      "anchor_t": 21.152440400008345,
+      "phase_anchor_s": 14.60862929999712,
+      "detection_ids": [
+        10
+      ],
+      "coasting": [
+        1,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "jsonl_line": 599,
+      "decision": 145,
+      "loop_observation_t": 21.29860589999589,
+      "phase_observation_s": 14.754794799984666,
+      "frame_reference": null,
+      "frame_index": null,
+      "anchor_t": 21.247533300018404,
+      "phase_anchor_s": 14.703722200007178,
+      "detection_ids": [
+        10,
+        8,
+        9
+      ],
+      "coasting": [
+        1,
+        7,
+        8,
+        9,
+        10
+      ]
+    },
+    {
+      "jsonl_line": 605,
+      "decision": 146,
+      "loop_observation_t": 21.42245750001166,
+      "phase_observation_s": 14.878646400000434,
+      "frame_reference": null,
+      "frame_index": null,
+      "anchor_t": 21.356335300020874,
+      "phase_anchor_s": 14.812524200009648,
+      "detection_ids": [
+        8,
+        9
+      ],
+      "coasting": [
+        7,
+        10
+      ]
+    },
+    {
+      "jsonl_line": 610,
+      "decision": 147,
+      "loop_observation_t": 21.51472740000463,
+      "phase_observation_s": 14.970916299993405,
+      "frame_reference": null,
+      "frame_index": null,
+      "anchor_t": 21.453031200013356,
+      "phase_anchor_s": 14.90922010000213,
+      "detection_ids": [
+        8,
+        9
+      ],
+      "coasting": [
+        10
+      ]
+    },
+    {
+      "jsonl_line": 615,
+      "decision": 148,
+      "loop_observation_t": 21.619831500021974,
+      "phase_observation_s": 15.076020400010748,
+      "frame_reference": null,
+      "frame_index": null,
+      "anchor_t": 21.5490941000171,
+      "phase_anchor_s": 15.005283000005875,
+      "detection_ids": [
+        8,
+        9
+      ],
+      "coasting": [
+        10
+      ]
+    },
+    {
+      "jsonl_line": 621,
+      "decision": 149,
+      "loop_observation_t": 21.72677589999512,
+      "phase_observation_s": 15.182964799983893,
+      "frame_reference": null,
+      "frame_index": null,
+      "anchor_t": 21.65635000000475,
+      "phase_anchor_s": 15.112538899993524,
+      "detection_ids": [
+        8,
+        9
+      ],
+      "coasting": [
+        10
+      ]
+    },
+    {
+      "jsonl_line": 625,
+      "decision": 150,
+      "loop_observation_t": 21.807357600016985,
+      "phase_observation_s": 15.26354650000576,
+      "frame_reference": null,
+      "frame_index": null,
+      "anchor_t": 21.747901900002034,
+      "phase_anchor_s": 15.204090799990809,
+      "detection_ids": [
+        8,
+        9,
+        10
+      ],
+      "coasting": []
+    },
+    {
+      "jsonl_line": 630,
+      "decision": 151,
+      "loop_observation_t": 21.895725000009406,
+      "phase_observation_s": 15.35191389999818,
+      "frame_reference": null,
+      "frame_index": null,
+      "anchor_t": 21.84463990002405,
+      "phase_anchor_s": 15.300828800012823,
+      "detection_ids": [
+        10,
+        8,
+        9
+      ],
+      "coasting": [
+        8,
+        9,
+        10
+      ]
+    },
+    {
+      "jsonl_line": 635,
+      "decision": 152,
+      "loop_observation_t": 22.007929200015496,
+      "phase_observation_s": 15.46411810000427,
+      "frame_reference": null,
+      "frame_index": null,
+      "anchor_t": 21.94449920000625,
+      "phase_anchor_s": 15.400688099995023,
+      "detection_ids": [
+        8,
+        9
+      ],
+      "coasting": [
+        8,
+        9,
+        10
+      ]
+    },
+    {
+      "jsonl_line": 639,
+      "decision": 153,
+      "loop_observation_t": 22.080338800005848,
+      "phase_observation_s": 15.536527699994622,
+      "frame_reference": null,
+      "frame_index": null,
+      "anchor_t": 22.057068099995377,
+      "phase_anchor_s": 15.51325699998415,
+      "detection_ids": [
+        10
+      ],
+      "coasting": [
+        8,
+        9
+      ]
+    },
+    {
+      "jsonl_line": 646,
+      "decision": 154,
+      "loop_observation_t": 22.21289880000404,
+      "phase_observation_s": 15.669087699992815,
+      "frame_reference": null,
+      "frame_index": null,
+      "anchor_t": 22.15673310001148,
+      "phase_anchor_s": 15.612922000000253,
+      "detection_ids": [
+        8,
+        9
+      ],
+      "coasting": [
+        10
+      ]
+    },
+    {
+      "jsonl_line": 651,
+      "decision": 155,
+      "loop_observation_t": 22.317201800004113,
+      "phase_observation_s": 15.773390699992888,
+      "frame_reference": null,
+      "frame_index": null,
+      "anchor_t": 22.256753699999535,
+      "phase_anchor_s": 15.71294259998831,
+      "detection_ids": [
+        8,
+        9
+      ],
+      "coasting": [
+        10
+      ]
+    },
+    {
+      "jsonl_line": 656,
+      "decision": 156,
+      "loop_observation_t": 22.424124800018035,
+      "phase_observation_s": 15.880313700006809,
+      "frame_reference": null,
+      "frame_index": null,
+      "anchor_t": 22.352854800003115,
+      "phase_anchor_s": 15.80904369999189,
+      "detection_ids": [
+        8,
+        9
+      ],
+      "coasting": [
+        10
+      ]
+    },
+    {
+      "jsonl_line": 659,
+      "decision": 157,
+      "loop_observation_t": 22.477853899996262,
+      "phase_observation_s": 15.934042799985036,
+      "frame_reference": null,
+      "frame_index": null,
+      "anchor_t": 22.444073499995284,
+      "phase_anchor_s": 15.900262399984058,
+      "detection_ids": [
+        10
+      ],
+      "coasting": [
+        8,
+        9
+      ]
+    },
+    {
+      "jsonl_line": 666,
+      "decision": 158,
+      "loop_observation_t": 22.610316600010265,
+      "phase_observation_s": 16.06650549999904,
+      "frame_reference": null,
+      "frame_index": null,
+      "anchor_t": 22.553283300017938,
+      "phase_anchor_s": 16.009472200006712,
+      "detection_ids": [
+        8,
+        9
+      ],
+      "coasting": [
+        10
+      ]
+    },
+    {
+      "jsonl_line": 672,
+      "decision": 159,
+      "loop_observation_t": 22.720061700005317,
+      "phase_observation_s": 16.17625059999409,
+      "frame_reference": null,
+      "frame_index": null,
+      "anchor_t": 22.650873500009766,
+      "phase_anchor_s": 16.10706239999854,
+      "detection_ids": [
+        8,
+        9
+      ],
+      "coasting": [
+        10
+      ]
+    },
+    {
+      "jsonl_line": 677,
+      "decision": 160,
+      "loop_observation_t": 22.832799600000726,
+      "phase_observation_s": 16.2889884999895,
+      "frame_reference": null,
+      "frame_index": null,
+      "anchor_t": 22.76517710002372,
+      "phase_anchor_s": 16.221366000012495,
+      "detection_ids": [
+        8,
+        9
+      ],
+      "coasting": [
+        10
+      ]
+    },
+    {
+      "jsonl_line": 681,
+      "decision": 161,
+      "loop_observation_t": 22.90878180001164,
+      "phase_observation_s": 16.364970700000413,
+      "frame_reference": null,
+      "frame_index": null,
+      "anchor_t": 22.847963300009724,
+      "phase_anchor_s": 16.304152199998498,
+      "detection_ids": [
+        8,
+        9
+      ],
+      "coasting": [
+        10
+      ]
+    },
+    {
+      "jsonl_line": 685,
+      "decision": 162,
+      "loop_observation_t": 23.00908060002257,
+      "phase_observation_s": 16.465269500011345,
+      "frame_reference": null,
+      "frame_index": null,
+      "anchor_t": 22.948456200014334,
+      "phase_anchor_s": 16.40464510000311,
+      "detection_ids": [
+        11
+      ],
+      "coasting": [
+        8,
+        9,
+        10
+      ]
+    }
+  ],
+  "range_gaps": [],
+  "errors": [],
+  "schedule_counts": {
+    "offered": 196,
+    "first_acquisition_late": 4
+  },
+  "late_slots": [
+    {
+      "slot": 31,
+      "phase_t": 9.643811100011225,
+      "acquisition_t": 9.678775300009875,
+      "offset_s": 0.03496419999864919,
+      "reason": "first_acquisition_late"
+    },
+    {
+      "slot": 41,
+      "phase_t": 10.643811100011227,
+      "acquisition_t": 10.676604700012831,
+      "offset_s": 0.032793600001603807,
+      "reason": "first_acquisition_late"
+    },
+    {
+      "slot": 94,
+      "phase_t": 15.943811100011226,
+      "acquisition_t": 15.980065900017507,
+      "offset_s": 0.03625480000628123,
+      "reason": "first_acquisition_late"
+    },
+    {
+      "slot": 167,
+      "phase_t": 23.243811100011225,
+      "acquisition_t": 23.27087570002186,
+      "offset_s": 0.027064600010636042,
+      "reason": "first_acquisition_late"
+    }
+  ],
+  "worker_queue_misses": 0,
+  "exact_first_consumption_links": 196,
+  "unconsumed_decisions": [],
+  "preflight": {
+    "launch-result": {
+      "ended_utc": "2026-09-23T00:30:43.9531878Z",
+      "run": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\range-request-20s-20260922-1",
+      "original_record_pid": 48828,
+      "exit_code": 0
+    },
+    "actual-thread-settings": {
+      "pid": 47188,
+      "python": "3.11.9",
+      "torch": "2.14.0+cpu",
+      "observed_utc": "2026-09-23T00:30:15.336276+00:00",
+      "before_main": {
+        "intra_op": 24,
+        "inter_op": 24
+      },
+      "thread_settings_modified": false,
+      "model_inference_by_wrapper": false,
+      "after_main": {
+        "intra_op": 24,
+        "inter_op": 24
+      },
+      "finished_utc": "2026-09-23T00:30:42.423975+00:00"
+    },
+    "loader-preflight": {
+      "loaded": true,
+      "origin": "reviewed_human",
+      "spec": {
+        "steps": 5,
+        "period_s": 0.1,
+        "tolerance_s": 0.025,
+        "hidden": 8,
+        "confidence": 0.7
+      },
+      "checkpoint_sha256": "6ee388070599e3df042ea73876e391340bf228a9e626cc212c60875d8191aeef",
+      "inference_calls": 0,
+      "input": false
+    },
+    "binding-consumed": {
+      "run": "range-request-20s-20260922-1",
+      "binding_sha256": "5e21c2ee7fe665689f2fab7f691a25575dfcf7db5cecf2ce33b7bff223ad137b",
+      "consumed_utc": "2026-09-23T00:30:12.8052113Z",
+      "reason": "one authorized exploratory launch; preserve failure; do not rerun this binding",
+      "checkpoint_sha256": "6ee388070599e3df042ea73876e391340bf228a9e626cc212c60875d8191aeef"
+    },
+    "deployment-check": {
+      "commit": "676f99ae2d487e34fbb0cd02c3c117b30242c743",
+      "manifest_sha256": {
+        "controller": "bda2d130881c9275b1a8b3fc804be91563b40081cf75fde70c96cb87b3ad6cad",
+        "perception": "dc8b4447b93f4e97f9c486106f05930627ef06cfab5d6b58461f88f7a8eea69c",
+        "selector": "ddf1428a61c54805ce06164ef0daa7dfa1302fdf1735990336fdcab939ae098d"
+      },
+      "selector_inputs": {
+        "agent/brain.py": "0deaafb77cae4fa4a15fc8c8abe6d49c09821de7a1ab5810b096788117b30c00",
+        "agent/tracker.py": "56fa3012391b22a0c4a3dbe3f5414f275faba4e038bfebdbe6b8f579bc72c892"
+      },
+      "live_authority": false,
+      "remaining": "fresh effective setup and final reviewed runtime binding"
+    }
+  },
+  "limits": [
+    "All targets are local tracker IDs, not named bot/kill identities.",
+    "Log HP is an upstream observation, not independently verified damage/healing.",
+    "Locators use loop seconds and phase age, not independently synchronized video PTS.",
+    "Request/pulse/send timestamps are recorded software clocks, not physical delivery.",
+    "No old 67ms gate, counterfactual scheduler, broad stage campaign or new inference."
+  ]
+}

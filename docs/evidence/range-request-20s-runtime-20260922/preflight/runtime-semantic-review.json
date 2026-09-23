@@ -1,0 +1,67 @@
+{
+  "decision": "lead_accepts_one_exploratory_runtime_diagnostic",
+  "at_utc": "2026-09-23T00:29:50.154152+00:00",
+  "authority": "Root lead under James authorized practice-range goal; independent semantic and caller reviews retained",
+  "lead_semantic_review": {
+    "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-20s-preflight-20260922\\semantic-review.md",
+    "sha256": "0a468ca604e741a89e472fe56eb3b005e577e43d5e4b03c4104896b453af5cce"
+  },
+  "independent_caller_review": {
+    "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-20s-preflight-20260922\\caller-review.md",
+    "sha256": "93f513a990a5469a04e3b2cb375d830833cb5f080d32a5aaae3d572ab61cd832"
+  },
+  "launcher": {
+    "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-20s-preflight-20260922\\run_instrumented.py",
+    "sha256": "d20bb27fbd3ce537e8dc66f3b82d431bfc8af53145c21df4f62a61c332234830"
+  },
+  "experiment_question": "Test whether the unchanged request model completes a Luna kill in one fresh20-second phase; preserve every cast, failure and outcome without tuning or retry",
+  "source": {
+    "patch": "1.1.3870120/build25364676",
+    "cooldown_regime": "normal",
+    "source_profile_sha256": "9f413b81dabc71518359c28a6e506b1a1accbae5654bbf006967652332e3208f",
+    "perception_sha256": "e9d40f7a12442335866df16edaa8ceea7116177ab8546b3267ac096c1c616798",
+    "selector_sha256": "ddf1428a61c54805ce06164ef0daa7dfa1302fdf1735990336fdcab939ae098d",
+    "semantic_revision": "web-cluster-request-v1",
+    "feature_revision": "masked-state-grid-causal-v1"
+  },
+  "checkpoint": {
+    "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\diagnostics\\range-request-human-fit-20260922\\run-1\\model.pt",
+    "sha256": "6ee388070599e3df042ea73876e391340bf228a9e626cc212c60875d8191aeef"
+  },
+  "controller": {
+    "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-20s-preflight-20260922\\controller-deployed.json",
+    "sha256": "bda2d130881c9275b1a8b3fc804be91563b40081cf75fde70c96cb87b3ad6cad"
+  },
+  "perception": {
+    "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-20s-preflight-20260922\\perception-deployed.json",
+    "sha256": "dc8b4447b93f4e97f9c486106f05930627ef06cfab5d6b58461f88f7a8eea69c"
+  },
+  "runtime_settings": {
+    "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-20s-preflight-20260922\\runtime-settings.json",
+    "sha256": "d9002db02cec2e9fb1087b9a20ce6f1b95cd2a18f36e629f1cd607577a029624"
+  },
+  "calibration": {
+    "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-diagnostic-20260922\\calibration-manifest.json",
+    "sha256": "7e1ab360fcf5fe074160a1b8a0564554249b77315fb72648642ec609d5b1f1d5"
+  },
+  "scope": {
+    "run_name": "range-request-20s-20260922-1",
+    "run_count": 1,
+    "learned_phase_max_s": 20,
+    "startup_max_s": 14,
+    "absolute_authorization_budget_s": 34,
+    "confidence": 0.7,
+    "scoreboard": false,
+    "cooldown_regime": "normal",
+    "scenario": "Luna setup; generic continuous selector, not named-target lock"
+  },
+  "interpretation": "request-start-owned-pulse-v1: immediate guarded start before original acquisition+100ms and original ammo+100ms; nominal end fixed at Controller acceptance+33ms, capped by phase/session; no exact human97.984ms delay, physical hold or visible completion guarantee",
+  "limits": [
+    "One source event/four negative labels; TRAIN-only fit, independent quality unknown",
+    "MK/PAD and reset-window/continuous differences are exploratory uncertainties",
+    "Fifth named measurement:20-second phase after fourth independently audited eight-hit/no-KO result; unchanged reviewed code/model/threshold and fresh full-health setup; not independent quality or a retry of any consumed binding",
+    "One named run, no rerun/tuning to select success; request deadline expiry permits only completion of already-owned pulse; faults and send failures cancel with returned/recorded neutral before recovery; no replay or scripted offensive fallback",
+    "Proof freshness/watchdog limits remain; no physical-write/process-exit precision claim",
+    "Not independent validation, designated Galacta completion, pro parity or ten-trial acceptance"
+  ]
+}

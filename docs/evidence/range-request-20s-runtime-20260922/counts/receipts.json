@@ -1,0 +1,44 @@
+{
+  "inputs_before_after": [
+    {
+      "path": "data/l1/range-request-20s-20260922-1/meta.json",
+      "sha256": "4d005fe44444d7701f2c54d2beb93bcfb01398f1f33d345e91ba0dd2efaf8a9f",
+      "bytes": 172929
+    },
+    {
+      "path": "data/l1/range-request-20s-20260922-1/frames.jsonl",
+      "sha256": "46002b2e42cff7e1a93dce161bd8f3d2cde77f5a7a606e5ff65f627fa36943ac",
+      "bytes": 1414451
+    },
+    {
+      "path": "data/runtime/range-request-20s-preflight-20260922/launch-result.json",
+      "sha256": "109730c59584726d29f3c082e2ec77edfe8aadffc50c84ad65fa2d555f931653",
+      "bytes": 208
+    },
+    {
+      "path": "data/runtime/range-request-20s-preflight-20260922/actual-thread-settings.json",
+      "sha256": "ea2f447462b3cbcf309e8823f32578eb81f33665c7d8e06d61f6c35b041d7b4c",
+      "bytes": 392
+    },
+    {
+      "path": "data/runtime/range-request-20s-preflight-20260922/loader-preflight.json",
+      "sha256": "7f7044bbeb308f50ace2b3ea15108044fb0428138f11c49534590f6211fe31d3",
+      "bytes": 303
+    },
+    {
+      "path": "data/runtime/range-request-20s-preflight-20260922/binding-consumed.json",
+      "sha256": "6194ff86050560190087834810d6dfdc6de53332730897ba18b14dd6f003b8a4",
+      "bytes": 389
+    },
+    {
+      "path": "data/runtime/range-request-20s-preflight-20260922/deployment-check.json",
+      "sha256": "ce25286707a0557633550a86acacf6fa51e5d334a8c0eb79a993584b3cce22fa",
+      "bytes": 653
+    }
+  ],
+  "analyzer": {
+    "path": "data/diagnostics/range-request-20s-counts-20260922/analyze.py",
+    "sha256": "cd095f181c1f16f614d622504b7c3b1c46bbfa2abcac0e2e7da8be0a5585dd1f",
+    "bytes": 12567
+  }
+}

@@ -1,0 +1,1 @@
+capture preflight ok: 89 dxcam frames in 1 s

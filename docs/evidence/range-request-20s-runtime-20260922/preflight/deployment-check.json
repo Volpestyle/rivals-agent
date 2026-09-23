@@ -1,0 +1,14 @@
+{
+  "commit": "676f99ae2d487e34fbb0cd02c3c117b30242c743",
+  "manifest_sha256": {
+    "controller": "bda2d130881c9275b1a8b3fc804be91563b40081cf75fde70c96cb87b3ad6cad",
+    "perception": "dc8b4447b93f4e97f9c486106f05930627ef06cfab5d6b58461f88f7a8eea69c",
+    "selector": "ddf1428a61c54805ce06164ef0daa7dfa1302fdf1735990336fdcab939ae098d"
+  },
+  "selector_inputs": {
+    "agent/brain.py": "0deaafb77cae4fa4a15fc8c8abe6d49c09821de7a1ab5810b096788117b30c00",
+    "agent/tracker.py": "56fa3012391b22a0c4a3dbe3f5414f275faba4e038bfebdbe6b8f579bc72c892"
+  },
+  "live_authority": false,
+  "remaining": "fresh effective setup and final reviewed runtime binding"
+}
