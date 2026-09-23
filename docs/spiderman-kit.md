@@ -4,6 +4,7 @@ Reference for the controller (L4), HUD (L2) and brain (L5) lanes. Everything her
 researched from the web on 2026-09-20. **Nothing has been checked in the live game.**
 
 **Patch reflected: Season 10, Version 20260911 (balance post dated 2026-09-08, live 2026-09-11).**
+Checked 2026-09-23 against the running client (1.1.3870120 / Steam build 25364676, the 20260917 update): its first-party notes carry no Spider-Man change, so these numbers still apply; a native replay measured that day is the source (VUH-1328).
 The only Spider-Man changes in that patch are Amazing Combo cooldown 2 s -> 1 s and Parker
 Power-Up cooldown 15 s -> 10 s
 ([official balance post](https://www.marvelrivals.com/20260908/41525_1313334.html)).
