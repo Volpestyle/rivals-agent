@@ -448,3 +448,106 @@ At the measured 3.4–9 ms per step, the fit takes about 13–34 s. Masked rows 
   from the cohort's pinned code snapshot. A later policy change therefore needs re-validation of the cohort,
   not a silent refit. The Mac block refuses a dirty worktree, and `merge-base --is-ancestor` refuses to move it
   backwards or sideways.
+
+## Range BC (end-to-end fit): plumbing runbook
+
+Owner: the end-to-end fit lane (`docs/lanes/end-to-end-fit.md`). No real data has been fitted.
+
+**What was rehearsed on 2026-09-23 with the calibration take** (`2026-09-23 15-47-07.mkv`, not a training session):
+- steps 1-2: transfer with hash checks;
+- step 4: the cache build on the Mac;
+- the Windows and Mac decode agreement.
+
+The script is `range_bc_rehearsal.py` in this folder. Steps 3 and 5-9 have run only on synthetic data, in
+`tests/test_range_bc*.py`.
+
+**Rules:**
+- Caches are built **on the Mac only**, with the pinned Homebrew **ffmpeg 8.1.2_1**; the builder refuses other
+  platforms.
+- The sealed denylist (`data/human/sealed-denylist.json`, pin `57cfe01f…`) is loaded by every CLI.
+- 053616 is never transferred.
+
+```powershell
+# 0. Set once. $W is a clean Mac worktree at $COMMIT (create it once: git -C /Users/james/dev/rivals-agent worktree
+#    add --detach $W $COMMIT); $D is the Mac data root, outside every checkout.
+$MAC    = "$HOME/.claude/skills/mac-remote/mac.ps1"
+$W      = '/Users/james/dev/rivals-agent-worktrees/range-bc'
+$D      = '/Users/james/dev/range-bc-data'
+$COMMIT = git rev-parse HEAD                      # the landed package; --scope fit refuses uncommitted code (K5)
+$UV     = 'uv run --offline --locked --group execution'
+
+# 1. Windows, per admitted recording $ID (never 053616): hash the originals, video first, then the logger files.
+$ID = '<logger session id>'; $V = '<C:\Users\volpe\Videos\... .mkv, from metadata.json video_path>'
+$L = "C:\Users\volpe\Videos\RivalsInput\$ID"
+Get-FileHash -Algorithm SHA256 $V, "$L\metadata.json", "$L\inputs.jsonl", "$L\frames.csv" |
+    ForEach-Object { "$($_.Hash.ToLower())  $(Split-Path $_.Path -Leaf)" } | Set-Content -Encoding ascii "$ID.sha256"
+
+# 2. Send, keeping the video's own base name (the cache resolves videos by it), then verify on the Mac.
+ssh -o BatchMode=yes mac "mkdir -p '$D/originals/$ID' '$D/steps' '$D/caches' '$D/runs'"
+scp -o BatchMode=yes "$L\metadata.json" "$L\inputs.jsonl" "$L\frames.csv" "$ID.sha256" "mac:$D/originals/$ID/"
+scp -o BatchMode=yes "$V" "mac:'$D/originals/'"              # a name with spaces: check the result in step 2b
+& $MAC ("D=$D; ID=$ID`n" + @'
+cd "$D/originals"
+while read -r want name; do
+  f="$ID/$name"; [[ -e "$f" ]] || f="$name"
+  got=$(shasum -a 256 "$f" | cut -c1-64); [[ $got == $want ]] || { echo "BAD $name"; exit 2; }; echo "ok $name"
+done < "$ID/$ID.sha256"
+'@)
+if ($LASTEXITCODE) { throw 'transfer hash mismatch' }
+
+# 3. The step table: intake writes it on the Mac (agent.human_intake.write_steps, the admission lane's procedure) to
+#    $D/steps/$ID.jsonl. Check it loads under the fit's reader and the pinned denylist before anything else reads it.
+& $MAC ("cd $W; ID=$ID; D=$D`n" + @'
+uv run --offline --locked --group execution python -c 'import sys; from policy.range_bc import steps; s=steps.load(sys.argv[1], denylist=steps.load_denylist()); print(s.session_id, s.split, len(s.rows), s.sha256)' "$D/steps/$ID.jsonl"
+'@)
+
+# 4. Cache, on the Mac only (rehearsed: 2 min of HEVC took 20 s). Refuses a changed video, wrong colour tagging,
+#    another timebase or a pts that differs from the step table.
+& $MAC ("cd $W; ID=$ID; D=$D`n" + @'
+nice -n 10 uv run --offline --locked --group execution python -m policy.range_bc.cache "$D/steps/$ID.jsonl" "$D/caches/$ID" --video-root "$D/originals"
+'@)
+if ($LASTEXITCODE) { throw 'cache build failed' }
+
+# 5. Dev carve-out, before the first fit: the lead names whole train recordings as dev (the group unit is one
+#    recording). Record the list and never change it between the plumbing and the real fit. It is never validation.
+#    $DEV = @('<id>', ...);  $TRAIN = the other train-split recordings;  $VAL = the two dedicated validation takes.
+
+# 6-8. Fits: one durable niced job each, on the Mac, waiting for its exit status (the pattern of "Next fit" step 3).
+#    smoke:     --scope smoke    --train <train steps> --dev <dev steps> --epochs 1 --seeds 0
+#    plumbing:  --scope plumbing --train ... --dev ... --epochs 20 --seeds 0            (dev curve; no --val)
+#               the same again into a second --out (the repeatability check: compare the two checkpoints' sha256)
+#               --lag 1 and --lag 2 runs; the scaling curve with --max-steps on nested recording subsets, 2 seeds each
+#    then write $D/preregistration.json: {"epochs": <argmin of the seed-0 dev total loss in epochs_log>,
+#               "weight_decay": 1e-4, "stride": 48 or 64, "hud_parity_sha256": <sha256 of the parity file>,
+#               "source": "<plumbing report path and sha256>"}
+#    real:      --scope fit --train ... --dev ... --val ... --preregistration $D/preregistration.json
+#               --hud-parity <parity file> --epochs <as registered> --weight-decay <as registered> --stride <as registered>
+$FIT = "$UV python -m policy.range_bc.train --cache-root $D/caches --device mps --out $D/runs/<name> <arguments above>"
+& $MAC ("cd $W`n" + "print -r -- '$FIT >$D/runs/<name>.log 2>&1; echo `$? >$D/runs/<name>.exit' > $D/runs/<name>.sh`n" + @'
+nohup nice -n 10 zsh $D/runs/<name>.sh >/dev/null 2>&1 & echo $! > $D/runs/<name>.pid
+'@)
+#    Report the result from <name>.exit, <name>.log and runs/<name>/report.json, never from the launch.
+
+# 9. Return and verify on Windows CPU. Copy back the run directory, the validation step tables and their caches
+#    (about 9 GB for two 12-minute takes: 43k anchors x 208 kB), then verify against the report hash read from the Mac.
+$RS = (ssh -o BatchMode=yes mac "shasum -a 256 $D/runs/<name>/report.json").Split(' ')[0]
+uv run --offline --locked --group execution python -m policy.range_bc.verify --run <local run dir> --set val `
+    --steps <local val step tables> --cache-root <local caches> --report-sha256 $RS --out <local run dir>\windows-report.json
+if ($LASTEXITCODE) { throw 'Windows verification failed' }
+```
+
+**Rehearsal notes:**
+- **Login shell.** A non-login SSH shell on the Mac has no Homebrew `PATH` (`ffmpeg: command not found`). `mac.ps1`
+  runs `zsh -l`, and so did the rehearsal (ssh with the script on stdin, from Git Bash).
+- **Word splitting.** zsh does not word-split `$UV`, so `$UV python …` inside a zsh script fails. Use a function, or
+  `uv run …` written out, as the blocks above do.
+- **The video name** must keep its original base name, spaces included. The rehearsal renamed after `scp` and
+  verified the hash; step 2's glob copy keeps the name, but check it.
+- **Timing** for the 2 min, 940 MB HEVC take:
+
+  | Operation | Machine | Time |
+  |---|---|---|
+  | Transfer | | 33 s |
+  | Full-decode probe | Mac | 121 s |
+  | Full-decode probe | Windows, under load | 327 s |
+  | Cache build | Mac | 20 s |

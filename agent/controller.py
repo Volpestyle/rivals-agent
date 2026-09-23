@@ -309,6 +309,11 @@ class Cal:
     # aim assist 0. The response is immediate at every deflection (first 60 ms average = steady rate within 6 %).
     yaw_map: tuple = ((0.0, 0.0), (0.1, 18.5), (0.2, 61.5), (0.3, 110.0), (0.45, 172.0), (0.6, 241.0), (0.8, 320.0), (1.0, 415.0))
     pitch_map: tuple = ((0.0, 0.0), (0.5, 43.0), (1.0, 99.0))
+    # Stick deflection below which the camera does not turn, per axis. None = unmeasured: the maps above interpolate
+    # linearly to (0, 0), which the game's Min Input Deadzone 5 (l4-controller settings) makes optimistic below
+    # 0.1 yaw / 0.5 pitch. To be measured on the live pad with the low-end map (end-to-end fit lane, K3).
+    yaw_deadzone: float | None = None
+    pitch_deadzone: float | None = None
     latency_s: float = 0.045             # pad -> screen is 17-20 ms (measured); the rest is capture + perception + one loop period
     press_s: float = 0.033               # an 8 ms press of A registered 6/6; two 60 Hz periods leaves margin
     strike_s: float = 0.7                # web_strike: RB to arrival
@@ -325,10 +330,16 @@ def _interp(x, pts):
     return pts[-1][1]
 
 
-def stick_for(rate, rate_map):
-    """Feedforward: invert the measured stick -> deg/s map (sign carried through)."""
+def stick_for(rate, rate_map, deadzone=None):
+    """Feedforward: invert the measured stick -> deg/s map (sign carried through). With a measured deadzone, the
+    zero-rate point moves to (deadzone, 0), so a small request is commanded just past the deadzone instead of inside it."""
     mag = min(abs(rate), rate_map[-1][1])
-    return math.copysign(_interp(mag, [(r, s) for s, r in rate_map]), rate) if mag > 0 else 0.0
+    if deadzone is not None:
+        rate_map = ((0.0, 0.0), (deadzone, 0.0)) + tuple(p for p in rate_map if p[0] > deadzone)
+        pts = [(r, s) for s, r in rate_map[1:]]
+    else:
+        pts = [(r, s) for s, r in rate_map]
+    return math.copysign(_interp(mag, pts), rate) if mag > 0 else 0.0
 
 
 # The player's own third-person region, fractions of the frame: a target passing through it is hidden, not gone.

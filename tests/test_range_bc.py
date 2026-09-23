@@ -1,0 +1,726 @@
+"""The end-to-end range fit's stdlib pieces: vocabulary, step-table contract, windows, baselines, metrics, gates,
+executor mapping, report, and (with ffmpeg on PATH) the frame cache. Torch pieces: test_range_bc_torch.py."""
+import copy
+import json
+import shutil
+
+import pytest
+
+from agent.controller import Cal, stick_for
+from policy.range_bc import baselines, cache, executor, fixture, gates, metrics, report, steps, vocab
+
+CAL = fixture.CALIBRATION
+
+
+def write_session(tmp_path, name="a", **kw):
+    header, rows = fixture.session(name, **kw)
+    return fixture.write(tmp_path / f"{name}.jsonl", header, rows)
+
+
+def rewrite(tmp_path, name, mutate, **kw):
+    header, rows = fixture.session(name, **kw)
+    mutate(header, rows)
+    return fixture.write(tmp_path / f"{name}.jsonl", header, rows)
+
+
+# ---- vocabulary ---------------------------------------------------------------------------------------------------------
+
+def test_actions_are_semantic_and_the_pad_cannot_send_stick_clicks_y_or_x1():
+    assert vocab.N == 14 and len(set(vocab.NAMES)) == 14 and vocab.NAMES[-2:] == ("team_up", "goh_targeting")
+    assert set(vocab.DEFAULT_BINDINGS) == set(vocab.NAMES) and vocab.DEFAULT_BINDINGS["goh_targeting"] == "mouse:4"
+    for name in ("ultimate", "melee", "team_up", "goh_targeting"):
+        assert not vocab.PAD_SENDABLE[vocab.INDEX[name]]
+    mask = vocab.live_mask([1000] * vocab.N)
+    assert not mask[vocab.INDEX["ultimate"]] and not mask[vocab.INDEX["team_up"]] and mask[vocab.INDEX["spider_power"]]
+    presses = [1000] * vocab.N
+    presses[vocab.INDEX["amazing_combo"]] = 49
+    assert not vocab.live_mask(presses)[vocab.INDEX["amazing_combo"]]
+
+
+def test_camera_classes_round_trip_and_are_monotone():
+    assert vocab.camera_class(0.) == vocab.ZERO_CLASS and vocab.camera_class(.01) == vocab.ZERO_CLASS
+    for r in vocab.REPS:
+        assert vocab.class_degrees(vocab.camera_class(r)) == r
+        assert vocab.class_degrees(vocab.camera_class(-r)) == -r
+    assert vocab.camera_class(500.) == vocab.CAMERA_CLASSES - 1 and vocab.camera_class(-500.) == 0
+    classes = [vocab.camera_class(v / 100) for v in range(-6000, 6001)]
+    assert classes == sorted(classes)
+
+
+def test_median_class_is_the_distribution_median_not_the_argmax():
+    probs = [0.] * vocab.CAMERA_CLASSES
+    probs[5], probs[20], probs[25] = .4, .15, .45
+    assert vocab.median_class(probs) == 20        # the argmax would be 25
+
+
+# ---- the step-table contract --------------------------------------------------------------------------------------------
+
+def test_fixture_satisfies_the_contract(tmp_path):
+    s = steps.load(write_session(tmp_path))
+    assert len(s.rows) == 210 and s.split == "train" and len(s.sha256) == 64 and s.calibration == CAL
+
+
+SEALED_ID = "20260923T053616-779Z-33696-2"
+SEALED_MEDIA = "ea49d523bddf86b97c4307aae99198a374e011a4ef1eb5df8d4b90de6b6053bf"
+
+
+def test_the_real_denylist_is_read_by_intakes_reader_with_its_pin():
+    deny = steps.load_denylist()                 # data/human/sealed-denylist.json, pinned
+    assert [r["session_id"] for r in deny["sessions"]] == [SEALED_ID]
+    assert deny["sessions"][0]["media_sha256"] == SEALED_MEDIA
+    with pytest.raises(steps.StepError, match="pinned"):
+        steps.load_denylist(steps.DENYLIST, "0" * 64)
+
+
+def test_test_split_and_denylist_are_refused_before_any_row_is_read(tmp_path):
+    deny = steps.load_denylist()
+    header = fixture.header_for("sealed-x", split="test")
+    path = tmp_path / "sealed.jsonl"
+    path.write_text(json.dumps(header) + "\nthis is not json\n", encoding="utf-8")
+    with pytest.raises(steps.StepError, match="sealed"):
+        steps.load(path, denylist=deny)
+    with pytest.raises(steps.StepError, match="sealed"):
+        steps.load_cohort([path], splits=("train", "test"))
+    # a train-labelled header naming the sealed id, or only its media hash: refused before any row
+    for name, patch in (("by-id", {"session_id": SEALED_ID, "session_group": SEALED_ID}),
+                        ("by-media", {"media_sha256": SEALED_MEDIA})):
+        other = tmp_path / f"{name}.jsonl"
+        other.write_text(json.dumps({**fixture.header_for("x"), **patch}) + "\nthis is not json\n", encoding="utf-8")
+        with pytest.raises(steps.StepError, match="sealed by the denylist"):
+            steps.load(other, denylist=deny)
+    with pytest.raises(steps.StepError, match="named for a sealed session"):
+        steps.load(tmp_path / f"{SEALED_ID}.jsonl", denylist=deny)     # refused by exact name before opening
+    # exact match only: a substring of the sealed id is not a match
+    near = tmp_path / "053616.jsonl"
+    header, rows = fixture.session("053616")
+    fixture.write(near, header, rows)
+    assert steps.load(near, denylist=deny).session_id == "053616"
+
+
+@pytest.mark.parametrize("mutate, message", [
+    (lambda h, r: h.update(actions=list(reversed(h["actions"]))), "vocabulary"),
+    (lambda h, r: h["bindings"].pop("melee"), "bind every action"),
+    (lambda h, r: h["bindings"].update(melee="key:17:0"), "distinct"),
+    (lambda h, r: h.update(calibration={"yaw_deg_per_count": 0, "pitch_deg_per_count": .01, "source": "x"}),
+     "calibration"),
+    (lambda h, r: h.update(session_group="sitting-1"), "one recording"),
+    (lambda h, r: h.update(hud_layout="pad"), "mouse-and-keyboard"),
+    (lambda h, r: h.update(injected_events=3), "injected"),
+    (lambda h, r: h.update(device_scope="multi"), "device scope"),
+    (lambda h, r: h.update(video_size=[2560, 1600]), "16:9"),
+    (lambda h, r: h.pop("sitting"), "lacks"),
+    (lambda h, r: h.update(media_sha256="abc"), "media_sha256"),
+    (lambda h, r: h.update(swing_mode={"hold_to_swing": True}), "swing_mode"),
+    (lambda h, r: h.update(swing_mode={"automatic_swing": "off", "hold_to_swing": True}), "swing_mode"),
+    (lambda h, r: h.pop("accel_on"), "lacks"),
+    (lambda h, r: h.update(accel_on="on"), "accel_on"),
+    (lambda h, r: h["calibration"].update(kind="guess"), "calibration kind"),
+    (lambda h, r: h["calibration"].update(kind="speed_curve"), "not implemented"),
+    (lambda h, r: h["calibration"].pop("pitch"), "pitch.kind"),
+    (lambda h, r: h["calibration"].update(pitch={"kind": "assumed"}), "pitch.kind"),
+])
+def test_header_violations_are_refused(tmp_path, mutate, message):
+    with pytest.raises(steps.StepError, match=message):
+        steps.load(rewrite(tmp_path, "bad", mutate))
+
+
+def _repeat_counted_as_press(h, r):
+    w = vocab.INDEX["move_forward"]
+    row = next(x for x in r if x["held_start"][w] and x["held_end"][w] and x["held_known"][w])
+    row["press"][w] += 1          # a repeated make of a held key counted as a press
+
+
+def _stride(h, r):
+    r[5]["anchor_ns"] += 1
+    r[5]["frame"]["composition_ns"] += 1
+
+
+def _reappear(h, r):
+    for x in r[150:]:
+        x["run"] = "run0"          # run0 again after run1
+
+
+def _hold_break(h, r):
+    w = vocab.INDEX["move_forward"]
+    k = next(i for i in range(1, 100) if r[i]["held_start"][w] == 0 and r[i]["press"][w] == 0
+             and r[i]["held_end"][w] == 0)
+    r[k]["held_start"][w] = r[k]["held_end"][w] = 1     # continuous within the row, not with the row before
+
+
+@pytest.mark.parametrize("mutate, message", [
+    (_repeat_counted_as_press, "edges do not account"),
+    (_stride, "anchor stride"),
+    (_reappear, "reappears"),
+    (_hold_break, "hold discontinuous"),
+    (lambda h, r: r[3]["frame"].update(composition_ns=r[3]["anchor_ns"] - 3 * fixture.PERIOD_NS), "frame age"),
+    (lambda h, r: r[3].update(relative_known=True, mouse_dx=None), "relative_known with null"),
+    (lambda h, r: r[3].update(unsupported={"key:17:0": 1}), "unbound"),      # W is bound: not unsupported
+    (lambda h, r: r[3].update(tag_source="untagged", tags=["near"]), "untagged"),
+    (lambda h, r: r[3].pop("held_known"), "lacks"),
+    (lambda h, r: r[3].update(hud=[1]), "hud"),
+    (lambda h, r: r[3].update(i=7), "i is"),
+])
+def test_row_violations_are_refused(tmp_path, mutate, message):
+    with pytest.raises(steps.StepError, match=message):
+        steps.load(rewrite(tmp_path, "bad", mutate))
+
+
+def test_unknown_holds_are_not_checked_for_edges_or_continuity(tmp_path):
+    def mutate(h, r):
+        w = vocab.INDEX["move_forward"]
+        k = next(i for i, x in enumerate(r) if not x["held_known"][w])
+        r[k]["press"][w] = 1                    # an edge the unknown start state cannot account for
+    steps.load(rewrite(tmp_path, "u", mutate))
+
+
+def test_cohort_refuses_duplicates_and_mixed_identity(tmp_path):
+    a = write_session(tmp_path, "a")
+    with pytest.raises(steps.StepError, match="twice"):
+        steps.load_cohort([a, a])
+    for key, value in (("settings_hash", "other"), ("calibration", {**CAL, "yaw_deg_per_count": .02}),
+                       ("bindings", {**vocab.DEFAULT_BINDINGS, "melee": "key:48:0"}),
+                       ("swing_mode", {"automatic_swing": False, "hold_to_swing": False})):
+        b = rewrite(tmp_path, f"b-{key}", lambda h, r, key=key, value=value: h.update({key: value}))
+        with pytest.raises(steps.StepError, match=key):
+            steps.load_cohort([a, b])
+    assert len(steps.load_cohort([a, write_session(tmp_path, "d", split="val")])) == 2
+    same = rewrite(tmp_path, "e", lambda h, r: h.update(media_sha256=fixture.media_sha256("a")))
+    with pytest.raises(steps.StepError, match="same recording media"):
+        steps.load_cohort([a, same])
+
+
+def test_the_live_mask_drops_web_swing_unless_the_swing_mode_is_the_pads():
+    presses = [1000] * vocab.N
+    swing = vocab.INDEX["web_swing"]
+    assert vocab.live_mask(presses, dict(vocab.PAD_SWING_MODE))[swing]
+    assert not vocab.live_mask(presses, {"automatic_swing": False, "hold_to_swing": False})[swing]
+    assert not vocab.live_mask(presses, {"automatic_swing": None, "hold_to_swing": True})[swing]
+
+
+# ---- runs, windows, records ---------------------------------------------------------------------------------------------
+
+def test_runs_drop_rejected_segments_and_other_regimes(tmp_path):
+    s = steps.load(write_session(tmp_path, runs=(100, 50, 40), reject_run=1, regime_every=3))
+    assert steps.runs(s) == [(0, 100)]                                  # run1 rejected, run2 no-cooldown
+    assert steps.runs(s, regimes=steps.REGIMES) == [(0, 100), (150, 190)]
+
+
+def test_tiling_drops_short_runs_and_aligns_the_remainder():
+    assert steps.tile(0, 47) is None
+    assert steps.tile(0, 60) == [(0, 60)]
+    assert steps.tile(0, 96) == [(0, 96)]
+    assert steps.tile(10, 210) == [(10, 96), (58, 96), (106, 96), (114, 96)]
+
+
+def test_windows_and_train_minutes_count_what_they_drop(tmp_path):
+    s = steps.load(write_session(tmp_path, runs=(200, 30)))
+    wins, dropped = steps.windows([s])
+    assert dropped == {"dropped_runs": 1, "dropped_steps": 30}
+    assert all(0 <= st and st + n <= 200 and a == 0 for _, st, n, a in wins)
+    minutes = steps.train_minutes([s])
+    assert minutes["total"] == pytest.approx(199 * fixture.STEP_NS / 60e9)     # run0's last step touches the gap
+
+
+def test_loss_skips_burn_in_except_at_the_run_start():
+    assert steps.loss_mask_start(0, 0) == 0
+    assert steps.loss_mask_start(48, 0) == steps.BURN_IN
+
+
+def test_step_records_are_causal(tmp_path):
+    s = steps.load(write_session(tmp_path, runs=(100, 60)))
+    recs = steps.step_records(s, 0, 100)
+    assert recs[0]["prev"] is None and recs[1]["prev"] == steps.target(s.rows[0], CAL) and recs[1]["prev2"] is None
+    assert recs[2]["prev2"] == steps.target(s.rows[0], CAL) and recs[0]["sitting"] == "sitting-1"
+    inner = steps.step_records(s, 0, 100, start=50, stop=60)
+    assert inner[0]["prev"] == steps.target(s.rows[49], CAL)            # a window start is not a run start
+    for lag in (1, 2):
+        lagged = steps.step_records(s, 0, 100, lag=lag)
+        assert lagged[0]["target"] == steps.target(s.rows[lag], CAL)
+        assert lagged[0]["prev"] == steps.target(s.rows[lag - 1], CAL)
+        assert not lagged[-1]["valid"] and lagged[-1]["target"] is None
+    assert not recs[-1]["valid"]                                         # the fixture's run end touches a gap
+
+
+def test_targets_are_semantic_and_in_degrees():
+    row = {"held_start": [0] * vocab.N, "held_end": [0] * vocab.N, "held_known": [True] * vocab.N,
+           "press": [0] * vocab.N, "release": [0] * vocab.N, "relative_known": True, "mouse_dx": 5000,
+           "mouse_dy": -20, "unsupported": {"key:56:0": 2}}
+    e, lmb = vocab.INDEX["get_over_here"], vocab.INDEX["spider_power"]
+    row["press"][e] = row["release"][e] = 1
+    row["press"][lmb] = row["release"][lmb] = 2
+    t = steps.target(row, CAL)
+    assert t["press"][e] == t["release"][e] == 1 and t["held"][e] == 0 and not t["multi"][e]
+    assert t["press"][lmb] == 1 and t["multi"][lmb] == 1
+    assert t["yaw"] == pytest.approx(66.) and t["clamped"] and t["cy"] == vocab.CAMERA_CLASSES - 1
+    assert t["pitch"] == pytest.approx(-.264) and t["cp"] == vocab.camera_class(-.264)
+    assert t["unsupported"] == 2 and t["presses"] == 3
+
+
+def test_prev_vector_layout():
+    assert steps.prev_vector(None) == [0.] * steps.PREV_DIM
+    t = {"held": [1] + [0] * (vocab.N - 1), "press": [0] * vocab.N, "release": [0] * vocab.N, "known": [True] * vocab.N,
+         "camera_known": True, "cy": 0, "cp": vocab.CAMERA_CLASSES - 1}
+    v = steps.prev_vector(t)
+    assert v[0] == 1. and v[3 * vocab.N] == 1. and v[3 * vocab.N + 2 * vocab.CAMERA_CLASSES - 1] == 1. and v[-1] == 1.
+    assert sum(v) == 4.
+
+
+def test_train_statistics(tmp_path):
+    s = steps.load(write_session(tmp_path, runs=(700, 400)))
+    stats = steps.train_statistics([s])
+    assert stats["steps"] > 0 and stats["press"][vocab.INDEX["ultimate"]] == 0
+    assert not stats["live_mask"][vocab.INDEX["ultimate"]]
+    assert all(stats["longest_hold"][vocab.INDEX[n]] > 0 for n in fixture.HOLDERS)
+    lo, hi = stats["drift"]["yaw"]
+    assert lo is not None and lo <= hi
+    v = steps.load(write_session(tmp_path, "v", split="val"))
+    with pytest.raises(steps.StepError, match="train split only"):
+        steps.train_statistics([v])
+    assert steps.pos_weight(0, 100) == 1. and steps.pos_weight(1, 100) == 20. and steps.pos_weight(25, 100) == 3.
+
+
+# ---- baselines and metrics ----------------------------------------------------------------------------------------------
+
+def oracle(rec):
+    t = rec["target"]
+    if t is None:
+        return {"held": [0.] * vocab.N, "press": [0.] * vocab.N, "release": [0.] * vocab.N, "yaw": 0., "pitch": 0.}
+    return {"held": [float(v) for v in t["held"]], "press": [float(v) for v in t["press"]],
+            "release": [float(v) for v in t["release"]], "yaw": t["yaw"] or 0., "pitch": t["pitch"] or 0.}
+
+
+def val_runs(tmp_path, name="v", seed=3, runs=(300, 200)):
+    s = steps.load(write_session(tmp_path, name, split="val", runs=runs, seed=seed))
+    return [steps.step_records(s, a, b) for a, b in steps.runs(s)]
+
+
+def test_matching_windows():
+    assert metrics.match_window([5, 10], [4, 6, 11]) == 2
+    assert metrics.match_window([5], [7]) == 0
+    assert metrics.match_window([1, 2, 3], [2]) == 1
+    assert metrics.match_window([5], [6], early=1, late=0) == 0     # late: the edge was already in the input
+    assert metrics.match_window([5], [4], early=1, late=0) == 1     # early is fine
+    assert metrics.f1(0, 0, 0) is None and metrics.f1(1, 1, 0) == 2 / 3
+
+
+def test_average_precision():
+    assert metrics.average_precision([.9, .8, .1], [1, 0, 1]) == pytest.approx((1 + 2 / 3) / 2)
+    assert metrics.average_precision([.1], [0]) is None
+
+
+def test_oracle_is_perfect(tmp_path):
+    m = metrics.evaluate(metrics.predict_runs(val_runs(tmp_path), oracle), **metrics.TEACHER)
+    for name in ("spider_power", "web_cluster", "get_over_here", "jump"):
+        a = m["actions"][name]
+        assert a["press_f1"] == a["press_f1_tol"] == a["held_balanced_accuracy"] == 1.
+    assert m["camera"]["yaw"]["mae_deg"] == 0 and m["macro_press_f1_tol"] == 1.
+    assert m["camera"]["yaw"]["onset_sign_agreement"] == 1. and m["camera"]["yaw"]["onset_steps"] > 0
+    assert 0 < m["unsupported_share"] < .2
+
+
+def test_echo_is_credited_only_by_the_leaky_window(tmp_path):
+    """F2: echoing the previous true edge maxes a symmetric +-1 window and scores ~0 on [t-1, t]."""
+    runs = metrics.predict_runs(val_runs(tmp_path), baselines.echo)
+    leaky = metrics.evaluate(runs, early=1, late=1)["macro_press_f1_tol"]
+    fair = metrics.evaluate(runs, **metrics.TEACHER)["macro_press_f1_tol"]
+    assert leaky > .95 and fair < .05
+
+
+def test_baselines(tmp_path):
+    runs = val_runs(tmp_path)
+    p = metrics.evaluate(metrics.predict_runs(runs, baselines.persistence), **metrics.TEACHER)
+    assert all(a["press_f1"] is None or a["press_f1"] == 0 for a in p["actions"].values())
+    assert p["actions"]["move_forward"]["held_balanced_accuracy"] > .8        # persistence is strong on holds
+    rec = runs[0][5]
+    assert baselines.persistence(rec)["yaw"] == rec["prev"]["yaw"] and baselines.zero_motion(rec)["yaw"] == 0
+    train = steps.load(write_session(tmp_path, runs=(800, 600)))
+    stats = steps.train_statistics([train])
+    prior = baselines.prior(stats)(rec)
+    assert 0 < prior["press"][vocab.INDEX["spider_power"]] < .5 and prior["press"][vocab.INDEX["ultimate"]] == 0
+    coef = baselines.fit_ar2([train])
+    assert coef["yaw"][0] == pytest.approx(1.35, abs=.1) and coef["yaw"][1] == pytest.approx(-.42, abs=.1)
+    ar = metrics.evaluate(metrics.predict_runs(runs, baselines.ar2(coef)), **metrics.TEACHER)
+    assert ar["camera"]["yaw"]["mae_deg"] < p["camera"]["yaw"]["mae_deg"]      # the fixture's camera is AR(2)
+    with pytest.raises(steps.StepError):
+        baselines.fit_ar2([steps.load(write_session(tmp_path, "vv", split="val"))])
+
+
+def test_stratification_by_tag_regime_sitting_and_resource(tmp_path):
+    s = steps.load(write_session(tmp_path, "v", split="val", runs=(100, 100, 100), regime_every=3, hud=True))
+    runs = [steps.step_records(s, a, b) for a, b in steps.runs(s, regimes=steps.REGIMES)]
+    out = metrics.stratified(metrics.predict_runs(runs, oracle))
+    assert set(out["by_tag"]) == {"near", "foot", "untagged"} and set(out["by_regime"]) == set(steps.REGIMES)
+    assert set(out["by_sitting"]) == {"sitting-1"} and any(k.startswith("webs=") for k in out["by_resource"])
+    assert out["by_tag"]["near"]["valid_steps"] + out["by_tag"]["untagged"]["valid_steps"] == out["all"]["valid_steps"]
+
+
+def test_sanity_measures_stuck_holds_and_drift():
+    rec = {"valid": True}
+    held = [0.] * vocab.N
+    held[vocab.INDEX["move_forward"]] = 1.
+    run = [(rec, {"held": held, "press": [0.] * vocab.N, "release": [0.] * vocab.N, "yaw": 2., "pitch": 0.})] * 600
+    s = metrics.sanity([run])
+    assert s["longest_hold"]["move_forward"] == 600 and s["longest_hold"]["jump"] == 0
+    assert s["drift"]["yaw"] == [2., 2.]
+
+
+# ---- gates --------------------------------------------------------------------------------------------------------------
+
+def gate_inputs(tmp_path):
+    runs = val_runs(tmp_path)
+    train = steps.load(write_session(tmp_path, runs=(800, 600)))
+    stats = steps.train_statistics([train])
+    coef = baselines.fit_ar2([train])
+    ev = lambda f, w=metrics.TEACHER: metrics.evaluate(metrics.predict_runs(runs, f), **w)
+    good_tf, good_sf = ev(oracle), ev(oracle, metrics.SELF)
+    tf = {"model": {s: good_tf for s in gates.SEEDS}, "history_only": {s: ev(baselines.persistence)
+                                                                       for s in gates.SEEDS},
+          "persistence": ev(baselines.persistence), "zero_motion": ev(baselines.zero_motion),
+          "prior": ev(baselines.prior(stats)), "echo": ev(baselines.echo), "ar2": ev(baselines.ar2(coef))}
+    sf = {"model": {s: good_sf for s in gates.SEEDS},
+          "history_only": {s: ev(baselines.persistence, metrics.SELF) for s in gates.SEEDS}}
+    sane = {s: metrics.sanity(metrics.predict_runs(runs, oracle)) for s in gates.SEEDS}
+    stats["live_mask"] = list(vocab.live_mask([1000] * vocab.N))
+    human = metrics.sanity(metrics.predict_runs(runs, metrics.truth))
+    return tf, sf, sane, stats, human
+
+
+def test_an_oracle_passes_every_gate(tmp_path):
+    tf, sf, sane, stats, human = gate_inputs(tmp_path)
+    v = gates.evaluate(tf, sf, sane, stats, human)
+    assert v["pilot_worthy"], {k: v[k]["pass"] for k in ("G0", "G1", "G2", "G3", "G4", "G5", "G6")}
+    assert v["headline_self_fed_macro_press_f1"] == 1.
+    json.dumps(v)
+
+
+def test_no_frame_gain_fails_g1_and_one_bad_seed_fails_g6(tmp_path):
+    tf, sf, sane, stats, human = gate_inputs(tmp_path)
+    same = {**tf, "history_only": dict(tf["model"])}
+    v = gates.evaluate(same, sf, sane, stats, human)
+    assert not v["G1"]["pass"] and not v["pilot_worthy"]
+    bad = {**sf, "model": {**sf["model"], 2: tf["persistence"]}}
+    v = gates.evaluate(tf, bad, sane, stats, human)
+    assert v["G2"]["pass"] and not v["G6"]["pass"] and not v["pilot_worthy"]
+
+
+def test_a_leaky_metric_invalidates_the_gates(tmp_path):
+    tf, sf, sane, stats, human = gate_inputs(tmp_path)
+    leaky = copy.deepcopy(tf["echo"])
+    leaky["macro_press_f1_tol"] = .99
+    v = gates.evaluate({**tf, "echo": leaky}, sf, sane, stats, human)
+    assert not v["G0"]["pass"] and not v["pilot_worthy"]
+
+
+def test_onset_sign_must_beat_the_references(tmp_path):
+    tf, sf, sane, stats, human = gate_inputs(tmp_path)
+    weak = copy.deepcopy(tf["model"][0])
+    weak["camera"]["yaw"]["onset_sign_agreement"] = tf["persistence"]["camera"]["yaw"]["onset_sign_agreement"]
+    assert not gates.g3(weak, tf["persistence"], tf["zero_motion"], tf["ar2"], tf["history_only"][0])["pass"]
+
+
+def test_spam_stuck_and_drift_fail_g5_and_missing_seeds_are_incomplete(tmp_path):
+    tf, sf, sane, stats, human = gate_inputs(tmp_path)
+    ref = gates.human_reference(stats, human)
+    assert gates.g5(sf["model"][0], sane[0], ref)["pass"]
+    spam = copy.deepcopy(sf["model"][0])
+    spam["actions"]["get_over_here"]["pred_press_rate"] = 3 * spam["actions"]["get_over_here"]["human_press_rate"]
+    assert not gates.g5(spam, sane[0], ref)["pass"]
+    stuck = copy.deepcopy(sane[0])
+    stuck["longest_hold"]["move_forward"] = ref["longest_hold"][vocab.INDEX["move_forward"]] + 1
+    assert not gates.g5(sf["model"][0], stuck, ref)["pass"]
+    drift = copy.deepcopy(sane[0])
+    drift["drift"]["yaw"] = [0., 99.]
+    assert not gates.g5(sf["model"][0], drift, ref)["pass"]
+    v = gates.evaluate({**tf, "model": {0: tf["model"][0]}}, sf, sane, stats, human)
+    assert not v["complete"] and not v["pilot_worthy"] and v["missing_seeds"] == [1, 2]
+
+
+# ---- executor mapping ---------------------------------------------------------------------------------------------------
+
+def test_decode_step_is_consistent_and_masked():
+    live = list(vocab.live_mask([1000] * vocab.N))
+    p0 = [0.] * vocab.N
+    e, ult, fwd = vocab.INDEX["get_over_here"], vocab.INDEX["ultimate"], vocab.INDEX["move_forward"]
+    press, release = list(p0), list(p0)
+    press[e] = release[e] = .9
+    held = list(p0)
+    held[fwd] = held[ult] = .9
+    h, p, r = executor.decode_step(held, press, release, [0] * vocab.N, live)
+    assert p[e] == r[e] == 1 and h[e] == 0                  # a tap
+    assert h[fwd] == 1 and p[fwd] == 1 and r[fwd] == 0      # a hold starts with its press
+    assert h[ult] == p[ult] == 0                            # never sent: the pad cannot click sticks
+    h2, p2, r2 = executor.decode_step(p0, p0, p0, h, live)
+    assert r2[fwd] == 1 and p2[fwd] == 0
+
+
+def test_pad_state_maps_actions_and_degrees_through_the_measured_maps():
+    cal = Cal()
+    held = [0] * vocab.N
+    for n in ("move_forward", "move_right", "web_swing", "spider_power", "web_cluster"):
+        held[vocab.INDEX[n]] = 1
+    press = [0] * vocab.N
+    press[vocab.INDEX["jump"]] = 1                          # a tap is held for the whole step
+    pad = executor.pad_state(held, press, 172. / 30, -43. / 30, cal=cal)
+    assert pad["lx"] == pytest.approx(2 ** -.5) and pad["ly"] == pytest.approx(2 ** -.5)
+    assert pad["buttons"] == ("A", "LB") and pad["rt"] == 1. and pad["lt"] == 1.
+    assert pad["rx"] == pytest.approx(.45) and pad["ry"] == pytest.approx(.5)    # pitch -1.43 deg (up) -> ry +0.5
+    assert set(pad) == set(executor.NEUTRAL)
+
+
+def test_saturation_tracking_error_and_feasibility():
+    my, mp = executor.max_step_degrees()
+    assert my == pytest.approx(415 / 30) and mp == pytest.approx(99 / 30)
+    assert executor.saturate(100., -100.) == (pytest.approx(my), pytest.approx(-mp))
+    req = [(1., .5), (20., 0.), (-2., 0.)]
+    got = [(1.2, .5), (my, None), (-2., 0.)]
+    t = executor.tracking_error(req, got)
+    assert t["yaw"]["steps"] == 3 and t["yaw"]["saturated_share"] == pytest.approx(1 / 3)
+    assert t["yaw"]["unsaturated_mae"] == pytest.approx(.1) and t["pitch"]["steps"] == 2
+    f = executor.human_feasibility([1., 20., -30.], [0., 5.])
+    assert f["yaw_over_cap"] == pytest.approx(2 / 3) and f["pitch_over_cap"] == .5
+
+
+def test_tracker_integrates_measured_error_only():
+    tr = executor.Tracker(k=2.)
+    assert tr.update((1., 0.), (.5, None)) == (1., -0.)
+    assert tr.error == [.5, 0.]
+
+
+# ---- report -------------------------------------------------------------------------------------------------------------
+
+def test_report_requires_every_field_and_writes_once(tmp_path):
+    fields = {k: None for k in report.REQUIRED}
+    fields.update(scope="smoke", test_opened=False)
+    path = report.write(tmp_path / "r.json", **fields)
+    assert json.loads(path.read_text())["format"] == report.FORMAT
+    with pytest.raises(FileExistsError):
+        report.write(path, **fields)
+    with pytest.raises(report.ReportError, match="lacks"):
+        report.write(tmp_path / "s.json", scope="smoke")
+    with pytest.raises(report.ReportError, match="final-test"):
+        report.write(tmp_path / "t.json", **{**fields, "test_opened": True})
+
+
+# ---- frame cache (ffmpeg) -----------------------------------------------------------------------------------------------
+
+needs_ffmpeg = pytest.mark.skipif(not (shutil.which("ffmpeg") and shutil.which("ffprobe")),
+                                  reason="ffmpeg/ffprobe not on PATH")
+
+
+def test_progressions_compress_the_anchor_grid():
+    assert cache.progressions([0, 4, 8, 12, 13, 20]) == [(0, 12, 4), (13, 20, 7)]
+    assert cache.select_expression([5]) == "select=eq(n\\,5)"
+
+
+def _cached_session(tmp_path, frames=140, pts_shift=0, size=(640, 360), video=None, media=None, timebase=None):
+    video = video or fixture.write_video(tmp_path / "v.mkv", frames)
+    tb, pts = fixture.probe_pts(video)
+    header, rows = fixture.session("c", runs=(12, 10), video_path=str(video), timebase=timebase or tb,
+                                   pts_of=lambda n: pts[n + pts_shift])
+    header["video_size"] = list(size)
+    header["media_sha256"] = media or cache.file_sha256(video)
+    return fixture.write(tmp_path / "c.jsonl", header, rows), rows
+
+
+@needs_ffmpeg
+def test_cache_holds_each_rows_exact_frame(tmp_path):
+    path, rows = _cached_session(tmp_path)
+    session = steps.load(path)
+    import platform
+    if platform.system() != "Darwin":
+        with pytest.raises(cache.CacheError, match="Mac only"):
+            cache.build(session, tmp_path / "refused")
+    m = cache.build(session, tmp_path / "cache", any_platform=True)
+    assert m["frames"] == len({r["frame"]["frame_index"] for r in rows}) and m["steps_sha256"] == session.sha256
+    assert m["videos"][0]["timebase"] == [1, 1000] and "bitexact" in m["graph"] and "in_color_matrix=bt709" in m["graph"]
+    data = {k: (tmp_path / "cache" / f"{k}.u8").read_bytes() for k in ("global", "crop", "hud")}
+    size = {"global": 144 * 256 * 3, "crop": 128 * 128 * 3, "hud": 80 * 200 * 3}
+    assert all(len(data[k]) == m["frames"] * size[k] for k in data)
+    for k, r in enumerate(rows):
+        bg, fg = fixture.frame_colours(r["frame"]["frame_index"])
+        pos = m["row_frame"][k]
+
+        def px(stream, y, x, width):
+            at = pos * size[stream] + (y * width + x) * 3
+            return list(data[stream][at:at + 3])
+        close = lambda a, b: all(abs(u - v) <= 2 for u, v in zip(a, b))
+        assert close(px("global", 0, 0, 256), bg) and close(px("crop", 64, 64, 128), fg)
+        assert close(px("hud", 10, 100, 200), bg) and close(px("hud", 60, 20, 200), bg)   # ability row; webs box
+        assert px("hud", 60, 150, 200) == [0, 0, 0]                                      # padding
+    assert steps.sha256(tmp_path / "cache" / "hud.u8") == m["hud_sha256"]
+
+
+@needs_ffmpeg
+def test_cache_refuses_a_pts_that_disagrees_with_the_step_table(tmp_path):
+    path, _ = _cached_session(tmp_path, pts_shift=1)          # the importer's ordinal would be off by one
+    with pytest.raises(cache.CacheError, match="pts"):
+        cache.build(steps.load(path), tmp_path / "cache", any_platform=True)
+
+
+@needs_ffmpeg
+def test_cache_refuses_a_video_of_another_size(tmp_path):
+    path, _ = _cached_session(tmp_path, size=(1280, 720))
+    with pytest.raises(cache.CacheError, match="size"):
+        cache.build(steps.load(path), tmp_path / "cache", any_platform=True)
+
+
+@needs_ffmpeg
+def test_cache_refuses_other_media_another_timebase_and_unpinned_colour(tmp_path):
+    path, _ = _cached_session(tmp_path, media="0" * 64)
+    with pytest.raises(cache.CacheError, match="media_sha256"):
+        cache.build(steps.load(path), tmp_path / "c1", any_platform=True)
+    (tmp_path / "c.jsonl").unlink()
+    path, _ = _cached_session(tmp_path, video=tmp_path / "v.mkv", timebase=(1, 90000))
+    with pytest.raises(cache.CacheError, match="timebase"):
+        cache.build(steps.load(path), tmp_path / "c2", any_platform=True)
+    import subprocess
+    pc = tmp_path / "pc.mkv"
+    subprocess.run(["ffmpeg", "-v", "error", "-f", "lavfi", "-i", "testsrc2=s=640x360:r=120:d=1.2", "-c:v", "libx264",
+                    "-pix_fmt", "yuvj420p", "-color_range", "pc", str(pc)], check=True)
+    (tmp_path / "c.jsonl").unlink()
+    path, _ = _cached_session(tmp_path, video=pc)
+    with pytest.raises(cache.CacheError, match="colour"):
+        cache.build(steps.load(path), tmp_path / "c3", any_platform=True)
+    assert cache.check_colour({"pix_fmt": "yuv420p", "color_range": "tv", "color_space": "bt709"}) is None
+
+
+# ---- unknown pitch gain (lead decision: no pitch gain is assumed until the pitch take exists) ------------------------
+
+def test_an_unknown_pitch_gain_masks_pitch_everywhere(tmp_path):
+    s = steps.load(write_session(tmp_path, "np", pitch_gain=None, runs=(700, 400)))
+    t = steps.target(s.rows[5], s.calibration)
+    assert t["yaw"] is not None and t["pitch"] is None and t["cp"] is None
+    v = steps.prev_vector(t)
+    m = vocab.CAMERA_CLASSES
+    assert sum(v[3 * vocab.N + m: 3 * vocab.N + 2 * m]) == 0 and sum(v[3 * vocab.N: 3 * vocab.N + m]) == 1
+    stats = steps.train_statistics([s])
+    assert not stats["pitch_gain_known"] and sum(stats["camera"]["pitch"]) == 0 and stats["drift"]["pitch"] == [None, None]
+    assert baselines.fit_ar2([s])["pitch"] == (0., 0.)
+    runs = [steps.step_records(s, a, b) for a, b in steps.runs(s)]
+    block = metrics.evaluate(metrics.predict_runs(runs, oracle), **metrics.TEACHER)
+    assert block["camera_axes"] == ["yaw"] and block["camera"]["pitch"]["steps"] == 0
+    assert block["camera_mae_mean"] == block["camera"]["yaw"]["mae_deg"]
+
+
+def test_an_unknown_pitch_gain_blocks_the_pilot_but_not_the_gates(tmp_path):
+    train = steps.load(write_session(tmp_path, "np", pitch_gain=None, runs=(800, 600)))
+    val = steps.load(write_session(tmp_path, "npv", split="val", pitch_gain=None, runs=(300, 200), seed=3))
+    runs = [steps.step_records(val, a, b) for a, b in steps.runs(val)]
+    stats = steps.train_statistics([train])
+    stats["live_mask"] = list(vocab.live_mask([1000] * vocab.N))
+    ev = lambda f, w=metrics.TEACHER: metrics.evaluate(metrics.predict_runs(runs, f), **w)
+    tf = {"model": {s: ev(oracle) for s in gates.SEEDS},
+          "history_only": {s: ev(baselines.persistence) for s in gates.SEEDS},
+          "persistence": ev(baselines.persistence), "zero_motion": ev(baselines.zero_motion),
+          "prior": ev(baselines.prior(stats)), "echo": ev(baselines.echo),
+          "ar2": ev(baselines.ar2(baselines.fit_ar2([train])))}
+    sf = {"model": {s: ev(oracle, metrics.SELF) for s in gates.SEEDS},
+          "history_only": {s: ev(baselines.persistence, metrics.SELF) for s in gates.SEEDS}}
+    sane = {s: metrics.sanity(metrics.predict_runs(runs, oracle)) for s in gates.SEEDS}
+    human = metrics.sanity(metrics.predict_runs(runs, metrics.truth))
+    v = gates.evaluate(tf, sf, sane, stats, human)
+    assert all(v[g]["pass"] for g in ("G0", "G1", "G2", "G3", "G4", "G5", "G6"))
+    assert list(v["G3"]["axes"]) == ["yaw"] and set(v["G5"]["drift"]) == {"yaw"}
+    assert v["pitch_gain_known"] is False and v["pilot_worthy"] is False
+
+
+def test_calibration_accepts_null_pitch_but_not_zero(tmp_path):
+    steps.load(rewrite(tmp_path, "ok", lambda h, r: h["calibration"].update(pitch_deg_per_count=None)))
+    with pytest.raises(steps.StepError, match="calibration"):
+        steps.load(rewrite(tmp_path, "bad", lambda h, r: h["calibration"].update(pitch_deg_per_count=0)))
+    with pytest.raises(steps.StepError, match="calibration"):
+        steps.load(rewrite(tmp_path, "bad2", lambda h, r: h["calibration"].pop("pitch_deg_per_count")))
+
+
+def test_default_bindings_follow_james_hud():
+    assert vocab.DEFAULT_BINDINGS["amazing_combo"] == "key:18:0"      # E, the fist on his HUD
+    assert vocab.DEFAULT_BINDINGS["get_over_here"] == "key:33:0"      # F, the arrow
+    assert vocab.DEFAULT_BINDINGS["team_up"] == "key:46:0"             # C: his team-up, which fires in the range
+
+
+# ---- review round 2: K3 executor low end, K4 self-fed change --------------------------------------------------------
+
+def test_stick_for_moves_the_zero_rate_point_to_a_measured_deadzone():
+    yaw = Cal().yaw_map
+    assert stick_for(9., yaw) == pytest.approx(.0486, abs=1e-3)              # unchanged without a deadzone
+    assert stick_for(.01, yaw, .05) == pytest.approx(.05, abs=1e-3)          # just past the deadzone
+    assert stick_for(9., yaw, .05) == pytest.approx(.05 + .05 * 9 / 18.5, abs=1e-3)
+    assert stick_for(18.5, yaw, .05) == pytest.approx(.1) and stick_for(0., yaw, .05) == 0.
+    assert stick_for(-172., yaw, .05) == pytest.approx(-.45)
+    from dataclasses import replace
+    pad = executor.pad_state([0] * vocab.N, [0] * vocab.N, .3, None, cal=replace(Cal(), yaw_deadzone=.05))
+    assert pad["rx"] == pytest.approx(stick_for(9., yaw, .05)) and pad["ry"] == 0.
+
+
+def test_minimum_rotation_rate_bands_and_train_only_profiles(tmp_path):
+    low = executor.min_step_degrees()
+    assert low["yaw"] == pytest.approx(18.5 / 30) and low["pitch"] == pytest.approx(43 / 30)
+    assert not low["deadzone_measured"]
+    t = executor.tracking_error([(.1, 0.), (1., 0.), (20., 0.)], [(0., 0.), (1., 0.), (13., 0.)])
+    bands = t["yaw"]["by_requested_rate_deg_s"]
+    assert set(bands) == {"0-9", "18.5-61.5", "saturated"} and bands["0-9"]["mae"] == pytest.approx(.1)
+    f = executor.human_feasibility([.1, 0., 5.], [0., .2])
+    assert f["yaw_moving_below_min"] == pytest.approx(.5)
+    train = steps.load(write_session(tmp_path))
+    profiles = executor.replay_profiles([train])
+    assert profiles and all(isinstance(y, float) for run in profiles for y, _ in run)
+    with pytest.raises(steps.StepError, match="train or dev"):
+        executor.replay_profiles([steps.load(write_session(tmp_path, "v", split="val"))])
+
+
+def test_self_fed_change_counts_from_the_models_own_previous_hold():
+    def rec(start, end):
+        held_start, held = [0] * vocab.N, [0] * vocab.N
+        held_start[0], held[0] = start, end
+        t = {"held": held, "held_start": held_start, "press": [0] * vocab.N, "release": [0] * vocab.N,
+             "known": [True] * vocab.N, "multi": [0] * vocab.N, "camera_known": False, "yaw": None, "pitch": None,
+             "presses": 0, "unsupported": 0}
+        return {"valid": True, "target": t, "prev": None, "tags": [], "regime": "normal", "sitting": "s", "hud": {}}
+    held = [0.] * vocab.N
+    held[0] = 1.
+    pred = {"held": held, "press": [0.] * vocab.N, "release": [0.] * vocab.N, "yaw": 0., "pitch": 0.}
+    # the human presses W at step 1; the model holds W from step 0 (one step early)
+    run = [(rec(0, 0), pred), (rec(0, 1), pred)]
+    tf = metrics.evaluate([run], **metrics.TEACHER)["actions"]["move_forward"]["held_change_f1"]
+    sf = metrics.evaluate([run], **metrics.SELF)["actions"]["move_forward"]["held_change_f1"]
+    # teacher-forced: the model "changes" at both steps against the human's start (1 TP, 1 FP);
+    # self-fed: it changed at step 0 from its own released start and kept holding at step 1 (0 TP, 1 FP, 1 FN)
+    assert tf == pytest.approx(2 / 3) and sf == 0.
+
+
+def test_g4_compares_with_the_self_fed_twin(tmp_path):
+    tf, sf, sane, stats, human = gate_inputs(tmp_path)
+    assert gates.g4(sf["model"][0], sf["history_only"][0])["pass"]
+    assert not gates.g4(sf["history_only"][0], sf["history_only"][0])["pass"]     # no better than the twin
+
+
+def test_an_action_may_have_several_bindings_but_no_id_twice(tmp_path):
+    s = steps.load(write_session(tmp_path))
+    assert s.header["bindings"]["melee"] == ["key:47:0", "mouse:5"]
+    assert "mouse:5" in steps.bound_ids(s.header["bindings"])
+    with pytest.raises(steps.StepError, match="distinct"):
+        steps.load(rewrite(tmp_path, "dup", lambda h, r: h["bindings"].update(ultimate="mouse:5")))
+    with pytest.raises(steps.StepError, match="distinct"):
+        steps.load(rewrite(tmp_path, "empty", lambda h, r: h["bindings"].update(melee=[])))
+    with pytest.raises(steps.StepError, match="unbound"):
+        steps.load(rewrite(tmp_path, "m5", lambda h, r: r[3].update(unsupported={"mouse:5": 1})))
+
+
+# ---- round 3 and the calibration take ----------------------------------------------------------------------------
+
+def test_tracking_bands_are_per_axis_and_every_degree_number_carries_the_caveat():
+    t = executor.tracking_error([(0., .1), (0., 1.)], [(0., 0.), (0., 1.)])      # pitch 3 and 30 deg/s requested
+    assert set(t["pitch"]["by_requested_rate_deg_s"]) == {"0-9", "9-43"}
+    assert t["caveat"] == vocab.DEGREE_CAVEAT and "unverified above slow speed" in vocab.DEGREE_CAVEAT
+    assert executor.human_feasibility([1.], [0.])["caveat"] == vocab.DEGREE_CAVEAT
+    assert executor.min_step_degrees()["caveat"] == vocab.DEGREE_CAVEAT
+
+
+def test_the_derived_pitch_gain_is_usable_and_recorded(tmp_path):
+    s = steps.load(write_session(tmp_path, runs=(700, 400)))
+    assert s.calibration["pitch"]["kind"] == "derived_equal_sensitivity"
+    stats = steps.train_statistics([s])
+    assert stats["pitch_gain_known"] and stats["pitch_gain_kind"] == ["derived_equal_sensitivity"]
+    assert steps.target(s.rows[5], s.calibration)["pitch"] is not None
+    null = steps.train_statistics([steps.load(write_session(tmp_path, "n", pitch_gain=None))])
+    assert not null["pitch_gain_known"]

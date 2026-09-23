@@ -58,7 +58,7 @@ Secondary Weapon both as Y and Ability 3 as LT, which collides with Secondary At
 | Wall Crawl | **A** (against a wall) | Space | Fandom template says "press A to wall crawl"; the Season 0 patch note says "hold to crawl". Hold vs tap: **U** |
 | Wall sprint | **RT** while crawling | LMB | |
 | Ultimate (Spectacular Spin) | **L3 + R3** together | Q | rebindable in settings. `pad.py` names these `LS` and `RS` |
-| Team-Up ability | **Y** | C | only with a partner hero (Venom, Peni Parker); irrelevant to the first bot |
+| Team-Up ability | **Y** | C | fires in the solo practice range: James pressed C 24 + 8 times in 051828 and 171533 and his M&K HUD shows the team-up slot labelled C (correction 2026-09-23; the earlier "only with a partner hero" was wrong for the range) |
 | Ping / comm wheel / hero profile / Chrono Vision | D-pad Down / Left / Up / Right | MMB / T / F1 / B | Fandom Controls page (**G**); not needed by the bot |
 | Crouch, sprint, pause | **U** | | Not in any reliable source. One guide summary says L3 is a sprint toggle; unconfirmed |
 
