@@ -21,6 +21,7 @@ for whole-session behaviour cloning (movement, targeting, combos), not just web-
 | 2026-09-23 15-01-29.mkv | 20260923T200129-346Z-33696-6 | 26.8 min | range, Galacta, whole-session campaign take 1 (James: "firing range footage"; content details at intake) | normal (no drop note) | logger complete, clean stop, 0 drops, 0 raw-input errors; intake pending |
 | 2026-09-23 15-37-16.mkv | 20260923T203716-726Z-45572-1 | 7 s | HEVC encoder test (NVENC HEVC, same quality tier); anchor holds (+21 ms, residual 0.333 ms) | n/a | encoder check only, not registered |
 | 2026-09-23 15-47-07.mkv | 20260923T204707-487Z-45572-2 | 2.0 min | calibration take (HEVC): settings screens (keyboard, controller), slow 360° yaw, pitch sweep; content confirmed at intake | normal | logger complete, 0 drops; intake pending |
+| 2026-09-23 15-55-28.mkv | 20260923T205528-900Z-45572-3 | 11.1 min | range, whole-session campaign take 2 (HEVC, ~110 Mbps: busier content than the calibration take) | normal (no drop note) | logger complete, clean stop, 0 drops; intake pending |
 
 Total logged range play with inputs: about 17 trainable minutes before the campaign; campaign take 1 adds up to ~27 min (pending intake). Campaign target: 180 minutes.
 
