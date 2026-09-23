@@ -1,0 +1,67 @@
+{
+  "rows": 1101,
+  "normal_rows": 1097,
+  "full_decisions": 199,
+  "unique_decision_ids": 199,
+  "model_no_new_start": 194,
+  "refusals": {
+    "target_unobserved": 1,
+    "warming_up": 4
+  },
+  "controller_accepts": 0,
+  "returned_calls": 1097,
+  "returned_offense_calls": 0,
+  "states_hp": {
+    "250": 199
+  },
+  "states_webs": {
+    "5": 199
+  },
+  "controller_reasons_including_releases": {
+    "scoreboard": 1,
+    "null": 30,
+    "no_new_start": 182,
+    "duplicate_no_new_start": 320,
+    "decision_expired": 502,
+    "target_missing_or_ambiguous": 64,
+    "scope_deadline": 1,
+    "range_lost": 1
+  },
+  "phase_origin": 8.35685559999547,
+  "last_observation_phase_age": 19.99537380001857,
+  "terminal_guard_phase_age": 20.007566400017822,
+  "meta_event_mirrors_exact": true,
+  "first_phase_bbox": [
+    1119.0,
+    501.0,
+    1295.0,
+    680.0
+  ],
+  "height_fraction": 0.12430555555555556,
+  "saved_frames_selected": [
+    {
+      "file": "000000.jpg",
+      "observation_t": 8.35685559999547
+    },
+    {
+      "file": "000012.jpg",
+      "observation_t": 9.680178799986606
+    },
+    {
+      "file": "000018.jpg",
+      "observation_t": 10.335150800005067
+    },
+    {
+      "file": "000024.jpg",
+      "observation_t": 10.964907099987613
+    },
+    {
+      "file": "000090.jpg",
+      "observation_t": 18.180066100001568
+    },
+    {
+      "file": "000183.jpg",
+      "observation_t": 28.29224979999708
+    }
+  ]
+}

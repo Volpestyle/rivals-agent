@@ -1,0 +1,50 @@
+[
+  {
+    "saved": "000012.jpg",
+    "loop_observation": 9.680178799986606,
+    "ranked_matches": [
+      {
+        "MAE": 12.412971117424243,
+        "sample_nominal_video_t": 11.9,
+        "file": "moving-005.jpg",
+        "video_minus_loop": 2.219821200013394
+      },
+      {
+        "MAE": 24.41305634469697,
+        "sample_nominal_video_t": 12.0,
+        "file": "moving-006.jpg",
+        "video_minus_loop": 2.3198212000133935
+      },
+      {
+        "MAE": 25.905776515151516,
+        "sample_nominal_video_t": 11.8,
+        "file": "moving-004.jpg",
+        "video_minus_loop": 2.1198212000133942
+      }
+    ]
+  },
+  {
+    "saved": "000018.jpg",
+    "loop_observation": 10.335150800005067,
+    "ranked_matches": [
+      {
+        "MAE": 17.397038352272727,
+        "sample_nominal_video_t": 12.6,
+        "file": "moving-012.jpg",
+        "video_minus_loop": 2.2648491999949325
+      },
+      {
+        "MAE": 24.046207386363637,
+        "sample_nominal_video_t": 12.7,
+        "file": "moving-013.jpg",
+        "video_minus_loop": 2.364849199994932
+      },
+      {
+        "MAE": 25.785648674242424,
+        "sample_nominal_video_t": 12.5,
+        "file": "moving-011.jpg",
+        "video_minus_loop": 2.164849199994933
+      }
+    ]
+  }
+]

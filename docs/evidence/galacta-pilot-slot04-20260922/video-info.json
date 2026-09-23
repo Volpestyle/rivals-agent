@@ -1,0 +1,18 @@
+{
+    "programs": [
+
+    ],
+    "stream_groups": [
+
+    ],
+    "streams": [
+        {
+            "width": 2560,
+            "height": 1440,
+            "nb_frames": "3584"
+        }
+    ],
+    "format": {
+        "duration": "60.000000"
+    }
+}

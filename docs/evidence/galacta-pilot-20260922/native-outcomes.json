@@ -1,0 +1,286 @@
+{
+  "purpose": "Lead native outcome disposition; not training labels or a completed scorer benchmark",
+  "original_schedule_sha256": "a69edd5ad6af7e00dc7c32a5e81045743a91c49d6043aff6752f655b710d0d1d",
+  "deployed_code": "e5511c5d4618bb5dfe675e84ed7cf3c0573cd2f8",
+  "status": "stopped_after_four_allocations",
+  "scheduled": 20,
+  "allocated_attempts": 4,
+  "phases_started": 3,
+  "unexecuted": 16,
+  "learned_designated_kos_observed": 0,
+  "scripted_designated_kos_observed": 1,
+  "passing_gate": false,
+  "policy_vocabularies": "learned web-request starts vs existing scripted full combo",
+  "records": [
+    {
+      "schedule_index": 1,
+      "pair_id": "pair-01",
+      "policy_role": "learned",
+      "scenario": "near",
+      "planned_run_name": "galacta-pilot-20260922-01-learned",
+      "execution_status": "AUDITED_NATIVE_TIMEOUT",
+      "original_runtime_stop": "max_time",
+      "native_outcome": "timeout",
+      "designated_kos": 0,
+      "independent_audit": "docs/evidence/galacta-pilot-slot01-20260922/independent-audit.md",
+      "scored_reward": null,
+      "audit_sha256": "50ce6fc2d164433695831f53f56b6b424f2cdff116123698e54ffd9d5725ed8d",
+      "original_artifacts": {
+        "meta.json": {
+          "path": "data/l1/galacta-pilot-20260922-01-learned/meta.json",
+          "sha256": "48c60301dbfc2c6a21f9963dd21a29075030e8ebec12313c0cb41bf8d9468cdf"
+        },
+        "frames.jsonl": {
+          "path": "data/l1/galacta-pilot-20260922-01-learned/frames.jsonl",
+          "sha256": "cef90ac2c2f1e36ad87d57d74e87331f4efb7ca585be7efd68dba88b602f1284"
+        }
+      },
+      "actual_phase_origin": 7.422207499999786,
+      "limits": "Native outcome is distinct from typed scorer readiness; qualitative full-health provenance only, numeric bot health/movement-menu settings unknown."
+    },
+    {
+      "schedule_index": 2,
+      "pair_id": "pair-01",
+      "policy_role": "scripted",
+      "scenario": "near",
+      "planned_run_name": "galacta-pilot-20260922-02-scripted",
+      "execution_status": "ENTRY_REFUSED",
+      "original_runtime_stop": "entry_refusal",
+      "native_outcome": "setup_refusal",
+      "designated_kos": null,
+      "independent_audit": null,
+      "scored_reward": null,
+      "evidence": "data/runtime/galacta-pilot-20260922-02-preflight/scripted.err",
+      "limits": "Refused before pad/phase; no run directory or model actions; allocation consumed, no replacement."
+    },
+    {
+      "schedule_index": 3,
+      "pair_id": "pair-02",
+      "policy_role": "scripted",
+      "scenario": "mid",
+      "planned_run_name": "galacta-pilot-20260922-03-scripted",
+      "execution_status": "AUDITED_DESIGNATED_KO",
+      "original_runtime_stop": "candidate_feed",
+      "native_outcome": "episode_complete",
+      "designated_kos": 1,
+      "independent_audit": "docs/evidence/galacta-pilot-slot03-20260922/independent-audit.md",
+      "scored_reward": null,
+      "audit_sha256": "27fee707a941eba82072399be5614eb11da311f750ae6a2d1e3ae0e524d10f4e",
+      "original_artifacts": {
+        "meta.json": {
+          "path": "data/l1/galacta-pilot-20260922-03-scripted/meta.json",
+          "sha256": "0f091e2ab695b8eac59a4f763dfdb47fee4789c41a6ee83b8ec4bd4968f135b0"
+        },
+        "frames.jsonl": {
+          "path": "data/l1/galacta-pilot-20260922-03-scripted/frames.jsonl",
+          "sha256": "fc1bce807eaa69195fb9287de017c2c527ee4c4f0e8f6f6d33b8e50c6b34c9c5"
+        }
+      },
+      "actual_phase_origin": 8.36284339998383,
+      "limits": "Native outcome is distinct from typed scorer readiness; qualitative full-health provenance only, numeric bot health/movement-menu settings unknown.",
+      "approximate_native_completion_phase_s": [
+        2.7,
+        2.9
+      ],
+      "completion_clock_calibrated": false,
+      "separate_audited_terminal": "episode_complete",
+      "original_stop_preserved": true,
+      "respawn_time": null
+    },
+    {
+      "schedule_index": 4,
+      "pair_id": "pair-02",
+      "policy_role": "learned",
+      "scenario": "mid",
+      "planned_run_name": "galacta-pilot-20260922-04-learned",
+      "execution_status": "AUDITED_PHASE_DEADLINE_INTERRUPTION",
+      "original_runtime_stop": "range_lost",
+      "native_outcome": "interrupted",
+      "designated_kos": 0,
+      "independent_audit": "docs/evidence/galacta-pilot-slot04-20260922/independent-audit.md",
+      "scored_reward": null,
+      "audit_sha256": "857f4844eafeada66d5d7aabaaa140aef8e129dcf3dc02b59141080c32cdbe24",
+      "original_artifacts": {
+        "meta.json": {
+          "path": "data/l1/galacta-pilot-20260922-04-learned/meta.json",
+          "sha256": "7418db6db7aa0c7ae71fcb9012e5f322810d43070ab183dc0e5202326d2f19ca"
+        },
+        "frames.jsonl": {
+          "path": "data/l1/galacta-pilot-20260922-04-learned/frames.jsonl",
+          "sha256": "1eadcb5efba274883e103ebfae5e5f62c4f720008c75c3ea5ec226baf9e071a6"
+        }
+      },
+      "actual_phase_origin": 8.35685559999547,
+      "limits": "Native outcome is distinct from typed scorer readiness; qualitative full-health provenance only, numeric bot health/movement-menu settings unknown. Guard interruption, not a completed20s timeout; no terminal counter delta. Zero KOs here refers to bounded observed native outcome.",
+      "last_observation_phase_s": 19.9953738,
+      "scope_check_phase_s": 20.0075664,
+      "terminal_scoreboard": null
+    },
+    {
+      "schedule_index": 5,
+      "pair_id": "pair-03",
+      "policy_role": "scripted",
+      "scenario": "near",
+      "planned_run_name": "galacta-pilot-20260922-05-scripted",
+      "execution_status": "UNEXECUTED_AFTER_PILOT_STOP",
+      "native_outcome": null,
+      "scored_reward": null
+    },
+    {
+      "schedule_index": 6,
+      "pair_id": "pair-03",
+      "policy_role": "learned",
+      "scenario": "near",
+      "planned_run_name": "galacta-pilot-20260922-06-learned",
+      "execution_status": "UNEXECUTED_AFTER_PILOT_STOP",
+      "native_outcome": null,
+      "scored_reward": null
+    },
+    {
+      "schedule_index": 7,
+      "pair_id": "pair-04",
+      "policy_role": "learned",
+      "scenario": "mid",
+      "planned_run_name": "galacta-pilot-20260922-07-learned",
+      "execution_status": "UNEXECUTED_AFTER_PILOT_STOP",
+      "native_outcome": null,
+      "scored_reward": null
+    },
+    {
+      "schedule_index": 8,
+      "pair_id": "pair-04",
+      "policy_role": "scripted",
+      "scenario": "mid",
+      "planned_run_name": "galacta-pilot-20260922-08-scripted",
+      "execution_status": "UNEXECUTED_AFTER_PILOT_STOP",
+      "native_outcome": null,
+      "scored_reward": null
+    },
+    {
+      "schedule_index": 9,
+      "pair_id": "pair-05",
+      "policy_role": "learned",
+      "scenario": "near",
+      "planned_run_name": "galacta-pilot-20260922-09-learned",
+      "execution_status": "UNEXECUTED_AFTER_PILOT_STOP",
+      "native_outcome": null,
+      "scored_reward": null
+    },
+    {
+      "schedule_index": 10,
+      "pair_id": "pair-05",
+      "policy_role": "scripted",
+      "scenario": "near",
+      "planned_run_name": "galacta-pilot-20260922-10-scripted",
+      "execution_status": "UNEXECUTED_AFTER_PILOT_STOP",
+      "native_outcome": null,
+      "scored_reward": null
+    },
+    {
+      "schedule_index": 11,
+      "pair_id": "pair-06",
+      "policy_role": "scripted",
+      "scenario": "mid",
+      "planned_run_name": "galacta-pilot-20260922-11-scripted",
+      "execution_status": "UNEXECUTED_AFTER_PILOT_STOP",
+      "native_outcome": null,
+      "scored_reward": null
+    },
+    {
+      "schedule_index": 12,
+      "pair_id": "pair-06",
+      "policy_role": "learned",
+      "scenario": "mid",
+      "planned_run_name": "galacta-pilot-20260922-12-learned",
+      "execution_status": "UNEXECUTED_AFTER_PILOT_STOP",
+      "native_outcome": null,
+      "scored_reward": null
+    },
+    {
+      "schedule_index": 13,
+      "pair_id": "pair-07",
+      "policy_role": "scripted",
+      "scenario": "near",
+      "planned_run_name": "galacta-pilot-20260922-13-scripted",
+      "execution_status": "UNEXECUTED_AFTER_PILOT_STOP",
+      "native_outcome": null,
+      "scored_reward": null
+    },
+    {
+      "schedule_index": 14,
+      "pair_id": "pair-07",
+      "policy_role": "learned",
+      "scenario": "near",
+      "planned_run_name": "galacta-pilot-20260922-14-learned",
+      "execution_status": "UNEXECUTED_AFTER_PILOT_STOP",
+      "native_outcome": null,
+      "scored_reward": null
+    },
+    {
+      "schedule_index": 15,
+      "pair_id": "pair-08",
+      "policy_role": "learned",
+      "scenario": "mid",
+      "planned_run_name": "galacta-pilot-20260922-15-learned",
+      "execution_status": "UNEXECUTED_AFTER_PILOT_STOP",
+      "native_outcome": null,
+      "scored_reward": null
+    },
+    {
+      "schedule_index": 16,
+      "pair_id": "pair-08",
+      "policy_role": "scripted",
+      "scenario": "mid",
+      "planned_run_name": "galacta-pilot-20260922-16-scripted",
+      "execution_status": "UNEXECUTED_AFTER_PILOT_STOP",
+      "native_outcome": null,
+      "scored_reward": null
+    },
+    {
+      "schedule_index": 17,
+      "pair_id": "pair-09",
+      "policy_role": "learned",
+      "scenario": "near",
+      "planned_run_name": "galacta-pilot-20260922-17-learned",
+      "execution_status": "UNEXECUTED_AFTER_PILOT_STOP",
+      "native_outcome": null,
+      "scored_reward": null
+    },
+    {
+      "schedule_index": 18,
+      "pair_id": "pair-09",
+      "policy_role": "scripted",
+      "scenario": "near",
+      "planned_run_name": "galacta-pilot-20260922-18-scripted",
+      "execution_status": "UNEXECUTED_AFTER_PILOT_STOP",
+      "native_outcome": null,
+      "scored_reward": null
+    },
+    {
+      "schedule_index": 19,
+      "pair_id": "pair-10",
+      "policy_role": "scripted",
+      "scenario": "mid",
+      "planned_run_name": "galacta-pilot-20260922-19-scripted",
+      "execution_status": "UNEXECUTED_AFTER_PILOT_STOP",
+      "native_outcome": null,
+      "scored_reward": null
+    },
+    {
+      "schedule_index": 20,
+      "pair_id": "pair-10",
+      "policy_role": "learned",
+      "scenario": "mid",
+      "planned_run_name": "galacta-pilot-20260922-20-learned",
+      "execution_status": "UNEXECUTED_AFTER_PILOT_STOP",
+      "native_outcome": null,
+      "scored_reward": null
+    }
+  ],
+  "limits": [
+    "No population success-rate estimate from this stopped pilot.",
+    "Qualitative fresh-entry/undamaged target health is retained; numeric bot health and movement settings unknown.",
+    "No synthetic expert labels or fabricated scorer readiness/rewards.",
+    "Remaining allocations have no gameplay outcome; no replacement retries."
+  ]
+}

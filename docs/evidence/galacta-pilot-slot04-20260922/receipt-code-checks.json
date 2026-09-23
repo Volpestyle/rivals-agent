@@ -1,0 +1,135 @@
+{
+  "code": [
+    {
+      "file": "agent/controller.py",
+      "live_sha256": "fc5bd0e000e7c6b718d4e974be22577247205475a07b1821da4a973a0fc8d44c",
+      "manifest_match": true,
+      "accepted_git_LF_match": true
+    },
+    {
+      "file": "agent/loop.py",
+      "live_sha256": "65b09606751b73d6e437e03a089a2a3776d96892b616d286e5b7772d93ffbae2",
+      "manifest_match": true,
+      "accepted_git_LF_match": true
+    },
+    {
+      "file": "agent/intents.py",
+      "live_sha256": "836692b7c241df0d2a57c109230f8047b1c4d0a4392782bfb652f883c6f50cf3",
+      "manifest_match": true,
+      "accepted_git_LF_match": true
+    },
+    {
+      "file": "agent/state.py",
+      "live_sha256": "83983c59f0ea39772686b9ce8e002aab86d312c5e75937bc2b9e6a21eddb8f5a",
+      "manifest_match": true,
+      "accepted_git_LF_match": true
+    },
+    {
+      "file": "agent/brain.py",
+      "live_sha256": "0deaafb77cae4fa4a15fc8c8abe6d49c09821de7a1ab5810b096788117b30c00",
+      "manifest_match": true,
+      "accepted_git_LF_match": true
+    },
+    {
+      "file": "agent/tracker.py",
+      "live_sha256": "56fa3012391b22a0c4a3dbe3f5414f275faba4e038bfebdbe6b8f579bc72c892",
+      "manifest_match": true,
+      "accepted_git_LF_match": true
+    },
+    {
+      "file": "agent/learned_range_skill.py",
+      "live_sha256": "77e4b7f19d4796737356b71d058d7c33688570940083cc82edb21d7c3e5c89ba",
+      "manifest_match": true,
+      "accepted_git_LF_match": true
+    },
+    {
+      "file": "agent/startup.py",
+      "live_sha256": "d664ca4bd1ffac599a8020c61d843a186c9e608dfee6071ade2d1274c0ff908c",
+      "manifest_match": true,
+      "accepted_git_LF_match": true
+    },
+    {
+      "file": "policy/range_skill_policy.py",
+      "live_sha256": "5109def43fe6d84a90a048431481d1ab56a429f2c4e9c804adee2413047d6a82",
+      "manifest_match": true,
+      "accepted_git_LF_match": true
+    },
+    {
+      "file": "policy/range_policy.py",
+      "live_sha256": "c46e7d8a6523892107c8a878532505d020896e5b32e9df6179c049d6aa3410bb",
+      "manifest_match": true,
+      "accepted_git_LF_match": true
+    },
+    {
+      "file": "policy/execution.py",
+      "live_sha256": "84dbec833e4378f94be8678b16ff5ff3b3f582838391e7d73ef23ed305481038",
+      "manifest_match": true,
+      "accepted_git_LF_match": true
+    },
+    {
+      "file": "scripts/capture.py",
+      "live_sha256": "b98f310616cf0569375d3e24cbb564d7702872c4ffaa888523ac6b52f96fb547",
+      "manifest_match": true,
+      "accepted_git_LF_match": true
+    },
+    {
+      "file": "scripts/record.py",
+      "live_sha256": "714346a2ac3672e02ea568b628d2413de2096486c3ba6930502e86694fc175ea",
+      "manifest_match": true,
+      "accepted_git_LF_match": true
+    },
+    {
+      "file": "perception/hud.py",
+      "live_sha256": "aa2dc58575e9f9c405ad3e430d9ed0d046f0f9b2f3fcba3884e7fb204e3c1969",
+      "manifest_match": true,
+      "accepted_git_LF_match": true
+    },
+    {
+      "file": "perception/outline.py",
+      "live_sha256": "fded81b150bb873c738e34fb3fc7d8f0a263a7cf9121e3325991bcdda4acd4f8",
+      "manifest_match": true,
+      "accepted_git_LF_match": true
+    },
+    {
+      "file": "agent/loop.py",
+      "live_sha256": "65b09606751b73d6e437e03a089a2a3776d96892b616d286e5b7772d93ffbae2",
+      "manifest_match": true,
+      "accepted_git_LF_match": true
+    },
+    {
+      "file": "agent/state.py",
+      "live_sha256": "83983c59f0ea39772686b9ce8e002aab86d312c5e75937bc2b9e6a21eddb8f5a",
+      "manifest_match": true,
+      "accepted_git_LF_match": true
+    },
+    {
+      "file": "agent/tracker.py",
+      "live_sha256": "56fa3012391b22a0c4a3dbe3f5414f275faba4e038bfebdbe6b8f579bc72c892",
+      "manifest_match": true,
+      "accepted_git_LF_match": true
+    },
+    {
+      "file": "policy/range_policy.py",
+      "live_sha256": "c46e7d8a6523892107c8a878532505d020896e5b32e9df6179c049d6aa3410bb",
+      "manifest_match": true,
+      "accepted_git_LF_match": true
+    },
+    {
+      "file": "policy/range_skill_policy.py",
+      "live_sha256": "5109def43fe6d84a90a048431481d1ab56a429f2c4e9c804adee2413047d6a82",
+      "manifest_match": true,
+      "accepted_git_LF_match": true
+    }
+  ],
+  "source_equal": true,
+  "runtime_equal": true,
+  "deployment_equal": true,
+  "binding_sha256": "06c94ab8bff5b9eb0aacf83df4e5b700cfef4927b75382d20ca62d0249e686de",
+  "runtime-settings.json": true,
+  "controller-deployed.json": true,
+  "perception-deployed.json": true,
+  "runtime-semantic-review.json": true,
+  "deployment_review": true,
+  "source_identity_canonical_sha256": "082535863ad7773de498b872eccbacc21753da99966f2f64ff953d1871c5995e",
+  "source_identity_canonical_match": true
+}

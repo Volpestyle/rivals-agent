@@ -1,0 +1,20 @@
+{
+  "clips": [
+    {
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\galacta-pilot-20260922-03-preflight\\scripted-native.mp4",
+      "source_sha256": "8fc7bfeca0a88dce0f099c587d527fa9a741f9bc594a2aa7cddf10b335502cc5",
+      "clip_start_pts_s": 8,
+      "duration_s": 8,
+      "caption": "Scripted full combo - designated Galacta KO"
+    },
+    {
+      "source": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\galacta-pilot-20260922-04-preflight\\learned-native.mp4",
+      "source_sha256": "e7f9fed039156a289fa303dc87e29be721b0ac9efa8383ef03bebd35eaa975ac",
+      "clip_start_pts_s": 9,
+      "duration_s": 8,
+      "caption": "Learned web-request policy - approaches, no shot"
+    }
+  ],
+  "ordering": "scripted then learned, sequential excerpts; not synchronized",
+  "limitations": "8s each from original60s videos; neither full episode nor performance rate; scripted uses full combos, learned only web-start requests"
+}

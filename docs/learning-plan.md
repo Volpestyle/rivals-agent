@@ -124,12 +124,22 @@ fresh decisions continued normally. All 196 decisions survived, with no
 invalid-history refusals. The model, threshold and reviewed runtime were unchanged.
 Target selection, aim, approach and pulse delivery remain scripted.
 
-This establishes the first exploratory learned-request kill, not repeatability
-or the designated-Galacta benchmark. Next, join the existing range setup and
-controller to the specified near/mid scenarios with audited readiness, reset and
-outcome evidence, then run the scheduled learned/scripted comparison with every
-failure retained. James's independent validation remains separate; the current
-single-event fit and this stationary Luna attempt do not establish generalization.
+This establishes the first exploratory learned-request kill, not repeatability.
+The [Galacta pilot](evidence/galacta-pilot-20260922/README.md) stopped after its
+first four allocations: near learned timeout without offense, near scripted
+entry refusal, mid scripted designated KO, and mid learned no-offense run ending
+at the phase-deadline guard. Sixteen scheduled allocations remain unexecuted.
+Both learned runs produced 194 no-new-start model decisions and zero starts;
+confidence filtering did not suppress attacks. The full scripted combo and the
+learned web-only vocabulary differ. No passing benchmark or generalized failure
+rate is claimed, and numeric bot-health/movement settings remain unknown.
+
+The next fit needs natural full-ammo first-engagement support beyond the current
+one positive/four negatives. VUH-1351 requests James's normal Galacta play, with
+movement, combos and resource-legal non-request intervals; no staged Idle.
+Admit a bounded correction packet, fit a separate checkpoint, then evaluate it
+without changing this failed candidate's evidence. VUH-1347 remains a separate
+validation session. The runtime failures are not automatically expert labels.
 
 The first executable experiment now learns **Web-Cluster start timing**, using
 five causal observations at 10 Hz. `start_web_cluster` requests one bounded pulse;

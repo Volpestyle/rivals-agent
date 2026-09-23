@@ -1,0 +1,21 @@
+{
+  "input_sha256_before": {
+    "data/l1/galacta-pilot-20260922-04-learned/meta.json": "7418db6db7aa0c7ae71fcb9012e5f322810d43070ab183dc0e5202326d2f19ca",
+    "data/l1/galacta-pilot-20260922-04-learned/frames.jsonl": "1eadcb5efba274883e103ebfae5e5f62c4f720008c75c3ea5ec226baf9e071a6",
+    "data/diagnostics/galacta-slot01-policy-20260922/report.json": "c98a2d4c84eb383c2c21b664189b4e4f4d1daf8f79eee0d8d16912b7e1aab666",
+    "data/human/skill-events/032454-request-diagnostic-v1/examples.json": "bd6cf4cb298379ac1a63fd226652e517ad6773ed6b4cead92dfb790abca91570"
+  },
+  "input_sha256_after": {
+    "data/l1/galacta-pilot-20260922-04-learned/meta.json": "7418db6db7aa0c7ae71fcb9012e5f322810d43070ab183dc0e5202326d2f19ca",
+    "data/l1/galacta-pilot-20260922-04-learned/frames.jsonl": "1eadcb5efba274883e103ebfae5e5f62c4f720008c75c3ea5ec226baf9e071a6",
+    "data/diagnostics/galacta-slot01-policy-20260922/report.json": "c98a2d4c84eb383c2c21b664189b4e4f4d1daf8f79eee0d8d16912b7e1aab666",
+    "data/human/skill-events/032454-request-diagnostic-v1/examples.json": "bd6cf4cb298379ac1a63fd226652e517ad6773ed6b4cead92dfb790abca91570"
+  },
+  "all_originals_unchanged": true,
+  "outputs": {
+    "analyze.py": "f95238643e0faa0cff694882a535d1ba5112517e6377b1dd69eb35b3ae5e7678",
+    "report.json": "0a5a46ac4a7964e6a2181d14c51b61ee4cdf8a8cc19ee662e55ddc0aa7e84ab3",
+    "README.md": "87c02dee9cc94683b2f7596bcb5d0c5d5201bc93b0a17dd126c2a700f3215845"
+  },
+  "method": "stdlib JSON/arithmetic only; no runtime imports or model inference"
+}

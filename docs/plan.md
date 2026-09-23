@@ -71,6 +71,14 @@ only once an outcome can be measured reliably.
   and teammate assistance remain explicit capabilities. Demonstrations initialize
   behavior; later outcome-driven experiments can discover better execution once
   those controls are learnable. See the [pilot contract](learning-plan.md#first-visible-learned-range-milestone-2026-09-22).
+- **Pilot result (2026-09-22).** The exploratory learned Luna KO is retained. The
+  [designated-Galacta comparison](evidence/galacta-pilot-20260922/README.md) stopped
+  after four allocations: both learned near/mid runs chose no new web starts,
+  the mid scripted combo killed its target, and the near scripted entry refused.
+  Sixteen allocations remain unexecuted. Broader natural training support is
+  requested in VUH-1351; VUH-1347 stays independent validation. No threshold
+  adjustment or artificial Idle recording is required. The repeated-kill gate
+  remains open.
 - **Human execution refactor (2026-09-21).** Retain this repository. Import explicitly
   reviewed OBS sessions, align actual decoded frames to logged packet timestamps, and
   train a temporal action-chunk baseline from causal frame history and native controls.

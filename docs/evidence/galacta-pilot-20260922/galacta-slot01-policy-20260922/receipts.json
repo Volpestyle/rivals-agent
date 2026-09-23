@@ -1,0 +1,25 @@
+{
+  "inputs_before": {
+    "data/l1/galacta-pilot-20260922-01-learned/meta.json": "48c60301dbfc2c6a21f9963dd21a29075030e8ebec12313c0cb41bf8d9468cdf",
+    "data/l1/galacta-pilot-20260922-01-learned/frames.jsonl": "cef90ac2c2f1e36ad87d57d74e87331f4efb7ca585be7efd68dba88b602f1284",
+    "data/human/skill-events/032454-request-diagnostic-v1/examples.json": "bd6cf4cb298379ac1a63fd226652e517ad6773ed6b4cead92dfb790abca91570",
+    "data/diagnostics/range-request-human-fit-20260922/run-1/windows-report.json": "ec9f51dc595f3c3a1741e2349a6fc689b0e7be62925a3867fbf679c6106ae0c4",
+    "data/runtime/galacta-pilot-20260922-01-preflight/loader-preflight.json": "7f7044bbeb308f50ace2b3ea15108044fb0428138f11c49534590f6211fe31d3",
+    "data/runtime/galacta-pilot-20260922-01-preflight/effective-setup.json": "6feafe85e0eaf48a76900ca027c9596808c5e6b179360424601132b3208e3099",
+    "policy/range_policy.py": "c46e7d8a6523892107c8a878532505d020896e5b32e9df6179c049d6aa3410bb"
+  },
+  "inputs_after": {
+    "data/l1/galacta-pilot-20260922-01-learned/meta.json": "48c60301dbfc2c6a21f9963dd21a29075030e8ebec12313c0cb41bf8d9468cdf",
+    "data/l1/galacta-pilot-20260922-01-learned/frames.jsonl": "cef90ac2c2f1e36ad87d57d74e87331f4efb7ca585be7efd68dba88b602f1284",
+    "data/human/skill-events/032454-request-diagnostic-v1/examples.json": "bd6cf4cb298379ac1a63fd226652e517ad6773ed6b4cead92dfb790abca91570",
+    "data/diagnostics/range-request-human-fit-20260922/run-1/windows-report.json": "ec9f51dc595f3c3a1741e2349a6fc689b0e7be62925a3867fbf679c6106ae0c4",
+    "data/runtime/galacta-pilot-20260922-01-preflight/loader-preflight.json": "7f7044bbeb308f50ace2b3ea15108044fb0428138f11c49534590f6211fe31d3",
+    "data/runtime/galacta-pilot-20260922-01-preflight/effective-setup.json": "6feafe85e0eaf48a76900ca027c9596808c5e6b179360424601132b3208e3099",
+    "policy/range_policy.py": "c46e7d8a6523892107c8a878532505d020896e5b32e9df6179c049d6aa3410bb"
+  },
+  "unchanged": true,
+  "script_sha256": "7c802ab86291a0772a963e2d2f87ff90332e78683420894ef9b0d96da771200f",
+  "report_sha256": "c98a2d4c84eb383c2c21b664189b4e4f4d1daf8f79eee0d8d16912b7e1aab666",
+  "readme_sha256": "c26a89436f640a64be1bbed958871ebcad809b9ac9d793693cab8a617ee35be9",
+  "method": "stdlib JSON/arithmetic only; no project imports, checkpoint reads, inference or media decode"
+}
