@@ -1,0 +1,44 @@
+{
+ "session": "20260923T200129-346Z-33696-6",
+ "regime": "normal",
+ "split": "train",
+ "recording_s": 1610.8421139,
+ "focused_s": 1606.7394652,
+ "unfocused_s": 4.1026487,
+ "accepted_s": 1597.058269453,
+ "rejected_s": 7.589529163,
+ "unresolved_s": 2.091666584,
+ "by_machine_reason_s": {
+  "dead": 2.775800235,
+  "focus_transition": 0.5,
+  "no_range_hud": 2.863038851,
+  "range_hud_present": 1599.149936037,
+  "ui_key": 1.4272051,
+  "unsampled_edge": 0.023484977
+ },
+ "tags_s": {
+  "range": {
+   "unknown": 1597.058269453
+  },
+  "approach": {
+   "unknown": 1597.058269453
+  },
+  "target": {
+   "unknown": 1597.058269453
+  },
+  "resources": {
+   "unknown": 1597.058269453
+  }
+ },
+ "admitted_minutes": 26.617637824216665,
+ "eligible_anchors": 47910,
+ "stride_ns": 33333333,
+ "trainable_minutes": 26.6166664005,
+ "counted": {
+  "runs": 2,
+  "counted_runs": 2,
+  "counted_minutes": 26.617637824216665,
+  "accepted_focused_minutes": 26.617637824216665,
+  "min_run_ns": 1600000000
+ }
+}

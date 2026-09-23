@@ -137,6 +137,8 @@ reader outputs (R12), when intake supplies them, are used only for stratificatio
 | ultimate | Q | LS+RS click | **no**: stick clicks are outside `Live`'s whitelist (`ALLOWED = {A, X, LB, RB}`) |
 | melee | V | RS click | **no**, for the same reason |
 | **team_up** | C | Y | **no**: Y is outside `Live`'s whitelist. Trained and scored normally (24 + 8 presses so far) |
+| **goh_targeting** | X1 | none | **no**: no pad control. Trained and scored |
+| **simple_swing** | Caps Lock | none yet | **no**, until the pilot pad profile binds Simple Swing to a button and `Live.ALLOWED` includes it (Pilot pre-registration item 7). Trained and scored with its positives (13 in 200129) |
 
 **Per action and step:**
 - held at the step's end, plus press and release (at least one edge in the step).
@@ -569,10 +571,19 @@ These are fixed before any pilot. Changing one is a new pre-registration.
    - human feasibility (steps above the pad's cap, and moving steps below the smallest measured rotation);
    - frame parity (dxcam against the cache graph);
    - the qualitative self-fed review.
-5. **Never sent:** ultimate, melee and team-up (outside `Live`'s whitelist), and web-swing unless the recording's
-   swing mode equals the pad's.
+5. **Never sent:** ultimate, melee and team-up (outside `Live`'s whitelist), `goh_targeting` and `simple_swing` (no
+   pad control), and web-swing unless the recording's swing mode equals the pad's.
 6. **Not yet fixed here:** the maximum trial duration, and placement between trials. Both belong to the pilot design
    and the placement lane.
+7. **Pre-registered settings change: Simple Swing on the pad** (James's decision, 2026-09-23). `simple_swing`
+   (Caps Lock) is trained and scored today and masked live. It becomes sendable only when **both** of these are true,
+   and together they are one new pre-registration of the pad settings in item 1:
+   - the pilot pad profile binds Simple Swing to a pad button, recorded here with the button;
+   - `Live.ALLOWED` includes that button (`agent/controller.py`, the controller lane's change).
+
+   Then `vocab.ACTIONS` gets that pad control and `PAD_SENDABLE` true, `executor.BUTTON` maps it, and the executor still
+   emits it only with at least 50 train presses (`vocab.live_mask`). Until then no checkpoint can send it, whatever its
+   count.
 
 ## Round 3 (2026-09-23): review, calibration take, vocabulary, cache rehearsal
 
@@ -643,22 +654,24 @@ These are fixed before any pilot. Changing one is a new pre-registration.
   - The header records `calibration.pitch.kind: "derived_equal_sensitivity"`. Pitch labels are usable with that flag,
     and the verdict carries `pitch_gain_kind`.
 
-### Vocabulary: 14 actions
+### Vocabulary: 14 actions (15 since `simple_swing`; see "Plumbing pre-registration")
 
 - `team_up` is on C.
 - **`goh_targeting`** (Get Over Here Targeting) is on X1. It is trained and never sent.
 - **melee** is on V *and* Mouse 5. A binding value may be a list of ids; the action is held while any of them is held,
   and presses and releases are the changes of that combined hold. Intake's writer implements this through `aliases`.
-- **Caps Lock** (Simple Swing) is bound to no action and stays unsupported until it occurs. Because it toggles the
-  swing mode itself, a Caps Lock press inside a recording would change `swing_mode` mid-session.
+- **Caps Lock** (Simple Swing) was bound to no action until it occurred. It first occurs in 200129 (VK 20, 13
+  presses), and James decided it is the 15th action, `simple_swing` (next section). This had been noted as a toggle
+  of the swing mode itself: if it is one, the header's `swing_mode` describes the session's start, and `web_swing`'s
+  live mask (K6) still compares that start state with the pad's.
 - **Which actions have positives is counted, never assumed.** Melee may now have positives, through Mouse 5.
 - **Parameters:**
 
   | Arm | Parameters |
   |---|---|
-  | Model | 4,808,768 |
-  | No-HUD arm | 4,192,632 |
-  | History-only twin | 2,555,240 |
+  | Model | 4,808,768 (15 actions: 4,810,499) |
+  | No-HUD arm | 4,192,632 (4,194,363) |
+  | History-only twin | 2,555,240 (2,556,971) |
 
 - **The cache is about 208 kB per anchor** (110.6 global + 49.2 crop + 48.0 HUD), so **about 67 GB at 3 h**, not
   52 GB. The 52 GB figure predates the HUD stream.
@@ -794,3 +807,70 @@ The labelling lanes' writer applies these rules:
 - **`tests/test_range_bc_torch.py`:** a replay window with unknown movement has no mask on any movement channel, gets
   zero gradient there and non-zero gradient where movement is known, and its loss is invariant to the values behind
   an unknown label.
+
+## Plumbing pre-registration (2026-09-23, before either new session is admitted)
+
+Fixed in `docs/evidence/fit-readiness-20260923/range_bc_plumbing_prereg.json`. The driver `range_bc_plumbing.py` in
+the same folder turns it into the exact command sequence, and later derives the real fit's `--preregistration` file
+from the plumbing reports. No plumbing fit has run.
+
+**Vocabulary: 15 actions.** `simple_swing` (Caps Lock, `key:58:0`; James's decision) is appended 15th, so the other
+indices are unchanged. It is trained and scored with its positives, and masked live until Pilot pre-registration item
+7 is met. Consequences:
+- **Intake** appends `simple_swing` to `FIT_ACTIONS`, binds Caps Lock in the reviewed binding tables and re-emits all
+  four step tables with 15 actions: 051828 and 171533 as well, which have zero presses but must carry the 15th column
+  with its own `held_known`. The fit refuses the 14-action tables (`actions differ from the fit vocabulary`).
+- **The contract tests** (`tests/test_range_bc_contract.py`) pass against intake's working-tree change, which
+  appends `simple_swing` to `FIT_ACTIONS` and binds `key:58:0` in its fixtures. The fit's vocabulary change and that
+  change must land together: either one alone fails them.
+- **The caches** of 051828 and 171533 are rebuilt, because the cache binds the step table's sha256. That takes about
+  2 min on the Mac.
+- **The parameters** grow by 1,731 per arm (the table above).
+- **Class balance:** 13 positives give the press channel a large `pos_weight`, capped at 20 (`steps.pos_weight`).
+
+**Cohort, fixed before admission.** Validation: none.
+
+| Role | Recordings |
+|---|---|
+| Train | 051828 and 200129 |
+| Dev | 171533 and 205528 |
+
+The dev rule is "171533 plus the later-recorded new session", which does not look at content. It also keeps 200129's
+`simple_swing` presses in train. The dev list stays frozen through the real fit.
+
+**Runs** (one niced durable queue on the Mac; every run `--scope plumbing`, batch 8, lr 3e-4, `normal` regime, dev
+only):
+
+| Run | Arms × seeds | Settings | Purpose |
+|---|---|---|---|
+| p1-curve | all three × 0 | 20 epochs, wd 1e-4, stride 48, lag 0 | The dev curve (per-epoch dev loss) |
+| p2-repeat | no-HUD + twin × 0 | as p1 | Byte repeatability against p1 on real data |
+| p3-wd | no-HUD × 0 | wd 1e-3 | The weight-decay alternative |
+| p4-lag1, p4-lag2 | no-HUD × 0 | lag 1, lag 2 | Reported only |
+| p5-scale-{¼, ½, ¾, 1} | no-HUD + twin × 0, 1 | `--train-fraction` f, `--max-steps` = 10 full epochs at f = 1 | The scaling curve (§6) |
+
+**New options, used only by these runs.** `--scope fit` refuses both:
+- `--arms` trains a subset of arms. If the pre-registered candidate arm is not trained, the report's CPU reference
+  uses the first trained model arm and says so.
+- `--train-fraction` keeps the nested time-prefix of each train recording that holds that fraction of its eligible,
+  gap-free steps (`steps.truncate`). The file and its sha256 are unchanged. Each point reports its real minutes.
+
+**Derivation** (`range_bc_plumbing.py derive`), on the pre-registered candidate arm (no-HUD). The HUD arm's curve is
+reported and selects nothing.
+- **Weight decay:** 1e-3 only if p3's minimum dev total loss is strictly lower than p1's; otherwise 1e-4.
+- **Epochs E\*:** 1 + the argmin epoch of the chosen curve; ties go to fewer epochs.
+- **Stride:** 48 if E\* ≤ 10, else 64 (the lead's first fallback).
+- **Lag** stays 0 until the frame-to-send latency is measured.
+- **Seeds** for the real fit: 0, 1, 2.
+- **`hud_parity_sha256`:** the parity file passed to derive. That is a P2′ result if one exists by then, else run 1,
+  which keeps the no-HUD candidate.
+- **derive refuses** if:
+  - p1 and p2 checkpoints of the same name differ;
+  - a report is missing, not plumbing-scope, or off-plan: another cohort, another step-table sha256, or other
+    arguments.
+- **Scaling reading:** derive computes rule (a) (the frames-minus-twin gap positive and rising from ½) and tabulates
+  what rules (b) and (c) need, for the lead to read.
+
+**Budget.** About 7.9 h at most. That assumes every recorded minute counts (33.8 train and 13.7 dev minutes); the
+driver re-estimates from the admitted tables. p1 is about 1.7 h. Transfer of the two new videos (35.6 GB) is about
+20 min, and the caches about 10 min.

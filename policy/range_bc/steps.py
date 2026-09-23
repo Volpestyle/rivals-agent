@@ -504,6 +504,19 @@ def windows(sessions, *, regimes=("normal",), window=WINDOW, stride=STRIDE, min_
     return out, dropped
 
 
+def truncate(session, fraction, *, regimes=("normal",)):
+    """The recording's time-prefix holding `fraction` of its eligible, gap-free steps: later rows become rejected in
+    memory (the file and its sha256 are untouched). Nested for increasing fractions: the plumbing scaling curve."""
+    require(0 < fraction <= 1, "a train fraction must be in (0, 1]")
+    if fraction == 1:
+        return session
+    eligible_rows = [k for a, b in runs(session, regimes=regimes) for k in range(a, b) if session.rows[k]["gap_free"]]
+    keep = max(1, int(round(fraction * len(eligible_rows))))
+    cutoff = eligible_rows[keep - 1] + 1
+    rows = session.rows[:cutoff] + [{**r, "suitability": "rejected"} for r in session.rows[cutoff:]]
+    return Session(session.path, session.sha256, session.header, rows)
+
+
 def loss_mask_start(start, run_start, burn_in=BURN_IN):
     """First window offset that carries loss: 0 when the window starts its run (the live state also starts there)."""
     return 0 if start == run_start else burn_in

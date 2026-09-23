@@ -86,7 +86,7 @@ BINDINGS = {"move_forward": ["key:17:0"], "move_left": ["key:30:0"], "move_back"
             "move_right": ["key:32:0"], "jump": ["key:57:0"], "web_swing": ["key:42:0"], "get_over_here": ["key:33:0"],
             "amazing_combo": ["key:18:0"], "ultimate": ["key:16:0"], "melee": ["key:47:0", "mouse:5"],
             "spider_power": ["mouse:1"], "web_cluster": ["mouse:2"], "team_up": ["key:46:0"],
-            "goh_targeting": ["mouse:4"]}
+            "goh_targeting": ["mouse:4"], "simple_swing": ["key:58:0"]}
 ALIASES = {"mouse:5": "melee"}
 PATCH = "1.1/build"
 DENYLIST = dict(schema_version=1, sessions=[dict(session_id="sealed-1", media_path="C:/v/sealed.mkv",

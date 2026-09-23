@@ -8,8 +8,25 @@
  "eligible_rows": 12550,
  "steps": {
   "path": "20260923T051828-422Z-33696-1.steps.jsonl",
-  "sha256": "5a1862249313c76048ea02c460b397898a9e26da3e401043624440edb55aef64"
+  "sha256": "d49224e3c4382a62ebb4c4252bcc5800138782688e1d0f60e03e46ce4b6e7edb"
  },
- "export_digest": "5a1862249313c76048ea02c460b397898a9e26da3e401043624440edb55aef64",
- "grid": "anchors every step_ns from the first frame inside each segment \u2229 focus span, while the step fits strictly before the span end; stale-frame anchors (age > 2 frame periods) are not emitted"
+ "export_digest": "d49224e3c4382a62ebb4c4252bcc5800138782688e1d0f60e03e46ce4b6e7edb",
+ "version": 2,
+ "actions": [
+  "move_forward",
+  "move_left",
+  "move_back",
+  "move_right",
+  "jump",
+  "web_swing",
+  "get_over_here",
+  "amazing_combo",
+  "ultimate",
+  "melee",
+  "spider_power",
+  "web_cluster",
+  "team_up",
+  "goh_targeting",
+  "simple_swing"
+ ]
 }

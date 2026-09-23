@@ -63,7 +63,7 @@ def rand(t, seed=0):
 def test_default_model_matches_the_design():
     model = Policy()
     counts = {n: parameter_count(c) for n, c in model.named_children()}
-    assert parameter_count(model) == 4_808_768, counts      # the lane doc's table
+    assert parameter_count(model) == 4_810_499, counts      # the lane doc's table
     acts, cams, state = model(*zeros(), torch.zeros(1, 2, steps.PREV_DIM))
     assert acts.shape == (1, 2, 3, vocab.N) and cams.shape == (1, 2, 2, vocab.CAMERA_CLASSES)
     assert state[0].shape == (1, 1, 512)
@@ -71,7 +71,7 @@ def test_default_model_matches_the_design():
 
 def test_twins():
     history = Policy(replace(Config(), frames=False))
-    assert not hasattr(history, "global_enc") and parameter_count(history) == 2_555_240
+    assert not hasattr(history, "global_enc") and parameter_count(history) == 2_556_971
     torch.manual_seed(0)
     frames_only = Policy(replace(TINY, history=False)).eval()
     a = frames_only(*rand(3), torch.zeros(1, 3, steps.PREV_DIM))[0]
@@ -263,6 +263,10 @@ def test_scope_fit_refuses_what_the_review_asked(tmp_path):
             str(tmp_path / "caches"), "--scope", "fit", "--epochs", "1", "--batch", "4"]
     with pytest.raises(train.FitError, match="smoke runs only"):
         train.main(base + ["--out", str(tmp_path / "a"), "--model-config", "{}"])
+    with pytest.raises(train.FitError, match="plumbing tools"):
+        train.main(base + ["--out", str(tmp_path / "a2"), "--arms", "model_nohud", "history_only"])
+    with pytest.raises(train.FitError, match="plumbing tools"):
+        train.main(base + ["--out", str(tmp_path / "a3"), "--train-fraction", "0.5"])
     with pytest.raises(train.FitError, match="preregistration"):
         train.main(base + ["--out", str(tmp_path / "b")])
     with pytest.raises(train.FitError, match="differs from the pre-registration"):
@@ -283,6 +287,48 @@ def test_scope_fit_refuses_what_the_review_asked(tmp_path):
     with pytest.raises(train.FitError, match="untracked|uncommitted"):
         train.main(base + ["--out", str(tmp_path / "e"), "--preregistration", str(pre), "--hud-parity", str(parity)])
     assert not (tmp_path / "e").exists()
+
+
+def test_a_plumbing_run_trains_the_named_arms_on_a_nested_prefix(tmp_path):
+    train_path, session = cohort(tmp_path, "train", "t", seed=0)
+    dev_path, _ = cohort(tmp_path, "train", "d", seed=2)
+    common = ["--train", str(train_path), "--dev", str(dev_path), "--cache-root", str(tmp_path / "caches"),
+              "--scope", "plumbing", "--max-steps", "3", "--batch", "4", "--seeds", "0",
+              "--model-config", json.dumps(TINY.as_dict())]
+    with pytest.raises(train.FitError, match="at least one model arm"):
+        train.main(common + ["--out", str(tmp_path / "x"), "--arms", "history_only"])
+    train.main(common + ["--out", str(tmp_path / "half"), "--arms", "model", "history_only", "--train-fraction", ".5"])
+    train.main(common + ["--out", str(tmp_path / "all"), "--arms", "model", "history_only"])
+    half, full = (json.loads((tmp_path / n / "report.json").read_text()) for n in ("half", "all"))
+    assert set(half["checkpoints"]) == {"model-seed0.pt", "history_only-seed0.pt"}
+    assert half["config"]["arms"] == ["model", "history_only"] and half["config"]["train_fraction"] == .5
+    # the pre-registered candidate (no-HUD) was not trained: the CPU reference falls back to the trained model arm
+    assert half["candidate"] == "model_nohud" and half["candidate_checkpoint"] == "model-seed0.pt"
+    assert half["candidate_reason"]["reference_arm"] == "model"
+    assert set(half["gates"]["dev"]) == {"model"}
+    # the same file and sha256, fewer counted minutes; the dev set is untouched
+    assert [c["steps_sha256"] for c in half["cohort"]] == [c["steps_sha256"] for c in full["cohort"]]
+    assert 0 < half["train_minutes"]["total"] < full["train_minutes"]["total"]
+    assert half["windows"]["count"] < full["windows"]["count"]
+    assert half["metrics"]["dev"]["teacher_forced"]["persistence"] == full["metrics"]["dev"]["teacher_forced"][
+        "persistence"]
+
+
+def test_every_pre_registered_plumbing_run_parses_under_the_fit_cli():
+    import importlib.util
+    spec = importlib.util.spec_from_file_location(
+        "range_bc_plumbing", train.ROOT / "docs/evidence/fit-readiness-20260923/range_bc_plumbing.py")
+    plumbing = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(plumbing)
+    pre, _ = plumbing.load_prereg()
+    runs = plumbing.run_list(pre, 1234)
+    assert len(runs) == 9
+    for name, args in runs:
+        a = train.parser().parse_args(["--train", "t.jsonl", "--dev", "d.jsonl", "--cache-root", "c", "--out", "o",
+                                       "--scope", "plumbing", "--device", "mps"] + args)
+        assert a.batch == pre["fixed"]["batch"] and a.lr == pre["fixed"]["lr"] and a.val == []
+        assert a.stride == 48 and 0 in a.seeds and any(arm in train.MODEL_ARMS for arm in a.arms)
+        assert (a.max_steps == 1234) == name.startswith("plumb-p5-")
 
 
 def test_bench_is_reproducible_on_cpu():

@@ -933,7 +933,8 @@ def load_cohort(paths, *, splits, declared_regimes, denylist, unseal=False):
 STEPS_FORMAT = "rivals-range-steps-v1"
 # Must equal policy.range_bc.vocab.NAMES (the reader); the fit lane's end-to-end contract test checks it.
 FIT_ACTIONS = ("move_forward", "move_left", "move_back", "move_right", "jump", "web_swing", "get_over_here",
-               "amazing_combo", "ultimate", "melee", "spider_power", "web_cluster", "team_up", "goh_targeting")
+               "amazing_combo", "ultimate", "melee", "spider_power", "web_cluster", "team_up", "goh_targeting",
+               "simple_swing")
 # Scan code -> the VK the importer uses for unknown snapshot holds (sided for Shift), for `held_known`.
 SCAN_VK = {17: 87, 30: 65, 31: 83, 32: 68, 57: 32, 42: 160, 54: 161, 18: 69, 33: 70, 16: 81, 47: 86, 46: 67,
            58: 20, 29: 162, 56: 164}

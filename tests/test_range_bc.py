@@ -25,11 +25,14 @@ def rewrite(tmp_path, name, mutate, **kw):
 
 # ---- vocabulary ---------------------------------------------------------------------------------------------------------
 
-def test_actions_are_semantic_and_the_pad_cannot_send_stick_clicks_y_or_x1():
-    assert vocab.N == 14 and len(set(vocab.NAMES)) == 14 and vocab.NAMES[-2:] == ("team_up", "goh_targeting")
+def test_actions_are_semantic_and_the_pad_cannot_send_stick_clicks_y_x1_or_simple_swing():
+    assert vocab.N == 15 and len(set(vocab.NAMES)) == 15
+    assert vocab.NAMES[-3:] == ("team_up", "goh_targeting", "simple_swing")     # appended: earlier indices unchanged
     assert set(vocab.DEFAULT_BINDINGS) == set(vocab.NAMES) and vocab.DEFAULT_BINDINGS["goh_targeting"] == "mouse:4"
-    for name in ("ultimate", "melee", "team_up", "goh_targeting"):
+    assert vocab.DEFAULT_BINDINGS["simple_swing"] == "key:58:0"                 # Caps Lock's scan code
+    for name in ("ultimate", "melee", "team_up", "goh_targeting", "simple_swing"):
         assert not vocab.PAD_SENDABLE[vocab.INDEX[name]]
+    assert not vocab.live_mask([1000] * vocab.N)[vocab.INDEX["simple_swing"]]  # masked live whatever its count
     mask = vocab.live_mask([1000] * vocab.N)
     assert not mask[vocab.INDEX["ultimate"]] and not mask[vocab.INDEX["team_up"]] and mask[vocab.INDEX["spider_power"]]
     presses = [1000] * vocab.N

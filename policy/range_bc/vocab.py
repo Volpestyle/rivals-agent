@@ -18,9 +18,13 @@ DOMAIN = "semantic_pad"     # checkpoints of this format drive the pad through t
 # 171533): a real action, trained and scored normally. It is appended last so the first twelve keep intake's order,
 # and it is masked live only because its pad control, Y, is outside Live's whitelist. Ultimate and melee are not
 # pad-sendable either. Which actions have positives is counted from the data (`steps.train_statistics`), never
-# assumed: melee may have some through Mouse 5. Caps Lock (Simple Swing) is bound to no action and stays unsupported.
+# assumed: melee may have some through Mouse 5.
 # goh_targeting (X1, Get Over Here Targeting; lead decision after the calibration take) is appended 14th: trained and
 # scored, never sent (it has no pad control in Live's whitelist).
+# simple_swing (Caps Lock = Simple Swing; James's decision 2026-09-23, first seen in 200129 with 13 presses) is appended
+# 15th: trained and scored with its positives, never sent until the pilot pad profile binds Simple Swing to a pad
+# button and Live.ALLOWED includes that button. Both are a pre-registered pilot settings change (lane doc, "Pilot
+# pre-registration" item 7): PAD_SENDABLE flips only with them.
 ACTIONS = (
     ("move_forward", "W", "LS up", True),
     ("move_left", "A", "LS left", True),
@@ -36,6 +40,7 @@ ACTIONS = (
     ("web_cluster", "RMB", "LT", True),
     ("team_up", "C", "Y", False),               # Y is outside Live.ALLOWED
     ("goh_targeting", "X1", "none", False),     # Get Over Here Targeting on mouse X1 (lead decision): no pad control
+    ("simple_swing", "Caps Lock", "none", False),  # no pad button until the pilot pad profile binds one (item 7)
 )
 NAMES = tuple(a[0] for a in ACTIONS)
 INDEX = {name: i for i, name in enumerate(NAMES)}
@@ -46,7 +51,7 @@ DEFAULT_BINDINGS = {
     "move_forward": "key:17:0", "move_left": "key:30:0", "move_back": "key:31:0", "move_right": "key:32:0",
     "jump": "key:57:0", "web_swing": "key:42:0", "get_over_here": "key:33:0", "amazing_combo": "key:18:0",
     "ultimate": "key:16:0", "melee": ["key:47:0", "mouse:5"], "spider_power": "mouse:1", "web_cluster": "mouse:2",
-    "team_up": "key:46:0", "goh_targeting": "mouse:4"}
+    "team_up": "key:46:0", "goh_targeting": "mouse:4", "simple_swing": "key:58:0"}
 
 # The executor emits an action only when the train split holds this many presses of it and the pad can send it.
 LIVE_MIN_PRESSES = 50

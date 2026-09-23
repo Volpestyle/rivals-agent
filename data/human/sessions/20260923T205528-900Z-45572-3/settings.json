@@ -1,0 +1,140 @@
+{
+ "session": "20260923T205528-900Z-45572-3",
+ "settings": {
+  "value": {
+   "dpi": 800,
+   "horizontal_sensitivity": 1.89,
+   "vertical_sensitivity": 1.89,
+   "swing_mode": {
+    "automatic_swing": false,
+    "hold_to_swing": true
+   },
+   "mouse_acceleration": true,
+   "mouse_smoothing": true
+  },
+  "source": "James's statements in docs/recording-log.md (2026-09-23): DPI 800 (~14:50 CDT), sensitivity unchanged since 2026-09-21 (1.89/1.89 in the 09-21 report), default swing settings on Shift with Simple Swing on Caps Lock; confirmed on native frames of the settings look (calibration.json: 1.89/1.89, hold to swing on, simple swing off)",
+  "per_session_source": "James's dated statements of 2026-09-23, applied by the lead to every existing session",
+  "evidence": [
+   {
+    "path": "data/human/sessions/20260923T205528-900Z-45572-3/recording-log.299ffba.md",
+    "sha256": "fc6e595cfb6ef47f7ffe89dd6f00058f8fec1f8e36ae89e51e273cd83d2b8e2f"
+   },
+   {
+    "path": "data/human/notes/2026-09-21-user-settings.json",
+    "sha256": "852c92254961b4fcb1278e8ebe752ea2f02ce6add678509d3276fd1a26264c6c"
+   },
+   {
+    "path": "data/human/sessions/20260923T205528-900Z-45572-3/provenance.json",
+    "sha256": "a924a82393a7e538f9252331cdaf248cf326f8d204e43c5b59436c0b5d7bcbe9"
+   },
+   {
+    "path": "data/human/calibration/20260923T204707-487Z-45572-2/calibration.json",
+    "sha256": "baa49158c9911e0155a2d06883faec00150b297e0a5fe0e8dd46fc86d5310283"
+   }
+  ]
+ },
+ "bindings": {
+  "value": {
+   "move_forward": [
+    "key:17:0"
+   ],
+   "move_left": [
+    "key:30:0"
+   ],
+   "move_back": [
+    "key:31:0"
+   ],
+   "move_right": [
+    "key:32:0"
+   ],
+   "jump": [
+    "key:57:0"
+   ],
+   "web_swing": [
+    "key:42:0"
+   ],
+   "get_over_here": [
+    "key:33:0"
+   ],
+   "amazing_combo": [
+    "key:18:0",
+    "key:3:0"
+   ],
+   "ultimate": [
+    "key:16:0"
+   ],
+   "melee": [
+    "key:47:0",
+    "mouse:5"
+   ],
+   "spider_power": [
+    "mouse:1"
+   ],
+   "web_cluster": [
+    "mouse:2"
+   ],
+   "team_up": [
+    "key:46:0"
+   ],
+   "team_up_b": [
+    "key:45:0"
+   ],
+   "simple_swing": [
+    "key:58:0"
+   ],
+   "goh_targeting": [
+    "mouse:4",
+    "key:3:0"
+   ],
+   "slow_walk": [
+    "key:29:0"
+   ]
+  },
+  "aliases": {
+   "mouse:5": "melee"
+  },
+  "notes": {
+   "team_up": "C = Team-Up A, fires in the solo range with a visible effect (James; 051828/team-up-check.json). A real action with positives, trained but masked live (Y is off the pad whitelist).",
+   "melee": "V and Mouse 5 (settings look; lead decision): Mouse 5 presses count as melee (header binding_aliases).",
+   "goh_targeting": "Get Over Here Targeting: Mouse 4 (X1) and 2; a fit action (lead decision), structurally unsupported on the pad, counted. Only Mouse 4 is in the step header (2 is shared).",
+   "amazing_combo": "E and 2; 2 is also Get Over Here Targeting, so it is not aliased (unsupported).",
+   "simple_swing": "Caps Lock (VK 20, scan 58), off as a mode; not in the fit vocabulary (unsupported).",
+   "team_up_b": "X, Team-Up B; not in the fit vocabulary (unsupported).",
+   "slow_walk": "LCtrl, hold; not in the fit vocabulary (unsupported).",
+   "alt": "Alt is unbound in game (James); Alt presses are Alt-Tab and stay UI-key cuts."
+  },
+  "source": "native frames of James's settings look (calibration take 2026-09-23, keyboard pages, calibration.json), agreeing with his 2026-09-21 report and 2026-09-23 statements; HUD key labels on this session's frames (slot-mapping.json)",
+  "per_session_source": "James's dated statements of 2026-09-23 (docs/recording-log.md)",
+  "evidence": [
+   {
+    "path": "data/human/sessions/20260923T205528-900Z-45572-3/recording-log.299ffba.md",
+    "sha256": "fc6e595cfb6ef47f7ffe89dd6f00058f8fec1f8e36ae89e51e273cd83d2b8e2f"
+   },
+   {
+    "path": "data/human/notes/2026-09-21-user-settings.json",
+    "sha256": "852c92254961b4fcb1278e8ebe752ea2f02ce6add678509d3276fd1a26264c6c"
+   },
+   {
+    "path": "data/human/sessions/20260923T205528-900Z-45572-3/slot-mapping.json",
+    "sha256": "6f057876e6e326d78c97f32c4b64632cc846c2ceb1cc640dca139d02a1851b74"
+   },
+   {
+    "path": "data/human/calibration/20260923T204707-487Z-45572-2/calibration.json",
+    "sha256": "baa49158c9911e0155a2d06883faec00150b297e0a5fe0e8dd46fc86d5310283"
+   }
+  ]
+ },
+ "settings_identity": "a8dea3bacebbe9377c8ea9bc7f517e7d907e126c61634676883599dbf2e3d1fd",
+ "caps_lock_packets": 120,
+ "calibration": {
+  "kind": "slow_turn_constant",
+  "yaw_deg_per_count": 0.0330738,
+  "pitch_deg_per_count": 0.0330738,
+  "pitch": {
+   "kind": "derived_equal_sensitivity"
+  },
+  "accel_on": true,
+  "source": "data/human/calibration/20260923T204707-487Z-45572-2/calibration.json (v2) (baa49158c9911e01)"
+ },
+ "no_pad_attestation": "James, 2026-09-23 ~15:55 CDT: no physical controller was plugged in during any recording session"
+}

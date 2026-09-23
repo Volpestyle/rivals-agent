@@ -38,16 +38,10 @@ ROWS = [
     dict(session="20260923T053929-795Z-33696-3", date="2026-09-23", status="not_range", reason="calibration take"),
     dict(session="20260923T054325-507Z-33696-4", date="2026-09-23", status="not_range",
          reason="DayMR native replay viewing, not logged play"),
-    dict(session="20260923T200129-346Z-33696-6", date="2026-09-23", status="pending",
-         reason="segments-evidence and owner verdicts ready (owner-provisional counted 26.62 min; two deaths cut); "
-                "independent per-session review next", regime="normal", focused_min=26.779),
     dict(session="20260923T203716-726Z-45572-1", date="2026-09-23", status="not_range",
          reason="7.4 s HEVC encoder test (anchor holds, hevc-check.md)"),
     dict(session="20260923T204707-487Z-45572-2", date="2026-09-23", status="not_range",
          reason="settings and calibration take (settings pages, 360-degree turn, pitch sweep)"),
-    dict(session="20260923T205528-900Z-45572-3", date="2026-09-23", status="pending",
-         reason="campaign take 2 (HEVC): segments-evidence and owner verdicts ready (owner-provisional counted 11.07 "
-                "min); independent per-session review next", regime="normal", focused_min=11.076),
 ]
 
 
@@ -55,7 +49,8 @@ def sha(p):
     return hashlib.sha256(Path(p).read_bytes()).hexdigest()
 
 
-ADMITTED = ("20260923T051828-422Z-33696-1", "20260923T171533-187Z-33696-5")
+ADMITTED = ("20260923T051828-422Z-33696-1", "20260923T171533-187Z-33696-5", "20260923T200129-346Z-33696-6",
+            "20260923T205528-900Z-45572-3")
 
 
 def admitted_row(hi, session):
@@ -72,7 +67,7 @@ def admitted_row(hi, session):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--snapshot", default="code-snapshot-23c8482")
+    ap.add_argument("--snapshot", default="code-snapshot-86a1912")
     args = ap.parse_args()
     sys.path.insert(0, str(HERE / args.snapshot))
     from agent import human_intake as hi

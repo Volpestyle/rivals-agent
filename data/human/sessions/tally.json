@@ -50,7 +50,7 @@
      "unknown": 418.349983267
     }
    },
-   "artifact_sha256": "cabd628037c43de9ee77d5344ccbeb4b05d310296cfdd4a76a18166ab9f35ff2",
+   "artifact_sha256": "f428cc64d9efd5e894d79dd6a29f146be323e780919d9332e6a60a11b99590cf",
    "group": "20260923T051828-422Z-33696-1",
    "split": "train"
   },
@@ -110,21 +110,39 @@
      "unknown": 154.366660493
     }
    },
-   "artifact_sha256": "04614051af7a5a67aadea96589f146ecd741df4045e835fb9228015162893de9",
+   "artifact_sha256": "eb61a5ac010ed82dc20d72b152bfbb4efc129068252df871a7a6ac4576d8f0b4",
    "group": "20260923T171533-187Z-33696-5",
    "split": "train"
   },
   {
    "session": "20260923T200129-346Z-33696-6",
    "date": "2026-09-23",
-   "status": "pending",
-   "reason": "segments-evidence and owner verdicts ready (owner-provisional counted 26.62 min; two deaths cut); independent per-session review next",
+   "status": "admitted",
+   "reason": "assembled: review.json from the owner and independent verdicts, imported, steps file frozen",
    "regime": "normal",
-   "focused_min": 26.779,
+   "focused_min": 26.778991086666668,
+   "admitted_min": 26.617637824216665,
+   "trainable_min": 26.6166664005,
+   "stride_ns": 33333333,
+   "rejected_min": 0.12649215271666667,
+   "unresolved_min": 0.03486110973333333,
+   "tags_s": {
+    "range": {
+     "unknown": 1597.058269453
+    },
+    "approach": {
+     "unknown": 1597.058269453
+    },
+    "target": {
+     "unknown": 1597.058269453
+    },
+    "resources": {
+     "unknown": 1597.058269453
+    }
+   },
+   "artifact_sha256": "93e2452130b267ba39e59b39c3ef3b0f7c7bcbe7307bdc337a58a1eb7850f48f",
    "group": "20260923T200129-346Z-33696-6",
-   "split": "train",
-   "admitted_min": null,
-   "trainable_min": null
+   "split": "train"
   },
   {
    "session": "20260923T203716-726Z-45572-1",
@@ -149,23 +167,41 @@
   {
    "session": "20260923T205528-900Z-45572-3",
    "date": "2026-09-23",
-   "status": "pending",
-   "reason": "campaign take 2 (HEVC): segments-evidence and owner verdicts ready (owner-provisional counted 11.07 min); independent per-session review next",
+   "status": "admitted",
+   "reason": "assembled: review.json from the owner and independent verdicts, imported, steps file frozen",
    "regime": "normal",
-   "focused_min": 11.076,
+   "focused_min": 11.076038855,
+   "admitted_min": 11.0701384461,
+   "trainable_min": 11.0699998893,
+   "stride_ns": 33333333,
+   "rejected_min": 0.0059004089,
+   "unresolved_min": 0.0,
+   "tags_s": {
+    "range": {
+     "unknown": 664.208306766
+    },
+    "approach": {
+     "unknown": 664.208306766
+    },
+    "target": {
+     "unknown": 664.208306766
+    },
+    "resources": {
+     "unknown": 664.208306766
+    }
+   },
+   "artifact_sha256": "c0687e0fe8e9ed1e05a49ebb98757dbf3321ea40f26be291f4eaad82fd9aba53",
    "group": "20260923T205528-900Z-45572-3",
-   "split": "train",
-   "admitted_min": null,
-   "trainable_min": null
+   "split": "train"
   }
  ],
  "headline_train_by_regime": {
   "normal": {
-   "admitted_min": 9.545277396,
-   "trainable_min": 9.544444348999999,
-   "sessions": 2,
+   "admitted_min": 47.233053666316664,
+   "trainable_min": 47.2311106388,
+   "sessions": 4,
    "target_min": 180,
-   "remaining_min": 170.454722604
+   "remaining_min": 132.76694633368334
   }
  },
  "val_by_regime": {},
@@ -178,6 +214,6 @@
   "path": "data/human/sealed-denylist.json",
   "sha256": "57cfe01f29f6e1a55293f968ec697aa293c268bd87d7cf247ef648279e2fba7c"
  },
- "snapshot": "code-snapshot-23c8482",
+ "snapshot": "code-snapshot-86a1912",
  "counted_rule": "focused logged time \u2229 accepted segments \u2229 gap-free runs >= 1.6 s"
 }

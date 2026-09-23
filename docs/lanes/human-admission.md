@@ -1153,3 +1153,18 @@ Both sessions await the independent per-session review before assembly.
   respawn ghost.
 - **The second death**, at 1,606.4 s: seg-010 ends at frame 192744 (1,606.324 s, alive, falling into the trees). The
   `dead` span runs from frame 192745 until the Alt-Tab that ends the session.
+
+## 2026-09-23 (late): four sessions admitted, 47.23 counted minutes; simple_swing (admission-owner)
+
+- **Two more sessions admitted** after their independent reviews:
+  - 200129 (verdicts `70e77f63...`): seg-007 and seg-010, two death cuts verified; counted **26.62** min.
+  - Take 2 205528 (verdicts `e526a4f3...`; HEVC packet order equals `frames.csv`): seg-002; counted **11.07** min.
+- **Both assembled from `code-snapshot-86a1912`** with the calibration v2 header and LF pins.
+- **`simple_swing` (Caps Lock, `key:58:0`) is a fit action** (James's decision; 15 actions). The session binding table
+  already mapped it.
+  - Take 2's 13 Caps Lock presses are now positives, not unsupported. 200129 has 3 more.
+  - 171533 (v3) and 051828 (v2) were re-stepped for the 15-action vocabulary with `restep_session.py`: review,
+    import, identity and row set unchanged; the old step file, sampling and freeze are kept as `.vN` and pinned by
+    `supersedes`.
+- **The fit reader loads the four step files as one cohort:** 85,016 accepted rows.
+- **Tally:** **normal, train: 47.23 counted / 47.23 trainable of 180 minutes**, 4 sessions.

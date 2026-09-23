@@ -161,7 +161,7 @@ def replay_session(session_id="replay-a", *, split="train", runs=(120, 60), seed
                    unknown_movement_every=5, unknown_span=3, pitch_unknown=.1, edge_abstain=.1):
     """A synthetic replay recording: movement unknown for `unknown_span` rows every `unknown_movement_every` x span
     rows; hold heads for primary, swing and crawl; cast onsets (no release label) with abstentions; everything the
-    labellers never emit (ultimate, melee, team_up, goh_targeting) unknown; camera in degrees."""
+    labellers never emit (ultimate, melee, team_up, goh_targeting, simple_swing) unknown; camera in degrees."""
     rng = random.Random(seed)
     header = replay_header(session_id, split=split)
     header["source"] = {"generator": "policy.range_bc.fixture.replay_session", "seed": seed}

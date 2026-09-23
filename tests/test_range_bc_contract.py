@@ -42,7 +42,8 @@ def test_intakes_writer_output_loads_in_the_fit(tmp_path):
     # James's C (team-up) is an action, not an unsupported control; W's repeated make is not a second press
     team, fwd = vocab.INDEX["team_up"], vocab.INDEX["move_forward"]
     assert sum(r["press"][team] for r in s.rows) == 1 and sum(r["press"][fwd] for r in s.rows) == 1
-    assert all("key:46:0" not in r["unsupported"] and "mouse:4" not in r["unsupported"] for r in s.rows)
+    assert all("key:46:0" not in r["unsupported"] and "mouse:4" not in r["unsupported"]
+               and "key:58:0" not in r["unsupported"] for r in s.rows)      # Caps Lock is simple_swing now
     assert {r["suitability"] for r in s.rows} == {"accepted", "rejected"}
     t = steps.target(s.rows[0], s.calibration)
     assert t["yaw"] is not None and t["pitch"] is not None                   # derived pitch gain: usable
@@ -78,5 +79,5 @@ def test_the_fit_refuses_a_sealed_recording_and_a_pending_yaw_gain(tmp_path):
 
 
 def test_intakes_default_action_list_is_the_fit_vocabulary():
-    # intake appended team_up and goh_targeting on 2026-09-23 (each was a strict xfail here until it did)
+    # intake appended team_up, goh_targeting and simple_swing (Caps Lock) on 2026-09-23
     assert list(hi.FIT_ACTIONS) == list(vocab.NAMES)

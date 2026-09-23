@@ -408,17 +408,19 @@ def load_checkpoint(path, *, domain=DOMAIN, device="cpu"):
 # ---- the fit ----------------------------------------------------------------------------------------------------------
 
 MODEL_ARMS = ("model", "model_nohud")     # K7: both are trained; the HUD arm must earn the candidacy (P2' + margin)
+ALL_ARMS = ("model", "model_nohud", "history_only")
 HUD_MARGIN = .05                          # self-fed macro press-F1 the HUD arm must beat the no-HUD arm by (seed 0)
 PARITY_FIELDS = ("rule", "thresholds", "P1", "P3", "sources", "pass")
 TWIN = "history_only"
 ROOT = Path(__file__).resolve().parents[2]
 
 
-def load_arrays(paths, cache_root, *, lag, regimes, splits, denylist, verify_hashes=False):
+def load_arrays(paths, cache_root, *, lag, regimes, splits, denylist, verify_hashes=False, fraction=1.):
     arrays = []
     for session in steps.load_cohort(paths, splits=splits, denylist=denylist):
         frames = cache.open_cache(Path(cache_root) / session.session_id, session, verify_hashes=verify_hashes)
-        arrays.append(SessionArrays(session, frames, lag=lag, regimes=regimes))
+        arrays.append(SessionArrays(steps.truncate(session, fraction, regimes=regimes), frames, lag=lag,
+                                    regimes=regimes))
     return arrays
 
 
@@ -532,6 +534,9 @@ def run_fit(a):
     require(a.scope != "fit" or (a.val and a.dev), "the real fit needs validation and dev recordings")
     require(a.scope != "fit" or not a.model_config, "--model-config is for smoke runs only")
     require(0 in a.seeds, "seed 0 is the pre-declared candidate and must be trained")
+    require(a.scope != "fit" or (set(a.arms) == set(ALL_ARMS) and a.train_fraction == 1),
+            "--scope fit trains every arm on all train data (K7); --arms and --train-fraction are plumbing tools")
+    require(any(arm in MODEL_ARMS for arm in a.arms), "train at least one model arm")
     pre = preregistered(a)
     parity = parity_record(a, pre)
     denylist = steps.load_denylist(a.sealed_denylist, a.sealed_denylist_sha256)
@@ -545,10 +550,11 @@ def run_fit(a):
     out.mkdir(parents=True, exist_ok=False)
     regimes = tuple(a.regimes)
 
-    def load(paths, split):
+    def load(paths, split, fraction=1.):
         return load_arrays(paths, a.cache_root, lag=a.lag, regimes=regimes, splits=(split,), denylist=denylist,
-                           verify_hashes=a.scope == "fit") if paths else []
-    train, dev, val = load(a.train, "train"), load(a.dev, "train"), load(a.val, "val")
+                           verify_hashes=a.scope == "fit", fraction=fraction) if paths else []
+    train = load(a.train, "train", a.train_fraction)
+    dev, val = load(a.dev, "train"), load(a.val, "val")
     ids = [x.session.session_id for x in train + dev + val]
     require(len(set(ids)) == len(ids), "a recording is in more than one of train, dev and validation")
     stats = steps.train_statistics([x.session for x in train], regimes=regimes)
@@ -556,6 +562,7 @@ def run_fit(a):
     base = Config.from_dict({**Config().as_dict(), **json.loads(a.model_config or "{}"),
                              "regime_bit": len(regimes) > 1})     # arm B (both regimes) adds the regime bit
     arms = {"model": base, "model_nohud": replace(base, hud=False), TWIN: replace(base, frames=False)}
+    arms = {k: v for k, v in arms.items() if k in a.arms}
     if a.frames_only:
         arms["frames_only"] = replace(base, history=False)
 
@@ -584,11 +591,16 @@ def run_fit(a):
         evaluation[name], verdicts[name] = evaluate_set(models, arrays, stats, ar2, device=a.device)
         budget.append({"run": f"evaluate-{name}", "seconds": time.perf_counter() - t0})
     candidate, candidate_reason = choose_candidate(parity, verdicts)
-    candidate_checkpoint = f"{candidate}-seed0.pt"
+    reference_arm = candidate
+    if (candidate, 0) not in models:                  # a plumbing run that skipped the candidate arm (--arms)
+        reference_arm = next(arm for arm in MODEL_ARMS if (arm, 0) in models)
+        candidate_reason = {**candidate_reason, "reference_arm": reference_arm,
+                            "note": "the pre-registered candidate arm was not trained in this run"}
+    candidate_checkpoint = f"{reference_arm}-seed0.pt"
     for name, arrays in (("dev", dev), ("val", val)):
         if not arrays:
             continue
-        device_runs = predict_teacher(models[candidate, 0], arrays, device=a.device)
+        device_runs = predict_teacher(models[reference_arm, 0], arrays, device=a.device)
         references[name] = verify.write_reference(out, name, arrays, stats["live_mask"], device_runs=device_runs,
                                                    checkpoint=candidate_checkpoint)
     windows = Batches(train, frames=False, stride=a.stride)
@@ -601,6 +613,7 @@ def run_fit(a):
                  cache_hashes_verified=a.scope == "fit",
                  config={"model": base.as_dict(), "epochs": a.epochs, "max_steps": a.max_steps, "batch": a.batch,
                          "stride": a.stride, "lr": a.lr, "weight_decay": a.weight_decay, "lag": a.lag,
+                         "arms": list(arms), "train_fraction": a.train_fraction,
                          "regimes": list(regimes), "loss_weights": LOSS_WEIGHTS, "drq_px": DRQ_PX,
                          "parameters": {arm: parameter_count(Policy(c)) for arm, c in arms.items()}},
                  preregistration=pre, candidate=candidate, candidate_checkpoint=candidate_checkpoint,
@@ -630,7 +643,7 @@ def run_fit(a):
     print(f"candidate {candidate_checkpoint}; report {out / 'report.json'}")
 
 
-def main(argv=None):
+def parser():
     p = argparse.ArgumentParser(description="Fit the end-to-end range policy (train/dev/val only; test is sealed)")
     p.add_argument("--train", nargs="+", required=True, help="train step tables")
     p.add_argument("--dev", nargs="*", default=[], help="dev step tables: train-split recordings held out of fitting")
@@ -651,11 +664,19 @@ def main(argv=None):
     p.add_argument("--stride", type=int, default=steps.STRIDE,
                    help="window stride; 64 (= window - burn-in) scores each step once, the lead's first fallback")
     p.add_argument("--lag", type=int, default=0, choices=(0, 1, 2))
+    p.add_argument("--arms", nargs="+", default=list(ALL_ARMS), choices=ALL_ARMS,
+                   help="smoke/plumbing only: train a subset of arms (the real fit trains all)")
+    p.add_argument("--train-fraction", type=float, default=1.,
+                   help="smoke/plumbing only: the nested time-prefix of each train recording (scaling curve)")
     p.add_argument("--regimes", nargs="+", default=["normal"], choices=steps.REGIMES)
     p.add_argument("--frames-only", action="store_true", help="also fit the (ungated) frames-only twin")
     p.add_argument("--device", default="cpu", choices=("cpu", "mps", "cuda"))
     p.add_argument("--model-config", help="JSON overrides of model.Config (smoke and plumbing runs only)")
-    run_fit(p.parse_args(argv))
+    return p
+
+
+def main(argv=None):
+    run_fit(parser().parse_args(argv))
 
 
 if __name__ == "__main__":
