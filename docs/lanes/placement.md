@@ -305,3 +305,54 @@ input stays gated on F4, F6's held-out check, the pitch reset, and the look's me
 
 **Tell the intake lane:** the look's spans are deliberate falls, edge-hugging and strafe tests. Tag them rejected for
 whole-session training, with the reason "placement look".
+
+## 8. PC window checklist: James's next session (one page)
+
+The pitch reset (F3) and the drop edge (F4) gate live input, and the fit's low-end stick map (fit review K3) gates
+the fit's executor.
+
+**Before any agent input.**
+- Controller settings: Linear curve, H/V sensitivity 265/75, aim assist 0 (`docs/lanes/l4-controller.md:1278-1298`).
+  The reset durations and the stick maps hold only at these settings. Any later change voids them.
+- Recording on, input logger on.
+- Game focused, in the Practice Range. Note the game PID.
+- **Before B and C, a measurement declaration** (`place.py` docstring; review D1). It holds:
+  - the pinned range-entry record: the PID, `entered_utc`, and the process start time from `Get-Process`;
+  - `james_present_recording: true`;
+  - a window of at most 1 h;
+  - the lead's authorization file: JSON `{"kind": "placement-authorization-v1", "binding_id": <the record's sha256>,
+    "modes": [...]}`, each mode listed exactly. Free text is refused (review E1).
+
+  A re-entry needs a new record, so a new declaration.
+
+**The kill switch, for every step that sends input:**
+- **Alt-Tab, or click any other window.** The game reads the pad only while it has focus. `scripts/place.py` also
+  checks focus before every 50 ms write, so the pad goes neutral and the run stops.
+- **Ctrl-C** in the agent's terminal closes the pad.
+- Nothing below presses a button. Only B and C touch a stick, and only the right (camera) stick.
+
+| # | Step (time) | What the agent sends | What James watches for |
+|---|---|---|---|
+| A | **The 5-minute look** (sections 6 and 7). James plays. | **Nothing.** | Walk, from the 25 m end facing the pair:<br>- both lane edges to the bots: where the right rail ends, and whether the left side is walls and planters all along;<br>- 1 s strafes right and left;<br>- the drop and its respawn;<br>- the three failure states, each with a slow camera circle, not moving;<br>- a lower-plaza approach to the terrace wall, facing the pair;<br>- 2 s stops at marked positions along both edges, facing the pair (localisation ground truth and the real bias bound). |
+| B | **Pitch-reset durations** (~3 min). James parks at the lane's 25 m end facing the pair and lets go:<br>`python scripts/place.py --measure-pitch --declaration <measurement.json>` | The M1 prime: right stick +0.45 for 0.3 s (the view turns ~55° right), 5 s of frames only, then −0.45 for 0.3 s back.<br>Then 29 resets, each: right stick y fully down 2.0 s, then +0.5 for 0.2 to 1.6 s (0.05 s steps).<br>Then one look fully up (+1.0 for 1 s) and a reset, then 3 repeats. | The camera only tilts: down to the feet, back up. It never walks, strafes or turns after the prime.<br>At the end it prints `ok`, `why`, `pitch_down_s` and `pitch_up_s`. The frames and `result.json` land in `data/placement/pitch-*`.<br>**Stop on any translation.** |
+| C | **The reset at the three failure spots** (~2 min), after B's numbers are set in code (next row). At each spot James faces where the pair is (or would be) and lets go:<br>`python scripts/place.py --reset-check --declaration <measurement.json> --spot post-ko` (then `nook`, then `plaza`) | The prime and its turn back as in B, then one PITCH_RESET with the measured durations. Right stick y only. | The camera lands level: the horizon where it sat at the lane in B.<br>In the nook, whether walls push the camera.<br>It prints the pair's residual: inside −40..+50 px on the lane, about +214 px from the plaza. |
+| D | **Low-end stick map (K3)** (~4 min). James stands on the spawn plaza, away from any drop, facing scenery with no bot near the crosshair. | Right stick x at 0.02, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09 and 0.10, each held 1.0 s right then the same left. Right stick y at 0.05, 0.1, 0.15, 0.2, 0.3, 0.4 and 0.5, each held 0.5 s up then the same down. A settled still before and after each hold. | The camera turns slowly or not at all, and ends near where it started. Never a step.<br>**The tool does not exist yet:** `scripts/l4_measure.py` covers yaw ≥ 0.1 and pitch at 0.5 and 1.0 only. A `lowmap` mode must be written and reviewed first (not in the placement lane's paths). |
+
+**After the session (offline).**
+- **From A:** `EDGE_X_M`, the strafe rate, the drop zone, the left side, the bias bound, and real plaza negatives.
+- **From B:** `PITCH_DOWN_S` and `PITCH_UP_S`, set in `scripts/place.py` only when `ok`.
+- **From D:** the deadzone, which goes into `Cal`.
+- Each value goes into its constant through a reviewed change.
+- The live declaration then repeats them in `findings`, and `check_declaration` refuses any disagreement.
+- Its look carries a reviewer's or lead's countersignature file quoting the findings' sha256 and every evidence
+  sha256 (review D3).
+
+**Two facts from the review's re-check that bound the next pilot.**
+- **The plaza stays pose-free only while the reset lands within ~150 px of the reference.**
+  - So C must show the plaza pair between +64 and +364 px: 214 ± 150, and never inside the level band.
+  - A spot outside that range blocks live placement until the reset is changed.
+- **Far placement reaches READY in 21 % of unbiased starts.** The next pilot uses the mid and near bins only.
+  `check_declaration` refuses `far`, and near stays refused until `EDGE_X_M` is set.
+
+**Intake:** tag every span of A-D rejected for whole-session training, with the reason "placement look" (A) or
+"placement measurement" (B-D).
