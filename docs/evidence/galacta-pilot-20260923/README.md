@@ -75,6 +75,8 @@ Nothing here establishes repeatability, parity or a feasibility gate.
   - the feed candidate at 11.76 s (`cowboyboopbop → GALACTA BOT`);
   - the terminal board shows exactly one KO and 250 damage, one bot's life.
 - **Audit status:** an operator audit, not an independent one; that audit is still pending.
+- **Correction:** the independent audit confirms the KO. Every slot's archive manifest hashed an unfinished native video,
+  and track id 1 was coasting from `000020`; see [audit-slot3.md](audit-slot3.md).
 
 ## Setup, restarts and placement
 
