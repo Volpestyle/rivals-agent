@@ -1,0 +1,7 @@
+# Lint only. Never run `ruff format`: it would rewrite the identity-pinned files (scripts/pins.py).
+target-version = "py310"
+extend-exclude = ["docs", "data"]   # evidence scripts are hash-pinned records, not maintained code
+
+[lint]
+# Syntax errors and undefined names: clean at 9de857c. The default set (E4, E7, E9, F) reports 233, mostly style.
+select = ["E9", "F63", "F7", "F82"]
