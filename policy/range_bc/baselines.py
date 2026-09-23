@@ -39,20 +39,23 @@ def echo(record):
     prev = record["prev"]
     out = persistence(record)
     if prev is not None:
-        out["press"] = [float(p) if k else 0. for p, k in zip(prev["press"], prev["known"])]
-        out["release"] = [float(p) if k else 0. for p, k in zip(prev["release"], prev["known"])]
+        out["press"] = [float(p) if k else 0. for p, k in zip(prev["press"], prev.get("press_known", prev["known"]))]
+        out["release"] = [float(p) if k else 0. for p, k in zip(prev["release"],
+                                                               prev.get("release_known", prev["known"]))]
     return out
 
 
 def prior(stats):
-    def rate(counts):
-        return [counts[c] / stats["known"][c] if stats["known"][c] else 0. for c in range(vocab.N)]
+    def rate(counts, denominators):
+        return [counts[c] / denominators[c] if denominators[c] else 0. for c in range(vocab.N)]
 
     def median(hist):
         total = sum(hist)
         return vocab.class_degrees(vocab.median_class([h / total for h in hist])) if total else 0.
 
-    held, press, release = rate(stats["held"]), rate(stats["press"]), rate(stats["release"])
+    held = rate(stats["held"], stats["known"])
+    press = rate(stats["press"], stats.get("press_known", stats["known"]))
+    release = rate(stats["release"], stats.get("release_known", stats["known"]))
     yaw, pitch = median(stats["camera"]["yaw"]), median(stats["camera"]["pitch"])
     return lambda record: {"held": list(held), "press": list(press), "release": list(release), "yaw": yaw,
                            "pitch": pitch}

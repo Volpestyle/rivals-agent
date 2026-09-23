@@ -85,6 +85,7 @@ class Ctx:
     def __init__(self, args):
         self.sid = args.session
         self.snapshot = HERE / args.snapshot
+        self.earlier_snapshot = getattr(args, "earlier_snapshot", None)
         sys.path.insert(0, str(self.snapshot))
         from agent import human_intake as hi
         from agent import human_demos as hd
@@ -394,10 +395,12 @@ def _proposal_inputs(c):
     frame_times = [r["composition_ns"] for r in ordered]
     frame_gap = (2 * 10**9 * c.meta["fps_den"] + c.meta["fps_num"] - 1) // c.meta["fps_num"]
     gaps = hi.capture_gaps(frame_times, frame_gap)
-    hud = [(r["composition_ns"], bool(r["hud_present"])) for r in _samples(c)]
+    samples = _samples(c)
+    hud = [(r["composition_ns"], r["hud_present"]) for r in samples]      # True/False/None kept as read (review I6)
+    dead = [r["composition_ns"] for r in samples if r.get("hp") == 0]
     regime = json.loads((c.out / "regime-timeline.json").read_text())["session_regime_from_scan"]
     return dict(intervals=focused, hud_samples=hud, ui_keys=hi.ui_key_presses(events), controls=hi.control_times(events),
-                gaps=gaps, session_regime=regime or "unknown"), ordered
+                gaps=gaps, session_regime=regime or "unknown", dead=dead), ordered
 
 
 def step_propose(c):
@@ -517,9 +520,9 @@ def step_evidence(c):
                                review_interior_every_ns=REVIEW_INTERIOR_EVERY_NS),
                session_regime=kw["session_regime"], focused_intervals=[list(i) for i in kw["intervals"]],
                capture_gaps=[list(g) for g in kw["gaps"]], flags=flags, native_edge_reads=reads, segments=segs,
-               earlier_steps=("provenance, verify, profile, vote, scan and regime ran from code-snapshot-72eee24: the "
-                              "same committed code as this snapshot (git diff 72eee24..c0892ab is empty for agent, "
-                              "perception, policy and scripts); agent/human_intake.py then lacked only FOCUS_SETTLE_NS"),
+               earlier_steps=dict(snapshot=c.earlier_snapshot or c.snapshot.name,
+                                  manifest_sha256=sha(HERE / (c.earlier_snapshot or c.snapshot.name) / "manifest.json"),
+                                  steps="provenance, verify, profile, vote, scan, regime, motor"),
                motor={"path": "motor-settings.json", "sha256": sha(c.out / "motor-settings.json")},
                note="`proposal` is the proposer's; nothing here is a verdict. Accepted comes only from a verdict "
                     "record with reviewer, time and inspected native frame hashes (review R5).")
@@ -535,7 +538,8 @@ def main():
                                      "evidence"])
     ap.add_argument("session")
     ap.add_argument("--scratch", required=True)
-    ap.add_argument("--snapshot", default="code-snapshot-c0892ab")
+    ap.add_argument("--snapshot", required=True)
+    ap.add_argument("--earlier-snapshot", help="the snapshot the earlier steps ran from, when it differs")
     args = ap.parse_args()
     below_normal()
     globals()[f"step_{args.step}"](Ctx(args))

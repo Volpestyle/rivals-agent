@@ -137,6 +137,71 @@ def write(path, header, rows):
     return path
 
 
+# ---- replay source (expert replay labels; steps docstring "REPLAY source") ------------------------------------------
+
+REPLAY_MOVE = ("move_forward", "move_left", "move_back", "move_right")
+REPLAY_HOLDS = ("spider_power", "web_swing", "jump")                       # the IDM's hold head
+REPLAY_CASTS = ("get_over_here", "amazing_combo", "web_cluster")           # replay-hud cast events: onsets only
+
+
+def replay_header(session_id, *, split="train", sitting="replay-1", **extra):
+    return {"format": steps.FORMAT, "source_kind": "replay", "session_id": session_id,
+            "media_sha256": media_sha256(session_id), "session_group": session_id, "sitting": sitting,
+            "split": split, "step_ns": STEP_NS, "frame_period_ns": PERIOD_NS, "actions": list(vocab.NAMES),
+            "calibration": {"kind": "replay_degrees", "source": "synthetic-idm",
+                            "label_sources": {"camera": "idm-camera@synthetic", "movement": "idm-locomotion@synthetic",
+                                              "edges": "replay-hud@synthetic"}},
+            "expert_context": {"player": "synthetic-expert", "match_id": "match-0001",
+                               "viewer_fov_assumption": "viewer_fov_103", "replay_source": "native replay"},
+            "hud_layout": "mk", "swing_mode": {"automatic_swing": None, "hold_to_swing": None},
+            "video_size": [2560, 1440], "patch": "synthetic-patch", **extra}
+
+
+def replay_session(session_id="replay-a", *, split="train", runs=(120, 60), seed=0, video_path="replay.mkv",
+                   unknown_movement_every=5, unknown_span=3, pitch_unknown=.1, edge_abstain=.1):
+    """A synthetic replay recording: movement unknown for `unknown_span` rows every `unknown_movement_every` x span
+    rows; hold heads for primary, swing and crawl; cast onsets (no release label) with abstentions; everything the
+    labellers never emit (ultimate, melee, team_up, goh_targeting) unknown; camera in degrees."""
+    rng = random.Random(seed)
+    header = replay_header(session_id, split=split)
+    header["source"] = {"generator": "policy.range_bc.fixture.replay_session", "seed": seed}
+    rows, anchor = [], T0_NS + 5 * PERIOD_NS + 1_000_000
+    for ri, length in enumerate(runs):
+        state = {n: 0 for n in REPLAY_MOVE + REPLAY_HOLDS}
+        for k in range(length):
+            frame_index = (anchor - T0_NS) // PERIOD_NS
+            none = [None] * vocab.N
+            hs, he, pr, rl = list(none), list(none), list(none), list(none)
+            unknown_move = (k // unknown_span) % unknown_movement_every == unknown_movement_every - 1
+            for name in REPLAY_MOVE + REPLAY_HOLDS:
+                c = vocab.INDEX[name]
+                before = state[name]
+                if rng.random() < .07:
+                    state[name] = 1 - state[name]
+                if name in REPLAY_MOVE and unknown_move:
+                    continue                                   # the IDM abstains on movement here
+                hs[c], he[c] = before, state[name]
+                pr[c], rl[c] = int(state[name] > before), int(state[name] < before)
+            for name in REPLAY_CASTS:
+                c = vocab.INDEX[name]
+                pr[c] = None if rng.random() < edge_abstain else int(rng.random() < .04)
+            yaw = rng.gauss(0, 2.)
+            rows.append({
+                "i": len(rows), "run": f"run{ri}", "anchor_ns": anchor,
+                "frame": {"video_path": video_path, "frame_index": frame_index, "pts": round(frame_index * 1000 / 120),
+                          "timebase": [1, 1000], "composition_ns": T0_NS + frame_index * PERIOD_NS},
+                "gap_free": True, "segment": f"seg{ri}", "suitability": "accepted", "regime": "normal",
+                "tags": [], "tag_source": "untagged",
+                "held_start": hs, "held_end": he, "press": pr, "release": rl,
+                "held_known": [a is not None and b is not None for a, b in zip(hs, he)],
+                "press_known": [v is not None for v in pr], "release_known": [v is not None for v in rl],
+                "yaw_deg": yaw, "pitch_deg": None if rng.random() < pitch_unknown else rng.gauss(0, .5),
+                "beyond_pad_envelope": abs(yaw) > 415 / 30})
+            anchor += STEP_NS
+        anchor += 30 * PERIOD_NS
+    return header, rows
+
+
 # ---- video ------------------------------------------------------------------------------------------------------------
 
 def frame_colours(n):

@@ -51,7 +51,14 @@ with tarfile.open(fileobj=io.BytesIO(tar)) as archive:
             dst = out / member.name
             dst.parent.mkdir(parents=True, exist_ok=True)
             dst.write_bytes(archive.extractfile(member).read())
-extra = [SCAN] + [p for p in LANE if p not in blobs]
+
+def _differs(rel):   # a tracked lane file whose working copy is not the commit's blob (LF-normalized)
+    blob = subprocess.run(['git', '-C', str(ROOT), 'show', f'{commit}:{rel}'], capture_output=True).stdout
+    return (ROOT / rel).read_bytes().replace(b'\r\n', b'\n') != blob.replace(b'\r\n', b'\n')
+
+
+overlay = [p for p in LANE if p in blobs and _differs(p)]
+extra = [SCAN] + [p for p in LANE if p not in blobs] + overlay
 for rel in extra:
     dst = out / rel
     dst.parent.mkdir(parents=True, exist_ok=True)
@@ -63,13 +70,16 @@ for p in sorted(out.rglob('*')):
     rel = p.relative_to(out).as_posix()
     data = p.read_bytes()
     blob = blobs.get(rel)
+    if rel in overlay:
+        blob = None     # the lane's uncommitted change over this commit: listed by origin, pinned by sha256
     content = subprocess.run(['git', '-C', str(ROOT), 'show', f'{commit}:{rel}'], capture_output=True).stdout if blob else None
     files.append(dict(path=rel, sha256=hashlib.sha256(data).hexdigest(), size=len(data), git_blob=blob,
                       content_equals_git_blob=None if blob is None else
                       data.replace(b'\r\n', b'\n') == content.replace(b'\r\n', b'\n'),
                       origin='git archive' if blob and rel != SCAN else
                       ('reused regime scan (untracked data path), sha pinned' if rel == SCAN
-                       else 'admission lane module, not yet committed')))
+                       else ('admission lane module: uncommitted change over the commit' if rel in overlay
+                             else 'admission lane module, not yet committed'))))
 need(all(f['content_equals_git_blob'] in (True, None) for f in files), "failed: all(f['content_equals_git_blob'] in (True, None) for f in files)")
 manifest = dict(commit=commit, files=files,
                 note='agent/perception/policy/scripts are `git archive` bytes of the commit; the other files are '

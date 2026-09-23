@@ -1051,3 +1051,105 @@ Both used `code-snapshot-299ffba` (the reviewed module) and the settings identit
 
 **The fit lane's contract test** (`tests/test_range_bc_contract.py`) still calls the old `write_steps` signature
 (identity arguments, no denylist). It needs their update to the I1/I3 API.
+
+## 2026-09-23 (late): transcode acceptance (media relocation), an Alt-cut fix (admission-owner)
+
+**Media relocation** (`agent/human_intake.py`). The original's sha256 stays the session identity.
+- **`load_transcode_receipt`** reads the receipt of `scripts/transcode_recording.py` (`recording-transcode-v1`). It
+  refuses unless:
+  - the verification is clean: `ok`, decoded frame count and PTS digest, packet counts, and `frames.csv` matched
+    frames equal to the frame count;
+  - it names this session and this original's sha256;
+  - its output sha256 is distinct from the original's.
+- **`relocation_record`** makes the session artefact `media-relocation.json`: the identity sha256, the transcoded path
+  and sha256, the receipt `{path, sha256}` and the verification summary.
+- **`check_media`** accepts the original bytes, or the recorded transcode when the receipt is unchanged and still
+  clean; anything else is refused.
+- **`load_dataset_relocated`** runs in the importer's own order:
+  1. the denylist and `check_registry`;
+  2. the sealed header refusal;
+  3. placement equality, with the registry keeping `recorded_video_path` and `expected_media_sha256` = the original;
+  4. the payload checksum.
+
+  The transcode then replaces the original byte check, and the importer's `_build` rebuilds the dataset with frame
+  references to the transcode. `reprobe` also decodes the transcode and requires the imported PTS list.
+- **`check_freeze`** accepts a pinned original that is gone only through a pinned `media-relocation.json` in the same
+  folder, and only while the transcode verifies. A tampered transcode fails.
+- **Driver.** `data/human/sessions/relocate_session.py SESSION --receipt ... --snapshot ...` checks the receipt against
+  the session's frozen identity and logger files, writes the record, proves the load, and re-freezes as a new version.
+  It never transcodes or deletes.
+- **Tests.** Synthetic: the original or the transcode, the refusals, an importer-built dataset loading after its
+  original is deleted, and the freeze with and without the record.
+- **For pilot-prep.** The tool's `--delete-original` refuses whenever any file under `data/human` names the original,
+  which is always true for an admitted session. It should instead require that every session naming it holds a pinned
+  `media-relocation.json` for that receipt. No transcode runs while the game is up.
+
+**Alt-cut fix.** After the I2 refactor, UI cuts are built across the whole session, and the 2 s settle after an Alt-Tab
+spilled into the next focus interval (1.06 s at 200129's return). Alt and Win cuts now stay inside their own focus
+interval: the focus loss ends it, and the focus settle covers the return. This is tested. It changes no admitted
+session: 171533 and 051828 have no Alt followed by another focus interval inside accepted time.
+
+**Snapshot.** `code-snapshot-6f4dba2` is the landed commit plus this uncommitted lane change, listed as an overlay by
+origin and sha256. `archive_code_snapshot.py` now overlays tracked lane files whose working copy differs from the
+commit.
+
+**Correction (051828 provenance line).** 051828's `segments-evidence.json` (`a421dfe7...`, frozen and landed) carries
+an `earlier_steps` sentence hard-coded for 171533: that the earlier steps ran from `code-snapshot-72eee24`. For 051828
+every intake step ran from `code-snapshot-c0892ab`. Its evidence content is unaffected; the sentence is wrong. The
+driver now records the earlier steps' snapshot and manifest hash from an explicit `--earlier-snapshot` argument.
+
+**Pin form (CRLF hazard).** Text artefacts are pinned in **LF form**, `lf_sha256` = sha256 with CRLF normalised to
+LF. This covers the denylist (`load_denylist`), the registry and every other `.json`/`.jsonl`/`.md`/`.py`/`.csv`/`.txt`
+pin that `check_freeze` and `check_manifest` verify. The PC checks out with `core.autocrlf=true`, which made raw pins
+fail on a fresh checkout; the fit lane hit this with the denylist. Binary pins (media, images, arrays) stay raw.
+Every pin written so far was computed on LF files, so no value changes; the denylist's is still
+`57cfe01f29f6e1a55293f968ec697aa293c268bd87d7cf247ef648279e2fba7c`. A test checks that a CRLF copy still matches and
+that a binary pin does not.
+
+## 2026-09-23 (late): death cut; 200129 and take 2 review-ready (admission-owner)
+
+**The death cut, a new proposer rule** found on 200129's frames.
+- The hero died twice in 200129, both times by falling off the terrace. The HUD reader still reports the HUD present
+  on the death and "SPECTATING" screens.
+- **`dead` spans** come from runs of scan samples whose HP reads 0. Each runs from one ns after the last sample before
+  the run to `RESPAWN_SETTLE_NS` (1 s) after the first alive sample, because the respawn ghost is still on screen when
+  the HP reads full again (up to 0.4 s seen).
+- The fall before the death is play and is kept. There is a test.
+- No admitted session has an HP-0 sample, so 171533 and 051828 are unchanged. The driver also keeps the scan's HUD
+  presence as read (review I6).
+
+**Code.** Both sessions were re-proposed with `code-snapshot-23c8482` (the landed code plus the Alt fix and the death
+cut). The earlier steps ran from `code-snapshot-c0892ab`, which `segments-evidence.json` now records. The `.v1`
+candidates and evidence of the pre-review proposer are kept.
+
+| Session | Focused min | Gameplay candidates | Owner verdicts | Owner-provisional counted min |
+|---|---|---|---|---|
+| 200129 (H.264) | 26.78 | seg-002 3.76-5.85 s (spawn room before Alt-Tab), seg-007 7.06-765.52 s, seg-010 767.73-1,606.32 s | seg-007 and seg-010 accepted; seg-002 unresolved; two `dead` spans and the rest rejected | 26.62 |
+| take 2 205528 (HEVC) | 11.08 | seg-002 0.93-665.14 s | accepted; the rest rejected | 11.07 |
+
+**HEVC.** On take 2 the HUD reader reads HP in 96.4 % and web ammo in 82 % of 5 fps samples, against 95.4 % and 85 %
+on 200129's H.264. This is the first real-play evidence that the readers hold on HEVC; the regime is normal in both.
+
+Both sessions await the independent per-session review before assembly.
+
+**Amendment: the `dead` rule** (proposer; `agent.human_intake.dead_spans`, `RESPAWN_SETTLE_NS` = 1 s).
+
+- **Where the rule cuts.**
+  - Gameplay before a death ends at the last scan sample read alive before the run of HP-0 samples. The fall that
+    causes the death is play and stays accepted.
+  - The `dead` segment runs from one ns after that sample to 1 s after the first sample read alive again. It covers
+    the death, the "SPECTATING" countdown and the respawn ghost, and it is always rejected.
+  - Play after the respawn is a new gameplay segment. In the step file a segment boundary starts a new run, so no
+    run, history window or action bin crosses a death.
+- **The two frames that bound 200129's first death:**
+
+| Frame | Time (s) | Role | Decoded BGR sha256 | What it shows |
+|---|---|---|---|---|
+| 91848 | 765.524 | end of accepted seg-007 | `282f2e22838fe797d96c0810ca34fc347aa973f52e6537b87eed2f76d141f300` | alive, falling off the terrace edge (HP 284) |
+| 92113 | 767.732 | start of accepted seg-010 (a new run) | `83c47790221d765d4df64f410bdb6bf4ecacc6a3a7199cb5995df3759be70e9e` | respawned, running from the spawn room |
+
+  The frames are in `data/human/sessions/20260923T200129-346Z-33696-6/review-frames/` (`seg-007-91848.jpg`,
+  `seg-010-92113.jpg`). Between them, `seg-008` (frames 91849-92112) is HP 0, the spectating countdown and the
+  respawn ghost.
+- **The second death**, at 1,606.4 s: seg-010 ends at frame 192744 (1,606.324 s, alive, falling into the trees). The
+  `dead` span runs from frame 192745 until the Alt-Tab that ends the session.

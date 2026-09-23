@@ -53,7 +53,7 @@ class SessionArrays:
         n = len(session.rows)
         self.session, self.lag, self.regimes = session, lag, regimes
         self.act = torch.zeros(n, 3, vocab.N)
-        self.act_known = torch.zeros(n, vocab.N, dtype=torch.bool)
+        self.act_known = torch.zeros(n, 3, vocab.N, dtype=torch.bool)   # per channel: hold, press, release
         self.camera = torch.full((n, 2), vocab.ZERO_CLASS, dtype=torch.long)
         self.camera_known = torch.zeros(n, 2, dtype=torch.bool)       # per axis: yaw, pitch
         self.valid = torch.zeros(n, dtype=torch.bool)
@@ -71,7 +71,7 @@ class SessionArrays:
                 self.act[k, 0] = torch.tensor(t["held"], dtype=torch.float)
                 self.act[k, 1] = torch.tensor(t["press"], dtype=torch.float)
                 self.act[k, 2] = torch.tensor(t["release"], dtype=torch.float)
-                self.act_known[k] = torch.tensor(t["known"])
+                self.act_known[k] = torch.tensor([t["known"], t["press_known"], t["release_known"]])
                 for axis, key in ((0, "cy"), (1, "cp")):
                     if t[key] is not None:
                         self.camera_known[k, axis] = True
@@ -117,7 +117,7 @@ class Batches:
         frames = [torch.zeros(b, t, 3, *hw, dtype=torch.uint8) for hw in shapes]
         prev = torch.zeros(b, t, steps.PREV_DIM)
         act = torch.zeros(b, t, 3, vocab.N)
-        act_mask = torch.zeros(b, t, vocab.N, dtype=torch.bool)
+        act_mask = torch.zeros(b, t, 3, vocab.N, dtype=torch.bool)
         camera = torch.full((b, t, 2), vocab.ZERO_CLASS, dtype=torch.long)
         camera_mask = torch.zeros(b, t, 2, dtype=torch.bool)
         regime = torch.zeros(b, t)
@@ -132,7 +132,7 @@ class Batches:
             act[i, :length] = arr.act[rows]
             live = arr.valid[rows].clone()
             live[:steps.loss_mask_start(start, run_start, self.burn_in)] = False
-            act_mask[i, :length] = arr.act_known[rows] & live[:, None]
+            act_mask[i, :length] = arr.act_known[rows] & live[:, None, None]
             camera[i, :length] = arr.camera[rows]
             camera_mask[i, :length] = arr.camera_known[rows] & live[:, None]
             regime[i, :length] = arr.regime[rows]
@@ -175,15 +175,16 @@ def to_device(batch, device):
 # ---- loss -------------------------------------------------------------------------------------------------------------
 
 def loss_terms(action_logits, camera_logits, batch, pos_weight):
-    """Masked means: BCE for holds, BCE with pos_weight for press and release, CE for the camera classes."""
+    """Masked means: BCE for holds, BCE with pos_weight for press and release, CE for the camera classes. Each
+    channel has its own known mask [B, T, 3, N]: an unknown hold, press or release (a replay abstention, a hold
+    unknown after a focus snapshot) contributes nothing to its term."""
     mask = batch["act_mask"].float()
-    denom = mask.sum().clamp_min(1)
     terms = {}
     for i, name in enumerate(("held", "press", "release")):
         pw = None if i == 0 else pos_weight[i - 1]
         bce = F.binary_cross_entropy_with_logits(action_logits[:, :, i], batch["act"][:, :, i], reduction="none",
                                                  pos_weight=pw)
-        terms[name] = (bce * mask).sum() / denom
+        terms[name] = (bce * mask[:, :, i]).sum() / mask[:, :, i].sum().clamp_min(1)
     cm = batch["camera_mask"].float()                               # [B, T, 2]: per axis
     ce = F.cross_entropy(camera_logits.reshape(-1, vocab.CAMERA_CLASSES), batch["camera"].reshape(-1),
                          reduction="none").reshape(cm.shape)
@@ -196,8 +197,9 @@ def total_loss(terms):
 
 
 def pos_weights(stats):
-    press = [steps.pos_weight(stats["press"][c], stats["known"][c]) for c in range(vocab.N)]
-    release = [steps.pos_weight(stats["release"][c], stats["known"][c]) for c in range(vocab.N)]
+    press = [steps.pos_weight(stats["press"][c], stats.get("press_known", stats["known"])[c]) for c in range(vocab.N)]
+    release = [steps.pos_weight(stats["release"][c], stats.get("release_known", stats["known"])[c])
+               for c in range(vocab.N)]
     return torch.tensor([press, release])
 
 

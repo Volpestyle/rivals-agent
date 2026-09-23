@@ -44,9 +44,9 @@ Row:
     segment          str; suitability "accepted" | "rejected" | "unresolved"
     regime           "normal" | "no_ability_cooldown"  (per row, from the regime scan, R4/R5)
     tags, tag_source list of str; "james" | "reviewer" | "untagged" (untagged has no tags). Never a model input
-    held_start, held_end   13 x 0/1 per action (vocab.NAMES order): held at the step's start and end
-    held_known       13 x bool: false where the hold is unknown (after a focus snapshot, until resolved; F13)
-    press, release   13 x int >= 0: real transitions of the bound control in the step. A repeated make of a held key
+    held_start, held_end   14 x 0/1 per action (vocab.NAMES order): held at the step's start and end
+    held_known       14 x bool: false where the hold is unknown (after a focus snapshot, until resolved; F13)
+    press, release   14 x int >= 0: real transitions of the bound control in the step. A repeated make of a held key
                      is not a press, so press - release == held_end - held_start wherever the hold is known
     mouse_dx, mouse_dy     int or null: relative counts summed over the step (the fit converts to degrees)
     relative_known   bool: true requires both mouse values to be ints
@@ -55,6 +55,24 @@ Row:
     hud              object (optional, R12): reader outputs for stratification only, never a model input
 
 The fit derives history from earlier rows, so intake never materialises per-sample past events.
+
+A REPLAY source (`source_kind: "replay"`; lane doc "Replay labels"): expert replay footage labelled by the
+inverse-dynamics lane (camera degrees, semantic movement and holds, with abstentions) and the replay-hud lane (cast
+events as press onsets, per-frame ability states, with abstentions). Same format and framing fields as above; differs:
+    header   source_kind "replay"; calibration {kind: "replay_degrees", source, label_sources: {camera, movement,
+             edges}} (no counts-to-degrees gain); expert_context {player, match_id, viewer_fov_assumption,
+             replay_source} replaces the settings identity; swing_mode from the expert's control_context (null =
+             unknown). ABSENT, and refused if present: bindings, device_scope, injected_events, settings_hash,
+             accel_on, media_relocation. The sealed denylist is irrelevant to replays (no human take is a replay); the
+             reader still runs it and it cannot match
+    rows     held_start, held_end, press, release: 14 x (0 | 1 | null); per-control masks held_known, press_known,
+             release_known, each equal to "the value(s) are not null" (held_known covers start and end). press and
+             release are onset flags (0/1), never counts. yaw_deg, pitch_deg: float or null (degrees direct, no
+             mouse counts); beyond_pad_envelope: bool (the IDM's flag; the label is saturated, never silently
+             clipped). ABSENT, and refused if present: mouse_dx, mouse_dy, relative_known, wheel_v, wheel_h,
+             unsupported. hud (optional): replay-hud's per-frame ability states, for stratification only
+Every unknown channel is masked out of the loss and the metrics per channel, never read as "no". A replay row whose
+movement is unknown contributes nothing to the movement heads (tested). A cohort holds one source kind.
 """
 from dataclasses import dataclass, field
 import hashlib
@@ -68,6 +86,17 @@ SPLITS = ("train", "val", "test")
 SUITABILITY = ("accepted", "rejected", "unresolved")
 REGIMES = ("normal", "no_ability_cooldown")
 TAG_SOURCES = ("james", "reviewer", "untagged")
+SOURCE_KINDS = ("human", "replay")
+REPLAY_HEADER_KEYS = ("format", "source_kind", "session_id", "media_sha256", "session_group", "sitting", "split",
+                      "step_ns", "frame_period_ns", "actions", "calibration", "expert_context", "hud_layout",
+                      "swing_mode", "video_size", "patch")
+REPLAY_HEADER_ABSENT = ("bindings", "device_scope", "injected_events", "settings_hash", "accel_on", "media_relocation")
+REPLAY_ROW_KEYS = ("i", "run", "anchor_ns", "frame", "gap_free", "segment", "suitability", "regime", "tags",
+                   "tag_source", "held_start", "held_end", "held_known", "press", "release", "press_known",
+                   "release_known", "yaw_deg", "pitch_deg", "beyond_pad_envelope")
+REPLAY_ROW_ABSENT = ("mouse_dx", "mouse_dy", "relative_known", "wheel_v", "wheel_h", "unsupported")
+LABEL_SOURCES = ("camera", "movement", "edges")
+EXPERT_CONTEXT = ("player", "match_id", "viewer_fov_assumption", "replay_source")
 HEADER_KEYS = ("format", "session_id", "media_sha256", "session_group", "sitting", "split", "step_ns",
                "frame_period_ns", "actions", "bindings", "calibration", "accel_on", "hud_layout", "swing_mode",
                "video_size", "device_scope", "injected_events", "settings_hash", "patch")
@@ -160,10 +189,60 @@ def load_denylist(path=DENYLIST, sha256_pin=DENYLIST_SHA256):
         raise StepError(f"sealed denylist refused: {exc}") from exc
 
 
+def is_replay(h):
+    return h.get("source_kind", "human") == "replay"
+
+
+def _check_swing_mode(sm):
+    require(isinstance(sm, dict) and set(sm) == {"automatic_swing", "hold_to_swing"}
+            and all(v is None or isinstance(v, bool) for v in sm.values()),
+            "swing_mode must be {automatic_swing, hold_to_swing}, each a bool or null")
+
+
+def _check_video_size(size):
+    require(isinstance(size, list) and len(size) == 2 and all(_is_int(v) and v >= 256 for v in size),
+            "video_size must be [width, height], each >= 256")
+    require(size[0] * 9 == size[1] * 16, "video_size must be 16:9")
+
+
+def check_replay_header(h, *, allow_test=False):
+    missing = [k for k in REPLAY_HEADER_KEYS if k not in h]
+    require(not missing, f"replay header lacks {missing}")
+    present = [k for k in REPLAY_HEADER_ABSENT if k in h]
+    require(not present, f"a replay header must not carry {present} (human-only identity)")
+    require(h["split"] in SPLITS, f"unknown split {h['split']!r}")
+    require(h["split"] != "test" or allow_test, "test split is sealed: refused before reading any row")
+    require(isinstance(h["session_id"], str) and h["session_id"], "session_id must be a non-empty string")
+    require(h["session_group"] == h["session_id"], "session_group must equal session_id: the group is one recording")
+    require(isinstance(h["sitting"], str) and h["sitting"], "sitting must be a non-empty string")
+    require(_is_int(h["step_ns"]) and h["step_ns"] > 0 and _is_int(h["frame_period_ns"]) and h["frame_period_ns"] > 0,
+            "step_ns and frame_period_ns must be positive ints")
+    require(list(h["actions"]) == list(vocab.NAMES), "actions differ from the fit vocabulary (order included)")
+    cal = h["calibration"]
+    require(isinstance(cal, dict) and cal.get("kind") == "replay_degrees"
+            and isinstance(cal.get("source"), str) and cal["source"]
+            and isinstance(cal.get("label_sources"), dict) and set(cal["label_sources"]) == set(LABEL_SOURCES)
+            and all(isinstance(v, str) and v for v in cal["label_sources"].values()),
+            "replay calibration must be {kind: replay_degrees, source, label_sources: {camera, movement, edges}}")
+    ctx = h["expert_context"]
+    require(isinstance(ctx, dict) and all(k in ctx for k in EXPERT_CONTEXT)
+            and all(isinstance(ctx[k], str) and ctx[k] for k in ("player", "match_id", "replay_source"))
+            and (isinstance(ctx["viewer_fov_assumption"], str) and ctx["viewer_fov_assumption"]
+                 or _is_pos(ctx["viewer_fov_assumption"])),
+            f"expert_context needs {EXPERT_CONTEXT} (the FOV assumption as degrees or a named assumption)")
+    require(h["hud_layout"] == "mk", "training frames must show the mouse-and-keyboard HUD layout")
+    _check_swing_mode(h["swing_mode"])
+    _check_video_size(h["video_size"])
+    require(isinstance(h["patch"], str) and h["patch"], "patch must be a non-empty string")
+
+
 def check_header(h, *, allow_test=False, denylist=None):
     require(isinstance(h, dict) and h.get("format") == FORMAT, f"not a {FORMAT} step table")
+    require(h.get("source_kind", "human") in SOURCE_KINDS, f"source_kind must be one of {SOURCE_KINDS}")
     require(_hex64(h.get("media_sha256")), "header needs the recording's media_sha256")
     check_sealed(h.get("session_id"), h["media_sha256"], denylist)
+    if is_replay(h):
+        return check_replay_header(h, allow_test=allow_test)
     missing = [k for k in HEADER_KEYS if k not in h]
     require(not missing, f"header lacks {missing}")
     require(h["split"] in SPLITS, f"unknown split {h['split']!r}")
@@ -193,21 +272,69 @@ def check_header(h, *, allow_test=False, denylist=None):
             "multi-speed take)")
     require(isinstance(h["accel_on"], bool), "accel_on must be a bool")
     require(h["hud_layout"] == "mk", "training frames must show the mouse-and-keyboard HUD layout")
-    sm = h["swing_mode"]
-    require(isinstance(sm, dict) and set(sm) == {"automatic_swing", "hold_to_swing"}
-            and all(v is None or isinstance(v, bool) for v in sm.values()),
-            "swing_mode must be {automatic_swing, hold_to_swing}, each a bool or null")
-    size = h["video_size"]
-    require(isinstance(size, list) and len(size) == 2 and all(_is_int(v) and v >= 256 for v in size),
-            "video_size must be [width, height], each >= 256")
-    require(size[0] * 9 == size[1] * 16, "video_size must be 16:9")
+    _check_swing_mode(h["swing_mode"])
+    _check_video_size(h["video_size"])
     require(h["device_scope"] == "single_keyboard_mouse", "device scope must be single_keyboard_mouse")
     require(h["injected_events"] == 0, "injected (device 0) events in a human session")
     require(isinstance(h["settings_hash"], str) and h["settings_hash"], "settings_hash must be a non-empty string")
     require(isinstance(h["patch"], str) and h["patch"], "patch must be a non-empty string")
 
 
+def _check_framing(r, h, k, keys):
+    where = f"row {k}"
+    require(isinstance(r, dict), f"{where}: not an object")
+    missing = [key for key in keys if key not in r]
+    require(not missing, f"{where}: lacks {missing}")
+    require(r["i"] == k, f"{where}: i is {r['i']!r}")
+    require(isinstance(r["run"], str) and r["run"], f"{where}: run must be a non-empty string")
+    require(_is_int(r["anchor_ns"]), f"{where}: anchor_ns must be an int")
+    f = r["frame"]
+    require(isinstance(f, dict) and all(key in f for key in FRAME_KEYS), f"{where}: frame lacks {FRAME_KEYS}")
+    require(_is_int(f["frame_index"]) and f["frame_index"] >= 0, f"{where}: frame_index must be an int >= 0")
+    require(_is_int(f["pts"]) and _is_int(f["composition_ns"]), f"{where}: pts and composition_ns must be ints")
+    tb = f["timebase"]
+    require(isinstance(tb, list) and len(tb) == 2 and all(_is_int(v) and v > 0 for v in tb), f"{where}: bad timebase")
+    age = r["anchor_ns"] - f["composition_ns"]
+    require(0 <= age <= 2 * h["frame_period_ns"], f"{where}: frame age {age} ns outside [0, 2 frame periods]")
+    require(isinstance(r["gap_free"], bool), f"{where}: gap_free must be a bool")
+    require(r["suitability"] in SUITABILITY, f"{where}: suitability {r['suitability']!r}")
+    require(r["regime"] in REGIMES, f"{where}: regime {r['regime']!r}")
+    require(r["tag_source"] in TAG_SOURCES, f"{where}: tag_source {r['tag_source']!r}")
+    require(isinstance(r["tags"], list) and all(isinstance(t, str) for t in r["tags"]), f"{where}: tags")
+    require(r["tag_source"] != "untagged" or not r["tags"], f"{where}: untagged row carries tags")
+    require("hud" not in r or isinstance(r["hud"], dict), f"{where}: hud must be an object")
+
+
+def check_replay_row(r, h, k):
+    where = f"row {k}"
+    _check_framing(r, h, k, REPLAY_ROW_KEYS)
+    present = [key for key in REPLAY_ROW_ABSENT if key in r]
+    require(not present, f"{where}: a replay row must not carry {present} (degrees come direct, no mouse counts)")
+    bit_or_none = lambda v: v is None or (v in (0, 1) and not isinstance(v, bool))
+    for key in ("held_start", "held_end", "press", "release"):
+        require(isinstance(r[key], list) and len(r[key]) == vocab.N and all(map(bit_or_none, r[key])),
+                f"{where}: {key} must be {vocab.N} x (0 | 1 | null)")
+    for key in ("held_known", "press_known", "release_known"):
+        require(isinstance(r[key], list) and len(r[key]) == vocab.N and all(isinstance(v, bool) for v in r[key]),
+                f"{where}: {key} must be {vocab.N} x bool")
+    for c in range(vocab.N):
+        name = vocab.NAMES[c]
+        require(r["held_known"][c] == (r["held_start"][c] is not None and r["held_end"][c] is not None),
+                f"{where}: {name} held_known disagrees with its held values")
+        require(r["press_known"][c] == (r["press"][c] is not None), f"{where}: {name} press_known disagrees")
+        require(r["release_known"][c] == (r["release"][c] is not None), f"{where}: {name} release_known disagrees")
+        if r["held_known"][c] and r["press_known"][c] and r["release_known"][c]:
+            require(r["press"][c] - r["release"][c] == r["held_end"][c] - r["held_start"][c],
+                    f"{where}: {name} edges do not account for its hold change")
+    for key in ("yaw_deg", "pitch_deg"):
+        v = r[key]
+        require(v is None or (isinstance(v, (int, float)) and not isinstance(v, bool)), f"{where}: {key} float|null")
+    require(isinstance(r["beyond_pad_envelope"], bool), f"{where}: beyond_pad_envelope must be a bool")
+
+
 def check_row(r, h, k):
+    if is_replay(h):
+        return check_replay_row(r, h, k)
     where = f"row {k}"
     require(isinstance(r, dict), f"{where}: not an object")
     missing = [key for key in ROW_KEYS if key not in r]
@@ -307,6 +434,8 @@ def load_cohort(paths, *, splits=("train", "val"), allow_test=False, denylist=No
     require(paths, "no step tables supplied")
     require("test" not in splits or allow_test, "test split is sealed")
     sessions = [load(p, allow_test=allow_test, denylist=denylist) for p in paths]
+    kinds = {s.header.get("source_kind", "human") for s in sessions}
+    require(len(kinds) == 1, f"a cohort holds one source kind, got {sorted(kinds)} (mixed pretraining is future work)")
     ids = [s.session_id for s in sessions]
     require(len(set(ids)) == len(ids), "a session appears twice")
     media = [s.header["media_sha256"] for s in sessions]
@@ -314,8 +443,10 @@ def load_cohort(paths, *, splits=("train", "val"), allow_test=False, denylist=No
     first = sessions[0].header
     for s in sessions:
         require(s.split in splits, f"{s.session_id}: split {s.split} not requested")
-        for key in ("settings_hash", "patch", "step_ns", "frame_period_ns", "video_size", "bindings", "calibration",
-                    "swing_mode", "accel_on"):
+        keys = (("patch", "step_ns", "frame_period_ns", "video_size", "calibration") if is_replay(s.header) else
+                ("settings_hash", "patch", "step_ns", "frame_period_ns", "video_size", "bindings", "calibration",
+                 "swing_mode", "accel_on"))
+        for key in keys:
             require(s.header[key] == first[key], f"{s.session_id}: {key} differs from the cohort")
     return sessions
 
@@ -390,9 +521,33 @@ def train_minutes(sessions, *, regimes=("normal",), min_run=MIN_RUN):
 
 # ---- targets and previous-action encoding ----------------------------------------------------------------------------
 
+def _replay_target(row):
+    """A replay step: nullable values become 0 under a False per-channel known mask; degrees come direct."""
+    z = lambda vs: [0 if v is None else int(v) for v in vs]
+    yaw, pitch = row["yaw_deg"], row["pitch_deg"]
+    return {
+        "held": z(row["held_end"]), "held_start": z(row["held_start"]),
+        "press": z(row["press"]), "release": z(row["release"]),
+        "known": list(row["held_known"]), "press_known": list(row["press_known"]),
+        "release_known": list(row["release_known"]),
+        "multi": [0] * vocab.N,
+        "camera_known": yaw is not None or pitch is not None,
+        "yaw": yaw, "pitch": pitch,
+        "cy": vocab.camera_class(yaw) if yaw is not None else None,
+        "cp": vocab.camera_class(pitch) if pitch is not None else None,
+        "clamped": bool(any(v is not None and abs(v) > vocab.CLAMP_DEG for v in (yaw, pitch))),
+        "beyond_pad_envelope": row["beyond_pad_envelope"],
+        "presses": sum(v for v in row["press"] if v is not None),
+        "unsupported": 0,
+    }
+
+
 def target(row, calibration):
     """One step's supervised action: semantic holds and edges, camera rotation in degrees and its classes.
-    Multi-edge steps keep press/release = 1 and are counted, not reproduced."""
+    Multi-edge steps keep press/release = 1 and are counted, not reproduced. Every target carries per-channel known
+    masks: `known` (the hold), `press_known`, `release_known`; a human row's edges are known where its hold is."""
+    if calibration.get("kind") == "replay_degrees":
+        return _replay_target(row)
     rel = row["relative_known"]
     pitch_gain = calibration["pitch_deg_per_count"]
     yaw = row["mouse_dx"] * calibration["yaw_deg_per_count"] if rel else None
@@ -403,6 +558,8 @@ def target(row, calibration):
         "press": [int(v > 0) for v in row["press"]],
         "release": [int(v > 0) for v in row["release"]],
         "known": list(row["held_known"]),
+        "press_known": list(row["held_known"]),
+        "release_known": list(row["held_known"]),
         "multi": [int(p > 1 or q > 1) for p, q in zip(row["press"], row["release"])],
         "camera_known": rel,
         "yaw": yaw,
@@ -426,9 +583,14 @@ def prev_vector(t):
     if t is None:
         return v
     n, m = vocab.N, vocab.CAMERA_CLASSES
+    pk, rk = t.get("press_known", t["known"]), t.get("release_known", t["known"])
     for c in range(n):
         if t["known"][c]:
-            v[c], v[n + c], v[2 * n + c] = float(t["held"][c]), float(t["press"][c]), float(t["release"][c])
+            v[c] = float(t["held"][c])
+        if pk[c]:
+            v[n + c] = float(t["press"][c])
+        if rk[c]:
+            v[2 * n + c] = float(t["release"][c])
     if t.get("cy") is not None:
         v[3 * n + t["cy"]] = 1.
     if t.get("cp") is not None:
@@ -468,6 +630,7 @@ def train_statistics(sessions, *, regimes=("normal",)):
     require(all(s.split == "train" for s in sessions), "statistics come from the train split only")
     n = vocab.N
     stats = {"steps": 0, "press": [0] * n, "release": [0] * n, "held": [0] * n, "known": [0] * n,
+             "press_known": [0] * n, "release_known": [0] * n,
              "camera": {"yaw": [0] * vocab.CAMERA_CLASSES, "pitch": [0] * vocab.CAMERA_CLASSES},
              "longest_hold": [0] * n, "drift": {"yaw": [None, None], "pitch": [None, None]}}
     for s in sessions:
@@ -485,12 +648,16 @@ def train_statistics(sessions, *, regimes=("normal",)):
                 if not r["gap_free"]:
                     continue
                 stats["steps"] += 1
-                for c in range(n):
+                for c in range(n):          # per channel: an unknown channel counts neither way
                     if t["known"][c]:
                         stats["known"][c] += 1
-                        stats["press"][c] += t["press"][c]
-                        stats["release"][c] += t["release"][c]
                         stats["held"][c] += t["held"][c]
+                    if t["press_known"][c]:
+                        stats["press_known"][c] += 1
+                        stats["press"][c] += t["press"][c]
+                    if t["release_known"][c]:
+                        stats["release_known"][c] += 1
+                        stats["release"][c] += t["release"][c]
                 if t["cy"] is not None:
                     stats["camera"]["yaw"][t["cy"]] += 1
                 if t["cp"] is not None:
@@ -501,8 +668,10 @@ def train_statistics(sessions, *, regimes=("normal",)):
                     lo, hi = stats["drift"][axis]
                     stats["drift"][axis] = [mean if lo is None else min(lo, mean), mean if hi is None else max(hi, mean)]
     stats["live_mask"] = list(vocab.live_mask(stats["press"], sessions[0].header["swing_mode"] if sessions else None))
-    stats["pitch_gain_known"] = all(s.calibration["pitch_deg_per_count"] is not None for s in sessions)
-    stats["pitch_gain_kind"] = sorted({(s.calibration.get("pitch") or {}).get("kind") or "unknown" for s in sessions})
+    replay = lambda s: s.calibration.get("kind") == "replay_degrees"      # degrees come direct: no pitch gain
+    stats["pitch_gain_known"] = all(replay(s) or s.calibration["pitch_deg_per_count"] is not None for s in sessions)
+    stats["pitch_gain_kind"] = sorted({"replay_degrees" if replay(s) else
+                                       (s.calibration.get("pitch") or {}).get("kind") or "unknown" for s in sessions})
     stats["degree_caveat"] = vocab.DEGREE_CAVEAT
     return stats
 

@@ -112,7 +112,7 @@ def test_session_arrays_and_batches(tmp_path):
     assert batch["prev"][0, 0].sum() == 0 and batch["prev"][0, 1, -1] == 1     # run start: no previous action
     fwd = vocab.INDEX["move_forward"]
     unknown = [150, 151, 152]                                                 # the fixture's unknown hold after run1
-    assert not arr.act_known[unknown, fwd].any() and arr.act_known[unknown, vocab.INDEX["jump"]].all()
+    assert not arr.act_known[unknown, :, fwd].any() and arr.act_known[unknown, :, vocab.INDEX["jump"]].all()
     blind = train.Batches([arr], frames=False).batch([0, 1], torch.Generator().manual_seed(0))
     assert blind["global"].shape == (2, 96, 3, 1, 1) and blind["aug"] is None
 
@@ -408,3 +408,33 @@ def test_a_failed_parity_makes_the_no_hud_arm_the_candidate_with_stride_and_unkn
     ok, rep = verify.verify(out, "val", [paths["v"]], tmp_path / "caches", denylist=steps.load_denylist(),
                             report_sha256=hashlib.sha256((out / "report.json").read_bytes()).hexdigest())
     assert ok, rep["failed"]
+
+
+# ---- replay source: an unknown channel never reaches the loss ----------------------------------------------------------
+
+def test_a_replay_row_with_unknown_movement_never_contributes_to_the_movement_loss(tmp_path):
+    header, rows = fixture.replay_session("rp", runs=(150,), seed=3)
+    path = fixture.write(tmp_path / "rp.jsonl", header, rows)
+    session = steps.load(path)
+    fake_cache(tmp_path / "caches" / "rp", session)
+    arr = train.SessionArrays(session, cache.open_cache(tmp_path / "caches" / "rp", session))
+    b = train.Batches([arr]).batch([0])                                          # the run's first window: no burn-in
+    move = [vocab.INDEX[n] for n in fixture.REPLAY_MOVE]
+    unknown = [k for k in range(96) if rows[k]["held_known"][move[0]] is False]
+    known = [k for k in range(96) if rows[k]["held_known"][move[0]] and rows[k]["gap_free"]]
+    assert unknown and known
+    assert not b["act_mask"][0, unknown][:, :, move].any()                      # every channel of every direction
+    # gradient: exactly zero on unknown movement, non-zero where movement is known
+    acts = torch.zeros(1, 96, 3, vocab.N, requires_grad=True)
+    cams = torch.zeros(1, 96, 2, vocab.CAMERA_CLASSES, requires_grad=True)
+    train.total_loss(train.loss_terms(acts, cams, b, torch.ones(2, vocab.N))).backward()
+    g = acts.grad[0][:, :, move]
+    assert g[unknown].abs().sum() == 0 and g[known].abs().sum() > 0
+    # and the loss does not move when the (masked) values behind an unknown label change
+    flipped = dict(b)
+    act = b["act"].clone()
+    act[0, torch.tensor(unknown)[:, None], :, torch.tensor(move)[None, :]] = 1.
+    flipped["act"] = act
+    base = train.total_loss(train.loss_terms(acts.detach(), cams.detach(), b, torch.ones(2, vocab.N)))
+    after = train.total_loss(train.loss_terms(acts.detach(), cams.detach(), flipped, torch.ones(2, vocab.N)))
+    assert torch.equal(base, after)

@@ -48,8 +48,11 @@ MAX_HUD_GAP_NS = 2 * S      # HUD-reader misses shorter than this stay inside ga
 # After focus returns, the first frames can still carry desktop pixels (171533: the Windows taskbar over the HUD
 # for one frame after the focus event); gameplay starts no earlier than this after every focus-interval start.
 FOCUS_SETTLE_NS = 250_000_000
+# After a death the HP reads full again while the respawn ghost and its "SPECTATING" countdown are still on screen
+# (200129: up to 0.4 s); play resumes no earlier than this after the first alive sample.
+RESPAWN_SETTLE_NS = 1_000_000_000
 # Cut reasons, strongest first: the reason a non-gameplay hole reports when several cuts cover it.
-CUT_ORDER = ("settings_menu", "after_settings_menu", "ui_key", "focus_transition", "afk", "capture_gap",
+CUT_ORDER = ("settings_menu", "after_settings_menu", "ui_key", "dead", "focus_transition", "afk", "capture_gap",
              "regime_differs_from_session")
 SUITABILITY = ("accepted", "rejected", "unresolved")
 TAG_DIMENSIONS = ("range", "approach", "target", "resources")
@@ -102,7 +105,8 @@ def ui_cuts(keys, intervals, settle_ns=UI_SETTLE_NS):
     until released. Each span is cut from its opening packet to its closing packet plus `settle_ns`; a span never
     closed runs to the end of its focus interval. Keys inside an open chat are typing, not commands. An Esc that
     closes chat or an overlay is consumed; any other Esc opens the settings menu (R3). Alt and Win cut a settle
-    after the packet (focus loss ends the interval anyway). Returns `(cuts, settings_esc_times)`.
+    after the packet, never past their own focus interval (the focus loss that follows ends it, and the focus
+    settle covers the return). Returns `(cuts, settings_esc_times)`.
     """
     keys = sorted((int(t), int(vk), bool(down)) for t, vk, *rest in keys for down in [rest[0] if rest else True])
     _require(all(vk in UI_KEYS for _, vk, _ in keys), "ui keys must be UI key packets")
@@ -138,8 +142,8 @@ def ui_cuts(keys, intervals, settle_ns=UI_SETTLE_NS):
             else:
                 esc.append(t)
                 cuts.append((t, t + settle_ns, "settings_menu"))
-        else:
-            cuts.append((t, t + settle_ns, "ui_key"))
+        else:   # Alt / Win: the focus loss that follows ends the interval, so the cut stays inside it
+            cuts.append((t, min(t + settle_ns, end_of(t)), "ui_key"))
     for opened in [chat, tab, *overlays.values()]:
         if opened is not None:
             cuts.append((opened, end_of(opened), "ui_key"))
@@ -164,9 +168,32 @@ def raw_input_gaps(raw_events):
 
 # ---- proposer -------------------------------------------------------------------------------------------
 
-def _cuts(a, b, *, ui, controls, gaps, regime_spans, session_regime, esc_from, afk_ns, focus_settle_ns):
+def dead_spans(samples, dead):
+    """Cut spans for the hero's death (HP read as 0): each run of dead samples, widened to the neighbouring samples.
+
+    While dead (spectating until the respawn) inputs do nothing, so those rows are not play. The fall or hit before
+    is play and is kept. The cut starts one ns after the last sample before the run and ends `RESPAWN_SETTLE_NS`
+    after the first alive sample, because the respawn ghost is still on screen when the HP reads full again.
+    """
+    times = sorted(t for t, _ in samples)
+    dead = set(dead)
+    spans, i = [], 0
+    while i < len(times):
+        if times[i] not in dead:
+            i += 1
+            continue
+        j = i
+        while j + 1 < len(times) and times[j + 1] in dead:
+            j += 1
+        alive = times[j + 1] if j + 1 < len(times) else times[j] + 1
+        spans.append((times[i - 1] + 1 if i else times[i], alive + RESPAWN_SETTLE_NS, "dead"))
+        i = j + 1
+    return spans
+
+
+def _cuts(a, b, *, ui, controls, gaps, regime_spans, session_regime, esc_from, afk_ns, focus_settle_ns, dead=()):
     cuts = [(a, a + focus_settle_ns, "focus_transition")] if focus_settle_ns else []
-    cuts += list(ui)
+    cuts += list(ui) + list(dead)
     if esc_from is not None:
         cuts.append((esc_from, b, "after_settings_menu"))
     if controls is not None:
@@ -182,12 +209,13 @@ def _cuts(a, b, *, ui, controls, gaps, regime_spans, session_regime, esc_from, a
 
 def propose_segments(intervals, hud_samples, *, ui_keys=(), controls=None, gaps=(), regime_spans=(),
                      session_regime="normal", native=None, afk_ns=AFK_NS, ui_settle_ns=UI_SETTLE_NS,
-                     max_hud_gap_ns=MAX_HUD_GAP_NS, focus_settle_ns=FOCUS_SETTLE_NS):
+                     max_hud_gap_ns=MAX_HUD_GAP_NS, focus_settle_ns=FOCUS_SETTLE_NS, dead=()):
     """Candidate segments tiling every focused interval, plus the session flags.
 
     Gameplay = runs of HUD-present samples (reader misses shorter than `max_hud_gap_ns` absorbed), minus every
     cut: `[focus start, + focus_settle_ns)` after every focus regain, the UI spans of `ui_cuts` (R1, I2: chat and
-    overlays from their opening to their closing packet plus the settle), everything after the first real Esc (R3: proposed `after_settings_menu`, never acceptable), `afk_ns`
+    overlays from their opening to their closing packet plus the settle), the hero's deaths (`dead`: samples whose
+    HP reads 0, widened to the neighbouring samples), everything after the first real Esc (R3: proposed `after_settings_menu`, never acceptable), `afk_ns`
     without control-affecting input (R6), capture gaps and other-regime spans. Each gameplay piece starts at its
     first HUD-present sample and ends one ns after its last HUD-present sample that precedes any cut, so both
     edges are verified gameplay frames (conservative).
@@ -201,6 +229,7 @@ def propose_segments(intervals, hud_samples, *, ui_keys=(), controls=None, gaps=
     samples = sorted((int(t), p) for t, p in hud_samples)
     _require(all(p in (True, False, None) for _, p in samples), "HUD presence must be True, False or None")
     ui, esc = ui_cuts(ui_keys, intervals, ui_settle_ns)
+    dead_cuts = dead_spans(samples, dead)
     esc_from = esc[0] if esc else None
     flags = []
     if esc_from is not None:
@@ -213,7 +242,7 @@ def propose_segments(intervals, hud_samples, *, ui_keys=(), controls=None, gaps=
         times = [t for t, _ in inside]
         cuts = _cuts(a, b, ui=ui, controls=controls, gaps=gaps, regime_spans=regime_spans,
                      session_regime=session_regime, esc_from=esc_from if esc_from is not None and esc_from < b else None,
-                     afk_ns=afk_ns, focus_settle_ns=focus_settle_ns)
+                     afk_ns=afk_ns, focus_settle_ns=focus_settle_ns, dead=dead_cuts)
         cut_at = lambda t: any(s <= t < e for s, e, _ in cuts)
         # gameplay pieces: present samples not inside any cut, split where a cut or a long HUD hole intervenes
         pieces, run = [], []
@@ -397,7 +426,7 @@ def load_denylist(path, *, sha256_pin=None):
     """The independent sealed denylist: {schema_version, sessions: [{session_id, media_path, media_sha256}]}."""
     path = Path(path)
     if sha256_pin is not None:
-        _require(sha256(path) == sha256_pin, "sealed denylist differs from its pinned sha256")
+        _require(lf_sha256(path) == sha256_pin, "sealed denylist differs from its pinned sha256 (LF form)")
     doc = json.loads(path.read_text(encoding="utf-8"))
     _require(doc.get("schema_version") == 1 and isinstance(doc.get("sessions"), list) and doc["sessions"],
              "sealed denylist needs sessions")
@@ -536,6 +565,23 @@ def render_tally(t, *, stride_note=""):
     return "\n".join(lines) + "\n"
 
 
+# Text artefacts are pinned in LF form, so a CRLF checkout (core.autocrlf=true on the PC) still matches its pin.
+TEXT_SUFFIXES = (".json", ".jsonl", ".md", ".py", ".csv", ".txt")
+
+
+def lf_sha256(path):
+    """sha256 of a text file with CRLF normalised to LF: the pin form of denylist, registry and text artefacts."""
+    return hashlib.sha256(Path(path).read_bytes().replace(b"\r\n", b"\n")).hexdigest()
+
+
+def pin_matches(path, value):
+    """A pinned file matches: raw bytes, or for text artefacts their LF-normalised form."""
+    path = Path(path)
+    if not path.is_file():
+        return False
+    return sha256(path) == value or (path.suffix.lower() in TEXT_SUFFIXES and lf_sha256(path) == value)
+
+
 def sha256(path):
     h = hashlib.sha256()
     with open(path, "rb") as f:
@@ -579,7 +625,7 @@ def check_freeze(folder, *, root, out_name="artifact-hashes.json"):
 
     def pinned_ok(key, value):
         f = resolve(key)
-        if f.is_file() and sha256(f) == value:
+        if pin_matches(f, value):
             return True
         if relocation is None or relocation.get("identity_sha256") != value:
             return False
@@ -614,7 +660,7 @@ def manifest(session_dirs, *, root, registry, denylist_path):
 def check_manifest(doc, *, root):
     root = Path(root)
     refs = [doc["registry"], doc["denylist"]] + [x for e in doc["sessions"] for x in (e["artifact_hashes"], e["sampling"])]
-    bad = [r["path"] for r in refs if sha256(root / r["path"]) != r["sha256"]]
+    bad = [r["path"] for r in refs if not pin_matches(root / r["path"], r["sha256"])]
     for e in doc["sessions"]:
         bad += check_freeze((root / e["artifact_hashes"]["path"]).parent, root=root)
     return bad

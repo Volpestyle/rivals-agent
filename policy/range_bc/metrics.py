@@ -69,7 +69,8 @@ def evaluate(runs, *, early=1, late=1, self_fed=False):
     per = {name: {"held_tp": 0, "held_tn": 0, "held_pos": 0, "held_neg": 0, "chg": [0, 0, 0],
                   "press": [0, 0, 0], "release": [0, 0, 0], "press_tol": [0, 0, 0], "release_tol": [0, 0, 0],
                   "scores": {"held": ([], []), "press": ([], []), "release": ([], [])},
-                  "pred_press": 0, "true_press": 0, "steps": 0, "multi": 0} for name in vocab.NAMES}
+                  "pred_press": 0, "true_press": 0, "steps": 0, "press_steps": 0, "multi": 0}
+           for name in vocab.NAMES}
     camera = {axis: _camera_block() for axis in ("yaw", "pitch")}
     steps = valid = unsupported = presses = 0
     for run in runs:
@@ -85,27 +86,29 @@ def evaluate(runs, *, early=1, late=1, self_fed=False):
             t = rec["target"]
             unsupported += t["unsupported"]
             presses += t["presses"]
+            pk, rk = t.get("press_known", t["known"]), t.get("release_known", t["known"])
             for c, name in enumerate(vocab.NAMES):
-                if not t["known"][c]:
-                    continue
                 m = per[name]
-                m["steps"] += 1
-                m["multi"] += t["multi"][c]
-                held = pred["held"][c] >= THRESHOLD
-                if t["held"][c]:
-                    m["held_pos"] += 1
-                    m["held_tp"] += held
-                else:
-                    m["held_neg"] += 1
-                    m["held_tn"] += not held
-                true_chg = t["held"][c] != t["held_start"][c]
-                pred_chg = int(held) != (was[c] if self_fed else t["held_start"][c])
-                m["chg"][0] += true_chg and pred_chg
-                m["chg"][1] += pred_chg and not true_chg
-                m["chg"][2] += true_chg and not pred_chg
-                m["scores"]["held"][0].append(pred["held"][c])
-                m["scores"]["held"][1].append(t["held"][c])
-                for ch in ("press", "release"):
+                if t["known"][c]:                      # hold channel: only where the hold is known
+                    m["steps"] += 1
+                    m["multi"] += t["multi"][c]
+                    held = pred["held"][c] >= THRESHOLD
+                    if t["held"][c]:
+                        m["held_pos"] += 1
+                        m["held_tp"] += held
+                    else:
+                        m["held_neg"] += 1
+                        m["held_tn"] += not held
+                    true_chg = t["held"][c] != t["held_start"][c]
+                    pred_chg = int(held) != (was[c] if self_fed else t["held_start"][c])
+                    m["chg"][0] += true_chg and pred_chg
+                    m["chg"][1] += pred_chg and not true_chg
+                    m["chg"][2] += true_chg and not pred_chg
+                    m["scores"]["held"][0].append(pred["held"][c])
+                    m["scores"]["held"][1].append(t["held"][c])
+                for ch, known in (("press", pk), ("release", rk)):   # edge channels: each only where it is known
+                    if not known[c]:
+                        continue
                     p, y = pred[ch][c] >= THRESHOLD, t[ch][c]
                     m[ch][0] += p and y
                     m[ch][1] += p and not y
@@ -116,8 +119,10 @@ def evaluate(runs, *, early=1, late=1, self_fed=False):
                         positions[name][ch][0].append(pos)
                     if p:
                         positions[name][ch][1].append(pos)
-                m["pred_press"] += pred["press"][c] >= THRESHOLD
-                m["true_press"] += t["press"][c]
+                if pk[c]:
+                    m["press_steps"] += 1
+                    m["pred_press"] += pred["press"][c] >= THRESHOLD
+                    m["true_press"] += t["press"][c]
             if t["camera_known"]:
                 prev = rec["prev"]
                 for axis in ("yaw", "pitch"):
@@ -148,8 +153,8 @@ def evaluate(runs, *, early=1, late=1, self_fed=False):
     for name, m in per.items():
         recalls = [r for r in ((m["held_tp"] / m["held_pos"]) if m["held_pos"] else None,
                                (m["held_tn"] / m["held_neg"]) if m["held_neg"] else None) if r is not None]
-        human_rate = m["true_press"] / m["steps"] if m["steps"] else 0.
-        pred_rate = m["pred_press"] / m["steps"] if m["steps"] else 0.
+        human_rate = m["true_press"] / m["press_steps"] if m["press_steps"] else 0.
+        pred_rate = m["pred_press"] / m["press_steps"] if m["press_steps"] else 0.
         actions[name] = {
             "steps": m["steps"], "multi_edge_steps": m["multi"],
             "held_balanced_accuracy": sum(recalls) / len(recalls) if recalls else None,

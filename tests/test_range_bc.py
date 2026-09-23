@@ -567,7 +567,7 @@ def test_cache_refuses_a_video_of_another_size(tmp_path):
 @needs_ffmpeg
 def test_cache_refuses_other_media_another_timebase_and_unpinned_colour(tmp_path):
     path, _ = _cached_session(tmp_path, media="0" * 64)
-    with pytest.raises(cache.CacheError, match="media_sha256"):
+    with pytest.raises(cache.CacheError, match="differs from the session's original"):
         cache.build(steps.load(path), tmp_path / "c1", any_platform=True)
     (tmp_path / "c.jsonl").unlink()
     path, _ = _cached_session(tmp_path, video=tmp_path / "v.mkv", timebase=(1, 90000))
@@ -724,3 +724,185 @@ def test_the_derived_pitch_gain_is_usable_and_recorded(tmp_path):
     assert steps.target(s.rows[5], s.calibration)["pitch"] is not None
     null = steps.train_statistics([steps.load(write_session(tmp_path, "n", pitch_gain=None))])
     assert not null["pitch_gain_known"]
+
+
+# ---- D2: a recorded transcode is accepted, anything else refused (intake's check_media contract) --------------------
+
+def _transcoded(tmp_path, original, name="t.mkv"):
+    """A lossless re-encode of the fixture video: different bytes, the same frames and pts."""
+    import subprocess
+    out = tmp_path / name
+    subprocess.run(["ffmpeg", "-v", "error", "-i", str(original), "-map", "0:v:0", "-c:v", "ffv1", "-level", "3",
+                    "-slices", "4", "-pix_fmt", "bgr0", str(out)], check=True)
+    return out
+
+
+def _relocation(tmp_path, session, original, transcode, *, identity=None):
+    from agent import human_intake as hi
+    receipt = tmp_path / "receipt.json"
+    receipt.write_text(json.dumps({
+        "kind": hi.TRANSCODE_KIND, "session_id": session.session_id,
+        "original": {"path": str(original), "sha256": identity or session.header["media_sha256"]},
+        "output": {"path": str(transcode), "sha256": cache.file_sha256(transcode)},
+        "verification": {"ok": True, "decoded_frames": 140, "decoded_pts_sha256": "e" * 64, "packets": {"n": 140},
+                         "frames_csv": {"matched_frames": 140}},
+        "original_deleted": False}), encoding="utf-8")
+    rec = hi.relocation_record(receipt, session_id=session.session_id,
+                               identity_sha256=identity or session.header["media_sha256"])
+    path = tmp_path / "media-relocation.json"
+    path.write_text(json.dumps(rec), encoding="utf-8")
+    return path, hashlib_sha(path)
+
+
+def hashlib_sha(path):
+    import hashlib
+    return hashlib.sha256(path.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
+
+
+@needs_ffmpeg
+def test_cache_accepts_the_recorded_transcode_and_decodes_it(tmp_path):
+    path, rows = _cached_session(tmp_path)
+    session = steps.load(path)
+    original = tmp_path / "v.mkv"
+    m0 = cache.build(session, tmp_path / "c-original", any_platform=True)
+    assert m0["videos"][0]["media_kind"] == "original" and m0["media_relocation"] is None
+    transcode = _transcoded(tmp_path, original)
+    assert cache.file_sha256(transcode) != session.header["media_sha256"]
+    reloc_path, pin = _relocation(tmp_path, session, original, transcode)
+    relocation = cache.load_relocation(reloc_path, pin)
+    original.rename(tmp_path / "gone.mkv")                  # only the transcode remains
+    m1 = cache.build(session, tmp_path / "c-transcode", any_platform=True, relocation=relocation)
+    assert m1["videos"][0]["media_kind"] == "transcode"
+    assert m1["media_relocation"]["transcoded_sha256"] == cache.file_sha256(transcode)
+    assert all(m1[f"{k}_sha256"] == m0[f"{k}_sha256"] for k in ("global", "crop", "hud"))   # the same pixels
+
+
+@needs_ffmpeg
+def test_cache_refuses_media_that_is_neither_the_original_nor_its_recorded_transcode(tmp_path):
+    path, _ = _cached_session(tmp_path)
+    session = steps.load(path)
+    original = tmp_path / "v.mkv"
+    transcode = _transcoded(tmp_path, original)
+    # a transcode with no relocation
+    with pytest.raises(cache.CacheError, match="no relocation"):
+        cache.check_media(transcode, session, None)
+    # a relocation recorded for another original
+    other, pin = _relocation(tmp_path, session, original, transcode, identity="f" * 64)
+    with pytest.raises(cache.CacheError, match="another original"):
+        cache.check_media(transcode, session, cache.load_relocation(other, pin))
+    # a third file, neither the original nor the recorded transcode
+    reloc_path, pin = _relocation(tmp_path, session, original, transcode)
+    relocation = cache.load_relocation(reloc_path, pin)
+    third = _transcoded(tmp_path, original, name="third.mkv")
+    import subprocess
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(original), "-c:v", "ffv1", "-level", "1",
+                    "-pix_fmt", "bgr0", str(third)], check=True)
+    with pytest.raises(cache.CacheError, match="neither the original nor its recorded transcode"):
+        cache.check_media(third, session, relocation)
+    # the relocation's pin, and its receipt, are checked
+    with pytest.raises(cache.CacheError, match="pinned"):
+        cache.load_relocation(reloc_path, "0" * 64)
+    receipt = tmp_path / "receipt.json"
+    receipt.write_text(receipt.read_text(encoding="utf-8") + " ", encoding="utf-8")
+    with pytest.raises(cache.CacheError, match="receipt changed"):
+        cache.check_media(transcode, session, relocation)
+    assert cache.check_media(original, session, None) == "original"
+
+
+# ---- replay source contract (expert replay labels) -------------------------------------------------------------------
+
+def write_replay(tmp_path, name="rp", **kw):
+    header, rows = fixture.replay_session(name, **kw)
+    return fixture.write(tmp_path / f"{name}.jsonl", header, rows)
+
+
+def rewrite_replay(tmp_path, name, mutate, **kw):
+    header, rows = fixture.replay_session(name, **kw)
+    mutate(header, rows)
+    return fixture.write(tmp_path / f"{name}.jsonl", header, rows)
+
+
+def test_a_replay_step_table_loads_with_per_channel_unknowns(tmp_path):
+    s = steps.load(write_replay(tmp_path), denylist=steps.load_denylist())
+    assert steps.is_replay(s.header) and s.calibration["kind"] == "replay_degrees"
+    fwd, goh, ult = (vocab.INDEX[n] for n in ("move_forward", "get_over_here", "ultimate"))
+    unknown_move = [r for r in s.rows if not r["held_known"][fwd]]
+    assert unknown_move and all(r["held_start"][fwd] is None and r["press"][fwd] is None for r in unknown_move)
+    t = steps.target(unknown_move[0], s.calibration)
+    assert not t["known"][fwd] and not t["press_known"][fwd] and not t["release_known"][fwd]
+    assert t["yaw"] is not None and t["unsupported"] == 0
+    assert all(not r["held_known"][ult] and not r["press_known"][ult] for r in s.rows)        # never labelled
+    assert all(not r["release_known"][goh] for r in s.rows)                                    # onsets only
+    stats = steps.train_statistics([s])
+    assert stats["known"][fwd] == len(s.rows) - len(unknown_move) and stats["press_known"][ult] == 0
+    assert stats["pitch_gain_kind"] == ["replay_degrees"] and stats["pitch_gain_known"]
+
+
+@pytest.mark.parametrize("mutate, message", [
+    (lambda h, r: h.update(bindings=dict(vocab.DEFAULT_BINDINGS)), "must not carry"),
+    (lambda h, r: h.update(settings_hash="x"), "must not carry"),
+    (lambda h, r: h.update(media_relocation={"x": 1}), "must not carry"),
+    (lambda h, r: h["calibration"].update(kind="slow_turn_constant"), "replay_degrees"),
+    (lambda h, r: h["calibration"]["label_sources"].pop("edges"), "label_sources"),
+    (lambda h, r: h["expert_context"].pop("viewer_fov_assumption"), "expert_context"),
+    (lambda h, r: h["expert_context"].update(player=""), "expert_context"),
+    (lambda h, r: h.update(source_kind="stream"), "source_kind"),
+])
+def test_replay_header_violations_are_refused(tmp_path, mutate, message):
+    with pytest.raises(steps.StepError, match=message):
+        steps.load(rewrite_replay(tmp_path, "bad", mutate))
+
+
+def _unknown_but_marked_known(h, r):
+    c = vocab.INDEX["move_forward"]
+    row = next(x for x in r if not x["held_known"][c])
+    row["held_known"][c] = True                                   # the values are still null
+
+
+def _conservation(h, r):
+    c = vocab.INDEX["jump"]
+    row = next(x for x in r if x["held_known"][c] and x["held_start"][c] == x["held_end"][c] == 0)
+    row["press"][c] = 1                                           # a press with no hold change and a known release 0
+
+
+@pytest.mark.parametrize("mutate, message", [
+    (lambda h, r: r[3].update(mouse_dx=4), "must not carry"),
+    (lambda h, r: r[3].update(unsupported={}), "must not carry"),
+    (lambda h, r: r[3].pop("press_known"), "lacks"),
+    (_unknown_but_marked_known, "held_known disagrees"),
+    (lambda h, r: r[3]["press_known"].__setitem__(vocab.INDEX["ultimate"], True), "press_known disagrees"),
+    (lambda h, r: r[3]["press"].__setitem__(vocab.INDEX["get_over_here"], 2), "0 | 1 | null"),
+    (_conservation, "edges do not account"),
+    (lambda h, r: r[3].update(yaw_deg="1.0"), "float|null"),
+    (lambda h, r: r[3].update(beyond_pad_envelope=None), "beyond_pad_envelope"),
+])
+def test_replay_row_violations_are_refused(tmp_path, mutate, message):
+    with pytest.raises(steps.StepError, match=message):
+        steps.load(rewrite_replay(tmp_path, "bad", mutate))
+
+
+def test_a_cohort_holds_one_source_kind_and_replays_take_no_relocation(tmp_path):
+    human, replay = write_session(tmp_path, "h"), write_replay(tmp_path, "r")
+    with pytest.raises(steps.StepError, match="one source kind"):
+        steps.load_cohort([human, replay])
+    assert len(steps.load_cohort([replay, write_replay(tmp_path, "r2", seed=4)])) == 2
+    with pytest.raises(cache.CacheError, match="no media relocation"):
+        cache.build(steps.load(replay), tmp_path / "c", any_platform=True, relocation={"kind": "x"})
+
+
+def test_unknown_replay_channels_are_never_scored_or_fed_back(tmp_path):
+    s = steps.load(write_replay(tmp_path, runs=(300,)))
+    recs = [steps.step_records(s, a, b) for a, b in steps.runs(s)]
+    fwd, goh = vocab.INDEX["move_forward"], vocab.INDEX["get_over_here"]
+    everything_on = lambda rec: {"held": [1.] * vocab.N, "press": [1.] * vocab.N, "release": [1.] * vocab.N,
+                                 "yaw": 0., "pitch": 0.}
+    m = metrics.evaluate(metrics.predict_runs(recs, everything_on), **metrics.TEACHER)
+    known_move = sum(r["held_known"][fwd] for r in s.rows if r["gap_free"])
+    assert m["actions"]["move_forward"]["steps"] == known_move < len(s.rows)
+    assert m["actions"]["ultimate"]["steps"] == 0 and m["actions"]["ultimate"]["pred_presses"] == 0
+    assert m["actions"]["get_over_here"]["release_f1"] is None                    # no release is ever labelled
+    t = steps.target(next(r for r in s.rows if not r["held_known"][fwd]), s.calibration)
+    v = steps.prev_vector({**t, "held": [1] * vocab.N, "press": [1] * vocab.N, "release": [1] * vocab.N})
+    n = vocab.N
+    assert v[fwd] == v[n + fwd] == v[2 * n + fwd] == 0.                          # unknown: no bit, whatever the value
+    assert v[n + goh] == (1. if t["press_known"][goh] else 0.)

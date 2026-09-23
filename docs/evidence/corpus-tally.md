@@ -12,9 +12,9 @@ Minutes are **counted minutes**: focused logged time ∩ accepted segments ∩ g
 | 20260923T053929-795Z-33696-3 | 2026-09-23 | - | - | not_range: calibration take | - | - | - | - | - | - | - | - |
 | 20260923T054325-507Z-33696-4 | 2026-09-23 | - | - | not_range: DayMR native replay viewing, not logged play | - | - | - | - | - | - | - | - |
 | 20260923T171533-187Z-33696-5 | 2026-09-23 | 20260923T171533-187Z-33696-5 | train | admitted: assembled: review.json from the owner and independent verdicts, imported, steps file frozen | normal | 2.67 | 2.57 | 2.57 | 0.02 | 0.08 | range: unknown 2.6; approach: unknown 2.6; target: unknown 2.6; resources: unknown 2.6 | `04614051af7a` |
-| 20260923T200129-346Z-33696-6 | 2026-09-23 | 20260923T200129-346Z-33696-6 | train | pending: registered train before inspection; intake running (26.78 focused min logged) | - | 26.78 | - | - | - | - | - | - |
+| 20260923T200129-346Z-33696-6 | 2026-09-23 | 20260923T200129-346Z-33696-6 | train | pending: segments-evidence and owner verdicts ready (owner-provisional counted 26.62 min; two deaths cut); independent per-session review next | normal | 26.78 | - | - | - | - | - | - |
 | 20260923T203716-726Z-45572-1 | 2026-09-23 | - | - | not_range: 7.4 s HEVC encoder test (anchor holds, hevc-check.md) | - | - | - | - | - | - | - | - |
 | 20260923T204707-487Z-45572-2 | 2026-09-23 | - | - | not_range: settings and calibration take (settings pages, 360-degree turn, pitch sweep) | - | - | - | - | - | - | - | - |
-| 20260923T205528-900Z-45572-3 | 2026-09-23 | 20260923T205528-900Z-45572-3 | train | pending: campaign take 2 (HEVC), registered train before inspection; queued after 200129 | - | 11.08 | - | - | - | - | - | - |
+| 20260923T205528-900Z-45572-3 | 2026-09-23 | 20260923T205528-900Z-45572-3 | train | pending: campaign take 2 (HEVC): segments-evidence and owner verdicts ready (owner-provisional counted 11.07 min); independent per-session review next | normal | 11.08 | - | - | - | - | - | - |
 
 **normal, train: 9.55 admitted / 9.54 trainable of 180 minutes** (170.45 to go, 2 sessions).

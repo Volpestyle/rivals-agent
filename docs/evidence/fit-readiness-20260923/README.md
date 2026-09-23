@@ -485,7 +485,8 @@ Get-FileHash -Algorithm SHA256 $V, "$L\metadata.json", "$L\inputs.jsonl", "$L\fr
 # 2. Send, keeping the video's own base name (the cache resolves videos by it), then verify on the Mac.
 ssh -o BatchMode=yes mac "mkdir -p '$D/originals/$ID' '$D/steps' '$D/caches' '$D/runs'"
 scp -o BatchMode=yes "$L\metadata.json" "$L\inputs.jsonl" "$L\frames.csv" "$ID.sha256" "mac:$D/originals/$ID/"
-scp -o BatchMode=yes "$V" "mac:'$D/originals/'"              # a name with spaces: check the result in step 2b
+scp -o BatchMode=yes "$V" "mac:$D/originals/"                # into the directory; the local name (spaces) is kept.
+                                                               # Do not quote the remote path: SFTP-mode scp takes quotes literally
 & $MAC ("D=$D; ID=$ID`n" + @'
 cd "$D/originals"
 while read -r want name; do
@@ -541,8 +542,12 @@ if ($LASTEXITCODE) { throw 'Windows verification failed' }
   runs `zsh -l`, and so did the rehearsal (ssh with the script on stdin, from Git Bash).
 - **Word splitting.** zsh does not word-split `$UV`, so `$UV python …` inside a zsh script fails. Use a function, or
   `uv run …` written out, as the blocks above do.
-- **The video name** must keep its original base name, spaces included. The rehearsal renamed after `scp` and
-  verified the hash; step 2's glob copy keeps the name, but check it.
+- **More zsh traps** (from the smoke job):
+  - `path` is tied to `PATH`, so a loop variable named `path` empties the command search path;
+  - `nice` cannot run a shell function. Nice the whole job (`nohup nice -n 10 zsh job.zsh`) instead.
+- **The video name** must keep its original base name, spaces included. Copy into the directory
+  (`mac:$D/originals/`) without quoting the remote path. The smoke transfer found that a quoted remote path
+  (`"mac:'…/'"`) fails with current scp: in SFTP mode it takes the quotes literally.
 - **Timing** for the 2 min, 940 MB HEVC take:
 
   | Operation | Machine | Time |

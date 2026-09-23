@@ -681,3 +681,116 @@ These are fixed before any pilot. Changing one is a new pre-registration.
 - **Pinned for caches: Homebrew ffmpeg 8.1.2_1 on the Mac.** Any other build is a new pin.
 - **Script:** `docs/evidence/fit-readiness-20260923/range_bc_rehearsal.py`. The runbook is in that folder's README,
   section "Range BC".
+
+## Smoke fit on real data (2026-09-23)
+
+This is a plumbing check only. No gate is claimed and no validation exists or was read.
+- **Code:** `git archive` of `2052b45`, byte-identical in the fit's files to the landed `ebba342`.
+- **Data:** train on 051828 (6.97 counted min), dev on 171533 (2.57 min, a train-split recording used only for
+  per-epoch dev loss).
+- **Run:** `--scope smoke --epochs 1 --seeds 0 --device mps`, twice, on the Mac, niced.
+
+| Measure | Result |
+|---|---|
+| Transfer (runbook steps 1-2) | 9.2 GB of originals in 5 min, every hash verified on the Mac |
+| Cache, 051828 (6.9 GB H.264, 7 min) | 81 s, 2.4 GB, 12,558 frames, all pts and timebase checks passed |
+| Cache, 171533 (2.3 GB) | 30 s, 976 MB, 4,800 frames |
+| Determinism on real data | Runs A and B gave **byte-identical checkpoints for all three arms**, and identical CPU-reference decisions |
+| MPS vs Mac CPU | Teacher-forced decisions equal; max probability delta 2.1e-7 |
+| Windows CPU verifier (runbook step 9, clean worktree at `2052b45`) | **All 14 checks pass**: identical tf and sf decisions on 4,800 dev rows, max delta 3.6e-7, full cache re-hash, code closure equal |
+| Throughput with the real loader | HUD model **802 frames/s**, no-HUD **1,056**, twin 52k |
+| Evaluation (every arm tf and sf, the baselines) | 22 s for 4,800 dev rows |
+
+- **About the throughput:** each run was one epoch of 33 steps, so the numbers include the per-epoch dev pass and
+  first-step warm-up.
+- **What it means for the budget:** the HUD arm's 802 frames/s is about 14% under the synthetic bench's 930, so plan
+  about 11 min per epoch at 2.5 h of train.
+- **The candidate is the no-HUD arm,** as pre-registered: there is no P2′ parity yet.
+- **The runbook was corrected during the smoke:**
+  - a quoted scp remote path fails in SFTP mode;
+  - two zsh traps (`path` clobbers `PATH`; `nice` cannot run a function).
+
+## Replay labels: how expert replays enter `rivals-range-steps-v1` (design, 2026-09-23)
+
+**Purpose.** Expert replay footage, once labelled, becomes a step table the fit can read. Two lanes label it:
+- **inverse-dynamics** (`docs/lanes/inverse-dynamics.md`): camera yaw and pitch in true degrees, locomotion holds,
+  holds for primary, swing and crawl, and action onsets. Every head can abstain.
+- **replay-hud** (in progress; its lane doc is not in this checkout yet): per-frame ability states, and cast events
+  with abstentions.
+
+**What is built.** The contract is in `policy/range_bc/steps.py` (docstring "REPLAY source"), with a fixture
+(`fixture.replay_session`) and tests. There has been no fit.
+
+**The one rule that matters:** an unknown channel is masked out of the loss and the metrics per channel and per
+action, and is never read as "no". A test shows that a replay row with unknown movement contributes exactly zero
+gradient to the movement heads, and that changing the values behind an unknown label does not change the loss.
+
+### Header (`source_kind: "replay"`)
+
+| Field | Replay value | Human value it replaces |
+|---|---|---|
+| `calibration` | `{kind: "replay_degrees", source, label_sources: {camera, movement, edges}}`. Degrees come direct, with no counts→degrees gain; each label source names a model or reader and its version | `slow_turn_constant` with gains |
+| `expert_context` | `{player, match_id, viewer_fov_assumption, replay_source}`. The FOV assumption matters because whether the replay renders at the viewer's FOV or the target's decides what the IDM's degrees mean (IDM doc) | `settings_hash`, `bindings`, `accel_on` (absent, refused if present) |
+| `swing_mode` | From the expert's `control_context` (IDM doc, F4); null = unknown, so the live mask drops `web_swing` | James's settings |
+| `media_sha256` | The replay *capture* video (OBS recording of the replay viewer) | The original recording |
+| Absent, refused if present | `bindings`, `device_scope`, `injected_events`, `settings_hash`, `accel_on`, `media_relocation` | |
+
+- **Unchanged:** `session_id` (the capture), `session_group` = `session_id`, `sitting`, `split`, `step_ns`,
+  `frame_period_ns`, `actions` (the same 14 semantic actions), `hud_layout` (must be `mk`: a pad-HUD replay is out of
+  scope), `video_size`, `patch`.
+- **The sealed denylist is irrelevant** (no human take is a replay). The reader still runs it, and it cannot match.
+- **No media relocation:** the cache refuses one for a replay.
+
+### Rows
+
+| Field | Replay form |
+|---|---|
+| `held_start`, `held_end`, `press`, `release` | 14 × (0 \| 1 \| null). Press and release are onset flags, never counts |
+| `held_known`, `press_known`, `release_known` | 14 × bool each, **equal to "the value is not null"** (`held_known` covers start and end). The reader refuses any disagreement |
+| `yaw_deg`, `pitch_deg` | float or null: degrees this step, direct |
+| `beyond_pad_envelope` | bool: the IDM's flag. The label is saturated, never silently clipped (IDM doc) |
+| Absent, refused if present | `mouse_dx`, `mouse_dy`, `relative_known`, `wheel_v`, `wheel_h`, `unsupported` |
+| `hud` (optional) | replay-hud's per-frame ability states, for stratification only, never a model input |
+
+**The framing fields are unchanged:** `i`, `run`, `anchor_ns`, `frame`, `gap_free`, `segment`, `suitability`,
+`regime`, `tags`. Anchors are 30 Hz on the capture's composition clock, exactly as for James.
+
+**Edge conservation** (`press − release = held_end − held_start`) is checked only where all four values are known.
+**Hold continuity** is checked only where both neighbouring holds are known.
+
+### From the labellers' 60 Hz intervals to one 33.3 ms step
+
+The labelling lanes' writer applies these rules:
+- **Camera:** the sum of the two intervals' degrees. The step is unknown if either interval is unknown, and flagged
+  beyond the envelope if either interval is.
+- **Holds:** `held_end` is the state in the step's last interval, and `held_start` is the previous step's `held_end`
+  (the state before the first interval). Each is unknown where its interval abstains.
+- **Onsets:** `press` is 1 if either interval has an onset, 0 only if both say "no" (a "no" needs support, IDM F2),
+  and null otherwise.
+- **Release:** `release` is derived only where both holds are known (a fall), and is null otherwise. Cast-only actions
+  (Get Over Here!, Amazing Combo, Web Cluster from replay-hud) therefore have `release` null.
+- **Unlabelled actions:** actions no labeller emits (ultimate, melee, `team_up` and `goh_targeting`, until a head
+  supports them) are all null. That keeps them out of the loss and the metrics entirely.
+
+### What the fit does with it
+
+- **Targets** carry per-channel masks: `known` (hold), `press_known` and `release_known`. Human rows set all three
+  from `held_known`, so their behaviour is unchanged (all human tests pass).
+- **The loss** uses a `[B, T, 3, 14]` mask, so each channel's term averages only over its known entries.
+- **Metrics** gate every channel separately, and press rates divide by press-known steps.
+- **The previous-action encoding** sets no bit for an unknown channel.
+- **Statistics** count per channel (`press_known`, `release_known` denominators). The prior and `pos_weight` use them.
+- **Cohorts hold one source kind.** Mixing replay and human recordings (replay pretraining, then a James fine-tune)
+  needs its own design: gates, splits, and how the expert's context meets James's. It is future work, and the reader
+  refuses it today.
+
+### Tests
+
+- **`tests/test_range_bc.py`:** a replay recording loads, with unknowns exactly where the fixture put them.
+  - Refused: every human-only field; a wrong calibration kind; a missing label source or expert-context field;
+    known-mask and value disagreements; out-of-range values; a conservation break; mouse fields in a row.
+  - A mixed cohort is refused, and so is a relocation for a replay.
+  - Unknown channels are never scored, and never fed back as previous-action bits.
+- **`tests/test_range_bc_torch.py`:** a replay window with unknown movement has no mask on any movement channel, gets
+  zero gradient there and non-zero gradient where movement is known, and its loss is invariant to the values behind
+  an unknown label.

@@ -106,6 +106,7 @@ def main():
     ap.add_argument("session")
     ap.add_argument("--independent-verdicts", required=True)
     ap.add_argument("--snapshot", required=True)
+    ap.add_argument("--sessions-dir", help="assemble a copy of the session folder here (rehearsal); default: this folder")
     ap.add_argument("--supersedes", help="reason: earlier assembly outputs were renamed .vN and are pinned by this one")
     args = ap.parse_args()
     if sys.platform == "win32":
@@ -120,7 +121,7 @@ def main():
     place = registry[args.session]
     need(place.split in ("train", "val") and place.session_group == args.session, 'failed: place.split in ("train", "val") and place.session_group == args.session')
     hi.assert_not_sealed(args.session, place.expected_media_sha256, denylist)
-    d = HERE / args.session
+    d = Path(args.sessions_dir or HERE) / args.session   # --sessions-dir: a scratch copy, for a rehearsal run
     raw = RAW / args.session
     meta = json.loads((raw / "metadata.json").read_text())
     ev = json.loads((d / "segments-evidence.json").read_text())

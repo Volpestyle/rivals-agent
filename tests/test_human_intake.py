@@ -681,3 +681,45 @@ def test_a_freeze_pinning_the_original_passes_only_with_a_pinned_relocation(tmp_
     assert hi.check_freeze(folder, root=tmp_path) == []                            # the transcode stands in
     output.write_bytes(b"tampered")
     assert hi.check_freeze(folder, root=tmp_path) == ["o.mkv"]
+
+
+def test_an_alt_tab_cut_never_spills_into_the_next_focus_interval():
+    focus = [(t(0), t(5.9)), (t(6.8), t(20))]
+    segs = propose(focus, hud(0, 20), ui_keys=[(t(5.85), 18, True)], focus_settle_ns=hi.FOCUS_SETTLE_NS)
+    second = [s for s in segs if s["start_ns"] >= t(6.8)]
+    assert second[0]["machine_reason"] == "focus_transition" and second[0]["end_ns"] == t(6.8) + hi.FOCUS_SETTLE_NS
+    assert "ui_key" not in reasons(second)
+
+
+def test_pins_survive_a_crlf_checkout(tmp_path):
+    deny = tmp_path / "deny.json"
+    deny.write_bytes(json.dumps(dict(schema_version=1, sessions=[dict(session_id="x", media_sha256="d" * 64)]),
+                                indent=1).encode())
+    pin = hi.sha256(deny)                                     # pinned from the LF file as written
+    crlf = tmp_path / "deny-crlf.json"
+    crlf.write_bytes(deny.read_bytes().replace(b"\n", b"\r\n"))
+    assert hi.sha256(crlf) != pin and hi.lf_sha256(crlf) == pin
+    assert hi.load_denylist(crlf, sha256_pin=pin)["sessions"][0]["session_id"] == "x"
+    with pytest.raises(DemoError, match="pinned"):
+        hi.load_denylist(crlf, sha256_pin="0" * 64)
+    folder = tmp_path / "s"
+    folder.mkdir()
+    (folder / "review.json").write_bytes(b'{\n "a": 1\n}\n')
+    (folder / "frame.jpg").write_bytes(b"\xff\xd8binary\n")
+    hi.freeze(folder, root=tmp_path)
+    (folder / "review.json").write_bytes((folder / "review.json").read_bytes().replace(b"\n", b"\r\n"))
+    assert hi.check_freeze(folder, root=tmp_path) == []       # a CRLF text artefact still matches
+    (folder / "frame.jpg").write_bytes(b"\xff\xd8binary\r\n")
+    assert hi.check_freeze(folder, root=tmp_path) == ["s/frame.jpg"]   # binary pins stay raw
+
+
+def test_a_death_is_cut_between_the_neighbouring_samples_and_the_fall_before_it_stays():
+    samples = hud(0, 20)
+    dead = [ts for ts, _ in samples if t(9.9) <= ts <= t(11.1)]           # HP read 0 from 10.0 to 11.0 s
+    segs = propose([(t(0), t(20))], samples, dead=dead)
+    cut = [s for s in segs if s["machine_reason"] == "dead"]
+    assert len(cut) == 1 and cut[0]["start_ns"] == t(9.8) + 1 and cut[0]["end_ns"] == t(11.2) + hi.RESPAWN_SETTLE_NS
+    play = [s for s in segs if s["machine_reason"] == hi.GAMEPLAY]
+    assert play[0]["end_ns"] == t(9.8) + 1                                        # the fall up to 9.8 s is kept
+    assert play[1]["start_ns"] == t(12.2)                                          # first sample after the respawn settle
+    assert not any(s["start_ns"] <= d < s["end_ns"] for s in play for d in dead)

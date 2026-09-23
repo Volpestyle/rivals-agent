@@ -32,7 +32,7 @@ def synthetic_pool(batch, window, config, pool, seed):
             **frames,
             "prev": (torch.rand(batch, window, steps.PREV_DIM, generator=gen) < .1).float(),
             "act": (torch.rand(batch, window, 3, vocab.N, generator=gen) < .05).float(),
-            "act_mask": torch.ones(batch, window, vocab.N, dtype=torch.bool),
+            "act_mask": torch.ones(batch, window, 3, vocab.N, dtype=torch.bool),
             "camera": torch.randint(0, vocab.CAMERA_CLASSES, (batch, window, 2), generator=gen),
             "camera_mask": torch.ones(batch, window, 2, dtype=torch.bool),
             "regime": torch.zeros(batch, window)})

@@ -18,6 +18,12 @@ done once at native size with `accurate_rnd+bitexact+full_chroma_int`; every sca
 A video tagged otherwise is refused. swscale output can still differ between CPU architectures, so caches are built on
 the Mac only (the builder refuses elsewhere; tests pass `any_platform=True`). The video's bytes must hash to the step
 table's `media_sha256`, and the sealed denylist is always loaded by the CLI.
+
+Recorded transcodes (intake's contract, `agent.human_intake.check_media`): the header's `media_sha256` stays the
+recording's identity. A video whose bytes differ is accepted only as the transcode named by a pinned
+`media-relocation.json` for that session (kind `media-relocation-v1`, cleanly verified receipt, `transcoded_sha256`
+equal to the bytes); anything else is refused. The transcode is decoded in place of the original, and the per-frame
+pts and timebase checks still hold every selected ordinal to the step table.
 """
 import hashlib
 import json
@@ -190,7 +196,31 @@ def _decode(path, ordinals, sinks, ffmpeg):
         return shown, [int(tb[0][0]), int(tb[0][1])]
 
 
-def build(session, out_dir, *, video_root=None, ffmpeg="ffmpeg", ffprobe="ffprobe", any_platform=False):
+def load_relocation(path, sha256_pin):
+    """A pinned `media-relocation.json` (LF-normalised sha256, as the denylist)."""
+    require(sha256_pin is not None, "a media relocation must be pinned (--media-relocation-sha256)")
+    raw = Path(path).read_bytes()
+    got = hashlib.sha256(raw.replace(b"\r\n", b"\n")).hexdigest()
+    require(got == sha256_pin, f"media relocation {path} differs from its pinned sha256")
+    return json.loads(raw)
+
+
+def check_media(path, session, relocation):
+    """'original' or 'transcode' through intake's own check; CacheError on anything else."""
+    import sys
+    root = Path(__file__).resolve().parents[2]
+    if str(root) not in sys.path:
+        sys.path.insert(0, str(root))
+    from agent import human_intake
+    try:
+        return human_intake.check_media(path, identity_sha256=session.header["media_sha256"], relocation=relocation,
+                                        session_id=session.session_id)
+    except Exception as exc:
+        raise CacheError(f"{path}: {exc}") from exc
+
+
+def build(session, out_dir, *, video_root=None, ffmpeg="ffmpeg", ffprobe="ffprobe", any_platform=False,
+          relocation=None):
     """Decode every row's frame of one validated session into out_dir (created; must not exist)."""
     require(any_platform or (platform.system() == "Darwin" and platform.machine() == "arm64"),
             "caches are built on the Mac only (swscale output can differ between CPU architectures)")
@@ -205,6 +235,7 @@ def build(session, out_dir, *, video_root=None, ffmpeg="ffmpeg", ffprobe="ffprob
     require(len(by_video) == 1, "one recording is one video: its media_sha256 names one file")
     timebases = {tuple(r["frame"]["timebase"]) for r in session.rows}
     require(session.header["hud_layout"] == "mk", "the HUD crop regions are the M&K layout's")
+    require(relocation is None or not steps.is_replay(session.header), "a replay source takes no media relocation")
     hashes = {"global": hashlib.sha256(), "crop": hashlib.sha256(), "hud": hashlib.sha256()}
     videos = []
     with (out / "global.u8").open("xb") as g, (out / "crop.u8").open("xb") as c, (out / "hud.u8").open("xb") as hd:
@@ -215,14 +246,14 @@ def build(session, out_dir, *, video_root=None, ffmpeg="ffmpeg", ffprobe="ffprob
             return write
         sinks = (sink(g, hashes["global"]), sink(c, hashes["crop"]), sink(hd, hashes["hud"]))
         for video, items in by_video.items():
-            path = resolve(video, video_root)
+            path = resolve(relocation["transcoded_path"] if relocation else video, video_root)
             require(path.is_file(), f"video not found: {path}")
             require(probe_size(path, ffprobe) == session.header["video_size"],
                     f"{path}: size differs from the step table's video_size")
             colour = probe_colour(path, ffprobe)
             check_colour(colour)
             media = file_sha256(path)
-            require(media == session.header["media_sha256"], f"{path}: bytes differ from the step table's media_sha256")
+            media_kind = check_media(path, session, relocation)
             ordinals = [o for o, _ in items]
             shown, timebase = _decode(path, ordinals, sinks, ffmpeg)
             require(timebases == {tuple(timebase)}, f"{path}: stream timebase {timebase} differs from the step "
@@ -231,13 +262,15 @@ def build(session, out_dir, *, video_root=None, ffmpeg="ffmpeg", ffprobe="ffprob
                 require(pts == expected[i][0], f"{path}: ordinal {ordinal} has pts {pts}, step table says "
                         f"{expected[i][0]}: decoded ordinals differ from the importer's")
             videos.append({"video_path": video, "resolved": str(path), "bytes": path.stat().st_size,
-                           "media_sha256": media, "colour": colour, "timebase": timebase,
+                           "media_sha256": media, "media_kind": media_kind, "colour": colour, "timebase": timebase,
                            "frames": len(items), "first_ordinal": ordinals[0], "last_ordinal": ordinals[-1]})
     manifest = {"format": FORMAT, "session_id": session.session_id, "steps_sha256": session.sha256,
                 "frames": len(frames), "global_shape": list(GLOBAL), "crop_shape": list(CROP),
                 "hud_shape": list(HUD), "hud_layout": "mk", "crop_native": CROP_NATIVE, "graph": GRAPH,
                 "platform": f"{platform.system()} {platform.machine()}", "ffmpeg": ffmpeg_version(ffmpeg), "videos": videos,
-                "row_frame": row_frame, **{f"{k}_sha256": h.hexdigest() for k, h in hashes.items()}}
+                "row_frame": row_frame, **{f"{k}_sha256": h.hexdigest() for k, h in hashes.items()},
+                "media_relocation": None if relocation is None else {
+                    k: relocation[k] for k in ("identity_sha256", "transcoded_sha256", "transcoded_path", "receipt")}}
     with (out / "cache.json").open("x", encoding="utf-8") as stream:
         json.dump(manifest, stream, sort_keys=True)
     return manifest
@@ -272,9 +305,12 @@ def main(argv=None):
     p.add_argument("--ffprobe", default="ffprobe")
     p.add_argument("--sealed-denylist", default=steps.DENYLIST, help="intake's sealed denylist (always loaded)")
     p.add_argument("--sealed-denylist-sha256", default=steps.DENYLIST_SHA256)
+    p.add_argument("--media-relocation", help="the session's media-relocation.json when its original was transcoded")
+    p.add_argument("--media-relocation-sha256", help="its pinned sha256 (required with --media-relocation)")
     a = p.parse_args(argv)
     session = steps.load(a.steps, denylist=steps.load_denylist(a.sealed_denylist, a.sealed_denylist_sha256))
-    m = build(session, a.out, video_root=a.video_root, ffmpeg=a.ffmpeg, ffprobe=a.ffprobe)
+    relocation = load_relocation(a.media_relocation, a.media_relocation_sha256) if a.media_relocation else None
+    m = build(session, a.out, video_root=a.video_root, ffmpeg=a.ffmpeg, ffprobe=a.ffprobe, relocation=relocation)
     print(json.dumps({k: m[k] for k in ("session_id", "frames", "global_sha256", "crop_sha256", "hud_sha256",
                                          "ffmpeg")}))
 
