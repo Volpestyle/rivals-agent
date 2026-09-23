@@ -67,5 +67,6 @@ cost nothing extra to capture now. Range sessions come first until the 3-hour ma
 - Tally: a running table of admitted minutes per session and per scenario mix, so the
   3-hour mark is a fact and not a feeling.
 - First fit when admitted minutes cross about 3 hours: a small causal frame/input
-  policy on the Mac, held-out session evaluation per the learning plan's step 4, then
+  policy on the Mac, held-out session evaluation per the learning plan's
+  [step 4](learning-plan.md#paired-human-execution-current-work), then
   a live range pilot with reset-based placement (no human between trials).

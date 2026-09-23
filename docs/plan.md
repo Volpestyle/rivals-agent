@@ -33,6 +33,12 @@ included (target choice, engage or retreat, positioning, setup and recovery), no
 button sequences. Order: imitation first, human correction next, reinforcement learning
 only once an outcome can be measured reliably.
 
+- **Whole-session recording (2026-09-23, current).** James records 20-30 minute
+  practice-range sessions with the OBS input logger ([protocol](recording-protocol.md),
+  [ledger](recording-log.md)). The first fit is one end-to-end policy that outputs semantic
+  actions plus camera degrees, executed by the pad ([end-to-end fit](lanes/end-to-end-fit.md)).
+  The web-start timing head proved the pipe and is not the product
+  ([pilot 2](evidence/galacta-pilot-20260923/README.md)).
 - **Sources.** Full VODs from James's selected sources DayMR and ReqMR supply tactical
   evidence; their rank is not independently verified. James's expert-level
   technical demonstrations now supply paired video and **keyboard/mouse** inputs through
