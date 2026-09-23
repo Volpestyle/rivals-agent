@@ -20,3 +20,9 @@ for whole-session behaviour cloning (movement, targeting, combos), not just web-
 | 2026-09-23 12-15-33.mkv | 20260923T171533-187Z-33696-5 | 3 min | range, Galacta, full-ammo combos with waited cooldowns, pulls at the end | normal | logger complete, 0 drops; intake pending |
 
 Total logged range play with inputs: about 17 trainable minutes (focused, non-sealed). Campaign target: 180 minutes.
+
+## Motor settings (James's statements)
+
+- 2026-09-23: mouse DPI **800** (James, from the mouse's software; source: chat statement, 2026-09-23 ~14:50 CDT).
+  In-game sensitivity **unchanged since the 2026-09-21 sessions** (James, same statement). A 10 cm ruler take
+  and a 360° turn take are still requested to pin counts/inch and counts/degree from the logger itself.
