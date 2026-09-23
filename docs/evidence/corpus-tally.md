@@ -5,8 +5,8 @@ Minutes are **counted minutes**: focused logged time ∩ accepted segments ∩ g
 
 | Session | Date | Group | Split | Status | Regime | Focused min | Admitted min | Trainable min | Rejected min | Unresolved min | Tags (accepted min) | Artifact |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 20260922T032454-642Z-24328-1 | 2026-09-21 | 20260922T032454-642Z-24328-1 | train | pending: whole-session intake not yet run (28.7 s of focused logged input) | normal | 0.48 | - | - | - | - | - | - |
-| 20260922T033319-205Z-24328-2 | 2026-09-21 | 20260922T033319-205Z-24328-2 | train | held: override; permanently unadmitted | - | 6.93 | - | - | - | - | - | - |
+| 20260922T032454-642Z-24328-1 | 2026-09-21 | 20260922T032454-642Z-24328-1 | train | held: at most 11.0-22.28 s admissible (normal play before the first Esc, <= 0.19 counted min); before it loading and selection, after it the settings menu (R3) and No Ability Cooldown ON from 23.7 s; intake only on request | normal | 0.48 | - | - | - | - | - | - |
+| 20260922T033319-205Z-24328-2 | 2026-09-21 | 20260922T033319-205Z-24328-2 | train | held: permanently unadmitted (lead): regime unresolved, no depletion in inspected windows against James's cooldowns-OFF report (R5: note and scan disagree); stays out | - | 6.93 | - | - | - | - | - | - |
 | 20260923T051828-422Z-33696-1 | 2026-09-23 | 20260923T051828-422Z-33696-1 | train | admitted: assembled: review.json from the owner and independent verdicts, imported, steps file frozen | normal | 6.98 | 6.97 | 6.97 | 0.01 | 0.00 | range: unknown 7.0; approach: unknown 7.0; target: unknown 7.0; resources: unknown 7.0 | `f428cc64d9ef` |
 | 20260923T053616-779Z-33696-2 | 2026-09-23 | 20260923T053616-779Z-33696-2 | test | sealed: validation take; never read | - | - | - | - | - | - | - | - |
 | 20260923T053929-795Z-33696-3 | 2026-09-23 | - | - | not_range: calibration take | - | - | - | - | - | - | - | - |

@@ -1168,3 +1168,22 @@ Both sessions await the independent per-session review before assembly.
     `supersedes`.
 - **The fit reader loads the four step files as one cohort:** 85,016 accepted rows.
 - **Tally:** **normal, train: 47.23 counted / 47.23 trainable of 180 minutes**, 4 sessions.
+
+## 2026-09-23 (late): the older logger sessions under the whole-session rules (admission-owner)
+
+- **032454** (2026-09-21, 30.5 s video): focus 0.42-29.11 s; UI keys Esc 22.28, Esc 23.61, Esc 28.01, Alt 29.03 s.
+  - Normal depleting play is visible only from about 11.0 s (after loading and hero selection) to 22.25 s
+    (`cooldown-inspection.md`).
+  - The first Esc at 22.28 s opens the settings menu, and No Ability Cooldown is switched ON at 23.7 s.
+  - **At most 11.0-22.28 s is admissible (<= 0.19 counted minutes).** Everything after it stays out: R3, plus a
+    regime change.
+  - One keyboard and one mouse, no injected input. Settings are covered by James's 2026-09-23 statements
+    ("unchanged since the 09-21 sessions").
+  - Status **held: intake only on request**. The yield is too small to spend a review on unless the lead wants the
+    09-21 sitting represented.
+- **033319** (2026-09-21, 6.93 focused min): the input timeline is clean (one focus interval; Esc only at 414.52 s,
+  then Alt), one keyboard and one mouse.
+  - The regime is unresolved: inspected windows show no depletion, while James reported cooldowns OFF.
+  - Under R5 a disagreement between the note and the scan makes the session unresolved.
+  - Admitting it as a declared no-cooldown session would need positive evidence of the setting, and there is none.
+  - It **stays out** (the lead's "permanently unadmitted").

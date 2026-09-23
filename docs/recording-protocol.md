@@ -70,3 +70,30 @@ cost nothing extra to capture now. Range sessions come first until the 3-hour ma
   policy on the Mac, held-out session evaluation per the learning plan's
   [step 4](learning-plan.md#paired-human-execution-current-work), then
   a live range pilot with reset-based placement (no human between trials).
+
+## Validation and test takes (added 2026-09-23)
+
+**The ask for James.** Twice more, please record a dedicated **10-15 minute take at the start of a sitting**, before
+any other recording that day:
+- **Which is which:** the first as a **validation** take and the second, in a different sitting, as a **test** take.
+- **What to play:** the same way and with the same settings as the training sessions: normal cooldowns, tab in once
+  and out once, no pause, no settings change. The same mix: both Galacta bots from near, mid and far starts; on-foot,
+  swing and from-above approaches; full combos with real cooldown waits as well as misses, whiffed pulls and
+  recoveries; some other bots; and varied resources.
+- **Before you start,** say in chat "validation take" or "test take". It is registered to that split before anyone
+  looks at it.
+- **Afterwards,** don't rewatch it.
+
+**Why.** The fit is only honest if it is judged on play it never trained on: validation to tune and stop training,
+and test sealed until the final check. By minutes the target is about 70/15/15, so these takes, and more like them
+later (at least two per split), are what will let a result count.
+
+**How the swarm handles them.**
+- **Registration comes before any inspection.** Each take is its own session group, with split `val` or `test`,
+  set when you announce it.
+- **A test take is added to the sealed denylist** (session id and media sha256). After that, no tool or agent opens
+  its logger folder or frames until the lead unseals it for the final evaluation.
+- **A validation take goes through intake like a training take** (review, assembly, step file). Its minutes are
+  reported beside the train headline and never added to it.
+- **053616 stays sealed test.** At 2.1 minutes, and from the same OBS process as 051828, it cannot carry a gate on
+  its own, which is why dedicated takes are needed.
