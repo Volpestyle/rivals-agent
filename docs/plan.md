@@ -92,6 +92,7 @@ only once an outcome can be measured reliably.
   unknown input states. See [the current learning decision](learning-plan.md#paired-human-execution-current-work).
   Keyboard/mouse checkpoints are offline artifacts: there is no validated conversion to
   the accepted virtual-pad executor, and the rejected synthetic-mouse path stays closed.
+  *Superseded 2026-09-23: semantic actions + degrees through the pad, see [docs/lanes/end-to-end-fit.md](lanes/end-to-end-fit.md).*
 - **Jev** is frozen as a baseline and a possible label assistant. Its inference path does
   not learn from experience, and agreement with it is not gameplay quality.
 - **Roadmap.** Six gated milestones in [learning-plan.md](learning-plan.md#roadmap-and-advancement-gates):
