@@ -1,0 +1,786 @@
+{
+  "scope": "Windows CPU reload of the exact Mac MPS cohort checkpoint; train only",
+  "mac_scope": "admitted_human_received_request_train_only_numerical_fit_reload",
+  "dry_run_member": null,
+  "git_commit": "45530720c10274680afe138f06f4b2f8689f77f7",
+  "torch": "2.14.0+cpu",
+  "device": "cpu",
+  "checkpoint_sha256": "698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b",
+  "mac_report_sha256": "d67507a00a1f302311f55d63fa7e36e344d26856ae0b23c19d235ce228a8bc61",
+  "cohort_manifest": {
+    "path": "data/human/skill-event-candidates/james-request-cohort-ae648b33/cohort-manifest.json",
+    "sha256": "bcaa1cf46eb0a86fc587c0cb3d66a8be682d5915a14da3ca36165aec20fb8794",
+    "status": "admitted"
+  },
+  "source_identity": {
+    "patch": "1.1.3870120/build25364676",
+    "cooldown_regime": "normal",
+    "source_profile_sha256": "c5528cf75add2d7dde45b98423519788b8f1865e6d578a0ec6dec082f7e4a914",
+    "perception_sha256": "a30b3cae3024641a1a235a99f6297114ec7cbc5d79398a3712e8fe06d8854e2c",
+    "selector_sha256": "00fd672e388faa0743bec098fc4bb0b6d8dfd35425fe7517bdfd67b846d4ed5f",
+    "semantic_revision": "web-cluster-request-v1",
+    "feature_revision": "masked-state-grid-causal-v1"
+  },
+  "code_checks": {
+    "policy/range_skill_policy.py": {
+      "windows_raw_sha256": "d6b62274434cd0b960da817e3d072f933bf6baa6e03055305c120a1e1baa760c",
+      "mac_and_git_blob_sha256": "d6b62274434cd0b960da817e3d072f933bf6baa6e03055305c120a1e1baa760c",
+      "crlf_only_difference": false
+    },
+    "policy/range_policy.py": {
+      "windows_raw_sha256": "c46e7d8a6523892107c8a878532505d020896e5b32e9df6179c049d6aa3410bb",
+      "mac_and_git_blob_sha256": "c46e7d8a6523892107c8a878532505d020896e5b32e9df6179c049d6aa3410bb",
+      "crlf_only_difference": false
+    },
+    "agent/state.py": {
+      "windows_raw_sha256": "83983c59f0ea39772686b9ce8e002aab86d312c5e75937bc2b9e6a21eddb8f5a",
+      "mac_and_git_blob_sha256": "7ee6b826c38090d28d44b598d77ddeabf22f4593cf64ea45012b461a2377c149",
+      "crlf_only_difference": true
+    }
+  },
+  "admission": [
+    {
+      "packet_status": "remeasured_accepted_labels_train_only_not_a_new_admission",
+      "remeasured_from": {
+        "path": "data/human/skill-events/032454-request-diagnostic-v1/examples.json",
+        "sha256": "bd6cf4cb298379ac1a63fd226652e517ad6773ed6b4cead92dfb790abca91570",
+        "status": "accepted_train_only_numerical_diagnostic"
+      },
+      "receipt": {
+        "path": "data/human/reviews/20260922T032454-642Z-24328-1.request-diagnostic-train-decision.json",
+        "sha256": "52423a3c96504b446d825da6fce9511b1e6572f7d42b0ef4057a46a3959333a1",
+        "schema": "decision_receipt"
+      },
+      "bound_artifact": {
+        "path": "data/human/skill-event-candidates/032454-request-timing-v1/candidate-rows.json",
+        "sha256": "4e85b6fd8af84db8a2f99d4b076861f834b83b343ae76167d9650182d2d4e8fc"
+      }
+    },
+    {
+      "packet_status": "admitted_train_only",
+      "remeasured_from": null,
+      "receipt": {
+        "path": "data/human/skill-event-candidates/james-request-cohort-ae648b33/admission-decision.json",
+        "sha256": "6d9fbe2d1b3decb4b9816fa34818333c41d80d8d396d46c0e1b081837358df91",
+        "schema": "lead_admission_decision"
+      },
+      "bound_artifact": {
+        "path": "data/human/skill-event-candidates/051828-request-timing-v5/candidate-rows.json",
+        "sha256": "bc605bf96f02037b82daeecd8ea369bed33f9c01be7a2faf6364b1a42af43fe0"
+      }
+    }
+  ],
+  "evidence_digest": "86e5894b12d9a6bf665524aad89ef29589b63dd05f070bd67052c6659d2a96c9",
+  "metrics_equal_to_mac_cpu": true,
+  "max_probability_delta_from_mac_cpu": 4.172325134277344e-07,
+  "train_metrics": {
+    "true_positive": 36,
+    "false_positive": 1,
+    "false_negative": 1,
+    "precision": 0.972972972972973,
+    "recall": 0.972972972972973,
+    "mean_request_lead_s": 0.04994221516666417,
+    "confusion": [
+      [
+        38,
+        1
+      ],
+      [
+        1,
+        36
+      ]
+    ],
+    "refusals": 0,
+    "scored_bins": 76,
+    "masked_bins": 4212
+  },
+  "known_rows": [
+    {
+      "session": "20260922T032454-642Z-24328-1",
+      "grid_index": 137,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.9917574524879456,
+        0.008242546580731869
+      ]
+    },
+    {
+      "session": "20260922T032454-642Z-24328-1",
+      "grid_index": 141,
+      "prediction": "start",
+      "probabilities": [
+        0.052578411996364594,
+        0.9474215507507324
+      ]
+    },
+    {
+      "session": "20260922T032454-642Z-24328-1",
+      "grid_index": 144,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.9584352970123291,
+        0.04156466946005821
+      ]
+    },
+    {
+      "session": "20260922T032454-642Z-24328-1",
+      "grid_index": 200,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.929298460483551,
+        0.07070152461528778
+      ]
+    },
+    {
+      "session": "20260922T032454-642Z-24328-1",
+      "grid_index": 206,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.9992665648460388,
+        0.0007334767724387348
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 36,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.9744724631309509,
+        0.025527475401759148
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 39,
+      "prediction": "start",
+      "probabilities": [
+        0.07512203603982925,
+        0.924877941608429
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 44,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.9999369382858276,
+        6.309121090453118e-05
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 48,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.689582109451294,
+        0.31041786074638367
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 51,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.5889714360237122,
+        0.41102856397628784
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 56,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.9993463158607483,
+        0.0006536460714414716
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 126,
+      "prediction": "start",
+      "probabilities": [
+        0.06544142216444016,
+        0.9345585703849792
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 131,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.9952030181884766,
+        0.00479701766744256
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 134,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.7865681052207947,
+        0.21343189477920532
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 137,
+      "prediction": "start",
+      "probabilities": [
+        0.06959801912307739,
+        0.9304019212722778
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 142,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.9987382292747498,
+        0.0012618113541975617
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 404,
+      "prediction": "start",
+      "probabilities": [
+        0.016597604379057884,
+        0.9834023714065552
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 480,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.999970555305481,
+        2.9399945560726337e-05
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 483,
+      "prediction": "start",
+      "probabilities": [
+        0.024200065061450005,
+        0.9757999777793884
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 488,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.9755420684814453,
+        0.02445794828236103
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 591,
+      "prediction": "start",
+      "probabilities": [
+        0.3579927384853363,
+        0.6420072317123413
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 594,
+      "prediction": "start",
+      "probabilities": [
+        0.12517666816711426,
+        0.8748233914375305
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 599,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.9998724460601807,
+        0.00012758010416291654
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 652,
+      "prediction": "start",
+      "probabilities": [
+        0.009633474983274937,
+        0.9903664588928223
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 657,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.9930022358894348,
+        0.006997711956501007
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 662,
+      "prediction": "start",
+      "probabilities": [
+        0.015106502920389175,
+        0.9848935008049011
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 667,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.9998440742492676,
+        0.00015584839275106788
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 761,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.9998094439506531,
+        0.00019059280748479068
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 764,
+      "prediction": "start",
+      "probabilities": [
+        0.3034438490867615,
+        0.6965562105178833
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 769,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.9998167157173157,
+        0.00018334333435632288
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 1047,
+      "prediction": "start",
+      "probabilities": [
+        0.07435023784637451,
+        0.9256497025489807
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 1089,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.9999892711639404,
+        1.0673285942175426e-05
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 1092,
+      "prediction": "start",
+      "probabilities": [
+        0.07936230301856995,
+        0.9206377267837524
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 1177,
+      "prediction": "start",
+      "probabilities": [
+        0.08504901826381683,
+        0.914950966835022
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 1184,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.9998284578323364,
+        0.000171480598510243
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 1187,
+      "prediction": "start",
+      "probabilities": [
+        0.17504490911960602,
+        0.8249551057815552
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 1374,
+      "prediction": "start",
+      "probabilities": [
+        0.11913371086120605,
+        0.8808663487434387
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 1514,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.9969057440757751,
+        0.0030942291487008333
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 1517,
+      "prediction": "start",
+      "probabilities": [
+        0.000226848860620521,
+        0.9997732043266296
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 1522,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.9998354911804199,
+        0.00016447062080260366
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 1655,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.9819772243499756,
+        0.018022743985056877
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 1658,
+      "prediction": "start",
+      "probabilities": [
+        0.006447506602853537,
+        0.9935524463653564
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 1663,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.996060311794281,
+        0.003939670976251364
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 1665,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.9960260391235352,
+        0.00397395109757781
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 1668,
+      "prediction": "start",
+      "probabilities": [
+        0.0017205356853082776,
+        0.9982794523239136
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 1714,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.9980564117431641,
+        0.001943608745932579
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 1717,
+      "prediction": "start",
+      "probabilities": [
+        0.0001859878102550283,
+        0.9998140931129456
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 1788,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.9989479184150696,
+        0.0010520531795918941
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 1791,
+      "prediction": "start",
+      "probabilities": [
+        0.01612742245197296,
+        0.9838725924491882
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 1859,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.9320865273475647,
+        0.06791352480649948
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 1862,
+      "prediction": "start",
+      "probabilities": [
+        0.014176816679537296,
+        0.9858231544494629
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 1867,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.9997757077217102,
+        0.00022424610506277531
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 2066,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.9985359907150269,
+        0.0014639509608969092
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 2069,
+      "prediction": "start",
+      "probabilities": [
+        0.05537107586860657,
+        0.944628894329071
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 2349,
+      "prediction": "start",
+      "probabilities": [
+        0.009717250242829323,
+        0.9902827739715576
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 2727,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.9814824461936951,
+        0.01851753517985344
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 2730,
+      "prediction": "start",
+      "probabilities": [
+        0.029331939294934273,
+        0.9706681370735168
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 3007,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.9995129108428955,
+        0.0004871264100074768
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 3010,
+      "prediction": "start",
+      "probabilities": [
+        0.0002966497850138694,
+        0.9997033476829529
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 3113,
+      "prediction": "start",
+      "probabilities": [
+        0.020045582205057144,
+        0.9799544215202332
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 3255,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.9993901252746582,
+        0.0006099106976762414
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 3258,
+      "prediction": "start",
+      "probabilities": [
+        0.005168603733181953,
+        0.994831383228302
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 3263,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.9996232986450195,
+        0.00037670269375666976
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 3266,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.9985249638557434,
+        0.001475036726333201
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 3269,
+      "prediction": "start",
+      "probabilities": [
+        0.24564053118228912,
+        0.7543594241142273
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 3401,
+      "prediction": "start",
+      "probabilities": [
+        0.01609732210636139,
+        0.9839026927947998
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 3434,
+      "prediction": "start",
+      "probabilities": [
+        2.6092990083270706e-05,
+        0.9999738931655884
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 3439,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.9994320273399353,
+        0.0005679229507222772
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 3528,
+      "prediction": "start",
+      "probabilities": [
+        0.022647526115179062,
+        0.9773524403572083
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 3730,
+      "prediction": "start",
+      "probabilities": [
+        0.0010885379742830992,
+        0.9989114999771118
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 3752,
+      "prediction": "start",
+      "probabilities": [
+        0.03275556117296219,
+        0.9672443866729736
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 3832,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.9139988422393799,
+        0.08600121736526489
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 3835,
+      "prediction": "start",
+      "probabilities": [
+        0.32449865341186523,
+        0.6755013465881348
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 3987,
+      "prediction": "start",
+      "probabilities": [
+        0.015541072003543377,
+        0.9844589233398438
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 4032,
+      "prediction": "start",
+      "probabilities": [
+        0.4768926799297333,
+        0.5231073498725891
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 4037,
+      "prediction": "no_new_start",
+      "probabilities": [
+        0.9992377758026123,
+        0.0007622383418492973
+      ]
+    }
+  ],
+  "validation": null,
+  "deployment_binding": null,
+  "live_io_imported": false
+}

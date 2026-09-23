@@ -1,0 +1,2351 @@
+{
+  "scope": "admitted_human_received_request_train_only_numerical_fit_reload",
+  "not_generalization_or_live_clearance": true,
+  "dry_run_member": null,
+  "git_commit": "45530720c10274680afe138f06f4b2f8689f77f7",
+  "torch": "2.14.0",
+  "training_device": "mps:0",
+  "fit_seconds": 9.294954582990613,
+  "config": {
+    "epochs": 100,
+    "batch_size": 2,
+    "lr": 0.01,
+    "device": "mps",
+    "seed": 7
+  },
+  "spec": {
+    "steps": 5,
+    "period_s": 0.1,
+    "tolerance_s": 0.025,
+    "hidden": 8,
+    "confidence": 0.7
+  },
+  "code_sha256": {
+    "policy/range_skill_policy.py": "d6b62274434cd0b960da817e3d072f933bf6baa6e03055305c120a1e1baa760c",
+    "policy/range_policy.py": "c46e7d8a6523892107c8a878532505d020896e5b32e9df6179c049d6aa3410bb",
+    "agent/state.py": "7ee6b826c38090d28d44b598d77ddeabf22f4593cf64ea45012b461a2377c149"
+  },
+  "code_closure_git_blobs": {
+    "agent/__init__.py": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+    "agent/state.py": "5f6d7333a6c2283d56d51d5eb626306709ff1b7e",
+    "agent/human_demos.py": "5d82d1baed989bdded995bf417a88ed6c1edf788",
+    "policy/__init__.py": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+    "policy/execution.py": "8d94086c695bea5b3c84b0fb5dfc0089b07a8beb",
+    "policy/range_policy.py": "76d8e795447221a9217a1812c72f2386d15276a1",
+    "policy/range_skill_policy.py": "c342af0ea47017a8c430e42befc6a362805b7778"
+  },
+  "driver": {
+    "path": "data/diagnostics/range-request-cohort-fit-20260923/fit_cohort_20260923.py",
+    "sha256": "f9f158fcc9abaa8fefe09d48c3fde2a85d80fa6573f69b4df777a82e30a7b653"
+  },
+  "cohort_manifest": {
+    "path": "data/human/skill-event-candidates/james-request-cohort-ae648b33/cohort-manifest.json",
+    "sha256": "bcaa1cf46eb0a86fc587c0cb3d66a8be682d5915a14da3ca36165aec20fb8794",
+    "status": "admitted"
+  },
+  "members": [
+    {
+      "session": "20260922T032454-642Z-24328-1",
+      "group": "james-2026-09-21-evening",
+      "status": "accepted labels re-measured under ae648b33 (not a new admission); frozen",
+      "examples": {
+        "path": "data/human/skill-event-candidates/032454-request-diagnostic-v1-ae648b33/examples.json",
+        "sha256": "c1a39ea72bc0f835b05353c8e4188ef143534277f3757084d3478c12fcf4ea5d"
+      },
+      "evidence_digest": "e66b6feca16c4e6ccce455cd8d008a9a8bded3a3b75a802cac8be60eca7d5cc3",
+      "admission": {
+        "packet_status": "remeasured_accepted_labels_train_only_not_a_new_admission",
+        "remeasured_from": {
+          "path": "data/human/skill-events/032454-request-diagnostic-v1/examples.json",
+          "sha256": "bd6cf4cb298379ac1a63fd226652e517ad6773ed6b4cead92dfb790abca91570",
+          "status": "accepted_train_only_numerical_diagnostic"
+        },
+        "receipt": {
+          "path": "data/human/reviews/20260922T032454-642Z-24328-1.request-diagnostic-train-decision.json",
+          "sha256": "52423a3c96504b446d825da6fce9511b1e6572f7d42b0ef4057a46a3959333a1",
+          "schema": "decision_receipt"
+        },
+        "bound_artifact": {
+          "path": "data/human/skill-event-candidates/032454-request-timing-v1/candidate-rows.json",
+          "sha256": "4e85b6fd8af84db8a2f99d4b076861f834b83b343ae76167d9650182d2d4e8fc"
+        }
+      },
+      "rows": 108,
+      "known": 5,
+      "bin_support": [
+        4,
+        1
+      ]
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "group": "james-2026-09-23-session",
+      "status": "admitted (lead decision 2026-09-23, TRAIN-only); rows equal frozen v5 plus review provenance",
+      "examples": {
+        "path": "data/human/skill-event-candidates/james-request-cohort-ae648b33/051828-v5-admitted-examples.json",
+        "sha256": "ffec16330a22211217a8c9e185654aa7ad64330d1f5e606c005fbdf34f080040"
+      },
+      "evidence_digest": "a6f8d62973d5cfde7e78a8d2d39ff0577010bd2b67541f4c9fbe84eb2f1b59c8",
+      "admission": {
+        "packet_status": "admitted_train_only",
+        "remeasured_from": null,
+        "receipt": {
+          "path": "data/human/skill-event-candidates/james-request-cohort-ae648b33/admission-decision.json",
+          "sha256": "6d9fbe2d1b3decb4b9816fa34818333c41d80d8d396d46c0e1b081837358df91",
+          "schema": "lead_admission_decision"
+        },
+        "bound_artifact": {
+          "path": "data/human/skill-event-candidates/051828-request-timing-v5/candidate-rows.json",
+          "sha256": "bc605bf96f02037b82daeecd8ea369bed33f9c01be7a2faf6364b1a42af43fe0"
+        }
+      },
+      "rows": 4180,
+      "known": 71,
+      "bin_support": [
+        35,
+        36
+      ]
+    }
+  ],
+  "skipped_members": [],
+  "input_artifacts": {
+    "data/human/skill-event-candidates/james-request-cohort-ae648b33/cohort-manifest.json": "bcaa1cf46eb0a86fc587c0cb3d66a8be682d5915a14da3ca36165aec20fb8794",
+    "data/human/skill-event-candidates/032454-request-diagnostic-v1-ae648b33/examples.json": "c1a39ea72bc0f835b05353c8e4188ef143534277f3757084d3478c12fcf4ea5d",
+    "data/human/skill-event-candidates/032454-request-diagnostic-v1-ae648b33/artifact-hashes.json": "43e3a63aefdf57d0da4d9cca1992b6cef0c1e9b8844a01943e51561c2c085ccc",
+    "data/human/skill-event-candidates/james-request-cohort-ae648b33/051828-v5-admitted-examples.json": "ffec16330a22211217a8c9e185654aa7ad64330d1f5e606c005fbdf34f080040",
+    "data/human/skill-event-candidates/james-request-cohort-ae648b33/051828-v5-admitted-hashes.json": "a0e817ff4c4ff16df518b16e2fff3d3692f89f2778f45ba73f147ab231973967",
+    "data/human/skill-event-candidates/james-request-cohort-ae648b33/admission-decision.json": "6d9fbe2d1b3decb4b9816fa34818333c41d80d8d396d46c0e1b081837358df91",
+    "data/human/skill-event-candidates/051828-request-timing-v5/artifact-hashes.json": "5f70238022fda526419d85bc7d4fdba2a390fbd768e79b46fb057db2f9e2502a",
+    "data/human/skill-event-candidates/james-request-source-profile-v1/source-profile.json": "c5528cf75add2d7dde45b98423519788b8f1865e6d578a0ec6dec082f7e4a914",
+    "data/human/inspection/20260923T051828-422Z-33696-1/code-snapshot/manifest-ae648b33.json": "11f2e88daa610805a6b1e2d579a0797a676667722ecce6eeed3bbaafc21b2eb1",
+    "data/human/inspection/20260923T051828-422Z-33696-1/code-snapshot/git-archive-ae648b33/policy/range_skill_policy.py": "5109def43fe6d84a90a048431481d1ab56a429f2c4e9c804adee2413047d6a82",
+    "data/human/skill-event-candidates/james-request-cohort-ae648b33/cohort.py": "6bc87ef24ff35b77dbd62fbcb6550dbbcb6f41ad25094dfa96754e5b019c7363",
+    "data/human/reviews/20260922T032454-642Z-24328-1.request-diagnostic-train-decision.json": "52423a3c96504b446d825da6fce9511b1e6572f7d42b0ef4057a46a3959333a1",
+    "data/human/reviews/20260922T032454-642Z-24328-1.request-diagnostic-independent-review-receipt.json": "c4a95505b3f0d217ace001cfe9b4838433cd1c3c745e883fe8737f4a42763d07",
+    "data/human/reviews/20260922T032454-642Z-24328-1.request-timing-independent-review.md": "12ad3514dc99bce8c4686cd029e495776eaceb02ab3bdc6e17916e694f9272b3",
+    "data/human/skill-event-candidates/032454-request-timing-v1/candidate-rows.json": "4e85b6fd8af84db8a2f99d4b076861f834b83b343ae76167d9650182d2d4e8fc",
+    "data/human/skill-events/032454-request-diagnostic-v1/mapping-ready.json": "a683012c0aca3cbcb8f0aaf4eaab6df44926b153f85526983452d9011260d734",
+    "data/human/skill-events/032454-request-diagnostic-v1/dependencies.json": "064004558aee7556fe5548117d968efcc61340bb4f8667ef2b9ba8b9b88cbe72",
+    "data/human/skill-events/032454-request-diagnostic-v1/examples.json": "bd6cf4cb298379ac1a63fd226652e517ad6773ed6b4cead92dfb790abca91570",
+    "data/human/skill-events/032454-request-diagnostic-v1/artifact-hashes.json": "c30477e8396f4bb722f7433eb27eab0375d5fb5ea5c76274f70edd08c302c99a",
+    "data/human/inspection/20260922T032454-642Z-24328-1/remeasure/ae648b3/report.json": "37c813f342e80b2f404c11229b1953e44acb33b0896db90d1affc5784b10df10",
+    "data/human/skill-event-candidates/032454-request-timing-v1/artifact-hashes.json": "41d937720e8d37a1a6eca21008d1764b3e5f6b7b16af819123131a64a5741f00",
+    "data/human/skill-event-candidates/032454-request-timing-v1/request-evidence.json": "513738c2552c02d36e94768e2a79dc0eaa28ccb12a1d827dd18f6f7acf89556a",
+    "data/human/skill-events/032454-request-diagnostic-v1/source-profile.json": "9f413b81dabc71518359c28a6e506b1a1accbae5654bbf006967652332e3208f",
+    "data/human/skill-event-candidates/051828-request-timing-v5/candidate-rows.json": "bc605bf96f02037b82daeecd8ea369bed33f9c01be7a2faf6364b1a42af43fe0",
+    "data/human/skill-event-candidates/051828-request-timing-v5/coverage.json": "c6e701b40175cc3d2d0d22cbb8d8bddd545165951d88bbb0ca1b656cd35dea54",
+    "data/human/reviews/20260923T051828-422Z-33696-1.request-timing-independent-review.md": "511877fc53720db334b32a395e5b5336c342c59bf2add8f11840746616b7ed24",
+    "data/human/reviews/20260923T051828-422Z-33696-1.request-timing-v4-independent-review.md": "42b88ac03642a9ef01980d00af4aac6cac8660a5dd9cdf35a44be82e2c65c830"
+  },
+  "source_identity": {
+    "patch": "1.1.3870120/build25364676",
+    "cooldown_regime": "normal",
+    "source_profile_sha256": "c5528cf75add2d7dde45b98423519788b8f1865e6d578a0ec6dec082f7e4a914",
+    "perception_sha256": "a30b3cae3024641a1a235a99f6297114ec7cbc5d79398a3712e8fe06d8854e2c",
+    "selector_sha256": "00fd672e388faa0743bec098fc4bb0b6d8dfd35425fe7517bdfd67b846d4ed5f",
+    "semantic_revision": "web-cluster-request-v1",
+    "feature_revision": "masked-state-grid-causal-v1"
+  },
+  "identity_code_check": {
+    "lf": {
+      "perception_sha256": "75912d7f50effc47d876b3194174d7009e64027e391c83f561e6e37dea00f8c1",
+      "selector_sha256": "9e024bc1d079b718cfd0fda64eb7f0d465965c05dd90624f9912a332f9b6bd4a"
+    },
+    "crlf": {
+      "perception_sha256": "a30b3cae3024641a1a235a99f6297114ec7cbc5d79398a3712e8fe06d8854e2c",
+      "selector_sha256": "00fd672e388faa0743bec098fc4bb0b6d8dfd35425fe7517bdfd67b846d4ed5f"
+    },
+    "source_identity_matches": [
+      "crlf"
+    ]
+  },
+  "evidence_digest": "86e5894b12d9a6bf665524aad89ef29589b63dd05f070bd67052c6659d2a96c9",
+  "checkpoint_sha256": "698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b",
+  "coverage": {
+    "grid_rows": 4288,
+    "known_rows": 76,
+    "masked_rows": 4212,
+    "masked_reasons": {
+      "Request semantics not inspected; historical visual labels do not transfer.": 102,
+      "RMB rising edge3983 is linked to eventual nearby Galacta cast, but actual causal selector chooses distant Galacta; target disagreement stays unknown.": 1,
+      "Sample window inspected: full ammo 5, RMB up, no control transition; selected box is only a leg fragment of the named Luna Snow on her pad (box 209-265 x 344-472); fragment anchor left unknown": 1,
+      "Request semantics not inspected; no history, no label.": 3768,
+      "Sample window inspected: Rejected: pre-input idle after focus gain, not an engagement. No input from focus (0.871) until W at 2.863; the scene is static from 1.3 to 2.8 s (consecutive-frame diffs 0.05-0.11) and Luna is a distant figure; 2.3 s before n51 and across n39.": 1,
+      "Inspected unknown (selector no_target; web recipient: named Luna Snow Hero Simulation): no selected target at the anchor; ammo 4->3 at 6.425 and bursts on Luna 6.44-6.54": 1,
+      "Inspected unknown (selector no_target; web recipient: none: web bursts on the planter wall): no selected target; web streak ends in a burst on the planter wall 7.91-7.98": 1,
+      "Inspected control unknown (beside request n76): request n76 has no agreed cast, so the engaged body is not established.": 1,
+      "Inspected control unknown (beside request n119): unknown: engaged body not established": 2,
+      "Inspected unknown (selector n/a; web recipient: none: web reaches no body): ammo recharges 4->5 at 11.992 before the request, then 5->4 at 12.025; the emission goes down-right and bursts on the ground beside Spider-Man 12.16-12.28, not the selected distant Galacta": 1,
+      "Inspected control unknown (beside request n126): unknown: Box selects the right-hand Galacta of the pair; n126 recipient is the left one. (v4, ae648b33)": 1,
+      "Inspected control unknown (beside request n143): request n143 has no agreed cast, so the engaged body is not established.": 1,
+      "Inspected unknown (selector fragment_of_recipient; web recipient: close Galacta (point-blank)): New box is a claw fragment of the close Galacta; point-blank, the white bursts land below Spider-Man around the 3->2 decrement at 14.650, not a separable palm-side burst on the bot.": 1,
+      "Inspected control unknown (beside request n167): request n167 has no agreed cast, so the engaged body is not established.": 1,
+      "Inspected unknown (selector no_target; web recipient: none: web bursts on the floor): no selected target; ammo 3->2 at 16.908; burst on the floor 16.99-17.03": 1,
+      "Inspected unknown (selector no_target; web recipient: close Galacta (point-blank)): bot boxed yellow but no selected target; reader None then 2 (3->2 inferred at 18.367); point-blank bursts on the close Galacta 18.35-18.40": 1,
+      "Inspected unknown (selector n/a; web recipient: close Galacta): point-blank: bursts on the close Galacta at 18.833 before the 2->1 decrement at 18.850 (LMB held); web not separable from melee": 1,
+      "Inspected unknown (selector no_target; web recipient: not_seen): No selected target at the anchor under ae648b33 (v3 selector n/a). selected a small box at the left edge while a large burst hits the centre bot at the anchor; ammo 1->0 at 19.792 but no web emission or impact seen afterwards": 1,
+      "Inspected unknown (selector not_a_body; web recipient: none: web streak heads down into the plaza): selected the nameplate of a distant Galacta on the far balcony; ammo 1->0 at 20.475 and the streak travels right and down into the plaza, not toward it": 1,
+      "Inspected unknown (selector n/a; web recipient: not_seen): anchor ammo 0; no web-ammo consumption and no emission after the rise": 1,
+      "Inspected unknown (selector n/a; web recipient: close Galacta): point-blank: burst on the close Galacta at 22.342 before the 1->0 decrement at 22.358 (LMB held); selected box is below the bot after the camera turn; not separable": 1,
+      "Inspected unknown (selector no_target; web recipient: not_seen): anchor ammo 0 and no consumption; melee on the close Galacta, no web emission": 1,
+      "Inspected control unknown (beside request n247): unknown: request n247 has no agreed cast": 1,
+      "Inspected unknown (selector no_target; web recipient: Galacta on the stairs): No selected target at the anchor under ae648b33 (v3 selector fragment_of_recipient). Box is the lower-claw fragment of the recipient stairs Galacta, no other body in it. LMB up. HUD 1->0 at 24838; a web ball from the palm bursts on the same bot 24879-24946.": 1,
+      "Inspected unknown (selector same; web recipient: Galacta by the railing (low confidence)): New box is the railing Galacta, but only small sparks appear on it (31.53-31.58) and the web ammo is mostly unread around the 3->2 reading at 31.483; no clear palm-side burst on the body.": 1,
+      "Inspected unknown (selector same; web recipient: close Galacta boxed whole): point-blank: burst already on the boxed Galacta at the anchor and 32.417 before the 3->2 decrement at 32.467; reader None for most frames and LMB held; web not separable from melee; one repeated horizon frame": 1,
+      "Inspected unknown (selector no_target; web recipient: not_seen): no selected target while perched on the railing; reader None; no emission seen": 1,
+      "Inspected control unknown (beside request n380): unknown: distant box": 1,
+      "Inspected unknown (selector merged_box; web recipient: not_seen): New box spans a nameplate bar and two small Galacta figures on the lower level; the streak goes down to the floor near them, impact on a body not established.": 1,
+      "Inspected control unknown (beside request n380): unknown: nearby bot boxed whole but no agreed cast establishes it as the engaged body": 1,
+      "Inspected control unknown (beside request n391): request n391 has no agreed cast, so the engaged body is not established.": 1,
+      "Inspected unknown (selector n/a; web recipient: none: web bursts at the staircase): New box is the Galacta beside Spider-Man at the anchor, but the web bursts at the staircase (non-engage emission).": 1,
+      "Inspected control unknown (beside request n408): request n408 has no agreed cast, so the engaged body is not established.": 2,
+      "Inspected unknown (selector not_a_body; web recipient: none: web streak lands far away on the floor): New box lies on Spider-Man own head/shoulder (hero region); the web travels far away and bursts on the floor.": 1,
+      "Inspected unknown (selector no_target; web recipient: close Galacta (web wrap on it)): no selected target (box on the ring behind); reader None; web wrap and bursts on the close Galacta 42.56-42.68": 1,
+      "Inspected control unknown (beside request n425): request n425 has no agreed cast, so the engaged body is not established.": 1,
+      "Inspected unknown (selector no_target; web recipient: close Galacta in the doorway (point-blank)): no selected target; ammo 3->2 at 47.675; point-blank bursts on the close Galacta 47.76-47.79": 1,
+      "Inspected control unknown (beside request n474): request n474 has no agreed cast, so the engaged body is not established.": 1,
+      "Inspected unknown (selector no_target; web recipient: close Galacta): no selected target; ammo 3->2 at 50.250; bursts on the close Galacta 50.25-50.35": 1,
+      "Inspected control unknown (beside request n501): request n501 has no agreed cast, so the engaged body is not established.": 1,
+      "Inspected control unknown (beside request n537): unknown: small box beside Spider-Man's hand": 1,
+      "Inspected unknown (selector n/a; web recipient: not_seen): close Galacta boxed whole and white bursts land on it 53.925-54.000, but no web-ammo decrement is read (3 -> None -> 3) and LMB is held, so web emission is not separated from melee": 1,
+      "Inspected control unknown (beside request n543): unknown: request n543 has no agreed cast": 1,
+      "Inspected control unknown (beside request n537): unknown: same close bot boxed whole, but the associated cast is not established": 1,
+      "Inspected unknown (selector same; web recipient: close Galacta): New box now encloses the close Galacta body; still no web-ammo consumption read (3 throughout) and the bursts are point-blank melee (LMB held).": 1,
+      "Inspected unknown (selector n/a; web recipient: Galacta ahead (low confidence)): New box is above the doorway Galacta (not on its body in the cast frames); only a small low-confidence spark near the bot after the 4->3 at 57.892.": 1,
+      "Inspected control unknown (beside request n601): unknown: request n601 has no agreed cast": 1,
+      "Inspected unknown (selector no_target; web recipient: close Galacta): bot boxed yellow but gate selected no target; ammo 4->3 at 60.250 and web wraps the close Galacta 60.27-60.37 (LMB held)": 1,
+      "Inspected control unknown (beside request n639): unknown: request n639 has no agreed cast": 2,
+      "Inspected unknown (selector not_a_body; web recipient: close Galacta Bot Ultra): New box encloses the Ultra lower body together with Spider-Man (another body in the box); point-blank bursts near the Ultra head (LMB held).": 1,
+      "Inspected control unknown (beside request n662): unknown: Box on the Ultra lower body with Spider-Man legs inside it (hero overlap). (v4, ae648b33)": 1,
+      "Inspected unknown (selector same; web recipient: close Galacta Bot Ultra): box encloses the Ultra and Spider-Man together (player-zone overlap); point-blank bursts already at the anchor; reader None around the single 3->2 frame at 67.367; web not separable": 1,
+      "Inspected unknown (selector n/a; web recipient: not_seen): selected a small distant bot on the far path; ammo 3->2 at 69.725 and a small projectile/splash appears mid-screen 69.742-69.792, but no impact on the selected bot is visible; a different close Galacta enters lower-left": 1,
+      "Inspected unknown (selector no_target; web recipient: not_seen): no selected target while swinging along the walkway; no web-ammo decrement and no emission seen": 1,
+      "Inspected control unknown (beside request n736): request n736 has no agreed cast, so the engaged body is not established.": 2,
+      "Inspected unknown (selector no_target; web recipient: not_seen): no selected target; no web-ammo decrement read; a bright spot near the upper Galacta 73.74-73.78 is not a confirmed web cast": 1,
+      "Inspected unknown (selector no_target; web recipient: not_seen): no selected target; ammo 3->2 at 74.808 while running; no emission or impact seen": 1,
+      "Inspected control unknown (beside request n775): unknown: request n775 has no agreed cast": 1,
+      "Inspected unknown (selector same; web recipient: close Galacta boxed whole): anchor ammo unknown and no consumption read (None then 1); point-blank bursts already on the boxed bot at 77.592 (LMB held); web not separable": 1,
+      "Inspected unknown (selector fragment_of_recipient; web recipient: close Galacta): selected box is a thin strip beside the close Galacta; no consumption read (None then 1); point-blank bursts; LMB held": 1,
+      "Inspected unknown (selector no_target; web recipient: none: web bursts on the floor at 15M): no selected target; ammo 1->0 at 79.292; web bursts on the floor in front of Spider-Man 79.34-79.41": 1,
+      "Inspected unknown (selector no_target; web recipient: Galacta on the lane ahead (low confidence)): anchor ammo 0 (recharged to 1 at 80.133, then 1->0 at 80.150); streak travels to the distant lane Galacta, small sparks at it 80.23-80.27": 1,
+      "Inspected unknown (selector n/a; web recipient: not_seen): anchor ammo 0; no consumption and no web emission after the rise": 1,
+      "Inspected unknown (selector no_target; web recipient: none: web bursts on the lane floor): anchor ammo 0 (recharged to 1, then 1->0 at 82.067); web bursts on the floor beside the lane 82.08-82.18": 1,
+      "Inspected unknown (selector no_target; web recipient: not_seen): No selected target at the anchor under ae648b33 (v3 selector n/a). anchor ammo 0; no consumption and no web emission after the rise": 1,
+      "Inspected unknown (selector no_target; web recipient: not_seen): anchor ammo 0 during a swing; no consumption and no emission": 1,
+      "Inspected control unknown (beside request n860): unknown: request n860 has no agreed cast": 2,
+      "Inspected unknown (selector no_target; web recipient: not_seen): No selected target at the anchor under ae648b33 (v3 selector not_a_body). selected box is empty lane space after the camera turn; reader None then 1, no consumption; bursts near a different bot at the left edge": 1,
+      "Inspected unknown (selector same; web recipient: Galacta on the pink lane, boxed with its nameplate and upper body (track 4)): delayed_cast: LMB pressed ~75 ms after the rise (seq 19328 at 86.7526, held to 86.9507) and held across the decrement; web ammo spent after RMB release (86.8948); rise->decrement 238 ms against 96-119 ms for the other starts. The streak does reach the same body, but the request->cast mechanism differs, so it is masked.": 1,
+      "Inspected control unknown (beside request n872): request n872 has no agreed cast, so the engaged body is not established.": 1,
+      "Inspected unknown (selector n/a; web recipient: not_seen): Anchor ammo 0 during the ultimate/shield effect; no consumption and no web emission.": 1,
+      "Inspected unknown (selector n/a; web recipient: not_seen): selected a distant Galacta on the right; reader None, no consumption and no web emission seen": 1,
+      "Inspected control unknown (beside request n910): unknown: request n910 has no agreed cast": 1,
+      "Inspected control unknown (beside request n922): unknown: request n922 has no agreed cast": 1,
+      "Inspected unknown (selector fragment_of_recipient; web recipient: close Galacta): selected box is the left-arm fragment of the close Galacta (head boxed yellow); reader None then 1, no consumption read; point-blank bursts (LMB held)": 1,
+      "Inspected unknown (selector no_target; web recipient: Galacta at the platform edge (low confidence)): no selected target; ammo 1->0 at 93.642; streak toward the edge Galacta, small sparks at it 93.74-93.76": 1,
+      "Inspected control unknown (beside request n935): request n935 has no agreed cast, so the engaged body is not established.": 1,
+      "Inspected unknown (selector n/a; web recipient: not_seen): selected the nameplate of the close Galacta; reader None, no consumption; point-blank, no separable web emission": 1,
+      "Inspected control unknown (beside request n965): unknown: request n965 has no agreed cast": 1,
+      "Inspected control unknown (beside request n978): unknown: request n978 has no agreed cast": 1,
+      "Inspected unknown (selector same; web recipient: close Galacta): point-blank: selected nameplate of the close Galacta; bursts on it at 97.942 before the 1->0 decrement at 97.958, recharge to 1 at 97.992 (LMB held); not separable": 1,
+      "Inspected control unknown (beside request n1047): unknown: no selected target at the anchor under ae648b33 (not an eligible control bin); the earlier \"n1047 has no agreed cast\" reason is stale, n1047 is an agreed start (v5)": 1,
+      "Inspected control unknown (beside request n1057): request n1057 has no agreed cast, so the engaged body is not established.": 2,
+      "Inspected unknown (selector n/a; web recipient: not_seen): No web-ammo consumption read (stays 3); only melee sparks; new box drifts onto Spider-Man in the cast frames.": 1,
+      "Inspected unknown (selector no_target; web recipient: Galacta ahead on the lanes (small burst at the bot 108.95-109.00, low confidence)): no selected target; ammo 4->3 at 108.900 during a flip; small burst at the bot": 1,
+      "Inspected unknown (selector no_target; web recipient: none: web bursts on the lane floor): no selected target; ammo 3->2 at 110.167; web bursts on the floor beside the close Galacta 110.23-110.28": 1,
+      "Inspected unknown (selector no_target; web recipient: not_seen): no selected target; ammo 3->2 at 112.592; projectile passes right of the Galacta, small sparks beside it, no confirmed hit": 1,
+      "Inspected unknown (selector n/a; web recipient: none: web bursts on the crate edge): Anchor ammo unread; the 1->0 at 113.475 comes 551 ms after this rise and belongs to n1133; the burst lands on the crate edge.": 1,
+      "Inspected unknown (selector n/a; web recipient: none: web bursts on the crate top): New box is the Galacta half-hidden behind the crate; 1->0 at 113.475 and the web bursts on the crate corner above it, not clearly on the body.": 1,
+      "Inspected unknown (selector same; web recipient: not_seen): New box is the near lane Galacta; web ammo unread through the rise (None then 1 at 116.642, no pre value), streak toward it with impact not established.": 1,
+      "Inspected control unknown (beside request n1165): unknown: request n1165 has no agreed cast": 1,
+      "Inspected control unknown (beside request n1177): unknown: Camera faces another part of the plaza; same body as n1177 recipient not established. (v4, ae648b33)": 1,
+      "Inspected control unknown (beside request n1177): unknown: Different bot in the later scene. (v4, ae648b33)": 1,
+      "Inspected control unknown (beside request n1191): request n1191 has no agreed cast, so the engaged body is not established.": 1,
+      "Inspected unknown (selector no_target; web recipient: not_seen): anchor ammo 0; no consumption and no web emission": 1,
+      "Inspected unknown (selector n/a; web recipient: not_seen): anchor ammo 0 during a web swing; no consumption and no emission toward a bot": 1,
+      "Inspected unknown (selector no_target; web recipient: Galacta at the platform edge): no selected target; ammo 1->0 at 121.500; web streak reaches the edge Galacta, sparks on it 121.57-121.62": 1,
+      "Inspected control unknown (beside request n1241): unknown: request n1241 has no agreed cast": 2,
+      "Inspected unknown (selector n/a; web recipient: not_seen): selected the nameplate of the close Galacta; reader None, no consumption; point-blank melee, no separable web emission (LMB held)": 1,
+      "Inspected unknown (selector no_target; web recipient: close Galacta (point-blank)): bot boxed yellow but no selected target; ammo 1->0 at 125.100 with point-blank bursts on the close Galacta": 1,
+      "Inspected control unknown (beside request n1313): request n1313 has no agreed cast, so the engaged body is not established.": 1,
+      "Inspected unknown (selector no_target; web recipient: not_seen): no selected target; ammo 3->2 at 131.558; streak toward a distant Galacta, Spider-Man body blocks the impact": 1,
+      "Inspected control unknown (beside request n1345): unknown: request n1345 has no agreed cast": 2,
+      "Inspected unknown (selector no_target; web recipient: Galacta rising out of frame): no selected target; ammo 4->3 at 134.667; streak and burst at the Galacta 134.67-134.73": 1,
+      "Inspected control unknown (beside request n1362): unknown: request n1362 has no agreed cast": 1,
+      "Inspected unknown (selector no_target; web recipient: distant Galacta on the middle lane): no selected target; ammo 4->3 at 136.392; web streak travels to the distant middle-lane Galacta 136.41-136.49": 1,
+      "Inspected control unknown (beside request n1367): request n1367 has no agreed cast, so the engaged body is not established.": 1,
+      "Inspected unknown (selector same; web recipient: not_seen): New box is the distant lane Galacta; 3->2 at 136.858 and the streak heads over the crate toward the upper lane; impact on the boxed bot not established.": 1,
+      "Inspected control unknown (beside request n1374): unknown: Box on a small figure beside Spider-Man hand below a nameplate by the booth; same body as n1374 recipient not established. (v4, ae648b33)": 1,
+      "Inspected unknown (selector same; web recipient: close Galacta): dive onto the boxed bot: reader None at the anchor, 1 from 139.667; point-blank bursts 139.683-139.75 during the landing (LMB held); web not separable from the dive/melee": 1,
+      "Inspected unknown (selector same; web recipient: lane Galacta (low confidence)): New box is the lane Galacta nameplate; the web reader is unread through the rise and first reads 1 at 141.142, so no consumption is bracketed; small projectile near the bot only.": 1,
+      "Inspected control unknown (beside request n1410): request n1410 has no agreed cast, so the engaged body is not established.": 1,
+      "Inspected unknown (selector no_target; web recipient: close Galacta): no selected target; ammo 2->1 at 142.775; web streak to the close Galacta and impact 142.79-142.86": 1,
+      "Inspected unknown (selector no_target; web recipient: Galacta to the right (web wrap on it)): No selected target at the anchor under ae648b33 (v3 selector not_a_body). selected box lies over Spider-Man arm/torso (player zone) with the bot boxed yellow beside it; ammo 1->0 at 143.492 and the web wraps the right Galacta 143.54-143.61": 1,
+      "Inspected control unknown (beside request n1464): unknown: request n1464 has no agreed cast": 2,
+      "Inspected unknown (selector different; web recipient: middle Galacta): target disagreement: selected the right Galacta; the web streak travels to the middle Galacta 146.52-146.58 (reader None then 1)": 1,
+      "Inspected control unknown (beside request n1474): unknown: request n1474 has no agreed cast": 1,
+      "Inspected unknown (selector same; web recipient: close Galacta boxed whole): point-blank: bursts on the boxed bot 147.508-147.542 before the 1->0 decrement at 147.558 (LMB held); web not separable from melee": 1,
+      "Inspected unknown (selector n/a; web recipient: not_seen): New box is the ledge Galacta; 1->0 at 148.975 but the streak heads between the two bots and no impact on the boxed one is established.": 1,
+      "Inspected control unknown (beside request n1530): unknown: request n1530 has no agreed cast": 1,
+      "Inspected unknown (selector not_a_body; web recipient: close Galacta): selected box covers Spider-Man head/shoulder overlapping the bot (player zone); point-blank bursts 153.14-153.21 around the 1->0 decrement (LMB held); not separable": 1,
+      "Inspected control unknown (beside request n1552): unknown: small far-left box, engaged body not established": 1,
+      "Inspected unknown (selector not_a_body; web recipient: none: web reaches no body): selected box sits on top of a tall black structure with no bot inside; emission 155.400 goes down-left and bursts beside Spider-Man; causal target not a visible bot": 1,
+      "Inspected unknown (selector no_target; web recipient: Galacta on the right lane): No selected target at the anchor under ae648b33 (v3 selector different). anchor ammo 0 (recharged to 1 at 156.067); selected box beside the left Galacta; ammo 1->0 at 156.083 and the web streak reaches the right-lane Galacta 156.10-156.20": 1,
+      "Inspected control unknown (beside request n1668): unknown: Top-down view after the cast: the box is a tiny region at the far screen edge beside a bot; same body as n1668 recipient not established. (v4, ae648b33)": 1,
+      "Inspected unknown (selector n/a; web recipient: not_seen): New box is the distant Galacta nameplate; 4->3 at 169.133 and the projectile travels low toward the lane, no impact on the boxed bot.": 1,
+      "Inspected unknown (selector not_a_body; web recipient: not_seen): selected box merges two stacked distant nameplates; reader None after 169.64 so no consumption read; small projectile toward the path, impact not established": 1,
+      "Inspected control unknown (beside request n1695): unknown: request n1695 has no agreed cast": 1,
+      "Inspected control unknown (beside request n1713): unknown: request n1713 has no agreed cast": 2,
+      "Inspected unknown (selector same; web recipient: tracer-tagged Galacta by the stairs (selected)): Unknown. The 2->1 decrement at 171.946 follows n1717's own rise (171.794), not n1713's. n1713's one consumption falls inside a 333 ms unread-ammo span (171.479-171.796), and its only visible emission travels low, bursting at the bot's feet rather than clearly on the body.": 1,
+      "Inspected unknown (selector no_target; web recipient: not_seen): no selected target; point-blank dive on the close Galacta, reader None/2, no separable web emission": 1,
+      "Inspected control unknown (beside request n1768): unknown: request n1768 has no agreed cast": 1,
+      "Inspected unknown (selector not_a_body; web recipient: not_seen): New box is empty floor between the two bots; 4->3 at 176.983 and the projectile travels past the boxed area toward the far Galacta, no impact seen.": 1,
+      "Inspected unknown (selector n/a; web recipient: not_seen): The first decrement (3->2 at 177.958) is 575 ms after this rise; no emission tied to it.": 1,
+      "Inspected control unknown (beside request n1791): unknown: Box on a bot half out of frame at the left edge after the cast; same body as n1791 recipient not established. (v4, ae648b33)": 1,
+      "Inspected unknown (selector no_target; web recipient: Galacta on the lane): full ammo 5 (4 at tick n-4); causal selector has no target at the anchor; ammo 5->4 at 184.133 and the web reaches the Galacta 184.15-184.25": 1,
+      "Inspected control unknown (beside request n1840): unknown: request n1840 has no agreed cast": 1,
+      "Inspected control unknown (beside request n1850): unknown: request n1850 has no agreed cast": 1,
+      "Inspected unknown (selector not_a_body; web recipient: close Galacta): New box is empty floor to the right of the close Galacta; the bursts land on the Galacta beside it (LMB held).": 2,
+      "Inspected unknown (selector same; web recipient: not_seen): New box is the lane Galacta body; HUD 3, unread, 2 at 187238, but the emission stays near the hand/nameplate level and no impact on the boxed bot is seen.": 1,
+      "Inspected control unknown (beside request n1875): unknown: request n1875 has no agreed cast": 1,
+      "Inspected unknown (selector same; web recipient: not_seen): New box is the lane Galacta whole; web ammo unread until 1 at 187.658 (no pre value); small projectile at the end of the sheet only.": 1,
+      "Inspected control unknown (beside request n1919): unknown: request n1919 has no agreed cast, so the engaged body at this anchor is not established": 2,
+      "Inspected unknown (selector different; web recipient: nearer middle Galacta): target disagreement: selected far-right Galacta; emission 192.067 flies to the nearer middle Galacta (impact about 192.18-192.30)": 1,
+      "Inspected control unknown (beside request n1933): unknown: selects the near Galacta, but request n1933 is not an agreed cast": 1,
+      "Inspected unknown (selector not_a_body; web recipient: near Galacta beside Spider-Man): Unknown: the web-ammo consumption falls inside a 108 ms unread span (193488-193588), like v3 n1713, so it is not bracketed. The hero overlap in the box is the same class as accepted 126 and is not the reason.": 1,
+      "Inspected unknown (selector n/a; web recipient: not_seen): box encloses the close Galacta together with Spider-Man leg (player-zone overlap); no web-ammo decrement read and Spider-Man flips over the bot; no web emission seen": 1,
+      "Inspected control unknown (beside request n1963): unknown: request n1963 has no agreed cast": 1,
+      "Inspected unknown (selector no_target; web recipient: Galacta at the platform edge): no selected target; ammo 4->3 at 196.500; web bursts on the Galacta 196.55-196.62": 1,
+      "Inspected unknown (selector same; web recipient: Galacta to the right (low confidence)): New box is the right Galacta nameplate and upper body; HUD 3->2 at 196971 and the streak heads toward it, but the camera flips before an impact on the bot is visible.": 1,
+      "Inspected control unknown (beside request n1968): unknown: request n1968 has no agreed cast": 1,
+      "Inspected unknown (selector n/a; web recipient: none: web reaches no body): web splats on the floor at 199.52-199.56; never reaches the selected distant bot": 1,
+      "Inspected unknown (selector not_a_body; web recipient: not_seen): selected box is a fragment beside a close Galacta split into several boxes; no ammo decrement or separable web emission in the inspected span": 1,
+      "Inspected unknown (selector n/a; web recipient: not_seen): point-blank at the anchor with the bot split into boxes (small fragment selected); camera then passes behind a pillar, reader None, no emission or impact seen; one repeated horizon frame": 1,
+      "Inspected unknown (selector same; web recipient: not_seen): New box is the distant Galacta behind the planter; 4->3 at 206.592 but the projectile flies low and short, no impact on the boxed bot seen.": 1,
+      "Inspected control unknown (beside request n2090): unknown: engaged body not established by an agreed cast": 1,
+      "Inspected unknown (selector n/a; web recipient: not_seen): ammo 3->2 at 209.375 point-blank beside the bot; no separable web emission/impact visible on it": 1,
+      "Inspected unknown (selector not_a_body; web recipient: not_seen): selected box spans two stacked bots and their nameplates; reader None then 1, no consumption; no emission seen": 1,
+      "Inspected unknown (selector different; web recipient: not_seen): New box is the distant stair nameplate; the web ammo is unread then 1 at 210.958 and the burst lands at the feet of the near Galacta 211.00-211.06; not on the boxed body.": 1,
+      "Inspected control unknown (beside request n2108): unknown: request n2108 has no agreed cast": 1,
+      "Inspected control unknown (beside request n2124): unknown: request n2124 has no agreed cast": 2,
+      "Inspected unknown (selector different; web recipient: left Galacta (web wrap on it)): target disagreement: selected the right distant Galacta; web wraps the left Galacta 212.51-212.58 (reader None)": 1,
+      "Inspected unknown (selector n/a; web recipient: not_seen): selected a small box beside the close Galacta head on the rock; ammo 1->0 at 213.825 but no impact on the bot is visible (a small projectile passes below it)": 1,
+      "Inspected control unknown (beside request n2137): unknown: request n2137 has no agreed cast": 1,
+      "Inspected control unknown (beside request n2200): unknown: merged box": 1,
+      "Inspected unknown (selector n/a; web recipient: none: web reaches no body): selected box merges two distant bots; emission 220.150 goes downward, not toward them": 1,
+      "Inspected control unknown (beside request n2224): unknown: request n2224 has no agreed cast": 1,
+      "Inspected unknown (selector no_target; web recipient: none: web bursts on the planter wall): no selected target while swinging; ammo 4->3 at 222.592; streak ends in a burst on the wall 222.69-222.71": 1,
+      "Inspected unknown (selector different; web recipient: close Galacta): Target disagreement: new box selects the distant Galacta on the ledge (upper left); 3->2 at 223.633 and the bursts land on the close Galacta beside Spider-Man 223.67-223.75.": 1,
+      "Inspected control unknown (beside request n2235): request n2235 has no agreed cast, so the engaged body is not established.": 1,
+      "Inspected unknown (selector fragment_of_recipient; web recipient: close Galacta (web wrap on it)): selected box is the lower claw fragment of the close Galacta; web wrap visible at 224.725 before the only 3->2 reading at 224.775, reader None elsewhere; LMB held; not separable": 1,
+      "Inspected control unknown (beside request n2312): unknown: request n2312 has no agreed cast, so the engaged body at this anchor is not established": 2,
+      "Inspected unknown (selector n/a; web recipient: none: web reaches no body): full ammo 5, selected right Galacta; emission 231.342 goes down-right and bursts on the ground near 10M, not the bot": 1,
+      "Inspected control unknown (beside request n2329): unknown: request n2329 has no agreed cast": 2,
+      "Inspected unknown (selector merged_box; web recipient: close Galacta beside Spider-Man): New box spans two distant nameplates on the far terrace; the web bursts on the close Galacta 233.05-233.15.": 1,
+      "Inspected control unknown (beside request n2339): unknown: request n2339 has no agreed cast": 1,
+      "Inspected unknown (selector different; web recipient: close Galacta (boxed yellow)): target disagreement: selected a distant Galacta on the lower terrace; ammo 4->3 at 234.083 and bursts land on the close Galacta 234.10-234.18 (LMB held)": 1,
+      "Control bin beside n2349, admitted as a start in v5, was not judged under the same-body rule; it stays unknown (v5 changes are limited to the lead decision).": 1,
+      "Inspected unknown (selector no_target; web recipient: Galacta at the top of the stairs): no selected target; ammo 3->2 at 235.825; web reaches that Galacta and wraps it 235.84-235.94": 1,
+      "Inspected unknown (selector n/a; web recipient: none: web bursts on the ring railing): camera swing moves the selected distant bot out of view; reader None then 1 at 236.517; web streak bursts on the ring railing beside Spider-Man 236.58-236.63": 1,
+      "Inspected control unknown (beside request n2371): unknown: request n2371 has no agreed cast": 2,
+      "Inspected control unknown (beside request n2364): unknown: request n2364 has no agreed cast": 1,
+      "Inspected unknown (selector different; web recipient: Galacta on the lane below the stairs): target disagreement: selected a small box at the stair landing; ammo 1->0 at 237.208 and the web streak reaches the lower lane Galacta 237.26-237.33": 1,
+      "Inspected unknown (selector not_a_body; web recipient: not_seen): New box is empty floor between the bots; web ammo mostly unread and its first decrement belongs to n2417.": 1,
+      "Inspected unknown (selector merged_box; web recipient: left Galacta): New box spans the left Galacta and the right Galacta nameplate (two bodies); the web reaches the left Galacta.": 1,
+      "Inspected control unknown (beside request n2417): unknown: request n2417 has no agreed cast": 1,
+      "Inspected control unknown (beside request n2455): unknown: request n2455 has no agreed cast, so the engaged body at this anchor is not established": 1,
+      "Inspected unknown (selector no_target; web recipient: not_seen): No selected target at the anchor under ae648b33 (v3 selector n/a). point-blank tangle with close Galacta; ammo 3->2 at 245.942 but web emission not separable from melee impacts": 1,
+      "Inspected unknown (selector not_a_body; web recipient: close Galacta): New box is empty floor below the Galacta; the bursts land on the Galacta during the swing-past (reader unread before 1 at 246.333, no bracket).": 1,
+      "Inspected control unknown (beside request n2523): unknown: request n2523 has no agreed cast, so the engaged body at this anchor is not established": 2,
+      "Inspected unknown (selector n/a; web recipient: none: web reaches no body): selected box spans distant bots; emission 252.450 travels along the ground and splats on the floor at 252.67": 1,
+      "Inspected control unknown (beside request n2540): unknown: different small box before the approach": 1,
+      "Inspected unknown (selector merged_box; web recipient: purple Galacta, one of two figures inside the merged anchor box): Merged box: the anchor box [1265,547,1457,657] encloses the nameplate and two green-outlined figures (a pale figure and the purple Galacta the web reaches) about 100 px apart, moving together 253921-254321. Same mask as v1 n2200/n2640.": 1,
+      "Inspected control unknown (beside request n2547): unknown: request n2547 has no agreed cast": 1,
+      "Inspected control unknown (beside request n2540): unknown: selected a distant box while the engaged bot is boxed yellow": 1,
+      "Inspected unknown (selector n/a; web recipient: not_seen): selected a small distant box while a close Galacta (boxed yellow) takes point-blank bursts; no web-ammo decrement read (3 then None), so no web emission is established": 1,
+      "Inspected unknown (selector no_target; web recipient: none: web splats on the rock): no selected target; web lands on the rock beside Spider-Man 256.92-256.98": 1,
+      "Inspected unknown (selector no_target; web recipient: not_seen): no selected target while swinging; no web-ammo decrement read and no impact seen": 2,
+      "Inspected control unknown (beside request n2604): unknown: request n2604 has no agreed cast, so the engaged body at this anchor is not established": 1,
+      "Inspected unknown (selector same; web recipient: closer Galacta at right): Same body as the causal target (v1 independent review). Still unknown: no HUD consumption read in the inspected span.": 1,
+      "Inspected unknown (selector same; web recipient: close Galacta boxed whole): reader flickers None/2 for the whole history and until 261.167 (1); sparks already on the boxed bot 261.117-261.133 before the read decrement; emission not separated": 1,
+      "Inspected control unknown (beside request n2610): unknown: selected an empty box on the far terrace": 1,
+      "Inspected control unknown (beside request n2640): unknown: request n2640 has no agreed cast, so the engaged body at this anchor is not established": 1,
+      "Inspected unknown (selector not_a_body; web recipient: not_seen): selected box merges two bots; no ammo decrement confirmed and no impact on either": 1,
+      "Inspected unknown (selector different; web recipient: nearby ground-level Galacta): target disagreement: full ammo 5, selected tiny distant bot on a high ledge; emission 270.533 travels to a nearby ground-level bot instead": 1,
+      "Inspected control unknown (beside request n2711): unknown: request n2711 has no agreed cast": 2,
+      "Inspected unknown (selector not_a_body; web recipient: none: web splats on the floor): selected box is empty floor/air in front of distant bots; ammo 4->3 at 271.208 and the web splats on the ground beside Spider-Man 271.29-271.45": 1,
+      "Inspected control unknown (beside request n2754): unknown: request n2754 has no agreed cast": 2,
+      "Inspected unknown (selector merged_box; web recipient: Galacta by the railing ahead (low confidence)): New box spans the nameplate bar and the stairs/railing area beside the distant bot; only small sparks near the bot after the 4->3 at 275.575.": 1,
+      "Inspected control unknown (beside request n2777): unknown: request n2777 has no agreed cast, so the engaged body at this anchor is not established": 2,
+      "Inspected unknown (selector n/a; web recipient: not_seen): point-blank with close Galacta; ammo 4->3 at 277.883, bursts start before the decrement and a web splat lands on the floor; cast recipient not established": 1,
+      "Inspected control unknown (beside request n2792): unknown: request n2792 has no agreed cast": 1,
+      "Inspected unknown (selector no_target; web recipient: close Galacta beside Spider-Man): No selected target at the anchor under ae648b33 (v3 selector fragment_of_recipient). selected box is the bot head overlapping Spider-Man arm (partial body in the player zone); point-blank bursts begin 279.29 before the 4->3 decrement at 279.325 (LMB held), web not separable from melee": 1,
+      "Inspected control unknown (beside request n2797): unknown: selected a distant box while the close bot is boxed yellow": 1,
+      "Inspected unknown (selector no_target; web recipient: Galacta ahead of Spider-Man, the only bot in view (track 1)): No selected target at the anchor under ae648b33 (v3 selector same). delayed_cast: LMB pressed ~75 ms after the rise (seq 64112 at 279.8427, held to 280.0766) and held across the decrement; web ammo spent after RMB release (280.0067); rise->decrement 299 ms against 96-119 ms for the other starts. The streak does reach the same body, but the request->cast mechanism differs, so it is masked.": 1,
+      "Inspected control unknown (beside request n2818): unknown: request n2818 has no agreed cast, so the engaged body at this anchor is not established": 1,
+      "Inspected unknown (selector n/a; web recipient: none: web reaches no body): emission 281.925 splats on ramp/railing next to Spider-Man; selected bot at screen edge not hit": 1,
+      "Inspected control unknown (beside request n2833): request n2833 has no agreed cast, so the engaged body is not established.": 1,
+      "Inspected unknown (selector not_a_body; web recipient: close Galacta): Point-blank: new box holds the Galacta together with Spider-Man lower leg (hero overlap); a web mesh is already on the bot at 283438 before the 3->2 at 283454.": 1,
+      "Inspected unknown (selector not_a_body; web recipient: not_seen): New box is a rock/plant region; no emission seen, reader mostly unread.": 1,
+      "Inspected control unknown (beside request n2887): unknown: request n2887 has no agreed cast": 1,
+      "Inspected unknown (selector same; web recipient: close Galacta boxed whole): point-blank: bursts already on the boxed bot at the anchor and 288.75-288.78 before the 3->2 decrement at 288.800 (LMB held); web not separable from melee": 1,
+      "Inspected unknown (selector n/a; web recipient: not_seen): camera turn moves the selected bot above its box; reader None then 1 at 289.958; web streak just leaving the hand at the end of the sheet, impact not seen": 1,
+      "Inspected unknown (selector same; web recipient: left Galacta): New box is now the left Galacta whole (v3 selected the right one). Web ammo unread through the rise and first reads 1 at 291.325 with no pre value, so no consumption bracket; the streak reaches the boxed Galacta.": 1,
+      "Inspected control unknown (beside request n2912): unknown: request n2912 has no agreed cast": 1,
+      "Inspected control unknown (beside request n2968): unknown: request n2968 has no agreed cast": 2,
+      "Inspected unknown (selector no_target; web recipient: none: web bursts on the floor near the 15M line): no selected target; ammo 4->3 at 296.908; web lands on the floor 296.99-297.03": 1,
+      "Inspected unknown (selector no_target; web recipient: not_seen): no selected target; ammo 4->3 at 298.667; projectile heads toward the bots by the railing, impact not established": 1,
+      "Inspected control unknown (beside request n2985): unknown: request n2985 has no agreed cast": 1,
+      "Inspected control unknown (beside request n3001): unknown: request n3001 has no agreed cast": 2,
+      "Inspected unknown (selector not_a_body; web recipient: none: web bursts on the floor beside Spider-Man): selected box spans stacked distant nameplates; web bursts on the platform floor 300.29-300.36; no decrement read (3/None/3)": 1,
+      "Inspected control unknown (beside request n3027): unknown: request n3027 has no agreed cast": 1,
+      "Inspected unknown (selector same; web recipient: close Galacta boxed whole): point-blank: burst already on the boxed bot at the anchor; no web-ammo decrement read (3 then None) and LMB held; web not separable from melee": 1,
+      "Inspected unknown (selector n/a; web recipient: none: web reaches no body): full ammo 5, selected right Galacta; emission 308.892 goes down-right and bursts on the ground near Spider-Man": 1,
+      "Inspected control unknown (beside request n3087): unknown: request n3087 has no agreed cast, so the engaged body at this anchor is not established": 1,
+      "Inspected control unknown (beside request n3103): unknown: request n3103 has no agreed cast": 2,
+      "Inspected unknown (selector no_target; web recipient: Galacta beside the stair railing): no selected target; ammo 4->3 at 310.425; bursts on the Galacta at the railing 310.51-310.54": 1,
+      "Inspected control unknown (beside request n3113): unknown: selected box overlaps Spider-Man arms (player zone), bot boxed yellow": 1,
+      "Inspected control unknown (beside request n3124): request n3124 has no agreed cast, so the engaged body is not established.": 1,
+      "Inspected unknown (selector no_target; web recipient: Galacta on the stair landing (low confidence)): no selected target; reader None then 3->2 at 312.758, 268 ms after the rise; small bursts on the landing Galacta 312.74-312.76": 1,
+      "Inspected unknown (selector n/a; web recipient: a Galacta near the plaza (identity versus the anchor box not established)): large camera pitch between the anchor and the cast; ammo 3->2 at 313.458 (reader None around it) and bursts on a Galacta 313.49-313.56, but whether it is the selected distant bot is not established": 1,
+      "Inspected control unknown (beside request n3132): unknown: selected a distant nameplate while another bot is in front": 1,
+      "Inspected control unknown (beside request n3156): unknown: request n3156 has no agreed cast, so the engaged body at this anchor is not established": 1,
+      "Inspected unknown (selector same; web recipient: close Galacta (nameplate box)): New box is the close Galacta nameplate; no web-ammo decrement read (3 then unread) and the burst at 315.775 is point-blank; no consumption bracket.": 1,
+      "Inspected unknown (selector n/a; web recipient: none: web travels far up-left and bursts in the distance): selected the lower-right Galacta; ammo 3->2 at 317.308; the web streak travels up-left away from every nearby bot and bursts far away 317.40-317.43": 1,
+      "Inspected unknown (selector n/a; web recipient: not_seen): selected a small box on the close Galacta arm; reader None/2, no consumption read; no web emission seen": 1,
+      "Inspected unknown (selector same; web recipient: close Galacta boxed whole): reader None until 1 at 319.842 (no pre-decrement value); point-blank hand contact and bursts 319.84-319.88 (LMB held); not separable": 1,
+      "Inspected control unknown (beside request n3269): unknown: View changed after the cast; the box is a nameplate at the bottom edge and the same body as n3269 recipient is not established. (v4, ae648b33)": 1,
+      "Inspected unknown (selector same; web recipient: Galacta at the platform edge): New box is the edge Galacta lower body; 3->2 read only at 328.500 between unread frames (no clean bracket); only small sparks on it.": 1,
+      "Inspected control unknown (beside request n3308): unknown: request n3308 has no agreed cast, so the engaged body at this anchor is not established": 2,
+      "Inspected unknown (selector no_target; web recipient: Galacta behind Spider-Man (web wraps it)): No selected target at the anchor under ae648b33 (v3 selector not_a_body). selected box lies over Spider-Man's own torso (bot fragment in the player zone); web wraps the bot behind, but causal box is not that body": 1,
+      "Inspected unknown (selector no_target; web recipient: not_seen): no selected target during a flip; no web-ammo decrement and no impact seen": 1,
+      "Inspected control unknown (beside request n3345): request n3345 has no agreed cast, so the engaged body is not established.": 1,
+      "Inspected unknown (selector no_target; web recipient: not_seen): no selected target; no web-ammo decrement read; only melee sparks on the close Galacta": 1,
+      "Inspected control unknown (beside request n3401): unknown: Two Galacta near Spider-Man after the cast; which is the n3401 recipient is not established. (v4, ae648b33)": 1,
+      "Inspected control unknown (beside request n3411): unknown: request n3411 has no agreed cast": 2,
+      "Inspected unknown (selector no_target; web recipient: close Galacta overlapping Spider-Man): No selected target at the anchor under ae648b33 (v3 selector same). box encloses the bot behind Spider-Man (player zone overlap); bursts on it start 341.217 before the 4->3 decrement at 341.267, so web emission is not separable from the point-blank hits": 1,
+      "Inspected control unknown (beside request n3434): unknown: Box sits at Spider-Man hand (hero region), not on the edge bot. (v4, ae648b33)": 1,
+      "Inspected unknown (selector no_target; web recipient: close Galacta (low confidence)): no selected target; reader mostly None, 3->2 read at 344.692 (242 ms after the rise); bursts on the close Galacta 344.79-344.81": 1,
+      "Inspected control unknown (beside request n3453): request n3453 has no agreed cast, so the engaged body is not established.": 1,
+      "Inspected unknown (selector no_target; web recipient: none: web bursts on the ledge edge): no selected target; ammo 3->2 at 345.425; bursts on the platform ledge beside Spider-Man 345.46-345.54": 1,
+      "Inspected unknown (selector no_target; web recipient: none: web bursts on the floor): no selected target; reader None then 1 at 346.367; web bursts on the floor 346.43-346.48": 1,
+      "Inspected unknown (selector no_target; web recipient: close Galacta): bots boxed yellow but no selected target; reader None then 1 at 348.242; bursts on the close Galacta 348.26-348.28": 1,
+      "Inspected unknown (selector no_target; web recipient: close Galacta beside Spider-Man): No selected target at the anchor under ae648b33 (v3 selector not_a_body). selected box lies on Spider-Man own torso (player zone); point-blank bursts on the Galacta beside him 349.41-349.54 around the None->1 reading": 1,
+      "Inspected control unknown (beside request n3493): unknown: request n3493 has no agreed cast": 1,
+      "Inspected control unknown (beside request n3505): request n3505 has no agreed cast, so the engaged body is not established.": 1,
+      "Inspected unknown (selector no_target; web recipient: Galacta by the crate): no selected target; ammo 1->0 at 350.667; burst on the Galacta by the crate 350.75-350.78": 1,
+      "Inspected unknown (selector no_target; web recipient: close Galacta): no selected target; ammo 1->0 at 351.708; web reaches the close Galacta with sparks 351.73-351.83": 1,
+      "Inspected unknown (selector not_a_body; web recipient: lane Galacta): New box sits beside the lane Galacta nameplate, off its body; the web reaches the Galacta 355.67-355.77. The box does not contain the recipient.": 1,
+      "Inspected unknown (selector n/a; web recipient: not_seen): Anchor ammo 0; no consumption; melee sparks only.": 1,
+      "Inspected unknown (selector not_a_body; web recipient: Galacta below the selected box): selected box is on the wall ledge above the bot (no body inside); ammo 1->0 at 357.325 and bursts on the Galacta below 357.34-357.44": 1,
+      "Inspected unknown (selector same; web recipient: not_seen): New box is the lane Galacta; ammo unread then 1 at 361.242 (no pre value), streak heads low toward the floor; impact not established.": 1,
+      "Inspected control unknown (beside request n3611): unknown: request n3611 has no agreed cast": 1,
+      "Inspected unknown (selector same; web recipient: close Galacta boxed whole): reader None for eight frames between 2 (363.133) and 1 (363.208); bursts on the boxed bot 363.24-363.33 during a flip kick (LMB held); emission not separable": 1,
+      "Inspected unknown (selector n/a; web recipient: none: web bursts on the floor): camera turn; ammo 1->0 at 363.892 and the web streak bursts on the floor 363.92-363.94, not on any bot": 1,
+      "Inspected unknown (selector n/a; web recipient: not_seen): anchor ammo 0; no consumption and no web emission": 1,
+      "Inspected control unknown (beside request n3646): unknown: request n3646 has no agreed cast": 1,
+      "Inspected control unknown (beside request n3664): unknown: request n3664 has no agreed cast": 2,
+      "Inspected unknown (selector n/a; web recipient: not_seen): selected the Galacta boxed with its nameplate; ammo 1->0 at 366.550 and a streak travels up-right but the burst lands above the bot nameplate 366.60-366.67; hit on the selected bot not established (LMB held)": 1,
+      "Inspected control unknown (beside request n3679): unknown: request n3679 has no agreed cast": 1,
+      "Inspected unknown (selector same; web recipient: close Galacta): point-blank: sparks at the bot top at 368.067 before the 1->0 decrement at 368.083; bursts at its lower claws 368.08-368.20 (LMB held); not separable": 1,
+      "Inspected unknown (selector no_target; web recipient: none: web bursts on the floor): no selected target; ammo 1->0 at 370.267; web bursts on the floor in front of Spider-Man 370.35-370.38": 1,
+      "Inspected unknown (selector different; web recipient: Galacta on the lane ahead): target disagreement: selected a distant Galacta on a high balcony at the top screen edge (box y 0-49); ammo 1->0 at 371.050 and the web streak reaches the lane Galacta 371.07-371.17": 1,
+      "Inspected unknown (selector no_target; web recipient: not_seen): anchor ammo 0; point-blank melee on the close Galacta, no consumption": 1,
+      "Inspected unknown (selector no_target; web recipient: not_seen): anchor ammo 0 during a leap; no consumption and no emission": 1,
+      "Inspected unknown (selector n/a; web recipient: none: web streak lands on the floor): New box is the distant stair Galacta; 1->0 at 378.067 and the streak goes down to the floor below, no impact on the boxed bot.": 1,
+      "Inspected unknown (selector not_a_body; web recipient: close Galacta beside Spider-Man): selected box lies over Spider-Man back/head (player zone) with the bot beside it; point-blank bursts 379.10-379.18 around the 1->0 decrement at 379.083 (LMB held)": 1,
+      "Inspected control unknown (beside request n3813): unknown: request n3813 has no agreed cast, so the engaged body at this anchor is not established": 1,
+      "Inspected unknown (selector n/a; web recipient: none: web reaches no body): ammo 1->0 at 381.483; emission trail goes toward the centre-left ground, selected bot is on the right": 1,
+      "Inspected unknown (selector no_target; web recipient: not_seen): No selected target at the anchor under ae648b33 (v3 selector n/a). anchor ammo 0; no consumption and no web emission": 1,
+      "Inspected unknown (selector n/a; web recipient: not_seen): anchor ammo 0; no consumption; only melee sparks near the boxed bot": 1,
+      "Inspected control unknown (beside request n3843): unknown: request n3843 has no agreed cast": 1,
+      "Inspected control unknown (beside request n3856): unknown: request n3856 has no agreed cast": 1,
+      "Inspected unknown (selector same; web recipient: not_seen): selected the lane-edge Galacta, drawn semi-transparent (occluded behind the lane wall); ammo 1->0 at 385.717 with the hand toward it and only small sparks near it 385.75-385.83; hit on the bot not established": 1,
+      "Inspected unknown (selector n/a; web recipient: not_seen): camera swings away right after the rise; bot leaves the crop, no impact visible": 1,
+      "Inspected control unknown (beside request n3935): request n3935 has no agreed cast, so the engaged body is not established.": 1,
+      "Inspected unknown (selector no_target; web recipient: not_seen): no selected target; no web-ammo decrement read; no web emission seen beside the Ultra": 1,
+      "Inspected unknown (selector n/a; web recipient: none: web streak curves down toward the floor edge): New box is the platform-edge Galacta; 4->3 at 397.808 but the streak descends to the floor short of the bot; no impact on it.": 1,
+      "Inspected control unknown (beside request n3977): unknown: request n3977 has no agreed cast": 1,
+      "Inspected control unknown (beside request n3987): unknown: Box selects a tiny distant bot at the lane edge while the close recipient is boxed yellow. (v4, ae648b33)": 1,
+      "Inspected control unknown (beside request n3987): unknown: anchor body changed under ae648b33 (lost_target); was: agreed: the same close Galacta (track 1) boxed whole right of Spider-Man after the cast": 1,
+      "Inspected control unknown (beside request n4015): unknown: request n4015 has no agreed cast": 2,
+      "Inspected unknown (selector no_target; web recipient: none: web bursts on the floor): no selected target; ammo 4->3 at 401.617; burst on the floor in front of Spider-Man 401.63-401.73": 1,
+      "Inspected control unknown (beside request n4032): unknown: Box is mostly empty lane around the 15M marker with a tiny distant figure; same body not established. (v4, ae648b33)": 1,
+      "Inspected control unknown (beside request n4039): request n4039 has no agreed cast, so the engaged body is not established.": 1,
+      "Inspected unknown (selector no_target; web recipient: close Galacta (point-blank)): bot boxed yellow but no selected target; ammo 3->2 at 404.083; point-blank bursts on the close Galacta": 1,
+      "Inspected unknown (selector no_target; web recipient: none: web splats on the floor): no selected target; web splat on the floor 405.90-406.03, ammo 3->2 at 405.917": 1,
+      "Inspected unknown (selector not_a_body; web recipient: Galacta by the tower): selected box is the empty doorway above the bot; ammo None->1 at 406.292 and the web streak reaches the Galacta by the tower 406.31-406.41": 1,
+      "Inspected unknown (selector same; web recipient: not_seen): New box is the distant lane Galacta; web ammo unread through the rise (None then 1 at 408.075), no bracket; small streak toward it, impact not established.": 1,
+      "Inspected control unknown (beside request n4079): request n4079 has no agreed cast, so the engaged body is not established.": 1,
+      "Inspected unknown (selector same; web recipient: lane Galacta boxed whole): reader None for the whole history and until 1 at 410.408 (no consumption read); web streak from the hand to the boxed bot and impact 410.43-410.48 (LMB held)": 1,
+      "Inspected unknown (selector same; web recipient: nearer left Galacta): New box is the nearer left Galacta (the v3 disagreement is resolved), but no web-ammo consumption is read in the span (3 then unread); no bracket.": 1,
+      "Inspected unknown (selector same; web recipient: close Galacta boxed whole): reader None except a single 3->2 frame at 415.308; the later bursts on the bot 415.46-415.56 coincide with melee kicks (LMB held); no separate web emission seen": 1,
+      "Inspected unknown (selector same; web recipient: close Galacta): selected the close Galacta head/nameplate; ammo 2->1 at 415.833 but bursts on the bot 415.87-415.95 coincide with a jumping melee (LMB held); web not separable": 1,
+      "Inspected unknown (selector different; web recipient: near Galacta below): target disagreement: selected the distant Galacta on the upper ring; reader None then 1 at 417.658 and the web streak reaches the near lower Galacta 417.66-417.78": 1,
+      "Inspected control unknown (beside request n4175): unknown: request n4175 has no agreed cast": 1
+    },
+    "bin_support": [
+      39,
+      37
+    ],
+    "unique_events": 37,
+    "ammo_positive_visible_nononsets": 38,
+    "complete_label_coverage": false,
+    "sampling": "full_grid_masked"
+  },
+  "label_reproduction": {
+    "known": 76,
+    "reproduced": 74
+  },
+  "model_train_metrics": {
+    "true_positive": 36,
+    "false_positive": 1,
+    "false_negative": 1,
+    "precision": 0.972972972972973,
+    "recall": 0.972972972972973,
+    "mean_request_lead_s": 0.04994221516666417,
+    "confusion": [
+      [
+        38,
+        1
+      ],
+      [
+        1,
+        36
+      ]
+    ],
+    "refusals": 0,
+    "scored_bins": 76,
+    "masked_bins": 4212
+  },
+  "cpu_reload_train_metrics": {
+    "true_positive": 36,
+    "false_positive": 1,
+    "false_negative": 1,
+    "precision": 0.972972972972973,
+    "recall": 0.972972972972973,
+    "mean_request_lead_s": 0.04994221516666417,
+    "confusion": [
+      [
+        38,
+        1
+      ],
+      [
+        1,
+        36
+      ]
+    ],
+    "refusals": 0,
+    "scored_bins": 76,
+    "masked_bins": 4212
+  },
+  "cpu_reload_max_probability_delta": 5.960464477539062e-07,
+  "confidence_filtered_train_metrics": {
+    "threshold": 0.7,
+    "true_positive": 33,
+    "false_positive": 0,
+    "false_negative": 4,
+    "precision": 1.0,
+    "recall": 0.8918918918918919,
+    "mean_request_lead_s": 0.04683518227272452,
+    "confusion": [
+      [
+        37,
+        0
+      ],
+      [
+        0,
+        33
+      ]
+    ],
+    "refusals": 6,
+    "scored_bins": 70,
+    "masked_bins": 4212
+  },
+  "ammo_baseline_train_metrics": {
+    "true_positive": 35,
+    "false_positive": 38,
+    "false_negative": 2,
+    "precision": 0.4794520547945205,
+    "recall": 0.9459459459459459,
+    "mean_request_lead_s": 0.04763537911428311,
+    "confusion": [
+      [
+        1,
+        38
+      ],
+      [
+        0,
+        35
+      ]
+    ],
+    "refusals": 2,
+    "scored_bins": 74,
+    "masked_bins": 4212
+  },
+  "never_start_train_metrics": {
+    "true_positive": 0,
+    "false_positive": 0,
+    "false_negative": 37,
+    "precision": null,
+    "recall": 0.0,
+    "mean_request_lead_s": null,
+    "confusion": [
+      [
+        39,
+        0
+      ],
+      [
+        37,
+        0
+      ]
+    ],
+    "refusals": 0,
+    "scored_bins": 76,
+    "masked_bins": 4212
+  },
+  "per_session_train_metrics": {
+    "20260922T032454-642Z-24328-1": {
+      "model": {
+        "true_positive": 1,
+        "false_positive": 0,
+        "false_negative": 0,
+        "precision": 1.0,
+        "recall": 1.0,
+        "mean_request_lead_s": 0.09798365099999984,
+        "confusion": [
+          [
+            4,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "refusals": 0,
+        "scored_bins": 5,
+        "masked_bins": 103
+      },
+      "ammo_baseline": {
+        "true_positive": 1,
+        "false_positive": 3,
+        "false_negative": 0,
+        "precision": 0.25,
+        "recall": 1.0,
+        "mean_request_lead_s": 0.09798365099999984,
+        "confusion": [
+          [
+            1,
+            3
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "refusals": 0,
+        "scored_bins": 5,
+        "masked_bins": 103
+      },
+      "never_start": {
+        "true_positive": 0,
+        "false_positive": 0,
+        "false_negative": 1,
+        "precision": null,
+        "recall": 0.0,
+        "mean_request_lead_s": null,
+        "confusion": [
+          [
+            4,
+            0
+          ],
+          [
+            1,
+            0
+          ]
+        ],
+        "refusals": 0,
+        "scored_bins": 5,
+        "masked_bins": 103
+      }
+    },
+    "20260923T051828-422Z-33696-1": {
+      "model": {
+        "true_positive": 35,
+        "false_positive": 1,
+        "false_negative": 1,
+        "precision": 0.9722222222222222,
+        "recall": 0.9722222222222222,
+        "mean_request_lead_s": 0.04856960271428315,
+        "confusion": [
+          [
+            34,
+            1
+          ],
+          [
+            1,
+            35
+          ]
+        ],
+        "refusals": 0,
+        "scored_bins": 71,
+        "masked_bins": 4109
+      },
+      "ammo_baseline": {
+        "true_positive": 34,
+        "false_positive": 35,
+        "false_negative": 2,
+        "precision": 0.4927536231884058,
+        "recall": 0.9444444444444444,
+        "mean_request_lead_s": 0.04615454758823262,
+        "confusion": [
+          [
+            0,
+            35
+          ],
+          [
+            0,
+            34
+          ]
+        ],
+        "refusals": 2,
+        "scored_bins": 69,
+        "masked_bins": 4109
+      },
+      "never_start": {
+        "true_positive": 0,
+        "false_positive": 0,
+        "false_negative": 36,
+        "precision": null,
+        "recall": 0.0,
+        "mean_request_lead_s": null,
+        "confusion": [
+          [
+            35,
+            0
+          ],
+          [
+            36,
+            0
+          ]
+        ],
+        "refusals": 0,
+        "scored_bins": 71,
+        "masked_bins": 4109
+      }
+    }
+  },
+  "known_rows": [
+    {
+      "session": "20260922T032454-642Z-24328-1",
+      "grid_index": 137,
+      "label": "no_new_start",
+      "request_id": null,
+      "ammo": 3,
+      "probabilities": [
+        0.9917574524879456,
+        0.00824255496263504
+      ],
+      "cpu_probabilities": [
+        0.9917574524879456,
+        0.008242541924118996
+      ],
+      "prediction": "no_new_start",
+      "reproduced": true
+    },
+    {
+      "session": "20260922T032454-642Z-24328-1",
+      "grid_index": 141,
+      "label": "start",
+      "request_id": "20260922T032454-642Z-24328-1:mouse65618:rmb-down:2757",
+      "ammo": 3,
+      "probabilities": [
+        0.05257834494113922,
+        0.947421669960022
+      ],
+      "cpu_probabilities": [
+        0.052578411996364594,
+        0.9474215507507324
+      ],
+      "prediction": "start",
+      "reproduced": true
+    },
+    {
+      "session": "20260922T032454-642Z-24328-1",
+      "grid_index": 144,
+      "label": "no_new_start",
+      "request_id": null,
+      "ammo": 3,
+      "probabilities": [
+        0.9584354162216187,
+        0.04156465828418732
+      ],
+      "cpu_probabilities": [
+        0.9584352970123291,
+        0.04156466946005821
+      ],
+      "prediction": "no_new_start",
+      "reproduced": true
+    },
+    {
+      "session": "20260922T032454-642Z-24328-1",
+      "grid_index": 200,
+      "label": "no_new_start",
+      "request_id": null,
+      "ammo": 0,
+      "probabilities": [
+        0.9292985796928406,
+        0.07070145010948181
+      ],
+      "cpu_probabilities": [
+        0.929298460483551,
+        0.07070150971412659
+      ],
+      "prediction": "no_new_start",
+      "reproduced": true
+    },
+    {
+      "session": "20260922T032454-642Z-24328-1",
+      "grid_index": 206,
+      "label": "no_new_start",
+      "request_id": null,
+      "ammo": 1,
+      "probabilities": [
+        0.9992665648460388,
+        0.0007334760739468038
+      ],
+      "cpu_probabilities": [
+        0.9992665648460388,
+        0.0007334757247008383
+      ],
+      "prediction": "no_new_start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 36,
+      "label": "no_new_start",
+      "request_id": null,
+      "ammo": 5,
+      "probabilities": [
+        0.9744724631309509,
+        0.025527477264404297
+      ],
+      "cpu_probabilities": [
+        0.9744724631309509,
+        0.025527475401759148
+      ],
+      "prediction": "no_new_start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 39,
+      "label": "start",
+      "request_id": "20260923T051828-422Z-33696-1:mouse65618:rmb-down:568",
+      "ammo": 5,
+      "probabilities": [
+        0.07512202113866806,
+        0.924877941608429
+      ],
+      "cpu_probabilities": [
+        0.07512211799621582,
+        0.9248778820037842
+      ],
+      "prediction": "start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 44,
+      "label": "no_new_start",
+      "request_id": null,
+      "ammo": 4,
+      "probabilities": [
+        0.9999369382858276,
+        6.309121090453118e-05
+      ],
+      "cpu_probabilities": [
+        0.9999369382858276,
+        6.309121090453118e-05
+      ],
+      "prediction": "no_new_start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 48,
+      "label": "no_new_start",
+      "request_id": null,
+      "ammo": 4,
+      "probabilities": [
+        0.6895822286605835,
+        0.31041771173477173
+      ],
+      "cpu_probabilities": [
+        0.689582109451294,
+        0.3104178309440613
+      ],
+      "prediction": "no_new_start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 51,
+      "label": "start",
+      "request_id": "20260923T051828-422Z-33696-1:mouse65618:rmb-down:808",
+      "ammo": 4,
+      "probabilities": [
+        0.5889714956283569,
+        0.41102850437164307
+      ],
+      "cpu_probabilities": [
+        0.5889713764190674,
+        0.4110286235809326
+      ],
+      "prediction": "no_new_start",
+      "reproduced": false
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 56,
+      "label": "no_new_start",
+      "request_id": null,
+      "ammo": 3,
+      "probabilities": [
+        0.9993463158607483,
+        0.0006536454893648624
+      ],
+      "cpu_probabilities": [
+        0.9993463158607483,
+        0.0006536467117257416
+      ],
+      "prediction": "no_new_start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 126,
+      "label": "start",
+      "request_id": "20260923T051828-422Z-33696-1:mouse65618:rmb-down:2229",
+      "ammo": 4,
+      "probabilities": [
+        0.06544158607721329,
+        0.9345584511756897
+      ],
+      "cpu_probabilities": [
+        0.06544148921966553,
+        0.9345584511756897
+      ],
+      "prediction": "start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 131,
+      "label": "no_new_start",
+      "request_id": null,
+      "ammo": 3,
+      "probabilities": [
+        0.9952030181884766,
+        0.004797008819878101
+      ],
+      "cpu_probabilities": [
+        0.9952030181884766,
+        0.004797013476490974
+      ],
+      "prediction": "no_new_start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 134,
+      "label": "no_new_start",
+      "request_id": null,
+      "ammo": 3,
+      "probabilities": [
+        0.7865681648254395,
+        0.21343185007572174
+      ],
+      "cpu_probabilities": [
+        0.7865681052207947,
+        0.2134319245815277
+      ],
+      "prediction": "no_new_start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 137,
+      "label": "start",
+      "request_id": "20260923T051828-422Z-33696-1:mouse65618:rmb-down:2509",
+      "ammo": 3,
+      "probabilities": [
+        0.06959789991378784,
+        0.9304021596908569
+      ],
+      "cpu_probabilities": [
+        0.06959807127714157,
+        0.9304019212722778
+      ],
+      "prediction": "start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 142,
+      "label": "no_new_start",
+      "request_id": null,
+      "ammo": 3,
+      "probabilities": [
+        0.9987382292747498,
+        0.0012618113541975617
+      ],
+      "cpu_probabilities": [
+        0.9987382292747498,
+        0.00126181251835078
+      ],
+      "prediction": "no_new_start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 404,
+      "label": "start",
+      "request_id": "20260923T051828-422Z-33696-1:mouse65618:rmb-down:8637",
+      "ammo": 3,
+      "probabilities": [
+        0.016597647219896317,
+        0.9834023714065552
+      ],
+      "cpu_probabilities": [
+        0.016597604379057884,
+        0.9834023714065552
+      ],
+      "prediction": "start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 480,
+      "label": "no_new_start",
+      "request_id": null,
+      "ammo": 3,
+      "probabilities": [
+        0.999970555305481,
+        2.9399974664556794e-05
+      ],
+      "cpu_probabilities": [
+        0.999970555305481,
+        2.9399945560726337e-05
+      ],
+      "prediction": "no_new_start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 483,
+      "label": "start",
+      "request_id": "20260923T051828-422Z-33696-1:mouse65618:rmb-down:10447",
+      "ammo": 3,
+      "probabilities": [
+        0.02420005388557911,
+        0.9757999777793884
+      ],
+      "cpu_probabilities": [
+        0.02420005388557911,
+        0.9757999777793884
+      ],
+      "prediction": "start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 488,
+      "label": "no_new_start",
+      "request_id": null,
+      "ammo": 2,
+      "probabilities": [
+        0.9755420684814453,
+        0.024457961320877075
+      ],
+      "cpu_probabilities": [
+        0.9755420684814453,
+        0.024457937106490135
+      ],
+      "prediction": "no_new_start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 591,
+      "label": "no_new_start",
+      "request_id": null,
+      "ammo": 4,
+      "probabilities": [
+        0.3579927980899811,
+        0.6420072317123413
+      ],
+      "cpu_probabilities": [
+        0.35799267888069153,
+        0.6420072913169861
+      ],
+      "prediction": "start",
+      "reproduced": false
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 594,
+      "label": "start",
+      "request_id": "20260923T051828-422Z-33696-1:mouse65618:rmb-down:12940",
+      "ammo": 4,
+      "probabilities": [
+        0.12517674267292023,
+        0.8748232126235962
+      ],
+      "cpu_probabilities": [
+        0.12517668306827545,
+        0.874823272228241
+      ],
+      "prediction": "start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 599,
+      "label": "no_new_start",
+      "request_id": null,
+      "ammo": 3,
+      "probabilities": [
+        0.9998724460601807,
+        0.00012758011871483177
+      ],
+      "cpu_probabilities": [
+        0.9998724460601807,
+        0.00012758010416291654
+      ],
+      "prediction": "no_new_start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 652,
+      "label": "start",
+      "request_id": "20260923T051828-422Z-33696-1:mouse65618:rmb-down:14314",
+      "ammo": 4,
+      "probabilities": [
+        0.009633471257984638,
+        0.9903665781021118
+      ],
+      "cpu_probabilities": [
+        0.009633471257984638,
+        0.9903665781021118
+      ],
+      "prediction": "start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 657,
+      "label": "no_new_start",
+      "request_id": null,
+      "ammo": 3,
+      "probabilities": [
+        0.9930022358894348,
+        0.006997718941420317
+      ],
+      "cpu_probabilities": [
+        0.9930022358894348,
+        0.0069977156817913055
+      ],
+      "prediction": "no_new_start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 662,
+      "label": "start",
+      "request_id": "20260923T051828-422Z-33696-1:mouse65618:rmb-down:14583",
+      "ammo": 4,
+      "probabilities": [
+        0.015106488950550556,
+        0.9848935008049011
+      ],
+      "cpu_probabilities": [
+        0.015106502920389175,
+        0.9848935008049011
+      ],
+      "prediction": "start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 667,
+      "label": "no_new_start",
+      "request_id": null,
+      "ammo": 3,
+      "probabilities": [
+        0.9998440742492676,
+        0.0001558482472319156
+      ],
+      "cpu_probabilities": [
+        0.9998440742492676,
+        0.00015584839275106788
+      ],
+      "prediction": "no_new_start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 761,
+      "label": "no_new_start",
+      "request_id": null,
+      "ammo": 3,
+      "probabilities": [
+        0.9998094439506531,
+        0.00019059280748479068
+      ],
+      "cpu_probabilities": [
+        0.9998094439506531,
+        0.00019059298210777342
+      ],
+      "prediction": "no_new_start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 764,
+      "label": "start",
+      "request_id": "20260923T051828-422Z-33696-1:mouse65618:rmb-down:16810",
+      "ammo": 3,
+      "probabilities": [
+        0.3034435510635376,
+        0.6965564489364624
+      ],
+      "cpu_probabilities": [
+        0.3034438192844391,
+        0.6965562105178833
+      ],
+      "prediction": "start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 769,
+      "label": "no_new_start",
+      "request_id": null,
+      "ammo": 2,
+      "probabilities": [
+        0.9998167157173157,
+        0.00018334333435632288
+      ],
+      "cpu_probabilities": [
+        0.9998167157173157,
+        0.00018334333435632288
+      ],
+      "prediction": "no_new_start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 1047,
+      "label": "start",
+      "request_id": "20260923T051828-422Z-33696-1:mouse65618:rmb-down:23379",
+      "ammo": 4,
+      "probabilities": [
+        0.0743502825498581,
+        0.9256497025489807
+      ],
+      "cpu_probabilities": [
+        0.07435017824172974,
+        0.9256498217582703
+      ],
+      "prediction": "start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 1089,
+      "label": "no_new_start",
+      "request_id": null,
+      "ammo": 3,
+      "probabilities": [
+        0.9999892711639404,
+        1.0673285942175426e-05
+      ],
+      "cpu_probabilities": [
+        0.9999892711639404,
+        1.0673275937733706e-05
+      ],
+      "prediction": "no_new_start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 1092,
+      "label": "start",
+      "request_id": "20260923T051828-422Z-33696-1:mouse65618:rmb-down:24280",
+      "ammo": 3,
+      "probabilities": [
+        0.0793621614575386,
+        0.920637845993042
+      ],
+      "cpu_probabilities": [
+        0.07936219871044159,
+        0.920637845993042
+      ],
+      "prediction": "start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 1177,
+      "label": "start",
+      "request_id": "20260923T051828-422Z-33696-1:mouse65618:rmb-down:26204",
+      "ammo": 1,
+      "probabilities": [
+        0.08504904806613922,
+        0.914950966835022
+      ],
+      "cpu_probabilities": [
+        0.08504901826381683,
+        0.914950966835022
+      ],
+      "prediction": "start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 1184,
+      "label": "no_new_start",
+      "request_id": null,
+      "ammo": 1,
+      "probabilities": [
+        0.9998284578323364,
+        0.00017148026381619275
+      ],
+      "cpu_probabilities": [
+        0.9998284578323364,
+        0.00017148026381619275
+      ],
+      "prediction": "no_new_start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 1187,
+      "label": "start",
+      "request_id": "20260923T051828-422Z-33696-1:mouse65618:rmb-down:26466",
+      "ammo": 1,
+      "probabilities": [
+        0.1750442534685135,
+        0.8249557614326477
+      ],
+      "cpu_probabilities": [
+        0.17504477500915527,
+        0.8249551653862
+      ],
+      "prediction": "start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 1374,
+      "label": "start",
+      "request_id": "20260923T051828-422Z-33696-1:mouse65618:rmb-down:30850",
+      "ammo": null,
+      "probabilities": [
+        0.11913373321294785,
+        0.8808662295341492
+      ],
+      "cpu_probabilities": [
+        0.11913371086120605,
+        0.8808663487434387
+      ],
+      "prediction": "start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 1514,
+      "label": "no_new_start",
+      "request_id": null,
+      "ammo": 1,
+      "probabilities": [
+        0.9969057440757751,
+        0.0030942396260797977
+      ],
+      "cpu_probabilities": [
+        0.9969057440757751,
+        0.003094230778515339
+      ],
+      "prediction": "no_new_start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 1517,
+      "label": "start",
+      "request_id": "20260923T051828-422Z-33696-1:mouse65618:rmb-down:34221",
+      "ammo": 1,
+      "probabilities": [
+        0.00022684864234179258,
+        0.9997732043266296
+      ],
+      "cpu_probabilities": [
+        0.00022684864234179258,
+        0.9997732043266296
+      ],
+      "prediction": "start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 1522,
+      "label": "no_new_start",
+      "request_id": null,
+      "ammo": 1,
+      "probabilities": [
+        0.9998354911804199,
+        0.0001644706353545189
+      ],
+      "cpu_probabilities": [
+        0.9998354911804199,
+        0.00016447078087367117
+      ],
+      "prediction": "no_new_start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 1655,
+      "label": "no_new_start",
+      "request_id": null,
+      "ammo": 4,
+      "probabilities": [
+        0.9819773435592651,
+        0.0180226918309927
+      ],
+      "cpu_probabilities": [
+        0.9819773435592651,
+        0.01802271604537964
+      ],
+      "prediction": "no_new_start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 1658,
+      "label": "start",
+      "request_id": "20260923T051828-422Z-33696-1:mouse65618:rmb-down:37527",
+      "ammo": 4,
+      "probabilities": [
+        0.0064475033432245255,
+        0.9935524463653564
+      ],
+      "cpu_probabilities": [
+        0.0064475033432245255,
+        0.9935524463653564
+      ],
+      "prediction": "start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 1663,
+      "label": "no_new_start",
+      "request_id": null,
+      "ammo": 4,
+      "probabilities": [
+        0.996060311794281,
+        0.0039396733045578
+      ],
+      "cpu_probabilities": [
+        0.996060311794281,
+        0.0039396691136062145
+      ],
+      "prediction": "no_new_start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 1665,
+      "label": "no_new_start",
+      "request_id": null,
+      "ammo": 4,
+      "probabilities": [
+        0.9960260391235352,
+        0.003973947837948799
+      ],
+      "cpu_probabilities": [
+        0.9960260391235352,
+        0.00397395109757781
+      ],
+      "prediction": "no_new_start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 1668,
+      "label": "start",
+      "request_id": "20260923T051828-422Z-33696-1:mouse65618:rmb-down:37798",
+      "ammo": 4,
+      "probabilities": [
+        0.0017205356853082776,
+        0.9982794523239136
+      ],
+      "cpu_probabilities": [
+        0.0017205356853082776,
+        0.9982794523239136
+      ],
+      "prediction": "start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 1714,
+      "label": "no_new_start",
+      "request_id": null,
+      "ammo": 3,
+      "probabilities": [
+        0.9980564117431641,
+        0.0019436096772551537
+      ],
+      "cpu_probabilities": [
+        0.9980564117431641,
+        0.0019436106085777283
+      ],
+      "prediction": "no_new_start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 1717,
+      "label": "start",
+      "request_id": "20260923T051828-422Z-33696-1:mouse65618:rmb-down:38902",
+      "ammo": null,
+      "probabilities": [
+        0.0001859881595009938,
+        0.9998140931129456
+      ],
+      "cpu_probabilities": [
+        0.0001859878102550283,
+        0.9998140931129456
+      ],
+      "prediction": "start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 1788,
+      "label": "no_new_start",
+      "request_id": null,
+      "ammo": 3,
+      "probabilities": [
+        0.9989479184150696,
+        0.0010520531795918941
+      ],
+      "cpu_probabilities": [
+        0.9989479184150696,
+        0.0010520531795918941
+      ],
+      "prediction": "no_new_start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 1791,
+      "label": "start",
+      "request_id": "20260923T051828-422Z-33696-1:mouse65618:rmb-down:40600",
+      "ammo": 3,
+      "probabilities": [
+        0.0161274541169405,
+        0.9838725924491882
+      ],
+      "cpu_probabilities": [
+        0.016127437353134155,
+        0.9838725924491882
+      ],
+      "prediction": "start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 1859,
+      "label": "no_new_start",
+      "request_id": null,
+      "ammo": 3,
+      "probabilities": [
+        0.9320862889289856,
+        0.06791365891695023
+      ],
+      "cpu_probabilities": [
+        0.9320864081382751,
+        0.06791362911462784
+      ],
+      "prediction": "no_new_start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 1862,
+      "label": "start",
+      "request_id": "20260923T051828-422Z-33696-1:mouse65618:rmb-down:42252",
+      "ammo": 4,
+      "probabilities": [
+        0.014176816679537296,
+        0.9858231544494629
+      ],
+      "cpu_probabilities": [
+        0.014176816679537296,
+        0.9858231544494629
+      ],
+      "prediction": "start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 1867,
+      "label": "no_new_start",
+      "request_id": null,
+      "ammo": 3,
+      "probabilities": [
+        0.9997757077217102,
+        0.00022424590133596212
+      ],
+      "cpu_probabilities": [
+        0.9997757077217102,
+        0.0002242456830572337
+      ],
+      "prediction": "no_new_start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 2066,
+      "label": "no_new_start",
+      "request_id": null,
+      "ammo": 3,
+      "probabilities": [
+        0.9985359907150269,
+        0.0014639523578807712
+      ],
+      "cpu_probabilities": [
+        0.9985359907150269,
+        0.0014639509608969092
+      ],
+      "prediction": "no_new_start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 2069,
+      "label": "start",
+      "request_id": "20260923T051828-422Z-33696-1:mouse65618:rmb-down:47256",
+      "ammo": 3,
+      "probabilities": [
+        0.055371154099702835,
+        0.9446288347244263
+      ],
+      "cpu_probabilities": [
+        0.05537095293402672,
+        0.9446290135383606
+      ],
+      "prediction": "start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 2349,
+      "label": "start",
+      "request_id": "20260923T051828-422Z-33696-1:mouse65618:rmb-down:53573",
+      "ammo": 3,
+      "probabilities": [
+        0.00971724558621645,
+        0.9902827739715576
+      ],
+      "cpu_probabilities": [
+        0.009717254899442196,
+        0.9902827739715576
+      ],
+      "prediction": "start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 2727,
+      "label": "no_new_start",
+      "request_id": null,
+      "ammo": 4,
+      "probabilities": [
+        0.9814824461936951,
+        0.01851755380630493
+      ],
+      "cpu_probabilities": [
+        0.9814824461936951,
+        0.01851755380630493
+      ],
+      "prediction": "no_new_start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 2730,
+      "label": "start",
+      "request_id": "20260923T051828-422Z-33696-1:mouse65618:rmb-down:62522",
+      "ammo": 4,
+      "probabilities": [
+        0.029331956058740616,
+        0.9706680178642273
+      ],
+      "cpu_probabilities": [
+        0.02933194860816002,
+        0.9706680178642273
+      ],
+      "prediction": "start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 3007,
+      "label": "no_new_start",
+      "request_id": null,
+      "ammo": 3,
+      "probabilities": [
+        0.9995129108428955,
+        0.00048712550778873265
+      ],
+      "cpu_probabilities": [
+        0.9995129108428955,
+        0.00048712664283812046
+      ],
+      "prediction": "no_new_start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 3010,
+      "label": "start",
+      "request_id": "20260923T051828-422Z-33696-1:mouse65618:rmb-down:68790",
+      "ammo": 3,
+      "probabilities": [
+        0.00029665036709047854,
+        0.9997033476829529
+      ],
+      "cpu_probabilities": [
+        0.0002966500469483435,
+        0.9997033476829529
+      ],
+      "prediction": "start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 3113,
+      "label": "start",
+      "request_id": "20260923T051828-422Z-33696-1:mouse65618:rmb-down:71036",
+      "ammo": 4,
+      "probabilities": [
+        0.020045582205057144,
+        0.9799544215202332
+      ],
+      "cpu_probabilities": [
+        0.020045582205057144,
+        0.9799544215202332
+      ],
+      "prediction": "start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 3255,
+      "label": "no_new_start",
+      "request_id": null,
+      "ammo": 4,
+      "probabilities": [
+        0.9993901252746582,
+        0.0006099110469222069
+      ],
+      "cpu_probabilities": [
+        0.9993901252746582,
+        0.0006099104066379368
+      ],
+      "prediction": "no_new_start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 3258,
+      "label": "start",
+      "request_id": "20260923T051828-422Z-33696-1:mouse65618:rmb-down:74419",
+      "ammo": 4,
+      "probabilities": [
+        0.005168604198843241,
+        0.994831383228302
+      ],
+      "cpu_probabilities": [
+        0.005168618634343147,
+        0.994831383228302
+      ],
+      "prediction": "start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 3263,
+      "label": "no_new_start",
+      "request_id": null,
+      "ammo": 3,
+      "probabilities": [
+        0.9996232986450195,
+        0.0003767030721064657
+      ],
+      "cpu_probabilities": [
+        0.9996232986450195,
+        0.00037670304300263524
+      ],
+      "prediction": "no_new_start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 3266,
+      "label": "no_new_start",
+      "request_id": null,
+      "ammo": 3,
+      "probabilities": [
+        0.9985249638557434,
+        0.0014750368427485228
+      ],
+      "cpu_probabilities": [
+        0.9985249638557434,
+        0.001475037424825132
+      ],
+      "prediction": "no_new_start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 3269,
+      "label": "start",
+      "request_id": "20260923T051828-422Z-33696-1:mouse65618:rmb-down:74687",
+      "ammo": 4,
+      "probabilities": [
+        0.24564063549041748,
+        0.7543593645095825
+      ],
+      "cpu_probabilities": [
+        0.24564069509506226,
+        0.7543593049049377
+      ],
+      "prediction": "start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 3401,
+      "label": "start",
+      "request_id": "20260923T051828-422Z-33696-1:mouse65618:rmb-down:77832",
+      "ammo": 4,
+      "probabilities": [
+        0.016097284853458405,
+        0.9839026927947998
+      ],
+      "cpu_probabilities": [
+        0.016097337007522583,
+        0.983902633190155
+      ],
+      "prediction": "start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 3434,
+      "label": "start",
+      "request_id": "20260923T051828-422Z-33696-1:mouse65618:rmb-down:78580",
+      "ammo": 4,
+      "probabilities": [
+        2.6092990083270706e-05,
+        0.9999738931655884
+      ],
+      "cpu_probabilities": [
+        2.6092990083270706e-05,
+        0.9999738931655884
+      ],
+      "prediction": "start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 3439,
+      "label": "no_new_start",
+      "request_id": null,
+      "ammo": 3,
+      "probabilities": [
+        0.9994320273399353,
+        0.0005679229507222772
+      ],
+      "cpu_probabilities": [
+        0.9994320273399353,
+        0.0005679234745912254
+      ],
+      "prediction": "no_new_start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 3528,
+      "label": "start",
+      "request_id": "20260923T051828-422Z-33696-1:mouse65618:rmb-down:80668",
+      "ammo": 1,
+      "probabilities": [
+        0.0226475577801466,
+        0.9773524403572083
+      ],
+      "cpu_probabilities": [
+        0.022647548466920853,
+        0.9773524403572083
+      ],
+      "prediction": "start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 3730,
+      "label": "start",
+      "request_id": "20260923T051828-422Z-33696-1:mouse65618:rmb-down:85468",
+      "ammo": 1,
+      "probabilities": [
+        0.0010885390220209956,
+        0.9989114999771118
+      ],
+      "cpu_probabilities": [
+        0.0010885384399443865,
+        0.9989114999771118
+      ],
+      "prediction": "start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 3752,
+      "label": "start",
+      "request_id": "20260923T051828-422Z-33696-1:mouse65618:rmb-down:86030",
+      "ammo": 1,
+      "probabilities": [
+        0.032755594700574875,
+        0.9672443866729736
+      ],
+      "cpu_probabilities": [
+        0.032755594700574875,
+        0.9672443866729736
+      ],
+      "prediction": "start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 3832,
+      "label": "no_new_start",
+      "request_id": null,
+      "ammo": 1,
+      "probabilities": [
+        0.9139988422393799,
+        0.08600123226642609
+      ],
+      "cpu_probabilities": [
+        0.9139988422393799,
+        0.0860011875629425
+      ],
+      "prediction": "no_new_start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 3835,
+      "label": "start",
+      "request_id": "20260923T051828-422Z-33696-1:mouse65618:rmb-down:87982",
+      "ammo": 1,
+      "probabilities": [
+        0.32449889183044434,
+        0.6755011081695557
+      ],
+      "cpu_probabilities": [
+        0.3244990110397339,
+        0.6755009293556213
+      ],
+      "prediction": "start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 3987,
+      "label": "start",
+      "request_id": "20260923T051828-422Z-33696-1:mouse65618:rmb-down:91605",
+      "ammo": 3,
+      "probabilities": [
+        0.01554106641560793,
+        0.9844589233398438
+      ],
+      "cpu_probabilities": [
+        0.015541049651801586,
+        0.9844589233398438
+      ],
+      "prediction": "start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 4032,
+      "label": "start",
+      "request_id": "20260923T051828-422Z-33696-1:mouse65618:rmb-down:92705",
+      "ammo": 4,
+      "probabilities": [
+        0.4768928587436676,
+        0.5231071710586548
+      ],
+      "cpu_probabilities": [
+        0.4768926799297333,
+        0.5231073498725891
+      ],
+      "prediction": "start",
+      "reproduced": true
+    },
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "grid_index": 4037,
+      "label": "no_new_start",
+      "request_id": null,
+      "ammo": 3,
+      "probabilities": [
+        0.9992377758026123,
+        0.0007622394477948546
+      ],
+      "cpu_probabilities": [
+        0.9992377758026123,
+        0.0007622390985488892
+      ],
+      "prediction": "no_new_start",
+      "reproduced": true
+    }
+  ],
+  "same_ammo_contrast_groups": [
+    {
+      "ammo_history": [
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      "no_new_start": [
+        [
+          "20260922T032454-642Z-24328-1",
+          137
+        ],
+        [
+          "20260923T051828-422Z-33696-1",
+          134
+        ],
+        [
+          "20260923T051828-422Z-33696-1",
+          1714
+        ],
+        [
+          "20260923T051828-422Z-33696-1",
+          1788
+        ],
+        [
+          "20260923T051828-422Z-33696-1",
+          1859
+        ],
+        [
+          "20260923T051828-422Z-33696-1",
+          3266
+        ]
+      ],
+      "start": [
+        [
+          "20260922T032454-642Z-24328-1",
+          141
+        ],
+        [
+          "20260923T051828-422Z-33696-1",
+          137
+        ],
+        [
+          "20260923T051828-422Z-33696-1",
+          404
+        ],
+        [
+          "20260923T051828-422Z-33696-1",
+          764
+        ],
+        [
+          "20260923T051828-422Z-33696-1",
+          1791
+        ],
+        [
+          "20260923T051828-422Z-33696-1",
+          2349
+        ],
+        [
+          "20260923T051828-422Z-33696-1",
+          3010
+        ],
+        [
+          "20260923T051828-422Z-33696-1",
+          3987
+        ]
+      ]
+    },
+    {
+      "ammo_history": [
+        0,
+        0,
+        1,
+        1,
+        1
+      ],
+      "no_new_start": [
+        [
+          "20260922T032454-642Z-24328-1",
+          206
+        ]
+      ],
+      "start": [
+        [
+          "20260923T051828-422Z-33696-1",
+          3730
+        ]
+      ]
+    },
+    {
+      "ammo_history": [
+        5,
+        5,
+        5,
+        5,
+        5
+      ],
+      "no_new_start": [
+        [
+          "20260923T051828-422Z-33696-1",
+          36
+        ]
+      ],
+      "start": [
+        [
+          "20260923T051828-422Z-33696-1",
+          39
+        ]
+      ]
+    },
+    {
+      "ammo_history": [
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "no_new_start": [
+        [
+          "20260923T051828-422Z-33696-1",
+          48
+        ],
+        [
+          "20260923T051828-422Z-33696-1",
+          591
+        ],
+        [
+          "20260923T051828-422Z-33696-1",
+          1655
+        ],
+        [
+          "20260923T051828-422Z-33696-1",
+          1663
+        ],
+        [
+          "20260923T051828-422Z-33696-1",
+          1665
+        ],
+        [
+          "20260923T051828-422Z-33696-1",
+          3255
+        ]
+      ],
+      "start": [
+        [
+          "20260923T051828-422Z-33696-1",
+          51
+        ],
+        [
+          "20260923T051828-422Z-33696-1",
+          126
+        ],
+        [
+          "20260923T051828-422Z-33696-1",
+          594
+        ],
+        [
+          "20260923T051828-422Z-33696-1",
+          652
+        ],
+        [
+          "20260923T051828-422Z-33696-1",
+          1047
+        ],
+        [
+          "20260923T051828-422Z-33696-1",
+          1658
+        ],
+        [
+          "20260923T051828-422Z-33696-1",
+          1668
+        ],
+        [
+          "20260923T051828-422Z-33696-1",
+          2730
+        ],
+        [
+          "20260923T051828-422Z-33696-1",
+          3113
+        ],
+        [
+          "20260923T051828-422Z-33696-1",
+          3258
+        ],
+        [
+          "20260923T051828-422Z-33696-1",
+          3401
+        ],
+        [
+          "20260923T051828-422Z-33696-1",
+          3434
+        ],
+        [
+          "20260923T051828-422Z-33696-1",
+          4032
+        ]
+      ]
+    },
+    {
+      "ammo_history": [
+        4,
+        3,
+        3,
+        3,
+        3
+      ],
+      "no_new_start": [
+        [
+          "20260923T051828-422Z-33696-1",
+          56
+        ],
+        [
+          "20260923T051828-422Z-33696-1",
+          131
+        ],
+        [
+          "20260923T051828-422Z-33696-1",
+          599
+        ],
+        [
+          "20260923T051828-422Z-33696-1",
+          657
+        ],
+        [
+          "20260923T051828-422Z-33696-1",
+          667
+        ],
+        [
+          "20260923T051828-422Z-33696-1",
+          1867
+        ],
+        [
+          "20260923T051828-422Z-33696-1",
+          3263
+        ],
+        [
+          "20260923T051828-422Z-33696-1",
+          3439
+        ],
+        [
+          "20260923T051828-422Z-33696-1",
+          4037
+        ]
+      ],
+      "start": [
+        [
+          "20260923T051828-422Z-33696-1",
+          1092
+        ],
+        [
+          "20260923T051828-422Z-33696-1",
+          2069
+        ]
+      ]
+    },
+    {
+      "ammo_history": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "no_new_start": [
+        [
+          "20260923T051828-422Z-33696-1",
+          1184
+        ],
+        [
+          "20260923T051828-422Z-33696-1",
+          1514
+        ],
+        [
+          "20260923T051828-422Z-33696-1",
+          3832
+        ]
+      ],
+      "start": [
+        [
+          "20260923T051828-422Z-33696-1",
+          1177
+        ],
+        [
+          "20260923T051828-422Z-33696-1",
+          1187
+        ],
+        [
+          "20260923T051828-422Z-33696-1",
+          1517
+        ],
+        [
+          "20260923T051828-422Z-33696-1",
+          3752
+        ],
+        [
+          "20260923T051828-422Z-33696-1",
+          3835
+        ]
+      ]
+    }
+  ],
+  "validation": null,
+  "deployment_binding": null,
+  "live_io_imported": false,
+  "limits": [
+    "One target-agreed received request, four no-new-RMB-initiation controls; not physical device/delivery timestamps",
+    "Negative no_fresh_rise includes observed held continuation200; not absence of other abilities or alternate bindings",
+    "Left hold overlap and later releases preserved; no complete motor settings or pad equivalence",
+    "Luna named visual source, not Galacta benchmark substitution",
+    "Window-local IDs/reset selector; continuous200/206 differences retained and198 stays target-disagreement unknown",
+    "james-2026-09-21-evening TRAIN only; no generalization, validation, performance or live authority",
+    "No new media/native review, training, old artifact/source/lane edits or input by corpus owner",
+    "Train-only reproduction of admitted labels; this is not validation or generalization.",
+    "Window-reset tracking is not proven equivalent to continuous live selection.",
+    "No native media opened by this training job."
+  ]
+}
