@@ -1,0 +1,118 @@
+{
+ "unmutated": {
+  "exit": 0,
+  "summary": "125 passed, 1 skipped in 1.56s"
+ },
+ "ko_does_not_end_the_option": {
+  "killed": true,
+  "summary": "5 failed, 120 passed, 1 skipped in 1.01s",
+  "failed": [
+   "tests/test_options.py::test_a_ko_ends_the_burst_at_once_and_stops_its_primitive",
+   "tests/test_options.py::test_every_ending_names_its_observation_and_the_state_time",
+   "tests/test_options.py::test_the_legacy_loop_reads_the_feed_logs_the_status_and_stops_the_burst_at_the_ko",
+   "tests/test_options.py::test_the_recorded_burst_trial_ends_at_its_ko_not_at_its_bound",
+   "tests/test_options.py::test_the_status_serialises_for_the_run_log"
+  ]
+ },
+ "ko_never_confirmed": {
+  "killed": true,
+  "summary": "9 failed, 116 passed, 1 skipped in 1.07s",
+  "failed": [
+   "tests/test_options.py::test_a_ko_ends_the_burst_at_once_and_stops_its_primitive",
+   "tests/test_options.py::test_a_ko_is_two_true_reads_after_a_false",
+   "tests/test_options.py::test_a_ko_stops_the_latest_attacks_primitive_even_after_its_option_was_interrupted",
+   "tests/test_options.py::test_every_ending_names_its_observation_and_the_state_time",
+   "tests/test_options.py::test_the_legacy_loop_reads_the_feed_logs_the_status_and_stops_the_burst_at_the_ko",
+   "tests/test_options.py::test_the_recorded_burst_trial_ends_at_its_ko_not_at_its_bound",
+   "tests/test_options.py::test_the_status_serialises_for_the_run_log"
+  ]
+ },
+ "ko_on_one_true_read": {
+  "killed": true,
+  "summary": "10 failed, 115 passed, 1 skipped in 1.01s",
+  "failed": [
+   "tests/test_options.py::test_a_ko_ends_the_burst_at_once_and_stops_its_primitive",
+   "tests/test_options.py::test_a_ko_is_two_true_reads_after_a_false",
+   "tests/test_options.py::test_a_ko_stops_the_latest_attacks_primitive_even_after_its_option_was_interrupted",
+   "tests/test_options.py::test_every_ending_names_its_observation_and_the_state_time",
+   "tests/test_options.py::test_the_legacy_loop_reads_the_feed_logs_the_status_and_stops_the_burst_at_the_ko",
+   "tests/test_options.py::test_the_recorded_burst_trial_ends_at_its_ko_not_at_its_bound",
+   "tests/test_options.py::test_the_status_serialises_for_the_run_log"
+  ]
+ },
+ "lost_target_does_not_end_the_option": {
+  "killed": true,
+  "summary": "8 failed, 117 passed, 1 skipped in 1.16s",
+  "failed": [
+   "tests/test_options.py::test_a_ko_stops_the_latest_attacks_primitive_even_after_its_option_was_interrupted",
+   "tests/test_options.py::test_a_lost_target_ends_the_option_at_once",
+   "tests/test_options.py::test_every_ending_names_its_observation_and_the_state_time",
+   "tests/test_tracker.py::test_a_cancelled_combo_does_not_come_back_through_another_targets_flicker_grace",
+   "tests/test_tracker.py::test_a_combo_committed_on_a_target_that_is_then_gone_does_not_hold_for_its_whole_length",
+   "tests/test_tracker.py::test_a_combo_on_a_dead_target_ends_even_with_another_enemy_in_view",
+   "tests/test_tracker.py::test_a_held_combo_does_not_survive_on_a_replacement_target"
+  ]
+ },
+ "arrival_does_not_complete": {
+  "killed": true,
+  "summary": "2 failed, 123 passed, 1 skipped in 0.99s",
+  "failed": [
+   "tests/test_options.py::test_a_pull_completes_when_its_target_is_pulled_into_near_range",
+   "tests/test_options.py::test_every_ending_names_its_observation_and_the_state_time"
+  ]
+ },
+ "unread_bound_reads_failed": {
+  "killed": true,
+  "summary": "1 failed, 124 passed, 1 skipped in 1.00s",
+  "failed": [
+   "tests/test_options.py::test_every_ending_names_its_observation_and_the_state_time"
+  ]
+ },
+ "ko_stops_only_a_running_option": {
+  "killed": true,
+  "summary": "1 failed, 124 passed, 1 skipped in 1.04s",
+  "failed": [
+   "tests/test_options.py::test_a_ko_stops_the_latest_attacks_primitive_even_after_its_option_was_interrupted"
+  ]
+ },
+ "every_ending_stops_the_primitive": {
+  "killed": true,
+  "summary": "4 failed, 121 passed, 1 skipped in 1.05s",
+  "failed": [
+   "tests/test_options.py::test_a_ko_ends_the_burst_at_once_and_stops_its_primitive",
+   "tests/test_options.py::test_a_ko_stops_the_latest_attacks_primitive_even_after_its_option_was_interrupted",
+   "tests/test_options.py::test_a_lost_target_ends_the_option_at_once",
+   "tests/test_options.py::test_the_legacy_loop_reads_the_feed_logs_the_status_and_stops_the_burst_at_the_ko"
+  ]
+ },
+ "completed_option_reissued_by_flicker_grace": {
+  "killed": true,
+  "summary": "2 failed, 123 passed, 1 skipped in 1.02s",
+  "failed": [
+   "tests/test_options.py::test_a_ko_ends_the_burst_at_once_and_stops_its_primitive",
+   "tests/test_options.py::test_the_recorded_burst_trial_ends_at_its_ko_not_at_its_bound"
+  ]
+ },
+ "controller_ignores_stop": {
+  "killed": true,
+  "summary": "2 failed, 123 passed, 1 skipped in 1.01s",
+  "failed": [
+   "tests/test_options.py::test_a_stop_cuts_only_the_primitive_played_for_that_intent",
+   "tests/test_options.py::test_the_legacy_loop_reads_the_feed_logs_the_status_and_stops_the_burst_at_the_ko"
+  ]
+ },
+ "loop_reads_the_feed_in_range_skill_mode": {
+  "killed": true,
+  "summary": "1 failed, 124 passed, 1 skipped in 1.09s",
+  "failed": [
+   "tests/test_options.py::test_range_skill_mode_reads_no_kill_feed_and_passes_no_stop"
+  ]
+ },
+ "loop_passes_no_stop": {
+  "killed": true,
+  "summary": "1 failed, 124 passed, 1 skipped in 0.99s",
+  "failed": [
+   "tests/test_options.py::test_the_legacy_loop_reads_the_feed_logs_the_status_and_stops_the_burst_at_the_ko"
+  ]
+ }
+}

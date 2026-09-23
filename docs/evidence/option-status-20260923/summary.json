@@ -1,0 +1,604 @@
+{
+ "inputs": {
+  "base_commit": "0f71336",
+  "logs": {
+   "trial0": {
+    "path": "C:\\rivals-agent\\data\\l4\\burst\\log.jsonl",
+    "sha256": "955b07c2171ef3a6f433b6226e3a6134903e7eef3f786f4e55ad43c0c7348027",
+    "saved_frames": 53,
+    "frames_digest": "1c34defc615a61edab20936c9baa0c20878e5b8ce3a1ced96cd6d52d9885e92b"
+   },
+   "plaza30": {
+    "path": "C:\\rivals-agent\\data\\l1\\plaza30\\frames.jsonl",
+    "sha256": "ee7d43e477ae2c7f0ed9bb75f1f22967cb3b7905b71f78295ebf8cfcd2f25578",
+    "saved_frames": 272,
+    "frames_digest": "08c250a7b3e05b195bbfdb8bd683e70f5d1636ca76070c913c04a1bfbb5d72eb"
+   }
+  },
+  "code_lf_sha256": {
+   "agent/brain.py": "8e078c085002607c3c6eaf69e5c5b8188fe9092cdd536a2acd301877d9aaf425",
+   "agent/controller.py": "c5525b8ec2fb7b73fddc982956720fdfc48f6e87b32ed06a8df90ec8fa70aed5",
+   "agent/loop.py": "85ad52438f69828575d26108f8ce1048eb15e48809eae2774ea184f1b5091b46",
+   "agent/state.py": "521d7c4a6278c7477932af130056cc57a80b1f8b3f0e6102326dc1c5672d7931",
+   "agent/jev.py": "e59dfff3dc562d9a6d2ea97bf45f7751fbbcb6a272ccf36c772a064c7a9c9c32",
+   "agent/tracker.py": "4b4affaf62ff7e19522508645de1b9b41f2749ea72b7be6899b766d356d67f5a",
+   "agent/intents.py": "836692b7c241df0d2a57c109230f8047b1c4d0a4392782bfb652f883c6f50cf3"
+  },
+  "scripts_lf_sha256": {
+   "feed.py": "80bf0e1d038eb721a829fcd6f38bb3c5c90a141e7af2564cca336047a1b06794",
+   "replay.py": "d12a6894f4cbdf514c2c7704970accb5a81995e58a29ba8aa404494307d9fe1c",
+   "run.py": "80a789a78a41f9377432b79179ce868b64fc947ffa6dd1b857f99bbc74c4998f"
+  }
+ },
+ "kill_feed_read_ms": {
+  "trial0": {
+   "size": [
+    1280,
+    720
+   ],
+   "p50": 0.345,
+   "p95": 0.491,
+   "max": 0.697
+  },
+  "plaza30": {
+   "size": [
+    2560,
+    1440
+   ],
+   "p50": 0.957,
+   "p95": 1.407,
+   "max": 1.786
+  }
+ },
+ "trial0": {
+  "kos_confirmed_t": [
+   2.2338
+  ],
+  "base_holds": [
+   {
+    "held": "Combo:1",
+    "start_t": 0.4001,
+    "hold_until": 3.4001,
+    "last_t": 2.2338
+   }
+  ],
+  "tree_options": [
+   {
+    "kind": "Combo",
+    "target": 1,
+    "start_t": 0.4001,
+    "bound_t": 3.4001,
+    "status": "completed",
+    "evidence": {
+     "observation": "ko_feed",
+     "t": 2.2338,
+     "detail": "kill feed False at 1.998, True at 2.111, 2.234; which bot is not read"
+    },
+    "stop_t": 2.2338
+   }
+  ],
+  "base_presses_after_each_ko": {
+   "2.2338": [
+    [
+     2.2748,
+     3.3747
+    ],
+    [
+     3.4496,
+     3.4496
+    ]
+   ]
+  },
+  "tree_presses_after_each_ko": {
+   "2.2338": []
+  },
+  "last_press_t": {
+   "base": 3.4496,
+   "tree": 2.1946
+  },
+  "pads_differing_tree_vs_base": {
+   "rows": 39,
+   "spans": [
+    [
+     2.2338,
+     3.3747
+    ],
+    [
+     3.4496,
+     3.4496
+    ],
+    [
+     3.5585,
+     3.6313
+    ],
+    [
+     3.7378,
+     3.8122
+    ]
+   ]
+  },
+  "pads_identical_before_first_ko": true,
+  "base_replay_fidelity": {
+   "rows": 138,
+   "attack_inputs_as_recorded": 138,
+   "whole_pad_as_recorded": 44
+  },
+  "tree_stop_takes_effect_t": {
+   "2.2338": 2.2338
+  }
+ },
+ "plaza30": {
+  "kos_confirmed_t": [
+   13.5255,
+   25.0754
+  ],
+  "base_holds": [
+   {
+    "held": "Combo:1",
+    "start_t": 7.1278,
+    "hold_until": 10.1278,
+    "last_t": 9.6953
+   },
+   {
+    "held": "Combo:23",
+    "start_t": 13.1123,
+    "hold_until": 16.1123,
+    "last_t": 13.9263
+   },
+   {
+    "held": "Combo:56",
+    "start_t": 22.531,
+    "hold_until": 25.531,
+    "last_t": 25.4716
+   }
+  ],
+  "tree_options": [
+   {
+    "kind": "Combo",
+    "target": 1,
+    "start_t": 7.1278,
+    "bound_t": 10.1278,
+    "status": "interrupted",
+    "evidence": {
+     "observation": "track_lost",
+     "t": 9.7868,
+     "detail": "target 1: not seen since 8.209, not coasting"
+    },
+    "stop_t": null
+   },
+   {
+    "kind": "Combo",
+    "target": 23,
+    "start_t": 13.1123,
+    "bound_t": 16.1123,
+    "status": "completed",
+    "evidence": {
+     "observation": "ko_feed",
+     "t": 13.5255,
+     "detail": "kill feed False at 13.230, True at 13.420, 13.526; which bot is not read"
+    },
+    "stop_t": 13.5255
+   },
+   {
+    "kind": "Combo",
+    "target": 56,
+    "start_t": 22.531,
+    "bound_t": 25.531,
+    "status": "completed",
+    "evidence": {
+     "observation": "ko_feed",
+     "t": 25.0754,
+     "detail": "kill feed False at 24.886, True at 24.981, 25.075; which bot is not read"
+    },
+    "stop_t": 25.0754
+   }
+  ],
+  "base_presses_after_each_ko": {
+   "13.5255": [
+    [
+     20.4601,
+     20.4766
+    ],
+    [
+     22.668,
+     22.6843
+    ],
+    [
+     22.9838,
+     23.004
+    ],
+    [
+     23.7587,
+     23.7587
+    ],
+    [
+     24.3072,
+     25.5853
+    ],
+    [
+     25.6507,
+     25.6507
+    ]
+   ],
+   "25.0754": [
+    [
+     25.0965,
+     25.5853
+    ],
+    [
+     25.6507,
+     25.6507
+    ]
+   ]
+  },
+  "tree_presses_after_each_ko": {
+   "13.5255": [
+    [
+     20.4601,
+     20.4766
+    ],
+    [
+     22.668,
+     22.6843
+    ],
+    [
+     22.9838,
+     23.004
+    ],
+    [
+     23.7587,
+     23.7587
+    ],
+    [
+     24.3072,
+     25.1337
+    ]
+   ],
+   "25.0754": [
+    [
+     25.0965,
+     25.1337
+    ]
+   ]
+  },
+  "last_press_t": {
+   "base": 25.6507,
+   "tree": 25.1337
+  },
+  "pads_differing_tree_vs_base": {
+   "rows": 600,
+   "spans": [
+    [
+     13.596,
+     14.5421
+    ],
+    [
+     15.4548,
+     15.9028
+    ],
+    [
+     16.5081,
+     16.5081
+    ],
+    [
+     16.8995,
+     17.0933
+    ],
+    [
+     18.727,
+     18.9274
+    ],
+    [
+     18.9824,
+     19.0004
+    ],
+    [
+     19.0742,
+     19.0742
+    ],
+    [
+     19.1457,
+     19.5232
+    ],
+    [
+     19.5734,
+     20.0017
+    ],
+    [
+     20.072,
+     20.8971
+    ],
+    [
+     21.9311,
+     21.9311
+    ],
+    [
+     22.0072,
+     22.1227
+    ],
+    [
+     22.1927,
+     22.2972
+    ],
+    [
+     22.3564,
+     22.5095
+    ],
+    [
+     22.5714,
+     22.5714
+    ],
+    [
+     22.6264,
+     22.6483
+    ],
+    [
+     22.7214,
+     22.7214
+    ],
+    [
+     22.7819,
+     22.7819
+    ],
+    [
+     22.855,
+     22.855
+    ],
+    [
+     23.1156,
+     23.152
+    ],
+    [
+     23.2136,
+     23.2136
+    ],
+    [
+     23.2647,
+     23.502
+    ],
+    [
+     23.6947,
+     23.6947
+    ],
+    [
+     24.5086,
+     24.5504
+    ],
+    [
+     24.626,
+     24.626
+    ],
+    [
+     24.804,
+     24.8206
+    ],
+    [
+     25.1549,
+     25.9415
+    ],
+    [
+     26.0209,
+     26.6408
+    ],
+    [
+     26.917,
+     26.9499
+    ],
+    [
+     27.0084,
+     27.0454
+    ],
+    [
+     27.1415,
+     27.246
+    ],
+    [
+     27.307,
+     27.3425
+    ],
+    [
+     28.0426,
+     28.0815
+    ],
+    [
+     28.1431,
+     28.1636
+    ],
+    [
+     28.2351,
+     28.31
+    ],
+    [
+     28.3639,
+     28.3639
+    ],
+    [
+     28.455,
+     28.455
+    ],
+    [
+     28.6451,
+     29.0508
+    ],
+    [
+     29.1008,
+     29.1666
+    ],
+    [
+     29.2385,
+     29.2385
+    ],
+    [
+     29.3856,
+     29.3856
+    ],
+    [
+     29.4584,
+     29.5342
+    ],
+    [
+     29.5908,
+     29.8999
+    ],
+    [
+     29.9631,
+     30.805
+    ],
+    [
+     30.855,
+     31.4032
+    ],
+    [
+     31.4602,
+     31.7121
+    ],
+    [
+     31.7819,
+     32.2138
+    ],
+    [
+     32.2922,
+     32.4472
+    ],
+    [
+     32.5037,
+     32.5595
+    ],
+    [
+     32.6168,
+     32.6508
+    ],
+    [
+     32.7242,
+     32.7433
+    ],
+    [
+     32.795,
+     32.8134
+    ],
+    [
+     32.9926,
+     33.1314
+    ],
+    [
+     33.1851,
+     33.3688
+    ],
+    [
+     33.4251,
+     33.4413
+    ],
+    [
+     33.5111,
+     33.697
+    ],
+    [
+     33.7658,
+     34.2304
+    ],
+    [
+     34.2864,
+     34.4446
+    ],
+    [
+     34.5342,
+     34.8265
+    ],
+    [
+     34.8855,
+     34.9051
+    ],
+    [
+     34.9571,
+     35.1684
+    ],
+    [
+     35.2497,
+     35.4826
+    ],
+    [
+     35.5364,
+     35.5364
+    ],
+    [
+     35.5893,
+     35.6067
+    ],
+    [
+     35.664,
+     35.664
+    ],
+    [
+     35.8132,
+     36.1504
+    ],
+    [
+     36.2165,
+     36.27
+    ],
+    [
+     36.4361,
+     36.5013
+    ]
+   ]
+  },
+  "pads_identical_before_first_ko": true,
+  "base_replay_fidelity": {
+   "rows": 1542,
+   "attack_inputs_as_recorded": 1542,
+   "whole_pad_as_recorded": 339
+  },
+  "tree_stop_takes_effect_t": {
+   "13.5255": 13.596,
+   "25.0754": 25.1549
+  },
+  "tree_without_feed": {
+   "options": [
+    {
+     "kind": "Combo",
+     "target": 1,
+     "start_t": 7.1278,
+     "bound_t": 10.1278,
+     "status": "interrupted",
+     "evidence": {
+      "observation": "track_lost",
+      "t": 9.7868,
+      "detail": "target 1: not seen since 8.209, not coasting"
+     },
+     "stop_t": null
+    },
+    {
+     "kind": "Combo",
+     "target": 23,
+     "start_t": 13.1123,
+     "bound_t": 16.1123,
+     "status": "interrupted",
+     "evidence": {
+      "observation": "track_lost",
+      "t": 14.0361,
+      "detail": "target 23: not seen since 13.112, not coasting"
+     },
+     "stop_t": null
+    },
+    {
+     "kind": "Combo",
+     "target": 56,
+     "start_t": 22.531,
+     "bound_t": 25.531,
+     "status": "interrupted",
+     "evidence": {
+      "observation": "upper_bound",
+      "t": 25.5697,
+      "detail": "3.0 s bound: ko_feed not read"
+     },
+     "stop_t": null
+    }
+   ],
+   "pads_differing_vs_base": {
+    "rows": 0,
+    "spans": []
+   },
+   "intents_differing_vs_base": 0
+  }
+ }
+}
