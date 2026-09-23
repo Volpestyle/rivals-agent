@@ -28,3 +28,4 @@ Total logged range play with inputs: about 17 trainable minutes before the campa
   In-game sensitivity **unchanged since the 2026-09-21 sessions** (James, same statement). A 10 cm ruler take
   and a 360° turn take are still requested to pin counts/inch and counts/degree from the logger itself.
 - 2026-09-23: **C = Team-Up ability (default binding)**, per James; in the solo practice range it has no effect, so C presses are a known no-effect key (structurally unsupported action, never a training positive).
+- 2026-09-23: **Alt does nothing in game** (unbound), per James; Alt presses are Alt-Tab only and stay UI-key cuts.
