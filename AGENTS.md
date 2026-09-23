@@ -26,13 +26,19 @@ Development can run on either machine. `CLAUDE.md` is a symlink to this file.
 | Path | Holds |
 |---|---|
 | `docs/plan.md` | Lead-only. One writer, because a shared edit lost sections once |
+| `docs/learning-plan.md` | The canonical learning plan: milestones, advancement gates, reward contract. Lead's |
+| `docs/recording-protocol.md`, `docs/recording-log.md` | What James does per recording session, and the ledger of every take (the lead appends rows; the admission lane fills intake status) |
 | `docs/machines.md` | Mac/PC responsibilities, remote access and transfer procedure |
 | `docs/lanes/<lane>.md` | Each lane's present-state notes and measured facts; the lane's owner is its only writer |
-| `docs/spiderman-kit.md` | Sourced controller bindings, cooldowns, tracer rule, combos, settings |
-| `docs/evidence/` | Inspected screenshots and contact sheets per lane |
-| `agent/` | `State` contract, intents, scripted brain, Jev client, replay |
-| `perception/` | HUD readers, enemy finders, training, offline State replay |
-| `scripts/` | `pad.py` (pad token sequencer), `padrun.sh`, `capture.py`, `record.py` |
+| `docs/spiderman-kit.md` | Sourced controller bindings, cooldowns, tracer rule, combos, settings. Its "Patch reflected" line is read at run time: keep it byte-identical within the first 2,000 characters |
+| `docs/evidence/` | Hash-pinned run records: frames, receipts, reports and the scripts that made them. Never edited or moved; `docs/evidence/README.md` indexes them |
+| `agent/` | `State` contract, intents, scripted brain, tracker, pad controller, live loop and start phase, learned range brains, human demonstration import and whole-session intake, placement, Jev client (frozen), replay |
+| `perception/` | HUD readers, scoreboard and event stream, enemy finders (green outline; the YOLO path is kept for VOD footage), camera motion, offline State replay |
+| `policy/` | Learned policies: `range_bc/` (end-to-end whole-session fit), `range_skill_policy.py` (web-start head, checkpoint `698d8831`), `execution.py` (keyboard/mouse baseline), and the MLX chooser (`live`, `train`, `encode`, `frames`, `corpus`, `behaviour`) |
+| `scripts/` | Pad and capture: `pad.py`, `padrun.sh`, `capture.py`, `record.py`. Arrival and menus: `reenter.py`, `l4_menu.py`, `l4_practice_settings.py`. Placement: `place.py`. Also `range_benchmark.py`, `range_cast_probe.py`, `import_human_demo.py`, `recording_watch.py`, `pins.py` and `regenerate_sealed.py`, plus the one-off measurements `l4_measure.py`, `l4_trial.py` and `padprime_m1.py` |
+| `agent/server.py`, `agent/session.py`, `scripts/clankie_bridge.ps1`, `docs/clankie.md` | Clankie's session API bridge (VUH-1316): bounded sittings around `agent.loop`. Disabled on the PC (its scheduled task and firewall rule are installed but off, VUH-1325) and being wired on the Mac. The bridge author owns these files; keep them |
+| `tests/` | `uv run pytest` (stdlib) and `uv run --group perception pytest`; fixtures under `tests/fixtures/` |
+| `justfile`, `ruff.toml`, `.pre-commit-config.yaml`, `.github/` | `just test`, `test-perception`, `check`, `closure`; lint; the `DECLARATION:` commit guard for the identity-pinned files; CI |
 | `.env` | `JEV_URL`, `JEV_MODEL`, `JEV_KEY` (TypeSafe's direct API, the default route) and `OPENROUTER_API_KEY` (fallback), and `HF_TOKEN` (read-only Hugging Face token, for gated pretrained encoders only; nothing is ever uploaded); gitignored, also at `C:\rivals-agent\.env`. Never print or log a key. `JEV_KEY` goes to whatever `JEV_URL` names, so set or clear them together |
 
 ## Rules that came from real failures
