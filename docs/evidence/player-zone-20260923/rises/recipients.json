@@ -1,0 +1,1074 @@
+{
+"39": {
+"aim": [
+0
+],
+"wide": [],
+"note": "Luna's name+health bar only; her body is not outlined at the anchor"
+},
+"51": {
+"aim": [
+0,
+1
+],
+"wide": [],
+"note": ""
+},
+"63": {
+"aim": [
+0,
+1
+],
+"wide": [],
+"note": "Luna at Spider-Man's hand, x .44: inside the hero region"
+},
+"126": {
+"aim": [
+0
+],
+"wide": [],
+"note": "nearer left Galacta"
+},
+"137": {
+"aim": [
+0,
+1
+],
+"wide": [],
+"note": ""
+},
+"143": {
+"aim": [
+0,
+1,
+2,
+3
+],
+"wide": [],
+"note": ""
+},
+"179": {
+"aim": [
+0,
+1
+],
+"wide": [],
+"note": "plate + head arc of the point-blank Galacta"
+},
+"187": {
+"aim": [
+0,
+1,
+2,
+3
+],
+"wide": [],
+"note": ""
+},
+"222": {
+"aim": [
+0,
+1,
+2,
+3
+],
+"wide": [],
+"note": ""
+},
+"247": {
+"aim": [
+0,
+1,
+2
+],
+"wide": [],
+"note": "the Galacta at his hand; a3/a4 are the other bot"
+},
+"311": {
+"aim": [
+0
+],
+"wide": [],
+"note": "Galacta by the right railing (low confidence recipient)"
+},
+"322": {
+"aim": [
+0,
+1
+],
+"wide": [],
+"note": ""
+},
+"380": {
+"aim": [
+1,
+2
+],
+"wide": [],
+"note": ""
+},
+"404": {
+"aim": [
+0,
+1
+],
+"wide": [],
+"note": "Galacta at his right hand by the 5M mark; a2/w2/w3 the other bot"
+},
+"425": {
+"aim": [
+1,
+2,
+3,
+4,
+5
+],
+"wide": [],
+"note": "point-blank Galacta; a0 is the far bot on the ring"
+},
+"474": {
+"aim": [
+0
+],
+"wide": [],
+"note": "only its name bar; body in the doorway not outlined"
+},
+"483": {
+"aim": [
+0,
+1,
+2,
+3
+],
+"wide": [],
+"note": ""
+},
+"501": {
+"aim": [
+0,
+1
+],
+"wide": [],
+"note": "close Galacta drawn over the hero's legs (x .44-.45, y .58-.72)"
+},
+"543": {
+"aim": [
+0,
+1,
+2
+],
+"wide": [],
+"note": ""
+},
+"577": {
+"aim": [
+0
+],
+"wide": [],
+"note": ""
+},
+"594": {
+"aim": [
+0,
+1
+],
+"wide": [],
+"note": ""
+},
+"601": {
+"aim": [
+0,
+1,
+2,
+3,
+4,
+5
+],
+"wide": [],
+"note": ""
+},
+"639": {
+"aim": [
+0,
+1,
+2,
+3,
+4,
+5,
+6
+],
+"wide": [],
+"note": ""
+},
+"652": {
+"aim": [
+0,
+1,
+2,
+3,
+4,
+6,
+7,
+8,
+9,
+10,
+11
+],
+"wide": [],
+"note": "a5 is the far bot at the right"
+},
+"662": {
+"aim": [
+0,
+1,
+2,
+3,
+4
+],
+"wide": [],
+"note": "Ultra split round the hero: a0/a4 behind his left side"
+},
+"670": {
+"aim": [
+0,
+1,
+2,
+3,
+4,
+5,
+6,
+7,
+8,
+9,
+10
+],
+"wide": [],
+"note": ""
+},
+"764": {
+"aim": [
+0
+],
+"wide": [],
+"note": ""
+},
+"775": {
+"aim": [
+0
+],
+"wide": [],
+"note": ""
+},
+"784": {
+"aim": [
+0,
+1,
+2,
+3
+],
+"wide": [],
+"note": ""
+},
+"800": {
+"aim": [
+0
+],
+"wide": [],
+"note": "low confidence recipient"
+},
+"866": {
+"aim": [
+0,
+1,
+2
+],
+"wide": [],
+"note": ""
+},
+"922": {
+"aim": [
+0,
+1,
+2,
+3,
+4,
+5,
+6
+],
+"wide": [],
+"note": ""
+},
+"935": {
+"aim": [],
+"wide": [],
+"note": "no green mark accepted anywhere at the anchor (name text only, not a component)"
+},
+"978": {
+"aim": [
+0
+],
+"wide": [],
+"note": "its nameplate; the body is not outlined"
+},
+"1047": {
+"aim": [
+0,
+1,
+2,
+3,
+4,
+5,
+6
+],
+"wide": [],
+"note": ""
+},
+"1087": {
+"aim": [
+0,
+1
+],
+"wide": [],
+"note": "low confidence recipient"
+},
+"1092": {
+"aim": [
+0
+],
+"wide": [],
+"note": ""
+},
+"1177": {
+"aim": [
+0,
+1,
+2,
+3
+],
+"wide": [],
+"note": ""
+},
+"1187": {
+"aim": [
+0,
+1,
+2
+],
+"wide": [],
+"note": ""
+},
+"1212": {
+"aim": [
+0,
+1
+],
+"wide": [],
+"note": ""
+},
+"1249": {
+"aim": [
+0,
+1,
+2,
+3,
+4,
+5,
+6
+],
+"wide": [],
+"note": ""
+},
+"1345": {
+"aim": [
+0,
+1
+],
+"wide": [],
+"note": ""
+},
+"1362": {
+"aim": [
+1
+],
+"wide": [],
+"note": "distant middle-lane bot; a0 is another plate further up"
+},
+"1374": {
+"aim": [
+0
+],
+"wide": [],
+"note": ""
+},
+"1395": {
+"aim": [
+0,
+1,
+2,
+3
+],
+"wide": [],
+"note": ""
+},
+"1410": {
+"aim": [
+0
+],
+"wide": [],
+"note": "low confidence recipient"
+},
+"1426": {
+"aim": [
+0,
+1
+],
+"wide": [],
+"note": "bot just above his head; only its bar and one small arc are components"
+},
+"1433": {
+"aim": [
+1,
+3,
+4
+],
+"wide": [],
+"note": "a2 (at his hand) is the box the producer judged over his arm; not counted as recipient"
+},
+"1464": {
+"aim": [
+2,
+3
+],
+"wide": [],
+"note": "middle Galacta at his hand; a0/a1 the right bot"
+},
+"1474": {
+"aim": [
+0,
+1
+],
+"wide": [],
+"note": ""
+},
+"1517": {
+"aim": [
+0,
+1
+],
+"wide": [],
+"note": ""
+},
+"1530": {
+"aim": [
+0,
+1
+],
+"wide": [],
+"note": "its plate and one hand arc; its body is not outlined"
+},
+"1559": {
+"aim": [],
+"wide": [
+1,
+2
+],
+"note": "right-lane bot outside the aim crop; a0 is the middle bot, w3-w5 the left one"
+},
+"1658": {
+"aim": [
+1
+],
+"wide": [],
+"note": "a0 is the far-right bot"
+},
+"1668": {
+"aim": [
+0,
+1,
+2,
+3,
+4
+],
+"wide": [],
+"note": ""
+},
+"1713": {
+"aim": [
+0
+],
+"wide": [],
+"note": ""
+},
+"1717": {
+"aim": [
+0
+],
+"wide": [],
+"note": ""
+},
+"1791": {
+"aim": [
+0,
+1,
+2
+],
+"wide": [],
+"note": ""
+},
+"1840": {
+"aim": [
+0
+],
+"wide": [],
+"note": "its bar only; the body is not outlined"
+},
+"1850": {
+"aim": [
+1,
+2,
+3,
+4,
+5
+],
+"wide": [],
+"note": "a0/w0-w3 are other bots"
+},
+"1862": {
+"aim": [
+0
+],
+"wide": [],
+"note": ""
+},
+"1870": {
+"aim": [
+0
+],
+"wide": [],
+"note": "low confidence recipient; a0 is the only bot on his right"
+},
+"1919": {
+"aim": [
+1
+],
+"wide": [],
+"note": "a0 is the far-right bot"
+},
+"1933": {
+"aim": [
+0,
+2,
+3,
+5
+],
+"wide": [],
+"note": "a1/a4 are the distant right bot"
+},
+"1963": {
+"aim": [
+0,
+2
+],
+"wide": [],
+"note": "a1 is another bot's plate by his hand"
+},
+"1968": {
+"aim": [
+0,
+2
+],
+"wide": [],
+"note": "a1 is the upper-left bot by his head"
+},
+"2069": {
+"aim": [
+0
+],
+"wide": [],
+"note": ""
+},
+"2124": {
+"aim": [
+0
+],
+"wide": [],
+"note": "its plate; a1 is the right bot, and the two merge into one box when both are kept"
+},
+"2235": {
+"aim": [
+1,
+2
+],
+"wide": [],
+"note": "a0 is the other bot, upper left"
+},
+"2245": {
+"aim": [
+0,
+1,
+2
+],
+"wide": [],
+"note": ""
+},
+"2329": {
+"aim": [
+2,
+3
+],
+"wide": [],
+"note": "a2 is two plates side by side; a0/a1 are other bots"
+},
+"2339": {
+"aim": [
+1,
+2,
+3
+],
+"wide": [],
+"note": "a0 is the distant bot on the lower terrace"
+},
+"2349": {
+"aim": [
+0
+],
+"wide": [],
+"note": ""
+},
+"2357": {
+"aim": [],
+"wide": [],
+"note": "the bot at the top of the stairs is not outlined at the anchor (web flash on it); no component"
+},
+"2371": {
+"aim": [],
+"wide": [],
+"note": "not identified: the producer judged the only bot component (a1, the selected box) to be a different bot at the stair landing"
+},
+"2417": {
+"aim": [
+0,
+1
+],
+"wide": [],
+"note": "a2/a3 are the right bot"
+},
+"2460": {
+"aim": [
+0,
+1
+],
+"wide": [],
+"note": ""
+},
+"2540": {
+"aim": [
+0
+],
+"wide": [],
+"note": ""
+},
+"2604": {
+"aim": [],
+"wide": [],
+"note": "the closer bot at right is not in view at the anchor; a0 is the far-ledge bot"
+},
+"2610": {
+"aim": [
+0,
+1,
+2,
+3
+],
+"wide": [],
+"note": ""
+},
+"2704": {
+"aim": [],
+"wide": [],
+"note": "the nearby ground-level bot at his hand is not outlined (no component); a0 is the distant ledge bot"
+},
+"2730": {
+"aim": [
+0,
+1,
+2,
+3,
+4
+],
+"wide": [],
+"note": ""
+},
+"2754": {
+"aim": [
+0
+],
+"wide": [],
+"note": "low confidence recipient; a0 is a wide plate strip"
+},
+"2792": {
+"aim": [
+0,
+1,
+2
+],
+"wide": [],
+"note": ""
+},
+"2797": {
+"aim": [
+0
+],
+"wide": [],
+"note": "its plate; the body is not outlined"
+},
+"2833": {
+"aim": [
+0
+],
+"wide": [],
+"note": ""
+},
+"2887": {
+"aim": [
+0,
+1,
+2,
+3,
+4
+],
+"wide": [],
+"note": ""
+},
+"2912": {
+"aim": [
+1
+],
+"wide": [],
+"note": "a0 is the right bot"
+},
+"3010": {
+"aim": [
+1
+],
+"wide": [],
+"note": "a0/a2 are the other bot at right"
+},
+"3027": {
+"aim": [
+1,
+2,
+3
+],
+"wide": [],
+"note": "a0/w0-w3 are another bot top right"
+},
+"3103": {
+"aim": [
+0
+],
+"wide": [],
+"note": "its plate strip just above his head; the body is not outlined"
+},
+"3113": {
+"aim": [
+0,
+1,
+2,
+3
+],
+"wide": [
+4
+],
+"note": ""
+},
+"3124": {
+"aim": [
+0
+],
+"wide": [],
+"note": "low confidence recipient"
+},
+"3197": {
+"aim": [
+0,
+1,
+2,
+3,
+4,
+5
+],
+"wide": [],
+"note": ""
+},
+"3258": {
+"aim": [
+1
+],
+"wide": [],
+"note": "a0 is the far-right bot"
+},
+"3269": {
+"aim": [
+0,
+1,
+2,
+3,
+4
+],
+"wide": [],
+"note": ""
+},
+"3283": {
+"aim": [
+0
+],
+"wide": [],
+"note": "its plate"
+},
+"3308": {
+"aim": [
+0,
+1
+],
+"wide": [],
+"note": "its plate drawn over his head (a0) and one claw arc (a1)"
+},
+"3345": {
+"aim": [
+0,
+1,
+2
+],
+"wide": [],
+"note": ""
+},
+"3401": {
+"aim": [
+0
+],
+"wide": [],
+"note": "a1 is another bot by his left hand"
+},
+"3411": {
+"aim": [
+3,
+4,
+5,
+6
+],
+"wide": [],
+"note": "bot overlapping him; a0-a2/w0 are another bot at the top"
+},
+"3434": {
+"aim": [
+0
+],
+"wide": [],
+"note": ""
+},
+"3444": {
+"aim": [
+0,
+1,
+2
+],
+"wide": [],
+"note": "low confidence recipient"
+},
+"3481": {
+"aim": [
+0,
+1,
+2,
+3,
+4,
+5
+],
+"wide": [],
+"note": ""
+},
+"3493": {
+"aim": [
+0,
+1,
+2
+],
+"wide": [],
+"note": "bot drawn over his torso; a0 is 118 px, just under the 120 px rule"
+},
+"3505": {
+"aim": [
+0,
+1
+],
+"wide": [],
+"note": ""
+},
+"3516": {
+"aim": [
+0
+],
+"wide": [],
+"note": "its plate; the body is not outlined"
+},
+"3528": {
+"aim": [
+0,
+1,
+2,
+3,
+4,
+5
+],
+"wide": [],
+"note": ""
+},
+"3555": {
+"aim": [
+0
+],
+"wide": [],
+"note": ""
+},
+"3570": {
+"aim": [
+0,
+1
+],
+"wide": [],
+"note": "a0 is its plate, whose projected box lands on the ledge above it"
+},
+"3631": {
+"aim": [
+0,
+1
+],
+"wide": [],
+"note": ""
+},
+"3679": {
+"aim": [
+0,
+1
+],
+"wide": [],
+"note": ""
+},
+"3709": {
+"aim": [],
+"wide": [],
+"note": "the lane bot ahead is not outlined at the anchor; w0 is the balcony bot at the top edge"
+},
+"3730": {
+"aim": [
+0,
+1,
+2
+],
+"wide": [],
+"note": ""
+},
+"3752": {
+"aim": [
+0,
+1
+],
+"wide": [],
+"note": "w0 is the two distant plates"
+},
+"3789": {
+"aim": [
+0,
+2
+],
+"wide": [],
+"note": "a1 (behind his head) is the box the producer judged over him; not counted"
+},
+"3835": {
+"aim": [
+0,
+1,
+2,
+3
+],
+"wide": [],
+"note": ""
+},
+"3987": {
+"aim": [
+0,
+1
+],
+"wide": [],
+"note": ""
+},
+"4032": {
+"aim": [
+0,
+1,
+2,
+3
+],
+"wide": [],
+"note": ""
+},
+"4039": {
+"aim": [
+0,
+1,
+2,
+3
+],
+"wide": [],
+"note": ""
+},
+"4061": {
+"aim": [
+0
+],
+"wide": [],
+"note": "bot by the tower, plate and body one component"
+},
+"4103": {
+"aim": [
+0,
+1,
+2
+],
+"wide": [],
+"note": ""
+},
+"4138": {
+"aim": [
+1
+],
+"wide": [],
+"note": "a0 is the far-right bot"
+},
+"4150": {
+"aim": [
+0,
+1,
+2
+],
+"wide": [],
+"note": ""
+},
+"4156": {
+"aim": [
+0,
+1,
+2
+],
+"wide": [],
+"note": ""
+},
+"4175": {
+"aim": [
+2
+],
+"wide": [],
+"note": "its plate; the body under it is not outlined, and a1 (the upper bot's body) merges with it into one box"
+}
+}

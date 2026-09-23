@@ -120,7 +120,14 @@ BAR_ABOVE = 0.8  # a nameplate floats up to this share of the body height above 
 # frame: the fps/ping overlay is green text, and the player's own HP bar has green
 # segments. Same idea as autolabel's DEAD_ZONES, kept here because outline.py is used
 # on its own by the aim path.
-PLAYER_ZONE = (0.28, 0.33, 0.64, 1.00)  # where the third-person hero is drawn
+# Where the third-person hero is drawn, in fractions of the whole FRAME: an aim crop passes origin/frame, as for the HUD
+# zones. Measured, not assumed (docs/evidence/player-zone-20260923): his suit segmented on 1,373 native frames of five
+# recordings. He stands left of the crosshair (box right edge p95 .51; it holds the crosshair in 4.8% of frames), so the
+# zone ends at .47. Its left edge is .27, where he is drawn in about 25% of frames, not .18 (5%): at .18 it dropped real
+# bots standing left of him (ground-truth recall 0.731). The old (.28, .33, .64, 1.0) was applied in the passed image's
+# own fractions, so on the aim crop it covered 13% of him and held the crosshair: on James's 2026-09-23 take it dropped the
+# body his web reached in 35 of 120 rises (now 5), and it kept the one real piece of hero junk seen (tagrun0 000422).
+PLAYER_ZONE = (0.27, 0.39, 0.47, 0.90)
 PLAYER_ZONE_MIN_H = 60  # px at 720p; above this it is a close enemy, not junk
 GREEN_DEAD_ZONES = [
     (0.00, 0.88, 1.00, 1.00),  # bottom HUD strip: own HP bar, ability row
@@ -183,9 +190,12 @@ def find_bars(frame_bgr, scale=None):
 def find_green(frame_bgr, scale=None, band=GREEN, origin=(0, 0), frame=None):
     """Enemy marks in the game's green: (x, y, w, h, kind), kind in {'outline', 'bar'}, in the pixels of the image passed in.
 
-    `origin` and `frame` say where that image sits in the whole frame: the (x, y) of its top-left corner and the frame's (w, h). The HUD
-    and kill-feed zones are places on the screen, so an aim crop must pass them, or the zones land on the scene inside the crop (on
-    postfreeze30 that removed 32 aim-crop boxes in 27 of 273 frames, 16 of them 120 px or taller). A whole frame needs neither.
+    `origin` and `frame` say where that image sits in the whole frame: the (x, y) of its top-left corner and the frame's (w, h). The HUD,
+    kill-feed and player zones are places on the screen, so an aim crop must pass them, or the zones land on the scene inside the crop (on
+    postfreeze30 that removed 32 aim-crop boxes in 27 of 273 frames, 16 of them 120 px or taller; on tagrun0 000422 the player zone then
+    misses the junk drawn round the hero's head). A whole frame needs neither. An `origin` without `frame`, or an image that does not fit
+    in `frame` at `origin`, raises ValueError: the fractions would pass 1 and every zone would silently switch off. A crop passed with
+    neither cannot be told from a whole frame; that one is the caller's to get right.
 
     `Enemy Color = Green` recolours the enemy marks. Whether that is a contour around
     the body, a health bar, or both is a question for the first recording made with the
@@ -214,7 +224,11 @@ def find_green(frame_bgr, scale=None, band=GREEN, origin=(0, 0), frame=None):
     n, labels, stats, _ = cv2.connectedComponentsWithStats(mask, 8)
     ih, iw = frame_bgr.shape[:2]
     ox, oy = origin
+    if frame is None and (ox, oy) != (0, 0):
+        raise ValueError(f"origin {origin} given without frame: the screen zones need the whole frame's (w, h)")
     fw, fh = frame if frame is not None else (iw, ih)
+    if ox < 0 or oy < 0 or ox + iw > fw or oy + ih > fh:
+        raise ValueError(f"a {iw}x{ih} image at {origin} does not fit in a {fw}x{fh} frame")
     out, guarded, components = [], set(), {}
     for i in range(1, n):
         x, y, w, h, area = stats[i]
@@ -230,15 +244,12 @@ def find_green(frame_bgr, scale=None, band=GREEN, origin=(0, 0), frame=None):
         kx1, ky1, kx2, ky2 = KILL_FEED
         if kx1 <= (ox + x) / fw and (ox + x + w) / fw <= kx2 and ky1 <= (oy + y) / fh and (oy + y + h) / fh <= ky2:
             continue
-        # The player's own band. Only enemies are outlined, so nothing here produced a
-        # false box in the tagrun footage -- but junk in front of the player is what
-        # caused a stray ability press, so small marks are dropped. The height test is
-        # the point: a bot at point blank stands exactly here and must survive.
-        # The player zone stays in the passed image's own fractions, as it always has: placed in frame terms on the aim crop it covers
-        # most of the crop and drops small marks the crop exists to see (postfreeze30 and tagrun0: 17 frames emptied, among them Luna's
-        # pieces in a fight and a bot's bar). Where the hero really is in the crop is an open question (docs/lanes/l3-detector.md).
-        pcx, pcy = (x + w / 2) / iw, (y + h / 2) / ih
-        player = (PLAYER_ZONE[0] <= pcx <= PLAYER_ZONE[2] and PLAYER_ZONE[1] <= pcy <= PLAYER_ZONE[3]
+        # The player's own region, a place on the screen like the HUD zones, so the same centre (cx, cy) in frame
+        # fractions is tested on the whole frame and on the aim crop. Small marks there are dropped: junk drawn round
+        # the hero (effect strokes round his head, tagrun0 000422; door glass seen past his hand, plaza30 000184). The
+        # height test is the point: a bot at point blank stands beside him and must survive. Nothing in agent/ filters
+        # this region, so this is the only hero-region protection on the green path.
+        player = (PLAYER_ZONE[0] <= cx <= PLAYER_ZONE[2] and PLAYER_ZONE[1] <= cy <= PLAYER_ZONE[3]
                   and h < PLAYER_ZONE_MIN_H * s)
         if (w / max(h, 1) >= BAR_MIN_ASPECT and BAR_MIN_W * s <= w <= BAR_MAX_W * s
                 and BAR_MIN_H * s <= h <= GREEN_BAR_MAX_H * s):

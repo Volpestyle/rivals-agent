@@ -280,14 +280,15 @@ def test_the_door_seen_from_the_plaza_is_under_the_hue_bar_too():
 @pytest.mark.parametrize("scale", [1, 2])
 @pytest.mark.parametrize("gap", [10, 22])
 def test_partial_player_zone_body_needs_its_own_filled_health_strip(scale, gap):
-    """Same partial body, with/without a health strip; merged and separate marks."""
+    """Same partial body, with/without a health strip; merged and separate marks. It stands where the hero is drawn (the zone is a
+    measured place on the screen, docs/evidence/player-zone-20260923): x .43-.45 of the frame, left of the crosshair."""
     import cv2
     base = _frame()
     top = 308 + gap
-    _body(base, top, top + 40, 590, 620)
+    _body(base, top, top + 40, 550, 580)
     bare = cv2.resize(base, None, fx=scale, fy=scale, interpolation=cv2.INTER_NEAREST)
     assert find_enemies(bare, scale=scale) == []
-    base[300:308, 560:640] = GREEN_BGR
+    base[300:308, 520:600] = GREEN_BGR
     paired = cv2.resize(base, None, fx=scale, fy=scale, interpolation=cv2.INTER_NEAREST)
     wide = find_enemies(paired, scale=scale)
     assert len(wide) == 1 and wide[0].bbox[3] >= (top + 38) * scale
@@ -301,12 +302,12 @@ def test_partial_player_zone_body_needs_its_own_filled_health_strip(scale, gap):
 @pytest.mark.parametrize("placement", ["none", "far_above", "below", "beside", "hud"])
 def test_partial_player_junk_cannot_borrow_an_unrelated_or_hud_bar(placement):
     f = _frame()
-    _body(f, 360, 400, 590, 630)  # even thick hollow edges are not a separate bar
-    locations = {"far_above":(560,200), "below":(560,410), "beside":(750,330), "hud":(30,90)}
+    _body(f, 360, 400, 550, 590)  # even thick hollow edges are not a separate bar; x .43-.46, where the hero is drawn
+    locations = {"far_above":(520,200), "below":(520,410), "beside":(710,330), "hud":(30,90)}
     if placement in locations:
         x,y = locations[placement]
         f[y:y+8,x:x+80] = GREEN_BGR
-    assert not any(570 < d.center[0] < 650 and 340 < d.center[1] < 430 for d in find_enemies(f))
+    assert not any(530 < d.center[0] < 610 and 340 < d.center[1] < 430 for d in find_enemies(f))
 
 
 def test_chat_region_keeps_a_real_health_bar_but_not_sender_text_in_full_or_crop():
@@ -383,7 +384,10 @@ def test_native_squad_chat_removed_while_nearby_luna_survives():
 
 
 @pytest.mark.corpus
-def test_same_native_partial_body_without_its_health_strip_stays_guarded():
+def test_same_native_partial_body_without_its_health_strip_is_kept_at_the_crosshair():
+    """Flipped by VUH-1355. The nearby body (centre x .498 of the frame) stands at the crosshair, which the hero's measured footprint
+    does not reach (his box holds the crosshair in 4.8% of 1,373 native frames; docs/evidence/player-zone-20260923). The frame-terms
+    player zone ends at x .47, so the body no longer needs its health strip to survive, in either view."""
     number,digest = _CANDIDATE_20021[-1]
     original = _candidate_frame("candidate-20021",number,digest)
     no_bar = original.copy()
@@ -391,8 +395,8 @@ def test_same_native_partial_body_without_its_health_strip_stays_guarded():
     assert np.array_equal(no_bar[708:795,1243:1305], original[708:795,1243:1305])
     for image,origin in ((no_bar,(0,0)), (no_bar[240:1200,800:1760],(800,240))):
         ds=find_enemies(image,scale=2,origin=origin,frame=(2560,1440))
-        assert not any(1200 < d.center[0]+origin[0] < 1350 and
-                       690 < d.center[1]+origin[1] < 820 for d in ds)
+        assert any(1200 < d.center[0]+origin[0] < 1350 and
+                   690 < d.center[1]+origin[1] < 820 for d in ds)
         assert any(1490 < d.bbox[0]+origin[0] < 1510 for d in ds)  # distant bot preserved
 
 
@@ -401,9 +405,9 @@ def test_same_native_partial_body_without_its_health_strip_stays_guarded():
 def test_rejected_component_inside_body_bbox_cannot_supply_health_evidence(scale, crop):
     import cv2
     f = _frame()
-    f[350:406,560:700] = _hsv_bgr(65,200,200)
-    f[352:404,562:698] = 0
-    f[373:379,590:625] = _hsv_bgr(55,200,200)  # separately rejected scenery component
+    f[350:406,520:660] = _hsv_bgr(65,200,200)   # small hollow mark where the hero is drawn (x .41-.52, centre .46)
+    f[352:404,522:658] = 0
+    f[373:379,550:585] = _hsv_bgr(55,200,200)  # separately rejected scenery component
     f = cv2.resize(f,None,fx=scale,fy=scale,interpolation=cv2.INTER_NEAREST)
     if crop:
         ds = find_enemies(f[120*scale:600*scale,400*scale:880*scale],scale=scale,

@@ -1,0 +1,569 @@
+Accepted green components at each rise anchor (a = aim crop, w = whole frame, centre outside the crop; ids as on the sheets).
+keep: which rules keep the component: H = HEAD, C = this change (.27,.39,.47,.90), A = first approval (.18,.39,.47,.90), B = (.27,.39,.50,.90), D = (.27,.39,.55,.90), N = no guard; sup = kept by health-strip evidence.
+targets: the selected target box (native px) under each rule. recipients.json names the components on the recipient.
+n39 [no_target] targets: H=None C=[1250, 676, 1443, 893] A=[1250, 676, 1443, 893] B=[1250, 676, 1443, 893] D=[1250, 676, 1443, 893] N=[1250, 676, 1443, 893]
+   a0  c=(0.526,0.390) h40   w228  bar     sup=- keep:.CABDN
+n51 [same] targets: H=[1197, 661, 1399, 1098] C=[1197, 661, 1399, 1098] A=[1197, 661, 1399, 1098] B=[1197, 661, 1399, 1098] D=[1197, 661, 1399, 1098] N=[1197, 661, 1399, 1098]
+   a0  c=(0.497,0.399) h52   w274  bar     sup=Y keep:HCABDN
+   a1  c=(0.507,0.611) h437  w202  outline sup=Y keep:HCABDN
+   w0  c=(0.077,0.211) h42   w54   outline sup=- keep:HCABDN
+   w1  c=(0.007,0.222) h38   w35   outline sup=- keep:HCABDN
+n63 [no_target] targets: H=None C=None A=None B=None D=None N=[1061, 619, 1177, 771]
+   a0  c=(0.436,0.447) h48   w110  outline sup=- keep:.....N
+   a1  c=(0.447,0.499) h105  w64   outline sup=- keep:.....N
+n126 [different] targets: H=[1643, 663, 1760, 775] C=[1250, 651, 1335, 737] A=[1250, 651, 1335, 737] B=[1643, 663, 1760, 775] D=[1643, 663, 1760, 775] N=[1250, 651, 1335, 737]
+   a0  c=(0.505,0.482) h86   w85   outline sup=- keep:.CAB.N
+   a1  c=(0.665,0.499) h112  w117  outline sup=- keep:HCABDN
+n137 [same] targets: H=[1069, 619, 1351, 1001] C=[1069, 619, 1351, 1001] A=[1069, 619, 1351, 1001] B=[1069, 619, 1351, 1001] D=[1069, 619, 1351, 1001] N=[1069, 619, 1351, 1001]
+   a0  c=(0.473,0.512) h238  w282  outline sup=Y keep:HCABDN
+   a1  c=(0.496,0.612) h240  w98   outline sup=Y keep:HCABDN
+n143 [no_target] targets: H=None C=[1195, 751, 1307, 869] A=[1195, 751, 1307, 869] B=None D=None N=None
+   a0  c=(0.453,0.450) h154  w250  outline sup=- keep:HCABDN
+   a1  c=(0.400,0.497) h76   w58   outline sup=- keep:H....N
+   a2  c=(0.497,0.539) h50   w70   outline sup=- keep:.CA..N
+   a3  c=(0.471,0.581) h64   w20   outline sup=- keep:.CA..N
+n179 [no_target] targets: H=None C=None A=None B=None D=None N=None
+   a0  c=(0.500,0.353) h44   w248  bar     sup=- keep:HCABDN
+   a1  c=(0.497,0.412) h34   w30   outline sup=- keep:.CA..N
+   w1  c=(0.900,0.378) h32   w42   outline sup=- keep:HCABDN
+   w2  c=(0.724,0.409) h92   w42   outline sup=- keep:HCABDN
+   w3  c=(0.894,0.415) h68   w60   outline sup=- keep:HCABDN
+   w5  c=(0.705,0.425) h62   w24   outline sup=- keep:HCABDN
+n187 [n/a] targets: H=[1131, 689, 1249, 883] C=[1131, 689, 1249, 883] A=[1131, 689, 1249, 883] B=[1131, 689, 1249, 883] D=[1131, 689, 1249, 883] N=None
+   a0  c=(0.405,0.424) h52   w270  bar     sup=Y keep:HCABDN
+   a1  c=(0.471,0.520) h120  w88   outline sup=Y keep:HCABDN
+   a2  c=(0.459,0.578) h100  w90   outline sup=Y keep:HCABDN
+   a3  c=(0.414,0.716) h76   w92   outline sup=- keep:H....N
+n222 [n/a] targets: H=[1157, 841, 1261, 1129] C=[1157, 841, 1261, 1129] A=[1157, 841, 1261, 1129] B=[1157, 841, 1261, 1129] D=[1157, 841, 1261, 1129] N=[1157, 841, 1261, 1129]
+   a0  c=(0.455,0.549) h24   w102  bar     sup=Y keep:HCABDN
+   a1  c=(0.410,0.578) h50   w72   outline sup=- keep:H....N
+   a2  c=(0.472,0.684) h288  w104  outline sup=Y keep:HCABDN
+   a3  c=(0.374,0.686) h30   w42   outline sup=- keep:H....N
+n247 [fragment_of_recipient] targets: H=[1131, 837, 1229, 983] C=None A=None B=None D=None N=None
+   a0  c=(0.423,0.581) h114  w158  outline sup=- keep:.....N
+   a1  c=(0.461,0.632) h146  w98   outline sup=- keep:HCABDN
+   a2  c=(0.480,0.626) h48   w47   outline sup=- keep:.CA..N
+   a3  c=(0.567,0.684) h52   w117  outline sup=- keep:HCABDN
+   a4  c=(0.572,0.778) h64   w63   outline sup=- keep:HCABDN
+n311 [no_target] targets: H=None C=[1251, 659, 1307, 735] A=[1251, 659, 1307, 735] B=None D=None N=[1007, 709, 1077, 774]
+   a0  c=(0.500,0.484) h76   w56   outline sup=- keep:.CA..N
+   a1  c=(0.402,0.508) h44   w46   outline sup=- keep:H....N
+   a2  c=(0.418,0.523) h43   w16   outline sup=- keep:.....N
+n322 [same] targets: H=[1113, 465, 1395, 885] C=[1113, 465, 1395, 885] A=[1113, 465, 1395, 885] B=[1113, 465, 1395, 885] D=[1113, 465, 1395, 885] N=[1113, 465, 1395, 885]
+   a0  c=(0.490,0.428) h302  w282  outline sup=Y keep:HCABDN
+   a1  c=(0.464,0.506) h314  w124  outline sup=Y keep:HCABDN
+   w2  c=(0.046,0.741) h124  w160  outline sup=- keep:HCABDN
+n380 [different] targets: H=[800, 297, 811, 335] C=[1235, 705, 1463, 827] A=[1235, 705, 1463, 827] B=[800, 297, 811, 335] D=[800, 297, 811, 335] N=[1235, 705, 1463, 827]
+   a0  c=(0.315,0.219) h38   w11   outline sup=- keep:HCABDN
+   a1  c=(0.492,0.451) h14   w116  bar     sup=- keep:.CA..N
+   a2  c=(0.527,0.532) h122  w228  outline sup=Y keep:HCABDN
+   w0  c=(0.302,0.212) h70   w76   outline sup=- keep:HCABDN
+n404 [different] targets: H=[800, 1091, 853, 1121] C=[1197, 693, 1439, 821] A=[1197, 693, 1439, 821] B=[1197, 693, 1439, 821] D=None N=[800, 1091, 853, 1121]
+   a0  c=(0.505,0.503) h62   w190  outline sup=- keep:.CAB.N
+   a1  c=(0.545,0.547) h68   w87   outline sup=- keep:.CAB.N
+   a2  c=(0.323,0.768) h30   w53   outline sup=- keep:H....N
+   w2  c=(0.286,0.708) h44   w230  bar     sup=- keep:.....N
+   w3  c=(0.295,0.765) h56   w92   outline sup=- keep:.....N
+n425 [no_target] targets: H=None C=None A=None B=None D=None N=[1099, 693, 1247, 799]
+   a0  c=(0.599,0.303) h124  w228  outline sup=Y keep:HCABDN
+   a1  c=(0.443,0.411) h50   w216  bar     sup=- keep:.....N
+   a2  c=(0.466,0.518) h106  w110  outline sup=- keep:.....N
+   a3  c=(0.436,0.512) h36   w36   outline sup=- keep:.....N
+   a4  c=(0.495,0.612) h88   w18   outline sup=- keep:.CA..N
+   a5  c=(0.429,0.637) h98   w92   outline sup=- keep:.....N
+n474 [no_target] targets: H=None C=None A=None B=None D=None N=[1102, 688, 1295, 905]
+   a0  c=(0.468,0.398) h40   w228  bar     sup=- keep:.....N
+   w0  c=(0.922,0.048) h77   w148  outline sup=- keep:HCABDN
+   w1  c=(0.452,0.086) h66   w30   outline sup=- keep:HCABDN
+n483 [same] targets: H=[1275, 461, 1535, 703] C=[1275, 461, 1535, 703] A=[1275, 461, 1535, 703] B=[1275, 461, 1535, 703] D=[1275, 461, 1535, 703] N=[1275, 461, 1535, 703]
+   a0  c=(0.547,0.275) h46   w270  bar     sup=Y keep:HCABDN
+   a1  c=(0.554,0.404) h242  w232  outline sup=Y keep:HCABDN
+   a2  c=(0.511,0.419) h84   w64   outline sup=Y keep:HCABDN
+   a3  c=(0.521,0.469) h48   w38   outline sup=Y keep:HCABDN
+n501 [no_target] targets: H=None C=None A=None B=None D=None N=[1085, 999, 1141, 1081]
+   a0  c=(0.454,0.582) h45   w196  bar     sup=- keep:.....N
+   a1  c=(0.435,0.722) h82   w56   outline sup=- keep:.....N
+n543 [fragment_of_recipient] targets: H=[1131, 615, 1173, 741] C=[1131, 523, 1395, 741] A=[1131, 523, 1395, 741] B=[1131, 615, 1173, 741] D=[1131, 615, 1173, 741] N=[1131, 523, 1395, 741]
+   a0  c=(0.491,0.400) h107  w178  outline sup=- keep:.CA..N
+   a1  c=(0.450,0.471) h126  w42   outline sup=- keep:HCABDN
+   a2  c=(0.537,0.453) h68   w42   outline sup=- keep:.CAB.N
+n577 [no_target] targets: H=None C=[1189, 534, 1303, 581] A=[1189, 534, 1303, 581] B=[1189, 534, 1303, 581] D=[1189, 534, 1303, 581] N=[1189, 534, 1303, 581]
+   a0  c=(0.487,0.387) h47   w114  outline sup=- keep:.CABDN
+n594 [same] targets: H=[1071, 715, 1267, 841] C=[1071, 715, 1267, 841] A=[1071, 715, 1267, 841] B=[1071, 715, 1267, 841] D=[1071, 715, 1267, 841] N=[1071, 715, 1267, 841]
+   a0  c=(0.457,0.527) h89   w196  outline sup=Y keep:HCABDN
+   a1  c=(0.478,0.566) h52   w62   outline sup=Y keep:HCABDN
+n601 [no_target] targets: H=None C=None A=None B=None D=None N=None
+   a0  c=(0.488,0.505) h240  w204  outline sup=- keep:HCABDN
+   a1  c=(0.440,0.528) h158  w69   outline sup=- keep:HCABDN
+   a2  c=(0.444,0.593) h34   w38   outline sup=- keep:.....N
+   a3  c=(0.505,0.611) h74   w70   outline sup=- keep:.CAB.N
+   a4  c=(0.461,0.626) h46   w40   outline sup=- keep:.....N
+   a5  c=(0.434,0.654) h50   w70   outline sup=- keep:.....N
+n639 [no_target] targets: H=None C=[1095, 788, 1413, 1167] A=[1095, 788, 1413, 1167] B=None D=None N=[1087, 788, 1413, 1167]
+   a0  c=(0.479,0.588) h117  w260  outline sup=- keep:.CA..N
+   a1  c=(0.426,0.633) h76   w7    outline sup=- keep:.....N
+   a2  c=(0.458,0.634) h40   w15   outline sup=- keep:.....N
+   a3  c=(0.541,0.662) h94   w58   outline sup=- keep:.CAB.N
+   a4  c=(0.506,0.726) h86   w37   outline sup=- keep:.CAB.N
+   a5  c=(0.542,0.755) h124  w20   outline sup=- keep:HCABDN
+   a6  c=(0.524,0.790) h59   w64   outline sup=- keep:.CAB.N
+   w0  c=(0.596,0.050) h63   w32   outline sup=- keep:HCABDN
+   w1  c=(0.545,0.102) h72   w38   outline sup=- keep:HCABDN
+n652 [same] targets: H=[999, 339, 1597, 877] C=[999, 339, 1597, 877] A=[999, 339, 1597, 877] B=[999, 339, 1597, 877] D=[999, 339, 1597, 877] N=[999, 339, 1597, 877]
+   a0  c=(0.502,0.194) h50   w255  bar     sup=Y keep:HCABDN
+   a1  c=(0.521,0.274) h110  w157  outline sup=Y keep:HCABDN
+   a2  c=(0.480,0.272) h82   w38   outline sup=Y keep:HCABDN
+   a3  c=(0.457,0.328) h42   w40   outline sup=Y keep:HCABDN
+   a4  c=(0.597,0.459) h360  w136  outline sup=- keep:HCABDN
+   a5  c=(0.680,0.348) h41   w10   outline sup=- keep:HCABDN
+   a6  c=(0.408,0.397) h154  w90   outline sup=- keep:HCABDN
+   a7  c=(0.553,0.442) h242  w146  outline sup=- keep:HCABDN
+   a8  c=(0.453,0.431) h146  w130  outline sup=- keep:HCABDN
+   a9  c=(0.481,0.407) h71   w32   outline sup=- keep:.CA..N
+   a10 c=(0.506,0.421) h58   w41   outline sup=- keep:.CAB.N
+   a11 c=(0.431,0.561) h138  w52   outline sup=- keep:HCABDN
+   w3  c=(0.769,0.315) h75   w50   outline sup=- keep:HCABDN
+   w5  c=(0.688,0.339) h74   w54   outline sup=- keep:HCABDN
+n662 [fragment_of_recipient] targets: H=[1279, 771, 1377, 981] C=[1173, 771, 1377, 981] A=[1173, 771, 1377, 981] B=[1279, 771, 1377, 981] D=[1279, 771, 1377, 981] N=[1173, 771, 1377, 981]
+   a0  c=(0.397,0.559) h73   w81   outline sup=- keep:H....N
+   a1  c=(0.519,0.608) h210  w98   outline sup=- keep:HCABDN
+   a2  c=(0.473,0.555) h28   w76   outline sup=- keep:.CA..N
+   a3  c=(0.494,0.628) h66   w46   outline sup=- keep:.CA..N
+   a4  c=(0.402,0.707) h50   w50   outline sup=- keep:H....N
+n670 [same] targets: H=[867, 299, 1591, 1089] C=[867, 299, 1591, 1089] A=[867, 299, 1591, 1089] B=[867, 299, 1591, 1089] D=[867, 299, 1591, 1089] N=[867, 299, 1591, 1089]
+   a0  c=(0.480,0.482) h790  w722  outline sup=Y keep:HCABDN
+   a1  c=(0.412,0.452) h40   w40   outline sup=Y keep:HCABDN
+   a2  c=(0.491,0.453) h38   w68   outline sup=- keep:.CA..N
+   a3  c=(0.554,0.450) h29   w90   outline sup=- keep:HCABDN
+   a4  c=(0.344,0.495) h144  w27   outline sup=- keep:HCABDN
+   a5  c=(0.450,0.513) h63   w102  outline sup=Y keep:HCABDN
+   a6  c=(0.536,0.556) h176  w100  outline sup=- keep:HCABDN
+   a7  c=(0.436,0.562) h78   w6    outline sup=Y keep:HCABDN
+   a8  c=(0.405,0.567) h42   w38   outline sup=- keep:H....N
+   a9  c=(0.448,0.583) h64   w54   outline sup=Y keep:HCABDN
+   a10 c=(0.512,0.576) h32   w30   outline sup=- keep:.CAB.N
+n764 [same] targets: H=[1225, 741, 1411, 853] C=[1225, 741, 1411, 853] A=[1225, 741, 1411, 853] B=[1225, 741, 1411, 853] D=[1225, 741, 1411, 853] N=[1225, 741, 1411, 853]
+   a0  c=(0.515,0.553) h112  w186  outline sup=Y keep:HCABDN
+n775 [same] targets: H=[1125, 543, 1389, 809] C=[1125, 543, 1389, 809] A=[1125, 543, 1389, 809] B=[1125, 543, 1389, 809] D=[1125, 543, 1389, 809] N=[1125, 543, 1389, 809]
+   a0  c=(0.491,0.469) h266  w264  outline sup=Y keep:HCABDN
+n784 [fragment_of_recipient] targets: H=[1155, 919, 1281, 1200] C=[1155, 919, 1281, 1200] A=[1155, 919, 1281, 1200] B=[1155, 919, 1281, 1200] D=[1155, 919, 1281, 1200] N=[1155, 919, 1281, 1200]
+   a0  c=(0.537,0.576) h58   w158  outline sup=- keep:.CAB.N
+   a1  c=(0.549,0.654) h118  w28   outline sup=- keep:.CAB.N
+   a2  c=(0.476,0.736) h281  w126  outline sup=- keep:HCABDN
+   a3  c=(0.543,0.769) h185  w68   outline sup=- keep:HCABDN
+n800 [no_target] targets: H=None C=None A=None B=None D=None N=None
+   a0  c=(0.517,0.409) h52   w42   outline sup=- keep:.CAB.N
+n866 [same] targets: H=[1125, 771, 1279, 945] C=[1125, 771, 1279, 945] A=[1125, 771, 1279, 945] B=[1125, 771, 1279, 945] D=[1125, 771, 1279, 945] N=[1085, 771, 1279, 954]
+   a0  c=(0.470,0.596) h174  w154  outline sup=Y keep:HCABDN
+   a1  c=(0.431,0.623) h113  w36   outline sup=- keep:.....N
+   a2  c=(0.441,0.713) h74   w126  outline sup=- keep:.....N
+n922 [fragment_of_recipient] targets: H=[1101, 571, 1271, 843] C=[1101, 571, 1271, 843] A=[1101, 571, 1271, 843] B=[1101, 571, 1271, 843] D=[1101, 571, 1271, 843] N=[1101, 571, 1271, 843]
+   a0  c=(0.500,0.321) h50   w258  bar     sup=Y keep:HCABDN
+   a1  c=(0.489,0.420) h69   w32   outline sup=Y keep:HCABDN
+   a2  c=(0.534,0.460) h174  w100  outline sup=Y keep:HCABDN
+   a3  c=(0.459,0.511) h190  w146  outline sup=Y keep:HCABDN
+   a4  c=(0.553,0.566) h119  w28   outline sup=Y keep:HCABDN
+   a5  c=(0.473,0.557) h82   w118  outline sup=Y keep:HCABDN
+   a6  c=(0.536,0.585) h160  w104  outline sup=Y keep:HCABDN
+n935 [no_target] targets: H=None C=None A=None B=None D=None N=None
+n978 [same] targets: H=[1071, 285, 1298, 359] C=[1071, 285, 1298, 359] A=[1071, 285, 1298, 359] B=[1071, 285, 1298, 359] D=[1071, 285, 1298, 359] N=[1071, 285, 1298, 359]
+   a0  c=(0.463,0.224) h74   w227  outline sup=- keep:HCABDN
+   a1  c=(0.358,0.216) h39   w233  bar     sup=- keep:HCABDN
+   w0  c=(0.858,0.172) h46   w42   outline sup=- keep:HCABDN
+n1047 [no_target] targets: H=None C=[1209, 553, 1307, 769] A=[1209, 553, 1307, 769] B=None D=None N=[1061, 553, 1307, 855]
+   a0  c=(0.460,0.341) h16   w144  bar     sup=- keep:HCABDN
+   a1  c=(0.491,0.420) h104  w52   outline sup=- keep:.CA..N
+   a2  c=(0.441,0.419) h38   w30   outline sup=- keep:.....N
+   a3  c=(0.500,0.463) h60   w36   outline sup=- keep:.CA..N
+   a4  c=(0.425,0.516) h116  w52   outline sup=- keep:.....N
+   a5  c=(0.491,0.515) h56   w98   outline sup=- keep:.CA..N
+   a6  c=(0.455,0.553) h116  w82   outline sup=- keep:.....N
+n1087 [no_target] targets: H=None C=None A=None B=None D=None N=None
+   a0  c=(0.498,0.369) h14   w114  bar     sup=- keep:HCABDN
+   a1  c=(0.501,0.417) h38   w62   outline sup=- keep:.CAB.N
+n1092 [no_target] targets: H=None C=[1161, 649, 1297, 713] A=[1161, 649, 1297, 713] B=None D=None N=[1161, 649, 1297, 713]
+   a0  c=(0.480,0.473) h64   w136  outline sup=Y keep:HCABDN
+   w0  c=(0.471,0.015) h43   w58   outline sup=- keep:HCABDN
+n1177 [same] targets: H=[1117, 609, 1405, 953] C=[1117, 609, 1405, 953] A=[1117, 609, 1405, 953] B=[1117, 609, 1405, 953] D=[1117, 609, 1405, 953] N=[1117, 609, 1405, 953]
+   a0  c=(0.494,0.372) h50   w262  bar     sup=Y keep:HCABDN
+   a1  c=(0.493,0.510) h251  w288  outline sup=Y keep:HCABDN
+   a2  c=(0.516,0.562) h64   w78   outline sup=Y keep:HCABDN
+   a3  c=(0.467,0.604) h166  w114  outline sup=Y keep:HCABDN
+   w0  c=(0.896,0.406) h306  w220  outline sup=- keep:HCABDN
+   w1  c=(0.874,0.390) h254  w184  outline sup=- keep:HCABDN
+n1187 [same] targets: H=[1119, 821, 1329, 965] C=[1119, 821, 1329, 999] A=[1119, 821, 1329, 999] B=[1119, 821, 1329, 965] D=[1119, 821, 1329, 965] N=[1119, 821, 1329, 999]
+   a0  c=(0.478,0.615) h128  w210  outline sup=Y keep:HCABDN
+   a1  c=(0.465,0.656) h40   w40   outline sup=Y keep:HCABDN
+   a2  c=(0.484,0.688) h18   w78   bar     sup=- keep:.CA..N
+n1212 [no_target] targets: H=None C=None A=None B=None D=None N=None
+   a0  c=(0.620,0.344) h12   w122  bar     sup=- keep:HCABDN
+   a1  c=(0.640,0.516) h44   w69   outline sup=- keep:HCABDN
+n1249 [no_target] targets: H=None C=None A=None B=None D=None N=None
+   a0  c=(0.457,0.369) h52   w220  bar     sup=Y keep:HCABDN
+   a1  c=(0.465,0.452) h92   w106  outline sup=Y keep:HCABDN
+   a2  c=(0.430,0.488) h137  w76   outline sup=Y keep:HCABDN
+   a3  c=(0.396,0.560) h54   w50   outline sup=- keep:H....N
+   a4  c=(0.502,0.601) h144  w22   outline sup=- keep:HCABDN
+   a5  c=(0.467,0.625) h58   w84   outline sup=- keep:.....N
+   a6  c=(0.489,0.676) h48   w54   outline sup=- keep:.CA..N
+n1345 [no_target] targets: H=None C=None A=None B=None D=None N=None
+   a0  c=(0.431,0.490) h80   w238  outline sup=Y keep:HCABDN
+   a1  c=(0.425,0.558) h34   w36   outline sup=- keep:.....N
+n1362 [no_target] targets: H=None C=None A=None B=None D=None N=None
+   a0  c=(0.451,0.326) h36   w116  outline sup=- keep:HCABDN
+   a1  c=(0.527,0.442) h12   w114  bar     sup=- keep:.CAB.N
+   w0  c=(0.224,0.250) h110  w128  outline sup=- keep:HCABDN
+n1374 [same] targets: H=[1203, 615, 1381, 691] C=[1203, 615, 1381, 691] A=[1203, 615, 1381, 691] B=[1203, 615, 1381, 691] D=[1203, 615, 1381, 691] N=[1203, 615, 1381, 691]
+   a0  c=(0.505,0.453) h76   w178  outline sup=Y keep:HCABDN
+   a1  c=(0.341,0.783) h14   w94   bar     sup=- keep:H....N
+   w0  c=(0.424,0.050) h105  w100  outline sup=- keep:HCABDN
+   w1  c=(0.445,0.053) h40   w50   outline sup=- keep:HCABDN
+   w2  c=(0.800,0.415) h86   w48   outline sup=- keep:HCABDN
+n1395 [same] targets: H=[1059, 445, 1320, 741] C=[1059, 445, 1351, 773] A=[1059, 445, 1351, 773] B=[1059, 445, 1351, 773] D=[1059, 445, 1320, 741] N=[1059, 445, 1351, 773]
+   a0  c=(0.469,0.361) h151  w237  outline sup=Y keep:HCABDN
+   a1  c=(0.432,0.465) h144  w92   outline sup=Y keep:HCABDN
+   a2  c=(0.524,0.512) h72   w18   outline sup=- keep:.CAB.N
+   a3  c=(0.500,0.639) h194  w134  outline sup=- keep:HCABDN
+   w0  c=(0.845,0.017) h49   w77   outline sup=- keep:HCABDN
+   w1  c=(0.923,0.036) h105  w141  outline sup=- keep:HCABDN
+   w2  c=(0.827,0.096) h78   w121  outline sup=- keep:HCABDN
+n1410 [no_target] targets: H=None C=[1167, 603, 1397, 669] A=[1167, 603, 1397, 669] B=None D=None N=[1167, 603, 1397, 669]
+   a0  c=(0.501,0.442) h66   w230  outline sup=- keep:.CAB.N
+n1426 [no_target] targets: H=None C=None A=None B=None D=None N=[1105, 712, 1266, 893]
+   a0  c=(0.463,0.424) h44   w190  bar     sup=- keep:.....N
+   a1  c=(0.459,0.494) h36   w28   outline sup=- keep:.....N
+n1433 [not_a_body] targets: H=[1057, 617, 1175, 797] C=None A=None B=[1057, 617, 1175, 797] D=[1057, 617, 1175, 797] N=[1057, 593, 1393, 857]
+   a0  c=(0.478,0.369) h16   w148  bar     sup=- keep:HCABDN
+   a1  c=(0.516,0.478) h192  w136  outline sup=- keep:HCABDN
+   a2  c=(0.436,0.491) h180  w118  outline sup=- keep:HCABDN
+   a3  c=(0.471,0.542) h82   w172  outline sup=- keep:.CA..N
+   a4  c=(0.535,0.571) h70   w48   outline sup=- keep:.CAB.N
+n1464 [different] targets: H=[1571, 629, 1635, 717] C=[1571, 629, 1635, 717] A=[1571, 629, 1635, 717] B=[1571, 629, 1635, 717] D=[1571, 629, 1635, 717] N=[1571, 629, 1635, 717]
+   a0  c=(0.630,0.463) h76   w42   outline sup=- keep:HCABDN
+   a1  c=(0.621,0.472) h76   w39   outline sup=- keep:HCABDN
+   a2  c=(0.509,0.522) h68   w34   outline sup=- keep:.CAB.N
+   a3  c=(0.527,0.518) h38   w33   outline sup=- keep:.CAB.N
+n1474 [same] targets: H=[1121, 683, 1459, 1155] C=[1121, 683, 1459, 1155] A=[1121, 683, 1459, 1155] B=[1121, 683, 1459, 1155] D=[1121, 683, 1459, 1155] N=[1121, 683, 1459, 1155]
+   a0  c=(0.504,0.608) h385  w338  outline sup=Y keep:HCABDN
+   a1  c=(0.521,0.752) h144  w102  outline sup=Y keep:HCABDN
+n1517 [same] targets: H=[1165, 637, 1363, 811] C=[1165, 637, 1363, 811] A=[1165, 637, 1363, 811] B=[1165, 637, 1363, 811] D=[1165, 637, 1363, 811] N=[1165, 637, 1363, 811]
+   a0  c=(0.494,0.466) h68   w198  outline sup=Y keep:HCABDN
+   a1  c=(0.500,0.531) h94   w90   outline sup=Y keep:HCABDN
+n1530 [not_a_body] targets: H=[975, 536, 1164, 747] C=[975, 536, 1164, 747] A=[975, 536, 1164, 747] B=[975, 536, 1164, 747] D=[975, 536, 1164, 747] N=[975, 536, 1164, 747]
+   a0  c=(0.418,0.290) h50   w222  bar     sup=- keep:HCABDN
+   a1  c=(0.510,0.542) h57   w72   outline sup=- keep:.CAB.N
+   w0  c=(0.143,0.252) h40   w230  bar     sup=- keep:HCABDN
+   w2  c=(0.188,0.404) h50   w90   outline sup=- keep:HC.BDN
+n1559 [different] targets: H=[633, 900, 747, 951] C=None A=None B=None D=None N=None
+   a0  c=(0.484,0.473) h48   w26   outline sup=- keep:.CA..N
+   w1  c=(0.798,0.550) h35   w44   outline sup=- keep:HCABDN
+   w2  c=(0.784,0.588) h66   w36   outline sup=- keep:HCABDN
+   w3  c=(0.270,0.643) h51   w114  outline sup=- keep:HC.BDN
+   w4  c=(0.293,0.683) h56   w50   outline sup=- keep:.....N
+   w5  c=(0.265,0.704) h66   w46   outline sup=- keep:HC.BDN
+n1658 [different] targets: H=[1529, 663, 1595, 743] C=[1241, 693, 1319, 783] A=[1241, 693, 1319, 783] B=None D=[1529, 663, 1595, 743] N=[1241, 693, 1319, 783]
+   a0  c=(0.610,0.488) h80   w66   outline sup=- keep:HCABDN
+   a1  c=(0.500,0.512) h90   w78   outline sup=- keep:.CA..N
+n1668 [no_target] targets: H=None C=[1229, 865, 1339, 999] A=[1229, 865, 1339, 999] B=[1229, 865, 1339, 999] D=None N=[1056, 748, 1283, 1001]
+   a0  c=(0.457,0.424) h52   w266  bar     sup=- keep:.....N
+   a1  c=(0.468,0.481) h42   w66   outline sup=- keep:.....N
+   a2  c=(0.457,0.623) h88   w50   outline sup=- keep:.....N
+   a3  c=(0.513,0.624) h68   w52   outline sup=- keep:.CAB.N
+   a4  c=(0.501,0.675) h54   w108  outline sup=- keep:.CAB.N
+   w0  c=(0.404,0.066) h13   w120  bar     sup=- keep:HCABDN
+   w1  c=(0.407,0.124) h60   w64   outline sup=- keep:HCABDN
+n1713 [same] targets: H=[1379, 591, 1503, 747] C=[1379, 591, 1503, 747] A=[1379, 591, 1503, 747] B=[1379, 591, 1503, 747] D=[1379, 591, 1503, 747] N=[1379, 591, 1503, 747]
+   a0  c=(0.563,0.465) h156  w124  outline sup=- keep:HCABDN
+n1717 [same] targets: H=[1185, 605, 1383, 763] C=[1185, 605, 1383, 763] A=[1185, 605, 1383, 763] B=[1185, 605, 1383, 763] D=[1185, 605, 1383, 763] N=[1185, 605, 1383, 763]
+   a0  c=(0.502,0.475) h158  w198  outline sup=Y keep:HCABDN
+n1791 [same] targets: H=[1095, 429, 1409, 701] C=[1095, 429, 1409, 713] A=[1095, 429, 1409, 713] B=None D=[1095, 429, 1409, 701] N=[1095, 429, 1409, 713]
+   a0  c=(0.489,0.392) h272  w314  outline sup=Y keep:HCABDN
+   a1  c=(0.502,0.473) h64   w70   outline sup=- keep:.CAB.N
+   a2  c=(0.528,0.468) h42   w62   outline sup=- keep:.CAB.N
+n1840 [no_target] targets: H=None C=None A=None B=None D=None N=None
+   a0  c=(0.502,0.464) h14   w114  bar     sup=- keep:.CAB.N
+n1850 [no_target] targets: H=None C=[1285, 817, 1409, 905] A=[1285, 817, 1409, 905] B=[1285, 817, 1409, 905] D=None N=[1285, 817, 1409, 905]
+   a0  c=(0.418,0.181) h41   w36   outline sup=- keep:HCABDN
+   a1  c=(0.479,0.412) h76   w252  outline sup=- keep:.CA..N
+   a2  c=(0.463,0.517) h58   w19   outline sup=- keep:.....N
+   a3  c=(0.510,0.519) h34   w40   outline sup=- keep:.CAB.N
+   a4  c=(0.461,0.569) h82   w42   outline sup=- keep:.....N
+   a5  c=(0.526,0.598) h88   w124  outline sup=- keep:.CAB.N
+   w0  c=(0.407,0.153) h122  w114  outline sup=- keep:HCABDN
+   w1  c=(0.189,0.205) h13   w116  bar     sup=- keep:HCABDN
+   w2  c=(0.186,0.283) h92   w16   outline sup=- keep:HCABDN
+   w3  c=(0.206,0.321) h30   w31   outline sup=- keep:HCABDN
+n1862 [same] targets: H=[1175, 787, 1311, 921] C=[1175, 787, 1311, 921] A=[1175, 787, 1311, 921] B=[1175, 787, 1311, 921] D=[1175, 787, 1311, 921] N=[1175, 787, 1311, 921]
+   a0  c=(0.486,0.593) h134  w136  outline sup=- keep:HCABDN
+n1870 [different] targets: H=[565, 898, 709, 981] C=[1241, 763, 1340, 873] A=[1241, 763, 1340, 873] B=[1241, 763, 1340, 873] D=[565, 898, 709, 981] N=[1241, 763, 1340, 873]
+   a0  c=(0.504,0.492) h14   w116  bar     sup=- keep:.CAB.N
+   w1  c=(0.243,0.639) h43   w112  outline sup=- keep:HC.BDN
+   w2  c=(0.270,0.668) h38   w36   outline sup=- keep:HC.BDN
+n1919 [different] targets: H=[1561, 596, 1609, 651] C=[1561, 596, 1609, 651] A=[1561, 596, 1609, 651] B=[1561, 596, 1609, 651] D=[1561, 596, 1609, 651] N=[1561, 596, 1609, 651]
+   a0  c=(0.619,0.433) h55   w48   outline sup=- keep:HCABDN
+   a1  c=(0.547,0.447) h58   w51   outline sup=- keep:.CAB.N
+n1933 [different] targets: H=[1579, 651, 1673, 765] C=[1169, 675, 1271, 791] A=[1169, 675, 1271, 791] B=[1579, 651, 1673, 765] D=[1579, 651, 1673, 765] N=[1169, 675, 1271, 791]
+   a0  c=(0.470,0.434) h40   w206  bar     sup=Y keep:HCABDN
+   a1  c=(0.641,0.489) h106  w66   outline sup=- keep:HCABDN
+   a2  c=(0.476,0.480) h31   w46   outline sup=Y keep:HCABDN
+   a3  c=(0.462,0.487) h40   w26   outline sup=Y keep:HCABDN
+   a4  c=(0.624,0.505) h76   w38   outline sup=- keep:HCABDN
+   a5  c=(0.479,0.531) h52   w90   outline sup=Y keep:HCABDN
+n1963 [no_target] targets: H=None C=None A=None B=None D=None N=None
+   a0  c=(0.558,0.492) h40   w126  outline sup=- keep:HCABDN
+   a1  c=(0.447,0.495) h16   w116  bar     sup=- keep:.....N
+   a2  c=(0.597,0.564) h50   w66   outline sup=- keep:HCABDN
+n1968 [different] targets: H=[959, 602, 1056, 711] C=[1272, 609, 1405, 709] A=[1272, 609, 1405, 709] B=[1272, 609, 1405, 709] D=None N=[1272, 609, 1405, 709]
+   a0  c=(0.505,0.386) h39   w118  outline sup=- keep:HCABDN
+   a1  c=(0.394,0.381) h14   w114  bar     sup=- keep:HCABDN
+   a2  c=(0.523,0.458) h100  w133  outline sup=- keep:.CAB.N
+n2069 [no_target] targets: H=None C=[1231, 699, 1289, 757] A=[1231, 699, 1289, 757] B=None D=None N=[1231, 699, 1289, 757]
+   a0  c=(0.492,0.506) h58   w58   outline sup=- keep:.CA..N
+n2124 [different] targets: H=[1353, 551, 1579, 683] C=[1163, 547, 1579, 683] A=[1163, 547, 1579, 683] B=[1353, 551, 1579, 683] D=[1353, 551, 1579, 683] N=[1163, 547, 1579, 683]
+   a0  c=(0.488,0.394) h40   w172  bar     sup=- keep:.CA..N
+   a1  c=(0.573,0.428) h132  w226  outline sup=Y keep:HCABDN
+n2235 [no_target] targets: H=None C=[1029, 523, 1145, 577] A=[1029, 523, 1145, 577] B=[1291, 785, 1325, 819] D=None N=[1029, 523, 1145, 577]
+   a0  c=(0.425,0.382) h54   w116  outline sup=- keep:HCABDN
+   a1  c=(0.521,0.494) h62   w116  outline sup=- keep:.CAB.N
+   a2  c=(0.511,0.557) h34   w34   outline sup=- keep:.CAB.N
+   w0  c=(0.827,0.015) h43   w33   outline sup=- keep:HCABDN
+   w1  c=(0.903,0.059) h40   w31   outline sup=- keep:HCABDN
+n2245 [fragment_of_recipient] targets: H=[1181, 1041, 1345, 1200] C=[1181, 1041, 1345, 1200] A=[1181, 1041, 1345, 1200] B=[1181, 1041, 1345, 1200] D=[1181, 1041, 1345, 1200] N=[1181, 1041, 1345, 1200]
+   a0  c=(0.425,0.657) h94   w236  outline sup=Y keep:HCABDN
+   a1  c=(0.483,0.744) h62   w86   outline sup=Y keep:HCABDN
+   a2  c=(0.493,0.783) h145  w164  outline sup=Y keep:HCABDN
+   w0  c=(0.290,0.006) h17   w128  bar     sup=- keep:HCABDN
+n2329 [different] targets: H=[1153, 370, 1267, 425] C=[1145, 587, 1553, 693] A=[1145, 587, 1553, 693] B=[1145, 587, 1553, 693] D=[1153, 370, 1267, 425] N=[1145, 587, 1553, 693]
+   a0  c=(0.679,0.182) h43   w43   outline sup=- keep:HCABDN
+   a1  c=(0.473,0.276) h55   w114  outline sup=- keep:HCABDN
+   a2  c=(0.527,0.430) h63   w408  outline sup=- keep:.CAB.N
+   a3  c=(0.559,0.468) h38   w26   outline sup=- keep:HCABDN
+   w0  c=(0.697,0.182) h41   w137  outline sup=- keep:HCABDN
+n2339 [different] targets: H=[1369, 257, 1597, 371] C=[1369, 257, 1597, 371] A=[1369, 257, 1597, 371] B=[1369, 257, 1597, 371] D=[1369, 257, 1597, 371] N=[1369, 257, 1597, 371]
+   a0  c=(0.579,0.218) h114  w228  outline sup=Y keep:HCABDN
+   a1  c=(0.477,0.313) h48   w218  bar     sup=- keep:HCABDN
+   a2  c=(0.506,0.502) h51   w12   outline sup=- keep:.CAB.N
+   a3  c=(0.469,0.525) h46   w40   outline sup=- keep:.....N
+   w0  c=(0.452,0.066) h58   w116  outline sup=- keep:HCABDN
+n2349 [no_target] targets: H=None C=[1093, 769, 1275, 859] A=[1093, 769, 1275, 859] B=None D=None N=[1093, 769, 1275, 859]
+   a0  c=(0.463,0.565) h90   w182  outline sup=Y keep:HCABDN
+n2357 [no_target] targets: H=None C=None A=None B=None D=None N=None
+   w0  c=(0.780,0.036) h50   w56   outline sup=- keep:HCABDN
+n2371 [different] targets: H=[1327, 550, 1459, 673] C=[1327, 550, 1459, 673] A=[1327, 550, 1459, 673] B=[1327, 550, 1459, 673] D=[1327, 550, 1459, 673] N=[1327, 550, 1459, 673]
+   a0  c=(0.555,0.343) h38   w228  bar     sup=Y keep:HCABDN
+   a1  c=(0.544,0.425) h123  w132  outline sup=Y keep:HCABDN
+n2417 [different] targets: H=[1375, 763, 1499, 883] C=[1169, 551, 1559, 723] A=[1169, 551, 1559, 723] B=[1375, 763, 1499, 883] D=[1169, 551, 1559, 723] N=[1169, 551, 1559, 723]
+   a0  c=(0.491,0.408) h74   w174  outline sup=Y keep:HCABDN
+   a1  c=(0.486,0.465) h55   w50   outline sup=Y keep:HCABDN
+   a2  c=(0.555,0.478) h68   w276  outline sup=Y keep:HCABDN
+   a3  c=(0.561,0.572) h120  w124  outline sup=Y keep:HCABDN
+n2460 [no_target] targets: H=None C=[1219, 1005, 1287, 1081] A=[1219, 1005, 1287, 1081] B=None D=None N=[1095, 857, 1305, 929]
+   a0  c=(0.469,0.620) h72   w210  outline sup=- keep:.....N
+   a1  c=(0.489,0.724) h76   w68   outline sup=- keep:.CA..N
+n2540 [same] targets: H=[1265, 547, 1457, 657] C=[1265, 547, 1457, 657] A=[1265, 547, 1457, 657] B=[1265, 547, 1457, 657] D=[1265, 547, 1457, 657] N=[1265, 547, 1457, 657]
+   a0  c=(0.532,0.418) h110  w192  outline sup=Y keep:HCABDN
+   w0  c=(0.698,0.218) h14   w114  bar     sup=- keep:HCABDN
+n2604 [different] targets: H=[963, 511, 1167, 625] C=[963, 511, 1167, 625] A=[963, 511, 1167, 625] B=[963, 511, 1167, 625] D=[963, 511, 1167, 625] N=[963, 511, 1167, 625]
+   a0  c=(0.416,0.394) h114  w204  outline sup=Y keep:HCABDN
+n2610 [same] targets: H=[1085, 641, 1245, 823] C=[1085, 641, 1245, 823] A=[1085, 641, 1245, 823] B=[1085, 641, 1245, 823] D=[1085, 641, 1245, 823] N=[1085, 641, 1245, 823]
+   a0  c=(0.444,0.404) h38   w204  bar     sup=Y keep:HCABDN
+   a1  c=(0.466,0.508) h182  w102  outline sup=Y keep:HCABDN
+   a2  c=(0.435,0.487) h104  w56   outline sup=Y keep:HCABDN
+   a3  c=(0.442,0.534) h28   w30   outline sup=Y keep:HCABDN
+   w0  c=(0.250,0.367) h62   w228  outline sup=- keep:HCABDN
+   w4  c=(0.280,0.475) h43   w57   outline sup=- keep:H....N
+   w5  c=(0.230,0.485) h28   w42   outline sup=- keep:HC.BDN
+n2704 [different] targets: H=[1491, 240, 1529, 283] C=[1491, 240, 1529, 283] A=[1491, 240, 1529, 283] B=[1491, 240, 1529, 283] D=[1491, 240, 1529, 283] N=[1491, 240, 1529, 283]
+   a0  c=(0.590,0.182) h43   w38   outline sup=- keep:HCABDN
+n2730 [same] targets: H=[1037, 581, 1353, 845] C=[1047, 581, 1353, 845] A=[1047, 581, 1353, 845] B=[1047, 581, 1353, 845] D=[1047, 581, 1353, 845] N=[1037, 581, 1353, 845]
+   a0  c=(0.448,0.347) h50   w222  bar     sup=Y keep:HCABDN
+   a1  c=(0.439,0.453) h144  w156  outline sup=Y keep:HCABDN
+   a2  c=(0.491,0.456) h98   w106  outline sup=Y keep:HCABDN
+   a3  c=(0.516,0.537) h144  w64   outline sup=- keep:HCABDN
+   a4  c=(0.411,0.568) h30   w30   outline sup=- keep:H....N
+n2754 [no_target] targets: H=None C=[1147, 605, 1511, 705] A=[1147, 605, 1511, 705] B=[1147, 605, 1511, 705] D=None N=[1147, 605, 1511, 705]
+   a0  c=(0.519,0.455) h100  w364  outline sup=- keep:.CAB.N
+n2792 [fragment_of_recipient] targets: H=[991, 633, 1184, 848] C=None A=None B=None D=None N=[991, 633, 1184, 848]
+   a0  c=(0.425,0.356) h52   w226  bar     sup=- keep:HCABDN
+   a1  c=(0.432,0.409) h32   w50   outline sup=- keep:.....N
+   a2  c=(0.452,0.618) h50   w63   outline sup=- keep:.....N
+   w0  c=(0.357,0.060) h14   w118  bar     sup=- keep:HCABDN
+n2797 [same] targets: H=[1218, 523, 1325, 643] C=None A=None B=None D=[1218, 523, 1325, 643] N=None
+   a0  c=(0.497,0.322) h15   w126  bar     sup=- keep:HCABDN
+n2833 [no_target] targets: H=None C=[1170, 756, 1323, 927] A=[1170, 756, 1323, 927] B=None D=None N=[1170, 756, 1323, 927]
+   a0  c=(0.487,0.459) h40   w180  bar     sup=- keep:.CA..N
+n2887 [same] targets: H=[1053, 745, 1335, 1071] C=[1053, 745, 1335, 1071] A=[1053, 745, 1335, 1071] B=[1053, 745, 1335, 1071] D=[1053, 745, 1335, 1071] N=[1053, 745, 1335, 1071]
+   a0  c=(0.466,0.584) h191  w282  outline sup=Y keep:HCABDN
+   a1  c=(0.436,0.635) h82   w60   outline sup=Y keep:HCABDN
+   a2  c=(0.489,0.676) h66   w44   outline sup=Y keep:HCABDN
+   a3  c=(0.428,0.709) h100  w64   outline sup=Y keep:HCABDN
+   a4  c=(0.459,0.717) h66   w94   outline sup=Y keep:HCABDN
+n2912 [different] targets: H=[1555, 583, 1760, 745] C=[1229, 603, 1344, 737] A=[1229, 603, 1344, 737] B=[1555, 583, 1760, 745] D=[1555, 583, 1760, 745] N=[1229, 603, 1344, 737]
+   a0  c=(0.647,0.461) h162  w205  outline sup=Y keep:HCABDN
+   a1  c=(0.503,0.465) h134  w115  outline sup=- keep:HCABDN
+n3010 [same] targets: H=[1173, 621, 1363, 761] C=[1173, 621, 1363, 761] A=[1173, 621, 1363, 761] B=[1173, 621, 1363, 761] D=[1173, 621, 1363, 761] N=[1173, 621, 1363, 761]
+   a0  c=(0.589,0.428) h70   w116  outline sup=- keep:HCABDN
+   a1  c=(0.495,0.480) h140  w190  outline sup=Y keep:HCABDN
+   a2  c=(0.581,0.460) h40   w42   outline sup=- keep:HCABDN
+   w0  c=(0.724,0.113) h84   w92   outline sup=- keep:HCABDN
+n3027 [same] targets: H=[1171, 451, 1393, 797] C=[1171, 451, 1393, 871] A=[1171, 451, 1393, 871] B=[1171, 451, 1393, 797] D=[1171, 451, 1393, 797] N=[1171, 451, 1393, 871]
+   a0  c=(0.684,0.271) h42   w17   outline sup=- keep:HCABDN
+   a1  c=(0.501,0.363) h144  w222  outline sup=Y keep:HCABDN
+   a2  c=(0.523,0.484) h200  w86   outline sup=- keep:HCABDN
+   a3  c=(0.483,0.567) h108  w116  outline sup=- keep:.CA..N
+   w0  c=(0.745,0.081) h14   w122  bar     sup=- keep:HCABDN
+   w1  c=(0.722,0.134) h64   w80   outline sup=- keep:HCABDN
+   w2  c=(0.730,0.181) h180  w50   outline sup=- keep:HCABDN
+   w3  c=(0.698,0.233) h152  w86   outline sup=- keep:HCABDN
+n3103 [no_target] targets: H=None C=None A=None B=None D=None N=[993, 643, 1283, 715]
+   a0  c=(0.445,0.472) h72   w290  outline sup=- keep:.....N
+n3113 [same] targets: H=[1247, 779, 1483, 878] C=[1217, 943, 1297, 1017] A=[1217, 943, 1297, 1017] B=[1315, 1147, 1337, 1200] D=None N=[1217, 943, 1297, 1017]
+   a0  c=(0.533,0.575) h99   w236  outline sup=Y keep:HCABDN
+   a1  c=(0.491,0.681) h74   w80   outline sup=- keep:.CA..N
+   a2  c=(0.544,0.786) h30   w20   outline sup=- keep:.CAB.N
+   a3  c=(0.518,0.815) h53   w22   outline sup=- keep:.CAB.N
+   w0  c=(0.291,0.235) h66   w230  outline sup=- keep:HCABDN
+   w4  c=(0.519,0.864) h78   w56   outline sup=- keep:.CAB.N
+n3124 [no_target] targets: H=None C=None A=None B=None D=None N=[1255, 359, 1399, 513]
+   a0  c=(0.518,0.303) h154  w144  outline sup=- keep:HCABDN
+n3197 [same] targets: H=[1034, 594, 1207, 788] C=[1034, 594, 1207, 788] A=[1034, 594, 1207, 788] B=[1034, 594, 1207, 788] D=[1034, 594, 1207, 788] N=[1223, 647, 1295, 737]
+   a0  c=(0.438,0.337) h48   w204  bar     sup=- keep:HCABDN
+   a1  c=(0.474,0.414) h31   w32   outline sup=- keep:.CA..N
+   a2  c=(0.432,0.436) h58   w39   outline sup=- keep:.....N
+   a3  c=(0.492,0.481) h90   w72   outline sup=- keep:.CA..N
+   a4  c=(0.424,0.478) h50   w64   outline sup=- keep:.....N
+   a5  c=(0.422,0.547) h28   w62   outline sup=- keep:.....N
+   w0  c=(0.804,0.077) h56   w48   outline sup=- keep:HCABDN
+n3258 [different] targets: H=[1481, 625, 1535, 699] C=[1245, 663, 1311, 747] A=[1245, 663, 1311, 747] B=[1481, 625, 1535, 699] D=[1481, 625, 1535, 699] N=[1245, 663, 1311, 747]
+   a0  c=(0.589,0.460) h74   w54   outline sup=- keep:HCABDN
+   a1  c=(0.499,0.490) h84   w66   outline sup=- keep:.CA..N
+n3269 [same] targets: H=[1091, 429, 1427, 873] C=[1091, 429, 1427, 873] A=[1091, 429, 1427, 873] B=[1091, 429, 1427, 873] D=[1091, 429, 1427, 873] N=[1091, 429, 1427, 873]
+   a0  c=(0.499,0.253) h54   w272  bar     sup=Y keep:HCABDN
+   a1  c=(0.517,0.342) h126  w120  outline sup=Y keep:HCABDN
+   a2  c=(0.479,0.379) h82   w54   outline sup=Y keep:HCABDN
+   a3  c=(0.455,0.451) h100  w148  outline sup=Y keep:HCABDN
+   a4  c=(0.536,0.511) h274  w112  outline sup=Y keep:HCABDN
+n3283 [no_target] targets: H=None C=[1217, 772, 1314, 881] A=[1217, 772, 1314, 881] B=None D=None N=[1217, 772, 1314, 881]
+   a0  c=(0.495,0.499) h14   w114  bar     sup=- keep:.CA..N
+n3308 [not_a_body] targets: H=[899, 730, 1104, 960] C=None A=None B=None D=None N=[899, 730, 1104, 960]
+   a0  c=(0.391,0.418) h54   w242  bar     sup=- keep:H....N
+   a1  c=(0.503,0.563) h36   w33   outline sup=- keep:.CAB.N
+n3345 [no_target] targets: H=None C=[1304, 744, 1433, 889] A=[1304, 744, 1433, 889] B=[1304, 744, 1433, 889] D=None N=[1304, 744, 1433, 889]
+   a0  c=(0.535,0.467) h18   w152  bar     sup=- keep:.CAB.N
+   a1  c=(0.510,0.701) h48   w47   outline sup=- keep:.CAB.N
+   a2  c=(0.512,0.783) h38   w35   outline sup=- keep:.CAB.N
+n3401 [no_target] targets: H=None C=[1259, 617, 1327, 658] A=[1259, 617, 1327, 658] B=[1259, 617, 1327, 658] D=None N=[1259, 617, 1327, 658]
+   a0  c=(0.505,0.443) h41   w68   outline sup=- keep:.CAB.N
+   a1  c=(0.374,0.454) h38   w72   outline sup=- keep:H....N
+n3411 [same] targets: H=[1003, 701, 1267, 1143] C=None A=None B=[1003, 701, 1267, 1143] D=[1003, 701, 1267, 1143] N=[1003, 701, 1267, 1143]
+   a0  c=(0.396,0.205) h109  w76   outline sup=- keep:HCABDN
+   a1  c=(0.432,0.213) h133  w16   outline sup=- keep:HCABDN
+   a2  c=(0.420,0.265) h66   w46   outline sup=- keep:HCABDN
+   a3  c=(0.443,0.532) h130  w264  outline sup=Y keep:HCABDN
+   a4  c=(0.463,0.615) h104  w48   outline sup=Y keep:HCABDN
+   a5  c=(0.466,0.681) h76   w17   outline sup=Y keep:HCABDN
+   a6  c=(0.458,0.751) h124  w78   outline sup=Y keep:HCABDN
+   w0  c=(0.409,0.166) h219  w142  outline sup=- keep:HCABDN
+n3434 [no_target] targets: H=None C=[1189, 668, 1303, 793] A=[1189, 668, 1303, 793] B=None D=None N=[1189, 668, 1303, 793]
+   a0  c=(0.487,0.507) h125  w114  outline sup=- keep:HCABDN
+n3444 [no_target] targets: H=None C=None A=None B=[1247, 665, 1273, 806] D=None N=None
+   a0  c=(0.497,0.379) h46   w230  bar     sup=- keep:HCABDN
+   a1  c=(0.492,0.511) h141  w26   outline sup=- keep:HCABDN
+   a2  c=(0.520,0.483) h36   w26   outline sup=- keep:.CAB.N
+n3481 [no_target] targets: H=None C=None A=None B=None D=None N=None
+   a0  c=(0.569,0.406) h16   w134  bar     sup=- keep:HCABDN
+   a1  c=(0.539,0.526) h30   w32   outline sup=- keep:.CAB.N
+   a2  c=(0.552,0.560) h42   w35   outline sup=- keep:.CABDN
+   a3  c=(0.521,0.574) h52   w51   outline sup=- keep:.CAB.N
+   a4  c=(0.587,0.577) h40   w26   outline sup=- keep:HCABDN
+   a5  c=(0.601,0.610) h38   w48   outline sup=- keep:HCABDN
+n3493 [not_a_body] targets: H=[945, 801, 1143, 919] C=None A=None B=None D=None N=[945, 801, 1143, 919]
+   a0  c=(0.408,0.597) h118  w198  outline sup=- keep:H....N
+   a1  c=(0.482,0.637) h36   w50   outline sup=- keep:.CA..N
+   a2  c=(0.454,0.683) h34   w82   outline sup=- keep:.....N
+   w0  c=(0.073,0.242) h44   w92   outline sup=- keep:HCABDN
+n3505 [no_target] targets: H=None C=None A=None B=None D=None N=None
+   a0  c=(0.586,0.476) h51   w114  outline sup=- keep:HCABDN
+   a1  c=(0.596,0.581) h34   w24   outline sup=- keep:HCABDN
+n3516 [no_target] targets: H=None C=None A=None B=None D=None N=None
+   a0  c=(0.485,0.447) h64   w204  outline sup=- keep:.CA..N
+n3528 [same] targets: H=[963, 589, 1301, 933] C=[963, 589, 1301, 933] A=[963, 589, 1301, 933] B=[963, 589, 1301, 933] D=[963, 589, 1301, 933] N=[963, 589, 1301, 933]
+   a0  c=(0.419,0.451) h120  w220  outline sup=Y keep:HCABDN
+   a1  c=(0.470,0.509) h132  w124  outline sup=Y keep:HCABDN
+   a2  c=(0.411,0.555) h56   w30   outline sup=Y keep:HCABDN
+   a3  c=(0.497,0.598) h144  w58   outline sup=- keep:HCABDN
+   a4  c=(0.470,0.621) h70   w78   outline sup=- keep:.....N
+   a5  c=(0.424,0.624) h58   w66   outline sup=- keep:.....N
+n3555 [no_target] targets: H=None C=[1341, 607, 1457, 667] A=[1341, 607, 1457, 667] B=[1341, 607, 1457, 667] D=None N=[1341, 607, 1457, 667]
+   a0  c=(0.546,0.442) h60   w116  outline sup=- keep:.CAB.N
+n3570 [not_a_body] targets: H=[1273, 311, 1392, 444] C=[1273, 311, 1392, 444] A=[1273, 311, 1392, 444] B=[1273, 311, 1392, 444] D=[1273, 311, 1392, 444] N=[1273, 311, 1392, 444]
+   a0  c=(0.521,0.171) h13   w140  bar     sup=- keep:HCABDN
+   a1  c=(0.553,0.401) h114  w188  outline sup=- keep:HCABDN
+   w0  c=(0.507,0.159) h48   w216  bar     sup=- keep:HCABDN
+n3631 [same] targets: H=[1207, 647, 1385, 875] C=[1207, 647, 1385, 875] A=[1207, 647, 1385, 875] B=[1207, 647, 1385, 875] D=[1207, 647, 1385, 875] N=[1207, 647, 1385, 875]
+   a0  c=(0.506,0.501) h148  w178  outline sup=Y keep:HCABDN
+   a1  c=(0.521,0.576) h92   w72   outline sup=Y keep:HCABDN
+n3679 [same] targets: H=[1185, 731, 1381, 1011] C=[1185, 731, 1381, 1011] A=[1185, 731, 1381, 1011] B=[1185, 731, 1381, 1011] D=[1185, 731, 1381, 1011] N=[1185, 731, 1381, 1011]
+   a0  c=(0.501,0.581) h212  w196  outline sup=Y keep:HCABDN
+   a1  c=(0.501,0.680) h64   w76   outline sup=Y keep:HCABDN
+n3709 [different] targets: H=[2105, 0, 2173, 49] C=[2105, 0, 2173, 49] A=[2105, 0, 2173, 49] B=[2105, 0, 2173, 49] D=[2105, 0, 2173, 49] N=[2105, 0, 2173, 49]
+   w0  c=(0.836,0.017) h49   w68   outline sup=- keep:HCABDN
+n3730 [same] targets: H=[1133, 587, 1307, 769] C=[1271, 469, 1415, 559] A=[1271, 469, 1415, 559] B=[1133, 587, 1307, 769] D=[1133, 587, 1307, 769] N=[1271, 469, 1415, 559]
+   a0  c=(0.525,0.357) h90   w144  outline sup=- keep:HCABDN
+   a1  c=(0.477,0.471) h182  w174  outline sup=- keep:HCABDN
+   a2  c=(0.530,0.513) h53   w26   outline sup=- keep:.CAB.N
+n3752 [not_a_body] targets: H=[1915, 277, 2377, 403] C=[1195, 569, 1307, 677] A=[1195, 569, 1307, 677] B=None D=[1915, 277, 2377, 403] N=[1195, 569, 1307, 677]
+   a0  c=(0.489,0.433) h108  w112  outline sup=- keep:.CA..N
+   a1  c=(0.504,0.431) h40   w32   outline sup=- keep:.CAB.N
+   w0  c=(0.838,0.236) h126  w462  outline sup=- keep:HCABDN
+n3789 [not_a_body] targets: H=[931, 637, 1071, 795] C=[931, 637, 1071, 795] A=[931, 637, 1071, 795] B=[931, 637, 1071, 795] D=[931, 637, 1071, 795] N=None
+   a0  c=(0.365,0.406) h50   w267  bar     sup=Y keep:HCABDN
+   a1  c=(0.380,0.497) h158  w86   outline sup=Y keep:HCABDN
+   a2  c=(0.411,0.522) h46   w38   outline sup=Y keep:HCABDN
+n3835 [same] targets: H=[999, 535, 1267, 663] C=[1031, 747, 1121, 867] A=[1031, 747, 1121, 867] B=[999, 535, 1267, 663] D=[999, 535, 1267, 663] N=[1157, 771, 1345, 889]
+   a0  c=(0.443,0.416) h128  w268  outline sup=Y keep:HCABDN
+   a1  c=(0.420,0.560) h120  w90   outline sup=- keep:HCABDN
+   a2  c=(0.505,0.569) h96   w104  outline sup=- keep:.CAB.N
+   a3  c=(0.470,0.601) h46   w93   outline sup=- keep:.CA..N
+n3987 [same] targets: H=[899, 425, 1171, 527] C=[899, 425, 1171, 527] A=[899, 425, 1171, 527] B=[899, 425, 1171, 527] D=[899, 425, 1171, 527] N=None
+   a0  c=(0.404,0.331) h102  w272  outline sup=Y keep:HCABDN
+   a1  c=(0.467,0.556) h100  w136  outline sup=- keep:.....N
+n4032 [fragment_of_recipient] targets: H=[1049, 555, 1232, 760] C=[1049, 555, 1232, 760] A=[1049, 555, 1232, 760] B=[1049, 555, 1232, 760] D=[1049, 555, 1232, 760] N=[1049, 555, 1232, 760]
+   a0  c=(0.446,0.306) h50   w216  bar     sup=- keep:HCABDN
+   a1  c=(0.491,0.420) h80   w22   outline sup=- keep:.CA..N
+   a2  c=(0.443,0.428) h96   w56   outline sup=- keep:.....N
+   a3  c=(0.441,0.543) h66   w74   outline sup=- keep:.....N
+n4039 [no_target] targets: H=None C=None A=None B=None D=None N=None
+   a0  c=(0.509,0.592) h216  w236  outline sup=Y keep:HCABDN
+   a1  c=(0.548,0.691) h88   w14   outline sup=- keep:.CAB.N
+   a2  c=(0.516,0.742) h194  w188  outline sup=Y keep:HCABDN
+   a3  c=(0.577,0.766) h120  w150  outline sup=- keep:HCABDN
+n4061 [not_a_body] targets: H=[1197, 451, 1345, 559] C=[1197, 451, 1345, 559] A=[1197, 451, 1345, 559] B=[1197, 451, 1345, 559] D=[1197, 451, 1345, 559] N=[1197, 451, 1345, 559]
+   a0  c=(0.496,0.351) h108  w148  outline sup=- keep:HCABDN
+   w0  c=(0.605,0.037) h53   w32   outline sup=- keep:HCABDN
+   w2  c=(0.987,0.437) h52   w65   outline sup=- keep:HCABDN
+   w3  c=(0.984,0.473) h52   w81   outline sup=- keep:HCABDN
+n4103 [same] targets: H=[1208, 639, 1379, 831] C=[1208, 639, 1379, 831] A=[1208, 639, 1379, 831] B=[1208, 639, 1379, 831] D=[1208, 639, 1379, 831] N=[1208, 639, 1379, 831]
+   a0  c=(0.505,0.372) h40   w202  bar     sup=- keep:HCABDN
+   a1  c=(0.524,0.428) h44   w28   outline sup=- keep:.CAB.N
+   a2  c=(0.489,0.454) h38   w21   outline sup=- keep:.CA..N
+   w0  c=(0.762,0.035) h101  w157  outline sup=Y keep:HCABDN
+n4138 [different] targets: H=[1449, 681, 1495, 737] C=[1259, 699, 1311, 759] A=[1259, 699, 1311, 759] B=[1259, 699, 1311, 759] D=[1449, 681, 1495, 737] N=[1259, 699, 1311, 759]
+   a0  c=(0.575,0.492) h56   w46   outline sup=- keep:HCABDN
+   a1  c=(0.502,0.506) h60   w52   outline sup=- keep:.CAB.N
+n4150 [same] targets: H=[1145, 551, 1337, 773] C=[1145, 551, 1337, 773] A=[1145, 551, 1337, 773] B=[1145, 551, 1337, 773] D=[1145, 551, 1337, 773] N=[1145, 551, 1337, 773]
+   a0  c=(0.471,0.345) h44   w224  bar     sup=Y keep:HCABDN
+   a1  c=(0.498,0.449) h190  w124  outline sup=Y keep:HCABDN
+   a2  c=(0.462,0.463) h212  w77   outline sup=Y keep:HCABDN
+   w0  c=(0.770,0.318) h13   w114  bar     sup=- keep:HCABDN
+   w2  c=(0.750,0.416) h196  w140  outline sup=- keep:HCABDN
+   w3  c=(0.739,0.375) h62   w44   outline sup=- keep:HCABDN
+n4156 [same] targets: H=[961, 465, 1209, 569] C=[961, 465, 1209, 569] A=[961, 465, 1209, 569] B=[961, 465, 1209, 569] D=[961, 465, 1209, 569] N=[961, 465, 1209, 569]
+   a0  c=(0.424,0.359) h104  w248  outline sup=Y keep:HCABDN
+   a1  c=(0.489,0.421) h38   w29   outline sup=- keep:.CA..N
+   a2  c=(0.462,0.517) h118  w72   outline sup=- keep:.....N
+   w0  c=(0.510,0.079) h14   w114  bar     sup=- keep:HCABDN
+n4175 [different] targets: H=[1157, 429, 1329, 519] C=[1157, 429, 1329, 519] A=[1157, 429, 1329, 519] B=[1157, 429, 1329, 519] D=[1157, 429, 1329, 519] N=[1157, 429, 1329, 519]
+   a0  c=(0.469,0.274) h13   w114  bar     sup=- keep:HCABDN
+   a1  c=(0.465,0.321) h66   w68   outline sup=- keep:HCABDN
+   a2  c=(0.496,0.355) h16   w116  bar     sup=- keep:HCABDN

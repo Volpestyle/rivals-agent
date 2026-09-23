@@ -1,6 +1,6 @@
 # L3 — detector
 
-Owner: `rivals-det` (pane w26:pA). Files: `perception/autolabel.py`, `train.py`,
+Owner: `detector-owner` (VUH-1355; previously `rivals-det`, pane w26:pA). Files: `perception/autolabel.py`, `train.py`,
 `eval.py`, `detect.py`, `outline.py`, `setup_pc.ps1`, `docs/evidence/l3/`, `data/`.
 
 Full method, measurements and contact sheets: **`docs/evidence/l3/README.md`**.
@@ -14,23 +14,25 @@ Classical, no GPU, no weights.
 ```python
 from perception.outline import find_enemies      # perception/outline.py
 
-dets = find_enemies(frame_bgr, scale=None, band=GREEN)
+dets = find_enemies(frame_bgr, scale=None, band=GREEN, origin=(0, 0), frame=None)
 # -> list[agent.state.Detection]: cls=ENEMY, bbox=(x1,y1,x2,y2), conf
 ```
 
 | Argument | Meaning |
 |---|---|
-| `frame_bgr` | BGR image. A full frame **or a crop** — boxes come back in *that* image's pixels, so add the crop origin yourself. |
+| `frame_bgr` | BGR image. A full frame **or a crop** — boxes come back in *that* image's pixels, so add the crop origin to them yourself. |
+| `origin`, `frame` | **A crop must pass both:** `origin` is its top-left (x, y) in the whole frame, `frame` the whole frame's (w, h). The HUD, kill-feed, chat and player zones are places on the screen; without these they land on the scene inside the crop, and on tagrun0 000422 the head-stroke junk round the hero came back as an enemy. An `origin` without `frame`, or an image that does not fit its frame, raises `ValueError`. A whole frame passes neither. A crop passed with neither cannot be detected and is wrong. |
 | `scale` | How big this image's pixels are vs 1280x720: `1.0` for 720p, **`2.0` for anything cut from the 2560x1440 capture**. `None` infers from frame height, which is right only for a *full* frame — a 960 px crop of a 1440p capture is 960 tall but its marks are 2.0x, so **the aim path must pass `scale=2.0`**. |
 | `band` | `outline.GREEN`, a `Band(hue_lo, hue_hi, sat_min, val_min)`. **A swatch change is this one constant** — nothing else in the file needs editing. |
 
-Aim path, 960 px native crop around the crosshair:
+Aim path, 960 px native crop around the crosshair, as `agent/loop.py` calls it:
 
 ```python
-crop = frame[cy-480:cy+480, cx-480:cx+480]
-for d in find_enemies(crop, scale=2.0):
+x0, y0 = cx - 480, cy - 480
+crop = frame[y0:y0 + 960, x0:x0 + 960]
+for d in find_enemies(crop, scale=2.0, origin=(x0, y0), frame=(frame.shape[1], frame.shape[0])):
     x1, y1, x2, y2 = d.bbox
-    x1 += cx-480; x2 += cx-480; y1 += cy-480; y2 += cy-480
+    x1 += x0; x2 += x0; y1 += y0; y2 += y0
 ```
 
 Measured over all 511 native `tagrun` frames. **Use the PC column** — that is where the
@@ -94,15 +96,86 @@ pixels have a median hue under `GREEN_MIN_MEDIAN_HUE` is dropped (56 when measur
 | Mac cost: aim crop / full frame p50 | 1.39 / 4.42 ms | 1.43 / 4.51 ms |
 
 The four door boxes left are thin slivers of the door's edge, each in a single frame. `tests/test_gt_range_green.py` gates at P 0.88 / R
-0.82 against the count numbers above. The rule applies to the `GREEN` band only.
+0.82 against the count numbers above (precision over bodies since VUH-1355, below). The rule applies to the `GREEN` band only.
 
 **The zones are places on the screen.** `find_green` / `find_enemies` take an optional `origin` (the image's top-left in the frame) and
 `frame` (w, h); a whole frame needs neither. The HUD and kill-feed zones are tested in frame terms, so on the 960 px aim crop they cover
 only real HUD (before, they removed 32 aim-crop boxes in 27 of postfreeze30's 273 frames, 16 of them 120 px or taller; now the crop
 finds 25 more boxes there and 12 more on tagrun0, and empties no frame). The two aim-crop callers, `agent.loop` and
-`scripts/l4_trial.py`, pass both. The **player zone** stays in
-the image's own fractions: placed in frame terms it covers most of the crop and drops small marks the crop exists to see (17 frames
-emptied on the two runs, Luna's pieces and a bot's bar among them). Where the hero is drawn inside the crop is not measured.
+`scripts/l4_trial.py`, pass both. Since VUH-1355 the **player zone** is one too (below). Before, it was applied in the image's own
+fractions, because the old zone placed in frame terms covered most of the crop; the measured hero region does not.
+
+**The player guard is the only hero-region protection (VUH-1355).** Nothing in `agent/` filters detections in the player's region:
+`controller.HERO_BOX` only keeps coasting a track that passes behind the hero. AGENTS.md and plan.md used to say the controller
+ignores detections inside the player's own screen region; the lead has corrected both to name this guard.
+
+**Where the hero is drawn, measured** (`docs/evidence/player-zone-20260923/`). The suit is segmented on 1,373 of 1,419 native frames:
+the 2026-09-23 take's keyframes and anchor windows, the Galacta pilot runs, plaza30 and tagrun0.
+- His box, p5/p50/p95 in frame fractions: x1 .14/.30/.39, x2 .43/.47/.51, y1 .35/.49/.54. He runs into the bottom HUD band in 72% of
+  frames.
+- He stands left of the crosshair; his box holds it in 4.8% of frames. Pixels he covers in ≥ 5% of frames: (.18, .39, .47, .90); in
+  ≥ 25%: (.29, .48, .45, .88).
+- The old zone applied in the aim crop's fractions was frame (.42–.55, .39–.83). It covered 13% of him and held the crosshair.
+- Of 569 small marks next to him outside the Galacta pilot, 567 are enemy pieces. Two are not: effect strokes round his head (tagrun0
+  000422, which the old aim-crop zone kept) and door glass past his hand (plaza30 000184).
+
+**`PLAYER_ZONE = (.27, .39, .47, .90)` of the whole frame, in both views (VUH-1355).** Small marks (under 60 px at 720p) centred there
+are dropped unless health-strip evidence keeps them.
+- **The right edge .47** is his measured right side, so the crosshair is outside the zone. **The left edge .27** is where he is drawn in
+  about 25% of frames. The 5% edge (.18) dropped real bots standing left of him (ground-truth recall 0.731).
+- **On James's 2026-09-23 take** (126 rises with an established web recipient, exact replay): the recipient survives at the anchor in
+  115 of 120 rises that have one (was 85), and the selector is on it in 86 of 126 (was 58). The 22 "different bot" rises fall to 8.
+- **Both junk marks** are dropped in both views. The two closest separate bots on tagrun0 and plaza30 stay two boxes.
+
+**The ground-truth gate counts bodies for precision.** Every zone that clears the crosshair exposes close bots drawn as two to five
+boxes (the old zone hid those small pieces), which the count labels score as false positives.
+- **The lead's decision:** pieces are joined downstream, by the tracker (VUH-1314), not by widening `GREEN_MERGE_GAP`. A wider merge risks
+  fusing two adjacent bots into one box, which is worse for target identity than fragments.
+- **So `test_gt_range_green` now joins boxes within 24 px (720p) for precision only.** It reads HEAD 0.932 / 0.872 and this change
+  0.911 / 0.923; with boxes counted as before, this change is 0.857 / 0.923.
+- **A box-level floor of 0.85 stands beside it** (review F5). The join could hide a false box next to a bot, or count two bots that
+  close as one (frames5/0315: two Luna 32 px apart, native). The floor still fails a change that shatters bots into close pieces.
+- **What the gate measures:** scenery-level false positives and missed bots. It does not test the hero guard: this set has no junk
+  round him, and with no guard it passes the body gate at 0.881 (box floor 0.796). The junk tests in
+  `tests/test_outline_player_zone.py` pin the guard.
+- **It is a `corpus` test,** reading 72 recorded frames each pinned by sha256; run it with `--corpus`.
+- **The tracker's in-frame rule (`_same_body`, stacked pieces) joins none of these side-by-side splits.** Whether its `PIECE_INSIDE`
+  absorption holds them together live depends on track state, and is not measured here.
+
+**Residuals** (corrected after independent review):
+- **Recipient lost inside his region:**
+  - 5 rises have the recipient still dropped: 63, 474, 501, 1426, 3103.
+  - **3493 is the same class:** the recipient Galacta's plate and outlined body are drawn over his torso, just under the 120 px
+    rule. The change keeps only a small claw arc, which is not selected.
+- **HEAD's target lost in 6 rises, per rise:**
+  - **3308, a correct loss:** HEAD's box enclosed his crouched torso.
+  - **3493:** the recipient loss above.
+  - **247, a selector effect:** the recipient fragment is still returned. The selector locked from tick 244 onto a nearer box that
+    only the change keeps; it coasts at 247.
+  - **2792, a real earlier detection loss:** the recipient's pieces beside him (x .31–.36) at 2789–2790 fall in the zone. At the
+    anchor its box is a new track, refused by the two-decisions acquisition.
+  - **2797, a selector effect:** the change keeps a second real Galacta near the crosshair. The selector picks it and holds it while
+    it coasts.
+  - **3411, tracker history:** a newly kept lower piece of the same Galacta took its track off the body at 3409.
+- **Remaining selector count, 3:** in 1464, 1919 and 2339 the recipient is detected and the selector stays on the other bot. The
+  other five of the eight left have no recipient pixels, or the recipient is out of the aim crop.
+
+**Residual: bots whose name plates touch come back as one box** (review F4; `test_native_bots_with_touching_plates_come_back_as_two`,
+strict xfail).
+- **Where:** the calibration take, frames5/0305 (2026-09-23 00-39-29).
+- **What:** closing joins two Lunas' touching plates and bodies into one flat 276×70 component. The box is centred on the floor between
+  them.
+- **What the change alters:** HEAD's aim-crop zone dropped it at the crosshair; the change keeps it.
+- **Do the controller's existing gates refuse it as a target? No.** Replayed over frames5/0301–0309 through the aim crop, tracker and
+  `brain.gate`, it is the selected target from 0303 to 0309 (1.2 s):
+  - it passes `Controller._range_detection` and `PLAUSIBLE` (height 70/1440 = 0.049, inside 0.008–0.9), and `in_reach` (> 0.0325);
+  - `_fits` compares only heights with the held track;
+  - `tracker.BODY_ASPECT` only joins stacked pieces, and no target check reads a box's shape.
+- **Result:** the reflex aims at the floor between two bots. HEAD targeted the third Luna at 0303–0304, then nothing.
+- **Status:** not repaired, and no splitting rule is proposed; the lead decides. Bots whose marks do not touch stay apart down to 32 px
+  (frames5/0315).
+
+Numbers, per-rise reasons and scripts are in the evidence README.
 
 **Precision 82%, recall 83%** against hand-checked ground truth — see below.
 

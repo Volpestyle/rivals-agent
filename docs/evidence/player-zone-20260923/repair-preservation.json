@@ -1,0 +1,2030 @@
+{
+ "head_outline_sha256_lf": "fded81b150bb873c738e34fb3fc7d8f0a263a7cf9121e3325991bcdda4acd4f8",
+ "new_outline_sha256": "837680f0c4f277fe8ca3acc25399d3a6341fee20ad56ecd122d668defc98c850",
+ "frames": [
+  {
+   "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-13521\\frame-0001.png",
+   "wide": {
+    "same": false,
+    "recorded": [],
+    "new": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1309.0,
+       627.0,
+       1345.0,
+       710.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     }
+    ]
+   },
+   "aim": {
+    "same": false,
+    "recorded": [],
+    "new": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1309.0,
+       627.0,
+       1345.0,
+       710.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     }
+    ]
+   }
+  },
+  {
+   "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-13521\\frame-0013.png",
+   "wide": {
+    "same": false,
+    "recorded": [],
+    "new": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1291.0,
+       727.0,
+       1329.0,
+       798.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     }
+    ]
+   },
+   "aim": {
+    "same": false,
+    "recorded": [],
+    "new": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1291.0,
+       727.0,
+       1329.0,
+       798.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     }
+    ]
+   }
+  },
+  {
+   "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-13521\\frame-0025.png",
+   "wide": {
+    "same": false,
+    "recorded": [],
+    "new": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1250.0,
+       711.0,
+       1297.0,
+       809.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     }
+    ]
+   },
+   "aim": {
+    "same": false,
+    "recorded": [],
+    "new": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1250.0,
+       711.0,
+       1297.0,
+       809.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     }
+    ]
+   }
+  },
+  {
+   "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-13521\\frame-0037.png",
+   "wide": {
+    "same": false,
+    "recorded": [],
+    "new": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1267.0,
+       653.0,
+       1331.0,
+       767.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     }
+    ]
+   },
+   "aim": {
+    "same": false,
+    "recorded": [],
+    "new": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1267.0,
+       653.0,
+       1331.0,
+       767.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     }
+    ]
+   }
+  },
+  {
+   "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-13521\\frame-0049.png",
+   "wide": {
+    "same": true,
+    "recorded": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1276.0,
+       555.0,
+       1371.0,
+       754.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": true
+     },
+     {
+      "cls": "enemy",
+      "bbox": [
+       0.0,
+       579.0,
+       45.0,
+       619.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     }
+    ],
+    "new": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1276.0,
+       555.0,
+       1371.0,
+       754.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": true
+     },
+     {
+      "cls": "enemy",
+      "bbox": [
+       0.0,
+       579.0,
+       45.0,
+       619.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     }
+    ]
+   },
+   "aim": {
+    "same": true,
+    "recorded": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1276.0,
+       555.0,
+       1371.0,
+       754.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": true
+     }
+    ],
+    "new": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1276.0,
+       555.0,
+       1371.0,
+       754.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": true
+     }
+    ]
+   }
+  },
+  {
+   "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-19821\\frame-0001.png",
+   "wide": {
+    "same": true,
+    "recorded": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1849.0,
+       249.0,
+       1897.0,
+       323.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     }
+    ],
+    "new": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1849.0,
+       249.0,
+       1897.0,
+       323.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     }
+    ]
+   },
+   "aim": {
+    "same": true,
+    "recorded": [],
+    "new": []
+   }
+  },
+  {
+   "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-19821\\frame-0013.png",
+   "wide": {
+    "same": true,
+    "recorded": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1775.0,
+       221.0,
+       1819.0,
+       311.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     },
+     {
+      "cls": "enemy",
+      "bbox": [
+       2089.0,
+       351.0,
+       2157.0,
+       401.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     }
+    ],
+    "new": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1775.0,
+       221.0,
+       1819.0,
+       311.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     },
+     {
+      "cls": "enemy",
+      "bbox": [
+       2089.0,
+       351.0,
+       2157.0,
+       401.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     }
+    ]
+   },
+   "aim": {
+    "same": true,
+    "recorded": [],
+    "new": []
+   }
+  },
+  {
+   "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-20021\\frame-0001.png",
+   "wide": {
+    "same": false,
+    "recorded": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1653.0,
+       217.0,
+       1697.0,
+       305.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     },
+     {
+      "cls": "enemy",
+      "bbox": [
+       1935.0,
+       345.0,
+       1997.0,
+       389.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     }
+    ],
+    "new": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1653.0,
+       217.0,
+       1697.0,
+       305.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     },
+     {
+      "cls": "enemy",
+      "bbox": [
+       1935.0,
+       345.0,
+       1997.0,
+       389.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     },
+     {
+      "cls": "enemy",
+      "bbox": [
+       1205.0,
+       576.0,
+       1255.0,
+       625.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     }
+    ]
+   },
+   "aim": {
+    "same": false,
+    "recorded": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1653.0,
+       240.0,
+       1697.0,
+       305.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": null
+     }
+    ],
+    "new": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1653.0,
+       240.0,
+       1697.0,
+       305.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": null
+     },
+     {
+      "cls": "enemy",
+      "bbox": [
+       1205.0,
+       576.0,
+       1255.0,
+       625.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     }
+    ]
+   }
+  },
+  {
+   "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-20021\\frame-0013.png",
+   "wide": {
+    "same": true,
+    "recorded": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1549.0,
+       221.0,
+       1615.0,
+       307.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     },
+     {
+      "cls": "enemy",
+      "bbox": [
+       1157.0,
+       579.0,
+       1249.0,
+       634.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     },
+     {
+      "cls": "enemy",
+      "bbox": [
+       1837.0,
+       347.0,
+       1889.0,
+       384.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     }
+    ],
+    "new": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1549.0,
+       221.0,
+       1615.0,
+       307.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     },
+     {
+      "cls": "enemy",
+      "bbox": [
+       1157.0,
+       579.0,
+       1249.0,
+       634.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     },
+     {
+      "cls": "enemy",
+      "bbox": [
+       1837.0,
+       347.0,
+       1889.0,
+       384.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     }
+    ]
+   },
+   "aim": {
+    "same": true,
+    "recorded": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1157.0,
+       579.0,
+       1249.0,
+       634.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     },
+     {
+      "cls": "enemy",
+      "bbox": [
+       1549.0,
+       240.0,
+       1615.0,
+       307.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": null
+     }
+    ],
+    "new": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1157.0,
+       579.0,
+       1249.0,
+       634.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     },
+     {
+      "cls": "enemy",
+      "bbox": [
+       1549.0,
+       240.0,
+       1615.0,
+       307.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": null
+     }
+    ]
+   }
+  },
+  {
+   "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-20021\\frame-0025.png",
+   "wide": {
+    "same": true,
+    "recorded": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1151.0,
+       585.0,
+       1276.0,
+       669.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     },
+     {
+      "cls": "enemy",
+      "bbox": [
+       1525.0,
+       261.0,
+       1593.0,
+       343.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     },
+     {
+      "cls": "enemy",
+      "bbox": [
+       1805.0,
+       381.0,
+       1863.0,
+       417.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     }
+    ],
+    "new": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1151.0,
+       585.0,
+       1276.0,
+       669.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     },
+     {
+      "cls": "enemy",
+      "bbox": [
+       1525.0,
+       261.0,
+       1593.0,
+       343.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     },
+     {
+      "cls": "enemy",
+      "bbox": [
+       1805.0,
+       381.0,
+       1863.0,
+       417.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     }
+    ]
+   },
+   "aim": {
+    "same": true,
+    "recorded": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1151.0,
+       585.0,
+       1276.0,
+       669.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     },
+     {
+      "cls": "enemy",
+      "bbox": [
+       1525.0,
+       261.0,
+       1593.0,
+       343.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": null
+     }
+    ],
+    "new": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1151.0,
+       585.0,
+       1276.0,
+       669.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     },
+     {
+      "cls": "enemy",
+      "bbox": [
+       1525.0,
+       261.0,
+       1593.0,
+       343.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": null
+     }
+    ]
+   }
+  },
+  {
+   "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-20021\\frame-0037.png",
+   "wide": {
+    "same": true,
+    "recorded": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1153.0,
+       613.0,
+       1333.0,
+       743.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     },
+     {
+      "cls": "enemy",
+      "bbox": [
+       1511.0,
+       305.0,
+       1579.0,
+       383.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     },
+     {
+      "cls": "enemy",
+      "bbox": [
+       1785.0,
+       419.0,
+       1847.0,
+       455.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     }
+    ],
+    "new": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1153.0,
+       613.0,
+       1333.0,
+       743.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     },
+     {
+      "cls": "enemy",
+      "bbox": [
+       1511.0,
+       305.0,
+       1579.0,
+       383.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     },
+     {
+      "cls": "enemy",
+      "bbox": [
+       1785.0,
+       419.0,
+       1847.0,
+       455.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     }
+    ]
+   },
+   "aim": {
+    "same": true,
+    "recorded": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1153.0,
+       613.0,
+       1333.0,
+       743.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     },
+     {
+      "cls": "enemy",
+      "bbox": [
+       1511.0,
+       305.0,
+       1579.0,
+       383.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     }
+    ],
+    "new": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1153.0,
+       613.0,
+       1333.0,
+       743.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     },
+     {
+      "cls": "enemy",
+      "bbox": [
+       1511.0,
+       305.0,
+       1579.0,
+       383.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     }
+    ]
+   }
+  },
+  {
+   "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-20021\\frame-0049.png",
+   "wide": {
+    "same": true,
+    "recorded": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1243.0,
+       708.0,
+       1305.0,
+       795.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": true
+     },
+     {
+      "cls": "enemy",
+      "bbox": [
+       1497.0,
+       355.0,
+       1565.0,
+       431.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     },
+     {
+      "cls": "enemy",
+      "bbox": [
+       1765.0,
+       467.0,
+       1827.0,
+       503.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     }
+    ],
+    "new": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1243.0,
+       708.0,
+       1305.0,
+       795.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": true
+     },
+     {
+      "cls": "enemy",
+      "bbox": [
+       1497.0,
+       355.0,
+       1565.0,
+       431.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     },
+     {
+      "cls": "enemy",
+      "bbox": [
+       1765.0,
+       467.0,
+       1827.0,
+       503.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     }
+    ]
+   },
+   "aim": {
+    "same": true,
+    "recorded": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1243.0,
+       708.0,
+       1305.0,
+       795.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": true
+     },
+     {
+      "cls": "enemy",
+      "bbox": [
+       1497.0,
+       355.0,
+       1565.0,
+       431.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     }
+    ],
+    "new": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1243.0,
+       708.0,
+       1305.0,
+       795.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": true
+     },
+     {
+      "cls": "enemy",
+      "bbox": [
+       1497.0,
+       355.0,
+       1565.0,
+       431.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": false
+     }
+    ]
+   }
+  },
+  {
+   "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-21921\\frame-0001.png",
+   "wide": {
+    "same": true,
+    "recorded": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1016.5,
+       151.0,
+       1101.5,
+       246.0
+      ],
+      "conf": 0.75,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": null
+     }
+    ],
+    "new": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1016.5,
+       151.0,
+       1101.5,
+       246.0
+      ],
+      "conf": 0.75,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": null
+     }
+    ]
+   },
+   "aim": {
+    "same": true,
+    "recorded": [],
+    "new": []
+   }
+  },
+  {
+   "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-21921\\frame-0013.png",
+   "wide": {
+    "same": true,
+    "recorded": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1076.8,
+       140.7,
+       1165.2,
+       239.5
+      ],
+      "conf": 0.76,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": null
+     }
+    ],
+    "new": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1076.8,
+       140.7,
+       1165.2,
+       239.5
+      ],
+      "conf": 0.76,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": null
+     }
+    ]
+   },
+   "aim": {
+    "same": true,
+    "recorded": [],
+    "new": []
+   }
+  },
+  {
+   "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-21921\\frame-0025.png",
+   "wide": {
+    "same": true,
+    "recorded": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1239.2,
+       159.2,
+       1332.8,
+       263.7
+      ],
+      "conf": 0.775,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": null
+     }
+    ],
+    "new": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1239.2,
+       159.2,
+       1332.8,
+       263.7
+      ],
+      "conf": 0.775,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": null
+     }
+    ]
+   },
+   "aim": {
+    "same": true,
+    "recorded": [],
+    "new": []
+   }
+  },
+  {
+   "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-21921\\frame-0037.png",
+   "wide": {
+    "same": true,
+    "recorded": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1324.5,
+       164.1,
+       1387.5,
+       234.4
+      ],
+      "conf": 0.685,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": null
+     }
+    ],
+    "new": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1324.5,
+       164.1,
+       1387.5,
+       234.4
+      ],
+      "conf": 0.685,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": null
+     }
+    ]
+   },
+   "aim": {
+    "same": true,
+    "recorded": [],
+    "new": []
+   }
+  },
+  {
+   "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\semantic-candidates\\20260922T032454-642Z-24328-1\\candidate-21921\\frame-0049.png",
+   "wide": {
+    "same": true,
+    "recorded": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1334.5,
+       176.1,
+       1397.5,
+       246.4
+      ],
+      "conf": 0.685,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": null
+     }
+    ],
+    "new": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       1334.5,
+       176.1,
+       1397.5,
+       246.4
+      ],
+      "conf": 0.685,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": null
+     }
+    ]
+   },
+   "aim": {
+    "same": true,
+    "recorded": [],
+    "new": []
+   }
+  },
+  {
+   "path": "C:\\rivals-agent\\data\\l1\\postfreeze30\\000150.jpg",
+   "wide": {
+    "same": true,
+    "recorded": [],
+    "new": []
+   },
+   "aim": {
+    "same": true,
+    "recorded": [],
+    "new": []
+   }
+  },
+  {
+   "path": "C:\\rivals-agent\\data\\l1\\tagrun0\\000206.jpg",
+   "wide": {
+    "same": true,
+    "recorded": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       2403.7,
+       72.6,
+       2524.3,
+       207.5
+      ],
+      "conf": 0.855,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": null
+     }
+    ],
+    "new": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       2403.7,
+       72.6,
+       2524.3,
+       207.5
+      ],
+      "conf": 0.855,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": null
+     }
+    ]
+   },
+   "aim": {
+    "same": true,
+    "recorded": [],
+    "new": []
+   }
+  },
+  {
+   "path": "C:\\rivals-agent\\data\\l1\\tagrun0\\000228.jpg",
+   "wide": {
+    "same": true,
+    "recorded": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       2423.0,
+       24.0,
+       2560.0,
+       100.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": null
+     }
+    ],
+    "new": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       2423.0,
+       24.0,
+       2560.0,
+       100.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": null
+     }
+    ]
+   },
+   "aim": {
+    "same": true,
+    "recorded": [],
+    "new": []
+   }
+  },
+  {
+   "path": "C:\\rivals-agent\\data\\l1\\tagrun1\\000342.jpg",
+   "wide": {
+    "same": true,
+    "recorded": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       2157.6,
+       91.6,
+       2300.4,
+       251.2
+      ],
+      "conf": 0.92,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": null
+     }
+    ],
+    "new": [
+     {
+      "cls": "enemy",
+      "bbox": [
+       2157.6,
+       91.6,
+       2300.4,
+       251.2
+      ],
+      "conf": 0.92,
+      "distance": null,
+      "tagged": null,
+      "track": null,
+      "plate": null
+     }
+    ]
+   },
+   "aim": {
+    "same": true,
+    "recorded": [],
+    "new": []
+   }
+  }
+ ],
+ "replays": {
+  "candidate-13521": {
+   "same": false,
+   "recorded": [
+    {
+     "pts_ms": 13121,
+     "target": null
+    },
+    {
+     "pts_ms": 13221,
+     "target": null
+    },
+    {
+     "pts_ms": 13321,
+     "target": null
+    },
+    {
+     "pts_ms": 13421,
+     "target": null
+    },
+    {
+     "pts_ms": 13521,
+     "target": null
+    }
+   ],
+   "new": [
+    {
+     "pts_ms": 13121,
+     "target": null
+    },
+    {
+     "pts_ms": 13221,
+     "target": {
+      "cls": "enemy",
+      "bbox": [
+       1291.0,
+       727.0,
+       1329.0,
+       798.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": 1,
+      "plate": false
+     }
+    },
+    {
+     "pts_ms": 13321,
+     "target": {
+      "cls": "enemy",
+      "bbox": [
+       1250.0,
+       711.0,
+       1297.0,
+       809.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": 1,
+      "plate": false
+     }
+    },
+    {
+     "pts_ms": 13421,
+     "target": {
+      "cls": "enemy",
+      "bbox": [
+       1267.0,
+       653.0,
+       1331.0,
+       767.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": 1,
+      "plate": false
+     }
+    },
+    {
+     "pts_ms": 13521,
+     "target": {
+      "cls": "enemy",
+      "bbox": [
+       1276.0,
+       555.0,
+       1371.0,
+       754.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": 1,
+      "plate": true
+     }
+    }
+   ]
+  },
+  "candidate-19821": {
+   "same": true,
+   "recorded": [
+    {
+     "pts_ms": 19421,
+     "target": null
+    },
+    {
+     "pts_ms": 19521,
+     "target": {
+      "cls": "enemy",
+      "bbox": [
+       1775.0,
+       221.0,
+       1819.0,
+       311.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": 1,
+      "plate": false
+     }
+    },
+    {
+     "pts_ms": 19621,
+     "target": {
+      "cls": "enemy",
+      "bbox": [
+       1653.0,
+       240.0,
+       1697.0,
+       305.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": 1,
+      "plate": null
+     }
+    },
+    {
+     "pts_ms": 19721,
+     "target": {
+      "cls": "enemy",
+      "bbox": [
+       1549.0,
+       240.0,
+       1615.0,
+       307.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": 1,
+      "plate": null
+     }
+    },
+    {
+     "pts_ms": 19821,
+     "target": {
+      "cls": "enemy",
+      "bbox": [
+       1525.0,
+       261.0,
+       1593.0,
+       343.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": 1,
+      "plate": null
+     }
+    }
+   ],
+   "new": [
+    {
+     "pts_ms": 19421,
+     "target": null
+    },
+    {
+     "pts_ms": 19521,
+     "target": {
+      "cls": "enemy",
+      "bbox": [
+       1775.0,
+       221.0,
+       1819.0,
+       311.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": 1,
+      "plate": false
+     }
+    },
+    {
+     "pts_ms": 19621,
+     "target": {
+      "cls": "enemy",
+      "bbox": [
+       1653.0,
+       240.0,
+       1697.0,
+       305.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": 1,
+      "plate": null
+     }
+    },
+    {
+     "pts_ms": 19721,
+     "target": {
+      "cls": "enemy",
+      "bbox": [
+       1549.0,
+       240.0,
+       1615.0,
+       307.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": 1,
+      "plate": null
+     }
+    },
+    {
+     "pts_ms": 19821,
+     "target": {
+      "cls": "enemy",
+      "bbox": [
+       1525.0,
+       261.0,
+       1593.0,
+       343.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": 1,
+      "plate": null
+     }
+    }
+   ]
+  },
+  "candidate-20021": {
+   "same": false,
+   "recorded": [
+    {
+     "pts_ms": 19621,
+     "target": null
+    },
+    {
+     "pts_ms": 19721,
+     "target": null
+    },
+    {
+     "pts_ms": 19821,
+     "target": {
+      "cls": "enemy",
+      "bbox": [
+       1151.0,
+       585.0,
+       1276.0,
+       669.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": 2,
+      "plate": false
+     }
+    },
+    {
+     "pts_ms": 19921,
+     "target": {
+      "cls": "enemy",
+      "bbox": [
+       1153.0,
+       613.0,
+       1333.0,
+       743.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": 2,
+      "plate": false
+     }
+    },
+    {
+     "pts_ms": 20021,
+     "target": {
+      "cls": "enemy",
+      "bbox": [
+       1243.0,
+       708.0,
+       1305.0,
+       795.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": 2,
+      "plate": true
+     }
+    }
+   ],
+   "new": [
+    {
+     "pts_ms": 19621,
+     "target": null
+    },
+    {
+     "pts_ms": 19721,
+     "target": {
+      "cls": "enemy",
+      "bbox": [
+       1157.0,
+       579.0,
+       1249.0,
+       634.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": 2,
+      "plate": false
+     }
+    },
+    {
+     "pts_ms": 19821,
+     "target": {
+      "cls": "enemy",
+      "bbox": [
+       1151.0,
+       585.0,
+       1276.0,
+       669.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": 2,
+      "plate": false
+     }
+    },
+    {
+     "pts_ms": 19921,
+     "target": {
+      "cls": "enemy",
+      "bbox": [
+       1153.0,
+       613.0,
+       1333.0,
+       743.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": 2,
+      "plate": false
+     }
+    },
+    {
+     "pts_ms": 20021,
+     "target": {
+      "cls": "enemy",
+      "bbox": [
+       1243.0,
+       708.0,
+       1305.0,
+       795.0
+      ],
+      "conf": 0.9,
+      "distance": null,
+      "tagged": null,
+      "track": 2,
+      "plate": true
+     }
+    }
+   ]
+  },
+  "candidate-21921": {
+   "same": true,
+   "recorded": [
+    {
+     "pts_ms": 21521,
+     "target": null
+    },
+    {
+     "pts_ms": 21621,
+     "target": {
+      "cls": "enemy",
+      "bbox": [
+       1076.8,
+       140.7,
+       1165.2,
+       239.5
+      ],
+      "conf": 0.76,
+      "distance": null,
+      "tagged": null,
+      "track": 1,
+      "plate": null
+     }
+    },
+    {
+     "pts_ms": 21721,
+     "target": null
+    },
+    {
+     "pts_ms": 21821,
+     "target": {
+      "cls": "enemy",
+      "bbox": [
+       1324.5,
+       164.1,
+       1387.5,
+       234.4
+      ],
+      "conf": 0.685,
+      "distance": null,
+      "tagged": null,
+      "track": 2,
+      "plate": null
+     }
+    },
+    {
+     "pts_ms": 21921,
+     "target": {
+      "cls": "enemy",
+      "bbox": [
+       1334.5,
+       176.1,
+       1397.5,
+       246.4
+      ],
+      "conf": 0.685,
+      "distance": null,
+      "tagged": null,
+      "track": 2,
+      "plate": null
+     }
+    }
+   ],
+   "new": [
+    {
+     "pts_ms": 21521,
+     "target": null
+    },
+    {
+     "pts_ms": 21621,
+     "target": {
+      "cls": "enemy",
+      "bbox": [
+       1076.8,
+       140.7,
+       1165.2,
+       239.5
+      ],
+      "conf": 0.76,
+      "distance": null,
+      "tagged": null,
+      "track": 1,
+      "plate": null
+     }
+    },
+    {
+     "pts_ms": 21721,
+     "target": null
+    },
+    {
+     "pts_ms": 21821,
+     "target": {
+      "cls": "enemy",
+      "bbox": [
+       1324.5,
+       164.1,
+       1387.5,
+       234.4
+      ],
+      "conf": 0.685,
+      "distance": null,
+      "tagged": null,
+      "track": 2,
+      "plate": null
+     }
+    },
+    {
+     "pts_ms": 21921,
+     "target": {
+      "cls": "enemy",
+      "bbox": [
+       1334.5,
+       176.1,
+       1397.5,
+       246.4
+      ],
+      "conf": 0.685,
+      "distance": null,
+      "tagged": null,
+      "track": 2,
+      "plate": null
+     }
+    }
+   ]
+  }
+ },
+ "summary": {
+  "frames_same_wide": 16,
+  "frames_same_aim": 16,
+  "frames": 21,
+  "replays_same": 2,
+  "replays": 4,
+  "diagnostics_files_unchanged": 53
+ }
+}
