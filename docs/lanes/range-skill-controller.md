@@ -67,8 +67,11 @@ Entry discards all old sequences and resets arming. A foreign legacy sequence
 inserted while in range mode faults neutral. Exit cancels the owned pulse;
 explicit existing modes otherwise retain their existing behavior.
 
-Each healthy step reuses `_follow` and `_aim`, requiring exactly one current,
-plausible measurement of the held tracker ID. Missing/untracked/ambiguous target,
+Each healthy step reuses `_follow` and `_aim`, requiring one current, plausible
+measurement of the held tracker ID: its single box, or, from the tracker's current
+witness, a directly matched box and its `_body_of` pieces united inside the body's
+last one-box box, with forward approach withheld (VUH-1314, docs/lanes/tracker.md).
+Missing/untracked/ambiguous target,
 coast, detector failure or fault cancels the pulse and returns neutral. A target
 switch cancels the old pulse and requires fresh arming. Guarded forward approach
 requires the normal reach/near limits plus ARM_FRAMES consecutive measurements.

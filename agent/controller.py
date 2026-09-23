@@ -294,7 +294,8 @@ from copy import deepcopy  # noqa: E402
 
 from .intents import BURST, Combo, Disengage, Engage, Idle, Pull, RangeSkill, RangeSkillResources, Search, SwingTo, WebStrike  # noqa: E402
 from .state import ANCHOR, ENEMY, TARGET, Detection  # noqa: E402
-from .tracker import CLOSE_H, CLOSE_RATIO, SIZE_RATIO  # noqa: E402
+from .tracker import TrackedBody, TrackingObservation  # noqa: E402
+from .tracker import CLOSE_H, CLOSE_RATIO, PIECE_INSIDE, PIECE_PAD, SIZE_RATIO  # noqa: E402
 
 
 @dataclass
@@ -432,6 +433,7 @@ class Controller:
     _range_seen_request: object = None
     _range_seen_result: str = "none"
     _range_trace: dict | None = None
+    _range_body: dict | None = None
     _range_lt: bool = False
     _range_execution_t: float | None = None
 
@@ -461,14 +463,16 @@ class Controller:
             self.seq.append((end, changes))
 
     # -- one step -------------------------------------------------------------
-    def step(self, state, intent, intent_t=None, execution_t=None):
+    def step(self, state, intent, intent_t=None, execution_t=None, *, tracking_observation=None):
         """`intent_t`: the frame time of the State the brain decided on (the loop's Decision.t), so a target the brain measured is
         placed at the camera angle of that frame, not of this one. None: the target is placed at this frame's angle.
         `execution_t`: range-mode authorization/actuation clock, in the same domain; defaults to State.t for replay.
-        Observations are never re-stamped with execution time."""
+        Observations are never re-stamped with execution time. `tracking_observation`
+        is an optional current tracker body witness, used only by RangeSkill."""
+        self._range_body = None
         execution_t = state.t if execution_t is None else execution_t
         if isinstance(intent, RangeSkill):
-            return self._range_step(state, intent, intent_t, execution_t)
+            return self._range_step(state, intent, intent_t, execution_t, tracking_observation)
         range_exit = self.intent_key == ("RangeSkill", None)
         old_pulse = self._range_pulse
         if range_exit:
@@ -654,6 +658,7 @@ class Controller:
             "valid_until": scalar(getattr(intent, "valid_until", None)),
             "resources": {"webs": scalar(resources.webs), "observed_t": scalar(resources.observed_t)}
             if isinstance(resources, RangeSkillResources) else None,
+            "body_observation": deepcopy(self._range_body) if event == "step" else None,
             "accepted": accepted, "reason": reason, "cancel_reason": cancel,
             "pulse_decision_id": owner.decision_id if owner else None,
             "pulse_target_id": owner.target_id if owner else None,
@@ -673,7 +678,104 @@ class Controller:
         self.stick = (out["rx"], out["ry"])
         return out
 
-    def _range_step(self, state, intent, intent_t, execution_t):
+    @classmethod
+    def _range_body_measurement(cls, state, target, observation):
+        """(measurement, members) of the target's body from the tracker's current witness, or the refusal reason.
+
+        `invalid_tracking_observation`: the witness is not this State's, or is not an association the tracker could have made: raw boxes
+        that are not `state.detections`, bodies that do not partition them by id, a mixed-class body, pieces on a body that was not
+        matched on its own, a reference `own` could not have been matched near, or a piece that is not inside its body the way
+        `Tracker._body_of` requires. The last makes a hand-built grouping of same-id boxes fail: an id alone is not a body.
+        `target_missing_or_ambiguous`: a well-formed witness that gives no single current body for the target, as without a witness:
+        no body with its id, a member that fails the target checks, members that disagree about distance, a box group `_bodies` joined
+        (one body drawn in two and two bodies in line look alike, so neither is united), a reference too unlike `own` in size, or a union
+        that leaves the body's `whole` box (its last one-box measurement) padded by PIECE_PAD, or no recent `whole` at all.
+        Only a matched box plus its `_body_of` pieces is united; one member is used as is. Other ids' boxes are checked for type and
+        partition only, so a flaw in an unrelated box never vetoes the target. These checks hold a hand-built witness to unions the
+        tracker could plausibly report; they cannot prove where a witness came from.
+        """
+        invalid, missing = "invalid_tracking_observation", "target_missing_or_ambiguous"
+        if (type(observation) is not TrackingObservation or not cls._range_number(observation.t) or observation.t != state.t
+                or type(observation.frame) is not tuple or observation.frame != tuple(state.frame)
+                or type(observation.raw) is not tuple or type(observation.coasting) is not tuple
+                or type(observation.bodies) is not tuple or observation.coasting != tuple(state.coasting)
+                or any(type(i) is not int or i < 0 for i in observation.coasting)
+                or len(set(observation.coasting)) != len(observation.coasting)):
+            return invalid
+        raw = observation.raw
+        if (any(type(d) is not Detection or type(d.track) is not int or d.track < 0 or d.track in observation.coasting for d in raw)
+                or raw != tuple(state.detections)):
+            return invalid
+        covered, found = set(), None
+        for body in observation.bodies:
+            groups = (body.own, *body.pieces) if type(body) is TrackedBody and type(body.pieces) is tuple else ()
+            if (type(body) is not TrackedBody or type(body.track) is not int or body.how not in ("matched", "entering", "new")
+                    or any(type(g) is not tuple or not g or any(type(i) is not int or not 0 <= i < len(raw) for i in g) for g in groups)
+                    or not groups or len(set(body.members)) != len(body.members) or covered.intersection(body.members)
+                    or set(body.members) != {i for i, d in enumerate(raw) if d.track == body.track}
+                    or any(raw[i].cls != body.cls for i in body.members)
+                    or (body.pieces and (body.how != "matched" or type(body.reference) is not tuple or len(body.reference) != 4
+                                         or (body.whole is not None and (type(body.whole) is not tuple or len(body.whole) != 4))))
+                    or (not body.pieces and (body.reference is not None or body.whole is not None))):
+                return invalid
+            covered.update(body.members)
+            if body.track == target.track:
+                found = body
+        if covered != set(range(len(raw))):
+            return invalid
+        if found is None or found.cls != target.cls:
+            return missing
+        members = [raw[i] for i in found.members]
+        if not all(cls._range_detection(d, state.frame) for d in members):
+            return missing
+        union = (min(d.bbox[0] for d in members), min(d.bbox[1] for d in members),
+                 max(d.bbox[2] for d in members), max(d.bbox[3] for d in members))
+        if found.bbox != union:
+            return invalid
+        if len(members) == 1:
+            return members[0], tuple(members)
+        if any(len(g) > 1 for g in (found.own, *found.pieces)):
+            return missing
+        ref, own = found.reference, raw[found.own[0]].bbox
+        if not all(cls._range_number(x) for x in ref):
+            return invalid
+        size = lambda b: max(b[2] - b[0], b[3] - b[1])                                      # noqa: E731
+        # Tracker._cost matched `own` within GATE (or IOU_MIN overlap, under sqrt 2) sizes of the reference moved by at most one size.
+        span = max(size(ref), size(own), 1.0)
+        if math.dist(((ref[0] + ref[2]) / 2, (ref[1] + ref[3]) / 2), ((own[0] + own[2]) / 2, (own[1] + own[3]) / 2)) >= (1 + math.sqrt(2)) * span:
+            return invalid
+        # Its size gate compared heights, possibly a remembered one; past CLOSE_RATIO in size (or a degenerate reference) this step
+        # does not vouch for the union.
+        if max(size(ref), size(own)) > CLOSE_RATIO * max(min(size(ref), size(own)), 1e-9):
+            return missing
+        body, pad = (min(ref[0], own[0]), min(ref[1], own[1]), max(ref[2], own[2]), max(ref[3], own[3])), PIECE_PAD * max(size(ref), 1.0)
+        for g in found.pieces:                  # Tracker._body_of, recomputed: inside its padded body, and no taller than it
+            b = raw[g[0]].bbox
+            w = max(0.0, min(b[2], body[2] + pad) - max(b[0], body[0] - pad))
+            h = max(0.0, min(b[3], body[3] + pad) - max(b[1], body[1] - pad))
+            if b[3] - b[1] > body[3] - body[1] + pad or w * h / max((b[2] - b[0]) * (b[3] - b[1]), 1e-9) < PIECE_INSIDE:
+                return invalid
+        # The track's box takes in every piece, so a second bot absorbed once can be followed out of the body one update at a time
+        # (review T3: LT with the crosshair on it). The union stays inside where the body last stood as one box, padded as a piece is.
+        whole = found.whole
+        if whole is None:
+            return missing
+        if not all(cls._range_number(x) for x in whole):
+            return invalid
+        cap = PIECE_PAD * max(size(whole), 1.0)
+        if not (whole[0] - cap <= union[0] and whole[1] - cap <= union[1] and union[2] <= whole[2] + cap and union[3] <= whole[3] + cap):
+            return missing
+        # A known distance that disagrees would fall to the height fallback and could allow approach outside reach.
+        if any(d.distance != members[0].distance for d in members):
+            return missing
+
+        def consensus(field):
+            value = getattr(members[0], field)
+            return value if all(getattr(d, field) == value for d in members) else None
+        return (replace(members[0], bbox=union, conf=min(d.conf for d in members),
+                        tagged=consensus("tagged"), plate=consensus("plate")), tuple(members))
+
+    def _range_step(self, state, intent, intent_t, execution_t, tracking_observation):
         """One-shot authorization is separate from continuously updated movement.
 
         No rejected request is buffered. This branch never reaches legacy seq or
@@ -698,6 +800,7 @@ class Controller:
             self._range_seen_result = "rejected"
 
         def refuse(reason):
+            self._range_body = None             # a refused step measured nothing, whichever check refused it
             self._range_cancel()
             self.track, self.wanted, self.wanted_id = None, None, None
             if fresh:
@@ -740,6 +843,12 @@ class Controller:
         if not isinstance(state.coasting, (list, tuple)) or intent.target.track in state.coasting:
             return refuse("target_coasting")
         held = [d for d in state.detections if isinstance(d, Detection) and d.track == intent.target.track]
+        members = held
+        if tracking_observation is not None:
+            body = self._range_body_measurement(state, intent.target, tracking_observation)
+            if isinstance(body, str):
+                return refuse(body)
+            held, members = [body[0]], body[1]
         if len(held) != 1 or held[0].cls != intent.target.cls or not self._range_detection(held[0], state.frame):
             return refuse("target_missing_or_ambiguous")
         cancel = None
@@ -753,12 +862,19 @@ class Controller:
         plausible = mine and PLAUSIBLE[0] <= self.track.h / state.frame[1] <= PLAUSIBLE[1]
         if not plausible:
             return refuse("target_not_measured")
+        # Several members are one body drawn in pieces, which the finder does at close range, and their union measures it short
+        # (slot 4: 416-503 px against 525-536 px whole-box neighbours, across near_h). Aim, arming and requests use it; approach does not.
+        withheld = len(members) > 1
+        self._range_body = {"t": t, "frame": tuple(state.frame), "track": held[0].track,
+                            "bbox": tuple(held[0].bbox), "member_count": len(members),
+                            "plate_count": sum(d.plate is True for d in members), "approach_withheld": withheld,
+                            "source": "tracker_current_body" if tracking_observation is not None else "raw_single"}
         self.stable += 1
         aligned = self._aim(state, out, dt)
         armed = self.stable >= ARM_FRAMES
         far = beyond_reach(self.track, state.frame[1])
         near = self.track.h / state.frame[1] >= near_h()
-        out["ly"] = 1.0 if armed and self.track.confirmed and not near and not far else 0.0
+        out["ly"] = 1.0 if armed and self.track.confirmed and not near and not far and not withheld else 0.0
 
         pulse = self._range_pulse
         # Request expiry prevents new starts. An already-owned pulse retains its

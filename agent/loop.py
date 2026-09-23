@@ -541,15 +541,19 @@ class Loop:
         self.executor_events = []
         lock, tracker, self.coasting = threading.Lock(), tracker or Tracker(), ()
 
-        def track(dets, t, size=None, clip=None):       # the reflex thread and the decision worker share one tracker
+        def track(dets, t, size=None, clip=None, *, observation=False):   # the reflex thread and the decision worker share one tracker
             # Invariant `state.coasting` rests on: the wide finder runs only when the aim crop found nothing, so a decision State
             # carries the crop's boxes (the bot among them) whenever the crop saw it; the whole-frame search never drops a bot the crop held.
             cam = self.cams.get(t)                      # the camera this frame showed, noted by the reflex tick that took it
             with lock:
                 extra = {k: v for k, v in (("cam", cam), ("clip", clip)) if v is not None}
-                out = tracker.update(dets, t, size, **extra)
-                self.coasting = tuple(getattr(tracker, "coasting", ()))
-                return out
+                snapshot = (tracker.observe(dets, t, size, **extra)
+                            if observation and callable(getattr(tracker, "observe", None)) else None)
+                out = list(snapshot.raw) if snapshot is not None else tracker.update(dets, t, size, **extra)
+                self.coasting = snapshot.coasting if snapshot is not None else tuple(getattr(tracker, "coasting", ()))
+                # Detach both under the lock; a worker may update the tracker
+                # before this reflex tick reaches Controller.step or its log.
+                return (out, self.coasting, snapshot) if observation else out
 
         self.track, self.cams = track, {}
         self.decider = Decider(decide, percept, decision_hz, threaded, track, lambda: self.coasting,
@@ -736,7 +740,11 @@ class Loop:
         self.size = size = p.size(frame)
         a0 = time.perf_counter()
         self._note_cam(t, size)
-        dets = self.track(p.aim(frame), t, size, clip=aim_window(size))
+        tracking_observation = reflex_coasting = None
+        if self.range_skill_mode:
+            dets, reflex_coasting, tracking_observation = self.track(p.aim(frame), t, size, clip=aim_window(size), observation=True)
+        else:
+            dets = self.track(p.aim(frame), t, size, clip=aim_window(size))
         self.aim_ms.append((time.perf_counter() - a0) * 1000)
         if self.decision_slots is None:
             self.decider.offer(frame, t, size, dets)
@@ -751,14 +759,17 @@ class Loop:
         if self.range_skill_mode and not isinstance(intent, (RangeSkill, Idle, Disengage)):
             intent, source = Idle(), "range_skill_invalid_intent"
         execution = {"execution_t": self._execution_now()} if self.range_skill_mode else {}
-        pad = clean(self._keepalive(self.ctrl.step(State(t=t, frame=size, detections=dets, coasting=self.coasting), intent,
+        if tracking_observation is not None:
+            execution["tracking_observation"] = tracking_observation
+        coasting = reflex_coasting if self.range_skill_mode else self.coasting   # legacy: read at step time, as before
+        pad = clean(self._keepalive(self.ctrl.step(State(t=t, frame=size, detections=dets, coasting=coasting), intent,
                                                    intent_t=d.t if fresh else None, **execution), t))
         origin = None
         if self.range_skill_mode:
             # In-memory only, before send/cancellation can replace the step.
             # No writer runs until the actuator's send or release attempt returns.
             if self.log:
-                origin = {"observation_t": t, "proposed_pad": deepcopy(pad)}
+                origin = {"observation_t": t, "proposed_pad": deepcopy(pad), "coasting": list(reflex_coasting)}
                 trace = self.ctrl.range_skill_trace
                 if trace is not None:
                     origin["range_skill_trace"] = trace

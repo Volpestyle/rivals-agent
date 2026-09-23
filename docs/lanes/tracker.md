@@ -3,7 +3,8 @@
 `agent/tracker.py` gives every detection a persistent `track` id at the one place detections become a `State`: `agent.loop` calls
 `Tracker.update(dets, t, frame)` on the aim crop's boxes every reflex tick and on the whole-frame search's boxes at a decision tick, on
 one instance under one lock. Ids are never reused. Stdlib only; tests in `tests/test_tracker.py` and, on recorded frames,
-`tests/test_tracker_frames.py`.
+`tests/test_tracker_frames.py`. In range mode the reflex call is `Tracker.observe`: the same update, which also returns how it
+associated each id's boxes (see "The body witness (range mode)"; tests in `tests/test_tracked_body_execution.py`).
 
 ```mermaid
 flowchart LR
@@ -392,7 +393,89 @@ age limits above; after that the target is gone and the nearest hostile is picke
   missing", not gone, and takes a new target only once its id was present at the previous decision too.
 - `jev.reassociate` follows an answered target by id and class, returns it as-is while it coasts, and otherwise falls back to the
   nearest box of its class within `MATCH_FRAC`.
-- **The controller does not.** `Controller._follow` keeps its own `Track` and re-associates it by bearing each step; it never reads
-  `Detection.track`. Brain identity is not actuator identity: the pad steers to whichever box lies at the tracked bearing, so brain and
-  controller can disagree about which box is the target when two bots are close, and the disagreement can persist for as long as the
+- **The legacy controller does not.** `Controller._follow` keeps its own `Track` and re-associates it by bearing each step; it never
+  reads `Detection.track`. Brain identity is not actuator identity: the pad steers to whichever box lies at the tracked bearing, so brain
+  and controller can disagree about which box is the target when two bots are close, and the disagreement can persist for as long as the
   bearing re-association stays on the other bot.
+- **The range-skill controller does.** It measures only the boxes carrying the held id, and in range mode it reads them through the
+  tracker's body witness (next section), not by id alone.
+
+## The body witness (range mode)
+
+The tracker gives every piece of a close bot the bot's id (the two sections above), and the range-skill controller refused any tick on
+which the held id had more than one box. On Galacta slot 4 that refused 12 first-consumed decisions, 53-58 and 155-160, as
+`target_missing_or_ambiguous` (VUH-1314; `docs/evidence/range-support-followup-20260922`). Grouping the boxes by id is no answer:
+the same id also covers two boxes `_bodies` joined as stacked, which may be two bots (the 250 x 200 pair under "Split bodies").
+
+**The boundary.** In range mode `Loop.track` calls `Tracker.observe` in place of `update`, under the same lock. It returns a frozen
+`TrackingObservation`, detached before the lock is released, so the decision worker's next update cannot change it:
+
+- `raw` is exactly what `update` returns. It is the decision and model input, fragments and all, unchanged.
+- `coasting`, and the reflex `State` is built from `raw` and `coasting`.
+- A `TrackedBody` per id, recording the association itself:
+  - `own`: the box group the id took on its own. `how` says whether it was `matched` by cost, `entering` at the crop's edge, or `new`.
+  - `pieces`: the groups `_body_of` added to that matched body.
+  - `reference`: the track's last box, in this frame's camera, that those pieces were tested against.
+  - `whole`: with pieces, the track's box from its last update as one box, in this frame's camera, at most `HIST_S` old.
+  Neither reference box is ever measured; they gate membership only.
+
+**The rule** (`Controller._range_body_measurement`):
+- **One member** is used as is, exactly the raw rule.
+- **Several members are united only when they are one matched box plus single-box `_body_of` pieces.** The controller recomputes
+  `_body_of` against the exported reference (each piece at least `PIECE_INSIDE` inside the reference-plus-own box padded by `PIECE_PAD`,
+  and no taller than it). It also checks that the reference could have been matched to `own`:
+  - its centre within (1 + sqrt 2) sizes, which is the cost gate plus one predicted box size, a bound the tracker always meets;
+  - its size within `CLOSE_RATIO`.
+  A hand-built grouping by id therefore fails. These checks hold a hand-built witness to associations the tracker could plausibly have
+  made; they do not prove where a witness came from. A reference forged inside both bounds, together with a forged `whole` around
+  both, can still unite two separate boxes (review S7e). Live witnesses come only from `Tracker.observe` under the loop's lock.
+- **The union must also stay inside `whole` padded by `PIECE_PAD`** (of `whole`'s size), and a united body needs a `whole` at all.
+  The track's box takes in every piece it absorbs, and the next update's pieces are tested against that box. So a second bot taken as a
+  piece once could be followed out of the body a few pixels per update. In the review's T3 a smaller bot stepped out of a near target
+  at 240 px/s and kept its id; before this cap two starts were accepted with the crosshair on it. The cap is `whole`, the body where it
+  last stood by itself. Failing it, or having no recent `whole`, is `target_missing_or_ambiguous`.
+- **Any multi-box `_bodies` group in the target's members is refused** as `target_missing_or_ambiguous`, the status quo for that
+  geometry: one body drawn in two and two bodies in line look alike.
+- `invalid_tracking_observation` means the witness is not this State's, or is not an association the tracker could have made. The
+  cast probe latches it as a hard refusal. A well-formed witness with no single body for the target is `target_missing_or_ambiguous`,
+  as without a witness. Other ids' boxes need only a type and their place in the partition, so a flaw in an unrelated box
+  (`outline.py` can in theory round a clipped box to zero height) never vetoes the target.
+
+**Approach is withheld on a united body.** The finder fragments a bot at close range, and the union measures it short. On slot 4 the
+fragment unions are 416-503 px tall, against 525-536 px for the whole box on the neighbouring ticks. `near_h` is 0.325 (468 px at
+1440p), so the union alone would walk at a bot already in near range, as the first repair did on 48 ticks. Aim, arming, request
+accounting and pulse authorization use the union; forward approach (`ly`) stays 0. The trace's `body_observation` records `bbox`,
+`member_count`, `plate_count`, `approach_withheld` and `source`. It is None on every refusal, including one after measurement.
+
+**Measured on slot 4** (`docs/evidence/range-fragment-repair-20260922`, recorded boxes and decisions, pure replay):
+- HEAD's replay reproduces the recording on all 1068 range steps: reasons, pads and ids.
+- A fresh `observe` reproduces every recorded id. The tracker's camera in that replay is the recording's own: it comes from a
+  controller that reproduces every recorded pad. The replayed controller's aim, which the recorded pixels never saw, is not used.
+- Of the 64 refused ticks, 48 are now measured bodies (a matched box plus 1-4 pieces). They step as `no_new_start` 9,
+  `duplicate_no_new_start` 16 and `decision_expired` 23, with `ly` 0 on all 64.
+- **16 stay refused**, rows 864-882 (decisions 156-160; the first consumptions of 157-159). There the finder drew Galacta's left side
+  as two boxes one above the other ((1131, 603, 1215, 813) over (1042, 852, 1231, 1034) at row 865), which `_bodies` joins as stacked,
+  with three pieces beside them.
+- 9 of the 12 decisions are repaired.
+- No reason changes anywhere else. Starts 0 -> 0, LT ticks 0 -> 0, forward ticks 76 -> 76. Aim moves on 484 ticks.
+- The `whole` cap costs none of the 48. Their unions are 379-470 px wide, at most 0.99 of the last one-box width; the pieces fit
+  inside where Galacta last stood whole.
+
+Residuals:
+- **Stacked groups stay refused**, including d157-159's real single Galacta. Uniting them needs native evidence that separates a body
+  split in two from two bodies in line. Those rows are the first native examples of the split kind.
+- **A smaller bot inside a near bot's box is taken as its piece** (the residual under "Split bodies"). On the update it is taken, it
+  adds no area: the union is the near bot's own box. That does not last by itself. The track's box keeps the piece, so later updates
+  can take the bot as a piece again as it walks out, and the id follows it for as long as it stays in view (review T3).
+  - The `whole` cap bounds what the controller measures: the union never leaves the body's last one-box box plus the piece pad.
+    In T3 it refuses from the 17th tick, and the union is never wider than 309 px against the target's 250.
+  - Inside that box a second bot still counts. On a fragmented own match it can pull the union's centre by about 100 px (review T1).
+  - The brain may still follow it under the held id.
+- **The union misses parts of the body, so the aim point moves.** On d53 the centre is x ~1330 against ~1284 for the neighbouring
+  whole box, about 46 px or 2.8 degrees at 2560 wide. That still lies inside the body. It is not fixed here.
+- **The reference size bound can refuse a real association** when the tracker matched through a remembered height. Such a tick is
+  refused, never united.
+- **`plate_count` is recorded, not a gate.** All 12 multi-member bodies in slot 4's decision States have exactly one `plate=True`
+  member. Reflex rows do not log `plate`, so only new traces can show it on reflex frames.
+- **`range-cast-probe` runs in range mode too.** Its scripted starts see the same rule: a matched box plus its pieces only, with
+  approach withheld.

@@ -3,8 +3,10 @@
 The finder returns boxes with no memory, so the brain re-picked "the enemy nearest where the last one was" every tick while the controller
 kept its own private Track, and the two could disagree about who the target was. Here every detection gets a `track` id at the one place
 detections become a State (agent.loop calls `update` for the controller's per-frame boxes and for the brain's whole-frame search, on one
-instance). The brain's memory and Jev's re-association follow the id. The controller does not read it: its `_follow` still re-associates
-its own Track by bearing (docs/lanes/tracker.md).
+instance). The brain's memory and Jev's re-association follow the id. The legacy controller does not read it: its `_follow` still
+re-associates its own Track by bearing. The range-skill controller measures only the held id, and in range mode the loop calls `observe`,
+which also returns how this update associated each id's boxes, so one body drawn in pieces can be told from boxes that share an id for
+another reason (docs/lanes/tracker.md, "The body witness (range mode)").
 
 An id survives the four ways the green finder loses a bot (docs/lanes/l3-detector.md, "Where the 13 misses come from"):
 
@@ -22,6 +24,49 @@ or a small box). Ids are never reused.
 """
 import math
 from dataclasses import dataclass, replace
+
+from .state import Detection
+
+
+@dataclass(frozen=True)
+class TrackedBody:
+    """How one update gave one id its boxes, as indices into TrackingObservation.raw: the association itself, not a grouping by id.
+
+    `own`: the box group the id took on its own. `how` says which way: matched to the track by cost ("matched"), a sliver at the aim
+    crop's edge ("entering"), or a new track ("new"). A group of two or more boxes is `_bodies` joining boxes stacked one above the other,
+    which is one body drawn in two or two bodies standing in line (docs/lanes/tracker.md, "Split bodies"). `pieces`: the box groups
+    `_body_of` took as pieces of a matched body. `reference`: the track's last box, in this frame's camera, that those pieces were tested
+    against (with `own`, padded); None when there are none. `whole`: with pieces, the track's box from its last update as one box, in
+    this frame's camera and at most HIST_S old, else None. The track's box takes in every piece, so a second bot absorbed once can be
+    followed out of the body one update at a time; `whole` is where the body last stood by itself. Neither is ever a measurement.
+    `bbox`: every member's union.
+    """
+    track: int
+    cls: str
+    how: str
+    own: tuple[int, ...]
+    pieces: tuple[tuple[int, ...], ...]
+    reference: tuple | None
+    whole: tuple | None
+    bbox: tuple
+
+    @property
+    def members(self):
+        return self.own + tuple(i for g in self.pieces for i in g)
+
+
+@dataclass(frozen=True)
+class TrackingObservation:
+    """One update's detections and their association, detached from the tracker.
+
+    Call `observe` under the same external lock as `update` when sharing a tracker. `raw` is exactly what `update` returns (the decision
+    and model input, fragments and all); `bodies` partition it and are a reflex-only witness of which boxes are one body.
+    """
+    t: float
+    frame: tuple
+    raw: tuple[Detection, ...]
+    coasting: tuple[int, ...]
+    bodies: tuple[TrackedBody, ...]
 
 MAX_AGE_S = 0.8      # a confirmed track is held this long unseen: a hit flash (~0.35 s), a pass behind the hero (~0.5 s), with margin
 CLOSE_AGE_S = 1.5    # ...and this long once its box is close: the controller's own CLOSE_LOST_S for a point-blank outline off the edge
@@ -61,6 +106,7 @@ class _Track:
     vy: float = 0.0
     hs: list = None      # (t, height) over the last HIST_S
     cam: tuple = None    # (yaw, pitch) degrees of the camera the box was last placed in; None = not known
+    solo: tuple = None   # (box, cam, t) of its last update as one box (TrackedBody.whole)
 
     def __post_init__(self):
         self.hs = [(self.seen_t, self.box[3] - self.box[1])]
@@ -206,6 +252,13 @@ class Tracker:
         into it before anything is matched, so a camera turn does not carry a bot past its gate: on stall30 the re-aim turned 19 degrees
         between a bot's last whole-frame box and its first aim-crop box, 1.5 track sizes on screen, and it got a new id both times.
         `clip`: (x1, y1, x2, y2) of the region the boxes were found in when it is not the whole frame (the aim crop)."""
+        return self._update(dets, t, frame, cam, clip)
+
+    def observe(self, dets, t, frame, cam=None, clip=None):
+        """`update`, returning a TrackingObservation: the same detections, frozen, with how this update associated each id's boxes."""
+        return self._update(dets, t, frame, cam, clip, observation=True)
+
+    def _update(self, dets, t, frame, cam, clip, *, observation=False):
         dets = dets or []
         stored = {}                              # each track's own box and camera, put back unless a newer measurement replaces them;
                                                  # keyed by track id, never id(): a new track can reuse an expired one's address
@@ -227,9 +280,12 @@ class Tracker:
             got[gi] = self.tracks[k]
             used.add(k)
         direct = dict(got)                       # the bodies matched on their own: the only witnesses (an absorbed piece is never one,
-        for gi, g in enumerate(groups):          # or the footprint chains outward piece by piece and the result depends on the order)
+        reference = {tr.id: tr.box for tr in direct.values()}   # or the footprint chains outward piece by piece and the result depends
+        pieces = set()                                          # on the order); `_body_of` tests pieces against these boxes
+        for gi, g in enumerate(groups):
             if gi not in direct and (tr := self._body_of(boxes[gi], dets[g[0]].cls, direct, boxes)) is not None:
                 got[gi] = tr
+                pieces.add(gi)
         if clip is not None:                     # a box cut by the aim crop's edge: the part of a bot that has come in so far
             for gi, g in enumerate(groups):
                 if gi not in got and (k := self._entering(boxes[gi], dets[g[0]].cls, clip, used, t)) is not None:
@@ -253,6 +309,7 @@ class Tracker:
                 continue
             if tr is None:
                 tr = _Track(self._next, dets[g[0]].cls, box, t, cam=cam[:2] if cam is not None else None)
+                tr.solo = (box, tr.cam, t) if len(g) == 1 else None
                 self._next += 1
                 self.tracks.append(tr)
             else:
@@ -268,6 +325,8 @@ class Tracker:
                 tr.cam = cam[:2] if cam is not None else tr.cam
                 moved.add(tr.id)
                 tr.hs = [(tt, h) for tt, h in tr.hs if t - tt <= HIST_S] + [(t, box[3] - box[1])]
+                if len(g) == 1 and parts[tr.id] == [gi]:
+                    tr.solo = (box, tr.cam, t)
             ids.update({i: tr.id for i in g})
         for tr in self.tracks:
             if tr.id in stored and tr.id not in moved:
@@ -277,4 +336,26 @@ class Tracker:
         out = [replace(d, track=ids[i]) for i, d in enumerate(dets)]
         seen = {tr.id for tr in got.values()} | {tr.id for tr in self.tracks if tr.seen_t >= t}
         self.coasting = tuple(tr.id for tr in self.tracks if tr.id not in seen and tr.hits >= CONFIRM)
-        return out
+        if not observation:
+            return out
+        raw = tuple(replace(d, bbox=tuple(d.bbox)) for d in out)
+        found = {}                               # id -> [how, own group, piece groups], from the association above
+        for gi, g in enumerate(groups):
+            g, body = tuple(sorted(g)), found.setdefault(ids[g[0]], [None, (), []])
+            if gi in pieces:
+                body[2].append(g)
+            else:                                # one own group per id: a track matches once, and a new id is one group's
+                body[:2] = "matched" if gi in direct else "entering" if gi in got else "new", g
+        by_id = {tr.id: tr for tr in self.tracks}
+
+        def whole(tr):                           # its last one-box measurement, if recent, in this frame's camera
+            if tr is None or tr.solo is None or t - tr.solo[2] > HIST_S:
+                return None
+            box, was, _ = tr.solo
+            return _turned(box, was, cam, frame) if cam is not None and frame is not None and was is not None else box
+        bodies = []
+        for tid, (how, own, parts) in sorted(found.items(), key=lambda kv: min(kv[1][1] + sum(kv[1][2], ()))):
+            members = own + sum(parts, ())
+            bodies.append(TrackedBody(tid, raw[members[0]].cls, how, own, tuple(parts), reference[tid] if parts else None,
+                                      whole(by_id.get(tid)) if parts else None, _union([raw[i].bbox for i in members])))
+        return TrackingObservation(t, tuple(frame), raw, self.coasting, tuple(bodies))

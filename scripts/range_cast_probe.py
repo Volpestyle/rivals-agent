@@ -29,7 +29,8 @@ TARGET_REFUSALS = frozenset({"unknown_detector", "target_coasting",
 HARD_REFUSALS = frozenset({"invalid_state_time", "invalid_execution_time", "invalid_decision_id",
                            "decision_reused_or_reordered", "invalid_request", "invalid_decision_time",
                            "decision_expired_or_invalid", "invalid_resources", "invalid_resource_time",
-                           "future_resources", "invalid_frame", "foreign_sequence", "invalid_press_calibration"})
+                           "future_resources", "invalid_frame", "foreign_sequence", "invalid_press_calibration",
+                           "invalid_tracking_observation"})
 
 
 def finite(value):

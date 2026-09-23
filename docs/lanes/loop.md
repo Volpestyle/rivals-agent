@@ -226,6 +226,11 @@ segments (`no_hud` ends, `hud_returned` starts), so no training window crosses o
 `State.from_dict` (one per line, extracted, they are `agent.replay`'s input). Tests: `test_the_log_loads_through_agent_demos_as_an_own_recording`,
 `test_a_hud_gap_becomes_a_segment_boundary_the_loader_respects`, and the same on real `tagrun0` frames.
 
+In range mode (`range-skill`, `range-cast-probe`) a row's `coasting` is the coasting in the reflex `State` the controller stepped on,
+taken with the boxes from one `Tracker.observe` under the tracker lock (VUH-1314). Before, it was a later read of the shared
+`Loop.coasting`, which the decision worker's whole-frame update can rewrite in between, so older range rows may differ. The shape is
+unchanged. Outside range mode it is still that later read.
+
 ## Seams
 
 - **The brain** is any callable `decide(state, memory) -> Intent`; the loop reads nothing else of it. `--brain scripted` is

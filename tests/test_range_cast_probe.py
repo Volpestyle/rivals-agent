@@ -154,6 +154,7 @@ def test_reflex_loss_latches_before_next_decision_even_when_same_id_returns(harn
     ("ambiguous", "target_missing_or_ambiguous", True),
     ("invalid_frame", "invalid_frame", True),
     ("future_resources", "future_resources", True),
+    ("invalid_witness", "invalid_tracking_observation", True),
     ("unknown_ammo", "unsupported_or_empty_ammo", False),
     ("stale_ammo", "stale_resources", False),
     ("unaligned", "unaligned_target", False),
@@ -178,7 +179,12 @@ def test_latch_classifies_actual_controller_trace_without_broadening_slot_refusa
         intent = replace(intent, resources=RangeSkillResources(None if fault == "unknown_ammo" else 5,
                          .2 if fault == "future_resources" else -.1 if fault == "stale_ammo" else .1))
     execution_t = .2 if fault == "expired" else .18 if fault == "late_press" else .1
-    controller.step(state, intent, intent_t=.1, execution_t=execution_t)
+    witness = {}
+    if fault == "invalid_witness":              # a tracker witness from another frame: a contract fault, not a lost target
+        from agent.tracker import TrackedBody, TrackingObservation
+        witness["tracking_observation"] = TrackingObservation(.09, (1280, 720), (bot,), (), (
+            TrackedBody(bot.track, bot.cls, "matched", (0,), (), None, None, bot.bbox),))
+    controller.step(state, intent, intent_t=.1, execution_t=execution_t, **witness)
     trace = controller.range_skill_trace
     assert trace["reason"] == reason
     schedule = probe.CastSchedule((.45, .35, .55, .65), lambda: execution_t)
@@ -194,6 +200,7 @@ def test_latch_classifies_actual_controller_trace_without_broadening_slot_refusa
         assert schedule.reflex_latch["reason"] == reason
         assert schedule.reflex_latch["observation_t"] == .1
         assert schedule.reflex_latch["execution_t"] == execution_t
+        assert schedule.failure == ("controller_hard_refusal" if reason in probe.HARD_REFUSALS else "target_identity_lost")
     else:
         assert schedule.failure is None
 

@@ -1,0 +1,2160 @@
+{
+ "inputs": {
+  "slot4_log": {
+   "path": "data/l1/galacta-pilot-20260922-04-learned/frames.jsonl",
+   "sha256": "1eadcb5efba274883e103ebfae5e5f62c4f720008c75c3ea5ec226baf9e071a6"
+  },
+  "base_commit": "83c6739",
+  "working_tree_lf": {
+   "agent/tracker.py": "4b4affaf62ff7e19522508645de1b9b41f2749ea72b7be6899b766d356d67f5a",
+   "agent/controller.py": "c90af6c4f8cc1d3a7521766da91b53951c9cd5d5e2939413d2f2906e7738bf32",
+   "agent/loop.py": "4e006d09687a2a0add6210cddabbb4299c0a260b7125ae23dcad4f78394e9533",
+   "agent/state.py": "7ee6b826c38090d28d44b598d77ddeabf22f4593cf64ea45012b461a2377c149",
+   "agent/intents.py": "836692b7c241df0d2a57c109230f8047b1c4d0a4392782bfb652f883c6f50cf3",
+   "agent/brain.py": "71165c51a98df3f7bc170eb71d86e3db117dd084f57c788ec96ca1560ccffaec",
+   "scripts/range_cast_probe.py": "ce609d78cab6e0eaee43bf8029d8401b020566beac25743f406c2ffd2b9a7f5f"
+  },
+  "scripts_lf": {
+   "run.py": "609c8a6f55af148824c8eff430cd3563c737816e847297e00cf5a33de74dd030",
+   "replay.py": "ab807b0995c7916762a53697db758370d201d54ffa9db4a9b655e20c1cb6b456",
+   "scenarios.py": "b9f90c6c9143ce4afe0ed75b9def505d2739afe6f2a7001cc65711a0605a2e04"
+  }
+ },
+ "head_replay_fidelity_to_recording": {
+  "range_steps": 1068,
+  "reason_mismatches": 0,
+  "max_pad_abs_diff": 0.0,
+  "rows_with_ids_differing": 0
+ },
+ "tree_without_witness_vs_head": {
+  "reason_changes": 0,
+  "pad_changes": 0
+ },
+ "tree_observe_rows_with_ids_differing_from_recording": 0,
+ "tree_observe_camera_pads_differing_from_recording": 0,
+ "former_refusal_ticks": {
+  "count": 64,
+  "after_census": {
+   "decision_expired": 23,
+   "no_new_start": 9,
+   "duplicate_no_new_start": 16,
+   "target_missing_or_ambiguous": 16
+  },
+  "association_census": {
+   "{\"how\": \"matched\", \"own\": 1, \"pieces\": [1, 1, 1, 1]}": 20,
+   "{\"how\": \"matched\", \"own\": 1, \"pieces\": [1, 1, 1]}": 25,
+   "{\"how\": \"matched\", \"own\": 1, \"pieces\": [1, 1]}": 1,
+   "{\"how\": \"matched\", \"own\": 1, \"pieces\": [1]}": 2,
+   "{\"how\": \"matched\", \"own\": 2, \"pieces\": [1, 1, 1]}": 16
+  },
+  "ly_after_census": {
+   "0.0": 64
+  },
+  "measured_union_w_range": [
+   379,
+   470
+  ],
+  "measured_union_w_over_last_one_box_w_max": 0.9915611814345991,
+  "table": [
+   {
+    "row": 287,
+    "d": 52,
+    "boxes": 5,
+    "before": "target_missing_or_ambiguous",
+    "after": "decision_expired",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": 5,
+    "union_h": 481,
+    "union_w": 381,
+    "last_one_box_w": 474,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 288,
+    "d": 52,
+    "boxes": 5,
+    "before": "target_missing_or_ambiguous",
+    "after": "decision_expired",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": 5,
+    "union_h": 450,
+    "union_w": 381,
+    "last_one_box_w": 474,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 289,
+    "d": 52,
+    "boxes": 5,
+    "before": "target_missing_or_ambiguous",
+    "after": "decision_expired",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": 5,
+    "union_h": 481,
+    "union_w": 381,
+    "last_one_box_w": 474,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 290,
+    "d": 53,
+    "boxes": 4,
+    "before": "target_missing_or_ambiguous",
+    "after": "no_new_start",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": 4,
+    "union_h": 481,
+    "union_w": 381,
+    "last_one_box_w": 474,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 291,
+    "d": 53,
+    "boxes": 4,
+    "before": "target_missing_or_ambiguous",
+    "after": "duplicate_no_new_start",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": 4,
+    "union_h": 424,
+    "union_w": 381,
+    "last_one_box_w": 474,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 292,
+    "d": 53,
+    "boxes": 4,
+    "before": "target_missing_or_ambiguous",
+    "after": "duplicate_no_new_start",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": 4,
+    "union_h": 484,
+    "union_w": 381,
+    "last_one_box_w": 474,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 293,
+    "d": 53,
+    "boxes": 5,
+    "before": "target_missing_or_ambiguous",
+    "after": "decision_expired",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": 5,
+    "union_h": 488,
+    "union_w": 381,
+    "last_one_box_w": 474,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 294,
+    "d": 53,
+    "boxes": 4,
+    "before": "target_missing_or_ambiguous",
+    "after": "decision_expired",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": 4,
+    "union_h": 489,
+    "union_w": 381,
+    "last_one_box_w": 474,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 295,
+    "d": 54,
+    "boxes": 5,
+    "before": "target_missing_or_ambiguous",
+    "after": "no_new_start",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": 5,
+    "union_h": 424,
+    "union_w": 381,
+    "last_one_box_w": 474,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 296,
+    "d": 54,
+    "boxes": 4,
+    "before": "target_missing_or_ambiguous",
+    "after": "duplicate_no_new_start",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": 4,
+    "union_h": 453,
+    "union_w": 381,
+    "last_one_box_w": 474,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 297,
+    "d": 54,
+    "boxes": 4,
+    "before": "target_missing_or_ambiguous",
+    "after": "duplicate_no_new_start",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": 4,
+    "union_h": 433,
+    "union_w": 381,
+    "last_one_box_w": 474,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 298,
+    "d": 54,
+    "boxes": 4,
+    "before": "target_missing_or_ambiguous",
+    "after": "decision_expired",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": 4,
+    "union_h": 416,
+    "union_w": 380,
+    "last_one_box_w": 474,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 299,
+    "d": 54,
+    "boxes": 4,
+    "before": "target_missing_or_ambiguous",
+    "after": "decision_expired",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": 4,
+    "union_h": 422,
+    "union_w": 381,
+    "last_one_box_w": 474,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 300,
+    "d": 54,
+    "boxes": 4,
+    "before": "target_missing_or_ambiguous",
+    "after": "decision_expired",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": 4,
+    "union_h": 425,
+    "union_w": 382,
+    "last_one_box_w": 474,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 301,
+    "d": 55,
+    "boxes": 4,
+    "before": "target_missing_or_ambiguous",
+    "after": "no_new_start",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": 4,
+    "union_h": 436,
+    "union_w": 381,
+    "last_one_box_w": 474,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 302,
+    "d": 55,
+    "boxes": 4,
+    "before": "target_missing_or_ambiguous",
+    "after": "duplicate_no_new_start",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": 4,
+    "union_h": 426,
+    "union_w": 382,
+    "last_one_box_w": 474,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 303,
+    "d": 55,
+    "boxes": 4,
+    "before": "target_missing_or_ambiguous",
+    "after": "duplicate_no_new_start",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": 4,
+    "union_h": 437,
+    "union_w": 381,
+    "last_one_box_w": 474,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 304,
+    "d": 55,
+    "boxes": 4,
+    "before": "target_missing_or_ambiguous",
+    "after": "decision_expired",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": 4,
+    "union_h": 492,
+    "union_w": 381,
+    "last_one_box_w": 474,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 305,
+    "d": 55,
+    "boxes": 5,
+    "before": "target_missing_or_ambiguous",
+    "after": "decision_expired",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": 5,
+    "union_h": 456,
+    "union_w": 380,
+    "last_one_box_w": 474,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 306,
+    "d": 56,
+    "boxes": 5,
+    "before": "target_missing_or_ambiguous",
+    "after": "no_new_start",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": 5,
+    "union_h": 491,
+    "union_w": 380,
+    "last_one_box_w": 474,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 307,
+    "d": 56,
+    "boxes": 4,
+    "before": "target_missing_or_ambiguous",
+    "after": "duplicate_no_new_start",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": 4,
+    "union_h": 455,
+    "union_w": 380,
+    "last_one_box_w": 474,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 308,
+    "d": 56,
+    "boxes": 4,
+    "before": "target_missing_or_ambiguous",
+    "after": "duplicate_no_new_start",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": 4,
+    "union_h": 430,
+    "union_w": 380,
+    "last_one_box_w": 474,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 309,
+    "d": 56,
+    "boxes": 4,
+    "before": "target_missing_or_ambiguous",
+    "after": "decision_expired",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": 4,
+    "union_h": 429,
+    "union_w": 380,
+    "last_one_box_w": 474,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 310,
+    "d": 56,
+    "boxes": 4,
+    "before": "target_missing_or_ambiguous",
+    "after": "decision_expired",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": 4,
+    "union_h": 429,
+    "union_w": 380,
+    "last_one_box_w": 474,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 311,
+    "d": 56,
+    "boxes": 4,
+    "before": "target_missing_or_ambiguous",
+    "after": "decision_expired",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": 4,
+    "union_h": 439,
+    "union_w": 380,
+    "last_one_box_w": 474,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 312,
+    "d": 57,
+    "boxes": 4,
+    "before": "target_missing_or_ambiguous",
+    "after": "no_new_start",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": 4,
+    "union_h": 441,
+    "union_w": 380,
+    "last_one_box_w": 474,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 313,
+    "d": 57,
+    "boxes": 4,
+    "before": "target_missing_or_ambiguous",
+    "after": "duplicate_no_new_start",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": 4,
+    "union_h": 429,
+    "union_w": 380,
+    "last_one_box_w": 474,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 314,
+    "d": 57,
+    "boxes": 4,
+    "before": "target_missing_or_ambiguous",
+    "after": "duplicate_no_new_start",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": 4,
+    "union_h": 432,
+    "union_w": 380,
+    "last_one_box_w": 474,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 315,
+    "d": 57,
+    "boxes": 4,
+    "before": "target_missing_or_ambiguous",
+    "after": "decision_expired",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": 4,
+    "union_h": 420,
+    "union_w": 380,
+    "last_one_box_w": 474,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 316,
+    "d": 57,
+    "boxes": 5,
+    "before": "target_missing_or_ambiguous",
+    "after": "decision_expired",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": 5,
+    "union_h": 489,
+    "union_w": 380,
+    "last_one_box_w": 474,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 317,
+    "d": 58,
+    "boxes": 5,
+    "before": "target_missing_or_ambiguous",
+    "after": "no_new_start",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": 5,
+    "union_h": 502,
+    "union_w": 380,
+    "last_one_box_w": 474,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 318,
+    "d": 58,
+    "boxes": 3,
+    "before": "target_missing_or_ambiguous",
+    "after": "duplicate_no_new_start",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1
+     ]
+    },
+    "member_count": 3,
+    "union_h": 503,
+    "union_w": 469,
+    "last_one_box_w": 474,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 319,
+    "d": 58,
+    "boxes": 2,
+    "before": "target_missing_or_ambiguous",
+    "after": "duplicate_no_new_start",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1
+     ]
+    },
+    "member_count": 2,
+    "union_h": 511,
+    "union_w": 470,
+    "last_one_box_w": 474,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 853,
+    "d": 154,
+    "boxes": 5,
+    "before": "target_missing_or_ambiguous",
+    "after": "decision_expired",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": 5,
+    "union_h": 425,
+    "union_w": 380,
+    "last_one_box_w": 471,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 854,
+    "d": 154,
+    "boxes": 4,
+    "before": "target_missing_or_ambiguous",
+    "after": "decision_expired",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": 4,
+    "union_h": 432,
+    "union_w": 380,
+    "last_one_box_w": 471,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 855,
+    "d": 155,
+    "boxes": 5,
+    "before": "target_missing_or_ambiguous",
+    "after": "no_new_start",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": 5,
+    "union_h": 433,
+    "union_w": 379,
+    "last_one_box_w": 471,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 856,
+    "d": 155,
+    "boxes": 4,
+    "before": "target_missing_or_ambiguous",
+    "after": "duplicate_no_new_start",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": 4,
+    "union_h": 463,
+    "union_w": 380,
+    "last_one_box_w": 471,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 857,
+    "d": 155,
+    "boxes": 4,
+    "before": "target_missing_or_ambiguous",
+    "after": "decision_expired",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": 4,
+    "union_h": 419,
+    "union_w": 379,
+    "last_one_box_w": 471,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 858,
+    "d": 155,
+    "boxes": 5,
+    "before": "target_missing_or_ambiguous",
+    "after": "decision_expired",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": 5,
+    "union_h": 463,
+    "union_w": 380,
+    "last_one_box_w": 471,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 859,
+    "d": 156,
+    "boxes": 5,
+    "before": "target_missing_or_ambiguous",
+    "after": "no_new_start",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": 5,
+    "union_h": 462,
+    "union_w": 380,
+    "last_one_box_w": 471,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 860,
+    "d": 156,
+    "boxes": 5,
+    "before": "target_missing_or_ambiguous",
+    "after": "duplicate_no_new_start",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": 5,
+    "union_h": 464,
+    "union_w": 380,
+    "last_one_box_w": 471,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 861,
+    "d": 156,
+    "boxes": 5,
+    "before": "target_missing_or_ambiguous",
+    "after": "duplicate_no_new_start",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": 5,
+    "union_h": 430,
+    "union_w": 379,
+    "last_one_box_w": 471,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 862,
+    "d": 156,
+    "boxes": 5,
+    "before": "target_missing_or_ambiguous",
+    "after": "decision_expired",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": 5,
+    "union_h": 464,
+    "union_w": 379,
+    "last_one_box_w": 471,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 863,
+    "d": 156,
+    "boxes": 5,
+    "before": "target_missing_or_ambiguous",
+    "after": "decision_expired",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": 5,
+    "union_h": 462,
+    "union_w": 379,
+    "last_one_box_w": 471,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 864,
+    "d": 156,
+    "boxes": 5,
+    "before": "target_missing_or_ambiguous",
+    "after": "target_missing_or_ambiguous",
+    "target_association": {
+     "how": "matched",
+     "own": 2,
+     "pieces": [
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": null,
+    "union_h": {},
+    "union_w": {},
+    "last_one_box_w": 471,
+    "approach_withheld": null,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 865,
+    "d": 157,
+    "boxes": 5,
+    "before": "target_missing_or_ambiguous",
+    "after": "target_missing_or_ambiguous",
+    "target_association": {
+     "how": "matched",
+     "own": 2,
+     "pieces": [
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": null,
+    "union_h": {},
+    "union_w": {},
+    "last_one_box_w": 471,
+    "approach_withheld": null,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 866,
+    "d": 157,
+    "boxes": 5,
+    "before": "target_missing_or_ambiguous",
+    "after": "target_missing_or_ambiguous",
+    "target_association": {
+     "how": "matched",
+     "own": 2,
+     "pieces": [
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": null,
+    "union_h": {},
+    "union_w": {},
+    "last_one_box_w": 471,
+    "approach_withheld": null,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 867,
+    "d": 157,
+    "boxes": 5,
+    "before": "target_missing_or_ambiguous",
+    "after": "target_missing_or_ambiguous",
+    "target_association": {
+     "how": "matched",
+     "own": 2,
+     "pieces": [
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": null,
+    "union_h": {},
+    "union_w": {},
+    "last_one_box_w": 471,
+    "approach_withheld": null,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 868,
+    "d": 157,
+    "boxes": 5,
+    "before": "target_missing_or_ambiguous",
+    "after": "target_missing_or_ambiguous",
+    "target_association": {
+     "how": "matched",
+     "own": 2,
+     "pieces": [
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": null,
+    "union_h": {},
+    "union_w": {},
+    "last_one_box_w": 471,
+    "approach_withheld": null,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 869,
+    "d": 157,
+    "boxes": 5,
+    "before": "target_missing_or_ambiguous",
+    "after": "target_missing_or_ambiguous",
+    "target_association": {
+     "how": "matched",
+     "own": 2,
+     "pieces": [
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": null,
+    "union_h": {},
+    "union_w": {},
+    "last_one_box_w": 471,
+    "approach_withheld": null,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 870,
+    "d": 158,
+    "boxes": 5,
+    "before": "target_missing_or_ambiguous",
+    "after": "target_missing_or_ambiguous",
+    "target_association": {
+     "how": "matched",
+     "own": 2,
+     "pieces": [
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": null,
+    "union_h": {},
+    "union_w": {},
+    "last_one_box_w": 471,
+    "approach_withheld": null,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 871,
+    "d": 158,
+    "boxes": 5,
+    "before": "target_missing_or_ambiguous",
+    "after": "target_missing_or_ambiguous",
+    "target_association": {
+     "how": "matched",
+     "own": 2,
+     "pieces": [
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": null,
+    "union_h": {},
+    "union_w": {},
+    "last_one_box_w": 471,
+    "approach_withheld": null,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 872,
+    "d": 158,
+    "boxes": 5,
+    "before": "target_missing_or_ambiguous",
+    "after": "target_missing_or_ambiguous",
+    "target_association": {
+     "how": "matched",
+     "own": 2,
+     "pieces": [
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": null,
+    "union_h": {},
+    "union_w": {},
+    "last_one_box_w": 471,
+    "approach_withheld": null,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 873,
+    "d": 158,
+    "boxes": 5,
+    "before": "target_missing_or_ambiguous",
+    "after": "target_missing_or_ambiguous",
+    "target_association": {
+     "how": "matched",
+     "own": 2,
+     "pieces": [
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": null,
+    "union_h": {},
+    "union_w": {},
+    "last_one_box_w": 471,
+    "approach_withheld": null,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 874,
+    "d": 158,
+    "boxes": 5,
+    "before": "target_missing_or_ambiguous",
+    "after": "target_missing_or_ambiguous",
+    "target_association": {
+     "how": "matched",
+     "own": 2,
+     "pieces": [
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": null,
+    "union_h": {},
+    "union_w": {},
+    "last_one_box_w": 471,
+    "approach_withheld": null,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 875,
+    "d": 158,
+    "boxes": 5,
+    "before": "target_missing_or_ambiguous",
+    "after": "target_missing_or_ambiguous",
+    "target_association": {
+     "how": "matched",
+     "own": 2,
+     "pieces": [
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": null,
+    "union_h": {},
+    "union_w": {},
+    "last_one_box_w": 471,
+    "approach_withheld": null,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 876,
+    "d": 159,
+    "boxes": 5,
+    "before": "target_missing_or_ambiguous",
+    "after": "target_missing_or_ambiguous",
+    "target_association": {
+     "how": "matched",
+     "own": 2,
+     "pieces": [
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": null,
+    "union_h": {},
+    "union_w": {},
+    "last_one_box_w": 471,
+    "approach_withheld": null,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 877,
+    "d": 159,
+    "boxes": 5,
+    "before": "target_missing_or_ambiguous",
+    "after": "target_missing_or_ambiguous",
+    "target_association": {
+     "how": "matched",
+     "own": 2,
+     "pieces": [
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": null,
+    "union_h": {},
+    "union_w": {},
+    "last_one_box_w": 471,
+    "approach_withheld": null,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 878,
+    "d": 159,
+    "boxes": 5,
+    "before": "target_missing_or_ambiguous",
+    "after": "target_missing_or_ambiguous",
+    "target_association": {
+     "how": "matched",
+     "own": 2,
+     "pieces": [
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": null,
+    "union_h": {},
+    "union_w": {},
+    "last_one_box_w": 471,
+    "approach_withheld": null,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 879,
+    "d": 159,
+    "boxes": 5,
+    "before": "target_missing_or_ambiguous",
+    "after": "decision_expired",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": 5,
+    "union_h": 462,
+    "union_w": 455,
+    "last_one_box_w": 471,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 880,
+    "d": 159,
+    "boxes": 5,
+    "before": "target_missing_or_ambiguous",
+    "after": "decision_expired",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": 5,
+    "union_h": 426,
+    "union_w": 455,
+    "last_one_box_w": 471,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 881,
+    "d": 160,
+    "boxes": 5,
+    "before": "target_missing_or_ambiguous",
+    "after": "no_new_start",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1,
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": 5,
+    "union_h": 466,
+    "union_w": 454,
+    "last_one_box_w": 471,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 882,
+    "d": 160,
+    "boxes": 5,
+    "before": "target_missing_or_ambiguous",
+    "after": "target_missing_or_ambiguous",
+    "target_association": {
+     "how": "matched",
+     "own": 2,
+     "pieces": [
+      1,
+      1,
+      1
+     ]
+    },
+    "member_count": null,
+    "union_h": {},
+    "union_w": {},
+    "last_one_box_w": 471,
+    "approach_withheld": null,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   },
+   {
+    "row": 883,
+    "d": 160,
+    "boxes": 2,
+    "before": "target_missing_or_ambiguous",
+    "after": "duplicate_no_new_start",
+    "target_association": {
+     "how": "matched",
+     "own": 1,
+     "pieces": [
+      1
+     ]
+    },
+    "member_count": 2,
+    "union_h": 501,
+    "union_w": 466,
+    "last_one_box_w": 471,
+    "approach_withheld": true,
+    "ly_before": 0.0,
+    "ly_after": 0.0,
+    "lt_after": 0.0
+   }
+  ]
+ },
+ "refused_decisions_first_consumed": [
+  {
+   "d": 53,
+   "row": 290,
+   "before": "target_missing_or_ambiguous",
+   "after": "no_new_start",
+   "target_association": {
+    "how": "matched",
+    "own": 1,
+    "pieces": [
+     1,
+     1,
+     1
+    ]
+   },
+   "member_count": 4
+  },
+  {
+   "d": 54,
+   "row": 295,
+   "before": "target_missing_or_ambiguous",
+   "after": "no_new_start",
+   "target_association": {
+    "how": "matched",
+    "own": 1,
+    "pieces": [
+     1,
+     1,
+     1,
+     1
+    ]
+   },
+   "member_count": 5
+  },
+  {
+   "d": 55,
+   "row": 301,
+   "before": "target_missing_or_ambiguous",
+   "after": "no_new_start",
+   "target_association": {
+    "how": "matched",
+    "own": 1,
+    "pieces": [
+     1,
+     1,
+     1
+    ]
+   },
+   "member_count": 4
+  },
+  {
+   "d": 56,
+   "row": 306,
+   "before": "target_missing_or_ambiguous",
+   "after": "no_new_start",
+   "target_association": {
+    "how": "matched",
+    "own": 1,
+    "pieces": [
+     1,
+     1,
+     1,
+     1
+    ]
+   },
+   "member_count": 5
+  },
+  {
+   "d": 57,
+   "row": 312,
+   "before": "target_missing_or_ambiguous",
+   "after": "no_new_start",
+   "target_association": {
+    "how": "matched",
+    "own": 1,
+    "pieces": [
+     1,
+     1,
+     1
+    ]
+   },
+   "member_count": 4
+  },
+  {
+   "d": 58,
+   "row": 317,
+   "before": "target_missing_or_ambiguous",
+   "after": "no_new_start",
+   "target_association": {
+    "how": "matched",
+    "own": 1,
+    "pieces": [
+     1,
+     1,
+     1,
+     1
+    ]
+   },
+   "member_count": 5
+  },
+  {
+   "d": 155,
+   "row": 855,
+   "before": "target_missing_or_ambiguous",
+   "after": "no_new_start",
+   "target_association": {
+    "how": "matched",
+    "own": 1,
+    "pieces": [
+     1,
+     1,
+     1,
+     1
+    ]
+   },
+   "member_count": 5
+  },
+  {
+   "d": 156,
+   "row": 859,
+   "before": "target_missing_or_ambiguous",
+   "after": "no_new_start",
+   "target_association": {
+    "how": "matched",
+    "own": 1,
+    "pieces": [
+     1,
+     1,
+     1,
+     1
+    ]
+   },
+   "member_count": 5
+  },
+  {
+   "d": 157,
+   "row": 865,
+   "before": "target_missing_or_ambiguous",
+   "after": "target_missing_or_ambiguous",
+   "target_association": {
+    "how": "matched",
+    "own": 2,
+    "pieces": [
+     1,
+     1,
+     1
+    ]
+   },
+   "member_count": null
+  },
+  {
+   "d": 158,
+   "row": 870,
+   "before": "target_missing_or_ambiguous",
+   "after": "target_missing_or_ambiguous",
+   "target_association": {
+    "how": "matched",
+    "own": 2,
+    "pieces": [
+     1,
+     1,
+     1
+    ]
+   },
+   "member_count": null
+  },
+  {
+   "d": 159,
+   "row": 876,
+   "before": "target_missing_or_ambiguous",
+   "after": "target_missing_or_ambiguous",
+   "target_association": {
+    "how": "matched",
+    "own": 2,
+    "pieces": [
+     1,
+     1,
+     1
+    ]
+   },
+   "member_count": null
+  },
+  {
+   "d": 160,
+   "row": 881,
+   "before": "target_missing_or_ambiguous",
+   "after": "no_new_start",
+   "target_association": {
+    "how": "matched",
+    "own": 1,
+    "pieces": [
+     1,
+     1,
+     1,
+     1
+    ]
+   },
+   "member_count": 5
+  }
+ ],
+ "whole_run": {
+  "reason_changes": {
+   "target_missing_or_ambiguous -> decision_expired": 23,
+   "target_missing_or_ambiguous -> no_new_start": 9,
+   "target_missing_or_ambiguous -> duplicate_no_new_start": 16
+  },
+  "reason_changes_outside_former_refusals": 0,
+  "accepted_starts": [
+   0,
+   0
+  ],
+  "lt_down_ticks": [
+   0,
+   0
+  ],
+  "ly_forward_ticks": [
+   76,
+   76
+  ],
+  "ticks_with_any_pad_change": 484
+ },
+ "scenarios": {
+  "S0 one whole body (control)": {
+   "head": {
+    "ids": [
+     1
+    ],
+    "reason": "accepted",
+    "lt": 1.0,
+    "ly": 1.0,
+    "body_observation": null
+   },
+   "tree": {
+    "ids": [
+     1
+    ],
+    "reason": "accepted",
+    "lt": 1.0,
+    "ly": 1.0,
+    "body_observation": {
+     "t": 0.1,
+     "frame": [
+      1280,
+      720
+     ],
+     "track": 1,
+     "bbox": [
+      600.0,
+      260.0,
+      680.0,
+      460.0
+     ],
+     "member_count": 1,
+     "plate_count": 0,
+     "approach_withheld": false,
+     "source": "tracker_current_body"
+    }
+   }
+  },
+  "S1 native d53 reflex fragments (row 290)": {
+   "head": {
+    "ids": [
+     1,
+     1,
+     1,
+     1
+    ],
+    "reason": "target_missing_or_ambiguous",
+    "lt": 0.0,
+    "ly": 0.0,
+    "body_observation": null
+   },
+   "tree": {
+    "ids": [
+     1,
+     1,
+     1,
+     1
+    ],
+    "reason": "accepted",
+    "lt": 1.0,
+    "ly": 0.0,
+    "body_observation": {
+     "t": 0.1,
+     "frame": [
+      2560,
+      1440
+     ],
+     "track": 1,
+     "bbox": [
+      1140.0,
+      610.0,
+      1521.0,
+      1091.0
+     ],
+     "member_count": 4,
+     "plate_count": 0,
+     "approach_withheld": true,
+     "source": "tracker_current_body"
+    }
+   }
+  },
+  "S1b native d53 decision fragments": {
+   "head": {
+    "ids": [
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "reason": "target_missing_or_ambiguous",
+    "lt": 0.0,
+    "ly": 0.0,
+    "body_observation": null
+   },
+   "tree": {
+    "ids": [
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "reason": "accepted",
+    "lt": 1.0,
+    "ly": 0.0,
+    "body_observation": {
+     "t": 0.1,
+     "frame": [
+      2560,
+      1440
+     ],
+     "track": 1,
+     "bbox": [
+      1140.0,
+      610.0,
+      1521.0,
+      1091.0
+     ],
+     "member_count": 5,
+     "plate_count": 0,
+     "approach_withheld": true,
+     "source": "tracker_current_body"
+    }
+   }
+  },
+  "S2 smaller bot inside a near bot (lane residual)": {
+   "head": {
+    "ids": [
+     1,
+     1
+    ],
+    "reason": "target_missing_or_ambiguous",
+    "lt": 0.0,
+    "ly": 0.0,
+    "body_observation": null
+   },
+   "tree": {
+    "ids": [
+     1,
+     1
+    ],
+    "reason": "unaligned_target",
+    "lt": 0.0,
+    "ly": 0.0,
+    "body_observation": {
+     "t": 0.1,
+     "frame": [
+      2560,
+      1440
+     ],
+     "track": 1,
+     "bbox": [
+      1000.0,
+      400.0,
+      1250.0,
+      1000.0
+     ],
+     "member_count": 2,
+     "plate_count": 0,
+     "approach_withheld": true,
+     "source": "tracker_current_body"
+    }
+   }
+  },
+  "S3 smaller bot stacked on the target's head": {
+   "head": {
+    "ids": [
+     1,
+     1
+    ],
+    "reason": "target_missing_or_ambiguous",
+    "lt": 0.0,
+    "ly": 0.0,
+    "body_observation": null
+   },
+   "tree": {
+    "ids": [
+     1,
+     1
+    ],
+    "reason": "target_missing_or_ambiguous",
+    "lt": 0.0,
+    "ly": 0.0,
+    "body_observation": null
+   }
+  },
+  "S4 lane hole: two 250x200 boxes 10 px apart": {
+   "head": {
+    "ids": [
+     1,
+     1
+    ],
+    "reason": "target_missing_or_ambiguous",
+    "lt": 0.0,
+    "ly": 0.0,
+    "body_observation": null
+   },
+   "tree": {
+    "ids": [
+     1,
+     1
+    ],
+    "reason": "target_missing_or_ambiguous",
+    "lt": 0.0,
+    "ly": 0.0,
+    "body_observation": null
+   }
+  },
+  "S5 far small body alone (control)": {
+   "head": {
+    "ids": [
+     1
+    ],
+    "reason": "outside_reach",
+    "lt": 0.0,
+    "ly": 0.0,
+    "body_observation": null
+   },
+   "tree": {
+    "ids": [
+     1
+    ],
+    "reason": "outside_reach",
+    "lt": 0.0,
+    "ly": 0.0,
+    "body_observation": {
+     "t": 0.1,
+     "frame": [
+      1280,
+      720
+     ],
+     "track": 1,
+     "bbox": [
+      630.0,
+      350.0,
+      640.0,
+      370.0
+     ],
+     "member_count": 1,
+     "plate_count": 0,
+     "approach_withheld": false,
+     "source": "tracker_current_body"
+    }
+   }
+  },
+  "S5b two stacked beyond-reach boxes": {
+   "head": {
+    "ids": [
+     1,
+     1
+    ],
+    "reason": "target_missing_or_ambiguous",
+    "lt": 0.0,
+    "ly": 0.0,
+    "body_observation": null
+   },
+   "tree": {
+    "ids": [
+     1,
+     1
+    ],
+    "reason": "target_missing_or_ambiguous",
+    "lt": 0.0,
+    "ly": 0.0,
+    "body_observation": null
+   }
+  },
+  "S5c two stacked beyond-reach boxes, other way up": {
+   "head": {
+    "ids": [
+     1,
+     1
+    ],
+    "reason": "target_missing_or_ambiguous",
+    "lt": 0.0,
+    "ly": 0.0,
+    "body_observation": null
+   },
+   "tree": {
+    "ids": [
+     1,
+     1
+    ],
+    "reason": "target_missing_or_ambiguous",
+    "lt": 0.0,
+    "ly": 0.0,
+    "body_observation": null
+   }
+  },
+  "S6 target gone, another bot in the crop": {
+   "head": {
+    "reason": "target_missing_or_ambiguous"
+   },
+   "tree": {
+    "reason": "target_missing_or_ambiguous"
+   }
+  },
+  "T3a second bot walks out of a near target": {
+   "head": {
+    "accepted_starts_with_second_bot_present": [],
+    "max_union_width": null,
+    "target_width": 250,
+    "refused_from_tick": 1
+   },
+   "tree": {
+    "accepted_starts_with_second_bot_present": [],
+    "max_union_width": 309.0,
+    "target_width": 250,
+    "refused_from_tick": 17
+   }
+  },
+  "T3b ... across the crosshair, target left of it": {
+   "head": {
+    "accepted_starts_with_second_bot_present": [],
+    "max_union_width": null,
+    "target_width": 250,
+    "refused_from_tick": 1
+   },
+   "tree": {
+    "accepted_starts_with_second_bot_present": [],
+    "max_union_width": 309.0,
+    "target_width": 250,
+    "refused_from_tick": 17
+   }
+  }
+ }
+}
