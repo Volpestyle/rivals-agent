@@ -1,0 +1,32 @@
+{
+  "game_pid": 10668,
+  "range_entry": "second range entry of game PID 10668 (process started 2026-09-23 12:13:21 local): the game idle-dropped to the PLAY lobby about 13:20; James re-entered and parked Spider-Man at the courtyard stairs about 13:40",
+  "observed": {"range": true, "spiderman": true, "normal_cooldown_menu": true, "friendly_fire_off": true, "pad_web_layout": true,
+               "galacta_setup": true, "monitor_present": true, "capture_preflight": true},
+  "display_idle_off_disabled": true,
+  "cpu_percent": "re-read by the launcher before every slot (60 % cap)",
+  "observations": [
+    "Scene confirmed on a no-input frame at 13:41 (scene-03): courtyard, GALACTA BOT pair ahead, designated right bot by the stair railing.",
+    "Practice Settings page read fresh in this entry at 13:43 (practice-settings-entry2/ps-0.jpg): No Ability Cooldown X/off (nothing pressed), Friendly Fire X/off, 240 FPS.",
+    "Cooldowns from play at 13:45: one Web Cluster into open air away from both bots; webs 5 -> 4 -> 5 within 2.6 s (e2-cd-b/c).",
+    "Readiness frame 13:45 (galacta-0923-ready-e2): both bots name plate only, no health bar (undamaged); own HP 250/250, webs 5, swing 3, uppercut 2, ultimate charging (95 %). Numeric bot health/movement settings unknown.",
+    "Scout for slot 3 (mid): right bot 1265,509,1391,640 h .091 mid (e2-cd-d); setup reference only, the trial's bin is its own first-phase frame.",
+    "The settings script's pad attach turned the camera; the operator reversed its own 1.8 s walk and re-faced the lane before placement (e2-back).",
+    "Display idle-off AC = 0 (never). capture.py preflight 159 dxcam frames in 1 s; VG27AQM1A present."
+  ],
+  "limits": [
+    "Qualitative undamaged appearance (name plate, no bar); no numeric target health.",
+    "Generic selector; native target correspondence is audited per trial.",
+    "Binding 2 covers this PID and this range entry; each remaining learned allocation (4, 6, 7, 9, 12, 14, 15, 17, 20) is consumed once; slot 1 was consumed under binding 1."
+  ],
+  "evidence": [
+    "C:/Users/volpe/repos/rivals-agent/data/benchmarks/galacta-setup-20260923/practice-settings-entry2/ps-0.jpg",
+    "C:/desk/out/p0923-scene-03.png",
+    "C:/desk/out/p0923-e2-cd-b.jpg",
+    "C:/desk/out/p0923-e2-cd-c.jpg",
+    "C:/desk/out/p0923-e2-cd-d.jpg",
+    "C:/desk/out/galacta-0923-ready-e2.png",
+    "C:/desk/pilot0923/capture-preflight-2.txt",
+    "C:/desk/pilot0923/monitor-2.txt"
+  ]
+}

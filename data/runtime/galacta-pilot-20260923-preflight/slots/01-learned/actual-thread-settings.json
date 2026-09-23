@@ -1,0 +1,17 @@
+{
+  "pid": 25292,
+  "python": "3.11.9",
+  "torch": "2.14.0+cpu",
+  "observed_utc": "2026-09-23T17:59:12.944833+00:00",
+  "before_main": {
+    "intra_op": 24,
+    "inter_op": 24
+  },
+  "thread_settings_modified": false,
+  "model_inference_by_wrapper": false,
+  "after_main": {
+    "intra_op": 24,
+    "inter_op": 24
+  },
+  "finished_utc": "2026-09-23T17:59:43.245552+00:00"
+}

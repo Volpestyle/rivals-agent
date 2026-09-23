@@ -1,0 +1,299 @@
+{
+  "kind": "galacta-pilot-20260923 slot archive manifest, verbatim, not an audit",
+  "slot": 3,
+  "policy_role": "scripted",
+  "scenario": "mid",
+  "run": "galacta-pilot-20260923-03-scripted",
+  "written_utc": "2026-09-23T18:46:18.505239+00:00",
+  "slot_dir": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\galacta-pilot-20260923-preflight\\slots\\03-scripted",
+  "run_dir": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260923-03-scripted",
+  "slot_files": {
+    "after.png": {
+      "sha256": "54fcdfce7faa2f1738ae958c2f37d79e7f8abaa31b333988718842985850ed14",
+      "size": 7486775
+    },
+    "allocation-consumed.json": {
+      "sha256": "36eaff01c2feb5c2a59c8db8c55c7ad90f3e230b35779131c2b84bcba9606c25",
+      "size": 775
+    },
+    "before.png": {
+      "sha256": "ce3fa6a746f3a3f8428fa945d2ccd814558906b65f0c5d85a91b633c972fe4d4",
+      "size": 7205339
+    },
+    "launch-result.json": {
+      "sha256": "0f61df43b47d6c400e158d07867bd2dcf2a4059ce5e376f58f9c324d919e7037",
+      "size": 214
+    },
+    "scripted-native.mp4": {
+      "sha256": "f18f5a7f9c24296e6b7d6781133111bdab02be42e6da1eca0d7219cb506040c7",
+      "size": 91226160
+    },
+    "scripted-record.log": {
+      "sha256": "609c262fe6a36136066876f23e56e37ef0666de582a6cd98dcf3d856436136e0",
+      "size": 4384
+    },
+    "scripted-recorder.json": {
+      "sha256": "82f9ec749413d63c1cf0badd120ac7d99b1832382bb82c87653fde4a2ce24507",
+      "size": 527
+    },
+    "scripted.err": {
+      "sha256": "9254be008187dc77c567bb891b46e3c5fc09613684c77cff84c47fb3bfced017",
+      "size": 1584
+    },
+    "scripted.log": {
+      "sha256": "96cf5c1e390f6f73e491cfb52795aec5ed80964d92d0ad22e7e4b89022f331b5",
+      "size": 5443
+    }
+  },
+  "run_files": {
+    "000000.jpg": {
+      "sha256": "4948f701a3682d1302961a5a08f50dd8b1ff9a5c16d9beaf187c9cd3fc2e74ce",
+      "size": 802942
+    },
+    "000001.jpg": {
+      "sha256": "8c7d12814ba02e1cc7f92f254cbcdd94ff15ccb94d1f91b90cb2bd90f1a4dd6a",
+      "size": 803465
+    },
+    "000002.jpg": {
+      "sha256": "bcdd8d1977bd2b26a1393f7a4fea566e58f4c2928bc986eaa0f119812f3609e7",
+      "size": 728546
+    },
+    "000003.jpg": {
+      "sha256": "d89995056a825041f1f85ceba25f0d4ed1a8f7b9a4c3a18fd3ebc510fef92914",
+      "size": 724083
+    },
+    "000004.jpg": {
+      "sha256": "73befa177d736067f89a9db901796034412fc6039253a45080a334702632702d",
+      "size": 729328
+    },
+    "000005.jpg": {
+      "sha256": "a86d4a4422972eb53c9326ac930c19990bf2617286efbb54fed1b72cd74a0383",
+      "size": 729117
+    },
+    "000006.jpg": {
+      "sha256": "a71b0b2698ce6834c6eabbc26a4b338f84440496f840de23b56f4cbb2563cbe2",
+      "size": 749704
+    },
+    "000007.jpg": {
+      "sha256": "4f2fbc53d82842aad786418ca6eeb3e9df97d30d83a5cc955af4de2819570bdb",
+      "size": 753117
+    },
+    "000008.jpg": {
+      "sha256": "6ac025f1c42786aed8c77612ca2f2093ee7bc53ce39151b8fd1ec799bd1e8690",
+      "size": 737216
+    },
+    "000009.jpg": {
+      "sha256": "7ab53ec02293156d4bc51d1e971ec11929a127d5d29e6aa35c2be034e509fa88",
+      "size": 723350
+    },
+    "000010.jpg": {
+      "sha256": "4c64e8ccf7d87feae9d91bb8088169da5aa43875cea7ce8e5b84051f7a3acbce",
+      "size": 720336
+    },
+    "000011.jpg": {
+      "sha256": "e5317c8a936de2445fd149667512c2c2461e751f7987920004a728c4fc591990",
+      "size": 755421
+    },
+    "000012.jpg": {
+      "sha256": "ebf7531f6f29e29c0c60c6ab5f902782cfc16b18fae4a6cc9a1ac1e41fb60078",
+      "size": 707610
+    },
+    "000013.jpg": {
+      "sha256": "c2c5bafa307ad15c3fd9833cf2468a10adbeec44efc913f1f069e53f115cf82a",
+      "size": 775870
+    },
+    "000014.jpg": {
+      "sha256": "519e9891e134fe484ad71a37c9d21de8678c074651bb3fd616bf9d621a9b46d4",
+      "size": 716940
+    },
+    "000015.jpg": {
+      "sha256": "50b0d8ee4eaebb39bb928ca1c83cfc31450b5a566904b67f3d482b017e4501e5",
+      "size": 687134
+    },
+    "000016.jpg": {
+      "sha256": "39a847b8f48f37473a26bdbd1fc19a08ef6e8ce98e3ddedf92f7277b6cc5bf96",
+      "size": 737392
+    },
+    "000017.jpg": {
+      "sha256": "530b4ec219d89281caab07b1c53d488a97587af2f71cb44b52e0c23c4442c8ca",
+      "size": 715465
+    },
+    "000018.jpg": {
+      "sha256": "a7af27e34e38745159907986053ff5751e578f98899a5b1b504115e2e0fd7729",
+      "size": 678768
+    },
+    "000019.jpg": {
+      "sha256": "f758696c437ba3ae4f3cf655f20757d010e3f1671dd1279c882f13c52a6a25a4",
+      "size": 824929
+    },
+    "000020.jpg": {
+      "sha256": "22adf9588f0417f19517a789790c96a8e7a87e3cfb8793a2fbf16089e51a9c0d",
+      "size": 897053
+    },
+    "000021.jpg": {
+      "sha256": "b90ffab6dbf0dfd62497e8e33f1930b515bfe18f91dfac2a21880a3866d4d520",
+      "size": 937006
+    },
+    "000022.jpg": {
+      "sha256": "cd14884678bab9716c1dd686a4caf9aa7829f9caf02f7d0979838c1542143659",
+      "size": 947897
+    },
+    "000023.jpg": {
+      "sha256": "b7e9d2cfcd8ad711ecfe2a2725fc2b3e66b7f26e8e8e5b82635a82e4ef3837cb",
+      "size": 888838
+    },
+    "000024.jpg": {
+      "sha256": "67641df9519c941d718ad79d742da113fdb34cdd319d0670310aeac068c88c4e",
+      "size": 722168
+    },
+    "000025.jpg": {
+      "sha256": "0be72f7ee19238f6f71c2ade2f7bce9e3aa7280c81f8e5369209b2f5af96816f",
+      "size": 623516
+    },
+    "000026.jpg": {
+      "sha256": "9f2eaff54805978c25fd7f15e7a97a12e3d4105e1b0540eb3801fcf999b1c685",
+      "size": 596657
+    },
+    "000027.jpg": {
+      "sha256": "8c3d79829b86de91f9a0fadcd60fb9abd95c6cd9878d6052f7728928150ebf01",
+      "size": 692683
+    },
+    "episode-candidate-feed.png": {
+      "sha256": "56c9ed7bbaef2acbf5308c5a64577dc44b93ff730c0bf81d5d39392f5ff4137c",
+      "size": 5237264
+    },
+    "episode-first-phase.png": {
+      "sha256": "88810986886131d592d3711861a074fd6a90616e5e430c1b915c738ca01237f6",
+      "size": 5103772
+    },
+    "frames.jsonl": {
+      "sha256": "3f5b5f76328e52e5f9c5f608637e965a4e98cc7f5cf88cb19ed6d1e7fdf23900",
+      "size": 61242
+    },
+    "meta.json": {
+      "sha256": "4b6617cf49a980a8ea2a3c0c26d4879f9e1624753334142c84ece3fe14d8abd3",
+      "size": 5389
+    },
+    "scoreboard-baseline.png": {
+      "sha256": "56ad5c219c7ea505738d8532fcaa4ad7cfc8b24ac84a877353869dda4db874c5",
+      "size": 1481087
+    },
+    "scoreboard-end.png": {
+      "sha256": "e52b25b7a01d2d07bb34de9791e9e639e8fefe8eec7aad463773feeeadb63b02",
+      "size": 1645638
+    },
+    "start-confirm-1.png": {
+      "sha256": "aacf7cab53e11baf7fb4fa893f2bde72681fc879f8401bd2d9311dfa4212b3f3",
+      "size": 4881890
+    },
+    "start-confirm-2.png": {
+      "sha256": "fb50d5bef322b056f713664335f48226973a3afdbcb07c5494ba1fe4fbeb126d",
+      "size": 4940275
+    },
+    "start-step-01.png": {
+      "sha256": "e93ef5139c6a1598c8e4303d5e351e31307446b59560777160e403028677950a",
+      "size": 5117426
+    },
+    "start-step-02.png": {
+      "sha256": "b701eb8123352a0f285e04c3184fa1ede03a07bbf2933e2248e1324965ec86af",
+      "size": 5112237
+    },
+    "start-step-03.png": {
+      "sha256": "cee212d05ca21a74726b9897ca54bcbe818b65fbd5b8413feb92499db06c95e5",
+      "size": 5127190
+    },
+    "start-step-04.png": {
+      "sha256": "93412cfe15806a77bb9e58e3a776291f3fc7c9246fad5ecd278c9eea83e68d26",
+      "size": 5100970
+    },
+    "start-step-05.png": {
+      "sha256": "060eb439b1068dccd2638a0e71bbe74a355d001e1d01fd4ee9819c037f59d91c",
+      "size": 4910040
+    },
+    "start-step-06.png": {
+      "sha256": "aacf7cab53e11baf7fb4fa893f2bde72681fc879f8401bd2d9311dfa4212b3f3",
+      "size": 4881890
+    },
+    "start-step-07.png": {
+      "sha256": "fb50d5bef322b056f713664335f48226973a3afdbcb07c5494ba1fe4fbeb126d",
+      "size": 4940275
+    },
+    "start-step-08.png": {
+      "sha256": "fb50d5bef322b056f713664335f48226973a3afdbcb07c5494ba1fe4fbeb126d",
+      "size": 4940275
+    },
+    "start-steps.jsonl": {
+      "sha256": "a4b4b60044649cc3188b79bb01b123af675c4c56640cf74115b70c303bb86c93",
+      "size": 1117
+    }
+  },
+  "recorded": {
+    "stop": "candidate_feed",
+    "seconds": 3.113,
+    "decisions": 30,
+    "errors": [],
+    "boards": [
+      {
+        "file": "scoreboard-baseline.png",
+        "t": 7.515,
+        "parsed": {
+          "open": true,
+          "kos": 0,
+          "deaths": 0,
+          "assists": 0,
+          "accuracy": 0,
+          "damage": 0,
+          "damage_blocked": 0,
+          "healing": 0,
+          "web_cluster_accuracy": 0,
+          "spin_kos": 0
+        },
+        "skipped": null
+      },
+      {
+        "file": "scoreboard-end.png",
+        "t": 11.759,
+        "parsed": {
+          "open": true,
+          "kos": 1,
+          "deaths": 0,
+          "assists": 0,
+          "accuracy": 0,
+          "damage": 250,
+          "damage_blocked": 0,
+          "healing": 0,
+          "web_cluster_accuracy": 33,
+          "spin_kos": 0
+        },
+        "skipped": null
+      }
+    ],
+    "collection_status": "phase_started",
+    "readiness_accepted": null,
+    "first_phase": {
+      "t": 8.646817600005306,
+      "file": "episode-first-phase.png",
+      "size": [
+        2560,
+        1440
+      ],
+      "feed_present": false
+    },
+    "candidate_feed": {
+      "t": 11.759336200018879,
+      "file": "episode-candidate-feed.png",
+      "feed_present": true,
+      "designated_completion": null
+    },
+    "live_scope": {
+      "game_pid": 10668,
+      "focus_method": "GetForegroundWindow/GetWindowThreadProcessId, read-only",
+      "loop_perf_origin": 257039.0585961,
+      "not_after_perf": 257072.7004036,
+      "not_after_t": 33.641807500011055,
+      "startup_max_s": 14.0,
+      "phase_max_s": 20.0,
+      "combined_max_s": 34.0
+    }
+  }
+}

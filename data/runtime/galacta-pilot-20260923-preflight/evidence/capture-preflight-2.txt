@@ -1,0 +1,2 @@
+Installed 16 packages in 25.05s
+capture preflight ok: 159 dxcam frames in 1 s

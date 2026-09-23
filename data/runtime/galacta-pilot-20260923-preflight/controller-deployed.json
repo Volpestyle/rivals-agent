@@ -1,0 +1,141 @@
+{
+  "status": "deployed_bytes_equal_main_git_blobs_up_to_CRLF",
+  "files": {
+    "agent/controller.py": {
+      "sha256": "0ce26bc5da1ccebc36c5e5fcea78908ce5e5a25466a8cdbbafaa85f478825bbd",
+      "LF_normalized_sha256": "c90af6c4f8cc1d3a7521766da91b53951c9cd5d5e2939413d2f2906e7738bf32",
+      "CRLF_blob_sha256": "0ce26bc5da1ccebc36c5e5fcea78908ce5e5a25466a8cdbbafaa85f478825bbd",
+      "live_line_endings": "CRLF"
+    },
+    "agent/loop.py": {
+      "sha256": "be16e045d9ef06a8a1fbb38ca7beb979a8927a9bdd6be0540592721ec08417da",
+      "LF_normalized_sha256": "4e006d09687a2a0add6210cddabbb4299c0a260b7125ae23dcad4f78394e9533",
+      "CRLF_blob_sha256": "be16e045d9ef06a8a1fbb38ca7beb979a8927a9bdd6be0540592721ec08417da",
+      "live_line_endings": "CRLF"
+    },
+    "agent/intents.py": {
+      "sha256": "836692b7c241df0d2a57c109230f8047b1c4d0a4392782bfb652f883c6f50cf3",
+      "LF_normalized_sha256": "836692b7c241df0d2a57c109230f8047b1c4d0a4392782bfb652f883c6f50cf3",
+      "CRLF_blob_sha256": "fbf4d757ef5b1a904f5a84b12506955fdf0a8525e1b2b2e17ced79467aa9a89e",
+      "live_line_endings": "LF"
+    },
+    "agent/state.py": {
+      "sha256": "83983c59f0ea39772686b9ce8e002aab86d312c5e75937bc2b9e6a21eddb8f5a",
+      "LF_normalized_sha256": "7ee6b826c38090d28d44b598d77ddeabf22f4593cf64ea45012b461a2377c149",
+      "CRLF_blob_sha256": "83983c59f0ea39772686b9ce8e002aab86d312c5e75937bc2b9e6a21eddb8f5a",
+      "live_line_endings": "CRLF"
+    },
+    "agent/brain.py": {
+      "sha256": "0deaafb77cae4fa4a15fc8c8abe6d49c09821de7a1ab5810b096788117b30c00",
+      "LF_normalized_sha256": "71165c51a98df3f7bc170eb71d86e3db117dd084f57c788ec96ca1560ccffaec",
+      "CRLF_blob_sha256": "0deaafb77cae4fa4a15fc8c8abe6d49c09821de7a1ab5810b096788117b30c00",
+      "live_line_endings": "CRLF"
+    },
+    "agent/tracker.py": {
+      "sha256": "0f181117f434a8a0168f1222f5a183f9e9061367838354a6bd5be4e0e540d093",
+      "LF_normalized_sha256": "4b4affaf62ff7e19522508645de1b9b41f2749ea72b7be6899b766d356d67f5a",
+      "CRLF_blob_sha256": "0f181117f434a8a0168f1222f5a183f9e9061367838354a6bd5be4e0e540d093",
+      "live_line_endings": "CRLF"
+    },
+    "agent/learned_range_skill.py": {
+      "sha256": "77e4b7f19d4796737356b71d058d7c33688570940083cc82edb21d7c3e5c89ba",
+      "LF_normalized_sha256": "77e4b7f19d4796737356b71d058d7c33688570940083cc82edb21d7c3e5c89ba",
+      "CRLF_blob_sha256": "0c0b44a8975b5241d55bce7cbd25bcb81789ff7486f804721a8df9ad8fd5ba08",
+      "live_line_endings": "LF"
+    },
+    "agent/startup.py": {
+      "sha256": "d664ca4bd1ffac599a8020c61d843a186c9e608dfee6071ade2d1274c0ff908c",
+      "LF_normalized_sha256": "1d89d1b48506e8978265812bd54908780b455543881738ed5aa0f02a0786f03c",
+      "CRLF_blob_sha256": "d664ca4bd1ffac599a8020c61d843a186c9e608dfee6071ade2d1274c0ff908c",
+      "live_line_endings": "CRLF"
+    },
+    "policy/range_skill_policy.py": {
+      "sha256": "5109def43fe6d84a90a048431481d1ab56a429f2c4e9c804adee2413047d6a82",
+      "LF_normalized_sha256": "d6b62274434cd0b960da817e3d072f933bf6baa6e03055305c120a1e1baa760c",
+      "CRLF_blob_sha256": "5109def43fe6d84a90a048431481d1ab56a429f2c4e9c804adee2413047d6a82",
+      "live_line_endings": "CRLF"
+    },
+    "policy/range_policy.py": {
+      "sha256": "c46e7d8a6523892107c8a878532505d020896e5b32e9df6179c049d6aa3410bb",
+      "LF_normalized_sha256": "c46e7d8a6523892107c8a878532505d020896e5b32e9df6179c049d6aa3410bb",
+      "CRLF_blob_sha256": "376a98874f55445a18f8bcc6ba7b83cb32db4a06ff07ca4259e1621c668504c0",
+      "live_line_endings": "LF"
+    },
+    "policy/execution.py": {
+      "sha256": "84dbec833e4378f94be8678b16ff5ff3b3f582838391e7d73ef23ed305481038",
+      "LF_normalized_sha256": "e35df47e9d78c699ba9ed38664a9ba79451e068cee6dbb9b1e47404e64ddee20",
+      "CRLF_blob_sha256": "84dbec833e4378f94be8678b16ff5ff3b3f582838391e7d73ef23ed305481038",
+      "live_line_endings": "CRLF"
+    },
+    "scripts/capture.py": {
+      "sha256": "b98f310616cf0569375d3e24cbb564d7702872c4ffaa888523ac6b52f96fb547",
+      "LF_normalized_sha256": "86fbfaa655ab40fe24aae54f3d43fbeefa38eea8af7517d3813e400acedd5b6e",
+      "CRLF_blob_sha256": "b98f310616cf0569375d3e24cbb564d7702872c4ffaa888523ac6b52f96fb547",
+      "live_line_endings": "CRLF"
+    },
+    "scripts/record.py": {
+      "sha256": "714346a2ac3672e02ea568b628d2413de2096486c3ba6930502e86694fc175ea",
+      "LF_normalized_sha256": "f22bfeb4381ffdfd3fd8fbb74e7d4a2e85a9c2ce881847961ce8fe437dbaa904",
+      "CRLF_blob_sha256": "714346a2ac3672e02ea568b628d2413de2096486c3ba6930502e86694fc175ea",
+      "live_line_endings": "CRLF"
+    }
+  },
+  "D_receipt": {
+    "path": "docs/evidence/range-cast-calibration-d-20260922/code-receipt.json",
+    "sha256": "b87330523bb336d6c39dc302deeef607aff2b2685c91d0feb510b5475c4fd4e1"
+  },
+  "historical_from_baseline_manifest": {
+    "D_comparisons": {
+      "agent/startup.py": {
+        "D_sha256": "d664ca4bd1ffac599a8020c61d843a186c9e608dfee6071ade2d1274c0ff908c",
+        "raw_match": true,
+        "LF_match": false
+      },
+      "agent/controller.py": {
+        "D_sha256": "268527c0137943597092a5cbc61486ec5a85b56e3070a099d29839cf2e678c43",
+        "raw_match": false,
+        "LF_match": true
+      },
+      "agent/loop.py": {
+        "D_sha256": "c345ec61b92c4eec7406da54f0977439fefeb2347d925b61f28a060536c2e5c3",
+        "raw_match": false,
+        "LF_match": true
+      },
+      "agent/intents.py": {
+        "D_sha256": "836692b7c241df0d2a57c109230f8047b1c4d0a4392782bfb652f883c6f50cf3",
+        "raw_match": false,
+        "LF_match": true
+      },
+      "perception/hud.py": {
+        "D_sha256": "c34e9d071490179a20186ccee0ab6a69cb1c5c7be08f5d57a94b728b53df4661",
+        "raw_match": false,
+        "LF_match": true
+      },
+      "perception/outline.py": {
+        "D_sha256": "fded81b150bb873c738e34fb3fc7d8f0a263a7cf9121e3325991bcdda4acd4f8",
+        "raw_match": false,
+        "LF_match": true
+      }
+    },
+    "scope": "integrated decision/features/selector/executor and acquisition/range guards; external device/backend versions not newly measured",
+    "planned_mode": "range-skill; request checkpoint; no scripted attack fallback; keepalive/warmup disabled; no scoreboard",
+    "run_limit_s": 10,
+    "run_count": 1,
+    "target_scope": "single Luna diagnostic setup, no hard-coded named-target recognition"
+  },
+  "checkout": "C:\\Users\\volpe\\repos\\rivals-agent-live",
+  "git_commit": "627dba3dcefed81f519ee4a1f041bbdf7f056dbb",
+  "frozen_utc": "2026-09-23T18:31:45.264786+00:00",
+  "baseline_manifest": {
+    "path": "data\\runtime\\range-request-diagnostic-20260922\\controller-manifest.json",
+    "sha256": "afa5ba2269ae813aca13358ec5ae23f0c6dfed8c61ef6fc3696740127f72e37d"
+  },
+  "planned_mode": "galacta-pilot-20260923: range-skill (checkpoint 698d8831, confidence 0.7, no scripted attack fallback) and scripted agent.brain.decide, both --collect-episode --stop-on-feed; live warmup off; the 180 s keepalive cannot fire in 20 s; end scoreboard on",
+  "run_limit_s": 20,
+  "startup_limit_s": 14,
+  "combined_authorization_s": 34,
+  "budget_limit": "proof authorization under existing freshness/watchdog limits; not hard process/physical timing",
+  "run_count": "one per scheduled allocation, 20 allocations, no replacement",
+  "scoreboard": true,
+  "target_scope": "designated right Galacta by the courtyard stair railing; near and mid; generic continuous selector"
+}

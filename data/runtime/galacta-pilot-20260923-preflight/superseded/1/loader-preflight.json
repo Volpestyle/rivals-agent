@@ -1,0 +1,46 @@
+{
+  "loaded": true,
+  "live_load": true,
+  "origin": "reviewed_human",
+  "spec": {
+    "steps": 5,
+    "period_s": 0.1,
+    "tolerance_s": 0.025,
+    "hidden": 8,
+    "confidence": 0.7
+  },
+  "checkpoint_sha256": "698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b",
+  "binding_sha256": "fa7c6b06f8962743ba95de5a216af997db86c1fc0ea4a1c815387edbb2dac98f",
+  "runtime": {
+    "patch": "1.1.3870120/build25364676",
+    "cooldown_regime": "normal",
+    "runtime_settings_sha256": "7a1021a8848e65f52d7fd7689ac5afcff35f3548ae3db273cfd86f7a1df0cf57",
+    "calibration_sha256": "a1718fc2d00ac2937bc06937ba678b9ecc291950de6b2422c3ff4d50cd5517ca",
+    "controller_code_sha256": "01836cd185d66c54364b90e30f876099b889c0852a0214509ce93100660752ee",
+    "perception_sha256": "a30b3cae3024641a1a235a99f6297114ec7cbc5d79398a3712e8fe06d8854e2c",
+    "semantic_review_sha256": "378493a5e01622dea0d84be3246e19b9459302e085c70f9e1910c9c21f61dc3e",
+    "input_domain": "virtual_pad",
+    "selector_sha256": "00fd672e388faa0743bec098fc4bb0b6d8dfd35425fe7517bdfd67b846d4ed5f",
+    "semantic_revision": "web-cluster-request-v1",
+    "feature_revision": "masked-state-grid-causal-v1"
+  },
+  "review_sha256": "c12a20a85b8f1b90d762e020b98f970e6d8c1fbc0b06fed7fde0a1ba45cb8030",
+  "code_tree": "C:\\Users\\volpe\\repos\\rivals-agent-live",
+  "inference_calls": 0,
+  "input": false,
+  "refusal_controls": {
+    "binding names the first pilot checkpoint": "DemoError: deployment checkpoint binding mismatch",
+    "expected checkpoint hash is the first pilot one": "DemoError: checkpoint digest mismatch",
+    "runtime selector is the first pilot selector": "DemoError: source/runtime kit or fixed selector mismatch",
+    "runtime patch differs from the source": "DemoError: source/runtime kit or fixed selector mismatch",
+    "runtime cooldown regime is off": "DemoError: source/runtime kit or fixed selector mismatch",
+    "runtime settings hash is the source profile": "DemoError: visual source profile is not runtime motor settings evidence",
+    "runtime semantics are the onset revision": "DemoError: deployment semantic/feature mismatch",
+    "expected runtime differs from the bound one (LF perception)": "DemoError: deployment runtime profile mismatch",
+    "review reference is not a sha256": "DemoError: deployment receipt hashes required",
+    "binding source digest is of another identity": "DemoError: deployment source binding mismatch",
+    "expected identity is the first pilot source": "DemoError: source identity mismatch",
+    "no binding at all (live load)": "DemoError: live load requires event runtime and reviewed deployment binding"
+  },
+  "controls_passed_wrongly": []
+}

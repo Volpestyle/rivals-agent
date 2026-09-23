@@ -161,3 +161,22 @@ the live tree; no game, pad, capture or desktop input.
 **Not dry-run:** the real fast-forward, and everything that needs the game: effective setup, PID, capture preflight,
 Focus/Screenshot, ffmpeg, the loop past its focus gate, the scoreboard, the kill switch. The calibration refusal path
 (a changed `Cal` cannot be committed without moving `main`). `Stop-Process` behaviour of the ViGEm pad.
+
+## Note (2026-09-23, operator): re-issue scripts run as desk jobs after a pane restart
+
+After the Herdr restart at ~13:50 the resumed operator pane could no longer read through the live tree's `data`
+junction (bash `Permission denied`, PowerShell "path not found"); from that pane `git status` in the live tree showed
+all 125 tracked `data/` files as deleted, while the desktop session (C:\desk jobs, where the launcher runs) saw the tree
+clean at the same HEAD. `freeze_deployed*.py` and `issue_binding.py` check the live tree, so after any pane restart run
+them as `C:\desk` jobs; the launcher is unaffected. (Staged outside the repo: editing this tracked README mid-pilot would
+dirty the live tree through the junction and the launcher would refuse. Land after the pilot.)
+
+## Note (2026-09-23, operator): launcher stderr fix, and where the run's operator files are
+
+`launch_slot.ps1` now runs the capture preflight, the git reads and the fragment accounting through `cmd /c`: under
+`ErrorAction Stop`, Windows PowerShell 5.1 turns uv's stderr ("Installed N packages") into a terminating error. The
+fixed copy ran slots 1-3 from `C:\desk\pilot0923\` because a mid-pilot edit here would have dirtied the live tree.
+The operator's other scripts from that folder are in `operator/` (declared-change freeze, archive, inspect, setup
+writer, keep-alive, setup specs, declaration text, reader recheck, stopped-pilot score), resets in `resets/`, and the
+setup evidence the two effective-setup records pin in `evidence/`. The pilot stopped after slot 3; see
+`docs/evidence/galacta-pilot-20260923/README.md`.

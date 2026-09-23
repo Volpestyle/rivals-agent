@@ -1,0 +1,55 @@
+{
+  "slot": 1,
+  "planned_bin": "near",
+  "first_phase": {
+    "size": [
+      2560,
+      1440
+    ],
+    "in_range": true,
+    "hp": 250,
+    "max_hp": 250,
+    "webs": 5,
+    "boxes": [
+      {
+        "finder": "aim",
+        "bbox": [
+          1037,
+          672,
+          1556,
+          1200
+        ],
+        "h": 0.3667,
+        "bin": "near"
+      },
+      {
+        "finder": "wide",
+        "bbox": [
+          1037,
+          672,
+          1556,
+          1202
+        ],
+        "h": 0.3681,
+        "bin": "near"
+      }
+    ]
+  },
+  "inspected": [
+    {
+      "row": 723,
+      "t": 23.4511,
+      "decision_id": 142,
+      "bbox": [
+        1048.0,
+        579.0,
+        1506.0,
+        1162.0
+      ],
+      "member_count": 2,
+      "nearest_saved_frame": "000134.jpg",
+      "drawn_on": "000134.jpg",
+      "file": "inspect-723.jpg"
+    }
+  ]
+}

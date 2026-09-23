@@ -1,0 +1,53 @@
+{
+  "kind": "vuh1314_fragment_boundary_accounting",
+  "run_dir": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260923-01-learned",
+  "stop": "max_time",
+  "range_steps": 794,
+  "steps_with_witness_field": 794,
+  "body_source": {
+    "tracker_current_body": 779,
+    "none_refused": 15
+  },
+  "member_count": {
+    "1": 778,
+    "2": 1
+  },
+  "approach_withheld_steps": 1,
+  "plate_count": {
+    "0": 7,
+    "1": 772
+  },
+  "reasons": {
+    "decision_expired": 594,
+    "no_new_start": 129,
+    "duplicate_no_new_start": 49,
+    "mode_exit": 14,
+    "accepted": 3,
+    "unstable_target": 3,
+    "target_missing_or_ambiguous": 1,
+    "duplicate_unstable_target": 1
+  },
+  "decisions": {
+    "first_consumed": 155,
+    "measured": 155,
+    "not_measured_by_reason": {}
+  },
+  "multi_member_steps": 1,
+  "inspect": [
+    {
+      "row": 723,
+      "t": 23.4511,
+      "decision_id": 142,
+      "bbox": [
+        1048.0,
+        579.0,
+        1506.0,
+        1162.0
+      ],
+      "member_count": 2,
+      "nearest_saved_frame": "000134.jpg"
+    }
+  ],
+  "boundary_anomalies": [],
+  "verdict": "EXERCISED pending native inspection: live steps measured multi-member bodies"
+}

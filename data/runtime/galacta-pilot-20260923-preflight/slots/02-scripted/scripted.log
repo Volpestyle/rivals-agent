@@ -1,0 +1,154 @@
+start: plaza view confirmed after 1 turns (5.45 s)
+{
+ "stop": "collection_baseline_refused",
+ "brain": "scripted",
+ "cooldowns": "normal",
+ "patch": "Season 10, Version 20260911",
+ "seconds": 0.0,
+ "ticks": 0,
+ "reflex_hz": null,
+ "period_ms": null,
+ "tick_ms": null,
+ "aim_ms": null,
+ "over_budget": 0,
+ "budget_ms": 16.67,
+ "decisions": 0,
+ "decision_hz": null,
+ "decide_ms": null,
+ "decision_lag_ms": null,
+ "missed_decisions": 0,
+ "sources": {},
+ "intents": {},
+ "keepalives": 0,
+ "range_gaps": [],
+ "scoreboards": [
+  {
+   "t": 6.543,
+   "captured_t": 7.564847000001464,
+   "capture_interval": [
+    7.5386206000112,
+    7.564847000001464
+   ],
+   "capture_clock": "grab_start_to_return_loop_seconds",
+   "file": "scoreboard-baseline.png",
+   "size": [
+    2560,
+    1440
+   ],
+   "parsed": {
+    "open": true,
+    "kos": null,
+    "deaths": 0,
+    "assists": 0,
+    "accuracy": 45,
+    "damage": 3275,
+    "damage_blocked": 0,
+    "healing": 0,
+    "web_cluster_accuracy": 62,
+    "spin_kos": 0
+   }
+  }
+ ],
+ "errors": [],
+ "native": null,
+ "start": {
+  "turns": 1,
+  "stamps_s_after_liveio_return": [
+   5.3277,
+   5.4139
+  ],
+  "ms": {
+   "first_send_returned": 10.3,
+   "prime_done": 319.4,
+   "confirmed": 5445.7,
+   "liveio_return_to_first_send_return": 10.3
+  },
+  "liveio_ms": 420.9,
+  "live_scope": {
+   "game_pid": 10668,
+   "focus_method": "GetForegroundWindow/GetWindowThreadProcessId, read-only",
+   "loop_perf_origin": 254490.8301719,
+   "not_after_perf": 254524.478067,
+   "not_after_t": 33.64789510000264,
+   "startup_max_s": 14.0,
+   "phase_max_s": 20.0,
+   "combined_max_s": 34.0
+  },
+  "confirm_frames": [
+   "start-confirm-1.png",
+   "start-confirm-2.png"
+  ],
+  "steps_file": "start-steps.jsonl"
+ },
+ "executor_events": [
+  {
+   "t": 6.555427400016924,
+   "type": "executor_release",
+   "reason": "scoreboard",
+   "observation_t": null,
+   "range_skill_trace": null,
+   "release_attempts": [
+    {
+     "attempted_t": 6.555429900006857,
+     "status": "returned",
+     "returned_t": 6.555502500006696
+    }
+   ],
+   "neutral_requested": true,
+   "preceding_send_result": null,
+   "release_returned": true
+  },
+  {
+   "t": 7.683328200015239,
+   "type": "executor_release",
+   "reason": "collection_baseline_refused",
+   "observation_t": null,
+   "range_skill_trace": null,
+   "release_attempts": [
+    {
+     "attempted_t": 7.683333600027254,
+     "status": "returned",
+     "returned_t": 7.683401300018886
+    }
+   ],
+   "neutral_requested": true,
+   "preceding_send_result": null,
+   "release_returned": true
+  }
+ ],
+ "episode_collection": {
+  "status": "refused",
+  "clock": "loop_seconds",
+  "readiness_accepted": null,
+  "designated_completion": null,
+  "first_phase": null,
+  "candidate_feed": null,
+  "baseline": {
+   "t": 6.543,
+   "captured_t": 7.564847000001464,
+   "capture_interval": [
+    7.5386206000112,
+    7.564847000001464
+   ],
+   "capture_clock": "grab_start_to_return_loop_seconds",
+   "file": "scoreboard-baseline.png",
+   "size": [
+    2560,
+    1440
+   ],
+   "parsed": {
+    "open": true,
+    "kos": null,
+    "deaths": 0,
+    "assists": 0,
+    "accuracy": 45,
+    "damage": 3275,
+    "damage_blocked": 0,
+    "healing": 0,
+    "web_cluster_accuracy": 62,
+    "spin_kos": 0
+   }
+  },
+  "reason": "collection_baseline_refused"
+ }
+}

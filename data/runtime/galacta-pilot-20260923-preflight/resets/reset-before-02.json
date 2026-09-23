@@ -1,0 +1,53 @@
+{
+  "kind": "reset",
+  "before_slot": 2,
+  "procedure": "operator Web Cluster shots (7 LT taps) at the designated right Galacta until KO; then waited for respawn",
+  "why": "after slot 1 the designated bot kept ~65% health bar for 2 min (no regeneration seen); slot 2 readiness needs a visibly full-health target",
+  "damaged_look": {
+    "path": "C:/desk/out/p0923-pre02-look.png",
+    "sha256": "5cf7bae0e55392fa81981628edcd6edf1a29bd096154a2d827a480b249ac463e",
+    "mtime_local": "2026-09-23T13:01:34.914"
+  },
+  "ko": "kill feed 'cowboyooopbop -> GALACTA BOT' and KO marker in reset02-c/d",
+  "respawned_full_bar": "reset02-e (about 3-4 s after KO) and pre02-ready: full green bar",
+  "respawn_seconds_upper_bound": "about 4 (between reset02-c and reset02-e shots)",
+  "new_epoch": "UNOBSERVED-epoch-02 bound to this respawned incarnation",
+  "evidence": [
+    {
+      "path": "C:/desk/out/p0923-pre02-look.png",
+      "sha256": "5cf7bae0e55392fa81981628edcd6edf1a29bd096154a2d827a480b249ac463e",
+      "mtime_local": "2026-09-23T13:01:34.914"
+    },
+    {
+      "path": "C:/desk/out/p0923-reset02-a.jpg",
+      "sha256": "cf563c4def06406ef7ba1cf624c79ec1fbd08193cb817e8d2c6224b00652d99f",
+      "mtime_local": "2026-09-23T13:02:19.975"
+    },
+    {
+      "path": "C:/desk/out/p0923-reset02-b.jpg",
+      "sha256": "a71a1fed7a9ddb420f1c181119e7d6bb864a6a9eecb633417946c9f12990c326",
+      "mtime_local": "2026-09-23T13:02:23.200"
+    },
+    {
+      "path": "C:/desk/out/p0923-reset02-c.jpg",
+      "sha256": "36e00c4340bbe15e46a133fc4277e2ef31ae132aeeb48d0a36e6b94e354a59ad",
+      "mtime_local": "2026-09-23T13:02:26.823"
+    },
+    {
+      "path": "C:/desk/out/p0923-reset02-d.jpg",
+      "sha256": "82161a4b18896a4269fe36bfe5add2ae12fd836e4dbae919e94647a49d3ffead",
+      "mtime_local": "2026-09-23T13:02:28.138"
+    },
+    {
+      "path": "C:/desk/out/p0923-reset02-e.jpg",
+      "sha256": "5fcb2c4acb355ebe5a7ab0aa70a02e2b81c25382be0d0c05669cf6337aa045d7",
+      "mtime_local": "2026-09-23T13:02:31.456"
+    },
+    {
+      "path": "C:/desk/out/p0923-pre02-ready.png",
+      "sha256": "ef68f2dc7d6233c9169175af700ca682695977239aa35e42414a0bdcd9813ad7",
+      "mtime_local": "2026-09-23T13:02:54.186"
+    }
+  ],
+  "board_note": "this KO adds 1 to the scoreboard KOs before slot 2's own same-epoch baseline"
+}

@@ -34,7 +34,7 @@ $checks.order = "$($Index - 1) earlier slot(s) consumed; slot $Index unconsumed"
 $scope = Get-Content -LiteralPath (Join-Path $pre 'runtime-semantic-review.json') -Raw | ConvertFrom-Json
 if ((Get-FileHash -LiteralPath $schedulePath).Hash.ToLower() -ne $scope.scope.schedule.sha256) { throw 'Schedule changed since the binding' }
 $frozen = (Get-Content -LiteralPath (Join-Path $pre 'deployment-check.json') -Raw | ConvertFrom-Json).commit
-if ((git -C $liveTree rev-parse HEAD) -ne $frozen -or (git -C $liveTree status --porcelain)) { throw 'Live tree moved or is dirty since the freeze' }
+if ((cmd /c "git -C $liveTree rev-parse HEAD 2>NUL") -ne $frozen -or (cmd /c "git -C $liveTree status --porcelain 2>NUL")) { throw 'Live tree moved or is dirty since the freeze' }
 foreach ($m in @('controller-deployed.json', 'perception-deployed.json')) {
   $manifest = Get-Content -LiteralPath (Join-Path $pre $m) -Raw | ConvertFrom-Json
   foreach ($p in $manifest.files.PSObject.Properties) {
@@ -66,7 +66,8 @@ if (-not $monitors.Count) { throw 'No monitor Present: dxcam will deliver nothin
 $checks.machine = "CPU $cpu%, no ffmpeg/ffprobe, $($monitors.Count) monitor(s) present"
 if ($CheckOnly) { [pscustomobject]@{slot = $Index; role = $role; run = $name; checks = $checks; launched = $false} | ConvertTo-Json -Depth 4; return }
 
-$pre_capture = & $uv @($uvEnv.Split(' ')) python "$liveTree\scripts\capture.py" preflight 2>&1 | Out-String
+# Native stderr (uv's "Installed N packages") redirected in PowerShell 5.1 under ErrorAction Stop throws: merge it in cmd.
+$pre_capture = cmd /c "$uv $uvEnv python $liveTree\scripts\capture.py preflight 2>&1" | Out-String
 if ($LASTEXITCODE) { throw "capture preflight failed: $pre_capture" }
 New-Item -ItemType Directory -Force $slotDir | Out-Null
 Focus 'Marvel Rivals'
@@ -89,6 +90,6 @@ $run = Start-Process -FilePath $uv -WorkingDirectory $liveTree -WindowStyle Hidd
 Screenshot (Join-Path $slotDir 'after.png')
 "slot $Index $role exit=$($run.ExitCode)"
 if ($role -eq 'learned' -and (Test-Path -LiteralPath $runDir)) {
-  & $uv run --offline --no-project python -B (Join-Path $repo 'data\benchmarks\galacta-pilot-20260923\fragment_accounting.py') $runDir --out (Join-Path $slotDir 'fragment-accounting.json') | Out-Null
+  cmd /c "$uv run --offline --no-project python -B $repo\data\benchmarks\galacta-pilot-20260923\fragment_accounting.py $runDir --out $slotDir\fragment-accounting.json >NUL 2>&1"
   if ($LASTEXITCODE -eq 3) { 'STOP: boundary anomaly, see fragment-accounting.json; hand back to the lead' } elseif ($LASTEXITCODE) { 'STOP: fragment accounting could not read the run' }
 }

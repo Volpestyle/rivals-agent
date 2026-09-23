@@ -1,0 +1,5 @@
+{"n": 1, "t": 0.319, "action": "prime pulse 1 of 7: right stick +0.45 up to 0.3 s, then neutral", "stamp": 0.0, "plaza": null, "turns": 1, "frame": "start-step-01.png"}
+{"n": 2, "t": 5.328, "action": "delay 5.00 s, frames only", "stamp": 5.3015, "plaza": null, "turns": 1, "frame": "start-step-02.png"}
+{"n": 3, "t": 5.414, "action": "look", "stamp": 5.3277, "plaza": true, "turns": 1, "frame": "start-step-03.png"}
+{"n": 4, "t": 5.446, "action": "look again", "stamp": 5.4139, "plaza": true, "turns": 1, "frame": "start-step-04.png"}
+{"n": 5, "t": 5.446, "action": "accepted: plaza view on two distinct fresh frames", "stamp": 5.4139, "plaza": true, "turns": 1, "frame": "start-step-05.png"}

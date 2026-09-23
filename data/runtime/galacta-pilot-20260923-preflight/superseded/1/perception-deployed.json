@@ -1,0 +1,194 @@
+{
+  "status": "deployed_bytes_equal_main_git_blobs_up_to_CRLF",
+  "files": {
+    "perception/hud.py": {
+      "sha256": "bcde3611529e26805edbdecbdbd763fec03e74d6100a5a62158dd21ca530198c",
+      "LF_normalized_sha256": "06de320dfe57074631e4c529b613410b7654f39822981bf0b023adb4e3e3ef18",
+      "CRLF_blob_sha256": "bcde3611529e26805edbdecbdbd763fec03e74d6100a5a62158dd21ca530198c",
+      "live_line_endings": "CRLF"
+    },
+    "perception/outline.py": {
+      "sha256": "837680f0c4f277fe8ca3acc25399d3a6341fee20ad56ecd122d668defc98c850",
+      "LF_normalized_sha256": "f6c7d68cdba4df06d97eed8eafa6ca029034e1c5e324d7fe3c64c79eb02c55f4",
+      "CRLF_blob_sha256": "837680f0c4f277fe8ca3acc25399d3a6341fee20ad56ecd122d668defc98c850",
+      "live_line_endings": "CRLF"
+    },
+    "agent/loop.py": {
+      "sha256": "be16e045d9ef06a8a1fbb38ca7beb979a8927a9bdd6be0540592721ec08417da",
+      "LF_normalized_sha256": "4e006d09687a2a0add6210cddabbb4299c0a260b7125ae23dcad4f78394e9533",
+      "CRLF_blob_sha256": "be16e045d9ef06a8a1fbb38ca7beb979a8927a9bdd6be0540592721ec08417da",
+      "live_line_endings": "CRLF"
+    },
+    "agent/state.py": {
+      "sha256": "83983c59f0ea39772686b9ce8e002aab86d312c5e75937bc2b9e6a21eddb8f5a",
+      "LF_normalized_sha256": "7ee6b826c38090d28d44b598d77ddeabf22f4593cf64ea45012b461a2377c149",
+      "CRLF_blob_sha256": "83983c59f0ea39772686b9ce8e002aab86d312c5e75937bc2b9e6a21eddb8f5a",
+      "live_line_endings": "CRLF"
+    },
+    "agent/tracker.py": {
+      "sha256": "0f181117f434a8a0168f1222f5a183f9e9061367838354a6bd5be4e0e540d093",
+      "LF_normalized_sha256": "4b4affaf62ff7e19522508645de1b9b41f2749ea72b7be6899b766d356d67f5a",
+      "CRLF_blob_sha256": "0f181117f434a8a0168f1222f5a183f9e9061367838354a6bd5be4e0e540d093",
+      "live_line_endings": "CRLF"
+    },
+    "policy/range_policy.py": {
+      "sha256": "c46e7d8a6523892107c8a878532505d020896e5b32e9df6179c049d6aa3410bb",
+      "LF_normalized_sha256": "c46e7d8a6523892107c8a878532505d020896e5b32e9df6179c049d6aa3410bb",
+      "CRLF_blob_sha256": "376a98874f55445a18f8bcc6ba7b83cb32db4a06ff07ca4259e1621c668504c0",
+      "live_line_endings": "LF"
+    },
+    "policy/range_skill_policy.py": {
+      "sha256": "5109def43fe6d84a90a048431481d1ab56a429f2c4e9c804adee2413047d6a82",
+      "LF_normalized_sha256": "d6b62274434cd0b960da817e3d072f933bf6baa6e03055305c120a1e1baa760c",
+      "CRLF_blob_sha256": "5109def43fe6d84a90a048431481d1ab56a429f2c4e9c804adee2413047d6a82",
+      "live_line_endings": "CRLF"
+    }
+  },
+  "PAD": {
+    "HP_TEXT": [
+      0.44,
+      0.896,
+      0.56,
+      0.9315
+    ],
+    "HP_BAR": [
+      0.4055,
+      0.9335,
+      0.5945,
+      0.9425
+    ],
+    "WEBS": [
+      0.162,
+      0.905,
+      0.179,
+      0.95
+    ],
+    "WEBS_RIGHT": [
+      24,
+      38
+    ],
+    "SLOT_CX": {
+      "teamup": 0.7516,
+      "swing": 0.795,
+      "get_over_here": 0.8348,
+      "uppercut": 0.8723
+    },
+    "ULT": [
+      0.902,
+      0.872,
+      0.972,
+      0.95
+    ],
+    "badge_light_disc": true,
+    "slot_spill": 0.95,
+    "entrypoint": "hud.read(frame) default PAD; embedded glyph/tag templates in hashed module"
+  },
+  "source_mapped_MK": {
+    "name": "mk",
+    "webs": [
+      0.2455,
+      0.905,
+      0.27,
+      0.95
+    ],
+    "webs_right": [
+      48,
+      66
+    ],
+    "badge_light_disc": false,
+    "slot_spill": 0.15,
+    "hp_text": [
+      0.44,
+      0.896,
+      0.56,
+      0.9315
+    ],
+    "hp_bar": [
+      0.4055,
+      0.9335,
+      0.5945,
+      0.9425
+    ],
+    "slot_cx": {
+      "swing": 0.795,
+      "uppercut": 0.8348,
+      "get_over_here": 0.8723
+    },
+    "ult": [
+      0.902,
+      0.872,
+      0.972,
+      0.95
+    ]
+  },
+  "crop": {
+    "base_square_px_at_1440h": 960,
+    "side": "round(960 * actual_height / 1440)",
+    "native_2560x1440_example": [
+      800,
+      240,
+      1760,
+      1200
+    ],
+    "detector_scale": "actual_width/1280",
+    "coordinates": "crop origin and full frame passed into finder; bbox translated to actual frame pixels",
+    "fallback": "full-frame only when decision crop empty; same episode Tracker; no RGB resize assumed"
+  },
+  "enemy_channel": "find_enemies default GREEN; player/HUD exclusions retained",
+  "tag": "hud.read_tagged(frame,bbox)",
+  "features": {
+    "revision": "masked-state-grid-causal-v1",
+    "spec": {
+      "steps": 5,
+      "period_s": 0.1,
+      "tolerance_s": 0.025,
+      "hidden": 8,
+      "confidence": 0.7
+    },
+    "fields": [
+      "hp_fraction",
+      "webs",
+      "pull_ready",
+      "uppercut_ready",
+      "swing_ready",
+      "on_target",
+      "detector",
+      "target",
+      "target_x",
+      "target_y",
+      "target_height",
+      "target_distance",
+      "target_tagged"
+    ],
+    "representation": "13 value/known pairs; original State.t/resource time; unknown stays masked",
+    "source_sampling": "causal actual decoded CTS at/before fixed ticks within25ms; offline available_t=State.t",
+    "runtime_sampling": "five actual acquisition anchors,100ms cadence +/-25ms; detector/malformed/cadence faults reset; current target required"
+  },
+  "remaining_difference": "mapped MK versus PAD slot/ammo/badge layout; crop and continuous selection may change actual inputs; code/config manifests are not observed feature equivalence",
+  "historical_from_baseline_manifest": {
+    "selector_sha256": "ddf1428a61c54805ce06164ef0daa7dfa1302fdf1735990336fdcab939ae098d",
+    "selector_manifest_sha256": "ef64d787d610157879714c9cf80684e7b570eef7a334d8f75d37a2f2c44fa253"
+  },
+  "checkout": "C:\\Users\\volpe\\repos\\rivals-agent-live",
+  "git_commit": "7de8d5f3a3e261295c3e847d158de98f81c04562",
+  "frozen_utc": "2026-09-23T17:38:19.849662+00:00",
+  "baseline_manifest": {
+    "path": "data\\runtime\\range-request-diagnostic-20260922\\perception-manifest.json",
+    "sha256": "183f4cb3e79680c6387a43318e2b1f4bbd0e02ae62b7fd83db4c15672357dc45"
+  },
+  "planned_mode": "galacta-pilot-20260923: range-skill (checkpoint 698d8831, confidence 0.7, no scripted attack fallback) and scripted agent.brain.decide, both --collect-episode --stop-on-feed; live warmup off; the 180 s keepalive cannot fire in 20 s; end scoreboard on",
+  "run_limit_s": 20,
+  "startup_limit_s": 14,
+  "combined_authorization_s": 34,
+  "budget_limit": "proof authorization under existing freshness/watchdog limits; not hard process/physical timing",
+  "run_count": "one per scheduled allocation, 20 allocations, no replacement",
+  "scoreboard": true,
+  "target_scope": "designated right Galacta by the courtyard stair railing; near and mid; generic continuous selector",
+  "selector_sha256": "00fd672e388faa0743bec098fc4bb0b6d8dfd35425fe7517bdfd67b846d4ed5f",
+  "identity": {
+    "perception_sha256": "a30b3cae3024641a1a235a99f6297114ec7cbc5d79398a3712e8fe06d8854e2c",
+    "selector_sha256": "00fd672e388faa0743bec098fc4bb0b6d8dfd35425fe7517bdfd67b846d4ed5f",
+    "form": "digest({path: sha256(git blob with LF -> CRLF)}); docs/evidence/fit-readiness-20260923/README.md 'The identity hashes are over CRLF bytes'",
+    "equals_source_identity": true
+  }
+}

@@ -1,0 +1,16 @@
+{
+    "checks":  {
+                   "order":  "1 earlier slot(s) consumed; slot 2 unconsumed",
+                   "deployed":  "live 7de8d5f3a3e261295c3e847d158de98f81c04562, manifests match",
+                   "game":  "PID 10668 started 2026-09-23T12:13:21.5150286-05:00",
+                   "machine":  "CPU 26.2%, no ffmpeg/ffprobe, 1 monitor(s) present"
+               },
+    "game_pid":  10668,
+    "capture_preflight":  "capture preflight ok: 172 dxcam frames in 1 s",
+    "consumed_utc":  "2026-09-23T18:03:34.6349321Z",
+    "run":  "galacta-pilot-20260923-02-scripted",
+    "policy":  "scripted",
+    "binding_sha256":  null,
+    "reason":  "predeclared galacta-pilot-20260923 allocation, once; preserve failure, no replacement",
+    "slot":  2
+}
