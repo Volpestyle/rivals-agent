@@ -214,3 +214,22 @@ Remaining boundary: independent code review, root's producer/loop resource/event
 clock assertions and integration, then separately authorized evidence. Pure
 tests establish executor semantics, not fluid gameplay, cast success, learned
 movement or policy quality.
+
+## 2026-09-23: a box on two bots is not refusable by its shape (VUH-1356, no code change)
+
+**The case.** The finder can return one flat box spanning two bots whose name plates touch (calibration take
+frames5/0303–0309). The scripted selector picks it at every tick. Range mode then steers toward the box's centre, the
+floor between the bots, and arming reaches 4 of 5 before the run ends. See `docs/evidence/flat-target-20260923/`.
+
+**Why no controller limit was added.** Measured over every recording here (4,660 boxes; every box with w/h ≥ 2 viewed
+natively):
+- **Real single-bot target boxes reach w/h 1.86 at close range.** At mid range they reach 3.98 as a bot's own name plate,
+  about 2.4 as a plate with the head, and 6.72 as a crop-edge sliver.
+- **The fused box measures 2.31 to 4.43 across its seven ticks.**
+- **So any limit that refuses all seven also refuses 4 to 6 of the take's 39 labelled single-bot anchors.** A limit
+  that spares them catches at most four of the seven.
+- **`PLAUSIBLE`, `_fits` and `_range_detection` all pass the box;** none reads shape.
+- **Galacta slot 4's range-step targets top out at w/h 1.89,** so a limit would not change that replay.
+
+**Where it belongs:** the finder, which sees the two health strips inside the one component (`outline._health_strips`).
+Projecting lone tall plates as bodies would also make single-bot targets body-shaped. The lead decides.

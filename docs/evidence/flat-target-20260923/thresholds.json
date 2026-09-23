@@ -1,0 +1,510 @@
+{
+ "frames5_0301_0309": [
+  {
+   "frame": "0301",
+   "boxes": [],
+   "target": null,
+   "target_aspect": null
+  },
+  {
+   "frame": "0302",
+   "boxes": [
+    [
+     1206,
+     676,
+     1351,
+     739
+    ],
+    [
+     1395,
+     679,
+     1539,
+     740
+    ],
+    [
+     1631,
+     722,
+     1655,
+     763
+    ]
+   ],
+   "target": null,
+   "target_aspect": null
+  },
+  {
+   "frame": "0303",
+   "boxes": [
+    [
+     1227,
+     648,
+     1524,
+     715
+    ],
+    [
+     1632,
+     664,
+     1650,
+     713
+    ]
+   ],
+   "target": [
+    1227,
+    648,
+    1524,
+    715
+   ],
+   "target_aspect": 4.433,
+   "reason": "no_new_start",
+   "stable": 1,
+   "ly": 0.0,
+   "rx": 0.318,
+   "ry": 0.539
+  },
+  {
+   "frame": "0304",
+   "boxes": [
+    [
+     1261,
+     639,
+     1533,
+     711
+    ],
+    [
+     1633,
+     657,
+     1651,
+     697
+    ]
+   ],
+   "target": [
+    1261,
+    639,
+    1533,
+    711
+   ],
+   "target_aspect": 3.778,
+   "reason": "no_new_start",
+   "stable": 2,
+   "ly": 0.0,
+   "rx": 0.0,
+   "ry": 0.0
+  },
+  {
+   "frame": "0305",
+   "boxes": [
+    [
+     1185,
+     651,
+     1461,
+     721
+    ],
+    [
+     1537,
+     673,
+     1555,
+     721
+    ]
+   ],
+   "target": [
+    1185,
+    651,
+    1461,
+    721
+   ],
+   "target_aspect": 3.943,
+   "reason": "target_missing_or_ambiguous",
+   "stable": 0,
+   "ly": 0.0,
+   "rx": 0.0,
+   "ry": 0.0
+  },
+  {
+   "frame": "0306",
+   "boxes": [
+    [
+     1208,
+     659,
+     1488,
+     726
+    ]
+   ],
+   "target": [
+    1208,
+    659,
+    1488,
+    726
+   ],
+   "target_aspect": 4.179,
+   "reason": "no_new_start",
+   "stable": 1,
+   "ly": 0.0,
+   "rx": 0.247,
+   "ry": 0.397
+  },
+  {
+   "frame": "0307",
+   "boxes": [
+    [
+     1241,
+     626,
+     1554,
+     732
+    ]
+   ],
+   "target": [
+    1241,
+    626,
+    1554,
+    732
+   ],
+   "target_aspect": 2.953,
+   "reason": "no_new_start",
+   "stable": 2,
+   "ly": 0.0,
+   "rx": 0.099,
+   "ry": 0.0
+  },
+  {
+   "frame": "0308",
+   "boxes": [
+    [
+     1202,
+     621,
+     1461,
+     733
+    ]
+   ],
+   "target": [
+    1202,
+    621,
+    1461,
+    733
+   ],
+   "target_aspect": 2.312,
+   "reason": "no_new_start",
+   "stable": 3,
+   "ly": 0.0,
+   "rx": 0.1,
+   "ry": 0.339
+  },
+  {
+   "frame": "0309",
+   "boxes": [
+    [
+     1153,
+     604,
+     1455,
+     705
+    ]
+   ],
+   "target": [
+    1153,
+    604,
+    1455,
+    705
+   ],
+   "target_aspect": 2.99,
+   "reason": "no_new_start",
+   "stable": 4,
+   "ly": 0.0,
+   "rx": 0.0,
+   "ry": 0.259
+  }
+ ],
+ "table": [
+  {
+   "limit": 1.9,
+   "fused_refused": 7,
+   "fused": 7,
+   "labelled_refused": 7,
+   "labelled": 39,
+   "labelled_refused_ids": [
+    "56",
+    "1374",
+    "1788",
+    "1859",
+    "3113",
+    "3835",
+    "3987"
+   ],
+   "other_targets_refused": 183,
+   "other_targets": 1787,
+   "slot4_refused": 0,
+   "slot4": 1291
+  },
+  {
+   "limit": 2.0,
+   "fused_refused": 7,
+   "fused": 7,
+   "labelled_refused": 6,
+   "labelled": 39,
+   "labelled_refused_ids": [
+    "56",
+    "1374",
+    "1859",
+    "3113",
+    "3835",
+    "3987"
+   ],
+   "other_targets_refused": 158,
+   "other_targets": 1787,
+   "slot4_refused": 0,
+   "slot4": 1291
+  },
+  {
+   "limit": 2.2,
+   "fused_refused": 7,
+   "fused": 7,
+   "labelled_refused": 4,
+   "labelled": 39,
+   "labelled_refused_ids": [
+    "56",
+    "1374",
+    "3113",
+    "3987"
+   ],
+   "other_targets_refused": 126,
+   "other_targets": 1787,
+   "slot4_refused": 0,
+   "slot4": 1291
+  },
+  {
+   "limit": 2.3,
+   "fused_refused": 7,
+   "fused": 7,
+   "labelled_refused": 4,
+   "labelled": 39,
+   "labelled_refused_ids": [
+    "56",
+    "1374",
+    "3113",
+    "3987"
+   ],
+   "other_targets_refused": 108,
+   "other_targets": 1787,
+   "slot4_refused": 0,
+   "slot4": 1291
+  },
+  {
+   "limit": 2.5,
+   "fused_refused": 6,
+   "fused": 7,
+   "labelled_refused": 1,
+   "labelled": 39,
+   "labelled_refused_ids": [
+    "3987"
+   ],
+   "other_targets_refused": 77,
+   "other_targets": 1787,
+   "slot4_refused": 0,
+   "slot4": 1291
+  },
+  {
+   "limit": 3.0,
+   "fused_refused": 4,
+   "fused": 7,
+   "labelled_refused": 0,
+   "labelled": 39,
+   "labelled_refused_ids": [],
+   "other_targets_refused": 29,
+   "other_targets": 1787,
+   "slot4_refused": 0,
+   "slot4": 1291
+  },
+  {
+   "limit": 3.5,
+   "fused_refused": 4,
+   "fused": 7,
+   "labelled_refused": 0,
+   "labelled": 39,
+   "labelled_refused_ids": [],
+   "other_targets_refused": 12,
+   "other_targets": 1787,
+   "slot4_refused": 0,
+   "slot4": 1291
+  },
+  {
+   "limit": 4.0,
+   "fused_refused": 2,
+   "fused": 7,
+   "labelled_refused": 0,
+   "labelled": 39,
+   "labelled_refused_ids": [],
+   "other_targets_refused": 5,
+   "other_targets": 1787,
+   "slot4_refused": 0,
+   "slot4": 1291
+  },
+  {
+   "limit": 4.5,
+   "fused_refused": 0,
+   "fused": 7,
+   "labelled_refused": 0,
+   "labelled": 39,
+   "labelled_refused_ids": [],
+   "other_targets_refused": 3,
+   "other_targets": 1787,
+   "slot4_refused": 0,
+   "slot4": 1291
+  }
+ ],
+ "slot4_target_aspect_max": 1.892,
+ "labelled_aspects": [
+  [
+   0.371,
+   "599"
+  ],
+  [
+   0.442,
+   "48"
+  ],
+  [
+   0.462,
+   "51"
+  ],
+  [
+   0.467,
+   "662"
+  ],
+  [
+   0.671,
+   "247"
+  ],
+  [
+   0.723,
+   "3266"
+  ],
+  [
+   0.738,
+   "137"
+  ],
+  [
+   0.757,
+   "3269"
+  ],
+  [
+   0.775,
+   "142"
+  ],
+  [
+   0.787,
+   "1714"
+  ],
+  [
+   0.837,
+   "1177"
+  ],
+  [
+   0.895,
+   "4032"
+  ],
+  [
+   0.942,
+   "134"
+  ],
+  [
+   0.956,
+   "3730"
+  ],
+  [
+   0.983,
+   "3528"
+  ],
+  [
+   1.015,
+   "1862"
+  ],
+  [
+   1.041,
+   "3992"
+  ],
+  [
+   1.064,
+   "488"
+  ],
+  [
+   1.074,
+   "483"
+  ],
+  [
+   1.112,
+   "652"
+  ],
+  [
+   1.138,
+   "1517"
+  ],
+  [
+   1.154,
+   "1791"
+  ],
+  [
+   1.162,
+   "769"
+  ],
+  [
+   1.197,
+   "2730"
+  ],
+  [
+   1.226,
+   "1514"
+  ],
+  [
+   1.253,
+   "1717"
+  ],
+  [
+   1.357,
+   "3010"
+  ],
+  [
+   1.458,
+   "1187"
+  ],
+  [
+   1.537,
+   "761"
+  ],
+  [
+   1.556,
+   "594"
+  ],
+  [
+   1.621,
+   "3007"
+  ],
+  [
+   1.661,
+   "764"
+  ],
+  [
+   1.917,
+   "1788"
+  ],
+  [
+   2.044,
+   "1859"
+  ],
+  [
+   2.094,
+   "3835"
+  ],
+  [
+   2.342,
+   "1374"
+  ],
+  [
+   2.368,
+   "56"
+  ],
+  [
+   2.384,
+   "3113"
+  ],
+  [
+   2.667,
+   "3987"
+  ]
+ ]
+}
