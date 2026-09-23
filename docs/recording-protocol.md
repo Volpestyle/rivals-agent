@@ -14,7 +14,11 @@ replaces event-only recording (VUH-1351) with whole-session recording.
    before (2560x1440, 120 fps, MKV). Nothing else changes.
 2. Same game settings as the September 23 sessions: normal cooldowns (No Ability
    Cooldown OFF), Friendly Fire OFF, 240 FPS cap, same DPI, sensitivity and bindings.
-   If any of these change, say so with the recording.
+   If any of these change, say so with the recording. Once per campaign, and again after any
+   change: a 5-second look at the Controls settings screen (mouse sensitivity, DPI if shown,
+   swing mode, key bindings) inside a recording, so the motor settings that the mouse counts
+   depend on are pinned from pixels and not from memory. Keyboard and mouse only; the logger
+   cannot see a controller, so say if one was ever plugged in.
 3. Start recording, tab into the game once, play 20 to 30 minutes, tab out once, stop.
    One recording is one session. Do not pause OBS. If you must stop early, stop the
    recording and start a new one later; do not resume.
