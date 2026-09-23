@@ -19,6 +19,8 @@ for whole-session behaviour cloning (movement, targeting, combos), not just web-
 | 2026-09-23 00-43-25.mkv | 20260923T054325-507Z-33696-4 | 34 min | DayMR native replay viewing (no player inputs to learn; route map cut) | n/a | replay corpus (VUH-1328) |
 | 2026-09-23 12-15-33.mkv | 20260923T171533-187Z-33696-5 | 3 min | range, Galacta, full-ammo combos with waited cooldowns, pulls at the end | normal | logger complete, 0 drops; intake pending |
 | 2026-09-23 15-01-29.mkv | 20260923T200129-346Z-33696-6 | 26.8 min | range, Galacta, whole-session campaign take 1 (James: "firing range footage"; content details at intake) | normal (no drop note) | logger complete, clean stop, 0 drops, 0 raw-input errors; intake pending |
+| 2026-09-23 15-37-16.mkv | 20260923T203716-726Z-45572-1 | 7 s | HEVC encoder test (NVENC HEVC, same quality tier); anchor holds (+21 ms, residual 0.333 ms) | n/a | encoder check only, not registered |
+| 2026-09-23 15-47-07.mkv | 20260923T204707-487Z-45572-2 | 2.0 min | calibration take (HEVC): settings screens (keyboard, controller), slow 360° yaw, pitch sweep; content confirmed at intake | normal | logger complete, 0 drops; intake pending |
 
 Total logged range play with inputs: about 17 trainable minutes before the campaign; campaign take 1 adds up to ~27 min (pending intake). Campaign target: 180 minutes.
 
@@ -31,3 +33,4 @@ Total logged range play with inputs: about 17 trainable minutes before the campa
 - 2026-09-23: **Alt does nothing in game** (unbound), per James; Alt presses are Alt-Tab only and stay UI-key cuts.
 - 2026-09-23: **Swing bindings**, per James: normal Web-Swing on the default key (Shift) with default swing settings; **Simple Swing bound to Caps Lock** as a separate key. Caps Lock (VK 20) presses, if any, are simple-swing actions, not UI keys.
 - 2026-09-23: **No physical controller was plugged in during any recording session** (James's attestation, ~15:55 CDT). Device scope for every human session: single keyboard and mouse.
+- 2026-09-23: **OBS recording encoder switched to NVENC HEVC** (same quality tier, 1440p120, MKV) after the 15-01-29 take; anchor verified on the 15-37-16 test (63 Mbps on the 15-47-07 take versus ~130 Mbps under H.264).
