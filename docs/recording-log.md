@@ -18,8 +18,9 @@ for whole-session behaviour cloning (movement, targeting, combos), not just web-
 | 2026-09-23 00-39-29.mkv | 20260923T053929-795Z-33696-3 | 1 min | range, calibration | normal | inspected |
 | 2026-09-23 00-43-25.mkv | 20260923T054325-507Z-33696-4 | 34 min | DayMR native replay viewing (no player inputs to learn; route map cut) | n/a | replay corpus (VUH-1328) |
 | 2026-09-23 12-15-33.mkv | 20260923T171533-187Z-33696-5 | 3 min | range, Galacta, full-ammo combos with waited cooldowns, pulls at the end | normal | logger complete, 0 drops; intake pending |
+| 2026-09-23 15-01-29.mkv | 20260923T200129-346Z-33696-6 | 26.8 min | range, Galacta, whole-session campaign take 1 (James: "firing range footage"; content details at intake) | normal (no drop note) | logger complete, clean stop, 0 drops, 0 raw-input errors; intake pending |
 
-Total logged range play with inputs: about 17 trainable minutes (focused, non-sealed). Campaign target: 180 minutes.
+Total logged range play with inputs: about 17 trainable minutes before the campaign; campaign take 1 adds up to ~27 min (pending intake). Campaign target: 180 minutes.
 
 ## Motor settings (James's statements)
 
