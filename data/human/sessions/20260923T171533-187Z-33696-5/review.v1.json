@@ -1,0 +1,239 @@
+{
+ "schema_version": 1,
+ "session_id": "20260923T171533-187Z-33696-5",
+ "reviewer": "owner admission-owner (502db85ef1e71c89) + independent admission-review (Claude Opus 5.5, claude-opus-5-5, pane admission-review)",
+ "reviewed_at": "2026-09-23T15:12:21-05:00",
+ "device_scope": {
+  "kind": "single_keyboard_mouse",
+  "source": "input-profile.json: keyboard ['745933423'], mouse ['65618']; 3 zero-effect handle-0 packets allowed (lead decision), no injected control input",
+  "no_pad_attestation": "James, 2026-09-23 ~15:55 CDT (docs/recording-log.md): no physical controller plugged in during any recording session"
+ },
+ "pts_anchor": {
+  "kind": "independent_muxer_offset",
+  "offset_num": 21,
+  "offset_den": 1000,
+  "source": "accepted blank-scene derivation plus this session's own first-16-packet forward prediction (provenance.json anchor_applicability), no fitting",
+  "evidence": [
+   {
+    "path": "data/human/inspection/20260922T033319-205Z-24328-2/independent-review-resolution.md",
+    "sha256": "a67f55f36554887d97765b4552a33ac5c92494f6a50c814801183528a0c3c8e6"
+   },
+   {
+    "path": "data/human/sessions/20260923T171533-187Z-33696-5/provenance.json",
+    "sha256": "b5bce4f95f63d8b9ce1a032bce542f6df8dc14f1715b6cfe6fcb69a5ce415f57"
+   }
+  ]
+ },
+ "provenance": {
+  "hero": "Spider-Man",
+  "settings": {
+   "value": {
+    "dpi": 800,
+    "horizontal_sensitivity": 1.89,
+    "vertical_sensitivity": 1.89,
+    "swing_mode": "default: hold_to_swing true, automatic (simple) swing false on Shift; Simple Swing on Caps Lock"
+   },
+   "source": "James's statements in docs/recording-log.md (2026-09-23): DPI 800 (~14:50 CDT), sensitivity unchanged since 2026-09-21 (1.89/1.89 in the 09-21 report), default swing settings on Shift with Simple Swing on Caps Lock; the saved profile shows hold-to-swing on, simple swing off",
+   "per_session_source": "James's dated statements of 2026-09-23, applied by the lead to every existing session",
+   "evidence": [
+    {
+     "path": "data/human/sessions/20260923T171533-187Z-33696-5/recording-log.299ffba.md",
+     "sha256": "fc6e595cfb6ef47f7ffe89dd6f00058f8fec1f8e36ae89e51e273cd83d2b8e2f"
+    },
+    {
+     "path": "data/human/notes/2026-09-21-user-settings.json",
+     "sha256": "852c92254961b4fcb1278e8ebe752ea2f02ce6add678509d3276fd1a26264c6c"
+    },
+    {
+     "path": "data/human/sessions/20260923T171533-187Z-33696-5/provenance.json",
+     "sha256": "b5bce4f95f63d8b9ce1a032bce542f6df8dc14f1715b6cfe6fcb69a5ce415f57"
+    }
+   ]
+  },
+  "bindings": {
+   "value": {
+    "move_forward": "key:17:0",
+    "move_left": "key:30:0",
+    "move_back": "key:31:0",
+    "move_right": "key:32:0",
+    "jump": "key:57:0",
+    "web_swing": "key:42:0",
+    "get_over_here": "key:33:0",
+    "amazing_combo": "key:18:0",
+    "ultimate": "key:16:0",
+    "melee": "key:47:0",
+    "spider_power": "mouse:1",
+    "web_cluster": "mouse:2",
+    "team_up": "key:46:0",
+    "simple_swing": "key:58:0"
+   },
+   "notes": {
+    "team_up": "C = Team-Up, fires in the solo range with a visible effect (James 2026-09-23 correction; HUD check in 051828/team-up-check.json). A real action with positives, trained but masked live (Y is off the pad whitelist). An action of the fit vocabulary since 2026-09-23 15:47.",
+    "simple_swing": "Caps Lock (VK 20, scan 58) = Simple Swing, a semantic action, not a UI key (James). Not in the fit vocabulary; step rows would count it as unsupported key:58:0.",
+    "melee": "V quick melee: the game default, not in James's reported table; never pressed in the reviewed sessions.",
+    "spider_power": "LMB. James's 2026-09-21 report also binds Mouse 5 (mouse:5) to punch; the fit's one-id binding counts mouse:5 presses as unsupported.",
+    "alt": "Alt is unbound in game (James); Alt presses are Alt-Tab and stay UI-key cuts."
+   },
+   "source": "James: 2026-09-21 reported table; 2026-09-23 statements (C team-up, Alt unbound, Simple Swing on Caps Lock); HUD key labels on this session's frames (slot-mapping.json)",
+   "per_session_source": "James's dated statements of 2026-09-23 (docs/recording-log.md)",
+   "evidence": [
+    {
+     "path": "data/human/sessions/20260923T171533-187Z-33696-5/recording-log.299ffba.md",
+     "sha256": "fc6e595cfb6ef47f7ffe89dd6f00058f8fec1f8e36ae89e51e273cd83d2b8e2f"
+    },
+    {
+     "path": "data/human/notes/2026-09-21-user-settings.json",
+     "sha256": "852c92254961b4fcb1278e8ebe752ea2f02ce6add678509d3276fd1a26264c6c"
+    },
+    {
+     "path": "data/human/sessions/20260923T171533-187Z-33696-5/slot-mapping.json",
+     "sha256": "12afa956e7058d7a96a5e740258731ab467634f3c7f5155ef32aae1a911b4eaf"
+    }
+   ]
+  },
+  "game_patch": {
+   "value": "1.1.3870120/build25364676",
+   "source": "Steam content log and appmanifest: build 25364676, no later update",
+   "evidence": [
+    {
+     "path": "data/human/sessions/20260923T171533-187Z-33696-5/provenance.json",
+     "sha256": "b5bce4f95f63d8b9ce1a032bce542f6df8dc14f1715b6cfe6fcb69a5ce415f57"
+    }
+   ]
+  },
+  "cooldown_regime": {
+   "value": "normal",
+   "source": "5 fps HUD scan: depletion observed",
+   "evidence": [
+    {
+     "path": "data/human/sessions/20260923T171533-187Z-33696-5/regime-timeline.json",
+     "sha256": "7633b004f1bbf83b142cff469384bf6121aa14bc36da3895861f203af16439e9"
+    }
+   ]
+  },
+  "segments_evidence": {
+   "path": "data/human/sessions/20260923T171533-187Z-33696-5/segments-evidence.json",
+   "sha256": "9cf113cbe6a18dd59aeaab368b56d1d734bfc721f9d3bbacd382a70ac06395e8"
+  },
+  "owner_verdicts": {
+   "path": "data/human/sessions/20260923T171533-187Z-33696-5/owner-verdicts.json",
+   "sha256": "502db85ef1e71c8948326fe7fe3bfd8022d38b02a7e52ae0abef51ade074d6ec"
+  },
+  "lead_decisions": {
+   "path": "data/human/sessions/20260923T171533-187Z-33696-5/lead-decisions.json",
+   "sha256": "dc92445c9c214e2cfbfbba87cf318ea5aaaf579e7e95dc53c6da909321ea6e22"
+  },
+  "independent_review": {
+   "path": "data/human/sessions/20260923T171533-187Z-33696-5/independent-review.verdicts.json",
+   "sha256": "bf9a7df2a88f347951b39c64ae1078e4f967d4a2b42d159d0394187b41fe6013",
+   "reviewer": "admission-review (Claude Opus 5.5, claude-opus-5-5, pane admission-review)"
+  }
+ },
+ "alignment": {
+  "kind": "assumption",
+  "statement": "OBS composition time is the labelling clock; capture, display and input-delivery latency are uncalibrated (no measured bound is asserted)",
+  "source": "lead decision for the whole-session campaign; as for the 2026-09-22/23 request packets"
+ },
+ "segments": [
+  {
+   "segment_id": "seg-000",
+   "start_ns": 251609740341400,
+   "end_ns": 251609990341400,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "focus_transition: first 250 ms after focus gain (FOCUS_SETTLE). Native: the only taskbar frame is f146, before focus; f147-176 clean, but the settle window is correctly excluded.",
+   "evidence": "data/human/sessions/20260923T171533-187Z-33696-5/independent-review.verdicts.json (bf9a7df2a88f3479)",
+   "machine_reason": "focus_transition"
+  },
+  {
+   "segment_id": "seg-001",
+   "start_ns": 251609990341400,
+   "end_ns": 251609994172915,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "sub-frame sliver between the settle end and the first decoded frame (3.8 ms); no frame to inspect.",
+   "evidence": "data/human/sessions/20260923T171533-187Z-33696-5/independent-review.verdicts.json (bf9a7df2a88f3479)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-002",
+   "start_ns": 251609994172915,
+   "end_ns": 251614535839401,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "unresolved",
+   "suitability_reason": "4.5 s of range HUD at the 25 m marks before the Alt-Tab: standing, mouse look and one D tap (4.608-4.727 s), no engagement. Reads as a setup check before the session proper; not a protocol violation, but not demonstrated play either. Concur with owner: unresolved (never trains).",
+   "evidence": "data/human/sessions/20260923T171533-187Z-33696-5/independent-review.verdicts.json (bf9a7df2a88f3479)",
+   "machine_reason": "range_hud_present"
+  },
+  {
+   "segment_id": "seg-003",
+   "start_ns": 251614535839401,
+   "end_ns": 251614542951200,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "sliver between the last frame before Alt and the Alt packet (7 ms).",
+   "evidence": "data/human/sessions/20260923T171533-187Z-33696-5/independent-review.verdicts.json (bf9a7df2a88f3479)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-004",
+   "start_ns": 251614542951200,
+   "end_ns": 251614649167700,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "ui_key: Alt down 6.149277 s (Alt-Tab out); frames still show gameplay but the span contains a UI key and precedes focus loss.",
+   "evidence": "data/human/sessions/20260923T171533-187Z-33696-5/independent-review.verdicts.json (bf9a7df2a88f3479)",
+   "machine_reason": "ui_key"
+  },
+  {
+   "segment_id": "seg-005",
+   "start_ns": 251620895718500,
+   "end_ns": 251621145718500,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "focus_transition after focus regain 12.502 s. Native: f1486 (12.509 s) still shows the Windows taskbar; f1487 onward clean. The 250 ms settle covers it with margin.",
+   "evidence": "data/human/sessions/20260923T171533-187Z-33696-5/independent-review.verdicts.json (bf9a7df2a88f3479)",
+   "machine_reason": "focus_transition"
+  },
+  {
+   "segment_id": "seg-006",
+   "start_ns": 251621145718500,
+   "end_ns": 251621152505802,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "sliver between the settle end and the first decoded frame (6.8 ms).",
+   "evidence": "data/human/sessions/20260923T171533-187Z-33696-5/independent-review.verdicts.json (bf9a7df2a88f3479)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-007",
+   "start_ns": 251621152505802,
+   "end_ns": 251775519166295,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "accepted",
+   "suitability_reason": "Continuous range play 12.759-167.125 s: every owner frame (17) and 14 seeded reviewer samples show the range HUD and live play (swings, combos, KO feed); first frame f1516 clean (no taskbar), last frame f20040 still gameplay; the Esc packet (167.131250 s) lies after end_ns, so no future bin can contain it. Longest no-control-input gap 2.08 s (AFK rule 20 s). No UI key inside. Mouse X1 (button 4) pressed once at 59.61 s: unbound per the profile, retained as an unsupported control event.",
+   "evidence": "data/human/sessions/20260923T171533-187Z-33696-5/independent-review.verdicts.json (bf9a7df2a88f3479)",
+   "machine_reason": "range_hud_present"
+  },
+  {
+   "segment_id": "seg-008",
+   "start_ns": 251775519166295,
+   "end_ns": 251775524924300,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "sliver between the last gameplay frame and the Esc packet (5.8 ms).",
+   "evidence": "data/human/sessions/20260923T171533-187Z-33696-5/independent-review.verdicts.json (bf9a7df2a88f3479)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-009",
+   "start_ns": 251775524924300,
+   "end_ns": 251776119862600,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "settings_menu: Esc at 167.131 s opens the main menu (native f20076 and later: Resume/Practice Settings/Settings/Leave Game menu, in_range false); Alt at 167.684 s and focus loss at 167.726 s follow. Non-play.",
+   "evidence": "data/human/sessions/20260923T171533-187Z-33696-5/independent-review.verdicts.json (bf9a7df2a88f3479)",
+   "machine_reason": "settings_menu"
+  }
+ ]
+}

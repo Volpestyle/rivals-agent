@@ -1,0 +1,132 @@
+{
+ "session": "20260923T051828-422Z-33696-1",
+ "settings": {
+  "value": {
+   "dpi": 800,
+   "horizontal_sensitivity": 1.89,
+   "vertical_sensitivity": 1.89,
+   "swing_mode": "hold"
+  },
+  "source": "DPI: James's statement 2026-09-23 ~14:50 CDT. Sensitivity 1.89/1.89 and hold swing: James's 2026-09-21 report, carried forward by the same 2026-09-23 statement (sensitivity unchanged).",
+  "per_session_source": "James's statement dated 2026-09-23 ~14:50 CDT, applied by lead decision to every existing session",
+  "evidence": [
+   {
+    "path": "docs/recording-log.md",
+    "sha256": "58f8328386354a0a4395313afad0a23f1e36591336f3aee98b453597d81e89ae"
+   },
+   {
+    "path": "data/human/notes/2026-09-21-user-settings.json",
+    "sha256": "852c92254961b4fcb1278e8ebe752ea2f02ce6add678509d3276fd1a26264c6c"
+   },
+   {
+    "path": "data/human/sessions/20260923T051828-422Z-33696-1/provenance.json",
+    "sha256": "a47105f9dcab22a8b8474a00093c915976e3588cea1b4cdfe606ea51c6436f40"
+   }
+  ],
+  "statement": {
+   "path": "docs/recording-log.md",
+   "sha256": "58f8328386354a0a4395313afad0a23f1e36591336f3aee98b453597d81e89ae",
+   "commit": "d857356d3b5e3844c500ffaf0bd36b78e6d703e5",
+   "section": "Motor settings (James's statements)",
+   "text": "2026-09-23: mouse DPI 800 (James, from the mouse's software; chat statement ~14:50 CDT). In-game sensitivity unchanged since the 2026-09-21 sessions (same statement)."
+  },
+  "corroboration": {
+   "saved_settings_sha256": "b0197ee2f5872ea41567b03dd2f1564c3d8606eb15909572aae0c440141d91c0",
+   "saved_profile_equals_2026_09_22": {
+    "1036": true,
+    "0": true
+   },
+   "saved_1036_mouse_sensitivity": [
+    1.8899999856948853,
+    1.8899999856948853
+   ],
+   "note": "later local state; stores sensitivity and bindings, not DPI"
+  },
+  "limits": [
+   "swing mode is from the 2026-09-21 report; the 2026-09-23 statement names sensitivity only",
+   "counts/inch and counts/degree await the ruler and 360-degree takes (fit R8)"
+  ]
+ },
+ "bindings": {
+  "value": {
+   "Shift": "swing",
+   "Caps Lock": "ez swing",
+   "E": "uppercut",
+   "F": "pull",
+   "Q": "ultimate",
+   "Left mouse": "punch",
+   "Mouse 5": "punch",
+   "Right mouse": "web cluster",
+   "C": "team-up"
+  },
+  "physical": {
+   "Shift": {
+    "action": "swing",
+    "kind": "key",
+    "code": 42
+   },
+   "Caps Lock": {
+    "action": "ez swing",
+    "kind": "key",
+    "code": 58
+   },
+   "E": {
+    "action": "uppercut",
+    "kind": "key",
+    "code": 18
+   },
+   "F": {
+    "action": "pull",
+    "kind": "key",
+    "code": 33
+   },
+   "Q": {
+    "action": "ultimate",
+    "kind": "key",
+    "code": 16
+   },
+   "Left mouse": {
+    "action": "punch",
+    "kind": "button",
+    "code": 1
+   },
+   "Mouse 5": {
+    "action": "punch",
+    "kind": "button",
+    "code": 5
+   },
+   "Right mouse": {
+    "action": "web cluster",
+    "kind": "button",
+    "code": 2
+   },
+   "C": {
+    "action": "team-up",
+    "kind": "key",
+    "code": 46
+   }
+  },
+  "source": "James's 2026-09-21 report (bindings_reported); HUD key labels C/LSHIFT/E/F inspected on this session's own frames (slot-mapping.json)",
+  "per_session_source": "James's statement 2026-09-23 (settings unchanged since 2026-09-21); the lead is asking James what C and Alt are bound to",
+  "evidence": [
+   {
+    "path": "data/human/notes/2026-09-21-user-settings.json",
+    "sha256": "852c92254961b4fcb1278e8ebe752ea2f02ce6add678509d3276fd1a26264c6c"
+   },
+   {
+    "path": "data/human/sessions/20260923T051828-422Z-33696-1/slot-mapping.json",
+    "sha256": "b2ccd06d9d4d19d78ebb336ccd9c9fa6acd4cb64a63a36551083e69a8286a2c0"
+   }
+  ],
+  "pending": [
+   "C binding confirmation (reported team-up on 2026-09-21)",
+   "any Alt binding"
+  ]
+ },
+ "settings_identity": "e55453d680fc841ef713cdaee906360c2a7c2daab4210ddca6d8d136de31218a",
+ "calibration_takes": {
+  "dpi_ruler": null,
+  "turn_360": null,
+  "note": "pointers are added when the takes arrive"
+ }
+}

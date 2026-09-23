@@ -1,0 +1,95 @@
+{
+ "schema_version": 1,
+ "kind": "corpus_split_registry",
+ "purpose": "Whole-session corpus placement (VUH-1359). One recording is one session group, named by its session id (lead decisions F6 and K2, 2026-09-23); `sitting` (same day block; `obs_process` beside it) is for stratification only. Campaign play recordings are train and are never held back; validation and test groups are dedicated 10-15 min takes James records later, placed at registration (the 70/15/15 minutes target sizes those takes). 053616 is sealed test; it shares sitting 2026-09-23-early and OBS process 33696 with 051828, so a test result on it is not session-independent of 051828. The 2026-09-22 request-event cohorts keep their own groups; this registry governs whole-session intake only. On the Mac only video_path changes (to the local copy); recorded_video_path and expected_media_sha256 stay as here.",
+ "sessions": [
+  {
+   "session_id": "20260922T032454-642Z-24328-1",
+   "session_group": "20260922T032454-642Z-24328-1",
+   "split": "train",
+   "video_path": "C:/Users/volpe/Videos/2026-09-21 22-24-54.mkv",
+   "recorded_video_path": "C:/Users/volpe/Videos/2026-09-21 22-24-54.mkv",
+   "expected_media_sha256": "2df73a79377e316e28f9e53947ee203dda95f949772f7fd68d1f864dbe960c51",
+   "registered_focused_minutes": 0.478,
+   "split_basis": "existing group (train, 2026-09-22)",
+   "sitting": "2026-09-21-evening",
+   "obs_process": 24328
+  },
+  {
+   "session_id": "20260922T033319-205Z-24328-2",
+   "session_group": "20260922T033319-205Z-24328-2",
+   "split": "train",
+   "video_path": "C:/Users/volpe/Videos/2026-09-21 22-33-19.mkv",
+   "recorded_video_path": "C:/Users/volpe/Videos/2026-09-21 22-33-19.mkv",
+   "expected_media_sha256": "83bdc7f72a066eee2a76fd54ec9d284b4833fd9b0ae8740750650ab1c83184d0",
+   "registered_focused_minutes": 6.933,
+   "split_basis": "existing group; session permanently unadmitted (override)",
+   "sitting": "2026-09-21-evening",
+   "obs_process": 24328
+  },
+  {
+   "session_id": "20260923T051828-422Z-33696-1",
+   "session_group": "20260923T051828-422Z-33696-1",
+   "split": "train",
+   "video_path": "C:/Users/volpe/Videos/2026-09-23 00-18-28.mkv",
+   "recorded_video_path": "C:/Users/volpe/Videos/2026-09-23 00-18-28.mkv",
+   "expected_media_sha256": "ad14e5bc0a1e0da23527a8f4a092e591ddf568ac925cfd0b2907e38dc94b9aaf",
+   "registered_focused_minutes": 6.978,
+   "split_basis": "existing group (train, lead 2026-09-23)",
+   "sitting": "2026-09-23-early",
+   "obs_process": 33696
+  },
+  {
+   "session_id": "20260923T053616-779Z-33696-2",
+   "session_group": "20260923T053616-779Z-33696-2",
+   "split": "test",
+   "video_path": "C:/Users/volpe/Videos/2026-09-23 00-36-16.mkv",
+   "recorded_video_path": "C:/Users/volpe/Videos/2026-09-23 00-36-16.mkv",
+   "expected_media_sha256": "ea49d523bddf86b97c4307aae99198a374e011a4ef1eb5df8d4b90de6b6053bf",
+   "registered_focused_minutes": null,
+   "split_basis": "lead decision 2026-09-23; sealed (denylist)",
+   "sealed": true,
+   "sitting": "2026-09-23-early",
+   "obs_process": 33696
+  },
+  {
+   "session_id": "20260923T171533-187Z-33696-5",
+   "session_group": "20260923T171533-187Z-33696-5",
+   "split": "train",
+   "video_path": "C:/Users/volpe/Videos/2026-09-23 12-15-33.mkv",
+   "recorded_video_path": "C:/Users/volpe/Videos/2026-09-23 12-15-33.mkv",
+   "expected_media_sha256": "3f8e408719433a4603122ff92759f2382deb1f4f6ddf54ee4562c4c86da42126",
+   "registered_focused_minutes": 2.669,
+   "split_basis": "lead decision 2026-09-23 (before the 70/15/15 rule)",
+   "sitting": "2026-09-23-afternoon",
+   "obs_process": 33696
+  },
+  {
+   "session_id": "20260923T200129-346Z-33696-6",
+   "session_group": "20260923T200129-346Z-33696-6",
+   "split": "train",
+   "video_path": "C:/Users/volpe/Videos/2026-09-23 15-01-29.mkv",
+   "recorded_video_path": "C:/Users/volpe/Videos/2026-09-23 15-01-29.mkv",
+   "expected_media_sha256": "b06621fe4d6de489ac1c78b9557f57cdc4e8f8e641cbe1b35912510c60336f30",
+   "registered_focused_minutes": 26.779,
+   "split_basis": "lead decision 2026-09-23: campaign play takes are train (F6); registered before inspection",
+   "sitting": "2026-09-23-afternoon",
+   "obs_process": 33696,
+   "registered_at": "2026-09-23"
+  },
+  {
+   "session_id": "20260923T205528-900Z-45572-3",
+   "session_group": "20260923T205528-900Z-45572-3",
+   "split": "train",
+   "video_path": "C:/Users/volpe/Videos/2026-09-23 15-55-28.mkv",
+   "recorded_video_path": "C:/Users/volpe/Videos/2026-09-23 15-55-28.mkv",
+   "expected_media_sha256": "bf32202abd0b93a300453ffaa9896b7566c52ee4ed8b6aacb8edc9a4dd6f11e9",
+   "registered_focused_minutes": 11.076,
+   "split_basis": "lead decision 2026-09-23: campaign play takes are train (F6); registered before inspection",
+   "sitting": "2026-09-23-afternoon",
+   "obs_process": 45572,
+   "registered_at": "2026-09-23",
+   "codec": "hevc"
+  }
+ ]
+}

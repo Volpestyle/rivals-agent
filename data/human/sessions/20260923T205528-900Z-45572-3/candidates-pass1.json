@@ -1,0 +1,60 @@
+{
+ "session": "20260923T205528-900Z-45572-3",
+ "flags": [],
+ "capture_gaps": [],
+ "segments": [
+  {
+   "segment_id": "seg-000",
+   "start_ns": 264804725438600,
+   "end_ns": 264804975438600,
+   "machine_reason": "focus_transition",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-001",
+   "start_ns": 264804975438600,
+   "end_ns": 264804984131243,
+   "machine_reason": "unsampled_edge",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-002",
+   "start_ns": 264804984131243,
+   "end_ns": 265469184104676,
+   "machine_reason": "range_hud_present",
+   "proposal": "unresolved",
+   "edges": {
+    "start": {
+     "sample_ns": 264804984131243,
+     "refine": [
+      264804975438600,
+      264804984131244
+     ],
+     "refined": false
+    },
+    "end": {
+     "sample_ns": 265469184104675,
+     "refine": [
+      265469184104675,
+      265469186808500
+     ],
+     "refined": false
+    }
+   }
+  },
+  {
+   "segment_id": "seg-003",
+   "start_ns": 265469184104676,
+   "end_ns": 265469186808500,
+   "machine_reason": "unsampled_edge",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-004",
+   "start_ns": 265469186808500,
+   "end_ns": 265469287769900,
+   "machine_reason": "ui_key",
+   "proposal": "rejected"
+  }
+ ]
+}

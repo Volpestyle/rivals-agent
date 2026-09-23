@@ -1,0 +1,14 @@
+{
+ "schema_version": 1,
+ "kind": "sealed_denylist",
+ "purpose": "Independent of any split registry (review R4). Every tool (proposer, assembly, tally, fit) loads this pinned file before reading a registry and refuses any registry row naming these ids, paths or media hashes outside split test. The media hash was computed from the immutable original file only; the session's logger folder was not opened.",
+ "sessions": [
+  {
+   "session_id": "20260923T053616-779Z-33696-2",
+   "media_path": "C:/Users/volpe/Videos/2026-09-23 00-36-16.mkv",
+   "media_sha256": "ea49d523bddf86b97c4307aae99198a374e011a4ef1eb5df8d4b90de6b6053bf",
+   "hashed_at": "2026-09-23",
+   "reason": "validation take VUH-1347; sealed test"
+  }
+ ]
+}

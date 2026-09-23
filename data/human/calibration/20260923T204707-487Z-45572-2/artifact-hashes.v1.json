@@ -1,0 +1,20 @@
+{
+ "format": "rivals-session-artifact-hashes-v1",
+ "session": "20260923T204707-487Z-45572-2",
+ "kind": "calibration",
+ "files": {
+  "data/human/calibration/20260923T204707-487Z-45572-2/calibration.json": "c52b0f18bcb1fac2352cf94fc9824d91d23e6963f075911c2bd4047d03e37093",
+  "data/human/calibration/20260923T204707-487Z-45572-2/decode_turn.py": "0b0ca3c2845081dc96d3d7e4874d4e6644a5b4d5ffc31ef9c62748a18163f8d9",
+  "data/human/calibration/20260923T204707-487Z-45572-2/match_view.py": "2bf3ddbd275e3fb1ab26ab25b79ee40d351747f5b4ac5d23df3ea8c2f5dc5d3c",
+  "data/human/calibration/20260923T204707-487Z-45572-2/recorder-and-anchor.json": "bf4a0590040b6242cf2a8e184787d74b7cbc5eb9a1ec1dc934a095fe613f0422",
+  "data/human/calibration/20260923T204707-487Z-45572-2/registry.01bc1e00335f.json": "01bc1e00335f1f2e303fa116b0b8f53cf3d9b78a624a184c85b5184e0b850f3e",
+  "data/human/calibration/20260923T204707-487Z-45572-2/verify_recorder.py": "e05c0f0566f8c704c10438600d2a043fa41979461c315037c2f25e22594399c7",
+  "data/human/calibration/20260923T204707-487Z-45572-2/yaw-match.json": "15942344f13027d460d2d2343a333f7e47ba43538e503a939c361d2acdbd546f"
+ },
+ "external": {
+  "C:/Users/volpe/Videos/2026-09-23 15-47-07.mkv": "e8259ef8e2b6fb00e59972c5597e63a20f1203dd6ef1757db1a3d0fca70fbc09",
+  "C:/Users/volpe/Videos/RivalsInput/20260923T204707-487Z-45572-2/metadata.json": "1ca180a5687b2fc2e8ff2cf6c760251059c467d8567753585c071c0805a75f0d",
+  "C:/Users/volpe/Videos/RivalsInput/20260923T204707-487Z-45572-2/inputs.jsonl": "787884dc251d10269aa6e537839e183ad194799d8ee299f904322e2a49974a28",
+  "C:/Users/volpe/Videos/RivalsInput/20260923T204707-487Z-45572-2/frames.csv": "ffd5994af70a9577ed392ee3ef13d557f5a5c0b18b5460a5cf870aee240bb6ba"
+ }
+}

@@ -1,0 +1,80 @@
+{
+ "session": "20260923T171533-187Z-33696-5",
+ "settings": {
+  "value": {
+   "dpi": 800,
+   "horizontal_sensitivity": 1.89,
+   "vertical_sensitivity": 1.89,
+   "swing_mode": "default: hold_to_swing true, automatic (simple) swing false on Shift; Simple Swing on Caps Lock"
+  },
+  "source": "James's statements in docs/recording-log.md (2026-09-23): DPI 800 (~14:50 CDT), sensitivity unchanged since 2026-09-21 (1.89/1.89 in the 09-21 report), default swing settings on Shift with Simple Swing on Caps Lock; the saved profile shows hold-to-swing on, simple swing off",
+  "per_session_source": "James's dated statements of 2026-09-23, applied by the lead to every existing session",
+  "evidence": [
+   {
+    "path": "data/human/sessions/20260923T171533-187Z-33696-5/recording-log.299ffba.md",
+    "sha256": "fc6e595cfb6ef47f7ffe89dd6f00058f8fec1f8e36ae89e51e273cd83d2b8e2f"
+   },
+   {
+    "path": "data/human/notes/2026-09-21-user-settings.json",
+    "sha256": "852c92254961b4fcb1278e8ebe752ea2f02ce6add678509d3276fd1a26264c6c"
+   },
+   {
+    "path": "data/human/sessions/20260923T171533-187Z-33696-5/provenance.json",
+    "sha256": "b5bce4f95f63d8b9ce1a032bce542f6df8dc14f1715b6cfe6fcb69a5ce415f57"
+   }
+  ]
+ },
+ "bindings": {
+  "value": {
+   "move_forward": "key:17:0",
+   "move_left": "key:30:0",
+   "move_back": "key:31:0",
+   "move_right": "key:32:0",
+   "jump": "key:57:0",
+   "web_swing": "key:42:0",
+   "get_over_here": "key:33:0",
+   "amazing_combo": "key:18:0",
+   "ultimate": "key:16:0",
+   "melee": "key:47:0",
+   "spider_power": "mouse:1",
+   "web_cluster": "mouse:2",
+   "team_up": "key:46:0",
+   "simple_swing": "key:58:0"
+  },
+  "notes": {
+   "team_up": "C = Team-Up, fires in the solo range with a visible effect (James 2026-09-23 correction; HUD check in 051828/team-up-check.json). A real action with positives, trained but masked live (Y is off the pad whitelist). An action of the fit vocabulary since 2026-09-23 15:47.",
+   "simple_swing": "Caps Lock (VK 20, scan 58) = Simple Swing, a semantic action, not a UI key (James). Not in the fit vocabulary; step rows would count it as unsupported key:58:0.",
+   "melee": "V quick melee: the game default, not in James's reported table; never pressed in the reviewed sessions.",
+   "spider_power": "LMB. James's 2026-09-21 report also binds Mouse 5 (mouse:5) to punch; the fit's one-id binding counts mouse:5 presses as unsupported.",
+   "alt": "Alt is unbound in game (James); Alt presses are Alt-Tab and stay UI-key cuts."
+  },
+  "source": "James: 2026-09-21 reported table; 2026-09-23 statements (C team-up, Alt unbound, Simple Swing on Caps Lock); HUD key labels on this session's frames (slot-mapping.json)",
+  "per_session_source": "James's dated statements of 2026-09-23 (docs/recording-log.md)",
+  "evidence": [
+   {
+    "path": "data/human/sessions/20260923T171533-187Z-33696-5/recording-log.299ffba.md",
+    "sha256": "fc6e595cfb6ef47f7ffe89dd6f00058f8fec1f8e36ae89e51e273cd83d2b8e2f"
+   },
+   {
+    "path": "data/human/notes/2026-09-21-user-settings.json",
+    "sha256": "852c92254961b4fcb1278e8ebe752ea2f02ce6add678509d3276fd1a26264c6c"
+   },
+   {
+    "path": "data/human/sessions/20260923T171533-187Z-33696-5/slot-mapping.json",
+    "sha256": "12afa956e7058d7a96a5e740258731ab467634f3c7f5155ef32aae1a911b4eaf"
+   }
+  ]
+ },
+ "settings_identity": "eb9e66a076a9bc5f2a4b36785aad2ef69c9effc733c49d43dbbb75383967cf11",
+ "swing_mode_header": {
+  "automatic_swing": false,
+  "hold_to_swing": true
+ },
+ "caps_lock_packets": 0,
+ "calibration": {
+  "yaw_deg_per_count": null,
+  "pitch_deg_per_count": null,
+  "source": "pending: calibration take 20260923T204707-487Z-45572-2"
+ },
+ "no_pad_attestation": "James, 2026-09-23 ~15:55 CDT: no physical controller was plugged in during any recording session"
+}

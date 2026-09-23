@@ -1,0 +1,953 @@
+{
+ "session": "20260923T205528-900Z-45572-3",
+ "session_group": "20260923T205528-900Z-45572-3",
+ "split": "train",
+ "media_sha256": "bf32202abd0b93a300453ffaa9896b7566c52ee4ed8b6aacb8edc9a4dd6f11e9",
+ "snapshot": "code-snapshot-c0892ab",
+ "snapshot_manifest_sha256": "998f7852011f49c57164f6a6cc46bae9d1e37aab4cac87d6cb58a2bad1ae830b",
+ "registry": {
+  "path": "data/human/session-splits.corpus.json",
+  "sha256": "01bc1e00335f1f2e303fa116b0b8f53cf3d9b78a624a184c85b5184e0b850f3e"
+ },
+ "denylist": {
+  "path": "data/human/sealed-denylist.json",
+  "sha256": "57cfe01f29f6e1a55293f968ec697aa293c268bd87d7cf247ef648279e2fba7c"
+ },
+ "inputs": {
+  "provenance.json": {
+   "path": "provenance.json",
+   "sha256": "a924a82393a7e538f9252331cdaf248cf326f8d204e43c5b59436c0b5d7bcbe9"
+  },
+  "recorder-verification.json": {
+   "path": "recorder-verification.json",
+   "sha256": "f0211df83db1a445e97722af794709c9e15cd46f530bfabfc8e6c4c89ff446e0"
+  },
+  "input-profile.json": {
+   "path": "input-profile.json",
+   "sha256": "5502db3a2f5e170ab88127c24c36243e7e44eb699c609627f36a845fe2a7638e"
+  },
+  "slot-mapping.json": {
+   "path": "slot-mapping.json",
+   "sha256": "6f057876e6e326d78c97f32c4b64632cc846c2ceb1cc640dca139d02a1851b74"
+  },
+  "hud-scan-samples.jsonl": {
+   "path": "hud-scan-samples.jsonl",
+   "sha256": "f56849492cffe6fa6d366bd500c0526c7a5559cb7b33f56063eeee437afe7997"
+  },
+  "regime-timeline.json": {
+   "path": "regime-timeline.json",
+   "sha256": "91be05c8d0b9686eb307f829bd2f5ddd0906278233d2d2b145c16a318f2d3acf"
+  },
+  "candidates-pass1.json": {
+   "path": "candidates-pass1.json",
+   "sha256": "99c3c5580944be47eeb8120c25adb4cf68e52025b7e20b40a57e53b8783f728b"
+  }
+ },
+ "parameters": {
+  "ui_keys": {
+   "27": "Esc",
+   "72": "H",
+   "66": "B",
+   "112": "F1",
+   "9": "Tab",
+   "13": "Enter",
+   "18": "Alt",
+   "164": "LAlt",
+   "165": "RAlt",
+   "91": "LWin",
+   "92": "RWin"
+  },
+  "settings_menu_keys": [
+   27
+  ],
+  "ui_settle_ns": 2000000000,
+  "afk_ns": 20000000000,
+  "max_hud_gap_ns": 2000000000,
+  "review_interior_every_ns": 10000000000
+ },
+ "session_regime": "normal",
+ "focused_intervals": [
+  [
+   264804725438600,
+   265469287769900
+  ]
+ ],
+ "capture_gaps": [],
+ "flags": [],
+ "native_edge_reads": [
+  {
+   "segment": "seg-002",
+   "edge": "start",
+   "sample_ns": 264804984131243,
+   "bracket": [
+    264804975438600,
+    264804984131244
+   ],
+   "frames": [
+    {
+     "composition_ns": 264804975797910,
+     "frame_index": 95,
+     "file_ms": 813,
+     "hud_present": true
+    },
+    {
+     "composition_ns": 264804984131243,
+     "frame_index": 96,
+     "file_ms": 821,
+     "hud_present": true
+    }
+   ]
+  },
+  {
+   "segment": "seg-002",
+   "edge": "end",
+   "sample_ns": 265469184104675,
+   "bracket": [
+    265469184104675,
+    265469186808500
+   ],
+   "frames": [
+    {
+     "composition_ns": 265469184104675,
+     "frame_index": 79800,
+     "file_ms": 665021,
+     "hud_present": true
+    }
+   ]
+  }
+ ],
+ "segments": [
+  {
+   "segment_id": "seg-000",
+   "start_ns": 264804725438600,
+   "end_ns": 264804975438600,
+   "machine_reason": "focus_transition",
+   "proposal": "rejected",
+   "review_frames": [
+    {
+     "frame_index": 65,
+     "composition_ns": 264804725797920,
+     "file_ms": 563,
+     "decoded_bgr_sha256": "e296b8f2aaa626c2830e513ace91c42e44d57ff9cbe6f57fc11fe7fec1e1a6cd",
+     "hud_present": true,
+     "image": "review-frames/seg-000-00065.jpg",
+     "image_sha256": "f8587f70ad5053f94bc2d510a589ebb5300481bcaa4c894cfabf41a290442615",
+     "role": "start"
+    },
+    {
+     "frame_index": 79,
+     "composition_ns": 264804842464582,
+     "file_ms": 679,
+     "decoded_bgr_sha256": "837231c43a7dc6c2456a1f30b625caf47f3f4898202fb57d21e7c79e424e9171",
+     "hud_present": true,
+     "image": "review-frames/seg-000-00079.jpg",
+     "image_sha256": "b5e03cf892bd179f2b6d7180959d4d6092e036916101dea01f1943116854fdff",
+     "role": "interior"
+    },
+    {
+     "frame_index": 94,
+     "composition_ns": 264804967464577,
+     "file_ms": 804,
+     "decoded_bgr_sha256": "a3c983c19ff430eb5e1b28308793b096391dd32cf351844a77bf50dffb67f837",
+     "hud_present": true,
+     "image": "review-frames/seg-000-00094.jpg",
+     "image_sha256": "dc53105bf46b3878a3c9d63467a82bcd6dcafe84132a3eeb663e09035ef46be1",
+     "role": "end"
+    }
+   ],
+   "t_rel_s": [
+    0.6781203,
+    0.9281203
+   ],
+   "seen": null
+  },
+  {
+   "segment_id": "seg-001",
+   "start_ns": 264804975438600,
+   "end_ns": 264804975797910,
+   "machine_reason": "unsampled_edge",
+   "proposal": "rejected",
+   "review_frames": [],
+   "t_rel_s": [
+    0.9281203,
+    0.92847961
+   ],
+   "seen": null
+  },
+  {
+   "segment_id": "seg-002",
+   "start_ns": 264804975797910,
+   "end_ns": 265469184104676,
+   "machine_reason": "range_hud_present",
+   "proposal": "unresolved",
+   "edges": {
+    "start": {
+     "sample_ns": 264804984131243,
+     "refine": [
+      264804975438600,
+      264804984131244
+     ],
+     "refined": true
+    },
+    "end": {
+     "sample_ns": 265469184104675,
+     "refine": [
+      265469184104675,
+      265469186808500
+     ],
+     "refined": true
+    }
+   },
+   "review_frames": [
+    {
+     "frame_index": 95,
+     "composition_ns": 264804975797910,
+     "file_ms": 813,
+     "decoded_bgr_sha256": "11f60c2a61c39a3a316d8c195f94e3b15d2e3ed85bdc6f3f07fcd09fb0f7c71e",
+     "hud_present": true,
+     "image": "review-frames/seg-002-00095.jpg",
+     "image_sha256": "e09774177ff8bf6167498424c487c84e1a255c4436cf5d77e35828f0266cadbb",
+     "role": "start"
+    },
+    {
+     "frame_index": 1284,
+     "composition_ns": 264814884130847,
+     "file_ms": 10721,
+     "decoded_bgr_sha256": "cc9cb73945eb850f6e51f2dd07bbd821dea9924d58bd8acf2fc293cfe203ecbf",
+     "hud_present": true,
+     "image": "review-frames/seg-002-01284.jpg",
+     "image_sha256": "deb0cc48eb6be77cc5619a6b5f9406053fa8725e51ea1f8dfcd4c05c1f809b33",
+     "role": "interior"
+    },
+    {
+     "frame_index": 2474,
+     "composition_ns": 264824800797117,
+     "file_ms": 20638,
+     "decoded_bgr_sha256": "3e0753ee23384b72f703995dfda7d58c344ce8d76c599d3d87aafecaf947c521",
+     "hud_present": true,
+     "image": "review-frames/seg-002-02474.jpg",
+     "image_sha256": "788f235925d5010e1aaf17f80fd933c338c18d1cad902c4316f5496b51451773",
+     "role": "interior"
+    },
+    {
+     "frame_index": 3663,
+     "composition_ns": 264834709130054,
+     "file_ms": 30546,
+     "decoded_bgr_sha256": "150390117375caad6afc004adca46dc987eda882ff1e125c12d912838698ea71",
+     "hud_present": true,
+     "image": "review-frames/seg-002-03663.jpg",
+     "image_sha256": "0763e0d38ffbcab095e39bb27ec0a4c2f31f4a4c68b364ada8c030840a9be487",
+     "role": "interior"
+    },
+    {
+     "frame_index": 4853,
+     "composition_ns": 264844625796324,
+     "file_ms": 40463,
+     "decoded_bgr_sha256": "cd8f2365603e72149ecafb333b07e14571feeef322881d061600ac287a907b8c",
+     "hud_present": true,
+     "image": "review-frames/seg-002-04853.jpg",
+     "image_sha256": "0b2c16d6833dcdc3b2616fd45e5d7ea0df8ca9aec0255b2a2e23557e09c13e51",
+     "role": "interior"
+    },
+    {
+     "frame_index": 6043,
+     "composition_ns": 264854542462594,
+     "file_ms": 50379,
+     "decoded_bgr_sha256": "f6ed05114c3959ccdbec074ffee9564d050c1fa84170e658aad1ca88d033bc34",
+     "hud_present": true,
+     "image": "review-frames/seg-002-06043.jpg",
+     "image_sha256": "88d743013c8d6f66f07ce1efd49f18b068ea32de9a573f3615ca7a1781e0eb6c",
+     "role": "interior"
+    },
+    {
+     "frame_index": 7232,
+     "composition_ns": 264864450795531,
+     "file_ms": 60288,
+     "decoded_bgr_sha256": "955be7fb8c7bac118ef46a92201e1dba053c16f7f7176c0e6db70cc8b5ee0af9",
+     "hud_present": true,
+     "image": "review-frames/seg-002-07232.jpg",
+     "image_sha256": "a033e8e919213eb41faf19a8963851c2a9893a52d110b2be80dd573aa90bd16c",
+     "role": "interior"
+    },
+    {
+     "frame_index": 8422,
+     "composition_ns": 264874367461801,
+     "file_ms": 70204,
+     "decoded_bgr_sha256": "05de133db26b2f481c8f57a3d93d5152ad05751cc80b8bb790cf97a6169bf0d1",
+     "hud_present": true,
+     "image": "review-frames/seg-002-08422.jpg",
+     "image_sha256": "b1d5fd9e62948baa6c23183dc66ac1021473ba40f3e2f9e02c5de3d976e6cc49",
+     "role": "interior"
+    },
+    {
+     "frame_index": 9612,
+     "composition_ns": 264884284128071,
+     "file_ms": 80121,
+     "decoded_bgr_sha256": "ac36d084182e849368374c7c7e2470de98b8a83bbd6a12ba2fa5a9931802e3cc",
+     "hud_present": true,
+     "image": "review-frames/seg-002-09612.jpg",
+     "image_sha256": "49516eb60f497fa5fd4072a13dee5f72a4616a483c965143b4638f8e2a598040",
+     "role": "interior"
+    },
+    {
+     "frame_index": 10801,
+     "composition_ns": 264894192461008,
+     "file_ms": 90029,
+     "decoded_bgr_sha256": "f9f44db33f34c4ba9490889f1ff05831f44a74bf4066878a8897f0c3ddd25832",
+     "hud_present": true,
+     "image": "review-frames/seg-002-10801.jpg",
+     "image_sha256": "0be13220c0b8d15473ce985213b8ec4b9a71db61b0a07b1173665de4c50b9af2",
+     "role": "interior"
+    },
+    {
+     "frame_index": 11991,
+     "composition_ns": 264904109127278,
+     "file_ms": 99946,
+     "decoded_bgr_sha256": "3b4570cda7da5b544fb6cba22fa41536a13372d02b9a1f425b479db006324191",
+     "hud_present": true,
+     "image": "review-frames/seg-002-11991.jpg",
+     "image_sha256": "b53076c6206ec67fcd4b6eaddb22cf61a2d6b507221c814542faf6f9996fe65d",
+     "role": "interior"
+    },
+    {
+     "frame_index": 13180,
+     "composition_ns": 264914017460215,
+     "file_ms": 109854,
+     "decoded_bgr_sha256": "507511ee706c7e6f76badf5083e3f789ab727825964680e167adcb21854f9d8f",
+     "hud_present": true,
+     "image": "review-frames/seg-002-13180.jpg",
+     "image_sha256": "ac6f648c7bc95a79e202026b64a133a1e09fefe98d5fd5c4ad7d9a2accbd466c",
+     "role": "interior"
+    },
+    {
+     "frame_index": 14370,
+     "composition_ns": 264923934126485,
+     "file_ms": 119771,
+     "decoded_bgr_sha256": "2b7902eacbc074e23fe8b004d0b2458d5113f91a258ce66e83337c5e8f0f9e74",
+     "hud_present": true,
+     "image": "review-frames/seg-002-14370.jpg",
+     "image_sha256": "53b56d5b6765179b00ed8d7554c117b0459710ebffa32c4117578e1c54aa805b",
+     "role": "interior"
+    },
+    {
+     "frame_index": 15560,
+     "composition_ns": 264933850792755,
+     "file_ms": 129688,
+     "decoded_bgr_sha256": "844c3f97f35f074dd1c97782d699a2d0fa85039648f41bd0e600e8a8ce6f1f50",
+     "hud_present": true,
+     "image": "review-frames/seg-002-15560.jpg",
+     "image_sha256": "62297e98a71cda9cb29d34fb452b822aae95048455d66d536b2227c1eae850f5",
+     "role": "interior"
+    },
+    {
+     "frame_index": 16749,
+     "composition_ns": 264943759125692,
+     "file_ms": 139596,
+     "decoded_bgr_sha256": "113cc715292e11190933420e02b7778846b597bce4798af6f44052e043fc5b3d",
+     "hud_present": true,
+     "image": "review-frames/seg-002-16749.jpg",
+     "image_sha256": "051d40bacd24d31a024a15d6e2f76761babf4405a4e0d64e331e5846efbadca5",
+     "role": "interior"
+    },
+    {
+     "frame_index": 17939,
+     "composition_ns": 264953675791962,
+     "file_ms": 149513,
+     "decoded_bgr_sha256": "71b8c64a5ff42aa35b059fae485ad39c5f0aa19f420c1e89fd84966162f93eff",
+     "hud_present": true,
+     "image": "review-frames/seg-002-17939.jpg",
+     "image_sha256": "395a9a83291f0f8f4da8f1366e4c4903a2c38c5e562e4f445f562a5297954282",
+     "role": "interior"
+    },
+    {
+     "frame_index": 19129,
+     "composition_ns": 264963592458232,
+     "file_ms": 159429,
+     "decoded_bgr_sha256": "2f067ae156b1d6ac0cfddc9bd56f8ffa50c571b51a23a7f1539d9d4316453529",
+     "hud_present": true,
+     "image": "review-frames/seg-002-19129.jpg",
+     "image_sha256": "91e064414d7ed86c8023e8e3e85b0874e5ded20390c2d72736c12d12ea90e620",
+     "role": "interior"
+    },
+    {
+     "frame_index": 20318,
+     "composition_ns": 264973500791169,
+     "file_ms": 169338,
+     "decoded_bgr_sha256": "8b5f1fa69f492ab10f24f29f9936f392d9e0cc65e2c346d3d9409fd7ff1184c3",
+     "hud_present": true,
+     "image": "review-frames/seg-002-20318.jpg",
+     "image_sha256": "52ceb85f7758ba49c1b86143288fba0fa0bfee0d537b44ffb540870bf1cc355f",
+     "role": "interior"
+    },
+    {
+     "frame_index": 21508,
+     "composition_ns": 264983417457439,
+     "file_ms": 179254,
+     "decoded_bgr_sha256": "3b27a5c3d81b91606942324ddd7f5f3610c31f07a26c1af7ad3aab6a7021545d",
+     "hud_present": true,
+     "image": "review-frames/seg-002-21508.jpg",
+     "image_sha256": "cdd56a804767855a2a9d003ca0b022458567c8487c6259057051cbf74fcc4874",
+     "role": "interior"
+    },
+    {
+     "frame_index": 22697,
+     "composition_ns": 264993325790376,
+     "file_ms": 189163,
+     "decoded_bgr_sha256": "0998fb821749464ce46d30d21bc405edbd2ef4bb4adf1b86dafbdee4df0742f6",
+     "hud_present": true,
+     "image": "review-frames/seg-002-22697.jpg",
+     "image_sha256": "6a4530e57ef3a0883579a0975466646f2cc0635809bfa0aecc351acb83974e1a",
+     "role": "interior"
+    },
+    {
+     "frame_index": 23887,
+     "composition_ns": 265003242456646,
+     "file_ms": 199079,
+     "decoded_bgr_sha256": "ee642ed5debb7b672bd40acec52374c66431c0f72493014d083664ac1e6b1b09",
+     "hud_present": true,
+     "image": "review-frames/seg-002-23887.jpg",
+     "image_sha256": "3dff6ae96cc31fce4edfb2fa00dbb013a88f7548240083c1a269e740e4ca8d3f",
+     "role": "interior"
+    },
+    {
+     "frame_index": 25077,
+     "composition_ns": 265013159122916,
+     "file_ms": 208996,
+     "decoded_bgr_sha256": "4d1db446611320634e7f14fe0f608f30ac268eb96496fcff4486fea75ffe4792",
+     "hud_present": true,
+     "image": "review-frames/seg-002-25077.jpg",
+     "image_sha256": "6e445024474f95fe0b45e3b2effa1ceb1ec87566cfed713ceea8290f5238b3c0",
+     "role": "interior"
+    },
+    {
+     "frame_index": 26266,
+     "composition_ns": 265023067455853,
+     "file_ms": 218904,
+     "decoded_bgr_sha256": "a66559706a805f02461f6f8a4b81b0a2effafe85fcb573e5edea41aef3969422",
+     "hud_present": true,
+     "image": "review-frames/seg-002-26266.jpg",
+     "image_sha256": "1d532ab62af314d7d36f5b8e6dc7403e7d2a00b9b18358a185d9e2e99e1aa1f4",
+     "role": "interior"
+    },
+    {
+     "frame_index": 27456,
+     "composition_ns": 265032984122123,
+     "file_ms": 228821,
+     "decoded_bgr_sha256": "2fed69a9c90b807244af55f78907ff493a21a3805c302f5ba897a5e9c05a7e26",
+     "hud_present": true,
+     "image": "review-frames/seg-002-27456.jpg",
+     "image_sha256": "eb1417221ccea1e7ef90d4167c58ba85c1a200f6ed8ec2f9dde63b3b6846e734",
+     "role": "interior"
+    },
+    {
+     "frame_index": 28646,
+     "composition_ns": 265042900788393,
+     "file_ms": 238738,
+     "decoded_bgr_sha256": "aace15f1a1a2496e491e56e5f2fce64b8e5204e294ec17c207537bd876d15fed",
+     "hud_present": true,
+     "image": "review-frames/seg-002-28646.jpg",
+     "image_sha256": "e43c0ce927ed658f26d1ff5df68f9763a84de467582f993e9643dbdcf8867be3",
+     "role": "interior"
+    },
+    {
+     "frame_index": 29835,
+     "composition_ns": 265052809121330,
+     "file_ms": 248646,
+     "decoded_bgr_sha256": "7815556c90d2875c8c181a3c66d5a5180d109e158cccc6024bf83cca923e64fc",
+     "hud_present": true,
+     "image": "review-frames/seg-002-29835.jpg",
+     "image_sha256": "d261a215aa370b522c2b9ffa3fe57cad7b0386ea862e20b81dcd15ce736b492f",
+     "role": "interior"
+    },
+    {
+     "frame_index": 31025,
+     "composition_ns": 265062725787600,
+     "file_ms": 258563,
+     "decoded_bgr_sha256": "dc074a64a4816d7e26be0683279daf3f58c23ed0f9412ef96ec3f6c59dea87fd",
+     "hud_present": true,
+     "image": "review-frames/seg-002-31025.jpg",
+     "image_sha256": "2ff503998caed9c1c79882ccb3c55ecc14dd7feaa9e2a0fb85ecbcde7649790b",
+     "role": "interior"
+    },
+    {
+     "frame_index": 32214,
+     "composition_ns": 265072634120537,
+     "file_ms": 268471,
+     "decoded_bgr_sha256": "423eedcbddcc408923e66884e13f8d1740e5e9724db333ff74449081199a5a6c",
+     "hud_present": true,
+     "image": "review-frames/seg-002-32214.jpg",
+     "image_sha256": "496d669967ba8d06685968f903650d5b719d289a35b6dcf9cc68624acab0ff44",
+     "role": "interior"
+    },
+    {
+     "frame_index": 33404,
+     "composition_ns": 265082550786807,
+     "file_ms": 278388,
+     "decoded_bgr_sha256": "604706c97bddbce6cdf0189b7f57b8772860c6440c915f51eb4ef4926c545d6b",
+     "hud_present": true,
+     "image": "review-frames/seg-002-33404.jpg",
+     "image_sha256": "e6981fd70ec1c5d30ca7ce19350e49520035168ceeac5f040bd0da98706c7881",
+     "role": "interior"
+    },
+    {
+     "frame_index": 34594,
+     "composition_ns": 265092467453077,
+     "file_ms": 288304,
+     "decoded_bgr_sha256": "b7ea21a58ec338c28e1c729c406629e2b625cc5d94dadfdcb4feb2325eb6f91d",
+     "hud_present": true,
+     "image": "review-frames/seg-002-34594.jpg",
+     "image_sha256": "222219313669e93b589ccf02dbddee2d6e1ddd926ca5d414818a6075cdc4aea4",
+     "role": "interior"
+    },
+    {
+     "frame_index": 35783,
+     "composition_ns": 265102375786014,
+     "file_ms": 298213,
+     "decoded_bgr_sha256": "b02d14e08894bdf3a0f3a3c42a6414ac212d3b864d226946b58088883ba542b6",
+     "hud_present": true,
+     "image": "review-frames/seg-002-35783.jpg",
+     "image_sha256": "2d583bbeba690a4ce7d073a9710b449e9a10c27d5b6c513e4e3e3e56998eee33",
+     "role": "interior"
+    },
+    {
+     "frame_index": 36973,
+     "composition_ns": 265112292452284,
+     "file_ms": 308129,
+     "decoded_bgr_sha256": "74a5bdac36bb8077906867d285053e6401708d999a06d3731f68f03b7f292275",
+     "hud_present": true,
+     "image": "review-frames/seg-002-36973.jpg",
+     "image_sha256": "7c5a908954f13d71154bbb6335ebe872cb4fcce1019c21cfa45e1004365e4ce0",
+     "role": "interior"
+    },
+    {
+     "frame_index": 38163,
+     "composition_ns": 265122209118554,
+     "file_ms": 318046,
+     "decoded_bgr_sha256": "bee217ff00a948ff1b7463796968df4b439deaef33976bff5dc85e90642f84fb",
+     "hud_present": true,
+     "image": "review-frames/seg-002-38163.jpg",
+     "image_sha256": "139941a190bd49f66f3c027bbb042c4d3aeb28329c7376d34cd8776433c52bf4",
+     "role": "interior"
+    },
+    {
+     "frame_index": 39352,
+     "composition_ns": 265132117451491,
+     "file_ms": 327954,
+     "decoded_bgr_sha256": "c98231d2d788f6132fa6c9fd152b01e28037559a915759d5fd84960c848fe2e7",
+     "hud_present": true,
+     "image": "review-frames/seg-002-39352.jpg",
+     "image_sha256": "99227b9e1f417396c0f8bb80d3a4cd212db13f2993aff5e162877a3de0635c75",
+     "role": "interior"
+    },
+    {
+     "frame_index": 40542,
+     "composition_ns": 265142034117761,
+     "file_ms": 337871,
+     "decoded_bgr_sha256": "dfbd60a18a2d9f3089135caab2f5f193b411244546d6592b0c8980e1fed221a0",
+     "hud_present": true,
+     "image": "review-frames/seg-002-40542.jpg",
+     "image_sha256": "419542cca18ef08d956082fb9b1c477d5a19734e88d95093814467d24f01ff91",
+     "role": "interior"
+    },
+    {
+     "frame_index": 41731,
+     "composition_ns": 265151942450698,
+     "file_ms": 347779,
+     "decoded_bgr_sha256": "36dff72011c447f24ca557ee8ef05ca1ef20b8f58e6ba506f3d174991bbc7db8",
+     "hud_present": true,
+     "image": "review-frames/seg-002-41731.jpg",
+     "image_sha256": "4cdcce87076aefb23d2c1137a102f9a763300f1d8f7286375f94ec94a74772e0",
+     "role": "interior"
+    },
+    {
+     "frame_index": 42921,
+     "composition_ns": 265161859116968,
+     "file_ms": 357696,
+     "decoded_bgr_sha256": "4632eed4b0b84dcf3be5dbd88e1c28601cb28ebc04db398a263fe207a08c99a5",
+     "hud_present": true,
+     "image": "review-frames/seg-002-42921.jpg",
+     "image_sha256": "d720a22b409df5fe060720e6eae16936e18ef485e8532eceeeee18268c59f14b",
+     "role": "interior"
+    },
+    {
+     "frame_index": 44111,
+     "composition_ns": 265171775783238,
+     "file_ms": 367613,
+     "decoded_bgr_sha256": "4b82e22ca2c05c20978673b1d96adde095ea91dc6f805b02a90f70bdea30b6ca",
+     "hud_present": true,
+     "image": "review-frames/seg-002-44111.jpg",
+     "image_sha256": "12c03495acd2eca2f2fe058c9df1090cc857a067f1f1d8c5b4a45bc47325a080",
+     "role": "interior"
+    },
+    {
+     "frame_index": 45300,
+     "composition_ns": 265181684116175,
+     "file_ms": 377521,
+     "decoded_bgr_sha256": "c1f50359befd71a59bc16e5a4f7166973af30698bf6e571500facff8add79791",
+     "hud_present": true,
+     "image": "review-frames/seg-002-45300.jpg",
+     "image_sha256": "46f46c1303abe5d44eff92e4f49d27bf02646a890acfe803c1e7bb5b8d0ecbd1",
+     "role": "interior"
+    },
+    {
+     "frame_index": 46490,
+     "composition_ns": 265191600782445,
+     "file_ms": 387438,
+     "decoded_bgr_sha256": "585491ea28038720587664542035187f90a2dfd76b7baa18523b73b59975e703",
+     "hud_present": true,
+     "image": "review-frames/seg-002-46490.jpg",
+     "image_sha256": "aa3dcda66fcc078e758b91d6b0a16130b1afcb7f7c2d7d47776233f9c68f6dfa",
+     "role": "interior"
+    },
+    {
+     "frame_index": 47680,
+     "composition_ns": 265201517448715,
+     "file_ms": 397354,
+     "decoded_bgr_sha256": "35dde5c2769242970b0beacd0b50b701a5365f5649baf63d9283629f0b807c4d",
+     "hud_present": true,
+     "image": "review-frames/seg-002-47680.jpg",
+     "image_sha256": "f4f4a9fd590e8d558b6734265a96e0b7977e219d02bb9ee555d0d220f5778084",
+     "role": "interior"
+    },
+    {
+     "frame_index": 48869,
+     "composition_ns": 265211425781652,
+     "file_ms": 407263,
+     "decoded_bgr_sha256": "22e3fd37644c95fd5102eb3dbc942bd30a7fba8dcb4f641a3be4a59023e3861d",
+     "hud_present": true,
+     "image": "review-frames/seg-002-48869.jpg",
+     "image_sha256": "e9bb4a691eb9e9ab99b0e6458d5b5d695c32d795243fac0d1b2fdd56204b7b7a",
+     "role": "interior"
+    },
+    {
+     "frame_index": 50059,
+     "composition_ns": 265221342447922,
+     "file_ms": 417179,
+     "decoded_bgr_sha256": "a0317eee43dc957646dcb76ab3ca6507febf34e91b259a7273cffcbff9addc9d",
+     "hud_present": true,
+     "image": "review-frames/seg-002-50059.jpg",
+     "image_sha256": "de13d4545a99d93f297f5e27aac0cfe35cf6c98a8965ed63af0ea923c0d420ac",
+     "role": "interior"
+    },
+    {
+     "frame_index": 51248,
+     "composition_ns": 265231250780859,
+     "file_ms": 427088,
+     "decoded_bgr_sha256": "78a1934f6001474984cd874a4277ee547a1163dd1648214b34df5a3e0aa9a0b8",
+     "hud_present": true,
+     "image": "review-frames/seg-002-51248.jpg",
+     "image_sha256": "3daf7825a3d39215690ad38c63bf815e6d71a3390c8a4721b1a28748695cd6f9",
+     "role": "interior"
+    },
+    {
+     "frame_index": 52438,
+     "composition_ns": 265241167447129,
+     "file_ms": 437004,
+     "decoded_bgr_sha256": "9a9a376c82ea3c03f9df8b06011aba09ebcfecf42119b1c9e050694cda2ceb56",
+     "hud_present": true,
+     "image": "review-frames/seg-002-52438.jpg",
+     "image_sha256": "32d14f042fc44c899a69e6166747c6dd8fc7dd68224daff87407ed266e8f41ca",
+     "role": "interior"
+    },
+    {
+     "frame_index": 53628,
+     "composition_ns": 265251084113399,
+     "file_ms": 446921,
+     "decoded_bgr_sha256": "3dadc0fda4dd4c7866982bf1c19f4aba5029b0fc19304e7578e7b25d00d64e69",
+     "hud_present": true,
+     "image": "review-frames/seg-002-53628.jpg",
+     "image_sha256": "b72f9890a8fdd972273e00f841a18b0f7f61d00035637273c3d37ce4880e113a",
+     "role": "interior"
+    },
+    {
+     "frame_index": 54817,
+     "composition_ns": 265260992446336,
+     "file_ms": 456829,
+     "decoded_bgr_sha256": "1b5d35d5198163fd339a1bcf4cba3fc68ccf561d233bba118a265ae009633b11",
+     "hud_present": true,
+     "image": "review-frames/seg-002-54817.jpg",
+     "image_sha256": "23da38fa532beb9217bea367f0303dc6315a0b8b9195bb3c60e3ecf5e7ed6fd1",
+     "role": "interior"
+    },
+    {
+     "frame_index": 56007,
+     "composition_ns": 265270909112606,
+     "file_ms": 466746,
+     "decoded_bgr_sha256": "1ca50a58f9646435a4ad70de88380af6301b47034c42955041ca79b05bf3bfb6",
+     "hud_present": true,
+     "image": "review-frames/seg-002-56007.jpg",
+     "image_sha256": "ccad7268d41a21bb1a14c1ebb56ffb744ff9d69a2a5b62a92fe8e99a67aa450a",
+     "role": "interior"
+    },
+    {
+     "frame_index": 57197,
+     "composition_ns": 265280825778876,
+     "file_ms": 476663,
+     "decoded_bgr_sha256": "f5ba878c1f2cae90f2e37a519b9db3c7a8a421999452f68e16523ab1637ac32b",
+     "hud_present": true,
+     "image": "review-frames/seg-002-57197.jpg",
+     "image_sha256": "4b218d3d030c9a1d005dec34e54b335c3b20b645781d1476a11ade51810a5cda",
+     "role": "interior"
+    },
+    {
+     "frame_index": 58386,
+     "composition_ns": 265290734111813,
+     "file_ms": 486571,
+     "decoded_bgr_sha256": "044613fb72f1e71578f480d538d0ecf8bc8767c39a33ef610bbf1c7bd7bad75e",
+     "hud_present": true,
+     "image": "review-frames/seg-002-58386.jpg",
+     "image_sha256": "0579d23ba05ebe331091f119a7fc4036c4bdf3ff6251392c9272b0cbcf280921",
+     "role": "interior"
+    },
+    {
+     "frame_index": 59576,
+     "composition_ns": 265300650778083,
+     "file_ms": 496488,
+     "decoded_bgr_sha256": "a9c3b80cec77bf88af0349a65ce05f9def8b9ce169196a47b976215849f4d863",
+     "hud_present": true,
+     "image": "review-frames/seg-002-59576.jpg",
+     "image_sha256": "f344a2ae418a6a5344d8439b1f3813bf7f376766c2f4cf3d2fb1d73e6427e177",
+     "role": "interior"
+    },
+    {
+     "frame_index": 60765,
+     "composition_ns": 265310559111020,
+     "file_ms": 506396,
+     "decoded_bgr_sha256": "c56dd123eb856e5fa4dbb0515a1378d977a1fa20c8359754fd7378efc6edddc3",
+     "hud_present": true,
+     "image": "review-frames/seg-002-60765.jpg",
+     "image_sha256": "bdf820776664b41bf8a1856b9439faad96ec6800be5ddd2cba5c4a0042e39a90",
+     "role": "interior"
+    },
+    {
+     "frame_index": 61955,
+     "composition_ns": 265320475777290,
+     "file_ms": 516313,
+     "decoded_bgr_sha256": "5e5d2a752db1c28095eb2d7cd00e21c0ea3505f1806dec8ecd4a4e9c3606a4f0",
+     "hud_present": true,
+     "image": "review-frames/seg-002-61955.jpg",
+     "image_sha256": "1d961574b1c777e0c3636aa8822e38fe37f948688ede51836218ba0bf9ba2759",
+     "role": "interior"
+    },
+    {
+     "frame_index": 63145,
+     "composition_ns": 265330392443560,
+     "file_ms": 526229,
+     "decoded_bgr_sha256": "b9ba593cf8228dcdae5032ec69cacd56d887681ed5f4cac9906b709de090b969",
+     "hud_present": true,
+     "image": "review-frames/seg-002-63145.jpg",
+     "image_sha256": "dedb171f1cee3e1040723884996b242ae70562ff2a95297d4f38873f601d869b",
+     "role": "interior"
+    },
+    {
+     "frame_index": 64334,
+     "composition_ns": 265340300776497,
+     "file_ms": 536138,
+     "decoded_bgr_sha256": "f7a6568a50ab23e4dc34fbfd8eea9e0e59b1eb6ec000b79a767c87c42db76714",
+     "hud_present": true,
+     "image": "review-frames/seg-002-64334.jpg",
+     "image_sha256": "bd1519ecafb60ef41ebc0bd25031c51a377bb42e0b0b0c4f7c9f5231d19c18be",
+     "role": "interior"
+    },
+    {
+     "frame_index": 65524,
+     "composition_ns": 265350217442767,
+     "file_ms": 546054,
+     "decoded_bgr_sha256": "c93e8e36d39c1c85ca3da6e437fad3c6038a4146c9805fc67578b32d301a60b1",
+     "hud_present": true,
+     "image": "review-frames/seg-002-65524.jpg",
+     "image_sha256": "cb0add6704dfc3d448177d83de995d8df5e5bc3c8985c994ffc65e7988d2de61",
+     "role": "interior"
+    },
+    {
+     "frame_index": 66714,
+     "composition_ns": 265360134109037,
+     "file_ms": 555971,
+     "decoded_bgr_sha256": "0d6a324a8abde5910785747b5e7973e439a904b8900566a5de148fec341708de",
+     "hud_present": true,
+     "image": "review-frames/seg-002-66714.jpg",
+     "image_sha256": "21021ce6fc1810ad156a7cd174a9f9fcb847ff698fa01b1a221abed51da4e39c",
+     "role": "interior"
+    },
+    {
+     "frame_index": 67903,
+     "composition_ns": 265370042441974,
+     "file_ms": 565879,
+     "decoded_bgr_sha256": "36191915844e590ac62988a785c00a9bd7fdbfb6178d786db4a1e27a60bc18cb",
+     "hud_present": true,
+     "image": "review-frames/seg-002-67903.jpg",
+     "image_sha256": "1dc3a97cb02355349ee1c9436624f59ce51348ffd99a97d79bb921882d19d406",
+     "role": "interior"
+    },
+    {
+     "frame_index": 69093,
+     "composition_ns": 265379959108244,
+     "file_ms": 575796,
+     "decoded_bgr_sha256": "521b9233e3163c9848d64ca63c54c6fba5957b9a32e9780a06d7ed2bd4a3ccb8",
+     "hud_present": true,
+     "image": "review-frames/seg-002-69093.jpg",
+     "image_sha256": "fe3ede92e9c13344f1843acdfb1b941cc52f350445c41689d6d9a77bcbd6540e",
+     "role": "interior"
+    },
+    {
+     "frame_index": 70282,
+     "composition_ns": 265389867441181,
+     "file_ms": 585704,
+     "decoded_bgr_sha256": "2242f4abd0ca793a008020c89e18b8862f1fab08b4f7a32499f51f385e296ff9",
+     "hud_present": true,
+     "image": "review-frames/seg-002-70282.jpg",
+     "image_sha256": "80951c2b77fbece5ba0b1c80f76a0104e5ba08f890eb7cb5d57ed72339543a6a",
+     "role": "interior"
+    },
+    {
+     "frame_index": 71472,
+     "composition_ns": 265399784107451,
+     "file_ms": 595621,
+     "decoded_bgr_sha256": "080de6ba5581520afbebcc7e3a0e8fdd057b79fb087ba8a9e4a767aed1116210",
+     "hud_present": true,
+     "image": "review-frames/seg-002-71472.jpg",
+     "image_sha256": "2e271ae20cdaa5519c4435d2bf3cbe289c14ba7eecccbe1b10e0ac96f4450e39",
+     "role": "interior"
+    },
+    {
+     "frame_index": 72662,
+     "composition_ns": 265409700773721,
+     "file_ms": 605538,
+     "decoded_bgr_sha256": "9d9a6c79cfd88fdaba9424b96d87ca51dc7142a89ad2494151046413480f1bec",
+     "hud_present": true,
+     "image": "review-frames/seg-002-72662.jpg",
+     "image_sha256": "8c0250b2f514309bc0aaff1f5c6b0a18b62249766176e5201eb4631e97d32ff8",
+     "role": "interior"
+    },
+    {
+     "frame_index": 73851,
+     "composition_ns": 265419609106658,
+     "file_ms": 615446,
+     "decoded_bgr_sha256": "72edcc561a0a0fe5b64ae386fb2130516f9e9d2a17cb2c753e4f0a157a938b67",
+     "hud_present": true,
+     "image": "review-frames/seg-002-73851.jpg",
+     "image_sha256": "d657038810eaa361224510bedc42ed3171fc6853b2e4b68705cf29a6dd44fc57",
+     "role": "interior"
+    },
+    {
+     "frame_index": 75041,
+     "composition_ns": 265429525772928,
+     "file_ms": 625363,
+     "decoded_bgr_sha256": "f549507929adf86bbf4f6d3eb60ef7562725c32fd43b2386ddbb1fb26bf8d1f4",
+     "hud_present": true,
+     "image": "review-frames/seg-002-75041.jpg",
+     "image_sha256": "00730e3b4164395a109e7d5349ab4346fa49beaefcf449e2c592ed9ee13b8ff1",
+     "role": "interior"
+    },
+    {
+     "frame_index": 76231,
+     "composition_ns": 265439442439198,
+     "file_ms": 635279,
+     "decoded_bgr_sha256": "240f6f677bcf1c1cea6f9791a1d058f43673079ace2fe37baaff2a0d39a90333",
+     "hud_present": true,
+     "image": "review-frames/seg-002-76231.jpg",
+     "image_sha256": "9a4810375f0842f9c167652d6445d6199bfc159f43298aebef3617471460c2ff",
+     "role": "interior"
+    },
+    {
+     "frame_index": 77420,
+     "composition_ns": 265449350772135,
+     "file_ms": 645188,
+     "decoded_bgr_sha256": "2fe4ad068c7fd9dde6b1a9d61c13d8fec8d862ccba2ffa961973d08956806d71",
+     "hud_present": true,
+     "image": "review-frames/seg-002-77420.jpg",
+     "image_sha256": "e0f237da3df3c98fa0e3ad2397577ff888fa620588e058bfdba94adc3eecf086",
+     "role": "interior"
+    },
+    {
+     "frame_index": 78610,
+     "composition_ns": 265459267438405,
+     "file_ms": 655104,
+     "decoded_bgr_sha256": "2d868b01ec5c25cfd25b4cb0c067ff9ec0b3c522e1cc7f6533ba4938ccdbc3e7",
+     "hud_present": true,
+     "image": "review-frames/seg-002-78610.jpg",
+     "image_sha256": "b1782d2db5e96c7f6e3a282ffa366cc3274f8b58d6f4ca4da3886d3210e81359",
+     "role": "interior"
+    },
+    {
+     "frame_index": 79800,
+     "composition_ns": 265469184104675,
+     "file_ms": 665021,
+     "decoded_bgr_sha256": "0fda47f119f4c1c2932edf3202057b3ab5ef2f74a2eb25241b774cfaeed644c8",
+     "hud_present": true,
+     "image": "review-frames/seg-002-79800.jpg",
+     "image_sha256": "ea8b07b1ed8fa65a530ca5a6778e54b56d0fab61eb36a9eb6c8ad3aa75273dd2",
+     "role": "end"
+    }
+   ],
+   "t_rel_s": [
+    0.92847961,
+    665.136786376
+   ],
+   "seen": null
+  },
+  {
+   "segment_id": "seg-003",
+   "start_ns": 265469184104676,
+   "end_ns": 265469186808500,
+   "machine_reason": "unsampled_edge",
+   "proposal": "rejected",
+   "review_frames": [],
+   "t_rel_s": [
+    665.136786376,
+    665.1394902
+   ],
+   "seen": null
+  },
+  {
+   "segment_id": "seg-004",
+   "start_ns": 265469186808500,
+   "end_ns": 265469287769900,
+   "machine_reason": "ui_key",
+   "proposal": "rejected",
+   "review_frames": [
+    {
+     "frame_index": 79801,
+     "composition_ns": 265469192438008,
+     "file_ms": 665029,
+     "decoded_bgr_sha256": "84f0adcdad42033c167677076721a63a9db4e8573228cceac51c444d9be7e9b3",
+     "hud_present": true,
+     "image": "review-frames/seg-004-79801.jpg",
+     "image_sha256": "bce63f03bf4ed2b8efd13495b16e4ea70d19dab5169108b395ff90fbe8390ab9",
+     "role": "start"
+    },
+    {
+     "frame_index": 79806,
+     "composition_ns": 265469234104673,
+     "file_ms": 665071,
+     "decoded_bgr_sha256": "bd5c18d21baa4d90a15cec9365679ad3d4adb3d937f24cdd160adf33836172fd",
+     "hud_present": true,
+     "image": "review-frames/seg-004-79806.jpg",
+     "image_sha256": "ca3abf96b9119f23322165f025935d3ce67f711f9b95882e17a5517590496711",
+     "role": "interior"
+    },
+    {
+     "frame_index": 79812,
+     "composition_ns": 265469284104671,
+     "file_ms": 665121,
+     "decoded_bgr_sha256": "2f35b3cf29d2e12bb9b4ae7abae8e7e2ac9032454316c0639704e58e3b250e8e",
+     "hud_present": true,
+     "image": "review-frames/seg-004-79812.jpg",
+     "image_sha256": "baf80465f1e5f3819d230b067c9f8014d01808b56281c3d98ecd9e036febbf08",
+     "role": "end"
+    }
+   ],
+   "t_rel_s": [
+    665.1394902,
+    665.2404516
+   ],
+   "seen": null
+  }
+ ],
+ "earlier_steps": "provenance, verify, profile, vote, scan and regime ran from code-snapshot-72eee24: the same committed code as this snapshot (git diff 72eee24..c0892ab is empty for agent, perception, policy and scripts); agent/human_intake.py then lacked only FOCUS_SETTLE_NS",
+ "motor": {
+  "path": "motor-settings.json",
+  "sha256": "181d28b21d38d5159c357fdecd7cd094ca6cbebba080d252c1eca625c544195b"
+ },
+ "note": "`proposal` is the proposer's; nothing here is a verdict. Accepted comes only from a verdict record with reviewer, time and inspected native frame hashes (review R5)."
+}

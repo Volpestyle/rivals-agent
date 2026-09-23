@@ -1,0 +1,183 @@
+{
+ "rows": [
+  {
+   "session": "20260922T032454-642Z-24328-1",
+   "date": "2026-09-21",
+   "status": "pending",
+   "reason": "whole-session intake not yet run (28.7 s of focused logged input)",
+   "regime": "normal",
+   "focused_min": 0.478,
+   "group": "20260922T032454-642Z-24328-1",
+   "split": "train",
+   "admitted_min": null,
+   "trainable_min": null
+  },
+  {
+   "session": "20260922T033319-205Z-24328-2",
+   "date": "2026-09-21",
+   "status": "held",
+   "reason": "override; permanently unadmitted",
+   "regime": null,
+   "focused_min": 6.933,
+   "group": "20260922T033319-205Z-24328-2",
+   "split": "train",
+   "admitted_min": null,
+   "trainable_min": null
+  },
+  {
+   "session": "20260923T051828-422Z-33696-1",
+   "date": "2026-09-23",
+   "status": "admitted",
+   "reason": "assembled: review.json from the owner and independent verdicts, imported, steps file frozen",
+   "regime": "normal",
+   "focused_min": 6.977869778333333,
+   "admitted_min": 6.972499721116667,
+   "trainable_min": 6.9722221525,
+   "stride_ns": 33333333,
+   "rejected_min": 0.0053700572166666665,
+   "unresolved_min": 0.0,
+   "tags_s": {
+    "range": {
+     "unknown": 418.349983267
+    },
+    "approach": {
+     "unknown": 418.349983267
+    },
+    "target": {
+     "unknown": 418.349983267
+    },
+    "resources": {
+     "unknown": 418.349983267
+    }
+   },
+   "artifact_sha256": "cabd628037c43de9ee77d5344ccbeb4b05d310296cfdd4a76a18166ab9f35ff2",
+   "group": "20260923T051828-422Z-33696-1",
+   "split": "train"
+  },
+  {
+   "session": "20260923T053616-779Z-33696-2",
+   "date": "2026-09-23",
+   "status": "sealed",
+   "reason": "validation take; never read",
+   "group": "20260923T053616-779Z-33696-2",
+   "split": "test",
+   "admitted_min": null,
+   "trainable_min": null
+  },
+  {
+   "session": "20260923T053929-795Z-33696-3",
+   "date": "2026-09-23",
+   "status": "not_range",
+   "reason": "calibration take",
+   "group": null,
+   "split": null,
+   "admitted_min": null,
+   "trainable_min": null
+  },
+  {
+   "session": "20260923T054325-507Z-33696-4",
+   "date": "2026-09-23",
+   "status": "not_range",
+   "reason": "DayMR native replay viewing, not logged play",
+   "group": null,
+   "split": null,
+   "admitted_min": null,
+   "trainable_min": null
+  },
+  {
+   "session": "20260923T171533-187Z-33696-5",
+   "date": "2026-09-23",
+   "status": "admitted",
+   "reason": "assembled: review.json from the owner and independent verdicts, imported, steps file frozen",
+   "regime": "normal",
+   "focused_min": 2.66888284,
+   "admitted_min": 2.5727776748833335,
+   "trainable_min": 2.5722221965,
+   "stride_ns": 33333333,
+   "rejected_min": 0.020410723683333333,
+   "unresolved_min": 0.07569444143333333,
+   "tags_s": {
+    "range": {
+     "unknown": 154.366660493
+    },
+    "approach": {
+     "unknown": 154.366660493
+    },
+    "target": {
+     "unknown": 154.366660493
+    },
+    "resources": {
+     "unknown": 154.366660493
+    }
+   },
+   "artifact_sha256": "04614051af7a5a67aadea96589f146ecd741df4045e835fb9228015162893de9",
+   "group": "20260923T171533-187Z-33696-5",
+   "split": "train"
+  },
+  {
+   "session": "20260923T200129-346Z-33696-6",
+   "date": "2026-09-23",
+   "status": "pending",
+   "reason": "registered train before inspection; intake running (26.78 focused min logged)",
+   "regime": null,
+   "focused_min": 26.779,
+   "group": "20260923T200129-346Z-33696-6",
+   "split": "train",
+   "admitted_min": null,
+   "trainable_min": null
+  },
+  {
+   "session": "20260923T203716-726Z-45572-1",
+   "date": "2026-09-23",
+   "status": "not_range",
+   "reason": "7.4 s HEVC encoder test (anchor holds, hevc-check.md)",
+   "group": null,
+   "split": null,
+   "admitted_min": null,
+   "trainable_min": null
+  },
+  {
+   "session": "20260923T204707-487Z-45572-2",
+   "date": "2026-09-23",
+   "status": "not_range",
+   "reason": "settings and calibration take (settings pages, 360-degree turn, pitch sweep)",
+   "group": null,
+   "split": null,
+   "admitted_min": null,
+   "trainable_min": null
+  },
+  {
+   "session": "20260923T205528-900Z-45572-3",
+   "date": "2026-09-23",
+   "status": "pending",
+   "reason": "campaign take 2 (HEVC), registered train before inspection; queued after 200129",
+   "regime": null,
+   "focused_min": 11.076,
+   "group": "20260923T205528-900Z-45572-3",
+   "split": "train",
+   "admitted_min": null,
+   "trainable_min": null
+  }
+ ],
+ "headline_train_by_regime": {
+  "normal": {
+   "admitted_min": 9.545277396,
+   "trainable_min": 9.544444348999999,
+   "sessions": 2,
+   "target_min": 180,
+   "remaining_min": 170.454722604
+  }
+ },
+ "val_by_regime": {},
+ "target_min": 180,
+ "registry": {
+  "path": "data/human/session-splits.corpus.json",
+  "sha256": "01bc1e00335f1f2e303fa116b0b8f53cf3d9b78a624a184c85b5184e0b850f3e"
+ },
+ "denylist": {
+  "path": "data/human/sealed-denylist.json",
+  "sha256": "57cfe01f29f6e1a55293f968ec697aa293c268bd87d7cf247ef648279e2fba7c"
+ },
+ "snapshot": "code-snapshot-299ffba",
+ "counted_rule": "focused logged time \u2229 accepted segments \u2229 gap-free runs >= 1.6 s"
+}
