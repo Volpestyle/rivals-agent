@@ -27,7 +27,7 @@ Total logged range play with inputs: about 17 trainable minutes before the campa
 - 2026-09-23: mouse DPI **800** (James, from the mouse's software; source: chat statement, 2026-09-23 ~14:50 CDT).
   In-game sensitivity **unchanged since the 2026-09-21 sessions** (James, same statement). A 10 cm ruler take
   and a 360° turn take are still requested to pin counts/inch and counts/degree from the logger itself.
-- 2026-09-23: **C = Team-Up ability (default binding)**, per James; in the solo practice range it has no effect, so C presses are a known no-effect key (structurally unsupported action, never a training positive).
+- 2026-09-23: **C = Team-Up ability (default binding), and it fires in the solo practice range** (James: "i press c, it uses my team up ability"). It is a real action with a visible effect and training positives (24 presses in 051828, 8 in 171533), so it is a learnable semantic action `team_up`. It is not on the pad executor's whitelist today (Y is outside `Live.ALLOWED`), so it is trained but masked live until that is extended. An earlier line here said it had no effect; that came from the kit doc and was wrong.
 - 2026-09-23: **Alt does nothing in game** (unbound), per James; Alt presses are Alt-Tab only and stay UI-key cuts.
 - 2026-09-23: **Swing bindings**, per James: normal Web-Swing on the default key (Shift) with default swing settings; **Simple Swing bound to Caps Lock** as a separate key. Caps Lock (VK 20) presses, if any, are simple-swing actions, not UI keys.
 - 2026-09-23: **No physical controller was plugged in during any recording session** (James's attestation, ~15:55 CDT). Device scope for every human session: single keyboard and mouse.
