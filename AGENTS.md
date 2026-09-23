@@ -39,8 +39,10 @@ Development can run on either machine. `CLAUDE.md` is a symlink to this file.
   the brain never reads unknown as zero.
 - Any loop that sends input confirms the range HUD on a fresh frame first and stops when
   it disappears. Workers never navigate the lobby; they hand back to the lead.
-- Detections inside the player's own screen region are ignored before aiming: a labeller
-  once boxed Spider-Man's arm as an enemy.
+- The outline finder drops small marks inside the hero's measured screen region (a frame-terms
+  zone, `perception/outline.py`) before any box reaches the tracker; nothing in `agent/` filters
+  detections by screen region, so that guard is the only hero-region protection. A labeller once
+  boxed Spider-Man's arm as an enemy; the zone is measured, not guessed (VUH-1355).
 - Capture and pad code run inside the PC's desktop session, not plain SSH.
 - The PC's GPU belongs to the game while it is running. Train on the Mac (MPS), niced;
   CUDA training is an explicit exception while the game and recording are stopped.
