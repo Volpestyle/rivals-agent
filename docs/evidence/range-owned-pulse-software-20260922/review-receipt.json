@@ -1,0 +1,22 @@
+{
+  "decision": "lead_accepts_independently_reviewed_software_delta",
+  "review_source": "Same independent range reviewer, direct final handoff in lead conversation after 407-case suite and eight actual synthetic checkpoint joins",
+  "review_base": "67a7e31",
+  "execution_interpretation": "request-start-owned-pulse-v1",
+  "raw_candidate_sha256": {
+    "agent/controller.py": "052a2a12819ed11a2a42fff599fb90f1344f8de7787d61088fdfca23c0cd93da",
+    "agent/loop.py": "48fcc336d4ccc58521899d76321e3b439cb6326ea5a3c00a8368c41695203d58",
+    "tests/test_range_skill_controller.py": "d43dc7f5626097f0264dcf9b2f5bb6eef0f201b10afac551c4152383dd2f1533",
+    "tests/test_range_skill_loop.py": "477d3ac6590216f3d7193b338285551bd7a200d0737326fb58b886d2bb6b4bdb",
+    "tests/test_range_cast_probe.py": "e2ef8395b999f759feb883e984b3b5148e0a98cc33b35eb77c0a40d99356b029",
+    "tests/test_range_pulse_lifetime.py": "0ae108d3d0084c830c1be6f3c8fa6d11ebcdff6ec0296899e8ae409f595854f0",
+    "tests/test_range_owned_pulse_loop.py": "0a0fa2d0646c19e3d853cc13b48afcb70dbb00eb6e5149c3b2257676bbde47db",
+    "docs/lanes/range-request-pulse-lifetime.md": "7bda088b0bff8b984f1553934351693c6e9bfff96656cbbe877f6c70d84d0083",
+    "docs/lanes/range-owned-pulse-loop.md": "da98bb8d3031f745f915967256d6f9b7c507a59bac12dabe947afc670db09d1f"
+  },
+  "limits": [
+    "No native input or original model/data in verification",
+    "No physical timing, visible cast or quality result",
+    "Historical bindings remain unchanged; next native run requires genuine new runtime binding"
+  ]
+}

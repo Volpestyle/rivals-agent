@@ -158,7 +158,7 @@ def test_reflex_loss_latches_before_next_decision_even_when_same_id_returns(harn
     ("stale_ammo", "stale_resources", False),
     ("unaligned", "unaligned_target", False),
     ("expired", "decision_expired", False),
-    ("late_press", "insufficient_press_time", False),
+    ("late_press", "accepted", False),
 ])
 def test_latch_classifies_actual_controller_trace_without_broadening_slot_refusals(fault, reason, latches):
     from agent.state import State
@@ -268,7 +268,7 @@ def test_dry_cli_uses_real_log_without_importing_native_factories(tmp_path):
     assert report["controller_acceptances"] == 3
 
 
-def test_controller_late_press_budget_is_reported_separately_from_proposal(harness, tmp_path):
+def test_late_fresh_start_keeps_owned_press_budget(harness, tmp_path):
     delayed = []
     def hud(frame):
         if 1.19 < harness.source.now() < 1.25 and not delayed:
@@ -278,9 +278,9 @@ def test_controller_late_press_budget_is_reported_separately_from_proposal(harne
     harness.p.hud = hud
     result = run(harness, tmp_path)
     assert result["start_proposals"] == 3
-    assert result["controller_acceptances"] == 2
-    assert result["slots"][0]["controller_reason"] == "insufficient_press_time"
-    assert result["slots"][0]["lt_sends"] == []
+    assert result["controller_acceptances"] == 3
+    assert result["slots"][0]["controller_reason"] == "accepted"
+    assert result["slots"][0]["lt_sends"]
 
 
 def test_source_end_during_press_has_original_owner_and_successful_release(harness, tmp_path):
@@ -521,7 +521,7 @@ def test_invalid_evaluation_clock_cannot_open_a_slot(bad):
     assert all(s["status"] == "pending" and s["request_valid_until"] is None for s in schedule.slots)
 
 
-@pytest.mark.parametrize("latency,accepts", [(.064, 3), (.074, 0)])
+@pytest.mark.parametrize("latency,accepts", [(.064, 3), (.074, 3)])
 def test_real_joined_loop_processing_latency_crosses_slot_start_without_retiming(harness, tmp_path, latency, accepts):
     # 94 ms acquisitions put original observations just BEFORE each fixed slot;
     # HUD work completes inside it. Real Loop/Controller/LiveIO/Live do the rest.
@@ -544,7 +544,7 @@ def test_real_joined_loop_processing_latency_crosses_slot_start_without_retiming
         assert slot["observed_t"] < slot["scheduled_t"] <= slot["evaluated_t"] < slot["deadline"]
         assert slot["request_valid_until"] == slot["observed_t"] + .1
         assert slot["resources"]["observed_t"] == slot["observed_t"]
-        assert slot["controller_reason"] == ("accepted" if accepts else "insufficient_press_time")
+        assert slot["controller_reason"] == "accepted"
     assert (result["lt_send_returns"] > 0) is bool(accepts)
     assert result["terminal_releases"][-1]["release_returned"] is True
     assert harness.device.neutral()
@@ -593,14 +593,14 @@ def test_frozen_c_states_keep_original_clocks_through_controller_and_fake_liveio
         assert intent.resources.observed_t == state.t
         pad = ctrl.step(state, intent, intent_t=state.t, execution_t=slot["evaluated_t"])
         trace = ctrl.range_skill_trace
-        assert trace["reason"] == ("accepted" if slot["slot"] < 3 else "insufficient_press_time")
+        assert trace["reason"] == "accepted"  # current owned-pulse interpretation; original C remains zero accepts
         assert state.to_dict() == before
         harness.clock.t = harness.io.t0 + slot["evaluated_t"]
         harness.live.frame_t = harness.io.t0 + state.t
         harness.live.frame = probe.DryFrame()
         if pad["lt"]:
-            release_at = min(trace["pulse_press_until"], intent.valid_until)
-            harness.io.send_guarded(pad, not_after=min(intent.valid_until - ctrl.cal.press_s, release_at), release_at=release_at)
+            release_at = trace["pulse_press_until"]
+            harness.io.send_guarded(pad, not_after=min(intent.valid_until, state.t + .1, release_at), release_at=release_at)
             assert harness.device.reports[-1][1]["lt"] == 1
         else:
             harness.io.send(pad)

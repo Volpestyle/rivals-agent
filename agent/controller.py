@@ -120,7 +120,7 @@ class Live:
             time.sleep(0.001)
 
     # -- the actuator -----------------------------------------------------------------------------------------------
-    def _commit(self, state, proof, *, not_after=None, release_at=None):
+    def _commit(self, state, proof, *, not_after=None, release_at=None, scope_not_after=None):
         """Write `state` if `proof(frame)` holds. The age of THAT frame is judged twice: here, after the proof has been
         computed, and again at the actuator, inside the pad lock, immediately before the write (see _apply)."""
         if time.perf_counter() - self.frame_t > FRESH_S:
@@ -132,7 +132,7 @@ class Live:
             raise RangeLost("range proof missing or stale at commit; input released")
         # _apply checks closed/stale proof before request expiry under the same
         # lock as the neutral write. Only a request-specific refusal can recover.
-        self._apply(state, proof_t, not_after=not_after, release_at=release_at)
+        self._apply(state, proof_t, not_after=not_after, release_at=release_at, scope_not_after=scope_not_after)
 
     def send(self, **changes):
         """Apply pad changes: whitelisted buttons only, and only against fresh in-range proof at the moment of writing."""
@@ -143,15 +143,16 @@ class Live:
             raise Forbidden(f"refused {sorted(bad)}")
         self._commit(state, self._in_range)
 
-    def send_guarded(self, pad, *, not_after, release_at):
+    def send_guarded(self, pad, *, not_after, release_at, scope_not_after=None):
         """Commit a pad snapshot within absolute perf_counter deadlines.
 
-        Expiry is checked after proof and again inside the actuator lock. The
-        watchdog lease is capped to release_at on its separate monotonic clock.
+        Expiry is checked inside the actuator lock after proof. Hard scope loss
+        precedes request expiry; the lease is capped to release_at and scope.
         This bounds requests at existing watchdog resolution, not device delivery.
         """
         try:
-            valid = all(type(t) in (int, float) and math.isfinite(t) for t in (not_after, release_at))
+            clocks = (not_after, release_at) + (() if scope_not_after is None else (scope_not_after,))
+            valid = all(type(t) in (int, float) and math.isfinite(t) for t in clocks)
         except OverflowError:
             valid = False
         if not valid or not_after > release_at:
@@ -165,7 +166,7 @@ class Live:
         if not state["buttons"] and not any(state[k] for k in ("lx", "ly", "rx", "ry", "lt", "rt")):
             self.release()
             return
-        self._commit(state, self._in_range, not_after=not_after, release_at=release_at)
+        self._commit(state, self._in_range, not_after=not_after, release_at=release_at, scope_not_after=scope_not_after)
 
     def release(self):
         self._apply(dict(NEUTRAL))
@@ -228,7 +229,7 @@ class Live:
             time.sleep(0.02)
         return shot
 
-    def _apply(self, s, proof_t=None, *, not_after=None, release_at=None):
+    def _apply(self, s, proof_t=None, *, not_after=None, release_at=None, scope_not_after=None):
         """The actuator. A neutral state is always written. A non-neutral one needs the timestamp of the frame that
         proved it, and is checked HERE, inside the lock, immediately before the write: not closed, and the proof still
         under FRESH_S old (a wait for the lock cannot hide a stale proof). Capture and proof never run under this lock."""
@@ -239,18 +240,23 @@ class Live:
                 return
             # Sample the lease clock first so conversion cannot add time spent
             # waiting on proof, the lock or the device write to the deadline.
-            lease_now = _real_clock() if release_at is not None else None
+            lease_now = _real_clock() if release_at is not None or scope_not_after is not None else None
             now = time.perf_counter()
             error_type = RangeLost
             if self._dead:
                 refusal = "Live is closed; input refused"
             elif proof_t is None or now - proof_t > FRESH_S:
                 refusal = "range proof stale at the actuator; input released"
+            elif scope_not_after is not None and now >= scope_not_after:
+                refusal = "hard scope deadline expired at the actuator; input released"
             elif not_after is not None and (now >= not_after or now >= release_at):
                 refusal = "guarded input deadline expired at the actuator; input released"
                 error_type = InputExpired
             else:
-                lease_until = None if release_at is None else lease_now + min(LEASE_S, release_at - now)
+                end = release_at
+                if scope_not_after is not None:
+                    end = scope_not_after if end is None else min(end, scope_not_after)
+                lease_until = None if end is None else lease_now + min(LEASE_S, end - now)
                 self._write(s)
                 self._lease_until = _real_clock() + LEASE_S if lease_until is None else lease_until
                 return
@@ -384,13 +390,15 @@ class Track:
 
 
 RANGE_SKILL_VALID_S = 0.1
+RANGE_SKILL_EXECUTION_INTERPRETATION = "request-start-owned-pulse-v1"
 
 
-@dataclass
+@dataclass(frozen=True)
 class _RangePulse:
     decision_id: int
     target_id: int
     valid_until: float
+    accepted_t: float
     press_until: float
     steps: list
 
@@ -639,6 +647,7 @@ class Controller:
         self._range_trace = {
             "t": scalar(observation_t), "observation_t": scalar(observation_t),
             "execution_t": scalar(execution_t), "execution_clock_valid": valid_execution, "event": event,
+            "execution_interpretation": RANGE_SKILL_EXECUTION_INTERPRETATION,
             "decision_id": scalar(getattr(intent, "decision_id", None)),
             "target_id": scalar(getattr(getattr(intent, "target", None), "track", None)),
             "proposal": scalar(getattr(intent, "web_cluster_request", None)),
@@ -649,6 +658,7 @@ class Controller:
             "pulse_decision_id": owner.decision_id if owner else None,
             "pulse_target_id": owner.target_id if owner else None,
             "pulse_press_until": owner.press_until if owner else None,
+            "pulse_accepted_t": owner.accepted_t if owner else None,
             "pulse_valid_until": owner.valid_until if owner else None,
             "pulse_phase": ("press" if down else "release") if pulse else "none",
             "lt_down": down, "press_edge": down and not self._range_lt,
@@ -751,15 +761,9 @@ class Controller:
         out["ly"] = 1.0 if armed and self.track.confirmed and not near and not far else 0.0
 
         pulse = self._range_pulse
-        if expired:
-            # An old offensive decision cannot fire or keep a pulse alive, but
-            # current same-target observations still earn tracking/arming.
-            self._range_pulse = None
-            cancel = "decision_expired"
-        elif pulse and execution_t >= pulse.valid_until:
-            self._range_pulse = None
-            cancel = "pulse_expired"
-        elif pulse:
+        # Request expiry prevents new starts. An already-owned pulse retains its
+        # immutable execution schedule, subject to the hard refusals above.
+        if pulse:
             while pulse.steps and execution_t >= pulse.steps[0][0]:
                 pulse.steps.pop(0)
             if not pulse.steps:
@@ -782,17 +786,15 @@ class Controller:
                 reason = ammo_reason
             elif execution_t < self.next_shot_t:
                 reason = "shot_spacing"
-            elif not self._range_number(self.cal.press_s) or self.cal.press_s <= 0:
+            elif not self._range_number(self.cal.press_s) or not 0 < self.cal.press_s <= RANGE_SKILL_VALID_S:
                 return refuse("invalid_press_calibration")
-            elif execution_t + self.cal.press_s > intent.valid_until:
-                reason = "insufficient_press_time"
             else:
                 steps, end = [], execution_t
                 for seconds, changes in self.primitive("web_cluster"):
                     end += seconds
                     steps.append((end, changes))
                 self._range_pulse = _RangePulse(intent.decision_id, intent.target.track,
-                                                intent.valid_until, execution_t + self.cal.press_s, steps)
+                                                intent.valid_until, execution_t, execution_t + self.cal.press_s, steps)
                 self.next_shot_t = execution_t + .34
                 accepted, reason = True, "accepted"
         if fresh:

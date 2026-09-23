@@ -242,7 +242,7 @@ def delayed_event_run(*, decision_delay=0, after_controller_delay=0, pad=None, g
     return run, pad, log
 
 
-@pytest.mark.parametrize("delay, expected_attack", [(0, True), (.05, True), (.08, False), (.15, False)])
+@pytest.mark.parametrize("delay, expected_attack", [(0, True), (.05, True), (.08, True), (.15, False)])
 @pytest.mark.parametrize("mode", ["range-skill", "range-cast-probe"])
 def test_execution_clock_accounts_for_decision_work_without_retiming_observations(delay, expected_attack, mode):
     run, pad, log = delayed_event_run(decision_delay=delay, mode=mode)
@@ -690,6 +690,9 @@ def failing_send_run(tmp_path, *, fail_at=1, release_fails=False, write_fails=Fa
     class Pad(FakePad):
         calls, failed = 0, False
         def send_guarded(self, value, **limits):
+            if not value["lt"]:                       # movement is now guarded too; inject at the intended offensive boundary
+                self.send(value)
+                return
             self.calls += 1
             events.append("send")
             if self.calls == fail_at:

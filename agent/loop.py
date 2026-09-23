@@ -34,7 +34,7 @@ from typing import Callable
 
 from . import brain as scripted
 from .brain import Memory
-from .controller import NEUTRAL, Controller, InputExpired, RangeLost
+from .controller import NEUTRAL, RANGE_SKILL_VALID_S, Controller, InputExpired, RangeLost
 from .demos import COOLDOWNS
 from .intents import Disengage, Idle, RangeSkill
 from .jev import pct
@@ -213,8 +213,9 @@ class LiveIO:
     def now(self):
         return time.perf_counter() - self.t0
 
-    def send_guarded(self, pad, *, not_after, release_at):
-        return self.live.send_guarded(pad, not_after=self.t0 + not_after, release_at=self.t0 + release_at)
+    def send_guarded(self, pad, *, not_after, release_at, scope_not_after=None):
+        scope = {} if scope_not_after is None else {"scope_not_after": self.t0 + scope_not_after}
+        return self.live.send_guarded(pad, not_after=self.t0 + not_after, release_at=self.t0 + release_at, **scope)
 
     def release(self):
         self.live.release()
@@ -489,7 +490,10 @@ class Loop:
     def __init__(self, source, pad, percept, decide=scripted.decide, *, log=None, controller=None, threaded=False,
                  reflex_hz=REFLEX_HZ, decision_hz=DECISION_HZ, max_s=MAX_S, keepalive_s=KEEPALIVE_S, warmup=True,
                  stale_s=STALE_S, scoreboard=True, scoreboard_every_s=None, brain_name="scripted", tracker=None, cooldowns="unknown",
-                 patch=None, start=None, range_receipt=None, execution_clock=None):
+                 patch=None, start=None, range_receipt=None, execution_clock=None, scope_not_after=None):
+        if scope_not_after is not None and (type(scope_not_after) not in (int, float) or not math.isfinite(scope_not_after)):
+            raise ValueError("scope_not_after must be a finite loop-clock timestamp")
+        self.scope_not_after = scope_not_after
         probe = brain_name == "range-cast-probe"
         if probe and range_receipt is not None:
             raise ValueError("scripted cast calibration cannot carry a learned model receipt")
@@ -635,6 +639,12 @@ class Loop:
         self.last_t = t
         if t - self.t0 >= self.max_s:
             return "max_time"
+        if self.brain_name == "range-skill":
+            now = self._execution_now()
+            if self.scope_not_after is not None and now >= self.scope_not_after:
+                return "range_lost"
+            if now >= self.t0 + self.max_s:
+                return "max_time"                  # normal phase end before more work; send-time scope loss still stops
         if self.decider.error:
             raise self.decider.error
         if p.idle(frame):                               # the keep-alive failed, or we are somewhere idle: stop, do not escape
@@ -699,14 +709,14 @@ class Loop:
                 try:
                     self._log(t, None, label(intent), source, frame, dets,
                               (time.perf_counter() - c0) * 1000, d, origin=origin,
-                              event="executor_send_failure")
+                              event=self._send_event())
                 except Exception as e:
                     self.errors.append(f"failed-send log: {e!r}")
                 raise
             if pad is None:                            # consumed expiry, confirmed release; await fresh decisions
                 self.tick_ms.append((time.perf_counter() - c0) * 1000)
                 self._log(t, None, label(intent), source, frame, dets,
-                          self.tick_ms[-1], d, origin=origin, event="executor_send_failure")
+                          self.tick_ms[-1], d, origin=origin, event=self._send_event())
                 return None
         else:
             self.pad.send(pad)                          # Live confirms its own frame again: a second, independent guard
@@ -750,23 +760,45 @@ class Loop:
             self.ka_t = None
         return pad
 
+    def _send_event(self):
+        return ("executor_returned_then_released" if self.last_send and self.last_send["status"] == "returned"
+                else "executor_send_failure")
+
     def _send_skill(self, pad, observation_t):
         trace = self.ctrl.range_skill_trace
         now = self._execution_now()
         limits = {}
+        pulse = {}
+        scope = None
+        if self.brain_name == "range-skill":
+            scope = self.t0 + self.max_s
+            if self.scope_not_after is not None:
+                scope = min(scope, self.scope_not_after)
+            limits = {"not_after": scope, "release_at": scope, "scope_not_after": scope}
         if pad["lt"]:
-            release_at = min(trace["pulse_press_until"], trace["pulse_valid_until"])
+            release_at = trace["pulse_press_until"]
+            if scope is not None:
+                release_at = min(release_at, scope)
             not_after = release_at
             if trace["press_edge"]:
-                not_after = min(not_after, trace["pulse_valid_until"] - self.ctrl.cal.press_s)
-            limits = {"not_after": not_after, "release_at": release_at}
-            if not math.isfinite(now) or now >= not_after:
-                self.last_send = {"observation_t": observation_t, "checked_t": now, "status": "not_sent",
-                                  "reason": "authorization_expired", **limits}
-                if not self._release("send_deadline", force=True):
-                    raise RangeLost("request expired and cancellation could not be confirmed")
-                return dict(NEUTRAL)
-        self.last_send = {"observation_t": observation_t, "attempted_t": now, "status": "attempted", **limits}
+                not_after = min(not_after, trace["pulse_valid_until"],
+                                trace["resources"]["observed_t"] + RANGE_SKILL_VALID_S)
+            limits.update(not_after=not_after, release_at=release_at)
+            pulse = {"pulse_accepted_t": trace["pulse_accepted_t"], "pulse_press_until": trace["pulse_press_until"],
+                     "request_valid_until": trace["pulse_valid_until"]}
+        if not math.isfinite(now) or (scope is not None and now >= scope):
+            self.last_send = {"observation_t": observation_t, "checked_t": now, "status": "not_sent",
+                              "reason": "scope_deadline_or_invalid_clock", **limits, **pulse}
+            self._release("scope_deadline", force=True)
+            raise RangeLost("scope deadline or invalid execution clock; cancellation attempted")
+        if limits and now >= limits["not_after"]:
+            self.last_send = {"observation_t": observation_t, "checked_t": now, "status": "not_sent",
+                              "reason": "authorization_expired", **limits, **pulse}
+            if not self._release("send_deadline", force=True):
+                raise RangeLost("request expired and cancellation could not be confirmed")
+            return dict(NEUTRAL)
+        self.last_send = {"observation_t": observation_t, "attempted_t": now, "status": "attempted", **limits, **pulse}
+        proposed = deepcopy(pad)
         try:
             if limits and hasattr(self.pad, "send_guarded"):
                 self.pad.send_guarded(pad, **limits)
@@ -779,6 +811,18 @@ class Loop:
                 return None
             raise
         self.last_send.update(status="returned", returned_t=self._execution_now())
+        returned = self.last_send["returned_t"]
+        scope_elapsed = scope is not None and returned >= scope
+        pulse_elapsed = bool(pulse) and returned >= limits["release_at"]
+        if not math.isfinite(returned) or scope_elapsed or pulse_elapsed:
+            self.last_send.update(returned_pad=proposed, pulse_budget_elapsed=pulse_elapsed,
+                                  scope_budget_elapsed=scope_elapsed)
+            released = self._release("send_return_after_budget", force=True)
+            if not released:
+                raise RangeLost("send returned after budget and cancellation could not be confirmed")
+            if not math.isfinite(returned) or scope_elapsed:
+                raise RangeLost("scope deadline or invalid return clock; input released")
+            return None
         return pad
 
     def _release(self, reason="explicit_release", *, force=False):
@@ -865,7 +909,7 @@ class Loop:
             row["pad"] = {**pad, "buttons": list(pad["buttons"])}
         if event is not None:
             row["type"] = event
-            row["reason"] = "send_failed"
+            row["reason"] = "send_return_after_budget" if event == "executor_returned_then_released" else "send_failed"
         try:                                            # the id trace (a steal is visible per tick): logging only, never raises into the tick
             row["ids"] = [x.track for x in dets]        # parallel to "dets"
             row["coasting"] = list(self.coasting)
@@ -892,12 +936,13 @@ class Loop:
                     row["range_skill_trace"] = deepcopy(trace)
             if self.last_send is not None and self.last_send["observation_t"] == t:
                 row["send_result"] = deepcopy(self.last_send)
-            if origin is not None and row.get("send_result", {}).get("status") in ("failed", "not_sent"):
+            if origin is not None and (row.get("send_result", {}).get("status") in ("failed", "not_sent")
+                                       or event == "executor_returned_then_released"):
                 # Mirror refusal evidence in summary even if the frame writer
                 # fails. This is the SAME send event, not another attempt.
                 self.executor_events.append(deepcopy({**row,
                     "type": event or "executor_send_refusal",
-                    "reason": "send_failed" if event else "send_deadline"}))
+                    "reason": row.get("reason", "send_deadline")}))
         self.log.write(row, frame)
         if "state" in row:
             self.last_d = row["d"]                      # dedup only after the writer returns
@@ -1138,7 +1183,7 @@ def main(argv=None):
         if focused() is not True:
             ap.error("configured game process is not foreground; no perception, capture or pad opened")
 
-    start = percept = None
+    start = percept = scope = None
     if a.live:
         percept, plaza = default_perception(), _plaza_view()   # everything slow BEFORE the pad opens: the attach drift runs until priming
         board, session = _scoreboard_readers() if focused is not None else (None, None)
@@ -1205,7 +1250,7 @@ def main(argv=None):
                     scoreboard=not a.no_scoreboard, scoreboard_every_s=a.scoreboard_every, cooldowns=a.cooldowns or "unknown",
                     warmup=not a.live, start=start,
                     patch=range_runtime.patch if range_runtime else range_identity.patch if range_identity else None,
-                    range_receipt=range_receipt)
+                    range_receipt=range_receipt, scope_not_after=scope["not_after_t"] if scope else None)
         print(json.dumps(loop.run(), indent=1))
     finally:
         if a.live:

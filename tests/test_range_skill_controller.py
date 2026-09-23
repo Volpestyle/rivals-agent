@@ -172,18 +172,20 @@ def test_original_resource_clock_is_checked_at_acceptance():
     assert c.range_skill_trace["reason"] == "stale_resources"
 
 
-def test_late_start_requires_whole_calibrated_press_and_never_extends_deadline():
+def test_late_start_keeps_request_deadline_and_owns_separate_press_end():
     c = warm()
     late = decision(.02, 10, "start")
-    assert not offensive(step(c, .1, late, anchor=.02))
-    assert c.range_skill_trace["reason"] == "insufficient_press_time"
-    assert c._range_pulse is None
+    assert step(c, .1, late, anchor=.02)["lt"] == 1
+    assert c.range_skill_trace["reason"] == "accepted"
+    assert c.range_skill_trace["pulse_valid_until"] == pytest.approx(.12)
+    assert c.range_skill_trace["pulse_press_until"] == pytest.approx(.133)
     c = warm(Controller(cal=Cal(press_s=.05)))
     req = decision(.05, 10, "start")
     assert step(c, .1, req, anchor=.05)["lt"] == 1
     assert step(c, .151, decision(.151, 11))["lt"] == 0
-    assert c.range_skill_trace["cancel_reason"] == "pulse_expired"
-    assert c.range_skill_trace["pulse_outcome"] == "cancelled_after_press"
+    assert c.range_skill_trace["cancel_reason"] is None
+    assert c.range_skill_trace["release_edge"] is True
+    assert c.range_skill_trace["pulse_phase"] == "release"
 
 
 @pytest.mark.parametrize("kind", ["melee_combo", "burst", "uppercut", "web_cluster", "swing"])
@@ -241,7 +243,7 @@ def test_history_refusal_idle_releases_and_cannot_resurrect_request():
     assert c.range_skill_trace["accepted"] is False
 
 
-def test_expired_decision_cancels_even_when_loop_one_second_gate_would_pass():
+def test_expired_decision_cannot_restart_a_finished_pulse():
     c = warm(Controller(cal=Cal(press_s=.07)))
     req, _ = start(c)
     assert not offensive(step(c, .201, req, anchor=.1))
@@ -466,11 +468,13 @@ def test_rsc2_execution_clock_cannot_move_back_even_with_newer_observation():
     assert c.range_skill_trace["reason"] == "invalid_execution_time"
 
 
-def test_rsc2_full_press_and_resource_budget_use_execution_clock():
+def test_rsc2_start_and_resource_budget_use_execution_clock():
     c = warm()
     req = decision(.1, 10, "start")
-    assert not offensive(c.step(State(.1, FRAME, detections=[BOT]), req, intent_t=.1, execution_t=.18))
-    assert c.range_skill_trace["reason"] == "insufficient_press_time"
+    assert c.step(State(.1, FRAME, detections=[BOT]), req, intent_t=.1, execution_t=.18)["lt"] == 1
+    assert c.range_skill_trace["pulse_accepted_t"] == .18
+    assert c.range_skill_trace["pulse_press_until"] == pytest.approx(.213)
+    assert c.range_skill_trace["pulse_valid_until"] == .2
     c = warm()
     req = decision(.1, 10, "start", resources=RangeSkillResources(5, .04))
     assert not offensive(c.step(State(.1, FRAME, detections=[BOT]), req, intent_t=.1, execution_t=.15))
