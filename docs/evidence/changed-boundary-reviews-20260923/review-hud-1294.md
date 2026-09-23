@@ -527,3 +527,129 @@ default-suite latency guard (≤ 4 ms, one plate, synthetic) is consistent with 
 - All measurements used `uv run --group perception`.
 - The repo was not edited; the HEAD test run used a scratch extraction.
 - `uv sync` was run afterwards.
+
+## Scoreboard KO digit fix
+
+**Scope:** a bounded, read-only review of VUH-1319 against `scoreboard-fix-final.md`. It covers the uncommitted delta
+on `perception/scoreboard.py` (+15/-1), `tests/test_scoreboard.py` (+51) and `docs/lanes/l2-hud.md` (+24), base
+`main` `7de8d5f`.
+
+**How it was run:**
+- No repo edit and no decode. Only the committed JPEGs and the eight pilot PNGs were read.
+- The old reader is `git show HEAD:perception/scoreboard.py`, executed beside the working tree.
+- Scripts and outputs are in `…\scratchpad\sb\`: `check.py` and `construct.py`, `board0_bgonly.png`, and a mirror for
+  the skip test.
+
+### Verdict: approve
+
+- The fix is correct, narrow and honest.
+- It can only remove mask pixels, and it moves no pixel of any labelled board, so the templates stay valid.
+- Every native board reads as before, except that the failing 13 now reads.
+- Under the physically plausible construction it never reads wrong.
+- One wrong read is reachable under a harsher construction (S1), and the forward risk is larger than stated (S2).
+  Neither is a reason to hold the pilot, but the lead should know both.
+
+### Settled
+
+**(1) The gate only removes pixels: confirmed.**
+- `_gold_mask` returns `(top > 40) & (mx > 140) & (top > GOLD_EDGE * top.max())` (`scoreboard.py:265-266`), a pure
+  conjunction. With `top.max()` at 0 the third term is `top > 0`, still a subset.
+- Measured over all 51 KO/D/A crops of the 17 boards: **0 pixels added, 59 removed.**
+
+**(2) The k band: reproduced exactly.**
+
+| k | wrong | unread | labelled boards whose mask moves |
+|---|---|---|---|
+| 0.20 / 0.25 / 0.275 | 0 | 1 (the 13) | none |
+| **0.30 / 0.3125 / 1/3 / 0.35** | **0** | **0** | **none** |
+| 0.375 | 0 | 0 | board0 |
+| 0.40 | 0 | 1 (board0 kos) | board0, board3, board4 |
+
+`learn()` over the labelled set (the native board plus board0-7) returns the checked-in `GLYPHS` exactly.
+
+**(3) 17 native boards, full `read_scoreboard`, old against new.**
+- Identical on 16. On `galacta-pilot-20260923-02-scripted/scoreboard-baseline.png` the only change is
+  `kos` None → **13**.
+- **The failing "3":** 0.138 with a margin of 0.000 against "9", becomes **0.094 with a margin of 0.094** against
+  "8" (runner-up at 0.188). `MIN_MARGIN` is 0.04 and `STRONG` 0.05, so it is accepted on margin, not as
+  near-exact. It is still 12 px wide.
+- **Tightest inexact runner-up margin across all boards:** 0.055 (the same board's deaths "0" against "8").
+- **The report's claim about the 09-22 slot-3 baseline** is accurate: its fattened deaths and assists zeros (0.076
+  and 0.073, 12 px wide) become exact. Its KO zero was already 0.018, unchanged.
+- **Small side effect:** on the 09-22 slot-3 *end* board the gate trims glyphs that were exact (0.000 → 0.018 and
+  0.008). The values are unchanged.
+
+**(4) The new tests: confirmed.**
+- All eight `PILOT_BOARDS` sha256 pins match their frames.
+- **In the repo:** `--corpus` gives 9 passed; without `--corpus`, the 8 corpus cases are skipped ("reads the
+  demonstration corpus").
+- **On a mirror without `data/l1`:** `--corpus` gives the 8 cases **skipped with their reason** ("… is local to the
+  machine that ran the pilot"), and the learn test still passes on the committed boards.
+- A present frame with the wrong hash fails rather than skips, by construction.
+
+**(5) Forward risk, and my construction.** I shifted the scene behind every board's KO/D/A band by −40…+60 grey
+levels in two ways (`construct.py`):
+- **blend**: every pixel moves by `delta × (1 − coverage)`, coverage being the pixel's glyph share
+  (tophat ÷ peak). This is what a semi-transparent board over a brighter scene does, and what the real failing board
+  shows: third-covered edges rising about 20 at about +30.
+- **bg-only**: only pixels under 5% coverage move. Harsher, and less physical.
+
+| model | delta | new: ok / unknown / WRONG | old: ok / unknown / WRONG |
+|---|---|---|---|
+| blend | −40 / −20 | 49/2/0, 50/1/0 | 49/2/0, 50/1/0 |
+| blend | +20 | 44/7/**0** | 36/15/0 |
+| blend | +30 | 36/15/**0** | 26/24/**1** (board2 8 → 9) |
+| blend | +40 | 35/16/**0** | 25/25/**1** (board2 8 → 9) |
+| blend | +60 | 35/16/**0** | 30/21/0 |
+| bg-only | +20 | 50/1/0 | 51/0/0 |
+| bg-only | +30 / +40 | 50/0/**1**, 49/1/**1** | 51/0/0 |
+| bg-only | +60 | 48/2/**1** | 43/7/**1** (the 13 → 1) |
+
+Under the blend model the new reader is **never wrong**, and it returns roughly half the old reader's unknowns.
+
+### S1 (low, not blocking): one wrong read under the harsher construction
+
+**Failing input:** labelled `board0.jpg` (KO 6), bg-only, +30.
+- The old reader reads 6 at an exact 0.000.
+- **The new reader reads 8**: 0.055, against "6" by 0.042, just over `MIN_MARGIN`.
+- The same at +40 and +60 (`board0_bgonly.png`).
+
+**Mechanism:**
+- The edge gate is relative to the crop-wide `top.max()`.
+- When only the background brightens, the anti-aliased edges lose tophat contrast while the peak does not. The gate
+  then strips 8-11 edge pixels, and the thinned 6 sits closer to an 8.
+
+**Why it isn't blocking:**
+- A real semi-transparent board passes the scene into its edges as well (the blend model), where the gate's test
+  reduces to "coverage > 1/3" and no wrong read occurs.
+- The old reader is also wrong under the same family of constructions.
+
+**Recommended follow-up:**
+- Give `classify_digit` the HUD reader's hole-topology veto for 0/6/8/9 (`perception.hud._checked_char` /
+  `_holes`). A 6 has one low hole and an 8 has two, so that case would read unknown rather than 8.
+- Or raise the margin for 0/6/8/9 confusions.
+
+### S2 (information, for the pilot): the forward risk is larger than "digits 4-9 on a pale board are untested"
+
+**The statement is accurate as far as it goes. Two things are missing.**
+
+**(a) Gold 4 and 5 have never been seen on any board.**
+- The labelled gold KO values are 3 and 6-13, and the D/A tallies are 0 and 1.
+- The "4" and "5" templates come only from the white stats digits (damage 845), a different mask and rendering.
+- So a KO of 14 or 15 is the first gold 4 or 5 the reader meets, pale or not.
+
+**(b) The fix does not carry over to a paler copy of the same digits.**
+- Labelled `board7` (a gold 13) under the blend model at +20…+40 reads **unknown with both readers**: the "3" drifts
+  to "9", 0.135-0.148 with margins 0.005-0.021.
+- Overall the new reader still leaves 7-16 of 51 tallies unknown on the brightened boards.
+
+Unknown is the contract, not an error. But an unknown KO is what paused this pilot, so the lead should expect further
+`kos: None` on pale boards, including at episode end, and decide how the pilot treats them.
+
+### S3 (low): the new learn test passes silently when its boards are missing
+
+`test_the_labelled_boards_still_learn_the_checked_in_glyphs` does `if not _boards(): return`. It should
+`pytest.skip(...)`. The boards are committed, so this is cosmetic.
+
+**Not re-checked here:** the report's operational notes (the freeze guard, the events-writer fingerprint and
+`behaviour.py` `CODE` staleness). I did not rerun the full suites; the targeted scoreboard tests above pass.
