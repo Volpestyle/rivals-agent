@@ -1,0 +1,56 @@
+{
+  "kind": "unexecuted_schedule_cli_verification_not_gameplay",
+  "exit_code": 0,
+  "command": [
+    "C:\\Users\\volpe\\repos\\rivals-agent\\.venv\\Scripts\\python.exe",
+    "-m",
+    "scripts.range_benchmark",
+    "score",
+    "C:\\Users\\volpe\\repos\\rivals-agent\\data\\benchmarks\\galacta-pilot-20260923\\schedule.json"
+  ],
+  "stderr": "",
+  "python": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+  "code_revision": "4e9d10ec57fa82c2108bcf0c80341be5f0468504",
+  "source_sha256": {
+    "agent/episodes.py": "295d0301b666ddd0e5f771ce8fc79358592601003aecc8bf8d8039ff05e625a2",
+    "scripts/range_benchmark.py": "0305525c492d92b084aac3df77f17c7d5eca90139b8ec724f7cc25c7ca610786",
+    "agent/brain.py": "0deaafb77cae4fa4a15fc8c8abe6d49c09821de7a1ab5810b096788117b30c00",
+    "agent/controller.py": "c90af6c4f8cc1d3a7521766da91b53951c9cd5d5e2939413d2f2906e7738bf32",
+    "agent/loop.py": "4e006d09687a2a0add6210cddabbb4299c0a260b7125ae23dcad4f78394e9533",
+    "agent/startup.py": "d664ca4bd1ffac599a8020c61d843a186c9e608dfee6071ade2d1274c0ff908c",
+    "agent/state.py": "83983c59f0ea39772686b9ce8e002aab86d312c5e75937bc2b9e6a21eddb8f5a",
+    "agent/tracker.py": "4b4affaf62ff7e19522508645de1b9b41f2749ea72b7be6899b766d356d67f5a",
+    "perception/hud.py": "bcde3611529e26805edbdecbdbd763fec03e74d6100a5a62158dd21ca530198c",
+    "perception/outline.py": "837680f0c4f277fe8ca3acc25399d3a6341fee20ad56ecd122d668defc98c850"
+  },
+  "source_bytes_note": "working-tree bytes of the shared checkout (mixed line endings); identity hashes are over CRLF git blobs",
+  "schedule_sha256": "cc0614fd8d292e3bdbf61e50ca4dd07dc9dfc41f4729691d569ad6535157ff31",
+  "first_pilot_schedule_sha256": "a69edd5ad6af7e00dc7c32a5e81045743a91c49d6043aff6752f655b710d0d1d",
+  "height_boundary_checks": [
+    {
+      "ratio": 0.325,
+      "range_of": "near"
+    },
+    {
+      "ratio": 0.324,
+      "range_of": "mid"
+    },
+    {
+      "ratio": 0.066,
+      "range_of": "mid"
+    },
+    {
+      "ratio": 0.065,
+      "range_of": "far"
+    }
+  ],
+  "scheduled": 20,
+  "executed": 0,
+  "result": "20 retained setup failures, zero attempts, comparison/gates false; no evidence fabricated",
+  "imports_excluded": [
+    "torch",
+    "cv2",
+    "vgamepad",
+    "dxcam"
+  ]
+}
