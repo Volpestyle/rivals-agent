@@ -1,0 +1,173 @@
+[
+  {
+    "file": "000008.jpg",
+    "observation_t": 7.3867842000036035,
+    "sha256": "d401ea91a3104a075a1d479859b7dd33610a84c5f4e3eb5116049471d4cd4400",
+    "matches": [
+      {
+        "pts": 10.266667,
+        "file": "native-0005.jpg",
+        "mad": 12.95690625,
+        "offset": 2.8798827999963965
+      },
+      {
+        "pts": 10.283333,
+        "file": "native-0006.jpg",
+        "mad": 18.08453125,
+        "offset": 2.8965487999963972
+      }
+    ]
+  },
+  {
+    "file": "000009.jpg",
+    "observation_t": 7.5009257000056095,
+    "sha256": "59d4ef9e95db21c17eac1adf4b22274acb1febc236700a151e9e020b22805202",
+    "matches": [
+      {
+        "pts": 10.383333,
+        "file": "native-0012.jpg",
+        "mad": 0.46178125,
+        "offset": 2.882407299994391
+      },
+      {
+        "pts": 10.4,
+        "file": "native-0013.jpg",
+        "mad": 5.78025,
+        "offset": 2.899074299994391
+      }
+    ]
+  },
+  {
+    "file": "000010.jpg",
+    "observation_t": 7.615111299994169,
+    "sha256": "7b717b5678acd937b4b50a518fcbce6bb415e54dc9e5ba944b3a63b378eea7e2",
+    "matches": [
+      {
+        "pts": 10.5,
+        "file": "native-0019.jpg",
+        "mad": 2.420375,
+        "offset": 2.884888700005831
+      },
+      {
+        "pts": 10.483333,
+        "file": "native-0018.jpg",
+        "mad": 5.00525,
+        "offset": 2.868221700005831
+      }
+    ]
+  },
+  {
+    "file": "000011.jpg",
+    "observation_t": 7.716150699998252,
+    "sha256": "616dc4ec5bfed8b9c8e3be89254ee821dde5fa10156ea47052f414904b535d4b",
+    "matches": [
+      {
+        "pts": 10.6,
+        "file": "native-0025.jpg",
+        "mad": 4.3918125,
+        "offset": 2.8838493000017476
+      },
+      {
+        "pts": 10.583333,
+        "file": "native-0024.jpg",
+        "mad": 4.68721875,
+        "offset": 2.8671823000017476
+      }
+    ]
+  },
+  {
+    "file": "000012.jpg",
+    "observation_t": 7.830961400002707,
+    "sha256": "8a6cbd3382ed745db1f4913c4705e93728beb901796e6e34f6394e057f3ced72",
+    "matches": [
+      {
+        "pts": 10.716667,
+        "file": "native-0032.jpg",
+        "mad": 0.45246875,
+        "offset": 2.8857055999972925
+      },
+      {
+        "pts": 10.7,
+        "file": "native-0031.jpg",
+        "mad": 5.37553125,
+        "offset": 2.8690385999972925
+      }
+    ]
+  },
+  {
+    "file": "000013.jpg",
+    "observation_t": 7.939748500008136,
+    "sha256": "1bfe8aa6b69d7b44981ae1b66a15d79706e09fd39019e8c1b980a20c945b43d6",
+    "matches": [
+      {
+        "pts": 10.816667,
+        "file": "native-0038.jpg",
+        "mad": 2.7070625,
+        "offset": 2.8769184999918647
+      },
+      {
+        "pts": 10.833333,
+        "file": "native-0039.jpg",
+        "mad": 6.69215625,
+        "offset": 2.8935844999918636
+      }
+    ]
+  },
+  {
+    "file": "000014.jpg",
+    "observation_t": 8.057299300009618,
+    "sha256": "06a909ae48479b36021dfc99c06d4e284548b3fe1f3061b5c0f76b2026f0107b",
+    "matches": [
+      {
+        "pts": 10.95,
+        "file": "native-0046.jpg",
+        "mad": 4.0918125,
+        "offset": 2.8927006999903817
+      },
+      {
+        "pts": 10.933333,
+        "file": "native-0045.jpg",
+        "mad": 4.098125,
+        "offset": 2.8760336999903817
+      }
+    ]
+  },
+  {
+    "file": "000015.jpg",
+    "observation_t": 8.172456900007091,
+    "sha256": "2345ec1782529571046a11420207112fbbb81e4d844b25fb0aa4601d5a368551",
+    "matches": [
+      {
+        "pts": 11.066667,
+        "file": "native-0053.jpg",
+        "mad": 2.0900625,
+        "offset": 2.8942100999929092
+      },
+      {
+        "pts": 11.05,
+        "file": "native-0052.jpg",
+        "mad": 3.46353125,
+        "offset": 2.8775430999929092
+      }
+    ]
+  },
+  {
+    "file": "000016.jpg",
+    "observation_t": 8.28133140000864,
+    "sha256": "ff23fa70861a888d78447aa292440e33842a08a371ee7c96ac920e2e629c997b",
+    "matches": [
+      {
+        "pts": 11.1,
+        "file": "native-0055.jpg",
+        "mad": 11.369375,
+        "offset": 2.8186685999913603
+      },
+      {
+        "pts": 11.083333,
+        "file": "native-0054.jpg",
+        "mad": 15.89221875,
+        "offset": 2.8020015999913603
+      }
+    ]
+  }
+]

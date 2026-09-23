@@ -1,0 +1,64 @@
+{
+  "root_ready_for_one_diagnostic": true,
+  "observed_utc": "2026-09-23T00:09:21.455851+00:00",
+  "observer": "root, direct fresh menu/native PAD and entry scene inspection",
+  "observed": {
+    "normal_cooldown_menu": true,
+    "spiderman": true,
+    "pad_web_layout": true,
+    "luna_setup": true,
+    "range": true
+  },
+  "game_pid": 48460,
+  "frame": [
+    2560,
+    1440
+  ],
+  "observations": [
+    "Entry helper exited0; fresh scene names Luna Snow at Hero Simulation, Spider-Man250 health,5 webs; generic target selection remains unconstrained by hero name.",
+    "Fresh ps-0 shows No Ability Cooldown X/off and Friendly Fire X/off; settings helper already-off, no toggle.",
+    "Settings native4s frame shows LT projectile5, RT infinity melee, LB swing3, RB pull, X uppercut2. 11.8s is already KBM after helper disconnect and is not PAD evidence.",
+    "Setup attach turned toward spawn; accepted same-device camera startup must reacquire plaza. Actual scope proof rechecks foreground48460,range,deadlines.",
+    "Saved selected client/build/PAD/display values equal post-D receipt; all effective unspecified defaults remain unknown."
+  ],
+  "limits": [
+    "Entry helper RT priming is setup, not learned offense.",
+    "New request-start-owned-pulse-v1 deliberately permits fixed nominal33ms owned pulse beyond requestD, bounded by phase/session; physical holding/emission remains unmeasured.",
+    "Historical D primitive identity retained, not new holding-authority equivalence.",
+    "One fourth exploratory software diagnostic, model/threshold/thread unchanged, no retry or independent-quality claim."
+  ],
+  "evidence": [
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-owned-pulse-preflight-20260922\\practice-settings\\ps-0.jpg",
+      "sha256": "9d88c048b0c49d618f07e1ed364a142109d0f407d86d9638625bbe6caf39113a"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-owned-pulse-preflight-20260922\\settings-4s.png",
+      "sha256": "8797955ee42d525b210921bac04fc839cde13642a1758cc0dc9f489bd587817e"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-owned-pulse-preflight-20260922\\settings-native.mp4",
+      "sha256": "88bcbae8eb990a8a1af7ba89668ea55eabcdab2e27020ce61e889e5bfdc7cbd4"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-owned-pulse-preflight-20260922\\settings.log",
+      "sha256": "98df43fefe1bf7ab14d6bfea9f29617738a09a743690606aa950ada66142674b"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-owned-pulse-preflight-20260922\\capture-preflight.txt",
+      "sha256": "b8708c763fa616f0b6c858f89b4769352e7dfab54cd65a48d97d36ed9beecaee"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-owned-pulse-preflight-20260922\\saved-settings.json",
+      "sha256": "af2c4bd4af15a570680b5baf4bf2abd586d585f341215234822e76a9de5d4cef"
+    },
+    {
+      "path": "C:\\desk\\out\\range-request-owned-pulse-entry-after.png",
+      "sha256": "bc3f81eb0b624fbdc5026f10e34955fc5ee4fc7804d047bdb43de10c79dacecd"
+    },
+    {
+      "path": "C:\\desk\\out\\range-request-owned-pulse-settings-after.png",
+      "sha256": "0990f8502b426d102520637f75a70a11a99151a460283e9ddfd9190064ec947c"
+    }
+  ]
+}

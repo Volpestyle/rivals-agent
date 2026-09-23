@@ -1,0 +1,34 @@
+{
+  "inputs_before_after": [
+    {
+      "path": "data/l1/range-request-owned-pulse-20260922-1/meta.json",
+      "sha256": "547045f0609c4e9545f7b294de28a2418f3b359ccdd78edb632dfcf161d31cff",
+      "bytes": 85302
+    },
+    {
+      "path": "data/l1/range-request-owned-pulse-20260922-1/frames.jsonl",
+      "sha256": "de55f50c202f0a5fe875669aa04dac0051e492a0b679727d3aa6c5f2ce378bde",
+      "bytes": 706220
+    },
+    {
+      "path": "data/runtime/range-request-owned-pulse-preflight-20260922/actual-thread-settings.json",
+      "sha256": "9f4f17b93d2e40e4c4ef5dc32a866a79dd09c1952a5e2062e1e5cefa26d85f75",
+      "bytes": 392
+    },
+    {
+      "path": "data/runtime/range-request-owned-pulse-preflight-20260922/launch-result.json",
+      "sha256": "5851c027e10f60a0baf079b79eb8d24d39a278c6548fab813f23f3de4019a199",
+      "bytes": 216
+    },
+    {
+      "path": "data/diagnostics/range-request-efficiency-stage-20260922/report.json",
+      "sha256": "067a604773519fbbe6ecaa537a4a154570bd39a2d4fdac161aedf6f273e2fd4c",
+      "bytes": 204636
+    }
+  ],
+  "analyzer": {
+    "path": "data/diagnostics/range-request-owned-pulse-stage-20260922/analyze.py",
+    "sha256": "93876404d6334c41fe468622598bf6ce3ce2f1614c7faaf158dc84ea18d70f93",
+    "bytes": 14957
+  }
+}

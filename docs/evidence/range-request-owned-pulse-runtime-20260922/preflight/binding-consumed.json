@@ -1,0 +1,7 @@
+{
+    "run":  "range-request-owned-pulse-20260922-1",
+    "binding_sha256":  "9132d5126c7c865e2437223be88d1e43f4ec12d17993a1503bb3c696db94eed3",
+    "consumed_utc":  "2026-09-23T00:10:07.9027094Z",
+    "reason":  "one authorized exploratory launch; preserve failure; do not rerun this binding",
+    "checkpoint_sha256":  "6ee388070599e3df042ea73876e391340bf228a9e626cc212c60875d8191aeef"
+}

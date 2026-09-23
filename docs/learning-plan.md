@@ -75,7 +75,7 @@ unique received request, not independent validation or learned gameplay. No
 additional footage, stationary waits, guessed motor profile or live binding was
 used to reach this numerical result. The prior visual artifacts stay unchanged.
 
-The exact request model has now run in three retained exploratory measurements,
+The exact request model has now run in four retained exploratory measurements,
 each with reviewed code, a distinct consumed runtime binding and fresh
 normal-resource/PAD setup. The [first run](evidence/range-request-runtime-20260922/README.md)
 hit Luna once and stopped at 8.615 seconds; its final trace gap remains historical.
@@ -90,9 +90,30 @@ requests stayed consumed while fresh decisions continued. All 90 decisions survi
 with zero invalid-history refusals; Luna remained alive. Actual HUD/coasting median
 was 22.941 ms and acquisition-to-consumption 71.261 ms, so perception and pre-offer
 work remain latency priorities. The whole consumer took about 1 ms on model events.
-Do not infer a causal speedup from different scenes or relax the 100 ms authority,
-33 ms pulse, confidence threshold or history tolerance to hide processing delays.
-Independent validation and the ten-trial bot-kill comparison remain open.
+Different scenes prevent a causal speedup claim. That run used the historical
+requirement to finish the nominal pulse inside the original 100 ms deadline;
+its results and binding remain unchanged.
+
+The independently accepted [owned-pulse execution change](evidence/range-owned-pulse-software-20260922/README.md)
+is on main in `676f99a`. A fresh request must start before its original 100 ms
+deadline and original ammo freshness limit. Controller acceptance fixes a nominal
+33 ms pulse end, capped by the phase and session. Only that same owner can continue
+past the request deadline, and faults or loss still cancel it. Delays consume the
+fixed pulse budget. This explicitly changes held-input authority; the received-request
+prediction horizon, checkpoint, 0.7 threshold and history tolerance are unchanged.
+It does not establish exact human timing, physical pulse duration or visible
+completion inside 100 ms. Independent validation and the ten-trial bot-kill
+comparison remain open.
+
+The [fourth run](evidence/range-request-owned-pulse-runtime-20260922/README.md)
+completed 10.0035 seconds with **eight independently confirmed web casts and eight
+impacts on Luna, no KO**. Ten owned requests produced twenty returned LT calls;
+two owners had no separate visible cast. All 95 decisions survived, with zero
+invalid-history refusals or failed sends. Two same-owner continuations actually
+ran after their request deadlines and before their fixed pulse ends. Luna retained
+a small amount of health. A fresh 20-second exploratory trial with the unchanged
+model is the next measurement, using the existing caller cap and a new binding.
+This result does not count toward the designated-bot comparison.
 
 The first executable experiment now learns **Web-Cluster start timing**, using
 five causal observations at 10 Hz. `start_web_cluster` requests one bounded pulse;

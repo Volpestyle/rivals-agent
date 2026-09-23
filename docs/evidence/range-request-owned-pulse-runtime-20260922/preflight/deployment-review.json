@@ -1,0 +1,33 @@
+{
+  "decision": "accept_only_the_named_one_run_scope",
+  "checkpoint_sha256": "6ee388070599e3df042ea73876e391340bf228a9e626cc212c60875d8191aeef",
+  "source_identity_sha256": "082535863ad7773de498b872eccbacc21753da99966f2f64ff953d1871c5995e",
+  "runtime": {
+    "patch": "1.1.3870120/build25364676",
+    "cooldown_regime": "normal",
+    "runtime_settings_sha256": "99eca1118b4466c5e0c7df9b19551a7b59785d4aacead8c08047b022fb490861",
+    "calibration_sha256": "7e1ab360fcf5fe074160a1b8a0564554249b77315fb72648642ec609d5b1f1d5",
+    "controller_code_sha256": "376e664d69fe5ff88bb19d7718d48edde6f2a58f203aef8f7d6260c436031fa5",
+    "perception_sha256": "7d531889f81c31c11786838e1e7e1cdecaf01e6148a433821df4d02502932219",
+    "semantic_review_sha256": "2c7c04716f2c08b459ca993857cf33d199b0814c03cec49a3acb49f1f283d37e",
+    "input_domain": "virtual_pad",
+    "selector_sha256": "ddf1428a61c54805ce06164ef0daa7dfa1302fdf1735990336fdcab939ae098d",
+    "semantic_revision": "web-cluster-request-v1",
+    "feature_revision": "masked-state-grid-causal-v1"
+  },
+  "semantic_review": {
+    "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-owned-pulse-preflight-20260922\\runtime-semantic-review.json",
+    "sha256": "2c7c04716f2c08b459ca993857cf33d199b0814c03cec49a3acb49f1f283d37e"
+  },
+  "scope": {
+    "run_name": "range-request-owned-pulse-20260922-1",
+    "run_count": 1,
+    "learned_phase_max_s": 10,
+    "startup_max_s": 14,
+    "absolute_authorization_budget_s": 24,
+    "confidence": 0.7,
+    "scoreboard": false,
+    "cooldown_regime": "normal",
+    "scenario": "Luna setup; generic continuous selector, not named-target lock"
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "stop": "max_time",
+  "phase_observation_s": 10.003527699998813,
+  "normal": 406,
+  "release": 1,
+  "decisions": 95,
+  "proposals": {
+    "refusal": 23,
+    "no_new_start": 24,
+    "start": 48
+  },
+  "decision_reasons": {
+    "target_unobserved": 1,
+    "warming_up": 20,
+    "model_event": 72,
+    "low_confidence": 2
+  },
+  "accepts": [
+    11,
+    37,
+    41,
+    45,
+    49,
+    57,
+    61,
+    65,
+    69,
+    78
+  ],
+  "returned_LT_calls": 20,
+  "failed_sends": 0,
+  "phase_end": 16.51235629999428,
+  "absolute_scope": 23.648247800010722,
+  "last_returned_send": {
+    "observation_t": 16.495579400012502,
+    "attempted_t": 16.511264600005234,
+    "status": "returned",
+    "not_after": 16.51235629999428,
+    "release_at": 16.51235629999428,
+    "scope_not_after": 16.51235629999428,
+    "returned_t": 16.51136500001303
+  },
+  "terminal_release": [
+    {
+      "attempted_t": 16.534214200015413,
+      "status": "returned",
+      "returned_t": 16.53432249999605
+    }
+  ],
+  "nominal_end_after_D": [
+    37,
+    41,
+    49,
+    57,
+    65,
+    78
+  ],
+  "continuation_attempt_after_D": [
+    57,
+    78
+  ],
+  "continuation_return_after_D": [
+    37,
+    57,
+    78
+  ]
+}

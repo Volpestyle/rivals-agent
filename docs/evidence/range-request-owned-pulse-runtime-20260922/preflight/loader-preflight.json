@@ -1,0 +1,14 @@
+{
+  "loaded": true,
+  "origin": "reviewed_human",
+  "spec": {
+    "steps": 5,
+    "period_s": 0.1,
+    "tolerance_s": 0.025,
+    "hidden": 8,
+    "confidence": 0.7
+  },
+  "checkpoint_sha256": "6ee388070599e3df042ea73876e391340bf228a9e626cc212c60875d8191aeef",
+  "inference_calls": 0,
+  "input": false
+}

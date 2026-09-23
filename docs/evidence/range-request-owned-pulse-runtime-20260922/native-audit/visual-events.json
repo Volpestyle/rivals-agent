@@ -1,0 +1,154 @@
+[
+  {
+    "probable_owner": 11,
+    "video_emission_bracket_pts": [
+      10.633333,
+      10.666667
+    ],
+    "impact_sample_pts": 10.766667,
+    "ammo": [
+      5,
+      4
+    ],
+    "files": [
+      "native-0027.jpg",
+      "native-0029.jpg",
+      "native-0035.jpg",
+      "native-0043.jpg"
+    ],
+    "claim": "separate visible cast and hit; owner association uses approximate local alignment, not an exact game timestamp"
+  },
+  {
+    "probable_owner": 37,
+    "video_emission_bracket_pts": [
+      13.4,
+      13.433333
+    ],
+    "impact_sample_pts": 13.516667,
+    "ammo": [
+      5,
+      4
+    ],
+    "files": [
+      "native-0078.jpg",
+      "native-0080.jpg",
+      "native-0084.jpg",
+      "native-0090.jpg"
+    ],
+    "claim": "separate visible cast and hit; owner association uses approximate local alignment, not an exact game timestamp"
+  },
+  {
+    "probable_owner": 45,
+    "video_emission_bracket_pts": [
+      14.15,
+      14.183333
+    ],
+    "impact_sample_pts": 14.216667,
+    "ammo": [
+      4,
+      3
+    ],
+    "files": [
+      "native-0122.jpg",
+      "native-0124.jpg",
+      "native-0126.jpg",
+      "native-0134.jpg"
+    ],
+    "claim": "separate visible cast and hit; owner association uses approximate local alignment, not an exact game timestamp"
+  },
+  {
+    "probable_owner": 49,
+    "video_emission_bracket_pts": [
+      14.583333,
+      14.616667
+    ],
+    "impact_sample_pts": 14.683333,
+    "ammo": [
+      3,
+      2
+    ],
+    "files": [
+      "native-0148.jpg",
+      "native-0150.jpg",
+      "native-0154.jpg",
+      "native-0164.jpg"
+    ],
+    "claim": "separate visible cast and hit; owner association uses approximate local alignment, not an exact game timestamp"
+  },
+  {
+    "probable_owner": 57,
+    "video_emission_bracket_pts": [
+      15.483333,
+      15.516667
+    ],
+    "impact_sample_pts": 15.583333,
+    "ammo": [
+      3,
+      2
+    ],
+    "files": [
+      "native-0202.jpg",
+      "native-0204.jpg",
+      "native-0208.jpg",
+      "native-0216.jpg"
+    ],
+    "claim": "separate visible cast and hit; owner association uses approximate local alignment, not an exact game timestamp"
+  },
+  {
+    "probable_owner": 65,
+    "video_emission_bracket_pts": [
+      16.283333,
+      16.316667
+    ],
+    "impact_sample_pts": 16.35,
+    "ammo": [
+      2,
+      1
+    ],
+    "files": [
+      "native-0250.jpg",
+      "native-0252.jpg",
+      "native-0254.jpg",
+      "native-0260.jpg"
+    ],
+    "claim": "separate visible cast and hit; owner association uses approximate local alignment, not an exact game timestamp"
+  },
+  {
+    "probable_owner": 69,
+    "video_emission_bracket_pts": [
+      16.683333,
+      16.716667
+    ],
+    "impact_sample_pts": 16.783333,
+    "ammo": [
+      1,
+      0
+    ],
+    "files": [
+      "native-0274.jpg",
+      "native-0276.jpg",
+      "native-0280.jpg",
+      "native-0288.jpg"
+    ],
+    "claim": "separate visible cast and hit; owner association uses approximate local alignment, not an exact game timestamp"
+  },
+  {
+    "probable_owner": 78,
+    "video_emission_bracket_pts": [
+      17.683333,
+      17.716667
+    ],
+    "impact_sample_pts": 17.783333,
+    "ammo": [
+      1,
+      0
+    ],
+    "files": [
+      "native-0334.jpg",
+      "native-0336.jpg",
+      "native-0340.jpg",
+      "native-0348.jpg"
+    ],
+    "claim": "separate visible cast and hit; owner association uses approximate local alignment, not an exact game timestamp"
+  }
+]

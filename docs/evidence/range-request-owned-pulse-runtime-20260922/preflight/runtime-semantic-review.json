@@ -1,0 +1,67 @@
+{
+  "decision": "lead_accepts_one_exploratory_runtime_diagnostic",
+  "at_utc": "2026-09-23T00:09:22.311634+00:00",
+  "authority": "Root lead under James authorized practice-range goal; independent semantic and caller reviews retained",
+  "lead_semantic_review": {
+    "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-owned-pulse-preflight-20260922\\semantic-review.md",
+    "sha256": "93d9c2637b08c51654552b2c9277afb533d2b0f77d7551e8bc75265a608322ec"
+  },
+  "independent_caller_review": {
+    "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-owned-pulse-preflight-20260922\\caller-review.md",
+    "sha256": "f8e26b2f0e650cd52f2d9a74711b16110a63c00f9696f5d8c78c697fdba14cca"
+  },
+  "launcher": {
+    "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-owned-pulse-preflight-20260922\\run_instrumented.py",
+    "sha256": "d20bb27fbd3ce537e8dc66f3b82d431bfc8af53145c21df4f62a61c332234830"
+  },
+  "experiment_question": "Measure fresh request starts and fixed owned pulse completion under request-start-owned-pulse-v1, with exact-output HUD candidate filtering; preserve all proposals/refusals/returns/releases in one exploratory phase",
+  "source": {
+    "patch": "1.1.3870120/build25364676",
+    "cooldown_regime": "normal",
+    "source_profile_sha256": "9f413b81dabc71518359c28a6e506b1a1accbae5654bbf006967652332e3208f",
+    "perception_sha256": "e9d40f7a12442335866df16edaa8ceea7116177ab8546b3267ac096c1c616798",
+    "selector_sha256": "ddf1428a61c54805ce06164ef0daa7dfa1302fdf1735990336fdcab939ae098d",
+    "semantic_revision": "web-cluster-request-v1",
+    "feature_revision": "masked-state-grid-causal-v1"
+  },
+  "checkpoint": {
+    "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\diagnostics\\range-request-human-fit-20260922\\run-1\\model.pt",
+    "sha256": "6ee388070599e3df042ea73876e391340bf228a9e626cc212c60875d8191aeef"
+  },
+  "controller": {
+    "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-owned-pulse-preflight-20260922\\controller-deployed.json",
+    "sha256": "376e664d69fe5ff88bb19d7718d48edde6f2a58f203aef8f7d6260c436031fa5"
+  },
+  "perception": {
+    "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-owned-pulse-preflight-20260922\\perception-deployed.json",
+    "sha256": "7d531889f81c31c11786838e1e7e1cdecaf01e6148a433821df4d02502932219"
+  },
+  "runtime_settings": {
+    "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-owned-pulse-preflight-20260922\\runtime-settings.json",
+    "sha256": "99eca1118b4466c5e0c7df9b19551a7b59785d4aacead8c08047b022fb490861"
+  },
+  "calibration": {
+    "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\range-request-diagnostic-20260922\\calibration-manifest.json",
+    "sha256": "7e1ab360fcf5fe074160a1b8a0564554249b77315fb72648642ec609d5b1f1d5"
+  },
+  "scope": {
+    "run_name": "range-request-owned-pulse-20260922-1",
+    "run_count": 1,
+    "learned_phase_max_s": 10,
+    "startup_max_s": 14,
+    "absolute_authorization_budget_s": 24,
+    "confidence": 0.7,
+    "scoreboard": false,
+    "cooldown_regime": "normal",
+    "scenario": "Luna setup; generic continuous selector, not named-target lock"
+  },
+  "interpretation": "request-start-owned-pulse-v1: immediate guarded start before original acquisition+100ms and original ammo+100ms; nominal end fixed at Controller acceptance+33ms, capped by phase/session; no exact human97.984ms delay, physical hold or visible completion guarantee",
+  "limits": [
+    "One source event/four negative labels; TRAIN-only fit, independent quality unknown",
+    "MK/PAD and reset-window/continuous differences are exploratory uncertainties",
+    "Fourth named software diagnostic after reviewed owned-pulse execution interpretation and exact-output HUD candidate filter; not independent quality or a retry of any consumed binding",
+    "One named run, no rerun/tuning to select success; request deadline expiry permits only completion of already-owned pulse; faults and send failures cancel with returned/recorded neutral before recovery; no replay or scripted offensive fallback",
+    "Proof freshness/watchdog limits remain; no physical-write/process-exit precision claim",
+    "Not independent validation, designated Galacta completion, pro parity or ten-trial acceptance"
+  ]
+}
