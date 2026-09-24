@@ -856,6 +856,34 @@ synthetic FFV1 fixture):
 - **The HUD identity with range_bc's cache** is now also tested on textured frames (`testsrc2`), which a crop offset
   would break.
 
+**2026-09-24: first IDM plumbing run on the Mac** (`gate1-dev` scope, not a gate result; code `1df31e7`, clean).
+- **Stores:** 170,112 frames, 26 GB, built in about 33 min (niced, 4 threads) from the originals read in place.
+  All four re-verify and bind to their targets. The inspected dev frames look right.
+- **MPS:** runs under deterministic algorithms. Two 512-example smoke fits gave byte-identical checkpoints
+  (`2b97875d`).
+- **Leave-one-session-out:** 3 epochs, seed 0, four folds in 81 min (0.0029 s/example). Train loss falls in every
+  fold. The held-out sessions are train-split recordings.
+- **Camera beats zero in every fold, and is far short of persistence.** Persistence uses the true previous rotation,
+  so it is a ceiling built from labels, not a floor.
+
+  | Held out | Yaw error, moving, median: model / zero / persistence | Yaw direction agreement | Pitch error, moving, median: model / zero | Extrapolated share |
+  |---|---|---|---|---|
+  | 171533 | 0.35° / 1.22° / 0.20° | 0.96 | 0.51° / 0.89° | 23 % |
+  | 051828 | 0.85° / 1.42° / 0.20° | 0.54 | 0.56° / 0.93° | 43 % |
+  | 205528 | 0.74° / 1.46° / 0.20° | 0.47 | 0.68° / 0.93° | 40 % |
+  | 200129 | 0.85° / 1.39° / 0.20° | 0.51 | 0.82° / 0.93° | 41 % |
+
+  - **Open, not explained:** yaw direction agreement is at chance on the three fast-heavy folds. The aggregates
+    cannot split it by speed.
+  - **A hypothesis to test** with per-row predictions: turns faster than the conv's receptive field per interval
+    leave the direction ambiguous to a small conv with global pooling.
+  - The stated yaw std under-covers above the calibrated band: 29–73 % of errors within 1σ, where about 68 % is
+    expected.
+- **The edge head has no usable skill yet.** It predicts almost no onsets. The exception is jump, which fires
+  constantly (precision 0.02–0.06, recall 0.59–0.94, F1 0.05–0.11). Every other deciding action has F1 0.
+- **Runs, reports and store manifests** are in `data/idm/runs/` on the PC (gitignored); the hashes are in the
+  hand-back.
+
 ## Measurements owed
 
 - **The 7 large live zeros (a) still keeps:** parallax during combined movement and turning.
