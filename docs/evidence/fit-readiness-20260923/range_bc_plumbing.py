@@ -194,7 +194,7 @@ def scripts(p, pre, mac_root=MAC_ROOT):
             "uvr() { uv run --offline --locked --group execution \"$@\"; }",
             "# 1. the new recordings' originals, against their Windows hashes"]
     for sid in new:
-        prep += [f"cd $D/originals; while read -r want name; do f={sid}/$name; [[ -e $f ]] || f=$name;",
+        prep += [f"cd $D/originals; while read -r want name; do name=${{name%$'\\r'}}; f={sid}/$name; [[ -e $f ]] || f=$name;",
                  "  got=$(shasum -a 256 \"$f\" | cut -c1-64); [[ $got == $want ]] || { echo \"BAD $name\"; exit 2; }; "
                  "echo \"ok $name\";",
                  f"done < {sid}/{sid}.sha256"]
@@ -225,24 +225,27 @@ def scripts(p, pre, mac_root=MAC_ROOT):
         queue.append(f"run {name} {' '.join(args)} || {{ echo FAILED {name} >$R/plumb-queue.status; exit 1; }}")
     queue.append("echo DONE >$R/plumb-queue.status")
     launch = [f"# Range BC plumbing launch (commit {p['commit']}).",
-              "$ErrorActionPreference = 'Stop'",
+              "# No ErrorActionPreference Stop here: under PowerShell 5.1 a redirected native stderr line (uv's",
+              "# progress) would end the script mid-ssh; the exit status is checked instead.",
               f"ssh -o BatchMode=yes mac 'zsh -l {pl}/mac-prepare.zsh'",
               "if ($LASTEXITCODE) { throw 'prepare failed' }",
               f"ssh -o BatchMode=yes mac 'nohup nice -n 10 zsh -l {pl}/mac-queue.zsh >/dev/null 2>&1 & "
               f"echo $! > {pl}/queue.pid'",
               f"# Status: ssh mac 'cat {rn}/plumb-queue.status; tail -n 3 {rn}/plumb-*.log; cat {rn}/plumb-*.exit'",
               "# Report from the .exit files, the logs and the reports, never from the launch."]
-    collect = [f"# Range BC plumbing collect (commit {p['commit']}): reports back, then derive.",
-               "$ErrorActionPreference = 'Stop'", "$H = $PSScriptRoot",
+    collect = [f"# Range BC plumbing collect (commit {p['commit']}): reports back, then derive. Run from the repo root.",
+               "# -Parity: the HUD parity JSON (a P2' result if one exists, else run 1, hud-parity-1.json).",
+               "# Native exit statuses are checked; no ErrorActionPreference Stop (see launch.ps1).",
+               "param([Parameter(Mandatory = $true)][string] $Parity)", "$H = $PSScriptRoot",
                f"if ((ssh -o BatchMode=yes mac 'cat {rn}/plumb-queue.status') -ne 'DONE') {{ throw 'queue not done' }}"]
     for name, _ in p_runs(p):
         collect += [f"New-Item -ItemType Directory -Force \"$H\\runs\\{name}\" | Out-Null",
-                    f"scp -o BatchMode=yes mac:{rn}/{name}/report.json \"$H\\runs\\{name}\\\""]
-    collect += ["# the parity file: a P2' result if one exists, else run 1 (hud-parity-1.json)",
-                "$PARITY = '<path to the parity JSON>'",
-                "uv run --offline --locked --group execution python docs\\evidence\\fit-readiness-20260923\\"
-                "range_bc_plumbing.py derive --plan \"$H\\plan.json\" --runs \"$H\\runs\" --hud-parity $PARITY "
-                "--out \"$H\\preregistration.json\""]
+                    f"scp -o BatchMode=yes mac:{rn}/{name}/report.json \"$H\\runs\\{name}\\\"",
+                    f"if ($LASTEXITCODE) {{ throw 'copy failed: {name}' }}"]
+    collect += ["uv run --offline --locked --group execution python docs\\evidence\\fit-readiness-20260923\\"
+                "range_bc_plumbing.py derive --plan \"$H\\plan.json\" --runs \"$H\\runs\" --hud-parity $Parity "
+                "--out \"$H\\preregistration.json\"",
+                "if ($LASTEXITCODE) { throw 'derive refused' }"]
     lf = lambda lines: "\n".join(lines) + "\n"
     return {"transfer.ps1": lf(ps), "mac-prepare.zsh": lf(prep), "mac-queue.zsh": lf(queue),
             "launch.ps1": lf(launch), "collect.ps1": lf(collect)}

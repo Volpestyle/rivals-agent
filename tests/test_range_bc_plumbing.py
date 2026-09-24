@@ -110,10 +110,11 @@ def test_commands_write_the_plan_and_the_scripts(tmp_path):
     assert all(v["steps_sha256"] in prep for v in p["cohort"].values())
     assert prep.count("policy.range_bc.cache") == 4 and prep.count("/cache.json ]]") == 4
     assert "steps.load_denylist()" in prep
+    assert prep.count("name=${name%$'\\r'}") == 2           # PowerShell writes the hash lists with CRLF
     t = s["transfer.ps1"]
     assert NEW_TRAIN in t and NEW_DEV in t and "mac:'" not in t and "\"mac:" not in t and "git archive" in t
     assert all(p["cohort"][sid]["media_sha256"] in t for sid in (NEW_TRAIN, NEW_DEV))
-    assert "nohup nice -n 10" in s["launch.ps1"]
+    assert "nohup nice -n 10" in s["launch.ps1"] and "ErrorActionPreference = 'Stop'" not in s["launch.ps1"]
 
 
 def test_commands_refuse_a_broken_dev_rule_and_a_validation_recording(tmp_path):
