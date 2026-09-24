@@ -352,20 +352,39 @@ def test_a_frame_store_refuses_a_tampered_array(tmp_path):
         FR.FrameStore(tmp_path / "frames" / "z", verify=True)
 
 
-def test_run_fit_end_to_end_commits_the_closure_it_checks_and_writes_a_report(tmp_path, monkeypatch):
-    """Review C1: every module a run imports is in the closure require_committed sees before anything is read, the
-    closure is unchanged after the fit, and the run writes its checkpoint and report (full-scale config, smoke)."""
+FRESH_FIT = """
+import json, sys
+sys.path.insert(0, sys.argv[1])
+assert "agent.human_intake" not in sys.modules and "policy.idm_targets" not in sys.modules
+from policy.idm import train as TR
+checked = []
+TR.require_committed = lambda files: checked.append(list(files))
+rc = TR.main(sys.argv[3:])
+json.dump({"rc": rc, "checked": checked}, open(sys.argv[2], "w"))
+"""
+
+
+def test_run_fit_end_to_end_commits_the_closure_it_checks_and_writes_a_report(tmp_path):
+    """Review C1, import-order-proof: run_fit runs in a FRESH interpreter, where nothing but policy.idm.train has been
+    imported, so a module imported lazily after the first closure would change the closure and fail the run. Every
+    module the run imports is in the closure require_committed sees before anything is read, the closure is unchanged
+    after the fit, and the run writes its checkpoint and report (full-scale config, smoke)."""
+    import subprocess
     full = M.Config()
     train_t, train_store, train_path = session(tmp_path, "tr", n=80, config=full, jump_p=0.7)
     _, _, held_path = session(tmp_path, "he", n=40, split="val", seed=5, config=full, jump_p=0.7)
-    checked = []
-    monkeypatch.setattr(TR, "require_committed", lambda files: checked.append(list(files)))
-    out = tmp_path / "run"
-    assert TR.main(["fit", "--train", str(train_path), "--heldout", str(held_path), "--frames-root",
-                    str(tmp_path / "frames"), "--out", str(out), "--epochs", "1", "--scope", "smoke",
-                    "--max-examples", "16"]) == 0
-    assert len(checked) == 1 and {"agent/human_intake.py", "agent/human_demos.py", "policy/idm_targets.py",
-                                  "policy/idm/train.py", "policy/idm/frames.py"} <= set(checked[0])
+    out, result = tmp_path / "run", tmp_path / "result.json"
+    proc = subprocess.run([sys.executable, "-c", FRESH_FIT, str(ROOT), str(result), "fit", "--train", str(train_path),
+                           "--heldout", str(held_path), "--frames-root", str(tmp_path / "frames"), "--out", str(out),
+                           "--epochs", "1", "--scope", "smoke", "--max-examples", "16"],
+                          capture_output=True, text=True, timeout=600)
+    assert proc.returncode == 0, proc.stderr[-3000:]
+    ran = json.loads(result.read_text(encoding="utf-8"))
+    checked = ran["checked"]
+    assert ran["rc"] == 0 and len(checked) == 1
+    assert {"agent/human_intake.py", "agent/human_demos.py", "policy/idm_targets.py", "policy/idm/train.py",
+            "policy/idm/frames.py"} <= set(checked[0])
+    assert not any(f.startswith("tests/") for f in checked[0])          # a real run's closure, not pytest's
     report = json.loads((out / "report.json").read_text(encoding="utf-8"))
     assert list(report["code_closure"]) == checked[0]                   # the closure checked is the one recorded
     assert report["train_statistics"]["examples"] == 16 and report["supported"]["jump"]

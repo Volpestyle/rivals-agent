@@ -845,6 +845,17 @@ synthetic FFV1 fixture):
   - `Examples` refuses a store whose size differs from the config's.
   - `--max-examples` is allowed for `--scope smoke` only.
 
+**2026-09-23: decoder re-check follow-ups** (`review-idm-model-3.md`; the decoder landed in `057a843`):
+- **The denylist:** the store CLI refuses any sealed denylist path or pin but the pinned default, and the manifest
+  records the denylist used.
+- **The demo** is read once, and parsed only after its bytes match the targets' pin. The step table is pin-checked
+  before it is parsed, and again after.
+- **The video's** size and mtime must not change between hashing and the end of the decode.
+- **The e2e `run_fit` test runs in a fresh interpreter.** Negative control: with the module-level `agent` import
+  removed it fails with "the code closure changed during the fit".
+- **The HUD identity with range_bc's cache** is now also tested on textured frames (`testsrc2`), which a crop offset
+  would break.
+
 ## Measurements owed
 
 - **The 7 large live zeros (a) still keeps:** parallax during combined movement and turning.

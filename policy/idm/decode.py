@@ -98,11 +98,14 @@ def needed_frames(targets, n_frames):
     return sorted(o for o in need if 0 <= o < n_frames)
 
 
-def read_demo_frames(path):
-    """(timebase [num, den], [pts per decoded ordinal], demo header) from an imported demo's decoded table."""
-    with Path(path).open(encoding="utf-8") as fh:
-        header = json.loads(fh.readline())
-        payload = json.loads(fh.readline())
+def read_demo_frames(path, sha256_pin):
+    """(timebase [num, den], [pts per decoded ordinal], demo header) from an imported demo's decoded table. The file is
+    read once, and its bytes are parsed only after they hash to the targets' pin (a wrong demo, sealed or not, is
+    refused unparsed)."""
+    data = Path(path).read_bytes()
+    require(hashlib.sha256(data).hexdigest() == sha256_pin, "imported demo differs from the one the targets pin")
+    first, rest = data.split(b"\n", 1)
+    header, payload = json.loads(first), json.loads(rest.split(b"\n", 1)[0])
     decoded = payload["decoded"]
     pts = decoded["pts"]
     require(isinstance(pts, list) and pts and all(isinstance(p, int) for p in pts), "demo has no decoded pts")
@@ -110,12 +113,11 @@ def read_demo_frames(path):
     return [int(decoded["timebase_num"]), int(decoded["timebase_den"])], pts, header
 
 
-def check_inputs(targets, targets_sha, session, steps_path, demo_path, demo_header, denylist):
-    """Every input names the same recording and the targets' pins hold; sealed refused."""
-    h, src = targets.header, targets.header["source"]
+def check_inputs(targets, session, demo_header, denylist):
+    """Every input names the same recording (the pins were checked before each was parsed); sealed refused."""
+    h = targets.header
     T.refuse_sealed(targets.session_id, h["media_sha256"], denylist)
-    require(T.sha256(steps_path) == src["steps"]["sha256"], "step table differs from the one the targets pin")
-    require(T.sha256(demo_path) == src["imported_demo"]["sha256"], "imported demo differs from the one the targets pin")
+    T.refuse_sealed(demo_header.get("session_id") or targets.session_id, demo_header.get("media_sha256"), denylist)
     require(session.session_id == targets.session_id and session.header["media_sha256"] == h["media_sha256"],
             "step table is another recording")
     require(demo_header.get("media_sha256") == h["media_sha256"], "imported demo is another recording")
@@ -123,7 +125,6 @@ def check_inputs(targets, targets_sha, session, steps_path, demo_path, demo_head
             "120 fps")
     require(session.header.get("hud_layout") == "mk", "the HUD crop regions are the M&K layout's")
     require(not steps.is_replay(session.header), "a replay source is not an admitted session")
-    return targets_sha
 
 
 def _decode(path, ordinals, sink, ffmpeg, threads):
@@ -169,9 +170,12 @@ def prepare(targets_path, steps_path, demo_path, *, denylist=None):
     targets_sha = T.sha256(targets_path)
     targets = T.load(targets_path, denylist=denylist)                  # sealed id / media and test refused here
     require(T.sha256(targets_path) == targets_sha, f"{targets_path} changed while it was loaded")
-    session = steps.load(steps_path, denylist=denylist)
-    timebase, demo_pts, demo_header = read_demo_frames(demo_path)
-    check_inputs(targets, targets_sha, session, steps_path, demo_path, demo_header, denylist)
+    src = targets.header["source"]
+    require(T.sha256(steps_path) == src["steps"]["sha256"], "step table differs from the one the targets pin")
+    session = steps.load(steps_path, denylist=denylist)                  # pinned before it is parsed
+    require(session.sha256 == src["steps"]["sha256"], "step table changed while it was loaded")
+    timebase, demo_pts, demo_header = read_demo_frames(demo_path, src["imported_demo"]["sha256"])
+    check_inputs(targets, session, demo_header, denylist)
 
     videos = {r["frame"]["video_path"] for r in session.rows}
     require(len(videos) == 1, "one recording is one video: its media_sha256 names one file")
@@ -192,8 +196,9 @@ def prepare(targets_path, steps_path, demo_path, *, denylist=None):
 
 
 def build(targets_path, steps_path, demo_path, out_dir, *, video_root=None, ffmpeg="ffmpeg", ffprobe="ffprobe",
-          any_platform=False, relocation=None, denylist=None, threads=4):
-    """Decode one session's store into out_dir (created; must not exist). Returns the manifest."""
+          any_platform=False, relocation=None, denylist=None, threads=4, denylist_source=None):
+    """Decode one session's store into out_dir (created; must not exist). Returns the manifest. denylist_source:
+    {path, sha256_pin} recorded in the manifest (the CLI's pinned default)."""
     require(any_platform or (platform.system() == "Darwin" and platform.machine() == "arm64"),
             "frame stores are built on the Mac only (swscale output can differ between CPU architectures)")
     targets, targets_sha, session, timebase, demo_pts, video, ordinals = prepare(targets_path, steps_path, demo_path,
@@ -207,6 +212,7 @@ def build(targets_path, steps_path, demo_path, out_dir, *, video_root=None, ffmp
         cache.check_colour(colour)
     except cache.CacheError as e:
         raise DecodeError(str(e)) from None
+    before = path.stat()
     media = cache.file_sha256(path)
     try:
         media_kind = cache.check_media(path, session, relocation)
@@ -225,6 +231,9 @@ def build(targets_path, steps_path, demo_path, out_dir, *, video_root=None, ffmp
             hd.write(c)
             hashes["hud"].update(c)
         shown, stream_tb = _decode(path, ordinals, sink, ffmpeg, threads)
+    after = path.stat()
+    require((after.st_size, after.st_mtime_ns) == (before.st_size, before.st_mtime_ns),
+            f"{path} changed while it was hashed and decoded")
     require(stream_tb == timebase, f"{path}: stream timebase {stream_tb} differs from the demo's {timebase}")
     for ordinal, pts in zip(ordinals, shown):
         require(pts == demo_pts[ordinal], f"{path}: ordinal {ordinal} has pts {pts}, the demo's table says "
@@ -242,6 +251,9 @@ def build(targets_path, steps_path, demo_path, out_dir, *, video_root=None, ffmp
                            "media_relocation": None if relocation is None else {
                                k: relocation[k] for k in ("identity_sha256", "transcoded_sha256", "transcoded_path",
                                                           "receipt")},
+                           "sealed_denylist": denylist_source or {"path": steps.DENYLIST,
+                                                                  "sha256_pin": steps.DENYLIST_SHA256,
+                                                                  "passed_in": denylist is not None},
                            "ffmpeg": cache.ffmpeg_version(ffmpeg),
                            "platform": f"{platform.system()} {platform.machine()}"}}
     with (out / "frames.json").open("x", encoding="utf-8") as fh:
@@ -309,10 +321,15 @@ def main(argv=None):
     p.add_argument("--media-relocation", help="the session's media-relocation.json when its original was transcoded")
     p.add_argument("--media-relocation-sha256", help="its pinned sha256 (required with --media-relocation)")
     a = p.parse_args(argv)
+    default = (Path(a.sealed_denylist).resolve() == (ROOT / steps.DENYLIST).resolve()
+               and a.sealed_denylist_sha256 == steps.DENYLIST_SHA256)
+    require(default, "the store is built with the pinned default sealed denylist only (review: a store's pixels are "
+            "decoded to disk before any later check could refuse them)")
     denylist = T.load_denylist(a.sealed_denylist, a.sealed_denylist_sha256)
     relocation = cache.load_relocation(a.media_relocation, a.media_relocation_sha256) if a.media_relocation else None
     m = build(a.targets, a.steps, a.imported_demo, a.out, video_root=a.video_root, ffmpeg=a.ffmpeg,
-              ffprobe=a.ffprobe, relocation=relocation, denylist=denylist, threads=a.threads)
+              ffprobe=a.ffprobe, relocation=relocation, denylist=denylist, threads=a.threads,
+              denylist_source={"path": steps.DENYLIST, "sha256_pin": steps.DENYLIST_SHA256, "passed_in": False})
     print(json.dumps({"session_id": m["session_id"], "frames": len(m["frame_indices"]),
                       "frames_sha256": m["frames_sha256"], "hud_sha256": m["hud_sha256"],
                       "ffmpeg": m["decode"]["ffmpeg"]}))

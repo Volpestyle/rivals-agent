@@ -30,11 +30,15 @@ N, DT = vocab.N, 16_666_667
 FRAMES, ROWS = 160, 60
 
 
-def recording(tmp_path, *, pts_shift=None, media=None, sid="c"):
+def recording(tmp_path, *, pts_shift=None, media=None, sid="c", textured=False):
     """(targets path, steps path, demo path, video, pts): one synthetic recording's three pinned inputs.
     pts_shift: a frame whose pts the demo's table puts one tick off."""
     video = tmp_path / "v.mkv"
-    if not video.exists():
+    if not video.exists() and textured:                                 # texture everywhere, the HUD regions included
+        import subprocess
+        subprocess.run(["ffmpeg", "-v", "error", "-nostdin", "-f", "lavfi", "-i", "testsrc2=s=640x360:r=120",
+                        "-frames:v", str(FRAMES), "-c:v", "ffv1", "-pix_fmt", "bgr0", str(video)], check=True)
+    elif not video.exists():
         fixture.write_video(video, FRAMES)
     tb, pts = fixture.probe_pts(video)
     media = media or cache.file_sha256(video)
@@ -72,7 +76,8 @@ def recording(tmp_path, *, pts_shift=None, media=None, sid="c"):
 
 
 def build(tmp_path, out="store", **kw):
-    targets, steps_path, demo, _, _ = recording(tmp_path, **{k: kw.pop(k) for k in ("pts_shift", "media") if k in kw})
+    targets, steps_path, demo, _, _ = recording(tmp_path, **{k: kw.pop(k) for k in ("pts_shift", "media", "textured")
+                                                              if k in kw})
     return D.build(targets, steps_path, demo, tmp_path / out, any_platform=True, **kw), targets
 
 
@@ -100,8 +105,11 @@ def test_the_store_holds_every_window_frame_with_its_pts_and_pixels(tmp_path):
     assert motion.shape == (1, 16, 252, 448) and hud.shape == (1, 6, 80, 200)
 
 
-def test_the_hud_crop_is_byte_identical_to_the_range_caches(tmp_path):
-    m, _ = build(tmp_path)
+@pytest.mark.parametrize("textured", [False, True])
+def test_the_hud_crop_is_byte_identical_to_the_range_caches(tmp_path, textured):
+    """Solid frames check the plumbing; textured frames (the HUD regions full of detail) check the crop geometry,
+    since any offset or scale phase changes the bytes there."""
+    m, _ = build(tmp_path, textured=textured)
     session = steps.load(tmp_path / "c.jsonl")
     cm = cache.build(session, tmp_path / "cache", any_platform=True)
     _, _, hud, row_frame, _ = cache.open_cache(tmp_path / "cache", session)
@@ -146,7 +154,7 @@ def test_other_media_and_unpinned_inputs_are_refused(tmp_path):
     other.write_bytes(steps_path.read_bytes() + b"\n")
     with pytest.raises(D.DecodeError, match="step table differs"):
         D.build(targets, other, demo, tmp_path / "s2", any_platform=True)
-    demo.write_bytes(demo.read_bytes() + b"\n")
+    demo.write_bytes(b"not json at all\n{")                               # refused by its pin, never parsed
     with pytest.raises(D.DecodeError, match="imported demo differs"):
         D.build(targets, steps_path, demo, tmp_path / "s3", any_platform=True)
 
@@ -196,3 +204,28 @@ def test_the_cli_builds_and_inspect_writes_viewable_samples(tmp_path, monkeypatc
     assert (tmp_path / "look" / f"{picks[0]}-diff.png").exists()
     with pytest.raises(D.DecodeError, match="usage"):
         D.main([str(targets)])
+
+
+@pytest.mark.parametrize("args, message", [
+    (["--sealed-denylist", "other.json"], "pinned default sealed denylist only"),
+    (["--sealed-denylist-sha256", "0" * 64], "pinned default sealed denylist only")])
+def test_the_cli_refuses_any_denylist_but_the_pinned_default(tmp_path, monkeypatch, args, message):
+    targets, steps_path, demo, _, _ = recording(tmp_path)
+    monkeypatch.setattr(D, "build", lambda *a, **k: pytest.fail("built with a non-default denylist"))
+    with pytest.raises(D.DecodeError, match=message):
+        D.main(["build", str(targets), str(steps_path), str(demo), str(tmp_path / "s"), *args])
+
+
+def test_the_manifest_records_the_denylist_and_the_video_must_not_change(tmp_path, monkeypatch):
+    m, _ = build(tmp_path, "s1")
+    assert m["decode"]["sealed_denylist"]["sha256_pin"] == steps.DENYLIST_SHA256
+    real = D._decode
+
+    def touch_then_decode(path, *a, **k):
+        out = real(path, *a, **k)
+        Path(path).write_bytes(Path(path).read_bytes() + b"\0")        # the video changes during the decode
+        return out
+    monkeypatch.setattr(D, "_decode", touch_then_decode)
+    with pytest.raises(D.DecodeError, match="changed while it was hashed and decoded"):
+        D.build(tmp_path / "c.idm.jsonl", tmp_path / "c.jsonl", tmp_path / "imported-demo.jsonl", tmp_path / "s2",
+                any_platform=True)
