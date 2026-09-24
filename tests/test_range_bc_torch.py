@@ -6,6 +6,7 @@ from dataclasses import replace
 import hashlib
 import json
 import math
+import sys
 
 import pytest
 
@@ -49,6 +50,16 @@ def arrays(tmp_path, split="train", name="t", seed=0, lag=0):
     _, session = cohort(tmp_path, split, name, seed=seed)
     frames = cache.open_cache(tmp_path / "caches" / name, session, verify_hashes=True)
     return train.SessionArrays(session, frames, lag=lag)
+
+
+@pytest.fixture
+def no_live_io_modules(monkeypatch):
+    """The verifier's no_live_io check (policy/range_bc/verify.py) fails when vgamepad, dxcam or agent.loop is in
+    sys.modules, which is right for a verifier process. In a whole-repo run earlier test files (tests/test_loop.py)
+    import agent.loop first, so the verifier tests hide those entries for their own duration; monkeypatch restores
+    them afterwards. The names are the guard's."""
+    for name in ("vgamepad", "dxcam", "agent.loop"):
+        monkeypatch.delitem(sys.modules, name, raising=False)
 
 
 def zeros(t=2):
@@ -386,6 +397,7 @@ def _fit(tmp_path, extra=(), pitch_gain=fixture.CALIBRATION["pitch_deg_per_count
     return out, paths
 
 
+@pytest.mark.usefixtures("no_live_io_modules")
 def test_the_cpu_reference_verifies_and_every_tamper_fails(tmp_path):
     from policy.range_bc import verify
     import shutil
@@ -426,6 +438,7 @@ def test_the_cpu_reference_verifies_and_every_tamper_fails(tmp_path):
         verify.verify(out, "val", [other], tmp_path / "caches", denylist=deny, report_sha256=rs)
 
 
+@pytest.mark.usefixtures("no_live_io_modules")
 def test_the_verifier_cli_writes_its_report_once(tmp_path):
     from policy.range_bc import verify
     out, paths = _fit(tmp_path)
@@ -455,6 +468,7 @@ def test_the_candidate_rule_needs_p2prime_and_the_validation_margin():
     assert train.choose_candidate(ok, {})[0] == "model_nohud"                                     # no validation
 
 
+@pytest.mark.usefixtures("no_live_io_modules")
 def test_a_failed_parity_makes_the_no_hud_arm_the_candidate_with_stride_and_unknown_pitch(tmp_path):
     from policy.range_bc import verify
     parity = tmp_path / "parity.json"
