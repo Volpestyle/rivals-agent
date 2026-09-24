@@ -29,6 +29,7 @@ above the calibrated band; the edge head has no usable skill (only jump fires). 
 | `*idm-loso.md` | `056624745f88dc10d129b2224802525c93d514ca18177fca7f793fd6c8e74a53` |
 | `idm-yaw-test.md` (the pre-registered yaw falsification test: plain loss learns yaw on 1 of 3 seeds; beta-NLL 0.5 on the failing seed learns, branch idm/yaw-test-20260924 @ 4e7f005) | `5304ad9280d20ddabb90ca4d223eac83e9d952b06834babdbf4e09f47fd07a99` |
 | `idm-thresholds.md` (rate-matched per-action thresholds, pre-registered in idm-diag.md: jump has signal in 4 of 4 folds, every other action none or undecided) | `a2d6d59eb5faeebaeda8f7a30b27d30135bcb1119e4044ab8e2c24c012211304` |
+| `idm-yaw-test-2.md` (beta-NLL at seeds 1 and 2: yaw learned on 3 of 3 seeds against 1 of 3 for the plain loss; beta-NLL is the candidate camera loss, pending review) | `5891b95c1167267366372a63baac7cbe5844fe739752e1819e5cf736b45d7539` |
 | `idm-diag.md` | `af4d2aaa91e5296ea46019706c5b3b4d178e9fbb436c3675b283f46fa76f60bf` |
 
 Checkpoints (`idm-seed0.pt`, hashes in `idm-loso.md`), logs and `.exit` files stay in gitignored `data/idm/runs/`

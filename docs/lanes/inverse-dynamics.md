@@ -957,6 +957,27 @@ four seed-0 fits learned yaw), and T learns.
 - **Budget:** two fits of about 21 min each, and four predict passes, in one niced queue after part C's inference
   frees the Mac.
 
+**Result (measured 2026-09-24, after both pre-registrations).** Raw-μ yaw direction agreement on moving rows, held
+out (051828) / in-sample (171533). All runs are 3 epochs on the same fold.
+
+| Run | Loss | Seed | Held out | In-sample | Learned | Yaw \|μ\|/\|true\| (held out) | Pitch agreement (held out / in-sample) |
+|---|---|---|---|---|---|---|---|
+| `loso-051828` | plain | 0 | 0.523 | 0.442 | no | 0.064 | 0.836 / 0.829 |
+| C1 | plain | 1 | 0.567 | 0.569 | no | 0.050 | 0.829 / 0.870 |
+| C2 | plain | 2 | 0.920 | 0.954 | yes | 0.658 | 0.823 / 0.807 |
+| T | β-NLL 0.5 | 0 | 0.976 | 0.988 | yes | 0.811 | 0.814 / 0.846 |
+| T1 | β-NLL 0.5 | 1 | 0.946 | 0.968 | yes | 0.900 | 0.783 / 0.779 |
+| T2 | β-NLL 0.5 | 2 | 0.973 | 0.991 | yes | 0.878 | 0.798 / 0.778 |
+
+- **The plain loss learns yaw on 1 of 3 seeds; β-NLL on 3 of 3.** By the addendum's fixed reading, β-NLL is the
+  candidate camera loss: to fit-review, landed behind the flag, default off until Gate 1 is re-run.
+- **The failing plain seeds show the diagnosed signature:** yaw means about 5 % of the truth, and the motion carried
+  in the variance.
+- **β-NLL's yaw means are near full scale** (ratio 0.81–0.90 held out).
+- **Reported, not judged:** β-NLL's pitch agreement is 0.78–0.85, against the plain loss's 0.81–0.87. Two of three
+  β-NLL seeds are lowest on in-sample pitch (about 0.78). Fit-review should weigh this before β-NLL is relied on.
+- Evidence: `idm-yaw-test.md` (landed in `de69898`) and `idm-yaw-test-2.md`.
+
 ## Measurements owed
 
 - **The 7 large live zeros (a) still keeps:** parallax during combined movement and turning.
