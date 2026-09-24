@@ -188,6 +188,30 @@ def test_extrapolated_targets_weigh_less_in_the_camera_loss(tmp_path):
     assert wide < tight
 
 
+def test_beta_nll_is_off_by_default_and_rescales_only_the_gradient_weight(tmp_path):
+    """The yaw falsification test's treatment: None is today's Gaussian NLL exactly; beta = 0.5 weights each element's
+    NLL by stop-gradient(var ** beta), so d/d mu = var ** (beta - 1) (mu - y) and no gradient flows through the weight."""
+    y, mask, sigma = torch.tensor([[3.0, -1.0]]), torch.tensor([[True, True]]), torch.tensor([[0.2, 0.1]])
+    none = torch.zeros(1, N, dtype=torch.bool)
+
+    def grads(**kw):
+        out = torch.tensor([[0.5, 0.25, 1.2, -0.4]], requires_grad=True)
+        loss = TR.loss_terms(torch.zeros(1, N), out, torch.zeros(1, N), none, y, mask, sigma, torch.ones(N), **kw)
+        loss["camera"].backward()
+        return loss["camera"].detach(), out.grad.clone()
+
+    (l0, g0), (l1, g1) = grads(), grads(camera_beta=None)
+    assert torch.equal(l0, l1) and torch.equal(g0, g1)                   # the default is today's loss, bit for bit
+    _, gb = grads(camera_beta=0.5)
+    var = torch.tensor([[1.2, -0.4]]).exp() + sigma ** 2
+    mu = torch.tensor([[0.5, 0.25]])
+    assert torch.allclose(gb[:, :2], var ** (0.5 - 1) * (mu - y) / 2, rtol=1e-5)       # the mean (mean over 2 elements)
+    assert torch.allclose(gb[:, 2:], var ** 0.5 * g0[:, 2:], rtol=1e-5)               # log-variance: weighted only
+    ex, _, _ = examples(tmp_path)
+    with pytest.raises(TR.FitError, match="camera_beta"):
+        TR.fit(ex, TINY, TR.train_statistics(ex), epochs=1, camera_beta=1.5)
+
+
 def test_training_is_byte_reproducible_on_cpu_and_learns(tmp_path):
     t, store, path = session(tmp_path, "a")
     ex = TR.Examples([(t, store)], TINY, SUPPORTED)
