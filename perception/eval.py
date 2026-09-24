@@ -12,15 +12,18 @@ from pathlib import Path
 
 import cv2
 
-from autolabel import contact_sheet
+from autolabel import contact_sheet, sheet_path
 from detect import Detector, pick_device
+
+
+EVAL_SHEET = "data/l3/eval-sheet.jpg"   # gitignored; the committed sheets under docs/evidence/l3/ are a record
 
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("weights")
     ap.add_argument("dataset", type=Path)
-    ap.add_argument("--sheet", type=Path, default=Path("docs/evidence/l3/eval-sheet.jpg"))
+    ap.add_argument("--sheet", type=sheet_path, default=EVAL_SHEET)
     ap.add_argument("--imgsz", type=int, default=1280)
     ap.add_argument("--sheet-n", type=int, default=12)
     a = ap.parse_args()
