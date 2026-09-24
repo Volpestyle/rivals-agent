@@ -2389,3 +2389,7 @@ are all box placement, not the marker reader: the enemy box drifted and the
 search band went with it. The large web-splat VFX scores 0.45–0.53 against the
 tracer template, below the 0.60 match threshold, so it yields `None` or
 `False` — never a false `True`.
+
+## 2026-09-23: camera_motion coverage changed under it (lead note)
+
+The l2 probe tables in this lane were produced at `2920ceb`. `perception/camera_motion.py` landed a per-pair abstain rule on 2026-09-23 (VUH-1353, `docs/lanes/inverse-dynamics.md`, `docs/evidence/idm-camera-m1-20260923/`): zero-flow pairs are now withheld unless the frame centre itself confirms stillness, so re-running the probe on the working tree yields lower coverage in the still and attack strata (baseline1 -0.50 pts, baseline3 -0.25 pts on the audited still set; most withheld zeros were real camera motion that HEAD had reported as 0). The numbers above stand as measured at `2920ceb`; a re-run must cite the new commit.

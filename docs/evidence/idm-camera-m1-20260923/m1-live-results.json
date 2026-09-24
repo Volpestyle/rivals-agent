@@ -1,0 +1,170 @@
+{
+ "stopped": null,
+ "windows": {
+  "live_39": {
+   "verdict": {
+    "valid": true,
+    "zero_flow_frac": 0.011,
+    "unconfirmed_zero_frac": 0.011,
+    "fitted": 358,
+    "pairs": 359,
+    "reason": null
+   },
+   "fresh_frac": 0.989,
+   "pair_abstain": 4,
+   "fitted": 354,
+   "rate_dps_p50_p95": [
+    93.5,
+    573.7
+   ],
+   "mouse_lag_frames": 5,
+   "mouse_corr": 0.878,
+   "b3_on_live": {
+    "centre_pairs": 0
+   },
+   "rule_on_live": {
+    "moved_pairs": 205,
+    "moved_zero_flow": 3,
+    "moved_zero_flow_withheld": 3,
+    "still_pairs": 71,
+    "still_reported": 71,
+    "still_withheld": 0,
+    "still_withheld_reasons": {},
+    "still_zero_flow_kept": 0
+   }
+  },
+  "live_117": {
+   "verdict": {
+    "valid": true,
+    "zero_flow_frac": 0.017,
+    "unconfirmed_zero_frac": 0.011,
+    "fitted": 356,
+    "pairs": 359,
+    "reason": null
+   },
+   "fresh_frac": 0.989,
+   "pair_abstain": 4,
+   "fitted": 352,
+   "rate_dps_p50_p95": [
+    81.7,
+    565.1
+   ],
+   "mouse_lag_frames": 1,
+   "mouse_corr": 0.849,
+   "b3_on_live": {
+    "centre_pairs": 0
+   },
+   "rule_on_live": {
+    "moved_pairs": 174,
+    "moved_zero_flow": 1,
+    "moved_zero_flow_withheld": 1,
+    "still_pairs": 34,
+    "still_reported": 33,
+    "still_withheld": 1,
+    "still_withheld_reasons": {
+     "repeated frame": 1
+    },
+    "still_zero_flow_kept": 1
+   }
+  },
+  "live_245": {
+   "verdict": {
+    "valid": true,
+    "zero_flow_frac": 0.204,
+    "unconfirmed_zero_frac": 0.098,
+    "fitted": 358,
+    "pairs": 359,
+    "reason": null
+   },
+   "fresh_frac": 0.989,
+   "pair_abstain": 35,
+   "fitted": 323,
+   "rate_dps_p50_p95": [
+    41.6,
+    371.9
+   ],
+   "mouse_lag_frames": 2,
+   "mouse_corr": 0.822,
+   "b3_on_live": {
+    "centre_pairs": 9,
+    "gain_deg_per_count": 0.02887,
+    "median_abs_err_deg": 0.529,
+    "sign_agree": 0.778,
+    "median_abs_pred_deg": 1.27,
+    "corr": 0.798
+   },
+   "rule_on_live": {
+    "moved_pairs": 180,
+    "moved_zero_flow": 33,
+    "moved_zero_flow_withheld": 23,
+    "still_pairs": 37,
+    "still_reported": 36,
+    "still_withheld": 1,
+    "still_withheld_reasons": {
+     "zero flow on border features only": 1
+    },
+    "still_zero_flow_kept": 2
+   }
+  },
+  "live_347": {
+   "verdict": {
+    "valid": true,
+    "zero_flow_frac": 0.416,
+    "unconfirmed_zero_frac": 0.14,
+    "fitted": 358,
+    "pairs": 359,
+    "reason": null
+   },
+   "fresh_frac": 0.989,
+   "pair_abstain": 50,
+   "fitted": 308,
+   "rate_dps_p50_p95": [
+    47.9,
+    460.7
+   ],
+   "mouse_lag_frames": 3,
+   "mouse_corr": 0.806,
+   "b3_on_live": {
+    "centre_pairs": 15,
+    "gain_deg_per_count": 0.02335,
+    "median_abs_err_deg": 0.505,
+    "sign_agree": 0.933,
+    "median_abs_pred_deg": 1.121,
+    "corr": 0.623
+   },
+   "rule_on_live": {
+    "moved_pairs": 163,
+    "moved_zero_flow": 50,
+    "moved_zero_flow_withheld": 27,
+    "still_pairs": 134,
+    "still_reported": 113,
+    "still_withheld": 21,
+    "still_withheld_reasons": {
+     "zero flow contradicted by the centre's own matches": 18,
+     "zero flow contradicted by a world rotation among the centre outliers": 1,
+     "repeated frame": 1
+    },
+    "still_zero_flow_kept": 43
+   }
+  }
+ },
+ "m2": {
+  "live_pairs": 274,
+  "replay_pairs": 0,
+  "gate": {
+   "known": 465.0,
+   "live": {
+    "focal": 515.0,
+    "basin": [
+     427.5,
+     640.0
+    ],
+    "basin_frac": 0.413,
+    "pairs": 274
+   },
+   "passed": false,
+   "reason": "live fit 515.0 px misses the calibrated 465.0 px"
+  },
+  "replay": null
+ }
+}

@@ -1,0 +1,164 @@
+{
+ "run": "baseline3",
+ "stratum_n": 789,
+ "withheld": 9,
+ "sample_seed": 7,
+ "pairs": [
+  {
+   "k": 853,
+   "reason": "zero flow contradicted by the centre's own matches",
+   "frames": [
+    [
+     "000853.jpg",
+     "8503ebd4cd6999052040a99002d2128d3e3aa80291e8753e17c9708572f5ff33"
+    ],
+    [
+     "000854.jpg",
+     "71f0ec984d95283df5e9378d372be8283ec42dc7a5a5f8176a155ef498165ad9"
+    ]
+   ],
+   "label": "still",
+   "label_source": "carried from the option (i) audit"
+  },
+  {
+   "k": 1207,
+   "reason": "zero flow contradicted by the centre's own matches",
+   "frames": [
+    [
+     "001207.jpg",
+     "333d9211a1bf0221f74befa115c4954f5808a55a44abdec9865df672fb84a084"
+    ],
+    [
+     "001208.jpg",
+     "5d1d91bfdf13ae7d360abb82c7cdb642435afc945876193925de936ccf8fb870"
+    ]
+   ],
+   "label": "moved",
+   "label_source": "carried from the option (i) audit"
+  },
+  {
+   "k": 1209,
+   "reason": "zero flow contradicted by the centre's own matches",
+   "frames": [
+    [
+     "001209.jpg",
+     "2010977357b85c3bca82abeaf4ea15bd5098189642760eee9291fcb3538cdf5b"
+    ],
+    [
+     "001210.jpg",
+     "e8712c811d542ac9c0db3574be4230e45541cef03fbb67815cff586df633226d"
+    ]
+   ],
+   "label": "moved",
+   "label_source": "carried from the option (i) audit"
+  },
+  {
+   "k": 1210,
+   "reason": "zero flow contradicted by the centre's own matches",
+   "frames": [
+    [
+     "001210.jpg",
+     "e8712c811d542ac9c0db3574be4230e45541cef03fbb67815cff586df633226d"
+    ],
+    [
+     "001211.jpg",
+     "16f8a18af03e4a3f69f7bc232433c46bdd3791c352970f646895710eccf7d2a8"
+    ]
+   ],
+   "label": "moved",
+   "label_source": "carried from the option (i) audit"
+  },
+  {
+   "k": 1212,
+   "reason": "zero flow contradicted by the centre's own matches",
+   "frames": [
+    [
+     "001212.jpg",
+     "bf83fd026b2ad72c075f5c70121bfec51a10e12b8ed8a3253a6e88cac0539fd7"
+    ],
+    [
+     "001213.jpg",
+     "67fbb29a8fd66115f7f9a3ea4c5728209702dbce04e561b34091c730d91491e5"
+    ]
+   ],
+   "label": "moved",
+   "label_source": "carried from the option (i) audit"
+  },
+  {
+   "k": 1521,
+   "reason": "zero flow contradicted by the centre's own matches",
+   "frames": [
+    [
+     "001521.jpg",
+     "43dfc8066b84d54160b5e8fe3167a5d803372b1d2ed60a5a3d96e28fb3bc11d8"
+    ],
+    [
+     "001522.jpg",
+     "cdbf223b0780360cf8e57044c19a2bad06863db555a856d88c0bf61b1fb2abb5"
+    ]
+   ],
+   "label": "moved",
+   "label_source": "carried from the option (i) audit"
+  },
+  {
+   "k": 1522,
+   "reason": "zero flow contradicted by the centre's own matches",
+   "frames": [
+    [
+     "001522.jpg",
+     "cdbf223b0780360cf8e57044c19a2bad06863db555a856d88c0bf61b1fb2abb5"
+    ],
+    [
+     "001523.jpg",
+     "bf67f7b1b347bb7eea7af69a36081e19dbf47aaf90e8b506166006ef6bddb739"
+    ]
+   ],
+   "label": "moved",
+   "label_source": "carried from the option (i) audit"
+  },
+  {
+   "k": 1528,
+   "reason": "zero flow contradicted by the centre's own matches",
+   "frames": [
+    [
+     "001528.jpg",
+     "4af7e508c276e400e0c8ed5f0a52fda9afb119b2a196ba318db0f1d72eb96743"
+    ],
+    [
+     "001529.jpg",
+     "7085eb872875daae73d8b37efd769ddabdd2d652ddd06028a4c651c724c49175"
+    ]
+   ],
+   "label": "moved",
+   "label_source": "carried from the option (i) audit"
+  },
+  {
+   "k": 1915,
+   "reason": "zero flow contradicted by a world rotation among the centre outliers",
+   "frames": [
+    [
+     "001915.jpg",
+     "27e2e702b5017e97b2b5e7b231e8f7d1cc3eec15f1347932331a430dd79ef148"
+    ],
+    [
+     "001916.jpg",
+     "c0ece095d43f5cbd581ff18147109259fa29ef129bb0c843dbddf2c826b586b1"
+    ]
+   ],
+   "label": "still",
+   "label_source": "labelled on the option (a) bytes"
+  }
+ ],
+ "result": {
+  "labelled": 9,
+  "still": 2,
+  "moved": 7,
+  "unclear": 0,
+  "est_false_withholds": 2.0,
+  "est_points": 0.25,
+  "wilson95_upper_points": 0.62,
+  "bound_points": 2.0,
+  "passes": true,
+  "note": "the sample is the whole withheld population (withheld <= 20)"
+ }
+}
