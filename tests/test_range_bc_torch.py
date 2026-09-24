@@ -211,6 +211,22 @@ def test_checkpoint_round_trip_and_domain_refusal(tmp_path):
         train.save_checkpoint(tmp_path / "m.pt", model, {})
 
 
+@pytest.mark.parametrize("flag", ["--train", "--dev", "--val"])
+def test_the_fit_cli_refuses_a_replay_split_table(tmp_path, flag):
+    """Replay rows are never train (lead decision 2026-09-23): --train, --dev and --val refuse a replay-split table
+    before any fitting, whatever else is supplied."""
+    header, rows = fixture.replay_session("rp", runs=(150,))
+    replay = fixture.write(tmp_path / "rp.jsonl", header, rows)
+    fake_cache(tmp_path / "caches" / "rp", steps.load(replay))
+    train_path, _ = cohort(tmp_path, "train", "t", seed=0)
+    args = {"--train": [str(train_path)], "--dev": [], "--val": []}
+    args[flag] = args[flag] + [str(replay)] if flag != "--train" else [str(replay)]
+    argv = [x for k, v in args.items() if v for x in (k, *v)]
+    with pytest.raises(steps.StepError, match="replay-split recording is never train, val or test"):
+        train.main(argv + ["--cache-root", str(tmp_path / "caches"), "--out", str(tmp_path / "o"), "--scope",
+                           "smoke", "--epochs", "1", "--batch", "4", "--model-config", json.dumps(TINY.as_dict())])
+
+
 def test_the_fit_cli_end_to_end(tmp_path):
     train_path, _ = cohort(tmp_path, "train", "t", seed=0)
     dev_path, _ = cohort(tmp_path, "train", "d", seed=2)

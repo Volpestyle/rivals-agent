@@ -144,7 +144,7 @@ REPLAY_HOLDS = ("spider_power", "web_swing", "jump")                       # the
 REPLAY_CASTS = ("get_over_here", "amazing_combo", "web_cluster")           # replay-hud cast events: onsets only
 
 
-def replay_header(session_id, *, split="train", sitting="replay-1", **extra):
+def replay_header(session_id, *, split="replay", sitting="replay-1", **extra):
     return {"format": steps.FORMAT, "source_kind": "replay", "session_id": session_id,
             "media_sha256": media_sha256(session_id), "session_group": session_id, "sitting": sitting,
             "split": split, "step_ns": STEP_NS, "frame_period_ns": PERIOD_NS, "actions": list(vocab.NAMES),
@@ -157,7 +157,7 @@ def replay_header(session_id, *, split="train", sitting="replay-1", **extra):
             "video_size": [2560, 1440], "patch": "synthetic-patch", **extra}
 
 
-def replay_session(session_id="replay-a", *, split="train", runs=(120, 60), seed=0, video_path="replay.mkv",
+def replay_session(session_id="replay-a", *, split="replay", runs=(120, 60), seed=0, video_path="replay.mkv",
                    unknown_movement_every=5, unknown_span=3, pitch_unknown=.1, edge_abstain=.1):
     """A synthetic replay recording: movement unknown for `unknown_span` rows every `unknown_movement_every` x span
     rows; hold heads for primary, swing and crawl; cast onsets (no release label) with abstentions; everything the

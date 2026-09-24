@@ -2,8 +2,8 @@
 
     uv run pytest tests/test_replay_camera.py
 
-A synthetic run over a synthetic replay table (stdlib). Needs scripts/replay_steps.py, whose fill_camera does the
-filling; skipped where it is not present.
+A synthetic run over a synthetic replay table. Needs scripts/replay_steps.py, whose fill_camera does the filling,
+and numpy (scripts/replay_camera.py imports perception.camera_motion); skipped where either is absent.
 """
 import copy
 import sys
@@ -16,6 +16,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 sys.path.insert(0, str(ROOT))
 if not (ROOT / "scripts" / "replay_steps.py").is_file():
     pytest.skip("scripts/replay_steps.py (the replay step table) is not in this checkout", allow_module_level=True)
+pytest.importorskip("numpy")  # scripts/replay_camera.py imports perception.camera_motion; the stdlib suite skips
 import replay_camera as C  # noqa: E402
 import replay_steps as S  # noqa: E402
 from policy.range_bc import vocab  # noqa: E402
