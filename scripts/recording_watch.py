@@ -1,17 +1,19 @@
-"""Prepare finished input-logger sessions for intake: hash the video, add a recording-log row, print the command.
+"""Prepare finished input-logger sessions for intake: hash the video, add a recording-log row, print the next steps.
 
   uv run python scripts/recording_watch.py                     # poll ~/Videos/RivalsInput every 60 s (the PC)
   uv run python scripts/recording_watch.py --once --dry-run    # one pass; print rows, write nothing
 
 A session is ready when its metadata.json says `complete: true` and the video it names has stopped changing.
 This script only prepares. It reads metadata.json and the video's bytes, and nothing else: never inputs.jsonl
-or frames.csv, never a decode, never a write under Videos/. It registers, splits, seals and imports nothing;
-that is the admission lane's (docs/human-demo-schema.md, docs/machines.md "Record on Windows, import on the
-Mac"). A take James calls a validation take is sealed there before anything reads its content.
+or frames.csv, never a decode, never a write under Videos/. It registers, splits, seals, reviews and imports
+nothing. It prints the admission lane's sequence for the session: register it in the split registry, run the
+whole-session intake steps, get the independent per-session review, then assemble
+(data/human/sessions/intake_session.py and assemble_session.py). A take James calls a validation take is
+sealed at registration, before anything reads its content.
 
 The row goes into the table in docs/recording-log.md. Content and Cooldowns are left for the lead to fill
 from what James says; the intake status column carries what the logger reported and the video's sha256 (the
-`expected_media_sha256` a Mac registry needs). A session whose id is already in the log is skipped, so
+media sha256 that intake's provenance step re-measures). A session whose id is already in the log is skipped, so
 re-runs and restarts are safe. The log edit is left uncommitted for the lead.
 """
 import argparse
@@ -24,8 +26,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 LOG = ROOT / "docs" / "recording-log.md"
 HEADER = "| Video (Videos/) | Logger session |"
-INTAKE = ('uv run python scripts/import_human_demo.py import --session "{session}" --review <review.json> '
-          '--splits <session-splits.json> --output <imported-demo.jsonl>')
+INTAKE_STEPS = ("provenance", "verify", "profile", "vote", "scan", "regime", "motor", "propose", "evidence")
 
 
 def sha256(path):
@@ -45,6 +46,19 @@ def settled(video, settle_s):
     except OSError:
         return False
     return (before.st_size, before.st_mtime_ns) == (after.st_size, after.st_mtime_ns)
+
+
+def next_steps(sid):
+    """The admission lane's sequence for one new session, as text to run by hand. Nothing here runs it."""
+    steps = "\n".join(f"       python intake_session.py {step} {sid} --scratch <DIR> --snapshot <code-snapshot-XXXXXXX>"
+                      for step in INTAKE_STEPS)
+    return (f"  next, by the admission lane (this script has registered, reviewed and imported nothing):\n"
+            f"    1. register {sid} in data/human/session-splits.corpus.json: its group, and the split from\n"
+            f"       agent.human_intake.assign_split, fixed before inspection. A validation take goes on\n"
+            f"       data/human/sealed-denylist.json first.\n"
+            f"    2. intake, in data/human/sessions/, one step at a time and in this order:\n{steps}\n"
+            f"    3. the independent per-session review of {sid}/segments-evidence.json: a verdict record\n"
+            f"    4. python assemble_session.py {sid} --independent-verdicts <PATH> --snapshot <code-snapshot-XXXXXXX>")
 
 
 def row(meta, video, digest):
@@ -102,9 +116,9 @@ def scan(root, settle_s, dry_run):
             log = insert(read_log(), line)
             with open(LOG, "w", encoding="utf-8", newline="") as handle:
                 handle.write(log)
-            print(f"{LOG.relative_to(ROOT)}: added {meta['session_id']}")
-        print(f"  recorded_video_path: {meta['video_path']}\n  expected_media_sha256: {digest}\n"
-              f"  when the admission lane has registered and reviewed it:\n    {INTAKE.format(session=meta_path.parent)}")
+            print(f"{LOG}: added {meta['session_id']}")
+        print(f"  recorded_video_path: {meta['video_path']}\n  media sha256: {digest}")
+        print(next_steps(meta["session_id"]))
 
 
 def main(argv=None):
