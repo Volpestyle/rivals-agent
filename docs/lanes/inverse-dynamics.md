@@ -552,6 +552,156 @@ tests: 50 passing plus 1 strict expected failure):
 - **Replay:** the 8 windows were not rerun for (a) (lead decision). Their results on the (i) bytes stand:
   `m1-replay-results-option-i.json`.
 
+**2026-09-23: the data step, as code** (no model yet):
+- **Replay camera labels:** `scripts/replay_camera.py`.
+  - It fills the replay step table's yaw and pitch from the estimator's replay run (`video --spectator-mask`) through
+    `scripts/replay_steps.py` `fill_camera`, unchanged.
+  - Default sources are "main" only; "centre" pairs are opt-in.
+  - Every row gets a `camera` note: the source where filled; where unknown, why (no pair, a gap, a withheld pair with
+    the estimator's own reason, a source not accepted).
+  - The header records the run and the estimator's sha256. The output is checked with the step-table contract and
+    written as a new file.
+  - Tests: `tests/test_replay_camera.py`, 6.
+  - **Not run on the capture yet:** the replay run over the whole capture is a decode.
+- **Human IDM targets:** `policy/idm_targets.py`, format `rivals-idm-targets-v1`, spec in the module docstring.
+  - Every admitted 30 Hz step row is split into two 60 Hz intervals, binned with the intake's own rules from the
+    session's imported demo. The halves must add up exactly to the admitted row (presses, releases, holds, mouse
+    counts), or the build refuses. The video is not opened.
+  - Camera degrees use the table's calibration: yaw 0.0330738°/count from the 360° take, pitch derived equal,
+    `accel_on` true. `beyond_pad_envelope` is flagged per interval, never clipped.
+  - The reader refuses a test split before any row, and checks masks, hold arithmetic and degrees.
+  - `supported_actions` applies F2 over train rows; `target()` makes unsupported actions unknown.
+  - Tests: `tests/test_idm_targets.py`, 10.
+- **Built for the four admitted sessions** (051828, 171533, 200129, 205528; all train), `data/idm/targets/`
+  (gitignored):
+  - **170,976 intervals, 170,032 usable** (accepted, gap-free, normal); every one of the 85,488 parent rows matched
+    exactly.
+  - Camera known on every usable interval. 8,999 are beyond the pad envelope (5.3 %).
+  - Training presses:
+
+    | Action | Presses |
+    |---|---|
+    | move_forward | 997 |
+    | move_left | 1,244 |
+    | move_back | 778 |
+    | move_right | 977 |
+    | jump | 2,186 |
+    | web_swing | 573 |
+    | get_over_here | 159 |
+    | amazing_combo | 368 |
+    | spider_power | 635 |
+    | web_cluster | 1,322 |
+    | goh_targeting | 51 |
+    | team_up | 168 |
+    | ultimate | 9 |
+    | melee | 23 |
+    | simple_swing | 16 |
+
+  - **Unsupported:** ultimate, melee and simple_swing by count (floor 50, pre-registered in the spec).
+  - **Lead decisions, 2026-09-23:**
+    - team_up is **supported**: 168 presses, and a visible range effect (the icon turns gold, hp 250 → 300, a 10 s
+      cooldown); the replay HUD reads 22 team-up events on DayMR. Its match-time effect differs.
+    - goh_targeting is **supported** by the floor: 51 train presses; the earlier declaration is dropped. melee (23)
+      stays unsupported.
+
+**2026-09-23: data review fixes** (`review-idm-data.md`: the join and the calibration confirmed):
+- **S1, sealed before any read.** `build()` loads the pinned denylist (`57cfe01f`) and refuses a denylisted id before
+  forming any path. It then reads only the step header line (media hash and split), and runs the intake's
+  `check_registry` (denylist first) before opening the demo. `load()` refuses a denylisted id or media. Tested with a
+  fake sealed folder: nothing under it is opened.
+- **S3, the acceleration caveat per row.** Each interval carries `mouse_rate_cps` and `gain_regime`: "calibrated" up to
+  1,400 counts/s (the top of the calibration turn's measured speeds), "extrapolated" above.
+  - `target()` gives a per-row camera sigma: half a count, plus 20 % of the degrees when extrapolated (the calibration
+    record's slow-to-fast drop, provisional until a fast-turn calibration). It also gives `degrees_kind` and
+    `pitch_derived`.
+  - Gate 1 reports camera error by regime and by speed band (≤ 1×, 1–4×, > 4× the turn's 915 counts/s).
+  - Over the four sessions, **40.1 % of usable intervals are extrapolated, carrying 90.2 % of all yaw counts**.
+- **S2:** `target()` refuses a non-usable row, and `training_rows()` gives the usable ones.
+- **S4:** tests pin `DECLARED_UNSUPPORTED == {}`, the floor of 50, and team_up and goh_targeting counting by presses.
+
+**2026-09-23: Gate 1 evaluation harness** (`policy/idm_eval.py`, no model; tests `tests/test_idm_eval.py`, 14):
+- **Inputs:** held-out target files and a predictor (per row: yaw, pitch, and a press probability per action; None =
+  abstain). Results per session and pooled.
+- **Camera, per axis:**
+  - error against the calibration truth: median, mean and p90, all and split moving (≥ 0.5°) / still;
+  - direction agreement on moving rows;
+  - summed error over 15- and 60-interval windows (0.25 s and 1 s);
+  - abstention rate and envelope share.
+- **Edges, per supported action:**
+  - one-to-one matching inside a run within ±2 intervals (the label-precision window);
+  - precision, recall, F1, onset error and abstention rate;
+  - held-out positives, and "decides" only at ≥ 30 (F7).
+- **Baselines:**
+  - zero;
+  - persistence. For camera it uses the previous interval's true rotation: a strong smoothness reference built from
+    labels, not a floor. For edges a persisting hold has no onset. Repeating the previous press would leak the label
+    through the ±2 window (F1 = 1), and a test pins that it does not.
+- **Plumbing run** (171533 as a stand-in held-out against the other three; it is train in the corpus, so this is not
+  a gate result). Yaw on moving intervals:
+  - zero: median error 1.22°, 1 s summed error 12.6°;
+  - persistence: 0.20°, 99.3 % direction agreement, 1 s summed error 0.36°.
+  - Edges: both baselines have F1 0. Five actions have ≥ 30 held-out positives there (move_left, move_back,
+    move_right, jump, web_cluster).
+
+**2026-09-23: the IDM model as code** (`policy/idm/`, no real training; tests `tests/test_idm_model.py`, 10,
+synthetic fixtures only):
+- **Frame store** (`frames.py`, "rivals-idm-frames-v1"): per session, grey frames at the motion width and the native
+  80×200 HUD crops, keyed by video frame index, as uint8 arrays with sha256s in a manifest (`verify=True` checks them).
+  Filling it from the video is a decode job and is not written yet.
+- **Model** (`model.py`, F3): the motion input is the 2W = 16 differences of the grey frames at the interval's end
+  frame ±8 intervals (±16 video frames), 448×252, through a small trainable conv (4 stride-2 layers, GroupNorm).
+  The native HUD crops at the start and end frames go through a second small conv that feeds the edge head only.
+  - **Heads:** a press-onset logit per action; camera yaw and pitch means in degrees, plus a log-variance each.
+  - About 420 k parameters. A width under 448 is refused unless the config is marked test-scale, and the fit CLI
+    refuses test-scale.
+- **Loss:** masked BCE on press onsets. The mask is `held_known` AND supported, so an unsupported action contributes
+  neither loss nor gradient (tested). Camera loss is a Gaussian NLL whose variance is the model's own plus the
+  target's sigma² (`idm_targets.camera_sigma`), so an extrapolated row weighs less. It trains on `training_rows` only.
+- **Trainer** (`train.py`), with range_bc's reproduction discipline:
+  - seeded `random` and torch, deterministic algorithms, the permutation `Random(seed*1000003+epoch)`, AdamW, clip 1;
+  - train files only; checkpoints written once;
+  - a byte-identical checkpoint test on CPU (same seed gives the same sha, another seed differs);
+  - a write-once canonical report carrying the target and frame-store shas, git commit and history, which refuses
+    `test_opened`.
+- **Abstention** (pre-registered here):
+  - unsupported actions are always None;
+  - a press probability inside (0.35, 0.65) is None;
+  - a camera axis whose **total** std exceeds its predicted regime's bound is None: 1° when calibrated, 3° when
+    extrapolated (see the review fixes below);
+  - a row lacking any frame of its window is fully abstained.
+- **Evaluation:** `gate1()` runs `idm_eval.evaluate` for the model, zero and persistence on the held-out files, which
+  includes the camera error by gain regime and speed band.
+
+**2026-09-23: model review fixes** (`review-idm-model.md`: land as dev code after K1 and K2; tests 16):
+- **K1, provenance in the checkpoint.** The checkpoint meta and the report carry:
+  - the support set with the train press counts;
+  - the code closure (range_bc's `code_closure`: the LF sha256 of every imported repo module);
+  - each target file's sha256, taken as it is loaded, with its calibration and `media_sha256`;
+  - the frame stores' array hashes, and the seed.
+
+  `checkpoint_bytes` refuses a meta that lacks any of these, or whose support set differs from the model's. The
+  predictor and `gate1` take the support set from the model (fit or checkpoint) and refuse a caller's that differs.
+  `run_fit` calls `require_committed` on the closure before reading anything: `git_commit` ignores untracked files,
+  so an uncommitted package would otherwise look clean.
+- **K2, pixels bound to the targets.** A frame store records each frame's pts. `bind()` refuses the whole file when:
+  - the store's `media_sha256` differs from the target header's;
+  - any frame both name carries a different pts;
+  - the header's frame period is not the 120 fps the offsets assume.
+
+  Opening a store refuses a denylisted session id or media. The decode job, when written, must check the denylist
+  before it decodes.
+- **Masked-loss guard.** Masked camera targets and sigmas are zeroed before the NLL. A NaN or inf in a masked slot
+  otherwise left the loss finite but made every parameter gradient NaN (`torch.where`'s backward is 0 × NaN). Tested:
+  the gradients are finite and equal to a clean batch's.
+- **Camera uncertainty used at prediction.** Each axis reports its **total** std, sqrt(model variance + the label
+  sigma of the predicted value in its predicted gain regime), plus that regime, which comes from the predicted counts'
+  rate.
+  - The abstention bound is per regime, pre-registered: 1° calibrated, 3° extrapolated. Extrapolated labels are known
+    to about 20 %, so 3° admits up to ~15° per interval with a sure model.
+  - Gate 1 adds, per true regime and axis, the abstention rate and the stated std's coverage (share of |error| within
+    1 and 2 std).
+  - `pitch_truth` labels pitch as scored against derived equal-sensitivity degrees.
+
 ## Measurements owed
 
 - **The 7 large live zeros (a) still keeps:** parallax during combined movement and turning.
