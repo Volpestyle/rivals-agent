@@ -30,10 +30,13 @@ OUT_JSON = HERE / "tally.json"
 DENYLIST_SHA256 = "57cfe01f29f6e1a55293f968ec697aa293c268bd87d7cf247ef648279e2fba7c"   # pinned (review I3)
 
 ROWS = [
-    dict(session="20260922T032454-642Z-24328-1", date="2026-09-21", status="pending",
-         reason="whole-session intake not yet run (28.7 s of focused logged input)", regime="normal", focused_min=0.478),
+    dict(session="20260922T032454-642Z-24328-1", date="2026-09-21", status="held",
+         reason="at most 11.0-22.28 s admissible (normal play before the first Esc, <= 0.19 counted min); before it "
+                "loading and selection, after it the settings menu (R3) and No Ability Cooldown ON from 23.7 s; "
+                "intake only on request", regime="normal", focused_min=0.478),
     dict(session="20260922T033319-205Z-24328-2", date="2026-09-21", status="held",
-         reason="override; permanently unadmitted", regime=None, focused_min=6.933),
+         reason="permanently unadmitted (lead): regime unresolved, no depletion in inspected windows against James's "
+                "cooldowns-OFF report (R5: note and scan disagree); stays out", regime=None, focused_min=6.933),
     dict(session="20260923T053616-779Z-33696-2", date="2026-09-23", status="sealed", reason="validation take; never read"),
     dict(session="20260923T053929-795Z-33696-3", date="2026-09-23", status="not_range", reason="calibration take"),
     dict(session="20260923T054325-507Z-33696-4", date="2026-09-23", status="not_range",
