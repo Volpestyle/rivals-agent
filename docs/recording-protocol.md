@@ -97,3 +97,7 @@ later (at least two per split), are what will let a result count.
   reported beside the train headline and never added to it.
 - **053616 stays sealed test.** At 2.1 minutes, and from the same OBS process as 051828, it cannot carry a gate on
   its own, which is why dedicated takes are needed.
+
+## 2026-09-23 (late): multi-speed calibration take
+
+The first calibration take gave the yaw gain at one slow speed (about 30 °/s). 92 % of the yaw motion in the admitted sessions is faster than that, so degree targets above the calibrated band are currently marked "extrapolated". Once, at the start of a session with the logger on: three full 360° turns in a row at slow, medium and fast (flick-like) speed, each ending facing where it started, then the same three speeds for a pitch sweep from the horizon down and back. About 40 seconds. Say "calibration" when you drop the path.
