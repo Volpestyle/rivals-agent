@@ -4,6 +4,7 @@ Owner: importer lane, VUH-1309 / VUH-1326. Consumer: w2:p1 execution policy.
 This is a new keyboard/mouse domain; it does not change `agent/demos.py` or
 translate human controls to gamepad controls. Independent review is required
 before relying on this importer for training/evaluation admission.
+*Superseded 2026-09-23: semantic actions + degrees through the pad, see [docs/lanes/end-to-end-fit.md](lanes/end-to-end-fit.md).*
 
 ## Policy API
 

@@ -1,0 +1,29 @@
+{
+  "commit": "627dba3dcefed81f519ee4a1f041bbdf7f056dbb",
+  "main": "627dba3dcefed81f519ee4a1f041bbdf7f056dbb",
+  "predeclared_commit": "545eb55011e7b37f0515c6ab9c3539a16a8e7dea",
+  "identity_commit": "45530720c10274680afe138f06f4b2f8689f77f7",
+  "runtime_paths_unchanged": false,
+  "declared_runtime_changes": {
+    "paths": [
+      "perception/scoreboard.py"
+    ],
+    "note": "Permitted runtime change for galacta-pilot-20260923 after slot 2: perception/scoreboard.py gold digit mask gate GOLD_EDGE=1/3 (commit 7f18ba4d), scorer-evidence reader only, outside the checkpoint identity hash (hud/outline/loop unchanged: perception a30b3cae, selector 00fd672e); independently reviewed, approved; declared by the lead 2026-09-23 13:40 CDT. Slots 1-2 stand as archived; slots 3-20 run under the amended freeze.",
+    "since": "45530720c10274680afe138f06f4b2f8689f77f7",
+    "commits": [
+      "7f18ba4df163d4021a4d6b917f6388bee776df0b fix(scoreboard): gold digit mask ignores background-lifted edge pixels so \"13\" reads on a pale board (VUH-1319)"
+    ]
+  },
+  "identity": {
+    "perception": "a30b3cae3024641a1a235a99f6297114ec7cbc5d79398a3712e8fe06d8854e2c",
+    "selector": "00fd672e388faa0743bec098fc4bb0b6d8dfd35425fe7517bdfd67b846d4ed5f"
+  },
+  "manifest_sha256": {
+    "controller-deployed.json": "e81383120ae7fa3a486792566caba72c656ed8806cb83694ca8fda5d7765492b",
+    "perception-deployed.json": "13f7186bda7f954608ca83d73d9d2c0c3c2f8a4e303462f0115b1b57b89186df",
+    "calibration-current.json": "9709d7e96c15668c9eb6c459f67629c93a19fc003dda6af19c013b83f2fd3e53"
+  },
+  "frozen_utc": "2026-09-23T18:31:45.264786+00:00",
+  "live_authority": false,
+  "remaining": "effective setup, saved settings, binding"
+}

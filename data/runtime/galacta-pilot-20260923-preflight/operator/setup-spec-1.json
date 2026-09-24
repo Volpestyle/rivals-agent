@@ -1,0 +1,33 @@
+{
+  "game_pid": 10668,
+  "range_entry": "range entry that game PID 10668 made (process started 2026-09-23 12:13:21 local); James walked Spider-Man to the courtyard at about 12:53; no re-entry since",
+  "observed": {"range": true, "spiderman": true, "normal_cooldown_menu": true, "friendly_fire_off": true, "pad_web_layout": true,
+               "galacta_setup": true, "monitor_present": true, "capture_preflight": true},
+  "display_idle_off_disabled": true,
+  "cpu_percent": "4-22 % across checks at 12:20-12:40; the launcher re-reads it before every slot",
+  "observations": [
+    "Practice Settings page read fresh at 12:27 in this range entry (ps-0.jpg): No Ability Cooldown X/off (nothing pressed), Friendly Fire X/off, 240 FPS overlay.",
+    "Cooldowns from play at 13:00: one Web Cluster fired into open air away from both bots; HUD webs 5 -> 4, then 5 again 2.6 s later (cdcheck-b/c).",
+    "Courtyard-stairs pair of GALACTA BOTs in front of the pink-banner pavilion; designated right bot at the foot of the wooden stair railing, green name plate, no health bar (pos-02-a). Numeric bot health and movement settings are not exposed: unknown.",
+    "Own HP 250/250, webs 5, swing 3, uppercut 2, pull and ult ready (scout.py on pos-03-a and cdcheck-d). PAD glyphs LT web / RT melee / Y LB RB X shown with a pad attached.",
+    "Scout for slot 1 (near): right bot bbox 1055,663,1475,1155 h .3417 near (cdcheck-d); a setup reference only, the trial's bin is its own first-phase frame.",
+    "Display idle-off AC = 0 (never), set by the lead. capture.py preflight 158 dxcam frames in 1 s; VG27AQM1A present.",
+    "No attack reached either bot in this entry after the operator took over; James's earlier re-take fought Galacta bots before 12:20 and their damage state then is not known beyond the undamaged appearance now."
+  ],
+  "limits": [
+    "Qualitative undamaged appearance (name plate, no bar); no numeric target health.",
+    "Generic selector; native target correspondence is audited per trial.",
+    "One binding for this PID and range entry; each of the ten learned allocations is consumed once."
+  ],
+  "evidence": [
+    "C:/Users/volpe/repos/rivals-agent/data/benchmarks/galacta-setup-20260923/practice-settings/ps-0.jpg",
+    "C:/desk/out/p0923-scene-01.png",
+    "C:/desk/out/p0923-pos-02-a.jpg",
+    "C:/desk/out/p0923-cdcheck-b.jpg",
+    "C:/desk/out/p0923-cdcheck-c.jpg",
+    "C:/desk/out/p0923-cdcheck-d.jpg",
+    "C:/desk/out/galacta-0923-ready.png",
+    "C:/desk/pilot0923/capture-preflight-1.txt",
+    "C:/desk/pilot0923/monitor-1.txt"
+  ]
+}

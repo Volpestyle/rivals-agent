@@ -1,0 +1,114 @@
+{
+ "session": "20260923T171533-187Z-33696-5",
+ "raw_files": {
+  "inputs.jsonl": "07191e90725c55916a4c003e8f994ec214a1e46f9832e23cb6ab201b81d60b1e",
+  "frames.csv": "9eabf1b670222f994948c521fe3491ffe8fc0c94efcc25ffc5cc2fe95e3d3380",
+  "metadata.json": "b15051efeca575fe9c54c89b534e31390b3cda4536a3c56e5b7ed3fff8144a44"
+ },
+ "event_counts": {
+  "raw_input_status": 1,
+  "focus": 5,
+  "mouse": 12052,
+  "key": 996
+ },
+ "focus_events": [
+  {
+   "seq": 1,
+   "t_ns": 251608396945000,
+   "t_rel_s": 0.0032708,
+   "active": false,
+   "held_vk": []
+  },
+  {
+   "seq": 24,
+   "t_ns": 251609740341400,
+   "t_rel_s": 1.3466672,
+   "active": true,
+   "held_vk": []
+  },
+  {
+   "seq": 732,
+   "t_ns": 251614649167700,
+   "t_rel_s": 6.2554935,
+   "active": false,
+   "held_vk": []
+  },
+  {
+   "seq": 1482,
+   "t_ns": 251620895718500,
+   "t_rel_s": 12.5020443,
+   "active": true,
+   "held_vk": []
+  },
+  {
+   "seq": 33040,
+   "t_ns": 251776119862600,
+   "t_rel_s": 167.7261884,
+   "active": false,
+   "held_vk": []
+  }
+ ],
+ "focused_intervals": [
+  [
+   251609740341400,
+   251614649167700
+  ],
+  [
+   251620895718500,
+   251776119862600
+  ]
+ ],
+ "focused_s": 160.1329704,
+ "recording_s": 171.1654982,
+ "device_scope": {
+  "keyboard_handles": {
+   "745933423": 996
+  },
+  "mouse_handles": {
+   "65618": 12020
+  },
+  "zero_effect_packets": {
+   "mouse:65618": 29,
+   "mouse:0": 3
+  },
+  "injected_control_packets": 0,
+  "injected_zero_effect_packets": 3,
+  "single_keyboard_mouse": true
+ },
+ "key_make_counts_by_vk": {
+  "16": 131,
+  "18": 2,
+  "27": 1,
+  "32": 88,
+  "65": 116,
+  "67": 8,
+  "68": 151,
+  "69": 14,
+  "70": 7,
+  "83": 103,
+  "87": 76
+ },
+ "ui_key_presses": [
+  {
+   "t_ns": 251614542951200,
+   "t_rel_s": 6.149277,
+   "vk": 18,
+   "key": "Alt"
+  },
+  {
+   "t_ns": 251775524924300,
+   "t_rel_s": 167.1312501,
+   "vk": 27,
+   "key": "Esc"
+  },
+  {
+   "t_ns": 251776077943500,
+   "t_rel_s": 167.6842693,
+   "vk": 18,
+   "key": "Alt"
+  }
+ ],
+ "afk_spans": [],
+ "raw_input_gap_events": [],
+ "pause_events": []
+}

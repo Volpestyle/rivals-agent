@@ -1,0 +1,65 @@
+{
+ "session": "20260923T051828-422Z-33696-1",
+ "kind": "team_up_visible_effect_check",
+ "checked_by": "admission-owner",
+ "date": "2026-09-23",
+ "press": {
+  "vk": 67,
+  "scan": 46,
+  "t_rel_s": 46.9350518,
+  "note": "the 3rd of 24 C makes; C presses come in pairs about 0.2 s apart"
+ },
+ "frames": [
+  {
+   "frame_index": 5602,
+   "dt_ms": -101,
+   "decoded_bgr_sha256": "ad129fd15e430767cc1f0e5990cd7c3504d4f1233654216cf949369098a78e42"
+  },
+  {
+   "frame_index": 5614,
+   "dt_ms": -1,
+   "decoded_bgr_sha256": "63959522deaaaa77e129cfacda9546692799260e9671cb16442a0b022e1b042a"
+  },
+  {
+   "frame_index": 5626,
+   "dt_ms": 99,
+   "decoded_bgr_sha256": "128b7ca6a07784f112658b63afeffaa2896ff243536b651c4b3aa76002750f1a"
+  },
+  {
+   "frame_index": 5638,
+   "dt_ms": 199,
+   "decoded_bgr_sha256": "ddda1339eb84dedc46049f2a0e91f3808ec91cfd384ff27d0ded617b374766f3"
+  },
+  {
+   "frame_index": 5650,
+   "dt_ms": 299,
+   "decoded_bgr_sha256": "cc03d1c574417e744e3b0799a19956ed509514291828611bf7399c9cfe687458"
+  },
+  {
+   "frame_index": 5674,
+   "dt_ms": 499,
+   "decoded_bgr_sha256": "e5c9232fa8e1b54c5f8e610ed8f15725206b6e13ab6dcfc25dee54d2e022e3af"
+  },
+  {
+   "frame_index": 5704,
+   "dt_ms": 749,
+   "decoded_bgr_sha256": "545942c74678bb136aa1da09740cc5b516e4467b40ec8614c78eaf3f266027e7"
+  },
+  {
+   "frame_index": 5734,
+   "dt_ms": 999,
+   "decoded_bgr_sha256": "4704a3bf2beb49bc0798238230fdda0be0029375d31ff57f6220169c1b06095f"
+  }
+ ],
+ "image": {
+  "path": "team-up-check.jpg",
+  "sha256": "8fcc054065549cf630c2c3d9afd73a8114140e26310e146afd72454b8760c062",
+  "crop": "ability row x 1860-2500, y 1200-1395 of the native frame"
+ },
+ "observed": [
+  "+99 ms: the C slot icon turns from white to gold (ability active)",
+  "+299 ms: HP 250/250 -> 300/300 with a blue bonus segment on the health bar",
+  "+499 ms: a 10 s cooldown numeral replaces the C icon and counts down"
+ ],
+ "conclusion": "C fires Team-Up in the solo practice range with a visible effect (James's correction confirmed): a real semantic action team_up with training positives."
+}

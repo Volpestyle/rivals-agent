@@ -1,0 +1,8 @@
+{"n": 1, "t": 0.307, "action": "prime pulse 1 of 7: right stick +0.45 up to 0.3 s, then neutral", "stamp": 0.0, "plaza": null, "turns": 1, "frame": "start-step-01.png"}
+{"n": 2, "t": 5.32, "action": "delay 5.00 s, frames only", "stamp": 5.2944, "plaza": null, "turns": 1, "frame": "start-step-02.png"}
+{"n": 3, "t": 5.371, "action": "look", "stamp": 5.3198, "plaza": false, "turns": 1, "frame": "start-step-03.png"}
+{"n": 4, "t": 5.735, "action": "search pulse 2 of 7: right stick -0.45 up to 0.3 s, then neutral", "stamp": 5.3707, "plaza": null, "turns": 2, "frame": "start-step-04.png"}
+{"n": 5, "t": 5.891, "action": "delay 0.15 s, frames only", "stamp": 5.8662, "plaza": null, "turns": 2, "frame": "start-step-05.png"}
+{"n": 6, "t": 5.934, "action": "look", "stamp": 5.8914, "plaza": true, "turns": 2, "frame": "start-step-06.png"}
+{"n": 7, "t": 5.975, "action": "look again", "stamp": 5.9339, "plaza": true, "turns": 2, "frame": "start-step-07.png"}
+{"n": 8, "t": 5.975, "action": "accepted: plaza view on two distinct fresh frames", "stamp": 5.9339, "plaza": true, "turns": 2, "frame": "start-step-08.png"}

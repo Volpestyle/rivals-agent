@@ -1,7 +1,8 @@
 # Spider-Man kit reference (Xbox default layout)
 
 Reference for the controller (L4), HUD (L2) and brain (L5) lanes. Everything here was
-researched from the web on 2026-09-20. **Nothing has been checked in the live game.**
+researched from the web on 2026-09-20. Live checks made since are in the `rivals-live-game` skill and
+`docs/lanes/l4-controller.md`; where they differ from this page, they win.
 
 **Patch reflected: Season 10, Version 20260911 (balance post dated 2026-09-08, live 2026-09-11).**
 Checked 2026-09-23 against the running client (1.1.3870120 / Steam build 25364676, the 20260917 update): its first-party notes carry no Spider-Man change, so these numbers still apply; a native replay measured that day is the source (VUH-1328).
@@ -58,7 +59,7 @@ Secondary Weapon both as Y and Ability 3 as LT, which collides with Secondary At
 | Wall Crawl | **A** (against a wall) | Space | Fandom template says "press A to wall crawl"; the Season 0 patch note says "hold to crawl". Hold vs tap: **U** |
 | Wall sprint | **RT** while crawling | LMB | |
 | Ultimate (Spectacular Spin) | **L3 + R3** together | Q | rebindable in settings. `pad.py` names these `LS` and `RS` |
-| Team-Up ability | **Y** | C | only with a partner hero (Venom, Peni Parker); irrelevant to the first bot |
+| Team-Up ability | **Y** | C | fires in the solo practice range: James pressed C 24 + 8 times in 051828 and 171533 and his M&K HUD shows the team-up slot labelled C (correction 2026-09-23; the earlier "only with a partner hero" was wrong for the range) |
 | Ping / comm wheel / hero profile / Chrono Vision | D-pad Down / Left / Up / Right | MMB / T / F1 / B | Fandom Controls page (**G**); not needed by the bot |
 | Crouch, sprint, pause | **U** | | Not in any reliable source. One guide summary says L3 is a sprint toggle; unconfirmed |
 
@@ -235,6 +236,11 @@ toggles are documented ([The Gamer](https://www.thegamer.com/marvel-rivals-compl
 | No Ability Cooldown | Removes ability cooldowns so abilities repeat | Repeat-trial testing of Get Over Here!, Amazing Combo, swing. Whether it also removes charge limits and the ultimate cost: **U** |
 | Friendly Fire Mode | Damages friendly heroes | Not needed |
 
+Measured live (the `rivals-live-game` skill): the page has four rows, No Ability Cooldown, its "(Always On)"
+sub-row, Friendly Fire and a controller test tool. **No Ability Cooldown is ON by default** and is re-enabled on every
+range entry; `scripts/l4_practice_settings.py cooldowns-off` switches it off. From the range the pad opens the
+pause menu with START.
+
 There is **no documented bot-movement or cooldown-reset toggle in the pause menu.** Bot movement is
 set at the stations below, not globally. Changing hero inside the range is `H` on PC; the pad
 binding is **U** (the Fandom controls table leaves it blank).
@@ -248,6 +254,9 @@ Stations (all **G**; layout is from launch-era guides and the Fandom `Practice M
 | Timed Practice consoles | basement of the building; two consoles, one sets parameters, one starts/stops | parameters: hero/target selection, distance (fixed or dynamic), target movement and speed, duration, music |
 | Hero Simulation kiosk / pads | outside spawn | spawns NPC heroes as enemies, for testing hero interactions |
 | Team-Up kiosks | right of spawn | partner-hero simulation for team-up abilities |
+
+Measured live: the courtyard Galacta bots never attack (the `rivals-live-game` skill), so "some that shoot
+back" above is unconfirmed for the range.
 | Support Training kiosk | right of spawn | friendly bots to protect/heal; not needed |
 | Building destruction | left/down, then right | destructible structures |
 | Ultimate Charge pad | practice floor | purple-rimmed circle; stepping on it fills the ultimate instantly |
@@ -291,6 +300,9 @@ recognisable as fingerprints for which ability just landed).
 ## Open verifications
 
 Cheapest way to close them is L1 recording or a short L4 session; every item is marked **U** above.
+Items 1, 6 and 7 are partly answered by live checks: the `rivals-live-game` skill (pause via START, the Practice
+Settings rows, bots never attack, the ult relighting with No Ability Cooldown ON) and `docs/lanes/l4-controller.md`
+("Game settings set", "Measurements").
 
 1. Actual defaults of every controller setting (record the screen).
 2. Whether a separate "pull regardless of tracer" binding exists.

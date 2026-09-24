@@ -1,0 +1,50 @@
+{
+  "slot": 3,
+  "planned_bin": "mid",
+  "first_phase": {
+    "size": [
+      2560,
+      1440
+    ],
+    "in_range": true,
+    "hp": 250,
+    "max_hp": 250,
+    "webs": 5,
+    "boxes": [
+      {
+        "finder": "aim",
+        "bbox": [
+          1223,
+          509,
+          1351,
+          642
+        ],
+        "h": 0.0924,
+        "bin": "mid"
+      },
+      {
+        "finder": "wide",
+        "bbox": [
+          677,
+          512,
+          839,
+          652
+        ],
+        "h": 0.0972,
+        "bin": "mid"
+      },
+      {
+        "finder": "wide",
+        "bbox": [
+          1223,
+          509,
+          1351,
+          642
+        ],
+        "h": 0.0924,
+        "bin": "mid"
+      }
+    ]
+  },
+  "inspected": []
+}

@@ -1,0 +1,32 @@
+{
+ "session": "20260923T171533-187Z-33696-5",
+ "format": "rivals-range-steps-v1",
+ "step_ns": 33333333,
+ "frame_period_ns": 8333333,
+ "rows": 4800,
+ "accepted_rows": 4630,
+ "eligible_rows": 4630,
+ "steps": {
+  "path": "20260923T171533-187Z-33696-5.steps.jsonl",
+  "sha256": "dc28b0c1511f7847c8dde08c3e04addce8b57bc6c32cc2873405962d3235559e"
+ },
+ "export_digest": "dc28b0c1511f7847c8dde08c3e04addce8b57bc6c32cc2873405962d3235559e",
+ "version": 3,
+ "actions": [
+  "move_forward",
+  "move_left",
+  "move_back",
+  "move_right",
+  "jump",
+  "web_swing",
+  "get_over_here",
+  "amazing_combo",
+  "ultimate",
+  "melee",
+  "spider_power",
+  "web_cluster",
+  "team_up",
+  "goh_targeting",
+  "simple_swing"
+ ]
+}

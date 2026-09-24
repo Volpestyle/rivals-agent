@@ -2,8 +2,8 @@
 
     uv run --group perception python scripts/regenerate_sealed.py data/demos/events/sections/<source>.jsonl
 
-For a source under sealed handling (docs/learning-plan.md, the sealed-migration
-ruling): the file is rebuilt by the unchanged writer from its own recorded
+For a source under sealed handling (docs/plan.md, "Sealed test data": the
+sealed-migration ruling on VUH-1326): the file is rebuilt by the unchanged writer from its own recorded
 recipe (`from_video`, patch resolved as it always is), and everything the job
 says -- progress, warnings, alarms, tracebacks, ffmpeg -- goes to a log under
 data/demos/migration-format5/sealed-logs/ that nobody reads (mode 600). The only

@@ -5,6 +5,7 @@ imported OBS sessions and their original video. It does not send input, load the
 historical MLX policies, translate mouse counts into stick axes, or access sealed
 test payloads. A successful fit establishes software plumbing, not Spider-Man
 competence. Independent admission review remains required before using real data.
+*Superseded 2026-09-23: semantic actions + degrees through the pad, see [docs/lanes/end-to-end-fit.md](lanes/end-to-end-fit.md).*
 
 ## Inputs and commands
 

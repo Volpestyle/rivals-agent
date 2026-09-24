@@ -1,0 +1,500 @@
+{
+ "baseline1": {
+  "hz": 9.23,
+  "strata": {
+   "still_sampled60": {
+    "n": 60,
+    "coverage_head": 1.0,
+    "coverage_new": 0.95,
+    "points_lost": 5.0,
+    "zero_flow": 52,
+    "zero_kept": 47,
+    "zero_centre_sourced": 2,
+    "zero_withheld": 3,
+    "reasons": {
+     "zero flow contradicted by a world rotation among the centre outliers": 1,
+     "zero flow contradicted by the centre's own matches": 2
+    },
+    "withheld_ks": [
+     [
+      1476,
+      "zero flow contradicted by a world rotation among the centre outliers"
+     ],
+     [
+      97,
+      "zero flow contradicted by the centre's own matches"
+     ],
+     [
+      99,
+      "zero flow contradicted by the centre's own matches"
+     ]
+    ],
+    "centre_ks": [
+     [
+      1906,
+      0.263
+     ],
+     [
+      1328,
+      0.743
+     ]
+    ]
+   },
+   "attack_sampled60": {
+    "n": 60,
+    "coverage_head": 0.833,
+    "coverage_new": 0.767,
+    "points_lost": 6.67,
+    "zero_flow": 9,
+    "zero_kept": 3,
+    "zero_centre_sourced": 2,
+    "zero_withheld": 4,
+    "reasons": {
+     "zero flow on border features only": 1,
+     "zero flow unconfirmed: too few centre matches": 2,
+     "zero flow contradicted by the centre's own matches": 1
+    },
+    "withheld_ks": [
+     [
+      2567,
+      "zero flow on border features only"
+     ],
+     [
+      1319,
+      "zero flow unconfirmed: too few centre matches"
+     ],
+     [
+      2152,
+      "zero flow unconfirmed: too few centre matches"
+     ],
+     [
+      2225,
+      "zero flow contradicted by the centre's own matches"
+     ]
+    ],
+    "centre_ks": [
+     [
+      1324,
+      0.886
+     ],
+     [
+      2640,
+      0.73
+     ]
+    ]
+   },
+   "ability_sampled60": {
+    "n": 60,
+    "coverage_head": 0.683,
+    "coverage_new": 0.683,
+    "points_lost": 0.0,
+    "zero_flow": 3,
+    "zero_kept": 3,
+    "zero_centre_sourced": 0,
+    "zero_withheld": 0,
+    "reasons": {},
+    "withheld_ks": [],
+    "centre_ks": []
+   },
+   "turn_sampled60": {
+    "n": 60,
+    "coverage_head": 0.65,
+    "coverage_new": 0.65,
+    "points_lost": 0.0,
+    "zero_flow": 2,
+    "zero_kept": 2,
+    "zero_centre_sourced": 0,
+    "zero_withheld": 0,
+    "reasons": {},
+    "withheld_ks": [],
+    "centre_ks": []
+   },
+   "moving_sampled60": {
+    "n": 60,
+    "coverage_head": 0.617,
+    "coverage_new": 0.583,
+    "points_lost": 3.33,
+    "zero_flow": 2,
+    "zero_kept": 0,
+    "zero_centre_sourced": 0,
+    "zero_withheld": 2,
+    "reasons": {
+     "zero flow contradicted by the centre's own matches": 2
+    },
+    "withheld_ks": [
+     [
+      1576,
+      "zero flow contradicted by the centre's own matches"
+     ],
+     [
+      1533,
+      "zero flow contradicted by the centre's own matches"
+     ]
+    ],
+    "centre_ks": []
+   },
+   "mixed_sampled60": {
+    "n": 60,
+    "coverage_head": 0.783,
+    "coverage_new": 0.767,
+    "points_lost": 1.67,
+    "zero_flow": 5,
+    "zero_kept": 4,
+    "zero_centre_sourced": 0,
+    "zero_withheld": 1,
+    "reasons": {
+     "zero flow on border features only": 1
+    },
+    "withheld_ks": [
+     [
+      1525,
+      "zero flow on border features only"
+     ]
+    ],
+    "centre_ks": []
+   },
+   "still_full": {
+    "n": 806,
+    "coverage_head": 0.994,
+    "coverage_new": 0.981,
+    "points_lost": 1.24,
+    "zero_flow": 689,
+    "zero_kept": 665,
+    "zero_centre_sourced": 14,
+    "zero_withheld": 10,
+    "reasons": {
+     "zero flow contradicted by the centre's own matches": 5,
+     "zero flow on border features only": 4,
+     "zero flow contradicted by a world rotation among the centre outliers": 1
+    },
+    "withheld_ks": [
+     [
+      97,
+      "zero flow contradicted by the centre's own matches"
+     ],
+     [
+      98,
+      "zero flow on border features only"
+     ],
+     [
+      99,
+      "zero flow contradicted by the centre's own matches"
+     ],
+     [
+      100,
+      "zero flow contradicted by the centre's own matches"
+     ],
+     [
+      1476,
+      "zero flow contradicted by a world rotation among the centre outliers"
+     ],
+     [
+      1999,
+      "zero flow contradicted by the centre's own matches"
+     ],
+     [
+      2510,
+      "zero flow on border features only"
+     ],
+     [
+      2511,
+      "zero flow on border features only"
+     ],
+     [
+      2512,
+      "zero flow on border features only"
+     ],
+     [
+      2576,
+      "zero flow contradicted by the centre's own matches"
+     ]
+    ],
+    "centre_ks": [
+     [
+      721,
+      0.262
+     ],
+     [
+      966,
+      0.289
+     ],
+     [
+      967,
+      0.274
+     ],
+     [
+      1328,
+      0.743
+     ],
+     [
+      1329,
+      0.923
+     ],
+     [
+      1330,
+      0.919
+     ],
+     [
+      1474,
+      0.015
+     ],
+     [
+      1900,
+      0.493
+     ],
+     [
+      1906,
+      0.263
+     ],
+     [
+      2000,
+      1.059
+     ],
+     [
+      2001,
+      0.602
+     ],
+     [
+      2396,
+      1.884
+     ],
+     [
+      2397,
+      1.056
+     ],
+     [
+      2509,
+      0.793
+     ]
+    ]
+   }
+  }
+ },
+ "baseline3": {
+  "hz": 9.16,
+  "strata": {
+   "still_sampled60": {
+    "n": 60,
+    "coverage_head": 1.0,
+    "coverage_new": 0.983,
+    "points_lost": 1.67,
+    "zero_flow": 56,
+    "zero_kept": 55,
+    "zero_centre_sourced": 0,
+    "zero_withheld": 1,
+    "reasons": {
+     "zero flow contradicted by the centre's own matches": 1
+    },
+    "withheld_ks": [
+     [
+      1521,
+      "zero flow contradicted by the centre's own matches"
+     ]
+    ],
+    "centre_ks": []
+   },
+   "attack_sampled60": {
+    "n": 60,
+    "coverage_head": 0.9,
+    "coverage_new": 0.833,
+    "points_lost": 6.67,
+    "zero_flow": 10,
+    "zero_kept": 4,
+    "zero_centre_sourced": 2,
+    "zero_withheld": 4,
+    "reasons": {
+     "zero flow on border features only": 2,
+     "zero flow contradicted by the centre's own matches": 2
+    },
+    "withheld_ks": [
+     [
+      488,
+      "zero flow on border features only"
+     ],
+     [
+      1365,
+      "zero flow contradicted by the centre's own matches"
+     ],
+     [
+      1370,
+      "zero flow contradicted by the centre's own matches"
+     ],
+     [
+      177,
+      "zero flow on border features only"
+     ]
+    ],
+    "centre_ks": [
+     [
+      517,
+      0.385
+     ],
+     [
+      1362,
+      0.7
+     ]
+    ]
+   },
+   "ability_sampled60": {
+    "n": 60,
+    "coverage_head": 0.833,
+    "coverage_new": 0.783,
+    "points_lost": 5.0,
+    "zero_flow": 5,
+    "zero_kept": 2,
+    "zero_centre_sourced": 0,
+    "zero_withheld": 3,
+    "reasons": {
+     "zero flow on border features only": 2,
+     "zero flow contradicted by the centre's own matches": 1
+    },
+    "withheld_ks": [
+     [
+      261,
+      "zero flow on border features only"
+     ],
+     [
+      497,
+      "zero flow on border features only"
+     ],
+     [
+      1516,
+      "zero flow contradicted by the centre's own matches"
+     ]
+    ],
+    "centre_ks": []
+   },
+   "turn_sampled60": {
+    "n": 60,
+    "coverage_head": 0.433,
+    "coverage_new": 0.417,
+    "points_lost": 1.67,
+    "zero_flow": 1,
+    "zero_kept": 0,
+    "zero_centre_sourced": 0,
+    "zero_withheld": 1,
+    "reasons": {
+     "zero flow on border features only": 1
+    },
+    "withheld_ks": [
+     [
+      1962,
+      "zero flow on border features only"
+     ]
+    ],
+    "centre_ks": []
+   },
+   "moving_sampled60": {
+    "n": 60,
+    "coverage_head": 0.6,
+    "coverage_new": 0.567,
+    "points_lost": 3.33,
+    "zero_flow": 2,
+    "zero_kept": 0,
+    "zero_centre_sourced": 0,
+    "zero_withheld": 2,
+    "reasons": {
+     "zero flow on border features only": 2
+    },
+    "withheld_ks": [
+     [
+      4,
+      "zero flow on border features only"
+     ],
+     [
+      812,
+      "zero flow on border features only"
+     ]
+    ],
+    "centre_ks": []
+   },
+   "mixed_sampled60": {
+    "n": 60,
+    "coverage_head": 0.717,
+    "coverage_new": 0.717,
+    "points_lost": 0.0,
+    "zero_flow": 1,
+    "zero_kept": 1,
+    "zero_centre_sourced": 0,
+    "zero_withheld": 0,
+    "reasons": {},
+    "withheld_ks": [],
+    "centre_ks": []
+   },
+   "still_full": {
+    "n": 789,
+    "coverage_head": 0.996,
+    "coverage_new": 0.985,
+    "points_lost": 1.14,
+    "zero_flow": 686,
+    "zero_kept": 672,
+    "zero_centre_sourced": 5,
+    "zero_withheld": 9,
+    "reasons": {
+     "zero flow contradicted by the centre's own matches": 8,
+     "zero flow contradicted by a world rotation among the centre outliers": 1
+    },
+    "withheld_ks": [
+     [
+      853,
+      "zero flow contradicted by the centre's own matches"
+     ],
+     [
+      1207,
+      "zero flow contradicted by the centre's own matches"
+     ],
+     [
+      1209,
+      "zero flow contradicted by the centre's own matches"
+     ],
+     [
+      1210,
+      "zero flow contradicted by the centre's own matches"
+     ],
+     [
+      1212,
+      "zero flow contradicted by the centre's own matches"
+     ],
+     [
+      1521,
+      "zero flow contradicted by the centre's own matches"
+     ],
+     [
+      1522,
+      "zero flow contradicted by the centre's own matches"
+     ],
+     [
+      1528,
+      "zero flow contradicted by the centre's own matches"
+     ],
+     [
+      1915,
+      "zero flow contradicted by a world rotation among the centre outliers"
+     ]
+    ],
+    "centre_ks": [
+     [
+      182,
+      1.297
+     ],
+     [
+      1524,
+      0.671
+     ],
+     [
+      1527,
+      2.207
+     ],
+     [
+      1535,
+      0.345
+     ],
+     [
+      1864,
+      0.626
+     ]
+    ]
+   }
+  }
+ }
+}

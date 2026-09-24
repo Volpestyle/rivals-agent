@@ -1,0 +1,1168 @@
+{
+  "schema": "range-benchmark-v1",
+  "predeclaration": {
+    "status": "UNEXECUTED",
+    "date": "2026-09-23",
+    "code_revision": "545eb55011e7b37f0515c6ab9c3539a16a8e7dea",
+    "runtime_code_rule": "The live tree runs the main commit it is fast-forwarded to at the window. That commit must descend from 545eb55011e7b37f0515c6ab9c3539a16a8e7dea and have no change under agent/, perception/, policy/ or scripts/ since 45530720c10274680afe138f06f4b2f8689f77f7, the commit the cohort's perception/selector identity was measured at; data/runtime/galacta-pilot-20260923-preflight/freeze_deployed.py refuses otherwise. Any runtime change is declared here before slot 1, which makes this a different pilot.",
+    "relation_to_galacta_pilot_20260922": "A new pilot, not a continuation. galacta-pilot-20260922 keeps all 20 allocations in its own denominator (slots 1-4 run, 5-20 UNEXECUTED and not resumed): 0f71336 (tracker body witness), 1bd6a8a (HUD) and ae648b3 (outline player zone) changed the runtime and its identity, so a binding on checkpoint 6ee38807 cannot validate at this runtime. No slot, result or run name is shared between the two pilots.",
+    "horizon_s": 20,
+    "display_grace_s": 2,
+    "slots_per_policy": 10,
+    "each_policy_bins": {
+      "near": 5,
+      "mid": 5
+    },
+    "ordering": "Ten adjacent matched pairs; both policies see near,mid repeated five times. First policy alternates within each bin, 5 first slots each overall. Same pair order as galacta-pilot-20260922; slot 1 is near/learned.",
+    "retention": "All 20 scheduled entries retained; refused setup, interruptions, unknowns and unrun slots never replaced or silently dropped.",
+    "gate": "learned: >=8/10 audited designated completions within 20s, zero scope breaches, auditable matched scripted comparison; feasibility only",
+    "placeholder_contract": "spec.track=0 is schema-only UNOBSERVED, not an observed track. All UNOBSERVED/UNEXECUTED identifiers are allocated placeholders. Evidence/observed context remains null or empty. Bind actual track/incarnation/epoch with evidence; no defaults can assert readiness.",
+    "baseline_freeze": {
+      "brain": "agent.brain.decide",
+      "code_revision": "545eb55011e7b37f0515c6ab9c3539a16a8e7dea",
+      "config": {
+        "max_s": 20,
+        "decision_hz": 10,
+        "reflex_hz": 60,
+        "save_fps": 10,
+        "live_warmup": false,
+        "keepalive_s": 180,
+        "scoreboard": "end only; initial baseline requires existing guarded supervisor acquisition",
+        "collect_episode": true,
+        "stop_on_feed": true,
+        "game_pid": "required; --collect-episode composes the same foreground-PID proof as range-skill"
+      },
+      "note": "Existing scripted modes/attack sequences retained; not a synthetic learned-mode always-start baseline. 180s keepalive cannot trigger in a fresh 20s loop. The e5511c5 collection caller gives both policies the same same-Live baseline board, fresh first-phase frame, focus proof and 14+20 s scope."
+    },
+    "candidate_freeze": {
+      "brain": "range-skill",
+      "checkpoint_sha256": "698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b",
+      "confidence": 0.7,
+      "code_revision": "545eb55011e7b37f0515c6ab9c3539a16a8e7dea",
+      "checkpoint_path": "data/diagnostics/range-request-cohort-fit-20260923/run-1/model.pt",
+      "fit_reports": {
+        "mac-report.json": "d67507a00a1f302311f55d63fa7e36e344d26856ae0b23c19d235ce228a8bc61",
+        "windows-report.json": "b38defa3c42c59cd5bc261dabdd14e8bfab1486deface43885e58a85037752b8"
+      },
+      "training": "admitted two-session request cohort (manifest bcaa1cf4...), TRAIN only: 76 known rows, 37 unique web starts / 39 no-new controls; no validation split; confidence unchanged at 0.7",
+      "source_identity": {
+        "patch": "1.1.3870120/build25364676",
+        "cooldown_regime": "normal",
+        "source_profile_sha256": "c5528cf75add2d7dde45b98423519788b8f1865e6d578a0ec6dec082f7e4a914",
+        "perception_sha256": "a30b3cae3024641a1a235a99f6297114ec7cbc5d79398a3712e8fe06d8854e2c",
+        "selector_sha256": "00fd672e388faa0743bec098fc4bb0b6d8dfd35425fe7517bdfd67b846d4ed5f",
+        "semantic_revision": "web-cluster-request-v1",
+        "feature_revision": "masked-state-grid-causal-v1"
+      },
+      "source_identity_sha256": "fff3cab14b4e7c15e788938bce5246312b9965e72719fd92a32c6f4b7b85d16a",
+      "runtime_binding": "data/runtime/galacta-pilot-20260923-preflight/: one binding per game PID and range entry, scoped to the ten learned allocations below, each consumed once",
+      "review_reference": {
+        "path": "docs/evidence/fit-readiness-20260923/driver-review.md",
+        "git_blob_sha256": "c12a20a85b8f1b90d762e020b98f970e6d8c1fbc0b06fed7fde0a1ba45cb8030",
+        "use": "SkillDeploymentBinding.review_sha256"
+      },
+      "note": "Checkpoint 6ee38807 (the first pilot's) is not a policy in this pilot."
+    },
+    "conditions": {
+      "profile": "galacta-shared-02",
+      "required_cooldowns": "normal",
+      "required_input_domain": "virtual_pad",
+      "required_swing": "hold",
+      "fixed": {
+        "arena": "practice range, courtyard pair of GALACTA BOTs at the stairs",
+        "designated_target": "right GALACTA BOT of the courtyard pair by the stair railing (the bot slots 1, 3 and 4 of galacta-pilot-20260922 used); no Luna or left-bot substitution",
+        "patch": "1.1.3870120/build25364676, re-read at the window from version.json and the Steam app manifest",
+        "no_ability_cooldown": "OFF (normal cooldowns)",
+        "friendly_fire": "OFF",
+        "fps_cap": 240,
+        "settings_evidence": "docs/evidence/practice-settings-20260923-0040.jpg (James, 2026-09-23 00:40); re-checked after every range entry",
+        "pad_profile": "saved Spider-Man pad profile as in the slot-4 receipt: hold-to-swing, horizontal sensitivity 265, linear curve, aim assist 0"
+      },
+      "unknown": {
+        "bot_health": "not exposed by Practice Settings; no numeric value asserted",
+        "bot_movement": "not exposed by Practice Settings; no setting asserted",
+        "server_hotfix": "client/build does not identify a server-side change"
+      },
+      "bot_health": "unknown, same for all slots",
+      "bot_movement": "unknown, same for all slots",
+      "patch": null,
+      "observed_settings": null,
+      "native_landmark_reference": null,
+      "note": "patch/observed_settings/native_landmark_reference stay null until observed at the window; the fixed values above are requirements, not observations of the pilot session. A planned bin the setup cannot meet is retained as a setup failure."
+    },
+    "vuh_1314_fragment_accounting": {
+      "question": "a separately authorized supervised run exercises fragment-to-whole recovery, or NOT EXERCISED",
+      "per_learned_trial": "collection.fragment_boundary_accounting = the output of data/benchmarks/galacta-pilot-20260923/fragment_accounting.py on the trial's run directory: step rows by body_observation.source, member_count histogram, approach_withheld and plate_count, refusals by reason (target_missing_or_ambiguous, invalid_tracking_observation, target_not_measured, ...), first-consumed decisions measured vs refused, and the verdict",
+      "verdict_rule": "EXERCISED once any logged step measured a body with member_count > 1 on a live frame; until then NOT EXERCISED. Answered from the first learned trials (slot 1 is near, where the finder fragments). Native frames at the multi-member ticks are inspected before the verdict is published.",
+      "scripted_trials": "not counted: the scripted brain does not run range mode, so no body witness is logged"
+    }
+  },
+  "scripted_baseline": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+  "scenarios": {
+    "near": {
+      "arena": "practice range, designated right GALACTA BOT of the courtyard pair by the stair railing (the bot slots 1, 3 and 4 of galacta-pilot-20260922 used); no Luna or left-bot substitution",
+      "location_view": "same Galacta landmark/view reference for both policies; native reference bound at the window",
+      "visual_height": {
+        "quantity": "(bbox_y2-bbox_y1)/State.frame[1]",
+        "minimum": 0.325,
+        "minimum_inclusive": true,
+        "maximum": null
+      },
+      "rule": "agent.brain.range_of height branch; Detection.distance must remain None, no metres asserted",
+      "target_start": "visually identified full-health designated incarnation; ambiguous or clipped height is unverified",
+      "own_resources": "observed full normal starting resources, same per pair; no stationary-player or Idle requirement",
+      "condition_profile": "galacta-shared-02"
+    },
+    "mid": {
+      "arena": "practice range, designated right GALACTA BOT of the courtyard pair by the stair railing (the bot slots 1, 3 and 4 of galacta-pilot-20260922 used); no Luna or left-bot substitution",
+      "location_view": "same Galacta landmark/view reference for both policies; native reference bound at the window",
+      "visual_height": {
+        "quantity": "(bbox_y2-bbox_y1)/State.frame[1]",
+        "minimum": 0.065,
+        "minimum_inclusive": false,
+        "maximum": 0.325,
+        "maximum_inclusive": false
+      },
+      "rule": "agent.brain.range_of height branch; Detection.distance must remain None, no metres asserted",
+      "target_start": "visually identified full-health designated incarnation; ambiguous or clipped height is unverified",
+      "own_resources": "observed full normal starting resources, same per pair; no stationary-player or Idle requirement",
+      "condition_profile": "galacta-shared-02"
+    }
+  },
+  "human_reference": null,
+  "wall_seconds": null,
+  "reset_seconds": [],
+  "respawn_seconds": [],
+  "trials": [
+    {
+      "schedule_index": 1,
+      "pair_id": "pair-01",
+      "policy_role": "learned",
+      "execution_status": "UNEXECUTED",
+      "planned_run_name": "galacta-pilot-20260923-01-learned",
+      "condition_profile": "galacta-shared-02",
+      "spec": {
+        "episode_id": "galacta-pilot-20260923-episode-01",
+        "run_id": "UNEXECUTED-run-01-learned",
+        "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+        "scenario": "near",
+        "epoch": "UNOBSERVED-epoch-01",
+        "target": "UNOBSERVED-galacta-incarnation-01",
+        "track": 0,
+        "patch": null,
+        "patch_evidence": null,
+        "cooldowns": null,
+        "settings_evidence": null,
+        "settings": {
+          "bot_health": null,
+          "bot_movement": null,
+          "bindings": null,
+          "swing": null
+        },
+        "display_grace_s": 2
+      },
+      "observations": [],
+      "stop": null,
+      "scope_audit": {
+        "breach": null,
+        "evidence": null
+      },
+      "run_dir": null,
+      "log_interval": null,
+      "collection": {
+        "observed_track": null,
+        "native_recording": null,
+        "clock_join": null,
+        "start_bbox": null,
+        "start_frame": null,
+        "start_visual_height_ratio": null,
+        "start_location_view_evidence": null,
+        "reset_interval": null,
+        "respawn_interval": null,
+        "readiness_observed_t": null,
+        "neutral_release_evidence": null,
+        "scope_audit_author": null,
+        "note": "No trial attempted. Populate only actual observations, keep missing evidence missing.",
+        "fragment_boundary_accounting": null
+      }
+    },
+    {
+      "schedule_index": 2,
+      "pair_id": "pair-01",
+      "policy_role": "scripted",
+      "execution_status": "UNEXECUTED",
+      "planned_run_name": "galacta-pilot-20260923-02-scripted",
+      "condition_profile": "galacta-shared-02",
+      "spec": {
+        "episode_id": "galacta-pilot-20260923-episode-02",
+        "run_id": "UNEXECUTED-run-02-scripted",
+        "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+        "scenario": "near",
+        "epoch": "UNOBSERVED-epoch-02",
+        "target": "UNOBSERVED-galacta-incarnation-02",
+        "track": 0,
+        "patch": null,
+        "patch_evidence": null,
+        "cooldowns": null,
+        "settings_evidence": null,
+        "settings": {
+          "bot_health": null,
+          "bot_movement": null,
+          "bindings": null,
+          "swing": null
+        },
+        "display_grace_s": 2
+      },
+      "observations": [],
+      "stop": null,
+      "scope_audit": {
+        "breach": null,
+        "evidence": null
+      },
+      "run_dir": null,
+      "log_interval": null,
+      "collection": {
+        "observed_track": null,
+        "native_recording": null,
+        "clock_join": null,
+        "start_bbox": null,
+        "start_frame": null,
+        "start_visual_height_ratio": null,
+        "start_location_view_evidence": null,
+        "reset_interval": null,
+        "respawn_interval": null,
+        "readiness_observed_t": null,
+        "neutral_release_evidence": null,
+        "scope_audit_author": null,
+        "note": "No trial attempted. Populate only actual observations, keep missing evidence missing."
+      }
+    },
+    {
+      "schedule_index": 3,
+      "pair_id": "pair-02",
+      "policy_role": "scripted",
+      "execution_status": "UNEXECUTED",
+      "planned_run_name": "galacta-pilot-20260923-03-scripted",
+      "condition_profile": "galacta-shared-02",
+      "spec": {
+        "episode_id": "galacta-pilot-20260923-episode-03",
+        "run_id": "UNEXECUTED-run-03-scripted",
+        "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+        "scenario": "mid",
+        "epoch": "UNOBSERVED-epoch-03",
+        "target": "UNOBSERVED-galacta-incarnation-03",
+        "track": 0,
+        "patch": null,
+        "patch_evidence": null,
+        "cooldowns": null,
+        "settings_evidence": null,
+        "settings": {
+          "bot_health": null,
+          "bot_movement": null,
+          "bindings": null,
+          "swing": null
+        },
+        "display_grace_s": 2
+      },
+      "observations": [],
+      "stop": null,
+      "scope_audit": {
+        "breach": null,
+        "evidence": null
+      },
+      "run_dir": null,
+      "log_interval": null,
+      "collection": {
+        "observed_track": null,
+        "native_recording": null,
+        "clock_join": null,
+        "start_bbox": null,
+        "start_frame": null,
+        "start_visual_height_ratio": null,
+        "start_location_view_evidence": null,
+        "reset_interval": null,
+        "respawn_interval": null,
+        "readiness_observed_t": null,
+        "neutral_release_evidence": null,
+        "scope_audit_author": null,
+        "note": "No trial attempted. Populate only actual observations, keep missing evidence missing."
+      }
+    },
+    {
+      "schedule_index": 4,
+      "pair_id": "pair-02",
+      "policy_role": "learned",
+      "execution_status": "UNEXECUTED",
+      "planned_run_name": "galacta-pilot-20260923-04-learned",
+      "condition_profile": "galacta-shared-02",
+      "spec": {
+        "episode_id": "galacta-pilot-20260923-episode-04",
+        "run_id": "UNEXECUTED-run-04-learned",
+        "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+        "scenario": "mid",
+        "epoch": "UNOBSERVED-epoch-04",
+        "target": "UNOBSERVED-galacta-incarnation-04",
+        "track": 0,
+        "patch": null,
+        "patch_evidence": null,
+        "cooldowns": null,
+        "settings_evidence": null,
+        "settings": {
+          "bot_health": null,
+          "bot_movement": null,
+          "bindings": null,
+          "swing": null
+        },
+        "display_grace_s": 2
+      },
+      "observations": [],
+      "stop": null,
+      "scope_audit": {
+        "breach": null,
+        "evidence": null
+      },
+      "run_dir": null,
+      "log_interval": null,
+      "collection": {
+        "observed_track": null,
+        "native_recording": null,
+        "clock_join": null,
+        "start_bbox": null,
+        "start_frame": null,
+        "start_visual_height_ratio": null,
+        "start_location_view_evidence": null,
+        "reset_interval": null,
+        "respawn_interval": null,
+        "readiness_observed_t": null,
+        "neutral_release_evidence": null,
+        "scope_audit_author": null,
+        "note": "No trial attempted. Populate only actual observations, keep missing evidence missing.",
+        "fragment_boundary_accounting": null
+      }
+    },
+    {
+      "schedule_index": 5,
+      "pair_id": "pair-03",
+      "policy_role": "scripted",
+      "execution_status": "UNEXECUTED",
+      "planned_run_name": "galacta-pilot-20260923-05-scripted",
+      "condition_profile": "galacta-shared-02",
+      "spec": {
+        "episode_id": "galacta-pilot-20260923-episode-05",
+        "run_id": "UNEXECUTED-run-05-scripted",
+        "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+        "scenario": "near",
+        "epoch": "UNOBSERVED-epoch-05",
+        "target": "UNOBSERVED-galacta-incarnation-05",
+        "track": 0,
+        "patch": null,
+        "patch_evidence": null,
+        "cooldowns": null,
+        "settings_evidence": null,
+        "settings": {
+          "bot_health": null,
+          "bot_movement": null,
+          "bindings": null,
+          "swing": null
+        },
+        "display_grace_s": 2
+      },
+      "observations": [],
+      "stop": null,
+      "scope_audit": {
+        "breach": null,
+        "evidence": null
+      },
+      "run_dir": null,
+      "log_interval": null,
+      "collection": {
+        "observed_track": null,
+        "native_recording": null,
+        "clock_join": null,
+        "start_bbox": null,
+        "start_frame": null,
+        "start_visual_height_ratio": null,
+        "start_location_view_evidence": null,
+        "reset_interval": null,
+        "respawn_interval": null,
+        "readiness_observed_t": null,
+        "neutral_release_evidence": null,
+        "scope_audit_author": null,
+        "note": "No trial attempted. Populate only actual observations, keep missing evidence missing."
+      }
+    },
+    {
+      "schedule_index": 6,
+      "pair_id": "pair-03",
+      "policy_role": "learned",
+      "execution_status": "UNEXECUTED",
+      "planned_run_name": "galacta-pilot-20260923-06-learned",
+      "condition_profile": "galacta-shared-02",
+      "spec": {
+        "episode_id": "galacta-pilot-20260923-episode-06",
+        "run_id": "UNEXECUTED-run-06-learned",
+        "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+        "scenario": "near",
+        "epoch": "UNOBSERVED-epoch-06",
+        "target": "UNOBSERVED-galacta-incarnation-06",
+        "track": 0,
+        "patch": null,
+        "patch_evidence": null,
+        "cooldowns": null,
+        "settings_evidence": null,
+        "settings": {
+          "bot_health": null,
+          "bot_movement": null,
+          "bindings": null,
+          "swing": null
+        },
+        "display_grace_s": 2
+      },
+      "observations": [],
+      "stop": null,
+      "scope_audit": {
+        "breach": null,
+        "evidence": null
+      },
+      "run_dir": null,
+      "log_interval": null,
+      "collection": {
+        "observed_track": null,
+        "native_recording": null,
+        "clock_join": null,
+        "start_bbox": null,
+        "start_frame": null,
+        "start_visual_height_ratio": null,
+        "start_location_view_evidence": null,
+        "reset_interval": null,
+        "respawn_interval": null,
+        "readiness_observed_t": null,
+        "neutral_release_evidence": null,
+        "scope_audit_author": null,
+        "note": "No trial attempted. Populate only actual observations, keep missing evidence missing.",
+        "fragment_boundary_accounting": null
+      }
+    },
+    {
+      "schedule_index": 7,
+      "pair_id": "pair-04",
+      "policy_role": "learned",
+      "execution_status": "UNEXECUTED",
+      "planned_run_name": "galacta-pilot-20260923-07-learned",
+      "condition_profile": "galacta-shared-02",
+      "spec": {
+        "episode_id": "galacta-pilot-20260923-episode-07",
+        "run_id": "UNEXECUTED-run-07-learned",
+        "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+        "scenario": "mid",
+        "epoch": "UNOBSERVED-epoch-07",
+        "target": "UNOBSERVED-galacta-incarnation-07",
+        "track": 0,
+        "patch": null,
+        "patch_evidence": null,
+        "cooldowns": null,
+        "settings_evidence": null,
+        "settings": {
+          "bot_health": null,
+          "bot_movement": null,
+          "bindings": null,
+          "swing": null
+        },
+        "display_grace_s": 2
+      },
+      "observations": [],
+      "stop": null,
+      "scope_audit": {
+        "breach": null,
+        "evidence": null
+      },
+      "run_dir": null,
+      "log_interval": null,
+      "collection": {
+        "observed_track": null,
+        "native_recording": null,
+        "clock_join": null,
+        "start_bbox": null,
+        "start_frame": null,
+        "start_visual_height_ratio": null,
+        "start_location_view_evidence": null,
+        "reset_interval": null,
+        "respawn_interval": null,
+        "readiness_observed_t": null,
+        "neutral_release_evidence": null,
+        "scope_audit_author": null,
+        "note": "No trial attempted. Populate only actual observations, keep missing evidence missing.",
+        "fragment_boundary_accounting": null
+      }
+    },
+    {
+      "schedule_index": 8,
+      "pair_id": "pair-04",
+      "policy_role": "scripted",
+      "execution_status": "UNEXECUTED",
+      "planned_run_name": "galacta-pilot-20260923-08-scripted",
+      "condition_profile": "galacta-shared-02",
+      "spec": {
+        "episode_id": "galacta-pilot-20260923-episode-08",
+        "run_id": "UNEXECUTED-run-08-scripted",
+        "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+        "scenario": "mid",
+        "epoch": "UNOBSERVED-epoch-08",
+        "target": "UNOBSERVED-galacta-incarnation-08",
+        "track": 0,
+        "patch": null,
+        "patch_evidence": null,
+        "cooldowns": null,
+        "settings_evidence": null,
+        "settings": {
+          "bot_health": null,
+          "bot_movement": null,
+          "bindings": null,
+          "swing": null
+        },
+        "display_grace_s": 2
+      },
+      "observations": [],
+      "stop": null,
+      "scope_audit": {
+        "breach": null,
+        "evidence": null
+      },
+      "run_dir": null,
+      "log_interval": null,
+      "collection": {
+        "observed_track": null,
+        "native_recording": null,
+        "clock_join": null,
+        "start_bbox": null,
+        "start_frame": null,
+        "start_visual_height_ratio": null,
+        "start_location_view_evidence": null,
+        "reset_interval": null,
+        "respawn_interval": null,
+        "readiness_observed_t": null,
+        "neutral_release_evidence": null,
+        "scope_audit_author": null,
+        "note": "No trial attempted. Populate only actual observations, keep missing evidence missing."
+      }
+    },
+    {
+      "schedule_index": 9,
+      "pair_id": "pair-05",
+      "policy_role": "learned",
+      "execution_status": "UNEXECUTED",
+      "planned_run_name": "galacta-pilot-20260923-09-learned",
+      "condition_profile": "galacta-shared-02",
+      "spec": {
+        "episode_id": "galacta-pilot-20260923-episode-09",
+        "run_id": "UNEXECUTED-run-09-learned",
+        "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+        "scenario": "near",
+        "epoch": "UNOBSERVED-epoch-09",
+        "target": "UNOBSERVED-galacta-incarnation-09",
+        "track": 0,
+        "patch": null,
+        "patch_evidence": null,
+        "cooldowns": null,
+        "settings_evidence": null,
+        "settings": {
+          "bot_health": null,
+          "bot_movement": null,
+          "bindings": null,
+          "swing": null
+        },
+        "display_grace_s": 2
+      },
+      "observations": [],
+      "stop": null,
+      "scope_audit": {
+        "breach": null,
+        "evidence": null
+      },
+      "run_dir": null,
+      "log_interval": null,
+      "collection": {
+        "observed_track": null,
+        "native_recording": null,
+        "clock_join": null,
+        "start_bbox": null,
+        "start_frame": null,
+        "start_visual_height_ratio": null,
+        "start_location_view_evidence": null,
+        "reset_interval": null,
+        "respawn_interval": null,
+        "readiness_observed_t": null,
+        "neutral_release_evidence": null,
+        "scope_audit_author": null,
+        "note": "No trial attempted. Populate only actual observations, keep missing evidence missing.",
+        "fragment_boundary_accounting": null
+      }
+    },
+    {
+      "schedule_index": 10,
+      "pair_id": "pair-05",
+      "policy_role": "scripted",
+      "execution_status": "UNEXECUTED",
+      "planned_run_name": "galacta-pilot-20260923-10-scripted",
+      "condition_profile": "galacta-shared-02",
+      "spec": {
+        "episode_id": "galacta-pilot-20260923-episode-10",
+        "run_id": "UNEXECUTED-run-10-scripted",
+        "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+        "scenario": "near",
+        "epoch": "UNOBSERVED-epoch-10",
+        "target": "UNOBSERVED-galacta-incarnation-10",
+        "track": 0,
+        "patch": null,
+        "patch_evidence": null,
+        "cooldowns": null,
+        "settings_evidence": null,
+        "settings": {
+          "bot_health": null,
+          "bot_movement": null,
+          "bindings": null,
+          "swing": null
+        },
+        "display_grace_s": 2
+      },
+      "observations": [],
+      "stop": null,
+      "scope_audit": {
+        "breach": null,
+        "evidence": null
+      },
+      "run_dir": null,
+      "log_interval": null,
+      "collection": {
+        "observed_track": null,
+        "native_recording": null,
+        "clock_join": null,
+        "start_bbox": null,
+        "start_frame": null,
+        "start_visual_height_ratio": null,
+        "start_location_view_evidence": null,
+        "reset_interval": null,
+        "respawn_interval": null,
+        "readiness_observed_t": null,
+        "neutral_release_evidence": null,
+        "scope_audit_author": null,
+        "note": "No trial attempted. Populate only actual observations, keep missing evidence missing."
+      }
+    },
+    {
+      "schedule_index": 11,
+      "pair_id": "pair-06",
+      "policy_role": "scripted",
+      "execution_status": "UNEXECUTED",
+      "planned_run_name": "galacta-pilot-20260923-11-scripted",
+      "condition_profile": "galacta-shared-02",
+      "spec": {
+        "episode_id": "galacta-pilot-20260923-episode-11",
+        "run_id": "UNEXECUTED-run-11-scripted",
+        "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+        "scenario": "mid",
+        "epoch": "UNOBSERVED-epoch-11",
+        "target": "UNOBSERVED-galacta-incarnation-11",
+        "track": 0,
+        "patch": null,
+        "patch_evidence": null,
+        "cooldowns": null,
+        "settings_evidence": null,
+        "settings": {
+          "bot_health": null,
+          "bot_movement": null,
+          "bindings": null,
+          "swing": null
+        },
+        "display_grace_s": 2
+      },
+      "observations": [],
+      "stop": null,
+      "scope_audit": {
+        "breach": null,
+        "evidence": null
+      },
+      "run_dir": null,
+      "log_interval": null,
+      "collection": {
+        "observed_track": null,
+        "native_recording": null,
+        "clock_join": null,
+        "start_bbox": null,
+        "start_frame": null,
+        "start_visual_height_ratio": null,
+        "start_location_view_evidence": null,
+        "reset_interval": null,
+        "respawn_interval": null,
+        "readiness_observed_t": null,
+        "neutral_release_evidence": null,
+        "scope_audit_author": null,
+        "note": "No trial attempted. Populate only actual observations, keep missing evidence missing."
+      }
+    },
+    {
+      "schedule_index": 12,
+      "pair_id": "pair-06",
+      "policy_role": "learned",
+      "execution_status": "UNEXECUTED",
+      "planned_run_name": "galacta-pilot-20260923-12-learned",
+      "condition_profile": "galacta-shared-02",
+      "spec": {
+        "episode_id": "galacta-pilot-20260923-episode-12",
+        "run_id": "UNEXECUTED-run-12-learned",
+        "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+        "scenario": "mid",
+        "epoch": "UNOBSERVED-epoch-12",
+        "target": "UNOBSERVED-galacta-incarnation-12",
+        "track": 0,
+        "patch": null,
+        "patch_evidence": null,
+        "cooldowns": null,
+        "settings_evidence": null,
+        "settings": {
+          "bot_health": null,
+          "bot_movement": null,
+          "bindings": null,
+          "swing": null
+        },
+        "display_grace_s": 2
+      },
+      "observations": [],
+      "stop": null,
+      "scope_audit": {
+        "breach": null,
+        "evidence": null
+      },
+      "run_dir": null,
+      "log_interval": null,
+      "collection": {
+        "observed_track": null,
+        "native_recording": null,
+        "clock_join": null,
+        "start_bbox": null,
+        "start_frame": null,
+        "start_visual_height_ratio": null,
+        "start_location_view_evidence": null,
+        "reset_interval": null,
+        "respawn_interval": null,
+        "readiness_observed_t": null,
+        "neutral_release_evidence": null,
+        "scope_audit_author": null,
+        "note": "No trial attempted. Populate only actual observations, keep missing evidence missing.",
+        "fragment_boundary_accounting": null
+      }
+    },
+    {
+      "schedule_index": 13,
+      "pair_id": "pair-07",
+      "policy_role": "scripted",
+      "execution_status": "UNEXECUTED",
+      "planned_run_name": "galacta-pilot-20260923-13-scripted",
+      "condition_profile": "galacta-shared-02",
+      "spec": {
+        "episode_id": "galacta-pilot-20260923-episode-13",
+        "run_id": "UNEXECUTED-run-13-scripted",
+        "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+        "scenario": "near",
+        "epoch": "UNOBSERVED-epoch-13",
+        "target": "UNOBSERVED-galacta-incarnation-13",
+        "track": 0,
+        "patch": null,
+        "patch_evidence": null,
+        "cooldowns": null,
+        "settings_evidence": null,
+        "settings": {
+          "bot_health": null,
+          "bot_movement": null,
+          "bindings": null,
+          "swing": null
+        },
+        "display_grace_s": 2
+      },
+      "observations": [],
+      "stop": null,
+      "scope_audit": {
+        "breach": null,
+        "evidence": null
+      },
+      "run_dir": null,
+      "log_interval": null,
+      "collection": {
+        "observed_track": null,
+        "native_recording": null,
+        "clock_join": null,
+        "start_bbox": null,
+        "start_frame": null,
+        "start_visual_height_ratio": null,
+        "start_location_view_evidence": null,
+        "reset_interval": null,
+        "respawn_interval": null,
+        "readiness_observed_t": null,
+        "neutral_release_evidence": null,
+        "scope_audit_author": null,
+        "note": "No trial attempted. Populate only actual observations, keep missing evidence missing."
+      }
+    },
+    {
+      "schedule_index": 14,
+      "pair_id": "pair-07",
+      "policy_role": "learned",
+      "execution_status": "UNEXECUTED",
+      "planned_run_name": "galacta-pilot-20260923-14-learned",
+      "condition_profile": "galacta-shared-02",
+      "spec": {
+        "episode_id": "galacta-pilot-20260923-episode-14",
+        "run_id": "UNEXECUTED-run-14-learned",
+        "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+        "scenario": "near",
+        "epoch": "UNOBSERVED-epoch-14",
+        "target": "UNOBSERVED-galacta-incarnation-14",
+        "track": 0,
+        "patch": null,
+        "patch_evidence": null,
+        "cooldowns": null,
+        "settings_evidence": null,
+        "settings": {
+          "bot_health": null,
+          "bot_movement": null,
+          "bindings": null,
+          "swing": null
+        },
+        "display_grace_s": 2
+      },
+      "observations": [],
+      "stop": null,
+      "scope_audit": {
+        "breach": null,
+        "evidence": null
+      },
+      "run_dir": null,
+      "log_interval": null,
+      "collection": {
+        "observed_track": null,
+        "native_recording": null,
+        "clock_join": null,
+        "start_bbox": null,
+        "start_frame": null,
+        "start_visual_height_ratio": null,
+        "start_location_view_evidence": null,
+        "reset_interval": null,
+        "respawn_interval": null,
+        "readiness_observed_t": null,
+        "neutral_release_evidence": null,
+        "scope_audit_author": null,
+        "note": "No trial attempted. Populate only actual observations, keep missing evidence missing.",
+        "fragment_boundary_accounting": null
+      }
+    },
+    {
+      "schedule_index": 15,
+      "pair_id": "pair-08",
+      "policy_role": "learned",
+      "execution_status": "UNEXECUTED",
+      "planned_run_name": "galacta-pilot-20260923-15-learned",
+      "condition_profile": "galacta-shared-02",
+      "spec": {
+        "episode_id": "galacta-pilot-20260923-episode-15",
+        "run_id": "UNEXECUTED-run-15-learned",
+        "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+        "scenario": "mid",
+        "epoch": "UNOBSERVED-epoch-15",
+        "target": "UNOBSERVED-galacta-incarnation-15",
+        "track": 0,
+        "patch": null,
+        "patch_evidence": null,
+        "cooldowns": null,
+        "settings_evidence": null,
+        "settings": {
+          "bot_health": null,
+          "bot_movement": null,
+          "bindings": null,
+          "swing": null
+        },
+        "display_grace_s": 2
+      },
+      "observations": [],
+      "stop": null,
+      "scope_audit": {
+        "breach": null,
+        "evidence": null
+      },
+      "run_dir": null,
+      "log_interval": null,
+      "collection": {
+        "observed_track": null,
+        "native_recording": null,
+        "clock_join": null,
+        "start_bbox": null,
+        "start_frame": null,
+        "start_visual_height_ratio": null,
+        "start_location_view_evidence": null,
+        "reset_interval": null,
+        "respawn_interval": null,
+        "readiness_observed_t": null,
+        "neutral_release_evidence": null,
+        "scope_audit_author": null,
+        "note": "No trial attempted. Populate only actual observations, keep missing evidence missing.",
+        "fragment_boundary_accounting": null
+      }
+    },
+    {
+      "schedule_index": 16,
+      "pair_id": "pair-08",
+      "policy_role": "scripted",
+      "execution_status": "UNEXECUTED",
+      "planned_run_name": "galacta-pilot-20260923-16-scripted",
+      "condition_profile": "galacta-shared-02",
+      "spec": {
+        "episode_id": "galacta-pilot-20260923-episode-16",
+        "run_id": "UNEXECUTED-run-16-scripted",
+        "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+        "scenario": "mid",
+        "epoch": "UNOBSERVED-epoch-16",
+        "target": "UNOBSERVED-galacta-incarnation-16",
+        "track": 0,
+        "patch": null,
+        "patch_evidence": null,
+        "cooldowns": null,
+        "settings_evidence": null,
+        "settings": {
+          "bot_health": null,
+          "bot_movement": null,
+          "bindings": null,
+          "swing": null
+        },
+        "display_grace_s": 2
+      },
+      "observations": [],
+      "stop": null,
+      "scope_audit": {
+        "breach": null,
+        "evidence": null
+      },
+      "run_dir": null,
+      "log_interval": null,
+      "collection": {
+        "observed_track": null,
+        "native_recording": null,
+        "clock_join": null,
+        "start_bbox": null,
+        "start_frame": null,
+        "start_visual_height_ratio": null,
+        "start_location_view_evidence": null,
+        "reset_interval": null,
+        "respawn_interval": null,
+        "readiness_observed_t": null,
+        "neutral_release_evidence": null,
+        "scope_audit_author": null,
+        "note": "No trial attempted. Populate only actual observations, keep missing evidence missing."
+      }
+    },
+    {
+      "schedule_index": 17,
+      "pair_id": "pair-09",
+      "policy_role": "learned",
+      "execution_status": "UNEXECUTED",
+      "planned_run_name": "galacta-pilot-20260923-17-learned",
+      "condition_profile": "galacta-shared-02",
+      "spec": {
+        "episode_id": "galacta-pilot-20260923-episode-17",
+        "run_id": "UNEXECUTED-run-17-learned",
+        "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+        "scenario": "near",
+        "epoch": "UNOBSERVED-epoch-17",
+        "target": "UNOBSERVED-galacta-incarnation-17",
+        "track": 0,
+        "patch": null,
+        "patch_evidence": null,
+        "cooldowns": null,
+        "settings_evidence": null,
+        "settings": {
+          "bot_health": null,
+          "bot_movement": null,
+          "bindings": null,
+          "swing": null
+        },
+        "display_grace_s": 2
+      },
+      "observations": [],
+      "stop": null,
+      "scope_audit": {
+        "breach": null,
+        "evidence": null
+      },
+      "run_dir": null,
+      "log_interval": null,
+      "collection": {
+        "observed_track": null,
+        "native_recording": null,
+        "clock_join": null,
+        "start_bbox": null,
+        "start_frame": null,
+        "start_visual_height_ratio": null,
+        "start_location_view_evidence": null,
+        "reset_interval": null,
+        "respawn_interval": null,
+        "readiness_observed_t": null,
+        "neutral_release_evidence": null,
+        "scope_audit_author": null,
+        "note": "No trial attempted. Populate only actual observations, keep missing evidence missing.",
+        "fragment_boundary_accounting": null
+      }
+    },
+    {
+      "schedule_index": 18,
+      "pair_id": "pair-09",
+      "policy_role": "scripted",
+      "execution_status": "UNEXECUTED",
+      "planned_run_name": "galacta-pilot-20260923-18-scripted",
+      "condition_profile": "galacta-shared-02",
+      "spec": {
+        "episode_id": "galacta-pilot-20260923-episode-18",
+        "run_id": "UNEXECUTED-run-18-scripted",
+        "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+        "scenario": "near",
+        "epoch": "UNOBSERVED-epoch-18",
+        "target": "UNOBSERVED-galacta-incarnation-18",
+        "track": 0,
+        "patch": null,
+        "patch_evidence": null,
+        "cooldowns": null,
+        "settings_evidence": null,
+        "settings": {
+          "bot_health": null,
+          "bot_movement": null,
+          "bindings": null,
+          "swing": null
+        },
+        "display_grace_s": 2
+      },
+      "observations": [],
+      "stop": null,
+      "scope_audit": {
+        "breach": null,
+        "evidence": null
+      },
+      "run_dir": null,
+      "log_interval": null,
+      "collection": {
+        "observed_track": null,
+        "native_recording": null,
+        "clock_join": null,
+        "start_bbox": null,
+        "start_frame": null,
+        "start_visual_height_ratio": null,
+        "start_location_view_evidence": null,
+        "reset_interval": null,
+        "respawn_interval": null,
+        "readiness_observed_t": null,
+        "neutral_release_evidence": null,
+        "scope_audit_author": null,
+        "note": "No trial attempted. Populate only actual observations, keep missing evidence missing."
+      }
+    },
+    {
+      "schedule_index": 19,
+      "pair_id": "pair-10",
+      "policy_role": "scripted",
+      "execution_status": "UNEXECUTED",
+      "planned_run_name": "galacta-pilot-20260923-19-scripted",
+      "condition_profile": "galacta-shared-02",
+      "spec": {
+        "episode_id": "galacta-pilot-20260923-episode-19",
+        "run_id": "UNEXECUTED-run-19-scripted",
+        "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+        "scenario": "mid",
+        "epoch": "UNOBSERVED-epoch-19",
+        "target": "UNOBSERVED-galacta-incarnation-19",
+        "track": 0,
+        "patch": null,
+        "patch_evidence": null,
+        "cooldowns": null,
+        "settings_evidence": null,
+        "settings": {
+          "bot_health": null,
+          "bot_movement": null,
+          "bindings": null,
+          "swing": null
+        },
+        "display_grace_s": 2
+      },
+      "observations": [],
+      "stop": null,
+      "scope_audit": {
+        "breach": null,
+        "evidence": null
+      },
+      "run_dir": null,
+      "log_interval": null,
+      "collection": {
+        "observed_track": null,
+        "native_recording": null,
+        "clock_join": null,
+        "start_bbox": null,
+        "start_frame": null,
+        "start_visual_height_ratio": null,
+        "start_location_view_evidence": null,
+        "reset_interval": null,
+        "respawn_interval": null,
+        "readiness_observed_t": null,
+        "neutral_release_evidence": null,
+        "scope_audit_author": null,
+        "note": "No trial attempted. Populate only actual observations, keep missing evidence missing."
+      }
+    },
+    {
+      "schedule_index": 20,
+      "pair_id": "pair-10",
+      "policy_role": "learned",
+      "execution_status": "UNEXECUTED",
+      "planned_run_name": "galacta-pilot-20260923-20-learned",
+      "condition_profile": "galacta-shared-02",
+      "spec": {
+        "episode_id": "galacta-pilot-20260923-episode-20",
+        "run_id": "UNEXECUTED-run-20-learned",
+        "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+        "scenario": "mid",
+        "epoch": "UNOBSERVED-epoch-20",
+        "target": "UNOBSERVED-galacta-incarnation-20",
+        "track": 0,
+        "patch": null,
+        "patch_evidence": null,
+        "cooldowns": null,
+        "settings_evidence": null,
+        "settings": {
+          "bot_health": null,
+          "bot_movement": null,
+          "bindings": null,
+          "swing": null
+        },
+        "display_grace_s": 2
+      },
+      "observations": [],
+      "stop": null,
+      "scope_audit": {
+        "breach": null,
+        "evidence": null
+      },
+      "run_dir": null,
+      "log_interval": null,
+      "collection": {
+        "observed_track": null,
+        "native_recording": null,
+        "clock_join": null,
+        "start_bbox": null,
+        "start_frame": null,
+        "start_visual_height_ratio": null,
+        "start_location_view_evidence": null,
+        "reset_interval": null,
+        "respawn_interval": null,
+        "readiness_observed_t": null,
+        "neutral_release_evidence": null,
+        "scope_audit_author": null,
+        "note": "No trial attempted. Populate only actual observations, keep missing evidence missing.",
+        "fragment_boundary_accounting": null
+      }
+    }
+  ]
+}

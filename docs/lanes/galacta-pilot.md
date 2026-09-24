@@ -210,3 +210,59 @@ ready; this unexecuted preparation requests no new broad audit. Outcome gate:
 at least eight audited designated completions in the learned ten within 20s,
 zero scope breaches, actual matched baseline evidence, complete failure/reset/
 latency report and wide uncertainty. This is feasibility, not James parity.
+
+## 2026-09-23: second predeclared pilot, `galacta-pilot-20260923` (unexecuted)
+
+**Why a new pilot.** The first pilot ran 4 of its 20 slots and stopped: checkpoint `6ee38807` proposed no starts on
+Galacta. Its 16 unrun slots stay in its own denominator and are not resumed. The runtime and its identity have changed
+since: `0f71336` (tracker body witness), `1bd6a8a` (HUD tracer witness) and `ae648b3` (outline player zone). A binding on
+the old checkpoint therefore cannot validate at this runtime. The new cohort checkpoint gets a new predeclared schedule.
+The two pilots share no slot, result or run name.
+
+**Schedule.** `data/benchmarks/galacta-pilot-20260923/schedule.json`, sha256 `cc0614fd…`. The format, scorer fields, gate,
+bins and pair order are the first pilot's: ten learned and ten scripted trials, five near and five mid per policy, matched
+adjacent pairs, a fresh loop and history per trial, all slots in the denominator, no replacement retries. Slot 1 is
+near/learned. The CLI scores it with exit 0: twenty retained setup failures, gates false.
+
+- **Learned:** checkpoint `698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b` at confidence 0.7,
+  unchanged. It is the admitted two-session cohort fit, TRAIN only (76 known rows: 37 starts, 39 controls). Its
+  identity is perception `a30b3cae…` and selector `00fd672e…`, as CRLF git blobs at `4553072`.
+- **Scripted:** `agent.brain.decide` with its full combo vocabulary.
+- **Both:** `--collect-episode --stop-on-feed --game-pid`, 20 s phase, 14+20 s scope. First-pilot gap 4 is closed:
+  collection composes the same foreground-PID proof for the scripted brain.
+- **Runtime:** the main commit the live tree is fast-forwarded to at the window. Nothing under `agent/`,
+  `perception/`, `policy/` or `scripts/` may change after `4553072`; `freeze_deployed.py` refuses otherwise. Any runtime
+  landing before the window, the VUH-1356 finder split included, means re-measuring the identity and refitting first.
+
+**Condition `galacta-shared-02`.**
+- **Fixed:** the practice range, and the courtyard-stairs pair of GALACTA BOTs, whose **right bot by the stair railing**
+  is designated (the bot of the first pilot's slots 1, 3 and 4). Also fixed: patch `1.1.3870120/build25364676`, No Ability
+  Cooldown OFF, Friendly Fire OFF, 240 FPS cap (`docs/evidence/practice-settings-20260923-0040.jpg`), and the slot-4 pad
+  profile: hold-to-swing, sensitivity 265, aim assist 0.
+- **Unknown:** bot health, bot movement and any server hotfix. Practice Settings does not expose them.
+- Patch and observed settings stay null in the schedule until they are observed at the window.
+
+**VUH-1314.** This pilot also answers VUH-1314's open item: "fragment-to-whole recovery exercised, or NOT EXERCISED".
+- **Per learned trial**, `fragment_accounting.py` reports the body witness: `body_observation` sources, the
+  `member_count` histogram, `approach_withheld`, `plate_count`, refusals by reason, and first-consumed decisions measured
+  vs refused. The output goes into `collection.fragment_boundary_accounting`.
+- **Verdict:** EXERCISED once a logged live step measured a body with `member_count > 1`, after native inspection of
+  those frames.
+- **When:** the first learned trials answer it, since slot 1 is near and the finder fragments at close range.
+- **Stop:** a refusal storm, any `invalid_tracking_observation` or a stall stops the pilot for the lead.
+
+**Binding and window.** `data/runtime/galacta-pilot-20260923-preflight/README.md` holds the procedure, the one-page
+operator checklist and the time estimate.
+- **Scope:** one binding per game PID and range entry, covering the ten learned slots, each consumed once.
+- **Review reference:** `review_sha256` is the sha256 of the committed blob of
+  `docs/evidence/fit-readiness-20260923/driver-review.md`, `c12a20a8…`.
+- **Dry run:** everything that runs without the game was dry-run in scratch with a mock effective setup. The binding
+  validates. The checkpoint live-loads through it. Twelve refusal controls refuse. The real CLI accepts the binding and
+  stops at its focus gate.
+- **Window:** about 2 h 15 min expected. Ask for 2.5 h.
+
+**Known risks carried in.**
+- A fused box over both courtyard bots is not refused by shape (VUH-1356).
+- A stacked `_bodies` group on a real Galacta stays refused (VUH-1314 residual).
+- The Galacta respawn time after a KO is unmeasured.
+- Display idle-off at 15 min can kill dxcam unless James disables it.

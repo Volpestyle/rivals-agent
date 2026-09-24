@@ -1,0 +1,19 @@
+{
+  "commit": "7de8d5f3a3e261295c3e847d158de98f81c04562",
+  "main": "7de8d5f3a3e261295c3e847d158de98f81c04562",
+  "predeclared_commit": "545eb55011e7b37f0515c6ab9c3539a16a8e7dea",
+  "identity_commit": "45530720c10274680afe138f06f4b2f8689f77f7",
+  "runtime_paths_unchanged": true,
+  "identity": {
+    "perception": "a30b3cae3024641a1a235a99f6297114ec7cbc5d79398a3712e8fe06d8854e2c",
+    "selector": "00fd672e388faa0743bec098fc4bb0b6d8dfd35425fe7517bdfd67b846d4ed5f"
+  },
+  "manifest_sha256": {
+    "controller-deployed.json": "01836cd185d66c54364b90e30f876099b889c0852a0214509ce93100660752ee",
+    "perception-deployed.json": "2ca714d1927830b6a7cfb71933c298b602ce8baf2cd5690a93a19a2367dc078a",
+    "calibration-current.json": "a1718fc2d00ac2937bc06937ba678b9ecc291950de6b2422c3ff4d50cd5517ca"
+  },
+  "frozen_utc": "2026-09-23T17:38:19.849662+00:00",
+  "live_authority": false,
+  "remaining": "effective setup, saved settings, binding"
+}

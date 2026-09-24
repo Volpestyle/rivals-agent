@@ -1,0 +1,76 @@
+{
+  "format": "rivals-range-plumbing-prereg-v1",
+  "status": "draft, fixed before any plumbing fit; the runs start once 200129 and 205528 are admitted",
+  "tickets": ["VUH-1359", "VUH-1346"],
+  "reads": "dev only: no validation take exists, and none is read. The test split stays sealed; 053616 is never read",
+  "vocabulary": {
+    "actions": ["move_forward", "move_left", "move_back", "move_right", "jump", "web_swing", "get_over_here",
+                "amazing_combo", "ultimate", "melee", "spider_power", "web_cluster", "team_up", "goh_targeting",
+                "simple_swing"],
+    "simple_swing": "Caps Lock = Simple Swing (James's decision 2026-09-23): the 15th action, bound to key:58:0, trained and scored with its positives (13 presses in 200129, where VK 20 is first seen). Never sent: its pad control does not exist until the pilot pad profile binds Simple Swing to a button and Live.ALLOWED includes it (lane doc, Pilot pre-registration item 7)",
+    "step_tables": "every step table is written by intake with these 15 actions; the 14-action tables of 051828 and 171533 are superseded and re-emitted, and their caches are rebuilt (the cache binds the step table's sha256)"
+  },
+  "cohort": {
+    "train": ["20260923T051828-422Z-33696-1", "20260923T200129-346Z-33696-6"],
+    "dev": ["20260923T171533-187Z-33696-5", "20260923T205528-900Z-45572-3"],
+    "val": [],
+    "dev_rule": "dev = 171533 plus the later-recorded of the two new sessions (205528, recorded after 200129), fixed here before either is admitted. The rule does not look at content; it also keeps 200129's 13 simple_swing presses in train",
+    "step_table_path": "data/human/sessions/{id}/{id}.steps.jsonl",
+    "split_required": "every recording's header split is 'train' (dev recordings are train-split recordings held out of fitting); a val or test recording is refused",
+    "frozen": "the dev list stays the same between the plumbing and the real fit (runbook step 5)"
+  },
+  "fixed": {
+    "scope": "plumbing",
+    "device": "mps",
+    "batch": 8,
+    "lr": 0.0003,
+    "window": 96,
+    "burn_in": 32,
+    "regimes": ["normal"],
+    "sealed_denylist": "data/human/sealed-denylist.json at its pinned sha256 (the package default)",
+    "hud_parity": "not passed: plumbing does not choose a candidate",
+    "code": "a git archive of the landed commit that carries this file, on the Mac outside every checkout"
+  },
+  "runs": [
+    {"name": "plumb-p1-curve", "purpose": "the dev curve: per-epoch dev loss for every arm at weight decay 1e-4",
+     "args": ["--arms", "model", "model_nohud", "history_only", "--seeds", "0", "--epochs", "20",
+              "--weight-decay", "0.0001", "--stride", "48", "--lag", "0"]},
+    {"name": "plumb-p2-repeat", "purpose": "MPS repeatability on real data at plumbing scale: its checkpoints must be byte-identical to p1's of the same name",
+     "args": ["--arms", "model_nohud", "history_only", "--seeds", "0", "--epochs", "20",
+              "--weight-decay", "0.0001", "--stride", "48", "--lag", "0"]},
+    {"name": "plumb-p3-wd", "purpose": "the weight-decay alternative, on the pre-registered candidate arm",
+     "args": ["--arms", "model_nohud", "--seeds", "0", "--epochs", "20",
+              "--weight-decay", "0.001", "--stride", "48", "--lag", "0"]},
+    {"name": "plumb-p4-lag1", "purpose": "lag 1, reported only",
+     "args": ["--arms", "model_nohud", "--seeds", "0", "--epochs", "20",
+              "--weight-decay", "0.0001", "--stride", "48", "--lag", "1"]},
+    {"name": "plumb-p4-lag2", "purpose": "lag 2, reported only",
+     "args": ["--arms", "model_nohud", "--seeds", "0", "--epochs", "20",
+              "--weight-decay", "0.0001", "--stride", "48", "--lag", "2"]},
+    {"name": "plumb-p5-scale-{fraction}", "purpose": "the scaling curve: nested time-prefixes of each train recording, fixed optimiser steps",
+     "fractions": [0.25, 0.5, 0.75, 1.0],
+     "max_steps": "10 full epochs of the whole train set at stride 48: 10 x ceil(windows / 8), computed from the admitted step tables by range_bc_plumbing.py and printed with the commands",
+     "args": ["--arms", "model_nohud", "history_only", "--seeds", "0", "1", "--train-fraction", "{fraction}",
+              "--max-steps", "{max_steps}", "--weight-decay", "0.0001", "--stride", "48", "--lag", "0"]}
+  ],
+  "derivation": {
+    "arm": "model_nohud, the pre-registered candidate (round 3). The HUD arm's curve is reported beside it and selects nothing",
+    "weight_decay": "0.001 if the minimum over epochs of p3's model_nohud seed-0 dev total loss is strictly lower than p1's; otherwise 0.0001",
+    "epochs": "E* = 1 + the argmin epoch of the chosen weight decay's model_nohud seed-0 dev total loss (ties go to fewer epochs)",
+    "stride": "48 if E* <= 10, else 64 (the lead's first fallback: every step scored once, -25% cost)",
+    "lag": "0 until the frame-to-send latency is measured; the lag runs are reported, not used",
+    "seeds": [0, 1, 2],
+    "hud_parity_sha256": "the sha256 of the parity file passed to derive: a P2' result if one exists by then, else run 1 (hud-parity-1.json, 158649e6...), which keeps the no-HUD candidate",
+    "refuse_if": ["p1 and p2 checkpoints of the same name differ (the reproduction rule needs byte repeatability)",
+                  "any plumbing report is missing, is not scope plumbing, read a val or test recording, or used a different cohort or step-table sha256",
+                  "a run's arguments differ from this file"]
+  },
+  "scaling_reading": {
+    "plotted_against_dev": ["per-head dev NLL", "frames-minus-twin gap in teacher-forced macro press-F1 on the [t-1, t] window (model_nohud minus history_only, mean of seeds 0 and 1)", "dev camera MAE"],
+    "a": "the frames-minus-twin gap is not positive and rising from 1/2 to all: more minutes will not make the policy use its eyes; change the observation or encoder first",
+    "b": "dev NLL falls roughly linearly in log(minutes): extrapolate to 2.5 h of train; if the projection does not clear the G2/G3 floors with margin, 3 h is not enough, and the report states the implied minutes",
+    "c": "train NLL falls while dev NLL rises: the model is memorising; fix regularisation before adding data",
+    "minutes": "each point reports its actual counted train minutes, not only the fraction"
+  },
+  "budget": "estimated by range_bc_plumbing.py from the admitted step tables and the smoke's measured throughput (HUD arm 802 frames/s, no-HUD 1,056, twin 52k; 22 s of evaluation per 4,800 dev rows); printed with the commands. One niced durable queue on the Mac"
+}

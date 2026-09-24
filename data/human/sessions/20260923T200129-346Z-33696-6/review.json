@@ -1,0 +1,325 @@
+{
+ "schema_version": 1,
+ "session_id": "20260923T200129-346Z-33696-6",
+ "reviewer": "owner admission-owner (cded3e35a21f809c) + independent admission-review (Claude Opus 5.5, claude-opus-5-5, pane admission-review)",
+ "reviewed_at": "2026-09-23T17:51:33-05:00",
+ "device_scope": {
+  "kind": "single_keyboard_mouse",
+  "source": "input-profile.json: keyboard ['1043402031'], mouse ['614403941']; 32 zero-effect handle-0 packets allowed (lead decision), no injected control input",
+  "no_pad_attestation": "James, 2026-09-23 ~15:55 CDT (docs/recording-log.md): no physical controller plugged in during any recording session"
+ },
+ "pts_anchor": {
+  "kind": "independent_muxer_offset",
+  "offset_num": 21,
+  "offset_den": 1000,
+  "source": "accepted blank-scene derivation plus this session's own first-16-packet forward prediction (provenance.json anchor_applicability), no fitting",
+  "evidence": [
+   {
+    "path": "data/human/inspection/20260922T033319-205Z-24328-2/independent-review-resolution.md",
+    "sha256": "a67f55f36554887d97765b4552a33ac5c92494f6a50c814801183528a0c3c8e6"
+   },
+   {
+    "path": "data/human/sessions/20260923T200129-346Z-33696-6/provenance.json",
+    "sha256": "dde2efa4124d5a8a69f326165438bb4599de0e15b6727877d4a5569a663d4368"
+   }
+  ]
+ },
+ "provenance": {
+  "hero": "Spider-Man",
+  "settings": {
+   "value": {
+    "dpi": 800,
+    "horizontal_sensitivity": 1.89,
+    "vertical_sensitivity": 1.89,
+    "swing_mode": {
+     "automatic_swing": false,
+     "hold_to_swing": true
+    },
+    "mouse_acceleration": true,
+    "mouse_smoothing": true
+   },
+   "source": "James's statements in docs/recording-log.md (2026-09-23): DPI 800 (~14:50 CDT), sensitivity unchanged since 2026-09-21 (1.89/1.89 in the 09-21 report), default swing settings on Shift with Simple Swing on Caps Lock; confirmed on native frames of the settings look (calibration.json: 1.89/1.89, hold to swing on, simple swing off)",
+   "per_session_source": "James's dated statements of 2026-09-23, applied by the lead to every existing session",
+   "evidence": [
+    {
+     "path": "data/human/sessions/20260923T200129-346Z-33696-6/recording-log.299ffba.md",
+     "sha256": "fc6e595cfb6ef47f7ffe89dd6f00058f8fec1f8e36ae89e51e273cd83d2b8e2f"
+    },
+    {
+     "path": "data/human/notes/2026-09-21-user-settings.json",
+     "sha256": "852c92254961b4fcb1278e8ebe752ea2f02ce6add678509d3276fd1a26264c6c"
+    },
+    {
+     "path": "data/human/sessions/20260923T200129-346Z-33696-6/provenance.json",
+     "sha256": "dde2efa4124d5a8a69f326165438bb4599de0e15b6727877d4a5569a663d4368"
+    },
+    {
+     "path": "data/human/calibration/20260923T204707-487Z-45572-2/calibration.json",
+     "sha256": "baa49158c9911e0155a2d06883faec00150b297e0a5fe0e8dd46fc86d5310283"
+    }
+   ]
+  },
+  "bindings": {
+   "value": {
+    "move_forward": [
+     "key:17:0"
+    ],
+    "move_left": [
+     "key:30:0"
+    ],
+    "move_back": [
+     "key:31:0"
+    ],
+    "move_right": [
+     "key:32:0"
+    ],
+    "jump": [
+     "key:57:0"
+    ],
+    "web_swing": [
+     "key:42:0"
+    ],
+    "get_over_here": [
+     "key:33:0"
+    ],
+    "amazing_combo": [
+     "key:18:0",
+     "key:3:0"
+    ],
+    "ultimate": [
+     "key:16:0"
+    ],
+    "melee": [
+     "key:47:0",
+     "mouse:5"
+    ],
+    "spider_power": [
+     "mouse:1"
+    ],
+    "web_cluster": [
+     "mouse:2"
+    ],
+    "team_up": [
+     "key:46:0"
+    ],
+    "team_up_b": [
+     "key:45:0"
+    ],
+    "simple_swing": [
+     "key:58:0"
+    ],
+    "goh_targeting": [
+     "mouse:4",
+     "key:3:0"
+    ],
+    "slow_walk": [
+     "key:29:0"
+    ]
+   },
+   "aliases": {
+    "mouse:5": "melee"
+   },
+   "notes": {
+    "team_up": "C = Team-Up A, fires in the solo range with a visible effect (James; 051828/team-up-check.json). A real action with positives, trained but masked live (Y is off the pad whitelist).",
+    "melee": "V and Mouse 5 (settings look; lead decision): Mouse 5 presses count as melee (header binding_aliases).",
+    "goh_targeting": "Get Over Here Targeting: Mouse 4 (X1) and 2; a fit action (lead decision), structurally unsupported on the pad, counted. Only Mouse 4 is in the step header (2 is shared).",
+    "amazing_combo": "E and 2; 2 is also Get Over Here Targeting, so it is not aliased (unsupported).",
+    "simple_swing": "Caps Lock (VK 20, scan 58), off as a mode; not in the fit vocabulary (unsupported).",
+    "team_up_b": "X, Team-Up B; not in the fit vocabulary (unsupported).",
+    "slow_walk": "LCtrl, hold; not in the fit vocabulary (unsupported).",
+    "alt": "Alt is unbound in game (James); Alt presses are Alt-Tab and stay UI-key cuts."
+   },
+   "source": "native frames of James's settings look (calibration take 2026-09-23, keyboard pages, calibration.json), agreeing with his 2026-09-21 report and 2026-09-23 statements; HUD key labels on this session's frames (slot-mapping.json)",
+   "per_session_source": "James's dated statements of 2026-09-23 (docs/recording-log.md)",
+   "evidence": [
+    {
+     "path": "data/human/sessions/20260923T200129-346Z-33696-6/recording-log.299ffba.md",
+     "sha256": "fc6e595cfb6ef47f7ffe89dd6f00058f8fec1f8e36ae89e51e273cd83d2b8e2f"
+    },
+    {
+     "path": "data/human/notes/2026-09-21-user-settings.json",
+     "sha256": "852c92254961b4fcb1278e8ebe752ea2f02ce6add678509d3276fd1a26264c6c"
+    },
+    {
+     "path": "data/human/sessions/20260923T200129-346Z-33696-6/slot-mapping.json",
+     "sha256": "2dd634c88c34d9a455d6b6da854d4c37bb474996c03277a49e709d6a55b2b1b4"
+    },
+    {
+     "path": "data/human/calibration/20260923T204707-487Z-45572-2/calibration.json",
+     "sha256": "baa49158c9911e0155a2d06883faec00150b297e0a5fe0e8dd46fc86d5310283"
+    }
+   ]
+  },
+  "game_patch": {
+   "value": "1.1.3870120/build25364676",
+   "source": "Steam content log and appmanifest: build 25364676, no later update",
+   "evidence": [
+    {
+     "path": "data/human/sessions/20260923T200129-346Z-33696-6/provenance.json",
+     "sha256": "dde2efa4124d5a8a69f326165438bb4599de0e15b6727877d4a5569a663d4368"
+    }
+   ]
+  },
+  "cooldown_regime": {
+   "value": "normal",
+   "source": "5 fps HUD scan: depletion observed",
+   "evidence": [
+    {
+     "path": "data/human/sessions/20260923T200129-346Z-33696-6/regime-timeline.json",
+     "sha256": "ba222a8fd8822e0ff7c734c66abc3bc6e3c371c409bf22b29c5ce3464ac752a6"
+    }
+   ]
+  },
+  "segments_evidence": {
+   "path": "data/human/sessions/20260923T200129-346Z-33696-6/segments-evidence.json",
+   "sha256": "3c55e0e093578364ece44c911c1061c1fe1d173fe9161802c7354d7e65ec1a2c"
+  },
+  "owner_verdicts": {
+   "path": "data/human/sessions/20260923T200129-346Z-33696-6/owner-verdicts.json",
+   "sha256": "cded3e35a21f809c7312cb82684e0625985b5eb20f9b82dd3fa396ccd9bd6c92"
+  },
+  "lead_decisions": null,
+  "independent_review": {
+   "path": "data/human/sessions/20260923T200129-346Z-33696-6/independent-review.verdicts.json",
+   "sha256": "70e77f6342a00be3a5fbaa5b0bc9df3608eff724213ee4a1cd25d16e41a0fe83",
+   "reviewer": "admission-review (Claude Opus 5.5, claude-opus-5-5, pane admission-review)"
+  }
+ },
+ "alignment": {
+  "kind": "assumption",
+  "statement": "OBS composition time is the labelling clock; capture, display and input-delivery latency are uncalibrated (no measured bound is asserted)",
+  "source": "lead decision for the whole-session campaign; as for the 2026-09-22/23 request packets"
+ },
+ "segments": [
+  {
+   "segment_id": "seg-000",
+   "start_ns": 261565147402400,
+   "end_ns": 261565397402400,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "focus_transition: the hero-select screen (Namor shown) during the settle after focus gain; not range play.",
+   "evidence": "data/human/sessions/20260923T200129-346Z-33696-6/independent-review.verdicts.json (70e77f6342a00be3)",
+   "machine_reason": "focus_transition"
+  },
+  {
+   "segment_id": "seg-001",
+   "start_ns": 261565397402400,
+   "end_ns": 261568260441251,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "no_range_hud: hero select (Namor, then Spider-Man confirmed) and the load into the spawn room; in_range false on native frames.",
+   "evidence": "data/human/sessions/20260923T200129-346Z-33696-6/independent-review.verdicts.json (70e77f6342a00be3)",
+   "machine_reason": "no_range_hud"
+  },
+  {
+   "segment_id": "seg-002",
+   "start_ns": 261568260441251,
+   "end_ns": 261570352107835,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "unresolved",
+   "suitability_reason": "2.1 s in the spawn room after arrival, HUD still drawing in; no engagement before the Alt-Tab. Concur with owner: unresolved (never trains).",
+   "evidence": "data/human/sessions/20260923T200129-346Z-33696-6/independent-review.verdicts.json (70e77f6342a00be3)",
+   "machine_reason": "range_hud_present"
+  },
+  {
+   "segment_id": "seg-003",
+   "start_ns": 261570352107835,
+   "end_ns": 261570359792700,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "sliver before the Alt packet (5.856 s).",
+   "evidence": "data/human/sessions/20260923T200129-346Z-33696-6/independent-review.verdicts.json (70e77f6342a00be3)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-004",
+   "start_ns": 261570359792700,
+   "end_ns": 261570442476200,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "ui_key: Alt at 5.856 s (Alt-Tab out), focus lost 5.939 s.",
+   "evidence": "data/human/sessions/20260923T200129-346Z-33696-6/independent-review.verdicts.json (70e77f6342a00be3)",
+   "machine_reason": "ui_key"
+  },
+  {
+   "segment_id": "seg-005",
+   "start_ns": 261571302974300,
+   "end_ns": 261571552974300,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "focus_transition after regain 6.799 s (settle).",
+   "evidence": "data/human/sessions/20260923T200129-346Z-33696-6/independent-review.verdicts.json (70e77f6342a00be3)",
+   "machine_reason": "focus_transition"
+  },
+  {
+   "segment_id": "seg-006",
+   "start_ns": 261571552974300,
+   "end_ns": 261571560441119,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "sliver before the first frame after the settle.",
+   "evidence": "data/human/sessions/20260923T200129-346Z-33696-6/independent-review.verdicts.json (70e77f6342a00be3)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-007",
+   "start_ns": 261571560441119,
+   "end_ns": 262330027077448,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "accepted",
+   "suitability_reason": "Continuous range play 7.057-765.524 s: every owner frame and 20 seeded samples show the range HUD and live Spider-Man play. First frame f832 in range; last frame f91848 (765.52 s) is Spider-Man alive and falling off the terrace edge (HP 286 at 765.25 s, reader None at 765.50 s); the fall is kept as play. No UI key inside; longest no-control gap 1.84 s.",
+   "evidence": "data/human/sessions/20260923T200129-346Z-33696-6/independent-review.verdicts.json (70e77f6342a00be3)",
+   "machine_reason": "range_hud_present"
+  },
+  {
+   "segment_id": "seg-008",
+   "start_ns": 262330027077448,
+   "end_ns": 262332227077399,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "dead: HP 0 and SPECTATING from 765.75 s on native frames, then the respawn ghost in the spawn room at 766.75 s; alive and controllable from 767.0 s. The cut (765.524-767.724) covers the whole dead span with margin on both sides.",
+   "evidence": "data/human/sessions/20260923T200129-346Z-33696-6/independent-review.verdicts.json (70e77f6342a00be3)",
+   "machine_reason": "dead"
+  },
+  {
+   "segment_id": "seg-009",
+   "start_ns": 262332227077399,
+   "end_ns": 262332235410692,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "sliver after the dead span.",
+   "evidence": "data/human/sessions/20260923T200129-346Z-33696-6/independent-review.verdicts.json (70e77f6342a00be3)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-010",
+   "start_ns": 262332235410692,
+   "end_ns": 263170827043816,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "accepted",
+   "suitability_reason": "Continuous range play 767.732-1606.324 s: starts in the spawn room after the respawn (HP 250, HUD present, walking out), then courtyard/lane play; every owner frame and 20 seeded samples in range with live play. Last frame f192744 (1606.32 s) is Spider-Man alive, falling (HP 250); the next frame is already SPECTATING. No UI key inside; longest no-control gap 3.67 s. Ctrl held 1397.58-1400.42 s and Caps Lock (54 presses, 1202-1214 s): bindings not in the fit vocabulary, kept as unsupported events.",
+   "evidence": "data/human/sessions/20260923T200129-346Z-33696-6/independent-review.verdicts.json (70e77f6342a00be3)",
+   "machine_reason": "range_hud_present"
+  },
+  {
+   "segment_id": "seg-011",
+   "start_ns": 263170827043816,
+   "end_ns": 263171402844100,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "dead: HP 0 / SPECTATING from 1606.40 s (second fall).",
+   "evidence": "data/human/sessions/20260923T200129-346Z-33696-6/independent-review.verdicts.json (70e77f6342a00be3)",
+   "machine_reason": "dead"
+  },
+  {
+   "segment_id": "seg-012",
+   "start_ns": 263171402844100,
+   "end_ns": 263172747365700,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "ui_key: Alt at 1606.899 s and again 1608.166 s, focus lost 1608.244 s.",
+   "evidence": "data/human/sessions/20260923T200129-346Z-33696-6/independent-review.verdicts.json (70e77f6342a00be3)",
+   "machine_reason": "ui_key"
+  }
+ ]
+}

@@ -1,0 +1,463 @@
+{
+ "session": "20260923T171533-187Z-33696-5",
+ "scan_samples": {
+  "path": "hud-scan-samples.jsonl",
+  "sha256": "801db434a3afc04de6d57bcb147fc8d803150c7907dc39ba2950d30a382f9c8a"
+ },
+ "interval_s": 5,
+ "counts": {
+  "no_evidence": 7,
+  "normal_depletion_observed": 27
+ },
+ "intervals": [
+  {
+   "t_rel_s": [
+    0,
+    5
+   ],
+   "samples": 25,
+   "hud_present": 19,
+   "webs_min": 5,
+   "webs_max": 5,
+   "web_decrements": 0,
+   "countdown_samples": 0,
+   "reading": "no_evidence"
+  },
+  {
+   "t_rel_s": [
+    5,
+    10
+   ],
+   "samples": 25,
+   "hud_present": 16,
+   "webs_min": 5,
+   "webs_max": 5,
+   "web_decrements": 0,
+   "countdown_samples": 0,
+   "reading": "no_evidence"
+  },
+  {
+   "t_rel_s": [
+    10,
+    15
+   ],
+   "samples": 25,
+   "hud_present": 13,
+   "webs_min": 5,
+   "webs_max": 5,
+   "web_decrements": 0,
+   "countdown_samples": 0,
+   "reading": "no_evidence"
+  },
+  {
+   "t_rel_s": [
+    15,
+    20
+   ],
+   "samples": 25,
+   "hud_present": 25,
+   "webs_min": 3,
+   "webs_max": 5,
+   "web_decrements": 3,
+   "countdown_samples": 2,
+   "reading": "normal_depletion_observed"
+  },
+  {
+   "t_rel_s": [
+    20,
+    25
+   ],
+   "samples": 25,
+   "hud_present": 25,
+   "webs_min": 3,
+   "webs_max": 5,
+   "web_decrements": 1,
+   "countdown_samples": 1,
+   "reading": "normal_depletion_observed"
+  },
+  {
+   "t_rel_s": [
+    25,
+    30
+   ],
+   "samples": 25,
+   "hud_present": 25,
+   "webs_min": 2,
+   "webs_max": 4,
+   "web_decrements": 2,
+   "countdown_samples": 4,
+   "reading": "normal_depletion_observed"
+  },
+  {
+   "t_rel_s": [
+    30,
+    35
+   ],
+   "samples": 25,
+   "hud_present": 25,
+   "webs_min": 3,
+   "webs_max": 5,
+   "web_decrements": 0,
+   "countdown_samples": 0,
+   "reading": "no_evidence"
+  },
+  {
+   "t_rel_s": [
+    35,
+    40
+   ],
+   "samples": 25,
+   "hud_present": 25,
+   "webs_min": 2,
+   "webs_max": 5,
+   "web_decrements": 4,
+   "countdown_samples": 4,
+   "reading": "normal_depletion_observed"
+  },
+  {
+   "t_rel_s": [
+    40,
+    45
+   ],
+   "samples": 25,
+   "hud_present": 25,
+   "webs_min": 3,
+   "webs_max": 4,
+   "web_decrements": 0,
+   "countdown_samples": 0,
+   "reading": "no_evidence"
+  },
+  {
+   "t_rel_s": [
+    45,
+    50
+   ],
+   "samples": 25,
+   "hud_present": 25,
+   "webs_min": 4,
+   "webs_max": 5,
+   "web_decrements": 1,
+   "countdown_samples": 0,
+   "reading": "normal_depletion_observed"
+  },
+  {
+   "t_rel_s": [
+    50,
+    55
+   ],
+   "samples": 25,
+   "hud_present": 25,
+   "webs_min": 3,
+   "webs_max": 5,
+   "web_decrements": 1,
+   "countdown_samples": 3,
+   "reading": "normal_depletion_observed"
+  },
+  {
+   "t_rel_s": [
+    55,
+    60
+   ],
+   "samples": 25,
+   "hud_present": 25,
+   "webs_min": 2,
+   "webs_max": 5,
+   "web_decrements": 3,
+   "countdown_samples": 0,
+   "reading": "normal_depletion_observed"
+  },
+  {
+   "t_rel_s": [
+    60,
+    65
+   ],
+   "samples": 25,
+   "hud_present": 25,
+   "webs_min": 3,
+   "webs_max": 4,
+   "web_decrements": 0,
+   "countdown_samples": 22,
+   "reading": "normal_depletion_observed"
+  },
+  {
+   "t_rel_s": [
+    65,
+    70
+   ],
+   "samples": 25,
+   "hud_present": 25,
+   "webs_min": 4,
+   "webs_max": 5,
+   "web_decrements": 0,
+   "countdown_samples": 18,
+   "reading": "normal_depletion_observed"
+  },
+  {
+   "t_rel_s": [
+    70,
+    75
+   ],
+   "samples": 25,
+   "hud_present": 25,
+   "webs_min": 3,
+   "webs_max": 5,
+   "web_decrements": 3,
+   "countdown_samples": 8,
+   "reading": "normal_depletion_observed"
+  },
+  {
+   "t_rel_s": [
+    75,
+    80
+   ],
+   "samples": 25,
+   "hud_present": 25,
+   "webs_min": 4,
+   "webs_max": 5,
+   "web_decrements": 0,
+   "countdown_samples": 25,
+   "reading": "normal_depletion_observed"
+  },
+  {
+   "t_rel_s": [
+    80,
+    85
+   ],
+   "samples": 25,
+   "hud_present": 25,
+   "webs_min": 4,
+   "webs_max": 5,
+   "web_decrements": 2,
+   "countdown_samples": 9,
+   "reading": "normal_depletion_observed"
+  },
+  {
+   "t_rel_s": [
+    85,
+    90
+   ],
+   "samples": 25,
+   "hud_present": 25,
+   "webs_min": 4,
+   "webs_max": 5,
+   "web_decrements": 0,
+   "countdown_samples": 23,
+   "reading": "normal_depletion_observed"
+  },
+  {
+   "t_rel_s": [
+    90,
+    95
+   ],
+   "samples": 25,
+   "hud_present": 25,
+   "webs_min": 4,
+   "webs_max": 5,
+   "web_decrements": 1,
+   "countdown_samples": 18,
+   "reading": "normal_depletion_observed"
+  },
+  {
+   "t_rel_s": [
+    95,
+    100
+   ],
+   "samples": 25,
+   "hud_present": 25,
+   "webs_min": 4,
+   "webs_max": 5,
+   "web_decrements": 0,
+   "countdown_samples": 24,
+   "reading": "normal_depletion_observed"
+  },
+  {
+   "t_rel_s": [
+    100,
+    105
+   ],
+   "samples": 25,
+   "hud_present": 25,
+   "webs_min": 4,
+   "webs_max": 5,
+   "web_decrements": 1,
+   "countdown_samples": 14,
+   "reading": "normal_depletion_observed"
+  },
+  {
+   "t_rel_s": [
+    105,
+    110
+   ],
+   "samples": 25,
+   "hud_present": 25,
+   "webs_min": 3,
+   "webs_max": 4,
+   "web_decrements": 2,
+   "countdown_samples": 24,
+   "reading": "normal_depletion_observed"
+  },
+  {
+   "t_rel_s": [
+    110,
+    115
+   ],
+   "samples": 25,
+   "hud_present": 25,
+   "webs_min": 4,
+   "webs_max": 5,
+   "web_decrements": 0,
+   "countdown_samples": 13,
+   "reading": "normal_depletion_observed"
+  },
+  {
+   "t_rel_s": [
+    115,
+    120
+   ],
+   "samples": 25,
+   "hud_present": 25,
+   "webs_min": 5,
+   "webs_max": 5,
+   "web_decrements": 0,
+   "countdown_samples": 0,
+   "reading": "no_evidence"
+  },
+  {
+   "t_rel_s": [
+    120,
+    125
+   ],
+   "samples": 25,
+   "hud_present": 25,
+   "webs_min": 5,
+   "webs_max": 5,
+   "web_decrements": 0,
+   "countdown_samples": 0,
+   "reading": "no_evidence"
+  },
+  {
+   "t_rel_s": [
+    125,
+    130
+   ],
+   "samples": 25,
+   "hud_present": 25,
+   "webs_min": 3,
+   "webs_max": 5,
+   "web_decrements": 3,
+   "countdown_samples": 19,
+   "reading": "normal_depletion_observed"
+  },
+  {
+   "t_rel_s": [
+    130,
+    135
+   ],
+   "samples": 25,
+   "hud_present": 25,
+   "webs_min": 4,
+   "webs_max": 5,
+   "web_decrements": 0,
+   "countdown_samples": 25,
+   "reading": "normal_depletion_observed"
+  },
+  {
+   "t_rel_s": [
+    135,
+    140
+   ],
+   "samples": 25,
+   "hud_present": 25,
+   "webs_min": 4,
+   "webs_max": 5,
+   "web_decrements": 1,
+   "countdown_samples": 7,
+   "reading": "normal_depletion_observed"
+  },
+  {
+   "t_rel_s": [
+    140,
+    145
+   ],
+   "samples": 25,
+   "hud_present": 25,
+   "webs_min": 2,
+   "webs_max": 4,
+   "web_decrements": 4,
+   "countdown_samples": 25,
+   "reading": "normal_depletion_observed"
+  },
+  {
+   "t_rel_s": [
+    145,
+    150
+   ],
+   "samples": 25,
+   "hud_present": 25,
+   "webs_min": 3,
+   "webs_max": 5,
+   "web_decrements": 0,
+   "countdown_samples": 21,
+   "reading": "normal_depletion_observed"
+  },
+  {
+   "t_rel_s": [
+    150,
+    155
+   ],
+   "samples": 25,
+   "hud_present": 25,
+   "webs_min": 3,
+   "webs_max": 5,
+   "web_decrements": 3,
+   "countdown_samples": 18,
+   "reading": "normal_depletion_observed"
+  },
+  {
+   "t_rel_s": [
+    155,
+    160
+   ],
+   "samples": 25,
+   "hud_present": 25,
+   "webs_min": 3,
+   "webs_max": 5,
+   "web_decrements": 0,
+   "countdown_samples": 25,
+   "reading": "normal_depletion_observed"
+  },
+  {
+   "t_rel_s": [
+    160,
+    165
+   ],
+   "samples": 25,
+   "hud_present": 25,
+   "webs_min": 3,
+   "webs_max": 5,
+   "web_decrements": 2,
+   "countdown_samples": 12,
+   "reading": "normal_depletion_observed"
+  },
+  {
+   "t_rel_s": [
+    165,
+    170
+   ],
+   "samples": 25,
+   "hud_present": 11,
+   "webs_min": 3,
+   "webs_max": 4,
+   "web_decrements": 1,
+   "countdown_samples": 11,
+   "reading": "normal_depletion_observed"
+  }
+ ],
+ "session_regime_from_scan": "normal",
+ "rule": "normal when depletion is observed (countdown numerals, web decrements or 0 webs); no interval evidence is ever read as no-cooldown; no_evidence stays no_evidence",
+ "drop_note": null,
+ "cross_check": {
+  "agreement": null,
+  "status": "no_note"
+ }
+}

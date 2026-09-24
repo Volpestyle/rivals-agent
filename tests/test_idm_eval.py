@@ -1,0 +1,266 @@
+"""policy/idm_eval.py: IDM Gate 1 metrics and baselines on a fixture whose answers are known by construction.
+
+    uv run pytest tests/test_idm_eval.py
+"""
+from __future__ import annotations
+
+import sys
+from pathlib import Path
+
+import pytest
+
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))
+
+from policy import idm_eval as E  # noqa: E402
+from policy import idm_targets as T  # noqa: E402
+from policy.range_bc import vocab  # noqa: E402
+
+N = len(vocab.NAMES)
+DT = 16_666_667
+FWD, JUMP = vocab.INDEX["move_forward"], vocab.INDEX["jump"]
+
+
+def rows_of(yaws, presses=(), run="r0", start=0, i0=0, known=True, pitch=0.0):
+    """One run of intervals: yaw per row, (row, action index) presses."""
+    out = []
+    for k, y in enumerate(yaws):
+        press = [0] * N
+        for row, c in presses:
+            if row == k:
+                press[c] = 1
+        out.append({"i": i0 + k, "run": run, "t0_ns": start + k * DT, "t1_ns": start + (k + 1) * DT,
+                    "suitability": "accepted", "gap_free": True, "regime": "normal", "yaw_deg": y,
+                    "pitch_deg": pitch, "beyond_pad_envelope": abs(y) > 415 / 60, "press": press,
+                    "held_known": [known] * N})
+    return out
+
+
+def targets(rows, sid="held"):
+    return T.Targets({"session_id": sid, "split": "val"}, rows)
+
+
+SUPPORTED = {a: a in ("move_forward", "jump") for a in vocab.NAMES}
+
+
+def oracle(rows):
+    return {r["i"]: {"yaw_deg": r["yaw_deg"], "pitch_deg": r["pitch_deg"],
+                     "press": {a: float(r["press"][c] > 0) for c, a in enumerate(vocab.NAMES)}} for r in rows}
+
+
+def shifted(by):
+    def predict(rows):
+        p = E.zero(rows)
+        for k, r in enumerate(rows):
+            for c, a in enumerate(vocab.NAMES):
+                if r["press"][c] and 0 <= k + by < len(rows):
+                    p[rows[k + by]["i"]]["press"][a] = 1.0
+        return p
+    return predict
+
+
+def test_the_oracle_scores_perfectly():
+    t = targets(rows_of([0.0, 1.0, -2.0, 0.3] * 30, presses=[(5, FWD), (40, FWD), (70, JUMP)]))
+    rep = E.evaluate([t], oracle, SUPPORTED)["sessions"]["held"]
+    yaw = rep["camera"]["yaw_deg"]
+    assert yaw["abstention_rate"] == 0 and yaw["abs_error_deg"]["median"] == 0 and yaw["direction_agreement_moving"] == 1
+    assert yaw["sum_error_deg_by_window"]["15"]["n"] == 8 and yaw["sum_error_deg_by_window"]["60"]["median"] == 0
+    assert rep["edges"]["move_forward"]["f1"] == 1 and rep["edges"]["jump"]["tp"] == 1
+    assert set(rep["edges"]) == {"move_forward", "jump"}                   # unsupported actions are not scored
+
+
+def test_the_zero_baseline_errs_by_the_truth_and_finds_no_press():
+    t = targets(rows_of([0.0, 1.0, -2.0, 0.3] * 30, presses=[(5, FWD)]))
+    rep = E.evaluate([t], E.zero, SUPPORTED)["sessions"]["held"]
+    yaw = rep["camera"]["yaw_deg"]
+    assert yaw["abs_error_moving_deg"]["median"] == pytest.approx(1.5)      # moving truths 1.0 and 2.0
+    assert yaw["abs_error_still_deg"]["median"] == pytest.approx(0.15)      # still truths 0.0 and 0.3
+    assert yaw["direction_agreement_moving"] == 0                           # a zero never agrees on direction
+    fwd = rep["edges"]["move_forward"]
+    assert (fwd["tp"], fwd["fp"], fwd["fn"], fwd["recall"], fwd["f1"], fwd["precision"]) == (0, 0, 1, 0, 0, None)
+
+
+@pytest.mark.parametrize("by,hit", [(1, True), (-2, True), (2, True), (3, False), (-3, False)])
+def test_the_label_precision_window_is_two_intervals(by, hit):
+    t = targets(rows_of([0.0] * 40, presses=[(20, FWD)]))
+    fwd = E.evaluate([t], shifted(by), SUPPORTED)["sessions"]["held"]["edges"]["move_forward"]
+    assert (fwd["tp"], fwd["fp"], fwd["fn"]) == ((1, 0, 0) if hit else (0, 1, 1))
+    if hit:
+        assert fwd["onset_error_intervals_median"] == abs(by)
+
+
+def test_matching_never_crosses_a_run_boundary():
+    rows = rows_of([0.0] * 10, presses=[(9, FWD)], run="a") + rows_of([0.0] * 10, run="b", start=10 * DT, i0=10)
+
+    def late(rows):
+        p = E.zero(rows)
+        p[10]["press"]["move_forward"] = 1.0         # one interval later, but in the next run
+        return p
+    fwd = E.evaluate([targets(rows)], late, SUPPORTED)["sessions"]["held"]["edges"]["move_forward"]
+    assert (fwd["tp"], fwd["fp"], fwd["fn"]) == (0, 1, 1)
+
+
+def abstain_at(rows_to_skip, base=None):
+    """A predictor that answers like `base` (the oracle) except on the given row indices, where it abstains."""
+    def predict(rows):
+        p = (base or oracle)(rows)
+        for r in rows:
+            if r["i"] in rows_to_skip:
+                p[r["i"]] = {"yaw_deg": None, "pitch_deg": None, "press": {a: None for a in vocab.NAMES}}
+        return p
+    return predict
+
+
+def test_abstentions_are_rated_and_an_abstained_onset_is_a_miss():
+    t = targets(rows_of([1.0] * 20, presses=[(3, FWD), (15, FWD)]))
+    rep = E.evaluate([t], abstain_at(set(range(10, 20))), SUPPORTED)["sessions"]["held"]
+    assert rep["camera"]["yaw_deg"]["abstention_rate"] == 0.5 and rep["camera"]["yaw_deg"]["abs_error_deg"]["n"] == 10
+    fwd = rep["edges"]["move_forward"]
+    assert fwd["abstention_rate"] == 0.5 and fwd["answered_rows"] == 10
+    assert fwd["heldout_positives"] == 2 and (fwd["tp"], fwd["fp"], fwd["fn"]) == (1, 0, 1)   # row 15 abstained
+    assert (fwd["abstained_onsets"], fwd["abstained_onsets_missed"]) == (1, 1)
+    assert fwd["recall"] == 0.5 and fwd["f1"] == pytest.approx(0.6667)
+
+
+def test_abstention_cannot_hide_onsets_from_the_positive_count():
+    """idm-diag: move_left had 183 held-out onsets and the report said 5, because 178 fell in the abstention band.
+    Here 35 of 40 onsets are abstained on: they stay positives, count as misses, and the action still decides."""
+    onsets = list(range(5, 400, 10))                                   # 40 onsets
+    t = targets(rows_of([0.0] * 400, presses=[(k, FWD) for k in onsets]))
+    fwd = E.evaluate([t], abstain_at(set(onsets[5:])), SUPPORTED)["sessions"]["held"]["edges"]["move_forward"]
+    assert fwd["heldout_positives"] == 40 and fwd["decides"] is True   # the old count was 5, deciding nothing
+    assert (fwd["abstained_onsets"], fwd["abstained_onsets_missed"]) == (35, 35)
+    assert (fwd["tp"], fwd["fp"], fwd["fn"]) == (5, 0, 35) and fwd["recall"] == 0.125
+
+
+def test_an_abstained_onset_claimed_by_an_answered_neighbour_is_found():
+    t = targets(rows_of([0.0] * 40, presses=[(20, FWD)]))
+    fwd = E.evaluate([t], abstain_at({20}, base=shifted(1)), SUPPORTED)["sessions"]["held"]["edges"]["move_forward"]
+    assert (fwd["tp"], fwd["fp"], fwd["fn"]) == (1, 0, 0)               # the prediction at 21 claims it; no false +
+    assert (fwd["abstained_onsets"], fwd["abstained_onsets_missed"]) == (1, 0)
+    assert fwd["onset_error_intervals_median"] is None and fwd["onset_error_matches"] == 0     # M2: kept apart
+    assert fwd["onset_error_intervals_median_abstained_onsets"] == 1 and fwd["onset_error_matches_abstained_onsets"] == 1
+
+
+def test_neighbour_claimed_abstained_onsets_do_not_enter_the_timing_median():
+    """M2: an abstained onset can only be matched at >= 1 interval, so its matches would inflate the timing median."""
+    t = targets(rows_of([0.0] * 100, presses=[(10, FWD), (30, FWD), (50, FWD), (70, FWD)]))
+
+    def oracle_plus_neighbours(rows):                                  # onsets 10 and 30 exact; 51 and 72 fire too
+        p = oracle(rows)
+        for k in (51, 72):
+            p[rows[k]["i"]]["press"]["move_forward"] = 1.0
+        return p
+    fwd = E.evaluate([t], abstain_at({50, 70}, base=oracle_plus_neighbours),
+                     SUPPORTED)["sessions"]["held"]["edges"]["move_forward"]
+    assert (fwd["tp"], fwd["fp"], fwd["fn"]) == (4, 0, 0)
+    assert (fwd["onset_error_intervals_median"], fwd["onset_error_matches"]) == (0, 2)       # the answered onsets
+    assert fwd["onset_error_intervals_median_abstained_onsets"] == 1.5                        # |51-50|, |72-70|
+    assert fwd["onset_error_matches_abstained_onsets"] == 2
+
+
+def test_the_onset_rates_share_one_denominator_known_rows():
+    """M1, the reviewer's probe: a perfect predictor answering only on the three rows around each onset. Per answered
+    row it read as over-firing 3.3x; per known row both rates are 0.1."""
+    onsets = list(range(5, 400, 10))                                   # 40 onsets in 400 rows
+    near = {k + d for k in onsets for d in (-1, 0, 1)}
+    t = targets(rows_of([0.0] * 400, presses=[(k, FWD) for k in onsets]))
+    fwd = E.evaluate([t], abstain_at(set(range(400)) - near), SUPPORTED)["sessions"]["held"]["edges"]["move_forward"]
+    assert (fwd["tp"], fwd["fp"], fwd["fn"]) == (40, 0, 0) and fwd["answered_rows"] == 120
+    assert fwd["predicted_onset_rate"] == fwd["true_onset_rate"] == 0.1
+
+
+def test_the_auc_is_none_when_every_onset_row_was_abstained_on():
+    """M3: the AUC is over answered rows only; with every onset row abstained there is no onset to rank, and the
+    abstained onset-row count sits beside it."""
+    t = targets(rows_of([0.0] * 40, presses=[(10, FWD), (30, FWD)]))
+    fwd = E.evaluate([t], abstain_at({10, 30}, base=shifted(1)), SUPPORTED)["sessions"]["held"]["edges"]["move_forward"]
+    assert fwd["recall"] == 1.0 and fwd["auc"] is None                 # found by neighbours, but nothing to rank
+    assert (fwd["auc_rows"], fwd["auc_onset_rows"], fwd["auc_abstained_onset_rows"]) == (38, 0, 2)
+
+
+def test_the_onset_error_is_reported_with_the_density_it_was_measured_at():
+    """A predictor that fires on every row matches every onset at error 0; its density says why."""
+    t = targets(rows_of([0.0] * 40, presses=[(20, FWD)]))
+
+    def always(rows):
+        p = E.zero(rows)
+        for r in rows:
+            p[r["i"]]["press"]["move_forward"] = 1.0
+        return p
+    fwd = E.evaluate([t], always, SUPPORTED)["sessions"]["held"]["edges"]["move_forward"]
+    assert fwd["onset_error_intervals_median"] == 0 and fwd["tp"] == 1 and fwd["fp"] == 39
+    assert fwd["predicted_onset_rate"] == 1.0 and fwd["true_onset_rate"] == 0.025
+
+
+def test_the_auc_ranks_onset_rows_against_the_rest_over_answered_rows():
+    t = targets(rows_of([0.0] * 40, presses=[(10, FWD), (30, FWD)]))
+
+    def inverted(rows):
+        p = oracle(rows)
+        for r in rows:
+            p[r["i"]]["press"]["move_forward"] = 1.0 - p[r["i"]]["press"]["move_forward"]
+        return p
+    edges = lambda pred: E.evaluate([t], pred, SUPPORTED)["sessions"]["held"]["edges"]
+    assert edges(oracle)["move_forward"]["auc"] == 1.0 and edges(inverted)["move_forward"]["auc"] == 0.0
+    assert edges(E.zero)["move_forward"]["auc"] == 0.5                  # all ties
+    assert edges(oracle)["jump"]["auc"] is None                          # no jump onset: no ranking to measure
+    skip = edges(abstain_at({10, 11, 12}))["move_forward"]
+    assert skip["auc_rows"] == 37 and skip["auc"] == 1.0                # abstained rows carry no probability
+    assert (skip["auc_onset_rows"], skip["auc_abstained_onset_rows"]) == (1, 1)
+    assert E.auc([0.9, 0.1], [0.5]) == 0.5 and E.auc([0.5], [0.5]) == 0.5 and E.auc([], [0.1]) is None
+
+
+def test_persistence_repeats_the_previous_truth_and_abstains_at_a_run_start():
+    rows = rows_of([1.0, 2.0, 3.0], presses=[(1, FWD)]) + rows_of([5.0, 6.0], run="b", start=3 * DT, i0=3)
+    p = E.persistence(rows)
+    assert p[0]["yaw_deg"] is None and p[1]["yaw_deg"] == 1.0 and p[2]["yaw_deg"] == 2.0
+    assert p[3]["yaw_deg"] is None and p[4]["yaw_deg"] == 5.0                 # a new run starts over
+    assert p[2]["press"]["move_forward"] == 0.0 and p[1]["press"]["move_forward"] == 0.0   # a held state has no onset
+
+
+def test_persistence_edges_do_not_leak_the_label():
+    """Repeating the previous press would score F1 = 1 through the tolerance window; persistence finds no press."""
+    t = targets(rows_of([0.0] * 40, presses=[(10, FWD), (25, FWD)]))
+    fwd = E.evaluate([t], E.persistence, SUPPORTED)["sessions"]["held"]["edges"]["move_forward"]
+    assert fwd["tp"] == 0 and fwd["fn"] == 2
+
+
+def test_unknown_holds_and_unusable_rows_do_not_count():
+    rows = rows_of([1.0] * 10, presses=[(2, FWD)], known=False)
+    rows[5]["suitability"] = "rejected"
+    rep = E.evaluate([targets(rows)], oracle, SUPPORTED)["sessions"]["held"]
+    assert rep["usable_rows"] == 9 and rep["edges"]["move_forward"]["known_rows"] == 0
+    assert rep["edges"]["move_forward"]["f1"] is None and rep["camera"]["yaw_deg"]["evaluable"] == 9
+
+
+def test_an_action_decides_only_with_enough_heldout_positives():
+    few = targets(rows_of([0.0] * 100, presses=[(k, FWD) for k in range(0, 100, 10)]))
+    many = targets(rows_of([0.0] * 400, presses=[(k, FWD) for k in range(0, 400, 10)]), sid="big")
+    rep = E.evaluate([few, many], oracle, SUPPORTED)
+    assert rep["sessions"]["held"]["edges"]["move_forward"]["decides"] is False      # 10 positives
+    assert rep["sessions"]["big"]["edges"]["move_forward"]["decides"] is True        # 40
+    assert rep["pooled"]["edges"]["move_forward"]["heldout_positives"] == 50
+
+
+def test_pitch_is_unknown_where_its_gain_is():
+    rows = rows_of([1.0] * 5)
+    for r in rows:
+        r["pitch_deg"] = None
+    cam = E.evaluate([targets(rows)], oracle, SUPPORTED)["sessions"]["held"]["camera"]
+    assert cam["pitch_deg"]["evaluable"] == 0 and cam["pitch_deg"]["abstention_rate"] is None
+
+
+def test_camera_error_is_reported_per_gain_regime_and_speed_band():
+    """review S3: calibrated vs extrapolated degrees, and <=1x / 1-4x / >4x the calibration turn's rate."""
+    rows = rows_of([0.5, 1.0, 3.0, 12.0])
+    rates = [0.0, 900.0, 2000.0, 5000.0]                        # counts/s: 0x, ~1x, ~2.2x, ~5.5x
+    for r, rate in zip(rows, rates):
+        r["mouse_rate_cps"] = rate
+        r["gain_regime"] = "calibrated" if rate <= 1400 else "extrapolated"
+    yaw = E.evaluate([targets(rows)], E.zero, SUPPORTED)["sessions"]["held"]["camera"]["yaw_deg"]
+    assert yaw["abs_error_deg_by_gain_regime"]["calibrated"]["n"] == 2
+    assert yaw["abs_error_deg_by_gain_regime"]["extrapolated"]["median"] == pytest.approx(7.5)
+    bands = yaw["abs_error_deg_by_speed_band"]
+    assert (bands["<=1x"]["n"], bands["1-4x"]["n"], bands[">4x"]["n"]) == (2, 1, 1)
+    assert bands[">4x"]["median"] == pytest.approx(12.0)

@@ -1,0 +1,20 @@
+{
+  "input_domain": "virtual_pad",
+  "saved_values": {
+    "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\galacta-pilot-20260923-preflight\\saved-settings.json",
+    "sha256": "fb676e3b687f10813326728d9437dd112bf043b87d0a33251630e9570d5aa635"
+  },
+  "effective_setup": {
+    "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\galacta-pilot-20260923-preflight\\effective-setup.json",
+    "sha256": "ebe253133110df0e05c8e20efb39ba5172551b774d6492c36f4b873d77f537cf"
+  },
+  "limits": [
+    "Persisted values and a current range scene, not proof of all effective in-memory settings.",
+    "Unspecified vertical sensitivity, deadzones and complete/default pad bindings remain unspecified.",
+    "NoCDSaved is retained without encoding interpretation; the range menu must independently confirm normal cooldowns.",
+    "Client/build does not prove a server hotfix or marketing patch label.",
+    "Bot health and bot movement are not exposed by Practice Settings: unknown.",
+    "No human source motor settings are backdated from these runtime fields."
+  ],
+  "no_source_motor_conversion": true
+}

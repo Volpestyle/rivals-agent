@@ -1,0 +1,61 @@
+{
+  "status": "pinned_inputs_for_the_galacta_pilot_20260923_binding_not_an_approval",
+  "schedule": {
+    "path": "data/benchmarks/galacta-pilot-20260923/schedule.json",
+    "note": "sha256 is read at issue time and written into the scope; the schedule is frozen before slot 1"
+  },
+  "checkpoint": {
+    "path": "data/diagnostics/range-request-cohort-fit-20260923/run-1/model.pt",
+    "sha256": "698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b",
+    "confidence": 0.7
+  },
+  "fit_reports": [
+    {
+      "path": "data/diagnostics/range-request-cohort-fit-20260923/run-1/mac-report.json",
+      "sha256": "d67507a00a1f302311f55d63fa7e36e344d26856ae0b23c19d235ce228a8bc61"
+    },
+    {
+      "path": "data/diagnostics/range-request-cohort-fit-20260923/run-1/windows-report.json",
+      "sha256": "b38defa3c42c59cd5bc261dabdd14e8bfab1486deface43885e58a85037752b8"
+    }
+  ],
+  "source_identity": {
+    "patch": "1.1.3870120/build25364676",
+    "cooldown_regime": "normal",
+    "source_profile_sha256": "c5528cf75add2d7dde45b98423519788b8f1865e6d578a0ec6dec082f7e4a914",
+    "perception_sha256": "a30b3cae3024641a1a235a99f6297114ec7cbc5d79398a3712e8fe06d8854e2c",
+    "selector_sha256": "00fd672e388faa0743bec098fc4bb0b6d8dfd35425fe7517bdfd67b846d4ed5f",
+    "semantic_revision": "web-cluster-request-v1",
+    "feature_revision": "masked-state-grid-causal-v1"
+  },
+  "source_identity_sha256": "fff3cab14b4e7c15e788938bce5246312b9965e72719fd92a32c6f4b7b85d16a",
+  "identity_commit": "45530720c10274680afe138f06f4b2f8689f77f7",
+  "predeclared_commit": "545eb55011e7b37f0515c6ab9c3539a16a8e7dea",
+  "runtime_paths": ["agent", "perception", "policy", "scripts"],
+  "identity_files": {
+    "perception": ["perception/hud.py", "perception/outline.py", "agent/loop.py"],
+    "selector": ["agent/brain.py", "agent/tracker.py"],
+    "byte_form": "digest({path: sha256(git blob with LF -> CRLF)}); docs/evidence/fit-readiness-20260923/README.md 'The identity hashes are over CRLF bytes'"
+  },
+  "review_reference": {
+    "path": "docs/evidence/fit-readiness-20260923/driver-review.md",
+    "git_blob_sha1": "aa3e79901732594c874c3f5cfecc76a2cc80b117",
+    "git_blob_sha256": "c12a20a85b8f1b90d762e020b98f970e6d8c1fbc0b06fed7fde0a1ba45cb8030",
+    "working_tree_sha256_on_this_pc": "d74822916cac17a7fe7be72f3d3f7a23d02117de05816271deebee4eaf6efd0b",
+    "committed_in": "545eb55011e7b37f0515c6ab9c3539a16a8e7dea",
+    "use": "SkillDeploymentBinding.review_sha256 = sha256 of the committed blob bytes (the git blob id is SHA-1 and the field requires SHA-256)"
+  },
+  "changed_boundary_reviews": {
+    "note": "Reviews of the runtime changes since the first pilot's live tree e5511c5. issue_binding.py pins each by hash from the lead's handoff folder (data/ entries from this repo) and records a missing one as absent; committing them under docs/evidence/ would make the pins durable.",
+    "0f71336 tracker body witness (VUH-1314)": ["review-vuh1314.md", "review-vuh1314-delta.md"],
+    "1bd6a8a HUD tracer witness (VUH-1294)": ["review-hud-1294.md"],
+    "ae648b3 outline player zone (VUH-1355)": ["review-vuh1355.md"],
+    "e5511c5 collection caller (VUH-1319)": ["data/runtime/galacta-pilot-20260922-04-preflight/caller-review.md"]
+  },
+  "baseline_manifests": {
+    "controller": "data/runtime/range-request-diagnostic-20260922/controller-manifest.json",
+    "perception": "data/runtime/range-request-diagnostic-20260922/perception-manifest.json",
+    "calibration": "data/runtime/range-request-diagnostic-20260922/calibration-manifest.json"
+  },
+  "previous_saved_settings": "data/runtime/galacta-pilot-20260922-04-preflight/saved-settings.json"
+}

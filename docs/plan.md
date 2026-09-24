@@ -33,6 +33,12 @@ included (target choice, engage or retreat, positioning, setup and recovery), no
 button sequences. Order: imitation first, human correction next, reinforcement learning
 only once an outcome can be measured reliably.
 
+- **Whole-session recording (2026-09-23, current).** James records 20-30 minute
+  practice-range sessions with the OBS input logger ([protocol](recording-protocol.md),
+  [ledger](recording-log.md)). The first fit is one end-to-end policy that outputs semantic
+  actions plus camera degrees, executed by the pad ([end-to-end fit](lanes/end-to-end-fit.md)).
+  The web-start timing head proved the pipe and is not the product
+  ([pilot 2](evidence/galacta-pilot-20260923/README.md)).
 - **Sources.** Full VODs from James's selected sources DayMR and ReqMR supply tactical
   evidence; their rank is not independently verified. James's expert-level
   technical demonstrations now supply paired video and **keyboard/mouse** inputs through
@@ -86,6 +92,7 @@ only once an outcome can be measured reliably.
   unknown input states. See [the current learning decision](learning-plan.md#paired-human-execution-current-work).
   Keyboard/mouse checkpoints are offline artifacts: there is no validated conversion to
   the accepted virtual-pad executor, and the rejected synthetic-mouse path stays closed.
+  *Superseded 2026-09-23: semantic actions + degrees through the pad, see [docs/lanes/end-to-end-fit.md](lanes/end-to-end-fit.md).*
 - **Jev** is frozen as a baseline and a possible label assistant. Its inference path does
   not learn from experience, and agreement with it is not gameplay quality.
 - **Roadmap.** Six gated milestones in [learning-plan.md](learning-plan.md#roadmap-and-advancement-gates):
@@ -224,93 +231,9 @@ then L4 takes the game while L2 and L3 run offline on the L1 footage, then L5.
 
 ## Decision layer
 
-The offline half of L5 lives in `agent/`: a scripted brain that runs on recorded
-`State`s, no game needed. Test with `uv run pytest`; replay a run with
-`uv run python -m agent.replay run.jsonl [--hz 10] [--json]`
-(`--synth` first writes a synthetic run to the given path).
-
-| File | Holds |
-|------|-------|
-| `agent/state.py` | `State`, `Detection`, `Ability`; one `State` per JSONL line via `to_dict` / `from_dict`, which rejects a line without `frame` |
-| `agent/intents.py` | `Idle`, `Search`, `Engage`, `SwingTo`, `Pull`, `WebStrike`, `Combo`, `Disengage` (frozen dataclasses); each names the kit primitives it plays |
-| `agent/brain.py` | `decide(state, memory) -> Intent` plus `Memory`, in two halves: `gate` (retreat, playing holds, a flickering target: no choice needed) and `policy` (the scripted choice). All timing reads `state.t`, so replays are deterministic |
-| `agent/jev.py` | `decide_jev(state, memory)`: `gate`, then Jev makes the choice `policy` would make, with `policy` as the per-tick fallback. Also the latency benchmark: `uv run python -m agent.jev` |
-| `agent/replay.py` | Decimates to the brain rate, prints the intent timeline and metrics (time per intent, switches, retreats, time to first attack, unknown-field share, max gap) |
-
-What perception fills in (`None` means "could not read this frame", never zero or
-"not ready"). `State.frame` is required, has no default, and is the (width, height) of
-the frame actually processed; the builder of each `State` sets it:
-
-- L2 HUD: `hp`, `max_hp`, `abilities[name] = Ability(ready, charges)` for `swing`
-  (Web-Swing, LB), `pull` (Get Over Here!, RB: it gates both `Pull` and `WebStrike`),
-  `uppercut` (Amazing Combo, X), `ult` (a missing key is unknown too), `webs`
-  (Web Cluster ammo, LT), and `on_target` (crosshair over a hostile).
-- L3 detector: `detections` of class `enemy`, `target` (static dummy) or `anchor`,
-  bbox in pixels of `State.frame`, confidence, optional `distance` in metres.
-  `detections=None` means the detector did not run; `[]` means it ran and saw
-  nothing. There is no track id.
-- Per enemy, `Detection.tagged`: the Spider-Tracer icon is over it. `None` means
-  not read, and an icon missing from the frame is not evidence of `False`. The
-  icon floats over the enemy's head, so it cannot come from a fixed HUD region.
-
-```mermaid
-stateDiagram-v2
-  [*] --> SEARCH
-  SEARCH --> APPROACH: hostile seen, not near
-  SEARCH --> FIGHT: hostile seen, near
-  APPROACH --> FIGHT: near
-  FIGHT --> APPROACH: target moves off
-  APPROACH --> SEARCH: target lost 0.5 s
-  FIGHT --> SEARCH: target lost 0.5 s
-  SEARCH --> RETREAT: hp at or below 30%
-  APPROACH --> RETREAT: hp at or below 30%
-  FIGHT --> RETREAT: hp at or below 30%
-  RETREAT --> SEARCH: hp at or above 60%, or 6 s
-```
-
-Intent choice, nearest hostile to the crosshair (sticky while it stays visible).
-Range is `Detection.distance` when present (near <= 4 m, far > 20 m; the kit's
-uppercut/kick reach and pull/burst reach), else bbox height over frame height
-(near >= 35%, far <= 8%).
-
-Get Over Here! is one button whose meaning follows the Spider-Tracer: on an
-**untagged** enemy it is `pull` (they come to you, aimed, 25 dmg); on a **tagged**
-one it is `web_strike` (you zip to them, auto-lock, 55 dmg, tag kept). So `Pull`
-and `WebStrike` are separate intents, and the brain never presses RB blind:
-
-| Situation | Intent |
-|-----------|--------|
-| Retreat (preempts everything) | `Disengage` |
-| Nothing in view | `Search`; `SwingTo` the nearest anchor after 3 s if swing is ready; `Idle` when the detector is down |
-| Far | `SwingTo` the anchor nearest the target if swing is ready, else `Engage` |
-| Near | `Engage` (melee and uppercut also consume a tag) |
-| Mid, RB ready, target tagged | `WebStrike` (no aim check: it auto-locks) |
-| Mid, RB ready, aimed, webs and uppercut ready | `Combo("burst")`: tags first, so the tag state does not matter |
-| Mid, RB ready, aimed, target untagged, no burst | `Pull` |
-| Mid, anything else (tag unknown, RB cooling or unread, unaimed) | `Engage`; its Web Cluster shots tag the enemy for the next tick |
-
-Rules the reflex controller (L4) can rely on:
-
-- Intents map onto the typed primitives of `docs/spiderman-kit.md`: `Pull` is
-  `pull`, `WebStrike` is `web_strike`, `SwingTo` is `swing_start(anchor)` or
-  `web_zip(point)`, `Engage` may play `web_cluster`, `melee_combo` and `uppercut`,
-  and `Combo.name` is always one of `intents.MACROS`, today only `burst`
-  (`web_cluster` -> `web_strike` -> `uppercut` -> `melee_combo` -> `web_cluster`).
-- An intent carries the `Detection` seen at decision time. The controller runs
-  faster than the brain and re-associates it with the nearest current detection.
-- After `Combo("burst")` (3.0 s), `Pull` or `WebStrike` (0.8 s) or `SwingTo` (1.2 s)
-  the brain repeats that intent instead of re-deciding, so the controller can play
-  it out; only `Disengage` interrupts. A target lost for under 0.5 s keeps the
-  current intent.
-- Unknown fields are never read as values: unknown hp never retreats, an unknown
-  ability or ammo count is never spent, an unknown tag never presses RB,
-  `on_target=None` falls back to whether the crosshair is inside the bbox, and a
-  retreat in progress outlasts unreadable hp until its 6 s cap. Retreat does not
-  re-fire until hp has read >= 60% once, so a timed-out retreat at low hp does not
-  flap straight back in.
-- The 4 m and 20 m ranges and the 3 s burst window come from the kit (the window is
-  a guide's claim, unmeasured). Every other threshold at the top of `brain.py` is a
-  labelled guess to tune by replaying L1 footage.
+The scripted brain's contract lives in the L5 lane doc, [lanes/l5-brain.md](lanes/l5-brain.md): the `agent/`
+file table, the state diagram and the intent table. The intents themselves are in `agent/intents.py`. This
+section used to repeat that doc verbatim and had drifted from it.
 
 ### Jev
 
@@ -324,10 +247,9 @@ shape, client behaviour and measurements: [lanes/jev.md](lanes/jev.md).
 ## Human-only tasks
 
 Current human actions live in Linear and are assigned to and mention James
-(`@volpestyle`). [VUH-1347](https://linear.app/vuhlp/issue/VUH-1347) requests an
-independent 5-10 minute KBM validation session with original OBS sidecars, visible
-normal-cooldown verification and settings/version evidence. Existing clips remain
-useful; unknown DPI does not require re-recording.
+(`@volpestyle`). The independent KBM validation session that
+[VUH-1347](https://linear.app/vuhlp/issue/VUH-1347) requested was recorded on 2026-09-23
+(`2026-09-23 00-36-16.mkv`, 2 min) and is sealed and held out ([recording log](recording-log.md)).
 
 The lead reports other blockers on their existing issues, including those agents
 can resolve. James authorized opening Steam/Rivals and guarded practice-range

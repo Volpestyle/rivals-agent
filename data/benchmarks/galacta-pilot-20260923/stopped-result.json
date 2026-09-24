@@ -1,0 +1,1812 @@
+{
+  "schema": "range-benchmark-result-v1",
+  "stage": "offline_scoring_requires_independent_audit",
+  "summary": {
+    "scheduled_trials": 20,
+    "attempted_episodes": 0,
+    "setup_failures": 20,
+    "valid_episodes": 0,
+    "outcomes": {
+      "setup_failure": 20
+    },
+    "successes": 0,
+    "success_per_attempt": null,
+    "success_per_scheduled_trial": 0.0,
+    "success_per_valid_episode": null,
+    "primary_metric": "success_per_scheduled_trial",
+    "scheduled_success_wilson95": [
+      0,
+      0.16112515805281938
+    ],
+    "attempted_success_wilson95": null,
+    "uncertainty_note": "Small, possibly correlated trial sample; feasibility only, not human parity.",
+    "invalid_attempt_fraction": null,
+    "restricted_completion_s": null,
+    "wall_seconds": null,
+    "valid_episodes_per_hour": null,
+    "reset_seconds": {
+      "n": 0,
+      "p50": null,
+      "p95": null,
+      "max": null
+    },
+    "respawn_seconds": {
+      "n": 0,
+      "p50": null,
+      "p95": null,
+      "max": null
+    },
+    "latency_ms": {},
+    "failures": [
+      {
+        "episode_id": "galacta-pilot-20260923-episode-01",
+        "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+        "scenario": "near",
+        "outcome": "setup_failure",
+        "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+        "elapsed_s": null,
+        "evidence": []
+      },
+      {
+        "episode_id": "galacta-pilot-20260923-episode-02",
+        "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+        "scenario": "near",
+        "outcome": "setup_failure",
+        "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+        "elapsed_s": null,
+        "evidence": []
+      },
+      {
+        "episode_id": "galacta-pilot-20260923-episode-03",
+        "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+        "scenario": "mid",
+        "outcome": "setup_failure",
+        "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+        "elapsed_s": null,
+        "evidence": []
+      },
+      {
+        "episode_id": "galacta-pilot-20260923-episode-04",
+        "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+        "scenario": "mid",
+        "outcome": "setup_failure",
+        "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+        "elapsed_s": null,
+        "evidence": []
+      },
+      {
+        "episode_id": "galacta-pilot-20260923-episode-05",
+        "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+        "scenario": "near",
+        "outcome": "setup_failure",
+        "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+        "elapsed_s": null,
+        "evidence": []
+      },
+      {
+        "episode_id": "galacta-pilot-20260923-episode-06",
+        "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+        "scenario": "near",
+        "outcome": "setup_failure",
+        "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+        "elapsed_s": null,
+        "evidence": []
+      },
+      {
+        "episode_id": "galacta-pilot-20260923-episode-07",
+        "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+        "scenario": "mid",
+        "outcome": "setup_failure",
+        "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+        "elapsed_s": null,
+        "evidence": []
+      },
+      {
+        "episode_id": "galacta-pilot-20260923-episode-08",
+        "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+        "scenario": "mid",
+        "outcome": "setup_failure",
+        "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+        "elapsed_s": null,
+        "evidence": []
+      },
+      {
+        "episode_id": "galacta-pilot-20260923-episode-09",
+        "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+        "scenario": "near",
+        "outcome": "setup_failure",
+        "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+        "elapsed_s": null,
+        "evidence": []
+      },
+      {
+        "episode_id": "galacta-pilot-20260923-episode-10",
+        "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+        "scenario": "near",
+        "outcome": "setup_failure",
+        "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+        "elapsed_s": null,
+        "evidence": []
+      },
+      {
+        "episode_id": "galacta-pilot-20260923-episode-11",
+        "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+        "scenario": "mid",
+        "outcome": "setup_failure",
+        "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+        "elapsed_s": null,
+        "evidence": []
+      },
+      {
+        "episode_id": "galacta-pilot-20260923-episode-12",
+        "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+        "scenario": "mid",
+        "outcome": "setup_failure",
+        "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+        "elapsed_s": null,
+        "evidence": []
+      },
+      {
+        "episode_id": "galacta-pilot-20260923-episode-13",
+        "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+        "scenario": "near",
+        "outcome": "setup_failure",
+        "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+        "elapsed_s": null,
+        "evidence": []
+      },
+      {
+        "episode_id": "galacta-pilot-20260923-episode-14",
+        "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+        "scenario": "near",
+        "outcome": "setup_failure",
+        "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+        "elapsed_s": null,
+        "evidence": []
+      },
+      {
+        "episode_id": "galacta-pilot-20260923-episode-15",
+        "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+        "scenario": "mid",
+        "outcome": "setup_failure",
+        "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+        "elapsed_s": null,
+        "evidence": []
+      },
+      {
+        "episode_id": "galacta-pilot-20260923-episode-16",
+        "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+        "scenario": "mid",
+        "outcome": "setup_failure",
+        "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+        "elapsed_s": null,
+        "evidence": []
+      },
+      {
+        "episode_id": "galacta-pilot-20260923-episode-17",
+        "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+        "scenario": "near",
+        "outcome": "setup_failure",
+        "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+        "elapsed_s": null,
+        "evidence": []
+      },
+      {
+        "episode_id": "galacta-pilot-20260923-episode-18",
+        "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+        "scenario": "near",
+        "outcome": "setup_failure",
+        "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+        "elapsed_s": null,
+        "evidence": []
+      },
+      {
+        "episode_id": "galacta-pilot-20260923-episode-19",
+        "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+        "scenario": "mid",
+        "outcome": "setup_failure",
+        "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+        "elapsed_s": null,
+        "evidence": []
+      },
+      {
+        "episode_id": "galacta-pilot-20260923-episode-20",
+        "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+        "scenario": "mid",
+        "outcome": "setup_failure",
+        "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+        "elapsed_s": null,
+        "evidence": []
+      }
+    ],
+    "feasibility_gate": {
+      "scheduled_trials_required": 10,
+      "minimum_successes": 8,
+      "scope_audited_trials": 0,
+      "scope_breaches": null,
+      "matched_baseline": null,
+      "passed": false,
+      "meaning": "feasibility, not pro-level parity"
+    }
+  },
+  "by_policy": {
+    "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7": {
+      "scheduled_trials": 10,
+      "attempted_episodes": 0,
+      "setup_failures": 10,
+      "valid_episodes": 0,
+      "outcomes": {
+        "setup_failure": 10
+      },
+      "successes": 0,
+      "success_per_attempt": null,
+      "success_per_scheduled_trial": 0.0,
+      "success_per_valid_episode": null,
+      "primary_metric": "success_per_scheduled_trial",
+      "scheduled_success_wilson95": [
+        0,
+        0.2775327998628892
+      ],
+      "attempted_success_wilson95": null,
+      "uncertainty_note": "Small, possibly correlated trial sample; feasibility only, not human parity.",
+      "invalid_attempt_fraction": null,
+      "restricted_completion_s": null,
+      "wall_seconds": null,
+      "valid_episodes_per_hour": null,
+      "reset_seconds": {
+        "n": 0,
+        "p50": null,
+        "p95": null,
+        "max": null
+      },
+      "respawn_seconds": {
+        "n": 0,
+        "p50": null,
+        "p95": null,
+        "max": null
+      },
+      "latency_ms": {},
+      "failures": [
+        {
+          "episode_id": "galacta-pilot-20260923-episode-01",
+          "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+          "scenario": "near",
+          "outcome": "setup_failure",
+          "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+          "elapsed_s": null,
+          "evidence": []
+        },
+        {
+          "episode_id": "galacta-pilot-20260923-episode-04",
+          "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+          "scenario": "mid",
+          "outcome": "setup_failure",
+          "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+          "elapsed_s": null,
+          "evidence": []
+        },
+        {
+          "episode_id": "galacta-pilot-20260923-episode-06",
+          "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+          "scenario": "near",
+          "outcome": "setup_failure",
+          "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+          "elapsed_s": null,
+          "evidence": []
+        },
+        {
+          "episode_id": "galacta-pilot-20260923-episode-07",
+          "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+          "scenario": "mid",
+          "outcome": "setup_failure",
+          "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+          "elapsed_s": null,
+          "evidence": []
+        },
+        {
+          "episode_id": "galacta-pilot-20260923-episode-09",
+          "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+          "scenario": "near",
+          "outcome": "setup_failure",
+          "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+          "elapsed_s": null,
+          "evidence": []
+        },
+        {
+          "episode_id": "galacta-pilot-20260923-episode-12",
+          "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+          "scenario": "mid",
+          "outcome": "setup_failure",
+          "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+          "elapsed_s": null,
+          "evidence": []
+        },
+        {
+          "episode_id": "galacta-pilot-20260923-episode-14",
+          "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+          "scenario": "near",
+          "outcome": "setup_failure",
+          "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+          "elapsed_s": null,
+          "evidence": []
+        },
+        {
+          "episode_id": "galacta-pilot-20260923-episode-15",
+          "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+          "scenario": "mid",
+          "outcome": "setup_failure",
+          "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+          "elapsed_s": null,
+          "evidence": []
+        },
+        {
+          "episode_id": "galacta-pilot-20260923-episode-17",
+          "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+          "scenario": "near",
+          "outcome": "setup_failure",
+          "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+          "elapsed_s": null,
+          "evidence": []
+        },
+        {
+          "episode_id": "galacta-pilot-20260923-episode-20",
+          "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+          "scenario": "mid",
+          "outcome": "setup_failure",
+          "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+          "elapsed_s": null,
+          "evidence": []
+        }
+      ],
+      "feasibility_gate": {
+        "scheduled_trials_required": 10,
+        "minimum_successes": 8,
+        "scope_audited_trials": 0,
+        "scope_breaches": null,
+        "matched_baseline": false,
+        "passed": false,
+        "meaning": "feasibility, not pro-level parity"
+      },
+      "by_scenario": {
+        "near": {
+          "scheduled_trials": 5,
+          "attempted_episodes": 0,
+          "setup_failures": 5,
+          "valid_episodes": 0,
+          "outcomes": {
+            "setup_failure": 5
+          },
+          "successes": 0,
+          "success_per_attempt": null,
+          "success_per_scheduled_trial": 0.0,
+          "success_per_valid_episode": null,
+          "primary_metric": "success_per_scheduled_trial",
+          "scheduled_success_wilson95": [
+            0,
+            0.43448246478317476
+          ],
+          "attempted_success_wilson95": null,
+          "uncertainty_note": "Small, possibly correlated trial sample; feasibility only, not human parity.",
+          "invalid_attempt_fraction": null,
+          "restricted_completion_s": null,
+          "wall_seconds": null,
+          "valid_episodes_per_hour": null,
+          "reset_seconds": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "max": null
+          },
+          "respawn_seconds": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "max": null
+          },
+          "latency_ms": {},
+          "failures": [
+            {
+              "episode_id": "galacta-pilot-20260923-episode-01",
+              "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+              "scenario": "near",
+              "outcome": "setup_failure",
+              "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+              "elapsed_s": null,
+              "evidence": []
+            },
+            {
+              "episode_id": "galacta-pilot-20260923-episode-06",
+              "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+              "scenario": "near",
+              "outcome": "setup_failure",
+              "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+              "elapsed_s": null,
+              "evidence": []
+            },
+            {
+              "episode_id": "galacta-pilot-20260923-episode-09",
+              "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+              "scenario": "near",
+              "outcome": "setup_failure",
+              "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+              "elapsed_s": null,
+              "evidence": []
+            },
+            {
+              "episode_id": "galacta-pilot-20260923-episode-14",
+              "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+              "scenario": "near",
+              "outcome": "setup_failure",
+              "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+              "elapsed_s": null,
+              "evidence": []
+            },
+            {
+              "episode_id": "galacta-pilot-20260923-episode-17",
+              "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+              "scenario": "near",
+              "outcome": "setup_failure",
+              "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+              "elapsed_s": null,
+              "evidence": []
+            }
+          ],
+          "feasibility_gate": {
+            "scheduled_trials_required": 10,
+            "minimum_successes": 8,
+            "scope_audited_trials": 0,
+            "scope_breaches": null,
+            "matched_baseline": null,
+            "passed": false,
+            "meaning": "feasibility, not pro-level parity"
+          }
+        },
+        "mid": {
+          "scheduled_trials": 5,
+          "attempted_episodes": 0,
+          "setup_failures": 5,
+          "valid_episodes": 0,
+          "outcomes": {
+            "setup_failure": 5
+          },
+          "successes": 0,
+          "success_per_attempt": null,
+          "success_per_scheduled_trial": 0.0,
+          "success_per_valid_episode": null,
+          "primary_metric": "success_per_scheduled_trial",
+          "scheduled_success_wilson95": [
+            0,
+            0.43448246478317476
+          ],
+          "attempted_success_wilson95": null,
+          "uncertainty_note": "Small, possibly correlated trial sample; feasibility only, not human parity.",
+          "invalid_attempt_fraction": null,
+          "restricted_completion_s": null,
+          "wall_seconds": null,
+          "valid_episodes_per_hour": null,
+          "reset_seconds": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "max": null
+          },
+          "respawn_seconds": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "max": null
+          },
+          "latency_ms": {},
+          "failures": [
+            {
+              "episode_id": "galacta-pilot-20260923-episode-04",
+              "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+              "scenario": "mid",
+              "outcome": "setup_failure",
+              "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+              "elapsed_s": null,
+              "evidence": []
+            },
+            {
+              "episode_id": "galacta-pilot-20260923-episode-07",
+              "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+              "scenario": "mid",
+              "outcome": "setup_failure",
+              "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+              "elapsed_s": null,
+              "evidence": []
+            },
+            {
+              "episode_id": "galacta-pilot-20260923-episode-12",
+              "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+              "scenario": "mid",
+              "outcome": "setup_failure",
+              "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+              "elapsed_s": null,
+              "evidence": []
+            },
+            {
+              "episode_id": "galacta-pilot-20260923-episode-15",
+              "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+              "scenario": "mid",
+              "outcome": "setup_failure",
+              "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+              "elapsed_s": null,
+              "evidence": []
+            },
+            {
+              "episode_id": "galacta-pilot-20260923-episode-20",
+              "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+              "scenario": "mid",
+              "outcome": "setup_failure",
+              "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+              "elapsed_s": null,
+              "evidence": []
+            }
+          ],
+          "feasibility_gate": {
+            "scheduled_trials_required": 10,
+            "minimum_successes": 8,
+            "scope_audited_trials": 0,
+            "scope_breaches": null,
+            "matched_baseline": null,
+            "passed": false,
+            "meaning": "feasibility, not pro-level parity"
+          }
+        }
+      }
+    },
+    "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s": {
+      "scheduled_trials": 10,
+      "attempted_episodes": 0,
+      "setup_failures": 10,
+      "valid_episodes": 0,
+      "outcomes": {
+        "setup_failure": 10
+      },
+      "successes": 0,
+      "success_per_attempt": null,
+      "success_per_scheduled_trial": 0.0,
+      "success_per_valid_episode": null,
+      "primary_metric": "success_per_scheduled_trial",
+      "scheduled_success_wilson95": [
+        0,
+        0.2775327998628892
+      ],
+      "attempted_success_wilson95": null,
+      "uncertainty_note": "Small, possibly correlated trial sample; feasibility only, not human parity.",
+      "invalid_attempt_fraction": null,
+      "restricted_completion_s": null,
+      "wall_seconds": null,
+      "valid_episodes_per_hour": null,
+      "reset_seconds": {
+        "n": 0,
+        "p50": null,
+        "p95": null,
+        "max": null
+      },
+      "respawn_seconds": {
+        "n": 0,
+        "p50": null,
+        "p95": null,
+        "max": null
+      },
+      "latency_ms": {},
+      "failures": [
+        {
+          "episode_id": "galacta-pilot-20260923-episode-02",
+          "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+          "scenario": "near",
+          "outcome": "setup_failure",
+          "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+          "elapsed_s": null,
+          "evidence": []
+        },
+        {
+          "episode_id": "galacta-pilot-20260923-episode-03",
+          "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+          "scenario": "mid",
+          "outcome": "setup_failure",
+          "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+          "elapsed_s": null,
+          "evidence": []
+        },
+        {
+          "episode_id": "galacta-pilot-20260923-episode-05",
+          "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+          "scenario": "near",
+          "outcome": "setup_failure",
+          "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+          "elapsed_s": null,
+          "evidence": []
+        },
+        {
+          "episode_id": "galacta-pilot-20260923-episode-08",
+          "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+          "scenario": "mid",
+          "outcome": "setup_failure",
+          "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+          "elapsed_s": null,
+          "evidence": []
+        },
+        {
+          "episode_id": "galacta-pilot-20260923-episode-10",
+          "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+          "scenario": "near",
+          "outcome": "setup_failure",
+          "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+          "elapsed_s": null,
+          "evidence": []
+        },
+        {
+          "episode_id": "galacta-pilot-20260923-episode-11",
+          "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+          "scenario": "mid",
+          "outcome": "setup_failure",
+          "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+          "elapsed_s": null,
+          "evidence": []
+        },
+        {
+          "episode_id": "galacta-pilot-20260923-episode-13",
+          "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+          "scenario": "near",
+          "outcome": "setup_failure",
+          "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+          "elapsed_s": null,
+          "evidence": []
+        },
+        {
+          "episode_id": "galacta-pilot-20260923-episode-16",
+          "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+          "scenario": "mid",
+          "outcome": "setup_failure",
+          "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+          "elapsed_s": null,
+          "evidence": []
+        },
+        {
+          "episode_id": "galacta-pilot-20260923-episode-18",
+          "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+          "scenario": "near",
+          "outcome": "setup_failure",
+          "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+          "elapsed_s": null,
+          "evidence": []
+        },
+        {
+          "episode_id": "galacta-pilot-20260923-episode-19",
+          "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+          "scenario": "mid",
+          "outcome": "setup_failure",
+          "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+          "elapsed_s": null,
+          "evidence": []
+        }
+      ],
+      "feasibility_gate": {
+        "scheduled_trials_required": 10,
+        "minimum_successes": 8,
+        "scope_audited_trials": 0,
+        "scope_breaches": null,
+        "matched_baseline": false,
+        "passed": false,
+        "meaning": "feasibility, not pro-level parity"
+      },
+      "by_scenario": {
+        "near": {
+          "scheduled_trials": 5,
+          "attempted_episodes": 0,
+          "setup_failures": 5,
+          "valid_episodes": 0,
+          "outcomes": {
+            "setup_failure": 5
+          },
+          "successes": 0,
+          "success_per_attempt": null,
+          "success_per_scheduled_trial": 0.0,
+          "success_per_valid_episode": null,
+          "primary_metric": "success_per_scheduled_trial",
+          "scheduled_success_wilson95": [
+            0,
+            0.43448246478317476
+          ],
+          "attempted_success_wilson95": null,
+          "uncertainty_note": "Small, possibly correlated trial sample; feasibility only, not human parity.",
+          "invalid_attempt_fraction": null,
+          "restricted_completion_s": null,
+          "wall_seconds": null,
+          "valid_episodes_per_hour": null,
+          "reset_seconds": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "max": null
+          },
+          "respawn_seconds": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "max": null
+          },
+          "latency_ms": {},
+          "failures": [
+            {
+              "episode_id": "galacta-pilot-20260923-episode-02",
+              "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+              "scenario": "near",
+              "outcome": "setup_failure",
+              "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+              "elapsed_s": null,
+              "evidence": []
+            },
+            {
+              "episode_id": "galacta-pilot-20260923-episode-05",
+              "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+              "scenario": "near",
+              "outcome": "setup_failure",
+              "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+              "elapsed_s": null,
+              "evidence": []
+            },
+            {
+              "episode_id": "galacta-pilot-20260923-episode-10",
+              "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+              "scenario": "near",
+              "outcome": "setup_failure",
+              "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+              "elapsed_s": null,
+              "evidence": []
+            },
+            {
+              "episode_id": "galacta-pilot-20260923-episode-13",
+              "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+              "scenario": "near",
+              "outcome": "setup_failure",
+              "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+              "elapsed_s": null,
+              "evidence": []
+            },
+            {
+              "episode_id": "galacta-pilot-20260923-episode-18",
+              "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+              "scenario": "near",
+              "outcome": "setup_failure",
+              "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+              "elapsed_s": null,
+              "evidence": []
+            }
+          ],
+          "feasibility_gate": {
+            "scheduled_trials_required": 10,
+            "minimum_successes": 8,
+            "scope_audited_trials": 0,
+            "scope_breaches": null,
+            "matched_baseline": null,
+            "passed": false,
+            "meaning": "feasibility, not pro-level parity"
+          }
+        },
+        "mid": {
+          "scheduled_trials": 5,
+          "attempted_episodes": 0,
+          "setup_failures": 5,
+          "valid_episodes": 0,
+          "outcomes": {
+            "setup_failure": 5
+          },
+          "successes": 0,
+          "success_per_attempt": null,
+          "success_per_scheduled_trial": 0.0,
+          "success_per_valid_episode": null,
+          "primary_metric": "success_per_scheduled_trial",
+          "scheduled_success_wilson95": [
+            0,
+            0.43448246478317476
+          ],
+          "attempted_success_wilson95": null,
+          "uncertainty_note": "Small, possibly correlated trial sample; feasibility only, not human parity.",
+          "invalid_attempt_fraction": null,
+          "restricted_completion_s": null,
+          "wall_seconds": null,
+          "valid_episodes_per_hour": null,
+          "reset_seconds": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "max": null
+          },
+          "respawn_seconds": {
+            "n": 0,
+            "p50": null,
+            "p95": null,
+            "max": null
+          },
+          "latency_ms": {},
+          "failures": [
+            {
+              "episode_id": "galacta-pilot-20260923-episode-03",
+              "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+              "scenario": "mid",
+              "outcome": "setup_failure",
+              "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+              "elapsed_s": null,
+              "evidence": []
+            },
+            {
+              "episode_id": "galacta-pilot-20260923-episode-08",
+              "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+              "scenario": "mid",
+              "outcome": "setup_failure",
+              "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+              "elapsed_s": null,
+              "evidence": []
+            },
+            {
+              "episode_id": "galacta-pilot-20260923-episode-11",
+              "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+              "scenario": "mid",
+              "outcome": "setup_failure",
+              "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+              "elapsed_s": null,
+              "evidence": []
+            },
+            {
+              "episode_id": "galacta-pilot-20260923-episode-16",
+              "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+              "scenario": "mid",
+              "outcome": "setup_failure",
+              "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+              "elapsed_s": null,
+              "evidence": []
+            },
+            {
+              "episode_id": "galacta-pilot-20260923-episode-19",
+              "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+              "scenario": "mid",
+              "outcome": "setup_failure",
+              "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+              "elapsed_s": null,
+              "evidence": []
+            }
+          ],
+          "feasibility_gate": {
+            "scheduled_trials_required": 10,
+            "minimum_successes": 8,
+            "scope_audited_trials": 0,
+            "scope_breaches": null,
+            "matched_baseline": null,
+            "passed": false,
+            "meaning": "feasibility, not pro-level parity"
+          }
+        }
+      }
+    }
+  },
+  "schedule_counts": {
+    "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7": {
+      "near": 5,
+      "mid": 5
+    },
+    "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s": {
+      "near": 5,
+      "mid": 5
+    }
+  },
+  "comparable_schedule": true,
+  "execution_evidence": {
+    "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7": {
+      "auditable_executed_slots": 0,
+      "started_by_scenario": {
+        "near": 0,
+        "mid": 0
+      },
+      "comparison_ready": false
+    },
+    "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s": {
+      "auditable_executed_slots": 0,
+      "started_by_scenario": {
+        "near": 0,
+        "mid": 0
+      },
+      "comparison_ready": false
+    }
+  },
+  "matched_baseline_comparison": {
+    "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7": false,
+    "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s": false
+  },
+  "human_reference": {
+    "declared": null,
+    "scored_policies": [],
+    "comparison": "not_established"
+  },
+  "scope_audits": {
+    "galacta-pilot-20260923-episode-01": {
+      "breach": null,
+      "evidence": null
+    },
+    "galacta-pilot-20260923-episode-02": {
+      "breach": null,
+      "evidence": null
+    },
+    "galacta-pilot-20260923-episode-03": {
+      "breach": null,
+      "evidence": null
+    },
+    "galacta-pilot-20260923-episode-04": {
+      "breach": null,
+      "evidence": null
+    },
+    "galacta-pilot-20260923-episode-05": {
+      "breach": null,
+      "evidence": null
+    },
+    "galacta-pilot-20260923-episode-06": {
+      "breach": null,
+      "evidence": null
+    },
+    "galacta-pilot-20260923-episode-07": {
+      "breach": null,
+      "evidence": null
+    },
+    "galacta-pilot-20260923-episode-08": {
+      "breach": null,
+      "evidence": null
+    },
+    "galacta-pilot-20260923-episode-09": {
+      "breach": null,
+      "evidence": null
+    },
+    "galacta-pilot-20260923-episode-10": {
+      "breach": null,
+      "evidence": null
+    },
+    "galacta-pilot-20260923-episode-11": {
+      "breach": null,
+      "evidence": null
+    },
+    "galacta-pilot-20260923-episode-12": {
+      "breach": null,
+      "evidence": null
+    },
+    "galacta-pilot-20260923-episode-13": {
+      "breach": null,
+      "evidence": null
+    },
+    "galacta-pilot-20260923-episode-14": {
+      "breach": null,
+      "evidence": null
+    },
+    "galacta-pilot-20260923-episode-15": {
+      "breach": null,
+      "evidence": null
+    },
+    "galacta-pilot-20260923-episode-16": {
+      "breach": null,
+      "evidence": null
+    },
+    "galacta-pilot-20260923-episode-17": {
+      "breach": null,
+      "evidence": null
+    },
+    "galacta-pilot-20260923-episode-18": {
+      "breach": null,
+      "evidence": null
+    },
+    "galacta-pilot-20260923-episode-19": {
+      "breach": null,
+      "evidence": null
+    },
+    "galacta-pilot-20260923-episode-20": {
+      "breach": null,
+      "evidence": null
+    }
+  },
+  "experiment_stop_required": false,
+  "promotion": null,
+  "results": [
+    {
+      "spec": {
+        "episode_id": "galacta-pilot-20260923-episode-01",
+        "run_id": "UNEXECUTED-run-01-learned",
+        "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+        "scenario": "near",
+        "epoch": "UNOBSERVED-epoch-01",
+        "target": "UNOBSERVED-galacta-incarnation-01",
+        "track": 0,
+        "patch": null,
+        "patch_evidence": null,
+        "cooldowns": null,
+        "settings_evidence": null,
+        "settings": {
+          "bot_health": null,
+          "bot_movement": null,
+          "bindings": null,
+          "swing": null
+        },
+        "display_grace_s": 2
+      },
+      "outcome": "setup_failure",
+      "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+      "start_t": null,
+      "end_t": null,
+      "elapsed_s": null,
+      "reward": null,
+      "components": {
+        "event": null,
+        "time": null,
+        "damage": null,
+        "valid": false,
+        "source": null
+      },
+      "evidence": [],
+      "event_id": null,
+      "counter_credit": null,
+      "completion_interval_s": null,
+      "valid": false
+    },
+    {
+      "spec": {
+        "episode_id": "galacta-pilot-20260923-episode-02",
+        "run_id": "UNEXECUTED-run-02-scripted",
+        "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+        "scenario": "near",
+        "epoch": "UNOBSERVED-epoch-02",
+        "target": "UNOBSERVED-galacta-incarnation-02",
+        "track": 0,
+        "patch": null,
+        "patch_evidence": null,
+        "cooldowns": null,
+        "settings_evidence": null,
+        "settings": {
+          "bot_health": null,
+          "bot_movement": null,
+          "bindings": null,
+          "swing": null
+        },
+        "display_grace_s": 2
+      },
+      "outcome": "setup_failure",
+      "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+      "start_t": null,
+      "end_t": null,
+      "elapsed_s": null,
+      "reward": null,
+      "components": {
+        "event": null,
+        "time": null,
+        "damage": null,
+        "valid": false,
+        "source": null
+      },
+      "evidence": [],
+      "event_id": null,
+      "counter_credit": null,
+      "completion_interval_s": null,
+      "valid": false
+    },
+    {
+      "spec": {
+        "episode_id": "galacta-pilot-20260923-episode-03",
+        "run_id": "UNEXECUTED-run-03-scripted",
+        "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+        "scenario": "mid",
+        "epoch": "UNOBSERVED-epoch-03",
+        "target": "UNOBSERVED-galacta-incarnation-03",
+        "track": 0,
+        "patch": null,
+        "patch_evidence": null,
+        "cooldowns": null,
+        "settings_evidence": null,
+        "settings": {
+          "bot_health": null,
+          "bot_movement": null,
+          "bindings": null,
+          "swing": null
+        },
+        "display_grace_s": 2
+      },
+      "outcome": "setup_failure",
+      "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+      "start_t": null,
+      "end_t": null,
+      "elapsed_s": null,
+      "reward": null,
+      "components": {
+        "event": null,
+        "time": null,
+        "damage": null,
+        "valid": false,
+        "source": null
+      },
+      "evidence": [],
+      "event_id": null,
+      "counter_credit": null,
+      "completion_interval_s": null,
+      "valid": false
+    },
+    {
+      "spec": {
+        "episode_id": "galacta-pilot-20260923-episode-04",
+        "run_id": "UNEXECUTED-run-04-learned",
+        "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+        "scenario": "mid",
+        "epoch": "UNOBSERVED-epoch-04",
+        "target": "UNOBSERVED-galacta-incarnation-04",
+        "track": 0,
+        "patch": null,
+        "patch_evidence": null,
+        "cooldowns": null,
+        "settings_evidence": null,
+        "settings": {
+          "bot_health": null,
+          "bot_movement": null,
+          "bindings": null,
+          "swing": null
+        },
+        "display_grace_s": 2
+      },
+      "outcome": "setup_failure",
+      "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+      "start_t": null,
+      "end_t": null,
+      "elapsed_s": null,
+      "reward": null,
+      "components": {
+        "event": null,
+        "time": null,
+        "damage": null,
+        "valid": false,
+        "source": null
+      },
+      "evidence": [],
+      "event_id": null,
+      "counter_credit": null,
+      "completion_interval_s": null,
+      "valid": false
+    },
+    {
+      "spec": {
+        "episode_id": "galacta-pilot-20260923-episode-05",
+        "run_id": "UNEXECUTED-run-05-scripted",
+        "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+        "scenario": "near",
+        "epoch": "UNOBSERVED-epoch-05",
+        "target": "UNOBSERVED-galacta-incarnation-05",
+        "track": 0,
+        "patch": null,
+        "patch_evidence": null,
+        "cooldowns": null,
+        "settings_evidence": null,
+        "settings": {
+          "bot_health": null,
+          "bot_movement": null,
+          "bindings": null,
+          "swing": null
+        },
+        "display_grace_s": 2
+      },
+      "outcome": "setup_failure",
+      "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+      "start_t": null,
+      "end_t": null,
+      "elapsed_s": null,
+      "reward": null,
+      "components": {
+        "event": null,
+        "time": null,
+        "damage": null,
+        "valid": false,
+        "source": null
+      },
+      "evidence": [],
+      "event_id": null,
+      "counter_credit": null,
+      "completion_interval_s": null,
+      "valid": false
+    },
+    {
+      "spec": {
+        "episode_id": "galacta-pilot-20260923-episode-06",
+        "run_id": "UNEXECUTED-run-06-learned",
+        "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+        "scenario": "near",
+        "epoch": "UNOBSERVED-epoch-06",
+        "target": "UNOBSERVED-galacta-incarnation-06",
+        "track": 0,
+        "patch": null,
+        "patch_evidence": null,
+        "cooldowns": null,
+        "settings_evidence": null,
+        "settings": {
+          "bot_health": null,
+          "bot_movement": null,
+          "bindings": null,
+          "swing": null
+        },
+        "display_grace_s": 2
+      },
+      "outcome": "setup_failure",
+      "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+      "start_t": null,
+      "end_t": null,
+      "elapsed_s": null,
+      "reward": null,
+      "components": {
+        "event": null,
+        "time": null,
+        "damage": null,
+        "valid": false,
+        "source": null
+      },
+      "evidence": [],
+      "event_id": null,
+      "counter_credit": null,
+      "completion_interval_s": null,
+      "valid": false
+    },
+    {
+      "spec": {
+        "episode_id": "galacta-pilot-20260923-episode-07",
+        "run_id": "UNEXECUTED-run-07-learned",
+        "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+        "scenario": "mid",
+        "epoch": "UNOBSERVED-epoch-07",
+        "target": "UNOBSERVED-galacta-incarnation-07",
+        "track": 0,
+        "patch": null,
+        "patch_evidence": null,
+        "cooldowns": null,
+        "settings_evidence": null,
+        "settings": {
+          "bot_health": null,
+          "bot_movement": null,
+          "bindings": null,
+          "swing": null
+        },
+        "display_grace_s": 2
+      },
+      "outcome": "setup_failure",
+      "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+      "start_t": null,
+      "end_t": null,
+      "elapsed_s": null,
+      "reward": null,
+      "components": {
+        "event": null,
+        "time": null,
+        "damage": null,
+        "valid": false,
+        "source": null
+      },
+      "evidence": [],
+      "event_id": null,
+      "counter_credit": null,
+      "completion_interval_s": null,
+      "valid": false
+    },
+    {
+      "spec": {
+        "episode_id": "galacta-pilot-20260923-episode-08",
+        "run_id": "UNEXECUTED-run-08-scripted",
+        "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+        "scenario": "mid",
+        "epoch": "UNOBSERVED-epoch-08",
+        "target": "UNOBSERVED-galacta-incarnation-08",
+        "track": 0,
+        "patch": null,
+        "patch_evidence": null,
+        "cooldowns": null,
+        "settings_evidence": null,
+        "settings": {
+          "bot_health": null,
+          "bot_movement": null,
+          "bindings": null,
+          "swing": null
+        },
+        "display_grace_s": 2
+      },
+      "outcome": "setup_failure",
+      "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+      "start_t": null,
+      "end_t": null,
+      "elapsed_s": null,
+      "reward": null,
+      "components": {
+        "event": null,
+        "time": null,
+        "damage": null,
+        "valid": false,
+        "source": null
+      },
+      "evidence": [],
+      "event_id": null,
+      "counter_credit": null,
+      "completion_interval_s": null,
+      "valid": false
+    },
+    {
+      "spec": {
+        "episode_id": "galacta-pilot-20260923-episode-09",
+        "run_id": "UNEXECUTED-run-09-learned",
+        "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+        "scenario": "near",
+        "epoch": "UNOBSERVED-epoch-09",
+        "target": "UNOBSERVED-galacta-incarnation-09",
+        "track": 0,
+        "patch": null,
+        "patch_evidence": null,
+        "cooldowns": null,
+        "settings_evidence": null,
+        "settings": {
+          "bot_health": null,
+          "bot_movement": null,
+          "bindings": null,
+          "swing": null
+        },
+        "display_grace_s": 2
+      },
+      "outcome": "setup_failure",
+      "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+      "start_t": null,
+      "end_t": null,
+      "elapsed_s": null,
+      "reward": null,
+      "components": {
+        "event": null,
+        "time": null,
+        "damage": null,
+        "valid": false,
+        "source": null
+      },
+      "evidence": [],
+      "event_id": null,
+      "counter_credit": null,
+      "completion_interval_s": null,
+      "valid": false
+    },
+    {
+      "spec": {
+        "episode_id": "galacta-pilot-20260923-episode-10",
+        "run_id": "UNEXECUTED-run-10-scripted",
+        "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+        "scenario": "near",
+        "epoch": "UNOBSERVED-epoch-10",
+        "target": "UNOBSERVED-galacta-incarnation-10",
+        "track": 0,
+        "patch": null,
+        "patch_evidence": null,
+        "cooldowns": null,
+        "settings_evidence": null,
+        "settings": {
+          "bot_health": null,
+          "bot_movement": null,
+          "bindings": null,
+          "swing": null
+        },
+        "display_grace_s": 2
+      },
+      "outcome": "setup_failure",
+      "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+      "start_t": null,
+      "end_t": null,
+      "elapsed_s": null,
+      "reward": null,
+      "components": {
+        "event": null,
+        "time": null,
+        "damage": null,
+        "valid": false,
+        "source": null
+      },
+      "evidence": [],
+      "event_id": null,
+      "counter_credit": null,
+      "completion_interval_s": null,
+      "valid": false
+    },
+    {
+      "spec": {
+        "episode_id": "galacta-pilot-20260923-episode-11",
+        "run_id": "UNEXECUTED-run-11-scripted",
+        "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+        "scenario": "mid",
+        "epoch": "UNOBSERVED-epoch-11",
+        "target": "UNOBSERVED-galacta-incarnation-11",
+        "track": 0,
+        "patch": null,
+        "patch_evidence": null,
+        "cooldowns": null,
+        "settings_evidence": null,
+        "settings": {
+          "bot_health": null,
+          "bot_movement": null,
+          "bindings": null,
+          "swing": null
+        },
+        "display_grace_s": 2
+      },
+      "outcome": "setup_failure",
+      "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+      "start_t": null,
+      "end_t": null,
+      "elapsed_s": null,
+      "reward": null,
+      "components": {
+        "event": null,
+        "time": null,
+        "damage": null,
+        "valid": false,
+        "source": null
+      },
+      "evidence": [],
+      "event_id": null,
+      "counter_credit": null,
+      "completion_interval_s": null,
+      "valid": false
+    },
+    {
+      "spec": {
+        "episode_id": "galacta-pilot-20260923-episode-12",
+        "run_id": "UNEXECUTED-run-12-learned",
+        "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+        "scenario": "mid",
+        "epoch": "UNOBSERVED-epoch-12",
+        "target": "UNOBSERVED-galacta-incarnation-12",
+        "track": 0,
+        "patch": null,
+        "patch_evidence": null,
+        "cooldowns": null,
+        "settings_evidence": null,
+        "settings": {
+          "bot_health": null,
+          "bot_movement": null,
+          "bindings": null,
+          "swing": null
+        },
+        "display_grace_s": 2
+      },
+      "outcome": "setup_failure",
+      "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+      "start_t": null,
+      "end_t": null,
+      "elapsed_s": null,
+      "reward": null,
+      "components": {
+        "event": null,
+        "time": null,
+        "damage": null,
+        "valid": false,
+        "source": null
+      },
+      "evidence": [],
+      "event_id": null,
+      "counter_credit": null,
+      "completion_interval_s": null,
+      "valid": false
+    },
+    {
+      "spec": {
+        "episode_id": "galacta-pilot-20260923-episode-13",
+        "run_id": "UNEXECUTED-run-13-scripted",
+        "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+        "scenario": "near",
+        "epoch": "UNOBSERVED-epoch-13",
+        "target": "UNOBSERVED-galacta-incarnation-13",
+        "track": 0,
+        "patch": null,
+        "patch_evidence": null,
+        "cooldowns": null,
+        "settings_evidence": null,
+        "settings": {
+          "bot_health": null,
+          "bot_movement": null,
+          "bindings": null,
+          "swing": null
+        },
+        "display_grace_s": 2
+      },
+      "outcome": "setup_failure",
+      "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+      "start_t": null,
+      "end_t": null,
+      "elapsed_s": null,
+      "reward": null,
+      "components": {
+        "event": null,
+        "time": null,
+        "damage": null,
+        "valid": false,
+        "source": null
+      },
+      "evidence": [],
+      "event_id": null,
+      "counter_credit": null,
+      "completion_interval_s": null,
+      "valid": false
+    },
+    {
+      "spec": {
+        "episode_id": "galacta-pilot-20260923-episode-14",
+        "run_id": "UNEXECUTED-run-14-learned",
+        "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+        "scenario": "near",
+        "epoch": "UNOBSERVED-epoch-14",
+        "target": "UNOBSERVED-galacta-incarnation-14",
+        "track": 0,
+        "patch": null,
+        "patch_evidence": null,
+        "cooldowns": null,
+        "settings_evidence": null,
+        "settings": {
+          "bot_health": null,
+          "bot_movement": null,
+          "bindings": null,
+          "swing": null
+        },
+        "display_grace_s": 2
+      },
+      "outcome": "setup_failure",
+      "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+      "start_t": null,
+      "end_t": null,
+      "elapsed_s": null,
+      "reward": null,
+      "components": {
+        "event": null,
+        "time": null,
+        "damage": null,
+        "valid": false,
+        "source": null
+      },
+      "evidence": [],
+      "event_id": null,
+      "counter_credit": null,
+      "completion_interval_s": null,
+      "valid": false
+    },
+    {
+      "spec": {
+        "episode_id": "galacta-pilot-20260923-episode-15",
+        "run_id": "UNEXECUTED-run-15-learned",
+        "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+        "scenario": "mid",
+        "epoch": "UNOBSERVED-epoch-15",
+        "target": "UNOBSERVED-galacta-incarnation-15",
+        "track": 0,
+        "patch": null,
+        "patch_evidence": null,
+        "cooldowns": null,
+        "settings_evidence": null,
+        "settings": {
+          "bot_health": null,
+          "bot_movement": null,
+          "bindings": null,
+          "swing": null
+        },
+        "display_grace_s": 2
+      },
+      "outcome": "setup_failure",
+      "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+      "start_t": null,
+      "end_t": null,
+      "elapsed_s": null,
+      "reward": null,
+      "components": {
+        "event": null,
+        "time": null,
+        "damage": null,
+        "valid": false,
+        "source": null
+      },
+      "evidence": [],
+      "event_id": null,
+      "counter_credit": null,
+      "completion_interval_s": null,
+      "valid": false
+    },
+    {
+      "spec": {
+        "episode_id": "galacta-pilot-20260923-episode-16",
+        "run_id": "UNEXECUTED-run-16-scripted",
+        "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+        "scenario": "mid",
+        "epoch": "UNOBSERVED-epoch-16",
+        "target": "UNOBSERVED-galacta-incarnation-16",
+        "track": 0,
+        "patch": null,
+        "patch_evidence": null,
+        "cooldowns": null,
+        "settings_evidence": null,
+        "settings": {
+          "bot_health": null,
+          "bot_movement": null,
+          "bindings": null,
+          "swing": null
+        },
+        "display_grace_s": 2
+      },
+      "outcome": "setup_failure",
+      "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+      "start_t": null,
+      "end_t": null,
+      "elapsed_s": null,
+      "reward": null,
+      "components": {
+        "event": null,
+        "time": null,
+        "damage": null,
+        "valid": false,
+        "source": null
+      },
+      "evidence": [],
+      "event_id": null,
+      "counter_credit": null,
+      "completion_interval_s": null,
+      "valid": false
+    },
+    {
+      "spec": {
+        "episode_id": "galacta-pilot-20260923-episode-17",
+        "run_id": "UNEXECUTED-run-17-learned",
+        "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+        "scenario": "near",
+        "epoch": "UNOBSERVED-epoch-17",
+        "target": "UNOBSERVED-galacta-incarnation-17",
+        "track": 0,
+        "patch": null,
+        "patch_evidence": null,
+        "cooldowns": null,
+        "settings_evidence": null,
+        "settings": {
+          "bot_health": null,
+          "bot_movement": null,
+          "bindings": null,
+          "swing": null
+        },
+        "display_grace_s": 2
+      },
+      "outcome": "setup_failure",
+      "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+      "start_t": null,
+      "end_t": null,
+      "elapsed_s": null,
+      "reward": null,
+      "components": {
+        "event": null,
+        "time": null,
+        "damage": null,
+        "valid": false,
+        "source": null
+      },
+      "evidence": [],
+      "event_id": null,
+      "counter_credit": null,
+      "completion_interval_s": null,
+      "valid": false
+    },
+    {
+      "spec": {
+        "episode_id": "galacta-pilot-20260923-episode-18",
+        "run_id": "UNEXECUTED-run-18-scripted",
+        "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+        "scenario": "near",
+        "epoch": "UNOBSERVED-epoch-18",
+        "target": "UNOBSERVED-galacta-incarnation-18",
+        "track": 0,
+        "patch": null,
+        "patch_evidence": null,
+        "cooldowns": null,
+        "settings_evidence": null,
+        "settings": {
+          "bot_health": null,
+          "bot_movement": null,
+          "bindings": null,
+          "swing": null
+        },
+        "display_grace_s": 2
+      },
+      "outcome": "setup_failure",
+      "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+      "start_t": null,
+      "end_t": null,
+      "elapsed_s": null,
+      "reward": null,
+      "components": {
+        "event": null,
+        "time": null,
+        "damage": null,
+        "valid": false,
+        "source": null
+      },
+      "evidence": [],
+      "event_id": null,
+      "counter_credit": null,
+      "completion_interval_s": null,
+      "valid": false
+    },
+    {
+      "spec": {
+        "episode_id": "galacta-pilot-20260923-episode-19",
+        "run_id": "UNEXECUTED-run-19-scripted",
+        "policy": "scripted:545eb55011e7b37f0515c6ab9c3539a16a8e7dea:agent.brain.decide:live20s",
+        "scenario": "mid",
+        "epoch": "UNOBSERVED-epoch-19",
+        "target": "UNOBSERVED-galacta-incarnation-19",
+        "track": 0,
+        "patch": null,
+        "patch_evidence": null,
+        "cooldowns": null,
+        "settings_evidence": null,
+        "settings": {
+          "bot_health": null,
+          "bot_movement": null,
+          "bindings": null,
+          "swing": null
+        },
+        "display_grace_s": 2
+      },
+      "outcome": "setup_failure",
+      "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+      "start_t": null,
+      "end_t": null,
+      "elapsed_s": null,
+      "reward": null,
+      "components": {
+        "event": null,
+        "time": null,
+        "damage": null,
+        "valid": false,
+        "source": null
+      },
+      "evidence": [],
+      "event_id": null,
+      "counter_credit": null,
+      "completion_interval_s": null,
+      "valid": false
+    },
+    {
+      "spec": {
+        "episode_id": "galacta-pilot-20260923-episode-20",
+        "run_id": "UNEXECUTED-run-20-learned",
+        "policy": "learned:range-skill:698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b:code=545eb55011e7b37f0515c6ab9c3539a16a8e7dea:confidence=0.7",
+        "scenario": "mid",
+        "epoch": "UNOBSERVED-epoch-20",
+        "target": "UNOBSERVED-galacta-incarnation-20",
+        "track": 0,
+        "patch": null,
+        "patch_evidence": null,
+        "cooldowns": null,
+        "settings_evidence": null,
+        "settings": {
+          "bot_health": null,
+          "bot_movement": null,
+          "bindings": null,
+          "swing": null
+        },
+        "display_grace_s": 2
+      },
+      "outcome": "setup_failure",
+      "reason": "unverified_context:patch,patch_evidence,settings_evidence,settings.bot_health,settings.bot_movement,settings.bindings,settings.swing,normal_cooldowns",
+      "start_t": null,
+      "end_t": null,
+      "elapsed_s": null,
+      "reward": null,
+      "components": {
+        "event": null,
+        "time": null,
+        "damage": null,
+        "valid": false,
+        "source": null
+      },
+      "evidence": [],
+      "event_id": null,
+      "counter_credit": null,
+      "completion_interval_s": null,
+      "valid": false
+    }
+  ],
+  "logs": {},
+  "capture_timing_requirement": "Grab intervals are acquisition bounds, not render or game-event times. Auditors must bound any render age in native evidence; kill occurrence intervals never come from scoreboard captured_t."
+}

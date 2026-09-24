@@ -1,0 +1,2270 @@
+[
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260922-01-learned\\000061.jpg",
+"in_range": true,
+"a": [
+1185,
+537,
+1323,
+691
+],
+"b": [
+1345,
+577,
+1437,
+691
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0931,
+"sep_h": 1.022,
+"dy": 40.0,
+"dh": 0.26,
+"y1": 537,
+"mid": 1322,
+"label": "neg",
+"why": "point-blank fragments"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260922-03-scripted\\000001.jpg",
+"in_range": true,
+"a": [
+699,
+648,
+851,
+777
+],
+"b": [
+1219,
+647,
+1361,
+782
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0917,
+"sep_h": 3.902,
+"dy": 1.0,
+"dh": 0.044,
+"y1": 647,
+"mid": 1032,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260922-03-scripted\\000002.jpg",
+"in_range": true,
+"a": [
+686,
+653,
+843,
+781
+],
+"b": [
+1212,
+651,
+1354,
+787
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0917,
+"sep_h": 3.928,
+"dy": 2.0,
+"dh": 0.059,
+"y1": 651,
+"mid": 1024,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260922-03-scripted\\000003.jpg",
+"in_range": true,
+"a": [
+671,
+651,
+825,
+781
+],
+"b": [
+1201,
+651,
+1345,
+787
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0924,
+"sep_h": 3.947,
+"dy": 0.0,
+"dh": 0.044,
+"y1": 651,
+"mid": 1010,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260922-03-scripted\\000007.jpg",
+"in_range": true,
+"a": [
+689,
+650,
+841,
+775
+],
+"b": [
+1212,
+685,
+1347,
+782
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0771,
+"sep_h": 4.635,
+"dy": 35.0,
+"dh": 0.224,
+"y1": 650,
+"mid": 1022,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260922-03-scripted\\000010.jpg",
+"in_range": true,
+"a": [
+656,
+666,
+815,
+795
+],
+"b": [
+1235,
+655,
+1347,
+801
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0955,
+"sep_h": 4.04,
+"dy": 11.0,
+"dh": 0.116,
+"y1": 655,
+"mid": 1013,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260922-03-scripted\\000016.jpg",
+"in_range": true,
+"a": [
+758,
+981,
+890,
+1127
+],
+"b": [
+1191,
+989,
+1356,
+1169
+],
+"size": [
+2560,
+1440
+],
+"h": 0.1132,
+"sep_h": 2.758,
+"dy": 8.0,
+"dh": 0.189,
+"y1": 981,
+"mid": 1049,
+"label": "neg",
+"why": "mid-combo fragments"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260922-03-scripted\\episode-first-phase.png",
+"in_range": true,
+"a": [
+694,
+641,
+852,
+778
+],
+"b": [
+1218,
+642,
+1363,
+784
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0969,
+"sep_h": 3.71,
+"dy": 1.0,
+"dh": 0.035,
+"y1": 641,
+"mid": 1032,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260922-03-scripted\\start-confirm-1.png",
+"in_range": true,
+"a": [
+694,
+643,
+853,
+780
+],
+"b": [
+1217,
+643,
+1364,
+786
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0972,
+"sep_h": 3.693,
+"dy": 0.0,
+"dh": 0.042,
+"y1": 643,
+"mid": 1032,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260922-03-scripted\\start-confirm-2.png",
+"in_range": true,
+"a": [
+694,
+643,
+853,
+780
+],
+"b": [
+1217,
+643,
+1364,
+786
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0972,
+"sep_h": 3.693,
+"dy": 0.0,
+"dh": 0.042,
+"y1": 643,
+"mid": 1032,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260922-03-scripted\\start-step-01.png",
+"in_range": true,
+"a": [
+725,
+642,
+881,
+778
+],
+"b": [
+1242,
+643,
+1389,
+786
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0969,
+"sep_h": 3.674,
+"dy": 1.0,
+"dh": 0.049,
+"y1": 642,
+"mid": 1059,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260922-03-scripted\\start-step-05.png",
+"in_range": true,
+"a": [
+694,
+643,
+853,
+780
+],
+"b": [
+1217,
+643,
+1364,
+786
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0972,
+"sep_h": 3.693,
+"dy": 0.0,
+"dh": 0.042,
+"y1": 643,
+"mid": 1032,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260922-03-scripted\\start-step-06.png",
+"in_range": true,
+"a": [
+694,
+643,
+853,
+780
+],
+"b": [
+1217,
+643,
+1364,
+786
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0972,
+"sep_h": 3.693,
+"dy": 0.0,
+"dh": 0.042,
+"y1": 643,
+"mid": 1032,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260922-03-scripted\\start-step-07.png",
+"in_range": true,
+"a": [
+694,
+643,
+853,
+780
+],
+"b": [
+1217,
+643,
+1364,
+786
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0972,
+"sep_h": 3.693,
+"dy": 0.0,
+"dh": 0.042,
+"y1": 643,
+"mid": 1032,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260922-03-scripted\\start-step-08.png",
+"in_range": true,
+"a": [
+694,
+643,
+853,
+780
+],
+"b": [
+1217,
+643,
+1364,
+786
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0972,
+"sep_h": 3.693,
+"dy": 0.0,
+"dh": 0.042,
+"y1": 643,
+"mid": 1032,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260922-04-learned\\000000.jpg",
+"in_range": true,
+"a": [
+386,
+515,
+506,
+683
+],
+"b": [
+1119,
+501,
+1295,
+679
+],
+"size": [
+2560,
+1440
+],
+"h": 0.1201,
+"sep_h": 4.399,
+"dy": 14.0,
+"dh": 0.056,
+"y1": 501,
+"mid": 826,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260922-04-learned\\000001.jpg",
+"in_range": true,
+"a": [
+386,
+516,
+506,
+683
+],
+"b": [
+1121,
+501,
+1295,
+679
+],
+"size": [
+2560,
+1440
+],
+"h": 0.1198,
+"sep_h": 4.417,
+"dy": 15.0,
+"dh": 0.062,
+"y1": 501,
+"mid": 827,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260922-04-learned\\000002.jpg",
+"in_range": true,
+"a": [
+386,
+514,
+507,
+683
+],
+"b": [
+1123,
+501,
+1295,
+677
+],
+"size": [
+2560,
+1440
+],
+"h": 0.1198,
+"sep_h": 4.42,
+"dy": 13.0,
+"dh": 0.04,
+"y1": 501,
+"mid": 828,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260922-04-learned\\000003.jpg",
+"in_range": true,
+"a": [
+385,
+513,
+507,
+683
+],
+"b": [
+1123,
+501,
+1295,
+677
+],
+"size": [
+2560,
+1440
+],
+"h": 0.1201,
+"sep_h": 4.41,
+"dy": 12.0,
+"dh": 0.034,
+"y1": 501,
+"mid": 828,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260922-04-learned\\000004.jpg",
+"in_range": true,
+"a": [
+385,
+505,
+618,
+687
+],
+"b": [
+1123,
+501,
+1295,
+677
+],
+"size": [
+2560,
+1440
+],
+"h": 0.1243,
+"sep_h": 3.953,
+"dy": 4.0,
+"dh": 0.033,
+"y1": 501,
+"mid": 855,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260922-04-learned\\000005.jpg",
+"in_range": true,
+"a": [
+385,
+504,
+617,
+687
+],
+"b": [
+1123,
+501,
+1295,
+677
+],
+"size": [
+2560,
+1440
+],
+"h": 0.1247,
+"sep_h": 3.944,
+"dy": 3.0,
+"dh": 0.038,
+"y1": 501,
+"mid": 855,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260922-04-learned\\000006.jpg",
+"in_range": true,
+"a": [
+385,
+504,
+617,
+685
+],
+"b": [
+1123,
+502,
+1296,
+677
+],
+"size": [
+2560,
+1440
+],
+"h": 0.1236,
+"sep_h": 3.98,
+"dy": 2.0,
+"dh": 0.033,
+"y1": 502,
+"mid": 855,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260922-04-learned\\000007.jpg",
+"in_range": true,
+"a": [
+431,
+609,
+549,
+771
+],
+"b": [
+1153,
+604,
+1327,
+779
+],
+"size": [
+2560,
+1440
+],
+"h": 0.117,
+"sep_h": 4.451,
+"dy": 5.0,
+"dh": 0.074,
+"y1": 604,
+"mid": 865,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260922-04-learned\\000008.jpg",
+"in_range": true,
+"a": [
+469,
+633,
+585,
+793
+],
+"b": [
+1189,
+627,
+1367,
+807
+],
+"size": [
+2560,
+1440
+],
+"h": 0.1181,
+"sep_h": 4.418,
+"dy": 6.0,
+"dh": 0.111,
+"y1": 627,
+"mid": 902,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260922-04-learned\\000009.jpg",
+"in_range": true,
+"a": [
+425,
+639,
+550,
+801
+],
+"b": [
+1185,
+629,
+1373,
+819
+],
+"size": [
+2560,
+1440
+],
+"h": 0.1222,
+"sep_h": 4.497,
+"dy": 10.0,
+"dh": 0.147,
+"y1": 629,
+"mid": 883,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260922-04-learned\\000012.jpg",
+"in_range": true,
+"a": [
+195,
+627,
+368,
+832
+],
+"b": [
+1153,
+613,
+1397,
+851
+],
+"size": [
+2560,
+1440
+],
+"h": 0.1538,
+"sep_h": 4.485,
+"dy": 14.0,
+"dh": 0.139,
+"y1": 613,
+"mid": 778,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260922-04-learned\\000013.jpg",
+"in_range": true,
+"a": [
+81,
+611,
+279,
+847
+],
+"b": [
+1183,
+602,
+1407,
+864
+],
+"size": [
+2560,
+1440
+],
+"h": 0.1729,
+"sep_h": 4.478,
+"dy": 9.0,
+"dh": 0.099,
+"y1": 602,
+"mid": 738,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260922-04-learned\\episode-first-phase.png",
+"in_range": true,
+"a": [
+386,
+507,
+620,
+690
+],
+"b": [
+1119,
+501,
+1295,
+680
+],
+"size": [
+2560,
+1440
+],
+"h": 0.1257,
+"sep_h": 3.89,
+"dy": 6.0,
+"dh": 0.022,
+"y1": 501,
+"mid": 855,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260922-04-learned\\start-confirm-1.png",
+"in_range": true,
+"a": [
+394,
+506,
+621,
+688
+],
+"b": [
+1121,
+504,
+1297,
+682
+],
+"size": [
+2560,
+1440
+],
+"h": 0.125,
+"sep_h": 3.897,
+"dy": 2.0,
+"dh": 0.022,
+"y1": 504,
+"mid": 858,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260922-04-learned\\start-confirm-2.png",
+"in_range": true,
+"a": [
+394,
+506,
+621,
+688
+],
+"b": [
+1119,
+504,
+1297,
+682
+],
+"size": [
+2560,
+1440
+],
+"h": 0.125,
+"sep_h": 3.892,
+"dy": 2.0,
+"dh": 0.022,
+"y1": 504,
+"mid": 858,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260922-04-learned\\start-step-01.png",
+"in_range": true,
+"a": [
+584,
+501,
+785,
+675
+],
+"b": [
+1249,
+504,
+1431,
+686
+],
+"size": [
+2560,
+1440
+],
+"h": 0.1236,
+"sep_h": 3.683,
+"dy": 3.0,
+"dh": 0.044,
+"y1": 501,
+"mid": 1012,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260922-04-learned\\start-step-05.png",
+"in_range": true,
+"a": [
+394,
+506,
+621,
+688
+],
+"b": [
+1122,
+505,
+1298,
+682
+],
+"size": [
+2560,
+1440
+],
+"h": 0.1247,
+"sep_h": 3.914,
+"dy": 1.0,
+"dh": 0.027,
+"y1": 505,
+"mid": 859,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260922-04-learned\\start-step-06.png",
+"in_range": true,
+"a": [
+394,
+506,
+621,
+688
+],
+"b": [
+1121,
+504,
+1297,
+682
+],
+"size": [
+2560,
+1440
+],
+"h": 0.125,
+"sep_h": 3.897,
+"dy": 2.0,
+"dh": 0.022,
+"y1": 504,
+"mid": 858,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260922-04-learned\\start-step-07.png",
+"in_range": true,
+"a": [
+394,
+506,
+621,
+688
+],
+"b": [
+1119,
+504,
+1297,
+682
+],
+"size": [
+2560,
+1440
+],
+"h": 0.125,
+"sep_h": 3.892,
+"dy": 2.0,
+"dh": 0.022,
+"y1": 504,
+"mid": 858,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260922-04-learned\\start-step-08.png",
+"in_range": true,
+"a": [
+394,
+506,
+621,
+688
+],
+"b": [
+1119,
+504,
+1297,
+682
+],
+"size": [
+2560,
+1440
+],
+"h": 0.125,
+"sep_h": 3.892,
+"dy": 2.0,
+"dh": 0.022,
+"y1": 504,
+"mid": 858,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260923-03-scripted\\000000.jpg",
+"in_range": true,
+"a": [
+678,
+513,
+839,
+651
+],
+"b": [
+1223,
+516,
+1351,
+641
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0913,
+"sep_h": 4.019,
+"dy": 3.0,
+"dh": 0.094,
+"y1": 513,
+"mid": 1023,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260923-03-scripted\\000001.jpg",
+"in_range": true,
+"a": [
+679,
+511,
+837,
+651
+],
+"b": [
+1223,
+515,
+1350,
+641
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0924,
+"sep_h": 3.974,
+"dy": 4.0,
+"dh": 0.1,
+"y1": 511,
+"mid": 1022,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260923-03-scripted\\000002.jpg",
+"in_range": true,
+"a": [
+521,
+547,
+694,
+691
+],
+"b": [
+1098,
+545,
+1225,
+673
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0944,
+"sep_h": 4.074,
+"dy": 2.0,
+"dh": 0.111,
+"y1": 545,
+"mid": 884,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260923-03-scripted\\000003.jpg",
+"in_range": true,
+"a": [
+584,
+630,
+751,
+767
+],
+"b": [
+1151,
+632,
+1279,
+755
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0903,
+"sep_h": 4.212,
+"dy": 2.0,
+"dh": 0.102,
+"y1": 630,
+"mid": 941,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260923-03-scripted\\000004.jpg",
+"in_range": true,
+"a": [
+643,
+651,
+808,
+795
+],
+"b": [
+1215,
+651,
+1349,
+787
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0972,
+"sep_h": 3.975,
+"dy": 0.0,
+"dh": 0.056,
+"y1": 651,
+"mid": 1004,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260923-03-scripted\\000006.jpg",
+"in_range": true,
+"a": [
+641,
+649,
+811,
+796
+],
+"b": [
+1224,
+654,
+1359,
+789
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0979,
+"sep_h": 4.011,
+"dy": 5.0,
+"dh": 0.082,
+"y1": 649,
+"mid": 1009,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260923-03-scripted\\000008.jpg",
+"in_range": true,
+"a": [
+650,
+645,
+817,
+789
+],
+"b": [
+1225,
+645,
+1359,
+781
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0972,
+"sep_h": 3.989,
+"dy": 0.0,
+"dh": 0.056,
+"y1": 645,
+"mid": 1013,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260923-03-scripted\\000009.jpg",
+"in_range": true,
+"a": [
+698,
+657,
+851,
+791
+],
+"b": [
+1231,
+667,
+1354,
+783
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0868,
+"sep_h": 4.144,
+"dy": 10.0,
+"dh": 0.134,
+"y1": 657,
+"mid": 1034,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260923-03-scripted\\000010.jpg",
+"in_range": true,
+"a": [
+739,
+661,
+880,
+787
+],
+"b": [
+1229,
+665,
+1347,
+779
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0833,
+"sep_h": 3.987,
+"dy": 4.0,
+"dh": 0.095,
+"y1": 661,
+"mid": 1049,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260923-03-scripted\\000011.jpg",
+"in_range": true,
+"a": [
+739,
+662,
+881,
+787
+],
+"b": [
+1231,
+667,
+1347,
+781
+],
+"size": [
+2560,
+1440
+],
+"h": 0.083,
+"sep_h": 4.008,
+"dy": 5.0,
+"dh": 0.088,
+"y1": 662,
+"mid": 1050,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260923-03-scripted\\000015.jpg",
+"in_range": true,
+"a": [
+948,
+344,
+1173,
+557
+],
+"b": [
+1217,
+368,
+1468,
+584
+],
+"size": [
+2560,
+1440
+],
+"h": 0.149,
+"sep_h": 1.315,
+"dy": 24.0,
+"dh": 0.014,
+"y1": 344,
+"mid": 1202,
+"label": "neg",
+"why": "point-blank fragments"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260923-03-scripted\\episode-first-phase.png",
+"in_range": true,
+"a": [
+677,
+512,
+839,
+652
+],
+"b": [
+1223,
+509,
+1351,
+642
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0948,
+"sep_h": 3.875,
+"dy": 3.0,
+"dh": 0.05,
+"y1": 509,
+"mid": 1022,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260923-03-scripted\\start-confirm-1.png",
+"in_range": true,
+"a": [
+686,
+514,
+841,
+654
+],
+"b": [
+1223,
+511,
+1353,
+644
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0948,
+"sep_h": 3.842,
+"dy": 3.0,
+"dh": 0.05,
+"y1": 511,
+"mid": 1026,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260923-03-scripted\\start-confirm-2.png",
+"in_range": true,
+"a": [
+685,
+514,
+841,
+654
+],
+"b": [
+1223,
+511,
+1353,
+644
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0948,
+"sep_h": 3.846,
+"dy": 3.0,
+"dh": 0.05,
+"y1": 511,
+"mid": 1026,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260923-03-scripted\\start-step-01.png",
+"in_range": true,
+"a": [
+733,
+513,
+886,
+652
+],
+"b": [
+1264,
+511,
+1394,
+645
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0948,
+"sep_h": 3.806,
+"dy": 2.0,
+"dh": 0.036,
+"y1": 511,
+"mid": 1069,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260923-03-scripted\\start-step-05.png",
+"in_range": true,
+"a": [
+686,
+514,
+841,
+654
+],
+"b": [
+1224,
+510,
+1353,
+644
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0951,
+"sep_h": 3.832,
+"dy": 4.0,
+"dh": 0.043,
+"y1": 510,
+"mid": 1026,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260923-03-scripted\\start-step-06.png",
+"in_range": true,
+"a": [
+686,
+514,
+841,
+654
+],
+"b": [
+1223,
+511,
+1353,
+644
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0948,
+"sep_h": 3.842,
+"dy": 3.0,
+"dh": 0.05,
+"y1": 511,
+"mid": 1026,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260923-03-scripted\\start-step-07.png",
+"in_range": true,
+"a": [
+685,
+514,
+841,
+654
+],
+"b": [
+1223,
+511,
+1353,
+644
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0948,
+"sep_h": 3.846,
+"dy": 3.0,
+"dh": 0.05,
+"y1": 511,
+"mid": 1026,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260923-03-scripted\\start-step-08.png",
+"in_range": true,
+"a": [
+685,
+514,
+841,
+654
+],
+"b": [
+1223,
+511,
+1353,
+644
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0948,
+"sep_h": 3.846,
+"dy": 3.0,
+"dh": 0.05,
+"y1": 511,
+"mid": 1026,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\benchmarks\\galacta-setup-20260922\\near-02.png",
+"in_range": true,
+"a": [
+0,
+648,
+300,
+948
+],
+"b": [
+1070,
+655,
+1421,
+1004
+],
+"size": [
+2560,
+1440
+],
+"h": 0.2253,
+"sep_h": 3.376,
+"dy": 7.0,
+"dh": 0.14,
+"y1": 648,
+"mid": 698,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\benchmarks\\galacta-setup-20260922\\near-candidate.png",
+"in_range": true,
+"a": [
+355,
+714,
+619,
+926
+],
+"b": [
+1166,
+713,
+1417,
+955
+],
+"size": [
+2560,
+1440
+],
+"h": 0.1576,
+"sep_h": 3.544,
+"dy": 1.0,
+"dh": 0.124,
+"y1": 713,
+"mid": 889,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\benchmarks\\galacta-setup-20260922-entry2\\mid-ready.png",
+"in_range": true,
+"a": [
+726,
+640,
+881,
+775
+],
+"b": [
+1245,
+641,
+1388,
+783
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0962,
+"sep_h": 3.704,
+"dy": 1.0,
+"dh": 0.049,
+"y1": 640,
+"mid": 1060,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\benchmarks\\galacta-setup-20260922-entry3\\slot04-mid.png",
+"in_range": true,
+"a": [
+579,
+500,
+783,
+672
+],
+"b": [
+1249,
+506,
+1432,
+687
+],
+"size": [
+2560,
+1440
+],
+"h": 0.1226,
+"sep_h": 3.737,
+"dy": 6.0,
+"dh": 0.05,
+"y1": 500,
+"mid": 1011,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\desk\\out\\galacta-0923-ready-e2.png",
+"in_range": true,
+"a": [
+729,
+510,
+884,
+649
+],
+"b": [
+1264,
+508,
+1392,
+641
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0944,
+"sep_h": 3.835,
+"dy": 2.0,
+"dh": 0.043,
+"y1": 508,
+"mid": 1067,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\desk\\out\\galacta-courtyard-01.png",
+"in_range": true,
+"a": [
+1228,
+795,
+1262,
+830
+],
+"b": [
+1348,
+795,
+1381,
+830
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0243,
+"sep_h": 3.414,
+"dy": 0.0,
+"dh": 0.0,
+"y1": 795,
+"mid": 1305,
+"label": "neg",
+"why": "pair seen from the far bridge rail"
+},
+{
+"path": "C:\\desk\\out\\galacta-courtyard-06.png",
+"in_range": true,
+"a": [
+310,
+717,
+583,
+934
+],
+"b": [
+1136,
+717,
+1393,
+959
+],
+"size": [
+2560,
+1440
+],
+"h": 0.1594,
+"sep_h": 3.564,
+"dy": 0.0,
+"dh": 0.103,
+"y1": 717,
+"mid": 856,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\desk\\out\\galacta-manual-second-02.png",
+"in_range": true,
+"a": [
+1253,
+715,
+1299,
+762
+],
+"b": [
+1422,
+715,
+1470,
+763
+],
+"size": [
+2560,
+1440
+],
+"h": 0.033,
+"sep_h": 3.579,
+"dy": 0.0,
+"dh": 0.021,
+"y1": 715,
+"mid": 1361,
+"label": "neg",
+"why": "pair seen from the lower plaza"
+},
+{
+"path": "C:\\desk\\out\\galacta-mid-adjust-01.png",
+"in_range": true,
+"a": [
+726,
+640,
+881,
+775
+],
+"b": [
+1245,
+641,
+1388,
+783
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0962,
+"sep_h": 3.704,
+"dy": 1.0,
+"dh": 0.049,
+"y1": 640,
+"mid": 1060,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\desk\\out\\galacta-scout-01-after.png",
+"in_range": true,
+"a": [
+1498,
+722,
+1524,
+751
+],
+"b": [
+1597,
+723,
+1626,
+753
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0205,
+"sep_h": 3.407,
+"dy": 1.0,
+"dh": 0.033,
+"y1": 722,
+"mid": 1561,
+"label": "neg",
+"why": "another room's bot pair"
+},
+{
+"path": "C:\\desk\\out\\galacta-scout-02-before.png",
+"in_range": true,
+"a": [
+1498,
+722,
+1524,
+751
+],
+"b": [
+1597,
+723,
+1627,
+753
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0205,
+"sep_h": 3.424,
+"dy": 1.0,
+"dh": 0.033,
+"y1": 722,
+"mid": 1562,
+"label": "neg",
+"why": "another room's bot pair"
+},
+{
+"path": "C:\\desk\\out\\galacta-slot03-before-setup.png",
+"in_range": true,
+"a": [
+725,
+641,
+881,
+776
+],
+"b": [
+1243,
+641,
+1388,
+784
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0965,
+"sep_h": 3.687,
+"dy": 0.0,
+"dh": 0.056,
+"y1": 641,
+"mid": 1059,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\desk\\out\\galacta-slot03-before.png",
+"in_range": true,
+"a": [
+727,
+640,
+881,
+775
+],
+"b": [
+1246,
+641,
+1388,
+783
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0962,
+"sep_h": 3.704,
+"dy": 1.0,
+"dh": 0.049,
+"y1": 640,
+"mid": 1060,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\desk\\out\\galacta-slot04-aim.png",
+"in_range": true,
+"a": [
+609,
+501,
+812,
+674
+],
+"b": [
+1272,
+502,
+1453,
+684
+],
+"size": [
+2560,
+1440
+],
+"h": 0.1233,
+"sep_h": 3.673,
+"dy": 1.0,
+"dh": 0.049,
+"y1": 501,
+"mid": 1036,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\desk\\out\\galacta-slot04-before.png",
+"in_range": true,
+"a": [
+577,
+498,
+782,
+672
+],
+"b": [
+1254,
+503,
+1431,
+683
+],
+"size": [
+2560,
+1440
+],
+"h": 0.1229,
+"sep_h": 3.746,
+"dy": 5.0,
+"dh": 0.033,
+"y1": 498,
+"mid": 1011,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\desk\\out\\galacta-slot04-entry3.png",
+"in_range": true,
+"a": [
+208,
+796,
+251,
+830
+],
+"b": [
+358,
+792,
+398,
+825
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0233,
+"sep_h": 4.433,
+"dy": 4.0,
+"dh": 0.029,
+"y1": 792,
+"mid": 304,
+"label": "neg",
+"why": "inside a building"
+},
+{
+"path": "C:\\desk\\out\\galacta-slot04-entrycheck.png",
+"in_range": true,
+"a": [
+585,
+502,
+784,
+676
+],
+"b": [
+1249,
+503,
+1430,
+685
+],
+"size": [
+2560,
+1440
+],
+"h": 0.1236,
+"sep_h": 3.68,
+"dy": 1.0,
+"dh": 0.044,
+"y1": 502,
+"mid": 1012,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\desk\\out\\galacta-slot04-level.png",
+"in_range": true,
+"a": [
+1343,
+344,
+1386,
+383
+],
+"b": [
+1467,
+339,
+1513,
+382
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0285,
+"sep_h": 3.061,
+"dy": 5.0,
+"dh": 0.093,
+"y1": 339,
+"mid": 1427,
+"label": "neg",
+"why": "pair from the lower plaza, far above"
+},
+{
+"path": "C:\\desk\\out\\galacta-slot04-ready.png",
+"in_range": true,
+"a": [
+579,
+500,
+783,
+672
+],
+"b": [
+1249,
+506,
+1432,
+687
+],
+"size": [
+2560,
+1440
+],
+"h": 0.1226,
+"sep_h": 3.737,
+"dy": 6.0,
+"dh": 0.05,
+"y1": 500,
+"mid": 1011,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\desk\\out\\p0923-after-ps-e2.png",
+"in_range": true,
+"a": [
+902,
+469,
+960,
+525
+],
+"b": [
+1097,
+475,
+1158,
+552
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0462,
+"sep_h": 2.955,
+"dy": 6.0,
+"dh": 0.273,
+"y1": 469,
+"mid": 1029,
+"label": "neg",
+"why": "other lane, moving bots"
+},
+{
+"path": "C:\\desk\\out\\p0923-scene-01.png",
+"in_range": true,
+"a": [
+988,
+518,
+1071,
+597
+],
+"b": [
+1282,
+518,
+1359,
+598
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0552,
+"sep_h": 3.66,
+"dy": 0.0,
+"dh": 0.013,
+"y1": 518,
+"mid": 1175,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\desk\\out\\p0923-e2-back-p1.jpg",
+"in_range": true,
+"a": [
+1219,
+476,
+1271,
+531
+],
+"b": [
+1419,
+475,
+1473,
+531
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0385,
+"sep_h": 3.622,
+"dy": 1.0,
+"dh": 0.018,
+"y1": 475,
+"mid": 1346,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\desk\\out\\p0923-e2-cd-d.jpg",
+"in_range": true,
+"a": [
+729,
+512,
+883,
+647
+],
+"b": [
+1265,
+509,
+1391,
+640
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0924,
+"sep_h": 3.925,
+"dy": 3.0,
+"dh": 0.03,
+"y1": 509,
+"mid": 1067,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\desk\\out\\p0923-e2-pos2-a.jpg",
+"in_range": true,
+"a": [
+1176,
+476,
+1231,
+531
+],
+"b": [
+1377,
+475,
+1431,
+531
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0385,
+"sep_h": 3.613,
+"dy": 1.0,
+"dh": 0.018,
+"y1": 475,
+"mid": 1304,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\desk\\out\\p0923-e2-pos2-b.jpg",
+"in_range": true,
+"a": [
+1105,
+493,
+1195,
+585
+],
+"b": [
+1448,
+498,
+1537,
+587
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0628,
+"sep_h": 3.785,
+"dy": 5.0,
+"dh": 0.033,
+"y1": 493,
+"mid": 1321,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\desk\\out\\p0923-e2-pos3-a.jpg",
+"in_range": true,
+"a": [
+725,
+513,
+877,
+649
+],
+"b": [
+1259,
+515,
+1387,
+641
+],
+"size": [
+2560,
+1440
+],
+"h": 0.091,
+"sep_h": 3.985,
+"dy": 2.0,
+"dh": 0.074,
+"y1": 513,
+"mid": 1062,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+},
+{
+"path": "C:\\desk\\out\\p0923-pos-01-a.jpg",
+"in_range": true,
+"a": [
+888,
+541,
+1042,
+680
+],
+"b": [
+1449,
+545,
+1595,
+689
+],
+"size": [
+2560,
+1440
+],
+"h": 0.0983,
+"sep_h": 3.936,
+"dy": 4.0,
+"dh": 0.035,
+"y1": 541,
+"mid": 1244,
+"label": "pos",
+"why": "on the courtyard lane, operator-labelled"
+}
+]

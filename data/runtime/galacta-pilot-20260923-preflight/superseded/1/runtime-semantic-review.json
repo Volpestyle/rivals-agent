@@ -1,0 +1,171 @@
+{
+  "decision": "lead_accepts_galacta_pilot_20260923_learned_allocations",
+  "at_utc": "2026-09-23T17:58:31.821646+00:00",
+  "authority": "Root lead under James authorized practice-range goal; independent reviews retained",
+  "experiment_question": "Execute the ten learned allocations of the predeclared galacta-pilot-20260923 schedule, each once; preserve every result against the frozen 20-slot matched schedule",
+  "source": {
+    "patch": "1.1.3870120/build25364676",
+    "cooldown_regime": "normal",
+    "source_profile_sha256": "c5528cf75add2d7dde45b98423519788b8f1865e6d578a0ec6dec082f7e4a914",
+    "perception_sha256": "a30b3cae3024641a1a235a99f6297114ec7cbc5d79398a3712e8fe06d8854e2c",
+    "selector_sha256": "00fd672e388faa0743bec098fc4bb0b6d8dfd35425fe7517bdfd67b846d4ed5f",
+    "semantic_revision": "web-cluster-request-v1",
+    "feature_revision": "masked-state-grid-causal-v1"
+  },
+  "checkpoint": {
+    "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\diagnostics\\range-request-cohort-fit-20260923\\run-1\\model.pt",
+    "sha256": "698d8831a6740d1d060ed3691dc2102fc1a39987ad4c7a03ad4c96a49df9ce1b"
+  },
+  "fit_reports": [
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\diagnostics\\range-request-cohort-fit-20260923\\run-1\\mac-report.json",
+      "sha256": "d67507a00a1f302311f55d63fa7e36e344d26856ae0b23c19d235ce228a8bc61"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\diagnostics\\range-request-cohort-fit-20260923\\run-1\\windows-report.json",
+      "sha256": "b38defa3c42c59cd5bc261dabdd14e8bfab1486deface43885e58a85037752b8"
+    }
+  ],
+  "driver_review": {
+    "path": "docs/evidence/fit-readiness-20260923/driver-review.md",
+    "git_commit": "7de8d5f3a3e261295c3e847d158de98f81c04562",
+    "git_blob_sha256": "c12a20a85b8f1b90d762e020b98f970e6d8c1fbc0b06fed7fde0a1ba45cb8030"
+  },
+  "changed_boundary_reviews": {
+    "0f71336 tracker body witness (VUH-1314)": [
+      {
+        "path": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\review-vuh1314.md",
+        "sha256": "aac0e17cc825769aa466a41c0e540689bc963f349eaa8276a9c510df0188d7ac"
+      },
+      {
+        "path": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\review-vuh1314-delta.md",
+        "sha256": "5aa57ad839be7f60f3a08f20cacff45ef6cf51d74b292e7938d983c5d304b95d"
+      }
+    ],
+    "1bd6a8a HUD tracer witness (VUH-1294)": [
+      {
+        "path": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\review-hud-1294.md",
+        "sha256": "f9636405c90ae608ac6b53e6faea6975da08ebddddfa0c5b2f42cae94c67bee6"
+      }
+    ],
+    "ae648b3 outline player zone (VUH-1355)": [
+      {
+        "path": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\review-vuh1355.md",
+        "sha256": "a55fe0cb1af4f4a1b6e6bfa1065ac9b5feec62008eee17f99b84266d8f73f220"
+      }
+    ],
+    "e5511c5 collection caller (VUH-1319)": [
+      {
+        "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\galacta-pilot-20260922-04-preflight\\caller-review.md",
+        "sha256": "e555e9d0aece103310432f7a94f28fe8c62a9ceb08929df8e8df146df85cd71f"
+      }
+    ]
+  },
+  "controller": {
+    "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\galacta-pilot-20260923-preflight\\controller-deployed.json",
+    "sha256": "01836cd185d66c54364b90e30f876099b889c0852a0214509ce93100660752ee"
+  },
+  "perception": {
+    "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\galacta-pilot-20260923-preflight\\perception-deployed.json",
+    "sha256": "2ca714d1927830b6a7cfb71933c298b602ce8baf2cd5690a93a19a2367dc078a"
+  },
+  "calibration": {
+    "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\galacta-pilot-20260923-preflight\\calibration-current.json",
+    "sha256": "a1718fc2d00ac2937bc06937ba678b9ecc291950de6b2422c3ff4d50cd5517ca"
+  },
+  "deployment_check": {
+    "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\galacta-pilot-20260923-preflight\\deployment-check.json",
+    "sha256": "9da61c0468de6f280d6d91ad4a26dd847d183b8dc6be153de72761987f26a024"
+  },
+  "runtime_settings": {
+    "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\galacta-pilot-20260923-preflight\\runtime-settings.json",
+    "sha256": "7a1021a8848e65f52d7fd7689ac5afcff35f3548ae3db273cfd86f7a1df0cf57"
+  },
+  "scope": {
+    "schedule": {
+      "path": "data/benchmarks/galacta-pilot-20260923/schedule.json",
+      "sha256": "cc0614fd8d292e3bdbf61e50ca4dd07dc9dfc41f4729691d569ad6535157ff31"
+    },
+    "allocations": [
+      {
+        "schedule_index": 1,
+        "run_name": "galacta-pilot-20260923-01-learned",
+        "scenario": "near"
+      },
+      {
+        "schedule_index": 4,
+        "run_name": "galacta-pilot-20260923-04-learned",
+        "scenario": "mid"
+      },
+      {
+        "schedule_index": 6,
+        "run_name": "galacta-pilot-20260923-06-learned",
+        "scenario": "near"
+      },
+      {
+        "schedule_index": 7,
+        "run_name": "galacta-pilot-20260923-07-learned",
+        "scenario": "mid"
+      },
+      {
+        "schedule_index": 9,
+        "run_name": "galacta-pilot-20260923-09-learned",
+        "scenario": "near"
+      },
+      {
+        "schedule_index": 12,
+        "run_name": "galacta-pilot-20260923-12-learned",
+        "scenario": "mid"
+      },
+      {
+        "schedule_index": 14,
+        "run_name": "galacta-pilot-20260923-14-learned",
+        "scenario": "near"
+      },
+      {
+        "schedule_index": 15,
+        "run_name": "galacta-pilot-20260923-15-learned",
+        "scenario": "mid"
+      },
+      {
+        "schedule_index": 17,
+        "run_name": "galacta-pilot-20260923-17-learned",
+        "scenario": "near"
+      },
+      {
+        "schedule_index": 20,
+        "run_name": "galacta-pilot-20260923-20-learned",
+        "scenario": "mid"
+      }
+    ],
+    "each_allocation_once": true,
+    "game_pid": 10668,
+    "range_entry": "range entry that game PID 10668 made (process started 2026-09-23 12:13:21 local); James walked Spider-Man to the courtyard at about 12:53; no re-entry since",
+    "learned_phase_max_s": 20,
+    "startup_max_s": 14,
+    "absolute_authorization_budget_s": 34,
+    "confidence": 0.7,
+    "scoreboard": true,
+    "collect_episode": true,
+    "stop_on_feed": true,
+    "cooldown_regime": "normal",
+    "decision_hz": 10,
+    "reflex_hz": 60,
+    "scenario": "designated right Galacta by the courtyard stair railing; generic continuous selector; target identity, full health and bin require the actual episode audit",
+    "reissue_on": [
+      "game PID change",
+      "range re-entry",
+      "any deployed byte change",
+      "live tree move"
+    ]
+  },
+  "interpretation": "request-start-owned-pulse-v1 unchanged from slot 4; tracker body witness (0f71336) active in range mode",
+  "limits": [
+    "TRAIN-only fit on 76 known rows (37 starts / 39 controls); independent quality unknown",
+    "MK source vs PAD runtime and reset-window vs continuous selection remain exploratory uncertainties",
+    "Fused two-bot boxes are not refused by shape (VUH-1356); the courtyard pair can produce one",
+    "Stacked _bodies groups stay refused (VUH-1314 residual)",
+    "No rerun/tuning to select success; no replay or scripted offensive fallback",
+    "Proof freshness/watchdog limits remain; no physical-write/process-exit precision claim"
+  ]
+}

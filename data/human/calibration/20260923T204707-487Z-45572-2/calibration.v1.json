@@ -1,0 +1,225 @@
+{
+ "format": "rivals-calibration-v1",
+ "session": "20260923T204707-487Z-45572-2",
+ "media": {
+  "path": "C:/Users/volpe/Videos/2026-09-23 15-47-07.mkv",
+  "sha256": "e8259ef8e2b6fb00e59972c5597e63a20f1203dd6ef1757db1a3d0fca70fbc09"
+ },
+ "codec": "hevc",
+ "recorder": {
+  "integrity_ok": true,
+  "errors": [],
+  "warnings": [
+   "Capture/display/input-delivery latency has not been calibrated",
+   "Only matched file frames are usable; OBS muxer discarded trailing callback packets"
+  ],
+  "decoded_video_frames": 14242,
+  "matched_video_frames": 14242,
+  "unwritten_muxer_tail_packets": 2,
+  "muxer_pts_offset_seconds": 0.021,
+  "max_video_pts_residual_seconds": 0.00033333333334439885,
+  "composition_duration_seconds": 118.708328585,
+  "counts": {
+   "key": 576,
+   "mouse": 8376,
+   "focus": 3,
+   "pause": 0,
+   "gap": 0,
+   "frames": 14244,
+   "raw_input_status": 1
+  }
+ },
+ "anchor_applies": true,
+ "settings": {
+  "source": "native frames of James's settings look in this take (keyboard and controller pages, file 88.5-116.5 s)",
+  "frames": [
+   {
+    "file_ms": 89596,
+    "decoded_bgr_sha256": "7cebcf12d00d2a5faa52811b1273f4f6ff7fd9a256a98399c49d9c93637d1b02",
+    "crop": "settings-frames/f089596-crop.jpg",
+    "crop_sha256": "296452aa6cee2e6dbcd9536637d59b308108855cccd00be5b071738e25add480"
+   },
+   {
+    "file_ms": 90596,
+    "decoded_bgr_sha256": "6f640218ee845c62f79e5c2a747e6d07b4d5625191b289539bba53f651c64b77",
+    "crop": "settings-frames/f090596-crop.jpg",
+    "crop_sha256": "6c5c7176a3a1ad1a2232596085ecaf52cb87a80a6e3e51c4ffdffab07c820408"
+   },
+   {
+    "file_ms": 95596,
+    "decoded_bgr_sha256": "4b1d1538b40452871efbae18151d6e03efb91b41654400d9eb6399249561a2bc",
+    "crop": "settings-frames/f095596-crop.jpg",
+    "crop_sha256": "e4958225cc3fc40719eefa5f1d11da106a4787e64c56562cf586c1a9784e6cb6"
+   },
+   {
+    "file_ms": 97596,
+    "decoded_bgr_sha256": "fe012a1a5df3715d8f3857f3b0802f57700cdfc8386dbf99361248ca6c9ecaf9",
+    "crop": "settings-frames/f097596-crop.jpg",
+    "crop_sha256": "bb7c5ceb3a62196a3614a75df7b1194108605a823318b7fc08180e471efbc629"
+   },
+   {
+    "file_ms": 98596,
+    "decoded_bgr_sha256": "3664d34d0fe38d4dccde4152e399617e1ca629b604e1c7e03d8bd092bd879b0e",
+    "crop": "settings-frames/f098596-crop.jpg",
+    "crop_sha256": "432f30f9d36dc1be6e2241986b7b718dfe921f68db39bfc267191e5cf5b6d406"
+   },
+   {
+    "file_ms": 99596,
+    "decoded_bgr_sha256": "be907dcaaae0020dde9bad6053f5f03c8852ff4e2d5db78e3c46de88d30a118c",
+    "crop": "settings-frames/f099596-crop.jpg",
+    "crop_sha256": "1a98f0e7d9235b585046625adc99956fd04bbddc4609da11693446dcfd95f537"
+   },
+   {
+    "file_ms": 100596,
+    "decoded_bgr_sha256": "8e86b9f8cbe9bf979a56f32287f228a74a2fcb465b621d6f56deea0fc5bd000d",
+    "crop": "settings-frames/f100596-crop.jpg",
+    "crop_sha256": "4f3fc95edd8699e03177fc16ba2eab5250a5b557b2f9fd8ede6bb6de112e1311"
+   },
+   {
+    "file_ms": 102596,
+    "decoded_bgr_sha256": "980395c1dea3dc831af7bea38fe85cb3d50476b83d6465682332946619838e33",
+    "crop": "settings-frames/f102596-crop.jpg",
+    "crop_sha256": "e801a8b69ff1358d64bc817d1528c8998873f005796ad38bff4bf0a021b4598d"
+   },
+   {
+    "file_ms": 104596,
+    "decoded_bgr_sha256": "b70747d2974e4ef6e4bcdd69aa334c3c362705ac7e943cfb2d44624b7a7fb234",
+    "crop": "settings-frames/f104596-crop.jpg",
+    "crop_sha256": "3f423e59c7d6b36fcebf434879122989bc83f6331a5f72724266f5c630e50a07"
+   }
+  ],
+  "mouse": {
+   "horizontal_sensitivity": 1.89,
+   "vertical_sensitivity": 1.89,
+   "invert_horizontal": false,
+   "invert_vertical": false,
+   "mouse_smoothing": true,
+   "mouse_acceleration": true,
+   "acceleration_activation_threshold": 1,
+   "acceleration_factor": 1.0,
+   "center_mouse_in_background": false,
+   "raw_input": true,
+   "high_polling_rate_optimization": false,
+   "frame_ms": 90596
+  },
+  "hero": {
+   "targeting_sensitivity_while_aloft": 100.0,
+   "hold_to_swing": true,
+   "simple_swing": false,
+   "simple_swing_key": "CAPS",
+   "hold_to_wall_crawl": true,
+   "hold_to_run_on_walls": false,
+   "direction_of_wall_crawling": "Advance Vertically Upwards",
+   "attack_range_hint": true,
+   "frame_ms": [
+    97596,
+    98596
+   ]
+  },
+  "keyboard_bindings": {
+   "forward": "W",
+   "back": "S",
+   "left": "A",
+   "right": "D",
+   "jump": "SPACE",
+   "slow_walk": "LCTRL",
+   "hold_to_slow_walk": true,
+   "primary_attack_spider_power": "mouse left (icon)",
+   "secondary_attack_web_cluster": "mouse right (icon)",
+   "melee_attack": [
+    "V",
+    "mouse 5 (icon)"
+   ],
+   "ability1_get_over_here": "F",
+   "ability2_web_swing": "LSHIFT",
+   "ability3_amazing_combo": [
+    "E",
+    "2"
+   ],
+   "ultimate": "Q",
+   "team_up_a": "C",
+   "team_up_b": "X",
+   "get_over_here_targeting": [
+    "mouse 4 (icon)",
+    "2"
+   ],
+   "frame_ms": [
+    98596,
+    100596
+   ]
+  },
+  "controller": {
+   "scope": "all heroes (stick)",
+   "horizontal_sensitivity": 265,
+   "vertical_sensitivity": 75,
+   "stick_profile": "Default",
+   "reticle_type": "Circle",
+   "cursor_sensitivity": 100,
+   "vibration": true,
+   "vibration_intensity": 80,
+   "bindings": "not shown: the page reads 'controller required' (no controller connected)",
+   "frame_ms": [
+    102596,
+    104596
+   ]
+  },
+  "fov": "not shown in this take (the Display tab was not opened)"
+ },
+ "yaw": {
+  "method": "360-degree closure: the pre-turn view (file 58.60 s, still) against every decoded frame of the turn; phase correlation on the upper scene band with the static practice-range overlay masked; the view returns between the two final rest positions, and the count total at zero horizontal shift is interpolated between them",
+  "turn": {
+   "start_file_s": 59.0,
+   "end_file_s": 70.9,
+   "counts_dx_total_at_rest": [
+    10891,
+    10876
+   ],
+   "dy_drift_counts": -41
+  },
+  "rest_shifts_px_at_640": [
+   {
+    "dcx": 10891,
+    "sx": -1.161
+   },
+   {
+    "dcx": 10876,
+    "sx": 1.629
+   }
+  ],
+  "phase_response": 0.85,
+  "counts_per_360": 10884.76,
+  "yaw_deg_per_count": 0.0330738,
+  "uncertainty": {
+   "counts_per_360": "+/-2 counts (interpolation between rest frames 15 counts apart; shift sd 0.01 px)",
+   "yaw_deg_per_count": "+/-0.00001 (0.02 %)",
+   "latency": "none: both ends are still frames",
+   "speed_dependence": "open: the settings show Mouse Acceleration on (threshold 1, factor 1.00) and Mouse Smoothing on. The closure integrates this turn's speeds (about 200-1,400 counts/s). Local frame-pair px/count falls about 20 % from slow to fast (r=-0.38), which may be acceleration or a measurement artefact; a fast and a slow 360 would settle it"
+  },
+  "cross_check": "0.0330738 equals 0.0175 x 1.89 = 0.033075 to 0.01 %; 0.0175 deg/count is the factor common sensitivity converters use for this game (not verified from a primary source)"
+ },
+ "pitch": {
+  "pitch_deg_per_count": null,
+  "why_null": "the third-person camera orbits the hero on pitch, so frame-to-frame vertical image shift does not track rotation (phase correlation fails), and the clamp positions give only (range)/gain without the game's pitch limits",
+  "observations": {
+   "sweep_file_s": [
+    73.0,
+    85.9
+   ],
+   "up_counts_to_view_stop": [
+    -1941,
+    -1965
+   ],
+   "down_limit_reached_by_counts_from_top": 4624,
+   "down_nudge_after_limit": "+119 counts moved the image 0.2 px",
+   "end_vs_start": "net +182 counts, view about 1 deg lower than the start (counts past both limits are lost)"
+  },
+  "if_pitch_equals_yaw": "then the range between limits is 4,624 x 0.0330738 = 152.9 deg; not established",
+  "next_take": "a pitch take that stays inside the limits and returns to a still start view, or a published pitch range"
+ },
+ "header_calibration": {
+  "yaw_deg_per_count": 0.0330738,
+  "pitch_deg_per_count": null,
+  "source": "data/human/calibration/20260923T204707-487Z-45572-2/calibration.json"
+ },
+ "applies_to": "every session with sensitivity 1.89/1.89 and DPI 800 (all campaign sessions so far)"
+}

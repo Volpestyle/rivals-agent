@@ -1,0 +1,72 @@
+{
+  "mock": false,
+  "root_ready_for_pilot": true,
+  "observed_utc": "2026-09-23T18:45:40.788003+00:00",
+  "observer": "pilot operator (Claude pane), native frames inspected before the binding",
+  "game_pid": 10668,
+  "range_entry": "second range entry of game PID 10668 (process started 2026-09-23 12:13:21 local): the game idle-dropped to the PLAY lobby about 13:20; James re-entered and parked Spider-Man at the courtyard stairs about 13:40",
+  "frame": [
+    2560,
+    1440
+  ],
+  "observed": {
+    "range": true,
+    "spiderman": true,
+    "normal_cooldown_menu": true,
+    "friendly_fire_off": true,
+    "pad_web_layout": true,
+    "galacta_setup": true,
+    "monitor_present": true,
+    "capture_preflight": true
+  },
+  "display_idle_off_disabled": true,
+  "cpu_percent": "re-read by the launcher before every slot (60 % cap)",
+  "observations": [
+    "Scene confirmed on a no-input frame at 13:41 (scene-03): courtyard, GALACTA BOT pair ahead, designated right bot by the stair railing.",
+    "Practice Settings page read fresh in this entry at 13:43 (practice-settings-entry2/ps-0.jpg): No Ability Cooldown X/off (nothing pressed), Friendly Fire X/off, 240 FPS.",
+    "Cooldowns from play at 13:45: one Web Cluster into open air away from both bots; webs 5 -> 4 -> 5 within 2.6 s (e2-cd-b/c).",
+    "Readiness frame 13:45 (galacta-0923-ready-e2): both bots name plate only, no health bar (undamaged); own HP 250/250, webs 5, swing 3, uppercut 2, ultimate charging (95 %). Numeric bot health/movement settings unknown.",
+    "Scout for slot 3 (mid): right bot 1265,509,1391,640 h .091 mid (e2-cd-d); setup reference only, the trial's bin is its own first-phase frame.",
+    "The settings script's pad attach turned the camera; the operator reversed its own 1.8 s walk and re-faced the lane before placement (e2-back).",
+    "Display idle-off AC = 0 (never). capture.py preflight 159 dxcam frames in 1 s; VG27AQM1A present."
+  ],
+  "limits": [
+    "Qualitative undamaged appearance (name plate, no bar); no numeric target health.",
+    "Generic selector; native target correspondence is audited per trial.",
+    "Binding 2 covers this PID and this range entry; each remaining learned allocation (4, 6, 7, 9, 12, 14, 15, 17, 20) is consumed once; slot 1 was consumed under binding 1."
+  ],
+  "evidence": [
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\benchmarks\\galacta-setup-20260923\\practice-settings-entry2\\ps-0.jpg",
+      "sha256": "11ab3f9716aed117b1457ad742a1b4a5402bb0e5682f2bd2e66d2345ff43915a"
+    },
+    {
+      "path": "C:\\desk\\out\\p0923-scene-03.png",
+      "sha256": "1ca9d4861ffee9c693148cdf3569b40ded3173955cf79105e155f23cc41f39f5"
+    },
+    {
+      "path": "C:\\desk\\out\\p0923-e2-cd-b.jpg",
+      "sha256": "c57ed921c8b4b070e0bef4e611d7a875885598804d95cdae43bdb301a92ed57f"
+    },
+    {
+      "path": "C:\\desk\\out\\p0923-e2-cd-c.jpg",
+      "sha256": "635cb02bb3eee9538a223902bba2c8ed5ca760abc409d7eb36a835397d64d64f"
+    },
+    {
+      "path": "C:\\desk\\out\\p0923-e2-cd-d.jpg",
+      "sha256": "82eb126f5f8c4af96f24769c0006fdd49852cb182c192478115059f7ec440d7a"
+    },
+    {
+      "path": "C:\\desk\\out\\galacta-0923-ready-e2.png",
+      "sha256": "8e2a7d88b679285c673ed05082826e418d6940391d1421286edfe098d15e2368"
+    },
+    {
+      "path": "C:\\desk\\pilot0923\\capture-preflight-2.txt",
+      "sha256": "145396282b8c8708fcde9fc8209666c2bb42365ea1c7f1c94cecdb8c36e011f5"
+    },
+    {
+      "path": "C:\\desk\\pilot0923\\monitor-2.txt",
+      "sha256": "b5498de65fcf72ac419b7684ec8b056fff2812f1c8f5bb021c07e43bb7b391e2"
+    }
+  ]
+}

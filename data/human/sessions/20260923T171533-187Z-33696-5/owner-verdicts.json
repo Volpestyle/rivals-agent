@@ -1,0 +1,255 @@
+{
+ "session": "20260923T171533-187Z-33696-5",
+ "segments_evidence_sha256": "9cf113cbe6a18dd59aeaab368b56d1d734bfc721f9d3bbacd382a70ac06395e8",
+ "reviewer": "admission-owner",
+ "reviewed_at": "2026-09-23T21:30:00Z",
+ "role": "owner inspection; assembly additionally requires the independent per-session review (R5)",
+ "verdicts": {
+  "seg-000": {
+   "suitability": "rejected",
+   "reason": "focus_transition: the first 250 ms after focus returns at session start; not play by rule",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-23T21:30:00Z",
+   "evidence": "segments-evidence.json 9cf113cbe6a18dd5 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 147,
+     "composition_ns": 251609744172925,
+     "decoded_bgr_sha256": "4e827d4e7c69420df601188d883c932a014202946506fad9a8e867f5db602383"
+    },
+    {
+     "frame_index": 161,
+     "composition_ns": 251609860839587,
+     "decoded_bgr_sha256": "5e33f8c2c9e6eea9ed53fd5dae8af517404b149d1311e0d29764ffd54f05d041"
+    },
+    {
+     "frame_index": 176,
+     "composition_ns": 251609985839582,
+     "decoded_bgr_sha256": "b1a736510fc3aa24301b59fc575f52a74ada274ebb41bde8dde21a984fa4b683"
+    }
+   ]
+  },
+  "seg-001": {
+   "suitability": "rejected",
+   "reason": "unsampled sliver between the focus settle and the first HUD sample",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-23T21:30:00Z",
+   "evidence": "segments-evidence.json 9cf113cbe6a18dd5 review frames + contact sheets",
+   "frames": []
+  },
+  "seg-002": {
+   "suitability": "unresolved",
+   "reason": "4.5 s of range lane before the Alt-Tab out at 6.15 s: one D tap and mouse look, no engagement; reads as a pre-play check before tabbing out, not play the protocol asks for. Reviewer decides",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-23T21:30:00Z",
+   "evidence": "segments-evidence.json 9cf113cbe6a18dd5 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 177,
+     "composition_ns": 251609994172915,
+     "decoded_bgr_sha256": "4a99b22b1a473550de182be52bd8d5cdc58ca28309223bb1a78b5361f38777d2"
+    },
+    {
+     "frame_index": 449,
+     "composition_ns": 251612260839491,
+     "decoded_bgr_sha256": "e4f84aa52c0dc422209b451a8c0a73bb4250d32fdbd12464bf44d6033837a932"
+    },
+    {
+     "frame_index": 722,
+     "composition_ns": 251614535839400,
+     "decoded_bgr_sha256": "1e4d2614e2d3c3e6e207b6ddcdba039885ed3b02bcb534c6915b74f7ca739009"
+    }
+   ]
+  },
+  "seg-003": {
+   "suitability": "rejected",
+   "reason": "sliver between the last HUD-present frame and the Alt key packet",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-23T21:30:00Z",
+   "evidence": "segments-evidence.json 9cf113cbe6a18dd5 review frames + contact sheets",
+   "frames": []
+  },
+  "seg-004": {
+   "suitability": "rejected",
+   "reason": "ui_key: Alt at 6.149 s, then focus loss at 6.255 s (Alt-Tab out)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-23T21:30:00Z",
+   "evidence": "segments-evidence.json 9cf113cbe6a18dd5 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 723,
+     "composition_ns": 251614544172733,
+     "decoded_bgr_sha256": "3139c1eae18e1f2fef08797806f770629a9cfe647b7e0f7b24c9053357b7bfdb"
+    },
+    {
+     "frame_index": 729,
+     "composition_ns": 251614594172731,
+     "decoded_bgr_sha256": "2384317db687511c20c12bdd0992f6b4f9b39ad9892b83de0f5149b5d08257d0"
+    },
+    {
+     "frame_index": 735,
+     "composition_ns": 251614644172729,
+     "decoded_bgr_sha256": "60d75624496e2b5ddec66d12cfb0baa04ae434f60913a6109b4769b0d749762a"
+    }
+   ]
+  },
+  "seg-005": {
+   "suitability": "rejected",
+   "reason": "focus_transition after the Alt-Tab back: frame 1486 (12.509 s) still shows the Windows taskbar over the HUD",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-23T21:30:00Z",
+   "evidence": "segments-evidence.json 9cf113cbe6a18dd5 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 1486,
+     "composition_ns": 251620902505812,
+     "decoded_bgr_sha256": "4a825851450a26d2ee69c3bfc4e7527f7b5f94d7578c530b376406f2bae1db82"
+    },
+    {
+     "frame_index": 1500,
+     "composition_ns": 251621019172474,
+     "decoded_bgr_sha256": "fa7813c1e6721c02bec826737bca93599327256a2bc5a6792d0df6648709b527"
+    },
+    {
+     "frame_index": 1515,
+     "composition_ns": 251621144172469,
+     "decoded_bgr_sha256": "0f8c0af64c7c9c5cbf8a635c3b0ec9635e086d90ab2cf4bbea011d76dc1b8a14"
+    }
+   ]
+  },
+  "seg-006": {
+   "suitability": "rejected",
+   "reason": "unsampled sliver before the first HUD sample after the settle",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-23T21:30:00Z",
+   "evidence": "segments-evidence.json 9cf113cbe6a18dd5 review frames + contact sheets",
+   "frames": []
+  },
+  "seg-007": {
+   "suitability": "accepted",
+   "reason": "continuous practice-range play, 154.4 s, in all 17 inspected frames: Spider-Man moving through the courtyard and lanes near the Galacta bots (KO banners in three frames, a bot at point blank in two), one airborne frame and one on a rock in the water; HUD present throughout; no UI key, AFK span or capture gap inside; regime normal (27 of 34 five-second intervals show depletion, 7 show no evidence)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-23T21:30:00Z",
+   "evidence": "segments-evidence.json 9cf113cbe6a18dd5 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 1516,
+     "composition_ns": 251621152505802,
+     "decoded_bgr_sha256": "f5a48e7be88c21f41ae76bd8668f6f2be97c137ab6302d0ca3a6bb23b01e397f"
+    },
+    {
+     "frame_index": 2673,
+     "composition_ns": 251630794172083,
+     "decoded_bgr_sha256": "9d22dd08bbd3a1b9fc340f815c886c209fe9fac92b2e3efaa0b49c5caa34266a"
+    },
+    {
+     "frame_index": 3831,
+     "composition_ns": 251640444171697,
+     "decoded_bgr_sha256": "ba42ef77e7feec9c2392aca89881227cf267dcfd1d4a848cb79c53aec2633636"
+    },
+    {
+     "frame_index": 4989,
+     "composition_ns": 251650094171311,
+     "decoded_bgr_sha256": "f03fa302e6ee257430fb722fde6599ab0b43006aa3a635f62b5db6c9c37a695f"
+    },
+    {
+     "frame_index": 6147,
+     "composition_ns": 251659744170925,
+     "decoded_bgr_sha256": "f96637d4dc88277dfbbb8a8d6bb67a94d817a2bfe9bec14d23a2fe46450cd03e"
+    },
+    {
+     "frame_index": 7304,
+     "composition_ns": 251669385837206,
+     "decoded_bgr_sha256": "9b0fe4d95d000b780bc85a4b206c03c69e0bc6acd5d35d5afa13954a5593a50b"
+    },
+    {
+     "frame_index": 8462,
+     "composition_ns": 251679035836820,
+     "decoded_bgr_sha256": "b69ed96e8e7dc86fbe6b56cbb72777d4218c11d58d01c49fc870267f4a25ba17"
+    },
+    {
+     "frame_index": 9620,
+     "composition_ns": 251688685836434,
+     "decoded_bgr_sha256": "748de312e5b9d31ece21a99f60bdc93f823417ffe864c9e6c0c849087e3121e6"
+    },
+    {
+     "frame_index": 10778,
+     "composition_ns": 251698335836048,
+     "decoded_bgr_sha256": "8c50dfc19af65df83e35dd6d14d436b432b5630edcbeab0473a4bb1022dbf84c"
+    },
+    {
+     "frame_index": 11935,
+     "composition_ns": 251707977502329,
+     "decoded_bgr_sha256": "d141dfaeb2b5bedb6be7a42bdbfd4e6a27f3c4dcdd0f7f36e090cb6b338a0cf9"
+    },
+    {
+     "frame_index": 13093,
+     "composition_ns": 251717627501943,
+     "decoded_bgr_sha256": "991c743a5e82781fc6f4c20054711589c309410c38eec9a56241f522963dc932"
+    },
+    {
+     "frame_index": 14251,
+     "composition_ns": 251727277501557,
+     "decoded_bgr_sha256": "f1b9fa3661b2d0e9df983d3b53778118317d22118b79ef8f75f14a6ea15ec9c7"
+    },
+    {
+     "frame_index": 15409,
+     "composition_ns": 251736927501171,
+     "decoded_bgr_sha256": "c21b195b92b8a0fe97f04926d56abd559a8813f9d7f37c32e6ac68a7d024e76a"
+    },
+    {
+     "frame_index": 16566,
+     "composition_ns": 251746569167452,
+     "decoded_bgr_sha256": "f9a8edfed4110f7832594f5a1daebc379704db911971097f30128ff320546e3b"
+    },
+    {
+     "frame_index": 17724,
+     "composition_ns": 251756219167066,
+     "decoded_bgr_sha256": "86162974866cf2b98604b00875a32f5b02a436195d1c4fe988d966a9b05f785e"
+    },
+    {
+     "frame_index": 18882,
+     "composition_ns": 251765869166680,
+     "decoded_bgr_sha256": "8ec871a2aa42b586efd1b1364dd7997a467b31b2c3a5cb0219de5969730ce51d"
+    },
+    {
+     "frame_index": 20040,
+     "composition_ns": 251775519166294,
+     "decoded_bgr_sha256": "7b7bec6ea5054294ab8062e7c0001f9e78280d19cffe44124c7154db909f99d6"
+    }
+   ]
+  },
+  "seg-008": {
+   "suitability": "rejected",
+   "reason": "sliver between the last HUD sample and the Esc key packet",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-23T21:30:00Z",
+   "evidence": "segments-evidence.json 9cf113cbe6a18dd5 review frames + contact sheets",
+   "frames": []
+  },
+  "seg-009": {
+   "suitability": "rejected",
+   "reason": "settings_menu: Esc at 167.131 s opens the main menu (RESUME GAME / PRACTICE SETTINGS / SETTINGS; frames 20076 and 20112), then Alt-Tab and focus loss at 167.726 s; nothing follows",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-23T21:30:00Z",
+   "evidence": "segments-evidence.json 9cf113cbe6a18dd5 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 20041,
+     "composition_ns": 251775527499627,
+     "decoded_bgr_sha256": "13b6fdc2e4a9e9456da52597f06aabef3975facf0b8c21fc88bfdb1b73b1c093"
+    },
+    {
+     "frame_index": 20076,
+     "composition_ns": 251775819166282,
+     "decoded_bgr_sha256": "d4893ff10423f4bd6df8094d3077df89b6a4ab1ff79f1a0a3397f30e7d37175f"
+    },
+    {
+     "frame_index": 20112,
+     "composition_ns": 251776119166270,
+     "decoded_bgr_sha256": "f604ad5f71e8ee0822226b3400b15fa9bcbd2d0efb407ca0f1ec35b675a0f425"
+    }
+   ]
+  }
+ }
+}

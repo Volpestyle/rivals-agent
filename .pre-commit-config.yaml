@@ -1,0 +1,19 @@
+# Install once per clone (hooks live in the shared .git, so every worktree of that clone gets them):
+#   uv tool install pre-commit
+#   pre-commit install --allow-missing-config
+# --allow-missing-config lets branches cut before this file landed keep committing.
+default_install_hook_types: [pre-commit, commit-msg]
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.14.0
+    hooks:
+      - id: ruff-check          # no --fix: a hook never rewrites a staged file
+        stages: [pre-commit]
+  - repo: local
+    hooks:
+      - id: identity-pinned-declaration
+        name: identity-pinned files need a DECLARATION trailer
+        entry: python scripts/pins.py commit-msg
+        language: python        # stdlib only; pre-commit supplies the interpreter on both machines
+        stages: [commit-msg]
+        always_run: true

@@ -1,0 +1,76 @@
+{
+ "format": "rivals-session-artifact-hashes-v1",
+ "session": "20260923T051828-422Z-33696-1",
+ "status": "assembled",
+ "split": "train",
+ "sitting": "2026-09-23-early",
+ "settings_identity": "a8dea3bacebbe9377c8ea9bc7f517e7d907e126c61634676883599dbf2e3d1fd",
+ "counted_minutes": 6.972499721116667,
+ "snapshot": "code-snapshot-86a1912",
+ "calibration": {
+  "kind": "slow_turn_constant",
+  "yaw_deg_per_count": 0.0330738,
+  "pitch_deg_per_count": 0.0330738,
+  "pitch": {
+   "kind": "derived_equal_sensitivity"
+  },
+  "accel_on": true,
+  "source": "data/human/calibration/20260923T204707-487Z-45572-2/calibration.json (v2) (baa49158c9911e01)"
+ },
+ "version": 2,
+ "supersedes": {
+  "reason": "fit vocabulary gained simple_swing (Caps Lock, James's decision 2026-09-23): 15 actions; identity, review and import unchanged",
+  "renamed": {
+   "20260923T051828-422Z-33696-1.steps.jsonl": {
+    "to": "20260923T051828-422Z-33696-1.steps.v1.jsonl",
+    "sha256": "5a1862249313c76048ea02c460b397898a9e26da3e401043624440edb55aef64"
+   },
+   "sampling.json": {
+    "to": "sampling.v1.json",
+    "sha256": "afbb8e8d31342dbf12e5d7eebb30d911dba4936a1fd0e5e60e3a969b28ef8d7d"
+   },
+   "artifact-hashes.json": {
+    "to": "artifact-hashes.v1.json",
+    "sha256": "cabd628037c43de9ee77d5344ccbeb4b05d310296cfdd4a76a18166ab9f35ff2"
+   }
+  }
+ },
+ "files": {
+  "data/human/sessions/20260923T051828-422Z-33696-1/20260923T051828-422Z-33696-1.steps.jsonl": "d49224e3c4382a62ebb4c4252bcc5800138782688e1d0f60e03e46ce4b6e7edb",
+  "data/human/sessions/20260923T051828-422Z-33696-1/20260923T051828-422Z-33696-1.steps.v1.jsonl": "5a1862249313c76048ea02c460b397898a9e26da3e401043624440edb55aef64",
+  "data/human/sessions/20260923T051828-422Z-33696-1/artifact-hashes.v1.json": "cabd628037c43de9ee77d5344ccbeb4b05d310296cfdd4a76a18166ab9f35ff2",
+  "data/human/sessions/20260923T051828-422Z-33696-1/candidates-pass1.json": "037b416bb99589ef583c29be0ca7661318de2fae29133a4c6dd264cefadbf464",
+  "data/human/sessions/20260923T051828-422Z-33696-1/hud-scan-samples.jsonl": "3627e6ed4ecc30a64edf5e9f5aa09fa0f6e6ab1179739aa7cdbe45e3f4892ce7",
+  "data/human/sessions/20260923T051828-422Z-33696-1/imported-demo.jsonl": "ed98a5c177151adce3d5951db41d20e6bc7f9af0a293a836c5792a890aa00380",
+  "data/human/sessions/20260923T051828-422Z-33696-1/independent-review.md": "7228d19643b2274da38e21af52f2dd02516860c683f822cea158fc547bcdad1e",
+  "data/human/sessions/20260923T051828-422Z-33696-1/independent-review.verdicts.json": "4d33ef16bde1b5cb84a2b6e94da99f4c6ecd9b1ccfbbbd502afc4c29f0f87551",
+  "data/human/sessions/20260923T051828-422Z-33696-1/input-profile.json": "1a166d1a4ec78984a16a230b4ac81ce0ba8a4d7a65bbd14f955c4b20492e0897",
+  "data/human/sessions/20260923T051828-422Z-33696-1/minutes.json": "cc2a474e3e436d8abdf9704789ef7b68a74c6ec478b741140aef5fbd7fc08b23",
+  "data/human/sessions/20260923T051828-422Z-33696-1/motor-settings.json": "28b91e96b5e051afd61268ddd0d29971ba891826d20eacb0baf3d6794b1eb861",
+  "data/human/sessions/20260923T051828-422Z-33696-1/owner-verdicts.json": "8e4adceb3d1f591ce072abea69395289911e9084bda6d65c29b75f41b0c63a9a",
+  "data/human/sessions/20260923T051828-422Z-33696-1/provenance.json": "a47105f9dcab22a8b8474a00093c915976e3588cea1b4cdfe606ea51c6436f40",
+  "data/human/sessions/20260923T051828-422Z-33696-1/recorder-verification.json": "fc3ab76ce1d9324d1a7f1e8ec92719cc5e9edc4dd0cbe97aa67e0d23f63abf2c",
+  "data/human/sessions/20260923T051828-422Z-33696-1/recording-log.299ffba.md": "fc6e595cfb6ef47f7ffe89dd6f00058f8fec1f8e36ae89e51e273cd83d2b8e2f",
+  "data/human/sessions/20260923T051828-422Z-33696-1/regime-timeline.json": "7893a93f9612c1ec51b242cecb72eaf521517011607266cb66e8fc4b494ac41d",
+  "data/human/sessions/20260923T051828-422Z-33696-1/registry.01bc1e00335f.json": "01bc1e00335f1f2e303fa116b0b8f53cf3d9b78a624a184c85b5184e0b850f3e",
+  "data/human/sessions/20260923T051828-422Z-33696-1/review.json": "53f6b340bc7161dacb9fa2cddc7041d443800477656a375630d9086047abae27",
+  "data/human/sessions/20260923T051828-422Z-33696-1/sampling.json": "8d1d042a648372cad5c79eb955c089efecdaa3a6f8f91892a0bc9c2cc916c4d4",
+  "data/human/sessions/20260923T051828-422Z-33696-1/sampling.v1.json": "afbb8e8d31342dbf12e5d7eebb30d911dba4936a1fd0e5e60e3a969b28ef8d7d",
+  "data/human/sessions/20260923T051828-422Z-33696-1/segments-evidence.json": "a421dfe7bf489a4811c372f96c18613a38cc5105fdb701dc06022e9e11168cce",
+  "data/human/sessions/20260923T051828-422Z-33696-1/settings.json": "b550f7cd616ee45396cc8fab709cd556f0808ae7bfee02cff15e206a4e98b555",
+  "data/human/sessions/20260923T051828-422Z-33696-1/slot-mapping.json": "b2ccd06d9d4d19d78ebb336ccd9c9fa6acd4cb64a63a36551083e69a8286a2c0",
+  "data/human/sessions/20260923T051828-422Z-33696-1/team-up-check.jpg": "8fcc054065549cf630c2c3d9afd73a8114140e26310e146afd72454b8760c062",
+  "data/human/sessions/20260923T051828-422Z-33696-1/team-up-check.json": "cf1728665fe99c38eff79656ab8910a0eb773558487f3e9c8a0ea9173bcb716c"
+ },
+ "external": {
+  "C:/Users/volpe/Videos/2026-09-23 00-18-28.mkv": "ad14e5bc0a1e0da23527a8f4a092e591ddf568ac925cfd0b2907e38dc94b9aaf",
+  "C:/Users/volpe/Videos/RivalsInput/20260923T051828-422Z-33696-1/metadata.json": "c24b77b40c8e17f3086612531a813f3441b53d8c0cf629f2b270d6452e0f8381",
+  "C:/Users/volpe/Videos/RivalsInput/20260923T051828-422Z-33696-1/inputs.jsonl": "f6188c34c850eab8e4fd4a1199513b2b01342f6e0fe1516801bddf0273f40990",
+  "C:/Users/volpe/Videos/RivalsInput/20260923T051828-422Z-33696-1/frames.csv": "2520d2dbcdc707984037c057e6b0fd6d5dfe1be37a830fb206c403dd10317c46",
+  "data/human/sealed-denylist.json": "57cfe01f29f6e1a55293f968ec697aa293c268bd87d7cf247ef648279e2fba7c",
+  "data/human/notes/2026-09-21-user-settings.json": "852c92254961b4fcb1278e8ebe752ea2f02ce6add678509d3276fd1a26264c6c",
+  "data/human/inspection/20260922T033319-205Z-24328-2/independent-review-resolution.md": "a67f55f36554887d97765b4552a33ac5c92494f6a50c814801183528a0c3c8e6",
+  "data/human/calibration/20260923T204707-487Z-45572-2/calibration.json": "baa49158c9911e0155a2d06883faec00150b297e0a5fe0e8dd46fc86d5310283",
+  "data/human/sessions/code-snapshot-86a1912/manifest.json": "19242fb6bb1f61422c9bbbc2d367baab5edfdcba3bfe3236767adf4bb56a2c09"
+ }
+}

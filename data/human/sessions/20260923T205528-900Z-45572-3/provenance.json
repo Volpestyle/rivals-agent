@@ -1,0 +1,466 @@
+{
+ "session": "20260923T205528-900Z-45572-3",
+ "media": {
+  "path": "C:/Users/volpe/Videos/2026-09-23 15-55-28.mkv",
+  "sha256": "bf32202abd0b93a300453ffaa9896b7566c52ee4ed8b6aacb8edc9a4dd6f11e9",
+  "bytes": 9151541232
+ },
+ "metadata": {
+  "sha256": "4ee7bd82028e593b3be5c10a7b9b0a664054d76c4fd8897588705f5fc4be10a9",
+  "status": "complete",
+  "complete": true,
+  "clean_stop": true,
+  "obs_version": "32.0.1",
+  "logger_version": "1.0.0",
+  "width": 2560,
+  "height": 1440,
+  "fps_num": 120,
+  "fps_den": 1,
+  "queue_dropped_events": 0,
+  "raw_input_errors": 0,
+  "writer_failed": false,
+  "events_attempted": 149338,
+  "video_packets": 80039,
+  "input_events": 69295,
+  "started_utc": "2026-09-23T20:55:28.900Z",
+  "start_ns": 264804047318300,
+  "end_ns": 265471947027400,
+  "capture_latency_calibrated": false
+ },
+ "raw_files": {
+  "inputs.jsonl": "f7008ad72f343167eb560fc2c598065e415a51b8a7fb63f684cb4c5acd862163",
+  "frames.csv": "4ca26a1e9b4c90a3daa44cfa1122ecea45af111a9e740164284716de7f04e40e",
+  "metadata.json": "4ee7bd82028e593b3be5c10a7b9b0a664054d76c4fd8897588705f5fc4be10a9"
+ },
+ "anchor_applicability": {
+  "accepted_derivation": "data/human/inspection/20260922T033319-205Z-24328-2/independent-review-resolution.md",
+  "accepted_derivation_sha256": "a67f55f36554887d97765b4552a33ac5c92494f6a50c814801183528a0c3c8e6",
+  "first_16_packets": {
+   "video_ms": [
+    21,
+    46,
+    29,
+    38,
+    71,
+    54,
+    63,
+    96,
+    79,
+    88,
+    121
+   ],
+   "audio_ms": [
+    0,
+    21,
+    42,
+    64,
+    85
+   ]
+  },
+  "predicted": {
+   "video_ms": [
+    21,
+    46,
+    29,
+    38,
+    71,
+    54,
+    63,
+    96,
+    79,
+    88,
+    121
+   ],
+   "audio_ms": [
+    0,
+    21,
+    42,
+    64,
+    85
+   ]
+  },
+  "matches": true,
+  "streams": {
+   "programs": [],
+   "stream_groups": [],
+   "streams": [
+    {
+     "index": 0,
+     "codec_name": "hevc",
+     "width": 2560,
+     "height": 1440,
+     "avg_frame_rate": "120/1",
+     "time_base": "1/1000"
+    },
+    {
+     "index": 1,
+     "codec_name": "aac",
+     "sample_rate": "48000",
+     "avg_frame_rate": "0/0",
+     "time_base": "1/1000"
+    }
+   ],
+   "format": {
+    "tags": {
+     "ENCODER": "Lavf61.7.100"
+    }
+   }
+  },
+  "note": "no fitting: the forward prediction of the accepted derivation"
+ },
+ "obs_log": {
+  "log": "2026-09-23 15-37-10.txt",
+  "log_sha256": "5e5367b679517f08af3eec05973e40f3a73dfd6b4bea10260d030bd5cedf28d6",
+  "lines": [
+   256,
+   281
+  ],
+  "block": [
+   " [obs-nvenc: 'simple_video_recording'] settings:",
+   " \tcodec:        HEVC",
+   " \trate_control: CQP",
+   " \tcqp:          23",
+   " \tkeyint:       250",
+   " \tpreset:       p5",
+   " \ttuning:       hq",
+   " \tmultipass:    qres",
+   " \tprofile:      main",
+   " \twidth:        2560",
+   " \theight:       1440",
+   " \tb-frames:     2",
+   " \tb-ref-mode:   0",
+   " \tlookahead:    true (8 frames)",
+   " \taq:           true",
+   " ",
+   " ---------------------------------",
+   " [FFmpeg aac encoder: 'simple_aac_recording0'] bitrate: 192, channels: 2, channel_layout: stereo, track: 1",
+   " ",
+   " ==== Recording Start ===============================================",
+   " [ffmpeg muxer: 'simple_file_output'] Writing file 'C:/Users/volpe/Videos/2026-09-23 15-55-28.mkv'...",
+   " [ffmpeg muxer: 'simple_file_output'] Output of file 'C:/Users/volpe/Videos/2026-09-23 15-55-28.mkv' stopped",
+   " Output 'simple_file_output': stopping",
+   " Output 'simple_file_output': Total frames output: 80037",
+   " Output 'simple_file_output': Total drawn frames: 80131",
+   " ==== Recording Stop ================================================"
+  ]
+ },
+ "build": {
+  "content_log": {
+   "path": "C:\\Program Files (x86)\\Steam\\logs\\content_log.txt",
+   "sha256": "f5f402b8418bfef9b4b9a5072f2d515c28ee685762ff72c0028c08f0b6f0d566",
+   "app_2767030_lines": [
+    "[2026-09-20 15:04:16] AppID 2767030 state changed : Fully Installed,",
+    "[2026-09-20 15:04:51] AppID 2767030 state changed : Fully Installed,App Running,",
+    "[2026-09-22 08:03:19] AppID 2767030 state changed : Fully Installed,",
+    "[2026-09-22 10:47:01] AppID 2767030 state changed : Fully Installed,App Running,",
+    "[2026-09-23 07:54:50] AppID 2767030 state changed : Fully Installed,",
+    "[2026-09-23 12:12:04] AppID 2767030 state changed : Fully Installed,App Running,"
+   ]
+  },
+  "appmanifest_buildid": [
+   [
+    "buildid",
+    "25364676"
+   ],
+   [
+    "TargetBuildID",
+    "25364676"
+   ]
+  ],
+  "version_json": {
+   "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\MarvelRivals\\MarvelGame\\version.json",
+   "sha256": "7e41c4f0724d036953576312c9ae2b6d48e0b89d5184b8bc2d15a589188028a4",
+   "version": "1.1.3870120",
+   "changelist": 3870120,
+   "mtime_utc": "2026-09-17T17:16:28.017550+00:00"
+  },
+  "note": "no app update line after the 2026-09-17 install of build 25364676 in the lines shown"
+ },
+ "settings_receipt": {
+  "path": "C:\\Users\\volpe\\AppData\\Local\\Marvel\\Saved\\Saved\\Config\\1295996384\\MarvelUserSetting.json",
+  "sha256": "ff25fc5bfc4a2a7e65c0a7f697f4e67bcaaba17947b818a45e7c670accb2c428",
+  "mtime_utc": "2026-09-23T21:14:20.809414+00:00",
+  "recording_started_utc": "2026-09-23T20:55:28.900Z",
+  "written_after_recording": true,
+  "saved_NoCDSaved": 0,
+  "controls": {
+   "0": {
+    "MouseHorizontalSensitivity": 1.6299999952316284,
+    "MouseVerticalSensitivity": 1.5499999523162842,
+    "CharControlInputMappings": {
+     "7": {
+      "PrimaryKey": {
+       "Key": "None"
+      }
+     },
+     "8": {
+      "PrimaryKey": {
+       "Key": "None"
+      }
+     },
+     "14": {
+      "SecondaryKey": {
+       "Key": "ThumbMouseButton2"
+      }
+     },
+     "16": {
+      "PrimaryKey": {
+       "Key": "ThumbMouseButton"
+      }
+     },
+     "19": {
+      "SecondaryKey": {
+       "Key": "F"
+      }
+     },
+     "20": {
+      "PrimaryKey": {
+       "Key": "Three"
+      }
+     },
+     "143": {
+      "PrimaryKey": {
+       "Key": "NumPadOne"
+      },
+      "SecondaryKey": {
+       "Key": "None"
+      }
+     },
+     "144": {
+      "PrimaryKey": {
+       "Key": "NumPadTwo"
+      },
+      "SecondaryKey": {
+       "Key": "None"
+      }
+     },
+     "145": {
+      "PrimaryKey": {
+       "Key": "NumPadThree"
+      },
+      "SecondaryKey": {
+       "Key": "None"
+      }
+     },
+     "146": {
+      "PrimaryKey": {
+       "Key": "NumPadFour"
+      },
+      "SecondaryKey": {
+       "Key": "None"
+      }
+     }
+    },
+    "BattleCommInputMappings": {
+     "7": {
+      "PrimaryKey": {
+       "Key": "Two"
+      }
+     },
+     "8": {
+      "PrimaryKey": {
+       "Key": "Four"
+      }
+     },
+     "9": {
+      "PrimaryKey": {
+       "Key": "One"
+      }
+     }
+    },
+    "AbilityUserSettingList": [
+     {
+      "SettingType": 1,
+      "Key": "WakandaUp",
+      "AbilityID": 200401,
+      "bIsGamepad": false,
+      "bIsDirty": false,
+      "Value": true
+     }
+    ]
+   },
+   "1036": {
+    "MouseHorizontalSensitivity": 1.8899999856948853,
+    "MouseVerticalSensitivity": 1.8899999856948853,
+    "bEnableMouseSmoothing": true,
+    "bEnableMouseAcceleration": true,
+    "bEnableMouseAlign": true,
+    "MouseAccelerationThreshold": 1.0,
+    "CharControlInputMappings": {
+     "5": {
+      "SecondaryKey": {
+       "Key": "MouseScrollDown"
+      }
+     },
+     "7": {
+      "PrimaryKey": {
+       "Key": "One"
+      }
+     },
+     "15": {
+      "PrimaryKey": {
+       "Key": "F"
+      }
+     },
+     "16": {
+      "PrimaryKey": {
+       "Key": "LeftShift"
+      }
+     },
+     "19": {
+      "SecondaryKey": {
+       "Key": "None"
+      }
+     },
+     "20": {
+      "PrimaryKey": {
+       "Key": "E"
+      },
+      "SecondaryKey": {
+       "Key": "Two"
+      }
+     },
+     "99": {
+      "PrimaryKey": {
+       "Key": "ThumbMouseButton"
+      },
+      "SecondaryKey": {
+       "Key": "Two"
+      }
+     },
+     "133": {
+      "PrimaryKey": {
+       "Key": "CapsLock"
+      },
+      "SecondaryKey": {
+       "Key": "MouseScrollUp"
+      }
+     },
+     "136": {
+      "PrimaryKey": {
+       "Key": "LeftControl"
+      }
+     },
+     "143": {
+      "PrimaryKey": {
+       "Key": "One"
+      },
+      "SecondaryKey": {
+       "Key": "NumPadOne"
+      }
+     },
+     "144": {
+      "PrimaryKey": {
+       "Key": "None"
+      },
+      "SecondaryKey": {
+       "Key": "NumPadTwo"
+      }
+     },
+     "145": {
+      "PrimaryKey": {
+       "Key": "Three"
+      },
+      "SecondaryKey": {
+       "Key": "NumPadThree"
+      }
+     },
+     "146": {
+      "PrimaryKey": {
+       "Key": "Four"
+      },
+      "SecondaryKey": {
+       "Key": "NumPadFour"
+      }
+     },
+     "8": {
+      "PrimaryKey": {
+       "Key": "None"
+      }
+     },
+     "14": {
+      "SecondaryKey": {
+       "Key": "ThumbMouseButton2"
+      }
+     }
+    },
+    "AbilityUserSettingList": [
+     {
+      "SettingType": 2,
+      "Key": "SelectSensitivity",
+      "AbilityID": 103614,
+      "bIsGamepad": false,
+      "bIsDirty": false,
+      "Value": 100.0,
+      "SettingNote": 0
+     },
+     {
+      "SettingType": 1,
+      "Key": "bIsHoldAbility",
+      "AbilityID": 103641,
+      "bIsGamepad": false,
+      "bIsDirty": false,
+      "Value": true
+     },
+     {
+      "SettingType": 1,
+      "Key": "UseSimpleSwing",
+      "AbilityID": 103641,
+      "bIsGamepad": false,
+      "bIsDirty": false,
+      "Value": false
+     },
+     {
+      "SettingType": 1,
+      "Key": "bIsHoldAbility",
+      "AbilityID": 103671,
+      "bIsGamepad": false,
+      "bIsDirty": false,
+      "Value": true
+     },
+     {
+      "SettingType": 1,
+      "Key": "bIsHoldSprint",
+      "AbilityID": 103671,
+      "bIsGamepad": false,
+      "bIsDirty": false,
+      "Value": false
+     },
+     {
+      "SettingType": 0,
+      "Key": "WallRunMode",
+      "AbilityID": 103671,
+      "bIsGamepad": false,
+      "bIsDirty": false,
+      "Value": "TowardUp"
+     },
+     {
+      "SettingType": 1,
+      "Key": "bIsMeleeAttackHighlightOn",
+      "AbilityID": 0,
+      "bIsGamepad": false,
+      "bIsDirty": false,
+      "Value": true
+     },
+     {
+      "SettingType": 1,
+      "Key": "WakandaUp",
+      "AbilityID": 200401,
+      "bIsGamepad": false,
+      "bIsDirty": false,
+      "Value": true
+     }
+    ]
+   }
+  },
+  "equals_2026_09_22_receipt": {
+   "1036": true,
+   "0": true
+  },
+  "note": "Later local state, not a recording-time attestation. DPI is not stored here; motor fields stay unknown until James's dated statement (lead, R2)."
+ },
+ "tools": {
+  "ffprobe": "ffprobe version 8.0.1-full_build-www.gyan.dev Copyright (c) 2007-2025 the FFmpeg developers",
+  "ffmpeg": "ffmpeg version 8.0.1-full_build-www.gyan.dev Copyright (c) 2000-2025 the FFmpeg developers"
+ }
+}

@@ -1,0 +1,118 @@
+{
+ "session": "20260923T200129-346Z-33696-6",
+ "raw_files": {
+  "inputs.jsonl": "bb6a024736d9b9db26559c5c2403a51994c31a0e4780a6432362baa2f40bbfb4",
+  "frames.csv": "cf2ed7fdb851a43bf7eb06458e142d2a4df2e8f989404a574ac4b51b2ad5efba",
+  "metadata.json": "0e23f53458bd11b91951e35cc8b4d917024792ea732b9489c2981a8775f04089"
+ },
+ "event_counts": {
+  "raw_input_status": 1,
+  "focus": 5,
+  "mouse": 159825,
+  "key": 11918
+ },
+ "focus_events": [
+  {
+   "seq": 1,
+   "t_ns": 261564507616300,
+   "t_rel_s": 0.0041147,
+   "active": false,
+   "held_vk": []
+  },
+  {
+   "seq": 2,
+   "t_ns": 261565147402400,
+   "t_rel_s": 0.6439008,
+   "active": true,
+   "held_vk": [
+    1
+   ]
+  },
+  {
+   "seq": 904,
+   "t_ns": 261570442476200,
+   "t_rel_s": 5.9389746,
+   "active": false,
+   "held_vk": []
+  },
+  {
+   "seq": 1009,
+   "t_ns": 261571302974300,
+   "t_rel_s": 6.7994727,
+   "active": true,
+   "held_vk": []
+  },
+  {
+   "seq": 364597,
+   "t_ns": 263172747365700,
+   "t_rel_s": 1608.2438641,
+   "active": false,
+   "held_vk": []
+  }
+ ],
+ "focused_intervals": [
+  [
+   261565147402400,
+   261570442476200
+  ],
+  [
+   261571302974300,
+   263172747365700
+  ]
+ ],
+ "focused_s": 1606.7394652,
+ "recording_s": 1610.8421139,
+ "device_scope": {
+  "keyboard_handles": {
+   "1043402031": 11918
+  },
+  "mouse_handles": {
+   "614403941": 159496
+  },
+  "zero_effect_packets": {
+   "mouse:614403941": 297,
+   "mouse:0": 32
+  },
+  "injected_control_packets": 0,
+  "injected_zero_effect_packets": 32,
+  "single_keyboard_mouse": true
+ },
+ "key_make_counts_by_vk": {
+  "16": 2088,
+  "17": 1,
+  "18": 3,
+  "20": 54,
+  "32": 1358,
+  "65": 1013,
+  "67": 94,
+  "68": 980,
+  "69": 212,
+  "70": 90,
+  "81": 5,
+  "83": 635,
+  "87": 1043
+ },
+ "ui_key_presses": [
+  {
+   "t_ns": 261570359792700,
+   "t_rel_s": 5.8562911,
+   "vk": 18,
+   "key": "Alt"
+  },
+  {
+   "t_ns": 263171402844100,
+   "t_rel_s": 1606.8993425,
+   "vk": 18,
+   "key": "Alt"
+  },
+  {
+   "t_ns": 263172669882300,
+   "t_rel_s": 1608.1663807,
+   "vk": 18,
+   "key": "Alt"
+  }
+ ],
+ "afk_spans": [],
+ "raw_input_gap_events": [],
+ "pause_events": []
+}

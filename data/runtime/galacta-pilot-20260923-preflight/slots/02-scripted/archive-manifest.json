@@ -1,0 +1,133 @@
+{
+  "kind": "galacta-pilot-20260923 slot archive manifest, verbatim, not an audit",
+  "slot": 2,
+  "policy_role": "scripted",
+  "scenario": "near",
+  "run": "galacta-pilot-20260923-02-scripted",
+  "written_utc": "2026-09-23T18:03:44.355560+00:00",
+  "slot_dir": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\galacta-pilot-20260923-preflight\\slots\\02-scripted",
+  "run_dir": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\l1\\galacta-pilot-20260923-02-scripted",
+  "slot_files": {
+    "after.png": {
+      "sha256": "24b420ad939e7cc5eaf0ebd898b4e20f881740f6022ad4fd1f99333770458181",
+      "size": 7018671
+    },
+    "allocation-consumed.json": {
+      "sha256": "fd0485ab2b55f207031b380c76fc2520a6ede40e3aef2cb026dadfb63094403d",
+      "size": 775
+    },
+    "before.png": {
+      "sha256": "0da1b23d70a3c3ec3bfdb026a8c18da2df9d8f2e98f0a3ec63b75f1927900ed2",
+      "size": 6909689
+    },
+    "launch-result.json": {
+      "sha256": "4f77d37afc1f78f85bf03b44ace376b0e36b795e4805ca0103643ef0904d368d",
+      "size": 214
+    },
+    "scripted-native.mp4": {
+      "sha256": "f22ad1c13c295ecb9c7817168f3e04417b6a12223c28f10621f76f2cec12de12",
+      "size": 41943088
+    },
+    "scripted-record.log": {
+      "sha256": "a533767f6cab3e9ca2b39ebb38dd858389b5f0a0a63bbdb660ef07133ba2f53a",
+      "size": 2961
+    },
+    "scripted-recorder.json": {
+      "sha256": "501ecd54908ba0eb52b88844530b6efa90f2d561cf315a5cb9da08d25f5326c6",
+      "size": 527
+    },
+    "scripted.err": {
+      "sha256": "d9ab60eefc9699043a264df04b099e3787e1abf9f3e6fa7be0015a6bbd4ec3cd",
+      "size": 904
+    },
+    "scripted.log": {
+      "sha256": "f344845efe5813b4b31ad5a9b5b0e48413deff3d13a0cd85890fab5b2f276dda",
+      "size": 3434
+    }
+  },
+  "run_files": {
+    "frames.jsonl": {
+      "sha256": "11e803abd76633a2f57ee485128954e8d31bbc6365a3812aecd60ab85edb70cb",
+      "size": 667
+    },
+    "meta.json": {
+      "sha256": "be593383be91c42df1446250d53143040b942eb37d9ec92122fd84492f0482f6",
+      "size": 3380
+    },
+    "scoreboard-baseline.png": {
+      "sha256": "1a51967ae8919fed286e2726bd7d2d99bb95f66c3ce32630508b416d5b8d86d3",
+      "size": 1532826
+    },
+    "start-confirm-1.png": {
+      "sha256": "043d10fe7f96f081005def398515cdd5b438a867a0255656deb0648526873c81",
+      "size": 4733035
+    },
+    "start-confirm-2.png": {
+      "sha256": "558d904f3535a499b8a0cecc43bfbb5a26a997b82a60e1b222ebe206ea1d797e",
+      "size": 4721983
+    },
+    "start-step-01.png": {
+      "sha256": "287f2f46e3dde30e0f8081e1fe232c15fb5c47664c849344ed20f85d77bb4bad",
+      "size": 4761974
+    },
+    "start-step-02.png": {
+      "sha256": "e09571742940df74cc26240c679e4e7497169a7f59b0b01f4fad41c23abf701b",
+      "size": 4769070
+    },
+    "start-step-03.png": {
+      "sha256": "043d10fe7f96f081005def398515cdd5b438a867a0255656deb0648526873c81",
+      "size": 4733035
+    },
+    "start-step-04.png": {
+      "sha256": "558d904f3535a499b8a0cecc43bfbb5a26a997b82a60e1b222ebe206ea1d797e",
+      "size": 4721983
+    },
+    "start-step-05.png": {
+      "sha256": "558d904f3535a499b8a0cecc43bfbb5a26a997b82a60e1b222ebe206ea1d797e",
+      "size": 4721983
+    },
+    "start-steps.jsonl": {
+      "sha256": "9fcb1cfdeb6f80c5e5d61f004dc9b678903d7a363efc3bbf0a26c680bbbf4320",
+      "size": 698
+    }
+  },
+  "recorded": {
+    "stop": "collection_baseline_refused",
+    "seconds": 0.0,
+    "decisions": 0,
+    "errors": [],
+    "boards": [
+      {
+        "file": "scoreboard-baseline.png",
+        "t": 6.543,
+        "parsed": {
+          "open": true,
+          "kos": null,
+          "deaths": 0,
+          "assists": 0,
+          "accuracy": 45,
+          "damage": 3275,
+          "damage_blocked": 0,
+          "healing": 0,
+          "web_cluster_accuracy": 62,
+          "spin_kos": 0
+        },
+        "skipped": null
+      }
+    ],
+    "collection_status": "refused",
+    "readiness_accepted": null,
+    "first_phase": null,
+    "candidate_feed": null,
+    "live_scope": {
+      "game_pid": 10668,
+      "focus_method": "GetForegroundWindow/GetWindowThreadProcessId, read-only",
+      "loop_perf_origin": 254490.8301719,
+      "not_after_perf": 254524.478067,
+      "not_after_t": 33.64789510000264,
+      "startup_max_s": 14.0,
+      "phase_max_s": 20.0,
+      "combined_max_s": 34.0
+    }
+  }
+}

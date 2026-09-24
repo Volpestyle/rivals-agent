@@ -1,0 +1,11 @@
+{
+    "record_pid":  16304,
+    "video_loop_mapping_known":  false,
+    "command":  "ddagrab=framerate=60 -\u003e h264_nvenc -cq20 -t60",
+    "video":  "C:\\Users\\volpe\\repos\\rivals-agent\\data\\runtime\\galacta-pilot-20260923-preflight\\slots\\02-scripted\\scripted-native.mp4",
+    "stopwatch_after":  2544898578687,
+    "stopwatch_frequency":  10000000,
+    "launch_utc_after":  "2026-09-23T18:03:34.6605207Z",
+    "stopwatch_before":  2544898348764,
+    "launch_utc_before":  "2026-09-23T18:03:34.6374385Z"
+}

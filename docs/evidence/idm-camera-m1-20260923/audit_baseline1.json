@@ -1,0 +1,180 @@
+{
+ "run": "baseline1",
+ "stratum_n": 806,
+ "withheld": 10,
+ "sample_seed": 7,
+ "pairs": [
+  {
+   "k": 97,
+   "reason": "zero flow contradicted by the centre's own matches",
+   "frames": [
+    [
+     "000097.jpg",
+     "29f0d56fc871699dc7e9611f6e329a9fd19a414d7756a64fe28cdbe2de2d57d6"
+    ],
+    [
+     "000098.jpg",
+     "48dac4b9ba8832cd02ecaf62170c62d254ae313843aba636198ba6c7c98e1fb7"
+    ]
+   ],
+   "label": "moved",
+   "label_source": "carried from the option (i) audit"
+  },
+  {
+   "k": 98,
+   "reason": "zero flow on border features only",
+   "frames": [
+    [
+     "000098.jpg",
+     "48dac4b9ba8832cd02ecaf62170c62d254ae313843aba636198ba6c7c98e1fb7"
+    ],
+    [
+     "000099.jpg",
+     "e03564d213d4601ff75cf7ab94615c04bc6951631bd9d590bf0c4e5b77e41671"
+    ]
+   ],
+   "label": "moved",
+   "label_source": "carried from the option (i) audit"
+  },
+  {
+   "k": 99,
+   "reason": "zero flow contradicted by the centre's own matches",
+   "frames": [
+    [
+     "000099.jpg",
+     "e03564d213d4601ff75cf7ab94615c04bc6951631bd9d590bf0c4e5b77e41671"
+    ],
+    [
+     "000100.jpg",
+     "a0538e8b29ebf7dec0dfe477fbd267c7fae82dd50f4ea3f6ca242677f259411f"
+    ]
+   ],
+   "label": "moved",
+   "label_source": "carried from the option (i) audit"
+  },
+  {
+   "k": 100,
+   "reason": "zero flow contradicted by the centre's own matches",
+   "frames": [
+    [
+     "000100.jpg",
+     "a0538e8b29ebf7dec0dfe477fbd267c7fae82dd50f4ea3f6ca242677f259411f"
+    ],
+    [
+     "000101.jpg",
+     "4aa0b270f4f8521c9ed54bc0f6e2aadd5cc857ef8ad5880593d6366eb5bc17b8"
+    ]
+   ],
+   "label": "moved",
+   "label_source": "carried from the option (i) audit"
+  },
+  {
+   "k": 1476,
+   "reason": "zero flow contradicted by a world rotation among the centre outliers",
+   "frames": [
+    [
+     "001476.jpg",
+     "d5907c459f5673a55987d6f89ba35606557e40a611ebd1e67554a00be4fb4fcc"
+    ],
+    [
+     "001477.jpg",
+     "3013ba23835585be6b16645702888d7e4ba53aa6fafb35b4ee20c6eaa177e77e"
+    ]
+   ],
+   "label": "still",
+   "label_source": "labelled on the option (a) bytes"
+  },
+  {
+   "k": 1999,
+   "reason": "zero flow contradicted by the centre's own matches",
+   "frames": [
+    [
+     "001999.jpg",
+     "07d1b3fc82a30ae57dcbca0d1d696fb90adcb0f80ebb635c04aac317ae117415"
+    ],
+    [
+     "002000.jpg",
+     "2522d697dc6ee40152a0036e73bf47b49b482910c606f57ff095be991af6dd5e"
+    ]
+   ],
+   "label": "moved",
+   "label_source": "carried from the option (i) audit"
+  },
+  {
+   "k": 2510,
+   "reason": "zero flow on border features only",
+   "frames": [
+    [
+     "002510.jpg",
+     "fbf1ed8e245d4579cf54b7eeabee5ae43c0336ae7b84e09d390edaca76d9dcfb"
+    ],
+    [
+     "002511.jpg",
+     "80443ade39cbf8182ee691fe18bada96106d76b84404931d83275ef1cd755c3e"
+    ]
+   ],
+   "label": "still",
+   "label_source": "carried from the option (i) audit"
+  },
+  {
+   "k": 2511,
+   "reason": "zero flow on border features only",
+   "frames": [
+    [
+     "002511.jpg",
+     "80443ade39cbf8182ee691fe18bada96106d76b84404931d83275ef1cd755c3e"
+    ],
+    [
+     "002512.jpg",
+     "6c697980669c9148103333c974c597ee0a3005834b1055c51251f3396a311d8f"
+    ]
+   ],
+   "label": "still",
+   "label_source": "carried from the option (i) audit"
+  },
+  {
+   "k": 2512,
+   "reason": "zero flow on border features only",
+   "frames": [
+    [
+     "002512.jpg",
+     "6c697980669c9148103333c974c597ee0a3005834b1055c51251f3396a311d8f"
+    ],
+    [
+     "002513.jpg",
+     "14c0f98cb62ae1b185b0852823cf71745e03e09df9a4d54cc15af7dd6aa47c45"
+    ]
+   ],
+   "label": "still",
+   "label_source": "carried from the option (i) audit"
+  },
+  {
+   "k": 2576,
+   "reason": "zero flow contradicted by the centre's own matches",
+   "frames": [
+    [
+     "002576.jpg",
+     "42bcb77d5100710d368dc618df360d5e1175ebe7e36f260c08bb4af84aff559c"
+    ],
+    [
+     "002577.jpg",
+     "3dd158ecbf39e2116e9fbf6e57cd92b58fdabe7cf73a4546f17eaf5a96445139"
+    ]
+   ],
+   "label": "moved",
+   "label_source": "carried from the option (i) audit"
+  }
+ ],
+ "result": {
+  "labelled": 10,
+  "still": 4,
+  "moved": 6,
+  "unclear": 0,
+  "est_false_withholds": 4.0,
+  "est_points": 0.5,
+  "wilson95_upper_points": 0.85,
+  "bound_points": 2.0,
+  "passes": true,
+  "note": "the sample is the whole withheld population (withheld <= 20)"
+ }
+}

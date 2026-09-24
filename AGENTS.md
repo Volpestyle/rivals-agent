@@ -3,18 +3,25 @@
 A vision-based agent that plays Spider-Man in the Marvel Rivals **practice range** on a
 virtual Xbox 360 pad. Windows `supedupsilly` owns gameplay, recording and the live
 agent loop; the M5 Max Mac owns offline preparation, training and evaluation.
-Development can run on either machine. `CLAUDE.md` is a symlink to this file.
+Development can run on either machine. `CLAUDE.md` imports this file (its one line is `@AGENTS.md`).
+`.claude/skills` and `.codex/skills` are git symlinks to `.agents/skills`. They work on the Mac, but the PC
+checks them out as plain text (`core.symlinks=false`), so read skills there directly from `.agents/skills/`.
+Claude Code has no plain-file way to point at another skills folder, so they stay symlinks.
 
 ## Read before doing anything
 
 1. `docs/plan.md`: scope boundary, gate results, architecture, perception decisions. The
    scope boundary is binding: pixels only, no anti-cheat evasion, no matchmade modes, and
    a path the game rejects stays closed. Stop and report instead of working around it.
-2. The `rivals-live-game` skill (`.agents/skills/`) before sending any input to the game.
+2. `docs/recording-protocol.md` and `docs/recording-log.md`: the current direction, set by James on
+   2026-09-23. It is whole-session keyboard/mouse recordings for one end-to-end policy that outputs
+   semantic actions plus camera degrees, executed by the pad. The log is the ledger of every take.
+   `docs/learning-plan.md` is the canonical plan and holds the advancement gates.
+3. The `rivals-live-game` skill (`.agents/skills/`) before sending any input to the game.
    On the PLAY lobby the pad's `X` starts a live Quick Match.
-3. Linear project **Rivals Agent** (team Vuhlp): what is done, in progress and blocked.
+4. Linear project **Rivals Agent** (team Vuhlp): what is done, in progress and blocked.
    Accepted results and evidence go on the issue; working notes stay in `docs/lanes/`.
-4. `docs/machines.md` before moving code, data or jobs between machines: ownership,
+5. `docs/machines.md` before moving code, data or jobs between machines: ownership,
    SSH directions, immutable recording relocation and checkpoint boundaries.
 
 ## Where things live
@@ -22,13 +29,19 @@ Development can run on either machine. `CLAUDE.md` is a symlink to this file.
 | Path | Holds |
 |---|---|
 | `docs/plan.md` | Lead-only. One writer, because a shared edit lost sections once |
+| `docs/learning-plan.md` | The canonical learning plan: milestones, advancement gates, reward contract. Lead's |
+| `docs/recording-protocol.md`, `docs/recording-log.md` | What James does per recording session, and the ledger of every take (the lead appends rows; the admission lane fills intake status) |
 | `docs/machines.md` | Mac/PC responsibilities, remote access and transfer procedure |
 | `docs/lanes/<lane>.md` | Each lane's present-state notes and measured facts; the lane's owner is its only writer |
-| `docs/spiderman-kit.md` | Sourced controller bindings, cooldowns, tracer rule, combos, settings |
-| `docs/evidence/` | Inspected screenshots and contact sheets per lane |
-| `agent/` | `State` contract, intents, scripted brain, Jev client, replay |
-| `perception/` | HUD readers, enemy finders, training, offline State replay |
-| `scripts/` | `pad.py` (pad token sequencer), `padrun.sh`, `capture.py`, `record.py` |
+| `docs/spiderman-kit.md` | Sourced controller bindings, cooldowns, tracer rule, combos, settings. Its "Patch reflected" line is read at run time: keep it byte-identical within the first 2,000 characters |
+| `docs/evidence/` | Hash-pinned run records: frames, receipts, reports and the scripts that made them. Never edited or moved; `docs/evidence/README.md` indexes them |
+| `agent/` | `State` contract, intents, scripted brain, tracker, pad controller, live loop and start phase, learned range brains, human demonstration import and whole-session intake, placement, Jev client (frozen), replay |
+| `perception/` | HUD readers, scoreboard and event stream, enemy finders (green outline; the YOLO path is kept for VOD footage), camera motion, offline State replay |
+| `policy/` | Learned policies: `range_bc/` (end-to-end whole-session fit), `range_skill_policy.py` (web-start head, checkpoint `698d8831`), `execution.py` (keyboard/mouse baseline), and the MLX chooser (`live`, `train`, `encode`, `frames`, `corpus`, `behaviour`) |
+| `scripts/` | Pad and capture: `pad.py`, `padrun.sh`, `capture.py`, `record.py`. Arrival and menus: `reenter.py`, `l4_menu.py`, `l4_practice_settings.py`. Placement: `place.py`. Also `range_benchmark.py`, `range_cast_probe.py`, `import_human_demo.py`, `recording_watch.py`, `pins.py` and `regenerate_sealed.py`, plus the one-off measurements `l4_measure.py`, `l4_trial.py` and `padprime_m1.py` |
+| `agent/server.py`, `agent/session.py`, `scripts/clankie_bridge.ps1`, `docs/clankie.md` | Clankie's session API bridge (VUH-1316): bounded sittings around `agent.loop`. Disabled on the PC (its scheduled task and firewall rule are installed but off, VUH-1325) and being wired on the Mac. The bridge author owns these files; keep them |
+| `tests/` | `uv run pytest` (stdlib) and `uv run --group perception pytest`; fixtures under `tests/fixtures/` |
+| `justfile`, `ruff.toml`, `.pre-commit-config.yaml`, `.github/` | `just test`, `test-perception`, `check`, `closure`; lint; the `DECLARATION:` commit guard for the identity-pinned files; CI |
 | `.env` | `JEV_URL`, `JEV_MODEL`, `JEV_KEY` (TypeSafe's direct API, the default route) and `OPENROUTER_API_KEY` (fallback), and `HF_TOKEN` (read-only Hugging Face token, for gated pretrained encoders only; nothing is ever uploaded); gitignored, also at `C:\rivals-agent\.env`. Never print or log a key. `JEV_KEY` goes to whatever `JEV_URL` names, so set or clear them together |
 
 ## Rules that came from real failures
@@ -101,3 +114,13 @@ co-leads route scope decisions through that lead. A status request alone creates
   own tests and report are evidence, not a review.
 - Several agents often share this checkout. Edit only the paths your brief names, and
   load the `shared-checkout` skill before committing.
+- **Frozen review packets.** A lane note whose current bytes are pinned by a review receipt or a freeze
+  manifest is never edited or moved, not even to fix a link or a stale "not yet accepted" line; the receipt
+  that pins it records its acceptance. `docs/lanes/range-lead.md` lists the pinned range notes and states
+  their present status, and `docs/evidence/README.md` does the same for evidence, which follows the same
+  rule. Before editing a lane note, search `docs/evidence/` and `data/` for its sha256 (both the LF and CRLF
+  forms). Code has an equivalent: editing any file of a deployment freeze (for checkpoint `698d8831`, the 16
+  files hashed in `data/runtime/galacta-pilot-20260923-preflight/*-deployed.json`) forces a re-freeze before
+  that checkpoint runs again.
+
+- **pre-commit hooks are not installed on the shared PC checkout** (2026-09-23): pre-commit stashes every unstaged tracked file around each commit, which is unsafe when other lanes have uncommitted work in the same tree. Run `uv run pre-commit run --all-files` manually on a clean worktree, or install the hooks only in a private worktree.

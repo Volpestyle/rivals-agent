@@ -567,3 +567,623 @@ lists in place of `examples`/`artifact_hashes`) and added `evidence_digest` to `
 - **Checks:** the fit driver's own `--check` (no `--dry-run`) passes on it: 21 verified inputs, [39, 37],
   digest `86e5894b...`. It ran from a scratch copy with the archived ae648b33 code. `cohort.py --check`, both
   freeze checks and v1-v5 plus the 032454 freeze checks pass.
+
+## 2026-09-23 (evening): whole-session intake design (VUH-1359, admission-owner)
+
+**Direction.** The lane now admits whole sessions and counts minutes; it no longer extracts events. The consumer
+is a causal frame/input policy: frames and input history in, keys and mouse out (`docs/learning-plan.md`,
+"Paired human execution", step 3). This section is the design only. No code has been written for it yet.
+
+### What already exists and is reused
+
+**`agent/human_demos.py` + `scripts/import_human_demo.py`**, the reviewed native KBM importer (PR #1).
+`docs/human-demo-schema.md` is its contract. It already does the core of step 3. It takes one named session,
+one `review.json`, one complete split registry, and writes one two-line `rivals-human-demo-v1` artifact.
+
+- **Raw-input admission.**
+  - Every event sequence is covered, metadata counts match, loss counters are zero, and completion and CTS are
+    checked.
+  - It gates on a single participating keyboard and mouse.
+  - Focus snapshots count as unknown holds, not neutral controls.
+- **Frame matching.**
+  - Decoded PTS are matched to callback packets. The stop-tail suffix is allowed.
+  - It **requires an independent muxer anchor**: our +21 ms blank-scene calibration.
+- **Review gate.**
+  - Provenance must carry settings, bindings, patch and cooldown regime, each with a source.
+  - Segments are sorted, disjoint `[start, end)` intervals. Each has `imitation_suitability`
+    accepted / rejected / unresolved and a reason.
+  - An alignment assumption or measured bound is required before training rows exist.
+- **Samples** (`HumanDataset.samples`).
+  - Causal `FrameRef` history uses the last CTS <= request.
+  - Raw past events and the `HeldState` are included.
+  - Contiguous future `ActionBin`s `(start, end]` hold holds, edges, raw mouse counts and wheel.
+  - Windows never cross focus, pause, capture-gap or segment boundaries.
+  - Only accepted segments train.
+- **Placement.**
+  - Split registry by session group; test placement is sealed with refusal before any read.
+  - Media sha256 plus payload hash on load.
+  - `load_datasets` rejects duplicates, cross-split media, and mixed patch or cooldown.
+
+**This lane's intake tools, unchanged:**
+- `verify_recorder.py`: decoded frames vs callbacks, the anchor residual, the regime and focus timeline.
+- `profile_inputs.py`: devices and bindings.
+- The regime scan (`regime_timeline.py`).
+- The shared source profile (settings identity).
+- The code snapshot archive.
+- The TRAIN/VAL/sealed discipline.
+
+### What is missing (the only new code)
+
+1. **Interval proposer: session to candidate segments.**
+   - A script derives candidate segments from evidence the importer does not read:
+     - focus intervals (logger);
+     - range-HUD presence per sampled frame, which splits gameplay from menus, the lobby after an idle kick,
+       loading and death screens;
+     - the regime scan, where a regime change mid-session splits a segment;
+     - capture gaps.
+   - Each candidate gets a machine reason (`no_range_hud`, `regime_differs_from_session`, `focus_lost`,
+     `capture_gap`, `idle_tail`) and a proposed suitability.
+   - The reviewer then decides accepted / rejected / unresolved per segment on sampled native frames. "Visible
+     gameplay" alone never makes a segment accepted. The rejection classes are protocol violations and non-play;
+     mistakes and misses stay accepted, because the protocol wants them.
+   - Output: `review.json` in the importer's schema, plus a `segments-evidence.json` holding frame references and
+     reasons. The proposer never sets `accepted` itself.
+2. **Review assembly from pinned intake evidence.**
+   - Fills `provenance` (settings and bindings from the shared source profile, patch, regime), `device_scope`,
+     `pts_anchor` (the independent 21/1000 calibration, cited by path and hash) and
+     `alignment: {"kind": "assumption"}`.
+   - The alignment statement is: composition time is the labelling clock, and capture latency is uncalibrated.
+     It follows the explicit decision already used for the event packets.
+3. **Corpus split registry.**
+   - One file, `data/human/session-splits.corpus.json`, listing every logged session with group and split.
+   - 053616 is `test`, so sealed, and is refused before any read.
+   - It replaces the 2026-09-22 candidate registry for this purpose. It is not the same file.
+4. **Session artifact folder and freeze.** Structure is below, with `freeze.py --check` as for the event packets.
+5. **Tally builder.** It reads frozen session artifacts only and writes `docs/evidence/corpus-tally.md` plus
+   `tally.json`.
+6. **Tests.** Synthetic, stdlib-only, in the importer's style.
+   - Proposer: boundaries, reasons, never-accept.
+   - Review assembly: required provenance, anchor citation.
+   - Tally: minute arithmetic, unknown tags, sealed rows never counted.
+   - Any test that opens `data/` carries `@pytest.mark.corpus`.
+
+Not changed: the importer, its sampling and its schema. If the proposer shows the importer needs a change (for
+example per-segment regime), I stop and report it rather than fork a second importer.
+
+### The session-level admitted artifact
+
+`data/human/sessions/<session_id>/` holds:
+
+| File | Content |
+|---|---|
+| `intake.json` | Pins (below), recorder verification result, anchor residual, device scope, focus intervals, regime timeline |
+| `segments-evidence.json` | Every proposed segment: bounds (monotonic ns), machine reasons, inspected frame refs, reviewer verdict and reason |
+| `review.json` | Importer review document. **Segments tile every focused interval**; each is accepted, rejected or unresolved with a reason |
+| `imported-demo.jsonl` | Importer output. Raw events, callback packets and decoded PTS; no media copies |
+| `sampling.json` | Stated sampling: anchors at decoded-frame composition times at a stated rate. Default 30 Hz: every 4th 120 fps frame. Also history length, frame step, bin width and count, per the fit's spec |
+| `minutes.json` | Accepted / rejected / unresolved seconds; per-tag seconds; eligible anchor count at the stated rate |
+| `artifact-hashes.json`, `freeze.py` | Freeze and check |
+
+**Rows are not materialized per session.** They are the importer's deterministic `samples()` output from the
+frozen artifact plus `sampling.json`, with `export_dataset` used for transfer. A 20-30 minute session at
+30 Hz is about 36-54k rows, each repeating its event history. The eligible-row count and an export digest are
+recorded, so a fit can prove it consumed the same rows.
+
+**Pinned in `intake.json`:**
+- session id and the original media sha256 (PowerShell `Get-FileHash`, as the schema requires for relocation);
+- metadata, inputs and frames sha256;
+- OBS and logger versions and profile;
+- game build (`1.1.3870120/build25364676` so far);
+- cooldown regime from the scan, with per-interval regime if mixed;
+- settings identity (shared source-profile sha256, plus a per-session statement that settings did not change);
+- anchor evidence path and hash;
+- **perception commit and code snapshot** used by the HUD-presence and regime scans.
+
+Frames and inputs themselves do not depend on perception. The commit is pinned because segment boundaries do.
+
+**Minutes counted.** Admitted minutes = the total duration of accepted segments. That is the minutes number the
+brief asks for. The tally shows it beside the anchor count that survives the importer's boundary and gap rules,
+which is smaller, so the two cannot be confused.
+
+### Scenario tags
+
+- Tags attach to time spans within accepted segments:
+  - range to target: near, mid or far;
+  - approach: foot, swing or above;
+  - target: galacta, galacta_bot_ultra, luna_snow or other;
+  - resources: web ammo band, ult ready, cooldown state.
+- Every tag starts as `unknown` and is filled by a later pass. Resource tags can come from the HUD readers
+  automatically; approach and range need inspection or a measured rule.
+- Tags are tally and stratification metadata only. They never enter the model's observation.
+
+### Tally format (`docs/evidence/corpus-tally.md`, regenerated from `tally.json`)
+
+One row per logged session under `C:\Users\volpe\Videos\RivalsInput\`:
+
+`session | date | group | split | status (admitted / held: reason / sealed / not range) | regime | focused min | admitted min | rejected min | unresolved min | tag minutes (near/mid/far/unknown ...) | artifact hash`
+
+- A footer gives the running admitted total against 180 minutes, per regime and per split.
+- Sealed and not-range rows show status only, with no minutes. For 053616 nothing is opened, so nothing is
+  counted.
+
+Initial status by session:
+
+| Session | Status |
+|---|---|
+| 032454 | pending whole-session intake |
+| 033319 | held: override, permanently unadmitted |
+| 051828 | pending |
+| 053616 | sealed |
+| 053929 | not range: calibration |
+| 054325 | not range: DayMR replay |
+| 171533 | first through |
+
+### Open decisions for the lead and review
+
+1. **053616 group.** The importer refuses a group appearing in two splits. 051828 (train) and 053616 (sealed)
+   were recorded 18 minutes apart under the same OBS process (`-33696-1`, `-33696-2`). The schema says to group
+   all recordings from one play session together, and the importer refuses a group placed in two splits. So
+   putting 053616 in `james-2026-09-23-session` makes the registry unusable. The lead must either give 053616 its
+   own group or seal the whole evening. Proposal: its own group, `james-2026-09-23-validation-take`, with the
+   dependence on 051828 stated in the registry `purpose`.
+2. **171533 group.** It was recorded about 12 h after 051828, under the same OBS process (`-33696-5`).
+   Proposal: a separate play-session group `james-2026-09-23-afternoon`, train.
+3. **Mixed regimes across sessions.** `load_datasets` rejects mixed cooldown values. The protocol welcomes No
+   Ability Cooldown sessions. The tally separates regimes, and a fit must either choose one regime or the
+   importer must learn a regime feature. That is a later decision; intake only records the regime.
+4. **Sampling rate for "every decoded frame".** Stored rows are all 120 fps frames via `FrameRef`. The stated
+   training anchor rate (30 Hz default) is a fit parameter recorded in `sampling.json`, not an intake choice.
+
+## 2026-09-23 (evening, later): whole-session intake design, amended by the reviews (admission-owner)
+
+This amends the design section above. The lead accepted every required item from three sources:
+
+- the independent design review (`review-whole-session-design.md`, R1-R9);
+- the fit design (`fit-design-final.md`, "Intake requirements", R1-R14);
+- fit review item F6.
+
+Where two items overlap, the stricter wording wins. Code: `agent/human_intake.py` (stdlib) and
+`tests/test_human_intake.py` (23 synthetic tests). The importer `agent/human_demos.py` is unchanged.
+
+### Segment boundaries (review R1, R3, R6; fit R14)
+
+- **UI keys.** The proposer cuts at the UI key packet: `end_ns <= t_ns` of any key-down in `UI_KEYS` (Esc, H,
+  B, F1, Tab, Enter, Alt/LAlt/RAlt, LWin/RWin; listed in code). Gameplay resumes only at a HUD-verified frame at
+  least `UI_SETTLE_NS` (2 s) later. Reason `ui_key`.
+- **Esc (settings menu).** Esc ends acceptance for the rest of the session:
+  - `settings_menu` covers the key's own settle span;
+  - every later span is `after_settings_menu`, proposed `unresolved` and never acceptable;
+  - the session is **held by default** and the lead is told.
+- **AFK.** 20 s with no control-affecting input (the importer's `_control_affecting`) is `afk`, rejected.
+- **Conservative edges.** Every gameplay edge sits on a HUD-present sample, and the samples are native frames.
+  Native refinement then decodes the 120 fps frames in each edge's bracket and moves the edge outward only over
+  contiguous HUD-present frames. It never passes the neighbouring sample or a cut.
+- **Tests.**
+  - "Esc inside an accepted span" and "Esc at its end" run the importer's own `samples()` and assert that no
+    future bin holds the key.
+  - A control case shows that a HUD-only boundary does leak Esc into the targets.
+- **Idle kick, lobby tail, hero select and pause menu** all end gameplay: through HUD loss, the Esc and H cuts,
+  and AFK.
+
+### Acceptance (review R5)
+
+- **Proposal key.** The proposer's field is `proposal`, never `imitation_suitability`, and it never says
+  `accepted`.
+- **Verdict records.** `review_segments` emits `accepted` only from a verdict record carrying reviewer, time,
+  evidence, and inspected native frames (`frame_index`, `composition_ns`, decoded-BGR sha256 inside the segment).
+  Only a `range_hud_present` candidate can be accepted, and a missing verdict becomes `unresolved`.
+- **Independent review.** Assembly refuses any `accepted` without an independent per-session review
+  `{path, sha256, reviewer}` in `review.json` provenance. That review is by `admission-review`, stratified by
+  proposer reason, covering every segment edge.
+- **Rejected spans.** `reviewed_gameplay: true` on a rejected span means "inspected" (the importer requires it on
+  every segment). What was actually seen is recorded per segment in `segments-evidence.json`.
+
+### Motor identity (review R2; fit R4, R7, R8)
+
+- **Assembly refuses** null DPI, horizontal/vertical sensitivity or swing mode, and any null binding. Settings and
+  bindings each need a `per_session_source`.
+- **Fit side.** `settings_identity` hashes these plus the binding table (a row column). `check_motor_consistency`
+  and `load_cohort` refuse cohorts whose motor settings or bindings differ.
+- **Until James's dated statement arrives,** every session carries motor fields unknown and status
+  `held: motor settings unknown`. The lead forwards the statement, and I flip the status then.
+- **Saved settings file.** `MarvelUserSetting.json` is recorded as later local state that corroborates, not a
+  recording-time attestation. It stores sensitivity and bindings but not DPI.
+- **Settings evidence when it arrives:** the per-session binding table, what C and Alt are bound to, and the
+  calibration takes (DPI ruler, 360° turn).
+
+### Sealing and placement (review R4; fit R10; F6)
+
+- **Denylist.** `data/human/sealed-denylist.json` (053616 id, path and media sha256 `ea49d523...`, hashed from
+  the immutable file only) is loaded before any registry.
+  - `check_registry` refuses any row naming a denylisted id, path or hash outside `test`, then runs the
+    importer's own registry check.
+  - Assembly and the tally also refuse denylisted sessions.
+  - Test: a registry with 053616 as train, renamed, or relocated by hash is refused.
+- **Registry.** `data/human/session-splits.corpus.json` is pinned in every session artifact and in the corpus
+  manifest.
+  - **One recording is one session group (F6).** `sitting` (day block) and `obs_process` are stratification tags
+    only.
+  - 053616 is sealed test in its own group; its sitting and OBS process are shared with 051828, as the registry
+    `purpose` states.
+  - The registry carries `recorded_video_path` and `expected_media_sha256` for every row, so a Mac copy changes
+    only `video_path`.
+- **Future placement.** Validation and test are dedicated 10-15 min takes James records later. Train recordings
+  are never held back. New groups are placed at registration, before inspection, by `assign_split` (70/15/15 by
+  focused logged minutes).
+
+### Rows and minutes (review R6, R9; fit R1-R3, R5, R11)
+
+- **The step table is the fit's input.** `step_table` gives one row per anchor on a `stride_ns` grid (default
+  33,333,333 = 30 Hz) inside each review segment ∩ focus interval. Anchors start at the first frame inside the
+  span. The step length is a separate parameter.
+  - Per row: the frame with the last CTS <= anchor, and the frame age.
+  - Per vocabulary control (W A S D Space LShift E F Q V by scan code; LMB, RMB): held at step start and end
+    (`None` when the importer marks it unknown), press and release counts. A repeat make is not a press.
+  - Mouse and wheel sums, `relative_motion_known`, and unsupported-control events by physical id.
+  - Also: `run_id`, a `gap_free` flag, segment, suitability and regime.
+  - Rejected and unresolved rows are kept and flagged. History is not materialized.
+- **Corrected sampling description.** The importer's own `samples()` uses a nanosecond grid that restarts at every
+  segment start, not "every 4th 120 fps frame". Either grid is pinned by its export digest or table hash.
+- **Mixed regimes are one declared cohort** with regime as a column (`load_cohort`). The primary arm uses
+  normal-regime rows. James's drop note is cross-checked against the scan, and a disagreement makes the session
+  unresolved.
+- **Counted minutes (the 3 h trigger)** = focused logged time ∩ accepted segments ∩ gap-free runs of at least
+  1.6 s. It is never video length. 032454 has 28.7 s of focused logged input.
+- **Tally headline.** It is per regime, train only. Trainable minutes (eligible anchors × stride) are always
+  printed with the stride.
+- **Session hold rules.** A raw-input `gap` event refuses the whole session in the importer, so the session is
+  held.
+- **Injected input.** Device handle 0 control input refuses a session (`assert_human_device_scope`). Zero-effect
+  handle-0 packets are counted and reported, never accepted silently.
+- **No-pad attestation.** `device_scope.no_pad_attestation` must carry James's statement that no controller was
+  used (XInput is not logged).
+
+### Superseding decision (review R8)
+
+- **Quiet bins are supervision.** Under whole-session behaviour cloning, a quiet bin inside **accepted genuine
+  play** is supervised "no action". This supersedes `docs/visual-range-supervision.md`'s "no-button periods are
+  not Idle negatives" for this head only.
+- **Non-play is never supervision.** Menus, lobby, AFK, UI-key spans and focus loss are always rejected.
+- **Focus snapshots** remain unknown holds, as the importer already treats them.
+
+### Pins (review R7; fit R9, R13)
+
+Each session artifact pins:
+- media, recorder files, build evidence;
+- the per-session anchor applicability (first 16 packets against the forward prediction, no fitting);
+- the OBS log block, the settings receipt, the ffprobe and ffmpeg versions;
+- the scan outputs, the native edge reads and the review frame hashes;
+- the registry and the denylist;
+- the code snapshot manifest, which includes the importer's git blob and the lane's uncommitted module by sha.
+
+A corpus manifest (`manifest`/`check_manifest`) pins each session's `artifact-hashes.json`, `sampling.json` and
+export digest, plus the registry and denylist. The fit runs the check and refuses on drift.
+
+## 2026-09-23 (evening, later): 171533 through intake up to segments-evidence (admission-owner)
+
+Session `20260923T171533-187Z-33696-5`: original `2026-09-23 12-15-33.mkv`, sha256 `3f8e4087...2126`. Folder
+`data/human/sessions/20260923T171533-187Z-33696-5/`. Code runs from `code-snapshot-c0892ab`. Earlier steps ran from
+`72eee24`, which has identical committed code; the lane module then lacked only the focus settle.
+
+- **Recorder.** 20,396 decoded frames = matched, 2 unwritten tail packets, +21 ms, maximum residual 0.333 ms,
+  integrity ok. The logger reports complete: 0 drops, 0 raw-input errors, no gap or pause events.
+- **Anchor applies.** The first 16 packets give video [21, 46, 29, 38, 71, 54, 63, 96, 79, 88, 121] ms and audio
+  [0, 21, 42, 64, 85] ms, exactly the forward prediction, with no fitting. The OBS encoder block is identical to
+  051828's in the same OBS process.
+- **Build.** No app update after build 25364676, from Steam's content log and appmanifest.
+- **Settings.** The saved settings file's control profiles 0 and 1036 equal the 2026-09-22 receipt. The file was
+  written after the recording, so this is corroboration only.
+- **Motor settings** (`motor-settings.json`, from James's statement of 2026-09-23 ~14:50 CDT):
+  - DPI 800, sensitivity 1.89/1.89, swing mode hold;
+  - bindings from the 09-21 report with physical codes; C and Alt are pending with James;
+  - settings identity `e55453d6...`.
+- **Devices.**
+  - One keyboard (745933423) and one mouse (65618).
+  - No injected control input.
+  - Three zero-effect packets on handle 0. This is the same ancillary pattern as 051828; it is reported, not
+    accepted silently.
+- **Focus.** Active 1.347-6.255 s. Out 6.2 s for an Alt-Tab (Alt at 6.149 s). Active again 12.502-167.726 s:
+  160.1 s focused of 171.2 s recorded.
+- **Regime.** The slot mapping equals 032454/051828. 850 HUD samples (809 present); 27 of 34 five-second
+  intervals show depletion and 7 show no evidence, so the regime is normal. No drop note was given.
+- **UI keys.** Alt at 6.149 s, Esc at 167.131 s, Alt at 167.684 s. The Esc opens the main menu (frames 20076 and
+  20112 show RESUME GAME / PRACTICE SETTINGS / SETTINGS), and then James leaves. Per R3 the session is **held by
+  default**; the lead is told.
+- **New finding: focus-regain transition.** The first frame after focus returns (1486, 12.509 s) still shows the
+  Windows taskbar over the HUD; frames are clean from 1487.
+  - Neither the HUD reader nor the proposer saw it.
+  - Added `FOCUS_SETTLE_NS` = 250 ms: gameplay starts no earlier than 250 ms after every focus-interval start,
+    reason `focus_transition`, with a test.
+- **Candidate segments** (edges refined on native frames):
+  - gameplay seg-002, 1.600-6.142 s (4.5 s), and seg-007, 12.759-167.125 s (154.4 s);
+  - everything else is rejected by rule: focus transitions, the Alt and Esc cuts and edge slivers.
+- **Owner verdicts** (`owner-verdicts.json`; not the independent review):
+  - seg-007 accepted: continuous range play in all 17 inspected frames;
+  - seg-002 unresolved: a pre-play check before the Alt-Tab;
+  - the rest rejected.
+  - Owner-provisional counted minutes: **2.57**. Nothing is counted until the independent per-session review and
+    the lead's R3 decision.
+- **Tally.** `docs/evidence/corpus-tally.md` (from `data/human/sessions/tally.py`) shows no admitted minutes yet.
+- **Registry.** `data/human/session-splits.corpus.json` now has one recording per group (F6), plus `sitting`
+  and `obs_process` tags.
+
+## 2026-09-23 (evening, later): lead decisions on final-10a and the 171533 independent review (admission-owner)
+
+- **R6 wording, amended.** Zero-effect packets on device handle 0 are allowed; that is the importer's
+  `_control_affecting` rule, and they are counted and reported. Any **control-affecting** handle-0 packet refuses
+  the session. This replaces "injected events (device handle 0) must be asserted absent".
+  `assert_human_device_scope` already implements exactly this.
+- **R3 hold, per session.** For 171533 the lead lifted it: the Esc is followed only by leaving, and seg-007 ends
+  at or before the Esc packet. The default hold stays for any Esc followed by more play. The decision is recorded
+  in `data/human/sessions/20260923T171533-187Z-33696-5/lead-decisions.json`.
+- **171533 independent review** (`admission-review`) agrees with the owner verdicts exactly: seg-007 accepted
+  (154.4 s), seg-002 unresolved, the rest rejected.
+  - Copies are in the session folder: `independent-review.md` `0b8a00fc...` and `independent-review.verdicts.json`
+    `bf9a7df2...`.
+  - The mouse X1 press at 59.61 s stays an unsupported-control event.
+- **Status: reviewed, awaiting settings.** Nothing is assembled as accepted until James supplies the C and Alt
+  bindings, the swing mode and the no-pad attestation.
+
+## 2026-09-23 (late): amendment: the fit's step file, settings answers, first assembled session (admission-owner)
+
+**Step file (fit code review K2).** Intake owns the writer of `rivals-range-steps-v1`, `agent.human_intake.write_steps`.
+Its reader is `policy/range_bc/steps.py`.
+
+- **One file per recording.**
+- **Header:** `session_group` = the session id; `sitting`; `frame_period_ns`; `actions` equal to the fit vocabulary
+  (13 since `team_up` was added); `bindings` (action -> `key:scan:E0E1` or `mouse:n`); `calibration`; `hud_layout`
+  `mk`; `swing_mode`; `video_size`; `device_scope`; `injected_events` (control-affecting handle-0 packets, must be 0)
+  beside `injected_zero_effect_packets`; `settings_hash`; `patch`; and a `source` with the importer blob, snapshot and
+  artifact hashes.
+- **Rows:** one per 33,333,333 ns anchor inside every review segment ∩ focus span.
+  - The last frame with CTS <= anchor.
+  - Holds at the step start and end, with `held_known`.
+  - Real press and release edges (a repeated make is not a press).
+  - Mouse and wheel sums.
+  - Presses of controls bound to no action, under `unsupported`.
+- **Gap rule:**
+  - An anchor whose frame is older than two frame periods is not emitted.
+  - A capture gap ends the run.
+  - A step touching a gap has `gap_free` false.
+  - So no row has a stale frame.
+- **Test helpers** for the fit lane's contract test are in `tests/human_intake_fixtures.py`: `session_payload`,
+  `steps_payload`, `build_dataset`, `key_event` and `mouse_event`. My tests restate the reader's row and sequence
+  invariants.
+- **Session group.** The registry now names every session group by its session id (K2).
+
+**Calibration conflict, for the fit lane.** The lead's instruction is calibration null until the takes are measured.
+The reader's `check_header` requires `yaw_deg_per_count > 0`, so today's 171533 step file is refused by the reader
+**on that field alone**. With a placeholder yaw, the header, all 4,800 rows and the sequence pass the reader. The
+calibration take (`20260923T204707-487Z-45572-2`) is next in my queue. Its measured gains will be written into every
+same-settings session's step file as a new version.
+
+**Settings, now complete** (James, 2026-09-23, `docs/recording-log.md`):
+- DPI 800.
+- Sensitivity 1.89/1.89, unchanged since 09-21.
+- **C = team_up**, a real action with a visible effect. Checked on native frames in 051828 (`team-up-check.json`):
+  the C icon turns gold at +99 ms, HP goes 250 -> 300 with a bonus segment at +299 ms, and a 10 s cooldown shows at
+  +499 ms. Trained, but masked live.
+- **Alt** is unbound; Alt presses stay UI-key cuts.
+- **Swing.** Default Web-Swing on Shift. The saved profile shows hold-to-swing on and simple swing off, and the step
+  header records `{automatic_swing: false, hold_to_swing: true}`; mapping "automatic swing" to the profile's
+  `UseSimpleSwing` is my reading. Simple Swing is on Caps Lock (VK 20, scan 58), a semantic action that is not in the
+  fit vocabulary. **No VK 20 packet exists in 171533 or 051828.**
+- **No pad** during any session.
+
+**Two binding gaps are counted as `unsupported` until the fit vocabulary says otherwise:**
+- Mouse 5, which James's 09-21 report binds to punch; the fit binds spider_power to LMB only.
+- Caps Lock.
+
+Melee is the default V; it was never pressed in the reviewed sessions.
+
+**Pinning living documents.** The recording log and the registry change as the campaign goes on, so a session
+freeze pins its own copies of them:
+- `recording-log.<commit>.md`: the committed blob, which must equal the working file;
+- `registry.<sha12>.json`: the revision used.
+
+It never pins the live files. The first freeze of 171533 failed exactly because a later log line had been appended.
+
+**HEVC.** The campaign continues on NVENC HEVC. The anchor holds under HEVC (`hevc-check.md`). The HUD readers
+have not yet been compared on HEVC range play, and each HEVC session's provenance records its codec.
+
+**171533 assembled** (`data/human/sessions/20260923T171533-187Z-33696-5/`, freeze `7744619e...`).
+- `review.json` is built from the independent verdict record, which agrees with the owner verdicts on all 10
+  segments.
+- Imported from `code-snapshot-74db8be`: 20,396 frames, `pts_alignment_verified`.
+- Step file: 4,800 rows, 4,630 accepted and gap-free, and 8 team_up presses.
+- **Counted 2.57 min, trainable 2.57 min** (stride 33,333,333 ns).
+- The tally shows it admitted: normal regime, train, 2.57 of 180.
+
+**Registered before inspection:** 200129 (26.78 focused min) and take 2 `20260923T205528-900Z-45572-3`
+(11.08 focused min, HEVC). Both are train, in their own groups, with sitting `2026-09-23-afternoon`.
+
+## 2026-09-23 (late): intake code review I1-I3, calibration v2, two sessions admitted (admission-owner)
+
+**Review fixes** (`review-intake-code.md`, the three items required before more step files):
+
+- **I1: the step header comes from the reviewed provenance.**
+  - `write_steps` derives bindings, binding aliases, the swing-mode dict, the settings hash, the patch and the
+    regime from `review.json` (`reviewed_identity`), and computes the device report from the recorded events.
+  - Any value a caller passes must equal the derived one; there is a refusal test per field (an E/F swap included).
+  - The review's swing mode is now the `{automatic_swing, hold_to_swing}` dict, and it is hashed.
+  - `mouse_acceleration` and `mouse_smoothing` joined the motor settings, which assembly requires and the identity
+    covers. They change counts -> degrees.
+- **I2: chat and overlays are spans, not a fixed settle.**
+  - Enter opens chat until the next Enter or Esc.
+  - F1, B and H toggle an overlay until the same key or Esc.
+  - Tab is cut while held.
+  - Each span is cut from its opening packet to its closing packet plus 2 s; an unclosed span runs to the focus
+    interval's end.
+  - Keys typed inside chat are not commands, and an Esc that closes chat or an overlay is not a settings-menu
+    opening (tested).
+  - No session so far has Enter or an overlay key (171533 and 051828: only Alt and Esc). What `hud_present` reports
+    with each overlay open is still unmeasured.
+- **I3: the denylist guards every path.**
+  - `write_steps`, `step_table` and `load_cohort` take the denylist. `load_cohort` runs `check_registry` first.
+  - Every driver pins the denylist's sha256 (`57cfe01f...`).
+  - All `assert`s in the drivers are now explicit raises.
+- **Queued, not yet done:** I4 (the R3 hold enforced in assembly), I5 (edge frames and re-hash), I6 (a confident
+  HUD absence is not absorbed), I7 (one grid, and "admitted" renamed), I8 (display settings in the identity).
+
+**Fit vocabulary** (14 actions): `goh_targeting` = X1 (lead decision). Melee is bound to V and Mouse 5 as a header
+binding list, and the action's hold is the union of its ids. The fit reader loads both step files, and they load
+together as one cohort.
+
+**Calibration v2** (`data/human/calibration/20260923T204707-487Z-45572-2/calibration.json` `baa49158...`, freeze
+`91e5b805...`; v1 kept):
+- yaw 0.0330738 deg/count as the **slow-turn gain**, with `accel_on: true`;
+- pitch 0.0330738 **derived** (`derived_equal_sensitivity`, lead decision); the failed sweep is recorded;
+- header kind `slow_turn_constant`.
+
+**The settings look** (native frames, pinned by hash):
+- Melee is V and Mouse 5; Get Over Here Targeting is X1 and 2; Amazing Combo is E and 2; Team-Up B is X.
+- Acceleration and smoothing are on.
+- "2" is bound to two actions, so it is not in any header binding and counts as unsupported.
+
+**Admitted, normal regime, train** (tally: **9.55 counted / 9.54 trainable of 180 min**):
+
+| Session | Freeze | Rows | Accepted | Counted min | Notes |
+|---|---|---|---|---|---|
+| 171533 (v2) | `04614051...` | 4,800 | 4,630 | 2.57 | v1 outputs kept as `.v1` and pinned (`supersedes`) |
+| 051828 | `cabd6280...` | 12,558 | 12,550 | 6.97 | melee 6 (all Mouse 5), goh_targeting 3, team_up 24; no unsupported presses |
+
+Both used `code-snapshot-299ffba` (the reviewed module) and the settings identity `a8dea3ba...`.
+
+**The fit lane's contract test** (`tests/test_range_bc_contract.py`) still calls the old `write_steps` signature
+(identity arguments, no denylist). It needs their update to the I1/I3 API.
+
+## 2026-09-23 (late): transcode acceptance (media relocation), an Alt-cut fix (admission-owner)
+
+**Media relocation** (`agent/human_intake.py`). The original's sha256 stays the session identity.
+- **`load_transcode_receipt`** reads the receipt of `scripts/transcode_recording.py` (`recording-transcode-v1`). It
+  refuses unless:
+  - the verification is clean: `ok`, decoded frame count and PTS digest, packet counts, and `frames.csv` matched
+    frames equal to the frame count;
+  - it names this session and this original's sha256;
+  - its output sha256 is distinct from the original's.
+- **`relocation_record`** makes the session artefact `media-relocation.json`: the identity sha256, the transcoded path
+  and sha256, the receipt `{path, sha256}` and the verification summary.
+- **`check_media`** accepts the original bytes, or the recorded transcode when the receipt is unchanged and still
+  clean; anything else is refused.
+- **`load_dataset_relocated`** runs in the importer's own order:
+  1. the denylist and `check_registry`;
+  2. the sealed header refusal;
+  3. placement equality, with the registry keeping `recorded_video_path` and `expected_media_sha256` = the original;
+  4. the payload checksum.
+
+  The transcode then replaces the original byte check, and the importer's `_build` rebuilds the dataset with frame
+  references to the transcode. `reprobe` also decodes the transcode and requires the imported PTS list.
+- **`check_freeze`** accepts a pinned original that is gone only through a pinned `media-relocation.json` in the same
+  folder, and only while the transcode verifies. A tampered transcode fails.
+- **Driver.** `data/human/sessions/relocate_session.py SESSION --receipt ... --snapshot ...` checks the receipt against
+  the session's frozen identity and logger files, writes the record, proves the load, and re-freezes as a new version.
+  It never transcodes or deletes.
+- **Tests.** Synthetic: the original or the transcode, the refusals, an importer-built dataset loading after its
+  original is deleted, and the freeze with and without the record.
+- **For pilot-prep.** The tool's `--delete-original` refuses whenever any file under `data/human` names the original,
+  which is always true for an admitted session. It should instead require that every session naming it holds a pinned
+  `media-relocation.json` for that receipt. No transcode runs while the game is up.
+
+**Alt-cut fix.** After the I2 refactor, UI cuts are built across the whole session, and the 2 s settle after an Alt-Tab
+spilled into the next focus interval (1.06 s at 200129's return). Alt and Win cuts now stay inside their own focus
+interval: the focus loss ends it, and the focus settle covers the return. This is tested. It changes no admitted
+session: 171533 and 051828 have no Alt followed by another focus interval inside accepted time.
+
+**Snapshot.** `code-snapshot-6f4dba2` is the landed commit plus this uncommitted lane change, listed as an overlay by
+origin and sha256. `archive_code_snapshot.py` now overlays tracked lane files whose working copy differs from the
+commit.
+
+**Correction (051828 provenance line).** 051828's `segments-evidence.json` (`a421dfe7...`, frozen and landed) carries
+an `earlier_steps` sentence hard-coded for 171533: that the earlier steps ran from `code-snapshot-72eee24`. For 051828
+every intake step ran from `code-snapshot-c0892ab`. Its evidence content is unaffected; the sentence is wrong. The
+driver now records the earlier steps' snapshot and manifest hash from an explicit `--earlier-snapshot` argument.
+
+**Pin form (CRLF hazard).** Text artefacts are pinned in **LF form**, `lf_sha256` = sha256 with CRLF normalised to
+LF. This covers the denylist (`load_denylist`), the registry and every other `.json`/`.jsonl`/`.md`/`.py`/`.csv`/`.txt`
+pin that `check_freeze` and `check_manifest` verify. The PC checks out with `core.autocrlf=true`, which made raw pins
+fail on a fresh checkout; the fit lane hit this with the denylist. Binary pins (media, images, arrays) stay raw.
+Every pin written so far was computed on LF files, so no value changes; the denylist's is still
+`57cfe01f29f6e1a55293f968ec697aa293c268bd87d7cf247ef648279e2fba7c`. A test checks that a CRLF copy still matches and
+that a binary pin does not.
+
+## 2026-09-23 (late): death cut; 200129 and take 2 review-ready (admission-owner)
+
+**The death cut, a new proposer rule** found on 200129's frames.
+- The hero died twice in 200129, both times by falling off the terrace. The HUD reader still reports the HUD present
+  on the death and "SPECTATING" screens.
+- **`dead` spans** come from runs of scan samples whose HP reads 0. Each runs from one ns after the last sample before
+  the run to `RESPAWN_SETTLE_NS` (1 s) after the first alive sample, because the respawn ghost is still on screen when
+  the HP reads full again (up to 0.4 s seen).
+- The fall before the death is play and is kept. There is a test.
+- No admitted session has an HP-0 sample, so 171533 and 051828 are unchanged. The driver also keeps the scan's HUD
+  presence as read (review I6).
+
+**Code.** Both sessions were re-proposed with `code-snapshot-23c8482` (the landed code plus the Alt fix and the death
+cut). The earlier steps ran from `code-snapshot-c0892ab`, which `segments-evidence.json` now records. The `.v1`
+candidates and evidence of the pre-review proposer are kept.
+
+| Session | Focused min | Gameplay candidates | Owner verdicts | Owner-provisional counted min |
+|---|---|---|---|---|
+| 200129 (H.264) | 26.78 | seg-002 3.76-5.85 s (spawn room before Alt-Tab), seg-007 7.06-765.52 s, seg-010 767.73-1,606.32 s | seg-007 and seg-010 accepted; seg-002 unresolved; two `dead` spans and the rest rejected | 26.62 |
+| take 2 205528 (HEVC) | 11.08 | seg-002 0.93-665.14 s | accepted; the rest rejected | 11.07 |
+
+**HEVC.** On take 2 the HUD reader reads HP in 96.4 % and web ammo in 82 % of 5 fps samples, against 95.4 % and 85 %
+on 200129's H.264. This is the first real-play evidence that the readers hold on HEVC; the regime is normal in both.
+
+Both sessions await the independent per-session review before assembly.
+
+**Amendment: the `dead` rule** (proposer; `agent.human_intake.dead_spans`, `RESPAWN_SETTLE_NS` = 1 s).
+
+- **Where the rule cuts.**
+  - Gameplay before a death ends at the last scan sample read alive before the run of HP-0 samples. The fall that
+    causes the death is play and stays accepted.
+  - The `dead` segment runs from one ns after that sample to 1 s after the first sample read alive again. It covers
+    the death, the "SPECTATING" countdown and the respawn ghost, and it is always rejected.
+  - Play after the respawn is a new gameplay segment. In the step file a segment boundary starts a new run, so no
+    run, history window or action bin crosses a death.
+- **The two frames that bound 200129's first death:**
+
+| Frame | Time (s) | Role | Decoded BGR sha256 | What it shows |
+|---|---|---|---|---|
+| 91848 | 765.524 | end of accepted seg-007 | `282f2e22838fe797d96c0810ca34fc347aa973f52e6537b87eed2f76d141f300` | alive, falling off the terrace edge (HP 284) |
+| 92113 | 767.732 | start of accepted seg-010 (a new run) | `83c47790221d765d4df64f410bdb6bf4ecacc6a3a7199cb5995df3759be70e9e` | respawned, running from the spawn room |
+
+  The frames are in `data/human/sessions/20260923T200129-346Z-33696-6/review-frames/` (`seg-007-91848.jpg`,
+  `seg-010-92113.jpg`). Between them, `seg-008` (frames 91849-92112) is HP 0, the spectating countdown and the
+  respawn ghost.
+- **The second death**, at 1,606.4 s: seg-010 ends at frame 192744 (1,606.324 s, alive, falling into the trees). The
+  `dead` span runs from frame 192745 until the Alt-Tab that ends the session.
+
+## 2026-09-23 (late): four sessions admitted, 47.23 counted minutes; simple_swing (admission-owner)
+
+- **Two more sessions admitted** after their independent reviews:
+  - 200129 (verdicts `70e77f63...`): seg-007 and seg-010, two death cuts verified; counted **26.62** min.
+  - Take 2 205528 (verdicts `e526a4f3...`; HEVC packet order equals `frames.csv`): seg-002; counted **11.07** min.
+- **Both assembled from `code-snapshot-86a1912`** with the calibration v2 header and LF pins.
+- **`simple_swing` (Caps Lock, `key:58:0`) is a fit action** (James's decision; 15 actions). The session binding table
+  already mapped it.
+  - Take 2's 13 Caps Lock presses are now positives, not unsupported. 200129 has 3 more.
+  - 171533 (v3) and 051828 (v2) were re-stepped for the 15-action vocabulary with `restep_session.py`: review,
+    import, identity and row set unchanged; the old step file, sampling and freeze are kept as `.vN` and pinned by
+    `supersedes`.
+- **The fit reader loads the four step files as one cohort:** 85,016 accepted rows.
+- **Tally:** **normal, train: 47.23 counted / 47.23 trainable of 180 minutes**, 4 sessions.
+
+## 2026-09-23 (late): the older logger sessions under the whole-session rules (admission-owner)
+
+- **032454** (2026-09-21, 30.5 s video): focus 0.42-29.11 s; UI keys Esc 22.28, Esc 23.61, Esc 28.01, Alt 29.03 s.
+  - Normal depleting play is visible only from about 11.0 s (after loading and hero selection) to 22.25 s
+    (`cooldown-inspection.md`).
+  - The first Esc at 22.28 s opens the settings menu, and No Ability Cooldown is switched ON at 23.7 s.
+  - **At most 11.0-22.28 s is admissible (<= 0.19 counted minutes).** Everything after it stays out: R3, plus a
+    regime change.
+  - One keyboard and one mouse, no injected input. Settings are covered by James's 2026-09-23 statements
+    ("unchanged since the 09-21 sessions").
+  - Status **held: intake only on request**. The yield is too small to spend a review on unless the lead wants the
+    09-21 sitting represented.
+- **033319** (2026-09-21, 6.93 focused min): the input timeline is clean (one focus interval; Esc only at 414.52 s,
+  then Alt), one keyboard and one mouse.
+  - The regime is unresolved: inspected windows show no depletion, while James reported cooldowns OFF.
+  - Under R5 a disagreement between the note and the scan makes the session unresolved.
+  - Admitting it as a declared no-cooldown session would need positive evidence of the setting, and there is none.
+  - It **stays out** (the lead's "permanently unadmitted").

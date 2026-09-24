@@ -1,0 +1,297 @@
+{
+ "session": "20260923T051828-422Z-33696-1",
+ "segments_evidence_sha256": "a421dfe7bf489a4811c372f96c18613a38cc5105fdb701dc06022e9e11168cce",
+ "reviewer": "admission-owner",
+ "reviewed_at": "2026-09-23T22:10:00Z",
+ "role": "owner inspection; assembly additionally requires the independent per-session review (R5)",
+ "verdicts": {
+  "seg-000": {
+   "suitability": "rejected",
+   "reason": "focus_transition: the first 250 ms after focus is gained; frame 105 (first after focus) still shows the Windows taskbar",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-23T22:10:00Z",
+   "evidence": "segments-evidence.json a421dfe7bf489a48 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 105,
+     "composition_ns": 208584837560588,
+     "decoded_bgr_sha256": "8d5e0896b8c72f77f5cfd77b63659f783e633bb8f7f0aa09f7d6639298c5571e"
+    },
+    {
+     "frame_index": 119,
+     "composition_ns": 208584954227250,
+     "decoded_bgr_sha256": "223078b15b7ca63c434268c2b7cc19c078d0749649b390fae05a4319358df377"
+    },
+    {
+     "frame_index": 134,
+     "composition_ns": 208585079227245,
+     "decoded_bgr_sha256": "d3b5ead117e38d33b99de433e6027b8cb07b23e48911e4acef1fadb16b2165a1"
+    }
+   ]
+  },
+  "seg-001": {
+   "suitability": "rejected",
+   "reason": "unsampled sliver between the focus settle and the first HUD sample",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-23T22:10:00Z",
+   "evidence": "segments-evidence.json a421dfe7bf489a48 review frames + contact sheets",
+   "frames": []
+  },
+  "seg-002": {
+   "suitability": "accepted",
+   "reason": "continuous practice-range play, 418.35 s, in all 43 inspected frames: traversal and web swings across the courtyard, lanes and terraces, engagements with the Galacta bots, the Galacta Bot Ultra and Luna Snow (KO feed and streak banners in several frames), ult charging and in use; HUD present throughout; no UI key, AFK span or capture gap inside; regime normal in all 85 five-second intervals",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-23T22:10:00Z",
+   "evidence": "segments-evidence.json a421dfe7bf489a48 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 135,
+     "composition_ns": 208585087560578,
+     "decoded_bgr_sha256": "2c59ba9cade37da387bfe38d745c28e1a2b6ff455d3816eb4c4f557053071684"
+    },
+    {
+     "frame_index": 1330,
+     "composition_ns": 208595045893513,
+     "decoded_bgr_sha256": "44991e710c414a5d0fbf2a146490910b256e16bb0ce322d5c17a5505d1be7923"
+    },
+    {
+     "frame_index": 2525,
+     "composition_ns": 208605004226448,
+     "decoded_bgr_sha256": "2a810e177a6562931c395a124c700587039347ed2d93d625c91d4d5df8756dfc"
+    },
+    {
+     "frame_index": 3720,
+     "composition_ns": 208614962559383,
+     "decoded_bgr_sha256": "eaf527aa457894395154886e4e401c5a2ab508185c83e9ec8d64b854edd08e31"
+    },
+    {
+     "frame_index": 4916,
+     "composition_ns": 208624929225651,
+     "decoded_bgr_sha256": "136612871ffca00999ead41afab880cb49cbc82cfca0babc45e42484245a712a"
+    },
+    {
+     "frame_index": 6111,
+     "composition_ns": 208634887558586,
+     "decoded_bgr_sha256": "ed016b4ac8ea2576f980f4af9a5d5da38eab83aa2fdb0bbcf016713fc6c4b30b"
+    },
+    {
+     "frame_index": 7306,
+     "composition_ns": 208644845891521,
+     "decoded_bgr_sha256": "7821b700619778d87c020df58898f8c856710ec58bfc762aad6cf1bcfe72a51a"
+    },
+    {
+     "frame_index": 8502,
+     "composition_ns": 208654812557789,
+     "decoded_bgr_sha256": "1040aa5d7abfac6bb7a41e0eec36a57e61349944190aa9223ce8e63ec39bfc4b"
+    },
+    {
+     "frame_index": 9697,
+     "composition_ns": 208664770890724,
+     "decoded_bgr_sha256": "ecd911eafd320c06419384ca6dea690834137a679ed5ecb9f178d64989fd7ee4"
+    },
+    {
+     "frame_index": 10892,
+     "composition_ns": 208674729223659,
+     "decoded_bgr_sha256": "9f62a956f65e6a473430eb75c8c1352ae9e1706176d215b8f327022c9c83fcc1"
+    },
+    {
+     "frame_index": 12087,
+     "composition_ns": 208684687556594,
+     "decoded_bgr_sha256": "854398a1e0a539feeedb748fcc2e33a7d7c7f0a28047fbc6a9f0383537ea6a71"
+    },
+    {
+     "frame_index": 13283,
+     "composition_ns": 208694654222862,
+     "decoded_bgr_sha256": "68a8cc1ea2b6280126027a144bdeaf4cbcb2ce048fdf783fc76df3eaeb982362"
+    },
+    {
+     "frame_index": 14478,
+     "composition_ns": 208704612555797,
+     "decoded_bgr_sha256": "9075416ced5ecdf4cac52f2a0facda48022b0e0feada7da17aa94ac8206cbdfe"
+    },
+    {
+     "frame_index": 15673,
+     "composition_ns": 208714570888732,
+     "decoded_bgr_sha256": "731b77a892e60c1f61d8ab82e5731de84134b27b3b34d5b400c040ed6f0d6fac"
+    },
+    {
+     "frame_index": 16869,
+     "composition_ns": 208724537555000,
+     "decoded_bgr_sha256": "2943d723f932e0195a111328128db8be6815b7dc82dca3ff31953d42db6972bd"
+    },
+    {
+     "frame_index": 18064,
+     "composition_ns": 208734495887935,
+     "decoded_bgr_sha256": "2c9216354b30ce758f718f9ac1e5f81cd6006f32207bac630b987ef50fcdba62"
+    },
+    {
+     "frame_index": 19259,
+     "composition_ns": 208744454220870,
+     "decoded_bgr_sha256": "f8c9e08a737258bb8a08a5b5d5e2e068ce0d1bb3ae96a82485f611a3f632a358"
+    },
+    {
+     "frame_index": 20454,
+     "composition_ns": 208754412553805,
+     "decoded_bgr_sha256": "6e986303b38fae471763f6fe11702646c413b24adb3a1b55fa483c859056633d"
+    },
+    {
+     "frame_index": 21650,
+     "composition_ns": 208764379220073,
+     "decoded_bgr_sha256": "c8e57d23e1fb6405eba8be2474fbd631f3eb4e82b6e85f176f49b26407b075b0"
+    },
+    {
+     "frame_index": 22845,
+     "composition_ns": 208774337553008,
+     "decoded_bgr_sha256": "114d89fe919c20ba7663b52f2af7a75d3d62b2bdedfad87fb70d3949a9da26c2"
+    },
+    {
+     "frame_index": 24040,
+     "composition_ns": 208784295885943,
+     "decoded_bgr_sha256": "de2b0edf74c14a999c26279d2d5e8028e0bd4db279eb9420db9ee7de5b05f215"
+    },
+    {
+     "frame_index": 25236,
+     "composition_ns": 208794262552211,
+     "decoded_bgr_sha256": "63b5aa938937b8a00c1fd557f9cab8761eab19f018fdc0518315295287257b42"
+    },
+    {
+     "frame_index": 26431,
+     "composition_ns": 208804220885146,
+     "decoded_bgr_sha256": "9b511bcb6c28596c9c577ec749d766686d4778acf7a9639db845d8c3aa64fcaa"
+    },
+    {
+     "frame_index": 27626,
+     "composition_ns": 208814179218081,
+     "decoded_bgr_sha256": "d884c4955304c7dcd9787c956ccb01a1b7f06e175a31c772c0f43aa009fc9e00"
+    },
+    {
+     "frame_index": 28821,
+     "composition_ns": 208824137551016,
+     "decoded_bgr_sha256": "fe1e3a9b504fedee74aecc56e14476de462e1c1b15af73d0fa23b7509825f08b"
+    },
+    {
+     "frame_index": 30017,
+     "composition_ns": 208834104217284,
+     "decoded_bgr_sha256": "35035bf930e8e9e4018760b8adbb0a2e12f352698ea436e7f1e463278bdcb0da"
+    },
+    {
+     "frame_index": 31212,
+     "composition_ns": 208844062550219,
+     "decoded_bgr_sha256": "a1039fc555196e2eab28099a7fa7fb7c4567d24c445b74b2e465e5d2db08b517"
+    },
+    {
+     "frame_index": 32407,
+     "composition_ns": 208854020883154,
+     "decoded_bgr_sha256": "38f337276822247e07390335dfdb133fc86038eb0d5c1ff82a7cd5441294a9a6"
+    },
+    {
+     "frame_index": 33603,
+     "composition_ns": 208863987549422,
+     "decoded_bgr_sha256": "e18b666b784214457657a8d2f8077afa8d686785345458ae6747c1dda2f16033"
+    },
+    {
+     "frame_index": 34798,
+     "composition_ns": 208873945882357,
+     "decoded_bgr_sha256": "cbabb95d9e77d74bfac03a6dcde186427def01b5caf2323c58dfec204e92bcdf"
+    },
+    {
+     "frame_index": 35993,
+     "composition_ns": 208883904215292,
+     "decoded_bgr_sha256": "9fcede18ac32b7d71718fbc3f50368381cc4803bd6ca5af8e615871237591052"
+    },
+    {
+     "frame_index": 37188,
+     "composition_ns": 208893862548227,
+     "decoded_bgr_sha256": "be1245b5368499829500d2c09a3e182f64af57cd29c19abb1c926902cbba6147"
+    },
+    {
+     "frame_index": 38384,
+     "composition_ns": 208903829214495,
+     "decoded_bgr_sha256": "fa1ecf2b8f030e7f3ec9ab61535af9ddaa9eeb6b973ad30a6dddea17959831b3"
+    },
+    {
+     "frame_index": 39579,
+     "composition_ns": 208913787547430,
+     "decoded_bgr_sha256": "d61b332c6f6e7547d88fd165187b644b5cee311d8e8fe58d68aa30b909e6a6c2"
+    },
+    {
+     "frame_index": 40774,
+     "composition_ns": 208923745880365,
+     "decoded_bgr_sha256": "6afcf2a0edcb202e672925c87fc830ff0ce88aed9e4de3121ca2223706ca62ee"
+    },
+    {
+     "frame_index": 41970,
+     "composition_ns": 208933712546633,
+     "decoded_bgr_sha256": "7bb96718356d954b668f9017101e85da2be8d0721ca4204e74b11c8a39053004"
+    },
+    {
+     "frame_index": 43165,
+     "composition_ns": 208943670879568,
+     "decoded_bgr_sha256": "a6367abe44effe08d752dc305ffe10be17b136f674af6f6b0f0edbb1ace81ddb"
+    },
+    {
+     "frame_index": 44360,
+     "composition_ns": 208953629212503,
+     "decoded_bgr_sha256": "7798b938afeb24c88a0dbef0d35624bb34b1ebd1f7d64d365ea10d863f2652bd"
+    },
+    {
+     "frame_index": 45555,
+     "composition_ns": 208963587545438,
+     "decoded_bgr_sha256": "64ffc86e2797e966d10abc3f922220c1513f8c705b1af7f84b7f1b13fc3f504c"
+    },
+    {
+     "frame_index": 46751,
+     "composition_ns": 208973554211706,
+     "decoded_bgr_sha256": "05b623a93dd5d49915fc526a356e0cdc5f867b2b667fa028b0043b62aebd2193"
+    },
+    {
+     "frame_index": 47946,
+     "composition_ns": 208983512544641,
+     "decoded_bgr_sha256": "4a4c5236133acd2aa5f6d18eb4ec18ab0d7b1677d94654d9c6a04f52e1790cfd"
+    },
+    {
+     "frame_index": 49141,
+     "composition_ns": 208993470877576,
+     "decoded_bgr_sha256": "7107f06686ab8ace4f3144c0ca1a4134413cf236e2bc16dd4912e37fc7af876c"
+    },
+    {
+     "frame_index": 50337,
+     "composition_ns": 209003437543844,
+     "decoded_bgr_sha256": "e548054192818460e54c924fbf5a00f82d4d3d11fdf4e8d09fc6e974dbb6fe5c"
+    }
+   ]
+  },
+  "seg-003": {
+   "suitability": "rejected",
+   "reason": "sliver between the last refined HUD frame and the Alt key packet",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-23T22:10:00Z",
+   "evidence": "segments-evidence.json a421dfe7bf489a48 review frames + contact sheets",
+   "frames": []
+  },
+  "seg-004": {
+   "suitability": "rejected",
+   "reason": "ui_key: Alt at 419.629 s, then focus loss (leaving to stop the recording); frames 50338-50345 still show play, cut by rule",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-23T22:10:00Z",
+   "evidence": "segments-evidence.json a421dfe7bf489a48 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 50338,
+     "composition_ns": 209003445877177,
+     "decoded_bgr_sha256": "34b5c61d021194a9afffe1223a358c09ed3b455b49c89dc533b1d78dc5b531dc"
+    },
+    {
+     "frame_index": 50341,
+     "composition_ns": 209003470877176,
+     "decoded_bgr_sha256": "9134889c497c719101b2b31d6533464c0abcf1c72914da09e8f48a7a6f0ab7c9"
+    },
+    {
+     "frame_index": 50345,
+     "composition_ns": 209003504210508,
+     "decoded_bgr_sha256": "0a849a78c770224a1c9c80fda9a329c9b8a6d032a592f22d9c1641d20534a18a"
+    }
+   ]
+  }
+ }
+}

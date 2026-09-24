@@ -1,0 +1,42 @@
+{
+ "session": "20260923T171533-187Z-33696-5",
+ "kind": "lead_decisions",
+ "decisions": [
+  {
+   "date": "2026-09-23",
+   "item": "R3 settings-menu hold",
+   "decision": "lifted for this session: seg-007 stands",
+   "reasoning": "The Esc at 167.131 s is followed only by leaving (main menu, Alt, focus loss at 167.726 s); nothing is played after it and seg-007 ends at or before the Esc packet, so no row can carry a changed regime. The default hold stays for any Esc that is followed by more play.",
+   "basis": [
+    "independent-review.md (admission-review) decision 1",
+    "admission-owner final-10a"
+   ]
+  },
+  {
+   "date": "2026-09-23",
+   "item": "device handle 0",
+   "decision": "zero-effect handle-0 packets allowed (the importer's _control_affecting rule); any control-affecting handle-0 packet refuses the session",
+   "observed": "3 zero-effect handle-0 mouse packets at 42.76, 92.79 and 142.80 s"
+  },
+  {
+   "date": "2026-09-23",
+   "item": "mouse X1 press at 59.61 s",
+   "decision": "stays an unsupported-control event in the step table"
+  },
+  {
+   "date": "2026-09-23",
+   "item": "admission status",
+   "decision": "reviewed, awaiting settings: nothing is assembled as accepted until James supplies the C and Alt bindings, the swing mode and the no-pad attestation (asked)"
+  }
+ ],
+ "independent_review": {
+  "path": "data/human/sessions/20260923T171533-187Z-33696-5/independent-review.md",
+  "sha256": "0b8a00fcf2bc848da40e94857cc164435d7adc8e510eaa61fd4eb31559cbaa85",
+  "verdicts": {
+   "path": "data/human/sessions/20260923T171533-187Z-33696-5/independent-review.verdicts.json",
+   "sha256": "bf9a7df2a88f347951b39c64ae1078e4f967d4a2b42d159d0394187b41fe6013"
+  },
+  "reviewer": "admission-review",
+  "agrees_with_owner_verdicts": true
+ }
+}

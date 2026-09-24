@@ -1,0 +1,87 @@
+{
+ "session": "20260923T205528-900Z-45572-3",
+ "raw_files": {
+  "inputs.jsonl": "f7008ad72f343167eb560fc2c598065e415a51b8a7fb63f684cb4c5acd862163",
+  "frames.csv": "4ca26a1e9b4c90a3daa44cfa1122ecea45af111a9e740164284716de7f04e40e",
+  "metadata.json": "4ee7bd82028e593b3be5c10a7b9b0a664054d76c4fd8897588705f5fc4be10a9"
+ },
+ "event_counts": {
+  "raw_input_status": 1,
+  "focus": 3,
+  "mouse": 64521,
+  "key": 4774
+ },
+ "focus_events": [
+  {
+   "seq": 1,
+   "t_ns": 264804050866200,
+   "t_rel_s": 0.0035479,
+   "active": false,
+   "held_vk": []
+  },
+  {
+   "seq": 51,
+   "t_ns": 264804725438600,
+   "t_rel_s": 0.6781203,
+   "active": true,
+   "held_vk": [
+    1
+   ]
+  },
+  {
+   "seq": 149093,
+   "t_ns": 265469287769900,
+   "t_rel_s": 665.2404516,
+   "active": false,
+   "held_vk": []
+  }
+ ],
+ "focused_intervals": [
+  [
+   264804725438600,
+   265469287769900
+  ]
+ ],
+ "focused_s": 664.5623313,
+ "recording_s": 667.8997091,
+ "device_scope": {
+  "keyboard_handles": {
+   "1043402031": 4774
+  },
+  "mouse_handles": {
+   "614403941": 64345
+  },
+  "zero_effect_packets": {
+   "mouse:614403941": 162,
+   "mouse:0": 14
+  },
+  "injected_control_packets": 0,
+  "injected_zero_effect_packets": 14,
+  "single_keyboard_mouse": true
+ },
+ "key_make_counts_by_vk": {
+  "16": 962,
+  "18": 1,
+  "20": 107,
+  "32": 498,
+  "65": 344,
+  "67": 42,
+  "68": 354,
+  "69": 82,
+  "70": 35,
+  "81": 4,
+  "83": 309,
+  "87": 371
+ },
+ "ui_key_presses": [
+  {
+   "t_ns": 265469186808500,
+   "t_rel_s": 665.1394902,
+   "vk": 18,
+   "key": "Alt"
+  }
+ ],
+ "afk_spans": [],
+ "raw_input_gap_events": [],
+ "pause_events": []
+}
