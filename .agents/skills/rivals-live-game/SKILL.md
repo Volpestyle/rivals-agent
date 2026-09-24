@@ -119,7 +119,8 @@ KOs also appear in a kill feed at the top right. It is the only outcome measure 
 far. The board starts fading in 270-520 ms after `BACK` goes down and is fully drawn ~200 ms later: hold at
 least 0.8 s and capture at native resolution (the reader refuses frames under 1920 wide).
 `record.in_range` is false while the scoreboard is up, so a loop confirms the range BEFORE the
-press and never treats the hold as the range being lost. Dead ends: the ult icon relights ~3.5 s after casting in the range, so ult charge says
+press and never treats the hold as the range being lost. Dead ends (with No Ability Cooldown ON, the range's default;
+see Practice Settings below): the ult icon relights ~3.5 s after casting in the range, so ult charge says
 nothing about damage; Web Cluster ammo never depletes there; the range bots do not attack,
 so hp never drops. Re-picking a hero does not respawn the player.
 
