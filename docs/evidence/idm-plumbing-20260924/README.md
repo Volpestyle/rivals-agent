@@ -27,6 +27,7 @@ above the calibrated band; the edge head has no usable skill (only jump fires). 
 | `*idm-prep.md` | `bc5f8fca3aa9588f57f59fc4067e75c2da5a2111050d99325b48f758689ea4d8` |
 | `*idm-stores.md` | `7d509fadeaa9d9cfec5cf1c62e14e71d62ba1bd41a837dccb4c94d910d809a70` |
 | `*idm-loso.md` | `056624745f88dc10d129b2224802525c93d514ca18177fca7f793fd6c8e74a53` |
+| `idm-yaw-test.md` (the pre-registered yaw falsification test: plain loss learns yaw on 1 of 3 seeds; beta-NLL 0.5 on the failing seed learns, branch idm/yaw-test-20260924 @ 4e7f005) | `5304ad9280d20ddabb90ca4d223eac83e9d952b06834babdbf4e09f47fd07a99` |
 | `idm-diag.md` | `af4d2aaa91e5296ea46019706c5b3b4d178e9fbb436c3675b283f46fa76f60bf` |
 
 Checkpoints (`idm-seed0.pt`, hashes in `idm-loso.md`), logs and `.exit` files stay in gitignored `data/idm/runs/`
