@@ -937,6 +937,26 @@ four seed-0 fits learned yaw), and T learns.
 - Six predict passes of under 1 min each.
 - About 1.2 h of Mac time.
 
+**Addendum: yaw-2** (pre-registered 2026-09-24, after the first result and before these runs; lead's go
+`DECISION idm-yaw-2`).
+- **The first result:** C1 not learned (0.567 / 0.569), C2 learned (0.920 / 0.954), T learned (0.976 / 0.988). The
+  reading "exactly one control learns" fixed the next step as seeds, not a loss change.
+- **The runs:** two more treatment seeds, so β-NLL has three seeds on the same data as the plain loss.
+
+  | Run | Seed | Camera loss | Code |
+  |---|---|---|---|
+  | **T1** | 1 | β-NLL, β = 0.5 | `4e7f005` (branch `idm/yaw-test-20260924`) |
+  | **T2** | 2 | β-NLL, β = 0.5 | `4e7f005` |
+
+  Everything else is as T: the fold, data, fit settings and code, and the same judge (≥ 0.85 raw-μ yaw agreement on
+  both 051828 and 171533, by `analyse.py`'s definition), with the same figures reported beside it.
+- **Reading, fixed by the lead before the runs:**
+  - **All three β-NLL seeds learn** (T, T1, T2): β-NLL becomes the candidate camera loss. It goes to fit-review, and
+    lands behind the flag, default off, until Gate 1 is re-run with it.
+  - **Any β-NLL seed fails:** both losses are fragile, and the next place is the optimiser or the input.
+- **Budget:** two fits of about 21 min each, and four predict passes, in one niced queue after part C's inference
+  frees the Mac.
+
 ## Measurements owed
 
 - **The 7 large live zeros (a) still keeps:** parallax during combined movement and turning.
