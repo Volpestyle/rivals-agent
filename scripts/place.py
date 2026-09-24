@@ -16,7 +16,13 @@ Usage (PC desktop session for --dry, --measure-pitch and --live; --replay runs a
   python scripts/place.py --reset-check --declaration FILE --spot NAME
         James's session only: at one of the three failure spots, facing the pair, runs the measured PITCH_RESET (right
         stick only) and reports every box's level residual; writes data/placement/reset-<spot>-<stamp>/
-        Both measurement modes: REFUSED unless FILE is a measurement declaration for this mode (below)
+  python scripts/place.py --lowmap --declaration FILE
+        James's session only (fit review K3): the pad's low-end camera map and deadzone. Right stick only, one axis
+        at a time: yaw at LOWMAP_YAW deflections, pitch at LOWMAP_PITCH, each held one way and then back, rotation
+        measured from settled frames with perception/camera_motion.py. Writes data/placement/lowmap-<stamp>.json
+        (agent.controller.Cal's fields) and its frames under data/placement/lowmap-<stamp>/; changes no code. The
+        declaration must also attest the pad settings the map holds at (LOWMAP_PAD_SETTINGS)
+        All three measurement modes: REFUSED unless FILE is a measurement declaration for this mode (below)
   python scripts/place.py --live --declaration FILE --bin mid
         REFUSED unless PITCH_DOWN_S, PITCH_UP_S and agent.placement.EDGE_X_M are measured (set in code), and FILE
         is a live declaration (below) whose look is done, countersigned and agrees with the code. Only the mid and
@@ -70,7 +76,7 @@ TURN_TOL_DEG = 8.0                           # replay agreement: turns within th
 MOVE_TOL_S = 0.15                            # replay agreement: walk/strafe seconds within this
 DECLARATION_KIND = "placement-live-declaration-v1"
 MEASURE_DECLARATION_KIND = "placement-measurement-declaration-v1"
-MEASURE_MODES = ("measure-pitch", "reset-check")
+MEASURE_MODES = ("measure-pitch", "reset-check", "lowmap")
 AUTH_KIND = "placement-authorization-v1"
 AUTH_MODES = ("live",) + MEASURE_MODES
 DECLARATION_MAX_VALID_S = 3600.0             # issued -> expiry: one session's window, not a standing licence
@@ -90,6 +96,15 @@ MEASURE_SPREAD_PX = 30.0                     # repeat residuals must lie within 
 MEASURE_CLAMP_TOL_PX = 15.0                  # the from-looking-up check must land within this of the sweep
 LIVE_BINS = ("mid", "near")                  # far: READY in 21 % of unbiased starts (review re-check); not piloted
 SPOTS = ("post-ko", "nook", "plaza")         # the three failure states of docs/lanes/placement.md section 6
+# --lowmap (fit review K3): the deflections, hold times and pad settings of docs/lanes/placement.md section 8 row D
+LOWMAP_YAW = (0.02, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10)
+LOWMAP_PITCH = (0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5)
+LOWMAP_HOLD_S = {"yaw": 1.0, "pitch": 0.5}   # 0.10 yaw ~18.5 deg, 0.5 pitch ~21.5 deg: the view keeps most features
+LOWMAP_REPEATS = 2                           # each deflection twice; the two must agree on moved / not moved
+LOWMAP_STILL_DEG = 0.25                      # a hold turning less than this (or 3x the still-frame noise) did not move
+LOWMAP_CAL_TOL = 0.25                        # the top deflection's rate within 25 % of Cal's map, or settings differ
+LOWMAP_PAD_SETTINGS = {"curve": "Linear", "horizontal": 265, "vertical": 75, "aim_assist": 0}
+LOWMAP_KIND = "cal-lowmap-v1"
 
 
 class Refused(Exception):
@@ -391,6 +406,9 @@ def check_measurement_declaration(path, mode, *, process_info, now=None):
         raise Refused(f"the declaration's modes must include '{mode}' and name only {MEASURE_MODES}")
     if d.get("james_present_recording") is not True:
         raise Refused("the declaration must record James present at the PC and recording")
+    if mode == "lowmap" and d.get("pad_settings") != LOWMAP_PAD_SETTINGS:
+        raise Refused(f"--lowmap: the declaration must attest pad_settings {LOWMAP_PAD_SETTINGS} (the map holds only "
+                      "there; docs/lanes/l4-controller.md)")
     binding = check_entry(d, mode, process_info=process_info, now=now or datetime.now(timezone.utc))
     return {**d, "binding_id": binding, "sha256": hashlib.sha256(raw).hexdigest()}
 
@@ -674,6 +692,155 @@ def pair_residual_frames(rows):
     return rs[len(rs) // 2] if rs else None
 
 
+# --- lowmap (fit review K3) -------------------------------------------------------------------------------------
+
+def camera_rotation(width=1280):
+    """rotation(a, b) -> (yaw_deg, pitch_deg, inliers) between two settled frames, or None when the fit abstains.
+
+    perception.camera_motion's rotation-only fit (Estimator.compare: ORB outside the HUD and the hero, Kabsch in
+    RANSAC; yaw right positive, pitch up positive), on frames scaled to `width`. Imported only on use (opencv)."""
+    import cv2
+    from perception.camera_motion import Estimator
+    est = Estimator(width)
+
+    def small(f):
+        return f if f.shape[1] == width else cv2.resize(f, (width, round(f.shape[0] * width / f.shape[1])),
+                                                        interpolation=cv2.INTER_AREA)
+
+    def rotation(a, b):
+        s = est.compare((0.0, *est.features(small(a))), (1.0, *est.features(small(b))))
+        if s.yaw_deg is None or s.pitch_deg is None:
+            return None
+        return s.yaw_deg, s.pitch_deg, s.inliers
+    return rotation
+
+
+def lowmap(live, proof, rotation, *, clock=time.perf_counter, sleep=time.sleep, log=print, keep=None):
+    """The low-end stick map and deadzone per camera axis (fit review K3), right stick only.
+
+    James stands on the spawn plaza facing open scenery. First two settled frames with no input give the still-frame
+    noise. Then, per axis and deflection d, LOWMAP_REPEATS times: a settled frame, d held for LOWMAP_HOLD_S (+rx
+    turns right, +ry looks up), a settled frame, -d for the same time (back), a settled frame. Each hold's rotation
+    on its own axis is measured between the settled frames around it. Returns the raw rows; lowmap_fit judges them.
+    Raises Stopped on a failed proof (the pad is neutral: _hold releases on every exit)."""
+    def still(tag):
+        sleep(STILL_S)
+        f = live.fresh()
+        reason = proof(f)
+        if reason:
+            raise Stopped(reason)
+        if keep is not None:
+            keep(tag, f)
+        return f
+
+    def rot(a, b, axis):
+        r = rotation(a, b)
+        if r is None:
+            return None
+        on, off = (r[0], r[1]) if axis == "yaw" else (r[1], r[0])
+        return {"deg": round(on, 3), "off_axis_deg": round(off, 3), "inliers": r[2]}
+
+    a = still("noise-0")
+    b = still("noise-1")
+    noise = rotation(a, b)
+    rows = {"noise": None if noise is None else {"yaw_deg": round(noise[0], 3), "pitch_deg": round(noise[1], 3)},
+            "yaw": [], "pitch": []}
+    for axis, key, grid in (("yaw", "rx", LOWMAP_YAW), ("pitch", "ry", LOWMAP_PITCH)):
+        hold = LOWMAP_HOLD_S[axis]
+        for d in grid:
+            for k in range(LOWMAP_REPEATS):
+                tag = f"{axis}-{d:.2f}-{k}"
+                f0 = still(f"{tag}-a")
+                t0 = clock()
+                _hold(live, [({key: d}, hold)], proof, clock=clock, sleep=sleep, allowed=frozenset({key}))
+                t1 = clock()
+                f1 = still(f"{tag}-b")
+                t2 = clock()
+                _hold(live, [({key: -d}, hold)], proof, clock=clock, sleep=sleep, allowed=frozenset({key}))
+                t3 = clock()
+                f2 = still(f"{tag}-c")
+                fwd, back = rot(f0, f1, axis), rot(f1, f2, axis)
+                # the stick's actual on-time: _hold writes every WRITE_EVERY_S until the hold has elapsed, so it
+                # overruns the nominal hold by up to one write (10 % of a 0.5 s hold); the rate uses what was held
+                for r, held in ((fwd, t1 - t0), (back, t3 - t2)):
+                    if r is not None:
+                        r["held_s"] = round(held, 4)
+                row = {"stick": d, "repeat": k, "hold_s": hold, "forward": fwd, "back": back}
+                log(json.dumps({"lowmap": axis, **row}))
+                rows[axis].append(row)
+    return rows
+
+
+def _cal_rate(stick, rate_map):
+    from agent.controller import _interp
+    return _interp(stick, rate_map)
+
+
+def lowmap_fit(rows, cal=None):
+    """Judge lowmap's rows: per axis, which deflections moved, the deadzone edge, the rates, and Cal's fields.
+
+    A hold moved when its rotation on its own axis exceeds the still threshold (LOWMAP_STILL_DEG, or 3x the
+    still-frame noise if larger) with the commanded sign (+ one way, - back). A deflection moved only if every one of
+    its holds moved, is still only if none did; anything else, an abstaining fit, a wrong sign, a still deflection
+    above a moving one, no deflection moving, or the top deflection's rate more than LOWMAP_CAL_TOL off Cal's map
+    (other pad settings), makes the result not ok.
+    The deadzone is the largest still deflection (0.0 when even the smallest moved; the edge lies in `edge`). Cal's
+    maps get the measured points: (d, 0) for still deflections and (d, mean rate) for moving ones, then Cal's own
+    points above the grid."""
+    from agent.controller import Cal
+    cal = cal or Cal()
+    noise = rows.get("noise")
+    noise_deg = None if noise is None else max(abs(noise["yaw_deg"]), abs(noise["pitch_deg"]))
+    still_deg = max(LOWMAP_STILL_DEG, 3 * (noise_deg or 0.0))
+    out = {"format": LOWMAP_KIND, "pad_settings": LOWMAP_PAD_SETTINGS, "still_deg": round(still_deg, 3),
+           "noise_deg": noise_deg, "axes": {}, "cal": {}, "ok": False}
+    why = [] if noise is not None else ["the still-frame noise pair abstained"]
+    for axis, grid, base in (("yaw", LOWMAP_YAW, cal.yaw_map), ("pitch", LOWMAP_PITCH, cal.pitch_map)):
+        per, points = [], []
+        for d in grid:
+            holds = [(r[side], sign) for r in rows[axis] if r["stick"] == d
+                     for side, sign in (("forward", 1), ("back", -1))]
+            if not holds or any(h is None for h, _ in holds):
+                why.append(f"{axis} {d}: the rotation fit abstained")
+                per.append({"stick": d, "state": "abstained"})
+                continue
+            moved = [abs(h["deg"]) > still_deg for h, _ in holds]
+            wrong = [h["deg"] for h, sign in holds if abs(h["deg"]) > still_deg and h["deg"] * sign < 0]
+            if wrong:
+                why.append(f"{axis} {d}: turned against the stick ({wrong} deg)")
+            state = "moved" if all(moved) else "still" if not any(moved) else "mixed"
+            if state == "mixed":
+                why.append(f"{axis} {d}: moved on some holds only")
+            rate = sum(abs(h["deg"]) / h.get("held_s", rows[axis][0]["hold_s"]) for h, _ in holds) / len(holds)
+            per.append({"stick": d, "state": state, "rate_deg_s": round(rate, 2),
+                        "holds_deg": [h["deg"] for h, _ in holds]})
+        states = [p["state"] for p in per]
+        moving = [p for p in per if p["state"] == "moved"]
+        dz = edge = None
+        if not moving:
+            why.append(f"{axis}: no deflection up to {grid[-1]} moved")
+        else:
+            first = grid.index(moving[0]["stick"])
+            if any(st != "moved" for st in states[first:]):
+                why.append(f"{axis}: a deflection above {moving[0]['stick']} did not move (not monotone)")
+            dz = grid[first - 1] if first > 0 else 0.0
+            edge = [dz, moving[0]["stick"]]
+            top, expect = per[-1], _cal_rate(grid[-1], base)
+            if top["state"] == "moved" and abs(top["rate_deg_s"] / expect - 1) > LOWMAP_CAL_TOL:
+                why.append(f"{axis}: {top['rate_deg_s']} deg/s at {grid[-1]} against Cal's {expect}: are the pad "
+                           f"settings {LOWMAP_PAD_SETTINGS}?")
+            for p in per:
+                if p["state"] in ("moved", "still"):
+                    points.append((p["stick"], p["rate_deg_s"] if p["state"] == "moved" else 0.0))
+        rate_map = [(0.0, 0.0)] + points + [tuple(q) for q in base if q[0] > grid[-1]]
+        out["axes"][axis] = {"deflections": per, "deadzone": dz, "edge": edge}
+        out["cal"][f"{axis}_map"] = [list(q) for q in rate_map]
+        out["cal"][f"{axis}_deadzone"] = dz
+    out["why"] = "; ".join(why) or None
+    out["ok"] = not why
+    return out
+
+
 def _process_info(pid):
     """{"name", "started_utc"} of a running process, or None. Read-only."""
     import subprocess
@@ -716,6 +883,7 @@ def main(argv=None):
     mode.add_argument("--replay", nargs="+", metavar="DIR_OR_IMAGE")
     mode.add_argument("--measure-pitch", action="store_true")
     mode.add_argument("--reset-check", action="store_true")
+    mode.add_argument("--lowmap", action="store_true")
     mode.add_argument("--live", action="store_true")
     ap.add_argument("--bin", choices=sorted(P.BINS), default="mid")
     ap.add_argument("--steps", type=int, default=1)
@@ -752,11 +920,11 @@ def main(argv=None):
             imwrite=cv2.imwrite)
         return 0
 
-    if a.measure_pitch or a.reset_check:
+    if a.measure_pitch or a.reset_check or a.lowmap:
         # Right stick only (the hold refuses any other key), in James's supervised session, behind their own
         # measurement declaration (review D1). The PID and focus are proven before anything that can open a pad
         # is even imported.
-        mode = "measure-pitch" if a.measure_pitch else "reset-check"
+        mode = "measure-pitch" if a.measure_pitch else "lowmap" if a.lowmap else "reset-check"
         try:
             if a.reset_check and (a.spot is None or PITCH_DOWN_S is None or PITCH_UP_S is None):
                 raise Refused("--reset-check needs --spot and the measured PITCH_DOWN_S / PITCH_UP_S")
@@ -768,7 +936,7 @@ def main(argv=None):
         import cv2
         Live, default_perception, idle_warning = _pad_side()
         perception = default_perception()
-        run_dir = _run_dir("pitch-" if a.measure_pitch else f"reset-{a.spot}-")
+        run_dir = _run_dir("pitch-" if a.measure_pitch else "lowmap-" if a.lowmap else f"reset-{a.spot}-")
         (run_dir / "declaration.json").write_text(json.dumps(decl, indent=2) + "\n", encoding="utf-8")
         proof = make_proof(perception, focused, idle_warning)
 
@@ -780,6 +948,9 @@ def main(argv=None):
             prime(live, proof, undo=True)
             if a.measure_pitch:
                 report = measure_pitch(live, perception, proof, keep=keep)
+            elif a.lowmap:
+                rows = lowmap(live, proof, camera_rotation(), keep=keep)
+                report = {**lowmap_fit(rows), "rows": rows}
             else:
                 report = {**reset_check(live, perception, proof, a.spot, keep=keep), "ok": True}
         except (Stopped, Refused) as e:
@@ -789,8 +960,12 @@ def main(argv=None):
         finally:
             live.close()
         (run_dir / "result.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+        if a.lowmap:                    # Cal's fields beside the frames: data/placement/lowmap-<stamp>.json
+            report["frames_dir"] = str(run_dir.relative_to(ROOT)).replace("\\", "/")
+            report["declaration_sha256"] = decl["sha256"]
+            run_dir.with_suffix(".json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
         print(json.dumps({k: report.get(k) for k in ("ok", "why", "pitch_down_s", "pitch_up_s", "spot",
-                                                     "pair_residual_px") if k in report}))
+                                                     "pair_residual_px", "cal") if k in report}))
         return 0 if report["ok"] else 1
 
     # --live: every check before anything that can attach a pad.
