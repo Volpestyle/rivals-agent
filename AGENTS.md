@@ -122,3 +122,5 @@ co-leads route scope decisions through that lead. A status request alone creates
   forms). Code has an equivalent: editing any file of a deployment freeze (for checkpoint `698d8831`, the 16
   files hashed in `data/runtime/galacta-pilot-20260923-preflight/*-deployed.json`) forces a re-freeze before
   that checkpoint runs again.
+
+- **pre-commit hooks are not installed on the shared PC checkout** (2026-09-23): pre-commit stashes every unstaged tracked file around each commit, which is unsafe when other lanes have uncommitted work in the same tree. Run `uv run pre-commit run --all-files` manually on a clean worktree, or install the hooks only in a private worktree.
