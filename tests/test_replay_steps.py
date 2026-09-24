@@ -81,6 +81,7 @@ def test_a_window_record_is_complete_only_over_one_runs_consecutive_rows():
 def test_review_r1_a_wide_transition_blocks_from_t_lo_and_places_no_1():
     """The reviewer's ult at 617.063-619.629 s: 307 unread frames between the reads. The press lies in
     [t_lo - Lmax, t_hi - Lmin]; every step there is null, and no 1 is placed (the window spans many steps)."""
+    pytest.importorskip("cv2")   # lag_ranges imports perception.replay_hud (cv2); the stdlib suite skips this one
     ult = S.lag_ranges({"abilities": {"ult": {"first_seen_lag_s": {"n": 1, "min": 0.0085, "median": 0.0085,
                                                                    "max": 0.0085},
                                               "cooldown_start_lag_s": {"n": 0}}}})
@@ -373,6 +374,7 @@ def test_review_r2_no_row_inside_a_death(table):
 def test_review_r1_no_zero_inside_any_casts_press_window(table):
     """Independent recomputation from events.json: no step overlapping [t_lo - Lmax, t_hi - Lmin] of a cast (floored
     lags) is labelled 0 for its action; the reviewer's ult at 617.063-619.629 s keeps no 0 in its rows."""
+    pytest.importorskip("cv2")   # lag_ranges imports perception.replay_hud (cv2); the stdlib suite skips this one
     ev = json.loads((S.HUD / "events.json").read_text(encoding="utf-8"))
     lags = S.lag_ranges(json.loads(S.LAGS.read_text(encoding="utf-8")))
     clock = S.capture_clock()
