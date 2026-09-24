@@ -82,7 +82,12 @@ from pathlib import Path
 from . import vocab
 
 FORMAT = "rivals-range-steps-v1"
-SPLITS = ("train", "val", "test")
+SPLITS = ("train", "val", "test", "replay")
+HUMAN_SPLITS = ("train", "val", "test")
+# Replay rows are never train, val or test (lead decision 2026-09-23): every replay-source table carries split
+# "replay", and the loader excludes it from every cohort unless the caller passes allow_replay, which is reserved for
+# a pre-registered replay arm after the inverse-dynamics trust gates. No CLI passes it today.
+REPLAY_SPLIT = "replay"
 SUITABILITY = ("accepted", "rejected", "unresolved")
 REGIMES = ("normal", "no_ability_cooldown")
 TAG_SOURCES = ("james", "reviewer", "untagged")
@@ -210,7 +215,8 @@ def check_replay_header(h, *, allow_test=False):
     require(not missing, f"replay header lacks {missing}")
     present = [k for k in REPLAY_HEADER_ABSENT if k in h]
     require(not present, f"a replay header must not carry {present} (human-only identity)")
-    require(h["split"] in SPLITS, f"unknown split {h['split']!r}")
+    require(h["split"] == REPLAY_SPLIT, f"a replay source's split must be {REPLAY_SPLIT!r}, not {h['split']!r}: "
+            "replay rows are never train, val or test")
     require(h["split"] != "test" or allow_test, "test split is sealed: refused before reading any row")
     require(isinstance(h["session_id"], str) and h["session_id"], "session_id must be a non-empty string")
     require(h["session_group"] == h["session_id"], "session_group must equal session_id: the group is one recording")
@@ -245,7 +251,8 @@ def check_header(h, *, allow_test=False, denylist=None):
         return check_replay_header(h, allow_test=allow_test)
     missing = [k for k in HEADER_KEYS if k not in h]
     require(not missing, f"header lacks {missing}")
-    require(h["split"] in SPLITS, f"unknown split {h['split']!r}")
+    require(h["split"] in HUMAN_SPLITS, f"unknown split {h['split']!r} for a human recording (the replay split is "
+            "for replay sources only)")
     require(h["split"] != "test" or allow_test, "test split is sealed: refused before reading any row")
     require(isinstance(h["session_id"], str) and h["session_id"], "session_id must be a non-empty string")
     require(h["session_group"] == h["session_id"], "session_group must equal session_id: the group is one recording")
@@ -429,10 +436,14 @@ def load(path, *, allow_test=False, denylist=None):
     return Session(str(path), sha256(path), header, rows)
 
 
-def load_cohort(paths, *, splits=("train", "val"), allow_test=False, denylist=None):
-    """Recordings sharing one settings identity, bindings, calibration, patch and step length; each once."""
+def load_cohort(paths, *, splits=("train", "val"), allow_test=False, allow_replay=False, denylist=None):
+    """Recordings sharing one settings identity, bindings, calibration, patch and step length; each once.
+
+    The replay split is refused unless it is requested with allow_replay (a pre-registered replay arm only)."""
     require(paths, "no step tables supplied")
     require("test" not in splits or allow_test, "test split is sealed")
+    require(REPLAY_SPLIT not in splits or allow_replay, "the replay split is usable only by a pre-registered arm "
+            "after the inverse-dynamics trust gates (allow_replay)")
     sessions = [load(p, allow_test=allow_test, denylist=denylist) for p in paths]
     kinds = {s.header.get("source_kind", "human") for s in sessions}
     require(len(kinds) == 1, f"a cohort holds one source kind, got {sorted(kinds)} (mixed pretraining is future work)")
@@ -442,6 +453,8 @@ def load_cohort(paths, *, splits=("train", "val"), allow_test=False, denylist=No
     require(len(set(media)) == len(media), "two step tables name the same recording media")
     first = sessions[0].header
     for s in sessions:
+        require(s.split != REPLAY_SPLIT or (REPLAY_SPLIT in splits and allow_replay),
+                f"{s.session_id}: a replay-split recording is never train, val or test")
         require(s.split in splits, f"{s.session_id}: split {s.split} not requested")
         keys = (("patch", "step_ns", "frame_period_ns", "video_size", "calibration") if is_replay(s.header) else
                 ("settings_hash", "patch", "step_ns", "frame_period_ns", "video_size", "bindings", "calibration",

@@ -1,6 +1,7 @@
 """The end-to-end range fit's stdlib pieces: vocabulary, step-table contract, windows, baselines, metrics, gates,
 executor mapping, report, and (with ffmpeg on PATH) the frame cache. Torch pieces: test_range_bc_torch.py."""
 import copy
+import dataclasses
 import json
 import shutil
 
@@ -836,7 +837,10 @@ def test_a_replay_step_table_loads_with_per_channel_unknowns(tmp_path):
     assert t["yaw"] is not None and t["unsupported"] == 0
     assert all(not r["held_known"][ult] and not r["press_known"][ult] for r in s.rows)        # never labelled
     assert all(not r["release_known"][goh] for r in s.rows)                                    # onsets only
-    stats = steps.train_statistics([s])
+    with pytest.raises(steps.StepError, match="train split only"):              # replay rows are never train
+        steps.train_statistics([s])
+    # the per-channel counting a future pre-registered replay arm would use, on an explicitly relabelled copy
+    stats = steps.train_statistics([dataclasses.replace(s, header={**s.header, "split": "train"})])
     assert stats["known"][fwd] == len(s.rows) - len(unknown_move) and stats["press_known"][ult] == 0
     assert stats["pitch_gain_kind"] == ["replay_degrees"] and stats["pitch_gain_known"]
 
@@ -888,9 +892,26 @@ def test_a_cohort_holds_one_source_kind_and_replays_take_no_relocation(tmp_path)
     human, replay = write_session(tmp_path, "h"), write_replay(tmp_path, "r")
     with pytest.raises(steps.StepError, match="one source kind"):
         steps.load_cohort([human, replay])
-    assert len(steps.load_cohort([replay, write_replay(tmp_path, "r2", seed=4)])) == 2
+    assert len(steps.load_cohort([replay, write_replay(tmp_path, "r2", seed=4)], splits=("replay",),
+                                 allow_replay=True)) == 2
     with pytest.raises(cache.CacheError, match="no media relocation"):
         cache.build(steps.load(replay), tmp_path / "c", any_platform=True, relocation={"kind": "x"})
+
+
+def test_the_replay_split_is_never_train_val_or_test(tmp_path):
+    """Lead decision 2026-09-23: replay rows are never train; split "replay" is excluded by the loader and usable only
+    by a pre-registered arm (allow_replay)."""
+    replay = write_replay(tmp_path, "r")
+    for splits in (("train",), ("val",), ("train", "val")):
+        with pytest.raises(steps.StepError, match="replay-split recording is never train"):
+            steps.load_cohort([replay], splits=splits)
+    with pytest.raises(steps.StepError, match="pre-registered arm"):
+        steps.load_cohort([replay], splits=("replay",))
+    assert len(steps.load_cohort([replay], splits=("replay",), allow_replay=True)) == 1
+    with pytest.raises(steps.StepError, match="must be 'replay'"):                  # a replay source cannot be train
+        steps.load(rewrite_replay(tmp_path, "t", lambda h, r: h.update(split="train")))
+    with pytest.raises(steps.StepError, match="replay split is for replay sources only"):
+        steps.load(write_session(tmp_path, "h", split="replay"))
 
 
 def test_unknown_replay_channels_are_never_scored_or_fed_back(tmp_path):

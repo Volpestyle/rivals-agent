@@ -372,3 +372,194 @@ Four 20 s windows (`validation-*.json`, `press-lags.json`):
   - columns 3 and 4 by icons and badges, which must agree.
 - **DayMR:** icons `[teamup, swing, get_over_here, uppercut]`, badges `[0, 240, 0, 249]`.
 - **Tests:** each column's failure, and frames of another POV not voting.
+
+## 7. The first replay-source step table (DayMR), for the fit lane
+
+**What it is.** `scripts/replay_steps.py` turns §6's outputs into a `rivals-range-steps-v1` table with
+`source_kind: "replay"`, under the fit lane's contract (`policy/range_bc/steps.py`, end-to-end-fit.md "Replay labels").
+- Table: `data/demos/replays/daymr-20260923-004325/steps/20260923T054325-507Z-33696-4.jsonl`, sha256 `4180dd6d…`.
+- `build.json` holds every input's sha256 and the counts.
+- Derived from third-party footage, so it stays under `data/`.
+
+**Clock and frames.**
+- Anchors are 33.3 ms on the capture's composition clock, taken from the logger's `frames.csv` for the capture
+  session `20260923T054325-507Z-33696-4`, with the OBS profile's 21 ms muxer offset.
+- **All 191,752 reader frames map** to a logged packet: max residual 0.33 ms, 0 unmapped.
+- `frame_index` is the packet's presentation-order rank.
+
+**Spans.** A frame is in only when all of these hold:
+- the reader read it: not another POV, timeline, dead or no HUD;
+- the route map logs its second on target with the timeline hidden;
+- it lies outside the duplicated setup footage and the operator pause.
+
+**Short misreads are forgiven:**
+- a follow-bar miss of at most 3 s inside on-target seconds (the route map's own hold rule): 3,217 frames;
+- an hp-0 read of at most 0.25 s between alive reads: 209 frames.
+
+**Runs** break at every excluded frame, every capture gap and every seek. The result: **74 runs, 29,561 rows, 985 s**,
+out of 118,452 included frames.
+
+**Labels:**
+- **Cast onsets** as `press`, for team-up, Get Over Here!, Amazing Combo, Web Cluster and ult. The press time is the
+  HUD time minus the median press lag from `press-lags.json`: for team-up and Get Over Here! from the cooldown start,
+  for the others from the first HUD evidence. It goes in the step holding that time.
+- **The positive's uncertainty:** every other step inside the HUD interval widened by the lag's min..max is null, and so
+  is every step near a flagged stretch.
+- **Negatives** (0) only where a step lies wholly inside the ability's press-time coverage. Everything else is null.
+- **Left null everywhere:**
+  - Web-Swing and Simple Swing: a charge drop doesn't tell them apart;
+  - holds, releases, movement, jump, melee, spider_power and goh_targeting;
+  - camera.
+- **The camera hook:** `fill_camera()` fills `yaw_deg`/`pitch_deg` from `perception/camera_motion.py` Step records.
+  It sums non-abstaining pairs that tile the step, flips pitch to down-positive, and flags steps over the executor's
+  per-step caps. It is not applied yet, because the camera lane's bytes are in final check.
+
+| Action | press = 1 | press = 0 | null |
+|---|---|---|---|
+| web_cluster | 263 | 2 | 29,296 |
+| amazing_combo | 74 | 90 | 29,397 |
+| get_over_here | 60 | 335 | 29,166 |
+| team_up | 22 | 344 | 29,195 |
+| ultimate | 8 | 608 | 28,945 |
+
+**Every non-flagged cast lands in a row** except 2 Amazing Combo and 1 ult, whose estimated press falls outside the
+spans.
+
+**Header:**
+- `expert_context`: player DayMR; the match (Competitive Convoy, Hellfire Gala: Arakko, 2026-09-22 11:30);
+  `viewer_fov_assumption: "viewer, unverified"`; the replay source.
+- `calibration`: `replay_degrees`, with label sources stating the camera hook and "movement not labelled".
+- `split: "replay"` (lead decision): a fourth split that `policy/range_bc/steps.py` refuses in every cohort unless
+  `allow_replay` is passed, which is reserved for a pre-registered arm after the IDM trust gates. Replay rows are never
+  train, val or test. (The first build wrote "train"; it is superseded.)
+
+**Checks** (`tests/test_replay_steps.py`, 12 passed with the execution and perception groups):
+- It loads through `steps.load` with intake's denylist.
+- Movement, holds, releases and camera are unknown on every row.
+- The known casts are exactly the counts in `build.json`.
+- **Withheld spans are absent:** no row's frame is withheld (bar the forgiven misreads), off target, or in an excluded
+  span.
+- **The fit lane's own zero-gradient check** (its fake cache, `Batches` and loss) passes on the real run with the most
+  known labels:
+  - no movement or camera mask on any window;
+  - exactly zero gradient on movement and camera;
+  - non-zero gradient on the known cast labels.
+
+**Caveats:**
+- **Press offsets are James's lags** (n in §6), applied to DayMR. The label is "a cast began here", placed by those
+  lags.
+- **A 2-count ammo drop** (4 events) gives one positive: onsets are 0/1 flags.
+- **Web Cluster has almost no negatives** (2), because its press-time coverage is 0.6 s: one outlier widens its lag
+  range to 1.1 s.
+
+## 8. Round-2 and step-table review fixes; one-reader pass; the rebuilt table (2026-09-23 night)
+
+This section supersedes the §6 coverage and the §7 counts. The §6 cast counts stand.
+
+**Reader versions (round 2, P3).**
+- The §6 rows were read by two unkept readers, 6503b74b and 2da754bd.
+- 6503b74b's rows equal the landed 30921c0c's rows on 3 windows: 86,400 rows, 0 differing.
+- 2da754bd could not be checked. Both are superseded (the old folders are kept as `hud.v1-mixed-readers/` and
+  `hud.v2-aborted-30921c0c/`).
+- The fresh pass read all 54 windows with one reader, `perception/replay_hud.py` 0397e837. This reader is the landed
+  logic plus the hp row. `progress.json` pins it, and the runner refuses to resume with other bytes.
+- The finish step (events and coverage) ran on 40d4f968. That version changes only `floored_lag` (the clamp below).
+  `manifest.json` records both hashes.
+- The pass reproduces the §6 frame reasons and cast counts: swing 164, web 267, GOH 60, AC 76, team-up 22, ult 9.
+  Separately, 9 team-up stretches are flagged; they are listed, never counted.
+
+**Press coverage (P1, P2).**
+- `press_coverage(coverage, events, lags)` merges adjacent read pairs into contiguous stretches. It cuts them at every
+  event of the ability (flagged included), then shrinks each stretch once by the lag.
+- The lag is floored by `floored_lag`:
+  - with n < 3, the range is at least median ± 0.5 s;
+  - any range is at least two frames wide;
+  - the lower bound is clamped at 0, because a press cannot follow its own HUD evidence.
+- The ult's n = 1 lag becomes [0, 0.51] s. A pair that straddles its own cast can no longer claim "no press".
+
+**Coverage walls (step-table review R3).** Coverage never crosses:
+- a withheld frame (other POV, dead, timeline, no HUD, order unknown);
+- an operator seek or an EXCLUDE span;
+- a read gap over 0.25 s.
+
+Press-time coverage in seconds: team-up 607, GOH 618, ult 841, swing 106, AC 535, web 271.
+
+**Transition window.** Every cast's press window is [t_lo − Lmax, t_hi − Lmin] (R1), for every basis.
+
+**Step-table rules (R1, R2).**
+- A cast's whole press window is null.
+- A step is 1 only if a placeable window lies inside that one step.
+- A step is 0 only if it overlaps no window and lies wholly inside press-time coverage.
+- Deaths: an hp-0 cluster (gaps ≤ 1 s, ≥ 30 frames), widened over every adjacent frame not read alive (hp > 0 read),
+  produces no rows. An hp-0 blip of ≤ 0.25 s is forgiven only between frames read alive.
+- Result: 21 death spans; 55,908 dead frames excluded; 2,711 follow-blip frames forgiven; 116,565 of 191,752 frames
+  included; 29,121 rows in 24 runs (970.7 s).
+
+| action | 1 | 0 | null | casts (events) | unplaceable |
+|---|---|---|---|---|---|
+| team_up | 1 | 17,819 | 11,301 | 22 | 21 |
+| get_over_here | 0 | 17,431 | 11,690 | 60 | 60 |
+| amazing_combo | 0 | 15,458 | 13,663 | 76 | 76 |
+| web_cluster | 0 | 7,912 | 21,209 | 263 | 263 |
+| ultimate | 0 | 24,892 | 4,229 | 9 | 9 |
+
+**Why there are almost no positives.** James's measured lag spreads are 0.15–1.6 s wide (the table's step is
+33 ms), so no press window fits in one step. The one 1 is a team-up countdown cast: its cooldown-start lag is
+[0, 14] ms and its reads are 8 ms apart.
+
+This table is negatives-and-nulls: good for "no press here", useless for "press here". Positives need either tighter
+lags (DayMR's own, or more samples), or a contract change that labels a window rather than a step. That is the fit
+lane's decision.
+
+**Transcode.** The lead's run of `2026-09-23 12-15-33.mkv` was skipped. The tool's own check refused: "obs64.exe
+running" (the game was closed).
+
+## 9. Press-label contract for the replay table (lead decision, replay-steps-3)
+
+This supersedes the §8 rule that a window inside one step is a 1.
+
+**Rows inside a cast's feasible press window are unknown.** For every step that overlaps
+[t_lo − Lmax, t_hi − Lmin] (floored lags):
+- press is null for that cast's action;
+- it is never a 0;
+- it is never a single-step 1.
+
+The table holds no 1 for any action. Negatives remain only on steps that overlap no window and lie wholly inside the
+ability's max-count press-time coverage (§8).
+
+**The windows file.** The windows go to `steps/<capture>.press-windows.json` (format
+`rivals-replay-press-windows-v1`). The table header and `build.json` both hash-pin it. It has one record per cast,
+plus the 9 flagged team-up stretches. Each record carries:
+- `action` and the HUD `ability`;
+- `basis` and `count`;
+- `cast`: false for a flagged stretch, where no cast is established;
+- `lag_measured`;
+- the window as `lo_s`/`hi_s` (capture file seconds) and `lo_ns`/`hi_ns` (the table's anchor clock);
+- `evidence_s`: the HUD reads [t_lo, t_hi];
+- `rows`: the first and last table row the window overlaps;
+- `complete`: the overlapped rows are one run's consecutive steps covering the whole window.
+
+**Use.** A record with `cast` true says at least one press of `action` lies in the window. That fits a window-level
+loss ("at least one press in the window"), which is a pre-registered arm only. The arm should use complete records
+only: an incomplete window's press may fall on rows that do not exist.
+
+**Counts** (table `3e1acef8`):
+
+| action | windows (casts) | complete | 0 | null |
+|---|---|---|---|---|
+| team_up | 22 (+9 flagged) | 22 | 17,819 | 11,302 |
+| get_over_here | 60 | 60 | 17,431 | 11,690 |
+| amazing_combo | 76 | 74 | 15,458 | 13,663 |
+| web_cluster | 263 | 262 | 7,912 | 21,209 |
+| ultimate | 9 | 8 | 24,892 | 4,229 |
+
+Web Cluster's 263 windows hold 267 casts: 4 windows are 2-count ammo drops (`count` 2).
+
+**Tests** (`tests/test_replay_steps.py`):
+- `test_even_a_window_inside_one_step_is_null_never_a_1`;
+- `test_a_window_record_is_complete_only_over_one_runs_consecutive_rows` (a missing row, a run break, a late start);
+- `test_the_press_windows_file_names_every_cast_and_its_rows_are_unknown` (on the real table: hash pins, row
+  spans, nulls, completeness);
+- `test_known_casts_are_the_ones_counted` (no 1 anywhere; one window per cast).
+
+The fit lane's "Replay labels" section in `docs/lanes/end-to-end-fit.md` is theirs to update.
