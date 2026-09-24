@@ -997,6 +997,7 @@ def _native(src, t):
     return cv2.imread(str(path))
 
 
+@pytest.mark.corpus
 def test_native_respawn_black_is_black_and_play_is_not():
     from perception.events import is_black
 
@@ -1005,6 +1006,7 @@ def test_native_respawn_black_is_black_and_play_is_not():
     assert not is_black(_native("daymr-2879354299-21660-900s", 330.0))
 
 
+@pytest.mark.corpus
 def test_native_scoreboard_tap_is_read_on_its_open_frames():
     from perception.scoreboard import is_scoreboard
 
@@ -1013,6 +1015,7 @@ def test_native_scoreboard_tap_is_read_on_its_open_frames():
     assert is_scoreboard(_native("reqmr-2873352801-1980-900s", 658.0)) is False
 
 
+@pytest.mark.corpus
 def test_native_false_killcam_is_one_frame():
     """Day 330.0: the reader's one false 'killcam' over ordinary play. It stays
     one frame, which the banner vote absorbs (see the synthetic test above)."""
@@ -1022,6 +1025,7 @@ def test_native_false_killcam_is_one_frame():
     assert words.count("killcam") <= 1
 
 
+@pytest.mark.corpus
 def test_native_countdowns_the_old_reader_missed():
     """Visible countdowns the classifier refused (6 against 8) or dropped as too
     wide (11), now read; and none read as a different number."""
@@ -1289,6 +1293,7 @@ def test_black_level_boundaries():
         assert is_black(frame) is black, level
 
 
+@pytest.mark.corpus
 def test_native_dark_gameplay_is_not_black():
     from perception.events import is_black
 
@@ -1575,6 +1580,7 @@ def test_prefix_invariant_where_segmentation_and_hp_look_ahead():
     _prefix_invariant(lambda x: extract_one([r[:3] for r in x], mapping=IDENTITY), rs)
 
 
+@pytest.mark.corpus
 def test_native_mk_charge_badges_read_across_the_uppercut_decrements():
     """Day uppercut: the badge steps 2 -> 1 a frame or two before the "1" lock.
     The "2" is a light disc with a dark digit, the "1" a light digit on a dark

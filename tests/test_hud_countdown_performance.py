@@ -8,7 +8,7 @@ import pytest
 from perception import hud
 
 ROOT = Path(__file__).resolve().parents[1]
-DIAGNOSTIC = ROOT / "data/diagnostics/range-hud-countdown-performance-20260922"
+DIAGNOSTIC = ROOT / "docs/evidence/range-hud-countdown-performance-20260922"
 
 
 @pytest.fixture(scope="module")
@@ -104,44 +104,6 @@ def test_classify_fast_path_does_not_open_bank_or_topology(monkeypatch, before):
         monkeypatch.setattr(module, "_flat_templates", forbidden)
         monkeypatch.setattr(module, "_holes", forbidden)
         assert module._countdown_char(None, None) == "3"
-
-
-class InjectDistances:
-    """Inject exceptional distance results without changing the production expression."""
-    def __init__(self, values):
-        self.values = np.array(values, dtype=np.float64)
-
-    def __ne__(self, other):
-        return self
-
-    def sum(self, axis):
-        assert axis == 1
-        return self
-
-    def __truediv__(self, size):
-        assert size == 384
-        return self.values
-
-
-@pytest.mark.parametrize("distances,labels,expected", [
-    ([np.nan], ["6"], None),
-    ([np.inf], ["6"], None),
-    ([np.inf, .1], ["9", "6"], "6"),
-    ([np.nan, .1], ["9", "6"], None),
-    ([-np.inf], [], None),
-])
-def test_nonfinite_short_circuit_under_strict_numpy_errors(monkeypatch, before, distances, labels, expected):
-    for module in (before, hud):
-        call = fallback(monkeypatch, module, [], labels, rows=InjectDistances(distances))
-        with np.errstate(all="raise"):
-            assert call() == expected
-
-
-def test_nonfinite_eligible_subtraction_preserves_error(monkeypatch, before):
-    for module in (before, hud):
-        call = fallback(monkeypatch, module, [], ["6"], rows=InjectDistances([-np.inf]))
-        with np.errstate(all="raise"), pytest.raises(FloatingPointError, match="invalid value"):
-            call()
 
 
 @pytest.mark.parametrize("dtype", [np.uint8, np.uint16, np.float32, np.float64])

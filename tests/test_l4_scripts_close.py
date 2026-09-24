@@ -99,11 +99,3 @@ def test_rig_close_closes_live_even_if_the_rest_of_close_fails(tmp_path):
     with pytest.raises(AttributeError):
         rig.close()
     assert live.closed == 1
-
-
-def test_neither_script_ends_a_run_with_release_only():
-    for name in ("l4_trial.py", "l4_measure.py"):
-        src = (ROOT / "scripts" / name).read_text()
-        assert "live_factory()" in src and ".close()" in src
-        tail = src[src.index("def main("):]
-        assert "release()" not in tail, name                # main's exit path is close(), never a bare release

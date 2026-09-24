@@ -190,11 +190,12 @@ establish creator-independent skill. No forecast is converted into pad input.
 Artifacts retain the admitted export and fingerprints, recipe, support, per-fold
 checkpoint/normalization, baseline predictions, label masks and metrics. Reload uses
 the recorded 128-row evaluation grouping and must match saved probabilities exactly.
-Synthetic-only verification (including a tiny test-only one-epoch optimization):
+Synthetic-only verification uses the accepted writer fingerprint in an isolated fixture, including
+checks that changing either the event writer or producer fingerprint refuses admission before
+embeddings open. It includes a tiny test-only one-epoch optimization:
 
 ```sh
-PYTHONDONTWRITEBYTECODE=1 nice -n 10 /tmp/rivals-policy-format5-venv/bin/python -m pytest -q \
-  -p no:cacheprovider tests/test_behaviour.py
+uv run --group perception --group policy pytest -q tests/test_behaviour.py
 ```
 
 The synthetic suite covers the original 30 cases plus complete canonical binding
@@ -910,7 +911,9 @@ the baseline digit for digit. A test now pins that the flag arrives.)
 exactly as the Jev path does — retreat, a playing hold and a flickering target never wait on a
 model — and the head only replaces `brain.policy`. Every answer then goes through `jev.legal`,
 the same kit preconditions `brain.policy` enforces, and is adopted with `jev.adopt`, the same hold
-and mode bookkeeping. Neither is rewritten here; both are imported, and a test pins that.
+and mode bookkeeping. Neither is rewritten here; both are imported. Behavioral tests call the learned chooser with controlled
+predictions: retreat and adopted holds skip inference, cooling abilities are rejected, and legal
+combo/web-strike predictions are adopted with their hold bookkeeping.
 
 An answer is dropped and the tick falls to `brain.policy` when the head names something no target
 can execute, when the pixels are stale, or when the vocabulary does not map. Each reason is

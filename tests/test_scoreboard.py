@@ -90,6 +90,7 @@ def test_ordinary_play_is_not_a_scoreboard():
             assert is_scoreboard(frame) is False, (path, rule_score(frame))
 
 
+@pytest.mark.corpus
 def test_the_margin_is_wide():
     """Guards the threshold: scoreboards score ~0.97 and play well under 0.5."""
     frame = cv2.imread(str(RANGE_NATIVE))
@@ -120,6 +121,7 @@ def test_a_frame_too_small_reads_nothing_rather_than_guessing():
     assert frame.shape[1] < MIN_WIDTH
 
 
+@pytest.mark.corpus
 def test_a_frame_without_a_scoreboard_reads_nothing():
     frame = cv2.imread(sorted(glob.glob(str(ROOT / "data/run1/*.jpg")))[0])
     if frame is None:
@@ -213,6 +215,7 @@ def test_killfeed_frames_are_detected():
         assert is_killfeed(frame) is True, name
 
 
+@pytest.mark.corpus
 def test_no_killfeed_on_play_or_on_a_board():
     """Pale sky is colourless too; it is the crisp banner edge that tells them apart."""
     from perception.scoreboard import is_killfeed

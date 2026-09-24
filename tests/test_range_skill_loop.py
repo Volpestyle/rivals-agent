@@ -898,7 +898,7 @@ def test_close_log_failure_without_a_send_error_still_propagates(tmp_path):
 
 
 # The diagnostic contains clocks only. No recording, State, media or model is opened.
-PHASE_REPORT = Path(__file__).resolve().parents[1] / "data/diagnostics/range-request-runtime-timing-20260922/phase-band/report.json"
+PHASE_REPORT = Path(__file__).resolve().parents[1] / "docs/evidence/range-request-runtime-20260922/phase-band/report.json"
 
 
 def clock_history_counts(clocks):

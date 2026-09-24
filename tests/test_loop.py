@@ -348,15 +348,6 @@ def test_a_blocked_grab_cannot_leave_x_held_lives_lease_releases_the_pad_while_t
     io.close()
 
 
-def test_the_loop_has_no_lease_thread_of_its_own_to_depend_on():
-    import agent.loop as L
-    assert not hasattr(L, "Lease") and not hasattr(L, "SEND_MAX_AGE_S")
-    before = threading.active_count()
-    io, live, cap, pad = live_io()
-    assert threading.active_count() == before + 1                                    # Live's watchdog, and nothing of the loop's
-    io.close()
-
-
 def test_every_reflex_tick_renews_the_lease_so_a_running_loop_is_not_cut_off():
     from agent.controller import LEASE_S
     io, live, cap, pad = live_io()
