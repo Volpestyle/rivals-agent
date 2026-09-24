@@ -154,7 +154,7 @@ def test_an_unknown_column_order_abstains():
 def test_a_clean_frame_reads_every_field():
     rows = {r.ability: r for r in rh.read_frame(key("k0420"), 5.0, rh.DAYMR_ORDER, source="replay", follow="B5")}
     assert set(rows) == {"teamup", "swing", "get_over_here", "uppercut", "swing.charges", "uppercut.charges",
-                         "web_cluster.ammo", "ult"}
+                         "web_cluster.ammo", "ult", "hp"}
     assert all(r.t == 5.0 for r in rows.values())
     assert all(r.confidence > 0 for r in rows.values() if r.state != "unknown")
 
@@ -236,13 +236,36 @@ def test_count_coverage_only_at_the_maximum():
     assert coverage["uppercut.charges"] == [(0.0, 0.4)] and len(events) == 1
 
 
-def test_press_time_coverage_shrinks_by_the_press_lag():
-    """Review item 2: HUD time is not press time. Get Over Here! shows 'ready' up to 1.87 s after the press."""
-    cov = {"get_over_here": [(10.0, 20.0)], "web_cluster.ammo": [(0.0, 0.02)], "teamup": [(0.0, 5.0)]}
-    out = rh.press_coverage(cov, {"get_over_here": (0.9, 1.9), "web_cluster": (0.08, 0.11), "teamup": None})
-    assert out["get_over_here"] == [(10.0 - 0.9, 20.0 - 1.9)]
-    assert out["web_cluster"] == [] and out["teamup"] == []               # shorter than the lag spread; unmeasured
-    assert all(v == [] for v in rh.press_coverage(cov).values())           # unmeasured lags: no press negatives
+def test_press_time_coverage_merges_cuts_at_events_then_shrinks():
+    """Review round 2, P1: adjacent read pairs are merged, cut at every event, then shrunk once."""
+    pairs = [(10 + k / 120, 10 + (k + 1) / 120) for k in range(1200)]          # 10 s of dense reads
+    ev = [rh.Event("get_over_here", 14.0, 14.02, 1, "countdown", 15.0)]
+    out = rh.press_coverage({"get_over_here": pairs}, ev, {"get_over_here": (0.6, 1.0, 5)})
+    assert out["get_over_here"] == [pytest.approx((10 - 0.6, 14.0 - 1.0)), pytest.approx((15.0 - 0.6, 20 - 1.0))]
+
+
+def test_a_straddling_pair_with_a_one_sample_lag_never_covers_the_cast():
+    """Review round 2, P1(b): the ult's n = 1 lag (zero spread) let a ready -> charging pair claim 'no press' across
+    its own cast. Cut at the event and floored, no coverage reaches the cast's press window."""
+    pairs = [(617.054, 619.620), (619.620, 640.0)]                              # the first pair straddles the cast
+    ev = [rh.Event("ult", 617.054, 619.620, 1, "transition", 619.620)]
+    cov = rh.press_coverage({"ult": pairs}, ev, {"ult": (0.0085, 0.0085, 1)})["ult"]
+    lo, hi = rh.floored_lag(0.0085, 0.0085, 1)
+    assert lo == 0.0 and hi >= 0.0085 + rh.LAG_FEW_HALF_WIDTH_S                  # floored, clamped at 0
+    press_window = (617.054 - hi, 619.620 - lo)
+    assert all(b <= press_window[0] or a >= press_window[1] for a, b in cov)
+
+
+def test_press_coverage_is_empty_without_a_measured_lag():
+    cov = {"teamup": [(0.0, 5.0)], "web_cluster.ammo": [(0.0, 5.0)]}
+    out = rh.press_coverage(cov, [], {"teamup": None})
+    assert out == {"teamup": [], "web_cluster": []}
+    assert all(v == [] for v in rh.press_coverage(cov, []).values())          # the module default: unmeasured
+
+
+def test_a_replay_source_needs_a_follow():
+    with pytest.raises(ValueError, match="roster slot"):
+        rh.identify_order([], source="replay")
 
 
 def test_min_run_drops_frame_flicker():
@@ -279,3 +302,40 @@ def test_two_countdowns_closer_than_the_cooldown_are_one_cast():
     rows = [cd(10.0, 8), cd(11.0, 7), cd(12.2, 8), cd(13.2, 7)]          # a restart 2 s in: impossible for 8 s
     events, _, flags = rh.cast_events(rows)
     assert len(events) == 1 and any("merged" in f["why"] for f in flags)
+
+
+# --- coverage walls (review of the step table, R3) and the hp row (R2) -----------------------------------------------
+
+def test_coverage_never_crosses_a_withheld_frame():
+    rows = [count(0.0, 5), count(0.1, 5), Row(0.15, "ult", "unknown", None, 0.0, "dead (hp 0)"), count(0.2, 5)]
+    _, coverage, _ = rh.cast_events(rows)
+    assert coverage["web_cluster.ammo"] == [(0.0, 0.1)]                   # 0.1 -> 0.2 crosses the dead frame
+
+
+def test_coverage_never_crosses_a_break_and_honours_the_gap_cap():
+    rows = [count(t / 10, 5) for t in range(10)] + [Row(t / 10, "ult", "charging", None, 1.0) for t in range(10)]
+    _, coverage, _ = rh.cast_events(rows, breaks=[(0.45, 0.45)])           # a seek at 0.45 s
+    assert (0.4, 0.5) not in coverage["web_cluster.ammo"] and (0.3, 0.4) in coverage["web_cluster.ammo"]
+    _, coverage, _ = rh.cast_events(rows, max_gap_s=0.05)                  # reads 0.1 s apart: none close enough
+    assert coverage["web_cluster.ammo"] == [] and coverage["ult"] == []
+
+
+def test_a_field_abstention_is_not_a_wall_but_hp_unread_is_not_alive():
+    rows = [count(0.0, 5), Row(0.05, "web_cluster.ammo", "unknown", None, 0.0, "ammo unread"), count(0.1, 5)]
+    _, coverage, _ = rh.cast_events(rows)
+    assert coverage["web_cluster.ammo"] == [(0.0, 0.1)]                   # one field unread: the frame was on screen
+    assert not rh.withheld(Row(0.0, "hp", "unknown", None, 0.0, "hp unread"))
+    assert rh.withheld(Row(0.0, "hp", "unknown", None, 0.0, "dead (hp 0)"))
+
+
+@has_replay
+def test_the_hp_row_is_read_on_a_clean_frame():
+    rows = {r.ability: r for r in rh.read_frame(key("k0420"), 5.0, rh.DAYMR_ORDER, source="replay", follow="B5")}
+    assert rows["hp"].state == "count" and rows["hp"].numeral > 0
+
+
+def test_the_lag_floor_never_goes_below_zero_and_keeps_a_measured_range():
+    assert rh.floored_lag(0.0963, 1.1019, 35, 0.1044) == (0.0963, 1.1019)          # n >= 3: the measured range
+    lo, hi = rh.floored_lag(0.0018, 0.0098, 6, 0.0045)
+    assert lo >= 0.0 and hi - lo == pytest.approx(rh.LAG_MIN_WIDTH_S) or lo == 0.0  # widened to two frames, clamped
+    assert rh.floored_lag(0.0085, 0.0085, 1) == (0.0, pytest.approx(0.5085))        # n = 1: +-0.5 s, clamped at 0

@@ -38,6 +38,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "scripts"))
 
 REPLAY = ROOT / "data" / "demos" / "replays" / "daymr-20260923-004325"
 VIDEO = Path("C:/Users/volpe/Videos/2026-09-23 00-43-25.mkv")
@@ -53,6 +54,7 @@ IN_FLIGHT = 48                     # frames decoded but not yet read: bounds mem
 FOLLOW = "B5"
 TEAMUP_S = 15.0                    # DayMR's team-up: Symbiote Bond (kit)
 MIN_RUN = 3
+COVERAGE_MAX_GAP_S = 0.25          # at 120 fps, reads further apart than this bridge unread frames
 
 
 class Paused(Exception):
@@ -209,14 +211,20 @@ def finish(progress, order_doc, args):
                 if d["ability"] == "teamup":
                     frames += 1
                     reasons[d["reason"] if d["state"] == "unknown" else "read"] += 1
-    events, coverage, flags = rh.cast_events(rows, cooldowns={"teamup": TEAMUP_S}, min_run=MIN_RUN)
+    # Coverage ends at withheld frames (the module), and at the operator's seeks and excluded footage (review R3);
+    # reads 120 per second: a gap over COVERAGE_MAX_GAP_S is itself unread time, never evidence of "no cast"
+    from replay_steps import EXCLUDE, SEEKS
+    breaks = [(t, t) for t in SEEKS] + [(a_, b_) for a_, b_, _ in EXCLUDE]
+    events, coverage, flags = rh.cast_events(rows, cooldowns={"teamup": TEAMUP_S}, min_run=MIN_RUN, breaks=breaks,
+                                             max_gap_s=COVERAGE_MAX_GAP_S)
     # Press-time coverage (review item 2): HUD spans shrunk by the press -> first-evidence lag measured on James's
     # own footage (press-lags.json). Provisional: James's lags, n per ability as reported, not DayMR's.
     lags_doc = json.loads((ROOT / "docs" / "evidence" / "replay-hud-20260923" / "press-lags.json").read_text(
         encoding="utf-8"))["abilities"]
-    lags = {a: (d["first_seen_lag_s"]["min"], d["first_seen_lag_s"]["max"]) if d["first_seen_lag_s"]["n"] else None
+    lags = {a: (d["first_seen_lag_s"]["min"], d["first_seen_lag_s"]["max"], d["first_seen_lag_s"]["n"],
+                d["first_seen_lag_s"]["median"]) if d["first_seen_lag_s"]["n"] else None
             for a, d in lags_doc.items()}
-    press_cov = rh.press_coverage(coverage, lags)
+    press_cov = rh.press_coverage(coverage, events, lags)          # merged, cut at events, floored lag (round 2 P1)
     by = collections.Counter()
     for e in events:
         if e.basis != "flagged":                  # a flagged stretch is listed, never counted as a cast
@@ -235,7 +243,8 @@ def finish(progress, order_doc, args):
         "precision_by_ability": prec,
         "coverage_s": {k: round(sum(b - a for a, b in v), 2) for k, v in coverage.items()},
         "press_coverage_s": {k: round(sum(b - a for a, b in v), 2) for k, v in press_cov.items()},
-        "press_lags_used": {a: {"lag_s": lags.get(a), "n": lags_doc[a]["first_seen_lag_s"]["n"]} for a in lags_doc},
+        "press_lags_used": {a: {"measured_s": lags.get(a) and lags[a][:2], "n": lags_doc[a]["first_seen_lag_s"]["n"],
+                                "floored_s": lags.get(a) and rh.floored_lag(*lags[a])} for a in lags_doc},
         "flags": flags,
         "events": [{"t": round(e.t, 4), "t_lo": round(e.t_lo, 4), "t_hi": round(e.t_hi, 4),
                     "precision": round(e.precision, 4), "ability": e.ability, "count": e.count, "basis": e.basis}
@@ -249,7 +258,10 @@ def finish(progress, order_doc, args):
         "video": {"path": str(args.video), "recorded_sha256": recorded,
                   "note": "the original's sha256 as recorded by the intake (sha256-original.txt); not re-hashed"},
         "tool": {"path": "scripts/replay_hud_full.py", "sha256": sha256(__file__)},
-        "reader": {"path": "perception/replay_hud.py", "sha256": sha256(ROOT / "perception" / "replay_hud.py")},
+        "reader": {"path": "perception/replay_hud.py", "sha256": progress.get("reader_sha256"),
+                   "note": "the bytes that read every rows file (progress.json pins one per run)"},
+        "finish_module": {"path": "perception/replay_hud.py", "sha256": sha256(ROOT / "perception" / "replay_hud.py"),
+                          "note": "the bytes that turned the rows into events and coverage (this finish step)"},
         "hud_reader": {"path": "perception/hud.py", "sha256": sha256(ROOT / "perception" / "hud.py")},
         "files": {p.name: sha256(p) for p in sorted(OUT.glob("rows-*.jsonl.gz")) + [OUT / "events.json"]},
         "windows": progress["windows"],
@@ -290,6 +302,13 @@ def main(argv=None):
         t += a.window
     todo = [s for s in starts if f"{s:.3f}" not in progress["windows"]]
     reader_sha = sha256(ROOT / "perception" / "replay_hud.py")          # the bytes that read these windows
+    # One reader for the whole run (review round 2, P3): the first window pins it, and a resumed run whose reader
+    # bytes differ is refused rather than mixing versions. A new reader means a new run folder.
+    pinned = progress.setdefault("reader_sha256", reader_sha)
+    if pinned != reader_sha:
+        print(f"REFUSED: this run was read by replay_hud.py {pinned[:12]}; the file is now {reader_sha[:12]}. "
+              "Start a new run folder instead of mixing reader versions.")
+        return 2
     done_now = 0
     with Pool(a.workers, initializer=_init, initargs=(order_doc["order"],)) as pool:
         for t0 in todo:

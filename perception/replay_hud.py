@@ -25,6 +25,7 @@ cast". A whole frame abstains (every row unknown, with the reason) when:
 """
 from __future__ import annotations
 
+import bisect
 import dataclasses
 from dataclasses import dataclass
 
@@ -64,6 +65,8 @@ def identify_order(frames, source="first_person", follow=None):
     - columns 3 and 4 hold Get Over Here! and Amazing Combo in the player's order: the icon votes (perception.hud's
       identify_slot, hud.slot_mapping's floor) and the charge badge, which only Amazing Combo carries, must agree.
     Returns {"order", "icons", "badges", "frames", "why"}."""
+    if source == "replay" and follow is None:
+        raise ValueError("a replay source needs the followed player's roster slot (follow): every POV would vote")
     badges, votes, n = [0, 0, 0, 0], [{}, {}, {}, {}], 0
     for f in frames:
         if viewer_reason(f, source, follow):
@@ -186,6 +189,7 @@ PRECISION = {
     "countdown": 1.0,                      # 182 correct, 0 wrong
     "teamup.ready": 41 / 43, "swing.ready": 1.0, "get_over_here.ready": 1.0, "uppercut.ready": 35 / 36,
     "swing.charges": 1.0, "uppercut.charges": 1.0, "web_cluster.ammo": 1.0, "ult.ready": 1.0,
+    "hp": 46 / 46,                         # 46 correct, 1 unknown, 0 wrong (intake README §3)
 }
 
 
@@ -199,9 +203,18 @@ class Row:
     reason: str = ""      # why unknown
 
 
+FIELDS = list(ABILITIES) + [f"{n}.charges" for n in CHARGED] + ["web_cluster.ammo", "ult", "hp"]
+# Frame-level abstentions: every field of the frame is unknown for one of these reasons. Coverage never bridges them.
+WITHHELD_REASONS = ("viewer not following", "replay timeline", "dead", "no HUD drawn", "column order unknown")
+
+
 def _unknown(t, reason):
-    names = list(ABILITIES) + [f"{n}.charges" for n in CHARGED] + ["web_cluster.ammo", "ult"]
-    return [Row(t, n, "unknown", None, 0.0, reason) for n in names]
+    return [Row(t, n, "unknown", None, 0.0, reason) for n in FIELDS]
+
+
+def withheld(row):
+    """True for a row of a frame the reader withheld as a whole (not a single field's abstention)."""
+    return row.state == "unknown" and row.reason.startswith(WITHHELD_REASONS)
 
 
 def read_frame(frame, t, order, source="replay", follow=None):
@@ -237,6 +250,9 @@ def read_frame(frame, t, order, source="replay", follow=None):
         rows.append(Row(t, "ult", "unknown", None, 0.0, "reader abstained"))
     else:
         rows.append(Row(t, "ult", "ready" if h.ult_ready else "charging", None, PRECISION["ult.ready"]))
+    # hp: a frame is "read alive" only with hp > 0 read; hp unread is an abstention, never evidence of life
+    rows.append(Row(t, "hp", "count", h.hp, PRECISION["hp"]) if h.hp is not None
+                else Row(t, "hp", "unknown", None, 0.0, "hp unread"))
     return rows
 
 
@@ -299,7 +315,31 @@ def _countdown_window(t, n, duration):
     raise ValueError(DISPLAY)
 
 
-def cast_events(rows, *, cooldowns=None, recharge=None, min_run=1):
+def _coverage(reads, walls, hide, keep=lambda a, b: True):
+    """Pairs of consecutive reads that are evidence of "no cast" between them: closer than `hide`, with no wall (a
+    withheld frame, a seek, an excluded span, a capture gap) strictly between them, and accepted by `keep`."""
+    out = []
+    for a, b in zip(reads, reads[1:]):
+        if b.t - a.t >= hide or not keep(a, b):
+            continue
+        k = bisect.bisect_right(walls, a.t)
+        if k < len(walls) and walls[k] < b.t:
+            continue
+        out.append((a.t, b.t))
+    return out
+
+
+def _walls(rows, breaks):
+    """Sorted times coverage may not cross: every withheld frame, and the ends and inside of every break span."""
+    walls = {r.t for r in rows if r.ability == "ult" and withheld(r)}
+    for a, b in breaks:
+        walls.add(a)
+        walls.add(b)
+        walls.update(r.t for r in rows if r.ability == "ult" and a <= r.t <= b)
+    return sorted(walls)
+
+
+def cast_events(rows, *, cooldowns=None, recharge=None, min_run=1, breaks=(), max_gap_s=None):
     """(events, coverage, flags) from per-frame rows.
 
     Cooldown abilities (team-up, Get Over Here!): a cast is a stretch of countdown reads whose numerals do not rise
@@ -311,10 +351,14 @@ def cast_events(rows, *, cooldowns=None, recharge=None, min_run=1):
     countdown implying an earlier start) give basis "flagged": listed with the flags, and NOT a claimed cast (on
     051828 such a stretch was a misread, with no press).
     Charges and ammo: a count that drops between two runs. The ult: ready -> charging.
-    Unknown reads never count as "no cast": `coverage` lists, per ability, the spans between reads closer than the
-    ability's hide time (its cooldown or recharge), and only there does no event mean no cast."""
+    Unknown reads never count as "no cast": `coverage` lists, per ability, the spans between consecutive reads closer
+    than the ability's hide time (its cooldown or recharge; `max_gap_s` caps it, as dense video should) that cross no
+    withheld frame (another POV, dead, timeline, no HUD) and no `breaks` span (seeks as zero-width spans, excluded
+    footage, capture gaps: review R3); only there does no event mean no cast."""
     cooldowns = {**COOLDOWN_S, **(cooldowns or {})}
     recharge = {**RECHARGE_S, **(recharge or {})}
+    cap = float("inf") if max_gap_s is None else max_gap_s
+    walls = _walls(rows, breaks)
     events, coverage, flags = [], {}, []
     for ability in ("teamup", "get_over_here"):
         seq = [r for r in _known(rows, ability) if r.state != "unknown"]
@@ -322,7 +366,7 @@ def cast_events(rows, *, cooldowns=None, recharge=None, min_run=1):
         reads = [r for run in runs for r in run]
         duration = cooldowns.get(ability)
         hide = duration or 6.0
-        coverage[ability] = [(a.t, b.t) for a, b in zip(reads, reads[1:]) if b.t - a.t < hide]
+        coverage[ability] = _coverage(reads, walls, min(hide, cap))
         # Group countdown reads into casts. With a known duration, reads belong to one cast while their windows
         # for the cooldown's start still intersect: a state flicker between them does not split it, and a window
         # that no longer fits is a new cast. Without one, a numeral that rises past one second starts a new cast.
@@ -362,7 +406,7 @@ def cast_events(rows, *, cooldowns=None, recharge=None, min_run=1):
     seq = [r for r in _known(rows, "ult") if r.state != "unknown"]
     runs = _runs(seq, lambda r: r.state, min_run)
     reads = [r for run in runs for r in run]
-    coverage["ult"] = [(a.t, b.t) for a, b in zip(reads, reads[1:]) if b.t - a.t < ULT_HIDE_S]
+    coverage["ult"] = _coverage(reads, walls, min(ULT_HIDE_S, cap))
     for a, b in zip(runs, runs[1:]):
         if a[-1].state == "ready" and b[0].state == "charging":
             events.append(Event("ult", a[-1].t, b[0].t, 1, "transition", b[0].t))
@@ -374,8 +418,8 @@ def cast_events(rows, *, cooldowns=None, recharge=None, min_run=1):
         # Only while the count stays at its maximum is no regen in flight, so a cast must show as a drop (review
         # item 1). Below the maximum a cast and a regen can cancel between two reads, so those spans are no negative.
         full = MAX_COUNT[ability]
-        coverage[ability] = [(a.t, b.t) for a, b in zip(reads, reads[1:])
-                             if b.t - a.t < hide and a.numeral == full and b.numeral == full]
+        coverage[ability] = _coverage(reads, walls, min(hide, cap),
+                                      lambda a, b: a.numeral == full and b.numeral == full)
         for a, b in zip(runs, runs[1:]):
             if b[0].numeral < a[-1].numeral:
                 name = ability.split(".")[0] if ability.endswith(".charges") else "web_cluster"
@@ -447,23 +491,76 @@ FIRST_EVIDENCE_LAG_S = {
 }
 
 
-def press_coverage(coverage, lags=None):
+LAG_FEW_N = 3                     # fewer samples than this: the lag is not trusted to bound itself
+LAG_FEW_HALF_WIDTH_S = 0.5        # ... so its range is at least median +- this (review round 2, P1)
+LAG_MIN_WIDTH_S = 2 / 120         # any measured range is at least two frames wide
+
+
+def floored_lag(lo, hi, n, median=None):
+    """A measured press lag range widened to its floor, never below 0 (a press precedes its own HUD evidence).
+
+    With at least LAG_FEW_N samples the measured [min, max] stands, widened symmetrically only to LAG_MIN_WIDTH_S.
+    With fewer, the range is at least median +- LAG_FEW_HALF_WIDTH_S: one sample never gives a zero-width range."""
+    med = (lo + hi) / 2 if median is None else median
+    if n < LAG_FEW_N:
+        lo, hi = min(lo, med - LAG_FEW_HALF_WIDTH_S), max(hi, med + LAG_FEW_HALF_WIDTH_S)
+    elif hi - lo < LAG_MIN_WIDTH_S:
+        pad = (LAG_MIN_WIDTH_S - (hi - lo)) / 2
+        lo, hi = lo - pad, hi + pad
+    return max(0.0, lo), hi
+
+
+def _merge(spans):
+    out = []
+    for a, b in sorted(spans):
+        if out and a <= out[-1][1] + 1e-9:
+            out[-1][1] = max(out[-1][1], b)
+        else:
+            out.append([a, b])
+    return out
+
+
+def _subtract(spans, cuts):
+    out = []
+    for a, b in spans:
+        pieces = [(a, b)]
+        for c0, c1 in cuts:
+            nxt = []
+            for x, y in pieces:
+                if c1 <= x or c0 >= y:
+                    nxt.append((x, y))
+                    continue
+                if x < c0:
+                    nxt.append((x, c0))
+                if c1 < y:
+                    nxt.append((c1, y))
+            pieces = nxt
+        out += pieces
+    return out
+
+
+def press_coverage(coverage, events, lags=None):
     """Spans of PRESS time in which no press of the ability can have happened, from HUD-time coverage.
 
-    A press at p first shows on the HUD at p + lag, lag in [lo, hi]. A HUD span [a, b] with no event therefore rules
-    out only presses with p + lag inside it for every possible lag: p in [a - lo, b - hi] (review item 2). Spans that
-    shrink to nothing are dropped; an ability without a measured lag gets no press-time coverage at all."""
+    Review round 2, P1: the adjacent-read pairs of `coverage` are first merged into contiguous observed stretches,
+    each stretch is cut at every event of the ability (flagged ones included: [t_lo, max(t_hi, first_seen)]), and
+    only then shrunk by the press lag. A press at p first shows on the HUD at p + lag, lag in [lo, hi], so an
+    event-free HUD stretch [a, b] rules out presses p in [a - lo, b - hi]. `lags`: {ability: (lo, hi, n)} or
+    (lo, hi, n, median); each range is widened by floored_lag. An ability without a measured lag gets no coverage."""
     lags = FIRST_EVIDENCE_LAG_S if lags is None else lags
     out = {}
     for key, spans in coverage.items():
         ability = key.split(".")[0]
+        out.setdefault(ability, [])
         lag = lags.get(ability)
         if lag is None:
-            out[ability] = []
             continue
-        lo, hi = lag
-        out.setdefault(ability, [])
-        out[ability] += [(a - lo, b - hi) for a, b in spans if b - hi > a - lo]
+        lo, hi = floored_lag(lag[0], lag[1], lag[2], lag[3] if len(lag) > 3 else None)
+        cuts = sorted((e.t_lo, max(e.t_hi, e.first_seen if e.first_seen is not None else e.t_hi))
+                      for e in events if e.ability == ability)
+        for a, b in _subtract(_merge(spans), cuts):
+            if b - hi > a - lo:
+                out[ability].append((a - lo, b - hi))
     return out
 
 
