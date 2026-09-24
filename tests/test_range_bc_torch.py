@@ -603,6 +603,19 @@ def test_replay_evaluation_reports_window_recall_and_the_cli_still_refuses_repla
     assert set(block) == {"tf", "sf"}
     assert block["tf"]["by_action"]["web_cluster"]["windows"] == 3                # complete cast windows, any length
     assert block["tf"]["by_action"]["amazing_combo"]["windows"] == 2              # the 70-row one is evaluated
+    # review N4: each block carries the set's window counts, by kind and by how training would score them
+    counts = {"web_cluster": {"windows": 4, "complete": 3, "partial_or_flagged": 1, "too_long": 0, "scored_base": 3,
+                              "scored_window_only": 0, "unplaced": 0},
+              "get_over_here": {"windows": 3, "complete": 2, "partial_or_flagged": 1, "too_long": 0, "scored_base": 2,
+                                "scored_window_only": 0, "unplaced": 0},
+              "amazing_combo": {"windows": 2, "complete": 2, "partial_or_flagged": 0, "too_long": 1, "scored_base": 1,
+                                "scored_window_only": 0, "unplaced": 0}}
+    assert block["tf"]["counts"] == block["sf"]["counts"] == counts            # the default stride, 48
+    at64 = train.window_counts([arr], stride=64)
+    assert at64["get_over_here"]["scored_base"] == 1 and at64["get_over_here"]["scored_window_only"] == 1
+    for a in at64.values():
+        assert a["windows"] == a["complete"] + a["partial_or_flagged"]
+        assert a["complete"] == a["too_long"] + a["scored_base"] + a["scored_window_only"] + a["unplaced"]
     with pytest.raises(steps.StepError, match="replay"):                        # no CLI path loads a replay table
         train.main(["--train", str(arr.session.path), "--cache-root", str(tmp_path / "caches"), "--out",
                     str(tmp_path / "o"), "--scope", "smoke", "--epochs", "1", "--model-config",

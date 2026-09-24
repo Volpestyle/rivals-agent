@@ -529,21 +529,47 @@ def require_committed(files):
     require(not dirty, f"--scope fit refuses uncommitted changes:\n{dirty[:1000]}")
 
 
-def evaluate_set(models, arrays, stats, ar2, *, device):
-    """Teacher-forced and self-fed blocks, sanity, baselines, and a gate verdict per model arm on one evaluation set."""
+def window_counts(arrays, *, stride=steps.STRIDE):
+    """Replay sets: per action, the set's press windows by kind and by how training at `stride` would score them
+    (review N4). windows = complete + partial_or_flagged; complete = too_long + scored_base + scored_window_only +
+    unplaced."""
+    out = {}
+    for arr in arrays:
+        if arr.press_windows is None:
+            continue
+        for action, r in arr.press_windows.report.items():
+            a = out.setdefault(action, {"windows": 0, "complete": 0, "partial_or_flagged": 0, "too_long": 0,
+                                        "scored_base": 0, "scored_window_only": 0, "unplaced": 0})
+            a["windows"] += r["records"]
+            a["complete"] += r["complete"]
+            a["partial_or_flagged"] += r["partial"] + r["flagged"]
+            a["too_long"] += r["too_long"]
+        placed, unplaced = steps.place_windows(arr.session, arr.press_windows.counted, lag=arr.lag,
+                                               regimes=arr.regimes, stride=stride)
+        for c, *_, own in placed:
+            out[vocab.NAMES[c]]["scored_window_only" if own else "scored_base"] += 1
+        for c, *_ in unplaced:
+            out[vocab.NAMES[c]]["unplaced"] += 1
+    return out
+
+
+def evaluate_set(models, arrays, stats, ar2, *, device, stride=steps.STRIDE):
+    """Teacher-forced and self-fed blocks, sanity, baselines, and a gate verdict per model arm on one evaluation set.
+    stride (replay sets only): the fit's, for the window counts."""
     tf, sf, sane = {}, {}, {}
     wins = {arr.session.session_id: arr.press_windows.complete for arr in arrays if arr.press_windows is not None}
+    counts = window_counts(arrays, stride=stride) if wins else None
     win_block = {}
     for (arm, seed), model in models.items():
         tf_runs = predict_teacher(model, arrays, device=device)
         tf.setdefault(arm, {})[seed] = metrics.stratified(tf_runs, **metrics.TEACHER)
         if wins:
-            win_block.setdefault(arm, {})[seed] = {"tf": metrics.window_block(tf_runs, wins)}
+            win_block.setdefault(arm, {})[seed] = {"tf": metrics.window_block(tf_runs, wins, counts=counts)}
         if arm in MODEL_ARMS or arm == TWIN:
             runs = predict_self(model, arrays, stats["live_mask"], device=device)
             sf.setdefault(arm, {})[seed] = metrics.stratified(runs, **metrics.SELF)
             if wins:
-                win_block[arm][seed]["sf"] = metrics.window_block(runs, wins)
+                win_block[arm][seed]["sf"] = metrics.window_block(runs, wins, counts=counts)
             if arm in MODEL_ARMS:
                 sane.setdefault(arm, {})[seed] = metrics.sanity(runs)
     recs = baseline_runs(arrays)
@@ -675,7 +701,7 @@ def run_fit(a):
         if not arrays:
             continue
         t0 = time.perf_counter()
-        evaluation[name], verdicts[name] = evaluate_set(models, arrays, stats, ar2, device=a.device)
+        evaluation[name], verdicts[name] = evaluate_set(models, arrays, stats, ar2, device=a.device, stride=a.stride)
         budget.append({"run": f"evaluate-{name}", "seconds": time.perf_counter() - t0})
     candidate, candidate_reason = choose_candidate(parity, verdicts)
     reference_arm = candidate

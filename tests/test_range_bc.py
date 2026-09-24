@@ -1056,6 +1056,9 @@ def test_window_recall_counts_a_window_once_whatever_its_presses(tmp_path):
     a = block["by_action"]["web_cluster"]
     assert (a["windows"], a["evaluated"], a["hits"], a["presses"]) == (3, 3, 2, 3)   # 10-25 and 20-35 share 12, 13
     assert a["recall"] == 2 / 3 and a["zero_row_press_rate"] == 0.
+    assert "counts" not in block                                                 # carried only when given (N4)
+    counts = {"web_cluster": {"windows": 4}}
+    assert metrics.window_block([], {s.session_id: w.complete}, counts=counts)["counts"] == counts
     everywhere = metrics.window_block(metrics.predict_runs(runs, pressing(set(range(len(s.rows))))),
                                       {s.session_id: w.complete})["by_action"]["web_cluster"]
     assert everywhere["recall"] == 1. and everywhere["zero_row_press_rate"] == 1.   # recall alone would reward this

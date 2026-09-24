@@ -253,12 +253,12 @@ def predict_runs(runs, predictor):
     return [[(rec, predictor(rec)) for rec in run] for run in runs]
 
 
-def window_block(runs, windows):
+def window_block(runs, windows, *, counts=None):
     """Replay evaluation sets only (lane doc "Replay window-level loss"): per action with complete cast windows, the
     share of windows holding at least one decoded press (probability or sent bit >= THRESHOLD) of that action among
     the steps whose target row lies in the window, the mean decoded presses per window, and the decoded-press rate on
     the action's press = 0 rows (a model pressing everywhere would reach recall 1). windows: {session_id: [(c, f, l)]}.
-    No gate reads it."""
+    counts: the set's per-action window counts (train.window_counts), carried under "counts". No gate reads it."""
     by_row = {(rec["session"], rec["target_row"]): (rec, pred) for run in runs for rec, pred in run
               if rec["valid"] and rec["target_row"] is not None}
     out = {}
@@ -285,4 +285,7 @@ def window_block(runs, windows):
         a["presses_per_window"] = a["presses"] / a["evaluated"] if a["evaluated"] else None
         a["zero_row_press_rate"] = a["zero_row_presses"] / a["zero_rows"] if a["zero_rows"] else None
     recalls = [a["recall"] for a in out.values() if a["recall"] is not None]
-    return {"by_action": out, "macro_recall": sum(recalls) / len(recalls) if recalls else None}
+    block = {"by_action": out, "macro_recall": sum(recalls) / len(recalls) if recalls else None}
+    if counts is not None:
+        block["counts"] = counts
+    return block
