@@ -154,7 +154,7 @@ the [implemented policy contract](lanes/learned-range-skills.md) distinguishes
 received-request and historical visual-onset versions.
 
 The prior Idle/Engage head is a legacy synthetic diagnostic. Its frozen four-row
-[visual candidate contract](visual-range-supervision.md) remains historical
+[visual candidate contract](archive/visual-range-supervision.md) remains historical
 evidence: four unknown labels and zero admitted Examples, unchanged. That failed
 experiment exposed real perception errors and a poor task definition. It does
 not establish that normal moving gameplay lacks useful supervision. VUH-1349's
