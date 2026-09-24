@@ -884,6 +884,59 @@ synthetic FFV1 fixture):
 - **Runs, reports and store manifests** are in `data/idm/runs/` on the PC (gitignored); the hashes are in the
   hand-back.
 
+### Yaw falsification test (2026-09-24)
+
+Pre-registered before any code or run, after `idm-diag`. In the plumbing fit that held out 051828, yaw direction was
+never learned, even on its own training data, while the fit that held out 171533 did learn it. The diagnosed mechanism
+is that the Gaussian NLL's learned variance starves the mean. This test separates that mechanism from seed fragility.
+**Nothing here is a gate result.**
+
+**Fixed across all three runs.**
+- **Fold:** 051828 held out; train on 171533, 205528 and 200129.
+- **Data:** the same target files and stores as `loso-051828`.
+  - Targets: 171533 `42732841`, 205528 `5d51f240`, 200129 `a32a7380`, held-out 051828 `2e89adf3`.
+  - Store manifests: `8780ea7c`, `14190df6`, `a111ba07`, `457637aa`.
+- **Fit:** `run_fit` defaults: 3 epochs, batch 16, AdamW lr 1e-3, weight decay 1e-4, clip 1.0, full-scale `Config()`,
+  MPS, niced, scope `gate1-dev`.
+
+**The runs.**
+
+| Run | Seed | Camera loss | Code |
+|---|---|---|---|
+| **C1** (control) | 1 | Unchanged (Gaussian NLL, variance = model + label σ²) | `1df31e7` |
+| **C2** (control) | 2 | Unchanged | `1df31e7` |
+| **T** (treatment) | 0 | **β-NLL, β = 0.5:** each camera element's NLL is multiplied by stop-gradient(var^β), with var the same total variance the NLL uses. The mean's gradient then scales with 1/σ instead of 1/σ². Both axes, nothing else changed | Branch `idm/yaw-test-20260924`: one commit adding this behind a flag that defaults to today's loss |
+
+T at seed 0 is otherwise identical to `loso-051828`, whose checkpoint is `11d0b912`.
+
+**Judge, per run.**
+- **Per-row raw μ** of the run's checkpoint, as in `idm-diag`, on:
+  - the held-out session **051828**;
+  - the in-sample session **171533**.
+- **Metric:** raw-μ yaw direction agreement on moving rows (|true yaw| ≥ 0.5°), by `analyse.py`'s definition
+  (`0ed5569b`). There is no abstention, so no selection.
+- **"Learned":** agreement ≥ **0.85 on both** sessions. Anything else is "not learned".
+- **Reported beside it, not judged:**
+  - yaw correlation, median |μ|/|true|, and the median predicted yaw std on still and moving rows;
+  - pitch agreement, as a guard that the treatment broke nothing else.
+
+**Pre-registered readings.**
+
+| C1, C2 | T | Reading |
+|---|---|---|
+| Both learn | Either | **Seed fragility.** Seed 0 was unlucky and the loss stays; T's result is reported, not decisive |
+| Exactly one learns | Either | **The current loss learns yaw only sometimes:** fragility is established. One treatment seed cannot show that β-NLL removes it; the next step is seeds, not a loss change |
+| Both fail | Learns | **The mechanism holds.** β-NLL becomes the candidate change, to be reviewed before it is relied on |
+| Both fail | Fails | **The mechanism is wrong.** The next place is the input or the optimiser |
+
+**The lane's own expectation,** stated before the runs and not part of the judge: at least one control fails (one of
+four seed-0 fits learned yaw), and T learns.
+
+**Budget.**
+- Three fits of about 21 min each (`loso-051828` took 1,273 s), one after another in one niced queue.
+- Six predict passes of under 1 min each.
+- About 1.2 h of Mac time.
+
 ## Measurements owed
 
 - **The 7 large live zeros (a) still keeps:** parallax during combined movement and turning.
