@@ -138,6 +138,45 @@ def test_an_abstained_onset_claimed_by_an_answered_neighbour_is_found():
     fwd = E.evaluate([t], abstain_at({20}, base=shifted(1)), SUPPORTED)["sessions"]["held"]["edges"]["move_forward"]
     assert (fwd["tp"], fwd["fp"], fwd["fn"]) == (1, 0, 0)               # the prediction at 21 claims it; no false +
     assert (fwd["abstained_onsets"], fwd["abstained_onsets_missed"]) == (1, 0)
+    assert fwd["onset_error_intervals_median"] is None and fwd["onset_error_matches"] == 0     # M2: kept apart
+    assert fwd["onset_error_intervals_median_abstained_onsets"] == 1 and fwd["onset_error_matches_abstained_onsets"] == 1
+
+
+def test_neighbour_claimed_abstained_onsets_do_not_enter_the_timing_median():
+    """M2: an abstained onset can only be matched at >= 1 interval, so its matches would inflate the timing median."""
+    t = targets(rows_of([0.0] * 100, presses=[(10, FWD), (30, FWD), (50, FWD), (70, FWD)]))
+
+    def oracle_plus_neighbours(rows):                                  # onsets 10 and 30 exact; 51 and 72 fire too
+        p = oracle(rows)
+        for k in (51, 72):
+            p[rows[k]["i"]]["press"]["move_forward"] = 1.0
+        return p
+    fwd = E.evaluate([t], abstain_at({50, 70}, base=oracle_plus_neighbours),
+                     SUPPORTED)["sessions"]["held"]["edges"]["move_forward"]
+    assert (fwd["tp"], fwd["fp"], fwd["fn"]) == (4, 0, 0)
+    assert (fwd["onset_error_intervals_median"], fwd["onset_error_matches"]) == (0, 2)       # the answered onsets
+    assert fwd["onset_error_intervals_median_abstained_onsets"] == 1.5                        # |51-50|, |72-70|
+    assert fwd["onset_error_matches_abstained_onsets"] == 2
+
+
+def test_the_onset_rates_share_one_denominator_known_rows():
+    """M1, the reviewer's probe: a perfect predictor answering only on the three rows around each onset. Per answered
+    row it read as over-firing 3.3x; per known row both rates are 0.1."""
+    onsets = list(range(5, 400, 10))                                   # 40 onsets in 400 rows
+    near = {k + d for k in onsets for d in (-1, 0, 1)}
+    t = targets(rows_of([0.0] * 400, presses=[(k, FWD) for k in onsets]))
+    fwd = E.evaluate([t], abstain_at(set(range(400)) - near), SUPPORTED)["sessions"]["held"]["edges"]["move_forward"]
+    assert (fwd["tp"], fwd["fp"], fwd["fn"]) == (40, 0, 0) and fwd["answered_rows"] == 120
+    assert fwd["predicted_onset_rate"] == fwd["true_onset_rate"] == 0.1
+
+
+def test_the_auc_is_none_when_every_onset_row_was_abstained_on():
+    """M3: the AUC is over answered rows only; with every onset row abstained there is no onset to rank, and the
+    abstained onset-row count sits beside it."""
+    t = targets(rows_of([0.0] * 40, presses=[(10, FWD), (30, FWD)]))
+    fwd = E.evaluate([t], abstain_at({10, 30}, base=shifted(1)), SUPPORTED)["sessions"]["held"]["edges"]["move_forward"]
+    assert fwd["recall"] == 1.0 and fwd["auc"] is None                 # found by neighbours, but nothing to rank
+    assert (fwd["auc_rows"], fwd["auc_onset_rows"], fwd["auc_abstained_onset_rows"]) == (38, 0, 2)
 
 
 def test_the_onset_error_is_reported_with_the_density_it_was_measured_at():
@@ -168,6 +207,7 @@ def test_the_auc_ranks_onset_rows_against_the_rest_over_answered_rows():
     assert edges(oracle)["jump"]["auc"] is None                          # no jump onset: no ranking to measure
     skip = edges(abstain_at({10, 11, 12}))["move_forward"]
     assert skip["auc_rows"] == 37 and skip["auc"] == 1.0                # abstained rows carry no probability
+    assert (skip["auc_onset_rows"], skip["auc_abstained_onset_rows"]) == (1, 1)
     assert E.auc([0.9, 0.1], [0.5]) == 0.5 and E.auc([0.5], [0.5]) == 0.5 and E.auc([], [0.1]) is None
 
 

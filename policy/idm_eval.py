@@ -27,10 +27,13 @@ Rows: only usable target rows count (accepted, gap-free, normal regime; policy.i
   predictor answered there, so an onset on an abstained row is a miss unless an answered prediction within TOLERANCE
   claims it (then it is found, and the neighbour is not charged a false positive). The onsets on abstained rows are
   reported ("abstained_onsets", and "abstained_onsets_missed" of them unmatched); abstained rows make no prediction.
-  Beside F1: the per-action AUC of the press probability, onset rows against the rest, over the ANSWERED rows (an
-  abstention carries no probability; "auc_rows" counts them); and the onset-error median is reported with the density
-  it was measured at ("predicted_onset_rate" per answered row, "true_onset_rate" per known row), since a predictor
-  that fires on most rows matches every onset at error 0.
+  Beside F1: the per-action AUC of the press probability, onset rows against the rest, over the ANSWERED rows only
+  (an abstention carries no probability): a coverage-conditional figure, read with "auc_rows", "auc_onset_rows" and
+  "auc_abstained_onset_rows" beside it, and None when every onset row was abstained on (M3). The onset-error median
+  is reported with the density it was measured at, both rates per KNOWN row ("predicted_onset_rate": an abstained row
+  fires nothing; "true_onset_rate"), since a predictor that fires on most rows matches every onset at error 0 (M1).
+  The median is over matches of ANSWERED onsets; a neighbour-claimed abstained onset matches at >= 1 interval by
+  construction, so its matches have their own median and count (M2).
 
 Results are per held-out session and pooled; uncertainty is by session (F7), so a single session reports no interval.
 """
@@ -184,7 +187,7 @@ def edge_metrics(targets, preds, supported, *, tolerance=TOLERANCE, threshold=TH
             continue
         tp = fp = fn = known = abstained = answered = positives = abstained_onsets = abstained_missed = 0
         predicted = 0
-        errors, on_scores, off_scores = [], [], []
+        errors, errors_abstained, on_scores, off_scores = [], [], [], []
         for run in runs:
             truth_pos, pred_pos, abstained_truth = [], [], set()
             for k, r in enumerate(run):
@@ -212,7 +215,8 @@ def edge_metrics(targets, preds, supported, *, tolerance=TOLERANCE, threshold=TH
             fp += len(pred_pos) - len(m)
             fn += len(truth_pos) - len(m)
             abstained_missed += len(abstained_truth - {t for t, _ in m})
-            errors += [abs(t - p) for t, p in m]
+            errors += [abs(t - p) for t, p in m if t not in abstained_truth]
+            errors_abstained += [abs(t - p) for t, p in m if t in abstained_truth]    # always >= 1 interval (M2)
         precision = tp / (tp + fp) if tp + fp else None
         recall = tp / (tp + fn) if tp + fn else None
         f1 = (2 * precision * recall / (precision + recall) if precision and recall else
@@ -227,8 +231,13 @@ def edge_metrics(targets, preds, supported, *, tolerance=TOLERANCE, threshold=TH
                        "recall": None if recall is None else round(recall, 4),
                        "f1": None if f1 is None else round(f1, 4),
                        "auc": None if a is None else round(a, 4), "auc_rows": len(on_scores) + len(off_scores),
+                       "auc_onset_rows": len(on_scores), "auc_abstained_onset_rows": abstained_onsets,
                        "onset_error_intervals_median": statistics.median(errors) if errors else None,
-                       "predicted_onset_rate": round(predicted / answered, 4) if answered else None,
+                       "onset_error_matches": len(errors),
+                       "onset_error_intervals_median_abstained_onsets":
+                           statistics.median(errors_abstained) if errors_abstained else None,
+                       "onset_error_matches_abstained_onsets": len(errors_abstained),
+                       "predicted_onset_rate": round(predicted / known, 4) if known else None,
                        "true_onset_rate": round(positives / known, 4) if known else None}
     return out
 
