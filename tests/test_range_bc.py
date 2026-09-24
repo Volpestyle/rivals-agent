@@ -930,3 +930,132 @@ def test_unknown_replay_channels_are_never_scored_or_fed_back(tmp_path):
     n = vocab.N
     assert v[fwd] == v[n + fwd] == v[2 * n + fwd] == 0.                          # unknown: no bit, whatever the value
     assert v[n + goh] == (1. if t["press_known"][goh] else 0.)
+
+
+# ---- replay press windows (the window-level loss; lane doc "Replay window-level loss") -------------------------------
+
+def write_windows(tmp_path, name="rw", mutate=None, **kw):
+    header, rows, doc = fixture.replay_windows_session(name, **kw)
+    if mutate:
+        mutate(header, rows, doc)
+    return fixture.write_replay_windows(tmp_path, name, header=header, rows=rows, doc=doc)
+
+
+def test_press_windows_load_with_complete_partial_flagged_and_overlapping_windows(tmp_path):
+    s = steps.load(write_windows(tmp_path))
+    w = steps.load_windows(s)
+    wc, goh, combo = (vocab.INDEX[n] for n in ("web_cluster", "get_over_here", "amazing_combo"))
+    assert w.report["web_cluster"] == {"records": 4, "cast": 4, "flagged": 0, "complete": 3, "partial": 1,
+                                       "too_long": 0, "counted": 3, "overlap_pairs": 1, "largest_group": 2}
+    assert w.report["get_over_here"]["flagged"] == 1 and w.report["get_over_here"]["counted"] == 2
+    assert w.report["amazing_combo"]["too_long"] == 1 and w.report["amazing_combo"]["counted"] == 1
+    # complete cast windows <= 64 rows enter the term; the partial, flagged and 70-row ones do not
+    assert w.counted == [(wc, 10, 25), (wc, 20, 35), (goh, 40, 50), (wc, 60, 75), (goh, 84, 99), (combo, 200, 210)]
+    assert (combo, 78, 147) in w.complete and (combo, 78, 147) not in w.counted
+    # no step inside any window (cast, flagged or partial) is a 0 or a 1 for its action; the table holds no cast 1
+    doc = json.loads(steps.windows_path(s).read_text(encoding="utf-8"))
+    for rec in doc["windows"]:
+        c = vocab.INDEX[rec["action"]]
+        assert all(s.rows[k]["press"][c] is None for k in range(rec["rows"][0], rec["rows"][1] + 1))
+    assert not any(r["press"][c] == 1 for r in s.rows for c in (wc, goh, combo))
+
+
+def _set(path_keys, value):
+    def mutate(header, rows, doc):
+        target = doc
+        for k in path_keys[:-1]:
+            target = target[k]
+        target[path_keys[-1]] = value
+    return mutate
+
+
+def _dup(header, rows, doc):
+    doc["windows"].append(dict(doc["windows"][0]))
+
+
+def _fill(header, rows, doc):
+    first = doc["windows"][0]
+    c = vocab.INDEX[first["action"]]
+    rows[first["rows"][0]]["press"][c], rows[first["rows"][0]]["press_known"][c] = 0, True
+
+
+@pytest.mark.parametrize("mutate, message", [
+    (_fill, "non-null web_cluster press"),                       # a cast is never both a window and a step 0
+    (_set(["windows", 0, "complete"], False), "complete is False"),
+    (_set(["windows", 0, "rows"], [11, 25]), "differ from the steps overlapping"),
+    (_dup, "exact duplicate"),
+    (_set(["windows", 0, "count"], 0), "count must be"),
+    (_set(["windows", 0, "action"], "fireball"), "not in the vocabulary"),
+    (_set(["windows", 0, "cast"], 1), "are bools"),
+    (_set(["windows", 0, "lo_ns"], 10 ** 18), "lo_ns <= hi_ns"),
+    (_set(["format"], "rivals-replay-press-windows-v0"), "not rivals-replay-press-windows-v1"),
+    (_set(["session_id"], "other"), "names another session"),
+    (_set(["step_ns"], 1), "step_ns differs"),
+])
+def test_malformed_press_windows_are_refused(tmp_path, mutate, message):
+    s = steps.load(write_windows(tmp_path, mutate=mutate))
+    with pytest.raises(steps.StepError, match=message):
+        steps.load_windows(s)
+
+
+def test_a_windows_file_must_be_the_pinned_one_and_never_sits_beside_a_human_table(tmp_path):
+    s = steps.load(write_windows(tmp_path))
+    path = steps.windows_path(s)
+    path.write_bytes(path.read_bytes() + b" ")
+    with pytest.raises(steps.StepError, match="sha256 differs"):
+        steps.load_windows(s)
+    unpinned = steps.load(write_replay(tmp_path, "plain"))                        # a replay table pinning none
+    assert steps.load_windows(unpinned) is None
+    steps.windows_path(unpinned).write_text("{}", encoding="utf-8")
+    with pytest.raises(steps.StepError, match="does not pin"):
+        steps.load_windows(unpinned)
+    human = steps.load(write_session(tmp_path, "h"))
+    assert steps.load_windows(human) is None
+    steps.windows_path(human).write_text("{}", encoding="utf-8")
+    with pytest.raises(steps.StepError, match="does not pin"):
+        steps.load_windows(human)
+
+
+def test_each_counted_window_is_placed_in_exactly_one_sequence(tmp_path):
+    s = steps.load(write_windows(tmp_path))
+    w = steps.load_windows(s)
+    goh = vocab.INDEX["get_over_here"]
+    for stride, own in ((48, []), (64, [(goh, 84, 99)])):
+        placed, unplaced = steps.place_windows(s, w.counted, stride=stride)
+        assert not unplaced and sorted((c, p0, p1) for c, p0, p1, *_ in placed) == sorted(w.counted)
+        assert [(c, p0, p1) for c, p0, p1, *_, is_own in placed if is_own] == own
+        for c, p0, p1, st, n, a, is_own in placed:                          # scored whole: after burn-in, inside
+            assert st + steps.loss_mask_start(st, a) <= p0 and p1 < st + n
+    placed, _ = steps.place_windows(s, w.counted, lag=1, stride=48)            # output k is the target of row k + 1
+    assert [(p0, p1) for c, p0, p1, *_ in placed][:1] == [(9, 24)]
+
+
+def test_windows_count_as_press_positives_in_replay_statistics(tmp_path):
+    s = steps.load(write_windows(tmp_path))
+    relabelled = dataclasses.replace(s, header={**s.header, "split": "train"})   # as a future replay arm would
+    placed, _ = steps.place_windows(s, steps.load_windows(s).counted, stride=64)
+    plain = steps.train_statistics([relabelled])
+    with_windows = steps.train_statistics([relabelled], windows={s.session_id: placed})
+    wc, goh = vocab.INDEX["web_cluster"], vocab.INDEX["get_over_here"]
+    assert plain["press"][wc] == plain["press"][goh] == 0                       # the table holds no cast 1
+    assert with_windows["press"][wc] == 3 and with_windows["press"][goh] == 2
+    assert with_windows["press_known"][wc] == plain["press_known"][wc] + 3
+    assert steps.pos_weight(3, with_windows["press_known"][wc]) == 20.          # capped, as for a human press
+
+
+def test_window_recall_counts_a_window_once_whatever_its_presses(tmp_path):
+    s = steps.load(write_windows(tmp_path))
+    w = steps.load_windows(s)
+    runs = [steps.step_records(s, a, b) for a, b in steps.runs(s)]
+    wc = vocab.INDEX["web_cluster"]
+
+    def pressing(rows):
+        return lambda rec: {"held": [0.] * vocab.N, "release": [0.] * vocab.N, "yaw": 0., "pitch": 0.,
+                            "press": [1. if (rec["target_row"] in rows and c == wc) else 0. for c in range(vocab.N)]}
+    block = metrics.window_block(metrics.predict_runs(runs, pressing({12, 13, 60})), {s.session_id: w.complete})
+    a = block["by_action"]["web_cluster"]
+    assert (a["windows"], a["evaluated"], a["hits"], a["presses"]) == (3, 3, 2, 3)   # 10-25 and 20-35 share 12, 13
+    assert a["recall"] == 2 / 3 and a["zero_row_press_rate"] == 0.
+    everywhere = metrics.window_block(metrics.predict_runs(runs, pressing(set(range(len(s.rows))))),
+                                      {s.session_id: w.complete})["by_action"]["web_cluster"]
+    assert everywhere["recall"] == 1. and everywhere["zero_row_press_rate"] == 1.   # recall alone would reward this

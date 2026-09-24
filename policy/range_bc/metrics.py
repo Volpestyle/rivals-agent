@@ -251,3 +251,38 @@ def stratified(runs, *, early=1, late=1, self_fed=False):
 def predict_runs(runs, predictor):
     """Pair each record of each run with a baseline predictor's output."""
     return [[(rec, predictor(rec)) for rec in run] for run in runs]
+
+
+def window_block(runs, windows):
+    """Replay evaluation sets only (lane doc "Replay window-level loss"): per action with complete cast windows, the
+    share of windows holding at least one decoded press (probability or sent bit >= THRESHOLD) of that action among
+    the steps whose target row lies in the window, the mean decoded presses per window, and the decoded-press rate on
+    the action's press = 0 rows (a model pressing everywhere would reach recall 1). windows: {session_id: [(c, f, l)]}.
+    No gate reads it."""
+    by_row = {(rec["session"], rec["target_row"]): (rec, pred) for run in runs for rec, pred in run
+              if rec["valid"] and rec["target_row"] is not None}
+    out = {}
+    for sid, ws in windows.items():
+        for c, f, l in ws:
+            a = out.setdefault(vocab.NAMES[c], {"windows": 0, "evaluated": 0, "hits": 0, "presses": 0,
+                                                "zero_rows": 0, "zero_row_presses": 0})
+            a["windows"] += 1
+            got = [by_row[sid, k][1]["press"][c] >= THRESHOLD for k in range(f, l + 1) if (sid, k) in by_row]
+            if len(got) < l - f + 1:                      # a window must be evaluated on all of its rows
+                continue
+            a["evaluated"] += 1
+            a["hits"] += any(got)
+            a["presses"] += sum(got)
+    for (sid, _), (rec, pred) in by_row.items():
+        t = rec["target"]
+        for name, a in out.items():
+            c = vocab.INDEX[name]
+            if sid in windows and t.get("press_known", t["known"])[c] and t["press"][c] == 0:
+                a["zero_rows"] += 1
+                a["zero_row_presses"] += pred["press"][c] >= THRESHOLD
+    for a in out.values():
+        a["recall"] = a["hits"] / a["evaluated"] if a["evaluated"] else None
+        a["presses_per_window"] = a["presses"] / a["evaluated"] if a["evaluated"] else None
+        a["zero_row_press_rate"] = a["zero_row_presses"] / a["zero_rows"] if a["zero_rows"] else None
+    recalls = [a["recall"] for a in out.values() if a["recall"] is not None]
+    return {"by_action": out, "macro_recall": sum(recalls) / len(recalls) if recalls else None}

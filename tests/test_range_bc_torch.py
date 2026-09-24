@@ -1,15 +1,17 @@
 """The end-to-end range fit's torch pieces: model, loss, deterministic trainer, both evaluation modes, checkpoints,
 the fit CLI and the bench. Runs with `uv run --group execution pytest tests/test_range_bc_torch.py` (skipped without
 torch)."""
+import dataclasses
 from dataclasses import replace
 import hashlib
 import json
+import math
 
 import pytest
 
 torch = pytest.importorskip("torch")
 
-from policy.range_bc import bench, cache, fixture, steps, train, vocab  # noqa: E402
+from policy.range_bc import baselines, bench, cache, fixture, steps, train, vocab  # noqa: E402
 from policy.range_bc.model import Config, Policy, parameter_count  # noqa: E402
 
 TINY = Config(channels=(4, 4, 4), reduce=2, embed=8, hud_embed=4, history_embed=8, hidden=16)
@@ -246,6 +248,7 @@ def test_the_fit_cli_end_to_end(tmp_path):
     assert set(r["gates"]) == {"dev", "val"} and set(r["gates"]["val"]) == {"model", "model_nohud"}
     assert all(v["complete"] for v in r["gates"]["val"].values())
     assert r["candidate"] == "model_nohud" and r["hud_parity"] is None          # no passing P2': the no-HUD arm
+    assert "windows" not in r["metrics"]["val"] and "press_windows" not in r["windows"]   # human: no window term
     assert r["sealed_denylist"]["default"] is True
     tf = r["metrics"]["val"]["teacher_forced"]
     assert set(tf) == set(arms) | {"persistence", "zero_motion", "prior", "echo", "ar2"}
@@ -500,3 +503,107 @@ def test_a_replay_row_with_unknown_movement_never_contributes_to_the_movement_lo
     base = train.total_loss(train.loss_terms(acts.detach(), cams.detach(), b, torch.ones(2, vocab.N)))
     after = train.total_loss(train.loss_terms(acts.detach(), cams.detach(), flipped, torch.ones(2, vocab.N)))
     assert torch.equal(base, after)
+
+
+# ---- replay press windows (the window-level loss; lane doc "Replay window-level loss") -------------------------------
+
+def replay_window_arrays(tmp_path, name="rw", lag=0):
+    tmp_path.mkdir(parents=True, exist_ok=True)
+    path = fixture.write_replay_windows(tmp_path, name)
+    session = steps.load(path)
+    fake_cache(tmp_path / "caches" / name, session)
+    return train.SessionArrays(session, cache.open_cache(tmp_path / "caches" / name, session), lag=lag,
+                               press_windows=steps.load_windows(session))
+
+
+def test_the_window_term_is_zero_at_its_optimum_and_matches_the_closed_form():
+    z = torch.full((12,), -3.)
+    z[5] = 40.                                                                  # one press certain
+    assert float(train.window_nll(z)) < 1e-6
+    z = torch.linspace(-4, 1, 12, dtype=torch.float64)
+    total = float(torch.nn.functional.softplus(z).sum())
+    assert abs(float(train.window_nll(z)) - -math.log(1 - math.exp(-total))) < 1e-6
+    assert float(train.window_nll(torch.full((3,), -60.))) == pytest.approx(-math.log(1e-12), rel=1e-4)   # capped
+
+
+def test_the_window_term_has_gradient_only_inside_its_window_and_only_for_its_action():
+    t, wc = 96, vocab.INDEX["web_cluster"]
+    batch = {"act": torch.zeros(1, t, 3, vocab.N), "act_mask": torch.zeros(1, t, 3, vocab.N, dtype=torch.bool),
+             "camera": torch.full((1, t, 2), vocab.ZERO_CLASS, dtype=torch.long),
+             "camera_mask": torch.zeros(1, t, 2, dtype=torch.bool),
+             "win_index": torch.tensor([[0, wc, 20, 36]])}
+    acts = torch.full((1, t, 3, vocab.N), -1., requires_grad=True)
+    cams = torch.zeros(1, t, 2, vocab.CAMERA_CLASSES, requires_grad=True)
+    terms = train.loss_terms(acts, cams, batch, torch.ones(2, vocab.N))
+    train.total_loss(terms).backward()
+    g = acts.grad[0]
+    assert (g[20:36, 1, wc] != 0).all()                                         # every step of the window
+    assert g[:20].abs().sum() == 0 and g[36:].abs().sum() == 0                  # nothing outside it
+    other = torch.ones(vocab.N, dtype=torch.bool)
+    other[wc] = False
+    assert g[:, :, other].abs().sum() == 0 and g[:, (0, 2)].abs().sum() == 0    # no other action, hold or release
+    # one window over no known entries: the press term is that window's NLL, weighted by its action's pos_weight
+    pw = torch.ones(2, vocab.N)
+    pw[0, wc] = 3.
+    expected = 3. * train.window_nll(acts.detach()[0, 20:36, 1, wc])
+    assert torch.allclose(train.loss_terms(acts.detach(), cams.detach(), batch, pw)["press"], expected)
+
+
+def test_each_window_is_scored_once_per_epoch_and_window_only_sequences_carry_no_step_loss(tmp_path):
+    arr = replay_window_arrays(tmp_path)
+    b64 = train.Batches([arr], stride=64, frames=False)
+    assert b64.window_report["window_only_sequences"] == 1 == len(b64.window_only)
+    assert b64.window_report["by_action"]["get_over_here"] == {
+        "complete": 2, "counted": 2, "scored_base": 1, "scored_own": 1, "unplaced": 0, "overlap_pairs": 0,
+        "largest_group": 1}
+    batch = b64.batch(list(range(len(b64.windows))))
+    seen = sorted((c, t0 + b64.windows[i][1], t1 - 1 + b64.windows[i][1]) for i, c, t0, t1 in
+                  batch["win_index"].tolist())
+    assert seen == sorted(arr.press_windows.counted)                             # every counted window, once
+    (own,) = b64.window_only
+    assert not batch["act_mask"][own].any() and not batch["camera_mask"][own].any()
+    assert batch["act_mask"][[i for i in range(len(b64.windows)) if i != own]].any()
+    b48 = train.Batches([arr], stride=48, frames=False)
+    assert not b48.window_only and len(b48.batch(list(range(len(b48.windows))))["win_index"]) == 6
+    # with lag 1 the window's positions move one step earlier, still one scoring each
+    lagged = replay_window_arrays(tmp_path / "lag", lag=1)
+    bl = train.Batches([lagged], stride=64, frames=False)
+    rows = sorted((t0 + bl.windows[i][1], c) for i, c, t0, _ in
+                  bl.batch(list(range(len(bl.windows))))["win_index"].tolist())
+    assert rows[0] == (9, vocab.INDEX["web_cluster"]) and len(rows) == 6
+
+
+def test_human_batches_and_the_human_loss_are_untouched(tmp_path):
+    arr = arrays(tmp_path)
+    assert arr.press_windows is None
+    b = train.Batches([arr])
+    assert not b.has_windows and b.window_report is None and not b.window_only
+    batch = b.batch([0, 1])
+    assert set(batch) == {"global", "crop", "hud", "prev", "act", "act_mask", "camera", "camera_mask", "regime", "aug"}
+    acts = torch.randn(2, 96, 3, vocab.N)
+    cams = torch.randn(2, 96, 2, vocab.CAMERA_CLASSES)
+    pw = torch.full((2, vocab.N), 4.)
+    mask = batch["act_mask"].float()
+    bce = torch.nn.functional.binary_cross_entropy_with_logits(acts[:, :, 1], batch["act"][:, :, 1], reduction="none",
+                                                               pos_weight=pw[0])
+    press = (bce * mask[:, :, 1]).sum() / mask[:, :, 1].sum().clamp_min(1)     # today's expression, verbatim
+    assert torch.equal(train.loss_terms(acts, cams, batch, pw)["press"], press)
+
+
+def test_replay_evaluation_reports_window_recall_and_the_cli_still_refuses_replay(tmp_path):
+    arr = replay_window_arrays(tmp_path)
+    torch.manual_seed(0)
+    model = Policy(replace(TINY, hud=False)).eval()
+    relabelled = dataclasses.replace(arr.session, header={**arr.session.header, "split": "train"})
+    placed, _ = steps.place_windows(arr.session, arr.press_windows.counted)
+    stats = steps.train_statistics([relabelled], windows={arr.session.session_id: placed})
+    ar2 = baselines.fit_ar2([relabelled])
+    evaluation, _ = train.evaluate_set({("model_nohud", 0): model}, [arr], stats, ar2, device="cpu")
+    block = evaluation["windows"]["model_nohud"][0]
+    assert set(block) == {"tf", "sf"}
+    assert block["tf"]["by_action"]["web_cluster"]["windows"] == 3                # complete cast windows, any length
+    assert block["tf"]["by_action"]["amazing_combo"]["windows"] == 2              # the 70-row one is evaluated
+    with pytest.raises(steps.StepError, match="replay"):                        # no CLI path loads a replay table
+        train.main(["--train", str(arr.session.path), "--cache-root", str(tmp_path / "caches"), "--out",
+                    str(tmp_path / "o"), "--scope", "smoke", "--epochs", "1", "--model-config",
+                    json.dumps(TINY.as_dict())])

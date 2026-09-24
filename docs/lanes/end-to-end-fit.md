@@ -1013,3 +1013,218 @@ which both derive and `train.parity_record` require.
    - candidate no-HUD.
 5. **The generated `launch.ps1` and `collect.ps1` hung on `ssh` under PowerShell 5.1.** Their steps were run from Git
    Bash instead. The driver is being changed to generate bash scripts for these two.
+
+## Replay window-level loss (pre-registration, 2026-09-24, before any code)
+
+**Status: pre-registered, then implemented.**
+- Pre-registered 2026-09-24 as section sha256 `75c530a7…`, before any code.
+- The lead's go the same day accepted W1-W3 as written, and asked that each run report the overlap count and largest
+  group per action, the extra sequences per epoch, and windows scored against complete.
+- Implemented and tested: see "Implemented" at the end of this section.
+- No replay fit has run. `--scope fit` still refuses replay cohorts.
+
+### What the term reads
+
+The replay step builder (`scripts/replay_steps.py`) writes `steps/<session>.press-windows.json`, format
+`rivals-replay-press-windows-v1`, with one record per HUD cast event:
+- `action`, `ability`, `basis`, `count`;
+- `cast` (false for a flagged stretch);
+- `lag_measured`;
+- `lo_ns` / `hi_ns` on the table's anchor clock, `lo_s` / `hi_s` and `evidence_s` in file seconds;
+- `rows` = [first, last] table rows overlapping the window, or null;
+- `complete` = those rows are one run's consecutive steps covering the whole window.
+
+The table's `press` is null on every step overlapping a window: never 0, never 1.
+
+**A window counts only when `cast` and `complete` are both true** (review-replay-steps-2's two conditions). Everything
+else is flagged and contributes nothing:
+- `cast` false (a flagged stretch);
+- `complete` false (cut by a run break, a death or excluded footage);
+- `rows` null.
+
+DayMR's table (`91df5010…` windows file, 29,121 rows, 24 runs) holds 439 records:
+
+| Action | Records | Complete cast | Flagged | Partial |
+|---|---|---|---|---|
+| web_cluster | 263 | 262 | 0 | 1 |
+| get_over_here | 60 | 60 | 0 | 0 |
+| amazing_combo | 76 | 74 | 0 | 2 |
+| team_up | 31 | 22 | 9 | 0 |
+| ultimate | 9 | 8 | 0 | 1 |
+
+### The reader (refusals)
+
+The windows file is found next to its step table as `<session_id>.press-windows.json`. It is refused when:
+- its sha256 differs from the table header's `source.press_windows.sha256`;
+- its format, `session_id` or `step_ns` differ from the table's;
+- a record lacks a field or has a mistyped one;
+- a record's `action` is not in `vocab.NAMES`;
+- `lo_ns` > `hi_ns`;
+- `rows` is out of the table's range or has first > last;
+- `complete` is true but the rows are not one run's consecutive steps, or do not cover [`lo_ns`, `hi_ns`] (checked
+  against the table, not taken on trust);
+- **any row inside a `cast` window has a non-null press for that action**. A cast is never both a window positive and a
+  step 0 or 1;
+- two records are exact duplicates (same action, `lo_ns`, `hi_ns` and `evidence_s`);
+- a human-source table has a windows file at all.
+
+**W1 (accepted): overlapping windows of the same action are allowed, not refused.** DayMR's web_cluster casts come
+about 1 s apart with windows of about 32 rows.
+- 65 overlapping pairs occur, in groups of 2 (45), 3 (7) and 4 (2): 119 of 262 complete windows.
+- A refusal would reject the only replay table.
+- Each window keeps its own "at least one press" term, so two overlapping windows may be satisfied by one shared press.
+  That is a sound relaxation: it never asserts anything false, and it only loses the "two distinct presses"
+  information.
+- For the same reason, `count` 2 (four web_cluster events) is scored as "at least one".
+- The alternatives were refusing (the brief's wording, which rejects the table) or excluding every window in an
+  overlap group (loses 119 of 262). A "≥ k distinct presses" term would be a later pre-registration.
+
+### The term
+
+For each counted window `w` of action `c`, over rows `f..l`, with `z_t` = the press logit of `c` at step `t`
+(`action_logits[..., 1, c]`):
+
+```
+S_w   = sum over t in f..l of softplus(z_t)      = -sum log(1 - sigmoid(z_t))
+P_w   = 1 - exp(-S_w)                              (the probability of at least one press in the window, noisy-OR)
+NLL_w = -log(-expm1(-max(S_w, 1e-12)))
+```
+
+- **At the optimum**, one step's `z_t` → +∞, so `S_w` → ∞ and `NLL_w` → 0.
+- **Away from it**, every step in the window gets gradient `-sigmoid(z_t) · exp(-S_w) / P_w`, and steps outside the
+  window get none.
+- **The clamp** caps a window whose every logit is below about −30 at NLL 27.6.
+
+**W3 (accepted): weight and normalisation.** A counted window is **one positive press observation** of its action,
+weighted like a labelled positive step. It enters the existing press term:
+
+```
+press = ( sum over known press entries of pw * BCE * mask  +  sum over windows scored in the batch of pw_c * NLL_w )
+        / ( number of known press entries + number of windows scored in the batch )
+```
+
+- `pw_c` is the action's press `pos_weight`. For a replay cohort, `train_statistics` counts each counted, scorable
+  train window as one press positive and one known press entry of its action. So `pw_c = min(20, negatives /
+  windows)`, exactly as for human presses.
+- `LOSS_WEIGHTS["press"]` stays 1. No window-specific weight exists, and none is tuned.
+- **Releases get no window term.** Replay releases are unlabelled.
+
+**W2 (accepted): which training sequence scores a window.** A window is scored only in a training sequence whose
+loss-scored steps (after burn-in) include all of `f..l`.
+- The base tiling alone would miss many windows. At the real fit's stride 64 it scores whole only these (stride 48 in
+  brackets):
+
+  | Action | Stride 64 | (Stride 48) |
+  |---|---|---|
+  | web_cluster | 131 / 262 | (172) |
+  | get_over_here | 50 / 60 | |
+  | amazing_combo | 67 / 74 | |
+  | team_up | 20 / 22 | |
+  | ultimate | 6 / 8 | |
+
+- **So each counted window is assigned to exactly one sequence per epoch:**
+  - the first base sequence (in tile order) that scores it whole;
+  - otherwise **its own window-only sequence**. That is a 96-step sequence in the window's run, placed to centre the
+    window in its scored span and clipped to the run. Its step terms (every head) and camera are masked, so it adds
+    only this window's term.
+- **Unscorable windows** (longer than 64 rows, or in a run too short to place a sequence) are flagged and never
+  scored. DayMR has 7: web_cluster 4, get_over_here 1, team_up 1, ultimate 1, all widened ones of 80-450 rows.
+- Window-only sequences add at most one forward pass per uncovered window, and windows placed alike share one. For
+  DayMR the implementation measures:
+
+  | Stride | Base sequences score | Window-only sequences |
+  |---|---|---|
+  | 64 | 274 windows | 145 |
+  | 48 | 329 windows | 90 |
+
+  None is left unplaced. Replay only.
+
+### Metrics (replay evaluation sets only)
+
+Next to the existing step metrics, a separate `windows` block, per cast action and macro over those present:
+- `recall_tf` and `recall_sf`: the fraction of the set's complete cast windows (every length) with at least one decoded
+  press of `c` inside `f..l`, teacher-forced and self-fed. The same decoder is used (`executor.decode_step`,
+  threshold 0.5).
+- `presses_per_window`: the mean number of decoded presses inside those windows.
+- `zero_row_press_rate`: the fraction of press = 0 rows of `c` with a decoded press. This guards against a model that
+  presses everywhere.
+- The flagged, partial and unscorable window counts.
+
+No gate is defined on these, and none is claimed. The replay arm's gates wait for the inverse-dynamics trust gates.
+
+### What it never touches
+
+- **Human cohorts are byte-identical.** Human tables carry no windows file, and the reader refuses one. Human batches
+  carry no window tensors, so `loss_terms` takes today's code path unchanged. No random draw is added, the step-table
+  format is unchanged, and so are human metrics, reports and checkpoints.
+- **`--scope fit` keeps refusing replay cohorts** (`load_cohort(allow_replay=False)`, which no CLI passes) until the
+  inverse-dynamics trust gates are recorded. Mixed replay-plus-human cohorts stay refused.
+- `scripts/replay_steps.py` and its outputs are not changed.
+
+### Acceptance tests (written with the code; all must pass on Windows stdlib and torch, and in the perception environment)
+
+1. **Reader:** a synthetic replay fixture with complete, partial, flagged, overlapping and too-long windows.
+   - Complete cast windows (≤ 64 rows) enter the term.
+   - Partial, flagged and too-long ones are flagged and excluded, with the counts reported.
+   - No step inside any cast window is a 0 or 1 for its action.
+   - Each refusal above has its own test: sha256 mismatch, a non-null row in a window, a false `complete`, a
+     duplicate, bad fields, a windows file on a human table.
+2. **The term:**
+   - a window with one very large logit inside has window loss < 1e-6;
+   - at moderate logits the gradient is non-zero on every step of `f..l` and exactly zero outside it and on every
+     other action;
+   - the loss equals the closed form above in float64 to 1e-6.
+3. **Assignment:** every counted window is scored exactly once per epoch, either in a base sequence or its own
+   window-only one. A window-only sequence contributes no step or camera loss.
+4. **Human byte-identity:** on the smoke fixture (human cohort, tiny config, CPU, seed 0), the per-epoch loss values
+   and the checkpoint sha256 are identical before and after the change. Before is recorded at `abda588`, after on the
+   changed tree, on the same machine. Every existing test passes.
+5. **The replay refusal stays:** `load_cohort` without `allow_replay` still refuses the replay split, and no CLI path
+   loads one.
+
+### Implemented (2026-09-24, uncommitted)
+
+**`steps.py`:**
+- `load_windows` is the reader, with every refusal above. It checks rows and completeness against the table's own
+  anchors, and a press-windows file must be pinned by the table's header.
+- `place_windows` implements W2, including lag (positions are target rows minus lag).
+- `train_statistics(..., windows=)` implements W3. It stays train-split only: a replay arm passes a relabelled copy, as
+  the existing replay statistics test does.
+
+**`train.py`:**
+- `SessionArrays(press_windows=)`.
+- `Batches` places the windows and adds window-only sequences, whose step and camera masks are cleared. It reports
+  `window_report`, and replay batches carry `win_index`.
+- `window_nll` and the press term in `loss_terms`.
+- `evaluate_set` adds a `windows` block only for replay sets.
+- `load_arrays` loads a table's windows file, and refuses one beside a human table.
+- `run_fit` feeds the placed windows to the statistics.
+
+**`metrics.window_block`:** recall, presses per window, and the decoded-press rate on press = 0 rows, per action and
+macro.
+
+**`fixture.replay_windows_session` and `write_replay_windows`:** a replay table with complete, overlapping,
+over-length, partial, flagged and stride-64-uncovered windows.
+
+**Found and fixed on the way:** `predict_teacher` and `predict_self` read `calibration["pitch_deg_per_count"]`, which a
+replay calibration does not carry. So replay evaluation could not run. `_pitch_known` now treats replay degrees as
+known, and gives the same value as before for every human table.
+
+**On the real DayMR table (read only):**
+- The reader accepts it. Per action:
+
+  | Action | Counted | Too long | Partial | Flagged | Overlap pairs | Largest group |
+  |---|---|---|---|---|---|---|
+  | web_cluster | 258 | 4 | 1 | | 65 | 4 |
+  | get_over_here | 59 | 1 | | | | |
+  | amazing_combo | 74 | | 2 | | | |
+  | team_up | 21 | 1 | | 9 | | |
+  | ultimate | 7 | 1 | 1 | | | |
+
+- Placement at stride 64 and 48 is in the W2 table above.
+
+**Human byte-identity (acceptance test 4):**
+- Run on the smoke fixture (human, tiny config, CPU, seed 0, 2 epochs), all three arms, at `abda588` and on the
+  changed tree on the same machine.
+- The two outputs are byte-identical (`9d74453f…`): checkpoints, per-epoch losses, press statistics and dev
+  teacher-forced metrics.

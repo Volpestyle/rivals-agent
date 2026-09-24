@@ -202,6 +202,57 @@ def replay_session(session_id="replay-a", *, split="replay", runs=(120, 60), see
     return header, rows
 
 
+# (action, first row, last row, cast) over replay runs (150, 120): two overlapping web_cluster windows, a 70-row one
+# (longer than a sequence's scored span), one across the run break (partial), a flagged stretch, and one (84-99) that
+# no stride-64 base tile scores whole (a window-only sequence there; at stride 48 the tile at 48 scores it).
+WINDOW_SPECS = (("web_cluster", 10, 25, True), ("web_cluster", 20, 35, True), ("web_cluster", 60, 75, True),
+                ("get_over_here", 40, 50, True), ("amazing_combo", 78, 147, True), ("get_over_here", 84, 99, True),
+                ("web_cluster", 145, 155, True), ("get_over_here", 100, 110, False), ("amazing_combo", 200, 210, True))
+
+
+def replay_windows_session(session_id="replay-w", *, runs=(150, 120), seed=0, specs=WINDOW_SPECS):
+    """A replay recording in the press-window contract (scripts/replay_steps.py): cast actions hold no 1 anywhere;
+    each spec is one cast's window [lo_ns, hi_ns] inside its rows, every step overlapping it null for its action.
+    Returns (header, rows, windows document); write_replay_windows pins the document in the header."""
+    header, rows = replay_session(session_id, runs=runs, seed=seed)
+    for r in rows:
+        for name in REPLAY_CASTS:
+            c = vocab.INDEX[name]
+            if r["press"][c] == 1:
+                r["press"][c] = 0                                        # the table holds no 1 for a cast action
+    anchors = [r["anchor_ns"] for r in rows]
+    records = []
+    for i, (action, f, l, cast) in enumerate(specs):
+        lo, hi = anchors[f] + STEP_NS // 3, anchors[l] + STEP_NS // 2
+        ks = [k for k in range(len(rows)) if anchors[k] < hi and anchors[k] + STEP_NS > lo]
+        whole = anchors[ks[0]] <= lo and hi <= anchors[ks[-1]] + STEP_NS and all(
+            rows[k]["run"] == rows[ks[0]]["run"] and anchors[k] - anchors[k - 1] == STEP_NS for k in ks[1:])
+        c = vocab.INDEX[action]
+        for k in ks:
+            rows[k]["press"][c] = None
+            rows[k]["press_known"][c] = False
+        records.append({"action": action, "ability": f"hud-{action}", "basis": "first_seen" if cast else "flagged",
+                        "count": 1, "cast": cast, "lag_measured": cast, "lo_s": f / 30, "hi_s": l / 30,
+                        "lo_ns": lo, "hi_ns": hi, "evidence_s": [f / 30 + .1, l / 30 + .1 + i],
+                        "rows": [ks[0], ks[-1]], "complete": whole})
+    doc = {"format": steps.WINDOWS_FORMAT, "session_id": session_id, "step_ns": STEP_NS,
+           "windows": sorted(records, key=lambda r: (r["lo_ns"], r["action"]))}
+    return header, rows, doc
+
+
+def write_replay_windows(directory, session_id="replay-w", *, header=None, rows=None, doc=None, **kw):
+    """Write the table and its <session_id>.press-windows.json side by side, the document's sha256 pinned in the
+    header's source.press_windows. Returns the table path."""
+    if header is None:
+        header, rows, doc = replay_windows_session(session_id, **kw)
+    directory = Path(directory)
+    wpath = directory / f"{session_id}.press-windows.json"
+    wpath.write_bytes((json.dumps(doc, indent=1) + "\n").encode("utf-8"))
+    header = {**header, "source": {**header["source"],
+                                   "press_windows": {"path": wpath.name, "sha256": steps.sha256(wpath)}}}
+    return write(directory / f"{session_id}.jsonl", header, rows)
+
+
 # ---- video ------------------------------------------------------------------------------------------------------------
 
 def frame_colours(n):

@@ -47,11 +47,12 @@ def require(condition, message):
 
 class SessionArrays:
     """Per-row tensors for one recording's eligible runs: action targets and known mask, camera classes and mask,
-    previous action, validity and regime. Rows outside eligible runs stay invalid and are never windowed."""
+    previous action, validity and regime. Rows outside eligible runs stay invalid and are never windowed.
+    press_windows: a replay table's steps.PressWindows (the window-level term), None for human tables."""
 
-    def __init__(self, session, frames, *, lag=0, regimes=("normal",)):
+    def __init__(self, session, frames, *, lag=0, regimes=("normal",), press_windows=None):
         n = len(session.rows)
-        self.session, self.lag, self.regimes = session, lag, regimes
+        self.session, self.lag, self.regimes, self.press_windows = session, lag, regimes, press_windows
         self.act = torch.zeros(n, 3, vocab.N)
         self.act_known = torch.zeros(n, 3, vocab.N, dtype=torch.bool)   # per channel: hold, press, release
         self.camera = torch.full((n, 2), vocab.ZERO_CLASS, dtype=torch.long)
@@ -107,6 +108,44 @@ class Batches:
                     self.dropped["dropped_steps"] += b - a
                 else:
                     self.windows += [(si, st, n, a) for st, n in tiles]
+        # replay press windows (W2): each scored by exactly one sequence per epoch; human cohorts have none
+        self.has_windows = any(arr.press_windows is not None for arr in arrays)
+        self.window_terms, self.window_only, self.window_report = {}, set(), None
+        if self.has_windows:
+            self._place_windows(window, stride, min_run, burn_in)
+
+    def _place_windows(self, window, stride, min_run, burn_in):
+        index = {(si, st): i for i, (si, st, _, _) in enumerate(self.windows)}
+        report = {}
+        for si, arr in enumerate(self.arrays):
+            if arr.press_windows is None:
+                continue
+            for action, r in arr.press_windows.report.items():
+                a = report.setdefault(action, {"complete": 0, "counted": 0, "scored_base": 0, "scored_own": 0,
+                                               "unplaced": 0, "overlap_pairs": 0, "largest_group": 0})
+                a["complete"] += r["complete"]
+                a["counted"] += r["counted"]
+                a["overlap_pairs"] += r["overlap_pairs"]
+                a["largest_group"] = max(a["largest_group"], r["largest_group"])
+            placed, unplaced = steps.place_windows(arr.session, arr.press_windows.counted, lag=arr.lag,
+                                                   regimes=arr.regimes, window=window, stride=stride,
+                                                   min_run=min_run, burn_in=burn_in)
+            own_index = {}
+            for c, p0, p1, st, n, run_start, own in placed:
+                if own:                               # windows placed alike share one window-only sequence
+                    i = own_index.get(st)
+                    if i is None:
+                        i = own_index[st] = len(self.windows)
+                        self.windows.append((si, st, n, run_start))
+                        self.window_only.add(i)
+                else:
+                    i = index[(si, st)]
+                self.window_terms.setdefault(i, []).append((c, p0 - st, p1 - st + 1))
+                report[vocab.NAMES[c]]["scored_own" if own else "scored_base"] += 1
+            for c, *_ in unplaced:
+                report[vocab.NAMES[c]]["unplaced"] += 1
+        self.window_report = {"by_action": report, "window_only_sequences": len(self.window_only),
+                              "base_sequences": len(self.windows) - len(self.window_only)}
 
     def batch(self, ids, generator=None, *, jitter=.1, prev_dropout=.2, shift=DRQ_PX):
         b, t = len(ids), self.window
@@ -136,6 +175,15 @@ class Batches:
             camera[i, :length] = arr.camera[rows]
             camera_mask[i, :length] = arr.camera_known[rows] & live[:, None]
             regime[i, :length] = arr.regime[rows]
+        extra = {}
+        if self.has_windows:                          # replay only: human batches keep exactly today's keys
+            win = []
+            for i, w in enumerate(ids):
+                if w in self.window_only:             # a window-only sequence adds its window term and nothing else
+                    act_mask[i] = False
+                    camera_mask[i] = False
+                win += [(i, c, t0, t1) for c, t0, t1 in self.window_terms.get(w, ())]
+            extra["win_index"] = torch.tensor(win, dtype=torch.long).reshape(-1, 4)
         aug = None
         if generator is not None:
             aug = {"scale": 1 + (torch.rand(b, generator=generator) * 2 - 1) * jitter,
@@ -146,7 +194,8 @@ class Batches:
             if not self.load_frames:
                 aug = None
         return {"global": frames[0], "crop": frames[1], "hud": frames[2], "prev": prev, "act": act,
-                "act_mask": act_mask, "camera": camera, "camera_mask": camera_mask, "regime": regime, "aug": aug}
+                "act_mask": act_mask, "camera": camera, "camera_mask": camera_mask, "regime": regime, "aug": aug,
+                **extra}
 
 
 def drq_shift(x, shifts, pad=DRQ_PX):
@@ -174,16 +223,36 @@ def to_device(batch, device):
 
 # ---- loss -------------------------------------------------------------------------------------------------------------
 
+def window_nll(press_logits):
+    """-log P(at least one press) over one window's steps, noisy-OR: -log(1 - exp(-sum softplus(z))) (lane doc
+    "Replay window-level loss"). Zero at the optimum (one logit -> +inf); every step of the window gets gradient."""
+    total = F.softplus(press_logits).sum().clamp_min(1e-12)
+    return -torch.log(-torch.expm1(-total))
+
+
 def loss_terms(action_logits, camera_logits, batch, pos_weight):
     """Masked means: BCE for holds, BCE with pos_weight for press and release, CE for the camera classes. Each
     channel has its own known mask [B, T, 3, N]: an unknown hold, press or release (a replay abstention, a hold
-    unknown after a focus snapshot) contributes nothing to its term."""
+    unknown after a focus snapshot) contributes nothing to its term.
+
+    A replay batch's press windows (win_index rows: sequence, action, first, end) join the press term as one positive
+    observation each, weighted by the action's press pos_weight (W3): the term's numerator gains pw * window_nll and
+    its denominator one per window. Human batches carry no win_index and take the plain masked mean."""
     mask = batch["act_mask"].float()
     terms = {}
     for i, name in enumerate(("held", "press", "release")):
         pw = None if i == 0 else pos_weight[i - 1]
         bce = F.binary_cross_entropy_with_logits(action_logits[:, :, i], batch["act"][:, :, i], reduction="none",
                                                  pos_weight=pw)
+        if name == "press" and "win_index" in batch:
+            num, den = (bce * mask[:, :, i]).sum(), mask[:, :, i].sum()
+            wins = batch["win_index"].tolist()
+            if wins:
+                nll = torch.stack([window_nll(action_logits[b, t0:t1, 1, c]) for b, c, t0, t1 in wins])
+                num = num + (pw[[c for _, c, _, _ in wins]] * nll).sum()
+                den = den + len(wins)
+            terms[name] = num / den.clamp_min(1)
+            continue
         terms[name] = (bce * mask[:, :, i]).sum() / mask[:, :, i].sum().clamp_min(1)
     cm = batch["camera_mask"].float()                               # [B, T, 2]: per axis
     ce = F.cross_entropy(camera_logits.reshape(-1, vocab.CAMERA_CLASSES), batch["camera"].reshape(-1),
@@ -294,6 +363,11 @@ def _frames(model, arr, rows):
     return arr.frames(rows) if model.config.frames else arr.blank(len(rows))
 
 
+def _pitch_known(session):
+    """A replay table's degrees come direct (no pitch gain to know); a human table needs its pitch gain."""
+    return steps.is_replay(session.header) or session.calibration["pitch_deg_per_count"] is not None
+
+
 @torch.no_grad()
 def predict_teacher(model, arrays, *, device="cpu", chunk=steps.WINDOW):
     """Teacher-forced: the true previous action is the input; each run from its start with the state carried."""
@@ -310,7 +384,7 @@ def predict_teacher(model, arrays, *, device="cpu", chunk=steps.WINDOW):
                                           regime=arr.regime[rows][None].to(device))
                 p = torch.sigmoid(acts[0]).cpu()
                 m = torch.softmax(cams[0], -1).cpu()
-                pitch_known = arr.session.calibration["pitch_deg_per_count"] is not None
+                pitch_known = _pitch_known(arr.session)
                 for i in range(len(rows)):
                     out.append({"held": p[i, 0].tolist(), "press": p[i, 1].tolist(), "release": p[i, 2].tolist(),
                                 "yaw": vocab.class_degrees(vocab.median_class(m[i, 0].tolist())),
@@ -331,7 +405,7 @@ def predict_self(model, arrays, live_mask, *, device="cpu", chunk=steps.WINDOW, 
             records = steps.step_records(arr.session, a, b, lag=arr.lag)
             out, state, sent_prev = [], None, None
             prev_held = [0] * vocab.N
-            pitch_known = arr.session.calibration["pitch_deg_per_count"] is not None
+            pitch_known = _pitch_known(arr.session)
             for s in range(a, b, chunk):
                 rows = torch.arange(s, min(b, s + chunk))
                 g, c, h = (x[None].to(device) for x in _frames(model, arr, rows))
@@ -420,7 +494,7 @@ def load_arrays(paths, cache_root, *, lag, regimes, splits, denylist, verify_has
     for session in steps.load_cohort(paths, splits=splits, denylist=denylist):
         frames = cache.open_cache(Path(cache_root) / session.session_id, session, verify_hashes=verify_hashes)
         arrays.append(SessionArrays(steps.truncate(session, fraction, regimes=regimes), frames, lag=lag,
-                                    regimes=regimes))
+                                    regimes=regimes, press_windows=steps.load_windows(session)))
     return arrays
 
 
@@ -458,12 +532,18 @@ def require_committed(files):
 def evaluate_set(models, arrays, stats, ar2, *, device):
     """Teacher-forced and self-fed blocks, sanity, baselines, and a gate verdict per model arm on one evaluation set."""
     tf, sf, sane = {}, {}, {}
+    wins = {arr.session.session_id: arr.press_windows.complete for arr in arrays if arr.press_windows is not None}
+    win_block = {}
     for (arm, seed), model in models.items():
-        tf.setdefault(arm, {})[seed] = metrics.stratified(predict_teacher(model, arrays, device=device),
-                                                          **metrics.TEACHER)
+        tf_runs = predict_teacher(model, arrays, device=device)
+        tf.setdefault(arm, {})[seed] = metrics.stratified(tf_runs, **metrics.TEACHER)
+        if wins:
+            win_block.setdefault(arm, {})[seed] = {"tf": metrics.window_block(tf_runs, wins)}
         if arm in MODEL_ARMS or arm == TWIN:
             runs = predict_self(model, arrays, stats["live_mask"], device=device)
             sf.setdefault(arm, {})[seed] = metrics.stratified(runs, **metrics.SELF)
+            if wins:
+                win_block[arm][seed]["sf"] = metrics.window_block(runs, wins)
             if arm in MODEL_ARMS:
                 sane.setdefault(arm, {})[seed] = metrics.sanity(runs)
     recs = baseline_runs(arrays)
@@ -480,7 +560,10 @@ def evaluate_set(models, arrays, stats, ar2, *, device):
             verdicts[arm] = gates.evaluate({"model": allof(tf[arm]), "history_only": allof(tf.get(TWIN, {})), **trivial},
                                            {"model": allof(sf[arm]), "history_only": allof(sf.get(TWIN, {}))},
                                            sane[arm], stats, human)
-    return {"teacher_forced": tf, "self_fed": sf, "sanity": sane, "human_sanity": human}, verdicts
+    out = {"teacher_forced": tf, "self_fed": sf, "sanity": sane, "human_sanity": human}
+    if wins:
+        out["windows"] = win_block                    # replay evaluation sets only; no gate reads it
+    return out, verdicts
 
 
 def preregistered(a):
@@ -557,7 +640,11 @@ def run_fit(a):
     dev, val = load(a.dev, "train"), load(a.val, "val")
     ids = [x.session.session_id for x in train + dev + val]
     require(len(set(ids)) == len(ids), "a recording is in more than one of train, dev and validation")
-    stats = steps.train_statistics([x.session for x in train], regimes=regimes)
+    placed = {x.session.session_id: steps.place_windows(x.session, x.press_windows.counted, lag=a.lag,
+                                                         regimes=regimes, stride=a.stride)[0]
+              for x in train if x.press_windows is not None}             # replay only (W3); human cohorts: {}
+    stats = steps.train_statistics([x.session for x in train], regimes=regimes,
+                                   **({"windows": placed} if placed else {}))
     ar2 = baselines.fit_ar2([x.session for x in train], regimes=regimes)
     base = Config.from_dict({**Config().as_dict(), **json.loads(a.model_config or "{}"),
                              "regime_bit": len(regimes) > 1})     # arm B (both regimes) adds the regime bit
@@ -625,7 +712,9 @@ def run_fit(a):
                  fit_seconds={b["run"]: b["seconds"] for b in budget}, budget=budget, checkpoints=checkpoints,
                  train_statistics=stats, ar2=ar2,
                  train_minutes=steps.train_minutes([x.session for x in train], regimes=regimes),
-                 windows={"count": len(windows.windows), **windows.dropped}, epochs_log=histories,
+                 windows={"count": len(windows.windows), **windows.dropped,
+                          **({"press_windows": windows.window_report} if windows.has_windows else {})},
+                 epochs_log=histories,
                  metrics=evaluation, gates=verdicts, test_opened=False, cpu_reference=references,
                  code_closure=code_closure(),
                  notes=["Offline gates only. A pilot also needs the executor's measured tracking error and the "

@@ -74,6 +74,7 @@ events as press onsets, per-frame ability states, with abstentions). Same format
 Every unknown channel is masked out of the loss and the metrics per channel, never read as "no". A replay row whose
 movement is unknown contributes nothing to the movement heads (tested). A cohort holds one source kind.
 """
+import bisect
 from dataclasses import dataclass, field
 import hashlib
 import json
@@ -118,6 +119,13 @@ WINDOW = 96       # steps per training sequence (3.2 s)
 STRIDE = 48       # window stride (50% overlap)
 BURN_IN = 32      # steps without loss at the start of a window that does not start at its run's start
 DRIFT_STEPS = 300  # 10 s: the window of the mean-signed-rotation drift check
+# Replay press windows (lane doc "Replay window-level loss", pre-registered and accepted 2026-09-24): the builder's
+# <session>.press-windows.json, one record per HUD cast event. A window enters the training term only when cast and
+# complete and no longer than one sequence's loss-scored span.
+WINDOWS_FORMAT = "rivals-replay-press-windows-v1"
+WINDOW_KEYS = ("action", "ability", "basis", "count", "cast", "lag_measured", "lo_s", "hi_s", "lo_ns", "hi_ns",
+               "evidence_s", "rows", "complete")
+MAX_WINDOW_ROWS = WINDOW - BURN_IN
 
 
 class StepError(ValueError):
@@ -650,9 +658,12 @@ def step_records(session, a, b, *, lag=0, start=None, stop=None):
     return out
 
 
-def train_statistics(sessions, *, regimes=("normal",)):
+def train_statistics(sessions, *, regimes=("normal",), windows=None):
     """From the train split only: presses per action (live mask, pos_weight, rates), priors, camera class histograms,
-    the longest human hold per action and the range of 10 s mean signed rotation (stuck and drift checks)."""
+    the longest human hold per action and the range of 10 s mean signed rotation (stuck and drift checks).
+
+    windows (replay only, W3): {session_id: placed windows (place_windows)}; each counts as one press positive and one
+    known press entry of its action, so its pos_weight is the action's as for a labelled press."""
     require(all(s.split == "train" for s in sessions), "statistics come from the train split only")
     n = vocab.N
     stats = {"steps": 0, "press": [0] * n, "release": [0] * n, "held": [0] * n, "known": [0] * n,
@@ -693,6 +704,10 @@ def train_statistics(sessions, *, regimes=("normal",)):
                     mean = sum(values[w:w + DRIFT_STEPS]) / DRIFT_STEPS
                     lo, hi = stats["drift"][axis]
                     stats["drift"][axis] = [mean if lo is None else min(lo, mean), mean if hi is None else max(hi, mean)]
+    for placed in (windows or {}).values():
+        for c, *_ in placed:
+            stats["press"][c] += 1
+            stats["press_known"][c] += 1
     stats["live_mask"] = list(vocab.live_mask(stats["press"], sessions[0].header["swing_mode"] if sessions else None))
     replay = lambda s: s.calibration.get("kind") == "replay_degrees"      # degrees come direct: no pitch gain
     stats["pitch_gain_known"] = all(replay(s) or s.calibration["pitch_deg_per_count"] is not None for s in sessions)
@@ -700,6 +715,147 @@ def train_statistics(sessions, *, regimes=("normal",)):
                                        (s.calibration.get("pitch") or {}).get("kind") or "unknown" for s in sessions})
     stats["degree_caveat"] = vocab.DEGREE_CAVEAT
     return stats
+
+
+# ---- replay press windows (the window-level loss) -----------------------------------------------------------------
+
+@dataclass
+class PressWindows:
+    """A replay table's press windows, checked against the table. counted: [(c, first row, last row)] for the training
+    term (cast, complete, at most MAX_WINDOW_ROWS rows); complete: every complete cast window, any length, for the
+    evaluation's window recall; report: per action counts."""
+    counted: list
+    complete: list
+    report: dict
+
+
+def windows_path(session):
+    return Path(session.path).with_name(f"{session.session_id}.press-windows.json")
+
+
+def _num(v):
+    return isinstance(v, (int, float)) and not isinstance(v, bool)
+
+
+def load_windows(session):
+    """The press windows of a replay table, or None. Refused: a windows file beside a human table or unpinned by its
+    replay header, a sha256 other than the header's pin, a format, session or step length other than the table's,
+    a malformed record, rows or completeness that differ from what the table's anchors give, a non-null press of the
+    window's action on any row the window overlaps, and exact duplicates. Overlapping windows of one action are allowed
+    (W1): each keeps its own at-least-one-press term, which may be met by one shared press."""
+    path = windows_path(session)
+    pin = (session.header.get("source") or {}).get("press_windows") if is_replay(session.header) else None
+    if pin is None:
+        require(not path.exists(), f"{session.session_id}: a press-windows file its step table does not pin "
+                "(human tables carry none)")
+        return None
+    require(isinstance(pin, dict) and _hex64(pin.get("sha256")), "source.press_windows needs a sha256")
+    require(path.exists(), f"{session.session_id}: press-windows file {path.name} is missing")
+    require(sha256(path) == pin["sha256"], f"{path.name}: sha256 differs from the step table's pin")
+    doc = json.loads(path.read_text(encoding="utf-8"))
+    require(isinstance(doc, dict) and doc.get("format") == WINDOWS_FORMAT, f"{path.name}: not {WINDOWS_FORMAT}")
+    require(doc.get("session_id") == session.session_id, f"{path.name}: names another session")
+    step = session.header["step_ns"]
+    require(doc.get("step_ns") == step, f"{path.name}: step_ns differs from the table")
+    records = doc.get("windows")
+    require(isinstance(records, list), f"{path.name}: windows must be a list")
+    rows = session.rows
+    anchors = [r["anchor_ns"] for r in rows]
+    report = {}
+    seen, counted, complete = set(), [], []
+    spans = {}
+    for i, w in enumerate(records):
+        where = f"{path.name} window {i}"
+        require(isinstance(w, dict) and all(k in w for k in WINDOW_KEYS), f"{where}: needs {WINDOW_KEYS}")
+        require(w["action"] in vocab.INDEX, f"{where}: action {w['action']!r} is not in the vocabulary")
+        require(all(isinstance(w[k], str) for k in ("ability", "basis")), f"{where}: ability and basis are strings")
+        require(_is_int(w["count"]) and w["count"] >= 1, f"{where}: count must be an int >= 1")
+        require(all(isinstance(w[k], bool) for k in ("cast", "lag_measured", "complete")),
+                f"{where}: cast, lag_measured and complete are bools")
+        require(_is_int(w["lo_ns"]) and _is_int(w["hi_ns"]) and w["lo_ns"] <= w["hi_ns"], f"{where}: lo_ns <= hi_ns")
+        require(_num(w["lo_s"]) and _num(w["hi_s"]) and isinstance(w["evidence_s"], list) and len(w["evidence_s"]) == 2
+                and all(map(_num, w["evidence_s"])), f"{where}: lo_s, hi_s and evidence_s [t_lo, t_hi] are numbers")
+        key = (w["action"], w["lo_ns"], w["hi_ns"], tuple(w["evidence_s"]))
+        require(key not in seen, f"{where}: an exact duplicate of an earlier window")
+        seen.add(key)
+        lo, hi = w["lo_ns"], w["hi_ns"]
+        k0 = max(0, bisect.bisect_left(anchors, lo - step))
+        ks = [k for k in range(k0, bisect.bisect_left(anchors, hi)) if anchors[k] + step > lo]
+        require(w["rows"] == ([ks[0], ks[-1]] if ks else None),
+                f"{where}: rows {w['rows']} differ from the steps overlapping [lo_ns, hi_ns] ({ks[:1] + ks[-1:]})")
+        whole = bool(ks) and anchors[ks[0]] <= lo and hi <= anchors[ks[-1]] + step and all(
+            rows[k]["run"] == rows[ks[0]]["run"] and anchors[k] - anchors[k - 1] == step for k in ks[1:])
+        require(w["complete"] == whole, f"{where}: complete is {w['complete']}, the table gives {whole}")
+        c = vocab.INDEX[w["action"]]
+        require(all(rows[k]["press"][c] is None for k in ks),
+                f"{where}: a row inside the window has a non-null {w['action']} press (never both a window and a step)")
+        a = report.setdefault(w["action"], {"records": 0, "cast": 0, "flagged": 0, "complete": 0, "partial": 0,
+                                            "too_long": 0, "counted": 0, "overlap_pairs": 0, "largest_group": 0})
+        a["records"] += 1
+        if not w["cast"]:
+            a["flagged"] += 1
+            continue
+        a["cast"] += 1
+        if not whole:
+            a["partial"] += 1
+            continue
+        a["complete"] += 1
+        complete.append((c, ks[0], ks[-1]))
+        spans.setdefault(w["action"], []).append((ks[0], ks[-1]))
+        if ks[-1] - ks[0] + 1 > MAX_WINDOW_ROWS:
+            a["too_long"] += 1
+            continue
+        a["counted"] += 1
+        counted.append((c, ks[0], ks[-1]))
+    for action, sp in spans.items():                  # W1: overlaps are reported, not refused
+        sp.sort()
+        group, end = 1, sp[0][1]
+        report[action]["largest_group"] = 1
+        for f, l in sp[1:]:
+            if f <= end:
+                report[action]["overlap_pairs"] += 1
+                group += 1
+            else:
+                group = 1
+            end = max(end, l)
+            report[action]["largest_group"] = max(report[action]["largest_group"], group)
+    return PressWindows(sorted(counted, key=lambda x: (x[1], x[0])), sorted(complete, key=lambda x: (x[1], x[0])),
+                        report)
+
+
+def place_windows(session, counted, *, lag=0, regimes=("normal",), window=WINDOW, stride=STRIDE, min_run=MIN_RUN,
+                  burn_in=BURN_IN):
+    """W2: each counted window (c, f, l), in table rows, scored by exactly one training sequence per epoch.
+
+    The window's sequence positions are f - lag .. l - lag (the output at position k is the target of row k + lag).
+    It goes to the first base tile of its run whose loss-scored positions hold all of them; otherwise to its own
+    window-only sequence (a tile-length sequence placed to centre it in the scored span, clipped to the run), whose
+    step and camera terms are masked. Returns (placed [(c, p0, p1, start, length, run_start, own)], unplaced
+    [(c, f, l, why)])."""
+    placed, unplaced = [], []
+    run_list = runs(session, regimes=regimes)
+    for c, f, l in counted:
+        p0, p1 = f - lag, l - lag
+        run = next(((a, b) for a, b in run_list if a <= p0 and l < b), None)
+        if run is None or not all(session.rows[k]["gap_free"] for k in range(f, l + 1)):
+            unplaced.append((c, f, l, "not inside one eligible, gap-free run"))
+            continue
+        a, b = run
+        tiles = tile(a, b, window=window, stride=stride, min_run=min_run)
+        if tiles is None:
+            unplaced.append((c, f, l, "its run is shorter than min_run"))
+            continue
+        base = next(((st, n) for st, n in tiles if st + loss_mask_start(st, a, burn_in) <= p0 and p1 < st + n), None)
+        if base is not None:
+            placed.append((c, p0, p1, base[0], base[1], a, False))
+            continue
+        n = min(window, b - a)
+        st = max(a, min(p0 - burn_in - (window - burn_in - (p1 - p0 + 1)) // 2, b - n))
+        if st + loss_mask_start(st, a, burn_in) <= p0 and p1 < st + n:
+            placed.append((c, p0, p1, st, n, a, True))
+        else:
+            unplaced.append((c, f, l, "no sequence scores it whole"))
+    return placed, unplaced
 
 
 def pos_weight(positives, total, cap=20.):
