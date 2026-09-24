@@ -10,8 +10,11 @@ plumbing reports (VUH-1359, VUH-1346). Stdlib only; it never trains and never op
                             archive and the two Mac scripts
           mac-prepare.zsh   Mac: verify hashes, unpack the code, sync its venv, check the tables, build the caches
           mac-queue.zsh     Mac: every pre-registered run in order, one log and exit file each, stop at a failure
-          launch.ps1        Windows: prepare (foreground), then the queue as one niced durable job
-          collect.ps1       Windows: copy the reports back and run derive
+          launch.sh         Git Bash: prepare (foreground), then the queue as one niced durable job; refuses while
+                            a queue runs or a queue status exists (one queue only)
+          collect.sh        Git Bash: copy the reports back, check them against the Mac's sha256, run derive
+        launch and collect are bash, not PowerShell: under PowerShell 5.1, ssh hung twice on 2026-09-23/24 (the
+        remote command had finished). transfer.ps1 stays PowerShell for Get-FileHash and metadata.json.
     derive --plan plan.json --runs DIR --hud-parity FILE --out preregistration.json
         Checks every report against the plan (scope, cohort and step-table sha256, arguments), checks p1/p2 byte
         repeatability, applies the pre-registered derivation and writes the real fit's --preregistration file, with
@@ -224,31 +227,45 @@ def scripts(p, pre, mac_root=MAC_ROOT):
     for name, args in p_runs(p):
         queue.append(f"run {name} {' '.join(args)} || {{ echo FAILED {name} >$R/plumb-queue.status; exit 1; }}")
     queue.append("echo DONE >$R/plumb-queue.status")
-    launch = [f"# Range BC plumbing launch (commit {p['commit']}).",
-              "# No ErrorActionPreference Stop here: under PowerShell 5.1 a redirected native stderr line (uv's",
-              "# progress) would end the script mid-ssh; the exit status is checked instead.",
-              f"ssh -o BatchMode=yes mac 'zsh -l {pl}/mac-prepare.zsh'",
-              "if ($LASTEXITCODE) { throw 'prepare failed' }",
-              f"ssh -o BatchMode=yes mac 'nohup nice -n 10 zsh -l {pl}/mac-queue.zsh >/dev/null 2>&1 & "
-              f"echo $! > {pl}/queue.pid'",
-              f"# Status: ssh mac 'cat {rn}/plumb-queue.status; tail -n 3 {rn}/plumb-*.log; cat {rn}/plumb-*.exit'",
+    ssh = "ssh -T -o BatchMode=yes -o ServerAliveInterval=15"
+    scp = "scp -q -o BatchMode=yes -o ServerAliveInterval=15"
+    launch = ["#!/bin/bash", f"# Range BC plumbing launch (commit {p['commit']}). Git Bash, from anywhere; plain ssh,",
+              "# exit statuses checked. One queue only: refuses while a queue runs or a queue status exists.",
+              "set -u",
+              f"busy=$({ssh} mac 'pgrep -f mac-queue.zsh; ls {rn}/plumb-queue.status 2>/dev/null')"
+              " || true",
+              "[ -z \"$busy\" ] || { echo \"a plumbing queue is running or has run: $busy\" >&2; exit 1; }",
+              f"{ssh} mac 'zsh -l {pl}/mac-prepare.zsh' || {{ echo 'prepare failed' >&2; exit 1; }}",
+              f"{ssh} -n mac 'nohup nice -n 10 zsh -l {pl}/mac-queue.zsh >/dev/null 2>&1 & "
+              f"echo $! > {pl}/queue.pid' || {{ echo 'queue launch failed' >&2; exit 1; }}",
+              f"echo \"queue launched: pid $({ssh} mac 'cat {pl}/queue.pid')\"",
+              f"# Status: {ssh} mac 'cat {rn}/plumb-queue.status; tail -n 3 {rn}/plumb-*.log; cat {rn}/plumb-*.exit'",
               "# Report from the .exit files, the logs and the reports, never from the launch."]
-    collect = [f"# Range BC plumbing collect (commit {p['commit']}): reports back, then derive. Run from the repo root.",
-               "# -Parity: the HUD parity JSON (a P2' result if one exists, else run 1, hud-parity-1.json).",
-               "# Native exit statuses are checked; no ErrorActionPreference Stop (see launch.ps1).",
-               "param([Parameter(Mandatory = $true)][string] $Parity)", "$H = $PSScriptRoot",
-               f"if ((ssh -o BatchMode=yes mac 'cat {rn}/plumb-queue.status') -ne 'DONE') {{ throw 'queue not done' }}"]
-    for name, _ in p_runs(p):
-        collect += [f"New-Item -ItemType Directory -Force \"$H\\runs\\{name}\" | Out-Null",
-                    f"scp -o BatchMode=yes mac:{rn}/{name}/report.json \"$H\\runs\\{name}\\\"",
-                    f"if ($LASTEXITCODE) {{ throw 'copy failed: {name}' }}"]
-    collect += ["uv run --offline --locked --group execution python docs\\evidence\\fit-readiness-20260923\\"
-                "range_bc_plumbing.py derive --plan \"$H\\plan.json\" --runs \"$H\\runs\" --hud-parity $Parity "
-                "--out \"$H\\preregistration.json\"",
-                "if ($LASTEXITCODE) { throw 'derive refused' }"]
+    names = [name for name, _ in p_runs(p)]
+    collect = ["#!/bin/bash",
+               f"# Range BC plumbing collect (commit {p['commit']}): reports back, then derive. Git Bash, from the repo",
+               "# root: bash collect.sh <HUD parity JSON> (a P2' result if one exists, else run 1 in the current format).",
+               "set -u",
+               "[ $# -eq 1 ] || { echo 'usage: collect.sh <hud parity json>' >&2; exit 2; }",
+               "PARITY=$1",
+               "H=$(cd \"$(dirname \"$0\")\" && pwd)       # /c/... (Git Bash converts it for native programs)",
+               f"st=$({ssh} mac 'cat {rn}/plumb-queue.status') || {{ echo 'status read failed' >&2; exit 1; }}",
+               "[ \"$st\" = DONE ] || { echo \"queue not done: $st\" >&2; exit 1; }",
+               f"NAMES=\"{' '.join(names)}\"",
+               "for n in $NAMES; do",
+               f"  mkdir -p \"$H/runs/$n\" && {scp} \"mac:{rn}/$n/report.json\" \"$H/runs/$n/\" "
+               "|| { echo \"copy failed: $n\" >&2; exit 1; }",
+               "done",
+               f"mac=$({ssh} mac \"cd {rn} && for n in $NAMES; do shasum -a 256 \\$n/report.json; done\") "
+               "|| { echo 'Mac hashes failed' >&2; exit 1; }",
+               "here=$(cd \"$H/runs\" && for n in $NAMES; do sha256sum \"$n/report.json\" | sed 's/ \\*/  /'; done)",
+               "[ \"$mac\" = \"$here\" ] || { echo 'copied reports differ from the Mac' >&2; exit 1; }",
+               "uv run --offline --locked python docs/evidence/fit-readiness-20260923/range_bc_plumbing.py derive "
+               "--plan \"$H/plan.json\" --runs \"$H/runs\" --hud-parity \"$PARITY\" --out \"$H/preregistration.json\" "
+               "|| { echo 'derive refused' >&2; exit 1; }"]
     lf = lambda lines: "\n".join(lines) + "\n"
     return {"transfer.ps1": lf(ps), "mac-prepare.zsh": lf(prep), "mac-queue.zsh": lf(queue),
-            "launch.ps1": lf(launch), "collect.ps1": lf(collect)}
+            "launch.sh": lf(launch), "collect.sh": lf(collect)}
 
 
 def p_runs(p):
@@ -269,7 +286,8 @@ def commands(a):
         (out / name).write_text(text, encoding="utf-8", newline="\n")
     print(json.dumps({"cohort": {k: [v["role"], round(v["counted_minutes"], 2)] for k, v in p["cohort"].items()},
                       "max_steps": p["max_steps"], "budget_total_hours": p["budget_total_hours"]}, indent=1))
-    print(f"next: {out / 'transfer.ps1'}, then {out / 'launch.ps1'}; later {out / 'collect.ps1'}")
+    print(f"next: {out / 'transfer.ps1'} (PowerShell), then bash {out / 'launch.sh'}; "
+          f"later bash {out / 'collect.sh'} <parity json> (Git Bash, from the repo root)")
     return 0
 
 

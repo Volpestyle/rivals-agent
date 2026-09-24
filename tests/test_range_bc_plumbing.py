@@ -4,6 +4,9 @@ import copy
 import importlib.util
 import json
 from pathlib import Path
+import shutil
+import subprocess
+import sys
 
 import pytest
 
@@ -100,7 +103,7 @@ def test_commands_write_the_plan_and_the_scripts(tmp_path):
     assert minutes == sorted(minutes) and minutes[0] > 0
     assert set(p["budget_minutes"]) == {r["name"] for r in p["runs"]} and p["budget_total_hours"] > 0
     s = plumbing.scripts(p, pre)
-    assert set(s) == {"transfer.ps1", "mac-prepare.zsh", "mac-queue.zsh", "launch.ps1", "collect.ps1"}
+    assert set(s) == {"transfer.ps1", "mac-prepare.zsh", "mac-queue.zsh", "launch.sh", "collect.sh"}
     assert all("053616" not in text and "\r" not in text for text in s.values())
     q = s["mac-queue.zsh"]
     assert q.count("\nrun plumb-") == 9 and "--scope plumbing" in q and "--val" not in q
@@ -114,7 +117,33 @@ def test_commands_write_the_plan_and_the_scripts(tmp_path):
     t = s["transfer.ps1"]
     assert NEW_TRAIN in t and NEW_DEV in t and "mac:'" not in t and "\"mac:" not in t and "git archive" in t
     assert all(p["cohort"][sid]["media_sha256"] in t for sid in (NEW_TRAIN, NEW_DEV))
-    assert "nohup nice -n 10" in s["launch.ps1"] and "ErrorActionPreference = 'Stop'" not in s["launch.ps1"]
+    # launch and collect are Git Bash scripts: ssh under PowerShell 5.1 hung twice after the remote command finished
+    for name in ("launch.sh", "collect.sh"):
+        text = s[name]
+        assert text.startswith("#!/bin/bash\n") and "\nset -u\n" in text and "powershell" not in text.lower()
+        assert "$LASTEXITCODE" not in text and "ErrorActionPreference" not in text
+        ssh_lines = [line for line in text.splitlines() if "ssh " in line and not line.startswith("#")]
+        assert ssh_lines and all("-o BatchMode=yes -o ServerAliveInterval=15" in line for line in ssh_lines)
+    launch = s["launch.sh"]
+    assert launch.index("pgrep -f mac-queue.zsh") < launch.index("mac-prepare.zsh")       # one queue only
+    assert "plumb-queue.status 2>/dev/null" in launch
+    assert "mac-prepare.zsh' || { echo 'prepare failed' >&2; exit 1; }" in launch      # no queue after a failed prepare
+    assert launch.index("mac-prepare.zsh") < launch.index("nohup nice -n 10 zsh -l")
+    collect = s["collect.sh"]
+    assert "[ $# -eq 1 ]" in collect and "--hud-parity \"$PARITY\"" in collect         # the parity file is required
+    assert '[ "$st" = DONE ]' in collect and "copied reports differ from the Mac" in collect
+    assert all(r["name"] in collect for r in p["runs"]) and "|| { echo 'derive refused' >&2; exit 1; }" in collect
+    assert "--group execution" not in collect                                          # derive is stdlib: no torch sync
+
+
+@pytest.mark.skipif(sys.platform == "win32" or not shutil.which("bash"), reason="bash -n where bash is POSIX bash")
+def test_the_generated_bash_scripts_parse(tmp_path):
+    pre, sha = plumbing.load_prereg()
+    write_cohort(tmp_path, pre)
+    for name, text in plumbing.scripts(plumbing.plan(pre, sha, "0123456789abcdef", root=tmp_path), pre).items():
+        if name.endswith(".sh"):
+            (tmp_path / name).write_text(text, encoding="utf-8", newline="\n")
+            assert subprocess.run(["bash", "-n", str(tmp_path / name)]).returncode == 0, name
 
 
 def test_commands_refuse_a_broken_dev_rule_and_a_validation_recording(tmp_path):

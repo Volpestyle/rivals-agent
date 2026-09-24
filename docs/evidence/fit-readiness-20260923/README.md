@@ -515,8 +515,8 @@ if ($LASTEXITCODE) { throw 'cache build failed' }
 
 # 6-8. Fits: one durable niced job each, on the Mac, waiting for its exit status (the pattern of "Next fit" step 3).
 #    The plumbing fit is generated, not typed: range_bc_plumbing.py commands --commit <landed sha> --out-dir <dir>
-#    writes transfer.ps1, mac-prepare.zsh, mac-queue.zsh, launch.ps1 and collect.ps1 from
-#    range_bc_plumbing_prereg.json; collect.ps1 ends in `derive`, which writes the real fit's preregistration.json.
+#    writes transfer.ps1 (PowerShell), mac-prepare.zsh, mac-queue.zsh, launch.sh and collect.sh (Git Bash) from
+#    range_bc_plumbing_prereg.json; `bash collect.sh <parity json>` ends in `derive`, which writes the real fit's preregistration.json.
 #    smoke:     --scope smoke    --train <train steps> --dev <dev steps> --epochs 1 --seeds 0
 #    plumbing:  --scope plumbing --train ... --dev ... --epochs 20 --seeds 0            (dev curve; no --val)
 #               the same again into a second --out (the repeatability check: compare the two checkpoints' sha256)
