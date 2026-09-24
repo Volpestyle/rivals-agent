@@ -35,3 +35,4 @@ Total logged range play with inputs: about 17 trainable minutes before the campa
 - 2026-09-23: **Swing bindings**, per James: normal Web-Swing on the default key (Shift) with default swing settings; **Simple Swing bound to Caps Lock** as a separate key. Caps Lock (VK 20) presses, if any, are simple-swing actions, not UI keys.
 - 2026-09-23: **No physical controller was plugged in during any recording session** (James's attestation, ~15:55 CDT). Device scope for every human session: single keyboard and mouse.
 - 2026-09-23: **OBS recording encoder switched to NVENC HEVC** (same quality tier, 1440p120, MKV) after the 15-01-29 take; anchor verified on the 15-37-16 test (63 Mbps on the 15-47-07 take versus ~130 Mbps under H.264).
+- 2026-09-24: **key "2"** is bound to both Amazing Combo and Get Over Here targeting in James's settings; James does not use it. It stays ambiguous/unsupported in every binding table.
