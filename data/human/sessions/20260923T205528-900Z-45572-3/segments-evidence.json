@@ -3,8 +3,8 @@
  "session_group": "20260923T205528-900Z-45572-3",
  "split": "train",
  "media_sha256": "bf32202abd0b93a300453ffaa9896b7566c52ee4ed8b6aacb8edc9a4dd6f11e9",
- "snapshot": "code-snapshot-c0892ab",
- "snapshot_manifest_sha256": "998f7852011f49c57164f6a6cc46bae9d1e37aab4cac87d6cb58a2bad1ae830b",
+ "snapshot": "code-snapshot-23c8482",
+ "snapshot_manifest_sha256": "103ab682122eb9e755d9f67c52deb8647a6fb516e9df7ffe0947051c78545c19",
  "registry": {
   "path": "data/human/session-splits.corpus.json",
   "sha256": "01bc1e00335f1f2e303fa116b0b8f53cf3d9b78a624a184c85b5184e0b850f3e"
@@ -944,7 +944,11 @@
    "seen": null
   }
  ],
- "earlier_steps": "provenance, verify, profile, vote, scan and regime ran from code-snapshot-72eee24: the same committed code as this snapshot (git diff 72eee24..c0892ab is empty for agent, perception, policy and scripts); agent/human_intake.py then lacked only FOCUS_SETTLE_NS",
+ "earlier_steps": {
+  "snapshot": "code-snapshot-c0892ab",
+  "manifest_sha256": "998f7852011f49c57164f6a6cc46bae9d1e37aab4cac87d6cb58a2bad1ae830b",
+  "steps": "provenance, verify, profile, vote, scan, regime, motor"
+ },
  "motor": {
   "path": "motor-settings.json",
   "sha256": "181d28b21d38d5159c357fdecd7cd094ca6cbebba080d252c1eca625c544195b"

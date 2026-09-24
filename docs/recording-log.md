@@ -18,10 +18,10 @@ for whole-session behaviour cloning (movement, targeting, combos), not just web-
 | 2026-09-23 00-39-29.mkv | 20260923T053929-795Z-33696-3 | 1 min | range, calibration | normal | inspected |
 | 2026-09-23 00-43-25.mkv | 20260923T054325-507Z-33696-4 | 34 min | DayMR native replay viewing (no player inputs to learn; route map cut) | n/a | replay corpus (VUH-1328) |
 | 2026-09-23 12-15-33.mkv | 20260923T171533-187Z-33696-5 | 3 min | range, Galacta, full-ammo combos with waited cooldowns, pulls at the end | normal | logger complete, 0 drops; intake pending |
-| 2026-09-23 15-01-29.mkv | 20260923T200129-346Z-33696-6 | 26.8 min | range, Galacta, whole-session campaign take 1 (James: "firing range footage"; content details at intake) | normal (no drop note) | logger complete, clean stop, 0 drops, 0 raw-input errors; intake pending |
+| 2026-09-23 15-01-29.mkv | 20260923T200129-346Z-33696-6 | 26.8 min | range, Galacta, whole-session campaign take 1 (James: "firing range footage"; content details at intake) | normal (no drop note) | logger complete, clean stop, 0 drops, 0 raw-input errors; admitted (afff279): train, normal, 26.62 counted min (seg-007, seg-010; death cut at 765.5 s), steps `fcc9b044` |
 | 2026-09-23 15-37-16.mkv | 20260923T203716-726Z-45572-1 | 7 s | HEVC encoder test (NVENC HEVC, same quality tier); anchor holds (+21 ms, residual 0.333 ms) | n/a | encoder check only, not registered |
 | 2026-09-23 15-47-07.mkv | 20260923T204707-487Z-45572-2 | 2.0 min | calibration take (HEVC): settings screens (keyboard, controller), slow 360° yaw, pitch sweep; content confirmed at intake | normal | logger complete, 0 drops; intake pending |
-| 2026-09-23 15-55-28.mkv | 20260923T205528-900Z-45572-3 | 11.1 min | range, whole-session campaign take 2 (HEVC, ~110 Mbps: busier content than the calibration take) | normal (no drop note) | logger complete, clean stop, 0 drops; intake pending |
+| 2026-09-23 15-55-28.mkv | 20260923T205528-900Z-45572-3 | 11.1 min | range, whole-session campaign take 2 (HEVC, ~110 Mbps: busier content than the calibration take) | normal (no drop note) | logger complete, clean stop, 0 drops; admitted (afff279): train, normal, 11.07 counted min (seg-002), steps `941950f1` |
 
 Total logged range play with inputs: about 17 trainable minutes before the campaign; campaign take 1 adds up to ~27 min (pending intake). Campaign target: 180 minutes.
 
