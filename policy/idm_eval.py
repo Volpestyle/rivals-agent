@@ -22,8 +22,15 @@ Rows: only usable target rows count (accepted, gap-free, normal regime; policy.i
   answered rows with probability >= THRESHOLD (pre-registered 0.5). Matching is one-to-one inside a run within
   TOLERANCE intervals (the label-precision window, +-2 x 16.7 ms), nearest first. Reported: precision, recall, F1,
   median absolute onset error of matches (intervals), abstention rate, held-out positives, and whether the action has
-  the MIN_HELDOUT_POSITIVES a stop rule needs to decide anything (F7). Rows the predictor abstained on are left out
-  of that action's truth and predictions alike: the scores are at the predictor's coverage, reported beside it.
+  the MIN_HELDOUT_POSITIVES a stop rule needs to decide anything (F7).
+  Abstention is not neutral (idm-diag, 2026-09-24): every true onset on a known row is a positive whether or not the
+  predictor answered there, so an onset on an abstained row is a miss unless an answered prediction within TOLERANCE
+  claims it (then it is found, and the neighbour is not charged a false positive). The onsets on abstained rows are
+  reported ("abstained_onsets", and "abstained_onsets_missed" of them unmatched); abstained rows make no prediction.
+  Beside F1: the per-action AUC of the press probability, onset rows against the rest, over the ANSWERED rows (an
+  abstention carries no probability; "auc_rows" counts them); and the onset-error median is reported with the density
+  it was measured at ("predicted_onset_rate" per answered row, "true_onset_rate" per known row), since a predictor
+  that fires on most rows matches every onset at error 0.
 
 Results are per held-out session and pooled; uncertainty is by session (F7), so a single session reports no interval.
 """
@@ -152,45 +159,77 @@ def _match(truth_pos, pred_pos, tolerance):
     return matches
 
 
+def auc(on_scores, off_scores):
+    """P(a random onset row scores above a random other row), ties counted half (the Mann-Whitney U over both sizes);
+    None unless both kinds of row exist."""
+    if not on_scores or not off_scores:
+        return None
+    ranked = sorted([(v, True) for v in on_scores] + [(v, False) for v in off_scores])
+    rank_sum, i = 0.0, 0
+    while i < len(ranked):
+        j = i
+        while j < len(ranked) and ranked[j][0] == ranked[i][0]:
+            j += 1
+        rank_sum += (i + 1 + j) / 2 * sum(1 for k in range(i, j) if ranked[k][1])
+        i = j
+    n_on, n_off = len(on_scores), len(off_scores)
+    return (rank_sum - n_on * (n_on + 1) / 2) / (n_on * n_off)
+
+
 def edge_metrics(targets, preds, supported, *, tolerance=TOLERANCE, threshold=THRESHOLD):
     out = {}
     runs = _runs(targets.rows)
     for c, action in enumerate(vocab.NAMES):
         if not supported.get(action):
             continue
-        tp = fp = fn = known = abstained = positives = 0
-        errors = []
+        tp = fp = fn = known = abstained = answered = positives = abstained_onsets = abstained_missed = 0
+        predicted = 0
+        errors, on_scores, off_scores = [], [], []
         for run in runs:
-            truth_pos, pred_pos = [], []
+            truth_pos, pred_pos, abstained_truth = [], [], set()
             for k, r in enumerate(run):
                 if not r["held_known"][c]:
                     continue
                 known += 1
+                onset = r["press"][c] > 0
+                if onset:                                   # every known onset is a positive, answered or not
+                    truth_pos.append(k)
                 p = preds.get(r["i"], {}).get("press", {}).get(action)
                 if p is None:
                     abstained += 1
+                    if onset:
+                        abstained_truth.add(k)
                     continue
-                if r["press"][c] > 0:
-                    truth_pos.append(k)
+                answered += 1
+                (on_scores if onset else off_scores).append(p)
                 if p >= threshold:
                     pred_pos.append(k)
             positives += len(truth_pos)
+            predicted += len(pred_pos)
+            abstained_onsets += len(abstained_truth)
             m = _match(truth_pos, pred_pos, tolerance)
             tp += len(m)
             fp += len(pred_pos) - len(m)
             fn += len(truth_pos) - len(m)
+            abstained_missed += len(abstained_truth - {t for t, _ in m})
             errors += [abs(t - p) for t, p in m]
         precision = tp / (tp + fp) if tp + fp else None
         recall = tp / (tp + fn) if tp + fn else None
         f1 = (2 * precision * recall / (precision + recall) if precision and recall else
               (0.0 if (precision is not None or recall is not None) else None))
-        out[action] = {"known_rows": known, "abstention_rate": round(abstained / known, 4) if known else None,
+        a = auc(on_scores, off_scores)
+        out[action] = {"known_rows": known, "answered_rows": answered,
+                       "abstention_rate": round(abstained / known, 4) if known else None,
                        "heldout_positives": positives, "decides": positives >= MIN_HELDOUT_POSITIVES,
+                       "abstained_onsets": abstained_onsets, "abstained_onsets_missed": abstained_missed,
                        "tp": tp, "fp": fp, "fn": fn,
                        "precision": None if precision is None else round(precision, 4),
                        "recall": None if recall is None else round(recall, 4),
                        "f1": None if f1 is None else round(f1, 4),
-                       "onset_error_intervals_median": statistics.median(errors) if errors else None}
+                       "auc": None if a is None else round(a, 4), "auc_rows": len(on_scores) + len(off_scores),
+                       "onset_error_intervals_median": statistics.median(errors) if errors else None,
+                       "predicted_onset_rate": round(predicted / answered, 4) if answered else None,
+                       "true_onset_rate": round(positives / known, 4) if known else None}
     return out
 
 

@@ -100,18 +100,75 @@ def test_matching_never_crosses_a_run_boundary():
     assert (fwd["tp"], fwd["fp"], fwd["fn"]) == (0, 1, 1)
 
 
-def test_abstentions_are_rated_and_left_out_of_the_scores():
-    t = targets(rows_of([1.0] * 20, presses=[(3, FWD), (15, FWD)]))
-
-    def half(rows):
-        p = oracle(rows)
-        for r in rows[10:]:
-            p[r["i"]] = {"yaw_deg": None, "pitch_deg": None, "press": {a: None for a in vocab.NAMES}}
+def abstain_at(rows_to_skip, base=None):
+    """A predictor that answers like `base` (the oracle) except on the given row indices, where it abstains."""
+    def predict(rows):
+        p = (base or oracle)(rows)
+        for r in rows:
+            if r["i"] in rows_to_skip:
+                p[r["i"]] = {"yaw_deg": None, "pitch_deg": None, "press": {a: None for a in vocab.NAMES}}
         return p
-    rep = E.evaluate([t], half, SUPPORTED)["sessions"]["held"]
+    return predict
+
+
+def test_abstentions_are_rated_and_an_abstained_onset_is_a_miss():
+    t = targets(rows_of([1.0] * 20, presses=[(3, FWD), (15, FWD)]))
+    rep = E.evaluate([t], abstain_at(set(range(10, 20))), SUPPORTED)["sessions"]["held"]
     assert rep["camera"]["yaw_deg"]["abstention_rate"] == 0.5 and rep["camera"]["yaw_deg"]["abs_error_deg"]["n"] == 10
     fwd = rep["edges"]["move_forward"]
-    assert fwd["abstention_rate"] == 0.5 and fwd["heldout_positives"] == 1 and fwd["f1"] == 1
+    assert fwd["abstention_rate"] == 0.5 and fwd["answered_rows"] == 10
+    assert fwd["heldout_positives"] == 2 and (fwd["tp"], fwd["fp"], fwd["fn"]) == (1, 0, 1)   # row 15 abstained
+    assert (fwd["abstained_onsets"], fwd["abstained_onsets_missed"]) == (1, 1)
+    assert fwd["recall"] == 0.5 and fwd["f1"] == pytest.approx(0.6667)
+
+
+def test_abstention_cannot_hide_onsets_from_the_positive_count():
+    """idm-diag: move_left had 183 held-out onsets and the report said 5, because 178 fell in the abstention band.
+    Here 35 of 40 onsets are abstained on: they stay positives, count as misses, and the action still decides."""
+    onsets = list(range(5, 400, 10))                                   # 40 onsets
+    t = targets(rows_of([0.0] * 400, presses=[(k, FWD) for k in onsets]))
+    fwd = E.evaluate([t], abstain_at(set(onsets[5:])), SUPPORTED)["sessions"]["held"]["edges"]["move_forward"]
+    assert fwd["heldout_positives"] == 40 and fwd["decides"] is True   # the old count was 5, deciding nothing
+    assert (fwd["abstained_onsets"], fwd["abstained_onsets_missed"]) == (35, 35)
+    assert (fwd["tp"], fwd["fp"], fwd["fn"]) == (5, 0, 35) and fwd["recall"] == 0.125
+
+
+def test_an_abstained_onset_claimed_by_an_answered_neighbour_is_found():
+    t = targets(rows_of([0.0] * 40, presses=[(20, FWD)]))
+    fwd = E.evaluate([t], abstain_at({20}, base=shifted(1)), SUPPORTED)["sessions"]["held"]["edges"]["move_forward"]
+    assert (fwd["tp"], fwd["fp"], fwd["fn"]) == (1, 0, 0)               # the prediction at 21 claims it; no false +
+    assert (fwd["abstained_onsets"], fwd["abstained_onsets_missed"]) == (1, 0)
+
+
+def test_the_onset_error_is_reported_with_the_density_it_was_measured_at():
+    """A predictor that fires on every row matches every onset at error 0; its density says why."""
+    t = targets(rows_of([0.0] * 40, presses=[(20, FWD)]))
+
+    def always(rows):
+        p = E.zero(rows)
+        for r in rows:
+            p[r["i"]]["press"]["move_forward"] = 1.0
+        return p
+    fwd = E.evaluate([t], always, SUPPORTED)["sessions"]["held"]["edges"]["move_forward"]
+    assert fwd["onset_error_intervals_median"] == 0 and fwd["tp"] == 1 and fwd["fp"] == 39
+    assert fwd["predicted_onset_rate"] == 1.0 and fwd["true_onset_rate"] == 0.025
+
+
+def test_the_auc_ranks_onset_rows_against_the_rest_over_answered_rows():
+    t = targets(rows_of([0.0] * 40, presses=[(10, FWD), (30, FWD)]))
+
+    def inverted(rows):
+        p = oracle(rows)
+        for r in rows:
+            p[r["i"]]["press"]["move_forward"] = 1.0 - p[r["i"]]["press"]["move_forward"]
+        return p
+    edges = lambda pred: E.evaluate([t], pred, SUPPORTED)["sessions"]["held"]["edges"]
+    assert edges(oracle)["move_forward"]["auc"] == 1.0 and edges(inverted)["move_forward"]["auc"] == 0.0
+    assert edges(E.zero)["move_forward"]["auc"] == 0.5                  # all ties
+    assert edges(oracle)["jump"]["auc"] is None                          # no jump onset: no ranking to measure
+    skip = edges(abstain_at({10, 11, 12}))["move_forward"]
+    assert skip["auc_rows"] == 37 and skip["auc"] == 1.0                # abstained rows carry no probability
+    assert E.auc([0.9, 0.1], [0.5]) == 0.5 and E.auc([0.5], [0.5]) == 0.5 and E.auc([], [0.1]) is None
 
 
 def test_persistence_repeats_the_previous_truth_and_abstains_at_a_run_start():
