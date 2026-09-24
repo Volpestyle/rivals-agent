@@ -5,7 +5,7 @@ The inverse-dynamics model's first run on real data: frame stores for the four a
 plumbing fit (four folds, 3 epochs, seed 0, scope `gate1-dev`), all at commit `1df31e7` from the worktree
 `/Users/james/dev/rivals-agent-worktrees/idm`. Owner: the inverse-dynamics lane (`docs/lanes/inverse-dynamics.md`,
 entry "2026-09-24: first IDM plumbing run on the Mac"). The lane's accounts are `idm-prep.md` (steps 0-4),
-`idm-stores.md` (steps 5-6) and `idm-loso.md` (steps 7-9).
+`idm-stores.md` (steps 5-6), `idm-loso.md` (steps 7-9) and `idm-diag.md` (the per-row yaw diagnosis and the edge-head reading, added 16:25 CDT: the yaw failure is one fit's training failure, not timing, sign or speed; the edge head outputs its class prior under the pos_weight clamp; `idm_eval` counts onsets on answered rows only).
 
 **Read as plumbing, not as a gate.** Camera magnitude beats the zero baseline in every fold (yaw moving median
 0.35-0.85° against 1.22-1.46°) but is far short of the label-built persistence ceiling; yaw direction agreement is
@@ -27,6 +27,7 @@ above the calibrated band; the edge head has no usable skill (only jump fires). 
 | `*idm-prep.md` | `bc5f8fca3aa9588f57f59fc4067e75c2da5a2111050d99325b48f758689ea4d8` |
 | `*idm-stores.md` | `7d509fadeaa9d9cfec5cf1c62e14e71d62ba1bd41a837dccb4c94d910d809a70` |
 | `*idm-loso.md` | `056624745f88dc10d129b2224802525c93d514ca18177fca7f793fd6c8e74a53` |
+| `idm-diag.md` | `af4d2aaa91e5296ea46019706c5b3b4d178e9fbb436c3675b283f46fa76f60bf` |
 
 Checkpoints (`idm-seed0.pt`, hashes in `idm-loso.md`), logs and `.exit` files stay in gitignored `data/idm/runs/`
 on the PC and under `/Users/james/dev/idm-data/` on the Mac, with the stores.
