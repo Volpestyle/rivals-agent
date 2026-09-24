@@ -2213,7 +2213,7 @@ memory requirements or iteration speed justify it. Track spend against that init
 allocation and revisit funding before exceeding it; $100 is not an estimate for
 the complete project. Hosted annotation and storage costs are estimated separately.
 
-The [local-model measurement](lanes/local-jev.md) is a concrete placement constraint:
+The [local-model measurement](archive/local-jev.md) is a concrete placement constraint:
 the 35B-A3B server answers in about 85 ms median on the Mac but 175 ms median /
 531 ms p95 from the PC in the reported run. A tiny kept-alive health request takes
 63–90 ms across that path versus 0.4 ms locally. These are measurements of the present
