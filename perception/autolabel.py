@@ -18,6 +18,9 @@ import numpy as np
 
 from detect import ENEMY, Detection, draw, pick_device  # detect re-exports the agent.state names
 
+EVIDENCE = Path(__file__).resolve().parents[1] / "docs" / "evidence"
+SHEET = "data/l3/autolabel-sheet.jpg"   # gitignored; the committed sheets under docs/evidence/l3/ are a record
+
 # class -> text prompts for the open-vocab model. Several prompts can feed one class.
 # Only ENEMY so far. agent.state also defines TARGET (static range dummies) and
 # ANCHOR (swingable surfaces); neither is here yet because nothing in the trial1
@@ -119,6 +122,17 @@ def pick_val_block(per_frame, val_frac):
     return best_lo, best_lo + n
 
 
+def sheet_path(value):
+    """--sheet: a destination that cannot overwrite committed evidence. An existing file under docs/evidence/ is
+    refused before any work starts; a new path anywhere is fine, and its folder is created."""
+    path = Path(value)
+    resolved = path.resolve()
+    if resolved.exists() and EVIDENCE in resolved.parents:
+        raise argparse.ArgumentTypeError(f"{value}: refusing to overwrite committed evidence; pass a new --sheet path")
+    resolved.parent.mkdir(parents=True, exist_ok=True)
+    return path
+
+
 def contact_sheet(samples, out, cols=4, tile_w=960):
     tiles = []
     for path, dets in samples:
@@ -143,7 +157,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("frames", type=Path)
     ap.add_argument("dataset", type=Path)
-    ap.add_argument("--sheet", type=Path, default=Path("docs/evidence/l3/autolabel-sheet.jpg"))
+    ap.add_argument("--sheet", type=sheet_path, default=SHEET)
     ap.add_argument("--model", default="data/weights/yolov8x-worldv2.pt")
     ap.add_argument("--every", type=int, default=1, help="keep every Nth frame (neighbouring video frames are near-duplicates)")
     ap.add_argument("--conf", type=float, default=0.10)
