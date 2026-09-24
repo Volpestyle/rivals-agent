@@ -22,6 +22,9 @@ Usage (PC desktop session for --dry, --measure-pitch and --live; --replay runs a
         measured from settled frames with perception/camera_motion.py. Writes data/placement/lowmap-<stamp>.json
         (agent.controller.Cal's fields) and its frames under data/placement/lowmap-<stamp>/; changes no code. The
         declaration must also attest the pad settings the map holds at (LOWMAP_PAD_SETTINGS)
+  python scripts/place.py --lowmap-judge FILE [--out FILE]
+        offline, no pad: re-judge a saved lowmap-<stamp>.json from its raw rows with this file's lowmap_fit; writes
+        FILE's stem + .rejudged.json unless --out
         All three measurement modes: REFUSED unless FILE is a measurement declaration for this mode (below)
   python scripts/place.py --live --declaration FILE --bin mid
         REFUSED unless PITCH_DOWN_S, PITCH_UP_S and agent.placement.EDGE_X_M are measured (set in code), and FILE
@@ -41,6 +44,13 @@ Every declaration (check_entry) names the game PID and binds to ONE range entry 
 Rules (docs/lanes/placement.md; .agents/skills/rivals-live-game/SKILL.md):
 - No move without a pose. The planner only plans WALK/STRAFE from a localised pair, and the executor refuses one
   whose deciding view has no pose, as a second, independent check.
+- The physical-input kill switch (agent/physical_input.py; fit review, review-lowmap L4), in every measurement mode
+  and --live: a separate sentinel process listens to raw keyboard and mouse input (RIDEV_INPUTSINK). Before any pad
+  opens, a positive test: a physical touch must stop a dry run of the same check within PRE_RUN_TOUCH_S, then the
+  hands must be off for QUIET_S with the game in front, and only then does it arm. Armed, any control-affecting
+  packet from a real device fails the proof before the next write (release and stop), and a hung executor that does
+  not acknowledge the trip within 1 s is terminated by the sentinel, which unplugs the pad. No sentinel, a stale
+  heartbeat or a failed touch test: REFUSED, no pad.
 - Every input goes through agent.controller.Live, the only door to the pad. That gives the whitelist, freshness checked
   at commit, the 0.25 s neutral lease (its watchdog) and release/close on every exit. Its range proof here is
   record.in_range AND the game PID in the foreground (agent.loop.foreground_pid_guard). The kill switch is the
@@ -457,9 +467,14 @@ def check_declaration(path, *, process_info, now=None):
     return {**d, "binding_id": binding, "sha256": hashlib.sha256(raw).hexdigest()}
 
 
-def make_proof(perception, focused, idle):
-    """proof(frame) -> None if the frame allows input, else the reason it does not (focus, range, idle)."""
+def make_proof(perception, focused, idle, physical=None):
+    """proof(frame) -> None if the frame allows input, else the reason it does not (physical input, focus, range,
+    idle). `physical`: the armed agent.physical_input.PhysicalInput (None only in tests that have no sentinel)."""
     def proof(frame):
+        if physical is not None:
+            reason = physical.check()
+            if reason:
+                return reason
         if not focused():
             return "game not in the foreground (kill switch)"
         if not perception.in_range(frame):
@@ -470,8 +485,10 @@ def make_proof(perception, focused, idle):
     return proof
 
 
-def _hold(live, steps, proof, *, clock, sleep, allowed=frozenset({"rx", "ry", "lx", "ly"})):
-    """Hold each (pad, seconds) through Live, re-proving on a fresh frame before every write; neutral on every exit."""
+def _hold(live, steps, proof, *, clock, sleep, allowed=frozenset({"rx", "ry", "lx", "ly"}), stamps=None):
+    """Hold each (pad, seconds) through Live, re-proving on a fresh frame before every write; neutral on every exit.
+
+    `stamps` (a list), if given, receives the clock at the first send and at the release: the stick's on-time."""
     writes = 0
     try:
         for pad, seconds in steps:
@@ -482,10 +499,14 @@ def _hold(live, steps, proof, *, clock, sleep, allowed=frozenset({"rx", "ry", "l
                 reason = proof(live.fresh())
                 if reason:
                     raise Stopped(reason)
+                if stamps is not None and not writes:
+                    stamps.append(clock())
                 live.send(**pad)
                 writes += 1
                 sleep(WRITE_EVERY_S)
     finally:
+        if stamps is not None and writes:
+            stamps.append(clock())
         live.release()
     return writes
 
@@ -522,7 +543,7 @@ def prime(live, proof, *, clock=time.perf_counter, sleep=time.sleep, undo=False)
 
 
 def run_live(live, perception, target_bin, *, focused, idle, log, clock=time.perf_counter, sleep=time.sleep,
-             max_steps=300, primed=False):
+             max_steps=300, primed=False, physical=None):
     """Closed loop to READY / HAND_BACK. `live` is an open agent.controller.Live; the caller closes it.
 
     Unless `primed`, the M1 camera prime runs first (prime()); the planner's own PITCH_RESET follows it."""
@@ -530,7 +551,7 @@ def run_live(live, perception, target_bin, *, focused, idle, log, clock=time.per
     if missing:                                                  # the gate again, before any write
         live.release()
         return {"result": "STOPPED", "reason": "unmeasured: " + ", ".join(missing), "steps": 0}
-    proof = make_proof(perception, focused, idle)
+    proof = make_proof(perception, focused, idle, physical)
     if not primed:
         try:
             writes = prime(live, proof, clock=clock, sleep=sleep)
@@ -751,20 +772,18 @@ def lowmap(live, proof, rotation, *, clock=time.perf_counter, sleep=time.sleep, 
             for k in range(LOWMAP_REPEATS):
                 tag = f"{axis}-{d:.2f}-{k}"
                 f0 = still(f"{tag}-a")
-                t0 = clock()
-                _hold(live, [({key: d}, hold)], proof, clock=clock, sleep=sleep, allowed=frozenset({key}))
-                t1 = clock()
+                on = []
+                _hold(live, [({key: d}, hold)], proof, clock=clock, sleep=sleep, allowed=frozenset({key}), stamps=on)
                 f1 = still(f"{tag}-b")
-                t2 = clock()
-                _hold(live, [({key: -d}, hold)], proof, clock=clock, sleep=sleep, allowed=frozenset({key}))
-                t3 = clock()
+                off = []
+                _hold(live, [({key: -d}, hold)], proof, clock=clock, sleep=sleep, allowed=frozenset({key}), stamps=off)
                 f2 = still(f"{tag}-c")
                 fwd, back = rot(f0, f1, axis), rot(f1, f2, axis)
-                # the stick's actual on-time: _hold writes every WRITE_EVERY_S until the hold has elapsed, so it
-                # overruns the nominal hold by up to one write (10 % of a 0.5 s hold); the rate uses what was held
-                for r, held in ((fwd, t1 - t0), (back, t3 - t2)):
+                # the stick's actual on-time, first send to release: _hold writes until the nominal hold has elapsed,
+                # so it overruns by up to one write plus a proof; the rate uses what was held
+                for r, st in ((fwd, on), (back, off)):
                     if r is not None:
-                        r["held_s"] = round(held, 4)
+                        r["held_s"] = round(st[1] - st[0], 4)
                 row = {"stick": d, "repeat": k, "hold_s": hold, "forward": fwd, "back": back}
                 log(json.dumps({"lowmap": axis, **row}))
                 rows[axis].append(row)
@@ -776,44 +795,82 @@ def _cal_rate(stick, rate_map):
     return _interp(stick, rate_map)
 
 
+LOWMAP_AGREE_REL, LOWMAP_AGREE_DEG = 0.25, 0.5     # L1: forward/back and repeats agree within max(25 %, 0.5 deg)
+LOWMAP_OFF_AXIS_REL = 0.20                           # L2: off-axis under max(still threshold, 3x noise, 20 % on-axis)
+
+
+def _lowmap_agree(a, b):
+    return abs(a - b) <= max(LOWMAP_AGREE_REL * max(a, b), LOWMAP_AGREE_DEG)
+
+
 def lowmap_fit(rows, cal=None):
     """Judge lowmap's rows: per axis, which deflections moved, the deadzone edge, the rates, and Cal's fields.
 
     A hold moved when its rotation on its own axis exceeds the still threshold (LOWMAP_STILL_DEG, or 3x the
-    still-frame noise if larger) with the commanded sign (+ one way, - back). A deflection moved only if every one of
-    its holds moved, is still only if none did; anything else, an abstaining fit, a wrong sign, a still deflection
-    above a moving one, no deflection moving, or the top deflection's rate more than LOWMAP_CAL_TOL off Cal's map
-    (other pad settings), makes the result not ok.
+    still-frame noise if larger). Each hold's magnitude is taken per nominal hold (|deg| / held_s * hold_s). The
+    result is not ok on any of:
+    - an abstaining fit (the noise pair or any hold);
+    - a hold turning against the stick's sign;
+    - a deflection that moved on some holds only;
+    - (review L1) a moving deflection whose forward and back magnitudes, or whose repeats' means, disagree by more
+      than max(LOWMAP_AGREE_REL, LOWMAP_AGREE_DEG): a clamp, a hand on the mouse or a disturbed settled frame;
+    - (review L2) any hold whose off-axis rotation exceeds max(still threshold, LOWMAP_OFF_AXIS_REL x on-axis): a
+      swapped or cross-coupled axis, or interference;
+    - a still deflection above a moving one; no deflection moving; the top deflection's rate more than
+      LOWMAP_CAL_TOL off Cal's map (other pad settings).
     The deadzone is the largest still deflection (0.0 when even the smallest moved; the edge lies in `edge`). Cal's
     maps get the measured points: (d, 0) for still deflections and (d, mean rate) for moving ones, then Cal's own
-    points above the grid."""
+    points above the grid. Review L3: those fields are `cal` only when the result is ok; otherwise they are
+    `cal_candidate`, and nothing named `cal` exists."""
     from agent.controller import Cal
     cal = cal or Cal()
     noise = rows.get("noise")
     noise_deg = None if noise is None else max(abs(noise["yaw_deg"]), abs(noise["pitch_deg"]))
     still_deg = max(LOWMAP_STILL_DEG, 3 * (noise_deg or 0.0))
     out = {"format": LOWMAP_KIND, "pad_settings": LOWMAP_PAD_SETTINGS, "still_deg": round(still_deg, 3),
-           "noise_deg": noise_deg, "axes": {}, "cal": {}, "ok": False}
+           "noise_deg": noise_deg, "axes": {}, "ok": False}
+    fields = {}
     why = [] if noise is not None else ["the still-frame noise pair abstained"]
     for axis, grid, base in (("yaw", LOWMAP_YAW, cal.yaw_map), ("pitch", LOWMAP_PITCH, cal.pitch_map)):
         per, points = [], []
+        nominal = LOWMAP_HOLD_S[axis]
         for d in grid:
-            holds = [(r[side], sign) for r in rows[axis] if r["stick"] == d
-                     for side, sign in (("forward", 1), ("back", -1))]
-            if not holds or any(h is None for h, _ in holds):
+            reps = [r for r in rows[axis] if r["stick"] == d]
+            holds = [(r[side], sign, r["repeat"]) for r in reps for side, sign in (("forward", 1), ("back", -1))]
+            if not holds or any(h is None for h, _, _ in holds):
                 why.append(f"{axis} {d}: the rotation fit abstained")
                 per.append({"stick": d, "state": "abstained"})
                 continue
-            moved = [abs(h["deg"]) > still_deg for h, _ in holds]
-            wrong = [h["deg"] for h, sign in holds if abs(h["deg"]) > still_deg and h["deg"] * sign < 0]
+
+            def mag(h):
+                return abs(h["deg"]) / h.get("held_s", nominal) * nominal
+            moved = [abs(h["deg"]) > still_deg for h, _, _ in holds]
+            wrong = [h["deg"] for h, sign, _ in holds if abs(h["deg"]) > still_deg and h["deg"] * sign < 0]
             if wrong:
                 why.append(f"{axis} {d}: turned against the stick ({wrong} deg)")
+            off = [h["off_axis_deg"] for h, _, _ in holds
+                   if abs(h["off_axis_deg"]) > max(still_deg, LOWMAP_OFF_AXIS_REL * abs(h["deg"]))]
+            if off:
+                why.append(f"{axis} {d}: off-axis rotation {off} deg (swapped or coupled axis, or interference)")
             state = "moved" if all(moved) else "still" if not any(moved) else "mixed"
             if state == "mixed":
                 why.append(f"{axis} {d}: moved on some holds only")
-            rate = sum(abs(h["deg"]) / h.get("held_s", rows[axis][0]["hold_s"]) for h, _ in holds) / len(holds)
+            elif state == "moved":
+                disagree = []
+                for k in sorted({rep for _, _, rep in holds}):
+                    f, b = [mag(h) for h, _, rep in holds if rep == k]
+                    if not _lowmap_agree(f, b):
+                        disagree.append(f"repeat {k} forward {f:.2f} vs back {b:.2f} deg")
+                means = [sum(mag(h) for h, _, rep in holds if rep == k) / 2 for k in sorted({r for _, _, r in holds})]
+                if len(means) > 1 and not _lowmap_agree(max(means), min(means)):
+                    disagree.append(f"repeats {[round(m, 2) for m in means]} deg")
+                if disagree:
+                    state = "mixed"
+                    why.append(f"{axis} {d}: holds disagree ({'; '.join(disagree)})")
+            rate = sum(mag(h) for h, _, _ in holds) / len(holds) / nominal
             per.append({"stick": d, "state": state, "rate_deg_s": round(rate, 2),
-                        "holds_deg": [h["deg"] for h, _ in holds]})
+                        "holds_deg": [h["deg"] for h, _, _ in holds],
+                        "off_axis_deg": [h["off_axis_deg"] for h, _, _ in holds]})
         states = [p["state"] for p in per]
         moving = [p for p in per if p["state"] == "moved"]
         dz = edge = None
@@ -822,7 +879,7 @@ def lowmap_fit(rows, cal=None):
         else:
             first = grid.index(moving[0]["stick"])
             if any(st != "moved" for st in states[first:]):
-                why.append(f"{axis}: a deflection above {moving[0]['stick']} did not move (not monotone)")
+                why.append(f"{axis}: a deflection above {moving[0]['stick']} did not move cleanly (not monotone)")
             dz = grid[first - 1] if first > 0 else 0.0
             edge = [dz, moving[0]["stick"]]
             top, expect = per[-1], _cal_rate(grid[-1], base)
@@ -834,11 +891,54 @@ def lowmap_fit(rows, cal=None):
                     points.append((p["stick"], p["rate_deg_s"] if p["state"] == "moved" else 0.0))
         rate_map = [(0.0, 0.0)] + points + [tuple(q) for q in base if q[0] > grid[-1]]
         out["axes"][axis] = {"deflections": per, "deadzone": dz, "edge": edge}
-        out["cal"][f"{axis}_map"] = [list(q) for q in rate_map]
-        out["cal"][f"{axis}_deadzone"] = dz
+        fields[f"{axis}_map"] = [list(q) for q in rate_map]
+        fields[f"{axis}_deadzone"] = dz
     out["why"] = "; ".join(why) or None
     out["ok"] = not why
+    out["cal" if out["ok"] else "cal_candidate"] = fields
     return out
+
+
+def lowmap_judge(path, out=None):
+    """Re-judge a saved lowmap file (its raw `rows`) with this file's lowmap_fit; no pad, no game. Returns the path
+    written: `out`, or the saved file's stem + .rejudged.json. The saved file itself is never rewritten."""
+    src = Path(path)
+    raw = src.read_bytes()
+    saved = json.loads(raw)
+    if saved.get("format") != LOWMAP_KIND or "rows" not in saved:
+        raise Refused(f"{src} is not a {LOWMAP_KIND} file with raw rows")
+    judged = {**lowmap_fit(saved["rows"]), "rows": saved["rows"],
+              "rejudged_from": {"path": str(src), "sha256": hashlib.sha256(raw).hexdigest()},
+              "judged_by": {"path": "scripts/place.py", "sha256": _self_sha256()}}
+    for k in ("frames_dir", "declaration_sha256"):
+        if k in saved:
+            judged[k] = saved[k]
+    dest = Path(out) if out else src.with_name(src.stem + ".rejudged.json")
+    if dest.resolve() == src.resolve():
+        raise Refused("--out must not overwrite the saved measurement")
+    dest.write_text(json.dumps(judged, indent=2) + "\n", encoding="utf-8")
+    return dest, judged
+
+
+def _self_sha256():
+    return hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
+
+
+def _physical_input(pid, out=print):
+    """The armed physical-input kill switch (agent/physical_input.py), or Refused. Started and tested before any
+    pad code is imported: READY from the sentinel, a physical touch that trips a dry run of its check, then hands
+    off with the game (PID `pid`) in front before it arms."""
+    from agent.loop import foreground_pid_guard
+    from agent.physical_input import PhysicalInput, Refused as PhysicalRefused
+    front = foreground_pid_guard(pid)
+    physical = PhysicalInput()
+    try:
+        physical.start()
+        physical.pre_run(out=out, ready_to_arm=lambda: front() is True)
+    except PhysicalRefused as e:
+        physical.close()
+        raise Refused(str(e))
+    return physical
 
 
 def _process_info(pid):
@@ -884,6 +984,7 @@ def main(argv=None):
     mode.add_argument("--measure-pitch", action="store_true")
     mode.add_argument("--reset-check", action="store_true")
     mode.add_argument("--lowmap", action="store_true")
+    mode.add_argument("--lowmap-judge", metavar="FILE")
     mode.add_argument("--live", action="store_true")
     ap.add_argument("--bin", choices=sorted(P.BINS), default="mid")
     ap.add_argument("--steps", type=int, default=1)
@@ -895,8 +996,18 @@ def main(argv=None):
     ap.add_argument("--allow-none", action="store_true", help="replay: exit 0 even if nothing was compared")
     ap.add_argument("--spot", choices=SPOTS, help="reset-check: which failure spot")
     ap.add_argument("--declaration")
-    ap.add_argument("--out", help="replay: write the report JSON here")
+    ap.add_argument("--out", help="replay: write the report JSON here; lowmap-judge: the re-judged file")
     a = ap.parse_args(argv)
+
+    if a.lowmap_judge:
+        try:
+            dest, judged = lowmap_judge(a.lowmap_judge, a.out)
+        except Refused as e:
+            print(f"REFUSED: {e}")
+            return 2
+        print(json.dumps({"written": str(dest), "ok": judged["ok"], "why": judged["why"],
+                          **({"cal": judged["cal"]} if judged["ok"] else {})}))
+        return 0 if judged["ok"] else 1
 
     if a.replay:
         import cv2
@@ -929,7 +1040,12 @@ def main(argv=None):
             if a.reset_check and (a.spot is None or PITCH_DOWN_S is None or PITCH_UP_S is None):
                 raise Refused("--reset-check needs --spot and the measured PITCH_DOWN_S / PITCH_UP_S")
             decl = check_measurement_declaration(a.declaration, mode, process_info=_process_info)
-            focused = _open_game(decl["game_pid"])
+            physical = _physical_input(decl["game_pid"])
+            try:
+                focused = _open_game(decl["game_pid"])
+            except Refused:
+                physical.close()
+                raise
         except Refused as e:
             print(f"REFUSED: {e}")
             return 2
@@ -938,19 +1054,25 @@ def main(argv=None):
         perception = default_perception()
         run_dir = _run_dir("pitch-" if a.measure_pitch else "lowmap-" if a.lowmap else f"reset-{a.spot}-")
         (run_dir / "declaration.json").write_text(json.dumps(decl, indent=2) + "\n", encoding="utf-8")
-        proof = make_proof(perception, focused, idle_warning)
+        proof = make_proof(perception, focused, idle_warning, physical)
 
         def keep(tag, f):
             cv2.imwrite(str(run_dir / f"{tag}.jpg"), f)
 
-        live = Live(guard=lambda f: bool(perception.in_range(f)) and focused(), settle_s=0)
+        try:
+            live = Live(guard=lambda f: physical.check() is None and bool(perception.in_range(f)) and focused(),
+                        settle_s=0)
+        except BaseException:
+            physical.close()
+            raise
         try:
             prime(live, proof, undo=True)
             if a.measure_pitch:
                 report = measure_pitch(live, perception, proof, keep=keep)
             elif a.lowmap:
                 rows = lowmap(live, proof, camera_rotation(), keep=keep)
-                report = {**lowmap_fit(rows), "rows": rows}
+                report = {**lowmap_fit(rows), "rows": rows,
+                          "judged_by": {"path": "scripts/place.py", "sha256": _self_sha256()}}
             else:
                 report = {**reset_check(live, perception, proof, a.spot, keep=keep), "ok": True}
         except (Stopped, Refused) as e:
@@ -959,13 +1081,14 @@ def main(argv=None):
             report = {"ok": False, "why": "Ctrl-C"}
         finally:
             live.close()
+            physical.close()
         (run_dir / "result.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
         if a.lowmap:                    # Cal's fields beside the frames: data/placement/lowmap-<stamp>.json
             report["frames_dir"] = str(run_dir.relative_to(ROOT)).replace("\\", "/")
             report["declaration_sha256"] = decl["sha256"]
             run_dir.with_suffix(".json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
         print(json.dumps({k: report.get(k) for k in ("ok", "why", "pitch_down_s", "pitch_up_s", "spot",
-                                                     "pair_residual_px", "cal") if k in report}))
+                                                     "pair_residual_px", "cal") if k in report}))   # cal: ok only
         return 0 if report["ok"] else 1
 
     # --live: every check before anything that can attach a pad.
@@ -973,7 +1096,12 @@ def main(argv=None):
         decl = check_declaration(a.declaration, process_info=_process_info)
         if decl["target_bin"] != a.bin:
             raise Refused(f"--bin {a.bin} differs from the declaration's {decl['target_bin']}")
-        focused = _open_game(decl["game_pid"])
+        physical = _physical_input(decl["game_pid"])
+        try:
+            focused = _open_game(decl["game_pid"])
+        except Refused:
+            physical.close()
+            raise
     except Refused as e:
         print(f"REFUSED: {e}")
         return 2
@@ -987,13 +1115,19 @@ def main(argv=None):
             logf.write(json.dumps({"t": time.perf_counter(), **entry}) + "\n")
             logf.flush()
 
-        live = Live(guard=lambda f: bool(perception.in_range(f)) and focused(), settle_s=0)
         try:
-            result = run_live(live, perception, a.bin, focused=focused, idle=idle_warning, log=log)
+            live = Live(guard=lambda f: physical.check() is None and bool(perception.in_range(f)) and focused(),
+                        settle_s=0)
+        except BaseException:
+            physical.close()
+            raise
+        try:
+            result = run_live(live, perception, a.bin, focused=focused, idle=idle_warning, log=log, physical=physical)
         except KeyboardInterrupt:
             result = {"result": "STOPPED", "reason": "Ctrl-C"}
         finally:
             live.close()
+            physical.close()
     (run_dir / "result.json").write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(result))
     return 0 if result["result"] == "READY" else 1

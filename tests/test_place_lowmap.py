@@ -152,7 +152,8 @@ def test_other_pad_settings_are_not_ok():
 def test_no_movement_up_to_the_top_deflection_is_not_ok_and_leaves_the_deadzone_unmeasured():
     rows, fit = run(Game(yaw_dz=0.2))
     assert not fit["ok"] and "yaw: no deflection" in fit["why"]
-    assert fit["cal"]["yaw_deadzone"] is None and fit["axes"]["pitch"]["deadzone"] == 0.1
+    assert "cal" not in fit and fit["cal_candidate"]["yaw_deadzone"] is None
+    assert fit["axes"]["pitch"]["deadzone"] == 0.1
 
 
 def test_a_deadzone_below_the_grid_is_zero_with_its_edge():
@@ -211,3 +212,95 @@ def test_main_lowmap_refuses_before_any_pad_opens(tmp_path, monkeypatch, capsys,
     assert place.main(["--lowmap"]) == 2 and "needs --declaration" in capsys.readouterr().out
     decl = _measurement(tmp_path, "lowmap")                                   # no pad_settings
     assert place.main(["--lowmap", "--declaration", str(decl)]) == 2 and "pad_settings" in capsys.readouterr().out
+
+
+# --- review-lowmap L1-L3 and the re-judge command ----------------------------------------------------------------
+
+def _scaled(rows, axis, fwd=1.0, back=1.0, repeat=None, off=None):
+    rows = copy.deepcopy(rows)
+    for r in rows[axis]:
+        if repeat is not None and r["repeat"] != repeat:
+            continue
+        for side, k in (("forward", fwd), ("back", back)):
+            r[side]["deg"] *= k
+            if off is not None:
+                r[side]["off_axis_deg"] = off
+    return rows
+
+
+def test_review_l1_forward_and_back_must_agree(default_run):
+    """The reviewer's construction: every forward hold at 1.6x and every back hold at 0.9x said ok."""
+    fit = place.lowmap_fit(_scaled(default_run[1], "yaw", fwd=1.6, back=0.9))
+    assert not fit["ok"] and "yaw" in fit["why"] and "forward" in fit["why"] and "holds disagree" in fit["why"]
+    assert "cal" not in fit
+
+
+def test_review_l1_the_repeats_must_agree(default_run):
+    fit = place.lowmap_fit(_scaled(default_run[1], "pitch", fwd=1.5, back=1.5, repeat=1))
+    assert not fit["ok"] and "pitch" in fit["why"] and "repeats" in fit["why"]
+
+
+def test_review_l1_small_disagreements_inside_the_tolerance_are_fine(default_run):
+    fit = place.lowmap_fit(_scaled(default_run[1], "yaw", fwd=1.1, back=0.95))
+    assert fit["ok"], fit["why"]
+
+
+def test_review_l2_off_axis_rotation_is_judged(default_run):
+    """The reviewer's construction: 15 deg off-axis on every hold said ok."""
+    fit = place.lowmap_fit(_scaled(default_run[1], "yaw", off=15.0))
+    assert not fit["ok"] and "off-axis" in fit["why"] and "cal" not in fit
+    small = place.lowmap_fit(_scaled(default_run[1], "yaw", off=0.1))            # below the still threshold
+    assert small["ok"], small["why"]
+
+
+def test_review_l3_a_not_ok_result_carries_no_cal(default_run):
+    rows = copy.deepcopy(default_run[1])
+    rows["yaw"][4]["back"] = None
+    fit = place.lowmap_fit(rows)
+    assert not fit["ok"] and "cal" not in fit and set(fit["cal_candidate"]) == {
+        "yaw_map", "pitch_map", "yaw_deadzone", "pitch_deadzone"}
+    assert "cal_candidate" not in default_run[2] and "cal" in default_run[2]
+
+
+def test_the_hold_time_is_the_sticks_on_time(default_run):
+    held = [h["held_s"] for r in default_run[1]["yaw"] for h in (r["forward"], r["back"])]
+    assert all(1.0 - 1e-6 <= x <= 1.0 + place.WRITE_EVERY_S + 1e-6 for x in held)
+
+
+def _saved(tmp_path, rows):
+    doc = {**place.lowmap_fit(rows), "rows": rows, "frames_dir": "data/placement/lowmap-x"}
+    path = tmp_path / "lowmap-20260924T190000Z.json"
+    path.write_text(json.dumps(doc), encoding="utf-8")
+    return path
+
+
+def test_the_re_judge_reprocesses_a_saved_files_raw_rows(tmp_path, default_run, capsys):
+    path = _saved(tmp_path, default_run[1])
+    before = path.read_bytes()
+    assert place.main(["--lowmap-judge", str(path)]) == 0
+    out = json.loads(capsys.readouterr().out)
+    judged = json.loads((tmp_path / "lowmap-20260924T190000Z.rejudged.json").read_text(encoding="utf-8"))
+    assert out["ok"] and judged["ok"] and judged["cal"] == default_run[2]["cal"]
+    assert judged["rejudged_from"]["sha256"] == __import__("hashlib").sha256(before).hexdigest()
+    assert judged["judged_by"]["sha256"] == place._self_sha256() and judged["frames_dir"] == "data/placement/lowmap-x"
+    assert path.read_bytes() == before                                           # the saved file is never rewritten
+
+
+def test_the_re_judge_applies_the_current_rules_to_an_old_ok(tmp_path, default_run, capsys):
+    rows = _scaled(default_run[1], "yaw", fwd=1.6, back=0.9)
+    path = _saved(tmp_path, rows)
+    doc = json.loads(path.read_text(encoding="utf-8"))
+    doc.update(ok=True, why=None)                                                # as the old rules would have said
+    path.write_text(json.dumps(doc), encoding="utf-8")
+    assert place.main(["--lowmap-judge", str(path)]) == 1
+    out = json.loads(capsys.readouterr().out)
+    assert not out["ok"] and "cal" not in out
+
+
+def test_the_re_judge_refuses_other_files_and_overwriting(tmp_path, default_run, capsys):
+    other = tmp_path / "other.json"
+    other.write_text(json.dumps({"format": "something"}), encoding="utf-8")
+    assert place.main(["--lowmap-judge", str(other)]) == 2 and "not a cal-lowmap-v1" in capsys.readouterr().out
+    path = _saved(tmp_path, default_run[1])
+    assert place.main(["--lowmap-judge", str(path), "--out", str(path)]) == 2
+    assert "must not overwrite" in capsys.readouterr().out
