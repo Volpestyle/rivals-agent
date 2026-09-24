@@ -1,0 +1,243 @@
+{
+ "format": "rivals-range-plumbing-plan-v1",
+ "prereg_sha256": "b0ce04dfe089f814528cc56bb6fc144ea7e9714e923ad269cebf879a724bc465",
+ "commit": "afff279a3d787d6a3cefc32881d6a28711f0770d",
+ "cohort": {
+  "20260923T051828-422Z-33696-1": {
+   "role": "train",
+   "steps_sha256": "d49224e3c4382a62ebb4c4252bcc5800138782688e1d0f60e03e46ce4b6e7edb",
+   "media_sha256": "ad14e5bc0a1e0da23527a8f4a092e591ddf568ac925cfd0b2907e38dc94b9aaf",
+   "rows": 12558,
+   "counted_minutes": 6.9722221525
+  },
+  "20260923T200129-346Z-33696-6": {
+   "role": "train",
+   "steps_sha256": "fcc9b0443e720648b899453ea3f04f82c0a6dd1735f30a420a36b3675549ba8e",
+   "media_sha256": "b06621fe4d6de489ac1c78b9557f57cdc4e8f8e641cbe1b35912510c60336f30",
+   "rows": 48195,
+   "counted_minutes": 26.6166664005
+  },
+  "20260923T171533-187Z-33696-5": {
+   "role": "dev",
+   "steps_sha256": "dc28b0c1511f7847c8dde08c3e04addce8b57bc6c32cc2873405962d3235559e",
+   "media_sha256": "3f8e408719433a4603122ff92759f2382deb1f4f6ddf54ee4562c4c86da42126",
+   "rows": 4800,
+   "counted_minutes": 2.5722221965
+  },
+  "20260923T205528-900Z-45572-3": {
+   "role": "dev",
+   "steps_sha256": "941950f16edef6a88b14d6bc536e33a66a0e779867fa145c78e7142164e1fd98",
+   "media_sha256": "bf32202abd0b93a300453ffaa9896b7566c52ee4ed8b6aacb8edc9a4dd6f11e9",
+   "rows": 19935,
+   "counted_minutes": 11.0699998893
+  }
+ },
+ "train_windows_stride48": 1259,
+ "dev_windows_stride48": 511,
+ "max_steps": 1580,
+ "fractions": {
+  "0.25": {
+   "train_minutes": 8.3977776938,
+   "windows": 314
+  },
+  "0.5": {
+   "train_minutes": 16.794444276500002,
+   "windows": 629
+  },
+  "0.75": {
+   "train_minutes": 25.1911108592,
+   "windows": 944
+  },
+  "1.0": {
+   "train_minutes": 33.588888553000004,
+   "windows": 1259
+  }
+ },
+ "runs": [
+  {
+   "name": "plumb-p1-curve",
+   "args": [
+    "--arms",
+    "model",
+    "model_nohud",
+    "history_only",
+    "--seeds",
+    "0",
+    "--epochs",
+    "20",
+    "--weight-decay",
+    "0.0001",
+    "--stride",
+    "48",
+    "--lag",
+    "0"
+   ]
+  },
+  {
+   "name": "plumb-p2-repeat",
+   "args": [
+    "--arms",
+    "model_nohud",
+    "history_only",
+    "--seeds",
+    "0",
+    "--epochs",
+    "20",
+    "--weight-decay",
+    "0.0001",
+    "--stride",
+    "48",
+    "--lag",
+    "0"
+   ]
+  },
+  {
+   "name": "plumb-p3-wd",
+   "args": [
+    "--arms",
+    "model_nohud",
+    "--seeds",
+    "0",
+    "--epochs",
+    "20",
+    "--weight-decay",
+    "0.001",
+    "--stride",
+    "48",
+    "--lag",
+    "0"
+   ]
+  },
+  {
+   "name": "plumb-p4-lag1",
+   "args": [
+    "--arms",
+    "model_nohud",
+    "--seeds",
+    "0",
+    "--epochs",
+    "20",
+    "--weight-decay",
+    "0.0001",
+    "--stride",
+    "48",
+    "--lag",
+    "1"
+   ]
+  },
+  {
+   "name": "plumb-p4-lag2",
+   "args": [
+    "--arms",
+    "model_nohud",
+    "--seeds",
+    "0",
+    "--epochs",
+    "20",
+    "--weight-decay",
+    "0.0001",
+    "--stride",
+    "48",
+    "--lag",
+    "2"
+   ]
+  },
+  {
+   "name": "plumb-p5-scale-0.25",
+   "args": [
+    "--arms",
+    "model_nohud",
+    "history_only",
+    "--seeds",
+    "0",
+    "1",
+    "--train-fraction",
+    "0.25",
+    "--max-steps",
+    "1580",
+    "--weight-decay",
+    "0.0001",
+    "--stride",
+    "48",
+    "--lag",
+    "0"
+   ]
+  },
+  {
+   "name": "plumb-p5-scale-0.50",
+   "args": [
+    "--arms",
+    "model_nohud",
+    "history_only",
+    "--seeds",
+    "0",
+    "1",
+    "--train-fraction",
+    "0.5",
+    "--max-steps",
+    "1580",
+    "--weight-decay",
+    "0.0001",
+    "--stride",
+    "48",
+    "--lag",
+    "0"
+   ]
+  },
+  {
+   "name": "plumb-p5-scale-0.75",
+   "args": [
+    "--arms",
+    "model_nohud",
+    "history_only",
+    "--seeds",
+    "0",
+    "1",
+    "--train-fraction",
+    "0.75",
+    "--max-steps",
+    "1580",
+    "--weight-decay",
+    "0.0001",
+    "--stride",
+    "48",
+    "--lag",
+    "0"
+   ]
+  },
+  {
+   "name": "plumb-p5-scale-1.00",
+   "args": [
+    "--arms",
+    "model_nohud",
+    "history_only",
+    "--seeds",
+    "0",
+    "1",
+    "--train-fraction",
+    "1.0",
+    "--max-steps",
+    "1580",
+    "--weight-decay",
+    "0.0001",
+    "--stride",
+    "48",
+    "--lag",
+    "0"
+   ]
+  }
+ ],
+ "budget_minutes": {
+  "plumb-p1-curve": 103.5,
+  "plumb-p2-repeat": 45.6,
+  "plumb-p3-wd": 44.1,
+  "plumb-p4-lag1": 44.1,
+  "plumb-p4-lag2": 44.1,
+  "plumb-p5-scale-0.25": 46.9,
+  "plumb-p5-scale-0.50": 46.9,
+  "plumb-p5-scale-0.75": 46.9,
+  "plumb-p5-scale-1.00": 46.9
+ },
+ "budget_total_hours": 7.82,
+ "budget_note": "estimate from the smoke's throughput (HUD 802, no-HUD 1,056, twin 52k frames/s), plus cache builds (about 12 s per recorded minute) and transfer; not a gate"
+}

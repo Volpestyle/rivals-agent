@@ -11,7 +11,8 @@
 - Round 3 (`review-fit-code-2.md`), the calibration take's facts, the vocabulary decisions (`team_up`,
   `goh_targeting`, Mouse 5 on melee) and the Mac cache rehearsal are folded in: see "Round 3" at the end. **Where the
   sections above disagree with "Round 3", "Round 3" wins.**
-- There has been no fit, no session data and no game input.
+- Later sections record the smoke fit (2026-09-23), the replay-label contract and the plumbing fit with its derived
+  real-fit pre-registration (2026-09-24, "Plumbing fit result" at the end). No game input.
 
 **Goal.** The design lets whole-session intake (`docs/lanes/human-admission.md`) produce what the first fit needs. It
 fixes the pass/fail rule before anyone sees a validation number.
@@ -812,7 +813,7 @@ The labelling lanes' writer applies these rules:
 
 Fixed in `docs/evidence/fit-readiness-20260923/range_bc_plumbing_prereg.json`. The driver `range_bc_plumbing.py` in
 the same folder turns it into the exact command sequence, and later derives the real fit's `--preregistration` file
-from the plumbing reports. No plumbing fit has run.
+from the plumbing reports. The plumbing fit ran on 2026-09-24: see "Plumbing fit result" below.
 
 **Vocabulary: 15 actions.** `simple_swing` (Caps Lock, `key:58:0`; James's decision) is appended 15th, so the other
 indices are unchanged. It is trained and scored with its positives, and masked live until Pilot pre-registration item
@@ -874,3 +875,141 @@ reported and selects nothing.
 **Budget.** About 7.9 h at most. That assumes every recorded minute counts (33.8 train and 13.7 dev minutes); the
 driver re-estimates from the admitted tables. p1 is about 1.7 h. Transfer of the two new videos (35.6 GB) is about
 20 min, and the caches about 10 min.
+
+## Plumbing fit result (2026-09-24)
+
+Every run of the plumbing pre-registration was carried out on the Mac (MPS, torch 2.14.0), niced, from a `git archive` of
+`afff279`. Only dev was read; there is no validation, and **no gate is claimed**: the p1 dev gate block reads
+`complete: false`. The 9 reports, the plan and the derived pre-registration are hashed in the hand-backs
+`fit-plumbing.md` (`e6f4da9e…`) and `fit-plumbing-2.md` (`69516188…`); the lead lands them under `docs/evidence/`.
+
+**Data:**
+- **Train:** 051828 and 200129, 33.59 counted min, 1,259 windows at stride 48, none dropped.
+- **Dev:** 171533 and 205528, 511 windows.
+
+### Runs
+
+The queue started at 05:09 and finished at 14:12:42. All 9 runs exited 0, in **9.06 h against the planned 7.82 h**.
+
+| Run | Wall (min) | Budget (min) | Main arm, sequence frames/s |
+|---|---|---|---|
+| p1-curve | 114.5 | 103.5 | HUD 635, no-HUD 930, twin 54.8k |
+| p2-repeat | 50.0 | 45.6 | no-HUD 933 |
+| p3-wd | 50.9 | 44.1 | no-HUD 890 |
+| p4-lag1 / lag2 | 50.9 / 50.2 | 44.1 each | no-HUD 891 / 905 |
+| p5 ¼ / ½ / ¾ / all | 63.4 / 56.4 / 54.3 / 53.2 | 46.9 each | no-HUD 724-894 |
+
+- **The frames/s include the per-epoch dev passes,** so they read below the smoke's 802 and 1,056.
+- **The overrun has two causes:**
+  - the dev passes cost more than the budget's one-third factor;
+  - the budget counted 10 dev passes per scaling run, but the fit runs one per epoch of the truncated set: 40, 20, 14
+    and 10.
+
+### p1: the dev curves (seed 0, wd 1e-4, stride 48, lag 0; dev total loss, epochs 1-based)
+
+| Arm | argmin epoch | Min | At epoch 20 | Train loss at 20 |
+|---|---|---|---|---|
+| model (HUD) | 16 | 1.3977 | 1.4021 | 1.3089 |
+| **model_nohud** (the candidate) | **13** | **1.4310** | 1.4630 | 1.2257 |
+| history_only | 20 (still falling) | 1.3717 | 1.3717 | 1.4054 |
+
+- **The no-HUD arm overfits after epoch 13.** Every head bottoms at epoch 12-13 while train loss keeps falling. At
+  epoch 13: held 0.0839, press 0.2933, release 0.1397, camera 1.8283.
+- **The camera head is most of the total.**
+
+### p2: MPS determinism on real data
+
+p2 reran p1's no-HUD and twin arms with the same arguments.
+- **The checkpoints are byte-identical:** no-HUD `12734546…`, twin `b6c42062…`.
+- **So is everything else:** every per-epoch train and dev value (all but wall seconds), the teacher-forced dev
+  metrics and the CPU reference.
+
+### p3, p4
+
+| Run | No-HUD min dev total | At epoch | Against p1 (1.4310 at 13) |
+|---|---|---|---|
+| p3, wd 1e-3 | 1.4409 | 12 | not lower, so wd stays 1e-4 |
+| p4, lag 1 | 1.4232 | 14 | lower |
+| p4, lag 2 | 1.4077 | 17 | lower |
+
+**Lag is reported only.** The real fit stays at lag 0 until the frame-to-send latency is measured. Teacher-forced macro
+press-F1 does not follow the loss:
+
+| Lag | F1 |
+|---|---|
+| 0 | 0.1673 |
+| 1 | 0.1356 |
+| 2 | 0.1550 |
+
+### p5: the scaling curve (no-HUD and twin × seeds 0, 1; 1,580 optimiser steps = 10 epochs at full data)
+
+| Fraction | Train min | No-HUD dev total (mean of 2 seeds) | Twin | tf macro press-F1, no-HUD / twin | Gap |
+|---|---|---|---|---|---|
+| ¼ | 8.40 | 2.157 | 1.654 | 0.067 / 0.079 | −0.012 |
+| ½ | 16.79 | 1.755 | 1.636 | 0.096 / 0.076 | +0.020 |
+| ¾ | 25.19 | 1.670 | 1.630 | 0.092 / 0.072 | +0.020 |
+| all | 33.59 | 1.657 | 1.627 | 0.080 / 0.075 | +0.005 |
+
+- **Rule (a):** the gap is positive from ½ but not rising, so the pre-registered condition holds ("not positive and
+  rising from ½ to all"). These are 2-seed F1s near 0.08, and the gap is small against the seed spread.
+- **Rule (b):** no-HUD dev NLL flattens rather than falling linearly in log(minutes); the twin is flat.
+- **Rule (c):** at ¼ the no-HUD arm memorises (train 1.31 against dev 2.11 after 40 epochs). From ½ up, train and dev
+  stay close.
+- **The p5 curve is not comparable with p1 in absolute terms.** The cosine schedule decays to zero over each run's own
+  1,580 steps. I have not verified that this explains the gap: p5-all's no-HUD reaches 1.672, where p1 at epoch 10 is
+  1.478.
+
+### The derived real-fit pre-registration
+
+**The parity-file decision (lead, option 2).** `derive` first refused `hud-parity-1.json`: it predates the `rule` field,
+which both derive and `train.parity_record` require.
+- Run 1 was re-emitted with `hudparity --rule p2` on its exact 653 sources.
+- The result equals run 1 in every field except the added `rule: "p2"`.
+- This is a re-emission, not a new measurement: P2 stays failed, the no-HUD arm stays the candidate, and P2′ waits for
+  fresh pad stills.
+
+**`derive` wrote `preregistration.json` (`e1b2cefb…`):**
+
+| epochs | weight_decay | stride | lag | seeds | hud_parity_sha256 | hud_parity_pass |
+|---|---|---|---|---|---|---|
+| 13 | 1e-4 | 64 (E* > 10) | 0 | 0, 1, 2 | `e9efe999…` | false |
+
+- **Source:** the 9 report sha256 values, plan `850aeded…`, plumbing pre-registration `b0ce04df…`, commit `afff279`.
+- **The fit's own pre-flight accepts the pair** (`train.preregistered` and `parity_record` at `--scope fit`), and refuses
+  any other epochs, stride or weight decay.
+- **The parity file has CRLF line endings** (LF-normalised `4ecb5e3e…`). The Mac fit must get these exact bytes, not a
+  `git archive` copy.
+
+### What the plumbing reports showed that the plan did not expect
+
+1. **The history-only twin has the lowest dev total loss** (1.3717, against HUD 1.3977 and no-HUD 1.4310). The frame
+   arms lead only on teacher-forced macro press-F1:
+
+   | Arm | F1 |
+   |---|---|
+   | no-HUD | 0.1673 |
+   | HUD | 0.1593 |
+   | twin | 0.1389 |
+
+2. **Teacher-forced camera MAE is worse than simple baselines** (°):
+
+   | Predictor | Camera MAE |
+   |---|---|
+   | ar2 | 0.376 |
+   | persistence and echo | 0.418 |
+   | twin | 0.632 |
+   | HUD | 0.663 |
+   | no-HUD | 0.690 |
+
+   The degree caveat applies: 92% of yaw motion is above the calibrated band (`d1201f2`).
+3. **`simple_swing` has 3 counted train presses, not 13.** The fit counts only accepted, `normal`-regime rows of eligible
+   runs.
+   - Other counts: ultimate 5, melee 17, goh_targeting 42, team_up 118.
+   - The live mask is on for 10 actions and off for ultimate, melee, team_up, goh_targeting and simple_swing.
+4. **Recorded by the fit, as expected for a `git archive` run:**
+   - `cache_hashes_verified: false`;
+   - `git_commit.head: null`;
+   - `hud_parity: null`;
+   - candidate no-HUD.
+5. **The generated `launch.ps1` and `collect.ps1` hung on `ssh` under PowerShell 5.1.** Their steps were run from Git
+   Bash instead. The driver is being changed to generate bash scripts for these two.
