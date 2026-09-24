@@ -264,6 +264,126 @@ pass or fail separately.
 
 **Still open:** whether Practice vs. AI matches get replays (research §1). Quick Match and Competitive do.
 
+### Gate 2 protocol: replay-of-self (2026-09-23)
+
+This makes the Gate 2 outline above concrete for the model as built (`policy/idm/`). **Where the two differ, this
+section holds.** Every number below is pre-registered here, before any replay-of-self recording exists. Nothing in
+this section is code yet.
+
+**What James records** (the paragraph in `docs/recording-protocol.md` is the version he reads):
+
+1. **The live match.**
+   - One real match as Spider-Man, recorded like a range session: the same OBS profile (2560×1440, 120 fps, MKV), the
+     logger on, the same DPI, sensitivity, bindings and M&K HUD, and a Controls-screen look in the same sitting.
+   - The mode is Quick Match, or Practice vs. AI if that match shows up in History with a replay (`replay-research.md`
+     §1 leaves this open).
+   - He notes the map and the time, so the History entry is unambiguous.
+2. **The replay of it, the same day** (replays can break at a patch).
+   - In the replay viewer, he follows **himself** in PLAYER POV, with the viewer at **his own settings**: the same FOV,
+     HUD on, M&K HUD.
+   - He records the whole match at **1× speed**, from the start to the end screen, with the logger on and the same
+     OBS profile. His viewer inputs only mark excluded stretches; they are never labels.
+   - No pause, seek, rewind, speed change or POV switch, and the timeline overlay stays hidden.
+   - If the follow drops, for example at a round setup, he re-selects himself and says so. The stretch until then is
+     excluded as a cut.
+3. **The two-FOV re-record, on the same replay.**
+   - He picks a 10–20 s stretch with plenty of turning and notes the in-game timer where it starts.
+   - He records it at his FOV, changes only the viewer's FOV to a clearly different value, scrubs back to the same
+     timer value, and records it again.
+   - He reports both FOV values, then restores his FOV.
+   - On his own match the true turn is known from his mouse counts and the gain, so this measures the FOV scale
+     directly (M2). The DayMR re-record ask stays open for the expert's replay.
+4. **Two matches on different maps.**
+   - A match is one unit: each match's live and replay recordings are one session group.
+   - The pair is **registered before anyone looks at it**, as its own `gate2` split. Every fit path refuses it, as it
+     refuses test. It is opened once per frozen checkpoint, to score that checkpoint (a decision for the lead).
+
+**Aligning the two recordings without rotation.**
+- **Principle.** The live recording has the logger's clock, and the replay recording has its own. The map between
+  them is fitted **only** from events both recordings show as HUD pixels, driven by server time rather than by the
+  camera:
+  - the **HUD match or round timer**: each displayed-second change is an anchor, one per second;
+  - **kill-feed entries**: the frame an entry first appears;
+  - **cooldown starts** (team-up, Get Over Here!): the replay-HUD lane's countdown reader, about ±0.015 s at full rate
+    (`replay-hud.md` §6).
+- **Never used:** rotation, optical flow, or any image correlation of the game view. Any of them carries the camera
+  lag and smoothing this gate exists to measure.
+- **Fit:**
+  - The replay recording is cut into **playback spans** at every pause, seek, speed change, follow change or cut. The
+    viewer logger and a cut detector mark these.
+  - Per span: offset = the median of the (replay time − live time) differences over the timer anchors, with the slope
+    fixed at 1.
+  - The free-slope fit is reported as a check: a span with |slope − 1| > 0.001 is not used, because playback was not
+    1×.
+  - Kill-feed and cooldown-start anchors are checked against the timer fit, not fitted.
+- **Span acceptance** (pre-registered):
+  - at least 30 timer anchors;
+  - the p90 |residual| of all anchors is at most 2 recorded frames (17 ms);
+  - every kill-feed and cooldown anchor lies within 2 frames of the fit.
+
+  A span that fails is excluded and counted.
+- **Readers.** No timer or kill-feed reader exists yet. Both come before any Gate 2 number. Each is validated first on
+  a small, inspected native-frame sample of James's live recording, where the logger clock checks it.
+- **What the alignment leaves in.** The live frame shows the client's prediction; the replay shows server state. Any
+  residual onset shift or camera lag after the anchor fit is **the effect being measured**. It is reported, never
+  fitted away.
+
+**What the IDM must reproduce.**
+- **Truth** is the live logger's inputs for the match: its `rivals-idm-targets-v1` file, with 60 Hz intervals, press
+  onsets, and camera degrees from the counts × the 360° gain (pitch derived, per row gain regime).
+- **Frames.** The live frames are the live recording's own. The replay frames are the replay recording's frames at
+  each interval's aligned times, chosen the way the live ones are: the last frame whose aligned time is at or before
+  t0 and t1, with the same ±8-interval window.
+- **One frozen checkpoint** from the real fit, trained on James's train sessions only (neither match, nor any range
+  session recorded after the checkpoint), is run on both frame sets with its own support set and abstention bounds.
+- **The paired set.** Scoring uses only intervals that are usable in the live targets **and** whose replay window
+  lies wholly inside an accepted span, with James followed in PLAYER POV. The same intervals score both sides, so the
+  only difference is the rendering.
+- **The replay must reproduce the true inputs,** not the live predictions. The live numbers are the bar; the true
+  inputs are the target.
+- **Heads.** The heads the model has today are camera (yaw and pitch) and press edges per supported action. Holds and
+  locomotion get their rows below once those heads exist; until then they are "no head", not a pass.
+
+**Per-head metric and pre-registered margin** (`policy.idm_eval` names, replay against live on the paired set).
+
+| Head | Metric | Clears when |
+|---|---|---|
+| Camera, per axis | `abs_error_moving_deg` median (\|true\| ≥ 0.5°); `direction_agreement_moving` | Replay median ≤ 1.25 × live median, and replay direction agreement ≥ live − 5 points |
+| Camera confidence | `model_std_coverage` within 1σ; answered share | Replay 1σ coverage ≥ live − 10 points, and replay answered share ≥ live − 10 points |
+| Edges, per supported action | F1 at ±2 intervals (`edge_metrics`); median onset error | Replay F1 ≥ live − 0.10, and \|replay − live\| median onset ≤ 1 interval. Only actions with ≥ 30 true onsets in the match's paired set decide; below that the action is "undecided" |
+| Holds, locomotion (when the heads exist) | F1 per hold; macro F1 | Replay ≥ live − 0.10, and locomotion above the last-value baseline |
+
+- **Matches.** A head clears only if **each** match meets its margin on its own. A pass pooled over both matches, with
+  one match failing, does not clear. A match with fewer than **6,000** paired, scored intervals (100 s) is undecided
+  for every head.
+- **Reported, not gated:**
+  - the camera error by true gain regime and speed band;
+  - the 0.25 s and 1 s summed error;
+  - the lag, in intervals, that minimises replay yaw error. This measures M1's smoothing and delay; it is never used
+    to align;
+  - the replay M1 signatures (kink period, pitch lattice) against the live ones;
+  - pitch, which is scored against derived pitch and labelled so.
+- **What passing means.** A head that clears may label the expert's replay, still behind the support gate. A head
+  that fails labels nothing. Heads pass or fail separately.
+
+**The withheld-share report.** Every 60 Hz interval of each replay recording falls in exactly **one** bucket, first
+match wins, in this order:
+1. **no alignment:** outside every accepted span, or in a rejected span;
+2. **not his POV:** follow lost, a cut, the timeline overlay, a menu;
+3. **not usable live:** focus loss, gaps, chat or menu, or not accepted in the live targets;
+4. **outside support:** the support gate. The estimated rotation rate is above James's train p99.5, or the frozen
+   out-of-distribution score is above James's dev p99;
+5. **scored.**
+
+Within "scored", the IDM's own abstention is reported **per head and per action**.
+- **Units:** counts and shares per match, and per stratum where the stratum is known (standing, walking, airborne,
+  swinging, combo animation, ability-driven camera, death or spawn, menu). A stratum that is missing is reported as
+  missing.
+- **The live recording's buckets** are reported beside them, so the paired set's size and the cost of each exclusion
+  are visible.
+- **The support gate's two thresholds** are computed from James's train and dev sessions and frozen with the
+  checkpoint, before Gate 2 is opened.
+
 ### Downstream check (F9)
 
 - **Relabel test.** At 3 h, relabel James's held-out sessions with the IDM, and train the same BC policy on IDM labels
