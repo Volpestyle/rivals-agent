@@ -702,6 +702,29 @@ synthetic fixtures only):
     1 and 2 std).
   - `pitch_truth` labels pitch as scored against derived equal-sensitivity degrees.
 
+**2026-09-23: the frame-store decoder** (`policy/idm/decode.py`; tests `tests/test_idm_decode.py`, 10, on range_bc's
+synthetic FFV1 fixture):
+- **Inputs, all pinned before any decode:**
+  - the target file (read by `idm_targets.load`, which refuses sealed sessions and the test split);
+  - the admitted step table and the imported demo, whose sha256 must equal the targets' `source` pins;
+  - the original, whose bytes must equal `media_sha256` (or be a pinned relocation, through intake's `check_media`).
+- **pts:** the imported demo's decoded frame table gives every frame's pts, not only the rows'. Each decoded frame's
+  showinfo pts, each target row's frame and each step-table anchor must all agree with it, and so must the timebase.
+- **What it decodes:** each usable row's ±8-interval window (every 2nd video frame) and its start and end frames. As
+  range_bc's cache does, it pins the YUV → RGB conversion and uses area+bitexact scaling to 448×252, then an integer
+  luma in numpy. The HUD crop is byte-identical to the range cache's (tested).
+- **Rules:** stores are built on the Mac only. They are streamed and hashed as written, and the manifest is written
+  last. `inspect` writes a few frames as PNG images (stdlib only) for a person to check before the other stores are built.
+- **Checked on the real inputs, with no decode:** all four sessions pass the pre-decode checks. The stores hold
+  25,116 / 9,276 / 95,852 / 39,868 frames (051828 / 171533 / 200129 / 205528), **27.4 GB** in all. Each session's
+  frames form one arithmetic run, so the select expression is a single term.
+- **C1 fixed** (review of `d402c74`): `train.py` imports `agent.human_intake` and `agent.human_demos` before its first
+  closure is taken. An end-to-end `run_fit` test (full-scale config, smoke) asserts that the committed closure holds
+  both, that the checkpoint and report are written, and that their closures agree.
+  - `store_entry` adds the manifest's sha256.
+  - `Examples` refuses a store whose size differs from the config's.
+  - `--max-examples` is allowed for `--scope smoke` only.
+
 ## Measurements owed
 
 - **The 7 large live zeros (a) still keeps:** parallax during combined movement and turning.

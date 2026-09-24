@@ -59,6 +59,9 @@ from policy.idm.frames import FrameStore  # noqa: E402
 from policy.idm.model import IDM, Config, parameter_count  # noqa: E402
 from policy.range_bc import report as bc_report, vocab  # noqa: E402
 from policy.range_bc.train import code_closure, require_committed  # noqa: E402
+# idm_targets imports these lazily (its denylist and builder). Import them here, so the closure run_fit takes before
+# reading anything already holds them and require_committed covers them (review C1).
+from agent import human_demos, human_intake  # noqa: E402,F401
 
 FORMAT = "rivals-idm-v1"
 REPORT_FORMAT = "rivals-idm-report-v1"
@@ -113,20 +116,24 @@ def bind(targets, store):
 class Examples:
     """The usable, fully framed rows of some target files, with their targets and masks as tensors."""
 
-    def __init__(self, sessions, config, supported):
-        """sessions: [(policy.idm_targets.Targets, FrameStore)]."""
+    def __init__(self, sessions, config, supported, *, limit=None):
+        """sessions: [(policy.idm_targets.Targets, FrameStore)]. limit: keep the first `limit` examples (smoke)."""
         self.config, self.supported, self.items = config, supported, []
         self.missing = 0
         offs = offsets(config)
         for targets, store in sessions:
             bind(targets, store)
+            require((store.manifest["height"], store.manifest["width"]) == (config.height, config.width),
+                    f"{targets.session_id}: store frames are {store.manifest['width']}x{store.manifest['height']}, "
+                    f"the model reads {config.width}x{config.height}")
             cal = targets.header["calibration"]
             for r in T.training_rows(targets):
                 f1, f0 = r["frame1"]["frame_index"], r["frame0"]["frame_index"]
                 if store.window(f1, offs) is None or store.hud([f0, f1]) is None:
                     self.missing += 1
                     continue
-                self.items.append((targets, store, r, cal))
+                if limit is None or len(self.items) < limit:
+                    self.items.append((targets, store, r, cal))
         sup = torch.tensor([bool(supported.get(a)) for a in vocab.NAMES])
         n = len(self.items)
         self.press = torch.zeros(n, vocab.N)
@@ -246,7 +253,8 @@ def target_entry(targets, sha256):
 
 def store_entry(store):
     m = store.manifest
-    return {k: m[k] for k in ("media_sha256", "frames_sha256", "hud_sha256", "width", "height")}
+    return {**{k: m[k] for k in ("media_sha256", "frames_sha256", "hud_sha256", "width", "height")},
+            "manifest_sha256": T.sha256(store.directory / "frames.json")}
 
 
 def provenance(*, seed, supported, train_press_counts, targets, frame_stores):
@@ -404,6 +412,7 @@ def _load_hashed(path):
 def run_fit(a):
     config = Config()
     require(not config.test_scale and config.width >= 448, "the fit runs at full scale only")
+    require(a.max_examples is None or a.scope == "smoke", "--max-examples is for --scope smoke only")
     closure = code_closure()
     require_committed(list(closure))                                # K1: a real fit never runs uncommitted code
     train_t = [_load_hashed(p) for p in a.train]
@@ -416,7 +425,7 @@ def run_fit(a):
     for t, _ in train_t + held_t:
         bind(t, stores[t.session_id])
     supported, counts = T.supported_actions([t for t, _ in train_t])
-    examples = Examples([(t, stores[t.session_id]) for t, _ in train_t], config, supported)
+    examples = Examples([(t, stores[t.session_id]) for t, _ in train_t], config, supported, limit=a.max_examples)
     stats = train_statistics(examples)
     model, history, secs = fit(examples, config, stats, seed=a.seed, epochs=a.epochs, device=a.device, log=print)
     prov = provenance(seed=a.seed, supported=supported, train_press_counts=counts,
@@ -451,6 +460,7 @@ def main(argv=None):
     f.add_argument("--epochs", type=int, default=10)
     f.add_argument("--device", default="cpu")
     f.add_argument("--scope", default="gate1-dev")
+    f.add_argument("--max-examples", type=int, help="train on the first N examples only (--scope smoke)")
     a = ap.parse_args(argv)
     return run_fit(a)
 

@@ -42,25 +42,25 @@ def header(sid, split="train"):
                             "pitch": {"kind": "derived_equal_sensitivity"}}}
 
 
-def session(tmp_path, sid, *, n=60, split="train", seed=0, hide=()):
+def session(tmp_path, sid, *, n=60, split="train", seed=0, hide=(), config=TINY, jump_p=0.25):
     """Targets (valid for the reader) and a frame store for n intervals. `hide`: intervals whose end frame is left
     out of the store. The fixture's pts equals the frame index."""
     rng = np.random.default_rng(seed)
-    world = rng.integers(0, 256, (TINY.height, 400), dtype=np.uint8)
+    world = rng.integers(0, 256, (config.height, config.width + 360), dtype=np.uint8)
     counts = rng.choice([-60, -30, 0, 30, 60], size=n)                  # dx per interval
-    jumps = rng.random(n) < 0.25
+    jumps = rng.random(n) < jump_p
     rows, frames, hud = [], {}, {}
     offset = 0.0
     frame_px = {}
-    for k in range(-TINY.window - 1, n + TINY.window + 1):             # the world's position at each end frame
+    for k in range(-config.window - 1, n + config.window + 1):             # the world's position at each end frame
         if 0 <= k < n:
             offset += counts[k] * GAIN * PX_PER_DEG
         frame_px[2 * k + 2] = offset
     for f, px in frame_px.items():
         if (f - 2) // 2 in hide:
             continue
-        start = 100 + int(round(px))
-        frames[f] = np.ascontiguousarray(world[:, start:start + TINY.width])
+        start = 180 + int(round(px))
+        frames[f] = np.ascontiguousarray(world[:, start:start + config.width])
         crop = np.zeros(FR.HUD_SHAPE, np.uint8)
         k = (f - 2) // 2
         if 0 <= k < n and jumps[k]:
@@ -350,3 +350,38 @@ def test_a_frame_store_refuses_a_tampered_array(tmp_path):
     arr.write_bytes(bytes(data))
     with pytest.raises(FR.StoreError, match="differ"):
         FR.FrameStore(tmp_path / "frames" / "z", verify=True)
+
+
+def test_run_fit_end_to_end_commits_the_closure_it_checks_and_writes_a_report(tmp_path, monkeypatch):
+    """Review C1: every module a run imports is in the closure require_committed sees before anything is read, the
+    closure is unchanged after the fit, and the run writes its checkpoint and report (full-scale config, smoke)."""
+    full = M.Config()
+    train_t, train_store, train_path = session(tmp_path, "tr", n=80, config=full, jump_p=0.7)
+    _, _, held_path = session(tmp_path, "he", n=40, split="val", seed=5, config=full, jump_p=0.7)
+    checked = []
+    monkeypatch.setattr(TR, "require_committed", lambda files: checked.append(list(files)))
+    out = tmp_path / "run"
+    assert TR.main(["fit", "--train", str(train_path), "--heldout", str(held_path), "--frames-root",
+                    str(tmp_path / "frames"), "--out", str(out), "--epochs", "1", "--scope", "smoke",
+                    "--max-examples", "16"]) == 0
+    assert len(checked) == 1 and {"agent/human_intake.py", "agent/human_demos.py", "policy/idm_targets.py",
+                                  "policy/idm/train.py", "policy/idm/frames.py"} <= set(checked[0])
+    report = json.loads((out / "report.json").read_text(encoding="utf-8"))
+    assert list(report["code_closure"]) == checked[0]                   # the closure checked is the one recorded
+    assert report["train_statistics"]["examples"] == 16 and report["supported"]["jump"]
+    assert report["frame_stores"]["tr"]["manifest_sha256"] == T.sha256(tmp_path / "frames" / "tr" / "frames.json")
+    assert report["targets"]["tr"]["sha256"] == T.sha256(train_path) and report["scope"] == "smoke"
+    _, payload = TR.load_checkpoint(out / "idm-seed0.pt")
+    assert payload["meta"]["code_closure"] == report["code_closure"]
+    assert hashlib.sha256((out / "idm-seed0.pt").read_bytes()).hexdigest() == report["checkpoint_sha256"]
+    assert train_t.session_id == "tr" and train_store.manifest["width"] == 448
+
+
+def test_the_limit_is_for_smoke_runs_and_a_narrow_store_is_refused(tmp_path, monkeypatch):
+    monkeypatch.setattr(TR, "require_committed", lambda files: None)
+    t, store, path = session(tmp_path, "a")
+    with pytest.raises(TR.FitError, match="the model reads 448x252"):
+        TR.Examples([(t, store)], M.Config(), SUPPORTED)                # a 40-wide store under the full model
+    with pytest.raises(TR.FitError, match="smoke only"):
+        TR.main(["fit", "--train", str(path), "--heldout", str(path), "--frames-root", str(tmp_path / "frames"),
+                 "--out", str(tmp_path / "o"), "--max-examples", "4"])
