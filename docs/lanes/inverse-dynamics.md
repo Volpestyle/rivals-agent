@@ -1286,6 +1286,26 @@ unchanged.
 
 **Budget:** PC only, from the existing prediction files; minutes. Nothing runs until the lead's OK.
 
+**Result (measured 2026-09-25): arm A PASSES**, so by the pre-registered reading **A is the fix**
+(`idm-pitch-fix-3.md`).
+- **Arm A, bins and k from the dev fold:** yaw-std edges 0.0606 / 0.1076 / 0.1700 / 0.3517; k = 1, 1, 1 (the three
+  lowest bins have 0 / 0 / 18 truly fast fit rows, under 50), **1.601**, **1.243**.
+- **Judge folds, pooled, extrapolated band:** **0.718 / 0.948** on 051828 and **0.756 / 0.964** on 205528.
+- **Calibrated band:** 0.881 / 0.983 and 0.906 / 0.975.
+- **The 1° / 3° bounds hold on all six runs, and yaw is identical row for row.**
+- **Arm B (cross-fit) fails** on 051828's extrapolated band (0.682). By the reading, that does not matter once A
+  passes.
+- **The cost:** pooled pitch abstention rises from 0.6 % to 2.0 % (051828) and from 1.4 % to 4.5 % (205528) in the
+  extrapolated band. The worst run is `a1-beta-s0`, at 3.2 % → 9.6 %.
+- **Caveats (not conditions):**
+  - The 051828 margin is narrow (0.718 against 0.70), and one of its seeds alone reaches 0.693. The judge is per fold
+    pooled.
+  - This is the third round on these judge sets.
+  - A confirmation on the three new admitted takes, as fresh held-out sessions, would guard against selection across
+    rounds before fast-band replay pitch labels are relied on.
+- **Deploying it** means a reviewed change to the predictor's stated pitch std (these edges and k values). It is not
+  made here.
+
 ### The edge head's input: HUD crops after the interval (pre-registered 2026-09-25)
 
 Pre-registered before any code or run; the reading was fixed by the lead's brief. **This is not a gate result.**
