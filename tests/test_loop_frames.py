@@ -1,5 +1,5 @@
 """agent/loop.py on real frames: the tracked evidence stills and the recorded tagrun0. Needs the perception group
-(`uv run --group perception pytest tests/test_loop_frames.py`); tagrun0 is under gitignored data/ and skips where absent."""
+(`uv run --group perception pytest tests/test_loop_frames.py`); tagrun0 is under gitignored data/ and requires --corpus, skipping where absent."""
 import json
 from pathlib import Path
 
@@ -91,6 +91,7 @@ def test_the_scoreboard_hides_the_hud_from_the_guard_and_is_read_only_at_native_
 
 
 @needs_tagrun0
+@pytest.mark.corpus
 def test_a_recorded_run_goes_through_the_loop_and_its_log_loads_as_a_clip(tmp_path):
     log = RunLog(tmp_path / "replay", save_fps=10.0)
     loop = Loop(RunSource(TAGRUN0, limit=120), FakePad(board=read(BOARD)), default_perception(), scripted.decide, log=log,
@@ -112,6 +113,7 @@ def test_a_recorded_run_goes_through_the_loop_and_its_log_loads_as_a_clip(tmp_pa
 
 
 @needs_tagrun0
+@pytest.mark.corpus
 def test_a_replay_is_deterministic_and_the_real_detector_and_hud_reach_the_brain():
     def go():
         loop = Loop(RunSource(TAGRUN0, limit=160), FakePad(), default_perception(), scripted.decide, warmup=False)
@@ -124,6 +126,7 @@ def test_a_replay_is_deterministic_and_the_real_detector_and_hud_reach_the_brain
 
 
 @needs_tagrun0
+@pytest.mark.corpus
 def test_the_threaded_loop_runs_real_perception_without_holding_a_reflex_step():
     pad = FakePad()
     loop = Loop(RunSource(TAGRUN0, limit=60), pad, default_perception(), scripted.decide, warmup=False, threaded=True)
@@ -133,6 +136,7 @@ def test_the_threaded_loop_runs_real_perception_without_holding_a_reflex_step():
 
 
 @needs_tagrun0
+@pytest.mark.corpus
 def test_the_dry_run_prints_tick_times_and_the_intents_chosen(capsys):
     assert main(["--dry", str(TAGRUN0), "--limit", "40", "--no-scoreboard"]) == 0
     out = json.loads(capsys.readouterr().out)
@@ -141,6 +145,7 @@ def test_the_dry_run_prints_tick_times_and_the_intents_chosen(capsys):
 
 
 @needs_tagrun0
+@pytest.mark.corpus
 def test_see_gets_a_read_only_view_of_the_real_frame_and_cannot_write_into_the_finders_pixels():
     calls = []
 

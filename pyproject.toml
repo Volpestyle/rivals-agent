@@ -30,4 +30,4 @@ pythonpath = ["."]
 testpaths = ["tests"]
 # A bare `uv run pytest` is stdlib-only: tests/conftest.py skips the modules that import cv2, numpy or
 # `perception` unless opencv and numpy are installed. `uv run --group perception pytest` collects them too
-# (they also need recorded data under data/, which is gitignored and not on every machine).
+# (recording-dependent tests additionally require --corpus; tracked and synthetic fixtures run by default).

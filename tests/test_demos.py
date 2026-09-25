@@ -1735,6 +1735,7 @@ def test_an_edited_upload_loads_never_splittable_and_never_crosses_a_cut():
 
 
 @pytest.mark.skipif(not (REAL_RUN / "frames.jsonl").is_file(), reason="data/l1/tagrun0 is not on this machine")
+@pytest.mark.corpus
 def test_tagrun0_iterates():
     d = Demos.load(REAL_RUN)
     clip = d.clips["run:tagrun0"]

@@ -12,6 +12,8 @@ from policy import behaviour as b
 @pytest.fixture(autouse=True)
 def synthetic_root(tmp_path, monkeypatch):
     monkeypatch.setattr(b, "ROOT", tmp_path.resolve())
+    # This consumer accepts a frozen writer, not arbitrary later HUD revisions.
+    monkeypatch.setattr(b, "producer_rule", lambda: {"writer": "21a390f547eb"})
 
 
 def bounds(lo, hi=None, known=None):
@@ -127,6 +129,26 @@ def test_source_freshness_and_canary_refusal(tmp_path, monkeypatch):
     path.write_text(json.dumps(dict(training_authorized=False, rows=[dict(training_authorized=False)])))
     with pytest.raises(ValueError, match="training_authorized"):
         b.run(path, cache, tmp_path / "out", True)
+
+
+@pytest.mark.parametrize("where", ["events", "producer"])
+def test_changed_writer_is_refused_before_embeddings(tmp_path, monkeypatch, where):
+    path, cache, export = fixture_export(tmp_path)
+    b.admit(path, cache)  # The frozen pair is valid before changing either side.
+    if where == "producer":
+        monkeypatch.setattr(b, "producer_rule", lambda: {"writer": "later-writer"})
+    else:
+        source = next(iter(export["sources"].values()))
+        events = tmp_path / source["events"]["path"]
+        meta = json.loads(events.read_text())
+        meta["writer"] = "later-writer"
+        events.write_text(json.dumps(meta) + "\n")
+        source["events"]["sha256"] = b.digest(events)
+        path.write_text(json.dumps(export))
+    monkeypatch.setattr(np, "load", lambda *a, **k: pytest.fail("embeddings opened before writer admission"))
+    with pytest.raises(ValueError, match="stale writer"):
+        b.run(path, cache, tmp_path / "out", smoke_fit=True)
+    assert not (tmp_path / "out").exists()
 
 
 def test_causal_clock_future_append_and_label_invariance(tmp_path):

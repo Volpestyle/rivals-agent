@@ -4,50 +4,31 @@ The interesting assertions are the negative ones: damage and eliminations must
 stay None on practice-range frames, because nothing on screen carries them, and
 a menu frame must not be counted as part of a run.
 
-    uv run --no-project --with opencv-python-headless --with numpy \
-        python -m tests.test_evalread
+    uv run --group perception pytest tests/test_evalread.py
 """
 from __future__ import annotations
 
-import json
 import sys
 from pathlib import Path
 
 import cv2
 import numpy as np
+import pytest
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from perception.evalread import EvalRead, read, summarise  # noqa: E402
 
-RUN = ROOT / "data" / "run1"
-
-
-def _frames(n=8, start=330):
-    if not (RUN / "frames.jsonl").exists():
-        return []
-    names = [json.loads(line)["file"]
-             for line in (RUN / "frames.jsonl").read_text().splitlines()[start:start + n * 3]]
-    return [RUN / f for f in names if (RUN / f).exists()][:n]
-
-
-def test_outcome_fields_stay_unknown():
-    for path in _frames():
-        r = read(cv2.imread(str(path)))
-        assert r.damage_dealt is None, f"{path.name}: damage must not be invented"
-        assert r.eliminations is None, f"{path.name}: eliminations must not be invented"
-
-
-def test_in_play_frames_read_something():
-    paths = _frames()
-    if not paths:
-        print("no recorded run on disk; skipping")
-        return
-    reads = [read(cv2.imread(str(p))) for p in paths]
-    assert any(r.enemies_visible is not None for r in reads), "no frame read as in play"
-    s = summarise(reads, seconds=len(reads) * 0.1)
-    assert s["frames_in_play"] > 0
+@pytest.mark.parametrize("name", ["pos-fight-017.jpg", "pos-fight-060.jpg"])
+def test_in_play_frames_keep_outcomes_unknown(name):
+    frame = cv2.imread(str(ROOT / "tests/fixtures/range" / name))
+    assert frame is not None, name
+    r = read(frame)
+    assert r.enemies_visible is not None, "positive fixture must be read as in play"
+    assert r.damage_dealt is None and r.eliminations is None
+    s = summarise([r], seconds=.1)
+    assert s["frames_in_play"] == 1
     assert s["damage_dealt"] is None and s["eliminations"] is None
     assert 0.0 <= s["enemy_visible_frac"] <= 1.0
 
@@ -68,12 +49,7 @@ def test_summarise_counts_only_rises_in_ult_charge():
 
 
 def main():
-    for name, fn in sorted(globals().items()):
-        if name.startswith("test_") and callable(fn):
-            fn()
-            print(f"ok  {name}")
-    print("\nOK")
-    return 0
+    return pytest.main([__file__])
 
 
 if __name__ == "__main__":

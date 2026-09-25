@@ -13,7 +13,7 @@ from agent.tracker import CLOSE_AGE_S, Tracker
 from perception.outline import find_enemies
 
 RUN = Path(__file__).resolve().parent.parent / "data" / "l1" / "tagrun0"
-pytestmark = pytest.mark.skipif(not (RUN / "frames.jsonl").is_file(), reason="data/l1/tagrun0 is not on this machine")
+pytestmark = [pytest.mark.corpus, pytest.mark.skipif(not (RUN / "frames.jsonl").is_file(), reason="data/l1/tagrun0 is not on this machine")]
 FRAME = (2560, 1440)
 N = 216
 

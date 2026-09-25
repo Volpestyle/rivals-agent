@@ -24,13 +24,11 @@ from agent.replay import load, run  # noqa: E402
 from agent.state import ENEMY, Detection, State  # noqa: E402
 from perception.replay_states import unknown_fractions, walk  # noqa: E402
 
-RUN = ROOT / "data" / "run1"
+RUN = ROOT / "tests" / "fixtures" / "range"
 
 
 def _staged(frames, tmp):
     """A miniature run directory built from real recorded frames."""
-    index = json.loads((RUN / "frames.jsonl").read_text().splitlines()[0])  # shape check
-    assert {"t", "file"} <= index.keys()
     rows = []
     for i, name in enumerate(frames):
         (tmp / name).write_bytes((RUN / name).read_bytes())
@@ -40,18 +38,13 @@ def _staged(frames, tmp):
 
 
 def _frames(n=6):
-    listed = [json.loads(line)["file"]
-              for line in (RUN / "frames.jsonl").read_text().splitlines()[330:340]]
-    return [f for f in listed if (RUN / f).exists()][:n]
+    return ["pos-fight-017.jpg", "pos-fight-060.jpg", "pos-fight-101.jpg"][:n]
 
 
 def test_walk_makes_loadable_states():
     from perception.outline import detect
 
     names = _frames()
-    if not names:
-        print("no recorded run on disk; skipping")
-        return
     with tempfile.TemporaryDirectory() as d:
         tmp = _staged(names, Path(d))
         states, stats = walk(tmp, detect)
@@ -78,8 +71,6 @@ def test_walk_makes_loadable_states():
 def test_finder_is_a_plain_function():
     """No registry, no plugin lookup: anything callable does."""
     names = _frames(3)
-    if not names:
-        return
     box = Detection(cls=ENEMY, bbox=(600.0, 300.0, 660.0, 420.0), conf=0.5)
     with tempfile.TemporaryDirectory() as d:
         tmp = _staged(names, Path(d))
@@ -95,8 +86,6 @@ def test_finder_is_a_plain_function():
 
 def test_missing_frame_is_skipped_not_faked():
     names = _frames(3)
-    if not names:
-        return
     with tempfile.TemporaryDirectory() as d:
         tmp = _staged(names, Path(d))
         (tmp / names[1]).unlink()

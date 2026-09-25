@@ -151,6 +151,7 @@ TAGGED_BOX = (645, 342, 695, 442)
 TAGGED = {63: False, 65: False, 69: False, 71: True, 75: True, 85: True}
 
 
+@pytest.mark.corpus
 def test_read_tagged():
     for i, want in TAGGED.items():
         frame = cv2.imread(str(ROOT / f"data/l2/{i:06d}.jpg"))
@@ -163,6 +164,7 @@ def test_read_tagged():
             assert got is not True, f"frame {i}: read_tagged {got!r}, truth untagged"
 
 
+@pytest.mark.corpus
 def test_tagged_band_off_screen_is_unknown():
     frame = cv2.imread(str(ROOT / "data/l2/000071.jpg"))
     if frame is not None:
@@ -170,6 +172,7 @@ def test_tagged_band_off_screen_is_unknown():
         assert read_tagged(frame, (600, 0, 660, 40)) is None
 
 
+@pytest.mark.corpus
 def test_hud_accuracy():
     assert main() == 0
 

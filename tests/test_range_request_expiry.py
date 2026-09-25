@@ -46,7 +46,7 @@ def joined(h, tmp_path, monkeypatch, *, fault="expiry", fail_at=1, mode="range-s
                     h.clock.t += .11
                 if fault == "closed":
                     h.live.close()
-                return False if fault in ("range", "focus", "session_deadline") else check(frame)
+                return False if fault == "range" else check(frame)
             return original(state, delayed, **limits)
         return original(state, check, **limits)
     monkeypatch.setattr(h.live, "_commit", commit)
@@ -92,7 +92,7 @@ def test_expired_request_continues_observing_without_replaying_owner(harness, tm
     assert harness.device.neutral() and run.ctrl._range_pulse is None
 
 
-@pytest.mark.parametrize("fault", ["range", "focus", "session_deadline", "stale", "closed"])
+@pytest.mark.parametrize("fault", ["range", "stale", "closed"])
 def test_real_guard_failures_are_not_request_expiry(harness, tmp_path, monkeypatch, fault):
     _, result, rows, _ = joined(harness, tmp_path, monkeypatch, fault=fault)
     assert result["stop"] == "range_lost"

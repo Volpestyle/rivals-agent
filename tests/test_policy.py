@@ -1,7 +1,7 @@
 """The policy lane's offline checks: provenance, the recorded normalization, and the cache.
 
 Stdlib-only tests run in the default suite. The ones that need numpy/mlx/ffmpeg or recorded
-media are skipped there and run under `uv run --group policy pytest tests/test_policy.py`.
+media are skipped there and run under `uv run --group perception --group policy pytest tests/test_policy.py`.
 """
 import dataclasses
 import json
@@ -197,11 +197,52 @@ def test_the_cache_holds_one_embedding_per_timestamp_and_nothing_later_is_implie
 
 
 @needs_mlx
-def test_an_interrupted_write_leaves_no_file_that_looks_complete(tmp_path):
-    """Both files land by rename, so a crash between them can only leave a .tmp."""
+@pytest.mark.parametrize("failure", ["npz_write", "sidecar_publish"])
+def test_an_interrupted_write_leaves_no_file_that_looks_complete(tmp_path, monkeypatch, failure):
+    """Partial writes and a missing sidecar are invisible to readers and retryable."""
+    import numpy as np
     import policy.encode as enc
-    assert "tmp_npz.rename(npz)" in Path(enc.__file__).read_text()
-    assert not list(tmp_path.glob("*.npz"))
+
+    monkeypatch.setattr(enc, "ROOT", tmp_path)
+    source = corpus_mod.Source("sample:synthetic", "sample", tmp_path / "synthetic.mp4",
+                               "us", "synthetic", "normal", "synthetic test")
+    class Frames:
+        def __iter__(self):
+            yield np.zeros((2, 224, 224, 3), np.uint8)
+        def check(self):
+            return np.array([0., .1], np.float64)
+    monkeypatch.setattr(enc, "Decoded", lambda *a, **k: Frames())
+    class Encoder:
+        name, dim, batch = "synthetic", 2, 2
+        def __call__(self, frames):
+            return np.array([[1, 2], [3, 4]], np.float16)
+    encoder = Encoder()
+    npz, side = tmp_path / "sample-synthetic.npz", tmp_path / "sample-synthetic.json"
+    rename = Path.rename
+    with monkeypatch.context() as interrupted:
+        if failure == "npz_write":
+            def partial(fh, **arrays):
+                fh.write(b"partial archive")
+                raise OSError("interrupted write")
+            interrupted.setattr(enc.np, "savez", partial)
+        else:
+            def publish(path, target):
+                if target == side:
+                    raise OSError("interrupted write")
+                return rename(path, target)
+            interrupted.setattr(Path, "rename", publish)
+        with pytest.raises(OSError, match="interrupted write"):
+            enc.encode_source(source, encoder, 10, tmp_path)
+    assert list(enc.load(tmp_path)) == []
+    if npz.exists():
+        with np.load(npz) as saved:
+            np.testing.assert_array_equal(saved["emb"], [[1, 2], [3, 4]])
+    assert enc.encode_source(source, encoder, 10, tmp_path)[0] == 2
+    (meta, emb, times), = enc.load(tmp_path)
+    np.testing.assert_array_equal(emb, [[1, 2], [3, 4]])
+    np.testing.assert_array_equal(times, [0., .1])
+    assert meta["frames"] == 2 and meta["id"] == source.id
+    assert enc.encode_source(source, encoder, 10, tmp_path) is None
 
 
 def test_only_one_opencv_distribution_is_ever_installed():
@@ -319,15 +360,42 @@ def test_l4s_trial_logs_are_a_different_recorder_and_are_not_pooled_with_the_loo
 
 
 @needs_mlx
-def test_the_learned_brain_runs_the_scripted_gate_first_and_never_adopts_an_illegal_intent():
-    """The gate and the kit checks are imported from brain/jev, not reimplemented here."""
-    import inspect
-
+@pytest.mark.parametrize("prediction", ["combo", "webstrike"])
+def test_the_learned_brain_runs_the_scripted_gate_first_and_never_adopts_an_illegal_intent(tmp_path, prediction):
+    from unittest.mock import Mock
+    import mlx.core as mx
+    import numpy as np
+    from agent.brain import Memory
+    from agent.intents import BURST, Combo, Disengage, Engage, WebStrike
+    from agent.state import Ability, Detection, State
     import policy.live as live
-    source = inspect.getsource(live.LearnedBrain.__call__)
-    assert "brain.gate(state, memory)" in source, "the scripted gate must run before the head"
-    assert "jev.legal(" in source and "jev.adopt(" in source, "legality and adoption are jev's, reused"
-    assert live.TO_JEV["combo"] == "burst" and live.TO_JEV["webstrike"] == "web_strike"
+    from policy.train import Head, STATE_F, layout
+
+    head = tmp_path / "head"
+    width = layout(2)["width"]
+    head.with_suffix(".json").write_text(json.dumps({"width": width, "classes": [prediction, "engage"],
+        "steps": 1, "emb_dim": 2, "state_f": STATE_F, "frame_hz": 10}))
+    Head(width, 2).save_weights(str(head.with_suffix(".safetensors")))
+    learned = live.LearnedBrain(head, encoder=lambda frames: np.zeros((len(frames), 2), np.float16))
+    model = Mock(return_value=mx.array([[2., 1.]]))
+    learned.model = model  # Controlled predictions; gate, window, ranking and adoption are real.
+    target = Detection("enemy", (600, 300, 680, 500), 1., tagged=True, distance=10.)
+    state = State(t=0., frame=(1280, 720), hp=1, max_hp=100, webs=5, on_target=True,
+                  detections=[target], abilities={"pull": Ability(False), "uppercut": Ability(True)})
+    learned.see(np.zeros((720, 1280, 3), np.uint8), state.t)
+    assert isinstance(learned(state, Memory()), Disengage)
+    model.assert_not_called()
+
+    state = dataclasses.replace(state, hp=100)
+    assert learned(state, Memory()) == Engage(target)  # Highest-ranked action is illegal while pull cools.
+    assert model.call_count == 1 and learned.source == "learned"
+    state = dataclasses.replace(state, abilities={"pull": Ability(True), "uppercut": Ability(True)})
+    memory = Memory()
+    chosen = learned(state, memory)
+    assert chosen == (Combo(BURST, target) if prediction == "combo" else WebStrike(target))
+    assert memory.intent == chosen and memory.hold_until > state.t
+    assert learned(dataclasses.replace(state, t=.01), memory) == chosen
+    assert model.call_count == 2  # The adopted hold also preempts inference.
 
 
 @needs_mlx
