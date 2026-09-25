@@ -1,0 +1,643 @@
+{
+ "format": "rivals-calibration-v1",
+ "session": "20260925T030045-211Z-7804-3",
+ "media": {
+  "path": "C:/Users/volpe/Videos/2026-09-24 22-00-45.mkv",
+  "sha256": "ff6b1fa017cb251c599603a7d10f6ddb03ef832c15c71af6270b8c4ff07c0aca"
+ },
+ "codec": "hevc",
+ "recorder": {
+  "integrity_ok": true,
+  "errors": [],
+  "warnings": [
+   "Capture/display/input-delivery latency has not been calibrated",
+   "Only matched file frames are usable; OBS muxer discarded trailing callback packets"
+  ],
+  "decoded_video_frames": 5480,
+  "matched_video_frames": 5480,
+  "unwritten_muxer_tail_packets": 1,
+  "muxer_pts_offset_seconds": 0.021,
+  "max_video_pts_residual_seconds": 0.0003333333333372934,
+  "composition_duration_seconds": 45.674998173,
+  "counts": {
+   "key": 1,
+   "mouse": 3324,
+   "focus": 3,
+   "pause": 0,
+   "gap": 0,
+   "frames": 5481,
+   "raw_input_status": 1
+  }
+ },
+ "anchor_applies": true,
+ "game_build": "1.1.3892207/build25501035 (kit-equivalent to 1.1.3870120/build25364676, data/human/patch-equivalence.json)",
+ "settings": {
+  "source": "unchanged since the 2026-09-23 settings look (James, relayed by the lead 2026-09-24): DPI 800, sensitivity 1.89/1.89, mouse acceleration on at factor 1.00, smoothing on",
+  "settings_look": "data/human/calibration/20260923T204707-487Z-45572-2/calibration.json (baa49158c9911e01)"
+ },
+ "take": {
+  "description": "four rightward yaw turns at rising speed, each ended on a still view, then 12 pitch sweeps; James: 'turns not exact'",
+  "strokes": "strokes-20260925T030045-211Z-7804-3.json (inputs.jsonl alone)"
+ },
+ "yaw": {
+  "method": "per turn: the camera rotation between the still frame before the turn and the still frame after it (the snapshot Estimator's rotation fit on the two frames' ORB features) is the turn's excess over one revolution; degrees = 360 + excess; gain = degrees / the mouse x counts between the two still frames. Still frames on both ends: display latency does not enter.",
+  "per_speed_class": [
+   {
+    "speed_class": "slow",
+    "stroke_logger_s": [
+     2.95,
+     9.05
+    ],
+    "moving_s": 6.0,
+    "mean_counts_per_s": 1806,
+    "median_bin_counts_per_s": 1920,
+    "peak_counts_per_s_100ms": 2720,
+    "still_frames_logger_s": [
+     2.298,
+     9.598
+    ],
+    "dx_counts_between_still_frames": 10783,
+    "dy_counts_between_still_frames": -197,
+    "excess_yaw_deg": -3.6101,
+    "excess_pitch_deg": 8.3308,
+    "still_pair_inliers": 116,
+    "turn_deg": 356.3899,
+    "counts_per_360": 10892.23,
+    "yaw_deg_per_count": 0.03305109
+   },
+   {
+    "speed_class": "medium",
+    "stroke_logger_s": [
+     10.5,
+     13.35
+    ],
+    "moving_s": 2.85,
+    "mean_counts_per_s": 3841,
+    "median_bin_counts_per_s": 4300,
+    "peak_counts_per_s_100ms": 6330,
+    "still_frames_logger_s": [
+     9.998,
+     13.698
+    ],
+    "dx_counts_between_still_frames": 10927,
+    "dy_counts_between_still_frames": -17,
+    "excess_yaw_deg": 1.5566,
+    "excess_pitch_deg": 0.7392,
+    "still_pair_inliers": 558,
+    "turn_deg": 361.5566,
+    "counts_per_360": 10879.96,
+    "yaw_deg_per_count": 0.03308836
+   },
+   {
+    "speed_class": "fast",
+    "stroke_logger_s": [
+     14.25,
+     16.0
+    ],
+    "moving_s": 1.75,
+    "mean_counts_per_s": 6207,
+    "median_bin_counts_per_s": 4660,
+    "peak_counts_per_s_100ms": 13250,
+    "still_frames_logger_s": [
+     13.898,
+     16.498
+    ],
+    "dx_counts_between_still_frames": 10846,
+    "dy_counts_between_still_frames": -37,
+    "excess_yaw_deg": -1.3969,
+    "excess_pitch_deg": 1.5442,
+    "still_pair_inliers": 474,
+    "turn_deg": 358.6031,
+    "counts_per_360": 10888.25,
+    "yaw_deg_per_count": 0.03306316
+   },
+   {
+    "speed_class": "fastest",
+    "stroke_logger_s": [
+     17.25,
+     18.15
+    ],
+    "moving_s": 0.9,
+    "mean_counts_per_s": 12088,
+    "median_bin_counts_per_s": 10880,
+    "peak_counts_per_s_100ms": 26960,
+    "still_frames_logger_s": [
+     16.798,
+     19.198
+    ],
+    "dx_counts_between_still_frames": 10854,
+    "dy_counts_between_still_frames": 125,
+    "excess_yaw_deg": -1.2324,
+    "excess_pitch_deg": -5.3481,
+    "still_pair_inliers": 340,
+    "turn_deg": 358.7676,
+    "counts_per_360": 10891.28,
+    "yaw_deg_per_count": 0.03305396
+   }
+  ],
+  "controls": [
+   {
+    "still_frames_logger_s": [
+     1.798,
+     2.298
+    ],
+    "yaw_deg": -0.00187,
+    "pitch_deg": -0.00185,
+    "inliers": 1347,
+    "dx_counts": 0
+   },
+   {
+    "still_frames_logger_s": [
+     9.598,
+     9.998
+    ],
+    "yaw_deg": -0.00898,
+    "pitch_deg": 0.00872,
+    "inliers": 1334,
+    "dx_counts": 0
+   },
+   {
+    "still_frames_logger_s": [
+     13.698,
+     13.898
+    ],
+    "yaw_deg": -0.00179,
+    "pitch_deg": 0.00016,
+    "inliers": 1350,
+    "dx_counts": 0
+   },
+   {
+    "still_frames_logger_s": [
+     16.498,
+     16.798
+    ],
+    "yaw_deg": 0.00087,
+    "pitch_deg": 0.0009,
+    "inliers": 1339,
+    "dx_counts": 0
+   },
+   {
+    "still_frames_logger_s": [
+     19.198,
+     20.498
+    ],
+    "yaw_deg": 0.00257,
+    "pitch_deg": -0.00061,
+    "inliers": 1267,
+    "dx_counts": 0
+   }
+  ],
+  "counts_per_360": {
+   "mean": 10887.93,
+   "sd": 5.58,
+   "min": 10879.96,
+   "max": 10892.23,
+   "range_pct": 0.113
+  },
+  "yaw_deg_per_count": {
+   "mean": 0.03306414,
+   "sd": 1.695e-05
+  },
+  "vs_2026_09_23": {
+   "counts_per_360": 10884.76,
+   "yaw_deg_per_count": 0.0330738,
+   "mean_difference_pct": 0.029
+  },
+  "result": "speed-independent: four speed classes from 1.8k to 12.1k counts/s mean (peaks to 27k) give 10880.0-10892.2 counts per 360 degrees, a 0.11 % range with no trend in speed, and a mean within 0.03 % of the 2026-09-23 slow closure; mouse acceleration (on, factor 1.00) has no measurable effect",
+  "uncertainty": {
+   "excess": "controls between adjacent still frames read at most 0.009 deg; the excess scales with the estimator's focal, whose error for this footage is about 3 % (below), so +-0.03-0.11 deg on excesses of 1.2-3.6 deg",
+   "slow_turn": "its still pair differs by 8.3 deg of pitch (197 y counts) and fits on 116 inliers; its excess is the least certain (+-0.3 deg, 0.08 %)",
+   "per_class_gain": "+-0.02-0.08 %"
+  },
+  "latency": "none: every measurement is still frame to still frame"
+ },
+ "estimator_scale": {
+  "note": "for the inverse-dynamics lane (VUH-1353): the per-pair estimator (focal 465 px at 1280 wide) summed over each turn against the still-to-still truth",
+  "per_turn": [
+   {
+    "speed_class": "slow",
+    "pairs": 876,
+    "fitted": 838,
+    "estimator_yaw_sum_deg": 365.0009175830757,
+    "rest_to_rest_turn_deg": 356.3898733913821
+   },
+   {
+    "speed_class": "medium",
+    "pairs": 444,
+    "fitted": 435,
+    "estimator_yaw_sum_deg": 373.0696741984578,
+    "rest_to_rest_turn_deg": 361.55656198146164
+   },
+   {
+    "speed_class": "fast",
+    "pairs": 312,
+    "fitted": 298,
+    "estimator_yaw_sum_deg": 371.875709757134,
+    "rest_to_rest_turn_deg": 358.6030830830476
+   },
+   {
+    "speed_class": "fastest",
+    "pairs": 288,
+    "fitted": 226,
+    "estimator_yaw_sum_deg": 323.44909113629893,
+    "rest_to_rest_turn_deg": 358.7676450786843
+   }
+  ],
+  "finding": "the per-pair yaw sums read 2.4 % (slow), 3.2 % (medium) and 3.7 % (fast) above the true turn, consistent with a focal about 3 % short for this footage; the fastest turn fits only 226 of 288 pairs (the fitted sum is 9.8 % below the turn). A focal refit on this take is the IDM lane's call.",
+  "per_rate_band": [
+   {
+    "band_counts_per_s": [
+     0,
+     1000
+    ],
+    "pairs": 84,
+    "fitted": 84,
+    "coverage": 1.0,
+    "sum_ratio_deg_per_count": 0.03587581035544454,
+    "median_ratio_deg_per_count": 0.03409234714343339,
+    "iqr": [
+     0.027293342053083,
+     0.04187059910206256
+    ]
+   },
+   {
+    "band_counts_per_s": [
+     1000,
+     2000
+    ],
+    "pairs": 400,
+    "fitted": 400,
+    "coverage": 1.0,
+    "sum_ratio_deg_per_count": 0.03555017229384754,
+    "median_ratio_deg_per_count": 0.03521133531730938,
+    "iqr": [
+     0.032759740052476685,
+     0.03840585651671975
+    ]
+   },
+   {
+    "band_counts_per_s": [
+     2000,
+     4000
+    ],
+    "pairs": 461,
+    "fitted": 460,
+    "coverage": 0.998,
+    "sum_ratio_deg_per_count": 0.03405121552837681,
+    "median_ratio_deg_per_count": 0.03449570576384023,
+    "iqr": [
+     0.031294920721752634,
+     0.037948867387225665
+    ]
+   },
+   {
+    "band_counts_per_s": [
+     4000,
+     8000
+    ],
+    "pairs": 269,
+    "fitted": 269,
+    "coverage": 1.0,
+    "sum_ratio_deg_per_count": 0.0352128404650978,
+    "median_ratio_deg_per_count": 0.0355584203191845,
+    "iqr": [
+     0.03336347094333795,
+     0.03822165589881122
+    ]
+   },
+   {
+    "band_counts_per_s": [
+     8000,
+     16000
+    ],
+    "pairs": 99,
+    "fitted": 95,
+    "coverage": 0.96,
+    "sum_ratio_deg_per_count": 0.033748332929140125,
+    "median_ratio_deg_per_count": 0.03425491749207387,
+    "iqr": [
+     0.02917483792437635,
+     0.03776030179687708
+    ]
+   },
+   {
+    "band_counts_per_s": [
+     16000,
+     64000
+    ],
+    "pairs": 39,
+    "fitted": 33,
+    "coverage": 0.846,
+    "sum_ratio_deg_per_count": 0.032006460321119805,
+    "median_ratio_deg_per_count": 0.0337905991897584,
+    "iqr": [
+     0.02870090349558324,
+     0.038222920737448755
+    ]
+   }
+  ],
+  "lag": {
+   "best_ms": 5,
+   "corr": 0.9372,
+   "grid_ms": [
+    -50,
+    200,
+    5
+   ],
+   "curve": [
+    [
+     -50,
+     0.9031
+    ],
+    [
+     -45,
+     0.9034
+    ],
+    [
+     -40,
+     0.9171
+    ],
+    [
+     -35,
+     0.9041
+    ],
+    [
+     -30,
+     0.918
+    ],
+    [
+     -25,
+     0.934
+    ],
+    [
+     -20,
+     0.9199
+    ],
+    [
+     -15,
+     0.9169
+    ],
+    [
+     -10,
+     0.9075
+    ],
+    [
+     -5,
+     0.9289
+    ],
+    [
+     0,
+     0.9321
+    ],
+    [
+     5,
+     0.9372
+    ],
+    [
+     10,
+     0.9316
+    ],
+    [
+     15,
+     0.9339
+    ],
+    [
+     20,
+     0.9226
+    ],
+    [
+     25,
+     0.9133
+    ],
+    [
+     30,
+     0.9216
+    ],
+    [
+     35,
+     0.9171
+    ],
+    [
+     40,
+     0.9085
+    ],
+    [
+     45,
+     0.9184
+    ],
+    [
+     50,
+     0.9071
+    ],
+    [
+     55,
+     0.9066
+    ],
+    [
+     60,
+     0.8899
+    ],
+    [
+     65,
+     0.8709
+    ],
+    [
+     70,
+     0.8818
+    ],
+    [
+     75,
+     0.8729
+    ],
+    [
+     80,
+     0.8781
+    ],
+    [
+     85,
+     0.8716
+    ],
+    [
+     90,
+     0.8424
+    ],
+    [
+     95,
+     0.8532
+    ],
+    [
+     100,
+     0.8422
+    ],
+    [
+     105,
+     0.8191
+    ],
+    [
+     110,
+     0.8265
+    ],
+    [
+     115,
+     0.7944
+    ],
+    [
+     120,
+     0.8082
+    ],
+    [
+     125,
+     0.7891
+    ],
+    [
+     130,
+     0.7791
+    ],
+    [
+     135,
+     0.7634
+    ],
+    [
+     140,
+     0.7435
+    ],
+    [
+     145,
+     0.7404
+    ],
+    [
+     150,
+     0.7372
+    ],
+    [
+     155,
+     0.7246
+    ],
+    [
+     160,
+     0.716
+    ],
+    [
+     165,
+     0.6949
+    ],
+    [
+     170,
+     0.6994
+    ],
+    [
+     175,
+     0.6908
+    ],
+    [
+     180,
+     0.6836
+    ],
+    [
+     185,
+     0.6628
+    ],
+    [
+     190,
+     0.6316
+    ],
+    [
+     195,
+     0.632
+    ],
+    [
+     200,
+     0.6237
+    ]
+   ]
+  },
+  "lag_note": "the yaw-vs-counts correlation is flat within +-30 ms (0.90-0.93); these data do not pin the lag"
+ },
+ "pitch": {
+  "pitch_deg_per_count": null,
+  "kind": "derived_equal_sensitivity (unchanged; lead decision 2026-09-23)",
+  "why_null": "the orbiting third-person camera moves as well as rotates on pitch: still-to-still rotation fails across a 64 deg sweep (0 inliers), and the estimator's pitch sign flips near the limits",
+  "observations": {
+   "free_pair_ratio_deg_per_count": 0.033276,
+   "free_pair_note": "per-pair estimator pitch / -dy over moving pairs not at a limit; carries the estimator's ~3 % scale error, so it is consistent with pitch = yaw, not a measurement",
+   "limit_to_limit_runs": [
+    {
+     "start_s": 25.965,
+     "direction": "down",
+     "dy_counts": 3340,
+     "mean_counts_per_s": 1616
+    },
+    {
+     "start_s": 30.082,
+     "direction": "up",
+     "dy_counts": -3310,
+     "mean_counts_per_s": 2194
+    },
+    {
+     "start_s": 33.048,
+     "direction": "down",
+     "dy_counts": 3412,
+     "mean_counts_per_s": 5459
+    },
+    {
+     "start_s": 33.765,
+     "direction": "up",
+     "dy_counts": -3290,
+     "mean_counts_per_s": 5640
+    },
+    {
+     "start_s": 35.732,
+     "direction": "down",
+     "dy_counts": 3563,
+     "mean_counts_per_s": 7774
+    },
+    {
+     "start_s": 36.407,
+     "direction": "up",
+     "dy_counts": -3601,
+     "mean_counts_per_s": 7084
+    },
+    {
+     "start_s": 38.323,
+     "direction": "down",
+     "dy_counts": 3300,
+     "mean_counts_per_s": 9000
+    },
+    {
+     "start_s": 38.723,
+     "direction": "up",
+     "dy_counts": -3225,
+     "mean_counts_per_s": 10750
+    },
+    {
+     "start_s": 40.098,
+     "direction": "down",
+     "dy_counts": 3844,
+     "mean_counts_per_s": 20967
+    },
+    {
+     "start_s": 40.423,
+     "direction": "up",
+     "dy_counts": -3450,
+     "mean_counts_per_s": 13800
+    }
+   ],
+   "limit_to_limit_note": "counts from leaving one pitch limit to reaching the other (by estimator motion): 3,225-3,601 for nine sweeps from 1.6k to 13.8k counts/s, no speed trend; one 21k sweep 3,844 with a confounded start. Below the 2026-09-23 4,624 by definition (motion onset at the limits blurs)"
+  },
+  "conclusion": "no evidence that pitch gain depends on speed or differs from yaw; not established by this take"
+ },
+ "header_calibration": {
+  "kind": "slow_turn_constant",
+  "yaw_deg_per_count": 0.0330738,
+  "pitch_deg_per_count": 0.0330738,
+  "pitch": {
+   "kind": "derived_equal_sensitivity"
+  },
+  "accel_on": true,
+  "source": "data/human/calibration/20260923T204707-487Z-45572-2/calibration.json (v2)"
+ },
+ "header_note": "unchanged: the step header keeps the 2026-09-23 calibration (v2). This take shows its yaw gain holds from 1.8k to 12.1k counts/s mean; relabelling the gain kind would re-step the admitted tables, so it is left to the lead",
+ "applies_to": "every session with DPI 800 and sensitivity 1.89/1.89 (all campaign sessions so far)",
+ "version": 1,
+ "accel_on": true
+}

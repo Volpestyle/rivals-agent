@@ -1187,3 +1187,190 @@ Both sessions await the independent per-session review before assembly.
   - Under R5 a disagreement between the note and the scan makes the session unresolved.
   - Admitting it as a declared no-cooldown session would need positive evidence of the setting, and there is none.
   - It **stays out** (the lead's "permanently unadmitted").
+
+
+## 2026-09-25: motor records, per-date motor statements, the recording's build (after review-intake-motor.md)
+
+**Motor records.** `motor-settings.json` is an intake evidence record; the assembly writes `settings.json` from
+its own `MOTOR`/`BINDINGS`.
+- **The admitted sessions** (051828, 171533, 200129, 205528):
+  - their motor records came from the pre-I1 motor step (four fields) and carry identity `e55453d6…`;
+  - their `settings.json` and step-table headers carry `a8dea3ba…` (six fields, the full binding table);
+  - the fit and the assembly only ever used `a8dea3ba…`. The frozen records are not rewritten; this note is the record.
+- **From 2026-09-25**, `step_motor` takes `MOTOR`, `BINDINGS`, `ALIASES` and `CALIBRATION` from
+  `assemble_session.py`, so both files carry `a8dea3ba…`.
+
+**Per-session motor statement (R2).**
+- **Keyed by date.** `assemble_session.MOTOR_STATEMENTS` is keyed by the recording's date in America/Chicago.
+  `chicago_date` spells out the US rule, because `zoneinfo` finds no tz database on this PC.
+- **Each entry** quotes the committed recording-log text it rests on (checked verbatim) and gives the per-session source
+  texts. A date without an entry refuses, in the motor step and before the assembly writes anything.
+- **2026-09-23** keeps the admitted `settings.json` wording exactly (a corpus test re-derives all four admitted sessions
+  byte-identical).
+- **2026-09-24** cites the line committed at `57d1f3d` ("DPI, in-game sensitivity and bindings unchanged", ~22:40 CDT).
+- **The motor record quotes** the recording date's own line, not the 09-23 text.
+
+**Regenerated.** 025230 and 232304 ran the motor step before `57d1f3d`. Their records were regenerated deliberately
+with `--supersedes`:
+- the first records are kept as `motor-settings.v1.json`, and the new record names them by sha256;
+- each `segments-evidence.json` still records the motor input it was built from, which is that `.v1` file.
+
+**The recording's build.** Since 2026-09-24, `assemble_session.py` has no `PATCH` constant. The build is
+`human_intake.recorded_build` over the Steam evidence that the provenance step records:
+- the appmanifest's `buildid` and `LastUpdated`;
+- `version.json`;
+- the content log's `finished update (BuildID N)` lines.
+
+It refuses a build that is no longer installed (patch-equivalence-design.md item 3).
+
+
+## 2026-09-25 (later): review corrections, the wheel secondaries, a recorder timestamp defect
+
+**Calibration take 030045: the slow class.**
+- The independent review (review-calibration-0924.md) reproduced medium, fast and fastest within 0.04 %.
+- It could not reproduce the slow turn: its pipeline reads 10,904–10,917 counts per 360°, against the record's 10,892.2.
+  - The cause is parallax. The two still views differ by about 8° of pitch, and the orbit camera's vertical motion
+    shifts near geometry, which a rotation-only fit takes for yaw.
+- **The slow class's uncertainty is about ±0.8° of excess, ±0.25 % in gain**, not the ±0.3°/0.08 % in the frozen record.
+  The record stands as frozen (lead). This entry carries the correction.
+- The speed-independence claim holds from 3.8k to 12.1k counts/s mean. The 2026-09-23 slow closure covers the slow end.
+
+**Caps Lock counts are key-down packets, not presses.** Windows auto-repeats a held key.
+- `inputs.jsonl` records every repeated make; the importer and the step table count only up→down transitions.
+- So 025230 has 56 Caps Lock downs but **2** Simple Swing presses. 200129 and 205528 have 54 and 107 downs, but 3 and 13
+  presses.
+- The key-down tables in arrivals-0924.md (Shift 843, Space 445, …) are raw downs in the same way, not presses.
+
+**The saved profile has two mouse-wheel secondaries that `BINDINGS` lacks.**
+- **The bindings** (both visible on the 2026-09-23 settings-look frames f097596 and f099596, and missed in my
+  transcription then):
+  - Simple Swing: CAPS + MouseScrollUp;
+  - Jump: SPACE + MouseScrollDown.
+- **Wheel ticks today.** The step tables carry them only as the `wheel_v` sum, never as an action. Ticks per session
+  (accepted step rows with wheel-up in brackets):
+
+  | Session | Wheel-up | Wheel-down |
+  |---|---|---|
+  | 051828 | 10 (8 rows) | 0 |
+  | 171533 | 0 | 0 |
+  | 200129 | 54, 43 in accepted spans (28 rows) | 0 |
+  | 205528 | 13 (12 rows) | 1, accepted |
+  | 025230 | 2 | 0 |
+  | 232304 | 6 | 0 |
+  | 021320 | 80, all bursts in its first 4 s | 8 |
+  | 030045 | 0 | 0 |
+
+- **The pattern.** Every burst sampled follows melee (Mouse 5) and a right click (Web Cluster) within about 0.1 s.
+- **The frames.** Frames after four bursts (051828, 200129, 205528 ×2), plus the reviewer's two in 025230, show melee
+  and no web-line swing: incidental ticks, not Simple Swings.
+- **If bound as the profile has them:**
+  - accepted `simple_swing` press rows would go 0→8 (051828), 3→31 (200129) and 13→25 (205528), all on melee frames;
+  - `jump` would gain 1 press (205528, 487→488).
+- No binding change without the lead's decision.
+
+**A recorder timestamp defect blocks the import of 025230 and 232304.**
+- **The defect.** In each take, one packet's logged composition time repeats its neighbour's. In 025230, packet 118
+  (pts 120) has 0.9833 s, the same as packet 119 (pts 118): slot 118 is doubled and slot 120 missing. So in
+  presentation order the composition time steps back once.
+  - 025230: at 0.99 s, before focus.
+  - 232304: at 323.1 s, which the proposer cut as `capture_gap`.
+- **Where it is not.** All four admitted sessions, 021320 and both calibration takes have none.
+- **What the importer does.** `human_demos.match_frames` requires composition times to be monotonic in presentation
+  order over the whole file, so `import_session` refuses both takes. The recorder check (pts-based) passes on both.
+- **Consequence.** The 025230 assembly stopped at its import on 2026-09-25. The four files it had written were moved
+  aside, not kept. Nothing is frozen, and the fix is the importer owner's decision.
+
+**Motor records.** For 025230 and 232304, each `segments-evidence.json`'s `motor` sha256 names the superseded
+`motor-settings.v1.json` (kept beside the current record, which names it in `supersedes`). Each session's freeze will
+pin both.
+
+
+## 2026-09-25: the edge rule (lead decision on review-session-232304.md)
+
+**The rule.** A gameplay segment edge sits only on a native frame where both the intake scan's HUD presence and the
+live range guard (`scripts/record.py` `in_range`, the pad loop's own proof, taken from the snapshot) hold. The scan's
+HUD presence alone no longer opens a segment.
+- **In the proposer** (`human_intake.propose_segments`):
+  - from a proven sample frame, an edge moves outward over contiguous proven frames, as before;
+  - from an unproven sample frame, it moves inward to the nearest proven frame;
+  - it refuses if the reads hold none.
+- **In the evidence step** (`intake_session.py`):
+  - it reads every edge bracket with both proofs, and records `hud_present`, `in_range` and `proof` per frame;
+  - it reads up to 2 s inward only when a sample frame fails;
+  - review frames record `in_range`.
+- **No 1 s spawn settle.**
+
+**Effect.** The reviewer decoded every accepted edge of the admitted sessions and of 025230, and all pass the guard, so
+none of them moves. 232304's seg-002 opens on f310 instead of f308: the two spawn-in frames, dark hero and no HP bar, fail
+the guard. The evidence was re-emitted with `--supersedes` (v1 `504e11fa`, v2 `939c3a51`; `review-frames.v1` kept) and
+the owner verdicts re-issued (v1 `452c4381`, v2 `a9ec8cb3`). Counted minutes are still 8.77.
+
+**Tests.**
+- `tests/test_human_intake.py`: outward, inward start, inward end, refusal.
+- `tests/test_human_intake_edges.py` (perception group): the three 720p frames in `tests/fixtures/intake_edge/` through
+  the guard and `edge_proof`, and the proposer placing the edge on f310.
+
+
+## 2026-09-25: duplicated composition times, edge rule E1, the wheel gap
+
+**The importer excuses one recorder-duplicated composition time** (lead decision, option A; `agent/human_demos.py`).
+- **The defect.** One packet's logged composition time repeats another packet's, so composition steps back once in
+  presentation order. In 025230 the twin is the next packet (distance 1); in 232304 it is five packets back.
+- **Excused only when all of these hold:**
+  - exactly one reversal and exactly one shared value in the file;
+  - the twins are at most `DUP_CTS_MAX_PACKET_DISTANCE` = 8 packets apart. That is the stream's reorder window: NVENC
+    HEVC with 3 B-frames per anchor;
+  - dropping one of the two frames at the step restores the order;
+  - no accepted segment covers the dropped frame's slot.
+- **What happens to the frame.** It leaves the frame references: its time is unknown, never interpolated.
+- **The audit's `unknown_composition` record** gives both packet indices, both file PTS, the distance, the rule and the slot.
+- **Everything else still refuses.** Callers without a review (transcode verification, replay tools) excuse nothing.
+- **Clean files:** their audits keep the same keys and values.
+
+**E1 (review of the edge rule).** The evidence step used to run the snapshot's pre-rule proposer.
+- **Now:** it refuses a proposer without `human_intake.EDGE_PROOF`, and after proposing it requires every gameplay edge
+  frame to have a native read with proof True. Otherwise it writes nothing.
+- **The snapshot refreshed** to `code-snapshot-dfbb4dd`. The archiver's lane list now includes the importer and its tests.
+
+**The wheel gap (lead, 2026-09-25).** The saved profile's secondaries, Simple Swing = CAPS + MouseScrollUp and Jump =
+SPACE + MouseScrollDown, are not in `BINDINGS`. The lead records them in the recording log's motor section (`dfbb4dd`).
+- **The audit** (bindings-wheel.md):
+  - wheel-up ticks in play come right after a Web Cluster click, on melee frames, with no Simple Swing visible;
+  - the one wheel-down in play (205528, 599.37 s) came with the hero already airborne from a Space jump, so no jump label
+    was lost;
+  - 021320's wheel-downs are in its hero select.
+- **No label is affected.** The secondaries enter `BINDINGS` at the next contract change, not now.
+
+
+## 2026-09-25: the 2026-09-24 takes admitted; the importer review's fix-forward; a correction
+
+**Admitted** (train, normal regime, build 1.1.3892207, kit-equivalent to the 2026-09-23 sessions), assembled from
+`code-snapshot-b7d4592` after admission-review approved the importer change and E1 (review-importer-dup-cts.md):
+
+| Session | Counted min | Runs | Step rows (accepted) | Freeze |
+|---|---|---|---|---|
+| 232304 | 8.7654 | 2 | 15,841 (15,777) | `ccdf6248` |
+| 025230 | 3.6640 | 2 | 6,667 (6,594) | `5617d968` |
+| 021320 | 34.5164 | 5 | 65,702 (62,126) | `16fabb73` |
+
+- **Tally, normal, train: 94.1789 counted minutes** (94.1739 trainable) of 180, across 7 sessions.
+- **The fit's reader** (`policy/range_bc/steps.load_cohort` with the patch-equivalence file) loads all seven step tables
+  as one cohort: **169,513 accepted rows**.
+- **The two imports** carry one `unknown_composition` frame each.
+- **Superseded records are pinned** by each freeze alongside their successors:
+  - motor `.v1` for 025230 and 232304;
+  - 232304's v1 evidence and owner verdicts.
+
+**The importer review's notes (fix-forward before assembly):**
+- **N1:** a duplicate whose twin lies in an accepted span is refused too.
+- **N2:** an evidence re-emission with `--supersedes` stages its review frames. It renames the current evidence only
+  after every check and decode has passed, so a refusal leaves the current evidence in place. There is no unit test,
+  because the step needs real decodes.
+- **N3:** the distance bound of 8 packets is recorded, in code and audit, as stated, not measured.
+
+**Correction.** In final-16, importer-dup-cts.md and an earlier entry of this file, I put 025230's duplicated timestamp
+"at 0.99 s, before focus". That was measured from the first frame, not the logger start.
+- **In logger time** the excused slot is 1.081–1.098 s: 82 ms after focus gain, inside rejected seg-000 (the focus
+  transition).
+- **232304's** is 323.243–323.260 s, inside rejected seg-004.
+- **Both are outside every accepted span,** which is what the importer checks.

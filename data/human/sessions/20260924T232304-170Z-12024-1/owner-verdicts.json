@@ -1,0 +1,424 @@
+{
+ "session": "20260924T232304-170Z-12024-1",
+ "segments_evidence_sha256": "939c3a5154cebb453bcb480b7089e4967f909f3c93b48b67d18bd9f07315d48d",
+ "reviewer": "admission-owner",
+ "reviewed_at": "2026-09-25T16:46:28Z",
+ "role": "owner inspection; assembly additionally requires the independent per-session review (R5)",
+ "verdicts": {
+  "seg-000": {
+   "suitability": "rejected",
+   "reason": "focus_transition: by rule (hero select, the Windows taskbar still over the first frame)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T16:46:28Z",
+   "evidence": "segments-evidence.json 939c3a5154cebb45 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 55,
+     "composition_ns": 360059630310999,
+     "decoded_bgr_sha256": "cc46c7b21ed7c7743bff1f2653d2a0be2d495e8b37a700196ed4fd0e412614f7"
+    },
+    {
+     "frame_index": 69,
+     "composition_ns": 360059746977661,
+     "decoded_bgr_sha256": "2ee287e033791fc373678bde031aabc951d0b676fb000476a28c9d49cdafcaeb"
+    },
+    {
+     "frame_index": 84,
+     "composition_ns": 360059871977656,
+     "decoded_bgr_sha256": "77a5069dfc35de003333b72171777377fbd670e522cfbf44e51654730d62dfdc"
+    }
+   ]
+  },
+  "seg-001": {
+   "suitability": "rejected",
+   "reason": "no_range_hud: by rule (the practice-range hero select: Magneto, then Spider-Man in the same suit as the admitted sessions, CONFIRM; now also the two spawn-in frames f308-f309, which fail the live range guard)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T16:46:28Z",
+   "evidence": "segments-evidence.json 939c3a5154cebb45 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 85,
+     "composition_ns": 360059880310989,
+     "decoded_bgr_sha256": "b196387387ba5a40b3aa97ec60caa399001ffd86eaadc09d009a15227aa4d4e7"
+    },
+    {
+     "frame_index": 197,
+     "composition_ns": 360060813644285,
+     "decoded_bgr_sha256": "8df703348d63ea8b70ee41ab962a204789bfd390375cd2d864db94cd690a46dc"
+    },
+    {
+     "frame_index": 309,
+     "composition_ns": 360061746977581,
+     "decoded_bgr_sha256": "4b64f700e2e33f5a9ef221306ac3fe1f98fc4c07648965a00d33e42c9eaecf17"
+    }
+   ]
+  },
+  "seg-002": {
+   "suitability": "accepted",
+   "reason": "continuous practice-range play in all 34 inspected frames: traversal, web swings and wall runs across the spawn room, courtyard, lanes and terraces; KOs on Galacta bots, the Galacta Bot Ultra and a Luna Snow bot (KO up to PENTA and HEXA banners); ultimate charge rising 13 %-98 %; HUD present with cooldowns counting down (normal regime); no UI key, AFK span or capture gap inside. Opens on f310 (file 2.604 s), the first frame the live range guard proves, under the edge rule (lead, 2026-09-25): the textured hero running on the held W, HP bar 250/250; the spawn-in frames f308-f309 are now in seg-001",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T16:46:28Z",
+   "evidence": "segments-evidence.json 939c3a5154cebb45 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 310,
+     "composition_ns": 360061755310914,
+     "decoded_bgr_sha256": "7df1b6eb5488a34bb8e5844206b333bd2010885f49adcc1807373b51c2770b4e"
+    },
+    {
+     "frame_index": 1475,
+     "composition_ns": 360071463643859,
+     "decoded_bgr_sha256": "b62fdbb36e5ceaee7363cef5a33882fe843610e7d8e962e09d6dfe1d26517086"
+    },
+    {
+     "frame_index": 2640,
+     "composition_ns": 360081171976804,
+     "decoded_bgr_sha256": "29c8656f91724fe0b3cc81219bac739f6e557bd2b025886b1eb8e15eb98ab5ce"
+    },
+    {
+     "frame_index": 3806,
+     "composition_ns": 360090888643082,
+     "decoded_bgr_sha256": "dbec59ee40aeb9caedc50c31c1e226c0bcce782b1fbe95844fee9f2dd335040d"
+    },
+    {
+     "frame_index": 4971,
+     "composition_ns": 360100596976027,
+     "decoded_bgr_sha256": "d1957156e086518430e67b3937c103f9d47a772802092ff8cd5ef6deed9e1384"
+    },
+    {
+     "frame_index": 6137,
+     "composition_ns": 360110313642305,
+     "decoded_bgr_sha256": "ab843509e088d9b550aa9f2e98f9abc0f676e59acd32253a0a48a66d053a0f27"
+    },
+    {
+     "frame_index": 7302,
+     "composition_ns": 360120021975250,
+     "decoded_bgr_sha256": "c4286e28bea0716ab5b69acc86628270b2dc62a71a874c9f7814a677d4da538a"
+    },
+    {
+     "frame_index": 8468,
+     "composition_ns": 360129738641528,
+     "decoded_bgr_sha256": "2051eb982ef1239d1574e0f941a90df0dd012d09bc85f24e2cc7b2776e64fec4"
+    },
+    {
+     "frame_index": 9633,
+     "composition_ns": 360139446974473,
+     "decoded_bgr_sha256": "ea9bd90d28680bd08d3d923e57d67913878e1b3837ef716f305e0e0de5f0d8f2"
+    },
+    {
+     "frame_index": 10799,
+     "composition_ns": 360149163640751,
+     "decoded_bgr_sha256": "76dc9626c129a14afa8bcfa6d48dde3f54aff1d87a41ded15e0eb1de333b6dc1"
+    },
+    {
+     "frame_index": 11964,
+     "composition_ns": 360158871973696,
+     "decoded_bgr_sha256": "bfcc4d82b28d4398da079591253a357675d6fd330234cd4104d9c0273de333b3"
+    },
+    {
+     "frame_index": 13130,
+     "composition_ns": 360168588639974,
+     "decoded_bgr_sha256": "0b41f5fbadf2e1f2aac25d8d11b7e257746bfcaee42269c047c7fd53864ac338"
+    },
+    {
+     "frame_index": 14295,
+     "composition_ns": 360178296972919,
+     "decoded_bgr_sha256": "506929f5b9001f34adbfe44f8a167aa87f4f1b905ddce575c85daf69a0be823b"
+    },
+    {
+     "frame_index": 15461,
+     "composition_ns": 360188013639197,
+     "decoded_bgr_sha256": "bec6cb06578c0a10faaee093d6b3be02848d43fa49e616c9ef69a1288a44540d"
+    },
+    {
+     "frame_index": 16626,
+     "composition_ns": 360197721972142,
+     "decoded_bgr_sha256": "7354592548272407360a77499861699b5eb21a21d9b63f5bb47a04bb48031581"
+    },
+    {
+     "frame_index": 17792,
+     "composition_ns": 360207438638420,
+     "decoded_bgr_sha256": "4a1ec90911f59c2a9c27face159d77dc6d213a0ce523bcfec5d793d6b1a82504"
+    },
+    {
+     "frame_index": 18957,
+     "composition_ns": 360217146971365,
+     "decoded_bgr_sha256": "964b3ea218de370024a28254f08ecf9cd6387987338db212a3c0fc5558191bc6"
+    },
+    {
+     "frame_index": 20123,
+     "composition_ns": 360226863637643,
+     "decoded_bgr_sha256": "bfd6ae1785e971ca2f7e1e252759c31a9b4fac39545a9b5f9f1793c712a0106b"
+    },
+    {
+     "frame_index": 21288,
+     "composition_ns": 360236571970588,
+     "decoded_bgr_sha256": "f18a4887f12a6a794282667a4dd47a6710ef8a084c899fe9ba0533a06b11a392"
+    },
+    {
+     "frame_index": 22454,
+     "composition_ns": 360246288636866,
+     "decoded_bgr_sha256": "b6a9c0f1703cbfe14d96900ca67bb69bf9ccb573a93952a68c021abc9d4eece3"
+    },
+    {
+     "frame_index": 23619,
+     "composition_ns": 360255996969811,
+     "decoded_bgr_sha256": "20958bb937ea361aa3c9c2a65984a697758adab1eda528df3569d004c5b71fc7"
+    },
+    {
+     "frame_index": 24785,
+     "composition_ns": 360265713636089,
+     "decoded_bgr_sha256": "4867b7357c7ba374b1a082db7d431366e9cc6168bb15d5fea15fd6fe6a949605"
+    },
+    {
+     "frame_index": 25950,
+     "composition_ns": 360275421969034,
+     "decoded_bgr_sha256": "919946a1a308ca7458e5e2ece09943fd6602483fea5822c98310fa83d47b1cb8"
+    },
+    {
+     "frame_index": 27116,
+     "composition_ns": 360285138635312,
+     "decoded_bgr_sha256": "0101f461546d381766e4d53a00ebf6f3d7471b70c269c0d688eeff52369a72d7"
+    },
+    {
+     "frame_index": 28281,
+     "composition_ns": 360294846968257,
+     "decoded_bgr_sha256": "f02fecab70d24494fffea942dfcf6fed8832c5b5278c87b362364dd2177400bf"
+    },
+    {
+     "frame_index": 29447,
+     "composition_ns": 360304563634535,
+     "decoded_bgr_sha256": "5a4053ec32fc9f5b5fd20667dd4f08045e7c22c25abe259974517b76cd114a9b"
+    },
+    {
+     "frame_index": 30612,
+     "composition_ns": 360314271967480,
+     "decoded_bgr_sha256": "ac973d407de450b8d299ac69916d9c9d13761ee4b2a4f696813d66a676b324eb"
+    },
+    {
+     "frame_index": 31778,
+     "composition_ns": 360323988633758,
+     "decoded_bgr_sha256": "9c37e818b84088a236e925e776ced2315f2fa9451d6babfeb5f6660604dcfd5a"
+    },
+    {
+     "frame_index": 32943,
+     "composition_ns": 360333696966703,
+     "decoded_bgr_sha256": "18d32ca6b6c21243254afa5d6eead71ee0d58cce16a146ccef06519dec60dcd0"
+    },
+    {
+     "frame_index": 34109,
+     "composition_ns": 360343413632981,
+     "decoded_bgr_sha256": "000fc0381e374a47374fc296bd6b707ba4cc00623726d3a0336ca267e2ac42ad"
+    },
+    {
+     "frame_index": 35274,
+     "composition_ns": 360353121965926,
+     "decoded_bgr_sha256": "1210427ae179e8acc58a459ce889309f1d600a9c1f3037ab9d8bcfd8ed659eaa"
+    },
+    {
+     "frame_index": 36440,
+     "composition_ns": 360362838632204,
+     "decoded_bgr_sha256": "8e1c9273f9ad2ecbe175dd5b3fb82765a0a1d2dae970d57fbd6e700355bf9f9b"
+    },
+    {
+     "frame_index": 37605,
+     "composition_ns": 360372546965149,
+     "decoded_bgr_sha256": "c7c68efb037759120e102017a4b39bfe95c2a2363b6cc7143c8017a2000176db"
+    },
+    {
+     "frame_index": 38771,
+     "composition_ns": 360382263631427,
+     "decoded_bgr_sha256": "a12ef0c5fa67ca747becdd8f309b19d93abccd4c81d94661b35f75b0ad5140f1"
+    }
+   ]
+  },
+  "seg-003": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: by rule",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T16:46:28Z",
+   "evidence": "segments-evidence.json 939c3a5154cebb45 review frames + contact sheets",
+   "frames": []
+  },
+  "seg-004": {
+   "suitability": "rejected",
+   "reason": "capture_gap: by rule (the single 16.7 ms composition step at 323.1 s; the frames either side are continuous play)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T16:46:28Z",
+   "evidence": "segments-evidence.json 939c3a5154cebb45 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 38772,
+     "composition_ns": 360382271964760,
+     "decoded_bgr_sha256": "298874c68404ba6c9914a9d16c1d9425cdc1ff888c41418b17715fa87a4dc558"
+    },
+    {
+     "frame_index": 38773,
+     "composition_ns": 360382280298093,
+     "decoded_bgr_sha256": "63512c0b981da147b18f07b6d997e6730d1e9d0327b241db5c992999d2946cc6"
+    },
+    {
+     "frame_index": 38774,
+     "composition_ns": 360382271964760,
+     "decoded_bgr_sha256": "298874c68404ba6c9914a9d16c1d9425cdc1ff888c41418b17715fa87a4dc558"
+    }
+   ]
+  },
+  "seg-005": {
+   "suitability": "accepted",
+   "reason": "continuous practice-range play in all 22 inspected frames: web swings, wall runs and fights on the lanes, terraces and sea cliffs; KOs on Galacta bots and a Luna Snow bot (DOUBLE, QUAD, PENTA, HEXA and UNSTOPPABLE banners); HUD present with cooldowns counting down; ultimate used near the end (500 HP, 0 %); no UI key, AFK span or capture gap inside; ends at the closing Alt press",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T16:46:28Z",
+   "evidence": "segments-evidence.json 939c3a5154cebb45 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 38775,
+     "composition_ns": 360382296964759,
+     "decoded_bgr_sha256": "cb4596babaa74b54747ff59698264013ee15325b74cc42f406e37cad094104d7"
+    },
+    {
+     "frame_index": 39948,
+     "composition_ns": 360392071964368,
+     "decoded_bgr_sha256": "cb3c6a59ce2bbe36d177b469f3cb9263e0fea1565874249094d767af7d0f4d90"
+    },
+    {
+     "frame_index": 41122,
+     "composition_ns": 360401855297310,
+     "decoded_bgr_sha256": "b0923dcedc32f012f50d4e9a9cb403d118e8bda7566dd783f5d14d79fb0470bf"
+    },
+    {
+     "frame_index": 42296,
+     "composition_ns": 360411638630252,
+     "decoded_bgr_sha256": "038df4d520e5bd2420690041a3cb981f210ef33079767bf4b129b141415f75e1"
+    },
+    {
+     "frame_index": 43470,
+     "composition_ns": 360421421963194,
+     "decoded_bgr_sha256": "2ef95121ec70b2b1d58557f0557d25072eb988af86392f533ad51659ad555ffd"
+    },
+    {
+     "frame_index": 44644,
+     "composition_ns": 360431205296136,
+     "decoded_bgr_sha256": "4a86b6bf7d0c4d9a672c4c5a374d95a4a41786ae84f4e3f12b3965876de6f815"
+    },
+    {
+     "frame_index": 45817,
+     "composition_ns": 360440980295745,
+     "decoded_bgr_sha256": "587cd88de3daf8403d44747356bf6807747dac1e51e27765a472cb3132256a54"
+    },
+    {
+     "frame_index": 46991,
+     "composition_ns": 360450763628687,
+     "decoded_bgr_sha256": "548ce668d4831a412ccb335baa8c1db3fdfe7d01a3e03e472fb4f3ff530c58c4"
+    },
+    {
+     "frame_index": 48165,
+     "composition_ns": 360460546961629,
+     "decoded_bgr_sha256": "c8f4026a9bd8d17006421f1a95e8f7e2f0e96896c23c10d76858d9281ce5d42b"
+    },
+    {
+     "frame_index": 49339,
+     "composition_ns": 360470330294571,
+     "decoded_bgr_sha256": "cde3415a71653de2c16fa2b8a88bb86804db30a84b2ccc660e4dc3c4ee63fb68"
+    },
+    {
+     "frame_index": 50513,
+     "composition_ns": 360480113627513,
+     "decoded_bgr_sha256": "50b7a4d21ec629d8cfff8c0e5a070e5ecad15e09c30483109762692d559a1b3e"
+    },
+    {
+     "frame_index": 51686,
+     "composition_ns": 360489888627122,
+     "decoded_bgr_sha256": "3c4890cfccf257f7c811bc36346ae501d7e3cb32eba83a9f63fa639b5b55c280"
+    },
+    {
+     "frame_index": 52860,
+     "composition_ns": 360499671960064,
+     "decoded_bgr_sha256": "082c3cdb5cedb4fa6977a9f6623c1f39adbb24a02d236820cc61fec2f50fc7f1"
+    },
+    {
+     "frame_index": 54034,
+     "composition_ns": 360509455293006,
+     "decoded_bgr_sha256": "c2a7888abb589913131ae35f004c703f62d915429ff4afe2c3695b80770f5b47"
+    },
+    {
+     "frame_index": 55208,
+     "composition_ns": 360519238625948,
+     "decoded_bgr_sha256": "6f60f599bfea1966425b8ca1508b1a5084f2116d9e051d012bb26200478914a7"
+    },
+    {
+     "frame_index": 56382,
+     "composition_ns": 360529021958890,
+     "decoded_bgr_sha256": "a868b8b9378e827d640499743f95b94831b8b78e21d633c8f42096ae000f2acd"
+    },
+    {
+     "frame_index": 57555,
+     "composition_ns": 360538796958499,
+     "decoded_bgr_sha256": "cab87e7a3fc8f695d1120300eca6ed5ebb775135d4f3fa538701e73b1e67dbae"
+    },
+    {
+     "frame_index": 58729,
+     "composition_ns": 360548580291441,
+     "decoded_bgr_sha256": "258fddf130be9179c4f41801d6a9798a17b91b98b1d71c9ee47d2f82eec89d9c"
+    },
+    {
+     "frame_index": 59903,
+     "composition_ns": 360558363624383,
+     "decoded_bgr_sha256": "293a7380f6da2f23c483013fe5528d175ab1bf7d383e74a4ce0cf3d5d2f8d0cc"
+    },
+    {
+     "frame_index": 61077,
+     "composition_ns": 360568146957325,
+     "decoded_bgr_sha256": "728b528041d4737a5826dfa900b34a8ae1b0ae9d55fc747590765b284b9d0f69"
+    },
+    {
+     "frame_index": 62251,
+     "composition_ns": 360577930290267,
+     "decoded_bgr_sha256": "f2bdb921413053b496476f2c28416208317a41c948b1fa5d7aa5248d4c35f097"
+    },
+    {
+     "frame_index": 63425,
+     "composition_ns": 360587713623209,
+     "decoded_bgr_sha256": "26636e9f54912faa529a83562cd4670b7a9e3df4cde1a05c85fc4823a1490e60"
+    }
+   ]
+  },
+  "seg-006": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: by rule",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T16:46:28Z",
+   "evidence": "segments-evidence.json 939c3a5154cebb45 review frames + contact sheets",
+   "frames": []
+  },
+  "seg-007": {
+   "suitability": "rejected",
+   "reason": "ui_key (Alt, leaving the game): by rule",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T16:46:28Z",
+   "evidence": "segments-evidence.json 939c3a5154cebb45 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 63426,
+     "composition_ns": 360587721956542,
+     "decoded_bgr_sha256": "780093233fe9954d55e0683cc95d5abd2ff5a751b24e6b7ae3fe2d217a18eb93"
+    },
+    {
+     "frame_index": 63429,
+     "composition_ns": 360587746956541,
+     "decoded_bgr_sha256": "cb3e2f87e87eaf5b97dd2066c882935b30bcb081110ef48d3cea6ffe0f0b431a"
+    },
+    {
+     "frame_index": 63433,
+     "composition_ns": 360587780289873,
+     "decoded_bgr_sha256": "d4616f962f93ccc8945d1f12e86b64080916f51aebe8568ae58294f22c88d4a4"
+    }
+   ]
+  }
+ },
+ "supersedes": {
+  "file": "owner-verdicts.v1.json",
+  "sha256": "452c438141bfad119b6d20ea39857283c57de12beac9044ea5fcdfa80450a4db",
+  "reason": "re-issued for the evidence re-emitted under the edge rule (segments-evidence 939c3a51; v1 504e11fa); verdicts unchanged"
+ }
+}

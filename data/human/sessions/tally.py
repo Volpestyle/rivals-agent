@@ -45,6 +45,8 @@ ROWS = [
          reason="7.4 s HEVC encoder test (anchor holds, hevc-check.md)"),
     dict(session="20260923T204707-487Z-45572-2", date="2026-09-23", status="not_range",
          reason="settings and calibration take (settings pages, 360-degree turn, pitch sweep)"),
+    dict(session="20260925T030045-211Z-7804-3", date="2026-09-24", status="not_range",
+         reason="multi-speed calibration take (four yaw speed classes, pitch sweeps): data/human/calibration/"),
 ]
 
 
@@ -53,14 +55,26 @@ def sha(p):
 
 
 ADMITTED = ("20260923T051828-422Z-33696-1", "20260923T171533-187Z-33696-5", "20260923T200129-346Z-33696-6",
-            "20260923T205528-900Z-45572-3")
+            "20260923T205528-900Z-45572-3", "20260924T232304-170Z-12024-1", "20260925T025230-605Z-7804-2",
+            "20260925T021320-371Z-7804-1")
+
+
+def recording_date(session):
+    """The recording's date in America/Chicago (assemble_session.chicago_date), from the recorder's started_utc."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("assemble_session", HERE / "assemble_session.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    started = json.loads((HERE / session / "provenance.json").read_text())["metadata"]["started_utc"]
+    from datetime import datetime
+    return module.chicago_date(datetime.fromisoformat(started.replace("Z", "+00:00")))
 
 
 def admitted_row(hi, session):
     d = HERE / session
     need(hi.check_freeze(d, root=ROOT) == [], f"{session} freeze check fails")
     m = json.loads((d / "minutes.json").read_text())
-    return dict(session=m["session"], date="2026-09-23", status="admitted",
+    return dict(session=m["session"], date=recording_date(session), status="admitted",
                 reason="assembled: review.json from the owner and independent verdicts, imported, steps file frozen",
                 regime=m["regime"], focused_min=m["focused_s"] / 60, admitted_min=m["counted"]["counted_minutes"],
                 trainable_min=m["trainable_minutes"], stride_ns=m["stride_ns"], rejected_min=m["rejected_s"] / 60,

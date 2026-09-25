@@ -17,7 +17,7 @@ import hashlib
 import json
 import subprocess
 import sys
-from datetime import timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 
@@ -50,6 +50,56 @@ STEP_NS = 33_333_333
 MOTOR = dict(dpi=800, horizontal_sensitivity=1.89, vertical_sensitivity=1.89,
              swing_mode={"automatic_swing": False, "hold_to_swing": True}, mouse_acceleration=True, mouse_smoothing=True)
 CALIBRATION = ROOT / "data/human/calibration/20260923T204707-487Z-45572-2/calibration.json"
+# The per-session source that MOTOR and BINDINGS still held (review R2), by the recording's date in America/Chicago.
+# A date without a statement refuses: nobody has said the settings were unchanged that day. Each entry quotes the
+# committed docs/recording-log.md text it rests on (`log_quotes`, each checked verbatim against the log) and gives
+# the per-session source texts the assembly writes; the 2026-09-23 texts are the admitted sessions' settings.json
+# wording, so a re-assembly re-derives it byte-identical (review of the motor fix, M1-M3).
+MOTOR_STATEMENTS = {
+    "2026-09-23": dict(
+        log_quotes=("2026-09-23: mouse DPI **800** (James, from the mouse's software; source: chat statement, "
+                    "2026-09-23 ~14:50 CDT).",
+                    "In-game sensitivity **unchanged since the 2026-09-21 sessions** (James, same statement)."),
+        settings="James's dated statements of 2026-09-23, applied by the lead to every existing session",
+        bindings="James's dated statements of 2026-09-23 (docs/recording-log.md)"),
+    "2026-09-24": dict(
+        log_quotes=("2026-09-24: **DPI, in-game sensitivity and bindings unchanged** for the four 2026-09-24 takes "
+                    "(James, chat via the lead, 2026-09-24 ~22:40 CDT, answering \"it should be calibrated the same "
+                    "as before?\": same settings).",),
+        settings="James's dated statement for the 2026-09-24 takes (docs/recording-log.md, Motor settings, "
+                 "committed 57d1f3d): DPI, in-game sensitivity and bindings unchanged (chat via the lead, "
+                 "2026-09-24 ~22:40 CDT)",
+        bindings="James's dated statement for the 2026-09-24 takes (docs/recording-log.md, Motor settings, "
+                 "committed 57d1f3d): DPI, in-game sensitivity and bindings unchanged (chat via the lead, "
+                 "2026-09-24 ~22:40 CDT)"),
+}
+
+
+def chicago_date(moment):
+    """The calendar date of an aware time in America/Chicago, the PC's zone, whatever zone this machine is set to.
+
+    The US rule since 2007, written out because zoneinfo finds no tz database on this Windows PC and the stdlib suite
+    takes no tzdata: CDT (UTC-5) from the second Sunday of March 08:00 UTC to the first Sunday of November 07:00 UTC,
+    CST (UTC-6) otherwise.
+    """
+    utc = moment.astimezone(timezone.utc)
+
+    def sunday(month, n):
+        first = datetime(utc.year, month, 1, tzinfo=timezone.utc)
+        return first + timedelta(days=(6 - first.weekday()) % 7 + 7 * (n - 1))
+
+    dst = sunday(3, 2) + timedelta(hours=8) <= utc < sunday(11, 1) + timedelta(hours=7)
+    return (utc - timedelta(hours=5 if dst else 6)).date().isoformat()
+
+
+def motor_statement(meta, hi, log_text):
+    """The recording date's MOTOR_STATEMENTS entry; refuses a date without one, or a log without its quoted text."""
+    day = chicago_date(hi._utc(meta["started_utc"]))
+    need(day in MOTOR_STATEMENTS, f"no per-session motor statement for recordings of {day} (review R2): refused")
+    entry = MOTOR_STATEMENTS[day]
+    need(all(q in log_text for q in entry["log_quotes"]),
+         f"the recording log lacks the {day} motor statement it must quote (refused)")
+    return dict(entry, date=day)
 # The session binding table as James's settings look shows it (calibration take, keyboard pages): every semantic
 # action -> its physical ids (key:scan:E0E1-bits, mouse:button), primary first.
 BINDINGS = {
@@ -154,6 +204,7 @@ def main():
     reg_rows = {r["session_id"]: r for r in json.loads(REGISTRY.read_text())["sessions"]}
     sitting = reg_rows[args.session]["sitting"]
     patch = session_patch(d, meta, hi)   # before anything is written: an unreadable build refuses the assembly
+    statement = motor_statement(meta, hi, RECORDING_LOG.read_text(encoding="utf-8"))   # and a date without one
 
     # 0. immutable copies of the living documents this assembly cites: the recording log at its last commit (the
     # working file must equal that blob) and the registry revision used; the freeze pins the copies
@@ -174,13 +225,13 @@ def main():
                     "sensitivity unchanged since 2026-09-21 (1.89/1.89 in the 09-21 report), default swing settings on "
                     "Shift with Simple Swing on Caps Lock; confirmed on native frames of the settings look (calibration.json: "
                            "1.89/1.89, hold to swing on, simple swing off)",
-                    per_session_source="James's dated statements of 2026-09-23, applied by the lead to every existing session",
+                    per_session_source=statement["settings"],
                     evidence=cite(log_copy, USER_SETTINGS_0921, d / "provenance.json", CALIBRATION))
     bindings = dict(value=BINDINGS, aliases=ALIASES, notes=BINDING_NOTES,
                     source="native frames of James's settings look (calibration take 2026-09-23, keyboard pages, "
                            "calibration.json), agreeing with his 2026-09-21 report and 2026-09-23 statements; HUD key "
                            "labels on this session's frames (slot-mapping.json)",
-                    per_session_source="James's dated statements of 2026-09-23 (docs/recording-log.md)",
+                    per_session_source=statement["bindings"],
                     evidence=cite(log_copy, USER_SETTINGS_0921, d / "slot-mapping.json", CALIBRATION))
     identity = hi.settings_identity(MOTOR, BINDINGS)
     calibration = header_calibration()

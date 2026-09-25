@@ -1,0 +1,111 @@
+{
+ "session": "20260924T232304-170Z-12024-1",
+ "flags": [],
+ "capture_gaps": [
+  [
+   360382271964760,
+   360382296964759
+  ]
+ ],
+ "segments": [
+  {
+   "segment_id": "seg-000",
+   "start_ns": 360059629991400,
+   "end_ns": 360059879991400,
+   "machine_reason": "focus_transition",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-001",
+   "start_ns": 360059879991400,
+   "end_ns": 360061771977580,
+   "machine_reason": "no_range_hud",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-002",
+   "start_ns": 360061771977580,
+   "end_ns": 360382171964765,
+   "machine_reason": "range_hud_present",
+   "proposal": "unresolved",
+   "edges": {
+    "start": {
+     "sample_ns": 360061771977580,
+     "refine": [
+      360061571977589,
+      360061771977581
+     ],
+     "refined": false
+    },
+    "end": {
+     "sample_ns": 360382171964764,
+     "refine": [
+      360382171964764,
+      360382271964760
+     ],
+     "refined": false
+    }
+   }
+  },
+  {
+   "segment_id": "seg-003",
+   "start_ns": 360382171964765,
+   "end_ns": 360382271964760,
+   "machine_reason": "unsampled_edge",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-004",
+   "start_ns": 360382271964760,
+   "end_ns": 360382296964759,
+   "machine_reason": "capture_gap",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-005",
+   "start_ns": 360382296964759,
+   "end_ns": 360382371964756,
+   "machine_reason": "unsampled_edge",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-006",
+   "start_ns": 360382371964756,
+   "end_ns": 360587571956549,
+   "machine_reason": "range_hud_present",
+   "proposal": "unresolved",
+   "edges": {
+    "start": {
+     "sample_ns": 360382371964756,
+     "refine": [
+      360382296964759,
+      360382371964757
+     ],
+     "refined": false
+    },
+    "end": {
+     "sample_ns": 360587571956548,
+     "refine": [
+      360587571956548,
+      360587715925700
+     ],
+     "refined": false
+    }
+   }
+  },
+  {
+   "segment_id": "seg-007",
+   "start_ns": 360587571956549,
+   "end_ns": 360587715925700,
+   "machine_reason": "unsampled_edge",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-008",
+   "start_ns": 360587715925700,
+   "end_ns": 360587786414800,
+   "machine_reason": "ui_key",
+   "proposal": "rejected"
+  }
+ ]
+}

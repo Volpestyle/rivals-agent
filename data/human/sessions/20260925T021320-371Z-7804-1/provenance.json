@@ -1,0 +1,1941 @@
+{
+ "session": "20260925T021320-371Z-7804-1",
+ "media": {
+  "path": "C:/Users/volpe/Videos/2026-09-24 21-13-20.mkv",
+  "sha256": "a1a89dd32aa74f98c109d3a052061a0dd7f669a99d23a6483cc0930407ed7992",
+  "bytes": 31641970672
+ },
+ "metadata": {
+  "sha256": "6fc9e27620fdf6ff1a20722d67726f3d7c46df5ea9129b16c646cc424a60cadc",
+  "status": "complete",
+  "complete": true,
+  "clean_stop": true,
+  "obs_version": "32.0.1",
+  "logger_version": "1.0.0",
+  "width": 2560,
+  "height": 1440,
+  "fps_num": 120,
+  "fps_den": 1,
+  "queue_dropped_events": 0,
+  "raw_input_errors": 0,
+  "writer_failed": false,
+  "events_attempted": 489280,
+  "video_packets": 263437,
+  "input_events": 225839,
+  "started_utc": "2026-09-25T02:13:20.371Z",
+  "start_ns": 370275206823900,
+  "end_ns": 372470833448000,
+  "capture_latency_calibrated": false
+ },
+ "raw_files": {
+  "inputs.jsonl": "6fdf4fecd5b4a20922b050385f425c1d09b4cccb2a3b908cad2bb89501615dac",
+  "frames.csv": "108b3ca4cbfe1887f8e7ce59117b0b1793adca2b1f58cae9af225f1ea12bd98c",
+  "metadata.json": "6fc9e27620fdf6ff1a20722d67726f3d7c46df5ea9129b16c646cc424a60cadc"
+ },
+ "anchor_applicability": {
+  "accepted_derivation": "data/human/inspection/20260922T033319-205Z-24328-2/independent-review-resolution.md",
+  "accepted_derivation_sha256": "a67f55f36554887d97765b4552a33ac5c92494f6a50c814801183528a0c3c8e6",
+  "first_16_packets": {
+   "video_ms": [
+    21,
+    46,
+    29,
+    38,
+    71,
+    54,
+    63,
+    96,
+    79,
+    88,
+    121
+   ],
+   "audio_ms": [
+    0,
+    21,
+    42,
+    64,
+    85
+   ]
+  },
+  "predicted": {
+   "video_ms": [
+    21,
+    46,
+    29,
+    38,
+    71,
+    54,
+    63,
+    96,
+    79,
+    88,
+    121
+   ],
+   "audio_ms": [
+    0,
+    21,
+    42,
+    64,
+    85
+   ]
+  },
+  "matches": true,
+  "streams": {
+   "programs": [],
+   "stream_groups": [],
+   "streams": [
+    {
+     "index": 0,
+     "codec_name": "hevc",
+     "width": 2560,
+     "height": 1440,
+     "avg_frame_rate": "120/1",
+     "time_base": "1/1000"
+    },
+    {
+     "index": 1,
+     "codec_name": "aac",
+     "sample_rate": "48000",
+     "avg_frame_rate": "0/0",
+     "time_base": "1/1000"
+    }
+   ],
+   "format": {
+    "tags": {
+     "ENCODER": "Lavf61.7.100"
+    }
+   }
+  },
+  "note": "no fitting: the forward prediction of the accepted derivation"
+ },
+ "obs_log": {
+  "log": "2026-09-24 21-13-15.txt",
+  "log_sha256": "2083afc38eaaa1e6e74fc3b9f4dec9b19b53905b8f6328649306fac7ad5d1904",
+  "lines": [
+   200,
+   245
+  ],
+  "block": [
+   " [obs-nvenc: 'simple_video_recording'] settings:",
+   " \tcodec:        HEVC",
+   " \trate_control: CQP",
+   " \tcqp:          23",
+   " \tkeyint:       250",
+   " \tpreset:       p5",
+   " \ttuning:       hq",
+   " \tmultipass:    qres",
+   " \tprofile:      main",
+   " \twidth:        2560",
+   " \theight:       1440",
+   " \tb-frames:     2",
+   " \tb-ref-mode:   0",
+   " \tlookahead:    true (8 frames)",
+   " \taq:           true",
+   " ",
+   " ---------------------------------",
+   " [FFmpeg aac encoder: 'simple_aac_recording0'] bitrate: 192, channels: 2, channel_layout: stereo, track: 1",
+   " ",
+   " ==== Recording Start ===============================================",
+   " [ffmpeg muxer: 'simple_file_output'] Writing file 'C:/Users/volpe/Videos/2026-09-24 21-13-20.mkv'...",
+   " Device 'Analogue 1 + 2 (Focusrite USB Audio)' invalidated.  Retrying (source: Mic/Aux)",
+   " Device 'Analogue 1 + 2 (Focusrite USB Audio)' invalidated.  Retrying (source: Audio Input Capture)",
+   " Device 'Analogue 1 + 2 (Focusrite USB Audio)' invalidated.  Retrying (source: Audio Input Capture 2)",
+   " WASAPI: Default input device changed",
+   " Device 'Speakers (Focusrite USB Audio)' invalidated.  Retrying (source: Desktop Audio)",
+   " WASAPI: Default output device changed",
+   " [WASAPISource::TryInitialize]:[Analogue 1 + 2 (Focusrite USB Audio)] Failed to activate client context: 88890004",
+   " WASAPI: Device 'Microphone (Steam Streaming Microphone)' [44100 Hz] initialized (source: Mic/Aux)",
+   " Device 'Microphone (Steam Streaming Microphone)' invalidated.  Retrying (source: Mic/Aux)",
+   " WASAPI: Device 'Microphone (Steam Streaming Microphone)' [44100 Hz] initialized (source: Mic/Aux)",
+   " WASAPI: Device 'VG27AQM1A (NVIDIA High Definition Audio)' [48000 Hz] initialized (source: Desktop Audio)",
+   " Device 'VG27AQM1A (NVIDIA High Definition Audio)' invalidated.  Retrying (source: Desktop Audio)",
+   " WASAPI: Device 'VG27AQM1A (NVIDIA High Definition Audio)' [48000 Hz] initialized (source: Desktop Audio)",
+   " WASAPI: Default input device changed",
+   " Device 'Microphone (Steam Streaming Microphone)' invalidated.  Retrying (source: Mic/Aux)",
+   " WASAPI: Device 'Analogue 1 + 2 (Focusrite USB Audio)' [48000 Hz] initialized (source: Mic/Aux)",
+   " WASAPI: Default output device changed",
+   " Device 'VG27AQM1A (NVIDIA High Definition Audio)' invalidated.  Retrying (source: Desktop Audio)",
+   " WASAPI: Device 'Speakers (Focusrite USB Audio)' [48000 Hz] initialized (source: Desktop Audio)",
+   " WASAPI: Device 'Analogue 1 + 2 (Focusrite USB Audio)' [48000 Hz] initialized (source: Audio Input Capture 2)",
+   " [ffmpeg muxer: 'simple_file_output'] Output of file 'C:/Users/volpe/Videos/2026-09-24 21-13-20.mkv' stopped",
+   " Output 'simple_file_output': stopping",
+   " Output 'simple_file_output': Total frames output: 263436",
+   " Output 'simple_file_output': Total drawn frames: 263457",
+   " ==== Recording Stop ================================================"
+  ]
+ },
+ "build": {
+  "content_log": {
+   "path": "C:\\Program Files (x86)\\Steam\\logs\\content_log.txt",
+   "sha256": "639add2191c88434b26c5b56e3362c0de8a794572f4a5e543a4a9f62d5c10e52",
+   "app_2767030_lines": [
+    "[2026-09-24 06:15:31] AppID 2767030 state changed : Fully Installed,",
+    "[2026-09-24 06:15:31] AppID 2767030 scheduler finished : removed from schedule (result No Error, state 0xc) ",
+    "[2026-09-24 18:21:10] AppID 2767030 state changed : Fully Installed,App Running,",
+    "[2026-09-24 18:32:29] AppID 2767030 state changed : Fully Installed,",
+    "[2026-09-24 21:08:20] AppID 2767030 state changed : Fully Installed,App Running,",
+    "[2026-09-24 22:06:27] AppID 2767030 state changed : Fully Installed,"
+   ]
+  },
+  "appmanifest": {
+   "path": "C:\\Program Files (x86)\\Steam\\steamapps\\appmanifest_2767030.acf",
+   "sha256": "831d22bc401da6bc3d37f604fc5420f0790cf3f05140f06e6ec7a51d6615d392"
+  },
+  "appmanifest_buildid": [
+   [
+    "buildid",
+    "25501035"
+   ],
+   [
+    "TargetBuildID",
+    "25501035"
+   ]
+  ],
+  "version_json": {
+   "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\MarvelRivals\\MarvelGame\\version.json",
+   "sha256": "a5e39e36760d8353b05ce3e29bc43fb52023c1824e657862e1ec141e92be9fae",
+   "version": "1.1.3892207",
+   "changelist": 3892207,
+   "mtime_utc": "2026-09-24T11:15:10.109511+00:00"
+  },
+  "evidence": {
+   "app_id": "2767030",
+   "appmanifest": {
+    "buildid": "25501035",
+    "target_buildid": "25501035",
+    "last_updated": 1790248531
+   },
+   "version_json": {
+    "version": "1.1.3892207",
+    "changelist": 3892207,
+    "mtime_utc": "2026-09-24T11:15:10.109511+00:00"
+   },
+   "content_log": {
+    "utc_offset_s": -18000,
+    "update_steps": [
+     {
+      "local": "2025-03-27 18:23:04",
+      "utc": "2025-03-27T23:23:04+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2025-03-27 18:34:46",
+      "utc": "2025-03-27T23:34:46+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2025-03-27 18:34:46",
+      "utc": "2025-03-27T23:34:46+00:00",
+      "step": "finished update",
+      "build": "17879964"
+     },
+     {
+      "local": "2025-03-28 12:08:45",
+      "utc": "2025-03-28T17:08:45+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2025-03-28 12:08:46",
+      "utc": "2025-03-28T17:08:46+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2025-03-28 12:08:46",
+      "utc": "2025-03-28T17:08:46+00:00",
+      "step": "finished update",
+      "build": "17899835"
+     },
+     {
+      "local": "2025-04-11 09:48:50",
+      "utc": "2025-04-11T14:48:50+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2025-04-11 09:59:58",
+      "utc": "2025-04-11T14:59:58+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2025-04-11 09:59:58",
+      "utc": "2025-04-11T14:59:58+00:00",
+      "step": "finished update",
+      "build": "18069072"
+     },
+     {
+      "local": "2025-04-11 17:25:04",
+      "utc": "2025-04-11T22:25:04+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2025-04-11 17:25:04",
+      "utc": "2025-04-11T22:25:04+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2025-04-11 17:25:04",
+      "utc": "2025-04-11T22:25:04+00:00",
+      "step": "finished update",
+      "build": "18074871"
+     },
+     {
+      "local": "2025-04-17 05:43:07",
+      "utc": "2025-04-17T10:43:07+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2025-04-17 05:43:30",
+      "utc": "2025-04-17T10:43:30+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2025-04-17 05:43:30",
+      "utc": "2025-04-17T10:43:30+00:00",
+      "step": "finished update",
+      "build": "18141526"
+     },
+     {
+      "local": "2025-04-24 09:02:45",
+      "utc": "2025-04-24T14:02:45+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2025-04-24 09:03:16",
+      "utc": "2025-04-24T14:03:16+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2025-04-24 09:03:16",
+      "utc": "2025-04-24T14:03:16+00:00",
+      "step": "finished update",
+      "build": "18221024"
+     },
+     {
+      "local": "2025-05-04 16:07:39",
+      "utc": "2025-05-04T21:07:39+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2025-05-04 16:08:04",
+      "utc": "2025-05-04T21:08:04+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2025-05-04 16:08:05",
+      "utc": "2025-05-04T21:08:05+00:00",
+      "step": "finished update",
+      "build": "18292868"
+     },
+     {
+      "local": "2025-05-08 10:24:03",
+      "utc": "2025-05-08T15:24:03+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2025-05-08 10:24:15",
+      "utc": "2025-05-08T15:24:15+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2025-05-08 10:24:15",
+      "utc": "2025-05-08T15:24:15+00:00",
+      "step": "finished update",
+      "build": "18386271"
+     },
+     {
+      "local": "2025-05-08 20:48:25",
+      "utc": "2025-05-09T01:48:25+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2025-05-08 20:48:28",
+      "utc": "2025-05-09T01:48:28+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2025-05-08 20:48:28",
+      "utc": "2025-05-09T01:48:28+00:00",
+      "step": "finished update",
+      "build": "18394013"
+     },
+     {
+      "local": "2025-05-13 12:21:54",
+      "utc": "2025-05-13T17:21:54+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2025-05-13 12:21:55",
+      "utc": "2025-05-13T17:21:55+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2025-05-15 17:44:48",
+      "utc": "2025-05-15T22:44:48+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2025-05-15 17:44:57",
+      "utc": "2025-05-15T22:44:57+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2025-05-15 17:44:57",
+      "utc": "2025-05-15T22:44:57+00:00",
+      "step": "finished update",
+      "build": "18473024"
+     },
+     {
+      "local": "2025-05-22 22:31:14",
+      "utc": "2025-05-23T03:31:14+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2025-05-22 22:31:25",
+      "utc": "2025-05-23T03:31:25+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2025-05-22 22:31:26",
+      "utc": "2025-05-23T03:31:26+00:00",
+      "step": "finished update",
+      "build": "18562934"
+     },
+     {
+      "local": "2025-05-28 15:37:26",
+      "utc": "2025-05-28T20:37:26+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2025-05-28 15:37:31",
+      "utc": "2025-05-28T20:37:31+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2025-05-28 15:37:33",
+      "utc": "2025-05-28T20:37:33+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2025-05-28 15:37:33",
+      "utc": "2025-05-28T20:37:33+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2025-05-28 15:54:16",
+      "utc": "2025-05-28T20:54:16+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2025-05-28 15:54:16",
+      "utc": "2025-05-28T20:54:16+00:00",
+      "step": "finished update",
+      "build": "18640038"
+     },
+     {
+      "local": "2025-05-30 14:43:32",
+      "utc": "2025-05-30T19:43:32+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2025-05-30 14:50:51",
+      "utc": "2025-05-30T19:50:51+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2025-05-30 14:50:51",
+      "utc": "2025-05-30T19:50:51+00:00",
+      "step": "finished update",
+      "build": "18671187"
+     },
+     {
+      "local": "2025-06-17 22:13:04",
+      "utc": "2025-06-18T03:13:04+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2025-06-17 22:13:28",
+      "utc": "2025-06-18T03:13:28+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2025-06-17 22:13:28",
+      "utc": "2025-06-18T03:13:28+00:00",
+      "step": "finished update",
+      "build": "18897855"
+     },
+     {
+      "local": "2025-06-20 01:10:35",
+      "utc": "2025-06-20T06:10:35+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2025-06-20 01:11:06",
+      "utc": "2025-06-20T06:11:06+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2025-06-20 01:11:06",
+      "utc": "2025-06-20T06:11:06+00:00",
+      "step": "finished update",
+      "build": "18924297"
+     },
+     {
+      "local": "2025-06-26 08:40:07",
+      "utc": "2025-06-26T13:40:07+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2025-06-26 08:40:17",
+      "utc": "2025-06-26T13:40:17+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2025-06-26 08:40:17",
+      "utc": "2025-06-26T13:40:17+00:00",
+      "step": "finished update",
+      "build": "19007995"
+     },
+     {
+      "local": "2025-07-03 21:15:48",
+      "utc": "2025-07-04T02:15:48+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2025-07-03 21:15:56",
+      "utc": "2025-07-04T02:15:56+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2025-07-03 21:15:56",
+      "utc": "2025-07-04T02:15:56+00:00",
+      "step": "finished update",
+      "build": "19090948"
+     },
+     {
+      "local": "2025-07-11 11:50:44",
+      "utc": "2025-07-11T16:50:44+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2025-07-11 11:56:08",
+      "utc": "2025-07-11T16:56:08+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2025-07-11 11:56:08",
+      "utc": "2025-07-11T16:56:08+00:00",
+      "step": "finished update",
+      "build": "19188146"
+     },
+     {
+      "local": "2025-07-17 09:41:40",
+      "utc": "2025-07-17T14:41:40+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2025-07-17 09:42:09",
+      "utc": "2025-07-17T14:42:09+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2025-07-17 09:42:09",
+      "utc": "2025-07-17T14:42:09+00:00",
+      "step": "finished update",
+      "build": "19257140"
+     },
+     {
+      "local": "2025-07-24 17:28:32",
+      "utc": "2025-07-24T22:28:32+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2025-07-24 17:28:51",
+      "utc": "2025-07-24T22:28:51+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2025-07-24 17:28:51",
+      "utc": "2025-07-24T22:28:51+00:00",
+      "step": "finished update",
+      "build": "19340953"
+     },
+     {
+      "local": "2025-07-31 18:26:17",
+      "utc": "2025-07-31T23:26:17+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2025-07-31 18:26:30",
+      "utc": "2025-07-31T23:26:30+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2025-07-31 18:26:31",
+      "utc": "2025-07-31T23:26:31+00:00",
+      "step": "finished update",
+      "build": "19426303"
+     },
+     {
+      "local": "2025-08-13 03:37:58",
+      "utc": "2025-08-13T08:37:58+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2025-08-13 03:42:47",
+      "utc": "2025-08-13T08:42:47+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2025-08-13 03:42:47",
+      "utc": "2025-08-13T08:42:47+00:00",
+      "step": "finished update",
+      "build": "19578778"
+     },
+     {
+      "local": "2025-08-14 18:58:39",
+      "utc": "2025-08-14T23:58:39+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2025-08-14 18:59:05",
+      "utc": "2025-08-14T23:59:05+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2025-08-14 18:59:06",
+      "utc": "2025-08-14T23:59:06+00:00",
+      "step": "finished update",
+      "build": "19595137"
+     },
+     {
+      "local": "2025-08-24 22:58:27",
+      "utc": "2025-08-25T03:58:27+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2025-08-24 22:59:47",
+      "utc": "2025-08-25T03:59:47+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2025-08-24 22:59:47",
+      "utc": "2025-08-25T03:59:47+00:00",
+      "step": "finished update",
+      "build": "19681090"
+     },
+     {
+      "local": "2025-09-01 16:59:35",
+      "utc": "2025-09-01T21:59:35+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2025-09-01 16:59:45",
+      "utc": "2025-09-01T21:59:45+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2025-09-01 16:59:45",
+      "utc": "2025-09-01T21:59:45+00:00",
+      "step": "finished update",
+      "build": "19767867"
+     },
+     {
+      "local": "2025-09-04 21:55:09",
+      "utc": "2025-09-05T02:55:09+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2025-09-04 21:55:47",
+      "utc": "2025-09-05T02:55:47+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2025-09-04 21:55:47",
+      "utc": "2025-09-05T02:55:47+00:00",
+      "step": "finished update",
+      "build": "19853088"
+     },
+     {
+      "local": "2025-09-13 17:23:02",
+      "utc": "2025-09-13T22:23:02+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2025-09-13 17:45:31",
+      "utc": "2025-09-13T22:45:31+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2025-09-13 17:45:31",
+      "utc": "2025-09-13T22:45:31+00:00",
+      "step": "finished update",
+      "build": "19954668"
+     },
+     {
+      "local": "2025-09-18 21:50:18",
+      "utc": "2025-09-19T02:50:18+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2025-09-18 21:52:14",
+      "utc": "2025-09-19T02:52:14+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2025-09-18 21:52:14",
+      "utc": "2025-09-19T02:52:14+00:00",
+      "step": "finished update",
+      "build": "20028809"
+     },
+     {
+      "local": "2025-10-05 07:05:57",
+      "utc": "2025-10-05T12:05:57+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2025-10-05 07:16:54",
+      "utc": "2025-10-05T12:16:54+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2025-10-05 07:16:54",
+      "utc": "2025-10-05T12:16:54+00:00",
+      "step": "finished update",
+      "build": "20219664"
+     },
+     {
+      "local": "2025-10-10 10:22:30",
+      "utc": "2025-10-10T15:22:30+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2025-10-10 10:39:00",
+      "utc": "2025-10-10T15:39:00+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2025-10-10 10:39:00",
+      "utc": "2025-10-10T15:39:00+00:00",
+      "step": "finished update",
+      "build": "20334107"
+     },
+     {
+      "local": "2025-10-16 17:12:20",
+      "utc": "2025-10-16T22:12:20+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2025-10-16 17:14:39",
+      "utc": "2025-10-16T22:14:39+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2025-10-16 17:14:39",
+      "utc": "2025-10-16T22:14:39+00:00",
+      "step": "finished update",
+      "build": "20415998"
+     },
+     {
+      "local": "2025-10-23 17:04:39",
+      "utc": "2025-10-23T22:04:39+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2025-10-23 17:07:28",
+      "utc": "2025-10-23T22:07:28+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2025-10-23 17:07:28",
+      "utc": "2025-10-23T22:07:28+00:00",
+      "step": "finished update",
+      "build": "20509898"
+     },
+     {
+      "local": "2025-10-30 18:26:08",
+      "utc": "2025-10-30T23:26:08+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2025-10-30 18:28:16",
+      "utc": "2025-10-30T23:28:16+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2025-10-30 18:28:16",
+      "utc": "2025-10-30T23:28:16+00:00",
+      "step": "finished update",
+      "build": "20602896"
+     },
+     {
+      "local": "2025-11-06 18:59:44",
+      "utc": "2025-11-06T23:59:44+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2025-11-06 19:00:31",
+      "utc": "2025-11-07T00:00:31+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2025-11-06 19:00:31",
+      "utc": "2025-11-07T00:00:31+00:00",
+      "step": "finished update",
+      "build": "20691787"
+     },
+     {
+      "local": "2025-11-14 11:24:39",
+      "utc": "2025-11-14T16:24:39+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2025-11-14 11:31:05",
+      "utc": "2025-11-14T16:31:05+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2025-11-14 11:31:06",
+      "utc": "2025-11-14T16:31:06+00:00",
+      "step": "finished update",
+      "build": "20796383"
+     },
+     {
+      "local": "2025-11-20 08:20:36",
+      "utc": "2025-11-20T13:20:36+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2025-11-20 08:20:51",
+      "utc": "2025-11-20T13:20:51+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2025-11-20 08:20:51",
+      "utc": "2025-11-20T13:20:51+00:00",
+      "step": "finished update",
+      "build": "20871990"
+     },
+     {
+      "local": "2025-11-27 09:04:30",
+      "utc": "2025-11-27T14:04:30+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2025-11-27 09:05:29",
+      "utc": "2025-11-27T14:05:29+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2025-11-27 09:05:29",
+      "utc": "2025-11-27T14:05:29+00:00",
+      "step": "finished update",
+      "build": "20962680"
+     },
+     {
+      "local": "2025-12-04 20:31:54",
+      "utc": "2025-12-05T01:31:54+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2025-12-04 20:32:44",
+      "utc": "2025-12-05T01:32:44+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2025-12-04 20:32:44",
+      "utc": "2025-12-05T01:32:44+00:00",
+      "step": "finished update",
+      "build": "21050563"
+     },
+     {
+      "local": "2025-12-12 05:14:37",
+      "utc": "2025-12-12T10:14:37+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2025-12-12 05:20:01",
+      "utc": "2025-12-12T10:20:01+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2025-12-12 05:20:02",
+      "utc": "2025-12-12T10:20:02+00:00",
+      "step": "finished update",
+      "build": "21160523"
+     },
+     {
+      "local": "2025-12-18 18:12:17",
+      "utc": "2025-12-18T23:12:17+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2025-12-18 18:13:03",
+      "utc": "2025-12-18T23:13:03+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2025-12-18 18:13:03",
+      "utc": "2025-12-18T23:13:03+00:00",
+      "step": "finished update",
+      "build": "21237620"
+     },
+     {
+      "local": "2026-01-05 05:11:08",
+      "utc": "2026-01-05T10:11:08+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2026-01-05 05:11:48",
+      "utc": "2026-01-05T10:11:48+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2026-01-05 05:11:48",
+      "utc": "2026-01-05T10:11:48+00:00",
+      "step": "finished update",
+      "build": "21357897"
+     },
+     {
+      "local": "2026-01-08 19:26:39",
+      "utc": "2026-01-09T00:26:39+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2026-01-08 19:26:52",
+      "utc": "2026-01-09T00:26:52+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2026-01-08 19:26:52",
+      "utc": "2026-01-09T00:26:52+00:00",
+      "step": "finished update",
+      "build": "21421011"
+     },
+     {
+      "local": "2026-01-16 05:54:41",
+      "utc": "2026-01-16T10:54:41+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2026-01-16 06:04:46",
+      "utc": "2026-01-16T11:04:46+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2026-01-16 06:04:46",
+      "utc": "2026-01-16T11:04:46+00:00",
+      "step": "finished update",
+      "build": "21522596"
+     },
+     {
+      "local": "2026-01-22 11:24:55",
+      "utc": "2026-01-22T16:24:55+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2026-01-22 11:26:20",
+      "utc": "2026-01-22T16:26:20+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2026-01-22 11:26:20",
+      "utc": "2026-01-22T16:26:20+00:00",
+      "step": "finished update",
+      "build": "21599310"
+     },
+     {
+      "local": "2026-01-29 09:16:01",
+      "utc": "2026-01-29T14:16:01+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2026-01-29 09:17:54",
+      "utc": "2026-01-29T14:17:54+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2026-01-29 09:17:55",
+      "utc": "2026-01-29T14:17:55+00:00",
+      "step": "finished update",
+      "build": "21696108"
+     },
+     {
+      "local": "2026-02-05 04:30:12",
+      "utc": "2026-02-05T09:30:12+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2026-02-05 04:30:43",
+      "utc": "2026-02-05T09:30:43+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2026-02-05 04:30:43",
+      "utc": "2026-02-05T09:30:43+00:00",
+      "step": "finished update",
+      "build": "21795583"
+     },
+     {
+      "local": "2026-02-13 15:58:18",
+      "utc": "2026-02-13T20:58:18+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2026-02-13 16:05:14",
+      "utc": "2026-02-13T21:05:14+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2026-02-13 16:05:14",
+      "utc": "2026-02-13T21:05:14+00:00",
+      "step": "finished update",
+      "build": "21920507"
+     },
+     {
+      "local": "2026-02-19 15:42:42",
+      "utc": "2026-02-19T20:42:42+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2026-02-19 15:46:31",
+      "utc": "2026-02-19T20:46:31+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2026-02-19 15:46:31",
+      "utc": "2026-02-19T20:46:31+00:00",
+      "step": "finished update",
+      "build": "21998182"
+     },
+     {
+      "local": "2026-03-05 07:43:31",
+      "utc": "2026-03-05T12:43:31+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2026-03-05 07:47:22",
+      "utc": "2026-03-05T12:47:22+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2026-03-05 07:47:24",
+      "utc": "2026-03-05T12:47:24+00:00",
+      "step": "finished update",
+      "build": "22209392"
+     },
+     {
+      "local": "2026-03-12 21:06:50",
+      "utc": "2026-03-13T02:06:50+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2026-03-12 21:07:02",
+      "utc": "2026-03-13T02:07:02+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2026-03-12 21:07:02",
+      "utc": "2026-03-13T02:07:02+00:00",
+      "step": "finished update",
+      "build": "22309695"
+     },
+     {
+      "local": "2026-03-20 16:09:43",
+      "utc": "2026-03-20T21:09:43+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2026-03-20 16:22:47",
+      "utc": "2026-03-20T21:22:47+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2026-03-20 16:22:47",
+      "utc": "2026-03-20T21:22:47+00:00",
+      "step": "finished update",
+      "build": "22437292"
+     },
+     {
+      "local": "2026-03-24 10:03:12",
+      "utc": "2026-03-24T15:03:12+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2026-03-24 10:03:13",
+      "utc": "2026-03-24T15:03:13+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2026-03-26 08:56:20",
+      "utc": "2026-03-26T13:56:20+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2026-03-26 08:56:59",
+      "utc": "2026-03-26T13:56:59+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2026-03-26 08:56:59",
+      "utc": "2026-03-26T13:56:59+00:00",
+      "step": "finished update",
+      "build": "22512587"
+     },
+     {
+      "local": "2026-04-02 08:42:51",
+      "utc": "2026-04-02T13:42:51+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2026-04-02 08:43:39",
+      "utc": "2026-04-02T13:43:39+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2026-04-02 08:43:39",
+      "utc": "2026-04-02T13:43:39+00:00",
+      "step": "finished update",
+      "build": "22616608"
+     },
+     {
+      "local": "2026-04-09 21:15:31",
+      "utc": "2026-04-10T02:15:31+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2026-04-09 21:16:11",
+      "utc": "2026-04-10T02:16:11+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2026-04-09 21:16:11",
+      "utc": "2026-04-10T02:16:11+00:00",
+      "step": "finished update",
+      "build": "22709812"
+     },
+     {
+      "local": "2026-04-18 17:18:46",
+      "utc": "2026-04-18T22:18:46+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2026-04-18 17:24:47",
+      "utc": "2026-04-18T22:24:47+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2026-04-18 17:24:47",
+      "utc": "2026-04-18T22:24:47+00:00",
+      "step": "finished update",
+      "build": "22830870"
+     },
+     {
+      "local": "2026-04-23 05:10:47",
+      "utc": "2026-04-23T10:10:47+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2026-04-23 05:11:36",
+      "utc": "2026-04-23T10:11:36+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2026-04-23 05:11:36",
+      "utc": "2026-04-23T10:11:36+00:00",
+      "step": "finished update",
+      "build": "22919530"
+     },
+     {
+      "local": "2026-04-30 19:53:25",
+      "utc": "2026-05-01T00:53:25+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2026-04-30 19:54:01",
+      "utc": "2026-05-01T00:54:01+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2026-04-30 19:54:01",
+      "utc": "2026-05-01T00:54:01+00:00",
+      "step": "finished update",
+      "build": "23026145"
+     },
+     {
+      "local": "2026-05-09 05:59:26",
+      "utc": "2026-05-09T10:59:26+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2026-05-09 05:59:37",
+      "utc": "2026-05-09T10:59:37+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2026-05-09 05:59:37",
+      "utc": "2026-05-09T10:59:37+00:00",
+      "step": "finished update",
+      "build": "23124765"
+     },
+     {
+      "local": "2026-05-15 04:26:16",
+      "utc": "2026-05-15T09:26:16+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2026-05-15 04:38:28",
+      "utc": "2026-05-15T09:38:28+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2026-05-15 04:38:29",
+      "utc": "2026-05-15T09:38:29+00:00",
+      "step": "finished update",
+      "build": "23248974"
+     },
+     {
+      "local": "2026-05-21 15:16:16",
+      "utc": "2026-05-21T20:16:16+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2026-05-21 15:16:40",
+      "utc": "2026-05-21T20:16:40+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2026-05-21 15:16:40",
+      "utc": "2026-05-21T20:16:40+00:00",
+      "step": "finished update",
+      "build": "23340377"
+     },
+     {
+      "local": "2026-05-28 06:11:00",
+      "utc": "2026-05-28T11:11:00+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2026-05-28 06:11:26",
+      "utc": "2026-05-28T11:11:26+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2026-05-28 06:11:26",
+      "utc": "2026-05-28T11:11:26+00:00",
+      "step": "finished update",
+      "build": "23447842"
+     },
+     {
+      "local": "2026-06-04 21:53:16",
+      "utc": "2026-06-05T02:53:16+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2026-06-04 21:53:32",
+      "utc": "2026-06-05T02:53:32+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2026-06-04 21:53:32",
+      "utc": "2026-06-05T02:53:32+00:00",
+      "step": "finished update",
+      "build": "23562461"
+     },
+     {
+      "local": "2026-06-22 00:20:29",
+      "utc": "2026-06-22T05:20:29+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2026-06-22 00:29:07",
+      "utc": "2026-06-22T05:29:07+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2026-06-22 00:29:08",
+      "utc": "2026-06-22T05:29:08+00:00",
+      "step": "finished update",
+      "build": "23799226"
+     },
+     {
+      "local": "2026-06-26 22:53:09",
+      "utc": "2026-06-27T03:53:09+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2026-06-26 22:53:24",
+      "utc": "2026-06-27T03:53:24+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2026-06-26 22:53:24",
+      "utc": "2026-06-27T03:53:24+00:00",
+      "step": "finished update",
+      "build": "23908790"
+     },
+     {
+      "local": "2026-07-02 20:56:31",
+      "utc": "2026-07-03T01:56:31+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2026-07-02 20:56:47",
+      "utc": "2026-07-03T01:56:47+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2026-07-02 20:56:47",
+      "utc": "2026-07-03T01:56:47+00:00",
+      "step": "finished update",
+      "build": "24017129"
+     },
+     {
+      "local": "2026-07-10 07:02:08",
+      "utc": "2026-07-10T12:02:08+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2026-07-10 07:08:05",
+      "utc": "2026-07-10T12:08:05+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2026-07-10 07:08:05",
+      "utc": "2026-07-10T12:08:05+00:00",
+      "step": "finished update",
+      "build": "24143200"
+     },
+     {
+      "local": "2026-07-16 18:25:22",
+      "utc": "2026-07-16T23:25:22+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2026-07-16 18:25:58",
+      "utc": "2026-07-16T23:25:58+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2026-07-16 18:25:58",
+      "utc": "2026-07-16T23:25:58+00:00",
+      "step": "finished update",
+      "build": "24236173"
+     },
+     {
+      "local": "2026-07-23 12:00:36",
+      "utc": "2026-07-23T17:00:36+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2026-07-23 12:07:03",
+      "utc": "2026-07-23T17:07:03+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2026-07-23 12:07:03",
+      "utc": "2026-07-23T17:07:03+00:00",
+      "step": "finished update",
+      "build": "24350511"
+     },
+     {
+      "local": "2026-07-31 13:29:34",
+      "utc": "2026-07-31T18:29:34+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2026-07-31 13:30:09",
+      "utc": "2026-07-31T18:30:09+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2026-07-31 13:30:09",
+      "utc": "2026-07-31T18:30:09+00:00",
+      "step": "finished update",
+      "build": "24495584"
+     },
+     {
+      "local": "2026-08-08 18:16:13",
+      "utc": "2026-08-08T23:16:13+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2026-08-08 18:28:03",
+      "utc": "2026-08-08T23:28:03+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2026-08-08 18:28:03",
+      "utc": "2026-08-08T23:28:03+00:00",
+      "step": "finished update",
+      "build": "24609681"
+     },
+     {
+      "local": "2026-08-23 19:57:43",
+      "utc": "2026-08-24T00:57:43+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2026-08-23 19:58:26",
+      "utc": "2026-08-24T00:58:26+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2026-08-23 19:58:26",
+      "utc": "2026-08-24T00:58:26+00:00",
+      "step": "finished update",
+      "build": "24835802"
+     },
+     {
+      "local": "2026-08-28 20:05:15",
+      "utc": "2026-08-29T01:05:15+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2026-08-28 20:05:25",
+      "utc": "2026-08-29T01:05:25+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2026-08-28 20:05:25",
+      "utc": "2026-08-29T01:05:25+00:00",
+      "step": "finished update",
+      "build": "24966883"
+     },
+     {
+      "local": "2026-09-04 19:39:07",
+      "utc": "2026-09-05T00:39:07+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2026-09-04 19:39:24",
+      "utc": "2026-09-05T00:39:24+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2026-09-04 19:39:24",
+      "utc": "2026-09-05T00:39:24+00:00",
+      "step": "finished update",
+      "build": "25098044"
+     },
+     {
+      "local": "2026-09-13 00:35:33",
+      "utc": "2026-09-13T05:35:33+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2026-09-13 02:04:29",
+      "utc": "2026-09-13T07:04:29+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2026-09-13 02:06:34",
+      "utc": "2026-09-13T07:06:34+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2026-09-13 02:06:34",
+      "utc": "2026-09-13T07:06:34+00:00",
+      "step": "finished update",
+      "build": "25249397"
+     },
+     {
+      "local": "2026-09-17 12:15:39",
+      "utc": "2026-09-17T17:15:39+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2026-09-17 12:16:35",
+      "utc": "2026-09-17T17:16:35+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2026-09-17 12:16:35",
+      "utc": "2026-09-17T17:16:35+00:00",
+      "step": "finished update",
+      "build": "25364676"
+     },
+     {
+      "local": "2026-09-24 06:15:09",
+      "utc": "2026-09-24T11:15:09+00:00",
+      "step": "update started",
+      "build": null
+     },
+     {
+      "local": "2026-09-24 06:15:31",
+      "utc": "2026-09-24T11:15:31+00:00",
+      "step": "starting commit",
+      "build": null
+     },
+     {
+      "local": "2026-09-24 06:15:31",
+      "utc": "2026-09-24T11:15:31+00:00",
+      "step": "finished update",
+      "build": "25501035"
+     }
+    ]
+   }
+  },
+  "recorded": {
+   "value": "1.1.3892207/build25501035",
+   "version": "1.1.3892207",
+   "buildid": "25501035",
+   "installed_utc": "2026-09-24T11:15:31+00:00",
+   "version_json_written_utc": "2026-09-24T11:15:10.109511+00:00",
+   "recording": {
+    "started_utc": "2026-09-25T02:13:20.371000+00:00",
+    "ended_utc": "2026-09-25T02:49:55.997624+00:00"
+   },
+   "content_log_finished_update": {
+    "local": "2026-09-24 06:15:31",
+    "utc": "2026-09-24T11:15:31+00:00",
+    "build": "25501035"
+   },
+   "content_log_utc_offset_s": -18000
+  },
+  "note": "recorded = agent.human_intake.recorded_build over `evidence`, read here at intake; the assembly re-derives it from `evidence` and refuses when it cannot be read"
+ },
+ "settings_receipt": {
+  "path": "C:\\Users\\volpe\\AppData\\Local\\Marvel\\Saved\\Saved\\Config\\1295996384\\MarvelUserSetting.json",
+  "sha256": "5980abebae990a7c6317db1cbe80a29206dd6eb261fbb67b2f2c944fcada08fa",
+  "mtime_utc": "2026-09-25T03:05:52.873408+00:00",
+  "recording_started_utc": "2026-09-25T02:13:20.371Z",
+  "written_after_recording": true,
+  "saved_NoCDSaved": 0,
+  "controls": {
+   "0": {
+    "MouseHorizontalSensitivity": 1.6299999952316284,
+    "MouseVerticalSensitivity": 1.5499999523162842,
+    "CharControlInputMappings": {
+     "7": {
+      "PrimaryKey": {
+       "Key": "None"
+      }
+     },
+     "8": {
+      "PrimaryKey": {
+       "Key": "None"
+      }
+     },
+     "14": {
+      "SecondaryKey": {
+       "Key": "ThumbMouseButton2"
+      }
+     },
+     "16": {
+      "PrimaryKey": {
+       "Key": "ThumbMouseButton"
+      }
+     },
+     "19": {
+      "SecondaryKey": {
+       "Key": "F"
+      }
+     },
+     "20": {
+      "PrimaryKey": {
+       "Key": "Three"
+      }
+     },
+     "143": {
+      "PrimaryKey": {
+       "Key": "NumPadOne"
+      },
+      "SecondaryKey": {
+       "Key": "None"
+      }
+     },
+     "144": {
+      "PrimaryKey": {
+       "Key": "NumPadTwo"
+      },
+      "SecondaryKey": {
+       "Key": "None"
+      }
+     },
+     "145": {
+      "PrimaryKey": {
+       "Key": "NumPadThree"
+      },
+      "SecondaryKey": {
+       "Key": "None"
+      }
+     },
+     "146": {
+      "PrimaryKey": {
+       "Key": "NumPadFour"
+      },
+      "SecondaryKey": {
+       "Key": "None"
+      }
+     }
+    },
+    "BattleCommInputMappings": {
+     "7": {
+      "PrimaryKey": {
+       "Key": "Two"
+      }
+     },
+     "8": {
+      "PrimaryKey": {
+       "Key": "Four"
+      }
+     },
+     "9": {
+      "PrimaryKey": {
+       "Key": "One"
+      }
+     }
+    },
+    "AbilityUserSettingList": [
+     {
+      "SettingType": 1,
+      "Key": "WakandaUp",
+      "AbilityID": 200401,
+      "bIsGamepad": false,
+      "bIsDirty": false,
+      "Value": true
+     }
+    ]
+   },
+   "1036": {
+    "MouseHorizontalSensitivity": 1.8899999856948853,
+    "MouseVerticalSensitivity": 1.8899999856948853,
+    "bEnableMouseSmoothing": true,
+    "bEnableMouseAcceleration": true,
+    "bEnableMouseAlign": true,
+    "MouseAccelerationThreshold": 1.0,
+    "CharControlInputMappings": {
+     "5": {
+      "SecondaryKey": {
+       "Key": "MouseScrollDown"
+      }
+     },
+     "7": {
+      "PrimaryKey": {
+       "Key": "One"
+      }
+     },
+     "15": {
+      "PrimaryKey": {
+       "Key": "F"
+      }
+     },
+     "16": {
+      "PrimaryKey": {
+       "Key": "LeftShift"
+      }
+     },
+     "19": {
+      "SecondaryKey": {
+       "Key": "None"
+      }
+     },
+     "20": {
+      "PrimaryKey": {
+       "Key": "E"
+      },
+      "SecondaryKey": {
+       "Key": "Two"
+      }
+     },
+     "99": {
+      "PrimaryKey": {
+       "Key": "ThumbMouseButton"
+      },
+      "SecondaryKey": {
+       "Key": "Two"
+      }
+     },
+     "133": {
+      "PrimaryKey": {
+       "Key": "CapsLock"
+      },
+      "SecondaryKey": {
+       "Key": "MouseScrollUp"
+      }
+     },
+     "136": {
+      "PrimaryKey": {
+       "Key": "LeftControl"
+      }
+     },
+     "143": {
+      "PrimaryKey": {
+       "Key": "One"
+      },
+      "SecondaryKey": {
+       "Key": "NumPadOne"
+      }
+     },
+     "144": {
+      "PrimaryKey": {
+       "Key": "None"
+      },
+      "SecondaryKey": {
+       "Key": "NumPadTwo"
+      }
+     },
+     "145": {
+      "PrimaryKey": {
+       "Key": "Three"
+      },
+      "SecondaryKey": {
+       "Key": "NumPadThree"
+      }
+     },
+     "146": {
+      "PrimaryKey": {
+       "Key": "Four"
+      },
+      "SecondaryKey": {
+       "Key": "NumPadFour"
+      }
+     },
+     "8": {
+      "PrimaryKey": {
+       "Key": "None"
+      }
+     },
+     "14": {
+      "SecondaryKey": {
+       "Key": "ThumbMouseButton2"
+      }
+     }
+    },
+    "AbilityUserSettingList": [
+     {
+      "SettingType": 2,
+      "Key": "SelectSensitivity",
+      "AbilityID": 103614,
+      "bIsGamepad": false,
+      "bIsDirty": false,
+      "Value": 100.0,
+      "SettingNote": 0
+     },
+     {
+      "SettingType": 1,
+      "Key": "bIsHoldAbility",
+      "AbilityID": 103641,
+      "bIsGamepad": false,
+      "bIsDirty": false,
+      "Value": true
+     },
+     {
+      "SettingType": 1,
+      "Key": "UseSimpleSwing",
+      "AbilityID": 103641,
+      "bIsGamepad": false,
+      "bIsDirty": false,
+      "Value": false
+     },
+     {
+      "SettingType": 1,
+      "Key": "bIsHoldAbility",
+      "AbilityID": 103671,
+      "bIsGamepad": false,
+      "bIsDirty": false,
+      "Value": true
+     },
+     {
+      "SettingType": 1,
+      "Key": "bIsHoldSprint",
+      "AbilityID": 103671,
+      "bIsGamepad": false,
+      "bIsDirty": false,
+      "Value": false
+     },
+     {
+      "SettingType": 0,
+      "Key": "WallRunMode",
+      "AbilityID": 103671,
+      "bIsGamepad": false,
+      "bIsDirty": false,
+      "Value": "TowardUp"
+     },
+     {
+      "SettingType": 1,
+      "Key": "bIsMeleeAttackHighlightOn",
+      "AbilityID": 0,
+      "bIsGamepad": false,
+      "bIsDirty": false,
+      "Value": true
+     },
+     {
+      "SettingType": 1,
+      "Key": "WakandaUp",
+      "AbilityID": 200401,
+      "bIsGamepad": false,
+      "bIsDirty": false,
+      "Value": true
+     }
+    ]
+   }
+  },
+  "equals_2026_09_22_receipt": {
+   "1036": true,
+   "0": true
+  },
+  "note": "Later local state, not a recording-time attestation. DPI is not stored here; motor fields stay unknown until James's dated statement (lead, R2)."
+ },
+ "tools": {
+  "ffprobe": "ffprobe version 8.0.1-full_build-www.gyan.dev Copyright (c) 2007-2025 the FFmpeg developers",
+  "ffmpeg": "ffmpeg version 8.0.1-full_build-www.gyan.dev Copyright (c) 2000-2025 the FFmpeg developers"
+ }
+}

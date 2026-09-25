@@ -1,0 +1,1393 @@
+{
+ "session": "20260925T021320-371Z-7804-1",
+ "segments_evidence_sha256": "75e34751156ff813cfcbf69613eda598433c02d387ea0f0ac5feca49ddcdcf34",
+ "reviewer": "admission-owner",
+ "reviewed_at": "2026-09-25T17:26:35Z",
+ "role": "owner inspection; assembly additionally requires the independent per-session review (R5)",
+ "verdicts": {
+  "seg-000": {
+   "suitability": "rejected",
+   "reason": "focus_transition: by rule (the practice-range hero select, Elsa Bloodstone showing)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T17:26:35Z",
+   "evidence": "segments-evidence.json 75e34751156ff813 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 301,
+     "composition_ns": 370277867464809,
+     "decoded_bgr_sha256": "e3c8edb6848e34f318b82a4803134f415f4a8091fc92bdaa00d4a8b77487ffd5"
+    },
+    {
+     "frame_index": 315,
+     "composition_ns": 370277984131471,
+     "decoded_bgr_sha256": "e767b7ee17e13873569a23586953ed5d1644fdf0abf49f433b9bdc5f77ea7fc2"
+    },
+    {
+     "frame_index": 330,
+     "composition_ns": 370278109131466,
+     "decoded_bgr_sha256": "d8b217ec12cfc7252ae6e0a46b6eee9c32d03f9c9fff6de1e14eabda86175524"
+    }
+   ]
+  },
+  "seg-001": {
+   "suitability": "rejected",
+   "reason": "no_range_hud: by rule (the hero select: Elsa Bloodstone, then Spider-Man in the admitted suit, CONFIRM; then the spawn-in frames f745-f759, which fail the live range guard)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T17:26:35Z",
+   "evidence": "segments-evidence.json 75e34751156ff813 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 331,
+     "composition_ns": 370278117464799,
+     "decoded_bgr_sha256": "abf8b3e410e9b69502790abda00f456ec1d11300084dc3b0eeadbc23fa1eb67b"
+    },
+    {
+     "frame_index": 545,
+     "composition_ns": 370279900798061,
+     "decoded_bgr_sha256": "1c9c1e7006b61770bb0c54a325133ce7d0129a4d698a53cbe2fbd55011514c2b"
+    },
+    {
+     "frame_index": 759,
+     "composition_ns": 370281684131323,
+     "decoded_bgr_sha256": "e93fec38ecc993444efef164f69a761bf4177045da8709ff048eb851a2d9f684"
+    }
+   ]
+  },
+  "seg-002": {
+   "suitability": "accepted",
+   "reason": "continuous practice-range play in all 38 inspected frames: traversal, web swings and wall runs over the courtyard, lanes and terraces; KOs on Galacta bots, the Galacta Bot Ultra and a Luna Snow bot (KO to HEXA banners); HUD present with cooldowns counting down (normal regime); no UI key, AFK span or capture gap inside. Opens on f760, the first frame the live range guard proves (HP bar and range banner drawn; the hero model itself is drawn from f761; no input until W at f804); ends at the last frame before the first AFK span",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T17:26:35Z",
+   "evidence": "segments-evidence.json 75e34751156ff813 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 760,
+     "composition_ns": 370281692464656,
+     "decoded_bgr_sha256": "ee138e369b7338795126b486d80f1aa55ead4dace42026634c770b4720ef54bc"
+    },
+    {
+     "frame_index": 1933,
+     "composition_ns": 370291467464265,
+     "decoded_bgr_sha256": "48139f9c95faf0064219b424ba203c0c6f60d6014880a9f7fae496707871fbb7"
+    },
+    {
+     "frame_index": 3107,
+     "composition_ns": 370301250797207,
+     "decoded_bgr_sha256": "8fc5f466c97db343e4580f302721bd45820e2b18f4fb626453a0696beb090cd9"
+    },
+    {
+     "frame_index": 4281,
+     "composition_ns": 370311034130149,
+     "decoded_bgr_sha256": "fc294a33d09c46974602dddbf6cebe7aed28caed5d1d5233c93745adcf752597"
+    },
+    {
+     "frame_index": 5455,
+     "composition_ns": 370320817463091,
+     "decoded_bgr_sha256": "957c00f6fe90f56ebf111d9371772e70e43cf59cf5be8d3089a390fbe45df47d"
+    },
+    {
+     "frame_index": 6629,
+     "composition_ns": 370330600796033,
+     "decoded_bgr_sha256": "7894e2a92659be526bdfc7ca53ce6b4e407a324b60a5ec9d27b1f5afe78124ac"
+    },
+    {
+     "frame_index": 7803,
+     "composition_ns": 370340384128975,
+     "decoded_bgr_sha256": "48ba0a1096a5cac86242a735d1898d063c8eb56a0d70a8024ebfd9f02992ee57"
+    },
+    {
+     "frame_index": 8977,
+     "composition_ns": 370350167461917,
+     "decoded_bgr_sha256": "ea48c5960319dac7b310dadc925ed2c184c32da6b23fea596b970b1e0f4698cf"
+    },
+    {
+     "frame_index": 10150,
+     "composition_ns": 370359942461526,
+     "decoded_bgr_sha256": "33f6f86a13b43764c66d634e54282fc4ace92bf9d473893239b6307a0d2db952"
+    },
+    {
+     "frame_index": 11324,
+     "composition_ns": 370369725794468,
+     "decoded_bgr_sha256": "b83e1fd9424535b87faabb41a3917f652d4f3b7fb2ea3173d2998c37846b8659"
+    },
+    {
+     "frame_index": 12498,
+     "composition_ns": 370379509127410,
+     "decoded_bgr_sha256": "4be4d9b0b6c54beb41aef5dac99ba80e4fc4ebb95f4a6bcdd409814f3282a0b4"
+    },
+    {
+     "frame_index": 13672,
+     "composition_ns": 370389292460352,
+     "decoded_bgr_sha256": "704e7a2ffd817a5c4088a1600d7b98f3bf70d3e2977eaa2306a37cf9119818ed"
+    },
+    {
+     "frame_index": 14846,
+     "composition_ns": 370399075793294,
+     "decoded_bgr_sha256": "61b42c819acb26d3b945af6603ba0656bcab73ec74ccbc270cb5dc28a7552eb3"
+    },
+    {
+     "frame_index": 16020,
+     "composition_ns": 370408859126236,
+     "decoded_bgr_sha256": "0b61f7d0a7a727bc1eaec1c2f312d8d10b8caa9cc001b0cb6cf8a4f57d49971e"
+    },
+    {
+     "frame_index": 17194,
+     "composition_ns": 370418642459178,
+     "decoded_bgr_sha256": "174bedc002dbc48e6e9c6f15b04f5066ed4e29f74d32d5b14fae11675f93254c"
+    },
+    {
+     "frame_index": 18367,
+     "composition_ns": 370428417458787,
+     "decoded_bgr_sha256": "0c3b09b13773299d0e038ccedff4a793be75fdc062ebf9ae670fb3b85e51514e"
+    },
+    {
+     "frame_index": 19541,
+     "composition_ns": 370438200791729,
+     "decoded_bgr_sha256": "161c2f12d6788fe0d72d2ebd4f4e1ac94edac88dc9ced8bceabbe025ad118f4d"
+    },
+    {
+     "frame_index": 20715,
+     "composition_ns": 370447984124671,
+     "decoded_bgr_sha256": "e044d5889ec6d1ac1df5da0f546e7f22585e20fa60cd992972c5f92b87f95629"
+    },
+    {
+     "frame_index": 21889,
+     "composition_ns": 370457767457613,
+     "decoded_bgr_sha256": "a1c756235dfa3038d4c6b47e1854d47518e2123fee746a5574b454a07eec19ac"
+    },
+    {
+     "frame_index": 23063,
+     "composition_ns": 370467550790555,
+     "decoded_bgr_sha256": "cc4daedd2ad80dad50634784849be8231d9446883806214e54adf90a1a00d73f"
+    },
+    {
+     "frame_index": 24237,
+     "composition_ns": 370477334123497,
+     "decoded_bgr_sha256": "8c8505ddfeba1c6e2197cbdfa039e8507d8c38e5d057368a3eb6e29d93823caa"
+    },
+    {
+     "frame_index": 25411,
+     "composition_ns": 370487117456439,
+     "decoded_bgr_sha256": "da288c0c72a718ec0f7b17b4de39b1c368b148b000572ba4d3cfbff1b7509a1a"
+    },
+    {
+     "frame_index": 26585,
+     "composition_ns": 370496900789381,
+     "decoded_bgr_sha256": "9c847db0ed675c3988adf5baff680e5144144d862ca07441ec1261aac2b2b7e4"
+    },
+    {
+     "frame_index": 27758,
+     "composition_ns": 370506675788990,
+     "decoded_bgr_sha256": "784d95d88f8e73eecfabd4e2ec5be143d918f407b7d9143fb26e1588c3ace1fd"
+    },
+    {
+     "frame_index": 28932,
+     "composition_ns": 370516459121932,
+     "decoded_bgr_sha256": "390ab1bf4910a460e7d7578000bf2c485da43f1872ba25ce128e2bf3926e5f49"
+    },
+    {
+     "frame_index": 30106,
+     "composition_ns": 370526242454874,
+     "decoded_bgr_sha256": "496c2bd6106dfe500d76e29205c1f74deabd9e06e9dcfcae1a6cc3d2ce60f7fa"
+    },
+    {
+     "frame_index": 31280,
+     "composition_ns": 370536025787816,
+     "decoded_bgr_sha256": "f0dc68a717907d540331277a66217d969351227a8052a63b715575e9e567a2e3"
+    },
+    {
+     "frame_index": 32454,
+     "composition_ns": 370545809120758,
+     "decoded_bgr_sha256": "af2955a2be249e95f0bdff1072f9fcd885ad577c05a825e771cf41852f78dd0e"
+    },
+    {
+     "frame_index": 33628,
+     "composition_ns": 370555592453700,
+     "decoded_bgr_sha256": "6959af93d0e159f9fb6215327832c90d9e8c7db4578f996290ff75e4d33a491e"
+    },
+    {
+     "frame_index": 34802,
+     "composition_ns": 370565375786642,
+     "decoded_bgr_sha256": "bb085d171e84ba6856a4fc7ee77224d9e1acfbe5de41f0b006d6f912d581230e"
+    },
+    {
+     "frame_index": 35975,
+     "composition_ns": 370575150786251,
+     "decoded_bgr_sha256": "d7695d675b24450f73084b1c5f1265341c1ed4efd8fa7a09f871de156fdfb9dc"
+    },
+    {
+     "frame_index": 37149,
+     "composition_ns": 370584934119193,
+     "decoded_bgr_sha256": "dbdda106cb238a1fb0be0ffd3fd8fef642530f246e534df32abe133a31b3ab70"
+    },
+    {
+     "frame_index": 38323,
+     "composition_ns": 370594717452135,
+     "decoded_bgr_sha256": "4cbac820c469a71b7a8497f36e099a740bda78af8befde42febf3772e8a89019"
+    },
+    {
+     "frame_index": 39497,
+     "composition_ns": 370604500785077,
+     "decoded_bgr_sha256": "3e954afea443fd786b89f7eed09f0cc3cac1e1a432b07549c00cf9f73c24958d"
+    },
+    {
+     "frame_index": 40671,
+     "composition_ns": 370614284118019,
+     "decoded_bgr_sha256": "7923cfe081bf0a109f666d6ced24e3581b7e183607696a4310e66ea1e0531313"
+    },
+    {
+     "frame_index": 41845,
+     "composition_ns": 370624067450961,
+     "decoded_bgr_sha256": "b775325375fa7daf19217875b64683788d3f7db340f7194233fbeb45672941b6"
+    },
+    {
+     "frame_index": 43019,
+     "composition_ns": 370633850783903,
+     "decoded_bgr_sha256": "294152d37722627872e5dcbeaf46e71f5dea80b6eeac95100d0e0ae83552d347"
+    },
+    {
+     "frame_index": 44193,
+     "composition_ns": 370643634116845,
+     "decoded_bgr_sha256": "29143afee43d81ef0d68c28a7378e4ef481a2511416ab3f7ef6be89380ce6725"
+    }
+   ]
+  },
+  "seg-003": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: by rule",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T17:26:35Z",
+   "evidence": "segments-evidence.json 75e34751156ff813 review frames + contact sheets",
+   "frames": []
+  },
+  "seg-004": {
+   "suitability": "rejected",
+   "reason": "afk: by rule (55 s without control input: James stepping away, lead 2026-09-25; the frames show Spider-Man standing still while the bots move)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T17:26:35Z",
+   "evidence": "segments-evidence.json 75e34751156ff813 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 44194,
+     "composition_ns": 370643642450178,
+     "decoded_bgr_sha256": "02b973bb9a85ec0d6e826deffa649205a7084c4dae05725f90663e4433b41c06"
+    },
+    {
+     "frame_index": 45291,
+     "composition_ns": 370652784116479,
+     "decoded_bgr_sha256": "af0b48b2398922616adaf16c01529b6d8ef1934ff366276b0ac6090222ae5ad4"
+    },
+    {
+     "frame_index": 46389,
+     "composition_ns": 370661934116113,
+     "decoded_bgr_sha256": "292ba580b89d0ad497bd863218e1ddb70e81fb7c0942f7d6e132db5430b7e9f3"
+    },
+    {
+     "frame_index": 47487,
+     "composition_ns": 370671084115747,
+     "decoded_bgr_sha256": "a0ccce93f3ae0204c6daeeb1c7c923fab4e8d8cbfafe4f14f82846e6f1249d82"
+    },
+    {
+     "frame_index": 48584,
+     "composition_ns": 370680225782048,
+     "decoded_bgr_sha256": "8169ca5468dd9343b538434664c184f2417c1215a2779a117db69cb1f3094654"
+    },
+    {
+     "frame_index": 49682,
+     "composition_ns": 370689375781682,
+     "decoded_bgr_sha256": "9e0f9173fbd49cdcc446c8ef44ee6ad311d7b1b40f0596b172a58775fe355f01"
+    },
+    {
+     "frame_index": 50780,
+     "composition_ns": 370698525781316,
+     "decoded_bgr_sha256": "1dac38d489ca737afabdb8fdc233e537fb6478c88f0a70793b61825b32923bb5"
+    }
+   ]
+  },
+  "seg-005": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: by rule",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T17:26:35Z",
+   "evidence": "segments-evidence.json 75e34751156ff813 review frames + contact sheets",
+   "frames": []
+  },
+  "seg-006": {
+   "suitability": "accepted",
+   "reason": "continuous practice-range play in all 87 inspected frames: swings, wall runs and fights across the whole map including the sea cliffs; KOs with KO to HEXA banners, an ultimate in use (550/550 HP on frame 105353); HUD present with cooldowns counting down; no UI key, AFK span or capture gap inside; ends at the last alive frame, falling toward the sea",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T17:26:35Z",
+   "evidence": "segments-evidence.json 75e34751156ff813 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 50781,
+     "composition_ns": 370698534114649,
+     "decoded_bgr_sha256": "2039aecd795e76844ec0d9df31a41bd1cfe8dedda46e3b838069b7952a696b72"
+    },
+    {
+     "frame_index": 51967,
+     "composition_ns": 370708417447587,
+     "decoded_bgr_sha256": "87c4e213ff79e3475c9ad399c5b4cfef502254582e5656de5f150047d9d58363"
+    },
+    {
+     "frame_index": 53153,
+     "composition_ns": 370718300780525,
+     "decoded_bgr_sha256": "36f4b8bc8aa5c1e2f36265ea1561195bc4999e999c78e6018c21aebad120ff76"
+    },
+    {
+     "frame_index": 54340,
+     "composition_ns": 370728192446796,
+     "decoded_bgr_sha256": "07602b6441bd8bf409cab96784bcb8d289c64d585433db9e5c3c7e55e0d3006c"
+    },
+    {
+     "frame_index": 55526,
+     "composition_ns": 370738075779734,
+     "decoded_bgr_sha256": "78e676806fd34136160dcea4ef54c3c53ae4425fbe7cffbf454d77cb1cb8bcbf"
+    },
+    {
+     "frame_index": 56712,
+     "composition_ns": 370747959112672,
+     "decoded_bgr_sha256": "59517d41c94b0543e882b71a0ef05c7e9e9b63de85a1eac0148b060d39e13185"
+    },
+    {
+     "frame_index": 57899,
+     "composition_ns": 370757850778943,
+     "decoded_bgr_sha256": "44911e8910c8d9ccccdfdd70b22c391833d200a7aab2445e97217c2a15192f1d"
+    },
+    {
+     "frame_index": 59085,
+     "composition_ns": 370767734111881,
+     "decoded_bgr_sha256": "dfe76be8034c80e6091272ac706eb485330282ec727aa7eb41062c654decb203"
+    },
+    {
+     "frame_index": 60271,
+     "composition_ns": 370777617444819,
+     "decoded_bgr_sha256": "571c4a4f69a0291990531c3fe6364cd26360f62e104ffd17203512e291431d82"
+    },
+    {
+     "frame_index": 61458,
+     "composition_ns": 370787509111090,
+     "decoded_bgr_sha256": "39ba86e11f47db035e233454fe603fce856149b6a8bb53a03d7a8b1aa3c82db8"
+    },
+    {
+     "frame_index": 62644,
+     "composition_ns": 370797392444028,
+     "decoded_bgr_sha256": "80a53e3043a43df059ff7fd54dbb4739e4c635370a5285e9c8123d9b60d88e9a"
+    },
+    {
+     "frame_index": 63830,
+     "composition_ns": 370807275776966,
+     "decoded_bgr_sha256": "278a2fd0fe6a0194b8fc680503a932364741a67dbbb201c27020b4b97e4255f2"
+    },
+    {
+     "frame_index": 65017,
+     "composition_ns": 370817167443237,
+     "decoded_bgr_sha256": "6bf6105cbe6fb805d3dd83ac14927eaecb72047c46c3e74a9ef5b986311b714a"
+    },
+    {
+     "frame_index": 66203,
+     "composition_ns": 370827050776175,
+     "decoded_bgr_sha256": "1f69e91f1dafaf87444dbc7c092eb8c026f32ddea24caeb4da68b39ee110ad9d"
+    },
+    {
+     "frame_index": 67390,
+     "composition_ns": 370836942442446,
+     "decoded_bgr_sha256": "52114546f2daf0a1686c46fed8fb3a47f29b186d0b27632f2471fe8f42fe59a3"
+    },
+    {
+     "frame_index": 68576,
+     "composition_ns": 370846825775384,
+     "decoded_bgr_sha256": "9c5418e77650293c60adc93c6765a4e43e83753648c8ab9ca8a8a96604448e3e"
+    },
+    {
+     "frame_index": 69762,
+     "composition_ns": 370856709108322,
+     "decoded_bgr_sha256": "56beab8348920e7ede97af87ea32a3c28e86014cdb87716e712b6182799e3c6c"
+    },
+    {
+     "frame_index": 70949,
+     "composition_ns": 370866600774593,
+     "decoded_bgr_sha256": "ef657c1c48af4a635a7e76c390e25b7713ab51a7a52e6a1fb52b1081ad850d79"
+    },
+    {
+     "frame_index": 72135,
+     "composition_ns": 370876484107531,
+     "decoded_bgr_sha256": "a7d5132314517281dfa64d42b3a094217242d5c47e69f6a3a24f22bd59eb2261"
+    },
+    {
+     "frame_index": 73321,
+     "composition_ns": 370886367440469,
+     "decoded_bgr_sha256": "215569842e4c9d063ad63aeccf10d481d56033f65c25a0b7b2235824f3015a07"
+    },
+    {
+     "frame_index": 74508,
+     "composition_ns": 370896259106740,
+     "decoded_bgr_sha256": "27b7b5eee964e52293730e4d905e9eeed6f23fadc0cf34be57dc25c3ab6f3be6"
+    },
+    {
+     "frame_index": 75694,
+     "composition_ns": 370906142439678,
+     "decoded_bgr_sha256": "02447590b775e7f3e34aae664dbc9f20848db4ba21f32fcd98b0815283a5d305"
+    },
+    {
+     "frame_index": 76880,
+     "composition_ns": 370916025772616,
+     "decoded_bgr_sha256": "15077975ecd82d6ba1880826beeb9cd41b68d5d0174a211edba191a5a38eef45"
+    },
+    {
+     "frame_index": 78067,
+     "composition_ns": 370925917438887,
+     "decoded_bgr_sha256": "32c579c8571567dcadafd90f04093111b573382ab5efd1b2c46dc148065bbe11"
+    },
+    {
+     "frame_index": 79253,
+     "composition_ns": 370935800771825,
+     "decoded_bgr_sha256": "eace4eea35f32ab833e10f9c98436c2cf16807588b159bc816fd10a386a8ea55"
+    },
+    {
+     "frame_index": 80440,
+     "composition_ns": 370945692438096,
+     "decoded_bgr_sha256": "4113da45d76cc04769655ff24ec105479c7c3e981cbc5478e6c4bd54d0f125ff"
+    },
+    {
+     "frame_index": 81626,
+     "composition_ns": 370955575771034,
+     "decoded_bgr_sha256": "e1eefb8e828c8393cdc70aa7e4c29ae8c77505e8945a8b63bb718f2a58ba8a17"
+    },
+    {
+     "frame_index": 82812,
+     "composition_ns": 370965459103972,
+     "decoded_bgr_sha256": "43bde30310615119a37cdbff5acde74d230e91fbcf95da1fe7fec5034bf06ed1"
+    },
+    {
+     "frame_index": 83999,
+     "composition_ns": 370975350770243,
+     "decoded_bgr_sha256": "658bceb5c0f6505b1087de29c5f367abb4b6203c34bc7a00986498a4c150fa2d"
+    },
+    {
+     "frame_index": 85185,
+     "composition_ns": 370985234103181,
+     "decoded_bgr_sha256": "edd071c013e4479a3ddc63514df743970b693fced59658fde84c9523c28a2cb0"
+    },
+    {
+     "frame_index": 86371,
+     "composition_ns": 370995117436119,
+     "decoded_bgr_sha256": "d9a47cac5c1412cacbe79d6d0531ccfdc3ad60fa16f9a3174b4760606c3f7a6f"
+    },
+    {
+     "frame_index": 87558,
+     "composition_ns": 371005009102390,
+     "decoded_bgr_sha256": "3a1170b5b756d442beee49f621561242cbf6bf00e7b54eb7d88c936486d30b1a"
+    },
+    {
+     "frame_index": 88744,
+     "composition_ns": 371014892435328,
+     "decoded_bgr_sha256": "7f6ea76817ecef2f7885e0b24ef82d612be7bc1e4062a12f660630832b455e51"
+    },
+    {
+     "frame_index": 89930,
+     "composition_ns": 371024775768266,
+     "decoded_bgr_sha256": "01e4571fd81c96250a7ae52fed24edc24e82011ee607bac2d8d6aaf1ca39bb7c"
+    },
+    {
+     "frame_index": 91117,
+     "composition_ns": 371034667434537,
+     "decoded_bgr_sha256": "2a80af446864bf7104ad0f8c5a2bb4387356844dd47407c3cea1bb6bdbae6b0e"
+    },
+    {
+     "frame_index": 92303,
+     "composition_ns": 371044550767475,
+     "decoded_bgr_sha256": "a7701bf09963615a9832ac6f36759260a502e4072c1ce37abb6b5e7816271c5c"
+    },
+    {
+     "frame_index": 93489,
+     "composition_ns": 371054434100413,
+     "decoded_bgr_sha256": "620d53e290809cd45c55a992bf4debe55fa7bd3b218e7154a332d43b6c3ddfbe"
+    },
+    {
+     "frame_index": 94676,
+     "composition_ns": 371064325766684,
+     "decoded_bgr_sha256": "e4f93c1e209fb9096fa91ff7a7fbe2389ca9628ff5b3da2368ac8d3464d34686"
+    },
+    {
+     "frame_index": 95862,
+     "composition_ns": 371074209099622,
+     "decoded_bgr_sha256": "b158610418f9583d44658be8d1088d856e7ef8cc3fcc97af7d353e12d4342e8c"
+    },
+    {
+     "frame_index": 97049,
+     "composition_ns": 371084100765893,
+     "decoded_bgr_sha256": "7d3227c4798c3f4ea5d043c44f37ca9f9b4f04f91692e1333609d9db6e66677d"
+    },
+    {
+     "frame_index": 98235,
+     "composition_ns": 371093984098831,
+     "decoded_bgr_sha256": "eae948e4b051b1090fe27f3cfa55ba9a9ce70d2565313939503043659fcbd1d4"
+    },
+    {
+     "frame_index": 99421,
+     "composition_ns": 371103867431769,
+     "decoded_bgr_sha256": "7fb773b264a4b7d7c5561d34842dc8d4fbd1267bf172b06431dfa8a250ef4153"
+    },
+    {
+     "frame_index": 100608,
+     "composition_ns": 371113759098040,
+     "decoded_bgr_sha256": "a2f0e0346a10cf4caf991c7be7f9bc9ac49a46eca2a0343f49722633544085a7"
+    },
+    {
+     "frame_index": 101794,
+     "composition_ns": 371123642430978,
+     "decoded_bgr_sha256": "2d8af95b815797fb95ba2d8af8f2af99360e964bbce1c4ffefc2e3febd510f2a"
+    },
+    {
+     "frame_index": 102980,
+     "composition_ns": 371133525763916,
+     "decoded_bgr_sha256": "a9c9752df846927ce1af2edd7dbe87675c84b5e50754bf8d990380425ea7facb"
+    },
+    {
+     "frame_index": 104167,
+     "composition_ns": 371143417430187,
+     "decoded_bgr_sha256": "f0baa048199e65257d4e4e8790ff2a344e1394cbf00d9fbd17fafa641798addb"
+    },
+    {
+     "frame_index": 105353,
+     "composition_ns": 371153300763125,
+     "decoded_bgr_sha256": "36a799778c33153162312587ab6d45159edb3c1b551053e117af6afb851c6b52"
+    },
+    {
+     "frame_index": 106539,
+     "composition_ns": 371163184096063,
+     "decoded_bgr_sha256": "34b760a33ed9d833bd75d57482936a80eab9a604b2eb8ba74f695f4a29122101"
+    },
+    {
+     "frame_index": 107726,
+     "composition_ns": 371173075762334,
+     "decoded_bgr_sha256": "f9111d12f3b13c71924cc3795ba1120cd44efa71a1a6e91e4f1c137e6092d8ea"
+    },
+    {
+     "frame_index": 108912,
+     "composition_ns": 371182959095272,
+     "decoded_bgr_sha256": "2683632adf8bb29b1a1a331aa8c8d5bb0e8b62d84609a36c4643a391461e1eee"
+    },
+    {
+     "frame_index": 110099,
+     "composition_ns": 371192850761543,
+     "decoded_bgr_sha256": "de45494dfc064b24dd162711d2fc61cef23cc418aa89b95d2ea6537af6550c27"
+    },
+    {
+     "frame_index": 111285,
+     "composition_ns": 371202734094481,
+     "decoded_bgr_sha256": "8a57df81b2821871d3206b8655eb490683947cbf146fb69b9b6aca96c4c50178"
+    },
+    {
+     "frame_index": 112471,
+     "composition_ns": 371212617427419,
+     "decoded_bgr_sha256": "c19f9e3cc07ab4a0a6d131333ba0c47c2f14ffcce07b9880e2aa2862ab5debd6"
+    },
+    {
+     "frame_index": 113658,
+     "composition_ns": 371222509093690,
+     "decoded_bgr_sha256": "152d9fd1541a8d754264d17517be66c1839f74197657d42eae34799a89bae7da"
+    },
+    {
+     "frame_index": 114844,
+     "composition_ns": 371232392426628,
+     "decoded_bgr_sha256": "3c747ddf29e6adf00fb61d3ae9fc5dbc7a9bce02ee0142896af03944e2142ec7"
+    },
+    {
+     "frame_index": 116030,
+     "composition_ns": 371242275759566,
+     "decoded_bgr_sha256": "51f9e5d585e255d1cdfdc4d727319cfc14294c4a09e240da7a8d2c91bf069aa5"
+    },
+    {
+     "frame_index": 117217,
+     "composition_ns": 371252167425837,
+     "decoded_bgr_sha256": "650e6be712bb718be27153bb1aef3f83f5210b62b04c865e42c482360b95a4cc"
+    },
+    {
+     "frame_index": 118403,
+     "composition_ns": 371262050758775,
+     "decoded_bgr_sha256": "cd001ebc97311ce0e1427a8018c06d1dc1ad917d218a029d8237987e3eec8e6f"
+    },
+    {
+     "frame_index": 119589,
+     "composition_ns": 371271934091713,
+     "decoded_bgr_sha256": "a32104b4adb9fc94677cc2ea07c9b8095fcb22fc496750d754dcb79f28a5c4ee"
+    },
+    {
+     "frame_index": 120776,
+     "composition_ns": 371281825757984,
+     "decoded_bgr_sha256": "55124d7608dea3e381a4d6bfc1a3fc55f53cfdee22e2828e43875ba146870de2"
+    },
+    {
+     "frame_index": 121962,
+     "composition_ns": 371291709090922,
+     "decoded_bgr_sha256": "69ccfbab302aa329498718ba3215da229657fb3ad3f86e96619b0b5ddbfedde5"
+    },
+    {
+     "frame_index": 123148,
+     "composition_ns": 371301592423860,
+     "decoded_bgr_sha256": "0f7814e38754f5452da21cb8ecad20c28406759e7a6e41a9e5ade3e67362bb8d"
+    },
+    {
+     "frame_index": 124335,
+     "composition_ns": 371311484090131,
+     "decoded_bgr_sha256": "eb2c5bb9544b9346a2de4eccd8923d1f8a5ce8b593149be44d05bf89968fa97c"
+    },
+    {
+     "frame_index": 125521,
+     "composition_ns": 371321367423069,
+     "decoded_bgr_sha256": "8b4f78eab69630337df53fa74f9830c5b0c10e0c4c2cc3ace885d50dbcfcbe1b"
+    },
+    {
+     "frame_index": 126708,
+     "composition_ns": 371331259089340,
+     "decoded_bgr_sha256": "3999b6389f0836d31c32563ac0c8c6829de44b3b5bdceae69e2076ac86325582"
+    },
+    {
+     "frame_index": 127894,
+     "composition_ns": 371341142422278,
+     "decoded_bgr_sha256": "04a6980bac5c7e969b35a64e4d55e39253bf7246473f50b699b97396e0546be1"
+    },
+    {
+     "frame_index": 129080,
+     "composition_ns": 371351025755216,
+     "decoded_bgr_sha256": "27d7d96ceb5767a46e67db267972d667f6fc357791ef122ed7a3e94ace1844fb"
+    },
+    {
+     "frame_index": 130267,
+     "composition_ns": 371360917421487,
+     "decoded_bgr_sha256": "a500f4dc4d1148cfe0797d371626e31fc7a28d94317273ee61dd3a63e88ab956"
+    },
+    {
+     "frame_index": 131453,
+     "composition_ns": 371370800754425,
+     "decoded_bgr_sha256": "caed909910b4bf797753889c14bc68c9cf7fac38f1c01d7ffb88d8b0e5be4746"
+    },
+    {
+     "frame_index": 132639,
+     "composition_ns": 371380684087363,
+     "decoded_bgr_sha256": "33a95a80ccfeeb9da5b54b7f22bd9d6339ccc39037e28f56470b457f19aed63f"
+    },
+    {
+     "frame_index": 133826,
+     "composition_ns": 371390575753634,
+     "decoded_bgr_sha256": "2a322e130495feae4a36e40ba009dd604e3ae6f219cca3c84b8cd4700a85b886"
+    },
+    {
+     "frame_index": 135012,
+     "composition_ns": 371400459086572,
+     "decoded_bgr_sha256": "edb4b158a8339e883c4b33030675ea8e6cf23389d6e29978a65f7b5d476f2406"
+    },
+    {
+     "frame_index": 136198,
+     "composition_ns": 371410342419510,
+     "decoded_bgr_sha256": "df737c16891bd604cc0cded06d91d4624c137e1ad3846e0152ac783dff54834d"
+    },
+    {
+     "frame_index": 137385,
+     "composition_ns": 371420234085781,
+     "decoded_bgr_sha256": "55820c3f0bbc456df1907ad4e1883e6869928c7fd7e4f8e0de48facb58ea0d1e"
+    },
+    {
+     "frame_index": 138571,
+     "composition_ns": 371430117418719,
+     "decoded_bgr_sha256": "70f697c45452b7746c8f8d16447dab758c5e8b3b0ccdbaa1344d08264d83977e"
+    },
+    {
+     "frame_index": 139758,
+     "composition_ns": 371440009084990,
+     "decoded_bgr_sha256": "6bd6ff5321afbc7415438ac6a090c99eb5f1f14f8c21d60e00ee384093b97a72"
+    },
+    {
+     "frame_index": 140944,
+     "composition_ns": 371449892417928,
+     "decoded_bgr_sha256": "f233d619db77745b7fb00dbbc7262ea4f855c270af58ecad2af6e582df281f05"
+    },
+    {
+     "frame_index": 142130,
+     "composition_ns": 371459775750866,
+     "decoded_bgr_sha256": "8ff51ca3067757fde43ed60a65b2ff7b02c48f0db94e8c797795f78fa41fcf13"
+    },
+    {
+     "frame_index": 143317,
+     "composition_ns": 371469667417137,
+     "decoded_bgr_sha256": "2baa29402ade70dd45bb8c84657ae574f67a81688c00f771a85c89a207e1c50d"
+    },
+    {
+     "frame_index": 144503,
+     "composition_ns": 371479550750075,
+     "decoded_bgr_sha256": "0244bb6e85fe0a549984f3624fa4ddcb8e107cfd4318e1d9e41c3a4738b8453d"
+    },
+    {
+     "frame_index": 145689,
+     "composition_ns": 371489434083013,
+     "decoded_bgr_sha256": "ddffb96aea7d9e98c4338e5a5cadca7e3d5bd92893f71f7ec93277ef8dd39395"
+    },
+    {
+     "frame_index": 146876,
+     "composition_ns": 371499325749284,
+     "decoded_bgr_sha256": "8f6856b15be2674cd4698a5c6796dae13cf72e054612b7ac15a71dc2485f15f3"
+    },
+    {
+     "frame_index": 148062,
+     "composition_ns": 371509209082222,
+     "decoded_bgr_sha256": "5df7e6e99ce426e136cb23c32b0baf064c68cd94dc64d48300041a69155bacc6"
+    },
+    {
+     "frame_index": 149248,
+     "composition_ns": 371519092415160,
+     "decoded_bgr_sha256": "d5b9929349e8c8d55e4c93e0d429979ed5c088b3f6ef0e6a8347df97145212ee"
+    },
+    {
+     "frame_index": 150435,
+     "composition_ns": 371528984081431,
+     "decoded_bgr_sha256": "8553a71ce4db221f9890247ed69a03a6e3f0cfa40c444bbaef5975aebe821ec7"
+    },
+    {
+     "frame_index": 151621,
+     "composition_ns": 371538867414369,
+     "decoded_bgr_sha256": "a4391b4851dceb20d7736b395f82a917bca6bcf08327cc71bac4de9709990ddd"
+    },
+    {
+     "frame_index": 152808,
+     "composition_ns": 371548759080640,
+     "decoded_bgr_sha256": "f6746539616337130a395259229d6e60ef5751654446bb0b00c8c616bc065d7d"
+    }
+   ]
+  },
+  "seg-007": {
+   "suitability": "rejected",
+   "reason": "dead: by rule (the fall into the sea, 0 HP and the 1 s SPECTATING ghost, then the spawn room)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T17:26:35Z",
+   "evidence": "segments-evidence.json 75e34751156ff813 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 152809,
+     "composition_ns": 371548767413973,
+     "decoded_bgr_sha256": "ea88d4d4415727ac21a2c1b4653b21f86ad15c120e886934ddc3634b138798e0"
+    },
+    {
+     "frame_index": 152940,
+     "composition_ns": 371549859080596,
+     "decoded_bgr_sha256": "04d8a83dd04ae446f201c6a0d5d8f8d449034735522efc4848a2f297203acad9"
+    },
+    {
+     "frame_index": 153072,
+     "composition_ns": 371550959080552,
+     "decoded_bgr_sha256": "0f9ba4fce344a5e2ab72ce272e82194b1520b9b46c821e4df61352eb19b082fe"
+    }
+   ]
+  },
+  "seg-008": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: by rule",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T17:26:35Z",
+   "evidence": "segments-evidence.json 75e34751156ff813 review frames + contact sheets",
+   "frames": []
+  },
+  "seg-009": {
+   "suitability": "accepted",
+   "reason": "practice-range play in all 14 inspected frames, from the spawn room after the respawn settle: KOs on Galacta and Luna Snow bots (up to a 10-player KO streak banner); HUD present; no UI key, AFK span or capture gap inside; ends at the last frame before the second AFK span",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T17:26:35Z",
+   "evidence": "segments-evidence.json 75e34751156ff813 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 153073,
+     "composition_ns": 371550967413885,
+     "decoded_bgr_sha256": "4ff0bc231d931c87d6b02906879c62225edf60a032d075a06a5bfd06352f1172"
+    },
+    {
+     "frame_index": 154250,
+     "composition_ns": 371560775746826,
+     "decoded_bgr_sha256": "881bf12982357a52416d2bc32b13df68fa8c2e8ba0086ccf2aa5d2031d37b2c7"
+    },
+    {
+     "frame_index": 155428,
+     "composition_ns": 371570592413100,
+     "decoded_bgr_sha256": "3afe6f4e47509a9cd06531865fd9de489498652e1dbdbe3d8326218dc15c2661"
+    },
+    {
+     "frame_index": 156605,
+     "composition_ns": 371580400746041,
+     "decoded_bgr_sha256": "a7f2c3711155f4fc0f564fab4437b1c53d72721afb9a8745b7bf3c4a8c90db09"
+    },
+    {
+     "frame_index": 157783,
+     "composition_ns": 371590217412315,
+     "decoded_bgr_sha256": "a59480f396f6cc8f82b1788e9edb65490fa218da14242815b3f3473c9950bd99"
+    },
+    {
+     "frame_index": 158960,
+     "composition_ns": 371600025745256,
+     "decoded_bgr_sha256": "c54fd3aeaea6626fc0dd5d884c6b505ba86da07b4e8d56dc3539e86abcc2a64c"
+    },
+    {
+     "frame_index": 160138,
+     "composition_ns": 371609842411530,
+     "decoded_bgr_sha256": "faa72992bc0e4b7857538ec4185b154bbed893effb5ae0c12aa8988a1321086f"
+    },
+    {
+     "frame_index": 161315,
+     "composition_ns": 371619650744471,
+     "decoded_bgr_sha256": "2e6aa61ceae22a261da08d08dde06c2b69bf02c3d9cfd83fc754301f435906dc"
+    },
+    {
+     "frame_index": 162493,
+     "composition_ns": 371629467410745,
+     "decoded_bgr_sha256": "5e2ad5d1d0487f2497835ae99601fae3fa3a4128db29e854fba2ba144444998e"
+    },
+    {
+     "frame_index": 163670,
+     "composition_ns": 371639275743686,
+     "decoded_bgr_sha256": "3d152e2d510e9134f2038ec3c1b97b8e35c9f8dcbda71b255ef58d194e1676d6"
+    },
+    {
+     "frame_index": 164848,
+     "composition_ns": 371649092409960,
+     "decoded_bgr_sha256": "93a60d16f4129becb46a58b2c3da3cf3bb0585b7741121d340c53fb65d11d129"
+    },
+    {
+     "frame_index": 166025,
+     "composition_ns": 371658900742901,
+     "decoded_bgr_sha256": "eac231a9d0fd704dcc382fcb9f4fa6fd2fb51232c1927caa0b907c90fdef73d3"
+    },
+    {
+     "frame_index": 167203,
+     "composition_ns": 371668717409175,
+     "decoded_bgr_sha256": "8086b80215d1d0e56026a5f652755467310eb11a65561b6859e8774884a5b5ac"
+    },
+    {
+     "frame_index": 168381,
+     "composition_ns": 371678534075449,
+     "decoded_bgr_sha256": "4fea4e573b6b45a6341c304e19dd28107cf472139716f1bfdd23420df729bccb"
+    }
+   ]
+  },
+  "seg-010": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: by rule",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T17:26:35Z",
+   "evidence": "segments-evidence.json 75e34751156ff813 review frames + contact sheets",
+   "frames": []
+  },
+  "seg-011": {
+   "suitability": "rejected",
+   "reason": "afk: by rule (56 s without control input: James stepping away; Spider-Man standing still, with a Windows 'output device has changed' banner over the game on the inspected frames 170625 and 171747)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T17:26:35Z",
+   "evidence": "segments-evidence.json 75e34751156ff813 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 168382,
+     "composition_ns": 371678542408782,
+     "decoded_bgr_sha256": "488a2925602100c007dd6d05a1a29a9988726fd84e498ef6112e423a5f2d5546"
+    },
+    {
+     "frame_index": 169503,
+     "composition_ns": 371687884075075,
+     "decoded_bgr_sha256": "438e5624e4fc7eb59b8abaf71004495ee579503d7cf0dbc213a1c8aeb8c592f8"
+    },
+    {
+     "frame_index": 170625,
+     "composition_ns": 371697234074701,
+     "decoded_bgr_sha256": "07cec9da562a6e6e9600fb6fe7fa4ea586de84da73102307b6116e59aeb8f24d"
+    },
+    {
+     "frame_index": 171747,
+     "composition_ns": 371706584074327,
+     "decoded_bgr_sha256": "f66fc78db120021b1b9173d3aa6426f2a7c133afb327d8ef0b51f8000c022e4f"
+    },
+    {
+     "frame_index": 172868,
+     "composition_ns": 371715925740620,
+     "decoded_bgr_sha256": "10e39d6fc0b8df375a92d6a14c570ca53a18869495e33a58c285d3e32a64d753"
+    },
+    {
+     "frame_index": 173990,
+     "composition_ns": 371725275740246,
+     "decoded_bgr_sha256": "587d879e08f3849dab60bacbabffde998a20325dccba11f3da2adda8d3341fc5"
+    },
+    {
+     "frame_index": 175112,
+     "composition_ns": 371734625739872,
+     "decoded_bgr_sha256": "2fd948d22b5339b511bd99c4ba36b63c32705f8681cc199de850ae355b776e9e"
+    }
+   ]
+  },
+  "seg-012": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: by rule",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T17:26:35Z",
+   "evidence": "segments-evidence.json 75e34751156ff813 review frames + contact sheets",
+   "frames": []
+  },
+  "seg-013": {
+   "suitability": "accepted",
+   "reason": "continuous practice-range play in all 47 inspected frames: swings, wall runs and fights over the lanes, terraces and sea cliffs; KOs up to HEXA; the ultimate used; HUD present with cooldowns counting down; no UI key, AFK span or capture gap inside; ends at the last alive frame (f229320, 250 HP, falling off the map edge against the sky)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T17:26:35Z",
+   "evidence": "segments-evidence.json 75e34751156ff813 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 175113,
+     "composition_ns": 371734634073205,
+     "decoded_bgr_sha256": "39203338f8ea5fa38d4f762e93baea944892c6617a24786f07200162eac29a0e"
+    },
+    {
+     "frame_index": 176291,
+     "composition_ns": 371744450739479,
+     "decoded_bgr_sha256": "6a14518fcf711692fa2f3df184456a929bfecaea95eced77fe698ba61dc583ec"
+    },
+    {
+     "frame_index": 177469,
+     "composition_ns": 371754267405753,
+     "decoded_bgr_sha256": "92f445776ff9483e15848e63edba3f11da785917028afaa7ac7e598b0993758e"
+    },
+    {
+     "frame_index": 178648,
+     "composition_ns": 371764092405360,
+     "decoded_bgr_sha256": "83c4343dd84844d383f0a1cbddfee7de82bb975bcbf19d5ad56867b13ecead05"
+    },
+    {
+     "frame_index": 179826,
+     "composition_ns": 371773909071634,
+     "decoded_bgr_sha256": "4b3b7e1ad19b5ac3fb170984f96c577ea44de3d9faf24d9152d65c3b8b5d5e2b"
+    },
+    {
+     "frame_index": 181005,
+     "composition_ns": 371783734071241,
+     "decoded_bgr_sha256": "cee2647928c3c80375cdcd2ff777132b16e26c10e0253b908148176ab7d2d9dc"
+    },
+    {
+     "frame_index": 182183,
+     "composition_ns": 371793550737515,
+     "decoded_bgr_sha256": "293c098d08e99270dc9aad5205141330f38ccfcc20239090880c2c57d3886423"
+    },
+    {
+     "frame_index": 183361,
+     "composition_ns": 371803367403789,
+     "decoded_bgr_sha256": "cbc51bdd8029201fe54ffb085d548ef79fcf8c264a16df471b6492b34a2418d5"
+    },
+    {
+     "frame_index": 184540,
+     "composition_ns": 371813192403396,
+     "decoded_bgr_sha256": "5db59bc1016d2ab6d6cb72dfd64a54f8e02f3e543b3705257c02dee99ba09eb8"
+    },
+    {
+     "frame_index": 185718,
+     "composition_ns": 371823009069670,
+     "decoded_bgr_sha256": "20e0169537d341101ce13730fe419b8edee5fa8842687aa3e1c5cf45f1cd523d"
+    },
+    {
+     "frame_index": 186897,
+     "composition_ns": 371832834069277,
+     "decoded_bgr_sha256": "9d6723d938c3ca9bb28eb68b5cc2cb4c326cc780dd424021d2125bce6e74f8f6"
+    },
+    {
+     "frame_index": 188075,
+     "composition_ns": 371842650735551,
+     "decoded_bgr_sha256": "11008790846e39aed79ff2fc21f5d20565b49dd5d98a6adc64c81e2e02f50d03"
+    },
+    {
+     "frame_index": 189253,
+     "composition_ns": 371852467401825,
+     "decoded_bgr_sha256": "f4505b399013078293815abed87972a1460f497d743882d054698ab59a5da542"
+    },
+    {
+     "frame_index": 190432,
+     "composition_ns": 371862292401432,
+     "decoded_bgr_sha256": "35d892b5d5e8bac0253d4091447f3c2d061c56056d1e1a16b594c2a2d3524c88"
+    },
+    {
+     "frame_index": 191610,
+     "composition_ns": 371872109067706,
+     "decoded_bgr_sha256": "c216481ef0c1b88001fe089b5af08cb5b56f0f0063344b4a076a513121bd59ec"
+    },
+    {
+     "frame_index": 192789,
+     "composition_ns": 371881934067313,
+     "decoded_bgr_sha256": "31abcae705c35e54f1b9e8242600238f7f0cf985d10a69492028208feea503b9"
+    },
+    {
+     "frame_index": 193967,
+     "composition_ns": 371891750733587,
+     "decoded_bgr_sha256": "fb0c928d64b0311d78be95160bfff521b26342600995b4bdd03e2e966e4acbe1"
+    },
+    {
+     "frame_index": 195146,
+     "composition_ns": 371901575733194,
+     "decoded_bgr_sha256": "4b03fe4d8ffa49d15af79d7db9feaa20fb51934cb0841a64c189afaf9d7aaeff"
+    },
+    {
+     "frame_index": 196324,
+     "composition_ns": 371911392399468,
+     "decoded_bgr_sha256": "4a6289f9290ae109d3e0bbebf0f02f83e193d80e88644af5f8564facfe384a20"
+    },
+    {
+     "frame_index": 197502,
+     "composition_ns": 371921209065742,
+     "decoded_bgr_sha256": "b88f77111249190f475cb4c34312cc25356fa2e64eabc9a99e9e5b1f98644a73"
+    },
+    {
+     "frame_index": 198681,
+     "composition_ns": 371931034065349,
+     "decoded_bgr_sha256": "6e6b6ee2ec5c5022a92526b847dc6a0e088e12b539edad74ca0d94868a0d0389"
+    },
+    {
+     "frame_index": 199859,
+     "composition_ns": 371940850731623,
+     "decoded_bgr_sha256": "e426b724dab3284f98963f0114b933215f9994362777bc15c13f06440781003f"
+    },
+    {
+     "frame_index": 201038,
+     "composition_ns": 371950675731230,
+     "decoded_bgr_sha256": "f9d83d1fbe7780eb4291db350cfd58c88487e2b53747098d84e31300dff26ba1"
+    },
+    {
+     "frame_index": 202216,
+     "composition_ns": 371960492397504,
+     "decoded_bgr_sha256": "f94cff35c1ea95b5266a94e5dde51fe1d1dab668dd70b858b8881324d2b893e7"
+    },
+    {
+     "frame_index": 203394,
+     "composition_ns": 371970309063778,
+     "decoded_bgr_sha256": "33b1fea74ff92612a3001d4acc4a80fb178d01d392b4ff8917a9fd5cc11205ea"
+    },
+    {
+     "frame_index": 204573,
+     "composition_ns": 371980134063385,
+     "decoded_bgr_sha256": "299729cae6711678dfd4cd0b304ffac04563551f3534745c97144ac2fb96759d"
+    },
+    {
+     "frame_index": 205751,
+     "composition_ns": 371989950729659,
+     "decoded_bgr_sha256": "23f9ea3ba58cc39d65872e01f9a4d784b0c67238d9c75f2fbd09b5afa3d43fe0"
+    },
+    {
+     "frame_index": 206930,
+     "composition_ns": 371999775729266,
+     "decoded_bgr_sha256": "bc430a1dd4f96853a30ea330b002c803337a29895c3f247ce8446e4deffe264c"
+    },
+    {
+     "frame_index": 208108,
+     "composition_ns": 372009592395540,
+     "decoded_bgr_sha256": "e7738e55e35b5db5b1ff4fb9f93c2dca5fbebba570f9286f8a1bf9225a2085d3"
+    },
+    {
+     "frame_index": 209286,
+     "composition_ns": 372019409061814,
+     "decoded_bgr_sha256": "8f250dc9046e549775a35d24f0282c7069346cfc8a737f9d24962ed28e62c579"
+    },
+    {
+     "frame_index": 210465,
+     "composition_ns": 372029234061421,
+     "decoded_bgr_sha256": "4fe587e78caa5e721ad7d38dc62f866d1a2614d8a39165703ea6f092f88e3ada"
+    },
+    {
+     "frame_index": 211643,
+     "composition_ns": 372039050727695,
+     "decoded_bgr_sha256": "786a0cf42a527afd13450460fc8c7ea170d3868a3b7c9b17b88cb73c9365e88e"
+    },
+    {
+     "frame_index": 212822,
+     "composition_ns": 372048875727302,
+     "decoded_bgr_sha256": "491457460ded2a8add86905f7d4111a0a1f1e9ca9d8e91965205bf08dfd676e1"
+    },
+    {
+     "frame_index": 214000,
+     "composition_ns": 372058692393576,
+     "decoded_bgr_sha256": "2571cef2c1dde0959066b3b638e507edc7be7e5b71b38e836d2f2a48c130b0d0"
+    },
+    {
+     "frame_index": 215179,
+     "composition_ns": 372068517393183,
+     "decoded_bgr_sha256": "c802d7875f7b612cbb61719cc2cda39070a6d5f618ece5ecb474718bc1322d6a"
+    },
+    {
+     "frame_index": 216357,
+     "composition_ns": 372078334059457,
+     "decoded_bgr_sha256": "05c7e85bf2b9fb2d545bc0899daef0f0683561ec3b036b7b7b24fa8d2c069995"
+    },
+    {
+     "frame_index": 217535,
+     "composition_ns": 372088150725731,
+     "decoded_bgr_sha256": "0daaef62df0fe9b09d028606545ffd4fd0d5ce76149d5cf55b0a15f3e0932ee9"
+    },
+    {
+     "frame_index": 218714,
+     "composition_ns": 372097975725338,
+     "decoded_bgr_sha256": "257955c7e9dba211a6a445220ef69acd8cdf5cb67660aaaa106db6838a587f3d"
+    },
+    {
+     "frame_index": 219892,
+     "composition_ns": 372107792391612,
+     "decoded_bgr_sha256": "7463d11d0c3373fd6a0995627224260d351c8edb47f5c5a7c9a22a968e87487f"
+    },
+    {
+     "frame_index": 221071,
+     "composition_ns": 372117617391219,
+     "decoded_bgr_sha256": "94ad17625391627b17b53228372b096ab39255ded305811c5eee08c8189a395f"
+    },
+    {
+     "frame_index": 222249,
+     "composition_ns": 372127434057493,
+     "decoded_bgr_sha256": "adce96629ffe988842697772f42a57d11580b1898f631286ce1a7ff96e874237"
+    },
+    {
+     "frame_index": 223427,
+     "composition_ns": 372137250723767,
+     "decoded_bgr_sha256": "0c28c9c1d575ff67643e8e87bab456355a94c34524f5152fd6a4cae5b12b88f9"
+    },
+    {
+     "frame_index": 224606,
+     "composition_ns": 372147075723374,
+     "decoded_bgr_sha256": "8370fa7f2ac01d11df0cb3c8b6b608bf8b1aa1231679ab72d3bfd032a32e29e8"
+    },
+    {
+     "frame_index": 225784,
+     "composition_ns": 372156892389648,
+     "decoded_bgr_sha256": "c9e94e685e672a2fc280d469169a196bd9ff1e4b1f99846ce4bcb2c3dadcb601"
+    },
+    {
+     "frame_index": 226963,
+     "composition_ns": 372166717389255,
+     "decoded_bgr_sha256": "964a2c074e5f85c1c9cd513e26dc57fc1451377cd617ea6b9dc1189a7177aca9"
+    },
+    {
+     "frame_index": 228141,
+     "composition_ns": 372176534055529,
+     "decoded_bgr_sha256": "23dfd777c6f72307ec79a24a73d8e79f16586b458d8336ec748364f4a46f3d47"
+    },
+    {
+     "frame_index": 229320,
+     "composition_ns": 372186359055136,
+     "decoded_bgr_sha256": "67b35f9dce3e6ec6e38eb68adbfd7b0ecd2e0540e0b7c32798a6a90d257cbc31"
+    }
+   ]
+  },
+  "seg-014": {
+   "suitability": "rejected",
+   "reason": "dead: by rule (the fall off the map, the 1 s respawn ghost in the spawn room, then the spawn room)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T17:26:35Z",
+   "evidence": "segments-evidence.json 75e34751156ff813 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 229321,
+     "composition_ns": 372186367388469,
+     "decoded_bgr_sha256": "cb506a84f547c8e9cf757ed54859b8d383265076de795105d8afd3215bf8ced3"
+    },
+    {
+     "frame_index": 229452,
+     "composition_ns": 372187459055092,
+     "decoded_bgr_sha256": "d57adf339fb2871b38efd05b65c276dd64486bcd4f1299637aaa7dbf5e9940b6"
+    },
+    {
+     "frame_index": 229584,
+     "composition_ns": 372188559055048,
+     "decoded_bgr_sha256": "c9029f06cbdc8ea19075298046f6f4a09718bcadb4e3bedf1932b5f41a085213"
+    }
+   ]
+  },
+  "seg-015": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: by rule",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T17:26:35Z",
+   "evidence": "segments-evidence.json 75e34751156ff813 review frames + contact sheets",
+   "frames": []
+  },
+  "seg-016": {
+   "suitability": "accepted",
+   "reason": "continuous practice-range play in all 29 inspected frames from the spawn room after the respawn settle: swings, wall runs and fights on the lanes and terraces; KOs up to HEXA; HUD present; no UI key, AFK span or capture gap inside; ends at the closing Alt press",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T17:26:35Z",
+   "evidence": "segments-evidence.json 75e34751156ff813 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 229585,
+     "composition_ns": 372188567388381,
+     "decoded_bgr_sha256": "c6ba5d7f97703929f32a40ebe762be8d6d911e2bc1bc8e323b4fe485078a6f87"
+    },
+    {
+     "frame_index": 230782,
+     "composition_ns": 372198542387982,
+     "decoded_bgr_sha256": "79fb5544435331fc357231fa9b77fdf28ed46b1b9175768a1b353cf4d8b4e1b7"
+    },
+    {
+     "frame_index": 231980,
+     "composition_ns": 372208525720916,
+     "decoded_bgr_sha256": "8df80becac6f2fd1454b7cc23a765e8be529596236ab86ccbd39b1d0e4d2ac6b"
+    },
+    {
+     "frame_index": 233178,
+     "composition_ns": 372218509053850,
+     "decoded_bgr_sha256": "d2a4922383cca7cc3628409f1e23339c05171c363dd677504f8d9658c8d12ca3"
+    },
+    {
+     "frame_index": 234376,
+     "composition_ns": 372228492386784,
+     "decoded_bgr_sha256": "8a4ca4673099135fc771205553176786bc7dc0aecb7fd1ad5729ef0c3cadc5c4"
+    },
+    {
+     "frame_index": 235574,
+     "composition_ns": 372238475719718,
+     "decoded_bgr_sha256": "68c4e8d79de80f62d265a85235ec2f2f74ef746fc700b98186d700de5d694a48"
+    },
+    {
+     "frame_index": 236772,
+     "composition_ns": 372248459052652,
+     "decoded_bgr_sha256": "076f41224fb6c63f3100093154b51154088c697a41ac18520651d310e822f7b5"
+    },
+    {
+     "frame_index": 237970,
+     "composition_ns": 372258442385586,
+     "decoded_bgr_sha256": "bf3f71c2d51879bd8e5af287de91e62789f906f5eccda55f614e045ab5a18cb1"
+    },
+    {
+     "frame_index": 239168,
+     "composition_ns": 372268425718520,
+     "decoded_bgr_sha256": "2bac08be08ac1d0fd3062de21db609d616b3f8e4601adcabc19def54f92fc5c7"
+    },
+    {
+     "frame_index": 240366,
+     "composition_ns": 372278409051454,
+     "decoded_bgr_sha256": "3821a8c755d9c6d0e4dc4f30cccdab20e06a32457605e2cae1bafe90cd3d2c76"
+    },
+    {
+     "frame_index": 241564,
+     "composition_ns": 372288392384388,
+     "decoded_bgr_sha256": "105b42937dda422c216459d7008eca55eaeedff2aa7b7a67d8e524fbe4500418"
+    },
+    {
+     "frame_index": 242762,
+     "composition_ns": 372298375717322,
+     "decoded_bgr_sha256": "a695e2eb3cfb4bd02c2d3e6c1e5d1d26fb7eb89f57da3bcdefc6d4dfc5cc7ab1"
+    },
+    {
+     "frame_index": 243960,
+     "composition_ns": 372308359050256,
+     "decoded_bgr_sha256": "e6c3d4064f871ae8d49d49b006bdfe32b8efb7a9369b93c7c308691490757bb8"
+    },
+    {
+     "frame_index": 245158,
+     "composition_ns": 372318342383190,
+     "decoded_bgr_sha256": "30021dd981fa8562cd08ee8f0ea1ce088060b1a12327836ee7d9f1b36c89ef5b"
+    },
+    {
+     "frame_index": 246356,
+     "composition_ns": 372328325716124,
+     "decoded_bgr_sha256": "3ce7961d079a7d21f725b74552d46fdb989d24847fa3b32bb039d492e3489fdf"
+    },
+    {
+     "frame_index": 247554,
+     "composition_ns": 372338309049058,
+     "decoded_bgr_sha256": "cdab38b4ec7dc37bcb0fcf9a6118ff44560fff9f020f18a95d60f6a2636d1476"
+    },
+    {
+     "frame_index": 248752,
+     "composition_ns": 372348292381992,
+     "decoded_bgr_sha256": "a772bf5bf5c3a10df901017d84bd82220400edf34958be46ff6e0bb77425c1de"
+    },
+    {
+     "frame_index": 249950,
+     "composition_ns": 372358275714926,
+     "decoded_bgr_sha256": "2601f3aa527895dff5f308bdad3554fc22c58720052b4fae82bfec467a627294"
+    },
+    {
+     "frame_index": 251148,
+     "composition_ns": 372368259047860,
+     "decoded_bgr_sha256": "1a9bd3c97308c599d860442fe7d5022626a764e3905e588e458653297c689121"
+    },
+    {
+     "frame_index": 252346,
+     "composition_ns": 372378242380794,
+     "decoded_bgr_sha256": "b6e7062b6e0da5db8f385e823eb6497c8d5ebb3ef40cfe7cf8b1e5118dd6fed5"
+    },
+    {
+     "frame_index": 253544,
+     "composition_ns": 372388225713728,
+     "decoded_bgr_sha256": "4ab8150dd8dd363ab23252112946cdefa8eead35d7d08f3607103e6e469bd45e"
+    },
+    {
+     "frame_index": 254742,
+     "composition_ns": 372398209046662,
+     "decoded_bgr_sha256": "b419b0b8da6db8fa454b9945a08164b7e461d9dfe019920e7c9d5233cea1c94a"
+    },
+    {
+     "frame_index": 255940,
+     "composition_ns": 372408192379596,
+     "decoded_bgr_sha256": "ec625b43d8a6b6643d8c999e2ef4741da12d7aae42e4572a626b7320f3295d27"
+    },
+    {
+     "frame_index": 257138,
+     "composition_ns": 372418175712530,
+     "decoded_bgr_sha256": "86d944bab03f4b867e16453f83cb70b27c06ba0e94f0f4eae78413aef6be55cf"
+    },
+    {
+     "frame_index": 258336,
+     "composition_ns": 372428159045464,
+     "decoded_bgr_sha256": "0d969f0863c1fc2b4f50844954ddd97b4ca557b27515870487ed6aaaccffc984"
+    },
+    {
+     "frame_index": 259534,
+     "composition_ns": 372438142378398,
+     "decoded_bgr_sha256": "03a770d14b31f9a42f4f2c5d7c5dff2d7d013a1387f579f83bcd3939b6988d98"
+    },
+    {
+     "frame_index": 260732,
+     "composition_ns": 372448125711332,
+     "decoded_bgr_sha256": "464dd9daf00f1d7f898c77d8c0ca1658f24857d3b0143bf0ca247631fe022365"
+    },
+    {
+     "frame_index": 261930,
+     "composition_ns": 372458109044266,
+     "decoded_bgr_sha256": "67486cba27b2923734454ea2f8ef963ba39b56e063421d3bcd878e93012e4290"
+    },
+    {
+     "frame_index": 263128,
+     "composition_ns": 372468092377200,
+     "decoded_bgr_sha256": "a2d3c2a310cdbde6d66cca943c9cd5adae90e4d48eea0a06f4ab800e0e213b35"
+    }
+   ]
+  },
+  "seg-017": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: by rule",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T17:26:35Z",
+   "evidence": "segments-evidence.json 75e34751156ff813 review frames + contact sheets",
+   "frames": []
+  },
+  "seg-018": {
+   "suitability": "rejected",
+   "reason": "ui_key (Alt, leaving the game): by rule",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T17:26:35Z",
+   "evidence": "segments-evidence.json 75e34751156ff813 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 263129,
+     "composition_ns": 372468100710533,
+     "decoded_bgr_sha256": "baf1a2cb53d0dda9b9360ad0997752dd26f6a1afb48e34b1acecf1470f6c824b"
+    },
+    {
+     "frame_index": 263138,
+     "composition_ns": 372468175710530,
+     "decoded_bgr_sha256": "fa86bca4fd6c7b80e7e0695c314972371ad8d29ff47ec4b732d4cbafee929d1b"
+    },
+    {
+     "frame_index": 263147,
+     "composition_ns": 372468250710527,
+     "decoded_bgr_sha256": "c0f84f54741ce2443d506a07bc0c771622c73ef24ecc24f4ce3f5f569ac5625f"
+    }
+   ]
+  }
+ }
+}

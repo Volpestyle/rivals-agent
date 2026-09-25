@@ -1,0 +1,248 @@
+{
+ "session": "20260925T025230-605Z-7804-2",
+ "segments_evidence_sha256": "b7d89667a92e988a370de213d6ae8776ac31492fc9f6f60ca17cd73002e80fbd",
+ "reviewer": "admission-owner",
+ "reviewed_at": "2026-09-25T16:03:37Z",
+ "role": "owner inspection; assembly additionally requires the independent per-session review (R5)",
+ "verdicts": {
+  "seg-000": {
+   "suitability": "rejected",
+   "reason": "focus_transition: by rule",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T16:03:37Z",
+   "evidence": "segments-evidence.json b7d89667a92e988a review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 110,
+     "composition_ns": 372626450704199,
+     "decoded_bgr_sha256": "5a086793126c9294f3d1981703d1645418317240063cefee8d23b4addd1b051a"
+    },
+    {
+     "frame_index": 124,
+     "composition_ns": 372626567370861,
+     "decoded_bgr_sha256": "853dd13638784ea51be91c34efa19fbfc3855b040f8b0811b4b6c598fba8715a"
+    },
+    {
+     "frame_index": 139,
+     "composition_ns": 372626692370856,
+     "decoded_bgr_sha256": "e868fcacb220d4b529b17c008db88db8f0fb524a9a542ef8b8e2de26de656c02"
+    }
+   ]
+  },
+  "seg-001": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: by rule",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T16:03:37Z",
+   "evidence": "segments-evidence.json b7d89667a92e988a review frames + contact sheets",
+   "frames": []
+  },
+  "seg-002": {
+   "suitability": "accepted",
+   "reason": "continuous practice-range play in all 19 inspected frames: traversal, web swings and wall runs across the courtyard, lanes, terraces and sea cliffs; engagements with the Galacta bots (KO, DOUBLE, TRIPLE and QUAD banners); HUD present throughout with ability cooldowns counting down (normal regime); Simple Swing presses are ordinary data (lead, 2026-09-25); no UI key, AFK span or capture gap inside; ends at the last alive frame (21144/21145: clinging to a sea cliff) before the death",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T16:03:37Z",
+   "evidence": "segments-evidence.json b7d89667a92e988a review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 140,
+     "composition_ns": 372626700704189,
+     "decoded_bgr_sha256": "c04723ee4e2accdd9edcfb6976af9b6b1e1e50681dccde2efe69a4ef9f157f9c"
+    },
+    {
+     "frame_index": 1306,
+     "composition_ns": 372636417370467,
+     "decoded_bgr_sha256": "3f18bf1447e4c09a497fbc6f4abd39da53d9d28e0dc3879596649db647efbb0e"
+    },
+    {
+     "frame_index": 2473,
+     "composition_ns": 372646142370078,
+     "decoded_bgr_sha256": "80dcb8f770e9b4b16cb7f7bebea2d3353b2c1645f98df9c55ab494cbcdda4a62"
+    },
+    {
+     "frame_index": 3640,
+     "composition_ns": 372655867369689,
+     "decoded_bgr_sha256": "08047e7d6d21865f8858836c28791b68614ba246508860bc6f2237ffab486441"
+    },
+    {
+     "frame_index": 4807,
+     "composition_ns": 372665592369300,
+     "decoded_bgr_sha256": "aee9cc9d25a8c50808f13e4134ea1c3ef82f9e8ba8a59dedad3b24f310bec7ae"
+    },
+    {
+     "frame_index": 5974,
+     "composition_ns": 372675317368911,
+     "decoded_bgr_sha256": "24882c398c7a1bc103bb5abe9fe44b0899b35d9d21257cd9b41044b857ed21e1"
+    },
+    {
+     "frame_index": 7141,
+     "composition_ns": 372685042368522,
+     "decoded_bgr_sha256": "c4f1ec7798abe157c6f8d2d82f72aa80a5f53ff83409c90b32fa222340ba1ab7"
+    },
+    {
+     "frame_index": 8308,
+     "composition_ns": 372694767368133,
+     "decoded_bgr_sha256": "acc9b1ece2a8e482c4a8d19ae17e26fb0f9c7c96e4ef74aa8362fdd15acb22cc"
+    },
+    {
+     "frame_index": 9475,
+     "composition_ns": 372704492367744,
+     "decoded_bgr_sha256": "1cbb00759002aca1e6f2269ec23680991fef4b9f488b637bf0d3e947bf4116ea"
+    },
+    {
+     "frame_index": 10642,
+     "composition_ns": 372714217367355,
+     "decoded_bgr_sha256": "3d9fa3f226c332cfcc64a0128a466789470fcd302abc97f0969a901a2e4b0824"
+    },
+    {
+     "frame_index": 11808,
+     "composition_ns": 372723934033633,
+     "decoded_bgr_sha256": "dbe8031084d56f9d6705921903790507b3845eadcf9b0bade7f0572cc10efd5f"
+    },
+    {
+     "frame_index": 12975,
+     "composition_ns": 372733659033244,
+     "decoded_bgr_sha256": "9e52946ae00ab36658a909eb2a1fdc3dc0acda9ddcb9fb062a8ffe2d448a9a4f"
+    },
+    {
+     "frame_index": 14142,
+     "composition_ns": 372743384032855,
+     "decoded_bgr_sha256": "b9589386d2c66de92975f122b6e7823bf2c014068a3fbcf9d09d7e12fda02830"
+    },
+    {
+     "frame_index": 15309,
+     "composition_ns": 372753109032466,
+     "decoded_bgr_sha256": "c787bdc868a56dcc4b934d9b79b4b5f15e048ac412b371192a1aebc7db5820d2"
+    },
+    {
+     "frame_index": 16476,
+     "composition_ns": 372762834032077,
+     "decoded_bgr_sha256": "06703a843ad367de9e81c147d620a174a5d25fe45dcdb42210fe27c89d09485f"
+    },
+    {
+     "frame_index": 17643,
+     "composition_ns": 372772559031688,
+     "decoded_bgr_sha256": "38ed266010fc1900c963b512d1c25c671e5234dff343cc917a3822e47fdd7aed"
+    },
+    {
+     "frame_index": 18810,
+     "composition_ns": 372782284031299,
+     "decoded_bgr_sha256": "9847b4f3be13a5bfe98f4903cac6f76f490d084615a59e2b3a4890c853b71930"
+    },
+    {
+     "frame_index": 19977,
+     "composition_ns": 372792009030910,
+     "decoded_bgr_sha256": "43b1ffd38d4372991bf17d648ba38800325d5583d4d2e63e18cb46202a26075b"
+    },
+    {
+     "frame_index": 21144,
+     "composition_ns": 372801734030521,
+     "decoded_bgr_sha256": "8d6a299d8d85b342317f1fda51711018e37d589da637e739bf032922ee51b250"
+    }
+   ]
+  },
+  "seg-003": {
+   "suitability": "rejected",
+   "reason": "dead: by rule; the last alive frame on the sea cliff (21145), the respawn ghost with its countdown (21276), then the spawn room (21408)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T16:03:37Z",
+   "evidence": "segments-evidence.json b7d89667a92e988a review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 21145,
+     "composition_ns": 372801742363854,
+     "decoded_bgr_sha256": "d1f9d32179a6d56191d8c7cfd352976b72680f67d813066483923fe9ea062375"
+    },
+    {
+     "frame_index": 21276,
+     "composition_ns": 372802834030477,
+     "decoded_bgr_sha256": "8ab97021dd845ac3dd51cdc9e5cda4e9cb3614fe168ecf39d2e2dabb2b48cd2a"
+    },
+    {
+     "frame_index": 21408,
+     "composition_ns": 372803934030433,
+     "decoded_bgr_sha256": "080b034d2c8e9c084633d7af819b752fe0bf341c99be4ff9125561087065c4be"
+    }
+   ]
+  },
+  "seg-004": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: by rule",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T16:03:37Z",
+   "evidence": "segments-evidence.json b7d89667a92e988a review frames + contact sheets",
+   "frames": []
+  },
+  "seg-005": {
+   "suitability": "accepted",
+   "reason": "practice-range play from the spawn room after the respawn settle in all 6 inspected frames: running out of spawn, web swings over the lanes, KOs on Galacta bots and a Luna Snow bot (KO and DOUBLE banners); HUD present with cooldowns counting down; no UI key, AFK span or capture gap inside; ends at the closing Alt press",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T16:03:37Z",
+   "evidence": "segments-evidence.json b7d89667a92e988a review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 21409,
+     "composition_ns": 372803942363766,
+     "decoded_bgr_sha256": "f6e6edeb7495fd14e51309d67cd3750c861a5a86927e4fe55b17cba0cb80c6ff"
+    },
+    {
+     "frame_index": 22484,
+     "composition_ns": 372812900696741,
+     "decoded_bgr_sha256": "650f11d7897ccef43975a03cf3aa49b47a772b67d34acdf2a1f1492d5c035e6a"
+    },
+    {
+     "frame_index": 23559,
+     "composition_ns": 372821859029716,
+     "decoded_bgr_sha256": "b599f7cb5aa3a85295345217f285b920afe39903367e7e3bd1034240e7ef18c3"
+    },
+    {
+     "frame_index": 24635,
+     "composition_ns": 372830825696024,
+     "decoded_bgr_sha256": "23d2d2873546416f4fd374a93b1841c3fefa0fa04f35654ad864c8b3e043eeeb"
+    },
+    {
+     "frame_index": 25710,
+     "composition_ns": 372839784028999,
+     "decoded_bgr_sha256": "6903d485f4eda55f7ebea3f7a034add5bcf79fff2a2a6a699aed2f6b90d9d64b"
+    },
+    {
+     "frame_index": 26786,
+     "composition_ns": 372848750695307,
+     "decoded_bgr_sha256": "a2b5a69ff28d842b23a4a76a47051a656475498fbc23189d709b32fb7352c4be"
+    }
+   ]
+  },
+  "seg-006": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: by rule",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T16:03:37Z",
+   "evidence": "segments-evidence.json b7d89667a92e988a review frames + contact sheets",
+   "frames": []
+  },
+  "seg-007": {
+   "suitability": "rejected",
+   "reason": "ui_key (Alt, leaving the game): by rule",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T16:03:37Z",
+   "evidence": "segments-evidence.json b7d89667a92e988a review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 26787,
+     "composition_ns": 372848759028640,
+     "decoded_bgr_sha256": "ed4f5560433d9755b8bb2f9c825f98029c6230f41e205428f491968bfd4d7005"
+    },
+    {
+     "frame_index": 26790,
+     "composition_ns": 372848784028639,
+     "decoded_bgr_sha256": "6a81dcf5a9b40a7ec010f9dcb490eff1b9deea89d7ebaa8de26e43e1625f2819"
+    },
+    {
+     "frame_index": 26794,
+     "composition_ns": 372848817361971,
+     "decoded_bgr_sha256": "d49e37cae44c4d8f55e7532f9697bca69248d94e3880ec1878e7c2d4cc27cb96"
+    }
+   ]
+  }
+ }
+}

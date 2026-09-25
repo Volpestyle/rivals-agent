@@ -16,5 +16,9 @@ Minutes are **counted minutes**: focused logged time ∩ accepted segments ∩ g
 | 20260923T203716-726Z-45572-1 | 2026-09-23 | - | - | not_range: 7.4 s HEVC encoder test (anchor holds, hevc-check.md) | - | - | - | - | - | - | - | - |
 | 20260923T204707-487Z-45572-2 | 2026-09-23 | - | - | not_range: settings and calibration take (settings pages, 360-degree turn, pitch sweep) | - | - | - | - | - | - | - | - |
 | 20260923T205528-900Z-45572-3 | 2026-09-23 | 20260923T205528-900Z-45572-3 | train | admitted: assembled: review.json from the owner and independent verdicts, imported, steps file frozen | normal | 11.08 | 11.07 | 11.07 | 0.01 | 0.00 | range: unknown 11.1; approach: unknown 11.1; target: unknown 11.1; resources: unknown 11.1 | `c0687e0fe8e9` |
+| 20260924T232304-170Z-12024-1 | 2026-09-24 | 20260924T232304-170Z-12024-1 | train | admitted: assembled: review.json from the owner and independent verdicts, imported, steps file frozen | normal | 8.80 | 8.77 | 8.76 | 0.04 | 0.00 | range: unknown 8.8; approach: unknown 8.8; target: unknown 8.8; resources: unknown 8.8 | `ccdf62482e72` |
+| 20260925T021320-371Z-7804-1 | 2026-09-24 | 20260925T021320-371Z-7804-1 | train | admitted: assembled: review.json from the owner and independent verdicts, imported, steps file frozen | normal | 36.51 | 34.52 | 34.51 | 1.99 | 0.00 | range: unknown 34.5; approach: unknown 34.5; target: unknown 34.5; resources: unknown 34.5 | `16fabb73285d` |
+| 20260925T025230-605Z-7804-2 | 2026-09-24 | 20260925T025230-605Z-7804-2 | train | admitted: assembled: review.json from the owner and independent verdicts, imported, steps file frozen | normal | 3.71 | 3.66 | 3.66 | 0.04 | 0.00 | range: unknown 3.7; approach: unknown 3.7; target: unknown 3.7; resources: unknown 3.7 | `5617d968ac8f` |
+| 20260925T030045-211Z-7804-3 | 2026-09-24 | - | - | not_range: multi-speed calibration take (four yaw speed classes, pitch sweeps): data/human/calibration/ | - | - | - | - | - | - | - | - |
 
-**normal, train: 47.23 admitted / 47.23 trainable of 180 minutes** (132.77 to go, 4 sessions).
+**normal, train: 94.18 admitted / 94.17 trainable of 180 minutes** (85.82 to go, 7 sessions).

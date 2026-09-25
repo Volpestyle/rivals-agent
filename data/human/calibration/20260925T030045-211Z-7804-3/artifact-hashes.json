@@ -1,0 +1,31 @@
+{
+ "format": "rivals-session-artifact-hashes-v1",
+ "session": "20260925T030045-211Z-7804-3",
+ "kind": "calibration",
+ "version": 1,
+ "files": {
+  "data/human/calibration/20260925T030045-211Z-7804-3/analysis.json": "fbd491fa327ec4003decb628514cde1c78be64ea0ea885eca56423c961363c05",
+  "data/human/calibration/20260925T030045-211Z-7804-3/analyze.py": "f9ffecf8df89eb0511ae47f53c48273f3d3c43b0d7b09a4272c694a09e44b301",
+  "data/human/calibration/20260925T030045-211Z-7804-3/calibration.json": "c84da2f9a132504d445f62061952ca676af754b913f772a5e46a5d54c0c09247",
+  "data/human/calibration/20260925T030045-211Z-7804-3/estimate-meta.json": "abc70a9f3fe136c6283de4f3ed4344eecd127e9438589dc8fdd7efa4046042b3",
+  "data/human/calibration/20260925T030045-211Z-7804-3/estimate.py": "424ce2b3da8769d041945d5d79f6af3abf1504baed3d45fef25176311b81b986",
+  "data/human/calibration/20260925T030045-211Z-7804-3/make_calibration.py": "b5f7510e4b51b8fefa3facb8707a74db2b9a270d55067f52d37070276b4b2283",
+  "data/human/calibration/20260925T030045-211Z-7804-3/pairs.jsonl": "2969e6cb4e0b15b35b32391f8c6604e1d75c91ac21ae28619d22aa2211ce275d",
+  "data/human/calibration/20260925T030045-211Z-7804-3/pitch-runs.json": "93c9833a1b26076c4eef0961acffe912774cb83954ace11864d610723df2a6d0",
+  "data/human/calibration/20260925T030045-211Z-7804-3/pitch.py": "360ee91e08095acb2eddcd17b9464a249aafe0a46ae8ac8b4145d8ebed7d5daa",
+  "data/human/calibration/20260925T030045-211Z-7804-3/recorder-and-anchor.json": "087c9d3632a03edc9b036d1c5cee13a15fab768c5a3862646b509a4457009610",
+  "data/human/calibration/20260925T030045-211Z-7804-3/registry.f36e9e3b5650.json": "f36e9e3b565041cbd719d3d4c6b80033d66a685a599f3b6607e67bab3ee574fb",
+  "data/human/calibration/20260925T030045-211Z-7804-3/rest-features.npz": "ed057c02214b0faf5d0b186e393b73185317a50dc233f31a345a28adacade8a7",
+  "data/human/calibration/20260925T030045-211Z-7804-3/strokes-20260925T030045-211Z-7804-3.json": "e059aa7db59c4bea2ee1ee46575cd542cbf892c5b9420f2fa90c0ba6ce1ad895",
+  "data/human/calibration/20260925T030045-211Z-7804-3/strokes.py": "8b7464206bf35d80047660554501193d3d6e7ddb0ed8f8f5e0374f065a780b49",
+  "data/human/calibration/20260925T030045-211Z-7804-3/verify_recorder.py": "0b9f709e01a0883a506429230c68328c31695f56041532ffddeb0568d701f225"
+ },
+ "external": {
+  "C:/Users/volpe/Videos/2026-09-24 22-00-45.mkv": "ff6b1fa017cb251c599603a7d10f6ddb03ef832c15c71af6270b8c4ff07c0aca",
+  "C:/Users/volpe/Videos/RivalsInput/20260925T030045-211Z-7804-3/metadata.json": "db524b1750888f8787a29d3bf20c9c5e818f20b1a45097a900f5442967ca6c4e",
+  "C:/Users/volpe/Videos/RivalsInput/20260925T030045-211Z-7804-3/inputs.jsonl": "7a76e222299a75dc866557305455a4e23496edc914b2a1d8b7c6e570b6de559b",
+  "C:/Users/volpe/Videos/RivalsInput/20260925T030045-211Z-7804-3/frames.csv": "454a50fe15c1c3910c5f109f2641622b5dc779d0f3f61a87d69f099c2919688e",
+  "data/human/sessions/code-snapshot-2ad0992/manifest.json": "a17ecf847db2b9c2ad021c6e4f2028f44fb81a88049c667eeb157f311878d14d",
+  "data/human/calibration/20260923T204707-487Z-45572-2/calibration.json": "baa49158c9911e0155a2d06883faec00150b297e0a5fe0e8dd46fc86d5310283"
+ }
+}

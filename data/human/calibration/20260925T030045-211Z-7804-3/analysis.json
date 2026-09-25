@@ -1,0 +1,531 @@
+{
+ "session": "20260925T030045-211Z-7804-3",
+ "method": "Yaw gain per speed class and per rate band for the multi-speed calibration take, from estimate.py's output.\n\n    python analyze.py RUN_DIR\n\n1. Per yaw turn (the deliverable's anchor): the camera rotation between the still frame before the turn and the\n   still frame after it (the snapshot Estimator's own rotation fit, `compare`, on the two frames' ORB features) is\n   the turn's excess over one full revolution; degrees = 360 + that excess; gain = degrees / the mouse x counts\n   between the two frames. Both frames are still, so display latency does not enter. Adjacent still frames are\n   compared too, as a control (it must read ~0).\n2. Per frame pair (the curve): estimated yaw against the counts over the same interval shifted by the display lag;\n   the lag is the one maximising the yaw-vs-counts correlation on the turns. Pairs are banded by their count rate.\n   The estimator's scale is checked against step 1 (sum of its per-pair yaw over each turn vs 360 + excess).\n3. Pitch, reported only: per-pair pitch against y counts (up positive = -dy), with clamped pairs (camera pitch still,\n   counts still coming) shown, not hidden.\n",
+ "estimator": {
+  "focal": 465.0,
+  "width": 1280,
+  "snapshot": "code-snapshot-2ad0992"
+ },
+ "lag": {
+  "best_ms": 5,
+  "corr": 0.9372,
+  "grid_ms": [
+   -50,
+   200,
+   5
+  ],
+  "curve": [
+   [
+    -50,
+    0.9031
+   ],
+   [
+    -45,
+    0.9034
+   ],
+   [
+    -40,
+    0.9171
+   ],
+   [
+    -35,
+    0.9041
+   ],
+   [
+    -30,
+    0.918
+   ],
+   [
+    -25,
+    0.934
+   ],
+   [
+    -20,
+    0.9199
+   ],
+   [
+    -15,
+    0.9169
+   ],
+   [
+    -10,
+    0.9075
+   ],
+   [
+    -5,
+    0.9289
+   ],
+   [
+    0,
+    0.9321
+   ],
+   [
+    5,
+    0.9372
+   ],
+   [
+    10,
+    0.9316
+   ],
+   [
+    15,
+    0.9339
+   ],
+   [
+    20,
+    0.9226
+   ],
+   [
+    25,
+    0.9133
+   ],
+   [
+    30,
+    0.9216
+   ],
+   [
+    35,
+    0.9171
+   ],
+   [
+    40,
+    0.9085
+   ],
+   [
+    45,
+    0.9184
+   ],
+   [
+    50,
+    0.9071
+   ],
+   [
+    55,
+    0.9066
+   ],
+   [
+    60,
+    0.8899
+   ],
+   [
+    65,
+    0.8709
+   ],
+   [
+    70,
+    0.8818
+   ],
+   [
+    75,
+    0.8729
+   ],
+   [
+    80,
+    0.8781
+   ],
+   [
+    85,
+    0.8716
+   ],
+   [
+    90,
+    0.8424
+   ],
+   [
+    95,
+    0.8532
+   ],
+   [
+    100,
+    0.8422
+   ],
+   [
+    105,
+    0.8191
+   ],
+   [
+    110,
+    0.8265
+   ],
+   [
+    115,
+    0.7944
+   ],
+   [
+    120,
+    0.8082
+   ],
+   [
+    125,
+    0.7891
+   ],
+   [
+    130,
+    0.7791
+   ],
+   [
+    135,
+    0.7634
+   ],
+   [
+    140,
+    0.7435
+   ],
+   [
+    145,
+    0.7404
+   ],
+   [
+    150,
+    0.7372
+   ],
+   [
+    155,
+    0.7246
+   ],
+   [
+    160,
+    0.716
+   ],
+   [
+    165,
+    0.6949
+   ],
+   [
+    170,
+    0.6994
+   ],
+   [
+    175,
+    0.6908
+   ],
+   [
+    180,
+    0.6836
+   ],
+   [
+    185,
+    0.6628
+   ],
+   [
+    190,
+    0.6316
+   ],
+   [
+    195,
+    0.632
+   ],
+   [
+    200,
+    0.6237
+   ]
+  ]
+ },
+ "pitch_rest_to_rest": [
+  {
+   "pre_rest": 10,
+   "post_rest": 11,
+   "pre_s": 21.298,
+   "post_s": 24.548,
+   "yaw_deg": null,
+   "pitch_deg": null,
+   "roll_deg": null,
+   "matches": 3,
+   "inliers": 0,
+   "flow_px": null,
+   "dx_counts": -205,
+   "dy_counts": -1927,
+   "sweep": 1
+  },
+  {
+   "pre_rest": 12,
+   "post_rest": 13,
+   "pre_s": 24.798,
+   "post_s": 28.298,
+   "yaw_deg": null,
+   "pitch_deg": null,
+   "roll_deg": null,
+   "matches": 3,
+   "inliers": 0,
+   "flow_px": null,
+   "dx_counts": 332,
+   "dy_counts": 4203,
+   "sweep": 2
+  }
+ ],
+ "controls": [
+  {
+   "pre_rest": 0,
+   "post_rest": 1,
+   "pre_s": 1.798,
+   "post_s": 2.298,
+   "yaw_deg": -0.0018710867653838235,
+   "pitch_deg": -0.0018534131190019046,
+   "roll_deg": 0.0009199941636273258,
+   "matches": 1348,
+   "inliers": 1347,
+   "flow_px": 0.0,
+   "dx_counts": 0,
+   "dy_counts": 0
+  },
+  {
+   "pre_rest": 2,
+   "post_rest": 3,
+   "pre_s": 9.598,
+   "post_s": 9.998,
+   "yaw_deg": -0.008980253581194956,
+   "pitch_deg": 0.008720729930709038,
+   "roll_deg": 0.008967207384611214,
+   "matches": 1342,
+   "inliers": 1334,
+   "flow_px": 0.0,
+   "dx_counts": 0,
+   "dy_counts": 0
+  },
+  {
+   "pre_rest": 4,
+   "post_rest": 5,
+   "pre_s": 13.698,
+   "post_s": 13.898,
+   "yaw_deg": -0.0017871507423359273,
+   "pitch_deg": 0.00015841010199171043,
+   "roll_deg": 0.001704702136858301,
+   "matches": 1353,
+   "inliers": 1350,
+   "flow_px": 0.0,
+   "dx_counts": 0,
+   "dy_counts": 0
+  },
+  {
+   "pre_rest": 6,
+   "post_rest": 7,
+   "pre_s": 16.498,
+   "post_s": 16.798,
+   "yaw_deg": 0.0008683351682586536,
+   "pitch_deg": 0.0009015893982779199,
+   "roll_deg": -0.00039068459973376723,
+   "matches": 1346,
+   "inliers": 1339,
+   "flow_px": 0.0,
+   "dx_counts": 0,
+   "dy_counts": 0
+  },
+  {
+   "pre_rest": 8,
+   "post_rest": 9,
+   "pre_s": 19.198,
+   "post_s": 20.498,
+   "yaw_deg": 0.0025690419291754685,
+   "pitch_deg": -0.0006063319903989364,
+   "roll_deg": -0.0024342483650122274,
+   "matches": 1290,
+   "inliers": 1267,
+   "flow_px": 0.0,
+   "dx_counts": 0,
+   "dy_counts": 0
+  }
+ ],
+ "turns": [
+  {
+   "pre_rest": 1,
+   "post_rest": 2,
+   "pre_s": 2.298,
+   "post_s": 9.598,
+   "yaw_deg": -3.610126608617925,
+   "pitch_deg": 8.330823572036918,
+   "roll_deg": -0.6413795188173564,
+   "matches": 260,
+   "inliers": 116,
+   "flow_px": 83.45223236083984,
+   "dx_counts": 10783,
+   "dy_counts": -197,
+   "speed_class": "slow",
+   "turn_deg": 356.3898733913821,
+   "deg_per_count": 0.033051087210551985,
+   "counts_per_360": 10892.228679396221
+  },
+  {
+   "pre_rest": 3,
+   "post_rest": 4,
+   "pre_s": 9.998,
+   "post_s": 13.698,
+   "yaw_deg": 1.556561981461649,
+   "pitch_deg": 0.7391731577079298,
+   "roll_deg": 0.055327633467299436,
+   "matches": 709,
+   "inliers": 558,
+   "flow_px": 19.117658615112305,
+   "dx_counts": 10927,
+   "dy_counts": -17,
+   "speed_class": "medium",
+   "turn_deg": 361.55656198146164,
+   "deg_per_count": 0.03308836478278225,
+   "counts_per_360": 10879.957421991685
+  },
+  {
+   "pre_rest": 5,
+   "post_rest": 6,
+   "pre_s": 13.898,
+   "post_s": 16.498,
+   "yaw_deg": -1.3969169169524078,
+   "pitch_deg": 1.5441938220396592,
+   "roll_deg": -0.01885228482086279,
+   "matches": 606,
+   "inliers": 474,
+   "flow_px": 21.36539077758789,
+   "dx_counts": 10846,
+   "dy_counts": -37,
+   "speed_class": "fast",
+   "turn_deg": 358.6030830830476,
+   "deg_per_count": 0.03306316458445949,
+   "counts_per_360": 10888.249945959771
+  },
+  {
+   "pre_rest": 7,
+   "post_rest": 8,
+   "pre_s": 16.798,
+   "post_s": 19.198,
+   "yaw_deg": -1.2323549213156682,
+   "pitch_deg": -5.348136198026139,
+   "roll_deg": 0.09822472140083577,
+   "matches": 452,
+   "inliers": 340,
+   "flow_px": 44.84724426269531,
+   "dx_counts": 10854,
+   "dy_counts": 125,
+   "speed_class": "fastest",
+   "turn_deg": 358.7676450786843,
+   "deg_per_count": 0.03305395661310893,
+   "counts_per_360": 10891.283128786674
+  }
+ ],
+ "bands": [
+  {
+   "band_counts_per_s": [
+    0,
+    1000
+   ],
+   "pairs": 84,
+   "fitted": 84,
+   "coverage": 1.0,
+   "sum_ratio_deg_per_count": 0.03587581035544454,
+   "median_ratio_deg_per_count": 0.03409234714343339,
+   "iqr": [
+    0.027293342053083,
+    0.04187059910206256
+   ]
+  },
+  {
+   "band_counts_per_s": [
+    1000,
+    2000
+   ],
+   "pairs": 400,
+   "fitted": 400,
+   "coverage": 1.0,
+   "sum_ratio_deg_per_count": 0.03555017229384754,
+   "median_ratio_deg_per_count": 0.03521133531730938,
+   "iqr": [
+    0.032759740052476685,
+    0.03840585651671975
+   ]
+  },
+  {
+   "band_counts_per_s": [
+    2000,
+    4000
+   ],
+   "pairs": 461,
+   "fitted": 460,
+   "coverage": 0.998,
+   "sum_ratio_deg_per_count": 0.03405121552837681,
+   "median_ratio_deg_per_count": 0.03449570576384023,
+   "iqr": [
+    0.031294920721752634,
+    0.037948867387225665
+   ]
+  },
+  {
+   "band_counts_per_s": [
+    4000,
+    8000
+   ],
+   "pairs": 269,
+   "fitted": 269,
+   "coverage": 1.0,
+   "sum_ratio_deg_per_count": 0.0352128404650978,
+   "median_ratio_deg_per_count": 0.0355584203191845,
+   "iqr": [
+    0.03336347094333795,
+    0.03822165589881122
+   ]
+  },
+  {
+   "band_counts_per_s": [
+    8000,
+    16000
+   ],
+   "pairs": 99,
+   "fitted": 95,
+   "coverage": 0.96,
+   "sum_ratio_deg_per_count": 0.033748332929140125,
+   "median_ratio_deg_per_count": 0.03425491749207387,
+   "iqr": [
+    0.02917483792437635,
+    0.03776030179687708
+   ]
+  },
+  {
+   "band_counts_per_s": [
+    16000,
+    64000
+   ],
+   "pairs": 39,
+   "fitted": 33,
+   "coverage": 0.846,
+   "sum_ratio_deg_per_count": 0.032006460321119805,
+   "median_ratio_deg_per_count": 0.0337905991897584,
+   "iqr": [
+    0.02870090349558324,
+    0.038222920737448755
+   ]
+  }
+ ],
+ "per_turn_estimator_sum": [
+  {
+   "speed_class": "slow",
+   "pairs": 876,
+   "fitted": 838,
+   "estimator_yaw_sum_deg": 365.0009175830757,
+   "rest_to_rest_turn_deg": 356.3898733913821
+  },
+  {
+   "speed_class": "medium",
+   "pairs": 444,
+   "fitted": 435,
+   "estimator_yaw_sum_deg": 373.0696741984578,
+   "rest_to_rest_turn_deg": 361.55656198146164
+  },
+  {
+   "speed_class": "fast",
+   "pairs": 312,
+   "fitted": 298,
+   "estimator_yaw_sum_deg": 371.875709757134,
+   "rest_to_rest_turn_deg": 358.6030830830476
+  },
+  {
+   "speed_class": "fastest",
+   "pairs": 288,
+   "fitted": 226,
+   "estimator_yaw_sum_deg": 323.44909113629893,
+   "rest_to_rest_turn_deg": 358.7676450786843
+  }
+ ],
+ "pitch": {
+  "moving_pairs": 1467,
+  "clamped_pairs": 269,
+  "free_sum_ratio_deg_per_count": 0.033276467136903756,
+  "free_median_ratio": 0.01758802831789585,
+  "rule": "moving: |dy| rate >= 500 counts/s; clamped: |estimated pitch| < 20 % of the slow gain x |dy| (camera at its pitch limit); the ratio is over the remaining pairs, up positive = -dy"
+ }
+}

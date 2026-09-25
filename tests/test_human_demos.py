@@ -791,3 +791,118 @@ def test_imitation_suitability_missing_or_reasonless_is_rejected(tmp_path):
     data["review"]["segments"][0]["suitability_reason"] = ""
     with pytest.raises(hd.DemoError, match="suitability reason"):
         build(data)
+
+
+# ---- one recorder-duplicated composition time (lead decision 2026-09-25, option A) ---------------------------------
+# 025230's defect: in a B-frame stream an anchor packet logged the next packet's composition time, so composition steps
+# back once in presentation order (twin 1 packet away). 232304's: a B-frame logged an anchor's time from 5 packets back.
+# The lead allows a twin up to 8 packets away (the stream's reorder window).
+
+ORDER = [0, 3, 1, 2, 6, 4, 5, 9, 7, 8, 12, 10, 11, 15, 13, 14, 18, 16, 17, 20, 19]   # packet j -> presentation slot
+
+
+def reordered(tmp_path, accepted_from=None):
+    """The fixture as a B-frame stream; with `accepted_from`, slots before it are a rejected span, the rest accepted."""
+    data = payload(tmp_path)
+    for j, (row, slot) in enumerate(zip(data["packets"], ORDER)):
+        row.update(pts=slot * 10, dts=j * 10 - 20, composition_ns=BASE + slot * STEP)
+    if accepted_from is not None:
+        head = dict(data["review"]["segments"][0], segment_id="head", end_ns=BASE + accepted_from * STEP,
+                    imitation_suitability="rejected", suitability_reason="synthetic rejected span")
+        tail = dict(data["review"]["segments"][0], segment_id="tail", start_ns=BASE + accepted_from * STEP)
+        data["review"]["segments"] = [head, tail]
+    return data
+
+
+def logs_time_of(data, packet, twin):
+    data["packets"][packet]["composition_ns"] = data["packets"][twin]["composition_ns"]
+    return data
+
+
+def test_distance_1_as_in_025230_is_excused_and_audited(tmp_path):
+    clean = build(reordered(tmp_path, accepted_from=10))
+    assert "unknown_composition" not in json.loads(clean.audit_json) and len(clean.frames) == 21
+    # packet 4 (slot 6) logs packet 5's time (slot 4): composition steps back between slots 5 and 6
+    dataset = build(logs_time_of(reordered(tmp_path, accepted_from=10), packet=4, twin=5))
+    audit = json.loads(dataset.audit_json)
+    assert audit["decoded_frames"] == 21 and audit["unwritten_tail_packets"] == 0
+    (record,) = audit["unknown_composition"]
+    assert (record["packet_index"], record["duplicate_of_packet_index"], record["logged_composition_ns"]) == \
+        (4, 5, BASE + 4 * STEP)
+    assert (record["file_pts"], record["twin_file_pts"], record["packet_distance"], record["max_packet_distance"]) == \
+        (81, 61, 1, 8)   # file PTS: the logged 60 and 40 ms plus the 21 ms muxer offset
+    assert record["slot_ns"] == [BASE + 5 * STEP, BASE + 7 * STEP]   # strictly between its neighbours' times
+    assert 4 not in [f.packet_index for f in dataset.frames] and len(dataset.frames) == 20   # dropped, not re-timed
+    assert all(a.composition_ns <= b.composition_ns for a, b in zip(dataset.frames, dataset.frames[1:]))
+
+
+def test_a_duplicated_time_inside_an_accepted_segment_is_refused(tmp_path):
+    data = logs_time_of(reordered(tmp_path), packet=4, twin=5)   # the fixture's one segment is accepted
+    with pytest.raises(hd.DemoError, match="inside an accepted segment"):
+        build(data)
+
+
+def test_an_accepted_span_may_start_on_the_next_real_frame_but_not_before_it(tmp_path):
+    # 232304's case: the accepted segment after the defect starts exactly on the next real frame (slot 7)
+    assert json.loads(build(logs_time_of(reordered(tmp_path, accepted_from=7), packet=4, twin=5)).audit_json)[
+        "unknown_composition"][0]["slot_ns"] == [BASE + 5 * STEP, BASE + 7 * STEP]
+    data = logs_time_of(reordered(tmp_path, accepted_from=7), packet=4, twin=5)
+    data["review"]["segments"][0]["end_ns"] -= 1                   # one ns into the open slot: the span covers it
+    data["review"]["segments"][1]["start_ns"] -= 1
+    with pytest.raises(hd.DemoError, match="inside an accepted segment"):
+        build(data)
+
+
+def test_a_twin_inside_an_accepted_segment_is_refused(tmp_path):
+    # the dropped frame (slot 6) sits in a rejected span, but its twin (packet 5, slot 4) is in an accepted one
+    data = logs_time_of(reordered(tmp_path), packet=4, twin=5)
+    base = data["review"]["segments"][0]
+    data["review"]["segments"] = [
+        dict(base, segment_id="a", end_ns=BASE + 5 * STEP),
+        dict(base, segment_id="b", start_ns=BASE + 5 * STEP, end_ns=BASE + 7 * STEP, imitation_suitability="rejected",
+             suitability_reason="synthetic rejected span"),
+        dict(base, segment_id="c", start_ns=BASE + 7 * STEP)]
+    with pytest.raises(hd.DemoError, match="twin is inside an accepted segment"):
+        build(data)
+
+
+def test_two_duplicated_times_are_refused(tmp_path):
+    data = logs_time_of(reordered(tmp_path, accepted_from=20), packet=4, twin=5)
+    data = logs_time_of(data, packet=13, twin=14)                 # a second one: packet 13 (slot 15) -> slot 13
+    with pytest.raises(hd.DemoError, match="backwards"):
+        build(data)
+
+
+def test_a_step_back_without_a_duplicate_is_refused(tmp_path):
+    data = reordered(tmp_path, accepted_from=10)
+    data["packets"][4]["composition_ns"] = BASE + 4 * STEP + 1    # slot 6 logs a time after slot 4, shared with none
+    with pytest.raises(hd.DemoError, match="backwards"):
+        build(data)
+
+
+def test_distance_5_as_in_232304_is_excused(tmp_path):
+    # packet 9 (slot 8) logs packet 4's time (slot 6), five packets earlier: 232304's shape
+    dataset = build(logs_time_of(reordered(tmp_path, accepted_from=10), packet=9, twin=4))
+    (record,) = json.loads(dataset.audit_json)["unknown_composition"]
+    assert (record["packet_index"], record["duplicate_of_packet_index"], record["packet_distance"]) == (9, 4, 5)
+    assert 9 not in [f.packet_index for f in dataset.frames] and len(dataset.frames) == 20
+
+
+def test_distance_9_is_refused(tmp_path):
+    # packet 13 (slot 15) logs packet 4's time (slot 6), nine packets earlier: beyond the reorder window
+    data = logs_time_of(reordered(tmp_path, accepted_from=20), packet=13, twin=4)
+    with pytest.raises(hd.DemoError, match="9 packets apart; at most 8"):
+        build(data)
+
+
+def test_callers_without_a_review_are_not_excused():
+    packets = [dict(packet_index=i, track=0, pts=p, timebase_num=1, timebase_den=120,
+                    composition_ns=BASE + p * 8_333_333) for i, p in enumerate(ORDER)]
+    packets[4]["composition_ns"] = packets[5]["composition_ns"]
+    pts = [round(Fraction(p * 1000, 120) + 21) for p in sorted(ORDER)]
+    decoded = dict(pts=pts, timebase_num=1, timebase_den=1000)
+    anchor = dict(kind="independent_muxer_offset", offset_num=21, offset_den=1000, source="fixture construction")
+    with pytest.raises(hd.DemoError, match="backwards"):
+        hd.match_frames(packets, decoded, "movie.mkv", pts_anchor=anchor)   # e.g. transcode verification
+    frames, audit = hd.match_frames(packets, decoded, "movie.mkv", pts_anchor=anchor, accepted=[])
+    assert audit["unknown_composition"][0]["packet_index"] == 4 and len(frames) == 20

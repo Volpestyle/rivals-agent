@@ -841,3 +841,137 @@ def test_assembly_takes_the_build_from_the_intake_evidence_and_refuses_without_i
     provenance({"evidence": steam("0917"), "recorded": new})          # the record and its evidence disagree
     with pytest.raises(A.Refused, match="re-derived"):
         A.session_patch(tmp_path, TAKE_0924, hi)
+
+
+# ---- per-date motor statements (review of the motor fix, M1-M3 and the zone) ------------------------------------
+
+ROOT = Path(__file__).resolve().parents[1]
+ADMITTED_0923 = ("20260923T051828-422Z-33696-1", "20260923T171533-187Z-33696-5", "20260923T200129-346Z-33696-6",
+                 "20260923T205528-900Z-45572-3")
+
+
+def intake_module():
+    spec = importlib.util.spec_from_file_location("intake_session_under_test", ROOT / "data/human/sessions/intake_session.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+@pytest.mark.parametrize("utc, day", [
+    ("2026-09-25T02:13:20.371Z", "2026-09-24"),   # 021320: 21:13 CDT on 09-24
+    ("2026-09-24T23:23:04.169Z", "2026-09-24"),   # 232304: 18:23 CDT
+    ("2026-09-24T02:30:00Z", "2026-09-23"),       # an evening 09-23 take reads 09-23 on any machine (review minor)
+    ("2026-09-24T04:59:59Z", "2026-09-23"), ("2026-09-24T05:00:00Z", "2026-09-24"),
+    ("2026-03-08T05:30:00Z", "2026-03-07"),       # before the second Sunday of March 08:00 UTC: CST
+    ("2026-03-09T05:30:00Z", "2026-03-09"),       # after it: CDT (CST would give 03-08)
+    ("2026-11-02T05:30:00Z", "2026-11-01"),       # after the first Sunday of November 07:00 UTC: CST again
+])
+def test_the_recording_date_is_taken_in_america_chicago(utc, day):
+    assert assemble_module().chicago_date(hi._utc(utc)) == day
+
+
+def test_motor_statements_quote_the_committed_log_and_keep_the_admitted_wording():
+    A = assemble_module()
+    log = (ROOT / "docs/recording-log.md").read_text(encoding="utf-8")
+    old = A.motor_statement(TAKE_0923, hi, log)
+    assert old["settings"] == "James's dated statements of 2026-09-23, applied by the lead to every existing session"
+    assert old["bindings"] == "James's dated statements of 2026-09-23 (docs/recording-log.md)"   # M1: the pinned text
+    new = A.motor_statement(TAKE_0924, hi, log)
+    assert "57d1f3d" in new["settings"] and "~22:40 CDT" in new["settings"] and "~22:10" not in new["settings"]   # M2
+    assert all(q in log for q in new["log_quotes"]) and new["log_quotes"][0].startswith("2026-09-24: ")
+    for day in ("2026-09-22T20:00:00Z", "2026-09-25T20:00:00Z"):
+        with pytest.raises(A.Refused, match="no per-session motor statement"):
+            A.motor_statement(dict(TAKE_0924, started_utc=day), hi, log)
+    with pytest.raises(A.Refused, match="lacks the 2026-09-24 motor statement"):
+        A.motor_statement(TAKE_0924, hi, log.replace("~22:40 CDT", "~22:10 CDT"))
+
+
+def test_the_motor_step_quotes_the_recording_dates_own_statement_and_regenerates_only_on_purpose(tmp_path):
+    from types import SimpleNamespace
+    S = intake_module()
+    A = S._assembly()
+    (tmp_path / "provenance.json").write_text(json.dumps({"settings_receipt": {
+        "sha256": "0" * 64, "equals_2026_09_22_receipt": {"1036": True, "0": True},
+        "controls": {"1036": {"MouseHorizontalSensitivity": 1.89, "MouseVerticalSensitivity": 1.89}}}}), encoding="utf-8")
+    (tmp_path / "slot-mapping.json").write_text("{}", encoding="utf-8")
+    c = SimpleNamespace(sid="s", meta=TAKE_0924, hi=hi, out=tmp_path, supersedes=None)
+    S.step_motor(c)
+    doc = json.loads((tmp_path / "motor-settings.json").read_text(encoding="utf-8"))
+    assert doc["settings"]["statement"]["date"] == "2026-09-24"
+    assert doc["settings"]["statement"]["text"] == list(A.MOTOR_STATEMENTS["2026-09-24"]["log_quotes"])   # M3
+    assert doc["settings"]["per_session_source"] == A.MOTOR_STATEMENTS["2026-09-24"]["settings"]
+    assert doc["settings_identity"] == hi.settings_identity(A.MOTOR, A.BINDINGS)
+    first = hashlib.sha256((tmp_path / "motor-settings.json").read_bytes()).hexdigest()
+    with pytest.raises(S.Refused, match="already written"):
+        S.step_motor(c)                                                      # write-once without --supersedes
+    S.step_motor(SimpleNamespace(**dict(vars(c), supersedes="regenerated after review M2/M3")))
+    again = json.loads((tmp_path / "motor-settings.json").read_text(encoding="utf-8"))
+    assert again["supersedes"] == {"file": "motor-settings.v1.json", "sha256": first,
+                                   "reason": "regenerated after review M2/M3"}
+    assert hashlib.sha256((tmp_path / "motor-settings.v1.json").read_bytes()).hexdigest() == first
+    c23 = SimpleNamespace(sid="s", meta=TAKE_0923, hi=hi, out=tmp_path / "d23", supersedes=None)
+    c23.out.mkdir()
+    for name in ("provenance.json", "slot-mapping.json"):
+        (c23.out / name).write_bytes((tmp_path / name).read_bytes())
+    S.step_motor(c23)
+    old = json.loads((c23.out / "motor-settings.json").read_text(encoding="utf-8"))
+    assert old["settings"]["statement"]["text"] == list(A.MOTOR_STATEMENTS["2026-09-23"]["log_quotes"])
+
+
+@pytest.mark.corpus
+def test_admitted_sessions_re_derive_their_pinned_per_session_sources():
+    A = assemble_module()
+    log = (ROOT / "docs/recording-log.md").read_text(encoding="utf-8")
+    for sid in ADMITTED_0923:
+        d = ROOT / "data/human/sessions" / sid
+        meta = json.loads((d / "provenance.json").read_text(encoding="utf-8"))["metadata"]
+        stored = json.loads((d / "settings.json").read_text(encoding="utf-8"))
+        got = A.motor_statement(meta, hi, log)
+        assert (got["settings"], got["bindings"]) == (stored["settings"]["per_session_source"],
+                                                      stored["bindings"]["per_session_source"]), sid
+
+
+# ---- the edge proof (lead decision 2026-09-25): an edge sits only on a frame the reads prove -------------------------
+
+def _play(segs):
+    return [s for s in segs if s["machine_reason"] == hi.GAMEPLAY]
+
+
+def test_an_edge_sits_only_on_a_proven_frame():
+    focus = [(t(0), t(10))]
+    samples = hud(0, 3, present=False) + hud(3, 10)
+    first, last = t(3), samples[-1][0]
+    f = lambda base, k: base + k * 8_333_333
+    # outward from a proven sample frame, over contiguous proven frames only (232304: f308-f309 fail, f310 holds)
+    native = {("start", first): [(f(first, -3), False), (f(first, -2), False), (f(first, -1), True), (first, True)]}
+    assert _play(propose(focus, samples, native=native))[0]["start_ns"] == f(first, -1)
+    # the sample frame itself fails: the start moves inward to the first proven frame
+    native = {("start", first): [(f(first, -1), True), (first, False), (f(first, 1), False), (f(first, 2), True)]}
+    assert _play(propose(focus, samples, native=native))[0]["start_ns"] == f(first, 2)
+    # the last sample frame fails (e.g. the HP bar under the guard's half-health test): the end moves inward
+    native = {("end", last): [(f(last, -2), True), (f(last, -1), False), (last, False), (f(last, 1), True)]}
+    assert _play(propose(focus, samples, native=native))[0]["end_ns"] == f(last, -2) + 1
+    # no proven frame in the reads: refused, never left on an unproven frame
+    native = {("start", first): [(first, False), (f(first, 1), False)]}
+    with pytest.raises(DemoError, match="passes the edge proof"):
+        propose(focus, samples, native=native)
+
+
+def test_the_evidence_step_refuses_a_pre_rule_proposer_and_any_unproven_edge():
+    from types import SimpleNamespace
+    S = intake_module()
+    S.require_edge_rule(hi, "this tree")                                  # the current proposer carries the rule
+    with pytest.raises(S.Refused, match="predates the edge rule"):
+        S.require_edge_rule(SimpleNamespace(), "code-snapshot-2ad0992")   # the pre-rule snapshot has no marker
+    f = lambda k: t(3) + k * 8_333_333
+    reads = [dict(frames=[dict(composition_ns=f(k), proof=k >= 2) for k in range(0, 4)]),
+             dict(frames=[dict(composition_ns=t(9) - 1, proof=True)])]
+    good = [dict(segment_id="seg-001", machine_reason=hi.GAMEPLAY, start_ns=f(2), end_ns=t(9))]
+    S.require_proven_edges(good, reads, hi.GAMEPLAY)
+    # what the pre-rule proposer did on an inward case: the edge left on the unproven sample frame
+    bad = [dict(segment_id="seg-001", machine_reason=hi.GAMEPLAY, start_ns=f(0), end_ns=t(9))]
+    with pytest.raises(S.Refused, match="seg-001 start edge"):
+        S.require_proven_edges(bad, reads, hi.GAMEPLAY)
+    unread = [dict(segment_id="seg-001", machine_reason=hi.GAMEPLAY, start_ns=f(2), end_ns=t(8))]
+    with pytest.raises(S.Refused, match="seg-001 end edge"):
+        S.require_proven_edges(unread, reads, hi.GAMEPLAY)

@@ -1,0 +1,3592 @@
+{
+ "kind": "independent_session_review",
+ "session": "20260925T021320-371Z-7804-1",
+ "reviewer": "admission-review (Claude Opus 5.5, claude-opus-5-5, pane admission-review)",
+ "reviewed_at": "2026-09-25T12:48:40-05:00",
+ "inputs": {
+  "segments_evidence_sha256": "75e34751156ff813cfcbf69613eda598433c02d387ea0f0ac5feca49ddcdcf34",
+  "owner_verdicts_sha256": "e492b2c443e7a8e94d557353fb33b03126b57fdd41323d980c4aeae4f1ea6bd4",
+  "motor_settings_sha256": "dbf5245551ee4af7a7d206ce66f7dfb30648cd07280c828bb4f69f13be550fe3",
+  "media_sha256": "a1a89dd32aa74f98c109d3a052061a0dd7f669a99d23a6483cc0930407ed7992"
+ },
+ "method": "Own ffmpeg exact-PTS decode (bgr24, 4 threads, below normal) of every segment edge, every owner frame and seeded (Random(20260923)) samples per trained/unresolved segment; decoded-BGR sha256; in_range from the session snapshot; inputs.jsonl replayed independently.",
+ "session_findings": [
+  "original re-hashed a1a89dd3 = pinned; raw logger files equal",
+  "container packet list: 263,435 packets = decoded frames",
+  "244/244 owner frame hashes match my exact-PTS decodes; every accepted-segment frame I decoded passes the snapshot in_range",
+  "devices: one keyboard and one mouse (same handles); 44 zero-effect handle-0 packets; one UI key (closing Alt)",
+  "the two AFK cuts are exactly the two no-input gaps >= 20 s",
+  "wheel-up: 45 in-play ticks in 1-4 tick bursts; two bursts checked on frames, melee/web-cluster, no Simple Swing"
+ ],
+ "segments": [
+  {
+   "segment_id": "seg-000",
+   "start_ns": 370277864348700,
+   "end_ns": 370278114348700,
+   "machine_reason": "focus_transition",
+   "proposal": "rejected",
+   "verdict": "rejected",
+   "reason": "focus_transition settle (OBS window over the hero select)",
+   "frames": [
+    {
+     "frame_index": 300,
+     "file_ms": 2521,
+     "composition_ns": 370277859131476,
+     "decoded_bgr_sha256": "6fd51427b129acc8cb13f8ecbe113afaf1246c0925b573df3b9bed5c865c17f4",
+     "role": "before",
+     "in_range": false
+    },
+    {
+     "frame_index": 301,
+     "file_ms": 2529,
+     "composition_ns": 370277867464809,
+     "decoded_bgr_sha256": "e3c8edb6848e34f318b82a4803134f415f4a8091fc92bdaa00d4a8b77487ffd5",
+     "role": "first_in",
+     "in_range": false
+    },
+    {
+     "frame_index": 301,
+     "file_ms": 2529,
+     "composition_ns": 370277867464809,
+     "decoded_bgr_sha256": "e3c8edb6848e34f318b82a4803134f415f4a8091fc92bdaa00d4a8b77487ffd5",
+     "role": "owner-start",
+     "in_range": false
+    },
+    {
+     "frame_index": 315,
+     "file_ms": 2646,
+     "composition_ns": 370277984131471,
+     "decoded_bgr_sha256": "e767b7ee17e13873569a23586953ed5d1644fdf0abf49f433b9bdc5f77ea7fc2",
+     "role": "owner-interior",
+     "in_range": false
+    },
+    {
+     "frame_index": 330,
+     "file_ms": 2771,
+     "composition_ns": 370278109131466,
+     "decoded_bgr_sha256": "d8b217ec12cfc7252ae6e0a46b6eee9c32d03f9c9fff6de1e14eabda86175524",
+     "role": "last_in",
+     "in_range": false
+    },
+    {
+     "frame_index": 330,
+     "file_ms": 2771,
+     "composition_ns": 370278109131466,
+     "decoded_bgr_sha256": "d8b217ec12cfc7252ae6e0a46b6eee9c32d03f9c9fff6de1e14eabda86175524",
+     "role": "owner-end",
+     "in_range": false
+    },
+    {
+     "frame_index": 331,
+     "file_ms": 2779,
+     "composition_ns": 370278117464799,
+     "decoded_bgr_sha256": "abf8b3e410e9b69502790abda00f456ec1d11300084dc3b0eeadbc23fa1eb67b",
+     "role": "after",
+     "in_range": false
+    }
+   ]
+  },
+  {
+   "segment_id": "seg-001",
+   "start_ns": 370278114348700,
+   "end_ns": 370281692464656,
+   "machine_reason": "no_range_hud",
+   "proposal": "rejected",
+   "verdict": "rejected",
+   "reason": "no_range_hud: the hero select (Elsa Bloodstone, then Spider-Man) and the spawn-in frames up to f759",
+   "frames": [
+    {
+     "frame_index": 330,
+     "file_ms": 2771,
+     "composition_ns": 370278109131466,
+     "decoded_bgr_sha256": "d8b217ec12cfc7252ae6e0a46b6eee9c32d03f9c9fff6de1e14eabda86175524",
+     "role": "before",
+     "in_range": false
+    },
+    {
+     "frame_index": 331,
+     "file_ms": 2779,
+     "composition_ns": 370278117464799,
+     "decoded_bgr_sha256": "abf8b3e410e9b69502790abda00f456ec1d11300084dc3b0eeadbc23fa1eb67b",
+     "role": "first_in",
+     "in_range": false
+    },
+    {
+     "frame_index": 331,
+     "file_ms": 2779,
+     "composition_ns": 370278117464799,
+     "decoded_bgr_sha256": "abf8b3e410e9b69502790abda00f456ec1d11300084dc3b0eeadbc23fa1eb67b",
+     "role": "owner-start",
+     "in_range": false
+    },
+    {
+     "frame_index": 545,
+     "file_ms": 4563,
+     "composition_ns": 370279900798061,
+     "decoded_bgr_sha256": "1c9c1e7006b61770bb0c54a325133ce7d0129a4d698a53cbe2fbd55011514c2b",
+     "role": "owner-interior",
+     "in_range": false
+    },
+    {
+     "frame_index": 759,
+     "file_ms": 6346,
+     "composition_ns": 370281684131323,
+     "decoded_bgr_sha256": "e93fec38ecc993444efef164f69a761bf4177045da8709ff048eb851a2d9f684",
+     "role": "last_in",
+     "in_range": false
+    },
+    {
+     "frame_index": 759,
+     "file_ms": 6346,
+     "composition_ns": 370281684131323,
+     "decoded_bgr_sha256": "e93fec38ecc993444efef164f69a761bf4177045da8709ff048eb851a2d9f684",
+     "role": "owner-end",
+     "in_range": false
+    },
+    {
+     "frame_index": 760,
+     "file_ms": 6354,
+     "composition_ns": 370281692464656,
+     "decoded_bgr_sha256": "ee138e369b7338795126b486d80f1aa55ead4dace42026634c770b4720ef54bc",
+     "role": "after",
+     "in_range": true
+    }
+   ]
+  },
+  {
+   "segment_id": "seg-002",
+   "start_ns": 370281692464656,
+   "end_ns": 370643634116846,
+   "machine_reason": "range_hud_present",
+   "proposal": "unresolved",
+   "verdict": "accepted",
+   "reason": "opens on f760 (range panel and HP bar 250/250 drawn, live guard True; hero model from f761; no input until W at f804); continuous live range play on every inspected native frame; both edge frames pass the live range guard",
+   "frames": [
+    {
+     "frame_index": 759,
+     "file_ms": 6346,
+     "composition_ns": 370281684131323,
+     "decoded_bgr_sha256": "e93fec38ecc993444efef164f69a761bf4177045da8709ff048eb851a2d9f684",
+     "role": "before",
+     "in_range": false
+    },
+    {
+     "frame_index": 760,
+     "file_ms": 6354,
+     "composition_ns": 370281692464656,
+     "decoded_bgr_sha256": "ee138e369b7338795126b486d80f1aa55ead4dace42026634c770b4720ef54bc",
+     "role": "first_in",
+     "in_range": true
+    },
+    {
+     "frame_index": 760,
+     "file_ms": 6354,
+     "composition_ns": 370281692464656,
+     "decoded_bgr_sha256": "ee138e369b7338795126b486d80f1aa55ead4dace42026634c770b4720ef54bc",
+     "role": "owner-start",
+     "in_range": true
+    },
+    {
+     "frame_index": 1933,
+     "file_ms": 16129,
+     "composition_ns": 370291467464265,
+     "decoded_bgr_sha256": "48139f9c95faf0064219b424ba203c0c6f60d6014880a9f7fae496707871fbb7",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 2545,
+     "file_ms": 21229,
+     "composition_ns": 370296567464061,
+     "decoded_bgr_sha256": "e28eee685bdc9eaf548f62b348565bf74dd5cda45042279acf63c8f32cf72215",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 2910,
+     "file_ms": 24271,
+     "composition_ns": 370299609130606,
+     "decoded_bgr_sha256": "0c311d567fa253922254ff8c3652b5b29dcc4f6d9ef19bec830a4a798a320efd",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 3107,
+     "file_ms": 25913,
+     "composition_ns": 370301250797207,
+     "decoded_bgr_sha256": "8fc5f466c97db343e4580f302721bd45820e2b18f4fb626453a0696beb090cd9",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 4281,
+     "file_ms": 35696,
+     "composition_ns": 370311034130149,
+     "decoded_bgr_sha256": "fc294a33d09c46974602dddbf6cebe7aed28caed5d1d5233c93745adcf752597",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 4452,
+     "file_ms": 37121,
+     "composition_ns": 370312459130092,
+     "decoded_bgr_sha256": "6a43b8c5c02030f5e9a4e9285c12983c5f620d1b1faba55895e4e279105989b6",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 4791,
+     "file_ms": 39946,
+     "composition_ns": 370315284129979,
+     "decoded_bgr_sha256": "5874bf547484a3905dc3a801182877d572213b18fe01ad0566a4f11dde71542f",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 5455,
+     "file_ms": 45479,
+     "composition_ns": 370320817463091,
+     "decoded_bgr_sha256": "957c00f6fe90f56ebf111d9371772e70e43cf59cf5be8d3089a390fbe45df47d",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 6228,
+     "file_ms": 51921,
+     "composition_ns": 370327259129500,
+     "decoded_bgr_sha256": "e6f539c8b8b5472a62d41b06229c60145c86f45b8172b90f8753485ec7e88f82",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 6629,
+     "file_ms": 55263,
+     "composition_ns": 370330600796033,
+     "decoded_bgr_sha256": "7894e2a92659be526bdfc7ca53ce6b4e407a324b60a5ec9d27b1f5afe78124ac",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 7803,
+     "file_ms": 65046,
+     "composition_ns": 370340384128975,
+     "decoded_bgr_sha256": "48ba0a1096a5cac86242a735d1898d063c8eb56a0d70a8024ebfd9f02992ee57",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 8977,
+     "file_ms": 74829,
+     "composition_ns": 370350167461917,
+     "decoded_bgr_sha256": "ea48c5960319dac7b310dadc925ed2c184c32da6b23fea596b970b1e0f4698cf",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 10150,
+     "file_ms": 84604,
+     "composition_ns": 370359942461526,
+     "decoded_bgr_sha256": "33f6f86a13b43764c66d634e54282fc4ace92bf9d473893239b6307a0d2db952",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 11324,
+     "file_ms": 94388,
+     "composition_ns": 370369725794468,
+     "decoded_bgr_sha256": "b83e1fd9424535b87faabb41a3917f652d4f3b7fb2ea3173d2998c37846b8659",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 12498,
+     "file_ms": 104171,
+     "composition_ns": 370379509127410,
+     "decoded_bgr_sha256": "4be4d9b0b6c54beb41aef5dac99ba80e4fc4ebb95f4a6bcdd409814f3282a0b4",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 13672,
+     "file_ms": 113954,
+     "composition_ns": 370389292460352,
+     "decoded_bgr_sha256": "704e7a2ffd817a5c4088a1600d7b98f3bf70d3e2977eaa2306a37cf9119818ed",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 14110,
+     "file_ms": 117604,
+     "composition_ns": 370392942460206,
+     "decoded_bgr_sha256": "fd86c110cbe8e36f3db702770dcb1af3ec6cd246bdd1a995504069d2b81eae52",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 14490,
+     "file_ms": 120771,
+     "composition_ns": 370396109126746,
+     "decoded_bgr_sha256": "7746870ffd27a9d30e7c20edfbcdf88a74ccf093a58cbaa2b49ed6db1739c08c",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 14846,
+     "file_ms": 123738,
+     "composition_ns": 370399075793294,
+     "decoded_bgr_sha256": "61b42c819acb26d3b945af6603ba0656bcab73ec74ccbc270cb5dc28a7552eb3",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 16020,
+     "file_ms": 133521,
+     "composition_ns": 370408859126236,
+     "decoded_bgr_sha256": "0b61f7d0a7a727bc1eaec1c2f312d8d10b8caa9cc001b0cb6cf8a4f57d49971e",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 16870,
+     "file_ms": 140604,
+     "composition_ns": 370415942459286,
+     "decoded_bgr_sha256": "f28fa04a5d277d05728536f23c140e9ccba0c367009332ec8faa46d961984e44",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 16921,
+     "file_ms": 141029,
+     "composition_ns": 370416367459269,
+     "decoded_bgr_sha256": "e7c81047ba80218df402981f0484ef72aaf36b2f0b02c62766f8fa1a6ba2f22c",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 17194,
+     "file_ms": 143304,
+     "composition_ns": 370418642459178,
+     "decoded_bgr_sha256": "174bedc002dbc48e6e9c6f15b04f5066ed4e29f74d32d5b14fae11675f93254c",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 18367,
+     "file_ms": 153079,
+     "composition_ns": 370428417458787,
+     "decoded_bgr_sha256": "0c3b09b13773299d0e038ccedff4a793be75fdc062ebf9ae670fb3b85e51514e",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 19541,
+     "file_ms": 162863,
+     "composition_ns": 370438200791729,
+     "decoded_bgr_sha256": "161c2f12d6788fe0d72d2ebd4f4e1ac94edac88dc9ced8bceabbe025ad118f4d",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 19958,
+     "file_ms": 166338,
+     "composition_ns": 370441675791590,
+     "decoded_bgr_sha256": "bf067f1402e43855b1c8dafa67b6e366f07964d428b826c7386968ba4ba768be",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 20715,
+     "file_ms": 172646,
+     "composition_ns": 370447984124671,
+     "decoded_bgr_sha256": "e044d5889ec6d1ac1df5da0f546e7f22585e20fa60cd992972c5f92b87f95629",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 21889,
+     "file_ms": 182429,
+     "composition_ns": 370457767457613,
+     "decoded_bgr_sha256": "a1c756235dfa3038d4c6b47e1854d47518e2123fee746a5574b454a07eec19ac",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 23063,
+     "file_ms": 192213,
+     "composition_ns": 370467550790555,
+     "decoded_bgr_sha256": "cc4daedd2ad80dad50634784849be8231d9446883806214e54adf90a1a00d73f",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 23397,
+     "file_ms": 194996,
+     "composition_ns": 370470334123777,
+     "decoded_bgr_sha256": "bedd4c8f2932b07d61d4ca15617d28422c85a9c2349f67cb2810ad93a21f1085",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 24237,
+     "file_ms": 201996,
+     "composition_ns": 370477334123497,
+     "decoded_bgr_sha256": "8c8505ddfeba1c6e2197cbdfa039e8507d8c38e5d057368a3eb6e29d93823caa",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 25021,
+     "file_ms": 208529,
+     "composition_ns": 370483867456569,
+     "decoded_bgr_sha256": "cab256a5dcbc06f9ec0a3a31e179fee56f7befe871fc311f3b65e8ab1a5afeba",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 25411,
+     "file_ms": 211779,
+     "composition_ns": 370487117456439,
+     "decoded_bgr_sha256": "da288c0c72a718ec0f7b17b4de39b1c368b148b000572ba4d3cfbff1b7509a1a",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 26585,
+     "file_ms": 221563,
+     "composition_ns": 370496900789381,
+     "decoded_bgr_sha256": "9c847db0ed675c3988adf5baff680e5144144d862ca07441ec1261aac2b2b7e4",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 27758,
+     "file_ms": 231338,
+     "composition_ns": 370506675788990,
+     "decoded_bgr_sha256": "784d95d88f8e73eecfabd4e2ec5be143d918f407b7d9143fb26e1588c3ace1fd",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 28372,
+     "file_ms": 236454,
+     "composition_ns": 370511792455452,
+     "decoded_bgr_sha256": "e4fff92ba6dc9e50238842e4ca602ef3f5cf00ee42b25d46a9415ae5262f15b6",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 28932,
+     "file_ms": 241121,
+     "composition_ns": 370516459121932,
+     "decoded_bgr_sha256": "390ab1bf4910a460e7d7578000bf2c485da43f1872ba25ce128e2bf3926e5f49",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 30106,
+     "file_ms": 250904,
+     "composition_ns": 370526242454874,
+     "decoded_bgr_sha256": "496c2bd6106dfe500d76e29205c1f74deabd9e06e9dcfcae1a6cc3d2ce60f7fa",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 31280,
+     "file_ms": 260688,
+     "composition_ns": 370536025787816,
+     "decoded_bgr_sha256": "f0dc68a717907d540331277a66217d969351227a8052a63b715575e9e567a2e3",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 32454,
+     "file_ms": 270471,
+     "composition_ns": 370545809120758,
+     "decoded_bgr_sha256": "af2955a2be249e95f0bdff1072f9fcd885ad577c05a825e771cf41852f78dd0e",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 32551,
+     "file_ms": 271279,
+     "composition_ns": 370546617454059,
+     "decoded_bgr_sha256": "fcbe8613b43a8f9e0828141e1ab547ad82858712e764667f68b5d628226ca4a7",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 33108,
+     "file_ms": 275921,
+     "composition_ns": 370551259120540,
+     "decoded_bgr_sha256": "88904644aad48216592e94176b3788ccf1bf2f5819240b38982918aa96913207",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 33628,
+     "file_ms": 280254,
+     "composition_ns": 370555592453700,
+     "decoded_bgr_sha256": "6959af93d0e159f9fb6215327832c90d9e8c7db4578f996290ff75e4d33a491e",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 34563,
+     "file_ms": 288046,
+     "composition_ns": 370563384120055,
+     "decoded_bgr_sha256": "568952f7de9f1f54d895d4e4872d86a48d428b24ad7476d94bdceee07bfba145",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 34757,
+     "file_ms": 289663,
+     "composition_ns": 370565000786657,
+     "decoded_bgr_sha256": "99bea48999ad917342bc2e00b5315be790cda44b9d7bf1bdbe8076b30e7780e6",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 34802,
+     "file_ms": 290038,
+     "composition_ns": 370565375786642,
+     "decoded_bgr_sha256": "bb085d171e84ba6856a4fc7ee77224d9e1acfbe5de41f0b006d6f912d581230e",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 35975,
+     "file_ms": 299813,
+     "composition_ns": 370575150786251,
+     "decoded_bgr_sha256": "d7695d675b24450f73084b1c5f1265341c1ed4efd8fa7a09f871de156fdfb9dc",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 37149,
+     "file_ms": 309596,
+     "composition_ns": 370584934119193,
+     "decoded_bgr_sha256": "dbdda106cb238a1fb0be0ffd3fd8fef642530f246e534df32abe133a31b3ab70",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 38323,
+     "file_ms": 319379,
+     "composition_ns": 370594717452135,
+     "decoded_bgr_sha256": "4cbac820c469a71b7a8497f36e099a740bda78af8befde42febf3772e8a89019",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 38874,
+     "file_ms": 323971,
+     "composition_ns": 370599309118618,
+     "decoded_bgr_sha256": "e16c6067c3a70304e96df03ac3fb366ab88a6556a1350784572471839cb1441c",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 39497,
+     "file_ms": 329163,
+     "composition_ns": 370604500785077,
+     "decoded_bgr_sha256": "3e954afea443fd786b89f7eed09f0cc3cac1e1a432b07549c00cf9f73c24958d",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 40671,
+     "file_ms": 338946,
+     "composition_ns": 370614284118019,
+     "decoded_bgr_sha256": "7923cfe081bf0a109f666d6ced24e3581b7e183607696a4310e66ea1e0531313",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 41845,
+     "file_ms": 348729,
+     "composition_ns": 370624067450961,
+     "decoded_bgr_sha256": "b775325375fa7daf19217875b64683788d3f7db340f7194233fbeb45672941b6",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 42916,
+     "file_ms": 357654,
+     "composition_ns": 370632992450604,
+     "decoded_bgr_sha256": "466dcdc7d5cf764a67b21c96cc6ea3a3901fe72924348f007fe384061b417b44",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 43019,
+     "file_ms": 358513,
+     "composition_ns": 370633850783903,
+     "decoded_bgr_sha256": "294152d37722627872e5dcbeaf46e71f5dea80b6eeac95100d0e0ae83552d347",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 43877,
+     "file_ms": 365663,
+     "composition_ns": 370641000783617,
+     "decoded_bgr_sha256": "7de9142fcd49d5198210645c2917241d7333d76ebbb886db70028a16cb836798",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 44193,
+     "file_ms": 368296,
+     "composition_ns": 370643634116845,
+     "decoded_bgr_sha256": "29143afee43d81ef0d68c28a7378e4ef481a2511416ab3f7ef6be89380ce6725",
+     "role": "last_in",
+     "in_range": true
+    },
+    {
+     "frame_index": 44193,
+     "file_ms": 368296,
+     "composition_ns": 370643634116845,
+     "decoded_bgr_sha256": "29143afee43d81ef0d68c28a7378e4ef481a2511416ab3f7ef6be89380ce6725",
+     "role": "owner-end",
+     "in_range": true
+    },
+    {
+     "frame_index": 44194,
+     "file_ms": 368304,
+     "composition_ns": 370643642450178,
+     "decoded_bgr_sha256": "02b973bb9a85ec0d6e826deffa649205a7084c4dae05725f90663e4433b41c06",
+     "role": "after",
+     "in_range": true
+    }
+   ]
+  },
+  {
+   "segment_id": "seg-003",
+   "start_ns": 370643634116846,
+   "end_ns": 370643634609200,
+   "machine_reason": "unsampled_edge",
+   "proposal": "rejected",
+   "verdict": "rejected",
+   "reason": "unsampled edge",
+   "frames": [
+    {
+     "frame_index": 44193,
+     "file_ms": 368296,
+     "composition_ns": 370643634116845,
+     "decoded_bgr_sha256": "29143afee43d81ef0d68c28a7378e4ef481a2511416ab3f7ef6be89380ce6725",
+     "role": "before",
+     "in_range": true
+    },
+    {
+     "frame_index": 44193,
+     "file_ms": 368296,
+     "composition_ns": 370643634116845,
+     "decoded_bgr_sha256": "29143afee43d81ef0d68c28a7378e4ef481a2511416ab3f7ef6be89380ce6725",
+     "role": "last_in",
+     "in_range": true
+    },
+    {
+     "frame_index": 44194,
+     "file_ms": 368304,
+     "composition_ns": 370643642450178,
+     "decoded_bgr_sha256": "02b973bb9a85ec0d6e826deffa649205a7084c4dae05725f90663e4433b41c06",
+     "role": "first_in",
+     "in_range": true
+    },
+    {
+     "frame_index": 44194,
+     "file_ms": 368304,
+     "composition_ns": 370643642450178,
+     "decoded_bgr_sha256": "02b973bb9a85ec0d6e826deffa649205a7084c4dae05725f90663e4433b41c06",
+     "role": "after",
+     "in_range": true
+    }
+   ]
+  },
+  {
+   "segment_id": "seg-004",
+   "start_ns": 370643634609200,
+   "end_ns": 370698532295500,
+   "machine_reason": "afk",
+   "proposal": "rejected",
+   "verdict": "rejected",
+   "reason": "afk: 54.9 s with no control input (368.428-423.325 s); hero idle on frames",
+   "frames": [
+    {
+     "frame_index": 44193,
+     "file_ms": 368296,
+     "composition_ns": 370643634116845,
+     "decoded_bgr_sha256": "29143afee43d81ef0d68c28a7378e4ef481a2511416ab3f7ef6be89380ce6725",
+     "role": "before",
+     "in_range": true
+    },
+    {
+     "frame_index": 44194,
+     "file_ms": 368304,
+     "composition_ns": 370643642450178,
+     "decoded_bgr_sha256": "02b973bb9a85ec0d6e826deffa649205a7084c4dae05725f90663e4433b41c06",
+     "role": "first_in",
+     "in_range": true
+    },
+    {
+     "frame_index": 44194,
+     "file_ms": 368304,
+     "composition_ns": 370643642450178,
+     "decoded_bgr_sha256": "02b973bb9a85ec0d6e826deffa649205a7084c4dae05725f90663e4433b41c06",
+     "role": "owner-start",
+     "in_range": true
+    },
+    {
+     "frame_index": 45291,
+     "file_ms": 377446,
+     "composition_ns": 370652784116479,
+     "decoded_bgr_sha256": "af0b48b2398922616adaf16c01529b6d8ef1934ff366276b0ac6090222ae5ad4",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 46389,
+     "file_ms": 386596,
+     "composition_ns": 370661934116113,
+     "decoded_bgr_sha256": "292ba580b89d0ad497bd863218e1ddb70e81fb7c0942f7d6e132db5430b7e9f3",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 47487,
+     "file_ms": 395746,
+     "composition_ns": 370671084115747,
+     "decoded_bgr_sha256": "a0ccce93f3ae0204c6daeeb1c7c923fab4e8d8cbfafe4f14f82846e6f1249d82",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 48584,
+     "file_ms": 404888,
+     "composition_ns": 370680225782048,
+     "decoded_bgr_sha256": "8169ca5468dd9343b538434664c184f2417c1215a2779a117db69cb1f3094654",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 49682,
+     "file_ms": 414038,
+     "composition_ns": 370689375781682,
+     "decoded_bgr_sha256": "9e0f9173fbd49cdcc446c8ef44ee6ad311d7b1b40f0596b172a58775fe355f01",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 50780,
+     "file_ms": 423188,
+     "composition_ns": 370698525781316,
+     "decoded_bgr_sha256": "1dac38d489ca737afabdb8fdc233e537fb6478c88f0a70793b61825b32923bb5",
+     "role": "last_in",
+     "in_range": true
+    },
+    {
+     "frame_index": 50780,
+     "file_ms": 423188,
+     "composition_ns": 370698525781316,
+     "decoded_bgr_sha256": "1dac38d489ca737afabdb8fdc233e537fb6478c88f0a70793b61825b32923bb5",
+     "role": "owner-end",
+     "in_range": true
+    },
+    {
+     "frame_index": 50781,
+     "file_ms": 423196,
+     "composition_ns": 370698534114649,
+     "decoded_bgr_sha256": "2039aecd795e76844ec0d9df31a41bd1cfe8dedda46e3b838069b7952a696b72",
+     "role": "after",
+     "in_range": true
+    }
+   ]
+  },
+  {
+   "segment_id": "seg-005",
+   "start_ns": 370698532295500,
+   "end_ns": 370698534114649,
+   "machine_reason": "unsampled_edge",
+   "proposal": "rejected",
+   "verdict": "rejected",
+   "reason": "unsampled edge",
+   "frames": [
+    {
+     "frame_index": 50780,
+     "file_ms": 423188,
+     "composition_ns": 370698525781316,
+     "decoded_bgr_sha256": "1dac38d489ca737afabdb8fdc233e537fb6478c88f0a70793b61825b32923bb5",
+     "role": "before",
+     "in_range": true
+    },
+    {
+     "frame_index": 50780,
+     "file_ms": 423188,
+     "composition_ns": 370698525781316,
+     "decoded_bgr_sha256": "1dac38d489ca737afabdb8fdc233e537fb6478c88f0a70793b61825b32923bb5",
+     "role": "last_in",
+     "in_range": true
+    },
+    {
+     "frame_index": 50781,
+     "file_ms": 423196,
+     "composition_ns": 370698534114649,
+     "decoded_bgr_sha256": "2039aecd795e76844ec0d9df31a41bd1cfe8dedda46e3b838069b7952a696b72",
+     "role": "first_in",
+     "in_range": true
+    },
+    {
+     "frame_index": 50781,
+     "file_ms": 423196,
+     "composition_ns": 370698534114649,
+     "decoded_bgr_sha256": "2039aecd795e76844ec0d9df31a41bd1cfe8dedda46e3b838069b7952a696b72",
+     "role": "after",
+     "in_range": true
+    }
+   ]
+  },
+  {
+   "segment_id": "seg-006",
+   "start_ns": 370698534114649,
+   "end_ns": 371548759080641,
+   "machine_reason": "range_hud_present",
+   "proposal": "unresolved",
+   "verdict": "accepted",
+   "reason": "continuous live range play on every inspected native frame; both edge frames pass the live range guard; last frame f152808 alive 250/250 over the sea before the fall",
+   "frames": [
+    {
+     "frame_index": 50780,
+     "file_ms": 423188,
+     "composition_ns": 370698525781316,
+     "decoded_bgr_sha256": "1dac38d489ca737afabdb8fdc233e537fb6478c88f0a70793b61825b32923bb5",
+     "role": "before",
+     "in_range": true
+    },
+    {
+     "frame_index": 50781,
+     "file_ms": 423196,
+     "composition_ns": 370698534114649,
+     "decoded_bgr_sha256": "2039aecd795e76844ec0d9df31a41bd1cfe8dedda46e3b838069b7952a696b72",
+     "role": "first_in",
+     "in_range": true
+    },
+    {
+     "frame_index": 50781,
+     "file_ms": 423196,
+     "composition_ns": 370698534114649,
+     "decoded_bgr_sha256": "2039aecd795e76844ec0d9df31a41bd1cfe8dedda46e3b838069b7952a696b72",
+     "role": "owner-start",
+     "in_range": true
+    },
+    {
+     "frame_index": 51588,
+     "file_ms": 429921,
+     "composition_ns": 370705259114380,
+     "decoded_bgr_sha256": "e9fc9fc77e22b95ea8555d60d907179926f01106e205051bdbbad4ce5ae9a58a",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 51967,
+     "file_ms": 433079,
+     "composition_ns": 370708417447587,
+     "decoded_bgr_sha256": "87c4e213ff79e3475c9ad399c5b4cfef502254582e5656de5f150047d9d58363",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 53153,
+     "file_ms": 442963,
+     "composition_ns": 370718300780525,
+     "decoded_bgr_sha256": "36f4b8bc8aa5c1e2f36265ea1561195bc4999e999c78e6018c21aebad120ff76",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 54340,
+     "file_ms": 452854,
+     "composition_ns": 370728192446796,
+     "decoded_bgr_sha256": "07602b6441bd8bf409cab96784bcb8d289c64d585433db9e5c3c7e55e0d3006c",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 54855,
+     "file_ms": 457146,
+     "composition_ns": 370732484113291,
+     "decoded_bgr_sha256": "6817e7277d6ef25dae050154cec7048b3219120aece3d9cc1f02e1b212f819f7",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 55526,
+     "file_ms": 462738,
+     "composition_ns": 370738075779734,
+     "decoded_bgr_sha256": "78e676806fd34136160dcea4ef54c3c53ae4425fbe7cffbf454d77cb1cb8bcbf",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 56712,
+     "file_ms": 472621,
+     "composition_ns": 370747959112672,
+     "decoded_bgr_sha256": "59517d41c94b0543e882b71a0ef05c7e9e9b63de85a1eac0148b060d39e13185",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 57899,
+     "file_ms": 482513,
+     "composition_ns": 370757850778943,
+     "decoded_bgr_sha256": "44911e8910c8d9ccccdfdd70b22c391833d200a7aab2445e97217c2a15192f1d",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 59085,
+     "file_ms": 492396,
+     "composition_ns": 370767734111881,
+     "decoded_bgr_sha256": "dfe76be8034c80e6091272ac706eb485330282ec727aa7eb41062c654decb203",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 60271,
+     "file_ms": 502279,
+     "composition_ns": 370777617444819,
+     "decoded_bgr_sha256": "571c4a4f69a0291990531c3fe6364cd26360f62e104ffd17203512e291431d82",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 61458,
+     "file_ms": 512171,
+     "composition_ns": 370787509111090,
+     "decoded_bgr_sha256": "39ba86e11f47db035e233454fe603fce856149b6a8bb53a03d7a8b1aa3c82db8",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 62644,
+     "file_ms": 522054,
+     "composition_ns": 370797392444028,
+     "decoded_bgr_sha256": "80a53e3043a43df059ff7fd54dbb4739e4c635370a5285e9c8123d9b60d88e9a",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 63830,
+     "file_ms": 531938,
+     "composition_ns": 370807275776966,
+     "decoded_bgr_sha256": "278a2fd0fe6a0194b8fc680503a932364741a67dbbb201c27020b4b97e4255f2",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 65017,
+     "file_ms": 541829,
+     "composition_ns": 370817167443237,
+     "decoded_bgr_sha256": "6bf6105cbe6fb805d3dd83ac14927eaecb72047c46c3e74a9ef5b986311b714a",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 66203,
+     "file_ms": 551713,
+     "composition_ns": 370827050776175,
+     "decoded_bgr_sha256": "1f69e91f1dafaf87444dbc7c092eb8c026f32ddea24caeb4da68b39ee110ad9d",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 67390,
+     "file_ms": 561604,
+     "composition_ns": 370836942442446,
+     "decoded_bgr_sha256": "52114546f2daf0a1686c46fed8fb3a47f29b186d0b27632f2471fe8f42fe59a3",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 68576,
+     "file_ms": 571488,
+     "composition_ns": 370846825775384,
+     "decoded_bgr_sha256": "9c5418e77650293c60adc93c6765a4e43e83753648c8ab9ca8a8a96604448e3e",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 69762,
+     "file_ms": 581371,
+     "composition_ns": 370856709108322,
+     "decoded_bgr_sha256": "56beab8348920e7ede97af87ea32a3c28e86014cdb87716e712b6182799e3c6c",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 70392,
+     "file_ms": 586621,
+     "composition_ns": 370861959108112,
+     "decoded_bgr_sha256": "6784bf860c50d495ad979ac6f7cb5e2bc3474e546b9a23345403b09d3e611344",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 70949,
+     "file_ms": 591263,
+     "composition_ns": 370866600774593,
+     "decoded_bgr_sha256": "ef657c1c48af4a635a7e76c390e25b7713ab51a7a52e6a1fb52b1081ad850d79",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 72135,
+     "file_ms": 601146,
+     "composition_ns": 370876484107531,
+     "decoded_bgr_sha256": "a7d5132314517281dfa64d42b3a094217242d5c47e69f6a3a24f22bd59eb2261",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 73321,
+     "file_ms": 611029,
+     "composition_ns": 370886367440469,
+     "decoded_bgr_sha256": "215569842e4c9d063ad63aeccf10d481d56033f65c25a0b7b2235824f3015a07",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 74508,
+     "file_ms": 620921,
+     "composition_ns": 370896259106740,
+     "decoded_bgr_sha256": "27b7b5eee964e52293730e4d905e9eeed6f23fadc0cf34be57dc25c3ab6f3be6",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 75694,
+     "file_ms": 630804,
+     "composition_ns": 370906142439678,
+     "decoded_bgr_sha256": "02447590b775e7f3e34aae664dbc9f20848db4ba21f32fcd98b0815283a5d305",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 75726,
+     "file_ms": 631071,
+     "composition_ns": 370906409106334,
+     "decoded_bgr_sha256": "0497bab4f858d740dc4a90f363ee5a54cccd17f358fbaa61232f15b0217a166b",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 76880,
+     "file_ms": 640688,
+     "composition_ns": 370916025772616,
+     "decoded_bgr_sha256": "15077975ecd82d6ba1880826beeb9cd41b68d5d0174a211edba191a5a38eef45",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 78067,
+     "file_ms": 650579,
+     "composition_ns": 370925917438887,
+     "decoded_bgr_sha256": "32c579c8571567dcadafd90f04093111b573382ab5efd1b2c46dc148065bbe11",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 79253,
+     "file_ms": 660463,
+     "composition_ns": 370935800771825,
+     "decoded_bgr_sha256": "eace4eea35f32ab833e10f9c98436c2cf16807588b159bc816fd10a386a8ea55",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 80301,
+     "file_ms": 669196,
+     "composition_ns": 370944534104809,
+     "decoded_bgr_sha256": "6ea462a388b049a941e3fc4c31d625c38d7459a581e17e087bb81d1ae5a8d1a0",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 80440,
+     "file_ms": 670354,
+     "composition_ns": 370945692438096,
+     "decoded_bgr_sha256": "4113da45d76cc04769655ff24ec105479c7c3e981cbc5478e6c4bd54d0f125ff",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 81626,
+     "file_ms": 680238,
+     "composition_ns": 370955575771034,
+     "decoded_bgr_sha256": "e1eefb8e828c8393cdc70aa7e4c29ae8c77505e8945a8b63bb718f2a58ba8a17",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 82812,
+     "file_ms": 690121,
+     "composition_ns": 370965459103972,
+     "decoded_bgr_sha256": "43bde30310615119a37cdbff5acde74d230e91fbcf95da1fe7fec5034bf06ed1",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 83999,
+     "file_ms": 700013,
+     "composition_ns": 370975350770243,
+     "decoded_bgr_sha256": "658bceb5c0f6505b1087de29c5f367abb4b6203c34bc7a00986498a4c150fa2d",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 85185,
+     "file_ms": 709896,
+     "composition_ns": 370985234103181,
+     "decoded_bgr_sha256": "edd071c013e4479a3ddc63514df743970b693fced59658fde84c9523c28a2cb0",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 86371,
+     "file_ms": 719779,
+     "composition_ns": 370995117436119,
+     "decoded_bgr_sha256": "d9a47cac5c1412cacbe79d6d0531ccfdc3ad60fa16f9a3174b4760606c3f7a6f",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 87558,
+     "file_ms": 729671,
+     "composition_ns": 371005009102390,
+     "decoded_bgr_sha256": "3a1170b5b756d442beee49f621561242cbf6bf00e7b54eb7d88c936486d30b1a",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 88744,
+     "file_ms": 739554,
+     "composition_ns": 371014892435328,
+     "decoded_bgr_sha256": "7f6ea76817ecef2f7885e0b24ef82d612be7bc1e4062a12f660630832b455e51",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 89930,
+     "file_ms": 749438,
+     "composition_ns": 371024775768266,
+     "decoded_bgr_sha256": "01e4571fd81c96250a7ae52fed24edc24e82011ee607bac2d8d6aaf1ca39bb7c",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 91117,
+     "file_ms": 759329,
+     "composition_ns": 371034667434537,
+     "decoded_bgr_sha256": "2a80af446864bf7104ad0f8c5a2bb4387356844dd47407c3cea1bb6bdbae6b0e",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 92303,
+     "file_ms": 769213,
+     "composition_ns": 371044550767475,
+     "decoded_bgr_sha256": "a7701bf09963615a9832ac6f36759260a502e4072c1ce37abb6b5e7816271c5c",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 93489,
+     "file_ms": 779096,
+     "composition_ns": 371054434100413,
+     "decoded_bgr_sha256": "620d53e290809cd45c55a992bf4debe55fa7bd3b218e7154a332d43b6c3ddfbe",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 94018,
+     "file_ms": 783504,
+     "composition_ns": 371058842433570,
+     "decoded_bgr_sha256": "35f7daf75c29b744d505b7c639cb382b961361dcbd703239026631b8d2dfa025",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 94392,
+     "file_ms": 786621,
+     "composition_ns": 371061959100112,
+     "decoded_bgr_sha256": "a8bb364808134dc35cf2f26bc281bc010f330e58cf78a66f9799b55ff72b6199",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 94676,
+     "file_ms": 788988,
+     "composition_ns": 371064325766684,
+     "decoded_bgr_sha256": "e4f93c1e209fb9096fa91ff7a7fbe2389ca9628ff5b3da2368ac8d3464d34686",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 95354,
+     "file_ms": 794638,
+     "composition_ns": 371069975766458,
+     "decoded_bgr_sha256": "340c679d4afd4b4059140aa75975614c69c7fd30e243d62771a2127fc0c021f0",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 95862,
+     "file_ms": 798871,
+     "composition_ns": 371074209099622,
+     "decoded_bgr_sha256": "b158610418f9583d44658be8d1088d856e7ef8cc3fcc97af7d353e12d4342e8c",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 97049,
+     "file_ms": 808763,
+     "composition_ns": 371084100765893,
+     "decoded_bgr_sha256": "7d3227c4798c3f4ea5d043c44f37ca9f9b4f04f91692e1333609d9db6e66677d",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 98235,
+     "file_ms": 818646,
+     "composition_ns": 371093984098831,
+     "decoded_bgr_sha256": "eae948e4b051b1090fe27f3cfa55ba9a9ce70d2565313939503043659fcbd1d4",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 99161,
+     "file_ms": 826363,
+     "composition_ns": 371101700765189,
+     "decoded_bgr_sha256": "9592515b2418de8a59aa0feb0f79b6a7840cad1588669d80151c49e19af3c31b",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 99421,
+     "file_ms": 828529,
+     "composition_ns": 371103867431769,
+     "decoded_bgr_sha256": "7fb773b264a4b7d7c5561d34842dc8d4fbd1267bf172b06431dfa8a250ef4153",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 100608,
+     "file_ms": 838421,
+     "composition_ns": 371113759098040,
+     "decoded_bgr_sha256": "a2f0e0346a10cf4caf991c7be7f9bc9ac49a46eca2a0343f49722633544085a7",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 101026,
+     "file_ms": 841904,
+     "composition_ns": 371117242431234,
+     "decoded_bgr_sha256": "cf5ae78f4bee04199c3a9706c961371da9fbc7b5071eadfff674f678e40aa16b",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 101794,
+     "file_ms": 848304,
+     "composition_ns": 371123642430978,
+     "decoded_bgr_sha256": "2d8af95b815797fb95ba2d8af8f2af99360e964bbce1c4ffefc2e3febd510f2a",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 102980,
+     "file_ms": 858188,
+     "composition_ns": 371133525763916,
+     "decoded_bgr_sha256": "a9c9752df846927ce1af2edd7dbe87675c84b5e50754bf8d990380425ea7facb",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 104167,
+     "file_ms": 868079,
+     "composition_ns": 371143417430187,
+     "decoded_bgr_sha256": "f0baa048199e65257d4e4e8790ff2a344e1394cbf00d9fbd17fafa641798addb",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 105353,
+     "file_ms": 877963,
+     "composition_ns": 371153300763125,
+     "decoded_bgr_sha256": "36a799778c33153162312587ab6d45159edb3c1b551053e117af6afb851c6b52",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 105434,
+     "file_ms": 878638,
+     "composition_ns": 371153975763098,
+     "decoded_bgr_sha256": "07381108a962b1275e6f4499e6fff2528dec3a078ca94e702d4f8d74e9a21bfa",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 106539,
+     "file_ms": 887846,
+     "composition_ns": 371163184096063,
+     "decoded_bgr_sha256": "34b760a33ed9d833bd75d57482936a80eab9a604b2eb8ba74f695f4a29122101",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 107726,
+     "file_ms": 897738,
+     "composition_ns": 371173075762334,
+     "decoded_bgr_sha256": "f9111d12f3b13c71924cc3795ba1120cd44efa71a1a6e91e4f1c137e6092d8ea",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 108912,
+     "file_ms": 907621,
+     "composition_ns": 371182959095272,
+     "decoded_bgr_sha256": "2683632adf8bb29b1a1a331aa8c8d5bb0e8b62d84609a36c4643a391461e1eee",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 110099,
+     "file_ms": 917513,
+     "composition_ns": 371192850761543,
+     "decoded_bgr_sha256": "de45494dfc064b24dd162711d2fc61cef23cc418aa89b95d2ea6537af6550c27",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 111285,
+     "file_ms": 927396,
+     "composition_ns": 371202734094481,
+     "decoded_bgr_sha256": "8a57df81b2821871d3206b8655eb490683947cbf146fb69b9b6aca96c4c50178",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 112471,
+     "file_ms": 937279,
+     "composition_ns": 371212617427419,
+     "decoded_bgr_sha256": "c19f9e3cc07ab4a0a6d131333ba0c47c2f14ffcce07b9880e2aa2862ab5debd6",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 113658,
+     "file_ms": 947171,
+     "composition_ns": 371222509093690,
+     "decoded_bgr_sha256": "152d9fd1541a8d754264d17517be66c1839f74197657d42eae34799a89bae7da",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 114844,
+     "file_ms": 957054,
+     "composition_ns": 371232392426628,
+     "decoded_bgr_sha256": "3c747ddf29e6adf00fb61d3ae9fc5dbc7a9bce02ee0142896af03944e2142ec7",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 116030,
+     "file_ms": 966938,
+     "composition_ns": 371242275759566,
+     "decoded_bgr_sha256": "51f9e5d585e255d1cdfdc4d727319cfc14294c4a09e240da7a8d2c91bf069aa5",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 117217,
+     "file_ms": 976829,
+     "composition_ns": 371252167425837,
+     "decoded_bgr_sha256": "650e6be712bb718be27153bb1aef3f83f5210b62b04c865e42c482360b95a4cc",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 118403,
+     "file_ms": 986713,
+     "composition_ns": 371262050758775,
+     "decoded_bgr_sha256": "cd001ebc97311ce0e1427a8018c06d1dc1ad917d218a029d8237987e3eec8e6f",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 119493,
+     "file_ms": 995796,
+     "composition_ns": 371271134091745,
+     "decoded_bgr_sha256": "311ac7585c4e572c3c7634c19dd435ff686d2241086dd6cb6f5cebfabe31b895",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 119589,
+     "file_ms": 996596,
+     "composition_ns": 371271934091713,
+     "decoded_bgr_sha256": "a32104b4adb9fc94677cc2ea07c9b8095fcb22fc496750d754dcb79f28a5c4ee",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 120776,
+     "file_ms": 1006488,
+     "composition_ns": 371281825757984,
+     "decoded_bgr_sha256": "55124d7608dea3e381a4d6bfc1a3fc55f53cfdee22e2828e43875ba146870de2",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 121962,
+     "file_ms": 1016371,
+     "composition_ns": 371291709090922,
+     "decoded_bgr_sha256": "69ccfbab302aa329498718ba3215da229657fb3ad3f86e96619b0b5ddbfedde5",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 123148,
+     "file_ms": 1026254,
+     "composition_ns": 371301592423860,
+     "decoded_bgr_sha256": "0f7814e38754f5452da21cb8ecad20c28406759e7a6e41a9e5ade3e67362bb8d",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 123745,
+     "file_ms": 1031229,
+     "composition_ns": 371306567423661,
+     "decoded_bgr_sha256": "9e87c308cbae10107984690124ad275ead18aa11c25e44d26dd538cf8e6c2f5f",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 124100,
+     "file_ms": 1034188,
+     "composition_ns": 371309525756876,
+     "decoded_bgr_sha256": "17f6cd4be6752a7d1459417a894961b9d30e139259b94f8322fee72278811b97",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 124335,
+     "file_ms": 1036146,
+     "composition_ns": 371311484090131,
+     "decoded_bgr_sha256": "eb2c5bb9544b9346a2de4eccd8923d1f8a5ce8b593149be44d05bf89968fa97c",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 124822,
+     "file_ms": 1040204,
+     "composition_ns": 371315542423302,
+     "decoded_bgr_sha256": "32f04b1aa428eb69732e380db32ad313eb1d09a606b9e3c0db4d330115dc5738",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 125521,
+     "file_ms": 1046029,
+     "composition_ns": 371321367423069,
+     "decoded_bgr_sha256": "8b4f78eab69630337df53fa74f9830c5b0c10e0c4c2cc3ace885d50dbcfcbe1b",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 126708,
+     "file_ms": 1055921,
+     "composition_ns": 371331259089340,
+     "decoded_bgr_sha256": "3999b6389f0836d31c32563ac0c8c6829de44b3b5bdceae69e2076ac86325582",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 127894,
+     "file_ms": 1065804,
+     "composition_ns": 371341142422278,
+     "decoded_bgr_sha256": "04a6980bac5c7e969b35a64e4d55e39253bf7246473f50b699b97396e0546be1",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 128994,
+     "file_ms": 1074971,
+     "composition_ns": 371350309088578,
+     "decoded_bgr_sha256": "487c40b180786fedace708e5f43764a4c7859cdabe59718852a755f63a529e47",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 129080,
+     "file_ms": 1075688,
+     "composition_ns": 371351025755216,
+     "decoded_bgr_sha256": "27d7d96ceb5767a46e67db267972d667f6fc357791ef122ed7a3e94ace1844fb",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 130267,
+     "file_ms": 1085579,
+     "composition_ns": 371360917421487,
+     "decoded_bgr_sha256": "a500f4dc4d1148cfe0797d371626e31fc7a28d94317273ee61dd3a63e88ab956",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 131453,
+     "file_ms": 1095463,
+     "composition_ns": 371370800754425,
+     "decoded_bgr_sha256": "caed909910b4bf797753889c14bc68c9cf7fac38f1c01d7ffb88d8b0e5be4746",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 132639,
+     "file_ms": 1105346,
+     "composition_ns": 371380684087363,
+     "decoded_bgr_sha256": "33a95a80ccfeeb9da5b54b7f22bd9d6339ccc39037e28f56470b457f19aed63f",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 133028,
+     "file_ms": 1108588,
+     "composition_ns": 371383925753900,
+     "decoded_bgr_sha256": "7ca734b98825eb11a32266cb6469591c5cdd8006f8fd898aac1e98ce57e35a9d",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 133826,
+     "file_ms": 1115238,
+     "composition_ns": 371390575753634,
+     "decoded_bgr_sha256": "2a322e130495feae4a36e40ba009dd604e3ae6f219cca3c84b8cd4700a85b886",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 134260,
+     "file_ms": 1118854,
+     "composition_ns": 371394192420156,
+     "decoded_bgr_sha256": "5f923236ea7a6a3c73a4cecfd1dd647fc1458fbfe636ad7881b8cc6b62ceb253",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 135012,
+     "file_ms": 1125121,
+     "composition_ns": 371400459086572,
+     "decoded_bgr_sha256": "edb4b158a8339e883c4b33030675ea8e6cf23389d6e29978a65f7b5d476f2406",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 136198,
+     "file_ms": 1135004,
+     "composition_ns": 371410342419510,
+     "decoded_bgr_sha256": "df737c16891bd604cc0cded06d91d4624c137e1ad3846e0152ac783dff54834d",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 137385,
+     "file_ms": 1144896,
+     "composition_ns": 371420234085781,
+     "decoded_bgr_sha256": "55820c3f0bbc456df1907ad4e1883e6869928c7fd7e4f8e0de48facb58ea0d1e",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 138571,
+     "file_ms": 1154779,
+     "composition_ns": 371430117418719,
+     "decoded_bgr_sha256": "70f697c45452b7746c8f8d16447dab758c5e8b3b0ccdbaa1344d08264d83977e",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 139758,
+     "file_ms": 1164671,
+     "composition_ns": 371440009084990,
+     "decoded_bgr_sha256": "6bd6ff5321afbc7415438ac6a090c99eb5f1f14f8c21d60e00ee384093b97a72",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 140944,
+     "file_ms": 1174554,
+     "composition_ns": 371449892417928,
+     "decoded_bgr_sha256": "f233d619db77745b7fb00dbbc7262ea4f855c270af58ecad2af6e582df281f05",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 142130,
+     "file_ms": 1184438,
+     "composition_ns": 371459775750866,
+     "decoded_bgr_sha256": "8ff51ca3067757fde43ed60a65b2ff7b02c48f0db94e8c797795f78fa41fcf13",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 143317,
+     "file_ms": 1194329,
+     "composition_ns": 371469667417137,
+     "decoded_bgr_sha256": "2baa29402ade70dd45bb8c84657ae574f67a81688c00f771a85c89a207e1c50d",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 144503,
+     "file_ms": 1204213,
+     "composition_ns": 371479550750075,
+     "decoded_bgr_sha256": "0244bb6e85fe0a549984f3624fa4ddcb8e107cfd4318e1d9e41c3a4738b8453d",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 145689,
+     "file_ms": 1214096,
+     "composition_ns": 371489434083013,
+     "decoded_bgr_sha256": "ddffb96aea7d9e98c4338e5a5cadca7e3d5bd92893f71f7ec93277ef8dd39395",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 146185,
+     "file_ms": 1218229,
+     "composition_ns": 371493567416181,
+     "decoded_bgr_sha256": "11bbf0edb7ce01fd4bdfc2616e3ef1279c24e922af585886238072d5e2191e86",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 146876,
+     "file_ms": 1223988,
+     "composition_ns": 371499325749284,
+     "decoded_bgr_sha256": "8f6856b15be2674cd4698a5c6796dae13cf72e054612b7ac15a71dc2485f15f3",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 147069,
+     "file_ms": 1225596,
+     "composition_ns": 371500934082553,
+     "decoded_bgr_sha256": "0e091929ded37546848557ab3b8092aa8c306142d681ccf3b401d6b4f522a486",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 148062,
+     "file_ms": 1233871,
+     "composition_ns": 371509209082222,
+     "decoded_bgr_sha256": "5df7e6e99ce426e136cb23c32b0baf064c68cd94dc64d48300041a69155bacc6",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 149248,
+     "file_ms": 1243754,
+     "composition_ns": 371519092415160,
+     "decoded_bgr_sha256": "d5b9929349e8c8d55e4c93e0d429979ed5c088b3f6ef0e6a8347df97145212ee",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 150435,
+     "file_ms": 1253646,
+     "composition_ns": 371528984081431,
+     "decoded_bgr_sha256": "8553a71ce4db221f9890247ed69a03a6e3f0cfa40c444bbaef5975aebe821ec7",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 151621,
+     "file_ms": 1263529,
+     "composition_ns": 371538867414369,
+     "decoded_bgr_sha256": "a4391b4851dceb20d7736b395f82a917bca6bcf08327cc71bac4de9709990ddd",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 152808,
+     "file_ms": 1273421,
+     "composition_ns": 371548759080640,
+     "decoded_bgr_sha256": "f6746539616337130a395259229d6e60ef5751654446bb0b00c8c616bc065d7d",
+     "role": "last_in",
+     "in_range": true
+    },
+    {
+     "frame_index": 152808,
+     "file_ms": 1273421,
+     "composition_ns": 371548759080640,
+     "decoded_bgr_sha256": "f6746539616337130a395259229d6e60ef5751654446bb0b00c8c616bc065d7d",
+     "role": "owner-end",
+     "in_range": true
+    },
+    {
+     "frame_index": 152809,
+     "file_ms": 1273429,
+     "composition_ns": 371548767413973,
+     "decoded_bgr_sha256": "ea88d4d4415727ac21a2c1b4653b21f86ad15c120e886934ddc3634b138798e0",
+     "role": "after",
+     "in_range": true
+    }
+   ]
+  },
+  {
+   "segment_id": "seg-007",
+   "start_ns": 371548759080641,
+   "end_ns": 371550959080592,
+   "machine_reason": "dead",
+   "proposal": "rejected",
+   "verdict": "rejected",
+   "reason": "dead: sea fall, 0/250 and 1s SPECTATING by 1273.70 s; spawn room with the 1 s respawn settle",
+   "frames": [
+    {
+     "frame_index": 152808,
+     "file_ms": 1273421,
+     "composition_ns": 371548759080640,
+     "decoded_bgr_sha256": "f6746539616337130a395259229d6e60ef5751654446bb0b00c8c616bc065d7d",
+     "role": "before",
+     "in_range": true
+    },
+    {
+     "frame_index": 152809,
+     "file_ms": 1273429,
+     "composition_ns": 371548767413973,
+     "decoded_bgr_sha256": "ea88d4d4415727ac21a2c1b4653b21f86ad15c120e886934ddc3634b138798e0",
+     "role": "first_in",
+     "in_range": true
+    },
+    {
+     "frame_index": 152809,
+     "file_ms": 1273429,
+     "composition_ns": 371548767413973,
+     "decoded_bgr_sha256": "ea88d4d4415727ac21a2c1b4653b21f86ad15c120e886934ddc3634b138798e0",
+     "role": "owner-start",
+     "in_range": true
+    },
+    {
+     "frame_index": 152940,
+     "file_ms": 1274521,
+     "composition_ns": 371549859080596,
+     "decoded_bgr_sha256": "04d8a83dd04ae446f201c6a0d5d8f8d449034735522efc4848a2f297203acad9",
+     "role": "owner-interior",
+     "in_range": false
+    },
+    {
+     "frame_index": 153072,
+     "file_ms": 1275621,
+     "composition_ns": 371550959080552,
+     "decoded_bgr_sha256": "0f9ba4fce344a5e2ab72ce272e82194b1520b9b46c821e4df61352eb19b082fe",
+     "role": "last_in",
+     "in_range": true
+    },
+    {
+     "frame_index": 153072,
+     "file_ms": 1275621,
+     "composition_ns": 371550959080552,
+     "decoded_bgr_sha256": "0f9ba4fce344a5e2ab72ce272e82194b1520b9b46c821e4df61352eb19b082fe",
+     "role": "owner-end",
+     "in_range": true
+    },
+    {
+     "frame_index": 153073,
+     "file_ms": 1275629,
+     "composition_ns": 371550967413885,
+     "decoded_bgr_sha256": "4ff0bc231d931c87d6b02906879c62225edf60a032d075a06a5bfd06352f1172",
+     "role": "after",
+     "in_range": true
+    }
+   ]
+  },
+  {
+   "segment_id": "seg-008",
+   "start_ns": 371550959080592,
+   "end_ns": 371550967413885,
+   "machine_reason": "unsampled_edge",
+   "proposal": "rejected",
+   "verdict": "rejected",
+   "reason": "unsampled edge",
+   "frames": [
+    {
+     "frame_index": 153072,
+     "file_ms": 1275621,
+     "composition_ns": 371550959080552,
+     "decoded_bgr_sha256": "0f9ba4fce344a5e2ab72ce272e82194b1520b9b46c821e4df61352eb19b082fe",
+     "role": "before",
+     "in_range": true
+    },
+    {
+     "frame_index": 153072,
+     "file_ms": 1275621,
+     "composition_ns": 371550959080552,
+     "decoded_bgr_sha256": "0f9ba4fce344a5e2ab72ce272e82194b1520b9b46c821e4df61352eb19b082fe",
+     "role": "last_in",
+     "in_range": true
+    },
+    {
+     "frame_index": 153073,
+     "file_ms": 1275629,
+     "composition_ns": 371550967413885,
+     "decoded_bgr_sha256": "4ff0bc231d931c87d6b02906879c62225edf60a032d075a06a5bfd06352f1172",
+     "role": "first_in",
+     "in_range": true
+    },
+    {
+     "frame_index": 153073,
+     "file_ms": 1275629,
+     "composition_ns": 371550967413885,
+     "decoded_bgr_sha256": "4ff0bc231d931c87d6b02906879c62225edf60a032d075a06a5bfd06352f1172",
+     "role": "after",
+     "in_range": true
+    }
+   ]
+  },
+  {
+   "segment_id": "seg-009",
+   "start_ns": 371550967413885,
+   "end_ns": 371678534075450,
+   "machine_reason": "range_hud_present",
+   "proposal": "unresolved",
+   "verdict": "accepted",
+   "reason": "continuous live range play on every inspected native frame; both edge frames pass the live range guard",
+   "frames": [
+    {
+     "frame_index": 153072,
+     "file_ms": 1275621,
+     "composition_ns": 371550959080552,
+     "decoded_bgr_sha256": "0f9ba4fce344a5e2ab72ce272e82194b1520b9b46c821e4df61352eb19b082fe",
+     "role": "before",
+     "in_range": true
+    },
+    {
+     "frame_index": 153073,
+     "file_ms": 1275629,
+     "composition_ns": 371550967413885,
+     "decoded_bgr_sha256": "4ff0bc231d931c87d6b02906879c62225edf60a032d075a06a5bfd06352f1172",
+     "role": "first_in",
+     "in_range": true
+    },
+    {
+     "frame_index": 153073,
+     "file_ms": 1275629,
+     "composition_ns": 371550967413885,
+     "decoded_bgr_sha256": "4ff0bc231d931c87d6b02906879c62225edf60a032d075a06a5bfd06352f1172",
+     "role": "owner-start",
+     "in_range": true
+    },
+    {
+     "frame_index": 154017,
+     "file_ms": 1283496,
+     "composition_ns": 371558834080237,
+     "decoded_bgr_sha256": "37f78d42d99f20622a0165f1c51dc9d38e2cc98944284c1d34a093ed0357f11a",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 154250,
+     "file_ms": 1285438,
+     "composition_ns": 371560775746826,
+     "decoded_bgr_sha256": "881bf12982357a52416d2bc32b13df68fa8c2e8ba0086ccf2aa5d2031d37b2c7",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 154864,
+     "file_ms": 1290554,
+     "composition_ns": 371565892413288,
+     "decoded_bgr_sha256": "8a787cc9b44b53283c0084322e3eefac32439089921168b0015b0ccdfc175633",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 155428,
+     "file_ms": 1295254,
+     "composition_ns": 371570592413100,
+     "decoded_bgr_sha256": "3afe6f4e47509a9cd06531865fd9de489498652e1dbdbe3d8326218dc15c2661",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 155475,
+     "file_ms": 1295646,
+     "composition_ns": 371570984079751,
+     "decoded_bgr_sha256": "a517cb74460ebc267a35418ff9a8ac6712760f89232141070e9b01201f3d047f",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 155919,
+     "file_ms": 1299346,
+     "composition_ns": 371574684079603,
+     "decoded_bgr_sha256": "a5d7b6fd2b3d62d187207d88ee77383ec587b3144cb682cde95018c03872e06e",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 156605,
+     "file_ms": 1305063,
+     "composition_ns": 371580400746041,
+     "decoded_bgr_sha256": "a7f2c3711155f4fc0f564fab4437b1c53d72721afb9a8745b7bf3c4a8c90db09",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 157321,
+     "file_ms": 1311029,
+     "composition_ns": 371586367412469,
+     "decoded_bgr_sha256": "ff026b502b2371adfc133eb4859ed961840393cb8bcd85ee1b13c22043691abf",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 157541,
+     "file_ms": 1312863,
+     "composition_ns": 371588200745729,
+     "decoded_bgr_sha256": "5d14ab572e63818a40d4ee4360c6b79bd5e64792472d71bdd54585419ec97901",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 157783,
+     "file_ms": 1314879,
+     "composition_ns": 371590217412315,
+     "decoded_bgr_sha256": "a59480f396f6cc8f82b1788e9edb65490fa218da14242815b3f3473c9950bd99",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 158063,
+     "file_ms": 1317213,
+     "composition_ns": 371592550745555,
+     "decoded_bgr_sha256": "ad0a93a28c7607bafec3605975b6c68cfd2426da8352fcb1ce5aeb8638f7dd43",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 158697,
+     "file_ms": 1322496,
+     "composition_ns": 371597834078677,
+     "decoded_bgr_sha256": "185fcfd95c496d687346e089f12d6de098f9f3f0676b95fb67ba671e3dff5147",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 158960,
+     "file_ms": 1324688,
+     "composition_ns": 371600025745256,
+     "decoded_bgr_sha256": "c54fd3aeaea6626fc0dd5d884c6b505ba86da07b4e8d56dc3539e86abcc2a64c",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 160138,
+     "file_ms": 1334504,
+     "composition_ns": 371609842411530,
+     "decoded_bgr_sha256": "faa72992bc0e4b7857538ec4185b154bbed893effb5ae0c12aa8988a1321086f",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 160453,
+     "file_ms": 1337129,
+     "composition_ns": 371612467411425,
+     "decoded_bgr_sha256": "0817e4cf73c230d2c6d8104fc5e25ce7ae46285ee1d77c43d5482a6c6c9ebb30",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 161315,
+     "file_ms": 1344313,
+     "composition_ns": 371619650744471,
+     "decoded_bgr_sha256": "2e6aa61ceae22a261da08d08dde06c2b69bf02c3d9cfd83fc754301f435906dc",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 161391,
+     "file_ms": 1344946,
+     "composition_ns": 371620284077779,
+     "decoded_bgr_sha256": "d755cf3df2cab654aa6a0222436edb0b40de3f97774e889166ce45c7abae3cdc",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 161393,
+     "file_ms": 1344963,
+     "composition_ns": 371620300744445,
+     "decoded_bgr_sha256": "0d5e026ffd42fa263084e7751f56de92ab8be8469e00a819440e78a6ba59502c",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 162493,
+     "file_ms": 1354129,
+     "composition_ns": 371629467410745,
+     "decoded_bgr_sha256": "5e2ad5d1d0487f2497835ae99601fae3fa3a4128db29e854fba2ba144444998e",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 163378,
+     "file_ms": 1361504,
+     "composition_ns": 371636842410450,
+     "decoded_bgr_sha256": "b478896e1583f2c266697fce41a7b409f3c5129f87d0740c481e77f145718373",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 163670,
+     "file_ms": 1363938,
+     "composition_ns": 371639275743686,
+     "decoded_bgr_sha256": "3d152e2d510e9134f2038ec3c1b97b8e35c9f8dcbda71b255ef58d194e1676d6",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 163817,
+     "file_ms": 1365163,
+     "composition_ns": 371640500743637,
+     "decoded_bgr_sha256": "8a4c4c7c38b6da31e55f0fe492be1e2fd9f67592b226e3ad28efbbd1387792eb",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 164184,
+     "file_ms": 1368221,
+     "composition_ns": 371643559076848,
+     "decoded_bgr_sha256": "09ae21f04174768e24c44d20de8e5572857007afd0c6ba2ba9fcedc988589381",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 164848,
+     "file_ms": 1373754,
+     "composition_ns": 371649092409960,
+     "decoded_bgr_sha256": "93a60d16f4129becb46a58b2c3da3cf3bb0585b7741121d340c53fb65d11d129",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 165282,
+     "file_ms": 1377371,
+     "composition_ns": 371652709076482,
+     "decoded_bgr_sha256": "86ae10abaff1139d9c926ce0c93751502232c31a14ebbde060b601254548985f",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 165385,
+     "file_ms": 1378229,
+     "composition_ns": 371653567409781,
+     "decoded_bgr_sha256": "8ca820394bdc8caec8ff90b0e08dd54d98c3c43310133511b94902cfd59cbc6c",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 165714,
+     "file_ms": 1380971,
+     "composition_ns": 371656309076338,
+     "decoded_bgr_sha256": "100e2605894021a37d5581bf8b6267600895da25e345efbab3c2c689287f16a9",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 165923,
+     "file_ms": 1382713,
+     "composition_ns": 371658050742935,
+     "decoded_bgr_sha256": "f8e9738f61429d8aed1fc4d1c7e9ae4b15b0f4748d1566659a9b0d1c95e7e265",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 166025,
+     "file_ms": 1383563,
+     "composition_ns": 371658900742901,
+     "decoded_bgr_sha256": "eac231a9d0fd704dcc382fcb9f4fa6fd2fb51232c1927caa0b907c90fdef73d3",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 167203,
+     "file_ms": 1393379,
+     "composition_ns": 371668717409175,
+     "decoded_bgr_sha256": "8086b80215d1d0e56026a5f652755467310eb11a65561b6859e8774884a5b5ac",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 167284,
+     "file_ms": 1394054,
+     "composition_ns": 371669392409148,
+     "decoded_bgr_sha256": "f24d6ca48739e94114a609016e042a7432f12647203df6a1c7357795cceb79fd",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 167981,
+     "file_ms": 1399863,
+     "composition_ns": 371675200742249,
+     "decoded_bgr_sha256": "4321b2f9267addad78537021cecaf61d4740f00c0cfa963dda968bbb1a595d70",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 168381,
+     "file_ms": 1403196,
+     "composition_ns": 371678534075449,
+     "decoded_bgr_sha256": "4fea4e573b6b45a6341c304e19dd28107cf472139716f1bfdd23420df729bccb",
+     "role": "last_in",
+     "in_range": true
+    },
+    {
+     "frame_index": 168381,
+     "file_ms": 1403196,
+     "composition_ns": 371678534075449,
+     "decoded_bgr_sha256": "4fea4e573b6b45a6341c304e19dd28107cf472139716f1bfdd23420df729bccb",
+     "role": "owner-end",
+     "in_range": true
+    },
+    {
+     "frame_index": 168382,
+     "file_ms": 1403204,
+     "composition_ns": 371678542408782,
+     "decoded_bgr_sha256": "488a2925602100c007dd6d05a1a29a9988726fd84e498ef6112e423a5f2d5546",
+     "role": "after",
+     "in_range": true
+    }
+   ]
+  },
+  {
+   "segment_id": "seg-010",
+   "start_ns": 371678534075450,
+   "end_ns": 371678542145100,
+   "machine_reason": "unsampled_edge",
+   "proposal": "rejected",
+   "verdict": "rejected",
+   "reason": "unsampled edge",
+   "frames": [
+    {
+     "frame_index": 168381,
+     "file_ms": 1403196,
+     "composition_ns": 371678534075449,
+     "decoded_bgr_sha256": "4fea4e573b6b45a6341c304e19dd28107cf472139716f1bfdd23420df729bccb",
+     "role": "before",
+     "in_range": true
+    },
+    {
+     "frame_index": 168381,
+     "file_ms": 1403196,
+     "composition_ns": 371678534075449,
+     "decoded_bgr_sha256": "4fea4e573b6b45a6341c304e19dd28107cf472139716f1bfdd23420df729bccb",
+     "role": "last_in",
+     "in_range": true
+    },
+    {
+     "frame_index": 168382,
+     "file_ms": 1403204,
+     "composition_ns": 371678542408782,
+     "decoded_bgr_sha256": "488a2925602100c007dd6d05a1a29a9988726fd84e498ef6112e423a5f2d5546",
+     "role": "first_in",
+     "in_range": true
+    },
+    {
+     "frame_index": 168382,
+     "file_ms": 1403204,
+     "composition_ns": 371678542408782,
+     "decoded_bgr_sha256": "488a2925602100c007dd6d05a1a29a9988726fd84e498ef6112e423a5f2d5546",
+     "role": "after",
+     "in_range": true
+    }
+   ]
+  },
+  {
+   "segment_id": "seg-011",
+   "start_ns": 371678542145100,
+   "end_ns": 371734628484700,
+   "machine_reason": "afk",
+   "proposal": "rejected",
+   "verdict": "rejected",
+   "reason": "afk: 56.1 s with no control input (1403.335-1459.422 s); hero idle; Windows audio-device banner at ~1420 s",
+   "frames": [
+    {
+     "frame_index": 168381,
+     "file_ms": 1403196,
+     "composition_ns": 371678534075449,
+     "decoded_bgr_sha256": "4fea4e573b6b45a6341c304e19dd28107cf472139716f1bfdd23420df729bccb",
+     "role": "before",
+     "in_range": true
+    },
+    {
+     "frame_index": 168382,
+     "file_ms": 1403204,
+     "composition_ns": 371678542408782,
+     "decoded_bgr_sha256": "488a2925602100c007dd6d05a1a29a9988726fd84e498ef6112e423a5f2d5546",
+     "role": "first_in",
+     "in_range": true
+    },
+    {
+     "frame_index": 168382,
+     "file_ms": 1403204,
+     "composition_ns": 371678542408782,
+     "decoded_bgr_sha256": "488a2925602100c007dd6d05a1a29a9988726fd84e498ef6112e423a5f2d5546",
+     "role": "owner-start",
+     "in_range": true
+    },
+    {
+     "frame_index": 169503,
+     "file_ms": 1412546,
+     "composition_ns": 371687884075075,
+     "decoded_bgr_sha256": "438e5624e4fc7eb59b8abaf71004495ee579503d7cf0dbc213a1c8aeb8c592f8",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 170625,
+     "file_ms": 1421896,
+     "composition_ns": 371697234074701,
+     "decoded_bgr_sha256": "07cec9da562a6e6e9600fb6fe7fa4ea586de84da73102307b6116e59aeb8f24d",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 171747,
+     "file_ms": 1431246,
+     "composition_ns": 371706584074327,
+     "decoded_bgr_sha256": "f66fc78db120021b1b9173d3aa6426f2a7c133afb327d8ef0b51f8000c022e4f",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 172868,
+     "file_ms": 1440588,
+     "composition_ns": 371715925740620,
+     "decoded_bgr_sha256": "10e39d6fc0b8df375a92d6a14c570ca53a18869495e33a58c285d3e32a64d753",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 173990,
+     "file_ms": 1449938,
+     "composition_ns": 371725275740246,
+     "decoded_bgr_sha256": "587d879e08f3849dab60bacbabffde998a20325dccba11f3da2adda8d3341fc5",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 175112,
+     "file_ms": 1459288,
+     "composition_ns": 371734625739872,
+     "decoded_bgr_sha256": "2fd948d22b5339b511bd99c4ba36b63c32705f8681cc199de850ae355b776e9e",
+     "role": "last_in",
+     "in_range": true
+    },
+    {
+     "frame_index": 175112,
+     "file_ms": 1459288,
+     "composition_ns": 371734625739872,
+     "decoded_bgr_sha256": "2fd948d22b5339b511bd99c4ba36b63c32705f8681cc199de850ae355b776e9e",
+     "role": "owner-end",
+     "in_range": true
+    },
+    {
+     "frame_index": 175113,
+     "file_ms": 1459296,
+     "composition_ns": 371734634073205,
+     "decoded_bgr_sha256": "39203338f8ea5fa38d4f762e93baea944892c6617a24786f07200162eac29a0e",
+     "role": "after",
+     "in_range": true
+    }
+   ]
+  },
+  {
+   "segment_id": "seg-012",
+   "start_ns": 371734628484700,
+   "end_ns": 371734634073205,
+   "machine_reason": "unsampled_edge",
+   "proposal": "rejected",
+   "verdict": "rejected",
+   "reason": "unsampled edge",
+   "frames": [
+    {
+     "frame_index": 175112,
+     "file_ms": 1459288,
+     "composition_ns": 371734625739872,
+     "decoded_bgr_sha256": "2fd948d22b5339b511bd99c4ba36b63c32705f8681cc199de850ae355b776e9e",
+     "role": "before",
+     "in_range": true
+    },
+    {
+     "frame_index": 175112,
+     "file_ms": 1459288,
+     "composition_ns": 371734625739872,
+     "decoded_bgr_sha256": "2fd948d22b5339b511bd99c4ba36b63c32705f8681cc199de850ae355b776e9e",
+     "role": "last_in",
+     "in_range": true
+    },
+    {
+     "frame_index": 175113,
+     "file_ms": 1459296,
+     "composition_ns": 371734634073205,
+     "decoded_bgr_sha256": "39203338f8ea5fa38d4f762e93baea944892c6617a24786f07200162eac29a0e",
+     "role": "first_in",
+     "in_range": true
+    },
+    {
+     "frame_index": 175113,
+     "file_ms": 1459296,
+     "composition_ns": 371734634073205,
+     "decoded_bgr_sha256": "39203338f8ea5fa38d4f762e93baea944892c6617a24786f07200162eac29a0e",
+     "role": "after",
+     "in_range": true
+    }
+   ]
+  },
+  {
+   "segment_id": "seg-013",
+   "start_ns": 371734634073205,
+   "end_ns": 372186359055137,
+   "machine_reason": "range_hud_present",
+   "proposal": "unresolved",
+   "verdict": "accepted",
+   "reason": "continuous live range play on every inspected native frame; both edge frames pass the live range guard; last frame f229320 alive, falling off the map edge",
+   "frames": [
+    {
+     "frame_index": 175112,
+     "file_ms": 1459288,
+     "composition_ns": 371734625739872,
+     "decoded_bgr_sha256": "2fd948d22b5339b511bd99c4ba36b63c32705f8681cc199de850ae355b776e9e",
+     "role": "before",
+     "in_range": true
+    },
+    {
+     "frame_index": 175113,
+     "file_ms": 1459296,
+     "composition_ns": 371734634073205,
+     "decoded_bgr_sha256": "39203338f8ea5fa38d4f762e93baea944892c6617a24786f07200162eac29a0e",
+     "role": "first_in",
+     "in_range": true
+    },
+    {
+     "frame_index": 175113,
+     "file_ms": 1459296,
+     "composition_ns": 371734634073205,
+     "decoded_bgr_sha256": "39203338f8ea5fa38d4f762e93baea944892c6617a24786f07200162eac29a0e",
+     "role": "owner-start",
+     "in_range": true
+    },
+    {
+     "frame_index": 176291,
+     "file_ms": 1469113,
+     "composition_ns": 371744450739479,
+     "decoded_bgr_sha256": "6a14518fcf711692fa2f3df184456a929bfecaea95eced77fe698ba61dc583ec",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 177469,
+     "file_ms": 1478929,
+     "composition_ns": 371754267405753,
+     "decoded_bgr_sha256": "92f445776ff9483e15848e63edba3f11da785917028afaa7ac7e598b0993758e",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 178648,
+     "file_ms": 1488754,
+     "composition_ns": 371764092405360,
+     "decoded_bgr_sha256": "83c4343dd84844d383f0a1cbddfee7de82bb975bcbf19d5ad56867b13ecead05",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 179508,
+     "file_ms": 1495921,
+     "composition_ns": 371771259071740,
+     "decoded_bgr_sha256": "bf78d92cf7b8ec0bb828e437196f30c8643c5f12b59fdf4dbbb2c1ebd5f987c4",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 179826,
+     "file_ms": 1498571,
+     "composition_ns": 371773909071634,
+     "decoded_bgr_sha256": "4b3b7e1ad19b5ac3fb170984f96c577ea44de3d9faf24d9152d65c3b8b5d5e2b",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 180036,
+     "file_ms": 1500321,
+     "composition_ns": 371775659071564,
+     "decoded_bgr_sha256": "e1c7770e6847afcaf2f20d253baf26501f0b843b7eb1b9864f8256587aa8083a",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 180446,
+     "file_ms": 1503738,
+     "composition_ns": 371779075738094,
+     "decoded_bgr_sha256": "0017ddab62338fc472aeabea07e39fa0d7d2e219b23023e441ab962f4a2ff050",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 181005,
+     "file_ms": 1508396,
+     "composition_ns": 371783734071241,
+     "decoded_bgr_sha256": "cee2647928c3c80375cdcd2ff777132b16e26c10e0253b908148176ab7d2d9dc",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 182183,
+     "file_ms": 1518213,
+     "composition_ns": 371793550737515,
+     "decoded_bgr_sha256": "293c098d08e99270dc9aad5205141330f38ccfcc20239090880c2c57d3886423",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 183361,
+     "file_ms": 1528029,
+     "composition_ns": 371803367403789,
+     "decoded_bgr_sha256": "cbc51bdd8029201fe54ffb085d548ef79fcf8c264a16df471b6492b34a2418d5",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 184540,
+     "file_ms": 1537854,
+     "composition_ns": 371813192403396,
+     "decoded_bgr_sha256": "5db59bc1016d2ab6d6cb72dfd64a54f8e02f3e543b3705257c02dee99ba09eb8",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 185443,
+     "file_ms": 1545379,
+     "composition_ns": 371820717403095,
+     "decoded_bgr_sha256": "6a1f1a1e64631bd68d8d97a5f7e56ef4ee7f60e0b14b529291aaa287d8680630",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 185718,
+     "file_ms": 1547671,
+     "composition_ns": 371823009069670,
+     "decoded_bgr_sha256": "20e0169537d341101ce13730fe419b8edee5fa8842687aa3e1c5cf45f1cd523d",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 186897,
+     "file_ms": 1557496,
+     "composition_ns": 371832834069277,
+     "decoded_bgr_sha256": "9d6723d938c3ca9bb28eb68b5cc2cb4c326cc780dd424021d2125bce6e74f8f6",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 187436,
+     "file_ms": 1561988,
+     "composition_ns": 371837325735764,
+     "decoded_bgr_sha256": "784ebb1e39f8c11fa0cce290bfe912d7284ccef4322c2d84cda175297fb90b1f",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 188075,
+     "file_ms": 1567313,
+     "composition_ns": 371842650735551,
+     "decoded_bgr_sha256": "11008790846e39aed79ff2fc21f5d20565b49dd5d98a6adc64c81e2e02f50d03",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 189253,
+     "file_ms": 1577129,
+     "composition_ns": 371852467401825,
+     "decoded_bgr_sha256": "f4505b399013078293815abed87972a1460f497d743882d054698ab59a5da542",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 190432,
+     "file_ms": 1586954,
+     "composition_ns": 371862292401432,
+     "decoded_bgr_sha256": "35d892b5d5e8bac0253d4091447f3c2d061c56056d1e1a16b594c2a2d3524c88",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 190904,
+     "file_ms": 1590888,
+     "composition_ns": 371866225734608,
+     "decoded_bgr_sha256": "56e1aba57cf4e0542a0fa9c421943b6fa24d248307c0455c2b740a6816fffa2b",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 191069,
+     "file_ms": 1592263,
+     "composition_ns": 371867600734553,
+     "decoded_bgr_sha256": "4d19d9325654ca17f40cf365a3fd4284650c14238a4db7505e415057466a5ec5",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 191415,
+     "file_ms": 1595146,
+     "composition_ns": 371870484067771,
+     "decoded_bgr_sha256": "f204a8ab9d6911bf4ee903a6c68f4b76855c1c1917e3b6787f1a1e43a8d76942",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 191587,
+     "file_ms": 1596579,
+     "composition_ns": 371871917401047,
+     "decoded_bgr_sha256": "20e74b5e4eb00371d33f7911f25446ed459146e19a046f0941d75ab58f51e011",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 191610,
+     "file_ms": 1596771,
+     "composition_ns": 371872109067706,
+     "decoded_bgr_sha256": "c216481ef0c1b88001fe089b5af08cb5b56f0f0063344b4a076a513121bd59ec",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 192789,
+     "file_ms": 1606596,
+     "composition_ns": 371881934067313,
+     "decoded_bgr_sha256": "31abcae705c35e54f1b9e8242600238f7f0cf985d10a69492028208feea503b9",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 193967,
+     "file_ms": 1616413,
+     "composition_ns": 371891750733587,
+     "decoded_bgr_sha256": "fb0c928d64b0311d78be95160bfff521b26342600995b4bdd03e2e966e4acbe1",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 195146,
+     "file_ms": 1626238,
+     "composition_ns": 371901575733194,
+     "decoded_bgr_sha256": "4b03fe4d8ffa49d15af79d7db9feaa20fb51934cb0841a64c189afaf9d7aaeff",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 196324,
+     "file_ms": 1636054,
+     "composition_ns": 371911392399468,
+     "decoded_bgr_sha256": "4a6289f9290ae109d3e0bbebf0f02f83e193d80e88644af5f8564facfe384a20",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 197502,
+     "file_ms": 1645871,
+     "composition_ns": 371921209065742,
+     "decoded_bgr_sha256": "b88f77111249190f475cb4c34312cc25356fa2e64eabc9a99e9e5b1f98644a73",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 198681,
+     "file_ms": 1655696,
+     "composition_ns": 371931034065349,
+     "decoded_bgr_sha256": "6e6b6ee2ec5c5022a92526b847dc6a0e088e12b539edad74ca0d94868a0d0389",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 199859,
+     "file_ms": 1665513,
+     "composition_ns": 371940850731623,
+     "decoded_bgr_sha256": "e426b724dab3284f98963f0114b933215f9994362777bc15c13f06440781003f",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 201038,
+     "file_ms": 1675338,
+     "composition_ns": 371950675731230,
+     "decoded_bgr_sha256": "f9d83d1fbe7780eb4291db350cfd58c88487e2b53747098d84e31300dff26ba1",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 201695,
+     "file_ms": 1680813,
+     "composition_ns": 371956150731011,
+     "decoded_bgr_sha256": "05a42bf19678cb20f24b92ede2bb522ebfa970e8b9466f856ec8d1150ec15476",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 202120,
+     "file_ms": 1684354,
+     "composition_ns": 371959692397536,
+     "decoded_bgr_sha256": "b0e4a7ea0f1db1c9a594d5f0c70c458b4c878bfd068cd97d8949472c854d4e73",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 202216,
+     "file_ms": 1685154,
+     "composition_ns": 371960492397504,
+     "decoded_bgr_sha256": "f94cff35c1ea95b5266a94e5dde51fe1d1dab668dd70b858b8881324d2b893e7",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 203394,
+     "file_ms": 1694971,
+     "composition_ns": 371970309063778,
+     "decoded_bgr_sha256": "33b1fea74ff92612a3001d4acc4a80fb178d01d392b4ff8917a9fd5cc11205ea",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 204469,
+     "file_ms": 1703929,
+     "composition_ns": 371979267396753,
+     "decoded_bgr_sha256": "f2d094ae7024a6d98ffc0b835dd81054be273e97c1f2a47db9c728ef84bcd1ce",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 204573,
+     "file_ms": 1704796,
+     "composition_ns": 371980134063385,
+     "decoded_bgr_sha256": "299729cae6711678dfd4cd0b304ffac04563551f3534745c97144ac2fb96759d",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 205751,
+     "file_ms": 1714613,
+     "composition_ns": 371989950729659,
+     "decoded_bgr_sha256": "23f9ea3ba58cc39d65872e01f9a4d784b0c67238d9c75f2fbd09b5afa3d43fe0",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 206930,
+     "file_ms": 1724438,
+     "composition_ns": 371999775729266,
+     "decoded_bgr_sha256": "bc430a1dd4f96853a30ea330b002c803337a29895c3f247ce8446e4deffe264c",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 208108,
+     "file_ms": 1734254,
+     "composition_ns": 372009592395540,
+     "decoded_bgr_sha256": "e7738e55e35b5db5b1ff4fb9f93c2dca5fbebba570f9286f8a1bf9225a2085d3",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 208573,
+     "file_ms": 1738129,
+     "composition_ns": 372013467395385,
+     "decoded_bgr_sha256": "631eb56da8524cbc4c5057faf26fb7400571fd9eb2a3b72b23dbd54726dd3fee",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 209286,
+     "file_ms": 1744071,
+     "composition_ns": 372019409061814,
+     "decoded_bgr_sha256": "8f250dc9046e549775a35d24f0282c7069346cfc8a737f9d24962ed28e62c579",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 210465,
+     "file_ms": 1753896,
+     "composition_ns": 372029234061421,
+     "decoded_bgr_sha256": "4fe587e78caa5e721ad7d38dc62f866d1a2614d8a39165703ea6f092f88e3ada",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 211643,
+     "file_ms": 1763713,
+     "composition_ns": 372039050727695,
+     "decoded_bgr_sha256": "786a0cf42a527afd13450460fc8c7ea170d3868a3b7c9b17b88cb73c9365e88e",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 211728,
+     "file_ms": 1764421,
+     "composition_ns": 372039759061000,
+     "decoded_bgr_sha256": "c8688a373b6dc6936d82affe61ce09c037c898b9c0e56158accec97f0f206ab4",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 212822,
+     "file_ms": 1773538,
+     "composition_ns": 372048875727302,
+     "decoded_bgr_sha256": "491457460ded2a8add86905f7d4111a0a1f1e9ca9d8e91965205bf08dfd676e1",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 213969,
+     "file_ms": 1783096,
+     "composition_ns": 372058434060253,
+     "decoded_bgr_sha256": "9fba971983ff2f210cbd5354738a790eb47d54ac3dc050b0a2a1e01c7eb8faed",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 214000,
+     "file_ms": 1783354,
+     "composition_ns": 372058692393576,
+     "decoded_bgr_sha256": "2571cef2c1dde0959066b3b638e507edc7be7e5b71b38e836d2f2a48c130b0d0",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 215150,
+     "file_ms": 1792938,
+     "composition_ns": 372068275726526,
+     "decoded_bgr_sha256": "ce749269e0da846df2d9e9b33882d4cec0a8849c96f921fa9e0ec9f3e7243242",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 215179,
+     "file_ms": 1793179,
+     "composition_ns": 372068517393183,
+     "decoded_bgr_sha256": "c802d7875f7b612cbb61719cc2cda39070a6d5f618ece5ecb474718bc1322d6a",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 215572,
+     "file_ms": 1796454,
+     "composition_ns": 372071792393052,
+     "decoded_bgr_sha256": "081dec63cb684b06afa807c2867d7aa9c8f7ea87c610751dcea06cac582be4a7",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 216357,
+     "file_ms": 1802996,
+     "composition_ns": 372078334059457,
+     "decoded_bgr_sha256": "05c7e85bf2b9fb2d545bc0899daef0f0683561ec3b036b7b7b24fa8d2c069995",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 217293,
+     "file_ms": 1810796,
+     "composition_ns": 372086134059145,
+     "decoded_bgr_sha256": "71a9e6892754e1ebd6281f36c85ea5ca59969b727e7a24d20aa1888414c40628",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 217535,
+     "file_ms": 1812813,
+     "composition_ns": 372088150725731,
+     "decoded_bgr_sha256": "0daaef62df0fe9b09d028606545ffd4fd0d5ce76149d5cf55b0a15f3e0932ee9",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 218714,
+     "file_ms": 1822638,
+     "composition_ns": 372097975725338,
+     "decoded_bgr_sha256": "257955c7e9dba211a6a445220ef69acd8cdf5cb67660aaaa106db6838a587f3d",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 219892,
+     "file_ms": 1832454,
+     "composition_ns": 372107792391612,
+     "decoded_bgr_sha256": "7463d11d0c3373fd6a0995627224260d351c8edb47f5c5a7c9a22a968e87487f",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 220120,
+     "file_ms": 1834354,
+     "composition_ns": 372109692391536,
+     "decoded_bgr_sha256": "641687505f8e271c4f35ece9e9fd7b59bb64204a98ca2457b7a6d6b60ea37349",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 221071,
+     "file_ms": 1842279,
+     "composition_ns": 372117617391219,
+     "decoded_bgr_sha256": "94ad17625391627b17b53228372b096ab39255ded305811c5eee08c8189a395f",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 222249,
+     "file_ms": 1852096,
+     "composition_ns": 372127434057493,
+     "decoded_bgr_sha256": "adce96629ffe988842697772f42a57d11580b1898f631286ce1a7ff96e874237",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 223427,
+     "file_ms": 1861913,
+     "composition_ns": 372137250723767,
+     "decoded_bgr_sha256": "0c28c9c1d575ff67643e8e87bab456355a94c34524f5152fd6a4cae5b12b88f9",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 224440,
+     "file_ms": 1870354,
+     "composition_ns": 372145692390096,
+     "decoded_bgr_sha256": "e6514208af1843b7ba701718bc357ba70d6375b3cecaec81caf09822fcfa018f",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 224606,
+     "file_ms": 1871738,
+     "composition_ns": 372147075723374,
+     "decoded_bgr_sha256": "8370fa7f2ac01d11df0cb3c8b6b608bf8b1aa1231679ab72d3bfd032a32e29e8",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 225784,
+     "file_ms": 1881554,
+     "composition_ns": 372156892389648,
+     "decoded_bgr_sha256": "c9e94e685e672a2fc280d469169a196bd9ff1e4b1f99846ce4bcb2c3dadcb601",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 226963,
+     "file_ms": 1891379,
+     "composition_ns": 372166717389255,
+     "decoded_bgr_sha256": "964a2c074e5f85c1c9cd513e26dc57fc1451377cd617ea6b9dc1189a7177aca9",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 228141,
+     "file_ms": 1901196,
+     "composition_ns": 372176534055529,
+     "decoded_bgr_sha256": "23dfd777c6f72307ec79a24a73d8e79f16586b458d8336ec748364f4a46f3d47",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 229320,
+     "file_ms": 1911021,
+     "composition_ns": 372186359055136,
+     "decoded_bgr_sha256": "67b35f9dce3e6ec6e38eb68adbfd7b0ecd2e0540e0b7c32798a6a90d257cbc31",
+     "role": "last_in",
+     "in_range": true
+    },
+    {
+     "frame_index": 229320,
+     "file_ms": 1911021,
+     "composition_ns": 372186359055136,
+     "decoded_bgr_sha256": "67b35f9dce3e6ec6e38eb68adbfd7b0ecd2e0540e0b7c32798a6a90d257cbc31",
+     "role": "owner-end",
+     "in_range": true
+    },
+    {
+     "frame_index": 229321,
+     "file_ms": 1911029,
+     "composition_ns": 372186367388469,
+     "decoded_bgr_sha256": "cb506a84f547c8e9cf757ed54859b8d383265076de795105d8afd3215bf8ced3",
+     "role": "after",
+     "in_range": true
+    }
+   ]
+  },
+  {
+   "segment_id": "seg-014",
+   "start_ns": 372186359055137,
+   "end_ns": 372188559055088,
+   "machine_reason": "dead",
+   "proposal": "rejected",
+   "verdict": "rejected",
+   "reason": "dead: 0/250 and 1s SPECTATING by 1911.30 s; spawn room with the 1 s respawn settle",
+   "frames": [
+    {
+     "frame_index": 229320,
+     "file_ms": 1911021,
+     "composition_ns": 372186359055136,
+     "decoded_bgr_sha256": "67b35f9dce3e6ec6e38eb68adbfd7b0ecd2e0540e0b7c32798a6a90d257cbc31",
+     "role": "before",
+     "in_range": true
+    },
+    {
+     "frame_index": 229321,
+     "file_ms": 1911029,
+     "composition_ns": 372186367388469,
+     "decoded_bgr_sha256": "cb506a84f547c8e9cf757ed54859b8d383265076de795105d8afd3215bf8ced3",
+     "role": "first_in",
+     "in_range": true
+    },
+    {
+     "frame_index": 229321,
+     "file_ms": 1911029,
+     "composition_ns": 372186367388469,
+     "decoded_bgr_sha256": "cb506a84f547c8e9cf757ed54859b8d383265076de795105d8afd3215bf8ced3",
+     "role": "owner-start",
+     "in_range": true
+    },
+    {
+     "frame_index": 229452,
+     "file_ms": 1912121,
+     "composition_ns": 372187459055092,
+     "decoded_bgr_sha256": "d57adf339fb2871b38efd05b65c276dd64486bcd4f1299637aaa7dbf5e9940b6",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 229584,
+     "file_ms": 1913221,
+     "composition_ns": 372188559055048,
+     "decoded_bgr_sha256": "c9029f06cbdc8ea19075298046f6f4a09718bcadb4e3bedf1932b5f41a085213",
+     "role": "last_in",
+     "in_range": true
+    },
+    {
+     "frame_index": 229584,
+     "file_ms": 1913221,
+     "composition_ns": 372188559055048,
+     "decoded_bgr_sha256": "c9029f06cbdc8ea19075298046f6f4a09718bcadb4e3bedf1932b5f41a085213",
+     "role": "owner-end",
+     "in_range": true
+    },
+    {
+     "frame_index": 229585,
+     "file_ms": 1913229,
+     "composition_ns": 372188567388381,
+     "decoded_bgr_sha256": "c6ba5d7f97703929f32a40ebe762be8d6d911e2bc1bc8e323b4fe485078a6f87",
+     "role": "after",
+     "in_range": true
+    }
+   ]
+  },
+  {
+   "segment_id": "seg-015",
+   "start_ns": 372188559055088,
+   "end_ns": 372188567388381,
+   "machine_reason": "unsampled_edge",
+   "proposal": "rejected",
+   "verdict": "rejected",
+   "reason": "unsampled edge",
+   "frames": [
+    {
+     "frame_index": 229584,
+     "file_ms": 1913221,
+     "composition_ns": 372188559055048,
+     "decoded_bgr_sha256": "c9029f06cbdc8ea19075298046f6f4a09718bcadb4e3bedf1932b5f41a085213",
+     "role": "before",
+     "in_range": true
+    },
+    {
+     "frame_index": 229584,
+     "file_ms": 1913221,
+     "composition_ns": 372188559055048,
+     "decoded_bgr_sha256": "c9029f06cbdc8ea19075298046f6f4a09718bcadb4e3bedf1932b5f41a085213",
+     "role": "last_in",
+     "in_range": true
+    },
+    {
+     "frame_index": 229585,
+     "file_ms": 1913229,
+     "composition_ns": 372188567388381,
+     "decoded_bgr_sha256": "c6ba5d7f97703929f32a40ebe762be8d6d911e2bc1bc8e323b4fe485078a6f87",
+     "role": "first_in",
+     "in_range": true
+    },
+    {
+     "frame_index": 229585,
+     "file_ms": 1913229,
+     "composition_ns": 372188567388381,
+     "decoded_bgr_sha256": "c6ba5d7f97703929f32a40ebe762be8d6d911e2bc1bc8e323b4fe485078a6f87",
+     "role": "after",
+     "in_range": true
+    }
+   ]
+  },
+  {
+   "segment_id": "seg-016",
+   "start_ns": 372188567388381,
+   "end_ns": 372468092377201,
+   "machine_reason": "range_hud_present",
+   "proposal": "unresolved",
+   "verdict": "accepted",
+   "reason": "continuous live range play on every inspected native frame; both edge frames pass the live range guard; last frame f263128 is play before the Alt packet",
+   "frames": [
+    {
+     "frame_index": 229584,
+     "file_ms": 1913221,
+     "composition_ns": 372188559055048,
+     "decoded_bgr_sha256": "c9029f06cbdc8ea19075298046f6f4a09718bcadb4e3bedf1932b5f41a085213",
+     "role": "before",
+     "in_range": true
+    },
+    {
+     "frame_index": 229585,
+     "file_ms": 1913229,
+     "composition_ns": 372188567388381,
+     "decoded_bgr_sha256": "c6ba5d7f97703929f32a40ebe762be8d6d911e2bc1bc8e323b4fe485078a6f87",
+     "role": "first_in",
+     "in_range": true
+    },
+    {
+     "frame_index": 229585,
+     "file_ms": 1913229,
+     "composition_ns": 372188567388381,
+     "decoded_bgr_sha256": "c6ba5d7f97703929f32a40ebe762be8d6d911e2bc1bc8e323b4fe485078a6f87",
+     "role": "owner-start",
+     "in_range": true
+    },
+    {
+     "frame_index": 230499,
+     "file_ms": 1920846,
+     "composition_ns": 372196184054743,
+     "decoded_bgr_sha256": "a023107eb6f89b56a16042a8237f44dd04109f9d29020c2f1649a62b37d14a6a",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 230553,
+     "file_ms": 1921296,
+     "composition_ns": 372196634054725,
+     "decoded_bgr_sha256": "f0f48a5d77b73c81a9ecf1656d78d3688ed35836f7b0406cbe61e1ae13bf51bb",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 230782,
+     "file_ms": 1923204,
+     "composition_ns": 372198542387982,
+     "decoded_bgr_sha256": "79fb5544435331fc357231fa9b77fdf28ed46b1b9175768a1b353cf4d8b4e1b7",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 231484,
+     "file_ms": 1929054,
+     "composition_ns": 372204392387748,
+     "decoded_bgr_sha256": "a49802086fc32c310f08bf7f09f01d9df8689a65778a90a758dc8c4cb12bfe22",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 231980,
+     "file_ms": 1933188,
+     "composition_ns": 372208525720916,
+     "decoded_bgr_sha256": "8df80becac6f2fd1454b7cc23a765e8be529596236ab86ccbd39b1d0e4d2ac6b",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 232328,
+     "file_ms": 1936088,
+     "composition_ns": 372211425720800,
+     "decoded_bgr_sha256": "b7d775b0c9f953ed008815d06d881aff645bbe09371d242a510a06a6886c5055",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 233178,
+     "file_ms": 1943171,
+     "composition_ns": 372218509053850,
+     "decoded_bgr_sha256": "d2a4922383cca7cc3628409f1e23339c05171c363dd677504f8d9658c8d12ca3",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 233498,
+     "file_ms": 1945838,
+     "composition_ns": 372221175720410,
+     "decoded_bgr_sha256": "e13b7e2174c932570652fab0f16f295fda54158d07ab732aaa040051b3fb8fe7",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 234376,
+     "file_ms": 1953154,
+     "composition_ns": 372228492386784,
+     "decoded_bgr_sha256": "8a4ca4673099135fc771205553176786bc7dc0aecb7fd1ad5729ef0c3cadc5c4",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 234459,
+     "file_ms": 1953846,
+     "composition_ns": 372229184053423,
+     "decoded_bgr_sha256": "2de71fe2ab6c17d2dc3ecbbcc429f72d9ab9a4db7a49d14fe5d97fdde240f6e7",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 235574,
+     "file_ms": 1963138,
+     "composition_ns": 372238475719718,
+     "decoded_bgr_sha256": "68c4e8d79de80f62d265a85235ec2f2f74ef746fc700b98186d700de5d694a48",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 235811,
+     "file_ms": 1965113,
+     "composition_ns": 372240450719639,
+     "decoded_bgr_sha256": "6440de49894280525ac76dcc8a69f7b9a0bbd832230cbc7aa556087633e7fe7c",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 236772,
+     "file_ms": 1973121,
+     "composition_ns": 372248459052652,
+     "decoded_bgr_sha256": "076f41224fb6c63f3100093154b51154088c697a41ac18520651d310e822f7b5",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 237398,
+     "file_ms": 1978338,
+     "composition_ns": 372253675719110,
+     "decoded_bgr_sha256": "585474fd7149bcdfc295d7f1d878f8857dc4df26aabebdc55cf900a00d929f55",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 237970,
+     "file_ms": 1983104,
+     "composition_ns": 372258442385586,
+     "decoded_bgr_sha256": "bf3f71c2d51879bd8e5af287de91e62789f906f5eccda55f614e045ab5a18cb1",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 239168,
+     "file_ms": 1993088,
+     "composition_ns": 372268425718520,
+     "decoded_bgr_sha256": "2bac08be08ac1d0fd3062de21db609d616b3f8e4601adcabc19def54f92fc5c7",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 240366,
+     "file_ms": 2003071,
+     "composition_ns": 372278409051454,
+     "decoded_bgr_sha256": "3821a8c755d9c6d0e4dc4f30cccdab20e06a32457605e2cae1bafe90cd3d2c76",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 241564,
+     "file_ms": 2013054,
+     "composition_ns": 372288392384388,
+     "decoded_bgr_sha256": "105b42937dda422c216459d7008eca55eaeedff2aa7b7a67d8e524fbe4500418",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 242762,
+     "file_ms": 2023038,
+     "composition_ns": 372298375717322,
+     "decoded_bgr_sha256": "a695e2eb3cfb4bd02c2d3e6c1e5d1d26fb7eb89f57da3bcdefc6d4dfc5cc7ab1",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 243635,
+     "file_ms": 2030313,
+     "composition_ns": 372305650717031,
+     "decoded_bgr_sha256": "6a5680b8eeace3b50f7076cf79a271170390f7c3fe435906b9a8907f7cb83586",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 243960,
+     "file_ms": 2033021,
+     "composition_ns": 372308359050256,
+     "decoded_bgr_sha256": "e6c3d4064f871ae8d49d49b006bdfe32b8efb7a9369b93c7c308691490757bb8",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 245158,
+     "file_ms": 2043004,
+     "composition_ns": 372318342383190,
+     "decoded_bgr_sha256": "30021dd981fa8562cd08ee8f0ea1ce088060b1a12327836ee7d9f1b36c89ef5b",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 246004,
+     "file_ms": 2050054,
+     "composition_ns": 372325392382908,
+     "decoded_bgr_sha256": "11db19a533fb0e838c20e028ec724caf9ea54bbe6077057effd148ce3201dc5f",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 246356,
+     "file_ms": 2052988,
+     "composition_ns": 372328325716124,
+     "decoded_bgr_sha256": "3ce7961d079a7d21f725b74552d46fdb989d24847fa3b32bb039d492e3489fdf",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 246538,
+     "file_ms": 2054504,
+     "composition_ns": 372329842382730,
+     "decoded_bgr_sha256": "68a0f9d86098b5e44317bc1f6d0a706eb89e39f5e422fd83192a12534027055c",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 247380,
+     "file_ms": 2061521,
+     "composition_ns": 372336859049116,
+     "decoded_bgr_sha256": "76a7ee325376c56abfad093171abfc99b73a9a606511f5190f4f5ae8ebfc602d",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 247554,
+     "file_ms": 2062971,
+     "composition_ns": 372338309049058,
+     "decoded_bgr_sha256": "cdab38b4ec7dc37bcb0fcf9a6118ff44560fff9f020f18a95d60f6a2636d1476",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 248167,
+     "file_ms": 2068079,
+     "composition_ns": 372343417382187,
+     "decoded_bgr_sha256": "01360794c4ce6c1938c1367f75ed503f29efa413723dbf3e0cb5bbf3cdb07c04",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 248376,
+     "file_ms": 2069821,
+     "composition_ns": 372345159048784,
+     "decoded_bgr_sha256": "556d1894c5978d10a0e79f0ca254930ee1df70e2622fcc4f85e16d9b2727e9ae",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 248752,
+     "file_ms": 2072954,
+     "composition_ns": 372348292381992,
+     "decoded_bgr_sha256": "a772bf5bf5c3a10df901017d84bd82220400edf34958be46ff6e0bb77425c1de",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 248960,
+     "file_ms": 2074688,
+     "composition_ns": 372350025715256,
+     "decoded_bgr_sha256": "13bdb124696508a6a08cb01a83e887a94b2dde9f9ca2489d9e112d3a1b31905d",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 249950,
+     "file_ms": 2082938,
+     "composition_ns": 372358275714926,
+     "decoded_bgr_sha256": "2601f3aa527895dff5f308bdad3554fc22c58720052b4fae82bfec467a627294",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 250811,
+     "file_ms": 2090113,
+     "composition_ns": 372365450714639,
+     "decoded_bgr_sha256": "334bd8a7d429add057af2370cb52914e53181801fb432fccd20fa06b36eabe24",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 251148,
+     "file_ms": 2092921,
+     "composition_ns": 372368259047860,
+     "decoded_bgr_sha256": "1a9bd3c97308c599d860442fe7d5022626a764e3905e588e458653297c689121",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 252346,
+     "file_ms": 2102904,
+     "composition_ns": 372378242380794,
+     "decoded_bgr_sha256": "b6e7062b6e0da5db8f385e823eb6497c8d5ebb3ef40cfe7cf8b1e5118dd6fed5",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 253544,
+     "file_ms": 2112888,
+     "composition_ns": 372388225713728,
+     "decoded_bgr_sha256": "4ab8150dd8dd363ab23252112946cdefa8eead35d7d08f3607103e6e469bd45e",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 254742,
+     "file_ms": 2122871,
+     "composition_ns": 372398209046662,
+     "decoded_bgr_sha256": "b419b0b8da6db8fa454b9945a08164b7e461d9dfe019920e7c9d5233cea1c94a",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 255940,
+     "file_ms": 2132854,
+     "composition_ns": 372408192379596,
+     "decoded_bgr_sha256": "ec625b43d8a6b6643d8c999e2ef4741da12d7aae42e4572a626b7320f3295d27",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 257138,
+     "file_ms": 2142838,
+     "composition_ns": 372418175712530,
+     "decoded_bgr_sha256": "86d944bab03f4b867e16453f83cb70b27c06ba0e94f0f4eae78413aef6be55cf",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 257372,
+     "file_ms": 2144788,
+     "composition_ns": 372420125712452,
+     "decoded_bgr_sha256": "176c79c30112bb0cb983da25e165c836462ff9b9728bb68728d48a1aa8b25bd7",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 257835,
+     "file_ms": 2148646,
+     "composition_ns": 372423984045631,
+     "decoded_bgr_sha256": "fa87b8a3cb493c29ec6e5f318cf86843b4d312dde6393ed6a5e01c25c4a19b1d",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 258336,
+     "file_ms": 2152821,
+     "composition_ns": 372428159045464,
+     "decoded_bgr_sha256": "0d969f0863c1fc2b4f50844954ddd97b4ca557b27515870487ed6aaaccffc984",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 258396,
+     "file_ms": 2153321,
+     "composition_ns": 372428659045444,
+     "decoded_bgr_sha256": "47668ee527c75f20b1af36fc2d992fc0fb77cd33bcc3fd3df32da20bf73332d8",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 259534,
+     "file_ms": 2162804,
+     "composition_ns": 372438142378398,
+     "decoded_bgr_sha256": "03a770d14b31f9a42f4f2c5d7c5dff2d7d013a1387f579f83bcd3939b6988d98",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 260594,
+     "file_ms": 2171638,
+     "composition_ns": 372446975711378,
+     "decoded_bgr_sha256": "8f40d7e7e2310d59550640525e0a1188de9fe67909e053ed8ce3bda9b1a12d90",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 260732,
+     "file_ms": 2172788,
+     "composition_ns": 372448125711332,
+     "decoded_bgr_sha256": "464dd9daf00f1d7f898c77d8c0ca1658f24857d3b0143bf0ca247631fe022365",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 261930,
+     "file_ms": 2182771,
+     "composition_ns": 372458109044266,
+     "decoded_bgr_sha256": "67486cba27b2923734454ea2f8ef963ba39b56e063421d3bcd878e93012e4290",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 263128,
+     "file_ms": 2192754,
+     "composition_ns": 372468092377200,
+     "decoded_bgr_sha256": "a2d3c2a310cdbde6d66cca943c9cd5adae90e4d48eea0a06f4ab800e0e213b35",
+     "role": "last_in",
+     "in_range": true
+    },
+    {
+     "frame_index": 263128,
+     "file_ms": 2192754,
+     "composition_ns": 372468092377200,
+     "decoded_bgr_sha256": "a2d3c2a310cdbde6d66cca943c9cd5adae90e4d48eea0a06f4ab800e0e213b35",
+     "role": "owner-end",
+     "in_range": true
+    },
+    {
+     "frame_index": 263129,
+     "file_ms": 2192763,
+     "composition_ns": 372468100710533,
+     "decoded_bgr_sha256": "baf1a2cb53d0dda9b9360ad0997752dd26f6a1afb48e34b1acecf1470f6c824b",
+     "role": "after",
+     "in_range": true
+    }
+   ]
+  },
+  {
+   "segment_id": "seg-017",
+   "start_ns": 372468092377201,
+   "end_ns": 372468095443300,
+   "machine_reason": "unsampled_edge",
+   "proposal": "rejected",
+   "verdict": "rejected",
+   "reason": "unsampled edge",
+   "frames": [
+    {
+     "frame_index": 263128,
+     "file_ms": 2192754,
+     "composition_ns": 372468092377200,
+     "decoded_bgr_sha256": "a2d3c2a310cdbde6d66cca943c9cd5adae90e4d48eea0a06f4ab800e0e213b35",
+     "role": "before",
+     "in_range": true
+    },
+    {
+     "frame_index": 263128,
+     "file_ms": 2192754,
+     "composition_ns": 372468092377200,
+     "decoded_bgr_sha256": "a2d3c2a310cdbde6d66cca943c9cd5adae90e4d48eea0a06f4ab800e0e213b35",
+     "role": "last_in",
+     "in_range": true
+    },
+    {
+     "frame_index": 263129,
+     "file_ms": 2192763,
+     "composition_ns": 372468100710533,
+     "decoded_bgr_sha256": "baf1a2cb53d0dda9b9360ad0997752dd26f6a1afb48e34b1acecf1470f6c824b",
+     "role": "first_in",
+     "in_range": true
+    },
+    {
+     "frame_index": 263129,
+     "file_ms": 2192763,
+     "composition_ns": 372468100710533,
+     "decoded_bgr_sha256": "baf1a2cb53d0dda9b9360ad0997752dd26f6a1afb48e34b1acecf1470f6c824b",
+     "role": "after",
+     "in_range": true
+    }
+   ]
+  },
+  {
+   "segment_id": "seg-018",
+   "start_ns": 372468095443300,
+   "end_ns": 372468254756300,
+   "machine_reason": "ui_key",
+   "proposal": "rejected",
+   "verdict": "rejected",
+   "reason": "ui_key: Alt down 2192.889 s, focus lost 2193.048 s",
+   "frames": [
+    {
+     "frame_index": 263128,
+     "file_ms": 2192754,
+     "composition_ns": 372468092377200,
+     "decoded_bgr_sha256": "a2d3c2a310cdbde6d66cca943c9cd5adae90e4d48eea0a06f4ab800e0e213b35",
+     "role": "before",
+     "in_range": true
+    },
+    {
+     "frame_index": 263129,
+     "file_ms": 2192763,
+     "composition_ns": 372468100710533,
+     "decoded_bgr_sha256": "baf1a2cb53d0dda9b9360ad0997752dd26f6a1afb48e34b1acecf1470f6c824b",
+     "role": "first_in",
+     "in_range": true
+    },
+    {
+     "frame_index": 263129,
+     "file_ms": 2192763,
+     "composition_ns": 372468100710533,
+     "decoded_bgr_sha256": "baf1a2cb53d0dda9b9360ad0997752dd26f6a1afb48e34b1acecf1470f6c824b",
+     "role": "owner-start",
+     "in_range": true
+    },
+    {
+     "frame_index": 263138,
+     "file_ms": 2192838,
+     "composition_ns": 372468175710530,
+     "decoded_bgr_sha256": "fa86bca4fd6c7b80e7e0695c314972371ad8d29ff47ec4b732d4cbafee929d1b",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 263147,
+     "file_ms": 2192913,
+     "composition_ns": 372468250710527,
+     "decoded_bgr_sha256": "c0f84f54741ce2443d506a07bc0c771622c73ef24ecc24f4ce3f5f569ac5625f",
+     "role": "last_in",
+     "in_range": true
+    },
+    {
+     "frame_index": 263147,
+     "file_ms": 2192913,
+     "composition_ns": 372468250710527,
+     "decoded_bgr_sha256": "c0f84f54741ce2443d506a07bc0c771622c73ef24ecc24f4ce3f5f569ac5625f",
+     "role": "owner-end",
+     "in_range": true
+    },
+    {
+     "frame_index": 263148,
+     "file_ms": 2192921,
+     "composition_ns": 372468259043860,
+     "decoded_bgr_sha256": "6469643479765c0855e74bc576619523d44dab459a955a3b71c92f1c7265c343",
+     "role": "after",
+     "in_range": true
+    }
+   ]
+  }
+ ]
+}

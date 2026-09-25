@@ -30,7 +30,10 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
 SCAN = 'data/human/inspection/20260922T033319-205Z-24328-2/regime-scan/scan.py'
 SCAN_SHA = '3b5ada424273cbde222096f5a729c18a9f72d48b3837856b8e0b34d672388b5d'
-LANE = ['agent/human_intake.py', 'tests/test_human_intake.py', 'tests/human_intake_fixtures.py']
+# the lane's modules: the intake, and since 2026-09-25 the importer (lead decision, option A: one duplicated
+# composition time outside accepted segments)
+LANE = ['agent/human_intake.py', 'tests/test_human_intake.py', 'tests/human_intake_fixtures.py', 'agent/human_demos.py',
+        'tests/test_human_demos.py']
 
 commit = subprocess.run(['git', '-C', str(ROOT), 'rev-parse', sys.argv[1]], check=True, capture_output=True,
                         text=True).stdout.strip()

@@ -1,0 +1,57 @@
+{
+ "format": "rivals-session-artifact-hashes-v1",
+ "session": "20260924T232304-170Z-12024-1",
+ "status": "assembled",
+ "split": "train",
+ "sitting": "2026-09-24-early-evening",
+ "settings_identity": "a8dea3bacebbe9377c8ea9bc7f517e7d907e126c61634676883599dbf2e3d1fd",
+ "counted_minutes": 8.765416316083334,
+ "snapshot": "code-snapshot-b7d4592",
+ "calibration": {
+  "kind": "slow_turn_constant",
+  "yaw_deg_per_count": 0.0330738,
+  "pitch_deg_per_count": 0.0330738,
+  "pitch": {
+   "kind": "derived_equal_sensitivity"
+  },
+  "accel_on": true,
+  "source": "data/human/calibration/20260923T204707-487Z-45572-2/calibration.json (v2) (baa49158c9911e01)"
+ },
+ "supersedes": null,
+ "files": {
+  "data/human/sessions/20260924T232304-170Z-12024-1/20260924T232304-170Z-12024-1.steps.jsonl": "8a6c63d4024b13d5b73ab0154f434782e6cfc853d6eaa8291bd9fa8ca8f3b1b1",
+  "data/human/sessions/20260924T232304-170Z-12024-1/candidates-pass1.json": "c6dab7e32a5242858d0052b501d74f34f68f6482daf847ebd380f274e656d06c",
+  "data/human/sessions/20260924T232304-170Z-12024-1/hud-scan-samples.jsonl": "eb6a2d0f0cdd951d77dd99ed68a7cd45ea90509c9832f22174540b595beab415",
+  "data/human/sessions/20260924T232304-170Z-12024-1/imported-demo.jsonl": "1cde21bdd67b88102199b104df6fec826aa0f2c7147c55dd9896b2376ed07d5c",
+  "data/human/sessions/20260924T232304-170Z-12024-1/independent-review.md": "27e60855cfbdda8da0389734230cf6f51fb1e012116df36c5b8b3d715920969c",
+  "data/human/sessions/20260924T232304-170Z-12024-1/independent-review.verdicts.json": "8a504cbdd6321c771553fe6c39ddfa9aa719ab9153a64c7e223c2472d9a04529",
+  "data/human/sessions/20260924T232304-170Z-12024-1/input-profile.json": "1e78e5bd9c078ec83efbabef7b2ff02abdf84ed418c1078c52f380c02d7b8662",
+  "data/human/sessions/20260924T232304-170Z-12024-1/minutes.json": "5a46215cfae3406d272571dd2e9a7b996ba8be8d781154e2a193331c18bff005",
+  "data/human/sessions/20260924T232304-170Z-12024-1/motor-settings.json": "46e82b4f110d514996625c5824dce7105e076863b4763e3e534b1554577201eb",
+  "data/human/sessions/20260924T232304-170Z-12024-1/motor-settings.v1.json": "14334d6bcea838140f58f0710ee7e94559c8c17d1e3d16661700c02ffa63761d",
+  "data/human/sessions/20260924T232304-170Z-12024-1/owner-verdicts.json": "a9ec8cb3c2e85c73ab91f0d0179d606bed6ddaf62fe1f2aadf230bbead391eab",
+  "data/human/sessions/20260924T232304-170Z-12024-1/owner-verdicts.v1.json": "452c438141bfad119b6d20ea39857283c57de12beac9044ea5fcdfa80450a4db",
+  "data/human/sessions/20260924T232304-170Z-12024-1/provenance.json": "9e2825039380f24929e9d969989f0ebe2490eee877a041e95f3b80f33b5b8bb4",
+  "data/human/sessions/20260924T232304-170Z-12024-1/recorder-verification.json": "5ca18044e68600c646a3a5c5e5c3b4ec5d8792fc030cc5f4d93bf863d0684319",
+  "data/human/sessions/20260924T232304-170Z-12024-1/recording-log.dfbb4dd.md": "25c9f622155726df96d5ab33bd021288630a74656b6a18d3dbf9748d41f4b799",
+  "data/human/sessions/20260924T232304-170Z-12024-1/regime-timeline.json": "b67fd6dd3468e271ea2e6047c4446fda185f4e4105ca7bb953495fcd05d7febc",
+  "data/human/sessions/20260924T232304-170Z-12024-1/registry.f36e9e3b5650.json": "f36e9e3b565041cbd719d3d4c6b80033d66a685a599f3b6607e67bab3ee574fb",
+  "data/human/sessions/20260924T232304-170Z-12024-1/review.json": "80a049d44e05a82fc97c106109bddd6b0492beee185811b25c204da7884baf89",
+  "data/human/sessions/20260924T232304-170Z-12024-1/sampling.json": "243f9265474b2dbe084723f632a9894bc2dc1ef2e3126f3b7e4b472c690c4de1",
+  "data/human/sessions/20260924T232304-170Z-12024-1/segments-evidence.json": "939c3a5154cebb453bcb480b7089e4967f909f3c93b48b67d18bd9f07315d48d",
+  "data/human/sessions/20260924T232304-170Z-12024-1/segments-evidence.v1.json": "504e11fa998b52005dc46e8de5219faecf838137273bccf8223684a0ce6d01c2",
+  "data/human/sessions/20260924T232304-170Z-12024-1/settings.json": "ebbfa839979d577256945695c2b6fe408d8c6abb1ffbf3f147d93777ca11ba13",
+  "data/human/sessions/20260924T232304-170Z-12024-1/slot-mapping.json": "e2f10206ae497a837358e3c092413d1a83056b6955496752a379da8850cb6aca"
+ },
+ "external": {
+  "C:/Users/volpe/Videos/2026-09-24 18-23-04.mkv": "58f8e234d7694cf4537788060378f919d4cebbb94c13d78c42b4225117f54ad7",
+  "C:/Users/volpe/Videos/RivalsInput/20260924T232304-170Z-12024-1/metadata.json": "c7baffb0748dbdf7c70d81c176da82ce66fb41d1e89aa9ad41e10cec36a19711",
+  "C:/Users/volpe/Videos/RivalsInput/20260924T232304-170Z-12024-1/inputs.jsonl": "e906c61f2a0850ae88836c30c38297106148bd848fab295578de86d040cfe847",
+  "C:/Users/volpe/Videos/RivalsInput/20260924T232304-170Z-12024-1/frames.csv": "d16777f7f339705b8342781b5451b72ef00ef390ddf20825d929458b5eaa0d2d",
+  "data/human/sealed-denylist.json": "57cfe01f29f6e1a55293f968ec697aa293c268bd87d7cf247ef648279e2fba7c",
+  "data/human/notes/2026-09-21-user-settings.json": "852c92254961b4fcb1278e8ebe752ea2f02ce6add678509d3276fd1a26264c6c",
+  "data/human/inspection/20260922T033319-205Z-24328-2/independent-review-resolution.md": "a67f55f36554887d97765b4552a33ac5c92494f6a50c814801183528a0c3c8e6",
+  "data/human/sessions/code-snapshot-b7d4592/manifest.json": "1927686c80e620e968796798d5a7c3facbff95f6cdff239f814eff33c2401e74",
+  "data/human/calibration/20260923T204707-487Z-45572-2/calibration.json": "baa49158c9911e0155a2d06883faec00150b297e0a5fe0e8dd46fc86d5310283"
+ }
+}

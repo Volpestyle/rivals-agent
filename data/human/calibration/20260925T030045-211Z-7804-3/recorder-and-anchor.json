@@ -1,0 +1,145 @@
+{
+ "report": {
+  "integrity_ok": true,
+  "errors": [],
+  "warnings": [
+   "Capture/display/input-delivery latency has not been calibrated",
+   "Only matched file frames are usable; OBS muxer discarded trailing callback packets"
+  ],
+  "decoded_video_frames": 5480,
+  "matched_video_frames": 5480,
+  "unwritten_muxer_tail_packets": 1,
+  "muxer_pts_offset_seconds": 0.021,
+  "max_video_pts_residual_seconds": 0.0003333333333372934,
+  "composition_duration_seconds": 45.674998173,
+  "counts": {
+   "key": 1,
+   "mouse": 3324,
+   "focus": 3,
+   "pause": 0,
+   "gap": 0,
+   "frames": 5481,
+   "raw_input_status": 1
+  }
+ },
+ "first_packets": [
+  "1,0.000000,0.000000,K__",
+  "0,0.021000,N/A,K__",
+  "0,0.046000,0.021000,___",
+  "0,0.029000,0.029000,___",
+  "1,0.021000,0.021000,K__",
+  "0,0.038000,0.038000,___",
+  "0,0.071000,0.046000,___",
+  "1,0.042000,0.042000,K__",
+  "0,0.054000,0.054000,___",
+  "0,0.063000,0.063000,___",
+  "0,0.096000,0.071000,___",
+  "1,0.064000,0.064000,K__",
+  "0,0.079000,0.079000,___",
+  "0,0.088000,0.088000,___",
+  "1,0.085000,0.085000,K__",
+  "0,0.121000,0.096000,___",
+  "0,0.104000,0.104000,___",
+  "0,0.113000,0.113000,___",
+  "1,0.106000,0.106000,K__",
+  "0,0.146000,0.121000,___",
+  "0,0.129000,0.129000,___",
+  "1,0.128000,0.128000,K__",
+  "0,0.138000,0.138000,___",
+  "0,0.171000,0.146000,___"
+ ],
+ "callback_pred_first16_video_ms": [
+  21,
+  46,
+  29,
+  38,
+  71,
+  54,
+  63,
+  96,
+  79,
+  88,
+  121,
+  104,
+  113,
+  146,
+  129,
+  138
+ ],
+ "callback_pts_first16": [
+  0,
+  3,
+  1,
+  2,
+  6,
+  4,
+  5,
+  9,
+  7,
+  8,
+  12,
+  10,
+  11,
+  15,
+  13,
+  14
+ ],
+ "callback_dts_first16": [
+  -2,
+  -1,
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13
+ ],
+ "streams": {
+  "programs": [],
+  "stream_groups": [],
+  "streams": [
+   {
+    "index": 0,
+    "codec_name": "hevc",
+    "profile": "Main",
+    "has_b_frames": 1,
+    "avg_frame_rate": "120/1",
+    "time_base": "1/1000"
+   },
+   {
+    "index": 1,
+    "codec_name": "aac",
+    "profile": "LC",
+    "sample_rate": "48000",
+    "avg_frame_rate": "0/0",
+    "time_base": "1/1000"
+   }
+  ],
+  "format": {
+   "duration": "45.704000",
+   "size": "315448302",
+   "bit_rate": "55215876",
+   "tags": {
+    "ENCODER": "Lavf61.7.100"
+   }
+  }
+ },
+ "media_sha256": "ff6b1fa017cb251c599603a7d10f6ddb03ef832c15c71af6270b8c4ff07c0aca",
+ "meta": {
+  "obs_version": "32.0.1",
+  "video_packets": 5481,
+  "input_events": 3325,
+  "status": "complete",
+  "clean_stop": true,
+  "queue_dropped_events": 0,
+  "raw_input_errors": 0
+ }
+}

@@ -1,0 +1,1232 @@
+{
+ "kind": "independent_session_review",
+ "session": "20260924T232304-170Z-12024-1",
+ "reviewer": "admission-review (Claude Opus 5.5, claude-opus-5-5, pane admission-review)",
+ "reviewed_at": "2026-09-25T11:36:51-05:00",
+ "inputs": {
+  "segments_evidence_sha256": "504e11fa998b52005dc46e8de5219faecf838137273bccf8223684a0ce6d01c2",
+  "owner_verdicts_sha256": "452c438141bfad119b6d20ea39857283c57de12beac9044ea5fcdfa80450a4db",
+  "motor_settings_sha256": "46e82b4f110d514996625c5824dce7105e076863b4763e3e534b1554577201eb",
+  "media_sha256": "58f8e234d7694cf4537788060378f919d4cebbb94c13d78c42b4225117f54ad7"
+ },
+ "method": "Own ffmpeg exact-PTS decode (bgr24, 4 threads, below normal) of every segment edge, every owner frame and seeded (Random(20260923)) samples per trained/unresolved segment; decoded-BGR sha256; in_range from the session snapshot; inputs.jsonl replayed independently.",
+ "session_findings": [
+  "original re-hashed 58f8e234 = pinned; raw logger files equal",
+  "HEVC packet order equals frames.csv prediction exactly (63,666 packets, 1 muxer-tail callback)",
+  "67/67 unique owner frame hashes match (seg-004 lists one frame twice)",
+  "build: the same Steam files as 025230, re-hashed equal; the game ran 18:21-18:32 local, covering the recording",
+  "devices: one keyboard and one mouse (same handles); 10 zero-effect handle-0 packets",
+  "spawn edge: f308-f309 fail the live in_range proof; every admitted accepted segment starts and ends on an in_range frame",
+  "wheel-up: 6 ticks at 200.7-201.5 s, no Simple Swing on frames; Ctrl (slow_walk, unsupported) once at 370.86 s"
+ ],
+ "segments": [
+  {
+   "segment_id": "seg-000",
+   "start_ns": 360059629991400,
+   "end_ns": 360059879991400,
+   "machine_reason": "focus_transition",
+   "proposal": "rejected",
+   "verdict": "rejected",
+   "reason": "focus_transition settle: the hero select with the Windows taskbar over the first frame",
+   "frames": [
+    {
+     "frame_index": 54,
+     "file_ms": 471,
+     "composition_ns": 360059621977666,
+     "decoded_bgr_sha256": "abd82ee55719d3f41ee8a82654a9a64e0af751564a93a15541d7c4bd4af72449",
+     "role": "before",
+     "in_range": false
+    },
+    {
+     "frame_index": 55,
+     "file_ms": 479,
+     "composition_ns": 360059630310999,
+     "decoded_bgr_sha256": "cc46c7b21ed7c7743bff1f2653d2a0be2d495e8b37a700196ed4fd0e412614f7",
+     "role": "first_in",
+     "in_range": false
+    },
+    {
+     "frame_index": 55,
+     "file_ms": 479,
+     "composition_ns": 360059630310999,
+     "decoded_bgr_sha256": "cc46c7b21ed7c7743bff1f2653d2a0be2d495e8b37a700196ed4fd0e412614f7",
+     "role": "owner-start",
+     "in_range": false
+    },
+    {
+     "frame_index": 69,
+     "file_ms": 596,
+     "composition_ns": 360059746977661,
+     "decoded_bgr_sha256": "2ee287e033791fc373678bde031aabc951d0b676fb000476a28c9d49cdafcaeb",
+     "role": "owner-interior",
+     "in_range": false
+    },
+    {
+     "frame_index": 84,
+     "file_ms": 721,
+     "composition_ns": 360059871977656,
+     "decoded_bgr_sha256": "77a5069dfc35de003333b72171777377fbd670e522cfbf44e51654730d62dfdc",
+     "role": "last_in",
+     "in_range": false
+    },
+    {
+     "frame_index": 84,
+     "file_ms": 721,
+     "composition_ns": 360059871977656,
+     "decoded_bgr_sha256": "77a5069dfc35de003333b72171777377fbd670e522cfbf44e51654730d62dfdc",
+     "role": "owner-end",
+     "in_range": false
+    },
+    {
+     "frame_index": 85,
+     "file_ms": 729,
+     "composition_ns": 360059880310989,
+     "decoded_bgr_sha256": "b196387387ba5a40b3aa97ec60caa399001ffd86eaadc09d009a15227aa4d4e7",
+     "role": "after",
+     "in_range": false
+    }
+   ]
+  },
+  {
+   "segment_id": "seg-001",
+   "start_ns": 360059879991400,
+   "end_ns": 360061738644248,
+   "machine_reason": "no_range_hud",
+   "proposal": "rejected",
+   "verdict": "rejected",
+   "reason": "no_range_hud: the practice-range hero select (Magneto, then Spider-Man, CONFIRM)",
+   "frames": [
+    {
+     "frame_index": 84,
+     "file_ms": 721,
+     "composition_ns": 360059871977656,
+     "decoded_bgr_sha256": "77a5069dfc35de003333b72171777377fbd670e522cfbf44e51654730d62dfdc",
+     "role": "before",
+     "in_range": false
+    },
+    {
+     "frame_index": 85,
+     "file_ms": 729,
+     "composition_ns": 360059880310989,
+     "decoded_bgr_sha256": "b196387387ba5a40b3aa97ec60caa399001ffd86eaadc09d009a15227aa4d4e7",
+     "role": "first_in",
+     "in_range": false
+    },
+    {
+     "frame_index": 85,
+     "file_ms": 729,
+     "composition_ns": 360059880310989,
+     "decoded_bgr_sha256": "b196387387ba5a40b3aa97ec60caa399001ffd86eaadc09d009a15227aa4d4e7",
+     "role": "owner-start",
+     "in_range": false
+    },
+    {
+     "frame_index": 196,
+     "file_ms": 1654,
+     "composition_ns": 360060805310952,
+     "decoded_bgr_sha256": "9f9fb3f4216e36223338cdc7d1f9c2052641c56b4e1dc648fdf1817214782874",
+     "role": "owner-interior",
+     "in_range": false
+    },
+    {
+     "frame_index": 307,
+     "file_ms": 2579,
+     "composition_ns": 360061730310915,
+     "decoded_bgr_sha256": "0a0355735a0e767edd040df94baae80c05acfcf28f5949b1ca3a3d73b1542ef5",
+     "role": "last_in",
+     "in_range": false
+    },
+    {
+     "frame_index": 307,
+     "file_ms": 2579,
+     "composition_ns": 360061730310915,
+     "decoded_bgr_sha256": "0a0355735a0e767edd040df94baae80c05acfcf28f5949b1ca3a3d73b1542ef5",
+     "role": "owner-end",
+     "in_range": false
+    },
+    {
+     "frame_index": 308,
+     "file_ms": 2588,
+     "composition_ns": 360061738644248,
+     "decoded_bgr_sha256": "015d13eb80238a226ee0b759e09c0a96aef00a3f8d2636b1862ac72a23c0d3b6",
+     "role": "after",
+     "in_range": false
+    }
+   ]
+  },
+  {
+   "segment_id": "seg-002",
+   "start_ns": 360061738644248,
+   "end_ns": 360382263631428,
+   "machine_reason": "range_hud_present",
+   "proposal": "unresolved",
+   "verdict": "accepted",
+   "reason": "continuous live range play on every inspected native frame; last frame f38771 is play before the capture gap. Edge note: f308-f309 (16.7 ms) are the untextured spawn-in with no HP bar and fail the live range proof; the first in_range frame is f310 (file 2.604 s), the hero already running on the held W",
+   "frames": [
+    {
+     "frame_index": 307,
+     "file_ms": 2579,
+     "composition_ns": 360061730310915,
+     "decoded_bgr_sha256": "0a0355735a0e767edd040df94baae80c05acfcf28f5949b1ca3a3d73b1542ef5",
+     "role": "before",
+     "in_range": false
+    },
+    {
+     "frame_index": 308,
+     "file_ms": 2588,
+     "composition_ns": 360061738644248,
+     "decoded_bgr_sha256": "015d13eb80238a226ee0b759e09c0a96aef00a3f8d2636b1862ac72a23c0d3b6",
+     "role": "first_in",
+     "in_range": false
+    },
+    {
+     "frame_index": 308,
+     "file_ms": 2588,
+     "composition_ns": 360061738644248,
+     "decoded_bgr_sha256": "015d13eb80238a226ee0b759e09c0a96aef00a3f8d2636b1862ac72a23c0d3b6",
+     "role": "owner-start",
+     "in_range": false
+    },
+    {
+     "frame_index": 1473,
+     "file_ms": 12296,
+     "composition_ns": 360071446977193,
+     "decoded_bgr_sha256": "c455e72ce9f5c9d28c8d6ceb0c0724740e7763faf24a3adf3663fac413b88fab",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 2093,
+     "file_ms": 17463,
+     "composition_ns": 360076613643653,
+     "decoded_bgr_sha256": "e659179124a60d6ae1037d5c66814ab2bf1bc07d1f25b7694aacb20acd9a161a",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 2458,
+     "file_ms": 20504,
+     "composition_ns": 360079655310198,
+     "decoded_bgr_sha256": "fef89ed99310385527ebe9537834956f8a9ceb3c4b13a3ce735a0a3580f234b5",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 2639,
+     "file_ms": 22013,
+     "composition_ns": 360081163643471,
+     "decoded_bgr_sha256": "72d23e31bfaa4ef79487d104691e2f3c2e160ab9982c12846edbbec29df26eb4",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 3804,
+     "file_ms": 31721,
+     "composition_ns": 360090871976416,
+     "decoded_bgr_sha256": "f036ae38ee4ef1a4b5a183fdd994498c261b8f2fc2c4caaed5355d3e4ac40bf5",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 4000,
+     "file_ms": 33354,
+     "composition_ns": 360092505309684,
+     "decoded_bgr_sha256": "995f976a50ab115cc41dd353b5d28a5f7d411d4a44766c3b4933476f44e76db6",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 4339,
+     "file_ms": 36179,
+     "composition_ns": 360095330309571,
+     "decoded_bgr_sha256": "6a999ee5715bb5eeec41898df02d77556bb5bea18fcefc4977c45bb07cdc002e",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 4970,
+     "file_ms": 41438,
+     "composition_ns": 360100588642694,
+     "decoded_bgr_sha256": "c0192760c45d5d47dca8843daae95889b4261d28eea2cdfccc0e9a7d1e6b9b3a",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 5776,
+     "file_ms": 48154,
+     "composition_ns": 360107305309092,
+     "decoded_bgr_sha256": "dbb705fb1f4e99e4e6a1c27fb6dca02f53f5020a8aaab8e746f7bc2695962ccb",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 6135,
+     "file_ms": 51146,
+     "composition_ns": 360110296975639,
+     "decoded_bgr_sha256": "5b4abedf84544f8444ce29acbdcd0784a2c38aea60e87b55ae865dda16da7e14",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 7301,
+     "file_ms": 60863,
+     "composition_ns": 360120013641917,
+     "decoded_bgr_sha256": "5605eb2e1da76a728c60b5a09d8216d49effa529c47df9db054b4fdddf4250c8",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 8466,
+     "file_ms": 70571,
+     "composition_ns": 360129721974862,
+     "decoded_bgr_sha256": "1a06c46d7013b2065d4f2f60ee68b994a08327ec5dca79b974b5c97888c9f0c7",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 9632,
+     "file_ms": 80288,
+     "composition_ns": 360139438641140,
+     "decoded_bgr_sha256": "38d4ff8d59320b2f2968b6e8d687d1e651efcfcd42d17aaaa1d5c7447d9158e4",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 10797,
+     "file_ms": 89996,
+     "composition_ns": 360149146974085,
+     "decoded_bgr_sha256": "d19a87252c17bee88d4adc11cd7a38a2feef464e585fd1d1d91df82c748aa09b",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 11963,
+     "file_ms": 99713,
+     "composition_ns": 360158863640363,
+     "decoded_bgr_sha256": "14d53db09ea287b7c53988d600f0e1e5acef4b2b4d198df2109d86719de6d1dd",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 13129,
+     "file_ms": 109429,
+     "composition_ns": 360168580306641,
+     "decoded_bgr_sha256": "1e33946030bd785f59ffcd18b22a5e352a5079026f2889e1f5245eed149caf33",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 13658,
+     "file_ms": 113838,
+     "composition_ns": 360172988639798,
+     "decoded_bgr_sha256": "2a1edc98da520a6739b70dc2056f4875262e20d92fe20944faea1e4cb9bf1254",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 14038,
+     "file_ms": 117004,
+     "composition_ns": 360176155306338,
+     "decoded_bgr_sha256": "d5799cd93a2c1447bee0d8af199d07340088eafee779595c7b3237813ddbd5b2",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 14294,
+     "file_ms": 119138,
+     "composition_ns": 360178288639586,
+     "decoded_bgr_sha256": "334581c0c9c95603478a74302d675bd49830104b1e14479b3cd208f14c0f63d4",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 15068,
+     "file_ms": 125588,
+     "composition_ns": 360184738639328,
+     "decoded_bgr_sha256": "dfeaa1dc3e9187d3cdbed32c3ceb3b55d5fc35b2cf37b8e7bb3c5e309faaab99",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 15460,
+     "file_ms": 128854,
+     "composition_ns": 360188005305864,
+     "decoded_bgr_sha256": "741f3f881c4509f40a08550ecac38041dca80261fde4eb09e2b0c681bd5cd282",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 16418,
+     "file_ms": 136838,
+     "composition_ns": 360195988638878,
+     "decoded_bgr_sha256": "39b54ae82de2368d01c42fb741161738f340070eaee0141ba5bfbfaae2d9546d",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 16469,
+     "file_ms": 137263,
+     "composition_ns": 360196413638861,
+     "decoded_bgr_sha256": "e4aab9ebf80268e0e1ad46d8b59d7fd32a5bb7130a889877cc615b48665bd5bb",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 16625,
+     "file_ms": 138563,
+     "composition_ns": 360197713638809,
+     "decoded_bgr_sha256": "017fb1e7f1ea6a28bbd5d240f2bf88e0f8cb023d20a83b03ccfe76c2d3ab1a7a",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 17791,
+     "file_ms": 148279,
+     "composition_ns": 360207430305087,
+     "decoded_bgr_sha256": "8a3324546ea9b3039d4b28d7d72d982e500e0937c2e92ff6dd216b625d5f02f1",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 18956,
+     "file_ms": 157988,
+     "composition_ns": 360217138638032,
+     "decoded_bgr_sha256": "f280067a126fa528bf4d26ac9ee88ab670d69807c09300227889d4ce9f2c8278",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 19506,
+     "file_ms": 162571,
+     "composition_ns": 360221721971182,
+     "decoded_bgr_sha256": "751e0a8d323729ebb1e17f9dca1667f1844265ce0fcb72c44905a9308a5e9016",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 20122,
+     "file_ms": 167704,
+     "composition_ns": 360226855304310,
+     "decoded_bgr_sha256": "a270dbd3c8d7aa84b9012ac8d1da7bc753c138bca6a68866ef0d1ef1fedf66e8",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 21287,
+     "file_ms": 177413,
+     "composition_ns": 360236563637255,
+     "decoded_bgr_sha256": "edb442f6a02e4238fb7e81cdbbc59fa861e4de71d5731816e9134890452b5d74",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 21926,
+     "file_ms": 182738,
+     "composition_ns": 360241888637042,
+     "decoded_bgr_sha256": "0f2bb98b893b2ef10e4bbfc78d9a8dcddf2d8dda0f76b44eeef281c2a41e439b",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 22453,
+     "file_ms": 187129,
+     "composition_ns": 360246280303533,
+     "decoded_bgr_sha256": "079d854f29d5b6819064a22e37f9d65e204e0a999a18060ac35341fc95295d65",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 22945,
+     "file_ms": 191229,
+     "composition_ns": 360250380303369,
+     "decoded_bgr_sha256": "690bdc1e08fc972ef76f39bcf33016b47e9baad46c6ca1f69757b4431c0a4f49",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 23618,
+     "file_ms": 196838,
+     "composition_ns": 360255988636478,
+     "decoded_bgr_sha256": "612da7fc128607ce97ce409c1abf5dfc0b92f916f1e64f2147cfc5d88996fdfd",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 24569,
+     "file_ms": 204763,
+     "composition_ns": 360263913636161,
+     "decoded_bgr_sha256": "d7994c1d0b0a2ae7df40d5a6c19b7f9eeb2c87285641d2daea4637094b59b6c5",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 24784,
+     "file_ms": 206554,
+     "composition_ns": 360265705302756,
+     "decoded_bgr_sha256": "677d65d52bc377a421186df3fefd1f0dc1b502e2b16bb972d1152893f24ee749",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 25950,
+     "file_ms": 216271,
+     "composition_ns": 360275421969034,
+     "decoded_bgr_sha256": "919946a1a308ca7458e5e2ece09943fd6602483fea5822c98310fa83d47b1cb8",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 27115,
+     "file_ms": 225979,
+     "composition_ns": 360285130301979,
+     "decoded_bgr_sha256": "8d23bd0b81848f45e5c793b953ea6a8908ad4b55ecf0eaaf6f6c69b49abc617e",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 27920,
+     "file_ms": 232688,
+     "composition_ns": 360291838635044,
+     "decoded_bgr_sha256": "6d374dd883aecf3c6c158f7ea03c39180b370c9e0ba57b933d30c740a6252d77",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 28281,
+     "file_ms": 235696,
+     "composition_ns": 360294846968257,
+     "decoded_bgr_sha256": "f02fecab70d24494fffea942dfcf6fed8832c5b5278c87b362364dd2177400bf",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 29446,
+     "file_ms": 245404,
+     "composition_ns": 360304555301202,
+     "decoded_bgr_sha256": "4a8783bbcfaaca47a124efbf98cd3e8b392852056e8383e42cc98793c80f4966",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 30612,
+     "file_ms": 255121,
+     "composition_ns": 360314271967480,
+     "decoded_bgr_sha256": "ac973d407de450b8d299ac69916d9c9d13761ee4b2a4f696813d66a676b324eb",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 31777,
+     "file_ms": 264829,
+     "composition_ns": 360323980300425,
+     "decoded_bgr_sha256": "79c2e9a5c94c46022a6197299b667300828d1ecb56c371b99026e3586bbcb090",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 32099,
+     "file_ms": 267513,
+     "composition_ns": 360326663633651,
+     "decoded_bgr_sha256": "a04fde6af9eb32452cdacf5b42004d625caea45f8ddba7c2ceebfc5bf9e5817c",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 32656,
+     "file_ms": 272154,
+     "composition_ns": 360331305300132,
+     "decoded_bgr_sha256": "6df4e38f4e9bc3d018c917e01d91a83766397446f03be09634bcbe587e14077b",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 32943,
+     "file_ms": 274546,
+     "composition_ns": 360333696966703,
+     "decoded_bgr_sha256": "18d32ca6b6c21243254afa5d6eead71ee0d58cce16a146ccef06519dec60dcd0",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 34108,
+     "file_ms": 284254,
+     "composition_ns": 360343405299648,
+     "decoded_bgr_sha256": "5a3c46c2e8150c1889d7e9c9f694f31190f4afb871db8fdc0345182398599590",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 34111,
+     "file_ms": 284279,
+     "composition_ns": 360343430299647,
+     "decoded_bgr_sha256": "fa9a3b90b752ba71160d41d22d4001e2fa8389bd8500c6b6d77ed2b19b59f27e",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 34305,
+     "file_ms": 285896,
+     "composition_ns": 360345046966249,
+     "decoded_bgr_sha256": "dcc519bba6778147cac9847845721bf6f0284ad14a2f29f905974c83c672d231",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 35274,
+     "file_ms": 293971,
+     "composition_ns": 360353121965926,
+     "decoded_bgr_sha256": "1210427ae179e8acc58a459ce889309f1d600a9c1f3037ab9d8bcfd8ed659eaa",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 36439,
+     "file_ms": 303679,
+     "composition_ns": 360362830298871,
+     "decoded_bgr_sha256": "af3dd59b04e070e6bb60a5329bd6701daceaf22467eca7cc20cab8b6a9d72e28",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 37605,
+     "file_ms": 313396,
+     "composition_ns": 360372546965149,
+     "decoded_bgr_sha256": "c7c68efb037759120e102017a4b39bfe95c2a2363b6cc7143c8017a2000176db",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 38422,
+     "file_ms": 320204,
+     "composition_ns": 360379355298210,
+     "decoded_bgr_sha256": "75d02e6091f4fd88a4f632118d3a2b43c216cb672dd3087b95f7b940ca050320",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 38771,
+     "file_ms": 323113,
+     "composition_ns": 360382263631427,
+     "decoded_bgr_sha256": "a12ef0c5fa67ca747becdd8f309b19d93abccd4c81d94661b35f75b0ad5140f1",
+     "role": "last_in",
+     "in_range": true
+    },
+    {
+     "frame_index": 38771,
+     "file_ms": 323113,
+     "composition_ns": 360382263631427,
+     "decoded_bgr_sha256": "a12ef0c5fa67ca747becdd8f309b19d93abccd4c81d94661b35f75b0ad5140f1",
+     "role": "owner-end",
+     "in_range": true
+    },
+    {
+     "frame_index": 38772,
+     "file_ms": 323121,
+     "composition_ns": 360382271964760,
+     "decoded_bgr_sha256": "a971c478ea3bdb4edb49e5cacdf696b44396b29be3d6825467e49f4bedc2a5b8",
+     "role": "after",
+     "in_range": true
+    }
+   ]
+  },
+  {
+   "segment_id": "seg-003",
+   "start_ns": 360382263631428,
+   "end_ns": 360382271964760,
+   "machine_reason": "unsampled_edge",
+   "proposal": "rejected",
+   "verdict": "rejected",
+   "reason": "unsampled edge (9 ms)",
+   "frames": [
+    {
+     "frame_index": 38771,
+     "file_ms": 323113,
+     "composition_ns": 360382263631427,
+     "decoded_bgr_sha256": "a12ef0c5fa67ca747becdd8f309b19d93abccd4c81d94661b35f75b0ad5140f1",
+     "role": "before",
+     "in_range": true
+    },
+    {
+     "frame_index": 38771,
+     "file_ms": 323113,
+     "composition_ns": 360382263631427,
+     "decoded_bgr_sha256": "a12ef0c5fa67ca747becdd8f309b19d93abccd4c81d94661b35f75b0ad5140f1",
+     "role": "last_in",
+     "in_range": true
+    },
+    {
+     "frame_index": 38772,
+     "file_ms": 323121,
+     "composition_ns": 360382271964760,
+     "decoded_bgr_sha256": "a971c478ea3bdb4edb49e5cacdf696b44396b29be3d6825467e49f4bedc2a5b8",
+     "role": "first_in",
+     "in_range": true
+    },
+    {
+     "frame_index": 38772,
+     "file_ms": 323121,
+     "composition_ns": 360382271964760,
+     "decoded_bgr_sha256": "a971c478ea3bdb4edb49e5cacdf696b44396b29be3d6825467e49f4bedc2a5b8",
+     "role": "after",
+     "in_range": true
+    }
+   ]
+  },
+  {
+   "segment_id": "seg-004",
+   "start_ns": 360382271964760,
+   "end_ns": 360382296964759,
+   "machine_reason": "capture_gap",
+   "proposal": "rejected",
+   "verdict": "rejected",
+   "reason": "capture_gap: the single 16.7 ms composition step at 323.2 s; frames either side continuous play",
+   "frames": [
+    {
+     "frame_index": 38771,
+     "file_ms": 323113,
+     "composition_ns": 360382263631427,
+     "decoded_bgr_sha256": "a12ef0c5fa67ca747becdd8f309b19d93abccd4c81d94661b35f75b0ad5140f1",
+     "role": "before",
+     "in_range": true
+    },
+    {
+     "frame_index": 38772,
+     "file_ms": 323121,
+     "composition_ns": 360382271964760,
+     "decoded_bgr_sha256": "a971c478ea3bdb4edb49e5cacdf696b44396b29be3d6825467e49f4bedc2a5b8",
+     "role": "first_in",
+     "in_range": true
+    },
+    {
+     "frame_index": 38773,
+     "file_ms": 323129,
+     "composition_ns": 360382280298093,
+     "decoded_bgr_sha256": "63512c0b981da147b18f07b6d997e6730d1e9d0327b241db5c992999d2946cc6",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 38774,
+     "file_ms": 323138,
+     "composition_ns": 360382271964760,
+     "decoded_bgr_sha256": "298874c68404ba6c9914a9d16c1d9425cdc1ff888c41418b17715fa87a4dc558",
+     "role": "last_in",
+     "in_range": true
+    },
+    {
+     "frame_index": 38774,
+     "file_ms": 323138,
+     "composition_ns": 360382271964760,
+     "decoded_bgr_sha256": "298874c68404ba6c9914a9d16c1d9425cdc1ff888c41418b17715fa87a4dc558",
+     "role": "owner-start",
+     "in_range": true
+    },
+    {
+     "frame_index": 38774,
+     "file_ms": 323138,
+     "composition_ns": 360382271964760,
+     "decoded_bgr_sha256": "298874c68404ba6c9914a9d16c1d9425cdc1ff888c41418b17715fa87a4dc558",
+     "role": "owner-end",
+     "in_range": true
+    },
+    {
+     "frame_index": 38775,
+     "file_ms": 323146,
+     "composition_ns": 360382296964759,
+     "decoded_bgr_sha256": "cb4596babaa74b54747ff59698264013ee15325b74cc42f406e37cad094104d7",
+     "role": "after",
+     "in_range": true
+    }
+   ]
+  },
+  {
+   "segment_id": "seg-005",
+   "start_ns": 360382296964759,
+   "end_ns": 360587713623210,
+   "machine_reason": "range_hud_present",
+   "proposal": "unresolved",
+   "verdict": "accepted",
+   "reason": "continuous live range play on every inspected frame; last frame f63425 is play before the Alt packet",
+   "frames": [
+    {
+     "frame_index": 38774,
+     "file_ms": 323138,
+     "composition_ns": 360382271964760,
+     "decoded_bgr_sha256": "298874c68404ba6c9914a9d16c1d9425cdc1ff888c41418b17715fa87a4dc558",
+     "role": "before",
+     "in_range": true
+    },
+    {
+     "frame_index": 38775,
+     "file_ms": 323146,
+     "composition_ns": 360382296964759,
+     "decoded_bgr_sha256": "cb4596babaa74b54747ff59698264013ee15325b74cc42f406e37cad094104d7",
+     "role": "first_in",
+     "in_range": true
+    },
+    {
+     "frame_index": 38775,
+     "file_ms": 323146,
+     "composition_ns": 360382296964759,
+     "decoded_bgr_sha256": "cb4596babaa74b54747ff59698264013ee15325b74cc42f406e37cad094104d7",
+     "role": "owner-start",
+     "in_range": true
+    },
+    {
+     "frame_index": 38976,
+     "file_ms": 324821,
+     "composition_ns": 360383971964692,
+     "decoded_bgr_sha256": "581cf648f4097c8593fa45a6f18c8e4f45ce86229801168533f9f4036cf47d02",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 39793,
+     "file_ms": 331629,
+     "composition_ns": 360390780297753,
+     "decoded_bgr_sha256": "399e52800ae2288258194f33aa75bf4d25f115f05e386a3dad184d4b3892e395",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 39948,
+     "file_ms": 332921,
+     "composition_ns": 360392071964368,
+     "decoded_bgr_sha256": "cb3c6a59ce2bbe36d177b469f3cb9263e0fea1565874249094d767af7d0f4d90",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 41122,
+     "file_ms": 342704,
+     "composition_ns": 360401855297310,
+     "decoded_bgr_sha256": "b0923dcedc32f012f50d4e9a9cb403d118e8bda7566dd783f5d14d79fb0470bf",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 42296,
+     "file_ms": 352488,
+     "composition_ns": 360411638630252,
+     "decoded_bgr_sha256": "038df4d520e5bd2420690041a3cb981f210ef33079767bf4b129b141415f75e1",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 42357,
+     "file_ms": 352996,
+     "composition_ns": 360412146963565,
+     "decoded_bgr_sha256": "f0c1e603cddb275f43c391971725d30d51d0457dd3ad92ed5c5447c80150d48a",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 43470,
+     "file_ms": 362271,
+     "composition_ns": 360421421963194,
+     "decoded_bgr_sha256": "2ef95121ec70b2b1d58557f0557d25072eb988af86392f533ad51659ad555ffd",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 43677,
+     "file_ms": 363996,
+     "composition_ns": 360423146963125,
+     "decoded_bgr_sha256": "3ac08a7ba84c6415a98588a458fc23400b93dad19449818aa5cacfd1351a36de",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 44644,
+     "file_ms": 372054,
+     "composition_ns": 360431205296136,
+     "decoded_bgr_sha256": "4a86b6bf7d0c4d9a672c4c5a374d95a4a41786ae84f4e3f12b3965876de6f815",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 45011,
+     "file_ms": 375113,
+     "composition_ns": 360434263629347,
+     "decoded_bgr_sha256": "9a18c5442a54785d3f3fd9aec98c5e0bc4840c17248b56a9f6fa8eae1e1ae562",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 45817,
+     "file_ms": 381829,
+     "composition_ns": 360440980295745,
+     "decoded_bgr_sha256": "587cd88de3daf8403d44747356bf6807747dac1e51e27765a472cb3132256a54",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 46991,
+     "file_ms": 391613,
+     "composition_ns": 360450763628687,
+     "decoded_bgr_sha256": "548ce668d4831a412ccb335baa8c1db3fdfe7d01a3e03e472fb4f3ff530c58c4",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 47271,
+     "file_ms": 393946,
+     "composition_ns": 360453096961927,
+     "decoded_bgr_sha256": "08446e0bdfd46c980c557e50ff6419fe6fc0ca14b7b6ffd90f683f32123993e9",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 48165,
+     "file_ms": 401396,
+     "composition_ns": 360460546961629,
+     "decoded_bgr_sha256": "c8f4026a9bd8d17006421f1a95e8f7e2f0e96896c23c10d76858d9281ce5d42b",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 49339,
+     "file_ms": 411179,
+     "composition_ns": 360470330294571,
+     "decoded_bgr_sha256": "cde3415a71653de2c16fa2b8a88bb86804db30a84b2ccc660e4dc3c4ee63fb68",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 49677,
+     "file_ms": 413996,
+     "composition_ns": 360473146961125,
+     "decoded_bgr_sha256": "ef3245b18dc60814aa4e57a7a90a860c3b329a044a0ae5e962f493e2544822fa",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 49918,
+     "file_ms": 416004,
+     "composition_ns": 360475155294378,
+     "decoded_bgr_sha256": "fe0b71e701f5876dbf40b88468f1bb9473cc1ef7596f6795a5a46b5e20cb586e",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 50513,
+     "file_ms": 420963,
+     "composition_ns": 360480113627513,
+     "decoded_bgr_sha256": "50b7a4d21ec629d8cfff8c0e5a070e5ecad15e09c30483109762692d559a1b3e",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 50870,
+     "file_ms": 423938,
+     "composition_ns": 360483088627394,
+     "decoded_bgr_sha256": "4f882b79c0e11cfc21b78f4c64e77a10fc75da7f803a814ac458983c5ee18f92",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 51336,
+     "file_ms": 427821,
+     "composition_ns": 360486971960572,
+     "decoded_bgr_sha256": "a311ea896e9d1becf41b3c56971deb54527c4feea61129f456021e38cd1efbed",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 51686,
+     "file_ms": 430738,
+     "composition_ns": 360489888627122,
+     "decoded_bgr_sha256": "3c4890cfccf257f7c811bc36346ae501d7e3cb32eba83a9f63fa639b5b55c280",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 52438,
+     "file_ms": 437004,
+     "composition_ns": 360496155293538,
+     "decoded_bgr_sha256": "1ca395858f2345c7bdf6f083590cf7ba5927939d73e5a99d1f041256d1d159ca",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 52860,
+     "file_ms": 440521,
+     "composition_ns": 360499671960064,
+     "decoded_bgr_sha256": "082c3cdb5cedb4fa6977a9f6623c1f39adbb24a02d236820cc61fec2f50fc7f1",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 54034,
+     "file_ms": 450304,
+     "composition_ns": 360509455293006,
+     "decoded_bgr_sha256": "c2a7888abb589913131ae35f004c703f62d915429ff4afe2c3695b80770f5b47",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 55208,
+     "file_ms": 460088,
+     "composition_ns": 360519238625948,
+     "decoded_bgr_sha256": "6f60f599bfea1966425b8ca1508b1a5084f2116d9e051d012bb26200478914a7",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 55953,
+     "file_ms": 466296,
+     "composition_ns": 360525446959033,
+     "decoded_bgr_sha256": "93d11475a36fa46da0b5efb59a0b764ebc5a9f3c3c5d48cfbcf80410eb5a7921",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 56382,
+     "file_ms": 469871,
+     "composition_ns": 360529021958890,
+     "decoded_bgr_sha256": "a868b8b9378e827d640499743f95b94831b8b78e21d633c8f42096ae000f2acd",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 57016,
+     "file_ms": 475154,
+     "composition_ns": 360534305292012,
+     "decoded_bgr_sha256": "442f56081cebf481837a6beb551e18a0dbe8447db718ade40c1f3eb7eff87164",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 57104,
+     "file_ms": 475888,
+     "composition_ns": 360535038625316,
+     "decoded_bgr_sha256": "f83588d3267de6acf30d8268d3caba6ece73ae3445d6a80aea128014c8d228ac",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 57285,
+     "file_ms": 477396,
+     "composition_ns": 360536546958589,
+     "decoded_bgr_sha256": "d11538eb874d03edad7e7d1f91b6ffd901079359f748870716900dfaad29ab25",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 57555,
+     "file_ms": 479646,
+     "composition_ns": 360538796958499,
+     "decoded_bgr_sha256": "cab87e7a3fc8f695d1120300eca6ed5ebb775135d4f3fa538701e73b1e67dbae",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 58328,
+     "file_ms": 486088,
+     "composition_ns": 360545238624908,
+     "decoded_bgr_sha256": "08cda7d377d79acfcd3e196466bf3dbdd02378689bccd858d16a7a35a184cff5",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 58729,
+     "file_ms": 489429,
+     "composition_ns": 360548580291441,
+     "decoded_bgr_sha256": "258fddf130be9179c4f41801d6a9798a17b91b98b1d71c9ee47d2f82eec89d9c",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 59336,
+     "file_ms": 494488,
+     "composition_ns": 360553638624572,
+     "decoded_bgr_sha256": "4c8b0c403af79f5c15449a251640b781086030a2428be0cce01fc75f27ea54ac",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 59644,
+     "file_ms": 497054,
+     "composition_ns": 360556205291136,
+     "decoded_bgr_sha256": "c63fb7da025a5f55b27f7b21e1c6e7d1068e75ba648fea3a1eed08eb98995d76",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 59903,
+     "file_ms": 499213,
+     "composition_ns": 360558363624383,
+     "decoded_bgr_sha256": "293a7380f6da2f23c483013fe5528d175ab1bf7d383e74a4ce0cf3d5d2f8d0cc",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 61077,
+     "file_ms": 508996,
+     "composition_ns": 360568146957325,
+     "decoded_bgr_sha256": "728b528041d4737a5826dfa900b34a8ae1b0ae9d55fc747590765b284b9d0f69",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 62251,
+     "file_ms": 518779,
+     "composition_ns": 360577930290267,
+     "decoded_bgr_sha256": "f2bdb921413053b496476f2c28416208317a41c948b1fa5d7aa5248d4c35f097",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 62626,
+     "file_ms": 521904,
+     "composition_ns": 360581055290142,
+     "decoded_bgr_sha256": "95c0adf3cefa85b70a50039b3fd55feb175edeec74afc13f0094366cb097fa78",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 62847,
+     "file_ms": 523746,
+     "composition_ns": 360582896956735,
+     "decoded_bgr_sha256": "e94e612f28d715370d702f9cebf4727f6dee2f0595642b72c535cdf84ddf9187",
+     "role": "reviewer-sample",
+     "in_range": true
+    },
+    {
+     "frame_index": 63425,
+     "file_ms": 528563,
+     "composition_ns": 360587713623209,
+     "decoded_bgr_sha256": "26636e9f54912faa529a83562cd4670b7a9e3df4cde1a05c85fc4823a1490e60",
+     "role": "last_in",
+     "in_range": true
+    },
+    {
+     "frame_index": 63425,
+     "file_ms": 528563,
+     "composition_ns": 360587713623209,
+     "decoded_bgr_sha256": "26636e9f54912faa529a83562cd4670b7a9e3df4cde1a05c85fc4823a1490e60",
+     "role": "owner-end",
+     "in_range": true
+    },
+    {
+     "frame_index": 63426,
+     "file_ms": 528571,
+     "composition_ns": 360587721956542,
+     "decoded_bgr_sha256": "780093233fe9954d55e0683cc95d5abd2ff5a751b24e6b7ae3fe2d217a18eb93",
+     "role": "after",
+     "in_range": true
+    }
+   ]
+  },
+  {
+   "segment_id": "seg-006",
+   "start_ns": 360587713623210,
+   "end_ns": 360587715925700,
+   "machine_reason": "unsampled_edge",
+   "proposal": "rejected",
+   "verdict": "rejected",
+   "reason": "unsampled edge (2 ms)",
+   "frames": [
+    {
+     "frame_index": 63425,
+     "file_ms": 528563,
+     "composition_ns": 360587713623209,
+     "decoded_bgr_sha256": "26636e9f54912faa529a83562cd4670b7a9e3df4cde1a05c85fc4823a1490e60",
+     "role": "before",
+     "in_range": true
+    },
+    {
+     "frame_index": 63425,
+     "file_ms": 528563,
+     "composition_ns": 360587713623209,
+     "decoded_bgr_sha256": "26636e9f54912faa529a83562cd4670b7a9e3df4cde1a05c85fc4823a1490e60",
+     "role": "last_in",
+     "in_range": true
+    },
+    {
+     "frame_index": 63426,
+     "file_ms": 528571,
+     "composition_ns": 360587721956542,
+     "decoded_bgr_sha256": "780093233fe9954d55e0683cc95d5abd2ff5a751b24e6b7ae3fe2d217a18eb93",
+     "role": "first_in",
+     "in_range": true
+    },
+    {
+     "frame_index": 63426,
+     "file_ms": 528571,
+     "composition_ns": 360587721956542,
+     "decoded_bgr_sha256": "780093233fe9954d55e0683cc95d5abd2ff5a751b24e6b7ae3fe2d217a18eb93",
+     "role": "after",
+     "in_range": true
+    }
+   ]
+  },
+  {
+   "segment_id": "seg-007",
+   "start_ns": 360587715925700,
+   "end_ns": 360587786414800,
+   "machine_reason": "ui_key",
+   "proposal": "rejected",
+   "verdict": "rejected",
+   "reason": "ui_key: Alt down 528.678 s, focus lost 528.749 s",
+   "frames": [
+    {
+     "frame_index": 63425,
+     "file_ms": 528563,
+     "composition_ns": 360587713623209,
+     "decoded_bgr_sha256": "26636e9f54912faa529a83562cd4670b7a9e3df4cde1a05c85fc4823a1490e60",
+     "role": "before",
+     "in_range": true
+    },
+    {
+     "frame_index": 63426,
+     "file_ms": 528571,
+     "composition_ns": 360587721956542,
+     "decoded_bgr_sha256": "780093233fe9954d55e0683cc95d5abd2ff5a751b24e6b7ae3fe2d217a18eb93",
+     "role": "first_in",
+     "in_range": true
+    },
+    {
+     "frame_index": 63426,
+     "file_ms": 528571,
+     "composition_ns": 360587721956542,
+     "decoded_bgr_sha256": "780093233fe9954d55e0683cc95d5abd2ff5a751b24e6b7ae3fe2d217a18eb93",
+     "role": "owner-start",
+     "in_range": true
+    },
+    {
+     "frame_index": 63429,
+     "file_ms": 528596,
+     "composition_ns": 360587746956541,
+     "decoded_bgr_sha256": "cb3e2f87e87eaf5b97dd2066c882935b30bcb081110ef48d3cea6ffe0f0b431a",
+     "role": "owner-interior",
+     "in_range": true
+    },
+    {
+     "frame_index": 63433,
+     "file_ms": 528629,
+     "composition_ns": 360587780289873,
+     "decoded_bgr_sha256": "d4616f962f93ccc8945d1f12e86b64080916f51aebe8568ae58294f22c88d4a4",
+     "role": "last_in",
+     "in_range": true
+    },
+    {
+     "frame_index": 63433,
+     "file_ms": 528629,
+     "composition_ns": 360587780289873,
+     "decoded_bgr_sha256": "d4616f962f93ccc8945d1f12e86b64080916f51aebe8568ae58294f22c88d4a4",
+     "role": "owner-end",
+     "in_range": true
+    },
+    {
+     "frame_index": 63434,
+     "file_ms": 528638,
+     "composition_ns": 360587788623206,
+     "decoded_bgr_sha256": "05a6991167afd5a4576e52e19e4e20261ce23b54d61edd63f61ac7bf364f7346",
+     "role": "after",
+     "in_range": true
+    }
+   ]
+  }
+ ]
+}

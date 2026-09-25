@@ -193,27 +193,127 @@
    "artifact_sha256": "c0687e0fe8e9ed1e05a49ebb98757dbf3321ea40f26be291f4eaad82fd9aba53",
    "group": "20260923T205528-900Z-45572-3",
    "split": "train"
+  },
+  {
+   "session": "20260924T232304-170Z-12024-1",
+   "date": "2026-09-24",
+   "status": "admitted",
+   "reason": "assembled: review.json from the owner and independent verdicts, imported, steps file frozen",
+   "regime": "normal",
+   "focused_min": 8.802607056666666,
+   "admitted_min": 8.765416316083334,
+   "trainable_min": 8.76499991235,
+   "stride_ns": 33333333,
+   "rejected_min": 0.03719074058333333,
+   "unresolved_min": 0.0,
+   "tags_s": {
+    "range": {
+     "unknown": 525.924978965
+    },
+    "approach": {
+     "unknown": 525.924978965
+    },
+    "target": {
+     "unknown": 525.924978965
+    },
+    "resources": {
+     "unknown": 525.924978965
+    }
+   },
+   "artifact_sha256": "ccdf62482e72739dffa373371ceb3ba9a5c382c340bf07129b5613647d1a1fb6",
+   "group": "20260924T232304-170Z-12024-1",
+   "split": "train"
+  },
+  {
+   "session": "20260925T021320-371Z-7804-1",
+   "date": "2026-09-24",
+   "status": "admitted",
+   "reason": "assembled: review.json from the owner and independent verdicts, imported, steps file frozen",
+   "regime": "normal",
+   "focused_min": 36.50650679333333,
+   "admitted_min": 34.51638750831667,
+   "trainable_min": 34.5144440993,
+   "stride_ns": 33333333,
+   "rejected_min": 1.9901192850166667,
+   "unresolved_min": 0.0,
+   "tags_s": {
+    "range": {
+     "unknown": 2070.983250499
+    },
+    "approach": {
+     "unknown": 2070.983250499
+    },
+    "target": {
+     "unknown": 2070.983250499
+    },
+    "resources": {
+     "unknown": 2070.983250499
+    }
+   },
+   "artifact_sha256": "16fabb73285dde1c0b00acfd57e68fbcf18e8c9e13c2a25787bfb21b81fecf43",
+   "group": "20260925T021320-371Z-7804-1",
+   "split": "train"
+  },
+  {
+   "session": "20260925T025230-605Z-7804-2",
+   "date": "2026-09-24",
+   "status": "admitted",
+   "reason": "assembled: review.json from the owner and independent verdicts, imported, steps file frozen",
+   "regime": "normal",
+   "focused_min": 3.7062578383333333,
+   "admitted_min": 3.66402763125,
+   "trainable_min": 3.6633332967,
+   "stride_ns": 33333333,
+   "rejected_min": 0.04223020708333333,
+   "unresolved_min": 0.0,
+   "tags_s": {
+    "range": {
+     "unknown": 219.841657875
+    },
+    "approach": {
+     "unknown": 219.841657875
+    },
+    "target": {
+     "unknown": 219.841657875
+    },
+    "resources": {
+     "unknown": 219.841657875
+    }
+   },
+   "artifact_sha256": "5617d968ac8f0e76fbd5459bc9a0b233e308a74f365309760f0d23166c014ab6",
+   "group": "20260925T025230-605Z-7804-2",
+   "split": "train"
+  },
+  {
+   "session": "20260925T030045-211Z-7804-3",
+   "date": "2026-09-24",
+   "status": "not_range",
+   "reason": "multi-speed calibration take (four yaw speed classes, pitch sweeps): data/human/calibration/",
+   "group": null,
+   "split": null,
+   "admitted_min": null,
+   "trainable_min": null
   }
  ],
  "headline_train_by_regime": {
   "normal": {
-   "admitted_min": 47.233053666316664,
-   "trainable_min": 47.2311106388,
-   "sessions": 4,
+   "admitted_min": 94.17888512196666,
+   "trainable_min": 94.17388794714999,
+   "sessions": 7,
    "target_min": 180,
-   "remaining_min": 132.76694633368334
+   "remaining_min": 85.82111487803334
   }
  },
  "val_by_regime": {},
  "target_min": 180,
  "registry": {
   "path": "data/human/session-splits.corpus.json",
-  "sha256": "01bc1e00335f1f2e303fa116b0b8f53cf3d9b78a624a184c85b5184e0b850f3e"
+  "sha256": "f36e9e3b565041cbd719d3d4c6b80033d66a685a599f3b6607e67bab3ee574fb"
  },
  "denylist": {
   "path": "data/human/sealed-denylist.json",
   "sha256": "57cfe01f29f6e1a55293f968ec697aa293c268bd87d7cf247ef648279e2fba7c"
  },
- "snapshot": "code-snapshot-86a1912",
+ "snapshot": "code-snapshot-b7d4592",
  "counted_rule": "focused logged time \u2229 accepted segments \u2229 gap-free runs >= 1.6 s"
 }

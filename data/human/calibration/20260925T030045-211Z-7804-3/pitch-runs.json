@@ -1,0 +1,728 @@
+{
+ "method": "Pitch: the counts each sweep spends between leaving one pitch limit and reaching the other, per sweep speed.\n\n    python pitch.py RUN_DIR\n\nThe estimator's pitch per frame pair only marks when the camera moves (a pair is moving when its |pitch| is at least\nMOVE_DEG); its scale is not used. For every moving run of consecutive pairs (gaps up to GAP pairs bridged) the y counts\nover the run are summed (no lag: the lag fit on yaw is flat within +-30 ms, and 30 ms at the fastest sweep's mean rate is\n~400 counts, reported as the edge uncertainty). A sweep that starts at one limit and ends at the other spends the whole\nlimit-to-limit range; the 2026-09-23 take measured 4,624 counts for it (top to bottom, slow). Equal counts at every speed\nmean the pitch gain does not depend on speed.\n",
+ "move_deg": 0.05,
+ "gap_pairs": 2,
+ "range_0923_counts": 4624,
+ "runs": [
+  {
+   "start_s": 21.682,
+   "end_s": 21.69,
+   "seconds": 0.008,
+   "direction": "up",
+   "dy_counts": 0,
+   "mean_counts_per_s": 0,
+   "estimator_pitch_sum_deg": 0.07,
+   "vs_0923_range": 0.0
+  },
+  {
+   "start_s": 21.715,
+   "end_s": 22.723,
+   "seconds": 1.008,
+   "direction": "up",
+   "dy_counts": -1036,
+   "mean_counts_per_s": 1027,
+   "estimator_pitch_sum_deg": 34.33,
+   "vs_0923_range": 0.224
+  },
+  {
+   "start_s": 22.732,
+   "end_s": 23.09,
+   "seconds": 0.358,
+   "direction": "down",
+   "dy_counts": -355,
+   "mean_counts_per_s": 991,
+   "estimator_pitch_sum_deg": -7.15,
+   "vs_0923_range": 0.0768
+  },
+  {
+   "start_s": 23.132,
+   "end_s": 23.14,
+   "seconds": 0.008,
+   "direction": "down",
+   "dy_counts": -7,
+   "mean_counts_per_s": 840,
+   "estimator_pitch_sum_deg": -0.06,
+   "vs_0923_range": 0.0015
+  },
+  {
+   "start_s": 23.173,
+   "end_s": 23.182,
+   "seconds": 0.008,
+   "direction": "down",
+   "dy_counts": -7,
+   "mean_counts_per_s": 840,
+   "estimator_pitch_sum_deg": -0.13,
+   "vs_0923_range": 0.0015
+  },
+  {
+   "start_s": 23.207,
+   "end_s": 23.265,
+   "seconds": 0.058,
+   "direction": "down",
+   "dy_counts": -58,
+   "mean_counts_per_s": 994,
+   "estimator_pitch_sum_deg": -0.45,
+   "vs_0923_range": 0.0125
+  },
+  {
+   "start_s": 23.29,
+   "end_s": 23.298,
+   "seconds": 0.008,
+   "direction": "down",
+   "dy_counts": -8,
+   "mean_counts_per_s": 960,
+   "estimator_pitch_sum_deg": -0.25,
+   "vs_0923_range": 0.0017
+  },
+  {
+   "start_s": 23.39,
+   "end_s": 23.398,
+   "seconds": 0.008,
+   "direction": "down",
+   "dy_counts": -7,
+   "mean_counts_per_s": 840,
+   "estimator_pitch_sum_deg": -0.08,
+   "vs_0923_range": 0.0015
+  },
+  {
+   "start_s": 23.482,
+   "end_s": 23.515,
+   "seconds": 0.033,
+   "direction": "down",
+   "dy_counts": -19,
+   "mean_counts_per_s": 570,
+   "estimator_pitch_sum_deg": -0.2,
+   "vs_0923_range": 0.0041
+  },
+  {
+   "start_s": 23.54,
+   "end_s": 23.548,
+   "seconds": 0.008,
+   "direction": "down",
+   "dy_counts": -4,
+   "mean_counts_per_s": 480,
+   "estimator_pitch_sum_deg": -0.07,
+   "vs_0923_range": 0.0009
+  },
+  {
+   "start_s": 23.598,
+   "end_s": 23.607,
+   "seconds": 0.008,
+   "direction": "down",
+   "dy_counts": -4,
+   "mean_counts_per_s": 480,
+   "estimator_pitch_sum_deg": -0.06,
+   "vs_0923_range": 0.0009
+  },
+  {
+   "start_s": 23.657,
+   "end_s": 23.682,
+   "seconds": 0.025,
+   "direction": "down",
+   "dy_counts": -17,
+   "mean_counts_per_s": 680,
+   "estimator_pitch_sum_deg": -0.14,
+   "vs_0923_range": 0.0037
+  },
+  {
+   "start_s": 23.715,
+   "end_s": 23.723,
+   "seconds": 0.008,
+   "direction": "down",
+   "dy_counts": -4,
+   "mean_counts_per_s": 480,
+   "estimator_pitch_sum_deg": -0.05,
+   "vs_0923_range": 0.0009
+  },
+  {
+   "start_s": 24.215,
+   "end_s": 24.273,
+   "seconds": 0.058,
+   "direction": "down",
+   "dy_counts": -11,
+   "mean_counts_per_s": 189,
+   "estimator_pitch_sum_deg": -0.57,
+   "vs_0923_range": 0.0024
+  },
+  {
+   "start_s": 25.198,
+   "end_s": 25.207,
+   "seconds": 0.008,
+   "direction": "up",
+   "dy_counts": 5,
+   "mean_counts_per_s": 600,
+   "estimator_pitch_sum_deg": 0.1,
+   "vs_0923_range": 0.0011
+  },
+  {
+   "start_s": 25.232,
+   "end_s": 25.44,
+   "seconds": 0.208,
+   "direction": "up",
+   "dy_counts": 252,
+   "mean_counts_per_s": 1210,
+   "estimator_pitch_sum_deg": 2.34,
+   "vs_0923_range": 0.0545
+  },
+  {
+   "start_s": 25.482,
+   "end_s": 25.965,
+   "seconds": 0.483,
+   "direction": "up",
+   "dy_counts": 543,
+   "mean_counts_per_s": 1123,
+   "estimator_pitch_sum_deg": 9.37,
+   "vs_0923_range": 0.1174
+  },
+  {
+   "start_s": 25.965,
+   "end_s": 28.032,
+   "seconds": 2.067,
+   "direction": "down",
+   "dy_counts": 3340,
+   "mean_counts_per_s": 1616,
+   "estimator_pitch_sum_deg": -87.97,
+   "vs_0923_range": 0.7223
+  },
+  {
+   "start_s": 28.115,
+   "end_s": 28.157,
+   "seconds": 0.042,
+   "direction": "up",
+   "dy_counts": -27,
+   "mean_counts_per_s": 648,
+   "estimator_pitch_sum_deg": 0.32,
+   "vs_0923_range": 0.0058
+  },
+  {
+   "start_s": 28.482,
+   "end_s": 28.523,
+   "seconds": 0.042,
+   "direction": "up",
+   "dy_counts": -38,
+   "mean_counts_per_s": 912,
+   "estimator_pitch_sum_deg": 0.54,
+   "vs_0923_range": 0.0082
+  },
+  {
+   "start_s": 28.698,
+   "end_s": 28.79,
+   "seconds": 0.092,
+   "direction": "up",
+   "dy_counts": -208,
+   "mean_counts_per_s": 2269,
+   "estimator_pitch_sum_deg": 2.85,
+   "vs_0923_range": 0.045
+  },
+  {
+   "start_s": 29.082,
+   "end_s": 29.215,
+   "seconds": 0.133,
+   "direction": "down",
+   "dy_counts": 150,
+   "mean_counts_per_s": 1125,
+   "estimator_pitch_sum_deg": -2.01,
+   "vs_0923_range": 0.0324
+  },
+  {
+   "start_s": 29.932,
+   "end_s": 29.948,
+   "seconds": 0.017,
+   "direction": "up",
+   "dy_counts": -6,
+   "mean_counts_per_s": 360,
+   "estimator_pitch_sum_deg": 0.12,
+   "vs_0923_range": 0.0013
+  },
+  {
+   "start_s": 29.973,
+   "end_s": 30.007,
+   "seconds": 0.033,
+   "direction": "up",
+   "dy_counts": -13,
+   "mean_counts_per_s": 390,
+   "estimator_pitch_sum_deg": 0.21,
+   "vs_0923_range": 0.0028
+  },
+  {
+   "start_s": 30.082,
+   "end_s": 31.59,
+   "seconds": 1.508,
+   "direction": "up",
+   "dy_counts": -3310,
+   "mean_counts_per_s": 2194,
+   "estimator_pitch_sum_deg": 94.39,
+   "vs_0923_range": 0.7158
+  },
+  {
+   "start_s": 31.74,
+   "end_s": 31.832,
+   "seconds": 0.092,
+   "direction": "down",
+   "dy_counts": -92,
+   "mean_counts_per_s": 1004,
+   "estimator_pitch_sum_deg": -0.53,
+   "vs_0923_range": 0.0199
+  },
+  {
+   "start_s": 31.857,
+   "end_s": 31.865,
+   "seconds": 0.008,
+   "direction": "down",
+   "dy_counts": -9,
+   "mean_counts_per_s": 1080,
+   "estimator_pitch_sum_deg": -0.07,
+   "vs_0923_range": 0.0019
+  },
+  {
+   "start_s": 31.89,
+   "end_s": 31.915,
+   "seconds": 0.025,
+   "direction": "down",
+   "dy_counts": -27,
+   "mean_counts_per_s": 1080,
+   "estimator_pitch_sum_deg": -0.16,
+   "vs_0923_range": 0.0058
+  },
+  {
+   "start_s": 31.94,
+   "end_s": 31.965,
+   "seconds": 0.025,
+   "direction": "up",
+   "dy_counts": -29,
+   "mean_counts_per_s": 1160,
+   "estimator_pitch_sum_deg": 0.35,
+   "vs_0923_range": 0.0063
+  },
+  {
+   "start_s": 32.265,
+   "end_s": 32.273,
+   "seconds": 0.008,
+   "direction": "up",
+   "dy_counts": 0,
+   "mean_counts_per_s": 0,
+   "estimator_pitch_sum_deg": 0.06,
+   "vs_0923_range": 0.0
+  },
+  {
+   "start_s": 32.923,
+   "end_s": 33.048,
+   "seconds": 0.125,
+   "direction": "up",
+   "dy_counts": 453,
+   "mean_counts_per_s": 3624,
+   "estimator_pitch_sum_deg": 3.28,
+   "vs_0923_range": 0.098
+  },
+  {
+   "start_s": 33.048,
+   "end_s": 33.673,
+   "seconds": 0.625,
+   "direction": "down",
+   "dy_counts": 3412,
+   "mean_counts_per_s": 5459,
+   "estimator_pitch_sum_deg": -101.6,
+   "vs_0923_range": 0.7379
+  },
+  {
+   "start_s": 33.765,
+   "end_s": 34.348,
+   "seconds": 0.583,
+   "direction": "up",
+   "dy_counts": -3290,
+   "mean_counts_per_s": 5640,
+   "estimator_pitch_sum_deg": 99.39,
+   "vs_0923_range": 0.7115
+  },
+  {
+   "start_s": 34.348,
+   "end_s": 34.54,
+   "seconds": 0.192,
+   "direction": "down",
+   "dy_counts": -650,
+   "mean_counts_per_s": 3391,
+   "estimator_pitch_sum_deg": -4.49,
+   "vs_0923_range": 0.1406
+  },
+  {
+   "start_s": 35.59,
+   "end_s": 35.623,
+   "seconds": 0.033,
+   "direction": "up",
+   "dy_counts": 86,
+   "mean_counts_per_s": 2580,
+   "estimator_pitch_sum_deg": 1.26,
+   "vs_0923_range": 0.0186
+  },
+  {
+   "start_s": 35.623,
+   "end_s": 35.648,
+   "seconds": 0.025,
+   "direction": "down",
+   "dy_counts": 93,
+   "mean_counts_per_s": 3720,
+   "estimator_pitch_sum_deg": -0.47,
+   "vs_0923_range": 0.0201
+  },
+  {
+   "start_s": 35.657,
+   "end_s": 35.665,
+   "seconds": 0.008,
+   "direction": "up",
+   "dy_counts": 43,
+   "mean_counts_per_s": 5160,
+   "estimator_pitch_sum_deg": 0.47,
+   "vs_0923_range": 0.0093
+  },
+  {
+   "start_s": 35.665,
+   "end_s": 35.673,
+   "seconds": 0.008,
+   "direction": "down",
+   "dy_counts": 46,
+   "mean_counts_per_s": 5520,
+   "estimator_pitch_sum_deg": -0.55,
+   "vs_0923_range": 0.0099
+  },
+  {
+   "start_s": 35.673,
+   "end_s": 35.732,
+   "seconds": 0.058,
+   "direction": "up",
+   "dy_counts": 399,
+   "mean_counts_per_s": 6840,
+   "estimator_pitch_sum_deg": 2.48,
+   "vs_0923_range": 0.0863
+  },
+  {
+   "start_s": 35.732,
+   "end_s": 36.19,
+   "seconds": 0.458,
+   "direction": "down",
+   "dy_counts": 3563,
+   "mean_counts_per_s": 7774,
+   "estimator_pitch_sum_deg": -101.68,
+   "vs_0923_range": 0.7705
+  },
+  {
+   "start_s": 36.407,
+   "end_s": 36.915,
+   "seconds": 0.508,
+   "direction": "up",
+   "dy_counts": -3601,
+   "mean_counts_per_s": 7084,
+   "estimator_pitch_sum_deg": 107.84,
+   "vs_0923_range": 0.7788
+  },
+  {
+   "start_s": 36.915,
+   "end_s": 36.957,
+   "seconds": 0.042,
+   "direction": "down",
+   "dy_counts": -307,
+   "mean_counts_per_s": 7368,
+   "estimator_pitch_sum_deg": -1.85,
+   "vs_0923_range": 0.0664
+  },
+  {
+   "start_s": 36.957,
+   "end_s": 36.965,
+   "seconds": 0.008,
+   "direction": "up",
+   "dy_counts": -54,
+   "mean_counts_per_s": 6480,
+   "estimator_pitch_sum_deg": 0.53,
+   "vs_0923_range": 0.0117
+  },
+  {
+   "start_s": 36.965,
+   "end_s": 36.973,
+   "seconds": 0.008,
+   "direction": "down",
+   "dy_counts": -51,
+   "mean_counts_per_s": 6120,
+   "estimator_pitch_sum_deg": -0.96,
+   "vs_0923_range": 0.011
+  },
+  {
+   "start_s": 36.982,
+   "end_s": 36.99,
+   "seconds": 0.008,
+   "direction": "up",
+   "dy_counts": -47,
+   "mean_counts_per_s": 5640,
+   "estimator_pitch_sum_deg": 0.1,
+   "vs_0923_range": 0.0102
+  },
+  {
+   "start_s": 36.99,
+   "end_s": 37.123,
+   "seconds": 0.133,
+   "direction": "down",
+   "dy_counts": -350,
+   "mean_counts_per_s": 2625,
+   "estimator_pitch_sum_deg": -5.39,
+   "vs_0923_range": 0.0757
+  },
+  {
+   "start_s": 37.423,
+   "end_s": 37.457,
+   "seconds": 0.033,
+   "direction": "down",
+   "dy_counts": 0,
+   "mean_counts_per_s": 0,
+   "estimator_pitch_sum_deg": -0.2,
+   "vs_0923_range": 0.0
+  },
+  {
+   "start_s": 37.848,
+   "end_s": 37.873,
+   "seconds": 0.025,
+   "direction": "down",
+   "dy_counts": 30,
+   "mean_counts_per_s": 1200,
+   "estimator_pitch_sum_deg": -0.3,
+   "vs_0923_range": 0.0065
+  },
+  {
+   "start_s": 37.873,
+   "end_s": 37.898,
+   "seconds": 0.025,
+   "direction": "up",
+   "dy_counts": 20,
+   "mean_counts_per_s": 800,
+   "estimator_pitch_sum_deg": 0.21,
+   "vs_0923_range": 0.0043
+  },
+  {
+   "start_s": 37.907,
+   "end_s": 37.915,
+   "seconds": 0.008,
+   "direction": "down",
+   "dy_counts": 0,
+   "mean_counts_per_s": 0,
+   "estimator_pitch_sum_deg": -0.06,
+   "vs_0923_range": 0.0
+  },
+  {
+   "start_s": 38.14,
+   "end_s": 38.148,
+   "seconds": 0.008,
+   "direction": "down",
+   "dy_counts": 0,
+   "mean_counts_per_s": 0,
+   "estimator_pitch_sum_deg": -0.06,
+   "vs_0923_range": 0.0
+  },
+  {
+   "start_s": 38.182,
+   "end_s": 38.282,
+   "seconds": 0.1,
+   "direction": "up",
+   "dy_counts": 312,
+   "mean_counts_per_s": 3120,
+   "estimator_pitch_sum_deg": 8.9,
+   "vs_0923_range": 0.0675
+  },
+  {
+   "start_s": 38.29,
+   "end_s": 38.298,
+   "seconds": 0.008,
+   "direction": "down",
+   "dy_counts": 67,
+   "mean_counts_per_s": 8040,
+   "estimator_pitch_sum_deg": -0.68,
+   "vs_0923_range": 0.0145
+  },
+  {
+   "start_s": 38.298,
+   "end_s": 38.307,
+   "seconds": 0.008,
+   "direction": "up",
+   "dy_counts": 74,
+   "mean_counts_per_s": 8880,
+   "estimator_pitch_sum_deg": 0.54,
+   "vs_0923_range": 0.016
+  },
+  {
+   "start_s": 38.307,
+   "end_s": 38.315,
+   "seconds": 0.008,
+   "direction": "down",
+   "dy_counts": 169,
+   "mean_counts_per_s": 20280,
+   "estimator_pitch_sum_deg": -0.83,
+   "vs_0923_range": 0.0365
+  },
+  {
+   "start_s": 38.315,
+   "end_s": 38.323,
+   "seconds": 0.008,
+   "direction": "up",
+   "dy_counts": 95,
+   "mean_counts_per_s": 11400,
+   "estimator_pitch_sum_deg": 4.2,
+   "vs_0923_range": 0.0205
+  },
+  {
+   "start_s": 38.323,
+   "end_s": 38.69,
+   "seconds": 0.367,
+   "direction": "down",
+   "dy_counts": 3300,
+   "mean_counts_per_s": 9000,
+   "estimator_pitch_sum_deg": -102.39,
+   "vs_0923_range": 0.7137
+  },
+  {
+   "start_s": 38.723,
+   "end_s": 39.023,
+   "seconds": 0.3,
+   "direction": "up",
+   "dy_counts": -3225,
+   "mean_counts_per_s": 10750,
+   "estimator_pitch_sum_deg": 100.72,
+   "vs_0923_range": 0.6974
+  },
+  {
+   "start_s": 39.023,
+   "end_s": 39.04,
+   "seconds": 0.017,
+   "direction": "down",
+   "dy_counts": -256,
+   "mean_counts_per_s": 15360,
+   "estimator_pitch_sum_deg": -0.27,
+   "vs_0923_range": 0.0554
+  },
+  {
+   "start_s": 39.04,
+   "end_s": 39.048,
+   "seconds": 0.008,
+   "direction": "up",
+   "dy_counts": -123,
+   "mean_counts_per_s": 14760,
+   "estimator_pitch_sum_deg": 0.41,
+   "vs_0923_range": 0.0266
+  },
+  {
+   "start_s": 39.057,
+   "end_s": 39.182,
+   "seconds": 0.125,
+   "direction": "down",
+   "dy_counts": -904,
+   "mean_counts_per_s": 7232,
+   "estimator_pitch_sum_deg": -20.62,
+   "vs_0923_range": 0.1955
+  },
+  {
+   "start_s": 39.182,
+   "end_s": 39.19,
+   "seconds": 0.008,
+   "direction": "up",
+   "dy_counts": -9,
+   "mean_counts_per_s": 1080,
+   "estimator_pitch_sum_deg": 0.73,
+   "vs_0923_range": 0.0019
+  },
+  {
+   "start_s": 39.957,
+   "end_s": 40.098,
+   "seconds": 0.142,
+   "direction": "up",
+   "dy_counts": 1102,
+   "mean_counts_per_s": 7779,
+   "estimator_pitch_sum_deg": 19.99,
+   "vs_0923_range": 0.2383
+  },
+  {
+   "start_s": 40.098,
+   "end_s": 40.282,
+   "seconds": 0.183,
+   "direction": "down",
+   "dy_counts": 3844,
+   "mean_counts_per_s": 20967,
+   "estimator_pitch_sum_deg": -111.93,
+   "vs_0923_range": 0.8313
+  },
+  {
+   "start_s": 40.423,
+   "end_s": 40.673,
+   "seconds": 0.25,
+   "direction": "up",
+   "dy_counts": -3450,
+   "mean_counts_per_s": 13800,
+   "estimator_pitch_sum_deg": 98.18,
+   "vs_0923_range": 0.7461
+  },
+  {
+   "start_s": 40.682,
+   "end_s": 40.815,
+   "seconds": 0.133,
+   "direction": "down",
+   "dy_counts": -1158,
+   "mean_counts_per_s": 8685,
+   "estimator_pitch_sum_deg": -18.17,
+   "vs_0923_range": 0.2504
+  },
+  {
+   "start_s": 40.823,
+   "end_s": 40.948,
+   "seconds": 0.125,
+   "direction": "up",
+   "dy_counts": 214,
+   "mean_counts_per_s": 1712,
+   "estimator_pitch_sum_deg": 5.42,
+   "vs_0923_range": 0.0463
+  },
+  {
+   "start_s": 41.182,
+   "end_s": 41.29,
+   "seconds": 0.108,
+   "direction": "up",
+   "dy_counts": 443,
+   "mean_counts_per_s": 4089,
+   "estimator_pitch_sum_deg": 7.84,
+   "vs_0923_range": 0.0958
+  },
+  {
+   "start_s": 41.298,
+   "end_s": 41.307,
+   "seconds": 0.008,
+   "direction": "down",
+   "dy_counts": 78,
+   "mean_counts_per_s": 9360,
+   "estimator_pitch_sum_deg": -0.69,
+   "vs_0923_range": 0.0169
+  },
+  {
+   "start_s": 41.307,
+   "end_s": 41.315,
+   "seconds": 0.008,
+   "direction": "up",
+   "dy_counts": 86,
+   "mean_counts_per_s": 10320,
+   "estimator_pitch_sum_deg": 1.26,
+   "vs_0923_range": 0.0186
+  },
+  {
+   "start_s": 41.315,
+   "end_s": 41.49,
+   "seconds": 0.175,
+   "direction": "down",
+   "dy_counts": 1671,
+   "mean_counts_per_s": 9549,
+   "estimator_pitch_sum_deg": -64.52,
+   "vs_0923_range": 0.3614
+  },
+  {
+   "start_s": 41.498,
+   "end_s": 41.673,
+   "seconds": 0.175,
+   "direction": "up",
+   "dy_counts": -140,
+   "mean_counts_per_s": 800,
+   "estimator_pitch_sum_deg": 5.34,
+   "vs_0923_range": 0.0303
+  }
+ ]
+}

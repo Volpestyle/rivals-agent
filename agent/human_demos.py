@@ -23,6 +23,16 @@ FRAME_COLUMNS = (
     "callback_ns", "sys_dts_us", "keyframe", "track",
 )
 MOUSE_VKS = {1: 1, 2: 2, 4: 3, 5: 4, 6: 5}
+# A recorder defect seen on 2026-09-24 takes: one packet's logged composition time repeats another packet's, so
+# composition steps back once in presentation order (025230: the twin is the next packet; 232304: five packets back).
+# Tolerated only as the lead decided on 2026-09-25 (option A): once per file, between packets at most this far apart in
+# packet order, never covered by an accepted segment, and that one frame's time is left unknown (the frame is dropped
+# from the references), never guessed. 8 packets is this stream's reorder window (NVENC HEVC with 3 B-frames per
+# anchor: a packet and the frames it is reordered against lie within 8 packets); a twin further away is refused.
+DUP_CTS_MAX_PACKET_DISTANCE = 8
+DUP_CTS_RATIONALE = ("a stated bound, not a measured one: the reorder window of this stream's configuration (NVENC "
+                     "HEVC, 3 B-frames per anchor); it covers both observed cases (distances 1 and 5) (lead decision "
+                     "2026-09-25)")
 MODIFIER_SIDES = {16: (160, 161), 17: (162, 163), 18: (164, 165)}
 
 
@@ -238,7 +248,7 @@ def probe_video(video_path, ffprobe="ffprobe") -> dict:
 
 
 def match_frames(packets, decoded, video_path, *, pts_anchor=None,
-                 inspection_only=False) -> tuple[tuple[FrameRef, ...], dict]:
+                 inspection_only=False, accepted=None) -> tuple[tuple[FrameRef, ...], dict]:
     """Match only a callback-order prefix; reject any other file loss.
 
     Sorting the entire callback stream then truncating is wrong with B-frames.
@@ -246,6 +256,9 @@ def match_frames(packets, decoded, video_path, *, pts_anchor=None,
     Admission requires an independently evidenced muxer offset. Fitting an
     offset to these same pairs cannot distinguish leading loss from a shift.
     Unanchored fitting is available only for explicit timing inspection.
+
+    Composition must not go backwards in presentation order. `accepted` (the review's accepted spans) lets
+    `_unknown_composition` excuse one recorder-duplicated time outside them; without it nothing is excused.
     """
     num = _int(decoded.get("timebase_num"), "file timebase_num", 1)
     den = _int(decoded.get("timebase_den"), "file timebase_den", 1)
@@ -287,16 +300,72 @@ def match_frames(packets, decoded, video_path, *, pts_anchor=None,
                  "file PTS do not match independent muxer offset; possible leading frame loss")
     refs = tuple(FrameRef(str(video_path), i, pts[i], num, den, row["packet_index"],
                           row["composition_ns"]) for i, row in enumerate(ordered))
-    _require(all(a.composition_ns <= b.composition_ns for a, b in zip(refs, refs[1:])),
-             "composition times go backwards in presentation order")
-    return refs, {
-        "decoded_frames": len(refs), "unwritten_tail_packets": len(packets) - len(refs),
+    unknown = None
+    if not all(a.composition_ns <= b.composition_ns for a, b in zip(refs, refs[1:])):
+        _require(accepted is not None, "composition times go backwards in presentation order")
+        position, unknown = _unknown_composition(refs, accepted)
+        refs = refs[:position] + refs[position + 1:]
+    audit = {
+        "decoded_frames": len(pts), "unwritten_tail_packets": len(packets) - len(pts),
         "muxer_offset_num": offset.numerator, "muxer_offset_den": offset.denominator,
         "max_residual_num": max(abs(v - offset) for v in shifts).numerator,
         "max_residual_den": max(abs(v - offset) for v in shifts).denominator,
         "capture_latency_calibrated": False,
         "pts_alignment_verified": pts_anchor is not None,
     }
+    if unknown is not None:
+        audit["unknown_composition"] = [unknown]
+    return refs, audit
+
+
+def _unknown_composition(refs, accepted):
+    """(position, audit record) of the one frame whose logged composition time is a recorder duplicate, or refuse.
+
+    Excused only when composition steps back exactly once in presentation order, the file holds exactly one
+    composition value shared by two frames, those two are at most DUP_CTS_MAX_PACKET_DISTANCE apart in packet order,
+    dropping one of the two frames at the step makes presentation order monotonic again, and no accepted span covers
+    the dropped frame's slot: its true time lies strictly between its presentation neighbours' times (which are
+    real frames of their own and may bound an accepted span). Its time stays unknown: the frame leaves the
+    references, and nothing is interpolated. A frame at either end of the file has no such bound and is refused.
+    """
+    refused = "composition times go backwards in presentation order"
+    back = [i for i in range(len(refs) - 1) if refs[i].composition_ns > refs[i + 1].composition_ns]
+    _require(len(back) == 1, refused)
+    holders = {}
+    for ref in refs:
+        holders.setdefault(ref.composition_ns, []).append(ref)
+    shared = [group for group in holders.values() if len(group) > 1]
+    _require(len(shared) == 1 and len(shared[0]) == 2, refused)
+    pair = shared[0]
+    _require(abs(pair[0].packet_index - pair[1].packet_index) <= DUP_CTS_MAX_PACKET_DISTANCE,
+             f"{refused} (a duplicated composition time {abs(pair[0].packet_index - pair[1].packet_index)} packets "
+             f"apart; at most {DUP_CTS_MAX_PACKET_DISTANCE} is excused)")
+    candidates = []
+    for position in (back[0], back[0] + 1):
+        if refs[position] not in pair:
+            continue
+        rest = refs[:position] + refs[position + 1:]
+        if all(a.composition_ns <= b.composition_ns for a, b in zip(rest, rest[1:])):
+            candidates.append(position)
+    _require(len(candidates) == 1, refused)
+    position = candidates[0]
+    ref = refs[position]
+    twin = pair[1] if pair[0] is ref else pair[0]
+    _require(0 < position < len(refs) - 1, refused)
+    before, after = refs[position - 1].composition_ns, refs[position + 1].composition_ns
+    slot = (before, after)   # exclusive: before < true time < after
+    _require(not any(max(before + 1, start) < min(after, end) for start, end in accepted),
+             "a duplicated composition time inside an accepted segment is not excused")
+    # the twin keeps its logged time; if an accepted span holds it, the duplicate is not isolated from accepted play
+    _require(not any(start <= twin.composition_ns < end for start, end in accepted),
+             "a duplicated composition time whose twin is inside an accepted segment is not excused")
+    return position, dict(
+        packet_index=ref.packet_index, file_pts=ref.pts, frame_index=ref.frame_index,
+        logged_composition_ns=ref.composition_ns, duplicate_of_packet_index=twin.packet_index, twin_file_pts=twin.pts,
+        packet_distance=abs(ref.packet_index - twin.packet_index), max_packet_distance=DUP_CTS_MAX_PACKET_DISTANCE,
+        distance_rationale=DUP_CTS_RATIONALE, slot_ns=list(slot),
+        reason="recorder-duplicated composition time; the frame's time is unknown (strictly between slot_ns) and the "
+               "frame is dropped from the references (lead decision 2026-09-25, option A)")
 
 
 def _event(raw):
@@ -623,8 +692,10 @@ def _build(payload, placement, media_sha256):
     decoded = payload["decoded"]
     _require((decoded.get("width"), decoded.get("height")) == (meta["width"], meta["height"]),
              "decoded video dimensions differ from recorder metadata")
+    accepted = [(s["start_ns"], s["end_ns"]) for s in review.get("segments", [])
+                if s.get("imitation_suitability") == "accepted"]
     frames, audit = match_frames(packets, decoded, placement.video_path,
-                                pts_anchor=review.get("pts_anchor"))
+                                pts_anchor=review.get("pts_anchor"), accepted=accepted)
     _require(all(start <= f.composition_ns <= end for f in frames), "frame CTS outside session")
     events, states, intervals = _timeline(events, start, end)
     return HumanDataset(placement, frames, events, states, intervals, _json(review),

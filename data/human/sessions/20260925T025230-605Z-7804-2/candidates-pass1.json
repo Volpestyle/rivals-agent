@@ -1,0 +1,104 @@
+{
+ "session": "20260925T025230-605Z-7804-2",
+ "flags": [],
+ "capture_gaps": [
+  [
+   372626517370863,
+   372626542370862
+  ]
+ ],
+ "segments": [
+  {
+   "segment_id": "seg-000",
+   "start_ns": 372626443519500,
+   "end_ns": 372626693519500,
+   "machine_reason": "focus_transition",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-001",
+   "start_ns": 372626693519500,
+   "end_ns": 372626734037521,
+   "machine_reason": "unsampled_edge",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-002",
+   "start_ns": 372626734037521,
+   "end_ns": 372801734030522,
+   "machine_reason": "range_hud_present",
+   "proposal": "unresolved",
+   "edges": {
+    "start": {
+     "sample_ns": 372626734037521,
+     "refine": [
+      372626693519500,
+      372626734037522
+     ],
+     "refined": false
+    },
+    "end": {
+     "sample_ns": 372801734030521,
+     "refine": [
+      372801734030521,
+      372801734030522
+     ],
+     "refined": false
+    }
+   }
+  },
+  {
+   "segment_id": "seg-003",
+   "start_ns": 372801734030522,
+   "end_ns": 372803934030473,
+   "machine_reason": "dead",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-004",
+   "start_ns": 372803934030473,
+   "end_ns": 372804134030425,
+   "machine_reason": "unsampled_edge",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-005",
+   "start_ns": 372804134030425,
+   "end_ns": 372848734028642,
+   "machine_reason": "range_hud_present",
+   "proposal": "unresolved",
+   "edges": {
+    "start": {
+     "sample_ns": 372804134030425,
+     "refine": [
+      372803934030473,
+      372804134030426
+     ],
+     "refined": false
+    },
+    "end": {
+     "sample_ns": 372848734028641,
+     "refine": [
+      372848734028641,
+      372848752419000
+     ],
+     "refined": false
+    }
+   }
+  },
+  {
+   "segment_id": "seg-006",
+   "start_ns": 372848734028642,
+   "end_ns": 372848752419000,
+   "machine_reason": "unsampled_edge",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-007",
+   "start_ns": 372848752419000,
+   "end_ns": 372848818989800,
+   "machine_reason": "ui_key",
+   "proposal": "rejected"
+  }
+ ]
+}

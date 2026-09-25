@@ -28,6 +28,7 @@ import importlib.util
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 from datetime import datetime, timedelta, timezone
@@ -60,6 +61,10 @@ W, H = 2560, 1440
 ANCHOR_VIDEO_MS = [21, 46, 29, 38, 71, 54, 63, 96, 79, 88, 121]
 ANCHOR_AUDIO_MS = [0, 21, 42, 64, 85]
 REVIEW_INTERIOR_EVERY_NS = 10_000_000_000   # one interior review frame per 10 s of segment, at least one
+# Edge proof (lead decision 2026-09-25, from the 232304 review): a gameplay edge sits only on a native frame where the
+# scan's HUD presence and the live range guard (scripts/record.py `in_range`, the pad loop's proof) both hold. When a
+# sample frame itself fails, the edge moves inward; this is how far inward the evidence step reads for a proven frame.
+EDGE_INWARD_NS = 2_000_000_000
 REVIEW_THUMB = (1280, 720)
 
 
@@ -87,6 +92,9 @@ class Ctx:
         self.sid = args.session
         self.snapshot = HERE / args.snapshot
         self.earlier_snapshot = getattr(args, "earlier_snapshot", None)
+        self.supersedes = getattr(args, "supersedes", None)
+        need(not self.supersedes or args.step in ("motor", "evidence"),
+             "--supersedes applies to the motor and evidence steps only")
         sys.path.insert(0, str(self.snapshot))
         from agent import human_intake as hi
         from agent import human_demos as hd
@@ -121,6 +129,36 @@ class Ctx:
 
     def mapping(self):
         return json.loads((self.out / "slot-mapping.json").read_text())["mapping"]
+
+    def range_guard(self):
+        """The snapshot's live range guard, `in_range(frame)` from scripts/record.py (the pad loop's proof)."""
+        spec = importlib.util.spec_from_file_location("snapshot_record", self.snapshot / "scripts/record.py")
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        return mod.in_range
+
+
+def require_edge_rule(hi, snapshot_name):
+    """Review E1: the evidence step runs only a proposer that has the edge rule (human_intake.EDGE_PROOF)."""
+    need(getattr(hi, "EDGE_PROOF", 0) >= 1, f"{snapshot_name}'s proposer predates the edge rule (review E1): "
+                                         "re-run the evidence step with a refreshed snapshot")
+
+
+def require_proven_edges(segs, reads, gameplay):
+    """Review E1: every gameplay edge frame (start_ns, end_ns - 1) has a native read whose proof is True."""
+    proven = {f["composition_ns"]: f["proof"] for r in reads for f in r["frames"]}
+    for s in segs:
+        if s["machine_reason"] == gameplay:
+            for edge, t in (("start", s["start_ns"]), ("end", s["end_ns"] - 1)):
+                need(proven.get(t) is True, f"{s['segment_id']} {edge} edge at {t}: no native read proves this frame "
+                                            "(edge rule, review E1)")
+
+
+def edge_proof(img, scan, layout, mapping, guard):
+    """One native frame's edge proof: the scan's HUD presence and the live range guard; both must hold."""
+    hud = bool(scan.read_sample(img, layout, mapping)["hud_present"])
+    live = bool(guard(img))
+    return dict(hud_present=hud, in_range=live, proof=hud and live)
 
 
 def step_provenance(c):
@@ -350,36 +388,44 @@ def step_regime(c):
 
 RECORDING_LOG = ROOT / "docs/recording-log.md"
 USER_SETTINGS_0921 = ROOT / "data/human/notes/2026-09-21-user-settings.json"
-# The 2026-09-21 reported bindings with their physical codes (scan code, or mouse button) for the fit (R7).
-BINDINGS_0921 = {"Shift": ("swing", "key", 42), "Caps Lock": ("ez swing", "key", 58), "E": ("uppercut", "key", 18),
-                 "F": ("pull", "key", 33), "Q": ("ultimate", "key", 16), "Left mouse": ("punch", "button", 1),
-                 "Mouse 5": ("punch", "button", 5), "Right mouse": ("web cluster", "button", 2),
-                 "C": ("team-up", "key", 46)}
+
+
+def _assembly():
+    """assemble_session.py's MOTOR, BINDINGS, ALIASES, CALIBRATION and per-date motor statements: one source."""
+    spec = importlib.util.spec_from_file_location("assemble_session", HERE / "assemble_session.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
 def step_motor(c):
+    A = _assembly()
     log = RECORDING_LOG.read_text(encoding="utf-8")
-    need("mouse DPI **800**" in log and "unchanged since the 2026-09-21 sessions" in log, 'failed: "mouse DPI **800**" in log and "unchanged since the 2026-09-21 sessions" in log')
-    note = json.loads(USER_SETTINGS_0921.read_text())
+    # the values' origin, James's 2026-09-23 statements (DPI 800; sensitivity unchanged since 2026-09-21)
+    need(all(q in log for q in A.MOTOR_STATEMENTS["2026-09-23"]["log_quotes"]),
+         "the recording log lacks the 2026-09-23 motor statements")
+    per_session = A.motor_statement(c.meta, c.hi, log)   # this recording date's own statement (review M2, M3)
     prov = json.loads((c.out / "provenance.json").read_text())
     commit = subprocess.run(["git", "-C", str(ROOT), "log", "-1", "--format=%H", "--", "docs/recording-log.md"],
                             capture_output=True, text=True, check=True).stdout.strip()
     statement = dict(path="docs/recording-log.md", sha256=sha(RECORDING_LOG), commit=commit,
-                     section="Motor settings (James's statements)",
-                     text="2026-09-23: mouse DPI 800 (James, from the mouse's software; chat statement ~14:50 CDT). "
-                          "In-game sensitivity unchanged since the 2026-09-21 sessions (same statement).")
-    settings = dict(dpi=800, horizontal_sensitivity=note["mouse"]["horizontal_sensitivity"],
-                    vertical_sensitivity=note["mouse"]["vertical_sensitivity"], swing_mode=note["swing_hold_or_toggle"])
-    bindings = {k: v[0] for k, v in BINDINGS_0921.items()}
+                     section="Motor settings (James's statements)", date=per_session["date"],
+                     text=list(per_session["log_quotes"]))   # verbatim from the committed log
+    # The assembly's own values (review I1: six motor fields; the full binding table), so this record and the
+    # session's settings.json carry the same settings identity.
+    settings, bindings = dict(A.MOTOR), A.BINDINGS
+    cal = {"path": str(A.CALIBRATION.relative_to(ROOT).as_posix()), "sha256": sha(A.CALIBRATION)}
     doc = dict(
         session=c.sid,
         settings=dict(value=settings,
-                      source="DPI: James's statement 2026-09-23 ~14:50 CDT. Sensitivity 1.89/1.89 and hold swing: James's "
-                             "2026-09-21 report, carried forward by the same 2026-09-23 statement (sensitivity unchanged).",
-                      per_session_source="James's statement dated 2026-09-23 ~14:50 CDT, applied by lead decision to every "
-                                         "existing session",
+                      source="DPI 800: James's statement 2026-09-23 ~14:50 CDT. Sensitivity 1.89/1.89 unchanged since "
+                             "2026-09-21 (same statement). Swing, acceleration and smoothing: native frames of the "
+                             "2026-09-23 settings look (calibration.json: hold to swing on, simple swing off, mouse "
+                             "acceleration on at factor 1.00, smoothing on).",
+                      per_session_source=per_session["settings"],
                       evidence=[{k: statement[k] for k in ("path", "sha256")},
                                 {"path": "data/human/notes/2026-09-21-user-settings.json", "sha256": sha(USER_SETTINGS_0921)},
+                                cal,
                                 {"path": f"data/human/sessions/{c.sid}/provenance.json", "sha256": sha(c.out / "provenance.json")}],
                       statement=statement,
                       corroboration=dict(saved_settings_sha256=prov["settings_receipt"]["sha256"],
@@ -388,21 +434,30 @@ def step_motor(c):
                                                                        for k in ("MouseHorizontalSensitivity",
                                                                                  "MouseVerticalSensitivity")],
                                          note="later local state; stores sensitivity and bindings, not DPI"),
-                      limits=["swing mode is from the 2026-09-21 report; the 2026-09-23 statement names sensitivity only",
-                              "counts/inch and counts/degree await the ruler and 360-degree takes (fit R8)"]),
-        bindings=dict(value=bindings, physical={k: {"action": a, "kind": kind, "code": code}
-                                                for k, (a, kind, code) in BINDINGS_0921.items()},
-                      source="James's 2026-09-21 report (bindings_reported); HUD key labels C/LSHIFT/E/F inspected on this "
-                             "session's own frames (slot-mapping.json)",
-                      per_session_source="James's statement 2026-09-23 (settings unchanged since 2026-09-21); the lead is "
-                                         "asking James what C and Alt are bound to",
-                      evidence=[{"path": "data/human/notes/2026-09-21-user-settings.json", "sha256": sha(USER_SETTINGS_0921)},
+                      limits=["DPI is not stored anywhere the intake can read; it rests on James's statements"]),
+        bindings=dict(value=bindings, aliases=A.ALIASES, notes=A.BINDING_NOTES,
+                      source="native frames of James's settings look (calibration take 2026-09-23, keyboard pages, "
+                             "calibration.json), agreeing with his 2026-09-21 report and 2026-09-23 statements; HUD key "
+                             "labels on this session's frames (slot-mapping.json)",
+                      per_session_source=per_session["bindings"],
+                      evidence=[{k: statement[k] for k in ("path", "sha256")},
+                                {"path": "data/human/notes/2026-09-21-user-settings.json", "sha256": sha(USER_SETTINGS_0921)},
+                                cal,
                                 {"path": f"data/human/sessions/{c.sid}/slot-mapping.json",
-                                 "sha256": sha(c.out / "slot-mapping.json")}],
-                      pending=["C binding confirmation (reported team-up on 2026-09-21)", "any Alt binding"]),
+                                 "sha256": sha(c.out / "slot-mapping.json")}]),
         settings_identity=c.hi.settings_identity(settings, bindings),
-        calibration_takes=dict(dpi_ruler=None, turn_360=None, note="pointers are added when the takes arrive"))
-    write_once(c.out / "motor-settings.json", doc)
+        calibration_takes=dict(turn_360=cal, note="multi-speed yaw: data/human/calibration/<calibration session>/, "
+                                                  "added to the step header only by lead decision"))
+    target = c.out / "motor-settings.json"
+    if c.supersedes:   # a deliberate regeneration: the old record stays, renamed, and is named here
+        need(target.exists(), "--supersedes needs an existing motor-settings.json")
+        n = 1
+        while (c.out / f"motor-settings.v{n}.json").exists():
+            n += 1
+        kept = c.out / f"motor-settings.v{n}.json"
+        doc["supersedes"] = {"file": kept.name, "sha256": sha(target), "reason": c.supersedes}
+        target.rename(kept)
+    write_once(target, doc)
     print(settings, doc["settings_identity"])
 
 
@@ -471,33 +526,56 @@ def step_evidence(c):
     scan = c.scan_module()
     mapping = c.mapping()
     layout = scan.source_layout(mapping)
+    require_edge_rule(hi, c.snapshot.name)
     kw, ordered = _proposal_inputs(c)
     ms_of = {r["composition_ns"]: round(r["pts"] * 1000 / 120) + 21 for r in ordered}
     index_of = {r["composition_ns"]: i for i, r in enumerate(ordered)}
     times = [r["composition_ns"] for r in ordered]
     pass1 = json.loads((c.out / "candidates-pass1.json").read_text())["segments"]
-    # 1. native HUD reads for every frame inside each gameplay edge bracket
+    current = c.out / "segments-evidence.json"
+    if c.supersedes:   # a deliberate re-emission: the current evidence stays in place until the new one is complete
+        need(current.exists(), "--supersedes needs an existing segments-evidence.json")
+    else:
+        need(not current.exists(), "segments-evidence.json already written")
+        need(not (c.out / "review-frames").exists(), "review-frames/ exists without segments-evidence.json")
+    guard = c.range_guard()
+
+    def proofs(frames):
+        by_ms = dict(_decode(c, [ms_of[t] for t in frames])) if frames else {}
+        return [(t, edge_proof(by_ms[ms_of[t]], scan, layout, mapping, guard)) for t in frames]
+
+    # 1. native edge reads: every frame of each gameplay edge's bracket and, when the sample frame itself fails the
+    # edge proof, the frames up to EDGE_INWARD_NS inside the segment (hi.propose_segments places the edge)
     native, reads = {}, []
     for s in pass1:
         if s["machine_reason"] != hi.GAMEPLAY:
             continue
+        first_s, last_s = s["edges"]["start"]["sample_ns"], s["edges"]["end"]["sample_ns"]
         for edge in ("start", "end"):
+            sample = s["edges"][edge]["sample_ns"]
             lo, hi_ = s["edges"][edge]["refine"]
-            frames = [t for t in times if lo <= t < hi_]
-            decoded = _decode(c, [ms_of[t] for t in frames])
-            by_ms = dict(decoded)
-            row = []
-            for t in frames:
-                present = scan.read_sample(by_ms[ms_of[t]], layout, mapping)["hud_present"]
-                row.append((t, bool(present)))
-            native[(edge, s["edges"][edge]["sample_ns"])] = row
-            reads.append(dict(segment=s["segment_id"], edge=edge, sample_ns=s["edges"][edge]["sample_ns"], bracket=[lo, hi_],
-                              frames=[dict(composition_ns=t, frame_index=index_of[t], file_ms=ms_of[t], hud_present=p)
-                                      for t, p in row]))
+            row = proofs([t for t in times if lo <= t < hi_])
+            inward = []
+            if not dict(row).get(sample, {"proof": True})["proof"]:
+                if edge == "start":
+                    inside = [t for t in times if sample < t <= min(sample + EDGE_INWARD_NS, last_s)]
+                else:
+                    inside = [t for t in times if max(sample - EDGE_INWARD_NS, first_s) <= t < sample]
+                inward = proofs(inside)
+            both = sorted(row + inward)
+            native[(edge, sample)] = [(t, r["proof"]) for t, r in both]
+            reads.append(dict(segment=s["segment_id"], edge=edge, sample_ns=sample, bracket=[lo, hi_],
+                              inward_frames=len(inward),
+                              frames=[dict(composition_ns=t, frame_index=index_of[t], file_ms=ms_of[t], **r)
+                                      for t, r in both]))
     segs, flags = hi.propose_segments(**kw, native=native)
-    # 2. review frames: both edges plus stratified interior frames, decoded exactly and hashed
-    review_dir = c.out / "review-frames"
-    review_dir.mkdir(exist_ok=True)
+    require_proven_edges(segs, reads, hi.GAMEPLAY)   # E1: or nothing is written
+    # 2. review frames: both edges plus stratified interior frames, decoded exactly and hashed; written to a staging
+    # folder that becomes review-frames/ only once everything else succeeded (review N2)
+    review_dir = c.out / "review-frames.staging"
+    if review_dir.exists():
+        shutil.rmtree(review_dir)   # this step's own leftover from an interrupted run
+    review_dir.mkdir()
     picks = {}
     from bisect import bisect_left, bisect_right
     for s in segs:
@@ -522,6 +600,7 @@ def step_evidence(c):
             s["review_frames"].append(dict(frame_index=i, composition_ns=t, file_ms=ms_of[t],
                                            decoded_bgr_sha256=hashlib.sha256(img.tobytes()).hexdigest(),
                                            hud_present=bool(scan.read_sample(img, layout, mapping)["hud_present"]),
+                                           in_range=bool(guard(img)),
                                            image=f"review-frames/{name}", image_sha256=sha(review_dir / name),
                                            role="start" if i == picks[s["segment_id"]][0] else
                                            ("end" if i == picks[s["segment_id"]][-1] else "interior")))
@@ -538,7 +617,11 @@ def step_evidence(c):
                    "hud-scan-samples.jsonl", "regime-timeline.json", "candidates-pass1.json")},
                parameters=dict(ui_keys=hi.UI_KEYS, settings_menu_keys=sorted(hi.SETTINGS_MENU_KEYS),
                                ui_settle_ns=hi.UI_SETTLE_NS, afk_ns=hi.AFK_NS, max_hud_gap_ns=hi.MAX_HUD_GAP_NS,
-                               review_interior_every_ns=REVIEW_INTERIOR_EVERY_NS),
+                               review_interior_every_ns=REVIEW_INTERIOR_EVERY_NS,
+                               edge_rule="an edge sits only on a native frame where the scan's HUD presence and the live "
+                                         "range guard (snapshot scripts/record.py in_range) both hold (lead, 2026-09-25)",
+                               edge_inward_ns=EDGE_INWARD_NS,
+                               range_guard={"path": "scripts/record.py", "sha256": sha(c.snapshot / "scripts/record.py")}),
                session_regime=kw["session_regime"], focused_intervals=[list(i) for i in kw["intervals"]],
                capture_gaps=[list(g) for g in kw["gaps"]], flags=flags, native_edge_reads=reads, segments=segs,
                earlier_steps=dict(snapshot=c.earlier_snapshot or c.snapshot.name,
@@ -547,7 +630,17 @@ def step_evidence(c):
                motor={"path": "motor-settings.json", "sha256": sha(c.out / "motor-settings.json")},
                note="`proposal` is the proposer's; nothing here is a verdict. Accepted comes only from a verdict "
                     "record with reviewer, time and inspected native frame hashes (review R5).")
-    write_once(c.out / "segments-evidence.json", doc)
+    if c.supersedes:   # every check passed and every frame is written: only now does the old evidence step aside
+        n = 1
+        while (c.out / f"segments-evidence.v{n}.json").exists() or (c.out / f"review-frames.v{n}").exists():
+            n += 1
+        doc["supersedes"] = {"file": f"segments-evidence.v{n}.json", "sha256": sha(current),
+                             "review_frames": f"review-frames.v{n}", "reason": c.supersedes}
+        current.rename(c.out / doc["supersedes"]["file"])
+        if (c.out / "review-frames").exists():
+            (c.out / "review-frames").rename(c.out / doc["supersedes"]["review_frames"])
+    review_dir.rename(c.out / "review-frames")
+    write_once(current, doc)
     for s in segs:
         print(s["segment_id"], s["machine_reason"], s["proposal"], [round(x, 3) for x in s["t_rel_s"]],
               len(s["review_frames"]), "frames")
@@ -561,6 +654,7 @@ def main():
     ap.add_argument("--scratch", required=True)
     ap.add_argument("--snapshot", required=True)
     ap.add_argument("--earlier-snapshot", help="the snapshot the earlier steps ran from, when it differs")
+    ap.add_argument("--supersedes", help="motor step only: regenerate deliberately, keeping the old record as .vN")
     args = ap.parse_args()
     below_normal()
     globals()[f"step_{args.step}"](Ctx(args))

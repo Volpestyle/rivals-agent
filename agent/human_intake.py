@@ -55,6 +55,9 @@ FOCUS_SETTLE_NS = 250_000_000
 # After a death the HP reads full again while the respawn ghost and its "SPECTATING" countdown are still on screen
 # (200129: up to 0.4 s); play resumes no earlier than this after the first alive sample.
 RESPAWN_SETTLE_NS = 1_000_000_000
+# The edge rule's version (lead decision 2026-09-25): propose_segments places an edge only on a frame the native reads
+# prove, moving inward from an unproven sample frame and refusing when none is proven. Drivers check this marker.
+EDGE_PROOF = 1
 # Cut reasons, strongest first: the reason a non-gameplay hole reports when several cuts cover it.
 CUT_ORDER = ("settings_menu", "after_settings_menu", "ui_key", "dead", "focus_transition", "afk", "capture_gap",
              "regime_differs_from_session")
@@ -224,9 +227,12 @@ def propose_segments(intervals, hud_samples, *, ui_keys=(), controls=None, gaps=
     first HUD-present sample and ends one ns after its last HUD-present sample that precedes any cut, so both
     edges are verified gameplay frames (conservative).
 
-    `native[(edge, sample_ns)] = [(composition_ns, present)]` holds per-frame HUD reads for the native frames an
-    edge's `refine` bracket lists; an edge then moves outward over contiguous present frames, never past the
-    bracket (the neighbouring sample or cut). Returns `(segments, flags)`.
+    `native[(edge, sample_ns)] = [(composition_ns, present)]` holds per-frame reads for the native frames around
+    an edge; `present` is the edge proof (the intake reads the scan's HUD presence and the live range guard, and
+    both must hold: lead decision 2026-09-25). An edge sits only on a proven frame: from a proven sample frame it
+    moves outward over contiguous proven frames, never past the `refine` bracket (the neighbouring sample or cut);
+    from an unproven sample frame it moves inward to the nearest proven frame the reads hold, and refuses if they
+    hold none. Returns `(segments, flags)`.
     """
     intervals = [tuple(i) for i in intervals]
     _intervals_ok(intervals, "focus intervals")
@@ -268,16 +274,28 @@ def propose_segments(intervals, hud_samples, *, ui_keys=(), controls=None, gaps=
             start, end = first, last + 1
             start_frames = native.get(("start", first))
             if start_frames:
-                for t, p in sorted(start_frames, reverse=True):
-                    if not (lo <= t <= first) or p is not True:
-                        break
-                    start = t
+                reads = dict(start_frames)
+                if reads.get(first, True) is True:
+                    for t, p in sorted(((t, p) for t, p in start_frames if t <= first), reverse=True):
+                        if not (lo <= t <= first) or p is not True:
+                            break
+                        start = t
+                else:   # the sample frame fails the edge proof: the edge moves inward to the first proven frame
+                    inward = [t for t, p in sorted(start_frames) if first < t <= last and p is True]
+                    _require(inward, f"start edge at {first}: no frame in the native reads passes the edge proof")
+                    start = inward[0]
             end_frames = native.get(("end", last))
             if end_frames:
-                for t, p in sorted(end_frames):
-                    if not (last <= t < hi) or p is not True:
-                        break
-                    end = t + 1
+                reads = dict(end_frames)
+                if reads.get(last, True) is True:
+                    for t, p in sorted((t, p) for t, p in end_frames if t >= last):
+                        if not (last <= t < hi) or p is not True:
+                            break
+                        end = t + 1
+                else:   # the last sample frame fails the edge proof: the edge moves inward to the last proven frame
+                    inward = [t for t, p in sorted(end_frames) if start <= t < last and p is True]
+                    _require(inward, f"end edge at {last}: no frame in the native reads passes the edge proof")
+                    end = inward[-1] + 1
             play.append(dict(start_ns=start, end_ns=end, machine_reason=GAMEPLAY, proposal="unresolved",
                              edges=dict(start=dict(sample_ns=first, refine=[lo, first + 1], refined=bool(start_frames)),
                                         end=dict(sample_ns=last, refine=[last, hi], refined=bool(end_frames)))))
