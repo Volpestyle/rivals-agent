@@ -67,6 +67,7 @@ FORMAT = "rivals-idm-v1"
 REPORT_FORMAT = "rivals-idm-report-v1"
 PERMUTATION = "random.Random(seed * 1000003 + epoch).shuffle(example indices)"
 CAMERA_WEIGHT = 1.0
+CAMERA_BETA_AXES = ("both", "yaw")   # where beta-NLL applies when it is on; "both" is what d10f583 landed
 ABSTAIN_BAND = (0.35, 0.65)      # a press probability inside this band is an abstention (pre-registered)
 # Degrees: a camera axis whose TOTAL std (model + label sigma) exceeds its predicted regime's bound is an abstention
 # (pre-registered). Extrapolated labels are known to ~20 % (idm_targets.EXTRAPOLATED_SIGMA_FRACTION), so 3 degrees
@@ -179,10 +180,12 @@ def train_statistics(examples):
 # ---- loss and training --------------------------------------------------------------------------------------------
 
 def loss_terms(press_logits, camera_out, press, press_mask, camera, camera_mask, camera_sigma, pos_weight,
-               camera_beta=None):
+               camera_beta=None, camera_beta_axes="both"):
     """Masked losses; a masked entry contributes nothing, value or gradient. camera_beta (None = the Gaussian NLL):
     beta-NLL (Seitzer et al. 2022), each camera element's NLL weighted by stop-gradient(var ** beta), so the mean's
-    gradient scales with var ** (beta - 1) and a large variance cannot starve it (the yaw falsification test)."""
+    gradient scales with var ** (beta - 1) and a large variance cannot starve it (the yaw falsification test).
+    camera_beta_axes: "both" (the landed behaviour) or "yaw", which weights the yaw element only and keeps the Gaussian
+    NLL on pitch (the yaw-only test, lane doc 2026-09-25)."""
     bce = F.binary_cross_entropy_with_logits(press_logits, press, pos_weight=pos_weight, reduction="none")
     m = press_mask.float()
     press_loss = (bce * m).sum() / m.sum().clamp(min=1)
@@ -194,7 +197,10 @@ def loss_terms(press_logits, camera_out, press, press_mask, camera, camera_mask,
     var = logvar.exp() + camera_sigma ** 2
     nll = 0.5 * (var.log() + (camera - mu) ** 2 / var)
     if camera_beta is not None:
-        nll = nll * var.detach() ** camera_beta
+        weight = var.detach() ** camera_beta
+        if camera_beta_axes == "yaw":                   # beta-NLL on yaw only; pitch keeps the Gaussian NLL
+            weight = torch.cat([weight[:, :1], torch.ones_like(weight[:, 1:])], dim=1)
+        nll = nll * weight
     c = camera_mask.float()
     camera_loss = (torch.where(camera_mask, nll, torch.zeros_like(nll)) * c).sum() / c.sum().clamp(min=1)
     return {"press": press_loss, "camera": camera_loss, "total": press_loss + CAMERA_WEIGHT * camera_loss}
@@ -207,10 +213,11 @@ def seed_everything(seed, deterministic=True):
 
 
 def fit(examples, config, stats, *, seed=0, epochs=10, batch_size=16, lr=1e-3, weight_decay=1e-4, clip=1.0,
-        device="cpu", log=None, camera_beta=None):
+        device="cpu", log=None, camera_beta=None, camera_beta_axes="both"):
     """Train one IDM on train examples. Returns (model, per-epoch history, seconds)."""
     require(len(examples) > 0, "no training examples")
     require(camera_beta is None or 0 < camera_beta <= 1, "camera_beta must be in (0, 1]")
+    require(camera_beta_axes in CAMERA_BETA_AXES, f"camera_beta_axes must be one of {CAMERA_BETA_AXES}")
     require(all(t.header["split"] == "train" for t, _, _, _ in examples.items), "training accepts only train files")
     seed_everything(seed)
     model = IDM(config).to(device)
@@ -228,7 +235,8 @@ def fit(examples, config, stats, *, seed=0, epochs=10, batch_size=16, lr=1e-3, w
             press_logits, cam = model(motion, hud)
             terms = loss_terms(press_logits, cam, examples.press[idx].to(device), examples.press_mask[idx].to(device),
                                examples.camera[idx].to(device), examples.camera_mask[idx].to(device),
-                               examples.camera_sigma[idx].to(device), pw, camera_beta=camera_beta)
+                               examples.camera_sigma[idx].to(device), pw, camera_beta=camera_beta,
+                               camera_beta_axes=camera_beta_axes)
             require(bool(torch.isfinite(terms["total"])), "nonfinite training loss")
             opt.zero_grad(set_to_none=True)
             terms["total"].backward()
@@ -438,12 +446,14 @@ def run_fit(a):
     examples = Examples([(t, stores[t.session_id]) for t, _ in train_t], config, supported, limit=a.max_examples)
     stats = train_statistics(examples)
     model, history, secs = fit(examples, config, stats, seed=a.seed, epochs=a.epochs, device=a.device, log=print,
-                               camera_beta=a.beta_nll)
+                               camera_beta=a.beta_nll, camera_beta_axes=a.beta_nll_axes)
     prov = provenance(seed=a.seed, supported=supported, train_press_counts=counts,
                       targets={t.session_id: target_entry(t, sha) for t, sha in train_t + held_t},
                       frame_stores={sid: store_entry(s) for sid, s in stores.items()})
     if a.beta_nll is not None:                          # only then: a default checkpoint keeps today's bytes
         prov["camera_beta_nll"] = a.beta_nll
+        if a.beta_nll_axes != "both":                   # likewise: a both-axes checkpoint keeps its bytes
+            prov["camera_beta_nll_axes"] = a.beta_nll_axes
     prov["cohort"] = cohort
     require(prov["code_closure"] == closure, "the code closure changed during the fit")
     out = Path(a.out)
@@ -459,7 +469,8 @@ def run_fit(a):
                                    "missing_frames": stats["missing_frames"], "train_press_counts": counts},
                  history=history, abstention={"band": list(ABSTAIN_BAND), "camera_total_std_deg": CAMERA_ABSTAIN_STD},
                  gate1=result, pitch_truth=result["pitch_truth"], test_opened=False, cohort=cohort,
-                 camera_loss={"kind": "gaussian_nll" if a.beta_nll is None else "beta_nll", "beta": a.beta_nll})
+                 camera_loss={"kind": "gaussian_nll" if a.beta_nll is None else "beta_nll", "beta": a.beta_nll,
+                              "axes": None if a.beta_nll is None else a.beta_nll_axes})
     return 0
 
 
@@ -480,6 +491,9 @@ def main(argv=None):
                    help="the pinned build -> kit-version file (lead decision 2026-09-24)")
     f.add_argument("--patch-equivalence-sha256", default=T.PATCH_EQUIVALENCE_SHA256,
                    help="its LF sha256 pin (default: policy.idm_targets.PATCH_EQUIVALENCE_SHA256)")
+    f.add_argument("--beta-nll-axes", choices=CAMERA_BETA_AXES, default="both",
+                   help="with --beta-nll: the camera axes it applies to; 'yaw' keeps the Gaussian NLL on pitch "
+                   "(the yaw-only test, lane doc 2026-09-25)")
     f.add_argument("--beta-nll", type=float, help="camera loss: beta-NLL with this beta in (0, 1]; default: the "
                    "Gaussian NLL (the yaw falsification test, lane doc 2026-09-24)")
     a = ap.parse_args(argv)

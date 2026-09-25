@@ -458,3 +458,27 @@ def test_the_limit_is_for_smoke_runs_and_a_narrow_store_is_refused(tmp_path, mon
     with pytest.raises(TR.FitError, match="smoke only"):
         TR.main(["fit", "--train", str(path), "--heldout", str(path), "--frames-root", str(tmp_path / "frames"),
                  "--out", str(tmp_path / "o"), "--max-examples", "4"])
+
+
+def test_beta_nll_on_yaw_only_keeps_the_gaussian_nll_on_pitch(tmp_path):
+    """The yaw-only test (lane doc 2026-09-25): axes "both" is the landed beta-NLL bit for bit; "yaw" gives yaw the
+    beta-NLL gradient and pitch exactly the plain NLL's."""
+    y, mask, sigma = torch.tensor([[3.0, -1.0]]), torch.tensor([[True, True]]), torch.tensor([[0.2, 0.1]])
+    none = torch.zeros(1, N, dtype=torch.bool)
+
+    def grads(**kw):
+        out = torch.tensor([[0.5, 0.25, 1.2, -0.4]], requires_grad=True)
+        loss = TR.loss_terms(torch.zeros(1, N), out, torch.zeros(1, N), none, y, mask, sigma, torch.ones(N), **kw)
+        loss["camera"].backward()
+        return loss["camera"].detach(), out.grad.clone()
+
+    lb, gb = grads(camera_beta=0.5)
+    lboth, gboth = grads(camera_beta=0.5, camera_beta_axes="both")
+    assert torch.equal(lb, lboth) and torch.equal(gb, gboth)                # "both" is the landed behaviour
+    _, gplain = grads()
+    _, gyaw = grads(camera_beta=0.5, camera_beta_axes="yaw")
+    assert torch.equal(gyaw[:, [0, 2]], gb[:, [0, 2]])                      # yaw mean and log-variance: beta-NLL
+    assert torch.equal(gyaw[:, [1, 3]], gplain[:, [1, 3]])                  # pitch: the plain Gaussian NLL
+    ex, _, _ = examples(tmp_path)
+    with pytest.raises(TR.FitError, match="camera_beta_axes"):
+        TR.fit(ex, TINY, TR.train_statistics(ex), epochs=1, camera_beta=0.5, camera_beta_axes="pitch")
