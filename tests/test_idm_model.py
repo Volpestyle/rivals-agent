@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import sys
 from pathlib import Path
 
@@ -442,6 +443,8 @@ def test_run_fit_end_to_end_commits_the_closure_it_checks_and_writes_a_report(tm
     assert cohort["patch_equivalence"]["sha256"] == eq_sha and payload["meta"]["cohort"] == cohort
     assert report["camera_loss"] == {"kind": "beta_nll", "beta": 0.5}             # the default, recorded
     assert payload["meta"]["camera_beta_nll"] == 0.5
+    assert report["abstention"]["pitch_std_calibration"] == {                     # pitch fix A, recorded
+        "name": "A-6f8dba7b", "yaw_std_edges": list(TR.PITCH_STD_EDGES), "k": list(TR.PITCH_STD_K)}
 
 
 def equivalence(tmp_path, builds):
@@ -477,3 +480,91 @@ def test_the_limit_is_for_smoke_runs_and_a_narrow_store_is_refused(tmp_path, mon
     with pytest.raises(TR.FitError, match="smoke only"):
         TR.main(["fit", "--train", str(path), "--heldout", str(path), "--frames-root", str(tmp_path / "frames"),
                  "--out", str(tmp_path / "o"), "--max-examples", "4"])
+
+
+# ---- pitch fix A (VUH-1353): the deployed pitch-std calibration -----------------------------------------------------
+
+PITCH_FIX_PARAMS = ROOT / "docs" / "evidence" / "idm-beta-nll-20260925" / "pitch_fix3-params.json"
+PITCH_FIX_SHA256 = "6f8dba7b04336c3fd4ce5dcd2acaa8b5a6e4578678643dedb7d942b1549bcff3"
+
+
+def pitch_fix3_apply(rows, params):
+    """pitch_fix3.apply (docs/evidence/idm-beta-nll-20260925/pitch_fix3.py), verbatim but for the names: the rule that
+    was confirmed on fresh held-out sessions."""
+    import copy
+    from bisect import bisect_right
+    bound = {"calibrated": 1.0, "extrapolated": 3.0}
+    out = []
+    for r in rows:
+        c = copy.deepcopy(r)
+        if r["std_pitch"] is not None and r["pred_regime"] is not None and r["std_yaw"] is not None:
+            c["std_pitch"] = r["std_pitch"] * params["k"][bisect_right(params["edges"], r["std_yaw"])]
+            c["ans_pitch"] = None if c["std_pitch"] > bound[r["pred_regime"]] else r["mu_pitch"]
+        out.append(c)
+    return out
+
+
+def test_pitch_fix_a_is_pinned_to_the_landed_parameters_not_re_derived():
+    raw = PITCH_FIX_PARAMS.read_bytes()                                  # -text in git: these bytes everywhere
+    assert hashlib.sha256(raw).hexdigest() == PITCH_FIX_SHA256
+    a = json.loads(raw)["A"]
+    assert a["edges"] == list(TR.PITCH_STD_EDGES) and a["k"] == list(TR.PITCH_STD_K)      # exactly, not approximately
+    assert TR.PITCH_STD_CALIBRATION == "A-" + PITCH_FIX_SHA256[:8]
+    assert TR.CAMERA_ABSTAIN_STD == {"calibrated": 1.0, "extrapolated": 3.0}               # the bounds A was judged on
+
+
+def test_pitch_std_k_bins_by_the_stated_yaw_std_and_a_value_on_an_edge_goes_up():
+    e, k = TR.PITCH_STD_EDGES, TR.PITCH_STD_K
+    assert TR.pitch_std_k(0.0) == k[0] and TR.pitch_std_k(1e9) == k[4]
+    for b, edge in enumerate(e):
+        assert TR.pitch_std_k(edge) == k[b + 1]                          # on the edge: the upper bin
+        assert TR.pitch_std_k(math.nextafter(edge, 0.0)) == k[b]
+
+
+def test_the_camera_answer_applies_pitch_fix_a_exactly_as_confirmed(monkeypatch):
+    """_camera equals pitch_fix3.apply over the pre-A answer, row for row and bit for bit, on a grid that reaches every
+    yaw-std bin, both predicted regimes and pitch answers A turns into abstentions. Yaw and the regime are untouched."""
+    cal, r = header("a")["calibration"], {"t0_ns": 0, "t1_ns": DT}
+    grid = [(my, mp, float(ly), float(lp)) for my in (0.0, 0.3, 5.0, 12.0) for mp in (0.0, -0.2, 4.0)
+            for ly in np.linspace(-12.0, 2.0, 41) for lp in np.linspace(-12.0, 2.5, 30)]
+    after = [TR._camera(my, mp, [ly, lp], r, cal) for my, mp, ly, lp in grid]
+    monkeypatch.setattr(TR, "PITCH_STD_K", (1.0,) * 5)                   # A off: the predictor as it was
+    before = [TR._camera(my, mp, [ly, lp], r, cal) for my, mp, ly, lp in grid]
+    rows = [{"mu_pitch": mp, "ans_pitch": b["pitch_deg"], "std_pitch": b["pitch_std_deg"], "std_yaw": b["yaw_std_deg"],
+             "pred_regime": b["gain_regime"]} for (_, mp, _, _), b in zip(grid, before)]
+    expected = pitch_fix3_apply(rows, {"edges": list(TR.PITCH_STD_EDGES), "k": [1.0, 1.0, 1.0, 1.6005068343947064,
+                                                                                  1.242973089376128]})
+    for a, b, e in zip(after, before, expected):
+        assert a["pitch_std_deg"] == e["std_pitch"] and a["pitch_deg"] == e["ans_pitch"]
+        assert (a["yaw_deg"], a["yaw_std_deg"], a["gain_regime"]) == (b["yaw_deg"], b["yaw_std_deg"], b["gain_regime"])
+        assert a["pitch_std_calibration"] == "A-6f8dba7b"
+    from bisect import bisect_right
+    assert {bisect_right(TR.PITCH_STD_EDGES, b["yaw_std_deg"]) for b in before} == {0, 1, 2, 3, 4}
+    assert {b["gain_regime"] for b in before} == {"calibrated", "extrapolated"}
+    flips = [(a, b) for a, b in zip(after, before) if b["pitch_deg"] is not None and a["pitch_deg"] is None]
+    assert {b["gain_regime"] for _, b in flips} == {"calibrated", "extrapolated"}          # A's cost, both regimes
+    assert all(a["pitch_deg"] is None for a, b in zip(after, before) if b["pitch_deg"] is None)   # never less strict
+
+
+def test_every_prediction_is_marked_and_pitch_fix_a_leaves_yaw_press_and_the_regime_alone(tmp_path, monkeypatch):
+    t, store, _ = session(tmp_path, "a", hide=(5,))
+    model = fitted(M.IDM(TINY))
+    with torch.no_grad():                        # a confident yaw in bin 3 (std ~0.25) and a pitch std of ~0.8:
+        model.camera[-1].weight.zero_()          # answered before A, over the 1-degree bound after (x 1.6005)
+        model.camera[-1].bias.copy_(torch.tensor([0.2, 0.1, math.log(0.0625), math.log(0.64)]))
+    after = TR.predict(model, t, store)
+    monkeypatch.setattr(TR, "PITCH_STD_K", (1.0,) * 5)
+    before = TR.predict(model, t, store)
+    monkeypatch.undo()                                                   # A back on for the comparisons below
+    assert set(after) == set(before) == {r["i"] for r in t.rows}
+    flipped = 0
+    for i, a in after.items():
+        b = before[i]
+        assert a["pitch_std_calibration"] == b["pitch_std_calibration"] == "A-6f8dba7b"     # abstained rows too
+        assert {k: v for k, v in a.items() if not k.startswith("pitch_")} == \
+            {k: v for k, v in b.items() if not k.startswith("pitch_")}                      # yaw, press, regime
+        if b["gain_regime"] is not None:
+            assert a["pitch_std_deg"] == b["pitch_std_deg"] * TR.pitch_std_k(b["yaw_std_deg"])
+            flipped += b["pitch_deg"] is not None and a["pitch_deg"] is None
+    assert flipped and all(TR.pitch_std_k(p["yaw_std_deg"]) == TR.PITCH_STD_K[3]
+                           for p in before.values() if p["gain_regime"] is not None)

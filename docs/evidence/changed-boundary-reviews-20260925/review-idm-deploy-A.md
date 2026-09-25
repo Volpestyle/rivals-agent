@@ -1,0 +1,29 @@
+LAND
+
+Independent read-only review by fit-review, 2026-09-25, VUH-1353. No blocking findings. This accepts the pitch-fix-A deployment delta, not replay-domain transfer or a replay-label export.
+
+Reviewed HEAD `aafd800a1422fbe1480016d71c9a1329626cc644` plus the three uncommitted files. Brief `ab149a82`, producer hand-back `a59d14a5`, equality harness `f5b7159b` and output `14f260c4` all match their stated hashes.
+
+Findings
+
+- **N1 — note — `docs/lanes/inverse-dynamics.md:1398`: exact equality needs its platform qualifier.** The implementation equals the frozen rule exactly when both use the PC's pre-A values. It is not bit-identical to applying A to the Mac's stored standard deviations. Independently checked 137,440 rows: 745 rows had pre-A std differences (at most 1 ulp), and 352 had inflated-pitch-std differences against stored-value `apply`; no answers or regimes differed. The producer discloses this correctly in `idm-deploy-A.md` (all 21 files: 6,096 pre-A differing rows, at most 2 ulp). Expected follow-up: qualify the new lane paragraph with “same-platform recomputation; stored Mac stds may differ by rounding, with unchanged decisions.” Do not revise frozen historical evidence. This does not block landing: the arithmetic and observed decisions match. I verified the differences, not the producer's attribution specifically to `exp`.
+- **N2 — note — `docs/lanes/inverse-dynamics.md:1396`; `policy/idm/train.py:492`: report marker has a different shape.** Predictions contain the string `pitch_std_calibration: "A-6f8dba7b"`; reports contain `abstention.pitch_std_calibration = {name, yaw_std_edges, k}`. No existing consumer is broken. Expected follow-up: describe the report marker as `abstention.pitch_std_calibration.name` so a future exporter does not implement the prose's shorthand as a string comparison. No exporter exists today.
+
+Verification
+
+- **Same fitted quantity:** `idm-pitch-confirm-state/jobs/diag_predict_ckpt.py` (verified `ea834330`) passes raw camera means/logvars to `_camera` and stores its `yaw_std_deg` / `pitch_std_deg` as `std_yaw` / `std_pitch`. The committed pre-A `_camera` and deployed code both compute `sqrt(exp(logvar) + camera_sigma(predicted mean, predicted regime, gain)^2)` in degrees. The deployed yaw value selects the bin before pitch inflation; regime calculation remains ahead of both axes. `pitch_fix3.py:57` and `confirm_score.py` consume those same total stds, not model-only variance or truth labels.
+- **Constants and edges:** params file hashes to `6f8dba7b04336c3fd4ce5dcd2acaa8b5a6e4578678643dedb7d942b1549bcff3`; key A equals both constant tuples exactly. Four sorted edges plus five k values make `bisect_right` indices 0–4 safe. Exact edges go up; the immediately lower float stays below. Inflation precedes the unchanged strict `>` 1/3-degree bound.
+- **Independent equality spot-check:** extracted `_camera` from `git show aafd800:policy/idm/train.py` and the actual frozen `pitch_fix3.apply` via AST, rather than disabling A in the new implementation. Used stored raw means/logvars and only the two allowed target headers' calibration. Prediction hashes matched the confirmation record. `a4-beta-on-025230-predictions.jsonl`: 13,188 rows; `yaw-t0-on-021320-predictions.jsonl`: 124,252 rows. Both had **0 exact rule mismatches, 0 yaw/regime changes, 0 missing markers, 0 answer/regime differences versus applying A to stored Mac values**. Their pre-A std differences were 80 and 665 rows; inflated-pitch differences were 39 and 313. The producer's inspected all-21 harness/output accounts for 1,182,958 rows and zero same-platform mismatches; I did not independently rerun all 21.
+- **Output and consumers:** `_camera`, `_abstain_all` and no-yaw-gain early returns all mark their output. Independently exercised missing, None and zero yaw gain: all camera values remain unknown and the marker survives. `predict`'s press logic is untouched; its test verifies identical press/yaw/regime dictionaries with A on/off. `idm_eval` selects named camera/press fields, and `std_coverage` intentionally consumes inflated pitch std. Report metadata is additive; required report keys and checkpoint loading remain compatible. New pitch metrics change as documented; historical report bytes remain untouched. Repository searches found no IDM-to-replay exporter; existing replay camera generation uses camera-motion.
+- **Tests:** private `UV_PROJECT_ENVIRONMENT=C:/Users/volpe/.uv-envs/fit-review`; `uv run --offline --locked --group execution python -B -m pytest -p no:cacheprovider` on `test_idm_model.py`, `test_idm_decode.py`, `test_idm_eval.py`, `test_idm_targets.py`: **83 passed in 44.53s, exit 0**. Test temporary files were outside the checkout; bytecode writes disabled. Re-ran the inspected `mutate_a_off` plugin against the four new tests: **3 failed, 1 passed, exit 1**, as expected. The 14,760-row equality fixture covers all five bins, both regimes and newly abstained pitch in both. Producer's stdlib result (1,971 passed / 73 skipped) was not rerun.
+- **Preservation:** lane diff is exactly 12 insertions / 0 deletions. Frozen sections `a967962a`, `42beb90e`, `e6b5d526`, `5f94a529`, `f1385679` each hash correctly and occur verbatim once. No edited path overlaps the deployment-freeze manifests. `git diff --check` passes.
+
+Reviewed LF SHA-256 identities (working-tree hashes also matched the hand-back):
+
+| File | LF SHA-256 |
+|---|---|
+| `policy/idm/train.py` | `b6e6fa44b5f8acb936e47a36d63a2509f4745b7fecfd547b88ec2646f2a7c080` |
+| `tests/test_idm_model.py` | `273a044b7679a745e32ac1e3399272504170d8803060a786a9b0d38f8abf9c1c` |
+| `docs/lanes/inverse-dynamics.md` | `a430f8fa9d34e734cd2eb950ff84eda1c2d8e444ec58d9575e154e1f28d78e99` |
+
+No checkout edits, commits, Linear writes, game input, Mac jobs, or sealed-session reads.

@@ -31,7 +31,9 @@ media_sha256, the frame stores' array hashes, and the seed. run_fit refuses code
 Predictor (pre-registered abstentions): an unsupported action -> None; a press probability inside ABSTAIN_BAND ->
 None; a row without its frames -> everything None. Camera: each axis reports its TOTAL standard deviation, sqrt(the
 model's variance + the label sigma of the predicted value in its predicted gain regime) (idm_targets.camera_sigma),
-and the predicted gain_regime; an axis whose total std exceeds CAMERA_ABSTAIN_STD[predicted regime] -> None. Gate 1 is
+and the predicted gain_regime; pitch's total std is then inflated by pitch fix A (PITCH_STD_K per bin of the stated
+yaw std; every prediction and the report name it, PITCH_STD_CALIBRATION, so a replay-label export can refuse IDM pitch
+without it); an axis whose total std exceeds CAMERA_ABSTAIN_STD[predicted regime] -> None. Gate 1 is
 policy.idm_eval.evaluate on the held-out files, beside its zero and persistence baselines, plus the stated std's
 coverage (share of |error| within 1 and 2 std) and abstention per true gain regime. Pitch is scored against derived
 equal-sensitivity degrees wherever the calibration says so (reported as pitch_truth).
@@ -39,6 +41,7 @@ equal-sensitivity degrees wherever the calibration says so (reported as pitch_tr
 from __future__ import annotations
 
 import argparse
+import bisect
 import hashlib
 import io
 import json
@@ -77,6 +80,14 @@ ABSTAIN_BAND = (0.35, 0.65)      # a press probability inside this band is an ab
 # (pre-registered). Extrapolated labels are known to ~20 % (idm_targets.EXTRAPOLATED_SIGMA_FRACTION), so 3 degrees
 # admits an answer up to ~15 degrees per interval (900 deg/s, twice the pad's yaw envelope) with a tight model.
 CAMERA_ABSTAIN_STD = {"calibrated": 1.0, "extrapolated": 3.0}
+# Pitch fix A (VUH-1353): the stated pitch std is inflated by k[bin of the row's stated total YAW std] before the pitch
+# abstention bound is applied (a value on an edge goes to the upper bin). Fitted on the dev fold (lane doc round 3,
+# section f1385679), confirmed on three fresh held-out sessions (section a967962a, landed aafd800). Pinned, not
+# re-derived: key "A" of docs/evidence/idm-beta-nll-20260925/pitch_fix3-params.json, sha256
+# 6f8dba7b04336c3fd4ce5dcd2acaa8b5a6e4578678643dedb7d942b1549bcff3 (tested equal). Every prediction carries the name.
+PITCH_STD_CALIBRATION = "A-6f8dba7b"
+PITCH_STD_EDGES = (0.06059320594627363, 0.10755754546016058, 0.16996028513718056, 0.351656956463779)
+PITCH_STD_K = (1.0, 1.0, 1.0, 1.6005068343947064, 1.242973089376128)
 FRAME_PERIOD_NS = 8_333_333      # offsets() assume 120 fps: 2 video frames per 60 Hz interval
 POS_WEIGHT_MAX = 100.0
 PROVENANCE_REQUIRED = ("seed", "supported", "train_press_counts", "code_closure", "targets", "frame_stores")
@@ -311,21 +322,29 @@ def load_checkpoint(path, device="cpu"):
 
 def _abstain_all():
     return {"yaw_deg": None, "pitch_deg": None, "yaw_std_deg": None, "pitch_std_deg": None, "gain_regime": None,
-            "press": {a: None for a in vocab.NAMES}}
+            "pitch_std_calibration": PITCH_STD_CALIBRATION, "press": {a: None for a in vocab.NAMES}}
+
+
+def pitch_std_k(yaw_std):
+    """Pitch fix A's inflation for a row whose stated total yaw std is `yaw_std` (a value on an edge goes up)."""
+    return PITCH_STD_K[bisect.bisect_right(PITCH_STD_EDGES, yaw_std)]
 
 
 def _camera(mu_yaw, mu_pitch, logvar, r, cal):
     """One framed row's camera answer: the predicted gain regime (from the predicted counts' rate), each axis's total
-    std (model variance + the label sigma of the predicted value in that regime), and each axis's value unless its
-    total std exceeds the regime's pre-registered bound."""
+    std (model variance + the label sigma of the predicted value in that regime; pitch's then inflated by pitch fix A,
+    pitch_std_k of the yaw std), and each axis's value unless its total std exceeds the regime's pre-registered bound."""
     gy, gp = cal.get("yaw_deg_per_count"), cal.get("pitch_deg_per_count")
     if not gy:
-        return {"yaw_deg": None, "pitch_deg": None, "yaw_std_deg": None, "pitch_std_deg": None, "gain_regime": None}
+        return {"yaw_deg": None, "pitch_deg": None, "yaw_std_deg": None, "pitch_std_deg": None, "gain_regime": None,
+                "pitch_std_calibration": PITCH_STD_CALIBRATION}
     _, regime = T.gain_regime(mu_yaw / gy, mu_pitch / gp if gp else 0.0, r["t1_ns"] - r["t0_ns"])
     var = [math.exp(float(v)) for v in logvar]
-    out = {"gain_regime": regime}
+    out = {"gain_regime": regime, "pitch_std_calibration": PITCH_STD_CALIBRATION}
     for axis, mu, v, gain in (("yaw", mu_yaw, var[0], gy), ("pitch", mu_pitch, var[1], gp or 0.0)):
         std = math.sqrt(v + T.camera_sigma(mu, regime, gain) ** 2)
+        if axis == "pitch":                             # yaw is computed first; its std picks the bin
+            std = std * pitch_std_k(out["yaw_std_deg"])
         out[f"{axis}_std_deg"] = std
         out[f"{axis}_deg"] = None if std > CAMERA_ABSTAIN_STD[regime] else mu
     return out
@@ -469,7 +488,10 @@ def run_fit(a):
                  supported=prov["supported"],
                  train_statistics={"positives": stats["positives"], "examples": stats["examples"],
                                    "missing_frames": stats["missing_frames"], "train_press_counts": counts},
-                 history=history, abstention={"band": list(ABSTAIN_BAND), "camera_total_std_deg": CAMERA_ABSTAIN_STD},
+                 history=history, abstention={"band": list(ABSTAIN_BAND), "camera_total_std_deg": CAMERA_ABSTAIN_STD,
+                                              "pitch_std_calibration": {"name": PITCH_STD_CALIBRATION,
+                                                                        "yaw_std_edges": list(PITCH_STD_EDGES),
+                                                                        "k": list(PITCH_STD_K)}},
                  gate1=result, pitch_truth=result["pitch_truth"], test_opened=False, cohort=cohort,
                  camera_loss={"kind": "gaussian_nll" if beta is None else "beta_nll", "beta": beta})
     return 0
