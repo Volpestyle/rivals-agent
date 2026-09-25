@@ -1389,15 +1389,21 @@ and the Gate 2 precondition for fast-band replay pitch labels closes (`idm-pitch
 - **Deploying it** (A's edges and k in `policy.idm.train._camera`) is the reviewed change that follows. It is not made
   here.
 
-**Deployed (2026-09-25, pending fit-review):** `policy.idm.train._camera` applies A by default (`idm-deploy-A.md`).
+**Deployed (2026-09-25, landed `af0062c` on fit-review's LAND, receipt in
+`docs/evidence/changed-boundary-reviews-20260925/`):** `policy.idm.train._camera` applies A by default
+(`idm-deploy-A.md`).
 - **The rule:** each row's total pitch std is multiplied by `pitch_std_k(yaw std)` before the 1° / 3° bound.
 - **The parameters are pinned:** `PITCH_STD_EDGES` / `PITCH_STD_K` are the constants of key "A" in
   `pitch_fix3-params.json` (`6f8dba7b…`), and a test asserts they are equal.
-- **Every prediction is marked,** and so is the fit report's `abstention`: `"pitch_std_calibration": "A-6f8dba7b"`.
-  A replay-label export must refuse IDM pitch without it; none exists yet.
-- **Equal to what was confirmed:** recomputed from the stored raw outputs of all 21 confirmation files (1,182,958
-  rows), the deployed predictor equals `pitch_fix3.apply` exactly (0 mismatches). Yaw, the regime and press are
-  unchanged.
+- **Every prediction is marked** with `"pitch_std_calibration": "A-6f8dba7b"`. The fit report carries
+  `abstention.pitch_std_calibration` = {`name`, `yaw_std_edges`, `k`}, and its `name` is that string. A replay-label
+  export must refuse IDM pitch without the marker; none exists yet.
+- **Equal to what was confirmed,** recomputed on one platform (the PC) from the stored raw outputs of all 21
+  confirmation files (1,182,958 rows): the deployed predictor equals `pitch_fix3.apply` over the same recomputation
+  exactly (0 mismatches). Yaw, the regime and press are unchanged.
+  - The stored Mac-made stds may differ from a PC recomputation by rounding (`math.exp`), by at most 2 ulp on 0.52 %
+    of rows.
+  - Answers, abstentions and regimes are unchanged against the stored values (0 differences).
 - **Every new prediction carries A.** A Gate 1 report written after this change states A's pitch std and abstention.
   The reports of earlier checkpoints stand as they were written.
 
