@@ -16,6 +16,8 @@ from . import steps, vocab
 STEP_NS = 33_333_333
 PERIOD_NS = 8_333_333
 T0_NS = 1_000_000_000
+# The admitted sessions' game build: a human fixture cohorts through the pinned patch-equivalence file like them.
+PATCH = "1.1.3870120/build25364676"
 CALIBRATION = {"kind": "slow_turn_constant", "yaw_deg_per_count": .0132, "pitch_deg_per_count": .0132,
                "pitch": {"kind": "derived_equal_sensitivity"}, "source": "synthetic"}
 
@@ -36,7 +38,7 @@ def header_for(session_id, *, split="train", sitting="sitting-1", **extra):
             "bindings": dict(vocab.DEFAULT_BINDINGS), "calibration": dict(CALIBRATION), "hud_layout": "mk",
             "swing_mode": dict(vocab.PAD_SWING_MODE), "accel_on": True,
             "video_size": [2560, 1440], "device_scope": "single_keyboard_mouse", "injected_events": 0,
-            "settings_hash": "synthetic-settings", "patch": "synthetic-patch",
+            "settings_hash": "synthetic-settings", "patch": PATCH,
             "source": {"generator": "policy.range_bc.fixture"}, **extra}
 
 

@@ -109,6 +109,12 @@ HEADER_KEYS = ("format", "session_id", "media_sha256", "session_group", "sitting
 DENYLIST = "data/human/sealed-denylist.json"
 # The pinned sha256 of intake's denylist as of 2026-09-23 (053616 only). A changed file needs a new pin, passed with it.
 DENYLIST_SHA256 = "57cfe01f29f6e1a55293f968ec697aa293c268bd87d7cf247ef648279e2fba7c"
+# Game builds grouped by kit version (lead decision 2026-09-24; docs/lanes/end-to-end-fit-patch-equivalence.md). A human
+# cohort compares the kit version its builds map to, never the raw build; a build the file does not name is refused.
+# Pinned like the denylist (LF-normalised sha256); a changed file needs a new pin.
+PATCH_EQUIVALENCE = "data/human/patch-equivalence.json"
+PATCH_EQUIVALENCE_SHA256 = "4df869f31178898cc9d93c6c1108698fa0cc3321524aae0fa10b33b889c6bba4"
+PATCH_EQUIVALENCE_FORMAT = "rivals-patch-equivalence-v1"
 ROW_KEYS = ("i", "run", "anchor_ns", "frame", "gap_free", "segment", "suitability", "regime", "tags", "tag_source",
             "held_start", "held_end", "held_known", "press", "release", "mouse_dx", "mouse_dy", "relative_known",
             "wheel_v", "wheel_h", "unsupported")
@@ -200,6 +206,55 @@ def load_denylist(path=DENYLIST, sha256_pin=DENYLIST_SHA256):
         return human_intake.load_denylist(full)
     except Exception as exc:
         raise StepError(f"sealed denylist refused: {exc}") from exc
+
+
+@dataclass
+class PatchEquivalence:
+    """The lead's build -> kit version map (data/human/patch-equivalence.json), checked against its pin."""
+    path: str
+    sha256: str
+    kit_of: dict
+
+
+def load_patch_equivalence(path=PATCH_EQUIVALENCE, sha256_pin=PATCH_EQUIVALENCE_SHA256):
+    """Refused: a file whose LF-normalised sha256 differs from the pin, another format, no kit version, an entry without
+    a non-empty builds list, a non-empty evidence list, decided_by or a YYYY-MM-DD decided_on, an empty or non-string
+    build, and one build under two kit versions."""
+    root = Path(__file__).resolve().parents[2]
+    full = Path(path) if Path(path).is_absolute() else root / path
+    got = hashlib.sha256(full.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
+    require(sha256_pin is not None and got == sha256_pin,
+            f"patch equivalence refused: {full} differs from its pinned sha256 (LF-normalised)")
+    doc = json.loads(full.read_text(encoding="utf-8"))
+    require(isinstance(doc, dict) and doc.get("format") == PATCH_EQUIVALENCE_FORMAT,
+            f"patch equivalence refused: {full.name} is not {PATCH_EQUIVALENCE_FORMAT}")
+    kits = doc.get("kit_versions")
+    require(isinstance(kits, dict) and kits, "patch equivalence refused: no kit version")
+    kit_of = {}
+    for kit, entry in kits.items():
+        where = f"patch equivalence refused: kit version {kit!r}"
+        require(isinstance(kit, str) and kit and isinstance(entry, dict), f"{where} is malformed")
+        builds, evidence = entry.get("builds"), entry.get("evidence")
+        require(isinstance(builds, list) and builds and all(isinstance(b, str) and b for b in builds),
+                f"{where} needs a non-empty list of builds")
+        require(isinstance(evidence, list) and evidence and all(isinstance(e, str) and e for e in evidence),
+                f"{where} needs its evidence")
+        require(isinstance(entry.get("decided_by"), str) and entry["decided_by"], f"{where} needs decided_by")
+        on = entry.get("decided_on")
+        require(isinstance(on, str) and len(on) == 10 and on[4] == on[7] == "-" and (on[:4] + on[5:7] + on[8:]).isdigit(),
+                f"{where} needs decided_on as YYYY-MM-DD")
+        for b in builds:
+            require(b not in kit_of, f"patch equivalence refused: build {b!r} is under two kit versions")
+            kit_of[b] = kit
+    return PatchEquivalence(str(full), got, kit_of)
+
+
+def kit_version(build, equivalence):
+    """The kit version a game build belongs to; a build the equivalence file does not name is refused."""
+    require(build in equivalence.kit_of,
+            f"game build {build!r} is not in {equivalence.path}: adding a build to a kit version is a lead decision "
+            "with evidence (the patch-equivalence file and the recording log)")
+    return equivalence.kit_of[build]
 
 
 def is_replay(h):
@@ -444,10 +499,14 @@ def load(path, *, allow_test=False, denylist=None):
     return Session(str(path), sha256(path), header, rows)
 
 
-def load_cohort(paths, *, splits=("train", "val"), allow_test=False, allow_replay=False, denylist=None):
+def load_cohort(paths, *, splits=("train", "val"), allow_test=False, allow_replay=False, denylist=None,
+                equivalence=None):
     """Recordings sharing one settings identity, bindings, calibration, patch and step length; each once.
 
-    The replay split is refused unless it is requested with allow_replay (a pre-registered replay arm only)."""
+    The replay split is refused unless it is requested with allow_replay (a pre-registered replay arm only).
+    equivalence (load_patch_equivalence; every CLI passes it): a human cohort's patch is compared by the kit version
+    each session's build maps to, and a build the file does not name is refused. Without it the build string is compared
+    exactly. Replay cohorts always compare their patch exactly."""
     require(paths, "no step tables supplied")
     require("test" not in splits or allow_test, "test split is sealed")
     require(REPLAY_SPLIT not in splits or allow_replay, "the replay split is usable only by a pre-registered arm "
@@ -467,7 +526,13 @@ def load_cohort(paths, *, splits=("train", "val"), allow_test=False, allow_repla
         keys = (("patch", "step_ns", "frame_period_ns", "video_size", "calibration") if is_replay(s.header) else
                 ("settings_hash", "patch", "step_ns", "frame_period_ns", "video_size", "bindings", "calibration",
                  "swing_mode", "accel_on"))
+        by_kit = equivalence is not None and not is_replay(s.header)
         for key in keys:
+            if key == "patch" and by_kit:
+                kit, first_kit = kit_version(s.header["patch"], equivalence), kit_version(first["patch"], equivalence)
+                require(kit == first_kit, f"{s.session_id}: kit version {kit!r} (build {s.header['patch']!r}) differs "
+                        f"from the cohort's {first_kit!r}")
+                continue
             require(s.header[key] == first[key], f"{s.session_id}: {key} differs from the cohort")
     return sessions
 

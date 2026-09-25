@@ -6,6 +6,8 @@ Requires the session's frozen intake evidence (`segments-evidence.json`, `owner-
 per-session verdict record (copied beside them). Accepted comes only from the independent verdict record, which
 must agree with the owner verdicts on every segment; its inspected frames inside each segment are the verdict
 frames. Code runs from the archived snapshot. The import's ffprobe decode runs at four threads, below normal.
+The game build (review `game_patch`, step header `patch`) is the session's own, derived from the Steam evidence its
+provenance step recorded at intake; when that cannot settle it, nothing is written.
 Writes, each exclusively: copies of the cited recording log (at its last commit) and of the registry revision used,
 settings.json, review.json, imported-demo.jsonl, <SESSION_ID>.steps.jsonl, sampling.json, minutes.json, then
 artifact-hashes.json. Living documents are pinned through those copies, never as live files.
@@ -15,6 +17,7 @@ import hashlib
 import json
 import subprocess
 import sys
+from datetime import timedelta
 from pathlib import Path
 
 
@@ -38,7 +41,8 @@ ANCHOR = ROOT / "data/human/inspection/20260922T033319-205Z-24328-2/independent-
 RAW = Path("C:/Users/volpe/Videos/RivalsInput")
 BELOW = getattr(subprocess, "BELOW_NORMAL_PRIORITY_CLASS", 0)
 STEP_NS = 33_333_333
-PATCH = "1.1.3870120/build25364676"
+# The game build is not a constant: each session's is derived from the Steam evidence its provenance step read at
+# intake (session_patch; lead decision 2026-09-24, patch-equivalence-design.md item 3).
 
 # The campaign's settings from James's dated statements (docs/recording-log.md, 2026-09-23) and the saved profile.
 # The swing mode is the {automatic_swing, hold_to_swing} dict the step header carries (review I1): hold to swing
@@ -95,6 +99,24 @@ def cite(*paths):
     return [{"path": rel(p), "sha256": sha(p)} for p in paths]
 
 
+def session_patch(d, meta, hi):
+    """The build this recording ran on: `hi.recorded_build` over the Steam evidence (appmanifest buildid and
+    LastUpdated, version.json, content-log update steps) that the session's provenance step read at intake.
+    Refuses when provenance.json carries no such evidence or it does not settle the build."""
+    build = json.loads((d / "provenance.json").read_text(encoding="utf-8")).get("build") or {}
+    need(isinstance(build.get("evidence"), dict), "provenance.json has no Steam build evidence (provenance step before "
+                                                  "2026-09-24): the recording's build cannot be read (refused)")
+    started = hi._utc(meta["started_utc"])
+    ended = started + timedelta(microseconds=(meta["end_ns"] - meta["start_ns"]) // 1000)
+    try:
+        got = hi.recorded_build(build["evidence"], started_utc=started, ended_utc=ended)
+    except hi.hd.DemoError as exc:
+        raise Refused(str(exc)) from exc
+    recorded = (build.get("recorded") or {}).get("value")
+    need(recorded == got["value"], f"provenance recorded build {recorded!r}, re-derived {got['value']!r} (refused)")
+    return got
+
+
 def write_json(path, doc):
     need(not path.exists(), f"{path.name} already written")
     path.write_text(json.dumps(doc, indent=1) + "\n", encoding="utf-8", newline="\n")
@@ -131,6 +153,7 @@ def main():
     profile = json.loads((d / "input-profile.json").read_text())
     reg_rows = {r["session_id"]: r for r in json.loads(REGISTRY.read_text())["sessions"]}
     sitting = reg_rows[args.session]["sitting"]
+    patch = session_patch(d, meta, hi)   # before anything is written: an unreadable build refuses the assembly
 
     # 0. immutable copies of the living documents this assembly cites: the recording log at its last commit (the
     # working file must equal that blob) and the registry revision used; the freeze pins the copies
@@ -199,8 +222,10 @@ def main():
                                "prediction (provenance.json anchor_applicability), no fitting",
                         evidence=cite(ANCHOR, d / "provenance.json")),
         provenance=dict(hero="Spider-Man", settings=settings, bindings=bindings,
-                        game_patch=dict(value=PATCH, source="Steam content log and appmanifest: build 25364676, no later "
-                                        "update", evidence=cite(d / "provenance.json")),
+                        game_patch=dict(value=patch["value"], source="Steam appmanifest (buildid, LastUpdated), the "
+                                        "game's version.json and the content log's update steps, read by the "
+                                        "provenance step at intake; derived by agent.human_intake.recorded_build",
+                                        evidence=cite(d / "provenance.json"), derivation=patch),
                         cooldown_regime=dict(value=ev["session_regime"], source="5 fps HUD scan: depletion observed",
                                              evidence=cite(d / "regime-timeline.json")),
                         segments_evidence={"path": rel(d / "segments-evidence.json"), "sha256": sha(d / "segments-evidence.json")},
@@ -233,7 +258,7 @@ def main():
     steps = d / f"{args.session}.steps.jsonl"
     header, n = hi.write_steps(dataset, steps, sitting=sitting, calibration=calibration,
                                denylist=hi.load_denylist(DENYLIST, sha256_pin=DENYLIST_SHA256), step_ns=STEP_NS,
-                               settings_hash=identity, patch=PATCH, regime=ev["session_regime"],
+                               settings_hash=identity, patch=patch["value"], regime=ev["session_regime"],
                                source=dict(importer_git_blob=next(f["git_blob"] for f in json.loads(
                                    (snapshot / "manifest.json").read_text())["files"] if f["path"] == "agent/human_demos.py"),
                                    snapshot=args.snapshot, snapshot_manifest_sha256=sha(snapshot / "manifest.json"),

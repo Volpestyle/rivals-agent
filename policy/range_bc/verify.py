@@ -105,8 +105,9 @@ def _first_divergence(a, b, width=38):
     return None if len(a) == len(b) else min(len(a), len(b)) // width
 
 
-def verify(run, set_name, step_paths, cache_root, *, denylist, report_sha256, full_hash=True):
-    """All checks; returns (ok, windows report dict)."""
+def verify(run, set_name, step_paths, cache_root, *, denylist, report_sha256, full_hash=True, equivalence=None):
+    """All checks; returns (ok, windows report dict). equivalence: the pinned patch-equivalence file, as the fit used
+    it to cohort the set (the CLI always passes it)."""
     import torch
     from . import cache, steps
     from .train import SessionArrays
@@ -143,7 +144,7 @@ def verify(run, set_name, step_paths, cache_root, *, denylist, report_sha256, fu
     probs = (run / ref["probs_file"]).read_bytes()
     check("probs_sha256", hashlib.sha256(probs).hexdigest() == ref["probs_sha256"])
     split = "val" if set_name == "val" else "train"
-    sessions = steps.load_cohort(step_paths, splits=(split,), denylist=denylist)
+    sessions = steps.load_cohort(step_paths, splits=(split,), denylist=denylist, equivalence=equivalence)
     check("sessions", {s.session_id: s.sha256 for s in sessions} == ref["sessions"],
           {s.session_id: s.sha256 for s in sessions})
     arrays = []
@@ -196,6 +197,8 @@ def main(argv=None):
     p.add_argument("--report-sha256", required=True, help="recorded out of band (review L7)")
     p.add_argument("--sealed-denylist", default=None, help="default: the fit's pinned data/human/sealed-denylist.json")
     p.add_argument("--sealed-denylist-sha256", default=None)
+    p.add_argument("--patch-equivalence", default=None, help="default: the fit's pinned data/human/patch-equivalence.json")
+    p.add_argument("--patch-equivalence-sha256", default=None)
     p.add_argument("--manifest-hash-only", action="store_true",
                    help="skip re-hashing cache bytes (full hashing is the default, review L7)")
     p.add_argument("--out", required=True)
@@ -203,8 +206,10 @@ def main(argv=None):
     from . import steps
     denylist = steps.load_denylist(a.sealed_denylist or steps.DENYLIST,
                                    a.sealed_denylist_sha256 or steps.DENYLIST_SHA256)
+    equivalence = steps.load_patch_equivalence(a.patch_equivalence or steps.PATCH_EQUIVALENCE,
+                                               a.patch_equivalence_sha256 or steps.PATCH_EQUIVALENCE_SHA256)
     ok, out = verify(a.run, a.set, a.steps, a.cache_root, denylist=denylist, report_sha256=a.report_sha256,
-                     full_hash=not a.manifest_hash_only)
+                     full_hash=not a.manifest_hash_only, equivalence=equivalence)
     import subprocess
     out["git"] = subprocess.run(["git", "-C", str(ROOT), "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip()
     with open(a.out, "x", encoding="utf-8") as stream:

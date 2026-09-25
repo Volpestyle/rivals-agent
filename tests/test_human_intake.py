@@ -1,6 +1,8 @@
 """Synthetic whole-session intake tests; never discover or open the corpus."""
 import hashlib
+import importlib.util
 import json
+from datetime import timedelta
 from pathlib import Path
 
 import pytest
@@ -723,3 +725,119 @@ def test_a_death_is_cut_between_the_neighbouring_samples_and_the_fall_before_it_
     assert play[0]["end_ns"] == t(9.8) + 1                                        # the fall up to 9.8 s is kept
     assert play[1]["start_ns"] == t(12.2)                                          # first sample after the respawn settle
     assert not any(s["start_ns"] <= d < s["end_ns"] for s in play for d in dead)
+
+
+# ---- the recording's game build (lead decision 2026-09-24, patch-equivalence-design.md item 3) ----------------------
+# Steam's own lines and values on this PC (content log, appmanifest, version.json), before and after the 06:15 update.
+
+CDT = -5 * 3600
+STEAM_LOG_0917 = (
+    "[2026-09-17 12:15:39] AppID 2767030 update started : download 0/4246668320, store 0/0, reuse 0/262622430, "
+    "delta 0/135746607, stage 0/4783234517 \n"
+    '[2026-09-17 12:16:35] AppID 2767030 starting commit from "C:\\Program Files (x86)\\Steam\\steamapps\\downloading'
+    '\\2767030" to "C:\\Program Files (x86)\\Steam\\steamapps\\common\\MarvelRivals" : 21 updated, 0 moved, 23 deleted files\n'
+    "[2026-09-17 12:16:35] AppID 2767030 finished update, 2 mounted depots (BuildID 25364676) : "
+    "2767031 (6449387869012127437),4406011 (4523644096164555972),\n"
+    "[2026-09-17 12:16:35] AppID 2767030 scheduler finished : removed from schedule (result No Error, state 0xc) \n"
+    "[2026-09-23 12:12:04] AppID 2767030 state changed : Fully Installed,App Running,\n")
+STEAM_LOG_0924 = (
+    "[2026-09-24 04:05:50] AppID 2767030 state changed : Update Required,Fully Installed, (Update delayed for 7753 secs)\n"
+    "[2026-09-24 06:15:09] AppID 2767030 update started : download 0/2101406176, store 0/0, reuse 0/196706645, "
+    "delta 0/124354901, stage 0/2515231161 \n"
+    '[2026-09-24 06:15:31] AppID 2767030 starting commit from "C:\\Program Files (x86)\\Steam\\steamapps\\downloading'
+    '\\2767030" to "C:\\Program Files (x86)\\Steam\\steamapps\\common\\MarvelRivals" : 16 updated, 0 moved, 0 deleted files\n'
+    "[2026-09-24 06:15:31] AppID 2767030 finished update, 2 mounted depots (BuildID 25501035) : "
+    "2767031 (3100206924004297687),4406011 (4356380312643998543),\n"
+    "[2026-09-24 18:21:10] AppID 2767030 state changed : Fully Installed,App Running,\n")
+TAKE_0924 = dict(started_utc="2026-09-24T23:23:04.169Z", start_ns=360059037430700, end_ns=360589929922700)   # 232304
+TAKE_0923 = dict(started_utc="2026-09-23T20:55:28.900Z", start_ns=264804047318300, end_ns=265471947027400)   # 205528
+
+
+def appmanifest(buildid, last_updated):
+    return (f'"AppState"\n{{\n\t"appid"\t\t"2767030"\n\t"LastUpdated"\t\t"{last_updated}"\n\t"LastPlayed"\t\t"1790305587"\n'
+            f'\t"buildid"\t\t"{buildid}"\n\t"TargetBuildID"\t\t"{buildid}"\n}}\n')
+
+
+def steam(install, *, log_extra="", **override):
+    """The evidence the provenance step parses: Steam as installed on 09-17 (build 25364676) or since 09-24 06:15."""
+    files = dict(content_log=STEAM_LOG_0917, appmanifest=appmanifest("25364676", 1789665395),
+                 version_json='{"version": "1.1.3870120", "changelist": 3870120}',
+                 version_json_mtime_utc="2026-09-17T17:16:28.017550+00:00", utc_offset_s=CDT)
+    if install == "0924":
+        files.update(content_log=STEAM_LOG_0917 + STEAM_LOG_0924, appmanifest=appmanifest("25501035", 1790248531),
+                     version_json='{"version": "1.1.3892207", "changelist": 3892207}',
+                     version_json_mtime_utc="2026-09-24T11:15:10.109511+00:00")
+    files.update(override)
+    files["content_log"] += log_extra
+    return hi.steam_build_evidence(**files)
+
+
+def span(take):
+    start = hi._utc(take["started_utc"])
+    return dict(started_utc=start, ended_utc=start + timedelta(microseconds=(take["end_ns"] - take["start_ns"]) // 1000))
+
+
+def test_a_session_on_the_new_build_records_it():
+    got = hi.recorded_build(steam("0924"), **span(TAKE_0924))
+    assert got["value"] == "1.1.3892207/build25501035"
+    assert got["content_log_finished_update"] == {"local": "2026-09-24 06:15:31", "utc": "2026-09-24T11:15:31+00:00",
+                                                  "build": "25501035"}
+    assert got["installed_utc"] == "2026-09-24T11:15:31+00:00"   # appmanifest LastUpdated agrees with the log
+
+
+def test_the_old_build_still_records_the_old_string():
+    got = hi.recorded_build(steam("0917"), **span(TAKE_0923))
+    assert got["value"] == "1.1.3870120/build25364676"   # the string every admitted step header carries
+
+
+def test_a_download_after_the_recording_leaves_the_build_readable():
+    later = "[2026-09-25 03:00:00] AppID 2767030 update started : download 0/1, store 0/0, reuse 0/0, delta 0/0, stage 0/1 \n"
+    assert hi.recorded_build(steam("0924", log_extra=later), **span(TAKE_0924))["value"] == "1.1.3892207/build25501035"
+
+
+@pytest.mark.parametrize("evidence, take, refusal", [
+    (lambda: steam("0924"), TAKE_0923, "after the recording started"),       # an old take read from the new install
+    (lambda: steam("0924", appmanifest='"AppState"\n{\n}\n'), TAKE_0924, "appmanifest"),
+    (lambda: steam("0924", version_json="not json"), TAKE_0924, "version.json version"),
+    (lambda: steam("0924", version_json='{"version": "1.1.3892207", "changelist": 3870120}'), TAKE_0924, "inconsistent"),
+    (lambda: steam("0924", version_json_mtime_utc="2026-09-17T17:16:28Z"), TAKE_0924, "not written by the update"),
+    (lambda: steam("0924", version_json_mtime_utc=None), TAKE_0924, "mtime unknown"),
+    (lambda: steam("0924", log_extra="[2026-09-24 18:25:00] AppID 2767030 update started : download 0/1\n"),
+     TAKE_0924, "during the recording"),
+    (lambda: steam("0924", log_extra="[2026-09-24 19:00:00] AppID 2767030 starting commit from \"a\" to \"b\" : 1 updated\n"),
+     TAKE_0924, "installed files after"),
+    (lambda: steam("0924", content_log=STEAM_LOG_0917), TAKE_0924, "not the installed 25501035"),
+])
+def test_an_unreadable_build_is_refused(evidence, take, refusal):
+    with pytest.raises(DemoError, match=refusal):
+        hi.recorded_build(evidence(), **span(take))
+
+
+def assemble_module():
+    path = Path(__file__).resolve().parents[1] / "data/human/sessions/assemble_session.py"
+    spec = importlib.util.spec_from_file_location("assemble_session_under_test", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_assembly_takes_the_build_from_the_intake_evidence_and_refuses_without_it(tmp_path):
+    A = assemble_module()
+
+    def provenance(build):
+        (tmp_path / "provenance.json").write_text(json.dumps({"build": build}), encoding="utf-8")
+
+    new = hi.recorded_build(steam("0924"), **span(TAKE_0924))
+    provenance({"evidence": steam("0924"), "recorded": new})
+    assert A.session_patch(tmp_path, TAKE_0924, hi)["value"] == "1.1.3892207/build25501035"
+    provenance({"evidence": steam("0917"), "recorded": hi.recorded_build(steam("0917"), **span(TAKE_0923))})
+    assert A.session_patch(tmp_path, TAKE_0923, hi)["value"] == "1.1.3870120/build25364676"
+    provenance({"appmanifest_buildid": [["buildid", "25364676"]]})   # a provenance record from before 2026-09-24
+    with pytest.raises(A.Refused, match="no Steam build evidence"):
+        A.session_patch(tmp_path, TAKE_0924, hi)
+    provenance({"evidence": steam("0924"), "recorded": {"value": None, "refused": "..."}})
+    with pytest.raises(A.Refused, match="after the recording started"):
+        A.session_patch(tmp_path, TAKE_0923, hi)
+    provenance({"evidence": steam("0917"), "recorded": new})          # the record and its evidence disagree
+    with pytest.raises(A.Refused, match="re-derived"):
+        A.session_patch(tmp_path, TAKE_0924, hi)

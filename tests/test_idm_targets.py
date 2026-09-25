@@ -18,7 +18,7 @@ sys.path.insert(0, str(ROOT))
 from agent import human_demos as hd  # noqa: E402
 from agent import human_intake as hi  # noqa: E402
 from policy import idm_targets as T  # noqa: E402
-from policy.range_bc import vocab  # noqa: E402
+from policy.range_bc import steps, vocab  # noqa: E402
 
 STEP, PERIOD, A = 33_333_333, 8_333_333, 1_000_000_000
 W = hd.PhysicalKey(device=1, vk=87, scan=17, flags=0)
@@ -304,3 +304,79 @@ def test_the_lead_decisions_on_support_are_pinned():
     t = T.Targets({"split": "train"}, rows)
     support, counts = T.supported_actions([t], min_positives=1)
     assert counts["team_up"] == 1 and support["team_up"] and support["goh_targeting"]
+
+
+# ---- builds grouped by kit version (lead decision 2026-09-24, patch-equivalence-design.md) -------------------------
+
+OLD, NEW, OTHER = "1.1.3870120/build25364676", "1.1.3892207/build25501035", "1.1.9999999/build99999999"
+KIT = "Season 10, Version 20260911"
+
+
+def equivalence_file(tmp_path, kits=None, name="patch-equivalence.json", crlf=False):
+    """A patch-equivalence file in the design's schema; returns (path, its LF sha256)."""
+    import hashlib
+    kits = kits if kits is not None else {KIT: {"builds": [OLD, NEW], "evidence": ["https://example.invalid/notes"],
+                                                "decided_by": "lead", "decided_on": "2026-09-24"}}
+    text = json.dumps({"format": T.PATCH_EQUIVALENCE_FORMAT, "kit_versions": kits}, indent=1) + "\n"
+    path = tmp_path / name
+    path.write_bytes(text.replace("\n", "\r\n").encode() if crlf else text.encode())
+    return path, hashlib.sha256(text.encode()).hexdigest()
+
+
+def cohort_header(sid, patch, **over):
+    h = {"session_id": sid, "media_sha256": f"media-{sid}", "patch": patch, "settings_hash": "s", "bindings": {"W": "w"},
+         "swing_mode": {"hold_to_swing": True}, "accel_on": True, "parent_step_ns": STEP, "frame_period_ns": PERIOD,
+         "calibration": {"yaw_deg_per_count": 0.033}}
+    return T.Targets({**h, **over}, [])
+
+
+def test_the_equivalence_file_is_pinned_and_validated(tmp_path):
+    path, sha = equivalence_file(tmp_path)
+    eq = T.load_patch_equivalence(path, sha)
+    assert eq.kit_of == {OLD: KIT, NEW: KIT} and eq.sha256 == sha
+    crlf, _ = equivalence_file(tmp_path, name="crlf.json", crlf=True)
+    assert T.load_patch_equivalence(crlf, sha).kit_of == eq.kit_of         # the pin is the LF form
+    with pytest.raises(T.TargetError, match="must be pinned"):
+        T.load_patch_equivalence(path, None)
+    with pytest.raises(T.TargetError, match="differs from its pinned"):
+        T.load_patch_equivalence(path, "0" * 64)
+    two, s2 = equivalence_file(tmp_path, name="two.json", kits={
+        "a": {"builds": [OLD], "evidence": ["e"], "decided_by": "lead", "decided_on": "2026-09-24"},
+        "b": {"builds": [OLD], "evidence": ["e"], "decided_by": "lead", "decided_on": "2026-09-24"}})
+    with pytest.raises(T.TargetError, match="under two kit versions"):
+        T.load_patch_equivalence(two, s2)
+    bare, s3 = equivalence_file(tmp_path, name="bare.json", kits={
+        KIT: {"builds": [OLD], "evidence": [], "decided_by": "lead", "decided_on": "2026-09-24"}})
+    with pytest.raises(T.TargetError, match="needs its evidence"):
+        T.load_patch_equivalence(bare, s3)
+    empty, s4 = equivalence_file(tmp_path, name="empty.json", kits={})
+    with pytest.raises(T.TargetError, match="no kit version"):
+        T.load_patch_equivalence(empty, s4)
+    assert T.PATCH_EQUIVALENCE_SHA256 == steps.PATCH_EQUIVALENCE_SHA256 and T.PATCH_EQUIVALENCE_SHA256   # one pin
+
+
+def test_a_cohort_compares_builds_by_kit_version_and_keeps_the_real_builds(tmp_path):
+    eq = T.load_patch_equivalence(*equivalence_file(tmp_path))
+    got = T.check_cohort([cohort_header("a", OLD), cohort_header("b", NEW)], eq)
+    assert got["kit_version"] == KIT and got["builds"] == {"a": OLD, "b": NEW}      # the real builds, recorded
+    assert got["patch_equivalence"]["sha256"] == eq.sha256
+    with pytest.raises(T.TargetError, match="adding a build to a kit version is a lead decision"):
+        T.check_cohort([cohort_header("a", OLD), cohort_header("c", OTHER)], eq)
+    with pytest.raises(T.TargetError, match="adding a build to a kit version is a lead decision"):
+        T.kit_version(OTHER, eq)
+
+
+def test_a_cohort_is_one_kit_version_and_one_identity(tmp_path):
+    kits = {KIT: {"builds": [OLD], "evidence": ["e"], "decided_by": "lead", "decided_on": "2026-09-24"},
+            "Season 11": {"builds": [OTHER], "evidence": ["e"], "decided_by": "lead", "decided_on": "2026-09-24"}}
+    eq = T.load_patch_equivalence(*equivalence_file(tmp_path, kits=kits))
+    with pytest.raises(T.TargetError, match="span kit versions"):
+        T.check_cohort([cohort_header("a", OLD), cohort_header("b", OTHER)], eq)
+    for key, value in (("settings_hash", "t"), ("bindings", {"W": "x"}), ("swing_mode", {"hold_to_swing": False}),
+                       ("accel_on", False), ("frame_period_ns", 16_666_667), ("calibration", {"yaw_deg_per_count": 1})):
+        with pytest.raises(T.TargetError, match=f"{key} differs"):
+            T.check_cohort([cohort_header("a", OLD), cohort_header("b", OLD, **{key: value})], eq)
+    with pytest.raises(T.TargetError, match="appears twice"):
+        T.check_cohort([cohort_header("a", OLD), cohort_header("a", OLD)], eq)
+    with pytest.raises(T.TargetError, match="same recording media"):
+        T.check_cohort([cohort_header("a", OLD), cohort_header("b", OLD, media_sha256="media-a")], eq)

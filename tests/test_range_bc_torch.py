@@ -261,6 +261,9 @@ def test_the_fit_cli_end_to_end(tmp_path):
     assert r["candidate"] == "model_nohud" and r["hud_parity"] is None          # no passing P2': the no-HUD arm
     assert "windows" not in r["metrics"]["val"] and "press_windows" not in r["windows"]   # human: no window term
     assert r["sealed_denylist"]["default"] is True
+    assert r["patch_equivalence"] == {"path": steps.PATCH_EQUIVALENCE, "sha256_pin": steps.PATCH_EQUIVALENCE_SHA256,
+                                      "default": True, "kit_version": "Season 10, Version 20260911",
+                                      "builds": [fixture.PATCH]}
     tf = r["metrics"]["val"]["teacher_forced"]
     assert set(tf) == set(arms) | {"persistence", "zero_motion", "prior", "echo", "ar2"}
     assert tf["echo"]["all"]["window"] == {"early": 1, "late": 0, "self_fed": False}
@@ -274,6 +277,34 @@ def test_the_fit_cli_end_to_end(tmp_path):
     assert not r["cache_hashes_verified"]
     for name, sha in r["checkpoints"].items():
         assert steps.sha256(tmp_path / "out" / name) == sha
+
+
+def test_train_dev_and_val_must_map_to_one_kit_version(tmp_path):
+    """Patch-equivalence amendment: each split is its own cohort, so the fit compares kit versions across them."""
+    new = "1.1.3892207/build25501035"
+    train_path, _ = cohort(tmp_path, "train", "t", seed=0)                          # the admitted build
+    header, rows = fixture.session("v", split="val", runs=(150, 120), seed=1)
+    header["patch"] = new
+    val_path = fixture.write(tmp_path / "v.jsonl", header, rows)
+    fake_cache(tmp_path / "caches" / "v", steps.load(val_path), 1)
+    common = ["--train", str(train_path), "--val", str(val_path), "--cache-root", str(tmp_path / "caches"),
+              "--scope", "smoke", "--epochs", "1", "--batch", "4", "--seeds", "0", "--arms", "model_nohud",
+              "--model-config", json.dumps(TINY.as_dict())]
+    two = tmp_path / "two-kits.json"                                                # the new build under another kit
+    two.write_text(json.dumps({"format": steps.PATCH_EQUIVALENCE_FORMAT, "kit_versions": {
+        "K-old": {"builds": [fixture.PATCH], "evidence": ["e"], "decided_by": "lead", "decided_on": "2026-09-24"},
+        "K-new": {"builds": [new], "evidence": ["e"], "decided_by": "lead", "decided_on": "2026-09-24"}}}),
+        encoding="utf-8")
+    with pytest.raises(train.FitError, match=r"more than one kit version: 'K-new' \(builds \['1\.1\.3892207/build25501035'\]\); "
+                                             r"'K-old'"):
+        train.main(common + ["--out", str(tmp_path / "x"), "--patch-equivalence", str(two),
+                             "--patch-equivalence-sha256", steps.sha256(two)])
+    assert not (tmp_path / "x" / "report.json").exists()                           # refused before anything trained
+    train.main(common + ["--out", str(tmp_path / "ok")])                            # the pinned file: one kit version
+    r = json.loads((tmp_path / "ok" / "report.json").read_text())
+    assert r["patch_equivalence"]["kit_version"] == "Season 10, Version 20260911"
+    assert r["patch_equivalence"]["builds"] == sorted([fixture.PATCH, new])
+    assert sorted(c["patch"] for c in r["cohort"]) == sorted([fixture.PATCH, new])  # headers keep the real builds
 
 
 def test_scope_fit_refuses_what_the_review_asked(tmp_path):
@@ -313,6 +344,11 @@ def test_scope_fit_refuses_what_the_review_asked(tmp_path):
     with pytest.raises(train.FitError, match="default denylist"):
         train.main(base + ["--out", str(tmp_path / "d4"), "--preregistration", str(pre), "--hud-parity", str(parity),
                            "--sealed-denylist", str(other)])
+    other_eq = tmp_path / "other-equivalence.json"                 # the same bytes elsewhere: not the pinned default
+    other_eq.write_bytes((train.ROOT / steps.PATCH_EQUIVALENCE).read_bytes())
+    with pytest.raises(train.FitError, match="pinned default patch-equivalence"):
+        train.main(base + ["--out", str(tmp_path / "d5"), "--preregistration", str(pre), "--hud-parity", str(parity),
+                           "--patch-equivalence", str(other_eq)])
     # today the package is untracked, so a real fit is refused before anything is trained
     with pytest.raises(train.FitError, match="untracked|uncommitted"):
         train.main(base + ["--out", str(tmp_path / "e"), "--preregistration", str(pre), "--hud-parity", str(parity)])

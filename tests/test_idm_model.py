@@ -398,9 +398,11 @@ def test_run_fit_end_to_end_commits_the_closure_it_checks_and_writes_a_report(tm
     train_t, train_store, train_path = session(tmp_path, "tr", n=80, config=full, jump_p=0.7)
     _, _, held_path = session(tmp_path, "he", n=40, split="val", seed=5, config=full, jump_p=0.7)
     out, result = tmp_path / "run", tmp_path / "result.json"
+    eq, eq_sha = equivalence(tmp_path, builds=["p"])                    # the fixture headers' build
     proc = subprocess.run([sys.executable, "-c", FRESH_FIT, str(ROOT), str(result), "fit", "--train", str(train_path),
                            "--heldout", str(held_path), "--frames-root", str(tmp_path / "frames"), "--out", str(out),
-                           "--epochs", "1", "--scope", "smoke", "--max-examples", "16"],
+                           "--epochs", "1", "--scope", "smoke", "--max-examples", "16",
+                           "--patch-equivalence", str(eq), "--patch-equivalence-sha256", eq_sha],
                           capture_output=True, text=True, timeout=600)
     assert proc.returncode == 0, proc.stderr[-3000:]
     ran = json.loads(result.read_text(encoding="utf-8"))
@@ -418,6 +420,34 @@ def test_run_fit_end_to_end_commits_the_closure_it_checks_and_writes_a_report(tm
     assert payload["meta"]["code_closure"] == report["code_closure"]
     assert hashlib.sha256((out / "idm-seed0.pt").read_bytes()).hexdigest() == report["checkpoint_sha256"]
     assert train_t.session_id == "tr" and train_store.manifest["width"] == 448
+    cohort = report["cohort"]                                          # the kit version and the real builds
+    assert cohort["builds"] == {"tr": "p", "he": "p"} and cohort["kit_version"] == "K"
+    assert cohort["patch_equivalence"]["sha256"] == eq_sha and payload["meta"]["cohort"] == cohort
+
+
+def equivalence(tmp_path, builds):
+    """A patch-equivalence file naming `builds` under one kit version "K"; returns (path, LF sha256)."""
+    text = json.dumps({"format": T.PATCH_EQUIVALENCE_FORMAT, "kit_versions": {"K": {
+        "builds": builds, "evidence": ["test"], "decided_by": "lead", "decided_on": "2026-09-24"}}}) + "\n"
+    path = tmp_path / f"equivalence-{'-'.join(builds)}.json"
+    path.write_text(text, encoding="utf-8", newline="\n")
+    return path, hashlib.sha256(text.encode()).hexdigest()
+
+
+def test_a_fit_refuses_a_build_the_equivalence_file_does_not_name_before_opening_a_store(tmp_path, monkeypatch):
+    monkeypatch.setattr(TR, "require_committed", lambda files: None)
+    _, _, train_path = session(tmp_path, "tr")
+    _, _, held_path = session(tmp_path, "he", split="val", seed=5)
+    monkeypatch.setattr(TR, "FrameStore", lambda *a, **k: pytest.fail("a store was opened"))
+    eq, eq_sha = equivalence(tmp_path, builds=["another-build"])
+    with pytest.raises(T.TargetError, match="adding a build to a kit version is a lead decision"):
+        TR.main(["fit", "--train", str(train_path), "--heldout", str(held_path), "--frames-root",
+                 str(tmp_path / "frames"), "--out", str(tmp_path / "o"),
+                 "--patch-equivalence", str(eq), "--patch-equivalence-sha256", eq_sha])
+    monkeypatch.setattr(T, "PATCH_EQUIVALENCE_SHA256", None)            # an unpinned file: no fit
+    with pytest.raises(T.TargetError, match="must be pinned"):
+        TR.main(["fit", "--train", str(train_path), "--heldout", str(held_path), "--frames-root",
+                 str(tmp_path / "frames"), "--out", str(tmp_path / "o"), "--patch-equivalence", str(eq)])
 
 
 def test_the_limit_is_for_smoke_runs_and_a_narrow_store_is_refused(tmp_path, monkeypatch):

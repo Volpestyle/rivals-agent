@@ -23,6 +23,8 @@ samples. This module supplies what it deliberately does not do, with the design 
   `load_cohort` (a declared mixed-regime cohort).
 - `write_steps`: the fit's per-recording step file, `rivals-range-steps-v1` (fit code review K2); its reader is
   `policy/range_bc/steps.py`. Test helpers for contract tests: `tests/human_intake_fixtures.py`.
+- `steam_build_evidence` / `recorded_build`: the game build a recording ran on, from the Steam files the intake
+  reads (patch-equivalence-design.md item 3); refused when they cannot settle it.
 
 Times are integer monotonic nanoseconds on the recorder clock; intervals are half-open `[start, end)`.
 """
@@ -30,6 +32,8 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from agent import human_demos as hd
@@ -1220,3 +1224,103 @@ def load_dataset_relocated(path, *, splits, denylist, relocation, unseal=False, 
         _require(decoded["pts"] == payload["decoded"]["pts"], "the transcode's decoded PTS differ from the import")
     moved = dataclasses.replace(placement, video_path=str(Path(relocation["transcoded_path"]).resolve()))
     return hd._build(payload, moved, identity)
+
+
+# ---- the game build a recording ran on (lead decision 2026-09-24, patch-equivalence-design.md item 3) ------------
+
+STEAM_APP_ID = "2767030"
+# Steam's content log, one line per update step, in the PC's local time, e.g.
+# "[2026-09-24 06:15:31] AppID 2767030 finished update, 2 mounted depots (BuildID 25501035) : ...".
+_STEAM_STEP = re.compile(r"^\[(\d{4}-\d\d-\d\d \d\d:\d\d:\d\d)\] AppID (\d+) "
+                         r"(update started|starting commit|finished update)\b(.*)$")
+_STEAM_BUILD = re.compile(r"\(BuildID (\d+)\)")
+_INSTALLING = ("starting commit", "finished update")   # these change installed files; "update started" only downloads
+# version.json is written by the update that installs the build, shortly before Steam records it as finished
+# (09-17: 7 s before; 09-24: 21 s before); outside this window it belongs to another install.
+VERSION_JSON_BEFORE_S = 3600
+VERSION_JSON_AFTER_S = 60
+
+
+def steam_build_evidence(*, content_log, appmanifest, version_json, version_json_mtime_utc, utc_offset_s,
+                         app_id=STEAM_APP_ID):
+    """The Steam facts `recorded_build` needs, parsed from the raw text of the files the intake reads.
+
+    `content_log` is Steam's logs/content_log.txt (local time: `utc_offset_s` is the PC's offset from UTC, applied
+    to every line), `appmanifest` is steamapps/appmanifest_<app>.acf, `version_json` is the game's
+    MarvelGame/version.json with its mtime (ISO, UTC). What cannot be parsed stays None; `recorded_build` refuses it.
+    """
+    def field(name):
+        m = re.search(rf'"{name}"\s+"([^"]*)"', appmanifest or "")
+        return m.group(1) if m else None
+    offset = timedelta(seconds=utc_offset_s)
+    steps = []
+    for line in (content_log or "").splitlines():
+        m = _STEAM_STEP.match(line.strip())
+        if m and m.group(2) == app_id:
+            local = datetime.strptime(m.group(1), "%Y-%m-%d %H:%M:%S")
+            build = _STEAM_BUILD.search(m.group(4))
+            steps.append(dict(local=m.group(1), utc=(local - offset).replace(tzinfo=timezone.utc).isoformat(),
+                              step=m.group(3), build=build.group(1) if build else None))
+    try:
+        version = json.loads(version_json)
+    except (TypeError, ValueError):
+        version = None
+    version = version if isinstance(version, dict) else {}
+    last = field("LastUpdated")
+    return dict(app_id=app_id,
+                appmanifest=dict(buildid=field("buildid"), target_buildid=field("TargetBuildID"),
+                                 last_updated=int(last) if last and last.isdigit() else None),
+                version_json=dict(version=version.get("version"), changelist=version.get("changelist"),
+                                  mtime_utc=version_json_mtime_utc),
+                content_log=dict(utc_offset_s=utc_offset_s, update_steps=steps))
+
+
+def _utc(value):
+    moment = value if isinstance(value, datetime) else datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+    _require(moment.tzinfo is not None, "a time without a zone")
+    return moment.astimezone(timezone.utc)
+
+
+def recorded_build(evidence, *, started_utc, ended_utc):
+    """The game build a recording ran on, `"<version>/build<buildid>"`, with the facts that settle it.
+
+    The installed build (appmanifest `buildid`, version string from version.json) is the recording's build only when
+    Steam last updated the game before the recording started (`LastUpdated`), no installing update step in the
+    content log falls after that start, version.json was written by that same update, and the last finished update
+    the log shows before the recording names the same BuildID. A build no longer installed is never guessed: once
+    a later update is installed, the recording's build can only come from evidence recorded before it (refused).
+    """
+    start, end = _utc(started_utc), _utc(ended_utc)
+    _require(end >= start, "the recording ends before it starts")
+    am, vj = evidence.get("appmanifest") or {}, evidence.get("version_json") or {}
+    build, last = am.get("buildid"), am.get("last_updated")
+    _require(isinstance(build, str) and build.isdigit() and isinstance(last, int),
+             "appmanifest buildid/LastUpdated unreadable: the recording's build cannot be read (refused)")
+    version, changelist = vj.get("version"), vj.get("changelist")
+    _require(isinstance(version, str) and re.fullmatch(r"\d+\.\d+\.\d+", version) is not None
+             and changelist == int(version.rsplit(".", 1)[-1]),
+             "version.json version/changelist unreadable or inconsistent: the build cannot be read (refused)")
+    installed = datetime.fromtimestamp(last, timezone.utc)
+    _require(installed <= start, f"Steam updated the game at {installed.isoformat()}, after the recording started "
+             f"({start.isoformat()}): its build then cannot be read from the current install (refused)")
+    _require(vj.get("mtime_utc") is not None, "version.json mtime unknown (refused)")
+    written = _utc(vj["mtime_utc"])
+    window = (installed - timedelta(seconds=VERSION_JSON_BEFORE_S), installed + timedelta(seconds=VERSION_JSON_AFTER_S))
+    _require(window[0] <= written <= window[1],
+             f"version.json ({written.isoformat()}) was not written by the update that installed build {build} (refused)")
+    steps = [dict(s, at=_utc(s["utc"])) for s in (evidence.get("content_log") or {}).get("update_steps") or []]
+    during = [s for s in steps if start <= s["at"] <= end]
+    _require(not during, f"a Steam update step during the recording ({during[0]['local'] if during else ''}) (refused)")
+    later = [s for s in steps if s["at"] > start and s["step"] in _INSTALLING]
+    _require(not later,
+             f"Steam installed files after the recording started ({later[0]['local'] if later else ''}) (refused)")
+    finished = [s for s in steps if s["step"] == "finished update" and s["at"] <= start]
+    _require(not finished or finished[-1]["build"] == build,
+             f"the content log's last finished update before the recording is BuildID "
+             f"{finished[-1]['build'] if finished else ''}, not the installed {build} (refused)")
+    return dict(value=f"{version}/build{build}", version=version, buildid=build, installed_utc=installed.isoformat(),
+                version_json_written_utc=written.isoformat(),
+                recording=dict(started_utc=start.isoformat(), ended_utc=end.isoformat()),
+                content_log_finished_update=({k: finished[-1][k] for k in ("local", "utc", "build")}
+                                             if finished else None),
+                content_log_utc_offset_s=(evidence.get("content_log") or {}).get("utc_offset_s"))

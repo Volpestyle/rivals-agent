@@ -1,6 +1,8 @@
 """IDM Gate 1: held-out-session metrics per head over rivals-idm-targets-v1, with the zero and persistence baselines.
 
     uv run python -m policy.idm_eval baselines HELDOUT.idm.jsonl [...] --train TRAIN.idm.jsonl [...]
+        [--patch-equivalence FILE --patch-equivalence-sha256 SHA]   (the files must form one cohort:
+        policy.idm_targets.check_cohort, builds compared by kit version)
 
 No model here: a predictor is anything that returns, per target row, a prediction dict
     {"yaw_deg": float | None, "pitch_deg": float | None, "press": {action: probability in [0, 1] | None}}
@@ -267,11 +269,15 @@ def main(argv=None):
     b = sub.add_parser("baselines")
     b.add_argument("heldout", nargs="+")
     b.add_argument("--train", nargs="+", required=True)
+    b.add_argument("--patch-equivalence", default=str(T.PATCH_EQUIVALENCE))
+    b.add_argument("--patch-equivalence-sha256", default=T.PATCH_EQUIVALENCE_SHA256)
     a = ap.parse_args(argv)
     train = [T.load(p) for p in a.train]
     supported, _ = T.supported_actions(train)
     heldout = [T.load(p) for p in a.heldout]
+    cohort = T.check_cohort(train + heldout, T.load_patch_equivalence(a.patch_equivalence, a.patch_equivalence_sha256))
     report = {name: evaluate(heldout, fn, supported) for name, fn in (("zero", zero), ("persistence", persistence))}
+    report["cohort"] = cohort
     print(json.dumps(report, indent=1))
     return 0
 

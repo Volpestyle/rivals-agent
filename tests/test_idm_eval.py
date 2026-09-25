@@ -264,3 +264,31 @@ def test_camera_error_is_reported_per_gain_regime_and_speed_band():
     bands = yaw["abs_error_deg_by_speed_band"]
     assert (bands["<=1x"]["n"], bands["1-4x"]["n"], bands[">4x"]["n"]) == (2, 1, 1)
     assert bands[">4x"]["median"] == pytest.approx(12.0)
+
+
+def test_the_baselines_cli_scores_one_cohort_by_kit_version(tmp_path, monkeypatch, capsys):
+    """Lead decision 2026-09-24: the files must form one cohort, builds compared by the kit version they map to under
+    the pinned patch-equivalence file; the printed report records the real builds."""
+    import hashlib
+    import json
+
+    def cohort_targets(sid, patch, split):
+        h = {"session_id": sid, "split": split, "media_sha256": f"m-{sid}", "patch": patch, "settings_hash": "s",
+             "bindings": {}, "swing_mode": {}, "accel_on": True, "parent_step_ns": 33_333_333,
+             "frame_period_ns": 8_333_333, "calibration": {"yaw_deg_per_count": 0.033}}
+        return T.Targets(h, rows_of([0.0, 1.0] * 5, presses=[(3, FWD)]))
+    files = {"train": cohort_targets("tr", "old-build", "train"), "held": cohort_targets("he", "new-build", "val"),
+             "stray": cohort_targets("st", "unknown-build", "val")}
+    monkeypatch.setattr(E.T, "load", lambda path, **kw: files[path])
+    text = json.dumps({"format": T.PATCH_EQUIVALENCE_FORMAT, "kit_versions": {"K": {
+        "builds": ["old-build", "new-build"], "evidence": ["test"], "decided_by": "lead", "decided_on": "2026-09-24"}}}) + "\n"
+    eq = tmp_path / "eq.json"
+    eq.write_text(text, encoding="utf-8", newline="\n")
+    pin = hashlib.sha256(text.encode()).hexdigest()
+    assert E.main(["baselines", "held", "--train", "train", "--patch-equivalence", str(eq),
+                   "--patch-equivalence-sha256", pin]) == 0
+    report = json.loads(capsys.readouterr().out)
+    assert report["cohort"]["builds"] == {"tr": "old-build", "he": "new-build"} and report["cohort"]["kit_version"] == "K"
+    with pytest.raises(T.TargetError, match="adding a build to a kit version is a lead decision"):
+        E.main(["baselines", "stray", "--train", "train", "--patch-equivalence", str(eq),
+                "--patch-equivalence-sha256", pin])

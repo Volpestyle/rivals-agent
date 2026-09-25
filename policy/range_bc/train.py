@@ -489,9 +489,10 @@ TWIN = "history_only"
 ROOT = Path(__file__).resolve().parents[2]
 
 
-def load_arrays(paths, cache_root, *, lag, regimes, splits, denylist, verify_hashes=False, fraction=1.):
+def load_arrays(paths, cache_root, *, lag, regimes, splits, denylist, verify_hashes=False, fraction=1.,
+                equivalence=None):
     arrays = []
-    for session in steps.load_cohort(paths, splits=splits, denylist=denylist):
+    for session in steps.load_cohort(paths, splits=splits, denylist=denylist, equivalence=equivalence):
         frames = cache.open_cache(Path(cache_root) / session.session_id, session, verify_hashes=verify_hashes)
         arrays.append(SessionArrays(steps.truncate(session, fraction, regimes=regimes), frames, lag=lag,
                                     regimes=regimes, press_windows=steps.load_windows(session)))
@@ -652,6 +653,11 @@ def run_fit(a):
     denylist_default = (Path(a.sealed_denylist).as_posix() == steps.DENYLIST
                         and a.sealed_denylist_sha256 == steps.DENYLIST_SHA256)
     require(a.scope != "fit" or denylist_default, "--scope fit uses the pinned default denylist only (review L5)")
+    equivalence = steps.load_patch_equivalence(a.patch_equivalence, a.patch_equivalence_sha256)
+    equivalence_default = (Path(a.patch_equivalence).as_posix() == steps.PATCH_EQUIVALENCE
+                           and a.patch_equivalence_sha256 == steps.PATCH_EQUIVALENCE_SHA256)
+    require(a.scope != "fit" or equivalence_default,
+            "--scope fit uses the pinned default patch-equivalence file only (as the denylist)")
     closure = code_closure()
     if a.scope == "fit":
         require_committed(list(closure))
@@ -661,11 +667,18 @@ def run_fit(a):
 
     def load(paths, split, fraction=1.):
         return load_arrays(paths, a.cache_root, lag=a.lag, regimes=regimes, splits=(split,), denylist=denylist,
-                           verify_hashes=a.scope == "fit", fraction=fraction) if paths else []
+                           verify_hashes=a.scope == "fit", fraction=fraction, equivalence=equivalence) if paths else []
     train = load(a.train, "train", a.train_fraction)
     dev, val = load(a.dev, "train"), load(a.val, "val")
     ids = [x.session.session_id for x in train + dev + val]
     require(len(set(ids)) == len(ids), "a recording is in more than one of train, dev and validation")
+    # one kit version across the whole fit (patch-equivalence amendment): each load_cohort call is one split's cohort
+    kits = {}
+    for x in train + dev + val:
+        if not steps.is_replay(x.session.header):
+            kits.setdefault(steps.kit_version(x.session.header["patch"], equivalence), set()).add(x.session.header["patch"])
+    require(len(kits) <= 1, "train, dev and validation map to more than one kit version: " + "; ".join(
+        f"{kit!r} (builds {sorted(builds)})" for kit, builds in sorted(kits.items())))
     placed = {x.session.session_id: steps.place_windows(x.session, x.press_windows.counted, lag=a.lag,
                                                          regimes=regimes, stride=a.stride)[0]
               for x in train if x.press_windows is not None}             # replay only (W3); human cohorts: {}
@@ -734,6 +747,10 @@ def run_fit(a):
                  sealed_denylist={"path": str(a.sealed_denylist), "sha256_pin": a.sealed_denylist_sha256,
                                   "default": denylist_default,
                                   "session_ids": [r["session_id"] for r in denylist["sessions"]]},
+                 patch_equivalence={"path": str(a.patch_equivalence), "sha256_pin": a.patch_equivalence_sha256,
+                                    "default": equivalence_default,
+                                    "kit_version": next(iter(kits), None),
+                                    "builds": sorted({x.session.header["patch"] for x in train + dev + val})},
                  seeds=list(a.seeds), permutation=PERMUTATION, device=a.device, torch=torch.__version__,
                  fit_seconds={b["run"]: b["seconds"] for b in budget}, budget=budget, checkpoints=checkpoints,
                  train_statistics=stats, ar2=ar2,
@@ -768,6 +785,9 @@ def parser():
     p.add_argument("--scope", default="fit", choices=("smoke", "plumbing", "fit"))
     p.add_argument("--sealed-denylist", default=steps.DENYLIST, help="intake's sealed denylist (always loaded)")
     p.add_argument("--sealed-denylist-sha256", default=steps.DENYLIST_SHA256, help="its pinned sha256")
+    p.add_argument("--patch-equivalence", default=steps.PATCH_EQUIVALENCE,
+                   help="the lead's build -> kit version file (always loaded; a cohort compares kit versions)")
+    p.add_argument("--patch-equivalence-sha256", default=steps.PATCH_EQUIVALENCE_SHA256, help="its pinned sha256")
     p.add_argument("--hud-parity", help="hudparity result JSON; required at --scope fit (picks the candidate arm)")
     p.add_argument("--preregistration", help="JSON {epochs, weight_decay, stride, source}; required at --scope fit")
     p.add_argument("--seeds", nargs="+", type=int, default=[0, 1, 2])

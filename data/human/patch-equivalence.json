@@ -1,0 +1,18 @@
+{
+ "format": "rivals-patch-equivalence-v1",
+ "kit_versions": {
+  "Season 10, Version 20260911": {
+   "builds": [
+    "1.1.3870120/build25364676",
+    "1.1.3892207/build25501035"
+   ],
+   "evidence": [
+    "https://www.marvelrivals.com/gameupdate/20260923/41548_1314808.html",
+    "https://marvelrivals.gg/marvel-rivals-version-20260924-patch-notes",
+    "docs/spiderman-kit.md Patch reflected line"
+   ],
+   "decided_by": "lead",
+   "decided_on": "2026-09-24"
+  }
+ }
+}

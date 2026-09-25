@@ -4,7 +4,8 @@
 
 Steps, in order (each writes into ./<SESSION_ID>/ and refuses to overwrite its own output):
   provenance  media sha256, recorder metadata, first-16-packet anchor applicability, OBS log recording block,
-              Steam build evidence, saved-settings receipt, ffprobe/ffmpeg versions      -> provenance.json
+              Steam build evidence and the build the recording ran on, saved-settings receipt,
+              ffprobe/ffmpeg versions                                                    -> provenance.json
   verify      obs-input-logger check_session (ffprobe 4 threads, below normal)           -> recorder-verification.json
   profile     devices (R6), focus, UI keys, AFK gaps, raw-input gaps                       -> input-profile.json
   vote        the source's own HUD slot mapping from its first 60 s (reused scan, unchanged)  -> slot-mapping.json
@@ -29,7 +30,7 @@ import os
 import re
 import subprocess
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 
@@ -142,9 +143,13 @@ def step_provenance(c):
                 stop = next(j for j in range(i, len(lines)) if "==== Recording Stop" in lines[j])
                 log_hit = dict(log=log.name, log_sha256=sha(log), lines=[start + 1, stop + 1],
                                block=[l[13:] if len(l) > 13 and l[2] == ":" else l for l in lines[start:stop + 1]])
+    # the Steam files are hashed and parsed from the same bytes (Steam may append to its log meanwhile)
     content_log = STEAM / "logs/content_log.txt"
-    app_lines = [l for l in content_log.read_text(errors="replace").splitlines() if "2767030" in l]
-    manifest = (STEAM / "steamapps/appmanifest_2767030.acf").read_text(errors="replace")
+    content_bytes = content_log.read_bytes()
+    app_lines = [l for l in content_bytes.decode(errors="replace").splitlines() if "2767030" in l]
+    manifest_path = STEAM / "steamapps/appmanifest_2767030.acf"
+    manifest_bytes = manifest_path.read_bytes()
+    manifest = manifest_bytes.decode(errors="replace")
     buildid = re.findall(r'"(buildid|TargetBuildID)"\s+"(\d+)"', manifest)
     remote = json.loads(SETTINGS.read_text(errors="replace"))["RemoteUserSetting"]
     controls = remote["UserControl"]
@@ -158,7 +163,20 @@ def step_provenance(c):
     prior = json.loads(SETTINGS_0922.read_text())
     now_1036, before_1036 = chosen["1036"], prior["controls"]["1036"]
     version_path = STEAM / "steamapps/common/MarvelRivals/MarvelGame/version.json"
-    version = json.loads(version_path.read_text())
+    version_bytes = version_path.read_bytes()
+    version = json.loads(version_bytes)
+    version_mtime = datetime.fromtimestamp(version_path.stat().st_mtime, timezone.utc).isoformat()
+    # the build this recording ran on (patch-equivalence-design.md item 3): derived now, re-derived at assembly
+    started = c.hi._utc(c.meta["started_utc"])
+    ended = started + timedelta(microseconds=(c.meta["end_ns"] - c.meta["start_ns"]) // 1000)
+    evidence = c.hi.steam_build_evidence(content_log=content_bytes.decode(errors="replace"), appmanifest=manifest,
+                                         version_json=version_bytes.decode(errors="replace"),
+                                         version_json_mtime_utc=version_mtime,
+                                         utc_offset_s=int(started.astimezone().utcoffset().total_seconds()))
+    try:
+        recorded = c.hi.recorded_build(evidence, started_utc=started, ended_utc=ended)
+    except c.hd.DemoError as exc:
+        recorded = dict(value=None, refused=str(exc))
     versions = {tool: run([tool, "-version"]).splitlines()[0] for tool in ("ffprobe", "ffmpeg")}
     doc = dict(
         session=c.sid, media={"path": c.video, "sha256": got, "bytes": os.path.getsize(c.video)},
@@ -175,12 +193,15 @@ def step_provenance(c):
             matches=video == ANCHOR_VIDEO_MS and audio == ANCHOR_AUDIO_MS,
             streams=json.loads(streams), note="no fitting: the forward prediction of the accepted derivation"),
         obs_log=log_hit,
-        build=dict(content_log={"path": str(content_log), "sha256": sha(content_log), "app_2767030_lines": app_lines[-6:]},
+        build=dict(content_log={"path": str(content_log), "sha256": hashlib.sha256(content_bytes).hexdigest(),
+                                "app_2767030_lines": app_lines[-6:]},
+                   appmanifest={"path": str(manifest_path), "sha256": hashlib.sha256(manifest_bytes).hexdigest()},
                    appmanifest_buildid=buildid,
-                   version_json={"path": str(version_path), "sha256": sha(version_path),
-                                 **{k: version.get(k) for k in ("version", "changelist")},
-                                 "mtime_utc": datetime.fromtimestamp(version_path.stat().st_mtime, timezone.utc).isoformat()},
-                   note="no app update line after the 2026-09-17 install of build 25364676 in the lines shown"),
+                   version_json={"path": str(version_path), "sha256": hashlib.sha256(version_bytes).hexdigest(),
+                                 **{k: version.get(k) for k in ("version", "changelist")}, "mtime_utc": version_mtime},
+                   evidence=evidence, recorded=recorded,
+                   note="recorded = agent.human_intake.recorded_build over `evidence`, read here at intake; the "
+                        "assembly re-derives it from `evidence` and refuses when it cannot be read"),
         settings_receipt=dict(path=str(SETTINGS), sha256=sha(SETTINGS),
                               mtime_utc=datetime.fromtimestamp(SETTINGS.stat().st_mtime, timezone.utc).isoformat(),
                               recording_started_utc=c.meta["started_utc"],
@@ -195,7 +216,7 @@ def step_provenance(c):
     write_once(c.out / "provenance.json", doc)
     print("anchor matches", doc["anchor_applicability"]["matches"], "settings equal 09-22:",
           doc["settings_receipt"]["equals_2026_09_22_receipt"], "after recording:",
-          doc["settings_receipt"]["written_after_recording"])
+          doc["settings_receipt"]["written_after_recording"], "build:", recorded.get("value") or recorded)
 
 
 def step_verify(c):

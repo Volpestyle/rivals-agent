@@ -77,7 +77,7 @@ POS_WEIGHT_MAX = 100.0
 PROVENANCE_REQUIRED = ("seed", "supported", "train_press_counts", "code_closure", "targets", "frame_stores")
 REPORT_REQUIRED = ("scope", "git_commit", "code_closure", "targets", "frame_stores", "config", "seed", "permutation",
                    "torch", "device", "fit_seconds", "checkpoint_sha256", "parameters", "supported",
-                   "train_statistics", "history", "abstention", "gate1", "pitch_truth", "test_opened")
+                   "train_statistics", "history", "abstention", "gate1", "pitch_truth", "test_opened", "cohort")
 
 
 class FitError(ValueError):
@@ -426,6 +426,10 @@ def run_fit(a):
     require(all(t.header["split"] == "train" for t, _ in train_t), "--train takes train files only")
     require(not {t.session_id for t, _ in train_t} & {t.session_id for t, _ in held_t},
             "a session is in train and held-out")
+    # One cohort: identity equal across train and held-out, `patch` by kit version under the pinned equivalence file
+    # (lead decision 2026-09-24); the files keep their real builds, recorded here.
+    cohort = T.check_cohort([t for t, _ in train_t + held_t],
+                            T.load_patch_equivalence(a.patch_equivalence, a.patch_equivalence_sha256))
     root = Path(a.frames_root)
     stores = {t.session_id: FrameStore(root / t.session_id, verify=True) for t, _ in train_t + held_t}
     for t, _ in train_t + held_t:
@@ -440,6 +444,7 @@ def run_fit(a):
                       frame_stores={sid: store_entry(s) for sid, s in stores.items()})
     if a.beta_nll is not None:                          # only then: a default checkpoint keeps today's bytes
         prov["camera_beta_nll"] = a.beta_nll
+    prov["cohort"] = cohort
     require(prov["code_closure"] == closure, "the code closure changed during the fit")
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=False)
@@ -453,7 +458,7 @@ def run_fit(a):
                  train_statistics={"positives": stats["positives"], "examples": stats["examples"],
                                    "missing_frames": stats["missing_frames"], "train_press_counts": counts},
                  history=history, abstention={"band": list(ABSTAIN_BAND), "camera_total_std_deg": CAMERA_ABSTAIN_STD},
-                 gate1=result, pitch_truth=result["pitch_truth"], test_opened=False,
+                 gate1=result, pitch_truth=result["pitch_truth"], test_opened=False, cohort=cohort,
                  camera_loss={"kind": "gaussian_nll" if a.beta_nll is None else "beta_nll", "beta": a.beta_nll})
     return 0
 
@@ -471,6 +476,10 @@ def main(argv=None):
     f.add_argument("--device", default="cpu")
     f.add_argument("--scope", default="gate1-dev")
     f.add_argument("--max-examples", type=int, help="train on the first N examples only (--scope smoke)")
+    f.add_argument("--patch-equivalence", default=str(T.PATCH_EQUIVALENCE),
+                   help="the pinned build -> kit-version file (lead decision 2026-09-24)")
+    f.add_argument("--patch-equivalence-sha256", default=T.PATCH_EQUIVALENCE_SHA256,
+                   help="its LF sha256 pin (default: policy.idm_targets.PATCH_EQUIVALENCE_SHA256)")
     f.add_argument("--beta-nll", type=float, help="camera loss: beta-NLL with this beta in (0, 1]; default: the "
                    "Gaussian NLL (the yaw falsification test, lane doc 2026-09-24)")
     a = ap.parse_args(argv)

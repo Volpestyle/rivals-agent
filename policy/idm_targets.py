@@ -24,7 +24,10 @@ Header:
                                                               any row is read (the IDM names no sealed session, F1)
     parent_step_ns, frame_period_ns, actions (vocab.NAMES)    from the step table
     bindings, swing_mode, accel_on, patch, settings_hash      from the step table (identity; accel_on true makes the
-                                                              degrees a slow-gain approximation)
+                                                              degrees a slow-gain approximation). patch is the real
+                                                              game build; files combined into one fit or evaluation
+                                                              compare the kit version it maps to (check_cohort, under
+                                                              the pinned PATCH_EQUIVALENCE file)
     calibration      the step table's: yaw_deg_per_count from the 360-degree take, pitch_deg_per_count (null = pitch
                      unknown) with pitch.kind ("derived_equal_sensitivity" is flagged, not measured)
     pad_envelope     {yaw_deg_per_s: 415, pitch_deg_per_s: 99}: the executor's reach (F4). A row beyond it keeps its
@@ -72,7 +75,7 @@ ROOT = Path(__file__).resolve().parent.parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from policy.range_bc import vocab  # noqa: E402
+from policy.range_bc import steps as _steps, vocab  # noqa: E402
 
 FORMAT = "rivals-idm-targets-v1"
 SESSIONS = ROOT / "data" / "human" / "sessions"
@@ -98,6 +101,15 @@ CALIBRATED_MAX_CPS = 1400.0
 # about 20 % from slow to fast", acceleration or artefact.
 EXTRAPOLATED_SIGMA_FRACTION = 0.20
 IDENTITY = ("bindings", "swing_mode", "accel_on", "patch", "settings_hash")
+# Game builds are grouped into cohorts by kit version, not by raw build (lead decision 2026-09-24,
+# patch-equivalence-design.md): a header keeps `patch` = the real build, and a cohort compares the kit version that
+# build maps to under this pinned file. Adding a build to a kit version is a lead decision with evidence, in the file.
+# One file, one loader, one pin: the fit lane's (policy.range_bc.steps), so the two lanes cannot drift apart.
+PATCH_EQUIVALENCE = ROOT / _steps.PATCH_EQUIVALENCE
+PATCH_EQUIVALENCE_FORMAT = _steps.PATCH_EQUIVALENCE_FORMAT
+PATCH_EQUIVALENCE_SHA256 = _steps.PATCH_EQUIVALENCE_SHA256
+# What one cohort shares (policy.range_bc.steps.load_cohort's human-source keys; a target header has no video_size).
+COHORT_KEYS = ("settings_hash", "bindings", "swing_mode", "accel_on", "parent_step_ns", "frame_period_ns", "calibration")
 ROW_KEYS = ("i", "parent", "half", "run", "segment", "suitability", "regime", "gap_free", "t0_ns", "t1_ns", "frame0",
             "frame1", "mouse_dx", "mouse_dy", "yaw_deg", "pitch_deg", "beyond_pad_envelope", "mouse_rate_cps",
             "gain_regime", "held_start", "held_end", "held_known", "press", "release")
@@ -288,6 +300,47 @@ def refuse_sealed(session_id, media_sha256, denylist):
     for row in denylist["sessions"]:
         _require(session_id != row["session_id"] and (media_sha256 is None or media_sha256 != row["media_sha256"]),
                  f"{session_id}: sealed by the denylist; the IDM never reads it")
+
+
+def load_patch_equivalence(path=PATCH_EQUIVALENCE, sha256_pin=PATCH_EQUIVALENCE_SHA256):
+    """The pinned build -> kit-version file, read by the fit lane's own loader (policy.range_bc.steps.
+    load_patch_equivalence: LF sha256 pin, schema, one kit version per build), so both lanes read it one way. Returns
+    its PatchEquivalence (path, sha256, kit_of); a refusal is a TargetError here."""
+    _require(sha256_pin is not None, "the patch-equivalence file must be pinned by its LF sha256")
+    try:
+        return _steps.load_patch_equivalence(path, sha256_pin)
+    except _steps.StepError as exc:
+        raise TargetError(str(exc)) from None
+
+
+def kit_version(build, equivalence):
+    """The kit version a game build maps to (the fit lane's kit_version); a build the file does not name is refused."""
+    try:
+        return _steps.kit_version(build, equivalence)
+    except _steps.StepError as exc:
+        raise TargetError(str(exc)) from None
+
+
+def check_cohort(targets, equivalence):
+    """One identity for every target file a fit or an evaluation combines: each session and recording once; the
+    COHORT_KEYS equal; and `patch` compared by the KIT VERSION its build maps to (the files keep the real build), a
+    build the file does not name refused. Returns what a report records: the equivalence file, the kit version and
+    every session's real build."""
+    _require(targets, "no target files")
+    ids = [t.session_id for t in targets]
+    _require(len(set(ids)) == len(ids), "a session appears twice")
+    media = [t.header["media_sha256"] for t in targets]
+    _require(len(set(media)) == len(media), "two target files name the same recording media")
+    first = targets[0].header
+    kits = {}
+    for t in targets:
+        kits[t.session_id] = kit_version(t.header["patch"], equivalence)
+        for key in COHORT_KEYS:
+            _require(t.header[key] == first[key], f"{t.session_id}: {key} differs from {first['session_id']}'s")
+    _require(len(set(kits.values())) == 1, f"the files span kit versions {sorted(set(kits.values()))}; "
+             "a cohort is one kit version")
+    return {"patch_equivalence": {"path": equivalence.path, "sha256": equivalence.sha256},
+            "kit_version": kits[ids[0]], "builds": {t.session_id: t.header["patch"] for t in targets}}
 
 
 def build(session_id, out_dir=OUT, *, sessions=SESSIONS, registry=REGISTRY, denylist=None):

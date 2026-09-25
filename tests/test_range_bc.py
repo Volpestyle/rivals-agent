@@ -1062,3 +1062,101 @@ def test_window_recall_counts_a_window_once_whatever_its_presses(tmp_path):
     everywhere = metrics.window_block(metrics.predict_runs(runs, pressing(set(range(len(s.rows))))),
                                       {s.session_id: w.complete})["by_action"]["web_cluster"]
     assert everywhere["recall"] == 1. and everywhere["zero_row_press_rate"] == 1.   # recall alone would reward this
+
+
+# ---- cohort patch equivalence (docs/lanes/end-to-end-fit-patch-equivalence.md) ----------------------------------------
+
+OLD_BUILD, NEW_BUILD = "1.1.3870120/build25364676", "1.1.3892207/build25501035"
+KIT = "Season 10, Version 20260911"
+
+
+def on_build(tmp_path, name, build, **kw):
+    return rewrite(tmp_path, name, lambda h, r: h.update(patch=build), **kw)
+
+
+def write_equivalence(tmp_path, kits, name="eq.json", fmt=steps.PATCH_EQUIVALENCE_FORMAT):
+    """A test equivalence file and its LF-normalised pin."""
+    path = tmp_path / name
+    path.write_text(json.dumps({"format": fmt, "kit_versions": kits}), encoding="utf-8")
+    return steps.load_patch_equivalence(path, steps.sha256(path))
+
+
+def entry(*builds, **kw):
+    return {"builds": list(builds), "evidence": ["patch notes"], "decided_by": "lead", "decided_on": "2026-09-24", **kw}
+
+
+def test_two_builds_under_one_kit_version_cohort_together(tmp_path):
+    old, new = on_build(tmp_path, "old", OLD_BUILD), on_build(tmp_path, "new", NEW_BUILD)
+    with pytest.raises(steps.StepError, match="patch differs from the cohort"):      # without the file: exact builds
+        steps.load_cohort([old, new])
+    real = steps.load_patch_equivalence()                                             # the pinned data file
+    assert real.sha256 == steps.PATCH_EQUIVALENCE_SHA256 and real.kit_of == {OLD_BUILD: KIT, NEW_BUILD: KIT}
+    sessions = steps.load_cohort([old, new], equivalence=real)
+    assert [s.header["patch"] for s in sessions] == [OLD_BUILD, NEW_BUILD]            # headers keep the real build
+    synthetic = write_equivalence(tmp_path, {"K": entry("b1", "b2")})
+    assert len(steps.load_cohort([on_build(tmp_path, "b1", "b1"), on_build(tmp_path, "b2", "b2")],
+                                 equivalence=synthetic)) == 2
+
+
+def test_a_build_the_file_does_not_name_or_another_kit_version_is_refused(tmp_path):
+    real = steps.load_patch_equivalence()
+    unknown = on_build(tmp_path, "u", "1.1.9999999/build0")
+    with pytest.raises(steps.StepError, match=r"game build '1\.1\.9999999/build0' is not in .*patch-equivalence\.json"):
+        steps.load_cohort([unknown], equivalence=real)                                # even a cohort of one
+    with pytest.raises(steps.StepError, match=r"1\.1\.9999999/build0"):
+        steps.load_cohort([on_build(tmp_path, "o", OLD_BUILD), unknown], equivalence=real)
+    two = write_equivalence(tmp_path, {"K1": entry("b1"), "K2": entry("b2")})
+    with pytest.raises(steps.StepError, match="kit version 'K2' \\(build 'b2'\\) differs from the cohort's 'K1'"):
+        steps.load_cohort([on_build(tmp_path, "b1", "b1"), on_build(tmp_path, "b2", "b2")], equivalence=two)
+
+
+@pytest.mark.parametrize("kits, fmt, message", [
+    ({"K": entry("b1")}, "rivals-patch-equivalence-v0", "is not rivals-patch-equivalence-v1"),
+    ({}, steps.PATCH_EQUIVALENCE_FORMAT, "no kit version"),
+    ({"K": entry()}, steps.PATCH_EQUIVALENCE_FORMAT, "non-empty list of builds"),
+    ({"K": entry("")}, steps.PATCH_EQUIVALENCE_FORMAT, "non-empty list of builds"),
+    ({"K": entry("b1", evidence=[])}, steps.PATCH_EQUIVALENCE_FORMAT, "needs its evidence"),
+    ({"K": entry("b1", decided_by="")}, steps.PATCH_EQUIVALENCE_FORMAT, "needs decided_by"),
+    ({"K": entry("b1", decided_on="24/09/2026")}, steps.PATCH_EQUIVALENCE_FORMAT, "YYYY-MM-DD"),
+    ({"K1": entry("b1"), "K2": entry("b1")}, steps.PATCH_EQUIVALENCE_FORMAT, "under two kit versions"),
+])
+def test_a_malformed_equivalence_file_is_refused(tmp_path, kits, fmt, message):
+    with pytest.raises(steps.StepError, match=message):
+        write_equivalence(tmp_path, kits, fmt=fmt)
+
+
+def test_a_tampered_equivalence_file_is_refused_by_its_pin(tmp_path):
+    real = steps.load_patch_equivalence()
+    raw = open(real.path, "rb").read()
+    crlf = tmp_path / "crlf.json"
+    crlf.write_bytes(raw.replace(b"\n", b"\r\n"))                                     # a CRLF checkout still loads
+    assert steps.load_patch_equivalence(crlf).kit_of == real.kit_of
+    tampered = tmp_path / "tampered.json"
+    tampered.write_bytes(raw.replace(b'"decided_by": "lead"', b'"decided_by": "someone"'))
+    with pytest.raises(steps.StepError, match="differs from its pinned sha256"):
+        steps.load_patch_equivalence(tampered)                                        # the default pin
+    with pytest.raises(steps.StepError, match="differs from its pinned sha256"):
+        steps.load_patch_equivalence(real.path, sha256_pin=None)                     # no pin, no file
+
+
+def test_replay_cohorts_compare_their_patch_exactly_with_or_without_the_file(tmp_path):
+    real = steps.load_patch_equivalence()
+    a, b = write_replay(tmp_path, "r1"), write_replay(tmp_path, "r2", seed=4)
+    assert len(steps.load_cohort([a, b], splits=("replay",), allow_replay=True, equivalence=real)) == 2
+
+
+ADMITTED = {"20260923T051828-422Z-33696-1": "d49224e3c4382a62ebb4c4252bcc5800138782688e1d0f60e03e46ce4b6e7edb",
+            "20260923T171533-187Z-33696-5": "dc28b0c1511f7847c8dde08c3e04addce8b57bc6c32cc2873405962d3235559e",
+            "20260923T200129-346Z-33696-6": "fcc9b0443e720648b899453ea3f04f82c0a6dd1735f30a420a36b3675549ba8e",
+            "20260923T205528-900Z-45572-3": "941950f16edef6a88b14d6bc536e33a66a0e779867fa145c78e7142164e1fd98"}
+
+
+@pytest.mark.corpus
+def test_the_four_admitted_tables_cohort_as_before_and_are_byte_unchanged():
+    root = fixture.Path(steps.__file__).resolve().parents[2]
+    paths = [root / "data/human/sessions" / sid / f"{sid}.steps.jsonl" for sid in ADMITTED]
+    deny = steps.load_denylist()
+    before = steps.load_cohort(paths, splits=("train",), denylist=deny)              # the exact comparison, as before
+    after = steps.load_cohort(paths, splits=("train",), denylist=deny, equivalence=steps.load_patch_equivalence())
+    assert {s.session_id: s.sha256 for s in before} == {s.session_id: s.sha256 for s in after} == ADMITTED
+    assert {s.header["patch"] for s in after} == {OLD_BUILD}
