@@ -458,3 +458,30 @@ def test_the_limit_is_for_smoke_runs_and_a_narrow_store_is_refused(tmp_path, mon
     with pytest.raises(TR.FitError, match="smoke only"):
         TR.main(["fit", "--train", str(path), "--heldout", str(path), "--frames-root", str(tmp_path / "frames"),
                  "--out", str(tmp_path / "o"), "--max-examples", "4"])
+
+
+def test_hud_offsets_default_to_todays_input_and_add_crops_after_the_interval(tmp_path):
+    """The edge-input test (lane doc 2026-09-25): default () is today's input and today's config bytes; with offsets
+    the edge head reads the HUD at the end frame + each offset, from crops the store already holds."""
+    from dataclasses import replace
+    assert set(M.Config().as_dict()) == {"window", "height", "width", "channels", "embed", "hud_channels", "hud_embed",
+                                         "hidden", "hud", "test_scale"}        # no new key: a default ckpt is unchanged
+    assert M.Config.from_dict(M.Config().as_dict()) == M.Config() and M.IDM(TINY).hud[0].in_channels == 6
+    lag = replace(TINY, hud_offsets=(2, 4))
+    assert lag.as_dict()["hud_offsets"] == [2, 4] and M.Config.from_dict(lag.as_dict()) == lag
+    assert M.IDM(lag).hud[0].in_channels == 12
+    for bad in ((3,), (0,), (6,)):                                       # odd, zero, beyond the stored +-4 window
+        with pytest.raises(ValueError, match="hud_offsets"):
+            replace(TINY, hud_offsets=bad)
+    t, store, _ = session(tmp_path, "a")
+    today, ex = TR.Examples([(t, store)], TINY, SUPPORTED), TR.Examples([(t, store)], lag, SUPPORTED)
+    assert len(ex) == len(today) and ex.missing == today.missing       # the motion window already needs f1 + 4
+    _, hud = ex.inputs([0])
+    r = ex.items[0][2]
+    f1 = r["frame1"]["frame_index"]
+    want = store.hud([r["frame0"]["frame_index"], f1, f1 + 2, f1 + 4]).astype(np.float32) / 255.0
+    assert hud.shape == (1, 12, 80, 200)
+    assert torch.equal(hud[0], torch.from_numpy(want).permute(0, 3, 1, 2).reshape(12, 80, 200))
+    model, _, _ = TR.fit(ex, lag, TR.train_statistics(ex), seed=0, epochs=1, batch_size=8)
+    preds = TR.predict(model, t, store)
+    assert any(p["press"]["jump"] is not None or p["yaw_deg"] is not None for p in preds.values())

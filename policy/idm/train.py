@@ -113,6 +113,11 @@ def bind(targets, store):
                     "targets")
 
 
+def hud_frames(config, f0, f1):
+    """The video frames whose HUD crops the edge head reads: start, end, and the end + each Config.hud_offsets."""
+    return [f0, f1] + [f1 + o for o in config.hud_offsets]
+
+
 class Examples:
     """The usable, fully framed rows of some target files, with their targets and masks as tensors."""
 
@@ -129,7 +134,7 @@ class Examples:
             cal = targets.header["calibration"]
             for r in T.training_rows(targets):
                 f1, f0 = r["frame1"]["frame_index"], r["frame0"]["frame_index"]
-                if store.window(f1, offs) is None or store.hud([f0, f1]) is None:
+                if store.window(f1, offs) is None or store.hud(hud_frames(config, f0, f1)) is None:
                     self.missing += 1
                     continue
                 if limit is None or len(self.items) < limit:
@@ -162,8 +167,10 @@ class Examples:
             _, store, r, _ = self.items[k]
             frames = store.window(r["frame1"]["frame_index"], offs).astype(np.float32) / 255.0
             motion.append(torch.from_numpy(frames[1:] - frames[:-1]))
-            crops = store.hud([r["frame0"]["frame_index"], r["frame1"]["frame_index"]]).astype(np.float32) / 255.0
-            hud.append(torch.from_numpy(crops).permute(0, 3, 1, 2).reshape(6, crops.shape[1], crops.shape[2]))
+            crops = store.hud(hud_frames(self.config, r["frame0"]["frame_index"],
+                                         r["frame1"]["frame_index"])).astype(np.float32) / 255.0
+            hud.append(torch.from_numpy(crops).permute(0, 3, 1, 2).reshape(3 * len(crops), crops.shape[1],
+                                                                            crops.shape[2]))
         return torch.stack(motion), torch.stack(hud)
 
 
@@ -416,7 +423,7 @@ def _load_hashed(path):
 
 
 def run_fit(a):
-    config = Config()
+    config = Config(hud_offsets=tuple(a.hud_offsets))
     require(not config.test_scale and config.width >= 448, "the fit runs at full scale only")
     require(a.max_examples is None or a.scope == "smoke", "--max-examples is for --scope smoke only")
     closure = code_closure()
@@ -480,6 +487,9 @@ def main(argv=None):
                    help="the pinned build -> kit-version file (lead decision 2026-09-24)")
     f.add_argument("--patch-equivalence-sha256", default=T.PATCH_EQUIVALENCE_SHA256,
                    help="its LF sha256 pin (default: policy.idm_targets.PATCH_EQUIVALENCE_SHA256)")
+    f.add_argument("--hud-offsets", type=int, nargs="*", default=[],
+                   help="extra HUD crops at the end frame + these video frames (the edge-input test, lane doc "
+                   "2026-09-25); default: the t0 and t1 crops only")
     f.add_argument("--beta-nll", type=float, help="camera loss: beta-NLL with this beta in (0, 1]; default: the "
                    "Gaussian NLL (the yaw falsification test, lane doc 2026-09-24)")
     a = ap.parse_args(argv)
