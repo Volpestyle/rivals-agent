@@ -19,4 +19,6 @@ seed-0 weights at `fe5c9ca` are bit-identical to `loso-205528` at `1df31e7`. All
 | `*idm-partA-prereg.md` | `42beb90e34d321e9391e2ad90f80b239e5b3a66d21f3cca2315cc8763280f098` |
 | `*idm-partB-prereg.md` | `4247102d1e328b134a51be6d526c18b831c7c4d5daee15abe60944a6230baeb2` |
 
-Pending in this folder: the gate-1 re-run (A4, `idm-beta-nll-2-a4.md`) and the edge-head input test (B, `idm-edge-input.md`).
+**B result (`idm-edge-input.md`, sha256 `0dba8450239d6835c1e7c820e1c235cc5d025ba721539e5f2d9393ec250988b7`):** HUD crops at t1+8 and t1+16 added to the input (fold 051828, plain loss, seed 0, branch `idm/edge-hud-lag-20260925` @ `b3112fc`): amazing_combo clears chance-at-rate by +0.089 F1 (today +0.030; AUC 0.797 -> 0.877), movement keys unchanged, jump F1 0.104 -> 0.069 (within the 0.05 tolerance; its margin over chance nearly gone), web_swing loses its margin. One seed, one fold: the pre-registered replication (seeds 1-2 on 051828, seeds 0-2 on 205528) follows the gate-1 re-run.
+
+Pending in this folder: the gate-1 re-run (A4, `idm-beta-nll-2-a4.md`) and the edge-input replication (`idm-edge-input-2.md`).
