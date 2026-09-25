@@ -1152,6 +1152,140 @@ Their per-row predictions already exist.
   - 16-27 % of truly-fast rows are predicted slow, so they keep k = 1 (their 1σ coverage is 0.39-0.48);
   - the dev fold is the least fast-heavy, so its k under-corrects.
 
+### Pitch-uncertainty fix: a yaw-std band, fitted apart and cross-fitted (pre-registered 2026-09-25)
+
+Pre-registered before anything is computed. It follows the lead's brief `brief-idm-pitch-fix` and is inference only,
+on the existing β-NLL checkpoints. There is no retraining and no model code change: a passing fix would become a
+reviewed change to the predictor's stated pitch std later. **This is not a gate result. It is a Gate 2 precondition
+for replay pitch labels in the fast band.**
+
+**Why.** The per-predicted-band scalar failed for two reasons:
+- 16–27 % of truly fast rows are predicted slow, so they keep k = 1;
+- the dev fold under-corrects.
+
+Arm A targets the first reason, and arm B adds the second.
+
+**What both arms change.** Only the stated pitch std s, the predictor's total: model variance plus the label sigma of
+the predicted value in its predicted regime.
+- **The band variable:** the stated total **yaw** std σ_y of the same row, known at inference. β-NLL's yaw variance
+  tracks motion magnitude (moving about 0.40°, still about 0.14° median, `idm-yaw-test.md`), so it can flag a fast row
+  whose predicted mean is small. Yaw itself is only read, never changed.
+- **The bins:** five quintile bins of σ_y. The edges are the 20/40/60/80 % quantiles of σ_y over the fit set's rows
+  with known pitch truth. A value on an edge goes to the upper bin; values beyond the outer edges go to the end bins.
+- **The inflation, per bin:** k_b = max(1, q₀.₆₈₃(r), q₀.₉₅₄(r) / 2), with r = |μ_pitch − pitch truth| / s over the fit
+  set's rows in bin b with known pitch truth, before any abstention; nearest-rank quantiles. This is the smallest
+  inflation that meets both nominal coverages on the fit set, and never a deflation.
+- **Applied:** s′ = k_{bin(σ_y)} · s, and pitch is answered iff s′ ≤ the pre-registered bound of its predicted regime
+  (1° calibrated, 3° extrapolated). Yaw's std, answers and abstention are untouched.
+
+**The arms, in order.**
+- **A (fitted apart):** the fit set is the dev fold's β-NLL seed-0 predictions (`a4-beta` on 171533, `822f22dc…`),
+  the only β prediction set that is not judged. One set of 5 edges and 5 k values is judged on both folds.
+- **B (cross-fitted on the fast-heavy folds):** the fit set is one fold's held-out predictions, pooled over its three
+  seeds. It is judged on the other fold:
+  - fit on fold 051828 (`yaw-t0/t1/t2` on 051828), judge fold 205528;
+  - fit on fold 205528 (`a1-beta-s0/s1/s2` on 205528), judge fold 051828.
+
+  **No fold is judged with parameters fitted on it.**
+
+**Judge sets:**
+- fold 051828: `yaw-t0`, `yaw-t1`, `yaw-t2` on 051828;
+- fold 205528: `a1-beta-s0`, `-s1`, `-s2` on 205528.
+
+All of these are existing per-row predictions.
+
+**Judge: per arm, all of these must hold** (the same judge as the failed calibration).
+1. **Coverage:** per fold (rows pooled over its three seeds), per **true** gain regime band, over the answered pitch
+   rows under s′. Within 1σ′ ≥ **0.70** and within 2σ′ ≥ **0.90**, in **both bands on both folds**.
+2. **The 1° / 3° bounds hold on every one of the six runs:** per true regime, ≥ **90 %** of answered pitch rows have
+   |error| ≤ the bound of their predicted regime.
+3. **Yaw untouched:** the yaw answers, std and mean are identical before and after, row for row.
+
+**Reading** (the arms are ordered; an arm passes only if all three components hold):
+- **A passes:** A is the fix, whatever B does. Its deployable parameters are A's dev-fold fit, one set. A is preferred
+  because it is fitted once, on data never judged.
+- **A fails and B passes:** B is the fix. Its deployable parameters are then fitted by the same rule on **both**
+  fast-heavy folds pooled (six runs). That set is not itself judged; the cross-fit is its held-out evidence. The
+  parameters are reported.
+- **Both fail:** the pitch cost stands, fast-band replay pitch labels stay untrusted, and the failing components are
+  named.
+
+**Reported beside, per arm:**
+- the bin edges and k values;
+- pitch abstention per true band, before and after (the cost in answered rows);
+- the per-run coverage;
+- the fit set's own in-sample coverage.
+
+**Budget:** PC only, from existing prediction files; minutes. Nothing runs until the lead's OK.
+
+**Result (measured 2026-09-25): both arms FAIL**, by the pre-registered reading; the pitch cost stands
+(`idm-pitch-fix.md`).
+- **Arm A (dev-fold fit):** meets on 205528 (extrapolated 0.717 / 0.949), but on 051828 the extrapolated band's
+  1σ′ is **0.678** (2σ′ 0.926), against 0.70.
+- **Arm B (cross-fit):** the extrapolated band is **0.615 / 0.892** on 051828 and **0.699** 1σ′ on 205528 (2σ′ 0.941).
+- **Both arms:** the calibrated band meets on both folds, the 1° / 3° bounds hold on all six runs, and yaw is identical
+  row for row. **No deployable parameters are named.**
+- **Not pre-registered (the mechanism):** the stated yaw std does separate fast rows (A's top bin 70–76 % truly fast,
+  its lowest three bins ≤ 2 %). But a k fitted over a whole bin under-covers the bin's fast rows.
+
+### Pitch-uncertainty fix, final round: k fitted on each bin's truly fast rows (pre-registered 2026-09-25)
+
+Pre-registered before anything is computed; inference only on the same β-NLL per-row predictions.
+**This is the last inference-only round on these judge sets.** If it fails, the pitch item waits for fresh held-out
+sessions: the three newly admitted takes, once their frame stores exist. **This is not a gate result.**
+
+**Why.**
+- The previous round's band variable works: the stated yaw std puts 70–76 % truly fast rows in its top bin and ≤ 2 %
+  in its lowest three. That finding was not pre-registered.
+- But a k fitted over a whole bin under-covers the bin's fast rows, because the slow rows in the bin over-cover.
+- The judge fails on the fast (extrapolated) band, so this round fits k on the fast rows it must cover.
+
+**What changes from the previous round: only how k is fitted.** The bins, the application and yaw's treatment are
+unchanged.
+- **The bins:** five quintile bins of the row's stated total yaw std σ_y. The edges are the 20/40/60/80 % quantiles of
+  σ_y over the fit set's rows with known pitch truth (all of them, as before). A value on an edge goes up.
+- **The inflation, per bin:** k_b = max(1, q₀.₆₈₃(r), q₀.₉₅₄(r) / 2), with r = |μ_pitch − pitch truth| / s over the fit
+  set's rows in bin b **whose true gain regime is extrapolated**, before any abstention; nearest-rank quantiles. The
+  true regime is used in fitting only.
+  - **If a bin has fewer than 50 truly fast fit rows,** k_b = 1: a quantile over so few rows is unstable, and those
+    bins' slow rows already over-cover.
+- **Applied at inference, to every row in the bin, slow or fast:** s′ = k_{bin(σ_y)} · s, and pitch is answered iff
+  s′ ≤ the pre-registered bound of its predicted regime (1° / 3°). Only σ_y is used at inference, never the true regime.
+  Yaw's std, answers and abstention are untouched.
+
+**The arms, in the same order as before.**
+- **A (fitted apart):** fitted on the dev fold's β-NLL seed-0 predictions (`a4-beta` on 171533, `822f22dc…`); judged
+  on both folds.
+- **B (cross-fitted):**
+  - fitted on fold 051828 (`yaw-t0/t1/t2` on 051828, pooled), judged on fold 205528;
+  - fitted on fold 205528 (`a1-beta-s0/s1/s2` on 205528, pooled), judged on fold 051828.
+
+  No fold is judged with parameters fitted on it.
+
+**Judge: per arm, the same as both previous rounds.**
+1. **Coverage:** per fold (three seeds pooled), per **true** band, over answered pitch rows under s′. Within 1σ′ ≥
+   **0.70** and within 2σ′ ≥ **0.90**, in both bands on both folds.
+2. **The 1° / 3° bounds hold on every one of the six runs:** per true regime, ≥ **90 %** of answered pitch rows have
+   |error| ≤ the bound of their predicted regime.
+3. **Yaw identical,** row for row.
+
+**Reading, the same as the previous round:**
+- **A passes:** A is the fix, with A's dev-fold parameters.
+- **A fails and B passes:** B is the fix, with its deployable parameters fitted by this rule on both fast-heavy folds
+  pooled. That set is not itself judged; the cross-fit is its held-out evidence.
+- **Both fail:** the pitch cost stands, fast-band replay pitch labels stay untrusted, and **the pitch item waits for
+  the three new admitted takes as fresh held-out sessions.** No further round is run on these judge sets.
+
+**Reported beside, per arm:**
+- the bin edges;
+- k per bin and the count of truly fast fit rows per bin;
+- pitch abstention per true band before and after. Inflating every row in a bin also inflates its slow rows, so the
+  cost in answered rows may be larger than last round's;
+- per-run coverage;
+- the fit sets' in-sample coverage.
+
+**Budget:** PC only, from the existing prediction files; minutes. Nothing runs until the lead's OK.
+
 ### The edge head's input: HUD crops after the interval (pre-registered 2026-09-25)
 
 Pre-registered before any code or run; the reading was fixed by the lead's brief. **This is not a gate result.**
