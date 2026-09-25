@@ -1370,6 +1370,25 @@ interpreted. It stays in the pooled judge.
 - **Fail:** A is not the fix. The pitch item needs a new direction, with these three sessions available as a second
   fold family. The failing component is named.
 
+**Result (measured 2026-09-25): PASS**, so by the pre-registered reading **A is confirmed** on fresh held-out sessions,
+and the Gate 2 precondition for fast-band replay pitch labels closes (`idm-pitch-confirm.md`).
+- **Pooled over the three sessions and the seven checkpoints (within 1σ′ / 2σ′):** extrapolated band **0.750 / 0.960**
+  (0.634 / 0.904 before A), calibrated band **0.905 / 0.986** (0.837 / 0.978 before A).
+- **The 1° / 3° bounds hold on all seven checkpoints** (extrapolated 0.951–0.971, calibrated ≥ 0.999), **and yaw is
+  identical row for row** on all 21 files.
+- **The cohort guard passed,** and every session's band is above the 500-row support floor (the smallest is 025230's
+  extrapolated band, 5,145 rows).
+- **The cost:** pooled pitch abstention in the extrapolated band rises from 0.7 % to 2.6 % (calibrated 0.2 % → 1.5 %).
+  The worst checkpoint is again `a1-beta-s0`: 2.9 % → 9.3 %, and 10.6 % on 232304.
+- **Reported beside, not conditions:**
+  - 232304 is the weakest session: its extrapolated band is 0.697 / 0.941 pooled over the checkpoints.
+  - Per checkpoint, `a4-beta` (A's own source checkpoint) is the lowest in the extrapolated band: 0.696 / 0.935 over
+    the sessions, 0.644 / 0.909 on 232304. The judge pools over checkpoints, as registered.
+  - Yaw raw-μ direction on moving rows is 0.936–0.980 across the 21 files, so the checkpoints transfer to the new
+    build.
+- **Deploying it** (A's edges and k in `policy.idm.train._camera`) is the reviewed change that follows. It is not made
+  here.
+
 ### The edge head's input: HUD crops after the interval (pre-registered 2026-09-25)
 
 Pre-registered before any code or run; the reading was fixed by the lead's brief. **This is not a gate result.**
