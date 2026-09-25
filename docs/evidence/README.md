@@ -70,6 +70,7 @@ Never add a root `.gitattributes` text or eol rule (`docs/cleanup-audit-20260923
 | `range-bc-plumbing-20260924/` | VUH-1346, VUH-1359 | Range BC plumbing fit: nine pre-registered runs at `afff279` (MPS byte-repeatable; twin 1.3717 vs no-HUD 1.4310 dev loss; scaling gap flat), run 1's HUD parity re-emitted, and the real fit's `preregistration.json` (13 epochs, wd 1e-4, stride 64) | current | `lanes/end-to-end-fit.md` |
 | `idm-plumbing-20260924/` | VUH-1353 | IDM plumbing at `1df31e7`: four frame stores (26 GB on the Mac), MPS smoke byte-repeatable, leave-one-session-out 3-epoch fit (camera beats zero, yaw direction at chance on fast folds, no edge skill); reports, store manifests and the lane's three accounts | current | `lanes/inverse-dynamics.md` |
 | `changed-boundary-reviews-20260924/` | VUH-1346, VUH-1353 | fit-review's verbatim review of the replay window-level loss (verdict: land) with hud-review's hand-back | historical | nothing outside evidence |
+| `idm-beta-nll-20260925/` | VUH-1353 | The beta-NLL camera loss toward default-on: second fold (beta 6 of 6 across folds, plain 2 of 6), pitch margin, per-regime calibration; gate-1 re-run and the edge-head input test to follow | current | `lanes/inverse-dynamics.md` |
 
 Adding evidence: add a new dated folder with its own README, then add its row here. `data/` is gitignored, so a
 run's output there stays untracked unless it is force-added on purpose.
