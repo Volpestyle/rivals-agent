@@ -978,6 +978,104 @@ out (051828) / in-sample (171533). All runs are 3 epochs on the same fold.
   β-NLL seeds are lowest on in-sample pitch (about 0.78). Fit-review should weigh this before β-NLL is relied on.
 - Evidence: `idm-yaw-test.md` (landed in `de69898`) and `idm-yaw-test-2.md`.
 
+### Toward β-NLL default-on: second fold, pitch, calibration, Gate 1 (pre-registered 2026-09-25)
+
+Pre-registered before any run. The readings were fixed by the lead's brief (`brief-scoreboard-fix-idm-night`); this
+section adds only the operational definitions. Code: main `fe5c9ca` (β-NLL behind `--beta-nll` since `d10f583`), with
+the Mac worktree at that commit. **Nothing here is a gate result except A4, and A4's call is the lead's.**
+
+**A1: the second fold, three seeds, both losses.**
+- **Fold:** **205528** held out, the other fast-heavy session. Train on 171533, 051828 and 200129, with the same
+  target files and stores as `loso-205528`.
+- **Runs:** seeds 0, 1 and 2 × {plain Gaussian NLL, β-NLL β = 0.5}, 3 epochs, `run_fit` defaults otherwise, MPS,
+  scope `gate1-dev`. Six fits in one niced queue.
+- **Judge, per run:** as the yaw falsification test. It is raw-μ yaw direction agreement on moving rows
+  (|true yaw| ≥ 0.5°), by `analyse.py`'s definition, on the held-out session **205528** and in-sample on **171533**.
+  "Learned" means ≥ 0.85 on both.
+- **Reading:**
+  - β-NLL learns yaw on 3 of 3 seeds here: **the fold dependence is closed.**
+  - Otherwise: the failing seeds are named, and the fold dependence stays open.
+  - The plain seeds are reported beside, with no reading of their own.
+- **Reported, not judged:** whether plain seed 0 at `fe5c9ca` reproduces `loso-205528`'s checkpoint bytes
+  (`982ce32f…`, seed 0 at `1df31e7`, same loss code). This is an MPS repeatability check across commits.
+
+**A2: pitch non-inferiority, pre-registered margin.**
+- **Metric:** held-out pitch agreement: raw-μ pitch direction agreement on moving rows (|true pitch| ≥ 0.5°), same
+  definition, on each run's held-out session.
+- **Pooled over both folds and all seeds**, six runs per loss:
+  - fold 051828: plain `loso-051828` (seed 0), C1, C2 against β T, T1, T2;
+  - fold 205528: the six A1 runs.
+- **Non-inferior** if β-NLL's mean ≥ the plain loss's mean − **0.05**.
+- **Also reported:** the six paired differences, β − plain for the same fold and seed.
+- **Reading:** below the margin, β-NLL stays behind the flag, and the next test is β-NLL on yaw only.
+
+**A3: per-regime calibration of the stated yaw std.**
+- **Definition** (Gate 1's `model_std_coverage`): per run on its held-out session, per **true** gain regime, over the
+  predictor's answered rows under the pre-registered abstention bounds. Coverage is the share with |error| ≤ 1σ and
+  ≤ 2σ of the stated **total** std (model variance + the label sigma of the predicted value in its predicted regime).
+  Abstention rates are reported beside.
+- **"Improved in the extrapolated band":** pooled over the β-NLL runs, the extrapolated band's distance from nominal,
+  |cov₁σ − 0.683| + |cov₂σ − 0.954|, is smaller than the plain runs' pooled distance.
+- **"The calibrated band worsened":** its pooled distance from nominal grows by more than **0.05** from plain to
+  β-NLL.
+- **The 1° / 3° abstention bounds hold on a β-NLL run** if, per true regime, at least **90 %** of answered yaw rows
+  have |error| ≤ the bound of their predicted regime.
+
+**A4: Gate 1 at scope with `--beta-nll 0.5`.**
+- **Run:** the dev fold, 171533 held out; train on 051828, 205528 and 200129; seed 0, 3 epochs, `run_fit`'s own
+  Gate 1 (the harness at `fe5c9ca`: model, zero and persistence; camera by gain regime and speed band; the stated std's
+  coverage; edges under the landed fixed-positive rule).
+- **Beside it:** the plain-loss Gate 1 of `idm-plumbing-20260924` (`loso-171533`, checkpoint `67636921…`), **re-scored
+  with the same `fe5c9ca` harness** so both sides use one rule. Its recorded report stays as recorded, under the old
+  edge rule.
+- **Reported per head, β against plain:**
+  - camera yaw and pitch: moving median error, direction agreement, the 1 s summed error, and the per-regime error and
+    coverage;
+  - edges: F1, AUC and abstained onsets per supported action.
+- **No margin is set here.** The lead makes the default-on call from these numbers.
+
+**Order and budget:**
+1. A1 (six fits of about 19 min, plus 12 predict passes);
+2. B (the separate pre-registration below);
+3. A4 (one fit of about 24 min, plus a re-score).
+
+A2 and A3 are computed on the PC from the per-row predictions. About 2.6 h of Mac time in all.
+
+### The edge head's input: HUD crops after the interval (pre-registered 2026-09-25)
+
+Pre-registered before any code or run; the reading was fixed by the lead's brief. **This is not a gate result.**
+
+**Why.**
+- `idm-diag` and part C found that the edge head outputs its class prior, and that thresholds rescue only jump.
+- The HUD-visible abilities' evidence lags the press by 0.1–1.9 s, while the head sees the HUD only at the interval's
+  start and end frames.
+- The stores already hold the HUD crop of every stored frame, including t1 + 8 and t1 + 16 video frames (+67 ms and
+  +133 ms) for every row whose motion window is complete. **No rebuild is needed.**
+
+**The arms** (fold 051828 held out; train on 171533, 205528 and 200129; plain loss, seed 0, 3 epochs, MPS):
+
+| Arm | HUD input | Run |
+|---|---|---|
+| **Today** | the t0 and t1 crops (6 channels) | the existing `loso-051828` (checkpoint `11d0b912…`, code `1df31e7`; the plain loss path is unchanged at `fe5c9ca`). Its part-C probabilities are reused |
+| **Lag** | the t0 and t1 crops **plus t1 + 8 and t1 + 16** (12 channels) | new. Code: one commit on branch `idm/edge-hud-lag-20260925` from `fe5c9ca`, adding the extra crops behind a config option that defaults to today's input, with a default checkpoint's bytes unchanged |
+
+**Judge** (part C's protocol, exactly):
+- **Threshold,** per action: the quantile on the arm's own train sessions at which it fires at the train onset rate.
+- **Scoring:** abstention band off; scored with the landed `idm_eval` on all known rows. Chance-at-rate is the mean
+  F1 of 20 seeded random draws at the arm's held-out fire rate.
+- **Only actions with ≥ 30 held-out onsets decide.**
+  - On 051828 that is **amazing_combo (60)**.
+  - Get Over Here! (27) and team_up (24) are below 30 there and **cannot decide**; they are reported only.
+- **The lag arm "helps"** if amazing_combo, get_over_here or team_up (in practice amazing_combo) clears chance-at-rate
+  by **≥ 0.05 F1 where today's input does not**, and **jump's F1 does not fall by more than 0.05**.
+  - Today's input on 051828: amazing_combo ΔF1 **+0.030** (does not clear); jump F1 **0.104**.
+  - So "helps" means amazing_combo ΔF1 ≥ 0.05 and jump F1 ≥ 0.054.
+- **The movement keys are expected unchanged:** there is no HUD evidence for them. They are reported, not judged.
+- **Reported beside:** held-out AUC per action for both arms.
+
+**Budget:** one fit of about 21 min, and four probability passes (the lag arm on its three train sessions and its
+held-out session), after A1.
+
 ## Measurements owed
 
 - **The 7 large live zeros (a) still keeps:** parallax during combined movement and turning.
