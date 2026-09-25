@@ -886,6 +886,7 @@ def test_motor_statements_quote_the_committed_log_and_keep_the_admitted_wording(
         A.motor_statement(TAKE_0924, hi, log.replace("~22:40 CDT", "~22:10 CDT"))
 
 
+@pytest.mark.corpus   # step_motor hashes data/human/notes/2026-09-21-user-settings.json, which is not in the repo
 def test_the_motor_step_quotes_the_recording_dates_own_statement_and_regenerates_only_on_purpose(tmp_path):
     from types import SimpleNamespace
     S = intake_module()
