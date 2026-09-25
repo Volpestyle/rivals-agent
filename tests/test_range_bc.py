@@ -1129,7 +1129,7 @@ def test_a_tampered_equivalence_file_is_refused_by_its_pin(tmp_path):
     real = steps.load_patch_equivalence()
     raw = open(real.path, "rb").read()
     crlf = tmp_path / "crlf.json"
-    crlf.write_bytes(raw.replace(b"\n", b"\r\n"))                                     # a CRLF checkout still loads
+    crlf.write_bytes(raw.replace(b"\r\n", b"\n").replace(b"\n", b"\r\n"))                                     # a CRLF checkout still loads (raw may already be CRLF)
     assert steps.load_patch_equivalence(crlf).kit_of == real.kit_of
     tampered = tmp_path / "tampered.json"
     tampered.write_bytes(raw.replace(b'"decided_by": "lead"', b'"decided_by": "someone"'))
