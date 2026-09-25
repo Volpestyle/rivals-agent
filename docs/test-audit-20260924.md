@@ -38,3 +38,11 @@ Real watchdog timing, range-banner equivalence, player-zone/crop geometry, OpenC
 Corpus tests, live gameplay and sealed-source inspection are outside this validation. Tracked diagnostic code and previously accepted clock-only evidence are used directly. No Linear update is made; the direct workspace Linear connector is unavailable in this session.
 
 Reflection: existing instructions already require corpus markers. The repair belongs in the tests and their fixtures; no duplicate instruction or new skill is added.
+
+## Merge integration
+
+The audit commit `0f249d1` joins upstream `7add7f8` through merge `226ddf5`. The upstream CI missing-data plugin is redundant with the repaired fixture paths and corpus markers; the workflow uses ordinary pytest failure reporting without blanket xfail suppression.
+
+- Merged stdlib suite: **1875 passed, 113 skipped, 3 failed**. All failures are in unchanged upstream `tests/test_transcode_recording.py`: Windows priority inheritance, Windows case-insensitive sealed-path spelling, and `tasklist`, on this Mac. Its production owner and tests are byte-identical to upstream.
+- Affected merged suites (scoreboard, countdown performance, replay states, range-skill loop, policy and behaviour): **247 passed, 34 skipped**.
+- Ruff passes. Independent Auto Review of the CI delta is **scoped-clean at P0–P2**. `uv sync` restores the stdlib-only environment.

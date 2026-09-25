@@ -1,5 +1,5 @@
-# Offline suites on push and pull request. No game, no pad, no network in the tests; recordings under data/ are
-# gitignored, so the tests that read them are xfail(strict=False) here only (.github/ci/missing_data.py).
+# Offline suites on push and pull request. No game, no pad, no network in the tests.
+# Recording-dependent tests require --corpus; synthetic and tracked fixtures run here.
 name: tests
 
 on:
@@ -23,7 +23,6 @@ permissions:
   contents: read
 
 env:
-  PYTHONPATH: .github/ci          # makes `-p missing_data` importable
   PYTHONDONTWRITEBYTECODE: "1"
 
 jobs:
@@ -35,7 +34,7 @@ jobs:
       - uses: astral-sh/setup-uv@v6
         with:
           python-version: "3.11"
-      - run: uv run pytest -p missing_data -p no:cacheprovider -q
+      - run: uv run pytest -p no:cacheprovider -q
 
   # Manual only (Actions > tests > Run workflow). macOS runner minutes bill at 10x on a private repo, and the Mac
   # already runs this suite before its own fits; run it here when a change touches Mac-side code or before a merge
@@ -49,7 +48,7 @@ jobs:
       - uses: astral-sh/setup-uv@v6
         with:
           python-version: "3.11"
-      - run: uv run pytest -p missing_data -p no:cacheprovider -q
+      - run: uv run pytest -p no:cacheprovider -q
 
   perception:
     runs-on: windows-latest       # the PC runs perception live
@@ -59,4 +58,4 @@ jobs:
       - uses: astral-sh/setup-uv@v6
         with:
           python-version: "3.11"
-      - run: uv run --group perception pytest -p missing_data -p no:cacheprovider -q
+      - run: uv run --group perception pytest -p no:cacheprovider -q
