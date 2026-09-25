@@ -188,9 +188,10 @@ def test_extrapolated_targets_weigh_less_in_the_camera_loss(tmp_path):
     assert wide < tight
 
 
-def test_beta_nll_is_off_by_default_and_rescales_only_the_gradient_weight(tmp_path):
-    """The yaw falsification test's treatment: None is today's Gaussian NLL exactly; beta = 0.5 weights each element's
-    NLL by stop-gradient(var ** beta), so d/d mu = var ** (beta - 1) (mu - y) and no gradient flows through the weight."""
+def test_the_loss_primitive_defaults_to_the_gaussian_nll_and_beta_rescales_only_the_gradient_weight(tmp_path):
+    """loss_terms is the primitive: its None is the Gaussian NLL exactly (the fit passes beta explicitly); beta = 0.5
+    weights each element's NLL by stop-gradient(var ** beta), so d/d mu = var ** (beta - 1) (mu - y) and no gradient
+    flows through the weight."""
     y, mask, sigma = torch.tensor([[3.0, -1.0]]), torch.tensor([[True, True]]), torch.tensor([[0.2, 0.1]])
     none = torch.zeros(1, N, dtype=torch.bool)
 
@@ -201,7 +202,7 @@ def test_beta_nll_is_off_by_default_and_rescales_only_the_gradient_weight(tmp_pa
         return loss["camera"].detach(), out.grad.clone()
 
     (l0, g0), (l1, g1) = grads(), grads(camera_beta=None)
-    assert torch.equal(l0, l1) and torch.equal(g0, g1)                   # the default is today's loss, bit for bit
+    assert torch.equal(l0, l1) and torch.equal(g0, g1)                   # the primitive's None: the Gaussian NLL
     _, gb = grads(camera_beta=0.5)
     var = torch.tensor([[1.2, -0.4]]).exp() + sigma ** 2
     mu = torch.tensor([[0.5, 0.25]])
@@ -210,6 +211,22 @@ def test_beta_nll_is_off_by_default_and_rescales_only_the_gradient_weight(tmp_pa
     ex, _, _ = examples(tmp_path)
     with pytest.raises(TR.FitError, match="camera_beta"):
         TR.fit(ex, TINY, TR.train_statistics(ex), epochs=1, camera_beta=1.5)
+
+
+def test_the_camera_loss_defaults_to_beta_nll_half_on_both_axes(tmp_path, monkeypatch):
+    """Lead decision beta-default (2026-09-25): fit() and the CLI default to beta-NLL, beta 0.5; --beta-nll 0 restores
+    the plain Gaussian NLL; a beta outside (0, 1] is refused."""
+    import inspect
+    assert TR.CAMERA_BETA_DEFAULT == 0.5
+    assert inspect.signature(TR.fit).parameters["camera_beta"].default == TR.CAMERA_BETA_DEFAULT
+    monkeypatch.setattr(TR, "run_fit", lambda a: a)                     # parse only
+    parsed = TR.main(["fit", "--train", "t", "--heldout", "h", "--frames-root", "f", "--out", "o"])
+    assert parsed.beta_nll == 0.5 and TR.camera_beta_from_cli(parsed.beta_nll) == 0.5
+    plain = TR.main(["fit", "--train", "t", "--heldout", "h", "--frames-root", "f", "--out", "o", "--beta-nll", "0"])
+    assert TR.camera_beta_from_cli(plain.beta_nll) is None
+    ex, _, _ = examples(tmp_path)
+    with pytest.raises(TR.FitError, match="camera_beta"):
+        TR.fit(ex, TINY, TR.train_statistics(ex), epochs=1, camera_beta=TR.camera_beta_from_cli(-0.5))
 
 
 def test_training_is_byte_reproducible_on_cpu_and_learns(tmp_path):
@@ -423,6 +440,8 @@ def test_run_fit_end_to_end_commits_the_closure_it_checks_and_writes_a_report(tm
     cohort = report["cohort"]                                          # the kit version and the real builds
     assert cohort["builds"] == {"tr": "p", "he": "p"} and cohort["kit_version"] == "K"
     assert cohort["patch_equivalence"]["sha256"] == eq_sha and payload["meta"]["cohort"] == cohort
+    assert report["camera_loss"] == {"kind": "beta_nll", "beta": 0.5}             # the default, recorded
+    assert payload["meta"]["camera_beta_nll"] == 0.5
 
 
 def equivalence(tmp_path, builds):

@@ -14,8 +14,10 @@ predictor abstains on it. Targets and masks per row:
              (policy.idm_targets.supported_actions over the TRAIN files; an unsupported action is never a "no")
     camera   yaw, pitch degrees (pitch positive down), each masked where unknown, with the target's own sigma
              (policy.idm_targets.camera_sigma: wider above the calibrated gain band, review S3)
-Loss: masked BCE over press (pos_weight per action from the train rows) + CAMERA_WEIGHT x masked Gaussian NLL whose
-variance is the model's plus the target's.
+Loss: masked BCE over press (pos_weight per action from the train rows) + CAMERA_WEIGHT x masked camera NLL whose
+variance is the model's plus the target's. The camera NLL is beta-NLL with beta = CAMERA_BETA_DEFAULT (0.5) on both axes
+by default (lead decision beta-default, 2026-09-25: yaw learned on 6 of 6 seeds against 2 of 6, the pitch cost on
+record); `--beta-nll 0` restores the plain Gaussian NLL.
 
 Pixels are bound to the targets (review K2): a frame store is read only if its manifest's media_sha256 equals the
 target header's, the header's frame period is the 120 fps the window offsets assume, and every frame the store and the
@@ -67,6 +69,9 @@ FORMAT = "rivals-idm-v1"
 REPORT_FORMAT = "rivals-idm-report-v1"
 PERMUTATION = "random.Random(seed * 1000003 + epoch).shuffle(example indices)"
 CAMERA_WEIGHT = 1.0
+# The camera loss's default: beta-NLL, beta 0.5, both axes (lead decision beta-default, 2026-09-25; the evidence is in
+# the lane doc). None, or --beta-nll 0 on the CLI, is the plain Gaussian NLL.
+CAMERA_BETA_DEFAULT = 0.5
 ABSTAIN_BAND = (0.35, 0.65)      # a press probability inside this band is an abstention (pre-registered)
 # Degrees: a camera axis whose TOTAL std (model + label sigma) exceeds its predicted regime's bound is an abstention
 # (pre-registered). Extrapolated labels are known to ~20 % (idm_targets.EXTRAPOLATED_SIGMA_FRACTION), so 3 degrees
@@ -180,7 +185,8 @@ def train_statistics(examples):
 
 def loss_terms(press_logits, camera_out, press, press_mask, camera, camera_mask, camera_sigma, pos_weight,
                camera_beta=None):
-    """Masked losses; a masked entry contributes nothing, value or gradient. camera_beta (None = the Gaussian NLL):
+    """Masked losses; a masked entry contributes nothing, value or gradient. camera_beta (None = the Gaussian NLL; the
+    fit's default is CAMERA_BETA_DEFAULT):
     beta-NLL (Seitzer et al. 2022), each camera element's NLL weighted by stop-gradient(var ** beta), so the mean's
     gradient scales with var ** (beta - 1) and a large variance cannot starve it (the yaw falsification test)."""
     bce = F.binary_cross_entropy_with_logits(press_logits, press, pos_weight=pos_weight, reduction="none")
@@ -207,7 +213,7 @@ def seed_everything(seed, deterministic=True):
 
 
 def fit(examples, config, stats, *, seed=0, epochs=10, batch_size=16, lr=1e-3, weight_decay=1e-4, clip=1.0,
-        device="cpu", log=None, camera_beta=None):
+        device="cpu", log=None, camera_beta=CAMERA_BETA_DEFAULT):
     """Train one IDM on train examples. Returns (model, per-epoch history, seconds)."""
     require(len(examples) > 0, "no training examples")
     require(camera_beta is None or 0 < camera_beta <= 1, "camera_beta must be in (0, 1]")
@@ -415,6 +421,11 @@ def _load_hashed(path):
     return targets, sha
 
 
+def camera_beta_from_cli(value):
+    """--beta-nll: 0 is the plain Gaussian NLL (None); anything else is beta, which fit() checks is in (0, 1]."""
+    return None if value == 0 else value
+
+
 def run_fit(a):
     config = Config()
     require(not config.test_scale and config.width >= 448, "the fit runs at full scale only")
@@ -437,13 +448,14 @@ def run_fit(a):
     supported, counts = T.supported_actions([t for t, _ in train_t])
     examples = Examples([(t, stores[t.session_id]) for t, _ in train_t], config, supported, limit=a.max_examples)
     stats = train_statistics(examples)
+    beta = camera_beta_from_cli(a.beta_nll)
     model, history, secs = fit(examples, config, stats, seed=a.seed, epochs=a.epochs, device=a.device, log=print,
-                               camera_beta=a.beta_nll)
+                               camera_beta=beta)
     prov = provenance(seed=a.seed, supported=supported, train_press_counts=counts,
                       targets={t.session_id: target_entry(t, sha) for t, sha in train_t + held_t},
                       frame_stores={sid: store_entry(s) for sid, s in stores.items()})
-    if a.beta_nll is not None:                          # only then: a default checkpoint keeps today's bytes
-        prov["camera_beta_nll"] = a.beta_nll
+    if beta is not None:                                # the camera loss a checkpoint was trained with
+        prov["camera_beta_nll"] = beta
     prov["cohort"] = cohort
     require(prov["code_closure"] == closure, "the code closure changed during the fit")
     out = Path(a.out)
@@ -459,7 +471,7 @@ def run_fit(a):
                                    "missing_frames": stats["missing_frames"], "train_press_counts": counts},
                  history=history, abstention={"band": list(ABSTAIN_BAND), "camera_total_std_deg": CAMERA_ABSTAIN_STD},
                  gate1=result, pitch_truth=result["pitch_truth"], test_opened=False, cohort=cohort,
-                 camera_loss={"kind": "gaussian_nll" if a.beta_nll is None else "beta_nll", "beta": a.beta_nll})
+                 camera_loss={"kind": "gaussian_nll" if beta is None else "beta_nll", "beta": beta})
     return 0
 
 
@@ -480,8 +492,9 @@ def main(argv=None):
                    help="the pinned build -> kit-version file (lead decision 2026-09-24)")
     f.add_argument("--patch-equivalence-sha256", default=T.PATCH_EQUIVALENCE_SHA256,
                    help="its LF sha256 pin (default: policy.idm_targets.PATCH_EQUIVALENCE_SHA256)")
-    f.add_argument("--beta-nll", type=float, help="camera loss: beta-NLL with this beta in (0, 1]; default: the "
-                   "Gaussian NLL (the yaw falsification test, lane doc 2026-09-24)")
+    f.add_argument("--beta-nll", type=float, default=CAMERA_BETA_DEFAULT,
+                   help=f"camera loss: beta-NLL with this beta in (0, 1] on both axes (default {CAMERA_BETA_DEFAULT}, "
+                   "lead decision beta-default 2026-09-25); 0 = the plain Gaussian NLL")
     a = ap.parse_args(argv)
     return run_fit(a)
 

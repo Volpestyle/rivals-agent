@@ -1070,6 +1070,88 @@ A2 and A3 are computed on the PC from the per-row predictions. About 2.6 h of Ma
   - **Fail:** the lead decides for β-NLL on both axes, with the pitch cost on record.
 - **Reported beside:** pitch agreement, and Gate 1's calibrated-band coverage and edges.
 
+**Decision (2026-09-25, lead's `beta-default`, `9a39228`): β-NLL, β 0.5, both axes, is the IDM's default camera
+loss.** `policy/idm/train.py` sets `CAMERA_BETA_DEFAULT = 0.5`; `--beta-nll 0` restores the plain Gaussian NLL. The
+evidence, all 3 epochs and MPS:
+
+| Test | Plain Gaussian NLL | β-NLL, both axes | β-NLL, yaw only |
+|---|---|---|---|
+| Yaw learned (≥ 0.85 held out and in-sample), folds 051828 + 205528, seeds 0-2 | **2 of 6** | **6 of 6** (0.937-0.976 held out) | 1 of 2 (0.911; 0.686) |
+| Held-out pitch agreement, mean over the 6 fold/seed runs (A2) | 0.793 | 0.776 (−0.017; non-inferior within 0.05) | 0.838; 0.592 |
+| Yaw stated-std coverage, extrapolated band, distance from nominal (A3) | 0.219 | **0.073** | – |
+| 1° / 3° abstention bounds hold on the runs (A3) | 2 of 6 | **6 of 6** | – |
+| Gate 1 on 171533, yaw: moving median / direction / abstention (A4) | 0.352° / 0.964 / 3.7 % | **0.263° / 0.995 / 0.3 %** | 0.365° / 0.978 / 0.7 % |
+| Gate 1 on 171533, pitch: moving median / extrapolated 1σ coverage | **0.508° / 0.734** | 0.568° / 0.604 | 0.654° / 0.654 |
+
+- **The pitch cost is on record:** at Gate 1, pitch error is +0.06°, and the stated pitch std is too tight at speed
+  (extrapolated 1σ coverage 0.604).
+- **Yaw-only β-NLL failed its pre-registered test** on all three components, so it is not the fix.
+- **The post-hoc pitch-std calibration ran and failed** (`idm-pitch-calibration.md`, landed `a517ec6`).
+  - After calibration the extrapolated band reached 0.621 / 0.893 on 051828 and 0.660 / 0.919 on 205528, against the
+    0.70 / 0.90 needed.
+  - The calibrated band meets, the abstention bounds hold on all six runs, and yaw is identical row for row.
+  - **So the pitch cost stands: replay pitch labels in the fast (extrapolated) band are untrusted until a new
+    pre-registered pitch fix passes.**
+  - The two directions it names, each a future pre-registration: a different band variable that catches the fast rows
+    predicted as slow; or fitting the calibration on the fast-heavy folds.
+- **Pitch is seed-fragile under both losses:** held-out 0.62-0.85 across seeds. Single-seed pitch comparisons are weak
+  evidence.
+- **Evidence:** `idm-beta-nll-2.md`, `idm-beta-nll-2-a4.md` and `idm-beta-yaw-only.md` (landed with the evidence
+  commits up to `9a39228`).
+
+### Post-hoc pitch-std calibration (pre-registered 2026-09-25)
+
+Pre-registered before anything is computed; the judge was fixed by the lead's `beta-default` decision. It is
+inference only, on existing β-NLL checkpoints, with no retraining. **This is not a gate result.**
+
+**Why.** Under the default β-NLL, the stated pitch std is too tight at speed: at Gate 1 the extrapolated band's 1σ
+coverage is 0.604. This test asks whether one scalar per band fixes that without touching yaw.
+
+**The calibration.**
+- The stated pitch std s is the predictor's total std: model variance plus the label sigma of the predicted value in
+  its predicted regime.
+- It is scaled by one scalar per **predicted** gain regime band, the band known at inference and the one the
+  abstention uses: s′ = k_band · s.
+- **Fit set:** the dev fold's β-NLL seed-0 checkpoint (`a4-beta`, 171533 held out), its per-row predictions on
+  171533. These are computed now, by inference only.
+- **k_band** = max(1, the 0.683 quantile of |pitch error| / s) over that band's rows with known pitch truth, before
+  any abstention. It is an inflation only: a band that already over-covers keeps k = 1.
+- **Applied:** pitch is answered iff s′ ≤ the pre-registered bound of its predicted regime (1° / 3°).
+- **Yaw:** its std, answers and abstention are left exactly as they are.
+
+**Judge sets:** the β-NLL runs of both folds, all seeds, on their held-out sessions:
+- fold 051828: T, T1 and T2 (`yaw-t0`, `yaw-t1`, `yaw-t2`);
+- fold 205528: `a1-beta-s0`, `-s1` and `-s2`.
+
+Their per-row predictions already exist.
+
+**Judge: all of these must hold.**
+1. **Coverage:** per fold (rows pooled over its three seeds), per **true** gain regime band, over the answered pitch
+   rows under s′. Within 1σ′ ≥ **0.70** and within 2σ′ ≥ **0.90**, in **both bands on both folds**.
+2. **The abstention bounds still hold:** on every one of the six runs, per true regime, ≥ **90 %** of answered pitch
+   rows have |error| ≤ the bound of their predicted regime (A3's definition, applied to pitch).
+3. **Yaw untouched:** the yaw answers, std and coverage are identical before and after, checked row for row.
+
+**Reported beside:**
+- k per band;
+- pitch abstention per band before and after (the inflation's cost in answered rows);
+- the per-run coverage;
+- the dev fold's own in-sample coverage.
+
+**Reading:**
+- **Pass:** the calibration is the candidate fix for the pitch cost, as a change to the predictor's stated std, to be
+  reviewed before it lands.
+- **Fail:** the pitch cost stands as recorded, and the failing component is named.
+
+**Result (measured 2026-09-25): FAIL**, by the pre-registered reading; the pitch cost stands (`idm-pitch-calibration.md`,
+`a517ec6`).
+- **The fit on `a4-beta` / 171533:** k = 1.000 for the calibrated band and 1.065 for the extrapolated band.
+- **The extrapolated band stays short** on both folds: 0.621 / 0.893 (051828) and 0.660 / 0.919 (205528), against
+  0.70 / 0.90. The calibrated band meets, the bounds hold on all six runs, and yaw is unchanged.
+- **Why one scalar per predicted band cannot close it:**
+  - 16-27 % of truly-fast rows are predicted slow, so they keep k = 1 (their 1σ coverage is 0.39-0.48);
+  - the dev fold is the least fast-heavy, so its k under-corrects.
+
 ### The edge head's input: HUD crops after the interval (pre-registered 2026-09-25)
 
 Pre-registered before any code or run; the reading was fixed by the lead's brief. **This is not a gate result.**
