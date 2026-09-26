@@ -9,7 +9,7 @@ SESSION_DIR is the Rivals Input Logger folder recorded with ORIGINAL (metadata.j
 read, never written. Every run prints its plan first; --plan stops there. --plan-all lists every pairable original
 under the logger root, read-only. Order, each step refusing before the next:
 
-1. Sealed denylist (data/human/sealed-denylist.json, pinned by sha256 in DENYLIST_SHA256): the session folder's name
+1. Sealed denylist (data/human/sealed-denylist.v2.json, pinned by sha256 in DENYLIST_SHA256): the session folder's name
    and the original's path are compared as strings before either is opened, then the original's sha256, then
    metadata.json's session_id (read, checked, and only then frames.csv).
 2. Pairing, never by name pattern: metadata.json's video_path names ORIGINAL and its session_id is the folder name,
@@ -68,8 +68,8 @@ sys.path.insert(0, str(ROOT))
 from agent import human_demos as hd      # noqa: E402
 from agent import human_intake as hi     # noqa: E402
 
-DENYLIST = ROOT / "data" / "human" / "sealed-denylist.json"
-DENYLIST_SHA256 = "57cfe01f29f6e1a55293f968ec697aa293c268bd87d7cf247ef648279e2fba7c"
+DENYLIST = ROOT / "data" / "human" / "sealed-denylist.v2.json"
+DENYLIST_SHA256 = "439c80df6cd5d6daa60b48e0acb2d3a3fa833134ff14edddc4121348c2dceb20"
 REGISTRIES = None                     # None: every registry*.json / session-splits*.json under data/ (registry_files)
 SESSIONS_ROOT = Path("C:/Users/volpe/Videos/RivalsInput")
 ADMITTED_SESSIONS = ROOT / "data" / "human" / "sessions"

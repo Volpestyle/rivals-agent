@@ -407,8 +407,8 @@
   {
    "session": "20260926T002109-428Z-63684-2",
    "date": "2026-09-25",
-   "status": "not_range",
-   "reason": "gate2 (sealed): the live match of the replay-of-self pair (Central Park, 19:28)",
+   "status": "sealed",
+   "reason": "gate2 pair 1 (sealed): the live match (Central Park, 19:28); never read",
    "group": "gate2-20260925-central-park-1928",
    "split": "gate2",
    "admitted_min": null,
@@ -417,10 +417,10 @@
   {
    "session": "20260926T002851-659Z-63684-3",
    "date": "2026-09-25",
-   "status": "not_range",
-   "reason": "match_dev: evaluation-only match recording, never trained on (handoff/matches-0925.md)",
-   "group": null,
-   "split": null,
+   "status": "sealed",
+   "reason": "gate2 pair 2 (sealed): the live half (Thebes 19:36 and Hall of Djalia 19:49; the whole file); never read",
+   "group": "gate2-20260925-hall-of-djalia-1949",
+   "split": "gate2",
    "admitted_min": null,
    "trainable_min": null
   },
@@ -428,7 +428,7 @@
    "session": "20260926T005304-628Z-63684-4",
    "date": "2026-09-25",
    "status": "not_range",
-   "reason": "match_dev: evaluation-only match recording, never trained on (handoff/matches-0925.md)",
+   "reason": "evaluation-only match recording (reader_validation, reader_development or match_dev), never trained on (handoff/matches-0925.md)",
    "group": null,
    "split": null,
    "admitted_min": null,
@@ -438,7 +438,7 @@
    "session": "20260926T010620-721Z-63684-5",
    "date": "2026-09-25",
    "status": "not_range",
-   "reason": "match_dev: evaluation-only match recording, never trained on (handoff/matches-0925.md)",
+   "reason": "evaluation-only match recording (reader_validation, reader_development or match_dev), never trained on (handoff/matches-0925.md)",
    "group": null,
    "split": null,
    "admitted_min": null,
@@ -448,7 +448,7 @@
    "session": "20260926T012552-291Z-63684-6",
    "date": "2026-09-25",
    "status": "not_range",
-   "reason": "match_dev: evaluation-only match recording, never trained on (handoff/matches-0925.md)",
+   "reason": "evaluation-only match recording (reader_validation, reader_development or match_dev), never trained on (handoff/matches-0925.md)",
    "group": null,
    "split": null,
    "admitted_min": null,
@@ -458,7 +458,7 @@
    "session": "20260926T013711-125Z-63684-7",
    "date": "2026-09-25",
    "status": "not_range",
-   "reason": "match_dev: evaluation-only match recording, never trained on (handoff/matches-0925.md)",
+   "reason": "evaluation-only match recording (reader_validation, reader_development or match_dev), never trained on (handoff/matches-0925.md)",
    "group": null,
    "split": null,
    "admitted_min": null,
@@ -468,7 +468,7 @@
    "session": "20260926T015610-960Z-63684-8",
    "date": "2026-09-25",
    "status": "not_range",
-   "reason": "match_dev: evaluation-only match recording, never trained on (handoff/matches-0925.md)",
+   "reason": "evaluation-only match recording (reader_validation, reader_development or match_dev), never trained on (handoff/matches-0925.md)",
    "group": null,
    "split": null,
    "admitted_min": null,
@@ -478,7 +478,7 @@
    "session": "20260926T021321-378Z-63684-9",
    "date": "2026-09-25",
    "status": "not_range",
-   "reason": "match_dev: evaluation-only match recording, never trained on (handoff/matches-0925.md)",
+   "reason": "evaluation-only match recording (reader_validation, reader_development or match_dev), never trained on (handoff/matches-0925.md)",
    "group": null,
    "split": null,
    "admitted_min": null,
@@ -518,7 +518,7 @@
    "session": "20260926T034805-307Z-63684-13",
    "date": "2026-09-25",
    "status": "not_range",
-   "reason": "match_dev: evaluation-only match recording, never trained on (handoff/matches-0925.md)",
+   "reason": "evaluation-only match recording (reader_validation, reader_development or match_dev), never trained on (handoff/matches-0925.md)",
    "group": null,
    "split": null,
    "admitted_min": null,
@@ -557,8 +557,8 @@
   {
    "session": "20260926T044958-507Z-63684-15",
    "date": "2026-09-25",
-   "status": "not_range",
-   "reason": "gate2 (sealed): the replay of the 19:28 Central Park match",
+   "status": "sealed",
+   "reason": "gate2 pair 1 (sealed): its replay; never read",
    "group": "gate2-20260925-central-park-1928",
    "split": "gate2",
    "admitted_min": null,
@@ -593,6 +593,76 @@
    "artifact_sha256": "596883a2bbe7e81f25c694684ea6a6ae1eff62f85fef982def4b10cf4febad5a",
    "group": "20260926T045729-166Z-79780-1",
    "split": "train"
+  },
+  {
+   "session": "20260926T060921-977Z-60612-1",
+   "date": "2026-09-26",
+   "status": "not_range",
+   "reason": "main-account yaw calibration take (calibration_sessions); never a split",
+   "group": null,
+   "split": null,
+   "admitted_min": null,
+   "trainable_min": null
+  },
+  {
+   "session": "20260926T153812-936Z-111496-1",
+   "date": "2026-09-26",
+   "status": "sealed",
+   "reason": "held with the 2026-09-26 test take (23 s, same OBS process); never read",
+   "group": "20260926T153812-936Z-111496-1",
+   "split": "test",
+   "admitted_min": null,
+   "trainable_min": null
+  },
+  {
+   "session": "20260926T153835-237Z-111496-2",
+   "date": "2026-09-26",
+   "status": "sealed",
+   "reason": "test take 2026-09-26 (James, 16 min); never read",
+   "group": "20260926T153835-237Z-111496-2",
+   "split": "test",
+   "admitted_min": null,
+   "trainable_min": null
+  },
+  {
+   "session": "20260926T155737-285Z-116800-1",
+   "date": "2026-09-26",
+   "status": "sealed",
+   "reason": "gate2 pair 2 (sealed): the Hall of Djalia replay; never read",
+   "group": "gate2-20260925-hall-of-djalia-1949",
+   "split": "gate2",
+   "admitted_min": null,
+   "trainable_min": null
+  },
+  {
+   "session": "20260926T161008-331Z-116800-2",
+   "date": "2026-09-26",
+   "status": "not_range",
+   "reason": "reader_development: the replay of the Heart of Heaven match (20-06-20), never trained on",
+   "group": null,
+   "split": null,
+   "admitted_min": null,
+   "trainable_min": null
+  },
+  {
+   "session": "20260926T162623-219Z-116800-3",
+   "date": "2026-09-26",
+   "status": "not_range",
+   "reason": "OBS false start (13 s, Alt+Tab only); James deleted the video; not a session",
+   "group": null,
+   "split": null,
+   "admitted_min": null,
+   "trainable_min": null
+  },
+  {
+   "session": "20260926T162648-153Z-116800-4",
+   "date": "2026-09-26",
+   "status": "not_range",
+   "reason": "leftward yaw calibration take (calibration_sessions); never a split",
+   "group": null,
+   "split": null,
+   "admitted_min": null,
+   "trainable_min": null
   }
  ],
  "headline_train_by_regime": {
@@ -614,12 +684,12 @@
  "target_min": 180,
  "registry": {
   "path": "data/human/session-splits.corpus.json",
-  "sha256": "d5f0f7d7f6ffb9b8aa94adae56a5ae9adf01619174902a1691741ad9ae5a57a9"
+  "sha256": "4b615b7b023fbd219cf9705ee51d25d096275b6f12c0e68c05e64f377a9323fd"
  },
  "denylist": {
-  "path": "data/human/sealed-denylist.json",
-  "sha256": "57cfe01f29f6e1a55293f968ec697aa293c268bd87d7cf247ef648279e2fba7c"
+  "path": "data/human/sealed-denylist.v2.json",
+  "sha256": "439c80df6cd5d6daa60b48e0acb2d3a3fa833134ff14edddc4121348c2dceb20"
  },
- "snapshot": "code-snapshot-6bbb276",
+ "snapshot": "code-snapshot-e7f5045",
  "counted_rule": "focused logged time \u2229 accepted segments \u2229 gap-free runs >= 1.6 s"
 }

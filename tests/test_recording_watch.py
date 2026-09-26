@@ -23,7 +23,7 @@ def test_next_steps_is_register_then_intake_steps_then_review_then_assemble():
               f"4. python assemble_session.py {SID} --independent-verdicts <PATH> --snapshot <code-snapshot-XXXXXXX>"]
     at = [text.index(m) for m in marks]
     assert at == sorted(at)
-    assert "sealed-denylist.json" in text and "registered, reviewed and imported nothing" in text
+    assert "sealed-denylist.v2.json" in text and "registered, reviewed and imported nothing" in text
 
 
 def test_nothing_printed_imports_by_itself():

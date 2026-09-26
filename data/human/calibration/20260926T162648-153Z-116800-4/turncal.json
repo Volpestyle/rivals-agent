@@ -1,0 +1,196 @@
+{
+ "session": "20260926T162648-153Z-116800-4",
+ "video": "C:/Users/volpe/Videos/2026-09-26 11-26-48.mkv",
+ "method": "    python turncal.py plan SESSION OUT_DIR            inputs.jsonl only: the turns and the still windows around them     python turncal.py measure SESSION VIDEO OUT_DIR   decode (after the game and OBS close): rest-to-rest gain",
+ "snapshot": "code-snapshot-2ad0992",
+ "focal": 465.0,
+ "turns": [
+  {
+   "pre_still_s": [
+    3.849,
+    4.187
+   ],
+   "post_still_s": [
+    13.664,
+    14.691
+   ],
+   "pre_rest_s": 4.018,
+   "post_rest_s": 14.177,
+   "dx_counts": -10883,
+   "dy_counts": -18,
+   "revolutions": 1,
+   "moving_s": 9.477,
+   "mean_counts_per_s": 1148,
+   "nominal_excess_deg": -0.06,
+   "frames_ns": [
+    507886450734534,
+    507896609067461
+   ],
+   "dx_between_frames": -10884,
+   "excess_yaw_deg": 0.01992387319402061,
+   "excess_pitch_deg": 0.7237203596531943,
+   "inliers": 820,
+   "turn_deg": 359.98007612680595,
+   "yaw_deg_per_count": 0.03307424440709353,
+   "counts_per_360": 10884.602398438761,
+   "vs_calibration_pct": 0.0013436831979518615,
+   "tolerance_pct": 0.08,
+   "within": true
+  },
+  {
+   "pre_still_s": [
+    13.664,
+    14.691
+   ],
+   "post_still_s": [
+    19.837,
+    21.045
+   ],
+   "pre_rest_s": 14.177,
+   "post_rest_s": 20.441,
+   "dx_counts": -10866,
+   "dy_counts": 5,
+   "revolutions": 1,
+   "moving_s": 5.146,
+   "mean_counts_per_s": 2111,
+   "nominal_excess_deg": -0.62,
+   "frames_ns": [
+    507896609067461,
+    507902875733877
+   ],
+   "dx_between_frames": -10865,
+   "excess_yaw_deg": 0.6754756270504185,
+   "excess_pitch_deg": -0.2391365521521555,
+   "inliers": 783,
+   "turn_deg": 359.32452437294955,
+   "yaw_deg_per_count": 0.03307174637578919,
+   "counts_per_360": 10885.424552709588,
+   "vs_calibration_pct": -0.006209217600672279,
+   "tolerance_pct": 0.08,
+   "within": true
+  },
+  {
+   "pre_still_s": [
+    19.837,
+    21.045
+   ],
+   "post_still_s": [
+    23.739,
+    26.594
+   ],
+   "pre_rest_s": 20.441,
+   "post_rest_s": 25.166,
+   "dx_counts": -10914,
+   "dy_counts": 39,
+   "revolutions": 1,
+   "moving_s": 2.694,
+   "mean_counts_per_s": 4051,
+   "nominal_excess_deg": 0.97,
+   "frames_ns": [
+    507902875733877,
+    507907600733688
+   ],
+   "dx_between_frames": -10915,
+   "excess_yaw_deg": -1.1395844392132282,
+   "excess_pitch_deg": -1.647724753507146,
+   "inliers": 549,
+   "turn_deg": 361.13958443921325,
+   "yaw_deg_per_count": 0.033086540031077714,
+   "counts_per_360": 10880.557461186849,
+   "vs_calibration_pct": 0.03852001003123995,
+   "tolerance_pct": 0.08,
+   "within": true
+  }
+ ],
+ "controls": [
+  {
+   "pre_still_s": [
+    1.713,
+    2.817
+   ],
+   "rests_s": [
+    2.044,
+    2.486
+   ],
+   "yaw_deg": 0.0013593925182784376,
+   "pitch_deg": -0.0014367266829765782,
+   "inliers": 1341,
+   "dx": 0
+  },
+  {
+   "pre_still_s": [
+    13.664,
+    14.691
+   ],
+   "rests_s": [
+    13.972,
+    14.383
+   ],
+   "yaw_deg": 0.0009588258925355872,
+   "pitch_deg": 0.00048006654343250605,
+   "inliers": 1339,
+   "dx": 0
+  },
+  {
+   "pre_still_s": [
+    19.837,
+    21.045
+   ],
+   "rests_s": [
+    20.2,
+    20.683
+   ],
+   "yaw_deg": -0.00016206043236306967,
+   "pitch_deg": -0.0009603551561173373,
+   "inliers": 1327,
+   "dx": 0
+  },
+  {
+   "pre_still_s": [
+    23.739,
+    26.594
+   ],
+   "rests_s": [
+    24.595,
+    25.738
+   ],
+   "yaw_deg": 0.001162384183533848,
+   "pitch_deg": 7.071856137897583e-05,
+   "inliers": 1279,
+   "dx": 0
+  },
+  {
+   "pre_still_s": [
+    27.617,
+    28.62
+   ],
+   "rests_s": [
+    27.918,
+    28.319
+   ],
+   "yaw_deg": -0.1338518671760068,
+   "pitch_deg": -0.09025279050763427,
+   "inliers": 70,
+   "dx": 0
+  },
+  {
+   "pre_still_s": [
+    36.411,
+    37.556
+   ],
+   "rests_s": [
+    36.755,
+    37.213
+   ],
+   "yaw_deg": 0.037881337595921626,
+   "pitch_deg": 0.031190884788679405,
+   "inliers": 276,
+   "dx": 0
+  }
+ ],
+ "calibration_gain": 0.0330738,
+ "mean_gain": 0.033077510271320144,
+ "mean_vs_calibration_pct": 0.011218158542836143,
+ "all_within": true,
+ "controls_ok": false
+}

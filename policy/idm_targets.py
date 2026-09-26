@@ -90,8 +90,8 @@ DECLARED_UNSUPPORTED = {}
 # effect (the icon turns gold, hp 250 -> 300, a 10 s cooldown); the replay HUD reads 22 team-up events on DayMR.
 # Its match-time effect (with a partner hero) differs from the range's; a match label inherits that caveat.
 FIT_SPLITS = ("train", "val")
-DENYLIST = ROOT / "data" / "human" / "sealed-denylist.json"
-DENYLIST_SHA256 = "57cfe01f29f6e1a55293f968ec697aa293c268bd87d7cf247ef648279e2fba7c"   # the intake's pin (review I3)
+DENYLIST = ROOT / "data" / "human" / "sealed-denylist.v2.json"
+DENYLIST_SHA256 = "439c80df6cd5d6daa60b48e0acb2d3a3fa833134ff14edddc4121348c2dceb20"   # the intake's pin (review I3)
 # The calibration turn (data/human/calibration/20260923T204707-487Z-45572-2/calibration.json): 10,884.76 counts per
 # 360 degrees over 11.9 s, speeds ~200-1,400 counts/s. Up to its top speed the gain is measured; above it, not.
 CALIBRATION_RATE_CPS = 915.0

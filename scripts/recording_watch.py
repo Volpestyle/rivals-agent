@@ -55,7 +55,7 @@ def next_steps(sid):
     return (f"  next, by the admission lane (this script has registered, reviewed and imported nothing):\n"
             f"    1. register {sid} in data/human/session-splits.corpus.json: its group, and the split from\n"
             f"       agent.human_intake.assign_split, fixed before inspection. A validation take goes on\n"
-            f"       data/human/sealed-denylist.json first.\n"
+            f"       data/human/sealed-denylist.v2.json first.\n"
             f"    2. intake, in data/human/sessions/, one step at a time and in this order:\n{steps}\n"
             f"    3. the independent per-session review of {sid}/segments-evidence.json: a verdict record\n"
             f"    4. python assemble_session.py {sid} --independent-verdicts <PATH> --snapshot <code-snapshot-XXXXXXX>")

@@ -1521,3 +1521,46 @@ min.
 - **The three from the first landing:** clean, apart from 203745's known round, which sits inside its cut.
 - **The seven earlier sessions:** 0 TIMED PRACTICE frames; the highest score is 0.468.
 - **Coverage:** no round lies in any admitted accepted span, down to about a 1 s round.
+
+
+## 2026-09-26: the test take sealed (denylist v2); gate2 pair 2; the left-turn calibration
+
+**The sealed denylist, version 2** (`data/human/sealed-denylist.v2.json`, LF `aab214eb`).
+- **What it adds:** it is a strict superset of v1. 053616 first, unchanged, then:
+  - the 2026-09-26 test take, `20260926T153835-237Z-111496-2` (`2026-09-26 10-38-35.mkv`, `58ddc1de…`);
+  - the session held with it, `20260926T153812-936Z-111496-1`. The OBS log shows it wrote `2026-09-26 10-38-12.mkv`
+    (10:38:13–10:38:24), which James deleted. It was hashed from its Recycle Bin copy (`1dcf54c0…`), bytes only, with
+    no restore or move (lead decision, option A).
+- **Why v1 stays:** v1 (`sealed-denylist.json`, `57cfe01f`) is byte-identical, because every admitted session's freeze
+  pins it by path and sha256. All 11 freezes still verify.
+- **Consumers re-pinned to v2:**
+  - `policy/idm_targets.py`, `policy/range_bc/steps.py` and `scripts/transcode_recording.py`;
+  - intake's `assemble_session.py`, `intake_session.py`, `relocate_session.py` and `tally.py`.
+- **Neither logger folder was opened.** Both media files were hashed only after `obs64` and every `Marvel*` process had
+  closed.
+
+**Registered on 2026-09-26 at 11:32, before inspection:**
+- **Gate 2 pair 2:** `gate2-20260925-hall-of-djalia-1949`, sealed.
+  - The live half is the whole of 19-28-51 (Thebes 19:36 and Hall of Djalia 19:49), moved out of `match_dev`.
+  - The replay half is 10-57-37. There is no FOV pair (James: not done; unsure the game has an FOV option).
+- **The Heart of Heaven replay** 11-10-08, as `reader_development` (evaluation-only), paired with 20-06-20.
+- **The left-turn calibration** 11-26-48.
+- **Not registered:** 162623, a 13 s Alt+Tab false start whose video is in the Recycle Bin.
+- **The tally is unchanged:** train 180.57, val 15.58.
+
+**Left-turn calibration** (`20260926T162648-153Z-116800-4`; `data/human/calibration/…/calibration.json` `3ba8e40c`).
+- **Turns:** three leftward 360° turns (1.1k, 2.1k and 4.1k counts/s), still-to-still, the 030045 method.
+- **Result:** +0.001 %, −0.006 % and +0.039 %; mean +0.011 %. All within the scripted ±0.08 %, so **the yaw gain is
+  direction-symmetric**.
+- **Controls:** the four around the turns read ≤ 0.0014°. `controls_ok` is false because of one pitch-sweep control
+  (27.6 s, 70 inliers, −0.134°). The other (36.4 s, 276 inliers, +0.038°) passes the 0.05° rule (review F1 corrected
+  this: I first said both failed).
+
+**Review B1/B2 (review-admission-test-take-20260926.md `77426ee7`): sealed membership is the denylist's.**
+- **v2 rows carry `allowed_split`:** test for the test identities (absent on v1's row means test) and `gate2` with
+  their `session_group` for gate2 pairs 1 and 2, which are now in v2 too. v2 LF is `439c80df`.
+- **`human_intake.check_registry`** checks `sessions`, `calibration_sessions` and `evaluation_sessions` (B1). A row that
+  names a sealed identity by id, media path or media sha256 must be in `sessions`, with exactly its allowed split and,
+  for gate2, its pair (B2).
+- **`hi.tally`** allows `sealed` rows in test or gate2, so the four gate2 recordings are `sealed` in the tally.
+- **Tests:** `tests/test_sealed_denylist_v2.py`. With the guard removed, all 127 refusal tests fail.

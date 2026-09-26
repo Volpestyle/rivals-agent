@@ -1,0 +1,126 @@
+{
+ "format": "rivals-calibration-v1",
+ "session": "20260926T162648-153Z-116800-4",
+ "account": "campaign (alt)",
+ "media": {
+  "path": "C:/Users/volpe/Videos/2026-09-26 11-26-48.mkv",
+  "sha256": "764f3fbce3cdb1eee8fbbcfe16f06e132c302b38cd7d5f06e3349fc9aeb72923",
+  "bytes": 347414289
+ },
+ "purpose": "leftward yaw calibration (lead 2026-09-26): the left-turn replicate the 030045 record asked for (its turns were all rightward)",
+ "take": "three leftward 360 degree turns (slow, medium, fast; still views between), then pitch sweeps (James: three sweeps; strokes.txt shows eight alternating strokes); no key presses before the closing Alt",
+ "method": "030045's still-to-still turn method (turncal.py; code-snapshot-2ad0992 Estimator); for a leftward turn, degrees = 360 - estimator yaw (yaw is positive to the right)",
+ "turns": [
+  {
+   "mean_counts_per_s": 1148,
+   "dx_between_frames": -10884,
+   "excess_yaw_deg": 0.01992387319402061,
+   "excess_pitch_deg": 0.7237203596531943,
+   "inliers": 820,
+   "counts_per_360": 10884.602398438761,
+   "yaw_deg_per_count": 0.03307424440709353,
+   "vs_calibration_pct": 0.0013436831979518615,
+   "tolerance_pct": 0.08,
+   "within": true
+  },
+  {
+   "mean_counts_per_s": 2111,
+   "dx_between_frames": -10865,
+   "excess_yaw_deg": 0.6754756270504185,
+   "excess_pitch_deg": -0.2391365521521555,
+   "inliers": 783,
+   "counts_per_360": 10885.424552709588,
+   "yaw_deg_per_count": 0.03307174637578919,
+   "vs_calibration_pct": -0.006209217600672279,
+   "tolerance_pct": 0.08,
+   "within": true
+  },
+  {
+   "mean_counts_per_s": 4051,
+   "dx_between_frames": -10915,
+   "excess_yaw_deg": -1.1395844392132282,
+   "excess_pitch_deg": -1.647724753507146,
+   "inliers": 549,
+   "counts_per_360": 10880.557461186849,
+   "yaw_deg_per_count": 0.033086540031077714,
+   "vs_calibration_pct": 0.03852001003123995,
+   "tolerance_pct": 0.08,
+   "within": true
+  }
+ ],
+ "mean_gain": 0.033077510271320144,
+ "mean_vs_calibration_pct": 0.011218158542836143,
+ "calibration_gain": 0.0330738,
+ "all_within": true,
+ "controls": [
+  {
+   "pre_still_s": [
+    1.713,
+    2.817
+   ],
+   "yaw_deg": 0.0013593925182784376,
+   "pitch_deg": -0.0014367266829765782,
+   "inliers": 1341,
+   "dx": 0
+  },
+  {
+   "pre_still_s": [
+    13.664,
+    14.691
+   ],
+   "yaw_deg": 0.0009588258925355872,
+   "pitch_deg": 0.00048006654343250605,
+   "inliers": 1339,
+   "dx": 0
+  },
+  {
+   "pre_still_s": [
+    19.837,
+    21.045
+   ],
+   "yaw_deg": -0.00016206043236306967,
+   "pitch_deg": -0.0009603551561173373,
+   "inliers": 1327,
+   "dx": 0
+  },
+  {
+   "pre_still_s": [
+    23.739,
+    26.594
+   ],
+   "yaw_deg": 0.001162384183533848,
+   "pitch_deg": 7.071856137897583e-05,
+   "inliers": 1279,
+   "dx": 0
+  },
+  {
+   "pre_still_s": [
+    27.617,
+    28.62
+   ],
+   "yaw_deg": -0.1338518671760068,
+   "pitch_deg": -0.09025279050763427,
+   "inliers": 70,
+   "dx": 0
+  },
+  {
+   "pre_still_s": [
+    36.411,
+    37.556
+   ],
+   "yaw_deg": 0.037881337595921626,
+   "pitch_deg": 0.031190884788679405,
+   "inliers": 276,
+   "dx": 0
+  }
+ ],
+ "controls_note": "controls_ok is False because of one control: inside the pitch sweeps at 27.6 s (a pitched view, 70 inliers) it reads -0.134 deg, beyond the script's 0.05 deg rule. The other pitch-sweep control (36.4 s, 276 inliers) reads +0.038 deg and passes. The four controls bracketing the yaw turns read at most 0.0014 deg on 1,279-1,341 inliers (review F1 corrected this note: an earlier version said both pitch-sweep controls failed)",
+ "result": "leftward gain equals the calibration at every speed within the scripted +-0.08 % (slow +0.001 %, medium -0.006 %, fast +0.039 %, mean +0.011 %): the yaw gain is direction-symmetric",
+ "files": {
+  "turncal.py": "a3dbf412e5f4098958a2e1b3eec82e1c07731f422372380dd47e5bd84a199993",
+  "plan.json": "c54e6201b0b368d79e988e621eeaa8a2eb0b4188c7b264ee4b41a35ed38d03e6",
+  "turncal.json": "beea4e04a2318be49d7fb97c37bdcbe27eb69f827ec4d71fdaf86f0848cb2d11",
+  "strokes.txt": "57a343cd78dfdb5d987b950c8b1a5c20037c0e7c3ef2fdfdd9983b0b6d491363"
+ },
+ "never_a_split": true
+}

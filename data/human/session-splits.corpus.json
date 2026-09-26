@@ -223,6 +223,66 @@
    "registered_at": "2026-09-26",
    "codec": "hevc",
    "note": "first registered 2026-09-26 00:09 CDT as evaluation-only (kind match / replay_of_self), moved to gate2 at the lead's correction; the decode-free inventory (logger check, first 16 packet headers, input-log profile, media sha256) ran in between; no frame has been decoded"
+  },
+  {
+   "session_id": "20260926T002851-659Z-63684-3",
+   "session_group": "gate2-20260925-hall-of-djalia-1949",
+   "split": "gate2",
+   "video_path": "C:/Users/volpe/Videos/2026-09-25 19-28-51.mkv",
+   "recorded_video_path": "C:/Users/volpe/Videos/2026-09-25 19-28-51.mkv",
+   "expected_media_sha256": "9661b0895cbc839f2257302e4ca4e70624316b4270f1d2b9c6dfeb889922c7fa",
+   "split_basis": "lead 2026-09-26 11:31 CDT (docs/lanes/inverse-dynamics.md, Gate 2 protocol: replay-of-self): a match's live and replay recordings are one session group, registered as its own gate2 split before anyone looks at it; every fit path refuses it, as it refuses test",
+   "sealed": true,
+   "role": "live match, alt account: two quick matches, Thebes (ended 19:36) and Hall of Djalia (ended 19:49, the pair's match); the whole file is sealed, both matches (lead: Thebes was held in reserve and unused)",
+   "sitting": "2026-09-25-evening",
+   "obs_process": 63684,
+   "registered_at": "2026-09-26",
+   "codec": "hevc",
+   "note": "moved from evaluation_sessions (match_dev) to gate2 on 2026-09-26; registered there from name, size, id and the map file only; the lead checked no lane has read it"
+  },
+  {
+   "session_id": "20260926T155737-285Z-116800-1",
+   "session_group": "gate2-20260925-hall-of-djalia-1949",
+   "split": "gate2",
+   "video_path": "C:/Users/volpe/Videos/2026-09-26 10-57-37.mkv",
+   "recorded_video_path": "C:/Users/volpe/Videos/2026-09-26 10-57-37.mkv",
+   "expected_media_sha256": "29f1a48f80a2f8c16c1d6d9690a62f82de63d154f7eea573b878edf26e1ea073",
+   "split_basis": "lead 2026-09-26 11:31 CDT (docs/lanes/inverse-dynamics.md, Gate 2 protocol: replay-of-self): a match's live and replay recordings are one session group, registered as its own gate2 split before anyone looks at it; every fit path refuses it, as it refuses test",
+   "sealed": true,
+   "role": "its first-person 1x in-game replay of Hall of Djalia 19:49, recorded by James 10:57:37-11:09:36",
+   "sitting": "2026-09-26-morning",
+   "obs_process": 116800,
+   "registered_at": "2026-09-26",
+   "codec": "hevc",
+   "note": "registered before inspection, from name, size and id only"
+  },
+  {
+   "session_id": "20260926T153835-237Z-111496-2",
+   "session_group": "20260926T153835-237Z-111496-2",
+   "split": "test",
+   "video_path": "C:/Users/volpe/Videos/2026-09-26 10-38-35.mkv",
+   "recorded_video_path": "C:/Users/volpe/Videos/2026-09-26 10-38-35.mkv",
+   "expected_media_sha256": "58ddc1de73e0bcfbbe3e21076c0edc7d54c3345edd48942386ae723f4fe76310",
+   "split_basis": "James 2026-09-26 (chat 10:55 CDT: \"one test take in, 16 mins\"); lead registered it sealed test before any inspection (recording log de0b331); sealed by the denylist (sealed-denylist.v2.json)",
+   "sealed": true,
+   "sitting": "2026-09-26-morning",
+   "obs_process": 111496,
+   "registered_at": "2026-09-26",
+   "codec": "hevc"
+  },
+  {
+   "session_id": "20260926T153812-936Z-111496-1",
+   "session_group": "20260926T153812-936Z-111496-1",
+   "split": "test",
+   "video_path": "C:/Users/volpe/Videos/2026-09-26 10-38-12.mkv",
+   "recorded_video_path": "C:/Users/volpe/Videos/2026-09-26 10-38-12.mkv",
+   "expected_media_sha256": "1dcf54c00e8223b04a07e2c57bd3ab9d0b51dec0addad76a10b4ca22bb7f5a68",
+   "split_basis": "held with the 2026-09-26 test take (lead brief): a 23 s logger session from the same OBS process 23 s earlier; its 11 s video (per the OBS log) was deleted by James; sealed by the denylist (sealed-denylist.v2.json); its logger folder is never opened",
+   "sealed": true,
+   "sitting": "2026-09-26-morning",
+   "obs_process": 111496,
+   "registered_at": "2026-09-26",
+   "codec": "hevc"
   }
  ],
  "calibration_sessions": [
@@ -264,20 +324,24 @@
    "recorded_video_path": "C:/Users/volpe/Videos/2026-09-26 01-09-21.mkv",
    "expected_media_sha256": "becf4c8ca197d0803ad5129c135881c49f9243ddfd3f24ad8c96159b5438264b",
    "result": "data/human/calibration/20260926T060921-977Z-60612-1/calibration.json (df5107c1): yaw gain equal to the campaign calibration, mean +0.064 % (lead 2026-09-26)"
+  },
+  {
+   "session_id": "20260926T162648-153Z-116800-4",
+   "session_group": "20260926T162648-153Z-116800-4",
+   "role": "leftward yaw calibration (lead 2026-09-26): three leftward 360 degree turns, slow, medium and fast, then pitch sweeps; the left-turn replicate the 030045 record asked for",
+   "video_path": "C:/Users/volpe/Videos/2026-09-26 11-26-48.mkv",
+   "account": "campaign",
+   "sitting": "2026-09-26-morning",
+   "obs_process": 116800,
+   "codec": "hevc",
+   "registered_at": "2026-09-26",
+   "note": "not a training, validation or test session; never enters a split",
+   "recorded_video_path": "C:/Users/volpe/Videos/2026-09-26 11-26-48.mkv",
+   "expected_media_sha256": "764f3fbce3cdb1eee8fbbcfe16f06e132c302b38cd7d5f06e3349fc9aeb72923",
+   "result": "data/human/calibration/20260926T162648-153Z-116800-4/calibration.json (7c9c655e): leftward yaw gain equals the calibration, mean +0.011 %, all speeds within +-0.08 %"
   }
  ],
  "evaluation_sessions": [
-  {
-   "session_id": "20260926T002851-659Z-63684-3",
-   "session_group": "match_dev",
-   "kind": "match_dev",
-   "video_path": "C:/Users/volpe/Videos/2026-09-25 19-28-51.mkv",
-   "role": "Thebes 19:36 6:39 Victory; Hall of Djalia 19:49 10:40 Victory (two matches) (handoff/matches-0925.md)",
-   "account": "alt",
-   "registered_at": "2026-09-26",
-   "codec": "hevc",
-   "note": "evaluation-only: never a split, never trained on (lead 2026-09-26); registered from name, size, id and the map file only"
-  },
   {
    "session_id": "20260926T005304-628Z-63684-4",
    "session_group": "reader_validation",
@@ -354,6 +418,20 @@
    "registered_at": "2026-09-26",
    "codec": "hevc",
    "note": "evaluation-only: never a split, never trained on (lead 2026-09-26); registered from name, size, id and the map file only"
+  },
+  {
+   "session_id": "20260926T161008-331Z-116800-2",
+   "session_group": "reader_development",
+   "kind": "reader_development",
+   "video_path": "C:/Users/volpe/Videos/2026-09-26 11-10-08.mkv",
+   "role": "the in-game replay of the Heart of Heaven match (20-06-20, session 20260926T010620-721Z-63684-5); its tail runs long because James stepped away (lead 2026-09-26)",
+   "pair": "20260926T010620-721Z-63684-5",
+   "account": "alt",
+   "registered_at": "2026-09-26",
+   "codec": "hevc",
+   "note": "evaluation-only: never a split, never trained on; for scoreboard-fix's reader development (lead 2026-09-26); registered from name, size and id only",
+   "recorded_video_path": "C:/Users/volpe/Videos/2026-09-26 11-10-08.mkv",
+   "expected_media_sha256": "4c74f388be47e44c53002005edb548cd41aa7308ecf50ac39a34625862817e7e"
   }
  ]
 }

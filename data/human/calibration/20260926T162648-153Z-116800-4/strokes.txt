@@ -1,0 +1,14 @@
+yaw
+    4.15- 13.40 ( 9.25 s, moving  9.20) net  -10890 off   433 mean   1184/s median   1250/s peak   1880/s nominal  360.2 deg presses []
+   14.70- 19.60 ( 4.90 s, moving  4.85) net  -10876 off   493 mean   2242/s median   2500/s peak   3680/s nominal  359.7 deg presses []
+   21.05- 23.40 ( 2.35 s, moving  2.15) net  -10913 off   500 mean   5076/s median   4960/s peak  10150/s nominal  360.9 deg presses []
+pitch
+   26.60- 27.65 ( 1.05 s, moving  1.00) net   -1895 off   245 mean   1895/s median   2090/s peak   3190/s nominal   62.7 deg presses []
+   28.70- 32.70 ( 4.00 s, moving  4.00) net    4572 off   313 mean   1143/s median   1080/s peak   1900/s nominal  151.2 deg presses []
+   32.75- 36.00 ( 3.25 s, moving  3.25) net   -4597 off   360 mean   1414/s median   1440/s peak   2370/s nominal  152.0 deg presses []
+   37.70- 39.25 ( 1.55 s, moving  1.55) net    5063 off   370 mean   3266/s median   3660/s peak   4500/s nominal  167.5 deg presses []
+   39.25- 40.90 ( 1.65 s, moving  1.65) net   -4966 off   583 mean   3010/s median   3540/s peak   5120/s nominal  164.2 deg presses []
+   41.70- 42.45 ( 0.75 s, moving  0.75) net    4831 off   282 mean   6441/s median   7920/s peak   9770/s nominal  159.8 deg presses []
+   42.45- 43.30 ( 0.85 s, moving  0.85) net   -4915 off   579 mean   5782/s median   6180/s peak   9640/s nominal  162.6 deg presses []
+   44.55- 45.50 ( 0.95 s, moving  0.95) net    2644 off   120 mean   2783/s median   3300/s peak   4330/s nominal   87.4 deg presses []
+presses [(46.264193, 18), (46.7772616, 18)] focus [(0.0029494, False), (0.8219571, True), (46.7930275, False)]

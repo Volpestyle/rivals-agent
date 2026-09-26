@@ -106,9 +106,10 @@ EXPERT_CONTEXT = ("player", "match_id", "viewer_fov_assumption", "replay_source"
 HEADER_KEYS = ("format", "session_id", "media_sha256", "session_group", "sitting", "split", "step_ns",
                "frame_period_ns", "actions", "bindings", "calibration", "accel_on", "hud_layout", "swing_mode",
                "video_size", "device_scope", "injected_events", "settings_hash", "patch")
-DENYLIST = "data/human/sealed-denylist.json"
-# The pinned sha256 of intake's denylist as of 2026-09-23 (053616 only). A changed file needs a new pin, passed with it.
-DENYLIST_SHA256 = "57cfe01f29f6e1a55293f968ec697aa293c268bd87d7cf247ef648279e2fba7c"
+DENYLIST = "data/human/sealed-denylist.v2.json"
+# The pinned sha256 of intake's denylist v2 (2026-09-26: 053616 and the 2026-09-26 test take). A changed file needs a
+# new pin, passed with it. v1 (sealed-denylist.json, 57cfe01f) stays byte-identical: the admitted freezes pin it.
+DENYLIST_SHA256 = "439c80df6cd5d6daa60b48e0acb2d3a3fa833134ff14edddc4121348c2dceb20"
 # Game builds grouped by kit version (lead decision 2026-09-24; docs/lanes/end-to-end-fit-patch-equivalence.md). A human
 # cohort compares the kit version its builds map to, never the raw build; a build the file does not name is refused.
 # Pinned like the denylist (LF-normalised sha256); a changed file needs a new pin.

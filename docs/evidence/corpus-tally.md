@@ -27,21 +27,28 @@ Minutes are **counted minutes**: focused logged time ∩ accepted segments ∩ g
 | 20260925T212626-543Z-49728-5 | 2026-09-25 | - | - | not_range: OBS false start (4-15 s) before a take; James deleted the video; not a session | - | - | - | - | - | - | - | - |
 | 20260925T212646-322Z-49728-6 | 2026-09-25 | 20260925T212646-322Z-49728-6 | val | admitted: assembled: review.json from the owner and independent verdicts, imported, steps file frozen | normal | 15.74 | 15.58 | 15.58 | 0.16 | 0.00 | range: unknown 15.6; approach: unknown 15.6; target: unknown 15.6; resources: unknown 15.6 | `415b1b8bc95a` |
 | 20260925T234952-361Z-63684-1 | 2026-09-25 | - | - | pending: logger folder without a video; not opened | - | - | - | - | - | - | - | - |
-| 20260926T002109-428Z-63684-2 | 2026-09-25 | gate2-20260925-central-park-1928 | gate2 | not_range: gate2 (sealed): the live match of the replay-of-self pair (Central Park, 19:28) | - | - | - | - | - | - | - | - |
-| 20260926T002851-659Z-63684-3 | 2026-09-25 | - | - | not_range: match_dev: evaluation-only match recording, never trained on (handoff/matches-0925.md) | - | - | - | - | - | - | - | - |
-| 20260926T005304-628Z-63684-4 | 2026-09-25 | - | - | not_range: match_dev: evaluation-only match recording, never trained on (handoff/matches-0925.md) | - | - | - | - | - | - | - | - |
-| 20260926T010620-721Z-63684-5 | 2026-09-25 | - | - | not_range: match_dev: evaluation-only match recording, never trained on (handoff/matches-0925.md) | - | - | - | - | - | - | - | - |
-| 20260926T012552-291Z-63684-6 | 2026-09-25 | - | - | not_range: match_dev: evaluation-only match recording, never trained on (handoff/matches-0925.md) | - | - | - | - | - | - | - | - |
-| 20260926T013711-125Z-63684-7 | 2026-09-25 | - | - | not_range: match_dev: evaluation-only match recording, never trained on (handoff/matches-0925.md) | - | - | - | - | - | - | - | - |
-| 20260926T015610-960Z-63684-8 | 2026-09-25 | - | - | not_range: match_dev: evaluation-only match recording, never trained on (handoff/matches-0925.md) | - | - | - | - | - | - | - | - |
-| 20260926T021321-378Z-63684-9 | 2026-09-25 | - | - | not_range: match_dev: evaluation-only match recording, never trained on (handoff/matches-0925.md) | - | - | - | - | - | - | - | - |
+| 20260926T002109-428Z-63684-2 | 2026-09-25 | gate2-20260925-central-park-1928 | gate2 | sealed: gate2 pair 1 (sealed): the live match (Central Park, 19:28); never read | - | - | - | - | - | - | - | - |
+| 20260926T002851-659Z-63684-3 | 2026-09-25 | gate2-20260925-hall-of-djalia-1949 | gate2 | sealed: gate2 pair 2 (sealed): the live half (Thebes 19:36 and Hall of Djalia 19:49; the whole file); never read | - | - | - | - | - | - | - | - |
+| 20260926T005304-628Z-63684-4 | 2026-09-25 | - | - | not_range: evaluation-only match recording (reader_validation, reader_development or match_dev), never trained on (handoff/matches-0925.md) | - | - | - | - | - | - | - | - |
+| 20260926T010620-721Z-63684-5 | 2026-09-25 | - | - | not_range: evaluation-only match recording (reader_validation, reader_development or match_dev), never trained on (handoff/matches-0925.md) | - | - | - | - | - | - | - | - |
+| 20260926T012552-291Z-63684-6 | 2026-09-25 | - | - | not_range: evaluation-only match recording (reader_validation, reader_development or match_dev), never trained on (handoff/matches-0925.md) | - | - | - | - | - | - | - | - |
+| 20260926T013711-125Z-63684-7 | 2026-09-25 | - | - | not_range: evaluation-only match recording (reader_validation, reader_development or match_dev), never trained on (handoff/matches-0925.md) | - | - | - | - | - | - | - | - |
+| 20260926T015610-960Z-63684-8 | 2026-09-25 | - | - | not_range: evaluation-only match recording (reader_validation, reader_development or match_dev), never trained on (handoff/matches-0925.md) | - | - | - | - | - | - | - | - |
+| 20260926T021321-378Z-63684-9 | 2026-09-25 | - | - | not_range: evaluation-only match recording (reader_validation, reader_development or match_dev), never trained on (handoff/matches-0925.md) | - | - | - | - | - | - | - | - |
 | 20260926T022734-732Z-63684-10 | 2026-09-25 | - | - | pending: logger folder without a video; not opened | - | - | - | - | - | - | - | - |
 | 20260926T031019-828Z-63684-11 | 2026-09-25 | - | - | pending: logger folder without a video; not opened | - | - | - | - | - | - | - | - |
 | 20260926T033121-111Z-63684-12 | 2026-09-25 | - | - | pending: logger folder without a video; not opened | - | - | - | - | - | - | - | - |
-| 20260926T034805-307Z-63684-13 | 2026-09-25 | - | - | not_range: match_dev: evaluation-only match recording, never trained on (handoff/matches-0925.md) | - | - | - | - | - | - | - | - |
+| 20260926T034805-307Z-63684-13 | 2026-09-25 | - | - | not_range: evaluation-only match recording (reader_validation, reader_development or match_dev), never trained on (handoff/matches-0925.md) | - | - | - | - | - | - | - | - |
 | 20260926T035932-508Z-63684-14 | 2026-09-25 | 20260926T035932-508Z-63684-14 | train | admitted: assembled: review.json from the owner and independent verdicts, imported, steps file frozen | normal | 30.57 | 30.15 | 30.15 | 0.42 | 0.00 | range: unknown 30.2; approach: unknown 30.2; target: unknown 30.2; resources: unknown 30.2 | `2184320220d3` |
-| 20260926T044958-507Z-63684-15 | 2026-09-25 | gate2-20260925-central-park-1928 | gate2 | not_range: gate2 (sealed): the replay of the 19:28 Central Park match | - | - | - | - | - | - | - | - |
+| 20260926T044958-507Z-63684-15 | 2026-09-25 | gate2-20260925-central-park-1928 | gate2 | sealed: gate2 pair 1 (sealed): its replay; never read | - | - | - | - | - | - | - | - |
 | 20260926T045729-166Z-79780-1 | 2026-09-25 | 20260926T045729-166Z-79780-1 | train | admitted: assembled: review.json from the owner and independent verdicts, imported, steps file frozen | normal | 10.34 | 10.26 | 10.26 | 0.08 | 0.00 | range: unknown 10.3; approach: unknown 10.3; target: unknown 10.3; resources: unknown 10.3 | `596883a2bbe7` |
+| 20260926T060921-977Z-60612-1 | 2026-09-26 | - | - | not_range: main-account yaw calibration take (calibration_sessions); never a split | - | - | - | - | - | - | - | - |
+| 20260926T153812-936Z-111496-1 | 2026-09-26 | 20260926T153812-936Z-111496-1 | test | sealed: held with the 2026-09-26 test take (23 s, same OBS process); never read | - | - | - | - | - | - | - | - |
+| 20260926T153835-237Z-111496-2 | 2026-09-26 | 20260926T153835-237Z-111496-2 | test | sealed: test take 2026-09-26 (James, 16 min); never read | - | - | - | - | - | - | - | - |
+| 20260926T155737-285Z-116800-1 | 2026-09-26 | gate2-20260925-hall-of-djalia-1949 | gate2 | sealed: gate2 pair 2 (sealed): the Hall of Djalia replay; never read | - | - | - | - | - | - | - | - |
+| 20260926T161008-331Z-116800-2 | 2026-09-26 | - | - | not_range: reader_development: the replay of the Heart of Heaven match (20-06-20), never trained on | - | - | - | - | - | - | - | - |
+| 20260926T162623-219Z-116800-3 | 2026-09-26 | - | - | not_range: OBS false start (13 s, Alt+Tab only); James deleted the video; not a session | - | - | - | - | - | - | - | - |
+| 20260926T162648-153Z-116800-4 | 2026-09-26 | - | - | not_range: leftward yaw calibration take (calibration_sessions); never a split | - | - | - | - | - | - | - | - |
 
 **normal, train: 180.57 admitted / 180.56 trainable of 180 minutes** (0.00 to go, 10 sessions).
 normal, val: 15.58 admitted / 15.58 trainable minutes.

@@ -16,8 +16,8 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
-DENYLIST = ROOT / "data/human/sealed-denylist.json"
-DENYLIST_SHA256 = "57cfe01f29f6e1a55293f968ec697aa293c268bd87d7cf247ef648279e2fba7c"   # pinned (review I3)
+DENYLIST = ROOT / "data/human/sealed-denylist.v2.json"
+DENYLIST_SHA256 = "439c80df6cd5d6daa60b48e0acb2d3a3fa833134ff14edddc4121348c2dceb20"   # pinned (review I3)
 REGISTRY = ROOT / "data/human/session-splits.corpus.json"
 RAW = Path("C:/Users/volpe/Videos/RivalsInput")
 

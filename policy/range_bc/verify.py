@@ -195,7 +195,7 @@ def main(argv=None):
     p.add_argument("--steps", nargs="+", required=True)
     p.add_argument("--cache-root", required=True)
     p.add_argument("--report-sha256", required=True, help="recorded out of band (review L7)")
-    p.add_argument("--sealed-denylist", default=None, help="default: the fit's pinned data/human/sealed-denylist.json")
+    p.add_argument("--sealed-denylist", default=None, help="default: the fit's pinned data/human/sealed-denylist.v2.json")
     p.add_argument("--sealed-denylist-sha256", default=None)
     p.add_argument("--patch-equivalence", default=None, help="default: the fit's pinned data/human/patch-equivalence.json")
     p.add_argument("--patch-equivalence-sha256", default=None)

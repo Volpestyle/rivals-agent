@@ -27,7 +27,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
 OUT_MD = ROOT / "docs/evidence/corpus-tally.md"
 OUT_JSON = HERE / "tally.json"
-DENYLIST_SHA256 = "57cfe01f29f6e1a55293f968ec697aa293c268bd87d7cf247ef648279e2fba7c"   # pinned (review I3)
+DENYLIST_SHA256 = "439c80df6cd5d6daa60b48e0acb2d3a3fa833134ff14edddc4121348c2dceb20"   # pinned (review I3)
 
 ROWS = [
     dict(session="20260922T032454-642Z-24328-1", date="2026-09-21", status="held",
@@ -51,13 +51,28 @@ ROWS = [
            reason="OBS false start (4-15 s) before a take; James deleted the video; not a session")
       for s in ("20260925T200851-935Z-49728-1", "20260925T212548-665Z-49728-3", "20260925T212615-212Z-49728-4",
                 "20260925T212626-543Z-49728-5")],
-    *[dict(session=s, date="2026-09-25", status="not_range", reason=reason) for s, reason in (
-        ("20260926T002109-428Z-63684-2", "gate2 (sealed): the live match of the replay-of-self pair (Central Park, 19:28)"),
-        ("20260926T044958-507Z-63684-15", "gate2 (sealed): the replay of the 19:28 Central Park match"),
-        *[(m, "match_dev: evaluation-only match recording, never trained on (handoff/matches-0925.md)") for m in (
-            "20260926T002851-659Z-63684-3", "20260926T005304-628Z-63684-4", "20260926T010620-721Z-63684-5",
-            "20260926T012552-291Z-63684-6", "20260926T013711-125Z-63684-7", "20260926T015610-960Z-63684-8",
-            "20260926T021321-378Z-63684-9", "20260926T034805-307Z-63684-13")])],
+    *[dict(session=m, date="2026-09-25", status="not_range",
+           reason="evaluation-only match recording (reader_validation, reader_development or match_dev), never trained on "
+                  "(handoff/matches-0925.md)")
+      for m in ("20260926T005304-628Z-63684-4", "20260926T010620-721Z-63684-5", "20260926T012552-291Z-63684-6",
+                "20260926T013711-125Z-63684-7", "20260926T015610-960Z-63684-8", "20260926T021321-378Z-63684-9",
+                "20260926T034805-307Z-63684-13")],
+    *[dict(session=s, date="2026-09-26", status="not_range", reason=reason) for s, reason in (
+        ("20260926T161008-331Z-116800-2", "reader_development: the replay of the Heart of Heaven match (20-06-20), never "
+                                          "trained on"),
+        ("20260926T162648-153Z-116800-4", "leftward yaw calibration take (calibration_sessions); never a split"),
+        ("20260926T162623-219Z-116800-3", "OBS false start (13 s, Alt+Tab only); James deleted the video; not a session"),
+        ("20260926T060921-977Z-60612-1", "main-account yaw calibration take (calibration_sessions); never a split"),
+    )],
+    *[dict(session=s, date=d, status="sealed", reason=reason) for s, d, reason in (
+        ("20260926T002109-428Z-63684-2", "2026-09-25", "gate2 pair 1 (sealed): the live match (Central Park, 19:28); never read"),
+        ("20260926T044958-507Z-63684-15", "2026-09-25", "gate2 pair 1 (sealed): its replay; never read"),
+        ("20260926T002851-659Z-63684-3", "2026-09-25", "gate2 pair 2 (sealed): the live half (Thebes 19:36 and Hall of Djalia "
+                                                      "19:49; the whole file); never read"),
+        ("20260926T155737-285Z-116800-1", "2026-09-26", "gate2 pair 2 (sealed): the Hall of Djalia replay; never read"))],
+    *[dict(session=s, date="2026-09-26", status="sealed", reason=reason) for s, reason in (
+        ("20260926T153835-237Z-111496-2", "test take 2026-09-26 (James, 16 min); never read"),
+        ("20260926T153812-936Z-111496-1", "held with the 2026-09-26 test take (23 s, same OBS process); never read"))],
     *[dict(session=s, date="2026-09-25", status="pending", reason="logger folder without a video; not opened")
       for s in ("20260925T234952-361Z-63684-1", "20260926T022734-732Z-63684-10", "20260926T031019-828Z-63684-11",
                 "20260926T033121-111Z-63684-12")],
@@ -104,7 +119,7 @@ def main():
     args = ap.parse_args()
     sys.path.insert(0, str(HERE / args.snapshot))
     from agent import human_intake as hi
-    denylist = hi.load_denylist(ROOT / "data/human/sealed-denylist.json", sha256_pin=DENYLIST_SHA256)
+    denylist = hi.load_denylist(ROOT / "data/human/sealed-denylist.v2.json", sha256_pin=DENYLIST_SHA256)
     registry = hi.check_registry(ROOT / "data/human/session-splits.corpus.json", denylist=denylist)
     rows = [dict(r) for r in ROWS] + [admitted_row(hi, x) for x in ADMITTED]
     for r in rows:
@@ -113,7 +128,7 @@ def main():
     rows.sort(key=lambda r: r["session"])
     t = hi.tally(rows, denylist=denylist)
     t.update(registry={"path": "data/human/session-splits.corpus.json", "sha256": sha(ROOT / "data/human/session-splits.corpus.json")},
-             denylist={"path": "data/human/sealed-denylist.json", "sha256": sha(ROOT / "data/human/sealed-denylist.json")},
+             denylist={"path": "data/human/sealed-denylist.v2.json", "sha256": sha(ROOT / "data/human/sealed-denylist.v2.json")},
              snapshot=args.snapshot, counted_rule="focused logged time ∩ accepted segments ∩ gap-free runs >= 1.6 s")
     OUT_JSON.write_text(json.dumps(t, indent=1) + "\n", encoding="utf-8", newline="\n")
     head = ("# Corpus tally (whole-session intake, VUH-1359)\n\n"
