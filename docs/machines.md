@@ -19,6 +19,55 @@ The Mac's unified memory is useful for preparation and experiments; it is not
 a performance guarantee. `nice` changes CPU scheduling, not GPU priority: avoid
 overlapping training with another heavy Mac GPU workload.
 
+## Training job board
+
+Open <https://jamess-macbook-pro.tailb90f24.ts.net:9443/> while connected to the
+tailnet. `scripts/job_board.py` is a read-only Python stdlib server on
+`127.0.0.1:8766`; scans and the phone-friendly page refresh every 30 seconds.
+It reads shallow queue/status, exit, PID, log and report metadata in
+`~/dev/range-bc-data` and `~/dev/idm-data`, never frames, stores, checkpoints or
+sealed data. Evidence links serve metadata projections, not arbitrary files.
+Edit `docs/waiting-on-james.md` on the Mac to update the waiting list.
+
+The board distinguishes successful job exits from experiment PASS/FAIL. Missing
+judge outputs and incomplete gates stay undecided. Epoch logs are zero-based;
+the page shows completed epoch count. ETA, when supported by at least two measured
+epoch intervals and a known epoch budget, covers only the current arm/seed's
+training; evaluation and whole-job ETA remain unknown. PID reuse is reported as
+unconfirmed unless the process command also matches. Log creation time is labeled
+as such when an explicit start time is absent. The optional PC health probe is
+omitted to avoid a network dependency on page requests; unavailable Mac GPU
+counters are shown as unknown.
+
+The user LaunchAgent `~/Library/LaunchAgents/com.volpestyle.rivals-job-board.plist`
+runs `/usr/bin/python3` at nice 10, with `RunAtLoad` and `KeepAlive`. It restarts at
+James's login after reboot. Logs are `~/Library/Logs/rivals-job-board.{out,err}.log`.
+Historical judge JSON copied from the PC is under
+`~/Library/Application Support/rivals-job-board/evidence/{countermeasures,interim94}/`;
+these are snapshots, not recomputed results. New judge outputs under the live
+experiment directories are discovered on refresh. Startup arguments:
+
+```sh
+/usr/bin/python3 /Users/james/dev/rivals-agent/scripts/job_board.py \
+  --port 8766 --result-root '/Users/james/Library/Application Support/rivals-job-board/evidence'
+/Applications/Tailscale.app/Contents/MacOS/Tailscale serve --bg --https=9443 http://127.0.0.1:8766
+```
+
+To stop and remove only this service (leave other Serve routes alone):
+
+```sh
+/Applications/Tailscale.app/Contents/MacOS/Tailscale serve --https=9443 off
+launchctl bootout gui/$(id -u) ~/Library/LaunchAgents/com.volpestyle.rivals-job-board.plist
+rm ~/Library/LaunchAgents/com.volpestyle.rivals-job-board.plist
+```
+
+The two log files and the two copied historical judge JSON files above may then
+be removed individually. Training files and jobs are unchanged. Serve is tailnet
+only; do not enable Funnel. To restart after a stop without removing the plist,
+use `launchctl bootstrap gui/$(id -u)` with the same plist path and restore the
+single Serve command above. `--dump` emits a cached-status-shaped JSON snapshot
+without starting the HTTP server.
+
 ## Reach either machine
 
 Verified Windows-to-Mac SSH identity: `james`, Darwin arm64, Apple M5 Max,
