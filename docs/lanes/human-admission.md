@@ -1374,3 +1374,130 @@ SPACE + MouseScrollDown, are not in `BINDINGS`. The lead records them in the rec
   transition).
 - **232304's** is 323.243–323.260 s, inside rejected seg-004.
 - **Both are outside every accepted span,** which is what the importer checks.
+
+## 2026-09-25 (evening): the 2026-09-25 takes; the timed_practice cut; a second account
+
+**Registered before inspection.**
+- **212646** (16:26, 15.9 min) is **val**: James, "the 15 min validation take". It was named after recording and
+  recorded second in the same sitting, not at a sitting's start, so it is not validation from an independent sitting.
+  - Admitted 2026-09-25: **15.5846 val min**, 6 runs, freeze `415b1b8b`, independent record `7c47d6af`.
+  - Its minutes are reported beside the train headline and never added to it.
+- **203745** (15:37, 48.0 min) is train. It is review-ready (final-23), awaiting the independent review.
+- **Registry** `data/human/session-splits.corpus.json`: `681ca036…`.
+
+**The review's fix-forwards on 212646 (F1–F3).**
+- F1: all three Tab presses show the scoreboard, seg-013's included. My hand-back said otherwise.
+- F2: the three brief focus losses are 354.32–356.62, 673.64–674.95 and 883.51–885.40 s, plus the closing loss at
+  950.50 s. There are **four** Alt presses, not one.
+  - My press counter kept a key held across a focus loss, since a key released while unfocused never logs its up.
+    Presses are now counted with key state reset at every focus event.
+- F3: "no capture gap" means inside accepted footage; a 25 ms tail step follows the closing loss.
+
+**Timed Practice** (lead decision, option B, on 203745).
+- The range's scored static-target round is a new explicit cut, `timed_practice`:
+  - `agent/human_intake.timed_practice_span`, plus `propose_segments(..., timed_practice=...)`;
+  - `CUT_ORDER` gains it after `afk`.
+- **Measurement.** The span is measured on native banner reads by the `timed` step in `intake_session.py`:
+  - `BANNER_BOX` is matched against two pinned references in `tests/fixtures/intake_timed/`, with normalized correlation
+    ≥ 0.9 on one and below it on the other;
+  - the cut runs from 1 ns after the last PRACTICE RANGE frame to the first PRACTICE RANGE frame after the round.
+- **203745's round:** 2,228.5908–2,319.8658 s (91.275 s), from 525 native reads, none unlabelled. The live range guard
+  failed on some of its frames.
+- **Earlier sessions:** the banner on all 823 existing review frames of the seven admitted train sessions and 212646
+  shows no Timed Practice anywhere (maximum score 0.497).
+- **Tests:** stdlib cut and span tests, and perception-group banner tests.
+- **Snapshot:** `code-snapshot-fbe6693` (manifest `b5bdb3b3`).
+- **Re-emission:** 203745's propose and evidence were re-emitted with `--supersedes`. `propose` gained `--supersedes`
+  for this.
+
+**The late take ran on another account.**
+- **The take:** `2026-09-25 22-59-32.mkv`, session `20260926T035932-508Z-63684-14`, 30.8 min, registered train at 23:32.
+  - It opens with Esc at 4.092 and 5.438 s: James switched cooldowns on and set sensitivity 1.89 on his **main
+    account** (recording log `83c05f1`).
+- **Two accounts.** The game keeps one settings file per account (`…/Saved/Config/<id>/MarvelUserSetting.json`), and the
+  intake reads only the campaign account's (`1295996384`).
+  - The main account's file (`1859995554`) has Spider-Man at 1.89/1.89, but with mouse acceleration off, and 29
+    differences from the 2026-09-22 receipt.
+- **Effective bindings** (`bindings_equivalence.py`, in the arrivals-0925 scratch):
+  - no pressed key differs in meaning;
+  - LeftShift depends on the game default (the campaign account sets web swing explicitly, the main account leaves it
+    unset);
+  - the other differences are representational (primary and secondary swapped, gamepad slots) or on unpressed keys.
+  - James: "the binds are definitely the same in any meaningful way".
+- **Status:** the lead's option B admits the take only if (1) the effective bindings match, (2) frames show Shift
+  web-swinging, (3) the regime is normal and (4) the yaw gain equals the calibration, with everything up to the second
+  Esc plus 2 s cut. It is pending: (4) cannot reach the calibration record's tolerance from play footage, because every
+  near-whole-revolution turn has the hero moving.
+- **Assumption:** the other sessions were on the campaign account, as its settings check shows. James has been asked
+  about 203745 and 212646.
+- **Not registered:** `2026-09-25 22-48-05.mkv` (input log only: pre-play wait, Tab ×56, Enter ×8) is probably a Quick
+  Play match. The evening's other recordings (19:21–21:13) are unnamed matches and have not been opened. Tally rows are
+  `pending` or `not_range`.
+
+**Tally:** normal, train **94.18 / 180** (7 sessions); normal, val **15.58**, beside it.
+
+**The 203745 review** (review-session-203745.md, verdicts `916ea4bf`) matches all 20 verdicts: 6 accepted, 45.978 train
+min.
+- **F1 (fixed):** `timed_practice_span` accepted a range→timed→range flicker in an end bracket.
+  - The end bracket must now read timed, then range, exactly once. A range read before its last timed read refuses.
+  - The regression is the reviewer's case, plus a leading-range case.
+  - 203745's pinned reads still give the same cut.
+- **F2 (narrative):** the 1,477.9 s death does show SPECTATING (f177379–f177415) before the black fade. My final-23 said
+  it had no card. The cut already contained it.
+- **Assembly:** from `code-snapshot-3936f94-4c9638d1` (the F1 fix and the `gate2` importer).
+
+**The `gate2` split** (lead, 2026-09-26; `docs/lanes/inverse-dynamics.md`, Gate 2 protocol).
+- **The pair:** 19-21-09 (the live alt match, Central Park, 19:28) and 23-49-58 (its replay) form one sealed session
+  group, `gate2-20260925-central-park-1928`.
+- **Code:**
+  - `agent/human_demos.SEALED_SPLITS = ("test", "gate2")`, used for registry validation, placement, the training
+    refusal and artifact headers;
+  - the intake refuses any sealed split;
+  - the range-BC reader refuses the unknown split, even with `allow_test`;
+  - the IDM reader refuses it unless `allow_test` is set, as for test.
+- **Tests:** in `tests/test_human_demos.py` and `tests/test_gate2_split.py`.
+- **Disclosure:** both files were first registered as evaluation-only and inventoried, decode-free (logger check, packet
+  headers, input profile, media hash), before the correction. No frame was decoded.
+- **The other eight matches** are `evaluation_sessions`, never a split:
+  - `reader_validation`: 19-53-04, 20-25-52, 20-56-10;
+  - `reader_development`: 20-06-20, 20-37-11 (scoreboard-fix's HUD timer and kill-feed readers);
+  - `match_dev`: 19-28-51, 21-13-21, 22-48-05.
+
+**Two more range takes** (second landing).
+- **The late take, 22:59, main account:** under option B.
+  - `settings_change` cut: `human_intake.settings_change_span` and the `settings` step, 0–7.438 s.
+  - A per-session motor statement quoting `83c05f1`.
+  - Bindings equal in effect for every pressed key.
+  - The main-account calibration was not recorded, so the gain condition is the pre-registered relative per-pair check
+    against 203745. It needs a 95 % interval containing 1, with half-width ≤ 2 %.
+- **The 23:57 take, campaign account:** per-session motor statement quoting `3936f94`.
+- **Motor statements:** `MOTOR_STATEMENTS["2026-09-25"]` now names the takes its date-level line covers (`applies_to`,
+  the two afternoon takes). Any other session of the date needs its own entry (`sessions`), or refuses.
+
+**The 23:57 take (045729, campaign account)** was admitted on 2026-09-26.
+- Assembled from `code-snapshot-3936f94-4c9638d1` with the independent record `e80c10ca`.
+- **10.2599 counted min** in 3 runs; freeze `596883a2`.
+- **Tally:** normal, train **150.42 / 180** (9 sessions); val 15.58 beside it.
+
+**The intake delta review** (review-intake-0926.md `af85359c`; re-review `-2` `c26426fc`) is approved after two fixes.
+- **B1:** `read_splits` (and so `check_registry`) enforces:
+  - `calibration_sessions` and `evaluation_sessions` rows are disjoint from split rows and from each other, by id, media
+    path and media hash;
+  - they carry no split;
+  - no evaluation kind names a split.
+- **F2:** the relocated load applies `SEALED_SPLITS` to the header and the placement, and checks the sealed flag before
+  reading the body.
+
+**The late take (22:59), continued.**
+- The lead ruled the main account's gain equal to the calibration: turn take `20260926T060921-977Z-60612-1`,
+  `data/human/calibration/…/calibration.json` `df5107c1`, `turncal.json` `4ab87a55`.
+  - Mean +0.064 %; every speed within 030045's tolerance; the pipeline first reproduced 030045.
+  - This supersedes the inconclusive per-pair estimate (R 0.936, interval 0.84–1.04, after a sign-cancellation bug in
+    the first computation).
+- **Checks on the resumed intake:**
+  - (2) the HUD's key label reads LSHIFT under web swing, and Shift or Caps presses show swings;
+  - (3) the regime is normal across every gameplay span (364 normal, 4 no evidence).
+- **A second Timed Practice round** was found by the banner check: about 491–500 s, an aborted round of about 9 s
+  (review frame f59600). The range guard passed on it.
+- **A round that short can fall between review frames** (10 s apart). The 2026-09-26 all-sessions banner check assumed
+  rounds of at least 60 s, so it does not exclude short rounds in the admitted sessions.

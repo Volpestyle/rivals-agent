@@ -47,6 +47,23 @@ ROWS = [
          reason="settings and calibration take (settings pages, 360-degree turn, pitch sweep)"),
     dict(session="20260925T030045-211Z-7804-3", date="2026-09-24", status="not_range",
          reason="multi-speed calibration take (four yaw speed classes, pitch sweeps): data/human/calibration/"),
+    *[dict(session=s, date="2026-09-25", status="not_range",
+           reason="OBS false start (4-15 s) before a take; James deleted the video; not a session")
+      for s in ("20260925T200851-935Z-49728-1", "20260925T212548-665Z-49728-3", "20260925T212615-212Z-49728-4",
+                "20260925T212626-543Z-49728-5")],
+    *[dict(session=s, date="2026-09-25", status="not_range", reason=reason) for s, reason in (
+        ("20260926T002109-428Z-63684-2", "gate2 (sealed): the live match of the replay-of-self pair (Central Park, 19:28)"),
+        ("20260926T044958-507Z-63684-15", "gate2 (sealed): the replay of the 19:28 Central Park match"),
+        *[(m, "match_dev: evaluation-only match recording, never trained on (handoff/matches-0925.md)") for m in (
+            "20260926T002851-659Z-63684-3", "20260926T005304-628Z-63684-4", "20260926T010620-721Z-63684-5",
+            "20260926T012552-291Z-63684-6", "20260926T013711-125Z-63684-7", "20260926T015610-960Z-63684-8",
+            "20260926T021321-378Z-63684-9", "20260926T034805-307Z-63684-13")])],
+    *[dict(session=s, date="2026-09-25", status="pending", reason="logger folder without a video; not opened")
+      for s in ("20260925T234952-361Z-63684-1", "20260926T022734-732Z-63684-10", "20260926T031019-828Z-63684-11",
+                "20260926T033121-111Z-63684-12")],
+    dict(session="20260926T035932-508Z-63684-14", date="2026-09-25", status="pending",
+         reason="lead decision 2026-09-26 (B): main account, yaw gain measured equal to the calibration "
+                "(20260926T060921-977Z-60612-1); intake resumed, review pending"),
 ]
 
 
@@ -56,7 +73,8 @@ def sha(p):
 
 ADMITTED = ("20260923T051828-422Z-33696-1", "20260923T171533-187Z-33696-5", "20260923T200129-346Z-33696-6",
             "20260923T205528-900Z-45572-3", "20260924T232304-170Z-12024-1", "20260925T025230-605Z-7804-2",
-            "20260925T021320-371Z-7804-1")
+            "20260925T021320-371Z-7804-1", "20260925T212646-322Z-49728-6",
+            "20260925T203745-207Z-49728-2", "20260926T045729-166Z-79780-1")   # 212646 is val: beside the headline
 
 
 def recording_date(session):

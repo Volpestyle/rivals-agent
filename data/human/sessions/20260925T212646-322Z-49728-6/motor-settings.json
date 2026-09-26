@@ -1,0 +1,160 @@
+{
+ "session": "20260925T212646-322Z-49728-6",
+ "settings": {
+  "value": {
+   "dpi": 800,
+   "horizontal_sensitivity": 1.89,
+   "vertical_sensitivity": 1.89,
+   "swing_mode": {
+    "automatic_swing": false,
+    "hold_to_swing": true
+   },
+   "mouse_acceleration": true,
+   "mouse_smoothing": true
+  },
+  "source": "DPI 800: James's statement 2026-09-23 ~14:50 CDT. Sensitivity 1.89/1.89 unchanged since 2026-09-21 (same statement). Swing, acceleration and smoothing: native frames of the 2026-09-23 settings look (calibration.json: hold to swing on, simple swing off, mouse acceleration on at factor 1.00, smoothing on).",
+  "per_session_source": "James's dated statement for the 2026-09-25 takes (docs/recording-log.md, Motor settings, committed fbe6693): DPI, in-game sensitivity and bindings unchanged (chat, 2026-09-25 ~16:50 CDT: \"yep all the same\")",
+  "evidence": [
+   {
+    "path": "docs/recording-log.md",
+    "sha256": "f7ef32b2c9c3b099abd5c5f043cbd77d8d17782cb521be3b813e3bb9a712b4b0"
+   },
+   {
+    "path": "data/human/notes/2026-09-21-user-settings.json",
+    "sha256": "852c92254961b4fcb1278e8ebe752ea2f02ce6add678509d3276fd1a26264c6c"
+   },
+   {
+    "path": "data/human/calibration/20260923T204707-487Z-45572-2/calibration.json",
+    "sha256": "baa49158c9911e0155a2d06883faec00150b297e0a5fe0e8dd46fc86d5310283"
+   },
+   {
+    "path": "data/human/sessions/20260925T212646-322Z-49728-6/provenance.json",
+    "sha256": "69143ff2f96e941b7040aef199987141416d92bf3cf4f0fb34dd51dd9cf75601"
+   }
+  ],
+  "statement": {
+   "path": "docs/recording-log.md",
+   "sha256": "f7ef32b2c9c3b099abd5c5f043cbd77d8d17782cb521be3b813e3bb9a712b4b0",
+   "commit": "fbe669397984efac7c18413c6551d1219203e897",
+   "section": "Motor settings (James's statements)",
+   "date": "2026-09-25",
+   "text": [
+    "2026-09-25: **DPI, in-game sensitivity and bindings unchanged** for the two 2026-09-25 takes (James, chat, 2026-09-25 ~16:50 CDT, answering \"for today's two takes, were your mouse DPI, in-game sensitivity and key bindings the same as before?\": \"yep all the same\")."
+   ]
+  },
+  "corroboration": {
+   "saved_settings_sha256": "f564f1dde5c041ff2f17ba6a95be0292429076d1bdca5ade4c0ca248a4b464b6",
+   "saved_profile_equals_2026_09_22": {
+    "1036": true,
+    "0": true
+   },
+   "saved_1036_mouse_sensitivity": [
+    1.8899999856948853,
+    1.8899999856948853
+   ],
+   "note": "later local state; stores sensitivity and bindings, not DPI"
+  },
+  "limits": [
+   "DPI is not stored anywhere the intake can read; it rests on James's statements"
+  ]
+ },
+ "bindings": {
+  "value": {
+   "move_forward": [
+    "key:17:0"
+   ],
+   "move_left": [
+    "key:30:0"
+   ],
+   "move_back": [
+    "key:31:0"
+   ],
+   "move_right": [
+    "key:32:0"
+   ],
+   "jump": [
+    "key:57:0"
+   ],
+   "web_swing": [
+    "key:42:0"
+   ],
+   "get_over_here": [
+    "key:33:0"
+   ],
+   "amazing_combo": [
+    "key:18:0",
+    "key:3:0"
+   ],
+   "ultimate": [
+    "key:16:0"
+   ],
+   "melee": [
+    "key:47:0",
+    "mouse:5"
+   ],
+   "spider_power": [
+    "mouse:1"
+   ],
+   "web_cluster": [
+    "mouse:2"
+   ],
+   "team_up": [
+    "key:46:0"
+   ],
+   "team_up_b": [
+    "key:45:0"
+   ],
+   "simple_swing": [
+    "key:58:0"
+   ],
+   "goh_targeting": [
+    "mouse:4",
+    "key:3:0"
+   ],
+   "slow_walk": [
+    "key:29:0"
+   ]
+  },
+  "aliases": {
+   "mouse:5": "melee"
+  },
+  "notes": {
+   "team_up": "C = Team-Up A, fires in the solo range with a visible effect (James; 051828/team-up-check.json). A real action with positives, trained but masked live (Y is off the pad whitelist).",
+   "melee": "V and Mouse 5 (settings look; lead decision): Mouse 5 presses count as melee (header binding_aliases).",
+   "goh_targeting": "Get Over Here Targeting: Mouse 4 (X1) and 2; a fit action (lead decision), structurally unsupported on the pad, counted. Only Mouse 4 is in the step header (2 is shared).",
+   "amazing_combo": "E and 2; 2 is also Get Over Here Targeting, so it is not aliased (unsupported).",
+   "simple_swing": "Caps Lock (VK 20, scan 58), off as a mode; not in the fit vocabulary (unsupported).",
+   "team_up_b": "X, Team-Up B; not in the fit vocabulary (unsupported).",
+   "slow_walk": "LCtrl, hold; not in the fit vocabulary (unsupported).",
+   "alt": "Alt is unbound in game (James); Alt presses are Alt-Tab and stay UI-key cuts."
+  },
+  "source": "native frames of James's settings look (calibration take 2026-09-23, keyboard pages, calibration.json), agreeing with his 2026-09-21 report and 2026-09-23 statements; HUD key labels on this session's frames (slot-mapping.json)",
+  "per_session_source": "James's dated statement for the 2026-09-25 takes (docs/recording-log.md, Motor settings, committed fbe6693): DPI, in-game sensitivity and bindings unchanged (chat, 2026-09-25 ~16:50 CDT: \"yep all the same\")",
+  "evidence": [
+   {
+    "path": "docs/recording-log.md",
+    "sha256": "f7ef32b2c9c3b099abd5c5f043cbd77d8d17782cb521be3b813e3bb9a712b4b0"
+   },
+   {
+    "path": "data/human/notes/2026-09-21-user-settings.json",
+    "sha256": "852c92254961b4fcb1278e8ebe752ea2f02ce6add678509d3276fd1a26264c6c"
+   },
+   {
+    "path": "data/human/calibration/20260923T204707-487Z-45572-2/calibration.json",
+    "sha256": "baa49158c9911e0155a2d06883faec00150b297e0a5fe0e8dd46fc86d5310283"
+   },
+   {
+    "path": "data/human/sessions/20260925T212646-322Z-49728-6/slot-mapping.json",
+    "sha256": "21d0e0b8539eba0cb5c381c9208b3f66b8f880586be08768eea760e768a83d43"
+   }
+  ]
+ },
+ "settings_identity": "a8dea3bacebbe9377c8ea9bc7f517e7d907e126c61634676883599dbf2e3d1fd",
+ "calibration_takes": {
+  "turn_360": {
+   "path": "data/human/calibration/20260923T204707-487Z-45572-2/calibration.json",
+   "sha256": "baa49158c9911e0155a2d06883faec00150b297e0a5fe0e8dd46fc86d5310283"
+  },
+  "note": "multi-speed yaw: data/human/calibration/<calibration session>/, added to the step header only by lead decision"
+ }
+}

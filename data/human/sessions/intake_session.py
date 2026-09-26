@@ -12,6 +12,10 @@ Steps, in order (each writes into ./<SESSION_ID>/ and refuses to overwrite its o
   scan        reused regime scan over the whole original at 5 fps                          -> hud-scan-samples.jsonl
   regime      5 s regime timeline from the scan                                          -> regime-timeline.json
   motor       motor settings and binding table with per-session sources (review R2, fit R7)  -> motor-settings.json
+  settings    only for a take whose start holds a declared settings change (--esc-presses N --reason TEXT, a lead
+              decision): the cut from the recording's start to the Nth Esc press plus the UI settle  -> settings-change.json
+  timed       only for a session with a Timed Practice round (--span START_S END_S, the owner's coarse banner
+              measurement): native banner reads at both boundaries and the cut they place   -> timed-practice.json
   propose     candidate segments (first pass) with the native-frame brackets to decode      -> candidates-pass1.json
   evidence    decode each bracket, refine edges on native frames, re-propose; decode and hash the review frames
               for every segment (both edges plus stratified interior frames)             -> segments-evidence.json
@@ -66,6 +70,17 @@ REVIEW_INTERIOR_EVERY_NS = 10_000_000_000   # one interior review frame per 10 s
 # sample frame itself fails, the edge moves inward; this is how far inward the evidence step reads for a proven frame.
 EDGE_INWARD_NS = 2_000_000_000
 REVIEW_THUMB = (1280, 720)
+# Timed Practice (lead decision 2026-09-25, 203745): the range's scored static-target round is cut. Its top-left
+# banner reads TIMED PRACTICE instead of PRACTICE RANGE; each native frame's banner crop is matched against the two
+# pinned references (normalized correlation), and a label needs one match >= BANNER_MATCH and the other below it.
+BANNER_BOX = (110, 28, 420, 84)                 # x0, y0, x1, y1 in native 2560x1440 pixels
+BANNER_REFS = {"range": ("tests/fixtures/intake_timed/banner-range.png",
+                         "1857860c80c77dfe6bc40a6fe0d4cac3900fb38f53866e1d85009df28e9d9cf3"),
+               "timed": ("tests/fixtures/intake_timed/banner-timed.png",
+                         "71a80b2f629d7f777c7344ac1670cfde4738a30c6d9fcae718aaa248a819dace")}
+BANNER_MATCH = 0.9
+TIMED_BRACKET_NS = 1_000_000_000               # every native frame this far either side of each coarse boundary
+TIMED_INTERIOR_EVERY_NS = 2_000_000_000
 
 
 def below_normal():
@@ -93,8 +108,11 @@ class Ctx:
         self.snapshot = HERE / args.snapshot
         self.earlier_snapshot = getattr(args, "earlier_snapshot", None)
         self.supersedes = getattr(args, "supersedes", None)
-        need(not self.supersedes or args.step in ("motor", "evidence"),
-             "--supersedes applies to the motor and evidence steps only")
+        need(not self.supersedes or args.step in ("motor", "propose", "evidence"),
+             "--supersedes applies to the motor, propose and evidence steps only")
+        self.spans = getattr(args, "span", None) or []
+        self.esc_presses = getattr(args, "esc_presses", None)
+        self.reason = getattr(args, "reason", None)
         sys.path.insert(0, str(self.snapshot))
         from agent import human_intake as hi
         from agent import human_demos as hd
@@ -103,7 +121,7 @@ class Ctx:
         registry = hi.check_registry(REGISTRY, denylist=self.denylist)   # denylist first, then registry
         need(self.sid in registry, "session not registered")
         self.place = registry[self.sid]
-        need(self.place.split != "test", "sealed sessions are never taken in")
+        need(self.place.split not in getattr(hd, "SEALED_SPLITS", ("test",)), "sealed sessions are never taken in")
         self.raw = RAW / self.sid
         self.meta = json.loads((self.raw / "metadata.json").read_text())
         self.video = self.meta["video_path"]
@@ -475,15 +493,120 @@ def _proposal_inputs(c):
     hud = [(r["composition_ns"], r["hud_present"]) for r in samples]      # True/False/None kept as read (review I6)
     dead = [r["composition_ns"] for r in samples if r.get("hp") == 0]
     regime = json.loads((c.out / "regime-timeline.json").read_text())["session_regime_from_scan"]
-    return dict(intervals=focused, hud_samples=hud, ui_keys=hi.ui_key_presses(events), controls=hi.control_times(events),
-                gaps=gaps, session_regime=regime or "unknown", dead=dead), ordered
+    kw = dict(intervals=focused, hud_samples=hud, ui_keys=hi.ui_key_presses(events), controls=hi.control_times(events),
+              gaps=gaps, session_regime=regime or "unknown", dead=dead)
+    change = c.out / "settings-change.json"
+    if change.exists():   # a declared settings change at the take's start (lead decision 2026-09-25)
+        kw["settings_change"] = [tuple(json.loads(change.read_text())["cut_ns"])]
+    timed = c.out / "timed-practice.json"
+    if timed.exists():   # measured by the timed step; sessions without a round pass nothing (older snapshots too)
+        kw["timed_practice"] = [tuple(s["cut_ns"]) for s in json.loads(timed.read_text())["spans"]]
+    return kw, ordered
+
+
+def banner_refs():
+    import cv2
+    refs = {}
+    for label, (rel, digest) in BANNER_REFS.items():
+        need(sha(ROOT / rel) == digest, f"{rel} differs from its pinned sha256")
+        refs[label] = _banner_feature(cv2.imread(str(ROOT / rel)))
+    return refs
+
+
+def _banner_feature(crop):
+    import cv2
+    import numpy as np
+    g = cv2.cvtColor(crop, cv2.COLOR_BGR2GRAY).astype(np.float32)
+    return (g - g.mean()) / (g.std() + 1e-6)
+
+
+def banner_label(img, refs):
+    """("range" | "timed" | None, {label: score}) for one native frame's top-left banner."""
+    x0, y0, x1, y1 = BANNER_BOX
+    f = _banner_feature(img[y0:y1, x0:x1])
+    scores = {k: round(float((f * r).mean()), 4) for k, r in refs.items()}
+    hits = [k for k, v in scores.items() if v >= BANNER_MATCH]
+    return (hits[0] if len(hits) == 1 else None), scores
+
+
+def step_settings(c):
+    """A settings change declared at the take's start (lead decision 2026-09-25): the cut and the Esc presses it
+    covers, from the input log alone. The admission conditions that go with it are the lead's and are checked later."""
+    need(c.esc_presses and c.reason, "--esc-presses N and --reason TEXT are required (the lead's decision)")
+    cut, presses = c.hi.settings_change_span(c.hi.ui_key_presses(c.events()), c.meta["start_ns"],
+                                             esc_presses=c.esc_presses)
+    t0 = c.meta["start_ns"]
+    write_once(c.out / "settings-change.json", dict(
+        session=c.sid, snapshot=c.snapshot.name, cut_ns=list(cut), cut_rel_s=[(x - t0) / 1e9 for x in cut],
+        esc_presses_ns=presses, esc_presses_rel_s=[(x - t0) / 1e9 for x in presses], ui_settle_ns=c.hi.UI_SETTLE_NS,
+        inputs={"path": "inputs.jsonl", "sha256": sha(c.raw / "inputs.jsonl")}, reason=c.reason,
+        rule="agent.human_intake.settings_change_span: from the recording's start to the last declared Esc press plus "
+             "the UI settle; Esc presses inside are the declared change, later ones keep R3 (lead decision 2026-09-25)"))
+    print("settings change cut", [round((x - t0) / 1e9, 3) for x in cut], "esc", [round((x - t0) / 1e9, 3) for x in presses])
+
+
+def step_timed(c):
+    """Measure each Timed Practice round on native frames: every frame within TIMED_BRACKET_NS of the owner's coarse
+    boundaries (--span START_S END_S, logger seconds), and one frame every TIMED_INTERIOR_EVERY_NS between them;
+    hi.timed_practice_span places the cut from the banner labels (lead decision 2026-09-25)."""
+    need(c.spans, "--span START_S END_S is required (the owner's coarse banner measurement, logger seconds)")
+    refs = banner_refs()
+    _, ordered = _proposal_inputs(c)
+    ms_of = {r["composition_ns"]: round(r["pts"] * 1000 / 120) + 21 for r in ordered}
+    index_of = {r["composition_ns"]: i for i, r in enumerate(ordered)}
+    times = [r["composition_ns"] for r in ordered]
+    t0 = c.meta["start_ns"]
+
+    def read(frames):
+        out = []
+        for k in range(0, len(frames), 40):   # bounded memory: 40 native frames per decode
+            chunk = frames[k:k + 40]
+            by_ms = dict(_decode(c, [ms_of[t] for t in chunk]))
+            for t in chunk:
+                label, scores = banner_label(by_ms[ms_of[t]], refs)
+                out.append(dict(composition_ns=t, frame_index=index_of[t], file_ms=ms_of[t], label=label, scores=scores))
+        return out
+
+    spans = []
+    for a_s, b_s in c.spans:
+        a, b = t0 + round(a_s * 1e9), t0 + round(b_s * 1e9)
+        need(a < b, "--span start must precede end")
+        start = read([t for t in times if a - TIMED_BRACKET_NS <= t <= a + TIMED_BRACKET_NS])
+        end = read([t for t in times if b - TIMED_BRACKET_NS <= t <= b + TIMED_BRACKET_NS])
+        marks = range(a + TIMED_BRACKET_NS, b - TIMED_BRACKET_NS, TIMED_INTERIOR_EVERY_NS)
+        from bisect import bisect_left
+        interior = read(sorted({times[min(bisect_left(times, m), len(times) - 1)] for m in marks}))
+        pairs = lambda rows: [(r["composition_ns"], r["label"]) for r in rows]   # noqa: E731
+        cut = c.hi.timed_practice_span(pairs(start), pairs(end), pairs(interior))
+        spans.append(dict(coarse_s=[a_s, b_s], cut_ns=list(cut), cut_rel_s=[(cut[0] - t0) / 1e9, (cut[1] - t0) / 1e9],
+                          start_bracket=start, end_bracket=end, interior=interior))
+        print("timed practice", a_s, b_s, "->", [round(x, 4) for x in spans[-1]["cut_rel_s"]],
+              {k: sum(r["label"] == k for r in start + end + interior) for k in ("range", "timed", None)})
+    write_once(c.out / "timed-practice.json", dict(
+        session=c.sid, snapshot=c.snapshot.name, media_sha256=c.media_sha, spans=spans,
+        method=dict(banner_box=BANNER_BOX, banner_match=BANNER_MATCH, bracket_ns=TIMED_BRACKET_NS,
+                    interior_every_ns=TIMED_INTERIOR_EVERY_NS,
+                    references={k: {"path": p, "sha256": d} for k, (p, d) in BANNER_REFS.items()},
+                    rule="agent.human_intake.timed_practice_span: from one ns after the last PRACTICE RANGE frame before "
+                         "the round to the first PRACTICE RANGE frame after it (lead decision 2026-09-25)")))
 
 
 def step_propose(c):
     kw, _ = _proposal_inputs(c)
     segs, flags = c.hi.propose_segments(**kw)
-    write_once(c.out / "candidates-pass1.json", dict(session=c.sid, flags=flags, capture_gaps=[list(g) for g in kw["gaps"]],
-                                                    segments=segs))
+    current = c.out / "candidates-pass1.json"
+    doc = dict(session=c.sid, flags=flags, capture_gaps=[list(g) for g in kw["gaps"]], segments=segs)
+    if kw.get("timed_practice"):
+        doc["timed_practice"] = {"path": "timed-practice.json", "sha256": sha(c.out / "timed-practice.json"),
+                                 "cut_ns": [list(s) for s in kw["timed_practice"]]}
+    if c.supersedes:   # a deliberate re-proposal: the old candidates are kept as .vN and named here
+        need(current.exists(), "--supersedes needs an existing candidates-pass1.json")
+        n = 1
+        while (c.out / f"candidates-pass1.v{n}.json").exists():
+            n += 1
+        doc["supersedes"] = {"file": f"candidates-pass1.v{n}.json", "sha256": sha(current), "reason": c.supersedes}
+        current.rename(c.out / doc["supersedes"]["file"])
+    write_once(current, doc)
     for s in segs:
         print(s["segment_id"], s["machine_reason"], s["proposal"], round((s["start_ns"] - c.meta["start_ns"]) / 1e9, 3),
               round((s["end_ns"] - c.meta["start_ns"]) / 1e9, 3))
@@ -614,13 +737,17 @@ def step_evidence(c):
                denylist={"path": "data/human/sealed-denylist.json", "sha256": sha(DENYLIST)},
                inputs={n: {"path": n, "sha256": sha(c.out / n)} for n in (
                    "provenance.json", "recorder-verification.json", "input-profile.json", "slot-mapping.json",
-                   "hud-scan-samples.jsonl", "regime-timeline.json", "candidates-pass1.json")},
+                   "hud-scan-samples.jsonl", "regime-timeline.json", "candidates-pass1.json", "timed-practice.json",
+                   "settings-change.json")
+                   if n not in ("timed-practice.json", "settings-change.json") or (c.out / n).exists()},
                parameters=dict(ui_keys=hi.UI_KEYS, settings_menu_keys=sorted(hi.SETTINGS_MENU_KEYS),
                                ui_settle_ns=hi.UI_SETTLE_NS, afk_ns=hi.AFK_NS, max_hud_gap_ns=hi.MAX_HUD_GAP_NS,
                                review_interior_every_ns=REVIEW_INTERIOR_EVERY_NS,
                                edge_rule="an edge sits only on a native frame where the scan's HUD presence and the live "
                                          "range guard (snapshot scripts/record.py in_range) both hold (lead, 2026-09-25)",
                                edge_inward_ns=EDGE_INWARD_NS,
+                               timed_practice="cut: the range's scored Timed Practice round, measured on native banner "
+                                              "reads (timed-practice.json; lead decision 2026-09-25)",
                                range_guard={"path": "scripts/record.py", "sha256": sha(c.snapshot / "scripts/record.py")}),
                session_regime=kw["session_regime"], focused_intervals=[list(i) for i in kw["intervals"]],
                capture_gaps=[list(g) for g in kw["gaps"]], flags=flags, native_edge_reads=reads, segments=segs,
@@ -648,13 +775,18 @@ def step_evidence(c):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    ap.add_argument("step", choices=["provenance", "verify", "profile", "vote", "scan", "regime", "motor", "propose",
-                                     "evidence"])
+    ap.add_argument("step", choices=["provenance", "verify", "profile", "vote", "scan", "regime", "motor", "settings", "timed",
+                                     "propose", "evidence"])
     ap.add_argument("session")
     ap.add_argument("--scratch", required=True)
     ap.add_argument("--snapshot", required=True)
     ap.add_argument("--earlier-snapshot", help="the snapshot the earlier steps ran from, when it differs")
-    ap.add_argument("--supersedes", help="motor step only: regenerate deliberately, keeping the old record as .vN")
+    ap.add_argument("--supersedes", help="motor, propose or evidence: regenerate deliberately, keeping the old record "
+                                         "as .vN (the reason)")
+    ap.add_argument("--esc-presses", type=int, help="settings step: the Esc presses of the declared settings change")
+    ap.add_argument("--reason", help="settings step: the lead's decision, quoted")
+    ap.add_argument("--span", nargs=2, type=float, action="append", metavar=("START_S", "END_S"),
+                    help="timed step: the owner's coarse Timed Practice boundaries in logger seconds (repeatable)")
     args = ap.parse_args()
     below_normal()
     globals()[f"step_{args.step}"](Ctx(args))

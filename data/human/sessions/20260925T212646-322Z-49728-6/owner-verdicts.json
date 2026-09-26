@@ -1,0 +1,930 @@
+{
+ "session": "20260925T212646-322Z-49728-6",
+ "segments_evidence_sha256": "1f7b819485452efedb6892ba2f46dc36419c50510161d2512983f43ed89d2248",
+ "reviewer": "admission-owner",
+ "reviewed_at": "2026-09-25T22:21:59Z",
+ "role": "owner inspection; assembly additionally requires the independent per-session review (R5)",
+ "verdicts": {
+  "seg-000": {
+   "suitability": "rejected",
+   "reason": "focus transition (Alt+Tab return): first frames after focus gain; frames show the range, but the rule cuts the settle",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T22:21:59Z",
+   "evidence": "segments-evidence.json 1f7b819485452efe review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 36,
+     "composition_ns": 439481359279687,
+     "decoded_bgr_sha256": "64d948db4a48142dd2a38fe3ea5681a649b670d8c2cf9a38eca02fd331b28120"
+    },
+    {
+     "frame_index": 50,
+     "composition_ns": 439481475946349,
+     "decoded_bgr_sha256": "fc15ea2b177aed04097099a616b4f1fe39d997588667e69da9401da5accf772d"
+    },
+    {
+     "frame_index": 65,
+     "composition_ns": 439481600946344,
+     "decoded_bgr_sha256": "97720dfcca683a5d25f1b9295aea570b6ff5decdfc81cf794c1d54bd04c2b9fb"
+    }
+   ]
+  },
+  "seg-001": {
+   "suitability": "rejected",
+   "reason": "unsampled edge sliver between a rule cut and a proven gameplay edge; no review frames",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T22:21:59Z",
+   "evidence": "segments-evidence.json 1f7b819485452efe review frames + contact sheets",
+   "frames": []
+  },
+  "seg-002": {
+   "suitability": "accepted",
+   "reason": "range play, Spider-Man, Galacta bots; HUD and HP bar on every frame; ends on the fall off the map edge at 126.6 s with HP 250/250 (last accepted frame f15192 passes the guard)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T22:21:59Z",
+   "evidence": "segments-evidence.json 1f7b819485452efe review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 66,
+     "composition_ns": 439481609279677,
+     "decoded_bgr_sha256": "be55a0298d41e895c4be810cb9a029bc9879fdb82b5e8fa20260c627501dff6b"
+    },
+    {
+     "frame_index": 1229,
+     "composition_ns": 439491300945956,
+     "decoded_bgr_sha256": "c920e0992eb04a11d142e6e3d5e271e5ee0ae66ddb6af252597f3cda07dc5382"
+    },
+    {
+     "frame_index": 2393,
+     "composition_ns": 439501000945568,
+     "decoded_bgr_sha256": "490d00127af020ca4ce5eb620139eea3ad87b96cd4ae032c17a61669963d2458"
+    },
+    {
+     "frame_index": 3556,
+     "composition_ns": 439510692611847,
+     "decoded_bgr_sha256": "1a73e0c869e83e0c693e532e164c873a6a6c422a76f34dee892857bb5b9839ec"
+    },
+    {
+     "frame_index": 4720,
+     "composition_ns": 439520392611459,
+     "decoded_bgr_sha256": "cc90f9d12630413eb8864f79a15ce6b03ca9e8fec6999a6b83287ca56be683e9"
+    },
+    {
+     "frame_index": 5883,
+     "composition_ns": 439530084277738,
+     "decoded_bgr_sha256": "baa90723ed783abc5dc41c7452795ecbb4834169c7320d30ef4318f4a0e63b39"
+    },
+    {
+     "frame_index": 7047,
+     "composition_ns": 439539784277350,
+     "decoded_bgr_sha256": "036957c7907b6eeb122731efa03babdbc70f6078a7e9f0f42b1293aa7e7b8bac"
+    },
+    {
+     "frame_index": 8210,
+     "composition_ns": 439549475943629,
+     "decoded_bgr_sha256": "038f3e39c53dec4b706a7cc70feae7bc7931ebc189a1c90bc36185bcf6d5bf77"
+    },
+    {
+     "frame_index": 9374,
+     "composition_ns": 439559175943241,
+     "decoded_bgr_sha256": "8826411906042c266126a793e250700a7eb9a31da4ddd1eb31b4fbcf7e4a0b22"
+    },
+    {
+     "frame_index": 10537,
+     "composition_ns": 439568867609520,
+     "decoded_bgr_sha256": "3909e8033eb725d2ed8dfe6a1157d2e75bb7827ab6915411f97e21e3162d1f91"
+    },
+    {
+     "frame_index": 11701,
+     "composition_ns": 439578567609132,
+     "decoded_bgr_sha256": "0911877b6aa604e462553d503727b007f78bb85e25bb6d3bb01e7d70a1223a10"
+    },
+    {
+     "frame_index": 12864,
+     "composition_ns": 439588259275411,
+     "decoded_bgr_sha256": "68d6e6165d23289eae2c4783d0c578c792bc1174de3ab0db3c0873df0c45e15d"
+    },
+    {
+     "frame_index": 14028,
+     "composition_ns": 439597959275023,
+     "decoded_bgr_sha256": "445d26425a7e8c7a33f15eb84c49e4d41fe102a6dd66881798988b63ca215165"
+    },
+    {
+     "frame_index": 15192,
+     "composition_ns": 439607659274635,
+     "decoded_bgr_sha256": "63efaeecdfdc27127767d0b159e09cf0325b67ff57a0dd003ff55b412121eb4a"
+    }
+   ]
+  },
+  "seg-003": {
+   "suitability": "rejected",
+   "reason": "death: fall off the map edge, then SPECTATING (1 s respawn); cut by the dead rule",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T22:21:59Z",
+   "evidence": "segments-evidence.json 1f7b819485452efe review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 15193,
+     "composition_ns": 439607667607968,
+     "decoded_bgr_sha256": "781d68192ae1221b2f4a7d78700446db3c61da9903c1d0322ba64c80acfdb724"
+    },
+    {
+     "frame_index": 15225,
+     "composition_ns": 439607934274624,
+     "decoded_bgr_sha256": "f46d6f68d0d6fcbcc43a3941f1da7ac13074ea9f4ad3f5077805ea0668c045dd"
+    },
+    {
+     "frame_index": 15257,
+     "composition_ns": 439608200941280,
+     "decoded_bgr_sha256": "33397d13d8098fbe2af4f24dfd3e77888cbb7b60ca99599d2f43f605caa5937d"
+    }
+   ]
+  },
+  "seg-004": {
+   "suitability": "rejected",
+   "reason": "UI key (Tab or the Alt of Alt+Tab) with its 2 s settle; frames show ordinary range play, cut by rule",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T22:21:59Z",
+   "evidence": "segments-evidence.json 1f7b819485452efe review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 15258,
+     "composition_ns": 439608209274613,
+     "decoded_bgr_sha256": "4eb3baee1bcb867bc3e143c4bfcf07d15b78085b4b984458ecb3653751c0274d"
+    },
+    {
+     "frame_index": 15401,
+     "composition_ns": 439609400941232,
+     "decoded_bgr_sha256": "6f0872ddefb8836cd629e34d283d02572ade45a786909eb47cbcf79df09867e9"
+    },
+    {
+     "frame_index": 15545,
+     "composition_ns": 439610600941184,
+     "decoded_bgr_sha256": "5fe2f97cce84d0a6f67bc9000cbd213d9a7c6e80a4b5122a6f68f3bb7a91d89e"
+    }
+   ]
+  },
+  "seg-005": {
+   "suitability": "rejected",
+   "reason": "unsampled edge sliver between a rule cut and a proven gameplay edge; no review frames",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T22:21:59Z",
+   "evidence": "segments-evidence.json 1f7b819485452efe review frames + contact sheets",
+   "frames": []
+  },
+  "seg-006": {
+   "suitability": "accepted",
+   "reason": "range play from the respawn room onward; HUD on every frame; opens in the spawn room after the respawn",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T22:21:59Z",
+   "evidence": "segments-evidence.json 1f7b819485452efe review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 15546,
+     "composition_ns": 439610609274517,
+     "decoded_bgr_sha256": "6b14b5a6e4f0b0ee2d4a9cf3cf2e1a3811cbb893aed552bdbf3bec8ec43cc919"
+    },
+    {
+     "frame_index": 16717,
+     "composition_ns": 439620367607460,
+     "decoded_bgr_sha256": "62b3e6cf4d5412bfea630cde1f073c5eedf7873d5d3c107d5591823860b4591d"
+    },
+    {
+     "frame_index": 17889,
+     "composition_ns": 439630134273736,
+     "decoded_bgr_sha256": "00d86a84d10ffe11124d3d8115ee9bf3ae6bf56975ca562dfdd17bfaca596b36"
+    },
+    {
+     "frame_index": 19060,
+     "composition_ns": 439639892606679,
+     "decoded_bgr_sha256": "9efd46131eacf0024ecac21148992e0131d679a17e07b6636d1b6570def48508"
+    },
+    {
+     "frame_index": 20232,
+     "composition_ns": 439649659272955,
+     "decoded_bgr_sha256": "aed1cefe9327dfcf7989eb968b3486f638ebd9874c908445ef83044c9b71b5d2"
+    },
+    {
+     "frame_index": 21403,
+     "composition_ns": 439659417605898,
+     "decoded_bgr_sha256": "953357e18dc171e20bf9cc502bc15238deb3bad0df86a29f7364ace0d50da137"
+    },
+    {
+     "frame_index": 22575,
+     "composition_ns": 439669184272174,
+     "decoded_bgr_sha256": "c2c8699e70518952c2295ed6bc6c2da8fb432e7f38364314217e4aaf58a7fcab"
+    },
+    {
+     "frame_index": 23746,
+     "composition_ns": 439678942605117,
+     "decoded_bgr_sha256": "1b503ef49c2acfd47afd585fe4a23bbadb59f71c072806159f041585a0dd8826"
+    },
+    {
+     "frame_index": 24918,
+     "composition_ns": 439688709271393,
+     "decoded_bgr_sha256": "c6b2d8444ddb7527b5e0d3e87f26c7caeb2667435d6c264694e9be4fdd4e298a"
+    },
+    {
+     "frame_index": 26090,
+     "composition_ns": 439698475937669,
+     "decoded_bgr_sha256": "d14c92d431b14e08710b435bf18a3cc40c234c31ff1409ce0df7b41212be771d"
+    },
+    {
+     "frame_index": 27261,
+     "composition_ns": 439708234270612,
+     "decoded_bgr_sha256": "a531b085c6c89982f58caa1e531e285c8f274d890740b320d22ca554277e0024"
+    },
+    {
+     "frame_index": 28433,
+     "composition_ns": 439718000936888,
+     "decoded_bgr_sha256": "504d7eea176e7562e5cc5ff0c74c63422be4d428a91e23ef0c15a964129804ab"
+    },
+    {
+     "frame_index": 29604,
+     "composition_ns": 439727759269831,
+     "decoded_bgr_sha256": "11ec15f7ad5c4ffe73e848260b31a9343fdc330ff9bd00c1cad399c3d16b33b1"
+    },
+    {
+     "frame_index": 30776,
+     "composition_ns": 439737525936107,
+     "decoded_bgr_sha256": "6e8238c77ac39534d69b03ec7db4d9bb3c576a16602fd85b74318ca21b2214af"
+    },
+    {
+     "frame_index": 31947,
+     "composition_ns": 439747284269050,
+     "decoded_bgr_sha256": "1541eb4ae99507e60df1468cffe99a1b514f4897ef089d54e985b89e9574a2b5"
+    },
+    {
+     "frame_index": 33119,
+     "composition_ns": 439757050935326,
+     "decoded_bgr_sha256": "288b56e860e6efcc3dc32cbf90c7fcd07bb7046eaf2c36b64b6b7f86f3ceb636"
+    },
+    {
+     "frame_index": 34291,
+     "composition_ns": 439766817601602,
+     "decoded_bgr_sha256": "809ca79f24f4e022232053706dd61e8ca0fcf9874cceda5b9480f5fdfc247ea3"
+    },
+    {
+     "frame_index": 35462,
+     "composition_ns": 439776575934545,
+     "decoded_bgr_sha256": "979a47b94b805f2ff795ef840970c3602d2202f3a7c6e2262194e9f536fed97c"
+    },
+    {
+     "frame_index": 36634,
+     "composition_ns": 439786342600821,
+     "decoded_bgr_sha256": "bb08acd5c42d953b77a1c76f51251e3a9184ca6a2038b89bcd339d401ec66b95"
+    },
+    {
+     "frame_index": 37805,
+     "composition_ns": 439796100933764,
+     "decoded_bgr_sha256": "dfd6cc8c5c7912550a2a5aa13b3d4a9c276e428ea9012dad1426413ab7caad09"
+    },
+    {
+     "frame_index": 38977,
+     "composition_ns": 439805867600040,
+     "decoded_bgr_sha256": "d8ac3f83aec3aa16a5b5ede37a26fea672dbb4255ade35e0b8a4a693799a2e81"
+    },
+    {
+     "frame_index": 40148,
+     "composition_ns": 439815625932983,
+     "decoded_bgr_sha256": "04ffc465bc3da91c79d425e7352ac7fcc1f84f0fcbf61f07225d8314aa44d4d8"
+    },
+    {
+     "frame_index": 41320,
+     "composition_ns": 439825392599259,
+     "decoded_bgr_sha256": "2bb388708e3d34d44a9923738fbd99cb097ed433c98e86ded6c7977377b43b66"
+    },
+    {
+     "frame_index": 42492,
+     "composition_ns": 439835159265535,
+     "decoded_bgr_sha256": "b679ec2855e6cf8889ca4e89b40cc768e029eeb7eb9e7b0f15786ee6049f615e"
+    }
+   ]
+  },
+  "seg-007": {
+   "suitability": "rejected",
+   "reason": "unsampled edge sliver between a rule cut and a proven gameplay edge; no review frames",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T22:21:59Z",
+   "evidence": "segments-evidence.json 1f7b819485452efe review frames + contact sheets",
+   "frames": []
+  },
+  "seg-008": {
+   "suitability": "rejected",
+   "reason": "UI key (Tab or the Alt of Alt+Tab) with its 2 s settle; frames show ordinary range play, cut by rule",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T22:21:59Z",
+   "evidence": "segments-evidence.json 1f7b819485452efe review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 42493,
+     "composition_ns": 439835167598868,
+     "decoded_bgr_sha256": "ca928bfaebc4e344a311100f9fbc3e0ac4cdec4aca0288479d04c3701bec7957"
+    },
+    {
+     "frame_index": 42499,
+     "composition_ns": 439835217598866,
+     "decoded_bgr_sha256": "57ec28c45fe06de2bbba9164a8e700ccc2fb1feb367d778462b387b37ce7f070"
+    },
+    {
+     "frame_index": 42505,
+     "composition_ns": 439835267598864,
+     "decoded_bgr_sha256": "efc356315ab5f5bcebf96f8ba6f860a5afddade98f8ec0649ea848830712dcfa"
+    }
+   ]
+  },
+  "seg-009": {
+   "suitability": "rejected",
+   "reason": "focus transition (Alt+Tab return): first frames after focus gain; frames show the range, but the rule cuts the settle",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T22:21:59Z",
+   "evidence": "segments-evidence.json 1f7b819485452efe review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 42782,
+     "composition_ns": 439837575932105,
+     "decoded_bgr_sha256": "87d0250e1afacf4e80ff3dedf713ac99e64af4f488c5ebbde95b090730e24866"
+    },
+    {
+     "frame_index": 42796,
+     "composition_ns": 439837692598767,
+     "decoded_bgr_sha256": "08d3b4cf0e5aa5b3e14ab242e93d98eb23b30edb0c1ad95f9213cc3e963af381"
+    },
+    {
+     "frame_index": 42811,
+     "composition_ns": 439837817598762,
+     "decoded_bgr_sha256": "9be8487f9a6a56da4f7fd88d3e6325f9796550f0117348f1d93d4f53c144f85c"
+    }
+   ]
+  },
+  "seg-010": {
+   "suitability": "rejected",
+   "reason": "unsampled edge sliver between a rule cut and a proven gameplay edge; no review frames",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T22:21:59Z",
+   "evidence": "segments-evidence.json 1f7b819485452efe review frames + contact sheets",
+   "frames": []
+  },
+  "seg-011": {
+   "suitability": "accepted",
+   "reason": "range play after the first Alt+Tab return; HUD on every frame",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T22:21:59Z",
+   "evidence": "segments-evidence.json 1f7b819485452efe review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 42812,
+     "composition_ns": 439837825932095,
+     "decoded_bgr_sha256": "69755716295a104afebd1d23701bce3795bbccbbe7fe2bb791c7aa75722ddb01"
+    },
+    {
+     "frame_index": 43943,
+     "composition_ns": 439847250931718,
+     "decoded_bgr_sha256": "e8ebdf94bb1ef65783262ce6a1498a8f1e319515041c8c12cc282ed50b33c269"
+    },
+    {
+     "frame_index": 45074,
+     "composition_ns": 439856675931341,
+     "decoded_bgr_sha256": "bb7cff3e1d44472b538c344d95316523698fad9f2a73e49394e614507617987e"
+    },
+    {
+     "frame_index": 46205,
+     "composition_ns": 439866100930964,
+     "decoded_bgr_sha256": "47e4244b87dc585444dd73db756ddd37b7eab6eb272321156f864a7bc16f156d"
+    },
+    {
+     "frame_index": 47336,
+     "composition_ns": 439875525930587,
+     "decoded_bgr_sha256": "cac50ce74f5588ee516a3e6b6b7e8ad0efe0effe126a5a46aa64ce46a299186b"
+    },
+    {
+     "frame_index": 48468,
+     "composition_ns": 439884959263543,
+     "decoded_bgr_sha256": "898bb91770a197268915710f1d9f537d22649dc4078b1b7855df94b3111de0e8"
+    },
+    {
+     "frame_index": 49599,
+     "composition_ns": 439894384263166,
+     "decoded_bgr_sha256": "8d0acf9e73018a229c7efe31910cd3363527802793eb5ef8e763d7a3fa516890"
+    },
+    {
+     "frame_index": 50730,
+     "composition_ns": 439903809262789,
+     "decoded_bgr_sha256": "b90ed7490d84876e2b2ea3f468d8fdbbe2b6fb4ef186a0b9695fd00367b060e0"
+    },
+    {
+     "frame_index": 51861,
+     "composition_ns": 439913234262412,
+     "decoded_bgr_sha256": "5772c07749b736b6256f804ca47d1cb1e8cf3ff0ae2fe3aa2c2655c2d581e784"
+    },
+    {
+     "frame_index": 52992,
+     "composition_ns": 439922659262035,
+     "decoded_bgr_sha256": "b52d26dbc9f8b2e118d391790e1d018ff9884549130ce36398236059b1068def"
+    },
+    {
+     "frame_index": 54124,
+     "composition_ns": 439932092594991,
+     "decoded_bgr_sha256": "1279f962e9447e3d60d606b576d62b2f529d01f3862147cd385fff4647428c74"
+    },
+    {
+     "frame_index": 55255,
+     "composition_ns": 439941517594614,
+     "decoded_bgr_sha256": "15c150670fea51706ae3e166eca89157ada62b8d72382388b5371a97e5774c6e"
+    },
+    {
+     "frame_index": 56386,
+     "composition_ns": 439950942594237,
+     "decoded_bgr_sha256": "61dcfda4c9d441ff157b13dfae0a73680bd9ceb29cad81c2ef138ffedefae7f3"
+    },
+    {
+     "frame_index": 57517,
+     "composition_ns": 439960367593860,
+     "decoded_bgr_sha256": "6a35c87e498f98c749413c8ae1e401a808f34b5b03b75be2cc61bf5c17f3c5f9"
+    },
+    {
+     "frame_index": 58648,
+     "composition_ns": 439969792593483,
+     "decoded_bgr_sha256": "ed22b1b0ceb46f13d6ff12693f61a92ee1e8ca74f89b977c01f3dd188d477bf9"
+    },
+    {
+     "frame_index": 59780,
+     "composition_ns": 439979225926439,
+     "decoded_bgr_sha256": "c0b4860570ee5b04138a8db37e40fbb6c965b66e9c8c8f8a9e2a69d1a3b0a414"
+    }
+   ]
+  },
+  "seg-012": {
+   "suitability": "rejected",
+   "reason": "unsampled edge sliver between a rule cut and a proven gameplay edge; no review frames",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T22:21:59Z",
+   "evidence": "segments-evidence.json 1f7b819485452efe review frames + contact sheets",
+   "frames": []
+  },
+  "seg-013": {
+   "suitability": "rejected",
+   "reason": "UI key (Tab or the Alt of Alt+Tab) with its 2 s settle; frames show ordinary range play, cut by rule",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T22:21:59Z",
+   "evidence": "segments-evidence.json 1f7b819485452efe review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 59781,
+     "composition_ns": 439979234259772,
+     "decoded_bgr_sha256": "6e5c0852f4303b1e6a5a87f09ea33b14813bfe0dbaf4095bf963daf1f26ef224"
+    },
+    {
+     "frame_index": 59960,
+     "composition_ns": 439980725926379,
+     "decoded_bgr_sha256": "499c52f43fb368bd84c955bd96496ef1b4b6e6755323dce620a7a0c48d99b4f1"
+    },
+    {
+     "frame_index": 60139,
+     "composition_ns": 439982217592986,
+     "decoded_bgr_sha256": "2cd89a6d9d362e0ca1dcc88778128ea48f01c6240d5620a3027bd9bc750a7f34"
+    }
+   ]
+  },
+  "seg-014": {
+   "suitability": "rejected",
+   "reason": "unsampled edge sliver between a rule cut and a proven gameplay edge; no review frames",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T22:21:59Z",
+   "evidence": "segments-evidence.json 1f7b819485452efe review frames + contact sheets",
+   "frames": []
+  },
+  "seg-015": {
+   "suitability": "accepted",
+   "reason": "range play after the second Tab; HUD on every frame",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T22:21:59Z",
+   "evidence": "segments-evidence.json 1f7b819485452efe review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 60140,
+     "composition_ns": 439982225926319,
+     "decoded_bgr_sha256": "d05c568cbf8cc6683fafe980946d799f664aef049d75b6a10d96ab3c87220381"
+    },
+    {
+     "frame_index": 61288,
+     "composition_ns": 439991792592603,
+     "decoded_bgr_sha256": "80cc8c2b96eeb0ba344327947d00c552f195979ccf7177a8ce9ea30a062b2937"
+    },
+    {
+     "frame_index": 62436,
+     "composition_ns": 440001359258887,
+     "decoded_bgr_sha256": "874e0846552a8e8ed79b98003353d9cc9b0974893c9737eb6d4a447ba75b2426"
+    },
+    {
+     "frame_index": 63585,
+     "composition_ns": 440010934258504,
+     "decoded_bgr_sha256": "b147dd45acd3fffda66ba202a8191a2f173e50947fb29a87eb713c108bb5d35d"
+    },
+    {
+     "frame_index": 64733,
+     "composition_ns": 440020500924788,
+     "decoded_bgr_sha256": "73cf16b25e58ed5058a3bc2e185564dda2602e8a499d8cc6a7995595e487a76f"
+    },
+    {
+     "frame_index": 65882,
+     "composition_ns": 440030075924405,
+     "decoded_bgr_sha256": "707908d382f5a23eb5f4c4a75fa10a08843a836a985dfdacbac008e5b4a8f909"
+    },
+    {
+     "frame_index": 67030,
+     "composition_ns": 440039642590689,
+     "decoded_bgr_sha256": "d0a86f0dbd993056e0ad0c2361bcb5db31b685cd59f3876ff9bd15a1e8a320e7"
+    },
+    {
+     "frame_index": 68179,
+     "composition_ns": 440049217590306,
+     "decoded_bgr_sha256": "8b87283c939aa1624c14d8f71ccb1a139e946f851c3700d9adaea99b201c8d90"
+    },
+    {
+     "frame_index": 69327,
+     "composition_ns": 440058784256590,
+     "decoded_bgr_sha256": "89ab9439a4a18af95a1a228e7c3260243a47fe6b2126d56c023ef1df0752e530"
+    },
+    {
+     "frame_index": 70476,
+     "composition_ns": 440068359256207,
+     "decoded_bgr_sha256": "4d8e55892842a623fe489e5b868f2f71f3e4758c3a689381c86bf1085e4328fd"
+    },
+    {
+     "frame_index": 71624,
+     "composition_ns": 440077925922491,
+     "decoded_bgr_sha256": "ff86892e1d92654b711f6e9e873a0fcfdf83d738f234e19d3ecf8905ee5f89ab"
+    },
+    {
+     "frame_index": 72772,
+     "composition_ns": 440087492588775,
+     "decoded_bgr_sha256": "1986fe577ee9e6b64b164eec5f0cfec8fe984ba3469f7b55a851109d16326cd0"
+    },
+    {
+     "frame_index": 73921,
+     "composition_ns": 440097067588392,
+     "decoded_bgr_sha256": "174c01e0e4f05edc446f2247dca92d951a2d373b19ed2be2c7cb29258fafec73"
+    },
+    {
+     "frame_index": 75069,
+     "composition_ns": 440106634254676,
+     "decoded_bgr_sha256": "492d5649eb41041cf511e25d3da172a2de7f73a48b94a6289f82b1a207d5614b"
+    },
+    {
+     "frame_index": 76218,
+     "composition_ns": 440116209254293,
+     "decoded_bgr_sha256": "ffc55eafced9ae7fcc6dca67b261f7f4631cf0af8c72c2a34afdb9f5dbe11777"
+    },
+    {
+     "frame_index": 77366,
+     "composition_ns": 440125775920577,
+     "decoded_bgr_sha256": "2bc238ea60ec225a027496a97552768c6a4acdab1d75148c6e55dd6bde8ed49f"
+    },
+    {
+     "frame_index": 78515,
+     "composition_ns": 440135350920194,
+     "decoded_bgr_sha256": "28c306c7b046404ef54f9039ef5fc33d004d873f1525e6f6030d178090043f93"
+    },
+    {
+     "frame_index": 79663,
+     "composition_ns": 440144917586478,
+     "decoded_bgr_sha256": "e2437a366a3e9c8657ff2ff0e32f2bad125ad36945c5934e686ef535a864ffa4"
+    },
+    {
+     "frame_index": 80812,
+     "composition_ns": 440154492586095,
+     "decoded_bgr_sha256": "ce22d21006ae07527de5f472d7d187e4c6a39c4472398cb06b2e896b7d25ce19"
+    }
+   ]
+  },
+  "seg-016": {
+   "suitability": "rejected",
+   "reason": "unsampled edge sliver between a rule cut and a proven gameplay edge; no review frames",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T22:21:59Z",
+   "evidence": "segments-evidence.json 1f7b819485452efe review frames + contact sheets",
+   "frames": []
+  },
+  "seg-017": {
+   "suitability": "rejected",
+   "reason": "UI key (Tab or the Alt of Alt+Tab) with its 2 s settle; frames show ordinary range play, cut by rule",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T22:21:59Z",
+   "evidence": "segments-evidence.json 1f7b819485452efe review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 80813,
+     "composition_ns": 440154500919428,
+     "decoded_bgr_sha256": "f3940139026e076de00daa8b15e6b9dc57d0c1ca1b8bfeb38844696589a69e70"
+    },
+    {
+     "frame_index": 80817,
+     "composition_ns": 440154534252760,
+     "decoded_bgr_sha256": "65768586a644d4f715f08edc040e421550b9b96f6b5b79e60d7ca4113ba4af76"
+    },
+    {
+     "frame_index": 80822,
+     "composition_ns": 440154575919425,
+     "decoded_bgr_sha256": "601329d01b943992554a3f6cd388d6481c0324ea8254befbc795e1def0e4fdfb"
+    }
+   ]
+  },
+  "seg-018": {
+   "suitability": "rejected",
+   "reason": "focus transition (Alt+Tab return): first frames after focus gain; frames show the range, but the rule cuts the settle",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T22:21:59Z",
+   "evidence": "segments-evidence.json 1f7b819485452efe review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 80981,
+     "composition_ns": 440155900919372,
+     "decoded_bgr_sha256": "0fa00626ceec1487fb3dbd9c5e2da8d0dc3be3cd01ee613577e07582dd879c99"
+    },
+    {
+     "frame_index": 80995,
+     "composition_ns": 440156017586034,
+     "decoded_bgr_sha256": "5ec2c344d4f9023415795b00116b44e086509c158830241f2a8e52e94515293c"
+    },
+    {
+     "frame_index": 81010,
+     "composition_ns": 440156142586029,
+     "decoded_bgr_sha256": "b09a58910e116cb2239d0996d0505304f917be82d6c6448ed185cd950336de66"
+    }
+   ]
+  },
+  "seg-019": {
+   "suitability": "rejected",
+   "reason": "unsampled edge sliver between a rule cut and a proven gameplay edge; no review frames",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T22:21:59Z",
+   "evidence": "segments-evidence.json 1f7b819485452efe review frames + contact sheets",
+   "frames": []
+  },
+  "seg-020": {
+   "suitability": "accepted",
+   "reason": "range play after the second Alt+Tab return; HUD on every frame",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T22:21:59Z",
+   "evidence": "segments-evidence.json 1f7b819485452efe review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 81011,
+     "composition_ns": 440156150919362,
+     "decoded_bgr_sha256": "521977ac942e8c6967342d3a6c774a3daebf1dc5a8e38e13fa1ff6a82b8645f9"
+    },
+    {
+     "frame_index": 82189,
+     "composition_ns": 440165967585636,
+     "decoded_bgr_sha256": "6e4275c5ae545294d06bff1c8928ce247773d59ba3dbd39c5e153a3eed1bf415"
+    },
+    {
+     "frame_index": 83367,
+     "composition_ns": 440175784251910,
+     "decoded_bgr_sha256": "398a04e49caaf7cbfc41a2ec7739e1ac95f9e0f32b2b9db6a496f55f208066fd"
+    },
+    {
+     "frame_index": 84545,
+     "composition_ns": 440185600918184,
+     "decoded_bgr_sha256": "cfe22d4ff30a1d9a2d61985ef9cbcf01e6b9531cf6957eb37eadb24529906b1a"
+    },
+    {
+     "frame_index": 85723,
+     "composition_ns": 440195417584458,
+     "decoded_bgr_sha256": "a25fd2a823648c401fcbd9f94ccc92e009c5bb45f1f54ac7eb72b82f524d2611"
+    },
+    {
+     "frame_index": 86901,
+     "composition_ns": 440205234250732,
+     "decoded_bgr_sha256": "d3363ee0ebdf531c33c7110b1a794b64daefcb14a8182904de44a3ccd9dac20a"
+    },
+    {
+     "frame_index": 88079,
+     "composition_ns": 440215050917006,
+     "decoded_bgr_sha256": "9e23b86081447f1db00efde3d9bdcae89ae2e6c07f57f93546f28fbf4b02d1a0"
+    },
+    {
+     "frame_index": 89258,
+     "composition_ns": 440224875916613,
+     "decoded_bgr_sha256": "f76419f56590e364eb85b9402561a2ef632830c61c74fcb29e234cd98793df02"
+    },
+    {
+     "frame_index": 90436,
+     "composition_ns": 440234692582887,
+     "decoded_bgr_sha256": "872e91e8ce6c8342edd537c7145857ee145c0028bd31a6a5c4bb29b5ce5517a8"
+    },
+    {
+     "frame_index": 91614,
+     "composition_ns": 440244509249161,
+     "decoded_bgr_sha256": "06f1f7f43d80e9d5278094a7175d82312c2973292f86040a3a1cadce152640bd"
+    },
+    {
+     "frame_index": 92792,
+     "composition_ns": 440254325915435,
+     "decoded_bgr_sha256": "f4f6a64ceeb5e644f58e85956a1d7db9d26dd30d11b421daabcd33b8bac2152b"
+    },
+    {
+     "frame_index": 93970,
+     "composition_ns": 440264142581709,
+     "decoded_bgr_sha256": "a22aef8937af0f4048c6827440586585b43a82fc0db864d3b01b20f9204a85f9"
+    },
+    {
+     "frame_index": 95148,
+     "composition_ns": 440273959247983,
+     "decoded_bgr_sha256": "02a349dd65dcc6fbc050f3c824773971419182ad56bc0d171debe06750b18c3c"
+    },
+    {
+     "frame_index": 96326,
+     "composition_ns": 440283775914257,
+     "decoded_bgr_sha256": "d2907e2aef3e65af18c3ff772e0cba9ccadebce31e10f6d7987e3ac8f6ffe29c"
+    },
+    {
+     "frame_index": 97505,
+     "composition_ns": 440293600913864,
+     "decoded_bgr_sha256": "e27c301c0ca52fb536ebd96db093b8f0bb7d38eff87f03350d6df5ba303dc4f8"
+    },
+    {
+     "frame_index": 98683,
+     "composition_ns": 440303417580138,
+     "decoded_bgr_sha256": "f2aa380b527a8869a6cd6a80f58fa7cbba228903f3f396342a0ed934e9321205"
+    },
+    {
+     "frame_index": 99861,
+     "composition_ns": 440313234246412,
+     "decoded_bgr_sha256": "9ec84bd489da452311b5bd4daedd6f3093dd6c2fce048b10052d5bce6c9eb067"
+    },
+    {
+     "frame_index": 101039,
+     "composition_ns": 440323050912686,
+     "decoded_bgr_sha256": "522140b5e66a486f03ae161b7069e37162d21aa4dd19478f815e835b83961101"
+    },
+    {
+     "frame_index": 102217,
+     "composition_ns": 440332867578960,
+     "decoded_bgr_sha256": "5faae43c016222e2789725d57018e148935a54e2538faf6ee49708f159cbf5d4"
+    },
+    {
+     "frame_index": 103395,
+     "composition_ns": 440342684245234,
+     "decoded_bgr_sha256": "ccb552edb1505c6c028cc7fa2d1018e88a1e939cc5f75b6d33345bb0aa9c47cf"
+    },
+    {
+     "frame_index": 104573,
+     "composition_ns": 440352500911508,
+     "decoded_bgr_sha256": "6179ebf057ed0dbb68abfc028b1f86601a4b11a370f0b1f2a3e1d8d12224dcf1"
+    },
+    {
+     "frame_index": 105752,
+     "composition_ns": 440362325911115,
+     "decoded_bgr_sha256": "55c184604038f7bc452b1d814392237e390b384cde3cd23dd227b764d4a53f8f"
+    }
+   ]
+  },
+  "seg-021": {
+   "suitability": "rejected",
+   "reason": "unsampled edge sliver between a rule cut and a proven gameplay edge; no review frames",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T22:21:59Z",
+   "evidence": "segments-evidence.json 1f7b819485452efe review frames + contact sheets",
+   "frames": []
+  },
+  "seg-022": {
+   "suitability": "rejected",
+   "reason": "UI key (Tab or the Alt of Alt+Tab) with its 2 s settle; frames show ordinary range play, cut by rule",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T22:21:59Z",
+   "evidence": "segments-evidence.json 1f7b819485452efe review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 105753,
+     "composition_ns": 440362334244448,
+     "decoded_bgr_sha256": "dc37b253a5fcd3b44a3fe018a58adcd54d3b33b12de004b1eb715d0a6d905193"
+    },
+    {
+     "frame_index": 105880,
+     "composition_ns": 440363392577739,
+     "decoded_bgr_sha256": "4b5651148629f05db1e35a8519173bbeaa1057147277a71db9d9868fe71ea9b6"
+    },
+    {
+     "frame_index": 106007,
+     "composition_ns": 440364450911030,
+     "decoded_bgr_sha256": "a3ff849bed1caeefaba8b38d2b4f492cf34be6f491da0a4d086c579e6eeda721"
+    }
+   ]
+  },
+  "seg-023": {
+   "suitability": "rejected",
+   "reason": "focus transition (Alt+Tab return): first frames after focus gain; frames show the range, but the rule cuts the settle",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T22:21:59Z",
+   "evidence": "segments-evidence.json 1f7b819485452efe review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 106235,
+     "composition_ns": 440366350910954,
+     "decoded_bgr_sha256": "d51f6b6e1bdd03cbba1c689a432fe3d2c921a4a243086bce904df305fecfcd76"
+    },
+    {
+     "frame_index": 106249,
+     "composition_ns": 440366467577616,
+     "decoded_bgr_sha256": "f16cdf06a52de1ed5cc98df529b8096d2a583697068557af9b0303edf2f0e7df"
+    },
+    {
+     "frame_index": 106264,
+     "composition_ns": 440366592577611,
+     "decoded_bgr_sha256": "c4aaba36cfd595af3fa3b8d389114ea14672d7d45c75c8b56c1e517a312f2b41"
+    }
+   ]
+  },
+  "seg-024": {
+   "suitability": "rejected",
+   "reason": "unsampled edge sliver between a rule cut and a proven gameplay edge; no review frames",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T22:21:59Z",
+   "evidence": "segments-evidence.json 1f7b819485452efe review frames + contact sheets",
+   "frames": []
+  },
+  "seg-025": {
+   "suitability": "accepted",
+   "reason": "range play after the third Alt+Tab return; ends at the closing Alt; HUD on every frame",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T22:21:59Z",
+   "evidence": "segments-evidence.json 1f7b819485452efe review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 106265,
+     "composition_ns": 440366600910944,
+     "decoded_bgr_sha256": "62344162934d928da248040deb699a60b41e0a3ea4df43d91e0ee9024ca40cff"
+    },
+    {
+     "frame_index": 107373,
+     "composition_ns": 440375834243908,
+     "decoded_bgr_sha256": "cd837dd2aaf875291204011c8f2698be3f763f4aae9b8d732c10980a832dcb8d"
+    },
+    {
+     "frame_index": 108481,
+     "composition_ns": 440385067576872,
+     "decoded_bgr_sha256": "fe6f09b4eac949e1c91507a2eb9891850746b4551fe68aa854fee6da0b26bb82"
+    },
+    {
+     "frame_index": 109589,
+     "composition_ns": 440394300909836,
+     "decoded_bgr_sha256": "5215209354621fa0b827c33ca6f2624c47c5eae5d69da32bdd215a6455672a4e"
+    },
+    {
+     "frame_index": 110697,
+     "composition_ns": 440403534242800,
+     "decoded_bgr_sha256": "a21d40d369197c773eaf971e1215dd9ec22a929ef396b13a9533c1ce7ac18ba9"
+    },
+    {
+     "frame_index": 111805,
+     "composition_ns": 440412767575764,
+     "decoded_bgr_sha256": "9c4696124ce370dcbe7ac0a08c9506ccb0c605e88c1b6e05498c81de2e125507"
+    },
+    {
+     "frame_index": 112913,
+     "composition_ns": 440422000908728,
+     "decoded_bgr_sha256": "46ed988818845994ba400a028d189c360b29ecc55154135396facd4546c8af44"
+    },
+    {
+     "frame_index": 114021,
+     "composition_ns": 440431234241692,
+     "decoded_bgr_sha256": "95ef24c855d3ede6ad88dc762b881a13bbae8442131d6dd8e24139cf67b30041"
+    }
+   ]
+  },
+  "seg-026": {
+   "suitability": "rejected",
+   "reason": "unsampled edge sliver between a rule cut and a proven gameplay edge; no review frames",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T22:21:59Z",
+   "evidence": "segments-evidence.json 1f7b819485452efe review frames + contact sheets",
+   "frames": []
+  },
+  "seg-027": {
+   "suitability": "rejected",
+   "reason": "UI key (Tab or the Alt of Alt+Tab) with its 2 s settle; frames show ordinary range play, cut by rule",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T22:21:59Z",
+   "evidence": "segments-evidence.json 1f7b819485452efe review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 114022,
+     "composition_ns": 440431242575025,
+     "decoded_bgr_sha256": "85af8d173ffa8b0d4ec0e7b35e86c45ebfbac7db735e505e4ceb2b7a541a7a09"
+    },
+    {
+     "frame_index": 114033,
+     "composition_ns": 440431334241688,
+     "decoded_bgr_sha256": "9315c03a131cba5a6a88ae8cdcf515db5b60f918e9e09941b3e56f8157b1499f"
+    },
+    {
+     "frame_index": 114045,
+     "composition_ns": 440431434241684,
+     "decoded_bgr_sha256": "98391eeb52d1ffefff9353e34435a99f008742d24f56e77bbd9a0277fe704101"
+    }
+   ]
+  }
+ }
+}

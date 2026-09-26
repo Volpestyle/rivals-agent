@@ -59,8 +59,8 @@ RESPAWN_SETTLE_NS = 1_000_000_000
 # prove, moving inward from an unproven sample frame and refusing when none is proven. Drivers check this marker.
 EDGE_PROOF = 1
 # Cut reasons, strongest first: the reason a non-gameplay hole reports when several cuts cover it.
-CUT_ORDER = ("settings_menu", "after_settings_menu", "ui_key", "dead", "focus_transition", "afk", "capture_gap",
-             "regime_differs_from_session")
+CUT_ORDER = ("settings_menu", "after_settings_menu", "settings_change", "ui_key", "dead", "focus_transition", "afk", "timed_practice",
+             "capture_gap", "regime_differs_from_session")
 SUITABILITY = ("accepted", "rejected", "unresolved")
 TAG_DIMENSIONS = ("range", "approach", "target", "resources")
 STATUSES = ("admitted", "held", "sealed", "not_range", "pending")
@@ -198,8 +198,11 @@ def dead_spans(samples, dead):
     return spans
 
 
-def _cuts(a, b, *, ui, controls, gaps, regime_spans, session_regime, esc_from, afk_ns, focus_settle_ns, dead=()):
+def _cuts(a, b, *, ui, controls, gaps, regime_spans, session_regime, esc_from, afk_ns, focus_settle_ns, dead=(),
+          timed=(), settings_change=()):
     cuts = [(a, a + focus_settle_ns, "focus_transition")] if focus_settle_ns else []
+    cuts += [(s, e, "timed_practice") for s, e in timed]
+    cuts += [(s, e, "settings_change") for s, e in settings_change]
     cuts += list(ui) + list(dead)
     if esc_from is not None:
         cuts.append((esc_from, b, "after_settings_menu"))
@@ -214,16 +217,75 @@ def _cuts(a, b, *, ui, controls, gaps, regime_spans, session_regime, esc_from, a
     return [(max(s, a), min(e, b), r) for s, e, r in cuts if max(s, a) < min(e, b)]
 
 
+BANNER_LABELS = ("range", "timed", None)
+
+
+def timed_practice_span(start_reads, end_reads, interior=()):
+    """One Timed Practice span from native banner reads (lead decision 2026-09-25, 203745).
+
+    Each read is `(composition_ns, label)` with label "range" (the PRACTICE RANGE banner), "timed" (TIMED PRACTICE)
+    or None (neither: a fade, a blur, no banner). The start bracket must read range, then timed, with no range after
+    the first timed frame; the end bracket timed, then range, with no timed after the first range frame; the interior
+    samples must never read range. Each bracket changes label once (review F1, 2026-09-26). The cut is conservative: from one ns after the last range frame before the round
+    to the first range frame after it, so unread and unlabelled frames at either edge fall inside the cut.
+    Returns `(start_ns, end_ns)`; refuses anything else.
+    """
+    for reads in (start_reads, end_reads, interior):
+        _require(all(label in BANNER_LABELS for _, label in reads), "banner labels are range, timed or None")
+    s = sorted((int(t), label) for t, label in start_reads)
+    e = sorted((int(t), label) for t, label in end_reads)
+    first_timed = next((t for t, label in s if label == "timed"), None)
+    _require(first_timed is not None, "start bracket: no TIMED PRACTICE frame")
+    before = [t for t, label in s if label == "range" and t < first_timed]
+    _require(before, "start bracket: no PRACTICE RANGE frame before the round")
+    _require(not any(label == "range" for t, label in s if t > first_timed), "start bracket: the banner flickers back")
+    end_timed = max((t for t, label in e if label == "timed"), default=None)
+    _require(end_timed is not None, "end bracket: no TIMED PRACTICE frame")
+    # review F1 (203745): the end bracket must read timed, then range, once: a range read before the last timed read
+    # is a flicker (range -> timed -> range), and refuses
+    _require(not any(label == "range" for t, label in e if t < end_timed), "end bracket: the banner flickers back")
+    after = [t for t, label in e if label == "range" and t > end_timed]
+    _require(after, "end bracket: no PRACTICE RANGE frame after the round")
+    start, end = before[-1] + 1, after[0]
+    _require(first_timed < end_timed, "the round must end after it starts")
+    _require(not any(label == "range" for t, label in interior if start <= t < end), "interior reads PRACTICE RANGE")
+    return start, end
+
+
+def settings_change_span(ui_keys, start_ns, *, esc_presses, settle_ns=UI_SETTLE_NS):
+    """The cut for a settings change declared at a take's start (lead decision 2026-09-25, the late 2026-09-25 take):
+    from the recording's start to the last of the first `esc_presses` Esc presses plus `settle_ns`. A press is an
+    up->down transition of Esc (auto-repeat is not a press). Refuses when the take has fewer Esc presses than declared.
+    Esc presses after the span keep R3. Returns `((start_ns, end_ns), [press times])`."""
+    _require(isinstance(esc_presses, int) and esc_presses >= 1, "esc_presses must be a positive integer")
+    presses, held = [], False
+    for t, vk, *rest in sorted((int(t), int(vk), *rest) for t, vk, *rest in ui_keys):
+        if vk not in SETTINGS_MENU_KEYS:
+            continue
+        down = bool(rest[0]) if rest else True
+        if down and not held:
+            presses.append(t)
+        held = down
+    _require(len(presses) >= esc_presses, f"declared {esc_presses} Esc presses, the take has {len(presses)}")
+    chosen = presses[:esc_presses]
+    return (int(start_ns), chosen[-1] + settle_ns), chosen
+
+
 def propose_segments(intervals, hud_samples, *, ui_keys=(), controls=None, gaps=(), regime_spans=(),
                      session_regime="normal", native=None, afk_ns=AFK_NS, ui_settle_ns=UI_SETTLE_NS,
-                     max_hud_gap_ns=MAX_HUD_GAP_NS, focus_settle_ns=FOCUS_SETTLE_NS, dead=()):
+                     max_hud_gap_ns=MAX_HUD_GAP_NS, focus_settle_ns=FOCUS_SETTLE_NS, dead=(), timed_practice=(),
+                     settings_change=()):
     """Candidate segments tiling every focused interval, plus the session flags.
 
     Gameplay = runs of HUD-present samples (reader misses shorter than `max_hud_gap_ns` absorbed), minus every
     cut: `[focus start, + focus_settle_ns)` after every focus regain, the UI spans of `ui_cuts` (R1, I2: chat and
     overlays from their opening to their closing packet plus the settle), the hero's deaths (`dead`: samples whose
     HP reads 0, widened to the neighbouring samples), everything after the first real Esc (R3: proposed `after_settings_menu`, never acceptable), `afk_ns`
-    without control-affecting input (R6), capture gaps and other-regime spans. Each gameplay piece starts at its
+    without control-affecting input (R6), `settings_change` spans (`[(start_ns, end_ns)]` from
+    `settings_change_span`: a declared settings change at a take's start; the Esc presses inside are that change,
+    not an R3 settings-menu opening; lead decision 2026-09-25), `timed_practice` spans (`[(start_ns, end_ns)]` from `timed_practice_span`
+    over native banner reads: the range's scored static-target round, lead decision 2026-09-25), capture gaps and
+    other-regime spans. Each gameplay piece starts at its
     first HUD-present sample and ends one ns after its last HUD-present sample that precedes any cut, so both
     edges are verified gameplay frames (conservative).
 
@@ -238,6 +300,11 @@ def propose_segments(intervals, hud_samples, *, ui_keys=(), controls=None, gaps=
     _intervals_ok(intervals, "focus intervals")
     samples = sorted((int(t), p) for t, p in hud_samples)
     _require(all(p in (True, False, None) for _, p in samples), "HUD presence must be True, False or None")
+    _intervals_ok(sorted((int(s), int(e)) for s, e in timed_practice), "timed practice spans")
+    changes = sorted((int(s), int(e)) for s, e in settings_change)
+    _intervals_ok(changes, "settings change spans")
+    in_change = lambda t: any(s <= t < e for s, e in changes)   # noqa: E731
+    ui_keys = [k for k in ui_keys if not (int(k[1]) in SETTINGS_MENU_KEYS and in_change(int(k[0])))]
     ui, esc = ui_cuts(ui_keys, intervals, ui_settle_ns)
     dead_cuts = dead_spans(samples, dead)
     esc_from = esc[0] if esc else None
@@ -252,7 +319,8 @@ def propose_segments(intervals, hud_samples, *, ui_keys=(), controls=None, gaps=
         times = [t for t, _ in inside]
         cuts = _cuts(a, b, ui=ui, controls=controls, gaps=gaps, regime_spans=regime_spans,
                      session_regime=session_regime, esc_from=esc_from if esc_from is not None and esc_from < b else None,
-                     afk_ns=afk_ns, focus_settle_ns=focus_settle_ns, dead=dead_cuts)
+                     afk_ns=afk_ns, focus_settle_ns=focus_settle_ns, dead=dead_cuts,
+                     timed=[(int(s), int(e)) for s, e in timed_practice], settings_change=changes)
         cut_at = lambda t: any(s <= t < e for s, e, _ in cuts)
         # gameplay pieces: present samples not inside any cut, split where a cut or a long HUD hole intervenes
         pieces, run = [], []
@@ -1220,10 +1288,15 @@ def load_dataset_relocated(path, *, splits, denylist, relocation, unseal=False, 
     with Path(path).open(encoding="utf-8") as handle:
         header = json.loads(handle.readline())
         _require(header.get("format") == hd.FORMAT, "unsupported imported demo format")
-        if (header.get("sealed") is True or header.get("split") == "test") and not unseal:
-            raise hd.SealedError("test artifact is sealed")
+        if (header.get("sealed") is True or header.get("split") in hd.SEALED_SPLITS) and not unseal:
+            raise hd.SealedError(f"{header.get('split')} artifact is sealed")
         placement = registry.get(header.get("session_id"))
         _require(placement is not None, "session_id absent from split registry")
+        # review F2 (2026-09-26): the placement's own split refuses too, and the header's sealed flag must agree with
+        # it, before any byte of the body is read (a gate2 row with a header claiming sealed=False)
+        if placement.split in hd.SEALED_SPLITS and not unseal:
+            raise hd.SealedError(f"{placement.split} session is sealed; explicit unseal=True is required")
+        _require(header.get("sealed") is (placement.split in hd.SEALED_SPLITS), "sealed header mismatch")
         assert_not_sealed(placement.session_id, header.get("media_sha256"), denylist)
         _require(placement.recorded_video_path is not None,
                  "relocation needs recorded_video_path and expected_media_sha256 in the registry")

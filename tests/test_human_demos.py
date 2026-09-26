@@ -458,6 +458,72 @@ def test_sealed_refusal_before_session_or_artifact_payload_access(tmp_path):
         hd.load_dataset(artifact, splits=registry)
 
 
+def test_gate2_is_sealed_like_test(tmp_path):
+    """The IDM's replay-of-self pairs (split gate2, lead 2026-09-26): registered, never imported or loaded unsealed."""
+    data = payload(tmp_path)
+    _, review, registry = write_session(tmp_path, data, split="gate2")
+    assert [p.split for p in hd.read_splits(registry)] == ["gate2"]
+    with pytest.raises(hd.SealedError, match="gate2 session is sealed"):
+        hd.import_session(tmp_path / "DOES_NOT_EXIST", review=review, splits=registry, output=tmp_path / "out")
+    artifact = tmp_path / "gate2.jsonl"
+    artifact.write_text(json.dumps(dict(format=hd.FORMAT, session_id="s1", split="gate2", sealed=True)) +
+                        "\nTHIS PAYLOAD MUST NEVER BE PARSED\n")
+    with pytest.raises(hd.SealedError, match="gate2 artifact is sealed"):
+        hd.load_dataset(artifact, splits=registry)
+    doc = json.loads(registry.read_text())
+    doc["sessions"][0]["sealed"] = False                     # a gate2 row that claims to be unsealed is refused
+    registry.write_text(json.dumps(doc))
+    with pytest.raises(hd.DemoError, match="must be sealed"):
+        hd.read_splits(registry)
+    doc["sessions"][0].update(split="gate3", sealed=True)    # and a split nobody declared
+    registry.write_text(json.dumps(doc))
+    with pytest.raises(hd.DemoError, match="split must be one of"):
+        hd.read_splits(registry)
+
+
+def _registry_with(tmp_path, **lists):
+    """A one-session split registry plus excluded lists (review B1, 2026-09-26)."""
+    doc = dict(schema_version=1, sessions=[dict(session_id="s1", session_group="g1", split="train",
+                                                  video_path="s1.mkv", recorded_video_path="s1.mkv",
+                                                  expected_media_sha256="a" * 64)], **lists)
+    path = tmp_path / "splits.json"
+    path.write_text(json.dumps(doc))
+    return path
+
+
+@pytest.mark.parametrize("name,row,match", [
+    ("calibration_sessions", dict(session_id="s1", video_path="c.mkv"), "shares its session id"),
+    ("calibration_sessions", dict(session_id="c1", video_path="s1.mkv"), "shares its media path"),
+    ("calibration_sessions", dict(session_id="c1", video_path="c.mkv", expected_media_sha256="a" * 64),
+     "shares its media sha256"),
+    ("calibration_sessions", dict(session_id="c1", video_path="c.mkv", split="train"), "carries a split"),
+    ("evaluation_sessions", dict(session_id="s1", kind="reader_validation", video_path="e.mkv"), "shares its session id"),
+    ("evaluation_sessions", dict(session_id="e1", kind="reader_development", video_path="s1.mkv"),
+     "shares its media path"),
+    ("evaluation_sessions", dict(session_id="e1", kind="match_dev", video_path="e.mkv", expected_media_sha256="a" * 64),
+     "shares its media sha256"),
+    ("evaluation_sessions", dict(session_id="e1", kind="match_dev", video_path="e.mkv", split="val"), "carries a split"),
+    ("evaluation_sessions", dict(session_id="e1", kind="gate2", video_path="e.mkv"), "names a split"),
+])
+def test_calibration_and_evaluation_rows_never_resolve_to_a_split(tmp_path, name, row, match):
+    """Review B1: excluded rows are disjoint from split rows by id, media path and media hash, and carry no split."""
+    with pytest.raises(hd.DemoError, match=match):
+        hd.read_splits(_registry_with(tmp_path, **{name: [row]}))
+
+
+def test_excluded_lists_are_disjoint_from_each_other_and_do_not_add_placements(tmp_path):
+    cal = dict(session_id="c1", video_path="c.mkv", expected_media_sha256="b" * 64)
+    ok = _registry_with(tmp_path, calibration_sessions=[cal],
+                        evaluation_sessions=[dict(session_id="e1", kind="reader_validation", video_path="e.mkv")])
+    assert [p.session_id for p in hd.read_splits(ok)] == ["s1"]
+    for clash, match in ((dict(session_id="c1", kind="match_dev", video_path="x.mkv"), "shares its session id"),
+                         (dict(session_id="e2", kind="match_dev", video_path="c.mkv"), "shares its media path"),
+                         (dict(session_id="e3", kind="match_dev", video_path="y.mkv", expected_media_sha256="b" * 64),
+                          "shares its media sha256")):
+        with pytest.raises(hd.DemoError, match=match):
+            hd.read_splits(_registry_with(tmp_path, calibration_sessions=[cal], evaluation_sessions=[clash]))
+
+
 def test_roundtrip_import_export_and_cli(tmp_path, monkeypatch, capsys):
     data = payload(tmp_path)
     session, review, registry = write_session(tmp_path, data)

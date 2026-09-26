@@ -115,6 +115,122 @@ def test_capture_gap_and_regime_cut_gameplay():
     assert all(a["end_ns"] == b["start_ns"] for a, b in zip(segs, segs[1:]))
 
 
+def test_timed_practice_cut_splits_gameplay_and_the_new_edges_stay_outside_it():
+    segs = propose([(t(0), t(40))], hud(0, 40), timed_practice=[(t(10.05), t(20.05))])
+    play = [s for s in segs if s["machine_reason"] == hi.GAMEPLAY]
+    timed = [s for s in segs if s["machine_reason"] == "timed_practice"]
+    assert len(play) == 2 and len(timed) == 1 and timed[0]["proposal"] == "rejected"
+    assert play[0]["end_ns"] <= t(10.05) and play[1]["start_ns"] >= t(20.05)
+    assert timed[0]["start_ns"] <= t(10.05) and timed[0]["end_ns"] >= t(20.05)
+    assert all(a["end_ns"] == b["start_ns"] for a, b in zip(segs, segs[1:]))
+    # an edge proven by native reads may move outward, but never into the cut
+    first = play[1]["edges"]["start"]["sample_ns"]
+    native = {("start", first): [(t(19.9) + i * 8_333_333, True) for i in range(40)]}
+    again = [s for s in propose([(t(0), t(40))], hud(0, 40), timed_practice=[(t(10.05), t(20.05))], native=native)
+             if s["machine_reason"] == hi.GAMEPLAY]
+    assert again[1]["start_ns"] >= t(20.05)
+    with pytest.raises(DemoError, match="timed practice spans"):
+        propose([(t(0), t(40))], hud(0, 40), timed_practice=[(t(20), t(10))])
+
+
+def test_settings_change_span_ends_after_the_declared_esc_press_and_ignores_auto_repeat():
+    keys = [(t(4.09), 27, True), (t(4.12), 27, True), (t(4.2), 27, False),     # one press with an auto-repeat down
+            (t(5.44), 27, True), (t(5.5), 27, False), (t(900), 27, True), (t(900.1), 27, False)]
+    cut, presses = hi.settings_change_span(keys, t(0), esc_presses=2)
+    assert presses == [t(4.09), t(5.44)] and cut == (t(0), t(5.44) + hi.UI_SETTLE_NS)
+    with pytest.raises(DemoError, match="declared 4 Esc presses, the take has 3"):
+        hi.settings_change_span(keys, t(0), esc_presses=4)
+    with pytest.raises(DemoError, match="positive integer"):
+        hi.settings_change_span(keys, t(0), esc_presses=0)
+
+
+def test_settings_change_cut_exempts_its_esc_presses_from_r3_but_not_a_later_esc():
+    keys = [(t(4.09), 27, True), (t(4.2), 27, False), (t(5.44), 27, True), (t(5.5), 27, False)]
+    cut, _ = hi.settings_change_span(keys, t(0), esc_presses=2)
+    segs, flags = hi.propose_segments([(t(0.4), t(40))], hud(0, 40), ui_keys=keys, settings_change=[cut],
+                                      focus_settle_ns=0)
+    assert not flags and "after_settings_menu" not in reasons(segs)
+    play = [s for s in segs if s["machine_reason"] == hi.GAMEPLAY]
+    assert len(play) == 1 and play[0]["start_ns"] >= cut[1]
+    assert [s["machine_reason"] for s in segs if s["end_ns"] <= cut[1]] == ["settings_change"]
+    assert all(a["end_ns"] == b["start_ns"] for a, b in zip(segs, segs[1:]))
+    later = keys + [(t(30), 27, True), (t(30.1), 27, False)]      # an Esc after the declared change keeps R3
+    segs2, flags2 = hi.propose_segments([(t(0.4), t(40))], hud(0, 40), ui_keys=later, settings_change=[cut],
+                                        focus_settle_ns=0)
+    assert [f["flag"] for f in flags2] == ["settings_menu_opened"] and flags2[0]["t_ns"] == t(30)
+    assert "after_settings_menu" in reasons(segs2)
+    # without the declared change, the opening Esc holds the whole take (R3, unchanged)
+    _, flags3 = hi.propose_segments([(t(0.4), t(40))], hud(0, 40), ui_keys=keys, focus_settle_ns=0)
+    assert flags3[0]["t_ns"] == t(4.09)
+
+
+def test_a_dated_motor_statement_covers_only_its_named_sessions_and_a_session_override_replaces_it():
+    A = assemble_module()
+    log = (ROOT / "docs/recording-log.md").read_text(encoding="utf-8")
+    base = dict(TAKE_0924, started_utc="2026-09-25T21:26:46.322Z")
+    val = A.motor_statement(dict(base, session_id="20260925T212646-322Z-49728-6"), hi, log)
+    assert sorted(val) == ["bindings", "date", "log_quotes", "settings"] and "fbe6693" in val["settings"]
+    late = A.motor_statement(dict(base, session_id="20260926T035932-508Z-63684-14",
+                                  started_utc="2026-09-26T03:59:32.508Z"), hi, log)
+    assert late["date"] == "2026-09-25" and "83c05f1" in late["settings"] and late["log_quotes"][0].startswith(
+        "2026-09-25 (late): ")
+    alt = A.motor_statement(dict(base, session_id="20260926T045729-166Z-79780-1",
+                                 started_utc="2026-09-26T04:57:29.166Z"), hi, log)   # 23:57:29 CDT keys 2026-09-25
+    assert alt["date"] == "2026-09-25" and "3936f94" in alt["settings"]
+    with pytest.raises(A.Refused, match="no per-session motor statement for 20260926T999999-000Z-1-1"):
+        A.motor_statement(dict(base, session_id="20260926T999999-000Z-1-1", started_utc="2026-09-26T04:59:59.000Z"),
+                          hi, log)
+
+
+def test_relocated_load_refuses_a_gate2_placement_before_the_body_even_if_the_header_claims_unsealed(tmp_path):
+    """Review F2 (2026-09-26), the reviewer's relocation_repro: a gate2 row plus a header with sealed=False used to
+    reach the payload checksum. It must refuse as sealed before any byte of the body is read."""
+    import dataclasses
+    reg = tmp_path / "gate2-reg.json"
+    reg.write_text(json.dumps(dict(schema_version=1, sessions=[dict(
+        session_id="synthetic-gate2", session_group="synthetic-pair", split="gate2", sealed=True,
+        video_path=str(tmp_path / "absent.mkv"), recorded_video_path=str(tmp_path / "absent.mkv"),
+        expected_media_sha256="1" * 64)])))
+    header = dict(format=hd.FORMAT, **dataclasses.asdict(hd.read_splits(reg)[0]), sealed=False,
+                  media_sha256="1" * 64, payload_sha256="0" * 64)
+    artifact = tmp_path / "gate2-artifact.jsonl"
+    artifact.write_text(json.dumps(header) + "\nSYNTHETIC PAYLOAD MUST NOT BE READ\n")
+    with pytest.raises(hd.SealedError, match="gate2 artifact is sealed"):
+        hi.load_dataset_relocated(artifact, splits=reg, denylist={"sessions": []}, relocation={})
+    lying = tmp_path / "lying-artifact.jsonl"   # a header that also claims split train: the placement refuses it
+    lying.write_text(json.dumps(dict(header, split="train")) + "\nSYNTHETIC PAYLOAD MUST NOT BE READ\n")
+    with pytest.raises(hd.SealedError, match="gate2 session is sealed"):
+        hi.load_dataset_relocated(lying, splits=reg, denylist={"sessions": []}, relocation={})
+    with pytest.raises(DemoError, match="sealed header mismatch"):   # unsealed on purpose: the flag must still agree
+        hi.load_dataset_relocated(artifact, splits=reg, denylist={"sessions": []}, relocation={}, unseal=True)
+
+
+def test_timed_practice_span_is_conservative_and_refuses_ambiguity():
+    f = lambda i: t(100) + i * 8_333_333   # noqa: E731
+    start = [(f(i), "range") for i in range(10)] + [(f(10), None), (f(11), None)] + [(f(i), "timed") for i in range(12, 20)]
+    end = [(f(i), "timed") for i in range(1000, 1010)] + [(f(1010), None)] + [(f(i), "range") for i in range(1011, 1020)]
+    interior = [(f(i), "timed") for i in range(20, 1000, 100)] + [(f(500), None)]
+    assert hi.timed_practice_span(start, end, interior) == (f(9) + 1, f(1011))   # unlabelled edge frames are cut
+    with pytest.raises(DemoError, match="flickers back"):
+        hi.timed_practice_span(start + [(f(15), "range")], end)
+    with pytest.raises(DemoError, match="flickers back"):
+        hi.timed_practice_span(start, end + [(f(1015), "timed")])
+    # review F1 (203745): a range read before the end bracket's timed reads is a flicker too
+    with pytest.raises(DemoError, match="flickers back"):
+        hi.timed_practice_span([(0, "range"), (10, "timed")], [(90, "range"), (100, "timed"), (110, "range")],
+                               [(50, "timed")])
+    with pytest.raises(DemoError, match="flickers back"):
+        hi.timed_practice_span(start, [(f(990), "range")] + end)
+    with pytest.raises(DemoError, match="no PRACTICE RANGE frame before"):
+        hi.timed_practice_span([(f(i), "timed") for i in range(5)], end)
+    with pytest.raises(DemoError, match="no PRACTICE RANGE frame after"):
+        hi.timed_practice_span(start, [(f(i), "timed") for i in range(1000, 1005)])
+    with pytest.raises(DemoError, match="interior reads PRACTICE RANGE"):
+        hi.timed_practice_span(start, end, interior + [(f(600), "range")])
+    with pytest.raises(DemoError, match="range, timed or None"):
+        hi.timed_practice_span(start, end, [(f(600), "menu")])
+
+
 def test_native_refinement_is_conservative_and_bounded():
     samples = hud(0, 1, False) + hud(1, 5) + hud(5, 6, False)
     segs = propose([(t(0), t(6))], samples)
@@ -879,7 +995,11 @@ def test_motor_statements_quote_the_committed_log_and_keep_the_admitted_wording(
     new = A.motor_statement(TAKE_0924, hi, log)
     assert "57d1f3d" in new["settings"] and "~22:40 CDT" in new["settings"] and "~22:10" not in new["settings"]   # M2
     assert all(q in log for q in new["log_quotes"]) and new["log_quotes"][0].startswith("2026-09-24: ")
-    for day in ("2026-09-22T20:00:00Z", "2026-09-25T20:00:00Z"):
+    today = A.motor_statement(dict(TAKE_0924, started_utc="2026-09-25T21:26:46.322Z",
+                                    session_id="20260925T212646-322Z-49728-6"), hi, log)
+    assert today["date"] == "2026-09-25" and "fbe6693" in today["settings"] and "fbe6693" in today["bindings"] and "~16:50 CDT" in today["settings"]
+    assert all(q in log for q in today["log_quotes"]) and today["log_quotes"][0].startswith("2026-09-25: ")
+    for day in ("2026-09-22T20:00:00Z", "2026-09-26T20:00:00Z"):
         with pytest.raises(A.Refused, match="no per-session motor statement"):
             A.motor_statement(dict(TAKE_0924, started_utc=day), hi, log)
     with pytest.raises(A.Refused, match="lacks the 2026-09-24 motor statement"):

@@ -20,5 +20,28 @@ Minutes are **counted minutes**: focused logged time ∩ accepted segments ∩ g
 | 20260925T021320-371Z-7804-1 | 2026-09-24 | 20260925T021320-371Z-7804-1 | train | admitted: assembled: review.json from the owner and independent verdicts, imported, steps file frozen | normal | 36.51 | 34.52 | 34.51 | 1.99 | 0.00 | range: unknown 34.5; approach: unknown 34.5; target: unknown 34.5; resources: unknown 34.5 | `16fabb73285d` |
 | 20260925T025230-605Z-7804-2 | 2026-09-24 | 20260925T025230-605Z-7804-2 | train | admitted: assembled: review.json from the owner and independent verdicts, imported, steps file frozen | normal | 3.71 | 3.66 | 3.66 | 0.04 | 0.00 | range: unknown 3.7; approach: unknown 3.7; target: unknown 3.7; resources: unknown 3.7 | `5617d968ac8f` |
 | 20260925T030045-211Z-7804-3 | 2026-09-24 | - | - | not_range: multi-speed calibration take (four yaw speed classes, pitch sweeps): data/human/calibration/ | - | - | - | - | - | - | - | - |
+| 20260925T200851-935Z-49728-1 | 2026-09-25 | - | - | not_range: OBS false start (4-15 s) before a take; James deleted the video; not a session | - | - | - | - | - | - | - | - |
+| 20260925T203745-207Z-49728-2 | 2026-09-25 | 20260925T203745-207Z-49728-2 | train | admitted: assembled: review.json from the owner and independent verdicts, imported, steps file frozen | normal | 47.71 | 45.98 | 45.98 | 1.73 | 0.00 | range: unknown 46.0; approach: unknown 46.0; target: unknown 46.0; resources: unknown 46.0 | `e9860472efd7` |
+| 20260925T212548-665Z-49728-3 | 2026-09-25 | - | - | not_range: OBS false start (4-15 s) before a take; James deleted the video; not a session | - | - | - | - | - | - | - | - |
+| 20260925T212615-212Z-49728-4 | 2026-09-25 | - | - | not_range: OBS false start (4-15 s) before a take; James deleted the video; not a session | - | - | - | - | - | - | - | - |
+| 20260925T212626-543Z-49728-5 | 2026-09-25 | - | - | not_range: OBS false start (4-15 s) before a take; James deleted the video; not a session | - | - | - | - | - | - | - | - |
+| 20260925T212646-322Z-49728-6 | 2026-09-25 | 20260925T212646-322Z-49728-6 | val | admitted: assembled: review.json from the owner and independent verdicts, imported, steps file frozen | normal | 15.74 | 15.58 | 15.58 | 0.16 | 0.00 | range: unknown 15.6; approach: unknown 15.6; target: unknown 15.6; resources: unknown 15.6 | `415b1b8bc95a` |
+| 20260925T234952-361Z-63684-1 | 2026-09-25 | - | - | pending: logger folder without a video; not opened | - | - | - | - | - | - | - | - |
+| 20260926T002109-428Z-63684-2 | 2026-09-25 | gate2-20260925-central-park-1928 | gate2 | not_range: gate2 (sealed): the live match of the replay-of-self pair (Central Park, 19:28) | - | - | - | - | - | - | - | - |
+| 20260926T002851-659Z-63684-3 | 2026-09-25 | - | - | not_range: match_dev: evaluation-only match recording, never trained on (handoff/matches-0925.md) | - | - | - | - | - | - | - | - |
+| 20260926T005304-628Z-63684-4 | 2026-09-25 | - | - | not_range: match_dev: evaluation-only match recording, never trained on (handoff/matches-0925.md) | - | - | - | - | - | - | - | - |
+| 20260926T010620-721Z-63684-5 | 2026-09-25 | - | - | not_range: match_dev: evaluation-only match recording, never trained on (handoff/matches-0925.md) | - | - | - | - | - | - | - | - |
+| 20260926T012552-291Z-63684-6 | 2026-09-25 | - | - | not_range: match_dev: evaluation-only match recording, never trained on (handoff/matches-0925.md) | - | - | - | - | - | - | - | - |
+| 20260926T013711-125Z-63684-7 | 2026-09-25 | - | - | not_range: match_dev: evaluation-only match recording, never trained on (handoff/matches-0925.md) | - | - | - | - | - | - | - | - |
+| 20260926T015610-960Z-63684-8 | 2026-09-25 | - | - | not_range: match_dev: evaluation-only match recording, never trained on (handoff/matches-0925.md) | - | - | - | - | - | - | - | - |
+| 20260926T021321-378Z-63684-9 | 2026-09-25 | - | - | not_range: match_dev: evaluation-only match recording, never trained on (handoff/matches-0925.md) | - | - | - | - | - | - | - | - |
+| 20260926T022734-732Z-63684-10 | 2026-09-25 | - | - | pending: logger folder without a video; not opened | - | - | - | - | - | - | - | - |
+| 20260926T031019-828Z-63684-11 | 2026-09-25 | - | - | pending: logger folder without a video; not opened | - | - | - | - | - | - | - | - |
+| 20260926T033121-111Z-63684-12 | 2026-09-25 | - | - | pending: logger folder without a video; not opened | - | - | - | - | - | - | - | - |
+| 20260926T034805-307Z-63684-13 | 2026-09-25 | - | - | not_range: match_dev: evaluation-only match recording, never trained on (handoff/matches-0925.md) | - | - | - | - | - | - | - | - |
+| 20260926T035932-508Z-63684-14 | 2026-09-25 | 20260926T035932-508Z-63684-14 | train | pending: lead decision 2026-09-26 (B): main account, yaw gain measured equal to the calibration (20260926T060921-977Z-60612-1); intake resumed, review pending | - | - | - | - | - | - | - | - |
+| 20260926T044958-507Z-63684-15 | 2026-09-25 | gate2-20260925-central-park-1928 | gate2 | not_range: gate2 (sealed): the replay of the 19:28 Central Park match | - | - | - | - | - | - | - | - |
+| 20260926T045729-166Z-79780-1 | 2026-09-25 | 20260926T045729-166Z-79780-1 | train | admitted: assembled: review.json from the owner and independent verdicts, imported, steps file frozen | normal | 10.34 | 10.26 | 10.26 | 0.08 | 0.00 | range: unknown 10.3; approach: unknown 10.3; target: unknown 10.3; resources: unknown 10.3 | `596883a2bbe7` |
 
-**normal, train: 94.18 admitted / 94.17 trainable of 180 minutes** (85.82 to go, 7 sessions).
+**normal, train: 150.42 admitted / 150.41 trainable of 180 minutes** (29.58 to go, 9 sessions).
+normal, val: 15.58 admitted / 15.58 trainable minutes.

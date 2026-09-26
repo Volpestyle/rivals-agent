@@ -293,27 +293,313 @@
    "split": null,
    "admitted_min": null,
    "trainable_min": null
+  },
+  {
+   "session": "20260925T200851-935Z-49728-1",
+   "date": "2026-09-25",
+   "status": "not_range",
+   "reason": "OBS false start (4-15 s) before a take; James deleted the video; not a session",
+   "group": null,
+   "split": null,
+   "admitted_min": null,
+   "trainable_min": null
+  },
+  {
+   "session": "20260925T203745-207Z-49728-2",
+   "date": "2026-09-25",
+   "status": "admitted",
+   "reason": "assembled: review.json from the owner and independent verdicts, imported, steps file frozen",
+   "regime": "normal",
+   "focused_min": 47.70740485333333,
+   "admitted_min": 45.97805371653333,
+   "trainable_min": 45.9755550958,
+   "stride_ns": 33333333,
+   "rejected_min": 1.7293511367999999,
+   "unresolved_min": 0.0,
+   "tags_s": {
+    "range": {
+     "unknown": 2758.683222992
+    },
+    "approach": {
+     "unknown": 2758.683222992
+    },
+    "target": {
+     "unknown": 2758.683222992
+    },
+    "resources": {
+     "unknown": 2758.683222992
+    }
+   },
+   "artifact_sha256": "e9860472efd7e0f1cc48544e26d33629de18509e4437fc84f60e379b1ed10673",
+   "group": "20260925T203745-207Z-49728-2",
+   "split": "train"
+  },
+  {
+   "session": "20260925T212548-665Z-49728-3",
+   "date": "2026-09-25",
+   "status": "not_range",
+   "reason": "OBS false start (4-15 s) before a take; James deleted the video; not a session",
+   "group": null,
+   "split": null,
+   "admitted_min": null,
+   "trainable_min": null
+  },
+  {
+   "session": "20260925T212615-212Z-49728-4",
+   "date": "2026-09-25",
+   "status": "not_range",
+   "reason": "OBS false start (4-15 s) before a take; James deleted the video; not a session",
+   "group": null,
+   "split": null,
+   "admitted_min": null,
+   "trainable_min": null
+  },
+  {
+   "session": "20260925T212626-543Z-49728-5",
+   "date": "2026-09-25",
+   "status": "not_range",
+   "reason": "OBS false start (4-15 s) before a take; James deleted the video; not a session",
+   "group": null,
+   "split": null,
+   "admitted_min": null,
+   "trainable_min": null
+  },
+  {
+   "session": "20260925T212646-322Z-49728-6",
+   "date": "2026-09-25",
+   "status": "admitted",
+   "reason": "assembled: review.json from the owner and independent verdicts, imported, steps file frozen",
+   "regime": "normal",
+   "focused_min": 15.743154626666666,
+   "admitted_min": 15.58458271005,
+   "trainable_min": 15.5822220664,
+   "stride_ns": 33333333,
+   "rejected_min": 0.15857191661666667,
+   "unresolved_min": 0.0,
+   "tags_s": {
+    "range": {
+     "unknown": 935.074962603
+    },
+    "approach": {
+     "unknown": 935.074962603
+    },
+    "target": {
+     "unknown": 935.074962603
+    },
+    "resources": {
+     "unknown": 935.074962603
+    }
+   },
+   "artifact_sha256": "415b1b8bc95a682ea0acfb1252a68272540063b894243f2b485a10519883e984",
+   "group": "20260925T212646-322Z-49728-6",
+   "split": "val"
+  },
+  {
+   "session": "20260925T234952-361Z-63684-1",
+   "date": "2026-09-25",
+   "status": "pending",
+   "reason": "logger folder without a video; not opened",
+   "group": null,
+   "split": null,
+   "admitted_min": null,
+   "trainable_min": null
+  },
+  {
+   "session": "20260926T002109-428Z-63684-2",
+   "date": "2026-09-25",
+   "status": "not_range",
+   "reason": "gate2 (sealed): the live match of the replay-of-self pair (Central Park, 19:28)",
+   "group": "gate2-20260925-central-park-1928",
+   "split": "gate2",
+   "admitted_min": null,
+   "trainable_min": null
+  },
+  {
+   "session": "20260926T002851-659Z-63684-3",
+   "date": "2026-09-25",
+   "status": "not_range",
+   "reason": "match_dev: evaluation-only match recording, never trained on (handoff/matches-0925.md)",
+   "group": null,
+   "split": null,
+   "admitted_min": null,
+   "trainable_min": null
+  },
+  {
+   "session": "20260926T005304-628Z-63684-4",
+   "date": "2026-09-25",
+   "status": "not_range",
+   "reason": "match_dev: evaluation-only match recording, never trained on (handoff/matches-0925.md)",
+   "group": null,
+   "split": null,
+   "admitted_min": null,
+   "trainable_min": null
+  },
+  {
+   "session": "20260926T010620-721Z-63684-5",
+   "date": "2026-09-25",
+   "status": "not_range",
+   "reason": "match_dev: evaluation-only match recording, never trained on (handoff/matches-0925.md)",
+   "group": null,
+   "split": null,
+   "admitted_min": null,
+   "trainable_min": null
+  },
+  {
+   "session": "20260926T012552-291Z-63684-6",
+   "date": "2026-09-25",
+   "status": "not_range",
+   "reason": "match_dev: evaluation-only match recording, never trained on (handoff/matches-0925.md)",
+   "group": null,
+   "split": null,
+   "admitted_min": null,
+   "trainable_min": null
+  },
+  {
+   "session": "20260926T013711-125Z-63684-7",
+   "date": "2026-09-25",
+   "status": "not_range",
+   "reason": "match_dev: evaluation-only match recording, never trained on (handoff/matches-0925.md)",
+   "group": null,
+   "split": null,
+   "admitted_min": null,
+   "trainable_min": null
+  },
+  {
+   "session": "20260926T015610-960Z-63684-8",
+   "date": "2026-09-25",
+   "status": "not_range",
+   "reason": "match_dev: evaluation-only match recording, never trained on (handoff/matches-0925.md)",
+   "group": null,
+   "split": null,
+   "admitted_min": null,
+   "trainable_min": null
+  },
+  {
+   "session": "20260926T021321-378Z-63684-9",
+   "date": "2026-09-25",
+   "status": "not_range",
+   "reason": "match_dev: evaluation-only match recording, never trained on (handoff/matches-0925.md)",
+   "group": null,
+   "split": null,
+   "admitted_min": null,
+   "trainable_min": null
+  },
+  {
+   "session": "20260926T022734-732Z-63684-10",
+   "date": "2026-09-25",
+   "status": "pending",
+   "reason": "logger folder without a video; not opened",
+   "group": null,
+   "split": null,
+   "admitted_min": null,
+   "trainable_min": null
+  },
+  {
+   "session": "20260926T031019-828Z-63684-11",
+   "date": "2026-09-25",
+   "status": "pending",
+   "reason": "logger folder without a video; not opened",
+   "group": null,
+   "split": null,
+   "admitted_min": null,
+   "trainable_min": null
+  },
+  {
+   "session": "20260926T033121-111Z-63684-12",
+   "date": "2026-09-25",
+   "status": "pending",
+   "reason": "logger folder without a video; not opened",
+   "group": null,
+   "split": null,
+   "admitted_min": null,
+   "trainable_min": null
+  },
+  {
+   "session": "20260926T034805-307Z-63684-13",
+   "date": "2026-09-25",
+   "status": "not_range",
+   "reason": "match_dev: evaluation-only match recording, never trained on (handoff/matches-0925.md)",
+   "group": null,
+   "split": null,
+   "admitted_min": null,
+   "trainable_min": null
+  },
+  {
+   "session": "20260926T035932-508Z-63684-14",
+   "date": "2026-09-25",
+   "status": "pending",
+   "reason": "lead decision 2026-09-26 (B): main account, yaw gain measured equal to the calibration (20260926T060921-977Z-60612-1); intake resumed, review pending",
+   "group": "20260926T035932-508Z-63684-14",
+   "split": "train",
+   "admitted_min": null,
+   "trainable_min": null
+  },
+  {
+   "session": "20260926T044958-507Z-63684-15",
+   "date": "2026-09-25",
+   "status": "not_range",
+   "reason": "gate2 (sealed): the replay of the 19:28 Central Park match",
+   "group": "gate2-20260925-central-park-1928",
+   "split": "gate2",
+   "admitted_min": null,
+   "trainable_min": null
+  },
+  {
+   "session": "20260926T045729-166Z-79780-1",
+   "date": "2026-09-25",
+   "status": "admitted",
+   "reason": "assembled: review.json from the owner and independent verdicts, imported, steps file frozen",
+   "regime": "normal",
+   "focused_min": 10.339370126666667,
+   "admitted_min": 10.259860700766666,
+   "trainable_min": 10.25833323075,
+   "stride_ns": 33333333,
+   "rejected_min": 0.0795094259,
+   "unresolved_min": 0.0,
+   "tags_s": {
+    "range": {
+     "unknown": 615.591642046
+    },
+    "approach": {
+     "unknown": 615.591642046
+    },
+    "target": {
+     "unknown": 615.591642046
+    },
+    "resources": {
+     "unknown": 615.591642046
+    }
+   },
+   "artifact_sha256": "596883a2bbe7e81f25c694684ea6a6ae1eff62f85fef982def4b10cf4febad5a",
+   "group": "20260926T045729-166Z-79780-1",
+   "split": "train"
   }
  ],
  "headline_train_by_regime": {
   "normal": {
-   "admitted_min": 94.17888512196666,
-   "trainable_min": 94.17388794714999,
-   "sessions": 7,
+   "admitted_min": 150.41679953926666,
+   "trainable_min": 150.4077762737,
+   "sessions": 9,
    "target_min": 180,
-   "remaining_min": 85.82111487803334
+   "remaining_min": 29.583200460733337
   }
  },
- "val_by_regime": {},
+ "val_by_regime": {
+  "normal": {
+   "admitted_min": 15.58458271005,
+   "trainable_min": 15.5822220664,
+   "sessions": 1
+  }
+ },
  "target_min": 180,
  "registry": {
   "path": "data/human/session-splits.corpus.json",
-  "sha256": "f36e9e3b565041cbd719d3d4c6b80033d66a685a599f3b6607e67bab3ee574fb"
+  "sha256": "26d55f3d1bba686eaea1af82e5e02fa6fc6b93ef57737c5c9fff168a24d8da71"
  },
  "denylist": {
   "path": "data/human/sealed-denylist.json",
   "sha256": "57cfe01f29f6e1a55293f968ec697aa293c268bd87d7cf247ef648279e2fba7c"
  },
- "snapshot": "code-snapshot-b7d4592",
+ "snapshot": "code-snapshot-3936f94-4c9638d1",
  "counted_rule": "focused logged time \u2229 accepted segments \u2229 gap-free runs >= 1.6 s"
 }

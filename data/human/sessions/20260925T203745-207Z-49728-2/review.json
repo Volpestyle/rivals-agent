@@ -1,0 +1,412 @@
+{
+ "schema_version": 1,
+ "session_id": "20260925T203745-207Z-49728-2",
+ "reviewer": "owner admission-owner (0e1144bfbdad5821) + independent admission-review (Codex, GPT-6)",
+ "reviewed_at": "2026-09-26T05:32:42.028332+00:00",
+ "device_scope": {
+  "kind": "single_keyboard_mouse",
+  "source": "input-profile.json: keyboard ['661785265'], mouse ['614403941']; 58 zero-effect handle-0 packets allowed (lead decision), no injected control input",
+  "no_pad_attestation": "James, 2026-09-23 ~15:55 CDT (docs/recording-log.md): no physical controller plugged in during any recording session"
+ },
+ "pts_anchor": {
+  "kind": "independent_muxer_offset",
+  "offset_num": 21,
+  "offset_den": 1000,
+  "source": "accepted blank-scene derivation plus this session's own first-16-packet forward prediction (provenance.json anchor_applicability), no fitting",
+  "evidence": [
+   {
+    "path": "data/human/inspection/20260922T033319-205Z-24328-2/independent-review-resolution.md",
+    "sha256": "a67f55f36554887d97765b4552a33ac5c92494f6a50c814801183528a0c3c8e6"
+   },
+   {
+    "path": "data/human/sessions/20260925T203745-207Z-49728-2/provenance.json",
+    "sha256": "8b6c4865f1290bf4240405b1cc2e77b569de1224d062ad466bc1bd84e639b299"
+   }
+  ]
+ },
+ "provenance": {
+  "hero": "Spider-Man",
+  "settings": {
+   "value": {
+    "dpi": 800,
+    "horizontal_sensitivity": 1.89,
+    "vertical_sensitivity": 1.89,
+    "swing_mode": {
+     "automatic_swing": false,
+     "hold_to_swing": true
+    },
+    "mouse_acceleration": true,
+    "mouse_smoothing": true
+   },
+   "source": "James's statements in docs/recording-log.md (2026-09-23): DPI 800 (~14:50 CDT), sensitivity unchanged since 2026-09-21 (1.89/1.89 in the 09-21 report), default swing settings on Shift with Simple Swing on Caps Lock; confirmed on native frames of the settings look (calibration.json: 1.89/1.89, hold to swing on, simple swing off)",
+   "per_session_source": "James's dated statement for the 2026-09-25 takes (docs/recording-log.md, Motor settings, committed fbe6693): DPI, in-game sensitivity and bindings unchanged (chat, 2026-09-25 ~16:50 CDT: \"yep all the same\")",
+   "evidence": [
+    {
+     "path": "data/human/sessions/20260925T203745-207Z-49728-2/recording-log.3936f94.md",
+     "sha256": "e8c11fc586fe72a200a2d39c33559ba3b8f912025302385d1230616c9f07ff9a"
+    },
+    {
+     "path": "data/human/notes/2026-09-21-user-settings.json",
+     "sha256": "852c92254961b4fcb1278e8ebe752ea2f02ce6add678509d3276fd1a26264c6c"
+    },
+    {
+     "path": "data/human/sessions/20260925T203745-207Z-49728-2/provenance.json",
+     "sha256": "8b6c4865f1290bf4240405b1cc2e77b569de1224d062ad466bc1bd84e639b299"
+    },
+    {
+     "path": "data/human/calibration/20260923T204707-487Z-45572-2/calibration.json",
+     "sha256": "baa49158c9911e0155a2d06883faec00150b297e0a5fe0e8dd46fc86d5310283"
+    }
+   ]
+  },
+  "bindings": {
+   "value": {
+    "move_forward": [
+     "key:17:0"
+    ],
+    "move_left": [
+     "key:30:0"
+    ],
+    "move_back": [
+     "key:31:0"
+    ],
+    "move_right": [
+     "key:32:0"
+    ],
+    "jump": [
+     "key:57:0"
+    ],
+    "web_swing": [
+     "key:42:0"
+    ],
+    "get_over_here": [
+     "key:33:0"
+    ],
+    "amazing_combo": [
+     "key:18:0",
+     "key:3:0"
+    ],
+    "ultimate": [
+     "key:16:0"
+    ],
+    "melee": [
+     "key:47:0",
+     "mouse:5"
+    ],
+    "spider_power": [
+     "mouse:1"
+    ],
+    "web_cluster": [
+     "mouse:2"
+    ],
+    "team_up": [
+     "key:46:0"
+    ],
+    "team_up_b": [
+     "key:45:0"
+    ],
+    "simple_swing": [
+     "key:58:0"
+    ],
+    "goh_targeting": [
+     "mouse:4",
+     "key:3:0"
+    ],
+    "slow_walk": [
+     "key:29:0"
+    ]
+   },
+   "aliases": {
+    "mouse:5": "melee"
+   },
+   "notes": {
+    "team_up": "C = Team-Up A, fires in the solo range with a visible effect (James; 051828/team-up-check.json). A real action with positives, trained but masked live (Y is off the pad whitelist).",
+    "melee": "V and Mouse 5 (settings look; lead decision): Mouse 5 presses count as melee (header binding_aliases).",
+    "goh_targeting": "Get Over Here Targeting: Mouse 4 (X1) and 2; a fit action (lead decision), structurally unsupported on the pad, counted. Only Mouse 4 is in the step header (2 is shared).",
+    "amazing_combo": "E and 2; 2 is also Get Over Here Targeting, so it is not aliased (unsupported).",
+    "simple_swing": "Caps Lock (VK 20, scan 58), off as a mode; not in the fit vocabulary (unsupported).",
+    "team_up_b": "X, Team-Up B; not in the fit vocabulary (unsupported).",
+    "slow_walk": "LCtrl, hold; not in the fit vocabulary (unsupported).",
+    "alt": "Alt is unbound in game (James); Alt presses are Alt-Tab and stay UI-key cuts."
+   },
+   "source": "native frames of James's settings look (calibration take 2026-09-23, keyboard pages, calibration.json), agreeing with his 2026-09-21 report and 2026-09-23 statements; HUD key labels on this session's frames (slot-mapping.json)",
+   "per_session_source": "James's dated statement for the 2026-09-25 takes (docs/recording-log.md, Motor settings, committed fbe6693): DPI, in-game sensitivity and bindings unchanged (chat, 2026-09-25 ~16:50 CDT: \"yep all the same\")",
+   "evidence": [
+    {
+     "path": "data/human/sessions/20260925T203745-207Z-49728-2/recording-log.3936f94.md",
+     "sha256": "e8c11fc586fe72a200a2d39c33559ba3b8f912025302385d1230616c9f07ff9a"
+    },
+    {
+     "path": "data/human/notes/2026-09-21-user-settings.json",
+     "sha256": "852c92254961b4fcb1278e8ebe752ea2f02ce6add678509d3276fd1a26264c6c"
+    },
+    {
+     "path": "data/human/sessions/20260925T203745-207Z-49728-2/slot-mapping.json",
+     "sha256": "fb1188dd3b53d1a9f2609f69a9f3161b4a135be4ed4eb942e97d0b9ff747decb"
+    },
+    {
+     "path": "data/human/calibration/20260923T204707-487Z-45572-2/calibration.json",
+     "sha256": "baa49158c9911e0155a2d06883faec00150b297e0a5fe0e8dd46fc86d5310283"
+    }
+   ]
+  },
+  "game_patch": {
+   "value": "1.1.3892207/build25501035",
+   "source": "Steam appmanifest (buildid, LastUpdated), the game's version.json and the content log's update steps, read by the provenance step at intake; derived by agent.human_intake.recorded_build",
+   "evidence": [
+    {
+     "path": "data/human/sessions/20260925T203745-207Z-49728-2/provenance.json",
+     "sha256": "8b6c4865f1290bf4240405b1cc2e77b569de1224d062ad466bc1bd84e639b299"
+    }
+   ],
+   "derivation": {
+    "value": "1.1.3892207/build25501035",
+    "version": "1.1.3892207",
+    "buildid": "25501035",
+    "installed_utc": "2026-09-24T11:15:31+00:00",
+    "version_json_written_utc": "2026-09-24T11:15:10.109511+00:00",
+    "recording": {
+     "started_utc": "2026-09-25T20:37:45.207000+00:00",
+     "ended_utc": "2026-09-25T21:25:44.835027+00:00"
+    },
+    "content_log_finished_update": {
+     "local": "2026-09-24 06:15:31",
+     "utc": "2026-09-24T11:15:31+00:00",
+     "build": "25501035"
+    },
+    "content_log_utc_offset_s": -18000
+   }
+  },
+  "cooldown_regime": {
+   "value": "normal",
+   "source": "5 fps HUD scan: depletion observed",
+   "evidence": [
+    {
+     "path": "data/human/sessions/20260925T203745-207Z-49728-2/regime-timeline.json",
+     "sha256": "f8ed0187b5b4ac3a9714bf7c97f52a29483d9d79545603ae0e74bf80d1fc48e2"
+    }
+   ]
+  },
+  "segments_evidence": {
+   "path": "data/human/sessions/20260925T203745-207Z-49728-2/segments-evidence.json",
+   "sha256": "b730d89af4753fb7acfe1902e5c114fe10f4c7d4b10821a7913b6cc107f8f7f1"
+  },
+  "owner_verdicts": {
+   "path": "data/human/sessions/20260925T203745-207Z-49728-2/owner-verdicts.json",
+   "sha256": "0e1144bfbdad58217d4665fa84b0d83fbd643fd145dd1bfe588c40a23b1815e7"
+  },
+  "lead_decisions": null,
+  "independent_review": {
+   "path": "data/human/sessions/20260925T203745-207Z-49728-2/independent-review.verdicts.json",
+   "sha256": "916ea4bf20cba89b56c711e75b05c0d4c453e4e20c8dd9d0d8ab643146b4c74e",
+   "reviewer": "admission-review (Codex, GPT-6)"
+  }
+ },
+ "alignment": {
+  "kind": "assumption",
+  "statement": "OBS composition time is the labelling clock; capture, display and input-delivery latency are uncalibrated (no measured bound is asserted)",
+  "source": "lead decision for the whole-session campaign; as for the 2026-09-22/23 request packets"
+ },
+ "segments": [
+  {
+   "segment_id": "seg-000",
+   "start_ns": 436553723326300,
+   "end_ns": 436553973326300,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Initial 250 ms focus settle after focus returns at 13.8798597 s; reject by rule. Opening browser/OBS overlays lie in preceding unfocused footage.",
+   "evidence": "data/human/sessions/20260925T203745-207Z-49728-2/independent-review.verdicts.json (916ea4bf20cba89b)",
+   "machine_reason": "focus_transition"
+  },
+  {
+   "segment_id": "seg-001",
+   "start_ns": 436553973326300,
+   "end_ns": 436553976063449,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Sub-frame sliver with no logged composition frame; reject. Neighboring frame hashes are boundary evidence, explicitly marked outside this segment.",
+   "evidence": "data/human/sessions/20260925T203745-207Z-49728-2/independent-review.verdicts.json (916ea4bf20cba89b)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-002",
+   "start_ns": 436553976063449,
+   "end_ns": 437364542697694,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "accepted",
+   "suitability_reason": "Active Spider-Man range combat/traversal, normal depletion, no sampled UI or timed banner; both native edges pass E1. Endpoint alive at 250 HP while falling.",
+   "evidence": "data/human/sessions/20260925T203745-207Z-49728-2/independent-review.verdicts.json (916ea4bf20cba89b)",
+   "machine_reason": "range_hud_present"
+  },
+  {
+   "segment_id": "seg-003",
+   "start_ns": 437364542697694,
+   "end_ns": 437366742697645,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Conservative death bracket: alive falling lead-in, then 0 HP/SPECTATING and spawn-room ghost/respawn. Entire bracket rejected.",
+   "evidence": "data/human/sessions/20260925T203745-207Z-49728-2/independent-review.verdicts.json (916ea4bf20cba89b)",
+   "machine_reason": "dead"
+  },
+  {
+   "segment_id": "seg-004",
+   "start_ns": 437366742697645,
+   "end_ns": 437366751030938,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Sub-frame sliver with no logged composition frame; reject. Neighboring frame hashes are boundary evidence, explicitly marked outside this segment.",
+   "evidence": "data/human/sessions/20260925T203745-207Z-49728-2/independent-review.verdicts.json (916ea4bf20cba89b)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-005",
+   "start_ns": 437366751030938,
+   "end_ns": 438017742671566,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "accepted",
+   "suitability_reason": "Active range combat/traversal with clean return after death; both native edges pass E1. Last accepted frame remains alive while falling.",
+   "evidence": "data/human/sessions/20260925T203745-207Z-49728-2/independent-review.verdicts.json (916ea4bf20cba89b)",
+   "machine_reason": "range_hud_present"
+  },
+  {
+   "segment_id": "seg-006",
+   "start_ns": 438017742671566,
+   "end_ns": 438019742671525,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Death followed by SPECTATING and a black fade, then spawn-room respawn. Owner no-card narrative is incorrect; the existing cut contains it all.",
+   "evidence": "data/human/sessions/20260925T203745-207Z-49728-2/independent-review.verdicts.json (916ea4bf20cba89b)",
+   "machine_reason": "dead"
+  },
+  {
+   "segment_id": "seg-007",
+   "start_ns": 438019742671525,
+   "end_ns": 438019751004818,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Sub-frame sliver with no logged composition frame; reject. Neighboring frame hashes are boundary evidence, explicitly marked outside this segment.",
+   "evidence": "data/human/sessions/20260925T203745-207Z-49728-2/independent-review.verdicts.json (916ea4bf20cba89b)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-008",
+   "start_ns": 438019751004818,
+   "end_ns": 438200342664262,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "accepted",
+   "suitability_reason": "Active range combat/traversal, clean respawn return; both native edges pass E1. Last accepted frame alive at 250 HP while falling.",
+   "evidence": "data/human/sessions/20260925T203745-207Z-49728-2/independent-review.verdicts.json (916ea4bf20cba89b)",
+   "machine_reason": "range_hud_present"
+  },
+  {
+   "segment_id": "seg-009",
+   "start_ns": 438200342664262,
+   "end_ns": 438202542664213,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Cliff fall followed by 0 HP/SPECTATING and respawn; reject the conservative death bracket.",
+   "evidence": "data/human/sessions/20260925T203745-207Z-49728-2/independent-review.verdicts.json (916ea4bf20cba89b)",
+   "machine_reason": "dead"
+  },
+  {
+   "segment_id": "seg-010",
+   "start_ns": 438202542664213,
+   "end_ns": 438202550997506,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Sub-frame sliver with no logged composition frame; reject. Neighboring frame hashes are boundary evidence, explicitly marked outside this segment.",
+   "evidence": "data/human/sessions/20260925T203745-207Z-49728-2/independent-review.verdicts.json (916ea4bf20cba89b)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-011",
+   "start_ns": 438202550997506,
+   "end_ns": 438631942646998,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "accepted",
+   "suitability_reason": "Active range combat/traversal, normal depletion; both native edges pass E1. Endpoint alive at 250 HP while falling toward the sea.",
+   "evidence": "data/human/sessions/20260925T203745-207Z-49728-2/independent-review.verdicts.json (916ea4bf20cba89b)",
+   "machine_reason": "range_hud_present"
+  },
+  {
+   "segment_id": "seg-012",
+   "start_ns": 438631942646998,
+   "end_ns": 438632697658300,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Conservative death bracket followed by SPECTATING; continuation and respawn are covered by the following Tab cut.",
+   "evidence": "data/human/sessions/20260925T203745-207Z-49728-2/independent-review.verdicts.json (916ea4bf20cba89b)",
+   "machine_reason": "dead"
+  },
+  {
+   "segment_id": "seg-013",
+   "start_ns": 438632697658300,
+   "end_ns": 438635350676300,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Tab 2092.8541917-2093.5072097 s visibly opens scoreboard during spectating/respawn. Release plus two-second settle ends 2095.5072097 s; reject.",
+   "evidence": "data/human/sessions/20260925T203745-207Z-49728-2/independent-review.verdicts.json (916ea4bf20cba89b)",
+   "machine_reason": "ui_key"
+  },
+  {
+   "segment_id": "seg-014",
+   "start_ns": 438635350676300,
+   "end_ns": 438635350980194,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Sub-frame sliver with no logged composition frame; reject. Neighboring frame hashes are boundary evidence, explicitly marked outside this segment.",
+   "evidence": "data/human/sessions/20260925T203745-207Z-49728-2/independent-review.verdicts.json (916ea4bf20cba89b)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-015",
+   "start_ns": 438635350980194,
+   "end_ns": 438768434308205,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "accepted",
+   "suitability_reason": "Active range play after Tab settle through f267419, still PRACTICE RANGE with 250 HP while diving into the portal. Both edges pass E1. Next frame changes to TIMED PRACTICE; retain approach under existing rule.",
+   "evidence": "data/human/sessions/20260925T203745-207Z-49728-2/independent-review.verdicts.json (916ea4bf20cba89b)",
+   "machine_reason": "range_hud_present"
+  },
+  {
+   "segment_id": "seg-016",
+   "start_ns": 438768434308205,
+   "end_ns": 438859709304553,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "TIMED PRACTICE banner, scored static-target challenge and G-triggered countdown; reject the explicitly measured 91.274996348-second span. Guard intermittently fails inside; banner defines this cut.",
+   "evidence": "data/human/sessions/20260925T203745-207Z-49728-2/independent-review.verdicts.json (916ea4bf20cba89b)",
+   "machine_reason": "timed_practice"
+  },
+  {
+   "segment_id": "seg-017",
+   "start_ns": 438859709304553,
+   "end_ns": 439413767615725,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "accepted",
+   "suitability_reason": "PRACTICE RANGE returns on f278372, followed by active range combat/traversal. Both edges pass E1. Last accepted f344859 precedes scoreboard blur.",
+   "evidence": "data/human/sessions/20260925T203745-207Z-49728-2/independent-review.verdicts.json (916ea4bf20cba89b)",
+   "machine_reason": "range_hud_present"
+  },
+  {
+   "segment_id": "seg-018",
+   "start_ns": 439413767615725,
+   "end_ns": 439413770691300,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Sub-frame sliver with no logged composition frame; reject. Neighboring frame hashes are boundary evidence, explicitly marked outside this segment.",
+   "evidence": "data/human/sessions/20260925T203745-207Z-49728-2/independent-review.verdicts.json (916ea4bf20cba89b)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-019",
+   "start_ns": 439413770691300,
+   "end_ns": 439416167617500,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Final Tab 2873.9272247-2875.6051949 s visibly opens scoreboard; two-second settle overlaps closing Alt 2876.2433364 s and focus loss 2876.3241509 s. Reject; following unfocused tail is excluded.",
+   "evidence": "data/human/sessions/20260925T203745-207Z-49728-2/independent-review.verdicts.json (916ea4bf20cba89b)",
+   "machine_reason": "ui_key"
+  }
+ ]
+}

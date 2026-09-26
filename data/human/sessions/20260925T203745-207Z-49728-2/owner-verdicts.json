@@ -1,0 +1,1773 @@
+{
+ "session": "20260925T203745-207Z-49728-2",
+ "segments_evidence_sha256": "b730d89af4753fb7acfe1902e5c114fe10f4c7d4b10821a7913b6cc107f8f7f1",
+ "reviewer": "admission-owner",
+ "reviewed_at": "2026-09-25T23:43:33Z",
+ "role": "owner inspection; assembly additionally requires the independent per-session review (R5)",
+ "verdicts": {
+  "seg-000": {
+   "suitability": "rejected",
+   "reason": "focus settle after the take's first focus gain (13.88 s); range HUD visible, cut by rule",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T23:43:33Z",
+   "evidence": "segments-evidence.json b730d89af4753fb7 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 1654,
+     "composition_ns": 436553726063459,
+     "decoded_bgr_sha256": "f58a9c679e14de428027802b56746cd3f6ab08213eeb050f18e74ed2f2360676"
+    },
+    {
+     "frame_index": 1668,
+     "composition_ns": 436553842730121,
+     "decoded_bgr_sha256": "15ccb0808dd64740081e4ce19507ae68b0c1aa608bfd8573bef3c514dc47663c"
+    },
+    {
+     "frame_index": 1683,
+     "composition_ns": 436553967730116,
+     "decoded_bgr_sha256": "586343d6cb62feeda70a6cb127f0e85127bde89ed1ef9ead71e6332fa87688e4"
+    }
+   ]
+  },
+  "seg-001": {
+   "suitability": "rejected",
+   "reason": "unsampled edge sliver between a rule cut and a proven gameplay edge; no review frames",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T23:43:33Z",
+   "evidence": "segments-evidence.json b730d89af4753fb7 review frames + contact sheets",
+   "frames": []
+  },
+  "seg-002": {
+   "suitability": "accepted",
+   "reason": "range play from the first focus settle: Spider-Man, Galacta bots, HUD and HP bar on every frame; ends on a fall past the map edge with HP 250/250",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T23:43:33Z",
+   "evidence": "segments-evidence.json b730d89af4753fb7 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 1684,
+     "composition_ns": 436553976063449,
+     "decoded_bgr_sha256": "bf021fa700e60e077992a88b380f70eea71550a4061c70a98efd8df3725c82c6"
+    },
+    {
+     "frame_index": 2870,
+     "composition_ns": 436563859396387,
+     "decoded_bgr_sha256": "1bc6e25299f8575c48b41623268b6166764ae087f62b95135fbbaf8f191a30f0"
+    },
+    {
+     "frame_index": 4056,
+     "composition_ns": 436573742729325,
+     "decoded_bgr_sha256": "b02b98c8d2ca80a4380ac9e2ff1778188e9bdccf527bd52b64f96e89bcd6a339"
+    },
+    {
+     "frame_index": 5242,
+     "composition_ns": 436583626062263,
+     "decoded_bgr_sha256": "c663b5be695d0ba5351306505eb9fcac682f47b2416c78926974070ba80be851"
+    },
+    {
+     "frame_index": 6428,
+     "composition_ns": 436593509395201,
+     "decoded_bgr_sha256": "90f952f827f73dede4288e31f7d7e633aa23932e3e8a180029e77be675a47869"
+    },
+    {
+     "frame_index": 7614,
+     "composition_ns": 436603392728139,
+     "decoded_bgr_sha256": "ce70957851eccbf9b530b01618a47424d68fc2c12d3660c1934035bcd8afef86"
+    },
+    {
+     "frame_index": 8801,
+     "composition_ns": 436613284394410,
+     "decoded_bgr_sha256": "06ef058276d75c28239b0d2d959716dcf2f4c44c6cb4ae1edb1efbcd9cbbc66f"
+    },
+    {
+     "frame_index": 9987,
+     "composition_ns": 436623167727348,
+     "decoded_bgr_sha256": "9e428b505d1337a2b20b91fb8de28b5cc07f316ed3012c67a687b603c5bf6f6b"
+    },
+    {
+     "frame_index": 11173,
+     "composition_ns": 436633051060286,
+     "decoded_bgr_sha256": "d36a8e6435f153a15718b8c78bc5725771a40e805b8f252c4cac3e628b68ec66"
+    },
+    {
+     "frame_index": 12359,
+     "composition_ns": 436642934393224,
+     "decoded_bgr_sha256": "92f9577d35622a9e5596b3a1201107e32880b682c6d1b3581fd3478f12f07037"
+    },
+    {
+     "frame_index": 13545,
+     "composition_ns": 436652817726162,
+     "decoded_bgr_sha256": "7c3d7e12ef0c1e54ee2751186e884e2b073cce4bedb20a50a381c6dd8b18fe30"
+    },
+    {
+     "frame_index": 14732,
+     "composition_ns": 436662709392433,
+     "decoded_bgr_sha256": "ee64cba6300158bb89513292ffaa112f4295b336f7bbd1980b781667e311d08b"
+    },
+    {
+     "frame_index": 15918,
+     "composition_ns": 436672592725371,
+     "decoded_bgr_sha256": "90e1c10a58fc1dfa1843480f26279a1320e3dc5dfa063fd340558c7c553a77d4"
+    },
+    {
+     "frame_index": 17104,
+     "composition_ns": 436682476058309,
+     "decoded_bgr_sha256": "8dc7f4df68724b5e0b2cead8e02f693f290b0e2aa018e8e002dc584a04c29b5f"
+    },
+    {
+     "frame_index": 18290,
+     "composition_ns": 436692359391247,
+     "decoded_bgr_sha256": "274d86282bb7d485266d20cf66d6d22349d121d82b096e3df4b47aa49fe0ac9d"
+    },
+    {
+     "frame_index": 19476,
+     "composition_ns": 436702242724185,
+     "decoded_bgr_sha256": "fe2b7732e35c82ece0c138ab06d9ae3b666eaeec6c02914cdda8147f29d2b37f"
+    },
+    {
+     "frame_index": 20663,
+     "composition_ns": 436712134390456,
+     "decoded_bgr_sha256": "4ecff773405724a82a5fc3e19dc5a5b4e081229bdeed3d34b9dc5e4d7c76371a"
+    },
+    {
+     "frame_index": 21849,
+     "composition_ns": 436722017723394,
+     "decoded_bgr_sha256": "dac0b1d085de3366d369f7ab202ace2b8f04904a47d798769981bb46c4107c4a"
+    },
+    {
+     "frame_index": 23035,
+     "composition_ns": 436731901056332,
+     "decoded_bgr_sha256": "0741fd80eeac36a3b3373506ee280d8c7667d4a682bd01eb108f5006bb7a6151"
+    },
+    {
+     "frame_index": 24221,
+     "composition_ns": 436741784389270,
+     "decoded_bgr_sha256": "142dfa8cf35c1630b4499e09b35f1519819973a8aebe6f3959f3b7bce48099f2"
+    },
+    {
+     "frame_index": 25407,
+     "composition_ns": 436751667722208,
+     "decoded_bgr_sha256": "1149bf821643f005befe4f9dc5a17eab46dee94c3b0c84b3897406734af18851"
+    },
+    {
+     "frame_index": 26594,
+     "composition_ns": 436761559388479,
+     "decoded_bgr_sha256": "b8396d27a308d21db77d04daf76f0e0757f2a5d8cbe382426a3cc568a5e30d7b"
+    },
+    {
+     "frame_index": 27780,
+     "composition_ns": 436771442721417,
+     "decoded_bgr_sha256": "0265858afe561b81a2029eed6a944c0ccd3dcd898564bc32f78c39a8dadd7bcd"
+    },
+    {
+     "frame_index": 28966,
+     "composition_ns": 436781326054355,
+     "decoded_bgr_sha256": "2b4c459a9e9dc45e7c9d761988c1ebfa7524561b6423a5e34b84290c0a1bcb2b"
+    },
+    {
+     "frame_index": 30152,
+     "composition_ns": 436791209387293,
+     "decoded_bgr_sha256": "c778e50b70bac95c3eb041b8d0ff9166667eb15f7a82111f2bc52af7b26efad0"
+    },
+    {
+     "frame_index": 31338,
+     "composition_ns": 436801092720231,
+     "decoded_bgr_sha256": "32f5c7893d85b3effca7de80bbed1ec4ee8e809f02b473cd16bc1a26a1a26e9c"
+    },
+    {
+     "frame_index": 32525,
+     "composition_ns": 436810984386502,
+     "decoded_bgr_sha256": "1419070b8ca2e6047fd11e30d4f1694f999d217399863cbe0e9d1364ede77c0b"
+    },
+    {
+     "frame_index": 33711,
+     "composition_ns": 436820867719440,
+     "decoded_bgr_sha256": "72554758fdf971e724e6bed3a0c3769674920a3991f6fee1e094c823dc631670"
+    },
+    {
+     "frame_index": 34897,
+     "composition_ns": 436830751052378,
+     "decoded_bgr_sha256": "490561960bec1d6b871c8d048dd72f6abfdbf471606f7553e789c808e7c1923c"
+    },
+    {
+     "frame_index": 36083,
+     "composition_ns": 436840634385316,
+     "decoded_bgr_sha256": "afbc2567e23bfcdd322e93d1e311c5549f3c045ca6d3e93250b6f86dc69f03f0"
+    },
+    {
+     "frame_index": 37269,
+     "composition_ns": 436850517718254,
+     "decoded_bgr_sha256": "718949bf1bc0cafcc81caea1ec38b5aafcfe5d9bfbe730ff2df8fee5590d2d67"
+    },
+    {
+     "frame_index": 38456,
+     "composition_ns": 436860409384525,
+     "decoded_bgr_sha256": "ab3b78798c0661b49d772a82e9a4911216c54372f7d98830c824837f28e03e12"
+    },
+    {
+     "frame_index": 39642,
+     "composition_ns": 436870292717463,
+     "decoded_bgr_sha256": "5070b201679ee76c5a3de810a9b3e2be092c6e0ca4350324512da25b12c8612e"
+    },
+    {
+     "frame_index": 40828,
+     "composition_ns": 436880176050401,
+     "decoded_bgr_sha256": "cd9fd65b50d2862f25b5f10d817cf8b176dc284e08d7309730f0bf5e01cce59b"
+    },
+    {
+     "frame_index": 42014,
+     "composition_ns": 436890059383339,
+     "decoded_bgr_sha256": "5c0440f989c29811074b373fa317178566a32c51c1912ceb1bca032bd559674f"
+    },
+    {
+     "frame_index": 43200,
+     "composition_ns": 436899942716277,
+     "decoded_bgr_sha256": "21bef2c4b528a134767d535f8bb5cc186adb8e1832429558c226e065a491e204"
+    },
+    {
+     "frame_index": 44387,
+     "composition_ns": 436909834382548,
+     "decoded_bgr_sha256": "73b4ff451504aa3b8f9e210f5c3e1ece9523d2d4bb0540db5af16f88c8e62ea1"
+    },
+    {
+     "frame_index": 45573,
+     "composition_ns": 436919717715486,
+     "decoded_bgr_sha256": "577b2283636e26be8daaef9b3c70e63ba85460437db43b9ac4c13f368b517e73"
+    },
+    {
+     "frame_index": 46759,
+     "composition_ns": 436929601048424,
+     "decoded_bgr_sha256": "2a670b3d5969e7e1a54be67167400adbddee019f516bccc2c67f17d68f6b36fa"
+    },
+    {
+     "frame_index": 47945,
+     "composition_ns": 436939484381362,
+     "decoded_bgr_sha256": "928f1620b9aa4459bd608a89067f934c83fb0af8c4aeecbc71a0b6ebb7addccc"
+    },
+    {
+     "frame_index": 49131,
+     "composition_ns": 436949367714300,
+     "decoded_bgr_sha256": "edd9ff107af80861c61b20845dd5ba428e79a5ef43fc8a14d24d8da5e1b2394c"
+    },
+    {
+     "frame_index": 50318,
+     "composition_ns": 436959259380571,
+     "decoded_bgr_sha256": "de20656b7d350f67f8cea01aff4fd6f43d3de7d2a66e3e9b2c6e6cacfb9bcfd4"
+    },
+    {
+     "frame_index": 51504,
+     "composition_ns": 436969142713509,
+     "decoded_bgr_sha256": "44a47ad3f643279b062ca9cf0abe7c70b5bbfafc563672f91add50850bd996e9"
+    },
+    {
+     "frame_index": 52690,
+     "composition_ns": 436979026046447,
+     "decoded_bgr_sha256": "c72361a8a5ed5854e52b9395a0b5cb92d81a50c0f94c63d09c00e929a78b5c7e"
+    },
+    {
+     "frame_index": 53876,
+     "composition_ns": 436988909379385,
+     "decoded_bgr_sha256": "1a9cd2821c95d29832f1e661b084132ac093af0f8ab8f134997b7bebd4b61e54"
+    },
+    {
+     "frame_index": 55062,
+     "composition_ns": 436998792712323,
+     "decoded_bgr_sha256": "9bda4b701960317b5b8b5688862ebaa63cccb15e3017df686f0f07eddb31c8b0"
+    },
+    {
+     "frame_index": 56248,
+     "composition_ns": 437008676045261,
+     "decoded_bgr_sha256": "90c10d3725a754ac6fa8081f78520e1daf6e3a728fa42f63da273ebe3661d817"
+    },
+    {
+     "frame_index": 57435,
+     "composition_ns": 437018567711532,
+     "decoded_bgr_sha256": "ce7962b35e8acf74fa020b24f876da1b00e7db5f7bcfabdd9135269d0745d929"
+    },
+    {
+     "frame_index": 58621,
+     "composition_ns": 437028451044470,
+     "decoded_bgr_sha256": "71fe56df84338e95fe94eb9744eeb806bf567142c1cb5045c6da46d0112270cd"
+    },
+    {
+     "frame_index": 59807,
+     "composition_ns": 437038334377408,
+     "decoded_bgr_sha256": "a05169f35c5b1228996a1761c0965ac7ac311a754873e47c5dcb3208e427bd43"
+    },
+    {
+     "frame_index": 60993,
+     "composition_ns": 437048217710346,
+     "decoded_bgr_sha256": "790514e3b8552d3a963e9bb4d20158c63569a7465e6447df397cf727251d5bdb"
+    },
+    {
+     "frame_index": 62179,
+     "composition_ns": 437058101043284,
+     "decoded_bgr_sha256": "de759ce7f1e11775e3027cb083718ce120583fc0932af7b9656b0eded2717dbe"
+    },
+    {
+     "frame_index": 63366,
+     "composition_ns": 437067992709555,
+     "decoded_bgr_sha256": "123cc05b5e2b6af0f2cab0da54b38012bcf268aa1aeef199a5a94db320ebe6f1"
+    },
+    {
+     "frame_index": 64552,
+     "composition_ns": 437077876042493,
+     "decoded_bgr_sha256": "964d53d0fb19dcf1a7afc75563245e02a260f132d43f69c2a69c5a79127cd0a0"
+    },
+    {
+     "frame_index": 65738,
+     "composition_ns": 437087759375431,
+     "decoded_bgr_sha256": "3aa978f651e952cd4c7acb53e02b1332892340f0a799ac5fc4b44698d7203f66"
+    },
+    {
+     "frame_index": 66924,
+     "composition_ns": 437097642708369,
+     "decoded_bgr_sha256": "3c347f3661ae09b0df04472b3f236e03d9abc5b3c406fb414e1241b1ff9aa974"
+    },
+    {
+     "frame_index": 68110,
+     "composition_ns": 437107526041307,
+     "decoded_bgr_sha256": "f5d7c6c3830414e64777ec1f0ad0660ecb06b0b55cb2d8f5a66374563c0b42ea"
+    },
+    {
+     "frame_index": 69297,
+     "composition_ns": 437117417707578,
+     "decoded_bgr_sha256": "43e4793be81a2e7d79d08b4cafbabbf64e78f8e06ff3b953c8d6662bc2c946ed"
+    },
+    {
+     "frame_index": 70483,
+     "composition_ns": 437127301040516,
+     "decoded_bgr_sha256": "1bbb1d064b67eaab755afc1d28c7beb927250de037660aa4797e4b110ebdcaca"
+    },
+    {
+     "frame_index": 71669,
+     "composition_ns": 437137184373454,
+     "decoded_bgr_sha256": "bdcb74475d6209ccfb6a6b894f82202be7b473933ab4fc5fb6d5e621c5b94158"
+    },
+    {
+     "frame_index": 72855,
+     "composition_ns": 437147067706392,
+     "decoded_bgr_sha256": "4cc281a875d8e9da5285bb4d9405f969fb3a4f1179027137f121915d5d562af0"
+    },
+    {
+     "frame_index": 74041,
+     "composition_ns": 437156951039330,
+     "decoded_bgr_sha256": "fe4f3c11dd74b9ddee815e0ff994a81b8856cc62f21470abcfe6666679fdb75f"
+    },
+    {
+     "frame_index": 75228,
+     "composition_ns": 437166842705601,
+     "decoded_bgr_sha256": "77f49e97d6bcc33962af95a198d5502e8936f1f67fb273b75b8a788b0f06be9d"
+    },
+    {
+     "frame_index": 76414,
+     "composition_ns": 437176726038539,
+     "decoded_bgr_sha256": "ad38d102a108090c0d0497bcb399fc37f4c53464f7bc48a65c73d53ed7965edb"
+    },
+    {
+     "frame_index": 77600,
+     "composition_ns": 437186609371477,
+     "decoded_bgr_sha256": "e6013f2106da6e3a86072f16f102e8d0a9f7d08aa0cc002a0d5b8d099635b9e8"
+    },
+    {
+     "frame_index": 78786,
+     "composition_ns": 437196492704415,
+     "decoded_bgr_sha256": "1a532c61ce1802f7eb080568fc8d0c406bca926f14e5b9f85a7f3c29a3feb8f9"
+    },
+    {
+     "frame_index": 79972,
+     "composition_ns": 437206376037353,
+     "decoded_bgr_sha256": "6025e399469a08619646b07ecc62ff07488e8c0c0a513f66181c5cc4d8d0bd2b"
+    },
+    {
+     "frame_index": 81159,
+     "composition_ns": 437216267703624,
+     "decoded_bgr_sha256": "a8b478fce68a6842918899f584471c79b7a69dd9251a758f6d9887ef4c2805a1"
+    },
+    {
+     "frame_index": 82345,
+     "composition_ns": 437226151036562,
+     "decoded_bgr_sha256": "a26f5850d3f7e61ab02b4c35c14f9a29d0d492fe6baf7aa3adce37be2e8227c4"
+    },
+    {
+     "frame_index": 83531,
+     "composition_ns": 437236034369500,
+     "decoded_bgr_sha256": "1fc45b561eba47f277f7fa853dd03615f6cfb0db0af0e463f6e47913d12a54da"
+    },
+    {
+     "frame_index": 84717,
+     "composition_ns": 437245917702438,
+     "decoded_bgr_sha256": "96af421d0621f6d09620a99de3000de1731017d01913d7f403de3138514c867e"
+    },
+    {
+     "frame_index": 85903,
+     "composition_ns": 437255801035376,
+     "decoded_bgr_sha256": "d8ea8f95677dbdb7d3fe481e46d6121472042634d3691a8abca02e6a25a1d2ab"
+    },
+    {
+     "frame_index": 87090,
+     "composition_ns": 437265692701647,
+     "decoded_bgr_sha256": "078f887d7a3aab9aa5664965914290edbc8c630e88cbcb2eba6c591bb96a3233"
+    },
+    {
+     "frame_index": 88276,
+     "composition_ns": 437275576034585,
+     "decoded_bgr_sha256": "6c6595c4632fcf97a8d6be4c804f4d25b1accb688ec35b7e0cc3a83b1e8aab16"
+    },
+    {
+     "frame_index": 89462,
+     "composition_ns": 437285459367523,
+     "decoded_bgr_sha256": "278b2d54ede475107a0d8b48dacd2760aec3dd6c2b6fbd82d31f171738feb524"
+    },
+    {
+     "frame_index": 90648,
+     "composition_ns": 437295342700461,
+     "decoded_bgr_sha256": "e4b225bdbf917e9131d2c9f56feaa6f76c81746bf046033076de83401b757f3d"
+    },
+    {
+     "frame_index": 91834,
+     "composition_ns": 437305226033399,
+     "decoded_bgr_sha256": "40cbb5782588cdfd4ea1a9b1f49e1994603911bc854a6c4bc0c6227f279b52bd"
+    },
+    {
+     "frame_index": 93021,
+     "composition_ns": 437315117699670,
+     "decoded_bgr_sha256": "c50b06a376640f6979406a8da8247ca4f1447deb618e17606dfe7ff461692fcf"
+    },
+    {
+     "frame_index": 94207,
+     "composition_ns": 437325001032608,
+     "decoded_bgr_sha256": "662f5cf4b73ac61aa74513ab91439d6ebb8c49dc06258b15e6d239ec8b0e4f49"
+    },
+    {
+     "frame_index": 95393,
+     "composition_ns": 437334884365546,
+     "decoded_bgr_sha256": "c81b88f1473eb6bd505723d0229dbb8b1f41a6d70e8b13886e8e9e1a18774ea9"
+    },
+    {
+     "frame_index": 96579,
+     "composition_ns": 437344767698484,
+     "decoded_bgr_sha256": "67818ca06e6fa920ae923fe4910b9ed4b91018e4d329658ffa1fdbba04367872"
+    },
+    {
+     "frame_index": 97765,
+     "composition_ns": 437354651031422,
+     "decoded_bgr_sha256": "deb7de072ca404b4b74f217bafb0b151c8cb7348f93261dc8a58a482128425d1"
+    },
+    {
+     "frame_index": 98952,
+     "composition_ns": 437364542697693,
+     "decoded_bgr_sha256": "83423f0ecbe9428240c576564c630045861295efc86c56488a28773eb5b69c42"
+    }
+   ]
+  },
+  "seg-003": {
+   "suitability": "rejected",
+   "reason": "death: fall off the map edge or into the sea, then SPECTATING or a black fade; respawn in the spawn room; cut by the dead rule",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T23:43:33Z",
+   "evidence": "segments-evidence.json b730d89af4753fb7 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 98953,
+     "composition_ns": 437364551031026,
+     "decoded_bgr_sha256": "e410018a3deb5fadde4698ca362ca4a21326a9519e70c6d4efb351856e37bd64"
+    },
+    {
+     "frame_index": 99084,
+     "composition_ns": 437365642697649,
+     "decoded_bgr_sha256": "7d509c4fa4451a643b8077a58c002c49e9a5901bb869972b89e7b4919907c1cf"
+    },
+    {
+     "frame_index": 99216,
+     "composition_ns": 437366742697605,
+     "decoded_bgr_sha256": "1920c6ce66e08d256ca9d73833620737fe26162640f0a147ca9c25fac3bfaf7a"
+    }
+   ]
+  },
+  "seg-004": {
+   "suitability": "rejected",
+   "reason": "unsampled edge sliver between a rule cut and a proven gameplay edge; no review frames",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T23:43:33Z",
+   "evidence": "segments-evidence.json b730d89af4753fb7 review frames + contact sheets",
+   "frames": []
+  },
+  "seg-005": {
+   "suitability": "accepted",
+   "reason": "range play from the spawn room after the first respawn; ends falling into foliage, HP 250/250",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T23:43:33Z",
+   "evidence": "segments-evidence.json b730d89af4753fb7 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 99217,
+     "composition_ns": 437366751030938,
+     "decoded_bgr_sha256": "e86712de59da4b56a6fa56548ee77253663559bc186ef2176897b4cb4f280964"
+    },
+    {
+     "frame_index": 100400,
+     "composition_ns": 437376609363877,
+     "decoded_bgr_sha256": "c6d8c9935eedf7dad5e7a6c63de88ee5d5d90f4fac20a28a02495110c4fa7de1"
+    },
+    {
+     "frame_index": 101584,
+     "composition_ns": 437386476030149,
+     "decoded_bgr_sha256": "fffa1375b7f4f7d002cbeb987fb6c2756ff7d229de6bcca0e294944e89950cc4"
+    },
+    {
+     "frame_index": 102767,
+     "composition_ns": 437396334363088,
+     "decoded_bgr_sha256": "30368e6f4167c0f20e17aae34df3930643b75f18dd966907e4b843e730f02f2f"
+    },
+    {
+     "frame_index": 103951,
+     "composition_ns": 437406201029360,
+     "decoded_bgr_sha256": "2ad3afb96a8f909dd23c7e70a8f485750ff868702b83e9a4d9bf360d0d026558"
+    },
+    {
+     "frame_index": 105135,
+     "composition_ns": 437416067695632,
+     "decoded_bgr_sha256": "f0c0bc5347535e58ef005e3f0a211dbf7093bb120b13ff3be24fde05d2433e90"
+    },
+    {
+     "frame_index": 106318,
+     "composition_ns": 437425926028571,
+     "decoded_bgr_sha256": "18946b6feb55581f6f30971259110e1ed294d6e7d802e5c7b2b4d926cc590820"
+    },
+    {
+     "frame_index": 107502,
+     "composition_ns": 437435792694843,
+     "decoded_bgr_sha256": "98cfced2efd8cb52b7cf4254358634931baa3c74833636edc303954b54187ff6"
+    },
+    {
+     "frame_index": 108685,
+     "composition_ns": 437445651027782,
+     "decoded_bgr_sha256": "40ce6b910921dc15a123d06c07eceb1f797c5a2ae8bae85894d9d8db22559287"
+    },
+    {
+     "frame_index": 109869,
+     "composition_ns": 437455517694054,
+     "decoded_bgr_sha256": "be935d6615bbade3386247ef6ac2170144665123c3f8c55d2a4540da43369e6b"
+    },
+    {
+     "frame_index": 111053,
+     "composition_ns": 437465384360326,
+     "decoded_bgr_sha256": "c1cb15203270a11afaab1b82e02f1f6fabddc7784fd835be4ca4230966247126"
+    },
+    {
+     "frame_index": 112236,
+     "composition_ns": 437475242693265,
+     "decoded_bgr_sha256": "d2b74bbe2b513db771a29093b253ff863c1a790b25253099fb02e6a9d8622e65"
+    },
+    {
+     "frame_index": 113420,
+     "composition_ns": 437485109359537,
+     "decoded_bgr_sha256": "16f447a0dab96431b89a674206292fadb2428d80159f1274d3fb84176b456d76"
+    },
+    {
+     "frame_index": 114604,
+     "composition_ns": 437494976025809,
+     "decoded_bgr_sha256": "cf5377e6668b6dad6e5e3db6b5844a3eb1ec1e8b62c6c6ea6fc0f257eb14ce60"
+    },
+    {
+     "frame_index": 115787,
+     "composition_ns": 437504834358748,
+     "decoded_bgr_sha256": "5e13a94bbc8113860cfa9a596125754ba4a91fafbd36f436df2ca1ee9f38d497"
+    },
+    {
+     "frame_index": 116971,
+     "composition_ns": 437514701025020,
+     "decoded_bgr_sha256": "90aa6127379c3e1d37e76292a8639c227da3e0afc28c6ae3cc94da3af09a99d0"
+    },
+    {
+     "frame_index": 118154,
+     "composition_ns": 437524559357959,
+     "decoded_bgr_sha256": "aabff07644f560b4b46b77825ee44b31e8dfdc10163d9511311d3142b4c5d2be"
+    },
+    {
+     "frame_index": 119338,
+     "composition_ns": 437534426024231,
+     "decoded_bgr_sha256": "ac00a700a99b8271a4c0dc005ad59589f150525faa4ef77521ff20bded2cdd3d"
+    },
+    {
+     "frame_index": 120522,
+     "composition_ns": 437544292690503,
+     "decoded_bgr_sha256": "bdad28248b7099a647dcab94c39b0ce719366bb1dd71e999df367d91d62c7a3d"
+    },
+    {
+     "frame_index": 121705,
+     "composition_ns": 437554151023442,
+     "decoded_bgr_sha256": "b6f5d808ea81309ef90d7d9cd04951abd736edcabb1de30f69911e1a13db2fc5"
+    },
+    {
+     "frame_index": 122889,
+     "composition_ns": 437564017689714,
+     "decoded_bgr_sha256": "0a627c3a4554d25b06c02f490e72e7c8be45c7e2995bb61060f157d62817174c"
+    },
+    {
+     "frame_index": 124073,
+     "composition_ns": 437573884355986,
+     "decoded_bgr_sha256": "9ce53314fd5ea149bc68a6720a3a5e20e6ec3fa0fad7f648a40ff4657d2bfc2f"
+    },
+    {
+     "frame_index": 125256,
+     "composition_ns": 437583742688925,
+     "decoded_bgr_sha256": "8793fa5fdde934763640c220e88c8d80e6f1041ca7a11d2952d60ea176ac2d1e"
+    },
+    {
+     "frame_index": 126440,
+     "composition_ns": 437593609355197,
+     "decoded_bgr_sha256": "20b270545c967937d6b40a58b0fda823399dbb5a826b0ecc8493c5d200b8752a"
+    },
+    {
+     "frame_index": 127623,
+     "composition_ns": 437603467688136,
+     "decoded_bgr_sha256": "46d6ca609085799ac775972a304fe6ea333bef2bc49857e011478d1780f87670"
+    },
+    {
+     "frame_index": 128807,
+     "composition_ns": 437613334354408,
+     "decoded_bgr_sha256": "f5d151ca6f072fdf7a30fea598adad4fad0ef8a3bcdfb798b7bfab96aa0aad96"
+    },
+    {
+     "frame_index": 129991,
+     "composition_ns": 437623201020680,
+     "decoded_bgr_sha256": "8d330b5901db4a05c376992fc6218c2db0d20acf29d951b686b6716442739c17"
+    },
+    {
+     "frame_index": 131174,
+     "composition_ns": 437633059353619,
+     "decoded_bgr_sha256": "8b319ccb727a00ba64c11a0695a1d6f871b621e58aa1422751e3441494947903"
+    },
+    {
+     "frame_index": 132358,
+     "composition_ns": 437642926019891,
+     "decoded_bgr_sha256": "1771ca50c0663d7292d25c5afd6ee9e94bf051dbff372437ea6490512e8c9793"
+    },
+    {
+     "frame_index": 133542,
+     "composition_ns": 437652792686163,
+     "decoded_bgr_sha256": "22f4dc082031b7e0d17f4ede2883f1ca97067bb3ddb36c043cd4debc2a038fd1"
+    },
+    {
+     "frame_index": 134725,
+     "composition_ns": 437662651019102,
+     "decoded_bgr_sha256": "d6e7c5fd627a73ccd375552fe438147a8ad118ccd0c5e436bf58fe049149a363"
+    },
+    {
+     "frame_index": 135909,
+     "composition_ns": 437672517685374,
+     "decoded_bgr_sha256": "e8327c603ecb5d37130be7b7ca01619db7c4b8277ebe3fd0c32e5dc78ecf7811"
+    },
+    {
+     "frame_index": 137092,
+     "composition_ns": 437682376018313,
+     "decoded_bgr_sha256": "1160c64785779dd207f93459e75c4562c24a384c32af3d72bda5c8bddae19b9a"
+    },
+    {
+     "frame_index": 138276,
+     "composition_ns": 437692242684585,
+     "decoded_bgr_sha256": "1173478bdc7c8b1d8fb4907fab4a62cc3253dbdf990439b2bf6ef6804d7155ae"
+    },
+    {
+     "frame_index": 139460,
+     "composition_ns": 437702109350857,
+     "decoded_bgr_sha256": "3c50e118f0db189f9282e7f6ea2ff5f4bcc54459eddfd7e730e9d4e105b4316b"
+    },
+    {
+     "frame_index": 140643,
+     "composition_ns": 437711967683796,
+     "decoded_bgr_sha256": "0e3fe6923dab0b3b8a7a849fa353b8658f328b1cd4f1242bab05b583be6cf96f"
+    },
+    {
+     "frame_index": 141827,
+     "composition_ns": 437721834350068,
+     "decoded_bgr_sha256": "8b4c79d93b695ffe9a753031459d90fd59e85d71ce778c5b25dd0e46c98df2e2"
+    },
+    {
+     "frame_index": 143010,
+     "composition_ns": 437731692683007,
+     "decoded_bgr_sha256": "3d26e48006f3f0b79a6f863087bde0b9925a80bf34148711d4b0b2ee624599b1"
+    },
+    {
+     "frame_index": 144194,
+     "composition_ns": 437741559349279,
+     "decoded_bgr_sha256": "1c74b6895cf26df259faf4fb752d0d97db385e4f32d553aba0a1f6d635902783"
+    },
+    {
+     "frame_index": 145378,
+     "composition_ns": 437751426015551,
+     "decoded_bgr_sha256": "b4eac60a94aa9d3bbcf0d135cfb92f118069c7ebb61970936bcbf9ef2863f1a8"
+    },
+    {
+     "frame_index": 146561,
+     "composition_ns": 437761284348490,
+     "decoded_bgr_sha256": "7632d013d27fcb29581d5d35e64fd73e43a737a676ca5c16ded3af0f7264d2e8"
+    },
+    {
+     "frame_index": 147745,
+     "composition_ns": 437771151014762,
+     "decoded_bgr_sha256": "6af92430a12f4d729793149b189fe0c8943d1ec8c21b8461aa39fd502e34ab7a"
+    },
+    {
+     "frame_index": 148929,
+     "composition_ns": 437781017681034,
+     "decoded_bgr_sha256": "cfb4924fcfb8a39b9d03aebf1ac47ed49b8533947066f3aa65b7bd2c896c98fb"
+    },
+    {
+     "frame_index": 150112,
+     "composition_ns": 437790876013973,
+     "decoded_bgr_sha256": "e16bd94268bf588c6182fac5c5ac3622618f1ad86e3f67959a6cdca17f12b557"
+    },
+    {
+     "frame_index": 151296,
+     "composition_ns": 437800742680245,
+     "decoded_bgr_sha256": "f389b01d9d8f69d04e10233475e5b85898d201fa0292d2a48f81f2e73561e1ca"
+    },
+    {
+     "frame_index": 152479,
+     "composition_ns": 437810601013184,
+     "decoded_bgr_sha256": "c44590ae1478aa2561ddd8dad099055cce829726c3163f750228c703dc8abcc5"
+    },
+    {
+     "frame_index": 153663,
+     "composition_ns": 437820467679456,
+     "decoded_bgr_sha256": "2aa6e817d2c3db9562635d124705e6b789440cc6ca28e09ff4a4ea613e0faf93"
+    },
+    {
+     "frame_index": 154847,
+     "composition_ns": 437830334345728,
+     "decoded_bgr_sha256": "27031b89f80df08b9f4de6b05478cfaa5ddc0c4b8315f3e27be556e5e715c4ee"
+    },
+    {
+     "frame_index": 156030,
+     "composition_ns": 437840192678667,
+     "decoded_bgr_sha256": "1768169527be2b062b0a3d6cda8dd5b6af27702709fbc4556ad66dc5dad02d6b"
+    },
+    {
+     "frame_index": 157214,
+     "composition_ns": 437850059344939,
+     "decoded_bgr_sha256": "c459ff075ce33b479480b104aea8a881de68f16a712e95029a1c5f56cdfbf3d8"
+    },
+    {
+     "frame_index": 158398,
+     "composition_ns": 437859926011211,
+     "decoded_bgr_sha256": "0c2fb00cf2a7f27dc67dcb1663e42364551242b2696c55367317ed3bf2741880"
+    },
+    {
+     "frame_index": 159581,
+     "composition_ns": 437869784344150,
+     "decoded_bgr_sha256": "d6de169a02d348fa4ebf9fde546d627bbf63d8f30e894727f0d4fb7a55b90b44"
+    },
+    {
+     "frame_index": 160765,
+     "composition_ns": 437879651010422,
+     "decoded_bgr_sha256": "a31fc0e2afd6acf7b69574fd03f91e50c4073e4e1930bf89e927b4d601c6e89b"
+    },
+    {
+     "frame_index": 161948,
+     "composition_ns": 437889509343361,
+     "decoded_bgr_sha256": "145e2349c5379ae5838d69835dbebbffd75edcb21ae68e98483f7b5036f937f5"
+    },
+    {
+     "frame_index": 163132,
+     "composition_ns": 437899376009633,
+     "decoded_bgr_sha256": "ad9f561035353d2a50f3a8daf4b641242e486df40a9962240d60463e00710bdd"
+    },
+    {
+     "frame_index": 164316,
+     "composition_ns": 437909242675905,
+     "decoded_bgr_sha256": "a158557622f4fc86e86c3cdccd003dea62a844c0f8e6f892f7b896ae65775f2e"
+    },
+    {
+     "frame_index": 165499,
+     "composition_ns": 437919101008844,
+     "decoded_bgr_sha256": "9762c2db7cb33f13b20419d91c886cbbcde6d11c1339ac2cabbe484a34c2d530"
+    },
+    {
+     "frame_index": 166683,
+     "composition_ns": 437928967675116,
+     "decoded_bgr_sha256": "6d089a24df5b505ece5869adb8b659e5ea509462cf4125b7153af1e543b6fa7b"
+    },
+    {
+     "frame_index": 167867,
+     "composition_ns": 437938834341388,
+     "decoded_bgr_sha256": "33aa30e579f29d25bb41ae7ddb5b5c881ac5960d54bf4cd8477f225316ff7d74"
+    },
+    {
+     "frame_index": 169050,
+     "composition_ns": 437948692674327,
+     "decoded_bgr_sha256": "6a74c3d1ecf1bcbe7d2f90b401a0d96514cbb324462cd1b4183f2bdecfa2199c"
+    },
+    {
+     "frame_index": 170234,
+     "composition_ns": 437958559340599,
+     "decoded_bgr_sha256": "150bb1afe543d207c88815479ecb5470c289dfe8165075da26fdcd5fe99e04fe"
+    },
+    {
+     "frame_index": 171417,
+     "composition_ns": 437968417673538,
+     "decoded_bgr_sha256": "1249f10c0c43fa618940aa4d135a50ee7d25b90520e1a65bf8e21eb9017d90f1"
+    },
+    {
+     "frame_index": 172601,
+     "composition_ns": 437978284339810,
+     "decoded_bgr_sha256": "d90e74a6b7934ed150b852c29463298dd2f59ec48c269b0d4b4659476013219b"
+    },
+    {
+     "frame_index": 173785,
+     "composition_ns": 437988151006082,
+     "decoded_bgr_sha256": "4d3b10d7049f65712f3c4d7f3689b912d50a9791ce9c4597df497cdae6836814"
+    },
+    {
+     "frame_index": 174968,
+     "composition_ns": 437998009339021,
+     "decoded_bgr_sha256": "3afb49d7f921af4f11a5ba5aabda93599f89f7511a997dac6d9e77461c28c738"
+    },
+    {
+     "frame_index": 176152,
+     "composition_ns": 438007876005293,
+     "decoded_bgr_sha256": "3bf7a2769d43174d36531899385408e2d13beab2b04b25a60f774a2d8e28cd29"
+    },
+    {
+     "frame_index": 177336,
+     "composition_ns": 438017742671565,
+     "decoded_bgr_sha256": "8f62bcee9bf82a09547ef9c5370e1f6bbfe0e5ec7323c46713a734ddbb7a4f4b"
+    }
+   ]
+  },
+  "seg-006": {
+   "suitability": "rejected",
+   "reason": "death: fall off the map edge or into the sea, then SPECTATING or a black fade; respawn in the spawn room; cut by the dead rule",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T23:43:33Z",
+   "evidence": "segments-evidence.json b730d89af4753fb7 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 177337,
+     "composition_ns": 438017751004898,
+     "decoded_bgr_sha256": "334eff635f30d64bd8b9c6d0d31017768dedc5a73b4d4697c1109b21fddce6b2"
+    },
+    {
+     "frame_index": 177456,
+     "composition_ns": 438018742671525,
+     "decoded_bgr_sha256": "40530e9359a573a46ecffadacecb85b782f56329730b4a71a02254b60f7d5e36"
+    },
+    {
+     "frame_index": 177576,
+     "composition_ns": 438019742671485,
+     "decoded_bgr_sha256": "3fb95eb36c655a2c17fc6a79dfd9c8f32369e5457a04493aff5d452980985822"
+    }
+   ]
+  },
+  "seg-007": {
+   "suitability": "rejected",
+   "reason": "unsampled edge sliver between a rule cut and a proven gameplay edge; no review frames",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T23:43:33Z",
+   "evidence": "segments-evidence.json b730d89af4753fb7 review frames + contact sheets",
+   "frames": []
+  },
+  "seg-008": {
+   "suitability": "accepted",
+   "reason": "range play from the spawn room after the second respawn; ends on a cliff fall, HP 250/250",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T23:43:33Z",
+   "evidence": "segments-evidence.json b730d89af4753fb7 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 177577,
+     "composition_ns": 438019751004818,
+     "decoded_bgr_sha256": "fd86a5ac73263f981cc14dbefacd3aaedde106851380685eff85d4992f27cf2d"
+    },
+    {
+     "frame_index": 178717,
+     "composition_ns": 438029251004438,
+     "decoded_bgr_sha256": "b1324f415b9f58d7dcdad731be7d1d723cf51c8c7e976effe3d0e05b0f5696ec"
+    },
+    {
+     "frame_index": 179858,
+     "composition_ns": 438038759337391,
+     "decoded_bgr_sha256": "b441c88bbae1a707e9f0bcd2dc292e6aa03bbe370ae331dc04624094ae2668d1"
+    },
+    {
+     "frame_index": 180998,
+     "composition_ns": 438048259337011,
+     "decoded_bgr_sha256": "8a1105ab51384de51959e86c14a1ffe6abd9681aa2c21a061bccfdac7c29f16e"
+    },
+    {
+     "frame_index": 182139,
+     "composition_ns": 438057767669964,
+     "decoded_bgr_sha256": "c16592c5e04ba3836c8b5600149a151ec9846b7c9efe1311c1435a13b24e9ff9"
+    },
+    {
+     "frame_index": 183279,
+     "composition_ns": 438067267669584,
+     "decoded_bgr_sha256": "d00127142f9e7508e83f761a9d9161ed3797e42f4bf979f0f4ea27be94cdc60c"
+    },
+    {
+     "frame_index": 184420,
+     "composition_ns": 438076776002537,
+     "decoded_bgr_sha256": "321dff618705ebfaf32e587d469cf4f3c9996ea851f01b4a0cbfb3062a3977b7"
+    },
+    {
+     "frame_index": 185561,
+     "composition_ns": 438086284335490,
+     "decoded_bgr_sha256": "1f295968000aee57cfe70127c179a87753888c6910a73c0009ba738e88e58db1"
+    },
+    {
+     "frame_index": 186701,
+     "composition_ns": 438095784335110,
+     "decoded_bgr_sha256": "d5381a08fb3c12cee6822ada5dfbba6d66d27e2a5f14df1222e61214223221bc"
+    },
+    {
+     "frame_index": 187842,
+     "composition_ns": 438105292668063,
+     "decoded_bgr_sha256": "d48bd7631167898308ec37bea46e3bdc469b8c02ac175e8c1d07e26440dfd7a5"
+    },
+    {
+     "frame_index": 188982,
+     "composition_ns": 438114792667683,
+     "decoded_bgr_sha256": "eec131630203a6bd1695c87ac52166643519e9e8afad2f88273c8a2fd218d96d"
+    },
+    {
+     "frame_index": 190123,
+     "composition_ns": 438124301000636,
+     "decoded_bgr_sha256": "ec43d504b93d7001594ec2cea0a810d76d28c45dbe247ed69db6d1ce5e162713"
+    },
+    {
+     "frame_index": 191263,
+     "composition_ns": 438133801000256,
+     "decoded_bgr_sha256": "c0bd41fccca135aea9d5dec0f5cf41fba9c181d08d0dc299692da2b4c056aad3"
+    },
+    {
+     "frame_index": 192404,
+     "composition_ns": 438143309333209,
+     "decoded_bgr_sha256": "895558fa5d2899d83cceb42caf67ebcda8c63576f87712d50eaa3d2f8076afb1"
+    },
+    {
+     "frame_index": 193545,
+     "composition_ns": 438152817666162,
+     "decoded_bgr_sha256": "54bcabe0ecf8f0786ac3ea4b8150ff2b28a44daff1040d620e396439e5f40b6f"
+    },
+    {
+     "frame_index": 194685,
+     "composition_ns": 438162317665782,
+     "decoded_bgr_sha256": "2002cf6002c93a9acea7cd3f2ecb230e2cc505aae1b8b82a384d5602b1f78b08"
+    },
+    {
+     "frame_index": 195826,
+     "composition_ns": 438171825998735,
+     "decoded_bgr_sha256": "0a1d103b72c97e0008cc4581e368c2e372248dc91610436407c49d4bfee13161"
+    },
+    {
+     "frame_index": 196966,
+     "composition_ns": 438181325998355,
+     "decoded_bgr_sha256": "4397d29a96e9a6417db93b6d3b29e69d33c4ea9287dfe2239001f9549376185e"
+    },
+    {
+     "frame_index": 198107,
+     "composition_ns": 438190834331308,
+     "decoded_bgr_sha256": "c39923c8a5e0b80676ff869e806a7dbce9eb39d18d5676e5d815e4e60c108495"
+    },
+    {
+     "frame_index": 199248,
+     "composition_ns": 438200342664261,
+     "decoded_bgr_sha256": "90eee023bdc3203ece763803f549f93b519b34f68107e36ae76df4b11f933e1a"
+    }
+   ]
+  },
+  "seg-009": {
+   "suitability": "rejected",
+   "reason": "death: fall off the map edge or into the sea, then SPECTATING or a black fade; respawn in the spawn room; cut by the dead rule",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T23:43:33Z",
+   "evidence": "segments-evidence.json b730d89af4753fb7 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 199249,
+     "composition_ns": 438200350997594,
+     "decoded_bgr_sha256": "42b77642e30cabd44292e8c48a4ffb68c5145fc60e73f33b0c460912a0f98cbf"
+    },
+    {
+     "frame_index": 199380,
+     "composition_ns": 438201442664217,
+     "decoded_bgr_sha256": "0956540c6517409e01085b8ff9fec46c0c4ef295baababd7f5c36f89c55503ab"
+    },
+    {
+     "frame_index": 199512,
+     "composition_ns": 438202542664173,
+     "decoded_bgr_sha256": "b9c13bec118fe786c24d2fbe4b64a612e08aa7b5d1f4d18d18c9cc7de9465c98"
+    }
+   ]
+  },
+  "seg-010": {
+   "suitability": "rejected",
+   "reason": "unsampled edge sliver between a rule cut and a proven gameplay edge; no review frames",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T23:43:33Z",
+   "evidence": "segments-evidence.json b730d89af4753fb7 review frames + contact sheets",
+   "frames": []
+  },
+  "seg-011": {
+   "suitability": "accepted",
+   "reason": "range play from the spawn room after the third respawn; ends on a fall toward the sea, HP 250/250",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T23:43:33Z",
+   "evidence": "segments-evidence.json b730d89af4753fb7 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 199513,
+     "composition_ns": 438202550997506,
+     "decoded_bgr_sha256": "5a502af5d99211bb6cd8c4501bee4e7b8e4f6594ec864098615fe446b9c648d5"
+    },
+    {
+     "frame_index": 200711,
+     "composition_ns": 438212534330440,
+     "decoded_bgr_sha256": "82ba11878403e1ceaa0c34573cec4e9490ac3619b839f78d0efc58594b6ea202"
+    },
+    {
+     "frame_index": 201909,
+     "composition_ns": 438222517663374,
+     "decoded_bgr_sha256": "9f2e40539bdaa7e56f2c87d9bbf16900b20aa480caf935aae6023e51382e11b5"
+    },
+    {
+     "frame_index": 203107,
+     "composition_ns": 438232500996308,
+     "decoded_bgr_sha256": "eea009b998c0cac9321744c55a1652acfa88a8c031652ac7be177dbd7319e149"
+    },
+    {
+     "frame_index": 204306,
+     "composition_ns": 438242492662575,
+     "decoded_bgr_sha256": "9ae6727f396cff3c94589c2a77c48a5d4ecd7496a197cfea8c2c0dd849cd5ebe"
+    },
+    {
+     "frame_index": 205504,
+     "composition_ns": 438252475995509,
+     "decoded_bgr_sha256": "740ddc4f971c0663872559bdc0a7e9a2febe2ca4013fd2192c6ffa611142edc6"
+    },
+    {
+     "frame_index": 206702,
+     "composition_ns": 438262459328443,
+     "decoded_bgr_sha256": "baf8b961c0709b1f59c980364eae77961cc17b33d43ab76bae9bfa13a816576e"
+    },
+    {
+     "frame_index": 207901,
+     "composition_ns": 438272450994710,
+     "decoded_bgr_sha256": "61eb1c471b093dfa62e993015d8b25df7ab33ff1a05557b04c59c169def57835"
+    },
+    {
+     "frame_index": 209099,
+     "composition_ns": 438282434327644,
+     "decoded_bgr_sha256": "d0917bb5eeb27d49e7e6c03316370c33107b883b924f64f43fb5737ca9d2851f"
+    },
+    {
+     "frame_index": 210297,
+     "composition_ns": 438292417660578,
+     "decoded_bgr_sha256": "2ecdf71f9b17fb5f0fd8cbf5932ece9106e874f094b47f4e6214f5f1bdbc6639"
+    },
+    {
+     "frame_index": 211496,
+     "composition_ns": 438302409326845,
+     "decoded_bgr_sha256": "101a4aed428cced4831cae9fdc7205f52f6bf02eaeb778585692f8efe67c7b52"
+    },
+    {
+     "frame_index": 212694,
+     "composition_ns": 438312392659779,
+     "decoded_bgr_sha256": "35c8216eedea7f21c73ff8c799850fc1f8c93fb359647cc333a28dab2bb4d46c"
+    },
+    {
+     "frame_index": 213892,
+     "composition_ns": 438322375992713,
+     "decoded_bgr_sha256": "970707ef7a1da29048c073fc43500483c1dd7e12b91efa392076b94aa0f57b0f"
+    },
+    {
+     "frame_index": 215090,
+     "composition_ns": 438332359325647,
+     "decoded_bgr_sha256": "7b4fd5975a03d1b65008ca8536505d9aaf908148ef17922eaa299599c8579e67"
+    },
+    {
+     "frame_index": 216289,
+     "composition_ns": 438342350991914,
+     "decoded_bgr_sha256": "893866a8c6e8db28a1e953e1a8cf66259e7cb47be885a1ac22084e5e1d58db92"
+    },
+    {
+     "frame_index": 217487,
+     "composition_ns": 438352334324848,
+     "decoded_bgr_sha256": "ab7e9f86e2118c7c2e3df268f82b42e4ed0ab104dc61c2959ffd49bf54c28c47"
+    },
+    {
+     "frame_index": 218685,
+     "composition_ns": 438362317657782,
+     "decoded_bgr_sha256": "dc4fc6ba16db820798895a35d710719b1a3416f073f1a5354c5ff3ccfc1c34a5"
+    },
+    {
+     "frame_index": 219884,
+     "composition_ns": 438372309324049,
+     "decoded_bgr_sha256": "13d1442de30fa662e737988c305331e875e1430a9f4ef402bf4ead86d4e6ae5e"
+    },
+    {
+     "frame_index": 221082,
+     "composition_ns": 438382292656983,
+     "decoded_bgr_sha256": "182f006955ddeee2d7b271579b67c37c462ed3bd9f077d3cd86f2a6cf97a82e0"
+    },
+    {
+     "frame_index": 222280,
+     "composition_ns": 438392275989917,
+     "decoded_bgr_sha256": "5d35b89ccb6a4df8d05687a25f0eec70f98b6f4640973a734227895f66012469"
+    },
+    {
+     "frame_index": 223479,
+     "composition_ns": 438402267656184,
+     "decoded_bgr_sha256": "9e9e8c377a7f15c3396aec884108b74f57079e5d7789e4c595f771215caf9c79"
+    },
+    {
+     "frame_index": 224677,
+     "composition_ns": 438412250989118,
+     "decoded_bgr_sha256": "951362dac6ea7383b015dc08b2c83ec1e1ae6a8642c0c9568f66afbe74214a0e"
+    },
+    {
+     "frame_index": 225875,
+     "composition_ns": 438422234322052,
+     "decoded_bgr_sha256": "e7f7b94cb4b20f03aeaa749bc9cb6952e033c5a997c11b1f1ac5188ee690b23b"
+    },
+    {
+     "frame_index": 227073,
+     "composition_ns": 438432217654986,
+     "decoded_bgr_sha256": "d6ce526f567e56e1dda8cbb76afd08d40282263ee5645e6a74de42edcb4b3405"
+    },
+    {
+     "frame_index": 228272,
+     "composition_ns": 438442209321253,
+     "decoded_bgr_sha256": "a00f5cc0c1b2d4268c6a3cbfdd8b4211d4885e211085f17d46c00a7901eeef30"
+    },
+    {
+     "frame_index": 229470,
+     "composition_ns": 438452192654187,
+     "decoded_bgr_sha256": "fafece6cd84ab4989cbebab2aa576cdfc0c849d407106e0062c232d19217fa0c"
+    },
+    {
+     "frame_index": 230668,
+     "composition_ns": 438462175987121,
+     "decoded_bgr_sha256": "7e1470a9ed0f9290aa164b59c310f2d930621795b70789c1d2797e1271e4aa25"
+    },
+    {
+     "frame_index": 231867,
+     "composition_ns": 438472167653388,
+     "decoded_bgr_sha256": "9c0fb0f9afe0c49011e5295a5bdc871c7afca864cc001da795a7af56c7457a03"
+    },
+    {
+     "frame_index": 233065,
+     "composition_ns": 438482150986322,
+     "decoded_bgr_sha256": "019aaaec2d84d99619d810c80fbcb7187f9de9d65ad4900a565f678288d18d78"
+    },
+    {
+     "frame_index": 234263,
+     "composition_ns": 438492134319256,
+     "decoded_bgr_sha256": "e84e2aaf10a95c95e85487339e0de7baf71265169bcf2946b1316566eac48e83"
+    },
+    {
+     "frame_index": 235462,
+     "composition_ns": 438502125985523,
+     "decoded_bgr_sha256": "73bfd380a49d0637b86ed807b965f407504133d7299873509e57366218faf782"
+    },
+    {
+     "frame_index": 236660,
+     "composition_ns": 438512109318457,
+     "decoded_bgr_sha256": "b72478a2921d06e21d53da709e3063db5cbf9242340d5e52c13d1234dd978615"
+    },
+    {
+     "frame_index": 237858,
+     "composition_ns": 438522092651391,
+     "decoded_bgr_sha256": "6b50925a8ae5316d2ee225410cd0d4fae0d32e38daa412c54a19cccec8fc669e"
+    },
+    {
+     "frame_index": 239056,
+     "composition_ns": 438532075984325,
+     "decoded_bgr_sha256": "d24b71b43f26e4e76639d1111029ec0801d7daee0add3e37e169117f6790274b"
+    },
+    {
+     "frame_index": 240255,
+     "composition_ns": 438542067650592,
+     "decoded_bgr_sha256": "b4e6f75b3849fc57c560c9c296e45eac35ecf7d9df6f9b28334f00e17ea75a20"
+    },
+    {
+     "frame_index": 241453,
+     "composition_ns": 438552050983526,
+     "decoded_bgr_sha256": "66b6ec1847f0afd2d88b18b6d758cb796a835bcb9e900fe2647279c23747b663"
+    },
+    {
+     "frame_index": 242651,
+     "composition_ns": 438562034316460,
+     "decoded_bgr_sha256": "eb8c0d8a98af4ac62f7891df22bd664dc5ba9dad41fd5a9268b3fd73199cb285"
+    },
+    {
+     "frame_index": 243850,
+     "composition_ns": 438572025982727,
+     "decoded_bgr_sha256": "9b21a5491e404ce0ae675cb1ac2b661ff308e12fd29c6b0fdded993683aeae9b"
+    },
+    {
+     "frame_index": 245048,
+     "composition_ns": 438582009315661,
+     "decoded_bgr_sha256": "119a4e6fc77a7a6003dbbdcbefe54041bf0942a6de48e8c2afb51ce7dc4922a9"
+    },
+    {
+     "frame_index": 246246,
+     "composition_ns": 438591992648595,
+     "decoded_bgr_sha256": "b84a4e416c1ec713e48ede7cb4e438a343987c9372d5478caeed60004c024b5b"
+    },
+    {
+     "frame_index": 247445,
+     "composition_ns": 438601984314862,
+     "decoded_bgr_sha256": "41347f84b60c8c5412926b06b40ca6d5a399ee74366e11734b856f4770cb00b0"
+    },
+    {
+     "frame_index": 248643,
+     "composition_ns": 438611967647796,
+     "decoded_bgr_sha256": "f4563db72666ef74f4bc8278b3de49962cd408633cebe4f14b3427ddec637dcd"
+    },
+    {
+     "frame_index": 249841,
+     "composition_ns": 438621950980730,
+     "decoded_bgr_sha256": "0a9816409acb1a0ba18c7f8695a2f494d0d96eb1f0e9b6b291b85153b460e40b"
+    },
+    {
+     "frame_index": 251040,
+     "composition_ns": 438631942646997,
+     "decoded_bgr_sha256": "7f77744ae605be9d732939ff8675c2175113f487cfdeb3d171842cb50ed9db43"
+    }
+   ]
+  },
+  "seg-012": {
+   "suitability": "rejected",
+   "reason": "death: fall off the map edge or into the sea, then SPECTATING or a black fade; respawn in the spawn room; cut by the dead rule",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T23:43:33Z",
+   "evidence": "segments-evidence.json b730d89af4753fb7 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 251041,
+     "composition_ns": 438631950980330,
+     "decoded_bgr_sha256": "e3944f84a337e235b4951a1f42c69135c1d4f215ca98c19aa945cfe4edc1c98b"
+    },
+    {
+     "frame_index": 251085,
+     "composition_ns": 438632317646982,
+     "decoded_bgr_sha256": "9598658b016741e45a3fa6ab98ce4ae671eead0f4a91beee54e78e9803e452e8"
+    },
+    {
+     "frame_index": 251130,
+     "composition_ns": 438632692646967,
+     "decoded_bgr_sha256": "564540261124e2e1179dd9c90a1f1680fae98fb3de47e7213cc79d8660395b5d"
+    }
+   ]
+  },
+  "seg-013": {
+   "suitability": "rejected",
+   "reason": "UI key: Tab (scoreboard) with its 2 s settle; at 2,092.85 s while spectating after a death, at 2,873.93 s before the closing Alt",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T23:43:33Z",
+   "evidence": "segments-evidence.json b730d89af4753fb7 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 251131,
+     "composition_ns": 438632700980300,
+     "decoded_bgr_sha256": "d6a3437e66cdcb8fa48f589a78b329c91ed97cc24fe10540f5aee9e95bd6e270"
+    },
+    {
+     "frame_index": 251289,
+     "composition_ns": 438634017646914,
+     "decoded_bgr_sha256": "bf6f7380bbad7a067e279dff17a91f0929f79b0dc913f9d68147096c24854d67"
+    },
+    {
+     "frame_index": 251448,
+     "composition_ns": 438635342646861,
+     "decoded_bgr_sha256": "9e1c34bc8dfe79f468c9975c03d35737be061f32bc7d5fa346e980b1b31ec807"
+    }
+   ]
+  },
+  "seg-014": {
+   "suitability": "rejected",
+   "reason": "unsampled edge sliver between a rule cut and a proven gameplay edge; no review frames",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T23:43:33Z",
+   "evidence": "segments-evidence.json b730d89af4753fb7 review frames + contact sheets",
+   "frames": []
+  },
+  "seg-015": {
+   "suitability": "accepted",
+   "reason": "range play after the Tab settle, from the spawn room; ends on f267419, Spider-Man diving into the Timed Practice portal with the PRACTICE RANGE banner and both edge proofs still holding",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T23:43:33Z",
+   "evidence": "segments-evidence.json b730d89af4753fb7 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 251449,
+     "composition_ns": 438635350980194,
+     "decoded_bgr_sha256": "39ad15d242feec1312eae9f41163121b788aefa6676c97a82accc125f475a7a9"
+    },
+    {
+     "frame_index": 252589,
+     "composition_ns": 438644850979814,
+     "decoded_bgr_sha256": "4c535717e4181e5f8b14906f59013c963b5a78f1f55e59f7c4946ab3ce7b85d9"
+    },
+    {
+     "frame_index": 253730,
+     "composition_ns": 438654359312767,
+     "decoded_bgr_sha256": "c094187a26b0d51e9e55a3df3426ad32a1980fba2a9f9bc14ec36b0c3dca4cea"
+    },
+    {
+     "frame_index": 254871,
+     "composition_ns": 438663867645720,
+     "decoded_bgr_sha256": "3b493c1a7278fd36edd2592ec56d70254c47aaa8299ef2a88d751f4f8b701073"
+    },
+    {
+     "frame_index": 256011,
+     "composition_ns": 438673367645340,
+     "decoded_bgr_sha256": "3bf6ddeca087ba45bc9b4771076d8ef2763216aa524cac00745515d1a3b75377"
+    },
+    {
+     "frame_index": 257152,
+     "composition_ns": 438682875978293,
+     "decoded_bgr_sha256": "fbbe8fc34aa7a0373dab78959313b0b3a52ece7e4ee45ab97354d71867452e60"
+    },
+    {
+     "frame_index": 258293,
+     "composition_ns": 438692384311246,
+     "decoded_bgr_sha256": "184b81be6424a6a67f979ca87643e026853f4aef49659fd7df910b4f67ac20d5"
+    },
+    {
+     "frame_index": 259434,
+     "composition_ns": 438701892644199,
+     "decoded_bgr_sha256": "43bcebe411817d5f38cef172a3b68cd77e62e78c3bc344db35d4d4998bfaa18f"
+    },
+    {
+     "frame_index": 260574,
+     "composition_ns": 438711392643819,
+     "decoded_bgr_sha256": "347b5dc22299b12096d0d4747d8483e8144d4fa80ddd931525552ecdc3e8cca1"
+    },
+    {
+     "frame_index": 261715,
+     "composition_ns": 438720900976772,
+     "decoded_bgr_sha256": "2aa75ea6bc947057e588a54b9a7b3cf2cc7d8528a04a36d70514652dc55ec247"
+    },
+    {
+     "frame_index": 262856,
+     "composition_ns": 438730409309725,
+     "decoded_bgr_sha256": "dc258c26e6d267bba9ddebe7c4744cd2c91300d74a601a1f8b09627b88c3aaca"
+    },
+    {
+     "frame_index": 263996,
+     "composition_ns": 438739909309345,
+     "decoded_bgr_sha256": "0009ff25c25f4fd3bf0772857e6de6916215be0d862c467b822b8918d262ac6f"
+    },
+    {
+     "frame_index": 265137,
+     "composition_ns": 438749417642298,
+     "decoded_bgr_sha256": "f7ccd3be437029b934f67dddd22948696aacff3579b30b0b12fc73579b4cb097"
+    },
+    {
+     "frame_index": 266278,
+     "composition_ns": 438758925975251,
+     "decoded_bgr_sha256": "a03b964e5d2c570fc7dddd4d8afbc32e6a563059e16434f30252f0a90b17910b"
+    },
+    {
+     "frame_index": 267419,
+     "composition_ns": 438768434308204,
+     "decoded_bgr_sha256": "82aa26b5336be1ce39559c140632b78a0e83c07904bb073585a19a38a53d7ca2"
+    }
+   ]
+  },
+  "seg-016": {
+   "suitability": "rejected",
+   "reason": "the range's Timed Practice round (TIMED PRACTICE banner, scored static-target lane, 60 s countdown), 2,228.59-2,319.87 s, cut by the timed_practice rule (lead decision 2026-09-25); f268515 fails the live range guard",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T23:43:33Z",
+   "evidence": "segments-evidence.json b730d89af4753fb7 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 267420,
+     "composition_ns": 438768442641537,
+     "decoded_bgr_sha256": "20a66f0b99882a5d294c8e9dcd2dad3717b3a95384c8173fcab5cc68b76af8d0"
+    },
+    {
+     "frame_index": 268515,
+     "composition_ns": 438777567641172,
+     "decoded_bgr_sha256": "58ba8d0a94aad9283a5c19c342695f0e96def4e20cccb4a2e961c49307e03089"
+    },
+    {
+     "frame_index": 269610,
+     "composition_ns": 438786692640807,
+     "decoded_bgr_sha256": "2de3bad5b599fe31f2d9349e827d28fe94ee111e69d66294296c26eb644c4280"
+    },
+    {
+     "frame_index": 270705,
+     "composition_ns": 438795817640442,
+     "decoded_bgr_sha256": "06fc8c7cd291c79c4e5d42a600eabfa83553ee01772560ca8d70e5d0b4060487"
+    },
+    {
+     "frame_index": 271800,
+     "composition_ns": 438804942640077,
+     "decoded_bgr_sha256": "c7770210dfbddf00a5d0f153056bb33926f196dbb6ea844952cd97245a6944f0"
+    },
+    {
+     "frame_index": 272895,
+     "composition_ns": 438814067639712,
+     "decoded_bgr_sha256": "bbd0df5f7b5855278767f9766e07a503ac329b31b8e02735455a145601cc2503"
+    },
+    {
+     "frame_index": 273990,
+     "composition_ns": 438823192639347,
+     "decoded_bgr_sha256": "7fae33d1cdd2849e799324943aab3610ce6f796052035217875584f554ce1386"
+    },
+    {
+     "frame_index": 275085,
+     "composition_ns": 438832317638982,
+     "decoded_bgr_sha256": "3a2d0a2fc933f58a90976755949e153113108ca3594871d95231d415ddf3e361"
+    },
+    {
+     "frame_index": 276180,
+     "composition_ns": 438841442638617,
+     "decoded_bgr_sha256": "593e1209ec31bdab1bca2b2fc3bf617d072f47f9728422d618a018f9dcb5ecd0"
+    },
+    {
+     "frame_index": 277275,
+     "composition_ns": 438850567638252,
+     "decoded_bgr_sha256": "1e8151ebc926ecfd4fa4c8052928d77a48883c571956d5398c855b9f49a5dcea"
+    },
+    {
+     "frame_index": 278371,
+     "composition_ns": 438859700971220,
+     "decoded_bgr_sha256": "ebc47c59516c1d4bc7befa9f9558f80f970faf627d6586866609e56658b35d76"
+    }
+   ]
+  },
+  "seg-017": {
+   "suitability": "accepted",
+   "reason": "range play from the first PRACTICE RANGE frame after the Timed Practice round (f278372); ends before the closing Tab",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T23:43:33Z",
+   "evidence": "segments-evidence.json b730d89af4753fb7 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 278372,
+     "composition_ns": 438859709304553,
+     "decoded_bgr_sha256": "9582772eba46bd4f3c8a51908b868232e824c31693f0e948103c8199fdbb4182"
+    },
+    {
+     "frame_index": 279559,
+     "composition_ns": 438869600970824,
+     "decoded_bgr_sha256": "4463d259645ffa6b34e484b070e9ffdb3e6561e7d8be75e192d831f34671ff1f"
+    },
+    {
+     "frame_index": 280746,
+     "composition_ns": 438879492637095,
+     "decoded_bgr_sha256": "816efcad0e4e26d7b9edb74de180865f7f7cfd2be146a966022af8d39b5c5bf9"
+    },
+    {
+     "frame_index": 281933,
+     "composition_ns": 438889384303366,
+     "decoded_bgr_sha256": "7a4baa19cb963049aa91681448e3489f287332152478213976d99f07c9ea7cc2"
+    },
+    {
+     "frame_index": 283121,
+     "composition_ns": 438899284302970,
+     "decoded_bgr_sha256": "3a9b676cdc382bbec5d6ec75fc6423a16531490f6352d44b9e5edce074b47b10"
+    },
+    {
+     "frame_index": 284308,
+     "composition_ns": 438909175969241,
+     "decoded_bgr_sha256": "5c7ade2d2e226e8fac83563b5444ae51612666d6a56ae8a52ace42ada13955ce"
+    },
+    {
+     "frame_index": 285495,
+     "composition_ns": 438919067635512,
+     "decoded_bgr_sha256": "678397467e993a2b9be55bbf7d80a796f6340f9af214f3bc5835b9b052343c77"
+    },
+    {
+     "frame_index": 286682,
+     "composition_ns": 438928959301783,
+     "decoded_bgr_sha256": "61d53c702d418e2cc07b8b13d51e0a3e8e76e6def4fca6443c8aa5934c2ef8e9"
+    },
+    {
+     "frame_index": 287870,
+     "composition_ns": 438938859301387,
+     "decoded_bgr_sha256": "7381bb6d1ed6d9a9ff4aeaa6cf4560e910e6b99ea6f12d3b48380560061bf293"
+    },
+    {
+     "frame_index": 289057,
+     "composition_ns": 438948750967658,
+     "decoded_bgr_sha256": "6bb901a4dbede4bf6bc1ccda6b62a9dac429cada4ed02048f891e86db25f4c01"
+    },
+    {
+     "frame_index": 290244,
+     "composition_ns": 438958642633929,
+     "decoded_bgr_sha256": "21e6dc6a5a91d9b0a2e79f00913c143ec193e40cde984ded5c0eb592755e5188"
+    },
+    {
+     "frame_index": 291431,
+     "composition_ns": 438968534300200,
+     "decoded_bgr_sha256": "6aca18247cedfa396ab1b3ba53b91a6c1e979f218a0dedd157f43f89ed4b1049"
+    },
+    {
+     "frame_index": 292619,
+     "composition_ns": 438978434299804,
+     "decoded_bgr_sha256": "4beb62559ac8deaa38dc140e2903ace5d7561369987d7a51b7543b36b76823be"
+    },
+    {
+     "frame_index": 293806,
+     "composition_ns": 438988325966075,
+     "decoded_bgr_sha256": "78489539350f3819e2171a35909113d11866b8987f8d08cd45f82c2369ee5b26"
+    },
+    {
+     "frame_index": 294993,
+     "composition_ns": 438998217632346,
+     "decoded_bgr_sha256": "d10b89ce359b33e148990bf0e9a6043bf02f7d85d1fff1b1c11c884ab399b060"
+    },
+    {
+     "frame_index": 296181,
+     "composition_ns": 439008117631950,
+     "decoded_bgr_sha256": "93234366380b4d63588a54499e337636b62dd7954b910f096a349a1c2e730daf"
+    },
+    {
+     "frame_index": 297368,
+     "composition_ns": 439018009298221,
+     "decoded_bgr_sha256": "3d4afb2914d68238149f9c358bc457392e42f2b096c49bf6841879ed44c78201"
+    },
+    {
+     "frame_index": 298555,
+     "composition_ns": 439027900964492,
+     "decoded_bgr_sha256": "acc06a0f2a1d4c4315295d68b168f8aca959cf9634e584b360a1612c5602421d"
+    },
+    {
+     "frame_index": 299742,
+     "composition_ns": 439037792630763,
+     "decoded_bgr_sha256": "7cd78281bcb0e30ce3773eae46632bd6998359deafcee1b5abec1e070529fd7e"
+    },
+    {
+     "frame_index": 300930,
+     "composition_ns": 439047692630367,
+     "decoded_bgr_sha256": "9eb481a2cc6be7b0bd18195abb399b83168de5f8908758a441ab864601e7d738"
+    },
+    {
+     "frame_index": 302117,
+     "composition_ns": 439057584296638,
+     "decoded_bgr_sha256": "581d6957f31af349a4f3b6970d694bf55337a05234512022c0dad45653e3882b"
+    },
+    {
+     "frame_index": 303304,
+     "composition_ns": 439067475962909,
+     "decoded_bgr_sha256": "ea97c956fb91c300988c783222002b8055ea750e85d8ca2f3f3d13e062203a7c"
+    },
+    {
+     "frame_index": 304491,
+     "composition_ns": 439077367629180,
+     "decoded_bgr_sha256": "dcd1ffcbe84d4ff39dce768fe660a54458da7d9209ea4a510ac9f3c526143c03"
+    },
+    {
+     "frame_index": 305679,
+     "composition_ns": 439087267628784,
+     "decoded_bgr_sha256": "94aa8666a8ba954e2f969912bd7fd4c99dc64e11df26a93dfe52d2428dce1764"
+    },
+    {
+     "frame_index": 306866,
+     "composition_ns": 439097159295055,
+     "decoded_bgr_sha256": "25e5b90b57c0c21499b3002a12480ddc8ce56d78bd815909c4f054604abf325d"
+    },
+    {
+     "frame_index": 308053,
+     "composition_ns": 439107050961326,
+     "decoded_bgr_sha256": "0e1fe44b8a942e3683b9b2771ee0a8d8b032e213d7876445ce8df4805accb638"
+    },
+    {
+     "frame_index": 309240,
+     "composition_ns": 439116942627597,
+     "decoded_bgr_sha256": "40b1db774e35f0946d810a27d67c5bbb83658a14a8fc58bb5cf528a39f8b0123"
+    },
+    {
+     "frame_index": 310428,
+     "composition_ns": 439126842627201,
+     "decoded_bgr_sha256": "c05857b80f5e4ea70bdd68b9185da0189c84ad24b8e7685e62c187139e591aad"
+    },
+    {
+     "frame_index": 311615,
+     "composition_ns": 439136734293472,
+     "decoded_bgr_sha256": "0b3b89b4fb1a387a884af5adf26d51a018600e88b152ce9a0356d8d4180f9964"
+    },
+    {
+     "frame_index": 312802,
+     "composition_ns": 439146625959743,
+     "decoded_bgr_sha256": "7352132c665b2c2905ffb96d17e26723e1158d62c4d67af88d33e388960bb392"
+    },
+    {
+     "frame_index": 313990,
+     "composition_ns": 439156525959347,
+     "decoded_bgr_sha256": "21ce436a0cc51ab3b60b5638447edc801d92ab936627cd351cb7febf181f0a93"
+    },
+    {
+     "frame_index": 315177,
+     "composition_ns": 439166417625618,
+     "decoded_bgr_sha256": "db524441e1f3f80d89e546d16770e1a641111bfebf264dd2ee03aec07f69c1dd"
+    },
+    {
+     "frame_index": 316364,
+     "composition_ns": 439176309291889,
+     "decoded_bgr_sha256": "f18c19078f3d0d4d465f142db83a23941b77594d1b777e77c3c226a9adc0a3d9"
+    },
+    {
+     "frame_index": 317551,
+     "composition_ns": 439186200958160,
+     "decoded_bgr_sha256": "5e4e0389c7161fa3873244658728b90b5ea4ed25988ac1a93dc85c53ebfb78de"
+    },
+    {
+     "frame_index": 318739,
+     "composition_ns": 439196100957764,
+     "decoded_bgr_sha256": "691e7e22993bbea671b7802d46764dd0a79e786764296c9dfde78489dfa3cb0e"
+    },
+    {
+     "frame_index": 319926,
+     "composition_ns": 439205992624035,
+     "decoded_bgr_sha256": "3ffa0c82b90ce98cc30fee07c136c0d528c20e8898c13411420b44e2ca91c6c3"
+    },
+    {
+     "frame_index": 321113,
+     "composition_ns": 439215884290306,
+     "decoded_bgr_sha256": "d85de4de9e31f5c0573a9cc078786ab1241e0de5b1d131a0162f2659e736d7f2"
+    },
+    {
+     "frame_index": 322300,
+     "composition_ns": 439225775956577,
+     "decoded_bgr_sha256": "21919fdb33991b3bc06a871243491269be0c8f092964f9aa199f6b59aa10b72f"
+    },
+    {
+     "frame_index": 323488,
+     "composition_ns": 439235675956181,
+     "decoded_bgr_sha256": "edd4966509872edf7a39a7dbe1db0a902e2c717a688622cb26a06552aff1e6db"
+    },
+    {
+     "frame_index": 324675,
+     "composition_ns": 439245567622452,
+     "decoded_bgr_sha256": "b7f918a2d84b041266ba820f20243aae76de372cca9a5f54ca465f8f252cefaa"
+    },
+    {
+     "frame_index": 325862,
+     "composition_ns": 439255459288723,
+     "decoded_bgr_sha256": "6c749d0cadf9f0890e833b43350f5f626765d41f30abaf0fa298d3f7ca6025a1"
+    },
+    {
+     "frame_index": 327049,
+     "composition_ns": 439265350954994,
+     "decoded_bgr_sha256": "7a7144ce6ff2e23a074ba6d310f300e869e94fc5e83449d3f7443e4c0723b1b5"
+    },
+    {
+     "frame_index": 328237,
+     "composition_ns": 439275250954598,
+     "decoded_bgr_sha256": "20608820e21183684e51393964ec644a746a1117c1ff5e197c5297694f78fa07"
+    },
+    {
+     "frame_index": 329424,
+     "composition_ns": 439285142620869,
+     "decoded_bgr_sha256": "558e25cd6089a22c680125f72c7332851bb041ebb0f784061446f4a1073c6d29"
+    },
+    {
+     "frame_index": 330611,
+     "composition_ns": 439295034287140,
+     "decoded_bgr_sha256": "28ad79f1f3c434397462b6d0171c1549a9a0db9a82b315067cc4a8c00653dcb5"
+    },
+    {
+     "frame_index": 331799,
+     "composition_ns": 439304934286744,
+     "decoded_bgr_sha256": "5c25859ee46035e9a9187bd87c06e733e00cc2eb127f89606bca8b70e29e98de"
+    },
+    {
+     "frame_index": 332986,
+     "composition_ns": 439314825953015,
+     "decoded_bgr_sha256": "701c044c2380143a360e7b7f26cfc80751e11b49661c22a5ea55c671fbe62dc7"
+    },
+    {
+     "frame_index": 334173,
+     "composition_ns": 439324717619286,
+     "decoded_bgr_sha256": "31c5e4ef6a527fbfea242834150d3b200278b0dd4cf6db58e9c57b012036d75b"
+    },
+    {
+     "frame_index": 335360,
+     "composition_ns": 439334609285557,
+     "decoded_bgr_sha256": "f801e0e254abc4068b91cb8341e80f1fe806b1f991177601b3fafcff2cd1268a"
+    },
+    {
+     "frame_index": 336548,
+     "composition_ns": 439344509285161,
+     "decoded_bgr_sha256": "9394de37646ceab5f0d30566cc036def8d5eada1e5af514815a01a3a3a35c4e2"
+    },
+    {
+     "frame_index": 337735,
+     "composition_ns": 439354400951432,
+     "decoded_bgr_sha256": "dd1c77d274f5ec7b7313dcc0e57fd0b8f93b117e890571a79accc972782e1e53"
+    },
+    {
+     "frame_index": 338922,
+     "composition_ns": 439364292617703,
+     "decoded_bgr_sha256": "af4cec0063fe653e3b4933998f8badc494bf85d9fe2d9038292e2c05648af24b"
+    },
+    {
+     "frame_index": 340109,
+     "composition_ns": 439374184283974,
+     "decoded_bgr_sha256": "eeeec9e9fb8c3ee027b49fa68caebd1e4e40f76d11c45d16a576eb708850c4dd"
+    },
+    {
+     "frame_index": 341297,
+     "composition_ns": 439384084283578,
+     "decoded_bgr_sha256": "8ed5c22abd819997dc8010b5bc037dcd0ff228076b95ae0925e1c508addae497"
+    },
+    {
+     "frame_index": 342484,
+     "composition_ns": 439393975949849,
+     "decoded_bgr_sha256": "0ef5992ab34f9f9e41d32a22d0a9f66cea8036a36d05bcfd5c7075ea31054d95"
+    },
+    {
+     "frame_index": 343671,
+     "composition_ns": 439403867616120,
+     "decoded_bgr_sha256": "b3b1308fdf0a894cdace4db8166cdc5af6290b8fbdd58c7c5c29fdbfd13488c8"
+    },
+    {
+     "frame_index": 344859,
+     "composition_ns": 439413767615724,
+     "decoded_bgr_sha256": "53330a37522e7f5a1aace66c9dd2cfc9096d61893af1d7e0b7619c60b626d18d"
+    }
+   ]
+  },
+  "seg-018": {
+   "suitability": "rejected",
+   "reason": "unsampled edge sliver between a rule cut and a proven gameplay edge; no review frames",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T23:43:33Z",
+   "evidence": "segments-evidence.json b730d89af4753fb7 review frames + contact sheets",
+   "frames": []
+  },
+  "seg-019": {
+   "suitability": "rejected",
+   "reason": "UI key: Tab (scoreboard) with its 2 s settle; at 2,092.85 s while spectating after a death, at 2,873.93 s before the closing Alt",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-25T23:43:33Z",
+   "evidence": "segments-evidence.json b730d89af4753fb7 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 344860,
+     "composition_ns": 439413775949057,
+     "decoded_bgr_sha256": "59accef8301eaf9606dde857479dd3fd5e2b2fde043aefbc84f415841cf61410"
+    },
+    {
+     "frame_index": 345003,
+     "composition_ns": 439414967615676,
+     "decoded_bgr_sha256": "3665a13c99563e138d484b45c925c667b484786aa0beaa7f11f2d86e5df34ced"
+    },
+    {
+     "frame_index": 345147,
+     "composition_ns": 439416167615628,
+     "decoded_bgr_sha256": "bf9da172d17d48c5ea0efd98e74d23cddde1d664494cd6e401e2d8797b839537"
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,244 @@
+{
+ "session": "20260926T045729-166Z-79780-1",
+ "raw_files": {
+  "inputs.jsonl": "1a9f2086dca84ffceb1d96244f9a3936e671516e168e730f309e015a3683cbe2",
+  "frames.csv": "951e4262b93a3ac29b56c721125195d9e2549ff9bedbc119f4df523bc05a02de",
+  "metadata.json": "f1cc53fed61fbc3c612a77dab2d88dcaf41940a3dca5aa28c86d5f7a70f88b97"
+ },
+ "event_counts": {
+  "raw_input_status": 1,
+  "focus": 7,
+  "mouse": 62262,
+  "key": 4305
+ },
+ "focus_events": [
+  {
+   "seq": 1,
+   "t_ns": 466523681529600,
+   "t_rel_s": 0.0025331,
+   "active": false,
+   "held_vk": []
+  },
+  {
+   "seq": 363,
+   "t_ns": 466526915159100,
+   "t_rel_s": 3.2361626,
+   "active": true,
+   "held_vk": [
+    1
+   ]
+  },
+  {
+   "seq": 20937,
+   "t_ns": 466618974148500,
+   "t_rel_s": 95.295152,
+   "active": false,
+   "held_vk": []
+  },
+  {
+   "seq": 21008,
+   "t_ns": 466619553542200,
+   "t_rel_s": 95.8745457,
+   "active": true,
+   "held_vk": [
+    9
+   ]
+  },
+  {
+   "seq": 126587,
+   "t_ns": 467084270559600,
+   "t_rel_s": 560.5915631,
+   "active": false,
+   "held_vk": []
+  },
+  {
+   "seq": 126775,
+   "t_ns": 467085833064200,
+   "t_rel_s": 562.1540677,
+   "active": true,
+   "held_vk": [
+    9
+   ]
+  },
+  {
+   "seq": 141636,
+   "t_ns": 467149419265000,
+   "t_rel_s": 625.7402685,
+   "active": false,
+   "held_vk": []
+  }
+ ],
+ "focused_intervals": [
+  [
+   466526915159100,
+   466618974148500
+  ],
+  [
+   466619553542200,
+   467084270559600
+  ],
+  [
+   467085833064200,
+   467149419265000
+  ]
+ ],
+ "focused_s": 620.3622076,
+ "recording_s": 627.9392714,
+ "device_scope": {
+  "keyboard_handles": {
+   "305729567": 4305
+  },
+  "mouse_handles": {
+   "614403941": 62162
+  },
+  "zero_effect_packets": {
+   "mouse:614403941": 88,
+   "mouse:0": 12
+  },
+  "injected_control_packets": 0,
+  "injected_zero_effect_packets": 12,
+  "single_keyboard_mouse": true
+ },
+ "key_make_counts_by_vk": {
+  "9": 11,
+  "16": 791,
+  "17": 1,
+  "18": 3,
+  "20": 10,
+  "32": 456,
+  "65": 460,
+  "67": 72,
+  "68": 284,
+  "69": 97,
+  "70": 41,
+  "81": 3,
+  "82": 1,
+  "83": 199,
+  "86": 3,
+  "87": 252
+ },
+ "ui_key_presses": [
+  {
+   "t_ns": 466616176405300,
+   "t_rel_s": 92.4974088,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 466616689617300,
+   "t_rel_s": 93.0106208,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 466616721386000,
+   "t_rel_s": 93.0423895,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 466616752155300,
+   "t_rel_s": 93.0731588,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 466616783286000,
+   "t_rel_s": 93.1042895,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 466616814598600,
+   "t_rel_s": 93.1356021,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 466616845085300,
+   "t_rel_s": 93.1660888,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 466616876717100,
+   "t_rel_s": 93.1977206,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 466616922616500,
+   "t_rel_s": 93.24362,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 466616954425700,
+   "t_rel_s": 93.2754292,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 466616984851000,
+   "t_rel_s": 93.3058545,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 466617000412300,
+   "t_rel_s": 93.3214158,
+   "vk": 9,
+   "key": "Tab",
+   "down": false
+  },
+  {
+   "t_ns": 466618904324700,
+   "t_rel_s": 95.2253282,
+   "vk": 18,
+   "key": "Alt",
+   "down": true
+  },
+  {
+   "t_ns": 466619569397700,
+   "t_rel_s": 95.8904012,
+   "vk": 9,
+   "key": "Tab",
+   "down": false
+  },
+  {
+   "t_ns": 467084178432400,
+   "t_rel_s": 560.4994359,
+   "vk": 18,
+   "key": "Alt",
+   "down": true
+  },
+  {
+   "t_ns": 467085834408200,
+   "t_rel_s": 562.1554117,
+   "vk": 9,
+   "key": "Tab",
+   "down": false
+  },
+  {
+   "t_ns": 467149345343300,
+   "t_rel_s": 625.6663468,
+   "vk": 18,
+   "key": "Alt",
+   "down": true
+  }
+ ],
+ "afk_spans": [],
+ "raw_input_gap_events": [],
+ "pause_events": []
+}

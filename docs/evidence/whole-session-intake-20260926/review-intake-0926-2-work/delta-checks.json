@@ -1,0 +1,296 @@
+{
+  "handback_sha256": "9845788a9f5060c05c583ad42657541641d287c5d58fe3d8bd5b6b234cd15536",
+  "pins": {
+    "agent/human_demos.py": {
+      "raw": "64f21da2ca20658450035aa7737d458b665b2d6fd4ca7b256d2d84ea78f5fd27",
+      "lf": "614042e5cb8eb45164a4b7d3b49249180048dd9c530ae14c540484fb8e72dd38"
+    },
+    "agent/human_intake.py": {
+      "raw": "5961c5d2ee38595058dd6b94f1231d5afa04172f95ced5918639f7da27b2cfcf",
+      "lf": "8ecf85e48181568f9af9fd81de0227b0c0e54cb3ad613a6a870d19dbdecf53e0"
+    },
+    "tests/test_human_demos.py": {
+      "raw": "fb029bff800581e0e473061435439458e265db8e4451b48eddba42bdec41b966",
+      "lf": "d952b428ab1b9574fe8d6db8ab5687ff829ff635f2beea8937ce471695d85c4b"
+    },
+    "tests/test_human_intake.py": {
+      "raw": "fc81c28e77684c0a15987f415f5821730fb240270d8124c126340619baaa1c96",
+      "lf": "fc81c28e77684c0a15987f415f5821730fb240270d8124c126340619baaa1c96"
+    }
+  },
+  "original_scripts_byte_identical": true,
+  "registry_cases": [
+    {
+      "case": "calibration_sessions clean",
+      "loader": "read_splits",
+      "result": "one split placement only"
+    },
+    {
+      "case": "calibration_sessions clean",
+      "loader": "check_registry",
+      "result": "one split placement only"
+    },
+    {
+      "case": "calibration_sessions id",
+      "loader": "read_splits",
+      "result": "calibration_sessions row split1 shares its session id with a split row or another excluded row"
+    },
+    {
+      "case": "calibration_sessions id",
+      "loader": "check_registry",
+      "result": "calibration_sessions row split1 shares its session id with a split row or another excluded row"
+    },
+    {
+      "case": "calibration_sessions relative alias",
+      "loader": "read_splits",
+      "result": "calibration_sessions row excluded1 shares its media path with a split row or another excluded row"
+    },
+    {
+      "case": "calibration_sessions relative alias",
+      "loader": "check_registry",
+      "result": "calibration_sessions row excluded1 shares its media path with a split row or another excluded row"
+    },
+    {
+      "case": "calibration_sessions hash",
+      "loader": "read_splits",
+      "result": "calibration_sessions row excluded1 shares its media sha256 with a split row or another excluded row"
+    },
+    {
+      "case": "calibration_sessions hash",
+      "loader": "check_registry",
+      "result": "calibration_sessions row excluded1 shares its media sha256 with a split row or another excluded row"
+    },
+    {
+      "case": "calibration_sessions split",
+      "loader": "read_splits",
+      "result": "calibration_sessions row excluded1 carries a split; it never enters one"
+    },
+    {
+      "case": "calibration_sessions split",
+      "loader": "check_registry",
+      "result": "calibration_sessions row excluded1 carries a split; it never enters one"
+    },
+    {
+      "case": "calibration_sessions sealed",
+      "loader": "read_splits",
+      "result": "calibration_sessions row excluded1 carries a split; it never enters one"
+    },
+    {
+      "case": "calibration_sessions sealed",
+      "loader": "check_registry",
+      "result": "calibration_sessions row excluded1 carries a split; it never enters one"
+    },
+    {
+      "case": "calibration_sessions within-list session_id",
+      "loader": "read_splits",
+      "result": "calibration_sessions row excluded1 shares its session id with a split row or another excluded row"
+    },
+    {
+      "case": "calibration_sessions within-list session_id",
+      "loader": "check_registry",
+      "result": "calibration_sessions row excluded1 shares its session id with a split row or another excluded row"
+    },
+    {
+      "case": "calibration_sessions within-list video_path",
+      "loader": "read_splits",
+      "result": "calibration_sessions row excluded2 shares its media path with a split row or another excluded row"
+    },
+    {
+      "case": "calibration_sessions within-list video_path",
+      "loader": "check_registry",
+      "result": "calibration_sessions row excluded2 shares its media path with a split row or another excluded row"
+    },
+    {
+      "case": "calibration_sessions within-list expected_media_sha256",
+      "loader": "read_splits",
+      "result": "calibration_sessions row excluded2 shares its media sha256 with a split row or another excluded row"
+    },
+    {
+      "case": "calibration_sessions within-list expected_media_sha256",
+      "loader": "check_registry",
+      "result": "calibration_sessions row excluded2 shares its media sha256 with a split row or another excluded row"
+    },
+    {
+      "case": "evaluation_sessions clean",
+      "loader": "read_splits",
+      "result": "one split placement only"
+    },
+    {
+      "case": "evaluation_sessions clean",
+      "loader": "check_registry",
+      "result": "one split placement only"
+    },
+    {
+      "case": "evaluation_sessions id",
+      "loader": "read_splits",
+      "result": "evaluation_sessions row split1 shares its session id with a split row or another excluded row"
+    },
+    {
+      "case": "evaluation_sessions id",
+      "loader": "check_registry",
+      "result": "evaluation_sessions row split1 shares its session id with a split row or another excluded row"
+    },
+    {
+      "case": "evaluation_sessions relative alias",
+      "loader": "read_splits",
+      "result": "evaluation_sessions row excluded1 shares its media path with a split row or another excluded row"
+    },
+    {
+      "case": "evaluation_sessions relative alias",
+      "loader": "check_registry",
+      "result": "evaluation_sessions row excluded1 shares its media path with a split row or another excluded row"
+    },
+    {
+      "case": "evaluation_sessions hash",
+      "loader": "read_splits",
+      "result": "evaluation_sessions row excluded1 shares its media sha256 with a split row or another excluded row"
+    },
+    {
+      "case": "evaluation_sessions hash",
+      "loader": "check_registry",
+      "result": "evaluation_sessions row excluded1 shares its media sha256 with a split row or another excluded row"
+    },
+    {
+      "case": "evaluation_sessions split",
+      "loader": "read_splits",
+      "result": "evaluation_sessions row excluded1 carries a split; it never enters one"
+    },
+    {
+      "case": "evaluation_sessions split",
+      "loader": "check_registry",
+      "result": "evaluation_sessions row excluded1 carries a split; it never enters one"
+    },
+    {
+      "case": "evaluation_sessions sealed",
+      "loader": "read_splits",
+      "result": "evaluation_sessions row excluded1 carries a split; it never enters one"
+    },
+    {
+      "case": "evaluation_sessions sealed",
+      "loader": "check_registry",
+      "result": "evaluation_sessions row excluded1 carries a split; it never enters one"
+    },
+    {
+      "case": "evaluation_sessions within-list session_id",
+      "loader": "read_splits",
+      "result": "evaluation_sessions row excluded1 shares its session id with a split row or another excluded row"
+    },
+    {
+      "case": "evaluation_sessions within-list session_id",
+      "loader": "check_registry",
+      "result": "evaluation_sessions row excluded1 shares its session id with a split row or another excluded row"
+    },
+    {
+      "case": "evaluation_sessions within-list video_path",
+      "loader": "read_splits",
+      "result": "evaluation_sessions row excluded2 shares its media path with a split row or another excluded row"
+    },
+    {
+      "case": "evaluation_sessions within-list video_path",
+      "loader": "check_registry",
+      "result": "evaluation_sessions row excluded2 shares its media path with a split row or another excluded row"
+    },
+    {
+      "case": "evaluation_sessions within-list expected_media_sha256",
+      "loader": "read_splits",
+      "result": "evaluation_sessions row excluded2 shares its media sha256 with a split row or another excluded row"
+    },
+    {
+      "case": "evaluation_sessions within-list expected_media_sha256",
+      "loader": "check_registry",
+      "result": "evaluation_sessions row excluded2 shares its media sha256 with a split row or another excluded row"
+    },
+    {
+      "case": "split-kind train",
+      "loader": "read_splits",
+      "result": "evaluation_sessions row excluded1: kind 'train' names a split"
+    },
+    {
+      "case": "split-kind train",
+      "loader": "check_registry",
+      "result": "evaluation_sessions row excluded1: kind 'train' names a split"
+    },
+    {
+      "case": "split-kind val",
+      "loader": "read_splits",
+      "result": "evaluation_sessions row excluded1: kind 'val' names a split"
+    },
+    {
+      "case": "split-kind val",
+      "loader": "check_registry",
+      "result": "evaluation_sessions row excluded1: kind 'val' names a split"
+    },
+    {
+      "case": "split-kind test",
+      "loader": "read_splits",
+      "result": "evaluation_sessions row excluded1: kind 'test' names a split"
+    },
+    {
+      "case": "split-kind test",
+      "loader": "check_registry",
+      "result": "evaluation_sessions row excluded1: kind 'test' names a split"
+    },
+    {
+      "case": "split-kind gate2",
+      "loader": "read_splits",
+      "result": "evaluation_sessions row excluded1: kind 'gate2' names a split"
+    },
+    {
+      "case": "split-kind gate2",
+      "loader": "check_registry",
+      "result": "evaluation_sessions row excluded1: kind 'gate2' names a split"
+    },
+    {
+      "case": "cross-list session_id",
+      "loader": "read_splits",
+      "result": "evaluation_sessions row cal shares its session id with a split row or another excluded row"
+    },
+    {
+      "case": "cross-list session_id",
+      "loader": "check_registry",
+      "result": "evaluation_sessions row cal shares its session id with a split row or another excluded row"
+    },
+    {
+      "case": "cross-list video_path",
+      "loader": "read_splits",
+      "result": "evaluation_sessions row eval shares its media path with a split row or another excluded row"
+    },
+    {
+      "case": "cross-list video_path",
+      "loader": "check_registry",
+      "result": "evaluation_sessions row eval shares its media path with a split row or another excluded row"
+    },
+    {
+      "case": "cross-list expected_media_sha256",
+      "loader": "read_splits",
+      "result": "evaluation_sessions row eval shares its media sha256 with a split row or another excluded row"
+    },
+    {
+      "case": "cross-list expected_media_sha256",
+      "loader": "check_registry",
+      "result": "evaluation_sessions row eval shares its media sha256 with a split row or another excluded row"
+    }
+  ],
+  "guarded_artifact_cases": [
+    {
+      "case": "gate2 header",
+      "error": "gate2 artifact is sealed",
+      "readline_calls": 1
+    },
+    {
+      "case": "lying train header",
+      "error": "gate2 session is sealed; explicit unseal=True is required",
+      "readline_calls": 1
+    },
+    {
+      "case": "unsealed bad flag",
+      "error": "sealed header mismatch",
+      "readline_calls": 1
+    },
+    {
+      "case": "missing flag",
+      "error": "sealed header mismatch",
+      "readline_calls": 1
+    }
+  ]
+}

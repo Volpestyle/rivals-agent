@@ -1,0 +1,492 @@
+{
+ "schema_version": 1,
+ "session_id": "20260925T212646-322Z-49728-6",
+ "reviewer": "owner admission-owner (a05aedf83b2536b3) + independent admission-review (Codex, GPT-6)",
+ "reviewed_at": "2026-09-25T22:41:42.015193+00:00",
+ "device_scope": {
+  "kind": "single_keyboard_mouse",
+  "source": "input-profile.json: keyboard ['661785265'], mouse ['614403941']; 19 zero-effect handle-0 packets allowed (lead decision), no injected control input",
+  "no_pad_attestation": "James, 2026-09-23 ~15:55 CDT (docs/recording-log.md): no physical controller plugged in during any recording session"
+ },
+ "pts_anchor": {
+  "kind": "independent_muxer_offset",
+  "offset_num": 21,
+  "offset_den": 1000,
+  "source": "accepted blank-scene derivation plus this session's own first-16-packet forward prediction (provenance.json anchor_applicability), no fitting",
+  "evidence": [
+   {
+    "path": "data/human/inspection/20260922T033319-205Z-24328-2/independent-review-resolution.md",
+    "sha256": "a67f55f36554887d97765b4552a33ac5c92494f6a50c814801183528a0c3c8e6"
+   },
+   {
+    "path": "data/human/sessions/20260925T212646-322Z-49728-6/provenance.json",
+    "sha256": "69143ff2f96e941b7040aef199987141416d92bf3cf4f0fb34dd51dd9cf75601"
+   }
+  ]
+ },
+ "provenance": {
+  "hero": "Spider-Man",
+  "settings": {
+   "value": {
+    "dpi": 800,
+    "horizontal_sensitivity": 1.89,
+    "vertical_sensitivity": 1.89,
+    "swing_mode": {
+     "automatic_swing": false,
+     "hold_to_swing": true
+    },
+    "mouse_acceleration": true,
+    "mouse_smoothing": true
+   },
+   "source": "James's statements in docs/recording-log.md (2026-09-23): DPI 800 (~14:50 CDT), sensitivity unchanged since 2026-09-21 (1.89/1.89 in the 09-21 report), default swing settings on Shift with Simple Swing on Caps Lock; confirmed on native frames of the settings look (calibration.json: 1.89/1.89, hold to swing on, simple swing off)",
+   "per_session_source": "James's dated statement for the 2026-09-25 takes (docs/recording-log.md, Motor settings, committed fbe6693): DPI, in-game sensitivity and bindings unchanged (chat, 2026-09-25 ~16:50 CDT: \"yep all the same\")",
+   "evidence": [
+    {
+     "path": "data/human/sessions/20260925T212646-322Z-49728-6/recording-log.fbe6693.md",
+     "sha256": "f7ef32b2c9c3b099abd5c5f043cbd77d8d17782cb521be3b813e3bb9a712b4b0"
+    },
+    {
+     "path": "data/human/notes/2026-09-21-user-settings.json",
+     "sha256": "852c92254961b4fcb1278e8ebe752ea2f02ce6add678509d3276fd1a26264c6c"
+    },
+    {
+     "path": "data/human/sessions/20260925T212646-322Z-49728-6/provenance.json",
+     "sha256": "69143ff2f96e941b7040aef199987141416d92bf3cf4f0fb34dd51dd9cf75601"
+    },
+    {
+     "path": "data/human/calibration/20260923T204707-487Z-45572-2/calibration.json",
+     "sha256": "baa49158c9911e0155a2d06883faec00150b297e0a5fe0e8dd46fc86d5310283"
+    }
+   ]
+  },
+  "bindings": {
+   "value": {
+    "move_forward": [
+     "key:17:0"
+    ],
+    "move_left": [
+     "key:30:0"
+    ],
+    "move_back": [
+     "key:31:0"
+    ],
+    "move_right": [
+     "key:32:0"
+    ],
+    "jump": [
+     "key:57:0"
+    ],
+    "web_swing": [
+     "key:42:0"
+    ],
+    "get_over_here": [
+     "key:33:0"
+    ],
+    "amazing_combo": [
+     "key:18:0",
+     "key:3:0"
+    ],
+    "ultimate": [
+     "key:16:0"
+    ],
+    "melee": [
+     "key:47:0",
+     "mouse:5"
+    ],
+    "spider_power": [
+     "mouse:1"
+    ],
+    "web_cluster": [
+     "mouse:2"
+    ],
+    "team_up": [
+     "key:46:0"
+    ],
+    "team_up_b": [
+     "key:45:0"
+    ],
+    "simple_swing": [
+     "key:58:0"
+    ],
+    "goh_targeting": [
+     "mouse:4",
+     "key:3:0"
+    ],
+    "slow_walk": [
+     "key:29:0"
+    ]
+   },
+   "aliases": {
+    "mouse:5": "melee"
+   },
+   "notes": {
+    "team_up": "C = Team-Up A, fires in the solo range with a visible effect (James; 051828/team-up-check.json). A real action with positives, trained but masked live (Y is off the pad whitelist).",
+    "melee": "V and Mouse 5 (settings look; lead decision): Mouse 5 presses count as melee (header binding_aliases).",
+    "goh_targeting": "Get Over Here Targeting: Mouse 4 (X1) and 2; a fit action (lead decision), structurally unsupported on the pad, counted. Only Mouse 4 is in the step header (2 is shared).",
+    "amazing_combo": "E and 2; 2 is also Get Over Here Targeting, so it is not aliased (unsupported).",
+    "simple_swing": "Caps Lock (VK 20, scan 58), off as a mode; not in the fit vocabulary (unsupported).",
+    "team_up_b": "X, Team-Up B; not in the fit vocabulary (unsupported).",
+    "slow_walk": "LCtrl, hold; not in the fit vocabulary (unsupported).",
+    "alt": "Alt is unbound in game (James); Alt presses are Alt-Tab and stay UI-key cuts."
+   },
+   "source": "native frames of James's settings look (calibration take 2026-09-23, keyboard pages, calibration.json), agreeing with his 2026-09-21 report and 2026-09-23 statements; HUD key labels on this session's frames (slot-mapping.json)",
+   "per_session_source": "James's dated statement for the 2026-09-25 takes (docs/recording-log.md, Motor settings, committed fbe6693): DPI, in-game sensitivity and bindings unchanged (chat, 2026-09-25 ~16:50 CDT: \"yep all the same\")",
+   "evidence": [
+    {
+     "path": "data/human/sessions/20260925T212646-322Z-49728-6/recording-log.fbe6693.md",
+     "sha256": "f7ef32b2c9c3b099abd5c5f043cbd77d8d17782cb521be3b813e3bb9a712b4b0"
+    },
+    {
+     "path": "data/human/notes/2026-09-21-user-settings.json",
+     "sha256": "852c92254961b4fcb1278e8ebe752ea2f02ce6add678509d3276fd1a26264c6c"
+    },
+    {
+     "path": "data/human/sessions/20260925T212646-322Z-49728-6/slot-mapping.json",
+     "sha256": "21d0e0b8539eba0cb5c381c9208b3f66b8f880586be08768eea760e768a83d43"
+    },
+    {
+     "path": "data/human/calibration/20260923T204707-487Z-45572-2/calibration.json",
+     "sha256": "baa49158c9911e0155a2d06883faec00150b297e0a5fe0e8dd46fc86d5310283"
+    }
+   ]
+  },
+  "game_patch": {
+   "value": "1.1.3892207/build25501035",
+   "source": "Steam appmanifest (buildid, LastUpdated), the game's version.json and the content log's update steps, read by the provenance step at intake; derived by agent.human_intake.recorded_build",
+   "evidence": [
+    {
+     "path": "data/human/sessions/20260925T212646-322Z-49728-6/provenance.json",
+     "sha256": "69143ff2f96e941b7040aef199987141416d92bf3cf4f0fb34dd51dd9cf75601"
+    }
+   ],
+   "derivation": {
+    "value": "1.1.3892207/build25501035",
+    "version": "1.1.3892207",
+    "buildid": "25501035",
+    "installed_utc": "2026-09-24T11:15:31+00:00",
+    "version_json_written_utc": "2026-09-24T11:15:10.109511+00:00",
+    "recording": {
+     "started_utc": "2026-09-25T21:26:46.322000+00:00",
+     "ended_utc": "2026-09-25T21:42:39.158566+00:00"
+    },
+    "content_log_finished_update": {
+     "local": "2026-09-24 06:15:31",
+     "utc": "2026-09-24T11:15:31+00:00",
+     "build": "25501035"
+    },
+    "content_log_utc_offset_s": -18000
+   }
+  },
+  "cooldown_regime": {
+   "value": "normal",
+   "source": "5 fps HUD scan: depletion observed",
+   "evidence": [
+    {
+     "path": "data/human/sessions/20260925T212646-322Z-49728-6/regime-timeline.json",
+     "sha256": "af7c4fd581c172dda834afcf6f42f8f47e1a4b260c363daa8f6b2dd959d6ec3f"
+    }
+   ]
+  },
+  "segments_evidence": {
+   "path": "data/human/sessions/20260925T212646-322Z-49728-6/segments-evidence.json",
+   "sha256": "1f7b819485452efedb6892ba2f46dc36419c50510161d2512983f43ed89d2248"
+  },
+  "owner_verdicts": {
+   "path": "data/human/sessions/20260925T212646-322Z-49728-6/owner-verdicts.json",
+   "sha256": "a05aedf83b2536b328f4572684047060c8aeed1305b02f81db76cac6fd822bc2"
+  },
+  "lead_decisions": null,
+  "independent_review": {
+   "path": "data/human/sessions/20260925T212646-322Z-49728-6/independent-review.verdicts.json",
+   "sha256": "7c47d6afac6c439298ff64ff755877ce2ebfccabef52021bdae84d12e34fb9bf",
+   "reviewer": "admission-review (Codex, GPT-6)"
+  }
+ },
+ "alignment": {
+  "kind": "assumption",
+  "statement": "OBS composition time is the labelling clock; capture, display and input-delivery latency are uncalibrated (no measured bound is asserted)",
+  "source": "lead decision for the whole-session campaign; as for the 2026-09-22/23 request packets"
+ },
+ "segments": [
+  {
+   "segment_id": "seg-000",
+   "start_ns": 439481354631900,
+   "end_ns": 439481604631900,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Initial 250 ms focus settle; rejected by rule even though sampled range HUD is visible.",
+   "evidence": "data/human/sessions/20260925T212646-322Z-49728-6/independent-review.verdicts.json (7c47d6afac6c4392)",
+   "machine_reason": "focus_transition"
+  },
+  {
+   "segment_id": "seg-001",
+   "start_ns": 439481604631900,
+   "end_ns": 439481609279677,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Sub-frame sliver between a rule boundary and a proven gameplay frame; contains no logged composition frame. Reject, retaining both neighboring frame hashes as boundary evidence.",
+   "evidence": "data/human/sessions/20260925T212646-322Z-49728-6/independent-review.verdicts.json (7c47d6afac6c4392)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-002",
+   "start_ns": 439481609279677,
+   "end_ns": 439607659274636,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "accepted",
+   "suitability_reason": "Active Spider-Man practice-range combat and traversal. Both native edge proofs are true; last accepted frame f15192 remains alive (250/250) while falling. No new fall-only exclusion is imposed.",
+   "evidence": "data/human/sessions/20260925T212646-322Z-49728-6/independent-review.verdicts.json (7c47d6afac6c4392)",
+   "machine_reason": "range_hud_present"
+  },
+  {
+   "segment_id": "seg-003",
+   "start_ns": 439607659274636,
+   "end_ns": 439608205707900,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Conservative death bracket: begins while the falling hero is still alive, then 0 HP and SPECTATING appear. Respawn continues inside the following Tab cut. Reject the entire bracket.",
+   "evidence": "data/human/sessions/20260925T212646-322Z-49728-6/independent-review.verdicts.json (7c47d6afac6c4392)",
+   "machine_reason": "dead"
+  },
+  {
+   "segment_id": "seg-004",
+   "start_ns": 439608205707900,
+   "end_ns": 439610608655900,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Tab 127.2602084-127.6631564 s visibly opens scoreboard while spectating. Two-second settle ends 129.6631564 s. Respawn is covered; reject.",
+   "evidence": "data/human/sessions/20260925T212646-322Z-49728-6/independent-review.verdicts.json (7c47d6afac6c4392)",
+   "machine_reason": "ui_key"
+  },
+  {
+   "segment_id": "seg-005",
+   "start_ns": 439610608655900,
+   "end_ns": 439610609274517,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Sub-frame sliver between a rule boundary and a proven gameplay frame; contains no logged composition frame. Reject, retaining both neighboring frame hashes as boundary evidence.",
+   "evidence": "data/human/sessions/20260925T212646-322Z-49728-6/independent-review.verdicts.json (7c47d6afac6c4392)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-006",
+   "start_ns": 439610609274517,
+   "end_ns": 439835159265536,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "accepted",
+   "suitability_reason": "Active range combat and traversal; clean spawn-room return after Tab settle. Both native edge proofs true; endpoint precedes Alt down.",
+   "evidence": "data/human/sessions/20260925T212646-322Z-49728-6/independent-review.verdicts.json (7c47d6afac6c4392)",
+   "machine_reason": "range_hud_present"
+  },
+  {
+   "segment_id": "seg-007",
+   "start_ns": 439835159265536,
+   "end_ns": 439835163667000,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Sub-frame sliver between a rule boundary and a proven gameplay frame; contains no logged composition frame. Reject, retaining both neighboring frame hashes as boundary evidence.",
+   "evidence": "data/human/sessions/20260925T212646-322Z-49728-6/independent-review.verdicts.json (7c47d6afac6c4392)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-008",
+   "start_ns": 439835163667000,
+   "end_ns": 439835270374300,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Alt down precedes the 354.3248748 s focus loss. Reject by UI rule; following unfocused time is excluded from candidates.",
+   "evidence": "data/human/sessions/20260925T212646-322Z-49728-6/independent-review.verdicts.json (7c47d6afac6c4392)",
+   "machine_reason": "ui_key"
+  },
+  {
+   "segment_id": "seg-009",
+   "start_ns": 439837568111500,
+   "end_ns": 439837818111500,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "250 ms settle after focus returns at 356.622612 s. Taskbar visible on early return f42782; accepted f42812 is clean.",
+   "evidence": "data/human/sessions/20260925T212646-322Z-49728-6/independent-review.verdicts.json (7c47d6afac6c4392)",
+   "machine_reason": "focus_transition"
+  },
+  {
+   "segment_id": "seg-010",
+   "start_ns": 439837818111500,
+   "end_ns": 439837825932095,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Sub-frame sliver between a rule boundary and a proven gameplay frame; contains no logged composition frame. Reject, retaining both neighboring frame hashes as boundary evidence.",
+   "evidence": "data/human/sessions/20260925T212646-322Z-49728-6/independent-review.verdicts.json (7c47d6afac6c4392)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-011",
+   "start_ns": 439837825932095,
+   "end_ns": 439979225926440,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "accepted",
+   "suitability_reason": "Active range combat and traversal, clean focus-return edge, both native edge proofs true; endpoint precedes Tab down.",
+   "evidence": "data/human/sessions/20260925T212646-322Z-49728-6/independent-review.verdicts.json (7c47d6afac6c4392)",
+   "machine_reason": "range_hud_present"
+  },
+  {
+   "segment_id": "seg-012",
+   "start_ns": 439979225926440,
+   "end_ns": 439979233637600,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Sub-frame sliver between a rule boundary and a proven gameplay frame; contains no logged composition frame. Reject, retaining both neighboring frame hashes as boundary evidence.",
+   "evidence": "data/human/sessions/20260925T212646-322Z-49728-6/independent-review.verdicts.json (7c47d6afac6c4392)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-013",
+   "start_ns": 439979233637600,
+   "end_ns": 439982217644700,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Tab 498.2881381-499.2721452 s visibly opens scoreboard (including f59831). Owner handback no-scoreboard narrative is incorrect. Two-second settle ends 501.2721452 s; existing rejection and bounds are correct.",
+   "evidence": "data/human/sessions/20260925T212646-322Z-49728-6/independent-review.verdicts.json (7c47d6afac6c4392)",
+   "machine_reason": "ui_key"
+  },
+  {
+   "segment_id": "seg-014",
+   "start_ns": 439982217644700,
+   "end_ns": 439982225926319,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Sub-frame sliver between a rule boundary and a proven gameplay frame; contains no logged composition frame. Reject, retaining both neighboring frame hashes as boundary evidence.",
+   "evidence": "data/human/sessions/20260925T212646-322Z-49728-6/independent-review.verdicts.json (7c47d6afac6c4392)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-015",
+   "start_ns": 439982225926319,
+   "end_ns": 440154492586096,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "accepted",
+   "suitability_reason": "Active range combat and traversal, both native edge proofs true. The sole wheel-up tick was separately inspected; no Simple Swing tether or Stop prompt observed in that short sequence.",
+   "evidence": "data/human/sessions/20260925T212646-322Z-49728-6/independent-review.verdicts.json (7c47d6afac6c4392)",
+   "machine_reason": "range_hud_present"
+  },
+  {
+   "segment_id": "seg-016",
+   "start_ns": 440154492586096,
+   "end_ns": 440154497663300,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Sub-frame sliver between a rule boundary and a proven gameplay frame; contains no logged composition frame. Reject, retaining both neighboring frame hashes as boundary evidence.",
+   "evidence": "data/human/sessions/20260925T212646-322Z-49728-6/independent-review.verdicts.json (7c47d6afac6c4392)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-017",
+   "start_ns": 440154497663300,
+   "end_ns": 440154582970500,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Alt down precedes focus loss at 673.637471 s; reject by UI rule, with following unfocused time excluded.",
+   "evidence": "data/human/sessions/20260925T212646-322Z-49728-6/independent-review.verdicts.json (7c47d6afac6c4392)",
+   "machine_reason": "ui_key"
+  },
+  {
+   "segment_id": "seg-018",
+   "start_ns": 440155897940900,
+   "end_ns": 440156147940900,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "250 ms settle after focus returns at 674.9524414 s. Return and subsequent accepted edge visually checked; reject by rule.",
+   "evidence": "data/human/sessions/20260925T212646-322Z-49728-6/independent-review.verdicts.json (7c47d6afac6c4392)",
+   "machine_reason": "focus_transition"
+  },
+  {
+   "segment_id": "seg-019",
+   "start_ns": 440156147940900,
+   "end_ns": 440156150919362,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Sub-frame sliver between a rule boundary and a proven gameplay frame; contains no logged composition frame. Reject, retaining both neighboring frame hashes as boundary evidence.",
+   "evidence": "data/human/sessions/20260925T212646-322Z-49728-6/independent-review.verdicts.json (7c47d6afac6c4392)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-020",
+   "start_ns": 440156150919362,
+   "end_ns": 440362325911116,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "accepted",
+   "suitability_reason": "Active range combat and traversal, both native edge proofs true; endpoint precedes third Tab down.",
+   "evidence": "data/human/sessions/20260925T212646-322Z-49728-6/independent-review.verdicts.json (7c47d6afac6c4392)",
+   "machine_reason": "range_hud_present"
+  },
+  {
+   "segment_id": "seg-021",
+   "start_ns": 440362325911116,
+   "end_ns": 440362328616900,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Sub-frame sliver between a rule boundary and a proven gameplay frame; contains no logged composition frame. Reject, retaining both neighboring frame hashes as boundary evidence.",
+   "evidence": "data/human/sessions/20260925T212646-322Z-49728-6/independent-review.verdicts.json (7c47d6afac6c4392)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-022",
+   "start_ns": 440362328616900,
+   "end_ns": 440364458012700,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Third Tab visibly opens scoreboard. Its two-second release settle overlaps Alt down at 883.2081507 s and focus loss at 883.5125132 s. Entire focused UI bracket rejected; unfocused interval excluded.",
+   "evidence": "data/human/sessions/20260925T212646-322Z-49728-6/independent-review.verdicts.json (7c47d6afac6c4392)",
+   "machine_reason": "ui_key"
+  },
+  {
+   "segment_id": "seg-023",
+   "start_ns": 440366343419600,
+   "end_ns": 440366593419600,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "250 ms settle after focus returns at 885.3979201 s. Taskbar visible on f106235, absent at accepted f106265; reject.",
+   "evidence": "data/human/sessions/20260925T212646-322Z-49728-6/independent-review.verdicts.json (7c47d6afac6c4392)",
+   "machine_reason": "focus_transition"
+  },
+  {
+   "segment_id": "seg-024",
+   "start_ns": 440366593419600,
+   "end_ns": 440366600910944,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Sub-frame sliver between a rule boundary and a proven gameplay frame; contains no logged composition frame. Reject, retaining both neighboring frame hashes as boundary evidence.",
+   "evidence": "data/human/sessions/20260925T212646-322Z-49728-6/independent-review.verdicts.json (7c47d6afac6c4392)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-025",
+   "start_ns": 440366600910944,
+   "end_ns": 440431234241693,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "accepted",
+   "suitability_reason": "Active range combat and traversal with clean return, both native edge proofs true; last accepted frame precedes closing Alt.",
+   "evidence": "data/human/sessions/20260925T212646-322Z-49728-6/independent-review.verdicts.json (7c47d6afac6c4392)",
+   "machine_reason": "range_hud_present"
+  },
+  {
+   "segment_id": "seg-026",
+   "start_ns": 440431234241693,
+   "end_ns": 440431236657700,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Sub-frame sliver between a rule boundary and a proven gameplay frame; contains no logged composition frame. Reject, retaining both neighboring frame hashes as boundary evidence.",
+   "evidence": "data/human/sessions/20260925T212646-322Z-49728-6/independent-review.verdicts.json (7c47d6afac6c4392)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-027",
+   "start_ns": 440431236657700,
+   "end_ns": 440431442024000,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Closing Alt down at 950.2911582 s until final focus loss at 950.4965245 s; reject. Remaining capture tail is unfocused and not a candidate.",
+   "evidence": "data/human/sessions/20260925T212646-322Z-49728-6/independent-review.verdicts.json (7c47d6afac6c4392)",
+   "machine_reason": "ui_key"
+  }
+ ]
+}

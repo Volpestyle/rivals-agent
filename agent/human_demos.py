@@ -179,6 +179,12 @@ class Placement:
     expected_media_sha256: str | None = None
 
 
+# Sealed splits: evaluation only, refused by every fit path and never loaded without an explicit unseal. "gate2" holds
+# the IDM's replay-of-self pairs (docs/lanes/inverse-dynamics.md, Gate 2 protocol; lead 2026-09-26).
+SEALED_SPLITS = ("test", "gate2")
+SPLITS = ("train", "val") + SEALED_SPLITS
+
+
 def read_splits(path) -> tuple[Placement, ...]:
     """Validate the entire explicit registry without opening any session/media."""
     path = Path(path)
@@ -191,7 +197,7 @@ def read_splits(path) -> tuple[Placement, ...]:
         sid = _text(row.get("session_id"), "session_id")
         group = _text(row.get("session_group"), "session_group")
         split = row.get("split")
-        _require(split in ("train", "val", "test"), "split must be train/val/test")
+        _require(split in SPLITS, f"split must be one of {'/'.join(SPLITS)}")
         _require(sid not in ids, "duplicate session identity in split registry")
         _require(group not in groups or groups[group] == split, "session group split leakage")
         video = Path(_text(row.get("video_path"), "video_path"))
@@ -211,20 +217,53 @@ def read_splits(path) -> tuple[Placement, ...]:
                      "relocated source media split leakage")
             source_media[expected_hash] = (group, split)
         if "sealed" in row:
-            _require(row["sealed"] is (split == "test"), "test must be sealed; train/val unsealed")
+            _require(row["sealed"] is (split in SEALED_SPLITS), "test and gate2 must be sealed; train/val unsealed")
         ids.add(sid)
         groups[group] = split
         media[video] = (group, split)
         result.append(Placement(sid, group, split, video, recorded_path, expected_hash))
+    _check_excluded(path, doc, ids, set(media), set(source_media))
     return tuple(result)
+
+
+# Registry lists that never resolve to a split placement (review B1, 2026-09-26): calibration takes and
+# evaluation-only recordings (reader_validation, reader_development, match_dev). Their identities, media paths and
+# media hashes must be disjoint from every split row and from each other, and none may carry a split.
+EXCLUDED_LISTS = ("calibration_sessions", "evaluation_sessions")
+
+
+def _check_excluded(path, doc, split_ids, split_media, split_hashes):
+    seen_ids, seen_media, seen_hashes = set(), set(), set()
+    for name in EXCLUDED_LISTS:
+        rows = doc.get(name, [])
+        _require(isinstance(rows, list), f"{name} must be a list")
+        for row in rows:
+            sid = _text(row.get("session_id"), f"{name} session_id")
+            _require("split" not in row and "sealed" not in row,
+                     f"{name} row {sid} carries a split; it never enters one")
+            if name == "evaluation_sessions":
+                kind = _text(row.get("kind"), f"{name} kind")
+                _require(kind not in SPLITS, f"{name} row {sid}: kind {kind!r} names a split")
+            video = str((path.parent / Path(_text(row.get("video_path"), f"{name} video_path"))).resolve())
+            digest = row.get("expected_media_sha256")
+            _require(sid not in split_ids and sid not in seen_ids,
+                     f"{name} row {sid} shares its session id with a split row or another excluded row")
+            _require(video not in split_media and video not in seen_media,
+                     f"{name} row {sid} shares its media path with a split row or another excluded row")
+            _require(digest is None or (digest not in split_hashes and digest not in seen_hashes),
+                     f"{name} row {sid} shares its media sha256 with a split row or another excluded row")
+            seen_ids.add(sid)
+            seen_media.add(video)
+            if digest is not None:
+                seen_hashes.add(digest)
 
 
 def _placement(registry, session_id, unseal):
     rows = [row for row in registry if row.session_id == session_id]
     _require(len(rows) == 1, "session_id absent from split registry")
     row = rows[0]
-    if row.split == "test" and not unseal:
-        raise SealedError("test session is sealed; explicit unseal=True is required")
+    if row.split in SEALED_SPLITS and not unseal:
+        raise SealedError(f"{row.split} session is sealed; explicit unseal=True is required")
     return row
 
 
@@ -608,7 +647,8 @@ class HumanDataset:
         if for_training:
             _require(review.get("alignment", {}).get("kind") in ("assumption", "measured_bound"),
                      "training requires explicit alignment assumption or measured bound")
-            _require(self.placement.split != "test", "sealed test is evaluation-only; for_training=False required")
+            _require(self.placement.split not in SEALED_SPLITS,
+                     f"sealed {self.placement.split} is evaluation-only; for_training=False required")
         event_times = [event.t_ns for event in self.events]
         frame_times = [frame.composition_ns for frame in self.frames]
         meta = json.loads(self.metadata_json)
@@ -736,7 +776,7 @@ def import_session(session, *, review, splits, output, unseal=False, ffprobe="ff
                "packets": packets, "decoded": decoded}
     dataset = _build(payload, placement, fingerprint)
     body = _json(payload)
-    header = {"format": FORMAT, **asdict(placement), "sealed": placement.split == "test",
+    header = {"format": FORMAT, **asdict(placement), "sealed": placement.split in SEALED_SPLITS,
               "media_sha256": fingerprint, "payload_sha256": hashlib.sha256(body.encode()).hexdigest()}
     # Exclusive creation: a typo cannot overwrite original media/logs or another artifact.
     with Path(output).open("x", encoding="utf-8", newline="\n") as handle:
@@ -751,12 +791,12 @@ def load_dataset(path, *, splits, unseal=False) -> HumanDataset:
         header = json.loads(handle.readline())
         _require(header.get("format") == FORMAT, "unsupported imported demo format")
         # A stale registry cannot silently unseal an artifact, and vice versa.
-        if (header.get("sealed") is True or header.get("split") == "test") and not unseal:
-            raise SealedError("test artifact is sealed")
+        if (header.get("sealed") is True or header.get("split") in SEALED_SPLITS) and not unseal:
+            raise SealedError(f"{header.get('split')} artifact is sealed")
         placement = _placement(registry, header.get("session_id"), unseal)
         for key, value in asdict(placement).items():
             _require(header.get(key) == value, f"split registry/artifact mismatch: {key}")
-        _require(header.get("sealed") is (placement.split == "test"), "sealed header mismatch")
+        _require(header.get("sealed") is (placement.split in SEALED_SPLITS), "sealed header mismatch")
         body = handle.readline().rstrip("\r\n")
         _require(hashlib.sha256(body.encode()).hexdigest() == header.get("payload_sha256"), "artifact checksum mismatch")
         _require(not handle.read(), "unexpected trailing artifact records")
@@ -794,7 +834,7 @@ def export_dataset(dataset: HumanDataset, output, **sample_options) -> int:
     count = 0
     with Path(output).open("x", encoding="utf-8", newline="\n") as handle:
         handle.write(_json({"format": "rivals-human-samples-v1", **asdict(dataset.placement),
-            "sealed": dataset.placement.split == "test", "media_sha256": dataset.media_sha256,
+            "sealed": dataset.placement.split in SEALED_SPLITS, "media_sha256": dataset.media_sha256,
             "review": json.loads(dataset.review_json), "audit": json.loads(dataset.audit_json),
             "sample_options": sample_options, "control_type": "keyboard_mouse"}) + "\n")
         handle.write(_json(first.to_dict()) + "\n")

@@ -72,6 +72,51 @@ MOTOR_STATEMENTS = {
         bindings="James's dated statement for the 2026-09-24 takes (docs/recording-log.md, Motor settings, "
                  "committed 57d1f3d): DPI, in-game sensitivity and bindings unchanged (chat via the lead, "
                  "2026-09-24 ~22:40 CDT)"),
+    "2026-09-25": dict(
+        log_quotes=("2026-09-25: **DPI, in-game sensitivity and bindings unchanged** for the two 2026-09-25 takes "
+                    "(James, chat, 2026-09-25 ~16:50 CDT, answering \"for today's two takes, were your mouse DPI, "
+                    "in-game sensitivity and key bindings the same as before?\": \"yep all the same\").",),
+        settings="James's dated statement for the 2026-09-25 takes (docs/recording-log.md, Motor settings, "
+                 "committed fbe6693): DPI, in-game sensitivity and bindings unchanged (chat, 2026-09-25 ~16:50 CDT: "
+                 "\"yep all the same\")",
+        bindings="James's dated statement for the 2026-09-25 takes (docs/recording-log.md, Motor settings, "
+                 "committed fbe6693): DPI, in-game sensitivity and bindings unchanged (chat, 2026-09-25 ~16:50 CDT: "
+                 "\"yep all the same\")",
+        # the date's statement covers the two afternoon takes only; every later take of the date needs its own
+        applies_to=("20260925T203745-207Z-49728-2", "20260925T212646-322Z-49728-6"),
+        sessions={
+            "20260926T035932-508Z-63684-14": dict(
+                log_quotes=("2026-09-25 (late): **settings changed at the start of the 22:59 range take** "
+                            "(`2026-09-25 22-59-32.mkv`, recorded on James's main account). James, chat, 2026-09-25 "
+                            "~23:31 CDT: \"the usual skin for this one, same settings\"; then ~23:38 CDT, asked what the "
+                            "two Esc presses at 4.1 s and 5.4 s were: \"it was me switching on cooldowns on my main "
+                            "account firing range and probably changing the mouse sens to match what i was using "
+                            "(1.89)\".",
+                            "2026-09-26: **main account at in-game sensitivity 1.89** for the 19 s turn-calibration take "
+                            "(`2026-09-26 01-09-21.mkv`, recorded to measure the main account's yaw gain for the held "
+                            "22:59 take) (James, chat, 2026-09-26 ~01:12 CDT, answering \"was the main account still at "
+                            "sensitivity 1.89 for those turns?\": \"yes\")."),
+                settings="James's statements for the late take (docs/recording-log.md, Motor settings, committed "
+                         "83c05f1 and 7ad63e5): recorded on his main account; at its start (Esc 4.1 and 5.4 s, cut) "
+                         "cooldowns were switched on and sensitivity set to 1.89, DPI unchanged. Admitted on the lead's "
+                         "option B (2026-09-26): the main account's yaw gain was measured equal to the calibration on "
+                         "its own turn take 2026-09-26 01-09-21 (calibration 20260926T060921-977Z-60612-1, "
+                         "turncal.json 4ab87a55: mean +0.064 %, every speed within 030045's tolerance), which also "
+                         "covers its mouse acceleration setting",
+                bindings="the main account's Spider-Man bindings, equal in effect to this table for every key "
+                         "pressed after the cut (bindings-equivalence.json 9f2adb9b; James, 2026-09-25: \"the binds "
+                         "are definitely the same in any meaningful way\"); LeftShift checked as web swing on frames"),
+            "20260926T045729-166Z-79780-1": dict(
+                log_quotes=("2026-09-25 (23:57): **DPI, in-game sensitivity (1.89) and bindings unchanged** for the "
+                            "23:57 range take (`2026-09-25 23-57-29.mkv`), played on the campaign (alt) account in his "
+                            "usual skin (James, chat, 2026-09-26 ~00:11 CDT, answering \"was the 23:57 range take on "
+                            "your alt, in your usual skin, with the same settings?\": \"yes\").",),
+                settings="James's dated statement for the 23:57 take (docs/recording-log.md, Motor settings, committed "
+                         "3936f94): campaign (alt) account, DPI, in-game sensitivity (1.89) and bindings unchanged "
+                         "(chat, 2026-09-26 ~00:11 CDT: \"yes\")",
+                bindings="James's dated statement for the 23:57 take (docs/recording-log.md, Motor settings, committed "
+                         "3936f94): campaign (alt) account, bindings unchanged (chat, 2026-09-26 ~00:11 CDT: \"yes\")"),
+        }),
 }
 
 
@@ -97,6 +142,11 @@ def motor_statement(meta, hi, log_text):
     day = chicago_date(hi._utc(meta["started_utc"]))
     need(day in MOTOR_STATEMENTS, f"no per-session motor statement for recordings of {day} (review R2): refused")
     entry = MOTOR_STATEMENTS[day]
+    sid = meta.get("session_id")
+    override = entry.get("sessions", {}).get(sid)
+    need(override is not None or "applies_to" not in entry or sid in entry["applies_to"],
+         f"no per-session motor statement for {sid}: the {day} statement covers only {entry.get('applies_to')} (refused)")
+    entry = {k: v for k, v in {**entry, **(override or {})}.items() if k not in ("sessions", "applies_to")}
     need(all(q in log_text for q in entry["log_quotes"]),
          f"the recording log lacks the {day} motor statement it must quote (refused)")
     return dict(entry, date=day)

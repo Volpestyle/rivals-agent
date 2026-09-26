@@ -1,0 +1,405 @@
+{
+ "session": "20260925T203745-207Z-49728-2",
+ "raw_files": {
+  "inputs.jsonl": "c2beba39e2a63bb055f806dfb1aaaa90d80a4822e961164113f91da6e2e6e85d",
+  "frames.csv": "5620adc314efb082f579b567e53ae2829750f6b87bad6c1fe9404a4ac817fc82",
+  "metadata.json": "7c82ed27ae44c42d58e419c56fc7cdf9443254590e7bb8f0b1b76bbc28326236"
+ },
+ "event_counts": {
+  "raw_input_status": 1,
+  "focus": 3,
+  "mouse": 278875,
+  "key": 21407
+ },
+ "focus_events": [
+  {
+   "seq": 1,
+   "t_ns": 436539845955500,
+   "t_rel_s": 0.0024889,
+   "active": false,
+   "held_vk": []
+  },
+  {
+   "seq": 1640,
+   "t_ns": 436553723326300,
+   "t_rel_s": 13.8798597,
+   "active": true,
+   "held_vk": [
+    1
+   ]
+  },
+  {
+   "seq": 645415,
+   "t_ns": 439416167617500,
+   "t_rel_s": 2876.3241509,
+   "active": false,
+   "held_vk": []
+  }
+ ],
+ "focused_intervals": [
+  [
+   436553723326300,
+   439416167617500
+  ]
+ ],
+ "focused_s": 2862.4442912,
+ "recording_s": 2879.6280277,
+ "device_scope": {
+  "keyboard_handles": {
+   "661785265": 21407
+  },
+  "mouse_handles": {
+   "614403941": 278321
+  },
+  "zero_effect_packets": {
+   "mouse:614403941": 496,
+   "mouse:0": 58
+  },
+  "injected_control_packets": 0,
+  "injected_zero_effect_packets": 58,
+  "single_keyboard_mouse": true
+ },
+ "key_make_counts_by_vk": {
+  "9": 43,
+  "16": 4914,
+  "18": 1,
+  "20": 52,
+  "32": 2584,
+  "65": 1974,
+  "67": 167,
+  "68": 1576,
+  "69": 350,
+  "70": 146,
+  "71": 1,
+  "81": 10,
+  "83": 749,
+  "87": 1823
+ },
+ "ui_key_presses": [
+  {
+   "t_ns": 438632697658300,
+   "t_rel_s": 2092.8541917,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 438633203363800,
+   "t_rel_s": 2093.3598972,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 438633234720100,
+   "t_rel_s": 2093.3912535,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 438633265710300,
+   "t_rel_s": 2093.4222437,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 438633296476100,
+   "t_rel_s": 2093.4530095,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 438633342637800,
+   "t_rel_s": 2093.4991712,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 438633350676300,
+   "t_rel_s": 2093.5072097,
+   "vk": 9,
+   "key": "Tab",
+   "down": false
+  },
+  {
+   "t_ns": 439413770691300,
+   "t_rel_s": 2873.9272247,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 439414282512800,
+   "t_rel_s": 2874.4390462,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 439414314063900,
+   "t_rel_s": 2874.4705973,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 439414344907900,
+   "t_rel_s": 2874.5014413,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 439414376556400,
+   "t_rel_s": 2874.5330898,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 439414407997100,
+   "t_rel_s": 2874.5645305,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 439414439066600,
+   "t_rel_s": 2874.5956,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 439414470261500,
+   "t_rel_s": 2874.6267949,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 439414516236200,
+   "t_rel_s": 2874.6727696,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 439414547779200,
+   "t_rel_s": 2874.7043126,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 439414578432900,
+   "t_rel_s": 2874.7349663,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 439414609207500,
+   "t_rel_s": 2874.7657409,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 439414639916000,
+   "t_rel_s": 2874.7964494,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 439414671249200,
+   "t_rel_s": 2874.8277826,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 439414702405400,
+   "t_rel_s": 2874.8589388,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 439414733745500,
+   "t_rel_s": 2874.8902789,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 439414779997600,
+   "t_rel_s": 2874.936531,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 439414810835900,
+   "t_rel_s": 2874.9673693,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 439414842185000,
+   "t_rel_s": 2874.9987184,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 439414873375300,
+   "t_rel_s": 2875.0299087,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 439414904836500,
+   "t_rel_s": 2875.0613699,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 439414935249900,
+   "t_rel_s": 2875.0917833,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 439414966439900,
+   "t_rel_s": 2875.1229733,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 439414997121100,
+   "t_rel_s": 2875.1536545,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 439415044075500,
+   "t_rel_s": 2875.2006089,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 439415075803600,
+   "t_rel_s": 2875.232337,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 439415107401300,
+   "t_rel_s": 2875.2639347,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 439415138456800,
+   "t_rel_s": 2875.2949902,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 439415169789700,
+   "t_rel_s": 2875.3263231,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 439415200772700,
+   "t_rel_s": 2875.3573061,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 439415231913800,
+   "t_rel_s": 2875.3884472,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 439415263017400,
+   "t_rel_s": 2875.4195508,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 439415294595500,
+   "t_rel_s": 2875.4511289,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 439415341321500,
+   "t_rel_s": 2875.4978549,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 439415372903200,
+   "t_rel_s": 2875.5294366,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 439415404502700,
+   "t_rel_s": 2875.5610361,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 439415436103000,
+   "t_rel_s": 2875.5926364,
+   "vk": 9,
+   "key": "Tab",
+   "down": true
+  },
+  {
+   "t_ns": 439415448661500,
+   "t_rel_s": 2875.6051949,
+   "vk": 9,
+   "key": "Tab",
+   "down": false
+  },
+  {
+   "t_ns": 439416086803000,
+   "t_rel_s": 2876.2433364,
+   "vk": 18,
+   "key": "Alt",
+   "down": true
+  }
+ ],
+ "afk_spans": [],
+ "raw_input_gap_events": [],
+ "pause_events": []
+}
