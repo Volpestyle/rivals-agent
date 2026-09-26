@@ -359,16 +359,23 @@ def own_previous(action_logits, camera_logits, prev, live_mask, pitch_known):
     out = prev.clone()
     prev_h = (prev[:, 0, :n] >= .5) & live
     for t in range(prev.shape[1] - 1):
-        h = (p[:, t, 0] >= .5) & live
-        tap = ~h & ~prev_h & (p[:, t, 1] >= .5) & (p[:, t, 2] >= .5) & live
-        v = torch.zeros(prev.shape[0], prev.shape[2], device=dev)
-        v[:, :n], v[:, n:2 * n], v[:, 2 * n:3 * n] = h.float(), ((h & ~prev_h) | tap).float(), ((prev_h & ~h) | tap).float()
-        v[rows, 3 * n + cy[:, t]] = 1.
-        v[rows[pk], 3 * n + m + cp[pk, t]] = 1.
-        v[:, -1] = 1.
-        out[:, t + 1] = v
-        prev_h = h
+        out[:, t + 1], prev_h = _sent_vector(p[:, t], cy[:, t], cp[:, t], prev_h, live, pk, rows, prev.shape[2])
     return out
+
+
+def _sent_vector(p, cy, cp, prev_h, live, pk, rows, width):
+    """One step of the executor's decode (executor.decode_step's rule) for a batch: probabilities p [B, 3, N], the
+    saturated camera classes cy, cp [B], the previous executed hold prev_h [B, N]. Returns the previous-action vector
+    predict_self would feed next ([B, width]) and the new executed hold."""
+    n, m = vocab.N, vocab.CAMERA_CLASSES
+    h = (p[:, 0] >= .5) & live
+    tap = ~h & ~prev_h & (p[:, 1] >= .5) & (p[:, 2] >= .5) & live
+    v = torch.zeros(p.shape[0], width, device=p.device)
+    v[:, :n], v[:, n:2 * n], v[:, 2 * n:3 * n] = h.float(), ((h & ~prev_h) | tap).float(), ((prev_h & ~h) | tap).float()
+    v[rows, 3 * n + cy] = 1.
+    v[rows[pk], 3 * n + m + cp[pk]] = 1.
+    v[:, -1] = 1.
+    return v, h
 
 
 def self_conditioned_forward(model, b, live_mask, rate, generator, pitch_known):
@@ -383,18 +390,113 @@ def self_conditioned_forward(model, b, live_mask, rate, generator, pitch_known):
     return model.step(feats, torch.where(swap[..., None], own, b["prev"]), regime=b["regime"])
 
 
+IDLE_CORRUPTION_RULE = ("known-idle corruption: each training sequence, with probability p, gets one run of L "
+                        "steps, L uniform in [lo, hi] and clipped at the window's end, starting uniformly at a step in "
+                        "[burn-in, T - 1], whose previous-action input is the known all-idle vector predict_self feeds "
+                        "when nothing was sent (no hold, press or release; the zero camera class on yaw, and on pitch "
+                        "where the session's pitch gain is known; known bit 1), whatever the human did. Applied after "
+                        "prev dropout; draws from torch.Generator(seed * 1000003 + 2)")
+SELF_ROLL_RULE = ("sequential self-conditioning: per batch, a start s uniform in [burn-in, T - 1 - K] (in "
+                  "[1, T - 1 - K] when the window is shorter), so the rollout's K fed-back steps s + 1 .. s + K all lie "
+                  "inside the window; a no-grad pass over the batch's own previous-action input (after prev "
+                  "dropout) up to s, then K steps rolled forward closed-loop, each fed the executor's decode of the "
+                  "step before (executor.decode_step's rule, live mask, median camera class saturated to the pad, "
+                  "pitch only where the session's pitch gain is known); each sequence, with probability "
+                  "p * min(1, step / (ramp * total)), takes the rolled inputs at steps s + 1 .. s + K in the trained "
+                  "pass; draws from torch.Generator(seed * 1000003 + 3)")
+
+
+def idle_vector(pitch_known):
+    """The previous-action input predict_self feeds after a step in which nothing was sent."""
+    return steps.prev_vector({"held": [0] * vocab.N, "press": [0] * vocab.N, "release": [0] * vocab.N,
+                              "known": [True] * vocab.N, "cy": vocab.ZERO_CLASS,
+                              "cp": vocab.ZERO_CLASS if pitch_known else None})
+
+
+def idle_corrupted(prev, p, run, generator, pitch_known, burn_in=steps.BURN_IN):
+    """IDLE_CORRUPTION_RULE on one batch's previous-action inputs [B, T, P]; the draws are the same whatever p is."""
+    bsz, t = prev.shape[:2]
+    hit = torch.rand(bsz, generator=generator) < p
+    length = torch.randint(run[0], run[1] + 1, (bsz,), generator=generator)
+    start = torch.randint(max(1, min(burn_in, t - 1)), t, (bsz,), generator=generator)
+    out = prev.clone()
+    for i in range(bsz):
+        if hit[i]:
+            a = int(start[i])
+            out[i, a:a + int(length[i])] = torch.tensor(idle_vector(pitch_known[i]), dtype=out.dtype, device=out.device)
+    return out
+
+
+@torch.no_grad()
+def rolled_history(model, feats, prev, regime, live_mask, pitch_known, start, k):
+    """[B, T, P]: prev with steps start + 1 .. start + k (within the window) replaced by the model's own closed-loop
+    history: the state is built on prev up to `start`, then each step is fed the executor's decode of the step before,
+    beginning from prev[:, start] (which also seeds the previous executed hold)."""
+    n = vocab.N
+    dev = prev.device
+    live = torch.tensor(live_mask, dtype=torch.bool, device=dev)
+    ysat, psat = (x.to(dev) for x in _saturated_classes())
+    pk = torch.tensor(pitch_known, dtype=torch.bool, device=dev)
+    rows = torch.arange(prev.shape[0], device=dev)
+    _, _, state = model.step(feats[:, :start], prev[:, :start], regime=regime[:, :start])
+    out, pv = prev.clone(), prev[:, start]
+    prev_h = (pv[:, :n] >= .5) & live
+    for t in range(start, min(start + k, prev.shape[1] - 1)):
+        acts, cams, state = model.step(feats[:, t:t + 1], pv[:, None], state, regime=regime[:, t:t + 1])
+        cls = _median_classes(torch.softmax(cams[:, 0].float(), -1)).to(dev)
+        pv, prev_h = _sent_vector(torch.sigmoid(acts[:, 0].float()), ysat[cls[:, 0]], psat[cls[:, 1]], prev_h, live, pk,
+                                  rows, prev.shape[2])
+        out[:, t + 1] = pv
+    return out
+
+
+def self_roll_starts(t, k, burn_in=steps.BURN_IN):
+    """The inclusive range of rollout starts s for a window of t steps: s >= 1 and s + k <= t - 1, so all k fed-back
+    steps s + 1 .. s + k lie inside the window; from the burn-in on when the window allows it (fit-review round 2 F1)."""
+    hi = t - 1 - k
+    require(hi >= 1, f"self_roll_steps {k} leaves no rollout start in a {t}-step window")
+    return (burn_in if burn_in <= hi else 1), hi
+
+
+def self_rolled_forward(model, b, live_mask, rate, generator, pitch_known, k, burn_in=steps.BURN_IN):
+    """The forward pass with sequential self-conditioning (SELF_ROLL_RULE). The frame features are computed once and
+    carry the gradient; the rollout sees them detached. The draws are the same whatever the rate is."""
+    bsz, t = b["prev"].shape[:2]
+    feats = model.features(b["global"], b["crop"], b["hud"], bsz, t, b["prev"])
+    lo, hi = self_roll_starts(t, k, burn_in)
+    start = int(torch.randint(lo, hi + 1, (1,), generator=generator))
+    pick = torch.rand(bsz, generator=generator) < rate
+    prev = b["prev"]
+    if bool(pick.any()):
+        rolled = rolled_history(model, feats.detach(), prev, b["regime"], live_mask, pitch_known, start, k)
+        prev = torch.where(pick.to(prev.device)[:, None, None], rolled, prev)
+    return model.step(feats, prev, regime=b["regime"])
+
+
 def fit(batches, config, stats, *, seed=0, epochs=20, max_steps=None, batch_size=8, lr=3e-4, weight_decay=1e-4,
         warmup=500, clip=1., device="cpu", deterministic=True, jitter=.1, prev_dropout=.2, dev=None, log=None,
-        self_condition=0., self_condition_ramp=.5):
+        self_condition=0., self_condition_ramp=.5, idle_corruption=0., idle_run=(8, 48), self_roll=0.,
+        self_roll_steps=32, self_roll_ramp=.5):
     """Train one model. `max_steps` (fixed optimiser steps, for the scaling curve) overrides `epochs`.
     Returns (model, per-epoch log, seconds). The log holds train loss and, with `dev`, per-head dev loss; it is
     reported, never used to select a checkpoint.
     self_condition p > 0 turns on self-conditioned history (SELF_CONDITION_RULE), its rate ramped linearly from 0 to
-    p over the first `self_condition_ramp` of the steps. At 0 (the default) nothing of it runs or draws."""
+    p over the first `self_condition_ramp` of the steps. At 0 (the default) nothing of it runs or draws.
+    idle_corruption p > 0: known-idle corruption (IDLE_CORRUPTION_RULE) with runs of `idle_run` = (lo, hi) steps.
+    self_roll p > 0: sequential self-conditioning (SELF_ROLL_RULE) over `self_roll_steps` steps, its rate ramped as
+    self-conditioning's over the first `self_roll_ramp` of the steps. At most one of the three history options is on;
+    at 0 (the default) none of them runs or draws."""
     require(all(a.session.split == "train" for a in batches.arrays), "training accepts only train sessions")
     require(batches.windows, "no training windows")
     require(0. <= self_condition <= 1. and 0. < self_condition_ramp <= 1., "self_condition in [0, 1], ramp in (0, 1]")
     require(0. <= prev_dropout < 1., "prev_dropout in [0, 1)")
+    require(0. <= idle_corruption <= 1. and 1 <= idle_run[0] <= idle_run[1], "idle_corruption in [0, 1], 1 <= lo <= hi")
+    require(0. <= self_roll <= 1. and self_roll_steps >= 1 and 0. < self_roll_ramp <= 1.,
+            "self_roll in [0, 1], self_roll_steps >= 1, ramp in (0, 1]")
+    require(sum(bool(x) for x in (self_condition, idle_corruption, self_roll)) <= 1,
+            "at most one of self_condition, idle_corruption and self_roll")
+    if self_roll:
+        self_roll_starts(batches.window, self_roll_steps, batches.burn_in)     # refuses a K that leaves no start
     seed_everything(seed, deterministic)
     model = Policy(config).to(device)
     pw = pos_weights(stats).to(device)
@@ -407,6 +509,13 @@ def fit(batches, config, stats, *, seed=0, epochs=20, max_steps=None, batch_size
         sc_gen = torch.Generator().manual_seed(seed * 1000003 + 1)
         sc_ramp = max(1., self_condition_ramp * total)
         sc_pitch = [_pitch_known(a.session) for a in batches.arrays]
+    if idle_corruption:
+        ic_gen = torch.Generator().manual_seed(seed * 1000003 + 2)
+        ic_pitch = [_pitch_known(a.session) for a in batches.arrays]
+    if self_roll:
+        sr_gen = torch.Generator().manual_seed(seed * 1000003 + 3)
+        sr_ramp = max(1., self_roll_ramp * total)
+        sr_pitch = [_pitch_known(a.session) for a in batches.arrays]
     history, t0, step, epoch = [], time.perf_counter(), 0, 0
     while step < total:
         order = list(range(len(batches.windows)))
@@ -422,6 +531,13 @@ def fit(batches, config, stats, *, seed=0, epochs=20, max_steps=None, batch_size
                 outputs = self_conditioned_forward(model, b, stats["live_mask"],
                                                    self_condition * min(1., step / sc_ramp), sc_gen,
                                                    [sc_pitch[batches.windows[w][0]] for w in ids])
+            elif self_roll:
+                outputs = self_rolled_forward(model, b, stats["live_mask"], self_roll * min(1., step / sr_ramp),
+                                              sr_gen, [sr_pitch[batches.windows[w][0]] for w in ids], self_roll_steps)
+            elif idle_corruption:
+                b = {**b, "prev": idle_corrupted(b["prev"], idle_corruption, idle_run, ic_gen,
+                                                 [ic_pitch[batches.windows[w][0]] for w in ids])}
+                outputs = forward(model, b)
             else:
                 outputs = forward(model, b)
             loss = total_loss(loss_terms(*outputs[:2], b, pw))
@@ -775,6 +891,12 @@ def run_fit(a):
     require(0. <= a.prev_dropout < 1., "--prev-dropout in [0, 1)")
     require(0. <= a.self_condition <= 1. and 0. < a.self_condition_ramp <= 1.,
             "--self-condition in [0, 1], --self-condition-ramp in (0, 1]")
+    require(0. <= a.idle_corruption <= 1. and 1 <= a.idle_run[0] <= a.idle_run[1],
+            "--idle-corruption in [0, 1], --idle-run LO HI with 1 <= LO <= HI")
+    require(0. <= a.self_roll <= 1. and a.self_roll_steps >= 1 and 0. < a.self_roll_ramp <= 1.,
+            "--self-roll in [0, 1], --self-roll-steps >= 1, --self-roll-ramp in (0, 1]")
+    require(sum(bool(x) for x in (a.self_condition, a.idle_corruption, a.self_roll)) <= 1,
+            "at most one of --self-condition, --idle-corruption and --self-roll")
     pre = preregistered(a)
     parity = parity_record(a, pre)
     denylist = steps.load_denylist(a.sealed_denylist, a.sealed_denylist_sha256)
@@ -823,6 +945,10 @@ def run_fit(a):
         arms["frames_only_nohud"] = replace(base, history=False, hud=False)
     self_condition = ({"p": a.self_condition, "ramp": a.self_condition_ramp, "rule": SELF_CONDITION_RULE}
                       if a.self_condition else None)
+    idle_corruption = ({"p": a.idle_corruption, "run": list(a.idle_run), "rule": IDLE_CORRUPTION_RULE}
+                       if a.idle_corruption else None)
+    self_roll = ({"p": a.self_roll, "steps": a.self_roll_steps, "ramp": a.self_roll_ramp, "rule": SELF_ROLL_RULE}
+                 if a.self_roll else None)
 
     def log(msg):
         print(msg, flush=True)
@@ -834,13 +960,19 @@ def run_fit(a):
             model, hist, secs = fit(batches, config, stats, seed=seed, epochs=a.epochs, max_steps=a.max_steps,
                                     batch_size=a.batch, lr=a.lr, weight_decay=a.weight_decay, device=a.device,
                                     dev=dev_batches, log=log, prev_dropout=a.prev_dropout,
-                                    self_condition=a.self_condition, self_condition_ramp=a.self_condition_ramp)
+                                    self_condition=a.self_condition, self_condition_ramp=a.self_condition_ramp,
+                                    idle_corruption=a.idle_corruption, idle_run=tuple(a.idle_run), self_roll=a.self_roll,
+                                    self_roll_steps=a.self_roll_steps, self_roll_ramp=a.self_roll_ramp)
             name = f"{arm}-seed{seed}.pt"
             meta = {"arm": arm, "seed": seed, "lag": a.lag, "regimes": list(regimes)}
             if a.prev_dropout != PREV_DROPOUT:          # non-default training options only: default bytes unchanged
                 meta["prev_dropout"] = a.prev_dropout
             if self_condition:
                 meta["self_condition"] = {k: self_condition[k] for k in ("p", "ramp")}
+            if idle_corruption:
+                meta["idle_corruption"] = {k: idle_corruption[k] for k in ("p", "run")}
+            if self_roll:
+                meta["self_roll"] = {k: self_roll[k] for k in ("p", "steps", "ramp")}
             checkpoints[name] = save_checkpoint(out / name, model, meta)
             histories[name] = hist
             budget.append({"run": name, "seconds": secs, "optimizer_steps": hist[-1]["steps"],
@@ -880,6 +1012,7 @@ def run_fit(a):
                          "arms": list(arms), "train_fraction": a.train_fraction,
                          "regimes": list(regimes), "loss_weights": LOSS_WEIGHTS, "drq_px": DRQ_PX,
                          "prev_dropout": a.prev_dropout, "self_condition": self_condition,
+                         "idle_corruption": idle_corruption, "self_roll": self_roll,
                          "g1_press_source": "executed_teacher_forced" if a.g1_executed else "teacher_forced",
                          "parameters": {arm: parameter_count(Policy(c)) for arm, c in arms.items()}},
                  preregistration=pre, candidate=candidate, candidate_checkpoint=candidate_checkpoint,
@@ -954,6 +1087,16 @@ def parser():
                    help="training: the share of steps whose previous-action input is blanked (known = 0)")
     p.add_argument("--self-condition", type=float, default=0.,
                    help="training: self-conditioned history rate p (SELF_CONDITION_RULE); 0 = off, the default")
+    p.add_argument("--idle-corruption", type=float, default=0.,
+                   help="training: known-idle corruption, the share of sequences given one known-idle history run "
+                        "(IDLE_CORRUPTION_RULE); 0 = off, the default")
+    p.add_argument("--idle-run", type=int, nargs=2, default=[8, 48], metavar=("LO", "HI"),
+                   help="the known-idle run length in steps, uniform in [LO, HI]")
+    p.add_argument("--self-roll", type=float, default=0.,
+                   help="training: sequential self-conditioning rate p (SELF_ROLL_RULE); 0 = off, the default")
+    p.add_argument("--self-roll-steps", type=int, default=32, help="the closed-loop rollout length K in steps")
+    p.add_argument("--self-roll-ramp", type=float, default=.5,
+                   help="the share of the optimiser steps over which the self-roll rate ramps from 0 to p")
     p.add_argument("--self-condition-ramp", type=float, default=.5,
                    help="the share of the optimiser steps over which the self-conditioning rate ramps from 0 to p")
     p.add_argument("--device", default="cpu", choices=("cpu", "mps", "cuda"))

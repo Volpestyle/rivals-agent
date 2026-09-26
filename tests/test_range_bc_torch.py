@@ -855,3 +855,143 @@ def test_evaluate_set_can_gate_g1_on_the_executed_press_f1(tmp_path):
     assert {k: v for k, v in g.items() if k not in ("G1", "G1_press_source", "G1_teacher_forced_probability",
                                                     "pilot_worthy")} ==         {k: v for k, v in v0["model_nohud"].items() if k not in ("G1", "pilot_worthy")}
 
+
+# ---- round 2: known-idle corruption (D) and sequential self-conditioning (E) -----------------------------------------
+
+def test_idle_vector_is_what_predict_self_feeds_after_nothing_was_sent():
+    nothing = {"held": [0] * vocab.N, "press": [0] * vocab.N, "release": [0] * vocab.N, "known": [True] * vocab.N,
+               "camera_known": True}
+    yaw, pitch = train.executor.saturate(vocab.class_degrees(vocab.ZERO_CLASS), vocab.class_degrees(vocab.ZERO_CLASS))
+    for pk in (True, False):
+        sent = {**nothing, "cy": vocab.camera_class(yaw), "cp": vocab.camera_class(pitch) if pk else None}
+        assert train.idle_vector(pk) == steps.prev_vector(sent)
+    v = train.idle_vector(True)
+    assert v[-1] == 1. and sum(v[:3 * vocab.N]) == 0. and sum(v) == 3.     # known, idle, two zero-motion classes
+
+
+def test_idle_corruption_writes_one_known_idle_run_per_hit_sequence_and_draws_the_same_whatever_p():
+    g = torch.Generator().manual_seed(0)
+    prev = (torch.rand(6, 96, steps.PREV_DIM, generator=g) < .3).float()
+    pk = [True, False, True, True, False, True]
+    runs = {}
+    for p in (0., 1.):
+        gen = torch.Generator().manual_seed(7)
+        out = train.idle_corrupted(prev, p, (8, 48), gen, pk)
+        runs[p] = (out, torch.rand(1, generator=gen))                  # the generator's state after the call
+    assert torch.equal(runs[0.][0], prev) and torch.equal(runs[0.][1], runs[1.][1])
+    out = runs[1.][0]
+    for i in range(6):
+        idle = torch.tensor(train.idle_vector(pk[i]))
+        block = [t for t in range(96) if torch.equal(out[i, t], idle)]     # random prev never equals the idle vector
+        changed = [t for t in range(96) if not torch.equal(out[i, t], prev[i, t])]
+        assert block == list(range(block[0], block[-1] + 1)) and set(changed) == set(block)
+        assert block[0] >= steps.BURN_IN and len(block) <= 48
+        assert len(block) >= 8 or block[-1] == 95                          # 8-48 steps, clipped at the window's end
+
+
+def _rolled_reference(model, feats, prev, regime, live, pk, start, k):
+    """rolled_history's reference: the same batched model steps, the decode written with the executor and steps."""
+    b, t = prev.shape[:2]
+    out = prev.clone()
+    _, _, state = model.step(feats[:, :start], prev[:, :start], regime=regime[:, :start])
+    pv = prev[:, start]
+    held = [[int(v >= .5) and live[c] for c, v in enumerate(pv[i, :vocab.N].tolist())] for i in range(b)]
+    for s in range(start, min(start + k, t - 1)):
+        acts, cams, state = model.step(feats[:, s:s + 1], pv[:, None], state, regime=regime[:, s:s + 1])
+        vs = []
+        for i in range(b):
+            p = torch.sigmoid(acts[i, 0])
+            m = torch.softmax(cams[i, 0], -1)
+            h, press, release = train.executor.decode_step(p[0].tolist(), p[1].tolist(), p[2].tolist(), held[i], live)
+            yaw, pitch = train.executor.saturate(vocab.class_degrees(vocab.median_class(m[0].tolist())),
+                                                 vocab.class_degrees(vocab.median_class(m[1].tolist())))
+            vs.append(torch.tensor(steps.prev_vector({"held": h, "press": press, "release": release,
+                                                      "known": [True] * vocab.N, "cy": vocab.camera_class(yaw),
+                                                      "cp": vocab.camera_class(pitch) if pk[i] else None})))
+            held[i] = h
+        pv = torch.stack(vs)
+        out[:, s + 1] = pv
+    return out
+
+
+def test_rolled_history_is_the_closed_loop_executor_decode():
+    torch.manual_seed(0)
+    model = Policy(TINY).eval()
+    g = torch.Generator().manual_seed(1)
+    b, t = 3, 96
+    feats = torch.randn(b, t, TINY.frame_features, generator=g)
+    prev = (torch.rand(b, t, steps.PREV_DIM, generator=g) < .3).float()
+    regime = torch.zeros(b, t)
+    live = list(vocab.live_mask([1000] * vocab.N))
+    pk = [True, False, True]
+    for start, k in ((32, 32), (60, 64), (1, 5)):
+        got = train.rolled_history(model, feats, prev, regime, live, pk, start, k)
+        assert torch.equal(got, _rolled_reference(model, feats, prev, regime, live, pk, start, k))
+        end = min(start + k, t - 1)
+        assert torch.equal(got[:, :start + 1], prev[:, :start + 1]) and torch.equal(got[:, end + 1:], prev[:, end + 1:])
+
+
+def test_every_self_roll_start_leaves_exactly_k_fed_back_steps_inside_the_window(tmp_path):
+    """fit-review round 2 F1: at the maximum start and at K = 1 the rollout writes exactly K steps."""
+    torch.manual_seed(0)
+    model = Policy(TINY).eval()
+    live = list(vocab.live_mask([1000] * vocab.N))
+    t = 96
+    feats = torch.randn(2, t, TINY.frame_features, generator=torch.Generator().manual_seed(2))
+    sentinel = torch.full((2, t, steps.PREV_DIM), 7.)              # no fed-back vector holds a 7
+    for k, want in ((32, (steps.BURN_IN, 63)), (1, (steps.BURN_IN, 94)), (60, (steps.BURN_IN, 35)), (70, (1, 25)), (94, (1, 1))):
+        lo, hi = train.self_roll_starts(t, k)
+        assert (lo, hi) == want and hi + k == t - 1
+        for start in (lo, hi):
+            out = train.rolled_history(model, feats, sentinel, torch.zeros(2, t), live, [True, True], start, k)
+            written = [s for s in range(t) if not torch.equal(out[0, s], sentinel[0, s])]
+            assert written == list(range(start + 1, start + k + 1))
+    with pytest.raises(train.FitError, match="no rollout start"):
+        train.self_roll_starts(t, 95)
+    arr = arrays(tmp_path)
+    with pytest.raises(train.FitError, match="no rollout start"):
+        train.fit(train.Batches([arr]), TINY, steps.train_statistics([arr.session]), epochs=1, batch_size=2,
+                  self_roll=.5, self_roll_steps=95)
+
+
+def test_d_and_e_are_off_by_default_act_only_through_the_history_and_are_reproducible(tmp_path):
+    arr = arrays(tmp_path)
+    stats = steps.train_statistics([arr.session])
+    batches = train.Batches([arr])
+    sha = lambda m: hashlib.sha256(train.checkpoint_bytes(m, {"seed": 3})).hexdigest()
+    kw = {"seed": 3, "epochs": 3, "batch_size": 2, "lr": 3e-3, "warmup": 5}
+    default = sha(train.fit(batches, TINY, stats, **kw)[0])
+    blind = replace(TINY, history=False)
+    blind_default = sha(train.fit(batches, blind, stats, **kw)[0])
+    for on in ({"idle_corruption": .5, "idle_run": (4, 12)}, {"self_roll": .5, "self_roll_steps": 8}):
+        off = {k: (0. if isinstance(v, float) else v) for k, v in on.items()}
+        assert sha(train.fit(batches, TINY, stats, **off, **kw)[0]) == default
+        runs = [sha(train.fit(batches, TINY, stats, **on, **kw)[0]) for _ in range(2)]
+        assert runs[0] == runs[1] != default
+        assert sha(train.fit(batches, blind, stats, **on, **kw)[0]) == blind_default
+    with pytest.raises(train.FitError, match="at most one"):
+        train.fit(batches, TINY, stats, idle_corruption=.5, self_roll=.5, **kw)
+    with pytest.raises(train.FitError, match="idle_corruption"):
+        train.fit(batches, TINY, stats, idle_corruption=.5, idle_run=(9, 8), **kw)
+    with pytest.raises(train.FitError, match="self_roll"):
+        train.fit(batches, TINY, stats, self_roll=.5, self_roll_steps=0, **kw)
+
+
+def test_the_fit_cli_records_known_idle_corruption_and_self_roll(tmp_path):
+    out, _ = _fit(tmp_path)
+    r = json.loads((out / "report.json").read_text())
+    assert r["config"]["idle_corruption"] is None and r["config"]["self_roll"] is None
+    for name, extra, key, want in (("d", ["--idle-corruption", ".5", "--idle-run", "4", "12"], "idle_corruption",
+                                    {"p": .5, "run": [4, 12]}),
+                                   ("e", ["--self-roll", ".5", "--self-roll-steps", "8", "--self-roll-ramp", ".25"],
+                                    "self_roll", {"p": .5, "steps": 8, "ramp": .25})):
+        (tmp_path / name).mkdir()
+        run, _ = _fit(tmp_path / name, extra)
+        r = json.loads((run / "report.json").read_text())
+        rule = train.IDLE_CORRUPTION_RULE if key == "idle_corruption" else train.SELF_ROLL_RULE
+        assert r["config"][key] == {**want, "rule": rule}
+        assert torch.load(run / "model_nohud-seed0.pt", weights_only=True)["meta"][key] == want
+    (tmp_path / "x").mkdir()
+    with pytest.raises(train.FitError, match="at most one"):
+        _fit(tmp_path / "x", ["--idle-corruption", ".5", "--self-condition", ".5"])
+
