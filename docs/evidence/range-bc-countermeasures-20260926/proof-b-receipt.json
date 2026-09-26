@@ -1,0 +1,52 @@
+{
+ "all_equal": true,
+ "checkpoints": {
+  "history_only-seed0.pt": {
+   "equal": true,
+   "new_file": "6a0cce0ade7b5c74d2517bb2126062dc76fa7f7ff7dde7e09afeeb1e087dbe11",
+   "new_report_entry": "6a0cce0ade7b5c74d2517bb2126062dc76fa7f7ff7dde7e09afeeb1e087dbe11",
+   "old_file": "6a0cce0ade7b5c74d2517bb2126062dc76fa7f7ff7dde7e09afeeb1e087dbe11",
+   "old_report_entry": "6a0cce0ade7b5c74d2517bb2126062dc76fa7f7ff7dde7e09afeeb1e087dbe11"
+  },
+  "model_nohud-seed0.pt": {
+   "equal": true,
+   "new_file": "5cb5a1887483a63ce4c67f3647b36b063a6998fd3cc905e65b6a01d60d2ba6b1",
+   "new_report_entry": "5cb5a1887483a63ce4c67f3647b36b063a6998fd3cc905e65b6a01d60d2ba6b1",
+   "old_file": "5cb5a1887483a63ce4c67f3647b36b063a6998fd3cc905e65b6a01d60d2ba6b1",
+   "old_report_entry": "5cb5a1887483a63ce4c67f3647b36b063a6998fd3cc905e65b6a01d60d2ba6b1"
+  }
+ },
+ "code": "code-cm (cf25505 + the four reviewed files, first version)",
+ "equal": {
+  "ar2": true,
+  "config_except_new_keys": true,
+  "epochs_log.history_only-seed0.pt": true,
+  "epochs_log.model_nohud-seed0.pt": true,
+  "human_sanity": true,
+  "sanity.model_nohud": true,
+  "self_fed.history_only": true,
+  "self_fed.model_nohud": true,
+  "teacher_forced.ar2": true,
+  "teacher_forced.echo": true,
+  "teacher_forced.history_only": true,
+  "teacher_forced.model_nohud": true,
+  "teacher_forced.persistence": true,
+  "teacher_forced.prior": true,
+  "teacher_forced.zero_motion": true,
+  "train_statistics": true
+ },
+ "new_config_keys": {
+  "prev_dropout": 0.2,
+  "self_condition": null
+ },
+ "new_exit": "0",
+ "new_log_sha256": "766bdf8bb2822db75dc1a1ab94d984e7732905445e0caa16ca1f4faea7128c88",
+ "new_metric_keys": [
+  "executed_teacher_forced",
+  "self_fed_checks"
+ ],
+ "new_report_sha256": "c59244cd64d32d83bb93f88651dfcb05badf579c0af1cb225e43f5ef45dfbd24",
+ "new_run": "/Users/james/dev/range-bc-data/runs/cm-repro-control47-seed0",
+ "old_report_sha256": "f1a6a0b7f8d3c2f0fdece301685dd92684021b4bdfdc5e38a441166f3f9da43d",
+ "old_run": "/Users/james/dev/range-bc-data/runs/interim94-control47-s012"
+}

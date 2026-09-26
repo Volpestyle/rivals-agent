@@ -1,0 +1,306 @@
+{
+ "ar2_camera": 0.376,
+ "arms": {
+  "A": {
+   "F": {
+    "mean": 0.0,
+    "range": 0.0,
+    "values": [
+     0.0,
+     0.0,
+     0.0
+    ]
+   },
+   "T": {
+    "mean": 0.03510919047452093,
+    "range": 0.016743347373634285,
+    "values": [
+     0.04474455379689766,
+     0.028001206423263373,
+     0.032581811203401756
+    ]
+   },
+   "passes_S": false,
+   "seeds": {
+    "0": {
+     "S1": false,
+     "S2": false,
+     "S3": false,
+     "S4": false,
+     "pass": false,
+     "values": {
+      "actions_in_band": 0,
+      "any_hold_excluded_steps": 0,
+      "any_hold_share": 0.0,
+      "camera_bar": 1.1634128700769406,
+      "camera_mae": 1.2246451263967797,
+      "hold_onset_recall": 0.0,
+      "human_any_hold_share": 0.6992995601889559,
+      "live_actions": 10,
+      "press_ratio": 0.0
+     }
+    },
+    "1": {
+     "S1": false,
+     "S2": false,
+     "S3": false,
+     "S4": false,
+     "pass": false,
+     "values": {
+      "actions_in_band": 0,
+      "any_hold_excluded_steps": 0,
+      "any_hold_share": 0.0019547157517510994,
+      "camera_bar": 1.1634128700769406,
+      "camera_mae": 1.224647162559021,
+      "hold_onset_recall": 0.0,
+      "human_any_hold_share": 0.6992995601889559,
+      "live_actions": 10,
+      "press_ratio": 0.0004068348250610252
+     }
+    },
+    "2": {
+     "S1": false,
+     "S2": false,
+     "S3": false,
+     "S4": false,
+     "pass": false,
+     "values": {
+      "actions_in_band": 0,
+      "any_hold_excluded_steps": 0,
+      "any_hold_share": 0.053062388011076725,
+      "camera_bar": 1.1634128700769406,
+      "camera_mae": 1.2290168741977259,
+      "hold_onset_recall": 0.003261312678353037,
+      "human_any_hold_share": 0.6992995601889559,
+      "live_actions": 10,
+      "press_ratio": 0.0008136696501220504
+     }
+    }
+   },
+   "self_fed_camera_mae": [
+    1.2246451263967797,
+    1.224647162559021,
+    1.2290168741977259
+   ]
+  },
+  "B": {
+   "F": {
+    "mean": 0.052116472564467435,
+    "range": 0.0900587796673792,
+    "values": [
+     0.0,
+     0.0662906380260231,
+     0.0900587796673792
+    ]
+   },
+   "K": true,
+   "K_bar": -0.028681129690048858,
+   "T": {
+    "mean": 0.02996630025292184,
+    "range": 0.0470469727909355,
+    "values": [
+     0.0,
+     0.0470469727909355,
+     0.04285192796783003
+    ]
+   },
+   "passes_S": false,
+   "seeds": {
+    "0": {
+     "S1": false,
+     "S2": false,
+     "S3": false,
+     "S4": false,
+     "pass": false,
+     "values": {
+      "actions_in_band": 0,
+      "any_hold_excluded_steps": 0,
+      "any_hold_share": 0.0,
+      "camera_bar": 1.1634128700769406,
+      "camera_mae": 1.2246451263967797,
+      "hold_onset_recall": 0.0,
+      "human_any_hold_share": 0.6992995601889559,
+      "live_actions": 10,
+      "press_ratio": 0.0
+     }
+    },
+    "1": {
+     "S1": false,
+     "S2": false,
+     "S3": false,
+     "S4": false,
+     "pass": false,
+     "values": {
+      "actions_in_band": 2,
+      "any_hold_excluded_steps": 0,
+      "any_hold_share": 0.1904218928164196,
+      "camera_bar": 1.1634128700769406,
+      "camera_mae": 1.2138199160856666,
+      "hold_onset_recall": 0.02079086832450061,
+      "human_any_hold_share": 0.6992995601889559,
+      "live_actions": 10,
+      "press_ratio": 1.1838893409275835
+     }
+    },
+    "2": {
+     "S1": false,
+     "S2": false,
+     "S3": false,
+     "S4": false,
+     "pass": false,
+     "values": {
+      "actions_in_band": 2,
+      "any_hold_excluded_steps": 0,
+      "any_hold_share": 0.18691969376119888,
+      "camera_bar": 1.1634128700769406,
+      "camera_mae": 1.208530305627934,
+      "hold_onset_recall": 0.02323685283326539,
+      "human_any_hold_share": 0.6992995601889559,
+      "live_actions": 10,
+      "press_ratio": 0.9410089503661514
+     }
+    }
+   },
+   "self_fed_camera_mae": [
+    1.2246451263967797,
+    1.2138199160856666,
+    1.208530305627934
+   ]
+  },
+  "C": {
+   "F": {
+    "mean": 0.0030580897827282376,
+    "range": 0.0042652046020210345,
+    "values": [
+     0.0026062437904929825,
+     0.0011514104778353482,
+     0.005416615079856382
+    ]
+   },
+   "K": true,
+   "K_bar": 0.008936012794523236,
+   "T": {
+    "mean": 0.051852143264538714,
+    "range": 0.009429830306363407,
+    "values": [
+     0.05094682430257028,
+     0.04758988759234123,
+     0.057019717898704636
+    ]
+   },
+   "passes_S": false,
+   "seeds": {
+    "0": {
+     "S1": false,
+     "S2": false,
+     "S3": false,
+     "S4": false,
+     "pass": false,
+     "values": {
+      "actions_in_band": 0,
+      "any_hold_excluded_steps": 0,
+      "any_hold_share": 0.010913829613943639,
+      "camera_bar": 1.1634128700769406,
+      "camera_mae": 1.2428659292066815,
+      "hold_onset_recall": 0.00040766408479412964,
+      "human_any_hold_share": 0.6992995601889559,
+      "live_actions": 10,
+      "press_ratio": 0.0040683482506102524
+     }
+    },
+    "1": {
+     "S1": false,
+     "S2": false,
+     "S3": false,
+     "S4": false,
+     "pass": false,
+     "values": {
+      "actions_in_band": 0,
+      "any_hold_excluded_steps": 0,
+      "any_hold_share": 0.0057827007655970025,
+      "camera_bar": 1.1634128700769406,
+      "camera_mae": 1.2246451263967795,
+      "hold_onset_recall": 0.0,
+      "human_any_hold_share": 0.6992995601889559,
+      "live_actions": 10,
+      "press_ratio": 0.0024410089503661514
+     }
+    },
+    "2": {
+     "S1": false,
+     "S2": false,
+     "S3": false,
+     "S4": false,
+     "pass": false,
+     "values": {
+      "actions_in_band": 0,
+      "any_hold_excluded_steps": 0,
+      "any_hold_share": 0.014130965955367324,
+      "camera_bar": 1.1634128700769406,
+      "camera_mae": 1.235654492702368,
+      "hold_onset_recall": 0.0024459845087647777,
+      "human_any_hold_share": 0.6992995601889559,
+      "live_actions": 10,
+      "press_ratio": 0.008136696501220505
+     }
+    }
+   },
+   "self_fed_camera_mae": [
+    1.2428659292066815,
+    1.2246451263967795,
+    1.235654492702368
+   ]
+  }
+ },
+ "check_failures": [],
+ "context": {
+  "A": {
+   "dev_total_last": [
+    1.3143752671914375,
+    1.3152238072209819,
+    1.3100651695585126
+   ],
+   "train_loss_last": [
+    1.3380200993007338,
+    1.357208915999238,
+    1.3325400285317863
+   ]
+  },
+  "B": {
+   "argmin_epochs": [
+    9,
+    13,
+    13
+   ],
+   "dev_total_last": [
+    2.387060520387505,
+    2.205176351392549,
+    2.1555839107413206
+   ],
+   "train_loss_last": [
+    2.4568569769322033,
+    2.173336149521277,
+    2.1748179344224257
+   ]
+  },
+  "C": {
+   "argmin_epochs": [
+    13,
+    12,
+    13
+   ],
+   "dev_total_last": [
+    1.4412588014148233,
+    1.433659757494771,
+    1.4249591868633391
+   ],
+   "train_loss_last": [
+    1.5799680721591896,
+    1.5814087583985128,
+    1.5653138169100587
+   ]
+  }
+ },
+ "outcome": "Neither works",
+ "persistence_camera": 0.418
+}
