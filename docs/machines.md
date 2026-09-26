@@ -31,6 +31,14 @@ Edit `docs/waiting-on-james.md` on the Mac to update the waiting list.
 Finished and unconfirmed jobs whose latest metadata is older than 48 hours move
 into the collapsed History section; running and queued jobs stay current regardless
 of age. Swap reads `swap used X of Y GB` and turns amber above 80% of total.
+The page leads with readable experiment questions and recorded verdicts, with a
+separate running-jobs view and machine-health sidebar. The curated descriptions
+in `EXPERIMENTS` and `describe_job()` in `scripts/job_board.py` explain the existing
+pre-registrations; add a description there when introducing a new job family.
+Uncatalogued runs say so, and descriptions never supply a missing verdict.
+Progress bars cover only the current arm/seed's reported epoch or step budget;
+missing progress stays unknown, and reaching that budget does not imply the
+process has exited. Raw IDs, PID checks and evidence remain in expandable details.
 
 The board distinguishes successful job exits from experiment PASS/FAIL. Missing
 judge outputs and incomplete gates stay undecided. Epoch logs are zero-based;

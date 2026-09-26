@@ -160,6 +160,17 @@ def report_verdict(report):
     return "; ".join(notes) or "undecided (no explicit complete gate verdict)"
 
 
+def waiting_items(text):
+    """Keep wrapped lines and sub-bullets with the parent's hand-edited request."""
+    items = []
+    for line in text.splitlines():
+        if line.startswith("- "):
+            items.append(line[2:].strip())
+        elif items and line.startswith(" ") and line.strip():
+            items[-1] += " " + line.strip().removeprefix("- ")
+    return items
+
+
 class Board:
     def __init__(self, repo, roots, result_root=None):
         self.repo, self.roots, self.result_root = repo, roots, result_root
@@ -281,8 +292,7 @@ class Board:
         for result in results:
             if result["name"] not in latest or result["updated"] > latest[result["name"]]["updated"]:
                 latest[result["name"]] = result
-        waiting = [line.strip()[2:] for line in read(self.repo / "docs/waiting-on-james.md").splitlines()
-                   if line.strip().startswith("- ")]
+        waiting = waiting_items(read(self.repo / "docs/waiting-on-james.md"))
         jobs.sort(key=lambda j: (j.stage != "running", -j.updated, j.name))
         machine_health = health()
         snapshot = {"updated": stamp(time.time()), "jobs": [asdict(j) for j in jobs],
@@ -351,71 +361,239 @@ def health():
             "swap_text": swap, "swap_amber": amber}
 
 
+# Editorial descriptions explain the registered question, never manufacture a verdict.
+# Sources: range-bc-{countermeasures,countermeasures-2,interim,plumbing} evidence;
+# idm-plumbing-20260924 and idm-beta-nll-20260925 pre-registrations.
+EXPERIMENTS = {
+    'countermeasures2': ('02', 'Can it learn to break out of idle?',
+        'Train directly on the situations where the policy gets stuck: standing still, or following its own recent actions.',
+        [('D', 'Recover from idle', 'Replace stretches of action history with known idle inputs.'),
+         ('E', 'Learn from its own decisions', 'Feed back a sequence of the model’s own actions during training.')]),
+    'countermeasures': ('01', 'Can it stop copying its last action?',
+        'Test two ways to make decisions from the screen instead of simply repeating the previous input.',
+        [('B', 'Use only the frames', 'Remove the previous-action history from the model.'),
+         ('C', 'Practice with predicted actions', 'Mix the model’s one-step predictions into its training history.')]),
+    'interim94': ('00', 'Does more human play help?',
+        'Compare the same training recipe on 80.5 minutes and 33.6 minutes of play, with three random seeds each.',
+        [('A', 'Learn from the screen', 'Compare the visual policy with a model that sees only action history.')]),
+    'runs': ('BASE', 'Find a repeatable training recipe',
+        'Check repeatability, training duration, regularization, timing, and the amount of demonstration data.', []),
+}
+
+
+def describe_job(name):
+    family, separator, raw = name.partition(' / ')
+    if not separator:
+        raw, family = family, 'Job'
+    if raw.endswith('.status'):
+        key = raw.split('/')[0]
+        title, purpose = EXPERIMENTS.get(key, ('', 'Training queue', 'Coordinate the experiment’s ordered jobs.', []))[1:3]
+        return title + ' · queue', purpose, 'Queue'
+    if family == 'range_bc':
+        if raw.startswith('cm2-d'):
+            return 'Learn to recover from standing still', 'Train with stretches of known-idle history so the model must use the frames to decide when to act.', 'Round 2 · Arm D'
+        if raw.startswith('cm2-e'):
+            return 'Practice with its own decisions', 'Feed back a sequence of the model’s own actions during training, including the states where it gets stuck.', 'Round 2 · Arm E'
+        if raw == 'cm-s012':
+            return 'Test two ways out of copycat behavior', 'Compare a frames-only model with one trained partly on its own one-step action predictions.', 'Round 1 · Arms B + C'
+        if 'repro-control' in raw:
+            return 'Check that the baseline still reproduces', 'Repeat the smaller-data control with the updated code to check that its behavior stays consistent.', 'Reproducibility'
+        if raw.startswith('interim94-control'):
+            return 'Train the smaller-data control', 'Fit the comparison models on 33.6 minutes of human play using the same recipe as the larger run.', 'Data scaling · control'
+        if raw.startswith('interim94'):
+            return 'Learn from more human play', 'Fit the visual policy and action-history baseline on 80.5 minutes, then compare with the smaller-data control.', 'Data scaling'
+        plumbing = {
+            'plumb-p1': ('Find a useful training duration', 'Measure the learning curve before choosing how long the real fit should run.'),
+            'plumb-p2': ('Check training repeatability', 'Repeat the fit to see whether the same inputs and seed produce the same result.'),
+            'plumb-p3': ('Check regularization', 'Test the weight-decay setting in the training recipe.'),
+            'plumb-p4': ('Check action timing', 'Test how the alignment between observations and action targets affects the fit.'),
+            'plumb-p5': ('Measure the effect of more data', 'Compare demonstration-data fractions using a fixed optimizer-step budget.'),
+        }
+        for prefix, (title, purpose) in plumbing.items():
+            if raw.startswith(prefix):
+                return title, purpose, 'Training recipe'
+    else:
+        descriptions = {
+            'resume-confirm': ('Continue the pitch-confidence check', 'Finish checking the frozen pitch-uncertainty correction on fresh held-out sessions.'),
+            'confirm': ('Check pitch confidence on new sessions', 'Apply the frozen uncertainty correction to previously unused sessions; do not refit it.'),
+            'a1': ('Does the camera fix generalize?', 'Compare the original and revised camera losses on a second held-out session and three seeds.'),
+            'a4': ('Recheck the camera-learning gate', 'Evaluate the revised camera loss at the registered Gate 1 scope.'),
+            'e2': ('Repeat the delayed-HUD experiment', 'Check whether later HUD evidence improves action-onset predictions across more folds and seeds.'),
+            'b': ('Can later HUD changes reveal a press?', 'Give the action reader later HUD crops, where an ability’s visible response may appear.'),
+            'yaw2': ('Repeat the yaw-loss treatment', 'Repeat the revised camera-loss test with two additional random seeds.'),
+            'yaw': ('Check whether turn direction is learned', 'Compare the original camera loss with a revised loss on left/right turn predictions.'),
+            'yo': ('Apply the camera fix to yaw only', 'Test the revised loss on horizontal turning while keeping the original pitch loss.'),
+            'loso': ('Check transfer to an unseen session', 'Leave one recording session out of training, then evaluate the model on that session.'),
+            'press': ('Inspect action-press predictions', 'Run action-onset diagnostics on the stored models.'),
+            'stores': ('Prepare the frame stores', 'Build the offline frame inputs used by the inverse-dynamics experiments.'),
+            'chain': ('Coordinate the IDM job sequence', 'Run the registered inverse-dynamics jobs in their scheduled order.'),
+        }
+        for prefix, (title, purpose) in descriptions.items():
+            if raw == prefix or raw.startswith(prefix + '-') or (prefix in ('stores', 'chain') and raw.startswith(prefix)):
+                return title, purpose, 'Input learning · IDM'
+    if raw.startswith('smoke'):
+        return 'Check that the pipeline runs', 'Run a small plumbing check. Successful completion does not establish model quality.', family
+    return raw.replace('-', ' ').replace('_', ' ').capitalize(), 'No plain-language description has been recorded for this run yet. Its source metadata is available below.', family
+
+
+def progress_markup(job):
+    # The logs measure one arm/seed, not the entire multi-seed job.
+    text = job['progress']
+    match = re.search(r'(epoch|step) (\d+)/(\d+)', text)
+    if not match:
+        return '<div class="progress-unknown"></div><small>Progress not yet reported</small>'
+    unit, done, total = match[1], int(match[2]), int(match[3])
+    if total <= 0 or done > total:
+        return '<small>' + escape(text) + '</small>'
+    caption = 'Current arm / seed' + (' · budget reached; process still running' if done == total else '')
+    return (f'<div class="progress-label"><b>{unit.capitalize()} {done} of {total}</b><span>{escape(caption)}</span></div>'
+            f'<progress max="{total}" value="{done}" aria-label="{unit.capitalize()} progress for current arm and seed">{done}/{total}</progress>')
+
+
 CSS = """
-:root{color-scheme:dark;font:16px system-ui;background:#111820;color:#e8edf3}
-body{max-width:1160px;margin:auto;padding:24px}h1{font-size:2rem;margin-bottom:8px}
-h2{margin-top:32px}a{color:#8dc6ff}p,small{color:#afbdca}small{display:block}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr));gap:12px}
-article,.health{border:1px solid #344453;border-radius:12px;padding:16px;background:#18232e}
-article h3{margin:0 0 12px;overflow-wrap:anywhere;font-size:1rem}.badge{font-weight:700}
-.running,.PASS{color:#7eecb1}.failed,.FAIL{color:#ffa4a4}.unknown,.undecided,.amber{color:#ffd38d}
-dl{display:grid;grid-template-columns:80px 1fr;gap:6px;font-size:14px}dt{color:#afbdca}dd{margin:0;overflow-wrap:anywhere}
-li{margin:10px 0}code{overflow-wrap:anywhere;font-size:12px}details{margin:18px 0}summary{cursor:pointer}
-@media(max-width:500px){body{padding:16px}h1{font-size:1.7rem}}
+:root{color-scheme:dark;--bg:#101315;--panel:#181d20;--raised:#1e2528;--line:#30383c;--text:#f1ede5;--muted:#a7afb0;--orange:#ff9b62;--mint:#9bd8be;--coral:#ed8b83;--amber:#f2c178;--radius:12px;font:15px/1.55 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+*{box-sizing:border-box}body{margin:0}a{color:var(--mint);text-underline-offset:3px}a:hover{color:var(--text)}a:focus-visible,summary:focus-visible{outline:2px solid var(--orange);outline-offset:5px}h1,h2,h3,p{margin:0}h1{font-size:32px;line-height:1.18;letter-spacing:-1px}h2{font-size:21px;letter-spacing:-.5px}h3{font-size:17px;line-height:1.4;letter-spacing:-.2px}small,.muted{color:var(--muted)}small{font-size:12px}code,.mono,.eyebrow,.badge{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}code{overflow-wrap:anywhere;font-size:12px}.eyebrow{font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:var(--muted)}.shell{max-width:1460px;margin:auto;padding:0 32px 40px}.masthead{min-height:86px;display:flex;justify-content:space-between;align-items:center;gap:20px;border-bottom:1px solid var(--line)}.brand{font-size:19px;letter-spacing:4px;font-weight:800}.brand span{font:11px ui-monospace,monospace;color:var(--muted);letter-spacing:2px;margin-left:16px}.live-label{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px}.dot{height:7px;width:7px;background:var(--mint);border-radius:50%;display:inline-block}.overview{display:grid;grid-template-columns:1.6fr 1fr;gap:32px;padding:32px 0}.overview p{margin-top:12px;max-width:620px;color:var(--muted)}.stats{display:grid;grid-template-columns:repeat(3,1fr);align-items:center}.stat{padding:0 20px;border-left:1px solid var(--line)}.stat b{font-size:34px;line-height:1.1;display:block;font-weight:600;letter-spacing:-1px;margin-bottom:9px}.stat span{display:block;font-size:11px;color:var(--muted)}.layout{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:24px;align-items:start}.main,.sidebar{min-width:0}.panel{border:1px solid var(--line);border-radius:var(--radius);background:var(--panel);margin-bottom:20px;overflow:hidden}.panel-header{padding:20px 24px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:16px}.panel-header small{font-size:11px}.panel-body{padding:24px}.section-heading{display:flex;align-items:baseline;justify-content:space-between;margin:28px 0 15px;gap:12px}.section-heading:first-child{margin-top:0}.idle{display:flex;gap:18px;align-items:center;padding:26px 24px}.idle-mark{width:42px;height:42px;display:grid;place-items:center;background:#23312d;border-radius:50%;color:var(--mint);font-size:18px;flex-shrink:0}.idle p{color:var(--muted);font-size:13px;margin-top:5px}.job{border-top:1px solid var(--line);padding:22px 24px}.job:first-child{border-top:0}.job.running{border-left:3px solid var(--orange);padding-left:21px}.job-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px}.job-head>div{min-width:0}.job .eyebrow{margin-bottom:7px}.purpose{color:var(--muted);font-size:13px;margin-top:7px;max-width:680px}.badge{font-size:10px;line-height:1.4;letter-spacing:.6px;text-transform:uppercase;border:1px solid currentColor;border-radius:5px;padding:5px 8px;white-space:nowrap;display:inline-block;flex-shrink:0}.running .badge,.orange{color:var(--orange)}.badge.done,.badge.pass,.mint{color:var(--mint)}.badge.failed,.badge.fail{color:var(--coral)}.badge.unknown,.amber,.badge.undecided{color:var(--amber)}.job-facts{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:15px;font-size:12px;color:var(--muted)}.job-facts strong{color:var(--text);font-weight:500}.progress-label{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:20px 0 9px;font-size:12px}.progress-label span{font-size:11px;color:var(--muted)}progress,meter{display:block;width:100%;height:7px;border:0;border-radius:6px;overflow:hidden;background:#30383c;appearance:none}progress::-webkit-progress-bar{background:#30383c;border-radius:6px}progress::-webkit-progress-value{background:var(--orange);border-radius:6px}progress::-moz-progress-bar{background:var(--orange)}.progress-unknown{height:5px;background:repeating-linear-gradient(110deg,#38403f 0 8px,#252d2d 8px 16px);margin:18px 0 8px;border-radius:4px}.eta{margin-top:9px;font-size:12px;color:var(--muted)}.eta b{color:var(--text);font-weight:500}.technical{margin-top:14px;color:var(--muted);font-size:12px}.technical summary{cursor:pointer;width:fit-content}.technical[open] summary{margin-bottom:12px}.technical dl{display:grid;grid-template-columns:90px minmax(0,1fr);gap:7px;margin:12px 0}dd{margin:0;overflow-wrap:anywhere}dt{color:var(--muted)}.technical p{margin:8px 0}.technical a{display:inline-block;margin-top:8px}.experiment{padding:24px;margin-bottom:16px;border:1px solid var(--line);border-radius:var(--radius);background:var(--panel)}.experiment-head{display:flex;gap:15px;align-items:flex-start}.experiment-num{font:12px ui-monospace,monospace;color:var(--orange);border-right:1px solid var(--line);padding-right:15px;min-width:45px;line-height:26px}.experiment-heading{flex:1;min-width:0}.experiment .purpose{margin-top:12px}.outcome{display:flex;align-items:flex-start;gap:12px;margin:18px 0;padding:14px 16px;background:#212729;border-radius:6px;font-size:13px}.outcome .badge{margin-top:1px}.outcome p{color:var(--text)}.arms{border-top:1px solid var(--line)}.arm{display:grid;grid-template-columns:30px minmax(0,1fr);gap:12px;padding-top:13px;font-size:13px}.arm-id{font:11px ui-monospace,monospace;background:var(--raised);border:1px solid var(--line);border-radius:4px;display:grid;place-items:center;width:28px;height:28px;color:var(--orange)}.arm p{color:var(--muted);font-size:12px;margin-top:3px}.experiment footer{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:20px;font-size:11px;color:var(--muted)}.experiment footer a{font-size:12px}.machine-heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.machine-heading h2{font-size:18px}.machine-metric{margin:18px 0}.metric-label{display:flex;justify-content:space-between;gap:10px;font-size:12px;margin-bottom:9px}.metric-label strong{font-weight:500}.capacity{height:6px;background:var(--line);border-radius:4px;overflow:hidden}.capacity span{display:block;background:var(--mint);height:100%;border-radius:4px}.capacity.amber span{background:var(--amber)}.machine-details{margin-top:22px;padding-top:14px;border-top:1px solid var(--line);display:grid;grid-template-columns:1fr auto;gap:8px;font-size:12px}.machine-details dt,.machine-details dd{color:var(--muted)}.machine-warning{font-size:11px;color:var(--amber);margin-top:8px}.waiting{list-style:none;padding:0;margin:0;counter-reset:waiting}.waiting li{counter-increment:waiting;position:relative;padding:17px 0 17px 32px;border-top:1px solid var(--line);font-size:12px;line-height:1.75;color:var(--muted)}.waiting li:first-child{border-top:0;padding-top:0}.waiting li::before{content:counter(waiting,decimal-leading-zero);position:absolute;left:0;color:var(--orange);font:11px ui-monospace,monospace;top:21px}.waiting li:first-child::before{top:4px}.waiting strong{color:var(--text);font-weight:500}.glossary{font-size:12px;color:var(--muted)}.glossary p+p{margin-top:12px}.glossary strong{color:var(--text);font-weight:500}.fold>summary{cursor:pointer;padding:18px 24px;font-size:13px}.fold>summary .muted{font-size:11px;margin-left:10px}.fold[open]>summary{border-bottom:1px solid var(--line)}.warning-banner,.preview-banner{padding:12px 18px;border:1px solid var(--amber);color:var(--amber);border-radius:8px;margin-bottom:18px;font-size:13px}.page-footer{border-top:1px solid var(--line);padding-top:20px;margin-top:12px;display:flex;justify-content:space-between;gap:20px;color:var(--muted);font-size:11px}.empty-note{font-size:13px;color:var(--muted);padding:24px}.report-row{padding:16px 24px;border-top:1px solid var(--line)}.report-row h3{font-size:14px}.report-row p{font-size:12px;color:var(--muted);margin:6px 0}
+@media(min-width:1500px){.shell{padding:0 48px 40px}}@media(max-width:1000px){.layout{grid-template-columns:minmax(0,1fr) 280px;gap:16px}.shell{padding:0 22px 28px}.overview{grid-template-columns:1fr}.stats{max-width:540px}.stat:first-child{border-left:0;padding-left:0}.panel-body,.experiment,.job{padding:20px}.job.running{padding-left:17px}}@media(max-width:760px){.layout{display:flex;flex-direction:column}.main,.sidebar{width:100%}.sidebar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.sidebar .panel{margin:0}.sidebar .glossary-panel{grid-column:1/-1}.masthead{min-height:72px}.brand{font-size:16px}.brand span{font-size:9px;margin-left:8px}.live-label .refresh-label{display:none}.overview{padding:26px 0;gap:24px}h1{font-size:29px}.job-head{gap:8px}.badge{font-size:9px}.experiment footer{align-items:flex-start}.progress-label{flex-wrap:wrap;gap:3px}.page-footer{margin-top:24px}}@media(max-width:480px){.shell{padding:0 16px 24px}.sidebar{grid-template-columns:1fr}.sidebar .glossary-panel{grid-column:auto}.overview p{font-size:13px}.stat{padding:0 14px}.stat b{font-size:28px}.panel-header{padding:17px 18px}.panel-body,.experiment,.job{padding:18px}.job.running{padding-left:15px}.experiment-head{gap:10px}.experiment-num{padding-right:10px;min-width:36px}.experiment h3{font-size:17px}.outcome{flex-direction:column;gap:9px}.job-head{flex-wrap:wrap}.job-head>div{flex-basis:100%}.job-head>.badge{margin-top:4px}.job-facts{gap:6px 14px}.fold>summary{padding:16px 18px}.fold>summary .muted{display:block;margin-left:0;margin-top:3px}.page-footer{flex-direction:column;gap:5px}.live-label{font-size:10px}.technical dl{grid-template-columns:70px minmax(0,1fr)}}
 """
 
 
 def render(snapshot, evidence):
-    def link(url):
-        path = evidence.get(url.rsplit("/", 1)[-1], {}).get("path", "metadata")
-        return f'<a href="{escape(url)}"><code>{escape(path)}</code></a>'
+    now = time.time()
+    cutoff = now - 48 * 3600
+    jobs = snapshot['jobs']
+    history = [j for j in jobs if j['stage'] in ('done', 'failed', 'unknown') and 0 < j['updated'] < cutoff]
+    current = [j for j in jobs if j not in history]
+    active = [j for j in current if j['stage'] in ('running', 'queued')]
+    finished = [j for j in current if j['stage'] in ('done', 'failed')]
+    unconfirmed = [j for j in current if j['stage'] == 'unknown']
+    queues = [j for j in active if j['name'].endswith('.status')]
+    active_runs = [j for j in active if j not in queues]
+    recent_runs = [j for j in finished if not j['name'].endswith('.status')]
+    running_count = sum(j['stage'] == 'running' for j in active_runs)
+    queued_count = sum(j['stage'] == 'queued' for j in active_runs)
 
-    def card(job):
-        fields = [(label, job[key]) for label, key in (("Progress", "progress"), ("Arm", "arm"),
-                  ("Seed", "seed"), ("Started", "started"), ("ETA", "eta"), ("PID", "pid"), ("Verdict", "verdict"))]
-        return (f'<article><h3>{escape(job["name"])}</h3><span class="badge {escape(job["stage"])}">'
-                f'{escape(job["stage"]).upper()}</span><dl>' +
-                "".join(f"<dt>{label}</dt><dd>{escape(str(value))}</dd>" for label, value in fields) +
-                f'</dl><p>{escape(job["detail"])}</p>{link(job["evidence"])}</article>')
+    def age(timestamp):
+        if not timestamp:
+            return 'Update time unknown'
+        seconds = max(0, now - timestamp)
+        if seconds < 60:
+            return 'Updated just now'
+        if seconds < 3600:
+            return f'Updated {int(seconds / 60)} min ago'
+        if seconds < 86400:
+            return f'Updated {int(seconds / 3600)} h ago'
+        return f'Updated {int(seconds / 86400)} d ago'
 
-    cutoff = time.time() - 48 * 60 * 60
-    history = [j for j in snapshot["jobs"]
-               if j["stage"] in ("done", "failed", "unknown") and 0 < j["updated"] < cutoff]
-    current = [j for j in snapshot["jobs"] if j not in history]
-    active = [j for j in current if j["stage"] in ("running", "queued")]
-    unconfirmed = [j for j in current if j["stage"] == "unknown"]
-    finished = [j for j in current if j["stage"] in ("done", "failed")]
-    health_html = escape(snapshot.get("health_summary", snapshot["health"]))
-    if "swap_text" in snapshot:
-        warning = snapshot.get("swap_amber", False)
-        health_html += (f' · <span class="{"amber" if warning else ""}">'
-                        f'{escape(snapshot["swap_text"])}{" · above 80%" if warning else ""}</span>')
-    def result_cards(kind):
-        return "".join(f'<article><h3>{escape(r["name"])}</h3><b>{escape(r["verdict"])}</b>'
-                       f'<p>{escape(r["detail"])}</p>{link(r["evidence"])}</article>'
-                       for r in snapshot["results"] if r.get("kind") == kind)
-    return ('<!doctype html><html lang="en"><head><meta charset="utf-8">'
-            '<meta name="viewport" content="width=device-width,initial-scale=1">'
-            '<meta http-equiv="refresh" content="30"><title>Rivals training</title>'
-            f'<style>{CSS}</style></head><body><h1>Rivals training</h1>'
-            '<p>Read-only · refreshes every 30 seconds · job completion is separate from experiment acceptance.</p>'
-            f'<small>Snapshot: {escape(snapshot["updated"])}</small>'
-            + "".join(f'<p class="unknown">{escape(w)}</p>' for w in snapshot["warnings"]) +
-            f'<h2>Waiting on James</h2><ul>{"".join("<li>" + escape(x) + "</li>" for x in snapshot["waiting"])}</ul>'
-            f'<div class="health">{health_html}</div><h2>Jobs</h2>'
-            f'<p>{len(active)} running or queued · {len(unconfirmed)} unconfirmed · {len(finished)} finished in the last 48 h</p>'
-            f'<div class="grid">{"".join(card(j) for j in active)}</div>'
-            f'<details><summary>Unconfirmed jobs ({len(unconfirmed)})</summary><div class="grid">'
-            f'{"".join(card(j) for j in unconfirmed)}</div></details>'
-            f'<details><summary>Finished jobs ({len(finished)})</summary><div class="grid">'
-            f'{"".join(card(j) for j in finished)}</div></details>'
-            f'<details id="history"><summary>History ({len(history)}) · older than 48 h</summary><div class="grid">'
-            f'{"".join(card(j) for j in history)}</div></details>'
-            f'<h2>Results</h2><p>Existing judge decisions and report gates only. Unknown or incomplete bars stay undecided. '
-            f'Evidence links show metadata only.</p><div class="grid">{result_cards("experiment")}</div>'
-            f'<details><summary>Per-run report gates</summary><div class="grid">{result_cards("report")}'
-            '</div></details></body></html>')
+    def link(url, full=False):
+        path = evidence.get(url.rsplit('/', 1)[-1], {}).get('path', 'Source metadata')
+        label = '<code>' + escape(path) + '</code>' if full else 'View evidence ↗'
+        return f'<a href="{escape(url)}">{label}</a>'
 
+    def job_card(job):
+        title, purpose, category = describe_job(job['name'])
+        stage = job['stage']
+        label = {'running': 'In progress', 'queued': 'Queued', 'done': 'Finished', 'failed': 'Run failed', 'unknown': 'Unconfirmed'}.get(stage, stage)
+        details = ''.join(f'<dt>{name}</dt><dd>{escape(str(job[key]))}</dd>' for name, key in
+                          [('Run ID', 'name'), ('Started', 'started'), ('Arm', 'arm'), ('Seed', 'seed'), ('PID', 'pid'), ('Report gate', 'verdict')])
+        facts = f'<span>{escape(age(job["updated"]))}</span>'
+        if job['seed'] != 'unknown':
+            facts += f'<span>Random seed <strong>{escape(job["seed"])}</strong></span>'
+        if stage not in ('running', 'queued') and job['progress'] != 'unknown':
+            facts += f'<span>{escape(job["progress"])}</span>'
+        live = ''
+        if stage == 'running':
+            live = progress_markup(job)
+            eta = job['eta'] if job['eta'] not in ('unknown', '—') else 'Not enough timing evidence yet'
+            live += '<p class="eta"><b>ETA</b> · ' + escape(eta) + '</p>'
+        elif stage == 'queued':
+            live = '<p class="eta">Waiting to start · no training progress reported yet</p>'
+        return (f'<article class="job {escape(stage)}"><div class="job-head"><div><div class="eyebrow">{escape(category)}</div>'
+                f'<h3>{escape(title)}</h3></div><span class="badge {escape(stage)}">{escape(label)}</span></div>'
+                f'<p class="purpose">{escape(purpose)}</p>{live}<div class="job-facts">{facts}</div>'
+                f'<details class="technical"><summary>Run details &amp; evidence</summary><dl>{details}</dl>'
+                f'<p>{escape(job["detail"])}</p>{link(job["evidence"], True)}</details></article>')
+
+    def experiment_card(result):
+        key = result['name'].split(' / ')[-1]
+        serial, title, question, arms = EXPERIMENTS.get(key, ('EXP', result['name'], 'Read the recorded experiment decision and its source evidence.', []))
+        verdict, explanation = result['verdict'], result['detail']
+        label = {'FAIL': 'Did not meet the bar', 'PASS': 'Met the bar'}.get(verdict, 'Awaiting a verdict')
+        if verdict == 'FAIL' and explanation.lower() == 'neither works':
+            explanation = 'Neither approach passed the pre-registered checks. Finishing the runs does not make either approach ready to use.'
+        elif key == 'interim94' and 'opens_f1' in result['detail']:
+            label = 'Mixed finding'
+            explanation = 'The recorded score gap grew with more data. That score was later qualified: it does not show that the policy can act successfully on its own.'
+        elif verdict == 'undecided' and 'No experiment judge' in explanation:
+            explanation = 'Job status is available, but no experiment-level judge decision has been copied to the board yet.'
+        arm_html = ''.join(f'<div class="arm"><span class="arm-id">{escape(mark)}</span><div><b>{escape(name)}</b><p>{escape(text)}</p></div></div>' for mark, name, text in arms)
+        return (f'<article class="experiment"><div class="experiment-head"><span class="experiment-num">{escape(serial)}</span>'
+                f'<div class="experiment-heading"><h3>{escape(title)}</h3></div></div><p class="purpose">{escape(question)}</p>'
+                f'<div class="outcome"><span class="badge {escape(verdict.lower())}">{escape(label)}</span><p>{escape(explanation)}</p></div>'
+                f'<div class="arms">{arm_html}</div><footer><span>{escape(result["name"])}</span>{link(result["evidence"])}</footer>'
+                f'<details class="technical"><summary>Recorded verdict</summary><p>{escape(verdict)} · {escape(result["detail"])}</p></details></article>')
+
+    # Put the current experiments first, rather than ordering by when a copy landed.
+    experiments = [r for r in snapshot['results'] if r.get('kind') == 'experiment']
+    order = {'countermeasures2': 0, 'countermeasures': 1, 'interim94': 2}
+    experiments.sort(key=lambda r: order.get(r['name'].split(' / ')[-1], 3))
+    reports = [r for r in snapshot['results'] if r.get('kind') == 'report']
+    report_html = ''.join(f'<article class="report-row"><h3>{escape(describe_job(r["name"])[0])}</h3>'
+                          f'<p>{escape(r["name"])} · {escape(r["verdict"])}</p>{link(r["evidence"])}</article>' for r in reports)
+    health_text = snapshot.get('health_summary', snapshot['health'])
+    gpu = re.search(r'Mac GPU (\d+)%', health_text)
+    pressure = re.search(r'memory pressure ([^·]+)', health_text)
+    load = re.search(r'load 1/5/15 min ([^·]+)', health_text)
+    swap = snapshot.get('swap_text', 'swap unknown')
+    swap_values = re.search(r'swap used ([\d.]+) of ([\d.]+) GB', swap)
+    warning = snapshot.get('swap_amber', False)
+    gpu_bar = f'<div class="capacity"><span style="width:{min(100, int(gpu[1]))}%"></span></div>' if gpu else ''
+    swap_bar = ''
+    if swap_values and float(swap_values[2]) > 0:
+        percent = min(100, 100 * float(swap_values[1]) / float(swap_values[2]))
+        swap_bar = f'<div class="capacity {"amber" if warning else ""}"><span style="width:{percent:.1f}%"></span></div>'
+    machine = ('<section class="panel"><div class="panel-body"><div class="machine-heading"><h2>Machine</h2><span class="eyebrow">Mac</span></div>'
+               f'<div class="machine-metric"><div class="metric-label"><span>GPU utilization</span><strong>{gpu[1] + "%" if gpu else "Unknown"}</strong></div>{gpu_bar}</div>'
+               f'<div class="machine-metric"><div class="metric-label"><span class="{"amber" if warning else ""}">{escape(swap)}</span></div>{swap_bar}'
+               + ('<p class="machine-warning">Above 80% of available swap</p>' if warning else '') + '</div>'
+               f'<dl class="machine-details"><dt>Memory pressure</dt><dd>{escape(pressure[1].strip()) if pressure else "Unknown"}</dd>'
+               f'<dt>Load · 1 / 5 / 15 min</dt><dd>{escape(load[1].strip()) if load else "Unknown"}</dd></dl></div></section>')
+    waiting = ''.join('<li>' + re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', escape(item)) + '</li>' for item in snapshot['waiting'])
+    waiting_panel = '<section class="panel"><div class="panel-header"><h2>Up next for James</h2></div><div class="panel-body"><ol class="waiting">' + (waiting or '<li>No requests recorded.</li>') + '</ol></div></section>'
+    glossary = ('<section class="panel glossary-panel"><div class="panel-body glossary"><div class="eyebrow">Reading the board</div>'
+                '<p style="margin-top:14px"><strong>Finished ≠ passed.</strong> A finished run exited successfully. A verdict says whether its approach met the experiment’s bar.</p>'
+                '<p><strong>Arms</strong> are the approaches being compared. <strong>Seeds</strong> repeat an approach with different random starting points. '
+                '<strong>Epochs</strong> are passes through its training examples.</p>'
+                '<p><strong>Range learning</strong> teaches actions from gameplay. <strong>IDM</strong> learns to infer the human’s inputs from video.</p></div></section>')
+    if active_runs:
+        live_jobs = ''.join(job_card(j) for j in active_runs)
+    elif queues:
+        live_jobs = ''.join(job_card(j) for j in queues)
+    else:
+        live_jobs = '<div class="idle"><span class="idle-mark">—</span><div><h3>No training jobs confirmed running</h3><p>Recent results are below. Jobs without a confirmed exit remain listed separately.</p></div></div>'
+    if queues and active_runs:
+        live_jobs += '<details class="fold"><summary>Queue status <span class="muted">Orchestration, separate from training runs</span></summary>' + ''.join(job_card(j) for j in queues) + '</details>'
+    headline = 'Training is in progress.' if running_count else 'The queue is moving.' if queues else 'Training, at a glance.'
+    summary = 'Follow the runs. Understand what they tested. See what is ready for the next step.'
+    preview = '<div class="preview-banner">LOCAL DESIGN PREVIEW · simulated running states; no training was started.</div>' if snapshot.get('preview') else ''
+    warning_html = ''.join('<div class="warning-banner">' + escape(w) + '</div>' for w in snapshot['warnings'])
+    return ('<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
+            f'<meta http-equiv="refresh" content="30"><title>Rivals · Training lab</title><style>{CSS}</style></head><body><div class="shell">'
+            '<header class="masthead"><div class="brand">RIVALS<span>/ TRAINING LAB</span></div><div class="live-label"><span class="dot"></span>'
+            '<span class="refresh-label">Updates every 30 seconds</span><a href="/api/status">Snapshot ↗</a></div></header>'
+            f'<section class="overview"><div><h1>{headline}</h1><p>{summary}</p></div><div class="stats">'
+            f'<div class="stat"><b class="orange">{running_count}</b><span>RUNNING JOBS</span></div><div class="stat"><b>{sum(j["stage"] == "done" for j in recent_runs)}</b><span>FINISHED · LAST 48 H</span></div>'
+            f'<div class="stat"><b class="{"amber" if unconfirmed else "mint"}">{len(unconfirmed)}</b><span>UNCONFIRMED · CURRENT</span></div></div></section>'
+            f'{preview}{warning_html}<div class="layout"><main class="main"><section class="panel"><div class="panel-header"><h2>Running now</h2>'
+            f'<small>{running_count} running · {queued_count} queued</small></div>{live_jobs}</section>'
+            '<div class="section-heading"><h2>What the experiments tested</h2><small>Recorded decisions</small></div>'
+            + (''.join(experiment_card(r) for r in experiments) or '<div class="panel empty-note">No experiment decisions have been recorded yet.</div>') +
+            f'<details class="panel fold"><summary>Recent runs ({len(finished)})<span class="muted">Last 48 hours · completion is separate from acceptance</span></summary>'
+            f'{"".join(job_card(j) for j in finished)}</details>'
+            f'<details class="panel fold"><summary>Unconfirmed jobs ({len(unconfirmed)})<span class="muted">No confirmed terminal state</span></summary>{"".join(job_card(j) for j in unconfirmed)}</details>'
+            f'<details class="panel fold" id="history"><summary>History ({len(history)})<span class="muted">Finished or unconfirmed · older than 48 hours</span></summary>{"".join(job_card(j) for j in history)}</details>'
+            f'<details class="panel fold"><summary>Per-run report gates ({len(reports)})<span class="muted">Technical results, without recomputing metrics</span></summary>{report_html}</details></main>'
+            f'<aside class="sidebar">{machine}{waiting_panel}{glossary}</aside></div><footer class="page-footer"><span>Snapshot · {escape(snapshot["updated"])}</span>'
+            '<span>Read-only · tailnet only · source evidence stays on the Mac</span></footer></div></body></html>')
 
 def serve(board, port):
     class Handler(BaseHTTPRequestHandler):
