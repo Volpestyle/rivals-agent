@@ -48,3 +48,22 @@ MPS training on this code reproduces bit for bit across processes.
 - **Data and optimiser steps co-vary.** The recipe is fixed in epochs, so the 80.5 group took 2.4× the steps. This is
   "the same recipe on more data", not "more data at equal compute".
 - **Both rules sit within about 0.01 of their bars at three seeds.** Opens clears by 0.005; Closes misses by 0.012.
+
+## Qualified by the self-fed diagnosis (2026-09-25)
+
+Evidence: `docs/evidence/range-bc-selffed-diag-20260925/`. Inference only, on `interim94-s012`'s seed-0 no-HUD and
+twin checkpoints, on the same dev. Its probe reproduces the report's teacher-forced and self-fed figures exactly.
+
+- **"Opens" does not show an executed press advantage.** The pre-registered teacher-forced press-F1 scores lone press
+  probabilities (`press_p ≥ .5`). `executor.decode_step` never executes those: it sends a press only as a rise of the
+  hold or as a tap (press and release both ≥ .5). Self-fed, the no-HUD arm has `press_p ≥ .5` on 1,602 step-actions
+  and executes none. The teacher-forced count is also inflated: jump has 3,516 predicted presses against 575 true.
+- **Self-fed rollouts are an absorbing idle state, from copycat use of the history.** Teacher-forced, the models:
+  - continue a hold 93-96 % of the time;
+  - start only 2.0 % of true hold onsets from idle (twin 0.5 %);
+  - start a camera motion from a still previous step 2 % of the time (humans 22 %).
+
+  Fed their own known-idle history from step 1, the maximum live `held_p` falls to about 0.04, no hold crosses 0.5 in
+  24,556 steps, and the yaw median stays at the zero class. With the same weights, blanking the history lets the
+  no-HUD arm act (press-F1 0.079). Opening holds on press makes them latch, and sampling over-presses up to 6×. So the
+  cause is the fed-back history, not the threshold or the evaluation code.
