@@ -1,0 +1,88 @@
+{
+ "session": "20260926T060921-977Z-60612-1",
+ "start_ns": 470836463375400,
+ "still_windows": 6,
+ "turns": [
+  {
+   "pre_still_s": [
+    1.64,
+    2.24
+   ],
+   "post_still_s": [
+    8.717,
+    9.81
+   ],
+   "pre_rest_s": 1.94,
+   "post_rest_s": 9.263,
+   "dx_counts": 11024,
+   "dy_counts": -3,
+   "revolutions": 1,
+   "moving_s": 6.477,
+   "mean_counts_per_s": 1702,
+   "nominal_excess_deg": 4.61
+  },
+  {
+   "pre_still_s": [
+    8.717,
+    9.81
+   ],
+   "post_still_s": [
+    13.602,
+    14.469
+   ],
+   "pre_rest_s": 9.263,
+   "post_rest_s": 14.035,
+   "dx_counts": 10851,
+   "dy_counts": 16,
+   "revolutions": 1,
+   "moving_s": 3.792,
+   "mean_counts_per_s": 2862,
+   "nominal_excess_deg": -1.12
+  },
+  {
+   "pre_still_s": [
+    13.602,
+    14.469
+   ],
+   "post_still_s": [
+    16.538,
+    16.965
+   ],
+   "pre_rest_s": 14.035,
+   "post_rest_s": 16.751,
+   "dx_counts": 10932,
+   "dy_counts": 36,
+   "revolutions": 1,
+   "moving_s": 2.069,
+   "mean_counts_per_s": 5284,
+   "nominal_excess_deg": 1.56
+  }
+ ],
+ "controls": [
+  {
+   "pre_still_s": [
+    8.717,
+    9.81
+   ],
+   "rests_s": [
+    9.045,
+    9.482
+   ]
+  },
+  {
+   "pre_still_s": [
+    17.094,
+    18.416
+   ],
+   "rests_s": [
+    17.491,
+    18.019
+   ]
+  }
+ ],
+ "rule": {
+  "min_turn_counts": 9796,
+  "still_s": 0.3,
+  "gain": 0.0330738
+ }
+}

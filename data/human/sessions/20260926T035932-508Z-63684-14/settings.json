@@ -1,0 +1,140 @@
+{
+ "session": "20260926T035932-508Z-63684-14",
+ "settings": {
+  "value": {
+   "dpi": 800,
+   "horizontal_sensitivity": 1.89,
+   "vertical_sensitivity": 1.89,
+   "swing_mode": {
+    "automatic_swing": false,
+    "hold_to_swing": true
+   },
+   "mouse_acceleration": true,
+   "mouse_smoothing": true
+  },
+  "source": "James's statements in docs/recording-log.md (2026-09-23): DPI 800 (~14:50 CDT), sensitivity unchanged since 2026-09-21 (1.89/1.89 in the 09-21 report), default swing settings on Shift with Simple Swing on Caps Lock; confirmed on native frames of the settings look (calibration.json: 1.89/1.89, hold to swing on, simple swing off)",
+  "per_session_source": "James's statements for the late take (docs/recording-log.md, Motor settings, committed 83c05f1 and 7ad63e5): recorded on his main account; at its start (Esc 4.1 and 5.4 s, cut) cooldowns were switched on and sensitivity set to 1.89, DPI unchanged. Admitted on the lead's option B (2026-09-26). The main account's yaw gain was measured on its own turn take 2026-09-26 01-09-21 (calibration 20260926T060921-977Z-60612-1, turncal.json 4ab87a55) against the calibration 0.0330738 deg/count: slow (1,702 counts/s) +0.159 %, medium (2,862) -0.023 %, fast (5,284) +0.057 %, mean +0.064 %. The slow turn did NOT meet the scripted +-0.08 % check (turncal.py within false, all_within false); 'equal' is the lead's decision of 2026-09-26, applying 030045's own +-0.25 % slow-class tolerance, which all three speeds meet. The main account has mouse acceleration off; this identity (acceleration on at factor 1.00) is the lead-authorized equivalent profile, supported by the measured gain",
+  "evidence": [
+   {
+    "path": "data/human/sessions/20260926T035932-508Z-63684-14/recording-log.6bbb276.md",
+    "sha256": "dbf4c3236f3e62f668e055d29f921429930ed4c17c101d825f2ab7fa4ba9b26a"
+   },
+   {
+    "path": "data/human/notes/2026-09-21-user-settings.json",
+    "sha256": "852c92254961b4fcb1278e8ebe752ea2f02ce6add678509d3276fd1a26264c6c"
+   },
+   {
+    "path": "data/human/sessions/20260926T035932-508Z-63684-14/provenance.json",
+    "sha256": "e816be1da9838e921db7f02547393633785ab6d2b99ad501ef6d9ac1733d00e6"
+   },
+   {
+    "path": "data/human/calibration/20260923T204707-487Z-45572-2/calibration.json",
+    "sha256": "baa49158c9911e0155a2d06883faec00150b297e0a5fe0e8dd46fc86d5310283"
+   }
+  ]
+ },
+ "bindings": {
+  "value": {
+   "move_forward": [
+    "key:17:0"
+   ],
+   "move_left": [
+    "key:30:0"
+   ],
+   "move_back": [
+    "key:31:0"
+   ],
+   "move_right": [
+    "key:32:0"
+   ],
+   "jump": [
+    "key:57:0"
+   ],
+   "web_swing": [
+    "key:42:0"
+   ],
+   "get_over_here": [
+    "key:33:0"
+   ],
+   "amazing_combo": [
+    "key:18:0",
+    "key:3:0"
+   ],
+   "ultimate": [
+    "key:16:0"
+   ],
+   "melee": [
+    "key:47:0",
+    "mouse:5"
+   ],
+   "spider_power": [
+    "mouse:1"
+   ],
+   "web_cluster": [
+    "mouse:2"
+   ],
+   "team_up": [
+    "key:46:0"
+   ],
+   "team_up_b": [
+    "key:45:0"
+   ],
+   "simple_swing": [
+    "key:58:0"
+   ],
+   "goh_targeting": [
+    "mouse:4",
+    "key:3:0"
+   ],
+   "slow_walk": [
+    "key:29:0"
+   ]
+  },
+  "aliases": {
+   "mouse:5": "melee"
+  },
+  "notes": {
+   "team_up": "C = Team-Up A, fires in the solo range with a visible effect (James; 051828/team-up-check.json). A real action with positives, trained but masked live (Y is off the pad whitelist).",
+   "melee": "V and Mouse 5 (settings look; lead decision): Mouse 5 presses count as melee (header binding_aliases).",
+   "goh_targeting": "Get Over Here Targeting: Mouse 4 (X1) and 2; a fit action (lead decision), structurally unsupported on the pad, counted. Only Mouse 4 is in the step header (2 is shared).",
+   "amazing_combo": "E and 2; 2 is also Get Over Here Targeting, so it is not aliased (unsupported).",
+   "simple_swing": "Caps Lock (VK 20, scan 58), off as a mode; not in the fit vocabulary (unsupported).",
+   "team_up_b": "X, Team-Up B; not in the fit vocabulary (unsupported).",
+   "slow_walk": "LCtrl, hold; not in the fit vocabulary (unsupported).",
+   "alt": "Alt is unbound in game (James); Alt presses are Alt-Tab and stay UI-key cuts."
+  },
+  "source": "native frames of James's settings look (calibration take 2026-09-23, keyboard pages, calibration.json), agreeing with his 2026-09-21 report and 2026-09-23 statements; HUD key labels on this session's frames (slot-mapping.json)",
+  "per_session_source": "the main account's Spider-Man bindings, equal in effect to this table for every key pressed after the cut (bindings-equivalence.json 9f2adb9b; James, 2026-09-25: \"the binds are definitely the same in any meaningful way\"); LeftShift checked as web swing on frames",
+  "evidence": [
+   {
+    "path": "data/human/sessions/20260926T035932-508Z-63684-14/recording-log.6bbb276.md",
+    "sha256": "dbf4c3236f3e62f668e055d29f921429930ed4c17c101d825f2ab7fa4ba9b26a"
+   },
+   {
+    "path": "data/human/notes/2026-09-21-user-settings.json",
+    "sha256": "852c92254961b4fcb1278e8ebe752ea2f02ce6add678509d3276fd1a26264c6c"
+   },
+   {
+    "path": "data/human/sessions/20260926T035932-508Z-63684-14/slot-mapping.json",
+    "sha256": "4f7123888abe7835a07e7f02b50160d1e4fbba42d3cb2e17c3fbbab4c24789ac"
+   },
+   {
+    "path": "data/human/calibration/20260923T204707-487Z-45572-2/calibration.json",
+    "sha256": "baa49158c9911e0155a2d06883faec00150b297e0a5fe0e8dd46fc86d5310283"
+   }
+  ]
+ },
+ "settings_identity": "a8dea3bacebbe9377c8ea9bc7f517e7d907e126c61634676883599dbf2e3d1fd",
+ "caps_lock_packets": 12,
+ "calibration": {
+  "kind": "slow_turn_constant",
+  "yaw_deg_per_count": 0.0330738,
+  "pitch_deg_per_count": 0.0330738,
+  "pitch": {
+   "kind": "derived_equal_sensitivity"
+  },
+  "accel_on": true,
+  "source": "data/human/calibration/20260923T204707-487Z-45572-2/calibration.json (v2) (baa49158c9911e01)"
+ },
+ "no_pad_attestation": "James, 2026-09-23 ~15:55 CDT: no physical controller was plugged in during any recording session"
+}

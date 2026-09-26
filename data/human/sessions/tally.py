@@ -61,9 +61,6 @@ ROWS = [
     *[dict(session=s, date="2026-09-25", status="pending", reason="logger folder without a video; not opened")
       for s in ("20260925T234952-361Z-63684-1", "20260926T022734-732Z-63684-10", "20260926T031019-828Z-63684-11",
                 "20260926T033121-111Z-63684-12")],
-    dict(session="20260926T035932-508Z-63684-14", date="2026-09-25", status="pending",
-         reason="lead decision 2026-09-26 (B): main account, yaw gain measured equal to the calibration "
-                "(20260926T060921-977Z-60612-1); intake resumed, review pending"),
 ]
 
 
@@ -74,7 +71,8 @@ def sha(p):
 ADMITTED = ("20260923T051828-422Z-33696-1", "20260923T171533-187Z-33696-5", "20260923T200129-346Z-33696-6",
             "20260923T205528-900Z-45572-3", "20260924T232304-170Z-12024-1", "20260925T025230-605Z-7804-2",
             "20260925T021320-371Z-7804-1", "20260925T212646-322Z-49728-6",
-            "20260925T203745-207Z-49728-2", "20260926T045729-166Z-79780-1")   # 212646 is val: beside the headline
+            "20260925T203745-207Z-49728-2", "20260926T045729-166Z-79780-1",
+            "20260926T035932-508Z-63684-14")   # 212646 is val: beside the headline
 
 
 def recording_date(session):

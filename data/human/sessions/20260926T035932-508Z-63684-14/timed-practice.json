@@ -1,0 +1,4889 @@
+{
+ "session": "20260926T035932-508Z-63684-14",
+ "snapshot": "code-snapshot-3936f94-4c9638d1",
+ "media_sha256": "7ab6b6083ac9aa38ad5b3ccde866ccb684d79332be42696ab36c2c7030f22494",
+ "spans": [
+  {
+   "coarse_s": [
+    490.83,
+    499.83
+   ],
+   "cut_ns": [
+    463538143361923,
+    463546885028239
+   ],
+   "cut_rel_s": [
+    491.110421023,
+    499.852087339
+   ],
+   "start_bracket": [
+    {
+     "composition_ns": 463536868361973,
+     "frame_index": 58769,
+     "file_ms": 489763,
+     "label": "range",
+     "scores": {
+      "range": 0.9976,
+      "timed": 0.4526
+     }
+    },
+    {
+     "composition_ns": 463536876695306,
+     "frame_index": 58770,
+     "file_ms": 489771,
+     "label": "range",
+     "scores": {
+      "range": 0.9968,
+      "timed": 0.4511
+     }
+    },
+    {
+     "composition_ns": 463536885028639,
+     "frame_index": 58771,
+     "file_ms": 489779,
+     "label": "range",
+     "scores": {
+      "range": 0.9973,
+      "timed": 0.452
+     }
+    },
+    {
+     "composition_ns": 463536893361972,
+     "frame_index": 58772,
+     "file_ms": 489788,
+     "label": "range",
+     "scores": {
+      "range": 0.9974,
+      "timed": 0.4511
+     }
+    },
+    {
+     "composition_ns": 463536901695305,
+     "frame_index": 58773,
+     "file_ms": 489796,
+     "label": "range",
+     "scores": {
+      "range": 0.9971,
+      "timed": 0.4507
+     }
+    },
+    {
+     "composition_ns": 463536910028638,
+     "frame_index": 58774,
+     "file_ms": 489804,
+     "label": "range",
+     "scores": {
+      "range": 0.9974,
+      "timed": 0.4485
+     }
+    },
+    {
+     "composition_ns": 463536918361971,
+     "frame_index": 58775,
+     "file_ms": 489813,
+     "label": "range",
+     "scores": {
+      "range": 0.9975,
+      "timed": 0.4487
+     }
+    },
+    {
+     "composition_ns": 463536926695304,
+     "frame_index": 58776,
+     "file_ms": 489821,
+     "label": "range",
+     "scores": {
+      "range": 0.9977,
+      "timed": 0.4491
+     }
+    },
+    {
+     "composition_ns": 463536935028637,
+     "frame_index": 58777,
+     "file_ms": 489829,
+     "label": "range",
+     "scores": {
+      "range": 0.997,
+      "timed": 0.4508
+     }
+    },
+    {
+     "composition_ns": 463536943361970,
+     "frame_index": 58778,
+     "file_ms": 489838,
+     "label": "range",
+     "scores": {
+      "range": 0.9965,
+      "timed": 0.4531
+     }
+    },
+    {
+     "composition_ns": 463536951695303,
+     "frame_index": 58779,
+     "file_ms": 489846,
+     "label": "range",
+     "scores": {
+      "range": 0.9962,
+      "timed": 0.4518
+     }
+    },
+    {
+     "composition_ns": 463536960028636,
+     "frame_index": 58780,
+     "file_ms": 489854,
+     "label": "range",
+     "scores": {
+      "range": 0.9944,
+      "timed": 0.4513
+     }
+    },
+    {
+     "composition_ns": 463536968361969,
+     "frame_index": 58781,
+     "file_ms": 489863,
+     "label": "range",
+     "scores": {
+      "range": 0.9942,
+      "timed": 0.4496
+     }
+    },
+    {
+     "composition_ns": 463536976695302,
+     "frame_index": 58782,
+     "file_ms": 489871,
+     "label": "range",
+     "scores": {
+      "range": 0.9957,
+      "timed": 0.449
+     }
+    },
+    {
+     "composition_ns": 463536985028635,
+     "frame_index": 58783,
+     "file_ms": 489879,
+     "label": "range",
+     "scores": {
+      "range": 0.9951,
+      "timed": 0.4501
+     }
+    },
+    {
+     "composition_ns": 463536993361968,
+     "frame_index": 58784,
+     "file_ms": 489888,
+     "label": "range",
+     "scores": {
+      "range": 0.9955,
+      "timed": 0.4512
+     }
+    },
+    {
+     "composition_ns": 463537001695301,
+     "frame_index": 58785,
+     "file_ms": 489896,
+     "label": "range",
+     "scores": {
+      "range": 0.9957,
+      "timed": 0.4505
+     }
+    },
+    {
+     "composition_ns": 463537010028634,
+     "frame_index": 58786,
+     "file_ms": 489904,
+     "label": "range",
+     "scores": {
+      "range": 0.9968,
+      "timed": 0.4502
+     }
+    },
+    {
+     "composition_ns": 463537018361967,
+     "frame_index": 58787,
+     "file_ms": 489913,
+     "label": "range",
+     "scores": {
+      "range": 0.9981,
+      "timed": 0.4493
+     }
+    },
+    {
+     "composition_ns": 463537026695300,
+     "frame_index": 58788,
+     "file_ms": 489921,
+     "label": "range",
+     "scores": {
+      "range": 0.9979,
+      "timed": 0.4492
+     }
+    },
+    {
+     "composition_ns": 463537035028633,
+     "frame_index": 58789,
+     "file_ms": 489929,
+     "label": "range",
+     "scores": {
+      "range": 0.9975,
+      "timed": 0.447
+     }
+    },
+    {
+     "composition_ns": 463537043361966,
+     "frame_index": 58790,
+     "file_ms": 489938,
+     "label": "range",
+     "scores": {
+      "range": 0.9968,
+      "timed": 0.4451
+     }
+    },
+    {
+     "composition_ns": 463537051695299,
+     "frame_index": 58791,
+     "file_ms": 489946,
+     "label": "range",
+     "scores": {
+      "range": 0.9959,
+      "timed": 0.4452
+     }
+    },
+    {
+     "composition_ns": 463537060028632,
+     "frame_index": 58792,
+     "file_ms": 489954,
+     "label": "range",
+     "scores": {
+      "range": 0.9959,
+      "timed": 0.447
+     }
+    },
+    {
+     "composition_ns": 463537068361965,
+     "frame_index": 58793,
+     "file_ms": 489963,
+     "label": "range",
+     "scores": {
+      "range": 0.9966,
+      "timed": 0.4539
+     }
+    },
+    {
+     "composition_ns": 463537076695298,
+     "frame_index": 58794,
+     "file_ms": 489971,
+     "label": "range",
+     "scores": {
+      "range": 0.9967,
+      "timed": 0.4517
+     }
+    },
+    {
+     "composition_ns": 463537085028631,
+     "frame_index": 58795,
+     "file_ms": 489979,
+     "label": "range",
+     "scores": {
+      "range": 0.9971,
+      "timed": 0.4499
+     }
+    },
+    {
+     "composition_ns": 463537093361964,
+     "frame_index": 58796,
+     "file_ms": 489988,
+     "label": "range",
+     "scores": {
+      "range": 0.9961,
+      "timed": 0.4466
+     }
+    },
+    {
+     "composition_ns": 463537101695297,
+     "frame_index": 58797,
+     "file_ms": 489996,
+     "label": "range",
+     "scores": {
+      "range": 0.9956,
+      "timed": 0.44
+     }
+    },
+    {
+     "composition_ns": 463537110028630,
+     "frame_index": 58798,
+     "file_ms": 490004,
+     "label": "range",
+     "scores": {
+      "range": 0.9929,
+      "timed": 0.4441
+     }
+    },
+    {
+     "composition_ns": 463537118361963,
+     "frame_index": 58799,
+     "file_ms": 490013,
+     "label": "range",
+     "scores": {
+      "range": 0.9944,
+      "timed": 0.4521
+     }
+    },
+    {
+     "composition_ns": 463537126695296,
+     "frame_index": 58800,
+     "file_ms": 490021,
+     "label": "range",
+     "scores": {
+      "range": 0.9949,
+      "timed": 0.4549
+     }
+    },
+    {
+     "composition_ns": 463537135028629,
+     "frame_index": 58801,
+     "file_ms": 490029,
+     "label": "range",
+     "scores": {
+      "range": 0.9946,
+      "timed": 0.453
+     }
+    },
+    {
+     "composition_ns": 463537143361962,
+     "frame_index": 58802,
+     "file_ms": 490038,
+     "label": "range",
+     "scores": {
+      "range": 0.9946,
+      "timed": 0.4535
+     }
+    },
+    {
+     "composition_ns": 463537151695295,
+     "frame_index": 58803,
+     "file_ms": 490046,
+     "label": "range",
+     "scores": {
+      "range": 0.9947,
+      "timed": 0.4535
+     }
+    },
+    {
+     "composition_ns": 463537160028628,
+     "frame_index": 58804,
+     "file_ms": 490054,
+     "label": "range",
+     "scores": {
+      "range": 0.995,
+      "timed": 0.4528
+     }
+    },
+    {
+     "composition_ns": 463537168361961,
+     "frame_index": 58805,
+     "file_ms": 490063,
+     "label": "range",
+     "scores": {
+      "range": 0.9949,
+      "timed": 0.4527
+     }
+    },
+    {
+     "composition_ns": 463537176695294,
+     "frame_index": 58806,
+     "file_ms": 490071,
+     "label": "range",
+     "scores": {
+      "range": 0.9955,
+      "timed": 0.451
+     }
+    },
+    {
+     "composition_ns": 463537185028627,
+     "frame_index": 58807,
+     "file_ms": 490079,
+     "label": "range",
+     "scores": {
+      "range": 0.9969,
+      "timed": 0.4521
+     }
+    },
+    {
+     "composition_ns": 463537193361960,
+     "frame_index": 58808,
+     "file_ms": 490088,
+     "label": "range",
+     "scores": {
+      "range": 0.9972,
+      "timed": 0.4529
+     }
+    },
+    {
+     "composition_ns": 463537201695293,
+     "frame_index": 58809,
+     "file_ms": 490096,
+     "label": "range",
+     "scores": {
+      "range": 0.9972,
+      "timed": 0.4529
+     }
+    },
+    {
+     "composition_ns": 463537210028626,
+     "frame_index": 58810,
+     "file_ms": 490104,
+     "label": "range",
+     "scores": {
+      "range": 0.9971,
+      "timed": 0.4524
+     }
+    },
+    {
+     "composition_ns": 463537218361959,
+     "frame_index": 58811,
+     "file_ms": 490113,
+     "label": "range",
+     "scores": {
+      "range": 0.9959,
+      "timed": 0.4509
+     }
+    },
+    {
+     "composition_ns": 463537226695292,
+     "frame_index": 58812,
+     "file_ms": 490121,
+     "label": "range",
+     "scores": {
+      "range": 0.9966,
+      "timed": 0.4506
+     }
+    },
+    {
+     "composition_ns": 463537235028625,
+     "frame_index": 58813,
+     "file_ms": 490129,
+     "label": "range",
+     "scores": {
+      "range": 0.9964,
+      "timed": 0.453
+     }
+    },
+    {
+     "composition_ns": 463537243361958,
+     "frame_index": 58814,
+     "file_ms": 490138,
+     "label": "range",
+     "scores": {
+      "range": 0.995,
+      "timed": 0.4506
+     }
+    },
+    {
+     "composition_ns": 463537251695291,
+     "frame_index": 58815,
+     "file_ms": 490146,
+     "label": "range",
+     "scores": {
+      "range": 0.9937,
+      "timed": 0.4582
+     }
+    },
+    {
+     "composition_ns": 463537260028624,
+     "frame_index": 58816,
+     "file_ms": 490154,
+     "label": "range",
+     "scores": {
+      "range": 0.994,
+      "timed": 0.4504
+     }
+    },
+    {
+     "composition_ns": 463537268361957,
+     "frame_index": 58817,
+     "file_ms": 490163,
+     "label": "range",
+     "scores": {
+      "range": 0.9964,
+      "timed": 0.4512
+     }
+    },
+    {
+     "composition_ns": 463537276695290,
+     "frame_index": 58818,
+     "file_ms": 490171,
+     "label": "range",
+     "scores": {
+      "range": 0.9957,
+      "timed": 0.454
+     }
+    },
+    {
+     "composition_ns": 463537285028623,
+     "frame_index": 58819,
+     "file_ms": 490179,
+     "label": "range",
+     "scores": {
+      "range": 0.993,
+      "timed": 0.4544
+     }
+    },
+    {
+     "composition_ns": 463537293361956,
+     "frame_index": 58820,
+     "file_ms": 490188,
+     "label": "range",
+     "scores": {
+      "range": 0.9929,
+      "timed": 0.453
+     }
+    },
+    {
+     "composition_ns": 463537301695289,
+     "frame_index": 58821,
+     "file_ms": 490196,
+     "label": "range",
+     "scores": {
+      "range": 0.9941,
+      "timed": 0.4534
+     }
+    },
+    {
+     "composition_ns": 463537310028622,
+     "frame_index": 58822,
+     "file_ms": 490204,
+     "label": "range",
+     "scores": {
+      "range": 0.9945,
+      "timed": 0.4568
+     }
+    },
+    {
+     "composition_ns": 463537318361955,
+     "frame_index": 58823,
+     "file_ms": 490213,
+     "label": "range",
+     "scores": {
+      "range": 0.9945,
+      "timed": 0.4527
+     }
+    },
+    {
+     "composition_ns": 463537326695288,
+     "frame_index": 58824,
+     "file_ms": 490221,
+     "label": "range",
+     "scores": {
+      "range": 0.9948,
+      "timed": 0.4526
+     }
+    },
+    {
+     "composition_ns": 463537335028621,
+     "frame_index": 58825,
+     "file_ms": 490229,
+     "label": "range",
+     "scores": {
+      "range": 0.9973,
+      "timed": 0.4524
+     }
+    },
+    {
+     "composition_ns": 463537343361954,
+     "frame_index": 58826,
+     "file_ms": 490238,
+     "label": "range",
+     "scores": {
+      "range": 0.9981,
+      "timed": 0.4512
+     }
+    },
+    {
+     "composition_ns": 463537351695287,
+     "frame_index": 58827,
+     "file_ms": 490246,
+     "label": "range",
+     "scores": {
+      "range": 0.9982,
+      "timed": 0.4508
+     }
+    },
+    {
+     "composition_ns": 463537360028620,
+     "frame_index": 58828,
+     "file_ms": 490254,
+     "label": "range",
+     "scores": {
+      "range": 0.9984,
+      "timed": 0.4508
+     }
+    },
+    {
+     "composition_ns": 463537368361953,
+     "frame_index": 58829,
+     "file_ms": 490263,
+     "label": "range",
+     "scores": {
+      "range": 0.9982,
+      "timed": 0.4512
+     }
+    },
+    {
+     "composition_ns": 463537376695286,
+     "frame_index": 58830,
+     "file_ms": 490271,
+     "label": "range",
+     "scores": {
+      "range": 0.997,
+      "timed": 0.4508
+     }
+    },
+    {
+     "composition_ns": 463537385028619,
+     "frame_index": 58831,
+     "file_ms": 490279,
+     "label": "range",
+     "scores": {
+      "range": 0.9959,
+      "timed": 0.4529
+     }
+    },
+    {
+     "composition_ns": 463537393361952,
+     "frame_index": 58832,
+     "file_ms": 490288,
+     "label": "range",
+     "scores": {
+      "range": 0.9956,
+      "timed": 0.4515
+     }
+    },
+    {
+     "composition_ns": 463537401695285,
+     "frame_index": 58833,
+     "file_ms": 490296,
+     "label": "range",
+     "scores": {
+      "range": 0.9947,
+      "timed": 0.4536
+     }
+    },
+    {
+     "composition_ns": 463537410028618,
+     "frame_index": 58834,
+     "file_ms": 490304,
+     "label": "range",
+     "scores": {
+      "range": 0.9945,
+      "timed": 0.4543
+     }
+    },
+    {
+     "composition_ns": 463537418361951,
+     "frame_index": 58835,
+     "file_ms": 490313,
+     "label": "range",
+     "scores": {
+      "range": 0.9944,
+      "timed": 0.452
+     }
+    },
+    {
+     "composition_ns": 463537426695284,
+     "frame_index": 58836,
+     "file_ms": 490321,
+     "label": "range",
+     "scores": {
+      "range": 0.9939,
+      "timed": 0.4487
+     }
+    },
+    {
+     "composition_ns": 463537435028617,
+     "frame_index": 58837,
+     "file_ms": 490329,
+     "label": "range",
+     "scores": {
+      "range": 0.9931,
+      "timed": 0.4539
+     }
+    },
+    {
+     "composition_ns": 463537443361950,
+     "frame_index": 58838,
+     "file_ms": 490338,
+     "label": "range",
+     "scores": {
+      "range": 0.9941,
+      "timed": 0.4539
+     }
+    },
+    {
+     "composition_ns": 463537451695283,
+     "frame_index": 58839,
+     "file_ms": 490346,
+     "label": "range",
+     "scores": {
+      "range": 0.9937,
+      "timed": 0.4537
+     }
+    },
+    {
+     "composition_ns": 463537460028616,
+     "frame_index": 58840,
+     "file_ms": 490354,
+     "label": "range",
+     "scores": {
+      "range": 0.9942,
+      "timed": 0.4575
+     }
+    },
+    {
+     "composition_ns": 463537468361949,
+     "frame_index": 58841,
+     "file_ms": 490363,
+     "label": "range",
+     "scores": {
+      "range": 0.9942,
+      "timed": 0.453
+     }
+    },
+    {
+     "composition_ns": 463537476695282,
+     "frame_index": 58842,
+     "file_ms": 490371,
+     "label": "range",
+     "scores": {
+      "range": 0.9942,
+      "timed": 0.4512
+     }
+    },
+    {
+     "composition_ns": 463537485028615,
+     "frame_index": 58843,
+     "file_ms": 490379,
+     "label": "range",
+     "scores": {
+      "range": 0.9948,
+      "timed": 0.4562
+     }
+    },
+    {
+     "composition_ns": 463537493361948,
+     "frame_index": 58844,
+     "file_ms": 490388,
+     "label": "range",
+     "scores": {
+      "range": 0.9947,
+      "timed": 0.4545
+     }
+    },
+    {
+     "composition_ns": 463537501695281,
+     "frame_index": 58845,
+     "file_ms": 490396,
+     "label": "range",
+     "scores": {
+      "range": 0.9948,
+      "timed": 0.4545
+     }
+    },
+    {
+     "composition_ns": 463537510028614,
+     "frame_index": 58846,
+     "file_ms": 490404,
+     "label": "range",
+     "scores": {
+      "range": 0.9947,
+      "timed": 0.4536
+     }
+    },
+    {
+     "composition_ns": 463537518361947,
+     "frame_index": 58847,
+     "file_ms": 490413,
+     "label": "range",
+     "scores": {
+      "range": 0.9949,
+      "timed": 0.4545
+     }
+    },
+    {
+     "composition_ns": 463537526695280,
+     "frame_index": 58848,
+     "file_ms": 490421,
+     "label": "range",
+     "scores": {
+      "range": 0.995,
+      "timed": 0.4541
+     }
+    },
+    {
+     "composition_ns": 463537535028613,
+     "frame_index": 58849,
+     "file_ms": 490429,
+     "label": "range",
+     "scores": {
+      "range": 0.9985,
+      "timed": 0.4504
+     }
+    },
+    {
+     "composition_ns": 463537543361946,
+     "frame_index": 58850,
+     "file_ms": 490438,
+     "label": "range",
+     "scores": {
+      "range": 0.9987,
+      "timed": 0.4502
+     }
+    },
+    {
+     "composition_ns": 463537551695279,
+     "frame_index": 58851,
+     "file_ms": 490446,
+     "label": "range",
+     "scores": {
+      "range": 0.9987,
+      "timed": 0.4502
+     }
+    },
+    {
+     "composition_ns": 463537560028612,
+     "frame_index": 58852,
+     "file_ms": 490454,
+     "label": "range",
+     "scores": {
+      "range": 0.9987,
+      "timed": 0.4502
+     }
+    },
+    {
+     "composition_ns": 463537568361945,
+     "frame_index": 58853,
+     "file_ms": 490463,
+     "label": "range",
+     "scores": {
+      "range": 0.9986,
+      "timed": 0.4508
+     }
+    },
+    {
+     "composition_ns": 463537576695278,
+     "frame_index": 58854,
+     "file_ms": 490471,
+     "label": "range",
+     "scores": {
+      "range": 0.9986,
+      "timed": 0.4506
+     }
+    },
+    {
+     "composition_ns": 463537585028611,
+     "frame_index": 58855,
+     "file_ms": 490479,
+     "label": "range",
+     "scores": {
+      "range": 0.9986,
+      "timed": 0.4508
+     }
+    },
+    {
+     "composition_ns": 463537593361944,
+     "frame_index": 58856,
+     "file_ms": 490488,
+     "label": "range",
+     "scores": {
+      "range": 0.9986,
+      "timed": 0.4507
+     }
+    },
+    {
+     "composition_ns": 463537601695277,
+     "frame_index": 58857,
+     "file_ms": 490496,
+     "label": "range",
+     "scores": {
+      "range": 0.9984,
+      "timed": 0.4513
+     }
+    },
+    {
+     "composition_ns": 463537610028610,
+     "frame_index": 58858,
+     "file_ms": 490504,
+     "label": "range",
+     "scores": {
+      "range": 0.9983,
+      "timed": 0.4513
+     }
+    },
+    {
+     "composition_ns": 463537618361943,
+     "frame_index": 58859,
+     "file_ms": 490513,
+     "label": "range",
+     "scores": {
+      "range": 0.9983,
+      "timed": 0.4514
+     }
+    },
+    {
+     "composition_ns": 463537626695276,
+     "frame_index": 58860,
+     "file_ms": 490521,
+     "label": "range",
+     "scores": {
+      "range": 0.9982,
+      "timed": 0.4517
+     }
+    },
+    {
+     "composition_ns": 463537635028609,
+     "frame_index": 58861,
+     "file_ms": 490529,
+     "label": "range",
+     "scores": {
+      "range": 0.9982,
+      "timed": 0.4517
+     }
+    },
+    {
+     "composition_ns": 463537643361942,
+     "frame_index": 58862,
+     "file_ms": 490538,
+     "label": "range",
+     "scores": {
+      "range": 0.9982,
+      "timed": 0.4517
+     }
+    },
+    {
+     "composition_ns": 463537651695275,
+     "frame_index": 58863,
+     "file_ms": 490546,
+     "label": "range",
+     "scores": {
+      "range": 0.9981,
+      "timed": 0.4518
+     }
+    },
+    {
+     "composition_ns": 463537660028608,
+     "frame_index": 58864,
+     "file_ms": 490554,
+     "label": "range",
+     "scores": {
+      "range": 0.9981,
+      "timed": 0.4518
+     }
+    },
+    {
+     "composition_ns": 463537668361941,
+     "frame_index": 58865,
+     "file_ms": 490563,
+     "label": "range",
+     "scores": {
+      "range": 0.9981,
+      "timed": 0.4493
+     }
+    },
+    {
+     "composition_ns": 463537676695274,
+     "frame_index": 58866,
+     "file_ms": 490571,
+     "label": "range",
+     "scores": {
+      "range": 0.9982,
+      "timed": 0.4493
+     }
+    },
+    {
+     "composition_ns": 463537685028607,
+     "frame_index": 58867,
+     "file_ms": 490579,
+     "label": "range",
+     "scores": {
+      "range": 0.9984,
+      "timed": 0.4497
+     }
+    },
+    {
+     "composition_ns": 463537693361940,
+     "frame_index": 58868,
+     "file_ms": 490588,
+     "label": "range",
+     "scores": {
+      "range": 0.9978,
+      "timed": 0.4503
+     }
+    },
+    {
+     "composition_ns": 463537701695273,
+     "frame_index": 58869,
+     "file_ms": 490596,
+     "label": "range",
+     "scores": {
+      "range": 0.9971,
+      "timed": 0.4501
+     }
+    },
+    {
+     "composition_ns": 463537710028606,
+     "frame_index": 58870,
+     "file_ms": 490604,
+     "label": "range",
+     "scores": {
+      "range": 0.9968,
+      "timed": 0.4502
+     }
+    },
+    {
+     "composition_ns": 463537718361939,
+     "frame_index": 58871,
+     "file_ms": 490613,
+     "label": "range",
+     "scores": {
+      "range": 0.9974,
+      "timed": 0.4511
+     }
+    },
+    {
+     "composition_ns": 463537726695272,
+     "frame_index": 58872,
+     "file_ms": 490621,
+     "label": "range",
+     "scores": {
+      "range": 0.996,
+      "timed": 0.4531
+     }
+    },
+    {
+     "composition_ns": 463537735028605,
+     "frame_index": 58873,
+     "file_ms": 490629,
+     "label": "range",
+     "scores": {
+      "range": 0.9957,
+      "timed": 0.4534
+     }
+    },
+    {
+     "composition_ns": 463537743361938,
+     "frame_index": 58874,
+     "file_ms": 490638,
+     "label": "range",
+     "scores": {
+      "range": 0.9957,
+      "timed": 0.4534
+     }
+    },
+    {
+     "composition_ns": 463537751695271,
+     "frame_index": 58875,
+     "file_ms": 490646,
+     "label": "range",
+     "scores": {
+      "range": 0.9957,
+      "timed": 0.4534
+     }
+    },
+    {
+     "composition_ns": 463537760028604,
+     "frame_index": 58876,
+     "file_ms": 490654,
+     "label": "range",
+     "scores": {
+      "range": 0.9956,
+      "timed": 0.4523
+     }
+    },
+    {
+     "composition_ns": 463537768361937,
+     "frame_index": 58877,
+     "file_ms": 490663,
+     "label": "range",
+     "scores": {
+      "range": 0.9957,
+      "timed": 0.4526
+     }
+    },
+    {
+     "composition_ns": 463537776695270,
+     "frame_index": 58878,
+     "file_ms": 490671,
+     "label": "range",
+     "scores": {
+      "range": 0.9956,
+      "timed": 0.4534
+     }
+    },
+    {
+     "composition_ns": 463537785028603,
+     "frame_index": 58879,
+     "file_ms": 490679,
+     "label": "range",
+     "scores": {
+      "range": 0.9955,
+      "timed": 0.4529
+     }
+    },
+    {
+     "composition_ns": 463537793361936,
+     "frame_index": 58880,
+     "file_ms": 490688,
+     "label": "range",
+     "scores": {
+      "range": 0.9955,
+      "timed": 0.4527
+     }
+    },
+    {
+     "composition_ns": 463537801695269,
+     "frame_index": 58881,
+     "file_ms": 490696,
+     "label": "range",
+     "scores": {
+      "range": 0.9955,
+      "timed": 0.4528
+     }
+    },
+    {
+     "composition_ns": 463537810028602,
+     "frame_index": 58882,
+     "file_ms": 490704,
+     "label": "range",
+     "scores": {
+      "range": 0.9954,
+      "timed": 0.4528
+     }
+    },
+    {
+     "composition_ns": 463537818361935,
+     "frame_index": 58883,
+     "file_ms": 490713,
+     "label": "range",
+     "scores": {
+      "range": 0.9954,
+      "timed": 0.4525
+     }
+    },
+    {
+     "composition_ns": 463537826695268,
+     "frame_index": 58884,
+     "file_ms": 490721,
+     "label": "range",
+     "scores": {
+      "range": 0.9953,
+      "timed": 0.4519
+     }
+    },
+    {
+     "composition_ns": 463537835028601,
+     "frame_index": 58885,
+     "file_ms": 490729,
+     "label": "range",
+     "scores": {
+      "range": 0.9954,
+      "timed": 0.4518
+     }
+    },
+    {
+     "composition_ns": 463537843361934,
+     "frame_index": 58886,
+     "file_ms": 490738,
+     "label": "range",
+     "scores": {
+      "range": 0.9925,
+      "timed": 0.4446
+     }
+    },
+    {
+     "composition_ns": 463537851695267,
+     "frame_index": 58887,
+     "file_ms": 490746,
+     "label": "range",
+     "scores": {
+      "range": 0.9905,
+      "timed": 0.4433
+     }
+    },
+    {
+     "composition_ns": 463537860028600,
+     "frame_index": 58888,
+     "file_ms": 490754,
+     "label": "range",
+     "scores": {
+      "range": 0.9899,
+      "timed": 0.4424
+     }
+    },
+    {
+     "composition_ns": 463537868361933,
+     "frame_index": 58889,
+     "file_ms": 490763,
+     "label": "range",
+     "scores": {
+      "range": 0.9897,
+      "timed": 0.4415
+     }
+    },
+    {
+     "composition_ns": 463537876695266,
+     "frame_index": 58890,
+     "file_ms": 490771,
+     "label": "range",
+     "scores": {
+      "range": 0.9888,
+      "timed": 0.4418
+     }
+    },
+    {
+     "composition_ns": 463537885028599,
+     "frame_index": 58891,
+     "file_ms": 490779,
+     "label": "range",
+     "scores": {
+      "range": 0.9885,
+      "timed": 0.4427
+     }
+    },
+    {
+     "composition_ns": 463537893361932,
+     "frame_index": 58892,
+     "file_ms": 490788,
+     "label": "range",
+     "scores": {
+      "range": 0.9884,
+      "timed": 0.4422
+     }
+    },
+    {
+     "composition_ns": 463537901695265,
+     "frame_index": 58893,
+     "file_ms": 490796,
+     "label": "range",
+     "scores": {
+      "range": 0.9893,
+      "timed": 0.4428
+     }
+    },
+    {
+     "composition_ns": 463537910028598,
+     "frame_index": 58894,
+     "file_ms": 490804,
+     "label": "range",
+     "scores": {
+      "range": 0.9899,
+      "timed": 0.4424
+     }
+    },
+    {
+     "composition_ns": 463537918361931,
+     "frame_index": 58895,
+     "file_ms": 490813,
+     "label": "range",
+     "scores": {
+      "range": 0.9905,
+      "timed": 0.4436
+     }
+    },
+    {
+     "composition_ns": 463537926695264,
+     "frame_index": 58896,
+     "file_ms": 490821,
+     "label": "range",
+     "scores": {
+      "range": 0.9883,
+      "timed": 0.441
+     }
+    },
+    {
+     "composition_ns": 463537935028597,
+     "frame_index": 58897,
+     "file_ms": 490829,
+     "label": "range",
+     "scores": {
+      "range": 0.9861,
+      "timed": 0.4416
+     }
+    },
+    {
+     "composition_ns": 463537943361930,
+     "frame_index": 58898,
+     "file_ms": 490838,
+     "label": "range",
+     "scores": {
+      "range": 0.9874,
+      "timed": 0.4436
+     }
+    },
+    {
+     "composition_ns": 463537951695263,
+     "frame_index": 58899,
+     "file_ms": 490846,
+     "label": "range",
+     "scores": {
+      "range": 0.9892,
+      "timed": 0.4408
+     }
+    },
+    {
+     "composition_ns": 463537960028596,
+     "frame_index": 58900,
+     "file_ms": 490854,
+     "label": "range",
+     "scores": {
+      "range": 0.9957,
+      "timed": 0.4512
+     }
+    },
+    {
+     "composition_ns": 463537968361929,
+     "frame_index": 58901,
+     "file_ms": 490863,
+     "label": "range",
+     "scores": {
+      "range": 0.9943,
+      "timed": 0.4506
+     }
+    },
+    {
+     "composition_ns": 463537976695262,
+     "frame_index": 58902,
+     "file_ms": 490871,
+     "label": "range",
+     "scores": {
+      "range": 0.9945,
+      "timed": 0.4533
+     }
+    },
+    {
+     "composition_ns": 463537985028595,
+     "frame_index": 58903,
+     "file_ms": 490879,
+     "label": "range",
+     "scores": {
+      "range": 0.9973,
+      "timed": 0.4529
+     }
+    },
+    {
+     "composition_ns": 463537993361928,
+     "frame_index": 58904,
+     "file_ms": 490888,
+     "label": "range",
+     "scores": {
+      "range": 0.9959,
+      "timed": 0.4537
+     }
+    },
+    {
+     "composition_ns": 463538001695261,
+     "frame_index": 58905,
+     "file_ms": 490896,
+     "label": "range",
+     "scores": {
+      "range": 0.9952,
+      "timed": 0.4528
+     }
+    },
+    {
+     "composition_ns": 463538010028594,
+     "frame_index": 58906,
+     "file_ms": 490904,
+     "label": "range",
+     "scores": {
+      "range": 0.9943,
+      "timed": 0.4541
+     }
+    },
+    {
+     "composition_ns": 463538018361927,
+     "frame_index": 58907,
+     "file_ms": 490913,
+     "label": "range",
+     "scores": {
+      "range": 0.9931,
+      "timed": 0.4547
+     }
+    },
+    {
+     "composition_ns": 463538026695260,
+     "frame_index": 58908,
+     "file_ms": 490921,
+     "label": "range",
+     "scores": {
+      "range": 0.993,
+      "timed": 0.4526
+     }
+    },
+    {
+     "composition_ns": 463538035028593,
+     "frame_index": 58909,
+     "file_ms": 490929,
+     "label": "range",
+     "scores": {
+      "range": 0.9932,
+      "timed": 0.4561
+     }
+    },
+    {
+     "composition_ns": 463538043361926,
+     "frame_index": 58910,
+     "file_ms": 490938,
+     "label": "range",
+     "scores": {
+      "range": 0.9934,
+      "timed": 0.4588
+     }
+    },
+    {
+     "composition_ns": 463538051695259,
+     "frame_index": 58911,
+     "file_ms": 490946,
+     "label": "range",
+     "scores": {
+      "range": 0.9932,
+      "timed": 0.4526
+     }
+    },
+    {
+     "composition_ns": 463538060028592,
+     "frame_index": 58912,
+     "file_ms": 490954,
+     "label": "range",
+     "scores": {
+      "range": 0.9934,
+      "timed": 0.4527
+     }
+    },
+    {
+     "composition_ns": 463538068361925,
+     "frame_index": 58913,
+     "file_ms": 490963,
+     "label": "range",
+     "scores": {
+      "range": 0.9954,
+      "timed": 0.454
+     }
+    },
+    {
+     "composition_ns": 463538076695258,
+     "frame_index": 58914,
+     "file_ms": 490971,
+     "label": "range",
+     "scores": {
+      "range": 0.9952,
+      "timed": 0.4546
+     }
+    },
+    {
+     "composition_ns": 463538085028591,
+     "frame_index": 58915,
+     "file_ms": 490979,
+     "label": "range",
+     "scores": {
+      "range": 0.9943,
+      "timed": 0.4545
+     }
+    },
+    {
+     "composition_ns": 463538093361924,
+     "frame_index": 58916,
+     "file_ms": 490988,
+     "label": "range",
+     "scores": {
+      "range": 0.9943,
+      "timed": 0.4545
+     }
+    },
+    {
+     "composition_ns": 463538101695257,
+     "frame_index": 58917,
+     "file_ms": 490996,
+     "label": "range",
+     "scores": {
+      "range": 0.9944,
+      "timed": 0.4538
+     }
+    },
+    {
+     "composition_ns": 463538110028590,
+     "frame_index": 58918,
+     "file_ms": 491004,
+     "label": "range",
+     "scores": {
+      "range": 0.9941,
+      "timed": 0.4541
+     }
+    },
+    {
+     "composition_ns": 463538118361923,
+     "frame_index": 58919,
+     "file_ms": 491013,
+     "label": "range",
+     "scores": {
+      "range": 0.9941,
+      "timed": 0.453
+     }
+    },
+    {
+     "composition_ns": 463538126695256,
+     "frame_index": 58920,
+     "file_ms": 491021,
+     "label": "range",
+     "scores": {
+      "range": 0.9938,
+      "timed": 0.4536
+     }
+    },
+    {
+     "composition_ns": 463538135028589,
+     "frame_index": 58921,
+     "file_ms": 491029,
+     "label": "range",
+     "scores": {
+      "range": 0.9936,
+      "timed": 0.4533
+     }
+    },
+    {
+     "composition_ns": 463538143361922,
+     "frame_index": 58922,
+     "file_ms": 491038,
+     "label": "range",
+     "scores": {
+      "range": 0.9937,
+      "timed": 0.4536
+     }
+    },
+    {
+     "composition_ns": 463538151695255,
+     "frame_index": 58923,
+     "file_ms": 491046,
+     "label": "timed",
+     "scores": {
+      "range": 0.4444,
+      "timed": 0.9958
+     }
+    },
+    {
+     "composition_ns": 463538160028588,
+     "frame_index": 58924,
+     "file_ms": 491054,
+     "label": "timed",
+     "scores": {
+      "range": 0.4443,
+      "timed": 0.9958
+     }
+    },
+    {
+     "composition_ns": 463538168361921,
+     "frame_index": 58925,
+     "file_ms": 491063,
+     "label": "timed",
+     "scores": {
+      "range": 0.4442,
+      "timed": 0.9958
+     }
+    },
+    {
+     "composition_ns": 463538176695254,
+     "frame_index": 58926,
+     "file_ms": 491071,
+     "label": "timed",
+     "scores": {
+      "range": 0.4433,
+      "timed": 0.9958
+     }
+    },
+    {
+     "composition_ns": 463538185028587,
+     "frame_index": 58927,
+     "file_ms": 491079,
+     "label": "timed",
+     "scores": {
+      "range": 0.4437,
+      "timed": 0.9959
+     }
+    },
+    {
+     "composition_ns": 463538193361920,
+     "frame_index": 58928,
+     "file_ms": 491088,
+     "label": "timed",
+     "scores": {
+      "range": 0.4436,
+      "timed": 0.9959
+     }
+    },
+    {
+     "composition_ns": 463538201695253,
+     "frame_index": 58929,
+     "file_ms": 491096,
+     "label": "timed",
+     "scores": {
+      "range": 0.4438,
+      "timed": 0.9961
+     }
+    },
+    {
+     "composition_ns": 463538210028586,
+     "frame_index": 58930,
+     "file_ms": 491104,
+     "label": "timed",
+     "scores": {
+      "range": 0.4441,
+      "timed": 0.9963
+     }
+    },
+    {
+     "composition_ns": 463538218361919,
+     "frame_index": 58931,
+     "file_ms": 491113,
+     "label": "timed",
+     "scores": {
+      "range": 0.4443,
+      "timed": 0.9965
+     }
+    },
+    {
+     "composition_ns": 463538226695252,
+     "frame_index": 58932,
+     "file_ms": 491121,
+     "label": "timed",
+     "scores": {
+      "range": 0.4449,
+      "timed": 0.9967
+     }
+    },
+    {
+     "composition_ns": 463538235028585,
+     "frame_index": 58933,
+     "file_ms": 491129,
+     "label": "timed",
+     "scores": {
+      "range": 0.4454,
+      "timed": 0.9968
+     }
+    },
+    {
+     "composition_ns": 463538243361918,
+     "frame_index": 58934,
+     "file_ms": 491138,
+     "label": "timed",
+     "scores": {
+      "range": 0.4457,
+      "timed": 0.9968
+     }
+    },
+    {
+     "composition_ns": 463538251695251,
+     "frame_index": 58935,
+     "file_ms": 491146,
+     "label": "timed",
+     "scores": {
+      "range": 0.4457,
+      "timed": 0.997
+     }
+    },
+    {
+     "composition_ns": 463538260028584,
+     "frame_index": 58936,
+     "file_ms": 491154,
+     "label": "timed",
+     "scores": {
+      "range": 0.4459,
+      "timed": 0.9969
+     }
+    },
+    {
+     "composition_ns": 463538268361917,
+     "frame_index": 58937,
+     "file_ms": 491163,
+     "label": "timed",
+     "scores": {
+      "range": 0.4453,
+      "timed": 0.9969
+     }
+    },
+    {
+     "composition_ns": 463538276695250,
+     "frame_index": 58938,
+     "file_ms": 491171,
+     "label": "timed",
+     "scores": {
+      "range": 0.4443,
+      "timed": 0.9969
+     }
+    },
+    {
+     "composition_ns": 463538285028583,
+     "frame_index": 58939,
+     "file_ms": 491179,
+     "label": "timed",
+     "scores": {
+      "range": 0.4437,
+      "timed": 0.997
+     }
+    },
+    {
+     "composition_ns": 463538293361916,
+     "frame_index": 58940,
+     "file_ms": 491188,
+     "label": "timed",
+     "scores": {
+      "range": 0.4436,
+      "timed": 0.9969
+     }
+    },
+    {
+     "composition_ns": 463538301695249,
+     "frame_index": 58941,
+     "file_ms": 491196,
+     "label": "timed",
+     "scores": {
+      "range": 0.4432,
+      "timed": 0.9969
+     }
+    },
+    {
+     "composition_ns": 463538310028582,
+     "frame_index": 58942,
+     "file_ms": 491204,
+     "label": "timed",
+     "scores": {
+      "range": 0.4429,
+      "timed": 0.997
+     }
+    },
+    {
+     "composition_ns": 463538318361915,
+     "frame_index": 58943,
+     "file_ms": 491213,
+     "label": "timed",
+     "scores": {
+      "range": 0.443,
+      "timed": 0.9968
+     }
+    },
+    {
+     "composition_ns": 463538326695248,
+     "frame_index": 58944,
+     "file_ms": 491221,
+     "label": "timed",
+     "scores": {
+      "range": 0.442,
+      "timed": 0.9967
+     }
+    },
+    {
+     "composition_ns": 463538335028581,
+     "frame_index": 58945,
+     "file_ms": 491229,
+     "label": "timed",
+     "scores": {
+      "range": 0.4421,
+      "timed": 0.9968
+     }
+    },
+    {
+     "composition_ns": 463538343361914,
+     "frame_index": 58946,
+     "file_ms": 491238,
+     "label": "timed",
+     "scores": {
+      "range": 0.4413,
+      "timed": 0.9966
+     }
+    },
+    {
+     "composition_ns": 463538351695247,
+     "frame_index": 58947,
+     "file_ms": 491246,
+     "label": "timed",
+     "scores": {
+      "range": 0.4417,
+      "timed": 0.9965
+     }
+    },
+    {
+     "composition_ns": 463538360028580,
+     "frame_index": 58948,
+     "file_ms": 491254,
+     "label": "timed",
+     "scores": {
+      "range": 0.4422,
+      "timed": 0.9962
+     }
+    },
+    {
+     "composition_ns": 463538368361913,
+     "frame_index": 58949,
+     "file_ms": 491263,
+     "label": "timed",
+     "scores": {
+      "range": 0.4427,
+      "timed": 0.9964
+     }
+    },
+    {
+     "composition_ns": 463538376695246,
+     "frame_index": 58950,
+     "file_ms": 491271,
+     "label": "timed",
+     "scores": {
+      "range": 0.4432,
+      "timed": 0.9965
+     }
+    },
+    {
+     "composition_ns": 463538385028579,
+     "frame_index": 58951,
+     "file_ms": 491279,
+     "label": "timed",
+     "scores": {
+      "range": 0.4443,
+      "timed": 0.9966
+     }
+    },
+    {
+     "composition_ns": 463538393361912,
+     "frame_index": 58952,
+     "file_ms": 491288,
+     "label": "timed",
+     "scores": {
+      "range": 0.4455,
+      "timed": 0.9965
+     }
+    },
+    {
+     "composition_ns": 463538401695245,
+     "frame_index": 58953,
+     "file_ms": 491296,
+     "label": "timed",
+     "scores": {
+      "range": 0.4458,
+      "timed": 0.9966
+     }
+    },
+    {
+     "composition_ns": 463538410028578,
+     "frame_index": 58954,
+     "file_ms": 491304,
+     "label": "timed",
+     "scores": {
+      "range": 0.4465,
+      "timed": 0.9967
+     }
+    },
+    {
+     "composition_ns": 463538418361911,
+     "frame_index": 58955,
+     "file_ms": 491313,
+     "label": "timed",
+     "scores": {
+      "range": 0.4476,
+      "timed": 0.9966
+     }
+    },
+    {
+     "composition_ns": 463538426695244,
+     "frame_index": 58956,
+     "file_ms": 491321,
+     "label": "timed",
+     "scores": {
+      "range": 0.448,
+      "timed": 0.9966
+     }
+    },
+    {
+     "composition_ns": 463538435028577,
+     "frame_index": 58957,
+     "file_ms": 491329,
+     "label": "timed",
+     "scores": {
+      "range": 0.4479,
+      "timed": 0.9966
+     }
+    },
+    {
+     "composition_ns": 463538443361910,
+     "frame_index": 58958,
+     "file_ms": 491338,
+     "label": "timed",
+     "scores": {
+      "range": 0.4478,
+      "timed": 0.9966
+     }
+    },
+    {
+     "composition_ns": 463538451695243,
+     "frame_index": 58959,
+     "file_ms": 491346,
+     "label": "timed",
+     "scores": {
+      "range": 0.4479,
+      "timed": 0.9965
+     }
+    },
+    {
+     "composition_ns": 463538460028576,
+     "frame_index": 58960,
+     "file_ms": 491354,
+     "label": "timed",
+     "scores": {
+      "range": 0.4477,
+      "timed": 0.9965
+     }
+    },
+    {
+     "composition_ns": 463538468361909,
+     "frame_index": 58961,
+     "file_ms": 491363,
+     "label": "timed",
+     "scores": {
+      "range": 0.4475,
+      "timed": 0.9965
+     }
+    },
+    {
+     "composition_ns": 463538476695242,
+     "frame_index": 58962,
+     "file_ms": 491371,
+     "label": "timed",
+     "scores": {
+      "range": 0.4477,
+      "timed": 0.9965
+     }
+    },
+    {
+     "composition_ns": 463538485028575,
+     "frame_index": 58963,
+     "file_ms": 491379,
+     "label": "timed",
+     "scores": {
+      "range": 0.4478,
+      "timed": 0.9966
+     }
+    },
+    {
+     "composition_ns": 463538493361908,
+     "frame_index": 58964,
+     "file_ms": 491388,
+     "label": "timed",
+     "scores": {
+      "range": 0.4479,
+      "timed": 0.9966
+     }
+    },
+    {
+     "composition_ns": 463538501695241,
+     "frame_index": 58965,
+     "file_ms": 491396,
+     "label": "timed",
+     "scores": {
+      "range": 0.4483,
+      "timed": 0.9966
+     }
+    },
+    {
+     "composition_ns": 463538510028574,
+     "frame_index": 58966,
+     "file_ms": 491404,
+     "label": "timed",
+     "scores": {
+      "range": 0.4478,
+      "timed": 0.9967
+     }
+    },
+    {
+     "composition_ns": 463538518361907,
+     "frame_index": 58967,
+     "file_ms": 491413,
+     "label": "timed",
+     "scores": {
+      "range": 0.4478,
+      "timed": 0.9967
+     }
+    },
+    {
+     "composition_ns": 463538526695240,
+     "frame_index": 58968,
+     "file_ms": 491421,
+     "label": "timed",
+     "scores": {
+      "range": 0.4475,
+      "timed": 0.9968
+     }
+    },
+    {
+     "composition_ns": 463538535028573,
+     "frame_index": 58969,
+     "file_ms": 491429,
+     "label": "timed",
+     "scores": {
+      "range": 0.4463,
+      "timed": 0.9967
+     }
+    },
+    {
+     "composition_ns": 463538543361906,
+     "frame_index": 58970,
+     "file_ms": 491438,
+     "label": "timed",
+     "scores": {
+      "range": 0.4457,
+      "timed": 0.9966
+     }
+    },
+    {
+     "composition_ns": 463538551695239,
+     "frame_index": 58971,
+     "file_ms": 491446,
+     "label": "timed",
+     "scores": {
+      "range": 0.4453,
+      "timed": 0.9965
+     }
+    },
+    {
+     "composition_ns": 463538560028572,
+     "frame_index": 58972,
+     "file_ms": 491454,
+     "label": "timed",
+     "scores": {
+      "range": 0.4442,
+      "timed": 0.9966
+     }
+    },
+    {
+     "composition_ns": 463538568361905,
+     "frame_index": 58973,
+     "file_ms": 491463,
+     "label": "timed",
+     "scores": {
+      "range": 0.4433,
+      "timed": 0.9966
+     }
+    },
+    {
+     "composition_ns": 463538576695238,
+     "frame_index": 58974,
+     "file_ms": 491471,
+     "label": "timed",
+     "scores": {
+      "range": 0.4426,
+      "timed": 0.9966
+     }
+    },
+    {
+     "composition_ns": 463538585028571,
+     "frame_index": 58975,
+     "file_ms": 491479,
+     "label": "timed",
+     "scores": {
+      "range": 0.4419,
+      "timed": 0.9966
+     }
+    },
+    {
+     "composition_ns": 463538593361904,
+     "frame_index": 58976,
+     "file_ms": 491488,
+     "label": "timed",
+     "scores": {
+      "range": 0.4423,
+      "timed": 0.9967
+     }
+    },
+    {
+     "composition_ns": 463538601695237,
+     "frame_index": 58977,
+     "file_ms": 491496,
+     "label": "timed",
+     "scores": {
+      "range": 0.4429,
+      "timed": 0.9969
+     }
+    },
+    {
+     "composition_ns": 463538610028570,
+     "frame_index": 58978,
+     "file_ms": 491504,
+     "label": "timed",
+     "scores": {
+      "range": 0.444,
+      "timed": 0.997
+     }
+    },
+    {
+     "composition_ns": 463538618361903,
+     "frame_index": 58979,
+     "file_ms": 491513,
+     "label": "timed",
+     "scores": {
+      "range": 0.4455,
+      "timed": 0.9972
+     }
+    },
+    {
+     "composition_ns": 463538626695236,
+     "frame_index": 58980,
+     "file_ms": 491521,
+     "label": "timed",
+     "scores": {
+      "range": 0.4465,
+      "timed": 0.9974
+     }
+    },
+    {
+     "composition_ns": 463538635028569,
+     "frame_index": 58981,
+     "file_ms": 491529,
+     "label": "timed",
+     "scores": {
+      "range": 0.4462,
+      "timed": 0.9975
+     }
+    },
+    {
+     "composition_ns": 463538643361902,
+     "frame_index": 58982,
+     "file_ms": 491538,
+     "label": "timed",
+     "scores": {
+      "range": 0.4453,
+      "timed": 0.9973
+     }
+    },
+    {
+     "composition_ns": 463538651695235,
+     "frame_index": 58983,
+     "file_ms": 491546,
+     "label": "timed",
+     "scores": {
+      "range": 0.4446,
+      "timed": 0.9971
+     }
+    },
+    {
+     "composition_ns": 463538660028568,
+     "frame_index": 58984,
+     "file_ms": 491554,
+     "label": "timed",
+     "scores": {
+      "range": 0.4439,
+      "timed": 0.9968
+     }
+    },
+    {
+     "composition_ns": 463538668361901,
+     "frame_index": 58985,
+     "file_ms": 491563,
+     "label": "timed",
+     "scores": {
+      "range": 0.4434,
+      "timed": 0.9965
+     }
+    },
+    {
+     "composition_ns": 463538676695234,
+     "frame_index": 58986,
+     "file_ms": 491571,
+     "label": "timed",
+     "scores": {
+      "range": 0.4437,
+      "timed": 0.9963
+     }
+    },
+    {
+     "composition_ns": 463538685028567,
+     "frame_index": 58987,
+     "file_ms": 491579,
+     "label": "timed",
+     "scores": {
+      "range": 0.4439,
+      "timed": 0.9962
+     }
+    },
+    {
+     "composition_ns": 463538693361900,
+     "frame_index": 58988,
+     "file_ms": 491588,
+     "label": "timed",
+     "scores": {
+      "range": 0.4446,
+      "timed": 0.9963
+     }
+    },
+    {
+     "composition_ns": 463538701695233,
+     "frame_index": 58989,
+     "file_ms": 491596,
+     "label": "timed",
+     "scores": {
+      "range": 0.4444,
+      "timed": 0.9962
+     }
+    },
+    {
+     "composition_ns": 463538710028566,
+     "frame_index": 58990,
+     "file_ms": 491604,
+     "label": "timed",
+     "scores": {
+      "range": 0.4432,
+      "timed": 0.9962
+     }
+    },
+    {
+     "composition_ns": 463538718361899,
+     "frame_index": 58991,
+     "file_ms": 491613,
+     "label": "timed",
+     "scores": {
+      "range": 0.4434,
+      "timed": 0.9961
+     }
+    },
+    {
+     "composition_ns": 463538726695232,
+     "frame_index": 58992,
+     "file_ms": 491621,
+     "label": "timed",
+     "scores": {
+      "range": 0.4427,
+      "timed": 0.9961
+     }
+    },
+    {
+     "composition_ns": 463538735028565,
+     "frame_index": 58993,
+     "file_ms": 491629,
+     "label": "timed",
+     "scores": {
+      "range": 0.4426,
+      "timed": 0.9963
+     }
+    },
+    {
+     "composition_ns": 463538743361898,
+     "frame_index": 58994,
+     "file_ms": 491638,
+     "label": "timed",
+     "scores": {
+      "range": 0.4429,
+      "timed": 0.9965
+     }
+    },
+    {
+     "composition_ns": 463538751695231,
+     "frame_index": 58995,
+     "file_ms": 491646,
+     "label": "timed",
+     "scores": {
+      "range": 0.4435,
+      "timed": 0.9967
+     }
+    },
+    {
+     "composition_ns": 463538760028564,
+     "frame_index": 58996,
+     "file_ms": 491654,
+     "label": "timed",
+     "scores": {
+      "range": 0.4444,
+      "timed": 0.9969
+     }
+    },
+    {
+     "composition_ns": 463538768361897,
+     "frame_index": 58997,
+     "file_ms": 491663,
+     "label": "timed",
+     "scores": {
+      "range": 0.4435,
+      "timed": 0.9972
+     }
+    },
+    {
+     "composition_ns": 463538776695230,
+     "frame_index": 58998,
+     "file_ms": 491671,
+     "label": "timed",
+     "scores": {
+      "range": 0.4439,
+      "timed": 0.9971
+     }
+    },
+    {
+     "composition_ns": 463538785028563,
+     "frame_index": 58999,
+     "file_ms": 491679,
+     "label": "timed",
+     "scores": {
+      "range": 0.4435,
+      "timed": 0.9971
+     }
+    },
+    {
+     "composition_ns": 463538793361896,
+     "frame_index": 59000,
+     "file_ms": 491688,
+     "label": "timed",
+     "scores": {
+      "range": 0.4435,
+      "timed": 0.9971
+     }
+    },
+    {
+     "composition_ns": 463538801695229,
+     "frame_index": 59001,
+     "file_ms": 491696,
+     "label": "timed",
+     "scores": {
+      "range": 0.4438,
+      "timed": 0.9971
+     }
+    },
+    {
+     "composition_ns": 463538810028562,
+     "frame_index": 59002,
+     "file_ms": 491704,
+     "label": "timed",
+     "scores": {
+      "range": 0.4435,
+      "timed": 0.997
+     }
+    },
+    {
+     "composition_ns": 463538818361895,
+     "frame_index": 59003,
+     "file_ms": 491713,
+     "label": "timed",
+     "scores": {
+      "range": 0.4458,
+      "timed": 0.997
+     }
+    },
+    {
+     "composition_ns": 463538826695228,
+     "frame_index": 59004,
+     "file_ms": 491721,
+     "label": "timed",
+     "scores": {
+      "range": 0.4455,
+      "timed": 0.9977
+     }
+    },
+    {
+     "composition_ns": 463538835028561,
+     "frame_index": 59005,
+     "file_ms": 491729,
+     "label": "timed",
+     "scores": {
+      "range": 0.4452,
+      "timed": 0.9983
+     }
+    },
+    {
+     "composition_ns": 463538843361894,
+     "frame_index": 59006,
+     "file_ms": 491738,
+     "label": "timed",
+     "scores": {
+      "range": 0.4471,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463538851695227,
+     "frame_index": 59007,
+     "file_ms": 491746,
+     "label": "timed",
+     "scores": {
+      "range": 0.4468,
+      "timed": 0.9986
+     }
+    },
+    {
+     "composition_ns": 463538860028560,
+     "frame_index": 59008,
+     "file_ms": 491754,
+     "label": "timed",
+     "scores": {
+      "range": 0.4465,
+      "timed": 0.9989
+     }
+    }
+   ],
+   "end_bracket": [
+    {
+     "composition_ns": 463545868361613,
+     "frame_index": 59849,
+     "file_ms": 498763,
+     "label": "timed",
+     "scores": {
+      "range": 0.4463,
+      "timed": 0.9993
+     }
+    },
+    {
+     "composition_ns": 463545876694946,
+     "frame_index": 59850,
+     "file_ms": 498771,
+     "label": "timed",
+     "scores": {
+      "range": 0.445,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463545885028279,
+     "frame_index": 59851,
+     "file_ms": 498779,
+     "label": "timed",
+     "scores": {
+      "range": 0.444,
+      "timed": 0.9983
+     }
+    },
+    {
+     "composition_ns": 463545893361612,
+     "frame_index": 59852,
+     "file_ms": 498788,
+     "label": "timed",
+     "scores": {
+      "range": 0.4431,
+      "timed": 0.9972
+     }
+    },
+    {
+     "composition_ns": 463545901694945,
+     "frame_index": 59853,
+     "file_ms": 498796,
+     "label": "timed",
+     "scores": {
+      "range": 0.4437,
+      "timed": 0.9966
+     }
+    },
+    {
+     "composition_ns": 463545910028278,
+     "frame_index": 59854,
+     "file_ms": 498804,
+     "label": "timed",
+     "scores": {
+      "range": 0.4425,
+      "timed": 0.9958
+     }
+    },
+    {
+     "composition_ns": 463545918361611,
+     "frame_index": 59855,
+     "file_ms": 498813,
+     "label": "timed",
+     "scores": {
+      "range": 0.4442,
+      "timed": 0.9964
+     }
+    },
+    {
+     "composition_ns": 463545926694944,
+     "frame_index": 59856,
+     "file_ms": 498821,
+     "label": "timed",
+     "scores": {
+      "range": 0.446,
+      "timed": 0.9983
+     }
+    },
+    {
+     "composition_ns": 463545935028277,
+     "frame_index": 59857,
+     "file_ms": 498829,
+     "label": "timed",
+     "scores": {
+      "range": 0.4451,
+      "timed": 0.9985
+     }
+    },
+    {
+     "composition_ns": 463545943361610,
+     "frame_index": 59858,
+     "file_ms": 498838,
+     "label": "timed",
+     "scores": {
+      "range": 0.4457,
+      "timed": 0.9986
+     }
+    },
+    {
+     "composition_ns": 463545951694943,
+     "frame_index": 59859,
+     "file_ms": 498846,
+     "label": "timed",
+     "scores": {
+      "range": 0.4457,
+      "timed": 0.9986
+     }
+    },
+    {
+     "composition_ns": 463545960028276,
+     "frame_index": 59860,
+     "file_ms": 498854,
+     "label": "timed",
+     "scores": {
+      "range": 0.4459,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463545968361609,
+     "frame_index": 59861,
+     "file_ms": 498863,
+     "label": "timed",
+     "scores": {
+      "range": 0.4457,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463545976694942,
+     "frame_index": 59862,
+     "file_ms": 498871,
+     "label": "timed",
+     "scores": {
+      "range": 0.4459,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463545985028275,
+     "frame_index": 59863,
+     "file_ms": 498879,
+     "label": "timed",
+     "scores": {
+      "range": 0.4464,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463545993361608,
+     "frame_index": 59864,
+     "file_ms": 498888,
+     "label": "timed",
+     "scores": {
+      "range": 0.4469,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546001694941,
+     "frame_index": 59865,
+     "file_ms": 498896,
+     "label": "timed",
+     "scores": {
+      "range": 0.4467,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546010028274,
+     "frame_index": 59866,
+     "file_ms": 498904,
+     "label": "timed",
+     "scores": {
+      "range": 0.4466,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546018361607,
+     "frame_index": 59867,
+     "file_ms": 498913,
+     "label": "timed",
+     "scores": {
+      "range": 0.4467,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546026694940,
+     "frame_index": 59868,
+     "file_ms": 498921,
+     "label": "timed",
+     "scores": {
+      "range": 0.4469,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546035028273,
+     "frame_index": 59869,
+     "file_ms": 498929,
+     "label": "timed",
+     "scores": {
+      "range": 0.4469,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546043361606,
+     "frame_index": 59870,
+     "file_ms": 498938,
+     "label": "timed",
+     "scores": {
+      "range": 0.4463,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546051694939,
+     "frame_index": 59871,
+     "file_ms": 498946,
+     "label": "timed",
+     "scores": {
+      "range": 0.4464,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546060028272,
+     "frame_index": 59872,
+     "file_ms": 498954,
+     "label": "timed",
+     "scores": {
+      "range": 0.4462,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546068361605,
+     "frame_index": 59873,
+     "file_ms": 498963,
+     "label": "timed",
+     "scores": {
+      "range": 0.4462,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546076694938,
+     "frame_index": 59874,
+     "file_ms": 498971,
+     "label": "timed",
+     "scores": {
+      "range": 0.4463,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546085028271,
+     "frame_index": 59875,
+     "file_ms": 498979,
+     "label": "timed",
+     "scores": {
+      "range": 0.4464,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546093361604,
+     "frame_index": 59876,
+     "file_ms": 498988,
+     "label": "timed",
+     "scores": {
+      "range": 0.4461,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546101694937,
+     "frame_index": 59877,
+     "file_ms": 498996,
+     "label": "timed",
+     "scores": {
+      "range": 0.4461,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546110028270,
+     "frame_index": 59878,
+     "file_ms": 499004,
+     "label": "timed",
+     "scores": {
+      "range": 0.4461,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546118361603,
+     "frame_index": 59879,
+     "file_ms": 499013,
+     "label": "timed",
+     "scores": {
+      "range": 0.4458,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546126694936,
+     "frame_index": 59880,
+     "file_ms": 499021,
+     "label": "timed",
+     "scores": {
+      "range": 0.446,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546135028269,
+     "frame_index": 59881,
+     "file_ms": 499029,
+     "label": "timed",
+     "scores": {
+      "range": 0.4461,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546143361602,
+     "frame_index": 59882,
+     "file_ms": 499038,
+     "label": "timed",
+     "scores": {
+      "range": 0.4461,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546151694935,
+     "frame_index": 59883,
+     "file_ms": 499046,
+     "label": "timed",
+     "scores": {
+      "range": 0.4461,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546160028268,
+     "frame_index": 59884,
+     "file_ms": 499054,
+     "label": "timed",
+     "scores": {
+      "range": 0.446,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546168361601,
+     "frame_index": 59885,
+     "file_ms": 499063,
+     "label": "timed",
+     "scores": {
+      "range": 0.4457,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546176694934,
+     "frame_index": 59886,
+     "file_ms": 499071,
+     "label": "timed",
+     "scores": {
+      "range": 0.4458,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546185028267,
+     "frame_index": 59887,
+     "file_ms": 499079,
+     "label": "timed",
+     "scores": {
+      "range": 0.4459,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546193361600,
+     "frame_index": 59888,
+     "file_ms": 499088,
+     "label": "timed",
+     "scores": {
+      "range": 0.446,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546201694933,
+     "frame_index": 59889,
+     "file_ms": 499096,
+     "label": "timed",
+     "scores": {
+      "range": 0.446,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546210028266,
+     "frame_index": 59890,
+     "file_ms": 499104,
+     "label": "timed",
+     "scores": {
+      "range": 0.4461,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546218361599,
+     "frame_index": 59891,
+     "file_ms": 499113,
+     "label": "timed",
+     "scores": {
+      "range": 0.446,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546226694932,
+     "frame_index": 59892,
+     "file_ms": 499121,
+     "label": "timed",
+     "scores": {
+      "range": 0.4458,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546235028265,
+     "frame_index": 59893,
+     "file_ms": 499129,
+     "label": "timed",
+     "scores": {
+      "range": 0.4455,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546243361598,
+     "frame_index": 59894,
+     "file_ms": 499138,
+     "label": "timed",
+     "scores": {
+      "range": 0.4456,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546251694931,
+     "frame_index": 59895,
+     "file_ms": 499146,
+     "label": "timed",
+     "scores": {
+      "range": 0.4457,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546260028264,
+     "frame_index": 59896,
+     "file_ms": 499154,
+     "label": "timed",
+     "scores": {
+      "range": 0.4457,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546268361597,
+     "frame_index": 59897,
+     "file_ms": 499163,
+     "label": "timed",
+     "scores": {
+      "range": 0.4451,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546276694930,
+     "frame_index": 59898,
+     "file_ms": 499171,
+     "label": "timed",
+     "scores": {
+      "range": 0.445,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463546285028263,
+     "frame_index": 59899,
+     "file_ms": 499179,
+     "label": "timed",
+     "scores": {
+      "range": 0.445,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463546293361596,
+     "frame_index": 59900,
+     "file_ms": 499188,
+     "label": "timed",
+     "scores": {
+      "range": 0.4449,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463546301694929,
+     "frame_index": 59901,
+     "file_ms": 499196,
+     "label": "timed",
+     "scores": {
+      "range": 0.4448,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463546310028262,
+     "frame_index": 59902,
+     "file_ms": 499204,
+     "label": "timed",
+     "scores": {
+      "range": 0.4451,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463546318361595,
+     "frame_index": 59903,
+     "file_ms": 499213,
+     "label": "timed",
+     "scores": {
+      "range": 0.4451,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463546326694928,
+     "frame_index": 59904,
+     "file_ms": 499221,
+     "label": "timed",
+     "scores": {
+      "range": 0.445,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463546335028261,
+     "frame_index": 59905,
+     "file_ms": 499229,
+     "label": "timed",
+     "scores": {
+      "range": 0.445,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463546343361594,
+     "frame_index": 59906,
+     "file_ms": 499238,
+     "label": "timed",
+     "scores": {
+      "range": 0.4452,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463546351694927,
+     "frame_index": 59907,
+     "file_ms": 499246,
+     "label": "timed",
+     "scores": {
+      "range": 0.4452,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463546360028260,
+     "frame_index": 59908,
+     "file_ms": 499254,
+     "label": "timed",
+     "scores": {
+      "range": 0.4451,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463546368361593,
+     "frame_index": 59909,
+     "file_ms": 499263,
+     "label": "timed",
+     "scores": {
+      "range": 0.4451,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463546376694926,
+     "frame_index": 59910,
+     "file_ms": 499271,
+     "label": "timed",
+     "scores": {
+      "range": 0.4451,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463546385028259,
+     "frame_index": 59911,
+     "file_ms": 499279,
+     "label": "timed",
+     "scores": {
+      "range": 0.4452,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463546393361592,
+     "frame_index": 59912,
+     "file_ms": 499288,
+     "label": "timed",
+     "scores": {
+      "range": 0.4455,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463546401694925,
+     "frame_index": 59913,
+     "file_ms": 499296,
+     "label": "timed",
+     "scores": {
+      "range": 0.4455,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463546410028258,
+     "frame_index": 59914,
+     "file_ms": 499304,
+     "label": "timed",
+     "scores": {
+      "range": 0.4453,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463546418361591,
+     "frame_index": 59915,
+     "file_ms": 499313,
+     "label": "timed",
+     "scores": {
+      "range": 0.4452,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463546426694924,
+     "frame_index": 59916,
+     "file_ms": 499321,
+     "label": "timed",
+     "scores": {
+      "range": 0.4453,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463546435028257,
+     "frame_index": 59917,
+     "file_ms": 499329,
+     "label": "timed",
+     "scores": {
+      "range": 0.4451,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546443361590,
+     "frame_index": 59918,
+     "file_ms": 499338,
+     "label": "timed",
+     "scores": {
+      "range": 0.4451,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463546451694923,
+     "frame_index": 59919,
+     "file_ms": 499346,
+     "label": "timed",
+     "scores": {
+      "range": 0.445,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546460028256,
+     "frame_index": 59920,
+     "file_ms": 499354,
+     "label": "timed",
+     "scores": {
+      "range": 0.4451,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546468361589,
+     "frame_index": 59921,
+     "file_ms": 499363,
+     "label": "timed",
+     "scores": {
+      "range": 0.445,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546476694922,
+     "frame_index": 59922,
+     "file_ms": 499371,
+     "label": "timed",
+     "scores": {
+      "range": 0.445,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546485028255,
+     "frame_index": 59923,
+     "file_ms": 499379,
+     "label": "timed",
+     "scores": {
+      "range": 0.445,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546493361588,
+     "frame_index": 59924,
+     "file_ms": 499388,
+     "label": "timed",
+     "scores": {
+      "range": 0.4448,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546501694921,
+     "frame_index": 59925,
+     "file_ms": 499396,
+     "label": "timed",
+     "scores": {
+      "range": 0.4447,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546510028254,
+     "frame_index": 59926,
+     "file_ms": 499404,
+     "label": "timed",
+     "scores": {
+      "range": 0.4447,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546518361587,
+     "frame_index": 59927,
+     "file_ms": 499413,
+     "label": "timed",
+     "scores": {
+      "range": 0.4452,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546526694920,
+     "frame_index": 59928,
+     "file_ms": 499421,
+     "label": "timed",
+     "scores": {
+      "range": 0.4452,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546535028253,
+     "frame_index": 59929,
+     "file_ms": 499429,
+     "label": "timed",
+     "scores": {
+      "range": 0.4455,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546543361586,
+     "frame_index": 59930,
+     "file_ms": 499438,
+     "label": "timed",
+     "scores": {
+      "range": 0.4454,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546551694919,
+     "frame_index": 59931,
+     "file_ms": 499446,
+     "label": "timed",
+     "scores": {
+      "range": 0.4456,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546560028252,
+     "frame_index": 59932,
+     "file_ms": 499454,
+     "label": "timed",
+     "scores": {
+      "range": 0.4456,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546568361585,
+     "frame_index": 59933,
+     "file_ms": 499463,
+     "label": "timed",
+     "scores": {
+      "range": 0.4456,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546576694918,
+     "frame_index": 59934,
+     "file_ms": 499471,
+     "label": "timed",
+     "scores": {
+      "range": 0.4456,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546585028251,
+     "frame_index": 59935,
+     "file_ms": 499479,
+     "label": "timed",
+     "scores": {
+      "range": 0.4458,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546593361584,
+     "frame_index": 59936,
+     "file_ms": 499488,
+     "label": "timed",
+     "scores": {
+      "range": 0.4454,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546601694917,
+     "frame_index": 59937,
+     "file_ms": 499496,
+     "label": "timed",
+     "scores": {
+      "range": 0.4459,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546610028250,
+     "frame_index": 59938,
+     "file_ms": 499504,
+     "label": "timed",
+     "scores": {
+      "range": 0.4481,
+      "timed": 0.9986
+     }
+    },
+    {
+     "composition_ns": 463546618361583,
+     "frame_index": 59939,
+     "file_ms": 499513,
+     "label": "timed",
+     "scores": {
+      "range": 0.4472,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463546626694916,
+     "frame_index": 59940,
+     "file_ms": 499521,
+     "label": "timed",
+     "scores": {
+      "range": 0.4466,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463546635028249,
+     "frame_index": 59941,
+     "file_ms": 499529,
+     "label": "timed",
+     "scores": {
+      "range": 0.4465,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463546643361582,
+     "frame_index": 59942,
+     "file_ms": 499538,
+     "label": "timed",
+     "scores": {
+      "range": 0.4467,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463546651694915,
+     "frame_index": 59943,
+     "file_ms": 499546,
+     "label": "timed",
+     "scores": {
+      "range": 0.4464,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463546660028248,
+     "frame_index": 59944,
+     "file_ms": 499554,
+     "label": "timed",
+     "scores": {
+      "range": 0.4464,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463546668361581,
+     "frame_index": 59945,
+     "file_ms": 499563,
+     "label": "timed",
+     "scores": {
+      "range": 0.4462,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463546676694914,
+     "frame_index": 59946,
+     "file_ms": 499571,
+     "label": "timed",
+     "scores": {
+      "range": 0.4463,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463546685028247,
+     "frame_index": 59947,
+     "file_ms": 499579,
+     "label": "timed",
+     "scores": {
+      "range": 0.4466,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546693361580,
+     "frame_index": 59948,
+     "file_ms": 499588,
+     "label": "timed",
+     "scores": {
+      "range": 0.4465,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463546701694913,
+     "frame_index": 59949,
+     "file_ms": 499596,
+     "label": "timed",
+     "scores": {
+      "range": 0.4474,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463546710028246,
+     "frame_index": 59950,
+     "file_ms": 499604,
+     "label": "timed",
+     "scores": {
+      "range": 0.4468,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463546718361579,
+     "frame_index": 59951,
+     "file_ms": 499613,
+     "label": "timed",
+     "scores": {
+      "range": 0.4469,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463546726694912,
+     "frame_index": 59952,
+     "file_ms": 499621,
+     "label": "timed",
+     "scores": {
+      "range": 0.4469,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463546735028245,
+     "frame_index": 59953,
+     "file_ms": 499629,
+     "label": "timed",
+     "scores": {
+      "range": 0.4472,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546743361578,
+     "frame_index": 59954,
+     "file_ms": 499638,
+     "label": "timed",
+     "scores": {
+      "range": 0.4473,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546751694911,
+     "frame_index": 59955,
+     "file_ms": 499646,
+     "label": "timed",
+     "scores": {
+      "range": 0.4468,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546760028244,
+     "frame_index": 59956,
+     "file_ms": 499654,
+     "label": "timed",
+     "scores": {
+      "range": 0.4466,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546768361577,
+     "frame_index": 59957,
+     "file_ms": 499663,
+     "label": "timed",
+     "scores": {
+      "range": 0.447,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546776694910,
+     "frame_index": 59958,
+     "file_ms": 499671,
+     "label": "timed",
+     "scores": {
+      "range": 0.447,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546785028243,
+     "frame_index": 59959,
+     "file_ms": 499679,
+     "label": "timed",
+     "scores": {
+      "range": 0.4474,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546793361576,
+     "frame_index": 59960,
+     "file_ms": 499688,
+     "label": "timed",
+     "scores": {
+      "range": 0.4473,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546801694909,
+     "frame_index": 59961,
+     "file_ms": 499696,
+     "label": "timed",
+     "scores": {
+      "range": 0.4472,
+      "timed": 0.9988
+     }
+    },
+    {
+     "composition_ns": 463546810028242,
+     "frame_index": 59962,
+     "file_ms": 499704,
+     "label": "timed",
+     "scores": {
+      "range": 0.447,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463546818361575,
+     "frame_index": 59963,
+     "file_ms": 499713,
+     "label": "timed",
+     "scores": {
+      "range": 0.4468,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463546826694908,
+     "frame_index": 59964,
+     "file_ms": 499721,
+     "label": "timed",
+     "scores": {
+      "range": 0.4468,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463546835028241,
+     "frame_index": 59965,
+     "file_ms": 499729,
+     "label": "timed",
+     "scores": {
+      "range": 0.447,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463546843361574,
+     "frame_index": 59966,
+     "file_ms": 499738,
+     "label": "timed",
+     "scores": {
+      "range": 0.4474,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463546851694907,
+     "frame_index": 59967,
+     "file_ms": 499746,
+     "label": "timed",
+     "scores": {
+      "range": 0.4474,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463546860028240,
+     "frame_index": 59968,
+     "file_ms": 499754,
+     "label": "timed",
+     "scores": {
+      "range": 0.4474,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463546868361573,
+     "frame_index": 59969,
+     "file_ms": 499763,
+     "label": "timed",
+     "scores": {
+      "range": 0.4474,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463546876694906,
+     "frame_index": 59970,
+     "file_ms": 499771,
+     "label": "timed",
+     "scores": {
+      "range": 0.4471,
+      "timed": 0.9987
+     }
+    },
+    {
+     "composition_ns": 463546885028239,
+     "frame_index": 59971,
+     "file_ms": 499779,
+     "label": "range",
+     "scores": {
+      "range": 0.995,
+      "timed": 0.4548
+     }
+    },
+    {
+     "composition_ns": 463546893361572,
+     "frame_index": 59972,
+     "file_ms": 499788,
+     "label": "range",
+     "scores": {
+      "range": 0.9951,
+      "timed": 0.4544
+     }
+    },
+    {
+     "composition_ns": 463546901694905,
+     "frame_index": 59973,
+     "file_ms": 499796,
+     "label": "range",
+     "scores": {
+      "range": 0.9951,
+      "timed": 0.4548
+     }
+    },
+    {
+     "composition_ns": 463546910028238,
+     "frame_index": 59974,
+     "file_ms": 499804,
+     "label": "range",
+     "scores": {
+      "range": 0.9951,
+      "timed": 0.4543
+     }
+    },
+    {
+     "composition_ns": 463546918361571,
+     "frame_index": 59975,
+     "file_ms": 499813,
+     "label": "range",
+     "scores": {
+      "range": 0.9951,
+      "timed": 0.4545
+     }
+    },
+    {
+     "composition_ns": 463546926694904,
+     "frame_index": 59976,
+     "file_ms": 499821,
+     "label": "range",
+     "scores": {
+      "range": 0.9951,
+      "timed": 0.4544
+     }
+    },
+    {
+     "composition_ns": 463546935028237,
+     "frame_index": 59977,
+     "file_ms": 499829,
+     "label": "range",
+     "scores": {
+      "range": 0.995,
+      "timed": 0.4543
+     }
+    },
+    {
+     "composition_ns": 463546943361570,
+     "frame_index": 59978,
+     "file_ms": 499838,
+     "label": "range",
+     "scores": {
+      "range": 0.995,
+      "timed": 0.4539
+     }
+    },
+    {
+     "composition_ns": 463546951694903,
+     "frame_index": 59979,
+     "file_ms": 499846,
+     "label": "range",
+     "scores": {
+      "range": 0.995,
+      "timed": 0.4543
+     }
+    },
+    {
+     "composition_ns": 463546960028236,
+     "frame_index": 59980,
+     "file_ms": 499854,
+     "label": "range",
+     "scores": {
+      "range": 0.995,
+      "timed": 0.4539
+     }
+    },
+    {
+     "composition_ns": 463546968361569,
+     "frame_index": 59981,
+     "file_ms": 499863,
+     "label": "range",
+     "scores": {
+      "range": 0.995,
+      "timed": 0.4539
+     }
+    },
+    {
+     "composition_ns": 463546976694902,
+     "frame_index": 59982,
+     "file_ms": 499871,
+     "label": "range",
+     "scores": {
+      "range": 0.995,
+      "timed": 0.4538
+     }
+    },
+    {
+     "composition_ns": 463546985028235,
+     "frame_index": 59983,
+     "file_ms": 499879,
+     "label": "range",
+     "scores": {
+      "range": 0.9949,
+      "timed": 0.4537
+     }
+    },
+    {
+     "composition_ns": 463546993361568,
+     "frame_index": 59984,
+     "file_ms": 499888,
+     "label": "range",
+     "scores": {
+      "range": 0.9949,
+      "timed": 0.4541
+     }
+    },
+    {
+     "composition_ns": 463547001694901,
+     "frame_index": 59985,
+     "file_ms": 499896,
+     "label": "range",
+     "scores": {
+      "range": 0.9949,
+      "timed": 0.4543
+     }
+    },
+    {
+     "composition_ns": 463547010028234,
+     "frame_index": 59986,
+     "file_ms": 499904,
+     "label": "range",
+     "scores": {
+      "range": 0.9949,
+      "timed": 0.4543
+     }
+    },
+    {
+     "composition_ns": 463547018361567,
+     "frame_index": 59987,
+     "file_ms": 499913,
+     "label": "range",
+     "scores": {
+      "range": 0.9949,
+      "timed": 0.4543
+     }
+    },
+    {
+     "composition_ns": 463547026694900,
+     "frame_index": 59988,
+     "file_ms": 499921,
+     "label": "range",
+     "scores": {
+      "range": 0.9948,
+      "timed": 0.4545
+     }
+    },
+    {
+     "composition_ns": 463547035028233,
+     "frame_index": 59989,
+     "file_ms": 499929,
+     "label": "range",
+     "scores": {
+      "range": 0.995,
+      "timed": 0.4551
+     }
+    },
+    {
+     "composition_ns": 463547043361566,
+     "frame_index": 59990,
+     "file_ms": 499938,
+     "label": "range",
+     "scores": {
+      "range": 0.9948,
+      "timed": 0.4545
+     }
+    },
+    {
+     "composition_ns": 463547051694899,
+     "frame_index": 59991,
+     "file_ms": 499946,
+     "label": "range",
+     "scores": {
+      "range": 0.9947,
+      "timed": 0.4542
+     }
+    },
+    {
+     "composition_ns": 463547060028232,
+     "frame_index": 59992,
+     "file_ms": 499954,
+     "label": "range",
+     "scores": {
+      "range": 0.9947,
+      "timed": 0.4561
+     }
+    },
+    {
+     "composition_ns": 463547068361565,
+     "frame_index": 59993,
+     "file_ms": 499963,
+     "label": "range",
+     "scores": {
+      "range": 0.9949,
+      "timed": 0.4555
+     }
+    },
+    {
+     "composition_ns": 463547076694898,
+     "frame_index": 59994,
+     "file_ms": 499971,
+     "label": "range",
+     "scores": {
+      "range": 0.9953,
+      "timed": 0.4537
+     }
+    },
+    {
+     "composition_ns": 463547085028231,
+     "frame_index": 59995,
+     "file_ms": 499979,
+     "label": "range",
+     "scores": {
+      "range": 0.9961,
+      "timed": 0.4506
+     }
+    },
+    {
+     "composition_ns": 463547093361564,
+     "frame_index": 59996,
+     "file_ms": 499988,
+     "label": "range",
+     "scores": {
+      "range": 0.9974,
+      "timed": 0.4485
+     }
+    },
+    {
+     "composition_ns": 463547101694897,
+     "frame_index": 59997,
+     "file_ms": 499996,
+     "label": "range",
+     "scores": {
+      "range": 0.9983,
+      "timed": 0.4509
+     }
+    },
+    {
+     "composition_ns": 463547110028230,
+     "frame_index": 59998,
+     "file_ms": 500004,
+     "label": "range",
+     "scores": {
+      "range": 0.9982,
+      "timed": 0.4509
+     }
+    },
+    {
+     "composition_ns": 463547118361563,
+     "frame_index": 59999,
+     "file_ms": 500013,
+     "label": "range",
+     "scores": {
+      "range": 0.9979,
+      "timed": 0.4516
+     }
+    },
+    {
+     "composition_ns": 463547126694896,
+     "frame_index": 60000,
+     "file_ms": 500021,
+     "label": "range",
+     "scores": {
+      "range": 0.9978,
+      "timed": 0.4519
+     }
+    },
+    {
+     "composition_ns": 463547135028229,
+     "frame_index": 60001,
+     "file_ms": 500029,
+     "label": "range",
+     "scores": {
+      "range": 0.9977,
+      "timed": 0.4522
+     }
+    },
+    {
+     "composition_ns": 463547143361562,
+     "frame_index": 60002,
+     "file_ms": 500038,
+     "label": "range",
+     "scores": {
+      "range": 0.9976,
+      "timed": 0.4523
+     }
+    },
+    {
+     "composition_ns": 463547151694895,
+     "frame_index": 60003,
+     "file_ms": 500046,
+     "label": "range",
+     "scores": {
+      "range": 0.9976,
+      "timed": 0.4523
+     }
+    },
+    {
+     "composition_ns": 463547160028228,
+     "frame_index": 60004,
+     "file_ms": 500054,
+     "label": "range",
+     "scores": {
+      "range": 0.9976,
+      "timed": 0.4521
+     }
+    },
+    {
+     "composition_ns": 463547168361561,
+     "frame_index": 60005,
+     "file_ms": 500063,
+     "label": "range",
+     "scores": {
+      "range": 0.9976,
+      "timed": 0.4524
+     }
+    },
+    {
+     "composition_ns": 463547176694894,
+     "frame_index": 60006,
+     "file_ms": 500071,
+     "label": "range",
+     "scores": {
+      "range": 0.9969,
+      "timed": 0.45
+     }
+    },
+    {
+     "composition_ns": 463547185028227,
+     "frame_index": 60007,
+     "file_ms": 500079,
+     "label": "range",
+     "scores": {
+      "range": 0.9949,
+      "timed": 0.4515
+     }
+    },
+    {
+     "composition_ns": 463547193361560,
+     "frame_index": 60008,
+     "file_ms": 500088,
+     "label": "range",
+     "scores": {
+      "range": 0.9938,
+      "timed": 0.4486
+     }
+    },
+    {
+     "composition_ns": 463547201694893,
+     "frame_index": 60009,
+     "file_ms": 500096,
+     "label": "range",
+     "scores": {
+      "range": 0.9944,
+      "timed": 0.454
+     }
+    },
+    {
+     "composition_ns": 463547210028226,
+     "frame_index": 60010,
+     "file_ms": 500104,
+     "label": "range",
+     "scores": {
+      "range": 0.9944,
+      "timed": 0.4552
+     }
+    },
+    {
+     "composition_ns": 463547218361559,
+     "frame_index": 60011,
+     "file_ms": 500113,
+     "label": "range",
+     "scores": {
+      "range": 0.9944,
+      "timed": 0.4549
+     }
+    },
+    {
+     "composition_ns": 463547226694892,
+     "frame_index": 60012,
+     "file_ms": 500121,
+     "label": "range",
+     "scores": {
+      "range": 0.9945,
+      "timed": 0.4549
+     }
+    },
+    {
+     "composition_ns": 463547235028225,
+     "frame_index": 60013,
+     "file_ms": 500129,
+     "label": "range",
+     "scores": {
+      "range": 0.9945,
+      "timed": 0.455
+     }
+    },
+    {
+     "composition_ns": 463547243361558,
+     "frame_index": 60014,
+     "file_ms": 500138,
+     "label": "range",
+     "scores": {
+      "range": 0.9945,
+      "timed": 0.4549
+     }
+    },
+    {
+     "composition_ns": 463547251694891,
+     "frame_index": 60015,
+     "file_ms": 500146,
+     "label": "range",
+     "scores": {
+      "range": 0.9946,
+      "timed": 0.4554
+     }
+    },
+    {
+     "composition_ns": 463547260028224,
+     "frame_index": 60016,
+     "file_ms": 500154,
+     "label": "range",
+     "scores": {
+      "range": 0.9946,
+      "timed": 0.4554
+     }
+    },
+    {
+     "composition_ns": 463547268361557,
+     "frame_index": 60017,
+     "file_ms": 500163,
+     "label": "range",
+     "scores": {
+      "range": 0.9947,
+      "timed": 0.4557
+     }
+    },
+    {
+     "composition_ns": 463547276694890,
+     "frame_index": 60018,
+     "file_ms": 500171,
+     "label": "range",
+     "scores": {
+      "range": 0.9948,
+      "timed": 0.4554
+     }
+    },
+    {
+     "composition_ns": 463547285028223,
+     "frame_index": 60019,
+     "file_ms": 500179,
+     "label": "range",
+     "scores": {
+      "range": 0.9948,
+      "timed": 0.4554
+     }
+    },
+    {
+     "composition_ns": 463547293361556,
+     "frame_index": 60020,
+     "file_ms": 500188,
+     "label": "range",
+     "scores": {
+      "range": 0.9948,
+      "timed": 0.4546
+     }
+    },
+    {
+     "composition_ns": 463547301694889,
+     "frame_index": 60021,
+     "file_ms": 500196,
+     "label": "range",
+     "scores": {
+      "range": 0.995,
+      "timed": 0.4548
+     }
+    },
+    {
+     "composition_ns": 463547310028222,
+     "frame_index": 60022,
+     "file_ms": 500204,
+     "label": "range",
+     "scores": {
+      "range": 0.9951,
+      "timed": 0.4552
+     }
+    },
+    {
+     "composition_ns": 463547318361555,
+     "frame_index": 60023,
+     "file_ms": 500213,
+     "label": "range",
+     "scores": {
+      "range": 0.9952,
+      "timed": 0.4554
+     }
+    },
+    {
+     "composition_ns": 463547326694888,
+     "frame_index": 60024,
+     "file_ms": 500221,
+     "label": "range",
+     "scores": {
+      "range": 0.9953,
+      "timed": 0.4551
+     }
+    },
+    {
+     "composition_ns": 463547335028221,
+     "frame_index": 60025,
+     "file_ms": 500229,
+     "label": "range",
+     "scores": {
+      "range": 0.9955,
+      "timed": 0.4546
+     }
+    },
+    {
+     "composition_ns": 463547343361554,
+     "frame_index": 60026,
+     "file_ms": 500238,
+     "label": "range",
+     "scores": {
+      "range": 0.9958,
+      "timed": 0.4544
+     }
+    },
+    {
+     "composition_ns": 463547351694887,
+     "frame_index": 60027,
+     "file_ms": 500246,
+     "label": "range",
+     "scores": {
+      "range": 0.9961,
+      "timed": 0.454
+     }
+    },
+    {
+     "composition_ns": 463547360028220,
+     "frame_index": 60028,
+     "file_ms": 500254,
+     "label": "range",
+     "scores": {
+      "range": 0.9964,
+      "timed": 0.4538
+     }
+    },
+    {
+     "composition_ns": 463547368361553,
+     "frame_index": 60029,
+     "file_ms": 500263,
+     "label": "range",
+     "scores": {
+      "range": 0.9971,
+      "timed": 0.452
+     }
+    },
+    {
+     "composition_ns": 463547376694886,
+     "frame_index": 60030,
+     "file_ms": 500271,
+     "label": "range",
+     "scores": {
+      "range": 0.9968,
+      "timed": 0.4506
+     }
+    },
+    {
+     "composition_ns": 463547385028219,
+     "frame_index": 60031,
+     "file_ms": 500279,
+     "label": "range",
+     "scores": {
+      "range": 0.9954,
+      "timed": 0.449
+     }
+    },
+    {
+     "composition_ns": 463547393361552,
+     "frame_index": 60032,
+     "file_ms": 500288,
+     "label": "range",
+     "scores": {
+      "range": 0.9947,
+      "timed": 0.447
+     }
+    },
+    {
+     "composition_ns": 463547401694885,
+     "frame_index": 60033,
+     "file_ms": 500296,
+     "label": "range",
+     "scores": {
+      "range": 0.9952,
+      "timed": 0.4473
+     }
+    },
+    {
+     "composition_ns": 463547410028218,
+     "frame_index": 60034,
+     "file_ms": 500304,
+     "label": "range",
+     "scores": {
+      "range": 0.9958,
+      "timed": 0.4509
+     }
+    },
+    {
+     "composition_ns": 463547418361551,
+     "frame_index": 60035,
+     "file_ms": 500313,
+     "label": "range",
+     "scores": {
+      "range": 0.9958,
+      "timed": 0.4502
+     }
+    },
+    {
+     "composition_ns": 463547426694884,
+     "frame_index": 60036,
+     "file_ms": 500321,
+     "label": "range",
+     "scores": {
+      "range": 0.9936,
+      "timed": 0.4465
+     }
+    },
+    {
+     "composition_ns": 463547435028217,
+     "frame_index": 60037,
+     "file_ms": 500329,
+     "label": "range",
+     "scores": {
+      "range": 0.9925,
+      "timed": 0.4457
+     }
+    },
+    {
+     "composition_ns": 463547443361550,
+     "frame_index": 60038,
+     "file_ms": 500338,
+     "label": "range",
+     "scores": {
+      "range": 0.9922,
+      "timed": 0.4447
+     }
+    },
+    {
+     "composition_ns": 463547451694883,
+     "frame_index": 60039,
+     "file_ms": 500346,
+     "label": "range",
+     "scores": {
+      "range": 0.9927,
+      "timed": 0.444
+     }
+    },
+    {
+     "composition_ns": 463547460028216,
+     "frame_index": 60040,
+     "file_ms": 500354,
+     "label": "range",
+     "scores": {
+      "range": 0.9925,
+      "timed": 0.4431
+     }
+    },
+    {
+     "composition_ns": 463547468361549,
+     "frame_index": 60041,
+     "file_ms": 500363,
+     "label": "range",
+     "scores": {
+      "range": 0.9924,
+      "timed": 0.4477
+     }
+    },
+    {
+     "composition_ns": 463547476694882,
+     "frame_index": 60042,
+     "file_ms": 500371,
+     "label": "range",
+     "scores": {
+      "range": 0.9917,
+      "timed": 0.4452
+     }
+    },
+    {
+     "composition_ns": 463547485028215,
+     "frame_index": 60043,
+     "file_ms": 500379,
+     "label": "range",
+     "scores": {
+      "range": 0.9916,
+      "timed": 0.4426
+     }
+    },
+    {
+     "composition_ns": 463547493361548,
+     "frame_index": 60044,
+     "file_ms": 500388,
+     "label": "range",
+     "scores": {
+      "range": 0.9919,
+      "timed": 0.4431
+     }
+    },
+    {
+     "composition_ns": 463547501694881,
+     "frame_index": 60045,
+     "file_ms": 500396,
+     "label": "range",
+     "scores": {
+      "range": 0.9929,
+      "timed": 0.4504
+     }
+    },
+    {
+     "composition_ns": 463547510028214,
+     "frame_index": 60046,
+     "file_ms": 500404,
+     "label": "range",
+     "scores": {
+      "range": 0.993,
+      "timed": 0.4502
+     }
+    },
+    {
+     "composition_ns": 463547518361547,
+     "frame_index": 60047,
+     "file_ms": 500413,
+     "label": "range",
+     "scores": {
+      "range": 0.993,
+      "timed": 0.4505
+     }
+    },
+    {
+     "composition_ns": 463547526694880,
+     "frame_index": 60048,
+     "file_ms": 500421,
+     "label": "range",
+     "scores": {
+      "range": 0.9934,
+      "timed": 0.4496
+     }
+    },
+    {
+     "composition_ns": 463547535028213,
+     "frame_index": 60049,
+     "file_ms": 500429,
+     "label": "range",
+     "scores": {
+      "range": 0.9939,
+      "timed": 0.4499
+     }
+    },
+    {
+     "composition_ns": 463547543361546,
+     "frame_index": 60050,
+     "file_ms": 500438,
+     "label": "range",
+     "scores": {
+      "range": 0.9939,
+      "timed": 0.4483
+     }
+    },
+    {
+     "composition_ns": 463547551694879,
+     "frame_index": 60051,
+     "file_ms": 500446,
+     "label": "range",
+     "scores": {
+      "range": 0.9934,
+      "timed": 0.4468
+     }
+    },
+    {
+     "composition_ns": 463547560028212,
+     "frame_index": 60052,
+     "file_ms": 500454,
+     "label": "range",
+     "scores": {
+      "range": 0.9925,
+      "timed": 0.4456
+     }
+    },
+    {
+     "composition_ns": 463547568361545,
+     "frame_index": 60053,
+     "file_ms": 500463,
+     "label": "range",
+     "scores": {
+      "range": 0.9914,
+      "timed": 0.4407
+     }
+    },
+    {
+     "composition_ns": 463547576694878,
+     "frame_index": 60054,
+     "file_ms": 500471,
+     "label": "range",
+     "scores": {
+      "range": 0.9904,
+      "timed": 0.4431
+     }
+    },
+    {
+     "composition_ns": 463547585028211,
+     "frame_index": 60055,
+     "file_ms": 500479,
+     "label": "range",
+     "scores": {
+      "range": 0.9901,
+      "timed": 0.4449
+     }
+    },
+    {
+     "composition_ns": 463547593361544,
+     "frame_index": 60056,
+     "file_ms": 500488,
+     "label": "range",
+     "scores": {
+      "range": 0.9894,
+      "timed": 0.4484
+     }
+    },
+    {
+     "composition_ns": 463547601694877,
+     "frame_index": 60057,
+     "file_ms": 500496,
+     "label": "range",
+     "scores": {
+      "range": 0.9886,
+      "timed": 0.4491
+     }
+    },
+    {
+     "composition_ns": 463547610028210,
+     "frame_index": 60058,
+     "file_ms": 500504,
+     "label": "range",
+     "scores": {
+      "range": 0.9886,
+      "timed": 0.4473
+     }
+    },
+    {
+     "composition_ns": 463547618361543,
+     "frame_index": 60059,
+     "file_ms": 500513,
+     "label": "range",
+     "scores": {
+      "range": 0.9883,
+      "timed": 0.4462
+     }
+    },
+    {
+     "composition_ns": 463547626694876,
+     "frame_index": 60060,
+     "file_ms": 500521,
+     "label": "range",
+     "scores": {
+      "range": 0.9884,
+      "timed": 0.4483
+     }
+    },
+    {
+     "composition_ns": 463547635028209,
+     "frame_index": 60061,
+     "file_ms": 500529,
+     "label": "range",
+     "scores": {
+      "range": 0.9891,
+      "timed": 0.4476
+     }
+    },
+    {
+     "composition_ns": 463547643361542,
+     "frame_index": 60062,
+     "file_ms": 500538,
+     "label": "range",
+     "scores": {
+      "range": 0.9894,
+      "timed": 0.4498
+     }
+    },
+    {
+     "composition_ns": 463547651694875,
+     "frame_index": 60063,
+     "file_ms": 500546,
+     "label": "range",
+     "scores": {
+      "range": 0.9896,
+      "timed": 0.4528
+     }
+    },
+    {
+     "composition_ns": 463547660028208,
+     "frame_index": 60064,
+     "file_ms": 500554,
+     "label": "range",
+     "scores": {
+      "range": 0.9898,
+      "timed": 0.4525
+     }
+    },
+    {
+     "composition_ns": 463547668361541,
+     "frame_index": 60065,
+     "file_ms": 500563,
+     "label": "range",
+     "scores": {
+      "range": 0.9891,
+      "timed": 0.4527
+     }
+    },
+    {
+     "composition_ns": 463547676694874,
+     "frame_index": 60066,
+     "file_ms": 500571,
+     "label": "range",
+     "scores": {
+      "range": 0.9878,
+      "timed": 0.4513
+     }
+    },
+    {
+     "composition_ns": 463547685028207,
+     "frame_index": 60067,
+     "file_ms": 500579,
+     "label": "range",
+     "scores": {
+      "range": 0.987,
+      "timed": 0.4501
+     }
+    },
+    {
+     "composition_ns": 463547693361540,
+     "frame_index": 60068,
+     "file_ms": 500588,
+     "label": "range",
+     "scores": {
+      "range": 0.9867,
+      "timed": 0.451
+     }
+    },
+    {
+     "composition_ns": 463547701694873,
+     "frame_index": 60069,
+     "file_ms": 500596,
+     "label": "range",
+     "scores": {
+      "range": 0.9864,
+      "timed": 0.4528
+     }
+    },
+    {
+     "composition_ns": 463547710028206,
+     "frame_index": 60070,
+     "file_ms": 500604,
+     "label": "range",
+     "scores": {
+      "range": 0.986,
+      "timed": 0.4478
+     }
+    },
+    {
+     "composition_ns": 463547718361539,
+     "frame_index": 60071,
+     "file_ms": 500613,
+     "label": "range",
+     "scores": {
+      "range": 0.9858,
+      "timed": 0.4456
+     }
+    },
+    {
+     "composition_ns": 463547726694872,
+     "frame_index": 60072,
+     "file_ms": 500621,
+     "label": "range",
+     "scores": {
+      "range": 0.9851,
+      "timed": 0.4477
+     }
+    },
+    {
+     "composition_ns": 463547735028205,
+     "frame_index": 60073,
+     "file_ms": 500629,
+     "label": "range",
+     "scores": {
+      "range": 0.9845,
+      "timed": 0.4495
+     }
+    },
+    {
+     "composition_ns": 463547743361538,
+     "frame_index": 60074,
+     "file_ms": 500638,
+     "label": "range",
+     "scores": {
+      "range": 0.9838,
+      "timed": 0.4529
+     }
+    },
+    {
+     "composition_ns": 463547751694871,
+     "frame_index": 60075,
+     "file_ms": 500646,
+     "label": "range",
+     "scores": {
+      "range": 0.9832,
+      "timed": 0.4546
+     }
+    },
+    {
+     "composition_ns": 463547760028204,
+     "frame_index": 60076,
+     "file_ms": 500654,
+     "label": "range",
+     "scores": {
+      "range": 0.9831,
+      "timed": 0.4569
+     }
+    },
+    {
+     "composition_ns": 463547768361537,
+     "frame_index": 60077,
+     "file_ms": 500663,
+     "label": "range",
+     "scores": {
+      "range": 0.9827,
+      "timed": 0.4584
+     }
+    },
+    {
+     "composition_ns": 463547776694870,
+     "frame_index": 60078,
+     "file_ms": 500671,
+     "label": "range",
+     "scores": {
+      "range": 0.9828,
+      "timed": 0.458
+     }
+    },
+    {
+     "composition_ns": 463547785028203,
+     "frame_index": 60079,
+     "file_ms": 500679,
+     "label": "range",
+     "scores": {
+      "range": 0.983,
+      "timed": 0.4573
+     }
+    },
+    {
+     "composition_ns": 463547793361536,
+     "frame_index": 60080,
+     "file_ms": 500688,
+     "label": "range",
+     "scores": {
+      "range": 0.9821,
+      "timed": 0.4582
+     }
+    },
+    {
+     "composition_ns": 463547801694869,
+     "frame_index": 60081,
+     "file_ms": 500696,
+     "label": "range",
+     "scores": {
+      "range": 0.981,
+      "timed": 0.46
+     }
+    },
+    {
+     "composition_ns": 463547810028202,
+     "frame_index": 60082,
+     "file_ms": 500704,
+     "label": "range",
+     "scores": {
+      "range": 0.9814,
+      "timed": 0.4588
+     }
+    },
+    {
+     "composition_ns": 463547818361535,
+     "frame_index": 60083,
+     "file_ms": 500713,
+     "label": "range",
+     "scores": {
+      "range": 0.9814,
+      "timed": 0.4539
+     }
+    },
+    {
+     "composition_ns": 463547826694868,
+     "frame_index": 60084,
+     "file_ms": 500721,
+     "label": "range",
+     "scores": {
+      "range": 0.9817,
+      "timed": 0.4506
+     }
+    },
+    {
+     "composition_ns": 463547835028201,
+     "frame_index": 60085,
+     "file_ms": 500729,
+     "label": "range",
+     "scores": {
+      "range": 0.9823,
+      "timed": 0.4502
+     }
+    },
+    {
+     "composition_ns": 463547843361534,
+     "frame_index": 60086,
+     "file_ms": 500738,
+     "label": "range",
+     "scores": {
+      "range": 0.9837,
+      "timed": 0.4502
+     }
+    },
+    {
+     "composition_ns": 463547851694867,
+     "frame_index": 60087,
+     "file_ms": 500746,
+     "label": "range",
+     "scores": {
+      "range": 0.9861,
+      "timed": 0.4488
+     }
+    },
+    {
+     "composition_ns": 463547860028200,
+     "frame_index": 60088,
+     "file_ms": 500754,
+     "label": "range",
+     "scores": {
+      "range": 0.9879,
+      "timed": 0.4475
+     }
+    }
+   ],
+   "interior": [
+    {
+     "composition_ns": 463538868361893,
+     "frame_index": 59009,
+     "file_ms": 491763,
+     "label": "timed",
+     "scores": {
+      "range": 0.447,
+      "timed": 0.999
+     }
+    },
+    {
+     "composition_ns": 463540868361813,
+     "frame_index": 59249,
+     "file_ms": 493763,
+     "label": "timed",
+     "scores": {
+      "range": 0.4355,
+      "timed": 0.9856
+     }
+    },
+    {
+     "composition_ns": 463542868361733,
+     "frame_index": 59489,
+     "file_ms": 495763,
+     "label": "timed",
+     "scores": {
+      "range": 0.4464,
+      "timed": 0.9986
+     }
+    },
+    {
+     "composition_ns": 463544868361653,
+     "frame_index": 59729,
+     "file_ms": 497763,
+     "label": "timed",
+     "scores": {
+      "range": 0.4453,
+      "timed": 0.9986
+     }
+    }
+   ]
+  }
+ ],
+ "method": {
+  "banner_box": [
+   110,
+   28,
+   420,
+   84
+  ],
+  "banner_match": 0.9,
+  "bracket_ns": 1000000000,
+  "interior_every_ns": 2000000000,
+  "references": {
+   "range": {
+    "path": "tests/fixtures/intake_timed/banner-range.png",
+    "sha256": "1857860c80c77dfe6bc40a6fe0d4cac3900fb38f53866e1d85009df28e9d9cf3"
+   },
+   "timed": {
+    "path": "tests/fixtures/intake_timed/banner-timed.png",
+    "sha256": "71a80b2f629d7f777c7344ac1670cfde4738a30c6d9fcae718aaa248a819dace"
+   }
+  },
+  "rule": "agent.human_intake.timed_practice_span: from one ns after the last PRACTICE RANGE frame before the round to the first PRACTICE RANGE frame after it (lead decision 2026-09-25)"
+ }
+}

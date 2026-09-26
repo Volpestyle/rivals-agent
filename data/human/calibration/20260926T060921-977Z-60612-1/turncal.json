@@ -1,0 +1,140 @@
+{
+ "session": "20260926T060921-977Z-60612-1",
+ "video": "C:/Users/volpe/Videos/2026-09-26 01-09-21.mkv",
+ "method": "    python turncal.py plan SESSION OUT_DIR            inputs.jsonl only: the turns and the still windows around them     python turncal.py measure SESSION VIDEO OUT_DIR   decode (after the game and OBS close): rest-to-rest gain",
+ "snapshot": "code-snapshot-2ad0992",
+ "focal": 465.0,
+ "turns": [
+  {
+   "pre_still_s": [
+    1.64,
+    2.24
+   ],
+   "post_still_s": [
+    8.717,
+    9.81
+   ],
+   "pre_rest_s": 1.94,
+   "post_rest_s": 9.263,
+   "dx_counts": 11024,
+   "dy_counts": -3,
+   "revolutions": 1,
+   "moving_s": 6.477,
+   "mean_counts_per_s": 1702,
+   "nominal_excess_deg": 4.61,
+   "frames_ns": [
+    470838407407157,
+    470845724073531
+   ],
+   "dx_between_frames": 11025,
+   "excess_yaw_deg": 5.218024404240283,
+   "excess_pitch_deg": 0.16661764623933253,
+   "inliers": 172,
+   "turn_deg": 365.2180244042403,
+   "yaw_deg_per_count": 0.03312635141988574,
+   "counts_per_360": 10867.481161353982,
+   "vs_calibration_pct": 0.1588913880042231,
+   "tolerance_pct": 0.08,
+   "within": false
+  },
+  {
+   "pre_still_s": [
+    8.717,
+    9.81
+   ],
+   "post_still_s": [
+    13.602,
+    14.469
+   ],
+   "pre_rest_s": 9.263,
+   "post_rest_s": 14.035,
+   "dx_counts": 10851,
+   "dy_counts": 16,
+   "revolutions": 1,
+   "moving_s": 3.792,
+   "mean_counts_per_s": 2862,
+   "nominal_excess_deg": -1.12,
+   "frames_ns": [
+    470845724073531,
+    470850499073340
+   ],
+   "dx_between_frames": 10851,
+   "excess_yaw_deg": -1.1983872789746406,
+   "excess_pitch_deg": -0.715806839542374,
+   "inliers": 623,
+   "turn_deg": 358.8016127210254,
+   "yaw_deg_per_count": 0.03306622548346008,
+   "counts_per_360": 10887.242034325147,
+   "vs_calibration_pct": -0.022901863529189992,
+   "tolerance_pct": 0.08,
+   "within": true
+  },
+  {
+   "pre_still_s": [
+    13.602,
+    14.469
+   ],
+   "post_still_s": [
+    16.538,
+    16.965
+   ],
+   "pre_rest_s": 14.035,
+   "post_rest_s": 16.751,
+   "dx_counts": 10932,
+   "dy_counts": 36,
+   "revolutions": 1,
+   "moving_s": 2.069,
+   "mean_counts_per_s": 5284,
+   "nominal_excess_deg": 1.56,
+   "frames_ns": [
+    470850499073340,
+    470853215739898
+   ],
+   "dx_between_frames": 10931,
+   "excess_yaw_deg": 1.7369945466845318,
+   "excess_pitch_deg": -1.5090962212596701,
+   "inliers": 425,
+   "turn_deg": 361.7369945466845,
+   "yaw_deg_per_count": 0.0330927632006847,
+   "counts_per_360": 10878.511347536896,
+   "vs_calibration_pct": 0.057336020308218494,
+   "tolerance_pct": 0.08,
+   "within": true
+  }
+ ],
+ "controls": [
+  {
+   "pre_still_s": [
+    8.717,
+    9.81
+   ],
+   "rests_s": [
+    9.045,
+    9.482
+   ],
+   "yaw_deg": -0.0025195959581838937,
+   "pitch_deg": -0.0023097150395810194,
+   "inliers": 1321,
+   "dx": 0
+  },
+  {
+   "pre_still_s": [
+    17.094,
+    18.416
+   ],
+   "rests_s": [
+    17.491,
+    18.019
+   ],
+   "yaw_deg": -0.0001591938693886499,
+   "pitch_deg": -0.0002937465991208101,
+   "inliers": 1342,
+   "dx": 0
+  }
+ ],
+ "calibration_gain": 0.0330738,
+ "mean_gain": 0.03309511336801017,
+ "mean_vs_calibration_pct": 0.06444184826108756,
+ "all_within": false,
+ "controls_ok": true
+}

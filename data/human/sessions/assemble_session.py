@@ -99,10 +99,14 @@ MOTOR_STATEMENTS = {
                 settings="James's statements for the late take (docs/recording-log.md, Motor settings, committed "
                          "83c05f1 and 7ad63e5): recorded on his main account; at its start (Esc 4.1 and 5.4 s, cut) "
                          "cooldowns were switched on and sensitivity set to 1.89, DPI unchanged. Admitted on the lead's "
-                         "option B (2026-09-26): the main account's yaw gain was measured equal to the calibration on "
-                         "its own turn take 2026-09-26 01-09-21 (calibration 20260926T060921-977Z-60612-1, "
-                         "turncal.json 4ab87a55: mean +0.064 %, every speed within 030045's tolerance), which also "
-                         "covers its mouse acceleration setting",
+                         "option B (2026-09-26). The main account's yaw gain was measured on its own turn take "
+                         "2026-09-26 01-09-21 (calibration 20260926T060921-977Z-60612-1, turncal.json 4ab87a55) "
+                         "against the calibration 0.0330738 deg/count: slow (1,702 counts/s) +0.159 %, medium (2,862) "
+                         "-0.023 %, fast (5,284) +0.057 %, mean +0.064 %. The slow turn did NOT meet the scripted "
+                         "+-0.08 % check (turncal.py within false, all_within false); 'equal' is the lead's decision "
+                         "of 2026-09-26, applying 030045's own +-0.25 % slow-class tolerance, which all three speeds "
+                         "meet. The main account has mouse acceleration off; this identity (acceleration on at factor "
+                         "1.00) is the lead-authorized equivalent profile, supported by the measured gain",
                 bindings="the main account's Spider-Man bindings, equal in effect to this table for every key "
                          "pressed after the cut (bindings-equivalence.json 9f2adb9b; James, 2026-09-25: \"the binds "
                          "are definitely the same in any meaningful way\"); LeftShift checked as web swing on frames"),

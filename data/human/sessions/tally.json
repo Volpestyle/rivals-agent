@@ -527,12 +527,32 @@
   {
    "session": "20260926T035932-508Z-63684-14",
    "date": "2026-09-25",
-   "status": "pending",
-   "reason": "lead decision 2026-09-26 (B): main account, yaw gain measured equal to the calibration (20260926T060921-977Z-60612-1); intake resumed, review pending",
+   "status": "admitted",
+   "reason": "assembled: review.json from the owner and independent verdicts, imported, steps file frozen",
+   "regime": "normal",
+   "focused_min": 30.574367811666665,
+   "admitted_min": 30.152221016266665,
+   "trainable_min": 30.1499996985,
+   "stride_ns": 33333333,
+   "rejected_min": 0.4221467954,
+   "unresolved_min": 0.0,
+   "tags_s": {
+    "range": {
+     "unknown": 1809.133260976
+    },
+    "approach": {
+     "unknown": 1809.133260976
+    },
+    "target": {
+     "unknown": 1809.133260976
+    },
+    "resources": {
+     "unknown": 1809.133260976
+    }
+   },
+   "artifact_sha256": "2184320220d387095a6237209d80167d93a50339589ed9fe946f7c7f0a4b8f2d",
    "group": "20260926T035932-508Z-63684-14",
-   "split": "train",
-   "admitted_min": null,
-   "trainable_min": null
+   "split": "train"
   },
   {
    "session": "20260926T044958-507Z-63684-15",
@@ -577,11 +597,11 @@
  ],
  "headline_train_by_regime": {
   "normal": {
-   "admitted_min": 150.41679953926666,
-   "trainable_min": 150.4077762737,
-   "sessions": 9,
+   "admitted_min": 180.56902055553334,
+   "trainable_min": 180.5577759722,
+   "sessions": 10,
    "target_min": 180,
-   "remaining_min": 29.583200460733337
+   "remaining_min": 0.0
   }
  },
  "val_by_regime": {
@@ -594,12 +614,12 @@
  "target_min": 180,
  "registry": {
   "path": "data/human/session-splits.corpus.json",
-  "sha256": "26d55f3d1bba686eaea1af82e5e02fa6fc6b93ef57737c5c9fff168a24d8da71"
+  "sha256": "d5f0f7d7f6ffb9b8aa94adae56a5ae9adf01619174902a1691741ad9ae5a57a9"
  },
  "denylist": {
   "path": "data/human/sealed-denylist.json",
   "sha256": "57cfe01f29f6e1a55293f968ec697aa293c268bd87d7cf247ef648279e2fba7c"
  },
- "snapshot": "code-snapshot-3936f94-4c9638d1",
+ "snapshot": "code-snapshot-6bbb276",
  "counted_rule": "focused logged time \u2229 accepted segments \u2229 gap-free runs >= 1.6 s"
 }

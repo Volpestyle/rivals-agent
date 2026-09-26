@@ -1,0 +1,126 @@
+{
+ "session": "20260925T030045-211Z-7804-3",
+ "start_ns": 373120052255200,
+ "still_windows": 15,
+ "turns": [
+  {
+   "pre_still_s": [
+    0.772,
+    2.603
+   ],
+   "post_still_s": [
+    9.3,
+    10.538
+   ],
+   "pre_rest_s": 1.688,
+   "post_rest_s": 9.919,
+   "dx_counts": 10784,
+   "dy_counts": -196,
+   "revolutions": 1,
+   "moving_s": 6.697,
+   "mean_counts_per_s": 1610,
+   "nominal_excess_deg": -3.33
+  },
+  {
+   "pre_still_s": [
+    9.3,
+    10.538
+   ],
+   "post_still_s": [
+    13.609,
+    14.273
+   ],
+   "pre_rest_s": 9.919,
+   "post_rest_s": 13.941,
+   "dx_counts": 10927,
+   "dy_counts": -16,
+   "revolutions": 1,
+   "moving_s": 3.071,
+   "mean_counts_per_s": 3558,
+   "nominal_excess_deg": 1.4
+  },
+  {
+   "pre_still_s": [
+    13.609,
+    14.273
+   ],
+   "post_still_s": [
+    16.309,
+    17.197
+   ],
+   "pre_rest_s": 13.941,
+   "post_rest_s": 16.753,
+   "dx_counts": 10847,
+   "dy_counts": -37,
+   "revolutions": 1,
+   "moving_s": 2.036,
+   "mean_counts_per_s": 5328,
+   "nominal_excess_deg": -1.25
+  },
+  {
+   "pre_still_s": [
+    16.309,
+    17.197
+   ],
+   "post_still_s": [
+    18.105,
+    18.743
+   ],
+   "pre_rest_s": 16.753,
+   "post_rest_s": 18.424,
+   "dx_counts": 10869,
+   "dy_counts": 125,
+   "revolutions": 1,
+   "moving_s": 0.908,
+   "mean_counts_per_s": 11970,
+   "nominal_excess_deg": -0.52
+  }
+ ],
+ "controls": [
+  {
+   "pre_still_s": [
+    0.772,
+    2.603
+   ],
+   "rests_s": [
+    1.321,
+    2.054
+   ]
+  },
+  {
+   "pre_still_s": [
+    9.3,
+    10.538
+   ],
+   "rests_s": [
+    9.672,
+    10.167
+   ]
+  },
+  {
+   "pre_still_s": [
+    18.822,
+    21.425
+   ],
+   "rests_s": [
+    19.603,
+    20.644
+   ]
+  },
+  {
+   "pre_still_s": [
+    42.434,
+    43.449
+   ],
+   "rests_s": [
+    42.738,
+    43.144
+   ]
+  }
+ ],
+ "rule": {
+  "min_turn_counts": 9796,
+  "still_s": 0.3,
+  "gain": 0.0330738
+ }
+}

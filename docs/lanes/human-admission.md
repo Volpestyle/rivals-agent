@@ -1501,3 +1501,23 @@ min.
   (review frame f59600). The range guard passed on it.
 - **A round that short can fall between review frames** (10 s apart). The 2026-09-26 all-sessions banner check assumed
   rounds of at least 60 s, so it does not exclude short rounds in the admitted sessions.
+
+**The late take (22:59, main account) admitted, 2026-09-26.**
+- **Review:** review-session-035932.md `78b22e91`, which matches all 35 decisions.
+- **Assembly:** from `code-snapshot-6bbb276` (the landed intake code).
+- **Result:** 30.1522 counted min in 8 runs; freeze `21843202`.
+- **Tally:** normal, train **180.57 / 180** (10 sessions); val 15.58.
+- **Review F2:** the per-session motor text now states the three speeds' gain figures. It says the slow turn (+0.159 %)
+  failed the scripted ±0.08 % check (`all_within` false), and that "equal" is the lead's decision under 030045's ±0.25 %
+  slow-class tolerance.
+  - The motor record was regenerated with `--supersedes`. `motor-settings.v1.json` stays, pinned by the freeze, and the
+    evidence keeps pointing at `.v1`, the 025230/232304 precedent.
+- **Review F1:** final-25 said the take had no duplicated composition time. There is one equal adjacent pair
+  (f221161/f221162, 1,843.102 s), after the final focus loss and outside every accepted span. There is no reversal.
+- **Identity:** `a8dea3ba` is the lead-authorized equivalent profile, not the main account's literal settings
+  (acceleration off).
+
+**1 fps native banner sweep** for TIMED PRACTICE over all ten sessions (`banner_sweep.py`).
+- **The three from the first landing:** clean, apart from 203745's known round, which sits inside its cut.
+- **The seven earlier sessions:** 0 TIMED PRACTICE frames; the highest score is 0.468.
+- **Coverage:** no round lies in any admitted accepted span, down to about a 1 s round.

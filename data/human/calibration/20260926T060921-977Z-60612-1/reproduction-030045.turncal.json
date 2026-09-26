@@ -1,0 +1,200 @@
+{
+ "session": "20260925T030045-211Z-7804-3",
+ "video": "C:/Users/volpe/Videos/2026-09-24 22-00-45.mkv",
+ "method": "    python turncal.py plan SESSION OUT_DIR            inputs.jsonl only: the turns and the still windows around them     python turncal.py measure SESSION VIDEO OUT_DIR   decode (after the game and OBS close): rest-to-rest gain",
+ "snapshot": "code-snapshot-2ad0992",
+ "focal": 465.0,
+ "turns": [
+  {
+   "pre_still_s": [
+    0.772,
+    2.603
+   ],
+   "post_still_s": [
+    9.3,
+    10.538
+   ],
+   "pre_rest_s": 1.688,
+   "post_rest_s": 9.919,
+   "dx_counts": 10784,
+   "dy_counts": -196,
+   "revolutions": 1,
+   "moving_s": 6.697,
+   "mean_counts_per_s": 1610,
+   "nominal_excess_deg": -3.33,
+   "frames_ns": [
+    373121742351054,
+    373129967350725
+   ],
+   "dx_between_frames": 10783,
+   "excess_yaw_deg": -3.6625983806526077,
+   "excess_pitch_deg": 8.352659567627846,
+   "inliers": 108,
+   "turn_deg": 356.3374016193474,
+   "yaw_deg_per_count": 0.033046221053449634,
+   "counts_per_360": 10893.832593376672,
+   "vs_calibration_pct": -0.08338608369877765,
+   "tolerance_pct": 0.25,
+   "within": true
+  },
+  {
+   "pre_still_s": [
+    9.3,
+    10.538
+   ],
+   "post_still_s": [
+    13.609,
+    14.273
+   ],
+   "pre_rest_s": 9.919,
+   "post_rest_s": 13.941,
+   "dx_counts": 10927,
+   "dy_counts": -16,
+   "revolutions": 1,
+   "moving_s": 3.071,
+   "mean_counts_per_s": 3558,
+   "nominal_excess_deg": 1.4,
+   "frames_ns": [
+    373129967350725,
+    373133992350564
+   ],
+   "dx_between_frames": 10927,
+   "excess_yaw_deg": 1.5585171238527407,
+   "excess_pitch_deg": 0.7404318710362978,
+   "inliers": 555,
+   "turn_deg": 361.55851712385277,
+   "yaw_deg_per_count": 0.03308854371042855,
+   "counts_per_360": 10879.898588179281,
+   "vs_calibration_pct": 0.04457821728542921,
+   "tolerance_pct": 0.08,
+   "within": true
+  },
+  {
+   "pre_still_s": [
+    13.609,
+    14.273
+   ],
+   "post_still_s": [
+    16.309,
+    17.197
+   ],
+   "pre_rest_s": 13.941,
+   "post_rest_s": 16.753,
+   "dx_counts": 10847,
+   "dy_counts": -37,
+   "revolutions": 1,
+   "moving_s": 2.036,
+   "mean_counts_per_s": 5328,
+   "nominal_excess_deg": -1.25,
+   "frames_ns": [
+    373133992350564,
+    373136809017118
+   ],
+   "dx_between_frames": 10846,
+   "excess_yaw_deg": -1.3984748201462749,
+   "excess_pitch_deg": 1.544190736617653,
+   "inliers": 476,
+   "turn_deg": 358.60152517985375,
+   "yaw_deg_per_count": 0.03306302094595738,
+   "counts_per_360": 10888.297248712757,
+   "vs_calibration_pct": -0.03259091499199229,
+   "tolerance_pct": 0.08,
+   "within": true
+  },
+  {
+   "pre_still_s": [
+    16.309,
+    17.197
+   ],
+   "post_still_s": [
+    18.105,
+    18.743
+   ],
+   "pre_rest_s": 16.753,
+   "post_rest_s": 18.424,
+   "dx_counts": 10869,
+   "dy_counts": 125,
+   "revolutions": 1,
+   "moving_s": 0.908,
+   "mean_counts_per_s": 11970,
+   "nominal_excess_deg": -0.52,
+   "frames_ns": [
+    373136809017118,
+    373138475683718
+   ],
+   "dx_between_frames": 10868,
+   "excess_yaw_deg": -0.6953504012104645,
+   "excess_pitch_deg": -5.305620495963443,
+   "inliers": 367,
+   "turn_deg": 359.3046495987895,
+   "yaw_deg_per_count": 0.033060788516635034,
+   "counts_per_360": 10889.032480845415,
+   "vs_calibration_pct": -0.039340757230699186,
+   "tolerance_pct": 0.25,
+   "within": true
+  }
+ ],
+ "controls": [
+  {
+   "pre_still_s": [
+    0.772,
+    2.603
+   ],
+   "rests_s": [
+    1.321,
+    2.054
+   ],
+   "yaw_deg": 0.0009701316744383213,
+   "pitch_deg": -0.00045654173319178694,
+   "inliers": 1288,
+   "dx": 0
+  },
+  {
+   "pre_still_s": [
+    9.3,
+    10.538
+   ],
+   "rests_s": [
+    9.672,
+    10.167
+   ],
+   "yaw_deg": -0.005066094222295366,
+   "pitch_deg": 0.002165329011910596,
+   "inliers": 1339,
+   "dx": 0
+  },
+  {
+   "pre_still_s": [
+    18.822,
+    21.425
+   ],
+   "rests_s": [
+    19.603,
+    20.644
+   ],
+   "yaw_deg": 0.006608036103929513,
+   "pitch_deg": -0.004747701979683999,
+   "inliers": 1319,
+   "dx": 0
+  },
+  {
+   "pre_still_s": [
+    42.434,
+    43.449
+   ],
+   "rests_s": [
+    42.738,
+    43.144
+   ],
+   "yaw_deg": 0.002300077946874866,
+   "pitch_deg": 0.0033547987385637635,
+   "inliers": 1390,
+   "dx": 0
+  }
+ ],
+ "calibration_gain": 0.0330738,
+ "mean_gain": 0.033064643556617646,
+ "mean_vs_calibration_pct": -0.027684884659018305,
+ "all_within": true,
+ "controls_ok": true
+}

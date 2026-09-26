@@ -1,0 +1,3753 @@
+{
+ "note": "Hand-checked off perception.hud's contact sheets (python -m perception.hud sheet). Spider-Man in the practice range at 1280x720, from L1 runs trial1 (data/l2) and run1 (data/l2run1). A null means the reader should report that it cannot read the field; an omitted key is not scored. The slot once called 'pull' is 'get_over_here' from event format 2 on.",
+ "frames": [
+  {
+   "path": "data/l2/000000.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": null,
+   "bar_fill": 1.0,
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000007.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   }
+  },
+  {
+   "path": "data/l2/000008.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   }
+  },
+  {
+   "path": "data/l2/000010.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   }
+  },
+  {
+   "path": "data/l2/000024.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   }
+  },
+  {
+   "path": "data/l2/000041.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000043.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000063.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": false,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000065.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000068.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": false,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000073.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": false,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000076.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000085.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000092.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000123.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000131.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000136.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000145.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000147.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000148.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000150.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000153.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000163.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000177.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000178.jpg",
+   "hp": 300,
+   "max_hp": 300,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000179.jpg",
+   "hp": 300,
+   "max_hp": 300,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000180.jpg",
+   "hp": 300,
+   "max_hp": 300,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000181.jpg",
+   "hp": 300,
+   "max_hp": 300,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000183.jpg",
+   "hp": 300,
+   "max_hp": 300,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000185.jpg",
+   "hp": 300,
+   "max_hp": 300,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000191.jpg",
+   "hp": 300,
+   "max_hp": 300,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000197.jpg",
+   "hp": 300,
+   "max_hp": 300,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000200.jpg",
+   "hp": 300,
+   "max_hp": 300,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000201.jpg",
+   "hp": 300,
+   "max_hp": 300,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": false,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": false,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000202.jpg",
+   "hp": 300,
+   "max_hp": 300,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": false,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": false,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000203.jpg",
+   "hp": 300,
+   "max_hp": 300,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": false,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000204.jpg",
+   "hp": 300,
+   "max_hp": 300,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": false,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000205.jpg",
+   "hp": 300,
+   "max_hp": 300,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000206.jpg",
+   "hp": 300,
+   "max_hp": 300,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000207.jpg",
+   "hp": 300,
+   "max_hp": 300,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000222.jpg",
+   "hp": 300,
+   "max_hp": 300,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000231.jpg",
+   "hp": 296,
+   "max_hp": 296,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000234.jpg",
+   "hp": 292,
+   "max_hp": 292,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000235.jpg",
+   "hp": 292,
+   "max_hp": 292,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000236.jpg",
+   "hp": 290,
+   "max_hp": 290,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000240.jpg",
+   "hp": 286,
+   "max_hp": 286,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000247.jpg",
+   "hp": 280,
+   "max_hp": 280,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000253.jpg",
+   "hp": 274,
+   "max_hp": 274,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000254.jpg",
+   "hp": 272,
+   "max_hp": 272,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000255.jpg",
+   "hp": 272,
+   "max_hp": 272,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": false,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000256.jpg",
+   "hp": 270,
+   "max_hp": 270,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000260.jpg",
+   "hp": 266,
+   "max_hp": 266,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": false,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000261.jpg",
+   "hp": 266,
+   "max_hp": 266,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000264.jpg",
+   "hp": 262,
+   "max_hp": 262,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000265.jpg",
+   "hp": 262,
+   "max_hp": 262,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": false,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000266.jpg",
+   "hp": 260,
+   "max_hp": 260,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000267.jpg",
+   "hp": 260,
+   "max_hp": 260,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000269.jpg",
+   "hp": 258,
+   "max_hp": 258,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000270.jpg",
+   "hp": 256,
+   "max_hp": 256,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000271.jpg",
+   "hp": 256,
+   "max_hp": 256,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000273.jpg",
+   "hp": 252,
+   "max_hp": 252,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000274.jpg",
+   "hp": 252,
+   "max_hp": 252,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000275.jpg",
+   "hp": 252,
+   "max_hp": 252,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000282.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000295.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000304.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000316.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000321.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000326.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2/000341.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/000054.jpg",
+   "hp": 300,
+   "max_hp": 300,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/000065.jpg",
+   "hp": 300,
+   "max_hp": 300,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/000214.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/000223.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/000241.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/000260.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/000267.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/000330.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/000394.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/000398.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/000568.jpg",
+   "hp": 290,
+   "max_hp": 290,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/000574.jpg",
+   "hp": 284,
+   "max_hp": 284,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/000576.jpg",
+   "hp": 282,
+   "max_hp": 282,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/000608.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/000737.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/000738.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/000748.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/000917.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": false,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/000920.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/001020.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/001292.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/001300.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/001310.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/001381.jpg",
+   "hp": 298,
+   "max_hp": 298,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/001388.jpg",
+   "hp": 292,
+   "max_hp": 292,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": false,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/001393.jpg",
+   "hp": 286,
+   "max_hp": 286,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/001482.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/001721.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/001802.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/001987.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": false,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/001991.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/002030.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/002159.jpg",
+   "hp": 274,
+   "max_hp": 274,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/002171.jpg",
+   "hp": 262,
+   "max_hp": 262,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/002172.jpg",
+   "hp": 262,
+   "max_hp": 262,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/002227.jpg",
+   "hp": 300,
+   "max_hp": 300,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/002244.jpg",
+   "hp": 300,
+   "max_hp": 300,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/002366.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/002426.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/002430.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/002431.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/002448.jpg",
+   "hp": 300,
+   "max_hp": 300,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/002617.jpg",
+   "hp": 300,
+   "max_hp": 300,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/002628.jpg",
+   "hp": 294,
+   "max_hp": 294,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/002738.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/002822.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/002869.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/002872.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/002880.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/002889.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/002902.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/002924.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/003020.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/003029.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/003034.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/003165.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/003169.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/003244.jpg",
+   "hp": 300,
+   "max_hp": 300,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/003250.jpg",
+   "hp": 300,
+   "max_hp": 300,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/003260.jpg",
+   "hp": 300,
+   "max_hp": 300,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/003366.jpg",
+   "hp": 300,
+   "max_hp": 300,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/003576.jpg",
+   "hp": 300,
+   "max_hp": 300,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": false,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/003685.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/003698.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/003791.jpg",
+   "hp": 300,
+   "max_hp": 300,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/003834.jpg",
+   "hp": 260,
+   "max_hp": 260,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/003843.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/003959.jpg",
+   "hp": 300,
+   "max_hp": 300,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/004165.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/004199.jpg",
+   "hp": 250,
+   "max_hp": 250,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/004403.jpg",
+   "hp": 256,
+   "max_hp": 256,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/004675.jpg",
+   "hp": 284,
+   "max_hp": 284,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/004879.jpg",
+   "hp": 292,
+   "max_hp": 292,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/005202.jpg",
+   "hp": 298,
+   "max_hp": 298,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  },
+  {
+   "path": "data/l2run1/005627.jpg",
+   "hp": 300,
+   "max_hp": 300,
+   "webs": 5,
+   "bar_fill": 1.0,
+   "abilities": {
+    "teamup": {
+     "ready": true,
+     "charges": null
+    },
+    "swing": {
+     "ready": true,
+     "charges": 3
+    },
+    "get_over_here": {
+     "ready": true,
+     "charges": null
+    },
+    "uppercut": {
+     "ready": true,
+     "charges": 2
+    }
+   },
+   "ult_ready": true
+  }
+ ]
+}

@@ -1,0 +1,27 @@
+{
+ "session": "20260926T035932-508Z-63684-14",
+ "snapshot": "code-snapshot-83c05f1",
+ "cut_ns": [
+  463047032940900,
+  463054471436000
+ ],
+ "cut_rel_s": [
+  0.0,
+  7.4384951
+ ],
+ "esc_presses_ns": [
+  463051125392200,
+  463052471436000
+ ],
+ "esc_presses_rel_s": [
+  4.0924513,
+  5.4384951
+ ],
+ "ui_settle_ns": 2000000000,
+ "inputs": {
+  "path": "inputs.jsonl",
+  "sha256": "efe410e98bae89b7177dcd3d665a20b971781907f223db374f3b58ba76341c91"
+ },
+ "reason": "lead decision 2026-09-25 (option B, revised): the late take began with a settings change on James's main account (Esc 4.1 and 5.4 s: cooldowns on, sensitivity 1.89; recording log 83c05f1); cut everything up to the second Esc plus the 2 s settle",
+ "rule": "agent.human_intake.settings_change_span: from the recording's start to the last declared Esc press plus the UI settle; Esc presses inside are the declared change, later ones keep R3 (lead decision 2026-09-25)"
+}

@@ -50,3 +50,21 @@ late 22:59 main-account take is not in this landing; it follows its own session 
 | `review-session-203745.verdicts.json` | `916ea4bf20cba89b56c711e75b05c0d4c453e4e20c8dd9d0d8ab643146b4c74e` |
 | `review-session-212646.md` | `fcc7197343571ce0a28916d26513dc6d4e5b4148860df0594496f8e0832d3012` |
 | `review-session-212646.verdicts.json` | `7c47d6afac6c439298ff64ff755877ce2ebfccabef52021bdae84d12e34fb9bf` |
+
+**Second landing (2026-09-26): the late 22:59 take, 20260926T035932-508Z-63684-14 (train, 30.1522 min), on James's main
+account.** Admitted under the lead's option B: effective bindings equal on every pressed key, Shift and Caps Lock shown
+swinging on native frames, normal regime, the settings menu at its start and a ~9 s Timed Practice round cut, and the
+main account's yaw gain measured on its own turn take (calibration 20260926T060921-977Z-60612-1: mean +0.064 %; the slow
+turn +0.159 % missed the scripted +-0.08 % check, and "equal" is the lead's decision using 030045's +-0.25 % slow-class
+tolerance). Its independent review matches all 35 owner decisions. Train headline 180.57 of 180 over 10 sessions; val
+15.58 beside it. A 1 fps banner sweep of all ten admitted sessions found Timed Practice only inside the two cuts.
+
+| File | sha256 |
+|---|---|
+| `review-session-035932.md` | `78b22e91b932116bd2f79e3419f560d217b7a5c88aa08386087197f86b9f69b7` |
+| `review-session-035932.verdicts.json` | `88afc54b6534bf3a37d3ad570c42acd6616f083aac388b276878e2ca9b05a03e` |
+| `admission-owner-final-25.md` | `431b95ead635525ca9318410faabaecd9be87ca744aa8ce66df6e8273faa3c10` |
+| `admission-owner-final-25.held.md` | `e8e6c448ef09fc0bbf67428287f226c43e9860ec6851c7f8dce911985a89adde` |
+| `admission-owner-final-29.md` | `98668c820a2ee3a230db4964a46af1eadb55a56919f7043ada03311eda6b535f` |
+| `admission-owner-decision-late-account.md` | `9009449bc1504fd24a1dcf4b8b1e373507054c86cb34d0512bc96f4327f5f336` |
+| `admission-owner-decision-late-gain.md` | `45b3d19bbc9ce2501a452f7ff4c05cfaa81cafa6c9a59eff2d0fcbf0236365d0` |

@@ -1,0 +1,562 @@
+{
+ "schema_version": 1,
+ "session_id": "20260926T035932-508Z-63684-14",
+ "reviewer": "owner admission-owner (686b106c98b70994) + independent admission-review (Codex)",
+ "reviewed_at": "2026-09-26T09:59:23.945084+00:00",
+ "device_scope": {
+  "kind": "single_keyboard_mouse",
+  "source": "input-profile.json: keyboard ['305729567'], mouse ['614403941']; 37 zero-effect handle-0 packets allowed (lead decision), no injected control input",
+  "no_pad_attestation": "James, 2026-09-23 ~15:55 CDT (docs/recording-log.md): no physical controller plugged in during any recording session"
+ },
+ "pts_anchor": {
+  "kind": "independent_muxer_offset",
+  "offset_num": 21,
+  "offset_den": 1000,
+  "source": "accepted blank-scene derivation plus this session's own first-16-packet forward prediction (provenance.json anchor_applicability), no fitting",
+  "evidence": [
+   {
+    "path": "data/human/inspection/20260922T033319-205Z-24328-2/independent-review-resolution.md",
+    "sha256": "a67f55f36554887d97765b4552a33ac5c92494f6a50c814801183528a0c3c8e6"
+   },
+   {
+    "path": "data/human/sessions/20260926T035932-508Z-63684-14/provenance.json",
+    "sha256": "e816be1da9838e921db7f02547393633785ab6d2b99ad501ef6d9ac1733d00e6"
+   }
+  ]
+ },
+ "provenance": {
+  "hero": "Spider-Man",
+  "settings": {
+   "value": {
+    "dpi": 800,
+    "horizontal_sensitivity": 1.89,
+    "vertical_sensitivity": 1.89,
+    "swing_mode": {
+     "automatic_swing": false,
+     "hold_to_swing": true
+    },
+    "mouse_acceleration": true,
+    "mouse_smoothing": true
+   },
+   "source": "James's statements in docs/recording-log.md (2026-09-23): DPI 800 (~14:50 CDT), sensitivity unchanged since 2026-09-21 (1.89/1.89 in the 09-21 report), default swing settings on Shift with Simple Swing on Caps Lock; confirmed on native frames of the settings look (calibration.json: 1.89/1.89, hold to swing on, simple swing off)",
+   "per_session_source": "James's statements for the late take (docs/recording-log.md, Motor settings, committed 83c05f1 and 7ad63e5): recorded on his main account; at its start (Esc 4.1 and 5.4 s, cut) cooldowns were switched on and sensitivity set to 1.89, DPI unchanged. Admitted on the lead's option B (2026-09-26). The main account's yaw gain was measured on its own turn take 2026-09-26 01-09-21 (calibration 20260926T060921-977Z-60612-1, turncal.json 4ab87a55) against the calibration 0.0330738 deg/count: slow (1,702 counts/s) +0.159 %, medium (2,862) -0.023 %, fast (5,284) +0.057 %, mean +0.064 %. The slow turn did NOT meet the scripted +-0.08 % check (turncal.py within false, all_within false); 'equal' is the lead's decision of 2026-09-26, applying 030045's own +-0.25 % slow-class tolerance, which all three speeds meet. The main account has mouse acceleration off; this identity (acceleration on at factor 1.00) is the lead-authorized equivalent profile, supported by the measured gain",
+   "evidence": [
+    {
+     "path": "data/human/sessions/20260926T035932-508Z-63684-14/recording-log.6bbb276.md",
+     "sha256": "dbf4c3236f3e62f668e055d29f921429930ed4c17c101d825f2ab7fa4ba9b26a"
+    },
+    {
+     "path": "data/human/notes/2026-09-21-user-settings.json",
+     "sha256": "852c92254961b4fcb1278e8ebe752ea2f02ce6add678509d3276fd1a26264c6c"
+    },
+    {
+     "path": "data/human/sessions/20260926T035932-508Z-63684-14/provenance.json",
+     "sha256": "e816be1da9838e921db7f02547393633785ab6d2b99ad501ef6d9ac1733d00e6"
+    },
+    {
+     "path": "data/human/calibration/20260923T204707-487Z-45572-2/calibration.json",
+     "sha256": "baa49158c9911e0155a2d06883faec00150b297e0a5fe0e8dd46fc86d5310283"
+    }
+   ]
+  },
+  "bindings": {
+   "value": {
+    "move_forward": [
+     "key:17:0"
+    ],
+    "move_left": [
+     "key:30:0"
+    ],
+    "move_back": [
+     "key:31:0"
+    ],
+    "move_right": [
+     "key:32:0"
+    ],
+    "jump": [
+     "key:57:0"
+    ],
+    "web_swing": [
+     "key:42:0"
+    ],
+    "get_over_here": [
+     "key:33:0"
+    ],
+    "amazing_combo": [
+     "key:18:0",
+     "key:3:0"
+    ],
+    "ultimate": [
+     "key:16:0"
+    ],
+    "melee": [
+     "key:47:0",
+     "mouse:5"
+    ],
+    "spider_power": [
+     "mouse:1"
+    ],
+    "web_cluster": [
+     "mouse:2"
+    ],
+    "team_up": [
+     "key:46:0"
+    ],
+    "team_up_b": [
+     "key:45:0"
+    ],
+    "simple_swing": [
+     "key:58:0"
+    ],
+    "goh_targeting": [
+     "mouse:4",
+     "key:3:0"
+    ],
+    "slow_walk": [
+     "key:29:0"
+    ]
+   },
+   "aliases": {
+    "mouse:5": "melee"
+   },
+   "notes": {
+    "team_up": "C = Team-Up A, fires in the solo range with a visible effect (James; 051828/team-up-check.json). A real action with positives, trained but masked live (Y is off the pad whitelist).",
+    "melee": "V and Mouse 5 (settings look; lead decision): Mouse 5 presses count as melee (header binding_aliases).",
+    "goh_targeting": "Get Over Here Targeting: Mouse 4 (X1) and 2; a fit action (lead decision), structurally unsupported on the pad, counted. Only Mouse 4 is in the step header (2 is shared).",
+    "amazing_combo": "E and 2; 2 is also Get Over Here Targeting, so it is not aliased (unsupported).",
+    "simple_swing": "Caps Lock (VK 20, scan 58), off as a mode; not in the fit vocabulary (unsupported).",
+    "team_up_b": "X, Team-Up B; not in the fit vocabulary (unsupported).",
+    "slow_walk": "LCtrl, hold; not in the fit vocabulary (unsupported).",
+    "alt": "Alt is unbound in game (James); Alt presses are Alt-Tab and stay UI-key cuts."
+   },
+   "source": "native frames of James's settings look (calibration take 2026-09-23, keyboard pages, calibration.json), agreeing with his 2026-09-21 report and 2026-09-23 statements; HUD key labels on this session's frames (slot-mapping.json)",
+   "per_session_source": "the main account's Spider-Man bindings, equal in effect to this table for every key pressed after the cut (bindings-equivalence.json 9f2adb9b; James, 2026-09-25: \"the binds are definitely the same in any meaningful way\"); LeftShift checked as web swing on frames",
+   "evidence": [
+    {
+     "path": "data/human/sessions/20260926T035932-508Z-63684-14/recording-log.6bbb276.md",
+     "sha256": "dbf4c3236f3e62f668e055d29f921429930ed4c17c101d825f2ab7fa4ba9b26a"
+    },
+    {
+     "path": "data/human/notes/2026-09-21-user-settings.json",
+     "sha256": "852c92254961b4fcb1278e8ebe752ea2f02ce6add678509d3276fd1a26264c6c"
+    },
+    {
+     "path": "data/human/sessions/20260926T035932-508Z-63684-14/slot-mapping.json",
+     "sha256": "4f7123888abe7835a07e7f02b50160d1e4fbba42d3cb2e17c3fbbab4c24789ac"
+    },
+    {
+     "path": "data/human/calibration/20260923T204707-487Z-45572-2/calibration.json",
+     "sha256": "baa49158c9911e0155a2d06883faec00150b297e0a5fe0e8dd46fc86d5310283"
+    }
+   ]
+  },
+  "game_patch": {
+   "value": "1.1.3892207/build25501035",
+   "source": "Steam appmanifest (buildid, LastUpdated), the game's version.json and the content log's update steps, read by the provenance step at intake; derived by agent.human_intake.recorded_build",
+   "evidence": [
+    {
+     "path": "data/human/sessions/20260926T035932-508Z-63684-14/provenance.json",
+     "sha256": "e816be1da9838e921db7f02547393633785ab6d2b99ad501ef6d9ac1733d00e6"
+    }
+   ],
+   "derivation": {
+    "value": "1.1.3892207/build25501035",
+    "version": "1.1.3892207",
+    "buildid": "25501035",
+    "installed_utc": "2026-09-24T11:15:31+00:00",
+    "version_json_written_utc": "2026-09-24T11:15:10.109511+00:00",
+    "recording": {
+     "started_utc": "2026-09-26T03:59:32.508000+00:00",
+     "ended_utc": "2026-09-26T04:30:20.813850+00:00"
+    },
+    "content_log_finished_update": {
+     "local": "2026-09-24 06:15:31",
+     "utc": "2026-09-24T11:15:31+00:00",
+     "build": "25501035"
+    },
+    "content_log_utc_offset_s": -18000
+   }
+  },
+  "cooldown_regime": {
+   "value": "normal",
+   "source": "5 fps HUD scan: depletion observed",
+   "evidence": [
+    {
+     "path": "data/human/sessions/20260926T035932-508Z-63684-14/regime-timeline.json",
+     "sha256": "5644f80c4206b35bfd9d696f5420fd900c685a56950d01dcea2debd3a03831fd"
+    }
+   ]
+  },
+  "segments_evidence": {
+   "path": "data/human/sessions/20260926T035932-508Z-63684-14/segments-evidence.json",
+   "sha256": "b753ac38c2c762bfcc9b164aa77c190a3d246683ed85ce8fcfa8d2b194666e21"
+  },
+  "owner_verdicts": {
+   "path": "data/human/sessions/20260926T035932-508Z-63684-14/owner-verdicts.json",
+   "sha256": "686b106c98b70994693a69c4743d924924a5fe482e5bed119a9fbdfd211b26a9"
+  },
+  "lead_decisions": null,
+  "independent_review": {
+   "path": "data/human/sessions/20260926T035932-508Z-63684-14/independent-review.verdicts.json",
+   "sha256": "88afc54b6534bf3a37d3ad570c42acd6616f083aac388b276878e2ca9b05a03e",
+   "reviewer": "admission-review (Codex)"
+  }
+ },
+ "alignment": {
+  "kind": "assumption",
+  "statement": "OBS composition time is the labelling clock; capture, display and input-delivery latency are uncalibrated (no measured bound is asserted)",
+  "source": "lead decision for the whole-session campaign; as for the 2026-09-22/23 request packets"
+ },
+ "segments": [
+  {
+   "segment_id": "seg-000",
+   "start_ns": 463047443291300,
+   "end_ns": 463054471436000,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Hero select, spawn and settings. Esc opens practice settings; No Ability Cooldown is switched off, and the deactivation banner appears. Reject through second Esc down plus 2 seconds.",
+   "evidence": "data/human/sessions/20260926T035932-508Z-63684-14/independent-review.verdicts.json (88afc54b6534bf3a)",
+   "machine_reason": "settings_change"
+  },
+  {
+   "segment_id": "seg-001",
+   "start_ns": 463054471436000,
+   "end_ns": 463054476714602,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Sub-frame unsampled edge: no composition frame inside; retain rejection and neighboring native evidence.",
+   "evidence": "data/human/sessions/20260926T035932-508Z-63684-14/independent-review.verdicts.json (88afc54b6534bf3a)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-002",
+   "start_ns": 463054476714602,
+   "end_ns": 463538143361923,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "accepted",
+   "suitability_reason": "Active Spider-Man range combat/traversal. First f882 and last f58922 pass E1; every inspected interior frame passes proof and has the range banner. Normal regime corroborated by depletion/cooldowns.",
+   "evidence": "data/human/sessions/20260926T035932-508Z-63684-14/independent-review.verdicts.json (88afc54b6534bf3a)",
+   "machine_reason": "range_hud_present"
+  },
+  {
+   "segment_id": "seg-003",
+   "start_ns": 463538143361923,
+   "end_ns": 463546885028239,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Timed Practice banner appears at f58923 and remains through f59970; f58922 is range and f59971 returns to range. Aborted unscored round, excluded as declared.",
+   "evidence": "data/human/sessions/20260926T035932-508Z-63684-14/independent-review.verdicts.json (88afc54b6534bf3a)",
+   "machine_reason": "timed_practice"
+  },
+  {
+   "segment_id": "seg-004",
+   "start_ns": 463546885028239,
+   "end_ns": 464192893335733,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "accepted",
+   "suitability_reason": "Active Spider-Man range combat/traversal. First f59971 and last f137492 pass E1; every inspected interior frame passes proof and has the range banner. Normal regime corroborated by depletion/cooldowns.",
+   "evidence": "data/human/sessions/20260926T035932-508Z-63684-14/independent-review.verdicts.json (88afc54b6534bf3a)",
+   "machine_reason": "range_hud_present"
+  },
+  {
+   "segment_id": "seg-005",
+   "start_ns": 464192893335733,
+   "end_ns": 464192894409700,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Sub-frame unsampled edge: no composition frame inside; retain rejection and neighboring native evidence.",
+   "evidence": "data/human/sessions/20260926T035932-508Z-63684-14/independent-review.verdicts.json (88afc54b6534bf3a)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-006",
+   "start_ns": 464192894409700,
+   "end_ns": 464192990159800,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Alt/Tab UI before focus loss; reject the focused UI bracket. External desktop/OBS frames follow outside focus.",
+   "evidence": "data/human/sessions/20260926T035932-508Z-63684-14/independent-review.verdicts.json (88afc54b6534bf3a)",
+   "machine_reason": "ui_key"
+  },
+  {
+   "segment_id": "seg-007",
+   "start_ns": 464194537423500,
+   "end_ns": 464194787423500,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Prescribed 250 ms focus-return settle, with clean gameplay return before the next accepted frame.",
+   "evidence": "data/human/sessions/20260926T035932-508Z-63684-14/independent-review.verdicts.json (88afc54b6534bf3a)",
+   "machine_reason": "focus_transition"
+  },
+  {
+   "segment_id": "seg-008",
+   "start_ns": 464194787423500,
+   "end_ns": 464194793335656,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Sub-frame unsampled edge: no composition frame inside; retain rejection and neighboring native evidence.",
+   "evidence": "data/human/sessions/20260926T035932-508Z-63684-14/independent-review.verdicts.json (88afc54b6534bf3a)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-009",
+   "start_ns": 464194793335656,
+   "end_ns": 464249826666789,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "accepted",
+   "suitability_reason": "Active Spider-Man range combat/traversal. First f137720 and last f144324 pass E1; every inspected interior frame passes proof and has the range banner. Normal regime corroborated by depletion/cooldowns.",
+   "evidence": "data/human/sessions/20260926T035932-508Z-63684-14/independent-review.verdicts.json (88afc54b6534bf3a)",
+   "machine_reason": "range_hud_present"
+  },
+  {
+   "segment_id": "seg-010",
+   "start_ns": 464249826666789,
+   "end_ns": 464249832348300,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Sub-frame unsampled edge: no composition frame inside; retain rejection and neighboring native evidence.",
+   "evidence": "data/human/sessions/20260926T035932-508Z-63684-14/independent-review.verdicts.json (88afc54b6534bf3a)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-011",
+   "start_ns": 464249832348300,
+   "end_ns": 464249849945600,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Alt UI before Discord focus loss; reject. External overlay remains outside accepted play.",
+   "evidence": "data/human/sessions/20260926T035932-508Z-63684-14/independent-review.verdicts.json (88afc54b6534bf3a)",
+   "machine_reason": "ui_key"
+  },
+  {
+   "segment_id": "seg-012",
+   "start_ns": 464254333642000,
+   "end_ns": 464254583642000,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Prescribed 250 ms focus-return settle following Discord; reject.",
+   "evidence": "data/human/sessions/20260926T035932-508Z-63684-14/independent-review.verdicts.json (88afc54b6534bf3a)",
+   "machine_reason": "focus_transition"
+  },
+  {
+   "segment_id": "seg-013",
+   "start_ns": 464254583642000,
+   "end_ns": 464254584999931,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Sub-frame unsampled edge: no composition frame inside; retain rejection and neighboring native evidence.",
+   "evidence": "data/human/sessions/20260926T035932-508Z-63684-14/independent-review.verdicts.json (88afc54b6534bf3a)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-014",
+   "start_ns": 464254584999931,
+   "end_ns": 464262959999597,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "accepted",
+   "suitability_reason": "Active Spider-Man range combat/traversal. First f144895 and last f145900 pass E1; every inspected interior frame passes proof and has the range banner. Normal regime corroborated by depletion/cooldowns.",
+   "evidence": "data/human/sessions/20260926T035932-508Z-63684-14/independent-review.verdicts.json (88afc54b6534bf3a)",
+   "machine_reason": "range_hud_present"
+  },
+  {
+   "segment_id": "seg-015",
+   "start_ns": 464262959999597,
+   "end_ns": 464262960446700,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Sub-frame unsampled edge: no composition frame inside; retain rejection and neighboring native evidence.",
+   "evidence": "data/human/sessions/20260926T035932-508Z-63684-14/independent-review.verdicts.json (88afc54b6534bf3a)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-016",
+   "start_ns": 464262960446700,
+   "end_ns": 464263057172300,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Alt UI before the next Discord focus loss; reject.",
+   "evidence": "data/human/sessions/20260926T035932-508Z-63684-14/independent-review.verdicts.json (88afc54b6534bf3a)",
+   "machine_reason": "ui_key"
+  },
+  {
+   "segment_id": "seg-017",
+   "start_ns": 464264185679200,
+   "end_ns": 464264435679200,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Prescribed 250 ms focus-return settle; the following gameplay edge has positive proof.",
+   "evidence": "data/human/sessions/20260926T035932-508Z-63684-14/independent-review.verdicts.json (88afc54b6534bf3a)",
+   "machine_reason": "focus_transition"
+  },
+  {
+   "segment_id": "seg-018",
+   "start_ns": 464264435679200,
+   "end_ns": 464264443332870,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Sub-frame unsampled edge: no composition frame inside; retain rejection and neighboring native evidence.",
+   "evidence": "data/human/sessions/20260926T035932-508Z-63684-14/independent-review.verdicts.json (88afc54b6534bf3a)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-019",
+   "start_ns": 464264443332870,
+   "end_ns": 464268151666056,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "accepted",
+   "suitability_reason": "Active Spider-Man range combat/traversal. First f146078 and last f146523 pass E1; every inspected interior frame passes proof and has the range banner. Normal regime corroborated by depletion/cooldowns.",
+   "evidence": "data/human/sessions/20260926T035932-508Z-63684-14/independent-review.verdicts.json (88afc54b6534bf3a)",
+   "machine_reason": "range_hud_present"
+  },
+  {
+   "segment_id": "seg-020",
+   "start_ns": 464268151666056,
+   "end_ns": 464268158331000,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Sub-frame unsampled edge: no composition frame inside; retain rejection and neighboring native evidence.",
+   "evidence": "data/human/sessions/20260926T035932-508Z-63684-14/independent-review.verdicts.json (88afc54b6534bf3a)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-021",
+   "start_ns": 464268158331000,
+   "end_ns": 464269286636100,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Tab scoreboard (visible at 1221.327-1221.627 s), Windows key and Alt/focus-loss bracket. Reject under the UI rule and release settle.",
+   "evidence": "data/human/sessions/20260926T035932-508Z-63684-14/independent-review.verdicts.json (88afc54b6534bf3a)",
+   "machine_reason": "ui_key"
+  },
+  {
+   "segment_id": "seg-022",
+   "start_ns": 464270345166000,
+   "end_ns": 464270679424700,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Prescribed 250 ms focus-return settle after the external overlay; reject.",
+   "evidence": "data/human/sessions/20260926T035932-508Z-63684-14/independent-review.verdicts.json (88afc54b6534bf3a)",
+   "machine_reason": "ui_key"
+  },
+  {
+   "segment_id": "seg-023",
+   "start_ns": 464270679424700,
+   "end_ns": 464270684999287,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Sub-frame unsampled edge: no composition frame inside; retain rejection and neighboring native evidence.",
+   "evidence": "data/human/sessions/20260926T035932-508Z-63684-14/independent-review.verdicts.json (88afc54b6534bf3a)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-024",
+   "start_ns": 464270684999287,
+   "end_ns": 464503926656625,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "accepted",
+   "suitability_reason": "Active Spider-Man range combat/traversal. First f146827 and last f174816 pass E1; every inspected interior frame passes proof and has the range banner. Normal regime corroborated by depletion/cooldowns.",
+   "evidence": "data/human/sessions/20260926T035932-508Z-63684-14/independent-review.verdicts.json (88afc54b6534bf3a)",
+   "machine_reason": "range_hud_present"
+  },
+  {
+   "segment_id": "seg-025",
+   "start_ns": 464503926656625,
+   "end_ns": 464504530342200,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Fall death: HP reaches zero, followed by SPECTATING. Previous accepted f174816 still shows 250 HP; reject dead interval.",
+   "evidence": "data/human/sessions/20260926T035932-508Z-63684-14/independent-review.verdicts.json (88afc54b6534bf3a)",
+   "machine_reason": "dead"
+  },
+  {
+   "segment_id": "seg-026",
+   "start_ns": 464504530342200,
+   "end_ns": 464507266459000,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Tab scoreboard during death/respawn and the prescribed release settle. Clean respawn occurs inside this rejected interval.",
+   "evidence": "data/human/sessions/20260926T035932-508Z-63684-14/independent-review.verdicts.json (88afc54b6534bf3a)",
+   "machine_reason": "ui_key"
+  },
+  {
+   "segment_id": "seg-027",
+   "start_ns": 464507266459000,
+   "end_ns": 464507268323157,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Sub-frame unsampled edge: no composition frame inside; retain rejection and neighboring native evidence.",
+   "evidence": "data/human/sessions/20260926T035932-508Z-63684-14/independent-review.verdicts.json (88afc54b6534bf3a)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-028",
+   "start_ns": 464507268323157,
+   "end_ns": 464663151650256,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "accepted",
+   "suitability_reason": "Active Spider-Man range combat/traversal. First f175217 and last f193923 pass E1; every inspected interior frame passes proof and has the range banner. Normal regime corroborated by depletion/cooldowns.",
+   "evidence": "data/human/sessions/20260926T035932-508Z-63684-14/independent-review.verdicts.json (88afc54b6534bf3a)",
+   "machine_reason": "range_hud_present"
+  },
+  {
+   "segment_id": "seg-029",
+   "start_ns": 464663151650256,
+   "end_ns": 464663156495700,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Sub-frame unsampled edge: no composition frame inside; retain rejection and neighboring native evidence.",
+   "evidence": "data/human/sessions/20260926T035932-508Z-63684-14/independent-review.verdicts.json (88afc54b6534bf3a)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-030",
+   "start_ns": 464663156495700,
+   "end_ns": 464666821484900,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Tab scoreboard visibly opens around 1616.177 s and closes after release; two-second release settle remains excluded.",
+   "evidence": "data/human/sessions/20260926T035932-508Z-63684-14/independent-review.verdicts.json (88afc54b6534bf3a)",
+   "machine_reason": "ui_key"
+  },
+  {
+   "segment_id": "seg-031",
+   "start_ns": 464666821484900,
+   "end_ns": 464666826650108,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Sub-frame unsampled edge: no composition frame inside; retain rejection and neighboring native evidence.",
+   "evidence": "data/human/sessions/20260926T035932-508Z-63684-14/independent-review.verdicts.json (88afc54b6534bf3a)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-032",
+   "start_ns": 464666826650108,
+   "end_ns": 464890043307847,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "accepted",
+   "suitability_reason": "Active Spider-Man range combat/traversal. First f194364 and last f221150 pass E1; every inspected interior frame passes proof and has the range banner. Normal regime corroborated by depletion/cooldowns.",
+   "evidence": "data/human/sessions/20260926T035932-508Z-63684-14/independent-review.verdicts.json (88afc54b6534bf3a)",
+   "machine_reason": "range_hud_present"
+  },
+  {
+   "segment_id": "seg-033",
+   "start_ns": 464890043307847,
+   "end_ns": 464890043399100,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Sub-frame unsampled edge: no composition frame inside; retain rejection and neighboring native evidence.",
+   "evidence": "data/human/sessions/20260926T035932-508Z-63684-14/independent-review.verdicts.json (88afc54b6534bf3a)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-034",
+   "start_ns": 464890043399100,
+   "end_ns": 464890123356900,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "Closing Alt until final focus loss; following Discord and timestamp-duplicate tail are outside accepted spans.",
+   "evidence": "data/human/sessions/20260926T035932-508Z-63684-14/independent-review.verdicts.json (88afc54b6534bf3a)",
+   "machine_reason": "ui_key"
+  }
+ ]
+}

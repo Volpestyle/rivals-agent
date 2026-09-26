@@ -1,0 +1,61 @@
+{
+ "format": "rivals-calibration-v1",
+ "session": "20260926T060921-977Z-60612-1",
+ "account": "main (settings folder 1859995554)",
+ "media": {
+  "path": "C:/Users/volpe/Videos/2026-09-26 01-09-21.mkv",
+  "sha256": "becf4c8ca197d0803ad5129c135881c49f9243ddfd3f24ad8c96159b5438264b"
+ },
+ "purpose": "main-account yaw gain for the late 2026-09-25 take (22-59-32), lead decision 2026-09-26",
+ "settings": "James (recording log 7ad63e5): main account at in-game sensitivity 1.89; DPI 800",
+ "method": "030045's still-to-still turn method (turncal.py; code-snapshot-2ad0992 Estimator): per turn, the rotation between still frames before and after it is the excess over one revolution; gain = (360 + excess) / x counts",
+ "turns": [
+  {
+   "mean_counts_per_s": 1702,
+   "dx_between_frames": 11025,
+   "excess_yaw_deg": 5.218024404240283,
+   "excess_pitch_deg": 0.16661764623933253,
+   "inliers": 172,
+   "counts_per_360": 10867.481161353982,
+   "yaw_deg_per_count": 0.03312635141988574,
+   "vs_calibration_pct": 0.1588913880042231
+  },
+  {
+   "mean_counts_per_s": 2862,
+   "dx_between_frames": 10851,
+   "excess_yaw_deg": -1.1983872789746406,
+   "excess_pitch_deg": -0.715806839542374,
+   "inliers": 623,
+   "counts_per_360": 10887.242034325147,
+   "yaw_deg_per_count": 0.03306622548346008,
+   "vs_calibration_pct": -0.022901863529189992
+  },
+  {
+   "mean_counts_per_s": 5284,
+   "dx_between_frames": 10931,
+   "excess_yaw_deg": 1.7369945466845318,
+   "excess_pitch_deg": -1.5090962212596701,
+   "inliers": 425,
+   "counts_per_360": 10878.511347536896,
+   "yaw_deg_per_count": 0.0330927632006847,
+   "vs_calibration_pct": 0.057336020308218494
+  }
+ ],
+ "mean_gain": 0.03309511336801017,
+ "mean_vs_calibration_pct": 0.06444184826108756,
+ "calibration_gain": 0.0330738,
+ "reproduction_030045": {
+  "mean_vs_calibration_pct": -0.027684884659018305,
+  "record_mean_vs_calibration_pct": -0.029,
+  "file": "reproduction-030045.turncal.json"
+ },
+ "decision": "lead 2026-09-26: EQUAL to the campaign calibration (mean +0.064 %, every speed within 030045's +-0.25 % slow-class tolerance); supersedes the inconclusive relative per-pair estimate (R 0.936, 95 % interval 0.841-1.041)",
+ "files": {
+  "turncal.py": "a3dbf412e5f4098958a2e1b3eec82e1c07731f422372380dd47e5bd84a199993",
+  "plan.json": "cb98f350b089211edfc403709065fef606a9f77a9a44728941845b9afaa8e10e",
+  "turncal.json": "4ab87a552a7a00cc68000134d376e49f67f93088eb4ef28097dc6b7e06698b89",
+  "reproduction-030045.turncal.json": "6d91a908559a11710c7eab9f6553be3713405b42698e9ebf88bc081e594fa790",
+  "reproduction-030045.plan.json": "78b04b9783dcbcbdd180dbedfc9eb4e4b3fd202821487d7404d21d2c676f8ead"
+ },
+ "never_a_split": true
+}
