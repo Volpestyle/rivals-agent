@@ -34,6 +34,7 @@ for whole-session behaviour cloning (movement, targeting, combos), not just web-
 | 2026-09-25 23-49-58.mkv | 20260926T044958-507Z-63684-15 | 7.0 min | **replay-of-self** of the 19:28 Central Park match, first-person, 1x (the two-FOV re-record was skipped) | n/a | **gate2** replay half, sealed with its live match |
 | 2026-09-25 23-57-29.mkv | 20260926T045729-166Z-79780-1 | 10.5 min | range, training take on the alt account, usual skin | normal | admitted 2026-09-26: 10.26 counted min (3 runs), freeze `596883a2` |
 | 2026-09-26 01-09-21.mkv | 20260926T060921-977Z-60612-1 | 19 s | turn calibration on the **main** account (three rightward 360 degree turns, slow/medium/fast, sensitivity 1.89) | n/a | calibration entry, never a split; main-account yaw gain equals the campaign calibration (mean +0.064 %) |
+| 2026-09-26 10-38-35.mkv | 20260926T153835-237Z-111496-2 | ~16 min | **test** take (James, 10:55 CDT: "one test take in, 16 mins"; named in chat after recording, before anyone looked at it; the first recording of the 2026-09-26 morning sitting, the game open since about 10:10). A 23 s logger session 20260926T153812-936Z-111496-1 from the same OBS process, with no video, is held with it | not inspected | **sealed test**, registered by the lead 10:58 CDT from file and folder names only (logger folder and frames not opened); denylist entry and media sha256 pending (admission lane) |
 
 Total logged range play with inputs: about 17 trainable minutes before the campaign; campaign take 1 adds up to ~27 min (pending intake). Campaign target: 180 minutes.
 
