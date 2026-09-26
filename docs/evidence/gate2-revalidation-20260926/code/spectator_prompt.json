@@ -1,0 +1,13 @@
+{
+ "format": "rivals-spectator-prompt-v1",
+ "note": "The replay viewer's 'Press N to Show' prompt (bottom centre), binary white-text fill at native 2560x1440, box (1180, 1400, 1380, 1440); the median of 650 frames of the development Quick Match replay 2026-09-26 11-10-08.mkv. Present on every replay-viewer frame (DayMR 99 %, QM 96 %), never on live frames (max NCC 0.27 over 1,570 development seconds).",
+ "box": [
+  1180,
+  1400,
+  1380,
+  1440
+ ],
+ "h": 40,
+ "w": 200,
+ "bits": "eNrt0rFKBDEQANAJC8YiuldesbD4B4mCWIhX+gu24g+s3XWXZSHbLH6Ln3A2biPYWma5H8h1U4SLye5lPdGzEmwcBgbmwcAwA/AfM2d/CxYOPzdyvQtkw0YwQ52/9uBGmPIttIZIINUXwL1w/TPIDxCPNq8MIDW0Q1geaXurBljbWW0IUk1XCDrt7F3Tw33ZCMUDkOoQCnbSDJCvS8XVZAAGF0yoLTx5OIAImYezl34UKR8uqUywXgY49nAaYZMSHYF6OH/bgkxkESEJcBOBSJ5gG8CnUFfzCPx5QrGVEbIR/B7UOQ9TUjPRjBA272GF/h7CZsUA0uaJDgCdAcs4Znznwqlz3//CXviLeAeZBIwm"
+}

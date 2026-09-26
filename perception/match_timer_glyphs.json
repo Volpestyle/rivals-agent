@@ -1,0 +1,177 @@
+{
+ "format": "rivals-hud-timer-glyphs-v1",
+ "note": "Binary glyph fills (1 = the glyph's fill), upright (the italic slant removed by x' = x + 0.24 (y - y0)), each the pixelwise majority of its development examples. mmss: the live centre timer's MM:SS digits (white or yellow), from 2026-09-25 20-06-20.mkv and 20-37-11.mkv at 2-4 fps, clustered and labelled by eye. decimal: the SS.d countdown's larger digits and point, from 20-06-20.mkv 368-394 s, 86-98 s and 20-37-11.mkv 462-478 s at 120 fps, labelled from the reader's own reads between two agreeing reads. team: the replay viewer's team-box clocks, from 2026-09-23 00-43-25.mkv round 1 (471-871 s) at 4 fps. Development recordings only (lane doc, Gate 2 step 1).",
+ "sets": {
+  "mmss": {
+   "0": {
+    "h": 37,
+    "w": 21,
+    "bits": "eNo1jMENgCAQBE3uwZMSLIXOvFCZdkAJ0gH+1HAyotHXJrOz6xFa4IQESoV1ac3tW5jjZb5kVeEY6VA6JGKO/KYn6yT1KfkXUL6bhIUu2HAD80VIaA=="
+   },
+   "1": {
+    "h": 37,
+    "w": 19,
+    "bits": "eNptyLENgDAMAEFHKSgzgkfxaGYzGCUb4I5IAT9CtFx5hFLpPhqFsBTb6xAX7eUSW5eQFP2q/VSUfGsoE5yDGzZO8gFZFS4J"
+   },
+   "2": {
+    "h": 37,
+    "w": 21,
+    "bits": "eNo1zLERhCAURdHHEBBagqX80sDK1Aq2hKUDydQR/9XE/MwZibhxwg8yF/xX97Q3m6e7D1VoOERJh3JJXXmJXbZEl9XgGmt4QXtVarISYPsaHHYoD9AoPNA="
+   },
+   "3": {
+    "h": 37,
+    "w": 22,
+    "bits": "eNodzL0VQEAQAOH1LhBuCUq50o5IGVo5lZAJETnP2vGTzfuCUVroocESF6wwjJ7CabpsccguoYhuEtvkQglkdYn256tZkMqsPkozzaTudj1ggojB/q29Jj9wqUQe"
+   },
+   "4": {
+    "h": 37,
+    "w": 22,
+    "bits": "eNplzLERgCAMRuGfo6DMCIySzYQ7B2CldK6B5wKxkgIT6X3VVz1kgSNNZEWR6KCJosGFvLIF1+TCXl9Lz8itG++35WNsdA1up7H/UhjiAHVwXes4Fz+F9Tx9"
+   },
+   "5": {
+    "h": 37,
+    "w": 22,
+    "bits": "eNodjDEOQEAQRWejUDrCHmWPNlE5hqtsp3QEOiWiQDL2Gbqf918eHLBCxJT9n30WlWBSbxKHWZPTxSlFueG80pTR8Jj/KQsSnlKfV5xcba003hshYXy9jlKRX8UNSQk="
+   },
+   "6": {
+    "h": 37,
+    "w": 21,
+    "bits": "eNo1jLERgCAQwP6OwpIRGIXN5JgMnYARcAPtkOMlWmDqJA7D8DTIEOhQ9jGWevkUHxV7SBDTcEWhQmISUcsRVtNvx8ZfwDk3GfWfoPICJbJKDg=="
+   },
+   "7": {
+    "h": 37,
+    "w": 21,
+    "bits": "eNr7/x8M/v3///3///0g5vsH/+uZf/+wv3/w3z/+Bwz1DOw/GOwPMP5hQOf8B3MagBx5TM4HoDJmMAcABG8y6g=="
+   },
+   "8": {
+    "h": 37,
+    "w": 22,
+    "bits": "eNotzLENgCAUANGCgpIRHIXR0MoxHEWYBDtLTSyACP+UaPeKyxlGmGGgOm44YA3iVKlmP+3iP6aXiCNDQExvC6Rs44ZTTfTPqYlJEMFS4errqvEPlDJOqQ=="
+   },
+   "9": {
+    "h": 37,
+    "w": 22,
+    "bits": "eNo9zLENgCAUAFESCkpGcJQ/Glo5hqOIk2hnCVZIRE6Mid0VL2fpYYSO4rggwLxUp3Oxe5TJf5laUh0ZEqwgjYeIeIXSRZl0yrrhhrvaH8DxrovBP0xETGg="
+   },
+   ":": {
+    "h": 26,
+    "w": 9,
+    "bits": "eNqzsLef//777z9/bBhggE/+/vvv///9s+NjAADGPQyk"
+   }
+  },
+  "decimal": {
+   ".": {
+    "h": 10,
+    "w": 11,
+    "bits": "eNqTb/753/7////3f/+XP/wBAEpWCoI="
+   },
+   "0": {
+    "h": 47,
+    "w": 28,
+    "bits": "eNpNzTEOwyAQRFEQkVL6CD7KHm1LXyudr0FHGUsUpED7vQgUuXr600wIrwiXwAFd4ZwUMB+//W360dLTZJSMkskqzVLsSbWEZGmO5r1ZHKzxT3T2ihdUeHD5+wZZ+SUIN6CNcjY="
+   },
+   "1": {
+    "h": 46,
+    "w": 24,
+    "bits": "eNr7/5/hPxKqhyHm/wyMYMQAYzCiijD8bwAiRjBigJH4UD2QPMD//1/9//8QZI+KADQ0SNY="
+   },
+   "2": {
+    "h": 46,
+    "w": 28,
+    "bits": "eNpNjbEJxDAQBPdRoFAlqBSVdoYP3JYyh27B4AYEn1xwaL1v8/DR3A63bONM5DByJZ3kRoawf9G5ewlbbIt8w3MA7CiBxAVtIE/ADtTAS96GvD4OlKmrozqyhHydd7P5r5kkGvl+1k9tKn0e/KULeIpibA=="
+   },
+   "3": {
+    "h": 46,
+    "w": 27,
+    "bits": "eNo9jbENwyAUBR9yQckIjMJosFnYICMYKYXL0Jkozr/8yt3T6emuYBFeYAWe8AF8nQ5o7DN/LVB6ea/4QzTlqWBS7UorgAojsoQp0zYuBz052JDKUPQvXXkpUG/NY+TTonlrv5MHXL4SjMqMbvoDTG9lzA=="
+   },
+   "4": {
+    "h": 46,
+    "w": 28,
+    "bits": "eNplzcEJgDAQBMANPvJMCVeKpZ1WpnaSEtaXeUjWE0EQD5ZhP3vIHfCKEqjCHsaOQYTfVKgji0lCEYfAxBz4wrIHRgu6cdyUTqNvys2o+abpvSPinxbzK6whaUJp8frPBfCXW+k="
+   },
+   "5": {
+    "h": 46,
+    "w": 28,
+    "bits": "eNpVzcEJgDAMBdCUHnp0hIzS0epoggfHMNAFIr2WfKNVxNPjQ/4PgA3o+FEeFkqdyImDO6099aJlfy8rYHlwJUtWhKsFI8pCAY5SHARk4WYfmpv/9Prh8GACxMciMDP0BDjfbSs="
+   },
+   "6": {
+    "h": 48,
+    "w": 28,
+    "bits": "eNpNzTEKwzAMRmGHDB5zhB5FR5O3Xstbx1zBpUPWQoZ4UPSqxhQ6fSB4vxb6BE3hDh1Ywf6wxSm6WXatwexaUraUqBe6ej7pkT8iCDbwH20EVS6aHD4TvCyocgz2OMpb93gW3RcZ3OAZmxmK0D47wnzB"
+   },
+   "7": {
+    "h": 48,
+    "w": 28,
+    "bits": "eNply7ENwCAQQ1FHFKRjBEZhNBjtRqFLmy4UJ8wlEgXEzZOLT257th9JSVTHLPlS3416+g6wIqghk6g4WBDbR2pwBNI98UaueFMj9F8qS1rWdACp2lhw"
+   },
+   "8": {
+    "h": 46,
+    "w": 27,
+    "bits": "eNoljDEOwjAQBBNRXOkn8JR72iHxEJ6CO8o8IUYULrFEEUcYTy6kW+3OrNJP8ISuMEEFPC1ecGEq4dtHNOq7SmOwezovbfTJ5iLrwb7cMrrgAs2LB6xc0aS5ycGGj99Y1Fzlx8Btv/EpMe/s/ya7bBAgGkWowwa7bXbJ"
+   },
+   "9": {
+    "h": 46,
+    "w": 27,
+    "bits": "eNo9jTEOwjAQBM+iuNJPyFPuaeYnPAV3lHlCQpUSU8UW5gZHILrVrmbWcIU7uMEMDRhpHwVn5hJfHrBsW9WOcF2nvYcxpaXEdkzFNuiDusDzq7lBnRqnbquoi5BlKhJI2R5V3z+Nqw9g+V8emgQRcqIoXT7SFHLG"
+   }
+  },
+  "team": {
+   "0": {
+    "h": 20,
+    "w": 12,
+    "bits": "eNqzb/9X//xfwXu+gudwxF/wna/++X/7h38ABH4RIQ=="
+   },
+   "1": {
+    "h": 20,
+    "w": 10,
+    "bits": "eNr7Y89/+IMce+MDCzn2hgcWfCCi/v73v/8BkFMMdw=="
+   },
+   "2": {
+    "h": 20,
+    "w": 12,
+    "bits": "eNqzb/9X//xfwXs+xgcyzAcq+Bk+yDEfsGBvqH/+v/77fwDlNQ9H"
+   },
+   "3": {
+    "h": 20,
+    "w": 12,
+    "bits": "eNqzb/9X//xfwXs+hgd8/A/+sD+QY3jAX/Cdr/75f/uHfwD3BBBZ"
+   },
+   "4": {
+    "h": 20,
+    "w": 11,
+    "bits": "eNpjb/ggx37whz37wz/FfcV9hef/gwBzQwU/wwMA2eYPoA=="
+   },
+   "5": {
+    "h": 20,
+    "w": 12,
+    "bits": "eNr7//5f/fN/BewMxcfBjOd8DA/4gWT98//2D/8AACpKEp4="
+   },
+   "6": {
+    "h": 20,
+    "w": 12,
+    "bits": "eNqzb/9X//xfwXu+AnYJIKP++byC5/wF3/nqn/+3f/gHAAv7Eek="
+   },
+   "7": {
+    "h": 20,
+    "w": 11,
+    "bits": "eNr7f/////p38ocbCviYD1TwMR6o4Gc8YMHP+MCCnQEA3IEL4w=="
+   },
+   "8": {
+    "h": 20,
+    "w": 11,
+    "bits": "eNqrl//9v/6d7OEd5Xz/z3/8Xwlk/gAy7//9L38AAALhEl4="
+   },
+   "9": {
+    "h": 20,
+    "w": 11,
+    "bits": "eNqrl//9v/6d7OEd5Xwf7//9b/NAhvlHOd9/IFP+AAD4TBFg"
+   },
+   ":": {
+    "h": 14,
+    "w": 4,
+    "bits": "eNrze+fAwPL+CwAL2wNk"
+   }
+  }
+ }
+}

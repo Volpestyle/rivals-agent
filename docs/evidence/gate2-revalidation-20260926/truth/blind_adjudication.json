@@ -1,0 +1,51 @@
+{
+ "format": "gate2-readers-blind-adjudication-v1 (re-validation)",
+ "fit_review_labels_sha256": "2b4868b4f03ecc2b1468e89703b0fb8c6cbc223edab0eaf5c8212d96edac5f26",
+ "truth_v1_sha256": {
+  "feed_truth.json": "8842a476ff6b6a2ee65e256052d9c20a1266c1fe64a71e45d0f9bb7a396ff165",
+  "timer_values.json": "033955fedf6ec557b7c9e58cc7de3d899679f2f10d24aff3aef4726b683cce31"
+ },
+ "agreement": {
+  "t1": {
+   "n": 50,
+   "exact": 49,
+   "disagree": [
+    {
+     "id": "v42",
+     "where": "22-48-05 value frame 106",
+     "mine": "00:35",
+     "fit_review": "00:36",
+     "final": "00:35",
+     "why": "re-inspected at 3x: clearly 00:35"
+    }
+   ]
+  },
+  "entries": {
+   "n": 10,
+   "shift_or_empty_same": "9 of 9 decided (e03: fit-review unsure, no earlier frame in its crops)",
+   "after_shift_arrivals": {
+    "e01": 0,
+    "e02": 0,
+    "e05": -1,
+    "e07": 0,
+    "e08": 0,
+    "e09 (Cenxtii)": -1,
+    "e09 (chickentendy71, fit-review's main answer)": "+1 vs mine"
+   },
+   "empty_feed_arrivals": "e00, e03, e04, e06: my labels were the 0.2 s coarse cell (an upper bound); fit-review's frame-level first frames were 14-24 frames earlier; adopted after re-inspection"
+  },
+  "window": {
+   "window": "22-48-05_6",
+   "mine": 0,
+   "fit_review": 0
+  }
+ },
+ "changed_in_truth_v2": [
+  "21-13-21_0 1982->1981",
+  "21-13-21_0 chickentendy71 first 3081->3082, shift 3079->3080",
+  "21-13-21_0 Cenxtii first 3095->3094",
+  "22-48-05_5 2712->2691, 4152->4126, 5352->5338 (empty-feed)",
+  "21-13-21_0 5328->5309 (empty-feed)"
+ ],
+ "note": "the other 21 empty-feed arrivals in the truth stay at coarse (0.2 s) resolution; they are reported, not judged"
+}

@@ -1,0 +1,2269 @@
+{
+"format": "gate2-readers-timer-values-v1 (re-validation)",
+"labeller": "scoreboard-fix (by eye, native crops at 0.9 scale)",
+"notes": {
+"20-56-10": "135 is a pop frame with a ghosted glyph: illegible; 79, 80, 85, 136 are mid-pop frames labelled with the value shown"
+},
+"frames": {
+"19-53-04": [
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+}
+],
+"20-25-52": [
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+}
+],
+"20-56-10": [
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "00:33"
+},
+{
+"centre": "00:33"
+},
+{
+"centre": "00:32"
+},
+{
+"centre": "00:29"
+},
+{
+"centre": "00:26"
+},
+{
+"centre": "00:26"
+},
+{
+"centre": "00:23"
+},
+{
+"centre": "00:23"
+},
+{
+"centre": "00:21"
+},
+{
+"centre": "00:21"
+},
+{
+"centre": "00:21"
+},
+{
+"centre": "00:20"
+},
+{
+"centre": "00:20"
+},
+{
+"centre": "00:18"
+},
+{
+"centre": "00:17"
+},
+{
+"centre": "00:15"
+},
+{
+"centre": "00:14"
+},
+{
+"centre": "00:13"
+},
+{
+"centre": "00:10"
+},
+{
+"centre": "00:10"
+},
+{
+"centre": "00:10"
+},
+{
+"centre": "00:09"
+},
+{
+"centre": "00:08"
+},
+{
+"centre": "00:07"
+},
+{
+"centre": "00:07"
+},
+{
+"centre": "6.0"
+},
+{
+"centre": "4.9"
+},
+{
+"centre": "4.1"
+},
+{
+"centre": "4.1"
+},
+{
+"centre": "3.6"
+},
+{
+"centre": "2.1"
+},
+{
+"centre": "1.9"
+},
+{
+"centre": "1.0"
+},
+{
+"centre": "00:29"
+},
+{
+"centre": "00:29"
+},
+{
+"centre": "00:27"
+},
+{
+"centre": "00:26"
+},
+{
+"centre": "00:25"
+},
+{
+"centre": "00:19"
+},
+{
+"centre": "00:19"
+},
+{
+"centre": "00:18"
+},
+{
+"centre": "00:18"
+},
+{
+"centre": "00:18"
+},
+{
+"centre": "00:17"
+},
+{
+"centre": "00:17"
+},
+{
+"centre": "00:17"
+},
+{
+"centre": "00:14"
+},
+{
+"centre": "00:14"
+},
+{
+"centre": "00:13"
+},
+{
+"centre": "00:12"
+},
+{
+"centre": "00:11"
+},
+{
+"centre": "00:11"
+},
+{
+"centre": "00:10"
+},
+{
+"centre": "00:09"
+},
+{
+"centre": "00:08"
+},
+{
+"centre": "00:07"
+},
+{
+"centre": "00:07"
+},
+{
+"centre": "00:07"
+},
+{
+"centre": "00:06"
+},
+{
+"centre": "00:05"
+},
+{
+"centre": "00:01"
+},
+{
+"centre": "00:01"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "5.6"
+},
+{
+"centre": "5.3"
+},
+{
+"centre": "2.7"
+},
+{
+"centre": "2.7"
+},
+{
+"centre": "1.5"
+},
+{
+"centre": "1.2"
+},
+{
+"centre": "illegible"
+},
+{
+"centre": "0.9"
+},
+{
+"centre": "0.2"
+},
+{
+"centre": "00:30"
+},
+{
+"centre": "00:29"
+},
+{
+"centre": "00:29"
+},
+{
+"centre": "00:29"
+},
+{
+"centre": "00:28"
+},
+{
+"centre": "00:26"
+},
+{
+"centre": "00:26"
+},
+{
+"centre": "00:24"
+},
+{
+"centre": "00:23"
+},
+{
+"centre": "00:22"
+},
+{
+"centre": "00:21"
+},
+{
+"centre": "00:20"
+}
+],
+"21-13-21": [
+{
+"centre": "00:23"
+},
+{
+"centre": "00:22"
+},
+{
+"centre": "00:17"
+},
+{
+"centre": "00:17"
+},
+{
+"centre": "00:15"
+},
+{
+"centre": "00:13"
+},
+{
+"centre": "00:12"
+},
+{
+"centre": "00:11"
+},
+{
+"centre": "00:09"
+},
+{
+"centre": "00:09"
+},
+{
+"centre": "00:08"
+},
+{
+"centre": "00:02"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+}
+],
+"22-48-05": [
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "00:36"
+},
+{
+"centre": "00:34"
+},
+{
+"centre": "00:19"
+},
+{
+"centre": "00:17"
+},
+{
+"centre": "00:07"
+},
+{
+"centre": "3.5"
+},
+{
+"centre": "2.1"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "00:45"
+},
+{
+"centre": "00:45"
+},
+{
+"centre": "00:41"
+},
+{
+"centre": "00:38"
+},
+{
+"centre": "00:38"
+},
+{
+"centre": "00:35"
+},
+{
+"centre": "00:34"
+},
+{
+"centre": "00:23"
+},
+{
+"centre": "00:23"
+},
+{
+"centre": "00:16"
+},
+{
+"centre": "2.8"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+},
+{
+"centre": "none"
+}
+]
+}
+}

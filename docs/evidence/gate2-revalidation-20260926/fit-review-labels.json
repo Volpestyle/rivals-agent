@@ -1,0 +1,113 @@
+{
+  "t1": {
+    "v00": "none",
+    "v01": "none",
+    "v02": "none",
+    "v03": "none",
+    "v04": "none",
+    "v05": "none",
+    "v06": "none",
+    "v07": "00:01",
+    "v08": "00:14",
+    "v09": "none",
+    "v10": "none",
+    "v11": "none",
+    "v12": "none",
+    "v13": "none",
+    "v14": "none",
+    "v15": "none",
+    "v16": "none",
+    "v17": "none",
+    "v18": "none",
+    "v19": "none",
+    "v20": "00:26",
+    "v21": "none",
+    "v22": "none",
+    "v23": "none",
+    "v24": "none",
+    "v25": "none",
+    "v26": "none",
+    "v27": "none",
+    "v28": "none",
+    "v29": "none",
+    "v30": "none",
+    "v31": "none",
+    "v32": "none",
+    "v33": "00:34",
+    "v34": "0.2",
+    "v35": "none",
+    "v36": "1.2",
+    "v37": "none",
+    "v38": "none",
+    "v39": "none",
+    "v40": "none",
+    "v41": "none",
+    "v42": "00:36",
+    "v43": "none",
+    "v44": "none",
+    "v45": "none",
+    "v46": "none",
+    "v47": "none",
+    "v48": "none",
+    "v49": "none"
+  },
+  "entries": {
+    "e00": {
+      "first": 10,
+      "after_shift": false,
+      "shift": null
+    },
+    "e01": {
+      "first": 24,
+      "after_shift": true,
+      "shift": 22
+    },
+    "e02": {
+      "first": 24,
+      "after_shift": true,
+      "shift": 21
+    },
+    "e03": {
+      "first": 0,
+      "after_shift": "unsure",
+      "shift": null
+    },
+    "e04": {
+      "first": 3,
+      "after_shift": false,
+      "shift": null
+    },
+    "e05": {
+      "first": 23,
+      "after_shift": true,
+      "shift": 21
+    },
+    "e06": {
+      "first": 5,
+      "after_shift": false,
+      "shift": null
+    },
+    "e07": {
+      "first": 24,
+      "after_shift": true,
+      "shift": 22
+    },
+    "e08": {
+      "first": 24,
+      "after_shift": true,
+      "shift": 21
+    },
+    "e09": {
+      "first": 11,
+      "after_shift": true,
+      "shift": 9
+    }
+  },
+  "window": [],
+  "notes": {
+    "method": "Blind visual labels from this packet's README and images only. Arrival means the first visible part, including faint fade-in. after_shift refers to displacement of a previously occupied top slot, even when a blank interval precedes visible arrival.",
+    "e03": "The UsedDPsock / Dissi entry is already visible, partly faded in, at f00. first=0 is the first provided visible frame, not an observed onset. No preceding frame is available to determine after_shift; it is unsure.",
+    "e09": "Two new entries arrive. The main e09 answer records the first: ry1on / chickentendy71, first=11, shift=9. A second, ry1on / Cenxtii, follows shift=22; a very faint part is visible at f23 and more clearly at f24. Both arrivals are after shifts.",
+    "window": "All 300 provided crops c000 through c299 were inspected. No kill-feed entry is visible; window is empty. The small character fragment at the bottom of c294 is not a feed entry."
+  }
+}

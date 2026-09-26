@@ -384,6 +384,286 @@ Within "scored", the IDM's own abstention is reported **per head and per action*
 - **The support gate's two thresholds** are computed from James's train and dev sessions and frozen with the
   checkpoint, before Gate 2 is opened.
 
+**Amendment (2026-09-26, the lead's decision): span acceptance uses the median-offset rule.**
+- **Measured:** the game's displayed timer seconds change with a per-tick jitter of 20–75 ms at p90 in about a quarter
+  of 10 s windows. The hand-labelled truth shows the same jitter (Gate 2 step 1, Result below). So the per-anchor
+  "p90 |residual| ≤ 2 frames" in span acceptance above would reject spans for the display's own jitter, not for a bad
+  alignment.
+- **The replacement:**
+  - each span's timer anchors are split into continuous segments at the clock's discontinuities (checkpoint time
+    extensions, the MM:SS ↔ SS.d handover, as in T3' below);
+  - a segment's offset is the median of its anchors, as the fit above already takes;
+  - a span is accepted when its segments' median offsets agree within 1 frame of each other, and each has at least 30
+    anchors in total per span as before.
+- **What stays:** the raw per-anchor residuals are reported, not gated. The kill-feed and cooldown anchors are
+  checked around their own median offset, as the lead's earlier note has it: that offset is reported as a measured
+  effect, and a span fails only if their residuals around it exceed 2 frames.
+
+### Gate 2 step 1: validating the match-timer and kill-feed readers (pre-registered 2026-09-26)
+
+Pre-registered before either reader exists and before any validation frame is looked at, under the lead's brief
+`brief-scoreboard-fix-gate2-readers`. It fixes the sample, the truth labels and the pass bar for the two readers the
+Gate 2 protocol above requires ("each is validated first on a small, inspected native-frame sample"). **This is not
+a Gate 2 result.** It decides whether the readers may supply Gate 2's alignment anchors. The Gate 2 pair (the 19:21
+live match and its replay) is never opened for this.
+
+**The readers** (new files in `perception/`; the frozen `hud.py` and `scoreboard.py` are not edited):
+- **Match timer:** per frame, the displayed round or match timer as text and as seconds, or `None`. From a frame
+  sequence, the frame of each displayed-second change: the first frame showing the new value.
+- **Kill feed:** per frame, the entries shown. From a frame sequence, the frame each entry first appears. Its identity
+  (killer and victim hero, team side) where it is cheaply readable, else `None`.
+- **Abstention:** each returns a value or an explicit unknown, never a guess. A frame without the element (menus,
+  loading, banners, killcam, the replay timeline over it) is unknown, never a value.
+
+**Recordings** (2560×1440, 120 fps; each recording's own logger `frames.csv` gives the clock):
+
+| Use | Recording | Logger folder | Map, source |
+|---|---|---|---|
+| Development (free to inspect) | `2026-09-25 20-06-20.mkv` | `20260926T010620-721Z-63684-5` | Heart of Heaven, live, alt account |
+| Development | `2026-09-25 20-37-11.mkv` | `20260926T013711-125Z-63684-7` | Celestial Husk, live, alt account |
+| Development | `2026-09-23 00-43-25.mkv`, round 1 only (file time 471.3–871.3 s) | `20260923T054325-507Z-33696-4` | Hellfire Gala: Arakko, DayMR in-client replay |
+| **Validation, live** | `2026-09-25 19-53-04.mkv` | `20260926T005304-628Z-63684-4` | Celestial Husk |
+| **Validation, live** | `2026-09-25 20-25-52.mkv` | `20260926T012552-291Z-63684-6` | Central Park (the Gate 2 match's map) |
+| **Validation, live** | `2026-09-25 20-56-10.mkv` | `20260926T015610-960Z-63684-8` | Birnin T'Challa (a map in neither development take) |
+| **Validation, replay rendering** | `2026-09-23 00-43-25.mkv`, rounds 2 and 4 on DayMR's POV (file time 1071.0–1510.6 and 1893.9–2046.5 s) | as above | the replay viewer's HUD |
+
+- **Not used:** the Gate 2 pair; `19-28-51`, `21-13-21` and `22-48-05` (main account, competitive) are held in reserve.
+- **Validation media:** nothing from a validation recording is opened until both readers are frozen, apart from the
+  container duration and the logger's `frames.csv`, which the window draw needs.
+- **The replay's operator actions:** in the DayMR replay, any window touching a pause, seek, rewind, reload, POV
+  change or the timeline overlay (`logger_timeline.json` and the README's §2 table, ±1 s) is redrawn.
+
+**The validation sample** (drawn by script before any validation frame is decoded; seed 20260926; windows may not
+overlap):
+- **Timer windows:** 10 s windows decoded at the full 120 fps.
+  - Four per live validation recording, with each start uniform over [30 s, duration − 40 s].
+  - Four in the replay's rounds 2 and 4 stretches.
+- **Timer value frames:** 150 single frames per live validation recording, uniform over the whole file, including
+  menus and end screens. Also 100 frames over the replay's validation stretches.
+- **Kill-feed windows:** 60 s windows at the full 120 fps. Three per live validation recording, and two in the
+  replay's validation stretches.
+- **Minimum support:** at least 100 true second changes and 30 kill-feed entries on live, and 30 changes and 10
+  entries on the replay.
+  - If a set falls short, further windows are drawn in seed order until it meets the minimum or 15 windows per
+    recording are drawn.
+  - If it is still short, that reader is "undecided" on that set, not passed.
+
+**Truth labels** (made by inspecting native-resolution crops of the timer and kill-feed regions; frozen and hashed
+before a reader runs on any validation frame):
+- **Value frames:** the displayed timer text, or "none" (not drawn) or "illegible".
+- **Timer windows:** first, the displayed value on crops every 12th frame (0.1 s). Then, for each change, the exact
+  first frame showing the new value, from every frame within ±12 of it.
+- **Kill-feed windows:** first, every entry's appearance on crops every 24th frame (0.2 s; an entry stays up for
+  seconds). Then its exact first frame, from every frame within ±24.
+- **Clock times:** each decoded frame's pts is matched to its packet in `frames.csv` to take its `composition_ns`, as
+  `scripts/replay_steps.py` does. A frame without a composition time is reported, and it is never interpolated.
+- **Independent re-label** (amendment, the lead's condition, 2026-09-26; before any reader runs on a validation
+  frame). After my labels are frozen and hashed, fit-review re-labels a subsample without seeing them. The subsample
+  is drawn by script with seed 20260926 from the frozen label set:
+  - 50 T1 value frames, as crops;
+  - 10 kill-feed entries: each entry's crops at every frame within ±24 of its labelled first frame, labelled for its
+    first frame;
+  - one whole kill-feed window's 0.2 s crops, labelled for the entries it shows.
+
+  The agreement is reported: exact label matches on T1, the first-frame differences on the entries, and the entry
+  counts on the window. Each disagreement is re-inspected, and the final label is recorded beside both originals.
+  The agreement is reported, not judged.
+
+**Pass bar.** Each reader passes only if every one of its items holds on the live validation set pooled **and** on the
+replay set.
+
+| Item | Measure | Passes when |
+|---|---|---|
+| T1 Timer values | On the value frames: wrong = a value that differs from the label, or any value on a "none" or "illegible" frame | wrong ≤ 0.5 % of value frames, and unknown ≤ 10 % of legible frames |
+| T2 Timer changes | On the timer windows, against the labelled change frames | recall ≥ 95 %; detected frame exact on ≥ 95 % and within ±1 frame on all; 0 false changes; 0 changes carrying a wrong value |
+| T3 Timer clock | Per window, the detected change frames' `composition_ns` against a slope-1 fit (the median offset) | p90 \|residual\| ≤ 2 frames (16.7 ms), the Gate 2 span bar |
+| K1 Kill-feed recall | True entries with a detected appearance within ±12 frames | ≥ 90 % |
+| K2 Kill-feed precision | Detected appearances matching a true entry | ≥ 95 % |
+| K3 Kill-feed timing | \|detected − labelled first frame\| over matched entries | ≤ 2 frames on ≥ 95 %, and ≤ 1 frame on ≥ 80 % |
+
+- **Reported beside, not judged:**
+  - the labelled truth's own T3 residuals, which separate the game and capture jitter from the reader;
+  - the free-slope fit per window;
+  - the timer's unknown share by game state;
+  - kill-feed identity accuracy where it is read;
+  - per-recording figures (Birnin T'Challa and the replay are the transfer checks).
+- **Reading:**
+  - **Pass:** the reader supplies Gate 2 anchors after fit-review's review of its code. Gate 2's own span acceptance
+    still applies on the pair.
+  - **Fail:** the failing item is named, and the reader supplies nothing.
+    - It is fixed on the development recordings only.
+    - One re-validation is allowed, on windows redrawn with seed 20260927 from the same validation recordings, at
+      least 60 s from any first-draw window.
+    - The first draw's windows then become development frames.
+    - A second failure needs new recordings.
+- **Tests:** fixtures come from development frames only (crops, not whole frames). Validation crops may be added as
+  regression fixtures after the result is scored.
+- **Amendment 2** (the lead's decision B, 2026-09-26; made before any validation frame was opened): **the kill-feed
+  items K1–K3 are judged only on arrivals after a shift.**
+  - **The shift:** a new entry always arrives in the top slot. When that slot holds an entry, the old entry drops one
+    slot in a single frame, and the new entry's first faint frame follows exactly 4 frames later. That was true on all
+    four live and both spectator arrivals I checked by eye.
+  - **Empty-feed arrivals:** when the feed is empty, the entry only fades and slides in, and development gave no way
+    to time that to ±2 frames. A brightness-ramp fit was right on one arrival (281.696 s, live) and 9 frames late on
+    another (529.096 s by eye against 529.171 s, spectator).
+  - **How common each is:** full-rate scans of two development rounds found arrivals after a shift, ramp-fitted and
+    untimed of 23 / 14 / 7 (live, 20-06-20.mkv, 90–380 s) and 14 / 5 / 8 (spectator, DayMR round 1).
+  - **What is reported instead:** empty-feed arrivals are detected and reported beside, not judged: their detection
+    rate and their timing spread, against the same truth labels.
+  - **Gate 2:** it never uses an empty-feed arrival as a timing anchor; such an arrival counts for presence only.
+  - **Truth:** every labelled entry records whether a shift preceded it (whether the top slot held an entry on the
+    frame before its first frame).
+- **Unrecognised layouts fail closed** (the lead, 2026-09-26). On a layout they do not recognise, both readers
+  return an explicit unknown, never a guess. The replay-rendering set here is DayMR's Competitive replay; a Quick
+  Match replay's layout is validated separately if one is recorded (never from the Gate 2 pair).
+- **Budget:** PC only. Decoding runs at below-normal priority and stops if the game or OBS starts. No training, and
+  no Mac job.
+
+**Result (measured 2026-09-26): neither reader passes the pre-registered bar** (`gate2-readers.md`). The readers
+were frozen before any validation frame was opened (match_timer `945b3634`, killfeed `e21e5a40`).
+- **Blind re-label agreement** (reported, not judged):
+  - T1: 50 of 50 identical;
+  - kill-feed entries: first frame identical on 5 of 10, within 1 frame on 4, 3 frames apart on 1 (an empty-feed
+    arrival), and the same shift/empty call on 10 of 10;
+  - the whole window: 7 of 7 arrivals at the same crop.
+
+  Re-inspection kept my label on 5 disagreements and took fit-review's on 2, both empty-feed arrivals (truth v2).
+- **Timer: T1 and T2 pass; T3 fails.**
+  - **T1:** 0 wrong reads in 750, and 0 unknown among the legible frames.
+  - **T2:** recall 98.1 % live (105 of 107) and 100 % replay (40 of 40); exact 99.0 % and 97.5 %; all within ±1 frame;
+    0 wrong-valued. The 2 "false changes" are real second changes at frame 1198, after the last coarse truth sample:
+    they are gaps in the truth, not reader errors.
+  - **T3, as registered** (one slope-1 fit per window) **fails:** the fit spans the clock's own discontinuities, a
+    checkpoint time extension (04:29 → 04:20) and the MM:SS → SS.d handover, which the two formats round differently.
+    The truth frames fail identically.
+  - **T3 split at those discontinuities** (supplementary, not registered): 11 of 15 windows are within 2 frames. The
+    other 4 (three live, one replay) have p90 22–35 ms, and up to 75 ms at the extreme. The hand-labelled truth frames
+    have the same residuals in all 4. So **the game's displayed second changes jitter beyond the Gate 2 span bar in
+    about a quarter of windows; this is not a reader error.**
+- **Kill feed fails.** Arrivals after a shift:
+  - live: K1 recall 0.76 (29 of 38), K2 precision 1.00, K3 within 2 frames 0.93 and within 1 frame 0.83;
+  - replay: K1 recall 0.80 (8 of 10), K2 precision 1.00, K3 within 2 frames 1.00 but within 1 frame 0.38.
+  - Most misses are the second of two arrivals 16–20 frames apart, which the 60-frame merge window swallows.
+  - On the replay, the timing is mostly +2 frames: the spectator feed's shift-to-entry lag is about 2 frames there,
+    not the 4 measured on development.
+  - Empty-feed arrivals, reported beside: detected 26 of 29 live and 8 of 8 replay.
+- **Reading, as registered:** neither reader supplies Gate 2 anchors yet. The timer's failing item is T3, and it is a
+  property of the display that Gate 2's own span acceptance faces too. That is a Gate 2 design question for the lead.
+  The kill feed may be fixed on development recordings only, with one re-validation allowed (seed 20260927).
+
+**Amendment 3: the kill-feed fix and the one re-validation** (pre-registered 2026-09-26, before the seed-20260927
+sample is drawn, on the lead's decision after the Result above). Everything not named here is unchanged, including
+every bar.
+- **T3 is recorded as FAILED, as registered.** The cause is the game display's own jitter: the hand-labelled truth has
+  the same residuals.
+- **The kill-feed fix:** tuned on development recordings only. These are the two live development takes, the DayMR
+  replay's round 1, and James's new Quick Match replay of the Heart of Heaven development match (`2026-09-26
+  11-10-08.mkv`, session `20260926T161008-331Z-116800-2`, registered `reader_development`).
+  - **What is measured there, per layout:** the shift-to-entry lag (`SHIFT_LAG`) and the merge / refractory window.
+    The +2 frames seen on the validation replay is a hint, not a value to copy.
+  - **What may change:** also the shift test's thresholds, and the Quick Match spectator layout's geometry and
+    recognition.
+  - **What may not:** nothing about the truth, the scorers' K1–K3 definitions or the bars.
+  - **The layout rule is unchanged:** an unrecognised layout gives unknown.
+- **The timer code is unchanged,** except for the Quick Match spectator layout's geometry, if it differs.
+- **The re-validation:**
+  - **The draw:** one draw with seed 20260927 from the same four validation sources, by the same script, with the
+    same window counts, sizes and top-up rule.
+  - **The windows:** no window within 60 s of a first-draw window; the first-draw windows are now development frames.
+  - **The code:** frozen and hashed before the draw.
+  - **The truth:** labelled the same way, frozen and hashed before any reader runs.
+  - **The blind re-label:** repeated with the same sizes (seed 20260927), and reported, not judged.
+- **Both readers are scored on the new windows:** T1, T2 and K1–K3 with the bars above.
+- **T3 is replaced by T3'** for the re-validation, and T3' is judged only on the seed-20260927 windows:
+  - **Segments:** each window's timer anchors (the detected second changes) are split into continuous segments at the
+    clock's own discontinuities. A segment breaks where the displayed second changes by more than the elapsed time
+    allows (|Δvalue + Δt| > 0.5 s; for example a checkpoint's time extension), or where the format changes (MM:SS ↔
+    SS.d). A segment needs at least 3 anchors to count.
+  - **The offset:** per segment, the median over its anchors of (logger time + 1 s × displayed second), as the Gate 2
+    protocol's per-span offset already is. The truth-derived offset is the same median over the hand-labelled change
+    frames.
+  - **Passes when:** every segment's |reader offset − truth offset| is ≤ 1 frame (8.3 ms), and the p90 of those errors
+    across segments is ≤ 2 frames.
+  - **Reported, not judged:** the raw per-tick residual distribution around each segment's median, from both the
+    reader and the truth, as a measured property of the display.
+
+**Addendum to amendment 3** (the lead's decision, 2026-09-26; before any seed-20260927 window is decoded):
+- **Why:** the ±60 s margin around the used first-draw windows leaves almost no room in the four original sources.
+  The seed-20260927 draw (`sample-2.json` `d7e738e2`) found:
+  - timer windows: 3 in 19-53-04, 0 in 20-25-52, 8 in 20-56-10 and 10 on the replay;
+  - kill-feed windows: 0, 0 and 1 live, and 1 on the replay.
+- **Live sources:** the draw stands as made for the original four. Two fresh live sources are added, each
+  registered `reader_validation` by admission-owner before either is decoded:
+  - `2026-09-25 21-13-21.mkv` (session `20260926T021321-378Z-63684-9`, God Quarry, about 3 min recorded);
+  - `2026-09-25 22-48-05.mkv` (session `20260926T034805-307Z-63684-13`, Lower Manhattan competitive, main account).
+- **How they are drawn:** the same script (`draw_sample_2.py`), seed 20260927, with the same window sizes, counts,
+  60 s margin and top-up rule. Their windows, together with the original four sources' windows, are the live half of
+  the one re-validation.
+- **The margin is not shrunk:** neighbouring windows would be correlated.
+- **The replay half:** there is no unused replay. Every replay is either development data or a sealed Gate 2 pair.
+  - **Without a new replay,** the replay half is reported "undecided".
+  - **If James records a new replay,** it is judged later, as the second half of this same re-validation, not a new
+    one. It uses the same frozen code, pinned by the hashes in amendment 4, and the same seed-20260927 draw rules.
+- **19-28-51 is not a source:** it has been sealed as Gate 2 pair 2 since `bcf5495`.
+
+**Amendment 4** (the lead, 2026-09-26 14:11; before the seed-20260927 draw). It corrects amendment 3 and freezes the
+fix.
+- **The first-draw windows are spent validation data, not development frames.** Amendment 3's line saying otherwise
+  is withdrawn. They are only excluded from the new draw, with their ±60 s margin.
+- **An error on my part, recorded:** I ran the fixed reader once on the first-draw windows against their frozen truth
+  before this correction.
+  - **The numbers I saw:**
+    - live K1 0.868, K2 1.00, K3 within 2 frames 1.00 and within 1 frame 0.848, empty-feed detection 0.897;
+    - replay K1 0.90, K2 1.00, K3 1.00 / 1.00.
+    - Six misses were listed: live frames 440, 1481, 2947, 6672 and 6833, replay 6447.
+  - **Nothing was changed because of them:** every parameter below was set from development evidence before that run
+    (SHIFT_MOVED) or from the development caches, and none was changed after it. The run's output file was deleted
+    unread beyond those lines.
+- **Frozen kill-feed changes, each with its development evidence** (`perception/killfeed.py`):
+  - **`SHIFT_LAG` = {"live": 3, "spectator": 3}** (was a single 4). By eye on 27 development shifts, the new entry's
+    first frame after the shift frame:
+    - live 2,2,2,2,2,3,3,3,3,3,3,3,3,4 (median 3; 20-06-20 and 20-37-11);
+    - spectator 2,2,2,2,3,3,3,3,3,3,4,4,4 (median 3; DayMR round 1 and the Quick Match replay 11-10-08).
+  - **`SHIFT_MOVED` = 0.72** (was 0.85). The 27 development shifts score 0.76–0.96, and three of them (0.76, 0.78,
+    0.79) fell under 0.85.
+  - **Every shift is its own arrival** (the 60-frame merge now applies only to empty-feed arrivals); `SHIFT_DEDUP` = 8
+    is a safety margin. On the development windows each shift was detected once, and distinct arrivals were at least
+    85 frames apart. The change itself answers the failure named in the Result: arrivals merged.
+  - **The replay viewer is recognised by its "Press N to Show" prompt** (`perception/spectator_prompt.json`), as well
+    as by the team-box clocks. The Quick Match replay has no team-box clocks. The prompt's NCC is p5 0.91 on the DayMR
+    and QM replays, and at most 0.27 on 1,570 s of live development frames. The Quick Match spectator feed has the
+    same geometry as DayMR's (the same slot rows and pitch on the development windows).
+- **The development check:** 27 of 27 labelled development shifts are detected, all within ±1 frame, with 0 extra
+  shift detections.
+  - **This is partly circular:** those 27 shifts were found with a looser version of the same shift test (moved >
+    0.75, an entry before, a settled entry after), so a shift that test misses would be missing from the development
+    truth too.
+  - The re-validation's independently labelled windows are the real test.
+- **Frozen code (LF sha256):**
+  - `perception/killfeed.py` `c514727180493fcdf774c2730221e406a013368e44696e326f10d15dfd6fe377`;
+  - `perception/spectator_prompt.json` `5aeab85063424bea29b538d4adc699989e85d77941b3e4ef5b2cfb709df88e2b`;
+  - `perception/match_timer.py` `945b3634…` (unchanged);
+  - `perception/match_timer_glyphs.json` `1f5ce476…` (unchanged).
+- **The scorer** takes the layout from the prompt as well (`score_feed2.py`); K1–K3 and every bar are unchanged.
+
+**Re-validation result (seed 20260927, measured 2026-09-26; `reval/RESULTS.md`):**
+- **The kill feed FAILS.**
+  - **Live scores:** K1 recall 0.18 (7 of 39), K2 precision 0.78, K3 1.00 / 1.00 on the 7 matched.
+  - **Named cause:** layout recognition. On 22-48-05, the main account's competitive live match, the live HUD shows a
+    team-box clock where the replay viewer's team-B clock is (it reads "04:00"). `recognise_layout` took that as the
+    viewer, so six windows were read in the spectator geometry and missed every arrival.
+  - A competitive HUD was never in the development recordings.
+  - **Landing (fit-review's review):** `perception/match_timer.py` lands as a value reader only. `perception/killfeed.py`
+    is rejected and kept, byte for byte, in `docs/evidence/gate2-revalidation-20260926/code/` as a failed experiment.
+  - On the two live Quick Match windows recognised correctly: 7 of 9 arrivals, all within ±1 frame.
+  - This was the one allowed re-validation, so the kill feed supplies no Gate 2 anchors.
+- **The timer PASSES T1:** 1 wrong in 750 and 0.9 % unknown of the legible frames.
+  - T2 and T3' are information only (69 < 100 changes): recall 0.94, all within ±1 frame, 0 false changes, T3'
+    offset error 0.0 ms on 9 of 10 segments.
+  - The replay half is undecided (no source).
+- **Blind agreement:** T1 49 of 50; the window 0 vs 0; entries within 1 frame after a shift. Four empty-feed first
+  frames were moved to fit-review's frame-level values (truth v2 `856df87d`).
+
 ### Downstream check (F9)
 
 - **Relabel test.** At 3 h, relabel James's held-out sessions with the IDM, and train the same BC policy on IDM labels

@@ -1,0 +1,799 @@
+{
+ "format": "gate2-readers-killfeed-truth-v2 (re-validation)",
+ "labeller": "scoreboard-fix (by eye; arrivals after a shift at frame level, empty-feed arrivals at the 0.2 s coarse level)",
+ "windows": {
+  "20-56-10_0": {
+   "frames": 7200,
+   "entries": [
+    {
+     "first_frame": 4536,
+     "first_pts": 97188,
+     "after_shift": false,
+     "shift_frame": null,
+     "shift_pts": null,
+     "excluded": false,
+     "coarse_only": true,
+     "note": "MontereyPuma>Dissi (coarse first frame)"
+    },
+    {
+     "first_frame": 6000,
+     "first_pts": 109388,
+     "after_shift": false,
+     "shift_frame": null,
+     "shift_pts": null,
+     "excluded": false,
+     "coarse_only": true,
+     "note": "cowboyboopbop>REDRUM (coarse first frame)"
+    },
+    {
+     "first_frame": 6271,
+     "first_pts": 111646,
+     "after_shift": true,
+     "shift_frame": 6269,
+     "shift_pts": 111629,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "+2"
+    },
+    {
+     "first_frame": 6984,
+     "first_pts": 117588,
+     "after_shift": false,
+     "shift_frame": null,
+     "shift_pts": null,
+     "excluded": false,
+     "coarse_only": true,
+     "note": "ChevereGuy>Dissi (coarse first frame)"
+    }
+   ]
+  },
+  "21-13-21_0": {
+   "frames": 7200,
+   "entries": [
+    {
+     "first_frame": 648,
+     "first_pts": 67763,
+     "after_shift": false,
+     "shift_frame": null,
+     "shift_pts": null,
+     "excluded": false,
+     "coarse_only": true,
+     "note": "Embellish>IamZdddd (coarse first frame)"
+    },
+    {
+     "first_frame": null,
+     "first_pts": null,
+     "after_shift": null,
+     "shift_frame": null,
+     "shift_pts": null,
+     "excluded": true,
+     "coarse_only": false,
+     "note": "two arrivals 3 frames apart (shifts 1203 and 1206; ry1on>Dissi and ry1on>Embellish fade in together ~1207-1208): not separately identifiable, excluded"
+    },
+    {
+     "first_frame": 1501,
+     "first_pts": 74871,
+     "after_shift": true,
+     "shift_frame": 1499,
+     "shift_pts": 74854,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "+2 faint"
+    },
+    {
+     "first_frame": 1981,
+     "first_pts": 78871,
+     "after_shift": true,
+     "shift_frame": 1978,
+     "shift_pts": 78846,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "+4 | adjudicated after blind re-label: first 1982->1981 (fit-review 1981; the chevron is faint at 1980-1981); shift 1978 kept (fit-review 1979: 1978 is the first frame without the old entry)"
+    },
+    {
+     "first_frame": 2525,
+     "first_pts": 83404,
+     "after_shift": true,
+     "shift_frame": 2523,
+     "shift_pts": 83388,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "+2"
+    },
+    {
+     "first_frame": 3010,
+     "first_pts": 87446,
+     "after_shift": true,
+     "shift_frame": 3008,
+     "shift_pts": 87429,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "+2"
+    },
+    {
+     "first_frame": 3082,
+     "first_pts": 88046,
+     "after_shift": true,
+     "shift_frame": 3080,
+     "shift_pts": 88029,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "+2; a second shift at 3092 brings ry1on>Cenxtii | adjudicated after blind re-label: chickentendy71 arrival: shift 3079->3080 and first 3081->3082 (fit-review's; 3080 is the first empty frame)"
+    },
+    {
+     "first_frame": 3094,
+     "first_pts": 88146,
+     "after_shift": true,
+     "shift_frame": 3092,
+     "shift_pts": 88129,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "+3 (ry1on>Cenxtii) | adjudicated after blind re-label: Cenxtii arrival: first 3095->3094 (faint at 3094; fit-review 3094/3095); shift 3092 kept (fit-review 3093)"
+    },
+    {
+     "first_frame": 4296,
+     "first_pts": 98163,
+     "after_shift": false,
+     "shift_frame": null,
+     "shift_pts": null,
+     "excluded": false,
+     "coarse_only": true,
+     "note": "ry1on>Dissi (coarse first frame)"
+    },
+    {
+     "first_frame": 4726,
+     "first_pts": 101746,
+     "after_shift": true,
+     "shift_frame": 4723,
+     "shift_pts": 101721,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "+3, over a red damage screen"
+    },
+    {
+     "first_frame": 5309,
+     "first_pts": 106604,
+     "after_shift": false,
+     "shift_frame": null,
+     "shift_pts": null,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "ry1on>Dissi (blue) (coarse first frame) | adjudicated after blind re-label: empty-feed, coarse 5328 -> frame 5309 (fit-review 5309)"
+    },
+    {
+     "first_frame": 5746,
+     "first_pts": 110246,
+     "after_shift": true,
+     "shift_frame": 5743,
+     "shift_pts": 110221,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "+3"
+    }
+   ]
+  },
+  "22-48-05_0": {
+   "frames": 7200,
+   "entries": []
+  },
+  "22-48-05_1": {
+   "frames": 7200,
+   "entries": [
+    {
+     "first_frame": 218,
+     "first_pts": 318213,
+     "after_shift": false,
+     "shift_frame": null,
+     "shift_pts": null,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "empty feed, faint 218"
+    },
+    {
+     "first_frame": 243,
+     "first_pts": 318421,
+     "after_shift": true,
+     "shift_frame": 239,
+     "shift_pts": 318388,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "+4"
+    },
+    {
+     "first_frame": 339,
+     "first_pts": 319221,
+     "after_shift": true,
+     "shift_frame": 336,
+     "shift_pts": 319196,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "+3"
+    },
+    {
+     "first_frame": 368,
+     "first_pts": 319463,
+     "after_shift": true,
+     "shift_frame": 365,
+     "shift_pts": 319438,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "+3"
+    },
+    {
+     "first_frame": 919,
+     "first_pts": 324054,
+     "after_shift": true,
+     "shift_frame": 915,
+     "shift_pts": 324021,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "+4"
+    },
+    {
+     "first_frame": 3299,
+     "first_pts": 343888,
+     "after_shift": false,
+     "shift_frame": null,
+     "shift_pts": null,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "empty, faint chevron 3299"
+    },
+    {
+     "first_frame": 3821,
+     "first_pts": 348238,
+     "after_shift": true,
+     "shift_frame": 3816,
+     "shift_pts": 348196,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "+5"
+    },
+    {
+     "first_frame": 5262,
+     "first_pts": 360246,
+     "after_shift": false,
+     "shift_frame": null,
+     "shift_pts": null,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "empty, faint chevron 5262"
+    },
+    {
+     "first_frame": 5285,
+     "first_pts": 360438,
+     "after_shift": true,
+     "shift_frame": 5281,
+     "shift_pts": 360404,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "+4"
+    },
+    {
+     "first_frame": 5480,
+     "first_pts": 362063,
+     "after_shift": true,
+     "shift_frame": 5476,
+     "shift_pts": 362029,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "+4"
+    },
+    {
+     "first_frame": 6004,
+     "first_pts": 366429,
+     "after_shift": true,
+     "shift_frame": 6000,
+     "shift_pts": 366396,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "+4"
+    },
+    {
+     "first_frame": 6570,
+     "first_pts": 371146,
+     "after_shift": true,
+     "shift_frame": 6567,
+     "shift_pts": 371121,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "+3"
+    },
+    {
+     "first_frame": 6789,
+     "first_pts": 372971,
+     "after_shift": true,
+     "shift_frame": 6786,
+     "shift_pts": 372946,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "+3, red damage screen"
+    }
+   ]
+  },
+  "22-48-05_2": {
+   "frames": 7200,
+   "entries": [
+    {
+     "first_frame": 1224,
+     "first_pts": 401829,
+     "after_shift": false,
+     "shift_frame": null,
+     "shift_pts": null,
+     "excluded": false,
+     "coarse_only": true,
+     "note": "Used DP sock>SmellyArea6 (coarse first frame)"
+    },
+    {
+     "first_frame": 1700,
+     "first_pts": 405796,
+     "after_shift": true,
+     "shift_frame": 1698,
+     "shift_pts": 405779,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "+2, red damage screen"
+    },
+    {
+     "first_frame": null,
+     "first_pts": null,
+     "after_shift": null,
+     "shift_frame": null,
+     "shift_pts": null,
+     "excluded": true,
+     "coarse_only": false,
+     "note": "during a death blur: excluded"
+    },
+    {
+     "first_frame": null,
+     "first_pts": null,
+     "after_shift": null,
+     "shift_frame": null,
+     "shift_pts": null,
+     "excluded": true,
+     "coarse_only": false,
+     "note": "EnzzGalluzzo>vuhlp light after the blur: excluded"
+    },
+    {
+     "first_frame": 5376,
+     "first_pts": 436429,
+     "after_shift": false,
+     "shift_frame": null,
+     "shift_pts": null,
+     "excluded": false,
+     "coarse_only": true,
+     "note": "notlocMD>Guhurr (coarse first frame)"
+    },
+    {
+     "first_frame": null,
+     "first_pts": null,
+     "after_shift": null,
+     "shift_frame": null,
+     "shift_pts": null,
+     "excluded": true,
+     "coarse_only": false,
+     "note": "Buxxo>vuhlp: first visible already in slot 2 (it entered and shifted within the fade): excluded"
+    },
+    {
+     "first_frame": 5409,
+     "first_pts": 436704,
+     "after_shift": true,
+     "shift_frame": 5405,
+     "shift_pts": 436671,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "+4, Used DP sock>Dissi"
+    },
+    {
+     "first_frame": 6384,
+     "first_pts": 444829,
+     "after_shift": false,
+     "shift_frame": null,
+     "shift_pts": null,
+     "excluded": false,
+     "coarse_only": true,
+     "note": "notlocMD>Guhurr repeat after death (coarse first frame)"
+    },
+    {
+     "first_frame": 6397,
+     "first_pts": 444938,
+     "after_shift": true,
+     "shift_frame": 6394,
+     "shift_pts": 444913,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "+3, Buxxo>vuhlp"
+    },
+    {
+     "first_frame": 6402,
+     "first_pts": 444979,
+     "after_shift": true,
+     "shift_frame": 6399,
+     "shift_pts": 444954,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "+3, Used DP sock>Dissi"
+    },
+    {
+     "first_frame": null,
+     "first_pts": null,
+     "after_shift": null,
+     "shift_frame": null,
+     "shift_pts": null,
+     "excluded": true,
+     "coarse_only": false,
+     "note": "BOT ZE>SmellyArea6 during a blur: excluded"
+    }
+   ]
+  },
+  "22-48-05_3": {
+   "frames": 7200,
+   "entries": [
+    {
+     "first_frame": null,
+     "first_pts": null,
+     "after_shift": null,
+     "shift_frame": null,
+     "shift_pts": null,
+     "excluded": true,
+     "coarse_only": false,
+     "note": "entries emerging from a death blur: excluded"
+    },
+    {
+     "first_frame": 133,
+     "first_pts": 571821,
+     "after_shift": true,
+     "shift_frame": 129,
+     "shift_pts": 571788,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "+4"
+    },
+    {
+     "first_frame": 360,
+     "first_pts": 573713,
+     "after_shift": false,
+     "shift_frame": null,
+     "shift_pts": null,
+     "excluded": false,
+     "coarse_only": true,
+     "note": "Dissi>ToxicBBLs (coarse first frame)"
+    },
+    {
+     "first_frame": 549,
+     "first_pts": 575288,
+     "after_shift": true,
+     "shift_frame": 546,
+     "shift_pts": 575263,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "+3"
+    },
+    {
+     "first_frame": 934,
+     "first_pts": 578496,
+     "after_shift": true,
+     "shift_frame": 930,
+     "shift_pts": 578463,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "+4, orange screen"
+    },
+    {
+     "first_frame": 999,
+     "first_pts": 579038,
+     "after_shift": true,
+     "shift_frame": 997,
+     "shift_pts": 579021,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "+2"
+    },
+    {
+     "first_frame": 4248,
+     "first_pts": 606113,
+     "after_shift": false,
+     "shift_frame": null,
+     "shift_pts": null,
+     "excluded": false,
+     "coarse_only": true,
+     "note": "EnzzGalluzzo>AddDraxDoubleG (coarse first frame)"
+    },
+    {
+     "first_frame": 4649,
+     "first_pts": 609454,
+     "after_shift": true,
+     "shift_frame": 4645,
+     "shift_pts": 609421,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "+4"
+    },
+    {
+     "first_frame": 4916,
+     "first_pts": 611679,
+     "after_shift": true,
+     "shift_frame": 4912,
+     "shift_pts": 611646,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "+4"
+    },
+    {
+     "first_frame": 5288,
+     "first_pts": 614779,
+     "after_shift": true,
+     "shift_frame": 5286,
+     "shift_pts": 614763,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "+2"
+    },
+    {
+     "first_frame": null,
+     "first_pts": null,
+     "after_shift": null,
+     "shift_frame": null,
+     "shift_pts": null,
+     "excluded": true,
+     "coarse_only": false,
+     "note": "after a dark death screen: excluded"
+    },
+    {
+     "first_frame": 4940,
+     "first_pts": 611879,
+     "after_shift": true,
+     "shift_frame": 4935,
+     "shift_pts": 611838,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "+5, vuhlp>Used DP sock (found at frame level, missed by the coarse pass)"
+    },
+    {
+     "first_frame": 5323,
+     "first_pts": 615071,
+     "after_shift": true,
+     "shift_frame": 5321,
+     "shift_pts": 615054,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "+2, Guhurr>Dissi (found at frame level, missed by the coarse pass)"
+    }
+   ]
+  },
+  "22-48-05_4": {
+   "frames": 7200,
+   "entries": [
+    {
+     "first_frame": 24,
+     "first_pts": 233613,
+     "after_shift": false,
+     "shift_frame": null,
+     "shift_pts": null,
+     "excluded": false,
+     "coarse_only": true,
+     "note": "Guhurr>Dissi (coarse first frame)"
+    },
+    {
+     "first_frame": 73,
+     "first_pts": 234021,
+     "after_shift": true,
+     "shift_frame": 70,
+     "shift_pts": 233996,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "+3"
+    },
+    {
+     "first_frame": null,
+     "first_pts": null,
+     "after_shift": null,
+     "shift_frame": null,
+     "shift_pts": null,
+     "excluded": true,
+     "coarse_only": false,
+     "note": "slot 1 looks empty on the frame before the jump at 480 (dark screen): shift/empty ambiguous, excluded"
+    },
+    {
+     "first_frame": 801,
+     "first_pts": 240088,
+     "after_shift": true,
+     "shift_frame": 797,
+     "shift_pts": 240054,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "+4"
+    },
+    {
+     "first_frame": null,
+     "first_pts": null,
+     "after_shift": null,
+     "shift_frame": null,
+     "shift_pts": null,
+     "excluded": true,
+     "coarse_only": false,
+     "note": "light repeat after a death blur: excluded"
+    },
+    {
+     "first_frame": 2280,
+     "first_pts": 252413,
+     "after_shift": false,
+     "shift_frame": null,
+     "shift_pts": null,
+     "excluded": false,
+     "coarse_only": true,
+     "note": "Buxxo>Dissi (coarse first frame)"
+    },
+    {
+     "first_frame": 3192,
+     "first_pts": 260013,
+     "after_shift": false,
+     "shift_frame": null,
+     "shift_pts": null,
+     "excluded": false,
+     "coarse_only": true,
+     "note": "EnzzGalluzzo>vuhlp (coarse first frame)"
+    },
+    {
+     "first_frame": 4200,
+     "first_pts": 268413,
+     "after_shift": false,
+     "shift_frame": null,
+     "shift_pts": null,
+     "excluded": false,
+     "coarse_only": true,
+     "note": "EnzzGalluzzo>vuhlp light, after death (coarse first frame)"
+    },
+    {
+     "first_frame": 4680,
+     "first_pts": 272413,
+     "after_shift": false,
+     "shift_frame": null,
+     "shift_pts": null,
+     "excluded": false,
+     "coarse_only": true,
+     "note": "Guhurr>notlocMD (coarse first frame)"
+    },
+    {
+     "first_frame": 4700,
+     "first_pts": 272579,
+     "after_shift": true,
+     "shift_frame": 4697,
+     "shift_pts": 272554,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "+3"
+    },
+    {
+     "first_frame": 4957,
+     "first_pts": 274721,
+     "after_shift": true,
+     "shift_frame": 4953,
+     "shift_pts": 274688,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "+4"
+    },
+    {
+     "first_frame": 5088,
+     "first_pts": 275813,
+     "after_shift": true,
+     "shift_frame": 5084,
+     "shift_pts": 275779,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "+4"
+    },
+    {
+     "first_frame": 5140,
+     "first_pts": 276246,
+     "after_shift": true,
+     "shift_frame": 5137,
+     "shift_pts": 276221,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "+3"
+    },
+    {
+     "first_frame": 5674,
+     "first_pts": 280696,
+     "after_shift": true,
+     "shift_frame": 5670,
+     "shift_pts": 280663,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "+4, red damage screen"
+    },
+    {
+     "first_frame": 6048,
+     "first_pts": 283813,
+     "after_shift": false,
+     "shift_frame": null,
+     "shift_pts": null,
+     "excluded": false,
+     "coarse_only": true,
+     "note": "Guhurr>AddDraxDoubleG (coarse first frame)"
+    },
+    {
+     "first_frame": null,
+     "first_pts": null,
+     "after_shift": null,
+     "shift_frame": null,
+     "shift_pts": null,
+     "excluded": true,
+     "coarse_only": false,
+     "note": "entries emerging from a blur: excluded"
+    },
+    {
+     "first_frame": null,
+     "first_pts": null,
+     "after_shift": null,
+     "shift_frame": null,
+     "shift_pts": null,
+     "excluded": true,
+     "coarse_only": false,
+     "note": "after a blur: excluded"
+    }
+   ]
+  },
+  "22-48-05_5": {
+   "frames": 7200,
+   "entries": [
+    {
+     "first_frame": 1896,
+     "first_pts": 183096,
+     "after_shift": false,
+     "shift_frame": null,
+     "shift_pts": null,
+     "excluded": false,
+     "coarse_only": true,
+     "note": "Guhurr>Dissi (coarse first frame)"
+    },
+    {
+     "first_frame": 2691,
+     "first_pts": 189721,
+     "after_shift": false,
+     "shift_frame": null,
+     "shift_pts": null,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "ToxicBBLs>SmellyArea6 (coarse first frame) | adjudicated after blind re-label: empty-feed, coarse 2712 -> frame 2691 (fit-review 2691)"
+    },
+    {
+     "first_frame": 3384,
+     "first_pts": 195496,
+     "after_shift": false,
+     "shift_frame": null,
+     "shift_pts": null,
+     "excluded": false,
+     "coarse_only": true,
+     "note": "notlocMD>ToxicBBLs (coarse first frame)"
+    },
+    {
+     "first_frame": 4126,
+     "first_pts": 201679,
+     "after_shift": false,
+     "shift_frame": null,
+     "shift_pts": null,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "Used DP sock>Dissi (coarse first frame) | adjudicated after blind re-label: empty-feed, coarse 4152 -> frame 4126 (seen before fit-review's crop range; fit-review: already in at its first crop)"
+    },
+    {
+     "first_frame": 5338,
+     "first_pts": 211779,
+     "after_shift": false,
+     "shift_frame": null,
+     "shift_pts": null,
+     "excluded": false,
+     "coarse_only": false,
+     "note": "Guhurr>StayMadPlease (coarse first frame) | adjudicated after blind re-label: empty-feed, coarse 5352 -> frame 5338 (fit-review 5338)"
+    }
+   ]
+  },
+  "22-48-05_6": {
+   "frames": 7200,
+   "entries": []
+  }
+ }
+}
