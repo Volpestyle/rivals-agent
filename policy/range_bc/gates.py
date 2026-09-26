@@ -7,7 +7,10 @@ Two evaluation modes over the same validation runs (F2, F3):
 
     G0  leak check (tf)   the echo baseline's macro press-F1 stays under ECHO_MAX; otherwise the gates are invalid
     G1  frames matter (tf) seed 0 and the 3-seed mean beat the history-only twin: +0.05 macro press-F1 and 10% lower
-                          camera MAE
+                          camera MAE. With `g1_press` (the lead's decision on fit-real-prereg-draft.md, before any
+                          validation read) the press-F1 part reads the executed teacher-forced blocks instead
+                          (metrics.EXECUTED_TEACHER, late 0: a one-step echo scores nothing); the camera part stays
+                          on the teacher-forced blocks, and the probability version is reported beside it, ungated
     G2  edges (sf)        macro press-F1 >= 0.30 over the six edge actions; spider_power, web_cluster, get_over_here
                           each >= 0.20. The seed-0 macro is the headline
     G3  camera (tf)       per axis: MAE <= 0.8 x the best of persistence, zero-motion and AR(2); onset/reversal sign
@@ -57,18 +60,22 @@ def g0(echo):
     return {"pass": v <= ECHO_MAX, "echo_macro_press_f1_tol": v}
 
 
-def g1(model, history):
+def g1(model, history, press_model=None, press_history=None):
+    """press_model / press_history (both or neither): {seed: block} whose macro press-F1 replaces the teacher-forced
+    one; the camera MAE always comes from model / history."""
+    press_model, press_history = press_model or model, press_history or history
+
     def check(m_f1, h_f1, m_mae, h_mae):
         ok_f1 = m_f1 - h_f1 >= G1_PRESS_F1_MARGIN
         ok_mae = m_mae is not None and h_mae is not None and m_mae <= G1_CAMERA_MAE_RATIO * h_mae
         return ok_f1 and ok_mae, {"press_f1_delta": m_f1 - h_f1, "camera_mae": m_mae, "history_camera_mae": h_mae}
-    ok0, d0 = check(model[CANDIDATE]["macro_press_f1_tol"], history[CANDIDATE]["macro_press_f1_tol"],
+    ok0, d0 = check(press_model[CANDIDATE]["macro_press_f1_tol"], press_history[CANDIDATE]["macro_press_f1_tol"],
                     model[CANDIDATE]["camera_mae_mean"], history[CANDIDATE]["camera_mae_mean"])
     maes = [model[s]["camera_mae_mean"] for s in SEEDS] + [history[s]["camera_mae_mean"] for s in SEEDS]
     if any(v is None for v in maes):
         return {"pass": False, "seed0": d0, "mean": None, "reason": "camera MAE undefined"}
-    okm, dm = check(_mean(model[s]["macro_press_f1_tol"] for s in SEEDS),
-                    _mean(history[s]["macro_press_f1_tol"] for s in SEEDS),
+    okm, dm = check(_mean(press_model[s]["macro_press_f1_tol"] for s in SEEDS),
+                    _mean(press_history[s]["macro_press_f1_tol"] for s in SEEDS),
                     _mean(model[s]["camera_mae_mean"] for s in SEEDS),
                     _mean(history[s]["camera_mae_mean"] for s in SEEDS))
     return {"pass": ok0 and okm, "seed0": d0, "mean": dm}
@@ -147,22 +154,28 @@ def g5(block, sanity, stats):
     return {"pass": ok, "rates": rates, "stuck": stuck, "drift": drift}
 
 
-def evaluate(tf, sf, sanity, stats, human):
+def evaluate(tf, sf, sanity, stats, human, g1_press=None):
     """tf: {"model": {seed: block}, "history_only": {seed: block}, "persistence", "zero_motion", "prior", "echo",
     "ar2": block}; sf: {"model": {seed: block}, "history_only": {seed: block}}; sanity: {seed: metrics.sanity(...)};
     stats: train statistics;
     human: metrics.sanity over the evaluation set's recorded actions. Blocks are the "all" entries of
-    `metrics.stratified`."""
+    `metrics.stratified`.
+    g1_press: None (G1 as pre-registered first) or {"model": {seed: block}, "history_only": {seed: block}} of executed
+    teacher-forced blocks for G1's press-F1 part; the verdict then records "G1_press_source" and the probability G1
+    as "G1_teacher_forced_probability" (not gated). Without it the verdict is exactly as before."""
     reference = human_reference(stats, human)
     missing = [s for s in SEEDS if s not in tf["model"] or s not in tf["history_only"] or s not in sf["model"]
-               or s not in sf["history_only"] or s not in sanity]
+               or s not in sf["history_only"] or s not in sanity
+               or (g1_press is not None and (s not in g1_press["model"] or s not in g1_press["history_only"]))]
     if missing:
         return {"complete": False, "missing_seeds": missing, "pilot_worthy": False, "thresholds": THRESHOLDS,
                 "pitch_gain_known": stats.get("pitch_gain_known", True)}
     tfm, sfm = tf["model"], sf["model"]
     out = {"complete": True, "thresholds": THRESHOLDS,
            "headline_self_fed_macro_press_f1": sfm[CANDIDATE]["macro_press_f1_tol"],
-           "G0": g0(tf["echo"]), "G1": g1(tfm, tf["history_only"]), "G2": g2(sfm[CANDIDATE]),
+           "G0": g0(tf["echo"]), "G1": g1(tfm, tf["history_only"], *((g1_press["model"], g1_press["history_only"])
+                                                                   if g1_press is not None else ())),
+           "G2": g2(sfm[CANDIDATE]),
            "G3": g3(tfm[CANDIDATE], tf["persistence"], tf["zero_motion"], tf["ar2"], tf["history_only"][CANDIDATE]),
            "G4": g4(sfm[CANDIDATE], sf["history_only"][CANDIDATE]),
            "G5": g5(sfm[CANDIDATE], sanity[CANDIDATE], reference)}
@@ -170,6 +183,9 @@ def evaluate(tf, sf, sanity, stats, human):
                     "G3": g3(tfm[s], tf["persistence"], tf["zero_motion"], tf["ar2"], tf["history_only"][s])["pass"]}
                 for s in SEEDS}
     out["G6"] = {"pass": all(v["G2"] and v["G3"] for v in per_seed.values()), "seeds": per_seed}
+    if g1_press is not None:
+        out["G1_press_source"] = "executed_teacher_forced"
+        out["G1_teacher_forced_probability"] = g1(tfm, tf["history_only"])
     out["pitch_gain_known"] = stats.get("pitch_gain_known", True)
     out["pitch_gain_kind"] = stats.get("pitch_gain_kind")          # "derived_equal_sensitivity" flags derived labels
     out["degree_caveat"] = stats.get("degree_caveat")

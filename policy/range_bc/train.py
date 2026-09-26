@@ -661,9 +661,10 @@ def window_counts(arrays, *, stride=steps.STRIDE):
     return out
 
 
-def evaluate_set(models, arrays, stats, ar2, *, device, stride=steps.STRIDE):
+def evaluate_set(models, arrays, stats, ar2, *, device, stride=steps.STRIDE, g1_executed=False):
     """Teacher-forced and self-fed blocks, sanity, baselines, and a gate verdict per model arm on one evaluation set.
-    stride (replay sets only): the fit's, for the window counts."""
+    stride (replay sets only): the fit's, for the window counts. g1_executed: G1's press-F1 part reads the executed
+    teacher-forced blocks (gates.evaluate's g1_press); off, the verdicts are exactly as before."""
     tf, sf, sane = {}, {}, {}
     executed, checks = {}, {}
     wins = {arr.session.session_id: arr.press_windows.complete for arr in arrays if arr.press_windows is not None}
@@ -695,9 +696,10 @@ def evaluate_set(models, arrays, stats, ar2, *, device, stride=steps.STRIDE):
     verdicts = {}
     for arm in MODEL_ARMS:
         if arm in tf:
+            g1_press = ({"model": executed[arm], "history_only": executed.get(TWIN, {})} if g1_executed else None)
             verdicts[arm] = gates.evaluate({"model": allof(tf[arm]), "history_only": allof(tf.get(TWIN, {})), **trivial},
                                            {"model": allof(sf[arm]), "history_only": allof(sf.get(TWIN, {}))},
-                                           sane[arm], stats, human)
+                                           sane[arm], stats, human, g1_press=g1_press)
     zero_mae = trivial["zero_motion"]["camera_mae_mean"]
     for arm, per_seed in checks.items():
         for seed, c in per_seed.items():
@@ -766,6 +768,9 @@ def run_fit(a):
     require(0 in a.seeds, "seed 0 is the pre-declared candidate and must be trained")
     require(a.scope != "fit" or (set(a.arms) == set(ALL_ARMS) and a.train_fraction == 1),
             "--scope fit trains every arm on all train data (K7); --arms and --train-fraction are plumbing tools")
+    require(a.scope != "fit" or a.g1_executed,
+            "--scope fit gates G1 on the executed teacher-forced press-F1 (the lead's decision before any validation "
+            "read, fit-real-prereg): pass --g1-executed")
     require(any(arm in MODEL_ARMS for arm in a.arms), "train at least one model arm")
     require(0. <= a.prev_dropout < 1., "--prev-dropout in [0, 1)")
     require(0. <= a.self_condition <= 1. and 0. < a.self_condition_ramp <= 1.,
@@ -846,7 +851,8 @@ def run_fit(a):
         if not arrays:
             continue
         t0 = time.perf_counter()
-        evaluation[name], verdicts[name] = evaluate_set(models, arrays, stats, ar2, device=a.device, stride=a.stride)
+        evaluation[name], verdicts[name] = evaluate_set(models, arrays, stats, ar2, device=a.device, stride=a.stride,
+                                                        g1_executed=a.g1_executed)
         budget.append({"run": f"evaluate-{name}", "seconds": time.perf_counter() - t0})
     candidate, candidate_reason = choose_candidate(parity, verdicts)
     reference_arm = candidate
@@ -874,6 +880,7 @@ def run_fit(a):
                          "arms": list(arms), "train_fraction": a.train_fraction,
                          "regimes": list(regimes), "loss_weights": LOSS_WEIGHTS, "drq_px": DRQ_PX,
                          "prev_dropout": a.prev_dropout, "self_condition": self_condition,
+                         "g1_press_source": "executed_teacher_forced" if a.g1_executed else "teacher_forced",
                          "parameters": {arm: parameter_count(Policy(c)) for arm, c in arms.items()}},
                  preregistration=pre, candidate=candidate, candidate_checkpoint=candidate_checkpoint,
                  candidate_reason=candidate_reason, hud_parity=parity,
@@ -940,6 +947,9 @@ def parser():
     p.add_argument("--frames-only", action="store_true", help="also fit the (ungated) frames-only twin")
     p.add_argument("--frames-only-nohud", action="store_true",
                    help="also fit the (ungated) frames-only twin without the HUD stream (the no-HUD candidate's twin)")
+    p.add_argument("--g1-executed", action="store_true",
+                   help="G1's press-F1 part reads the executed teacher-forced blocks (late 0); the probability G1 is "
+                        "reported beside it, ungated. Off (the default) keeps G1 as first pre-registered")
     p.add_argument("--prev-dropout", type=float, default=PREV_DROPOUT,
                    help="training: the share of steps whose previous-action input is blanked (known = 0)")
     p.add_argument("--self-condition", type=float, default=0.,

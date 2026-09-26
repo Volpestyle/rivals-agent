@@ -407,6 +407,23 @@ def test_no_frame_gain_fails_g1_and_one_bad_seed_fails_g6(tmp_path):
     assert v["G2"]["pass"] and not v["G6"]["pass"] and not v["pilot_worthy"]
 
 
+def test_g1_can_read_the_executed_press_f1_and_is_unchanged_by_default(tmp_path):
+    tf, sf, sane, stats, human = gate_inputs(tmp_path)
+    default = gates.evaluate(tf, sf, sane, stats, human)
+    assert "G1_press_source" not in default and "G1_teacher_forced_probability" not in default
+    same = gates.evaluate(tf, sf, sane, stats, human, g1_press={"model": tf["model"], "history_only": tf["history_only"]})
+    assert same["G1"] == default["G1"] == same["G1_teacher_forced_probability"]
+    assert same["G1_press_source"] == "executed_teacher_forced" and same["pilot_worthy"] == default["pilot_worthy"]
+    # an echo: strong probability press-F1, but its executed presses score no better than the twin's
+    echo = {"model": dict(tf["history_only"]), "history_only": tf["history_only"]}
+    v = gates.evaluate(tf, sf, sane, stats, human, g1_press=echo)
+    assert default["G1"]["pass"] and v["G1_teacher_forced_probability"]["pass"]
+    assert not v["G1"]["pass"] and not v["pilot_worthy"] and v["G1"]["seed0"]["press_f1_delta"] == 0.
+    assert v["G1"]["seed0"]["camera_mae"] == default["G1"]["seed0"]["camera_mae"]       # camera stays teacher-forced
+    v = gates.evaluate(tf, sf, sane, stats, human, g1_press={"model": {0: tf["model"][0]}, "history_only": tf["history_only"]})
+    assert not v["complete"] and v["missing_seeds"] == [1, 2]
+
+
 def test_a_leaky_metric_invalidates_the_gates(tmp_path):
     tf, sf, sane, stats, human = gate_inputs(tmp_path)
     leaky = copy.deepcopy(tf["echo"])

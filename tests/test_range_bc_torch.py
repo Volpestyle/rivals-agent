@@ -320,8 +320,14 @@ def test_scope_fit_refuses_what_the_review_asked(tmp_path):
     bad_pre.write_text(json.dumps({"epochs": 1, "weight_decay": 1e-4, "stride": 48, "hud_parity_sha256": "0" * 64}))
     junk = tmp_path / "junk.json"
     junk.write_text(json.dumps({"pass": True}))
-    base = ["--train", str(train_path), "--dev", str(dev_path), "--val", str(val_path), "--cache-root",
+    bare = ["--train", str(train_path), "--dev", str(dev_path), "--val", str(val_path), "--cache-root",
             str(tmp_path / "caches"), "--scope", "fit", "--epochs", "1", "--batch", "4"]
+    with pytest.raises(train.FitError, match="pass --g1-executed"):         # G1 on the executed press-F1 is required
+        train.main(bare + ["--out", str(tmp_path / "g")])
+    base = bare + ["--g1-executed"]
+    with pytest.raises(train.FitError, match="needs --preregistration"):    # with it, the run passes that check
+        train.main(base + ["--out", str(tmp_path / "g2")])
+    assert not (tmp_path / "g").exists() and not (tmp_path / "g2").exists()
     with pytest.raises(train.FitError, match="smoke runs only"):
         train.main(base + ["--out", str(tmp_path / "a"), "--model-config", "{}"])
     with pytest.raises(train.FitError, match="plumbing tools"):
@@ -799,6 +805,7 @@ def test_the_fit_cli_reports_the_new_metrics_and_records_the_training_options(tm
     out, _ = _fit(tmp_path)
     r = json.loads((out / "report.json").read_text())
     assert r["config"]["prev_dropout"] == .2 and r["config"]["self_condition"] is None
+    assert r["config"]["g1_press_source"] == "teacher_forced"
     payload = torch.load(out / "model_nohud-seed0.pt", weights_only=True)
     assert set(payload["meta"]) == {"arm", "seed", "lag", "regimes"}     # default checkpoints: meta as before
     for split in ("dev", "val"):
@@ -812,9 +819,9 @@ def test_the_fit_cli_reports_the_new_metrics_and_records_the_training_options(tm
         assert c["camera_mae"] == m["self_fed"]["model_nohud"]["0"]["all"]["camera_mae_mean"]
     (tmp_path / "on").mkdir(), (tmp_path / "bad").mkdir()
     on, _ = _fit(tmp_path / "on", ["--self-condition", ".5", "--self-condition-ramp", ".25", "--prev-dropout", ".3",
-                                   "--frames-only-nohud"])
+                                   "--frames-only-nohud", "--g1-executed"])
     r = json.loads((on / "report.json").read_text())
-    assert r["config"]["prev_dropout"] == .3
+    assert r["config"]["prev_dropout"] == .3 and r["config"]["g1_press_source"] == "executed_teacher_forced"
     assert r["config"]["self_condition"] == {"p": .5, "ramp": .25, "rule": train.SELF_CONDITION_RULE}
     assert "frames_only_nohud" in r["config"]["arms"] and "frames_only_nohud-seed0.pt" in r["checkpoints"]
     assert set(r["metrics"]["dev"]["self_fed_checks"]) >= {"model_nohud", "frames_only_nohud"}
@@ -824,3 +831,27 @@ def test_the_fit_cli_reports_the_new_metrics_and_records_the_training_options(tm
     assert blind["history"] is False and blind["hud"] is False
     with pytest.raises(train.FitError, match="self-condition"):
         _fit(tmp_path / "bad", ["--self-condition", "2"])
+
+
+def test_evaluate_set_can_gate_g1_on_the_executed_press_f1(tmp_path):
+    arr = arrays(tmp_path)
+    val = arrays(tmp_path, split="val", name="v", seed=1)
+    stats = steps.train_statistics([arr.session])
+    ar2 = baselines.fit_ar2([arr.session])
+    models = {}
+    for arm, config in (("model_nohud", replace(TINY, hud=False)), ("history_only", replace(TINY, frames=False))):
+        for s in (0, 1, 2):
+            torch.manual_seed(10 * s + len(arm))
+            models[arm, s] = Policy(config)
+    base, v0 = train.evaluate_set(models, [val], stats, ar2, device="cpu")
+    ev, v1 = train.evaluate_set(models, [val], stats, ar2, device="cpu", g1_executed=True)
+    assert ev == base and "G1_press_source" not in v0["model_nohud"]
+    g = v1["model_nohud"]
+    assert g["G1_press_source"] == "executed_teacher_forced" and g["G1_teacher_forced_probability"] == v0["model_nohud"]["G1"]
+    exe = base["executed_teacher_forced"]
+    assert g["G1"]["seed0"]["press_f1_delta"] == (exe["model_nohud"][0]["macro_press_f1_tol"]
+                                                  - exe["history_only"][0]["macro_press_f1_tol"])
+    assert g["G1"]["seed0"]["camera_mae"] == v0["model_nohud"]["G1"]["seed0"]["camera_mae"]
+    assert {k: v for k, v in g.items() if k not in ("G1", "G1_press_source", "G1_teacher_forced_probability",
+                                                    "pilot_worthy")} ==         {k: v for k, v in v0["model_nohud"].items() if k not in ("G1", "pilot_worthy")}
+
