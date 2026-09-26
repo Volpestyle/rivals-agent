@@ -32,6 +32,7 @@ from dataclasses import asdict, dataclass, replace
 from pathlib import Path
 from typing import Callable
 
+from .pad_bindings import ATTACK_BUTTONS, COMBAT_BUTTONS, combat_controls, controls
 from . import brain as scripted
 from .brain import Memory
 from .controller import NEUTRAL, RANGE_SKILL_VALID_S, Controller, InputExpired, RangeLost
@@ -55,9 +56,9 @@ STALE_S = 1.0           # no decision this fresh: stand down (Idle)
 RANGE_BRAINS = frozenset({"range", "range-skill"})
 CROP = 960              # native px square at 1440p round the crosshair: L3's aim sensor, 4.4 ms on the PC
 SB_HOLD_S = 1.0         # BACK held this long before the scoreboard frame is taken
-ALLOWED = frozenset({"A", "X", "LB", "RB"})    # what Controller emits. Never START, BACK, the d-pad or a stick click
-ATTACK = frozenset({"X", "RB", "LB"})
-KEEPALIVE = ((0.3, dict(ly=1.0)), (0.3, dict(ly=-1.0)), (0.15, dict(ly=0.0, rt=1.0)), (0.5, dict(rt=0.0)))  # Live.keepalive
+ALLOWED = COMBAT_BUTTONS    # same combat whitelist as Live; menu inputs stay forbidden
+ATTACK = ATTACK_BUTTONS | frozenset(controls("web_swing"))
+KEEPALIVE = ((0.3, dict(ly=1.0)), (0.3, dict(ly=-1.0)), (0.15, {"ly": 0.0, **combat_controls("spider_power")}), (0.5, combat_controls("spider_power", down=False)))  # Live.keepalive
 END_SCOREBOARD = ("max_time", "source_end")     # the only stops after which the pad may press BACK
 
 

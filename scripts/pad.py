@@ -1,8 +1,10 @@
 """Send a scripted sequence to a ViGEm virtual Xbox 360 pad.
 
-Usage: uv run --no-project --with vgamepad python pad.py "LB w:1 ls:0,1,1.5 A" [--dangerous]
+Usage: uv run --no-project --with vgamepad python scripts/pad.py "combat:jump:0.15 w:1 ls:0,1,1.5" [--dangerous]
   A B X Y LB RB LS RS START BACK UP DOWN LEFT RIGHT   tap (150 ms)
   LT RT                                               trigger tap
+  combat:action:secs                                  semantic hold, then release (0 < secs <= 10)
+  LS+RS                                               simultaneous ultimate chord (150 ms)
   ls:x,y,secs / rs:x,y,secs                           hold a stick, then centre it
   w:secs                                              wait
 
@@ -13,27 +15,42 @@ left neutral, including on Ctrl-C.
 """
 import sys
 import time
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from agent.pad_bindings import XUSB_NAMES, button_codes, combat_controls  # noqa: E402
 
 import vgamepad as vg
 
-B = vg.XUSB_BUTTON
-BUTTONS = {
-    "A": B.XUSB_GAMEPAD_A, "B": B.XUSB_GAMEPAD_B, "X": B.XUSB_GAMEPAD_X, "Y": B.XUSB_GAMEPAD_Y,
-    "LB": B.XUSB_GAMEPAD_LEFT_SHOULDER, "RB": B.XUSB_GAMEPAD_RIGHT_SHOULDER,
-    "LS": B.XUSB_GAMEPAD_LEFT_THUMB, "RS": B.XUSB_GAMEPAD_RIGHT_THUMB,
-    "START": B.XUSB_GAMEPAD_START, "BACK": B.XUSB_GAMEPAD_BACK,
-    "UP": B.XUSB_GAMEPAD_DPAD_UP, "DOWN": B.XUSB_GAMEPAD_DPAD_DOWN,
-    "LEFT": B.XUSB_GAMEPAD_DPAD_LEFT, "RIGHT": B.XUSB_GAMEPAD_DPAD_RIGHT,
-}
+BUTTONS = button_codes(vg, XUSB_NAMES)
 
 
 DANGEROUS = {"X", "START", "BACK", "UP", "DOWN", "LEFT", "RIGHT"}
 
 
+def semantic(token):
+    """Resolve the complete command before touching a device."""
+    if token == "LS+RS":
+        return combat_controls("ultimate"), 0.15
+    _, action, duration = token.split(":")
+    secs = float(duration)
+    state = combat_controls(action)
+    if not state or not 0 < secs <= 10:
+        raise ValueError("unbound action or hold outside (0, 10] seconds")
+    return state, secs
+
+
 def check(tokens, dangerous=False):
     """Reject the whole sequence before any input is sent."""
     for token in tokens:
-        if token in BUTTONS or token in ("LT", "RT"):
+        if token.startswith("combat:") or token == "LS+RS":
+            try:
+                state, _ = semantic(token)
+            except (KeyError, ValueError) as exc:
+                raise SystemExit(f"refused: {token}: {exc}") from exc
+            if DANGEROUS & set(state.get("buttons", ())) and not dangerous:
+                raise SystemExit(f"refused: {token} needs --dangerous")
+        elif token in BUTTONS or token in ("LT", "RT"):
             if token in DANGEROUS and not dangerous:
                 raise SystemExit(f"refused: {token} needs --dangerous (on the PLAY lobby X starts a live match)")
         elif token.startswith(("ls:", "rs:")):
@@ -47,7 +64,20 @@ def check(tokens, dangerous=False):
 
 
 def run(pad, token):
-    if token in BUTTONS:
+    if token.startswith("combat:") or token == "LS+RS":
+        state, secs = semantic(token)
+        pad.reset()
+        try:
+            for name in state.get("buttons", ()):
+                pad.press_button(button=BUTTONS[name])
+            pad.left_trigger_float(state.get("lt", 0.0))
+            pad.right_trigger_float(state.get("rt", 0.0))
+            pad.update()  # BOTH ultimate clicks in this report, never separate updates
+            time.sleep(secs)
+        finally:
+            pad.reset(); pad.update()
+        time.sleep(0.4)
+    elif token in BUTTONS:
         pad.press_button(button=BUTTONS[token]); pad.update(); time.sleep(0.15)
         pad.release_button(button=BUTTONS[token]); pad.update(); time.sleep(0.4)
     elif token in ("LT", "RT"):

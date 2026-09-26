@@ -27,7 +27,16 @@ scripts/padrun.sh "ls:0,1,0.4 w:0.5" /tmp/shot.png   # tokens: scripts/pad.py do
 ```
 
 It focuses the game, runs `C:\rivals-agent\pad.py` in the desktop session, then pulls a
-screenshot. Read the screenshot before the next input.
+screenshot. Read the screenshot before the next input. Deploy the shared
+`C:\rivals-agent\agent\pad_bindings.py` with the reviewed `pad.py`; the flat
+hand-tool copy now imports it. No standalone copy of the combat mapping.
+
+Raw tokens remain physical menu/button controls. `combat:<action>:<seconds>`
+resolves the current combat mapping and holds it for 0 < seconds <= 10, then
+releases (for example `combat:jump:0.15` or `combat:web_swing:1.0`).
+`combat:ultimate:0.15` and `LS+RS` set both thumb clicks in one report; never use
+sequential `LS RS` taps for an ultimate. `combat:goh_targeting:0.1` still needs
+`--dangerous` because it resolves to X. These tokens add no screen guard.
 
 - The game reads the pad only while its window has focus. Any other window (a Herdr
   window, a terminal) silently eats the input.
@@ -61,7 +70,8 @@ screenshot. Read the screenshot before the next input.
 | PLAY lobby | `A` over START or TRY COMPETITIVE | queues a live match |
 | PRACTICE panel | `A` over DOOM MATCH | live mode with real players |
 | BATTLEPASS / STORE | `A` | the cursor can rest on a purchase button |
-| Range | `X` tap / hold | Amazing Combo / opens CHANGE HERO |
+| Range (alt) | `B` | Amazing Combo |
+| Range (alt) | `X` | Get Over Here Targeting; hold behaviour **unknown**, may open CHANGE HERO (UI binds not captured; measure in the touch test) |
 | Range | `START` | pause menu (Resume, Practice Settings, Settings, Leave Game, Exit) |
 
 Any loop that sends input confirms the range HUD on a fresh frame first
@@ -147,11 +157,17 @@ Holding `A` on a slider arrow auto-repeats.
 
 ## Spider-Man on the pad
 
-`RT` Spider-Power (melee), `LT` web cluster (5 ammo; tags), `LB` web-swing (3 charges),
-`RB` Get Over Here!, `X` Amazing Combo (2 charges), `A` jump / wall crawl, `Y` team-up,
-`LS`+`RS` together ultimate. Full sourced reference: `docs/spiderman-kit.md`.
+James's alt settings, screenshots 2026-09-26: `RT` Spider-Power (semantic melee),
+`LT` web cluster, `A` held web-swing, `RB` Get Over Here!, `B` Amazing Combo,
+`LB` jump / held wall crawl, `X` Get Over Here Targeting, `RS` Team-Up A,
+`LS` Team-Up B, `LS+RS` together ultimate. Melee Attack and Y are unbound.
+The learned policy still masks ultimate, melee, team_up and goh_targeting under
+its existing pre-registration. Full reference and pending touch-test procedure:
+`docs/spiderman-kit.md`, `docs/pad-bindings.md`.
 
-Camera (Linear curve, Horizontal Sensitivity 265, aim assist 0): yaw responds at once,
+Historical camera values below are **stale for the alt at H/V 247/124**; its
+Advanced curve/settings are not yet shown. No alt run before review, calibration,
+touch test and re-freeze. Camera (old Linear curve, H/V 265/75, aim assist 0): yaw responds at once,
 18 deg/s at 0.1 stick, 172 at 0.45, 415 at 1.0; pitch 43 deg/s at 0.5, 99 at 1.0. Horizontal
 FOV is ~108 deg (focal ~465 px at 1280 wide). The full map is in `docs/lanes/l4-controller.md`;
 re-measure it after any sensitivity change.

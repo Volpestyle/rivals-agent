@@ -179,7 +179,7 @@ def test_live_refusing_a_send_ends_the_run_cleanly():
     assert out["stop"] == "range_lost" and pad.state == NEUTRAL
 
 
-@pytest.mark.parametrize("button", ["START", "BACK", "DPAD_UP", "LS", "RS", "B", "Y", "X+START"])
+@pytest.mark.parametrize("button", ["START", "BACK", "DPAD_UP", "Y", "X+START"])
 def test_a_forbidden_button_never_reaches_the_pad(button):
     class Rogue(Walker):
         def step(self, state, intent, intent_t=None):
@@ -192,7 +192,7 @@ def test_a_forbidden_button_never_reaches_the_pad(button):
 
 
 def test_clean_keeps_the_allowed_buttons_and_clamps_the_axes():
-    assert ALLOWED == {"A", "X", "LB", "RB"}
+    assert ALLOWED == {"A", "B", "X", "LB", "RB", "LS", "RS"}
     pad = clean({**NEUTRAL, "lx": 3.0, "ry": -9.0, "lt": -1.0, "rt": 2.0, "buttons": ["X", "A"]})
     assert pad == {"lx": 1.0, "ly": 0.0, "rx": 0.0, "ry": -1.0, "lt": 0.0, "rt": 1.0, "buttons": ("A", "X")}
 

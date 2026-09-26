@@ -40,7 +40,7 @@ def test_burst_presses_every_button_once_the_aim_is_on_and_idle_releases():
     for i in range(360):
         pad = c.step(State(t=i / 60, frame=(1280, 720), detections=[d]), intent)
         seen |= set(pad["buttons"]) | ({"LT"} if pad["lt"] else set()) | ({"RT"} if pad["rt"] else set())
-    assert seen == {"LT", "RB", "X", "RT"}
+    assert seen == {"LT", "RB", "B", "RT"}
     assert c.step(State(t=7.0, frame=(1280, 720), detections=[d]), Idle()) == NEUTRAL
 
 

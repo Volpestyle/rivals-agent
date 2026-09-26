@@ -18,10 +18,14 @@ START, BACK or the d-pad. If the idle-kick banner shows, it runs forward attacki
 import argparse
 import json
 import random
+import sys
 import time
 from pathlib import Path
 
 import cv2
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from agent.pad_bindings import COMBAT_BUTTONS, button_codes, combat_controls, controls  # noqa: E402
 
 
 OUT_ROOT = Path(r"C:\rivals-agent\data\l1")
@@ -40,9 +44,8 @@ class Pad:
 
     def set(self, **changes):
         self.state.update(changes)
-        s, b = self.state, self.vg.XUSB_BUTTON
-        codes = {"A": b.XUSB_GAMEPAD_A, "B": b.XUSB_GAMEPAD_B, "X": b.XUSB_GAMEPAD_X, "Y": b.XUSB_GAMEPAD_Y,
-                 "LB": b.XUSB_GAMEPAD_LEFT_SHOULDER, "RB": b.XUSB_GAMEPAD_RIGHT_SHOULDER}
+        s = self.state
+        codes = button_codes(self.vg, COMBAT_BUTTONS | {"X", "RB", "A"})
         self.pad.reset()
         for name in s["buttons"]:
             self.pad.press_button(button=codes[name])
@@ -151,13 +154,13 @@ def routine(rng):
     opposite stick values, which walks the player back to where the cycle began.
     Start the run facing a target bot ~8 m away on open floor. Attacks and
     abilities go between legs. Never used: X (hold = change hero, START on the
-    lobby), LB (web swing, leaves the anchor), START/BACK/d-pad (menus).
+    lobby), A (web swing, leaves the anchor), START/BACK/d-pad (menus).
 
     ponytail: drift from collisions and melee lunges is uncorrected; a detector
     driven controller (L3+L4) is the upgrade.
     """
     rest = dict(lx=0.0, ly=0.0, rx=0.0, ry=0.0, lt=0.0, rt=0.0, buttons=[])
-    clock, next_ok = 0.0, {"Y": 0.0, "RB": 0.0}
+    clock, next_ok = 0.0, {"team_up": 0.0, "get_over_here": 0.0}
 
     def leg():
         kind = rng.choice(["approach", "approach", "strafe", "orbit", "orbit", "sweep", "pitch"])
@@ -176,19 +179,19 @@ def routine(rng):
         nonlocal clock
         act = rng.random()
         if act < 0.40:
-            yield "rt", rng.uniform(0.6, 1.6), dict(rt=1.0)
+            yield "rt", rng.uniform(0.6, 1.6), combat_controls("spider_power")
         elif act < 0.65:
             for _ in range(rng.randint(1, 3)):
-                yield "lt", 0.15, dict(lt=1.0)
-                yield "lt", 0.35, dict(lt=0.0)
+                yield "lt", 0.15, combat_controls("web_cluster")
+                yield "lt", 0.35, combat_controls("web_cluster", down=False)
         elif act < 0.78:
-            yield "jump", 0.15, dict(buttons=["A"])
+            yield "jump", 0.15, combat_controls("jump")
         else:
             ready = [name for name, t in next_ok.items() if t <= clock]
             if ready:
                 name = rng.choice(ready)
                 next_ok[name] = clock + 8.0
-                yield name.lower(), 0.2, dict(buttons=[name])
+                yield name, 0.2, combat_controls(name)
         yield "rest", 0.4, rest
 
     while True:
@@ -208,7 +211,7 @@ def routine(rng):
         # range cross the view at varied screen positions and distances.
         secs = rng.uniform(1.0, 2.5)
         yield "pan", secs, {**rest, "rx": rng.choice([-1.0, 1.0]) * rng.uniform(0.25, 0.45),
-                            "lt": 1.0 if rng.random() < 0.3 else 0.0}
+                            **combat_controls("web_cluster", down=rng.random() < 0.3)}
         yield "rest", 0.15, rest
         clock += secs + 0.15
 
@@ -254,7 +257,7 @@ def main():
         steps, t = routine(random.Random(0)), 0.0
         while t < 660:  # a full run never touches the buttons that leave the range or the anchor
             _, secs, changes = next(steps)
-            assert not {"X", "LB"} & set(changes.get("buttons", [])) and 0 < secs < 3
+            assert not ({"X", "START", "BACK"} | set(controls("web_swing"))) & set(changes.get("buttons", [])) and 0 < secs < 3
             t += secs
         print("selftest ok")
         return
@@ -298,7 +301,7 @@ def main():
                         break
             if pad and idle_warning(frame) and label != "idle-escape":
                 label, step_end = "idle-escape", now + 2.0  # the kick timer wants movement or combat
-                pad.set(lx=0.0, ly=1.0, rx=0.0, ry=0.0, lt=0.0, rt=1.0, buttons=[])
+                pad.set(lx=0.0, ly=1.0, rx=0.0, ry=0.0, lt=0.0, buttons=[], **combat_controls("spider_power"))
             if pad and now >= step_end:
                 label, secs, changes = next(steps)
                 pad.set(**changes)

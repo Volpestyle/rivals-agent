@@ -3,9 +3,12 @@
 Usage (PC desktop session, game focused, in the range, facing scenery with no bot near the crosshair):
   python scripts/l4_measure.py yaw      # focal length (px), deg/s per stick deflection, ramp, latency
   python scripts/l4_measure.py yawmap   # the same map from still frames before/after timed pulses (the one to trust)
-  python scripts/l4_measure.py press    # shortest LT and A press the game registers
-Writes data/l4/<what>.json and prints it. Every input goes through agent.controller.Live (HUD guard).
+  python scripts/l4_measure.py press    # shortest Web-Cluster and Jump press the game registers
+Writes a NEW data/l4/<what>.json (or --out PATH) and prints it; never overwrites.
+Use --focal PX with yawmap/yawleft after period-pinning focal length.
+Raw output is not calibration acceptance. See docs/pad-bindings.md. Every input goes through agent.controller.Live (HUD guard).
 """
+import argparse
 import json
 import math
 import sys
@@ -18,6 +21,8 @@ import numpy as np
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 from agent.controller import Live  # noqa: E402
+from agent.pad_bindings import PROFILE, combat_controls  # noqa: E402
+from agent.startup import watch_pad  # noqa: E402
 
 DEFLECTIONS = (0.3, 0.5, 0.7, 0.85, 1.0)
 OUT = ROOT / "data" / "l4"
@@ -122,21 +127,22 @@ def yaw(live):
 
 
 def hero(frame):
-    """The player's own screen region, 1/2 scale grey: a registered LT (throw) or A (jump) animates it."""
+    """The player's own screen region, 1/2 scale grey: a registered LT (throw) or Jump animates it."""
     k = frame.shape[1] / 1280.0
     g = cv2.cvtColor(frame[int(300 * k):int(620 * k), int(360 * k):int(700 * k)], cv2.COLOR_BGR2GRAY)
     return cv2.resize(g, (170, 160), interpolation=cv2.INTER_AREA).astype(np.float32)
 
 
 def press(live):
-    """Shortest press the game registers, for the analog trigger (LT) and a digital button (A).
+    """Shortest press the game registers, for the analog trigger (LT) and the current digital Jump button.
 
     The range never depletes Web Cluster ammo, so the HUD cannot tell; the throw / jump animation can.
     Stand still facing open floor. Signal = peak change of the hero region in the 0.5 s after the press,
     against the idle-animation peak in the 0.5 s before it.
     """
     res = {}
-    for name, down, up in (("LT", dict(lt=1.0), dict(lt=0.0)), ("A", dict(buttons=("A",)), dict(buttons=()))):
+    for name in ("web_cluster", "jump"):
+        down, up = combat_controls(name), combat_controls(name, down=False)
         res[name] = {}
         for ms in (8, 16, 25, 33, 50, 80, 120):
             hits, lat = 0, []
@@ -182,7 +188,7 @@ def pulse(live, secs, **pad):
 YAW_BOX = (820, 130, 1180, 400)   # right of the hero, clear of the HUD: a right turn carries it left across the view
 
 
-def yawmap(live):
+def yawmap(live, focal=None):
     """Stick -> turn map from still frames before and after timed pulses (robust where optical flow was not)."""
     res, cx = {"trials": []}, 640.0
     xa = (YAW_BOX[0] + YAW_BOX[2]) / 2 - cx
@@ -207,7 +213,8 @@ def yawmap(live):
             2 * (math.atan(xa / f) - math.atan((xa + d1) / f)) - (math.atan(xa / f) - math.atan((xa + d2) / f))))
         fs.append(float(best))
         res["trials"].append({"focal": best, "d1": d1, "d2": d2, "scores": [round(s1, 2), round(s2, 2)]})
-    f = float(np.median(fs))
+    f = float(np.median(fs)) if focal is None else focal
+    res["focal_source"] = "candidate_equal_pulses" if focal is None else "operator_period_pinned"
     res["focal_px_1280"], res["focal_runs"] = f, fs
     res["hfov_deg"] = round(2 * math.degrees(math.atan(640 / f)), 1)
 
@@ -218,9 +225,11 @@ def yawmap(live):
     for d in (0.1, 0.2, 0.3, 0.45, 0.6, 0.8, 1.0):
         row = {}
         for secs in ((0.10, 0.25) if d <= 0.45 else (0.06, 0.12)):   # short at high deflection: the patch must stay in view
-            _, _, dx, _, score = turn(d, secs)
-            row[str(secs)] = {"deg": round(ang(dx), 2), "score": round(score, 2)}
+            _, b, dx, _, score = turn(d, secs)
+            row[str(secs)] = {"deg": round(ang(dx), 2), "dx": dx, "score": round(score, 2)}
             pulse(live, secs, rx=-d)
+            back_dx, back_dy, back_score = shift_of(b, still(live), YAW_BOX)
+            row[str(secs)]["back"] = {"dx": back_dx, "dy": back_dy, "score": back_score}
         (s0, r0), (s1, r1) = [(float(k), v["deg"]) for k, v in row.items()]
         row["rate_deg_s"] = round((r1 - r0) / (s1 - s0), 1) if s1 > s0 else None
         res["yaw"][str(d)] = row
@@ -230,18 +239,21 @@ def yawmap(live):
     for d in (0.5, 1.0):
         row = {}
         for secs in (0.10, 0.20):
-            _, _, _, dy, score = turn(d, secs, axis="ry")
-            row[str(secs)] = {"deg": round(math.degrees(math.atan((ya + dy) / f) - math.atan(ya / f)), 2), "score": round(score, 2)}
+            _, b, _, dy, score = turn(d, secs, axis="ry")
+            row[str(secs)] = {"deg": round(math.degrees(math.atan((ya + dy) / f) - math.atan(ya / f)), 2), "dy": dy, "score": round(score, 2)}
             pulse(live, secs, ry=-d)
+            back_dx, back_dy, back_score = shift_of(b, still(live), YAW_BOX)
+            row[str(secs)]["back"] = {"dx": back_dx, "dy": back_dy, "score": back_score}
         (s0, r0), (s1, r1) = [(float(k), v["deg"]) for k, v in row.items()]
         row["rate_deg_s"] = round((r1 - r0) / (s1 - s0), 1)
         res["pitch"][str(d)] = row
     return res
 
 
-def yawleft(live):
+def yawleft(live, focal=None):
     """Left-turn check of the yaw map (the scene moves right, so the patch comes from the left of the hero)."""
-    f, box = 760.0, (60, 140, 330, 400)
+    # Historical 760 is retained only for old offline callers; pass the measured --focal.
+    f, box = (760.0 if focal is None else focal), (60, 140, 330, 400)
     xa = (box[0] + box[2]) / 2 - 640.0
     res = {}
     for d in (0.3, 0.6, 1.0):
@@ -275,16 +287,38 @@ def period(live):
 
 
 def main(argv, live_factory=Live):
-    what = argv[0]
-    run = {"yaw": yaw, "yawmap": yawmap, "yawleft": yawleft, "period": period, "press": press}[what]
-    live = live_factory()
-    try:                               # everything after the pad opens, keepalive included
-        live.keepalive()
-        result = run(live)
-    finally:
-        live.close()                   # close, not release: it owns the lease watchdog and refuses any later write
-    OUT.mkdir(parents=True, exist_ok=True)
-    (OUT / f"{what}.json").write_text(json.dumps(result, indent=1))
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("what", choices=("yaw", "yawmap", "yawleft", "period", "press"))
+    ap.add_argument("--focal", type=float, help="period-pinned focal length in 1280-wide pixels (yawmap/yawleft)")
+    ap.add_argument("--report-timing", action="store_true", help="retain watch_pad update-return times for pulse durations")
+    ap.add_argument("--out", type=Path, help="new output JSON; refuses an existing path before opening the pad")
+    args = ap.parse_args(argv)
+    if args.focal is not None and (not math.isfinite(args.focal) or args.focal <= 0
+                                   or args.what not in ("yawmap", "yawleft")):
+        ap.error("--focal must be positive and is only used by yawmap/yawleft")
+    dest = args.out or OUT / f"{args.what}.json"
+    # Reserve the output before opening a pad: never overwrite historical measurements.
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    with dest.open("x", encoding="utf-8") as output:
+        try:
+            run = {"yaw": yaw, "yawmap": yawmap, "yawleft": yawleft, "period": period, "press": press}[args.what]
+            live = live_factory()
+            try:
+                timing = watch_pad(live._pad) if args.report_timing else None
+                live.keepalive()
+                result = run(live) if args.focal is None else run(live, focal=args.focal)
+            finally:
+                live.close()
+            result = {"pad_profile": PROFILE, "acceptance": "raw_unreviewed", "report_timing": timing, **result}
+            output.write(json.dumps(result, indent=1) + "\n")
+        except BaseException as exc:
+            # Retain a readable failed attempt, including constructor errors and
+            # Ctrl-C, rather than an empty file that looks like measurements.
+            output.seek(0)
+            output.truncate()
+            output.write(json.dumps({"pad_profile": PROFILE, "acceptance": "failed",
+                                     "failed": repr(exc)}, indent=1) + "\n")
+            raise
     print(json.dumps(result))
 
 

@@ -39,32 +39,41 @@ kick 55). The balance log explains each: web strike and slam went 50 -> 55 in Se
 Spectacular Spin 170 -> 187.5 per s in Season 8 (2026-05-15). wiki.gg's "usage delay 2 s" on
 Amazing Combo is the old between-cast cooldown that Season 10 cut to 1 s.
 
-## Default Xbox layout: Spider-Man inputs
+## Current alt Xbox layout: Spider-Man inputs
 
-Source: Fandom ability template with `p=Xbox` (**S** unless noted). The generic Fandom `Controls`
-page ("Article In Progress", rev 2026-03-25) is not used for Spider-Man: it lists Primary and
-Secondary Weapon both as Y and Ability 3 as LT, which collides with Secondary Attack.
+Controller source: **James's alt settings, screenshots 2026-09-26** (16:46 CDT).
+This section supersedes the default-layout title above, which stays frozen for patch readers.
+Combat mapping: `agent/pad_bindings.py`. PC equivalents below are historical kit labels;
+recorded M&K sessions carry their own bindings. Menu controls do not follow combat rebinds.
 
 | Action | Xbox | PC equiv | Notes |
 |--------|------|----------|-------|
 | Move | LS | WASD | |
 | Camera / aim | RS | mouse | |
 | Spider-Power (primary) | **RT** | LMB | analog trigger |
-| Melee | **R3** (RS click) | V | Spider-Power is bound to both primary and melee; there is no separate melee attack |
+| Melee | **NONE** (unbound) | V | Semantic melee executes Spider-Power on RT; no separate melee attack. R3 is Team-Up A |
 | Web Cluster (secondary) | **LT** | RMB | analog trigger |
-| Web-Swing | **LB** | Shift | Ability 2 |
+| Web-Swing | **A held** | Shift | Hold to Swing ON; Simple Swing OFF and unbound |
 | Get Over Here! | **RB** | E | Ability 1 |
-| Amazing Combo | **X** | F | Ability 3 |
-| Jump / Thwip and Flip (double jump) | **A** | Space | |
-| Wall Crawl | **A** (against a wall) | Space | Fandom template says "press A to wall crawl"; the Season 0 patch note says "hold to crawl". Hold vs tap: **U** |
-| Wall sprint | **RT** while crawling | LMB | |
+| Amazing Combo | **B** | F | Ability 3 |
+| Jump / Thwip and Flip (double jump) | **LB** | Space | Separate press for each jump |
+| Wall Crawl | **LB held** (against a wall) | Space | Hold to Wall Crawl ON; Advance Vertically Upwards |
+| Wall sprint | **RT held while LB is held** | LMB | Hold to Run on Walls ON; combined response needs touch test |
 | Ultimate (Spectacular Spin) | **L3 + R3** together | Q | rebindable in settings. `pad.py` names these `LS` and `RS` |
-| Team-Up ability | **Y** | C | fires in the solo practice range: James pressed C 24 + 8 times in 051828 and 171533 and his M&K HUD shows the team-up slot labelled C (correction 2026-09-23; the earlier "only with a partner hero" was wrong for the range) |
+| Team-Up ability A | **R3** (RS click) | C | fires in the solo practice range: James pressed C 24 + 8 times in 051828 and 171533 and his M&K HUD shows the team-up slot labelled C (correction 2026-09-23; the earlier "only with a partner hero" was wrong for the range) |
 | Ping / comm wheel / hero profile / Chrono Vision | D-pad Down / Left / Up / Right | MMB / T / F1 / B | Fandom Controls page (**G**); not needed by the bot |
-| Crouch, sprint, pause | **U** | | Not in any reliable source. One guide summary says L3 is a sprint toggle; unconfirmed |
+| Crouch, sprint, pause | **U** | | Not in any reliable source |
+| Team-Up ability B | **L3** (LS click) | | L3 is not sprint |
+| Get Over Here Targeting | **X** | session-specific | Targeting Sensitivity While Aloft 100 |
+| Environmental Interaction | **View** (BACK) | | Outside combat whitelist; scoreboard uses a separate guarded path |
+| Unbound face button | **Y** | | No combat action |
 
 Two inputs use two controls at once: the ultimate needs both thumb clicks in the same report, and
-wall sprint needs RT while A/wall contact is held.
+wall sprint needs RT while LB/wall contact is held.
+
+Spider-Man overrides: **Horizontal 247 / Vertical 124** (All Heroes 265 / 195).
+Advanced stick curve is not shown. All earlier pad camera gains and tap/hold
+measurements are stale for this profile. See [calibration and touch test](pad-bindings.md).
 
 ## Ability reference
 
@@ -81,10 +90,10 @@ damage tables, not animation frames. Measure these from L1 recordings.
 | Spider-Tracer | applied by Web Cluster hit | lasts 3 s | n/a | n/a | +45 on consume | see next section |
 | Get Over Here! pull | RB | 8 s | 1 | 20 m | 25 | projectile 80 m/s (20 m = 250 ms, **D**) |
 | Get Over Here! web strike | RB, target tracer-tagged | shares the 8 s | | lock-on out to 24 m | 55 | travel time to target **U** |
-| Amazing Combo | X | 1 s between casts; 6 s recharge per charge | 2 | 4 m sphere | 70 (+45 if tagged) | **U** |
-| Web-Swing | LB | 6 s recharge per charge | 3 | 30 m | none | **U** |
-| Thwip and Flip | A in mid-air | none; refreshes on landing | 1 per airtime | n/a | none | instant |
-| Wall Crawl | A on wall/ceiling | none | n/a | crawl 3 m/s, sprint 9 m/s | none | n/a |
+| Amazing Combo | B | 1 s between casts; 6 s recharge per charge | 2 | 4 m sphere | 70 (+45 if tagged) | **U** |
+| Web-Swing | A held | 6 s recharge per charge | 3 | 30 m | none | **U** |
+| Thwip and Flip | LB in mid-air | none; refreshes on landing | 1 per airtime | n/a | none | instant |
+| Wall Crawl | LB held on wall/ceiling | none | n/a | crawl 3 m/s, sprint 9 m/s | none | n/a |
 | Spectacular Spin (ult) | L3+R3 | cost 2800 energy | n/a | 8 m radius sphere | 15 per 0.08 s tick = 187.5/s, 450 over 2.4 s (**D**) | 2.4 s duration |
 | Spider-Sense (passive) | n/a | n/a | n/a | 8 m sphere; warns of enemies in range that are out of sight. The template's "3 s disappearance time to trigger" semantics are **U** | none | warning icon above Spider-Man's head |
 
@@ -131,7 +140,7 @@ What the sources establish, and what they do not.
 | Per-hero swing settings | Settings > Controller/Keyboard > Combat > hero dropdown "Spider-Man": **Automatic Swing** (Venom's equivalent is "Easy Swing") and **Hold to Swing** | S ([Gfinity](https://www.gfinityesports.com/article/marvel-rivals-how-to-turn-off-easy-swing), 2024-12-27; setting names unchanged in Season 10 wiki prose) |
 | Automatic Swing ON (default) | Game picks the anchor: "locks onto the closest anchor point", no aiming | S (guide wording) |
 | Automatic Swing OFF | Player-chosen anchor: web attaches where the crosshair hits a surface. Aiming at a surface roughly level with, or below, Spider-Man produces a Web Zip (fast pull to the point) instead of a pendulum arc | S (Season 0 patch note "Perform a Web Zip if aiming at the ground"; template "aiming at surface directly below them") |
-| Tap vs hold | Default: tap LB to attach, tap again to release. Hold to Swing ON: swing lasts while LB is held, releases on let-go | S (Gfinity) |
+| Tap vs hold | Current alt: hold A to swing, release A to detach (Hold to Swing ON). A tap does not sustain a swing | James's alt settings, screenshots 2026-09-26 |
 | Momentum | Release keeps velocity; guides chain swing -> Get Over Here! and fly past the target while the pull resolves | G (2025-05-31) |
 | Swing cancel | Firing a normal web (Web Cluster) during the swing animation cancels the animation; jumping right after keeps momentum; repeating chains "b-hops" | G (2025-03-09, pre-Season 9). **U** on the current patch |
 | Web-Swing as a double jump | A brief web-fire at a surface counts as the double jump, enabling the overhead slam | S (Fandom strategy prose) |
@@ -158,17 +167,17 @@ of the last Web Cluster hit; Spider-Power chains at 0.37 s then 0.82 s; Amazing 
 
 | # | Name | Input order | Timing windows | Total damage (**D**, all hits land, no falloff) | Source |
 |---|------|-------------|----------------|--------------------------------------------------|--------|
-| 1 | Standard burst | LT (tag) -> RB (web strike) -> X (uppercut) -> RT, RT, RT -> LT | RB within 3 s of LT; X only after the strike lands (target within 4 m); RT hits at 0.37 s then 0.82 s spacing; final LT re-tags | 30 + 55 + (70+45) + 25 + 25 + 40 + 30 = **320** | G (marvelrivals.gg, 2025-03-09); damage figures S/D |
-| 2 | Squishy kill | LT -> RB -> X -> RT, RT | as #1, stop after two punches | 30 + 55 + 115 + 25 + 25 = **250** | D from #1 |
-| 3 | Fast cancel kill | LT -> RB -> one RT -> LT (cancel) -> X (cancel) | each step cancelled as soon as its hit lands; the punch consumes the first tag, the second LT re-tags for X | 30 + 55 + (25+45) + 30 + (70+45) = **300** | G (marvelrivals.gg summary); cancel windows **U** |
-| 4 | Pull and punish (no tag) | RB pull (25) -> X (70) -> RT x3 (90) | X once the enemy arrives; enemy is dragged into 3-4 m | 25 + 70 + 90 = **185** | D |
-| 5 | Air slam | A -> A (double jump or web-fire) -> RT | overhead slam within the airtime | 55 (+45 if tagged) | S |
-| 6 | Ledge pull | RB on an enemy at a ledge, then A, A to land back | pull is aimed; travel 250 ms at 20 m | 25 | G (2025-05-31) |
-| 7 | Ultimate opener | LB to high ground -> LT -> RB -> L3+R3 | needs 2800 energy; the ult only reaches 8 m | 450 over 2.4 s at full uptime | G (2025-03-09) |
-| 8 | B-hop movement | LB, then LT (cancel), then A, repeat | frame-tight | none | G, **U** on this patch. Not a first-cut primitive |
+| 1 | Standard burst | LT (tag) -> RB (web strike) -> B (uppercut) -> RT, RT, RT -> LT | RB within 3 s of LT; B only after the strike lands (target within 4 m); RT hits at 0.37 s then 0.82 s spacing; final LT re-tags | 30 + 55 + (70+45) + 25 + 25 + 40 + 30 = **320** | G (marvelrivals.gg, 2025-03-09); damage figures S/D |
+| 2 | Squishy kill | LT -> RB -> B -> RT, RT | as #1, stop after two punches | 30 + 55 + 115 + 25 + 25 = **250** | D from #1 |
+| 3 | Fast cancel kill | LT -> RB -> one RT -> LT (cancel) -> B (cancel) | each step cancelled as soon as its hit lands; the punch consumes the first tag, the second LT re-tags for B | 30 + 55 + (25+45) + 30 + (70+45) = **300** | G (marvelrivals.gg summary); cancel windows **U** |
+| 4 | Pull and punish (no tag) | RB pull (25) -> B (70) -> RT x3 (90) | B once the enemy arrives; enemy is dragged into 3-4 m | 25 + 70 + 90 = **185** | D |
+| 5 | Air slam | LB -> LB (double jump or web-fire) -> RT | overhead slam within the airtime | 55 (+45 if tagged) | S |
+| 6 | Ledge pull | RB on an enemy at a ledge, then LB, LB to land back | pull is aimed; travel 250 ms at 20 m | 25 | G (2025-05-31) |
+| 7 | Ultimate opener | A to high ground -> LT -> RB -> L3+R3 | needs 2800 energy; the ult only reaches 8 m | 450 over 2.4 s at full uptime | G (2025-03-09) |
+| 8 | B-hop movement | A, then LT (cancel), then LB, repeat | frame-tight | none | G, **U** on this patch. Not a first-cut primitive |
 
 The Venom suit-expulsion step in the older guides (#2 in marvelrivals.gg, 2025) refers to the
-pre-Season 9 team-up and is dropped here. Symbiote Bond and Parker Power-Up now sit on Y and need
+pre-Season 9 team-up and is dropped here. The alt team-up slots now sit on R3 (A) and L3 (B) and need
 the partner hero, so they are out of scope for the agent's own play.
 
 They are two different abilities with different cooldowns, which matters when reading expert
@@ -270,7 +279,7 @@ different mode and is in scope for later, not the first bot.
 
 ## Typed primitives for the controller lane
 
-Inputs use `pad.py` token names (`RT`, `LT`, `LB`, `RB`, `X`, `A`, `LS`, `RS`, `rs:x,y,secs`).
+Inputs use `pad.py` token names (`RT`, `LT`, `LB`, `RB`, `B`, `X`, `A`, `LS+RS`, `rs:x,y,secs`).
 `pad.py` taps hold 150 ms with a 400 ms gap, which is far too slow for a 0.37 s punch chain: the
 real controller needs a persistent pad and press durations of a few frames. Whether the game
 registers presses shorter than about 50 ms is **U**; measure it first.
@@ -279,16 +288,16 @@ registers presses shorter than about 50 ms is **U**; measure it first.
 |-----------|--------|---------------|-------------------------|
 | `web_cluster(n)` | `LT` tap, n times | at least 1 of 5 charges (HUD pips); enemy in line of sight, crosshair on it | projectile streak, hit marker, tracer icon over the enemy for 3 s, charge pip consumed and refilling every 2 s. Whether holding `LT` auto-fires: **U** |
 | `melee_combo` | `RT` tap at t=0, +0.37 s, +0.82 s | enemy within 3 m (4 m for the kick); crosshair on it | punch, punch, kick; damage numbers 25, 25, 40; +45 on the first hit if the enemy was tagged, tracer icon disappears. One press per hit vs hold-to-chain: **U** |
-| `uppercut` | `X` tap | at least 1 of 2 charges; enemy within 4 m | enemy launched upward, damage 70 (+45 if tagged, tracer consumed) |
+| `uppercut` | `B` tap | at least 1 of 2 charges; enemy within 4 m | enemy launched upward, damage 70 (+45 if tagged, tracer consumed) |
 | `pull` | `RB` tap, aimed | Get Over Here! ready (8 s), enemy untagged, within 20 m, crosshair on it | web line, enemy dragged to Spider-Man, 25 damage |
 | `web_strike` | `RB` tap | enemy tagged (icon visible), within 24 m; auto-locks, but how close the crosshair must be to the enemy is **U** | Spider-Man zips to the enemy and kicks, 55 damage, tracer still present |
-| `swing_start(anchor)` | aim `rs:` at anchor, hold `LB` (Hold to Swing ON) | at least 1 of 3 swing charges; airborne or on the ground; anchor within 30 m; Automatic Swing OFF | web line to anchor, pendulum arc, charge pip consumed |
-| `swing_release` | release `LB` | swinging | line drops, momentum carried. Release timing for best launch angle: **U** |
-| `web_zip(point)` | aim `rs:` level with or below Spider-Man, tap `LB` | at least 1 charge; Automatic Swing OFF | fast pull straight to the point, no arc |
-| `swing_cancel` | `LT` tap (or `A`) mid-swing | swinging | animation cancels, velocity kept (**G**, **U** this patch) |
-| `double_jump` | `A`, then `A` in mid-air | airborne; not yet double-jumped since landing | second upward hop, once per airtime |
-| `overhead_slam` | `A`, `A`, `RT` | after a double jump or web-fire; enemy within about 4 m below | downward slam, 55 damage |
-| `wall_crawl(dir)` | hold `A` into a wall, `ls:` along the wall | facing a wall or ceiling | Spider-Man sticks and moves at 3 m/s; `RT` while crawling raises it to 9 m/s. Hold vs tap: **U** |
+| `swing_start(anchor)` | aim `rs:` at anchor, hold `A` (Hold to Swing ON) | at least 1 of 3 swing charges; airborne or on the ground; anchor within 30 m; Automatic Swing OFF | web line to anchor, pendulum arc, charge pip consumed |
+| `swing_release` | release `A` | swinging | line drops, momentum carried. Release timing for best launch angle: **U** |
+| `web_zip(point)` | aim `rs:` level with or below Spider-Man, tap `A` | at least 1 charge; Automatic Swing OFF | fast pull straight to the point, no arc |
+| `swing_cancel` | `LT` tap (or `LB`) mid-swing | swinging | animation cancels, velocity kept (**G**, **U** this patch) |
+| `double_jump` | `LB`, then `LB` in mid-air | airborne; not yet double-jumped since landing | second upward hop, once per airtime |
+| `overhead_slam` | `LB`, `LB`, `RT` | after a double jump or web-fire; enemy within about 4 m below | downward slam, 55 damage |
+| `wall_crawl(dir)` | hold `LB` into a wall, `ls:` along the wall | facing a wall or ceiling | Spider-Man sticks and moves at 3 m/s; `RT` while crawling raises it to 9 m/s. Hold to Wall Crawl ON; tap alone cannot sustain crawl: **U** (inferred, pending touch test) |
 | `ultimate` | `LS` + `RS` pressed in the same report | ultimate meter full (2800), or standing on the range's Ultimate Charge pad; enemies within 8 m | web tornado around Spider-Man for 2.4 s, health bar shows bonus health, slow then stun after 20 hits, big damage numbers |
 | `burst(target)` | macro: `web_cluster(1)` -> `web_strike` -> `uppercut` -> `melee_combo` -> `web_cluster(1)` | all of the above ready; target within 20 m | 320 damage (combo #1); a guide claims the burst window is under 3 s. Damage total is arithmetic, duration is a claim: neither is observed |
 

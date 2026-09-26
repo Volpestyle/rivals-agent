@@ -1,0 +1,21 @@
+{
+  "agent/pad_bindings.py": "e71558625b1f35d0203958d383134fa98cdee55ecc94d65c2ea27eff87cdefc1",
+  "agent/controller.py": "4e5bb70fca797ab17a25a8699d1ad111f0b7cd561f59d2b308a52c10b44da060",
+  "agent/loop.py": "040c77c2c4ed0fff5a893e6e00991c8df7bad1e87267bf6d416964911b1e596f",
+  "policy/range_bc/executor.py": "bb5fa0065317bfeb9a1f8046422d722d7360810163091a56bb94f38809c2e60d",
+  "policy/range_bc/vocab.py": "9f57c02a977921cc0f8fef003a19eb647136ff51af34a7913f76fb22ec811f3e",
+  "scripts/pad.py": "e089c72da8375df14b4d185ef8c2a32c4d74c7b7e5f161d3fde94e4f0fc0bfc3",
+  "scripts/record.py": "d6aa320beb99a96953cccec2be81abbc9f65b026abade86fb34bff31babadead",
+  "scripts/reenter.py": "f1668eae6b1c9925ebfda4432f0a9e685114a8a37fb5b3b2fe64450c2fac4e32",
+  "scripts/l4_measure.py": "20e544bc90a2f804c52f755bf3372b116b9a0bac6cca5fee1a645c3ad946500d",
+  "docs/spiderman-kit.md": "5e8279db947028d95ff4e0315c6d318afb2325230c0e533a25e2129e027de162",
+  "docs/pad-bindings.md": "7f30bffcf2d6e1f9eb079735fb35e805b24be3dbc99a609273b1d74bb7684584",
+  "tests/test_pad_bindings.py": "5fda05904ffedcf531db94fe499f2c38ab24a0f75769d62ef3eba60914531669",
+  "tests/test_record_pad_bindings.py": "01843d031a4356a2877954388a7cd95e8494f452eaaf341cb1c47c4c52e93f40",
+  "tests/test_controller.py": "eb81e750d04c6c170d66d9f36961841e7cbfe7ece5c7736eeb5438c6a512b1d6",
+  "tests/test_live_pad.py": "9e175e1c7ac696fdec793cff4254b4fbc23eadb0db9cf3cdb5a59cab698da3ce",
+  "tests/test_loop.py": "905981a80418fe4d990a9f97449e00d0a67a5a2f51394c315094e12e2f284df6",
+  "tests/test_l4_scripts_close.py": "af533e6cd127cfbe4dce1c3e98a8a9dd1222f7de72d009e0a06698525bbe998b",
+  ".agents/skills/rivals-live-game/SKILL.md": "df51849c86be6b31966f9d707e2c3fa22b0c87a3262844b364e6812dd9150d00",
+  "tests/test_range_bc.py": "f608864fdec4a5bd5fa220f46f425266d6a8c372c03a49d098b79744222e4361"
+}

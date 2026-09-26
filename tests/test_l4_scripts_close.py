@@ -1,5 +1,6 @@
 """scripts/l4_trial.py and scripts/l4_measure.py open a Live: every exit path must end in Live.close(), not only
 release(), because close owns the lease watchdog and refuses any later write."""
+import json
 import sys
 from pathlib import Path
 
@@ -65,6 +66,8 @@ def test_measure_closes_live_however_it_ends(boom, error):
     with pytest.raises(error):
         l4_measure.main(["yawleft"], live_factory=lambda: live)
     assert live.closed == 1
+    result = json.loads((l4_measure.OUT / "yawleft.json").read_text())
+    assert result["acceptance"] == "failed" and result["failed"] == repr(error(boom))
 
 
 def test_measure_closes_live_on_success(monkeypatch):
@@ -72,6 +75,56 @@ def test_measure_closes_live_on_success(monkeypatch):
     monkeypatch.setitem(l4_measure.__dict__, "press", lambda lv: {"ok": True})
     l4_measure.main(["press"], live_factory=lambda: live)
     assert live.closed == 1 and "keepalive" in live.calls
+
+
+def test_measure_refuses_existing_output_before_opening_a_pad(tmp_path):
+    dest = tmp_path / "prior.json"
+    dest.write_text("keep these measurements")
+    opened = []
+    with pytest.raises(FileExistsError):
+        l4_measure.main(["press", "--out", str(dest)], live_factory=lambda: opened.append(True))
+    assert not opened and dest.read_text() == "keep these measurements"
+
+
+@pytest.mark.parametrize("focal", ["0", "-1", "nan", "inf"])
+def test_measure_refuses_invalid_focal_before_opening_a_pad(focal):
+    opened = []
+    with pytest.raises(SystemExit):
+        l4_measure.main(["yawmap", "--focal", focal], live_factory=lambda: opened.append(True))
+    assert not opened
+
+
+def test_measure_keeps_explicit_focal_and_report_times(monkeypatch, tmp_path):
+    from test_live_pad import FakePad
+    live = FakeLive()
+    live._pad = FakePad()
+    def measure(lv, focal):
+        lv._pad.press_button("LS")
+        lv._pad.press_button("RS")
+        lv._pad.update()
+        lv._pad.reset()
+        lv._pad.update()
+        return {"focal_px_1280": focal}
+    monkeypatch.setattr(l4_measure, "yawmap", measure)
+    dest = tmp_path / "new.json"
+    l4_measure.main(["yawmap", "--focal", "500", "--report-timing", "--out", str(dest)],
+                    live_factory=lambda: live)
+    result = json.loads(dest.read_text())
+    assert result["focal_px_1280"] == 500 and result["acceptance"] == "raw_unreviewed"
+    assert result["report_timing"]["failed"] is None
+    assert [on for _, on in result["report_timing"]["reports"]] == [True, False]
+    assert live.closed == 1
+
+
+@pytest.mark.parametrize("error", [RuntimeError, KeyboardInterrupt])
+def test_measure_records_failure_when_pad_construction_fails(error, tmp_path):
+    dest = tmp_path / "construction-failed.json"
+    def fail():
+        raise error("construction")
+    with pytest.raises(error):
+        l4_measure.main(["press", "--out", str(dest)], live_factory=fail)
+    result = json.loads(dest.read_text())
+    assert result["acceptance"] == "failed" and result["failed"] == repr(error("construction"))
 
 
 @pytest.mark.parametrize("mode", [["aim", "1"], ["prim", "web_cluster", "1"], ["tagrb", "1"], ["scoreboard", "1"], ["tagged", "1"], ["tagrun", "0.01"]])

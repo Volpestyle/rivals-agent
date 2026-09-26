@@ -5,7 +5,7 @@ This module only computes pad states: it never opens a pad. The live path hands 
 SendInput path: L0 closed injected mouse buttons and nobody works around it, and hardware or driver injectors are out
 of scope (`docs/plan.md` scope boundary).
 
-Camera: requested degrees per step -> deg/s -> stick deflection through the measured maps (`agent.controller.Cal`,
+Camera (historical maps, STALE for the 247/124 alt; recalibration required): requested degrees per step -> deg/s -> stick deflection through the measured maps (`agent.controller.Cal`,
 yaw 172 deg/s at 0.45, 415 at 1.0; pitch 99 at 1.0), feedforward, plus an optional correction on the accumulated
 error between requested and measured rotation. Whether the correction is needed is decided by the measured tracking
 error (`tracking_error`), reported before any pilot; nothing here assumes the maps are exact in play.
@@ -14,14 +14,13 @@ from dataclasses import dataclass, field
 import math
 
 from agent.controller import NEUTRAL, Cal, stick_for
+from agent.pad_bindings import BINDINGS, ALIASES, combat_controls
 
 from . import vocab
 
 STEP_S = 1 / 30
 
-# Semantic action -> pad buttons / triggers that Live's whitelist allows. Movement goes to the left stick.
-BUTTON = {"jump": "A", "web_swing": "LB", "get_over_here": "RB", "amazing_combo": "X"}
-TRIGGER = {"spider_power": "rt", "web_cluster": "lt"}
+# All combat actions resolve through agent.pad_bindings; no physical bind copy here.
 MOVE = {"move_forward": (0., 1.), "move_back": (0., -1.), "move_left": (-1., 0.), "move_right": (1., 0.)}
 
 
@@ -56,8 +55,9 @@ def decode_step(held_p, press_p, release_p, prev_held, live_mask, threshold=.5):
 
 
 def pad_state(held, press, yaw_deg, pitch_deg, *, cal=None, correction=(0., 0.)):
-    """One step's pad dict for Live.send_guarded. A tap is held for the whole step (the pad needs >= 33 ms: Cal.press_s),
-    so `press` without `held` still sets the control for this step. `correction` is deg/s added per axis."""
+    """One step's pad dict for Live.send_guarded. A tap is held for the whole step (historical floor: Cal.press_s; remeasure),
+    so `press` without `held` still sets the control for this step. Swing and Jump/wall crawl
+    remain down across consecutive held steps; a press-only prediction is only a one-step hold, never a toggle. `correction` is deg/s added per axis."""
     cal = cal or Cal()
     active = [h or p for h, p in zip(held, press)]
     lx = sum(MOVE[n][0] for n in MOVE if active[vocab.INDEX[n]])
@@ -67,9 +67,9 @@ def pad_state(held, press, yaw_deg, pitch_deg, *, cal=None, correction=(0., 0.))
         lx, ly = lx / norm, ly / norm
     out = dict(NEUTRAL)
     out["lx"], out["ly"] = lx, ly
-    out["buttons"] = tuple(sorted(BUTTON[n] for n in BUTTON if active[vocab.INDEX[n]]))
-    for n, t in TRIGGER.items():
-        out[t] = 1. if active[vocab.INDEX[n]] else 0.
+    out.update(combat_controls(*(n for n in vocab.NAMES
+                                 if n in BINDINGS or n in ALIASES
+                                 if active[vocab.INDEX[n]])))
     yaw_rate = yaw_deg / STEP_S + correction[0]
     # policy pitch is positive downward and ry up-positive; None (an unknown pitch gain) sends no pitch
     pitch_up_rate = -((pitch_deg or 0.) / STEP_S) + correction[1]

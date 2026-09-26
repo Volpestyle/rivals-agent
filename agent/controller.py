@@ -18,6 +18,8 @@ from time import monotonic as _real_clock   # the lease clock: never the patchab
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))  # capture.py, record.py
 
+from .pad_bindings import ATTACK_BUTTONS, COMBAT_BUTTONS, button_codes, combat_controls
+
 NEUTRAL = {"lx": 0.0, "ly": 0.0, "rx": 0.0, "ry": 0.0, "lt": 0.0, "rt": 0.0, "buttons": ()}
 FRESH_S = 0.1
 
@@ -38,7 +40,7 @@ class Forbidden(RuntimeError):
     """Something asked the pad for an input that is never sent from play; nothing was sent and the pad is neutral."""
 
 
-ALLOWED = frozenset({"A", "X", "LB", "RB"})   # what play needs. START, BACK, B, Y, the d-pad and stick clicks never leave send()
+ALLOWED = COMBAT_BUTTONS   # combat only; START/BACK/Y/d-pad remain forbidden
 STATE_KEYS = frozenset(NEUTRAL)
 
 
@@ -84,12 +86,10 @@ class Live:
             raise RangeLost("range HUD not on screen at start; no pad opened")
         if pad_factory is None:
             import vgamepad as vg
-            self._codes = {n: getattr(vg.XUSB_BUTTON, c) for n, c in (
-                ("A", "XUSB_GAMEPAD_A"), ("X", "XUSB_GAMEPAD_X"), ("LB", "XUSB_GAMEPAD_LEFT_SHOULDER"),
-                ("RB", "XUSB_GAMEPAD_RIGHT_SHOULDER"), ("BACK", "XUSB_GAMEPAD_BACK"))}
+            self._codes = button_codes(vg, ALLOWED | {"BACK"})
             self._pad = vg.VX360Gamepad()
         else:
-            self._codes = {n: n for n in ("A", "X", "LB", "RB", "BACK")}
+            self._codes = {n: n for n in ALLOWED | {"BACK"}}
             self._pad = pad_factory()
         self.sent = dict(NEUTRAL)
         self._lock, self._lease_until, self._closed, self._dead = threading.Lock(), None, threading.Event(), False
@@ -191,7 +191,7 @@ class Live:
 
     def keepalive(self):
         """The range removes a player ~10 min after the last move or attack; camera and menu input do not count."""
-        for secs, pad in ((0.3, dict(ly=1.0)), (0.3, dict(ly=-1.0)), (0.15, dict(rt=1.0))):
+        for secs, pad in ((0.3, dict(ly=1.0)), (0.3, dict(ly=-1.0)), (0.15, combat_controls("spider_power"))):
             self.hold(secs, **{**NEUTRAL, **pad})
         time.sleep(0.5)
 
@@ -300,7 +300,13 @@ from .tracker import CLOSE_H, CLOSE_RATIO, PIECE_INSIDE, PIECE_PAD, SIZE_RATIO  
 
 @dataclass
 class Cal:
-    """Measured on the live game (docs/lanes/l4-controller.md). Settings: Linear curve, aim assist 0, H/V sens 265/75."""
+    """HISTORICAL, STALE for James's alt Spider-Man at H/V 247/124 (2026-09-26).
+
+    Old measurements: docs/lanes/l4-controller.md, Linear, assist 0, 265/75.
+    Retained for offline baselines only; no new gains are inferred from sensitivity.
+    Recalibrate camera, press floor and hold behavior before any alt agent run.
+    See docs/pad-bindings.md for the required PC procedure.
+    """
     # Horizontal FOV ~108 deg. Pinned by timing a full 360 deg turn at 0.45 stick (2.08 s = 173 deg/s) and choosing the
     # focal length at which still-frame pixel shifts give the same rate. (Solving it from pixel shifts alone is
     # ill-conditioned: it gave 590-860.)
@@ -320,7 +326,7 @@ class Cal:
     pull_s: float = 0.8                  # pull: RB to the enemy arriving
     uppercut_s: float = 0.5
     melee_s: float = 1.3                 # RT held through punch, punch, kick
-    swing_s: float = 1.0                 # LB hold for one arc
+    swing_s: float = 1.0                 # web_swing held for one arc; duration needs a new touch test
 
 
 def _interp(x, pts):
@@ -456,15 +462,15 @@ class Controller:
     def primitive(self, name):
         c = self.cal
         return {
-            "web_cluster": self._tap(lt=1.0),
-            "melee_combo": [(c.melee_s, dict(rt=1.0)), (0.03, dict(rt=0.0))],
-            "uppercut": self._tap(buttons=("X",)) + [(c.uppercut_s, {})],
-            "pull": self._tap(buttons=("RB",)) + [(c.pull_s, {})],
-            "web_strike": self._tap(buttons=("RB",)) + [(c.strike_s, {})],
-            "swing": [(c.swing_s, dict(buttons=("LB",), ly=1.0)), (0.03, dict(buttons=()))],
-            "burst": (self._tap(lt=1.0) + [(0.25, {})] + self._tap(buttons=("RB",)) + [(c.strike_s, {})]
-                      + self._tap(buttons=("X",)) + [(c.uppercut_s, {})]
-                      + [(c.melee_s, dict(rt=1.0)), (0.03, dict(rt=0.0))] + self._tap(lt=1.0)),
+            "web_cluster": self._tap(**combat_controls("web_cluster")),
+            "melee_combo": [(c.melee_s, combat_controls("spider_power")), (0.03, combat_controls("spider_power", down=False))],
+            "uppercut": self._tap(**combat_controls("amazing_combo")) + [(c.uppercut_s, {})],
+            "pull": self._tap(**combat_controls("get_over_here")) + [(c.pull_s, {})],
+            "web_strike": self._tap(**combat_controls("get_over_here")) + [(c.strike_s, {})],
+            "swing": [(c.swing_s, {**combat_controls("web_swing"), "ly": 1.0}), (0.03, dict(buttons=()))],
+            "burst": (self._tap(**combat_controls("web_cluster")) + [(0.25, {})] + self._tap(**combat_controls("get_over_here")) + [(c.strike_s, {})]
+                      + self._tap(**combat_controls("amazing_combo")) + [(c.uppercut_s, {})]
+                      + [(c.melee_s, combat_controls("spider_power")), (0.03, combat_controls("spider_power", down=False))] + self._tap(**combat_controls("web_cluster"))),
         }[name]
 
     def play(self, name, t):
@@ -549,7 +555,7 @@ class Controller:
             else:
                 out["ly"] = 1.0
                 if (t - self.phase_t - turn_s) % 1.2 < self.cal.press_s:
-                    out["buttons"] = ("A",)
+                    out.update(combat_controls("jump"))
         elif isinstance(intent, Engage) and self.track is not None:
             near = self.track.h / state.frame[1] >= near_h()
             # Forward movement needs a box measured by the aim sensor ON THIS STEP: none on a coast, a hit flash, a lost track, or a
@@ -576,7 +582,7 @@ class Controller:
             self.seq.pop(0)
         if self.seq:
             out.update(self.seq[0][1])  # the step being played overrides buttons/triggers (and ly for the swing)
-        if out["lt"] or out["rt"] or set(out["buttons"]) & {"X", "RB"}:
+        if out["lt"] or out["rt"] or set(out["buttons"]) & ATTACK_BUTTONS:
             self.attack_t = t
         self.stick = (out["rx"], out["ry"])
         if range_exit:

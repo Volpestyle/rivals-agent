@@ -66,8 +66,8 @@ class Script:
 
 
 def test_only_the_play_buttons_pass_and_a_refusal_leaves_the_pad_neutral():
-    assert ALLOWED == {"A", "X", "LB", "RB"}
-    for bad in ("BACK", "START", "B", "Y", "LS", "RS", "UP", "DOWN", "LEFT", "RIGHT", "GUIDE"):
+    assert ALLOWED == {"A", "B", "X", "LB", "RB", "LS", "RS"}
+    for bad in ("BACK", "START", "Y", "UP", "DOWN", "LEFT", "RIGHT", "GUIDE"):
         lv, _, pad = live()
         lv.send(ly=1.0, buttons=("A",))
         with pytest.raises(Forbidden):

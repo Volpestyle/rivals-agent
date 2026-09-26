@@ -43,6 +43,10 @@ import numpy as np
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 sys.path.insert(0, str(ROOT))
+from agent.pad_bindings import controls  # noqa: E402
+
+# The arrival attack uses the combat table; all A/RB/X menu inputs stay physical.
+ARRIVAL_ATTACK = controls("spider_power")[0]
 from record import idle_warning, in_range  # noqa: E402  (the range HUD test every input loop uses, and the idle-kick banner)
 
 OUT = ROOT / "data" / "reenter"
@@ -92,6 +96,7 @@ SIDESTEP_S, SIDESTEP_TRIES = 0.4, 2   # then strafe LEFT this long, at most this
                      # right (the door beyond it, up to the left), so left is the side it is clear; after the last try, no progress refuses
 OUT_SWEEPS = 7       # outside, turn LEFT at most this many SWEEP_S steps (~360 deg) looking for the bot: live, from the exit she stood
                      # 25-45 deg left of the heading he left by (steps 12-15), one step brings her into plaza_view's window
+# STALE for alt H/V 247/124: remeasure before arrival steering (docs/pad-bindings.md).
 YAW_STICK, YAW_DEG_S, FOCAL = 0.45, 172.0, 465.0   # the camera: deg/s at that right-stick deflection, and the focal length at 1280 wide (l4)
 # The pad cursor sprite: a small ring (r ~19) with a bright centre dot when it hovers a widget, a plain larger ring (r ~26)
 # otherwise. Both are white, so the search runs on min(B, G, R). l4_menu.find_cursor is not used: it takes the first
@@ -552,7 +557,7 @@ def describe(frame):
 # --- the machine: capture + one pad, and a guard that decides what may be sent -----------------------------------------
 MAX_STEPS, MAX_MISSES = 30, 4              # cursor steering: at most this many nudges / lost-ring jiggles
 SPEED, DEADBAND_S = 700.0, 0.035           # px/s at full stick (1280x720), and the shortest useful tap; l4_menu's step law
-ALLOWED = {"lobby": {"A"}, "practice_panel": {"A"}, "hero_select": {"A", "RB", "X"}, "in_range": {"RT"}}
+ALLOWED = {"lobby": {"A"}, "practice_panel": {"A"}, "hero_select": {"A", "RB", "X"}, "in_range": {ARRIVAL_ATTACK}}
 
 
 MAX_PROOF_AGE_S = 0.3   # a proof frame may be this old when the pad is written
@@ -662,7 +667,7 @@ class Live:
     def tap(self, button, screen=None, proof_fn=None):
         b = self.vg.XUSB_BUTTON
         codes = {"A": b.XUSB_GAMEPAD_A, "X": b.XUSB_GAMEPAD_X, "RB": b.XUSB_GAMEPAD_RIGHT_SHOULDER}
-        if button != "RT" and button not in codes:
+        if button not in ("LT", "RT") and button not in codes:
             raise KeyError(button)
         t0 = self.clock()
         f = self.frame()                      # the screen NOW, not the one that was proven a moment ago
@@ -689,8 +694,9 @@ class Live:
         if age > MAX_PROOF_AGE_S:
             raise Refuse(f"the proof is {age:.2f} s old (limit {MAX_PROOF_AGE_S} s); {button} not sent ({stages()})", f)
         try:
-            if button == "RT":
-                self.pad.right_trigger_float(1.0)
+            if button in ("LT", "RT"):
+                trigger = self.pad.right_trigger_float if button == "RT" else self.pad.left_trigger_float
+                trigger(1.0)
                 self.pad.update()
                 self.sleep(0.15)
             else:
@@ -1007,9 +1013,9 @@ def _arrive(io, safe, note):
         f = look()
     else:
         raise Refuse(f"could not confirm the spawn room was left within {ARRIVE_S:.0f} s", f)
-    safe.press("RT")
+    safe.press(ARRIVAL_ATTACK)
     f = look()
-    note(f, "RT pressed once")
+    note(f, f"{ARRIVAL_ATTACK} pressed once")
     if not hero_is_spiderman(f):
         raise Refuse("in the range, but the HUD hero portrait is not Spider-Man", f)
 

@@ -1,0 +1,20 @@
+{
+  "agent/pad_bindings.py": "e71558625b1f35d0203958d383134fa98cdee55ecc94d65c2ea27eff87cdefc1",
+  "agent/controller.py": "4e5bb70fca797ab17a25a8699d1ad111f0b7cd561f59d2b308a52c10b44da060",
+  "agent/loop.py": "040c77c2c4ed0fff5a893e6e00991c8df7bad1e87267bf6d416964911b1e596f",
+  "policy/range_bc/executor.py": "bb5fa0065317bfeb9a1f8046422d722d7360810163091a56bb94f38809c2e60d",
+  "policy/range_bc/vocab.py": "a602668059e2efcfea6a5b65eb62b5ad4a85cbb33852f117b2def55e2053b804",
+  "scripts/pad.py": "e089c72da8375df14b4d185ef8c2a32c4d74c7b7e5f161d3fde94e4f0fc0bfc3",
+  "scripts/record.py": "feb489153b7c2f652e6e7d228205cee68eaa77ca14251649851cc4be8e8f2e25",
+  "scripts/reenter.py": "f1668eae6b1c9925ebfda4432f0a9e685114a8a37fb5b3b2fe64450c2fac4e32",
+  "scripts/l4_measure.py": "dd9c0c6fb13dcba556553296fcf60c5c1f203849bdb8d6555da80d7c89edead4",
+  "docs/spiderman-kit.md": "44a321bb8e91c652ef33bb1851f66dc90dc0989e537c457cd9a481fd8339a014",
+  "docs/pad-bindings.md": "d58e644ee839edd92d9c999fbccdd04e967e380bd694c048a74ce06311afff70",
+  "tests/test_pad_bindings.py": "67b1772e397175cf87a1f10f1d2bd7e5341ad0e13b90db91b0be6ee4bc72c04d",
+  "tests/test_record_pad_bindings.py": "430297e46ddb757fb31cefefd499aa39bef0944f56cc779a7ff58491e292d705",
+  "tests/test_controller.py": "eb81e750d04c6c170d66d9f36961841e7cbfe7ece5c7736eeb5438c6a512b1d6",
+  "tests/test_live_pad.py": "9e175e1c7ac696fdec793cff4254b4fbc23eadb0db9cf3cdb5a59cab698da3ce",
+  "tests/test_loop.py": "905981a80418fe4d990a9f97449e00d0a67a5a2f51394c315094e12e2f284df6",
+  "tests/test_range_bc.py": "f8184aaff32776273e43a64f59096b3bcc2724788882cb29ed5d2ef34a4e7ab0",
+  "tests/test_l4_scripts_close.py": "b17db5566191800b16152b6af2432ab9a337185135b9d3e4ecbb827db996ecda"
+}

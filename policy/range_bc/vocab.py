@@ -8,40 +8,25 @@ calibration take (another header field). The live executor maps the same actions
 import bisect
 import math
 
+from agent.pad_bindings import controls, pad_label
+
 DOMAIN = "semantic_pad"     # checkpoints of this format drive the pad through the executor, never keys
 
-# (action, James's binding as his M&K HUD labels it, pad control, sendable through Live's whitelist today).
-# His HUD (051828, 171533) labels the ability row C / LSHIFT / E / F over team-up / swing / the Amazing Combo fist /
-# the Get Over Here! arrow: E and F are the other way round from the kit's PC column. A session's header carries the
-# binding table it was recorded with; these are only the defaults the fixture uses.
-# team_up (C) fires in the solo practice range (James, lead correction 2026-09-23; 24 + 8 presses in 051828 and
-# 171533): a real action, trained and scored normally. It is appended last so the first twelve keep intake's order,
-# and it is masked live only because its pad control, Y, is outside Live's whitelist. Ultimate and melee are not
-# pad-sendable either. Which actions have positives is counted from the data (`steps.train_statistics`), never
-# assumed: melee may have some through Mouse 5.
-# goh_targeting (X1, Get Over Here Targeting; lead decision after the calibration take) is appended 14th: trained and
-# scored, never sent (it has no pad control in Live's whitelist).
-# simple_swing (Caps Lock = Simple Swing; James's decision 2026-09-23, first seen in 200129 with 13 presses) is appended
-# 15th: trained and scored with its positives, never sent until the pilot pad profile binds Simple Swing to a pad
-# button and Live.ALLOWED includes that button. Both are a pre-registered pilot settings change (lane doc, "Pilot
-# pre-registration" item 7): PAD_SENDABLE flips only with them.
-ACTIONS = (
-    ("move_forward", "W", "LS up", True),
-    ("move_left", "A", "LS left", True),
-    ("move_back", "S", "LS down", True),
-    ("move_right", "D", "LS right", True),
-    ("jump", "Space", "A", True),
-    ("web_swing", "LShift", "LB", True),
-    ("get_over_here", "F", "RB", True),
-    ("amazing_combo", "E", "X", True),
-    ("ultimate", "Q", "LS+RS click", False),    # stick clicks never leave Live.send (agent/controller.py ALLOWED)
-    ("melee", "V, Mouse 5", "RS click", False),  # Mouse 5 is James's second punch binding (lead decision)
-    ("spider_power", "LMB", "RT", True),
-    ("web_cluster", "RMB", "LT", True),
-    ("team_up", "C", "Y", False),               # Y is outside Live.ALLOWED
-    ("goh_targeting", "X1", "none", False),     # Get Over Here Targeting on mouse X1 (lead decision): no pad control
-    ("simple_swing", "Caps Lock", "none", False),  # no pad button until the pilot pad profile binds one (item 7)
+# Order and M&K defaults are the recorded-data contract; pad labels derive from
+# the current combat table. Physical support does not change the learned-policy
+# pre-registration (docs/lanes/end-to-end-fit.md, items 5 and 7). Only a separate
+# lead-recorded pre-registration change may enable these four actions.
+PREREGISTERED_UNSENDABLE = frozenset({"ultimate", "melee", "team_up", "goh_targeting"})
+# Simple Swing remains unbound; support counts still gate eligible actions.
+_ACTIONS = (
+    ("move_forward", "W"), ("move_left", "A"), ("move_back", "S"), ("move_right", "D"),
+    ("jump", "Space"), ("web_swing", "LShift"), ("get_over_here", "F"), ("amazing_combo", "E"),
+    ("ultimate", "Q"), ("melee", "V, Mouse 5"), ("spider_power", "LMB"), ("web_cluster", "RMB"),
+    ("team_up", "C"), ("goh_targeting", "X1"), ("simple_swing", "Caps Lock"),
 )
+_MOVE_LABELS = {"move_forward": "LS up", "move_left": "LS left", "move_back": "LS down", "move_right": "LS right"}
+ACTIONS = tuple((name, key, _MOVE_LABELS[name] if name in _MOVE_LABELS else pad_label(name),
+                 True if name in _MOVE_LABELS else name not in PREREGISTERED_UNSENDABLE and bool(controls(name))) for name, key in _ACTIONS)
 NAMES = tuple(a[0] for a in ACTIONS)
 INDEX = {name: i for i, name in enumerate(NAMES)}
 N = len(ACTIONS)
@@ -109,13 +94,13 @@ def median_class(probs):
     return len(probs) - 1
 
 
-# Our pad client's Spider-Man swing settings (docs/lanes/l4-controller.md settings table; docs/spiderman-kit.md).
+# James's alt Spider-Man swing settings (screenshots 2026-09-26; docs/spiderman-kit.md).
 PAD_SWING_MODE = {"automatic_swing": False, "hold_to_swing": True}
 
 
 def live_mask(train_presses, swing_mode=PAD_SWING_MODE):
     """Actions the executor may emit: pad-sendable, with at least LIVE_MIN_PRESSES presses in the train split, and
-    web_swing only when James's swing settings equal the pad's (K6: a tap-to-toggle Shift must not become a short LB
+    web_swing only when James's swing settings equal the pad's (K6: a tap-to-toggle Shift must not become a short A
     hold). An unknown swing mode drops web_swing."""
     swing_ok = swing_mode == PAD_SWING_MODE
     return tuple(PAD_SENDABLE[i] and train_presses[i] >= LIVE_MIN_PRESSES and (NAMES[i] != "web_swing" or swing_ok)
