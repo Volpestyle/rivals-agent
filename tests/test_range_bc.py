@@ -1160,3 +1160,81 @@ def test_the_four_admitted_tables_cohort_as_before_and_are_byte_unchanged():
     after = steps.load_cohort(paths, splits=("train",), denylist=deny, equivalence=steps.load_patch_equivalence())
     assert {s.session_id: s.sha256 for s in before} == {s.session_id: s.sha256 for s in after} == ADMITTED
     assert {s.header["patch"] for s in after} == {OLD_BUILD}
+
+
+# ---- self-fed checks (fit-selffed-diag.md) -----------------------------------------------------------------------------
+
+def _step(held, press, known=True):
+    n = vocab.N
+    return {"known": [known] * n, "held": [held.get(c, 0) for c in range(n)],
+            "press": [press.get(c, 0) for c in range(n)]}
+
+
+def test_selffed_checks_count_onsets_presses_and_hold_share_on_live_actions_only():
+    j, u = vocab.INDEX["jump"], vocab.INDEX["ultimate"]
+    live = [c != u for c in range(vocab.N)]
+    idle = _step({}, {})
+    jump_on = _step({j: 1}, {j: 1})
+    ult_on = _step({u: 1}, {u: 1})
+    recs = [{"valid": True, "prev": None, "target": idle},             # first step: no onset can be scored
+            {"valid": True, "prev": idle, "target": jump_on},          # a jump onset, held by the prediction
+            {"valid": True, "prev": jump_on, "target": idle},
+            {"valid": True, "prev": idle, "target": jump_on},          # a jump onset, missed
+            {"valid": False, "prev": idle, "target": jump_on},         # invalid: not counted at all
+            {"valid": True, "prev": idle, "target": ult_on}]           # ultimate is not live: ignored
+    pred = lambda held, press: {"held": [float(held.get(c, 0)) for c in range(vocab.N)],
+                                "press": [float(press.get(c, 0)) for c in range(vocab.N)]}
+    preds = [pred({}, {}), pred({j: 1}, {j: 1}), pred({j: 1}, {}), pred({}, {}), pred({j: 1}, {j: 1}),
+             pred({u: 1}, {u: 1})]
+    c = metrics.selffed_checks([list(zip(recs, preds))], live)
+    assert c["steps"] == 5 and "ultimate" not in c["actions"]
+    assert c["hold_onsets"] == 2 and c["hold_onset_recall"] == .5
+    assert c["actions"]["jump"] == {"onsets": 2, "onsets_held": 1, "onset_recall": .5, "pred_presses": 1,
+                                    "true_presses": 2, "press_ratio": .5}
+    assert c["pred_presses"] == 1 and c["true_presses"] == 2 and c["press_ratio"] == .5
+    assert c["any_hold_share"] == 2 / 5 and c["human_any_hold_share"] == 2 / 5
+    unknown = [{**r, "target": _step({j: 1}, {j: 1}, known=False)} for r in recs]
+    c = metrics.selffed_checks([list(zip(unknown, preds))], live)
+    assert c["hold_onsets"] == 0 and c["hold_onset_recall"] is None and c["press_ratio"] is None
+    assert c["human_any_hold_share"] is None and c["any_hold_share"] is None           # unknown is not idle
+    assert c["any_hold_observable_steps"] == 0 and c["any_hold_excluded_steps"] == 5
+    assert c["any_hold_share_all_steps"] == 2 / 5
+
+
+def _hold_row(known, held):
+    """One valid row whose live holds are known / held as given per action index; every other live hold as `rest`."""
+    n = vocab.N
+    return {"valid": True, "prev": None,
+            "target": {"known": [known.get(c, known.get("rest", True)) for c in range(n)],
+                       "held": [held.get(c, 0) for c in range(n)], "press": [0] * n}}
+
+
+def test_selffed_checks_any_hold_share_counts_only_rows_where_the_human_label_is_observable():
+    j, m = vocab.INDEX["jump"], vocab.INDEX["move_forward"]
+    live = list(vocab.live_mask([1000] * vocab.N))
+    on = {"held": [1. if c == m else 0. for c in range(vocab.N)], "press": [0.] * vocab.N}
+    off = {"held": [0.] * vocab.N, "press": [0.] * vocab.N}
+    check = lambda rows, preds: metrics.selffed_checks([list(zip(rows, preds))], live)
+    # all live holds unknown: no human label; excluded, not idle
+    c = check([_hold_row({"rest": False}, {})], [on])
+    assert (c["human_any_hold_share"], c["any_hold_share"]) == (None, None)
+    assert (c["any_hold_observable_steps"], c["any_hold_excluded_steps"], c["any_hold_share_all_steps"]) == (0, 1, 1.)
+    # known released except one unknown: still no observed idle
+    c = check([_hold_row({j: False}, {})], [on])
+    assert c["human_any_hold_share"] is None and c["any_hold_excluded_steps"] == 1
+    # one known held, another unknown: the human is on
+    c = check([_hold_row({j: False}, {m: 1})], [off])
+    assert (c["human_any_hold_share"], c["any_hold_share"], c["any_hold_observable_steps"]) == (1., 0., 1)
+    # every live hold known released: the human is off
+    c = check([_hold_row({}, {})], [on])
+    assert (c["human_any_hold_share"], c["any_hold_share"], c["any_hold_observable_steps"]) == (0., 1., 1)
+    # a mix: shares on the two observable rows only; the model's all-row share kept separately
+    c = check([_hold_row({}, {m: 1}), _hold_row({"rest": False}, {}), _hold_row({}, {})], [on, on, off])
+    assert (c["human_any_hold_share"], c["any_hold_share"], c["any_hold_share_all_steps"]) == (.5, .5, 2 / 3)
+    assert (c["any_hold_observable_steps"], c["any_hold_excluded_steps"]) == (2, 1)
+    # empty and invalid-only runs
+    for runs in ([], [[]], [[({**_hold_row({}, {m: 1}), "valid": False}, on)]]):
+        c = metrics.selffed_checks(runs, live)
+        assert c["steps"] == 0 and c["any_hold_observable_steps"] == 0 and c["any_hold_excluded_steps"] == 0
+        assert c["any_hold_share"] is None and c["human_any_hold_share"] is None
+        assert c["any_hold_share_all_steps"] is None and c["hold_onset_recall"] is None and c["press_ratio"] is None

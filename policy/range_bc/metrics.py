@@ -15,6 +15,10 @@ from . import vocab
 THRESHOLD = .5
 TEACHER = {"early": 1, "late": 0, "self_fed": False}
 SELF = {"early": 1, "late": 1, "self_fed": True}
+# Executed teacher-forced (fit-selffed-diag.md): the executor's decode of the teacher-forced probabilities, so only
+# the decisions the pad would send are scored. The true previous action is still the input, hence late 0; the decode's
+# hold changes are its own, hence self_fed (hold changes against its previous executed hold).
+EXECUTED_TEACHER = {"early": 1, "late": 0, "self_fed": True}
 # Camera sign agreement is scored where |true| >= SIGN_MIN_DEG. An onset or reversal is such a step whose previous
 # true step was below ONSET_PREV_DEG or of the opposite sign (F4). Pre-registered in degrees before the calibration
 # take; at the synthetic 0.0132 deg/count they are 23 and 6 counts, near the review's 20 and 5.
@@ -213,6 +217,58 @@ def sanity(runs, *, drift_steps=300):
                 lo, hi = drift[axis]
                 drift[axis] = [mean if lo is None else min(lo, mean), mean if hi is None else max(hi, mean)]
     return {"longest_hold": longest, "drift": drift}
+
+
+def selffed_checks(runs, live_mask):
+    """The self-fed diagnosis's checks (fit-selffed-diag.md) over executed predictions (0/1 as probabilities), on the
+    live actions and valid steps only:
+      hold-onset recall   of the human's hold onsets (previous step not held, this step held; both known), the share
+                          where the prediction holds;
+      presses             executed presses per action against the human's, where the press is known;
+      any-hold share      the share of steps with any live hold on, for the prediction and for the human, on the
+                          rows where the human's any-hold label is observable: on when a live hold is known held, off
+                          when every live hold is known released; any other row (an unknown hold and no known held
+                          one) is excluded from both shares and counted. The prediction's share over every valid row
+                          is kept separately.
+    Reporting only: the thresholds that judge these belong to a pre-registration."""
+    live = [c for c in range(vocab.N) if live_mask[c]]
+    per = {vocab.NAMES[c]: {"onsets": 0, "onsets_held": 0, "pred_presses": 0, "true_presses": 0} for c in live}
+    steps = model_any_all = model_any = human_any = observable = 0
+    for run in runs:
+        for rec, pred in run:
+            if not rec["valid"]:
+                continue
+            t, p = rec["target"], rec["prev"]
+            pk = t.get("press_known", t["known"])
+            steps += 1
+            held = any(pred["held"][c] >= THRESHOLD for c in live)
+            model_any_all += held
+            human_on = any(t["known"][c] and t["held"][c] for c in live)
+            if human_on or all(t["known"][c] for c in live):         # unknown never means released
+                observable += 1
+                human_any += human_on
+                model_any += held
+            for c in live:
+                m = per[vocab.NAMES[c]]
+                if pk[c]:
+                    m["pred_presses"] += pred["press"][c] >= THRESHOLD
+                    m["true_presses"] += t["press"][c]
+                if p is not None and t["known"][c] and p["known"][c] and t["held"][c] and not p["held"][c]:
+                    m["onsets"] += 1
+                    m["onsets_held"] += pred["held"][c] >= THRESHOLD
+    for m in per.values():
+        m["onset_recall"] = m["onsets_held"] / m["onsets"] if m["onsets"] else None
+        m["press_ratio"] = m["pred_presses"] / m["true_presses"] if m["true_presses"] else None
+    onsets = sum(m["onsets"] for m in per.values())
+    pred_p, true_p = sum(m["pred_presses"] for m in per.values()), sum(m["true_presses"] for m in per.values())
+    return {"steps": steps, "actions": per,
+            "hold_onsets": onsets,
+            "hold_onset_recall": sum(m["onsets_held"] for m in per.values()) / onsets if onsets else None,
+            "pred_presses": pred_p, "true_presses": true_p, "press_ratio": pred_p / true_p if true_p else None,
+            "any_hold_share": model_any / observable if observable else None,
+            "human_any_hold_share": human_any / observable if observable else None,
+            "any_hold_observable_steps": observable, "any_hold_excluded_steps": steps - observable,
+            "any_hold_share_all_steps": model_any_all / steps if steps else None}
 
 
 def truth(record):

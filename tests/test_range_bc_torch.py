@@ -670,3 +670,157 @@ def test_replay_evaluation_reports_window_recall_and_the_cli_still_refuses_repla
         train.main(["--train", str(arr.session.path), "--cache-root", str(tmp_path / "caches"), "--out",
                     str(tmp_path / "o"), "--scope", "smoke", "--epochs", "1", "--model-config",
                     json.dumps(TINY.as_dict())])
+
+
+# ---- countermeasures: executed metrics and self-conditioned history (fit-selffed-diag.md) -----------------------------
+
+def _decode_like_predict_self(acts, cams, prev, live, pitch_known):
+    """The reference for own_previous: predict_self's per-step decoding, written with the executor and steps helpers."""
+    out = prev.clone()
+    for i in range(prev.shape[0]):
+        prev_held = [int(v >= .5) and live[c] for c, v in enumerate(prev[i, 0, :vocab.N].tolist())]
+        for t in range(prev.shape[1] - 1):
+            p = torch.sigmoid(acts[i, t])
+            m = torch.softmax(cams[i, t], -1)
+            held, press, release = train.executor.decode_step(p[0].tolist(), p[1].tolist(), p[2].tolist(),
+                                                              prev_held, live)
+            yaw, pitch = train.executor.saturate(vocab.class_degrees(vocab.median_class(m[0].tolist())),
+                                                 vocab.class_degrees(vocab.median_class(m[1].tolist())))
+            sent = {"held": held, "press": press, "release": release, "known": [True] * vocab.N,
+                    "cy": vocab.camera_class(yaw), "cp": vocab.camera_class(pitch) if pitch_known[i] else None}
+            out[i, t + 1] = torch.tensor(steps.prev_vector(sent))
+            prev_held = held
+    return out
+
+
+def test_own_previous_decodes_exactly_as_predict_self_sends():
+    g = torch.Generator().manual_seed(0)
+    b, t = 4, 40
+    acts = torch.randn(b, t, 3, vocab.N, generator=g) * 2
+    cams = torch.randn(b, t, 2, vocab.CAMERA_CLASSES, generator=g) * 3
+    prev = (torch.rand(b, t, steps.PREV_DIM, generator=g) < .3).float()
+    live = list(vocab.live_mask([1000] * vocab.N))
+    pk = [True, False, True, False]
+    got = train.own_previous(acts, cams, prev, live, pk)
+    assert torch.equal(got, _decode_like_predict_self(acts, cams, prev, live, pk))
+    assert torch.equal(got[:, 0], prev[:, 0])                            # step 0 keeps its input
+
+
+# fit-review F2's retained float32 logits. On the reviewer's x86 CPU their float32 cumulative softmax mass through
+# class 14 is exactly 0.5 while the Python sum is 0.4999999988358468, so vocab.median_class picks 15 and a float32
+# cumsum 14. Softmax rounding is platform-dependent (the Mac's arm64 gives 0.50000006), so these rows are kept as a
+# parity regression on both sides of 0.5, and the platform-independent boundary is built below from exact float32 sums.
+MEDIAN_BOUNDARY = [-3.776796340942383, -1.7289953231811523, -4.881049156188965, -4.255186080932617, -5.356229782104492,
+                   -2.7890396118164062, -4.216971397399902, -1.5013617277145386, -4.61875057220459, -1.9501867294311523,
+                   -2.8966712951660156, -1.6201971769332886, -4.859790802001953, -3.8455939292907715,
+                   -3.2241733074188232, -4.893590450286865, -2.5582942962646484, -1.9174140691757202,
+                   -4.318824768066406, -2.1624302864074707, -4.95439338684082, -2.4538626670837402,
+                   -2.5275580883026123, -3.510953426361084, -3.5381813049316406, -3.2958667278289795,
+                   -3.912397623062134, -2.1852030754089355, -3.802489995956421, -1.576985478401184, -4.653883934020996]
+
+
+def _float32_half_boundary():
+    """float32 probabilities whose first two sum to just under 0.5 exactly (as Python floats) but to 0.5 when added
+    in float32: vocab.median_class must not stop at class 1."""
+    a, b = torch.tensor(.3), torch.tensor(.2)
+    while not (float(a) + float(b) < .5 <= float(a + b)):
+        b = torch.nextafter(b, torch.tensor(0.))
+    rest = (1 - float(a) - float(b)) / (vocab.CAMERA_CLASSES - 2)
+    return torch.tensor([float(a), float(b)] + [rest] * (vocab.CAMERA_CLASSES - 2))
+
+
+def test_the_median_class_matches_the_reference_where_float32_reaches_one_half_early():
+    probs = _float32_half_boundary()
+    assert float(probs.cumsum(-1)[1]) >= .5 > sum(probs[:2].tolist())         # the trap a float32 cumsum falls into
+    want = vocab.median_class(probs.tolist())
+    assert want == 2
+    assert train._median_classes(probs[None]).tolist() == [want]
+    above = probs.clone()
+    above[1] = torch.nextafter(above[1], torch.tensor(1.))
+    while sum(above[:2].tolist()) < .5:
+        above[1] = torch.nextafter(above[1], torch.tensor(1.))
+    assert train._median_classes(above[None]).tolist() == [vocab.median_class(above.tolist())] == [1]
+
+
+def test_own_previous_matches_the_reference_on_the_reviews_boundary_logits():
+    below = torch.tensor(MEDIAN_BOUNDARY)
+    above = below.clone()
+    above[14] += 1e-3                                                    # the other side: the mass passes 0.5 at 14
+    live = list(vocab.live_mask([1000] * vocab.N))
+    for row in (below, above):
+        cams = row.expand(1, 3, 2, vocab.CAMERA_CLASSES).clone()
+        acts = torch.zeros(1, 3, 3, vocab.N)
+        prev = torch.zeros(1, 3, steps.PREV_DIM)
+        assert torch.equal(train.own_previous(acts, cams, prev, live, [True]),
+                           _decode_like_predict_self(acts, cams, prev, live, [True]))
+    assert vocab.median_class(torch.softmax(above, -1).tolist()) == 14
+
+
+def test_self_condition_is_off_by_default_acts_only_through_the_history_and_is_reproducible(tmp_path):
+    arr = arrays(tmp_path)
+    stats = steps.train_statistics([arr.session])
+    batches = train.Batches([arr])
+    sha = lambda m: hashlib.sha256(train.checkpoint_bytes(m, {"seed": 3})).hexdigest()
+    kw = {"seed": 3, "epochs": 3, "batch_size": 2, "lr": 3e-3, "warmup": 5}
+    default = sha(train.fit(batches, TINY, stats, **kw)[0])
+    assert sha(train.fit(batches, TINY, stats, self_condition=0., **kw)[0]) == default
+    on = [sha(train.fit(batches, TINY, stats, self_condition=.5, self_condition_ramp=.5, **kw)[0]) for _ in range(2)]
+    assert on[0] == on[1] != default
+    blind = replace(TINY, history=False)                                 # no history input: nothing to replace
+    assert sha(train.fit(batches, blind, stats, self_condition=.5, **kw)[0]) == sha(train.fit(batches, blind, stats, **kw)[0])
+    assert sha(train.fit(batches, TINY, stats, prev_dropout=.5, **kw)[0]) != default
+    with pytest.raises(train.FitError, match="self_condition"):
+        train.fit(batches, TINY, stats, self_condition=1.5, **kw)
+    with pytest.raises(train.FitError, match="prev_dropout"):
+        train.fit(batches, TINY, stats, prev_dropout=1., **kw)
+
+
+def test_executed_runs_are_the_executors_decisions(tmp_path):
+    arr = arrays(tmp_path, split="val", name="v")
+    torch.manual_seed(0)
+    model = Policy(TINY)
+    live = list(vocab.live_mask([1000] * vocab.N))
+    tf = train.predict_teacher(model, [arr])
+    ex = train.executed_runs(tf, live)
+    my, mp = train.executor.max_step_degrees()
+    prev_held = [0] * vocab.N
+    for (r1, p), (r2, e) in zip(tf[0], ex[0]):
+        assert r1 is r2
+        held, press, release = train.executor.decode_step(p["held"], p["press"], p["release"], prev_held, live)
+        assert (e["held"], e["press"], e["release"]) == tuple([float(v) for v in x] for x in (held, press, release))
+        assert abs(e["yaw"]) <= my + 1e-9 and (e["pitch"] is None or abs(e["pitch"]) <= mp + 1e-9)
+        prev_held = held
+
+
+BASELINE_NAMES = ("persistence", "zero_motion", "prior", "echo", "ar2")
+
+
+def test_the_fit_cli_reports_the_new_metrics_and_records_the_training_options(tmp_path):
+    out, _ = _fit(tmp_path)
+    r = json.loads((out / "report.json").read_text())
+    assert r["config"]["prev_dropout"] == .2 and r["config"]["self_condition"] is None
+    payload = torch.load(out / "model_nohud-seed0.pt", weights_only=True)
+    assert set(payload["meta"]) == {"arm", "seed", "lag", "regimes"}     # default checkpoints: meta as before
+    for split in ("dev", "val"):
+        m = r["metrics"][split]
+        assert set(m["executed_teacher_forced"]) == set(m["teacher_forced"]) - set(BASELINE_NAMES)
+        assert m["executed_teacher_forced"]["model_nohud"]["0"]["window"] == train.metrics.EXECUTED_TEACHER
+        c = m["self_fed_checks"]["model_nohud"]["0"]
+        assert {"hold_onset_recall", "press_ratio", "any_hold_share", "human_any_hold_share", "camera_mae",
+                "zero_motion_camera_mae", "held_change_f1"} <= set(c)
+        assert c["zero_motion_camera_mae"] == m["teacher_forced"]["zero_motion"]["all"]["camera_mae_mean"]
+        assert c["camera_mae"] == m["self_fed"]["model_nohud"]["0"]["all"]["camera_mae_mean"]
+    (tmp_path / "on").mkdir(), (tmp_path / "bad").mkdir()
+    on, _ = _fit(tmp_path / "on", ["--self-condition", ".5", "--self-condition-ramp", ".25", "--prev-dropout", ".3",
+                                   "--frames-only-nohud"])
+    r = json.loads((on / "report.json").read_text())
+    assert r["config"]["prev_dropout"] == .3
+    assert r["config"]["self_condition"] == {"p": .5, "ramp": .25, "rule": train.SELF_CONDITION_RULE}
+    assert "frames_only_nohud" in r["config"]["arms"] and "frames_only_nohud-seed0.pt" in r["checkpoints"]
+    assert set(r["metrics"]["dev"]["self_fed_checks"]) >= {"model_nohud", "frames_only_nohud"}
+    payload = torch.load(on / "model_nohud-seed0.pt", weights_only=True)
+    assert payload["meta"]["self_condition"] == {"p": .5, "ramp": .25} and payload["meta"]["prev_dropout"] == .3
+    blind = torch.load(on / "frames_only_nohud-seed0.pt", weights_only=True)["config"]
+    assert blind["history"] is False and blind["hud"] is False
+    with pytest.raises(train.FitError, match="self-condition"):
+        _fit(tmp_path / "bad", ["--self-condition", "2"])

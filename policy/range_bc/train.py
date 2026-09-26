@@ -311,13 +311,90 @@ def dev_loss(model, batches, pw, *, device="cpu", batch_size=32):
     return out
 
 
+SELF_CONDITION_RULE = ("one-step scheduled sampling: a no-grad pass over the batch with its own previous-action input "
+                       "(after prev dropout) gives the model's decoded action per step (executor.decode_step's rule, "
+                       "live mask, median camera class saturated to the pad, pitch only where the session's pitch gain "
+                       "is known); each step t >= 1 of the window takes step t-1's decoded action as its input with "
+                       "probability p * min(1, step / (ramp * total)), drawn from torch.Generator(seed * 1000003 + 1)")
+
+
+def _saturated_classes():
+    """Per camera class, the class of the rotation the pad delivers (executor.saturate), per axis: what predict_self
+    feeds back."""
+    classes = range(vocab.CAMERA_CLASSES)
+    yaw = [vocab.camera_class(executor.saturate(vocab.class_degrees(c), 0.)[0]) for c in classes]
+    pitch = [vocab.camera_class(executor.saturate(0., vocab.class_degrees(c))[1]) for c in classes]
+    return torch.tensor(yaw), torch.tensor(pitch)
+
+
+def _median_classes(probs):
+    """vocab.median_class over the last axis, exactly: predict_self hands float32 probabilities to it as Python
+    floats and accumulates them one class at a time in double precision, so this does the same on the CPU (MPS has no
+    float64). A float32 cumsum can reach 0.5 one class early (fit-review F2)."""
+    p = probs.detach().cpu().double()
+    total = torch.zeros(p.shape[:-1], dtype=torch.float64)
+    cls = torch.full(p.shape[:-1], p.shape[-1] - 1, dtype=torch.long)
+    found = torch.zeros(p.shape[:-1], dtype=torch.bool)
+    for i in range(p.shape[-1]):
+        total = total + p[..., i]
+        hit = ~found & (total >= .5)
+        cls[hit], found = i, found | hit
+    return cls
+
+
+@torch.no_grad()
+def own_previous(action_logits, camera_logits, prev, live_mask, pitch_known):
+    """[B, T, P] previous-action inputs from the model's own decoded actions: step t + 1 gets the executor's decode of
+    step t, as predict_self sends it; step 0 keeps its input, which also seeds the decode's previous hold.
+    pitch_known: per sequence, whether its session's pitch gain is known (else no pitch class, as predict_self)."""
+    n, m = vocab.N, vocab.CAMERA_CLASSES
+    dev = prev.device
+    p = torch.sigmoid(action_logits.float())
+    live = torch.tensor(live_mask, dtype=torch.bool, device=dev)
+    cls = _median_classes(torch.softmax(camera_logits.float(), -1)).to(dev)
+    ysat, psat = (x.to(dev) for x in _saturated_classes())
+    cy, cp = ysat[cls[..., 0]], psat[cls[..., 1]]
+    pk = torch.tensor(pitch_known, dtype=torch.bool, device=dev)
+    rows = torch.arange(prev.shape[0], device=dev)
+    out = prev.clone()
+    prev_h = (prev[:, 0, :n] >= .5) & live
+    for t in range(prev.shape[1] - 1):
+        h = (p[:, t, 0] >= .5) & live
+        tap = ~h & ~prev_h & (p[:, t, 1] >= .5) & (p[:, t, 2] >= .5) & live
+        v = torch.zeros(prev.shape[0], prev.shape[2], device=dev)
+        v[:, :n], v[:, n:2 * n], v[:, 2 * n:3 * n] = h.float(), ((h & ~prev_h) | tap).float(), ((prev_h & ~h) | tap).float()
+        v[rows, 3 * n + cy[:, t]] = 1.
+        v[rows[pk], 3 * n + m + cp[pk, t]] = 1.
+        v[:, -1] = 1.
+        out[:, t + 1] = v
+        prev_h = h
+    return out
+
+
+def self_conditioned_forward(model, b, live_mask, rate, generator, pitch_known):
+    """The forward pass with self-conditioned history (SELF_CONDITION_RULE). The frame features are computed once and
+    carry the gradient; the decoding pass sees them detached."""
+    bsz, t = b["prev"].shape[:2]
+    feats = model.features(b["global"], b["crop"], b["hud"], bsz, t, b["prev"])
+    with torch.no_grad():
+        acts, cams, _ = model.step(feats.detach(), b["prev"], regime=b["regime"])
+    own = own_previous(acts, cams, b["prev"], live_mask, pitch_known)
+    swap = (torch.rand(bsz, t, generator=generator) < rate).to(own.device)
+    return model.step(feats, torch.where(swap[..., None], own, b["prev"]), regime=b["regime"])
+
+
 def fit(batches, config, stats, *, seed=0, epochs=20, max_steps=None, batch_size=8, lr=3e-4, weight_decay=1e-4,
-        warmup=500, clip=1., device="cpu", deterministic=True, jitter=.1, prev_dropout=.2, dev=None, log=None):
+        warmup=500, clip=1., device="cpu", deterministic=True, jitter=.1, prev_dropout=.2, dev=None, log=None,
+        self_condition=0., self_condition_ramp=.5):
     """Train one model. `max_steps` (fixed optimiser steps, for the scaling curve) overrides `epochs`.
     Returns (model, per-epoch log, seconds). The log holds train loss and, with `dev`, per-head dev loss; it is
-    reported, never used to select a checkpoint."""
+    reported, never used to select a checkpoint.
+    self_condition p > 0 turns on self-conditioned history (SELF_CONDITION_RULE), its rate ramped linearly from 0 to
+    p over the first `self_condition_ramp` of the steps. At 0 (the default) nothing of it runs or draws."""
     require(all(a.session.split == "train" for a in batches.arrays), "training accepts only train sessions")
     require(batches.windows, "no training windows")
+    require(0. <= self_condition <= 1. and 0. < self_condition_ramp <= 1., "self_condition in [0, 1], ramp in (0, 1]")
+    require(0. <= prev_dropout < 1., "prev_dropout in [0, 1)")
     seed_everything(seed, deterministic)
     model = Policy(config).to(device)
     pw = pos_weights(stats).to(device)
@@ -326,6 +403,10 @@ def fit(batches, config, stats, *, seed=0, epochs=20, max_steps=None, batch_size
     total = max_steps or epochs * per_epoch
     sched = torch.optim.lr_scheduler.LambdaLR(opt, schedule(total, min(warmup, total)))
     gen = torch.Generator().manual_seed(seed)
+    if self_condition:
+        sc_gen = torch.Generator().manual_seed(seed * 1000003 + 1)
+        sc_ramp = max(1., self_condition_ramp * total)
+        sc_pitch = [_pitch_known(a.session) for a in batches.arrays]
     history, t0, step, epoch = [], time.perf_counter(), 0, 0
     while step < total:
         order = list(range(len(batches.windows)))
@@ -335,9 +416,15 @@ def fit(batches, config, stats, *, seed=0, epochs=20, max_steps=None, batch_size
         for s in range(0, len(order), batch_size):
             if step >= total:
                 break
-            b = to_device(batches.batch(order[s:s + batch_size], gen, jitter=jitter, prev_dropout=prev_dropout),
-                          device)
-            loss = total_loss(loss_terms(*forward(model, b)[:2], b, pw))
+            ids = order[s:s + batch_size]
+            b = to_device(batches.batch(ids, gen, jitter=jitter, prev_dropout=prev_dropout), device)
+            if self_condition:
+                outputs = self_conditioned_forward(model, b, stats["live_mask"],
+                                                   self_condition * min(1., step / sc_ramp), sc_gen,
+                                                   [sc_pitch[batches.windows[w][0]] for w in ids])
+            else:
+                outputs = forward(model, b)
+            loss = total_loss(loss_terms(*outputs[:2], b, pw))
             require(bool(torch.isfinite(loss)), "nonfinite training loss")
             opt.zero_grad(set_to_none=True)
             loss.backward()
@@ -433,6 +520,24 @@ def predict_self(model, arrays, live_mask, *, device="cpu", chunk=steps.WINDOW, 
     return runs
 
 
+def executed_runs(runs, live_mask, cal=None):
+    """Teacher-forced runs as the executor would send them (fit-selffed-diag.md): each step's probabilities through
+    `executor.decode_step` against the decode's own previous hold (runs start released), and the median camera
+    saturated to the pad. The model's input is unchanged: still the true previous action."""
+    out = []
+    for run in runs:
+        prev_held, steps_out = [0] * vocab.N, []
+        for rec, p in run:
+            held, press, release = executor.decode_step(p["held"], p["press"], p["release"], prev_held, live_mask)
+            yaw, pitch = executor.saturate(p["yaw"], p["pitch"] if p["pitch"] is not None else 0., cal)
+            prev_held = held
+            steps_out.append((rec, {"held": [float(v) for v in held], "press": [float(v) for v in press],
+                                    "release": [float(v) for v in release], "yaw": yaw,
+                                    "pitch": pitch if p["pitch"] is not None else None}))
+        out.append(steps_out)
+    return out
+
+
 def _margin(p, m, live_mask, pitch_known):
     """How close this step's executed decisions sat to a threshold: the smallest |probability - 0.5| over the live
     actions' hold/press/release, and |cumulative camera probability - 0.5| at the median class's boundaries (L7)."""
@@ -486,6 +591,8 @@ ALL_ARMS = ("model", "model_nohud", "history_only")
 HUD_MARGIN = .05                          # self-fed macro press-F1 the HUD arm must beat the no-HUD arm by (seed 0)
 PARITY_FIELDS = ("rule", "thresholds", "P1", "P3", "sources", "pass")
 TWIN = "history_only"
+PREV_DROPOUT = .2                          # fit()'s default previous-action dropout
+FRAMES_ONLY_ARMS = ("frames_only", "frames_only_nohud")     # ungated; no history input, so self-fed = its decode
 ROOT = Path(__file__).resolve().parents[2]
 
 
@@ -558,17 +665,21 @@ def evaluate_set(models, arrays, stats, ar2, *, device, stride=steps.STRIDE):
     """Teacher-forced and self-fed blocks, sanity, baselines, and a gate verdict per model arm on one evaluation set.
     stride (replay sets only): the fit's, for the window counts."""
     tf, sf, sane = {}, {}, {}
+    executed, checks = {}, {}
     wins = {arr.session.session_id: arr.press_windows.complete for arr in arrays if arr.press_windows is not None}
     counts = window_counts(arrays, stride=stride) if wins else None
     win_block = {}
     for (arm, seed), model in models.items():
         tf_runs = predict_teacher(model, arrays, device=device)
         tf.setdefault(arm, {})[seed] = metrics.stratified(tf_runs, **metrics.TEACHER)
+        executed.setdefault(arm, {})[seed] = metrics.evaluate(executed_runs(tf_runs, stats["live_mask"]),
+                                                              **metrics.EXECUTED_TEACHER)
         if wins:
             win_block.setdefault(arm, {})[seed] = {"tf": metrics.window_block(tf_runs, wins, counts=counts)}
-        if arm in MODEL_ARMS or arm == TWIN:
+        if arm in MODEL_ARMS or arm == TWIN or arm in FRAMES_ONLY_ARMS:
             runs = predict_self(model, arrays, stats["live_mask"], device=device)
             sf.setdefault(arm, {})[seed] = metrics.stratified(runs, **metrics.SELF)
+            checks.setdefault(arm, {})[seed] = metrics.selffed_checks(runs, stats["live_mask"])
             if wins:
                 win_block[arm][seed]["sf"] = metrics.window_block(runs, wins, counts=counts)
             if arm in MODEL_ARMS:
@@ -587,7 +698,16 @@ def evaluate_set(models, arrays, stats, ar2, *, device, stride=steps.STRIDE):
             verdicts[arm] = gates.evaluate({"model": allof(tf[arm]), "history_only": allof(tf.get(TWIN, {})), **trivial},
                                            {"model": allof(sf[arm]), "history_only": allof(sf.get(TWIN, {}))},
                                            sane[arm], stats, human)
-    out = {"teacher_forced": tf, "self_fed": sf, "sanity": sane, "human_sanity": human}
+    zero_mae = trivial["zero_motion"]["camera_mae_mean"]
+    for arm, per_seed in checks.items():
+        for seed, c in per_seed.items():
+            held_change = lambda block: {n: a["held_change_f1"] for n, a in block["actions"].items()}
+            c.update(camera_mae=sf[arm][seed]["all"]["camera_mae_mean"], zero_motion_camera_mae=zero_mae,
+                     held_change_f1={"teacher_forced": held_change(tf[arm][seed]["all"]),
+                                     "executed_teacher_forced": held_change(executed[arm][seed]),
+                                     "self_fed": held_change(sf[arm][seed]["all"])})
+    out = {"teacher_forced": tf, "self_fed": sf, "sanity": sane, "human_sanity": human,
+           "executed_teacher_forced": executed, "self_fed_checks": checks}
     if wins:
         out["windows"] = win_block                    # replay evaluation sets only; no gate reads it
     return out, verdicts
@@ -647,6 +767,9 @@ def run_fit(a):
     require(a.scope != "fit" or (set(a.arms) == set(ALL_ARMS) and a.train_fraction == 1),
             "--scope fit trains every arm on all train data (K7); --arms and --train-fraction are plumbing tools")
     require(any(arm in MODEL_ARMS for arm in a.arms), "train at least one model arm")
+    require(0. <= a.prev_dropout < 1., "--prev-dropout in [0, 1)")
+    require(0. <= a.self_condition <= 1. and 0. < a.self_condition_ramp <= 1.,
+            "--self-condition in [0, 1], --self-condition-ramp in (0, 1]")
     pre = preregistered(a)
     parity = parity_record(a, pre)
     denylist = steps.load_denylist(a.sealed_denylist, a.sealed_denylist_sha256)
@@ -691,6 +814,10 @@ def run_fit(a):
     arms = {k: v for k, v in arms.items() if k in a.arms}
     if a.frames_only:
         arms["frames_only"] = replace(base, history=False)
+    if a.frames_only_nohud:
+        arms["frames_only_nohud"] = replace(base, history=False, hud=False)
+    self_condition = ({"p": a.self_condition, "ramp": a.self_condition_ramp, "rule": SELF_CONDITION_RULE}
+                      if a.self_condition else None)
 
     def log(msg):
         print(msg, flush=True)
@@ -701,10 +828,15 @@ def run_fit(a):
         for seed in a.seeds:
             model, hist, secs = fit(batches, config, stats, seed=seed, epochs=a.epochs, max_steps=a.max_steps,
                                     batch_size=a.batch, lr=a.lr, weight_decay=a.weight_decay, device=a.device,
-                                    dev=dev_batches, log=log)
+                                    dev=dev_batches, log=log, prev_dropout=a.prev_dropout,
+                                    self_condition=a.self_condition, self_condition_ramp=a.self_condition_ramp)
             name = f"{arm}-seed{seed}.pt"
-            checkpoints[name] = save_checkpoint(out / name, model, {"arm": arm, "seed": seed, "lag": a.lag,
-                                                                    "regimes": list(regimes)})
+            meta = {"arm": arm, "seed": seed, "lag": a.lag, "regimes": list(regimes)}
+            if a.prev_dropout != PREV_DROPOUT:          # non-default training options only: default bytes unchanged
+                meta["prev_dropout"] = a.prev_dropout
+            if self_condition:
+                meta["self_condition"] = {k: self_condition[k] for k in ("p", "ramp")}
+            checkpoints[name] = save_checkpoint(out / name, model, meta)
             histories[name] = hist
             budget.append({"run": name, "seconds": secs, "optimizer_steps": hist[-1]["steps"],
                            "sequence_frames_per_second": hist[-1]["steps"] * a.batch * steps.WINDOW / secs})
@@ -741,6 +873,7 @@ def run_fit(a):
                          "stride": a.stride, "lr": a.lr, "weight_decay": a.weight_decay, "lag": a.lag,
                          "arms": list(arms), "train_fraction": a.train_fraction,
                          "regimes": list(regimes), "loss_weights": LOSS_WEIGHTS, "drq_px": DRQ_PX,
+                         "prev_dropout": a.prev_dropout, "self_condition": self_condition,
                          "parameters": {arm: parameter_count(Policy(c)) for arm, c in arms.items()}},
                  preregistration=pre, candidate=candidate, candidate_checkpoint=candidate_checkpoint,
                  candidate_reason=candidate_reason, hud_parity=parity,
@@ -805,6 +938,14 @@ def parser():
                    help="smoke/plumbing only: the nested time-prefix of each train recording (scaling curve)")
     p.add_argument("--regimes", nargs="+", default=["normal"], choices=steps.REGIMES)
     p.add_argument("--frames-only", action="store_true", help="also fit the (ungated) frames-only twin")
+    p.add_argument("--frames-only-nohud", action="store_true",
+                   help="also fit the (ungated) frames-only twin without the HUD stream (the no-HUD candidate's twin)")
+    p.add_argument("--prev-dropout", type=float, default=PREV_DROPOUT,
+                   help="training: the share of steps whose previous-action input is blanked (known = 0)")
+    p.add_argument("--self-condition", type=float, default=0.,
+                   help="training: self-conditioned history rate p (SELF_CONDITION_RULE); 0 = off, the default")
+    p.add_argument("--self-condition-ramp", type=float, default=.5,
+                   help="the share of the optimiser steps over which the self-conditioning rate ramps from 0 to p")
     p.add_argument("--device", default="cpu", choices=("cpu", "mps", "cuda"))
     p.add_argument("--model-config", help="JSON overrides of model.Config (smoke and plumbing runs only)")
     return p
