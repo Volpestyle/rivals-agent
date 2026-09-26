@@ -105,3 +105,22 @@ The first calibration take gave the yaw gain at one slow speed (about 30 °/s). 
 ## 2026-09-23 (night): a match and its own replay
 
 To check whether the input model still reads the right inputs from replay footage, we need one match seen both ways. Twice, on two different maps: first, play one real match as Spider-Man with the logger on, recorded exactly like a range session (same OBS profile, settings and M&K HUD). Use Quick Match, or Practice vs. AI if that match shows a replay in Career > History. Note the map and the time. Then, the same day (a patch can break replays), open that match's replay, follow yourself in PLAYER POV with the viewer at your normal settings (same FOV, HUD on), and record the whole match at 1× speed with the logger on, from start to end screen. Don't pause, seek, change speed or switch POV, and keep the timeline overlay hidden. If the follow jumps to someone else, pick yourself again and mention it. Last, in the same replay, pick 10–20 s with lots of turning and note the in-game timer where it starts. Record it at your FOV, change only the viewer FOV to a clearly different value, scrub back to the same timer and record it again, then put your FOV back. Say "replay-of-self" and both FOV values when you drop the paths. These recordings are registered to their own evaluation split before anyone looks at them, and are never trained on.
+
+## 2026-09-26: the wishlist, most valuable first
+
+The training corpus reached its first target (180.57 of 180 minutes, 2026-09-26). Everything below is on the **alt
+account** in the usual skin, recorded with OBS and the logger as always.
+
+| # | What | Time | Why |
+|---|---|---|---|
+| 1 | **Sealed test take.** Ordinary range play, the first recording of a sitting; type "test take" in chat before starting; don't rewatch it. | 10-15 min | The only honest final score; the last piece the real fit needs. |
+| 2 | **Replay of the 2026-09-25 19:49 Hall of Djalia match** (alt), first person, 1x, the whole match; then one 15 s turning stretch recorded twice, at your FOV and at a clearly different viewer FOV. Say "replay-of-self Hall of Djalia" and both FOV values. **Before the next patch.** | ~15 min | Gate 2's second pair on a different map; the FOV pair settles how replays scale the camera. |
+| 3 | **Calibration turns:** standing still, three 360-degree turns to the **left** (slow, medium, fast), then three pitch sweeps (horizon to floor and back) at the same speeds. | 1 min | Only rightward turns are calibrated so far, and pitch across speeds was never measured. |
+| 4 | **Second validation take**, the first recording of a different sitting; type "validation take" first. | 10-15 min | Results need at least two takes per split. |
+| 5 | **Second test take**, first in yet another sitting; type "test take" first. | 10-15 min | The same, for the final score. |
+| 6 | **More ordinary range play**, as much as you like. | any | The fit improves with data; 180 minutes is a milestone, not a ceiling. |
+| 7 | **Replay of the 2026-09-25 20:12 Heart of Heaven match** (alt), first person, 1x. **Before the next patch.** | ~6 min | Checks the Gate 2 readers on the Quick Match spectator layout. |
+| 8 | **A PC session with an agent** on the pad (`docs/next-pc-session.md`). | ~30 min | Only once there is a policy worth running live. |
+
+Stay out of **Timed Practice** in range takes (it is cut), and keep range takes on the alt account (the main account's
+bindings are stored differently; one take was admitted only after a calibration proved them equivalent).
