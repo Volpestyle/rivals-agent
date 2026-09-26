@@ -1,0 +1,6 @@
+979376ff2c32a1f06f9f127ee9e108948fdd2042b7e3f6a85a0b94c95816090e  cm2-d-s012/model_nohud-seed0.pt
+f7cf1686bc2a7758491adc1ba0e2c03892ecb3745347193a48d2751d7477a6d5  cm2-d-s012/model_nohud-seed1.pt
+93dbd3ce2999550422a97290bc5102feddf3ab9914a0c2d7e8f22f10ad2c6d5d  cm2-d-s012/model_nohud-seed2.pt
+03dbe3985bdb3250527d7590c7fc9a48e79909ccbf0568db4177fdb9affa0b98  cm2-e-s012/model_nohud-seed0.pt
+d64cd297c6777efff50b4936aa99f07645efc6b08fc649614fcf12f8be449fbd  cm2-e-s012/model_nohud-seed1.pt
+83774784914a5e7f8e6c81f4a349c2f8d8ac261e3ea274e4bf6e4514c2ba81d0  cm2-e-s012/model_nohud-seed2.pt
