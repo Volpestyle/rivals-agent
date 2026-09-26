@@ -28,6 +28,9 @@ It reads shallow queue/status, exit, PID, log and report metadata in
 `~/dev/range-bc-data` and `~/dev/idm-data`, never frames, stores, checkpoints or
 sealed data. Evidence links serve metadata projections, not arbitrary files.
 Edit `docs/waiting-on-james.md` on the Mac to update the waiting list.
+Finished and unconfirmed jobs whose latest metadata is older than 48 hours move
+into the collapsed History section; running and queued jobs stay current regardless
+of age. Swap reads `swap used X of Y GB` and turns amber above 80% of total.
 
 The board distinguishes successful job exits from experiment PASS/FAIL. Missing
 judge outputs and incomplete gates stay undecided. Epoch logs are zero-based;
@@ -43,9 +46,19 @@ The user LaunchAgent `~/Library/LaunchAgents/com.volpestyle.rivals-job-board.pli
 runs `/usr/bin/python3` at nice 10, with `RunAtLoad` and `KeepAlive`. It restarts at
 James's login after reboot. Logs are `~/Library/Logs/rivals-job-board.{out,err}.log`.
 Historical judge JSON copied from the PC is under
-`~/Library/Application Support/rivals-job-board/evidence/{countermeasures,interim94}/`;
+`~/Library/Application Support/rivals-job-board/evidence/{countermeasures,countermeasures2,interim94}/`;
 these are snapshots, not recomputed results. New judge outputs under the live
-experiment directories are discovered on refresh. Startup arguments:
+experiment directories are discovered on refresh. After landing a future judge
+output on the PC, the lead runs this one line **on the Mac**, substituting the source
+evidence folder/file and the destination experiment name (which must match its queue
+directory). It copies the JSON byte-for-byte; compare SHA-256 with the PC source.
+The board picks it up within 30 seconds without a restart:
+
+```sh
+mkdir -p "$HOME/Library/Application Support/rivals-job-board/evidence/countermeasures2" && scp -p -o BatchMode=yes volpe@supedupsilly:C:/Users/volpe/repos/rivals-agent/docs/evidence/range-bc-countermeasures-2-20260926/reading.json "$HOME/Library/Application Support/rivals-job-board/evidence/countermeasures2/reading.json"
+```
+
+Startup arguments:
 
 ```sh
 /usr/bin/python3 /Users/james/dev/rivals-agent/scripts/job_board.py \
@@ -61,7 +74,7 @@ launchctl bootout gui/$(id -u) ~/Library/LaunchAgents/com.volpestyle.rivals-job-
 rm ~/Library/LaunchAgents/com.volpestyle.rivals-job-board.plist
 ```
 
-The two log files and the two copied historical judge JSON files above may then
+The two log files and the copied historical judge JSON files above may then
 be removed individually. Training files and jobs are unchanged. Serve is tailnet
 only; do not enable Funnel. To restart after a stop without removing the plist,
 use `launchctl bootstrap gui/$(id -u)` with the same plist path and restore the

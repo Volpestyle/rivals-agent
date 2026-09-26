@@ -255,7 +255,8 @@ class Board:
                           eta if stage == "running" else "unknown" if stage == "unknown" else "—",
                           verdict, arm=arm, seed=seed, started=begin, pid=pid,
                           detail=f"exit {rc}" if rc else "no exit marker",
-                          updated=max((p.stat().st_mtime for p in (log, exitfile) if p.exists()), default=0))
+                          updated=max((p.stat().st_mtime for p in (log, exitfile, runs / (name + ".pid"))
+                                       if p.exists()), default=0))
                 projection = {"progress": progress, "arm": arm, "seed": seed, "exit": rc or None,
                               "gates": report.get("gates"), "gate1": report.get("gate1")}
                 job.evidence = self.add_evidence(reportpath if report else log, projection)
@@ -283,9 +284,10 @@ class Board:
         waiting = [line.strip()[2:] for line in read(self.repo / "docs/waiting-on-james.md").splitlines()
                    if line.strip().startswith("- ")]
         jobs.sort(key=lambda j: (j.stage != "running", -j.updated, j.name))
+        machine_health = health()
         snapshot = {"updated": stamp(time.time()), "jobs": [asdict(j) for j in jobs],
                     "results": sorted(latest.values(), key=lambda r: -r["updated"]),
-                    "waiting": waiting, "health": health(), "warnings": warnings,
+                    "waiting": waiting, **machine_health, "warnings": warnings,
                     "scan_seconds": round(time.monotonic() - started, 3)}
         return snapshot
 
@@ -326,15 +328,27 @@ class Board:
             return self.cached
 
 
+def swap_summary(raw):
+    values = {}
+    for key, value, unit in re.findall(r"\b(total|used)\s*=\s*(\d+(?:\.\d+)?)\s*([KMGT])B?\b", raw):
+        values[key] = float(value) * {"K": 0.000001, "M": 0.001, "G": 1, "T": 1000}[unit]
+    if not {"used", "total"} <= values.keys():
+        return "swap unknown", False
+    used, total = values["used"], values["total"]
+    return f"swap used {used:.1f} of {total:.1f} GB", total > 0 and used / total > 0.8
+
+
 def health():
     loadavg = ", ".join(f"{n:.2f}" for n in os.getloadavg()) if hasattr(os, "getloadavg") else "unknown"
     pressure = command(["/usr/sbin/sysctl", "-n", "kern.memorystatus_vm_pressure_level"]).strip()
     pressure = {"1": "normal", "2": "warning", "4": "critical"}.get(pressure, "unknown")
-    swap = command(["/usr/sbin/sysctl", "-n", "vm.swapusage"]).strip()
+    swap, amber = swap_summary(command(["/usr/sbin/sysctl", "-n", "vm.swapusage"]))
     gpu = command(["/usr/sbin/ioreg", "-r", "-c", "AGXAccelerator", "-l"], timeout=2)
     match = re.search(r'"Device Utilization %"\s*=\s*(\d+)', gpu)
     usage = match[1] + "%" if match else "unknown (no cheap utilization counter)"
-    return f"Mac GPU {usage} · memory pressure {pressure} · load 1/5/15 min {loadavg} · swap {swap or 'unknown'}"
+    summary = f"Mac GPU {usage} · memory pressure {pressure} · load 1/5/15 min {loadavg}"
+    return {"health": summary + " · " + swap, "health_summary": summary,
+            "swap_text": swap, "swap_amber": amber}
 
 
 CSS = """
@@ -344,7 +358,7 @@ h2{margin-top:32px}a{color:#8dc6ff}p,small{color:#afbdca}small{display:block}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr));gap:12px}
 article,.health{border:1px solid #344453;border-radius:12px;padding:16px;background:#18232e}
 article h3{margin:0 0 12px;overflow-wrap:anywhere;font-size:1rem}.badge{font-weight:700}
-.running,.PASS{color:#7eecb1}.failed,.FAIL{color:#ffa4a4}.unknown,.undecided{color:#ffd38d}
+.running,.PASS{color:#7eecb1}.failed,.FAIL{color:#ffa4a4}.unknown,.undecided,.amber{color:#ffd38d}
 dl{display:grid;grid-template-columns:80px 1fr;gap:6px;font-size:14px}dt{color:#afbdca}dd{margin:0;overflow-wrap:anywhere}
 li{margin:10px 0}code{overflow-wrap:anywhere;font-size:12px}details{margin:18px 0}summary{cursor:pointer}
 @media(max-width:500px){body{padding:16px}h1{font-size:1.7rem}}
@@ -364,9 +378,18 @@ def render(snapshot, evidence):
                 "".join(f"<dt>{label}</dt><dd>{escape(str(value))}</dd>" for label, value in fields) +
                 f'</dl><p>{escape(job["detail"])}</p>{link(job["evidence"])}</article>')
 
-    active = [j for j in snapshot["jobs"] if j["stage"] in ("running", "queued")]
-    unconfirmed = [j for j in snapshot["jobs"] if j["stage"] == "unknown"]
-    history = [j for j in snapshot["jobs"] if j["stage"] in ("done", "failed")]
+    cutoff = time.time() - 48 * 60 * 60
+    history = [j for j in snapshot["jobs"]
+               if j["stage"] in ("done", "failed", "unknown") and 0 < j["updated"] < cutoff]
+    current = [j for j in snapshot["jobs"] if j not in history]
+    active = [j for j in current if j["stage"] in ("running", "queued")]
+    unconfirmed = [j for j in current if j["stage"] == "unknown"]
+    finished = [j for j in current if j["stage"] in ("done", "failed")]
+    health_html = escape(snapshot.get("health_summary", snapshot["health"]))
+    if "swap_text" in snapshot:
+        warning = snapshot.get("swap_amber", False)
+        health_html += (f' · <span class="{"amber" if warning else ""}">'
+                        f'{escape(snapshot["swap_text"])}{" · above 80%" if warning else ""}</span>')
     def result_cards(kind):
         return "".join(f'<article><h3>{escape(r["name"])}</h3><b>{escape(r["verdict"])}</b>'
                        f'<p>{escape(r["detail"])}</p>{link(r["evidence"])}</article>'
@@ -379,12 +402,14 @@ def render(snapshot, evidence):
             f'<small>Snapshot: {escape(snapshot["updated"])}</small>'
             + "".join(f'<p class="unknown">{escape(w)}</p>' for w in snapshot["warnings"]) +
             f'<h2>Waiting on James</h2><ul>{"".join("<li>" + escape(x) + "</li>" for x in snapshot["waiting"])}</ul>'
-            f'<div class="health">{escape(snapshot["health"])}</div><h2>Jobs</h2>'
-            f'<p>{len(active)} running or queued · {len(unconfirmed)} unconfirmed · {len(history)} finished</p>'
+            f'<div class="health">{health_html}</div><h2>Jobs</h2>'
+            f'<p>{len(active)} running or queued · {len(unconfirmed)} unconfirmed · {len(finished)} finished in the last 48 h</p>'
             f'<div class="grid">{"".join(card(j) for j in active)}</div>'
             f'<details><summary>Unconfirmed jobs ({len(unconfirmed)})</summary><div class="grid">'
             f'{"".join(card(j) for j in unconfirmed)}</div></details>'
-            f'<details><summary>Finished jobs ({len(history)})</summary><div class="grid">'
+            f'<details><summary>Finished jobs ({len(finished)})</summary><div class="grid">'
+            f'{"".join(card(j) for j in finished)}</div></details>'
+            f'<details id="history"><summary>History ({len(history)}) · older than 48 h</summary><div class="grid">'
             f'{"".join(card(j) for j in history)}</div></details>'
             f'<h2>Results</h2><p>Existing judge decisions and report gates only. Unknown or incomplete bars stay undecided. '
             f'Evidence links show metadata only.</p><div class="grid">{result_cards("experiment")}</div>'
