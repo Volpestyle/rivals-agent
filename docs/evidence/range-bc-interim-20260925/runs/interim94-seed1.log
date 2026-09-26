@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/james/dev/range-bc-data/code-5d2ec29/policy/range_bc/train.py", line 818, in <module>
+    main()
+  File "/Users/james/dev/range-bc-data/code-5d2ec29/policy/range_bc/train.py", line 814, in main
+    run_fit(parser().parse_args(argv))
+  File "/Users/james/dev/range-bc-data/code-5d2ec29/policy/range_bc/train.py", line 646, in run_fit
+    require(0 in a.seeds, "seed 0 is the pre-declared candidate and must be trained")
+  File "/Users/james/dev/range-bc-data/code-5d2ec29/policy/range_bc/train.py", line 43, in require
+    raise FitError(message)
+FitError: seed 0 is the pre-declared candidate and must be trained

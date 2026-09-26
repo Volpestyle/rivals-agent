@@ -10,6 +10,7 @@ This page covers the practice-range work as it stands, plus an index of the rang
 - **Direction.** Whole-session recording feeds one end-to-end policy that outputs semantic actions plus camera
   degrees, executed by the pad ([recording protocol](../recording-protocol.md), [end-to-end fit](end-to-end-fit.md)).
 - `docs/lanes/end-to-end-fit-patch-equivalence.md`: cohorts by kit version (2026-09-24), the fit lane's pre-registration for game builds that change nothing in the kit; `end-to-end-fit.md` is frozen by `changed-boundary-reviews-20260924/review-window-loss.md`, so new fit-lane sections go in new notes.
+- `docs/lanes/end-to-end-fit-interim.md`: the 94-minute interim scaling point (2026-09-25; reading Opens: the no-HUD arm's press-F1 lead over the twin grows with data; not the real fit), evidence `docs/evidence/range-bc-interim-20260925/`.
   The web-start timing head below proved the pipe (3 accepted starts, 3 hits in pilot 2), but it is not the product.
 - **Live caller.** `python -m agent.loop --live --brain range-skill`. It takes:
   - `--game-pid <PID>`, `--max-s` in (0, 20] and `--cooldowns normal`;
