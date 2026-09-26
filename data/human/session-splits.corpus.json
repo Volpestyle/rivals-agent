@@ -399,25 +399,25 @@
   },
   {
    "session_id": "20260926T021321-378Z-63684-9",
-   "session_group": "match_dev",
-   "kind": "match_dev",
+   "session_group": "reader_validation",
+   "kind": "reader_validation",
    "video_path": "C:/Users/volpe/Videos/2026-09-25 21-13-21.mkv",
    "role": "God Quarry, 21:16, 5:46, Defeat (only the last ~3 min recorded) (handoff/matches-0925.md)",
    "account": "alt",
    "registered_at": "2026-09-26",
    "codec": "hevc",
-   "note": "evaluation-only: never a split, never trained on (lead 2026-09-26); registered from name, size, id and the map file only"
+   "note": "moved from match_dev to reader_validation (lead 2026-09-26, VUH-1353): a fresh validation source for the Gate 2 readers' one re-validation; no lane has decoded it. Evaluation-only: never a split, never trained on"
   },
   {
    "session_id": "20260926T034805-307Z-63684-13",
-   "session_group": "match_dev",
-   "kind": "match_dev",
+   "session_group": "reader_validation",
+   "kind": "reader_validation",
    "video_path": "C:/Users/volpe/Videos/2026-09-25 22-48-05.mkv",
    "role": "Lower Manhattan competitive, 22:58, 5:55, Defeat (main account; its sensitivity during it unknown) (handoff/matches-0925.md)",
    "account": "main",
    "registered_at": "2026-09-26",
    "codec": "hevc",
-   "note": "evaluation-only: never a split, never trained on (lead 2026-09-26); registered from name, size, id and the map file only"
+   "note": "moved from match_dev to reader_validation (lead 2026-09-26, VUH-1353): a fresh validation source for the Gate 2 readers' one re-validation; no lane has decoded it (the admission lane read only its logger metadata and input log on 2026-09-25, to say it was a match). Evaluation-only: never a split, never trained on"
   },
   {
    "session_id": "20260926T161008-331Z-116800-2",
