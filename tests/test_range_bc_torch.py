@@ -253,7 +253,8 @@ def test_the_fit_cli_end_to_end(tmp_path):
                          "--val", str(val_path)])
     r = json.loads((tmp_path / "out" / "report.json").read_text())
     assert r["scope"] == "smoke" and not r["test_opened"]
-    assert r["sealed_denylist"]["session_ids"] == ["20260923T053616-779Z-33696-2"]     # always loaded, pinned
+    sealed = r["sealed_denylist"]["session_ids"]                                        # always loaded, pinned (v2)
+    assert {"20260923T053616-779Z-33696-2", "20260926T153835-237Z-111496-2"} <= set(sealed)
     arms = ("model", "model_nohud", "history_only")
     assert set(r["checkpoints"]) == {f"{arm}-seed{s}.pt" for arm in arms for s in (0, 1, 2)}
     assert set(r["gates"]) == {"dev", "val"} and set(r["gates"]["val"]) == {"model", "model_nohud"}
