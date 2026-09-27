@@ -563,3 +563,46 @@ Authoritative run root: `/Users/james/dev/range-bc-data/explore/encoder-historyo
 | result-packet.zip | `0f0bbf1bc835595e1873c6617072fee3d0084d445f42cf115b932bb76931be24` |
 
 **Lead decision:** no third exploratory arm. Prepare a pre-registered CONFIRM comparison of exact NitroGen no-history versus matched NitroGen history-enabled (dropout 0.2), seeds 1/2/3, $20 hard cap. Lead must approve committed pre-registration and pinned synthetic-tested judge before any confirm launch. Seed 0 is design evidence only, not confirmation.
+
+## NitroGen no-history CONFIRM launched ? 2026-09-27 18:45 UTC
+
+Lead approved the matched candidate/control seeds 1, 2 and 3 (seed 0 excluded),
+26 epochs, frozen full cohort/dev, L40S, $20 hard cap. No third explore arm.
+Pre-registration `c28d039` at `docs/evidence/nitrogen-nohistory-confirm-20260927/preregistration.md`
+SHA256 `825c3852d82ac0eb3e994bb64bf995e3babb7b14017da9d86cb8f564a9294295`;
+pre-result review-timing amendment `07c73ec`, `preregistration-a1.md`,
+SHA256 `7950bd9fce5cd57cde3bc218275999afec1cbfdb40f5ae47c142c5d03472f8a1`.
+Both pushed. Source `5673de101a398fa661be581e3c1dd041391e2a61`.
+Judge `6f2187dd974befedbaf656470d7b153f3a5ca7be0a62a3954a67670ab726aa32` cleared
+by frame-review, LAND WITH FIXES, receipt `review-confirm-judge-5673de1.md`
+SHA256 `cf8724b53bb29dc2829fbf844a1c53ea3e3f37e5123fe43dc10c4519f1f6b34a`.
+Do not edit judge. Publication must compare output source_manifest to the pinned judge,
+metrics `ff8ec1788700392a2490d39d19ecc623cea85094adbd23873aefb30420e2a2e5` and
+vocab `9f57c02a977921cc0f8fef003a19eb647136ff51af34a7913f76fb22ec811f3e`;
+report yaw/pitch and three paired differences separately. Future-test findings do not block this run.
+
+Mac parent `/Users/james/dev/range-bc-data/explore/nitrogen-nohistory-confirm-20260927`.
+Six exclusive app/output-volume pairs; read-only prior explore input volume. All use image
+`im-FNjy4v5u4XYF29SBGvT0KD`; runner manifests pin image/package versions/config/source/helpers.
+Source archive `8ae54d75dcbeb0f1fb5758d7df2c93cf12b21aa4eec7a3b540d058c52bce766a`
+contains source and explicit registry/tally/denylist/equivalence metadata, no demonstration payloads;
+every archived member verified byte-equal to git source. Windows `git archive` applied CRLF
+conversion on the first local attempt; prelaunch SHA check rejected it. Recreated with
+`-c core.autocrlf=false`, verified and prepared; no paid attempt used the rejected archive.
+
+| Arm | App ID | AppCreate UTC |
+|---|---|---|
+| Candidate seed 1 | ap-qG9re2Po0qwnHKEg4LWmwk | 18:44:02.380057 |
+| Control seed 1 | ap-qan0bFQU52xnosEkv8MKMz | 18:44:28.164320 |
+| Candidate seed 3 | ap-qoYesaN6NxbjwDVkuvRpVJ | 18:44:43.402331 |
+| Control seed 3 | ap-i85U45O1VaoGB1FeD35JEs | 18:44:58.623262 |
+| Candidate seed 2 | ap-PR5gZ1baNAJ6JV6G5fXUy6 | 18:45:13.803248 |
+| Control seed 2 | ap-McTxozLZtgSIkoF8rx5Kkb | 18:45:28.979106 |
+
+CM3 explicitly released its reserved window after zero AppCreate RPCs; its phase1-03 was parked.
+This burst respected global >15-second spacing and was released to IDM at 18:45:43.979106 UTC.
+No further encoder creation is authorized/planned. All six containers started and authenticated
+A1, seed and history mode; first cohort-loading heartbeats at 18:47 UTC. No scientific result yet.
+Six disjoint $3.33 guards reserve $19.97950176, immutable guard-function AST unchanged.
+Completed explore allocation before confirmation remains approximately $35.148644 (rounded chunk
+cost component; excludes other lanes/storage). Lead owns James's combined $150 weekend ledger.
