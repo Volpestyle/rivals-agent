@@ -8,7 +8,7 @@ in `docs/steering/charter-20260926.md` and `docs/learning-plan.md`. Written 2026
 
 | Machine | Use it for | Never |
 |---|---|---|
-| **PC** (`supedupsilly`, RTX 4080 Super) | The game, OBS recording, the live agent loop, capture and pad code. Light CPU work (hashing, JSON scans, one-file ffprobe) | Training or GPU jobs. James keeps the PC free to play or record, or for supervised live agent runs. While the game runs its GPU is the game's |
+| **PC** (`supedupsilly`, RTX 4080 Super) | The game, OBS recording, the live agent loop, capture and pad code. Light CPU work (hashing, JSON scans, one-file ffprobe) | Training or GPU jobs. James keeps the PC free to play or record, or for supervised live agent runs. While the game runs its GPU is the game's, except for live-agent inference (below) |
 | **Mac** (M5 Max, 128 GB, MPS) | Explore sweeps, inference-only audits, cache builds, small fits, the job board. One queue | Two heavy jobs at once. Anything that should be on the PC's live path |
 | **Modal** (workspace `volpestyle`, profile `rivals`) | Confirm-track fits that fan out: many GPUs in parallel, billed per second | Launching without a reviewed harness, a lead-approved receipt and a spend cap |
 | **AWS** (account 842434829012) | A fallback only. G/VT quota is 8 vCPU on-demand in us-east-2 | Anything, unless Modal is unavailable. The 2026-09-26 benchmark showed a 4-vCPU L40S is CPU-starved |
@@ -26,6 +26,8 @@ so give cloud boxes 8 CPUs or more.
 - If the game or OBS is running and the job would compete (bulk decode, re-encode), move it to the Mac queue instead.
 - James's SPIDEY CLIPS HEVC compression batch yields automatically when the game or OBS starts. Nothing may hash,
   copy or extract from a clip until `D:/SPIDEY CLIPS/_hevc_compress_log.jsonl` shows it replaced.
+- Live-agent inference may use the PC's GPU while the game runs (James, 2026-09-27, 12:36 CDT). The owner measures and
+  reports the game's FPS cost. Training on the PC's GPU remains an exception for when the game and recording are stopped.
 - Steam Input must be **disabled** for Marvel Rivals whenever the agent's virtual pad drives the game
   (`.agents/skills/rivals-live-game/SKILL.md`).
 

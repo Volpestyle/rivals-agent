@@ -67,6 +67,8 @@ gets them as one-line text files and loads no repo skills; set it to `true` and 
 - Capture and pad code run inside the PC's desktop session, not plain SSH.
 - The PC's GPU belongs to the game while it is running. Train on the Mac (MPS), niced;
   CUDA training is an explicit exception while the game and recording are stopped.
+  Live-agent inference may use the PC's GPU while the game runs (James, 2026-09-27); the owner measures and
+  reports the game's FPS cost.
 - Capture, perception, safety and latency-sensitive control stay on the PC. SSH moves
   jobs and artifacts; a Mac round trip is not the default live action path.
 - One agent drives the PC desktop at a time.
