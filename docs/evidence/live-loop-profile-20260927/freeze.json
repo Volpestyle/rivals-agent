@@ -1,0 +1,20 @@
+{
+  "baseline/H-t2.json": "e58f29db9a7fdf9af02061e5ae2f16e2ba96e2169987d8970b3ede31fc3c5bd4",
+  "baseline/I-t2.json": "7852b036ba457c53fd713577f2af011afad9beaddc343c02ff0f64d04b2f93aa",
+  "baseline/legacy-t2-r2.json": "7fcd5275062c2a13db3f4eca82e49817ccbc6ad5b66da1729e9aa77bdc770958",
+  "baseline/profile_range_bc_live.py": "6c4a9e1f79544c9595639c79896dc3809fdd644e5eb33341bb44fd770b662b28",
+  "baseline/W-t2.json": "38bd455fb5f110f52f19f545499c2dd609cbc2984d3a1879bca4bb01799ab69b",
+  "model-artifacts.json": "0d98bf54405e279802e28405e7ce0e7634de0b8fa24f40d58f4f947c58c00ac3",
+  "RESULT.md": "e0b73fcca35d44d010181330b336f460cddb814a7db1911e0401e111e3906df4",
+  "source-sha256.json": "b9f0b9f7fc06550f2e3f281d25fb85b764c99453e97409bc3b7db78d34b9b1ac",
+  "trained/H-dino-cuda-compact-t4.json": "9d4c9c6612537be862f27a24e39bc29dcaf6933b4d10d223960d629584603c61",
+  "trained/h1-cpu-compact-t1.json": "aa6b8a2901a5d3c6f0c75df03eb2b51fa4e55a63963eaaa7d8a49e29c3a32526",
+  "trained/h1-cpu-compact-t2.json": "424d2433ac9104e2d36df106824eb43c38a7a584e609397f1c8bd11f622f4823",
+  "trained/h1-cpu-compact-t4.json": "af0884ecaa39d62702477121d2c4e63262828a46eaf928fc91c175acd9d48b5e",
+  "trained/h1-cpu-original-t2.json": "e4cb4daefee99f86f5a4ee94c2782f768ed28ce1f623959dc9a6d9efb9bbb034",
+  "trained/h1-cuda-compact-t2.json": "b79e06fdc794cea84a541e68cecdda883a2f1758e15675e45f01683634990940",
+  "trained/nitrogen-cuda-compact-t2.json": "1c2dcacef996ce1a6d578c37c1cb5c0e882b4b36b1ce57fe367203bdbef20999",
+  "trained/siglip-cpu-compact-t4.json": "3c7e55be5f9aa78d470fe133ae704a291698d6cc11ffe6f7827a5df4ae962c9e",
+  "trained/siglip-cuda-compact-t2.json": "c8589bb0f632b0a961f121fe1fe459d58df290f6751428f87f2ea30a7ae60e39",
+  "trained/siglip-cuda-compact-t4.json": "076b3b8603835842b87e3dfb70732a316908280271254facad34747fee81f6c8"
+}

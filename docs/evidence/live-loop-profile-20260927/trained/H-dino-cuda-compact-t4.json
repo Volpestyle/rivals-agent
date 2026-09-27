@@ -1,0 +1,518 @@
+{
+  "manifest": {
+    "mode": "offline replay; no actual pad/capture",
+    "arm": "H",
+    "weights": "seeded random; web hold forced only to measure duty",
+    "recipe": null,
+    "artifacts": {},
+    "device": "cuda",
+    "dino_assets": {
+      "model": "facebook/dinov2-small",
+      "revision": "ed25f3a31f01632728cabb09d1542f84ab7b0056",
+      "weights_sha256": "ae1e99fcefd534ed978cdeb8326f08030c96e28b7a81ffcbc98a857c84d14be1",
+      "weights_bytes": 88249960,
+      "config_sha256": "1809f83e3bdb1609a501a610ad4a742f4fd8ae44d72ca4aa0df52d1f2ac8628d",
+      "implementation_sha256": {
+        "configuration_dinov2": "d36d05e792619389f06e9cf17c3c738bbecfa1efb93a9b8667e7fe9b11036058",
+        "modeling_dinov2": "def22737f3b5bb0d1500e9e41ea39fd8af59b462713ce7ef507e12a57c3dc4a5"
+      }
+    },
+    "optimized": true,
+    "inprocess": true,
+    "compact_bgr": true,
+    "tower_precision": "float32",
+    "frames": "tracked 1280x720 range JPEG fixtures, upscaled to 2560x1440",
+    "fixture_sha256": {
+      "tests\\fixtures\\range\\pos-fight-017.jpg": "b2b74893549894d95d905c42377363d8e12c44ab8b6cdc0e50e6024f4849054e",
+      "tests\\fixtures\\range\\pos-fight-060.jpg": "dc69479fd798e3125ec42b87af8e0fcbeeffee09647679ba7b11d435c5854817",
+      "tests\\fixtures\\range\\pos-fight-101.jpg": "ee7d8316210ee26a063dcf9a8a841679c19cca3aec5db8f56f60003adb7c54ab"
+    },
+    "source_sha256": {
+      "agent/live_range_bc.py": "d4c109e7c7c503728df2ea82d021154f40a90b05a54bd37bdae64be41b2baa46",
+      "policy/range_bc/model.py": "2b9619339970230902859ec42e149858382bf712840a7e2e61bc528b2c5e69e6",
+      "policy/range_bc/cm3.py": "c93d3c5125f03ef1c0b9183371a4200087a88031f675c3232a078cbaf86d8d3d",
+      "policy/range_bc/cm3_features.py": "45d40ff6045da313db3ae1b7fb0b3520ec6d08da0a7dea7210c56db1193272e7",
+      "scripts/profile_range_bc_live.py": "d304a0dc53522303de1ccfa23a28a7118bf2339e53921b288e98c98ce299f4d6",
+      "policy/range_bc/live_inference.py": "d0331d60ed05807cb13b4dc78e59fa0072d36e3b35c940dd532eefb54baa5e0a"
+    },
+    "torch": "2.11.0+cu128",
+    "threads": 4,
+    "interop_threads": 1,
+    "ffmpeg": {
+      "pyav": "18.1.0",
+      "libraries": {
+        "libavutil": [
+          60,
+          26,
+          102
+        ],
+        "libavcodec": [
+          62,
+          28,
+          102
+        ],
+        "libavformat": [
+          62,
+          12,
+          102
+        ],
+        "libavdevice": [
+          62,
+          3,
+          102
+        ],
+        "libavfilter": [
+          11,
+          14,
+          102
+        ],
+        "libswscale": [
+          9,
+          5,
+          102
+        ],
+        "libswresample": [
+          6,
+          3,
+          102
+        ]
+      }
+    },
+    "graph": "null,split=3[a][b][h];[a]scale=256:144:flags=area+accurate_rnd+bitexact[g];[b]crop=256:256:(iw-256)/2:(ih-256)/2,scale=128:128:flags=area+accurate_rnd+bitexact,pad=256:128[c];[h]split=2[h1][h2];[h1]crop=iw*0.237500:ih*0.105556:iw*0.734375:ih*0.844444,scale=200:50:flags=area+accurate_rnd+bitexact[ab];[h2]crop=iw*0.046875:ih*0.062500:iw*0.234375:ih*0.888889,scale=40:30:flags=area+accurate_rnd+bitexact,pad=200:30[wb];[ab][wb]vstack,pad=256:80[hd];[g][c][hd]vstack=inputs=3,format=rgb24"
+  },
+  "warmup_ms": {
+    "actions_gpu": {
+      "count": 3,
+      "total": 4.474271839484572,
+      "min": 0.005119999870657921,
+      "p50": 0.0989760011434555,
+      "p95": 4.370175838470459,
+      "max": 4.370175838470459
+    },
+    "camera_gpu": {
+      "count": 3,
+      "total": 0.3200960010290146,
+      "min": 0.08886399865150452,
+      "p50": 0.09257599711418152,
+      "p95": 0.13865600526332855,
+      "max": 0.13865600526332855
+    },
+    "core_gpu": {
+      "count": 3,
+      "total": 11.709215700626373,
+      "min": 0.2898879945278168,
+      "p50": 0.47206398844718933,
+      "p95": 10.947263717651367,
+      "max": 10.947263717651367
+    },
+    "crop_enc_gpu": {
+      "count": 3,
+      "total": 0.6436799913644791,
+      "min": 0.1422719955444336,
+      "p50": 0.21980799734592438,
+      "p95": 0.2815999984741211,
+      "max": 0.2815999984741211
+    },
+    "dino_encoder_call_gpu": {
+      "count": 3,
+      "total": 347.3709192276001,
+      "min": 14.871935844421387,
+      "p50": 15.938528060913086,
+      "p95": 316.5604553222656,
+      "max": 316.5604553222656
+    },
+    "dino_preprocess_per_view": {
+      "count": 6,
+      "total": 12.811199994757771,
+      "min": 0.9408999467268586,
+      "p50": 1.033599954098463,
+      "p95": 4.890899988822639,
+      "max": 4.890899988822639
+    },
+    "ffmpeg_preprocess": {
+      "count": 3,
+      "total": 48.73849998693913,
+      "min": 13.419999973848462,
+      "p50": 17.240899964235723,
+      "p95": 18.077600048854947,
+      "max": 18.077600048854947
+    },
+    "global_enc_gpu": {
+      "count": 3,
+      "total": 5.560512155294418,
+      "min": 0.16486400365829468,
+      "p50": 0.2643519937992096,
+      "p95": 5.131296157836914,
+      "max": 5.131296157836914
+    },
+    "predict_total": {
+      "count": 3,
+      "total": 446.2849001865834,
+      "min": 37.65940002631396,
+      "p50": 38.75350009184331,
+      "p95": 369.87200006842613,
+      "max": 369.87200006842613
+    }
+  },
+  "isolated_ms": {
+    "actions_gpu": {
+      "count": 30,
+      "total": 3.4221120132133365,
+      "min": 0.014336000196635723,
+      "p50": 0.09551999717950821,
+      "p95": 0.2457599937915802,
+      "max": 0.2937920093536377
+    },
+    "camera_gpu": {
+      "count": 30,
+      "total": 2.7986879739910364,
+      "min": 0.006144000217318535,
+      "p50": 0.08284799754619598,
+      "p95": 0.19865599274635315,
+      "max": 0.25804799795150757
+    },
+    "core_gpu": {
+      "count": 30,
+      "total": 8.949216052889824,
+      "min": 0.18432000279426575,
+      "p50": 0.28275200724601746,
+      "p95": 0.44089600443840027,
+      "max": 0.44921600818634033
+    },
+    "crop_enc_gpu": {
+      "count": 30,
+      "total": 4.335072003304958,
+      "min": 0.10342399775981903,
+      "p50": 0.1199679970741272,
+      "p95": 0.2181120067834854,
+      "max": 0.44646400213241577
+    },
+    "dino_encoder_call_gpu": {
+      "count": 30,
+      "total": 434.7424011230469,
+      "min": 12.226079940795898,
+      "p50": 13.96406364440918,
+      "p95": 17.553504943847656,
+      "max": 19.746240615844727
+    },
+    "dino_preprocess_per_view": {
+      "count": 60,
+      "total": 86.73350035678595,
+      "min": 0.8729000110179186,
+      "p50": 1.095999963581562,
+      "p95": 3.428200026974082,
+      "max": 10.843600030057132
+    },
+    "ffmpeg_preprocess": {
+      "count": 30,
+      "total": 551.5189004363492,
+      "min": 16.173000098206103,
+      "p50": 17.907300032675266,
+      "p95": 23.103600018657744,
+      "max": 26.02140000090003
+    },
+    "global_enc_gpu": {
+      "count": 30,
+      "total": 4.817536026239395,
+      "min": 0.04915200173854828,
+      "p50": 0.14745600521564484,
+      "p95": 0.25600001215934753,
+      "max": 0.26419198513031006
+    },
+    "predict_total": {
+      "count": 30,
+      "total": 1160.3931999998167,
+      "min": 33.54009997565299,
+      "p50": 37.017200025729835,
+      "p95": 46.39219993259758,
+      "max": 64.27670002449304
+    }
+  },
+  "replay_ms": {
+    "actions_gpu": {
+      "count": 64,
+      "total": 7.553344027604908,
+      "min": 0.005119999870657921,
+      "p50": 0.10099200159311295,
+      "p95": 0.21990400552749634,
+      "max": 1.1659200191497803
+    },
+    "camera_gpu": {
+      "count": 64,
+      "total": 6.230495998635888,
+      "min": 0.005119999870657921,
+      "p50": 0.08908800035715103,
+      "p95": 0.19356800615787506,
+      "max": 0.2672640085220337
+    },
+    "core_gpu": {
+      "count": 64,
+      "total": 21.98713606595993,
+      "min": 0.20377600193023682,
+      "p50": 0.3000960052013397,
+      "p95": 0.48236799240112305,
+      "max": 1.2298239469528198
+    },
+    "crop_enc_gpu": {
+      "count": 64,
+      "total": 8.72095999494195,
+      "min": 0.01740800030529499,
+      "p50": 0.12636800110340118,
+      "p95": 0.23756800591945648,
+      "max": 0.2701759934425354
+    },
+    "decode": {
+      "count": 64,
+      "total": 8.784899837337434,
+      "min": 0.12610002886503935,
+      "p50": 0.13319996651262045,
+      "p95": 0.15169999096542597,
+      "max": 0.19409996457397938
+    },
+    "dino_encoder_call_gpu": {
+      "count": 64,
+      "total": 1174.8236513137817,
+      "min": 15.725695610046387,
+      "p50": 18.255136489868164,
+      "p95": 20.42470359802246,
+      "max": 21.367616653442383
+    },
+    "dino_preprocess_per_view": {
+      "count": 128,
+      "total": 155.68019996862859,
+      "min": 0.8180999429896474,
+      "p50": 1.1056000366806984,
+      "p95": 2.148900064639747,
+      "max": 2.7359999949112535
+    },
+    "event_write": {
+      "count": 128,
+      "total": 86.68459905311465,
+      "min": 0.07670000195503235,
+      "p50": 0.11140003334730864,
+      "p95": 1.6404000343754888,
+      "max": 7.436599931679666
+    },
+    "feed_reader": {
+      "count": 319,
+      "total": 309.2711002100259,
+      "min": 0.6903000175952911,
+      "p50": 0.9149000979959965,
+      "p95": 1.207199995405972,
+      "max": 11.9698999915272
+    },
+    "ffmpeg_preprocess": {
+      "count": 64,
+      "total": 968.6432998860255,
+      "min": 13.150900020264089,
+      "p50": 14.814399997703731,
+      "p95": 17.166299978271127,
+      "max": 18.3968999190256
+    },
+    "global_enc_gpu": {
+      "count": 64,
+      "total": 11.647519908845425,
+      "min": 0.018432000651955605,
+      "p50": 0.16383999586105347,
+      "p95": 0.2927039861679077,
+      "max": 0.7768639922142029
+    },
+    "mock_send": {
+      "count": 64,
+      "total": 0.15279999934136868,
+      "min": 0.0017998972907662392,
+      "p50": 0.002200016751885414,
+      "p95": 0.0036999117583036423,
+      "max": 0.004999921657145023
+    },
+    "predict_total": {
+      "count": 64,
+      "total": 2522.3294000606984,
+      "min": 35.142799955792725,
+      "p50": 39.07150006853044,
+      "p95": 43.788300012238324,
+      "max": 46.69279989320785
+    },
+    "range_guard": {
+      "count": 383,
+      "total": 410.2551988326013,
+      "min": 0.7187000010162592,
+      "p50": 1.0223999852314591,
+      "p95": 1.451199990697205,
+      "max": 3.0185000505298376
+    },
+    "replay_frame_copy": {
+      "count": 383,
+      "total": 981.8631000816822,
+      "min": 1.767299952916801,
+      "p50": 2.5331000797450542,
+      "p95": 3.2407999970018864,
+      "max": 4.519799957051873
+    },
+    "retention_enqueue": {
+      "count": 447,
+      "total": 74.58599959500134,
+      "min": 0.001500011421740055,
+      "p50": 0.0037999125197529793,
+      "p95": 2.078999998047948,
+      "max": 3.321100026369095
+    }
+  },
+  "loop": {
+    "stop_reason": "duration",
+    "error": null,
+    "started": 599632.3961428,
+    "stopped": 599636.401727,
+    "loop_returned": 599636.401727,
+    "excluded_intervals": [],
+    "scorecard": {
+      "supervised_seconds": 4.005584200029261,
+      "successful_sends": 64,
+      "commanded_seconds": 2.0903102996526286,
+      "command_duty_cycle": 0.5218490475465123,
+      "neutral_gap_seconds": {
+        "count": 65,
+        "total": 1.9152739003766328,
+        "min": 0.00558420002926141,
+        "p50": 0.028428966645151377,
+        "p95": 0.03620696673169732,
+        "max": 0.08206399995833635
+      },
+      "gap_retriggered_presses": {
+        "move_forward": 0,
+        "move_left": 0,
+        "move_back": 0,
+        "move_right": 0,
+        "jump": 0,
+        "web_swing": 0,
+        "get_over_here": 0,
+        "amazing_combo": 0,
+        "ultimate": 0,
+        "melee": 0,
+        "spider_power": 0,
+        "web_cluster": 63,
+        "team_up": 0,
+        "goh_targeting": 0,
+        "simple_swing": 0
+      },
+      "gap_retriggered_presses_total": 63,
+      "presses_excluding_gap_retriggers": {
+        "move_forward": 0,
+        "move_left": 0,
+        "move_back": 0,
+        "move_right": 0,
+        "jump": 0,
+        "web_swing": 0,
+        "get_over_here": 0,
+        "amazing_combo": 0,
+        "ultimate": 0,
+        "melee": 0,
+        "spider_power": 0,
+        "web_cluster": 1,
+        "team_up": 0,
+        "goh_targeting": 0,
+        "simple_swing": 0
+      },
+      "observed_prediction_age_seconds": {
+        "count": 64,
+        "total": 3.3301718001021072,
+        "min": 0.043410300044342875,
+        "p50": 0.050951399956829846,
+        "p95": 0.05699690000619739,
+        "max": 0.07695399993099272
+      },
+      "sent_prediction_age_seconds": {
+        "count": 64,
+        "total": 3.5920766001800075,
+        "min": 0.048076999955810606,
+        "p50": 0.05545940005686134,
+        "p95": 0.06163449992891401,
+        "max": 0.08088239992503077
+      },
+      "commanded_presses": {
+        "move_forward": 0,
+        "move_left": 0,
+        "move_back": 0,
+        "move_right": 0,
+        "jump": 0,
+        "web_swing": 0,
+        "get_over_here": 0,
+        "amazing_combo": 0,
+        "ultimate": 0,
+        "melee": 0,
+        "spider_power": 0,
+        "web_cluster": 64,
+        "team_up": 0,
+        "goh_targeting": 0,
+        "simple_swing": 0
+      },
+      "commanded_presses_per_minute": {
+        "move_forward": 0.0,
+        "move_left": 0.0,
+        "move_back": 0.0,
+        "move_right": 0.0,
+        "jump": 0.0,
+        "web_swing": 0.0,
+        "get_over_here": 0.0,
+        "amazing_combo": 0.0,
+        "ultimate": 0.0,
+        "melee": 0.0,
+        "spider_power": 0.0,
+        "web_cluster": 958.6616603820107,
+        "team_up": 0.0,
+        "goh_targeting": 0.0,
+        "simple_swing": 0.0
+      },
+      "commanded_camera_abs_degrees": {
+        "yaw": 0.0,
+        "pitch": 0.0
+      },
+      "commanded_camera_deg_s": {
+        "yaw": 0.0,
+        "pitch": 0.0
+      },
+      "command_idle_seconds": 1.9152739003766328,
+      "ko_feed_appearances": 98,
+      "ko_feed_appearances_per_minute": 1467.950667459954,
+      "feed_known_frames": 319,
+      "feed_unknown_frames": 0,
+      "caveats": [
+        "Presses are commands, not confirmed ability casts.",
+        "Camera degrees are calibrated command estimates, not measured visual rotation.",
+        "Feed appearances are KO evidence, not exact kills; overlapping lines can be missed.",
+        "An already visible initial feed line is excluded; unknown is never zero."
+      ]
+    },
+    "frame_retention": {
+      "queue_capacity": 2,
+      "accepted_by_role": {
+        "guard": 1,
+        "policy": 5,
+        "send-proof": 24
+      },
+      "written_by_role": {
+        "guard": 1,
+        "policy": 5,
+        "send-proof": 24
+      },
+      "dropped_by_role": {
+        "policy": 59,
+        "send-proof": 40,
+        "guard": 3
+      },
+      "dropped_frames": 102,
+      "throttled_guard_frames": 315,
+      "accepted_not_written": 0,
+      "drain_complete": true,
+      "writer_error": null
+    }
+  },
+  "unmeasured": [
+    "desktop capture",
+    "actual guarded actuator and USB delivery",
+    "game contention",
+    "native 1440p image distribution",
+    "trained weights"
+  ],
+  "peak_working_set_bytes": 1331384320
+}

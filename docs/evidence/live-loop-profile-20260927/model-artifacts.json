@@ -1,0 +1,44 @@
+{
+  "h1": {
+    "path": "/Users/james/dev/range-bc-data/explore/modal30-attempt2/collected/h1/epoch-26.pt",
+    "bytes": 50438411,
+    "sha256": "2f6aae5d716a095b0d29c3cf32ec5833107e47d0bc6c7b905282e3932ca99767",
+    "mtime": 1790508970.247
+  },
+  "siglip_head": {
+    "path": "/Users/james/dev/range-bc-data/explore/encoder-20260927/siglip/collected/epoch-26.pt",
+    "bytes": 128234741,
+    "sha256": "09163e8fa5b28376911d8058483583ac046dbf26e8f48fd736ba8345536e9677",
+    "mtime": 1790529994.5218565
+  },
+  "siglip_vision": {
+    "path": "/Users/james/dev/range-bc-data/explore/encoder-20260927/siglip/collected/assets/vision.safetensors",
+    "bytes": 1263873664,
+    "sha256": "38e5bf7f597c42369ceaac06499bf9e63e67e97818d3dcae549e65bb8f11b7be",
+    "mtime": 1790530048.7364
+  },
+  "siglip_assets": {
+    "path": "/Users/james/dev/range-bc-data/explore/encoder-20260927/siglip/collected/assets/assets.json",
+    "bytes": 714,
+    "sha256": "b770aba2b6b30e3d74c946297c7923a34c884d864fbe6b92d91aea7f52ca62ab",
+    "mtime": 1790530001.9724889
+  },
+  "nitrogen_head": {
+    "path": "/Users/james/dev/range-bc-data/explore/encoder-20260927/nitrogen/collected/epoch-26.pt",
+    "bytes": 128236277,
+    "sha256": "b8429830f0c5f15dc8c869e4a2531b9677306696b0639098af8895422df6ef2a",
+    "mtime": 1790530049.454203
+  },
+  "nitrogen_vision": {
+    "path": "/Users/james/dev/range-bc-data/explore/encoder-20260927/nitrogen/collected/assets/vision.safetensors",
+    "bytes": 1263873664,
+    "sha256": "2fceee7b828e737e459b39aa5d11e01362ce38210033f6f885b9974d7a0d6e79",
+    "mtime": 1790530100.835011
+  },
+  "nitrogen_assets": {
+    "path": "/Users/james/dev/range-bc-data/explore/encoder-20260927/nitrogen/collected/assets/assets.json",
+    "bytes": 2598,
+    "sha256": "e1ed61730a4fe858c2a8fc1232a3a0987828535e8b8ff2cf655f00d098140002",
+    "mtime": 1790530063.267242
+  }
+}

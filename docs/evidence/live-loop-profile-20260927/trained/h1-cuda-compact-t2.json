@@ -1,0 +1,606 @@
+{
+  "manifest": {
+    "mode": "offline replay; no actual pad/capture",
+    "arm": "h1",
+    "weights": "trained; unchanged outputs",
+    "recipe": {
+      "tag": "EXPLORATORY",
+      "horizon": 1,
+      "seed": 0,
+      "epochs": 26,
+      "batch": 8,
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "warmup": 500,
+      "device": "cuda",
+      "config": {
+        "channels": [
+          16,
+          32,
+          32
+        ],
+        "reduce": 8,
+        "embed": 256,
+        "hud_embed": 128,
+        "history_embed": 64,
+        "hidden": 512,
+        "global_hw": [
+          144,
+          256
+        ],
+        "crop_hw": [
+          128,
+          128
+        ],
+        "hud_hw": [
+          80,
+          200
+        ],
+        "frames": true,
+        "hud": false,
+        "history": true,
+        "regime_bit": false
+      },
+      "prev_dropout": 0.2,
+      "lag": 0,
+      "cohort": "full",
+      "run_identity": "a38039e293b9d59a67467b90f53ec602a25d5d338e9ac9b15c3ecab14768b4cc",
+      "batch_identity": "a0c3ddce5b4885c003cfb8d53ff541ac971ed823370d7af753bd3101e5744df6",
+      "windows": 4697,
+      "total_steps": 15288,
+      "pos_weight": [
+        [
+          20.0,
+          20.0,
+          20.0,
+          20.0,
+          20.0,
+          20.0,
+          20.0,
+          20.0,
+          20.0,
+          20.0,
+          20.0,
+          20.0,
+          20.0,
+          20.0,
+          20.0
+        ],
+        [
+          20.0,
+          20.0,
+          20.0,
+          20.0,
+          20.0,
+          20.0,
+          20.0,
+          20.0,
+          20.0,
+          20.0,
+          20.0,
+          20.0,
+          20.0,
+          20.0,
+          20.0
+        ]
+      ]
+    },
+    "artifacts": {
+      "h1": {
+        "path": "/Users/james/dev/range-bc-data/explore/modal30-attempt2/collected/h1/epoch-26.pt",
+        "bytes": 50438411,
+        "sha256": "2f6aae5d716a095b0d29c3cf32ec5833107e47d0bc6c7b905282e3932ca99767",
+        "mtime": 1790508970.247
+      },
+      "siglip_head": {
+        "path": "/Users/james/dev/range-bc-data/explore/encoder-20260927/siglip/collected/epoch-26.pt",
+        "bytes": 128234741,
+        "sha256": "09163e8fa5b28376911d8058483583ac046dbf26e8f48fd736ba8345536e9677",
+        "mtime": 1790529994.5218565
+      },
+      "siglip_vision": {
+        "path": "/Users/james/dev/range-bc-data/explore/encoder-20260927/siglip/collected/assets/vision.safetensors",
+        "bytes": 1263873664,
+        "sha256": "38e5bf7f597c42369ceaac06499bf9e63e67e97818d3dcae549e65bb8f11b7be",
+        "mtime": 1790530048.7364
+      },
+      "siglip_assets": {
+        "path": "/Users/james/dev/range-bc-data/explore/encoder-20260927/siglip/collected/assets/assets.json",
+        "bytes": 714,
+        "sha256": "b770aba2b6b30e3d74c946297c7923a34c884d864fbe6b92d91aea7f52ca62ab",
+        "mtime": 1790530001.9724889
+      },
+      "nitrogen_head": {
+        "path": "/Users/james/dev/range-bc-data/explore/encoder-20260927/nitrogen/collected/epoch-26.pt",
+        "bytes": 128236277,
+        "sha256": "b8429830f0c5f15dc8c869e4a2531b9677306696b0639098af8895422df6ef2a",
+        "mtime": 1790530049.454203
+      },
+      "nitrogen_vision": {
+        "path": "/Users/james/dev/range-bc-data/explore/encoder-20260927/nitrogen/collected/assets/vision.safetensors",
+        "bytes": 1263873664,
+        "sha256": "2fceee7b828e737e459b39aa5d11e01362ce38210033f6f885b9974d7a0d6e79",
+        "mtime": 1790530100.835011
+      },
+      "nitrogen_assets": {
+        "path": "/Users/james/dev/range-bc-data/explore/encoder-20260927/nitrogen/collected/assets/assets.json",
+        "bytes": 2598,
+        "sha256": "e1ed61730a4fe858c2a8fc1232a3a0987828535e8b8ff2cf655f00d098140002",
+        "mtime": 1790530063.267242
+      }
+    },
+    "device": "cuda",
+    "optimized": true,
+    "inprocess": true,
+    "compact_bgr": true,
+    "tower_precision": "float32",
+    "frames": "tracked 1280x720 range JPEG fixtures, upscaled to 2560x1440",
+    "fixture_sha256": {
+      "tests\\fixtures\\range\\pos-fight-017.jpg": "b2b74893549894d95d905c42377363d8e12c44ab8b6cdc0e50e6024f4849054e",
+      "tests\\fixtures\\range\\pos-fight-060.jpg": "dc69479fd798e3125ec42b87af8e0fcbeeffee09647679ba7b11d435c5854817",
+      "tests\\fixtures\\range\\pos-fight-101.jpg": "ee7d8316210ee26a063dcf9a8a841679c19cca3aec5db8f56f60003adb7c54ab"
+    },
+    "source_sha256": {
+      "agent/live_range_bc.py": "d4c109e7c7c503728df2ea82d021154f40a90b05a54bd37bdae64be41b2baa46",
+      "policy/range_bc/model.py": "2b9619339970230902859ec42e149858382bf712840a7e2e61bc528b2c5e69e6",
+      "policy/range_bc/cm3.py": "c93d3c5125f03ef1c0b9183371a4200087a88031f675c3232a078cbaf86d8d3d",
+      "policy/range_bc/cm3_features.py": "45d40ff6045da313db3ae1b7fb0b3520ec6d08da0a7dea7210c56db1193272e7",
+      "scripts/profile_range_bc_live.py": "b07b678b05d57a298d5ef06a721cd214bb5e4c2179b5f65f0c39ed1846a6b684",
+      "policy/range_bc/live_inference.py": "d0331d60ed05807cb13b4dc78e59fa0072d36e3b35c940dd532eefb54baa5e0a"
+    },
+    "torch": "2.11.0+cu128",
+    "threads": 2,
+    "interop_threads": 1,
+    "ffmpeg": {
+      "pyav": "18.1.0",
+      "libraries": {
+        "libavutil": [
+          60,
+          26,
+          102
+        ],
+        "libavcodec": [
+          62,
+          28,
+          102
+        ],
+        "libavformat": [
+          62,
+          12,
+          102
+        ],
+        "libavdevice": [
+          62,
+          3,
+          102
+        ],
+        "libavfilter": [
+          11,
+          14,
+          102
+        ],
+        "libswscale": [
+          9,
+          5,
+          102
+        ],
+        "libswresample": [
+          6,
+          3,
+          102
+        ]
+      }
+    },
+    "graph": "null,split=3[a][b][h];[a]scale=256:144:flags=area+accurate_rnd+bitexact[g];[b]crop=256:256:(iw-256)/2:(ih-256)/2,scale=128:128:flags=area+accurate_rnd+bitexact,pad=256:128[c];[h]split=2[h1][h2];[h1]crop=iw*0.237500:ih*0.105556:iw*0.734375:ih*0.844444,scale=200:50:flags=area+accurate_rnd+bitexact[ab];[h2]crop=iw*0.046875:ih*0.062500:iw*0.234375:ih*0.888889,scale=40:30:flags=area+accurate_rnd+bitexact,pad=200:30[wb];[ab][wb]vstack,pad=256:80[hd];[g][c][hd]vstack=inputs=3,format=rgb24"
+  },
+  "warmup_ms": {
+    "actions_gpu": {
+      "count": 3,
+      "total": 4.869824193418026,
+      "min": 0.10515200346708298,
+      "p50": 0.10547199845314026,
+      "p95": 4.659200191497803,
+      "max": 4.659200191497803
+    },
+    "camera_gpu": {
+      "count": 3,
+      "total": 0.3776320070028305,
+      "min": 0.08790399879217148,
+      "p50": 0.09516800194978714,
+      "p95": 0.1945600062608719,
+      "max": 0.1945600062608719
+    },
+    "core_gpu": {
+      "count": 3,
+      "total": 11.635840326547623,
+      "min": 0.3102720081806183,
+      "p50": 0.3192960023880005,
+      "p95": 11.006272315979004,
+      "max": 11.006272315979004
+    },
+    "crop_enc_gpu": {
+      "count": 3,
+      "total": 21.790720224380493,
+      "min": 2.959359884262085,
+      "p50": 3.048448085784912,
+      "p95": 15.782912254333496,
+      "max": 15.782912254333496
+    },
+    "ffmpeg_preprocess": {
+      "count": 3,
+      "total": 52.20860010012984,
+      "min": 12.954800040461123,
+      "p50": 18.50400003604591,
+      "p95": 20.74980002362281,
+      "max": 20.74980002362281
+    },
+    "global_enc_gpu": {
+      "count": 3,
+      "total": 232.07526063919067,
+      "min": 2.3756799697875977,
+      "p50": 2.8098559379577637,
+      "p95": 226.8897247314453,
+      "max": 226.8897247314453
+    },
+    "hist_gpu": {
+      "count": 3,
+      "total": 0.596096009016037,
+      "min": 0.12611199915409088,
+      "p50": 0.14259199798107147,
+      "p95": 0.32739201188087463,
+      "max": 0.32739201188087463
+    },
+    "predict_total": {
+      "count": 3,
+      "total": 411.12829989288,
+      "min": 26.965599972754717,
+      "p50": 28.7121000001207,
+      "p95": 355.4505999200046,
+      "max": 355.4505999200046
+    }
+  },
+  "isolated_ms": {
+    "actions_gpu": {
+      "count": 30,
+      "total": 3.4625599905848503,
+      "min": 0.015647999942302704,
+      "p50": 0.10012800246477127,
+      "p95": 0.21164800226688385,
+      "max": 0.43724799156188965
+    },
+    "camera_gpu": {
+      "count": 30,
+      "total": 3.1299199741333723,
+      "min": 0.005119999870657921,
+      "p50": 0.08499199897050858,
+      "p95": 0.19881600141525269,
+      "max": 0.2027519941329956
+    },
+    "core_gpu": {
+      "count": 30,
+      "total": 9.89824002981186,
+      "min": 0.2467840015888214,
+      "p50": 0.29900801181793213,
+      "p95": 0.5096960067749023,
+      "max": 0.6398400068283081
+    },
+    "crop_enc_gpu": {
+      "count": 30,
+      "total": 70.87104046344757,
+      "min": 1.9374079704284668,
+      "p50": 2.261183977127075,
+      "p95": 2.974720001220703,
+      "max": 3.101696014404297
+    },
+    "ffmpeg_preprocess": {
+      "count": 30,
+      "total": 566.4447998860851,
+      "min": 16.194600029848516,
+      "p50": 18.76150001771748,
+      "p95": 21.513700019568205,
+      "max": 22.900199983268976
+    },
+    "global_enc_gpu": {
+      "count": 30,
+      "total": 78.14265632629395,
+      "min": 2.0357120037078857,
+      "p50": 2.5724480152130127,
+      "p95": 3.275871992111206,
+      "max": 3.283967971801758
+    },
+    "hist_gpu": {
+      "count": 30,
+      "total": 4.46851198002696,
+      "min": 0.026847999542951584,
+      "p50": 0.14534400403499603,
+      "p95": 0.2242559939622879,
+      "max": 0.2682879865169525
+    },
+    "predict_total": {
+      "count": 30,
+      "total": 798.1563004432246,
+      "min": 23.91300001181662,
+      "p50": 26.47520008031279,
+      "p95": 30.320200021378696,
+      "max": 30.77269997447729
+    }
+  },
+  "replay_ms": {
+    "actions_gpu": {
+      "count": 69,
+      "total": 8.747968019917607,
+      "min": 0.006144000217318535,
+      "p50": 0.1125119999051094,
+      "p95": 0.2672320008277893,
+      "max": 0.4136959910392761
+    },
+    "camera_gpu": {
+      "count": 69,
+      "total": 8.653823977336287,
+      "min": 0.005119999870657921,
+      "p50": 0.09625600278377533,
+      "p95": 0.23449599742889404,
+      "max": 0.9707520008087158
+    },
+    "core_gpu": {
+      "count": 69,
+      "total": 27.554719924926758,
+      "min": 0.2653760015964508,
+      "p50": 0.36134400963783264,
+      "p95": 0.551584005355835,
+      "max": 1.6383999586105347
+    },
+    "crop_enc_gpu": {
+      "count": 69,
+      "total": 281.13056087493896,
+      "min": 2.3355519771575928,
+      "p50": 3.72326397895813,
+      "p95": 5.901311874389648,
+      "max": 15.345536231994629
+    },
+    "decode": {
+      "count": 68,
+      "total": 9.782000910490751,
+      "min": 0.12129999231547117,
+      "p50": 0.1338000874966383,
+      "p95": 0.1927000703290105,
+      "max": 0.26000000070780516
+    },
+    "event_write": {
+      "count": 137,
+      "total": 128.2453000312671,
+      "min": 0.0771000050008297,
+      "p50": 0.14920008834451437,
+      "p95": 6.89540000166744,
+      "max": 13.14640010241419
+    },
+    "feed_reader": {
+      "count": 270,
+      "total": 276.35719964746386,
+      "min": 0.6847999757155776,
+      "p50": 0.9234000463038683,
+      "p95": 1.351799932308495,
+      "max": 11.50159991811961
+    },
+    "ffmpeg_preprocess": {
+      "count": 69,
+      "total": 1260.1638993946835,
+      "min": 14.392800047062337,
+      "p50": 17.445300007238984,
+      "p95": 24.255900061689317,
+      "max": 27.591499965637922
+    },
+    "global_enc_gpu": {
+      "count": 69,
+      "total": 268.2834241390228,
+      "min": 2.1637120246887207,
+      "p50": 3.275360107421875,
+      "p95": 7.296895980834961,
+      "max": 17.280895233154297
+    },
+    "hist_gpu": {
+      "count": 69,
+      "total": 13.71152000874281,
+      "min": 0.05119999870657921,
+      "p50": 0.17612800002098083,
+      "p95": 0.3543039858341217,
+      "max": 0.605184018611908
+    },
+    "mock_send": {
+      "count": 68,
+      "total": 0.19279960542917252,
+      "min": 0.00209989957511425,
+      "p50": 0.002599903382360935,
+      "p95": 0.004400033503770828,
+      "max": 0.005300040356814861
+    },
+    "predict_total": {
+      "count": 69,
+      "total": 2056.1590002616867,
+      "min": 23.374799988232553,
+      "p50": 28.175199986435473,
+      "p95": 38.75770000740886,
+      "max": 60.43439998757094
+    },
+    "range_guard": {
+      "count": 338,
+      "total": 371.07789830770344,
+      "min": 0.7874999428167939,
+      "p50": 1.0559000074863434,
+      "p95": 1.4521999983116984,
+      "max": 2.710100030526519
+    },
+    "replay_frame_copy": {
+      "count": 338,
+      "total": 1053.3785030711442,
+      "min": 1.8626999808475375,
+      "p50": 2.954700030386448,
+      "p95": 4.6950000105425715,
+      "max": 6.603399990126491
+    },
+    "retention_enqueue": {
+      "count": 407,
+      "total": 88.06609979365021,
+      "min": 0.001400010660290718,
+      "p50": 0.004500034265220165,
+      "p95": 2.652500057592988,
+      "max": 4.296099999919534
+    }
+  },
+  "loop": {
+    "stop_reason": "duration",
+    "error": null,
+    "started": 599412.5641846,
+    "stopped": 599416.5714693,
+    "loop_returned": 599416.5714693,
+    "excluded_intervals": [],
+    "scorecard": {
+      "supervised_seconds": 4.007284699939191,
+      "successful_sends": 68,
+      "commanded_seconds": 0.0,
+      "command_duty_cycle": 0.0,
+      "neutral_gap_seconds": {
+        "count": 1,
+        "total": 4.007284699939191,
+        "min": 4.007284699939191,
+        "p50": 4.007284699939191,
+        "p95": 4.007284699939191,
+        "max": 4.007284699939191
+      },
+      "gap_retriggered_presses": {
+        "move_forward": 0,
+        "move_left": 0,
+        "move_back": 0,
+        "move_right": 0,
+        "jump": 0,
+        "web_swing": 0,
+        "get_over_here": 0,
+        "amazing_combo": 0,
+        "ultimate": 0,
+        "melee": 0,
+        "spider_power": 0,
+        "web_cluster": 0,
+        "team_up": 0,
+        "goh_targeting": 0,
+        "simple_swing": 0
+      },
+      "gap_retriggered_presses_total": 0,
+      "presses_excluding_gap_retriggers": {
+        "move_forward": 0,
+        "move_left": 0,
+        "move_back": 0,
+        "move_right": 0,
+        "jump": 0,
+        "web_swing": 0,
+        "get_over_here": 0,
+        "amazing_combo": 0,
+        "ultimate": 0,
+        "melee": 0,
+        "spider_power": 0,
+        "web_cluster": 0,
+        "team_up": 0,
+        "goh_targeting": 0,
+        "simple_swing": 0
+      },
+      "observed_prediction_age_seconds": {
+        "count": 68,
+        "total": 3.2096176993800327,
+        "min": 0.03728479996789247,
+        "p50": 0.04388339992146939,
+        "p95": 0.0628419000422582,
+        "max": 0.09741809999104589
+      },
+      "sent_prediction_age_seconds": {
+        "count": 68,
+        "total": 3.5398337993538007,
+        "min": 0.04129540000576526,
+        "p50": 0.04825560003519058,
+        "p95": 0.070627799956128,
+        "max": 0.1026683000382036
+      },
+      "commanded_presses": {
+        "move_forward": 0,
+        "move_left": 0,
+        "move_back": 0,
+        "move_right": 0,
+        "jump": 0,
+        "web_swing": 0,
+        "get_over_here": 0,
+        "amazing_combo": 0,
+        "ultimate": 0,
+        "melee": 0,
+        "spider_power": 0,
+        "web_cluster": 0,
+        "team_up": 0,
+        "goh_targeting": 0,
+        "simple_swing": 0
+      },
+      "commanded_presses_per_minute": {
+        "move_forward": 0.0,
+        "move_left": 0.0,
+        "move_back": 0.0,
+        "move_right": 0.0,
+        "jump": 0.0,
+        "web_swing": 0.0,
+        "get_over_here": 0.0,
+        "amazing_combo": 0.0,
+        "ultimate": 0.0,
+        "melee": 0.0,
+        "spider_power": 0.0,
+        "web_cluster": 0.0,
+        "team_up": 0.0,
+        "goh_targeting": 0.0,
+        "simple_swing": 0.0
+      },
+      "commanded_camera_abs_degrees": {
+        "yaw": 0.0,
+        "pitch": 0.0
+      },
+      "commanded_camera_deg_s": {
+        "yaw": 0.0,
+        "pitch": 0.0
+      },
+      "command_idle_seconds": 4.007284699939191,
+      "ko_feed_appearances": 89,
+      "ko_feed_appearances_per_minute": 1332.573151111782,
+      "feed_known_frames": 270,
+      "feed_unknown_frames": 0,
+      "caveats": [
+        "Presses are commands, not confirmed ability casts.",
+        "Camera degrees are calibrated command estimates, not measured visual rotation.",
+        "Feed appearances are KO evidence, not exact kills; overlapping lines can be missed.",
+        "An already visible initial feed line is excluded; unknown is never zero."
+      ]
+    },
+    "frame_retention": {
+      "queue_capacity": 2,
+      "accepted_by_role": {
+        "guard": 1,
+        "policy": 3,
+        "send-proof": 23
+      },
+      "written_by_role": {
+        "guard": 1,
+        "policy": 3,
+        "send-proof": 23
+      },
+      "dropped_by_role": {
+        "policy": 66,
+        "send-proof": 45,
+        "guard": 3
+      },
+      "dropped_frames": 114,
+      "throttled_guard_frames": 266,
+      "accepted_not_written": 0,
+      "drain_complete": true,
+      "writer_error": null
+    }
+  },
+  "unmeasured": [
+    "desktop capture",
+    "actual guarded actuator and USB delivery",
+    "game contention",
+    "native 1440p image distribution"
+  ],
+  "peak_working_set_bytes": 1227411456
+}

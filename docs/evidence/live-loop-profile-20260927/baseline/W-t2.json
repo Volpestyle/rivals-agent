@@ -1,0 +1,462 @@
+{
+  "manifest": {
+    "mode": "offline replay; no actual pad/capture",
+    "arm": "W",
+    "weights": "seeded random; web hold forced only to measure duty",
+    "frames": "tracked 1280x720 range JPEG fixtures, upscaled to 2560x1440",
+    "fixture_sha256": {
+      "tests\\fixtures\\range\\pos-fight-017.jpg": "b2b74893549894d95d905c42377363d8e12c44ab8b6cdc0e50e6024f4849054e",
+      "tests\\fixtures\\range\\pos-fight-060.jpg": "dc69479fd798e3125ec42b87af8e0fcbeeffee09647679ba7b11d435c5854817",
+      "tests\\fixtures\\range\\pos-fight-101.jpg": "ee7d8316210ee26a063dcf9a8a841679c19cca3aec5db8f56f60003adb7c54ab"
+    },
+    "source_sha256": {
+      "agent/live_range_bc.py": "d4c109e7c7c503728df2ea82d021154f40a90b05a54bd37bdae64be41b2baa46",
+      "policy/range_bc/model.py": "2b9619339970230902859ec42e149858382bf712840a7e2e61bc528b2c5e69e6",
+      "policy/range_bc/cm3.py": "c93d3c5125f03ef1c0b9183371a4200087a88031f675c3232a078cbaf86d8d3d",
+      "policy/range_bc/cm3_features.py": "45d40ff6045da313db3ae1b7fb0b3520ec6d08da0a7dea7210c56db1193272e7",
+      "scripts/profile_range_bc_live.py": "6c4a9e1f79544c9595639c79896dc3809fdd644e5eb33341bb44fd770b662b28"
+    },
+    "torch": "2.14.0+cpu",
+    "threads": 2,
+    "interop_threads": 1,
+    "ffmpeg": "ffmpeg version 8.0.1-full_build-www.gyan.dev Copyright (c) 2000-2025 the FFmpeg developers",
+    "graph": "null,showinfo,scale=in_range=tv:in_color_matrix=bt709:out_range=pc:flags=accurate_rnd+bitexact+full_chroma_int,format=rgb24,split=3[a][b][h];[a]scale=256:144:flags=area+accurate_rnd+bitexact[g];[b]crop=256:256:(iw-256)/2:(ih-256)/2,scale=128:128:flags=area+accurate_rnd+bitexact,pad=256:128[c];[h]split=2[h1][h2];[h1]crop=iw*0.237500:ih*0.105556:iw*0.734375:ih*0.844444,scale=200:50:flags=area+accurate_rnd+bitexact[ab];[h2]crop=iw*0.046875:ih*0.062500:iw*0.234375:ih*0.888889,scale=40:30:flags=area+accurate_rnd+bitexact,pad=200:30[wb];[ab][wb]vstack,pad=256:80[hd];[g][c][hd]vstack=inputs=3"
+  },
+  "warmup_ms": {
+    "actions": {
+      "count": 3,
+      "total": 0.1537000061944127,
+      "min": 0.047600013203918934,
+      "p50": 0.05010003224015236,
+      "p95": 0.055999960750341415,
+      "max": 0.055999960750341415
+    },
+    "camera": {
+      "count": 3,
+      "total": 0.08619995787739754,
+      "min": 0.027799978852272034,
+      "p50": 0.027999980375170708,
+      "p95": 0.030399998649954796,
+      "max": 0.030399998649954796
+    },
+    "core": {
+      "count": 3,
+      "total": 5.969800055027008,
+      "min": 1.5147000085562468,
+      "p50": 1.6570000443607569,
+      "p95": 2.7981000021100044,
+      "max": 2.7981000021100044
+    },
+    "crop_enc": {
+      "count": 3,
+      "total": 1.8687000265344977,
+      "min": 0.47930004075169563,
+      "p50": 0.5921999691054225,
+      "p95": 0.7972000166773796,
+      "max": 0.7972000166773796
+    },
+    "dino_encoder_per_view": {
+      "count": 6,
+      "total": 936.5374998888001,
+      "min": 152.73480000905693,
+      "p50": 154.11939995829016,
+      "p95": 160.2758999215439,
+      "max": 160.2758999215439
+    },
+    "dino_preprocess_per_view": {
+      "count": 6,
+      "total": 8.04069999139756,
+      "min": 0.8147000335156918,
+      "p50": 1.3017000164836645,
+      "p95": 1.7956000519916415,
+      "max": 1.7956000519916415
+    },
+    "ffmpeg_preprocess": {
+      "count": 3,
+      "total": 165.43630009982735,
+      "min": 49.976799986325204,
+      "p50": 53.84140007663518,
+      "p95": 61.61810003686696,
+      "max": 61.61810003686696
+    },
+    "global_enc": {
+      "count": 3,
+      "total": 2.1454000379890203,
+      "min": 0.5571000510826707,
+      "p50": 0.6267999997362494,
+      "p95": 0.9614999871701002,
+      "max": 0.9614999871701002
+    },
+    "hist": {
+      "count": 3,
+      "total": 0.23710005916655064,
+      "min": 0.06420002318918705,
+      "p50": 0.0654000323265791,
+      "p95": 0.10750000365078449,
+      "max": 0.10750000365078449
+    },
+    "predict_total": {
+      "count": 3,
+      "total": 1122.5224998779595,
+      "min": 367.06119996961206,
+      "p50": 372.19919997733086,
+      "p95": 383.26209993101656,
+      "max": 383.26209993101656
+    }
+  },
+  "isolated_ms": {
+    "actions": {
+      "count": 20,
+      "total": 1.439400133676827,
+      "min": 0.05040003452450037,
+      "p50": 0.06210000719875097,
+      "p95": 0.1105000264942646,
+      "max": 0.13999990187585354
+    },
+    "camera": {
+      "count": 20,
+      "total": 0.924000283703208,
+      "min": 0.02789997961372137,
+      "p50": 0.03360002301633358,
+      "p95": 0.12250000145286322,
+      "max": 0.16540009528398514
+    },
+    "core": {
+      "count": 20,
+      "total": 38.61609997693449,
+      "min": 1.3581999810412526,
+      "p50": 1.9236999796703458,
+      "p95": 2.6041000382974744,
+      "max": 2.646799897775054
+    },
+    "crop_enc": {
+      "count": 20,
+      "total": 15.965200262144208,
+      "min": 0.4608000162988901,
+      "p50": 0.6466999184340239,
+      "p95": 1.075300038792193,
+      "max": 3.9142000023275614
+    },
+    "dino_encoder_per_view": {
+      "count": 40,
+      "total": 6567.000499693677,
+      "min": 148.6356999957934,
+      "p50": 160.38169991225004,
+      "p95": 193.21029994171113,
+      "max": 215.3997999848798
+    },
+    "dino_preprocess_per_view": {
+      "count": 40,
+      "total": 58.548900415189564,
+      "min": 0.7937999907881021,
+      "p50": 1.5138000017032027,
+      "p95": 2.4048000341281295,
+      "max": 3.2009000424295664
+    },
+    "ffmpeg_preprocess": {
+      "count": 20,
+      "total": 1079.6077998820692,
+      "min": 47.04049997963011,
+      "p50": 53.53010003454983,
+      "p95": 62.02120007947087,
+      "max": 63.22260003071278
+    },
+    "global_enc": {
+      "count": 20,
+      "total": 13.317800243385136,
+      "min": 0.5173999816179276,
+      "p50": 0.6473999237641692,
+      "p95": 0.8908000309020281,
+      "max": 1.093400060199201
+    },
+    "hist": {
+      "count": 20,
+      "total": 1.4127001632004976,
+      "min": 0.05929998587816954,
+      "p50": 0.06640003994107246,
+      "p95": 0.0969000393524766,
+      "max": 0.10529998689889908
+    },
+    "predict_total": {
+      "count": 20,
+      "total": 7792.012900114059,
+      "min": 361.6290999343619,
+      "p50": 379.0696000214666,
+      "p95": 434.40829997416586,
+      "max": 450.7759000407532
+    }
+  },
+  "replay_ms": {
+    "actions": {
+      "count": 1,
+      "total": 0.06589991971850395,
+      "min": 0.06589991971850395,
+      "p50": 0.06589991971850395,
+      "p95": 0.06589991971850395,
+      "max": 0.06589991971850395
+    },
+    "camera": {
+      "count": 1,
+      "total": 0.03130000550299883,
+      "min": 0.03130000550299883,
+      "p50": 0.03130000550299883,
+      "p95": 0.03130000550299883,
+      "max": 0.03130000550299883
+    },
+    "core": {
+      "count": 1,
+      "total": 2.213400090113282,
+      "min": 2.213400090113282,
+      "p50": 2.213400090113282,
+      "p95": 2.213400090113282,
+      "max": 2.213400090113282
+    },
+    "crop_enc": {
+      "count": 1,
+      "total": 0.7419000612571836,
+      "min": 0.7419000612571836,
+      "p50": 0.7419000612571836,
+      "p95": 0.7419000612571836,
+      "max": 0.7419000612571836
+    },
+    "dino_encoder_per_view": {
+      "count": 2,
+      "total": 356.5881000831723,
+      "min": 167.90940007194877,
+      "p50": 167.90940007194877,
+      "p95": 188.67870001122355,
+      "max": 188.67870001122355
+    },
+    "dino_preprocess_per_view": {
+      "count": 2,
+      "total": 3.9528999477624893,
+      "min": 1.7395999748259783,
+      "p50": 1.7395999748259783,
+      "p95": 2.213299972936511,
+      "max": 2.213299972936511
+    },
+    "event_write": {
+      "count": 1,
+      "total": 3.76029999461025,
+      "min": 3.76029999461025,
+      "p50": 3.76029999461025,
+      "p95": 3.76029999461025,
+      "max": 3.76029999461025
+    },
+    "feed_reader": {
+      "count": 36,
+      "total": 43.52850036229938,
+      "min": 0.7425000658258796,
+      "p50": 0.8880000095814466,
+      "p95": 1.311299973167479,
+      "max": 12.226799968630075
+    },
+    "ffmpeg_preprocess": {
+      "count": 1,
+      "total": 55.040700011886656,
+      "min": 55.040700011886656,
+      "p50": 55.040700011886656,
+      "p95": 55.040700011886656,
+      "max": 55.040700011886656
+    },
+    "global_enc": {
+      "count": 1,
+      "total": 0.6197999464347959,
+      "min": 0.6197999464347959,
+      "p50": 0.6197999464347959,
+      "p95": 0.6197999464347959,
+      "max": 0.6197999464347959
+    },
+    "hist": {
+      "count": 1,
+      "total": 0.08599995635449886,
+      "min": 0.08599995635449886,
+      "p50": 0.08599995635449886,
+      "p95": 0.08599995635449886,
+      "max": 0.08599995635449886
+    },
+    "predict_total": {
+      "count": 1,
+      "total": 420.20560009405017,
+      "min": 420.20560009405017,
+      "p50": 420.20560009405017,
+      "p95": 420.20560009405017,
+      "max": 420.20560009405017
+    },
+    "range_guard": {
+      "count": 36,
+      "total": 36.30999964661896,
+      "min": 0.8348000701516867,
+      "p50": 0.9516000282019377,
+      "p95": 1.505899941548705,
+      "max": 1.5577999874949455
+    },
+    "replay_frame_copy": {
+      "count": 36,
+      "total": 135.87480003479868,
+      "min": 3.0935999238863587,
+      "p50": 3.6601999308913946,
+      "p95": 4.9857000121846795,
+      "max": 5.936400033533573
+    },
+    "retention_enqueue": {
+      "count": 37,
+      "total": 6.5997999627143145,
+      "min": 0.002500019036233425,
+      "p50": 0.003300025127828121,
+      "p95": 3.13810002990067,
+      "max": 3.339200047776103
+    }
+  },
+  "loop": {
+    "stop_reason": "prediction_expired",
+    "error": null,
+    "started": 598715.5330489,
+    "stopped": 598715.9896073,
+    "loop_returned": 598715.9896073,
+    "excluded_intervals": [],
+    "scorecard": {
+      "supervised_seconds": 0.45655840006656945,
+      "successful_sends": 0,
+      "commanded_seconds": 0.0,
+      "command_duty_cycle": 0.0,
+      "neutral_gap_seconds": {
+        "count": 1,
+        "total": 0.45655840006656945,
+        "min": 0.45655840006656945,
+        "p50": 0.45655840006656945,
+        "p95": 0.45655840006656945,
+        "max": 0.45655840006656945
+      },
+      "gap_retriggered_presses": {
+        "move_forward": 0,
+        "move_left": 0,
+        "move_back": 0,
+        "move_right": 0,
+        "jump": 0,
+        "web_swing": 0,
+        "get_over_here": 0,
+        "amazing_combo": 0,
+        "ultimate": 0,
+        "melee": 0,
+        "spider_power": 0,
+        "web_cluster": 0,
+        "team_up": 0,
+        "goh_targeting": 0,
+        "simple_swing": 0
+      },
+      "gap_retriggered_presses_total": 0,
+      "presses_excluding_gap_retriggers": {
+        "move_forward": 0,
+        "move_left": 0,
+        "move_back": 0,
+        "move_right": 0,
+        "jump": 0,
+        "web_swing": 0,
+        "get_over_here": 0,
+        "amazing_combo": 0,
+        "ultimate": 0,
+        "melee": 0,
+        "spider_power": 0,
+        "web_cluster": 0,
+        "team_up": 0,
+        "goh_targeting": 0,
+        "simple_swing": 0
+      },
+      "observed_prediction_age_seconds": {
+        "count": 1,
+        "total": 0.4560421999776736,
+        "min": 0.4560421999776736,
+        "p50": 0.4560421999776736,
+        "p95": 0.4560421999776736,
+        "max": 0.4560421999776736
+      },
+      "sent_prediction_age_seconds": {
+        "count": 0,
+        "total": 0,
+        "min": null,
+        "p50": null,
+        "p95": null,
+        "max": null
+      },
+      "commanded_presses": {
+        "move_forward": 0,
+        "move_left": 0,
+        "move_back": 0,
+        "move_right": 0,
+        "jump": 0,
+        "web_swing": 0,
+        "get_over_here": 0,
+        "amazing_combo": 0,
+        "ultimate": 0,
+        "melee": 0,
+        "spider_power": 0,
+        "web_cluster": 0,
+        "team_up": 0,
+        "goh_targeting": 0,
+        "simple_swing": 0
+      },
+      "commanded_presses_per_minute": {
+        "move_forward": 0.0,
+        "move_left": 0.0,
+        "move_back": 0.0,
+        "move_right": 0.0,
+        "jump": 0.0,
+        "web_swing": 0.0,
+        "get_over_here": 0.0,
+        "amazing_combo": 0.0,
+        "ultimate": 0.0,
+        "melee": 0.0,
+        "spider_power": 0.0,
+        "web_cluster": 0.0,
+        "team_up": 0.0,
+        "goh_targeting": 0.0,
+        "simple_swing": 0.0
+      },
+      "commanded_camera_abs_degrees": {
+        "yaw": 0.0,
+        "pitch": 0.0
+      },
+      "commanded_camera_deg_s": {
+        "yaw": 0.0,
+        "pitch": 0.0
+      },
+      "command_idle_seconds": 0.45655840006656945,
+      "ko_feed_appearances": 12,
+      "ko_feed_appearances_per_minute": 1577.016215001233,
+      "feed_known_frames": 36,
+      "feed_unknown_frames": 0,
+      "caveats": [
+        "Presses are commands, not confirmed ability casts.",
+        "Camera degrees are calibrated command estimates, not measured visual rotation.",
+        "Feed appearances are KO evidence, not exact kills; overlapping lines can be missed.",
+        "An already visible initial feed line is excluded; unknown is never zero."
+      ]
+    },
+    "frame_retention": {
+      "queue_capacity": 2,
+      "accepted_by_role": {
+        "guard": 1,
+        "policy": 1
+      },
+      "written_by_role": {
+        "guard": 1,
+        "policy": 1
+      },
+      "dropped_by_role": {},
+      "dropped_frames": 0,
+      "throttled_guard_frames": 35,
+      "accepted_not_written": 0,
+      "drain_complete": true,
+      "writer_error": null
+    }
+  },
+  "unmeasured": [
+    "desktop capture",
+    "actual guarded actuator and USB delivery",
+    "game contention",
+    "trained weights",
+    "native 1440p image distribution"
+  ],
+  "peak_working_set_bytes": 572256256
+}
