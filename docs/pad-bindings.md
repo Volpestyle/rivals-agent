@@ -125,18 +125,34 @@ video and retains all attempts. Stop on a rejected input path or lost range HUD.
    repeated-texture match. Repeat as `period-2.json` and `period-3.json`.
 3. Pin focal length using that 360-degree rate and the raw .45-stick image
    shifts in `yawmap-candidate-1.json`. The script now retains `dx`/`dy`.
-   For the yaw patch center, x=360 px from center at 1280 width,
-   `angle(f, dx) = degrees(atan(360/f) - atan((360+dx)/f))`.
+   The upper-center yaw patch is `(520,100)-(760,260)` at 1280 width;
+   its center has x=0 relative to the image center.
+   `angle(f, dx) = degrees(atan(0/f) - atan(dx/f))`.
    Choose positive f so the difference of the two .45-stick pulse angles
    divided by their **observed report hold-time difference** matches 360/T.
-   `Live.hold` renews every 50 ms, so nominal .06/.12-second pulses can overrun;
-   nominal script `rate_deg_s` fields alone are insufficient. Retain report
+   Maps use short deadline-capped `Live.send_guarded` pulses, not `Live.hold`'s
+   50 ms renewal loop. `hold_s` records the update-return interval estimate;
+   rates use its difference rather than nominal duration. Retain report
    timings with `--report-timing`, which uses the existing
    `agent.startup.watch_pad` observer after construction and embeds reports in the JSON, and
    compare with native video. Observer timestamps are update-return times, not
    hardware arrival times. A noisy/multiple solution leaves focal unknown.
+   `--report-timing` also records `report_timing.full_reports`: each entry has
+   `t`, raw integer `buttons` (XUSB mask), signed `lx/ly/rx/ry`, and unsigned
+   `lt/rt` in 0..255 (`& 0xFF` handles signed ctypes BYTE layouts too). Existing
+   `[time, nonneutral]` tuples remain in `reports` for compatibility. Full state
+   is copied from the outgoing pad report after update, including releases and
+   close, and retained in failed output too. A non-null observer `failed` means
+   the capture is incomplete; missing bits must never be interpreted as zero.
    The equal-pulse focal candidate and old `yaw` optical-flow estimate are not
    acceptance evidence: L4 previously found them ill-conditioned.
+   `period` refuses without at least eight confident horizontal phase shifts
+   after the first .5 s, sampled at least .04 s apart: response >=.2, shift >=1
+   band pixel, horizontal shift >2x vertical, and median confident shift >=1
+   in the commanded direction (negative scene dx for positive yaw). Phase
+   correlation uses a Hanning window on copies, preserving the evidence arrays.
+   Identical/flat images never count. This prevents stationary false periods;
+   it does not disambiguate multiple turns, so the native-frame check still binds.
 4. With that measured f, repeat the map three times with new outputs:
 
    ```powershell
@@ -153,6 +169,28 @@ video and retains all attempts. Stop on a rejected input path or lost range HUD.
    and current Jump/LB at 8/16/25/33/50/80/120 ms, six trials each. It observes
    hero animation, so inspect the recordings; readiness failure is not a failed
    input and animation noise is not proof of a successful press.
+   Yaw durations are .04/.08 s through .45 deflection and .02/.04 s above it;
+   pitch uses .04/.08 s. Equal-pulse focal candidates use two .04 s pulses at
+   .45, with each forward and return checked. Every pulse has a guarded release
+   deadline and a finally-neutral; a measured overrun >10 ms is refused. This
+   removes the old .25 s pulse and 50 ms hold rounding. Pitch uses a separate
+   right-side patch `(920,280)-(1160,440)`, centered vertically.
+   At measured 161 deg/s, the longest .45 pulse plus 10 ms allowance is 14.49
+   degrees. Planning bounds of 500 deg/s yaw, 150 deg/s pitch and focal 250..1000
+   keep all patch edges inside the image for these durations; these bounds are
+   not Cal values or measured maxima. Synthetic tests exercise partial overlap
+   through +/-512 px yaw and +/-256 px pitch. Larger matches are refused.
+   Every map forward/return requires template score >=.8, displacement >=2 px,
+   >2x off-axis motion and the commanded scene sign (yaw opposite stick; pitch
+   same sign). Phase then verifies the template at its matched location using
+   a Hanning window, response >=.2 and residual <=1.5 px per axis. This avoids
+   the fixed-crop overlap failure without treating zero residual as movement.
+   Identical/flat patches are refused. Nonfinite audit values become JSON null.
+   Static, insufficient or ambiguous evidence raises `MotionRefused`, closes
+   Live, and writes a failed record with the motion audit; it is unknown, not
+   a zero rate or a measured deadzone. These conservative checks need live
+   validation after independent review; synthetic controls alone do not accept
+   a calibration. No automatic retry or extra movement follows a refusal.
 5. Measure the low end and both deadzones using the existing
    `scripts/place.py --lowmap --declaration <new-measurement.json>` procedure:
    yaw .02/.04/.05/.06/.07/.08/.09/.10 for 1 s, pitch

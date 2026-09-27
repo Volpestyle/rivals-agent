@@ -48,13 +48,17 @@ class StartRefused(RuntimeError):
     pass
 
 
-def watch_pad(pad, clock=time.perf_counter):
-    """For the M1 measurement only (never the loop): note when each report's pad.update() RETURNED and whether that report was non-neutral
+def watch_pad(pad, clock=time.perf_counter, *, full_report=False):
+    """For supervised M1/L4 measurements (never the loop): note when pad.update() RETURNED and whether that report was non-neutral
     (`reports`: [(time, non-neutral)]). update() runs inside Live's actuator lock, after its freshness check and before the lease is
     renewed, so the bookkeeping after it is best-effort: the real update's result and exceptions pass through unchanged, and any
     failure of the bookkeeping only sets `failed` (timing unavailable); it can never stop the write, the lease or a neutral. The time is
-    taken after update() returns: it includes this wrapper's own overhead, and is not the moment the device received the report."""
+    taken after update() returns: it includes this wrapper's own overhead, and is not the moment the device received the report.
+    With full_report=True, also copy the outgoing XUSB report into full_reports (signed axes, unsigned trigger bytes/button mask).
+    The legacy reports tuples remain unchanged for M1; a failed snapshot is explicit in failed, never inferred from setter calls."""
     record, pending = {"reports": [], "failed": None}, [False]
+    if full_report:
+        record["full_reports"] = []
     update, reset, press = pad.update, pad.reset, pad.press_button
 
     def note(fn):
@@ -65,7 +69,16 @@ def watch_pad(pad, clock=time.perf_counter):
 
     def timed_update():
         result = update()
-        note(lambda: record["reports"].append((clock(), pending[0])))
+        def snapshot():
+            stamp = clock()
+            record["reports"].append((stamp, pending[0]))
+            if full_report:
+                report = pad.report
+                record["full_reports"].append({"t": stamp, "buttons": int(report.wButtons),
+                    "lx": int(report.sThumbLX), "ly": int(report.sThumbLY),
+                    "rx": int(report.sThumbRX), "ry": int(report.sThumbRY),
+                    "lt": int(report.bLeftTrigger) & 0xFF, "rt": int(report.bRightTrigger) & 0xFF})
+        note(snapshot)
         return result
 
     def cleared():

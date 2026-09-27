@@ -42,6 +42,9 @@ class FakeLive:
     def hold(self, secs, **pad):
         self._hit("hold")
 
+    def send_guarded(self, pad, **deadlines):
+        self._hit("hold")
+
     def scoreboard(self, hold_s=1.0):
         return self.fresh()
 
@@ -95,9 +98,9 @@ def test_measure_refuses_invalid_focal_before_opening_a_pad(focal):
 
 
 def test_measure_keeps_explicit_focal_and_report_times(monkeypatch, tmp_path):
-    from test_live_pad import FakePad
+    from test_watch_pad import ReportPad
     live = FakeLive()
-    live._pad = FakePad()
+    live._pad = ReportPad()
     def measure(lv, focal):
         lv._pad.press_button("LS")
         lv._pad.press_button("RS")
@@ -113,6 +116,7 @@ def test_measure_keeps_explicit_focal_and_report_times(monkeypatch, tmp_path):
     assert result["focal_px_1280"] == 500 and result["acceptance"] == "raw_unreviewed"
     assert result["report_timing"]["failed"] is None
     assert [on for _, on in result["report_timing"]["reports"]] == [True, False]
+    assert [r["buttons"] for r in result["report_timing"]["full_reports"]] == [0xc0, 0]
     assert live.closed == 1
 
 
