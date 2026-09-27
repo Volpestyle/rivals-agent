@@ -606,3 +606,14 @@ A1, seed and history mode; first cohort-loading heartbeats at 18:47 UTC. No scie
 Six disjoint $3.33 guards reserve $19.97950176, immutable guard-function AST unchanged.
 Completed explore allocation before confirmation remains approximately $35.148644 (rounded chunk
 cost component; excludes other lanes/storage). Lead owns James's combined $150 weekend ledger.
+
+
+## Confirmation interruption and approved Mac recovery (2026-09-27, 19:46 UTC)
+
+All six original fits reached epoch 26, but their evaluations were interrupted and contain no completed decode summaries. Five re-entries refused existing output directories during a shared Modal rescheduling window also observed by IDM; the sixth ended via its original lifetime guard. All six apps are independently proven stopped/tasks zero/no containers. There is no statistical confirmation verdict yet. Original allocation is $13.8781933744; cumulative lane allocation approximately $49.0268373703, not an invoice and excluding other lanes/storage.
+
+All six complete checkpoints and original CUDA TRAIN cutoff receipts persisted. Two independent volume reads match; safe loads show finite epoch-26 tensors identical to latest.pt. No pre-failure checkpoint digest was produced; recovered-byte stability is the evidence available. The [incident record](../evidence/nitrogen-nohistory-confirm-20260927/modal-incident.md), raw receipts and six-input pins landed in 2975583.
+
+Lead-approved [A2](../evidence/nitrogen-nohistory-confirm-20260927/preregistration-a2.md), commit 535be13, SHA256 6f7eedfb6e0f1cf4407a2fde9b9dc83c895b780350a549d7dd37ff35dfd33c1d, moves all six evaluations to one $0 Mac MPS stack. It keeps exact checkpoints and original TRAIN cutoffs, frozen judge 6f2187dd and unchanged decision rules. Recovery source a5cb931 verifies complete identities and step/cache receipts and has no fit path. 64 synthetic tests pass on PC/Mac; the actual tower passes a synthetic bf16 MPS check.
+
+Mac evaluation launched 19:45:58 UTC, PID 93960, observed nice 15 (requested nice -n 10). All-six input manifest SHA256 14347004b5d12ed44a89d69961fcb2df7be8f1a34444460f145fee3c5797cf21 was committed before inference. Root /Users/james/dev/range-bc-data/explore/nitrogen-nohistory-confirm-20260927/mac-evaluation-a2. Per-seed metrics are withheld until all six outputs exist; persistence STOP still reports immediately. No additional cloud spend or AppCreate. Replay follows the result and lead decision; release the Mac slot explicitly to lead/IDM afterwards.
