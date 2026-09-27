@@ -1,0 +1,109 @@
+{
+ "session": "20260927T053838-153Z-150600-7",
+ "input_sha256": "8daf8a385aa90864ad0aae007502973294be8fb4956a07e9dd406b7c044b82ac",
+ "evidence_sha256": "1dc71c29fa683411003404705f743ba7a0e4aa097d57b9f7641c275298510410",
+ "candidate_ids": [
+  "seg-002",
+  "seg-006",
+  "seg-010",
+  "seg-014",
+  "seg-021",
+  "seg-025",
+  "seg-032",
+  "seg-041",
+  "seg-045",
+  "seg-050",
+  "seg-054"
+ ],
+ "candidate_ns": 418541649936,
+ "ui_key_down_count": 0,
+ "ping_cut_overlap_count": 0,
+ "mouse_down_counts": {
+  "2": 152,
+  "1": 59,
+  "4": 29
+ },
+ "key_down_counts": {
+  "87": 373,
+  "65": 439,
+  "32": 286,
+  "68": 383,
+  "83": 89,
+  "16": 312,
+  "69": 41,
+  "67": 37,
+  "70": 13,
+  "52": 2,
+  "81": 2,
+  "71": 6,
+  "86": 1
+ },
+ "unbound_key_down_events": [
+  {
+   "segment": "seg-021",
+   "t_rel_s": 94.8257905,
+   "vk": 52,
+   "physical": "key:5:0"
+  },
+  {
+   "segment": "seg-021",
+   "t_rel_s": 130.4448315,
+   "vk": 52,
+   "physical": "key:5:0"
+  },
+  {
+   "segment": "seg-041",
+   "t_rel_s": 251.0687452,
+   "vk": 71,
+   "physical": "key:34:0"
+  },
+  {
+   "segment": "seg-050",
+   "t_rel_s": 415.2579107,
+   "vk": 71,
+   "physical": "key:34:0"
+  },
+  {
+   "segment": "seg-054",
+   "t_rel_s": 495.6007644,
+   "vk": 71,
+   "physical": "key:34:0"
+  },
+  {
+   "segment": "seg-054",
+   "t_rel_s": 502.6518844,
+   "vk": 71,
+   "physical": "key:34:0"
+  },
+  {
+   "segment": "seg-054",
+   "t_rel_s": 503.3109053,
+   "vk": 71,
+   "physical": "key:34:0"
+  },
+  {
+   "segment": "seg-054",
+   "t_rel_s": 504.1438518,
+   "vk": 71,
+   "physical": "key:34:0"
+  }
+ ],
+ "ping_cuts_ns": [
+  [
+   555433705144800,
+   555435830190700,
+   "ui_key"
+  ],
+  [
+   555731693107000,
+   555733851137100,
+   "ui_key"
+  ],
+  [
+   555813826206900,
+   555816063136400,
+   "ui_key"
+  ]
+ ],
+ "note": "Metadata/input replay only. Unknown binding events require native-frame review; owner contact sheets do not densely cover them."
+}

@@ -1,0 +1,637 @@
+{
+ "session": "20260927T053838-153Z-150600-7",
+ "flags": [],
+ "capture_gaps": [],
+ "segments": [
+  {
+   "segment_id": "seg-000",
+   "start_ns": 555392967717000,
+   "end_ns": 555393217717000,
+   "machine_reason": "focus_transition",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-001",
+   "start_ns": 555393217717000,
+   "end_ns": 555393292973758,
+   "machine_reason": "unsampled_edge",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-002",
+   "start_ns": 555393292973758,
+   "end_ns": 555394492973711,
+   "machine_reason": "range_hud_present",
+   "proposal": "unresolved",
+   "edges": {
+    "start": {
+     "sample_ns": 555393292973758,
+     "refine": [
+      555393217717000,
+      555393292973759
+     ],
+     "refined": false
+    },
+    "end": {
+     "sample_ns": 555394492973710,
+     "refine": [
+      555394492973710,
+      555394659320200
+     ],
+     "refined": false
+    }
+   }
+  },
+  {
+   "segment_id": "seg-003",
+   "start_ns": 555394492973711,
+   "end_ns": 555394659320200,
+   "machine_reason": "unsampled_edge",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-004",
+   "start_ns": 555394659320200,
+   "end_ns": 555402553283500,
+   "machine_reason": "ui_key",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-005",
+   "start_ns": 555402553283500,
+   "end_ns": 555402692973382,
+   "machine_reason": "unsampled_edge",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-006",
+   "start_ns": 555402692973382,
+   "end_ns": 555414492972911,
+   "machine_reason": "range_hud_present",
+   "proposal": "unresolved",
+   "edges": {
+    "start": {
+     "sample_ns": 555402692973382,
+     "refine": [
+      555402553283500,
+      555402692973383
+     ],
+     "refined": false
+    },
+    "end": {
+     "sample_ns": 555414492972910,
+     "refine": [
+      555414492972910,
+      555414638341400
+     ],
+     "refined": false
+    }
+   }
+  },
+  {
+   "segment_id": "seg-007",
+   "start_ns": 555414492972911,
+   "end_ns": 555414638341400,
+   "machine_reason": "unsampled_edge",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-008",
+   "start_ns": 555414638341400,
+   "end_ns": 555417462275700,
+   "machine_reason": "ui_key",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-009",
+   "start_ns": 555417462275700,
+   "end_ns": 555417492972790,
+   "machine_reason": "unsampled_edge",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-010",
+   "start_ns": 555417492972790,
+   "end_ns": 555433692972143,
+   "machine_reason": "range_hud_present",
+   "proposal": "unresolved",
+   "edges": {
+    "start": {
+     "sample_ns": 555417492972790,
+     "refine": [
+      555417462275700,
+      555417492972791
+     ],
+     "refined": false
+    },
+    "end": {
+     "sample_ns": 555433692972142,
+     "refine": [
+      555433692972142,
+      555433705144800
+     ],
+     "refined": false
+    }
+   }
+  },
+  {
+   "segment_id": "seg-011",
+   "start_ns": 555433692972143,
+   "end_ns": 555433705144800,
+   "machine_reason": "unsampled_edge",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-012",
+   "start_ns": 555433705144800,
+   "end_ns": 555435830190700,
+   "machine_reason": "ui_key",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-013",
+   "start_ns": 555435830190700,
+   "end_ns": 555435892972054,
+   "machine_reason": "unsampled_edge",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-014",
+   "start_ns": 555435892972054,
+   "end_ns": 555459092971127,
+   "machine_reason": "range_hud_present",
+   "proposal": "unresolved",
+   "edges": {
+    "start": {
+     "sample_ns": 555435892972054,
+     "refine": [
+      555435830190700,
+      555435892972055
+     ],
+     "refined": false
+    },
+    "end": {
+     "sample_ns": 555459092971126,
+     "refine": [
+      555459092971126,
+      555459092971127
+     ],
+     "refined": false
+    }
+   }
+  },
+  {
+   "segment_id": "seg-015",
+   "start_ns": 555459092971127,
+   "end_ns": 555459756274200,
+   "machine_reason": "dead",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-016",
+   "start_ns": 555459756274200,
+   "end_ns": 555463036310300,
+   "machine_reason": "ui_key",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-017",
+   "start_ns": 555463036310300,
+   "end_ns": 555463118428000,
+   "machine_reason": "dead",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-018",
+   "start_ns": 555463118428000,
+   "end_ns": 555463176775600,
+   "machine_reason": "ui_key",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-019",
+   "start_ns": 555467521199600,
+   "end_ns": 555470492970710,
+   "machine_reason": "dead",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-020",
+   "start_ns": 555470492970710,
+   "end_ns": 555470692970662,
+   "machine_reason": "unsampled_edge",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-021",
+   "start_ns": 555470692970662,
+   "end_ns": 555536692968023,
+   "machine_reason": "range_hud_present",
+   "proposal": "unresolved",
+   "edges": {
+    "start": {
+     "sample_ns": 555470692970662,
+     "refine": [
+      555470492970710,
+      555470692970663
+     ],
+     "refined": false
+    },
+    "end": {
+     "sample_ns": 555536692968022,
+     "refine": [
+      555536692968022,
+      555536692968023
+     ],
+     "refined": false
+    }
+   }
+  },
+  {
+   "segment_id": "seg-022",
+   "start_ns": 555536692968023,
+   "end_ns": 555537431392800,
+   "machine_reason": "dead",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-023",
+   "start_ns": 555537431392800,
+   "end_ns": 555549118349000,
+   "machine_reason": "ui_key",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-024",
+   "start_ns": 555549118349000,
+   "end_ns": 555549292967518,
+   "machine_reason": "unsampled_edge",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-025",
+   "start_ns": 555549292967518,
+   "end_ns": 555563292966959,
+   "machine_reason": "range_hud_present",
+   "proposal": "unresolved",
+   "edges": {
+    "start": {
+     "sample_ns": 555549292967518,
+     "refine": [
+      555549118349000,
+      555549292967519
+     ],
+     "refined": false
+    },
+    "end": {
+     "sample_ns": 555563292966958,
+     "refine": [
+      555563292966958,
+      555563292966959
+     ],
+     "refined": false
+    }
+   }
+  },
+  {
+   "segment_id": "seg-026",
+   "start_ns": 555563292966959,
+   "end_ns": 555563974413200,
+   "machine_reason": "dead",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-027",
+   "start_ns": 555563974413200,
+   "end_ns": 555567403272000,
+   "machine_reason": "ui_key",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-028",
+   "start_ns": 555567403272000,
+   "end_ns": 555572320285100,
+   "machine_reason": "dead",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-029",
+   "start_ns": 555572320285100,
+   "end_ns": 555574558261100,
+   "machine_reason": "ui_key",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-030",
+   "start_ns": 555574558261100,
+   "end_ns": 555575092966526,
+   "machine_reason": "dead",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-031",
+   "start_ns": 555575092966526,
+   "end_ns": 555577292966398,
+   "machine_reason": "no_range_hud",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-032",
+   "start_ns": 555577292966398,
+   "end_ns": 555624092964527,
+   "machine_reason": "range_hud_present",
+   "proposal": "unresolved",
+   "edges": {
+    "start": {
+     "sample_ns": 555577292966398,
+     "refine": [
+      555577092966407,
+      555577292966399
+     ],
+     "refined": false
+    },
+    "end": {
+     "sample_ns": 555624092964526,
+     "refine": [
+      555624092964526,
+      555624127329300
+     ],
+     "refined": false
+    }
+   }
+  },
+  {
+   "segment_id": "seg-033",
+   "start_ns": 555624092964527,
+   "end_ns": 555624127329300,
+   "machine_reason": "unsampled_edge",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-034",
+   "start_ns": 555624127329300,
+   "end_ns": 555627624326900,
+   "machine_reason": "ui_key",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-035",
+   "start_ns": 555627624326900,
+   "end_ns": 555629694314100,
+   "machine_reason": "no_range_hud",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-036",
+   "start_ns": 555629694314100,
+   "end_ns": 555633581249500,
+   "machine_reason": "ui_key",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-037",
+   "start_ns": 555633581249500,
+   "end_ns": 555639943391300,
+   "machine_reason": "no_range_hud",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-038",
+   "start_ns": 555639943391300,
+   "end_ns": 555639990562200,
+   "machine_reason": "ui_key",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-039",
+   "start_ns": 555640974379100,
+   "end_ns": 555641224379100,
+   "machine_reason": "focus_transition",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-040",
+   "start_ns": 555641224379100,
+   "end_ns": 555642892963774,
+   "machine_reason": "no_range_hud",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-041",
+   "start_ns": 555642892963774,
+   "end_ns": 555731692960223,
+   "machine_reason": "range_hud_present",
+   "proposal": "unresolved",
+   "edges": {
+    "start": {
+     "sample_ns": 555642892963774,
+     "refine": [
+      555642692963783,
+      555642892963775
+     ],
+     "refined": false
+    },
+    "end": {
+     "sample_ns": 555731692960222,
+     "refine": [
+      555731692960222,
+      555731693107000
+     ],
+     "refined": false
+    }
+   }
+  },
+  {
+   "segment_id": "seg-042",
+   "start_ns": 555731692960223,
+   "end_ns": 555731693107000,
+   "machine_reason": "unsampled_edge",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-043",
+   "start_ns": 555731693107000,
+   "end_ns": 555733851137100,
+   "machine_reason": "ui_key",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-044",
+   "start_ns": 555733851137100,
+   "end_ns": 555733892960134,
+   "machine_reason": "unsampled_edge",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-045",
+   "start_ns": 555733892960134,
+   "end_ns": 555740892959855,
+   "machine_reason": "range_hud_present",
+   "proposal": "unresolved",
+   "edges": {
+    "start": {
+     "sample_ns": 555733892960134,
+     "refine": [
+      555733851137100,
+      555733892960135
+     ],
+     "refined": false
+    },
+    "end": {
+     "sample_ns": 555740892959854,
+     "refine": [
+      555740892959854,
+      555740892959855
+     ],
+     "refined": false
+    }
+   }
+  },
+  {
+   "segment_id": "seg-046",
+   "start_ns": 555740892959855,
+   "end_ns": 555741479367800,
+   "machine_reason": "dead",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-047",
+   "start_ns": 555741479367800,
+   "end_ns": 555746317270300,
+   "machine_reason": "ui_key",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-048",
+   "start_ns": 555746317270300,
+   "end_ns": 555752692959422,
+   "machine_reason": "dead",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-049",
+   "start_ns": 555752692959422,
+   "end_ns": 555752892959374,
+   "machine_reason": "unsampled_edge",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-050",
+   "start_ns": 555752892959374,
+   "end_ns": 555813692956943,
+   "machine_reason": "range_hud_present",
+   "proposal": "unresolved",
+   "edges": {
+    "start": {
+     "sample_ns": 555752892959374,
+     "refine": [
+      555752692959422,
+      555752892959375
+     ],
+     "refined": false
+    },
+    "end": {
+     "sample_ns": 555813692956942,
+     "refine": [
+      555813692956942,
+      555813826206900
+     ],
+     "refined": false
+    }
+   }
+  },
+  {
+   "segment_id": "seg-051",
+   "start_ns": 555813692956943,
+   "end_ns": 555813826206900,
+   "machine_reason": "unsampled_edge",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-052",
+   "start_ns": 555813826206900,
+   "end_ns": 555816063136400,
+   "machine_reason": "ui_key",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-053",
+   "start_ns": 555816063136400,
+   "end_ns": 555816092956846,
+   "machine_reason": "unsampled_edge",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-054",
+   "start_ns": 555816092956846,
+   "end_ns": 555898692953543,
+   "machine_reason": "range_hud_present",
+   "proposal": "unresolved",
+   "edges": {
+    "start": {
+     "sample_ns": 555816092956846,
+     "refine": [
+      555816063136400,
+      555816092956847
+     ],
+     "refined": false
+    },
+    "end": {
+     "sample_ns": 555898692953542,
+     "refine": [
+      555898692953542,
+      555898692953543
+     ],
+     "refined": false
+    }
+   }
+  },
+  {
+   "segment_id": "seg-055",
+   "start_ns": 555898692953543,
+   "end_ns": 555904531276500,
+   "machine_reason": "dead",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-056",
+   "start_ns": 555904531276500,
+   "end_ns": 555906825336500,
+   "machine_reason": "ui_key",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-057",
+   "start_ns": 555906825336500,
+   "end_ns": 555909925280300,
+   "machine_reason": "dead",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-058",
+   "start_ns": 555909925280300,
+   "end_ns": 555913273407100,
+   "machine_reason": "ui_key",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-059",
+   "start_ns": 555914859410000,
+   "end_ns": 555917894236100,
+   "machine_reason": "dead",
+   "proposal": "rejected"
+  },
+  {
+   "segment_id": "seg-060",
+   "start_ns": 555917894236100,
+   "end_ns": 555917938607400,
+   "machine_reason": "ui_key",
+   "proposal": "rejected"
+  }
+ ],
+ "supersedes": {
+  "file": "candidates-pass1.v1.json",
+  "sha256": "1f3541205b6a5a61d2e92e927e1d9a84deaba67ff8c9d9e152553bb55467e022",
+  "reason": "Lead 2026-09-27: exclude held middle-mouse ping wheel plus 2 s settle; preserve prior packet"
+ }
+}
