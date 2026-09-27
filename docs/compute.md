@@ -63,6 +63,9 @@ so give cloud boxes 8 CPUs or more.
 - Every paid run: a benchmark or fan-out script with a hard cap, a projected cost printed before launch, a
   running-spend stop, one class for the whole experiment, and teardown proven afterwards (all apps stopped, no
   containers). Caps are James's: $50 for round 3, and $0 cloud for the explore track unless he adds money.
+  **Explore budget, 2026-09-27** (James, relayed by the steering lead, ~02:15 CDT): a separate **$15** Modal cap covers the
+  EXPLORATORY full-cohort chunk arms H=1, H=4 and H=8. They run in parallel on one GPU class so the three arms match on
+  device. They use their own app and volume, never round 3's, with a hard guard and proven teardown.
 - A confirm-track fan-out (round 3's `handoff/modal/fanout/`) calls only the reviewed entry point
   (`policy/range_bc/cm3_run.py fit --arm --seed`), one fit per call, each authenticated by a lead-approved receipt.
   It never retries training automatically, and it stays disabled until its independent review lands.
