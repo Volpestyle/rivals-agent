@@ -1,0 +1,62 @@
+--- /c/Users/volpe/AppData/Local/Temp/claude/C--Users-volpe/7e6e33ed-20c0-4115-b6e2-59dc2d360929/scratchpad/handoff/matchmode-0927/human_intake.frozen.py	2026-09-27 10:57:43.809115900 -0500
++++ agent/human_intake.py	2026-09-27 11:00:47.352499300 -0500
+@@ -110,18 +110,50 @@
+ 
+ 
+ def move_presses(raw_events):
+-    """Times the player starts moving: a movement key's make (a repeat of a held key is not one). What ends an emote;
+-    mouse motion only orbits the camera, and a jump did not end one (pilot 052001)."""
++    """Times the player starts moving in game: a movement key's make (a repeat of a held key is not one) outside every
++    input-consuming UI span. What ends an emote; mouse motion only orbits the camera, and a jump did not end one (pilot
++    052001).
++    - Keys typed in chat are text, not movement (fit-review F1, 2026-09-27: W typed in chat once ended the emote cut).
++    - A toggled overlay (F1, B, H) or a held Tab or T is also UI.
++    - After a settings-menu Esc nothing counts (R3 cuts the rest).
++    The UI state follows ui_cuts' rules, on makes only."""
+     held, out = set(), []
++    chat = tab = wheel = menu = False
++    overlays = set()
+     for e in raw_events:
+-        if e.get("type") == "key" and int(e["vk"]) in MOVE_KEYS:
+-            vk = int(e["vk"])
+-            if e.get("down"):
+-                if vk not in held:
+-                    out.append(int(e["t_ns"]))
+-                held.add(vk)
++        if e.get("type") != "key":
++            continue
++        vk, t = int(e["vk"]), int(e["t_ns"])
++        if not e.get("down"):
++            held.discard(vk)
++            if vk in HELD_OVERLAY_KEYS:
++                tab = False
++            elif vk in EMOTE_KEYS:
++                wheel = False
++            continue
++        make = vk not in held
++        held.add(vk)
++        if not make or menu:
++            continue
++        if chat:
++            if vk in CHAT_KEYS | SETTINGS_MENU_KEYS:
++                chat = False
++            continue
++        if vk in CHAT_KEYS:
++            chat = True
++        elif vk in HELD_OVERLAY_KEYS:
++            tab = True
++        elif vk in EMOTE_KEYS:
++            wheel = True
++        elif vk in TOGGLE_OVERLAY_KEYS:
++            overlays ^= {vk}
++        elif vk in SETTINGS_MENU_KEYS:
++            if overlays:
++                overlays.clear()
+             else:
+-                held.discard(vk)
++                menu = True
++        elif vk in MOVE_KEYS and not (tab or wheel or overlays):
++            out.append(t)
+     return sorted(out)
+ 
+ 

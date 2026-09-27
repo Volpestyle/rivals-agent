@@ -1,0 +1,29 @@
+--- /c/Users/volpe/AppData/Local/Temp/claude/C--Users-volpe/7e6e33ed-20c0-4115-b6e2-59dc2d360929/scratchpad/handoff/matchmode-0927/test_intake_match_mode.frozen.py	2026-09-27 10:57:43.839245800 -0500
++++ tests/test_intake_match_mode.py	2026-09-27 11:01:13.139342700 -0500
+@@ -223,3 +223,26 @@
+     # a short reader miss (under HUD_HOLE_NS) is not a round transition: no settle
+     short = [sample(0), sample(ms, hud=False, hp=None, webs=None), sample(2 * ms), sample(3 * ms)]
+     assert [p for _, p in intake.match_hud(short)[0]] == [True, False, True, True]
++
++
++def test_movement_typed_in_chat_never_ends_the_emote_cut():
++    """fit-review F1 (2026-09-27): T down 1 s, up 2 s, Enter 3 s (chat opens), W 4 s (typed in chat), Enter 5 s. The
++    chat W is text, so the emote cut runs to the focus end; a real W after the chat (6 s) does end it."""
++    from agent import human_intake as hi
++    S = 10**9
++    key = lambda t, vk, down=True: dict(type="key", vk=vk, down=down, t_ns=t * S)   # noqa: E731
++    typed = [key(1, 84), key(2, 84, False), key(3, 13), key(3.1, 13, False), key(4, 87), key(4.1, 87, False),
++             key(5, 13), key(5.1, 13, False)]
++    assert hi.move_presses(typed) == []
++    cuts, _ = hi.ui_cuts(hi.ui_key_presses(typed), [(0, 60 * S)], presses=hi.move_presses(typed))
++    assert (1 * S, 60 * S, "ui_key") in cuts
++    moved = typed + [key(6, 87), key(6.1, 87, False)]
++    assert hi.move_presses(moved) == [6 * S]
++    cuts, _ = hi.ui_cuts(hi.ui_key_presses(moved), [(0, 60 * S)], presses=hi.move_presses(moved))
++    assert (1 * S, 6 * S + hi.UI_SETTLE_NS, "ui_key") in cuts
++    # other input-consuming UI: a toggled overlay, a held Tab or T, and everything after a settings-menu Esc
++    assert hi.move_presses([key(1, 112), key(1.1, 112, False), key(2, 87), key(3, 112), key(3.1, 112, False),
++                            key(4, 65)]) == [4 * S]                                            # F1 overlay
++    assert hi.move_presses([key(1, 9), key(2, 87), key(3, 9, False), key(4, 83)]) == [4 * S]    # Tab held
++    assert hi.move_presses([key(1, 27), key(2, 87)]) == []                                     # the settings menu
++    assert hi.move_presses([key(1, 112), key(1.1, 112, False), key(2, 27), key(3, 87)]) == [3 * S]   # Esc closes F1

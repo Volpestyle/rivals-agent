@@ -52,3 +52,98 @@ binds), played in a party with a friend.
   It validates with denylist v2.
 - **Hashed (01:52 CDT):** `expected_media_sha256` and `recorded_video_path` are filled for all eleven files (V-C 2,
   V-Q 1, idm_train 8). The tally is regenerated, and the headline is unchanged at 180.57 / 15.58.
+
+## 2026-09-27: match-mode intake, and pilot -5 (VUH-1353, VUH-1359)
+
+The lead confirmed at ~08:20 CDT: logged live matches get their own intake mode, piloted on
+`20260927T052001-827Z-150600-5` (00:20 Celestial Husk, MVP). The goal is an accepted
+`rivals-idm-match-admission-v1` receipt per live `idm_train` source. The mode is uncommitted until fit-review reviews
+the code and the pilot together.
+
+**The mode comes from the registry.** An `idm_train` row is match mode; no flag chooses it.
+
+**What differs from range intake** (`intake_session.py`, `assemble_session.py`, new `match_admission.py`):
+- **Vote.** A match opens in hero select, so the vote reads the 60 s from `--vote-from`. For -5: 75 s, giving the known
+  mapping.
+- **Edge guard** (key `own_hud`, replacing `in_range`). The scan reads Spider-Man's own live HUD: a positive hp and his
+  web-charge counter. A team holds one Spider-Man, so a spectated teammate never shows it.
+  - The range guard cannot hold in a match: it needs the PRACTICE RANGE banner and a health bar over half full.
+  - The first design used the top-centre match timer. -5 refuted it: Celestial Husk's objective mode draws a progress bar
+    there, and the timer read None on live frames at 100, 140 and 173 s.
+- **Zero versus absent.** A counter drawn at 0 (his own HUD, out of webs) reads 0 and passes. A missing counter reads
+  None and fails.
+  - On -5, 135 samples read 0 with a live hp.
+  - The dim drawn 0 is sometimes missed (108.0 s), which fails closed: only edges use the guard.
+  - Native fixtures cover 3, 0, a missed 0 and a spectate (`tests/fixtures/intake_match/`).
+  - The ability-icon matches are not an identity signal: spectated frames report matches too.
+- **Deaths.** After a death the game spectates a teammate for ~8 s, and that HUD reads present (max 275, no web
+  counter, "SPACE SKIP / H CHANGE HERO"). A death now runs from hp 0 to Spider-Man's own HUD's return.
+  - On -5 the death spans are 175–186, 210–220 and 426–436 s. A post-match scene read a bright health strip with no hp,
+    so HUD presence now needs a read hp.
+- **Refused steps.** Timed Practice is refused in match mode.
+- **Motor record.** The evidence may run before the motor step: the dated statement can come later, and the frame
+  verdicts don't depend on it. Assembly and the receipt still require `motor-settings.json`.
+- **Assembly.** Accepts `idm_train`, but never a replay, whose family is not its own id. No-controller attestation: the
+  2026-09-23 statement covers only recordings before the 2026-09-26 16:23 controller take. Later ones need their date's
+  own `no_pad` statement, quoted from the log, or assembly refuses.
+- **Receipt.** `match_admission.py` writes a pending receipt only: `decision` "pending", `reviewer` null. It refuses
+  `training_pending`, a replay, a wrong split, a media mismatch, a failed freeze or a missing motor record.
+
+**Pilot -5** (snapshot `code-snapshot-f8fd92c`):
+- **Provenance:** the anchor matches, build 1.1.3892207/build25501035. The saved hero-1036 settings differ from their
+  09-22 receipt (the 09-26 controller-tab changes).
+- **Recording:** 63,757 frames verified. Devices: one keyboard and one mouse, no injected control input.
+- **UI keys and regime:** 15 Tab presses, 1 Alt, no Esc. Regime normal (75 depletion intervals).
+- **Evidence** `393163fc…`: 44 segments.
+- **Owner verdicts** `af914927…`: 6 accepted (seg-004, 008, 014, 020, 026, 032; ~6.5 min), each inspected on its review
+  frames. The other 38 are rejected by rule; the death, spectate and post-match states were checked on native frames.
+
+**Waiting on:**
+- frame-review's independent verdicts;
+- James's keyboard-and-mouse statement for 23:13–01:27, for the motor step and the no-controller attestation;
+- fit-review of the code and the pilot.
+
+**frame-review's verdicts on -5** (independent, Opus; v1 record sha256 `358e9076…`):
+- **Agreed:** 5 of 6 accepts and all 38 rule rejects, with all 141 frame hashes equal.
+- **seg-026:** frame-review rejected it. It held the emote wheel: T held 281.414–282.751 s, the mouse driving the wheel.
+  Then the chosen emote, a sit, animated Spider-Man until D at 305.124 s. T was not a UI key.
+
+**The fix, at the rule level** (`agent/human_intake.py`: `UI_KEYS`, `EMOTE_KEYS`, `MOVE_KEYS`, `move_presses`):
+- T is a held wheel. Its cut runs to the next movement-key (W/A/S/D) make plus the settle.
+- A jump (Space, 283.495 s) did not end the sit, so "any action" was wrong. A first re-run used it and is kept as v2.
+- None of the 11 admitted range sessions has a T packet.
+- Re-run on `code-snapshot-f8fd92c-6046514b` with `--supersedes`: evidence `7bfa7d53…`, 48 segments, emote cut
+  [281.414, 307.124).
+
+**Owner verdicts v2** (`e8738680…`): 6 accepted, 345 s.
+- seg-026 [262.327, 281.411) is now rejected whole. It opens under the round-start PARKER POWER-UP splash, with no input
+  260–267.8 s, and no rule cuts round-start splashes yet. Such a rule is future work.
+- frame-review is re-verdicting.
+
+**frame-review v2** (`49842f90…`, 2026-09-27 ~09:58 CDT):
+- **Agreement:** matches_owner on all 48 segments. 6 accepted (seg-004, 008, 014, 020, 030, 036), 345.09 s. 42 rejected.
+- **Checks:** no blocking findings; all 143 review-frame hashes equal. frame-review confirmed the emote rule on frames
+  and concurred with the seg-026 reject.
+- **Next:** code plus pilot went to fit-review (packet `handoff/matchmode-0927/PACKET.md`, `39365985…`).
+- **Still pending:** the motor step, assembly and the receipt wait on James's keyboard-and-mouse statement.
+
+**2026-09-27 ~11:10 CDT: match mode lands, and -5's receipt is accepted.**
+- **fit-review verdict FIX, F1:** W/A/S/D typed in chat ended the emote cut.
+  - Fixed in `move_presses`: a movement make counts only outside chat, a toggled overlay, a held Tab or T, and nothing
+    after a settings Esc.
+  - A test replays fit-review's sequence.
+  - -5 is unaffected: it has no Enter, Esc, F1, B or H, and its emote cut is identical. The one dropped W (435.628 s,
+    Tab held) is inside a death and Tab cut.
+- **Delta re-review LAND** (`e0c2f848…`).
+- **Round-start splash rule** (match mode, `match_hud`): after a HUD gap over 2 s, gameplay resumes 3 s after the HUD
+  returns. -5 is not re-run (lead): its seg-026 is rejected whole anyway.
+- **Motor statements** (lead `32007db`, James's quotes):
+  - `MOTOR_STATEMENTS["2026-09-27"]` covers the eight night QMs, with `no_pad`.
+  - `MATCHES_0925` covers the six 09-25 alt matches.
+  - 22-48-05 stays motor-pending.
+- **-5 assembled** (freeze `f2f843f6…`, 5.75 counted min). Receipt accepted on the lead's instruction, citing
+  fit-review and frame-review.
+- **Packet and snapshots:** `docs/evidence/idm-match-pilot-052001-20260927/`. Snapshots `code-snapshot-f8fd92c`,
+  `-3c585dc1`, `-6046514b` and `-08c36e68` (the F1-fixed one) are committed.
+- **The other seven** continue on the landed code: batch 1 (provenance, verify, profile) is running. Propose and
+  evidence use `code-snapshot-f8fd92c-08c36e68`.

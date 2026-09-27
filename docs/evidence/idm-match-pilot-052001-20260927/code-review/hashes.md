@@ -1,0 +1,11 @@
+| agent/human_intake.py | b67dcb1a7d66e1971981038bedee77d65fe4cf67c58f7b45b183d847ff932412 (LF) |
+| data/human/sessions/intake_session.py | f65c7a5622c7faaf4dd4ed1df885d81cdb27be79ee473b566bec2ebc18601d7d (LF) |
+| data/human/sessions/assemble_session.py | 03b37c1d93c2368e21702fa974681444a58bcc6cb6a5baee36aad6bbf26c91f6 (LF) |
+| data/human/sessions/match_admission.py | 00a42683856d7e36d645ff22cc1318c572e1550f260b34791a608c5e72112ba9 (LF) |
+| tests/test_intake_match_mode.py | 97656fa22fdbd11ffe3841ac354c986e32f7f1e81c45a7ee93adba5c8ce6a3f6 (LF) |
+| docs/lanes/human-admission-2.md | 402a9c0eeb4e43fd01206d8f4c3f88d45ae223f07fee61630cd1eb7ab4bbe02e (LF) |
+| data/human/sessions/code-snapshot-f8fd92c-6046514b/manifest.json | 69e1aa71adda0ac021ac11f1874dd96b5b206224129ece3e9aacd872e0457cfe (LF) |
+| tests/fixtures/intake_match/052001-own-webs0-missed.jpg | 9d55a82918ebc472fcc7f67b93aaab3386c543b4b4301d8cf6762db3f337bb96 (raw) |
+| tests/fixtures/intake_match/052001-own-webs0.jpg | 0e72cd3bd44ad87f9dee49f63df59b826e5f161007ef45cb35cdf81eb22ac751 (raw) |
+| tests/fixtures/intake_match/052001-own-webs3.jpg | e7be4cb275adfc3b5a1780c9fcd49bbfa61aa3d3434bf249e30c9c7d2dc487b9 (raw) |
+| tests/fixtures/intake_match/052001-spectate.jpg | 7ce5089e2800d04d1d813d823c658824b5a6a50bb2dc675d32fe7b98824f4652 (raw) |

@@ -1,0 +1,475 @@
+diff --git a/agent/human_intake.py b/agent/human_intake.py
+index 89ede5a..197a45d 100644
+--- a/agent/human_intake.py
++++ b/agent/human_intake.py
+@@ -42,9 +42,10 @@ S = 1_000_000_000
+ GAMEPLAY = "range_hud_present"
+ # Key-down packets that open or drive game UI rather than play (R1). Esc opens the practice/settings menu,
+ # which also ends acceptance for the rest of the session (R3). H change hero, B destructible objects, F1 hero
+-# profile, Tab scoreboard, Enter chat, Alt/Win leave the game window.
++# profile, Tab scoreboard, Enter chat, Alt/Win leave the game window, T the emote wheel (frame-review on pilot 052001,
++# 2026-09-27: the held wheel is a menu the mouse drives, and the emote it starts animates the hero without input).
+ UI_KEYS = {27: "Esc", 72: "H", 66: "B", 112: "F1", 9: "Tab", 13: "Enter", 18: "Alt", 164: "LAlt", 165: "RAlt",
+-           91: "LWin", 92: "RWin"}
++           91: "LWin", 92: "RWin", 84: "T"}
+ SETTINGS_MENU_KEYS = frozenset({27})
+ UI_SETTLE_NS = 2 * S        # after a non-Esc UI key, gameplay resumes only at a HUD-verified frame this much later
+ AFK_NS = 20 * S             # R6: this long with no control-affecting input is AFK, not play
+@@ -102,9 +103,29 @@ def ui_key_presses(raw_events):
+ CHAT_KEYS = frozenset({13})               # Enter opens chat; the next Enter or Esc closes it
+ TOGGLE_OVERLAY_KEYS = frozenset({112, 66, 72})   # F1 hero profile, B destructible objects, H change hero
+ HELD_OVERLAY_KEYS = frozenset({9})        # Tab: the overlay is up while the key is held
++EMOTE_KEYS = frozenset({84})              # T: the emote wheel is up while held; the chosen emote plays until he moves
++# W, A, S, D (the session binding table's movement keys). Only moving is known to end an emote: on pilot 052001 a jump
++# (Space, 283.5 s) did not end the sit, and D (305.1 s) did.
++MOVE_KEYS = frozenset({87, 65, 83, 68})
+ 
+ 
+-def ui_cuts(keys, intervals, settle_ns=UI_SETTLE_NS):
++def move_presses(raw_events):
++    """Times the player starts moving: a movement key's make (a repeat of a held key is not one). What ends an emote;
++    mouse motion only orbits the camera, and a jump did not end one (pilot 052001)."""
++    held, out = set(), []
++    for e in raw_events:
++        if e.get("type") == "key" and int(e["vk"]) in MOVE_KEYS:
++            vk = int(e["vk"])
++            if e.get("down"):
++                if vk not in held:
++                    out.append(int(e["t_ns"]))
++                held.add(vk)
++            else:
++                held.discard(vk)
++    return sorted(out)
++
++
++def ui_cuts(keys, intervals, settle_ns=UI_SETTLE_NS, presses=None):
+     """Cut spans for UI keys (review I2), plus the times of real settings-menu (Esc) openings.
+ 
+     Chat and overlays can keep the range HUD up, so a fixed settle after the key is not enough. Enter opens chat
+@@ -113,18 +134,29 @@ def ui_cuts(keys, intervals, settle_ns=UI_SETTLE_NS):
+     closed runs to the end of its focus interval. Keys inside an open chat are typing, not commands. An Esc that
+     closes chat or an overlay is consumed; any other Esc opens the settings menu (R3). Alt and Win cut a settle
+     after the packet, never past their own focus interval (the focus loss that follows ends it, and the focus
+-    settle covers the return). Returns `(cuts, settings_esc_times)`.
++    settle covers the return). T (the emote wheel) is held like Tab, and its cut runs on after the release to the
++    player's next movement-key press plus the settle (`presses`, from `move_presses`), since the chosen emote animates
++    the hero until he moves; never past the focus interval. Returns `(cuts, settings_esc_times)`.
+     """
+     keys = sorted((int(t), int(vk), bool(down)) for t, vk, *rest in keys for down in [rest[0] if rest else True])
+     _require(all(vk in UI_KEYS for _, vk, _ in keys), "ui keys must be UI key packets")
+     end_of = lambda t: next((b for a, b in intervals if a <= t < b), t + settle_ns)
+-    cuts, esc, chat, overlays, tab = [], [], None, {}, None
++    cuts, esc, chat, overlays, tab, wheel = [], [], None, {}, None, None
+     for t, vk, down in keys:
+         if chat is not None:
+             if down and vk in CHAT_KEYS | SETTINGS_MENU_KEYS:
+                 cuts.append((chat, t + settle_ns, "ui_key"))
+                 chat = None
+             continue
++        if vk in EMOTE_KEYS:
++            if down and wheel is None:
++                wheel = t
++            elif not down and wheel is not None:
++                moved = next((p for p in (presses or ()) if p > t), None)
++                end = moved + settle_ns if moved is not None else end_of(wheel)
++                cuts.append((wheel, min(end, end_of(wheel)), "ui_key"))
++                wheel = None
++            continue
+         if vk in HELD_OVERLAY_KEYS:
+             if down and tab is None:
+                 tab = t
+@@ -151,7 +183,7 @@ def ui_cuts(keys, intervals, settle_ns=UI_SETTLE_NS):
+                 cuts.append((t, t + settle_ns, "settings_menu"))
+         else:   # Alt / Win: the focus loss that follows ends the interval, so the cut stays inside it
+             cuts.append((t, min(t + settle_ns, end_of(t)), "ui_key"))
+-    for opened in [chat, tab, *overlays.values()]:
++    for opened in [chat, tab, wheel, *overlays.values()]:
+         if opened is not None:
+             cuts.append((opened, end_of(opened), "ui_key"))
+     return cuts, esc
+@@ -274,7 +306,7 @@ def settings_change_span(ui_keys, start_ns, *, esc_presses, settle_ns=UI_SETTLE_
+ def propose_segments(intervals, hud_samples, *, ui_keys=(), controls=None, gaps=(), regime_spans=(),
+                      session_regime="normal", native=None, afk_ns=AFK_NS, ui_settle_ns=UI_SETTLE_NS,
+                      max_hud_gap_ns=MAX_HUD_GAP_NS, focus_settle_ns=FOCUS_SETTLE_NS, dead=(), timed_practice=(),
+-                     settings_change=()):
++                     settings_change=(), presses=None):
+     """Candidate segments tiling every focused interval, plus the session flags.
+ 
+     Gameplay = runs of HUD-present samples (reader misses shorter than `max_hud_gap_ns` absorbed), minus every
+@@ -305,7 +337,7 @@ def propose_segments(intervals, hud_samples, *, ui_keys=(), controls=None, gaps=
+     _intervals_ok(changes, "settings change spans")
+     in_change = lambda t: any(s <= t < e for s, e in changes)   # noqa: E731
+     ui_keys = [k for k in ui_keys if not (int(k[1]) in SETTINGS_MENU_KEYS and in_change(int(k[0])))]
+-    ui, esc = ui_cuts(ui_keys, intervals, ui_settle_ns)
++    ui, esc = ui_cuts(ui_keys, intervals, ui_settle_ns, presses=presses)
+     dead_cuts = dead_spans(samples, dead)
+     esc_from = esc[0] if esc else None
+     flags = []
+diff --git a/data/human/sessions/assemble_session.py b/data/human/sessions/assemble_session.py
+index 91d885a..7a650af 100644
+--- a/data/human/sessions/assemble_session.py
++++ b/data/human/sessions/assemble_session.py
+@@ -55,6 +55,21 @@ CALIBRATION = ROOT / "data/human/calibration/20260923T204707-487Z-45572-2/calibr
+ # committed docs/recording-log.md text it rests on (`log_quotes`, each checked verbatim against the log) and gives
+ # the per-session source texts the assembly writes; the 2026-09-23 texts are the admitted sessions' settings.json
+ # wording, so a re-assembly re-derives it byte-identical (review of the motor fix, M1-M3).
++# The six 2026-09-25 evening alt matches (logged live matches, idm_train): the date's afternoon statement does not cover
++# them; James's own statement for them (committed 32007db) does. The main-account 22-48-05 stays motor-pending.
++MATCHES_0925 = dict(
++    log_quotes=('2026-09-25 (evening, 19:21–22:48): **DPI, in-game sensitivity (1.89) and bindings the same as usual; '
++                'keyboard and mouse only** for the six alt-account matches in that window (James, chat, 2026-09-27 '
++                '~09:20 CDT, answering "Your six 09-25 alt matches (19:21–22:48): were DPI, in-game sensitivity '
++                '(1.89) and keybinds the same as usual, keyboard and mouse only?": "Same, KB/M only"). The '
++                'main-account 22-48-05 take stays motor-pending.',),
++    settings="James's statement for the six 2026-09-25 evening alt matches (docs/recording-log.md, Motor settings, "
++             "committed 32007db): DPI, in-game sensitivity (1.89) and bindings the same as usual (chat, 2026-09-27 "
++             "~09:20 CDT: \"Same, KB/M only\")",
++    bindings="James's statement for the six 2026-09-25 evening alt matches (docs/recording-log.md, Motor settings, "
++             "committed 32007db): bindings the same as usual",
++    no_pad="James, chat, 2026-09-27 ~09:20 CDT (docs/recording-log.md, Motor settings, committed 32007db): \"Same, "
++           "KB/M only\" for the six 2026-09-25 evening alt matches")
+ MOTOR_STATEMENTS = {
+     "2026-09-23": dict(
+         log_quotes=("2026-09-23: mouse DPI **800** (James, from the mouse's software; source: chat statement, "
+@@ -120,10 +135,60 @@ MOTOR_STATEMENTS = {
+                          "(chat, 2026-09-26 ~00:11 CDT: \"yes\")",
+                 bindings="James's dated statement for the 23:57 take (docs/recording-log.md, Motor settings, committed "
+                          "3936f94): campaign (alt) account, bindings unchanged (chat, 2026-09-26 ~00:11 CDT: \"yes\")"),
++            **{sid: MATCHES_0925 for sid in (
++                "20260926T005304-628Z-63684-4",
++                "20260926T010620-721Z-63684-5",
++                "20260926T012552-291Z-63684-6",
++                "20260926T013711-125Z-63684-7",
++                "20260926T015610-960Z-63684-8",
++                "20260926T021321-378Z-63684-9",
++            )},
+         }),
++    "2026-09-27": dict(
++        log_quotes=('2026-09-27 (night, 23:13–01:27): **DPI, in-game sensitivity (1.89) and bindings unchanged; keyboard '
++                'and mouse only, no controller used** for every take `2026-09-26 23-13-31` through `2026-09-27 '
++                '01-19-00` (alt account). James, chat, 2026-09-27 ~09:20 CDT, answering "Last night\'s matches '
++                '(23:13–01:27, alt): did you play only on keyboard and mouse, with no controller at any point?": '
++                '"Keyboard/mouse only". His 01:37 declaration already covered alt account and unchanged '
++                'DPI/sensitivity/binds. This supersedes the voided 09-23 no-controller attestation for these takes '
++                'only.',),
++        settings="James's statement for the 2026-09-27 night matches (docs/recording-log.md, Motor settings, committed "
++                 "32007db): alt account, DPI, in-game sensitivity (1.89) and bindings unchanged (chat, 2026-09-27 ~09:20 "
++                 "CDT, and his 01:37 declaration)",
++        bindings="James's statement for the 2026-09-27 night matches (docs/recording-log.md, Motor settings, committed "
++                 "32007db): bindings unchanged (chat, 2026-09-27 ~09:20 CDT)",
++        no_pad="James, chat, 2026-09-27 ~09:20 CDT (docs/recording-log.md, Motor settings, committed 32007db): "
++               "\"Keyboard/mouse only\", no controller at any point in the 23:13-01:27 takes",
++        # the night's live Quick Matches registered idm_train; V-C and V-Q are reader_validation and never assembled
++        applies_to=("20260927T051206-888Z-150600-4",
++                    "20260927T052001-827Z-150600-5",
++                    "20260927T053118-260Z-150600-6",
++                    "20260927T053838-153Z-150600-7",
++                    "20260927T055006-068Z-150600-8",
++                    "20260927T060021-195Z-150600-10",
++                    "20260927T061107-953Z-150600-11",
++                    "20260927T061900-143Z-150600-12")),
+ }
+ 
+ 
++# No-controller attestation (review of match mode): James's 2026-09-23 statement covers recordings that started before
++# the first take with a physical controller (2026-09-26 16:23 CDT, a DualSense over Steam Input; docs/recording-log.md).
++# A later recording needs its date's own `no_pad` text in MOTOR_STATEMENTS (also quoted from the log), or refuses:
++# controller input is not logged, so keyboard-and-mouse truth rests on the statement.
++CONTROLLER_SEEN_UTC = datetime(2026, 9, 26, 21, 23, 7, tzinfo=timezone.utc)   # 20260926T212307-570Z-141148-1
++
++
++def no_pad_attestation(statement, started_utc):
++    """The no-controller attestation for a recording: its statement's own `no_pad`, else None while the 2026-09-23
++    one still applies (the call sites keep its original wordings, so a re-assembly re-derives earlier bytes); refuses
++    otherwise."""
++    if statement.get("no_pad"):
++        return statement["no_pad"]
++    need(started_utc < CONTROLLER_SEEN_UTC, "no no-controller statement covers a recording after the 2026-09-26 16:23 "
++                                            "controller take (refused)")
++    return None
++
++
+ def chicago_date(moment):
+     """The calendar date of an aware time in America/Chicago, the PC's zone, whatever zone this machine is set to.
+ 
+@@ -245,9 +310,14 @@ def main():
+     denylist = hi.load_denylist(DENYLIST, sha256_pin=DENYLIST_SHA256)
+     registry = hi.check_registry(REGISTRY, denylist=denylist)
+     place = registry[args.session]
+-    need(place.split in ("train", "val") and place.session_group == args.session, 'failed: place.split in ("train", "val") and place.session_group == args.session')
++    # idm_train: a logged live match (match mode, lead 2026-09-27). A replay never assembles: its family is its live
++    # match, so its session_group is not its own id.
++    need(place.split in ("train", "val", getattr(hd, "IDM_TRAIN_SPLIT", "train")) and place.session_group == args.session,
++         'failed: place.split in ("train", "val", "idm_train") and place.session_group == args.session')
+     hi.assert_not_sealed(args.session, place.expected_media_sha256, denylist)
+     d = Path(args.sessions_dir or HERE) / args.session   # --sessions-dir: a scratch copy, for a rehearsal run
++    need(place.split in ("train", "val") or (d / "motor-settings.json").exists(),
++         "match mode: the motor step's record is missing (its evidence may run first; assembly never does)")
+     raw = RAW / args.session
+     meta = json.loads((raw / "metadata.json").read_text())
+     ev = json.loads((d / "segments-evidence.json").read_text())
+@@ -259,6 +329,7 @@ def main():
+     sitting = reg_rows[args.session]["sitting"]
+     patch = session_patch(d, meta, hi)   # before anything is written: an unreadable build refuses the assembly
+     statement = motor_statement(meta, hi, RECORDING_LOG.read_text(encoding="utf-8"))   # and a date without one
++    no_pad = no_pad_attestation(statement, hi._utc(meta["started_utc"]))
+ 
+     # 0. immutable copies of the living documents this assembly cites: the recording log at its last commit (the
+     # working file must equal that blob) and the registry revision used; the freeze pins the copies
+@@ -294,8 +365,9 @@ def main():
+     write_json(d / "settings.json", dict(session=args.session, settings=settings, bindings=bindings,
+                                          settings_identity=identity, caps_lock_packets=len(caps),
+                                          calibration=calibration,
+-                                         no_pad_attestation="James, 2026-09-23 ~15:55 CDT: no physical controller was "
+-                                                            "plugged in during any recording session"))
++                                         no_pad_attestation=no_pad or "James, 2026-09-23 ~15:55 CDT: no physical "
++                                                                      "controller was plugged in during any recording "
++                                                                      "session"))
+ 
+     # 2. review.json: accepted only from the independent verdict record, which must agree with the owner's
+     need(ind["session"] == args.session, 'failed: ind["session"] == args.session')
+@@ -320,8 +392,8 @@ def main():
+                                  f"mouse {list(profile['device_scope']['mouse_handles'])}; "
+                                  f"{profile['device_scope']['injected_zero_effect_packets']} zero-effect handle-0 packets "
+                                  "allowed (lead decision), no injected control input",
+-                          no_pad_attestation="James, 2026-09-23 ~15:55 CDT (docs/recording-log.md): no physical "
+-                                             "controller plugged in during any recording session"),
++                          no_pad_attestation=no_pad or "James, 2026-09-23 ~15:55 CDT (docs/recording-log.md): no "
++                                                       "physical controller plugged in during any recording session"),
+         pts_anchor=dict(kind="independent_muxer_offset", offset_num=21, offset_den=1000,
+                         source="accepted blank-scene derivation plus this session's own first-16-packet forward "
+                                "prediction (provenance.json anchor_applicability), no fitting",
+diff --git a/data/human/sessions/intake_session.py b/data/human/sessions/intake_session.py
+index 77827ed..9266648 100644
+--- a/data/human/sessions/intake_session.py
++++ b/data/human/sessions/intake_session.py
+@@ -8,7 +8,8 @@ Steps, in order (each writes into ./<SESSION_ID>/ and refuses to overwrite its o
+               ffprobe/ffmpeg versions                                                    -> provenance.json
+   verify      obs-input-logger check_session (ffprobe 4 threads, below normal)           -> recorder-verification.json
+   profile     devices (R6), focus, UI keys, AFK gaps, raw-input gaps                       -> input-profile.json
+-  vote        the source's own HUD slot mapping from its first 60 s (reused scan, unchanged)  -> slot-mapping.json
++  vote        the source's own HUD slot mapping from its first 60 s, or in match mode the 60 s from --vote-from
++              (reused scan, unchanged)                                                      -> slot-mapping.json
+   scan        reused regime scan over the whole original at 5 fps                          -> hud-scan-samples.jsonl
+   regime      5 s regime timeline from the scan                                          -> regime-timeline.json
+   motor       motor settings and binding table with per-session sources (review R2, fit R7)  -> motor-settings.json
+@@ -20,8 +21,14 @@ Steps, in order (each writes into ./<SESSION_ID>/ and refuses to overwrite its o
+   evidence    decode each bracket, refine edges on native frames, re-propose; decode and hash the review frames
+               for every segment (both edges plus stratified interior frames)             -> segments-evidence.json
+ 
+-Code runs from the archived snapshot (agent.human_intake, agent.human_demos, perception.hud, the reused
+-scan.py), never the live worktree. Decodes are CPU, four threads, below-normal priority. The sealed denylist
++Match mode (lead 2026-09-27): a session registered idm_train is a logged live match. Its vote takes a 60 s window from
++--vote-from (a match opens in hero select), and Timed Practice is refused.
++- An edge's live guard is Spider-Man's own HUD (a read hp and his web-charge counter) instead of the range guard.
++- A death runs from hp 0 to that own HUD's return, cutting the spectated teammate.
++Everything else is the range intake's.
++
++Code runs from the archived snapshot (agent.human_intake, agent.human_demos, perception.hud, the reused scan.py), never
++the live worktree. Decodes are CPU, four threads, below-normal priority. The sealed denylist
+ is checked before the registry or any session file is read.
+ """
+ import argparse
+@@ -122,6 +129,9 @@ class Ctx:
+         need(self.sid in registry, "session not registered")
+         self.place = registry[self.sid]
+         need(self.place.split not in getattr(hd, "SEALED_SPLITS", ("test",)), "sealed sessions are never taken in")
++        # The mode comes from the registry, never a flag: an idm_train row is a logged live match (match mode).
++        self.mode = "match" if self.place.split == getattr(hd, "IDM_TRAIN_SPLIT", None) else "range"
++        self.vote_from = getattr(args, "vote_from", None)
+         self.raw = RAW / self.sid
+         self.meta = json.loads((self.raw / "metadata.json").read_text())
+         self.video = self.meta["video_path"]
+@@ -155,6 +165,12 @@ class Ctx:
+         spec.loader.exec_module(mod)
+         return mod.in_range
+ 
++    def edge_guard(self, scan, layout, mapping):
++        """(guard, record key, guard source path) for this session's mode."""
++        if self.mode == "range":
++            return self.range_guard(), "in_range", "scripts/record.py"
++        return match_guard(lambda img: scan.read_sample(img, layout, mapping)), "own_hud", SCAN_REL
++
+ 
+ def require_edge_rule(hi, snapshot_name):
+     """Review E1: the evidence step runs only a proposer that has the edge rule (human_intake.EDGE_PROOF)."""
+@@ -172,11 +188,73 @@ def require_proven_edges(segs, reads, gameplay):
+                                             "(edge rule, review E1)")
+ 
+ 
+-def edge_proof(img, scan, layout, mapping, guard):
+-    """One native frame's edge proof: the scan's HUD presence and the live range guard; both must hold."""
++def edge_proof(img, scan, layout, mapping, guard, key="in_range"):
++    """One native frame's edge proof: the scan's HUD presence and the mode's live guard (`key` names it in the
++    record: `in_range` for a range take, `own_hud` for a live match); both must hold."""
+     hud = bool(scan.read_sample(img, layout, mapping)["hud_present"])
+     live = bool(guard(img))
+-    return dict(hud_present=hud, in_range=live, proof=hud and live)
++    return {"hud_present": hud, key: live, "proof": hud and live}
++
++
++# Match mode's HUD-return settle (lead, 2026-09-27): a round or phase start opens with a splash over most of the frame
++# (pilot 052001 at 262.3-263.5 s, a team-up "PARKER POWER-UP" banner right after the round-2 transition). So after any
++# HUD absence longer than the reader-miss tolerance, gameplay resumes only this long after the HUD returns.
++HUD_RETURN_SETTLE_NS = 3_000_000_000
++HUD_HOLE_NS = 2_000_000_000    # human_intake.MAX_HUD_GAP_NS: shorter misses stay inside gameplay
++
++
++def match_hud(samples):
++    """Match mode's HUD presence and death spans from the scan samples: ([(t, present)], [dead t]).
++
++    Found on pilot 052001's frames (owner, 2026-09-27):
++    - After a death the game spectates a teammate, whose HUD reads present with an hp of its own (max 275 there) for
++      the ~7 s until respawn. So a death runs from an hp-0 sample to the first later sample that reads Spider-Man's own
++      HUD again: his web-charge counter (`webs`) and a positive hp. A team holds one Spider-Man, so a spectated teammate
++      never shows the counter.
++    - A post-match scene reads a bright health-bar strip with no hp. So present needs a read hp (reader misses shorter
++      than hi.MAX_HUD_GAP_NS stay inside gameplay, as in range mode).
++    - After a HUD absence longer than HUD_HOLE_NS, samples within HUD_RETURN_SETTLE_NS of the HUD's return read
++      absent (False): the round-start splash.
++    True/False/None are kept as read otherwise, as in range mode."""
++    hud = [(r["composition_ns"], r["hud_present"] if r["hud_present"] is not True else r.get("hp") is not None)
++           for r in samples]
++    settled, last_present, absent_since, resume = [], None, None, None
++    for t, p in hud:
++        if p is True:
++            if absent_since is not None and t - absent_since > HUD_HOLE_NS:
++                resume = t + HUD_RETURN_SETTLE_NS
++            absent_since = None
++            settled.append((t, False if resume is not None and t < resume else True))
++        else:
++            if absent_since is None:
++                absent_since = t if last_present is None else last_present
++            settled.append((t, p))
++        if p is True:
++            last_present = t
++    hud = settled
++    dead, down = [], False
++    for r in samples:
++        if r.get("hp") == 0:
++            down = True
++        elif down and r.get("webs") is not None and (r.get("hp") or 0) > 0:
++            down = False
++        if down:
++            dead.append(r["composition_ns"])
++    return hud, dead
++
++
++def match_guard(read_sample):
++    """A live match's guard (match mode, 2026-09-27): this native frame shows Spider-Man's OWN live HUD. The scan's
++    reader reads a positive hp and his web-charge counter.
++    - A team holds one Spider-Man, so a spectated teammate's HUD never has the counter.
++    - Hero select, menus, the post-match scenes and the death screen show neither.
++    The range guard cannot hold in a match: it needs the PRACTICE RANGE banner and a health bar over half full.
++    The top-centre match timer is not a match guard either: pilot 052001's Celestial Husk objective mode draws a
++    progress bar there, and the timer only in some phases."""
++    def guard(img):
++        s = read_sample(img)
++        return s.get("webs") is not None and (s.get("hp") or 0) > 0
++    return guard
+ 
+ 
+ def step_provenance(c):
+@@ -349,9 +427,14 @@ def _scan(c, extra, scratch):
+ 
+ 
+ def step_vote(c):
+-    out = _scan(c, ["--t", "60"], c.scratch / "vote")
++    # A match opens in hero select and loading, with no ability HUD to vote on: match mode takes the 60 s window from
++    # --vote-from (seconds into the video file, the owner's choice, recorded here), a range take its first 60 s.
++    need((c.mode == "match") == (c.vote_from is not None), "--vote-from is required in match mode and only there")
++    window = [c.vote_from or 0.0, (c.vote_from or 0.0) + 60]
++    out = _scan(c, (["--ss", str(c.vote_from)] if c.mode == "match" else []) + ["--t", "60"], c.scratch / "vote")
+     mapping = json.loads(re.search(r"^MAPPING (.*)$", out, re.M).group(1))
+-    doc = dict(session=c.sid, mapping=mapping, method="reused scan.py voting rule on every 24th frame of the first 60 s",
++    doc = dict(session=c.sid, mapping=mapping, mode=c.mode, window_s=window,
++               method=f"reused scan.py voting rule on every 24th frame of the 60 s from {window[0]:g} s",
+                equals_051828_and_032454={"swing": "swing", "get_over_here": "uppercut",
+                                          "uppercut": "get_over_here"} == mapping)
+     write_once(c.out / "slot-mapping.json", doc)
+@@ -492,9 +575,13 @@ def _proposal_inputs(c):
+     samples = _samples(c)
+     hud = [(r["composition_ns"], r["hud_present"]) for r in samples]      # True/False/None kept as read (review I6)
+     dead = [r["composition_ns"] for r in samples if r.get("hp") == 0]
++    if c.mode == "match":   # deaths run to respawn (a spectated teammate's HUD reads present); no hp, no HUD
++        hud, dead = match_hud(samples)
+     regime = json.loads((c.out / "regime-timeline.json").read_text())["session_regime_from_scan"]
+     kw = dict(intervals=focused, hud_samples=hud, ui_keys=hi.ui_key_presses(events), controls=hi.control_times(events),
+               gaps=gaps, session_regime=regime or "unknown", dead=dead)
++    if hasattr(hi, "move_presses"):   # the emote wheel's cut runs to the player's next move (2026-09-27)
++        kw["presses"] = hi.move_presses(events)
+     change = c.out / "settings-change.json"
+     if change.exists():   # a declared settings change at the take's start (lead decision 2026-09-25)
+         kw["settings_change"] = [tuple(json.loads(change.read_text())["cut_ns"])]
+@@ -549,6 +636,7 @@ def step_timed(c):
+     """Measure each Timed Practice round on native frames: every frame within TIMED_BRACKET_NS of the owner's coarse
+     boundaries (--span START_S END_S, logger seconds), and one frame every TIMED_INTERIOR_EVERY_NS between them;
+     hi.timed_practice_span places the cut from the banner labels (lead decision 2026-09-25)."""
++    need(c.mode == "range", "Timed Practice is a range round: never a match step")
+     need(c.spans, "--span START_S END_S is required (the owner's coarse banner measurement, logger seconds)")
+     refs = banner_refs()
+     _, ordered = _proposal_inputs(c)
+@@ -661,11 +749,11 @@ def step_evidence(c):
+     else:
+         need(not current.exists(), "segments-evidence.json already written")
+         need(not (c.out / "review-frames").exists(), "review-frames/ exists without segments-evidence.json")
+-    guard = c.range_guard()
++    guard, guard_key, guard_rel = c.edge_guard(scan, layout, mapping)
+ 
+     def proofs(frames):
+         by_ms = dict(_decode(c, [ms_of[t] for t in frames])) if frames else {}
+-        return [(t, edge_proof(by_ms[ms_of[t]], scan, layout, mapping, guard)) for t in frames]
++        return [(t, edge_proof(by_ms[ms_of[t]], scan, layout, mapping, guard, guard_key)) for t in frames]
+ 
+     # 1. native edge reads: every frame of each gameplay edge's bracket and, when the sample frame itself fails the
+     # edge proof, the frames up to EDGE_INWARD_NS inside the segment (hi.propose_segments places the edge)
+@@ -723,7 +811,7 @@ def step_evidence(c):
+             s["review_frames"].append(dict(frame_index=i, composition_ns=t, file_ms=ms_of[t],
+                                            decoded_bgr_sha256=hashlib.sha256(img.tobytes()).hexdigest(),
+                                            hud_present=bool(scan.read_sample(img, layout, mapping)["hud_present"]),
+-                                           in_range=bool(guard(img)),
++                                           **{guard_key: bool(guard(img))},
+                                            image=f"review-frames/{name}", image_sha256=sha(review_dir / name),
+                                            role="start" if i == picks[s["segment_id"]][0] else
+                                            ("end" if i == picks[s["segment_id"]][-1] else "interior")))
+@@ -743,18 +831,27 @@ def step_evidence(c):
+                parameters=dict(ui_keys=hi.UI_KEYS, settings_menu_keys=sorted(hi.SETTINGS_MENU_KEYS),
+                                ui_settle_ns=hi.UI_SETTLE_NS, afk_ns=hi.AFK_NS, max_hud_gap_ns=hi.MAX_HUD_GAP_NS,
+                                review_interior_every_ns=REVIEW_INTERIOR_EVERY_NS,
+-                               edge_rule="an edge sits only on a native frame where the scan's HUD presence and the live "
+-                                         "range guard (snapshot scripts/record.py in_range) both hold (lead, 2026-09-25)",
++                               mode=c.mode,
++                               edge_rule=("an edge sits only on a native frame where the scan's HUD presence and the live "
++                                          "range guard (snapshot scripts/record.py in_range) both hold (lead, 2026-09-25)"
++                                          if c.mode == "range" else
++                                          "an edge sits only on a native frame where the scan's HUD presence holds and the "
++                                          "scan reads Spider-Man's own live HUD: a positive hp and his web-charge counter "
++                                          "(match mode, 2026-09-27)"),
+                                edge_inward_ns=EDGE_INWARD_NS,
+                                timed_practice="cut: the range's scored Timed Practice round, measured on native banner "
+                                               "reads (timed-practice.json; lead decision 2026-09-25)",
+-                               range_guard={"path": "scripts/record.py", "sha256": sha(c.snapshot / "scripts/record.py")}),
++                               **{"range_guard" if c.mode == "range" else "match_guard":
++                                  {"path": guard_rel, "sha256": sha(c.snapshot / guard_rel)}}),
+                session_regime=kw["session_regime"], focused_intervals=[list(i) for i in kw["intervals"]],
+                capture_gaps=[list(g) for g in kw["gaps"]], flags=flags, native_edge_reads=reads, segments=segs,
+                earlier_steps=dict(snapshot=c.earlier_snapshot or c.snapshot.name,
+                                   manifest_sha256=sha(HERE / (c.earlier_snapshot or c.snapshot.name) / "manifest.json"),
+                                   steps="provenance, verify, profile, vote, scan, regime, motor"),
+-               motor={"path": "motor-settings.json", "sha256": sha(c.out / "motor-settings.json")},
++               # match mode may run the evidence before the motor step: its dated statement can arrive later, and the
++               # frame verdicts do not depend on it; assembly and the match receipt still pin motor-settings.json
++               motor=({"path": "motor-settings.json", "sha256": sha(c.out / "motor-settings.json")}
++                      if c.mode == "range" or (c.out / "motor-settings.json").exists() else None),
+                note="`proposal` is the proposer's; nothing here is a verdict. Accepted comes only from a verdict "
+                     "record with reviewer, time and inspected native frame hashes (review R5).")
+     if c.supersedes:   # every check passed and every frame is written: only now does the old evidence step aside
+@@ -787,6 +884,8 @@ def main():
+     ap.add_argument("--reason", help="settings step: the lead's decision, quoted")
+     ap.add_argument("--span", nargs=2, type=float, action="append", metavar=("START_S", "END_S"),
+                     help="timed step: the owner's coarse Timed Practice boundaries in logger seconds (repeatable)")
++    ap.add_argument("--vote-from", type=float, help="vote step, match mode only: start of the 60 s vote window, in "
++                                                    "seconds into the video file (after hero select)")
+     args = ap.parse_args()
+     below_normal()
+     globals()[f"step_{args.step}"](Ctx(args))

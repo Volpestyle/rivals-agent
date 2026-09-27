@@ -1,0 +1,1151 @@
+{
+ "session": "20260927T052001-827Z-150600-5",
+ "segments_evidence_sha256": "7bfa7d5312e0b058db6326a09d4ff300974bc8ad4f8c8ca4226ff75cf88712c5",
+ "reviewer": "admission-owner",
+ "reviewed_at": "2026-09-27T14:55:19Z",
+ "role": "owner inspection; assembly additionally requires the independent per-session review (R5)",
+ "supersedes": {
+  "file": "owner-verdicts.v1.json",
+  "sha256": "af914927829de72206f3a8d7e53d70a943a59dca14ba1ddea2235928cde761f3",
+  "reason": "the evidence was re-proposed twice for the emote-wheel cut (frame-review's seg-026 finding); v1 verdicts pin segments-evidence.v1.json"
+ },
+ "verdicts": {
+  "seg-000": {
+   "suitability": "rejected",
+   "reason": "focus_transition: cut by rule (match mode); not individually inspected (the death, spectate and post-match states were checked on native frames at 176.5, 180, 183, 505 and 513 s)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 51,
+     "composition_ns": 554276384685101,
+     "decoded_bgr_sha256": "f1ca3bb1df14a57458a2a691ef4eb3feb0c6372be2a86b00a3153f886160c4fd"
+    },
+    {
+     "frame_index": 65,
+     "composition_ns": 554276501351763,
+     "decoded_bgr_sha256": "8c263952f7dae0738ab83e7cc959abaf986aa1770bc8921af47b182d5496c694"
+    },
+    {
+     "frame_index": 80,
+     "composition_ns": 554276626351758,
+     "decoded_bgr_sha256": "a1b97623f63dfc0fc1d25922251dbc7856d5a07d43ddc1aa24a58bea78c004c1"
+    }
+   ]
+  },
+  "seg-001": {
+   "suitability": "rejected",
+   "reason": "no_range_hud: cut by rule (match mode); not individually inspected (the death, spectate and post-match states were checked on native frames at 176.5, 180, 183, 505 and 513 s)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 81,
+     "composition_ns": 554276634685091,
+     "decoded_bgr_sha256": "75b3d0c9a168905110fde5b860a9264ab97a1fceb7c793d3c4eac35945609c9f"
+    },
+    {
+     "frame_index": 203,
+     "composition_ns": 554277651351717,
+     "decoded_bgr_sha256": "4c588ee22200e4de6053742b67626fc2c15a865aef827580b7ee81a0d79da9dc"
+    },
+    {
+     "frame_index": 325,
+     "composition_ns": 554278668018343,
+     "decoded_bgr_sha256": "e72a246ffffb53b104a4c606a388b352b9a173407a0696e5a1c0d3e92b678f4b"
+    }
+   ]
+  },
+  "seg-002": {
+   "suitability": "rejected",
+   "reason": "afk: cut by rule (match mode); not individually inspected (the death, spectate and post-match states were checked on native frames at 176.5, 180, 183, 505 and 513 s)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 326,
+     "composition_ns": 554278676351676,
+     "decoded_bgr_sha256": "dc2ad48ea588ac37850887729ab38ff9c99274922c4fbf67bdab46c08d50c26b"
+    },
+    {
+     "frame_index": 1488,
+     "composition_ns": 554288359684622,
+     "decoded_bgr_sha256": "c1e5cbbc1bf38493d5eeaa936463d89e2b5d57a727c32b45ca0ebd68cdcda073"
+    },
+    {
+     "frame_index": 2651,
+     "composition_ns": 554298051350901,
+     "decoded_bgr_sha256": "c34cb84e0c48f538fc621eafa550185a852d737a6498b16368b18fe334dd6137"
+    },
+    {
+     "frame_index": 3814,
+     "composition_ns": 554307743017180,
+     "decoded_bgr_sha256": "0937d4546cdbc8fff1c150f110c76756667eac96062591c430a43a5eda4ae3d0"
+    }
+   ]
+  },
+  "seg-003": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: cut by rule (match mode); not individually inspected (the death, spectate and post-match states were checked on native frames at 176.5, 180, 183, 505 and 513 s)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": []
+  },
+  "seg-004": {
+   "suitability": "accepted",
+   "reason": "own live control in the pre-match setup room (timer 00:36 to 00:25): Spider-Man moving, own HUD (250/250, webs); between the two AFK spans",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 3815,
+     "composition_ns": 554307751350513,
+     "decoded_bgr_sha256": "02b5648f4c699f0a93b4827cb5340d35a935bcda0ab4bb827ceca184eb6b7cf1"
+    },
+    {
+     "frame_index": 4462,
+     "composition_ns": 554313143016964,
+     "decoded_bgr_sha256": "b879bc7e736055452259770ffba9accec9523f994d2019ebef2d1064b2f0a735"
+    },
+    {
+     "frame_index": 5110,
+     "composition_ns": 554318543016748,
+     "decoded_bgr_sha256": "c837fbba3fad6ffc9e70b797eb8e29a8b79d70e6e52ccde954b3df93e6671126"
+    }
+   ]
+  },
+  "seg-005": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: cut by rule (match mode); not individually inspected (the death, spectate and post-match states were checked on native frames at 176.5, 180, 183, 505 and 513 s)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": []
+  },
+  "seg-006": {
+   "suitability": "rejected",
+   "reason": "afk: cut by rule (match mode); not individually inspected (the death, spectate and post-match states were checked on native frames at 176.5, 180, 183, 505 and 513 s)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 5111,
+     "composition_ns": 554318551350081,
+     "decoded_bgr_sha256": "f5f3d440a417fe8b0203d5fcd7e552a05311174127adaf3b9c03a80b246bc507"
+    },
+    {
+     "frame_index": 6218,
+     "composition_ns": 554327776349712,
+     "decoded_bgr_sha256": "0b22575539a812cc36cb72d4749aea820be5965f5d19438ceb32b83708c1b810"
+    },
+    {
+     "frame_index": 7325,
+     "composition_ns": 554337001349343,
+     "decoded_bgr_sha256": "ad5de4b36ff60078cb6023ca07d801e8f872946dc43e8b5077c7befb55e3bacd"
+    },
+    {
+     "frame_index": 8432,
+     "composition_ns": 554346226348974,
+     "decoded_bgr_sha256": "3176a3ec397823ba66d90e4be738b6d1ac4f22fdb0255e688e6e6be38b7c63f9"
+    }
+   ]
+  },
+  "seg-007": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: cut by rule (match mode); not individually inspected (the death, spectate and post-match states were checked on native frames at 176.5, 180, 183, 505 and 513 s)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": []
+  },
+  "seg-008": {
+   "suitability": "accepted",
+   "reason": "own live play from the drop at 'Awaiting mission area unlock' to the low-hp damage vignette before the first death; own HUD on every frame; own_hud=False interior frames (98.9, 127.5, 146.5 s) are web-counter reader misses on own play; the cyan tint at 156.0 s is a teammate's buff",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 8433,
+     "composition_ns": 554346234682307,
+     "decoded_bgr_sha256": "8cf69351fb3d44b6bb670e07160308320864df4ec22d6c155093ea00e918c14d"
+    },
+    {
+     "frame_index": 9574,
+     "composition_ns": 554355743015260,
+     "decoded_bgr_sha256": "62e9d5bbcd31b1c9eeff809f997ed137f34bd2a6222b1355922c1a1f77acf09a"
+    },
+    {
+     "frame_index": 10716,
+     "composition_ns": 554365259681546,
+     "decoded_bgr_sha256": "73f616c4601a5e4206670ca49bff88a503a2074809b3375783024bdda7596b66"
+    },
+    {
+     "frame_index": 11858,
+     "composition_ns": 554374776347832,
+     "decoded_bgr_sha256": "e57fe7b053487bee44d9896681842b779e7c52ce9d7cf6e172cb741eb59f8d34"
+    },
+    {
+     "frame_index": 12999,
+     "composition_ns": 554384284680785,
+     "decoded_bgr_sha256": "2b4bc022f3870054b2cfb472f9e55a9017e73fefffe3914a93bfbcc5befe1663"
+    },
+    {
+     "frame_index": 14141,
+     "composition_ns": 554393801347071,
+     "decoded_bgr_sha256": "23bd064335f68bbe71cc9882f5d0ad022c73f9a5fd84864b856eb5fcdb838dee"
+    },
+    {
+     "frame_index": 15283,
+     "composition_ns": 554403318013357,
+     "decoded_bgr_sha256": "90ebe995495c4f451e000e6645b2896d1b008cebec38169ec7984437a57920b3"
+    },
+    {
+     "frame_index": 16425,
+     "composition_ns": 554412834679643,
+     "decoded_bgr_sha256": "dbd001dd522fa09019a77b09893ad3398077adfeb33aefa192a042dad53e57af"
+    },
+    {
+     "frame_index": 17566,
+     "composition_ns": 554422343012596,
+     "decoded_bgr_sha256": "9c2c53d4564807555560cd98998dbd9aaffa040e4557e2d2c8822699d5c916a6"
+    },
+    {
+     "frame_index": 18708,
+     "composition_ns": 554431859678882,
+     "decoded_bgr_sha256": "e0de0573d3a52b2aaa5e6e41e312d970a2d714187806778883c3900ca1a9bd05"
+    },
+    {
+     "frame_index": 19850,
+     "composition_ns": 554441376345168,
+     "decoded_bgr_sha256": "71540b86d4f81ccd149be39badcbcef239ac37e0239b7f7e17750420b9c89d51"
+    },
+    {
+     "frame_index": 20992,
+     "composition_ns": 554450893011454,
+     "decoded_bgr_sha256": "fba45c12c825bbe530ea514dfb1340e8981cb36c0a8ee9f96d09935c7739f95b"
+    }
+   ]
+  },
+  "seg-009": {
+   "suitability": "rejected",
+   "reason": "hud_unknown: cut by rule (match mode); not individually inspected (the death, spectate and post-match states were checked on native frames at 176.5, 180, 183, 505 and 513 s)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 20993,
+     "composition_ns": 554450901344787,
+     "decoded_bgr_sha256": "b558a6e57b041994c36a0fdedba6a9fde02883c368e352a7e022ed0e8ed5ecd2"
+    },
+    {
+     "frame_index": 20996,
+     "composition_ns": 554450926344786,
+     "decoded_bgr_sha256": "4d9b679523dd08a070207eb0af310c63a7f751c5c1f402aa20f6e4d8bcad20d9"
+    },
+    {
+     "frame_index": 21000,
+     "composition_ns": 554450959678118,
+     "decoded_bgr_sha256": "763921527635d86b4c1d0ea0804428af2dcdd32baf5fc0af45acf9250fedd614"
+    }
+   ]
+  },
+  "seg-010": {
+   "suitability": "rejected",
+   "reason": "dead: cut by rule (match mode); not individually inspected (the death, spectate and post-match states were checked on native frames at 176.5, 180, 183, 505 and 513 s)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 21001,
+     "composition_ns": 554450968011451,
+     "decoded_bgr_sha256": "0aeed0aa93cb0fe1c3687cb950cde771a23f4294e6be200609ec1423834b1eea"
+    },
+    {
+     "frame_index": 21033,
+     "composition_ns": 554451234678107,
+     "decoded_bgr_sha256": "a14417ae263c47f5d85a0fe19bf94780fef97aa11f5e14a40988f54303d9fe19"
+    },
+    {
+     "frame_index": 21065,
+     "composition_ns": 554451501344763,
+     "decoded_bgr_sha256": "6e1ff93f5523ffbd8969726b6d6200ea3c05ec1614283340d669303d772b78d2"
+    }
+   ]
+  },
+  "seg-011": {
+   "suitability": "rejected",
+   "reason": "ui_key: cut by rule (match mode); not individually inspected (the death, spectate and post-match states were checked on native frames at 176.5, 180, 183, 505 and 513 s)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 21066,
+     "composition_ns": 554451509678096,
+     "decoded_bgr_sha256": "fcf2ab911624eac7f9f00b1a60021a257be70bb33730db1758f38896f654ff6b"
+    },
+    {
+     "frame_index": 21194,
+     "composition_ns": 554452576344720,
+     "decoded_bgr_sha256": "350a3960090fde9b423be360bc90c9a1d8482345005b1f743943faa57109fb46"
+    },
+    {
+     "frame_index": 21322,
+     "composition_ns": 554453643011344,
+     "decoded_bgr_sha256": "0c3e6e5854f7d0896a39cfaa42a83192ebcc42a36922edb88d322fd5c9e59c2c"
+    }
+   ]
+  },
+  "seg-012": {
+   "suitability": "rejected",
+   "reason": "dead: cut by rule (match mode); not individually inspected (the death, spectate and post-match states were checked on native frames at 176.5, 180, 183, 505 and 513 s)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 21323,
+     "composition_ns": 554453651344677,
+     "decoded_bgr_sha256": "21ba20e41f6787d851209f1b549d5095560fa1b9970520658dff9159c0f3bade"
+    },
+    {
+     "frame_index": 21857,
+     "composition_ns": 554458101344499,
+     "decoded_bgr_sha256": "950e2fa0bbc92b5aa04bc00640b656cca77b150f24d5a25c3fcb3f53b8ce5cc4"
+    },
+    {
+     "frame_index": 22392,
+     "composition_ns": 554462559677654,
+     "decoded_bgr_sha256": "6800507c90ce2aea08e87bbb6d2b754aa878da902f4ea83bdc790c8ac3de904a"
+    }
+   ]
+  },
+  "seg-013": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: cut by rule (match mode); not individually inspected (the death, spectate and post-match states were checked on native frames at 176.5, 180, 183, 505 and 513 s)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": []
+  },
+  "seg-014": {
+   "suitability": "accepted",
+   "reason": "own live play from respawn to hp 2 before the second death; own HUD on every frame",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 22393,
+     "composition_ns": 554462568010987,
+     "decoded_bgr_sha256": "7b22d50fd58fae29456269d140b42da7b1305a13e74999852f2fc93fd4f84ff3"
+    },
+    {
+     "frame_index": 23312,
+     "composition_ns": 554470226344014,
+     "decoded_bgr_sha256": "99838fab5fb62be62413cc8a6ab89dd7bb0d267cd30b42862ee275a8621c8b3b"
+    },
+    {
+     "frame_index": 24232,
+     "composition_ns": 554477893010374,
+     "decoded_bgr_sha256": "041aae3743c84c9c8e495d120750d90dcacb4eb34e32cf7270bb5e1bc52a17f1"
+    },
+    {
+     "frame_index": 25152,
+     "composition_ns": 554485559676734,
+     "decoded_bgr_sha256": "b28333de7ca6b02d1ad6d91dde3a6e583c9a2d8d0b4814581a205f8c7a08087d"
+    }
+   ]
+  },
+  "seg-015": {
+   "suitability": "rejected",
+   "reason": "dead: cut by rule (match mode); not individually inspected (the death, spectate and post-match states were checked on native frames at 176.5, 180, 183, 505 and 513 s)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 25153,
+     "composition_ns": 554485568010067,
+     "decoded_bgr_sha256": "35b1a79a11161d517c50fd1b93c6cdac343c6a9de1728ab8a6afb1d119b7dc94"
+    },
+    {
+     "frame_index": 25199,
+     "composition_ns": 554485951343385,
+     "decoded_bgr_sha256": "62ae17fe21f62596d3e7843f23bb48ccf6e6001482f76c6bf87df80e2f323a55"
+    },
+    {
+     "frame_index": 25246,
+     "composition_ns": 554486343010036,
+     "decoded_bgr_sha256": "561fc5da1c309b712c775d3a492c84fbb57059b2e10d3dd8ec8e949799fd1a40"
+    }
+   ]
+  },
+  "seg-016": {
+   "suitability": "rejected",
+   "reason": "ui_key: cut by rule (match mode); not individually inspected (the death, spectate and post-match states were checked on native frames at 176.5, 180, 183, 505 and 513 s)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 25247,
+     "composition_ns": 554486351343369,
+     "decoded_bgr_sha256": "1b2d346298a5cfdd3ecefedbaec49e2a3dbd11b5010bbb8af298347e12e5e256"
+    },
+    {
+     "frame_index": 25730,
+     "composition_ns": 554490376343208,
+     "decoded_bgr_sha256": "a36f7fa458ddf8da4214d97e2a32ae632d944a2cb6b827a4867f746e8039f788"
+    },
+    {
+     "frame_index": 26213,
+     "composition_ns": 554494401343047,
+     "decoded_bgr_sha256": "9a373b60802b31f1a9a20b82048444299e9f47e93dbde04281f2e12b48e3e8e0"
+    }
+   ]
+  },
+  "seg-017": {
+   "suitability": "rejected",
+   "reason": "dead: cut by rule (match mode); not individually inspected (the death, spectate and post-match states were checked on native frames at 176.5, 180, 183, 505 and 513 s)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 26214,
+     "composition_ns": 554494409676380,
+     "decoded_bgr_sha256": "9592c77c8ef2fe298130bcd825d703b9a68ced79b349d8fe4fc791cafd608cdb"
+    },
+    {
+     "frame_index": 26273,
+     "composition_ns": 554494901343027,
+     "decoded_bgr_sha256": "f96f4597b297348fee3fe225666461d72f47f6230dd17c0c0affda72fa17369f"
+    },
+    {
+     "frame_index": 26332,
+     "composition_ns": 554495393009674,
+     "decoded_bgr_sha256": "097e10215c14d9002824a467824f00bff5472c7deee3c5764308db99db7e6122"
+    }
+   ]
+  },
+  "seg-018": {
+   "suitability": "rejected",
+   "reason": "ui_key: cut by rule (match mode); not individually inspected (the death, spectate and post-match states were checked on native frames at 176.5, 180, 183, 505 and 513 s)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 26333,
+     "composition_ns": 554495401343007,
+     "decoded_bgr_sha256": "0472020043d950f98e7f1465d77f7c5c3d9531f1e45cf6adfe53f52f9e5b5d27"
+    },
+    {
+     "frame_index": 26487,
+     "composition_ns": 554496684676289,
+     "decoded_bgr_sha256": "0878328605a273760f8eb839df730a729eea2986be2ed904b9746cea17ee04fe"
+    },
+    {
+     "frame_index": 26641,
+     "composition_ns": 554497968009571,
+     "decoded_bgr_sha256": "f74f6ab34b86d55588b8b2d657e490a65a5d717248428c7304e5a08b6dae38e2"
+    }
+   ]
+  },
+  "seg-019": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: cut by rule (match mode); not individually inspected (the death, spectate and post-match states were checked on native frames at 176.5, 180, 183, 505 and 513 s)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": []
+  },
+  "seg-020": {
+   "suitability": "accepted",
+   "reason": "own live play from respawn (overtime) to the Tab press at 247.1 s; own HUD on every frame",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 26642,
+     "composition_ns": 554497976342904,
+     "decoded_bgr_sha256": "74ba622a09bae0be05fbe847d4e1bbac03728d08c35ecfab07acbeda9ca2b861"
+    },
+    {
+     "frame_index": 27640,
+     "composition_ns": 554506293009238,
+     "decoded_bgr_sha256": "c9bdb8019375c54a1cbccd8f8d414978816b548be0c3b14b93883013428beaa2"
+    },
+    {
+     "frame_index": 28639,
+     "composition_ns": 554514618008905,
+     "decoded_bgr_sha256": "ce20cde7ea4708d714ee6acf4dff870b045626d91e9da6603a34155b6545ec9d"
+    },
+    {
+     "frame_index": 29638,
+     "composition_ns": 554522943008572,
+     "decoded_bgr_sha256": "94f7c160d4f3fb5e235d47927c797929faafbf46789eb475b815cc9f1d9ba876"
+    }
+   ]
+  },
+  "seg-021": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: cut by rule (match mode); not individually inspected (the death, spectate and post-match states were checked on native frames at 176.5, 180, 183, 505 and 513 s)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": []
+  },
+  "seg-022": {
+   "suitability": "rejected",
+   "reason": "ui_key: cut by rule (match mode); not individually inspected (the death, spectate and post-match states were checked on native frames at 176.5, 180, 183, 505 and 513 s)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 29639,
+     "composition_ns": 554522951341905,
+     "decoded_bgr_sha256": "d32a251574b9e7b7d3f1909e2aa7efb936c85aca123bc69ffe924fd187b2a7ac"
+    },
+    {
+     "frame_index": 29797,
+     "composition_ns": 554524268008519,
+     "decoded_bgr_sha256": "9ee4e4344b864f101259fdcce19d04d541e1c335157f31bda105d3de7508520d"
+    },
+    {
+     "frame_index": 29956,
+     "composition_ns": 554525593008466,
+     "decoded_bgr_sha256": "d4ca8730dae21cf062a542fcbb7254af3a200404aaab474ef8ceae9fb07821de"
+    }
+   ]
+  },
+  "seg-023": {
+   "suitability": "rejected",
+   "reason": "no_range_hud: cut by rule (match mode); not individually inspected (the death, spectate and post-match states were checked on native frames at 176.5, 180, 183, 505 and 513 s)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 29957,
+     "composition_ns": 554525601341799,
+     "decoded_bgr_sha256": "d64bc1da93c3f58da3031bbbec0d2a578721ce34bdaa2dcf4c1d40c6a15f6d6c"
+    },
+    {
+     "frame_index": 30073,
+     "composition_ns": 554526568008427,
+     "decoded_bgr_sha256": "13877de629c2e8c450053c5eef5ae400d11f7013ef268628952e9155df0a49df"
+    },
+    {
+     "frame_index": 30190,
+     "composition_ns": 554527543008388,
+     "decoded_bgr_sha256": "4f95683a179ba9681f833551c0b6a065ef96cd652b213c4752d89c6e05cb4d1b"
+    }
+   ]
+  },
+  "seg-024": {
+   "suitability": "rejected",
+   "reason": "ui_key: cut by rule (match mode); not individually inspected (the death, spectate and post-match states were checked on native frames at 176.5, 180, 183, 505 and 513 s)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 30191,
+     "composition_ns": 554527551341721,
+     "decoded_bgr_sha256": "20ac457bcf61558cae4e2dc99354ee32620c51bc516d0f93dfceb185e8e2f577"
+    },
+    {
+     "frame_index": 30634,
+     "composition_ns": 554531243008240,
+     "decoded_bgr_sha256": "e80aec40e83f1a35068ab8cc3f60183d7eacae271b6d6bf1a75374e1798974ca"
+    },
+    {
+     "frame_index": 31078,
+     "composition_ns": 554534943008092,
+     "decoded_bgr_sha256": "01bdec957dfdbfe8f96ae72e924458bdf93711fabaf1253a619fef028f0bd79e"
+    }
+   ]
+  },
+  "seg-025": {
+   "suitability": "rejected",
+   "reason": "no_range_hud: cut by rule (match mode); not individually inspected (the death, spectate and post-match states were checked on native frames at 176.5, 180, 183, 505 and 513 s)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 31079,
+     "composition_ns": 554534951341425,
+     "decoded_bgr_sha256": "caf9c0ef860e15b802876ab7a8158b02b67de0cb09fb4546f65492f5a185eb19"
+    },
+    {
+     "frame_index": 31273,
+     "composition_ns": 554536568008027,
+     "decoded_bgr_sha256": "85b5887bc87206c09dbdab4fe8fd1bc39036d7d8d8fe9ca982c6d7d9c5b2e144"
+    },
+    {
+     "frame_index": 31467,
+     "composition_ns": 554538184674629,
+     "decoded_bgr_sha256": "73fc177c32e798be444ad319f5a6c3346283e0571dfa70281047c15048bdd939"
+    }
+   ]
+  },
+  "seg-026": {
+   "suitability": "rejected",
+   "reason": "opens under the round-2 PARKER POWER-UP team-up splash (262.3-263.5 s; no input 260-267.8 s, frame-review): an overlay over most of the frame at the edge, and no rule cuts round-start splashes yet; rejected whole (19 s) rather than accepted with an overlaid edge",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 31468,
+     "composition_ns": 554538193007962,
+     "decoded_bgr_sha256": "11b0dac26552d03ccf12b116be01e71c1c7fd85c6e64fecded4b80fcf5d89189"
+    },
+    {
+     "frame_index": 32613,
+     "composition_ns": 554547734674247,
+     "decoded_bgr_sha256": "004d6400738e689b22601b41bc3eca3be366b3fe835b57ad490786719dbd9083"
+    },
+    {
+     "frame_index": 33758,
+     "composition_ns": 554557276340532,
+     "decoded_bgr_sha256": "7c07b1335184168f9d0dd94052fef49910afdcadff964f2221efbd3380a64ebb"
+    }
+   ]
+  },
+  "seg-027": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: cut by rule (match mode); not individually inspected (the death, spectate and post-match states were checked on native frames at 176.5, 180, 183, 505 and 513 s)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": []
+  },
+  "seg-028": {
+   "suitability": "rejected",
+   "reason": "ui_key: cut by rule (match mode); not individually inspected (the death, spectate and post-match states were checked on native frames at 176.5, 180, 183, 505 and 513 s); the emote wheel and its sit (T 281.414-282.751 s, D 305.124 s), inspected",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 33759,
+     "composition_ns": 554557284673865,
+     "decoded_bgr_sha256": "8c054fdb7d54db631b1f6e4c563cc090cf456669b616f84ff21c04676775e8f9"
+    },
+    {
+     "frame_index": 34787,
+     "composition_ns": 554565851340189,
+     "decoded_bgr_sha256": "76397f608c7281cbbedb5d458fc1bd85bd1a3bcf98917c518650b8834804d1ff"
+    },
+    {
+     "frame_index": 35815,
+     "composition_ns": 554574418006513,
+     "decoded_bgr_sha256": "ec8617dd525dc1a34e62ea140bc1b00d456f0950c75aae344c39ac1e317cf228"
+    },
+    {
+     "frame_index": 36843,
+     "composition_ns": 554582984672837,
+     "decoded_bgr_sha256": "72a81a1c13b628ab867279a26f1c445aff6372e757ee48aebefba6098b4de5a5"
+    }
+   ]
+  },
+  "seg-029": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: cut by rule (match mode); not individually inspected (the death, spectate and post-match states were checked on native frames at 176.5, 180, 183, 505 and 513 s)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": []
+  },
+  "seg-030": {
+   "suitability": "accepted",
+   "reason": "own live play from the first move after the emote (D at 305.124 s, plus the settle) through round 2 to the low-hp frame before the third death; own HUD on every frame; own_hud=False at 346.6, 356.4, 376.2, 405.8, 415.6 s are web-counter reader misses on own play",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 36844,
+     "composition_ns": 554582993006170,
+     "decoded_bgr_sha256": "056481c0f7b0eb3a83cf366f22d0a5c9a922abb039b9b2bb73cd030bccb4f5ee"
+    },
+    {
+     "frame_index": 38027,
+     "composition_ns": 554592851339109,
+     "decoded_bgr_sha256": "01efaf067bd6bf7e97a936897ca33b95904f6898619f534f8fec492996fc8629"
+    },
+    {
+     "frame_index": 39211,
+     "composition_ns": 554602718005381,
+     "decoded_bgr_sha256": "28b4298a6f3a0123299361a23454fda4ee3837b2588fe21df3012d5402e51585"
+    },
+    {
+     "frame_index": 40395,
+     "composition_ns": 554612584671653,
+     "decoded_bgr_sha256": "5637e3e2cc41a80a873ed142cf141b338a0c86b6a12a7076c4b72821a9293765"
+    },
+    {
+     "frame_index": 41578,
+     "composition_ns": 554622443004592,
+     "decoded_bgr_sha256": "50b76a4110c492baba599d4f7b10a8401306850c61cb3651661736245f893250"
+    },
+    {
+     "frame_index": 42762,
+     "composition_ns": 554632309670864,
+     "decoded_bgr_sha256": "92322ec0f12a5982ce7993580ad12470879ecd01b1f46184de1405b1c0518c85"
+    },
+    {
+     "frame_index": 43946,
+     "composition_ns": 554642176337136,
+     "decoded_bgr_sha256": "e8e883ea58d7564d2585b419e886c0f86191c805a4ba00a8757db037adcc6ccb"
+    },
+    {
+     "frame_index": 45129,
+     "composition_ns": 554652034670075,
+     "decoded_bgr_sha256": "071bda4aa50cab6148437bc4e4b1f2c5a6513fa606eca3c6ea7a3ec5360ddace"
+    },
+    {
+     "frame_index": 46313,
+     "composition_ns": 554661901336347,
+     "decoded_bgr_sha256": "997f63c89288f4a35e372fcf260afa5e359158b957f233fe7e912c4a9dff0596"
+    },
+    {
+     "frame_index": 47497,
+     "composition_ns": 554671768002619,
+     "decoded_bgr_sha256": "71055b24c7a0260e14f2b9303fe3d81d31a2a5bc1c9ff0b5d5ef529701738345"
+    },
+    {
+     "frame_index": 48680,
+     "composition_ns": 554681626335558,
+     "decoded_bgr_sha256": "5df2836bef1978ec6020d65bfc0f45965b9d53bc7abc96c1e0fde74bb0d31e00"
+    },
+    {
+     "frame_index": 49864,
+     "composition_ns": 554691493001830,
+     "decoded_bgr_sha256": "40df8f88c94c7d7f1ef7cec8ad3f86a682e79c90db00351ba73382fd64d632c5"
+    },
+    {
+     "frame_index": 51048,
+     "composition_ns": 554701359668102,
+     "decoded_bgr_sha256": "c631b8f58beecadf45b46944be815d1d10ea1e3e05bbca85ecd87678d02a2d54"
+    }
+   ]
+  },
+  "seg-031": {
+   "suitability": "rejected",
+   "reason": "dead: cut by rule (match mode); not individually inspected (the death, spectate and post-match states were checked on native frames at 176.5, 180, 183, 505 and 513 s)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 51049,
+     "composition_ns": 554701368001435,
+     "decoded_bgr_sha256": "dec800dc39f543918f5f089c27ae6591ed841ccc599e71456059c78b81af8f49"
+    },
+    {
+     "frame_index": 51090,
+     "composition_ns": 554701709668088,
+     "decoded_bgr_sha256": "969402ff057dbf09b4499b21b13c5cbddc4b45a537fc755728f69d88dffb28f7"
+    },
+    {
+     "frame_index": 51131,
+     "composition_ns": 554702051334741,
+     "decoded_bgr_sha256": "3f7447186b92d60592b7b48b7cfaa8031ebccb044c48fda0cd2e7e92e0fd8b8e"
+    }
+   ]
+  },
+  "seg-032": {
+   "suitability": "rejected",
+   "reason": "ui_key: cut by rule (match mode); not individually inspected (the death, spectate and post-match states were checked on native frames at 176.5, 180, 183, 505 and 513 s)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 51132,
+     "composition_ns": 554702059668074,
+     "decoded_bgr_sha256": "3ec988f27f3e99114a409b70b038f01e83a0728cccde101a89f8ea81ba5a8ec9"
+    },
+    {
+     "frame_index": 51395,
+     "composition_ns": 554704251334653,
+     "decoded_bgr_sha256": "60feb62e16115469f2801c2aa8476f8e722132b413574d3b26ca9b7d76afbf50"
+    },
+    {
+     "frame_index": 51658,
+     "composition_ns": 554706443001232,
+     "decoded_bgr_sha256": "a717e6514de946bc4b557c0ef6790170cd9d93441ac2aba85996e0c834b70740"
+    }
+   ]
+  },
+  "seg-033": {
+   "suitability": "rejected",
+   "reason": "dead: cut by rule (match mode); not individually inspected (the death, spectate and post-match states were checked on native frames at 176.5, 180, 183, 505 and 513 s)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 51659,
+     "composition_ns": 554706451334565,
+     "decoded_bgr_sha256": "a25adaf8196b32434f48f0e1ec640d7ecee7bd010faa1fb6efd9cf668385b342"
+    },
+    {
+     "frame_index": 51896,
+     "composition_ns": 554708426334486,
+     "decoded_bgr_sha256": "610e91d7181a0fa5a2aee4deb192247461eeda1ec040140761fb12a40e804f8b"
+    },
+    {
+     "frame_index": 52133,
+     "composition_ns": 554710401334407,
+     "decoded_bgr_sha256": "89be9f532d72ec765f0d9885f2ef66de3ab382d184c74a0030e6c30708e2780e"
+    }
+   ]
+  },
+  "seg-034": {
+   "suitability": "rejected",
+   "reason": "ui_key: cut by rule (match mode); not individually inspected (the death, spectate and post-match states were checked on native frames at 176.5, 180, 183, 505 and 513 s)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 52134,
+     "composition_ns": 554710409667740,
+     "decoded_bgr_sha256": "3f3b06fa2f2e3b5d2b13189e99754bc69dbb0bd6decf67dad5ec5fa37180a156"
+    },
+    {
+     "frame_index": 52322,
+     "composition_ns": 554711976334344,
+     "decoded_bgr_sha256": "034a631b22aedfc99b67d68401b136e126d377f8e5cd277a3abb213fadbf0005"
+    },
+    {
+     "frame_index": 52510,
+     "composition_ns": 554713543000948,
+     "decoded_bgr_sha256": "ca1f60dbd40f59c47faacce60dc3d0ccd0246e2304a954a1d2c5a1ccd8066ad7"
+    }
+   ]
+  },
+  "seg-035": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: cut by rule (match mode); not individually inspected (the death, spectate and post-match states were checked on native frames at 176.5, 180, 183, 505 and 513 s)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": []
+  },
+  "seg-036": {
+   "suitability": "accepted",
+   "reason": "own live play from respawn to the match's last frame before the end screen, through his ultimate (480/490 bonus health at 501.0 s); own HUD on every frame; own_hud=False at 455.8 s is a reader miss",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 52511,
+     "composition_ns": 554713551334281,
+     "decoded_bgr_sha256": "9adab581bf6175aa1fdf0cedb07410e05b53f3fdbc7e55438d38d1d49074f023"
+    },
+    {
+     "frame_index": 53596,
+     "composition_ns": 554722593000586,
+     "decoded_bgr_sha256": "be9cfb9eb66d08d97327e45e85579a50e900e98433f9817cb2f635d25cb3d9dd"
+    },
+    {
+     "frame_index": 54681,
+     "composition_ns": 554731634666891,
+     "decoded_bgr_sha256": "a1886bf5b1e0a984ba9da66fb15894b9bad28c8fc7ca1eca0a871444e199a8ec"
+    },
+    {
+     "frame_index": 55767,
+     "composition_ns": 554740684666529,
+     "decoded_bgr_sha256": "01553fd6f4273a74dd12542b2ccd470ebbbb43dc6d8f71cfd0b6888b50fe48ad"
+    },
+    {
+     "frame_index": 56852,
+     "composition_ns": 554749726332834,
+     "decoded_bgr_sha256": "92683d98b4a92d82dbde0c37b5c094a082f9cc6e76774668bae98472e9fde40b"
+    },
+    {
+     "frame_index": 57938,
+     "composition_ns": 554758776332472,
+     "decoded_bgr_sha256": "cccf0c2d1f4bc1090c8f7be116eca744cb5b2bc90bdff23f027deaf600ba0db7"
+    },
+    {
+     "frame_index": 59023,
+     "composition_ns": 554767817998777,
+     "decoded_bgr_sha256": "502f7abb4981cbd00e42dc507d6947b959b9007f6d33039512245940ad279503"
+    },
+    {
+     "frame_index": 60109,
+     "composition_ns": 554776867998415,
+     "decoded_bgr_sha256": "f93f21abce7d3b714d3269cec64a4e5795f095c93730b5e32b28531a66dd5479"
+    }
+   ]
+  },
+  "seg-037": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: cut by rule (match mode); not individually inspected (the death, spectate and post-match states were checked on native frames at 176.5, 180, 183, 505 and 513 s)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": []
+  },
+  "seg-038": {
+   "suitability": "rejected",
+   "reason": "ui_key: cut by rule (match mode); not individually inspected (the death, spectate and post-match states were checked on native frames at 176.5, 180, 183, 505 and 513 s)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 60110,
+     "composition_ns": 554776876331748,
+     "decoded_bgr_sha256": "082087c65c5f76a6b45c99b9802010d5acbbeaf2864c6866de2c7142d71e00a2"
+    },
+    {
+     "frame_index": 60390,
+     "composition_ns": 554779209664988,
+     "decoded_bgr_sha256": "80187e9ba5c06369bfdd41101c1d4e939f37143dd5c69e7d2d96fa9b2a034199"
+    },
+    {
+     "frame_index": 60670,
+     "composition_ns": 554781542998228,
+     "decoded_bgr_sha256": "faa2cc2977a1e539f61f79047c2f15caa8a0f04eea604a8dd7398fb0e06a2d19"
+    }
+   ]
+  },
+  "seg-039": {
+   "suitability": "rejected",
+   "reason": "no_range_hud: cut by rule (match mode); not individually inspected (the death, spectate and post-match states were checked on native frames at 176.5, 180, 183, 505 and 513 s)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 60671,
+     "composition_ns": 554781551331561,
+     "decoded_bgr_sha256": "40bf4ffd87455b9b641ed3feebe41c1d89df4e48a0d88bad32e798333dfda395"
+    },
+    {
+     "frame_index": 60716,
+     "composition_ns": 554781926331546,
+     "decoded_bgr_sha256": "b7971846d07262e3e6e856185db4f671e66efad759c00026149663163e9c4000"
+    },
+    {
+     "frame_index": 60761,
+     "composition_ns": 554782301331531,
+     "decoded_bgr_sha256": "ff2a401be6948f330f4bdf6ef37d94c3251375d1050b844af58f3d1db171553e"
+    }
+   ]
+  },
+  "seg-040": {
+   "suitability": "rejected",
+   "reason": "ui_key: cut by rule (match mode); not individually inspected (the death, spectate and post-match states were checked on native frames at 176.5, 180, 183, 505 and 513 s)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 60762,
+     "composition_ns": 554782309664864,
+     "decoded_bgr_sha256": "c22ad1fff08b426ba1862ca5212220e683338e82b5bf941bc13c53af28c14b94"
+    },
+    {
+     "frame_index": 60768,
+     "composition_ns": 554782359664862,
+     "decoded_bgr_sha256": "76b6c896f503a0593e2e6e2a6574b413d0d48bcebe9cd72df370d8e6e06cee85"
+    },
+    {
+     "frame_index": 60775,
+     "composition_ns": 554782417998193,
+     "decoded_bgr_sha256": "b76a6fb9b5eda839e302971397cbd0ce4e903154e254bf3f27b5f23d28e5574f"
+    }
+   ]
+  },
+  "seg-041": {
+   "suitability": "rejected",
+   "reason": "focus_transition: cut by rule (match mode); not individually inspected (the death, spectate and post-match states were checked on native frames at 176.5, 180, 183, 505 and 513 s)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 60867,
+     "composition_ns": 554783184664829,
+     "decoded_bgr_sha256": "6281ee1a6d7a619f2fd099959e9b31026c87a922c5ac4a528ec5f06e1dc2cd15"
+    },
+    {
+     "frame_index": 60881,
+     "composition_ns": 554783301331491,
+     "decoded_bgr_sha256": "6f56378406175ff8c4df732ab6438eb8743884498b6b664f296cd40910d50f51"
+    },
+    {
+     "frame_index": 60896,
+     "composition_ns": 554783426331486,
+     "decoded_bgr_sha256": "f9a3d52ceee3ca2aa33645313c6cb4a136d6e273196c4e3642f10d7d80228e88"
+    }
+   ]
+  },
+  "seg-042": {
+   "suitability": "rejected",
+   "reason": "no_range_hud: cut by rule (match mode); not individually inspected (the death, spectate and post-match states were checked on native frames at 176.5, 180, 183, 505 and 513 s)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 60897,
+     "composition_ns": 554783434664819,
+     "decoded_bgr_sha256": "1f7530c8a3591d888eeaecee2d27cc201d516ab4cb886c0629d530388a6325b1"
+    },
+    {
+     "frame_index": 61767,
+     "composition_ns": 554790684664529,
+     "decoded_bgr_sha256": "2234b104944e76e845f5ea813b3e172973213ce8029fef4cac45e8551c4e9d22"
+    },
+    {
+     "frame_index": 62638,
+     "composition_ns": 554797942997572,
+     "decoded_bgr_sha256": "10dfe0f85133c900fddc651973c102a1fd34282826c28fbb4df0d0024383629d"
+    }
+   ]
+  },
+  "seg-043": {
+   "suitability": "rejected",
+   "reason": "ui_key: cut by rule (match mode); not individually inspected (the death, spectate and post-match states were checked on native frames at 176.5, 180, 183, 505 and 513 s)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 62639,
+     "composition_ns": 554797951330905,
+     "decoded_bgr_sha256": "0059a5af089840517293e01e3ea943b1836741be4fe281d3087e2a16434c159d"
+    },
+    {
+     "frame_index": 62925,
+     "composition_ns": 554800334664143,
+     "decoded_bgr_sha256": "c01e7b05e0acaf7ec410682e945708aca2a8cddd1976c13ad887a065acae0611"
+    },
+    {
+     "frame_index": 63211,
+     "composition_ns": 554802717997381,
+     "decoded_bgr_sha256": "35a9a39e79a1ea66d7e2ff1e5c85509c909fa13add16ca1785332ad0d173825b"
+    }
+   ]
+  },
+  "seg-044": {
+   "suitability": "rejected",
+   "reason": "no_range_hud: cut by rule (match mode); not individually inspected (the death, spectate and post-match states were checked on native frames at 176.5, 180, 183, 505 and 513 s)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 63212,
+     "composition_ns": 554802726330714,
+     "decoded_bgr_sha256": "60382312926408144b10746e29abe252e8d7725b9372d6ad6a492cf8f2eaa247"
+    },
+    {
+     "frame_index": 63261,
+     "composition_ns": 554803134664031,
+     "decoded_bgr_sha256": "33b0bda613fcb9d4c67dbc8e35c1e0386672aa92eb318942542d71b2934f5eb3"
+    },
+    {
+     "frame_index": 63311,
+     "composition_ns": 554803551330681,
+     "decoded_bgr_sha256": "28fbc52fc69b62ec4979559c3d17ee46bb93b550d7f15a02961459d19ead2d93"
+    }
+   ]
+  },
+  "seg-045": {
+   "suitability": "rejected",
+   "reason": "ui_key: cut by rule (match mode); not individually inspected (the death, spectate and post-match states were checked on native frames at 176.5, 180, 183, 505 and 513 s)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 63312,
+     "composition_ns": 554803559664014,
+     "decoded_bgr_sha256": "119cab4978445d173b8d812974b0c9d241f8b7feb3db5d2d6a5b967ecb94fbe1"
+    },
+    {
+     "frame_index": 63435,
+     "composition_ns": 554804584663973,
+     "decoded_bgr_sha256": "0704149fb6d2c1bfc9ca2db264f8451049243aaa31a7d482aa1c8855e09e2d0a"
+    },
+    {
+     "frame_index": 63558,
+     "composition_ns": 554805609663932,
+     "decoded_bgr_sha256": "8583466e15166ae870b817b7c2ad0aa19c24fbb1f55c3c97a1b64991b90078f7"
+    }
+   ]
+  },
+  "seg-046": {
+   "suitability": "rejected",
+   "reason": "no_range_hud: cut by rule (match mode); not individually inspected (the death, spectate and post-match states were checked on native frames at 176.5, 180, 183, 505 and 513 s)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 63559,
+     "composition_ns": 554805617997265,
+     "decoded_bgr_sha256": "47d0b2724938f4d2b82773dcc7b88cfd20005979a63367048ad96c67d2bf026e"
+    },
+    {
+     "frame_index": 63593,
+     "composition_ns": 554805901330587,
+     "decoded_bgr_sha256": "7ed2f7b0e1142702115eb803aa3f84f6dc51fafe8bf319eadef204c8e93e0c26"
+    },
+    {
+     "frame_index": 63627,
+     "composition_ns": 554806184663909,
+     "decoded_bgr_sha256": "e21e8e0419106b17e56b3a47a87113eecf1b5356b2c19a122a5eef05d4015fbb"
+    }
+   ]
+  },
+  "seg-047": {
+   "suitability": "rejected",
+   "reason": "ui_key: cut by rule (match mode); not individually inspected (the death, spectate and post-match states were checked on native frames at 176.5, 180, 183, 505 and 513 s)",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
+   "frames": [
+    {
+     "frame_index": 63628,
+     "composition_ns": 554806192997242,
+     "decoded_bgr_sha256": "b229fb3e2ee22278f4959f4d8f0700d1b05d81c00ef3f78d6f0d07e901d89ed1"
+    },
+    {
+     "frame_index": 63636,
+     "composition_ns": 554806259663906,
+     "decoded_bgr_sha256": "3ac095d9c9c8be6ec3ffc834b59bcefee72675e20651f7a2cfa501195ef502e9"
+    },
+    {
+     "frame_index": 63644,
+     "composition_ns": 554806326330570,
+     "decoded_bgr_sha256": "863b4f522ca7f42da974aa6c56542369dab01cf113cd0d0c5057a120959285ac"
+    }
+   ]
+  }
+ }
+}
