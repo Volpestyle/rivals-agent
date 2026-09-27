@@ -1,4 +1,4 @@
-param([Parameter(Mandatory=$true)][string]$Step,[Parameter(Mandatory=$true)][string]$Session,[double]$VoteFrom=60,[ValidateSet('initial','ping-a1')][string]$Revision='initial')
+param([Parameter(Mandatory=$true)][string]$Step,[Parameter(Mandatory=$true)][string]$Session,[double]$VoteFrom=60,[ValidateSet('initial','ping-a1')][string]$Revision='initial',[ValidateSet('initial','retry1')][string]$Attempt='initial')
 $ErrorActionPreference='Stop'
 $repo='C:/Users/volpe/repos/rivals-agent'
 $allowed=@('20260927T051206-888Z-150600-4','20260927T052001-827Z-150600-5','20260927T053118-260Z-150600-6','20260927T053838-153Z-150600-7','20260927T055006-068Z-150600-8','20260927T060021-195Z-150600-10','20260927T061107-953Z-150600-11','20260927T061900-143Z-150600-12')
@@ -7,6 +7,10 @@ if ($Session -eq '20260927T052001-827Z-150600-5' -and ($Revision -ne 'ping-a1' -
 $python='C:/Users/volpe/.uv-envs/admission-codex/Scripts/python.exe'
 $runRoot=Join-Path $repo "data/admission-codex/runs/$Session"
 if ($Revision -eq 'ping-a1') { $runRoot=Join-Path $runRoot 'ping-a1' }
+if ($Attempt -eq 'retry1') {
+  if ($Revision -ne 'ping-a1' -or $Step -notin @('assemble','receipt')) { throw 'Retry1 is restricted to ping assembly/receipt' }
+  $runRoot=Join-Path $runRoot 'retry1'
+}
 New-Item -ItemType Directory -Path $runRoot -Force | Out-Null
 $out=Join-Path $runRoot "$Step.stdout.log"
 $err=Join-Path $runRoot "$Step.stderr.log"
