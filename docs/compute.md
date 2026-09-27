@@ -114,6 +114,9 @@ so give cloud boxes 8 CPUs or more.
   - **Small spends:** a run under $5 that uses an already-reviewed spend guard, changing only its cap or name
     configuration, launches without waiting for review.
   - A change to a pre-registration still needs a pre-result `-aN` amendment before its result is read.
+- **Shake down a new launcher first** (steering lead, 2026-09-27, after round 3 spent ~18 h failing one launch piece at a
+  time). A new or changed Modal launcher runs one cheap explore job at the real concurrent app count before a confirm
+  run depends on it. Its hold and timeout values come from measured p95 plus a margin, not from estimates.
 
 ## Seeing what's running
 
