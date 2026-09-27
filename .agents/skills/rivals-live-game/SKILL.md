@@ -15,7 +15,10 @@ boundary; it binds everything here. One agent drives the desktop at a time.
 
 ## What the game accepts
 
-- Virtual Xbox 360 pad through ViGEmBus + `vgamepad`: accepted everywhere.
+- Virtual Xbox 360 pad through ViGEmBus + `vgamepad`: accepted everywhere, **with Steam Input disabled for Marvel Rivals**
+  (Steam → Properties → Controller → "Disable Steam Input"). With Steam Input forced on, the game shows the pad's prompts
+  but ignores all of its gameplay input: no walk, attack or camera (2026-09-26, VUH-1384). If prompts switch but nothing
+  moves, check this first. James turns it back on only for his own DualSense play.
 - Injected keyboard (`SendKeys`): accepted in menus. `h` did not open the hero picker.
 - Injected mouse clicks: ignored by the game. That path is closed; do not work around it.
 - Screen capture works with the anti-cheat running: dxcam ~216 fps, GDI ~23 fps.

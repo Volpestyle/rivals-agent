@@ -1,8 +1,7 @@
 # Waiting on James
 
-- Next PC session (VUH-1384), before any agent run on the alt:
-  - screenshots of Controller → Combat → Spider-Man → Stick **Advanced** (curve, deadzones, aim assist) and of
-    Keyboard → Combat → Spider-Man hero toggles (Hold to Wall Crawl, Hold to Swing, Hold to Run on Walls);
-  - be present for the pad camera recalibration at 247/124 and the touch test of every action.
+- Next PC session, before any agent run on the alt (VUH-1384): about 20 min for camera focal and full yaw/pitch maps,
+  plus wall crawl/run from a flat wall spot. Steam Input must be **disabled** for Marvel Rivals while the agent drives
+  the pad. Keep OBS recording, and tell the lead before opening any menu.
 - Optional, any time: one replay of a match nobody has used yet (~5 min); it decides the Gate 2 replay half (VUH-1353).
-- Round 3 design (VUH-1346): read and approve once its review is done. The lead brings it to you.
+- Approve the scoped agent AWS credential plan when the lead brings it (Phase 1 draft, then creation).
