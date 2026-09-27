@@ -1,0 +1,167 @@
+{
+  "tag": "CONFIRM",
+  "decision": "CONFIRMED",
+  "press_primary_pass": true,
+  "camera_primary_pass": true,
+  "primary_condition": "train_chosen/median",
+  "zero_motion_mae": 1.2246451263967797,
+  "incumbent_h1_f1_context": 0.10174581457659797,
+  "per_seed": {
+    "candidate": [
+      {
+        "seed": 1,
+        "press_f1": 0.28898790096328936,
+        "camera_mae": 1.1843444859504575,
+        "press_ratio": 0.9442636289666395,
+        "chance_f1": 0.027337549160868224,
+        "fixed_f1": 0.3295186476621316,
+        "fixed_press_ratio": 1.3319772172497966,
+        "fixed_chance_f1": 0.032026234609212216
+      },
+      {
+        "seed": 2,
+        "press_f1": 0.3142554175747801,
+        "camera_mae": 1.187238049454289,
+        "press_ratio": 0.9259560618388935,
+        "chance_f1": 0.027392968223663612,
+        "fixed_f1": 0.3565610836300874,
+        "fixed_press_ratio": 1.3189585028478439,
+        "fixed_chance_f1": 0.03209114186587884
+      },
+      {
+        "seed": 3,
+        "press_f1": 0.3044493285645635,
+        "camera_mae": 1.1776905035320477,
+        "press_ratio": 0.9263628966639544,
+        "chance_f1": 0.027929324034230138,
+        "fixed_f1": 0.3585474972919691,
+        "fixed_press_ratio": 1.305126118795769,
+        "fixed_chance_f1": 0.032433311015980786
+      }
+    ],
+    "control": [
+      {
+        "seed": 1,
+        "press_f1": 0.002876055422929166,
+        "camera_mae": 1.2836901749144545,
+        "press_ratio": 0.0024410089503661514,
+        "chance_f1": 0.00019555174440957413,
+        "fixed_f1": 0.05932485201712262,
+        "fixed_press_ratio": 0.0886899918633035,
+        "fixed_chance_f1": 0.007444093646841368
+      },
+      {
+        "seed": 2,
+        "press_f1": 0.002587695789410994,
+        "camera_mae": 1.302038156768167,
+        "press_ratio": 0.0028478437754271765,
+        "chance_f1": 0.00024258484828181765,
+        "fixed_f1": 0.05386978355892894,
+        "fixed_press_ratio": 0.08299430431244914,
+        "fixed_chance_f1": 0.006690149801837005
+      },
+      {
+        "seed": 3,
+        "press_f1": 0.006717044500419815,
+        "camera_mae": 1.396053667038569,
+        "press_ratio": 0.007323026851098454,
+        "chance_f1": 0.0005384789321762659,
+        "fixed_f1": 0.06726018991924408,
+        "fixed_press_ratio": 0.09275834011391375,
+        "fixed_chance_f1": 0.007827664223708754
+      }
+    ]
+  },
+  "means": {
+    "candidate": {
+      "press_f1": 0.30256421570087766,
+      "camera_mae": 1.1830910129789314,
+      "press_ratio": 0.9321941958231624,
+      "chance_f1": 0.027553280472920657,
+      "fixed_f1": 0.3482090761947294,
+      "fixed_press_ratio": 1.3186872796311364,
+      "fixed_chance_f1": 0.03218356249702395
+    },
+    "control": {
+      "press_f1": 0.004060265237586658,
+      "camera_mae": 1.3272606662403967,
+      "press_ratio": 0.004203959858963927,
+      "chance_f1": 0.0003255385082892192,
+      "fixed_f1": 0.06015160849843188,
+      "fixed_press_ratio": 0.0881475454298888,
+      "fixed_chance_f1": 0.00732063589079571
+    }
+  },
+  "human_live_press_events_per_frame": 0.10009773578758756,
+  "human_edge_press_events_per_frame": 0.05851930281804854,
+  "scope": "offline frozen-dev confirmation only; no live deployment clearance",
+  "source_manifest": {
+    "a3_sha256": "fca0af0dbe486e055c945923e715c105cced467072014641d751fc85f6ec0d3d",
+    "historical_judge_sha256": "6f2187dd974befedbaf656470d7b153f3a5ca7be0a62a3954a67670ab726aa32",
+    "judge_correction_commit": "c13820c",
+    "judge_sha256": "66830ce6eb302f4b9052b99f0f6ee31836121dd524e7eb1ddabd5a32915ef6c8",
+    "dependency_sha256": {
+      "policy.range_bc.metrics": "ff8ec1788700392a2490d39d19ecc623cea85094adbd23873aefb30420e2a2e5",
+      "policy.range_bc.vocab": "9f57c02a977921cc0f8fef003a19eb647136ff51af34a7913f76fb22ec811f3e"
+    },
+    "preregistration": "/Users/james/dev/range-bc-data/explore/nitrogen-nohistory-confirm-20260927/preregistration-a1.md",
+    "prereg_sha256": "7950bd9fce5cd57cde3bc218275999afec1cbfdb40f5ae47c142c5d03472f8a1",
+    "a2_sha256": "6f7eedfb6e0f1cf4407a2fde9b9dc83c895b780350a549d7dd37ff35dfd33c1d",
+    "recovery_inputs_sha256": "14347004b5d12ed44a89d69961fcb2df7be8f1a34444460f145fee3c5797cf21",
+    "features_stage_sha256": "d051df52812522d8973fec3b1e9a2dac5f1a37371cfdfd9798d553b53f66b23e",
+    "source_commit": "88b231d",
+    "scope": "Mac evaluation-only recovery; original CUDA fit failures retained",
+    "environment_sha256": "5eea8725654fc0f8d4d0d800911bb468177920c857ac410842cf6e6d50584be6",
+    "collector_sha256": "0244ab43656d8eb9392231f99b98938ce0cea0a6f6458ed16435071e5aae962b",
+    "runs": [
+      {
+        "arm": "candidate",
+        "seed": 1,
+        "evaluation": "/Users/james/dev/range-bc-data/explore/nitrogen-nohistory-confirm-20260927/mac-evaluation-a2b/candidate-s1/evaluation.json",
+        "evaluation_sha256": "49106a04c14c88478a9fa0656d52e3a6d264e9ee03f9532223c3367beb54e8e6",
+        "final": "/Users/james/dev/range-bc-data/explore/nitrogen-nohistory-confirm-20260927/mac-evaluation-a2b/candidate-s1/evaluation-final.json",
+        "final_sha256": "cffd9ecfc239aa8e5d76a7e0cecb1b974368285c875b1dd2a84a5dc95a9f71b2"
+      },
+      {
+        "arm": "control",
+        "seed": 1,
+        "evaluation": "/Users/james/dev/range-bc-data/explore/nitrogen-nohistory-confirm-20260927/mac-evaluation-a2b/control-s1/evaluation.json",
+        "evaluation_sha256": "2af2e7a24cccf2d5b158ae0a1876aa8d8860ef6722f6668c32b4f17b19e5d632",
+        "final": "/Users/james/dev/range-bc-data/explore/nitrogen-nohistory-confirm-20260927/mac-evaluation-a2b/control-s1/evaluation-final.json",
+        "final_sha256": "afd26dc8c5503553447fb2f30f2d2f28157accdda1cb1e429296624c018dc7a6"
+      },
+      {
+        "arm": "candidate",
+        "seed": 2,
+        "evaluation": "/Users/james/dev/range-bc-data/explore/nitrogen-nohistory-confirm-20260927/mac-evaluation-a2b/candidate-s2/evaluation.json",
+        "evaluation_sha256": "ba644e00d983fb75363edaea46e8b3e5e79baaf50251389e72cfbdf71285d7fb",
+        "final": "/Users/james/dev/range-bc-data/explore/nitrogen-nohistory-confirm-20260927/mac-evaluation-a2b/candidate-s2/evaluation-final.json",
+        "final_sha256": "cb8f0c074733cd7937383b3a8f3cb77a2ae0ab7c8ef72550690723bf5273fe00"
+      },
+      {
+        "arm": "control",
+        "seed": 2,
+        "evaluation": "/Users/james/dev/range-bc-data/explore/nitrogen-nohistory-confirm-20260927/mac-evaluation-a2b/control-s2/evaluation.json",
+        "evaluation_sha256": "23e982212a3a7f16f11c6c51838733d7bdf0d33eef9d203427fb690edcfcfa6f",
+        "final": "/Users/james/dev/range-bc-data/explore/nitrogen-nohistory-confirm-20260927/mac-evaluation-a2b/control-s2/evaluation-final.json",
+        "final_sha256": "26dbb83bc24782005af296054d50d7bfff3252535e8d89ee1bd43678b8e5d1c4"
+      },
+      {
+        "arm": "candidate",
+        "seed": 3,
+        "evaluation": "/Users/james/dev/range-bc-data/explore/nitrogen-nohistory-confirm-20260927/mac-evaluation-a2b/candidate-s3/evaluation.json",
+        "evaluation_sha256": "f2ebb1ac86a2e3128fa5f2d822c4da22230e26ea9402edd2a9629c003af9bde0",
+        "final": "/Users/james/dev/range-bc-data/explore/nitrogen-nohistory-confirm-20260927/mac-evaluation-a2b/candidate-s3/evaluation-final.json",
+        "final_sha256": "9ad59f7c5b5dd54eaff29c211cc2912d26c5ed51bed90ffd609e305a45d06d24"
+      },
+      {
+        "arm": "control",
+        "seed": 3,
+        "evaluation": "/Users/james/dev/range-bc-data/explore/nitrogen-nohistory-confirm-20260927/mac-evaluation-a2b/control-s3/evaluation.json",
+        "evaluation_sha256": "aa569391605fdc7fafc6af0a4541c843f191fa191842d48c66c19eccd842a3a4",
+        "final": "/Users/james/dev/range-bc-data/explore/nitrogen-nohistory-confirm-20260927/mac-evaluation-a2b/control-s3/evaluation-final.json",
+        "final_sha256": "878c5ed41453c3f8ecec2c05bda48ff6b063cc3fea2607733db911b3d43a19ae"
+      }
+    ]
+  }
+}

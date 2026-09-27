@@ -1,0 +1,16 @@
+{
+  "source_manifest_pins_verified": true,
+  "judge_sha256": "66830ce6eb302f4b9052b99f0f6ee31836121dd524e7eb1ddabd5a32915ef6c8",
+  "a3_sha256": "fca0af0dbe486e055c945923e715c105cced467072014641d751fc85f6ec0d3d",
+  "dependency_sha256": {
+    "policy.range_bc.metrics": "ff8ec1788700392a2490d39d19ecc623cea85094adbd23873aefb30420e2a2e5",
+    "policy.range_bc.vocab": "9f57c02a977921cc0f8fef003a19eb647136ff51af34a7913f76fb22ec811f3e"
+  },
+  "judge_review_sha256": "cd1e95264a431f575b9b85257affee397bb0d6395e7201c221800fea4c6fc159",
+  "judgement_sha256": "f09019fe10f4c01e7b9fc9440afe099c3c7214dc9c4bf8324aca8009b6a3ce27",
+  "result_packet_sha256": "c8fada8aadb2d9ed377cb3ef4a7521021a53f36fa0f64c1f89c48a69beb04baf",
+  "decision": "CONFIRMED",
+  "all_six_evaluations_complete_before_metrics_read": true,
+  "all_36_decodes_present": true,
+  "skipped_decodes": []
+}
