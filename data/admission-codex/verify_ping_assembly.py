@@ -40,11 +40,11 @@ def rows_by_segment(path):
 
 def main(sid, attempt='initial'):
     need(sid in ('20260927T051206-888Z-150600-4', '20260927T052001-827Z-150600-5'), 'outside authorized revision scope')
-    need(attempt in ('initial', 'retry1'), 'unknown attempt')
+    need(attempt in ('initial', 'retry1', 'retry2'), 'unknown attempt')
     d = ROOT / 'data/human/sessions' / sid
     run_dir = ROOT / 'data/admission-codex/runs' / sid / 'ping-a1'
-    if attempt == 'retry1':
-        run_dir /= 'retry1'
+    if attempt != 'initial':
+        run_dir /= attempt
     out = run_dir / 'assembly-delta-check.json'
     need(not out.exists(), 'verification already recorded')
     read = lambda p: json.loads(p.read_text(encoding='utf-8-sig'))
