@@ -1,0 +1,8 @@
+{
+  "acceptance": "failed_before_source_or_pixel_access",
+  "reason": "job_status.write started=time.time() exceeded its seconds-rounded updated timestamp",
+  "exception": "ValueError: updated precedes started",
+  "decode_started": false,
+  "native_stills_read": 0,
+  "correction": "Use int(time.time()) and a new attempt directory; retain this attempt."
+}

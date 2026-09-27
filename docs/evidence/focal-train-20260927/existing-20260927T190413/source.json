@@ -1,0 +1,26 @@
+{
+  "session": "20260923T051828-422Z-33696-1",
+  "split": "train",
+  "steps_sha256": "d49224e3c4382a62ebb4c4252bcc5800138782688e1d0f60e03e46ce4b6e7edb",
+  "media_sha256": "ad14e5bc0a1e0da23527a8f4a092e591ddf568ac925cfd0b2907e38dc94b9aaf",
+  "raw_mouse_sha256": "f6188c34c850eab8e4fd4a1199513b2b01342f6e0fe1516801bddf0273f40990",
+  "raw_mouse_events": 42917,
+  "initial_rows": [
+    7,
+    3607
+  ],
+  "calibration": {
+    "kind": "slow_turn_constant",
+    "yaw_deg_per_count": 0.0330738,
+    "pitch_deg_per_count": 0.0330738,
+    "pitch": {
+      "kind": "derived_equal_sensitivity"
+    },
+    "accel_on": true,
+    "source": "data/human/calibration/20260923T204707-487Z-45572-2/calibration.json (v2) (baa49158c9911e01)"
+  },
+  "settings_hash": "a8dea3bacebbe9377c8ea9bc7f517e7d907e126c61634676883599dbf2e3d1fd",
+  "alt_focal_transfer_verified": false,
+  "capture_latency_calibrated": false,
+  "input_time_semantics": "WM_INPUT logger receipt time"
+}

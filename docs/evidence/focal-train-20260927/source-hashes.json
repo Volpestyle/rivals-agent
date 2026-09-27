@@ -1,0 +1,13 @@
+{
+  "kind": "owner_check_source_and_attempt_bytes",
+  "files": {
+    "scripts/fit_focal_train.py": "6976d99ec7fbc82d8ec1f6f8ad3784f0a9aec0699b8621e03ab5344dd26b26c4",
+    "tests/test_fit_focal_train.py": "216138d159b9c6a510f1fc40ead05f218942accf8d7490d98d957c7dc854fc57",
+    "docs/evidence/focal-train-20260927/existing/startup-failure.json": "d99fe6a98b5715ec323ae66b684e6cfac4461b555d0c0d888593b98bc45d7f78",
+    "docs/evidence/focal-train-20260927/existing-20260927T190413/attempted-tracks.json": "0d56db35a3cff6ea6a3eb029fa969f32095447fd62a60582310bb4d2c7c95913",
+    "docs/evidence/focal-train-20260927/existing-20260927T190413/result.json": "f189568c890cfd4135718955a9b82c0c578706e217cbf4e0b0924415af2073d1",
+    "docs/evidence/focal-train-20260927/existing-20260927T190413/source.json": "b8ebe1353749e27fe37ceedeaeeb1fc02ace9721f3a29e2262ac756a30471c56",
+    "docs/evidence/focal-train-20260927/existing-20260927T190413/windows.json": "8c72047f81930d2cc8664068f09bdd4ed204aa0ca0ebfb2f26f5bf71672ab641",
+    "docs/evidence/focal-train-20260927/RESULT.md": "163e9c6ae13fe51531ddcb1e87f603a5361e1465de7adf48b6ef951d3172ea07"
+  }
+}

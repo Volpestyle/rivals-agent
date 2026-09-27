@@ -1,0 +1,72 @@
+{
+  "acceptance": "refused_no_defensible_source_focal",
+  "candidate_focal_px_1280": null,
+  "candidate_focal_bounds_px_1280": null,
+  "native_stills": [
+    {
+      "row": 7,
+      "file": "row-7-native.png",
+      "sha256": "09fc1aa08c13b45a419dff55077fb1c0313d26062a30fee78f708e7a9dce4abb",
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\docs\\evidence\\live-loop-fallback-train-20260927\\inspect\\row-7-native.png"
+    },
+    {
+      "row": 1807,
+      "file": "row-1807-native.png",
+      "sha256": "c56ba379ea7bcbe0ed100996e8195ceffd17faa706171c5fcda12b6a9f2e4a09",
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\docs\\evidence\\live-loop-fallback-train-20260927\\inspect\\row-1807-native.png"
+    },
+    {
+      "row": 3606,
+      "file": "row-3606-native.png",
+      "sha256": "d0d9d419a0bfbd8d0588506e53aef5829b6546fc634b7b4ea783ef766ddfb361",
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\docs\\evidence\\live-loop-fallback-train-20260927\\inspect\\row-3606-native.png"
+    }
+  ],
+  "intervals": [
+    {
+      "rows": [
+        7,
+        1807
+      ],
+      "duration_s": 59.9999976,
+      "raw_net_dx": -8838,
+      "raw_abs_dx": 104786,
+      "raw_abs_dy": 44883,
+      "max_step_counts_s": 25860,
+      "movement_or_action_steps": 1290
+    },
+    {
+      "rows": [
+        1807,
+        3606
+      ],
+      "duration_s": 59.966664268,
+      "raw_net_dx": 288,
+      "raw_abs_dx": 115946,
+      "raw_abs_dy": 49245,
+      "max_step_counts_s": 41610,
+      "movement_or_action_steps": 1413
+    }
+  ],
+  "surviving_lk_tracks": 0,
+  "fit_attempt": {
+    "refusal_reasons": [
+      "at least four frames and six full landmark tracks required"
+    ]
+  },
+  "source_observations": [
+    "row7: pitched-down view of nearby rail and stairs from upper platform",
+    "row1807: airborne hero, active bot combat, different nearby barriers and rails",
+    "row3606: ground-level close bot combat by stairs; different camera position"
+  ],
+  "refusal_reasons": [
+    "three widely spaced stills cannot establish continuous stationary tracks",
+    "native views show translation/airborne movement, pitch and nearby parallax",
+    "intervening count speeds exceed measured slow-gain support",
+    "capture latency uncalibrated; smoothing and acceleration enabled"
+  ],
+  "alt_focal_transfer_verified": false,
+  "account_identity": "not established by these records",
+  "decode_started": false,
+  "gpu_used": false
+}
