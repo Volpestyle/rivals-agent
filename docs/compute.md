@@ -63,6 +63,8 @@ so give cloud boxes 8 CPUs or more.
 - Every paid run: a benchmark or fan-out script with a hard cap, a projected cost printed before launch, a
   running-spend stop, one class for the whole experiment, and teardown proven afterwards (all apps stopped, no
   containers). Caps are James's: $50 for round 3, and $0 cloud for the explore track unless he adds money.
+  **Round-3 cap raised to $60 / 69,120 s** (James, chat, 2026-09-27 ~09:20 CDT). The budget gate stopped at a padded
+  $50.92 forecast; about $6 of that is full holds on apps Modal never created. The expected actual spend is ~$45.
   **Explore budget, 2026-09-27** (James, relayed by the steering lead, ~02:15 CDT): a separate **$15** Modal cap covers the
   EXPLORATORY full-cohort chunk arms H=1, H=4 and H=8. They run in parallel on one GPU class so the three arms match on
   device. They use their own app and volume, never round 3's, with a hard guard and proven teardown.
