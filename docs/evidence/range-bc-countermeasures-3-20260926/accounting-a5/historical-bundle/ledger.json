@@ -1,0 +1,183 @@
+{
+  "approved_by": "herdr-lead",
+  "basis_seconds": 12159,
+  "basis_usd": 6.18374656,
+  "campaign_id": "r3-20260926-l40s",
+  "format": "cm3-measured-accounting-v2",
+  "inventory": {
+    "path": "inventory.json",
+    "sha256": "7f9883a23858d2d540187e9baa1eeaea6ab37e26d7a967f1dcf017a16241e8e4"
+  },
+  "settlements": [
+    {
+      "attempt_id": "capture-03",
+      "pricing": {
+        "path": "pricing/capture-03.json",
+        "sha256": "df731ec32e233490977fc7a62b3028a3711409db92cf0e9b5e467d5eee3bffb8"
+      },
+      "reservation": {
+        "path": "reservations/capture-03.json",
+        "sha256": "bc952d66445f87ab6d3f1c234dd5afaae238587a10f64ba7dc8d3f36cb8314ee"
+      },
+      "result": {
+        "path": "results/capture-03.json",
+        "sha256": "2408b72a85f32e32bd0052e4c6fc6e50cc39b822443b75e57db870b2b75fe188"
+      }
+    },
+    {
+      "attempt_id": "copy-01",
+      "reservation": {
+        "path": "reservations/copy-01.json",
+        "sha256": "74bbec13a7745b9ea88ae7e9c06310cd53dbf37238907f38f82cfdfc5d1e2058"
+      },
+      "result": {
+        "path": "results/copy-01.json",
+        "sha256": "a7ad57c15867c9cf3f467413cfbd82fb33e183bd5cc892cdc3b5198648a6b31d"
+      }
+    },
+    {
+      "attempt_id": "copy-02",
+      "reservation": {
+        "path": "reservations/copy-02.json",
+        "sha256": "2947bdfe051b74ff526eaee3b9de161a4a58e2863b8c2cb47e5af9d122318a42"
+      },
+      "result": {
+        "path": "results/copy-02.json",
+        "sha256": "bd16c8424a720c844f7a950b38e4ac8e5a13d9162e7072abefa96e1c1927fa91"
+      }
+    },
+    {
+      "attempt_id": "copy-03",
+      "reservation": {
+        "path": "reservations/copy-03.json",
+        "sha256": "22efd3449ec732ce7b3547e147c59347c6648616bd7ea83727c70e53604a380c"
+      },
+      "result": {
+        "path": "results/copy-03.json",
+        "sha256": "bf8864127e23c9c774ec77173b16252178183c9b410ce77718e3982b9ab616bb"
+      }
+    },
+    {
+      "attempt_id": "inputs-01",
+      "reservation": {
+        "path": "reservations/inputs-01.json",
+        "sha256": "39f6174a3a8616b117233e9078b1556c99b2013f811c2db949721568ad710bba"
+      },
+      "result": {
+        "path": "results/inputs-01.json",
+        "sha256": "91a3961e05c129500c441e84bd9c72d3afa7b465c7de64c4916b897ad2b268e9"
+      }
+    },
+    {
+      "attempt_id": "inputs-02",
+      "reservation": {
+        "path": "reservations/inputs-02.json",
+        "sha256": "77e405a160399cc9072bfdd32c9a60ecb1821511c2e65b71937c2b9f7d7567d8"
+      },
+      "result": {
+        "path": "results/inputs-02.json",
+        "sha256": "c7139a8148aff1a1f514dea21ad59c539e5a6ba1891fe7fae0b7e656d9e31227"
+      }
+    },
+    {
+      "attempt_id": "inputs-03",
+      "reservation": {
+        "path": "reservations/inputs-03.json",
+        "sha256": "8ffbf4333f1da8991be2e5462a1d337f2fb5dd12f578ac5a847edf29eb79740f"
+      },
+      "result": {
+        "path": "results/inputs-03.json",
+        "sha256": "87a560aaee0f85c9994dc9c1da8ec9177c420381e399d2b1e25606d7e9174443"
+      }
+    },
+    {
+      "attempt_id": "mount-probe-01",
+      "pricing": {
+        "path": "pricing/mount-probe-01.json",
+        "sha256": "7d0c646ca274bbc4259dd3f2d8f83a4178e6469f2252892b600a45b569ba0843"
+      },
+      "reservation": {
+        "path": "reservations/mount-probe-01.json",
+        "sha256": "97f71f7977a383979ac3beb4d9bd6aaa88b08be18eeade65f364db5e5eeb149c"
+      },
+      "result": {
+        "path": "results/mount-probe-01.json",
+        "sha256": "e1439f5178525d3798c830d08b0d12f298e75fdd7027f4b5f242a88b1b6831f1"
+      }
+    },
+    {
+      "attempt_id": "proof128-01",
+      "reservation": {
+        "path": "reservations/proof128-01.json",
+        "sha256": "9446a36c88269ec8d92aa2a88cd2bcc28833950f51f9677ef22b5e9258ce53f4"
+      },
+      "result": {
+        "path": "results/proof128-01.json",
+        "sha256": "3b0fd545f4795633537dd491b2518ebf2d7be9bcfb1aa69ef8749515b8f69f98"
+      }
+    },
+    {
+      "attempt_id": "runtime-probe-01",
+      "pricing": {
+        "path": "pricing/runtime-probe-01.json",
+        "sha256": "065dd3552d1924e4f4b577e49d5050311e509c5c28b4d37b426a54870a0b33dc"
+      },
+      "reservation": {
+        "path": "reservations/runtime-probe-01.json",
+        "sha256": "aec6ff38526e3c1b6424006fdcc12d54a9f15f9097ed288a83ce6bd6c3f0fa48"
+      },
+      "result": {
+        "path": "results/runtime-probe-01.json",
+        "sha256": "0523b0303fcd62a2efc1544f3382dd7a20d5da48bead9942fefd93ee78c17931"
+      }
+    },
+    {
+      "attempt_id": "runtime-probe-03",
+      "pricing": {
+        "path": "pricing/runtime-probe-03.json",
+        "sha256": "8b7a93bbfb4925f1c9fb0c3a0be83cf2cd7ccd47dddaa8721068547486c8c797"
+      },
+      "reservation": {
+        "path": "reservations/runtime-probe-03.json",
+        "sha256": "b054ab432f0b0fca84324476552072f4fae30764435d4364914f85e6c7e90f0c"
+      },
+      "result": {
+        "path": "results/runtime-probe-03.json",
+        "sha256": "4ff8c02eaf2ef83e4c3bb80588ebb62f7477bd8b4daa264ac256dd73e1c5599d"
+      }
+    },
+    {
+      "attempt_id": "smoke-01",
+      "reservation": {
+        "path": "reservations/smoke-01.json",
+        "sha256": "0842be6ae2c8b7817c2785d296b90e0db8ec0c655280ad9decad7075e2847e38"
+      },
+      "result": {
+        "path": "results/smoke-01.json",
+        "sha256": "7d798160825fc137ef0327ac45f2509f919480b0a82301d247f30d463587759c"
+      }
+    },
+    {
+      "attempt_id": "stage0-01",
+      "reservation": {
+        "path": "reservations/stage0-01.json",
+        "sha256": "690a1967e82af1798ee3b1c15f96cc6d23de64a7773e04faafaf2a6f7b0c3d39"
+      },
+      "result": {
+        "path": "results/stage0-01.json",
+        "sha256": "3534f53a40d9b6e7eb9d136dd6d650fef9e0251b13292adf826a43ab3b3e33fd"
+      }
+    },
+    {
+      "attempt_id": "stage0-02",
+      "reservation": {
+        "path": "reservations/stage0-02.json",
+        "sha256": "b982d94c42c789cab27a358247e13fab8bb55bd888e3696bf1531ff7665f80a5"
+      },
+      "result": {
+        "path": "results/stage0-02.json",
+        "sha256": "896fbfc97cc268f6e8ddb44208d1b892faf0c670e122b2e36e96e121e101caec"
+      }
+    }
+  ]
+}

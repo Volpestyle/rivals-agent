@@ -1,0 +1,14 @@
+{
+  "gross_cap_usd": 5,
+  "gross_reservation_max_usd": 4.8873152,
+  "successful_app_seconds_upper": 796.0,
+  "all_four_reserved_resources_charged_for_entire_app_lifetime_usd": 1.6717273599999998,
+  "failed_app_gpu_upper_usd": 0.2520192,
+  "shared_overhead_reserve_usd": 0.75,
+  "conservative_total_upper_usd": 2.6737465599999997,
+  "returned_function_compute_estimate_usd": 1.2436365833415397,
+  "billing_report_available": false,
+  "workspace_limit": "unconfirmed",
+  "rates_source": "https://modal.com/pricing",
+  "note": "Gross before credits. Upper charges all four configurations for entire app lifetime plus two seconds rounding, prior failed startup, and reserved builds/verification/shutdown. Function subtotal excludes app startup; billing report still empty."
+}

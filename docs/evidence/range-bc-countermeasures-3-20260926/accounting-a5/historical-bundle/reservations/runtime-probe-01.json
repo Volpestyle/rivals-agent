@@ -1,0 +1,10 @@
+{
+  "attempt_id": "runtime-probe-01",
+  "reserved_usd": 0.3,
+  "reserved_compute_seconds": 376,
+  "prior_committed_usd": 11.833746560000002,
+  "prior_compute_seconds": 24793,
+  "proposal_sha256": "065dd3552d1924e4f4b577e49d5050311e509c5c28b4d37b426a54870a0b33dc",
+  "ledger_sha256": "87012f8802f85c72d1e10ff1cac51671abc790a9f66813c1f324a37f57e1cbac",
+  "message_id": "2687e498-d30d-4f06-b46b-4ca99fe2aaa5"
+}

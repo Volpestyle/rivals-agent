@@ -1,0 +1,100 @@
+{
+  "format": "cm3-bootstrap-result-v1",
+  "status": "PASS",
+  "stage": "stage0",
+  "attempt_id": "stage0-02",
+  "identity": {
+    "profile": "rivals",
+    "workspace": "volpestyle",
+    "workspace_id": "ac-kMLf5bJKqF5CAlSbfNhGh0"
+  },
+  "volume_name": "rivals-r3-cm3",
+  "volume_id": "vo-NpcsP2imIIon902PW96bTb",
+  "image": {
+    "image_id": "im-tE3Y0YrWYZ0po0yAA0JQT8",
+    "oci_digest": null,
+    "oci_digest_status": "not exposed by SDK",
+    "recipe_sha256": "f8b4b90c209f75c53364cdadb6d9be18b29dcf685533d25c5d0d3b958cad1114"
+  },
+  "error": null,
+  "spend": {
+    "estimated_conservative_usd": 0.261790281977669,
+    "reserved_charged_usd": 1.0,
+    "seconds_through_cleanup": 86.07807029096875,
+    "billing": "estimate, not account invoice",
+    "prior_total_usd": 6.18374656,
+    "bounds": {
+      "cap_usd": 1.0,
+      "rate_usd_second": 0.00071784,
+      "overhead_usd": 0.2,
+      "funded_seconds": 1114.4544745347155,
+      "work_seconds": 994.4544745347155,
+      "cleanup_seconds": 120
+    }
+  },
+  "teardown": {
+    "status": "TERMINAL",
+    "identity": {
+      "profile": "rivals",
+      "workspace": "volpestyle",
+      "workspace_id": "ac-kMLf5bJKqF5CAlSbfNhGh0"
+    },
+    "apps": [
+      "ap-Jun2ESssmjqlWZdRBqNd7O"
+    ],
+    "events": [
+      {
+        "app": "ap-Jun2ESssmjqlWZdRBqNd7O",
+        "stop_error": "Modal command failed: App is already stopped. (Finished at 2026-09-26 22:54:13-05:00).\n"
+      },
+      {
+        "round": 1,
+        "terminal_apps": [
+          "ap-Jun2ESssmjqlWZdRBqNd7O"
+        ],
+        "containers": 0
+      }
+    ],
+    "checked_at_unix": 1790481262.7485251
+  },
+  "artifacts": {
+    "image-build.json": {
+      "path": "/Users/james/dev/range-bc-data/handoff/modal/f5-real/bootstrap-campaign/stage0-02/image-build.json",
+      "sha256": "0df24c4daf58e6c15d1ac35e44b0b8a34c4b18bb10bca418819bb5f2495705c9",
+      "bytes": 199
+    },
+    "identity.json": {
+      "path": "/Users/james/dev/range-bc-data/handoff/modal/f5-real/bootstrap-campaign/stage0-02/identity.json",
+      "sha256": "8d266954d8db47930405c61580c0adf9e28a957d105b1577a0c7ca40cfe05ad2",
+      "bytes": 101
+    },
+    "completed.json": {
+      "path": "/Users/james/dev/range-bc-data/handoff/modal/f5-real/bootstrap-campaign/stage0-02/completed.json",
+      "sha256": "e7a6660c9ed5b55841efc4af9ee92286de60025c3c8a06ba3d15f9ce038152da",
+      "bytes": 34021
+    },
+    "reservation.json": {
+      "path": "/Users/james/dev/range-bc-data/handoff/modal/f5-real/bootstrap-campaign/stage0-02/reservation.json",
+      "sha256": "b982d94c42c789cab27a358247e13fab8bb55bd888e3696bf1531ff7665f80a5",
+      "bytes": 1088
+    },
+    "spend.json": {
+      "path": "/Users/james/dev/range-bc-data/handoff/modal/f5-real/bootstrap-campaign/stage0-02/spend.json",
+      "sha256": "b819571fd0c313e0d196572ecb546560d97ee2c0a0f59b957f9658e1d33efb93",
+      "bytes": 418
+    },
+    "image-recipe.json": {
+      "path": "/Users/james/dev/range-bc-data/handoff/modal/f5-real/bootstrap-campaign/stage0-02/image-recipe.json",
+      "sha256": "f8b4b90c209f75c53364cdadb6d9be18b29dcf685533d25c5d0d3b958cad1114",
+      "bytes": 431
+    },
+    "teardown.json": {
+      "path": "/Users/james/dev/range-bc-data/handoff/modal/f5-real/bootstrap-campaign/stage0-02/teardown.json",
+      "sha256": "216bb1ca6721b24415ba7aaf6714cf47b54e10652b83da0e67c77e15f2e071f5",
+      "bytes": 548
+    }
+  },
+  "sealed_data_read": false,
+  "fit_or_inference": false,
+  "workspace_spend_limit": "unconfirmed"
+}

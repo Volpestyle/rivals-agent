@@ -1,0 +1,31 @@
+{
+  "attempt_id": "inputs-02",
+  "reserved_usd": 1,
+  "reserved_compute_seconds": 1020,
+  "prior_committed_usd": 10.833746560000002,
+  "campaign_committed_usd": 11.833746560000002,
+  "prior_compute_seconds": 23773,
+  "campaign_reserved_seconds": 24793,
+  "approval_ledger_sha256": "70bd825a3ff92c423bea46dcf9911acbc40b693a246c8f715a772d285f402b8e",
+  "approved_receipt_sha256": "17c73b10c8baf74c3bfc4fcdaf62fb82864f8bacd68aef2692de7e334168dfba",
+  "authorization_swarm_message": "b83ba549-2245-4615-8dd4-6eada9b28c26",
+  "binding_sha256": "7bd6f7b91425a8508ba7a3c563699c6e94729aea1a5c4fac8e064f7975a8e0ed",
+  "driver_sha256": "96bc8c4a033592ace3875f21f6d700640cf937c2d692f52a898b386b4d18a21a",
+  "worker_sha256": "55eddc71052e79d540dc5dbccc6942df137b08e6e650acb259f7a4bc738ef9b7",
+  "transition_worker_sha256": "633e0bce3d2d2a5139277da3fa68df3906bbf258e3491c4c86c165ed2e12ef30",
+  "bounds": {
+    "cap_seconds": 57600,
+    "cap_usd": 50,
+    "cleanup_seconds": 120,
+    "overhead_usd": 0.2678032,
+    "prior_seconds": 23773,
+    "prior_usd": 10.83374656,
+    "rate_usd_second": 0.00071784,
+    "reserved_seconds": 1020,
+    "reserved_usd": 1,
+    "startup_seconds": 300,
+    "work_seconds": 600
+  },
+  "automatic_retries": 0,
+  "resume": false
+}

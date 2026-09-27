@@ -1,0 +1,46 @@
+{
+  "format": "cm3-inputs-wrapper-result-v1",
+  "status": "INCOMPLETE",
+  "attempt_id": "inputs-02",
+  "binding": {
+    "path": "/Users/james/dev/range-bc-data/handoff/modal/inputs-02/launch-binding.json",
+    "sha256": "7bd6f7b91425a8508ba7a3c563699c6e94729aea1a5c4fac8e064f7975a8e0ed"
+  },
+  "owner_result": null,
+  "transport_files": [],
+  "error": "AssertionError: owner runner failed: 1",
+  "teardown": {
+    "status": "TERMINAL",
+    "identity": {
+      "profile": "rivals",
+      "workspace": "volpestyle",
+      "workspace_id": "ac-kMLf5bJKqF5CAlSbfNhGh0"
+    },
+    "apps": [
+      "ap-VBwJIXMrOsF6kQWEnacLNl"
+    ],
+    "events": [
+      {
+        "app": "ap-VBwJIXMrOsF6kQWEnacLNl",
+        "stop_error": "Modal command failed: App is already stopped. (Finished at 2026-09-27 00:58:43-05:00).\n"
+      },
+      {
+        "round": 1,
+        "terminal_apps": [
+          "ap-VBwJIXMrOsF6kQWEnacLNl"
+        ],
+        "containers": 0
+      }
+    ],
+    "checked_at_unix": 1790488729.04599
+  },
+  "spend": {
+    "reserved_charged_usd": 1,
+    "estimated_conservative_usd": 0.39596834351207466,
+    "seconds_through_cleanup": 178.54277208301937,
+    "campaign_committed_usd": 11.833746560000002,
+    "campaign_reserved_seconds": 24793
+  },
+  "transition_result_sha256": "93f1c895c3580226a5dbd4afb53435bcec63f05ddac1591789bc1d5b3597a1a6",
+  "completed_sha256": null
+}

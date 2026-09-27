@@ -1,0 +1,530 @@
+{
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/FIT-RECEIPT-a3.md": {
+    "sha256": "5a6c1b4089e9e1790e5ed29a2b0ed1c5947558933dbae14a97d4a2b8323fc619",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\FIT-RECEIPT-a3.md"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/FIT-RECEIPT.md": {
+    "sha256": "68a8d6d5e4f224f4e3f535da4ec0925d932475cf7c9495bc76a4f2c2fb9155a0",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\FIT-RECEIPT.md"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/HANDBACK.md": {
+    "sha256": "d9801c2f08c7c7cb7574a0fa94d11bce3785bae3e0947c655002ea01016644c2",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\HANDBACK.md"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/check_f1_preservation.py": {
+    "sha256": "e7732e5c4fd3c051251dd337815d3d27c0d84121f081f3df24593ff1055e8509",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\check_f1_preservation.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/check_mapping.py": {
+    "sha256": "a6cb711f5d54a7df356e0aed6076b5adee7be46207b695bddf00ddbfb3af14e2",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\check_mapping.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/check_packet.py": {
+    "sha256": "1c19a1243d076a3d43fd91261940ed0417cb63816d1acb378844ed9af696e05f",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\check_packet.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/check_perarm_preservation.py": {
+    "sha256": "664b312f4120f0c03c1a367d665e16d4e9a6e834f172ae6d38bf8e4784017634",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\check_perarm_preservation.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/check_sdk.py": {
+    "sha256": "2706094078dcd91d0f3d4f2868187e2095a29bdcaae14c95036246f05a6482de",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\check_sdk.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/cm3_accounting.py": {
+    "sha256": "ad2d3c568ad0e7c08a4ae3c2680d02344288594b0bc985591108f9707e968835",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\cm3_accounting.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/cm3_budget_plan.py": {
+    "sha256": "4e2bd9f572f6883c91a872c16a4d1466bddce55730a469de01af8f73f7ec1b56",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\cm3_budget_plan.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/cm3_timeouts.py": {
+    "sha256": "de57202e85942651ebeea699f6b0a834ee72bfab0d0c270d153edf2e9a84c097",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\cm3_timeouts.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/collector.py": {
+    "sha256": "f39e6a7d1b5693cd9e3dadd88ea6da5fed7f41e2b26558a50df5d1f058e42b39",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\collector.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/evidence/f1-preservation.json": {
+    "sha256": "f19e40bce04fb1392181191b64c62c2b1e91cb5c3614f0e63e6699dd794c89f6",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\evidence\\f1-preservation.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/evidence/f1-tests.log": {
+    "sha256": "06f559e69efa24a564fb7a4cba5e7e72b903606bb14926850dc7d2ba53ce04af",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\evidence\\f1-tests.log"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/evidence/reservation-root-observation.json": {
+    "sha256": "c8c66a992cc983894432baed6bc316dc248532d5d1df0b30c085a530694a56eb",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\evidence\\reservation-root-observation.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/evidence/smoke-details.json": {
+    "sha256": "929c5d9b0deb0d72db0b092111fdb3fb527328722529ec162405c4d639bdd3fa",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\evidence\\smoke-details.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/f1-delta.diff": {
+    "sha256": "c5f7ec081cd5850c44196839daa8b5d751af0d8725dede26d2c6d988dddbd3cd",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\f1-delta.diff"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/f1-reference/files.json": {
+    "sha256": "395643cae0e1a86d49407402051274c9a46f04a2f52a5498b20fc95eff50a764",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\fanout-perarm-review-20260927\\files.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/f1-reference/safety.py": {
+    "sha256": "e862f5bf1507874fae378186db6deacd3994bb945f6d122488356511b589f0a0",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\f1-reference\\safety.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/fixes2-files.json": {
+    "sha256": "a9193d80013b2d35454bf68e206850fc4141ffb96189313e238936774f3291b2",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\fixes2-files.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/guard.py": {
+    "sha256": "905fd841d2ca7509c2d8abaadb84086fc3ee715f11126c1f2d061025be4c58a2",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\guard.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/identity_probe.py": {
+    "sha256": "de2a47c7dc2d494a0fcdadde0c5c12092d5f2b6b67bf2398281be71912bd6916",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\identity_probe.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/input_closure.py": {
+    "sha256": "6ecbb753175bef5eb70a1cf5497121b5f276a9fd493ddafc33f2ab523dcb91ed",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\input_closure.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/job_status.py": {
+    "sha256": "df4dd2f05ef9aeabe6504927f37ca4bf983544aa58b8905d2bd9bfe5f5de6541",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\job_status.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/judge_cm3-a3.py": {
+    "sha256": "e23b3212a0eadc98bc590e5081a92c9fab6740e93808aba2d245d6020b3f8eb0",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\judge_cm3-a3.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/judge_entry.py": {
+    "sha256": "8edfa450bfba4e1d341221efe882d4e6e03fa864918f8f245071f7db3f709013",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\judge_entry.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/launch-plan.json": {
+    "sha256": "da28bf71b4e6c452e48ad801c846ff2f101122bc5ee38f072fb5be22ba3c9f78",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\launch-plan.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/lifecycle.py": {
+    "sha256": "7e53b1b85f23e69018e29105f2054b2415cbb2004a2a5f0da1382047c43acc9e",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\lifecycle.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/map_metrics.py": {
+    "sha256": "de20a8bf4a626b42df03cfe9468ff77eef041cd471393c2d26da20509be201b5",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\map_metrics.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/modal_app.py": {
+    "sha256": "7bf6cde8ec02e36249d8d07456dfd4ca7a85c90d6738e23820e97ce1aad9b208",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\modal_app.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/packet_adapter.py": {
+    "sha256": "b469d345c48c9ff9a9b4555b06bf84c7183a1bd5373fc9d899aac24c2c91361a",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\packet_adapter.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/phase-a-spend.json": {
+    "sha256": "2d0edcd03ff6a75f4b327248fcc091af423db1867c29ad8833e8ded6be65642c",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\phase-a-spend.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/prior-test-reference/cm3_features.owner.py": {
+    "sha256": "45d40ff6045da313db3ae1b7fb0b3520ec6d08da0a7dea7210c56db1193272e7",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\prior-test-reference\\cm3_features.owner.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/review-base/collector.py": {
+    "sha256": "f39e6a7d1b5693cd9e3dadd88ea6da5fed7f41e2b26558a50df5d1f058e42b39",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\review-base\\collector.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/review-base/guard.py": {
+    "sha256": "3aa26fbe5511cd5572f8417e9c93c358c90f33cca80e437b2418d82e74babe49",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\review-base\\guard.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/review-base/identity_probe.py": {
+    "sha256": "de2a47c7dc2d494a0fcdadde0c5c12092d5f2b6b67bf2398281be71912bd6916",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\review-base\\identity_probe.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/review-base/input_closure.py": {
+    "sha256": "6ecbb753175bef5eb70a1cf5497121b5f276a9fd493ddafc33f2ab523dcb91ed",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\review-base\\input_closure.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/review-base/job_status.py": {
+    "sha256": "df4dd2f05ef9aeabe6504927f37ca4bf983544aa58b8905d2bd9bfe5f5de6541",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\review-base\\job_status.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/review-base/judge_cm3-a3.py": {
+    "sha256": "e23b3212a0eadc98bc590e5081a92c9fab6740e93808aba2d245d6020b3f8eb0",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\review-base\\judge_cm3-a3.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/review-base/lifecycle.py": {
+    "sha256": "c47a31fc4fc9cc23d2f3d854c120f4a82bf929782e9dade0397e2a099129860c",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\review-base\\lifecycle.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/review-base/map_metrics.py": {
+    "sha256": "de20a8bf4a626b42df03cfe9468ff77eef041cd471393c2d26da20509be201b5",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\review-base\\map_metrics.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/review-base/modal_app.py": {
+    "sha256": "6c6af5a15668d0f678ca9f6b5c20c55262b0c8b4c1c2acacb2b54033ce8b8c23",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\review-base\\modal_app.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/review-base/packet_adapter.py": {
+    "sha256": "b469d345c48c9ff9a9b4555b06bf84c7183a1bd5373fc9d899aac24c2c91361a",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\review-base\\packet_adapter.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/review-base/safety-bridge.py": {
+    "sha256": "e235a42d9e72ce76f6ff212eb53fe5df1189c868927ef0d3db752dc5519cef65",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\review-base\\safety-bridge.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/safety.py": {
+    "sha256": "f01b893508ea5bbccac4e1d0416666ef12aae2ed41cadf80fca5e54792ac09a0",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\safety.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/task_driver.py": {
+    "sha256": "b652e855b843be6f460a60a54a35c7037c72cf0b262d99e0e3eda79ed19295da",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\task_driver.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/test_admission.py": {
+    "sha256": "2f0c65f03da1074b8d5fedbf58b3541c3e26a2ecb1f728162b28539fbedd2c62",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\test_admission.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/test_cache_layout.py": {
+    "sha256": "e289a0c44291193e7f9ff7acbb8d7aea0fc3f9cf6e2a4da37cce23ccd6f24854",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\test_cache_layout.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/test_canonical_transport.py": {
+    "sha256": "1d277bef8f687c863d4a08350d913fa59273967a443ef391b1f1bc5a25c727cd",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\test_canonical_transport.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/test_dispatch.py": {
+    "sha256": "d26fbea194ce50aafdff994716143b23cee590dc904547d5cf59bffc4dc30790",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\test_dispatch.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/test_fit_budget.py": {
+    "sha256": "b779567a5b0870ed0583b91fecde92fe18cab1f63abd50e1b8e28ef9768863c9",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\test_fit_budget.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/test_fixes.py": {
+    "sha256": "2e7ab7fb27ccf203fba10019eb76b275c109bbd11ec060c443a990ab81ea786e",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\test_fixes.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/test_judge_cm3-a3.py": {
+    "sha256": "7fdbb62092cfd3d3f70093e63d48ac040d928c0920deca2bae1b7918df90481e",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\test_judge_cm3-a3.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/fanout/test_perarm.py": {
+    "sha256": "904c2301e178d2f00d9e40794f1ed6eeae57f8d20954ba1e3f43540339e39efc",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\test_perarm.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/historical-bundle/inventory.json": {
+    "sha256": "7f9883a23858d2d540187e9baa1eeaea6ab37e26d7a967f1dcf017a16241e8e4",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\historical-host-bundle\\inventory.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/historical-bundle/ledger.json": {
+    "sha256": "a63376e284306c6bdf9f49663ea7fbf703a91c215b03e32cacb8fcfc42e50d7b",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\historical-host-bundle\\ledger.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/historical-bundle/outputs/r3-20260926-l40s/inputs-03/result.json": {
+    "sha256": "5b35587c4b7a54b0bcd54ca9ab759654422ee5e6abaaafceba05318918683c42",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\historical-host-bundle\\outputs\\r3-20260926-l40s\\inputs-03\\result.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/historical-bundle/outputs/r3-20260926-l40s/proof128-01/result.json": {
+    "sha256": "11e76d93780ee01bd4649b9e78e5b9a0bb683a5d089fedab75e4aa6cba0cc814",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\historical-host-bundle\\outputs\\r3-20260926-l40s\\proof128-01\\result.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/historical-bundle/outputs/r3-20260926-l40s/smoke-01/result.json": {
+    "sha256": "f37bbfeff11a35e68e8db0060f14f316a68cbb19eb7dfe3ccc187bd8d16c6ec2",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\historical-host-bundle\\outputs\\r3-20260926-l40s\\smoke-01\\result.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/historical-bundle/pricing/capture-03.json": {
+    "sha256": "df731ec32e233490977fc7a62b3028a3711409db92cf0e9b5e467d5eee3bffb8",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\historical-host-bundle\\pricing\\capture-03.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/historical-bundle/pricing/mount-probe-01.json": {
+    "sha256": "7d0c646ca274bbc4259dd3f2d8f83a4178e6469f2252892b600a45b569ba0843",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\historical-host-bundle\\pricing\\mount-probe-01.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/historical-bundle/pricing/runtime-probe-01.json": {
+    "sha256": "065dd3552d1924e4f4b577e49d5050311e509c5c28b4d37b426a54870a0b33dc",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\historical-host-bundle\\pricing\\runtime-probe-01.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/historical-bundle/pricing/runtime-probe-03.json": {
+    "sha256": "8b7a93bbfb4925f1c9fb0c3a0be83cf2cd7ccd47dddaa8721068547486c8c797",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\historical-host-bundle\\pricing\\runtime-probe-03.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/historical-bundle/reservations/capture-03.json": {
+    "sha256": "bc952d66445f87ab6d3f1c234dd5afaae238587a10f64ba7dc8d3f36cb8314ee",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\historical-host-bundle\\reservations\\capture-03.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/historical-bundle/reservations/copy-01.json": {
+    "sha256": "74bbec13a7745b9ea88ae7e9c06310cd53dbf37238907f38f82cfdfc5d1e2058",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\historical-host-bundle\\reservations\\copy-01.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/historical-bundle/reservations/copy-02.json": {
+    "sha256": "2947bdfe051b74ff526eaee3b9de161a4a58e2863b8c2cb47e5af9d122318a42",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\historical-host-bundle\\reservations\\copy-02.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/historical-bundle/reservations/copy-03.json": {
+    "sha256": "22efd3449ec732ce7b3547e147c59347c6648616bd7ea83727c70e53604a380c",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\historical-host-bundle\\reservations\\copy-03.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/historical-bundle/reservations/inputs-01.json": {
+    "sha256": "39f6174a3a8616b117233e9078b1556c99b2013f811c2db949721568ad710bba",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\historical-host-bundle\\reservations\\inputs-01.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/historical-bundle/reservations/inputs-02.json": {
+    "sha256": "77e405a160399cc9072bfdd32c9a60ecb1821511c2e65b71937c2b9f7d7567d8",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\historical-host-bundle\\reservations\\inputs-02.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/historical-bundle/reservations/inputs-03.json": {
+    "sha256": "8ffbf4333f1da8991be2e5462a1d337f2fb5dd12f578ac5a847edf29eb79740f",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\historical-host-bundle\\reservations\\inputs-03.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/historical-bundle/reservations/mount-probe-01.json": {
+    "sha256": "97f71f7977a383979ac3beb4d9bd6aaa88b08be18eeade65f364db5e5eeb149c",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\historical-host-bundle\\reservations\\mount-probe-01.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/historical-bundle/reservations/proof128-01.json": {
+    "sha256": "9446a36c88269ec8d92aa2a88cd2bcc28833950f51f9677ef22b5e9258ce53f4",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\historical-host-bundle\\reservations\\proof128-01.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/historical-bundle/reservations/runtime-probe-01.json": {
+    "sha256": "aec6ff38526e3c1b6424006fdcc12d54a9f15f9097ed288a83ce6bd6c3f0fa48",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\historical-host-bundle\\reservations\\runtime-probe-01.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/historical-bundle/reservations/runtime-probe-03.json": {
+    "sha256": "b054ab432f0b0fca84324476552072f4fae30764435d4364914f85e6c7e90f0c",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\historical-host-bundle\\reservations\\runtime-probe-03.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/historical-bundle/reservations/smoke-01.json": {
+    "sha256": "0842be6ae2c8b7817c2785d296b90e0db8ec0c655280ad9decad7075e2847e38",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\historical-host-bundle\\reservations\\smoke-01.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/historical-bundle/reservations/stage0-01.json": {
+    "sha256": "690a1967e82af1798ee3b1c15f96cc6d23de64a7773e04faafaf2a6f7b0c3d39",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\historical-host-bundle\\reservations\\stage0-01.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/historical-bundle/reservations/stage0-02.json": {
+    "sha256": "b982d94c42c789cab27a358247e13fab8bb55bd888e3696bf1531ff7665f80a5",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\historical-host-bundle\\reservations\\stage0-02.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/historical-bundle/results/capture-03.json": {
+    "sha256": "2408b72a85f32e32bd0052e4c6fc6e50cc39b822443b75e57db870b2b75fe188",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\historical-host-bundle\\results\\capture-03.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/historical-bundle/results/copy-01.json": {
+    "sha256": "a7ad57c15867c9cf3f467413cfbd82fb33e183bd5cc892cdc3b5198648a6b31d",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\historical-host-bundle\\results\\copy-01.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/historical-bundle/results/copy-02.json": {
+    "sha256": "bd16c8424a720c844f7a950b38e4ac8e5a13d9162e7072abefa96e1c1927fa91",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\historical-host-bundle\\results\\copy-02.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/historical-bundle/results/copy-03.json": {
+    "sha256": "bf8864127e23c9c774ec77173b16252178183c9b410ce77718e3982b9ab616bb",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\historical-host-bundle\\results\\copy-03.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/historical-bundle/results/inputs-01.json": {
+    "sha256": "91a3961e05c129500c441e84bd9c72d3afa7b465c7de64c4916b897ad2b268e9",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\historical-host-bundle\\results\\inputs-01.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/historical-bundle/results/inputs-02.json": {
+    "sha256": "c7139a8148aff1a1f514dea21ad59c539e5a6ba1891fe7fae0b7e656d9e31227",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\historical-host-bundle\\results\\inputs-02.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/historical-bundle/results/inputs-03.json": {
+    "sha256": "87a560aaee0f85c9994dc9c1da8ec9177c420381e399d2b1e25606d7e9174443",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\historical-host-bundle\\results\\inputs-03.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/historical-bundle/results/mount-probe-01.json": {
+    "sha256": "e1439f5178525d3798c830d08b0d12f298e75fdd7027f4b5f242a88b1b6831f1",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\historical-host-bundle\\results\\mount-probe-01.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/historical-bundle/results/proof128-01.json": {
+    "sha256": "3b0fd545f4795633537dd491b2518ebf2d7be9bcfb1aa69ef8749515b8f69f98",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\historical-host-bundle\\results\\proof128-01.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/historical-bundle/results/runtime-probe-01.json": {
+    "sha256": "0523b0303fcd62a2efc1544f3382dd7a20d5da48bead9942fefd93ee78c17931",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\historical-host-bundle\\results\\runtime-probe-01.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/historical-bundle/results/runtime-probe-03.json": {
+    "sha256": "4ff8c02eaf2ef83e4c3bb80588ebb62f7477bd8b4daa264ac256dd73e1c5599d",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\historical-host-bundle\\results\\runtime-probe-03.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/historical-bundle/results/smoke-01.json": {
+    "sha256": "7d798160825fc137ef0327ac45f2509f919480b0a82301d247f30d463587759c",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\historical-host-bundle\\results\\smoke-01.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/historical-bundle/results/stage0-01.json": {
+    "sha256": "3534f53a40d9b6e7eb9d136dd6d650fef9e0251b13292adf826a43ab3b3e33fd",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\historical-host-bundle\\results\\stage0-01.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/historical-bundle/results/stage0-02.json": {
+    "sha256": "896fbfc97cc268f6e8ddb44208d1b892faf0c670e122b2e36e96e121e101caec",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\historical-host-bundle\\results\\stage0-02.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/records/admission-math.draft.json": {
+    "sha256": "8e8eb4479ecc59ca97510977bcadc353a0d368be72fc5bce249e5314d36976fb",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-sequenced\\admission-math.draft.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/records/budget-accounting-a5-sequenced.md": {
+    "sha256": "c5cd6aafca8e2021668c6432ab593ab4e76225708be3e6082340785ebe49c08f",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-sequenced\\budget-accounting-a5-sequenced.md"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/records/canonical-ledger-contract.md": {
+    "sha256": "a7b29cf65dc978389f824f9cf25ec4e6da603ff42cd54a6a27f34acaba698ba3",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\CONTRACT.md"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/records/f1-helper.patch": {
+    "sha256": "a335d54c16dd7a489dbfa8f071da59d3c199d7c4a142d7b323bbeda48d91ee29",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\helper.patch"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/records/f1-scope-audit.json": {
+    "sha256": "a102021f375ca2b25ef86e318b744dbeae8ebc6ef37ef0a198d88b057aec9cad",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\scope-audit.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/records/lead-2639-clarification.md": {
+    "sha256": "bcb183197e227c91192e2b79d8f0ff44ddc8eaf0ec1d3cf7a860d99e37ec09fb",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-joint-index-v2.md"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/records/owner-f1-handback.md": {
+    "sha256": "585fe3f1c4760b075b618bb59e602cb70c256736f79a428c7257db16613b8be2",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\HANDBACK.md"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/records/owner-regression-20260927.md": {
+    "sha256": "af87a2f2a2882df66181af9b910fd87bb5d53757c6366c82d01397995e62425a",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1-regression-20260927.md"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/records/review-f1-delta-20260927.md": {
+    "sha256": "590dd913de8b368ee4a8e2566cbf95c4ff23f4dd1ed0a11b8a7f8f06af7395f3",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1-joint\\review-budget-f1-delta-20260927.md"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/records/review-joint-20260927.md": {
+    "sha256": "5451ba0a9d442d9fc97972c839227c6e477c2977f7a51f7dbf3070a7c6416864",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-joint\\review-budget-joint-20260927.md"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/source-pins/f1-joint-files.json": {
+    "sha256": "d2388e517a7b253fdba6e4669070eec928a67f6204b531f1843f9272a2ac015b",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1-joint\\files.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/source-pins/f1-joint-index.json": {
+    "sha256": "5c9fe80f96edf94221cdd908895bd3f0cc7ee41f565d0e7eb1dadb5fd31c08e4",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1-joint\\index.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/source-pins/joint-files.json": {
+    "sha256": "10fc4e4806fb26ed7fadd1063c70d8065496d53774a5de9a85abd3188e83b4aa",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-joint\\files.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/source-pins/owner-f1-files.json": {
+    "sha256": "1d9fc6f92fc1ef88420eb2789e294ccdd738513b0d6a79075033b4c8680bce9c",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\files.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/source-pins/wrapper-f1-files.json": {
+    "sha256": "37c432ab108f0881f489436d42a0205df271b21fe81c8ff96359eb9b8d05a134",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\files.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/tests/test_canonical_accounting.py": {
+    "sha256": "2551a27c576abf2595c557462dbccadffe242826ec5535a878d25442779ff58d",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\tests\\test_canonical_accounting.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/writer/cm3_accounting.py": {
+    "sha256": "ad2d3c568ad0e7c08a4ae3c2680d02344288594b0bc985591108f9707e968835",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\writer\\cm3_accounting.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/writer/cm3_budget_plan.py": {
+    "sha256": "4e2bd9f572f6883c91a872c16a4d1466bddce55730a469de01af8f73f7ec1b56",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\writer\\cm3_budget_plan.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/writer/cm3_timeouts.py": {
+    "sha256": "de57202e85942651ebeea699f6b0a834ee72bfab0d0c270d153edf2e9a84c097",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\writer\\cm3_timeouts.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/writer/context.draft.json": {
+    "sha256": "b4cb04b5a09da7d469e84637e6aa9ed6d785d86a890e7d58ed79bcceb14db5b5",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\launch\\context.draft.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/writer/make_accounting_bundle.py": {
+    "sha256": "1e5a676e020d4c3808c1afcb7330fb531ff617a95b63831517a43dd01e5ad0b4",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\writer\\make_accounting_bundle.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/writer/make_receipt.py": {
+    "sha256": "ca1ac228a0fb6495117b81d6b3754810a54ed64ca7a5028df70fa272497c641e",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\writer\\make_receipt.py"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/writer/phase1-fanout.draft.json": {
+    "sha256": "92d5f6bfa80219f8a0ca97527fa1d88209b0f74dce1fc2dbf83b7562780deced",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\launch\\phase1-fanout.draft.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/writer/phase1/A-0.draft.json": {
+    "sha256": "52bdc10d92af9111d8a8aa969e4087752505a1e692f2d44e0bea0ecaa3b0e052",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\launch\\phase1\\A-0.draft.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/writer/phase1/A-1.draft.json": {
+    "sha256": "66c0019760d5dce0f709343a40524ec4b600d75ca4fefbd315dd53119cd94a35",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\launch\\phase1\\A-1.draft.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/writer/phase1/A-2.draft.json": {
+    "sha256": "849752817d41f6bf41cb5b42156a166b00382472cd2e02b7cdff4d1455fba27e",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\launch\\phase1\\A-2.draft.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/writer/phase1/H-0.draft.json": {
+    "sha256": "ff1622d5b45f40065b6d21e59338c5cd8d3090b197dcfd9de5b52d6982f29a0c",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\launch\\phase1\\H-0.draft.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/writer/phase1/H-repeat-0.draft.json": {
+    "sha256": "b528948627cb604c286363ef473cf186ec3d99528d4788e8ad37b42b5b80cf7c",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\launch\\phase1\\H-repeat-0.draft.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/writer/phase2-fanout.draft.json": {
+    "sha256": "757d01c95148e64e391797c73bf689752f72aa906640fbab2af458af4826604b",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\launch\\phase2-fanout.draft.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/writer/phase2/H-1.draft.json": {
+    "sha256": "c7e99117782ce227e234afacd1c5416a8f99f1f659fe0081707624646bb9f2c5",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\launch\\phase2\\H-1.draft.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/writer/phase2/H-2.draft.json": {
+    "sha256": "dbe2f3351443ca0a5293ce2bd08c70a3b73713097db0a0ca0802382f32473c21",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\launch\\phase2\\H-2.draft.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/writer/phase2/I-0.draft.json": {
+    "sha256": "d19ccccc97a5c63ab76c6600ded3e6b310afe46a616af8fc8daa72c208b57d59",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\launch\\phase2\\I-0.draft.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/writer/phase2/I-1.draft.json": {
+    "sha256": "907e13809bf73569ae0f466ee7e8f019eef66fa6df0e744d4b2122b421881072",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\launch\\phase2\\I-1.draft.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/writer/phase2/I-2.draft.json": {
+    "sha256": "ae80ec13771eae5809ecca78dac24ebb59d6f6d91abe4e7f04dbd148fff83c03",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\launch\\phase2\\I-2.draft.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/writer/phase2/W-0.draft.json": {
+    "sha256": "a9f3d0eee27480ca5ed13c7af1c7cf5ffe92d677a95ff43b539af7262d90d1f0",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\launch\\phase2\\W-0.draft.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/writer/phase2/W-1.draft.json": {
+    "sha256": "b6031875731898a56e02dc802e7fd2f9c277eb8b6df4df9dfa0670e65c030467",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\launch\\phase2\\W-1.draft.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/writer/phase2/W-2.draft.json": {
+    "sha256": "1ce08e12576d21ce8ccb63c81d18616f9e744c4dd7eed3d9392b5a0f73e77a86",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\launch\\phase2\\W-2.draft.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/writer/state.draft.json": {
+    "sha256": "ad1186d455adac1af36e3a36e0d1e8246977e703ebce0081c1a1d79426fcd6db",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\launch\\state.draft.json"
+  },
+  "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a5/writer/test_make_receipt.py": {
+    "sha256": "1f7b04b348711c21a29bfa9eddb435ce8ba1b7f46bdf9c5f1057f6679418e5a8",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\launch\\test_make_receipt.py"
+  },
+  "policy/range_bc/cm3_accounting.py": {
+    "sha256": "ad2d3c568ad0e7c08a4ae3c2680d02344288594b0bc985591108f9707e968835",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\owner\\policy\\range_bc\\cm3_accounting.py"
+  },
+  "policy/range_bc/cm3_run.py": {
+    "sha256": "327f51225949f4bdb16da427fbabbf9439005f8e5b09a9455e760ba75acf4900",
+    "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-joint\\candidate\\owner\\policy\\range_bc\\cm3_run.py"
+  }
+}

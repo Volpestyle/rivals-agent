@@ -1,0 +1,90 @@
+{
+  "format": "cm3-inputs-wrapper-result-v1",
+  "status": "PASS",
+  "attempt_id": "proof128-01",
+  "binding": {
+    "path": "/Users/james/dev/range-bc-data/handoff/modal/proof128-01/launch-binding.proposal.json",
+    "sha256": "6ad068e32ad675fc798d10f9f2b0aaebd45c80d985ed32a5f03aa5ecdd3697c5"
+  },
+  "owner_result": {
+    "path": "/outputs/r3-20260926-l40s/proof128-01/result.json",
+    "sha256": "11e76d93780ee01bd4649b9e78e5b9a0bb683a5d089fedab75e4aa6cba0cc814"
+  },
+  "transport_files": [
+    {
+      "path": "/outputs/r3-20260926-l40s/proof128-01/completed.json",
+      "bytes": 1776,
+      "sha256": "11e76d93780ee01bd4649b9e78e5b9a0bb683a5d089fedab75e4aa6cba0cc814"
+    },
+    {
+      "path": "/outputs/r3-20260926-l40s/proof128-01/crop.pt",
+      "bytes": 3343913,
+      "sha256": "e85d6427ae9abd5759cade0a7a54fb4687176f95b0389c787bd2b42ce460af2a"
+    },
+    {
+      "path": "/outputs/r3-20260926-l40s/proof128-01/details.json",
+      "bytes": 59462,
+      "sha256": "d511f351a7666f99e02c2405c4d0f3428ad1773453b73f28607afabf495c98d3"
+    },
+    {
+      "path": "/outputs/r3-20260926-l40s/proof128-01/effective-weight.json",
+      "bytes": 3895,
+      "sha256": "2fec6612f53b691f03c5e94ee0f36f0de8a0306f2719c01586ee3e4c7e9c4b76"
+    },
+    {
+      "path": "/outputs/r3-20260926-l40s/proof128-01/global.pt",
+      "bytes": 3343913,
+      "sha256": "1bee81ea5a6315a4649e8b48ba14b1d210b7f3e0662075fc29953a02a0c846e3"
+    },
+    {
+      "path": "/outputs/r3-20260926-l40s/proof128-01/inputs.json",
+      "bytes": 28351859,
+      "sha256": "dea6b585eb68f27d8816be0cc1ab08087124b4a674034e699d9c61d8cc60d344"
+    },
+    {
+      "path": "/outputs/r3-20260926-l40s/proof128-01/pairing.json",
+      "bytes": 95811,
+      "sha256": "5c84f0386c523a374d5c675b98f67aba967e9303f39e59cc51f646be01478520"
+    },
+    {
+      "path": "/outputs/r3-20260926-l40s/proof128-01/result.json",
+      "bytes": 1776,
+      "sha256": "11e76d93780ee01bd4649b9e78e5b9a0bb683a5d089fedab75e4aa6cba0cc814"
+    }
+  ],
+  "error": null,
+  "teardown": {
+    "status": "TERMINAL",
+    "identity": {
+      "profile": "rivals",
+      "workspace": "volpestyle",
+      "workspace_id": "ac-kMLf5bJKqF5CAlSbfNhGh0"
+    },
+    "apps": [
+      "ap-pczVAD3VGK5cX5adhuXLu3"
+    ],
+    "events": [
+      {
+        "app": "ap-pczVAD3VGK5cX5adhuXLu3",
+        "stop_error": "Modal command failed: App is already stopped. (Finished at 2026-09-27 03:13:07-05:00).\n"
+      },
+      {
+        "round": 1,
+        "terminal_apps": [
+          "ap-pczVAD3VGK5cX5adhuXLu3"
+        ],
+        "containers": 0
+      }
+    ],
+    "checked_at_unix": 1790496794.346816
+  },
+  "spend": {
+    "reserved_charged_usd": 1,
+    "estimated_conservative_usd": 0.3727678865850033,
+    "seconds_through_cleanup": 146.22295579098864,
+    "campaign_committed_usd": 14.53374656,
+    "campaign_reserved_seconds": 27709
+  },
+  "transition_result_sha256": "099c42997f9d49bc73f189d195566c759e7f42ed5fb910fc444fa3f26f003c13",
+  "completed_sha256": "53613d9de43a3484afa02a0c6d201bb3451edcaa8892404b797bd149235ef00e"
+}

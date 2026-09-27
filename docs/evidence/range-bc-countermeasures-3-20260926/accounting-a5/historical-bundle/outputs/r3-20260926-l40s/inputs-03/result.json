@@ -1,0 +1,37 @@
+{
+  "approval": {
+    "path": "/outputs/.modal-control/inputs-03/inputs-03.receipt.json",
+    "sha256": "3ed29afcb8631947620ab5cf88e59e4bfad69ef01579629b7a675ef02899483f"
+  },
+  "artifacts": {
+    "audit": {
+      "path": "/outputs/r3-20260926-l40s/inputs-03/effective-weight.json",
+      "sha256": "2fec6612f53b691f03c5e94ee0f36f0de8a0306f2719c01586ee3e4c7e9c4b76"
+    },
+    "details": {
+      "path": "/outputs/r3-20260926-l40s/inputs-03/details.json",
+      "sha256": "c1edc1cfd10a6978f9c4de4c6a9e68e61d9c9b8e74ec01ed7a34fb1b06169404"
+    },
+    "inputs": {
+      "path": "/outputs/r3-20260926-l40s/inputs-03/inputs.json",
+      "sha256": "dea6b585eb68f27d8816be0cc1ab08087124b4a674034e699d9c61d8cc60d344"
+    },
+    "pairing": {
+      "path": "/outputs/r3-20260926-l40s/inputs-03/pairing.json",
+      "sha256": "5c84f0386c523a374d5c675b98f67aba967e9303f39e59cc51f646be01478520"
+    }
+  },
+  "context_sha256": "f55dda3a08d428c2daf1c7c9120f0860dae5ed6d2250594f909ab0cc1547fa9b",
+  "elapsed_stage_seconds": 89.202543381,
+  "elapsed_total_seconds": 25758.202543381,
+  "format": "cm3-stage-result-v1",
+  "runtime_observation": {
+    "driver": "580.95.05",
+    "format": "cm3-runtime-observation-v1",
+    "kernel": "4.19.0-gvisor",
+    "platform": "Linux-4.19.0-gvisor-x86_64-with-glibc2.36",
+    "torch_cpu_capability_line": "  - CPU capability usage: AVX512\n"
+  },
+  "stage": "inputs",
+  "status": "PASS"
+}

@@ -1,0 +1,212 @@
+{
+  "allocation": {
+    "approved_by": "herdr-lead",
+    "cap_seconds": 57600,
+    "cloud_cap_usd": null,
+    "cloud_instance": null,
+    "hourly_usd": null,
+    "spent_seconds": null,
+    "stage_seconds": null
+  },
+  "budget_approval": {
+    "path": null,
+    "sha256": null
+  },
+  "fit_approvals": {
+    "A-0": {
+      "path": null,
+      "sha256": null
+    },
+    "A-1": {
+      "path": null,
+      "sha256": null
+    },
+    "A-2": {
+      "path": null,
+      "sha256": null
+    },
+    "H-0": {
+      "path": null,
+      "sha256": null
+    },
+    "H-1": {
+      "path": null,
+      "sha256": null
+    },
+    "H-2": {
+      "path": null,
+      "sha256": null
+    },
+    "H-repeat-0": {
+      "path": null,
+      "sha256": null
+    },
+    "I-0": {
+      "path": null,
+      "sha256": null
+    },
+    "I-1": {
+      "path": null,
+      "sha256": null
+    },
+    "I-2": {
+      "path": null,
+      "sha256": null
+    },
+    "W-0": {
+      "path": null,
+      "sha256": null
+    },
+    "W-1": {
+      "path": null,
+      "sha256": null
+    },
+    "W-2": {
+      "path": null,
+      "sha256": null
+    }
+  },
+  "fit_records": {
+    "A-0": {
+      "path": null,
+      "sha256": null
+    },
+    "A-1": {
+      "path": null,
+      "sha256": null
+    },
+    "A-2": {
+      "path": null,
+      "sha256": null
+    },
+    "H-0": {
+      "path": null,
+      "sha256": null
+    },
+    "H-1": {
+      "path": null,
+      "sha256": null
+    },
+    "H-2": {
+      "path": null,
+      "sha256": null
+    },
+    "H-repeat-0": {
+      "path": null,
+      "sha256": null
+    },
+    "I-0": {
+      "path": null,
+      "sha256": null
+    },
+    "I-1": {
+      "path": null,
+      "sha256": null
+    },
+    "I-2": {
+      "path": null,
+      "sha256": null
+    },
+    "W-0": {
+      "path": null,
+      "sha256": null
+    },
+    "W-1": {
+      "path": null,
+      "sha256": null
+    },
+    "W-2": {
+      "path": null,
+      "sha256": null
+    }
+  },
+  "fit_results": {
+    "A-0": {
+      "path": null,
+      "sha256": null
+    },
+    "A-1": {
+      "path": null,
+      "sha256": null
+    },
+    "A-2": {
+      "path": null,
+      "sha256": null
+    },
+    "H-0": {
+      "path": null,
+      "sha256": null
+    },
+    "H-1": {
+      "path": null,
+      "sha256": null
+    },
+    "H-2": {
+      "path": null,
+      "sha256": null
+    },
+    "H-repeat-0": {
+      "path": null,
+      "sha256": null
+    },
+    "I-0": {
+      "path": null,
+      "sha256": null
+    },
+    "I-1": {
+      "path": null,
+      "sha256": null
+    },
+    "I-2": {
+      "path": null,
+      "sha256": null
+    },
+    "W-0": {
+      "path": null,
+      "sha256": null
+    },
+    "W-1": {
+      "path": null,
+      "sha256": null
+    },
+    "W-2": {
+      "path": null,
+      "sha256": null
+    }
+  },
+  "judge_launch": {
+    "path": null,
+    "sha256": null
+  },
+  "phase1_gate": {
+    "path": null,
+    "sha256": null
+  },
+  "projection": {
+    "non_compute_usd": null,
+    "per_fit_diagnostics_serialization_seconds": null,
+    "safety_factor": null,
+    "source_and_full_cache_hashing_seconds": null,
+    "startup_shutdown_seconds": null,
+    "total_cache_frames": null,
+    "verification_seconds": null
+  },
+  "stage_results": {
+    "extract": {
+      "path": null,
+      "sha256": null
+    },
+    "inputs": {
+      "path": null,
+      "sha256": null
+    },
+    "proof128": {
+      "path": null,
+      "sha256": null
+    },
+    "smoke": {
+      "path": null,
+      "sha256": null
+    }
+  }
+}

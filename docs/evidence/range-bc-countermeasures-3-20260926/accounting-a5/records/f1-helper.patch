@@ -1,0 +1,139 @@
+--- cm3_accounting.py@joint10fc4e48
++++ cm3_accounting.py@F1
+@@ -5,6 +5,8 @@
+ """
+ from decimal import Decimal, ROUND_CEILING
+ import math
++from pathlib import Path, PurePosixPath
++import re
+ 
+ CAP_SECONDS = 57600
+ CAP_USD = Decimal('50')
+@@ -35,6 +37,64 @@
+ 
+ def usd_up(value):
+     return value.quantize(Decimal('0.000001'), rounding=ROUND_CEILING)
++
++
++
++def relative_ref(ref):
++    """Validate one root-relative evidence reference without changing its bytes."""
++    require(isinstance(ref, dict) and set(ref) == {'path', 'sha256'}, 'canonical evidence reference required')
++    name = ref['path']
++    require(isinstance(name, str) and name and ':' not in name and '\\' not in name,
++            'invalid canonical evidence path')
++    path = PurePosixPath(name)
++    require(path.parts and not path.is_absolute() and '..' not in path.parts and str(path) == name,
++            'noncanonical/traversal evidence path')
++    require(isinstance(ref['sha256'], str) and re.fullmatch('[0-9a-f]{64}', ref['sha256']) is not None,
++            'invalid canonical evidence digest')
++    return dict(ref)
++
++
++
++def reservation_ref(attempt, digest):
++    require(isinstance(attempt, str) and re.fullmatch('[a-zA-Z0-9_.-]+', attempt) is not None
++            and attempt not in ('.', '..'), 'invalid reservation attempt')
++    return relative_ref({'path': 'reservations/' + attempt + '.json', 'sha256': digest})
++
++
++def output_ref(ref):
++    """Only immutable owner /outputs refs have a fixed canonical namespace alias."""
++    require(isinstance(ref, dict) and set(ref) == {'path', 'sha256'}, 'owner reference required')
++    name = ref['path']
++    require(isinstance(name, str), 'invalid owner reference path')
++    if name.startswith('/outputs/'):
++        name = name[1:]
++    result = relative_ref({'path': name, 'sha256': ref['sha256']})
++    require(result['path'].startswith('outputs/'), 'owner evidence outside outputs namespace')
++    return result
++
++
++def bundle_document(reference, document, *, local_path=Path):
++    """Bind relative evidence to the externally authenticated ledger's directory.
++
++    document remains the caller's hash-checking reader. local_path maps logical
++    mounts to the physical filesystem only for containment checks (Writer.local).
++    No caller-supplied mapping is serialized into the canonical ledger.
++    """
++    external = Path(reference['path'])
++    if not external.is_absolute():
++        external = PurePosixPath(reference['path'])
++    root = external.parent
++    require(root.is_absolute(), 'absolute external ledger reference required')
++    physical_root = Path(local_path(str(root))).resolve(strict=True)
++    require(physical_root.is_dir(), 'ledger evidence root missing')
++    def read(ref):
++        ref = relative_ref(ref)
++        target = root.joinpath(*PurePosixPath(ref['path']).parts)
++        physical = Path(local_path(str(target))).resolve(strict=True)
++        require(physical.is_relative_to(physical_root) and physical.is_file(),
++                'evidence escaped ledger root')
++        return document({'path': str(target), 'sha256': ref['sha256']})
++    return read
+ 
+ 
+ def settle(row, document):
+@@ -91,22 +151,37 @@
+             'owner_results': owner_results, 'reservation': row['reservation']}
+ 
+ 
+-def ledger(reference, document, *, required_results=(), inventory=None):
++def ledger(reference, document, *, required_results=(), inventory=None, local_path=Path):
+     """The external pin binds the complete reservation inventory and every settlement.
+ 
+ The launching wrapper MUST also compare against its on-disk campaign inventory
+ under its existing lock, before creating a new hold. Missing results refuse.
+ """
+     data = document(reference)
+-    require(data['format'] == 'cm3-measured-accounting-v1' and data['approved_by'] == 'herdr-lead'
++    canonical = data['format'] == 'cm3-measured-accounting-v2'
++    require(data['format'] in ('cm3-measured-accounting-v1', 'cm3-measured-accounting-v2') and data['approved_by'] == 'herdr-lead'
+             and data['campaign_id'] == 'r3-20260926-l40s', 'accounting authority/campaign')
+     require(data['basis_seconds'] == BASIS_SECONDS and Decimal(str(data['basis_usd'])) == BASIS_USD,
+             'pre-campaign basis changed')
++    if canonical:
++        relative_ref(data['inventory'])
++        for row in data['settlements']:
++            for key in ('reservation', 'result', 'pricing'):
++                if key in row:
++                    relative_ref(row[key])
++        for ref in data.get('completed_phase1', {}).values():
++            require(relative_ref(ref) == output_ref(ref), 'noncanonical phase1 output')
++        required_results = [output_ref(ref) for ref in required_results]
++        document = bundle_document(reference, document, local_path=local_path)
+     reservations = document(data['inventory'])
+-    require(reservations['format'] == 'cm3-reservation-inventory-v1'
++    require(reservations['format'] == ('cm3-reservation-inventory-v2' if canonical else 'cm3-reservation-inventory-v1')
+             and reservations['campaign_id'] == data['campaign_id'], 'inventory campaign')
+     expected = reservations['reservations']
+     require(isinstance(expected, dict) and expected, 'empty reservation inventory')
++    if canonical:
++        for attempt, ref in expected.items():
++            require(relative_ref(ref) == reservation_ref(attempt, ref['sha256']),
++                    'noncanonical reservation location')
+     if inventory is not None:
+         require(expected == inventory, 'campaign reservation inventory changed')
+     rows, ids, measured, owners = data['settlements'], set(), [], []
+@@ -116,6 +191,8 @@
+                 'duplicate/unregistered settlement')
+         ids.add(attempt)
+         item = settle(row, document)
++        if canonical:
++            item['owner_results'] = [output_ref(ref) for ref in item['owner_results']]
+         measured.append(item)
+         elapsed = Decimal(0)
+         for ref in item['owner_results']:
+@@ -133,8 +210,10 @@
+             'inventory': expected}
+ 
+ 
+-def allocation(budget, document, *, required_results=()):
+-    totals = ledger(budget['accounting'], document, required_results=required_results)
++def allocation(budget, document, *, required_results=(), local_path=Path):
++    require(document(budget['accounting'])['format'] == 'cm3-measured-accounting-v2',
++            'canonical v2 ledger required for new allocations')
++    totals = ledger(budget['accounting'], document, required_results=required_results, local_path=local_path)
+     require(budget['spent_seconds'] == totals['spent_seconds']
+             and Decimal(str(budget['spent_usd'])) == Decimal(str(totals['spent_usd'])), 'spent differs from measured ledger')
+     cap = number(budget['cap_seconds'], 'compute cap', True)

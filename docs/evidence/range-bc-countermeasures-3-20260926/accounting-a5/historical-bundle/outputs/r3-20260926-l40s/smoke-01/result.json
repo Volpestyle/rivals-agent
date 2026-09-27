@@ -1,0 +1,59 @@
+{
+  "approval": {
+    "path": "/outputs/.modal-control/smoke-01/smoke-01.receipt.json",
+    "sha256": "8d7771641f47545d4ccffaa5953932ead6932595a085ae69b8865ca3cb48f756"
+  },
+  "artifacts": {
+    "audit": {
+      "path": "/outputs/r3-20260926-l40s/smoke-01/effective-weight.json",
+      "sha256": "2fec6612f53b691f03c5e94ee0f36f0de8a0306f2719c01586ee3e4c7e9c4b76"
+    },
+    "details": {
+      "path": "/outputs/r3-20260926-l40s/smoke-01/details.json",
+      "sha256": "929c5d9b0deb0d72db0b092111fdb3fb527328722529ec162405c4d639bdd3fa"
+    },
+    "features": {
+      "20260923T051828-422Z-33696-1": {
+        "path": "/outputs/r3-20260926-l40s/smoke-01/features/20260923T051828-422Z-33696-1/manifest.json",
+        "sha256": "cf75af4a3f1c996f89abeaa73ffe733733d059826860336f8a340b9099cc948d"
+      },
+      "20260923T200129-346Z-33696-6": {
+        "path": "/outputs/r3-20260926-l40s/smoke-01/features/20260923T200129-346Z-33696-6/manifest.json",
+        "sha256": "c51c951ecfb8e7f5b19a09980678904ba24f2b2d73288cc7480b15b2ab09b98f"
+      },
+      "20260924T232304-170Z-12024-1": {
+        "path": "/outputs/r3-20260926-l40s/smoke-01/features/20260924T232304-170Z-12024-1/manifest.json",
+        "sha256": "440e5df04a6147089f8be208c269d0284adb2de65754e71fb15471c28d025f30"
+      },
+      "20260925T021320-371Z-7804-1": {
+        "path": "/outputs/r3-20260926-l40s/smoke-01/features/20260925T021320-371Z-7804-1/manifest.json",
+        "sha256": "4ad16338e231c35c36805ce2d422b64218886e4cb6d30b9b4dd0693e000255f6"
+      },
+      "20260925T025230-605Z-7804-2": {
+        "path": "/outputs/r3-20260926-l40s/smoke-01/features/20260925T025230-605Z-7804-2/manifest.json",
+        "sha256": "2ee96f87177c3bbef326a92c081389900b62fb496d17a139ddacc949bc3d210e"
+      }
+    },
+    "inputs": {
+      "path": "/outputs/r3-20260926-l40s/smoke-01/inputs.json",
+      "sha256": "dea6b585eb68f27d8816be0cc1ab08087124b4a674034e699d9c61d8cc60d344"
+    },
+    "pairing": {
+      "path": "/outputs/r3-20260926-l40s/smoke-01/pairing.json",
+      "sha256": "5c84f0386c523a374d5c675b98f67aba967e9303f39e59cc51f646be01478520"
+    }
+  },
+  "context_sha256": "f55dda3a08d428c2daf1c7c9120f0860dae5ed6d2250594f909ab0cc1547fa9b",
+  "elapsed_stage_seconds": 440.782506128,
+  "elapsed_total_seconds": 28149.782506128002,
+  "format": "cm3-stage-result-v1",
+  "runtime_observation": {
+    "driver": "580.95.05",
+    "format": "cm3-runtime-observation-v1",
+    "kernel": "4.19.0-gvisor",
+    "platform": "Linux-4.19.0-gvisor-x86_64-with-glibc2.36",
+    "torch_cpu_capability_line": "  - CPU capability usage: AVX512\n"
+  },
+  "stage": "smoke",
+  "status": "PASS"
+}

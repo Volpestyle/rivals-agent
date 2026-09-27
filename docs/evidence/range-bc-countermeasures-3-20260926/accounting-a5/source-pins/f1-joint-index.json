@@ -1,0 +1,23 @@
+{
+  "base_joint_manifest_sha256": "10fc4e4806fb26ed7fadd1063c70d8065496d53774a5de9a85abd3188e83b4aa",
+  "base_review": {
+    "path": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-joint\\review-budget-joint-20260927.md",
+    "sha256": "5451ba0a9d442d9fc97972c839227c6e477c2977f7a51f7dbf3070a7c6416864"
+  },
+  "delta_only": true,
+  "format": "cm3-f1-joint-delta-index-v1",
+  "shared_accounting_sha256": "ad2d3c568ad0e7c08a4ae3c2680d02344288594b0bc985591108f9707e968835",
+  "sources": [
+    {
+      "path": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\budget-bridge-f1\\files.json",
+      "sha256": "1d9fc6f92fc1ef88420eb2789e294ccdd738513b0d6a79075033b4c8680bce9c",
+      "verified_members": 86
+    },
+    {
+      "path": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\canonical-ledger-f1-review-20260927\\files.json",
+      "sha256": "37c432ab108f0881f489436d42a0205df271b21fe81c8ff96359eb9b8d05a134",
+      "verified_members": 53
+    }
+  ],
+  "status": "FROZEN_DELTA_REVIEW_NOT_LAUNCH_APPROVAL"
+}

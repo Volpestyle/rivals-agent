@@ -1,0 +1,57 @@
+{
+  "files": {
+    "policy/range_bc/cm3-environment.in": "b82abb363e713e1a7078ad7a08fb660f280372088acffb2a199aa18c5c86e7a7",
+    "policy/range_bc/cm3-execution-constraints.txt": "aaac776e0d03ae16453f0c8d4bddba80285f57a85ef0a9ea62f9ffd8c86c230c",
+    "policy/range_bc/cm3-linux-x86_64.lock": "7a2634d6a4bcbee0e335ed5412b7e30ed0be088158a2f9d60eb4b8ed2b18571f",
+    "policy/range_bc/cm3-macos-arm64.lock": "433eec794dbf0c73f2433e7d5d067baf62a6fe8d23e769717c2c8e8a9a076892",
+    "policy/range_bc/cm3-requirements.txt": "a309da99faab36cfc41f4b493a6f7baaca33c218e8809c5852436dab3af8aa35",
+    "policy/range_bc/cm3.py": "c93d3c5125f03ef1c0b9183371a4200087a88031f675c3232a078cbaf86d8d3d",
+    "policy/range_bc/cm3_features.py": "45d40ff6045da313db3ae1b7fb0b3520ec6d08da0a7dea7210c56db1193272e7",
+    "policy/range_bc/cm3_proof.py": "e59a06e4bd349b7e3480f8dc9423ae4eeecb5c8b5c7b984c0b0ff75496e79fc6",
+    "policy/range_bc/cm3_run.py": "bcb638d057ba7b55fb906653569ef249fc755d39d0445df738d284c4ec63c817",
+    "policy/range_bc/cm3_train.py": "e05ca55056f7cb561afa23934572aa1ae1abdf972eab43f3b818bd8ec4a19426",
+    "tests/test_range_bc_cm3.py": "38a248e30b042110d0daf74513c08eb8d023edaaff0ed00c1cc80cad03333716",
+    "tests/test_range_bc_cm3_diagnostics.py": "6689df90f59ea27337e89810d1f67d4add2a0e66da702767cf6383311b59c28f",
+    "tests/test_range_bc_cm3_run.py": "92c9afd5b285340ce53474f80997f4e34dcc8575c14827311785561d9988ed23"
+  },
+  "fit_receipt_a3_sha256": "5a6c1b4089e9e1790e5ed29a2b0ed1c5947558933dbae14a97d4a2b8323fc619",
+  "git_head": "fb0d450897d584377ea48326b1738dd7721672f4",
+  "judge_sha256": "e23b3212a0eadc98bc590e5081a92c9fab6740e93808aba2d245d6020b3f8eb0",
+  "legacy_diff_9d61d59": "empty",
+  "prior_handback_sha256": "0103322f76275ac2737e78da6dd5283bd85e8c07cb6d5e8e2eab4b0629ef0817",
+  "review_sha256": "0c80ce4d8be4b1bbe66276ca5b04d83f4be3cb124cf7430a44ac87e0a11511c3",
+  "tests": {
+    "cm3-fixes2-tests.xml": {
+      "errors": "0",
+      "failures": "0",
+      "hostname": "SupedUpSilly",
+      "name": "pytest",
+      "sha256": "22921957f216392088cb001f40727bc10e37938cc71df6b60ecf080ddc9026d6",
+      "skipped": "0",
+      "tests": "156",
+      "time": "111.196",
+      "timestamp": "2026-09-26T20:32:16.646466-05:00"
+    },
+    "regression-current-main-fixes2.xml": {
+      "errors": "0",
+      "failures": "0",
+      "hostname": "SupedUpSilly",
+      "name": "pytest",
+      "sha256": "4151a63cb4243216c4641eaf9823d5491371c8e12eec61db018b4fece2ae5172",
+      "skipped": "77",
+      "tests": "2304",
+      "time": "314.639",
+      "timestamp": "2026-09-26T20:32:34.166634-05:00"
+    }
+  },
+  "unchanged_since_fixes": {
+    "policy/range_bc/cm3-environment.in": "b82abb363e713e1a7078ad7a08fb660f280372088acffb2a199aa18c5c86e7a7",
+    "policy/range_bc/cm3-execution-constraints.txt": "aaac776e0d03ae16453f0c8d4bddba80285f57a85ef0a9ea62f9ffd8c86c230c",
+    "policy/range_bc/cm3-linux-x86_64.lock": "7a2634d6a4bcbee0e335ed5412b7e30ed0be088158a2f9d60eb4b8ed2b18571f",
+    "policy/range_bc/cm3-macos-arm64.lock": "433eec794dbf0c73f2433e7d5d067baf62a6fe8d23e769717c2c8e8a9a076892",
+    "policy/range_bc/cm3-requirements.txt": "a309da99faab36cfc41f4b493a6f7baaca33c218e8809c5852436dab3af8aa35",
+    "policy/range_bc/cm3.py": "c93d3c5125f03ef1c0b9183371a4200087a88031f675c3232a078cbaf86d8d3d",
+    "policy/range_bc/cm3_features.py": "45d40ff6045da313db3ae1b7fb0b3520ec6d08da0a7dea7210c56db1193272e7",
+    "policy/range_bc/cm3_proof.py": "e59a06e4bd349b7e3480f8dc9423ae4eeecb5c8b5c7b984c0b0ff75496e79fc6"
+  }
+}

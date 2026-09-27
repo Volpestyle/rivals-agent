@@ -1,0 +1,10 @@
+{
+  "attempt_id": "capture-03",
+  "reserved_usd": 0.2,
+  "reserved_compute_seconds": 250,
+  "prior_committed_usd": 12.333746560000002,
+  "prior_compute_seconds": 25419,
+  "proposal_sha256": "df731ec32e233490977fc7a62b3028a3711409db92cf0e9b5e467d5eee3bffb8",
+  "ledger_sha256": "07ad84411c03c596c6710a0dcaa737e8214d010e9fd04aa240e29719c7db5a43",
+  "message_id": "070dd9a1-2858-494f-941a-ecb36b0ee4e9"
+}

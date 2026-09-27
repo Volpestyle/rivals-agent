@@ -1,0 +1,155 @@
+{
+  "format": "cm3-inputs-wrapper-result-v1",
+  "status": "PASS",
+  "attempt_id": "smoke-01",
+  "binding": {
+    "path": "/Users/james/dev/range-bc-data/handoff/modal/smoke-01-scope2/launch-binding.proposal.json",
+    "sha256": "d36d3e7f1fccdd9fd1a973cdf4b798c7e81be1589ab69f4401f425a69fdb4a05"
+  },
+  "owner_result": {
+    "path": "/outputs/r3-20260926-l40s/smoke-01/result.json",
+    "sha256": "f37bbfeff11a35e68e8db0060f14f316a68cbb19eb7dfe3ccc187bd8d16c6ec2"
+  },
+  "transport_files": [
+    {
+      "path": "/outputs/r3-20260926-l40s/smoke-01/completed.json",
+      "bytes": 2626,
+      "sha256": "f37bbfeff11a35e68e8db0060f14f316a68cbb19eb7dfe3ccc187bd8d16c6ec2"
+    },
+    {
+      "path": "/outputs/r3-20260926-l40s/smoke-01/details.json",
+      "bytes": 29977,
+      "sha256": "929c5d9b0deb0d72db0b092111fdb3fb527328722529ec162405c4d639bdd3fa"
+    },
+    {
+      "path": "/outputs/r3-20260926-l40s/smoke-01/effective-weight.json",
+      "bytes": 3895,
+      "sha256": "2fec6612f53b691f03c5e94ee0f36f0de8a0306f2719c01586ee3e4c7e9c4b76"
+    },
+    {
+      "path": "/outputs/r3-20260926-l40s/smoke-01/features/20260923T051828-422Z-33696-1/crop.f32",
+      "bytes": 2506752,
+      "sha256": "1882654f8a82d9d36320964664fc9828d1b16fcedf1b6a364b040c65b6ef6e08"
+    },
+    {
+      "path": "/outputs/r3-20260926-l40s/smoke-01/features/20260923T051828-422Z-33696-1/global.f32",
+      "bytes": 2506752,
+      "sha256": "07bcb187fa01f8c97b724ecde3d781b2bfcfe2e4d16d46ee1a540ad91ecdc2bb"
+    },
+    {
+      "path": "/outputs/r3-20260926-l40s/smoke-01/features/20260923T051828-422Z-33696-1/manifest.json",
+      "bytes": 1095216,
+      "sha256": "cf75af4a3f1c996f89abeaa73ffe733733d059826860336f8a340b9099cc948d"
+    },
+    {
+      "path": "/outputs/r3-20260926-l40s/smoke-01/features/20260923T200129-346Z-33696-6/crop.f32",
+      "bytes": 2506752,
+      "sha256": "e0ffbd7a9b8833539c1d5ca40844003ce6e5a939489eb0cf24e42aa6eae8ed28"
+    },
+    {
+      "path": "/outputs/r3-20260926-l40s/smoke-01/features/20260923T200129-346Z-33696-6/global.f32",
+      "bytes": 2506752,
+      "sha256": "106ae2a1faceac652bb990b4dd9585f82be9b422b44bc4075271f724d2420482"
+    },
+    {
+      "path": "/outputs/r3-20260926-l40s/smoke-01/features/20260923T200129-346Z-33696-6/manifest.json",
+      "bytes": 4272908,
+      "sha256": "c51c951ecfb8e7f5b19a09980678904ba24f2b2d73288cc7480b15b2ab09b98f"
+    },
+    {
+      "path": "/outputs/r3-20260926-l40s/smoke-01/features/20260924T232304-170Z-12024-1/crop.f32",
+      "bytes": 2506752,
+      "sha256": "2dee277c59210cce8a50711c1fcbdf42bd97cb86150a2fd8785edbed62542089"
+    },
+    {
+      "path": "/outputs/r3-20260926-l40s/smoke-01/features/20260924T232304-170Z-12024-1/global.f32",
+      "bytes": 2506752,
+      "sha256": "47d650acde2ed219bab72ffc9a0486afff3e70b022e427f1afb337d84e7817b0"
+    },
+    {
+      "path": "/outputs/r3-20260926-l40s/smoke-01/features/20260924T232304-170Z-12024-1/manifest.json",
+      "bytes": 1384107,
+      "sha256": "440e5df04a6147089f8be208c269d0284adb2de65754e71fb15471c28d025f30"
+    },
+    {
+      "path": "/outputs/r3-20260926-l40s/smoke-01/features/20260925T021320-371Z-7804-1/crop.f32",
+      "bytes": 2506752,
+      "sha256": "c60f0ca511198ff167975e3075afc54fbb518aab7fd2d5e9abce493a1fd2c69e"
+    },
+    {
+      "path": "/outputs/r3-20260926-l40s/smoke-01/features/20260925T021320-371Z-7804-1/global.f32",
+      "bytes": 2506752,
+      "sha256": "3219eac8affc18da56abe7974376c70c2e26d124be5bf10def79b50bc83f3166"
+    },
+    {
+      "path": "/outputs/r3-20260926-l40s/smoke-01/features/20260925T021320-371Z-7804-1/manifest.json",
+      "bytes": 5848745,
+      "sha256": "4ad16338e231c35c36805ce2d422b64218886e4cb6d30b9b4dd0693e000255f6"
+    },
+    {
+      "path": "/outputs/r3-20260926-l40s/smoke-01/features/20260925T025230-605Z-7804-2/crop.f32",
+      "bytes": 2506752,
+      "sha256": "a7e9f618fac7ccd246af004b377ab396bc24dedd7929e8d3f54227de9ee52f79"
+    },
+    {
+      "path": "/outputs/r3-20260926-l40s/smoke-01/features/20260925T025230-605Z-7804-2/global.f32",
+      "bytes": 2506752,
+      "sha256": "f30580619c6c9628e4dd5fd3f26651ed38aa1dcc053c75f9ec603a3e91005f58"
+    },
+    {
+      "path": "/outputs/r3-20260926-l40s/smoke-01/features/20260925T025230-605Z-7804-2/manifest.json",
+      "bytes": 580147,
+      "sha256": "2ee96f87177c3bbef326a92c081389900b62fb496d17a139ddacc949bc3d210e"
+    },
+    {
+      "path": "/outputs/r3-20260926-l40s/smoke-01/inputs.json",
+      "bytes": 28351859,
+      "sha256": "dea6b585eb68f27d8816be0cc1ab08087124b4a674034e699d9c61d8cc60d344"
+    },
+    {
+      "path": "/outputs/r3-20260926-l40s/smoke-01/pairing.json",
+      "bytes": 95811,
+      "sha256": "5c84f0386c523a374d5c675b98f67aba967e9303f39e59cc51f646be01478520"
+    },
+    {
+      "path": "/outputs/r3-20260926-l40s/smoke-01/result.json",
+      "bytes": 2626,
+      "sha256": "f37bbfeff11a35e68e8db0060f14f316a68cbb19eb7dfe3ccc187bd8d16c6ec2"
+    }
+  ],
+  "error": null,
+  "teardown": {
+    "status": "TERMINAL",
+    "identity": {
+      "profile": "rivals",
+      "workspace": "volpestyle",
+      "workspace_id": "ac-kMLf5bJKqF5CAlSbfNhGh0"
+    },
+    "apps": [
+      "ap-a0TbOqllE67arU7E8CegM2"
+    ],
+    "events": [
+      {
+        "app": "ap-a0TbOqllE67arU7E8CegM2",
+        "stop_error": "Modal command failed: App is already stopped. (Finished at 2026-09-27 03:40:36-05:00).\n"
+      },
+      {
+        "round": 1,
+        "terminal_apps": [
+          "ap-a0TbOqllE67arU7E8CegM2"
+        ],
+        "containers": 0
+      }
+    ],
+    "checked_at_unix": 1790498441.863219
+  },
+  "spend": {
+    "reserved_charged_usd": 1,
+    "estimated_conservative_usd": 0.6027055034688276,
+    "seconds_through_cleanup": 466.54171329102246,
+    "campaign_committed_usd": 15.533746559999997,
+    "campaign_reserved_seconds": 28729
+  },
+  "transition_result_sha256": "4d4ee7ebfa1800e11f3f13a15787e81e3a1a0aaa77fe9aa859e4ddd793907496",
+  "completed_sha256": "5596bc6069d9454b8fd17243042892a6839efc7de924934787c4b39ee0f7d558"
+}

@@ -1,0 +1,45 @@
+{
+  "approval": {
+    "path": "/outputs/.modal-control/proof128-01/proof128-01.receipt.json",
+    "sha256": "b648ac8a305482ade46b6782a5e3167d83950a04f0e6301e47179150444330df"
+  },
+  "artifacts": {
+    "audit": {
+      "path": "/outputs/r3-20260926-l40s/proof128-01/effective-weight.json",
+      "sha256": "2fec6612f53b691f03c5e94ee0f36f0de8a0306f2719c01586ee3e4c7e9c4b76"
+    },
+    "details": {
+      "path": "/outputs/r3-20260926-l40s/proof128-01/details.json",
+      "sha256": "d511f351a7666f99e02c2405c4d0f3428ad1773453b73f28607afabf495c98d3"
+    },
+    "inputs": {
+      "path": "/outputs/r3-20260926-l40s/proof128-01/inputs.json",
+      "sha256": "dea6b585eb68f27d8816be0cc1ab08087124b4a674034e699d9c61d8cc60d344"
+    },
+    "pairing": {
+      "path": "/outputs/r3-20260926-l40s/proof128-01/pairing.json",
+      "sha256": "5c84f0386c523a374d5c675b98f67aba967e9303f39e59cc51f646be01478520"
+    },
+    "probe_crop": {
+      "path": "/outputs/r3-20260926-l40s/proof128-01/crop.pt",
+      "sha256": "e85d6427ae9abd5759cade0a7a54fb4687176f95b0389c787bd2b42ce460af2a"
+    },
+    "probe_global": {
+      "path": "/outputs/r3-20260926-l40s/proof128-01/global.pt",
+      "sha256": "1bee81ea5a6315a4649e8b48ba14b1d210b7f3e0662075fc29953a02a0c846e3"
+    }
+  },
+  "context_sha256": "f55dda3a08d428c2daf1c7c9120f0860dae5ed6d2250594f909ab0cc1547fa9b",
+  "elapsed_stage_seconds": 116.90498593000001,
+  "elapsed_total_seconds": 26805.90498593,
+  "format": "cm3-stage-result-v1",
+  "runtime_observation": {
+    "driver": "580.95.05",
+    "format": "cm3-runtime-observation-v1",
+    "kernel": "4.19.0-gvisor",
+    "platform": "Linux-4.19.0-gvisor-x86_64-with-glibc2.36",
+    "torch_cpu_capability_line": "  - CPU capability usage: AVX2\n"
+  },
+  "stage": "proof128",
+  "status": "PASS"
+}

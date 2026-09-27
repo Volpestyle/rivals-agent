@@ -1,0 +1,272 @@
+{
+  "allowed_sources": [
+    "20260923T051828-422Z-33696-1",
+    "20260923T200129-346Z-33696-6",
+    "20260924T232304-170Z-12024-1",
+    "20260925T021320-371Z-7804-1",
+    "20260925T025230-605Z-7804-2",
+    "20260923T171533-187Z-33696-5",
+    "20260923T205528-900Z-45572-3"
+  ],
+  "approved_by": "herdr-lead",
+  "arm": "H",
+  "attempt_id": null,
+  "budget": {
+    "approved_by": "herdr-lead",
+    "cap_seconds": 57600,
+    "cloud_cap_usd": null,
+    "cloud_instance": null,
+    "forecast_total_seconds": null,
+    "hourly_usd": null,
+    "spent_seconds": null,
+    "stage_seconds": null
+  },
+  "budget_approval": {
+    "path": null,
+    "sha256": null
+  },
+  "context": {
+    "amendment": 3,
+    "assets": {
+      "config_sha256": null,
+      "directory": null,
+      "receipt": {
+        "config_sha256": null,
+        "implementation_sha256": {
+          "configuration_dinov2": null,
+          "modeling_dinov2": null
+        },
+        "model": "facebook/dinov2-small",
+        "revision": "ed25f3a31f01632728cabb09d1542f84ab7b0056",
+        "weights_bytes": 88249960,
+        "weights_sha256": "ae1e99fcefd534ed978cdeb8326f08030c96e28b7a81ffcbc98a857c84d14be1"
+      }
+    },
+    "code": null,
+    "denylist": {
+      "path": null,
+      "sha256": null
+    },
+    "dev_workload": {
+      "run_lengths": null,
+      "window_count": null
+    },
+    "device": "cuda",
+    "hardware": {
+      "class": null,
+      "cuda_runtime": null,
+      "cudnn": null,
+      "driver": null
+    },
+    "implementation_review": {
+      "path": null,
+      "sha256": null
+    },
+    "judge": {
+      "path": null,
+      "sha256": "e23b3212a0eadc98bc590e5081a92c9fab6740e93808aba2d245d6020b3f8eb0"
+    },
+    "judge_tests": {
+      "path": null,
+      "sha256": "7fdbb62092cfd3d3f70093e63d48ac040d928c0920deca2bae1b7918df90481e"
+    },
+    "patch_equivalence": {
+      "path": null,
+      "sha256": null
+    },
+    "registry": {
+      "path": null,
+      "sha256": null
+    },
+    "sidecar_manifest": {
+      "path": null,
+      "sha256": "03bbf9836dc06824d2380bcaa9c096ea2b6f8cea46758c18316bb70b7eb016ba"
+    },
+    "sidecar_reader_sha256": "6afc06f52bc8561a9ae9b36d7b6db0d36130ac7f30f6b1bf567c8acffa38d070",
+    "software": {
+      "locks": {
+        "policy/range_bc/cm3-environment.in": "b82abb363e713e1a7078ad7a08fb660f280372088acffb2a199aa18c5c86e7a7",
+        "policy/range_bc/cm3-execution-constraints.txt": "aaac776e0d03ae16453f0c8d4bddba80285f57a85ef0a9ea62f9ffd8c86c230c",
+        "policy/range_bc/cm3-linux-x86_64.lock": "7a2634d6a4bcbee0e335ed5412b7e30ed0be088158a2f9d60eb4b8ed2b18571f",
+        "policy/range_bc/cm3-macos-arm64.lock": "433eec794dbf0c73f2433e7d5d067baf62a6fe8d23e769717c2c8e8a9a076892",
+        "policy/range_bc/cm3-requirements.txt": "a309da99faab36cfc41f4b493a6f7baaca33c218e8809c5852436dab3af8aa35",
+        "uv.lock": "805154cc51ee9c02ddeeaa5696afdd657a6205a2af11d04b0c7224f0a4da696e"
+      },
+      "machine": "x86_64",
+      "os": null,
+      "packages": {
+        "certifi": "2026.7.22",
+        "charset-normalizer": "3.5.1",
+        "cuda-bindings": "13.4.2",
+        "cuda-pathfinder": "1.8.2",
+        "cuda-toolkit": "13.0.3.0",
+        "filelock": "4.0.1",
+        "fsspec": "2026.9.0",
+        "hf-xet": "1.6.0",
+        "huggingface-hub": "0.36.2",
+        "idna": "3.20",
+        "jinja2": "3.1.6",
+        "markupsafe": "3.0.3",
+        "mpmath": "1.3.0",
+        "networkx": "3.6.1",
+        "numpy": "2.4.6",
+        "nvidia-cublas": "13.1.1.3",
+        "nvidia-cuda-cupti": "13.0.85",
+        "nvidia-cuda-nvrtc": "13.0.88",
+        "nvidia-cuda-runtime": "13.0.96",
+        "nvidia-cudnn-cu13": "9.24.0.43",
+        "nvidia-cufft": "12.0.0.61",
+        "nvidia-cufile": "1.15.1.6",
+        "nvidia-curand": "10.4.0.35",
+        "nvidia-cusolver": "12.0.4.66",
+        "nvidia-cusparse": "12.6.3.3",
+        "nvidia-cusparselt-cu13": "0.8.1",
+        "nvidia-nccl-cu13": "2.30.7",
+        "nvidia-nvjitlink": "13.4.92",
+        "nvidia-nvshmem-cu13": "3.4.5",
+        "nvidia-nvtx": "13.0.85",
+        "packaging": "26.3",
+        "pillow": "10.4.0",
+        "pyyaml": "6.0.3",
+        "regex": "2026.9.10",
+        "requests": "2.34.2",
+        "safetensors": "0.6.2",
+        "setuptools": "84.0.0",
+        "sympy": "1.14.0",
+        "tokenizers": "0.22.2",
+        "torch": "2.14.0",
+        "torchvision": "0.29.0",
+        "tqdm": "4.70.1",
+        "transformers": "4.57.1",
+        "triton": "3.8.0",
+        "typing-extensions": "4.16.0",
+        "urllib3": "2.8.0"
+      },
+      "python": null,
+      "torch_build": null
+    },
+    "sources": {
+      "20260923T051828-422Z-33696-1": {
+        "cache": null,
+        "cache_manifest_sha256": null,
+        "role": "train",
+        "sidecar": {
+          "path": null,
+          "sha256": null
+        },
+        "table": {
+          "path": null,
+          "sha256": "d49224e3c4382a62ebb4c4252bcc5800138782688e1d0f60e03e46ce4b6e7edb"
+        }
+      },
+      "20260923T171533-187Z-33696-5": {
+        "cache": null,
+        "cache_manifest_sha256": null,
+        "role": "dev",
+        "sidecar": null,
+        "table": {
+          "path": null,
+          "sha256": "dc28b0c1511f7847c8dde08c3e04addce8b57bc6c32cc2873405962d3235559e"
+        }
+      },
+      "20260923T200129-346Z-33696-6": {
+        "cache": null,
+        "cache_manifest_sha256": null,
+        "role": "train",
+        "sidecar": {
+          "path": null,
+          "sha256": null
+        },
+        "table": {
+          "path": null,
+          "sha256": "fcc9b0443e720648b899453ea3f04f82c0a6dd1735f30a420a36b3675549ba8e"
+        }
+      },
+      "20260923T205528-900Z-45572-3": {
+        "cache": null,
+        "cache_manifest_sha256": null,
+        "role": "dev",
+        "sidecar": null,
+        "table": {
+          "path": null,
+          "sha256": "941950f16edef6a88b14d6bc536e33a66a0e779867fa145c78e7142164e1fd98"
+        }
+      },
+      "20260924T232304-170Z-12024-1": {
+        "cache": null,
+        "cache_manifest_sha256": null,
+        "role": "train",
+        "sidecar": {
+          "path": null,
+          "sha256": null
+        },
+        "table": {
+          "path": null,
+          "sha256": "8a6c63d4024b13d5b73ab0154f434782e6cfc853d6eaa8291bd9fa8ca8f3b1b1"
+        }
+      },
+      "20260925T021320-371Z-7804-1": {
+        "cache": null,
+        "cache_manifest_sha256": null,
+        "role": "train",
+        "sidecar": {
+          "path": null,
+          "sha256": null
+        },
+        "table": {
+          "path": null,
+          "sha256": "841fe6953cf473e55c6becfe24143259fa48dca639bb9387bc04615edf6ea537"
+        }
+      },
+      "20260925T025230-605Z-7804-2": {
+        "cache": null,
+        "cache_manifest_sha256": null,
+        "role": "train",
+        "sidecar": {
+          "path": null,
+          "sha256": null
+        },
+        "table": {
+          "path": null,
+          "sha256": "84cef39b81ce8a40637bb5cf9766cdfc6f4054b32cda5d94ac1082329434c288"
+        }
+      }
+    }
+  },
+  "context_sha256": null,
+  "fit_predecessors": {
+    "phase1_gate": {
+      "path": null,
+      "sha256": null
+    }
+  },
+  "format": "cm3-stage-approval-v1",
+  "freeze": null,
+  "output": null,
+  "pairing": {
+    "path": null,
+    "sha256": null
+  },
+  "predecessors": {
+    "extract": {
+      "path": null,
+      "sha256": null
+    },
+    "inputs": {
+      "path": null,
+      "sha256": null
+    },
+    "proof128": {
+      "path": null,
+      "sha256": null
+    },
+    "smoke": {
+      "path": null,
+      "sha256": null
+    }
+  },
+  "purpose": "registered",
+  "seed": 2,
+  "stage": "fit",
+  "subset": "one-registered-fit"
+}

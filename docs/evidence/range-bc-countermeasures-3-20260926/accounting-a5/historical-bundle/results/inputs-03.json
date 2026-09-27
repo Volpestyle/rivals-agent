@@ -1,0 +1,80 @@
+{
+  "format": "cm3-inputs-wrapper-result-v1",
+  "status": "PASS",
+  "attempt_id": "inputs-03",
+  "binding": {
+    "path": "/Users/james/dev/range-bc-data/handoff/modal/inputs-03/launch-binding.proposal.json",
+    "sha256": "f9296f786879f76e5414cc789c1a8920ddfc11350b1a169e63a251cafa50614f"
+  },
+  "owner_result": {
+    "path": "/outputs/r3-20260926-l40s/inputs-03/result.json",
+    "sha256": "5b35587c4b7a54b0bcd54ca9ab759654422ee5e6abaaafceba05318918683c42"
+  },
+  "transport_files": [
+    {
+      "path": "/outputs/r3-20260926-l40s/inputs-03/completed.json",
+      "bytes": 1409,
+      "sha256": "5b35587c4b7a54b0bcd54ca9ab759654422ee5e6abaaafceba05318918683c42"
+    },
+    {
+      "path": "/outputs/r3-20260926-l40s/inputs-03/details.json",
+      "bytes": 1061,
+      "sha256": "c1edc1cfd10a6978f9c4de4c6a9e68e61d9c9b8e74ec01ed7a34fb1b06169404"
+    },
+    {
+      "path": "/outputs/r3-20260926-l40s/inputs-03/effective-weight.json",
+      "bytes": 3895,
+      "sha256": "2fec6612f53b691f03c5e94ee0f36f0de8a0306f2719c01586ee3e4c7e9c4b76"
+    },
+    {
+      "path": "/outputs/r3-20260926-l40s/inputs-03/inputs.json",
+      "bytes": 28351859,
+      "sha256": "dea6b585eb68f27d8816be0cc1ab08087124b4a674034e699d9c61d8cc60d344"
+    },
+    {
+      "path": "/outputs/r3-20260926-l40s/inputs-03/pairing.json",
+      "bytes": 95811,
+      "sha256": "5c84f0386c523a374d5c675b98f67aba967e9303f39e59cc51f646be01478520"
+    },
+    {
+      "path": "/outputs/r3-20260926-l40s/inputs-03/result.json",
+      "bytes": 1409,
+      "sha256": "5b35587c4b7a54b0bcd54ca9ab759654422ee5e6abaaafceba05318918683c42"
+    }
+  ],
+  "error": null,
+  "teardown": {
+    "status": "TERMINAL",
+    "identity": {
+      "profile": "rivals",
+      "workspace": "volpestyle",
+      "workspace_id": "ac-kMLf5bJKqF5CAlSbfNhGh0"
+    },
+    "apps": [
+      "ap-xbtRzTdWlSoUKnYzLehZ7I"
+    ],
+    "events": [
+      {
+        "app": "ap-xbtRzTdWlSoUKnYzLehZ7I",
+        "stop_error": "Modal command failed: App is already stopped. (Finished at 2026-09-27 02:56:55-05:00).\n"
+      },
+      {
+        "round": 1,
+        "terminal_apps": [
+          "ap-xbtRzTdWlSoUKnYzLehZ7I"
+        ],
+        "containers": 0
+      }
+    ],
+    "checked_at_unix": 1790495823.2306921
+  },
+  "spend": {
+    "reserved_charged_usd": 1,
+    "estimated_conservative_usd": 0.3968492926429862,
+    "seconds_through_cleanup": 179.76999420899665,
+    "campaign_committed_usd": 13.53374656,
+    "campaign_reserved_seconds": 26689
+  },
+  "transition_result_sha256": "a363b7b5e3a255ae6f7181816670e3fc5490fcb756047e48fb73ab0e1d0a96e2",
+  "completed_sha256": "497b37ffc89cac1b07d89e502a722316386e6dd1efc0f4189d2548dd284de629"
+}

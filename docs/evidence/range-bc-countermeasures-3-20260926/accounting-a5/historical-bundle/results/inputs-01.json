@@ -1,0 +1,41 @@
+{
+  "format": "cm3-inputs-wrapper-result-v1",
+  "status": "INCOMPLETE",
+  "attempt_id": "inputs-01",
+  "binding": {
+    "path": "/Users/james/dev/range-bc-data/handoff/modal/inputs-01/launch-binding.json",
+    "sha256": "6a54605a78cfa5068416b30f6b876913c732cfa7427e138beef62f4640aefd38"
+  },
+  "owner_result": null,
+  "transport_files": [],
+  "error": "ValueError: invalid staging/mount root",
+  "teardown": {
+    "status": "TERMINAL",
+    "identity": {
+      "profile": "rivals",
+      "workspace": "volpestyle",
+      "workspace_id": "ac-kMLf5bJKqF5CAlSbfNhGh0"
+    },
+    "apps": [
+      "ap-ctQVW0V4AggbO7h3kbvog4"
+    ],
+    "events": [
+      {
+        "round": 0,
+        "terminal_apps": [
+          "ap-ctQVW0V4AggbO7h3kbvog4"
+        ],
+        "containers": 0
+      }
+    ],
+    "checked_at_unix": 1790483726.7966871
+  },
+  "spend": {
+    "reserved_charged_usd": 1,
+    "estimated_conservative_usd": 0.27539267038831333,
+    "seconds_through_cleanup": 10.57264904200565,
+    "campaign_committed_usd": 10.78374656,
+    "campaign_reserved_seconds": 23487
+  },
+  "completed_sha256": null
+}

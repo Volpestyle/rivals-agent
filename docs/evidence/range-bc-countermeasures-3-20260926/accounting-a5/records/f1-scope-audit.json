@@ -1,0 +1,15 @@
+{
+  "changed_existing_helper_functions": [
+    "ledger",
+    "allocation"
+  ],
+  "new_helper_functions": [
+    "relative_ref",
+    "reservation_ref",
+    "output_ref",
+    "bundle_document"
+  ],
+  "owner_runner_unchanged_sha256": "327f51225949f4bdb16da427fbabbf9439005f8e5b09a9455e760ba75acf4900",
+  "settlement_math_unchanged": true,
+  "writer_change": "pass existing mount resolver to canonical allocation reader"
+}

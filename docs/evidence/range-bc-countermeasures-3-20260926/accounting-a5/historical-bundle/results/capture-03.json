@@ -1,0 +1,84 @@
+{
+  "status": "PASS",
+  "scope": "fresh draft capture only; no scientific PASS",
+  "records": [
+    {
+      "status": "PASS",
+      "scope": "draft capture only, not scientific PASS",
+      "launch_authorized": false,
+      "modal_container_id": "ta-01M3GX1T13QMWR3B2S68AWF7MR",
+      "artifacts": [
+        {
+          "path": "/outputs/.modal-control/inputs-03/capture.json",
+          "sha256": "1863c3f608133ac2697c013d54b814d20ff51ddb9f1cc1683ee01629da8fcd2b",
+          "bytes": 436
+        },
+        {
+          "path": "/outputs/.modal-control/inputs-03/common-context.json",
+          "sha256": "827a5acad47513ab61380274491c3b8ca2ed2d7685bd1a69387b36d17e10a3f9",
+          "bytes": 14321
+        },
+        {
+          "path": "/outputs/.modal-control/inputs-03/independent-review.json",
+          "sha256": "bcc2a8d715edc0fadc5242afca77361cf791c2061ce051e883615ebaaa6b592f",
+          "bytes": 4657
+        },
+        {
+          "path": "/outputs/.modal-control/inputs-03/inputs-03.receipt.json",
+          "sha256": "3ed29afcb8631947620ab5cf88e59e4bfad69ef01579629b7a675ef02899483f",
+          "bytes": 15543
+        },
+        {
+          "path": "/outputs/.modal-control/inputs-03/review.md",
+          "sha256": "0c747ec307f3653ded817ea14fc5125d149cdbb9c2a513bcc82f8af9843547e6",
+          "bytes": 32629
+        },
+        {
+          "path": "/outputs/.modal-control/inputs-03/runtime-identity-a4.md",
+          "sha256": "aeb1f42423928cb503c8bafa984b862a655da75a3ce20760a607f9c25cf9210b",
+          "bytes": 5435
+        },
+        {
+          "path": "/outputs/.modal-control/inputs-03/runtime-observation.json",
+          "sha256": "bacbd87cd71ca7bf9f4a66137b185d58929347a67f0c5194e00c4af981a2a8f7",
+          "bytes": 227
+        }
+      ],
+      "metadata_seconds": 4.112452834
+    }
+  ],
+  "error": null,
+  "teardown": {
+    "status": "TERMINAL",
+    "identity": {
+      "profile": "rivals",
+      "workspace": "volpestyle",
+      "workspace_id": "ac-kMLf5bJKqF5CAlSbfNhGh0"
+    },
+    "apps": [
+      "ap-lzX9GMBhxBFZ1DHblCCA7T"
+    ],
+    "events": [
+      {
+        "app": "ap-lzX9GMBhxBFZ1DHblCCA7T",
+        "stop_error": "Modal command failed: App is already stopped. (Finished at 2026-09-27 02:42:46-05:00).\n"
+      },
+      {
+        "round": 1,
+        "terminal_apps": [
+          "ap-lzX9GMBhxBFZ1DHblCCA7T"
+        ],
+        "containers": 0
+      }
+    ],
+    "checked_at_unix": 1790494974.4706829
+  },
+  "elapsed_seconds": 18.741039874963462,
+  "spend": {
+    "reserved_charged_usd": 0.2,
+    "estimated_conservative_usd": 0.03345306806384377,
+    "campaign_committed_usd": 12.53374656,
+    "campaign_reserved_seconds": 25669
+  },
+  "proposal_sha256": "df731ec32e233490977fc7a62b3028a3711409db92cf0e9b5e467d5eee3bffb8"
+}

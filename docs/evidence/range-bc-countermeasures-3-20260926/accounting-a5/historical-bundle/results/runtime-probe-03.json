@@ -1,0 +1,67 @@
+{
+  "status": "PASS",
+  "scope": "metadata diagnostic only; no scientific PASS",
+  "records": [
+    {
+      "status": "PASS",
+      "modal_container_id": "ta-01M3GSEPNB1BWP4S63CGZ3G8WR",
+      "artifacts": [
+        {
+          "path": "/outputs/runtime-probe-03/child.json",
+          "sha256": "d3b10a4cc8ba9dad5b52bff11d7dbc74a8b64e6a13c71cdb669b2db3adf824df",
+          "bytes": 10971
+        },
+        {
+          "path": "/outputs/runtime-probe-03/comparison.json",
+          "sha256": "05df5463c99efc18c0a9ff85d6388fb1af0591e7a17f599332cb9c2c316c2aae",
+          "bytes": 9738
+        },
+        {
+          "path": "/outputs/runtime-probe-03/journal/runner.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        {
+          "path": "/outputs/runtime-probe-03/parent.json",
+          "sha256": "fb7233057d95ed3567272e88b0f4b2a77f469d35e50f89ab474dac7f0c7cf035",
+          "bytes": 10375
+        }
+      ],
+      "matches_context": {
+        "parent": true,
+        "child": true
+      },
+      "metadata_seconds": 20.496322779
+    }
+  ],
+  "error": null,
+  "teardown": {
+    "status": "TERMINAL",
+    "identity": {
+      "profile": "rivals",
+      "workspace": "volpestyle",
+      "workspace_id": "ac-kMLf5bJKqF5CAlSbfNhGh0"
+    },
+    "apps": [
+      "ap-ztnSyCVjtpm8M8kW7S2PLa"
+    ],
+    "events": [
+      {
+        "round": 0,
+        "terminal_apps": [
+          "ap-ztnSyCVjtpm8M8kW7S2PLa"
+        ],
+        "containers": 0
+      }
+    ],
+    "checked_at_unix": 1790491217.09672
+  },
+  "elapsed_seconds": 31.368250541971065,
+  "spend": {
+    "reserved_charged_usd": 0.2,
+    "estimated_conservative_usd": 0.04251738496904851,
+    "campaign_committed_usd": 12.33374656,
+    "campaign_reserved_seconds": 25419
+  },
+  "proposal_sha256": "8b7a93bbfb4925f1c9fb0c3a0be83cf2cd7ccd47dddaa8721068547486c8c797"
+}

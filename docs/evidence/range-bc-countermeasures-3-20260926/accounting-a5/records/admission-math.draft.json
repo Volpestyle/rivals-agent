@@ -1,0 +1,261 @@
+{
+  "caps": {
+    "seconds": 57600,
+    "usd": 50
+  },
+  "limitations": [
+    "Only the historical 14 attempts are settled measurements. Every prefix replay, extraction, fit and verification here is a prediction.",
+    "Future per-fit prediction adds172 hash+60 diagnostics+300 startup+120 cleanup to historical smoke work; these are not results.",
+    "Real admission must use authenticated current settled ledger and current holds; no future phase is held simultaneously.",
+    "USD values are rate-based estimates, not provider invoices; no launch is approved."
+  ],
+  "predicted_extract_seconds": 1578,
+  "predicted_fit_seconds": {
+    "A": 4554,
+    "H": 852,
+    "I": 3681,
+    "W": 791
+  },
+  "prior_measured_estimated_usd": 9.11189956,
+  "prior_measured_seconds": 13813,
+  "scenarios": {
+    "full_prefix_envelope_prediction": {
+      "eligibility": "ELIGIBLE_PREDICTION",
+      "eligibility_estimated_usd": 43.450988,
+      "eligibility_forecast_seconds": 55278.91617859411,
+      "gates": [
+        {
+          "admission_seconds": 19643,
+          "admission_usd": 14.656464,
+          "current_task_hold_seconds": 2220,
+          "predicted_prior_seconds": 17123,
+          "predicted_prior_usd": 12.31189956,
+          "predicted_settlement_seconds": 1578,
+          "stage": "extract",
+          "status": "ADMISSIBLE_PREDICTION",
+          "verification_reserve_seconds": 300
+        },
+        {
+          "admission_seconds": 39860,
+          "admission_usd": 29.919038,
+          "current_task_hold_seconds": 20859,
+          "predicted_prior_seconds": 18701,
+          "predicted_prior_usd": 13.71245456,
+          "predicted_settlement_seconds": 15366,
+          "stage": "phase1",
+          "status": "ADMISSIBLE_PREDICTION",
+          "verification_reserve_seconds": 300
+        },
+        {
+          "admission_seconds": 54356,
+          "admission_usd": 41.074848,
+          "current_task_hold_seconds": 19989,
+          "predicted_prior_seconds": 34067,
+          "predicted_prior_usd": 25.49278656,
+          "predicted_settlement_seconds": 15120,
+          "stage": "phase2",
+          "status": "ADMISSIBLE_PREDICTION",
+          "verification_reserve_seconds": 300
+        },
+        {
+          "admission_seconds": 49487,
+          "admission_usd": 37.579689,
+          "current_task_hold_seconds": 300,
+          "predicted_prior_seconds": 49187,
+          "predicted_prior_usd": 37.09653256,
+          "predicted_settlement_seconds": 300,
+          "stage": "verify",
+          "status": "ADMISSIBLE_PREDICTION",
+          "verification_reserve_seconds": 0
+        }
+      ],
+      "prefix_prediction_seconds": 3310,
+      "prefix_prediction_usd": 3.2
+    },
+    "historical_prefix_replay_prediction": {
+      "eligibility": "ELIGIBLE_PREDICTION",
+      "eligibility_estimated_usd": 41.658003,
+      "eligibility_forecast_seconds": 52781.91617859411,
+      "gates": [
+        {
+          "admission_seconds": 17146,
+          "admission_usd": 12.863479,
+          "current_task_hold_seconds": 2220,
+          "predicted_prior_seconds": 14626,
+          "predicted_prior_usd": 10.51891456,
+          "predicted_settlement_seconds": 1578,
+          "stage": "extract",
+          "status": "ADMISSIBLE_PREDICTION",
+          "verification_reserve_seconds": 300
+        },
+        {
+          "admission_seconds": 37363,
+          "admission_usd": 28.126053,
+          "current_task_hold_seconds": 20859,
+          "predicted_prior_seconds": 16204,
+          "predicted_prior_usd": 11.91946956,
+          "predicted_settlement_seconds": 15366,
+          "stage": "phase1",
+          "status": "ADMISSIBLE_PREDICTION",
+          "verification_reserve_seconds": 300
+        },
+        {
+          "admission_seconds": 51859,
+          "admission_usd": 39.281863,
+          "current_task_hold_seconds": 19989,
+          "predicted_prior_seconds": 31570,
+          "predicted_prior_usd": 23.69980156,
+          "predicted_settlement_seconds": 15120,
+          "stage": "phase2",
+          "status": "ADMISSIBLE_PREDICTION",
+          "verification_reserve_seconds": 300
+        },
+        {
+          "admission_seconds": 46990,
+          "admission_usd": 35.786704,
+          "current_task_hold_seconds": 300,
+          "predicted_prior_seconds": 46690,
+          "predicted_prior_usd": 35.30354756,
+          "predicted_settlement_seconds": 300,
+          "stage": "verify",
+          "status": "ADMISSIBLE_PREDICTION",
+          "verification_reserve_seconds": 0
+        }
+      ],
+      "prefix_prediction_seconds": 813,
+      "prefix_prediction_usd": 1.407015
+    }
+  },
+  "status": "DRAFT_PLANNING_ONLY_NOT_APPROVED",
+  "timing_plan": {
+    "attempt_timeout_seconds_by_arm": {
+      "A": 5853,
+      "H": 600,
+      "I": 4543,
+      "W": 600
+    },
+    "matrix_hold_seconds": 40848,
+    "measured_full_workload_seconds_by_arm": {
+      "A": 3901.3547615475013,
+      "H": 199.12274153862518,
+      "I": 3028.5386643506267,
+      "W": 138.21183124699894
+    },
+    "owner_stage_seconds_by_arm": {
+      "A": 5823,
+      "H": 570,
+      "I": 4513,
+      "W": 570
+    },
+    "per_fit_diagnostics_seconds": 60,
+    "per_fit_source_hash_seconds": 172,
+    "phase1_hold_seconds": 20859,
+    "phase2_hold_seconds": 19989,
+    "task_holds": {
+      "A-0": {
+        "cleanup_seconds": 120,
+        "owner_stage_seconds": 5823,
+        "resource_rate_usd_second": 0.00071784,
+        "startup_seconds": 300,
+        "total_seconds": 6273,
+        "work_seconds": 5853
+      },
+      "A-1": {
+        "cleanup_seconds": 120,
+        "owner_stage_seconds": 5823,
+        "resource_rate_usd_second": 0.00071784,
+        "startup_seconds": 300,
+        "total_seconds": 6273,
+        "work_seconds": 5853
+      },
+      "A-2": {
+        "cleanup_seconds": 120,
+        "owner_stage_seconds": 5823,
+        "resource_rate_usd_second": 0.00071784,
+        "startup_seconds": 300,
+        "total_seconds": 6273,
+        "work_seconds": 5853
+      },
+      "H-0": {
+        "cleanup_seconds": 120,
+        "owner_stage_seconds": 570,
+        "resource_rate_usd_second": 0.00071784,
+        "startup_seconds": 300,
+        "total_seconds": 1020,
+        "work_seconds": 600
+      },
+      "H-1": {
+        "cleanup_seconds": 120,
+        "owner_stage_seconds": 570,
+        "resource_rate_usd_second": 0.00071784,
+        "startup_seconds": 300,
+        "total_seconds": 1020,
+        "work_seconds": 600
+      },
+      "H-2": {
+        "cleanup_seconds": 120,
+        "owner_stage_seconds": 570,
+        "resource_rate_usd_second": 0.00071784,
+        "startup_seconds": 300,
+        "total_seconds": 1020,
+        "work_seconds": 600
+      },
+      "H-repeat-0": {
+        "cleanup_seconds": 120,
+        "owner_stage_seconds": 570,
+        "resource_rate_usd_second": 0.00071784,
+        "startup_seconds": 300,
+        "total_seconds": 1020,
+        "work_seconds": 600
+      },
+      "I-0": {
+        "cleanup_seconds": 120,
+        "owner_stage_seconds": 4513,
+        "resource_rate_usd_second": 0.00071784,
+        "startup_seconds": 300,
+        "total_seconds": 4963,
+        "work_seconds": 4543
+      },
+      "I-1": {
+        "cleanup_seconds": 120,
+        "owner_stage_seconds": 4513,
+        "resource_rate_usd_second": 0.00071784,
+        "startup_seconds": 300,
+        "total_seconds": 4963,
+        "work_seconds": 4543
+      },
+      "I-2": {
+        "cleanup_seconds": 120,
+        "owner_stage_seconds": 4513,
+        "resource_rate_usd_second": 0.00071784,
+        "startup_seconds": 300,
+        "total_seconds": 4963,
+        "work_seconds": 4543
+      },
+      "W-0": {
+        "cleanup_seconds": 120,
+        "owner_stage_seconds": 570,
+        "resource_rate_usd_second": 0.00071784,
+        "startup_seconds": 300,
+        "total_seconds": 1020,
+        "work_seconds": 600
+      },
+      "W-1": {
+        "cleanup_seconds": 120,
+        "owner_stage_seconds": 570,
+        "resource_rate_usd_second": 0.00071784,
+        "startup_seconds": 300,
+        "total_seconds": 1020,
+        "work_seconds": 600
+      },
+      "W-2": {
+        "cleanup_seconds": 120,
+        "owner_stage_seconds": 570,
+        "resource_rate_usd_second": 0.00071784,
+        "startup_seconds": 300,
+        "total_seconds": 1020,
+        "work_seconds": 600
+      }
+    }
+  }
+}

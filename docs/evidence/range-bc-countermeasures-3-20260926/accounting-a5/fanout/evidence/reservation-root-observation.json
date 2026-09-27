@@ -1,0 +1,92 @@
+{
+  "format": "cm3-bootstrap-reservation-root-observation-v1",
+  "root": "/Users/james/dev/range-bc-data/handoff/modal/f5-real/bootstrap-campaign",
+  "observed_at_unix": 1790500578.431222,
+  "glob": "*/reservation.json",
+  "entries": [
+    {
+      "attempt_id": "capture-03",
+      "path": "/Users/james/dev/range-bc-data/handoff/modal/f5-real/bootstrap-campaign/capture-03/reservation.json",
+      "bytes": 401,
+      "sha256": "bc952d66445f87ab6d3f1c234dd5afaae238587a10f64ba7dc8d3f36cb8314ee"
+    },
+    {
+      "attempt_id": "copy-01",
+      "path": "/Users/james/dev/range-bc-data/handoff/modal/f5-real/bootstrap-campaign/copy-01/reservation.json",
+      "bytes": 1087,
+      "sha256": "74bbec13a7745b9ea88ae7e9c06310cd53dbf37238907f38f82cfdfc5d1e2058"
+    },
+    {
+      "attempt_id": "copy-02",
+      "path": "/Users/james/dev/range-bc-data/handoff/modal/f5-real/bootstrap-campaign/copy-02/reservation.json",
+      "bytes": 1088,
+      "sha256": "2947bdfe051b74ff526eaee3b9de161a4a58e2863b8c2cb47e5af9d122318a42"
+    },
+    {
+      "attempt_id": "copy-03",
+      "path": "/Users/james/dev/range-bc-data/handoff/modal/f5-real/bootstrap-campaign/copy-03/reservation.json",
+      "bytes": 1088,
+      "sha256": "22efd3449ec732ce7b3547e147c59347c6648616bd7ea83727c70e53604a380c"
+    },
+    {
+      "attempt_id": "inputs-01",
+      "path": "/Users/james/dev/range-bc-data/handoff/modal/f5-real/bootstrap-campaign/inputs-01/reservation.json",
+      "bytes": 1133,
+      "sha256": "39f6174a3a8616b117233e9078b1556c99b2013f811c2db949721568ad710bba"
+    },
+    {
+      "attempt_id": "inputs-02",
+      "path": "/Users/james/dev/range-bc-data/handoff/modal/f5-real/bootstrap-campaign/inputs-02/reservation.json",
+      "bytes": 1245,
+      "sha256": "77e405a160399cc9072bfdd32c9a60ecb1821511c2e65b71937c2b9f7d7567d8"
+    },
+    {
+      "attempt_id": "inputs-03",
+      "path": "/Users/james/dev/range-bc-data/handoff/modal/f5-real/bootstrap-campaign/inputs-03/reservation.json",
+      "bytes": 1231,
+      "sha256": "8ffbf4333f1da8991be2e5462a1d337f2fb5dd12f578ac5a847edf29eb79740f"
+    },
+    {
+      "attempt_id": "mount-probe-01",
+      "path": "/Users/james/dev/range-bc-data/handoff/modal/f5-real/bootstrap-campaign/mount-probe-01/reservation.json",
+      "bytes": 426,
+      "sha256": "97f71f7977a383979ac3beb4d9bd6aaa88b08be18eeade65f364db5e5eeb149c"
+    },
+    {
+      "attempt_id": "proof128-01",
+      "path": "/Users/james/dev/range-bc-data/handoff/modal/f5-real/bootstrap-campaign/proof128-01/reservation.json",
+      "bytes": 1230,
+      "sha256": "9446a36c88269ec8d92aa2a88cd2bcc28833950f51f9677ef22b5e9258ce53f4"
+    },
+    {
+      "attempt_id": "runtime-probe-01",
+      "path": "/Users/james/dev/range-bc-data/handoff/modal/f5-real/bootstrap-campaign/runtime-probe-01/reservation.json",
+      "bytes": 407,
+      "sha256": "aec6ff38526e3c1b6424006fdcc12d54a9f15f9097ed288a83ce6bd6c3f0fa48"
+    },
+    {
+      "attempt_id": "runtime-probe-03",
+      "path": "/Users/james/dev/range-bc-data/handoff/modal/f5-real/bootstrap-campaign/runtime-probe-03/reservation.json",
+      "bytes": 400,
+      "sha256": "b054ab432f0b0fca84324476552072f4fae30764435d4364914f85e6c7e90f0c"
+    },
+    {
+      "attempt_id": "smoke-01",
+      "path": "/Users/james/dev/range-bc-data/handoff/modal/f5-real/bootstrap-campaign/smoke-01/reservation.json",
+      "bytes": 1241,
+      "sha256": "0842be6ae2c8b7817c2785d296b90e0db8ec0c655280ad9decad7075e2847e38"
+    },
+    {
+      "attempt_id": "stage0-01",
+      "path": "/Users/james/dev/range-bc-data/handoff/modal/f5-real/bootstrap-campaign/stage0-01/reservation.json",
+      "bytes": 1086,
+      "sha256": "690a1967e82af1798ee3b1c15f96cc6d23de64a7773e04faafaf2a6f7b0c3d39"
+    },
+    {
+      "attempt_id": "stage0-02",
+      "path": "/Users/james/dev/range-bc-data/handoff/modal/f5-real/bootstrap-campaign/stage0-02/reservation.json",
+      "bytes": 1088,
+      "sha256": "b982d94c42c789cab27a358247e13fab8bb55bd888e3696bf1531ff7665f80a5"
+    }
+  ]
+}

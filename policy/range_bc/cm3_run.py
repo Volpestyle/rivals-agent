@@ -22,6 +22,7 @@ import time
 import torch
 
 from agent import human_intake
+from . import cm3_accounting as accounting
 from . import baselines, cm3, cm3_features as features, cm3_proof as proof
 from . import cm3_train as training, idle_sidecar, metrics, steps, train
 from .model import Config as LegacyConfig
@@ -332,7 +333,10 @@ def authenticate(stage, ref, *, runtime=True, runtime_observation=None):
     require(0 < budget["cap_seconds"] <= 16 * 3600 and budget["spent_seconds"] >= previous_elapsed
             and 0 < budget["stage_seconds"] <= budget["cap_seconds"] - budget["spent_seconds"], "budget exhausted")
     require(budget["approved_by"] == "herdr-lead", "budget not approved")
-    if context["device"] == "cuda":
+    if "accounting" in budget:
+        require(budget["cloud_instance"] == context["hardware"]["class"], "budget class mismatch")
+        accounting.allocation(budget, document, required_results=predecessors.values())
+    if context["device"] == "cuda" and "accounting" not in budget:
         require(budget["cloud_instance"] and 0 < budget["hourly_usd"] and
                 budget["hourly_usd"] * budget["cap_seconds"] / 3600 <= budget["cloud_cap_usd"], "cloud budget missing")
     if stage in ("extract", "fit"):
@@ -969,6 +973,8 @@ def verify_matrix(receipt_path, receipt_sha256):
     budget = receipt["budget"]
     require(budget["approved_by"] == "herdr-lead" and 0 < budget["cap_seconds"] <= 57600
             and 0 < budget["stage_seconds"] <= budget["cap_seconds"] - budget["spent_seconds"], "verification budget exhausted")
+    if "accounting" in budget:
+        accounting.allocation(budget, document, required_results=receipt["outputs"])
     require(len(receipt["outputs"]) == 13, "complete 13-output matrix required")
     expected = {(a, s, "registered") for a in ("A", *cm3.ARMS) for s in range(3)} | {("H", 0, "repeat")}
     found, class_pins, elapsed_fits, elapsed_preflight = {}, None, 0., 0.

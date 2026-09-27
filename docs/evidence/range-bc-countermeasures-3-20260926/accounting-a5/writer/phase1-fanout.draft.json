@@ -1,0 +1,92 @@
+{
+  "a3_contract_sha256": "5a6c1b4089e9e1790e5ed29a2b0ed1c5947558933dbae14a97d4a2b8323fc619",
+  "absolute_deadline_unix": null,
+  "amendment": 3,
+  "attempt_timeout_seconds": null,
+  "attempts_max": 1,
+  "benchmark_provider": "modal",
+  "cap_usd": null,
+  "code_directory": null,
+  "context_sha256": null,
+  "contract_sha256": "68a8d6d5e4f224f4e3f535da4ec0925d932475cf7c9495bc76a4f2c2fb9155a0",
+  "cpu": null,
+  "device_class": null,
+  "entrypoint_sha256": "bcb638d057ba7b55fb906653569ef249fc755d39d0445df738d284c4ec63c817",
+  "entrypoint_supports_arm_seed": false,
+  "execution_mode": "two-phase",
+  "expected_fit_seconds": null,
+  "fixes2_freeze_sha256": "a9193d80013b2d35454bf68e206850fc4141ffb96189313e238936774f3291b2",
+  "fixes2_review_pass": false,
+  "gpu": null,
+  "h0_repeat_required": true,
+  "integration_review_pass": false,
+  "judge_sha256": "e23b3212a0eadc98bc590e5081a92c9fab6740e93808aba2d245d6020b3f8eb0",
+  "memory_mib": null,
+  "output_volume": null,
+  "overhead_reserve_usd": null,
+  "phase": "phase1",
+  "phase1_gate": null,
+  "profile": "rivals",
+  "resource_rate_usd_second": null,
+  "reviewed_image_digest": null,
+  "reviewed_input_volume": null,
+  "run_id": null,
+  "spend_started_at_unix": null,
+  "spent_before_compute_seconds": null,
+  "spent_before_usd": null,
+  "startup_shutdown_reserve_seconds": null,
+  "tasks": {
+    "A-0": {
+      "attempt_receipts": [
+        {
+          "attempt_id": null,
+          "output": null,
+          "path": null,
+          "sha256": null
+        }
+      ]
+    },
+    "A-1": {
+      "attempt_receipts": [
+        {
+          "attempt_id": null,
+          "output": null,
+          "path": null,
+          "sha256": null
+        }
+      ]
+    },
+    "A-2": {
+      "attempt_receipts": [
+        {
+          "attempt_id": null,
+          "output": null,
+          "path": null,
+          "sha256": null
+        }
+      ]
+    },
+    "H-0": {
+      "attempt_receipts": [
+        {
+          "attempt_id": null,
+          "output": null,
+          "path": null,
+          "sha256": null
+        }
+      ]
+    },
+    "H-repeat-0": {
+      "attempt_receipts": [
+        {
+          "attempt_id": null,
+          "output": null,
+          "path": null,
+          "sha256": null
+        }
+      ]
+    }
+  },
+  "workspace": "volpestyle",
+  "workspace_limit_confirmed": false
+}

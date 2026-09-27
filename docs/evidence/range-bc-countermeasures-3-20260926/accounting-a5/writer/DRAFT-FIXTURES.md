@@ -1,0 +1,1 @@
+These original unfilled draft JSON files are retained for the reviewed Writer regression tests. They are not current launch approvals and must not be executed. The new canonical v2 accounting and fresh code/context closure still require newly generated and lead-approved receipts.

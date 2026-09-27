@@ -1,0 +1,10 @@
+{
+  "attempt_id": "mount-probe-01",
+  "reserved_usd": 0.05,
+  "reserved_compute_seconds": 286,
+  "prior_committed_usd": 10.78374656,
+  "prior_compute_seconds": 23487,
+  "approved_receipt_sha256": "7d0c646ca274bbc4259dd3f2d8f83a4178e6469f2252892b600a45b569ba0843",
+  "authorization_swarm_message": "2d11887d-797a-4c5f-aee6-4b434a68640e",
+  "executor_sha256": "5f71e41bb7f95223b85bc3b68b6d2c727294c60011ff0b407ffbea445f8a648c"
+}

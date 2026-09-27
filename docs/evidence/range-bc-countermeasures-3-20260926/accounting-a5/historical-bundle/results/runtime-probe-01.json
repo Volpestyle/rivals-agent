@@ -1,0 +1,76 @@
+{
+  "status": "PASS",
+  "scope": "metadata diagnostic only; no scientific PASS",
+  "records": [
+    {
+      "status": "PASS",
+      "index": 1,
+      "modal_container_id": "ta-01M3GQYM1GHPXYYTK32A61K38R",
+      "artifacts": [
+        {
+          "path": "/outputs/runtime-probe-01/container-01/snapshot.json",
+          "sha256": "275813a82e9ab8b5e66efc2edd17f1aca66b0a0ea7ed6fe79cd8317c46be3041",
+          "bytes": 8540
+        },
+        {
+          "path": "/outputs/runtime-probe-01/container-01/diff.json",
+          "sha256": "39d5f52abadf2bbc6a9770a12f5dd13c1ec395877b78a892b6e5ef2899669332",
+          "bytes": 72
+        }
+      ],
+      "matches_context": true,
+      "differing_fields": [],
+      "metadata_seconds": 7.4063804399999995
+    },
+    {
+      "status": "PASS",
+      "index": 2,
+      "modal_container_id": "ta-01M3GQZ10P73F30EFFJEN9SVHR",
+      "artifacts": [
+        {
+          "path": "/outputs/runtime-probe-01/container-02/snapshot.json",
+          "sha256": "d7af1e04699276340fde6a220665f02bb22d8f894ef4df2f860824851c720ffe",
+          "bytes": 8540
+        },
+        {
+          "path": "/outputs/runtime-probe-01/container-02/diff.json",
+          "sha256": "39d5f52abadf2bbc6a9770a12f5dd13c1ec395877b78a892b6e5ef2899669332",
+          "bytes": 72
+        }
+      ],
+      "matches_context": true,
+      "differing_fields": [],
+      "metadata_seconds": 3.4985413319999994
+    }
+  ],
+  "error": null,
+  "teardown": {
+    "status": "TERMINAL",
+    "identity": {
+      "profile": "rivals",
+      "workspace": "volpestyle",
+      "workspace_id": "ac-kMLf5bJKqF5CAlSbfNhGh0"
+    },
+    "apps": [
+      "ap-fYWjwmQOKYWRa2PmxFRi34"
+    ],
+    "events": [
+      {
+        "round": 0,
+        "terminal_apps": [
+          "ap-fYWjwmQOKYWRa2PmxFRi34"
+        ],
+        "containers": 0
+      }
+    ],
+    "checked_at_unix": 1790489633.66051
+  },
+  "elapsed_seconds": 22.91948445799062,
+  "spend": {
+    "reserved_charged_usd": 0.3,
+    "estimated_conservative_usd": 0.04645252272332398,
+    "campaign_committed_usd": 12.13374656,
+    "campaign_reserved_seconds": 25169
+  },
+  "proposal_sha256": "065dd3552d1924e4f4b577e49d5050311e509c5c28b4d37b426a54870a0b33dc"
+}

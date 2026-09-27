@@ -1,0 +1,39 @@
+{
+  "format": "cm3-mount-probe-approval-v1",
+  "attempt_id": "mount-probe-01",
+  "status": "DRAFT_AWAITING_LEAD",
+  "operation": "lstat/is_dir/is_symlink/readlink/realpath of exactly four known mount paths; no source bytes, no owner stage, no writes to volumes",
+  "paths": [
+    "/inputs",
+    "/outputs",
+    "/inputs/receipts/inputs-01.json",
+    "/inputs/code-d4abc26"
+  ],
+  "image_id": "im-tE3Y0YrWYZ0po0yAA0JQT8",
+  "input_volume_id": "vo-NpcsP2imIIon902PW96bTb",
+  "output_volume_id": "vo-R1LWY3HJHJ1NrqDGFe5Sid",
+  "profile": "rivals",
+  "workspace": "volpestyle",
+  "budget": {
+    "reserved_usd": 0.05,
+    "rate_usd_second": 0.00010524,
+    "overhead_usd": 0.02,
+    "prior_committed_usd": 10.78374656,
+    "prior_reserved_seconds": 23487,
+    "reserved_seconds": 286,
+    "work_timeout_seconds": 30,
+    "startup_seconds": 120,
+    "guard_work_deadline_seconds": 155,
+    "cleanup_seconds": 120
+  },
+  "resources": {
+    "cpu": 2,
+    "memory_mib": 4096,
+    "gpu": null,
+    "nonpreemptible": true
+  },
+  "automatic_retries": 0,
+  "output": "/Users/james/dev/range-bc-data/handoff/modal/f5-real/bootstrap-campaign/mount-probe-01",
+  "executor_sha256": "8722c78633d5c211cdc7446e3c314d9460391aa72e45b5852e051251abb5807a",
+  "reason": "Inputs-01 failed before owner invocation; need actual mount targets before fixing verifier and resolved receipt/output path semantics"
+}

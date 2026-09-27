@@ -1,0 +1,221 @@
+{
+  "status": "PASS",
+  "result": {
+    "status": "PASS",
+    "operation": "mount metadata only",
+    "paths": [
+      {
+        "path": "/inputs",
+        "exists": true,
+        "is_directory": true,
+        "is_symlink": true,
+        "mode": "0o120777",
+        "realpath": "/__modal/volumes/vo-NpcsP2imIIon902PW96bTb",
+        "link_target": "/__modal/volumes/vo-NpcsP2imIIon902PW96bTb",
+        "lstat": {
+          "device": 29,
+          "device_major": 0,
+          "device_minor": 29,
+          "inode": 1279,
+          "mode": "0o120777"
+        },
+        "stat": {
+          "device": 31,
+          "device_major": 0,
+          "device_minor": 31,
+          "inode": 2,
+          "mode": "0o40755"
+        },
+        "logical_path_mount": {
+          "mount_id": "18",
+          "parent_id": "17",
+          "device": "0:20",
+          "root": "/",
+          "mount_point": "/",
+          "options": "rw",
+          "filesystem": "overlay",
+          "source": "none",
+          "super_options": "rw"
+        },
+        "resolved_path_mount": {
+          "mount_id": "36",
+          "parent_id": "18",
+          "device": "0:31",
+          "root": "/",
+          "mount_point": "/__modal/volumes",
+          "options": "rw,nosuid",
+          "filesystem": "9p",
+          "source": "none",
+          "super_options": "rw,trans=fd,rfdno=11,wfdno=11,aname=/,dfltuid=4294967294,dfltgid=4294967294,dcache=0,cache=remote_revalidating,disable_fifo_open,directfs"
+        }
+      },
+      {
+        "path": "/outputs",
+        "exists": true,
+        "is_directory": true,
+        "is_symlink": true,
+        "mode": "0o120777",
+        "realpath": "/__modal/volumes/vo-R1LWY3HJHJ1NrqDGFe5Sid",
+        "link_target": "/__modal/volumes/vo-R1LWY3HJHJ1NrqDGFe5Sid",
+        "lstat": {
+          "device": 29,
+          "device_major": 0,
+          "device_minor": 29,
+          "inode": 1280,
+          "mode": "0o120777"
+        },
+        "stat": {
+          "device": 31,
+          "device_major": 0,
+          "device_minor": 31,
+          "inode": 3,
+          "mode": "0o40755"
+        },
+        "logical_path_mount": {
+          "mount_id": "18",
+          "parent_id": "17",
+          "device": "0:20",
+          "root": "/",
+          "mount_point": "/",
+          "options": "rw",
+          "filesystem": "overlay",
+          "source": "none",
+          "super_options": "rw"
+        },
+        "resolved_path_mount": {
+          "mount_id": "36",
+          "parent_id": "18",
+          "device": "0:31",
+          "root": "/",
+          "mount_point": "/__modal/volumes",
+          "options": "rw,nosuid",
+          "filesystem": "9p",
+          "source": "none",
+          "super_options": "rw,trans=fd,rfdno=11,wfdno=11,aname=/,dfltuid=4294967294,dfltgid=4294967294,dcache=0,cache=remote_revalidating,disable_fifo_open,directfs"
+        }
+      },
+      {
+        "path": "/inputs/receipts/inputs-01.json",
+        "exists": true,
+        "is_directory": false,
+        "is_symlink": false,
+        "mode": "0o100644",
+        "realpath": "/__modal/volumes/vo-NpcsP2imIIon902PW96bTb/receipts/inputs-01.json",
+        "link_target": null,
+        "lstat": {
+          "device": 31,
+          "device_major": 0,
+          "device_minor": 31,
+          "inode": 5,
+          "mode": "0o100644"
+        },
+        "stat": {
+          "device": 31,
+          "device_major": 0,
+          "device_minor": 31,
+          "inode": 5,
+          "mode": "0o100644"
+        },
+        "logical_path_mount": {
+          "mount_id": "18",
+          "parent_id": "17",
+          "device": "0:20",
+          "root": "/",
+          "mount_point": "/",
+          "options": "rw",
+          "filesystem": "overlay",
+          "source": "none",
+          "super_options": "rw"
+        },
+        "resolved_path_mount": {
+          "mount_id": "36",
+          "parent_id": "18",
+          "device": "0:31",
+          "root": "/",
+          "mount_point": "/__modal/volumes",
+          "options": "rw,nosuid",
+          "filesystem": "9p",
+          "source": "none",
+          "super_options": "rw,trans=fd,rfdno=11,wfdno=11,aname=/,dfltuid=4294967294,dfltgid=4294967294,dcache=0,cache=remote_revalidating,disable_fifo_open,directfs"
+        }
+      },
+      {
+        "path": "/inputs/code-d4abc26",
+        "exists": true,
+        "is_directory": true,
+        "is_symlink": false,
+        "mode": "0o40755",
+        "realpath": "/__modal/volumes/vo-NpcsP2imIIon902PW96bTb/code-d4abc26",
+        "link_target": null,
+        "lstat": {
+          "device": 31,
+          "device_major": 0,
+          "device_minor": 31,
+          "inode": 6,
+          "mode": "0o40755"
+        },
+        "stat": {
+          "device": 31,
+          "device_major": 0,
+          "device_minor": 31,
+          "inode": 6,
+          "mode": "0o40755"
+        },
+        "logical_path_mount": {
+          "mount_id": "18",
+          "parent_id": "17",
+          "device": "0:20",
+          "root": "/",
+          "mount_point": "/",
+          "options": "rw",
+          "filesystem": "overlay",
+          "source": "none",
+          "super_options": "rw"
+        },
+        "resolved_path_mount": {
+          "mount_id": "36",
+          "parent_id": "18",
+          "device": "0:31",
+          "root": "/",
+          "mount_point": "/__modal/volumes",
+          "options": "rw,nosuid",
+          "filesystem": "9p",
+          "source": "none",
+          "super_options": "rw,trans=fd,rfdno=11,wfdno=11,aname=/,dfltuid=4294967294,dfltgid=4294967294,dcache=0,cache=remote_revalidating,disable_fifo_open,directfs"
+        }
+      }
+    ],
+    "source_payloads_read": false,
+    "source_writes": false,
+    "owner_stage_invoked": false
+  },
+  "error": null,
+  "teardown": {
+    "status": "TERMINAL",
+    "identity": {
+      "profile": "rivals",
+      "workspace": "volpestyle",
+      "workspace_id": "ac-kMLf5bJKqF5CAlSbfNhGh0"
+    },
+    "apps": [
+      "ap-bv9pzRHsxnPVAX4MICsxyZ"
+    ],
+    "events": [
+      {
+        "app": "ap-bv9pzRHsxnPVAX4MICsxyZ",
+        "stop_error": "Modal command failed: App is already stopped. (Finished at 2026-09-26 23:50:13-05:00).\n"
+      },
+      {
+        "round": 1,
+        "terminal_apps": [
+          "ap-bv9pzRHsxnPVAX4MICsxyZ"
+        ],
+        "containers": 0
+      }
+    ],
+    "checked_at_unix": 1790484622.288952
+  },
+  "estimated_conservative_usd": 0.0213100962504553,
+  "reserved_charged_usd": 0.05,
+  "elapsed_seconds": 12.448653083003592
+}

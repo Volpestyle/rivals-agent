@@ -1,0 +1,188 @@
+{
+  "approval_required": {
+    "path": "handoff/modal/runtime-probe03-proposal/proposal.json",
+    "stage": "runtime-probe-03"
+  },
+  "atomic_claim_keys": [
+    "runtime-probe-03-started"
+  ],
+  "attempt_id": "runtime-probe-03",
+  "automatic_retries": 0,
+  "budget": {
+    "after_committed_usd": 12.33374656,
+    "after_compute_seconds": 25419,
+    "cap_compute_seconds": 57600,
+    "cap_usd": 50,
+    "cleanup_seconds": 120,
+    "guard_seconds_from_driver_start": 130,
+    "maximum_bound_usd": 0.19945999999999997,
+    "overhead_usd": 0.02,
+    "per_container_startup_seconds": 90,
+    "per_container_work_seconds": 30,
+    "prior_committed_usd": 12.13374656,
+    "prior_compute_seconds": 25169,
+    "rate_usd_second": 0.00071784,
+    "reserved_compute_seconds": 250,
+    "reserved_usd": 0.2,
+    "workspace_limit": "unconfirmed"
+  },
+  "campaign_reservations": {
+    "copy-01/reservation.json": "74bbec13a7745b9ea88ae7e9c06310cd53dbf37238907f38f82cfdfc5d1e2058",
+    "copy-02/reservation.json": "2947bdfe051b74ff526eaee3b9de161a4a58e2863b8c2cb47e5af9d122318a42",
+    "copy-03/reservation.json": "22efd3449ec732ce7b3547e147c59347c6648616bd7ea83727c70e53604a380c",
+    "inputs-01/reservation.json": "39f6174a3a8616b117233e9078b1556c99b2013f811c2db949721568ad710bba",
+    "inputs-02/reservation.json": "77e405a160399cc9072bfdd32c9a60ecb1821511c2e65b71937c2b9f7d7567d8",
+    "mount-probe-01/reservation.json": "97f71f7977a383979ac3beb4d9bd6aaa88b08be18eeade65f364db5e5eeb149c",
+    "runtime-probe-01/reservation.json": "aec6ff38526e3c1b6424006fdcc12d54a9f15f9097ed288a83ce6bd6c3f0fa48",
+    "stage0-01/reservation.json": "690a1967e82af1798ee3b1c15f96cc6d23de64a7773e04faafaf2a6f7b0c3d39",
+    "stage0-02/reservation.json": "b982d94c42c789cab27a358247e13fab8bb55bd888e3696bf1531ff7665f80a5"
+  },
+  "code_directory": "/inputs/code-d4abc26-mounts-770d000",
+  "code_sha256": "aa170aee744f53d38e1709dcb4998cfc96a8f4b668a804b9aeed4ccc68cb6371",
+  "collector_bounds": {
+    "file_bytes": 1048576,
+    "files": 4,
+    "fresh_destination_required": true,
+    "seconds": 120,
+    "total_bytes": 4194304
+  },
+  "containers": 1,
+  "context": {
+    "remote_path": "/inputs/receipts/common-context-inputs02.json",
+    "sha256": "2507319b3e0c329953e8fc098f2c189877823633a8c01065af03901f6c930479"
+  },
+  "context_modification": false,
+  "cpu_request_and_limit": 8,
+  "distinct_hosts_guaranteed": false,
+  "environment_values_policy": "Requested prefix families only; additionally require recognized public key/value form; redact unrecognized/sensitive values. All keys retained.",
+  "executor_files": {
+    "README.md": "efd95ad5e56c6133f4a6f60b68fa5fbe7bc684495271578eb16d64324667cd1f",
+    "cm3_runtime_probe02_shim.py": "b2d494974a87fa09d409f63f73fc05dd756dc20e96c396013ce753e1590e54c5",
+    "collect.py": "54c9a0a8a1a925cfce270914cc0433fbed971eaaadf27df967772a1ae711d6f1",
+    "delta.patch": "ae49f2c2a5db1604fe79529b860eec866e30559ebd15ea4dd4715e547a31da2e",
+    "driver.py": "cfc36c4221d83850ec1be05166a5be9194de416a578e585464938dae197e153a",
+    "expected-context.json": "2507319b3e0c329953e8fc098f2c189877823633a8c01065af03901f6c930479",
+    "probe02-local-preflight-failure.json": "32dc246b5c6d37d934fa98e092a0a0121a64337a57e2033c35237fa3fe9ab83c",
+    "test_probe.py": "95733fe5a29d1a8a060b82e3793fe3b0a8d255df69d43a32512662496b969569",
+    "worker.py": "60112ea09c0fc7c8698a2ee931abef05b5d0247df386af1a63023bdaf37406b6"
+  },
+  "fix_ownership": "Do not edit context or owner code; any fix goes through r3-impl and independent review.",
+  "format": "cm3-runtime-owner-subprocess-probe-proposal-v1",
+  "gpu": "L40S",
+  "gpu_preemptible": true,
+  "helper_files": {
+    "guard.py": "3aa26fbe5511cd5572f8417e9c93c358c90f33cca80e437b2418d82e74babe49",
+    "identity_probe.py": "de2a47c7dc2d494a0fcdadde0c5c12092d5f2b6b67bf2398281be71912bd6916",
+    "input_closure.py": "0f433aa49df666ad32d9e1f61832a9cc883d41805df49c30d3500926f19c8036",
+    "job_status.py": "df4dd2f05ef9aeabe6504927f37ca4bf983544aa58b8905d2bd9bfe5f5de6541",
+    "lifecycle.py": "c47a31fc4fc9cc23d2f3d854c120f4a82bf929782e9dade0397e2a099129860c",
+    "safety.py": "5b3d9d30897a5fa2f60f1541631ac984261c549517b6bdda3a935381c4b8e89a"
+  },
+  "identity": {
+    "profile": "rivals",
+    "workspace": "volpestyle",
+    "workspace_id": "ac-kMLf5bJKqF5CAlSbfNhGh0"
+  },
+  "image_id": "im-tE3Y0YrWYZ0po0yAA0JQT8",
+  "image_rebuild": false,
+  "input_mount": "/inputs",
+  "input_read_only": true,
+  "input_volume_id": "vo-NpcsP2imIIon902PW96bTb",
+  "memory_request_and_limit_mib": 32768,
+  "metadata_reads": [
+    "/inputs/receipts/common-context-inputs02.json",
+    "/inputs/code-d4abc26-mounts-770d000/agent/__init__.py",
+    "/inputs/code-d4abc26-mounts-770d000/agent/controller.py",
+    "/inputs/code-d4abc26-mounts-770d000/agent/human_demos.py",
+    "/inputs/code-d4abc26-mounts-770d000/agent/human_intake.py",
+    "/inputs/code-d4abc26-mounts-770d000/agent/intents.py",
+    "/inputs/code-d4abc26-mounts-770d000/agent/pad_bindings.py",
+    "/inputs/code-d4abc26-mounts-770d000/agent/state.py",
+    "/inputs/code-d4abc26-mounts-770d000/agent/tracker.py",
+    "/inputs/code-d4abc26-mounts-770d000/policy/__init__.py",
+    "/inputs/code-d4abc26-mounts-770d000/policy/range_bc/__init__.py",
+    "/inputs/code-d4abc26-mounts-770d000/policy/range_bc/baselines.py",
+    "/inputs/code-d4abc26-mounts-770d000/policy/range_bc/cache.py",
+    "/inputs/code-d4abc26-mounts-770d000/policy/range_bc/cm3-environment.in",
+    "/inputs/code-d4abc26-mounts-770d000/policy/range_bc/cm3-execution-constraints.txt",
+    "/inputs/code-d4abc26-mounts-770d000/policy/range_bc/cm3-linux-x86_64.lock",
+    "/inputs/code-d4abc26-mounts-770d000/policy/range_bc/cm3-macos-arm64.lock",
+    "/inputs/code-d4abc26-mounts-770d000/policy/range_bc/cm3-requirements.txt",
+    "/inputs/code-d4abc26-mounts-770d000/policy/range_bc/cm3.py",
+    "/inputs/code-d4abc26-mounts-770d000/policy/range_bc/cm3_features.py",
+    "/inputs/code-d4abc26-mounts-770d000/policy/range_bc/cm3_proof.py",
+    "/inputs/code-d4abc26-mounts-770d000/policy/range_bc/cm3_run.py",
+    "/inputs/code-d4abc26-mounts-770d000/policy/range_bc/cm3_train.py",
+    "/inputs/code-d4abc26-mounts-770d000/policy/range_bc/executor.py",
+    "/inputs/code-d4abc26-mounts-770d000/policy/range_bc/fixture.py",
+    "/inputs/code-d4abc26-mounts-770d000/policy/range_bc/gates.py",
+    "/inputs/code-d4abc26-mounts-770d000/policy/range_bc/idle_sidecar.py",
+    "/inputs/code-d4abc26-mounts-770d000/policy/range_bc/metrics.py",
+    "/inputs/code-d4abc26-mounts-770d000/policy/range_bc/model.py",
+    "/inputs/code-d4abc26-mounts-770d000/policy/range_bc/report.py",
+    "/inputs/code-d4abc26-mounts-770d000/policy/range_bc/steps.py",
+    "/inputs/code-d4abc26-mounts-770d000/policy/range_bc/train.py",
+    "/inputs/code-d4abc26-mounts-770d000/policy/range_bc/verify.py",
+    "/inputs/code-d4abc26-mounts-770d000/policy/range_bc/vocab.py",
+    "/inputs/code-d4abc26-mounts-770d000/uv.lock"
+  ],
+  "model_construction": false,
+  "on_failure": "Stop; charge attempted compute and full reservation; no resume/retry. New attempt requires a new lead receipt/ID/output.",
+  "operations": [
+    "verify context and code/lock hashes only",
+    "preserve inputs-02 subprocess launch boundary; substitute metadata module target",
+    "capture child first, then parent",
+    "write bounded snapshots/diffs and combined child log",
+    "terminal cleanup and hash-verified collection"
+  ],
+  "output_mount": "/outputs",
+  "output_root": "/outputs/runtime-probe-03",
+  "output_volume_id": "vo-R1LWY3HJHJ1NrqDGFe5Sid",
+  "request_message_id": "a7041389-bec4-4389-b812-d9d1d43699e8",
+  "resume": false,
+  "reviewed_differences_document": "README.md",
+  "runner_class": "cuda:L40S",
+  "same_as_owner_launch": {
+    "PYTHONPATH": "inherited, unchanged",
+    "RLIMIT_FSIZE": [
+      67108864,
+      67108864
+    ],
+    "argv_prefix": [
+      "sys.executable",
+      "-B",
+      "-m"
+    ],
+    "cwd": "/inputs/code-d4abc26-mounts-770d000",
+    "environment": "dict(os.environ,PYTHONDONTWRITEBYTECODE=\"1\",PYTHONHASHSEED=\"0\",CUBLAS_WORKSPACE_CONFIG=\":4096:8\")",
+    "shell": false,
+    "stderr": "subprocess.STDOUT",
+    "stdin": "inherited, omitted kwarg",
+    "stdout": "exclusive binary journal/runner.log",
+    "timeout_arithmetic": "remaining_work_seconds - 10 - elapsed_since_function_start"
+  },
+  "scientific_scope_exclusions": [
+    "no volume transition",
+    "no source/cache payload reads or hashing",
+    "no inputs/proof128/smoke/extract/fit/authenticate invocation",
+    "no context or approved owner code changes",
+    "no ATEN or offline environment overrides",
+    "no retry or resume"
+  ],
+  "scientific_stage_dispatch": false,
+  "single_use_containers": true,
+  "source_cache_payload_reads": false,
+  "source_files": {
+    "inputs-02/stage_driver.py": "96bc8c4a033592ace3875f21f6d700640cf937c2d692f52a898b386b4d18a21a",
+    "inputs-02/stage_worker.py": "55eddc71052e79d540dc5dbccc6942df137b08e6e650acb259f7a4bc738ef9b7",
+    "runtime-probe-01/driver.py": "3d705c685d0b27ee74eec5e23664a4d82c16b5f1b01b8bd22d3f3ec78f9e8f15",
+    "runtime-probe-01/worker.py": "fd6a6e126c5c96e330a39f36146d7281fc88df623d6d2e2ae57d322caad41319"
+  },
+  "status": "DRAFT_PENDING_LEAD_APPROVAL",
+  "supersedes_unlaunched_proposal": {
+    "attempt_id": "runtime-probe-02",
+    "reason": "local sender-UUID assertion typo; zero paid work",
+    "sha256": "46027d77feff1017400cdd7c1422a72b61d33a8f914ef1331e3d5c613deba72e"
+  },
+  "volume_writes_only_under": "/outputs/runtime-probe-03"
+}
