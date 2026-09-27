@@ -136,7 +136,7 @@ def evaluate(a, report, *, device="mps", model_factory=ChunkPolicy, array_loader
     out.parent.mkdir(parents=True, exist_ok=True)
     result = {"tag": "EXPLORATORY", "recipe": recipe, "checkpoint": a.checkpoint,
               "epoch": payload["epoch"], "training_seconds": payload["seconds"],
-              "threshold_calibration": thresholds, "decode": {}}
+              "threshold_calibration": thresholds, "decode": {}, "skipped_decodes": []}
     out.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
     report("Recomputing cohort camera references")
     result["references"] = recompute_references(train_arrays, dev_arrays)
@@ -164,6 +164,8 @@ def evaluate(a, report, *, device="mps", model_factory=ChunkPolicy, array_loader
         if (stop_on_persistence and sf["camera_mae_mean"] <
                 result["references"]["frozen_dev"]["persistence"]["camera_mae_mean"]):
             result["stop_reason"] = f"STOP: {key} self-fed camera beats persistence; report to lead"
+            result["skipped_decodes"] = [f"{n}/{d}" for n, d in runs
+                                         if f"{n}/{d}" not in result["decode"]]
         out.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
         print(json.dumps({"tag": "EXPLORATORY", "decode": key, "T": tf["macro_press_f1_tol"],
                           "F": sf["macro_press_f1_tol"]}), flush=True)

@@ -445,5 +445,7 @@ def test_decode_persistence_stop_saves_first_result_and_stops_summary(
     if expected_count == 1:
         assert list(result["decode"]) == ["fixed_0.5/median"]
         assert messages[-1] == result["stop_reason"]
+        assert result["skipped_decodes"] == ["fixed_0.5/mode"]
     else:
         assert "stop_reason" not in result
+        assert result["skipped_decodes"] == []
