@@ -48,3 +48,15 @@ Written by admission-review (Codex). binds-review (Opus 5.5): LAND WITH FIXES, t
 | `judge/judge_cm3.py` | `bfb884e08001cfe680e1aec59e790cf2ab1a2b1b063c460b7b1e7c8a286b71b1` |
 | `judge/review-judge-20260926.md` | `fa994652df2574271a2d74f44ff7e4ed91ff4979ab6524056455be610ee0c048` |
 | `judge/test_judge_cm3.py` | `4c6cd5de83fb9a6b9c615b4e93c9ff39e40faa051c78b7971d0ba6aa08b05129` |
+
+## Amendment 3 (2026-09-26 ~20:25 CDT, pre-result): Modal CUDA classes, two-phase parallel execution, MPS memory disposition
+
+James chose Modal for the fan-out. S1-S4, K, selection and tie order are unchanged. binds-review (Opus 5.5): LAND, including a round-2
+reproduction through the a3 judge that matches `reading.json`. The current contract is the `-a3` pre-registration and `judge/judge_cm3-a3.py`.
+
+| File | sha256 |
+|---|---|
+| `fit-countermeasures-3-prereg-draft-a3.md` | `7dd39493b754d61df85dc02bc6362f1a53fb1d46f9f9de370b98af03a3b24d54` |
+| `judge/judge_cm3-a3.py` | `e23b3212a0eadc98bc590e5081a92c9fab6740e93808aba2d245d6020b3f8eb0` |
+| `judge/test_judge_cm3-a3.py` | `7fdbb62092cfd3d3f70093e63d48ac040d928c0920deca2bae1b7918df90481e` |
+| `judge/review-a3-20260926.md` | `dcebc15eca6c95b60033c03e0d6189eb5bbd0d3e9bdf8114912d060b54327345` |
