@@ -117,19 +117,19 @@ def main(argv=None):
         raise
 
 
-def evaluate(a, report):
+def evaluate(a, report, *, device="mps"):
     out = Path(a.out)
     start = time.perf_counter()
     payload = torch.load(a.checkpoint, map_location="cpu", weights_only=True)
     train.require(payload["format"] == FORMAT, "not an exploratory chunk checkpoint")
     recipe = payload["recipe"]
-    model = ChunkPolicy(Config.from_dict(recipe["config"]), recipe["horizon"]).to("mps")
+    model = ChunkPolicy(Config.from_dict(recipe["config"]), recipe["horizon"]).to(device)
     model.load_state_dict(payload["model"])
     train_arrays, dev_arrays = load_manifest(a.manifest, a.registry, a.tally, cohort=recipe["cohort"])
     from . import steps
     live_mask = steps.train_statistics([arr.session for arr in train_arrays])["live_mask"]
     report("TRAIN teacher-forced calibration")
-    train_predictions = train.predict_teacher(model, train_arrays, device="mps")
+    train_predictions = train.predict_teacher(model, train_arrays, device=device)
     thresholds = choose_thresholds(train_predictions, live_mask)
     del train_predictions
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -141,13 +141,13 @@ def evaluate(a, report):
     result["references"] = recompute_references(train_arrays, dev_arrays)
     if model.horizon == 1:
         report("H=1 visual conditioning NLL pre-step")
-        result["conditioning_pre_step"] = conditioning_nll(model, dev_arrays)
+        result["conditioning_pre_step"] = conditioning_nll(model, dev_arrays, device=device)
         out.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
     conditions = {(name, decoder): cutoffs
                   for name, cutoffs in (("fixed_0.5", [.5] * vocab.N), ("train_chosen", thresholds["thresholds"]))
                   for decoder in DECODERS}
     report("Six independent teacher/self-fed decode conditions")
-    runs = predict_suite(model, dev_arrays, live_mask, conditions, progress=report)
+    runs = predict_suite(model, dev_arrays, live_mask, conditions, device=device, progress=report)
     for (name, decoder), values in runs.items():
         report(f"Summarizing {name}/{decoder}")
         tf = metrics.evaluate(values["teacher"], **metrics.EXECUTED_TEACHER)
