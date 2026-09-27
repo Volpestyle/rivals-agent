@@ -1,0 +1,16 @@
+{
+  "sdk": "1.5.5",
+  "files": {
+    "image.py": "734954480a14f88a778390c6674ba1742ce85924168758348beed1c68f92cfe2",
+    "_image.py": "0763ea9a0435fed8150e9f43b49b3330308f856946f1c574cf2f4e250cefd9fe",
+    "_functions.py": "6884a56594caadb47517d10cacd08050b3ed4df02abf7bfb9df48d7c4865315f",
+    "_utils/function_utils.py": "1a68abc7442cfb1bb8d541742d98db833aad8acd62f18ef7a08656a499e0b1ff",
+    "mount.py": "a5656c530af790f88d207bb3ce3fdf2efafb83d585b0f3469e11e10e269b0bf9"
+  },
+  "Image.build": "requires initialized app; resolver.load uses app load context",
+  "ImageGetOrCreate": "request binds load_context.app_id",
+  "Image.from_id": "ImageFromId read-only lookup when loaded; hydrate unsupported",
+  "include_source": "FunctionSourceInfo.get_entrypoint_mount mounts top-level package; default includes non-py files",
+  "proof": "native-mount-proof.json",
+  "paid_calls": 0
+}

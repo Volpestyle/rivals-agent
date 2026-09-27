@@ -1,0 +1,34 @@
+{
+  "image_id": "im-FNjy4v5u4XYF29SBGvT0KD",
+  "release_sha256": "732dc08f9d0351b3a601a0a613dbc31f5c2476b6eaddc8cb49e1575d004b78ce",
+  "image_metadata_ref": {
+    "path": "C:\\Users\\volpe\\repos\\rivals-agent\\docs\\evidence\\nitrogen-spatial-yaw-20260927\\guard-integration\\base-image-metadata.json",
+    "sha256": "9063e15d1e16ea432452be27731e64f749aa9d4f2b33aa35c0cfc9cb5ffedcb1"
+  },
+  "outputs": [
+    {
+      "name": "rivals-yaw-probe-20260927-01-outputs",
+      "id": "vo-JtNIL2hBuJ0chN1ivHaHvO"
+    },
+    {
+      "name": "rivals-yaw-probe-20260927-02-outputs",
+      "id": "vo-7keXkVX85cPjrXfkpaRbPu"
+    },
+    {
+      "name": "rivals-yaw-probe-20260927-03-outputs",
+      "id": "vo-lPqlhxx4pXb6EQdvLPvppV"
+    },
+    {
+      "name": "rivals-yaw-probe-20260927-04-outputs",
+      "id": "vo-fD4OBnkoMIWOdfOSACNmn6"
+    },
+    {
+      "name": "rivals-yaw-probe-20260927-05-outputs",
+      "id": "vo-U0WUaIRo6SczX7SwQ9qF7m"
+    },
+    {
+      "name": "rivals-yaw-probe-20260927-06-outputs",
+      "id": "vo-DiruadWnofHeucZjXZuGhL"
+    }
+  ]
+}
