@@ -9,6 +9,8 @@ Linear is the current result record; the learning plan defines the gates, the
 recording log inventories takes, and retained evidence proves what happened.
 This skill joins those records at delivery. It adds no new tracker or review gate.
 Use `linear-orient` for discovery and `linear-issues` for authorized writes.
+An orientation or status question alone stays read-only; an existing delivery
+mandate covers reconciliation within that work's scope.
 
 ## Establish what changed
 
