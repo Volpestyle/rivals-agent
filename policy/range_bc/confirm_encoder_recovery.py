@@ -96,7 +96,7 @@ def main():
 
     def report(message):
         write(job, owner="explore-policy", host="mac", stage="running", progress=message,
-              evidence=str(args.out / "run.log"))
+              evidence=str(args.out.with_suffix(".log")))
         print(message, flush=True)
 
     environment = {"device": "mps", "torch": str(torch.__version__), "platform": platform.platform(),
@@ -148,4 +148,10 @@ def main():
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    try:
+        raise SystemExit(main())
+    except Exception as exc:
+        from scripts.job_status import write
+        write("nitrogen-confirm-mac-evaluation-a2", stage="failed",
+              progress=f"{type(exc).__name__}: {exc}"[:4096])
+        raise
