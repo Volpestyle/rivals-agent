@@ -1,6 +1,6 @@
 # EXPLORATORY — short action chunks (2026-09-26)
 
-Owner: explore-policy. VUH-1346, Policy team, EXPLORE track. **Interim H=1 trained; evaluation running. Full sweep queued.**
+Owner: explore-policy. VUH-1346, Policy team, EXPLORE track. **Interim H=1 evaluated; full-cohort caches building.**
 Mac-only, $0 cloud; round 3, the decoder audit, and the Modal upload have priority.
 Lead authorized an explore-only commit on 2026-09-27 once the full-run code is final.
 No validation, test, Gate 2 or sealed payloads are used.
@@ -37,7 +37,7 @@ if a chunk arm improves self-fed checks.
 
 | Arm, seed 0 | Epochs | S1 onset / S2 pooled + per-action press ratios | S3 camera / S4 any hold | T / F | Wall time |
 |---|---:|---|---|---|---|
-| H=1 (interim) | 26 complete | Evaluating | Evaluating | Evaluating | Fit complete; evaluation running |
+| H=1 (interim) | 26 complete | See six-decode table below | Worse than zero motion | See below | 155.78 min fit + 2.68 min eval |
 | H=4 (full) | 26 planned | Not run | Not run | Not run | Not run |
 | H=8 (full) | 26 planned | Not run | Not run | Not run | Not run |
 | H=1 (full) | 26 planned | Not run | Not run | Not run | Not run |
@@ -217,3 +217,44 @@ Interim H=1's dev loss rose after its earlier minimum while training loss kept
 falling. This is recorded as convergence/overfitting evidence, not a reason to
 silently change the approved full-sweep epoch cap or choose a dev-best model.
 Epoch-13 snapshots remain snapshots of the 26-epoch cosine schedule.
+
+## EXPLORATORY interim H=1 result (26 epochs, seed 0)
+
+This is the five-session, 80.5317-trainable-minute stopgap control, separate from
+the upcoming full cohort. Training/evaluation exited 0; the successor wrapper
+exited 75 after evaluation, as requested. Interim H=4/H=8 were not launched.
+
+| Threshold / camera decode | S1 onset recall | S2 pooled press ratio | S3 camera MAE | S4 any-hold share | T | F |
+|---|---:|---:|---:|---:|---:|---:|
+| fixed_0.5/median | 0.0538 | 0.1037 | 1.4017 | 0.2944 | 0.0859 | 0.0439 |
+| fixed_0.5/mode | 0.0685 | 0.1306 | 1.8278 | 0.3239 | 0.0859 | 0.0605 |
+| fixed_0.5/expectation | 0.0876 | 0.1664 | 1.9944 | 0.4342 | 0.0859 | 0.0593 |
+| train_chosen/median | 0.0037 | 0.0167 | 1.3523 | 0.0153 | 0.0333 | 0.0090 |
+| train_chosen/mode | 0.0053 | 0.0252 | 1.7036 | 0.0320 | 0.0333 | 0.0143 |
+| train_chosen/expectation | 0.0094 | 0.0285 | 1.8919 | 0.0340 | 0.0333 | 0.0176 |
+
+All six camera MAEs are worse than frozen-dev zero motion (1.224645 degrees),
+persistence (0.418271) and TRAIN-refitted AR2 (0.376227). TRAIN calibration does
+not rescue rollout here. Per-action onset recall, press ratios and raw counts
+are in `handoff/explore/interim-h1-per-action-checks.csv`; complete existing-metric
+outputs are in `interim-h1-evaluation.json`. No new judge or pass rule was added.
+Training took 155.78 min; evaluation 2.68 min.
+Step-one dev total reached 1.250403 at epoch 11, then rose to
+1.408418 at epoch 26. Epoch 26 remains the declared endpoint; the
+epoch-13 snapshot is from this 26-epoch cosine schedule.
+
+**H=1 visual conditioning pre-step:** real versus zero visual features, keeping
+true previous actions fixed, gave camera NLL yaw 1.744729 vs 1.662288 and pitch
+1.562909 vs 1.502069. Moving-sign conditional NLL was 0.217642 vs 0.197773 yaw,
+0.205489 vs 0.201742 pitch. Zeroing features improved these reused-dev metrics;
+this is an out-of-distribution ablation, not proof that visual features contain
+no direction or that a trained history-only policy would be better.
+
+**Full transition:** code commit `aca82b4` contains only explore paths; unrelated
+shared changes were preserved. Verified runtime `explore/code-full-aca82b4/`
+retains legacy base `107970b4` and its lock/metadata, overlays the committed
+explore modules, and has its own native venv. MPS backward verification passed.
+Pipeline PID 20950 is building 203745, 035932 and 045729 serially with the existing
+cache CLI, then runs fresh full H=1/H=4/H=8 train/eval jobs, each 26 epochs.
+Logs, stage PIDs/exits and STOP are under `explore/full-chunks26-seed0/`;
+dashboard parent `explore-full-chunks26-seed0`. No automatic retry or cohort switch.
