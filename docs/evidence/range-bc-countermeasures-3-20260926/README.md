@@ -36,3 +36,15 @@ The current contract is the `-a2` pair. The files above are the pinned Amendment
 | `fit-countermeasures-3-prereg-draft-a2.md` | `93fc8ecaba9668b53bc3c0da4a4fdea211a9339535b0a06e050c46fa9cd50928` |
 | `round3-design-a2.md` | `b36a50c1967891777b5f8ed4a80ed58112891370b3eaae74bbbeac256da32905` |
 | `review-round3-a2-20260926.md` | `5de5b160f4e1fddc68735769569df9e9604e837780759d02668ec76680b8434a` |
+
+## Judge, pinned before any round-3 result (2026-09-26 19:52 CDT)
+
+Written by admission-review (Codex). binds-review (Opus 5.5): LAND WITH FIXES, then LAND on the delta; no rule changed, and a rerun of round 2 reproduces its recorded reading.
+
+| File | sha256 |
+|---|---|
+| `judge/judge-pins-before-results-20260926T1932.txt` | `fd7e6d59bff0b8cb8ee59567cdb0c23cc2a6218d1d9863b324dd13bdc3c3ae31` |
+| `judge/judge-pins-v2-before-results-20260926T1947.txt` | `cee77837e9466cdba97abf8535e157ee0c02dc5996ee660158410ff7a1a9995b` |
+| `judge/judge_cm3.py` | `bfb884e08001cfe680e1aec59e790cf2ab1a2b1b063c460b7b1e7c8a286b71b1` |
+| `judge/review-judge-20260926.md` | `fa994652df2574271a2d74f44ff7e4ed91ff4979ab6524056455be610ee0c048` |
+| `judge/test_judge_cm3.py` | `4c6cd5de83fb9a6b9c615b4e93c9ff39e40faa051c78b7971d0ba6aa08b05129` |

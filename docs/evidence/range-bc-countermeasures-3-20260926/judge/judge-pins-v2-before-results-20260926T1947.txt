@@ -1,0 +1,2 @@
+bfb884e08001cfe680e1aec59e790cf2ab1a2b1b063c460b7b1e7c8a286b71b1 *judge_cm3.py
+4c6cd5de83fb9a6b9c615b4e93c9ff39e40faa051c78b7971d0ba6aa08b05129 *test_judge_cm3.py
