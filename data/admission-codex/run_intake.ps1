@@ -1,8 +1,9 @@
 param([Parameter(Mandatory=$true)][string]$Step,[Parameter(Mandatory=$true)][string]$Session,[double]$VoteFrom=60,[ValidateSet('initial','ping-a1')][string]$Revision='initial')
 $ErrorActionPreference='Stop'
 $repo='C:/Users/volpe/repos/rivals-agent'
-$allowed=@('20260927T051206-888Z-150600-4','20260927T053118-260Z-150600-6','20260927T053838-153Z-150600-7','20260927T055006-068Z-150600-8','20260927T060021-195Z-150600-10','20260927T061107-953Z-150600-11','20260927T061900-143Z-150600-12')
+$allowed=@('20260927T051206-888Z-150600-4','20260927T052001-827Z-150600-5','20260927T053118-260Z-150600-6','20260927T053838-153Z-150600-7','20260927T055006-068Z-150600-8','20260927T060021-195Z-150600-10','20260927T061107-953Z-150600-11','20260927T061900-143Z-150600-12')
 if ($Session -notin $allowed -or $Step -notin @('vote','scan','regime','motor','propose','evidence','assemble','receipt')) { throw 'Outside bounded night-match scope' }
+if ($Session -eq '20260927T052001-827Z-150600-5' -and ($Revision -ne 'ping-a1' -or $Step -notin @('propose','evidence'))) { throw 'Match -5 only permits the authorized ping delta here' }
 $python='C:/Users/volpe/.uv-envs/admission-codex/Scripts/python.exe'
 $runRoot=Join-Path $repo "data/admission-codex/runs/$Session"
 if ($Revision -eq 'ping-a1') { $runRoot=Join-Path $runRoot 'ping-a1' }
@@ -24,6 +25,7 @@ $arguments=@('-u','data/human/sessions/intake_session.py',$Step,$Session,'--scra
 if ($Revision -eq 'ping-a1') {
   if ($Step -notin @('propose','evidence')) { throw 'Ping revision currently permits proposal/evidence only' }
   $arguments=@('-u','data/human/sessions/intake_session.py',$Step,$Session,'--scratch','data/admission-codex/intake','--snapshot','code-snapshot-f8fd92c-ping-20260927','--supersedes','Lead 2026-09-27: exclude held middle-mouse ping wheel plus 2 s settle; preserve prior packet')
+  if ($Step -eq 'evidence' -and $Session -in @('20260927T051206-888Z-150600-4','20260927T052001-827Z-150600-5')) { $arguments+=@('--ping-delta') }
 }
 if ($Step -eq 'vote') { $arguments+=@('--vote-from',$VoteFrom.ToString([Globalization.CultureInfo]::InvariantCulture)) }
 if ($Step -in @('propose','evidence')) { $arguments+=@('--earlier-snapshot','code-snapshot-f8fd92c-6046514b') }

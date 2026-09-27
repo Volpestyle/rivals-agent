@@ -32,6 +32,7 @@ the live worktree. Decodes are CPU, four threads, below-normal priority. The sea
 is checked before the registry or any session file is read.
 """
 import argparse
+import copy
 import csv
 import ctypes
 import hashlib
@@ -133,6 +134,7 @@ class Ctx:
         self.snapshot = HERE / args.snapshot
         self.earlier_snapshot = getattr(args, "earlier_snapshot", None)
         self.supersedes = getattr(args, "supersedes", None)
+        self.ping_delta = getattr(args, "ping_delta", False)
         need(not self.supersedes or args.step in ("motor", "propose", "evidence"),
              "--supersedes applies to the motor, propose and evidence steps only")
         self.spans = getattr(args, "span", None) or []
@@ -750,6 +752,41 @@ def _decode(c, file_ms_list, keep_frames=False):
             yield ms, np.frombuffer(raw, np.uint8, count=size, offset=i * size).reshape(H, W, 3)
 
 
+PING_DELTA_SEGMENTS = {
+    "20260927T051206-888Z-150600-4": {"seg-015", "seg-030", "seg-043"},
+    "20260927T052001-827Z-150600-5": {"seg-030"},
+}
+
+
+def splice_ping_delta(previous, proposed, affected):
+    """Replace only named old segments; retain every other segment byte-for-byte as JSON values."""
+    need(affected <= {s["segment_id"] for s in previous}, "missing affected segment")
+    result = []
+    for old in previous:
+        if old["segment_id"] not in affected:
+            result.append(copy.deepcopy(old))
+            continue
+        pieces = []
+        for new in proposed:
+            lo, hi = max(old["start_ns"], new["start_ns"]), min(old["end_ns"], new["end_ns"])
+            if lo >= hi:
+                continue
+            child = copy.deepcopy(new)
+            child.update(start_ns=lo, end_ns=hi, parent_segment=old["segment_id"],
+                         segment_id=f"{old['segment_id']}-a1-{len(pieces):02d}")
+            # Clipped outer edges inherit their existing proof and bracket.
+            for edge, key in (("start", "start_ns"), ("end", "end_ns")):
+                if key in old and child[key] == old[key] and "edges" in child:
+                    child["edges"][edge] = copy.deepcopy(old["edges"][edge])
+            pieces.append(child)
+        need(pieces and pieces[0]["start_ns"] == old["start_ns"]
+             and pieces[-1]["end_ns"] == old["end_ns"]
+             and all(a["end_ns"] == b["start_ns"] for a, b in zip(pieces, pieces[1:])),
+             "delta does not tile its old segment")
+        result.extend(pieces)
+    return result
+
+
 def step_evidence(c):
     import cv2
     hi = c.hi
@@ -771,6 +808,22 @@ def step_evidence(c):
         need(not current.exists(), "segments-evidence.json already written")
         need(not (c.out / "review-frames").exists(), "review-frames/ exists without segments-evidence.json")
     guard, guard_key, guard_rel = c.edge_guard(scan, layout, mapping)
+    previous, affected = None, set()
+    if c.ping_delta:
+        need(c.supersedes and c.sid in PING_DELTA_SEGMENTS, "ping delta limited to the lead's named -4/-5 revisions")
+        previous = json.loads(current.read_text())
+        owner = json.loads((c.out / "owner-verdicts.json").read_text())
+        need(owner["segments_evidence_sha256"] == sha(current), "previous owner/evidence pin mismatch")
+        affected = PING_DELTA_SEGMENTS[c.sid]
+        need(all(owner["verdicts"][sid]["suitability"] == "accepted" for sid in affected),
+             "affected segment was not accepted")
+        # The input-only audit pins the raw log and original accepted review.
+        audit = next(r for r in json.loads((ROOT / "data/admission-codex/accepted-ping-wheel-audit-20260927.json").read_text())
+                     if r["session"] == c.sid)
+        need(sha(c.raw / "inputs.jsonl") == audit["input_sha256"], "audited inputs changed")
+        need(sha(c.out / "review.json") == audit["review_sha256"], "audited review changed")
+        old_ranges = [(s["start_ns"], s["end_ns"]) for s in previous["segments"] if s["segment_id"] in affected]
+        pass1 = [s for s in pass1 if any(s["start_ns"] < b and a < s["end_ns"] for a, b in old_ranges)]
 
     def proofs(frames):
         time_of = {ms_of[t]: t for t in frames}
@@ -780,6 +833,10 @@ def step_evidence(c):
     # 1. native edge reads: every frame of each gameplay edge's bracket and, when the sample frame itself fails the
     # edge proof, the frames up to EDGE_INWARD_NS inside the segment (hi.propose_segments places the edge)
     native, reads = {}, []
+    if previous:
+        reads = copy.deepcopy(previous["native_edge_reads"])
+        for r in reads:
+            native[(r["edge"], r["sample_ns"])] = [(f["composition_ns"], f["proof"]) for f in r["frames"]]
     for s in pass1:
         if s["machine_reason"] != hi.GAMEPLAY:
             continue
@@ -802,6 +859,8 @@ def step_evidence(c):
                               frames=[dict(composition_ns=t, frame_index=index_of[t], file_ms=ms_of[t], **r)
                                       for t, r in both]))
     segs, flags = hi.propose_segments(**kw, native=native)
+    if previous:
+        segs = splice_ping_delta(previous["segments"], segs, affected)
     require_proven_edges(segs, reads, hi.GAMEPLAY)   # E1: or nothing is written
     # 2. review frames: both edges plus stratified interior frames, decoded exactly and hashed; written to a staging
     # folder that becomes review-frames/ only once everything else succeeded (review N2)
@@ -810,8 +869,15 @@ def step_evidence(c):
         shutil.rmtree(review_dir)   # this step's own leftover from an interrupted run
     review_dir.mkdir()
     picks = {}
+    inherited_ids = {s["segment_id"] for s in previous["segments"] if s["segment_id"] not in affected} if previous else set()
     from bisect import bisect_left, bisect_right
     for s in segs:
+        if s["segment_id"] in inherited_ids:
+            for f in s["review_frames"]:
+                source = c.out / f["image"]
+                need(sha(source) == f["image_sha256"], "inherited review image changed")
+                shutil.copyfile(source, review_dir / Path(f["image"]).name)
+            continue
         first = bisect_left(times, s["start_ns"])
         last = bisect_right(times, s["end_ns"] - 1) - 1
         if first > last:
@@ -823,6 +889,8 @@ def step_evidence(c):
     all_ms = sorted({ms_of[times[i]] for v in picks.values() for i in v})
     owners = {}
     for s in segs:
+        if s["segment_id"] in inherited_ids:
+            continue
         s["review_frames"] = []
         for i in picks[s["segment_id"]]:
             owners.setdefault(ms_of[times[i]], []).append((s, i))
@@ -841,6 +909,8 @@ def step_evidence(c):
                                            ("end" if i == picks[s["segment_id"]][-1] else "interior")))
     t0 = c.meta["start_ns"]
     for s in segs:
+        if s["segment_id"] in inherited_ids:
+            continue
         s["t_rel_s"] = [(s["start_ns"] - t0) / 1e9, (s["end_ns"] - t0) / 1e9]
         s["seen"] = None   # filled by the owner's inspection; what the frames actually show (R9)
     doc = dict(session=c.sid, session_group=c.place.session_group, split=c.place.split, media_sha256=c.media_sha,
@@ -881,6 +951,10 @@ def step_evidence(c):
                note="`proposal` is the proposer's; nothing here is a verdict. Accepted comes only from a verdict "
                     "record with reviewer, time and inspected native frame hashes (review R5).")
     if c.supersedes:   # every check passed and every frame is written: only now does the old evidence step aside
+        if previous:
+            doc["delta_scope"] = dict(affected_old_segments=sorted(affected), unchanged_segments=sorted(inherited_ids),
+                                      previous_evidence_sha256=sha(current),
+                                      rule="Only named old segments replaced; all others retained exactly, including frames.")
         n = 1
         while (c.out / f"segments-evidence.v{n}.json").exists() or (c.out / f"review-frames.v{n}").exists():
             n += 1
@@ -904,6 +978,7 @@ def main():
     ap.add_argument("--scratch", required=True)
     ap.add_argument("--snapshot", required=True)
     ap.add_argument("--earlier-snapshot", help="the snapshot the earlier steps ran from, when it differs")
+    ap.add_argument("--ping-delta", action="store_true", help="evidence: replace only the lead's affected -4/-5 segments")
     ap.add_argument("--supersedes", help="motor, propose or evidence: regenerate deliberately, keeping the old record "
                                          "as .vN (the reason)")
     ap.add_argument("--esc-presses", type=int, help="settings step: the Esc presses of the declared settings change")
