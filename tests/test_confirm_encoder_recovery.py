@@ -1,5 +1,7 @@
 """No corpus: refuse partial/mismatched artifacts before evaluation-only recovery."""
 import json
+import hashlib
+from types import SimpleNamespace
 
 import pytest
 
@@ -52,3 +54,18 @@ def test_refuses_different_final_tensors_even_when_each_file_is_pinned(tmp_path)
     pin["files"]["latest.pt"] = recovery.sha(path)
     with pytest.raises(FitError, match="changed final tensor"):
         recovery.authenticate(tmp_path, pin)
+
+
+def test_same_session_name_does_not_allow_changed_steps_or_pixels():
+    arr = SimpleNamespace(session=SimpleNamespace(session_id="synthetic", sha256="steps"),
+                          manifest={"global_sha256": "original pixels"})
+    pin = {"synthetic": {"steps_sha256": "steps", "cache_manifest_sha256": hashlib.sha256(
+        json.dumps(arr.manifest, sort_keys=True).encode()).hexdigest()}}
+    recovery.authenticate_cohort([arr], pin)
+    arr.manifest["global_sha256"] = "changed pixels"
+    with pytest.raises(FitError, match="cohort bytes differ"):
+        recovery.authenticate_cohort([arr], pin)
+    arr.manifest["global_sha256"] = "original pixels"
+    arr.session.sha256 = "changed labels"
+    with pytest.raises(FitError, match="cohort bytes differ"):
+        recovery.authenticate_cohort([arr], pin)

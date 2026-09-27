@@ -56,6 +56,8 @@ def test_six_disjoint_authenticated_configs_and_funded_guard(tmp_path, monkeypat
 
 def test_guard_functions_are_the_reviewed_ast():
     tree = ast.parse((ROOT / "encoder_budget.py").read_text())
-    nodes = [ast.dump(n, include_attributes=False) for n in tree.body if isinstance(n, ast.FunctionDef)]
+    # Python 3.12 adds an empty type_params field to the identical 3.11 AST.
+    nodes = [ast.dump(n, include_attributes=False).replace(", type_params=[]", "")
+             for n in tree.body if isinstance(n, ast.FunctionDef)]
     # Computed from the completed, reviewed no-history guard before copying it.
     assert hashlib.sha256("\n".join(nodes).encode()).hexdigest() == "e79032c7b5ffa9226e667d867937d5f582960c1d5081d4b98d352d6b90985d6c"

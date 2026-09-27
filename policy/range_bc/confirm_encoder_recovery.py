@@ -26,6 +26,16 @@ def sha(path):
         return hashlib.file_digest(stream, "sha256").hexdigest()
 
 
+def authenticate_cohort(arrays, pins):
+    """Match the already verified original run's step/cache receipts, not just names."""
+    train.require({a.session.session_id for a in arrays} == set(pins), "cohort differs")
+    for arr in arrays:
+        pin = pins[arr.session.session_id]
+        manifest_sha = hashlib.sha256(json.dumps(arr.manifest, sort_keys=True).encode()).hexdigest()
+        train.require(arr.session.sha256 == pin["steps_sha256"]
+                      and manifest_sha == pin["cache_manifest_sha256"], "cohort bytes differ")
+
+
 def authenticate(root, pin):
     """Refuse partial fits or changed artifacts before any model inference."""
     root = Path(root)
@@ -97,6 +107,7 @@ def main():
     (args.out / "environment.json").write_text(json.dumps(environment, indent=2) + "\n")
     report("Load unchanged admitted TRAIN/frozen-dev roster")
     arrays, dev = load_manifest(args.manifest, args.registry, args.tally, cohort="full")
+    authenticate_cohort(arrays + dev, spec["cohort"])
     config = json.loads(args.vision_config.read_text())["vision_config"]
     tower = SiglipVisionModel(SiglipVisionConfig(**config))
     tower.load_state_dict(load_file(str(args.vision)), strict=True)
