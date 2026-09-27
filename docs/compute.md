@@ -29,6 +29,16 @@ so give cloud boxes 8 CPUs or more.
 - Steam Input must be **disabled** for Marvel Rivals whenever the agent's virtual pad drives the game
   (`.agents/skills/rivals-live-game/SKILL.md`).
 
+**Dated exception, night of 2026-09-26/27 only** (James, ~02:20 CDT, relayed by the steering lead). This is not a rule change.
+- What it allows: explore-policy may run the EXPLORATORY full-cohort chunk arms H=4 and H=8 on the PC's RTX 4080 while the
+  Mac runs H=1. It uses the same code, seeds, roster and frozen dev as the Mac arms, and each result names its device.
+- Conditions:
+  - A guard stops the fit and frees the GPU within ~10 s of any Marvel or OBS process starting.
+  - RAM stays modest.
+  - The job writes a status file.
+  - It is skipped if the caches cannot be on the PC within about an hour.
+- Without a new explicit decision from James, the PC stays off-limits for training from 2026-09-27 onward.
+
 ## Rules for the Mac queue
 
 - **One heavy job at a time.** The lead sets the order and announces it to the job owners. Every job waits for the
