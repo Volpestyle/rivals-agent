@@ -1,0 +1,78 @@
+{
+ "session": "20260927T055006-068Z-150600-8",
+ "input_sha256": "383326e6fde7bc6c3bd0c7a485099548749dcba62ba1f4583dda5c672145c592",
+ "evidence_sha256": "7f2a37896b1a04121d86a6b688225d48fe36b9c3cad6e22842886f560616e28e",
+ "candidate_ids": [
+  "seg-002",
+  "seg-006",
+  "seg-012",
+  "seg-020",
+  "seg-024",
+  "seg-032",
+  "seg-039",
+  "seg-043",
+  "seg-047",
+  "seg-053",
+  "seg-058",
+  "seg-062",
+  "seg-067"
+ ],
+ "candidate_ns": 309391654304,
+ "ui_key_down_count": 0,
+ "ui_key_down_events": [],
+ "ping_cut_overlap_count": 0,
+ "ping_cut_overlaps": [],
+ "mouse_down_counts": {
+  "2": 124,
+  "1": 40,
+  "4": 26
+ },
+ "key_down_counts": {
+  "65": 289,
+  "32": 233,
+  "16": 210,
+  "68": 303,
+  "87": 364,
+  "67": 33,
+  "83": 56,
+  "69": 26,
+  "70": 6,
+  "81": 2,
+  "52": 2
+ },
+ "unbound_key_down_events": [
+  {
+   "segment": "seg-043",
+   "t_rel_s": 257.1049323,
+   "vk": 52,
+   "physical": "key:5:0"
+  },
+  {
+   "segment": "seg-047",
+   "t_rel_s": 312.5987816,
+   "vk": 52,
+   "physical": "key:5:0"
+  }
+ ],
+ "unbound_mouse_down_events": [],
+ "scroll_events": [],
+ "focus_events": [],
+ "ping_cuts_ns": [
+  [
+   556334834404700,
+   556336996076500,
+   "ui_key"
+  ],
+  [
+   556353563119400,
+   556355795094100,
+   "ui_key"
+  ],
+  [
+   556466017165400,
+   556468199086400,
+   "ui_key"
+  ]
+ ],
+ "note": "Input-log-only replay; sparse JPEG inspection does not establish native event neighborhoods. Independent review required."
+}

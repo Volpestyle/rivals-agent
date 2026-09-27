@@ -1,0 +1,15 @@
+{
+ "session": "20260927T055006-068Z-150600-8",
+ "mapping": {
+  "swing": "swing",
+  "get_over_here": "uppercut",
+  "uppercut": "get_over_here"
+ },
+ "mode": "match",
+ "window_s": [
+  60.0,
+  120.0
+ ],
+ "method": "reused scan.py voting rule on every 24th frame of the 60 s from 60 s",
+ "equals_051828_and_032454": true
+}

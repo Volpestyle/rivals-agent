@@ -1,0 +1,31 @@
+﻿{
+    "session":  "20260927T055006-068Z-150600-8",
+    "step":  "vote",
+    "started":  "2026-09-27T22:04:05.4808527Z",
+    "finished":  "2026-09-27T22:05:42.2635967Z",
+    "pid":  33388,
+    "exit_code":  0,
+    "failure":  null,
+    "free_bytes_before":  13789220864,
+    "process_peak_working_set_bytes":  {
+                                           "96076":  29384704,
+                                           "33388":  4816896,
+                                           "160760":  90882048,
+                                           "162248":  4874240,
+                                           "98376":  7806976,
+                                           "111920":  166293504,
+                                           "93652":  12955648
+                                       },
+    "arguments":  [
+                      "-u",
+                      "data/human/sessions/intake_session.py",
+                      "vote",
+                      "20260927T055006-068Z-150600-8",
+                      "--scratch",
+                      "data/admission-codex/intake",
+                      "--snapshot",
+                      "code-snapshot-f8fd92c-bounded-20260927",
+                      "--vote-from",
+                      "60"
+                  ]
+}

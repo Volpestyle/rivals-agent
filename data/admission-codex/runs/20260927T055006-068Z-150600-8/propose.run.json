@@ -1,0 +1,27 @@
+﻿{
+    "session":  "20260927T055006-068Z-150600-8",
+    "step":  "propose",
+    "started":  "2026-09-27T22:16:37.9132725Z",
+    "finished":  "2026-09-27T22:16:39.6884480Z",
+    "pid":  109200,
+    "exit_code":  0,
+    "failure":  null,
+    "free_bytes_before":  13659840512,
+    "process_peak_working_set_bytes":  {
+                                           "37792":  7806976,
+                                           "109200":  4825088,
+                                           "82648":  105828352
+                                       },
+    "arguments":  [
+                      "-u",
+                      "data/human/sessions/intake_session.py",
+                      "propose",
+                      "20260927T055006-068Z-150600-8",
+                      "--scratch",
+                      "data/admission-codex/intake",
+                      "--snapshot",
+                      "code-snapshot-f8fd92c-ping-20260927",
+                      "--earlier-snapshot",
+                      "code-snapshot-f8fd92c-6046514b"
+                  ]
+}

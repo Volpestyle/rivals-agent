@@ -1,0 +1,32 @@
+﻿{
+    "session":  "20260927T055006-068Z-150600-8",
+    "step":  "scan",
+    "started":  "2026-09-27T22:05:42.7515595Z",
+    "finished":  "2026-09-27T22:16:33.0032454Z",
+    "pid":  10820,
+    "exit_code":  0,
+    "failure":  null,
+    "free_bytes_before":  13789368320,
+    "process_peak_working_set_bytes":  {
+                                           "55268":  7901184,
+                                           "107616":  166862848,
+                                           "10820":  4894720,
+                                           "95768":  4911104,
+                                           "92224":  64876544,
+                                           "141872":  60837888,
+                                           "119528":  101769216,
+                                           "100032":  63508480,
+                                           "95080":  12951552,
+                                           "116688":  26456064
+                                       },
+    "arguments":  [
+                      "-u",
+                      "data/human/sessions/intake_session.py",
+                      "scan",
+                      "20260927T055006-068Z-150600-8",
+                      "--scratch",
+                      "data/admission-codex/intake",
+                      "--snapshot",
+                      "code-snapshot-f8fd92c-bounded-20260927"
+                  ]
+}

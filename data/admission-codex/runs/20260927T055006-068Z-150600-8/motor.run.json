@@ -1,0 +1,23 @@
+﻿{
+    "session":  "20260927T055006-068Z-150600-8",
+    "step":  "motor",
+    "started":  "2026-09-27T22:16:35.7125916Z",
+    "finished":  "2026-09-27T22:16:37.4950890Z",
+    "pid":  93800,
+    "exit_code":  0,
+    "failure":  null,
+    "free_bytes_before":  13659271168,
+    "process_peak_working_set_bytes":  {
+
+                                       },
+    "arguments":  [
+                      "-u",
+                      "data/human/sessions/intake_session.py",
+                      "motor",
+                      "20260927T055006-068Z-150600-8",
+                      "--scratch",
+                      "data/admission-codex/intake",
+                      "--snapshot",
+                      "code-snapshot-f8fd92c-bounded-20260927"
+                  ]
+}
