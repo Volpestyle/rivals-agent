@@ -4,6 +4,7 @@ The --receipt-sha256 argument is the externally communicated LEAD pin, not a
 self-signature. No command creates an approval. See handoff/round3/impl/FIT-RECEIPT-a3.md.
 """
 import argparse
+import difflib
 import hashlib
 import importlib.metadata
 import importlib.util
@@ -14,6 +15,7 @@ import platform
 from pathlib import Path
 import re
 import subprocess
+import sys
 import threading
 import time
 
@@ -35,6 +37,53 @@ LOCKS = ("uv.lock", "policy/range_bc/cm3-requirements.txt", "policy/range_bc/cm3
 require = training.require
 MOUNT_ROOTS = ("/inputs", "/outputs")
 MODAL_VOLUMES = Path("/__modal/volumes")
+RUNTIME_DIAGNOSTIC_PREFIX = "CM3_RUNTIME_MISMATCH "
+RUNTIME_DIAGNOSTIC_MAX_BYTES = 16384
+
+
+def require_runtime_match(kind, expected, actual, message):
+    """Fail closed with bounded metadata on stderr; never open an output path."""
+    if expected == actual:
+        return
+    diagnostic = {"format": "cm3-runtime-mismatch-v1", "kind": kind,
+        "expected_sha256": cm3.digest(expected), "actual_sha256": cm3.digest(actual),
+        "differing_top_level_keys": [], "value_differences": [],
+        "mapping_differences": {"packages": [], "locks": []},
+        "torch_build_unified_diff": [], "truncated": False}
+
+    def encode():
+        return RUNTIME_DIAGNOSTIC_PREFIX + json.dumps(diagnostic, sort_keys=True, separators=(",", ":")) + "\n"
+
+    def append(items, value):
+        items.append(value)
+        # ensure_ascii=True makes the string length its UTF-8 byte length, even
+        # when package metadata contains non-ASCII text or embedded newlines.
+        if len(encode()) > RUNTIME_DIAGNOSTIC_MAX_BYTES:
+            items.pop()
+            diagnostic["truncated"] = True
+
+    def difference(key, left, right):
+        return {"key": key, "expected_present": key in left, "actual_present": key in right,
+                "expected": left.get(key), "actual": right.get(key)}
+
+    keys = [key for key in sorted(set(expected) | set(actual))
+            if key not in expected or key not in actual or expected[key] != actual[key]]
+    for key in keys:
+        append(diagnostic["differing_top_level_keys"], key)
+    for key in keys:
+        if key in ("packages", "locks") and isinstance(expected.get(key), dict) and isinstance(actual.get(key), dict):
+            left, right = expected[key], actual[key]
+            for name in sorted(set(left) | set(right)):
+                if name not in left or name not in right or left[name] != right[name]:
+                    append(diagnostic["mapping_differences"][key], difference(name, left, right))
+        elif key == "torch_build" and isinstance(expected.get(key), str) and isinstance(actual.get(key), str):
+            for line in difflib.unified_diff(expected[key].splitlines(), actual[key].splitlines(),
+                    fromfile="expected.torch_build", tofile="actual.torch_build", lineterm=""):
+                append(diagnostic["torch_build_unified_diff"], line)
+        else:
+            append(diagnostic["value_differences"], difference(key, expected, actual))
+    print(encode(), end="", file=sys.stderr, flush=True)
+    require(False, message)
 
 
 def logical_path(path, *, resolve_local=True):
@@ -133,18 +182,35 @@ def code_hashes():
     return {p: sha(ROOT / p) for p in train.code_closure()}
 
 
-def software_snapshot(device):
+def software_snapshot(device, *, observation=None):
     name = "cm3-macos-arm64.lock" if device == "mps" else "cm3-linux-x86_64.lock"
     packages = dict(re.findall(r"^([a-zA-Z0-9_.-]+)==([^\s;\\]+)",
                               (ROOT / "policy/range_bc" / name).read_text(), re.M))
     for package, version in packages.items():
         require(importlib.metadata.version(package) == version, "installed package differs: " + package)
-    return {"python": platform.python_version(), "os": platform.platform(), "machine": platform.machine(),
-            "packages": packages, "torch_build": torch.__config__.show(),
-            "locks": {p: sha(ROOT / p) for p in LOCKS}}
+    raw_os, build = platform.platform(), torch.__config__.show()
+    result = {"python": platform.python_version(), "os": raw_os, "machine": platform.machine(),
+              "packages": packages, "torch_build": build, "locks": {p: sha(ROOT / p) for p in LOCKS}}
+    if observation is not None:
+        observation.update(format="cm3-runtime-observation-v1", platform=raw_os)
+    if device == "cuda":
+        kernel = platform.release()
+        require(platform.system() == "Linux" and result["machine"] == "x86_64" and kernel
+                and re.fullmatch(r"Linux-" + re.escape(kernel) + r"-x86_64-with-glibc[0-9]+(?:\.[0-9]+)+", raw_os),
+                "unrecognized CUDA platform layout")
+        lines = build.splitlines(keepends=True)
+        capability = [line for line in lines if "CPU capability usage" in line]
+        require(len(capability) == 1 and re.fullmatch(
+            r"  - CPU capability usage: (DEFAULT|AVX2|AVX512)\n", capability[0]),
+            "unrecognized CPU capability layout")
+        result.update(format="cm3-software-v2", os="Linux-" + raw_os[len("Linux-" + kernel + "-"):],
+                      torch_build="".join(line for line in lines if line != capability[0]))
+        if observation is not None:
+            observation.update(kernel=kernel, torch_cpu_capability_line=capability[0])
+    return result
 
 
-def hardware_snapshot(device):
+def hardware_snapshot(device, *, observation=None):
     if device == "cuda":
         require(platform.system() == "Linux" and platform.machine() == "x86_64", "CUDA host refused")
         description = subprocess.check_output(
@@ -152,6 +218,11 @@ def hardware_snapshot(device):
         require("\n" not in description, "exactly one visible GPU required")
         name, driver = [v.strip() for v in description.split(",")]
         name = name.removeprefix("NVIDIA ")
+        match = re.fullmatch(r"([1-9][0-9]*)\.[0-9]+(?:\.[0-9]+)?", driver)
+        require(match, "unrecognized NVIDIA driver layout")
+        if observation is not None:
+            observation.update(format="cm3-runtime-observation-v1", driver=driver)
+        driver = match[1]
     else:
         require(device == "mps" and platform.system() == "Darwin" and platform.machine() == "arm64",
                 "MPS host refused")
@@ -159,6 +230,14 @@ def hardware_snapshot(device):
         driver = platform.mac_ver()[0]
     return {"class": device + ":" + name, "driver": driver,
             "cuda_runtime": torch.version.cuda, "cudnn": torch.backends.cudnn.version()}
+
+
+def runtime_snapshot(device):
+    """Capture required identity and raw host observations together, before freezing."""
+    observation = {}
+    software = software_snapshot(device, observation=observation)
+    hardware = hardware_snapshot(device, observation=observation)
+    return {"software": software, "hardware": hardware, "runtime_observation": observation}
 
 
 def check_sources(context, stage):
@@ -185,7 +264,7 @@ def check_sources(context, stage):
     return allowed, denylist, registrations
 
 
-def authenticate(stage, ref, *, runtime=True):
+def authenticate(stage, ref, *, runtime=True, runtime_observation=None):
     """No payload reads/output/model construction here. Re-run in the bounded worker."""
     receipt = document(ref)
     require(receipt["format"] == "cm3-stage-approval-v1" and receipt["approved_by"] == "herdr-lead",
@@ -271,8 +350,9 @@ def authenticate(stage, ref, *, runtime=True):
     allowed, denylist, registrations = check_sources(context, stage)
     require(receipt["allowed_sources"] == allowed, "wrong allowed sources")
     if runtime:
-        require(context["software"] == software_snapshot(context["device"]), "software runtime differs")
-        require(context["hardware"] == hardware_snapshot(context["device"]), "wrong device/model/driver")
+        observed = {} if runtime_observation is None else {"observation": runtime_observation}
+        require_runtime_match("software", context["software"], software_snapshot(context["device"], **observed), "software runtime differs")
+        require_runtime_match("hardware", context["hardware"], hardware_snapshot(context["device"], **observed), "wrong device/model/driver")
         if stage == "fit":
             require_fit_peak_supported(context["device"], context)
     if stage == "fit":
@@ -382,7 +462,8 @@ def evaluation(model, arrays, stats, device):
 
 
 def _worker(stage, ref, output, started):
-    receipt, denylist, registrations, predecessors = authenticate(stage, ref)
+    observation = {}
+    receipt, denylist, registrations, predecessors = authenticate(stage, ref, runtime_observation=observation)
     context, device = receipt["context"], receipt["context"]["device"]
     backend = proof.configure_backend(device)
     backend["hardware"] = context["hardware"]
@@ -455,6 +536,7 @@ def _worker(stage, ref, output, started):
     require(elapsed < receipt["budget"]["stage_seconds"], "INCOMPLETE: stage time limit")
     result_receipt = {"format": "cm3-stage-result-v1", "stage": stage, "status": "PASS",
         "approval": ref, "context_sha256": receipt["context_sha256"], "artifacts": artifacts,
+        "runtime_observation": observation,
         "elapsed_stage_seconds": elapsed, "elapsed_total_seconds": receipt["budget"]["spent_seconds"] + elapsed}
     if stage == "fit":
         result_receipt.update({k: receipt[k] for k in ("arm", "seed", "purpose", "attempt_id")})

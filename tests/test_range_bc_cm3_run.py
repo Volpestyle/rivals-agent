@@ -251,7 +251,7 @@ def test_hardware_class_excludes_uuid_and_host(monkeypatch):
         return "NVIDIA L40S, 580.126.09\n"
     monkeypatch.setattr(run.subprocess, "check_output", query)
     value = run.hardware_snapshot("cuda")
-    assert value["class"] == "cuda:L40S" and value["driver"] == "580.126.09"
+    assert value["class"] == "cuda:L40S" and value["driver"] == "580"
     assert set(value) == {"class", "driver", "cuda_runtime", "cudnn"}
     assert not any("uuid" in s for s in seen)
 
