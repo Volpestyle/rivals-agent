@@ -352,3 +352,146 @@ $30 hard cap, shortening the funded lifetime. Failed receipts remain under
 `rivals-explore-chunks-20260927-attempt2` app/output volume and a versioned
 small code overlay on the existing input volume. The 69.446 GB payload is reused.
 Results remain provisional pending the post-run plumbing review.
+
+## EXPLORATORY pretrained encoder comparison (2026-09-27, launched)
+
+Lead brief `brief-explore-encoder.md`, VUH-1346, authorizes **$25 hard total** from
+James's $150 weekend budget, warning at $20. No further history/decode/horizon
+variants. Code **9665876** adds frozen stock SigLIP versus NitroGen vision weights
+into the existing H1 recurrent heads. Nineteen synthetic tests passed; targeted
+Ruff passed. Results remain provisional pending independent post-landing review.
+
+A bounded HTTP-range read plus `pickletools` (no unpickle) established that the
+released NitroGen checkpoint's actual tower is **google/siglip2-large-patch16-256**,
+1024-wide, 24 layers. Stock revision `787800c8990e6f058423089178e718139608408c`,
+weight SHA256 `fa34f822f016dbb167d8d0e3a8af99b5e199aa28573360d4295252b9ec418e2a`;
+NitroGen revision `584c8dded734d032f07a4bcc0ccb330e703298c4`, source SHA256
+`a266f5fb9c7dbdcdf97216558d2d82075a9a994b824cda69afa9fd3280260a81`. Workers use
+`weights_only=True` for NitroGen and retain only vision tensors; no NitroGen
+package, game environment, live harness, VL mixer or action head is imported.
+
+Both arms use the same eight TRAIN plus two frozen-dev sessions, normal regime,
+lag0, seed0, H1, batch8, stride64, history dropout0.2, LR3e-4, unchanged weighted
+BCE/camera CE and the final epoch26 of the same cosine schedule. Epoch13 is retained.
+Frozen encoders see the existing global and crosshair RGB views resized to256x256;
+last-layer patch features pool to a spatial4x4 grid, then independent trainable
+projections emit256 features per view into the existing512-wide LSTM. Shared
+recurrent/head initialization is exactly preserved. **Compared with incumbent H1,
+pixel jitter/DrQ is removed because features are cached.** The two new arms match
+each other; the incumbent comparison therefore does not isolate initialization
+alone. Encoder inference is bf16, caches float16, trainable head arithmetic unchanged.
+
+Every arm evaluates all six fixed0.5/TRAIN-chosen thresholds by median/mode/expectation
+camera decodes and recomputes zero/persistence/TRAIN-AR2 references. The required
+real-versus-zero diagnostic now reports per-axis camera/moving-sign NLL and per-action
+press NLL (including positive-only NLL), with teacher action history fixed. It remains
+an out-of-distribution sensitivity test, not a separately trained history-only control.
+
+Mac launch/collection root: `/Users/james/dev/range-bc-data/explore/encoder-20260927/`,
+subdirectories `siglip/` and `nitrogen/`. Separate new apps/output volumes, one L40S,
+8CPU/32GiB per arm, retries0, single-use/max1 containers. Existing explore input volume
+is read-only; CM3 apps/volumes are untouched. Base image `im-tE3Y0YrWYZ0po0yAA0JQT8`,
+derived image `im-FNjy4v5u4XYF29SBGvT0KD` pins transformers4.57.1,
+safetensors0.6.2/huggingface-hub0.35.3. Resource rate $0.00071784/s, rechecked against
+Modal pricing. Each arm reserves at most$12.50 (including$0.75 overhead), so both
+remain inside$25. The original guard's dual-clock deadline and120s teardown reserve
+are retained. Large derived feature arrays stay on worker scratch; hashes/source
+receipts, weights, checkpoints and reports persist. This is not invoice accounting.
+
+Reviewed a6 `AppCreateGate` transport is reused unchanged, with lane-specific inventory
+adapter:15s spacing/RPC limit, stable idempotency key for typed ResourceExhausted only,
+no retry for uncertain creation or fit failure. Separate campaign parents do not share
+its lock; actual creation times were coordinated with modal-port and idm-owner via
+Herdr. SigLIP `ap-UuznXHyCEqJ5zipZ4EFz5p` created16:54:23.994UTC; NitroGen
+`ap-sKEKpIXEeauhlWzxAk5vxQ` created16:55:56.742UTC; one RPC each. One earlier local
+shell launcher failed on CRLF before any Modal call/reservation and was fixed to LF;
+its log is retained. At16:56UTC both workers are verifying input bytes, with no fit
+or result yet. Owner retains responsibility for outcomes, cost and terminal proof.
+
+
+**Independent review accepted to continue (17:10UTC):** frame-review (Claude Opus5.5)
+reviewed9665876 and the live launch: **LAND WITH FIXES, no blocker**; lead directed
+both runs to continue with running inputs unchanged. Receipt
+`C:/Users/volpe/AppData/Local/Temp/claude/C--Users-volpe/7e6e33ed-20c0-4115-b6e2-59dc2d360929/scratchpad/handoff/post-land-reviews-20260927/review-9665876-encoder-comparison.md`,
+SHA256 `1589f2a93234c01630eac48c313e06989d10e0d1468e1cc8883510a61c95bf9d`
+independently matched. Budget functions are AST-identical to the reviewed guard;
+each maximum reservation is$12.49960512. All running manifest hashes verified.
+
+Non-blocking findings and disposition:
+- F1: the$150 weekend aggregate is the lead's ledger responsibility, not a shared
+  code-enforced cap. These arms add at most$25 to previous runs; owner reports their
+  running conservative allocation and final resource-time estimate to the lead.
+- F2: the driver's status-only `scripts.job_status` import comes from the existing
+  Mac `code-full-aca82b4` snapshot and is not pinned by this runner manifest. This
+  limitation is retained for these runs; pin/vendor that helper before a future run.
+- F3: the code archive includes `agent/physical_input.py`, which is never imported.
+  The encoder transitively imports `agent.controller` via `vocab`/`executor`, matching
+  the existing offline fits; on these Linux containers it sends no live input.
+  No NitroGen code is downloaded/imported; only its hash-checked weight file is used.
+- F4: the copied PRIOR_CHARGE=0 comment still says failed CPU-only attempt. Its actual
+  booked prior charge is zero. Correct the comment in future launcher copies, not
+  these hash-pinned running inputs.
+
+The new trainable heads contain10,683,307 parameters versus4,194,363 for incumbent
+H1, excluding the frozen tower. This capacity difference also qualifies the
+incumbent comparison; the new encoder pair remains matched. Runtime asset receipts
+agree on architecture/preprocessing config SHA256
+`172e39dbf0143b8fe22d2f08921730eb8c397967e58cb37d133161e28aa34104`.
+Extracted vision weights differ: SigLIP
+`38e5bf7f597c42369ceaac06499bf9e63e67e97818d3dcae549e65bb8f11b7be`, NitroGen
+`2fceee7b828e737e459b39aa5d11e01362ce38210033f6f885b9974d7a0d6e79`.
+
+## Encoder result and closure (2026-09-27, 17:29 UTC; EXPLORATORY)
+
+**Both pretrained encoders improve the real-versus-zero visual NLL diagnostic, but neither resolves self-fed collapse.** Both completed the fixed epoch-26 endpoint and all six decodes on the same 300,448 TRAIN / 24,556 frozen-dev frames. This is one seed, not a confirm result or authorization to deploy. NitroGen has a larger ablation gap, but the two real-input NLLs are close and it is not a decisive winner.
+
+### Visual conditioning, teacher history held fixed
+
+Lower NLL is better. Values are real visuals / zeroed visual features. Press NLL pools all known action-frame pairs; positive-only pools observed press positives. Per-action results are mixed and remain in each full evaluation. This is an out-of-distribution ablation, not proof that pixels alone suffice.
+
+| Arm | Yaw NLL | Pitch NLL | Moving yaw sign NLL | Moving pitch sign NLL | Press NLL | Positive press NLL |
+|---|---:|---:|---:|---:|---:|---:|
+| siglip | 1.488341 / 1.530940 | 1.338252 / 1.387199 | 0.158956 / 0.164642 | 0.147473 / 0.155685 | 0.079501 / 0.085908 | 1.576067 / 2.366025 |
+| nitrogen | 1.496561 / 1.540679 | 1.337642 / 1.401752 | 0.160815 / 0.165816 | 0.152024 / 0.162761 | 0.078520 / 0.101509 | 1.567919 / 2.213433 |
+
+The previous matched L40S H1 did not show this camera NLL benefit (yaw real/zero 1.58918/1.54218; pitch 1.42897/1.42255). The new heads have more parameters and omit per-epoch pixel augmentation, so this comparison does not isolate pretrained initialization alone. The two new arms match architecture, recipe and preprocessing.
+
+### All six self-fed decodes
+
+F is the same executed press F1 used by the chunk sweep; camera error is mean yaw/pitch MAE in degrees. Frozen-dev reference MAE is **zero 1.224645, persistence 0.418271, TRAIN-refit AR2 0.379687**, identical across both arms and incumbent. These are camera references, not press predictors.
+
+| Decode | SigLIP F | SigLIP camera MAE | NitroGen F | NitroGen camera MAE | H1 F | H1 camera MAE |
+|---|---:|---:|---:|---:|---:|---:|
+| fixed_0.5/median | 0.024214 | 1.233146 | 0.041297 | 1.311368 | 0.069158 | 1.408948 |
+| fixed_0.5/mode | 0.019348 | 1.224645 | 0.051046 | 1.566926 | 0.072289 | 1.750884 |
+| fixed_0.5/expectation | 0.070692 | 1.897432 | 0.086649 | 1.849111 | 0.101746 | 1.823276 |
+| train_chosen/median | 0.000861 | 1.411876 | 0.000576 | 1.329099 | 0.006204 | 1.377091 |
+| train_chosen/mode | 0.000000 | 1.256158 | 0.000576 | 1.224652 | 0.009209 | 1.687592 |
+| train_chosen/expectation | 0.004278 | 1.952423 | 0.001709 | 1.729218 | 0.007291 | 1.755161 |
+
+No new self-fed camera beats zero; SigLIP fixed-mode equals zero exactly. Every self-fed camera fails persistence and AR2. Best press F1 is stock 0.070692 and NitroGen 0.086649, below incumbent H1 0.101746. TRAIN-chosen thresholds remain collapsed (F <= 0.004279, always some action held). At fixed-expectation, predicted press counts are only 293/2458 (stock) and 318/2458 (NitroGen). Better visual sensitivity therefore does not establish an autonomous-policy improvement.
+
+Teacher-forced F at fixed 0.5 / TRAIN-chosen thresholds is stock 0.126952 / 0.038675 and NitroGen 0.115361 / 0.035951. Best teacher camera MAE is stock 0.403704 and NitroGen 0.405622 (expectation): slightly better than persistence but still worse than AR2. No endpoint was selected using dev results.
+
+### Runtime, cost, retained artifacts
+
+Both environment receipts confirm **NVIDIA L40S, Torch 2.14.0+cu130, CUDA 13.0**. Stock training/evaluation took 512.627/239.378 seconds; NitroGen 505.647/237.825 seconds. Encoder extraction and asset setup are additional and included in the conservative budget duration.
+
+Both workers and drivers exited 0. All worker artifact hashes matched the Mac collector; the PC additionally verified all 88 files in the result packet. Large weight/checkpoint files remain on the Mac and separate owned output volumes. Teardown receipts plus a fresh authenticated inventory at 17:28:46 UTC prove both apps stopped, tasks 0, and no owned containers. No further encoder AppCreate or compute is planned.
+
+Cost is **$2.125502 stock + $2.090313 NitroGen = $4.215816**, conservatively charging reservation start through terminal proof at $0.00071784/s plus $0.75 setup reserve per arm. This is a resource-time estimate, not an invoice; storage remains retained. Maximum reserved liability was $24.999210, under this brief's $25 hard cap. The lead received this total for the separate $150 weekend ledger. The $20 notification threshold was not reached.
+
+Authoritative Mac root: `/Users/james/dev/range-bc-data/explore/encoder-20260927/`. Each arm has `final.json`, `teardown.json`, `runner-manifest.json`, and `collected/{evaluation.json,epoch-26.pt,environment.json,assets/assets.json}`. Combined `summary.json`, `terminal-proof.json`, `result-packet-manifest.json` and `result-packet.zip` are at the root. PC copy: `C:/Users/volpe/AppData/Local/Temp/explore-encoder/results/`; packet at its parent. Runtime source/guard/adapter copies are included in the packet.
+
+| Artifact | SHA256 |
+|---|---|
+| siglip evaluation.json | `0d55f44b7b9eed688ff738f85b2446349254e07bd6e99e2c639d0a640f98e42f` |
+| siglip epoch-26.pt | `09163e8fa5b28376911d8058483583ac046dbf26e8f48fd736ba8345536e9677` |
+| nitrogen evaluation.json | `87f434a84e9be7ba54d3bb24a1b7a5415956ad5553cd82dc9659e8e9efb3e99b` |
+| nitrogen epoch-26.pt | `b8429830f0c5f15dc8c869e4a2531b9677306696b0639098af8895422df6ef2a` |
+| summary.json | `2d1fda94bc10a12639390de6678eeb974d2d02d6d9425c183aed72df0ddd217b` |
+| terminal-proof.json | `2b3249430780dd362f8876cb06560ca2ec728352099a31e723118e899cb784d1` |
+| result-packet-manifest.json | `f63256f598c96700d12445ff411c3491548e16103baa3935b99efba9278f7238` |
+| result-packet.zip | `2223f9f04cbd757b9c848e76d2419f1b481833c847c0f1c40684de99a2dcbfcb` |
+
+Independent implementation/launch review remains LAND WITH FIXES, with the four documented non-blocking limitations above. The lead owns acceptance and the VUH-1346 result record; direct workspace Linear was unavailable to this lane. **Parked after this result; no extra seeds, variants or fit retries.**
