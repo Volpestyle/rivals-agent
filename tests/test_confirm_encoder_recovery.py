@@ -69,3 +69,34 @@ def test_same_session_name_does_not_allow_changed_steps_or_pixels():
     arr.session.sha256 = "changed labels"
     with pytest.raises(FitError, match="cohort bytes differ"):
         recovery.authenticate_cohort([arr], pin)
+
+
+def test_completed_feature_stage_refuses_partial_or_changed_artifacts(tmp_path):
+    root = tmp_path / "features"
+    root.mkdir()
+    summary = {}
+    for sid in recovery.DEV_IDS:
+        folder = root / sid
+        folder.mkdir()
+        for name in ("global.npy", "crop.npy"):
+            (folder / name).write_bytes(b"synthetic array bytes")
+        (folder / "features.json").write_text("{}")
+        summary[sid] = {"manifest_sha256": recovery.sha(folder / "features.json")}
+    (root / "features.json").write_text(json.dumps(summary))
+    value = {"stage": "frozen-dev-features", "exit": 0, "root": str(root), "inputs_sha256": "inputs",
+             "vision_sha256": recovery.VISION, "graph": recovery.GRAPH, "device": "mps",
+             "files": {p.relative_to(root).as_posix(): {"bytes": p.stat().st_size, "sha256": recovery.sha(p)}
+                       for p in root.rglob("*") if p.is_file()}}
+    path = tmp_path / "stage.json"
+    path.write_text(json.dumps(value))
+    assert recovery.completed_features(path, recovery.sha(path), "inputs") == root
+    with pytest.raises(FitError, match="identity differs"):
+        recovery.completed_features(path, recovery.sha(path), "other cohort")
+    pixel = next(root.rglob("global.npy"))
+    pixel.write_bytes(b"corrupted array bytes")
+    with pytest.raises(FitError, match="feature artifact changed"):
+        recovery.completed_features(path, recovery.sha(path), "inputs")
+    del value["files"][pixel.relative_to(root).as_posix()]
+    path.write_text(json.dumps(value))
+    with pytest.raises(FitError, match="partial feature stage"):
+        recovery.completed_features(path, recovery.sha(path), "inputs")

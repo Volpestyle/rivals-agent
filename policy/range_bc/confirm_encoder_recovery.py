@@ -13,8 +13,8 @@ import torch
 
 from . import steps, train
 from .explore_chunks_eval import evaluate
-from .explore_chunks_train import load_manifest
-from .explore_encoder import EncoderPolicy, FeatureArrays, extract
+from .explore_chunks_train import DEV_IDS, load_manifest
+from .explore_encoder import GRAPH, EncoderPolicy, FeatureArrays, extract
 
 A1 = "7950bd9fce5cd57cde3bc218275999afec1cbfdb40f5ae47c142c5d03472f8a1"
 VISION = "2fceee7b828e737e459b39aa5d11e01362ce38210033f6f885b9974d7a0d6e79"
@@ -67,10 +67,35 @@ def authenticate(root, pin):
     return calibration
 
 
+def completed_features(path, expected_sha, inputs_sha):
+    """A completed feature stage is reusable; partial files alone are not."""
+    train.require(sha(path) == expected_sha, "feature stage receipt changed")
+    value = json.loads(Path(path).read_text())
+    train.require(value["stage"] == "frozen-dev-features" and value["exit"] == 0
+                  and value["inputs_sha256"] == inputs_sha and value["vision_sha256"] == VISION
+                  and value["graph"] == GRAPH and value["device"] == "mps", "feature stage identity differs")
+    expected = {"features.json"} | {f"{sid}/{name}" for sid in DEV_IDS
+                                   for name in ("features.json", "global.npy", "crop.npy")}
+    train.require(set(value["files"]) == expected, "partial feature stage")
+    root = Path(value["root"])
+    for name, info in value["files"].items():
+        p = root / name
+        train.require(p.stat().st_size == info["bytes"] and sha(p) == info["sha256"],
+                      f"feature artifact changed: {name}")
+    summary = json.loads((root / "features.json").read_text())
+    train.require(set(summary) == DEV_IDS, "feature cohort differs")
+    for sid, info in summary.items():
+        train.require(sha(root / sid / "features.json") == info["manifest_sha256"], "feature summary differs")
+    return root
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     for key in ("inputs", "out", "manifest", "registry", "tally", "vision", "vision-config", "a2"):
         p.add_argument("--" + key, type=Path, required=True)
+    p.add_argument("--features-stage", type=Path)
+    p.add_argument("--features-stage-sha256")
+    p.add_argument("--job-name", default="nitrogen-confirm-mac-evaluation-a2")
     args = p.parse_args()
     spec = json.loads(args.inputs.read_text())
     a2_sha = hashlib.sha256(args.a2.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
@@ -92,7 +117,7 @@ def main():
     train.require(bool(torch.isfinite(probe @ probe).all()), "MPS bf16 unavailable")
     args.out.mkdir(exist_ok=False, parents=True)
     from scripts.job_status import write
-    job = "nitrogen-confirm-mac-evaluation-a2"
+    job = args.job_name
 
     def report(message):
         write(job, owner="explore-policy", host="mac", stage="running", progress=message,
@@ -108,14 +133,22 @@ def main():
     report("Load unchanged admitted TRAIN/frozen-dev roster")
     arrays, dev = load_manifest(args.manifest, args.registry, args.tally, cohort="full")
     authenticate_cohort(arrays + dev, spec["cohort"])
-    config = json.loads(args.vision_config.read_text())["vision_config"]
-    tower = SiglipVisionModel(SiglipVisionConfig(**config))
-    tower.load_state_dict(load_file(str(args.vision)), strict=True)
-    tower.requires_grad_(False).eval()
-    feature_root = args.out / "features"
-    extract(dev, tower, feature_root, report, device="mps", batch=8)
-    del tower
-    torch.mps.empty_cache()
+    if args.features_stage:
+        report("Verify completed feature stage hashes; do not re-extract")
+        feature_root = completed_features(args.features_stage, args.features_stage_sha256, sha(args.inputs))
+        (args.out / "reused-feature-stage.json").write_text(json.dumps({
+            "path": str(args.features_stage), "sha256": args.features_stage_sha256,
+            "features_root": str(feature_root)}) + "\n")
+    else:
+        train.require(args.features_stage_sha256 is None, "feature receipt path missing")
+        config = json.loads(args.vision_config.read_text())["vision_config"]
+        tower = SiglipVisionModel(SiglipVisionConfig(**config))
+        tower.load_state_dict(load_file(str(args.vision)), strict=True)
+        tower.requires_grad_(False).eval()
+        feature_root = args.out / "features"
+        extract(dev, tower, feature_root, report, device="mps", batch=8)
+        del tower
+        torch.mps.empty_cache()
     features = [FeatureArrays(arr, feature_root) for arr in dev]
     for pin, calibration in zip(spec["runs"], calibrations):
         name = f"{pin['arm']}-s{pin['seed']}"
@@ -151,7 +184,10 @@ if __name__ == "__main__":
     try:
         raise SystemExit(main())
     except Exception as exc:
+        import sys
         from scripts.job_status import write
-        write("nitrogen-confirm-mac-evaluation-a2", stage="failed",
+        job = (sys.argv[sys.argv.index("--job-name") + 1] if "--job-name" in sys.argv
+               else "nitrogen-confirm-mac-evaluation-a2")
+        write(job, stage="failed",
               progress=f"{type(exc).__name__}: {exc}"[:4096])
         raise

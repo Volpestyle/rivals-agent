@@ -147,7 +147,7 @@ def evaluate(a, report, *, device="mps", model_factory=ChunkPolicy, array_loader
         report("Reusing authenticated original CUDA TRAIN calibration")
     out.parent.mkdir(parents=True, exist_ok=True)
     tag = recipe.get("tag", "EXPLORATORY")
-    result = {"tag": tag, "recipe": recipe, "checkpoint": a.checkpoint,
+    result = {"tag": tag, "recipe": recipe, "checkpoint": str(a.checkpoint),
               "epoch": payload["epoch"], "training_seconds": payload["seconds"],
               "threshold_calibration": thresholds, "decode": {}, "skipped_decodes": []}
     out.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")

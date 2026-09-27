@@ -1,0 +1,58 @@
+{
+  "stage": "frozen-dev-features",
+  "exit": 0,
+  "root": "/Users/james/dev/range-bc-data/explore/nitrogen-nohistory-confirm-20260927/mac-evaluation-a2/features",
+  "inputs_sha256": "14347004b5d12ed44a89d69961fcb2df7be8f1a34444460f145fee3c5797cf21",
+  "vision_sha256": "2fceee7b828e737e459b39aa5d11e01362ce38210033f6f885b9974d7a0d6e79",
+  "graph": {
+    "views": [
+      "global",
+      "crop"
+    ],
+    "resize": "bilinear antialias 256x256 squash",
+    "normalization": "RGB / 127.5 - 1",
+    "tokens": "last_hidden_state",
+    "pool": "row-major 4x4 means of 4x4 patches",
+    "precision": "bf16 encoder, float16 cache",
+    "pixel_augmentation": false,
+    "frozen": true
+  },
+  "device": "mps",
+  "files": {
+    "features.json": {
+      "bytes": 376,
+      "sha256": "e471582c87424e0af2eef250b043ecfcaef1891a47131d9166831901cbc5e71c"
+    },
+    "20260923T171533-187Z-33696-5/features.json": {
+      "bytes": 104915,
+      "sha256": "d6a9f6cb37255deaecaa8e498cead0c969e40a5f0c792ee527dd1719edf452ea"
+    },
+    "20260923T171533-187Z-33696-5/global.npy": {
+      "bytes": 157286528,
+      "sha256": "075c4e4da7969262e88c638ee8a2f735b9c777303cf8a234ac4a6716399a0261"
+    },
+    "20260923T171533-187Z-33696-5/crop.npy": {
+      "bytes": 157286528,
+      "sha256": "b99d61e86e14f7527c9359badc72e0d7fd7780cfc9495d4ba5af83f45bdb8b66"
+    },
+    "20260923T205528-900Z-45572-3/features.json": {
+      "bytes": 459123,
+      "sha256": "2309ac9258996944b64cf14c9a2de85c31356cc7f4c0ec346cc1504975b91553"
+    },
+    "20260923T205528-900Z-45572-3/global.npy": {
+      "bytes": 653230208,
+      "sha256": "d5a6db75344c9a1cceabcfbeda1f05b9e50194bd6ba3a10da8dae6db798c465b"
+    },
+    "20260923T205528-900Z-45572-3/crop.npy": {
+      "bytes": 653230208,
+      "sha256": "9fb5b775470a9922a63fd8428e1dd85b371a2794b593f5d377263468d4ca021d"
+    }
+  },
+  "verified_at": 1790539329.707333,
+  "source_commit": "a5cb931",
+  "original_attempt_exit": 1,
+  "original_terminal_sha256": "93fa2be6a2b340c3d871d2f7047382d324382c2f37ea27afdc857763128d214e",
+  "environment_sha256": "3e1d69374816a10c897733a42010e82d0dea85c7416dbfa9f951ad3c03671050",
+  "pixel_verification_sha256": "668ed625247d0409b25fcdb4f2ac16d76ff709850eb29a47a5d857b005991951",
+  "note": "Feature stage completed before initial evaluation record failed Path JSON serialization. Stage exit zero does not assert whole-attempt success."
+}

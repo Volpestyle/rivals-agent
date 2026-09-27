@@ -440,7 +440,8 @@ def test_decode_persistence_stop_saves_first_result_and_stops_summary(
     monkeypatch.setattr(ev.metrics, "evaluate", lambda *a, **kw: {
         "camera_mae_mean": mae, "macro_press_f1_tol": .2})
     monkeypatch.setattr(ev.metrics, "selffed_checks", lambda *a: {})
-    args = SimpleNamespace(out=str(tmp_path / "evaluation.json"), checkpoint=str(checkpoint),
+    # Recovery supplies pathlib objects; the persisted receipt must remain JSON.
+    args = SimpleNamespace(out=tmp_path / "evaluation.json", checkpoint=checkpoint,
                            manifest="unused", registry="unused", tally="unused")
     messages = []
     result = ev.evaluate(args, messages.append, device="cpu", stop_on_persistence=enabled,
@@ -449,6 +450,7 @@ def test_decode_persistence_stop_saves_first_result_and_stops_summary(
                              if recovered else None))
     persisted = json.loads(Path(args.out).read_text())
     assert persisted == result and len(result["decode"]) == expected_count
+    assert persisted["checkpoint"] == str(checkpoint)
     if recovered:
         assert result["threshold_calibration"]["thresholds"] == [.7] * vocab.N
     if expected_count == 1:
