@@ -66,6 +66,10 @@ so give cloud boxes 8 CPUs or more.
   **Explore budget, 2026-09-27** (James, relayed by the steering lead, ~02:15 CDT): a separate **$15** Modal cap covers the
   EXPLORATORY full-cohort chunk arms H=1, H=4 and H=8. They run in parallel on one GPU class so the three arms match on
   device. They use their own app and volume, never round 3's, with a hard guard and proven teardown.
+  **Revised the same night** (James, ~02:30 CDT: "we can aim for an approximate price, but I'm shooting for best
+  quality"). The explore cap is approximate: about $21 plus setup and evaluation. James is told before spending passes
+  ~$30. Standing explore guidance: when quality and a small saving conflict, choose quality (matched devices, clean
+  comparisons). An arm that clearly beats H=1 goes next to a multi-seed confirm run, not to more single-seed variants.
 - A confirm-track fan-out (round 3's `handoff/modal/fanout/`) calls only the reviewed entry point
   (`policy/range_bc/cm3_run.py fit --arm --seed`), one fit per call, each authenticated by a lead-approved receipt.
   It never retries training automatically. The harness itself is launch plumbing, covered in "The two experiment tracks".
