@@ -1,0 +1,114 @@
+{
+  "script_sha256": "b06f367af417ba28576c9fcfd57a652882db902021f22a2aee332acd18cfe375",
+  "folds": [
+    {
+      "fold": "day-to-req",
+      "rows": 524,
+      "source_sha256": {
+        "day-to-req/predictions.npz": "e3c7a15d93c4afa47542cd98278c6f566b6ad04247b625c94e2c8148575b6595",
+        "day-to-req/windows.json": "0a4a8a11f609ca2f72f7062f7c0943724b02524dc5738b8f62be5159f3bdd627",
+        "day-to-req/report.json": "8a4ad75c872a5f0fa8b3e135d730a17aa3c8677cf871dd50fc1acd8f0b6a6dfd"
+      },
+      "prediction_mean_s": 1.190234849954607,
+      "prediction_sd_s": 0.5533233425470097,
+      "prediction_before_interval": 154,
+      "prediction_after_interval": 278,
+      "oracle_offset_objectives": {
+        "optimistic_paired_error": {
+          "offset_s": -0.19364619255065918,
+          "paired_error_bounds_s": [
+            0.055159152037542285,
+            0.25446987422254247
+          ],
+          "paired_error_bounds_exact": [
+            "1939674049/35165044736",
+            "8948444511/35165044736"
+          ],
+          "interval_error_s": 0.44675153636067877
+        },
+        "worst_case_paired_error": {
+          "offset_s": -0.2299022674560547,
+          "paired_error_bounds_s": [
+            0.05541179630592579,
+            0.2535966476070062
+          ],
+          "paired_error_bounds_exact": [
+            "243569787/4395630592",
+            "4458868729/17582522368"
+          ],
+          "interval_error_s": 0.4464412451871024
+        },
+        "interval_error": {
+          "offset_s": -0.22343814373016357,
+          "paired_error_bounds_s": [
+            0.055267738021967064,
+            0.2536040975051072
+          ],
+          "paired_error_bounds_exact": [
+            "15183535/274726912",
+            "4458999717/17582522368"
+          ],
+          "interval_error_s": 0.4463729409941735
+        }
+      },
+      "development_outcomes_used_to_choose_offset": true,
+      "deployable_correction": false,
+      "independent_truth_relaxation": true
+    },
+    {
+      "fold": "req-to-day",
+      "rows": 410,
+      "source_sha256": {
+        "req-to-day/predictions.npz": "ac034f73f8f7b50c072b0d4d01918a9b1f4c25877a35aba2887e96b577fcc042",
+        "req-to-day/windows.json": "db92c8113f0fdd071cc4ff385b71c32632c6284da7463580c584b5ddaba6820a",
+        "req-to-day/report.json": "67e340e690e606b93afcb86d09269fabfd83c4b6077b6530f10343190713ad9a"
+      },
+      "prediction_mean_s": 1.0278770391534013,
+      "prediction_sd_s": 0.47057099492904925,
+      "prediction_before_interval": 146,
+      "prediction_after_interval": 193,
+      "oracle_offset_objectives": {
+        "optimistic_paired_error": {
+          "offset_s": -0.14553189277648926,
+          "paired_error_bounds_s": [
+            0.015893041796800567,
+            0.18992835704873248
+          ],
+          "paired_error_bounds_exact": [
+            "13665351/859832320",
+            "1306452319/6878658560"
+          ],
+          "interval_error_s": 0.4126667966929878
+        },
+        "worst_case_paired_error": {
+          "offset_s": -0.08004343509674072,
+          "paired_error_bounds_s": [
+            0.017375235150500042,
+            0.1867509167368819
+          ],
+          "paired_error_bounds_exact": [
+            "11951831/687865856",
+            "80287237/429916160"
+          ],
+          "interval_error_s": 0.4118191732139122
+        },
+        "interval_error": {
+          "offset_s": -0.10423624515533447,
+          "paired_error_bounds_s": [
+            0.016497562280515344,
+            0.18728895943339277
+          ],
+          "paired_error_bounds_exact": [
+            "56740549/3439329280",
+            "322074201/1719664640"
+          ],
+          "interval_error_s": 0.4116493581271753
+        }
+      },
+      "development_outcomes_used_to_choose_offset": true,
+      "deployable_correction": false,
+      "independent_truth_relaxation": true
+    }
+  ],
+  "analysis_wall_s": 0.9484020000090823
+}

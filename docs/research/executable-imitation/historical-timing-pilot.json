@@ -1,0 +1,63 @@
+{
+  "kind": "historical_development_timing_bounds_not_current_policy_evaluation",
+  "analysis_seconds": 0.07003579998854548,
+  "script_sha256": "31835b9be842aa047f6c638732ef639c89fff9c35d736e1d64e59ee93835e32a",
+  "folds": [
+    {
+      "fold": "day-to-req",
+      "held_session": "reqmr-2873352801-1980-900s",
+      "rows": 524,
+      "verified_source_sha256": {
+        "day-to-req/predictions.npz": "e3c7a15d93c4afa47542cd98278c6f566b6ad04247b625c94e2c8148575b6595",
+        "day-to-req/windows.json": "0a4a8a11f609ca2f72f7062f7c0943724b02524dc5738b8f62be5159f3bdd627",
+        "day-to-req/report.json": "8a4ad75c872a5f0fa8b3e135d730a17aa3c8677cf871dd50fc1acd8f0b6a6dfd"
+      },
+      "reported_interval_error_model_s": 0.4707155227661133,
+      "reported_interval_error_baseline_s": 0.2919370234012604,
+      "recomputed_interval_error_model_s": 0.47071551992238025,
+      "recomputed_interval_error_baseline_s": 0.2919370232306364,
+      "mean_true_absolute_error_model_minus_baseline_bounds_s": [
+        0.07607532312510577,
+        0.2814816702583819
+      ],
+      "mean_difference_bounds_exact": [
+        "2675192141/35165044736",
+        "9898315527/35165044736"
+      ],
+      "rows_model_strictly_better_for_all_times": 135,
+      "rows_baseline_strictly_better_for_all_times": 278,
+      "rows_not_strictly_ranked": 111,
+      "independent_row_relaxation": true,
+      "sampling_confidence_interval": false,
+      "gameplay_claim": false
+    },
+    {
+      "fold": "req-to-day",
+      "held_session": "daymr-2879354299-21660-900s",
+      "rows": 410,
+      "verified_source_sha256": {
+        "req-to-day/predictions.npz": "ac034f73f8f7b50c072b0d4d01918a9b1f4c25877a35aba2887e96b577fcc042",
+        "req-to-day/windows.json": "db92c8113f0fdd071cc4ff385b71c32632c6284da7463580c584b5ddaba6820a",
+        "req-to-day/report.json": "67e340e690e606b93afcb86d09269fabfd83c4b6077b6530f10343190713ad9a"
+      },
+      "reported_interval_error_model_s": 0.41685351729393005,
+      "reported_interval_error_baseline_s": 0.3097561001777649,
+      "recomputed_interval_error_model_s": 0.4168535143863864,
+      "recomputed_interval_error_baseline_s": 0.30975609727022124,
+      "mean_true_absolute_error_model_minus_baseline_bounds_s": [
+        0.024426849004698964,
+        0.18976798522763136
+      ],
+      "mean_difference_bounds_exact": [
+        "84011977/3439329280",
+        "163168647/859832320"
+      ],
+      "rows_model_strictly_better_for_all_times": 116,
+      "rows_baseline_strictly_better_for_all_times": 212,
+      "rows_not_strictly_ranked": 82,
+      "independent_row_relaxation": true,
+      "sampling_confidence_interval": false,
+      "gameplay_claim": false
+    }
+  ]
+}

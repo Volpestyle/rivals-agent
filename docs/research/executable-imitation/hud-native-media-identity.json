@@ -1,0 +1,13 @@
+{
+  "kind": "native_media_identity_check",
+  "session": "20260923T171533-187Z-33696-5",
+  "path": "C:\\Users\\volpe\\Videos\\2026-09-23 12-15-33.mkv",
+  "bytes": 2303224685,
+  "sha256": "3f8e408719433a4603122ff92759f2382deb1f4f6ddf54ee4562c4c86da42126",
+  "mtime_ns": 1790183904323224200,
+  "elapsed_s": 24.160676400060765,
+  "read_block_bytes": 4194304,
+  "pause_per_block_s": 0.04,
+  "priority": "below_normal",
+  "decoded_frames": 0
+}

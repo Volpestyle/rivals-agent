@@ -1,0 +1,138 @@
+{
+  "source_session": "20260923T051828-422Z-33696-1",
+  "source_manifest_status": "admitted_train_only",
+  "scope": "research correspondence only; no new labels or admission",
+  "verified_sha256": {
+    "data/human/skill-event-candidates/051828-request-timing-v5/artifact-hashes.json": "5f70238022fda526419d85bc7d4fdba2a390fbd768e79b46fb057db2f9e2502a",
+    "data/human/skill-event-candidates/051828-request-timing-v2/artifact-hashes.json": "978d86f2ed82ff0a3f5852a3b0549c51eff469092ededd5e4f3794531ae67e24",
+    "data/human/skill-event-candidates/051828-request-timing-v5/request-evidence.json": "851e0b529a7064e81f6c4e7a4835d957ee832ac2c8ccd9bc30a6a7af3c8c6f50",
+    "data/human/skill-event-candidates/051828-request-timing-v5/visual-inspection-notes.json": "9aff808fc98a14cf8831435b82be6a38e712fa7c8c47018f857e2e907e703545",
+    "data/human/skill-event-candidates/051828-request-timing-v2/sheets/n39-cast.jpg": "ec0e21904193c6ab932fb25a47130b8bb05ac0f1821318a4ff9839e3a093f270",
+    "data/human/skill-event-candidates/051828-request-timing-v2/sheets/n119-cast.jpg": "e53c8737e8b41b7ad25fb384454b3c45fbb41c4898f992529d0f74a04f66bb1f"
+  },
+  "cases": [
+    {
+      "grid_index": 39,
+      "anchor_t": 3.9,
+      "proposed_label": "start_request",
+      "request_status": "fresh_rise",
+      "reason": "Received RMB rise 568 at 3.991753177 (91.8 ms after anchor) after the focus-gain snapshot seq 90 (held_vk empty; first RMB press of the session); anchor web reading 5; displayed right-mouse web binding; HUD web ammo 5->4 at 4.091667; web impact on the same causal target (named Luna Snow Hero Simulation) through 4.175000. LMB up.",
+      "latest_evidence_t": 4.174999833,
+      "linked_cast": {
+        "cast_id": "20260923T051828-422Z-33696-1:web-cluster:hud4104-4113",
+        "cast_last_not_started_t": 4.08333317,
+        "cast_first_started_t": 4.091666503,
+        "bracket_kind": "HUD web-ammo consumption (last pre / first decremented native frame); visual emission and impact on the same body confirmed separately",
+        "confirmation_frame_ms": 4196,
+        "confirmation_t": 4.174999833,
+        "recipient": "named Luna Snow Hero Simulation",
+        "pinned_bracket_ms": [
+          4104,
+          4113
+        ],
+        "tight_bracket_ms": [
+          4104,
+          4113
+        ],
+        "reviewer_flag": "box offset downward (covers Luna from the waist down and the pedestal); first full-ammo start",
+        "rmb_release": {
+          "seq": 608,
+          "t": 4.148770077
+        },
+        "lmb_at_request": {
+          "held": false,
+          "last_transition_seq": null,
+          "last_transition_t": null
+        },
+        "lmb_release": null
+      },
+      "sheets": [
+        "data/human/skill-event-candidates/051828-request-timing-v2/sheets/n39-cast.jpg"
+      ],
+      "request_t": 3.991753177,
+      "fresh_rmb_rise": true,
+      "lmb_held_at_request": false,
+      "anchor_webs": 5
+    },
+    {
+      "grid_index": 119,
+      "anchor_t": 11.9,
+      "proposed_label": null,
+      "request_status": "unknown",
+      "reason": "Inspected unknown (selector n/a; web recipient: none: web reaches no body): ammo recharges 4->5 at 11.992 before the request, then 5->4 at 12.025; the emission goes down-right and bursts on the ground beside Spider-Man 12.16-12.28, not the selected distant Galacta",
+      "latest_evidence_t": 12.008332853,
+      "linked_cast": null,
+      "sheets": [
+        "data/human/skill-event-candidates/051828-request-timing-v2/sheets/n119-cast.jpg"
+      ],
+      "request_t": 11.919736277,
+      "fresh_rmb_rise": true,
+      "lmb_held_at_request": false,
+      "anchor_webs": 4
+    }
+  ],
+  "matched_history_pair": false,
+  "causal_hit_memory_available": false,
+  "images_inspected": "two archived contact sheets; no new native video decode",
+  "finding": "Both have an RMB rise and ammo consumption; archived notes and contact sheets distinguish a body hit from ground impact.",
+  "continuation_inspection": [
+    {
+      "grid_index": 44,
+      "anchor_t": 4.4,
+      "proposed_label": "no_new_request",
+      "reason": "No received RMB rise in (4.4,4.5]; RMB up at anchor; resource-legal ammo 4; selected body is the same visible body as agreed request n39's recipient (named Luna Snow Hero Simulation); other controls retained: none. Producer note: agreed: Ammo 4 after the n39 cast; box holds the same named Luna Snow on her pad (named, unique). (v4, ae648b33)",
+      "request_t": null
+    },
+    {
+      "grid_index": 48,
+      "anchor_t": 4.8,
+      "proposed_label": "no_new_request",
+      "reason": "No received RMB rise in (4.8,4.9]; RMB up at anchor; resource-legal ammo 4; selected body is the same visible body as agreed request n51's recipient (Luna Snow (Hero Simulation, named nameplate), not Galacta); other controls retained: ['m1+']. Producer note: agreed: same named Luna boxed whole",
+      "request_t": null
+    },
+    {
+      "grid_index": 51,
+      "anchor_t": 5.1,
+      "proposed_label": "start_request",
+      "reason": "Received RMB rise 808 at 5.142668977 (42.7 ms after anchor) after up 608; anchor web reading 4; displayed right-mouse web binding; HUD web ammo 4->3 at 5.250000; web impact on the same causal target (Luna Snow (Hero Simulation, named nameplate), not Galacta) through 5.300000. LMB held across request (overlap retained, as accepted n141).",
+      "request_t": 5.142668977
+    },
+    {
+      "grid_index": 56,
+      "anchor_t": 5.6,
+      "proposed_label": "no_new_request",
+      "reason": "No received RMB rise in (5.6,5.7]; RMB up at anchor; resource-legal ammo 3; selected body is the same visible body as agreed request n51's recipient (Luna Snow (Hero Simulation, named nameplate), not Galacta); other controls retained: none. Producer note: agreed: same named Luna (box over her body/nameplate from above)",
+      "request_t": null
+    },
+    {
+      "grid_index": 123,
+      "anchor_t": 12.3,
+      "proposed_label": null,
+      "reason": "Inspected control unknown (beside request n126): unknown: Box selects the right-hand Galacta of the pair; n126 recipient is the left one. (v4, ae648b33)",
+      "request_t": null
+    },
+    {
+      "grid_index": 124,
+      "anchor_t": 12.4,
+      "proposed_label": null,
+      "reason": "Inspected control unknown (beside request n119): unknown: engaged body not established",
+      "request_t": null
+    },
+    {
+      "grid_index": 126,
+      "anchor_t": 12.6,
+      "proposed_label": "start_request",
+      "reason": "Received RMB rise 2229 at 12.617647277 (17.6 ms after anchor) after up 2108; anchor web reading 4; displayed right-mouse web binding; HUD web ammo 4->3 at 12.716666; web impact on the same causal target (nearer left Galacta) through 12.874999. LMB up.",
+      "request_t": 12.617647277
+    },
+    {
+      "grid_index": 131,
+      "anchor_t": 13.1,
+      "proposed_label": "no_new_request",
+      "reason": "No received RMB rise in (13.1,13.2]; RMB up at anchor; resource-legal ammo 3; selected body is the same visible body as agreed request n126's recipient (nearer left Galacta); other controls retained: none. Producer note: agreed: Box holds the close Galacta Spider-Man reached 0.5 s after webbing it (n126); the same engagement continues into n134/n137. Flag: approach; identity by continuity of the engagement (v4, ae648b33)",
+      "request_t": null
+    }
+  ],
+  "memory_benefit_established": false,
+  "continuation_finding": "Both continuations contain another web request; target, viewpoint, movement and recent controls differ. No matched memory-dependent decision is established."
+}

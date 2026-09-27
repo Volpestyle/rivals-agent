@@ -1,0 +1,47 @@
+{
+  "kind": "metadata_only_export_readiness",
+  "reports": [
+    {
+      "path": "data/diagnostics/range-human-shadow-d-20260922/report.json",
+      "sha256": "de2d396e38039dfbf900c3ee4b21cc1aca7aa4d271ddcdc29336b3677dfb5477",
+      "scope": "offline_off_policy_posthoc_observational_support_dispatch_only",
+      "known_rows": null,
+      "decision_rows": 52,
+      "validation": null,
+      "qualifies_as_paired_development_event_export": false,
+      "reason": "single-model scripted off-policy replay without reviewed event truth"
+    },
+    {
+      "path": "data/diagnostics/range-request-cohort-fit-20260923/run-1/mac-report.json",
+      "sha256": "d67507a00a1f302311f55d63fa7e36e344d26856ae0b23c19d235ce228a8bc61",
+      "scope": "admitted_human_received_request_train_only_numerical_fit_reload",
+      "known_rows": 76,
+      "decision_rows": null,
+      "validation": null,
+      "qualifies_as_paired_development_event_export": false,
+      "reason": "train-only fit/reproduction; not held-out development event evaluation"
+    },
+    {
+      "path": "data/diagnostics/range-request-cohort-rehearsal5-20260923/run-1/mac-report.json",
+      "sha256": "b36e237c6eda8b75c03526bc3bcb61cd878d7ac813f8230686315fb9c6b69c0f",
+      "scope": "dry_run_accepted_member_train_only_numerical_fit_reload_not_a_candidate",
+      "known_rows": 5,
+      "decision_rows": null,
+      "validation": null,
+      "qualifies_as_paired_development_event_export": false,
+      "reason": "train-only fit/reproduction; not held-out development event evaluation"
+    },
+    {
+      "path": "data/diagnostics/range-event-human-fit-v2-20260922/run-1/mac-report.json",
+      "sha256": "5cd1e957975cd2842f53866ac7e97b30796e7ba2434a98b6242c47a9cb479bcc",
+      "scope": "admitted_human_train_only_numerical_fit_reload",
+      "known_rows": 6,
+      "decision_rows": null,
+      "validation": null,
+      "qualifies_as_paired_development_event_export": false,
+      "reason": "train-only fit/reproduction; not held-out development event evaluation"
+    }
+  ],
+  "raw_or_sealed_payloads_opened": false,
+  "inference_run": false
+}

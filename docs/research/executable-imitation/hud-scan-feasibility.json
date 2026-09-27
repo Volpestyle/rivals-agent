@@ -1,0 +1,555 @@
+{
+  "kind": "hud_scan_feasibility_only_not_event_labels",
+  "session": "20260923T171533-187Z-33696-5",
+  "source_sha256": {
+    "data/human/sessions/20260923T171533-187Z-33696-5/hud-scan-samples.jsonl": "801db434a3afc04de6d57bcb147fc8d803150c7907dc39ba2950d30a382f9c8a",
+    "data/human/sessions/20260923T171533-187Z-33696-5/20260923T171533-187Z-33696-5.steps.jsonl": "dc28b0c1511f7847c8dde08c3e04addce8b57bc6c32cc2873405962d3235559e"
+  },
+  "scan_samples": 850,
+  "readable_ammo_samples": 770,
+  "accepted_normal_bounds_ns": [
+    251621152505802,
+    251775485837592
+  ],
+  "candidate_adjacent_decreases": [
+    {
+      "frames": [
+        1872,
+        1896
+      ],
+      "composition_ns": [
+        251624119172350,
+        251624319172342
+      ],
+      "counts": [
+        5,
+        4
+      ],
+      "decrement": 1
+    },
+    {
+      "frames": [
+        1920,
+        1944
+      ],
+      "composition_ns": [
+        251624519172334,
+        251624719172326
+      ],
+      "counts": [
+        4,
+        3
+      ],
+      "decrement": 1
+    },
+    {
+      "frames": [
+        2160,
+        2184
+      ],
+      "composition_ns": [
+        251626519172254,
+        251626719172246
+      ],
+      "counts": [
+        4,
+        3
+      ],
+      "decrement": 1
+    },
+    {
+      "frames": [
+        2376,
+        2400
+      ],
+      "composition_ns": [
+        251628319172182,
+        251628519172174
+      ],
+      "counts": [
+        4,
+        3
+      ],
+      "decrement": 1
+    },
+    {
+      "frames": [
+        2952,
+        2976
+      ],
+      "composition_ns": [
+        251633119171990,
+        251633319171982
+      ],
+      "counts": [
+        5,
+        4
+      ],
+      "decrement": 1
+    },
+    {
+      "frames": [
+        3024,
+        3048
+      ],
+      "composition_ns": [
+        251633719171966,
+        251633919171958
+      ],
+      "counts": [
+        4,
+        3
+      ],
+      "decrement": 1
+    },
+    {
+      "frames": [
+        4368,
+        4392
+      ],
+      "composition_ns": [
+        251644919171518,
+        251645119171510
+      ],
+      "counts": [
+        5,
+        4
+      ],
+      "decrement": 1
+    },
+    {
+      "frames": [
+        4440,
+        4464
+      ],
+      "composition_ns": [
+        251645519171494,
+        251645719171486
+      ],
+      "counts": [
+        4,
+        3
+      ],
+      "decrement": 1
+    },
+    {
+      "frames": [
+        5856,
+        5880
+      ],
+      "composition_ns": [
+        251657319171022,
+        251657519171014
+      ],
+      "counts": [
+        5,
+        4
+      ],
+      "decrement": 1
+    },
+    {
+      "frames": [
+        6072,
+        6096
+      ],
+      "composition_ns": [
+        251659119170950,
+        251659319170942
+      ],
+      "counts": [
+        4,
+        3
+      ],
+      "decrement": 1
+    },
+    {
+      "frames": [
+        6984,
+        7008
+      ],
+      "composition_ns": [
+        251666719170646,
+        251666919170638
+      ],
+      "counts": [
+        5,
+        4
+      ],
+      "decrement": 1
+    },
+    {
+      "frames": [
+        7056,
+        7080
+      ],
+      "composition_ns": [
+        251667319170622,
+        251667519170614
+      ],
+      "counts": [
+        4,
+        3
+      ],
+      "decrement": 1
+    },
+    {
+      "frames": [
+        7104,
+        7128
+      ],
+      "composition_ns": [
+        251667719170606,
+        251667919170598
+      ],
+      "counts": [
+        3,
+        2
+      ],
+      "decrement": 1
+    },
+    {
+      "frames": [
+        8448,
+        8472
+      ],
+      "composition_ns": [
+        251678919170158,
+        251679119170150
+      ],
+      "counts": [
+        5,
+        4
+      ],
+      "decrement": 1
+    },
+    {
+      "frames": [
+        8544,
+        8568
+      ],
+      "composition_ns": [
+        251679719170126,
+        251679919170118
+      ],
+      "counts": [
+        4,
+        3
+      ],
+      "decrement": 1
+    },
+    {
+      "frames": [
+        8712,
+        8736
+      ],
+      "composition_ns": [
+        251681119170070,
+        251681319170062
+      ],
+      "counts": [
+        4,
+        3
+      ],
+      "decrement": 1
+    },
+    {
+      "frames": [
+        9888,
+        9912
+      ],
+      "composition_ns": [
+        251690919169678,
+        251691119169670
+      ],
+      "counts": [
+        5,
+        4
+      ],
+      "decrement": 1
+    },
+    {
+      "frames": [
+        10152,
+        10176
+      ],
+      "composition_ns": [
+        251693119169590,
+        251693319169582
+      ],
+      "counts": [
+        5,
+        4
+      ],
+      "decrement": 1
+    },
+    {
+      "frames": [
+        11088,
+        11112
+      ],
+      "composition_ns": [
+        251700919169278,
+        251701119169270
+      ],
+      "counts": [
+        5,
+        4
+      ],
+      "decrement": 1
+    },
+    {
+      "frames": [
+        12288,
+        12312
+      ],
+      "composition_ns": [
+        251710919168878,
+        251711119168870
+      ],
+      "counts": [
+        5,
+        4
+      ],
+      "decrement": 1
+    },
+    {
+      "frames": [
+        12624,
+        12648
+      ],
+      "composition_ns": [
+        251713719168766,
+        251713919168758
+      ],
+      "counts": [
+        4,
+        3
+      ],
+      "decrement": 1
+    },
+    {
+      "frames": [
+        12864,
+        12888
+      ],
+      "composition_ns": [
+        251715719168686,
+        251715919168678
+      ],
+      "counts": [
+        4,
+        3
+      ],
+      "decrement": 1
+    },
+    {
+      "frames": [
+        15048,
+        15072
+      ],
+      "composition_ns": [
+        251733919167958,
+        251734119167950
+      ],
+      "counts": [
+        5,
+        4
+      ],
+      "decrement": 1
+    },
+    {
+      "frames": [
+        15168,
+        15192
+      ],
+      "composition_ns": [
+        251734919167918,
+        251735119167910
+      ],
+      "counts": [
+        4,
+        3
+      ],
+      "decrement": 1
+    },
+    {
+      "frames": [
+        15408,
+        15432
+      ],
+      "composition_ns": [
+        251736919167838,
+        251737119167830
+      ],
+      "counts": [
+        4,
+        3
+      ],
+      "decrement": 1
+    },
+    {
+      "frames": [
+        16392,
+        16416
+      ],
+      "composition_ns": [
+        251745119167510,
+        251745319167502
+      ],
+      "counts": [
+        5,
+        4
+      ],
+      "decrement": 1
+    },
+    {
+      "frames": [
+        16800,
+        16824
+      ],
+      "composition_ns": [
+        251748519167374,
+        251748719167366
+      ],
+      "counts": [
+        4,
+        3
+      ],
+      "decrement": 1
+    },
+    {
+      "frames": [
+        16968,
+        16992
+      ],
+      "composition_ns": [
+        251749919167318,
+        251750119167310
+      ],
+      "counts": [
+        4,
+        3
+      ],
+      "decrement": 1
+    },
+    {
+      "frames": [
+        17112,
+        17136
+      ],
+      "composition_ns": [
+        251751119167270,
+        251751319167262
+      ],
+      "counts": [
+        4,
+        3
+      ],
+      "decrement": 1
+    },
+    {
+      "frames": [
+        18168,
+        18192
+      ],
+      "composition_ns": [
+        251759919166918,
+        251760119166910
+      ],
+      "counts": [
+        5,
+        4
+      ],
+      "decrement": 1
+    },
+    {
+      "frames": [
+        18312,
+        18336
+      ],
+      "composition_ns": [
+        251761119166870,
+        251761319166862
+      ],
+      "counts": [
+        4,
+        3
+      ],
+      "decrement": 1
+    },
+    {
+      "frames": [
+        18528,
+        18552
+      ],
+      "composition_ns": [
+        251762919166798,
+        251763119166790
+      ],
+      "counts": [
+        4,
+        3
+      ],
+      "decrement": 1
+    },
+    {
+      "frames": [
+        19488,
+        19512
+      ],
+      "composition_ns": [
+        251770919166478,
+        251771119166470
+      ],
+      "counts": [
+        5,
+        4
+      ],
+      "decrement": 1
+    },
+    {
+      "frames": [
+        19656,
+        19680
+      ],
+      "composition_ns": [
+        251772319166422,
+        251772519166414
+      ],
+      "counts": [
+        4,
+        3
+      ],
+      "decrement": 1
+    },
+    {
+      "frames": [
+        19872,
+        19896
+      ],
+      "composition_ns": [
+        251774119166350,
+        251774319166342
+      ],
+      "counts": [
+        4,
+        3
+      ],
+      "decrement": 1
+    }
+  ],
+  "candidate_count": 35,
+  "sum_decrements": 35,
+  "stored_review_frame_count": 32,
+  "candidates_with_both_endpoint_frames_stored": 0,
+  "native_media_bytes": 2303224685,
+  "native_media_hash_verified_this_pass": false,
+  "current_blocker": "existing ffmpeg PID 5020 observed live; no research decode launched",
+  "restrictions": [
+    "reader outputs are candidate evidence, not independent cast truth",
+    "decrements are lower bounds when regeneration can hide consumption",
+    "historical first-seen delay extrema are not certified causal latency bounds",
+    "do not join a logged command prediction directly to an ammo transition as the same event",
+    "no training or evaluation admission; no new policy score"
+  ]
+}

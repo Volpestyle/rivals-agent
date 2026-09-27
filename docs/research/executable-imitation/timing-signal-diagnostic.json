@@ -1,0 +1,60 @@
+{
+  "script_sha256": "ef526fedafae1023319559daa8de368fe57be6de70f18408be23600fbb7e8a55",
+  "folds": [
+    {
+      "fold": "day-to-req",
+      "rows": 524,
+      "verified_source_sha256": {
+        "day-to-req/predictions.npz": "e3c7a15d93c4afa47542cd98278c6f566b6ad04247b625c94e2c8148575b6595",
+        "day-to-req/windows.json": "0a4a8a11f609ca2f72f7062f7c0943724b02524dc5738b8f62be5159f3bdd627",
+        "day-to-req/report.json": "8a4ad75c872a5f0fa8b3e135d730a17aa3c8677cf871dd50fc1acd8f0b6a6dfd"
+      },
+      "prediction_variance_s2": 0.3061667214073954,
+      "covariance_bounds_s2": [
+        -0.0768868254837955,
+        0.09317493832956956
+      ],
+      "covariance_bounds_exact": [
+        "-95076739203667710413/1236580371284881309696",
+        "230436599668050107375/2473160742569762619392"
+      ],
+      "oracle_unclipped_centered_linear_slope_bounds": [
+        -0.2511273110622868,
+        0.304327452380391
+      ],
+      "sign_identified_in_independent_row_relaxation": false,
+      "unique_first_interval_keys_not_verified_event_count": 95,
+      "rows_with_multiple_retained_intervals": 86,
+      "target_matches_first_interval_within_1us": true,
+      "training_or_gameplay_claim": false
+    },
+    {
+      "fold": "req-to-day",
+      "rows": 410,
+      "verified_source_sha256": {
+        "req-to-day/predictions.npz": "ac034f73f8f7b50c072b0d4d01918a9b1f4c25877a35aba2887e96b577fcc042",
+        "req-to-day/windows.json": "db92c8113f0fdd071cc4ff385b71c32632c6284da7463580c584b5ddaba6820a",
+        "req-to-day/report.json": "67e340e690e606b93afcb86d09269fabfd83c4b6077b6530f10343190713ad9a"
+      },
+      "prediction_variance_s2": 0.2214370612685153,
+      "covariance_bounds_s2": [
+        -0.0527749599163006,
+        0.08033191514322946
+      ],
+      "covariance_bounds_exact": [
+        "-9988388104414197539/189263774340245094400",
+        "7601960729993949487/94631887170122547200"
+      ],
+      "oracle_unclipped_centered_linear_slope_bounds": [
+        -0.2383293908164068,
+        0.36277538494705147
+      ],
+      "sign_identified_in_independent_row_relaxation": false,
+      "unique_first_interval_keys_not_verified_event_count": 78,
+      "rows_with_multiple_retained_intervals": 103,
+      "target_matches_first_interval_within_1us": true,
+      "training_or_gameplay_claim": false
+    }
+  ],
+  "analysis_wall_s": 0.12466430000495166
+}
