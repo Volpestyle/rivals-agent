@@ -130,6 +130,34 @@ def test_a_rebuild_is_byte_identical(tmp_path):
     assert (a["frames_sha256"], a["hud_sha256"]) == (b["frames_sha256"], b["hud_sha256"])
 
 
+def test_match_decode_prepare_requires_matching_admission(tmp_path):
+    from policy.idm import match_targets as A
+    target_path, step_path, demo, _, _ = recording(tmp_path)
+    raw = step_path.read_text().splitlines()
+    sh = json.loads(raw[0])
+    sh["split"] = "idm_train"
+    t = T.load(target_path)
+    for key in ("bindings", "swing_mode", "accel_on", "patch", "settings_hash", "calibration"):
+        t.header[key] = sh[key]
+    for row in t.rows:
+        row["yaw_deg"], row["pitch_deg"], row["beyond_pad_envelope"] = T.degrees(
+            row["mouse_dx"], row["mouse_dy"], t.header["calibration"], row["t1_ns"] - row["t0_ns"])
+    step_path.write_text(json.dumps(sh) + "\n" + "\n".join(raw[1:]) + "\n")
+    t.header["split"] = "idm_train"
+    t.header["source"]["steps"]["sha256"] = T.sha256(step_path)
+    T.write(target_path, t.header, t.rows)
+    with pytest.raises(T.TargetError, match="admission required"):
+        D.prepare(target_path, tmp_path / "must-not-open", demo)
+    media = t.header["media_sha256"]
+    admission = A.Admission({"c": {
+        "source_kind": "live", "session_group": "c", "media_sha256": media,
+        "steps_sha256": T.sha256(step_path), "imported_demo_sha256": T.sha256(demo),
+        "identity_sha256": A.digest(A.identity(t.header)), "motor_statement_sha256": "3" * 64}},
+        {"c": {"split": "idm_train", "session_group": "c", "expected_media_sha256": media}}, "4" * 64)
+    loaded = D.prepare(target_path, step_path, demo, match_admission=admission)
+    assert loaded[0].session_id == "c" and loaded[-1]
+
+
 def test_stores_are_built_on_the_mac_only(tmp_path):
     targets, steps_path, demo, _, _ = recording(tmp_path)
     if platform.system() == "Darwin" and platform.machine() == "arm64":

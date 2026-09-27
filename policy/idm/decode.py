@@ -178,17 +178,21 @@ def _decode(path, ordinals, sink, ffmpeg, threads):
         return shown, [int(tb[0][0]), int(tb[0][1])]
 
 
-def prepare(targets_path, steps_path, demo_path, *, denylist=None):
+def prepare(targets_path, steps_path, demo_path, *, denylist=None, match_admission=None):
     """Every check that needs no video: sealed refused, pins, one recording, and the targets' and the step table's
     pts against the demo's frame table. Returns (targets, targets_sha, session, timebase, demo_pts, video_path,
     ordinals). Reads the three inputs only; decodes nothing."""
     denylist = denylist or T.load_denylist()
     targets_sha = T.sha256(targets_path)
-    targets = T.load(targets_path, denylist=denylist)                  # sealed id / media and test refused here
+    targets = T.load(targets_path, denylist=denylist, match_admission=match_admission)
     require(T.sha256(targets_path) == targets_sha, f"{targets_path} changed while it was loaded")
     src = targets.header["source"]
     require(T.sha256(steps_path) == src["steps"]["sha256"], "step table differs from the one the targets pin")
-    session = steps.load(steps_path, denylist=denylist)                  # pinned before it is parsed
+    if targets.header["split"] == "idm_train":
+        from policy.idm.match_targets import load_steps
+        session = load_steps(steps_path, targets, match_admission, denylist)
+    else:
+        session = steps.load(steps_path, denylist=denylist)              # pinned before it is parsed
     require(session.sha256 == src["steps"]["sha256"], "step table changed while it was loaded")
     timebase, demo_pts, demo_header = read_demo_frames(demo_path, src["imported_demo"]["sha256"])
     check_inputs(targets, session, demo_header, denylist)
@@ -212,13 +216,15 @@ def prepare(targets_path, steps_path, demo_path, *, denylist=None):
 
 
 def build(targets_path, steps_path, demo_path, out_dir, *, video_root=None, ffmpeg="ffmpeg", ffprobe="ffprobe",
-          any_platform=False, relocation=None, denylist=None, threads=4, denylist_source=None):
+          any_platform=False, relocation=None, denylist=None, threads=4, denylist_source=None,
+          match_admission=None):
     """Decode one session's store into out_dir (created; must not exist). Returns the manifest. denylist_source:
     {path, sha256_pin} recorded in the manifest (the CLI's pinned default)."""
     require(any_platform or (platform.system() == "Darwin" and platform.machine() == "arm64"),
             "frame stores are built on the Mac only (swscale output can differ between CPU architectures)")
     targets, targets_sha, session, timebase, demo_pts, video, ordinals = prepare(targets_path, steps_path, demo_path,
-                                                                                denylist=denylist)
+                                                                                denylist=denylist,
+                                                                                match_admission=match_admission)
     path = cache.resolve(relocation["transcoded_path"] if relocation else video, video_root)
     require(path.is_file(), f"video not found: {path}")
     require(cache.probe_size(path, ffprobe) == session.header["video_size"],
