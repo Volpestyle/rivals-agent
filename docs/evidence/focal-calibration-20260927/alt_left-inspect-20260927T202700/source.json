@@ -1,0 +1,72 @@
+{
+  "phase": "static_preparation_only",
+  "source": {
+    "session": "20260926T162648-153Z-116800-4",
+    "account": "alt",
+    "account_source": "calibration.json account; recording-log 2026-09-26 11:26 row",
+    "video_path": "C:/Users/volpe/Videos/2026-09-26 11-26-48.mkv",
+    "expected_media_sha256": "764f3fbce3cdb1eee8fbbcfe16f06e132c302b38cd7d5f06e3349fc9aeb72923",
+    "start_ns": 507882435693300,
+    "direction": -1,
+    "inspect_logger_s": [
+      4.018,
+      6.4,
+      10.0,
+      14.177
+    ],
+    "track_windows_logger_s": [
+      [
+        6.0,
+        6.8
+      ],
+      [
+        9.5,
+        10.3
+      ],
+      [
+        16.0,
+        16.4
+      ],
+      [
+        22.0,
+        22.2
+      ]
+    ],
+    "still_control_logger_s": [
+      13.972,
+      14.383
+    ],
+    "pitch_control_logger_s": [
+      27.918,
+      28.319
+    ],
+    "settings_status": "alt identity explicit; numeric settings not stated in this calibration JSON",
+    "gain_reference": 0.0330738,
+    "reported_gain_tolerance_fraction": 0.0008,
+    "gain_caveat": "endpoint excess was estimated with assumed focal465; not independent focal truth"
+  },
+  "time_basis": "(composition_ns - logger start_ns)/1e9; never assume logger_s equals video PTS",
+  "candidate_focal_px_1280": null,
+  "candidate_bounds_px_1280": null,
+  "video_verified_this_task": false,
+  "tests_run": false,
+  "automatic_probe_queued": false,
+  "requires_explicit_lead_game_closed_release": true,
+  "cross_account_transfer_verified": false,
+  "metadata": {
+    "calibration_ref": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\human\\calibration\\20260926T162648-153Z-116800-4\\calibration.json",
+    "logger_ref": "C:\\Users\\volpe\\Videos\\RivalsInput\\20260926T162648-153Z-116800-4\\metadata.json",
+    "capture_latency_calibrated": false,
+    "native_size": [
+      2560,
+      1440
+    ],
+    "native_fps": [
+      120,
+      1
+    ],
+    "settings_provenance": null,
+    "account_provenance": "campaign (alt)",
+    "clean_stop": true
+  }
+}

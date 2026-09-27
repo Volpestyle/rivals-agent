@@ -1,0 +1,1 @@
+select='eq(pts,3929)+eq(pts,6313)+eq(pts,9913)+eq(pts,14088)',showinfo,scale=in_range=tv:in_color_matrix=bt709:out_range=pc:flags=accurate_rnd+bitexact+full_chroma_int,format=bgr24

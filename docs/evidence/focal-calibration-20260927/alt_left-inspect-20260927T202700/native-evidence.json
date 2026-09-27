@@ -1,0 +1,118 @@
+{
+  "frames": 4,
+  "shape": [
+    1440,
+    2560,
+    3
+  ],
+  "shown": [
+    [
+      0,
+      3929
+    ],
+    [
+      1,
+      6313
+    ],
+    [
+      2,
+      9913
+    ],
+    [
+      3,
+      14088
+    ]
+  ],
+  "retained": [
+    {
+      "index": 0,
+      "path": "native-000.png",
+      "sha256": "dbf6a1a6ef1ebd0640ec37cc0a9db4ccd382e5fd7e41ab212ba6db78cfb252e1",
+      "packet": {
+        "event_seq": "527",
+        "packet_index": "467",
+        "pts": "469",
+        "dts": "465",
+        "timebase_num": "1",
+        "timebase_den": "120",
+        "composition_ns": "507886450734534",
+        "encode_request_ns": "507886467788100",
+        "encode_complete_ns": "507886468062200",
+        "interleave_ns": "507886576272000",
+        "callback_ns": "507886576273000",
+        "sys_dts_us": "507886434067",
+        "keyframe": "0",
+        "track": "0",
+        "expected_mkv_pts": 3929
+      }
+    },
+    {
+      "index": 1,
+      "path": "native-001.png",
+      "sha256": "3efadc11de6ddae685672fa352dacc6a337cad599b5370ed8e9f7caee3cc5f23",
+      "packet": {
+        "event_seq": "1106",
+        "packet_index": "756",
+        "pts": "755",
+        "dts": "754",
+        "timebase_num": "1",
+        "timebase_den": "120",
+        "composition_ns": "507888834067772",
+        "encode_request_ns": "507888851154000",
+        "encode_complete_ns": "507888851609000",
+        "interleave_ns": "507888984937500",
+        "callback_ns": "507888984938600",
+        "sys_dts_us": "507888842400",
+        "keyframe": "0",
+        "track": "0",
+        "expected_mkv_pts": 6313
+      }
+    },
+    {
+      "index": 2,
+      "path": "native-002.png",
+      "sha256": "127e3271745a65e926437aa9ae15bf1e8c0f907f32c82cf6a35d98477085763c",
+      "packet": {
+        "event_seq": "1989",
+        "packet_index": "1188",
+        "pts": "1187",
+        "dts": "1186",
+        "timebase_num": "1",
+        "timebase_den": "120",
+        "composition_ns": "507892434067628",
+        "encode_request_ns": "507892451072800",
+        "encode_complete_ns": "507892451353600",
+        "interleave_ns": "507892588272500",
+        "callback_ns": "507892588273400",
+        "sys_dts_us": "507892442400",
+        "keyframe": "0",
+        "track": "0",
+        "expected_mkv_pts": 9913
+      }
+    },
+    {
+      "index": 3,
+      "path": "native-003.png",
+      "sha256": "4dba6543d146c5120bf62bc61e1d1eff3d4e50e853e9c105d5c6f7832e0a3be5",
+      "packet": {
+        "event_seq": "2881",
+        "packet_index": "1689",
+        "pts": "1688",
+        "dts": "1687",
+        "timebase_num": "1",
+        "timebase_den": "120",
+        "composition_ns": "507896609067461",
+        "encode_request_ns": "507896626186200",
+        "encode_complete_ns": "507896629032600",
+        "interleave_ns": "507896752927500",
+        "callback_ns": "507896752928200",
+        "sys_dts_us": "507896617400",
+        "keyframe": "0",
+        "track": "0",
+        "expected_mkv_pts": 14088
+      }
+    }
+  ],
+  "decoder_pid": 43884,
+  "decoder_exit": 0
+}
