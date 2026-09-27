@@ -23,8 +23,6 @@ sys.path.insert(0, str(ROOT))
 WARMUP_S, MEASURE_S = 10., 30.
 PHASES = ("A1", "B", "A2")
 FRESH_S, PREDICTION_LIMIT_S = .1, .25
-PRIME_LIMIT_S, COLD_PREDICTION_LIMIT_S, STARTUP_LIMIT_S = 3., 5., 10.
-PRIME_FRAMES, WARM_PREDICTIONS = 2, 3
 
 
 def require(ok, message):
@@ -88,136 +86,8 @@ class DiscardWorker:
         return not self.thread.is_alive()
 
 
-def warm_start(capture, worker, journal, *, focused, key_pressed, in_range, idle_warning,
-               memory, capture_hz=30., clock=time.perf_counter, sleep=time.sleep):
-    """Prime capture/proof and the SAME worker before the A/B/A clock starts.
-
-    Only the first prediction gets a separate cold-start allowance. All following
-    predictions must meet the unchanged steady deadline. Stale startup frames are
-    discarded before two consecutive fresh proofs; after that, any stale proof
-    aborts. Capture/proof and keyboard/focus guards continue during inference.
-    Native capture/proof calls cannot be interrupted; overruns fail on return.
-    """
-    require(math.isfinite(capture_hz) and 15 <= capture_hz <= 60, "capture Hz must be 15..60")
-    require(not worker.busy, "startup worker already busy")
-    started = clock()
-    result = {"started": started, "stop_reason": "startup_timeout", "predictions": [],
-              "discarded_stale_frames": 0, "no_frame": 0, "capture_attempts": 0,
-              "shape": None, "memory_start": memory()}
-    next_capture, last_fresh = started, None
-    prime_count, completed = 0, 0
-    primed, pending = False, None
-
-    def stop():
-        return "keypress" if key_pressed() else "focus_lost" if not focused() else None
-
-    journal.event(kind="startup_start", at=started, total_limit_s=STARTUP_LIMIT_S,
-                  prime_limit_s=PRIME_LIMIT_S, cold_prediction_limit_s=COLD_PREDICTION_LIMIT_S,
-                  warm_prediction_limit_s=PREDICTION_LIMIT_S)
-    try:
-        while True:
-            now = clock()
-            reason = stop()
-            if reason:
-                result["stop_reason"] = reason
-                break
-            if now - started >= STARTUP_LIMIT_S:
-                break
-            if not primed and now - started >= PRIME_LIMIT_S:
-                result["stop_reason"] = "capture_prime_timeout"
-                break
-            if primed and now - last_fresh > FRESH_S:
-                result["stop_reason"] = "capture_stale"
-                break
-            if worker.busy:
-                limit = COLD_PREDICTION_LIMIT_S if completed == 0 else PREDICTION_LIMIT_S
-                value = worker.poll()
-                if value is not None:
-                    age = value["finished"] - value["captured"]
-                    timing = {**value, "age_s": age, "duration_s": value["finished"] - value["started"],
-                              "cold": completed == 0, "limit_s": limit}
-                    result["predictions"].append(timing)
-                    journal.event(kind="startup_prediction", **timing)
-                    completed += 1
-                    pending = None
-                    if value["error"] or age > limit:
-                        result["stop_reason"] = "prediction_error" if value["error"] else "prediction_age_exceeded"
-                        break
-                elif now - pending >= limit:
-                    result["stop_reason"] = "prediction_timeout"
-                    break
-            if completed == 1 + WARM_PREDICTIONS:
-                result["stop_reason"] = "ready"
-                break
-            if now < next_capture:
-                sleep(min(.005, next_capture - now))
-                continue
-            next_capture += (max(0, int((now - next_capture) * capture_hz)) + 1) / capture_hz
-            captured = clock()
-            frame = capture.grab()
-            acquired = clock()
-            result["capture_attempts"] += 1
-            reason = stop()
-            if reason:
-                result["stop_reason"] = reason
-                break
-            if frame is None:
-                result["no_frame"] += 1
-                prime_count = 0
-                continue
-            shape = tuple(frame.shape)
-            if len(shape) != 3 or shape[2] != 3 or min(shape[:2]) < 360:
-                result["stop_reason"] = "invalid_native_frame"
-                break
-            if result["shape"] is not None and shape != tuple(result["shape"]):
-                result["stop_reason"] = "capture_geometry_changed"
-                break
-            result["shape"] = list(shape)
-            range_ok = in_range(frame)
-            range_done = clock()
-            idle = idle_warning(frame)
-            proof_done = clock()
-            age = proof_done - captured
-            journal.event(kind="startup_capture", captured=captured, capture_duration_s=acquired - captured,
-                          range_duration_s=range_done - acquired, idle_duration_s=proof_done - range_done,
-                          proof_age_s=age, range_ok=bool(range_ok), idle_warning=bool(idle), primed=primed)
-            reason = stop()
-            if reason or not range_ok or idle:
-                result["stop_reason"] = reason or ("range_lost" if not range_ok else "idle_warning")
-                break
-            if proof_done - started >= STARTUP_LIMIT_S:
-                break
-            if not primed and proof_done - started >= PRIME_LIMIT_S:
-                result["stop_reason"] = "capture_prime_timeout"
-                break
-            if age > FRESH_S:
-                if primed:
-                    result["stop_reason"] = "stale_proof"
-                    break
-                result["discarded_stale_frames"] += 1
-                prime_count = 0
-                continue
-            last_fresh = captured
-            prime_count += 1
-            if not primed and prime_count >= PRIME_FRAMES:
-                primed = True
-                result["primed_at"] = clock()
-            if primed and not worker.busy and clock() - captured <= FRESH_S:
-                worker.submit(frame, captured)
-                pending = captured
-    except KeyboardInterrupt:
-        result["stop_reason"] = "keyboard_interrupt"
-    except Exception as exc:
-        result.update(stop_reason="runtime_error", error=f"{type(exc).__name__}: {exc}")
-    result.update(stopped=clock(), memory_end=memory(), prediction_pending=worker.busy)
-    result["elapsed_s"] = result["stopped"] - started
-    journal.event(kind="startup_end", **result)
-    journal.write("startup.json", result)
-    return result
-
-
 def run(capture, worker, journal, *, focused, key_pressed, in_range, idle_warning,
-        memory, capture_hz=30., clock=time.perf_counter, sleep=time.sleep, startup=None):
+        memory, capture_hz=30., clock=time.perf_counter, sleep=time.sleep):
     """Fixed schedule, same capture/proof/1-Hz native evidence in every phase.
 
     Dependencies are injected for hardware-free tests. Slow external calls are
@@ -226,15 +96,11 @@ def run(capture, worker, journal, *, focused, key_pressed, in_range, idle_warnin
     """
     require(math.isfinite(capture_hz) and 15 <= capture_hz <= 60, "capture Hz must be 15..60")
     started = clock()
-    require(not worker.busy, "prediction in flight at measurement start")
-    require(startup is None or startup["stop_reason"] == "ready", "startup not ready")
     result = {"started": started, "phases": [], "stop_reason": "complete",
               "game_fps": "unmeasured: annotate native overlay samples", "samples": []}
-    if startup is not None:
-        result["startup"] = startup
     phase_length = WARMUP_S + MEASURE_S
     pending = None
-    previous_shape = tuple(startup["shape"]) if startup is not None else None
+    previous_shape = None
     last_fresh = started
     phase = interval = None
     next_capture = next_evidence = started
@@ -484,11 +350,7 @@ def prepare(a):
                 "phases": PHASES, "warmup_s": WARMUP_S, "measured_s": MEASURE_S,
                 "capture_hz": a.capture_hz, "evidence_hz": 1., "prediction_age_limit_s": PREDICTION_LIMIT_S,
                 "comparison": "active-inference cost; model resident throughout; no game-only reference",
-                "startup": {"total_limit_s": STARTUP_LIMIT_S, "prime_limit_s": PRIME_LIMIT_S,
-                            "prime_fresh_frames": PRIME_FRAMES, "cold_prediction_limit_s": COLD_PREDICTION_LIMIT_S,
-                            "warm_predictions": WARM_PREDICTIONS, "warm_prediction_limit_s": PREDICTION_LIMIT_S,
-                            "before_phase_clock": True, "outputs_discarded": True},
-                "history": "unknown previous input on every prediction; recurrent state retained from startup through B",
+                "history": "unknown previous input on every prediction; recurrent state retained in B",
                 "decoder": "pinned for identity only; outputs discarded without decoding",
                 "fixed_conditions": "operator holds pose, resolution, graphics, cap, OBS and other workloads constant"}
     return model, backbone, preprocess, manifest
@@ -606,19 +468,11 @@ def main(argv=None):
         from record import in_range, idle_warning
         cap = Capture("dxcam")
         worker = DiscardWorker(predictor)
-        guards = dict(focused=focused, key_pressed=keys, in_range=in_range, idle_warning=idle_warning,
-                      memory=lambda: memory_snapshot(a.device), capture_hz=a.capture_hz)
-        startup = warm_start(cap, worker, journal, **guards)
-        if startup["stop_reason"] != "ready":
-            journal.write("result.json", {"stop_reason": "startup_" + startup["stop_reason"],
-                          "startup": startup, "phases": [], "samples": [],
-                          "inference_worker_stopped": worker.close(), "game_fps": "unmeasured",
-                          "evidence": journal.finish_frames()})
-            journal.close()
-            return 1
         journal.event(kind="ready", monotonic=time.perf_counter(), utc=datetime.now(timezone.utc).isoformat(),
                       resident_memory=memory_snapshot(a.device))
-        result = run(cap, worker, journal, startup=startup, **guards)
+        result = run(cap, worker, journal, focused=focused, key_pressed=keys,
+                     in_range=in_range, idle_warning=idle_warning, memory=lambda: memory_snapshot(a.device),
+                     capture_hz=a.capture_hz)
         with (a.output / "fps-annotations.csv").open("x", newline="", encoding="utf-8") as stream:
             writer = csv.DictWriter(stream, fieldnames=("phase", "interval", "captured", "relative_s", "path", "fps"))
             writer.writeheader()

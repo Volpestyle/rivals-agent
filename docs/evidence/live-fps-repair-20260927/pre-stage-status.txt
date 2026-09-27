@@ -1,0 +1,33 @@
+﻿ M cloud/modal_guard/common.py
+ M cloud/modal_guard/ledger.py
+ M cloud/modal_guard/lifecycle.py
+ M cloud/modal_guard/provider.py
+ D data/human/sessions/20260927T051206-888Z-150600-4/artifact-hashes.json
+ M data/human/sessions/20260927T051206-888Z-150600-4/independent-review.verdicts.json
+ D data/human/sessions/20260927T051206-888Z-150600-4/minutes.json
+ D data/human/sessions/20260927T051206-888Z-150600-4/recording-log.32007db.md
+ M data/human/sessions/20260927T051206-888Z-150600-4/review.json
+ D data/human/sessions/20260927T051206-888Z-150600-4/sampling.json
+ M data/human/sessions/20260927T051206-888Z-150600-4/settings.json
+ M docs/lanes/explore-policy.md
+ M docs/lanes/human-admission-handoff-20260927.md
+ M docs/research/evaluator-checkin.md
+ M policy/idm/cloud_run.py
+ M policy/idm/explore.py
+ M policy/idm/match_targets.py
+ M scripts/measure_inference_fps.py
+ M tests/test_measure_inference_fps.py
+?? docs/evidence/live-fps-repair-20260927/
+?? docs/evidence/live-loop-fallback-20260927/cuda-t2/replay/
+?? docs/evidence/live-loop-fallback-20260927/prepared/events.jsonl
+?? docs/evidence/live-loop-fallback-20260927/prepared/frames.jsonl
+?? docs/lanes/idm-gate2-anchors-results.md
+?? docs/lanes/idm-gate2-anchors.md
+?? docs/lanes/idm-gate2-assumptions-addendum-20260926.md
+?? docs/lanes/live-fps-repair-20260927.md
+?? perception/replay_cuts.py
+?? policy/range_bc/spatial_yaw.py
+?? policy/range_bc/spatial_yaw_cache.py
+?? tests/test_idm_match_receipt_set.py
+?? tests/test_replay_cuts.py
+?? tests/test_spatial_yaw.py

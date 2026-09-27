@@ -395,3 +395,193 @@ def test_annotation_refuses_changed_identity_nonfinite_missing_or_incomplete_evi
         (tmp_path / "result.json").write_text(json.dumps(result))
     with pytest.raises(ValueError):
         fps.annotate(tmp_path, path)
+
+
+class ColdWorker(Worker):
+    def __init__(self, clock, cold=.6, warm=.02):
+        super().__init__(clock)
+        self.cold, self.warm = cold, warm
+
+    def submit(self, frame, captured):
+        self.delay = self.warm if self.submitted else self.cold
+        super().submit(frame, captured)
+
+
+def startup_fixture(*, cold=.6, warm=.02, first_capture=.001, **overrides):
+    clock, journal = Clock(), Journal()
+    capture = Capture(clock)
+    grab = capture.grab
+    def first_slow():
+        capture.duration = first_capture if capture.calls == 0 else .001
+        return grab()
+    capture.grab = first_slow
+    worker = ColdWorker(clock, cold, warm)
+    guards = dict(focused=lambda: True, key_pressed=lambda: False,
+                  in_range=lambda f: True, idle_warning=lambda f: False,
+                  memory=lambda: {}, clock=clock, sleep=clock.sleep)
+    guards.update({name: make(clock) for name, make in overrides.items()})
+    return clock, journal, capture, worker, guards
+
+
+def test_cold_start_is_outside_all_phase_clocks_and_same_worker_is_reused():
+    clock, journal, capture, worker, guards = startup_fixture(first_capture=.128)
+    startup = fps.warm_start(capture, worker, journal, **guards)
+    assert startup["stop_reason"] == "ready"
+    assert startup["discarded_stale_frames"] == 1
+    assert len(startup["predictions"]) == 4
+    assert startup["predictions"][0]["age_s"] > fps.PREDICTION_LIMIT_S
+    assert all(p["age_s"] < fps.PREDICTION_LIMIT_S for p in startup["predictions"][1:])
+    assert not worker.busy and not worker.closed
+    assert journal.index == 0  # no startup samples enter native FPS annotation
+    assert not any(e["kind"] == "interval_start" for e in journal.events)
+    submissions_before = len(worker.submitted)
+    result = fps.run(capture, worker, journal, startup=startup, **guards)
+    assert result["stop_reason"] == "complete"
+    assert result["started"] >= startup["stopped"]
+    assert result["elapsed_s"] == pytest.approx(120, abs=.005)
+    assert len(result["samples"]) == 120
+    assert all(result["started"] + 40 <= t < result["started"] + 80
+               for t, _ in worker.submitted[submissions_before:])
+
+
+@pytest.mark.parametrize(("cold", "warm", "reason"), [
+    (6., .02, "prediction_timeout"),
+    (.6, .3, "prediction_timeout"),
+])
+def test_startup_cold_and_warm_deadlines_are_bounded(cold, warm, reason):
+    clock, journal, capture, worker, guards = startup_fixture(cold=cold, warm=warm)
+    result = fps.warm_start(capture, worker, journal, **guards)
+    assert result["stop_reason"] == reason
+    assert result["elapsed_s"] < 5.1
+    assert result["prediction_pending"]
+    assert not any(e["kind"] == "interval_start" for e in journal.events)
+    assert len(worker.submitted) == (1 if cold == 6 else 2)
+
+
+@pytest.mark.parametrize(("guard", "factory", "reason"), [
+    ("focused", lambda c: lambda: c() < .2, "focus_lost"),
+    ("key_pressed", lambda c: lambda: c() >= .2, "keypress"),
+    ("in_range", lambda c: lambda f: c() < .2, "range_lost"),
+    ("idle_warning", lambda c: lambda f: c() >= .2, "idle_warning"),
+])
+def test_guards_continue_while_cold_prediction_is_running(guard, factory, reason):
+    clock, journal, capture, worker, guards = startup_fixture(**{guard: factory})
+    result = fps.warm_start(capture, worker, journal, **guards)
+    assert result["stop_reason"] == reason
+    assert result["stopped"] < .24
+    assert result["prediction_pending"]
+    assert len(worker.submitted) == 1
+
+
+@pytest.mark.parametrize("missing", [False, True])
+def test_priming_never_accepts_persistently_stale_or_missing_frames(missing):
+    clock, journal, _, worker, guards = startup_fixture()
+    capture = Capture(clock, duration=.128, missing=missing)
+    result = fps.warm_start(capture, worker, journal, **guards)
+    assert result["stop_reason"] == "capture_prime_timeout"
+    assert 3 <= result["elapsed_s"] < 3.2
+    assert worker.submitted == []
+
+
+def test_cold_proof_check_is_discarded_then_strict_after_priming():
+    clock, journal, capture, worker, guards = startup_fixture()
+    def proof(frame):
+        if capture.calls in (1, 5):
+            clock.sleep(.11)
+        return True
+    guards["in_range"] = proof
+    result = fps.warm_start(capture, worker, journal, **guards)
+    assert result["discarded_stale_frames"] == 1
+    assert result["stop_reason"] == "stale_proof"
+    assert len(worker.submitted) == 1
+    first = next(e for e in journal.events if e["kind"] == "startup_capture")
+    assert first["range_duration_s"] == pytest.approx(.11)
+
+
+def test_warmed_predictor_does_not_relax_timed_prediction_deadline():
+    clock, journal, capture, worker, guards = startup_fixture()
+    startup = fps.warm_start(capture, worker, journal, **guards)
+    worker.warm = .3
+    result = fps.run(capture, worker, journal, startup=startup, **guards)
+    assert result["stop_reason"] == "prediction_timeout"
+    assert result["elapsed_s"] < 40.3
+
+
+def test_warmup_geometry_is_required_at_timed_start():
+    clock, journal, capture, worker, guards = startup_fixture()
+    startup = fps.warm_start(capture, worker, journal, **guards)
+    original = capture.grab
+    def changed():
+        frame = original()
+        frame.shape = (720, 1280, 3)
+        return frame
+    capture.grab = changed
+    result = fps.run(capture, worker, journal, startup=startup, **guards)
+    assert result["stop_reason"] == "capture_geometry_changed"
+
+
+def test_startup_prediction_error_is_not_retried():
+    clock, journal, capture, worker, guards = startup_fixture(cold=.02)
+    worker.error = "synthetic failure"
+    result = fps.warm_start(capture, worker, journal, **guards)
+    assert result["stop_reason"] == "prediction_error"
+    assert len(worker.submitted) == 1
+
+
+def test_failed_startup_cannot_start_measurement():
+    clock, journal, capture, worker, guards = startup_fixture()
+    with pytest.raises(ValueError, match="startup not ready"):
+        fps.run(capture, worker, journal, startup={"stop_reason": "prediction_timeout"}, **guards)
+
+
+@pytest.mark.parametrize("ready", [False, True])
+def test_desktop_main_requires_startup_before_ready_or_measurement(tmp_path, monkeypatch, ready):
+    from agent import live_range_bc as harness
+    from policy.range_bc import live_inference
+    import capture as capture_module
+    calls = []
+    monkeypatch.setattr(fps.sys, "platform", "win32")
+    monkeypatch.setattr(fps, "prepare", lambda a: (object(), None, object(), {}))
+    journal = Journal()
+    journal.stream = types.SimpleNamespace(closed=False)
+    def make_journal(*args):
+        (tmp_path / "output").mkdir()
+        return journal
+    monkeypatch.setattr(harness, "Journal", make_journal)
+    predictor = types.SimpleNamespace(close=lambda: calls.append("predictor_closed"))
+    monkeypatch.setattr(live_inference, "DevicePredictor", lambda *a, **kw: predictor)
+    cap = types.SimpleNamespace(cam=types.SimpleNamespace(release=lambda: calls.append("capture_closed")))
+    monkeypatch.setattr(capture_module, "Capture", lambda backend: cap)
+    worker = types.SimpleNamespace(close=lambda: True)
+    monkeypatch.setattr(fps, "DiscardWorker", lambda p: worker)
+    monkeypatch.setattr(fps, "desktop_guards", lambda pid: (lambda: True, lambda: False))
+    monkeypatch.setattr(fps, "memory_snapshot", lambda device: {})
+    startup = {"stop_reason": "ready" if ready else "prediction_timeout"}
+    def warm(c, w, j, **kwargs):
+        assert (c, w, j) == (cap, worker, journal)
+        assert not journal.events
+        calls.append("warm")
+        return startup
+    def measured(c, w, j, **kwargs):
+        assert calls == ["warm"]
+        assert kwargs["startup"] is startup
+        assert (c, w, j) == (cap, worker, journal)
+        assert j.events[0]["kind"] == "ready"
+        calls.append("measure")
+        return {"stop_reason": "complete", "samples": []}
+    monkeypatch.setattr(fps, "warm_start", warm)
+    monkeypatch.setattr(fps, "run", measured)
+    code = fps.main(arguments(tmp_path) + ["--desktop-capture", "--game-pid", "123",
+                                         "--sitting", "synthetic", "--native-video", "unopened"])
+    assert code == (0 if ready else 1)
+    assert calls == ["warm"] + (["measure"] if ready else []) + ["predictor_closed", "capture_closed"]
+    if not ready:
+        assert journal.files["result.json"]["phases"] == []
+        assert journal.files["result.json"]["stop_reason"] == "startup_prediction_timeout"
+
+
+def test_native_prime_overrun_is_detected_on_return():
+    clock, journal, _, worker, guards = startup_fixture()
+    result = fps.warm_start(Capture(clock, duration=11.), worker, journal, **guards)
+    assert result["stop_reason"] == "startup_timeout"
+    assert worker.submitted == []

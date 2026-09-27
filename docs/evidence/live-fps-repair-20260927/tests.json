@@ -1,0 +1,9 @@
+{
+  "exit_code": 0,
+  "peak_rss_bytes": 685129728,
+  "cuda_used": false,
+  "tests": [
+    "tests/test_measure_inference_fps.py",
+    "tests/test_live_inference.py"
+  ]
+}

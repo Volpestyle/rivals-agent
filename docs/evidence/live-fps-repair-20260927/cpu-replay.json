@@ -1,0 +1,111 @@
+{
+  "device": "cpu",
+  "cuda_used": false,
+  "desktop_opened": false,
+  "no_actuator": true,
+  "checkpoint_sha256": "2d5183cba12913a36327e0a459ec0c0b2a1238d26a7df98f7823929af3129f18",
+  "script_sha256": "a41e27bb576e8f66a94826b5a3478a017252ecdd9ba10b48ee9452dc93824170",
+  "python": "C:\\Users\\volpe\\.venvs\\rivals-live-cu128\\Scripts\\python.exe",
+  "torch": "2.11.0+cu128",
+  "cpu_threads": 2,
+  "observations": [
+    {
+      "path": "data\\calibration\\alt-cam-20260927\\inference-fps-aba-2\\frames\\0000000-fps.png",
+      "sha256": "9e1d45f6fda77680c020ae7b539596ce440ef03ed1f23b4af780ec2d6369b488",
+      "repeat": 0,
+      "shape": [
+        1440,
+        2560,
+        3
+      ],
+      "range_ok": true,
+      "idle_warning": false,
+      "range_s": 0.0022496999008581042,
+      "idle_s": 0.0006220000796020031,
+      "prediction_s": 0.14685849996749312,
+      "prediction_age_s": 0.1504027999471873
+    },
+    {
+      "path": "data\\calibration\\alt-cam-20260927\\inference-fps-aba-2\\frames\\0000000-fps.png",
+      "sha256": "9e1d45f6fda77680c020ae7b539596ce440ef03ed1f23b4af780ec2d6369b488",
+      "repeat": 1,
+      "shape": [
+        1440,
+        2560,
+        3
+      ],
+      "range_ok": true,
+      "idle_warning": false,
+      "range_s": 0.000960600096732378,
+      "idle_s": 0.0006836000829935074,
+      "prediction_s": 0.04847779998090118,
+      "prediction_age_s": 0.05170229997020215
+    },
+    {
+      "path": "data\\calibration\\alt-cam-20260927\\inference-fps-aba-2\\frames\\0000010-fps.png",
+      "sha256": "bc4b8718023fa0e18ce3f754069b6bb7614807edaa07d7264c66a8d82627781f",
+      "repeat": 0,
+      "shape": [
+        1440,
+        2560,
+        3
+      ],
+      "range_ok": true,
+      "idle_warning": false,
+      "range_s": 0.0009112999541684985,
+      "idle_s": 0.0006552999839186668,
+      "prediction_s": 0.043812000076286495,
+      "prediction_age_s": 0.04703850008081645
+    },
+    {
+      "path": "data\\calibration\\alt-cam-20260927\\inference-fps-aba-2\\frames\\0000010-fps.png",
+      "sha256": "bc4b8718023fa0e18ce3f754069b6bb7614807edaa07d7264c66a8d82627781f",
+      "repeat": 1,
+      "shape": [
+        1440,
+        2560,
+        3
+      ],
+      "range_ok": true,
+      "idle_warning": false,
+      "range_s": 0.0009382000425830483,
+      "idle_s": 0.0003920999588444829,
+      "prediction_s": 0.043017599964514375,
+      "prediction_age_s": 0.04627789999358356
+    },
+    {
+      "path": "data\\calibration\\alt-cam-20260927\\inference-fps-aba-2\\frames\\0000040-fps.png",
+      "sha256": "314f550efe8d8fdbc7fbe33f819e589f69d4396830e48a03c1d9da5ac2de16c3",
+      "repeat": 0,
+      "shape": [
+        1440,
+        2560,
+        3
+      ],
+      "range_ok": true,
+      "idle_warning": false,
+      "range_s": 0.0009271000744774938,
+      "idle_s": 0.0005022999830543995,
+      "prediction_s": 0.04553720005787909,
+      "prediction_age_s": 0.04960889997892082
+    },
+    {
+      "path": "data\\calibration\\alt-cam-20260927\\inference-fps-aba-2\\frames\\0000040-fps.png",
+      "sha256": "314f550efe8d8fdbc7fbe33f819e589f69d4396830e48a03c1d9da5ac2de16c3",
+      "repeat": 1,
+      "shape": [
+        1440,
+        2560,
+        3
+      ],
+      "range_ok": true,
+      "idle_warning": false,
+      "range_s": 0.0010102998930960894,
+      "idle_s": 0.00040680007077753544,
+      "prediction_s": 0.055122500052675605,
+      "prediction_age_s": 0.0586895999731496
+    }
+  ],
+  "peak_rss_bytes": 641048576,
+  "limitation": "Saved PNG replay excludes capture and game contention; cannot diagnose CUDA initialization"
+}

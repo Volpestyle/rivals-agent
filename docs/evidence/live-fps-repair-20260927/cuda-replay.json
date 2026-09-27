@@ -1,0 +1,162 @@
+{
+  "device": {
+    "count": 1,
+    "name": "NVIDIA GeForce RTX 4080 SUPER",
+    "cuda": "12.8"
+  },
+  "saved_frames": [
+    {
+      "path": "data\\calibration\\alt-cam-20260927\\inference-fps-aba-2\\frames\\0000000-fps.png",
+      "sha256": "9e1d45f6fda77680c020ae7b539596ce440ef03ed1f23b4af780ec2d6369b488"
+    },
+    {
+      "path": "data\\calibration\\alt-cam-20260927\\inference-fps-aba-2\\frames\\0000010-fps.png",
+      "sha256": "bc4b8718023fa0e18ce3f754069b6bb7614807edaa07d7264c66a8d82627781f"
+    },
+    {
+      "path": "data\\calibration\\alt-cam-20260927\\inference-fps-aba-2\\frames\\0000040-fps.png",
+      "sha256": "314f550efe8d8fdbc7fbe33f819e589f69d4396830e48a03c1d9da5ac2de16c3"
+    }
+  ],
+  "checkpoint_sha256": "2d5183cba12913a36327e0a459ec0c0b2a1238d26a7df98f7823929af3129f18",
+  "script_sha256": "8a97a7604db9ede4cdc12835e879648cf4a11ef93f686e17031385e34b4f0b36",
+  "no_actuator": true,
+  "desktop_opened": false,
+  "startup": {
+    "started": 611164.6881167,
+    "stop_reason": "ready",
+    "predictions": [
+      {
+        "captured": 611164.7219367,
+        "started": 611164.7253386,
+        "finished": 611165.5002579,
+        "error": null,
+        "age_s": 0.7783211999339983,
+        "duration_s": 0.7749192999908701,
+        "cold": true,
+        "limit_s": 5.0
+      },
+      {
+        "captured": 611165.5216491,
+        "started": 611165.5252876,
+        "finished": 611165.5545602,
+        "error": null,
+        "age_s": 0.03291109995916486,
+        "duration_s": 0.029272599960677326,
+        "cold": false,
+        "limit_s": 0.25
+      },
+      {
+        "captured": 611165.5559683,
+        "started": 611165.5610916,
+        "finished": 611165.5919614,
+        "error": null,
+        "age_s": 0.03599310002755374,
+        "duration_s": 0.030869800015352666,
+        "cold": false,
+        "limit_s": 0.25
+      },
+      {
+        "captured": 611165.621728,
+        "started": 611165.6269458,
+        "finished": 611165.6544418,
+        "error": null,
+        "age_s": 0.0327137999702245,
+        "duration_s": 0.027495999936945736,
+        "cold": false,
+        "limit_s": 0.25
+      }
+    ],
+    "discarded_stale_frames": 0,
+    "no_frame": 0,
+    "capture_attempts": 29,
+    "shape": [
+      1440,
+      2560,
+      3
+    ],
+    "memory_start": {
+      "python_traced_bytes": 0,
+      "python_peak_bytes": 0,
+      "process_working_set_bytes": 703541248,
+      "cuda_allocated_bytes": 16792576,
+      "cuda_reserved_bytes": 44040192,
+      "cuda_peak_allocated_bytes": 25501184
+    },
+    "primed_at": 611164.7229443,
+    "stopped": 611165.655597,
+    "memory_end": {
+      "python_traced_bytes": 0,
+      "python_peak_bytes": 0,
+      "process_working_set_bytes": 1124278272,
+      "cuda_allocated_bytes": 26364928,
+      "cuda_reserved_bytes": 67108864,
+      "cuda_peak_allocated_bytes": 43919872
+    },
+    "prediction_pending": false,
+    "elapsed_s": 0.9674802999943495
+  },
+  "post_idle_predictions": [
+    {
+      "captured": 611206.5115709,
+      "started": 611206.5154012,
+      "finished": 611206.5407045,
+      "error": null,
+      "age_s": 0.029133600066415966,
+      "duration_s": 0.025303300004452467
+    },
+    {
+      "captured": 611207.5484582,
+      "started": 611207.5519538,
+      "finished": 611207.5747844,
+      "error": null,
+      "age_s": 0.026326200109906495,
+      "duration_s": 0.022830600035376847
+    },
+    {
+      "captured": 611208.445318,
+      "started": 611208.4489717,
+      "finished": 611208.4793614,
+      "error": null,
+      "age_s": 0.034043399966321886,
+      "duration_s": 0.030389699968509376
+    },
+    {
+      "captured": 611209.3097661,
+      "started": 611209.3137333,
+      "finished": 611209.3373113,
+      "error": null,
+      "age_s": 0.027545199962332845,
+      "duration_s": 0.023578000022098422
+    },
+    {
+      "captured": 611210.2663844,
+      "started": 611210.2699601,
+      "finished": 611210.2915092,
+      "error": null,
+      "age_s": 0.025124800042249262,
+      "duration_s": 0.021549100056290627
+    },
+    {
+      "captured": 611211.1685753,
+      "started": 611211.1724507,
+      "finished": 611211.1939307,
+      "error": null,
+      "age_s": 0.025355399935506284,
+      "duration_s": 0.021479999995790422
+    }
+  ],
+  "steady_limit_s": 0.25,
+  "limitations": "Offline saved PNGs, synthetic focus/keyboard; no capture or game-FPS claim",
+  "inference_idle_s": 40.003381600021385,
+  "stop_reason": "qualified_offline",
+  "peak_rss_bytes": 1159372800,
+  "memory_end": {
+    "python_traced_bytes": 0,
+    "python_peak_bytes": 0,
+    "process_working_set_bytes": 1126182912,
+    "cuda_allocated_bytes": 26364928,
+    "cuda_reserved_bytes": 67108864,
+    "cuda_peak_allocated_bytes": 43919872
+  }
+}

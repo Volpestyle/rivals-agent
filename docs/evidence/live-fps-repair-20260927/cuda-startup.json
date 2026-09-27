@@ -1,0 +1,74 @@
+{
+  "started": 611164.6881167,
+  "stop_reason": "ready",
+  "predictions": [
+    {
+      "captured": 611164.7219367,
+      "started": 611164.7253386,
+      "finished": 611165.5002579,
+      "error": null,
+      "age_s": 0.7783211999339983,
+      "duration_s": 0.7749192999908701,
+      "cold": true,
+      "limit_s": 5.0
+    },
+    {
+      "captured": 611165.5216491,
+      "started": 611165.5252876,
+      "finished": 611165.5545602,
+      "error": null,
+      "age_s": 0.03291109995916486,
+      "duration_s": 0.029272599960677326,
+      "cold": false,
+      "limit_s": 0.25
+    },
+    {
+      "captured": 611165.5559683,
+      "started": 611165.5610916,
+      "finished": 611165.5919614,
+      "error": null,
+      "age_s": 0.03599310002755374,
+      "duration_s": 0.030869800015352666,
+      "cold": false,
+      "limit_s": 0.25
+    },
+    {
+      "captured": 611165.621728,
+      "started": 611165.6269458,
+      "finished": 611165.6544418,
+      "error": null,
+      "age_s": 0.0327137999702245,
+      "duration_s": 0.027495999936945736,
+      "cold": false,
+      "limit_s": 0.25
+    }
+  ],
+  "discarded_stale_frames": 0,
+  "no_frame": 0,
+  "capture_attempts": 29,
+  "shape": [
+    1440,
+    2560,
+    3
+  ],
+  "memory_start": {
+    "python_traced_bytes": 0,
+    "python_peak_bytes": 0,
+    "process_working_set_bytes": 703541248,
+    "cuda_allocated_bytes": 16792576,
+    "cuda_reserved_bytes": 44040192,
+    "cuda_peak_allocated_bytes": 25501184
+  },
+  "primed_at": 611164.7229443,
+  "stopped": 611165.655597,
+  "memory_end": {
+    "python_traced_bytes": 0,
+    "python_peak_bytes": 0,
+    "process_working_set_bytes": 1124278272,
+    "cuda_allocated_bytes": 26364928,
+    "cuda_reserved_bytes": 67108864,
+    "cuda_peak_allocated_bytes": 43919872
+  },
+  "prediction_pending": false,
+  "elapsed_s": 0.9674802999943495
+}

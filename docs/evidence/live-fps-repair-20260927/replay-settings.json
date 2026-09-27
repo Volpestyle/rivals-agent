@@ -1,0 +1,11 @@
+{
+  "binding_profile": "james-alt-spiderman-20260926",
+  "calibration_status": "UNMEASURED: FPS A/B/A only; no camera map consumed; no actuator",
+  "cooldowns": "normal",
+  "patch": "**Patch reflected: Season 10, Version 20260911 (balance post dated 2026-09-08, live 2026-09-11).**",
+  "provenance": "observed by the lead at sitting alt-cam-20260927 (2026-09-27 ~15:50 CDT): alt account UID 1295996384, build 3892207 on screen, range HUD shows infinite web-cluster ammo (No Ability Cooldown ON, the range default); binding profile and swing mode carried from data/calibration/alt-20260926/SITTING.md, not re-read from menus; UPDATED ~15:58 CDT: James switched No Ability Cooldown OFF in Practice Settings on the lead's request and said 'done'; not verified from play (no ability was fired before the FPS run)",
+  "swing_mode": {
+    "automatic_swing": false,
+    "hold_to_swing": true
+  }
+}
