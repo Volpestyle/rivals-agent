@@ -1,0 +1,39 @@
+{
+  "session": "20260923T171533-187Z-33696-5",
+  "steps_sha256": "dc28b0c1511f7847c8dde08c3e04addce8b57bc6c32cc2873405962d3235559e",
+  "rule": "First continuous eligible 30 seconds after 32-step warm-up, selected before replay inference without inspecting predictions.",
+  "warmup_start_row": 153,
+  "display_start_row": 185,
+  "display_stop_row_exclusive": 1085,
+  "original_run_stop": 4783,
+  "frames": 900,
+  "step_ns": 33333333,
+  "duration_seconds": 29.9999997,
+  "first_anchor_ns": 251622219172458,
+  "last_anchor_ns": 251652185838825,
+  "first_source_frame": {
+    "video_path": "C:\\Users\\volpe\\Videos\\2026-09-23 12-15-33.mkv",
+    "frame_index": 1644,
+    "pts": 13721,
+    "timebase": [
+      1,
+      1000
+    ],
+    "composition_ns": 251622219172426
+  },
+  "last_source_frame": {
+    "video_path": "C:\\Users\\volpe\\Videos\\2026-09-23 12-15-33.mkv",
+    "frame_index": 5240,
+    "pts": 43688,
+    "timebase": [
+      1,
+      1000
+    ],
+    "composition_ns": 251652185837894
+  },
+  "visual_source": "Admitted RGB global policy-view cache (256x144), enlarged; same James-recorded frames in all panels.",
+  "caption": "Offline predictions on James recorded frames; not autonomous model gameplay.",
+  "candidate": "NitroGen no-history seed1 epoch26; only after confirmation permits advancement",
+  "incumbent_checkpoint_sha256": "2f6aae5d716a095b0d29c3cf32ec5833107e47d0bc6c7b905282e3932ca99767",
+  "candidate_checkpoint_sha256": "9f3dfd1a9a2edb1c280f0a2a86a18cb34cfe2a7ce172931823ababca41eebf24"
+}
