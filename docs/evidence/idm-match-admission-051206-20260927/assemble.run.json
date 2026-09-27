@@ -1,0 +1,25 @@
+﻿{
+    "session":  "20260927T051206-888Z-150600-4",
+    "step":  "assemble",
+    "started":  "2026-09-27T17:22:58.6781600Z",
+    "finished":  "2026-09-27T17:29:07.4326565Z",
+    "pid":  43940,
+    "exit_code":  0,
+    "failure":  null,
+    "free_bytes_before":  13972344832,
+    "process_peak_working_set_bytes":  {
+                                           "143672":  7503872,
+                                           "78760":  169644032,
+                                           "43940":  4898816,
+                                           "82384":  118091776
+                                       },
+    "arguments":  [
+                      "-u",
+                      "data/human/sessions/assemble_session.py",
+                      "20260927T051206-888Z-150600-4",
+                      "--independent-verdicts",
+                      "data/human/sessions/20260927T051206-888Z-150600-4/independent-review.verdicts.json",
+                      "--snapshot",
+                      "code-snapshot-f8fd92c-6046514b"
+                  ]
+}

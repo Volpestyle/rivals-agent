@@ -1,0 +1,53 @@
+{
+ "format": "rivals-session-artifact-hashes-v1",
+ "session": "20260927T051206-888Z-150600-4",
+ "status": "assembled",
+ "split": "idm_train",
+ "sitting": "2026-09-26-night",
+ "settings_identity": "a8dea3bacebbe9377c8ea9bc7f517e7d907e126c61634676883599dbf2e3d1fd",
+ "counted_minutes": 5.0605553532666665,
+ "snapshot": "code-snapshot-f8fd92c-6046514b",
+ "calibration": {
+  "kind": "slow_turn_constant",
+  "yaw_deg_per_count": 0.0330738,
+  "pitch_deg_per_count": 0.0330738,
+  "pitch": {
+   "kind": "derived_equal_sensitivity"
+  },
+  "accel_on": true,
+  "source": "data/human/calibration/20260923T204707-487Z-45572-2/calibration.json (v2) (baa49158c9911e01)"
+ },
+ "supersedes": null,
+ "files": {
+  "data/human/sessions/20260927T051206-888Z-150600-4/20260927T051206-888Z-150600-4.steps.jsonl": "d02b32a7665f68ec4f36e3e33b9075a625897018e3f31386c59343ce8ed2fc48",
+  "data/human/sessions/20260927T051206-888Z-150600-4/candidates-pass1.json": "86ec8eeed758968e79081b50609406820f65d10e5b0206df38a992f9f5bb6294",
+  "data/human/sessions/20260927T051206-888Z-150600-4/hud-scan-samples.jsonl": "45e265ff2f84c19be207421f2aaa96bcc3ef3699087bcec18d91fa71b656aac8",
+  "data/human/sessions/20260927T051206-888Z-150600-4/imported-demo.jsonl": "058f84d4a178f1e66b6cfd14f3f7c94104f4cc8cd9a8ce5a2cb0dc5d5a842653",
+  "data/human/sessions/20260927T051206-888Z-150600-4/independent-review.verdicts.json": "84b11c1f3632155420019c3e1d7f92b6f209995bca2d15a34e5bca325b35717d",
+  "data/human/sessions/20260927T051206-888Z-150600-4/input-profile.json": "0cde31e7320819377b799d59861972493c940c7f2305e4a4df66628038eb93f4",
+  "data/human/sessions/20260927T051206-888Z-150600-4/minutes.json": "bf431fc7856eded96922faa3857fef2c2099c6283738b918b05d2b8119636742",
+  "data/human/sessions/20260927T051206-888Z-150600-4/motor-settings.json": "7b5fb0e1cb548cf90969408883f42f37cfea45ec7b253365f608aa078707f3c9",
+  "data/human/sessions/20260927T051206-888Z-150600-4/owner-verdicts.json": "ea41484e73bf9c2ba8bc061679e0821995d5e3e47757deb280f4185b430b33ef",
+  "data/human/sessions/20260927T051206-888Z-150600-4/provenance.json": "1cc1e286dfb5a969477dd049da033fc7e4b613d130b1b076b9711cd52b1bd339",
+  "data/human/sessions/20260927T051206-888Z-150600-4/recorder-verification.json": "f8c97a9e7546235e7515e33ca32a2df9b8d7d604c4cdcd9850432d4b421ccc19",
+  "data/human/sessions/20260927T051206-888Z-150600-4/recording-log.32007db.md": "76748eb90f1eb4e454cdd98d614e7514329a63f37969753f15607942aba59618",
+  "data/human/sessions/20260927T051206-888Z-150600-4/regime-timeline.json": "e7b0de6ccc9bd9e63c1cc6fc6ccbba5279d3f973d77156d05116c8f332412d5c",
+  "data/human/sessions/20260927T051206-888Z-150600-4/registry.1c9e2c671b14.json": "1c9e2c671b14e9d1ea8bcefd4703668a039ecac946d2f5ece768746e67118a13",
+  "data/human/sessions/20260927T051206-888Z-150600-4/review.json": "cad8c9df75f082abd9eceab75064c1f00cef1bdec997368352d44983e601c303",
+  "data/human/sessions/20260927T051206-888Z-150600-4/sampling.json": "63ec8cb8ccbc7d115b4eb85b7bc606eee8957afa98f2d8a24dfd2dea3417a4b9",
+  "data/human/sessions/20260927T051206-888Z-150600-4/segments-evidence.json": "45a01606ca4eb218eda659e4dd11fc2d5dd1a5839face61011875004c1366f59",
+  "data/human/sessions/20260927T051206-888Z-150600-4/settings.json": "fcb7d8641725120cbd01a8e8080399235399f7b7cdf45a44dd071278e89db502",
+  "data/human/sessions/20260927T051206-888Z-150600-4/slot-mapping.json": "08e5930186cf2d7d3574f0a60fd65a045a41f65248d8679f24dac50443e20694"
+ },
+ "external": {
+  "C:/Users/volpe/Videos/2026-09-27 00-12-06.mkv": "d279f81bb4b36cfcf4a0224deef1eace2cbfaf02dbf5744e653b36ceb8bb49e3",
+  "C:/Users/volpe/Videos/RivalsInput/20260927T051206-888Z-150600-4/metadata.json": "2e08e2746cca99896e62e7ff339b2288358ab1583c73b65f01a053a191b7ca4d",
+  "C:/Users/volpe/Videos/RivalsInput/20260927T051206-888Z-150600-4/inputs.jsonl": "c7b9de0f3f363a1c7c7c7331355df7f7d2397423fd2dbb684f2a4d222eb0e411",
+  "C:/Users/volpe/Videos/RivalsInput/20260927T051206-888Z-150600-4/frames.csv": "539ba5d3c8466e351f97c120f3d43eb20fb1a565a9a8162db8d726edaa20e7f0",
+  "data/human/sealed-denylist.v2.json": "439c80df6cd5d6daa60b48e0acb2d3a3fa833134ff14edddc4121348c2dceb20",
+  "data/human/notes/2026-09-21-user-settings.json": "852c92254961b4fcb1278e8ebe752ea2f02ce6add678509d3276fd1a26264c6c",
+  "data/human/inspection/20260922T033319-205Z-24328-2/independent-review-resolution.md": "a67f55f36554887d97765b4552a33ac5c92494f6a50c814801183528a0c3c8e6",
+  "data/human/sessions/code-snapshot-f8fd92c-6046514b/manifest.json": "f37a5a717d06517d160403146eb69818060874582ce79d5fd6aa196fcea82e4e",
+  "data/human/calibration/20260923T204707-487Z-45572-2/calibration.json": "baa49158c9911e0155a2d06883faec00150b297e0a5fe0e8dd46fc86d5310283"
+ }
+}

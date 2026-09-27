@@ -1,0 +1,45 @@
+{
+ "session_id": "20260927T051206-888Z-150600-4",
+ "control_type": "keyboard_mouse",
+ "counts": {
+  "key": 3142,
+  "mouse": 34171,
+  "focus": 7,
+  "pause": 0,
+  "gap": 0,
+  "frames": 50230,
+  "raw_input_status": 1
+ },
+ "errors": [],
+ "warnings": [
+  "Capture/display/input-delivery latency has not been calibrated",
+  "Only matched file frames are usable; OBS muxer discarded trailing callback packets"
+ ],
+ "composition_duration_seconds": 418.574983257,
+ "decoded_video_frames": 50229,
+ "muxer_pts_offset_seconds": 0.021,
+ "max_video_pts_residual_seconds": 0.00033333333340124227,
+ "matched_video_frames": 50229,
+ "unwritten_muxer_tail_packets": 1,
+ "integrity_ok": true,
+ "verification_decoder_threads": 4,
+ "decoded_pts_sha256": "76d6a1b821839829ef25754b3757c4691224efef48653f054b46e407516fbd11",
+ "checker": {
+  "path": "C:/Users/volpe/obs-input-logger/check_session.py",
+  "sha256": "a965de1626aff8b4407731d065313b0b8cf0adedfdf75bd1ac71810f8fb01e0b",
+  "ffprobe_cmd": [
+   "ffprobe",
+   "-threads",
+   "4",
+   "-v",
+   "error",
+   "-select_streams",
+   "v:0",
+   "-show_entries",
+   "frame=best_effort_timestamp_time",
+   "-of",
+   "json",
+   "C:\\Users\\volpe\\Videos\\2026-09-27 00-12-06.mkv"
+  ]
+ }
+}

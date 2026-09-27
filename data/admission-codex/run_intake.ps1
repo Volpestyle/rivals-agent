@@ -2,7 +2,7 @@ param([Parameter(Mandatory=$true)][string]$Step,[Parameter(Mandatory=$true)][str
 $ErrorActionPreference='Stop'
 $repo='C:/Users/volpe/repos/rivals-agent'
 $allowed=@('20260927T051206-888Z-150600-4','20260927T053118-260Z-150600-6','20260927T053838-153Z-150600-7','20260927T055006-068Z-150600-8','20260927T060021-195Z-150600-10','20260927T061107-953Z-150600-11','20260927T061900-143Z-150600-12')
-if ($Session -notin $allowed -or $Step -notin @('vote','scan','regime','motor','propose','evidence','assemble')) { throw 'Outside bounded night-match scope' }
+if ($Session -notin $allowed -or $Step -notin @('vote','scan','regime','motor','propose','evidence','assemble','receipt')) { throw 'Outside bounded night-match scope' }
 $python='C:/Users/volpe/.uv-envs/admission-codex/Scripts/python.exe'
 $runRoot=Join-Path $repo "data/admission-codex/runs/$Session"
 New-Item -ItemType Directory -Path $runRoot -Force | Out-Null
@@ -23,6 +23,7 @@ $arguments=@('-u','data/human/sessions/intake_session.py',$Step,$Session,'--scra
 if ($Step -eq 'vote') { $arguments+=@('--vote-from',$VoteFrom.ToString([Globalization.CultureInfo]::InvariantCulture)) }
 if ($Step -in @('propose','evidence')) { $arguments+=@('--earlier-snapshot','code-snapshot-f8fd92c-6046514b') }
 if ($Step -eq 'assemble') { $arguments=@('-u','data/human/sessions/assemble_session.py',$Session,'--independent-verdicts',"data/human/sessions/$Session/independent-review.verdicts.json",'--snapshot','code-snapshot-f8fd92c-6046514b') }
+if ($Step -eq 'receipt') { $arguments=@('-u','data/human/sessions/match_admission.py',$Session,'--snapshot','code-snapshot-f8fd92c-6046514b','--out',(Join-Path $runRoot 'match-admission.pending.json')) }
 $started=[DateTime]::UtcNow.ToString('o')
 $statusCode="import sys; from scripts.job_status import write; write('admission-'+sys.argv[1],owner='admission-codex',stage=sys.argv[3],host='pc',evidence=sys.argv[2],progress=sys.argv[4])"
 & $python -c $statusCode $Session $out 'running' $Step

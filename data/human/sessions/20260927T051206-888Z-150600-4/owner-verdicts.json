@@ -1,0 +1,1146 @@
+{
+ "session": "20260927T051206-888Z-150600-4",
+ "segments_evidence_sha256": "45a01606ca4eb218eda659e4dd11fc2d5dd1a5839face61011875004c1366f59",
+ "reviewer": "admission-codex",
+ "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+ "role": "owner thumbnail inspection; provisional until independent native-frame review",
+ "verdicts": {
+  "seg-000": {
+   "suitability": "rejected",
+   "reason": "focus_transition: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json machine rule",
+   "frames": [
+    {
+     "frame_index": 77,
+     "composition_ns": 553801668037423,
+     "decoded_bgr_sha256": "02a375d65ebb0b5f6d91d35276cc58c73eb0e6038633c8a4dafa45d260ea3acf"
+    },
+    {
+     "frame_index": 91,
+     "composition_ns": 553801784704085,
+     "decoded_bgr_sha256": "883c7e0733f6ede6edfd8bb1eaad1aa5c2416fb406eac8d3b8239bd713c4faeb"
+    },
+    {
+     "frame_index": 106,
+     "composition_ns": 553801909704080,
+     "decoded_bgr_sha256": "1b36fb6713898a0a14624cb0f682bd753c3a2901a1d88b50f3ced0001ea77a47"
+    }
+   ]
+  },
+  "seg-001": {
+   "suitability": "rejected",
+   "reason": "afk: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json machine rule",
+   "frames": [
+    {
+     "frame_index": 107,
+     "composition_ns": 553801918037413,
+     "decoded_bgr_sha256": "c7e81f55fc535fb4aa5c603582f1baecf3493bde7f9aebde8edaf9aa15181300"
+    },
+    {
+     "frame_index": 1082,
+     "composition_ns": 553810043037088,
+     "decoded_bgr_sha256": "5ff5d6a768b0a0b79b7ce01eb06c7ad8270f0ddac21d8d117468194c9dd00c5c"
+    },
+    {
+     "frame_index": 2058,
+     "composition_ns": 553818176370096,
+     "decoded_bgr_sha256": "0a656a79112cd7a1c8d054eee9c69b912fce17e566fefda5839f32f019d21dd0"
+    },
+    {
+     "frame_index": 3034,
+     "composition_ns": 553826309703104,
+     "decoded_bgr_sha256": "2ce51137089cf052fd7353c3fecd456349ef4b8043adbc70793e4879839c1faa"
+    }
+   ]
+  },
+  "seg-002": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json machine rule",
+   "frames": []
+  },
+  "seg-003": {
+   "suitability": "accepted",
+   "reason": "Owner visually inspected every supplied review thumbnail on the segment contact sheet: own Spider-Man gameplay HUD/body, traversal or combat; no menu, death, spectate, cinematic or end screen observed. Pre-match controllable setup room is permitted. Native BGR hashes below are inherited from the producer evidence, not independently re-decoded by owner; independent native-frame review required.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json; review-frames/; data/admission-codex/review-4/seg-003.jpg",
+   "frames": [
+    {
+     "frame_index": 3035,
+     "composition_ns": 553826318036437,
+     "decoded_bgr_sha256": "8984d40c3d1fae4aa39ecf824bc678cc10beb8ec941f58409287ab9b37e9d90d"
+    },
+    {
+     "frame_index": 3854,
+     "composition_ns": 553833143036164,
+     "decoded_bgr_sha256": "b95f965a25759da25afa9ddac1f85f254af182b86f2ec32cbfaa664b1c94370b"
+    },
+    {
+     "frame_index": 4673,
+     "composition_ns": 553839968035891,
+     "decoded_bgr_sha256": "33e0533f675490161d307e11304a9a1de969c9b6166a0ad920a5846f4e030aa9"
+    },
+    {
+     "frame_index": 5493,
+     "composition_ns": 553846801368951,
+     "decoded_bgr_sha256": "12be2c38e57e4d0684f7a2ff88d70233a845dc00f874d5c0ae8aa9724ce2969a"
+    }
+   ]
+  },
+  "seg-004": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json machine rule",
+   "frames": []
+  },
+  "seg-005": {
+   "suitability": "rejected",
+   "reason": "ui_key: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json machine rule",
+   "frames": [
+    {
+     "frame_index": 5494,
+     "composition_ns": 553846809702284,
+     "decoded_bgr_sha256": "c05ad7487ecbde8e6b3fcbef7634cee912305e0bf5ad4436f3f9a8b37e950da1"
+    },
+    {
+     "frame_index": 5497,
+     "composition_ns": 553846834702283,
+     "decoded_bgr_sha256": "9251006d92bb0afd9e30af0b4331072a61be7f67bbb4ae209d5904e1148cab8c"
+    },
+    {
+     "frame_index": 5500,
+     "composition_ns": 553846859702282,
+     "decoded_bgr_sha256": "f6e7547909961158661a5eff7018163141170c5ac663ad78136666432cbfd4a1"
+    }
+   ]
+  },
+  "seg-006": {
+   "suitability": "rejected",
+   "reason": "focus_transition: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json machine rule",
+   "frames": [
+    {
+     "frame_index": 5710,
+     "composition_ns": 553848609702212,
+     "decoded_bgr_sha256": "d1bd3be2e4c9f8bdc76a02f3edc4d2a860106783416bb6fdfb4946f6351f1860"
+    },
+    {
+     "frame_index": 5724,
+     "composition_ns": 553848726368874,
+     "decoded_bgr_sha256": "dbf3d6e3d20bd2d19dfa527568aa4e6e5cf789fd628fe55dff6bceb23ee6bde1"
+    },
+    {
+     "frame_index": 5739,
+     "composition_ns": 553848851368869,
+     "decoded_bgr_sha256": "56adf6dc9ed212833920302a26e83e353d8accb9167a62b7e3bf48abf2ad2f2d"
+    }
+   ]
+  },
+  "seg-007": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json machine rule",
+   "frames": [
+    {
+     "frame_index": 5740,
+     "composition_ns": 553848859702202,
+     "decoded_bgr_sha256": "3eafeb9c5996edb17dab48d1497f4975982ed49dec14cb6893da5b21ae0f0471"
+    },
+    {
+     "frame_index": 5747,
+     "composition_ns": 553848918035533,
+     "decoded_bgr_sha256": "e42c0d3213b34ad1cdbd3bb4f27c163b4478a339e8060a35d00df8cf69f83ad2"
+    },
+    {
+     "frame_index": 5754,
+     "composition_ns": 553848976368864,
+     "decoded_bgr_sha256": "2e71f7fa589457efbd66946073ee2bfe75f65048435ed10f5daba8974969bfff"
+    }
+   ]
+  },
+  "seg-008": {
+   "suitability": "rejected",
+   "reason": "ui_key: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json machine rule",
+   "frames": [
+    {
+     "frame_index": 5755,
+     "composition_ns": 553848984702197,
+     "decoded_bgr_sha256": "72944d91e8d5f153190ebe6eb2946f67a534db4f134b430c207ffe225b0460da"
+    },
+    {
+     "frame_index": 5756,
+     "composition_ns": 553848993035530,
+     "decoded_bgr_sha256": "cbf7de95a8e85ed50f4121dc5b3e6382e35f0984a271f314632ee944164d7d69"
+    },
+    {
+     "frame_index": 5757,
+     "composition_ns": 553849001368863,
+     "decoded_bgr_sha256": "e2b390bb4031d90f3589d2fed8749ce26b51dd19fa722c7bfcdd5411b408f73c"
+    }
+   ]
+  },
+  "seg-009": {
+   "suitability": "rejected",
+   "reason": "focus_transition: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json machine rule",
+   "frames": [
+    {
+     "frame_index": 6416,
+     "composition_ns": 553854493035310,
+     "decoded_bgr_sha256": "2dd9a6809cae8996261bdf51d5ea7bae58870ccb568a8cfd15a643eeee3fc811"
+    },
+    {
+     "frame_index": 6430,
+     "composition_ns": 553854609701972,
+     "decoded_bgr_sha256": "7165a1bd389a2e10443e82525b89d0c39de036325a6cb55bae5f6136a3b96bf4"
+    },
+    {
+     "frame_index": 6445,
+     "composition_ns": 553854734701967,
+     "decoded_bgr_sha256": "4c36cefdfd35f9088f5b61493673bf5ed9bb3ed8ae6f92ff92e2037fd4ad3317"
+    }
+   ]
+  },
+  "seg-010": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json machine rule",
+   "frames": []
+  },
+  "seg-011": {
+   "suitability": "accepted",
+   "reason": "Owner visually inspected every supplied review thumbnail on the segment contact sheet: own Spider-Man gameplay HUD/body, traversal or combat; no menu, death, spectate, cinematic or end screen observed. Pre-match controllable setup room is permitted. Native BGR hashes below are inherited from the producer evidence, not independently re-decoded by owner; independent native-frame review required.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json; review-frames/; data/admission-codex/review-4/seg-011.jpg",
+   "frames": [
+    {
+     "frame_index": 6446,
+     "composition_ns": 553854743035300,
+     "decoded_bgr_sha256": "62a8e8f4fcb9acc23189cf00e95e42732c60597458694df9c7c59695e270a40c"
+    },
+    {
+     "frame_index": 7529,
+     "composition_ns": 553863768034939,
+     "decoded_bgr_sha256": "8f82ef37a5f5951470aee47949911470de2686a8b37708c78ccc4742ed8407da"
+    },
+    {
+     "frame_index": 8612,
+     "composition_ns": 553872793034578,
+     "decoded_bgr_sha256": "7680c583eca3cde3cbf7ae4b64222f97e279f44459331f610f5e0de0862005d7"
+    },
+    {
+     "frame_index": 9695,
+     "composition_ns": 553881818034217,
+     "decoded_bgr_sha256": "43e73ea08718eab528df03638716fbd9b4a0b7c315e629a8a5431490dcfa20bc"
+    },
+    {
+     "frame_index": 10778,
+     "composition_ns": 553890843033856,
+     "decoded_bgr_sha256": "552bb7599509c8d9dcd193e7705acc3cc932ea483d8fab15fa9201c81ee2e23e"
+    },
+    {
+     "frame_index": 11862,
+     "composition_ns": 553899876366828,
+     "decoded_bgr_sha256": "175d1a05684fc8a6dd6d18eb4097294753058bd71d61c63987dca094759eb2a6"
+    }
+   ]
+  },
+  "seg-012": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json machine rule",
+   "frames": []
+  },
+  "seg-013": {
+   "suitability": "rejected",
+   "reason": "ui_key: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json machine rule",
+   "frames": [
+    {
+     "frame_index": 11863,
+     "composition_ns": 553899884700161,
+     "decoded_bgr_sha256": "ff4cdbf060c13d864155f53dbf04074e2b8aa1e32e153326a4d2aeb601062487"
+    },
+    {
+     "frame_index": 12067,
+     "composition_ns": 553901584700093,
+     "decoded_bgr_sha256": "b2792e5c6ba3e40a4c1500476b7e90b9d213225983f2046b50cd2c7c4031692e"
+    },
+    {
+     "frame_index": 12272,
+     "composition_ns": 553903293033358,
+     "decoded_bgr_sha256": "bb67db97c539cee616e418e4e39bb8498738e757492c3f6a8b2318c43ec8655e"
+    }
+   ]
+  },
+  "seg-014": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json machine rule",
+   "frames": []
+  },
+  "seg-015": {
+   "suitability": "accepted",
+   "reason": "Owner visually inspected every supplied review thumbnail on the segment contact sheet: own Spider-Man gameplay HUD/body, traversal or combat; no menu, death, spectate, cinematic or end screen observed. Pre-match controllable setup room is permitted. Native BGR hashes below are inherited from the producer evidence, not independently re-decoded by owner; independent native-frame review required.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json; review-frames/; data/admission-codex/review-4/seg-015.jpg",
+   "frames": [
+    {
+     "frame_index": 12273,
+     "composition_ns": 553903301366691,
+     "decoded_bgr_sha256": "c69ebdcecf2d6f9a8166fd8429075f44b19a9b0211d4ca2928528a49d76e1297"
+    },
+    {
+     "frame_index": 13260,
+     "composition_ns": 553911526366362,
+     "decoded_bgr_sha256": "8be5d1c2f3cbd9055fb99595a71073fa58918875a1094465abfd8424dabbc275"
+    },
+    {
+     "frame_index": 14247,
+     "composition_ns": 553919751366033,
+     "decoded_bgr_sha256": "525f5868c68b8a6ad78bdaf0a51ce8a750be2783b6fe1767eedb2b9a54e294c5"
+    },
+    {
+     "frame_index": 15234,
+     "composition_ns": 553927976365704,
+     "decoded_bgr_sha256": "87c065676db4b8ab78a06616cc194c6ca25ef097403d7bb77862ca725662646f"
+    },
+    {
+     "frame_index": 16221,
+     "composition_ns": 553936201365375,
+     "decoded_bgr_sha256": "b5d997fc3340bdc920dbf5ac12dbb9894ccea73d76043d1f3e2150ce95b18edb"
+    },
+    {
+     "frame_index": 17208,
+     "composition_ns": 553944426365046,
+     "decoded_bgr_sha256": "1c55a937f44f48af45ae2af2f1a4ee75f8f3d903c2de4130d46383f52d81ca56"
+    }
+   ]
+  },
+  "seg-016": {
+   "suitability": "rejected",
+   "reason": "dead: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json machine rule",
+   "frames": [
+    {
+     "frame_index": 17209,
+     "composition_ns": 553944434698379,
+     "decoded_bgr_sha256": "d543977066f9998fab9f7ced895618f06a9b9f96ea53861368ee30ad2a518e9d"
+    },
+    {
+     "frame_index": 17245,
+     "composition_ns": 553944734698367,
+     "decoded_bgr_sha256": "8e94576a0bd7951f931843291bd7d42db7e7c16acfd6a35581fbbd52134bb748"
+    },
+    {
+     "frame_index": 17281,
+     "composition_ns": 553945034698355,
+     "decoded_bgr_sha256": "b1d2214734b3bf975b17e70e88f291434f3c5506d45aefd26e1e421bc9dde985"
+    }
+   ]
+  },
+  "seg-017": {
+   "suitability": "rejected",
+   "reason": "ui_key: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json machine rule",
+   "frames": [
+    {
+     "frame_index": 17282,
+     "composition_ns": 553945043031688,
+     "decoded_bgr_sha256": "bda31c83d6bd9ed2bfda759c8b56baf6c980f9e9b3c780ebab05a2a80fe79294"
+    },
+    {
+     "frame_index": 17669,
+     "composition_ns": 553948268031559,
+     "decoded_bgr_sha256": "bcef1bad0bb1f7ed780658ceaffb31dcf6b9c2b226145a63881abf93982671de"
+    },
+    {
+     "frame_index": 18057,
+     "composition_ns": 553951501364763,
+     "decoded_bgr_sha256": "9b0c14159b315cbd08705b75d81e99435de7b5d48812e6de71d6245bcb5741ef"
+    }
+   ]
+  },
+  "seg-018": {
+   "suitability": "rejected",
+   "reason": "dead: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json machine rule",
+   "frames": [
+    {
+     "frame_index": 18058,
+     "composition_ns": 553951509698096,
+     "decoded_bgr_sha256": "c036033e4dc7a9e22ffbb1592c2592ef5e082b33f776efab055b46c46f8b9628"
+    },
+    {
+     "frame_index": 18329,
+     "composition_ns": 553953768031339,
+     "decoded_bgr_sha256": "fd092a0e9de7521e12aa655699aa83a594be1eae49debcc488c7d1b88c83cb60"
+    },
+    {
+     "frame_index": 18600,
+     "composition_ns": 553956026364582,
+     "decoded_bgr_sha256": "dafeecd09fa950eae113a12dc6a359ecc760e2c8bdcdbd1f05188caead30381b"
+    }
+   ]
+  },
+  "seg-019": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json machine rule",
+   "frames": []
+  },
+  "seg-020": {
+   "suitability": "accepted",
+   "reason": "Owner visually inspected every supplied review thumbnail on the segment contact sheet: own Spider-Man gameplay HUD/body, traversal or combat; no menu, death, spectate, cinematic or end screen observed. Pre-match controllable setup room is permitted. Native BGR hashes below are inherited from the producer evidence, not independently re-decoded by owner; independent native-frame review required.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json; review-frames/; data/admission-codex/review-4/seg-020.jpg",
+   "frames": [
+    {
+     "frame_index": 18601,
+     "composition_ns": 553956034697915,
+     "decoded_bgr_sha256": "962db34097297b940a6d06da091a3f255266da2d690aee89c894207adde0ab40"
+    },
+    {
+     "frame_index": 19647,
+     "composition_ns": 553964751364233,
+     "decoded_bgr_sha256": "341e2435961646c338d9271ae95b431a9895d2c0f35a1785ebec681f76ee368c"
+    },
+    {
+     "frame_index": 20693,
+     "composition_ns": 553973468030551,
+     "decoded_bgr_sha256": "8623d1c5d9fd32d0fe748f204c1831af90194a51f8a5ab633d8495d385678b3b"
+    },
+    {
+     "frame_index": 21739,
+     "composition_ns": 553982184696869,
+     "decoded_bgr_sha256": "48d3d208ee42b4243c9e1de67119febd45be1d639dd8b119dc3289ef6ea2a736"
+    },
+    {
+     "frame_index": 22785,
+     "composition_ns": 553990901363187,
+     "decoded_bgr_sha256": "859cd387e5fcf38311a1843555013dd1313e6b4692d3b70c6e4c2c9fcd66f8c6"
+    },
+    {
+     "frame_index": 23832,
+     "composition_ns": 553999626362838,
+     "decoded_bgr_sha256": "236c975108353c3e1262b0e9eca8be2b1268d891890df97c4fc1d0e764b84912"
+    }
+   ]
+  },
+  "seg-021": {
+   "suitability": "rejected",
+   "reason": "dead: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json machine rule",
+   "frames": [
+    {
+     "frame_index": 23833,
+     "composition_ns": 553999634696171,
+     "decoded_bgr_sha256": "e103c6e8b75e89d525087907e8ccf541352b51b68549c17a37d52f8854a0fbb5"
+    },
+    {
+     "frame_index": 23880,
+     "composition_ns": 554000026362822,
+     "decoded_bgr_sha256": "dade87c7732b1e41fdb7b589061010231612e3e7c5158b2ac11d987beb591722"
+    },
+    {
+     "frame_index": 23927,
+     "composition_ns": 554000418029473,
+     "decoded_bgr_sha256": "f6368ea5eb1fca4b9ad7dfd3b51eab93772d5ff2fde512c7cfcd46e59b72f4f7"
+    }
+   ]
+  },
+  "seg-022": {
+   "suitability": "rejected",
+   "reason": "ui_key: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json machine rule",
+   "frames": [
+    {
+     "frame_index": 23928,
+     "composition_ns": 554000426362806,
+     "decoded_bgr_sha256": "42826331078f7d2728e05ec6f42c904c28c2796d7801eb0f458d1a0adcf4c59b"
+    },
+    {
+     "frame_index": 24415,
+     "composition_ns": 554004484695977,
+     "decoded_bgr_sha256": "0a8cbfe16a58743bd5aaad290dcf058d1b004f8cb11f1f7ea1d882fc38a22409"
+    },
+    {
+     "frame_index": 24902,
+     "composition_ns": 554008543029148,
+     "decoded_bgr_sha256": "6843905b5d2ec2a2ac4595f5491b000bcd2ab9bca1f01c07f48f734365244027"
+    }
+   ]
+  },
+  "seg-023": {
+   "suitability": "rejected",
+   "reason": "dead: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json machine rule",
+   "frames": [
+    {
+     "frame_index": 24903,
+     "composition_ns": 554008551362481,
+     "decoded_bgr_sha256": "f9ac078b38ed9319ff970410bd529188c0428673909375d1841d0f7f99450627"
+    },
+    {
+     "frame_index": 25063,
+     "composition_ns": 554009884695761,
+     "decoded_bgr_sha256": "a124d686ecd49ff438881897a511f9298b24972871b6256c2902fa92e533f00e"
+    },
+    {
+     "frame_index": 25224,
+     "composition_ns": 554011226362374,
+     "decoded_bgr_sha256": "db72b43f28231f3fe4611e98e0787f9efdc04fb6509eb5264b1d7db47d1aa0b8"
+    }
+   ]
+  },
+  "seg-024": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json machine rule",
+   "frames": []
+  },
+  "seg-025": {
+   "suitability": "accepted",
+   "reason": "Owner visually inspected every supplied review thumbnail on the segment contact sheet: own Spider-Man gameplay HUD/body, traversal or combat; no menu, death, spectate, cinematic or end screen observed. Pre-match controllable setup room is permitted. Native BGR hashes below are inherited from the producer evidence, not independently re-decoded by owner; independent native-frame review required.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json; review-frames/; data/admission-codex/review-4/seg-025.jpg",
+   "frames": [
+    {
+     "frame_index": 25225,
+     "composition_ns": 554011234695707,
+     "decoded_bgr_sha256": "39a7671ab97e99ebee2ca78747a2ce0f12f29c0f7fa178b6968f8e30c88796be"
+    },
+    {
+     "frame_index": 25812,
+     "composition_ns": 554016126362178,
+     "decoded_bgr_sha256": "9f1ae0354ac8b6b624de5855bd9cb8c104e8aa24f5ddf22483d449977234b38d"
+    },
+    {
+     "frame_index": 26400,
+     "composition_ns": 554021026361982,
+     "decoded_bgr_sha256": "5e5870382bd19f66e5b85d3ffc1435cca2c8d4d8a7d37e81bd73b82a5afc5b17"
+    }
+   ]
+  },
+  "seg-026": {
+   "suitability": "rejected",
+   "reason": "dead: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json machine rule",
+   "frames": [
+    {
+     "frame_index": 26401,
+     "composition_ns": 554021034695315,
+     "decoded_bgr_sha256": "a86c04a8017330b24627126a28eb23877ccf457c0dfc0d4ab0f8908ca8cf1ffa"
+    },
+    {
+     "frame_index": 26682,
+     "composition_ns": 554023376361888,
+     "decoded_bgr_sha256": "71915707c4f8d5df085a34fabe31846db22cdc803f681e314dc293c57edb71ea"
+    },
+    {
+     "frame_index": 26964,
+     "composition_ns": 554025726361794,
+     "decoded_bgr_sha256": "b84a3482b4addedef315146f2fa7cc0da72af0a66020e6034ed1648b31a49a9f"
+    }
+   ]
+  },
+  "seg-027": {
+   "suitability": "rejected",
+   "reason": "ui_key: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json machine rule",
+   "frames": [
+    {
+     "frame_index": 26965,
+     "composition_ns": 554025734695127,
+     "decoded_bgr_sha256": "29cdf95a6b4fb06758bb93f535daf6a356741327b7f60f479b092047750306d7"
+    },
+    {
+     "frame_index": 27332,
+     "composition_ns": 554028793028338,
+     "decoded_bgr_sha256": "14908a4aeb8a9ba15fd84fd5978552836f4ca8be89a9677411f771f2dfbcd1cf"
+    },
+    {
+     "frame_index": 27700,
+     "composition_ns": 554031859694882,
+     "decoded_bgr_sha256": "81c97a52e0d34f0c9235d32ed3495d7d5a9d1be36b3dd1b1fb2ffbee5af0c285"
+    }
+   ]
+  },
+  "seg-028": {
+   "suitability": "rejected",
+   "reason": "dead: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json machine rule",
+   "frames": [
+    {
+     "frame_index": 27701,
+     "composition_ns": 554031868028215,
+     "decoded_bgr_sha256": "1d8a4a9ec1a6cd97984a5f1f632e6ab113f321d355900578686762dd2a46e779"
+    },
+    {
+     "frame_index": 27746,
+     "composition_ns": 554032243028200,
+     "decoded_bgr_sha256": "c6ee1b6fdb0a600528febca6d3bbbdf960380b80abf4386949043ec766fb071b"
+    },
+    {
+     "frame_index": 27792,
+     "composition_ns": 554032626361518,
+     "decoded_bgr_sha256": "88ae9c43db7c745e6c028d687217d86d3225d0f389da2cd5d6e1268cbc0e2d09"
+    }
+   ]
+  },
+  "seg-029": {
+   "suitability": "rejected",
+   "reason": "no_range_hud: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json machine rule",
+   "frames": [
+    {
+     "frame_index": 27793,
+     "composition_ns": 554032634694851,
+     "decoded_bgr_sha256": "4b70423724be58bf86d5046c587af6482f7042c6fa041a922d4324679aca266a"
+    },
+    {
+     "frame_index": 27816,
+     "composition_ns": 554032826361510,
+     "decoded_bgr_sha256": "dc4644401f16b9ab69653d4d9825f4c2157e2123e4c8e4013a8c7436fa1f3bb4"
+    },
+    {
+     "frame_index": 27840,
+     "composition_ns": 554033026361502,
+     "decoded_bgr_sha256": "082f693fe95194a84e2c6fd34dcc223c028afc52b363335d62fc78150b17975b"
+    }
+   ]
+  },
+  "seg-030": {
+   "suitability": "accepted",
+   "reason": "Owner visually inspected every supplied review thumbnail on the segment contact sheet: own Spider-Man gameplay HUD/body, traversal or combat; no menu, death, spectate, cinematic or end screen observed. Pre-match controllable setup room is permitted. Native BGR hashes below are inherited from the producer evidence, not independently re-decoded by owner; independent native-frame review required.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json; review-frames/; data/admission-codex/review-4/seg-030.jpg",
+   "frames": [
+    {
+     "frame_index": 27841,
+     "composition_ns": 554033034694835,
+     "decoded_bgr_sha256": "b11f515ddd71d525b1733217ca425dc60988a9bb51be18b9b778143f51b76678"
+    },
+    {
+     "frame_index": 28979,
+     "composition_ns": 554042518027789,
+     "decoded_bgr_sha256": "ae42d4757693d26621cf8a1412a0c603585cdac2ab2f64ce6e8a62b1621a45b5"
+    },
+    {
+     "frame_index": 30117,
+     "composition_ns": 554052001360743,
+     "decoded_bgr_sha256": "37c48ec1fdc08718df2ef7d32dc016846ee9bbd569b336ded2eef7d391dd068c"
+    },
+    {
+     "frame_index": 31255,
+     "composition_ns": 554061484693697,
+     "decoded_bgr_sha256": "5831014944e2700d5ec363cea386b3feb61969f22c60f38c8ddf57e628d810b1"
+    },
+    {
+     "frame_index": 32393,
+     "composition_ns": 554070968026651,
+     "decoded_bgr_sha256": "7e61f46700492b520e39c62782a29d711422ce0cac369d362492d4ee03082edd"
+    },
+    {
+     "frame_index": 33531,
+     "composition_ns": 554080451359605,
+     "decoded_bgr_sha256": "a24e315fff49309f9fbcc574163f5899916958791b68ccfb4f700c82480fde17"
+    },
+    {
+     "frame_index": 34669,
+     "composition_ns": 554089934692559,
+     "decoded_bgr_sha256": "8c2b075fff9ba7d1d03021fc70453f835a7ec01e694e28f9edc791c7132cb266"
+    },
+    {
+     "frame_index": 35808,
+     "composition_ns": 554099426358846,
+     "decoded_bgr_sha256": "7aeb6c25da2c2b2ed9c13e9da93f74f1319b1c612efe8714bb4434e7acfc9a27"
+    }
+   ]
+  },
+  "seg-031": {
+   "suitability": "rejected",
+   "reason": "dead: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json machine rule",
+   "frames": [
+    {
+     "frame_index": 35809,
+     "composition_ns": 554099434692179,
+     "decoded_bgr_sha256": "c6852c815518861271c4aa4cb47112b387df9b417b78573f02bbf1a30e96b0dd"
+    },
+    {
+     "frame_index": 35844,
+     "composition_ns": 554099726358834,
+     "decoded_bgr_sha256": "6d4f5e086265db1ca452f99142b0fa37fb4fe75f086aa33cb469bc277617e659"
+    },
+    {
+     "frame_index": 35879,
+     "composition_ns": 554100018025489,
+     "decoded_bgr_sha256": "e79be140b298711ff98ff1f7c1fa68572b3b8a26077bb302110c48ef1130244a"
+    }
+   ]
+  },
+  "seg-032": {
+   "suitability": "rejected",
+   "reason": "ui_key: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json machine rule",
+   "frames": [
+    {
+     "frame_index": 35880,
+     "composition_ns": 554100026358822,
+     "decoded_bgr_sha256": "c91774dc31839892e66f90019a0d247869ce6490b87f5bd2d43ee3f3927212f1"
+    },
+    {
+     "frame_index": 36012,
+     "composition_ns": 554101126358778,
+     "decoded_bgr_sha256": "e5893bf91c37ea5671188fc51ef187921045c7f243b0745714028a3f06549f10"
+    },
+    {
+     "frame_index": 36145,
+     "composition_ns": 554102234692067,
+     "decoded_bgr_sha256": "d98801702ce9e47817c3267497c199d83df7fb99950358fb888150bfafd8401d"
+    }
+   ]
+  },
+  "seg-033": {
+   "suitability": "rejected",
+   "reason": "dead: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json machine rule",
+   "frames": [
+    {
+     "frame_index": 36146,
+     "composition_ns": 554102243025400,
+     "decoded_bgr_sha256": "6f00d34d02204008b6923bb06d132695bbbbbe6e4ae2020c0313a784aa778111"
+    },
+    {
+     "frame_index": 36536,
+     "composition_ns": 554105493025270,
+     "decoded_bgr_sha256": "e4849bb8b640a57041b08f2b85944f220b4ce7db88b1bbe9c7681bf52edd21d0"
+    },
+    {
+     "frame_index": 36927,
+     "composition_ns": 554108751358473,
+     "decoded_bgr_sha256": "8186dc8d2f49fcdcb65b2e6d7aa3b0b6fba6b20fd78573af708c8c8ec36afc92"
+    }
+   ]
+  },
+  "seg-034": {
+   "suitability": "rejected",
+   "reason": "ui_key: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json machine rule",
+   "frames": [
+    {
+     "frame_index": 36928,
+     "composition_ns": 554108759691806,
+     "decoded_bgr_sha256": "59b2a1179fbb60bc367d31fadbd18c66c034b03991516408c48939da2d489d51"
+    },
+    {
+     "frame_index": 37078,
+     "composition_ns": 554110009691756,
+     "decoded_bgr_sha256": "f304a0ab735f6ba40069d1072c97a549fb08133d2a0adbb9270e75d604a6921a"
+    },
+    {
+     "frame_index": 37229,
+     "composition_ns": 554111268025039,
+     "decoded_bgr_sha256": "04867562a83d2683063df6041514b5bfb7df66fc6d91195d3d84b937ece25dc5"
+    }
+   ]
+  },
+  "seg-035": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json machine rule",
+   "frames": []
+  },
+  "seg-036": {
+   "suitability": "accepted",
+   "reason": "Owner visually inspected every supplied review thumbnail on the segment contact sheet: own Spider-Man gameplay HUD/body, traversal or combat; no menu, death, spectate, cinematic or end screen observed. Pre-match controllable setup room is permitted. Native BGR hashes below are inherited from the producer evidence, not independently re-decoded by owner; independent native-frame review required.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json; review-frames/; data/admission-codex/review-4/seg-036.jpg",
+   "frames": [
+    {
+     "frame_index": 37230,
+     "composition_ns": 554111276358372,
+     "decoded_bgr_sha256": "7e543bd365ea13d3737bf40518321876e09f509bb96bd26b120fa2b857b0b7b3"
+    },
+    {
+     "frame_index": 38079,
+     "composition_ns": 554118351358089,
+     "decoded_bgr_sha256": "7121b08565748cf95d45eea2c61de5a10d0403b9b3b7f879348c6d727d6107c8"
+    },
+    {
+     "frame_index": 38928,
+     "composition_ns": 554125426357806,
+     "decoded_bgr_sha256": "5896d1529cdee40e104461c9b3d141e86c879341e56d0133c3cef79ed323ad70"
+    }
+   ]
+  },
+  "seg-037": {
+   "suitability": "rejected",
+   "reason": "dead: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json machine rule",
+   "frames": [
+    {
+     "frame_index": 38929,
+     "composition_ns": 554125434691139,
+     "decoded_bgr_sha256": "e4b13c23cb173c49373922e77c67f569108d6b0bb8d81e1d9b899ba19149ea91"
+    },
+    {
+     "frame_index": 38972,
+     "composition_ns": 554125793024458,
+     "decoded_bgr_sha256": "f38034f0707c42770549e625903dc8961782cdbcbe01ab1625b156138c01aa41"
+    },
+    {
+     "frame_index": 39015,
+     "composition_ns": 554126151357777,
+     "decoded_bgr_sha256": "ae3a033f16185eba671bbda035d94e75908c5decea674d5dcf338f7fe2ce08a8"
+    }
+   ]
+  },
+  "seg-038": {
+   "suitability": "rejected",
+   "reason": "ui_key: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json machine rule",
+   "frames": [
+    {
+     "frame_index": 39016,
+     "composition_ns": 554126159691110,
+     "decoded_bgr_sha256": "e0b0a7749f8fefa8afdc13f39af0c607997b944ac40bff141209ad827fd245d2"
+    },
+    {
+     "frame_index": 39330,
+     "composition_ns": 554128776357672,
+     "decoded_bgr_sha256": "6c78b64f0a0f22ac92d03bb87b2114ab8280e6160ddc8e7470eab0429fc54cdb"
+    },
+    {
+     "frame_index": 39644,
+     "composition_ns": 554131393024234,
+     "decoded_bgr_sha256": "a00c6baade6021414308efab45f2ba890d03c9c1cf7694c160d94ef2b45bc309"
+    }
+   ]
+  },
+  "seg-039": {
+   "suitability": "rejected",
+   "reason": "dead: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json machine rule",
+   "frames": [
+    {
+     "frame_index": 39645,
+     "composition_ns": 554131401357567,
+     "decoded_bgr_sha256": "e358ae0ebb36052bf01b53602e973ba72a38a4903bb791ebfc7779d49feceb60"
+    },
+    {
+     "frame_index": 39818,
+     "composition_ns": 554132843024176,
+     "decoded_bgr_sha256": "cfd5bedfc1b1ba211365b009aaba97be9bcc8ac9a149b6655504ad908a9f12b5"
+    },
+    {
+     "frame_index": 39992,
+     "composition_ns": 554134293024118,
+     "decoded_bgr_sha256": "3497bec73d081718cefc5cda2431a06aa4e4f01dfca256bcd145b2b979e6ffa0"
+    }
+   ]
+  },
+  "seg-040": {
+   "suitability": "rejected",
+   "reason": "ui_key: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json machine rule",
+   "frames": [
+    {
+     "frame_index": 39993,
+     "composition_ns": 554134301357451,
+     "decoded_bgr_sha256": "6b9cdf3e0347b1468aaf7fb7b5ade769b254b1cf77e4a937a25d10817ab6ed13"
+    },
+    {
+     "frame_index": 40146,
+     "composition_ns": 554135576357400,
+     "decoded_bgr_sha256": "caba1ef6753adb28369bf0b0a9f92070c5f030265833e463c844005fc2b87a91"
+    },
+    {
+     "frame_index": 40299,
+     "composition_ns": 554136851357349,
+     "decoded_bgr_sha256": "a38f1f26ae4689397c748a42019412bcf507ae6c184f3838802c910632f6732f"
+    }
+   ]
+  },
+  "seg-041": {
+   "suitability": "rejected",
+   "reason": "dead: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json machine rule",
+   "frames": [
+    {
+     "frame_index": 40300,
+     "composition_ns": 554136859690682,
+     "decoded_bgr_sha256": "eb4773270ea9a595e4fa3cd83b696172968ff9838fb5609377d0ccb769f43d6f"
+    },
+    {
+     "frame_index": 40322,
+     "composition_ns": 554137043024008,
+     "decoded_bgr_sha256": "bfaa8490767348290d9eb0f6a7bc494e2dd994f87b2f8a1408887751ad1ec2bb"
+    },
+    {
+     "frame_index": 40344,
+     "composition_ns": 554137226357334,
+     "decoded_bgr_sha256": "352056966b32d1d9b97fd4bceec583f8f4bbd5e6f131c03d429987dc05170d72"
+    }
+   ]
+  },
+  "seg-042": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json machine rule",
+   "frames": []
+  },
+  "seg-043": {
+   "suitability": "accepted",
+   "reason": "Owner visually inspected every supplied review thumbnail on the segment contact sheet: own Spider-Man gameplay HUD/body, traversal or combat; no menu, death, spectate, cinematic or end screen observed. Pre-match controllable setup room is permitted. Native BGR hashes below are inherited from the producer evidence, not independently re-decoded by owner; independent native-frame review required.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json; review-frames/; data/admission-codex/review-4/seg-043.jpg",
+   "frames": [
+    {
+     "frame_index": 40345,
+     "composition_ns": 554137234690667,
+     "decoded_bgr_sha256": "763a61877a9a7385b6af41e0e7bd60cf36ae15e591e4a8092ab5b2f10f13b135"
+    },
+    {
+     "frame_index": 41424,
+     "composition_ns": 554146226356974,
+     "decoded_bgr_sha256": "47a5e2b29b361f7bd087b4bf7e13d673c0e37e8cec68bf1589ff1e916dc341aa"
+    },
+    {
+     "frame_index": 42503,
+     "composition_ns": 554155218023281,
+     "decoded_bgr_sha256": "b2a95579933b040a4ea1ba336a6ce0433c4962baf04f7d34194b4bcc95dbad4f"
+    },
+    {
+     "frame_index": 43583,
+     "composition_ns": 554164218022921,
+     "decoded_bgr_sha256": "83758663dab87c71302c0ae56e34bc05cdea79cb9d652e34eee0eb833d7d52c6"
+    },
+    {
+     "frame_index": 44662,
+     "composition_ns": 554173209689228,
+     "decoded_bgr_sha256": "253bac1abcc50bbe7a946a1fe72d93873129f685cb66f6dc8846232a2cf9b251"
+    },
+    {
+     "frame_index": 45742,
+     "composition_ns": 554182209688868,
+     "decoded_bgr_sha256": "36546192b9d39944254e1851720a1701a321920b5f816fd4405539f063385f51"
+    },
+    {
+     "frame_index": 46821,
+     "composition_ns": 554191201355175,
+     "decoded_bgr_sha256": "7d38f969d8a8c65aacd6bab2c2df2e3af9d7be581c713ff193729cfa0e3940fd"
+    },
+    {
+     "frame_index": 47901,
+     "composition_ns": 554200201354815,
+     "decoded_bgr_sha256": "c68a6a97e7a988c3396437b7f0f0d2648ca4ef0992bc9ca2649012fd5d828ed9"
+    }
+   ]
+  },
+  "seg-044": {
+   "suitability": "rejected",
+   "reason": "hud_unknown: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json machine rule",
+   "frames": [
+    {
+     "frame_index": 47902,
+     "composition_ns": 554200209688148,
+     "decoded_bgr_sha256": "65edc757ec9e23fa8fdd438bdcda548549b8a35c16e22b83d8356454662648bf"
+    },
+    {
+     "frame_index": 47963,
+     "composition_ns": 554200718021461,
+     "decoded_bgr_sha256": "a54e984a90d049de596463190138230b42c73c74f1ad4720d317a927bd8d6bda"
+    },
+    {
+     "frame_index": 48024,
+     "composition_ns": 554201226354774,
+     "decoded_bgr_sha256": "a94bace0ce50ce6431c05c1babc3a02ff5405414f8f30998252fb9bfb32b0dfc"
+    }
+   ]
+  },
+  "seg-045": {
+   "suitability": "rejected",
+   "reason": "dead: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json machine rule",
+   "frames": [
+    {
+     "frame_index": 48025,
+     "composition_ns": 554201234688107,
+     "decoded_bgr_sha256": "d5c280b03f837429c804c302c7bc220dab77f83ee9767bb849ff64ca1b32295d"
+    },
+    {
+     "frame_index": 48059,
+     "composition_ns": 554201518021429,
+     "decoded_bgr_sha256": "54cae654f798f5046c1908b1b5962f648cc9832277efa03a2932bb6996b90da0"
+    },
+    {
+     "frame_index": 48093,
+     "composition_ns": 554201801354751,
+     "decoded_bgr_sha256": "457ed91621d8cd7409b2b6a87b5887fe95905b342e8c1e2196c0732b2214defd"
+    }
+   ]
+  },
+  "seg-046": {
+   "suitability": "rejected",
+   "reason": "ui_key: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json machine rule",
+   "frames": [
+    {
+     "frame_index": 48094,
+     "composition_ns": 554201809688084,
+     "decoded_bgr_sha256": "e890e46639ec52cfcaa8fe3f387b50c645b94a8f6e596906b7aa44df555351b8"
+    },
+    {
+     "frame_index": 48615,
+     "composition_ns": 554206151354577,
+     "decoded_bgr_sha256": "f4870019bbf45b7826252054f72df888784969634901ffd5643bcfe276fc653a"
+    },
+    {
+     "frame_index": 49137,
+     "composition_ns": 554210501354403,
+     "decoded_bgr_sha256": "1fdbd142f9ca2ebccd37e93e7c2ee11249e4c1fd709eef396751ecfd605c7226"
+    }
+   ]
+  },
+  "seg-047": {
+   "suitability": "rejected",
+   "reason": "dead: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json machine rule",
+   "frames": [
+    {
+     "frame_index": 49138,
+     "composition_ns": 554210509687736,
+     "decoded_bgr_sha256": "a8643bf95b7a70cfb4a9a56f310e3e8c6732e1889689753ea30d19d4090cf623"
+    },
+    {
+     "frame_index": 49151,
+     "composition_ns": 554210618021065,
+     "decoded_bgr_sha256": "657dae98dd95d5c001145b94b65a60b49867091639d30c77e77197646b7a1f04"
+    },
+    {
+     "frame_index": 49164,
+     "composition_ns": 554210726354394,
+     "decoded_bgr_sha256": "7d309461cc7557512fd699e6a52f053758123ee49f887f1a4623f7eff7340cef"
+    }
+   ]
+  },
+  "seg-048": {
+   "suitability": "rejected",
+   "reason": "ui_key: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (lane owner; not independent review)",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json machine rule",
+   "frames": [
+    {
+     "frame_index": 49165,
+     "composition_ns": 554210734687727,
+     "decoded_bgr_sha256": "16201b42ffe10d86535624b62cdcaa01c1230870382af863b2adee6676479b75"
+    },
+    {
+     "frame_index": 49502,
+     "composition_ns": 554213543020948,
+     "decoded_bgr_sha256": "e5e9c5718e4829cf9420bf693f5b641a5d9b6cdcee5e4cd628b96478be772a47"
+    },
+    {
+     "frame_index": 49840,
+     "composition_ns": 554216359687502,
+     "decoded_bgr_sha256": "4e2275f459c77889c65b8af7fbc02063b140d6ea5532c6cfc18046e0ad3a3391"
+    }
+   ]
+  }
+ }
+}
