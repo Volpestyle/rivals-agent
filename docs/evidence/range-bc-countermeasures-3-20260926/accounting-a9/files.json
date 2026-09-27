@@ -1,0 +1,224 @@
+{
+  "files": [
+    {
+      "path": "AMENDMENT-a9.md",
+      "sha256": "489e2961026cd973a94880459d90364f7d3a228c295f555b16300f143381633e",
+      "bytes": 3552
+    },
+    {
+      "path": "README.md",
+      "sha256": "e11090aac4c7776994eb87e7fd32854cc2b61b82b11c5e54b7a9bfb14fa0e572",
+      "bytes": 498
+    },
+    {
+      "path": "cascade-mutation.log",
+      "sha256": "0bf0111d6c1262b553aca6d39b8e8e3fad4234899c5f8b9b6607d40fc7951c63",
+      "bytes": 1103
+    },
+    {
+      "path": "change.diff",
+      "sha256": "70ebfb1ad6890dc2f7b08756806bd1ad6ef44c7b627b539b583847f1e874aa69",
+      "bytes": 10152
+    },
+    {
+      "path": "clock-evidence.json",
+      "sha256": "fe74fd8c4ccd1599a1391e0fe3dc488c80eaca8414ea1a68daa6e15d79a172d6",
+      "bytes": 4984
+    },
+    {
+      "path": "fanout/appcreate_gate.py",
+      "sha256": "2d076fa1c5908b11193a87838879bbd0498de515184a818d61f0586fac44c520",
+      "bytes": 11623
+    },
+    {
+      "path": "fanout/approved_task_entry.py",
+      "sha256": "d51ecf238447c5cafa788010d5f81548ba7b64404945864e40f2be1820652ee5",
+      "bytes": 671
+    },
+    {
+      "path": "fanout/cm3_accounting.py",
+      "sha256": "13c26df40e40f58eb4561b9e655eb71391e3aee4c05546f6e9d3ddbf7b0c7e4d",
+      "bytes": 20496
+    },
+    {
+      "path": "fanout/cm3_budget_plan.py",
+      "sha256": "1b76ee9707580beec7bb71f9b7b766bfb0b8f3a42ea849e7f767697a87ef59af",
+      "bytes": 1461
+    },
+    {
+      "path": "fanout/cm3_timeouts.py",
+      "sha256": "2ac8cadf52f66f8dc537fd7fa82e2d028e7af668ceb40ad42332c38992a9d447",
+      "bytes": 2541
+    },
+    {
+      "path": "fanout/collect_phase.py",
+      "sha256": "3cf97ceb5a4be8ed1193eb8a50d2aacd2787e35f3638c4df358464e2884e94ec",
+      "bytes": 8540
+    },
+    {
+      "path": "fanout/collector.py",
+      "sha256": "f39e6a7d1b5693cd9e3dadd88ea6da5fed7f41e2b26558a50df5d1f058e42b39",
+      "bytes": 12358
+    },
+    {
+      "path": "fanout/diagnostic_capture.py",
+      "sha256": "469292cface2bc627513322adca8a207bae8f9bcf490092e348ae3541461e3e0",
+      "bytes": 3875
+    },
+    {
+      "path": "fanout/guard.py",
+      "sha256": "905fd841d2ca7509c2d8abaadb84086fc3ee715f11126c1f2d061025be4c58a2",
+      "bytes": 1919
+    },
+    {
+      "path": "fanout/harness-files.json",
+      "sha256": "e2ec8d727c26f33c654d983f44a936eaac80cc741b4664b0b26c78ff08d0606c",
+      "bytes": 602
+    },
+    {
+      "path": "fanout/identity_probe.py",
+      "sha256": "de2a47c7dc2d494a0fcdadde0c5c12092d5f2b6b67bf2398281be71912bd6916",
+      "bytes": 248
+    },
+    {
+      "path": "fanout/input_closure.py",
+      "sha256": "00df2a52a7704dd9d212cf726126641f94d0d6b3097a014c025adebf299f23dd",
+      "bytes": 10788
+    },
+    {
+      "path": "fanout/job_status.py",
+      "sha256": "df4dd2f05ef9aeabe6504927f37ca4bf983544aa58b8905d2bd9bfe5f5de6541",
+      "bytes": 11413
+    },
+    {
+      "path": "fanout/judge_cm3-a3.py",
+      "sha256": "e23b3212a0eadc98bc590e5081a92c9fab6740e93808aba2d245d6020b3f8eb0",
+      "bytes": 46689
+    },
+    {
+      "path": "fanout/judge_entry.py",
+      "sha256": "8edfa450bfba4e1d341221efe882d4e6e03fa864918f8f245071f7db3f709013",
+      "bytes": 641
+    },
+    {
+      "path": "fanout/late_app_guard.py",
+      "sha256": "8a882c0fa21e3cffba7ded2fac5f23f55532ad06aa561ca99c33ec66a3fdf469",
+      "bytes": 8290
+    },
+    {
+      "path": "fanout/lifecycle.py",
+      "sha256": "9ca93de4f694078b96084764dc117be9fc41e3463eaa89c7bed62ce8c187e9dc",
+      "bytes": 11587
+    },
+    {
+      "path": "fanout/make_receipt.py",
+      "sha256": "056e178d4fc9d57451480a1e051121da9fd01dee0ef230d5e5a3c0191ccd099e",
+      "bytes": 22498
+    },
+    {
+      "path": "fanout/map_metrics.py",
+      "sha256": "de20a8bf4a626b42df03cfe9468ff77eef041cd471393c2d26da20509be201b5",
+      "bytes": 2600
+    },
+    {
+      "path": "fanout/modal_app.py",
+      "sha256": "89e8a8701b856e263321768ab64f7c6cb4afeb04901ed7fc373fed887d84f38c",
+      "bytes": 17457
+    },
+    {
+      "path": "fanout/packet_adapter.py",
+      "sha256": "b469d345c48c9ff9a9b4555b06bf84c7183a1bd5373fc9d899aac24c2c91361a",
+      "bytes": 3577
+    },
+    {
+      "path": "fanout/phase_driver.py",
+      "sha256": "5156266e48d580842516309b16af7f7a266dbaa02ff490d93992eb22eb6469c5",
+      "bytes": 481
+    },
+    {
+      "path": "fanout/phase_transport.py",
+      "sha256": "cba09d9db9c544a726f0ef2771610bbec19f5b6c310306a628f99b17caffa008",
+      "bytes": 10993
+    },
+    {
+      "path": "fanout/phase_worker.py",
+      "sha256": "f3a73d565268d974669fb049c8f8495be2f25f2af257676e2262e4d12bea9077",
+      "bytes": 7936
+    },
+    {
+      "path": "fanout/safety.py",
+      "sha256": "0b2ce44a3c5ce3d9ccf38f6aacf394391969e838e177d7a7f9bc3f952cc786c5",
+      "bytes": 18056
+    },
+    {
+      "path": "fanout/task_driver.py",
+      "sha256": "262a7bcabd435e18edd4d03ae6e99549b580be76d3d1e73d26ca5eb53a7d3d17",
+      "bytes": 5159
+    },
+    {
+      "path": "fanout/volume_inventory.py",
+      "sha256": "89da1c1077bae405a117f8fd7aafd1bb3826aa3556870b609272e78b73fc08ca",
+      "bytes": 2585
+    },
+    {
+      "path": "fanout/volume_scope.py",
+      "sha256": "a17fafeeb834683b61b6f4a4097620aa16426b224e7c7ce3c27da1fa87c2872a",
+      "bytes": 4199
+    },
+    {
+      "path": "owner/cm3_timeouts.py",
+      "sha256": "2ac8cadf52f66f8dc537fd7fa82e2d028e7af668ceb40ad42332c38992a9d447",
+      "bytes": 2541
+    },
+    {
+      "path": "preserved-source.json",
+      "sha256": "3a7b34ac28265284022c9c00ac509a9466775e98e5ec20eac4f650112034a2e8",
+      "bytes": 2060
+    },
+    {
+      "path": "relaunch-forecast-a9.json",
+      "sha256": "0d6bdf965a69b95769f9d46f245ad4816df5aa331254956c753662e227235ec3",
+      "bytes": 409
+    },
+    {
+      "path": "settlement.json",
+      "sha256": "48530f9f00556f66450db8fbd41418b9e19691a8d8a9cdbe267ac7b228ff6d75",
+      "bytes": 21411
+    },
+    {
+      "path": "startup-margin.json",
+      "sha256": "28048f91e03cbd7ab7d9429c5f014ee9d2a092df8366dfa2b0ff4e883ebaeee5",
+      "bytes": 782
+    },
+    {
+      "path": "tests/smoke-details.json",
+      "sha256": "aefff0446a0329964d3225e5a3acf24515913829fed293c01d7fae14eafbdbc9",
+      "bytes": 29985
+    },
+    {
+      "path": "tests/test_a9.py",
+      "sha256": "13dfec0ea9589ac1a7b6e48db6224648f4c4ea489e171b297651c6c838dd5175",
+      "bytes": 1621
+    },
+    {
+      "path": "tests/test_isolation.py",
+      "sha256": "a9ffe9c796e45e069a092f22c37e5aebd68800169b9f114f43e40573b8aaa701",
+      "bytes": 4693
+    },
+    {
+      "path": "tests/test_stagger.py",
+      "sha256": "d1a0c031558cf238c3bd8364ab2348a351487682a4ae86a5157b47bc27c3ebb7",
+      "bytes": 5764
+    },
+    {
+      "path": "tests.log",
+      "sha256": "e39da9368a4bdcad62f4800b176aa9c926a583f8491aad96d2bc394894b587bc",
+      "bytes": 2013
+    },
+    {
+      "path": "unchanged-hold-forecast.json",
+      "sha256": "c9edc29dca29ad0ad3329028e6f54928f044c0d8c54d50bf65fbbfd16e600fee",
+      "bytes": 372
+    }
+  ]
+}

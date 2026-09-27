@@ -1,0 +1,13 @@
+{
+  "admission_seconds": 51024,
+  "admission_usd": 41.88270356,
+  "cap_seconds": 69120,
+  "cap_usd": 60,
+  "launch_authorized": false,
+  "relaunch_phase1_plus_verify_seconds": 20373,
+  "relaunch_phase1_plus_verify_usd": 15.642361,
+  "spent_seconds": 30651,
+  "spent_usd": 26.24034256,
+  "status": "FITS_UNDER_CAP_WITH_UNCHANGED_HOLDS",
+  "timeout_change_assumed": false
+}

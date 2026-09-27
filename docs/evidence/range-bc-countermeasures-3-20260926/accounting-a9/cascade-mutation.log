@@ -1,0 +1,23 @@
+test_terminal_failed_fit_allows_independent_siblings_to_finish (test_isolation.Isolation.test_terminal_failed_fit_allows_independent_siblings_to_finish) ... FAIL
+
+======================================================================
+FAIL: test_terminal_failed_fit_allows_independent_siblings_to_finish (test_isolation.Isolation.test_terminal_failed_fit_allows_independent_siblings_to_finish)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/james/dev/range-bc-data/handoff/modal/phase1-isolation-fix/test_isolation.py", line 60, in test_terminal_failed_fit_allows_independent_siblings_to_finish
+    self.assertEqual(killed,[]);self.assertEqual(set(completed),KEYS)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['A-0', 'A-1', 'A-2'] != []
+
+First list contains 3 additional elements.
+First extra element 0:
+'A-0'
+
+- ['A-0', 'A-1', 'A-2']
++ []
+
+----------------------------------------------------------------------
+Ran 1 test in 0.011s
+
+FAILED (failures=1)
+PASS: original cascade is killed by sibling-survival test

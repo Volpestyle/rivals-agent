@@ -1,0 +1,23 @@
+test_caps_rate_and_clock_policy_unchanged (test_a9.A9.test_caps_rate_and_clock_policy_unchanged) ... ok
+test_exact_current_admission (test_a9.A9.test_exact_current_admission) ... ok
+test_h_only_floor_and_holds (test_a9.A9.test_h_only_floor_and_holds) ... ok
+test_measured_h_above_floor_still_scales (test_a9.A9.test_measured_h_above_floor_still_scales) ... ok
+test_all_pass_remains_complete (test_isolation.Isolation.test_all_pass_remains_complete) ... ok
+test_dead_guard_still_stops_siblings (test_isolation.Isolation.test_dead_guard_still_stops_siblings) ... ok
+test_over_hold_still_stops_siblings (test_isolation.Isolation.test_over_hold_still_stops_siblings) ... ok
+test_running_spend_stop_still_stops_siblings (test_isolation.Isolation.test_running_spend_stop_still_stops_siblings) ... ok
+test_terminal_failed_fit_allows_independent_siblings_to_finish (test_isolation.Isolation.test_terminal_failed_fit_allows_independent_siblings_to_finish) ... ok
+test_unknown_cleanup_still_stops_siblings (test_isolation.Isolation.test_unknown_cleanup_still_stops_siblings) ... ok
+test_a0_control_stops_before_gpu (test_stagger.Dispatch.test_a0_control_stops_before_gpu) ... ok
+test_control_pin_mismatch_refuses_gpu (test_stagger.Dispatch.test_control_pin_mismatch_refuses_gpu) ... ok
+test_gpu_and_cpu_timeouts_remain_inside_slot (test_stagger.Dispatch.test_gpu_and_cpu_timeouts_remain_inside_slot) ... ok
+test_guard_deadline_refuses_gpu_and_control (test_stagger.Dispatch.test_guard_deadline_refuses_gpu_and_control) ... ok
+test_guard_remains_active_during_stagger (test_stagger.Dispatch.test_guard_remains_active_during_stagger) ... ok
+test_h0_waits_120_before_gpu (test_stagger.Dispatch.test_h0_waits_120_before_gpu) ... ok
+test_other_task_waits_for_exact_control (test_stagger.Dispatch.test_other_task_waits_for_exact_control) ... ok
+test_repeat_has_no_stagger (test_stagger.Dispatch.test_repeat_has_no_stagger) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.132s
+
+OK

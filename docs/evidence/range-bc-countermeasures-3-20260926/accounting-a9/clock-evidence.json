@@ -1,0 +1,166 @@
+{
+  "captured_at": 1790533752.8500211,
+  "identity": {
+    "profile": "rivals",
+    "workspace": "volpestyle",
+    "workspace_id": "ac-kMLf5bJKqF5CAlSbfNhGh0"
+  },
+  "rows": {
+    "H-0": [
+      {
+        "path": "r3-20260926-l40s/fits/r3p1-H-0-02/pairing.json",
+        "bytes": 95811,
+        "mtime": 1790532823,
+        "mtime_utc": "2026-09-27T18:13:43+00:00"
+      },
+      {
+        "path": "r3-20260926-l40s/fits/r3p1-H-0-02/effective-weight.json",
+        "bytes": 3895,
+        "mtime": 1790532819,
+        "mtime_utc": "2026-09-27T18:13:39+00:00"
+      },
+      {
+        "path": "r3-20260926-l40s/fits/r3p1-H-0-02/inputs.json",
+        "bytes": 33027319,
+        "mtime": 1790532816,
+        "mtime_utc": "2026-09-27T18:13:36+00:00"
+      },
+      {
+        "path": ".modal-journal/phase1-02/H-0/attempt-result.json",
+        "bytes": 991,
+        "mtime": 1790533099,
+        "mtime_utc": "2026-09-27T18:18:19+00:00"
+      },
+      {
+        "path": ".modal-journal/phase1-02/H-0/runner.log",
+        "bytes": 0,
+        "mtime": 1790532529,
+        "mtime_utc": "2026-09-27T18:08:49+00:00"
+      },
+      {
+        "path": ".modal-journal/phase1-02/H-0/attempt-start.json",
+        "bytes": 87,
+        "mtime": 1790532529,
+        "mtime_utc": "2026-09-27T18:08:49+00:00"
+      },
+      {
+        "path": ".modal-journal/phase1-02/H-0/metadata-input-verification.json",
+        "bytes": 300,
+        "mtime": 1790532527,
+        "mtime_utc": "2026-09-27T18:08:47+00:00"
+      }
+    ],
+    "H-repeat-0": [
+      {
+        "path": "r3-20260926-l40s/fits/r3p1-H-repeat-0-02/result.json",
+        "bytes": 1853,
+        "mtime": 1790532837,
+        "mtime_utc": "2026-09-27T18:13:57+00:00"
+      },
+      {
+        "path": "r3-20260926-l40s/fits/r3p1-H-repeat-0-02/details.json",
+        "bytes": 187807,
+        "mtime": 1790532836,
+        "mtime_utc": "2026-09-27T18:13:56+00:00"
+      },
+      {
+        "path": "r3-20260926-l40s/fits/r3p1-H-repeat-0-02/completed.json",
+        "bytes": 1853,
+        "mtime": 1790532836,
+        "mtime_utc": "2026-09-27T18:13:56+00:00"
+      },
+      {
+        "path": "r3-20260926-l40s/fits/r3p1-H-repeat-0-02/checkpoint.pt",
+        "bytes": 22524735,
+        "mtime": 1790532836,
+        "mtime_utc": "2026-09-27T18:13:56+00:00"
+      },
+      {
+        "path": "r3-20260926-l40s/fits/r3p1-H-repeat-0-02/pairing.json",
+        "bytes": 95811,
+        "mtime": 1790532650,
+        "mtime_utc": "2026-09-27T18:10:50+00:00"
+      },
+      {
+        "path": "r3-20260926-l40s/fits/r3p1-H-repeat-0-02/effective-weight.json",
+        "bytes": 3895,
+        "mtime": 1790532646,
+        "mtime_utc": "2026-09-27T18:10:46+00:00"
+      },
+      {
+        "path": "r3-20260926-l40s/fits/r3p1-H-repeat-0-02/inputs.json",
+        "bytes": 33027319,
+        "mtime": 1790532643,
+        "mtime_utc": "2026-09-27T18:10:43+00:00"
+      },
+      {
+        "path": ".modal-journal/phase1-02/H-repeat-0/runner.log",
+        "bytes": 152,
+        "mtime": 1790532837,
+        "mtime_utc": "2026-09-27T18:13:57+00:00"
+      },
+      {
+        "path": ".modal-journal/phase1-02/H-repeat-0/attempt-result.json",
+        "bytes": 2152,
+        "mtime": 1790532837,
+        "mtime_utc": "2026-09-27T18:13:57+00:00"
+      },
+      {
+        "path": ".modal-journal/phase1-02/H-repeat-0/attempt-start.json",
+        "bytes": 94,
+        "mtime": 1790532513,
+        "mtime_utc": "2026-09-27T18:08:33+00:00"
+      },
+      {
+        "path": ".modal-journal/phase1-02/H-repeat-0/metadata-input-verification.json",
+        "bytes": 300,
+        "mtime": 1790532512,
+        "mtime_utc": "2026-09-27T18:08:32+00:00"
+      }
+    ],
+    "A-0": [
+      {
+        "path": "r3-20260926-l40s/fits/r3p1-A-0-02/pairing.json",
+        "bytes": 95811,
+        "mtime": 1790532650,
+        "mtime_utc": "2026-09-27T18:10:50+00:00"
+      },
+      {
+        "path": "r3-20260926-l40s/fits/r3p1-A-0-02/effective-weight.json",
+        "bytes": 3895,
+        "mtime": 1790532646,
+        "mtime_utc": "2026-09-27T18:10:46+00:00"
+      },
+      {
+        "path": "r3-20260926-l40s/fits/r3p1-A-0-02/inputs.json",
+        "bytes": 33027319,
+        "mtime": 1790532643,
+        "mtime_utc": "2026-09-27T18:10:43+00:00"
+      },
+      {
+        "path": ".modal-journal/phase1-02/A-0/attempt-result.json",
+        "bytes": 998,
+        "mtime": 1790533121,
+        "mtime_utc": "2026-09-27T18:18:41+00:00"
+      },
+      {
+        "path": ".modal-journal/phase1-02/A-0/runner.log",
+        "bytes": 0,
+        "mtime": 1790532513,
+        "mtime_utc": "2026-09-27T18:08:33+00:00"
+      },
+      {
+        "path": ".modal-journal/phase1-02/A-0/attempt-start.json",
+        "bytes": 87,
+        "mtime": 1790532513,
+        "mtime_utc": "2026-09-27T18:08:33+00:00"
+      },
+      {
+        "path": ".modal-journal/phase1-02/A-0/metadata-input-verification.json",
+        "bytes": 300,
+        "mtime": 1790532512,
+        "mtime_utc": "2026-09-27T18:08:32+00:00"
+      }
+    ]
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "units": "seconds",
+  "startup_allowance": 300,
+  "reservation_to_controls_ready": 36.840452432632446,
+  "H0_appcreate_to_controls_ready": 35.70204257965088,
+  "conservative_worst_observed_appcreate_to_container": 43.1849889755249,
+  "H0_container_to_owner": 19.038271188735962,
+  "container_start_source": "Authenticated Backend.containers snapshot observed 18:09 UTC: H0 ta-01M3J0VKHJG07EP57CWR5RZJKR start_time 2026-09-27 13:08:30-05:00, transcribed from tool result; second-resolution timestamp. App-to-container includes control wait, deliberately double counted as conservative bound.",
+  "150_second_stagger_headroom": 50.93628740310669,
+  "selected_stagger": 120,
+  "selected_headroom": 80.93628740310669,
+  "deadline_reset": false,
+  "extra_apps_or_gpu_calls": false
+}

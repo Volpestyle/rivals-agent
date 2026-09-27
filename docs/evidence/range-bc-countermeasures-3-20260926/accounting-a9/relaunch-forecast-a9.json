@@ -1,0 +1,16 @@
+{
+  "admission_seconds": 51624,
+  "admission_usd": 42.31340756,
+  "cap_seconds": 69120,
+  "cap_usd": 60,
+  "launch_authorized": false,
+  "relaunch_phase1_plus_verify_seconds": 20973,
+  "relaunch_phase1_plus_verify_usd": 16.073065,
+  "spent_seconds": 30651,
+  "spent_usd": 26.24034256,
+  "status": "ELIGIBLE_PROPOSED_A9",
+  "timeout_change_assumed": true,
+  "H_work": 900,
+  "H_owner": 870,
+  "H_hold": 1320
+}
