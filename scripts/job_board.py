@@ -16,10 +16,16 @@ import os
 from pathlib import Path
 import re
 import statistics
+import shutil
 import subprocess
 import threading
 import time
 from urllib.parse import urlsplit
+
+if __package__:
+    from .job_status import timestamp, validate as validate_status, matches_receipt
+else:
+    from job_status import timestamp, validate as validate_status, matches_receipt
 
 
 @dataclass
@@ -36,6 +42,9 @@ class Job:
     pid: str = "unknown"
     detail: str = ""
     updated: float = 0
+    owner: str = "unknown"
+    host: str = "mac"
+    source: str = "queue"
 
 
 def stamp(seconds):
@@ -172,12 +181,255 @@ def waiting_items(text):
 
 
 class Board:
-    def __init__(self, repo, roots, result_root=None):
+    def __init__(self, repo, roots, result_root=None, jobs_root=None, modal_cli=None):
         self.repo, self.roots, self.result_root = repo, roots, result_root
         self.lock = threading.Lock()
         self.cached = None
         self.deadline = 0
         self.evidence = {}
+        self.jobs_root = Path(jobs_root) if jobs_root is not None else Path.home() / "dev/jobs"
+        self.modal_cli = str(modal_cli or shutil.which("modal") or Path.home() / ".local/bin/modal")
+        self.modal_deadline = 0
+        self.modal_rows = []
+        self.modal_observed = 0
+        self.modal_warning = None
+        self.pc_lock = threading.Lock()
+        self.pc_busy = False
+        self.pc_deadline = 0
+        self.pc_data = None
+        self.pc_warning = None
+
+    def _poll_pc(self):
+        try:
+            result = subprocess.run(['ssh', '-n', '-T', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=4',
+                                     '-o', 'StrictHostKeyChecking=yes', 'volpe@supedupsilly',
+                                     'C:/Users/volpe/AppData/Local/Programs/Python/Python311/python.exe',
+                                     'C:/Users/volpe/repos/rivals-agent/scripts/job_status.py', '--snapshot-pc'],
+                                    capture_output=True, text=True, timeout=12, check=True)
+            if len(result.stdout) > 2 * 1024 * 1024:
+                raise ValueError('oversized PC metadata')
+            data = json.loads(result.stdout)
+            if not isinstance(data, dict) or any(not isinstance(data.get(k), list) for k in ('receipts', 'observations', 'warnings')):
+                raise ValueError('invalid PC metadata')
+            with self.pc_lock:
+                self.pc_data, self.pc_warning = data, None
+        except (OSError, ValueError, subprocess.SubprocessError):
+            with self.pc_lock:
+                self.pc_warning = 'PC status unavailable; cached activity is unconfirmed.'
+        finally:
+            with self.pc_lock:
+                self.pc_busy = False
+                self.pc_deadline = time.monotonic() + 60
+
+    def pc_jobs(self, warnings):
+        # Never wait on SSH in a page/scan thread, even on the first request.
+        with self.pc_lock:
+            if not self.pc_busy and time.monotonic() >= self.pc_deadline:
+                self.pc_busy = True
+                threading.Thread(target=self._poll_pc, name='job-board-pc', daemon=True).start()
+            data, error = self.pc_data, self.pc_warning
+        if error or data is None:
+            warnings.append(error or 'PC status is being fetched in the background.')
+        if data is None:
+            return []
+        warnings.extend(str(w) for w in data['warnings'])
+        jobs = []
+        for item in data['receipts']:
+            try:
+                status = validate_status(item['data'])
+                job = self.receipt_job(status)
+                job.pid = item.get('pid', 'unknown')
+                job.source = 'status'
+                job.evidence = self.add_evidence('pc:' + item['path'], status)
+                jobs.append(job)
+            except (ValueError, TypeError, KeyError, OSError, OverflowError):
+                warnings.append('Invalid cached PC job receipt.')
+        for item in data['observations']:
+            job = Job(item['name'], stage=item['stage'], host='pc', source='discovery', pid=item['pid'],
+                      updated=item['updated'], detail=item['detail'])
+            if item.get('log'):
+                job.progress = 'Last log: ' + str(item['log']['last'].get('status', 'unknown'))
+                job.detail += ' Log updated ' + stamp(item['log']['updated']) + '.'
+            job.evidence = self.add_evidence('pc:' + item['location'] + '/' + item['pid'], item)
+            jobs.append(job)
+        if error:
+            for job in jobs:
+                if job.stage in ('running', 'queued'):
+                    job.stage = 'stale'
+        return jobs
+
+    def receipt_job(self, data):
+        updated = timestamp(data['updated'])
+        stage = data['stage']
+        if stage == 'running' and time.time() - updated > 1800:
+            stage = 'stale'
+        progress = data['progress']
+        if isinstance(progress, dict):
+            progress = f'{progress["n"]}/{progress["total"]}'
+        return Job(data['name'], stage=stage, progress=progress, eta=data['eta'] or 'unknown',
+                   started=stamp(timestamp(data['started'])), updated=updated,
+                   owner=data['owner'], host=data['host'], source='status',
+                   detail='Owner-reported status' + ('; no heartbeat for over 30 minutes' if stage == 'stale' else ''))
+
+    def status_jobs(self, warnings):
+        jobs = []
+        for path in sorted(self.jobs_root.glob("*.status.json")):
+            try:
+                data = validate_status(json.loads(read(path)))
+                if path.name != data["name"] + ".status.json":
+                    raise ValueError("filename/name mismatch")
+                job = self.receipt_job(data)
+                # Display a bounded metadata projection, NEVER open the evidence path.
+                job.evidence = self.add_evidence(path, data)
+                jobs.append(job)
+            except (ValueError, TypeError, KeyError, OverflowError, OSError):
+                warnings.append(f"Unreadable or invalid job receipt: {path.name}")
+        return jobs
+
+    def known_jobs(self, procs, existing):
+        """Bounded discovery of named compute locations; no payload reads.
+
+        Status/exit markers give their recorded state; a recent directory without
+        registration is unconfirmed, never proof of a running training process.
+        Known live driver PIDs are shown even during quiet phases.
+        """
+        roots = [Path(root) for _, root in self.roots]
+        for family, root in self.roots:
+            if family == 'range_bc':
+                roots += [root / 'explore', root / 'handoff/modal', root / 'handoff/cloud-bench']
+        roots.append(self.repo / 'data/idm-lab')
+        skip = {'originals', 'inputs', 'stores', 'steps', 'steps15', 'caches', 'caches15', 'diag',
+                '__pycache__', 'execution-source', 'results'}
+        folders = set()
+        for root in roots:
+            if not root.is_dir() or root.is_symlink():
+                continue
+            folders.add(root)
+            for child in root.iterdir():
+                if (child.is_dir() and not child.is_symlink() and child.name not in skip
+                        and not child.name.startswith(('code-', '.')) and 'sealed' not in child.name.lower()):
+                    folders.add(child)
+        seen = {e['path'] for e in self.evidence.values()}
+        receipt_locations = {Path(self.evidence[j.evidence.rsplit('/', 1)[-1]]['metadata']['evidence']).parent
+                             for j in existing if j.source == 'status' and j.host == 'mac'}
+        jobs = []
+        for folder in sorted(folders):
+            if 'sealed' in str(folder).lower() or any(p.is_symlink() for p in folder.parents):
+                continue
+            registered = False
+            metadata = [p for p in folder.iterdir() if p.is_file() and not p.is_symlink()
+                        and p.suffix in ('.log', '.jsonl', '.json', '.status', '.exit', '.pid')]
+            for path in metadata:
+                if path.suffix not in ('.status', '.exit'):
+                    continue
+                if path.suffix == '.exit' and path.with_suffix('.status').exists():
+                    continue
+                if str(path) in seen or str(path.with_suffix('.log')) in seen:
+                    registered = True
+                    continue
+                text = read(path, 4096).strip()
+                word = text.split()[0].upper() if text else ''
+                stage = {'DONE': 'done', 'COMPLETED': 'done', 'FAILED': 'failed', 'QUEUED': 'queued',
+                         'RESULTS_DOWNLOADED': 'done'}.get(word, 'unknown')
+                if path.suffix == '.exit' and re.fullmatch(r'-?\d+', text):
+                    stage = 'done' if text == '0' else 'failed'
+                pid, proc = process_for(path.with_suffix('.pid'), str(path.with_suffix('.py')), procs)
+                if stage == 'unknown' and proc:
+                    stage = 'running'
+                elif word == 'RUNNING' and time.time() - path.stat().st_mtime > 1800:
+                    stage = 'stale'
+                job = Job(path.relative_to(folder.parent).as_posix(), stage=stage, source='discovery', pid=pid,
+                          progress=text[:300] or 'unknown', updated=path.stat().st_mtime,
+                          detail='Recorded marker; completion is separate from acceptance.')
+                if folder.name == 'cloud-bench':
+                    job.detail += ' Historical AWS benchmark orchestration on Mac.'
+                job.evidence = self.add_evidence(path, {'marker': text, 'pid': pid, 'historical': folder.name == 'cloud-bench'})
+                jobs.append(job)
+                registered = True
+            latest = max([folder.stat().st_mtime] + [p.stat().st_mtime for p in metadata])
+            if not registered and folder not in receipt_locations and time.time()-latest <= 1800:
+                job = Job('unregistered: ' + str(folder), source='discovery', updated=latest,
+                          detail='Known compute location changed in the last 30 minutes; no status/exit marker.')
+                job.evidence = self.add_evidence(folder, {'updated': stamp(latest), 'registration': 'missing'})
+                jobs.append(job)
+        candidates = {}
+        registered_parents = set()
+        for pid, info in procs.items():
+            cmd = info[2]
+            if pid == os.getpid() or 'job_board.py' in cmd:
+                continue
+            matches = [root for root in roots if str(root) + '/' in cmd]
+            if matches and re.search(r'python|ffmpeg|rsync|scp|/zsh|/bash', cmd, re.I):
+                registered = next((j for j in existing if j.source == 'status' and
+                    matches_receipt(self.evidence[j.evidence.rsplit('/', 1)[-1]]['metadata'], cmd, 'mac')), None)
+                if registered:
+                    registered.pid = str(pid) + ': matched receipt driver'
+                    registered_parents.add(info[0])
+                    continue
+                if any(str(j.pid).startswith(str(pid) + ':') for j in existing + jobs):
+                    continue
+                candidates[pid] = (max(matches, key=lambda p: len(str(p))), info)
+        for pid, (root, info) in candidates.items():
+            if info[0] in candidates or pid in registered_parents:
+                continue
+            job = Job(f'unregistered: {root}/pid {pid}', stage='running', source='discovery', pid=str(pid),
+                      started=info[1] + ' (Mac local)', updated=time.time(),
+                      detail='Known live compute process without a matched receipt; progress and outcome unknown.')
+            job.evidence = self.add_evidence(str(root) + '/pid/' + str(pid), {'pid': pid, 'location': str(root)})
+            jobs.append(job)
+        return jobs
+
+    def modal_jobs(self, warnings):
+        if time.monotonic() >= self.modal_deadline:
+            try:
+                env = dict(os.environ, MODAL_PROFILE="rivals")
+                # Select the named profile, not an ambient token override.
+                env.pop("MODAL_TOKEN_ID", None)
+                env.pop("MODAL_TOKEN_SECRET", None)
+                result = subprocess.run([self.modal_cli, "app", "list", "--json"], env=env,
+                                        capture_output=True, text=True, timeout=8, check=False)
+                if result.returncode or len(result.stdout) > 1024 * 1024:
+                    raise ValueError("CLI failure")
+                rows = json.loads(result.stdout)
+                if not isinstance(rows, list) or any(not isinstance(row, dict) for row in rows):
+                    raise ValueError("unexpected Modal JSON")
+                self.modal_rows = rows
+                self.modal_observed = time.time()
+                self.modal_warning = None
+            except (OSError, subprocess.TimeoutExpired, ValueError):
+                self.modal_warning = "Modal profile rivals is unavailable; last observed apps are unconfirmed."
+            self.modal_deadline = time.monotonic() + 60
+        if self.modal_warning:
+            warnings.append(self.modal_warning)
+        jobs = []
+        for raw in self.modal_rows:
+            row = {str(k).lower().replace(" ", "_"): v for k, v in raw.items()}
+            app_id = str(row.get("app_id", row.get("id", "unknown")))
+            name = str(row.get("description") or row.get("name") or row.get("app_name") or app_id)
+            state = str(row.get("state", "unknown")).lower()
+            stage = {"ephemeral": "running", "detached": "running", "deployed": "running", "running": "running",
+                     "initializing": "queued", "queued": "queued", "failed": "failed"}.get(state, "unknown")
+            if self.modal_warning and stage in ("running", "queued"):
+                stage = "stale"
+            created = row.get("created_at", row.get("created", "unknown"))
+            updated = self.modal_observed
+            if stage not in ("running", "queued", "stale"):
+                try:
+                    updated = timestamp(row.get("stopped_at") or created)
+                except (ValueError, TypeError, OverflowError, OSError):
+                    pass
+            try:
+                created_stamp = stamp(timestamp(created))
+            except (ValueError, TypeError, OverflowError, OSError):
+                created_stamp = str(created)
+            job = Job(name, stage=stage, host="modal", owner="rivals", source="modal",
+                      started=created_stamp, updated=updated,
+                      progress="unknown", detail=f"App {app_id}; state {state}; profile rivals. App state is not a training verdict.")
+            job.evidence = self.add_evidence("modal:rivals:" + app_id,
+                                             {"app_id": app_id, "name": name, "state": state, "created": created,
+                                              "observed": stamp(self.modal_observed), "profile": "rivals"})
+            jobs.append(job)
+        return jobs
 
     def add_evidence(self, path, metadata):
         key = hashlib.sha256(str(path).encode()).hexdigest()[:20]
@@ -293,6 +545,10 @@ class Board:
             if result["name"] not in latest or result["updated"] > latest[result["name"]]["updated"]:
                 latest[result["name"]] = result
         waiting = waiting_items(read(self.repo / "docs/waiting-on-james.md"))
+        jobs.extend(self.status_jobs(warnings))
+        jobs.extend(self.known_jobs(procs, jobs))
+        jobs.extend(self.modal_jobs(warnings))
+        jobs.extend(self.pc_jobs(warnings))
         jobs.sort(key=lambda j: (j.stage != "running", -j.updated, j.name))
         machine_health = health()
         snapshot = {"updated": stamp(time.time()), "jobs": [asdict(j) for j in jobs],
@@ -439,6 +695,12 @@ def describe_job(name):
 def progress_markup(job):
     # The logs measure one arm/seed, not the entire multi-seed job.
     text = job['progress']
+    if job.get('source') == 'status':
+        count = re.fullmatch(r'(\d+)/(\d+)', text)
+        if count and 0 <= int(count[1]) <= int(count[2]) and int(count[2]) > 0:
+            return (f'<div class="progress-label"><b>{escape(text)}</b><span>Owner-reported progress</span></div>'
+                    f'<progress max="{count[2]}" value="{count[1]}" aria-label="Job progress">{escape(text)}</progress>')
+        return '<p class="eta">' + escape(text if text != 'unknown' else 'Progress not yet reported') + '</p>'
     match = re.search(r'(epoch|step) (\d+)/(\d+)', text)
     if not match:
         return '<div class="progress-unknown"></div><small>Progress not yet reported</small>'
@@ -465,7 +727,7 @@ def render(snapshot, evidence):
     current = [j for j in jobs if j not in history]
     active = [j for j in current if j['stage'] in ('running', 'queued')]
     finished = [j for j in current if j['stage'] in ('done', 'failed')]
-    unconfirmed = [j for j in current if j['stage'] == 'unknown']
+    unconfirmed = [j for j in current if j['stage'] in ('unknown', 'stale')]
     queues = [j for j in active if j['name'].endswith('.status')]
     active_runs = [j for j in active if j not in queues]
     recent_runs = [j for j in finished if not j['name'].endswith('.status')]
@@ -491,11 +753,18 @@ def render(snapshot, evidence):
 
     def job_card(job):
         title, purpose, category = describe_job(job['name'])
+        if job.get('source') in ('status', 'modal', 'discovery'):
+            title = job['name'].replace('-', ' ').replace('_', ' ')
+            category = 'Modal app' if job['source'] == 'modal' else 'Discovered activity' if job['source'] == 'discovery' else 'Job status'
+            purpose = job['detail']
         stage = job['stage']
-        label = {'running': 'In progress', 'queued': 'Queued', 'done': 'Finished', 'failed': 'Run failed', 'unknown': 'Unconfirmed'}.get(stage, stage)
+        label = {'running': 'In progress', 'queued': 'Queued', 'done': 'Finished', 'failed': 'Run failed', 'unknown': 'Unconfirmed', 'stale': 'Stale'}.get(stage, stage)
         details = ''.join(f'<dt>{name}</dt><dd>{escape(str(job[key]))}</dd>' for name, key in
                           [('Run ID', 'name'), ('Started', 'started'), ('Arm', 'arm'), ('Seed', 'seed'), ('PID', 'pid'), ('Report gate', 'verdict')])
         facts = f'<span>{escape(age(job["updated"]))}</span>'
+        facts += f'<span>Host <strong>{escape(job.get("host", "mac"))}</strong></span>'
+        if job.get('owner', 'unknown') != 'unknown':
+            facts += f'<span>Owner <strong>{escape(job["owner"])}</strong></span>'
         if job['seed'] != 'unknown':
             facts += f'<span>Random seed <strong>{escape(job["seed"])}</strong></span>'
         if stage not in ('running', 'queued') and job['progress'] != 'unknown':
@@ -506,7 +775,9 @@ def render(snapshot, evidence):
             eta = job['eta'] if job['eta'] not in ('unknown', '—') else 'Not enough timing evidence yet'
             live += '<p class="eta"><b>ETA</b> · ' + escape(eta) + '</p>'
         elif stage == 'queued':
-            live = '<p class="eta">Waiting to start · no training progress reported yet</p>'
+            live = '<p class="eta">Waiting to start</p>'
+            if job.get('source') == 'status':
+                live += progress_markup(job)
         return (f'<article class="job {escape(stage)}"><div class="job-head"><div><div class="eyebrow">{escape(category)}</div>'
                 f'<h3>{escape(title)}</h3></div><span class="badge {escape(stage)}">{escape(label)}</span></div>'
                 f'<p class="purpose">{escape(purpose)}</p>{live}<div class="job-facts">{facts}</div>'
@@ -569,10 +840,10 @@ def render(snapshot, evidence):
     elif queues:
         live_jobs = ''.join(job_card(j) for j in queues)
     else:
-        live_jobs = '<div class="idle"><span class="idle-mark">—</span><div><h3>No training jobs confirmed running</h3><p>Recent results are below. Jobs without a confirmed exit remain listed separately.</p></div></div>'
+        live_jobs = '<div class="idle"><span class="idle-mark">—</span><div><h3>No jobs currently reported running</h3><p>Recent results are below. Stale and unconfirmed jobs remain listed separately.</p></div></div>'
     if queues and active_runs:
         live_jobs += '<details class="fold"><summary>Queue status <span class="muted">Orchestration, separate from training runs</span></summary>' + ''.join(job_card(j) for j in queues) + '</details>'
-    headline = 'Training is in progress.' if running_count else 'The queue is moving.' if queues else 'Training, at a glance.'
+    headline = 'Work is in progress.' if running_count else 'The queue is moving.' if queues else 'Training, at a glance.'
     summary = 'Follow the runs. Understand what they tested. See what is ready for the next step.'
     preview = '<div class="preview-banner">LOCAL DESIGN PREVIEW · simulated running states; no training was started.</div>' if snapshot.get('preview') else ''
     warning_html = ''.join('<div class="warning-banner">' + escape(w) + '</div>' for w in snapshot['warnings'])
@@ -631,12 +902,15 @@ def main():
     parser.add_argument("--range-root", type=Path, default=Path.home() / "dev/range-bc-data")
     parser.add_argument("--idm-root", type=Path, default=Path.home() / "dev/idm-data")
     parser.add_argument("--result-root", type=Path)
+    parser.add_argument("--jobs-root", type=Path, default=Path.home() / "dev/jobs")
+    parser.add_argument("--modal-cli", type=Path, help="Modal executable; reads profile rivals only")
     parser.add_argument("--port", type=int, default=8766)
     parser.add_argument("--dump", action="store_true")
     args = parser.parse_args()
     if hasattr(os, "nice") and os.getpriority(os.PRIO_PROCESS, 0) < 10:
         os.nice(10 - os.getpriority(os.PRIO_PROCESS, 0))
-    board = Board(args.repo, [("range_bc", args.range_root), ("IDM", args.idm_root)], args.result_root)
+    board = Board(args.repo, [("range_bc", args.range_root), ("IDM", args.idm_root)], args.result_root,
+                  args.jobs_root, args.modal_cli)
     if args.dump:
         print(json.dumps(board.snapshot(), indent=2))
     else:

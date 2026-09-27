@@ -25,8 +25,15 @@ Open <https://jamess-macbook-pro.tailb90f24.ts.net:9443/> while connected to the
 tailnet. `scripts/job_board.py` is a read-only Python stdlib server on
 `127.0.0.1:8766`; scans and the phone-friendly page refresh every 30 seconds.
 It reads shallow queue/status, exit, PID, log and report metadata in
-`~/dev/range-bc-data` and `~/dev/idm-data`, never frames, stores, checkpoints or
-sealed data. Evidence links serve metadata projections, not arbitrary files.
+`~/dev/range-bc-data` and `~/dev/idm-data`, plus the explicit explore,
+`handoff/modal`, `handoff/cloud-bench`, and checkout `data/idm-lab` locations.
+It never reads frames, stores, checkpoints or sealed data. Evidence links serve
+metadata projections, not arbitrary files. A known location changed within
+30 minutes without a status/exit marker appears as `unregistered: <dir>`;
+known live compute drivers without a matched receipt appear as
+`unregistered: <dir>/pid <pid>`. Directory activity alone is unconfirmed,
+not proof of training. Payload and code-snapshot directories are excluded.
+The cloud-bench `run-mac.status` is historical AWS orchestration, not a live run.
 Edit `docs/waiting-on-james.md` on the Mac to update the waiting list.
 Finished and unconfirmed jobs whose latest metadata is older than 48 hours move
 into the collapsed History section; running and queued jobs stay current regardless
@@ -46,9 +53,80 @@ the page shows completed epoch count. ETA, when supported by at least two measur
 epoch intervals and a known epoch budget, covers only the current arm/seed's
 training; evaluation and whole-job ETA remain unknown. PID reuse is reported as
 unconfirmed unless the process command also matches. Log creation time is labeled
-as such when an explicit start time is absent. The optional PC health probe is
-omitted to avoid a network dependency on page requests; unavailable Mac GPU
-counters are shown as unknown.
+as such when an explicit start time is absent. PC job polling runs in a background
+thread, never in the page request path; unavailable Mac GPU counters are unknown.
+
+Ad-hoc scripts, transfers and cloud launchers report through
+`~/dev/jobs/<name>.status.json` **on the Mac**. Use the stdlib helper from the
+Mac checkout (one writer per job name):
+
+```python
+from scripts.job_status import write
+
+write("decoder-audit", owner="r3-sidecar", stage="running", host="mac",
+      evidence="/Users/james/dev/range-bc-data/decoder-audit.log")
+write("decoder-audit", progress={"n": 3, "total": 20}, eta=None)
+write("decoder-audit", stage="done")  # use failed on an unsuccessful exit
+```
+
+The ten fields are `name`, `owner` (pane/lane), `stage`
+(`queued|running|done|failed`), `started`, `updated`, `progress`, `eta`,
+`host` (`mac|pc|modal`), and `evidence` (path). New writes require owner,
+stage, host and evidence. The helper supplies UTC ISO timestamps, defaults
+progress to `unknown` and ETA to null, retains fields on updates, and atomically
+replaces the receipt. Progress accepts free text, `n/total` text, or
+`{"n": 3, "total": 20}`. ETA is free text or null; it is not inferred. Names
+use letters, digits, dots, dashes or underscores. Use a new name or explicitly
+set `started` for a new attempt. Write at start, progress and exit, with a
+heartbeat at least every 30 minutes for long quiet phases. A running receipt
+older than 30 minutes shows **Stale** and is excluded from the running count.
+Owner-reported status is distinct from process-verified queue status.
+
+On Windows the helper defaults to `C:/Users/volpe/jobs/<name>.status.json`;
+on the Mac it defaults to `~/dev/jobs/<name>.status.json`. PC-to-Mac transfer
+drivers can write on the PC with `host="pc"`; the helper does not perform
+remote transport. The board reads only the receipt and serves
+its metadata projection. It never opens the declared evidence path, which may
+refer to a PC or cloud artifact. Keep credentials out of receipts. `done` means
+the owner reports successful completion, not an experiment PASS.
+
+Modal apps come from read-only `modal app list --json` with
+`MODAL_PROFILE=rivals`, without changing the active profile. The adapter uses
+the executable on PATH or `~/.local/bin/modal` (`--modal-cli` overrides it),
+caches results for 60 seconds and times out after 8 seconds. Each card shows
+the app name, Modal state, creation time and `host=modal`. App activity does
+not prove training progress; a stopped app has no inferred successful exit.
+On CLI/auth/network failure, a warning appears and previously active apps
+become stale until a successful refresh. Status receipts and Modal apps are
+separate views of owner-reported work and cloud activity. `--jobs-root` can
+override the default receipt directory.
+
+The PC adapter asynchronously invokes the read-only
+`scripts/job_status.py --snapshot-pc` over `ssh volpe@supedupsilly` using the
+PC's installed Python. Results are cached for 60 seconds; connection and overall
+probe timeouts are 4 and 12 seconds. No page request waits for that SSH process.
+Failure preserves the previous snapshot with active entries marked stale and
+a warning. Before the first response, the board explicitly shows the probe as
+pending. It reads PC job receipts, the bounded tail of
+`D:/SPIDEY CLIPS/_hevc_compress_log.jsonl`, known transfer metadata directories,
+and matching transfer/compression process metadata. Driver/child PIDs are
+grouped. A live encoder is shown separately from its last historical log event;
+an old `aborted_for_game` record does not claim the encoder is currently stopped.
+Only metadata projections leave the PC; neither recordings nor full process
+command lines are served by the board.
+
+For a code update, copy the named `scripts/job_status.py` and
+`scripts/job_board.py` files (and this documentation) to the matching Mac
+checkout, verify SHA-256 at both ends, then restart only this LaunchAgent:
+
+```sh
+launchctl kickstart -k gui/501/com.volpestyle.rivals-job-board
+```
+
+Verify `/api/status` and the rendered page through the existing tailnet URL.
+The helper is the writer; the board remains read-only, niced, loopback-bound
+and served only through the existing tailnet route. No training job or new
+Serve/Funnel route is started by deployment.
 
 The user LaunchAgent `~/Library/LaunchAgents/com.volpestyle.rivals-job-board.plist`
 runs `/usr/bin/python3` at nice 10, with `RunAtLoad` and `KeepAlive`. It restarts at
