@@ -5,6 +5,7 @@ The lead acknowledges each fresh ready token after inspecting its native frame.
 No automatic navigation, activity refresh, calibration acceptance or retry.
 """
 import argparse
+from collections import deque
 import hashlib
 import json
 import math
@@ -20,10 +21,11 @@ sys.path.insert(0, str(ROOT))
 
 from agent.controller import NEUTRAL, FRESH_S, RangeLost
 from agent.live_range_bc import Journal, require, sha256
+from agent.startup import START_TURN_RX, START_TURN_S, START_SETTLE_S
 from scripts import l4_measure as l4
 
 SIGNED = tuple(s * d for s in (1, -1) for d in (.1, .2, .3, .45, .6, .8, 1.))
-PRIME_D, PRIME_S = .45, .12  # pulse-block initialization, never calibration
+PRIME_D, PRIME_S = START_TURN_RX, START_TURN_S  # reviewed M1 initialization, never calibration
 FILES = ("scripts/measure_camera_turns.py", "tests/test_measure_camera_turns.py",
          "agent/controller.py", "agent/startup.py", "scripts/l4_measure.py", "scripts/record.py",
          "agent/pad_bindings.py", "agent/loop.py", "scripts/run_range_bc_live.py",
@@ -103,32 +105,100 @@ def save_native(journal, name, frame, captured):
         "shape": list(frame.shape), "sha256": hashlib.sha256(raw).hexdigest()})
 
 
-def initialize_pulse_pad(live, journal, proof, scope_end, *, clock=time.perf_counter):
-    """One inspected yaw initialization; require observed response, never retry."""
+def unchanged_pose(reference, frame):
+    """A token cannot approve a view that moved after its saved ready frame."""
+    import numpy as np
+    a, b = l4.band(reference), l4.band(frame)
+    (dx, dy), score = l4.phase_shift(a, b)
+    correlation = float(np.corrcoef(a.ravel(), b.ravel())[0, 1]) if min(a.std(), b.std()) >= 1 else 0.
+    audit = {"dx_band_px": float(dx), "dy_band_px": float(dy), "phase_score": float(score),
+             "correlation": correlation}
+    require(all(math.isfinite(v) for v in audit.values()) and score >= .5
+            and max(abs(dx), abs(dy)) <= 1.5 and correlation >= .95,
+            "ready pose changed or unprovable: " + str(audit))
+    return audit
+
+
+def attach_after_token(factory, capture, journal, capture_proof, acknowledge, guard, end):
+    """No virtual pad exists during the first human inspection/token wait."""
+    frame, captured = capture_proof()
+    reference = frame.copy()
+    save_native(journal, "ready-attach", reference, captured)
+    def fresh():
+        current, _ = capture_proof()
+        unchanged_pose(reference, current)
+        return current
+    acknowledge("attach", PRIME_D, fresh, end)
+    fresh()  # re-prove after token acceptance, before constructing any actuator
+    return factory(capture=capture, guard=guard, settle_s=0.)
+
+
+def initialize_pad(live, journal, proof, scope_end, *, clock=time.perf_counter, sleep=time.sleep):
+    """Prime immediately; neutral M1 settle; require response and stable pose."""
     import cv2
     import numpy as np
-    live.release()
-    time.sleep(.35)
-    before = proof()
-    before_t = live.frame_t
-    save_native(journal, "initialization-before", before, before_t)
-    before_gray = cv2.cvtColor(cv2.resize(before, (1280,720), interpolation=cv2.INTER_AREA), cv2.COLOR_BGR2GRAY)
-    rows, on, off = collect_segment(live, PRIME_D, PRIME_S, proof, scope_end=scope_end, clock=clock)
+    samples = deque(maxlen=16)
+    first = []
+    def prime_proof():
+        frame = proof()
+        snapshot = (live.frame_t, frame.copy())
+        if not first:
+            first.append(snapshot)
+        if not samples or samples[-1][0] < live.frame_t:
+            samples.append(snapshot)
+        return frame
+    rows, on, off = collect_segment(live, PRIME_D, PRIME_S, prime_proof, scope_end=scope_end, clock=clock)
     require(on is not None and rows, "initialization produced no report/capture interval")
+    # No PNG encoding or human gate before the first guarded non-neutral report.
+    before_t, before = first[0]
+    save_native(journal, "initialization-before", before, before_t)
     np.savez_compressed(journal.output / "initialization.npz",
                         timestamps=np.array([r[0] for r in rows]), bands=np.stack([r[1] for r in rows]))
-    time.sleep(.35)
-    after = proof()
-    save_native(journal, "initialization-after", after, live.frame_t)
     result = {"role": "initialization_excluded", "axis": "rx", "deflection": PRIME_D,
               "requested_seconds": PRIME_S, "on": on, "off": off, "before_t": before_t,
-              "after_t": live.frame_t, "excluded_from_calibration": True}
-    after_gray = cv2.cvtColor(cv2.resize(after, (1280,720), interpolation=cv2.INTER_AREA), cv2.COLOR_BGR2GRAY)
+              "excluded_from_calibration": True, "neutral_settle_seconds": START_SETTLE_S}
     try:
+        # The whole M1 turn can exceed checked_shift's displacement envelope.
+        # Prove response on a retained 40-100 ms subinterval in the latter
+        # 150-300 ms of the SAME prime (after a potentially swallowed report),
+        # never by adding a second pulse or weakening its motion checks.
+        last_t, last = samples[-1]
+        earlier = [(t, f) for t, f in samples
+                   if on + .15 <= t < last_t <= on + PRIME_S and .04 <= last_t - t <= .1]
+        if not earlier:
+            raise l4.MotionRefused({"motion_present": False, "reason": "no bounded prime response pair"})
+        motion_t, motion = earlier[0]
+        save_native(journal, "initialization-motion-before", motion, motion_t)
+        save_native(journal, "initialization-motion-after", last, last_t)
+        before_gray = cv2.cvtColor(cv2.resize(motion, (1280,720), interpolation=cv2.INTER_AREA), cv2.COLOR_BGR2GRAY)
+        after_gray = cv2.cvtColor(cv2.resize(last, (1280,720), interpolation=cv2.INTER_AREA), cv2.COLOR_BGR2GRAY)
+        result["motion_pair_times"] = [motion_t, last_t]
+        result["motion_pair_gap_s"] = last_t - motion_t
+        result["motion_pair_role"] = "mid_motion_response_only"
         dx, dy, confidence = l4.checked_shift(before_gray, after_gray, l4.YAW_BOX, direction=-1)
     except l4.MotionRefused as exc:
         journal.write("initialization.json", {**result, "observed_response": "refused", "motion": exc.audit})
         raise  # A swallowed initialization is not permission to try again.
+    # Full five-second neutral delay after response verification. No input or
+    # automatic search during device switching. The operator verifies banner
+    # clearance and level/bot-free pose on the subsequent ready-0 image.
+    settle_start, settle_end = clock(), clock() + START_SETTLE_S
+    require(settle_end < scope_end, "insufficient block time for neutral device settling")
+    stable = None
+    while clock() < settle_end:
+        frame = proof()
+        if clock() >= settle_end - .5:
+            if stable is None:
+                stable = frame.copy()
+            else:
+                unchanged_pose(stable, frame)
+        sleep(.01)
+    after = proof()
+    require(stable is not None, "no frames during final neutral stability interval")
+    unchanged_pose(stable, after)
+    save_native(journal, "initialization-after", after, live.frame_t)
+    result.update(settle_started=settle_start, excluded_until=clock(), after_t=live.frame_t,
+                  banner_clearance="operator_ready_0_inspection_required")
     journal.write("initialization.json", {**result, "observed_response": "directional_motion",
                   "dx": dx, "dy": dy, "confidence": confidence,
                   "not_device_delivery_timing": True})
@@ -174,13 +244,13 @@ def measure_pulse(live, d, duration, axis, focal, journal, index, proof, scope_e
 
 
 def run_block(live, deflections, duration, journal, *, proof, acknowledge, focused, stop_requested,
-              scope_seconds=180, clock=time.perf_counter, pulse_axis=None, focal=None):
+              scope_seconds=180, clock=time.perf_counter, pulse_axis=None, focal=None, scope_end=None):
     """No input while awaiting an acknowledgement; monitor closes independently."""
     import numpy as np
     validate(deflections, duration, scope_seconds, pulse_axis)
     if pulse_axis:
         require(type(focal) in (int, float) and math.isfinite(focal) and focal > 0, "accepted focal required")
-    end = clock() + scope_seconds
+    end = scope_end if scope_end is not None else clock() + scope_seconds
     stopped, reasons, results = threading.Event(), [], []
 
     def monitor():
@@ -204,17 +274,24 @@ def run_block(live, deflections, duration, journal, *, proof, acknowledge, focus
     thread = threading.Thread(target=monitor, daemon=True)
     thread.start()
     try:
-        jobs = ([("prime", PRIME_D)] if pulse_axis else []) + list(enumerate(deflections))
-        for index, d in jobs:
+        journal.event(kind="initialization_start", t=clock(), role="initialization_excluded")
+        try:
+            initialize_pad(live, journal, guarded_proof, end, clock=clock)
+        finally:
+            journal.event(kind="initialization_end", t=clock(), role="initialization_excluded")
+        for index, d in enumerate(deflections):
             live.release()
             frame = guarded_proof()
             # Separate file/metadata: never compete with Journal's frame writer.
             # Encoding is synchronous only while neutral, before acknowledgement.
-            save_native(journal, f"ready-{index}", frame, live.frame_t)
-            acknowledge(index, d, guarded_proof, end)
-            if index == "prime":
-                initialize_pulse_pad(live, journal, guarded_proof, end, clock=clock)
-                continue  # Next iteration is neutral, a fresh native still and a NEW token.
+            reference = frame.copy()
+            save_native(journal, f"ready-{index}", reference, live.frame_t)
+            def ready_proof():
+                current = guarded_proof()
+                unchanged_pose(reference, current)
+                return current
+            acknowledge(index, d, ready_proof, end)
+            ready_proof()  # Covers even a token returned as the view starts moving.
             if pulse_axis:
                 try:
                     result = measure_pulse(live, d, duration, pulse_axis, focal, journal, index,
@@ -325,9 +402,11 @@ def main(argv=None):
                 "recording_ref": a.recording_ref, "deflections": a.deflections, "seconds": a.seconds,
                 "scope_seconds": a.scope_seconds, "review": receipt, "source_sha256": LOADED,
                 "pulse_axis": a.pulse_axis, "focal": focal_receipt,
-                "pulse_initialization": {"axis": "rx", "deflection": PRIME_D, "seconds": PRIME_S,
-                    "separate_lead_token": True, "excluded_from_calibration": True,
-                    "role": "initialization_excluded", "motion_required": True} if a.pulse_axis else None,
+                "initialization": {"axis": "rx", "deflection": PRIME_D, "seconds": PRIME_S,
+                    "lead_token_before_pad_attach": True, "excluded_from_calibration": True,
+                    "role": "initialization_excluded", "motion_required": True,
+                    "neutral_settle_seconds": START_SETTLE_S, "all_modes": True,
+                    "banner_clearance": "operator_ready_0_inspection_required"},
                 "focal_receipt_sha256": hashlib.sha256(focal_raw).hexdigest() if a.focal_receipt else None,
                 "offline_analysis_sha256": sha256(ROOT / "perception/camera_turn_analysis.py"),
                 "wall_time_unix": time.time(), "monotonic_t": time.perf_counter(),
@@ -350,11 +429,24 @@ def main(argv=None):
         require(not any_key_pressed(), "release keyboard before attaching")
         cap = Capture("dxcam")
         preflight(cam=cap)
-        attach_end = time.perf_counter() + 3 + a.scope_seconds
-        guard = lambda f: focused() and time.perf_counter() < attach_end and in_range(f) and not idle_warning(f)
+        attach_end = time.perf_counter() + a.scope_seconds
+        guard = lambda f: (focused() and not any_key_pressed() and time.perf_counter() < attach_end
+                           and in_range(f) and not idle_warning(f))
         require(verify_receipt(a.review_receipt) == receipt, "review changed during preparation")
-        live = Live(capture=cap, guard=guard, settle_s=3.)
-        timing = watch_pad(live._pad, full_report=True)
+
+        def capture_proof():
+            end = min(attach_end, time.perf_counter() + FRESH_S)
+            while time.perf_counter() < end:
+                require(focused() and not any_key_pressed(), "focus/keyboard stop before attach")
+                captured = time.perf_counter()
+                frame = cap.grab()
+                if frame is not None:
+                    require(guard(frame) and time.perf_counter() - captured <= FRESH_S,
+                            "range/idle/freshness stop before attach")
+                    journal.frame(frame, captured, "before-attach")
+                    return frame, captured
+                time.sleep(.001)
+            raise RangeLost("no fresh pre-attach frame or block deadline")
 
         def proof():
             if not focused() or any_key_pressed():
@@ -369,11 +461,11 @@ def main(argv=None):
         def acknowledge(index, d, fresh, end):
             token = uuid.uuid4().hex
             journal.write(f"ready-{index}.json", {"token": token, "deflection": d,
-                          "axis": "rx" if index == "prime" else a.pulse_axis or "rx",
-                          "seconds": PRIME_S if index == "prime" else a.seconds,
-                          "kind": "initialization_excluded" if index == "prime" else "measurement",
+                          "axis": "rx" if index == "attach" else a.pulse_axis or "rx",
+                          "seconds": PRIME_S if index == "attach" else a.seconds,
+                          "kind": "pre_attach_initialization_permission" if index == "attach" else "measurement",
                           "native_frame": f"ready-{index}.png",
-                          "instruction": "Lead inspects pose then writes token to continue-N.json"})
+                          "instruction": "Inspect level bot-free pose, no idle or Switching Devices banner; then atomically write matching continue-N.json"})
             marker = journal.output / f"continue-{index}.json"
             while time.perf_counter() < end:
                 fresh()
@@ -383,17 +475,23 @@ def main(argv=None):
                 time.sleep(.05)
             raise RangeLost("block deadline while waiting for inspection")
 
+        def attach(**kwargs):
+            require(verify_receipt(a.review_receipt) == receipt, "review changed before attachment")
+            return Live(**kwargs)
+
+        live = attach_after_token(attach, cap, journal, capture_proof, acknowledge, guard, attach_end)
+        timing = watch_pad(live._pad, full_report=True)
         results = run_block(live, a.deflections, a.seconds, journal, proof=proof, acknowledge=acknowledge,
                             focused=focused, stop_requested=any_key_pressed, scope_seconds=a.scope_seconds,
-                            pulse_axis=a.pulse_axis, focal=focal)
+                            pulse_axis=a.pulse_axis, focal=focal, scope_end=attach_end)
         journal.write("result.json", {"stop_reason": "completed_block", "segments": results,
-                                     "initialization_excluded": "initialization.json" if a.pulse_axis else None,
+                                     "initialization_excluded": "initialization.json",
                                      "report_timing": timing, "acceptance": "raw_unreviewed"})
     except BaseException as exc:
         if live is not None:
             live.close()
         journal.write("failure.json", {"error": repr(exc), "report_timing": timing, "acceptance": "failed",
-            "initialization_excluded": "initialization.json" if a.pulse_axis else None})
+            "initialization_excluded": {"interval_events": "events.jsonl", "detail_if_present": "initialization.json"}})
         raise
     finally:
         if live is not None:

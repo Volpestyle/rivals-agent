@@ -6,10 +6,10 @@ inspect its result, then choose the next. Do not paste all commands as a batch.
 Only launch live commands through the established interactive desktop runner,
 with the game already foreground. Plain SSH cannot own dxcam or pad capture.
 
-**HOLD: startup repair is drafted, untested and awaiting pre-run review.**
-The stopped yaw-01 sitting exposed fresh-pad drift during the token wait.
-Current source differs from 6f3a7f7; receipt a2 (5c9da6f0) is now stale.
-Do not execute this sheet until the new source has passed tests and binds-review.
+Camera startup a3 has pre-run LAND, receipt 47a7960a:
+`docs/evidence/camera-turns-20260927/camera-turns-review-v1-a3.json`.
+Old a2 and earlier receipts are stale. Owner and independent reviewer each
+passed all 40 CPU tests. The actual yaw-01 drift frame now refuses.
 Full turns need NO focal. Every short-pulse block needs an ACCEPTED focal receipt.
 Offline focal remains unknown at this writing; do not wait in the range for it.
 The fallback is entirely neutral on TRAIN, so there is NO learned policy block.
@@ -30,20 +30,21 @@ $camSitting = 'REPLACE-WITH-NEW-SITTING'
 $camRoot = "C:/Users/volpe/repos/rivals-agent/data/calibration/$camSitting"
 $camGamePid = 12345 # REPLACE with fresh foreground Marvel game PID
 $camVideo = 'C:/Users/volpe/Videos/REPLACE-WITH-CURRENT-NATIVE-OBS.mkv'
-$camReceipt = 'REPLACE-WITH-ACCEPTED-STARTUP-REPAIR-RECEIPT'
+$camReceipt = 'docs/evidence/camera-turns-20260927/camera-turns-review-v1-a3.json'
 $camCommon = @('--live','--review-receipt',$camReceipt,'--game-pid',"$camGamePid",'--sitting',$camSitting,'--recording-ref',$camVideo,'--scope-seconds','180')
 ```
 
 The durable env receipt is commit 38bf7953. Inference imports and package checks
 passed. DXCAM import failed enumerating displays in service session 0; the lead
 will probe DXCAM/vgamepad through a C:\desk job in console session 1 after James
-closes the game. No CUDA forward or desktop qualification is claimed yet.
+closes the game. No CUDA forward or desktop qualification is claimed yet. Camera CPU tests
+now pass in this durable interpreter.
 
 Perform a guarded move-and-attack activity refresh **before the first block**,
 then close that pad and restore the inspected pose. Setup alone did not prevent
 the prior inactivity drop. Each --output must be a NEW directory. The driver
 performs capture preflight and ready-attach inspection BEFORE constructing Live;
-keyboard released and range already focused. The draft startup sequence is:
+keyboard released and range already focused. The accepted startup sequence is:
 
 1. Inspect ready-attach.png/json: range, level, bot-free, no idle or device banner.
    Atomically write continue-attach.json. There is no pad during this wait.
@@ -54,7 +55,7 @@ keyboard released and range already focused. The draft startup sequence is:
    A bad pose ends the block; no automatic leveling or search.
 
 Prime and settling are initialization_excluded; their times are retained. The
-draft refuses changed/ambiguous views during token waits. No numerical focal or
+driver refuses changed/ambiguous views during token waits. No numerical focal or
 camera rate is inferred from initialization.
 Stop on any scope/focus/HUD/idle/key/deadline/refusal. No automatic retry.
 Only after the process closes may the lead run his established guarded

@@ -104,6 +104,8 @@ def test_monitor_closes_even_while_capture_is_blocked(tmp_path, reason):
 
 def test_motion_refusal_stops_before_second_segment(tmp_path, monkeypatch):
     counts = {"ack": 0, "close": 0}
+    monkeypatch.setattr(m, "initialize_pad", lambda *a, **kw: None)
+    monkeypatch.setattr(m, "unchanged_pose", lambda *a: {})
     live = SimpleNamespace(frame_t=0., release=lambda: None,
                            close=lambda: counts.__setitem__("close", counts["close"] + 1))
     rows = [(i * .05, np.zeros((150, 265), np.uint8)) for i in range(100)]
@@ -189,63 +191,178 @@ def test_capture_retention_is_not_throttled_to_renewal():
     assert 2 <= len(sends) <= 3
 
 
-def test_pulse_block_primes_only_after_its_own_token_then_reinspects(tmp_path, monkeypatch):
+@pytest.mark.parametrize("axis,ds", [(None,[.45,-.45]), ("ry",[.5,-.5])])
+def test_both_modes_prime_before_first_ready_gate(tmp_path, monkeypatch, axis, ds):
     order = []
     live = SimpleNamespace(frame_t=0., release=lambda: order.append("neutral"), close=lambda: order.append("close"))
-    def collect(live, d, seconds, proof, **kw):
-        order.append(("prime", d, seconds))
-        proof()
-        return [(1., np.zeros((150,265),np.uint8))], 1., 1.12
+    monkeypatch.setattr(m, "initialize_pad", lambda *a,**kw: order.append("prime-and-settle"))
+    monkeypatch.setattr(m, "unchanged_pose", lambda *a: {})
+    monkeypatch.setattr(m, "measure_pulse", lambda live,d,*a,**kw: order.append(("measure",d)) or {"deflection":d})
+    def collect(live,d,*a,**kw):
+        order.append(("measure",d))
+        return [(1.,np.zeros((150,265),np.uint8))], 1., 2.
     monkeypatch.setattr(m, "collect_segment", collect)
-    monkeypatch.setattr(m.l4, "checked_shift", lambda *a, **kw: (-120, 0, .99))
-    monkeypatch.setattr(m, "measure_pulse", lambda live,d,*a,**kw: order.append(("pulse",d)) or {"deflection":d})
-    journal = m.Journal(tmp_path / "priming", {})
+    monkeypatch.setattr(m, "return_candidates", lambda *a: {"candidate_signed_deg_s":161.})
+    journal = m.Journal(tmp_path / "both", {})
     try:
-        result = m.run_block(live, [.5,-.5], .04, journal,
+        result = m.run_block(live, ds, .04 if axis else 1., journal,
             proof=lambda: np.zeros((360,640,3),np.uint8),
             acknowledge=lambda index,*a: order.append(("token",index)), focused=lambda: True,
-            stop_requested=lambda: False, pulse_axis="ry", focal=640.)
-        assert order == ["neutral", ("token","prime"), "neutral", ("prime",.45,.12),
-                         "neutral", ("token",0), ("pulse",.5),
-                         "neutral", ("token",1), ("pulse",-.5), "close"]
-        assert len(result) == 2  # initialization never becomes a measurement
-        assert json.loads((journal.output / "initialization.json").read_text())["excluded_from_calibration"]
-        assert (journal.output / "ready-prime.png").exists() and (journal.output / "ready-0.png").exists()
+            stop_requested=lambda: False, pulse_axis=axis, focal=640. if axis else None)
+        assert order == ["prime-and-settle", "neutral", ("token",0), ("measure",ds[0]),
+                         "neutral", ("token",1), ("measure",ds[1]), "close"]
+        assert len(result) == 2
+        assert not (journal.output / "ready-prime.png").exists()
     finally:
         journal.close()
 
 
-def test_swallowed_initialization_stops_without_pulses_or_retry(tmp_path, monkeypatch):
-    attempts = []
-    live = SimpleNamespace(frame_t=0., release=lambda: None, close=lambda: None)
-    def collect(*a, **kw):
-        attempts.append(True)
-        return [(1., np.zeros((150,265),np.uint8))], 1., 1.12
-    monkeypatch.setattr(m, "collect_segment", collect)
-    monkeypatch.setattr(m, "measure_pulse", lambda *a,**kw: pytest.fail("pulse after swallowed initialization"))
-    journal = m.Journal(tmp_path / "swallowed", {})
+def test_pre_attach_gate_waits_without_constructing_pad(tmp_path):
+    image = np.random.default_rng(4).integers(0,256,(720,1280,3),dtype=np.uint8)
+    now, constructed = [0.], []
+    journal = m.Journal(tmp_path / "before-attach", {})
+    def ack(index,d,fresh,end):
+        assert index == "attach" and not constructed
+        now[0] += 39.  # the actual failed sitting's token delay
+        fresh()
+        assert not constructed
+    def factory(**kw):
+        constructed.append(kw)
+        return "fake-pad"
     try:
-        with pytest.raises(m.l4.MotionRefused):
-            m.run_block(live, [.5], .04, journal, proof=lambda: np.zeros((360,640,3),np.uint8),
-                acknowledge=lambda *a: None, focused=lambda: True, stop_requested=lambda: False,
-                pulse_axis="ry", focal=640.)
-        assert attempts == [True]
-        result = json.loads((journal.output / "initialization.json").read_text())
-        assert result["role"] == "initialization_excluded" and result["observed_response"] == "refused"
-        assert not (journal.output / "ready-0.png").exists()
+        assert m.attach_after_token(factory,"fake-capture",journal,lambda:(image,now[0]),
+                                    ack,lambda f:True,180.) == "fake-pad"
+        assert constructed[0]["settle_s"] == 0
+        assert (journal.output / "ready-attach.png").exists()
     finally:
         journal.close()
 
 
-def test_refused_prime_token_sends_no_initialization_or_pulse(tmp_path, monkeypatch):
-    live = SimpleNamespace(frame_t=0., release=lambda: None, close=lambda: None)
-    monkeypatch.setattr(m, "collect_segment", lambda *a,**kw: pytest.fail("initialization without token"))
-    monkeypatch.setattr(m, "measure_pulse", lambda *a,**kw: pytest.fail("pulse without token"))
-    journal = m.Journal(tmp_path / "no-prime", {})
+def test_refused_attach_token_never_constructs_pad(tmp_path):
+    journal = m.Journal(tmp_path / "no-attach", {})
     try:
         with pytest.raises(ValueError, match="refused"):
-            m.run_block(live, [.5], .04, journal, proof=lambda: np.zeros((360,640,3),np.uint8),
-                acknowledge=lambda *a: (_ for _ in ()).throw(ValueError("refused")),
-                focused=lambda: True, stop_requested=lambda: False, pulse_axis="ry", focal=640.)
+            m.attach_after_token(lambda **kw:pytest.fail("pad before token"), None, journal,
+                lambda:(np.zeros((360,640,3),np.uint8),0.),
+                lambda *a: (_ for _ in ()).throw(ValueError("refused")), lambda f:True,180.)
+    finally:
+        journal.close()
+
+
+@pytest.mark.parametrize("flat", [False,True])
+def test_init_motion_check_no_retry_and_five_second_neutral(tmp_path,monkeypatch,flat):
+    base = np.zeros((720,1280,3),np.uint8) if flat else np.random.default_rng(9).integers(0,256,(720,1280,3),dtype=np.uint8)
+    now, displacement, attempts = [1.], [0], []
+    live = SimpleNamespace(frame_t=1.)
+    def proof():
+        live.frame_t = now[0]
+        return np.roll(base,displacement[0],axis=1)
+    def collect(live,d,seconds,fresh,**kw):
+        attempts.append((d,seconds))
+        rows=[]
+        for t,shift in ((1.,0),(1.08,-40),(1.16,-80),(1.24,-120)):
+            now[0],displacement[0]=t,shift
+            rows.append((t,m.l4.band(fresh())))
+        now[0]=1.3
+        return rows,1.,1.3
+    monkeypatch.setattr(m,"collect_segment",collect)
+    journal=m.Journal(tmp_path / "init",{})
+    try:
+        if flat:
+            with pytest.raises(m.l4.MotionRefused):
+                m.initialize_pad(live,journal,proof,10.,clock=lambda:now[0],sleep=lambda dt:now.__setitem__(0,now[0]+dt))
+            assert now[0] == 1.3
+            assert json.loads((journal.output / "initialization.json").read_text())["observed_response"] == "refused"
+        else:
+            m.initialize_pad(live,journal,proof,10.,clock=lambda:now[0],sleep=lambda dt:now.__setitem__(0,now[0]+dt))
+            result=json.loads((journal.output / "initialization.json").read_text())
+            assert result["excluded_until"]-result["settle_started"] >= 5.
+            assert result["observed_response"] == "directional_motion"
+            assert result["excluded_from_calibration"]
+            assert result["motion_pair_times"] == [1.16,1.24]
+            assert result["motion_pair_gap_s"] == pytest.approx(.08)
+            assert result["motion_pair_role"] == "mid_motion_response_only"
+        assert attempts == [(.45,.3)]
+    finally:
+        journal.close()
+
+
+def test_initialization_refuses_only_early_response_frames(tmp_path,monkeypatch):
+    base=np.random.default_rng(13).integers(0,256,(720,1280,3),dtype=np.uint8)
+    live=SimpleNamespace(frame_t=1.)
+    def collect(live,d,seconds,fresh,**kw):
+        rows=[]
+        for t in (1.,1.04,1.08,1.12):
+            live.frame_t=t
+            rows.append((t,m.l4.band(fresh())))
+        return rows,1.,1.3
+    monkeypatch.setattr(m,"collect_segment",collect)
+    journal=m.Journal(tmp_path / 'early-only',{})
+    try:
+        with pytest.raises(m.l4.MotionRefused):
+            m.initialize_pad(live,journal,lambda:base,10.,clock=lambda:1.3,
+                             sleep=lambda dt:pytest.fail('settle after unproven response'))
+        result=json.loads((journal.output/'initialization.json').read_text())
+        assert result['motion']['reason']=='no bounded prime response pair'
+    finally:
+        journal.close()
+
+
+@pytest.mark.parametrize("shift", [(0,0),(0,20),(20,0)])
+def test_ready_pose_refuses_yaw_or_pitch_drift(shift):
+    frame=np.random.default_rng(8).integers(0,256,(720,1280,3),dtype=np.uint8)
+    other=np.roll(frame,shift,axis=(0,1))
+    if shift == (0,0):
+        assert m.unchanged_pose(frame,other)["correlation"] > .99
+    else:
+        with pytest.raises(ValueError,match="pose changed"):
+            m.unchanged_pose(frame,other)
+
+
+def test_drift_after_token_cannot_start_measurement(tmp_path,monkeypatch):
+    frame=np.random.default_rng(2).integers(0,256,(720,1280,3),dtype=np.uint8)
+    changed=[False]
+    monkeypatch.setattr(m,"initialize_pad",lambda *a,**kw:None)
+    monkeypatch.setattr(m,"collect_segment",lambda *a,**kw:pytest.fail("input after pose drift"))
+    live=SimpleNamespace(frame_t=0.,release=lambda:None,close=lambda:None)
+    journal=m.Journal(tmp_path / "drift",{})
+    try:
+        with pytest.raises(ValueError,match="pose changed"):
+            m.run_block(live,[.45],1.,journal,
+                proof=lambda:np.roll(frame,20 if changed[0] else 0,axis=0),
+                acknowledge=lambda *a:changed.__setitem__(0,True), focused=lambda:True,stop_requested=lambda:False)
+    finally:
+        journal.close()
+
+@pytest.mark.parametrize('axis,ds', [(None,[.45]),('ry',[.5])])
+def test_initialization_refusal_closes_both_modes_without_measurement(tmp_path,monkeypatch,axis,ds):
+    closed=[]
+    live=SimpleNamespace(close=lambda:closed.append(True))
+    def refuse(*a,**kw):
+        raise m.l4.MotionRefused({'motion_present':False})
+    monkeypatch.setattr(m,'initialize_pad',refuse)
+    journal=m.Journal(tmp_path / 'refused-init',{})
+    try:
+        with pytest.raises(m.l4.MotionRefused):
+            m.run_block(live,ds,.04 if axis else 1.,journal,proof=lambda:None,
+                acknowledge=lambda *a:pytest.fail('measurement gate after refused init'),
+                focused=lambda:True,stop_requested=lambda:False,pulse_axis=axis,focal=640. if axis else None)
+        assert closed == [True]
+        events=[json.loads(line) for line in (journal.output/'events.jsonl').read_text().splitlines()]
+        assert [r['kind'] for r in events] == ['initialization_start','initialization_end']
+        assert all(r['role']=='initialization_excluded' for r in events)
+    finally:
+        journal.close()
+
+
+def test_changed_pre_attach_pose_refuses_before_pad(tmp_path):
+    frame=np.random.default_rng(12).integers(0,256,(720,1280,3),dtype=np.uint8)
+    changed=[False]
+    journal=m.Journal(tmp_path / 'pre-drift',{})
+    try:
+        with pytest.raises(ValueError,match='pose changed'):
+            m.attach_after_token(lambda **kw:pytest.fail('attached after stale pose'),None,journal,
+                lambda:(np.roll(frame,40 if changed[0] else 0,axis=0),0.),
+                lambda *a:changed.__setitem__(0,True),lambda f:True,180.)
     finally:
         journal.close()

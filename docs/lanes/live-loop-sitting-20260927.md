@@ -1,4 +1,4 @@
-# Camera and FPS sitting: startup repair pending
+# Camera and FPS sitting: startup repair accepted
 
 Owner live-loop; desktop/booking/Linear owner herdr-lead; input reviewer binds-review.
 VUH-1384, 2026-09-27. This is the next-attempt plan, not acceptance evidence.
@@ -10,22 +10,28 @@ cost and acceptance remain unknown. Raw evidence is
 `data/calibration/alt-cam-20260927/yaw-01`; partial OBS video is
 `C:/Users/volpe/Videos/2026-09-27 14-27-37.mkv`.
 
-James is playing/recording now. No sitting, native decode, tests or GPU probe
-runs concurrently. Static implementation and metadata preparation only.
+Lead released the PC at 15:24 CDT: game and OBS closed. Camera CPU checks
+completed; calibration analysis may use one guarded CPU decode slot (admission
+has the other). The lead will start after both the focal verdict and admission
+-5 assembly finish. A focal refusal means yaw + FPS only; no extra sweep is
+silently inserted. Workers stop before the sitting and whenever game/OBS starts.
 
 ## Before the next sitting
 
-- Both camera modes need the drafted startup repair tested and pre-run LAND by
-  binds-review. Current bytes invalidate a2 receipt 5c9da6f0. The new sequence is
-  capture-only token before Live; attach with zero settle; M1 +.45 rx /300 ms;
-  checked observed motion; five seconds neutral; NEW ready-0 inspection/token.
-  Initialization is excluded with times. A changed or unprovable ready pose
-  refuses. There is no retry, automatic leveling or search.
+- Both camera modes have a3 pre-run LAND, receipt
+  `docs/evidence/camera-turns-20260927/camera-turns-review-v1-a3.json` (47a7960a),
+  reviewer handback f5298fae. Owner/reviewer each passed 40 CPU tests. Fixed native
+  yaw-01 drift refuses; duplicate control passes. Old a2 is stale. Startup is
+  capture-only token before Live; zero settle; M1 +.45 rx /300 ms; observed
+  response from a late-prime 40-100ms pair; five seconds neutral; NEW ready-0
+  inspection/token. Initialization is excluded with times. Changed or unprovable
+  ready poses refuse. No retry, automatic leveling or search.
 - Durable Python is `C:/Users/volpe/.venvs/rivals-live-cu128/Scripts/python.exe`.
   Static env receipt 38bf7953: 36 pins, package checks/inference imports passed;
   DXCAM enumeration failed in service session 0. Lead will probe DXCAM/vgamepad
   through C:\desk in console session 1 after James closes the game. No new-env
-  CUDA forward, FPS preparation or desktop qualification is claimed.
+  CUDA forward, FPS preparation or desktop qualification is claimed. Camera
+  CPU tests passed using the repaired env.
 - Focal work now uses only the three explicitly authorized CALIBRATION entries:
   alt `20260926T162648-153Z-116800-4`, rightward strokes
   `20260925T030045-211Z-7804-3`, main `20260926T060921-977Z-60612-1`. They never
@@ -39,8 +45,7 @@ runs concurrently. Static implementation and metadata preparation only.
 James authorized the lead to use reenter.py for setup, navigate and refresh
 activity. James need not be at the desk. No worker drives input or capture.
 Exact commands and atomic tokens are in
-[live-loop-operator-20260927.md](live-loop-operator-20260927.md); its launch
-instructions remain HOLD until the replacement input receipt exists.
+[live-loop-operator-20260927.md](live-loop-operator-20260927.md); it names the accepted a3 receipt and durable interpreter.
 
 Allow about 23 minutes for yaw plus FPS, or about 29 minutes if accepted focal
 allows the six-minute pulse block. Plan around 30 minutes; hard stop remains
@@ -94,10 +99,11 @@ input and re-freeze of controller/loop/record/pad_bindings and dependencies.
 The camera/FPS sitting stopped after yaw-01: fresh-pad drift invalidated its
 ready view, motion refused, and FPS could not start because the Temp Python
 launcher was missing. No camera map or game FPS cost was measured. Startup
-repair is drafted for both modes (pre-attach token, M1 300ms prime, five-second
-neutral, fresh ready-0), awaiting tests and pre-run review. Durable env receipt
+repair has a3 pre-run LAND (47a7960a), with 40 owner/reviewer CPU tests and an
+actual yaw-01 drift rejection: pre-attach token, M1 300ms prime, five-second
+neutral, fresh ready-0. Durable env receipt
 38bf7953 provides C:/Users/volpe/.venvs/rivals-live-cu128/Scripts/python.exe;
 console-session desktop probe remains lead-owned. Focal now targets three
-existing CALIBRATION takes, decoding only after play/recording closes. Fallback
+existing CALIBRATION takes, with guarded CPU decoding released at15:24 after play/recording closed. Fallback
 replay f8892cf was 100% neutral across 3,600 frames; learned/scripted trials remain
 deferred. Lead owns publication and sitting scheduling; no Linear write claimed.
