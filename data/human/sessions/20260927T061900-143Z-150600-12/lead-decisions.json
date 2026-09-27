@@ -1,0 +1,56 @@
+{
+ "session": "20260927T061900-143Z-150600-12",
+ "kind": "lead_decisions",
+ "decisions": [
+  {
+   "date": "2026-09-27",
+   "item": "pts_anchor",
+   "decision": "accepted on the whole-stream verify match at +21 ms; the first-16 forward prediction failed and is never cited as the basis",
+   "reasoning": "The whole-stream verify (all 60,835 frames matched at +21 ms, max residual 0.33 ms, integrity ok) is stronger evidence for the offset than the first-16-packet forward prediction. A single early packet at 113 vs 121 ms is muxer jitter; it does not move alignment, because every frame matched.",
+   "conditions": [
+    "pts_anchor cites only what holds: 'whole-stream verify match at +21 ms (max residual 0.33 ms); first-16 forward prediction failed at video packet 11 (113 vs 121 ms)'",
+    "recorded as a lead decision in the lane note, and included in the post-landing review"
+   ],
+   "observed": {
+    "first_16_video_ms": [
+     21,
+     46,
+     29,
+     38,
+     71,
+     54,
+     63,
+     96,
+     79,
+     88,
+     113
+    ],
+    "predicted_video_ms": [
+     21,
+     46,
+     29,
+     38,
+     71,
+     54,
+     63,
+     96,
+     79,
+     88,
+     121
+    ],
+    "verify": {
+     "decoded_video_frames": 60835,
+     "matched_video_frames": 60835,
+     "muxer_pts_offset_seconds": 0.021,
+     "max_video_pts_residual_seconds": 0.00033333333340124227,
+     "integrity_ok": true
+    }
+   },
+   "basis": [
+    "the lead (herdr-lead), 2026-09-27, on admission-owner's hold report",
+    "provenance.json anchor_applicability",
+    "recorder-verification.json"
+   ]
+  }
+ ]
+}

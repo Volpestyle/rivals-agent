@@ -112,7 +112,7 @@ HEADER = dict(session_id="m1", split="idm_train", media_sha256="a" * 64, session
 
 def session_dir(tmp_path, header=HEADER):
     d = tmp_path / header["session_id"]
-    d.mkdir()
+    d.mkdir(parents=True)
     demo = d / "imported-demo.jsonl"
     demo.write_text('{"media_sha256": "' + header["media_sha256"] + '"}\n{}\n', encoding="utf-8")
     h = dict(header, source={"imported_demo_sha256": sha(demo)})
@@ -246,3 +246,34 @@ def test_movement_typed_in_chat_never_ends_the_emote_cut():
     assert hi.move_presses([key(1, 9), key(2, 87), key(3, 9, False), key(4, 83)]) == [4 * S]    # Tab held
     assert hi.move_presses([key(1, 27), key(2, 87)]) == []                                     # the settings menu
     assert hi.move_presses([key(1, 112), key(1.1, 112, False), key(2, 27), key(3, 87)]) == [3 * S]   # Esc closes F1
+
+
+def anchor_dir(tmp_path, matches, decision=True, matched=60835):
+    d = tmp_path / "s"
+    d.mkdir(parents=True)
+    got = [21, 46, 29, 38, 71, 54, 63, 96, 79, 88, 121 if matches else 113]
+    want = [21, 46, 29, 38, 71, 54, 63, 96, 79, 88, 121]
+    (d / "provenance.json").write_text(json.dumps(dict(anchor_applicability=dict(
+        matches=matches, first_16_packets=dict(video_ms=got, audio_ms=[0, 21, 42, 64, 85]),
+        predicted=dict(video_ms=want, audio_ms=[0, 21, 42, 64, 85])))), encoding="utf-8")
+    (d / "recorder-verification.json").write_text(json.dumps(dict(
+        integrity_ok=True, errors=[], decoded_video_frames=60835, matched_video_frames=matched,
+        muxer_pts_offset_seconds=0.021, max_video_pts_residual_seconds=0.00033333333340124227)), encoding="utf-8")
+    if decision:
+        (d / "lead-decisions.json").write_text(json.dumps(dict(decisions=[dict(item="pts_anchor")])), encoding="utf-8")
+    return d
+
+
+def test_the_pts_anchor_states_its_true_basis(tmp_path):
+    """Lead decision 2026-09-27 (session -150600-12): when the first-16 forward prediction fails, the anchor rests on the
+    whole-stream verify, under a lead decision, and the text names both facts; the range wording is unchanged."""
+    src, ev = assemble.pts_anchor_basis(anchor_dir(tmp_path / "a", True))
+    assert src == assemble.ANCHOR_SOURCE and [p.name for p in ev][1:] == ["provenance.json"]
+    src, ev = assemble.pts_anchor_basis(anchor_dir(tmp_path / "b", False))
+    assert src == ("whole-stream verify match at +21 ms (60835 of 60835 frames, max residual 0.33 ms); first-16 forward "
+                   "prediction failed at video packet 11 (113 vs 121 ms); lead decision (lead-decisions.json)")
+    assert [p.name for p in ev][1:] == ["provenance.json", "recorder-verification.json", "lead-decisions.json"]
+    with pytest.raises(assemble.Refused, match="lead decision"):
+        assemble.pts_anchor_basis(anchor_dir(tmp_path / "c", False, decision=False))
+    with pytest.raises(assemble.Refused, match="whole-stream verify"):
+        assemble.pts_anchor_basis(anchor_dir(tmp_path / "d", False, matched=60834))

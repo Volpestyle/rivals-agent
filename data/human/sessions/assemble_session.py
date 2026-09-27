@@ -189,6 +189,37 @@ def no_pad_attestation(statement, started_utc):
     return None
 
 
+ANCHOR_SOURCE = ("accepted blank-scene derivation plus this session's own first-16-packet forward "
+                 "prediction (provenance.json anchor_applicability), no fitting")
+
+
+def pts_anchor_basis(d):
+    """(source text, evidence paths) for the 21 ms muxer anchor, stating only what holds for this session.
+
+    The accepted derivation's forward prediction of the first 16 packets normally confirms the anchor (the range
+    wording, unchanged). When it fails, the anchor rests on the whole-stream verify instead: every decoded frame
+    matched at +21 ms with integrity ok. A lead decision (`lead-decisions.json`, item "pts_anchor") must accept that
+    basis; the text names both facts, never the failed one as the basis (lead, 2026-09-27, session -150600-12)."""
+    app = json.loads((d / "provenance.json").read_text(encoding="utf-8"))["anchor_applicability"]
+    if app["matches"]:
+        return ANCHOR_SOURCE, [ANCHOR, d / "provenance.json"]
+    ver = json.loads((d / "recorder-verification.json").read_text(encoding="utf-8"))
+    need(ver["integrity_ok"] and not ver["errors"] and ver["decoded_video_frames"] == ver["matched_video_frames"] > 0
+         and round(ver["muxer_pts_offset_seconds"] * 1000) == 21,
+         "the first-16 forward prediction failed and the whole-stream verify does not match at +21 ms (refused)")
+    lead = d / "lead-decisions.json"
+    decisions = json.loads(lead.read_text(encoding="utf-8"))["decisions"] if lead.exists() else []
+    need(any(x.get("item") == "pts_anchor" for x in decisions),
+         "the first-16 forward prediction failed: a pts_anchor lead decision is required (refused)")
+    got, want = app["first_16_packets"], app["predicted"]
+    stream, k = next((s, i) for s in ("video_ms", "audio_ms") for i, (a, b) in enumerate(zip(got[s], want[s])) if a != b)
+    source = (f"whole-stream verify match at +21 ms ({ver['matched_video_frames']} of {ver['decoded_video_frames']} "
+              f"frames, max residual {ver['max_video_pts_residual_seconds'] * 1000:.2f} ms); first-16 forward "
+              f"prediction failed at {stream.split('_')[0]} packet {k + 1} ({got[stream][k]} vs {want[stream][k]} ms); "
+              "lead decision (lead-decisions.json)")
+    return source, [ANCHOR, d / "provenance.json", d / "recorder-verification.json", lead]
+
+
 def chicago_date(moment):
     """The calendar date of an aware time in America/Chicago, the PC's zone, whatever zone this machine is set to.
 
@@ -330,6 +361,7 @@ def main():
     patch = session_patch(d, meta, hi)   # before anything is written: an unreadable build refuses the assembly
     statement = motor_statement(meta, hi, RECORDING_LOG.read_text(encoding="utf-8"))   # and a date without one
     no_pad = no_pad_attestation(statement, hi._utc(meta["started_utc"]))
+    anchor_source, anchor_evidence = pts_anchor_basis(d)   # before anything is written
 
     # 0. immutable copies of the living documents this assembly cites: the recording log at its last commit (the
     # working file must equal that blob) and the registry revision used; the freeze pins the copies
@@ -395,9 +427,7 @@ def main():
                           no_pad_attestation=no_pad or "James, 2026-09-23 ~15:55 CDT (docs/recording-log.md): no "
                                                        "physical controller plugged in during any recording session"),
         pts_anchor=dict(kind="independent_muxer_offset", offset_num=21, offset_den=1000,
-                        source="accepted blank-scene derivation plus this session's own first-16-packet forward "
-                               "prediction (provenance.json anchor_applicability), no fitting",
-                        evidence=cite(ANCHOR, d / "provenance.json")),
+                        source=anchor_source, evidence=cite(*anchor_evidence)),
         provenance=dict(hero="Spider-Man", settings=settings, bindings=bindings,
                         game_patch=dict(value=patch["value"], source="Steam appmanifest (buildid, LastUpdated), the "
                                         "game's version.json and the content log's update steps, read by the "

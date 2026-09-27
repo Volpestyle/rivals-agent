@@ -147,3 +147,17 @@ the code and the pilot together.
   `-3c585dc1`, `-6046514b` and `-08c36e68` (the F1-fixed one) are committed.
 - **The other seven** continue on the landed code: batch 1 (provenance, verify, profile) is running. Propose and
   evidence use `code-snapshot-f8fd92c-08c36e68`.
+
+**2026-09-27 ~11:45 CDT: lead decision on -12's PTS anchor.**
+- **What failed:** -12's provenance first-16-packet forward prediction. Video packet 11 is 113 ms, where 121 is
+  predicted.
+- **What held:** the whole-stream verify matched all 60,835 frames at +21 ms (max residual 0.33 ms, integrity ok).
+- **The decision:** accept. The whole-stream match is stronger evidence for the offset than the first-16 prediction, and
+  one early packet is muxer jitter that does not move alignment, because every frame matched.
+- **Conditions:** the `pts_anchor` cites only what holds, never the failed basis. It is recorded here and in -12's
+  `lead-decisions.json`, and is part of the post-landing review.
+- **In code:** `assemble_session.pts_anchor_basis` (uncommitted at the handoff). A session whose prediction holds keeps
+  the range wording byte-identical.
+
+**2026-09-27 ~12:00 CDT: lane handed to admission-codex** (James: workers on Codex). The complete state is in
+`docs/lanes/human-admission-handoff-20260927.md`.
