@@ -1,0 +1,46 @@
+{
+  "scope": "offline predictions, not model gameplay",
+  "exit": 0,
+  "spec_sha256": "abd9954ca8a7d860f56cd87950a64571faca77eb31ec0c0263dbd8bc6a888014",
+  "interval_sha256": "4ddc2064ed515129c3d21b21255a17e23509bd33870d1e6104333427e268292e",
+  "script_sha256": "fae20104c3183173e885ff3dcc3cfc9b6083abf57f2fc8aecf4d45ea04c900ea",
+  "probe": {
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "width": 1536,
+        "height": 800,
+        "duration": "30.000000",
+        "nb_read_frames": "900"
+      }
+    ]
+  },
+  "cloud_spend": 0,
+  "files": {
+    "preview-450.png": {
+      "bytes": 271215,
+      "sha256": "b3a3144ec17cdd598f60d6757e2e101fc320f09f38f95c8fa1c586678b2cf92c"
+    },
+    "preview-899.png": {
+      "bytes": 242124,
+      "sha256": "3253749117bf5630c27f26b5826ba5ad811ce886b7ce60d705ea0b5576cb2d3f"
+    },
+    "ffmpeg.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "preview-000.png": {
+      "bytes": 231338,
+      "sha256": "74f7aa7155ad831bf5f56dc0bb7c913a026f0446345d5b974538265869ba30a2"
+    },
+    "predictions.json": {
+      "bytes": 3483730,
+      "sha256": "8ac4a231066156d2cf69ec0f2e82bd31791e0f4d28e8fcb2a9d5c31d39afe4d1"
+    },
+    "offline-predictions.mp4": {
+      "bytes": 15768236,
+      "sha256": "c6df4e4d48b70eb740be932e59e2c1c00470334c4b1ed87cc0c1bd29167ff93a"
+    }
+  }
+}
