@@ -92,8 +92,18 @@ so give cloud boxes 8 CPUs or more.
   extraction → fits) in `approvals.json`, and the judge's reading and the evidence land in the repo and on the Linear issue.
 - Independent review is always required for code that sends live input, and for code that decides what enters a training
   or evaluation set. Prefer a reviewer from the other model family.
+- **Review after landing by default** (James, 2026-09-27 ~11:40 CDT: "less process, more results").
+  - **Default.** Code lands and runs first. Independent review follows on the delta, and a result stays provisional
+    until that review lands. A finding that could have changed data, numbers or spend means a rerun.
+  - **Still reviewed before it lands or runs,** in exactly three cases:
+    - code that sends live-game input;
+    - anything that could let spend exceed a hard cap;
+    - anything that could open sealed data.
+  - **This supersedes the stricter lists below.** Data selection, model, loss, metric, judge and numerics code now
+    follow the default, reviewed after landing. A change to a pre-registration still needs a pre-result `-aN`
+    amendment before its result is read.
 - **Launch plumbing: fix, run, review afterwards** (James, 2026-09-27; decided after a night of round-3 launch fixes
-  that each cost a full review cycle and trained nothing).
+  that each cost a full review cycle and trained nothing). The rule above supersedes this entry's review lists.
   - **What counts as plumbing.** Code that only moves, mounts, orchestrates, reports or refuses:
     - mount and namespace handling, wrapper and chain drivers, collection;
     - job status, teardown and watchdogs;

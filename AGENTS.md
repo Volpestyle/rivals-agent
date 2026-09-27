@@ -115,13 +115,13 @@ co-leads route scope decisions through that lead. A status request alone creates
   unless `--corpus` is given, so a whole-file or broad `-k` run never opens sealed or mid-migration files
   by accident. Each lane marks its own tests.
 - Python via `uv`; standard library first; add a dependency only when a few lines cannot do it.
-- Review is independent of the lane that wrote the code. Code that sends input to the live
-  game, and code that decides what enters a training or evaluation set, gets a read-only
-  review by an agent outside the lane (preferably another model family) before it is relied
-  on; the lead verifies each finding before dispatching a fix to the owning lane. A lane's
-  own tests and report are evidence, not a review. Launch plumbing (mounts, wrappers, chain drivers, status, teardown,
-  runtime-identity refusals) is fixed and run first and reviewed afterwards, with results provisional until then;
-  `docs/compute.md`, "The two experiment tracks", draws the line.
+- Review is independent of the lane that wrote the code: a read-only review by an agent outside the lane, preferably
+  another model family. The lead verifies each finding before dispatching a fix to the owning lane. A lane's own tests
+  and report are evidence, not a review.
+- By default, review happens after landing (James, 2026-09-27): the code lands and runs, and its results stay
+  provisional until the review lands. Review is still required before the code lands or runs for three kinds of
+  code: code that sends live-game input, anything that could let spend exceed a hard cap, and anything that could
+  open sealed data. `docs/compute.md`, "The two experiment tracks", has the detail.
 - Several agents often share this checkout. Edit only the paths your brief names, and
   load the `shared-checkout` skill before committing.
 - **Frozen review packets.** A lane note whose current bytes are pinned by a review receipt or a freeze
