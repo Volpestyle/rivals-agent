@@ -4,7 +4,7 @@ import time
 
 import pytest
 
-from cloud.modal_guard.common import IDENTITY, clock_id, json_bytes
+from cloud.modal_guard.common import IDENTITY, clock_id, elapsed_time, json_bytes
 from cloud.modal_guard.holds import derive
 from cloud.modal_guard.ledger import Ledger
 
@@ -12,7 +12,7 @@ from cloud.modal_guard.ledger import Ledger
 class Clock:
     def __init__(self):
         self.now = 1790542000.0  # September 2026 UTC
-        self.mono = time.monotonic()
+        self.mono = elapsed_time()
 
     def wall(self):
         return self.now
@@ -32,8 +32,8 @@ def raw(value, now, mono=None):
     text = json.dumps(value)
     return {"stdout": text, "sha256": hashlib.sha256(text.encode()).hexdigest(),
             "returncode": 0, "queried_at": now, "completed_at": now,
-            "queried_monotonic": mono if mono is not None else time.monotonic(),
-            "completed_monotonic": mono if mono is not None else time.monotonic(), "clock_id": clock_id()}
+            "queried_monotonic": mono if mono is not None else elapsed_time(),
+            "completed_monotonic": mono if mono is not None else elapsed_time(), "clock_id": clock_id()}
 
 
 def billing(clock, spent="48.25", apps=None):

@@ -10,7 +10,7 @@ import subprocess
 import sys
 import time
 
-from .common import IDENTITY, SDK_VERSION, clock_id, require, usd
+from .common import elapsed_time, IDENTITY, SDK_VERSION, clock_id, require, usd
 
 OVERRIDES = ("MODAL_TOKEN_ID", "MODAL_TOKEN_SECRET", "MODAL_OAUTH_REFRESH_TOKEN",
              "MODAL_OAUTH_CLIENT_ID", "MODAL_OAUTH_CLIENT_SECRET", "MODAL_CONFIG_PATH",
@@ -50,7 +50,7 @@ def connect():
 
 
 class Provider:
-    def __init__(self, cli=None, *, wall=time.time, monotonic=time.monotonic):
+    def __init__(self, cli=None, *, wall=time.time, monotonic=elapsed_time):
         self.cli = cli or str(Path.home() / ".local/bin/modal")
         self.wall = wall
         self.monotonic = monotonic

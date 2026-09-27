@@ -12,7 +12,7 @@ import random
 import time
 import uuid
 
-from .common import SDK_VERSION, Refused, atomic, clock_id, lock, read, require
+from .common import elapsed_time, SDK_VERSION, Refused, atomic, clock_id, lock, read, require
 
 SPACING_SECONDS = 15
 RPC_TIMEOUT_SECONDS = 15
@@ -20,7 +20,7 @@ RPC_TIMEOUT_SECONDS = 15
 
 class AppCreateGate:
     def __init__(self, original, ledger, attempt, *, exhausted, before_rpc,
-                 wall=time.time, monotonic=time.monotonic, sleep=asyncio.sleep, uniform=random.uniform):
+                 wall=time.time, monotonic=elapsed_time, sleep=asyncio.sleep, uniform=random.uniform):
         self.original, self.ledger, self.attempt = original, ledger, attempt
         self.exhausted, self.before_rpc = exhausted, before_rpc
         self.wall, self.mono, self.sleep, self.uniform = wall, monotonic, sleep, uniform

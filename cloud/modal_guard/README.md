@@ -1,4 +1,4 @@
-# Shared Modal guard, v1.0.1
+# Shared Modal guard, v1.0.2
 
 One maintained package, pinned by `RELEASE.json` SHA256. Future run packets hold
 that pin and a spec; they do not copy launcher helpers. Import from a checkout
@@ -31,8 +31,16 @@ mean-throughput extrapolations do not establish p95. The receipt pins the origin
 measurement file and the runner recomputes the hold. A new concurrent launcher
 still needs the cheap authorized shakedown required by `docs/compute.md`.
 
-The boot-identified monotonic deadline covers pacing/startup and cleanup. Wall
-timestamps are reporting/remote deadline data, never cost-duration evidence.
+The boot-identified, suspend-inclusive monotonic deadline covers pacing/startup and cleanup. Settlement charges the maximum of the positive wall-forward delta and
+suspend-inclusive monotonic elapsed; a rollback never lowers the latter.
+On macOS the clock is `clock_gettime(CLOCK_MONOTONIC_RAW)`, which Apple maps to
+`mach_continuous_time`; Linux uses `CLOCK_BOOTTIME`. Python `time.monotonic`
+is not used for paid host accounting because it pauses during Mac system sleep.
+The clock ID includes the clock-contract version; v1.0.1 awake-only records
+cannot mix with this clock. No missing-clock fallback can release an allowance.
+The driver and watchdog each hold an owned `caffeinate -i -w PID` process through
+teardown. This inhibits idle sleep, not forced sleep or network loss; after
+resuming from any such interruption, expired work is stopped without new funding.
 The watchdog performs billing in a daemon reader that cannot write the ledger;
 stop checks do not wait for it. Cleanup uses only the time remaining until the
 original funded end. Known owned IDs receive a stop before inventory queries.
@@ -196,6 +204,9 @@ The caller remains responsible for authorized data admission, image/recipe closu
 lead run authorization and the appropriate scientific judge. A COMPLETE execution
 is not a confirm PASS. No function retry, output overwrite, automatic relaunch,
 sealed-data access, Linear write or paid test is performed by importing the library.
+
+Clock source: [Apple Libc clock mapping](https://github.com/apple-oss-distributions/Libc/blob/main/gen/clock_gettime.c)
+and [Apple continuous clock declaration](https://github.com/apple-oss-distributions/xnu/blob/main/osfmk/mach/mach_time.h).
 
 Sources: [Modal preemption](https://modal.com/docs/guide/preemption),
 [failures/retries](https://modal.com/docs/guide/retries),

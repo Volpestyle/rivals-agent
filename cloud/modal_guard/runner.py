@@ -12,7 +12,7 @@ import time
 
 from . import release
 from .appcreate import install
-from .common import DEFAULT_ROOT, Refused, atomic, name, pinned, require, usd
+from .common import DEFAULT_ROOT, Refused, atomic, caffeinated, name, pinned, require, usd
 from .ledger import Ledger
 from .lifecycle import teardown
 from .provider import Provider, connect, environment, month_at
@@ -45,6 +45,12 @@ def execute_stages(deadline, identity, stages, output_root, output_volume, relea
 
 
 def run_arm(spec_ref, release_sha256, *, workspace_root=DEFAULT_ROOT):
+    # The inhibitor spans preparation, paid execution and final teardown.
+    with caffeinated() as inhibitor:
+        return _run_arm(spec_ref, release_sha256, workspace_root=workspace_root, inhibitor=inhibitor)
+
+
+def _run_arm(spec_ref, release_sha256, *, workspace_root, inhibitor):
     """Paid entry: pinned spec/release, accepted guard, billing, reserve, watch, run.
 
     All campaigns on the Mac MUST share workspace_root. Explicit alternate roots
@@ -94,6 +100,7 @@ def run_arm(spec_ref, release_sha256, *, workspace_root=DEFAULT_ROOT):
         require(ready.exists(), "watchdog readiness missing")
 
         async def before_rpc():
+            require(inhibitor.poll() is None, "caffeinate exited")
             require(guard.poll() is None, "watchdog died")
             ledger.funded(attempt)
             ledger.check_absent_names(await asyncio.to_thread(provider.snapshot))
@@ -122,6 +129,7 @@ def run_arm(spec_ref, release_sha256, *, workspace_root=DEFAULT_ROOT):
                                   spec["output_volume"], release_sha256)
             atomic(local / "call.json", {"call_id": call.object_id}, fresh=True)
             while result is None:
+                require(inhibitor.poll() is None, "caffeinate exited")
                 require(guard.poll() is None, "watchdog died")
                 ledger.funded(attempt)
                 try:

@@ -6,7 +6,7 @@ import time
 import queue
 import threading
 
-from .common import clock_id, number, require
+from .common import elapsed_time, clock_id, number, require
 from .provider import snapshot_values
 
 
@@ -54,7 +54,7 @@ def validate_proof(row, proof):
 
 
 def teardown(ledger, attempt, provider, *, sleep=time.sleep, wall=time.time,
-             monotonic=time.monotonic, cached_row=None):
+             monotonic=elapsed_time, cached_row=None):
     """Stop first; use only the original remaining funding, never a fresh hold.
 
     Emergency stopping after a lost clock/expired envelope is explicitly unfunded
@@ -134,7 +134,7 @@ class BillingRefresh:
 
 
 def watch(ledger, attempt, provider, driver_pid, *, sleep=time.sleep,
-          wall=time.time, monotonic=time.monotonic, refresh_factory=BillingRefresh):
+          wall=time.time, monotonic=elapsed_time, refresh_factory=BillingRefresh):
     """Independent host process. No network billing wait on the stop path."""
     refreshed, pending = float("-inf"), None
     row = ledger.get(attempt)

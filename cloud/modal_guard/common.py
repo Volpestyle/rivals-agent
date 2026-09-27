@@ -21,6 +21,33 @@ SDK_VERSION = "1.5.5"
 DEFAULT_ROOT = Path.home() / "dev/modal_guard/volpestyle"
 
 
+def elapsed_time():
+    """Suspend-inclusive clock. Darwin RAW maps to mach_continuous_time.
+
+    Apple Libc gen/clock_gettime.c distinguishes this from CLOCK_UPTIME_RAW and
+    Python time.monotonic(), which use mach_absolute_time and pause in sleep.
+    """
+    if sys.platform == "darwin":
+        return time.clock_gettime(time.CLOCK_MONOTONIC_RAW)
+    if sys.platform.startswith("linux"):
+        return time.clock_gettime(time.CLOCK_BOOTTIME)
+    return time.monotonic()  # offline Windows only; paid runner refuses Windows
+
+
+@contextmanager
+def caffeinated():
+    """Prevent Mac idle sleep for this owner process, including its teardown."""
+    require(sys.platform == "darwin", "paid control requires the Mac")
+    child = subprocess.Popen(["/usr/bin/caffeinate", "-i", "-w", str(os.getpid())])
+    try:
+        require(child.poll() is None, "caffeinate failed")
+        yield child
+    finally:
+        if child.poll() is None:
+            child.terminate()
+        child.wait(timeout=2)
+
+
 @functools.lru_cache(maxsize=1)
 def clock_id():
     """Identify the host boot, not a wall/uptime subtraction that NTP can change.
@@ -36,7 +63,7 @@ def clock_id():
         boot = "offline-process-" + uuid.uuid4().hex
     # uuid.getnode() can fall back to a fresh random value in each Mac process.
     # The kernel boot-session UUID is already host/boot unique and NTP-independent.
-    return hashlib.sha256((sys.platform + boot).encode()).hexdigest()
+    return hashlib.sha256(("suspend-inclusive-v1:" + sys.platform + boot).encode()).hexdigest()
 
 
 class Refused(RuntimeError):
@@ -132,7 +159,7 @@ def artifact(root, relative):
 @contextmanager
 def lock(path, *, timeout=10):
     """Host-local advisory lock; all launchers use the same Mac root, never a Volume."""
-    end = time.monotonic() + timeout
+    end = elapsed_time() + timeout
     with Path(path).open("a+b") as stream:
         if os.name == "nt":
             import msvcrt
@@ -157,7 +184,7 @@ def lock(path, *, timeout=10):
                 acquire()
                 break
             except OSError:
-                require(time.monotonic() < end, "workspace lock timed out")
+                require(elapsed_time() < end, "workspace lock timed out")
                 time.sleep(.02)
         try:
             yield

@@ -12,7 +12,7 @@ from pathlib import Path
 import sqlite3
 import time
 
-from .common import IDENTITY, clock_id, cost, json_bytes, name, number, require, usd
+from .common import elapsed_time, IDENTITY, clock_id, cost, json_bytes, name, number, require, usd
 from .holds import validate
 from .provider import billing_values, month_at, snapshot_values
 
@@ -29,7 +29,7 @@ def billing_clock(billing, now):
 
 
 class Ledger:
-    def __init__(self, path, *, wall=time.time, monotonic=time.monotonic):
+    def __init__(self, path, *, wall=time.time, monotonic=elapsed_time):
         self.path, self.wall, self.monotonic = Path(path), wall, monotonic
 
     @contextmanager
@@ -48,7 +48,7 @@ class Ledger:
 
     @classmethod
     def initialize(cls, path, billing, *, cap_usd=DEFAULT_CAP_USD, reports=(), external_holds=(), wall=time.time,
-                   monotonic=time.monotonic):
+                   monotonic=elapsed_time):
         path = Path(path)
         require(usd(cap_usd) > 0 and usd(cap_usd) <= usd(MAX_CAP_USD), "unauthorized cap")
         require(billing["month"] == month_at(wall()), "wrong billing month")
@@ -165,7 +165,7 @@ class Ledger:
             require(not any(r["state"] in ("NEVER_CREATED", "ABSENT_RPC") and r["app_name"] in observed
                             for r in s["attempts"].values()), "late app appeared after absence settlement")
 
-    def funded(self, attempt, *, monotonic=time.monotonic):
+    def funded(self, attempt, *, monotonic=elapsed_time):
         with self.transaction() as s:
             row = s["attempts"][attempt]
             require(row["state"] in ("RESERVED", "CREATING", "REJECTED", "RUNNING"), "attempt fenced")
@@ -232,7 +232,8 @@ class Ledger:
                 # Settlement reads the trusted host clock itself, rather than
                 # accepting a caller-supplied elapsed duration. Legacy/rebooted
                 # rows cannot release their original conservative allowance.
-                seconds = self.monotonic() - r["started_monotonic"] if continuous else None
+                seconds = (max(0, self.wall() - r["started_at"],
+                               self.monotonic() - r["started_monotonic"]) if continuous else None)
                 bound = (cost(seconds, r["hold"]["rate_usd_second"], r["hold"]["overhead_usd"])
                          if continuous else r["bound_usd"])
                 state = "TERMINAL"

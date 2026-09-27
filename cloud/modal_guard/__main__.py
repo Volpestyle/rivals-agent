@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 import time
 
-from .common import DEFAULT_ROOT, atomic, read
+from .common import DEFAULT_ROOT, atomic, caffeinated, read
 from .ledger import Ledger
 from .lifecycle import watch
 from .provider import Provider, month_at
@@ -45,10 +45,11 @@ def main():
         return 0 if result["status"] == "COMPLETE" else 1
     ledger = Ledger(args.ledger)
     provider = Provider()
-    provider.identity()
-    atomic(Path(args.ledger).parent / "attempts" / args.attempt / "watchdog-ready.json",
-           {"identity_verified": True}, fresh=True)
-    watch(ledger, args.attempt, provider, args.driver_pid)
+    with caffeinated():
+        provider.identity()
+        atomic(Path(args.ledger).parent / "attempts" / args.attempt / "watchdog-ready.json",
+               {"identity_verified": True, "idle_sleep_inhibited": True}, fresh=True)
+        watch(ledger, args.attempt, provider, args.driver_pid)
     return 0
 
 
