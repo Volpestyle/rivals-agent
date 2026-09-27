@@ -1,0 +1,245 @@
+{
+  "exit": 0,
+  "error": null,
+  "result": {
+    "tag": "EXPLORATORY",
+    "arm": "nitrogen",
+    "started_at": 1790528159.7390656,
+    "deadline": 1790544398.273715,
+    "mount_pins": {
+      "/inputs": "vo-K5FeMtunP9vFG2mx8HVn0p",
+      "/outputs": "vo-zxkvdk8daIhlOUVqdqUbE3"
+    },
+    "exit": 0,
+    "completed_at": 1790530009.9199836,
+    "seconds": 1850.1809186935425,
+    "files": {
+      "20260923T051828-422Z-33696-1-features.json": {
+        "bytes": 282086,
+        "sha256": "acd10c520e04ed73c95ff33f054b13ea653aaf36a5420e8d3363b0b0a3b8cca8"
+      },
+      "20260923T171533-187Z-33696-5-features.json": {
+        "bytes": 104915,
+        "sha256": "51446a456792a160151839afd8b64a4bc36e0058be4ae46c17df7dcc5c6da5c1"
+      },
+      "20260923T200129-346Z-33696-6-features.json": {
+        "bytes": 1134731,
+        "sha256": "e6526d061e7ad61a98cd7409d9808f261125f9c687cdec6d7dde488b19f2ce26"
+      },
+      "20260923T205528-900Z-45572-3-features.json": {
+        "bytes": 459123,
+        "sha256": "40f6d7c96aa261c4f8a64cd880daf1c008b0e0cf87ee3c0a7fd6f10f2ec7e9e2"
+      },
+      "20260924T232304-170Z-12024-1-features.json": {
+        "bytes": 360427,
+        "sha256": "e73a16dd4ebf11b4467b941b2d22b85f837d6b3c6d93a5ae7903a42f296e9139"
+      },
+      "20260925T021320-371Z-7804-1-features.json": {
+        "bytes": 1518605,
+        "sha256": "c19d300203c996b297c3dad139204151d82956b28002dd4e29262d78dbdf4d39"
+      },
+      "20260925T025230-605Z-7804-2-features.json": {
+        "bytes": 146714,
+        "sha256": "f25500989eb9189afe448dd02efeddf95735b4ca600f19e3699357bc0c72a504"
+      },
+      "20260925T203745-207Z-49728-2-features.json": {
+        "bytes": 2007298,
+        "sha256": "f766bc5fb06d642f50260f26792453562279ddb4331c970cfc0d852a269b4562"
+      },
+      "20260926T035932-508Z-63684-14-features.json": {
+        "bytes": 1293487,
+        "sha256": "d22a1b32ac20961147122f8dc64173eae72211ab7521d532a5cac95e06178326"
+      },
+      "20260926T045729-166Z-79780-1-features.json": {
+        "bytes": 425927,
+        "sha256": "0f1be97cff5d905c2a4bee5b6b7ebc8d592be116a6a82c1507465d7118e7e1e8"
+      },
+      "environment.json": {
+        "bytes": 120,
+        "sha256": "1b7dbbc288601ea89ac8d5e1e0c1af517c0f02d73cad600c07be738994fb1979"
+      },
+      "epoch-13.pt": {
+        "bytes": 128234613,
+        "sha256": "3a67628c61a691f3b5e07d21d0a46b8a4f11b0c9d3ccf40911fd8f67d39670f0"
+      },
+      "epoch-26.pt": {
+        "bytes": 128236277,
+        "sha256": "b8429830f0c5f15dc8c869e4a2531b9677306696b0639098af8895422df6ef2a"
+      },
+      "evaluation.json": {
+        "bytes": 186978,
+        "sha256": "87f434a84e9be7ba54d3bb24a1b7a5415956ad5553cd82dc9659e8e9efb3e99b"
+      },
+      "features-summary.json": {
+        "bytes": 1850,
+        "sha256": "01d48f9609b7e51a2d02384a218588d88f651d56d32989ecc09e986a508c6900"
+      },
+      "latest.pt": {
+        "bytes": 128233717,
+        "sha256": "9c753dd0ca48e4304e02c3e80e6cdb0896ba365dd466e02e8a7eb42987ad135b"
+      },
+      "run.exit": {
+        "bytes": 2,
+        "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+      },
+      "run.log": {
+        "bytes": 11683,
+        "sha256": "f28acc3cd581c5fc883e3f426f0888799fb543e517b3266db082abf149bba9cd"
+      },
+      "started.json": {
+        "bytes": 204,
+        "sha256": "b4e239440ac323ff7bdfb36df5b9d62b0b74d3bd48e11fa6fa959bce397278e2"
+      },
+      "status.json": {
+        "bytes": 16630,
+        "sha256": "822f8074a8947af80f8e3fa5514fbac2a49ff518d7f042652c9c70d25d38ad32"
+      },
+      "assets/assets.json": {
+        "bytes": 2598,
+        "sha256": "e1ed61730a4fe858c2a8fc1232a3a0987828535e8b8ff2cf655f00d098140002"
+      },
+      "assets/vision.safetensors": {
+        "bytes": 1263873664,
+        "sha256": "2fceee7b828e737e459b39aa5d11e01362ce38210033f6f885b9974d7a0d6e79"
+      },
+      "jobs/explore-encoder-nitrogen.status.json": {
+        "bytes": 277,
+        "sha256": "d879bff4b6a7111383ec0dcd0e63551bf98d63f8d1f5b7901f4d829c9b8f3be9"
+      }
+    }
+  },
+  "teardown": {
+    "terminal": true,
+    "owned_apps": [
+      "ap-sKEKpIXEeauhlWzxAk5vxQ"
+    ],
+    "owned_containers": 0,
+    "checked_at": 1790530022.421521,
+    "events": []
+  },
+  "budget": {
+    "cap_usd": 12.5,
+    "overhead_reserve_usd": 0.75,
+    "prior_attempt_charge_usd": 0.0,
+    "new_overhead_usd": 0.75,
+    "rate_usd_second_per_arm": 0.0007178399999999999,
+    "arms": [
+      1
+    ],
+    "attempts_per_arm": 1,
+    "started_at_unix": 1790528155.273715,
+    "started_monotonic": 430248.569367125,
+    "stop_at_unix": 1790544403.273715,
+    "stop_monotonic": 446496.569367125,
+    "funded_until_unix": 1790544523.273715,
+    "lifetime_seconds": 16368,
+    "function_timeout_seconds": 15948,
+    "startup_seconds": 300,
+    "stop_seconds": 120,
+    "reserved_usd": 12.499605119999998,
+    "app_name": "rivals-explore-encoder-nitrogen-20260927",
+    "identity": {
+      "profile": "rivals",
+      "workspace": "volpestyle",
+      "workspace_id": "ac-kMLf5bJKqF5CAlSbfNhGh0"
+    }
+  },
+  "collection": {
+    "20260923T051828-422Z-33696-1-features.json": {
+      "bytes": 282086,
+      "sha256": "acd10c520e04ed73c95ff33f054b13ea653aaf36a5420e8d3363b0b0a3b8cca8"
+    },
+    "20260923T171533-187Z-33696-5-features.json": {
+      "bytes": 104915,
+      "sha256": "51446a456792a160151839afd8b64a4bc36e0058be4ae46c17df7dcc5c6da5c1"
+    },
+    "20260923T200129-346Z-33696-6-features.json": {
+      "bytes": 1134731,
+      "sha256": "e6526d061e7ad61a98cd7409d9808f261125f9c687cdec6d7dde488b19f2ce26"
+    },
+    "20260923T205528-900Z-45572-3-features.json": {
+      "bytes": 459123,
+      "sha256": "40f6d7c96aa261c4f8a64cd880daf1c008b0e0cf87ee3c0a7fd6f10f2ec7e9e2"
+    },
+    "20260924T232304-170Z-12024-1-features.json": {
+      "bytes": 360427,
+      "sha256": "e73a16dd4ebf11b4467b941b2d22b85f837d6b3c6d93a5ae7903a42f296e9139"
+    },
+    "20260925T021320-371Z-7804-1-features.json": {
+      "bytes": 1518605,
+      "sha256": "c19d300203c996b297c3dad139204151d82956b28002dd4e29262d78dbdf4d39"
+    },
+    "20260925T025230-605Z-7804-2-features.json": {
+      "bytes": 146714,
+      "sha256": "f25500989eb9189afe448dd02efeddf95735b4ca600f19e3699357bc0c72a504"
+    },
+    "20260925T203745-207Z-49728-2-features.json": {
+      "bytes": 2007298,
+      "sha256": "f766bc5fb06d642f50260f26792453562279ddb4331c970cfc0d852a269b4562"
+    },
+    "20260926T035932-508Z-63684-14-features.json": {
+      "bytes": 1293487,
+      "sha256": "d22a1b32ac20961147122f8dc64173eae72211ab7521d532a5cac95e06178326"
+    },
+    "20260926T045729-166Z-79780-1-features.json": {
+      "bytes": 425927,
+      "sha256": "0f1be97cff5d905c2a4bee5b6b7ebc8d592be116a6a82c1507465d7118e7e1e8"
+    },
+    "environment.json": {
+      "bytes": 120,
+      "sha256": "1b7dbbc288601ea89ac8d5e1e0c1af517c0f02d73cad600c07be738994fb1979"
+    },
+    "epoch-13.pt": {
+      "bytes": 128234613,
+      "sha256": "3a67628c61a691f3b5e07d21d0a46b8a4f11b0c9d3ccf40911fd8f67d39670f0"
+    },
+    "epoch-26.pt": {
+      "bytes": 128236277,
+      "sha256": "b8429830f0c5f15dc8c869e4a2531b9677306696b0639098af8895422df6ef2a"
+    },
+    "evaluation.json": {
+      "bytes": 186978,
+      "sha256": "87f434a84e9be7ba54d3bb24a1b7a5415956ad5553cd82dc9659e8e9efb3e99b"
+    },
+    "features-summary.json": {
+      "bytes": 1850,
+      "sha256": "01d48f9609b7e51a2d02384a218588d88f651d56d32989ecc09e986a508c6900"
+    },
+    "latest.pt": {
+      "bytes": 128233717,
+      "sha256": "9c753dd0ca48e4304e02c3e80e6cdb0896ba365dd466e02e8a7eb42987ad135b"
+    },
+    "run.exit": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "run.log": {
+      "bytes": 11683,
+      "sha256": "f28acc3cd581c5fc883e3f426f0888799fb543e517b3266db082abf149bba9cd"
+    },
+    "started.json": {
+      "bytes": 204,
+      "sha256": "b4e239440ac323ff7bdfb36df5b9d62b0b74d3bd48e11fa6fa959bce397278e2"
+    },
+    "status.json": {
+      "bytes": 16630,
+      "sha256": "822f8074a8947af80f8e3fa5514fbac2a49ff518d7f042652c9c70d25d38ad32"
+    },
+    "assets/assets.json": {
+      "bytes": 2598,
+      "sha256": "e1ed61730a4fe858c2a8fc1232a3a0987828535e8b8ff2cf655f00d098140002"
+    },
+    "assets/vision.safetensors": {
+      "bytes": 1263873664,
+      "sha256": "2fceee7b828e737e459b39aa5d11e01362ce38210033f6f885b9974d7a0d6e79"
+    },
+    "jobs/explore-encoder-nitrogen.status.json": {
+      "bytes": 277,
+      "sha256": "d879bff4b6a7111383ec0dcd0e63551bf98d63f8d1f5b7901f4d829c9b8f3be9"
+    },
+    "result.json": {
+      "bytes": 3779,
+      "sha256": "1474e3447dee0d1e2f146b22a229a1f9a053a6782448f4c9a71be7d6abd64721"
+    }
+  }
+}

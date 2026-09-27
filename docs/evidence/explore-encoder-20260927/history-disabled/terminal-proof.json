@@ -1,0 +1,23 @@
+{
+  "checked_at": 1790532674.291577,
+  "apps": [
+    {
+      "app_id": "ap-RUfsHpFc94fSt7Qid64QAz",
+      "description": "rivals-explore-encoder-historyoff-nitrogen-20260927",
+      "state": "stopped",
+      "tasks": "0",
+      "created_at": "2026-09-27 12:38:30-05:00",
+      "stopped_at": "2026-09-27 13:09:21-05:00"
+    },
+    {
+      "app_id": "ap-bOm7PMDWI8dnoLASru9vUg",
+      "description": "rivals-explore-encoder-historyoff-siglip-20260927",
+      "state": "stopped",
+      "tasks": "0",
+      "created_at": "2026-09-27 12:37:11-05:00",
+      "stopped_at": "2026-09-27 13:08:50-05:00"
+    }
+  ],
+  "containers": [],
+  "terminal": true
+}

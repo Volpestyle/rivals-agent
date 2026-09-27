@@ -1,5 +1,7 @@
 # Evidence index
 
+- [Encoder exploration](explore-encoder-20260927/README.md): completed stock/NitroGen pairs with and without action history; absolute metrics, hashes, costs and terminal proofs; no-history NitroGen proceeds to a separately approved confirm comparison.
+
 - [Round 3 accounting-a8](range-bc-countermeasures-3-20260926/accounting-a8/README.md): lead-approved extraction hold 2320 seconds; unchanged caps/formulas; five metadata tests pass; post-landing review pending.
 
 Each entry below is a record: inspected frames, receipts, reports and the scripts that produced them. Later

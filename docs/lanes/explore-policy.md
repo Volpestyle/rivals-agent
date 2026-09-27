@@ -495,3 +495,71 @@ Authoritative Mac root: `/Users/james/dev/range-bc-data/explore/encoder-20260927
 | result-packet.zip | `2223f9f04cbd757b9c848e76d2419f1b481833c847c0f1c40684de99a2dcbfcb` |
 
 Independent implementation/launch review remains LAND WITH FIXES, with the four documented non-blocking limitations above. The lead owns acceptance and the VUH-1346 result record; direct workspace Linear was unavailable to this lane. **Parked after this result; no extra seeds, variants or fit retries.**
+
+## No-history encoder follow-up (2026-09-27, 17:38 UTC; launched)
+
+Lead authorized a new **$12 hard-cap EXPLORATORY round** after accepting/posting the encoder result on VUH-1346. Amended mandatory arms remove previous-action input completely on both stock SigLIP and NitroGen, everything else matched. Implementation `1a9bcaf` uses the existing `Config(history=False)` in training and evaluation. The previous-action projection receives a constant zero vector (its learned bias remains); the LSTM retains visual recurrent memory. This directly removes the feedback shortcut without selecting a dropout rate. Default history-enabled behavior is unchanged.
+
+Seed 0, 26 epochs, full cohort/frozen dev, H1 heads, loss, optimizer/schedule, cached frozen visual features and the six decodes per encoder remain matched to the prior encoder pair. The added test proves both chunk-training and recurrent one-step outputs/states are invariant to arbitrary prior-action values, with nonzero gradients into both visual projections and zero history-weight gradient. Focused suite: 20 passed; lint passed.
+
+New Mac root `/Users/james/dev/range-bc-data/explore/encoder-historyoff-20260927/{siglip,nitrogen}`; local launch copies at `C:/Users/volpe/AppData/Local/Temp/explore-encoder-historyoff/`. Each new app owns a separate new output volume. Existing explore inputs remain read-only; no prior or CM3 app/volume is changed. Reused image `im-FNjy4v5u4XYF29SBGvT0KD`, L40S/8 CPU/32 GiB, $0.00071784/s. Each arm reserves at most $5.99956392 including $0.75 setup: combined $11.99912784. Function timeout 6893 s, startup 300 s, teardown reserve 120 s. Guard functions and a6 gate are unchanged. The status helper is now vendored and hash-pinned (prior review F2); the stale prior-charge comment is corrected (F4).
+
+AppCreate coordinated with IDM and CM3, one RPC each: stock `ap-bOm7PMDWI8dnoLASru9vUg` at 17:37:11.779 UTC; NitroGen `ap-RUfsHpFc94fSt7Qid64QAz` at 17:38:30.821 UTC, 79.04 seconds apart. Post-land independent review requested from frame-review. These are running attempts, not completed outcomes.
+
+The evaluator stops summarizing further conditions and emits a STOP receipt on the first observed self-fed camera MAE below freshly recomputed persistence. Owner must report immediately and stop other work; no extra seed or experiment follows a breakthrough. Otherwise complete the 12 conditions and visual NLLs, settle/prove teardown, then use remaining dollars under the SAME $12 cap for at most one partial-history robustness variant on the stronger encoder. Alert the lead at $10 round allocation; weekend $150 aggregate remains the lead's ledger responsibility.
+
+## No-history result and closure (2026-09-27; EXPLORATORY)
+
+**NitroGen without previous-action input is a promising press candidate for confirmation.** All 12 decodes completed; **none skipped**, no persistence stop. Removing history makes model inputs independent of teacher/self-fed action history by construction, so gap closure is not a result. The absolute comparisons below use the same six-action macro tolerant self-fed press F1 as incumbent H1 (0.101745815). Teacher-executed and self-fed press metrics also have different tolerance windows; they must not be interpreted as an input-conditioning comparison.
+
+Frozen dev has 24,556 eligible frames and 2,458 human presses across the ten supported live actions: **0.100098 events/frame (100.098 per 1,000)**, allowing simultaneous actions. The six primary F1 actions contain 1,437 human presses: **0.058519 events/frame**. Neither quantity is the binary probability of any press on a frame.
+
+| Arm | Threshold / camera | Press F1 | Predicted presses / human | Predicted / human rate | Camera MAE (degrees) |
+|---|---|---:|---:|---:|---:|
+| siglip | fixed_0.5/median | 0.303451 | 3111 / 2458 | 1.265663 | 1.200213 |
+| siglip | fixed_0.5/mode | 0.303451 | 3111 / 2458 | 1.265663 | 1.358474 |
+| siglip | fixed_0.5/expectation | 0.303451 | 3111 / 2458 | 1.265663 | 1.269364 |
+| siglip | train_chosen/median | 0.268441 | 2267 / 2458 | 0.922295 | 1.200213 |
+| siglip | train_chosen/mode | 0.268441 | 2267 / 2458 | 0.922295 | 1.358474 |
+| siglip | train_chosen/expectation | 0.268441 | 2267 / 2458 | 0.922295 | 1.269364 |
+| nitrogen | fixed_0.5/median | 0.371920 | 3134 / 2458 | 1.275020 | 1.185917 |
+| nitrogen | fixed_0.5/mode | 0.371920 | 3134 / 2458 | 1.275020 | 1.364083 |
+| nitrogen | fixed_0.5/expectation | 0.371920 | 3134 / 2458 | 1.275020 | 1.249360 |
+| nitrogen | train_chosen/median | 0.308382 | 2259 / 2458 | 0.919040 | 1.185917 |
+| nitrogen | train_chosen/mode | 0.308382 | 2259 / 2458 | 0.919040 | 1.364083 |
+| nitrogen | train_chosen/expectation | 0.308382 | 2259 / 2458 | 0.919040 | 1.249360 |
+
+**Primary camera baseline: zero motion, MAE 1.224645.** Median improves the mean by 2.00% (stock) and 3.16% (NitroGen); mode and expectation do not beat zero. The gain is **pitch-driven**: stock yaw/pitch 1.800071/0.600355, NitroGen 1.782815/0.589019, versus zero 1.735184/0.714106. Both yaw errors are worse than zero. Persistence 0.418271 and AR2 0.379687 use **true human history unavailable to these no-history models**; show them as history-privileged references, not an equal-information baseline. Neither arm beats them.
+
+At TRAIN-calibrated cutoffs, NitroGen F1 0.308382 still exceeds incumbent H1 0.101746 while pressing at 0.91904 times the human rate. This supports confirmation without relying on the fixed-0.5 over-pressing. Remaining limits: one seed; small aggregate camera gain; yaw still weak; fixed-cutoff hold-onset recall only 0.1541 and any-hold share 0.5150 versus human 0.6993. No live-control success is claimed.
+
+### Required real/zero visual check
+
+Lower is better; values are real / zeroed visual features. History remains disabled in both cases. The ablation is out-of-distribution; per-action results are retained and mixed.
+
+| Arm | Yaw NLL | Pitch NLL | Moving yaw sign NLL | Moving pitch sign NLL | Pooled press NLL | Positive-only press NLL |
+|---|---:|---:|---:|---:|---:|---:|
+| siglip | 2.943649 / 3.430420 | 2.531853 / 3.482835 | 0.693818 / 0.693592 | 0.520461 / 0.748415 | 0.090900 / 0.154280 | 1.791490 / 1.997478 |
+| nitrogen | 2.900587 / 3.797517 | 2.493271 / 3.283924 | 0.681921 / 1.115805 | 0.518019 / 0.696238 | 0.093921 / 0.175099 | 1.693605 / 1.693639 |
+
+Camera and pooled press NLL improve with real features. Stock moving-yaw sign is essentially unchanged, and NitroGen positive-only press NLL is essentially unchanged; do not describe every submetric as improved.
+
+### Closure, review and next consumer
+
+Both worker/driver exits are 0, all collector hashes match, and the PC verified 90 packet files. Fresh authenticated inventory at 18:11:14 UTC: both apps stopped, tasks 0, zero owned containers. L40S / Torch 2.14.0+cu130 / CUDA 13.0, same immutable image. Stock train/eval 499.054/240.859 seconds; NitroGen 507.462/239.487 seconds. All weights and final checkpoints remain on the Mac and owned output volumes.
+
+Conservative resource-time cost including $0.75 setup per arm: **$2.11944192 + $2.08138654 = $4.20082846**. No $10 alert; below the $12 cap. Prior encoder pair $4.21581554 plus earlier chunk sweep $26.732 gives cumulative explore compute **about $35.148644**, using the earlier rounded conservative figure. Not an invoice; other lanes and retained storage excluded.
+
+Independent review of 1a9bcaf/live launch: **LAND WITH FIXES**, receipt SHA256 `88314b57bac5a7dc233d930eea9d6a93f0f6f0bcec01444166157a66a93c1c7f`. The missing stop test landed as a23a0c3 (23 passing). F1-F3 landed as **19d0060**, 26 tests passing: authenticated run-config drives history, skipped decodes are reported, and the next manifest includes image/package pins. New copies are under `docs/evidence/explore-encoder-20260927/launch-fixes/`; completed inputs remain unchanged, no rerun.
+
+Authoritative run root: `/Users/james/dev/range-bc-data/explore/encoder-historyoff-20260927/`; local metadata copy `C:/Users/volpe/AppData/Local/Temp/explore-encoder-historyoff/results/`. Summary, terminal proof, packet manifest, per-arm final receipt and evaluation hashes are retained.
+
+| Artifact | SHA256 |
+|---|---|
+| siglip evaluation | `2576d336817b06fbaefabf63a02faaf9c3a99a3a6f39c38258a909149448c31a` |
+| siglip epoch-26.pt | `e16bb4f2fc9b10913f399a4b7eebe4a10732cf579279c21d609cc84cfbef5071` |
+| nitrogen evaluation | `4ca4745b9d24aa77403d5805edf2e8e7934e5bbaf1d479659607075695aacd37` |
+| nitrogen epoch-26.pt | `70d279f6186a6be8597f17046d7b586784e450941f837b28372ab5f939500bb6` |
+| result-packet.zip | `0f0bbf1bc835595e1873c6617072fee3d0084d445f42cf115b932bb76931be24` |
+
+**Lead decision:** no third exploratory arm. Prepare a pre-registered CONFIRM comparison of exact NitroGen no-history versus matched NitroGen history-enabled (dropout 0.2), seeds 1/2/3, $20 hard cap. Lead must approve committed pre-registration and pinned synthetic-tested judge before any confirm launch. Seed 0 is design evidence only, not confirmation.

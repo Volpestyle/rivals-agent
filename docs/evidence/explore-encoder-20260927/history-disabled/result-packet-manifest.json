@@ -1,0 +1,362 @@
+{
+  "summary.json": {
+    "bytes": 98737,
+    "sha256": "72f655823748bb6bd1594fd4d205bd1c1b4bd14db0e4122d2a76c494fee10dbc"
+  },
+  "terminal-proof.json": {
+    "bytes": 646,
+    "sha256": "37ab81ca5cc7fef740760538a8be09d718382666a992c76021bf18b32f6b06c7"
+  },
+  "summarize.py": {
+    "bytes": 2147,
+    "sha256": "1328050f361b7b1fabc65993aa2852507391c9b81c2b5cebd28150ffaa4623f9"
+  },
+  "pack_results.py": {
+    "bytes": 2302,
+    "sha256": "2695104ba97ddfbd619bd639312e5c426da06a01dab7a7e8ea3674336efa34d8"
+  },
+  "siglip/final.json": {
+    "bytes": 8872,
+    "sha256": "e67f2b1896f04563ad183ef56f3c8a2aab774f226c9968720eb90a0fbd4b0394"
+  },
+  "siglip/teardown.json": {
+    "bytes": 351,
+    "sha256": "4d3a4f98fe28b7fa3551b89dec2434f8fc690cfa7a44a6e95456bad5c7690f18"
+  },
+  "siglip/result.json": {
+    "bytes": 3786,
+    "sha256": "3e62bf84e933302c10d02be2f93080ee1c8b9498932b030fe27aa65b039d2e99"
+  },
+  "siglip/budget-reservation.json": {
+    "bytes": 759,
+    "sha256": "e7f3d0fc608eb75862f97bd92155e1ee9c45696263b336814edde10d59bfa2e0"
+  },
+  "siglip/runner-manifest.json": {
+    "bytes": 1253,
+    "sha256": "1228bf92fe035695e5d805ebdfdd16975f16fcb6ded726cdd2e15a8c1690055c"
+  },
+  "siglip/run-config.json": {
+    "bytes": 41,
+    "sha256": "d9e990a1b5bf30ede8b443198c2dfd734b4797ed73f47e6aeb47cd99644bf47b"
+  },
+  "siglip/mount-pins.json": {
+    "bytes": 88,
+    "sha256": "2fc30e11d572a558ffd6e2f0b4313ed8fca5b88dbed8a077cf3c20c2cb24ebaa"
+  },
+  "siglip/appcreate.json": {
+    "bytes": 762,
+    "sha256": "6327538cc9c2f51b5da4b4617d750ac78f75119f94a94467f5b7d85eeda9cb70"
+  },
+  "siglip/app.json": {
+    "bytes": 146,
+    "sha256": "59f935f3b4c3fc446641990063675c3341bd4db3c96dadbd95207655419fd47d"
+  },
+  "siglip/driver.exit": {
+    "bytes": 2,
+    "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+  },
+  "siglip/launcher.exit": {
+    "bytes": 2,
+    "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+  },
+  "siglip/encoder_driver.py": {
+    "bytes": 8059,
+    "sha256": "a197c59661742e117fa59931204d4802fbd8e745ccf235d46b84f8b5ad7a75a9"
+  },
+  "siglip/encoder_budget.py": {
+    "bytes": 3063,
+    "sha256": "deccc29e76754711ccaf3afa918c2714f796755a383b91f13ec97cf28fd6453a"
+  },
+  "siglip/encoder_lifecycle.py": {
+    "bytes": 4794,
+    "sha256": "ce05eb46d9a0da59a606f1e296f316e8f7266347667fcc516448e478e8f9d36a"
+  },
+  "siglip/encoder_worker.py": {
+    "bytes": 3869,
+    "sha256": "174a3b2492122ac7c3273ae08c5d81135f0bc627b77ecd67ad221ecef0082ec7"
+  },
+  "siglip/appcreate_gate.py": {
+    "bytes": 11623,
+    "sha256": "2d076fa1c5908b11193a87838879bbd0498de515184a818d61f0586fac44c520"
+  },
+  "siglip/lifecycle.py": {
+    "bytes": 229,
+    "sha256": "aa0842c34711aee5a7301c48561220c0be6512c3ab70e29038bbbb76ec9e3bbd"
+  },
+  "siglip/explore_mounts.py": {
+    "bytes": 1629,
+    "sha256": "2c36e2537fc7abb1cf39802fdd0f07fcb80cb7adec3a63a8c67d516ec2e702a9"
+  },
+  "siglip/launch.sh": {
+    "bytes": 265,
+    "sha256": "068b7da3c3747df0807416cf5dbfaf96f87adf5fd3bb774e4869140111b7d9ee"
+  },
+  "siglip/driver.log": {
+    "bytes": 1275,
+    "sha256": "6bacd21c825b51e38948786fe5e88eee6ea67c86ef37440eacc4ff01bf290fb9"
+  },
+  "siglip/inventory.json": {
+    "bytes": 1318,
+    "sha256": "1a854bc596d55daf639d3ea46cea0b1de748ba529e77779a626232144fc1c3f5"
+  },
+  "siglip/guard-ready.json": {
+    "bytes": 52,
+    "sha256": "d7b3fd19190eeb0d17d236c1203311ad23c221c3f7e6db984855db1a9a63860b"
+  },
+  "siglip/job_status.py": {
+    "bytes": 11527,
+    "sha256": "423d157ff52b5f399c4b32562cd0fd61069f0c95a884444b7152507c8f45556d"
+  },
+  "siglip/collected/20260925T021320-371Z-7804-1-features.json": {
+    "bytes": 1518605,
+    "sha256": "0540772cd31cfcdbecb53ffdc79d66b8c693041b5dea25e5a4429167fd89bb87"
+  },
+  "siglip/collected/20260926T045729-166Z-79780-1-features.json": {
+    "bytes": 425927,
+    "sha256": "65d6fbcd95dfe4c9c842ee6a2e345956042ccd65deb7cf00c2d1797b7d56f36c"
+  },
+  "siglip/collected/20260923T205528-900Z-45572-3-features.json": {
+    "bytes": 459122,
+    "sha256": "853ecd39650b39e1cceef8d3e63d7f893ad5c49f940c9cd6a17b334ce45968b8"
+  },
+  "siglip/collected/result.json": {
+    "bytes": 3786,
+    "sha256": "3e62bf84e933302c10d02be2f93080ee1c8b9498932b030fe27aa65b039d2e99"
+  },
+  "siglip/collected/run.log": {
+    "bytes": 11699,
+    "sha256": "76444730a8a557beccd7636d99b21e63168953bb73c42fbf60d9db90d7ac85bd"
+  },
+  "siglip/collected/20260926T035932-508Z-63684-14-features.json": {
+    "bytes": 1293487,
+    "sha256": "3bfc7d0c6a8dee8e195d91cd4a6546aa1fe9c018cf136e4990583df8d502733f"
+  },
+  "siglip/collected/20260923T051828-422Z-33696-1-features.json": {
+    "bytes": 282086,
+    "sha256": "e1ec9da23f530eb388c59fceb6e8bf5d454d518adc2e2ac689ad42a1e6229a3a"
+  },
+  "siglip/collected/20260925T025230-605Z-7804-2-features.json": {
+    "bytes": 146714,
+    "sha256": "d771c2f3dae46a475a13a5f5bcbe18ad27af6c07e7510cd36fe61fd3454f56fc"
+  },
+  "siglip/collected/features-summary.json": {
+    "bytes": 1860,
+    "sha256": "75b2f05fdec7545ee0d6665dea97c5ae7951019fead5c9c1953efb7e26d53178"
+  },
+  "siglip/collected/started.json": {
+    "bytes": 203,
+    "sha256": "dd353cdc9202c4a9e1aedf78886a24c88dcb4b72bb1e00d7154713827e1b354c"
+  },
+  "siglip/collected/20260925T203745-207Z-49728-2-features.json": {
+    "bytes": 2007303,
+    "sha256": "5986938b5ac324d471ff485f6dc1c88af1d89bee8e5289d5fd93a3e04992c00d"
+  },
+  "siglip/collected/20260924T232304-170Z-12024-1-features.json": {
+    "bytes": 360432,
+    "sha256": "f984d3a797bcda247d23c1ef7ddb6f7e2f295ac67a5e25e8cdf60c4a3518ea1b"
+  },
+  "siglip/collected/run.exit": {
+    "bytes": 2,
+    "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+  },
+  "siglip/collected/20260923T200129-346Z-33696-6-features.json": {
+    "bytes": 1134732,
+    "sha256": "89855b4cbe1980d036cd6af01130cb927779f191dd947ec252485ab6030a9031"
+  },
+  "siglip/collected/status.json": {
+    "bytes": 14390,
+    "sha256": "302e874621174e8fa468e1f872c4aed8477543fa84a1b17db10c6304094855bc"
+  },
+  "siglip/collected/environment.json": {
+    "bytes": 118,
+    "sha256": "69842ce9919aab6b6f9126f64018e4f24a2f8baf9ffc17f8fa7af3822a6e0374"
+  },
+  "siglip/collected/evaluation.json": {
+    "bytes": 192202,
+    "sha256": "2576d336817b06fbaefabf63a02faaf9c3a99a3a6f39c38258a909149448c31a"
+  },
+  "siglip/collected/20260923T171533-187Z-33696-5-features.json": {
+    "bytes": 104915,
+    "sha256": "7bc81bd19a9ea07ebe7607eff2d3d88629c327ff8efa33db9c77a6aef1982f6b"
+  },
+  "siglip/collected/jobs/explore-encoder-historyoff-siglip.status.json": {
+    "bytes": 286,
+    "sha256": "8a677ffbfdd8fec902465432559fc5fa85306a0ce9e88d2b9fb3b0f526c9d5a6"
+  },
+  "siglip/collected/assets/assets.json": {
+    "bytes": 714,
+    "sha256": "b770aba2b6b30e3d74c946297c7923a34c884d864fbe6b92d91aea7f52ca62ab"
+  },
+  "nitrogen/final.json": {
+    "bytes": 8667,
+    "sha256": "f996daa3e201c7a9f9afe1dd72f4d2838c1c8e47c8929a84d98a7fe3d6df802b"
+  },
+  "nitrogen/teardown.json": {
+    "bytes": 154,
+    "sha256": "279b41c7f068e54494c5a29432e41f838b36700bb0f0f6b8ae9d436a561a0f46"
+  },
+  "nitrogen/result.json": {
+    "bytes": 3786,
+    "sha256": "f0dd1182c67d6949b15b1da07f2410d2a9cd89c62263c6e9a67ae2089f1fde56"
+  },
+  "nitrogen/budget-reservation.json": {
+    "bytes": 758,
+    "sha256": "548e458eff9b8830d163a91ea66ca031f1c5e70e6e910332480a5b408b43d135"
+  },
+  "nitrogen/runner-manifest.json": {
+    "bytes": 1253,
+    "sha256": "2239583ec981ff6bbb4b91d93cedea8a966185e66c54366ae833cf31289c395d"
+  },
+  "nitrogen/run-config.json": {
+    "bytes": 43,
+    "sha256": "e5d311e054ac0ef55aef2b05437dea5fee9350c4ecabc26c5f547128d3108be4"
+  },
+  "nitrogen/mount-pins.json": {
+    "bytes": 88,
+    "sha256": "a6f43f1f29be1098be517e3fffa4390f703812a4097dded5e9ac62f28587c36e"
+  },
+  "nitrogen/appcreate.json": {
+    "bytes": 768,
+    "sha256": "48afcb367f201676b417e12d0f9c7b828dd128e965aff846ad23527e1482bc1a"
+  },
+  "nitrogen/app.json": {
+    "bytes": 148,
+    "sha256": "8cdf5e4637dac0578d0a7e09948fe1a6f7b536213904c2f9fc63224919affa94"
+  },
+  "nitrogen/driver.exit": {
+    "bytes": 2,
+    "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+  },
+  "nitrogen/launcher.exit": {
+    "bytes": 2,
+    "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+  },
+  "nitrogen/encoder_driver.py": {
+    "bytes": 8059,
+    "sha256": "a197c59661742e117fa59931204d4802fbd8e745ccf235d46b84f8b5ad7a75a9"
+  },
+  "nitrogen/encoder_budget.py": {
+    "bytes": 3063,
+    "sha256": "deccc29e76754711ccaf3afa918c2714f796755a383b91f13ec97cf28fd6453a"
+  },
+  "nitrogen/encoder_lifecycle.py": {
+    "bytes": 4794,
+    "sha256": "ce05eb46d9a0da59a606f1e296f316e8f7266347667fcc516448e478e8f9d36a"
+  },
+  "nitrogen/encoder_worker.py": {
+    "bytes": 3869,
+    "sha256": "174a3b2492122ac7c3273ae08c5d81135f0bc627b77ecd67ad221ecef0082ec7"
+  },
+  "nitrogen/appcreate_gate.py": {
+    "bytes": 11623,
+    "sha256": "2d076fa1c5908b11193a87838879bbd0498de515184a818d61f0586fac44c520"
+  },
+  "nitrogen/lifecycle.py": {
+    "bytes": 229,
+    "sha256": "aa0842c34711aee5a7301c48561220c0be6512c3ab70e29038bbbb76ec9e3bbd"
+  },
+  "nitrogen/explore_mounts.py": {
+    "bytes": 1629,
+    "sha256": "2c36e2537fc7abb1cf39802fdd0f07fcb80cb7adec3a63a8c67d516ec2e702a9"
+  },
+  "nitrogen/launch.sh": {
+    "bytes": 267,
+    "sha256": "24421253af678282a21dc1a4b6de35d3cb0fded1cf2da40dfa0d780e9f7765ca"
+  },
+  "nitrogen/driver.log": {
+    "bytes": 1278,
+    "sha256": "2add981ef8e06314a8f4d8cc49fdcd2e1300f0cb5ca3f88a9c583f5814614b04"
+  },
+  "nitrogen/inventory.json": {
+    "bytes": 1323,
+    "sha256": "cbe113d4166b03d66126076f4f94dc752edc5c429cbb7345af0bb16cfa75a6df"
+  },
+  "nitrogen/guard-ready.json": {
+    "bytes": 52,
+    "sha256": "cc0af146a2275ebf8dc2ff85bc19050b3f3fe0821fe423533366d76c74eb8314"
+  },
+  "nitrogen/job_status.py": {
+    "bytes": 11527,
+    "sha256": "423d157ff52b5f399c4b32562cd0fd61069f0c95a884444b7152507c8f45556d"
+  },
+  "nitrogen/collected/20260925T021320-371Z-7804-1-features.json": {
+    "bytes": 1518600,
+    "sha256": "66bd593c06f647d27e068935c2a5f64f45a8171374640428638f785c4d345738"
+  },
+  "nitrogen/collected/20260926T045729-166Z-79780-1-features.json": {
+    "bytes": 425927,
+    "sha256": "992694a869fd636c8e3ceeeb074c0860e56a6493dacfc5f2eca6fa5d1c6b6906"
+  },
+  "nitrogen/collected/20260923T205528-900Z-45572-3-features.json": {
+    "bytes": 459122,
+    "sha256": "ea1794af5995d87fb0beb90be6d481fe9365d3c64cb8c3e31f9aaa136b50e248"
+  },
+  "nitrogen/collected/result.json": {
+    "bytes": 3786,
+    "sha256": "f0dd1182c67d6949b15b1da07f2410d2a9cd89c62263c6e9a67ae2089f1fde56"
+  },
+  "nitrogen/collected/run.log": {
+    "bytes": 11630,
+    "sha256": "8383dd2de2ffd3fb72e21869db7376aaaf474b5093efd0e8ffe39c296e8f36b5"
+  },
+  "nitrogen/collected/20260926T035932-508Z-63684-14-features.json": {
+    "bytes": 1293482,
+    "sha256": "5b217cc40113d445ea5a2565393c9948e53fc8f1c152b726185d4694abc32ce7"
+  },
+  "nitrogen/collected/20260923T051828-422Z-33696-1-features.json": {
+    "bytes": 282081,
+    "sha256": "1fa3bc21adf5f829ad4cd4a2c899944dd56d78dd6950de34421ab7b3c3d3f465"
+  },
+  "nitrogen/collected/20260925T025230-605Z-7804-2-features.json": {
+    "bytes": 146715,
+    "sha256": "5aa195737fc15701e45046bd39d70ce0a7e42cb2585ac23ca3def5be635c225e"
+  },
+  "nitrogen/collected/features-summary.json": {
+    "bytes": 1846,
+    "sha256": "d265d19325303d36f316c7978af6ac2cbb32f88e4c9ca40886271a46462a2cda"
+  },
+  "nitrogen/collected/started.json": {
+    "bytes": 200,
+    "sha256": "6727f0c0c8f2a9d0770f47f190a106bce4e9e9adec464e3f9351c06f436830cb"
+  },
+  "nitrogen/collected/20260925T203745-207Z-49728-2-features.json": {
+    "bytes": 2007303,
+    "sha256": "4edcbeb9e9d34d083ab995f1b7a6757a6ca9387072083d0d0756b497b1505c01"
+  },
+  "nitrogen/collected/20260924T232304-170Z-12024-1-features.json": {
+    "bytes": 360433,
+    "sha256": "e94bc4012ad58d612a4a471bfe18dcf1d3cd6bb26f19cb6d9293a69c277375e1"
+  },
+  "nitrogen/collected/run.exit": {
+    "bytes": 2,
+    "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+  },
+  "nitrogen/collected/20260923T200129-346Z-33696-6-features.json": {
+    "bytes": 1134731,
+    "sha256": "60497c9f7eb24f6c39786a2c02c90d35adc0ff4ea7e47fd0fd3cc18ed92e782f"
+  },
+  "nitrogen/collected/status.json": {
+    "bytes": 16622,
+    "sha256": "8e2a3dbd4d7979579cb58f37752f0ac9562a3f961e336f190d549fa418574cdb"
+  },
+  "nitrogen/collected/environment.json": {
+    "bytes": 120,
+    "sha256": "1b7dbbc288601ea89ac8d5e1e0c1af517c0f02d73cad600c07be738994fb1979"
+  },
+  "nitrogen/collected/evaluation.json": {
+    "bytes": 194414,
+    "sha256": "4ca4745b9d24aa77403d5805edf2e8e7934e5bbaf1d479659607075695aacd37"
+  },
+  "nitrogen/collected/20260923T171533-187Z-33696-5-features.json": {
+    "bytes": 104915,
+    "sha256": "8f98977f39cb47fddadb49a5601fd2c89c36c2c3715565295f48cdf6622c6123"
+  },
+  "nitrogen/collected/jobs/explore-encoder-historyoff-nitrogen.status.json": {
+    "bytes": 288,
+    "sha256": "01de6da9e9d33953d9485f9205b542c121068a9c7b990ff6d4bbf361f2e49ad3"
+  },
+  "nitrogen/collected/assets/assets.json": {
+    "bytes": 2598,
+    "sha256": "e1ed61730a4fe858c2a8fc1232a3a0987828535e8b8ff2cf655f00d098140002"
+  }
+}
