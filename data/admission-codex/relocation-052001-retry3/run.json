@@ -1,0 +1,24 @@
+﻿{
+    "session":  "20260927T052001-827Z-150600-5",
+    "started":  "2026-09-27T17:47:11.1940193Z",
+    "finished":  "2026-09-27T18:24:40.4970823Z",
+    "supervisor_pid":  127096,
+    "exit_code":  0,
+    "failure":  null,
+    "free_bytes_before":  14061879296,
+    "minimum_free_bytes":  4294967296,
+    "process_peak_working_set_bytes":  {
+                                           "72836":  3051520,
+                                           "146036":  6590464,
+                                           "14096":  9285632,
+                                           "7304":  9154560,
+                                           "65028":  7626752,
+                                           "78616":  4894720,
+                                           "62544":  9154560,
+                                           "153496":  13991936,
+                                           "122940":  9162752,
+                                           "125000":  9158656,
+                                           "158360":  24539136
+                                       },
+    "receipt":  "C:\\Users\\volpe\\repos\\rivals-agent\\data\\admission-codex\\relocation-052001-retry3\\relocation-052001-mac.json"
+}
