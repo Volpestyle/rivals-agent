@@ -8,8 +8,8 @@ with the game already foreground. Plain SSH cannot own dxcam or pad capture.
 
 Camera response repair a4 has pre-run LAND, receipt 1be5e514:
 `docs/evidence/camera-turns-20260927/camera-turns-review-v1-a4.json`.
-Old a3 and earlier receipts are stale. Owner42 driver tests and24 analyzer
-tests pass; independent reviewer66 tests pass. Actual yaw-01 drift still refuses.
+Old a3 and earlier receipts are stale. Owner 42 driver tests and24 analyzer
+tests pass; independent reviewer 66 tests pass. Actual yaw-01 drift still refuses.
 The yaw-01b visible prime response now passes without relaxing NCC>=.8: small
 patches below the banner replace the oversized rigid template, after release.
 No command, duration, token, guard or lease changed.
@@ -42,8 +42,8 @@ $camCommon = @('--live','--review-receipt',$camReceipt,'--game-pid',"$camGamePid
 
 The durable env receipt is commit 38bf7953. Inference imports and package checks
 passed. The subsequent sitting successfully captured A1 on this interpreter.
-An offline saved-PNG CUDA replay reproduced the cold first forward at775ms;
-pre-timing startup warmed it to28-31ms, and after40s idle prediction ages stayed
+An offline saved-PNG CUDA replay reproduced the cold first forward at 775ms;
+pre-timing startup warmed it to 28-31ms, and after 40s idle prediction ages stayed
 25-34ms. These are offline inference checks, not measured game FPS cost.
 
 Perform a guarded move-and-attack activity refresh **before the first block**,
@@ -177,13 +177,15 @@ $fpsArgs = @('--checkpoint','data/diagnostics/live-loop-fallback-20260927/model_
 uv run --no-project --python $camPython python scripts/measure_inference_fps.py @fpsArgs
 ```
 
-FPS repair adds bounded startup BEFORE the phase clock: at most3s to get two
+FPS repair adds bounded startup BEFORE the phase clock: at most3 s to get two
 consecutive fresh capture/proof frames (discard stale startup frames); first
-prediction at most5s, then three at the unchanged250ms deadline on the SAME
-worker; total startup cap10s. Range/idle/focus/key checks stay active. Outputs
+prediction at most5 s, then three at the unchanged 250ms deadline on the SAME
+worker; total startup cap10 s. Range/idle/focus/key checks stay active. Outputs
 are discarded. Startup is excluded from A/B/A and recorded in startup.json;
 failure stops instead of starting timing. After priming, stale proof still stops
-at100ms. Warmup repair must be landed before this next FPS command.
+at100ms. FPS warmup repair is landed 1455a92, with 51 owner tests and exact-source saved-PNG
+CUDA qualification. Camera a4 is landed b2fc8b1; all 11receipt pins verified again
+after commit. All worker compute is stopped for the lead-operated retry.
 
 Append --fps-cap with the ACTUAL configured cap if present. Each phase has 10 s
 warmup +30 s measured; A1/B/A2 complete automatically without actuator. B runs

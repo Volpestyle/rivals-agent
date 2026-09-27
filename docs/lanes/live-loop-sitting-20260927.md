@@ -19,19 +19,20 @@ recording and scheduling; workers remain off desktop and stop compute on cue.
 ## Before the next sitting
 
 - Camera a4 pre-run LAND: receipt camera-turns-review-v1-a4.json (1be5e514),
-  reviewer handback3a6149ef. Owner42 driver +24 analyzer tests, reviewer66 tests.
+  reviewer handback 3a6149ef. Owner 42 driver +24 analyzer tests, reviewer 66 tests.
   Saved yaw-01b prime passes new pixel-only small-patch response analysis; no
   input functions/calls changed. a3 and earlier receipts are stale. Ready-attach
-  before pad, M1 .45/.3s, observed response, five seconds neutral, new ready-0
+  before pad, M1 .45/.3 s, observed response, five seconds neutral, new ready-0
   token and pose lock remain. No retry, auto-leveling or search.
 - Durable Python: C:/Users/volpe/.venvs/rivals-live-cu128/Scripts/python.exe.
-  Latest sitting captured A1 about30Hz. Saved-PNG CUDA replay reproduced775ms
-  cold startup, then28-31ms; after40s idle six ages25-34ms passed250ms. FPS repair
+  Latest sitting captured A1 about 30Hz. Saved-PNG CUDA replay reproduced 775ms
+  cold startup, then 28-31ms; after 40s idle six ages25-34ms passed250ms. FPS repair
   adds capture/proof priming and bounded same-worker warmup before phase timing.
-  CPU packaging/land is the final pending FPS readiness item; no further GPU
-  job runs pending lead scheduling. No actual FPS A/B/A completed yet.
-- Focal remains UNKNOWN after the CALIBRATION attempt0dafeb0:96 frames/52 tracks,
-  all20 models refused residual checks. No focal/bounds or main-account transfer.
+  FPS repair landed 1455a92 with 51 owner tests; camera integration landed b2fc8b1
+  and its 11pins verified after commit. READY for supervised retry. No worker
+  compute remains, and no further GPU job runs pending lead scheduling. No actual FPS A/B/A completed yet.
+- Focal remains UNKNOWN after the CALIBRATION attempt 0dafeb0:96 frames/52 tracks,
+  all 20 models refused residual checks. No focal/bounds or main-account transfer.
   No pulse or mouse-sweep block is included. Model fallback remains an inference
   workload only; learned/scripted pairs are deferred.
 
@@ -93,9 +94,10 @@ Camera a4 has pre-run LAND (1be5e514): minimal post-release analyzer call change
 unchanged input functions/calls,42 driver +24 analyzer owner tests and66 reviewer
 tests. The actual yaw-01b prime now passes small-patch response checks; static,
 wrong-sign and stale controls refuse. Analyzer landed fe1118b. FPS saved-PNG
-CUDA replay reproduced775ms cold inference and passed bounded warmup plus40s
+CUDA replay reproduced 775ms cold inference and passed bounded warmup plus 40s
 idle with subsequent ages25-34ms under250ms. Capture/proof priming and same-worker
-warmup precede all A/B/A timing; steady limits remain100/250ms. FPS packaging
-is finishing CPU-only; GPU replay process exited. Focal0dafeb0 remains refused;
+warmup precede all A/B/A timing; steady limits remain100/250ms. FPS repair landed 1455a92 with 51 tests; camera integration landed b2fc8b1 and
+post-commit receipt verification passed. All worker compute exited. READY for
+supervised retry. Focal0dafeb0 remains refused;
 next sitting is camera turns + FPS only. No camera map, live policy result or
 game FPS cost is accepted. Lead owns publication; no Linear write claimed.
