@@ -95,6 +95,24 @@ def below_normal():
         ctypes.windll.kernel32.SetPriorityClass(ctypes.windll.kernel32.GetCurrentProcess(), 0x4000)
 
 
+def check_before_decode():
+    """Check each Windows decode launch; the owning watchdog also monitors ongoing work."""
+    if sys.platform != "win32":
+        return
+    class Memory(ctypes.Structure):
+        _fields_ = [("length", ctypes.c_ulong), ("load", ctypes.c_ulong),
+                    *[(n, ctypes.c_ulonglong) for n in ("total", "available", "page_total", "page_available",
+                                                       "virtual_total", "virtual_available", "extended")]]
+    memory = Memory()
+    memory.length = ctypes.sizeof(memory)
+    need(ctypes.windll.kernel32.GlobalMemoryStatusEx(ctypes.byref(memory)), "memory check failed")
+    need(memory.available >= 2 * 1024**3, "less than 2 GiB free RAM; decode refused")
+    processes = subprocess.run(["tasklist", "/fo", "csv", "/nh"], capture_output=True,
+                               text=True, check=True, creationflags=BELOW).stdout.lower()
+    need(not any(line.startswith(('"marvel', '"obs64')) for line in processes.splitlines()),
+         "Marvel or OBS active; decode refused")
+
+
 def sha(path):
     h = hashlib.sha256()
     with open(path, "rb") as f:
@@ -418,6 +436,7 @@ def step_profile(c):
 
 
 def _scan(c, extra, scratch):
+    check_before_decode()
     cmd = [sys.executable, str(c.snapshot / SCAN_REL), "--video", c.video, "--session", str(c.raw),
            "--scratch", str(scratch), "--workers", "4", *extra]
     env = dict(os.environ, PYTHONDONTWRITEBYTECODE="1")
@@ -715,6 +734,7 @@ def _decode(c, file_ms_list, keep_frames=False):
             cur = [ms]
     windows.append(cur)
     for win in windows:
+        check_before_decode()
         expr = "+".join(f"eq(pts\\,{ms})" for ms in win)
         cmd = ["ffmpeg", "-hide_banner", "-loglevel", "error", "-nostdin", "-copyts", "-threads", "2",
                "-ss", f"{max(0, win[0] / 1000 - 0.2):.3f}", "-i", c.video, "-an", "-sn", "-dn", "-filter_threads", "1",

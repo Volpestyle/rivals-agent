@@ -20,6 +20,7 @@ def test_decode_yields_bounded_windows_with_identical_pixels(monkeypatch):
     intake = load('streaming_intake', ROOT / 'data/human/sessions/intake_session.py')
     monkeypatch.setattr(intake, 'W', 2)
     monkeypatch.setattr(intake, 'H', 1)
+    monkeypatch.setattr(intake, 'check_before_decode', lambda: None)
     calls = []
     expected = list(range(21, 201, 10))
 
