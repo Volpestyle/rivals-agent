@@ -1,0 +1,23 @@
+﻿{
+    "session":  "20260927T060021-195Z-150600-10",
+    "step":  "regime",
+    "started":  "2026-09-27T23:01:24.2068082Z",
+    "finished":  "2026-09-27T23:01:25.9733828Z",
+    "pid":  151156,
+    "exit_code":  0,
+    "failure":  null,
+    "free_bytes_before":  13677662208,
+    "process_peak_working_set_bytes":  {
+
+                                       },
+    "arguments":  [
+                      "-u",
+                      "data/human/sessions/intake_session.py",
+                      "regime",
+                      "20260927T060021-195Z-150600-10",
+                      "--scratch",
+                      "data/admission-codex/intake",
+                      "--snapshot",
+                      "code-snapshot-f8fd92c-bounded-20260927"
+                  ]
+}
