@@ -5,16 +5,14 @@ description: Where and how this repo runs training and other heavy compute (PC v
 
 # rivals-compute
 
-Read `docs/compute.md` (the compute protocol) in full before starting a job. The short version:
+Read `docs/compute.md` (the compute protocol) in full before starting a job. It is the only source for machine roles,
+caps, the explore/confirm tracks and review timing; they change often, so this skill doesn't restate them.
 
-- **PC:** game, recording, and the live loop only. No training. Background CPU work runs at idle priority, with
-  ≤2 ffmpeg threads and ≤~3 GB per process, streamed.
-- **Mac:** one heavy job at a time, in the order the lead sets. Launch with Git Bash `ssh -n -T -o BatchMode=yes mac`, nohup
-  and niced, with status and `.exit` files. Judge completion from the files, never the launcher.
-- **Modal** (profile `rivals`): confirm-track fan-out only, with a reviewed harness, lead-approved receipts, a hard
-  cap and proven teardown. Only train and frozen-dev data go up.
-- **Explore vs confirm:** explore sweeps are Mac-only and tagged EXPLORATORY. Confirm runs need a pre-registration, a
-  judge pinned before results, independent review and stage approvals.
+The mechanics that rarely change:
+
+- **Mac:** launch with Git Bash `ssh -n -T -o BatchMode=yes mac` (PowerShell 5.1 around ssh hangs), nohup and niced,
+  with status and `.exit` files. Judge completion from the files, never the launcher.
+- **PC background CPU work:** idle or BelowNormal priority, ≤2 ffmpeg threads, ≤~3 GB per process, streamed.
 - Every job writes a status file (`scripts/job_status.py`) so it shows on the job board
   (`https://jamess-macbook-pro.tailb90f24.ts.net:9443/`).
 

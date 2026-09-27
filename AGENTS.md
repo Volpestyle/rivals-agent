@@ -21,6 +21,8 @@ gets them as one-line text files and loads no repo skills; set it to `true` and 
    On the PLAY lobby the pad's `X` starts a live Quick Match.
 4. Linear project **Rivals Agent** (team Vuhlp): what is done, in progress and blocked.
    Accepted results and evidence go on the issue; working notes stay in `docs/lanes/`.
+   Use `rivals-progress` when a result, blocker, scope or handoff changes, and before
+   asking James for more recording or calibration. A plan or checkbox alone is not completion evidence.
 5. `docs/machines.md` before moving code, data or jobs between machines: ownership,
    SSH directions, immutable recording relocation and checkpoint boundaries.
 
@@ -92,6 +94,11 @@ co-leads route scope decisions through that lead. A status request alone creates
   outcome; use checklists for its steps and blocking relations only for real prerequisites.
   Keep acceptance, accountable owner, current evidence, limitations and next action there.
   Workers publish substantive results once; the lead owns disputed acceptance and transitions.
+  Before handing off a material result, reconcile the affected issue's current result, remaining
+  acceptance and next action, then read back the write. The lead reconciles changed dependencies,
+  milestones and project entry points in that same delivery; `rivals-progress` gives the procedure.
+  If publication fails, keep the exact pending correction and owner in the existing handoff and
+  report the result as produced but not yet recorded. Preserve frozen and historical evidence.
   Load `linear-issues` and use the direct workspace Linear MCP for writes. Plans hold design,
   lane docs hold technical findings, and panes hold coordination; none is a second status queue.
 - **Validate measurements early.** Pair a reader or label-rule change with a small inspected
