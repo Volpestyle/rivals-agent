@@ -60,7 +60,7 @@ def main(argv=None):
             diagnostic = out / "press-diagnostic"
             diagnostic.mkdir()
             run(loaded, out / "refit.pt", result["checkpoint_sha256"], diagnostic,
-                device="cuda", progress=progress)
+                device="cuda", progress=progress, manifest_sha256=a.manifest_sha256)
         else:
             result = {}
             for item, target in loaded:

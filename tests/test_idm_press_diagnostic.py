@@ -16,6 +16,15 @@ def sample():
                            mask=torch.ones(4, 1, dtype=torch.bool))
 
 
+def test_overlap_is_refused_before_checkpoint_or_store_payload(tmp_path):
+    same = SimpleNamespace(session_id="same-source")
+    loaded = [({"role": "train"}, same), ({"role": "heldout"}, same)]
+    with pytest.raises(ValueError, match="separate explicit"):
+        D.run(loaded, tmp_path / "must-not-open", "0" * 64, tmp_path, device="cpu")
+    D.require_disjoint_roles([({"role": "train"}, same),
+                             ({"role": "heldout"}, SimpleNamespace(session_id="another-source"))])
+
+
 def test_calibration_uses_training_rate_and_reports_ties():
     e = sample()
     report = D.thresholds(e, np.array([[.1], [.9], [.9], [.2]]), role="train")

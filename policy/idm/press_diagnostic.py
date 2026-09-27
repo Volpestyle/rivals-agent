@@ -69,8 +69,19 @@ def score(examples, probabilities, cuts, supported, progress=lambda _: None):
     return result
 
 
-def run(loaded, checkpoint, checkpoint_sha, out, *, device, progress=lambda _: None):
+def require_disjoint_roles(loaded):
+    sets = {"train": set(), "heldout": set()}
+    for item, target in loaded:
+        E.require(item["role"] in sets, "unknown experiment role")
+        sets[item["role"]].add(target.session_id)
+    E.require(sets["train"] and sets["heldout"] and not sets["train"] & sets["heldout"],
+              "separate explicit train and heldout required")
+
+
+def run(loaded, checkpoint, checkpoint_sha, out, *, device, progress=lambda _: None,
+        manifest_sha256=None):
     out = Path(out)
+    require_disjoint_roles(loaded)
     E.require(T.sha256(checkpoint) == checkpoint_sha, "checkpoint hash mismatch")
     model, payload = TR.load_checkpoint(checkpoint, device=device)
     sets = {"train": [], "heldout": []}
@@ -103,6 +114,11 @@ def run(loaded, checkpoint, checkpoint_sha, out, *, device, progress=lambda _: N
     cuts = [calibration["thresholds"][a] for a in ACTIONS]
     supported = [model.support[a] for a in ACTIONS]
     report = {"scope": "EXPLORATORY", "review": "provisional", "checkpoint_sha256": checkpoint_sha,
+              "manifest_sha256": manifest_sha256,
+              "preflight": {"passed": True, "sessions": [
+                  {"session_id": target.session_id, "role": item["role"],
+                   "targets_sha256": item["targets_sha256"], "frames_sha256": item["frames_sha256"]}
+                  for item, target in loaded]},
               "device": device, "actions": ACTIONS, "calibration": calibration, "exclusions": exclusions,
               "heldout_rows": len(heldout), "controls": {},
               "scoring": "All known eligible rows; no probability abstention band. One-to-one +/-2 intervals; "
@@ -137,7 +153,7 @@ def main(argv=None):
           stage="running", evidence=str(out / "report.json"))
     try:
         run(loaded, a.checkpoint, a.checkpoint_sha256, out, device=a.device,
-            progress=lambda v: write(job, root=out / "jobs", progress=v))
+            progress=lambda v: write(job, root=out / "jobs", progress=v), manifest_sha256=a.manifest_sha256)
         write(job, root=out / "jobs", stage="done")
     except BaseException:
         write(job, root=out / "jobs", stage="failed")

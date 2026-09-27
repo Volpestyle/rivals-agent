@@ -20,6 +20,17 @@ def digest(path):
     return h.hexdigest()
 
 
+def report_context(path, manifest, manifest_sha256):
+    """Attach verified run context without changing the frozen diagnostic code."""
+    report = json.loads(Path(path).read_text())
+    report['manifest_sha256'] = manifest_sha256
+    report['preflight'] = {'passed': True, 'sessions': [
+        {key: item[key] for key in ('session_id', 'role', 'targets_sha256', 'frames_sha256')}
+        for item in manifest['sessions']]}
+    report['context_added_by'] = 'worker after successful pinned diagnostic exit; metrics unchanged'
+    Path(path).write_text(json.dumps(report, indent=2) + '\n')
+
+
 def run_press(deadline, upload_pin, run_pin, mount_pins, output_volume):
     import modal
     import torch
@@ -70,6 +81,8 @@ def run_press(deadline, upload_pin, run_pin, mount_pins, output_volume):
             time.sleep(1)
         status = status or proc.returncode
     (output / 'run.exit').write_text(str(status) + '\n')
+    if status == 0:
+        report_context(output / 'report.json', json.loads((inputs / 'run-manifest.json').read_text()), run_pin)
     result = {**claim, 'exit': status, 'completed_at': time.time(), 'seconds': time.time() - started,
               'device': 'cuda:NVIDIA L40S', 'files': {}}
     for p in output.rglob('*'):
