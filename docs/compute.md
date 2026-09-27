@@ -70,6 +70,8 @@ so give cloud boxes 8 CPUs or more.
   quality"). The explore cap is approximate: about $21 plus setup and evaluation. James is told before spending passes
   ~$30. Standing explore guidance: when quality and a small saving conflict, choose quality (matched devices, clean
   comparisons). An arm that clearly beats H=1 goes next to a multi-seed confirm run, not to more single-seed variants.
+  **~04:30 CDT, still the same night:** the explore cap rose to **$35**. The steering lead approved it as James's proxy,
+  so the relaunched H=4 fits alongside H=1 and H=8.
 - A confirm-track fan-out (round 3's `handoff/modal/fanout/`) calls only the reviewed entry point
   (`policy/range_bc/cm3_run.py fit --arm --seed`), one fit per call, each authenticated by a lead-approved receipt.
   It never retries training automatically. The harness itself is launch plumbing, covered in "The two experiment tracks".
