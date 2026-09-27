@@ -226,7 +226,20 @@ def score_edges(examples, scores, thresholds, supported, progress=lambda _: None
     return result
 
 
+def require_decode_platform(loaded):
+    """Refuse unknown or mixed decode backends before opening frame payloads."""
+    platforms = set()
+    for item, _ in loaded:
+        manifest = read_pinned(Path(item["store"]) / "frames.json", item["frames_sha256"])
+        backend = manifest.get("decode", {}).get("platform")
+        require(isinstance(backend, str) and bool(backend.strip()), "decode platform missing")
+        platforms.add(backend)
+    require(len(platforms) == 1, "mixed decode platforms require proven parity; refit refused")
+    return next(iter(platforms))
+
+
 def refit(loaded, *, out, seed, epochs, device, progress, max_examples=None):
+    require_decode_platform(loaded)
     stores, sets, exclusions = {}, {"train": [], "heldout": []}, {}
     for item, target in loaded:
         path = Path(item["store"])

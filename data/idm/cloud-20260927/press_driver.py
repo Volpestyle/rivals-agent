@@ -48,6 +48,24 @@ def main():
                            min_containers=0, max_containers=1, buffer_containers=0,
                            scaledown_window=10, single_use_containers=True)(run_press)
     result = call = error = None
+    # Reviewed a6 transport, instantiated directly as in the encoder lane.
+    # Campaign-local lock is supplemented by global cross-lane scheduling.
+    from appcreate_gate import AppCreateGate, IDENTITY, SDK_VERSION
+    from modal._utils.async_utils import synchronizer
+    from modal._grpc_client import UnaryUnaryWrapper
+    import modal.exception
+    assert modal.__version__ == SDK_VERSION
+    atomic(ROOT / 'inventory.json', {'identity': IDENTITY, 'attempt_id': job,
+        'app_name': APP_NAME, 'apps': [], 'creation_finished': False,
+        'reservation': str(ROOT / 'budget-reservation.json'),
+        'bounds': {**bounds, 'hold': {'startup_seconds': 300}}})
+    internal = synchronizer._translate_in(client)
+    original = internal.stub.AppCreate
+    assert isinstance(original, UnaryUnaryWrapper) and original.name == '/modal.client.ModalClient/AppCreate'
+    def funded():
+        assert not expired(bounds) and guard.poll() is None, 'Unfunded AppCreate'
+    gate = AppCreateGate(original, ROOT, funded, exhausted=modal.exception.ResourceExhaustedError)
+    internal.stub.AppCreate = gate
     try:
         # This single creation is additionally scheduled with the other lane owners.
         # Persist actual times; never retry an uncertain app creation or paid call.
@@ -85,6 +103,7 @@ def main():
         error = repr(exc)
         atomic(ROOT / 'driver-error.json', {'error': error, 'at': time.time()})
     finally:
+        internal.stub.AppCreate = original
         if call is not None:
             try:
                 call.cancel(terminate_containers=True)

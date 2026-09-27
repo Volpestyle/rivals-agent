@@ -100,6 +100,8 @@ def load_steps(path, targets, admission, denylist):
         T._require(header.get("media_sha256") == entry["media_sha256"]
                    and header.get("session_group") == entry["session_group"], "match step media/family mismatch")
         T._require(digest(identity(header)) == entry["identity_sha256"], "match step motor identity mismatch")
+        # Only split-dependent policy guard is the test-split refusal. Original
+        # idm_train is authenticated above; sealed checks remain unconditional.
         steps.check_header({**header, "split": "train"}, denylist=denylist)
         rows = [json.loads(line) for line in stream if line.strip()]
     T._require(rows and T.sha256(path) == pin, "empty/changed match step table")

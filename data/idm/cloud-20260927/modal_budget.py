@@ -1,4 +1,4 @@
-"""Fixed $30 explore reservation, independent of round 3 accounting."""
+"""Fixed $4 IDM press reservation, independent of other campaign accounting."""
 import json
 import math
 from pathlib import Path

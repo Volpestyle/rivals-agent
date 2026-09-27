@@ -1,5 +1,6 @@
 """Bounded offline checks: enforcement is byte-for-byte AST-equivalent to source."""
 import ast
+import hashlib
 import importlib.util
 from pathlib import Path
 
@@ -14,6 +15,8 @@ def load():
 
 
 def test_unchanged_enforcement():
+    assert hashlib.sha256((ROOT / 'base_budget.py').read_bytes()).hexdigest() == (
+        'dc540a101ed6070b8d70a78e39ceab9b3100a3b1faa658ab4b2019c0ea32fb34')
     def functions(path):
         return [ast.dump(n) for n in ast.parse(path.read_text()).body if isinstance(n, ast.FunctionDef)]
     assert functions(ROOT / 'base_budget.py') == functions(ROOT / 'modal_budget.py')
