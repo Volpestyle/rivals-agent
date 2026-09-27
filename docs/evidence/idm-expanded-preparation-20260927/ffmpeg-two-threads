@@ -1,0 +1,2 @@
+#!/bin/sh
+exec /opt/homebrew/bin/ffmpeg -filter_threads 2 -filter_complex_threads 2 "$@"

@@ -1,0 +1,65 @@
+[
+  {
+    "session_id": "20260925T203745-207Z-49728-2",
+    "path": "data\\idm\\cloud-20260927\\expanded-range-targets\\20260925T203745-207Z-49728-2.idm.jsonl",
+    "sha256": "e091b4fdae7e61d9e8dd564687a56aaf8bc9416768e23c38873e1896a984b1e0",
+    "rows": 171722,
+    "eligible_rows": 165512,
+    "source": {
+      "steps": {
+        "path": "data/human/sessions/20260925T203745-207Z-49728-2/20260925T203745-207Z-49728-2.steps.jsonl",
+        "sha256": "1fcfffb8fa67bcd1b48684611cfe07cafe6455670f82840eb72e99aa4d9e8373"
+      },
+      "imported_demo": {
+        "path": "data/human/sessions/20260925T203745-207Z-49728-2/imported-demo.jsonl",
+        "sha256": "f2664426fe55472491462f2822c306f325c7188780c4f375e0d9f0a786439a49"
+      },
+      "builder": {
+        "path": "policy/idm_targets.py",
+        "sha256": "bd67df97b019e5ed8c8cba9deb7cd81cab0dce7e044b7255812fe663a2ffa83e"
+      }
+    }
+  },
+  {
+    "session_id": "20260926T035932-508Z-63684-14",
+    "path": "data\\idm\\cloud-20260927\\expanded-range-targets\\20260926T035932-508Z-63684-14.idm.jsonl",
+    "sha256": "52856414daefd6021af07109bc8425b55a3d9057974b6437153f0c9205991cb8",
+    "rows": 110034,
+    "eligible_rows": 108540,
+    "source": {
+      "steps": {
+        "path": "data/human/sessions/20260926T035932-508Z-63684-14/20260926T035932-508Z-63684-14.steps.jsonl",
+        "sha256": "1a98150a122f316b9bd975e82ef8453d714466454a25a2d186c341b8baf2bdc2"
+      },
+      "imported_demo": {
+        "path": "data/human/sessions/20260926T035932-508Z-63684-14/imported-demo.jsonl",
+        "sha256": "35e5058301e8824ae1b911bd734ac8ca0580889f0f0f60a8c45bab41ef353629"
+      },
+      "builder": {
+        "path": "policy/idm_targets.py",
+        "sha256": "bd67df97b019e5ed8c8cba9deb7cd81cab0dce7e044b7255812fe663a2ffa83e"
+      }
+    }
+  },
+  {
+    "session_id": "20260926T045729-166Z-79780-1",
+    "path": "data\\idm\\cloud-20260927\\expanded-range-targets\\20260926T045729-166Z-79780-1.idm.jsonl",
+    "sha256": "8f8b75bdc0ccfbeb68fe585c176f139590681306550a5c2afcc5fbce76bcf629",
+    "rows": 37206,
+    "eligible_rows": 36930,
+    "source": {
+      "steps": {
+        "path": "data/human/sessions/20260926T045729-166Z-79780-1/20260926T045729-166Z-79780-1.steps.jsonl",
+        "sha256": "92ba60cf62f413a87adf3cd8d8b04647c4d004b79c9f2f4bde7647b808baae38"
+      },
+      "imported_demo": {
+        "path": "data/human/sessions/20260926T045729-166Z-79780-1/imported-demo.jsonl",
+        "sha256": "0bc65912332fb83aea528a281ef1d25de79f96805656028095d375a2aa62436f"
+      },
+      "builder": {
+        "path": "policy/idm_targets.py",
+        "sha256": "bd67df97b019e5ed8c8cba9deb7cd81cab0dce7e044b7255812fe663a2ffa83e"
+      }
+    }
+  }
+]

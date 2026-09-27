@@ -1,0 +1,36 @@
+{
+  "session_id": "20260927T052001-827Z-150600-5",
+  "destination": "/Users/james/dev/idm-match-data/a1-951cd9e/20260927T052001-827Z-150600-5",
+  "source_and_destination_match": true,
+  "artifacts": {
+    "20260927T052001-827Z-150600-5.steps.jsonl": {
+      "source": "data\\human\\sessions\\20260927T052001-827Z-150600-5\\20260927T052001-827Z-150600-5.steps.jsonl",
+      "bytes": 10760800,
+      "sha256": "2c25a3fc96fb7e5a3ec41b173e958b79fd14e76293b09ad9d4c842f2de11dcf8"
+    },
+    "imported-demo.jsonl": {
+      "source": "data\\human\\sessions\\20260927T052001-827Z-150600-5\\imported-demo.jsonl",
+      "bytes": 29270822,
+      "sha256": "f0fa88940e7190bd5ca74b083e2e790d814bdf20e705370a9eab3ef5c0f95d79"
+    },
+    "20260927T052001-827Z-150600-5.idm.jsonl": {
+      "source": "data\\idm\\cloud-20260927\\match5-a1-targets\\20260927T052001-827Z-150600-5.idm.jsonl",
+      "bytes": 23271136,
+      "sha256": "bdb36216f6017ba345949c55d9a2874c2c08570739829150fd5b9ca1d07f2ebd"
+    },
+    "target-receipt.json": {
+      "source": "data\\idm\\cloud-20260927\\match5-a1-targets\\target-receipt.json",
+      "bytes": 1137,
+      "sha256": "7c876351cecac8403cc8b28de3215eede70e32438779bdb369e0a05753dadb76"
+    },
+    "match-admission-052001.accepted-a1.json": {
+      "source": "docs\\evidence\\idm-match-pilot-052001-20260927\\receipt\\match-admission-052001.accepted-a1.json",
+      "bytes": 2418,
+      "sha256": "94701525132536f5794b4fefd9e06e6bdecdccb1f70c8bef0589a3b6af02c216"
+    }
+  },
+  "original_copied": false,
+  "historical_tables_modified": false,
+  "verification_attempts": 2,
+  "prior_failure": "system python lacks hashlib.file_digest; no bytes changed, retried streaming hash only"
+}
