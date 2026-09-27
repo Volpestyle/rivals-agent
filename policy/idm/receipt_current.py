@@ -13,7 +13,7 @@ import re
 
 ROOT = Path(__file__).resolve().parents[2]
 INDEX = ROOT / "policy/idm/receipt-current.json"
-INDEX_SHA256 = "a28ce0e2d914061ea6266d01be2bc14f263028efe164119a3e4f621ae627d1b3"  # LF
+INDEX_SHA256 = "0a0a1598d131935bc9877c2d17eb34e448603e14106f9ab7eedf0e7c04ac0802"  # LF
 FORMAT = "rivals-idm-current-receipts-v1"
 ACCEPTED = re.compile(r"(.+)\.accepted(?:-a([1-9][0-9]*))?\.json\Z")
 

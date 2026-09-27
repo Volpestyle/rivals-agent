@@ -48,7 +48,7 @@ def ref(path, pin=None):
 
 def registry(root):
     rows = []
-    for short, revision in [('051206','-a1'), ('052001','-a1'), ('053118','')]:
+    for short, revision in [('051206','-a1'), ('052001','-a1'), ('053118',''), ('053838','')]:
         doc = json.loads(receipt(root, short, revision).read_text())
         for sid, e in doc['sessions'].items():
             rows.append(dict(session_id=sid, session_group=e['session_group'], split='idm_train',
@@ -98,6 +98,17 @@ def test_current_controls_and_relocated_current_receipt(bundle):
     copied.write_bytes(Path(refs[0]['path']).read_bytes())
     loaded = M.load(copied, refs[0]['sha256'], registry=registry(bundle), denylist={'sessions':[]})
     assert len(loaded.sessions) == 1
+
+
+def test_new_accepted_metadata_is_in_bundle_without_expanding_selected_roster(bundle):
+    pin = '535adf28f42ba37b2051c7ccb5707d0b1e175bb0463bd7502bfe72b4ce578a87'
+    path = receipt(bundle, '053838')
+    assert sha(path) == pin and pin in C.heads().values()
+    a = M.load(path, pin, registry=registry(bundle), denylist={'sessions': []})
+    assert set(a.sessions) == {'20260927T053838-153Z-150600-7'}
+    selected = [ref(receipt(bundle,s,'-a1' if s in OLD else ''), p) for s,p in CURRENT.items()]
+    a = M.load_references(selected, registry=registry(bundle), denylist={'sessions': []})
+    assert len(a.sessions) == 3 and '20260927T053838-153Z-150600-7' not in a.sessions
 
 
 @pytest.mark.parametrize('short', OLD)
