@@ -1,0 +1,22 @@
+{
+  "scope": "EXPLORATORY",
+  "owner": "idm-owner",
+  "source_commit": "c7b92c7",
+  "source_archive_sha256": "57e487897e78054b6393fd6e34a462f251b2f6a606b5e22176e4be6b78b8b440",
+  "cap_usd": 3.0,
+  "launch_authorized": false,
+  "input_reuse": "Own verified immutable first-attempt input volume, read-only; new app/output volume",
+  "original_failure_sha256": "6cbf9c61a8eeb58b37693974e50006e0011dfebf3640e73553641783e2aef774",
+  "files": {
+    "code.tar": "57e487897e78054b6393fd6e34a462f251b2f6a606b5e22176e4be6b78b8b440",
+    "idm_worker.py": "b25eb049aaebbf8396994a54b7efa9214fdd4dc4e2fefbda297872d704031f98",
+    "modal_budget.py": "490e10909c24840e7ccb7b10f3600380c9b2585de3a729a6ad16167ca930bae9",
+    "modal_lifecycle.py": "99969e7d4952f747eb65c997b73e03f9f8e2fb503a87609a190436114506358a",
+    "appcreate_gate.py": "2d076fa1c5908b11193a87838879bbd0498de515184a818d61f0586fac44c520",
+    "lifecycle.py": "17f1ef90df289c51b1f44b61bd2ec3113a64204ea624eaf81cdd9bb2c48a6c11",
+    "explore_mounts.py": "2c36e2537fc7abb1cf39802fdd0f07fcb80cb7adec3a63a8c67d516ec2e702a9",
+    "press_driver.py": "0ecca3b3b85adb2124a64e2a739bc89852d620cee19408a0449b4864466e9fb4",
+    "upload-receipt.json": "c92c1cc04fe263f22f4e7608247a6fe64bc4c0414c1637fe4dd7f241cccf7b2e",
+    "upload.exit": "13bf7b3039c63bf5a50491fa3cfd8eb4e699d1ba1436315aef9cbe5711530354"
+  }
+}
