@@ -1,0 +1,49 @@
+test_app_setup_failure_cannot_repeat_appcreate (test_appcreate_gate.GateTests.test_app_setup_failure_cannot_repeat_appcreate) ... ok
+test_cancelled_rpc_is_unknown (test_appcreate_gate.GateTests.test_cancelled_rpc_is_unknown) ... ok
+test_dead_creator_inflight_state_blocks_new_process (test_appcreate_gate.GateTests.test_dead_creator_inflight_state_blocks_new_process) ... ok
+test_deadline_before_request_no_rpc (test_appcreate_gate.GateTests.test_deadline_before_request_no_rpc) ... ok
+test_deadline_during_queue_no_rpc (test_appcreate_gate.GateTests.test_deadline_during_queue_no_rpc) ... ok
+test_draft_entrypoint_disabled (test_appcreate_gate.GateTests.test_draft_entrypoint_disabled) ... ok
+test_exhausted_until_startup_deadline (test_appcreate_gate.GateTests.test_exhausted_until_startup_deadline) ... ok
+test_existing_app_refused (test_appcreate_gate.GateTests.test_existing_app_refused) ... ok
+test_explicit_rejections_retry_one_logical_request (test_appcreate_gate.GateTests.test_explicit_rejections_retry_one_logical_request) ... ok
+test_fresh_journal_required (test_appcreate_gate.GateTests.test_fresh_journal_required) ... ok
+test_guard_failure_stops_queued_work (test_appcreate_gate.GateTests.test_guard_failure_stops_queued_work) ... ok
+test_invalid_jitter_fails_closed (test_appcreate_gate.GateTests.test_invalid_jitter_fails_closed) ... ok
+test_native_sdk_resource_exhausted_only_retries (test_appcreate_gate.GateTests.test_native_sdk_resource_exhausted_only_retries) ... ok
+test_native_sdk_stub_install_and_restore_no_network (test_appcreate_gate.GateTests.test_native_sdk_stub_install_and_restore_no_network) ... ok
+test_no_second_call_after_created (test_appcreate_gate.GateTests.test_no_second_call_after_created) ... ok
+test_prior_inflight_not_retried (test_appcreate_gate.GateTests.test_prior_inflight_not_retried) ... ok
+test_rpc_deadline_bounds_hanging_transport (test_appcreate_gate.GateTests.test_rpc_deadline_bounds_hanging_transport) ... ok
+test_simultaneous_tasks_serialize_and_space (test_appcreate_gate.GateTests.test_simultaneous_tasks_serialize_and_space) ... ok
+test_startup_budget_cannot_change (test_appcreate_gate.GateTests.test_startup_budget_cannot_change) ... ok
+test_success_after_deadline_keeps_app_for_cleanup (test_appcreate_gate.GateTests.test_success_after_deadline_keeps_app_for_cleanup) ... ok
+test_success_journals_app_before_return (test_appcreate_gate.GateTests.test_success_journals_app_before_return) ... ok
+test_text_match_is_not_typed_rejection (test_appcreate_gate.GateTests.test_text_match_is_not_typed_rejection) ... ok
+test_unknown_blocks_other_task (test_appcreate_gate.GateTests.test_unknown_blocks_other_task) ... ok
+test_unknown_timeout_never_retries (test_appcreate_gate.GateTests.test_unknown_timeout_never_retries) ... ok
+test_wall_jump_stops_even_with_monotonic_time_left (test_appcreate_gate.GateTests.test_wall_jump_stops_even_with_monotonic_time_left) ... ok
+test_wrong_identity_refused (test_appcreate_gate.GateTests.test_wrong_identity_refused) ... ok
+test_wrong_name_refused (test_appcreate_gate.GateTests.test_wrong_name_refused) ... ok
+test_before_reservation_rejects_without_creating_new_holds (test_late_app_guard.WatchTests.test_before_reservation_rejects_without_creating_new_holds) ... ok
+test_changed_ledger_digest_refuses_before_provider_read (test_late_app_guard.WatchTests.test_changed_ledger_digest_refuses_before_provider_read) ... ok
+test_changed_reconciliation_refuses (test_late_app_guard.WatchTests.test_changed_reconciliation_refuses) ... ok
+test_helper_pin_change_refuses (test_late_app_guard.WatchTests.test_helper_pin_change_refuses) ... ok
+test_inventory_timeout_refuses (test_late_app_guard.WatchTests.test_inventory_timeout_refuses) ... ok
+test_key_match_with_changed_name_refuses (test_late_app_guard.WatchTests.test_key_match_with_changed_name_refuses) ... ok
+test_late_running_app_mutation_refuses_second_admission (test_late_app_guard.WatchTests.test_late_running_app_mutation_refuses_second_admission) ... ok
+test_late_stopped_app_mutation_also_refuses (test_late_app_guard.WatchTests.test_late_stopped_app_mutation_also_refuses) ... ok
+test_logical_key_match_refuses (test_late_app_guard.WatchTests.test_logical_key_match_refuses) ... ok
+test_malformed_inventory_refuses (test_late_app_guard.WatchTests.test_malformed_inventory_refuses) ... ok
+test_name_mandatory_even_null_key (test_late_app_guard.WatchTests.test_name_mandatory_even_null_key) ... ok
+test_native_sdk_partial_environment_read_refuses (test_late_app_guard.WatchTests.test_native_sdk_partial_environment_read_refuses) ... ok
+test_native_sdk_scans_all_environments_without_network (test_late_app_guard.WatchTests.test_native_sdk_scans_all_environments_without_network) ... ok
+test_partial_or_wrong_identity_refuses (test_late_app_guard.WatchTests.test_partial_or_wrong_identity_refuses) ... ok
+test_real_a6_canonical_ledger_emits_watch (test_late_app_guard.WatchTests.test_real_a6_canonical_ledger_emits_watch) ... ok
+test_retry_rechecks_live_inventory_and_never_creates_second_app (test_late_app_guard.WatchTests.test_retry_rechecks_live_inventory_and_never_creates_second_app) ... ok
+test_unobservable_key_does_not_infer_match (test_late_app_guard.WatchTests.test_unobservable_key_does_not_infer_match) ... ok
+
+----------------------------------------------------------------------
+Ran 44 tests in 0.697s
+
+OK

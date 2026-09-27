@@ -1,0 +1,18 @@
+{
+  "files": {
+    "HANDBACK.md": "fe8a35dd931614f8aff0d6dc50f5708047cf175d52a2b60071ec1c042b822a6f",
+    "appcreate_gate.py": "c8245f4e2858b86b4f1340b94e61c62958ee3bf044b8c0e8e74228d69e29f667",
+    "cm3_accounting.py": "ad2d3c568ad0e7c08a4ae3c2680d02344288594b0bc985591108f9707e968835",
+    "cm3_budget_plan.py": "4e2bd9f572f6883c91a872c16a4d1466bddce55730a469de01af8f73f7ec1b56",
+    "cm3_timeouts.py": "de57202e85942651ebeea699f6b0a834ee72bfab0d0c270d153edf2e9a84c097",
+    "environment-evidence.json": "3a617dfbd0ba9e2190ba46e741d9e2dfd9f609cbeb368830da54e6270cbd356a",
+    "guard.py": "905fd841d2ca7509c2d8abaadb84086fc3ee715f11126c1f2d061025be4c58a2",
+    "job_status.py": "df4dd2f05ef9aeabe6504927f37ca4bf983544aa58b8905d2bd9bfe5f5de6541",
+    "lifecycle.py": "7e53b1b85f23e69018e29105f2054b2415cbb2004a2a5f0da1382047c43acc9e",
+    "safety.py": "f01b893508ea5bbccac4e1d0416666ef12aae2ed41cadf80fca5e54792ac09a0",
+    "task_driver.diff": "f5a0b33d8bc99ceeff1db50a0312d5065bffdc71618560cf07f26a8c5dd72573",
+    "task_driver.py": "52f0303aa839b518a20b1618b565b39e98d75d9e7ac45cd0acf064f1871c5783",
+    "test_appcreate_gate.py": "c4c2516086267a3b646bd8381be7d7c1dbf1db17a1e991fd1d66ecc4fc2d82da",
+    "tests.log": "9b906e18b6f22d7ece187725723ceba3d42840a629fd9db54bee0542f2571365"
+  }
+}

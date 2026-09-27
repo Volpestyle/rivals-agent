@@ -1,0 +1,17 @@
+--- prior/test_appcreate_gate.py
++++ a6-watch/test_appcreate_gate.py
+@@ -207,9 +207,12 @@
+         inv["bounds"].update(started_monotonic=time.monotonic(),started_at_unix=time.time(),
+             stop_monotonic=time.monotonic()+1000,stop_at_unix=time.time()+1000)
+         g.atomic(local/"inventory.json",inv)
+-        restore=g.install(public,local,lambda:None)
++        restore=g.install(public,local,lambda:None,{"test":"offline"})
+         installed=client.stub.AppCreate
+-        reply=await installed(self.request())
++        from unittest.mock import AsyncMock
++        with patch("late_app_guard.admit_async",new=AsyncMock()) as guard:
++            reply=await installed(self.request())
++            self.assertEqual(guard.await_count,1)
+         self.assertEqual(reply.app_id,"ap-sdk")
+         self.assertEqual(len(seen),1)
+         restore()

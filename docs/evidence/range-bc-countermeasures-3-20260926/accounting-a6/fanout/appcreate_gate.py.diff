@@ -1,0 +1,46 @@
+--- prior/appcreate_gate.py
++++ a6-watch/appcreate_gate.py
+@@ -42,8 +42,9 @@
+ class AppCreateGate:
+     def __init__(self, original, local, funded, *, exhausted, policy=None,
+                  monotonic=time.monotonic, wall=time.time, sleep=asyncio.sleep,
+-                 uniform=None):
++                 uniform=None, before_rpc=None):
+         self.original = original
++        self.before_rpc = before_rpc
+         self.local = pathlib.Path(local)
+         self.funded = funded
+         self.exhausted = exhausted
+@@ -156,6 +157,8 @@
+                               previous["at_unix"] + self.policy["spacing_seconds"] - self.wall(), 0)
+                 if spacing:
+                     await self._pause(spacing)
++            if self.before_rpc is not None:
++                await asyncio.wait_for(self.before_rpc(), timeout=self._remaining())
+             timeout = min(self.policy["rpc_timeout_seconds"], self._remaining())
+             self.attempt += 1
+             self.last_outcome = "UNKNOWN"
+@@ -212,7 +215,7 @@
+             return response
+ 
+ 
+-def install(client, local, funded):
++def install(client, local, funded, plan):
+     """Private SDK seam is version-pinned; only AppCreate is replaced."""
+     import modal
+     import modal.client
+@@ -228,8 +231,13 @@
+     inv = read(pathlib.Path(local) / "inventory.json")
+     if not inv["attempt_id"].startswith("r3p1-") or not inv["attempt_id"].endswith("-02"):
+         raise CreationStopped("draft permits fresh -02 IDs only")
++    async def live_admission():
++        from late_app_guard import admit_async
++        await admit_async(plan, pathlib.Path(local) / "admission-watch",
++                          "before-AppCreate-RPC", client=internal)
+     gate = AppCreateGate(original, local, funded,
+-                         exhausted=modal.exception.ResourceExhaustedError)
++                         exhausted=modal.exception.ResourceExhaustedError,
++                         before_rpc=live_admission)
+     internal.stub.AppCreate = gate
+     def restore():
+         if internal.stub.AppCreate is not gate:

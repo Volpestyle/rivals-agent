@@ -1,0 +1,21 @@
+{
+  "python": "3.12.13 (main, Jul 18 2026, 16:55:18) [Clang 22.1.3 ]",
+  "modal_version": "1.5.5",
+  "sdk_files": {
+    "/Users/james/.local/share/uv/tools/modal/lib/python3.12/site-packages/modal/runner.py": "e5ab938a3a8a16f3257987d568ad35b1175777575640b8a55e54aa5b1f603003",
+    "/Users/james/.local/share/uv/tools/modal/lib/python3.12/site-packages/modal/_grpc_client.py": "be009ebb54d5ea906441e9c7212544d797635f7b730edffeec870322323acd0c",
+    "/Users/james/.local/share/uv/tools/modal/lib/python3.12/site-packages/modal/_utils/grpc_utils.py": "bc62fa2543516a16dee0745657f6d2d5c7827eccf328d5488005bf6f350da3be"
+  },
+  "unchanged_source_pins": {
+    "lifecycle.py": "7e53b1b85f23e69018e29105f2054b2415cbb2004a2a5f0da1382047c43acc9e",
+    "safety.py": "f01b893508ea5bbccac4e1d0416666ef12aae2ed41cadf80fca5e54792ac09a0",
+    "guard.py": "905fd841d2ca7509c2d8abaadb84086fc3ee715f11126c1f2d061025be4c58a2",
+    "job_status.py": "df4dd2f05ef9aeabe6504927f37ca4bf983544aa58b8905d2bd9bfe5f5de6541",
+    "cm3_accounting.py": "ad2d3c568ad0e7c08a4ae3c2680d02344288594b0bc985591108f9707e968835",
+    "cm3_timeouts.py": "de57202e85942651ebeea699f6b0a834ee72bfab0d0c270d153edf2e9a84c097",
+    "cm3_budget_plan.py": "4e2bd9f572f6883c91a872c16a4d1466bddce55730a469de01af8f73f7ec1b56"
+  },
+  "provider_calls": 0,
+  "launch_enabled": false,
+  "workspace_limit": "unconfirmed"
+}

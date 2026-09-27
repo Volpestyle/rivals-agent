@@ -1,0 +1,11 @@
+--- prior/task_driver.py
++++ a6-watch/task_driver.py
+@@ -43,7 +43,7 @@
+         task_plan=dict(p,absolute_deadline_unix=bound["stop_at_unix"],verified_identity=identity,
+                        owned_app_name=inv["app_name"],selected_task=key,task_local_directory=str(local))
+         from appcreate_gate import install
+-        restore_appcreate=install(client,local,funded)
++        restore_appcreate=install(client,local,funded,p)
+         app,function=modal_app.build_app(task_plan,identity,client,key)
+         import modal
+         # Journal intent immediately before the possible external side effect.

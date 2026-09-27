@@ -1,0 +1,11 @@
+--- prior/lifecycle.py
++++ a6-watch/lifecycle.py
+@@ -53,6 +53,8 @@
+     reservations=campaign/"reservations";reservations.mkdir(exist_ok=True)
+     with locked(campaign/"campaign.lock"):
+         ledger(p,reservations)
++        from late_app_guard import before_reservation
++        before_reservation(p,campaign,identity)
+         allocations={k:v["attempt_receipts"][0] for k,v in p["tasks"].items()}
+         ids=[a["attempt_id"] for a in allocations.values()]
+         require(len(set(ids))==len(ids) and all(re.fullmatch(r"[A-Za-z0-9_-]{1,80}",a) for a in ids),"invalid/duplicate attempt ID")

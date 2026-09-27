@@ -5,8 +5,6 @@ and approved-rate estimate, never represented as a provider invoice.
 """
 from decimal import Decimal, ROUND_CEILING
 import math
-import hashlib
-import json
 from pathlib import Path, PurePosixPath
 import re
 
@@ -99,115 +97,6 @@ def bundle_document(reference, document, *, local_path=Path):
     return read
 
 
-def absent_appcreate(row, reservation, result, document):
-    """A pinned rejected/unknown AppCreate plus absence charges the entire hold."""
-    evidence = document(row['appcreate_rejection'])
-    owned = document(row['owned_inventory'])
-    attempt = row['attempt_id']
-    require(evidence['format'] == 'cm3-appcreate-rejection-v2'
-            and evidence['attempt_id'] == owned['attempt_id'] == attempt
-            and evidence['reservation_sha256'] == owned['reservation']['sha256'] == row['reservation']['sha256']
-            and evidence['result_sha256'] == row['result']['sha256']
-            and evidence['owned_inventory_sha256'] == row['owned_inventory']['sha256'], 'rejection evidence binding')
-    require(reservation['format'] == 'cm3-task-reservation-v1'
-            and reservation['campaign_id'] == 'r3-20260926-l40s'
-            and type(reservation['concurrent_slots']) is int and reservation['concurrent_slots'] == 1,
-            'rejection requires one task reservation')
-    require(owned['format'] == 'cm3-owned-inventory-v1'
-            and owned['identity'] == evidence['identity'] == result['teardown']['identity'] == IDENTITY,
-            'rejection workspace identity')
-    require(result['format'] == 'cm3-inputs-wrapper-result-v1' and result['status'] == 'INCOMPLETE'
-            and result['creation_started'] is True and result.get('owner_result') is None
-            and not result.get('owner_results') and result['teardown']['apps'] == []
-            and result['teardown']['status'] == 'INCOMPLETE_CLEANUP',
-            'rejection result must have no app/owner result')
-    require(owned['creation_started'] is True and owned['creation_finished'] is False
-            and owned['apps'] == [] and owned['calls'] == {}
-            and evidence['creation_started'] is True and evidence['creation_finished'] is False
-            and evidence['creator_terminated'] is True, 'creation not conclusively ended')
-    outcome = evidence['rpc_outcome']
-    require(evidence['rpc_method'] == 'AppCreate' and outcome in ('REJECTED', 'UNKNOWN'),
-            'typed rejected or unknown AppCreate required')
-    require((outcome == 'REJECTED' and evidence['rpc_status'] == 'RESOURCE_EXHAUSTED')
-            or (outcome == 'UNKNOWN' and evidence['rpc_status'] is None
-                and evidence['rejected_at_unix'] is None), 'inconsistent typed RPC outcome')
-    name = owned['app_name']
-    require(isinstance(name, str) and name and evidence['app_name'] == name, 'rejection app name')
-    started = number(reservation['bounds']['started_at_unix'], 'creation start', True)
-    ended = number(result['teardown']['checked_at_unix'], 'failed cleanup time', True)
-    terminated = number(evidence['creator_terminated_at_unix'], 'creator termination time', True)
-    request = number(evidence['request_started_at_unix'], 'request clock', True)
-    startup = reservation['bounds']['hold']['startup_seconds']
-    require(type(startup) is int and startup == evidence['startup_seconds'] == 300,
-            'registered startup budget changed')
-    require(evidence['request_clock_source'] in ('rpc_started', 'failed_cleanup_upper_bound'),
-            'request clock provenance missing')
-    if evidence['request_clock_source'] == 'failed_cleanup_upper_bound':
-        require(request == ended, 'request upper bound differs from failed cleanup')
-    require(started <= request <= terminated and ended <= terminated, 'request/termination clock')
-    if outcome == 'REJECTED':
-        rejected = number(evidence['rejected_at_unix'], 'rejection time', True)
-        require(started <= rejected <= terminated, 'rejection clock')
-    logical_key = evidence['logical_request_id']
-    require(logical_key is None or isinstance(logical_key, str) and logical_key,
-            'invalid logical request key')
-    snapshots = evidence['inventory_snapshots']
-    require(type(snapshots) is list and len(snapshots) >= 2, 'repeated workspace inventory required')
-    capture_start = number(evidence['capture_started_at_unix'], 'capture start', True)
-    capture_end = number(evidence['capture_finished_at_unix'], 'capture end', True)
-    require(max(terminated, request + startup) < capture_start < capture_end
-            and capture_end - capture_start <= 90,
-            'absence capture outside 90 second bound')
-    times = []
-    for inventory in snapshots:
-        require(inventory['status'] == 'READ_OK' and inventory['complete'] is True
-                and inventory['identity'] == IDENTITY, 'authenticated complete inventory required')
-        checked = number(inventory['checked_at_unix'], 'absence check time', True)
-        require(capture_start <= checked <= capture_end and (not times or checked > times[-1]), 'stale rejection inventory')
-        times.append(checked)
-        require(inventory['owned_containers'] == [], 'owned containers still observed')
-        raw = {}
-        for key in ('identity', 'apps', 'containers'):
-            output = inventory['raw_outputs'][key]
-            require(type(output['returncode']) is int and output['returncode'] == 0
-                    and isinstance(output['stdout'], str), 'unreadable inventory command')
-            require(number(output['elapsed_seconds'], 'query elapsed') <= 10, 'inventory query timeout')
-            require(hashlib.sha256(output['stdout'].encode('utf-8')).hexdigest() == output['sha256'],
-                    'raw inventory digest mismatch')
-            raw[key] = json.loads(output['stdout'])
-        require(raw['identity'] == IDENTITY and raw['apps'] == inventory['apps']
-                and type(raw['containers']) is list, 'raw inventory differs from summary')
-        for container in raw['containers']:
-            require(isinstance(container, dict) and isinstance(container.get('app_id'), str)
-                    and container['app_id'], 'malformed workspace container')
-        apps = inventory['apps']
-        require(type(apps) is list, 'workspace apps must be a list')
-        ids = set()
-        for app in apps:
-            require(isinstance(app, dict) and isinstance(app.get('app_id'), str) and app['app_id']
-                    and isinstance(app.get('description'), str) and app['description'], 'malformed workspace app')
-            require(app['app_id'] not in ids, 'duplicate workspace app')
-            ids.add(app['app_id'])
-            require(app['description'] != name, 'absent app name exists in workspace')
-            require(logical_key is None or (app.get('logical_request_id') != logical_key
-                    and app.get('idempotency_key') != logical_key), 'absent app key exists in workspace')
-    require(times[-1] - times[0] >= 60, 'absence observation shorter than 60 seconds')
-    seconds = reservation['reserved_compute_seconds']
-    require(type(seconds) is int and seconds > 0, 'invalid full hold seconds')
-    require(result.get('over_hold', False) is False
-            and number(result['spend']['seconds_through_cleanup'], 'failed attempt seconds') <= seconds,
-            'failed attempt exceeds full hold')
-    dollars = number(reservation['reserved_usd'], 'full hold dollars', True)
-    bounds = reservation['bounds']
-    minimum = usd_up(Decimal(seconds) * number(bounds['rate_usd_second'], 'resource rate', True)
-                     + number(bounds['overhead_usd'], 'noncompute overhead'))
-    require(dollars >= minimum, 'full hold underfunded')
-    return {'attempt_id': attempt, 'seconds': seconds, 'usd': float(dollars),
-            'owner_results': [], 'reservation': row['reservation'],
-            'absent_app': {'app_name': name, 'logical_request_id': logical_key,
-                           'identity': dict(IDENTITY), 'rpc_outcome': outcome}}
-
-
 def settle(row, document):
     """Verify one completed attempt, including failed scientific executions."""
     reservation, result = document(row['reservation']), document(row['result'])
@@ -215,8 +104,6 @@ def settle(row, document):
     legacy = LEGACY_SERIAL.get(attempt) == row['result']['sha256']
     require(reservation.get('attempt_id', reservation.get('run_id')) == attempt
             and (result.get('attempt_id', result.get('run_id')) == attempt or legacy), 'attempt binding')
-    if 'appcreate_rejection' in row or 'owned_inventory' in row:
-        return absent_appcreate(row, reservation, result, document)
     require(result['status'] in ('PASS', 'INCOMPLETE', 'COMPLETE'), 'unfinished attempt')
     teardown = result['teardown']
     require(teardown['status'] == 'TERMINAL' and teardown['identity'] == IDENTITY,
@@ -279,7 +166,7 @@ under its existing lock, before creating a new hold. Missing results refuse.
     if canonical:
         relative_ref(data['inventory'])
         for row in data['settlements']:
-            for key in ('reservation', 'result', 'pricing', 'appcreate_rejection', 'owned_inventory'):
+            for key in ('reservation', 'result', 'pricing'):
                 if key in row:
                     relative_ref(row[key])
         for ref in data.get('completed_phase1', {}).values():

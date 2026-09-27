@@ -1,0 +1,12 @@
+--- baseline/make_accounting_bundle.py
++++ candidate/make_accounting_bundle.py
+@@ -45,6 +45,9 @@
+                 'result': add('results/'+attempt+'.json', source_bytes(row['result']))}
+         if 'pricing' in row:
+             item['pricing'] = add('pricing/'+attempt+'.json', source_bytes(row['pricing']))
++        for key in ('appcreate_rejection', 'owned_inventory'):
++            if key in row:
++                item[key] = add(key+'/'+attempt+'.json', source_bytes(row[key]))
+         for owner in settled['owner_results']:
+             add(accounting.output_ref(owner)['path'], source_bytes(owner))
+         rows.append(item)

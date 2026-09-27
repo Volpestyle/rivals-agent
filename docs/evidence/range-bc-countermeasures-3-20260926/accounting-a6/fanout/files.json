@@ -1,0 +1,25 @@
+{
+  "files": {
+    "A6-CONTRACT.md": "00da354ac9875e411323b7639fa2ce84e0a97fd256f532ad3f77a044ab8b926f",
+    "HANDBACK.md": "71ae9701317b78543b0a51c8151162bf3547ce3d4245a6b99518ec730924fb3d",
+    "appcreate_gate.py": "2d076fa1c5908b11193a87838879bbd0498de515184a818d61f0586fac44c520",
+    "appcreate_gate.py.diff": "2338dd050641917b548e6ca6eb9f4e8d1164d66312008b946f72f2d1d0cafcf1",
+    "cm3_accounting.py": "6222e2dcfcfde138ebec25b1e2933fd7a4f1cb75a2df0ffa14e944a6cb642b4a",
+    "cm3_budget_plan.py": "4e2bd9f572f6883c91a872c16a4d1466bddce55730a469de01af8f73f7ec1b56",
+    "cm3_timeouts.py": "de57202e85942651ebeea699f6b0a834ee72bfab0d0c270d153edf2e9a84c097",
+    "guard.py": "905fd841d2ca7509c2d8abaadb84086fc3ee715f11126c1f2d061025be4c58a2",
+    "job_status.py": "df4dd2f05ef9aeabe6504927f37ca4bf983544aa58b8905d2bd9bfe5f5de6541",
+    "late_app_guard.py": "caf3d2834736ad047a6f01d4d7e59408d05b1177ad20fd55ca119db2c8bc2b3d",
+    "lifecycle.py": "9ca93de4f694078b96084764dc117be9fc41e3463eaa89c7bed62ce8c187e9dc",
+    "lifecycle.py.diff": "d958521a08fa28e86ef2df9063a6cedf4fc78b1d4dda211a6802c22fcaa56626",
+    "lineage.json": "a02ed28b7f3e2238acfd6cf1801f590b72498c28b676568faaa7f1728ce3355f",
+    "safety.py": "f01b893508ea5bbccac4e1d0416666ef12aae2ed41cadf80fca5e54792ac09a0",
+    "task_driver.py": "262a7bcabd435e18edd4d03ae6e99549b580be76d3d1e73d26ca5eb53a7d3d17",
+    "task_driver.py.diff": "7a6a2da1432a789b5621911e4e064d30acb16b36dc1e41ad0a2696f08413a205",
+    "test_appcreate_gate.py": "474cca8fd2eb491cf3e0c9e1fef7706dbb722282b03cb95047dc9ef80d579bde",
+    "test_appcreate_gate.py.diff": "ebacb3800c8b5aa75ed37d29875f09a5c2fea0bf75360bb604f415213c4faf07",
+    "test_late_app_guard.py": "8142a74474ac6a77ffe0a5465fa02ea2d1c1fb83e8c76e4dc7c2ca795e553c3a",
+    "tests.log": "c8530fff090969b28ec9b75c912255e244a4f75be404cc2c232ac83991078931"
+  },
+  "status": "FROZEN_DRAFT_FOR_JOINT_REVIEW"
+}

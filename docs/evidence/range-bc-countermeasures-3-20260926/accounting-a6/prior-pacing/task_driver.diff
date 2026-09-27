@@ -1,0 +1,49 @@
+--- phase101-proposal/task_driver.py
++++ appcreate-fix-draft/task_driver.py
+@@ -3,9 +3,11 @@
+ import lifecycle
+ from safety import require,digest,numeric_plan,validate_binding,canonical
+ ROOT=pathlib.Path(__file__).resolve().parent
++DRAFT_LAUNCH_ENABLED=False
+ 
+ def execute(local,runtime_ref):
+     import modal_app
++    require(DRAFT_LAUNCH_ENABLED,"DRAFT AppCreate fix: launches disabled")
+     require(modal_app.DEPLOYMENT_ENABLED,"DRAFT: paid launch disabled pending independent delta review and lead approval")
+     local=pathlib.Path(local)
+     require(digest(runtime_ref["path"])==runtime_ref["sha256"],"runtime pin mismatch")
+@@ -29,7 +31,7 @@
+     require(runtime["phase_directory"]==str(local.parent.resolve()),"task directory mismatch")
+     require(inv["attempt_id"]==p["tasks"][key]["attempt_receipts"][0]["attempt_id"],"attempt binding")
+     lifecycle.update_inventory(local,lambda x:x.update(driver_pid=os.getpid()))
+-    worker=None;failure=None
++    worker=None;failure=None;restore_appcreate=None
+     try:
+         client,identity=lifecycle.connect_verified(inv["identity"])
+         def funded():
+@@ -40,6 +42,8 @@
+         funded()
+         task_plan=dict(p,absolute_deadline_unix=bound["stop_at_unix"],verified_identity=identity,
+                        owned_app_name=inv["app_name"],selected_task=key,task_local_directory=str(local))
++        from appcreate_gate import install
++        restore_appcreate=install(client,local,funded)
+         app,function=modal_app.build_app(task_plan,identity,client,key)
+         import modal
+         # Journal intent immediately before the possible external side effect.
+@@ -63,12 +67,16 @@
+     except BaseException as exc:
+         failure=str(exc)
+     finally:
++        if restore_appcreate is not None:
++            try:restore_appcreate()
++            except BaseException as exc:failure=failure or str(exc)
+         result=lifecycle.finish_task(local,worker,reason=failure)
+     require(result["status"]=="COMPLETE" and result["teardown"]["status"]=="TERMINAL" and not result["over_hold"],
+             "incomplete fit/cleanup or exceeded hold; no retry")
+     return result
+ 
+ if __name__=="__main__":
++    if not DRAFT_LAUNCH_ENABLED:raise SystemExit("DRAFT AppCreate fix: launches disabled")
+     import modal_app
+     from phase_transport import validate_authority
+     runtime=json.loads(pathlib.Path(sys.argv[2]).read_bytes())

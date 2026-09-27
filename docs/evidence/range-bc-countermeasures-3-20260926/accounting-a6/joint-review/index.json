@@ -1,0 +1,67 @@
+{
+  "constraints": [
+    "No launches, live reconciliation, ledger edits or commits",
+    "No new money or automatic fit retries",
+    "No scientific registration changes",
+    "Insufficient phase2 cap: stop at gate for James"
+  ],
+  "evidence": {
+    "owner_tests": {
+      "log": {
+        "path": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\accounting-a6\\tests.log",
+        "sha256": "53c675391498ed21f615add526234983e80ff2d634f0fdbe305562d9ee5e23b3"
+      },
+      "passed": 109,
+      "run_by": "r3-impl"
+    },
+    "wrapper_tests": {
+      "log": {
+        "path": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\appcreate-a6-watch-draft-20260927\\tests.log",
+        "sha256": "c8530fff090969b28ec9b75c912255e244a4f75be404cc2c232ac83991078931"
+      },
+      "passed": 44,
+      "run_by": "modal-port on Mac (reported; manifest authenticated here)"
+    }
+  },
+  "format": "cm3-a6-joint-review-index-v1",
+  "issue": "VUH-1346",
+  "lead_authority_messages": [
+    "241a4643-a15c-48fe-af6a-ebad5a6e7056",
+    "01f306a8-16a5-4477-a749-ea0c6fdb531c",
+    "c921138b-cd8e-428e-9db2-212f7c3eed26"
+  ],
+  "packets": {
+    "modal": {
+      "manifest": {
+        "path": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\appcreate-a6-watch-draft-20260927\\files.json",
+        "sha256": "ae3e535a77544fc6f50195b21c880ed5716174486a139f5f2d59afeaabc8ab57"
+      },
+      "root": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\appcreate-a6-watch-draft-20260927",
+      "verified_members": 20
+    },
+    "owner": {
+      "manifest": {
+        "path": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\accounting-a6\\files.json",
+        "sha256": "7d737fcf415867859cd019476754b1ac2e4d9324d2664b803604bf64a33c8607"
+      },
+      "root": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\accounting-a6",
+      "verified_members": 12
+    },
+    "prior_pacing": {
+      "manifest": {
+        "path": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\appcreate-fix-draft-20260927\\files.json",
+        "sha256": "659f7633f949f281f4df81084771575b36c5883539ebeb2d89221faef01018a0"
+      },
+      "root": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\modal\\appcreate-fix-draft-20260927",
+      "verified_members": 14
+    }
+  },
+  "review_output": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\accounting-a6-joint\\review-a6-joint-20260927.md",
+  "review_scope": {
+    "path": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\round3\\impl\\accounting-a6-joint\\REVIEW-SCOPE.md",
+    "sha256": "050a107a5f8d685db6752dc3407e583ec8d5bf68b5b5e760d07d2e98d616b27e"
+  },
+  "shared_contract_sha256": "00da354ac9875e411323b7639fa2ce84e0a97fd256f532ad3f77a044ab8b926f",
+  "shared_helper_sha256": "6222e2dcfcfde138ebec25b1e2933fd7a4f1cb75a2df0ffa14e944a6cb642b4a",
+  "status": "FROZEN_FOR_INDEPENDENT_REVIEW_NOT_LAUNCH"
+}
