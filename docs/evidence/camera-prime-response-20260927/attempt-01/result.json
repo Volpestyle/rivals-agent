@@ -1,0 +1,938 @@
+{
+  "source": [
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\calibration\\alt-cam-20260927\\yaw-01b\\initialization-motion-before.png",
+      "sha256": "007c703813f7fb5d924da3d70aacadf29cc39a8a99d49c353e47134719c0b3ac",
+      "captured": 609857.514211
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\calibration\\alt-cam-20260927\\yaw-01b\\initialization-motion-after.png",
+      "sha256": "d90fe16f9e0077c1dd0d4c73dada21ebb3bf1dd3af5adb651338371722fd6bb9",
+      "captured": 609857.603321
+    }
+  ],
+  "old_match": {
+    "dx": -170,
+    "dy": 0,
+    "ncc": 0.6893104910850525
+  },
+  "controls": {
+    "actual": {
+      "motion_present": false,
+      "acceptance": "response_evidence_only",
+      "direction": -1,
+      "refusal_reasons": [
+        "insufficient_independent_correspondences"
+      ],
+      "patches": [
+        {
+          "box": [
+            480,
+            125,
+            528,
+            173
+          ],
+          "row": 0,
+          "column": 0,
+          "refusal": "weak_or_ambiguous_match"
+        },
+        {
+          "box": [
+            560,
+            125,
+            608,
+            173
+          ],
+          "row": 0,
+          "column": 1,
+          "refusal": "weak_or_ambiguous_match"
+        },
+        {
+          "box": [
+            640,
+            125,
+            688,
+            173
+          ],
+          "row": 0,
+          "column": 2,
+          "dx": -168,
+          "dy": 0,
+          "ncc": 0.8889136910438538,
+          "peak_margin": 0.13486331701278687,
+          "phase": [
+            -0.11443079481832541,
+            -0.768195099396852,
+            0.642163186127113
+          ]
+        },
+        {
+          "box": [
+            720,
+            125,
+            768,
+            173
+          ],
+          "row": 0,
+          "column": 3,
+          "dx": -172,
+          "dy": 0,
+          "ncc": 0.9197036623954773,
+          "peak_margin": 0.4337533116340637,
+          "phase": [
+            -0.3636392694201618,
+            0.06652226855278442,
+            0.9199378088944488
+          ]
+        },
+        {
+          "box": [
+            800,
+            125,
+            848,
+            173
+          ],
+          "row": 0,
+          "column": 4,
+          "dx": -176,
+          "dy": 1,
+          "ncc": 0.9162854552268982,
+          "peak_margin": 0.19803601503372192,
+          "refusal": "reverse_correspondence"
+        },
+        {
+          "box": [
+            480,
+            190,
+            528,
+            238
+          ],
+          "row": 1,
+          "column": 0,
+          "refusal": "weak_or_ambiguous_match"
+        },
+        {
+          "box": [
+            560,
+            190,
+            608,
+            238
+          ],
+          "row": 1,
+          "column": 1,
+          "refusal": "weak_or_ambiguous_match"
+        },
+        {
+          "box": [
+            640,
+            190,
+            688,
+            238
+          ],
+          "row": 1,
+          "column": 2,
+          "refusal": "weak_or_ambiguous_match"
+        },
+        {
+          "box": [
+            720,
+            190,
+            768,
+            238
+          ],
+          "row": 1,
+          "column": 3,
+          "dx": -162,
+          "dy": 0,
+          "ncc": 0.8332381844520569,
+          "peak_margin": 0.18217319250106812,
+          "phase": [
+            -5.429977489346896,
+            -0.24889032694505886,
+            0.16529206641846234
+          ],
+          "refusal": "phase_residual"
+        },
+        {
+          "box": [
+            800,
+            190,
+            848,
+            238
+          ],
+          "row": 1,
+          "column": 4,
+          "refusal": "weak_or_ambiguous_match"
+        },
+        {
+          "box": [
+            480,
+            255,
+            528,
+            303
+          ],
+          "row": 2,
+          "column": 0,
+          "refusal": "weak_or_ambiguous_match"
+        },
+        {
+          "box": [
+            560,
+            255,
+            608,
+            303
+          ],
+          "row": 2,
+          "column": 1,
+          "refusal": "weak_or_ambiguous_match"
+        },
+        {
+          "box": [
+            640,
+            255,
+            688,
+            303
+          ],
+          "row": 2,
+          "column": 2,
+          "refusal": "weak_or_ambiguous_match"
+        },
+        {
+          "box": [
+            720,
+            255,
+            768,
+            303
+          ],
+          "row": 2,
+          "column": 3,
+          "refusal": "weak_or_ambiguous_match"
+        },
+        {
+          "box": [
+            800,
+            255,
+            848,
+            303
+          ],
+          "row": 2,
+          "column": 4,
+          "refusal": "weak_or_ambiguous_match"
+        }
+      ],
+      "pixel_scale_width": 1280,
+      "timing_checked": true,
+      "pair_gap_s": 0.0891100000590086,
+      "matched_patches": 2
+    },
+    "identical": {
+      "motion_present": false,
+      "acceptance": "response_evidence_only",
+      "direction": -1,
+      "refusal_reasons": [
+        "identical pixels: no motion or stale frame"
+      ],
+      "patches": [],
+      "pixel_scale_width": 1280,
+      "timing_checked": false
+    },
+    "wrong_sign": {
+      "motion_present": false,
+      "acceptance": "response_evidence_only",
+      "direction": 1,
+      "refusal_reasons": [
+        "insufficient_independent_correspondences"
+      ],
+      "patches": [
+        {
+          "box": [
+            480,
+            125,
+            528,
+            173
+          ],
+          "row": 0,
+          "column": 0,
+          "refusal": "weak_or_ambiguous_match"
+        },
+        {
+          "box": [
+            560,
+            125,
+            608,
+            173
+          ],
+          "row": 0,
+          "column": 1,
+          "refusal": "weak_or_ambiguous_match"
+        },
+        {
+          "box": [
+            640,
+            125,
+            688,
+            173
+          ],
+          "row": 0,
+          "column": 2,
+          "dx": -168,
+          "dy": 0,
+          "ncc": 0.8889136910438538,
+          "peak_margin": 0.13486331701278687,
+          "phase": [
+            -0.11443079481832541,
+            -0.768195099396852,
+            0.642163186127113
+          ]
+        },
+        {
+          "box": [
+            720,
+            125,
+            768,
+            173
+          ],
+          "row": 0,
+          "column": 3,
+          "dx": -172,
+          "dy": 0,
+          "ncc": 0.9197036623954773,
+          "peak_margin": 0.4337533116340637,
+          "phase": [
+            -0.3636392694201618,
+            0.06652226855278442,
+            0.9199378088944488
+          ]
+        },
+        {
+          "box": [
+            800,
+            125,
+            848,
+            173
+          ],
+          "row": 0,
+          "column": 4,
+          "dx": -176,
+          "dy": 1,
+          "ncc": 0.9162854552268982,
+          "peak_margin": 0.19803601503372192,
+          "refusal": "reverse_correspondence"
+        },
+        {
+          "box": [
+            480,
+            190,
+            528,
+            238
+          ],
+          "row": 1,
+          "column": 0,
+          "refusal": "weak_or_ambiguous_match"
+        },
+        {
+          "box": [
+            560,
+            190,
+            608,
+            238
+          ],
+          "row": 1,
+          "column": 1,
+          "refusal": "weak_or_ambiguous_match"
+        },
+        {
+          "box": [
+            640,
+            190,
+            688,
+            238
+          ],
+          "row": 1,
+          "column": 2,
+          "refusal": "weak_or_ambiguous_match"
+        },
+        {
+          "box": [
+            720,
+            190,
+            768,
+            238
+          ],
+          "row": 1,
+          "column": 3,
+          "dx": -162,
+          "dy": 0,
+          "ncc": 0.8332381844520569,
+          "peak_margin": 0.18217319250106812,
+          "phase": [
+            -5.429977489346896,
+            -0.24889032694505886,
+            0.16529206641846234
+          ],
+          "refusal": "phase_residual"
+        },
+        {
+          "box": [
+            800,
+            190,
+            848,
+            238
+          ],
+          "row": 1,
+          "column": 4,
+          "refusal": "weak_or_ambiguous_match"
+        },
+        {
+          "box": [
+            480,
+            255,
+            528,
+            303
+          ],
+          "row": 2,
+          "column": 0,
+          "refusal": "weak_or_ambiguous_match"
+        },
+        {
+          "box": [
+            560,
+            255,
+            608,
+            303
+          ],
+          "row": 2,
+          "column": 1,
+          "refusal": "weak_or_ambiguous_match"
+        },
+        {
+          "box": [
+            640,
+            255,
+            688,
+            303
+          ],
+          "row": 2,
+          "column": 2,
+          "refusal": "weak_or_ambiguous_match"
+        },
+        {
+          "box": [
+            720,
+            255,
+            768,
+            303
+          ],
+          "row": 2,
+          "column": 3,
+          "refusal": "weak_or_ambiguous_match"
+        },
+        {
+          "box": [
+            800,
+            255,
+            848,
+            303
+          ],
+          "row": 2,
+          "column": 4,
+          "refusal": "weak_or_ambiguous_match"
+        }
+      ],
+      "pixel_scale_width": 1280,
+      "timing_checked": false,
+      "matched_patches": 2
+    },
+    "reversed_pair": {
+      "motion_present": false,
+      "acceptance": "response_evidence_only",
+      "direction": -1,
+      "refusal_reasons": [
+        "incoherent_displacement",
+        "wrong_or_inconsistent_direction"
+      ],
+      "patches": [
+        {
+          "box": [
+            480,
+            125,
+            528,
+            173
+          ],
+          "row": 0,
+          "column": 0,
+          "dx": 168,
+          "dy": 0,
+          "ncc": 0.8900317549705505,
+          "peak_margin": 0.21965545415878296,
+          "phase": [
+            0.30434052068053674,
+            1.103081386080099,
+            0.48003460880782867
+          ]
+        },
+        {
+          "box": [
+            560,
+            125,
+            608,
+            173
+          ],
+          "row": 0,
+          "column": 1,
+          "dx": 172,
+          "dy": 0,
+          "ncc": 0.9358264803886414,
+          "peak_margin": 0.3872460722923279,
+          "phase": [
+            0.33305533790554165,
+            0.04421526553055344,
+            1.0146051576981943
+          ]
+        },
+        {
+          "box": [
+            640,
+            125,
+            688,
+            173
+          ],
+          "row": 0,
+          "column": 2,
+          "dx": 178,
+          "dy": -2,
+          "ncc": 0.9536752700805664,
+          "peak_margin": 0.20099884271621704,
+          "phase": [
+            -0.45554358686289476,
+            0.16601408941065898,
+            0.9042400125828054
+          ]
+        },
+        {
+          "box": [
+            720,
+            125,
+            768,
+            173
+          ],
+          "row": 0,
+          "column": 3,
+          "dx": 190,
+          "dy": -2,
+          "ncc": 0.8476045727729797,
+          "peak_margin": 0.24861496686935425,
+          "phase": [
+            -0.0030148116032790995,
+            -0.9138565284659315,
+            0.6714028293887774
+          ]
+        },
+        {
+          "box": [
+            800,
+            125,
+            848,
+            173
+          ],
+          "row": 0,
+          "column": 4,
+          "refusal": "weak_or_ambiguous_match"
+        },
+        {
+          "box": [
+            480,
+            190,
+            528,
+            238
+          ],
+          "row": 1,
+          "column": 0,
+          "refusal": "weak_or_ambiguous_match"
+        },
+        {
+          "box": [
+            560,
+            190,
+            608,
+            238
+          ],
+          "row": 1,
+          "column": 1,
+          "dx": 162,
+          "dy": 0,
+          "ncc": 0.8371291160583496,
+          "peak_margin": 0.1203506588935852,
+          "phase": [
+            5.751505325029406,
+            0.3919601118184026,
+            0.21930182890759575
+          ],
+          "refusal": "phase_residual"
+        },
+        {
+          "box": [
+            640,
+            190,
+            688,
+            238
+          ],
+          "row": 1,
+          "column": 2,
+          "refusal": "weak_or_ambiguous_match"
+        },
+        {
+          "box": [
+            720,
+            190,
+            768,
+            238
+          ],
+          "row": 1,
+          "column": 3,
+          "dx": 180,
+          "dy": 2,
+          "ncc": 0.8844484686851501,
+          "peak_margin": 0.3123827576637268,
+          "phase": [
+            0.9125686083867315,
+            0.05619603407719609,
+            0.7942665972643428
+          ]
+        },
+        {
+          "box": [
+            800,
+            190,
+            848,
+            238
+          ],
+          "row": 1,
+          "column": 4,
+          "refusal": "weak_or_ambiguous_match"
+        },
+        {
+          "box": [
+            480,
+            255,
+            528,
+            303
+          ],
+          "row": 2,
+          "column": 0,
+          "refusal": "weak_or_ambiguous_match"
+        },
+        {
+          "box": [
+            560,
+            255,
+            608,
+            303
+          ],
+          "row": 2,
+          "column": 1,
+          "refusal": "weak_or_ambiguous_match"
+        },
+        {
+          "box": [
+            640,
+            255,
+            688,
+            303
+          ],
+          "row": 2,
+          "column": 2,
+          "dx": 130,
+          "dy": 4,
+          "ncc": 0.8269465565681458,
+          "peak_margin": 0.07315778732299805,
+          "phase": [
+            0.0879915891687375,
+            0.4070366253894022,
+            0.6629830858566694
+          ]
+        },
+        {
+          "box": [
+            720,
+            255,
+            768,
+            303
+          ],
+          "row": 2,
+          "column": 3,
+          "refusal": "weak_or_ambiguous_match"
+        },
+        {
+          "box": [
+            800,
+            255,
+            848,
+            303
+          ],
+          "row": 2,
+          "column": 4,
+          "refusal": "weak_or_ambiguous_match"
+        }
+      ],
+      "pixel_scale_width": 1280,
+      "timing_checked": false,
+      "matched_patches": 6,
+      "median_dx": 175.0,
+      "median_dy": 0.0,
+      "coherent_patches": 5
+    },
+    "reversed_pair_correct_sign": {
+      "motion_present": false,
+      "acceptance": "response_evidence_only",
+      "direction": 1,
+      "refusal_reasons": [
+        "incoherent_displacement"
+      ],
+      "patches": [
+        {
+          "box": [
+            480,
+            125,
+            528,
+            173
+          ],
+          "row": 0,
+          "column": 0,
+          "dx": 168,
+          "dy": 0,
+          "ncc": 0.8900317549705505,
+          "peak_margin": 0.21965545415878296,
+          "phase": [
+            0.30434052068053674,
+            1.103081386080099,
+            0.48003460880782867
+          ]
+        },
+        {
+          "box": [
+            560,
+            125,
+            608,
+            173
+          ],
+          "row": 0,
+          "column": 1,
+          "dx": 172,
+          "dy": 0,
+          "ncc": 0.9358264803886414,
+          "peak_margin": 0.3872460722923279,
+          "phase": [
+            0.33305533790554165,
+            0.04421526553055344,
+            1.0146051576981943
+          ]
+        },
+        {
+          "box": [
+            640,
+            125,
+            688,
+            173
+          ],
+          "row": 0,
+          "column": 2,
+          "dx": 178,
+          "dy": -2,
+          "ncc": 0.9536752700805664,
+          "peak_margin": 0.20099884271621704,
+          "phase": [
+            -0.45554358686289476,
+            0.16601408941065898,
+            0.9042400125828054
+          ]
+        },
+        {
+          "box": [
+            720,
+            125,
+            768,
+            173
+          ],
+          "row": 0,
+          "column": 3,
+          "dx": 190,
+          "dy": -2,
+          "ncc": 0.8476045727729797,
+          "peak_margin": 0.24861496686935425,
+          "phase": [
+            -0.0030148116032790995,
+            -0.9138565284659315,
+            0.6714028293887774
+          ]
+        },
+        {
+          "box": [
+            800,
+            125,
+            848,
+            173
+          ],
+          "row": 0,
+          "column": 4,
+          "refusal": "weak_or_ambiguous_match"
+        },
+        {
+          "box": [
+            480,
+            190,
+            528,
+            238
+          ],
+          "row": 1,
+          "column": 0,
+          "refusal": "weak_or_ambiguous_match"
+        },
+        {
+          "box": [
+            560,
+            190,
+            608,
+            238
+          ],
+          "row": 1,
+          "column": 1,
+          "dx": 162,
+          "dy": 0,
+          "ncc": 0.8371291160583496,
+          "peak_margin": 0.1203506588935852,
+          "phase": [
+            5.751505325029406,
+            0.3919601118184026,
+            0.21930182890759575
+          ],
+          "refusal": "phase_residual"
+        },
+        {
+          "box": [
+            640,
+            190,
+            688,
+            238
+          ],
+          "row": 1,
+          "column": 2,
+          "refusal": "weak_or_ambiguous_match"
+        },
+        {
+          "box": [
+            720,
+            190,
+            768,
+            238
+          ],
+          "row": 1,
+          "column": 3,
+          "dx": 180,
+          "dy": 2,
+          "ncc": 0.8844484686851501,
+          "peak_margin": 0.3123827576637268,
+          "phase": [
+            0.9125686083867315,
+            0.05619603407719609,
+            0.7942665972643428
+          ]
+        },
+        {
+          "box": [
+            800,
+            190,
+            848,
+            238
+          ],
+          "row": 1,
+          "column": 4,
+          "refusal": "weak_or_ambiguous_match"
+        },
+        {
+          "box": [
+            480,
+            255,
+            528,
+            303
+          ],
+          "row": 2,
+          "column": 0,
+          "refusal": "weak_or_ambiguous_match"
+        },
+        {
+          "box": [
+            560,
+            255,
+            608,
+            303
+          ],
+          "row": 2,
+          "column": 1,
+          "refusal": "weak_or_ambiguous_match"
+        },
+        {
+          "box": [
+            640,
+            255,
+            688,
+            303
+          ],
+          "row": 2,
+          "column": 2,
+          "dx": 130,
+          "dy": 4,
+          "ncc": 0.8269465565681458,
+          "peak_margin": 0.07315778732299805,
+          "phase": [
+            0.0879915891687375,
+            0.4070366253894022,
+            0.6629830858566694
+          ]
+        },
+        {
+          "box": [
+            720,
+            255,
+            768,
+            303
+          ],
+          "row": 2,
+          "column": 3,
+          "refusal": "weak_or_ambiguous_match"
+        },
+        {
+          "box": [
+            800,
+            255,
+            848,
+            303
+          ],
+          "row": 2,
+          "column": 4,
+          "refusal": "weak_or_ambiguous_match"
+        }
+      ],
+      "pixel_scale_width": 1280,
+      "timing_checked": false,
+      "matched_patches": 6,
+      "median_dx": 175.0,
+      "median_dy": 0.0,
+      "coherent_patches": 5
+    },
+    "duplicate_stamp": {
+      "motion_present": false,
+      "acceptance": "response_evidence_only",
+      "direction": -1,
+      "refusal_reasons": [
+        "pair gap outside 40..100 ms"
+      ],
+      "patches": [],
+      "pixel_scale_width": 1280,
+      "timing_checked": true,
+      "pair_gap_s": 0.0
+    }
+  },
+  "peak_rss_bytes": 27746304,
+  "module_sha256": "ea5a4aedaa17783422dfd139f0b371d15bf01cdf771bb76b94d2291b40d93c49"
+}
