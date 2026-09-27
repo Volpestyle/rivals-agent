@@ -1,130 +1,103 @@
-﻿# Current sitting: lead-operated yaw and CUDA FPS cost
+# Camera and FPS sitting: startup repair pending
 
 Owner live-loop; desktop/booking/Linear owner herdr-lead; input reviewer binds-review.
-VUH-1384, updated 2026-09-27. This is a plan, not evidence of a completed sitting.
+VUH-1384, 2026-09-27. This is the next-attempt plan, not acceptance evidence.
 
-James authorized the lead to open the game, navigate to Practice Range and do
-pad move-and-attack activity refreshes between measurement blocks. **James does
-not need to be at the desk for these operations.** Live-loop and workers send
-no game input and open no capture. The older 55/40-minute human reservation is
-superseded by this operator arrangement, not by an accepted camera map.
+The first sitting stopped after yaw-01. Fresh-pad drift moved the ready view
+while its token waited 39 seconds, then the segment refused. The environment's
+Temp launcher was missing, so FPS A/B/A never ran. Camera map, focal, game FPS
+cost and acceptance remain unknown. Raw evidence is
+`data/calibration/alt-cam-20260927/yaw-01`; partial OBS video is
+`C:/Users/volpe/Videos/2026-09-27 14-27-37.mkv`.
 
-Exact ordered commands, screenshot checks and atomic token locations:
-[live-loop-operator-20260927.md](live-loop-operator-20260927.md), landed ad47f57.
-The lead runs one block at a time, inspects its result and confirms closure
-before any separate keep-alive. No concurrent worker process is needed.
+James is playing/recording now. No sitting, native decode, tests or GPU probe
+runs concurrently. Static implementation and metadata preparation only.
 
-## Current decision and timing
+## Before the next sitting
 
-**Recommend yaw full turns + actuator-free FPS only for the current attempt.**
-Allow roughly **23 minutes, capped at 30**: setup/pose/recording 0-4; four yaw
-blocks 4-16; FPS A/B/A plus setup 16-19; retain evidence and close 19-23. Never
-extend a block past 180 seconds. Retain the prior minute-33 absolute stop if
-operations slip; it is not permission to fill the time with retries. The lead
-owns the actual sequence and stop decision.
+- Both camera modes need the drafted startup repair tested and pre-run LAND by
+  binds-review. Current bytes invalidate a2 receipt 5c9da6f0. The new sequence is
+  capture-only token before Live; attach with zero settle; M1 +.45 rx /300 ms;
+  checked observed motion; five seconds neutral; NEW ready-0 inspection/token.
+  Initialization is excluded with times. A changed or unprovable ready pose
+  refuses. There is no retry, automatic leveling or search.
+- Durable Python is `C:/Users/volpe/.venvs/rivals-live-cu128/Scripts/python.exe`.
+  Static env receipt 38bf7953: 36 pins, package checks/inference imports passed;
+  DXCAM enumeration failed in service session 0. Lead will probe DXCAM/vgamepad
+  through C:\desk in console session 1 after James closes the game. No new-env
+  CUDA forward, FPS preparation or desktop qualification is claimed.
+- Focal work now uses only the three explicitly authorized CALIBRATION entries:
+  alt `20260926T162648-153Z-116800-4`, rightward strokes
+  `20260925T030045-211Z-7804-3`, main `20260926T060921-977Z-60612-1`. They never
+  entered a split. Prepare counts/settings/window provenance now; guarded CPU
+  native decoding only when game/recording closes. Fit each account separately,
+  preserve uncertainty, and establish transfer before accepting alt pulses.
+  The earlier three-TRAIN-still attempt had zero tracks and remains a refusal.
 
-Short-pulse commands are ready and independently reviewed, but **all require
-an accepted focal receipt**. Do not run them while focal is unknown. If focal
-is established later, the lead can schedule their roughly six-minute block,
-without the old six-minute mouse-sweep block only if the offline evidence
-actually replaces it. The current refusal does not establish that replacement.
-No live learned-versus-scripted trials are scheduled for this fallback.
+## Operator sequence and time
 
-## Offline focal attempt and remaining work
+James authorized the lead to use reenter.py for setup, navigate and refresh
+activity. James need not be at the desk. No worker drives input or capture.
+Exact commands and atomic tokens are in
+[live-loop-operator-20260927.md](live-loop-operator-20260927.md); its launch
+instructions remain HOLD until the replacement input receipt exists.
 
-At $0, CPU-only, the worker attempted shared tracks on three existing native
-TRAIN stills (rows 7, 1807, 3606 from session 20260923T051828-422Z-33696-1).
-**Zero tracks survived. Focal and bounds are null.** The views are about 60 s
-apart and show upper-platform near rails, airborne combat, then ground-level
-close combat. They do not establish stationary far-landmark rotation. Evidence:
-`docs/evidence/focal-train-20260927/existing-20260927T190413/result.json`.
+Allow about 23 minutes for yaw plus FPS, or about 29 minutes if accepted focal
+allows the six-minute pulse block. Plan around 30 minutes; hard stop remains
+minute 33 if camera work is incomplete. Do not keep the game idle awaiting
+implementation, review or a focal fit. No new mouse-sweep block is booked while
+existing calibration evidence is being analyzed.
 
-This is a bounded refusal on these saved stills, not a claim that all existing
-recordings are unusable. The named TRAIN table contains a promising no-button
-slow-yaw window at rows 833:860 (27 frames, about 28.68 s, +368 counts, maximum
-1,140 counts/s). Its adjacent native frames were not retained. No video decode
-or hash job started before Marvel opened, and none will run alongside the game.
-A later bounded extraction/fit while the game is stopped may still avoid any
-new human recording. No-button input alone does not prove stationary scenery.
+1. Setup Spider-Man in alt Practice Range, Steam Input disabled, H/V247/124,
+   observed actual curve/assist/cooldown settings, FPS overlay and native OBS.
+   **Move-and-attack keep-alive before the first block**, close that pad, then
+   restore the open, level, bot-free view. Setup alone did not prevent idle drop.
+2. Run yaw groups (+.45,-.45,+.1,-.1), (+.2,-.2,+.3,-.3), (+.6,-.6), and finally
+   (+.8,-.8,+1,-1), at most 180 seconds per command. Refresh activity only after
+   closure between blocks. No focal is needed. Every block has ready-attach
+   approval without a pad, M1 prime, five-second neutral delay, then a separate
+   ready-0 token. Recheck level, bots and banner after the roughly 50-degree turn.
+   Native video must count full turns; an NPZ return is only a candidate.
+3. Only with accepted focal, run signed short-pulse groups. Pitch order alternates
+   +.5,-.5,+1,-1 away from clamps. No return pulse exists. Each pulse has its own
+   inspected token. Refusal leaves the rate unknown and ends the block.
+4. After camera closure and another activity refresh, run the actuator-free FPS
+   A/B/A for 120 seconds with fixed view/settings/OBS/cap. Stop all worker math,
+   tests, decode and inference during the comparison. No keep-alive inside it.
+5. Retain failures and unexecuted rows. Annotate visible FPS evidence after
+   closure, report A drift/cap saturation and paired loss. Lead writes the sitting
+   record and acceptance. No worker process is required concurrently.
 
-The source's sensitivity 1.89/1.89 and 800 DPI are pinned by its own settings and
-review records. Main-versus-alt account identity is not explicit there; transfer
-to the current alt view is unverified. Mouse smoothing and acceleration were
-ON; gain .0330738 deg/count is supported for the recorded slow turn, with speed
-dependence unresolved. Counts remove the need to estimate commanded turn rate,
-but moving-frame alignment still needs latency/smoothing uncertainty. Do not
-substitute pad sensitivity 247/124 or assume 640 px focal.
+## Fallback and acceptance limits
 
-## Ready implementation and operator checks
-
-- Camera driver/pulse initialization: landed 6f3a7f7, 29 tests, pre-run a2 LAND.
-  Receipt `docs/evidence/camera-turns-20260927/camera-turns-review-v1-a2.json`
-  (5c9da6f0); v1/a1 receipts are stale. Full-turn analysis has 47 owner tests,
-  landed d1c49a4. Native video must still establish full turns and validity.
-- Full-turn groups are (+.45,-.45,+.1,-.1), (+.2,-.2,+.3,-.3), (+.6,-.6), then
-  (+.8,-.8,+1,-1). Keep >=.8 last or alone. Each segment has its own fresh native
-  ready frame and token; refusal ends the block, without automatic retry.
-- Every future pulse block starts with separately token-gated +.45 yaw /120 ms
-  initialization. Directional motion must be observed or it stops. Re-check
-  the bot-free pose on NEW ready-0 after its roughly 19-degree turn, then issue
-  a separate token. Exclude initialization frames/reports/video from calibration.
-  Pitch signs alternate +.5,-.5,+1,-1, away from clamps; no return pulse exists.
-- Steam Input DISABLED, Spider-Man in Practice Range, actual saved H/V247/124,
-  normal cooldowns, visible FPS counter and native OBS recording. Record other
-  settings; do not change aim assist ad hoc. Range/HUD/idle/focus/key/capture
-  failure or deadline ends the block. Lead refreshes activity only between
-  closed blocks and re-establishes pose. Camera turns do not reset inactivity.
-- FPS runner landed 22b53fc with 27 tests and actual fallback preparation passed.
-  It has no actuator and consumes no execution maps. Use newly observed sitting
-  settings, exact checkpoint, compact-bgr, two CPU threads, explicit CUDA and
-  capture flags. GPU inference approval is 4f81722. All other analysis stops for
-  the A/B/A comparison. Live-fps has finished and is idle.
-
-## Fallback result and FPS contract
-
-Approved fallback interim94-s012 model_nohud seed0 SHA256:
+The interim94-s012 fallback hash is
 `2d5183cba12913a36327e0a459ec0c0b2a1238d26a7df98f7823929af3129f18`.
-Its fixed 120-second /3,600 native TRAIN-frame replay produced zero supported
-presses/holds/releases and zero RAW median yaw/pitch on every step: 100% neutral.
-Human: 437 supported presses (3.642/s), 28.42% action neutral, 9.92% action-plus-
-camera neutral; mean absolute yaw/pitch 2.027/0.864 deg per step, with pitch
-explicitly derived from equal sensitivity. These were self-fed raw classes,
-not camera-disabled forced zeros. Replay code/evidence landed f8892cf:
-`docs/evidence/live-loop-fallback-train-20260927/RESULT.md`.
+Its fixed 3,600-native-TRAIN-frame replay emitted zero supported actions and raw
+median camera every step (100% neutral), versus 437 supported human presses,
+28.42% action-neutral and 9.92% action-plus-camera-neutral. Evidence:
+`docs/evidence/live-loop-fallback-train-20260927/RESULT.md` (f8892cf).
+Historical frozen-dev self-fed failure stands. Use it only as FPS workload with
+outputs discarded; there are no learned-versus-scripted pairs. A0 does not exist;
+round3 is parked. Lead must explicitly select any replacement.
 
-The historical frozen-dev self-fed failure stands. Use this model only as the
-FPS inference workload, with outputs discarded. A0 does not exist; phase1-02
-stopped and phase103 refused before AppCreate; round3 is parked. No adapter or
-new candidate is authorized. Lead must explicitly select any replacement.
-
-FPS A1/B/A2 is 120 seconds: each phase 10 s warmup +30 s measured. Keep model
-resident, view/resolution/settings/OBS/FPS cap and capture workload fixed. A
-has capture/guards/evidence only; B adds single-flight CUDA inference; final A
-turns inference off. Capture target30Hz, retained native counter samples1Hz;
-report actual rates, prediction ages, memory and evidence drops. No keep-alive
-runs during this sequence. Perform it before the sequence instead.
-
-After closure, manually annotate retained visible FPS values (unreadable blank)
-and run the annotate command. Report per-phase count/sample rate/median/p10,
-A1/A2 drift, cap saturation and paired loss relative to mean(A1,A2). Sparse
-counter samples are not frame-time or 1%-low measurements. FPS cost and its
-acceptability remain unmeasured until the desktop attempt and annotation.
-
-Any future policy input still requires an eligible selected checkpoint,
-accepted execution maps, reviewed input code and re-freeze of controller,
-loop, record, pad_bindings and changed live dependencies. No missing rate or
-deadzone is guessed, and the current symmetric Cal cannot hide asymmetry.
+FPS runner 22b53fc has 27 owner tests and no actuator. A1/B/A2 each has 10 seconds
+warmup plus 30 measured. Capture/guards/evidence remain active in A; B adds
+single-flight CUDA inference. Report actual capture and 1Hz counter sample rates,
+prediction ages, memory, dropped evidence, median/p10 FPS, A drift/cap saturation
+and paired loss. Sparse counter readings are not frame-time/1%-low measures.
+GPU inference approval 4f81722 does not make an unexecuted FPS result measured.
+Any policy input still requires eligible checkpoint, accepted maps, reviewed
+input and re-freeze of controller/loop/record/pad_bindings and dependencies.
 
 ## VUH-1384 current-result text for the lead
 
-Inference/CLI accepted and landed (7ca7e16, d034ff1). Camera initialization/input
-landed 6f3a7f7 with a2 pre-run receipt 5c9da6f0 and 29 tests; offline analysis has 47
-tests. Actuator-free FPS runner 22b53fc has 27 tests. Fallback native TRAIN replay
-f8892cf was 100% neutral across 3,600 frames including raw camera, versus 437
-supported human presses; learned/scripted pairs are deferred. Operator sheet
-ad47f57 supports lead-operated yaw and FPS, without worker input or James at
-the desk. Offline focal attempt on retained native stills refused (zero shared
-tracks); focal/pulses remain unresolved, with a consecutive-frame TRAIN window
-identified for later CPU extraction. No A0 checkpoint exists. Camera acceptance,
-live policy outcomes, game FPS cost and acceptance remain unmeasured. Lead owns
-publication and the sitting record; this text does not claim a Linear write.
+The camera/FPS sitting stopped after yaw-01: fresh-pad drift invalidated its
+ready view, motion refused, and FPS could not start because the Temp Python
+launcher was missing. No camera map or game FPS cost was measured. Startup
+repair is drafted for both modes (pre-attach token, M1 300ms prime, five-second
+neutral, fresh ready-0), awaiting tests and pre-run review. Durable env receipt
+38bf7953 provides C:/Users/volpe/.venvs/rivals-live-cu128/Scripts/python.exe;
+console-session desktop probe remains lead-owned. Focal now targets three
+existing CALIBRATION takes, decoding only after play/recording closes. Fallback
+replay f8892cf was 100% neutral across 3,600 frames; learned/scripted trials remain
+deferred. Lead owns publication and sitting scheduling; no Linear write claimed.

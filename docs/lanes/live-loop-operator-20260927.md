@@ -6,14 +6,18 @@ inspect its result, then choose the next. Do not paste all commands as a batch.
 Only launch live commands through the established interactive desktop runner,
 with the game already foreground. Plain SSH cannot own dxcam or pad capture.
 
-Code landed 6f3a7f7. Camera receipt a2 is 5c9da6f0; earlier receipts are stale.
+**HOLD: startup repair is drafted, untested and awaiting pre-run review.**
+The stopped yaw-01 sitting exposed fresh-pad drift during the token wait.
+Current source differs from 6f3a7f7; receipt a2 (5c9da6f0) is now stale.
+Do not execute this sheet until the new source has passed tests and binds-review.
 Full turns need NO focal. Every short-pulse block needs an ACCEPTED focal receipt.
 Offline focal remains unknown at this writing; do not wait in the range for it.
 The fallback is entirely neutral on TRAIN, so there is NO learned policy block.
 
 ## 0. Operator setup
 
-Enter Practice Range as Spider-Man on the alt, Steam Input DISABLED, H/V 247/124.
+The lead may use reenter.py for setup, as James authorized. Enter Practice Range
+as Spider-Man on the alt, Steam Input DISABLED, H/V 247/124.
 Verify actual saved curve/assist/settings, normal cooldowns, open level bot-free
 view, no idle warning. Turn monitor on, enable visible FPS counter, and start
 native OBS video. Native video is required to count full turns; NPZ returns alone
@@ -21,18 +25,37 @@ are not proof. Pin the actual PID, sitting and native recording in this setup:
 
 ```powershell
 Set-Location C:/Users/volpe/repos/rivals-agent
-$camPython = 'C:/Users/volpe/AppData/Local/Temp/live-loop-cuda-env/Scripts/python.exe'
+$camPython = 'C:/Users/volpe/.venvs/rivals-live-cu128/Scripts/python.exe'
 $camSitting = 'REPLACE-WITH-NEW-SITTING'
 $camRoot = "C:/Users/volpe/repos/rivals-agent/data/calibration/$camSitting"
 $camGamePid = 12345 # REPLACE with fresh foreground Marvel game PID
 $camVideo = 'C:/Users/volpe/Videos/REPLACE-WITH-CURRENT-NATIVE-OBS.mkv'
-$camReceipt = 'docs/evidence/camera-turns-20260927/camera-turns-review-v1-a2.json'
+$camReceipt = 'REPLACE-WITH-ACCEPTED-STARTUP-REPAIR-RECEIPT'
 $camCommon = @('--live','--review-receipt',$camReceipt,'--game-pid',"$camGamePid",'--sitting',$camSitting,'--recording-ref',$camVideo,'--scope-seconds','180')
 ```
 
-Each --output below must be a NEW directory. The driver performs capture
-preflight before attaching a pad; keyboard released and range already focused.
-Three-second attach settling can change the pose, so inspect its ready frame.
+The durable env receipt is commit 38bf7953. Inference imports and package checks
+passed. DXCAM import failed enumerating displays in service session 0; the lead
+will probe DXCAM/vgamepad through a C:\desk job in console session 1 after James
+closes the game. No CUDA forward or desktop qualification is claimed yet.
+
+Perform a guarded move-and-attack activity refresh **before the first block**,
+then close that pad and restore the inspected pose. Setup alone did not prevent
+the prior inactivity drop. Each --output must be a NEW directory. The driver
+performs capture preflight and ready-attach inspection BEFORE constructing Live;
+keyboard released and range already focused. The draft startup sequence is:
+
+1. Inspect ready-attach.png/json: range, level, bot-free, no idle or device banner.
+   Atomically write continue-attach.json. There is no pad during this wait.
+2. Attach with zero settle and immediately issue the guarded M1 +.45 rx /300 ms
+   prime. The motion check must pass without retry, then five seconds neutral.
+3. Inspect NEW ready-0.png/json after the roughly 50-degree initialization:
+   level, bot-free, banner cleared and range intact. Write a NEW continue-0.json.
+   A bad pose ends the block; no automatic leveling or search.
+
+Prime and settling are initialization_excluded; their times are retained. The
+draft refuses changed/ambiguous views during token waits. No numerical focal or
+camera rate is inferred from initialization.
 Stop on any scope/focus/HUD/idle/key/deadline/refusal. No automatic retry.
 Only after the process closes may the lead run his established guarded
 move-and-attack keep-alive, restore/reinspect pose and start another block.
@@ -76,13 +99,13 @@ Do not infer zero or a rate from that refusal. Record unexecuted rows as unknown
 
 Each command's output directory contains ready-N.png, ready-N-frame.json and
 ready-N.json; write matching continue-N.json in THAT SAME directory. For a
-pulse block the first index is the string prime, then 0..3. Never preapprove
+block the first index is the string attach, then 0..3. Never preapprove
 later frames or copy a prior block's token. The following performs ONE approval
 only AFTER visually inspecting the named ready image:
 
 ```powershell
 $tokenBlock = "$camRoot/yaw-01" # current output directory
-$tokenIndex = '0' # or 'prime' for pulse initialization, then 0,1,2,3
+$tokenIndex = 'attach' # pre-pad approval; then NEW tokens for 0,1,2,3
 $tokenReady = Get-Content -LiteralPath "$tokenBlock/ready-$tokenIndex.json" -Raw | ConvertFrom-Json
 $tokenFinal = "$tokenBlock/continue-$tokenIndex.json"
 if (Test-Path -LiteralPath $tokenFinal) { throw 'Token marker already exists' }
@@ -93,7 +116,8 @@ Move-Item -LiteralPath $tokenTemp -Destination $tokenFinal
 
 The file is closed before same-directory rename. Do this via the remote/agent
 shell; do not type on the game PC keyboard or steal focus. Independent monitor
-stays active during the token gate. A wrong/stale token stops the block.
+stays active after attachment; pre-attach capture checks focus/keys/HUD/idle and
+deadline without a pad. A wrong/stale token or changed pose stops the block.
 
 ## 3. Short pulses: ONLY after focal is accepted
 
@@ -106,12 +130,10 @@ accepted flag merely to unlock this command. Use the actual accepted path:
 $camFocal = "$camRoot/focal-accepted.json"
 ```
 
-Each block first exposes ready-prime: inspect and approve its own token. It
-sends fixed +.45 rx for 120 ms, requires observed negative scene motion, and
-stops without retry if swallowed/unreliable. It then exposes NEW ready-0:
-**re-check bot-free pose after the approximately 19-degree initialization**,
-then approve a separate token. Initialization frames/reports/video are excluded
-from calibration. Each signed measurement also needs its own inspected token.
+Each pulse block uses the SAME pre-attach token, M1 prime and five-second neutral
+startup described above. Re-check the approximately 50-degree changed pose on
+NEW ready-0, then approve a separate token. Initialization frames/reports/video
+are excluded from calibration. Each signed measurement has its own token.
 
 The following is the ordered command list for ONE repetition. Repeat it for
 rep02 and rep03 only inside the sitting cap, with NEW directory names and
