@@ -368,10 +368,8 @@ def main(argv=None):
         require(manifest.get("code_closure") == closure and manifest.get("independent_review") == "accepted",
                 "reviewed exact code closure required before source access")
         deny = T.load_denylist()
-        admission = None
-        if manifest.get("match_admission"):
-            ref = manifest["match_admission"]
-            admission = match_targets.load(ref["path"], ref["sha256"], registry=args.registry, denylist=deny)
+        admission = match_targets.load_references(match_targets.references(manifest),
+                                                  registry=args.registry, denylist=deny)
         return manifest, closure, deny, admission
     if args.command == "preflight":
         manifest, _, deny, admission = load_run()

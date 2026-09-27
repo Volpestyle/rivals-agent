@@ -77,6 +77,49 @@ def load(path, sha256_pin, *, registry, denylist):
     return result
 
 
+def references(manifest):
+    """One legacy receipt or an explicit list; never silently prefer one spelling."""
+    from policy import idm_targets as T
+
+    T._require(not ("match_admission" in manifest and "match_admissions" in manifest),
+               "choose match_admission or match_admissions, not both")
+    if "match_admissions" in manifest:
+        refs = manifest["match_admissions"]
+    else:
+        ref = manifest.get("match_admission")
+        refs = [] if ref is None else [ref]
+    T._require(isinstance(refs, list), "match_admissions must be a list")
+    for ref in refs:
+        T._require(isinstance(ref, dict) and set(ref) == {"path", "sha256"}, "receipt needs path and sha256")
+        T._require(isinstance(ref["path"], str) and ref["path"], "receipt path required")
+        T._require(isinstance(ref["sha256"], str) and len(ref["sha256"]) == 64
+                   and all(c in "0123456789abcdef" for c in ref["sha256"]), "receipt sha256 required")
+    return refs
+
+
+def load_references(refs, *, registry, denylist):
+    """Authenticate every receipt before combining disjoint session entries.
+
+    No target rows are read here. Each member keeps the existing accepted/reviewer,
+    registry, motor and sealed checks. For multiple receipts `sha256` identifies
+    the ordered pinned-reference set, not a fictional merged admission document.
+    """
+    from policy import idm_targets as T
+
+    receipts = [load(ref["path"], ref["sha256"], registry=registry, denylist=denylist) for ref in refs]
+    if not receipts:
+        return None
+    if len(receipts) == 1:
+        return receipts[0]
+    sessions = {}
+    for receipt in receipts:
+        T._require(receipt.registry == receipts[0].registry, "registry changed between admission receipts")
+        T._require(receipt.sessions, "empty member of admission receipt set")
+        T._require(not sessions.keys() & receipt.sessions.keys(), "duplicate session across admission receipts")
+        sessions.update(receipt.sessions)
+    return Admission(sessions, receipts[0].registry, digest(refs))
+
+
 def load_steps(path, targets, admission, denylist):
     """Validate an admitted match table without broadening the policy loader.
 

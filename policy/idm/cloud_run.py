@@ -36,11 +36,10 @@ def main(argv=None):
         E.require(logical_path(getattr(a, name), mounts).is_relative_to("/inputs"), "input mount required")
     manifest = E.read_pinned(a.manifest, a.manifest_sha256)
     denylist = T.load_denylist()
-    receipt = manifest.get("match_admission")
-    admission = None
-    if receipt:
+    receipts = match_targets.references(manifest)
+    for receipt in receipts:
         E.require(logical_path(receipt["path"], mounts).is_relative_to("/inputs"), "admission mount required")
-        admission = match_targets.load(receipt["path"], receipt["sha256"], registry=a.registry, denylist=denylist)
+    admission = match_targets.load_references(receipts, registry=a.registry, denylist=denylist)
     # Preserve all source/family/header guards before touching native stores.
     for item in manifest["sessions"]:
         for key in ("targets", "store", "video", "steps", "demo"):
