@@ -324,3 +324,60 @@ def test_conditioning_nll_masks_unknown_axes_and_measures_feature_ablation():
     assert visual["yaw"]["n"] == int(arr.valid.sum())
     assert visual["yaw"]["nll"] != zero["yaw"]["nll"]
     assert "out of distribution" in report["limitation"]
+    for mode in ("visual", "zero_features"):
+        for c, name in enumerate(vocab.NAMES):
+            mask = arr.act_known[:, 1, c] & arr.valid
+            assert report["press"][mode][name]["n"] == int(mask.sum())
+            assert report["press"][mode][name]["positive_n"] == int((mask & (arr.act[:, 1, c] > .5)).sum())
+
+
+def test_encoder_shared_initialization_and_feature_gradient():
+    from policy.range_bc.explore_encoder import EncoderPolicy, WIDTH
+
+    config = Config(hud=False, embed=4, hidden=8, history_embed=4)
+    torch.manual_seed(0)
+    original = ChunkPolicy(config, 1)
+    torch.manual_seed(0)
+    model = EncoderPolicy(config, 1)
+    for key, value in original.state_dict().items():
+        if not key.startswith(("global_enc.", "crop_enc.")):
+            assert torch.equal(value, model.state_dict()[key])
+    g, c = torch.randn(1, 5, WIDTH), torch.randn(1, 5, WIDTH)
+    prev = torch.randn(1, 5, steps.PREV_DIM)
+    a, cam, _ = model(g, c, None, prev)
+    (a.square().mean() + cam.square().mean()).backward()
+    assert model.global_enc[0].weight.grad.abs().sum() > 0
+    assert model.crop_enc[0].weight.grad.abs().sum() > 0
+    assert model.core.weight_ih_l0.grad.abs().sum() > 0
+
+
+def test_encoder_batches_keep_labels_masks_dropout_and_feature_rows():
+    from policy.range_bc.explore_encoder import FeatureBatches, WIDTH
+
+    arr = synthetic_array()
+    arr.prev = torch.randn_like(arr.prev)
+    arr.frames = lambda rows: (rows[:, None].expand(-1, WIDTH).half(),
+                               (rows[:, None] + 100).expand(-1, WIDTH).half(), torch.zeros(len(rows), 1))
+    opts = dict(window=8, stride=4, min_run=4, burn_in=2)
+    reference = ChunkBatches([arr], horizon=1, frames=False, **opts)
+    actual = FeatureBatches([arr], **opts)
+    assert reference.windows == actual.windows
+    ids = list(range(len(actual.windows)))
+    b = reference.batch(ids, torch.Generator().manual_seed(7))
+    got = actual.batch(ids, torch.Generator().manual_seed(7))
+    for key in ("prev", "act", "act_mask", "camera", "camera_mask", "chunk_act_mask", "chunk_camera_mask"):
+        assert torch.equal(b[key], got[key])
+    for i, (_, start, n, _) in enumerate(actual.windows):
+        assert torch.equal(got["global"][i, :n, 0], torch.arange(start, start + n).half())
+        assert torch.equal(got["crop"][i, :n, 0], torch.arange(start + 100, start + n + 100).half())
+        assert not got["global"][i, n:].any()
+
+
+def test_encoder_pool_preserves_row_major_spatial_cells():
+    from policy.range_bc.explore_encoder import pool_tokens
+
+    pixels = torch.arange(256).reshape(1, 256, 1).expand(-1, -1, 1024).float()
+    pooled = pool_tokens(pixels).reshape(1, 16, 1024)
+    expected = torch.tensor([[(r * 4 + y) * 16 + c * 4 + x for y in range(4) for x in range(4)]
+                             for r in range(4) for c in range(4)]).float().mean(1)
+    assert torch.equal(pooled[0, :, 0], expected)

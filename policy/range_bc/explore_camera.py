@@ -120,6 +120,8 @@ def conditioning_nll(model, arrays, *, device="mps", chunk=steps.WINDOW):
     model.eval()
     sums = {mode: {axis: {"n": 0, "nll_sum": 0., "moving_n": 0, "moving_sign_nll_sum": 0.}
                    for axis in ("yaw", "pitch")} for mode in ("visual", "zero_features")}
+    presses = {mode: {name: {"n": 0, "nll_sum": 0., "positive_n": 0, "positive_nll_sum": 0.}
+                      for name in vocab.NAMES} for mode in sums}
     for arr in arrays:
         for a, b in arr.runs:
             states = {mode: None for mode in sums}
@@ -130,8 +132,20 @@ def conditioning_nll(model, arrays, *, device="mps", chunk=steps.WINDOW):
                 feats = model.features(*frames, 1, len(rows), prev)
                 for mode in sums:
                     used = feats if mode == "visual" else torch.zeros_like(feats)
-                    _, camera, states[mode] = model.step(used, prev, states[mode],
+                    actions, camera, states[mode] = model.step(used, prev, states[mode],
                                                         regime=arr.regime[rows][None].to(device))
+                    target_press = arr.act[rows, 1].double()
+                    press_mask = arr.act_known[rows, 1] & arr.valid[rows, None]
+                    press_nll = F.binary_cross_entropy_with_logits(
+                        actions[0, :, 1].cpu().double(), target_press, reduction="none")
+                    for c, name in enumerate(vocab.NAMES):
+                        mask = press_mask[:, c]
+                        positive = mask & (target_press[:, c] > .5)
+                        item = presses[mode][name]
+                        item["n"] += int(mask.sum())
+                        item["nll_sum"] += float(press_nll[:, c][mask].sum())
+                        item["positive_n"] += int(positive.sum())
+                        item["positive_nll_sum"] += float(press_nll[:, c][positive].sum())
                     logp = F.log_softmax(camera[0].cpu().double(), dim=-1)
                     target = arr.camera[rows]
                     known = arr.camera_known[rows] & arr.valid[rows, None]
@@ -154,6 +168,11 @@ def conditioning_nll(model, arrays, *, device="mps", chunk=steps.WINDOW):
             item["nll"] = item["nll_sum"] / item["n"] if item["n"] else None
             item["moving_sign_nll"] = (item["moving_sign_nll_sum"] / item["moving_n"]
                                         if item["moving_n"] else None)
+    for actions in presses.values():
+        for item in actions.values():
+            item["nll"] = item["nll_sum"] / item["n"] if item["n"] else None
+            item["positive_nll"] = (item["positive_nll_sum"] / item["positive_n"]
+                                     if item["positive_n"] else None)
     return {"tag": "EXPLORATORY", "conditioning": "same teacher action history, real versus zero visual features",
             "limitation": "zero-feature inference ablation is out of distribution; not a trained history-only control",
-            "axes": sums}
+            "axes": sums, "press": presses}

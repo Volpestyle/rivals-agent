@@ -117,15 +117,15 @@ def main(argv=None):
         raise
 
 
-def evaluate(a, report, *, device="mps"):
+def evaluate(a, report, *, device="mps", model_factory=ChunkPolicy, array_loader=load_manifest):
     out = Path(a.out)
     start = time.perf_counter()
     payload = torch.load(a.checkpoint, map_location="cpu", weights_only=True)
     train.require(payload["format"] == FORMAT, "not an exploratory chunk checkpoint")
     recipe = payload["recipe"]
-    model = ChunkPolicy(Config.from_dict(recipe["config"]), recipe["horizon"]).to(device)
+    model = model_factory(Config.from_dict(recipe["config"]), recipe["horizon"]).to(device)
     model.load_state_dict(payload["model"])
-    train_arrays, dev_arrays = load_manifest(a.manifest, a.registry, a.tally, cohort=recipe["cohort"])
+    train_arrays, dev_arrays = array_loader(a.manifest, a.registry, a.tally, cohort=recipe["cohort"])
     from . import steps
     live_mask = steps.train_statistics([arr.session for arr in train_arrays])["live_mask"]
     report("TRAIN teacher-forced calibration")

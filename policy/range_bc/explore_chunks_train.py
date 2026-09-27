@@ -104,7 +104,8 @@ def batch_identity(batches):
 
 def fit_chunks(batches, config, stats, out, *, dev=None, seed=0, epochs=26, batch_size=8,
                lr=3e-4, weight_decay=1e-4, warmup=500, device="mps", resume=False,
-               stop_file=None, run_identity="", stop_after_steps=None, cohort="full", progress=None):
+               stop_file=None, run_identity="", stop_after_steps=None, cohort="full", progress=None,
+               model_factory=ChunkPolicy, recipe_extra=None):
     """Checkpoint at each epoch, and at next update when STOP is requested.
 
     A resumed arm restores optimizer, scheduler, CPU augmentation RNG and epoch
@@ -117,7 +118,7 @@ def fit_chunks(batches, config, stats, out, *, dev=None, seed=0, epochs=26, batc
     checkpoint = out / "latest.pt"
     train.require(resume == checkpoint.exists(), "use --resume for an existing arm; fresh output otherwise")
     train.seed_everything(seed)
-    model = ChunkPolicy(config, batches.horizon).to(device)
+    model = model_factory(config, batches.horizon).to(device)
     pw = train.pos_weights(stats).to(device)
     optimizer = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=weight_decay)
     total = epochs * math.ceil(len(batches.windows) / batch_size)
@@ -129,6 +130,8 @@ def fit_chunks(batches, config, stats, out, *, dev=None, seed=0, epochs=26, batc
               "run_identity": run_identity, "batch_identity": batch_identity(batches),
               "windows": len(batches.windows), "total_steps": total,
               "pos_weight": pw.detach().cpu().tolist()}
+    if recipe_extra is not None:
+        recipe["encoder_explore"] = recipe_extra
     epoch = cursor = updates = count = 0
     loss_sum = elapsed = 0.
     history = []
