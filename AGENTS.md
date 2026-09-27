@@ -77,7 +77,10 @@ gets them as one-line text files and loads no repo skills; set it to `true` and 
 
 ## Agent delivery protocol
 
-Use `herdr-lead` for swarm coordination and `herdr` for pane operations. Keep one
+Use `herdr-lead` for swarm coordination and `herdr` for pane operations. Codex workers don't receive Swarm messages
+while idle: a Codex worker checks `swarm_inbox` at task start and at each material handoff, and for an idle Codex
+recipient the lead sends a Herdr prompt asking it to check its inbox. That prompt doesn't repeat the assignment, and
+nobody polls an idle model in a loop (`~/dotfiles/docs/agents/swarm-launch.md`). Keep one
 lead responsible for dispatch, shared integration and Linear status transitions;
 co-leads route scope decisions through that lead. A status request alone creates no work.
 
