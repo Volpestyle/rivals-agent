@@ -1,0 +1,38 @@
+{
+  "20260926T035932-508Z-63684-14.exit": {
+    "bytes": 2,
+    "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+  },
+  "20260926T035932-508Z-63684-14.result.json": {
+    "bytes": 940,
+    "sha256": "b8a537ac1fd3c6828003d4f477c755434de5f28d1c5e741ca3a7dc901b8a6068"
+  },
+  "stores/20260926T035932-508Z-63684-14/frames.json": {
+    "bytes": 1730807,
+    "sha256": "6e7653c14bab459ec6d45ebc5018e6e1df3995ab92d8216794dd1cb8856167fa"
+  },
+  "samples/20260926T035932-508Z-63684-14/22602-grey.png": {
+    "bytes": 92224,
+    "sha256": "7e79788b62de2c65e2055003b0e497879f2b4c14ae2bb724fb1dc8791bd34634"
+  },
+  "samples/20260926T035932-508Z-63684-14/22602-hud.png": {
+    "bytes": 26131,
+    "sha256": "bb20067d8cf0cf3c092a488ad34843338f505c50ef1f6c15589509258a439430"
+  },
+  "samples/20260926T035932-508Z-63684-14/110557-grey.png": {
+    "bytes": 72856,
+    "sha256": "0b46bfe2192f2337af6c2dad2f27d367ebcaacf7a8f85f15c14281250d73fec2"
+  },
+  "samples/20260926T035932-508Z-63684-14/110557-hud.png": {
+    "bytes": 19954,
+    "sha256": "4201a34dd53076d847b9211522de63c93b96559522ab0aa4d3eb25bfdef0eeb7"
+  },
+  "samples/20260926T035932-508Z-63684-14/199430-grey.png": {
+    "bytes": 70509,
+    "sha256": "fc3d112c31ed0b95968a6781ce02f9dcdd2e52e893fca38eef79f80d26c883c6"
+  },
+  "samples/20260926T035932-508Z-63684-14/199430-hud.png": {
+    "bytes": 21243,
+    "sha256": "7b062eedae17bf56528b6d745c73d09a2d25582426137d9d1b244ffaa6d7d7c6"
+  }
+}

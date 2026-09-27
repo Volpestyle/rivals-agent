@@ -1,0 +1,22 @@
+{
+  "session_id": "20260926T035932-508Z-63684-14",
+  "inspected_samples": [
+    22602,
+    110557,
+    199430
+  ],
+  "inspected_components": [
+    "grey global",
+    "RGB HUD"
+  ],
+  "owner": "idm-owner",
+  "result": "PASS stored sample sanity",
+  "observations": [
+    "Practice Range HUD and own Spider-Man gameplay in all three samples",
+    "HUD samples agree with visible grey-frame resource states: web2/ultimate-ready, web5/ult0, web4/ult0",
+    "No blank payload, obvious crop shift or duplicated sample observed"
+  ],
+  "limits": "Stored samples only for this source; exact native/stored graph control reused from first045729 store. Not an additional data-admission verdict.",
+  "recipe_reference": "docs/evidence/idm-range-store-045729-20260927/first-inspection.json",
+  "payload_rehash_receipt": "20260926T035932-508Z-63684-14.result.json"
+}
