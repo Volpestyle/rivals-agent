@@ -1,0 +1,269 @@
+{
+  "format": "range-bc-inference-fps-v1",
+  "created_utc": "2026-09-27T18:48:18.250650+00:00",
+  "checkpoint": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\diagnostics\\live-loop-fallback-20260927\\model_nohud-seed0.pt",
+  "checkpoint_sha256": "2d5183cba12913a36327e0a459ec0c0b2a1238d26a7df98f7823929af3129f18",
+  "checkpoint_metadata": {
+    "format": "rivals-range-bc-v2",
+    "domain": "semantic_pad",
+    "actions": [
+      "move_forward",
+      "move_left",
+      "move_back",
+      "move_right",
+      "jump",
+      "web_swing",
+      "get_over_here",
+      "amazing_combo",
+      "ultimate",
+      "melee",
+      "spider_power",
+      "web_cluster",
+      "team_up",
+      "goh_targeting",
+      "simple_swing"
+    ],
+    "camera_reps": [
+      0.05,
+      0.1,
+      0.2,
+      0.35,
+      0.6,
+      1.0,
+      1.6,
+      2.5,
+      4.0,
+      6.0,
+      9.0,
+      13.0,
+      19.0,
+      28.0,
+      40.0
+    ],
+    "config": {
+      "channels": [
+        16,
+        32,
+        32
+      ],
+      "reduce": 8,
+      "embed": 256,
+      "hud_embed": 128,
+      "history_embed": 64,
+      "hidden": 512,
+      "global_hw": [
+        144,
+        256
+      ],
+      "crop_hw": [
+        128,
+        128
+      ],
+      "hud_hw": [
+        80,
+        200
+      ],
+      "frames": true,
+      "hud": false,
+      "history": true,
+      "regime_bit": false
+    },
+    "meta": {
+      "arm": "model_nohud",
+      "seed": 0,
+      "lag": 0,
+      "regimes": [
+        "normal"
+      ]
+    }
+  },
+  "distribution": {
+    "requested_regime": "normal",
+    "training_regimes": [
+      "normal"
+    ],
+    "pad_hud_input": false
+  },
+  "settings": {
+    "binding_profile": "james-alt-spiderman-20260926",
+    "swing_mode": {
+      "automatic_swing": false,
+      "hold_to_swing": true
+    },
+    "cooldowns": "normal",
+    "patch": "**Patch reflected: Season 10, Version 20260911 (balance post dated 2026-09-08, live 2026-09-11).**",
+    "calibration_status": "UNMEASURED: offline camera-disabled preparation only, never authorizes live input",
+    "provenance": "data/calibration/alt-20260926/SITTING.md; live settings must be re-observed at the sitting"
+  },
+  "no_actuator": true,
+  "calibration_status": "execution_maps_not_validated_or_consumed",
+  "support": {
+    "checkpoint_sha256": "2d5183cba12913a36327e0a459ec0c0b2a1238d26a7df98f7823929af3129f18",
+    "press": [
+      1711,
+      2072,
+      1208,
+      1573,
+      3655,
+      1026,
+      254,
+      677,
+      21,
+      42,
+      1047,
+      2282,
+      266,
+      113,
+      5
+    ],
+    "live_mask": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      false,
+      false,
+      true,
+      true,
+      false,
+      false,
+      false
+    ],
+    "swing_mode": {
+      "automatic_swing": false,
+      "hold_to_swing": true
+    },
+    "provenance": {
+      "press": "report.json/train_statistics/press",
+      "report_sha256": "e8d955c0faa59937456ed91485d731781850e316a1892a9544d24c93f47938d5",
+      "live_mask": "dev-cpu-reference.json/live_mask",
+      "reference_sha256": "73643a42c753ff25aa40112a7e9985adcc71b370b9f7824f5900fd4cc9d2d2c0",
+      "swing_mode": "Current alt hold-to-swing runtime contract; not a new training-label claim"
+    }
+  },
+  "live_mask": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    false,
+    false,
+    true,
+    true,
+    false,
+    false,
+    false
+  ],
+  "thresholds": {
+    "move_forward": 0.5,
+    "move_left": 0.5,
+    "move_back": 0.5,
+    "move_right": 0.5,
+    "jump": 0.5,
+    "web_swing": 0.5,
+    "get_over_here": 0.5,
+    "amazing_combo": 0.5,
+    "ultimate": 0.5,
+    "melee": 0.5,
+    "spider_power": 0.5,
+    "web_cluster": 0.5,
+    "team_up": 0.5,
+    "goh_targeting": 0.5,
+    "simple_swing": 0.5
+  },
+  "input_sha256": {
+    "settings": "409eca2d00d609ca76c7cd77b0a740d4825fb80fa916808785b37b0ff7c2de2c",
+    "support": "6ce79a68d0fd0894cb851574ecd30e1498f27a785e1d78f947b234232f40d97d",
+    "decoder": null
+  },
+  "device": "cuda",
+  "preparation_device": "cpu",
+  "cpu_threads": 2,
+  "preprocessor": "compact-bgr",
+  "cache_graph": "null,split=3[a][b][h];[a]scale=256:144:flags=area+accurate_rnd+bitexact[g];[b]crop=256:256:(iw-256)/2:(ih-256)/2,scale=128:128:flags=area+accurate_rnd+bitexact,pad=256:128[c];[h]split=2[h1][h2];[h1]crop=iw*0.237500:ih*0.105556:iw*0.734375:ih*0.844444,scale=200:50:flags=area+accurate_rnd+bitexact[ab];[h2]crop=iw*0.046875:ih*0.062500:iw*0.234375:ih*0.888889,scale=40:30:flags=area+accurate_rnd+bitexact,pad=200:30[wb];[ab][wb]vstack,pad=256:80[hd];[g][c][hd]vstack=inputs=3,format=rgb24",
+  "libraries": {
+    "pyav": "18.1.0",
+    "libraries": {
+      "libavutil": [
+        60,
+        26,
+        102
+      ],
+      "libavcodec": [
+        62,
+        28,
+        102
+      ],
+      "libavformat": [
+        62,
+        12,
+        102
+      ],
+      "libavdevice": [
+        62,
+        3,
+        102
+      ],
+      "libavfilter": [
+        11,
+        14,
+        102
+      ],
+      "libswscale": [
+        9,
+        5,
+        102
+      ],
+      "libswresample": [
+        6,
+        3,
+        102
+      ]
+    }
+  },
+  "dino": null,
+  "torch": "2.11.0+cu128",
+  "python": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+  "platform": "Windows-10-10.0.26200-SP0",
+  "script_sha256": "697bad65c45a06fc01753c71e4758857dd0e5b58314de36f05cd8df64730265c",
+  "runtime_sha256": {
+    "agent/live_range_bc.py": "d4c109e7c7c503728df2ea82d021154f40a90b05a54bd37bdae64be41b2baa46",
+    "policy/range_bc/live_inference.py": "d0331d60ed05807cb13b4dc78e59fa0072d36e3b35c940dd532eefb54baa5e0a",
+    "scripts/capture.py": "b98f310616cf0569375d3e24cbb564d7702872c4ffaa888523ac6b52f96fb547",
+    "scripts/record.py": "d6aa320beb99a96953cccec2be81abbc9f65b026abade86fb34bff31babadead",
+    "agent/controller.py": "4e5bb70fca797ab17a25a8699d1ad111f0b7cd561f59d2b308a52c10b44da060",
+    "policy/range_bc/vocab.py": "9f57c02a977921cc0f8fef003a19eb647136ff51af34a7913f76fb22ec811f3e"
+  },
+  "desktop_capture": false,
+  "game_pid": null,
+  "sitting": null,
+  "native_video": null,
+  "fps_cap": null,
+  "phases": [
+    "A1",
+    "B",
+    "A2"
+  ],
+  "warmup_s": 10.0,
+  "measured_s": 30.0,
+  "capture_hz": 30.0,
+  "evidence_hz": 1.0,
+  "prediction_age_limit_s": 0.25,
+  "comparison": "active-inference cost; model resident throughout; no game-only reference",
+  "history": "initial None; self-fed decoded masked held/press/release and RAW requested camera classes; recurrent state continuous",
+  "decoder": "pinned for identity only; outputs discarded without decoding",
+  "fixed_conditions": "operator holds pose, resolution, graphics, cap, OBS and other workloads constant",
+  "source": "fixed admitted training rows, native BGR from original recording",
+  "camera": "raw requested median class degrees; no saturation/Cal or actual pad rotation claim",
+  "selection_sha256": "f542bd117daa64a11b7cbed44a8703e122d27b0076f75b70854c0be03c32790a",
+  "historical_failure": "original frozen-dev self-fed press F1 0.0; this training diagnostic cannot promote model",
+  "neutral_verdict_rule": "recommend camera+FPS only if >=99% action+raw-camera neutral"
+}

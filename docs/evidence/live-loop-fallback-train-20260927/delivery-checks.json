@@ -1,0 +1,36 @@
+{
+  "tests": "17 passed, synthetic-only; private environment",
+  "ruff": "all checks passed",
+  "postrun_per_step_records": 3600,
+  "contiguous_selected_rows": [
+    7,
+    3607
+  ],
+  "all_model_actions_zero": true,
+  "all_raw_camera_medians_zero": true,
+  "as_run_source_matches_manifest": true,
+  "inspect_run_selection_identical": true,
+  "optional_neutral_gap_pass": "not run: every decoded history already neutral after initial None",
+  "executed_source_sha256": "697bad65c45a06fc01753c71e4758857dd0e5b58314de36f05cd8df64730265c",
+  "delivery_git_head_before_commit": "2b029f9db87a5aa667f62ce0787bf8dd9cf32c6f",
+  "source_sha256_at_delivery": {
+    "scripts/replay_live_fallback_train.py": "f291c4b4510f1ed4546625d98e3521b416b1bc85c48e763e222178ffd97d1eaa",
+    "tests/test_replay_live_fallback_train.py": "377fd9a3969d4d94d0a49e6bb8f006d80a144f49b26c3a1114c4c9a2b06a2b8d",
+    "scripts/measure_inference_fps.py": "a41e27bb576e8f66a94826b5a3478a017252ecdd9ba10b48ee9452dc93824170",
+    "scripts/profile_range_bc_live.py": "ddfbaa3f228ae3e6cc8f46eb85a4280b98481a6c2750b846b42ee560605274fa",
+    "scripts/job_status.py": "423d157ff52b5f399c4b32562cd0fd61069f0c95a884444b7152507c8f45556d",
+    "agent/live_range_bc.py": "d4c109e7c7c503728df2ea82d021154f40a90b05a54bd37bdae64be41b2baa46",
+    "policy/range_bc/live_inference.py": "d0331d60ed05807cb13b4dc78e59fa0072d36e3b35c940dd532eefb54baa5e0a",
+    "policy/range_bc/steps.py": "3117bf3acbfc2c81bb116d5bbe06feb17b240adf69ef21498c63399e3353b1f1",
+    "policy/range_bc/executor.py": "bb5fa0065317bfeb9a1f8046422d722d7360810163091a56bb94f38809c2e60d",
+    "policy/range_bc/cache.py": "7ec50165cdf6445f94cb3ebedf32890b7e14044c6e501b7f3bb8df710fe741c8",
+    "policy/range_bc/model.py": "2b9619339970230902859ec42e149858382bf712840a7e2e61bc528b2c5e69e6",
+    "policy/range_bc/train.py": "4c48a86558edbeb240c55a627cfa45b7c1b0a2c4a8be3ff3e40f19323369327c"
+  },
+  "metadata_only_delta": "replay_manifest removes inherited FPS fields; see manifest-scope-addendum.json",
+  "probability_maxima_held_press_release": [
+    0.36458462476730347,
+    0.9084724187850952,
+    0.25907617807388306
+  ]
+}

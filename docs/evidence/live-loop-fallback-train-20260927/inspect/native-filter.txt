@@ -1,0 +1,1 @@
+select=between(n\,135\,7335)*not(mod(n-135\,7200))+eq(n\,14531),showinfo,scale=in_range=tv:in_color_matrix=bt709:out_range=pc:flags=accurate_rnd+bitexact+full_chroma_int,format=bgr24

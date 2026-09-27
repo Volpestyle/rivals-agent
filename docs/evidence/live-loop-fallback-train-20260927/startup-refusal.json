@@ -1,0 +1,9 @@
+{
+  "stage": "first inspection command, before PCGuard or media access",
+  "error": "job_status validation: updated precedes started",
+  "cause": "started used fractional time.time() while the shared helper rounds updated to whole seconds",
+  "correction": "use int(time.time()), matching the existing profiler; no shared helper changed",
+  "media_opened": false,
+  "inference_ran": false,
+  "prior_attempt_directory": "inspect (empty; no evidence overwritten)"
+}

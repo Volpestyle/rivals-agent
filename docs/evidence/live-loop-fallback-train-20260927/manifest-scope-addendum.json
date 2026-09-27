@@ -1,0 +1,13 @@
+{
+  "applies_to": "run/manifest.json",
+  "reason": "The run reused the FPS runner's prepare() contract loader; unused FPS experiment boilerplate was inherited into the manifest. Original evidence is preserved.",
+  "correct_format": "range-bc-fallback-train-replay-v1",
+  "correct_comparison": "Fixed admitted TRAIN native frames: self-fed fallback policy versus recorded human targets",
+  "correct_decoder": "Fixed 0.5 threshold with checkpoint-pinned live mask; pure semantic decode plus raw median camera classes. Outputs were decoded, compared and self-fed, not discarded.",
+  "unused_fields_not_measurements": ["phases", "warmup_s", "measured_s", "capture_hz", "evidence_hz", "prediction_age_limit_s", "fixed_conditions", "game_pid", "sitting", "native_video", "fps_cap"],
+  "no_capture": true,
+  "no_actuator": true,
+  "not_measured": ["A/B/A phases", "game FPS", "live capture", "actual pad rotation"],
+  "exact_as_run_source": "run/replay-source.py (SHA256 matches run/manifest.json script_sha256)",
+  "delivery_delta": "The delivered script now removes unused FPS fields and describes its actual replay scope. The delta changes metadata only; prediction, decoder, source selection and metrics are unchanged. Existing measured evidence is reused, not re-run."
+}

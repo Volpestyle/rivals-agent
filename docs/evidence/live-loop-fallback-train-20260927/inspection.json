@@ -1,0 +1,17 @@
+{
+  "accepted": true,
+  "inspector": "live-fps; direct visual inspection through view_image before inference",
+  "selection_sha256": "f542bd117daa64a11b7cbed44a8703e122d27b0076f75b70854c0be03c32790a",
+  "scope": "Early native-frame inspection of the already admitted fixed TRAIN source; not new data admission",
+  "observations": [
+    "Row 7: clear Practice Range banner, Spider-Man on upper platform, native HUD and scene intact, no menu or dialog.",
+    "Row 1807: active airborne Spider-Man near Galacta bot; normal game KO-streak/feed overlays, intact HUD; no pause/settings interface.",
+    "Row 3606: close Galacta-bot combat near stairs; intact range banner and HUD with cooldown numeral; no non-game screen."
+  ],
+  "limitations": "Three sampled frames are a native-decoding sanity check; they do not re-adjudicate every row or establish action correctness. No inference had run when these were inspected.",
+  "images": [
+    {"row": 7, "file": "row-7-native.png", "sha256": "09fc1aa08c13b45a419dff55077fb1c0313d26062a30fee78f708e7a9dce4abb"},
+    {"row": 1807, "file": "row-1807-native.png", "sha256": "c56ba379ea7bcbe0ed100996e8195ceffd17faa706171c5fcda12b6a9f2e4a09"},
+    {"row": 3606, "file": "row-3606-native.png", "sha256": "d0d9d419a0bfbd8d0588506e53aef5829b6546fc634b7b4ea783ef766ddfb361"}
+  ]
+}

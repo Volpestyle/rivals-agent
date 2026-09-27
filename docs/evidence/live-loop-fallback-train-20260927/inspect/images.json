@@ -1,0 +1,56 @@
+[
+  {
+    "row": 7,
+    "file": "row-7-native.png",
+    "sha256": "09fc1aa08c13b45a419dff55077fb1c0313d26062a30fee78f708e7a9dce4abb",
+    "showinfo": [
+      0,
+      1146,
+      [
+        1,
+        1000
+      ]
+    ],
+    "shape": [
+      1440,
+      2560,
+      3
+    ]
+  },
+  {
+    "row": 1807,
+    "file": "row-1807-native.png",
+    "sha256": "c56ba379ea7bcbe0ed100996e8195ceffd17faa706171c5fcda12b6a9f2e4a09",
+    "showinfo": [
+      1,
+      61146,
+      [
+        1,
+        1000
+      ]
+    ],
+    "shape": [
+      1440,
+      2560,
+      3
+    ]
+  },
+  {
+    "row": 3606,
+    "file": "row-3606-native.png",
+    "sha256": "d0d9d419a0bfbd8d0588506e53aef5829b6546fc634b7b4ea783ef766ddfb361",
+    "showinfo": [
+      2,
+      121113,
+      [
+        1,
+        1000
+      ]
+    ],
+    "shape": [
+      1440,
+      2560,
+      3
+    ]
+  }
+]

@@ -1,0 +1,11 @@
+{
+  "sha256": "ad14e5bc0a1e0da23527a8f4a092e591ddf568ac925cfd0b2907e38dc94b9aaf",
+  "bytes": 6892293372,
+  "colour": {
+    "pix_fmt": "yuv420p",
+    "color_range": "tv",
+    "color_space": "bt709"
+  },
+  "ffmpeg": "ffmpeg version 8.0.1-full_build-www.gyan.dev Copyright (c) 2000-2025 the FFmpeg developers",
+  "verified_utc": "2026-09-27T18:48:08.592053+00:00"
+}

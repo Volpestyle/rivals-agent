@@ -1,0 +1,311 @@
+{
+  "human": {
+    "steps": 3600,
+    "duration_s": 119.9999988,
+    "per_action": {
+      "move_forward": {
+        "supported": true,
+        "press_steps": 55,
+        "press_hz": 0.4583333379166667,
+        "known_steps": 3600,
+        "held_steps": 794
+      },
+      "move_left": {
+        "supported": true,
+        "press_steps": 50,
+        "press_hz": 0.41666667083333336,
+        "known_steps": 3600,
+        "held_steps": 569
+      },
+      "move_back": {
+        "supported": true,
+        "press_steps": 27,
+        "press_hz": 0.22500000225000003,
+        "known_steps": 3600,
+        "held_steps": 417
+      },
+      "move_right": {
+        "supported": true,
+        "press_steps": 46,
+        "press_hz": 0.3833333371666667,
+        "known_steps": 3600,
+        "held_steps": 401
+      },
+      "jump": {
+        "supported": true,
+        "press_steps": 106,
+        "press_hz": 0.8833333421666667,
+        "known_steps": 3600,
+        "held_steps": 485
+      },
+      "web_swing": {
+        "supported": true,
+        "press_steps": 23,
+        "press_hz": 0.19166666858333334,
+        "known_steps": 3600,
+        "held_steps": 255
+      },
+      "get_over_here": {
+        "supported": true,
+        "press_steps": 4,
+        "press_hz": 0.03333333366666667,
+        "known_steps": 3600,
+        "held_steps": 13
+      },
+      "amazing_combo": {
+        "supported": true,
+        "press_steps": 19,
+        "press_hz": 0.15833333491666668,
+        "known_steps": 3600,
+        "held_steps": 88
+      },
+      "ultimate": {
+        "supported": false,
+        "press_steps": 0,
+        "press_hz": 0.0,
+        "known_steps": 3600,
+        "held_steps": 0
+      },
+      "melee": {
+        "supported": false,
+        "press_steps": 1,
+        "press_hz": 0.008333333416666668,
+        "known_steps": 3600,
+        "held_steps": 12
+      },
+      "spider_power": {
+        "supported": true,
+        "press_steps": 36,
+        "press_hz": 0.300000003,
+        "known_steps": 3600,
+        "held_steps": 1081
+      },
+      "web_cluster": {
+        "supported": true,
+        "press_steps": 71,
+        "press_hz": 0.5916666725833334,
+        "known_steps": 3600,
+        "held_steps": 308
+      },
+      "team_up": {
+        "supported": false,
+        "press_steps": 12,
+        "press_hz": 0.100000001,
+        "known_steps": 3600,
+        "held_steps": 43
+      },
+      "goh_targeting": {
+        "supported": false,
+        "press_steps": 1,
+        "press_hz": 0.008333333416666668,
+        "known_steps": 3600,
+        "held_steps": 4
+      },
+      "simple_swing": {
+        "supported": false,
+        "press_steps": 0,
+        "press_hz": 0.0,
+        "known_steps": 3600,
+        "held_steps": 0
+      }
+    },
+    "camera": {
+      "yaw": {
+        "known_steps": 3600,
+        "abs_mean_deg": 2.0266614051666565,
+        "abs_p95_deg": 9.19782377999998,
+        "abs_total_deg": 7295.981058599964,
+        "signed_total_deg": -276.0008610000004
+      },
+      "pitch": {
+        "known_steps": 3600,
+        "abs_mean_deg": 0.8636304153333295,
+        "abs_p95_deg": 3.2743062,
+        "abs_total_deg": 3109.0694951999862,
+        "signed_total_deg": -8.40074519999999
+      }
+    },
+    "neutral": {
+      "all": {
+        "action_known_steps": 3600,
+        "action_camera_known_steps": 3600,
+        "action_only_fraction": 0.2822222222222222,
+        "action_and_raw_camera_fraction": 0.09916666666666667,
+        "action_and_camera_zero_class_fraction": 0.09916666666666667
+      },
+      "supported": {
+        "action_known_steps": 3600,
+        "action_camera_known_steps": 3600,
+        "action_only_fraction": 0.2841666666666667,
+        "action_and_raw_camera_fraction": 0.09916666666666667,
+        "action_and_camera_zero_class_fraction": 0.09916666666666667
+      }
+    },
+    "all_press_steps": 451,
+    "supported_press_steps": 437,
+    "all_press_hz": 3.758333370916667,
+    "supported_press_hz": 3.6416667030833336
+  },
+  "model": {
+    "steps": 3600,
+    "duration_s": 119.9999988,
+    "per_action": {
+      "move_forward": {
+        "supported": true,
+        "press_steps": 0,
+        "press_hz": 0.0,
+        "known_steps": 3600,
+        "held_steps": 0
+      },
+      "move_left": {
+        "supported": true,
+        "press_steps": 0,
+        "press_hz": 0.0,
+        "known_steps": 3600,
+        "held_steps": 0
+      },
+      "move_back": {
+        "supported": true,
+        "press_steps": 0,
+        "press_hz": 0.0,
+        "known_steps": 3600,
+        "held_steps": 0
+      },
+      "move_right": {
+        "supported": true,
+        "press_steps": 0,
+        "press_hz": 0.0,
+        "known_steps": 3600,
+        "held_steps": 0
+      },
+      "jump": {
+        "supported": true,
+        "press_steps": 0,
+        "press_hz": 0.0,
+        "known_steps": 3600,
+        "held_steps": 0
+      },
+      "web_swing": {
+        "supported": true,
+        "press_steps": 0,
+        "press_hz": 0.0,
+        "known_steps": 3600,
+        "held_steps": 0
+      },
+      "get_over_here": {
+        "supported": true,
+        "press_steps": 0,
+        "press_hz": 0.0,
+        "known_steps": 3600,
+        "held_steps": 0
+      },
+      "amazing_combo": {
+        "supported": true,
+        "press_steps": 0,
+        "press_hz": 0.0,
+        "known_steps": 3600,
+        "held_steps": 0
+      },
+      "ultimate": {
+        "supported": false,
+        "press_steps": 0,
+        "press_hz": 0.0,
+        "known_steps": 3600,
+        "held_steps": 0
+      },
+      "melee": {
+        "supported": false,
+        "press_steps": 0,
+        "press_hz": 0.0,
+        "known_steps": 3600,
+        "held_steps": 0
+      },
+      "spider_power": {
+        "supported": true,
+        "press_steps": 0,
+        "press_hz": 0.0,
+        "known_steps": 3600,
+        "held_steps": 0
+      },
+      "web_cluster": {
+        "supported": true,
+        "press_steps": 0,
+        "press_hz": 0.0,
+        "known_steps": 3600,
+        "held_steps": 0
+      },
+      "team_up": {
+        "supported": false,
+        "press_steps": 0,
+        "press_hz": 0.0,
+        "known_steps": 3600,
+        "held_steps": 0
+      },
+      "goh_targeting": {
+        "supported": false,
+        "press_steps": 0,
+        "press_hz": 0.0,
+        "known_steps": 3600,
+        "held_steps": 0
+      },
+      "simple_swing": {
+        "supported": false,
+        "press_steps": 0,
+        "press_hz": 0.0,
+        "known_steps": 3600,
+        "held_steps": 0
+      }
+    },
+    "camera": {
+      "yaw": {
+        "known_steps": 3600,
+        "abs_mean_deg": 0.0,
+        "abs_p95_deg": 0.0,
+        "abs_total_deg": 0.0,
+        "signed_total_deg": 0.0
+      },
+      "pitch": {
+        "known_steps": 3600,
+        "abs_mean_deg": 0.0,
+        "abs_p95_deg": 0.0,
+        "abs_total_deg": 0.0,
+        "signed_total_deg": 0.0
+      }
+    },
+    "neutral": {
+      "all": {
+        "action_known_steps": 3600,
+        "action_camera_known_steps": 3600,
+        "action_only_fraction": 1.0,
+        "action_and_raw_camera_fraction": 1.0,
+        "action_and_camera_zero_class_fraction": 1.0
+      },
+      "supported": {
+        "action_known_steps": 3600,
+        "action_camera_known_steps": 3600,
+        "action_only_fraction": 1.0,
+        "action_and_raw_camera_fraction": 1.0,
+        "action_and_camera_zero_class_fraction": 1.0
+      }
+    },
+    "all_press_steps": 0,
+    "supported_press_steps": 0,
+    "all_press_hz": 0.0,
+    "supported_press_hz": 0.0
+  },
+  "prediction_seconds": {
+    "count": 3600,
+    "p10": 0.02087398003786802,
+    "p50": 0.023070249997545034,
+    "p95": 0.02697919495985843,
+    "p99": 0.029342110020807003
+  },
+  "elapsed_seconds": 148.77708979998715,
+  "peak_rss_bytes": 1186742272,
+  "human_raw_press_count_all": 451,
+  "human_raw_press_count_supported": 437,
+  "historical_self_fed_failure_unchanged": true,
+  "actual_pad_rotation": "unknown until accepted map",
+  "degree_caveat": "slow-turn yaw gain; pitch derived_equal_sensitivity, not independently measured",
+  "recommendation": "camera+FPS only"
+}
