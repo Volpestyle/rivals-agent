@@ -1,0 +1,29 @@
+{
+  "session_id": "20260925T203745-207Z-49728-2",
+  "frames": 165608,
+  "manifest_sha256": "185a1cf964b21155f1530766d152baefee6d6bc124ddf0353bd00bc012607eed",
+  "frames_sha256": "887854d079c7848f1360bb82ab7e2ba33711bfc961bf2402f705faff0b312770",
+  "hud_sha256": "353f72e7e4f38176076fd8326a19f14218dec385ba766f14f02a1a4a672e04c9",
+  "sample_frames": [
+    {
+      "frame_index": 34792,
+      "pts": 289954
+    },
+    {
+      "frame_index": 167515,
+      "pts": 1395979
+    },
+    {
+      "frame_index": 311750,
+      "pts": 2597938
+    }
+  ],
+  "seconds": 4241.113790375006,
+  "peak_rss_bytes": 2364211200,
+  "platform": "Darwin arm64",
+  "source_sha256": "666c626d4c285e20b3444081b9a1813d743aec8ab6cb538f134c5b61a265125c",
+  "target_sha256": "e091b4fdae7e61d9e8dd564687a56aaf8bc9416768e23c38873e1896a984b1e0",
+  "payload_rehash_passed": true,
+  "visual_inspection": "pending",
+  "compute": "Mac CPU, one decoder, two threads, nice10, $0"
+}

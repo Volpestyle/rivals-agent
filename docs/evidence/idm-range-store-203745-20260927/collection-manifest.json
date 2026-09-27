@@ -1,0 +1,46 @@
+{
+  "20260925T203745-207Z-49728-2.exit": {
+    "bytes": 2,
+    "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+  },
+  "20260925T203745-207Z-49728-2.result.json": {
+    "bytes": 940,
+    "sha256": "422ceae05ce89482443e95d57dda36267f31a0f03a1b73e55d4ff0d32ef35c2d"
+  },
+  "stores/20260925T203745-207Z-49728-2/frames.json": {
+    "bytes": 2699837,
+    "sha256": "185a1cf964b21155f1530766d152baefee6d6bc124ddf0353bd00bc012607eed"
+  },
+  "remaining.exit": {
+    "bytes": 2,
+    "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+  },
+  "remaining-result.json": {
+    "bytes": 2001,
+    "sha256": "9e10fd47bf6ce40628444d610a0da0cbce7860088162572e4e31d3d6a427f094"
+  },
+  "samples/20260925T203745-207Z-49728-2/34792-grey.png": {
+    "bytes": 92585,
+    "sha256": "5ff380b7e455c71fdf45173f0f4dd9e0053fdc9b005b9b7415435c8783e5164e"
+  },
+  "samples/20260925T203745-207Z-49728-2/34792-hud.png": {
+    "bytes": 30845,
+    "sha256": "ab5d87a90e5ef09f084fdb9d6f3aa67b47310512f7a4d0e577786b74d16f9f96"
+  },
+  "samples/20260925T203745-207Z-49728-2/167515-grey.png": {
+    "bytes": 68604,
+    "sha256": "08443e9f629135167e162d3a874d3f004e6d55b1e37d2f756f9e74941bda7ae0"
+  },
+  "samples/20260925T203745-207Z-49728-2/167515-hud.png": {
+    "bytes": 23991,
+    "sha256": "190753d4b29c798cae4faa40d7c4730b1f8d4f297f6cd40024135f4ccc9b9ef2"
+  },
+  "samples/20260925T203745-207Z-49728-2/311750-grey.png": {
+    "bytes": 78577,
+    "sha256": "06a6d082ec522edf64ddea2297a2d33c425df168e0a3c93c0b1a84c643ab8b84"
+  },
+  "samples/20260925T203745-207Z-49728-2/311750-hud.png": {
+    "bytes": 26051,
+    "sha256": "232b79ee89113455364bf0d61d068419ecc0a250efdd81d70c8e065a353b812b"
+  }
+}

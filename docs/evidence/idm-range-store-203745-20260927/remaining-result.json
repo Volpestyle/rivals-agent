@@ -1,0 +1,60 @@
+[
+  {
+    "session_id": "20260926T035932-508Z-63684-14",
+    "frames": 108668,
+    "manifest_sha256": "6e7653c14bab459ec6d45ebc5018e6e1df3995ab92d8216794dd1cb8856167fa",
+    "frames_sha256": "556eacc58716e39a43403c5fea626e6f9192654e7076bacd84e0bdf54bc6d58f",
+    "hud_sha256": "e14321909dbde499202d89aa7600c8bfc1626a49ca23e2fbfb4d7f99c6377dfd",
+    "sample_frames": [
+      {
+        "frame_index": 22602,
+        "pts": 188371
+      },
+      {
+        "frame_index": 110557,
+        "pts": 921329
+      },
+      {
+        "frame_index": 199430,
+        "pts": 1661938
+      }
+    ],
+    "seconds": 2709.211033416039,
+    "peak_rss_bytes": 1531658240,
+    "platform": "Darwin arm64",
+    "source_sha256": "7ab6b6083ac9aa38ad5b3ccde866ccb684d79332be42696ab36c2c7030f22494",
+    "target_sha256": "52856414daefd6021af07109bc8425b55a3d9057974b6437153f0c9205991cb8",
+    "payload_rehash_passed": true,
+    "visual_inspection": "pending",
+    "compute": "Mac CPU, one decoder, two threads, nice10, $0"
+  },
+  {
+    "session_id": "20260925T203745-207Z-49728-2",
+    "frames": 165608,
+    "manifest_sha256": "185a1cf964b21155f1530766d152baefee6d6bc124ddf0353bd00bc012607eed",
+    "frames_sha256": "887854d079c7848f1360bb82ab7e2ba33711bfc961bf2402f705faff0b312770",
+    "hud_sha256": "353f72e7e4f38176076fd8326a19f14218dec385ba766f14f02a1a4a672e04c9",
+    "sample_frames": [
+      {
+        "frame_index": 34792,
+        "pts": 289954
+      },
+      {
+        "frame_index": 167515,
+        "pts": 1395979
+      },
+      {
+        "frame_index": 311750,
+        "pts": 2597938
+      }
+    ],
+    "seconds": 4241.113790375006,
+    "peak_rss_bytes": 2364211200,
+    "platform": "Darwin arm64",
+    "source_sha256": "666c626d4c285e20b3444081b9a1813d743aec8ab6cb538f134c5b61a265125c",
+    "target_sha256": "e091b4fdae7e61d9e8dd564687a56aaf8bc9416768e23c38873e1896a984b1e0",
+    "payload_rehash_passed": true,
+    "visual_inspection": "pending",
+    "compute": "Mac CPU, one decoder, two threads, nice10, $0"
+  }
+]
