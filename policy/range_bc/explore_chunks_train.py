@@ -105,7 +105,7 @@ def batch_identity(batches):
 def fit_chunks(batches, config, stats, out, *, dev=None, seed=0, epochs=26, batch_size=8,
                lr=3e-4, weight_decay=1e-4, warmup=500, device="mps", resume=False,
                stop_file=None, run_identity="", stop_after_steps=None, cohort="full", progress=None,
-               model_factory=ChunkPolicy, recipe_extra=None):
+               model_factory=ChunkPolicy, recipe_extra=None, experiment_tag="EXPLORATORY"):
     """Checkpoint at each epoch, and at next update when STOP is requested.
 
     A resumed arm restores optimizer, scheduler, CPU augmentation RNG and epoch
@@ -124,7 +124,8 @@ def fit_chunks(batches, config, stats, out, *, dev=None, seed=0, epochs=26, batc
     total = epochs * math.ceil(len(batches.windows) / batch_size)
     scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, train.schedule(total, min(warmup, total)))
     generator = torch.Generator().manual_seed(seed)
-    recipe = {"tag": "EXPLORATORY", "horizon": batches.horizon, "seed": seed, "epochs": epochs,
+    train.require(experiment_tag in ("EXPLORATORY", "CONFIRM"), "unknown experiment track")
+    recipe = {"tag": experiment_tag, "horizon": batches.horizon, "seed": seed, "epochs": epochs,
               "batch": batch_size, "lr": lr, "weight_decay": weight_decay, "warmup": warmup,
               "device": device, "config": config.as_dict(), "prev_dropout": .2, "lag": 0, "cohort": cohort,
               "run_identity": run_identity, "batch_identity": batch_identity(batches),
@@ -154,7 +155,7 @@ def fit_chunks(batches, config, stats, out, *, dev=None, seed=0, epochs=26, batc
     def snapshot(status):
         if device == "mps":
             torch.mps.synchronize()
-        payload = {"format": FORMAT, "tag": "EXPLORATORY", "recipe": recipe, "epoch_reason": EPOCH_REASON,
+        payload = {"format": FORMAT, "tag": experiment_tag, "recipe": recipe, "epoch_reason": EPOCH_REASON,
                    "model": {k: v.detach().cpu() for k, v in model.state_dict().items()},
                    "optimizer": optimizer.state_dict(), "scheduler": scheduler.state_dict(),
                    "generator": generator.get_state(), "torch_rng": torch.get_rng_state(),

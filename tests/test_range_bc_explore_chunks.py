@@ -449,3 +449,40 @@ def test_decode_persistence_stop_saves_first_result_and_stops_summary(
     else:
         assert "stop_reason" not in result
         assert result["skipped_decodes"] == []
+
+
+@pytest.mark.parametrize("seed,history", [(1, "disabled"), (2, "enabled"), (3, "disabled")])
+def test_confirmation_entrypoint_propagates_seed_history_and_prereg(tmp_path, monkeypatch, seed, history):
+    from policy.range_bc import explore_encoder as encoder
+    from scripts import job_status
+
+    monkeypatch.setattr(torch.cuda, "is_available", lambda: True)
+    monkeypatch.setattr(torch.cuda, "get_device_name", lambda: "NVIDIA L40S")
+    monkeypatch.setattr(torch.cuda, "empty_cache", lambda: None)
+    monkeypatch.setattr(job_status, "write", lambda *a, **kw: None)
+    monkeypatch.setattr(encoder, "load_manifest", lambda *a, **kw: ([], []))
+    monkeypatch.setattr(encoder, "download_tower", lambda *a: (None, {}))
+    monkeypatch.setattr(encoder, "extract", lambda *a: {})
+    monkeypatch.setattr(encoder, "FeatureBatches", lambda *a, **kw: None)
+    monkeypatch.setattr(steps, "train_statistics", lambda *a: {})
+    monkeypatch.setattr(steps, "sha256", lambda *a: "b" * 64)
+    called = {}
+
+    def fit(batches, config, *a, **kw):
+        called.update(kw)
+        assert config.history == (history == "enabled")
+        return None, None, "complete"
+
+    def evaluate(*a, **kw):
+        assert kw["chance_floor"] and kw["stop_on_persistence"]
+        return {}
+
+    monkeypatch.setattr(encoder, "fit_chunks", fit)
+    monkeypatch.setattr(encoder, "evaluate", evaluate)
+    args = ["--arm", "nitrogen", "--manifest", "unused", "--registry", "unused", "--tally", "unused",
+            "--out", str(tmp_path), "--stop-file", "unused", "--log", "unused", "--history", history,
+            "--seed", str(seed), "--job-name", "synthetic", "--confirm-prereg-sha256", "a" * 64,
+            "--stop-on-persistence"]
+    assert encoder.main(args) == 0
+    assert called["seed"] == seed and called["experiment_tag"] == "CONFIRM"
+    assert called["recipe_extra"]["prereg_sha256"] == "a" * 64

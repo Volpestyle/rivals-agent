@@ -118,7 +118,7 @@ def main(argv=None):
 
 
 def evaluate(a, report, *, device="mps", model_factory=ChunkPolicy, array_loader=load_manifest,
-             stop_on_persistence=False):
+             stop_on_persistence=False, chance_floor=False):
     out = Path(a.out)
     start = time.perf_counter()
     payload = torch.load(a.checkpoint, map_location="cpu", weights_only=True)
@@ -134,7 +134,8 @@ def evaluate(a, report, *, device="mps", model_factory=ChunkPolicy, array_loader
     thresholds = choose_thresholds(train_predictions, live_mask)
     del train_predictions
     out.parent.mkdir(parents=True, exist_ok=True)
-    result = {"tag": "EXPLORATORY", "recipe": recipe, "checkpoint": a.checkpoint,
+    tag = recipe.get("tag", "EXPLORATORY")
+    result = {"tag": tag, "recipe": recipe, "checkpoint": a.checkpoint,
               "epoch": payload["epoch"], "training_seconds": payload["seconds"],
               "threshold_calibration": thresholds, "decode": {}, "skipped_decodes": []}
     out.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
@@ -156,10 +157,13 @@ def evaluate(a, report, *, device="mps", model_factory=ChunkPolicy, array_loader
         camera = metrics.evaluate(values["teacher_camera"], **metrics.TEACHER)
         checks = metrics.selffed_checks(values["self"], live_mask)
         key = f"{name}/{decoder}"
-        result["decode"][key] = {"tag": "EXPLORATORY", "teacher_executed": tf, "self_fed": sf,
+        result["decode"][key] = {"tag": tag, "teacher_executed": tf, "self_fed": sf,
                                  "S1_S2_S4": checks, "S3_camera_mae": sf["camera_mae_mean"],
                                  "TF_camera_mae": camera["camera_mae_mean"],
                                  "T": tf["macro_press_f1_tol"], "F": sf["macro_press_f1_tol"]}
+        if chance_floor and decoder == "median":
+            from .confirm_encoder_judge import random_press_floor
+            result["decode"][key]["chance_floor"] = random_press_floor(values["self"], live_mask)
         result["evaluation_seconds"] = time.perf_counter() - start
         if (stop_on_persistence and sf["camera_mae_mean"] <
                 result["references"]["frozen_dev"]["persistence"]["camera_mae_mean"]):
@@ -167,7 +171,7 @@ def evaluate(a, report, *, device="mps", model_factory=ChunkPolicy, array_loader
             result["skipped_decodes"] = [f"{n}/{d}" for n, d in runs
                                          if f"{n}/{d}" not in result["decode"]]
         out.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
-        print(json.dumps({"tag": "EXPLORATORY", "decode": key, "T": tf["macro_press_f1_tol"],
+        print(json.dumps({"tag": tag, "decode": key, "T": tf["macro_press_f1_tol"],
                           "F": sf["macro_press_f1_tol"]}), flush=True)
         if "stop_reason" in result:
             report(result["stop_reason"])

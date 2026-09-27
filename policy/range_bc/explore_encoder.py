@@ -182,21 +182,31 @@ def main(argv=None):
         p.add_argument("--" + key, required=True)
     p.add_argument("--history", choices=("enabled", "disabled"), default="enabled")
     p.add_argument("--stop-on-persistence", action="store_true")
+    p.add_argument("--seed", type=int, default=0)
+    p.add_argument("--job-name")
+    p.add_argument("--confirm-prereg-sha256")
     a = p.parse_args(argv)
+    if a.confirm_prereg_sha256:
+        train.require(a.arm == "nitrogen" and a.seed in (1, 2, 3)
+                      and len(a.confirm_prereg_sha256) == 64
+                      and all(c in "0123456789abcdef" for c in a.confirm_prereg_sha256),
+                      "invalid confirmation identity")
     train.require(torch.cuda.is_available() and torch.cuda.get_device_name() == "NVIDIA L40S",
                   "matched Modal L40S required")
     torch.set_num_threads(8)
     root = Path(a.out)
     from scripts.job_status import write
-    job = "explore-encoder-" + ("historyoff-" if a.history == "disabled" else "") + a.arm
+    job = a.job_name or "explore-encoder-" + ("historyoff-" if a.history == "disabled" else "") + a.arm
+    tag = "CONFIRM" if a.confirm_prereg_sha256 else "EXPLORATORY"
     def report(message):
         write(job, root=root / "jobs", owner="explore-policy", host="modal", stage="running",
               evidence=a.log, progress=message)
         print(message, flush=True)
     report("Loading authorized full-cohort H1 inputs")
     arrays, dev = load_manifest(a.manifest, a.registry, a.tally, cohort="full")
-    environment = {"tag": "EXPLORATORY", "torch": str(torch.__version__), "cuda": torch.version.cuda,
-                   "device": torch.cuda.get_device_name(), "arm": a.arm}
+    environment = {"tag": tag, "torch": str(torch.__version__), "cuda": torch.version.cuda,
+                   "device": torch.cuda.get_device_name(), "arm": a.arm, "seed": a.seed,
+                   "prereg_sha256": a.confirm_prereg_sha256}
     (root / "environment.json").write_text(json.dumps(environment, indent=2) + "\n")
     report("Downloading pinned vision weights")
     tower, assets = download_tower(a.arm, root / "assets")
@@ -217,18 +227,22 @@ def main(argv=None):
     identity = steps.sha256(a.manifest) + steps.sha256(feature_root / "features.json")
     extra = {"arm": a.arm, "assets": assets, "extraction": extraction, "history_input": a.history,
              "incumbent_difference": "frozen pretrained tower and cached features; no pixel jitter/DrQ"}
+    if a.confirm_prereg_sha256:
+        extra["prereg_sha256"] = a.confirm_prereg_sha256
     config = Config(hud=False, history=a.history == "enabled")
     _, _, status = fit_chunks(FeatureBatches(train_arrays, stride=64), config, stats, root,
-                              dev=FeatureBatches(dev_arrays, stride=64), seed=0, epochs=26, device="cuda",
+                              dev=FeatureBatches(dev_arrays, stride=64), seed=a.seed, epochs=26, device="cuda",
                               stop_file=a.stop_file, run_identity=identity, model_factory=EncoderPolicy,
-                              recipe_extra=extra, progress=lambda n, total: report(f"fit {n}/{total}"))
+                              recipe_extra=extra, experiment_tag=tag,
+                              progress=lambda n, total: report(f"fit {n}/{total}"))
     if status != "complete":
         return 75
     args = copy.copy(a)
     args.checkpoint, args.out = str(root / "epoch-26.pt"), str(root / "evaluation.json")
     result = evaluate(args, report, device="cuda", model_factory=EncoderPolicy,
                       array_loader=lambda *args, **kw: (train_arrays, dev_arrays),
-                      stop_on_persistence=a.stop_on_persistence)
+                      stop_on_persistence=a.stop_on_persistence,
+                      chance_floor=bool(a.confirm_prereg_sha256))
     message = result.get("stop_reason", "26 epochs and six decodes complete")
     write(job, root=root / "jobs", stage="done", progress=message)
     return 0
