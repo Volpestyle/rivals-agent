@@ -1,0 +1,24 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-02/code/cloud/modal_guard/__main__.py", line 57, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-02/code/cloud/modal_guard/__main__.py", line 44, in main
+    result = run_arm({"path": args.spec, "sha256": args.spec_sha256}, args.release_sha256)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-02/code/cloud/modal_guard/runner.py", line 59, in run_arm
+    return _run_arm(spec_ref, release_sha256, workspace_root=workspace_root, inhibitor=inhibitor)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-02/code/cloud/modal_guard/runner.py", line 162, in _run_arm
+    current = ledger.get(attempt)
+              ^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-02/code/cloud/modal_guard/ledger.py", line 156, in get
+    with self.transaction() as s:
+         ^^^^^^^^^^^^^^^^^^
+  File "/Users/james/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/contextlib.py", line 137, in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-02/code/cloud/modal_guard/ledger.py", line 41, in transaction
+    db.execute("BEGIN IMMEDIATE")
+sqlite3.OperationalError: database is locked

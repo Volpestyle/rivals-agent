@@ -1,0 +1,18 @@
+2026-09-27 17:11:08-05:00 Traceback (most recent call last):
+2026-09-27 17:11:08-05:00   File "/pkg/modal/_runtime/container_io_manager.py", line 987, in handle_input_exception
+2026-09-27 17:11:08-05:00     yield
+2026-09-27 17:11:08-05:00   File "/pkg/modal/_container_entrypoint.py", line 189, in run_input_sync
+2026-09-27 17:11:08-05:00     values = io_context.call_function_sync()
+2026-09-27 17:11:08-05:00              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-09-27 17:11:08-05:00   File "/pkg/modal/_runtime/container_io_manager.py", line 266, in call_function_sync
+2026-09-27 17:11:08-05:00     expected_value_or_values = self.finalized_function.callable(*args, **kwargs)
+2026-09-27 17:11:08-05:00                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-09-27 17:11:08-05:00   File "/root/cloud/modal_guard/runner.py", line 50, in execute_stages
+2026-09-27 17:11:08-05:00     results.append(run(Path(output_root) / name(stage["name"]), stage["name"], identity,
+2026-09-27 17:11:08-05:00                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-09-27 17:11:08-05:00   File "/root/cloud/modal_guard/stages.py", line 56, in run
+2026-09-27 17:11:08-05:00     atomic(root / "started.json", {"identity": identity, "stage": stage}, fresh=True)
+2026-09-27 17:11:08-05:00   File "/root/cloud/modal_guard/common.py", line 140, in atomic
+2026-09-27 17:11:08-05:00     os.link(temporary, path)
+2026-09-27 17:11:08-05:00 PermissionError: [Errno 1] Operation not permitted: '/outputs/yaw-probe2-20260927-01/probe/started.json.8c0e3ca7f40f4f26bb1d0ce05e3a8355.tmp' -> '/outputs/yaw-probe2-20260927-01/probe/started.json'
+2026-09-27 17:11:08-05:00 Stopping app - uncaught exception raised in remote container: PermissionError(1, 'Operation not permitted').

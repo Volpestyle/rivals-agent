@@ -1,0 +1,66 @@
+{
+  "tag": "EXPLORATORY_LAUNCHER_SHAKEDOWN",
+  "verdict": "INCOMPLETE",
+  "checked_at": "2026-09-27T22:17:35.138190+00:00",
+  "rows": [
+    {
+      "attempt_id": "yaw-probe2-20260927-01",
+      "app_id": "ap-62GMnyZ1PD7X5MmiizVcw8",
+      "rpc_count": 1,
+      "state": "TERMINAL",
+      "bound_usd": "0.234976",
+      "error": "PermissionError(1, 'Operation not permitted')"
+    },
+    {
+      "attempt_id": "yaw-probe2-20260927-02",
+      "app_id": null,
+      "rpc_count": 0,
+      "state": "NEVER_CREATED",
+      "bound_usd": "0",
+      "error": "Refused('watchdog exited before admission')"
+    },
+    {
+      "attempt_id": "yaw-probe2-20260927-03",
+      "app_id": null,
+      "rpc_count": 0,
+      "state": "NEVER_CREATED",
+      "bound_usd": "0",
+      "error": "OperationalError('database is locked')"
+    },
+    {
+      "attempt_id": "yaw-probe2-20260927-04",
+      "app_id": null,
+      "rpc_count": 0,
+      "state": "NEVER_CREATED",
+      "bound_usd": "0",
+      "error": "Driver escaped at finally ledger.get; no result.json. Reconciled by owner."
+    },
+    {
+      "attempt_id": "yaw-probe2-20260927-05",
+      "app_id": null,
+      "rpc_count": 0,
+      "state": "NEVER_CREATED",
+      "bound_usd": "0",
+      "error": "Refused('watchdog exited before admission')"
+    },
+    {
+      "attempt_id": "yaw-probe2-20260927-06",
+      "app_id": null,
+      "rpc_count": 0,
+      "state": "NEVER_CREATED",
+      "bound_usd": "0",
+      "error": "OperationalError('database is locked')"
+    }
+  ],
+  "appcreate_rpcs": 1,
+  "last_appcreate_unix": 1790547060.131674,
+  "conservative_charge_usd": "0.234976",
+  "outstanding_holds_usd": "0",
+  "bootstrap_consumed_cumulative_usd": "2.977478",
+  "compute_callback_reached": false,
+  "six_way_overlap": false,
+  "volume_failure": "os.link in atomic(fresh=True) rejected by Modal output volume before stage claim",
+  "same_guard_fanout_failure": "SQLite BEGIN IMMEDIATE contention on read APIs and watchdog startup",
+  "group_helper_mutations": 0,
+  "original_guard_or_orphan_teardown_settled_all": true
+}

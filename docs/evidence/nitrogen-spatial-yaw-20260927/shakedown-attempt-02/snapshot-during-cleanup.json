@@ -1,0 +1,65 @@
+{
+  "identity": {
+    "profile": "rivals",
+    "workspace": "volpestyle",
+    "workspace_id": "ac-kMLf5bJKqF5CAlSbfNhGh0"
+  },
+  "checked_at": 1790547144.786005,
+  "complete": true,
+  "checked_monotonic": 452530.108410791,
+  "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5",
+  "raw": {
+    "identity": {
+      "command": [
+        "/Users/james/.local/share/uv/tools/modal/bin/python",
+        "-m",
+        "cloud.modal_guard.provider",
+        "identity"
+      ],
+      "stdout": "{\"profile\": \"rivals\", \"workspace\": \"volpestyle\", \"workspace_id\": \"ac-kMLf5bJKqF5CAlSbfNhGh0\"}\n",
+      "returncode": 0,
+      "sha256": "115ccb5f88cfa01cad9fa5ca24d1bbdbec18847c2450f8a2446bae25e817e6ee",
+      "queried_at": 1790547142.1370199,
+      "completed_at": 1790547142.7368078,
+      "queried_monotonic": 452527.459444916,
+      "completed_monotonic": 452528.059232875,
+      "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5"
+    },
+    "apps": {
+      "command": [
+        "/Users/james/.local/bin/modal",
+        "app",
+        "list",
+        "--profile",
+        "rivals",
+        "--json"
+      ],
+      "stdout": "[\n  {\n    \"app_id\": \"ap-62GMnyZ1PD7X5MmiizVcw8\",\n    \"description\": \"rivals-yaw-probe2-20260927-01\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 17:11:00-05:00\",\n    \"stopped_at\": \"2026-09-27 17:11:09-05:00\"\n  },\n  {\n    \"app_id\": \"ap-ZwXMMponOGgpGdd1IgiVKa\",\n    \"description\": \"rivals-idm-press-20260927-03\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 15:38:36-05:00\",\n    \"stopped_at\": \"2026-09-27 15:41:07-05:00\"\n  },\n  {\n    \"app_id\": \"ap-WZbhoHmsPD62QkTuSpAr91\",\n    \"description\": \"rivals-idm-press-20260927-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 14:41:15-05:00\",\n    \"stopped_at\": \"2026-09-27 15:26:45-05:00\"\n  }\n]\n",
+      "returncode": 0,
+      "sha256": "f5acd95ff48a3cd4dd5a095134f4c665c7f5a00332e5b3babc927d5e29f119f5",
+      "queried_at": 1790547142.742749,
+      "completed_at": 1790547143.82219,
+      "queried_monotonic": 452528.065169583,
+      "completed_monotonic": 452529.144614125,
+      "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5"
+    },
+    "containers": {
+      "command": [
+        "/Users/james/.local/bin/modal",
+        "container",
+        "list",
+        "--profile",
+        "rivals",
+        "--json"
+      ],
+      "stdout": "[]\n",
+      "returncode": 0,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "queried_at": 1790547143.822221,
+      "completed_at": 1790547144.785995,
+      "queried_monotonic": 452529.144632916,
+      "completed_monotonic": 452530.108404375,
+      "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5"
+    }
+  }
+}
