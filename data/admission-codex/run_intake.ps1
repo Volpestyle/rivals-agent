@@ -26,6 +26,10 @@ $freeBefore=Check-Resources
 $env:PYTHONDONTWRITEBYTECODE='1'
 $env:PYTHONIOENCODING='utf-8'
 $arguments=@('-u','data/human/sessions/intake_session.py',$Step,$Session,'--scratch','data/admission-codex/intake','--snapshot','code-snapshot-f8fd92c-bounded-20260927')
+if ($Revision -eq 'initial' -and $Step -in @('propose','evidence')) {
+  # Fresh night-match packets also use the reviewed held-button3 cut.
+  $arguments[-1]='code-snapshot-f8fd92c-ping-20260927'
+}
 if ($Revision -eq 'ping-a1') {
   if ($Step -notin @('propose','evidence','assemble','receipt')) { throw 'Ping revision permits proposal, evidence, assembly and receipt only' }
   $arguments=@('-u','data/human/sessions/intake_session.py',$Step,$Session,'--scratch','data/admission-codex/intake','--snapshot','code-snapshot-f8fd92c-ping-20260927','--supersedes','Lead 2026-09-27: exclude held middle-mouse ping wheel plus 2 s settle; preserve prior packet')
