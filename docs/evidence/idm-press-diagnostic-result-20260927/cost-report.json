@@ -1,0 +1,67 @@
+{
+  "as_of_utc": "2026-09-27T20:44:08.847700+00:00",
+  "basis": "Conservative allocation bounds including setup allowance; not invoices",
+  "runs": [
+    {
+      "run": "ssl",
+      "state": "terminal",
+      "upper_usd": 0.9568266506762123,
+      "app_id": "ap-dlUQUitwSwNF6G0MCpnWh6",
+      "owned_containers": 0,
+      "reservation_started_unix": 1790534938.1377192,
+      "terminal_checked_unix": 1790535222.520161,
+      "terminal_checked_utc": "2026-09-27T18:53:42.520161+00:00",
+      "final_path": "data\\idm\\cloud-20260927\\ssl-result\\final.json",
+      "final_sha256": "5452fdfa3af0b48ce3e08a2f3bfdb0e9e37a2208b6513796c62fce46c031337d",
+      "original_reservation_usd": 1.9997594399999998,
+      "outstanding_hold_usd": 0
+    },
+    {
+      "run": "press01",
+      "state": "terminal",
+      "upper_usd": 1.798725950444412,
+      "app_id": "ap-qu8I6QJ2O03oHfzPibSLML",
+      "owned_containers": 0,
+      "reservation_started_unix": 1790535135.666034,
+      "terminal_checked_unix": 1790536595.670665,
+      "terminal_checked_utc": "2026-09-27T19:16:35.670665+00:00",
+      "final_path": "data\\idm\\cloud-20260927\\press-failure\\final.json",
+      "final_sha256": "6cbf9c61a8eeb58b37693974e50006e0011dfebf3640e73553641783e2aef774",
+      "original_reservation_usd": 3.9996616799999996,
+      "outstanding_hold_usd": 0
+    },
+    {
+      "run": "press02",
+      "state": "terminal",
+      "upper_usd": 2.715989037845592,
+      "app_id": "ap-WZbhoHmsPD62QkTuSpAr91",
+      "owned_containers": 0,
+      "reservation_started_unix": 1790538075.213794,
+      "terminal_checked_unix": 1790540807.275502,
+      "terminal_checked_utc": "2026-09-27T20:26:47.275502+00:00",
+      "final_path": "data\\idm\\cloud-20260927\\press02-result\\final.json",
+      "final_sha256": "7b5cc6897deb68c71558d3017eaa07aa2e60fea9034e6f02b76fd978857added",
+      "original_reservation_usd": 2.9997105599999996,
+      "outstanding_hold_usd": 0
+    },
+    {
+      "run": "press03",
+      "state": "terminal",
+      "upper_usd": 0.8643344297040367,
+      "app_id": "ap-ZwXMMponOGgpGdd1IgiVKa",
+      "owned_containers": 0,
+      "reservation_started_unix": 1790541515.818851,
+      "terminal_checked_unix": 1790541669.569878,
+      "terminal_checked_utc": "2026-09-27T20:41:09.569878+00:00",
+      "final_path": "data\\idm\\cloud-20260927\\press03-result\\final.json",
+      "final_sha256": "b83896db74caf831c47cb2c43e29a1fba1bde3f51a4669c8a83837f860cd1b16",
+      "original_reservation_usd": 1.4994249599999998,
+      "outstanding_hold_usd": 0
+    }
+  ],
+  "cumulative_terminal_upper_usd": 6.335876068670252,
+  "upcoming_holds": [],
+  "other_active_or_upcoming_holds": [],
+  "idm_hard_cap_usd": 25,
+  "alert_usd": 20
+}

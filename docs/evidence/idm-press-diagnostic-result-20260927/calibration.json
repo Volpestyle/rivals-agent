@@ -1,0 +1,30 @@
+{
+  "method": "TRAIN known-row empirical onset-rate quantile; >= threshold; ties retained",
+  "rates": {
+    "amazing_combo": {
+      "achieved": 0.0023367227894326285,
+      "target": 0.0023367227894326285
+    },
+    "jump": {
+      "achieved": 0.012612090210615694,
+      "target": 0.012612090210615694
+    },
+    "web_cluster": {
+      "achieved": 0.007873064523922934,
+      "target": 0.007873064523922934
+    }
+  },
+  "sessions": [
+    "20260923T051828-422Z-33696-1",
+    "20260923T200129-346Z-33696-6",
+    "20260924T232304-170Z-12024-1",
+    "20260925T021320-371Z-7804-1",
+    "20260925T025230-605Z-7804-2"
+  ],
+  "thresholds": {
+    "amazing_combo": 0.9456475973129272,
+    "jump": 0.9475389719009399,
+    "web_cluster": 0.9723330736160278
+  },
+  "warning": "Calibration is in-training; dev labels do not select thresholds."
+}

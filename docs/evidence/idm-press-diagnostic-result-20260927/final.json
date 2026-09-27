@@ -1,0 +1,160 @@
+{
+  "exit": 0,
+  "error": null,
+  "result": {
+    "scope": "EXPLORATORY",
+    "deadline": 1790542434.818851,
+    "started_at": 1790541546.19767,
+    "mount_pins": {
+      "/inputs": "vo-l6vlOAevRQVOveYRhWaQiT",
+      "/outputs": "vo-P3ZUkFCfGDROpmkgiaFAhL"
+    },
+    "upload_manifest_sha256": "ea45b03bc2aa5a728dba5481682e4db09116303eb1f56fadc90a7c79d97ec548",
+    "run_manifest_sha256": "2560f70ab076d8b63d034fca5b77c026823f35516a51fe28a892eccba3d5358b",
+    "stage_identity": {
+      "run_config_sha256": "2560f70ab076d8b63d034fca5b77c026823f35516a51fe28a892eccba3d5358b",
+      "source_archive_sha256": "cc942454d3dfdd4d17b40afecedb86269fd180a0766621c40a47dec685da4036",
+      "input_manifest_sha256": "ea45b03bc2aa5a728dba5481682e4db09116303eb1f56fadc90a7c79d97ec548",
+      "checkpoint_sha256": "1b9bcc6a6f909d0e5cbd1cb5fb64c71c89a6cc5320c8c8989ac51cb952cbf541",
+      "app_name": "rivals-idm-press-20260927-03",
+      "output_volume_id": "vo-P3ZUkFCfGDROpmkgiaFAhL"
+    },
+    "exit": 0,
+    "completed_at": 1790541656.7427993,
+    "seconds": 110.54513025283813,
+    "device": "cuda:NVIDIA L40S",
+    "files": {
+      "calibration.json": {
+        "bytes": 835,
+        "sha256": "0e0c6b7fc578955e733c513c9044b7def061d44b9a6fe085bd396ee9d96645cb"
+      },
+      "heldout-row-ids.json": {
+        "bytes": 2678439,
+        "sha256": "d21761e8613b16640b9114b96feb8ecabc162c7453d72f8f513ffb4292df84b7"
+      },
+      "report.json": {
+        "bytes": 33212,
+        "sha256": "dd09f3b33b2a27c458fca580bec8da7753b38584d73950aa35a4fe14efed6a98"
+      },
+      "run.exit": {
+        "bytes": 2,
+        "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+      },
+      "run.log": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stage-identity.json": {
+        "bytes": 447,
+        "sha256": "2254423ae15342f4139aa94aefde3b62f06000bd7b0ad68d32da5e9654c34e42"
+      },
+      "started.json": {
+        "bytes": 847,
+        "sha256": "505da4d04178c29bc569b4b3abd38743eceafa75e9813e197e87bfcc2f43bcbf"
+      },
+      "zero_visuals-probabilities.npy": {
+        "bytes": 589088,
+        "sha256": "f451e02cbef3c4097e60839678400099d2161c2fc96131b2d5c8d337f5bcdca3"
+      },
+      "jobs/idm-press-diagnostic.status.json": {
+        "bytes": 276,
+        "sha256": "834652e05126d81f45611f3492ea8fff3f58f1ef4171480f9c5217e1e5c222b1"
+      },
+      "stages/zero_visuals/probabilities.npy": {
+        "bytes": 589088,
+        "sha256": "f451e02cbef3c4097e60839678400099d2161c2fc96131b2d5c8d337f5bcdca3"
+      },
+      "stages/zero_visuals/row-ids.json": {
+        "bytes": 1893158,
+        "sha256": "07c2038f23cdf302729e38df57ce3888c2d9424d3e15d450ff3a34802698fc50"
+      },
+      "stages/zero_visuals/stage-complete.json": {
+        "bytes": 825,
+        "sha256": "33ca2077ac7481792830467e2ec9e9dd0d81ad135b708f3c2fa410904c2cf9da"
+      }
+    }
+  },
+  "teardown": {
+    "terminal": true,
+    "owned_apps": [
+      "ap-ZwXMMponOGgpGdd1IgiVKa"
+    ],
+    "owned_containers": 0,
+    "checked_at": 1790541669.569878,
+    "events": []
+  },
+  "budget": {
+    "cap_usd": 1.5,
+    "overhead_reserve_usd": 0.75,
+    "prior_attempt_charge_usd": 0.0,
+    "new_overhead_usd": 0.75,
+    "rate_usd_second_per_arm": 0.0007178399999999999,
+    "arms": [
+      1
+    ],
+    "attempts_per_arm": 1,
+    "started_at_unix": 1790541515.818851,
+    "started_monotonic": 443609.0176305,
+    "stop_at_unix": 1790542439.818851,
+    "stop_monotonic": 444533.0176305,
+    "funded_until_unix": 1790542559.818851,
+    "lifetime_seconds": 1044,
+    "function_timeout_seconds": 624,
+    "startup_seconds": 300,
+    "stop_seconds": 120,
+    "reserved_usd": 1.4994249599999998,
+    "app_name": "rivals-idm-press-20260927-03",
+    "identity": {
+      "profile": "rivals",
+      "workspace": "volpestyle",
+      "workspace_id": "ac-kMLf5bJKqF5CAlSbfNhGh0"
+    }
+  },
+  "collection": {
+    "result.json": {
+      "bytes": 2756,
+      "sha256": "9141c483e0045dc524ca6a0c6ab95091f5dfc859161693d7c8b8fbdb315aba99"
+    },
+    "report.json": {
+      "bytes": 33212,
+      "sha256": "dd09f3b33b2a27c458fca580bec8da7753b38584d73950aa35a4fe14efed6a98"
+    },
+    "calibration.json": {
+      "bytes": 835,
+      "sha256": "0e0c6b7fc578955e733c513c9044b7def061d44b9a6fe085bd396ee9d96645cb"
+    },
+    "heldout-row-ids.json": {
+      "bytes": 2678439,
+      "sha256": "d21761e8613b16640b9114b96feb8ecabc162c7453d72f8f513ffb4292df84b7"
+    },
+    "run.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "run.exit": {
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "zero_visuals-probabilities.npy": {
+      "bytes": 589088,
+      "sha256": "f451e02cbef3c4097e60839678400099d2161c2fc96131b2d5c8d337f5bcdca3"
+    },
+    "stage-identity.json": {
+      "bytes": 447,
+      "sha256": "2254423ae15342f4139aa94aefde3b62f06000bd7b0ad68d32da5e9654c34e42"
+    },
+    "stages/zero_visuals/stage-complete.json": {
+      "bytes": 825,
+      "sha256": "33ca2077ac7481792830467e2ec9e9dd0d81ad135b708f3c2fa410904c2cf9da"
+    },
+    "stages/zero_visuals/row-ids.json": {
+      "bytes": 1893158,
+      "sha256": "07c2038f23cdf302729e38df57ce3888c2d9424d3e15d450ff3a34802698fc50"
+    },
+    "stages/zero_visuals/probabilities.npy": {
+      "bytes": 589088,
+      "sha256": "f451e02cbef3c4097e60839678400099d2161c2fc96131b2d5c8d337f5bcdca3"
+    }
+  },
+  "upper_usd": 0.8643344297040367
+}

@@ -1,0 +1,96 @@
+{
+  "exit": 1,
+  "error": "FunctionTimeoutError(\"Task's current input in-01M3J65Q85GE97TS0ZTV4J0JX6:1790538079517-0 hit its timeout of 2714s\")",
+  "result": null,
+  "teardown": {
+    "terminal": true,
+    "owned_apps": [
+      "ap-WZbhoHmsPD62QkTuSpAr91"
+    ],
+    "owned_containers": 0,
+    "checked_at": 1790540807.275502,
+    "events": []
+  },
+  "budget": {
+    "cap_usd": 3.0,
+    "overhead_reserve_usd": 0.75,
+    "prior_attempt_charge_usd": 0.0,
+    "new_overhead_usd": 0.75,
+    "rate_usd_second_per_arm": 0.0007178399999999999,
+    "arms": [
+      1
+    ],
+    "attempts_per_arm": 1,
+    "started_at_unix": 1790538075.213794,
+    "started_monotonic": 440168.434335541,
+    "stop_at_unix": 1790541089.213794,
+    "stop_monotonic": 443182.434335541,
+    "funded_until_unix": 1790541209.213794,
+    "lifetime_seconds": 3134,
+    "function_timeout_seconds": 2714,
+    "startup_seconds": 300,
+    "stop_seconds": 120,
+    "reserved_usd": 2.9997105599999996,
+    "app_name": "rivals-idm-press-20260927-02",
+    "identity": {
+      "profile": "rivals",
+      "workspace": "volpestyle",
+      "workspace_id": "ac-kMLf5bJKqF5CAlSbfNhGh0"
+    }
+  },
+  "collection": {
+    "calibration.json": {
+      "bytes": 835,
+      "sha256": "0e0c6b7fc578955e733c513c9044b7def061d44b9a6fe085bd396ee9d96645cb"
+    },
+    "heldout-row-ids.json": {
+      "bytes": 2678439,
+      "sha256": "d21761e8613b16640b9114b96feb8ecabc162c7453d72f8f513ffb4292df84b7"
+    },
+    "run.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "train-probabilities.npy": {
+      "bytes": 3476792,
+      "sha256": "451cfb98f2a833729ee0b96118d0bf0349d1bb3d8f66a84be04e51eb32721a50"
+    },
+    "real-probabilities.npy": {
+      "bytes": 589088,
+      "sha256": "65f8996e369e787f71d86e174c5b2275d509a31d9f8924deeb5689957a58f21e"
+    },
+    "stage-identity.json": {
+      "bytes": 447,
+      "sha256": "ab6cc4cf83fe313239dd67dbdc1174c1e31ab7ae3b2919f11a4ab805565f9c28"
+    },
+    "stages/train-inference/stage-complete.json": {
+      "bytes": 946,
+      "sha256": "15c871695b2874ed680e6e89ef22a7346a14ca79fa824ea536f89f976c875202"
+    },
+    "stages/train-inference/calibration.json": {
+      "bytes": 681,
+      "sha256": "61c0b954ca3f7f0d0515d9442658a8bb7bc012c9be70752b1e7e554c82bb628d"
+    },
+    "stages/train-inference/row-ids.json": {
+      "bytes": 11139414,
+      "sha256": "560cf2279b2fc995177216734f16b831dda9e2ce675822992df475182d0833a3"
+    },
+    "stages/train-inference/probabilities.npy": {
+      "bytes": 3476792,
+      "sha256": "451cfb98f2a833729ee0b96118d0bf0349d1bb3d8f66a84be04e51eb32721a50"
+    },
+    "stages/real/stage-complete.json": {
+      "bytes": 817,
+      "sha256": "bdb8ffb1a13a931daf57aa2aade01eafeb31ad367aa20db0b0cb25712f5ee45c"
+    },
+    "stages/real/row-ids.json": {
+      "bytes": 1893158,
+      "sha256": "07c2038f23cdf302729e38df57ce3888c2d9424d3e15d450ff3a34802698fc50"
+    },
+    "stages/real/probabilities.npy": {
+      "bytes": 589088,
+      "sha256": "65f8996e369e787f71d86e174c5b2275d509a31d9f8924deeb5689957a58f21e"
+    }
+  },
+  "upper_usd": 2.715989037845592
+}
