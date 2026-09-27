@@ -1,0 +1,822 @@
+{
+ "schema_version": 1,
+ "session_id": "20260927T053838-153Z-150600-7",
+ "reviewer": "owner admission-owner (b5a578d217d15ab5) + independent frame-review (Opus)",
+ "reviewed_at": "2026-09-27T21:49:48Z",
+ "device_scope": {
+  "kind": "single_keyboard_mouse",
+  "source": "input-profile.json: keyboard ['1840451255'], mouse ['614403941']; 11 zero-effect handle-0 packets allowed (lead decision), no injected control input",
+  "no_pad_attestation": "James, chat, 2026-09-27 ~09:20 CDT (docs/recording-log.md, Motor settings, committed 32007db): \"Keyboard/mouse only\", no controller at any point in the 23:13-01:27 takes"
+ },
+ "pts_anchor": {
+  "kind": "independent_muxer_offset",
+  "offset_num": 21,
+  "offset_den": 1000,
+  "source": "accepted blank-scene derivation plus this session's own first-16-packet forward prediction (provenance.json anchor_applicability), no fitting",
+  "evidence": [
+   {
+    "path": "data/human/inspection/20260922T033319-205Z-24328-2/independent-review-resolution.md",
+    "sha256": "a67f55f36554887d97765b4552a33ac5c92494f6a50c814801183528a0c3c8e6"
+   },
+   {
+    "path": "data/human/sessions/20260927T053838-153Z-150600-7/provenance.json",
+    "sha256": "cb2267536bae5ba01997acc9c1837b58e2338d959bcfb685d8dee8d0b7bae936"
+   }
+  ]
+ },
+ "provenance": {
+  "hero": "Spider-Man",
+  "settings": {
+   "value": {
+    "dpi": 800,
+    "horizontal_sensitivity": 1.89,
+    "vertical_sensitivity": 1.89,
+    "swing_mode": {
+     "automatic_swing": false,
+     "hold_to_swing": true
+    },
+    "mouse_acceleration": true,
+    "mouse_smoothing": true
+   },
+   "source": "James's statements in docs/recording-log.md (2026-09-23): DPI 800 (~14:50 CDT), sensitivity unchanged since 2026-09-21 (1.89/1.89 in the 09-21 report), default swing settings on Shift with Simple Swing on Caps Lock; confirmed on native frames of the settings look (calibration.json: 1.89/1.89, hold to swing on, simple swing off)",
+   "per_session_source": "James's statement for the 2026-09-27 night matches (docs/recording-log.md, Motor settings, committed 32007db): alt account, DPI, in-game sensitivity (1.89) and bindings unchanged (chat, 2026-09-27 ~09:20 CDT, and his 01:37 declaration)",
+   "evidence": [
+    {
+     "path": "data/human/sessions/20260927T053838-153Z-150600-7/recording-log.f478461.md",
+     "sha256": "782eb4b996bfa45ef9ba83675988524798a881799ee2e562ccd1954c2f426549"
+    },
+    {
+     "path": "data/human/notes/2026-09-21-user-settings.json",
+     "sha256": "852c92254961b4fcb1278e8ebe752ea2f02ce6add678509d3276fd1a26264c6c"
+    },
+    {
+     "path": "data/human/sessions/20260927T053838-153Z-150600-7/provenance.json",
+     "sha256": "cb2267536bae5ba01997acc9c1837b58e2338d959bcfb685d8dee8d0b7bae936"
+    },
+    {
+     "path": "data/human/calibration/20260923T204707-487Z-45572-2/calibration.json",
+     "sha256": "baa49158c9911e0155a2d06883faec00150b297e0a5fe0e8dd46fc86d5310283"
+    }
+   ]
+  },
+  "bindings": {
+   "value": {
+    "move_forward": [
+     "key:17:0"
+    ],
+    "move_left": [
+     "key:30:0"
+    ],
+    "move_back": [
+     "key:31:0"
+    ],
+    "move_right": [
+     "key:32:0"
+    ],
+    "jump": [
+     "key:57:0"
+    ],
+    "web_swing": [
+     "key:42:0"
+    ],
+    "get_over_here": [
+     "key:33:0"
+    ],
+    "amazing_combo": [
+     "key:18:0",
+     "key:3:0"
+    ],
+    "ultimate": [
+     "key:16:0"
+    ],
+    "melee": [
+     "key:47:0",
+     "mouse:5"
+    ],
+    "spider_power": [
+     "mouse:1"
+    ],
+    "web_cluster": [
+     "mouse:2"
+    ],
+    "team_up": [
+     "key:46:0"
+    ],
+    "team_up_b": [
+     "key:45:0"
+    ],
+    "simple_swing": [
+     "key:58:0"
+    ],
+    "goh_targeting": [
+     "mouse:4",
+     "key:3:0"
+    ],
+    "slow_walk": [
+     "key:29:0"
+    ]
+   },
+   "aliases": {
+    "mouse:5": "melee"
+   },
+   "notes": {
+    "team_up": "C = Team-Up A, fires in the solo range with a visible effect (James; 051828/team-up-check.json). A real action with positives, trained but masked live (Y is off the pad whitelist).",
+    "melee": "V and Mouse 5 (settings look; lead decision): Mouse 5 presses count as melee (header binding_aliases).",
+    "goh_targeting": "Get Over Here Targeting: Mouse 4 (X1) and 2; a fit action (lead decision), structurally unsupported on the pad, counted. Only Mouse 4 is in the step header (2 is shared).",
+    "amazing_combo": "E and 2; 2 is also Get Over Here Targeting, so it is not aliased (unsupported).",
+    "simple_swing": "Caps Lock (VK 20, scan 58), off as a mode; not in the fit vocabulary (unsupported).",
+    "team_up_b": "X, Team-Up B; not in the fit vocabulary (unsupported).",
+    "slow_walk": "LCtrl, hold; not in the fit vocabulary (unsupported).",
+    "alt": "Alt is unbound in game (James); Alt presses are Alt-Tab and stay UI-key cuts."
+   },
+   "source": "native frames of James's settings look (calibration take 2026-09-23, keyboard pages, calibration.json), agreeing with his 2026-09-21 report and 2026-09-23 statements; HUD key labels on this session's frames (slot-mapping.json)",
+   "per_session_source": "James's statement for the 2026-09-27 night matches (docs/recording-log.md, Motor settings, committed 32007db): bindings unchanged (chat, 2026-09-27 ~09:20 CDT)",
+   "evidence": [
+    {
+     "path": "data/human/sessions/20260927T053838-153Z-150600-7/recording-log.f478461.md",
+     "sha256": "782eb4b996bfa45ef9ba83675988524798a881799ee2e562ccd1954c2f426549"
+    },
+    {
+     "path": "data/human/notes/2026-09-21-user-settings.json",
+     "sha256": "852c92254961b4fcb1278e8ebe752ea2f02ce6add678509d3276fd1a26264c6c"
+    },
+    {
+     "path": "data/human/sessions/20260927T053838-153Z-150600-7/slot-mapping.json",
+     "sha256": "72c92a371563839f906ffc915a43be7b5b838e0dd193c8542e7bd1c5fb06555c"
+    },
+    {
+     "path": "data/human/calibration/20260923T204707-487Z-45572-2/calibration.json",
+     "sha256": "baa49158c9911e0155a2d06883faec00150b297e0a5fe0e8dd46fc86d5310283"
+    }
+   ]
+  },
+  "game_patch": {
+   "value": "1.1.3892207/build25501035",
+   "source": "Steam appmanifest (buildid, LastUpdated), the game's version.json and the content log's update steps, read by the provenance step at intake; derived by agent.human_intake.recorded_build",
+   "evidence": [
+    {
+     "path": "data/human/sessions/20260927T053838-153Z-150600-7/provenance.json",
+     "sha256": "cb2267536bae5ba01997acc9c1837b58e2338d959bcfb685d8dee8d0b7bae936"
+    }
+   ],
+   "derivation": {
+    "value": "1.1.3892207/build25501035",
+    "version": "1.1.3892207",
+    "buildid": "25501035",
+    "installed_utc": "2026-09-24T11:15:31+00:00",
+    "version_json_written_utc": "2026-09-24T11:15:10.109511+00:00",
+    "recording": {
+     "started_utc": "2026-09-27T05:38:38.153000+00:00",
+     "ended_utc": "2026-09-27T05:47:25.979386+00:00"
+    },
+    "content_log_finished_update": {
+     "local": "2026-09-24 06:15:31",
+     "utc": "2026-09-24T11:15:31+00:00",
+     "build": "25501035"
+    },
+    "content_log_utc_offset_s": -18000
+   }
+  },
+  "cooldown_regime": {
+   "value": "normal",
+   "source": "5 fps HUD scan: depletion observed",
+   "evidence": [
+    {
+     "path": "data/human/sessions/20260927T053838-153Z-150600-7/regime-timeline.json",
+     "sha256": "c321828083cfef174dbb778cf2b29bbbb6479aeda6dbb1e87b88b61e6a94241b"
+    }
+   ]
+  },
+  "segments_evidence": {
+   "path": "data/human/sessions/20260927T053838-153Z-150600-7/segments-evidence.json",
+   "sha256": "1dc71c29fa683411003404705f743ba7a0e4aa097d57b9f7641c275298510410"
+  },
+  "owner_verdicts": {
+   "path": "data/human/sessions/20260927T053838-153Z-150600-7/owner-verdicts.json",
+   "sha256": "b5a578d217d15ab59f8f89fea36307500e2e402c72e28397514c0cab83e508b1"
+  },
+  "lead_decisions": null,
+  "independent_review": {
+   "path": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json",
+   "sha256": "79fbf0a04ab4cd328458b085a22850b140f7a44b3d6a8060e84f1007970fbad2",
+   "reviewer": "frame-review (Opus)"
+  }
+ },
+ "alignment": {
+  "kind": "assumption",
+  "statement": "OBS composition time is the labelling clock; capture, display and input-delivery latency are uncalibrated (no measured bound is asserted)",
+  "source": "lead decision for the whole-session campaign; as for the 2026-09-22/23 request packets"
+ },
+ "segments": [
+  {
+   "segment_id": "seg-000",
+   "start_ns": 555392967717000,
+   "end_ns": 555393217717000,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "focus_transition: concur, rejected by rule; owner frames inspected on native decodes (deaths and 'DEFEATED BY' spectate, loading blanks, chat open, objective splash).",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "focus_transition"
+  },
+  {
+   "segment_id": "seg-001",
+   "start_ns": 555393217717000,
+   "end_ns": 555393217973761,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "unsampled_edge: sliver with no native frame inside; rejected by rule.",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-002",
+   "start_ns": 555393217973761,
+   "end_ns": 555394651307038,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "accepted",
+   "suitability_reason": "1.03-2.47 s: own live control on the pre-round steps (own HUD 250/250, running); no mouse buttons but keys pressed. Short (1.433 s, below the counted threshold) but valid.",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "range_hud_present"
+  },
+  {
+   "segment_id": "seg-003",
+   "start_ns": 555394651307038,
+   "end_ns": 555394659320200,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "unsampled_edge: sliver with no native frame inside; rejected by rule.",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-004",
+   "start_ns": 555394659320200,
+   "end_ns": 555402553283500,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "ui_key: concur, rejected by rule; owner frames inspected on native decodes (deaths and 'DEFEATED BY' spectate, loading blanks, chat open, objective splash).",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "ui_key"
+  },
+  {
+   "segment_id": "seg-005",
+   "start_ns": 555402553283500,
+   "end_ns": 555402559640054,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "unsampled_edge: sliver with no native frame inside; rejected by rule.",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-006",
+   "start_ns": 555402559640054,
+   "end_ns": 555414634639572,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "accepted",
+   "suitability_reason": "10.37-22.45 s: own control in the setup/drop, 'AWAITING MISSION AREA UNLOCK' then live swinging; own HUD throughout.",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "range_hud_present"
+  },
+  {
+   "segment_id": "seg-007",
+   "start_ns": 555414634639572,
+   "end_ns": 555414638341400,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "unsampled_edge: sliver with no native frame inside; rejected by rule.",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-008",
+   "start_ns": 555414638341400,
+   "end_ns": 555417462275700,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "ui_key: concur, rejected by rule; owner frames inspected on native decodes (deaths and 'DEFEATED BY' spectate, loading blanks, chat open, objective splash).",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "ui_key"
+  },
+  {
+   "segment_id": "seg-009",
+   "start_ns": 555417462275700,
+   "end_ns": 555417467972791,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "unsampled_edge: sliver with no native frame inside; rejected by rule.",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-010",
+   "start_ns": 555417467972791,
+   "end_ns": 555432559638855,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "accepted",
+   "suitability_reason": "25.28-40.37 s: own live play; the 30 own_hud=False frames are reader misses on own play at low hp under the damage vignette (hp 25-33 at 38-40 s, still controlling).",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "range_hud_present"
+  },
+  {
+   "segment_id": "seg-011",
+   "start_ns": 555432559638855,
+   "end_ns": 555433705144800,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "no_range_hud: concur, rejected by rule; owner frames inspected on native decodes (deaths and 'DEFEATED BY' spectate, loading blanks, chat open, objective splash).",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "no_range_hud"
+  },
+  {
+   "segment_id": "seg-012",
+   "start_ns": 555433705144800,
+   "end_ns": 555435830190700,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "ui_key: concur, rejected by rule; owner frames inspected on native decodes (deaths and 'DEFEATED BY' spectate, loading blanks, chat open, objective splash).",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "ui_key"
+  },
+  {
+   "segment_id": "seg-013",
+   "start_ns": 555435830190700,
+   "end_ns": 555435884638721,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "unsampled_edge: concur, rejected by rule; owner frames inspected on native decodes (deaths and 'DEFEATED BY' spectate, loading blanks, chat open, objective splash).",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-014",
+   "start_ns": 555435884638721,
+   "end_ns": 555459092971127,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "accepted",
+   "suitability_reason": "43.70-66.91 s: own live play (objective banner 'Capture the Cradle', fights); reader misses in combat only; ends at hp 54 before the death.",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "range_hud_present"
+  },
+  {
+   "segment_id": "seg-015",
+   "start_ns": 555459092971127,
+   "end_ns": 555459756274200,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "dead: concur, rejected by rule; owner frames inspected on native decodes (deaths and 'DEFEATED BY' spectate, loading blanks, chat open, objective splash).",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "dead"
+  },
+  {
+   "segment_id": "seg-016",
+   "start_ns": 555459756274200,
+   "end_ns": 555463036310300,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "ui_key: concur, rejected by rule; owner frames inspected on native decodes (deaths and 'DEFEATED BY' spectate, loading blanks, chat open, objective splash).",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "ui_key"
+  },
+  {
+   "segment_id": "seg-017",
+   "start_ns": 555463036310300,
+   "end_ns": 555463118428000,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "dead: concur, rejected by rule; owner frames inspected on native decodes (deaths and 'DEFEATED BY' spectate, loading blanks, chat open, objective splash).",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "dead"
+  },
+  {
+   "segment_id": "seg-018",
+   "start_ns": 555463118428000,
+   "end_ns": 555463176775600,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "ui_key: concur, rejected by rule; owner frames inspected on native decodes (deaths and 'DEFEATED BY' spectate, loading blanks, chat open, objective splash).",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "ui_key"
+  },
+  {
+   "segment_id": "seg-019",
+   "start_ns": 555467521199600,
+   "end_ns": 555470492970710,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "dead: concur, rejected by rule; owner frames inspected on native decodes (deaths and 'DEFEATED BY' spectate, loading blanks, chat open, objective splash).",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "dead"
+  },
+  {
+   "segment_id": "seg-020",
+   "start_ns": 555470492970710,
+   "end_ns": 555470501304003,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "unsampled_edge: sliver with no native frame inside; rejected by rule.",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-021",
+   "start_ns": 555470501304003,
+   "end_ns": 555536692968023,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "accepted",
+   "suitability_reason": "78.32-144.51 s: own live play from respawn through fights to hp 7 before the death; the 103 own_hud=False frames are reader misses on own play (combat effects, bonus health). Two unbound '4' presses (94.83, 130.44 s): frames after show no menu, overlay or camera change, only continued own play (a small pickup/heal icon); not a reject.",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "range_hud_present"
+  },
+  {
+   "segment_id": "seg-022",
+   "start_ns": 555536692968023,
+   "end_ns": 555537431392800,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "dead: concur, rejected by rule; owner frames inspected on native decodes (deaths and 'DEFEATED BY' spectate, loading blanks, chat open, objective splash).",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "dead"
+  },
+  {
+   "segment_id": "seg-023",
+   "start_ns": 555537431392800,
+   "end_ns": 555549118349000,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "ui_key: concur, rejected by rule; owner frames inspected on native decodes (deaths and 'DEFEATED BY' spectate, loading blanks, chat open, objective splash).",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "ui_key"
+  },
+  {
+   "segment_id": "seg-024",
+   "start_ns": 555549118349000,
+   "end_ns": 555549126300858,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "unsampled_edge: sliver with no native frame inside; rejected by rule.",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-025",
+   "start_ns": 555549126300858,
+   "end_ns": 555563292966959,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "accepted",
+   "suitability_reason": "156.94-171.11 s: own live play from respawn to hp 22 before the death.",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "range_hud_present"
+  },
+  {
+   "segment_id": "seg-026",
+   "start_ns": 555563292966959,
+   "end_ns": 555563974413200,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "dead: concur, rejected by rule; owner frames inspected on native decodes (deaths and 'DEFEATED BY' spectate, loading blanks, chat open, objective splash).",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "dead"
+  },
+  {
+   "segment_id": "seg-027",
+   "start_ns": 555563974413200,
+   "end_ns": 555567403272000,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "ui_key: concur, rejected by rule; owner frames inspected on native decodes (deaths and 'DEFEATED BY' spectate, loading blanks, chat open, objective splash).",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "ui_key"
+  },
+  {
+   "segment_id": "seg-028",
+   "start_ns": 555567403272000,
+   "end_ns": 555572320285100,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "dead: concur, rejected by rule; owner frames inspected on native decodes (deaths and 'DEFEATED BY' spectate, loading blanks, chat open, objective splash).",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "dead"
+  },
+  {
+   "segment_id": "seg-029",
+   "start_ns": 555572320285100,
+   "end_ns": 555574558261100,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "ui_key: concur, rejected by rule; owner frames inspected on native decodes (deaths and 'DEFEATED BY' spectate, loading blanks, chat open, objective splash).",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "ui_key"
+  },
+  {
+   "segment_id": "seg-030",
+   "start_ns": 555574558261100,
+   "end_ns": 555575092966526,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "dead: concur, rejected by rule; owner frames inspected on native decodes (deaths and 'DEFEATED BY' spectate, loading blanks, chat open, objective splash).",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "dead"
+  },
+  {
+   "segment_id": "seg-031",
+   "start_ns": 555575092966526,
+   "end_ns": 555577101299739,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "no_range_hud: concur, rejected by rule; owner frames inspected on native decodes (deaths and 'DEFEATED BY' spectate, loading blanks, chat open, objective splash).",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "no_range_hud"
+  },
+  {
+   "segment_id": "seg-032",
+   "start_ns": 555577101299739,
+   "end_ns": 555624126297859,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "accepted",
+   "suitability_reason": "184.92-231.94 s: own live play (bonus health up to 529/541 during a team-up, then fights).",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "range_hud_present"
+  },
+  {
+   "segment_id": "seg-033",
+   "start_ns": 555624126297859,
+   "end_ns": 555624127329300,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "unsampled_edge: sliver with no native frame inside; rejected by rule.",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-034",
+   "start_ns": 555624127329300,
+   "end_ns": 555627624326900,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "ui_key: concur, rejected by rule; owner frames inspected on native decodes (deaths and 'DEFEATED BY' spectate, loading blanks, chat open, objective splash).",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "ui_key"
+  },
+  {
+   "segment_id": "seg-035",
+   "start_ns": 555627624326900,
+   "end_ns": 555629694314100,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "no_range_hud: concur, rejected by rule; owner frames inspected on native decodes (deaths and 'DEFEATED BY' spectate, loading blanks, chat open, objective splash).",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "no_range_hud"
+  },
+  {
+   "segment_id": "seg-036",
+   "start_ns": 555629694314100,
+   "end_ns": 555633581249500,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "ui_key: concur, rejected by rule; owner frames inspected on native decodes (deaths and 'DEFEATED BY' spectate, loading blanks, chat open, objective splash).",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "ui_key"
+  },
+  {
+   "segment_id": "seg-037",
+   "start_ns": 555633581249500,
+   "end_ns": 555639943391300,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "no_range_hud: concur, rejected by rule; owner frames inspected on native decodes (deaths and 'DEFEATED BY' spectate, loading blanks, chat open, objective splash).",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "no_range_hud"
+  },
+  {
+   "segment_id": "seg-038",
+   "start_ns": 555639943391300,
+   "end_ns": 555639990562200,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "ui_key: concur, rejected by rule; owner frames inspected on native decodes (deaths and 'DEFEATED BY' spectate, loading blanks, chat open, objective splash).",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "ui_key"
+  },
+  {
+   "segment_id": "seg-039",
+   "start_ns": 555640974379100,
+   "end_ns": 555641224379100,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "focus_transition: concur, rejected by rule; owner frames inspected on native decodes (deaths and 'DEFEATED BY' spectate, loading blanks, chat open, objective splash).",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "focus_transition"
+  },
+  {
+   "segment_id": "seg-040",
+   "start_ns": 555641224379100,
+   "end_ns": 555642701297115,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "no_range_hud: concur, rejected by rule; owner frames inspected on native decodes (deaths and 'DEFEATED BY' spectate, loading blanks, chat open, objective splash).",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "no_range_hud"
+  },
+  {
+   "segment_id": "seg-041",
+   "start_ns": 555642701297115,
+   "end_ns": 555731692960223,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "accepted",
+   "suitability_reason": "250.52-339.51 s: own live play incl. a teleport at 251.07 s (G). Teleport portals ('G Teleport' prompt): the player presses G while running into the portal; frames 0.1-0.75 s after show a ~0.2-0.5 s white/radial transition, then the camera stays behind his own body at the exit with his own HUD and live control (running, attacking) throughout; no cinematic, menu or camera takeover.",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "range_hud_present"
+  },
+  {
+   "segment_id": "seg-042",
+   "start_ns": 555731692960223,
+   "end_ns": 555731693107000,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "unsampled_edge: sliver with no native frame inside; rejected by rule.",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-043",
+   "start_ns": 555731693107000,
+   "end_ns": 555733851137100,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "ui_key: concur, rejected by rule; owner frames inspected on native decodes (deaths and 'DEFEATED BY' spectate, loading blanks, chat open, objective splash).",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "ui_key"
+  },
+  {
+   "segment_id": "seg-044",
+   "start_ns": 555733851137100,
+   "end_ns": 555734276293452,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "hud_unknown: concur, rejected by rule; owner frames inspected on native decodes (deaths and 'DEFEATED BY' spectate, loading blanks, chat open, objective splash).",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "hud_unknown"
+  },
+  {
+   "segment_id": "seg-045",
+   "start_ns": 555734276293452,
+   "end_ns": 555740892959855,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "accepted",
+   "suitability_reason": "342.09-348.71 s: own live play to hp 10.",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "range_hud_present"
+  },
+  {
+   "segment_id": "seg-046",
+   "start_ns": 555740892959855,
+   "end_ns": 555741479367800,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "dead: concur, rejected by rule; owner frames inspected on native decodes (deaths and 'DEFEATED BY' spectate, loading blanks, chat open, objective splash).",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "dead"
+  },
+  {
+   "segment_id": "seg-047",
+   "start_ns": 555741479367800,
+   "end_ns": 555746317270300,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "ui_key: concur, rejected by rule; owner frames inspected on native decodes (deaths and 'DEFEATED BY' spectate, loading blanks, chat open, objective splash).",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "ui_key"
+  },
+  {
+   "segment_id": "seg-048",
+   "start_ns": 555746317270300,
+   "end_ns": 555752692959422,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "dead: concur, rejected by rule; owner frames inspected on native decodes (deaths and 'DEFEATED BY' spectate, loading blanks, chat open, objective splash).",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "dead"
+  },
+  {
+   "segment_id": "seg-049",
+   "start_ns": 555752692959422,
+   "end_ns": 555752701292715,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "unsampled_edge: sliver with no native frame inside; rejected by rule.",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-050",
+   "start_ns": 555752701292715,
+   "end_ns": 555813817956938,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "accepted",
+   "suitability_reason": "360.52-421.63 s: own live play incl. a teleport at 415.26 s (G); Teleport portals ('G Teleport' prompt): the player presses G while running into the portal; frames 0.1-0.75 s after show a ~0.2-0.5 s white/radial transition, then the camera stays behind his own body at the exit with his own HUD and live control (running, attacking) throughout; no cinematic, menu or camera takeover.",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "range_hud_present"
+  },
+  {
+   "segment_id": "seg-051",
+   "start_ns": 555813817956938,
+   "end_ns": 555813826206900,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "unsampled_edge: sliver with no native frame inside; rejected by rule.",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-052",
+   "start_ns": 555813826206900,
+   "end_ns": 555816063136400,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "ui_key: concur, rejected by rule; owner frames inspected on native decodes (deaths and 'DEFEATED BY' spectate, loading blanks, chat open, objective splash).",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "ui_key"
+  },
+  {
+   "segment_id": "seg-053",
+   "start_ns": 555816063136400,
+   "end_ns": 555816067956847,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "unsampled_edge: sliver with no native frame inside; rejected by rule.",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "unsampled_edge"
+  },
+  {
+   "segment_id": "seg-054",
+   "start_ns": 555816067956847,
+   "end_ns": 555898692953543,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "accepted",
+   "suitability_reason": "423.88-506.51 s: own live play incl. four G presses at 495.60, 502.65, 503.31, 504.14 s (teleport portals; the 502.65 and 503.31 presses show no transition, just running at the portal); Teleport portals ('G Teleport' prompt): the player presses G while running into the portal; frames 0.1-0.75 s after show a ~0.2-0.5 s white/radial transition, then the camera stays behind his own body at the exit with his own HUD and live control (running, attacking) throughout; no cinematic, menu or camera takeover. Ends at hp 28 in a fight before the next cut.",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "range_hud_present"
+  },
+  {
+   "segment_id": "seg-055",
+   "start_ns": 555898692953543,
+   "end_ns": 555904531276500,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "dead: concur, rejected by rule; owner frames inspected on native decodes (deaths and 'DEFEATED BY' spectate, loading blanks, chat open, objective splash).",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "dead"
+  },
+  {
+   "segment_id": "seg-056",
+   "start_ns": 555904531276500,
+   "end_ns": 555906825336500,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "ui_key: concur, rejected by rule; owner frames inspected on native decodes (deaths and 'DEFEATED BY' spectate, loading blanks, chat open, objective splash).",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "ui_key"
+  },
+  {
+   "segment_id": "seg-057",
+   "start_ns": 555906825336500,
+   "end_ns": 555909925280300,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "dead: concur, rejected by rule; owner frames inspected on native decodes (deaths and 'DEFEATED BY' spectate, loading blanks, chat open, objective splash).",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "dead"
+  },
+  {
+   "segment_id": "seg-058",
+   "start_ns": 555909925280300,
+   "end_ns": 555913273407100,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "ui_key: concur, rejected by rule; owner frames inspected on native decodes (deaths and 'DEFEATED BY' spectate, loading blanks, chat open, objective splash).",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "ui_key"
+  },
+  {
+   "segment_id": "seg-059",
+   "start_ns": 555914859410000,
+   "end_ns": 555917894236100,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "dead: concur, rejected by rule; owner frames inspected on native decodes (deaths and 'DEFEATED BY' spectate, loading blanks, chat open, objective splash).",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "dead"
+  },
+  {
+   "segment_id": "seg-060",
+   "start_ns": 555917894236100,
+   "end_ns": 555917938607400,
+   "reviewed_gameplay": true,
+   "imitation_suitability": "rejected",
+   "suitability_reason": "ui_key: concur, rejected by rule; owner frames inspected on native decodes (deaths and 'DEFEATED BY' spectate, loading blanks, chat open, objective splash).",
+   "evidence": "data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json (79fbf0a04ab4cd32)",
+   "machine_reason": "ui_key"
+  }
+ ]
+}

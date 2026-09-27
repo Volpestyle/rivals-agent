@@ -1,0 +1,8 @@
+settings.json b81b96b3da1ccfbed4dedd021afd8268b16c0f2d9669053a0922b02a1b45e2d4
+review.json b5c4108161d2b34a7923296434ada17ce9440b892861fe00d8b3d132bcb618d8
+import {'capture_latency_calibrated': False, 'decoded_frames': 63282, 'max_residual_den': 3000, 'max_residual_num': 1, 'muxer_offset_den': 1000, 'muxer_offset_num': 21, 'pts_alignment_verified': True, 'unwritten_tail_packets': 1}
+steps 15508 accepted 12549 gap-free accepted 12549
+sampling.json 8c7dfa218c2c9a13c59d5d2e7546ae510d3816ad19d65c9ef805e922d6a62c66
+minutes.json e4fe770b1800054f884a6a190c6cb717b062de1ff159b526d1480fc1db4ee60b
+artifact-hashes d9ad09f80f88b0e34e7cbc07026c2836803b63fbf51383da96b26a2200f1a107 files 21 external 9
+minutes {'accepted_s': 418.541649936, 'admitted_minutes': 6.9756941656, 'trainable_minutes': 6.97166659695} {'runs': 11, 'counted_runs': 10, 'counted_minutes': 6.95180527765, 'accepted_focused_minutes': 6.9756941656, 'min_run_ns': 1600000000}

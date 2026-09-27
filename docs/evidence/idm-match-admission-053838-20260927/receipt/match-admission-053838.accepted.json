@@ -1,0 +1,32 @@
+{
+ "format": "rivals-idm-match-admission-v1",
+ "scope": "EXPLORATORY",
+ "decision": "accepted",
+ "reviewer": "fit-review (Codex, independent admission cut review): docs/evidence/admission-reviews-20260927/review-ping-wheel-b35afbf.md, verdict LAND at sha256 bb972508abb5687bfa6569bdc66eb31da58f6f1412f5d44aa508d7985bccb254; frame-review (Opus, independent native-frame verdicts): data/human/sessions/20260927T053838-153Z-150600-7/independent-review.verdicts.json sha256 79fbf0a04ab4cd328458b085a22850b140f7a44b3d6a8060e84f1007970fbad2, matches_owner on all 61 segments",
+ "producer": "admission-owner (data/human/sessions/match_admission.py)",
+ "snapshot": "code-snapshot-f8fd92c-6046514b",
+ "snapshot_manifest_sha256": "f37a5a717d06517d160403146eb69818060874582ce79d5fd6aa196fcea82e4e",
+ "registry": {
+  "path": "data/human/session-splits.corpus.json",
+  "sha256": "1c9e2c671b14e9d1ea8bcefd4703668a039ecac946d2f5ece768746e67118a13"
+ },
+ "sessions": {
+  "20260927T053838-153Z-150600-7": {
+   "source_kind": "live",
+   "session_group": "20260927T053838-153Z-150600-7",
+   "media_sha256": "de6aea85939a986b9c090ac72139b66c2ab6742259d3c8aff427d31a58c4ff81",
+   "steps_sha256": "7efd043edcbdd7036b6ee28da32584cd3e4fba32683405c0f0c4259144ee213f",
+   "imported_demo_sha256": "75aa74285213cc11c7d17ec5c82e045156430378ea260e863e8841699e00d71c",
+   "identity_sha256": "5100f677648de77413e6c419308f6a37daa5e5066532b78b6de078c82a23a436",
+   "motor_statement_sha256": "e9150b25e414ae606894ede854657386ddba654ee1bd3dd33dbd772540885024"
+  }
+ },
+ "accepted": {
+  "by": "the lead (herdr-lead), 2026-09-27, on the two independent reviews above",
+  "written_by": "admission-codex, on the lead's instruction; the entry is byte-for-byte the pending one",
+  "pending": {
+   "path": "receipt/match-admission-053838.pending.json",
+   "sha256": "83fddfbc9801411c61d55ff026429023e9db8911ab7b7796f149500e5376d0f9"
+  }
+ }
+}
