@@ -1,0 +1,1420 @@
+{
+ "session": "20260927T060021-195Z-150600-10",
+ "segments_evidence_sha256": "a9d97ffd85d06f6394024a74654179468a0af6cda231c19887aa26625b154673",
+ "reviewer": "admission-codex",
+ "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+ "role": "owner visual inspection; provisional until independent frame verdicts and admission review",
+ "method": "Inspected all 175 supplied JPEGs in 22 contact sheets. Verified every JPEG and evidence-input hash. Rejected seg-021 self-replay and seg-057 transition despite unresolved machine proposals. Input replay found no UI makes, ping overlap, unknown key/button or focus events in accepts. One scroll event requires native review. No new decode during owner inspection.",
+ "limits": [
+  "Sparse JPEGs cannot prove every intervening frame. Native review required around scroll event, own-HUD reader misses, self-replay boundaries and final round transition."
+ ],
+ "input_audit": {
+  "path": "data/admission-codex/review-10/input-audit.json",
+  "sha256": "75201c0cc8c4aaa44111045e9061bf7bb63ee66acfc37a91cfe8e2170a1a491a"
+ },
+ "verdicts": {
+  "seg-000": {
+   "suitability": "rejected",
+   "reason": "focus_transition: retained intake exclusion. All supplied samples visually inspected; conservative cuts remain even when a boundary sample shows own play.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 23,
+     "composition_ns": 556695509588336,
+     "decoded_bgr_sha256": "217c0ea96565f9c001b81b3a31718ee98b9c621cf6c22ff4990843e2a75e3f15"
+    },
+    {
+     "frame_index": 37,
+     "composition_ns": 556695626254998,
+     "decoded_bgr_sha256": "35a0a30639be09d41830bac6e5da1b4c952b2a98dcd862d51c0d7a98e2dd5b43"
+    },
+    {
+     "frame_index": 52,
+     "composition_ns": 556695751254993,
+     "decoded_bgr_sha256": "999e7e06a44b2f70e8ac92f4c5fef4d1f38f1a79167635b828ad786d09e15f1c"
+    }
+   ]
+  },
+  "seg-001": {
+   "suitability": "rejected",
+   "reason": "no_range_hud: retained intake exclusion. All supplied samples visually inspected; conservative cuts remain even when a boundary sample shows own play.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 53,
+     "composition_ns": 556695759588326,
+     "decoded_bgr_sha256": "af942115ae3fc52c06abd649c6381b5696bddc7c29e54403c3c72a82838cd6cb"
+    },
+    {
+     "frame_index": 974,
+     "composition_ns": 556703434588019,
+     "decoded_bgr_sha256": "260391ac76541b006984a33556c8577c9584907e52e06788d39016d9584a3969"
+    },
+    {
+     "frame_index": 1896,
+     "composition_ns": 556711117921045,
+     "decoded_bgr_sha256": "a4f490a197f32c617cac4798210be9f29c63b3f9643533ab682e2e7ce48a5ef5"
+    }
+   ]
+  },
+  "seg-002": {
+   "suitability": "accepted",
+   "reason": "Own setup-room traversal, wall crawling and subsequent combat in all eight samples. Objective banners overlay own play; final frame is live at 87 HP before the ping cut.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 1897,
+     "composition_ns": 556711126254378,
+     "decoded_bgr_sha256": "0cebab68daade2b574103665d58f5e70caab5bb3dff78cd19c8a56db897fb022"
+    },
+    {
+     "frame_index": 2982,
+     "composition_ns": 556720167920683,
+     "decoded_bgr_sha256": "fd4588d2c39d9b04510e1e72338c344df564177e58dd68f7e8e0611ce1841bb4"
+    },
+    {
+     "frame_index": 4068,
+     "composition_ns": 556729217920321,
+     "decoded_bgr_sha256": "d0b290d37fe9d1821c7519fabf82ab41c40487b2d058efec518724a5432f3819"
+    },
+    {
+     "frame_index": 5154,
+     "composition_ns": 556738267919959,
+     "decoded_bgr_sha256": "879044df66f167e5411bf4191f3456a8b42905f35d8b00bd3cc42748ff3872a4"
+    },
+    {
+     "frame_index": 6239,
+     "composition_ns": 556747309586264,
+     "decoded_bgr_sha256": "48e77ae5277c9803690d22f0e8061b8e593f085023d98b347f16d354187c1814"
+    },
+    {
+     "frame_index": 7325,
+     "composition_ns": 556756359585902,
+     "decoded_bgr_sha256": "f86656d58311b1abe98a20dd0d8dba8b5f8a49a37cbab37d3d419d3fbd9badac"
+    },
+    {
+     "frame_index": 8411,
+     "composition_ns": 556765409585540,
+     "decoded_bgr_sha256": "218f7655527697b8114927f985d31b49916d3652e53ee87b24f05f08af0ef644"
+    },
+    {
+     "frame_index": 9497,
+     "composition_ns": 556774459585178,
+     "decoded_bgr_sha256": "77a36bd2188e3e5d794601ad5d4dcac3dcb35eb3f58c4e82b7a77cbce78b1522"
+    }
+   ]
+  },
+  "seg-003": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: retained intake exclusion. All supplied samples visually inspected; conservative cuts remain even when a boundary sample shows own play.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 9498,
+     "composition_ns": 556774467918511,
+     "decoded_bgr_sha256": "d3544758f4f40109ac34afbe1114e9c64246b727fb10a3417ac3086cdda9715d"
+    },
+    {
+     "frame_index": 9499,
+     "composition_ns": 556774476251844,
+     "decoded_bgr_sha256": "b4eb1fc97fb3dfb95c9dc13eee0b9d5f3333deca3272fbfa48212e614f63d925"
+    },
+    {
+     "frame_index": 9501,
+     "composition_ns": 556774492918510,
+     "decoded_bgr_sha256": "39ab1fa293ab7e4a856507133ac2746a42f7e2e0c92e5e0ab0572e18f0570676"
+    }
+   ]
+  },
+  "seg-004": {
+   "suitability": "rejected",
+   "reason": "ui_key: retained intake exclusion. All supplied samples visually inspected; conservative cuts remain even when a boundary sample shows own play.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 9502,
+     "composition_ns": 556774501251843,
+     "decoded_bgr_sha256": "29385d1f3c3c7c092b23b91abb8ec5a77ce7a597cff4e546fb4489cec35a29b3"
+    },
+    {
+     "frame_index": 9632,
+     "composition_ns": 556775584585133,
+     "decoded_bgr_sha256": "f118f06c331bd623b6a9e393e91ee3c0883cb0eda14464b15f98f7655d45d69a"
+    },
+    {
+     "frame_index": 9762,
+     "composition_ns": 556776667918423,
+     "decoded_bgr_sha256": "aff5afd9dea961b8d8c2fa3a74281f08e9c56cda7b939ad2c8f4866c5defd384"
+    }
+   ]
+  },
+  "seg-005": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: retained intake exclusion. Zero-frame sliver; no visual claim.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": []
+  },
+  "seg-006": {
+   "suitability": "accepted",
+   "reason": "Own healing and combat in all three samples after ping settle, ending alive at 33 HP before the death cut.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 9763,
+     "composition_ns": 556776676251756,
+     "decoded_bgr_sha256": "177b765e0350031934a40b9a402086c51bf4f3834417ac02140bb346e86a50bc"
+    },
+    {
+     "frame_index": 9921,
+     "composition_ns": 556777992918370,
+     "decoded_bgr_sha256": "e162e5d3b766a719af27b14798e63d6d9cec6792653a26377c545452afb076d5"
+    },
+    {
+     "frame_index": 10080,
+     "composition_ns": 556779317918317,
+     "decoded_bgr_sha256": "023d8e1ec149ad68ce37b93106be512843c2c1f272a481593929ce55db23d148"
+    }
+   ]
+  },
+  "seg-007": {
+   "suitability": "rejected",
+   "reason": "dead: retained intake exclusion. All supplied samples visually inspected; conservative cuts remain even when a boundary sample shows own play.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 10081,
+     "composition_ns": 556779326251650,
+     "decoded_bgr_sha256": "b055e90d0610513758866ef5542f414d9e093ab517c99f2e3159aa80ca116dcd"
+    },
+    {
+     "frame_index": 10126,
+     "composition_ns": 556779701251635,
+     "decoded_bgr_sha256": "ae2918c94284487ce40a5db7a6c3cfaa32831c81a6559800c3e1ef56b5022b2c"
+    },
+    {
+     "frame_index": 10172,
+     "composition_ns": 556780084584953,
+     "decoded_bgr_sha256": "dd307aaaab2852efa103baf2a7e4a1690a358de5e472844cd4bad9fc75ddcd51"
+    }
+   ]
+  },
+  "seg-008": {
+   "suitability": "rejected",
+   "reason": "ui_key: retained intake exclusion. All supplied samples visually inspected; conservative cuts remain even when a boundary sample shows own play.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 10173,
+     "composition_ns": 556780092918286,
+     "decoded_bgr_sha256": "a55f5edbbdd2e2f68d6fed619009051f019a665bdf39a00d1e4e9264d27e8a2e"
+    },
+    {
+     "frame_index": 10511,
+     "composition_ns": 556782909584840,
+     "decoded_bgr_sha256": "871cbdc9207cc155a1305db2f4c8a69ba919de1b51e53d3a8539a018b899c025"
+    },
+    {
+     "frame_index": 10849,
+     "composition_ns": 556785726251394,
+     "decoded_bgr_sha256": "67d52388b8b5b42c0e6a4fdc8a8589a66074bf88f0ee9900a0317831c74850ae"
+    }
+   ]
+  },
+  "seg-009": {
+   "suitability": "rejected",
+   "reason": "dead: retained intake exclusion. All supplied samples visually inspected; conservative cuts remain even when a boundary sample shows own play.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 10850,
+     "composition_ns": 556785734584727,
+     "decoded_bgr_sha256": "7c2eaade72554f16c517c28d821bb1b46b313854d0bb099843fee2297d639532"
+    },
+    {
+     "frame_index": 10879,
+     "composition_ns": 556785976251384,
+     "decoded_bgr_sha256": "1aa5558f355bdf6fed4465a805e8361012c590229028a227bed7de0b36174840"
+    },
+    {
+     "frame_index": 10909,
+     "composition_ns": 556786226251374,
+     "decoded_bgr_sha256": "8e927487a04e00605855155f8112531f5c43dc3df8de13e7950e3945f27ba5fd"
+    }
+   ]
+  },
+  "seg-010": {
+   "suitability": "rejected",
+   "reason": "ui_key: retained intake exclusion. All supplied samples visually inspected; conservative cuts remain even when a boundary sample shows own play.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 10910,
+     "composition_ns": 556786234584707,
+     "decoded_bgr_sha256": "2bcf3f8c41e8feedf95ac66f9853e5bddec1c8919018ee64c03798ce5253cc06"
+    },
+    {
+     "frame_index": 11052,
+     "composition_ns": 556787417917993,
+     "decoded_bgr_sha256": "3b1be005cd8e2e693708b276c9c11661ad1549587af87d3ace2d34a876e839a1"
+    },
+    {
+     "frame_index": 11195,
+     "composition_ns": 556788609584612,
+     "decoded_bgr_sha256": "a2dfcbdf69a48256e92361b7c159273821acee80211f1c7407a13b1a29b68024"
+    }
+   ]
+  },
+  "seg-011": {
+   "suitability": "rejected",
+   "reason": "dead: retained intake exclusion. All supplied samples visually inspected; conservative cuts remain even when a boundary sample shows own play.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 11196,
+     "composition_ns": 556788617917945,
+     "decoded_bgr_sha256": "861afda95c4ecd062171870949f8d147e59a1f7e3931353fe246b7e1ff05c81f"
+    },
+    {
+     "frame_index": 11346,
+     "composition_ns": 556789867917895,
+     "decoded_bgr_sha256": "c88461f2a274ac3448aa92d6baeadb227d49092b584d0ef39f4e3c36f9e3758c"
+    },
+    {
+     "frame_index": 11496,
+     "composition_ns": 556791117917845,
+     "decoded_bgr_sha256": "a3490186c7d989a9bf26704701511ff8235d233c644e003e1b3009dd188931a7"
+    }
+   ]
+  },
+  "seg-012": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: retained intake exclusion. Zero-frame sliver; no visual claim.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": []
+  },
+  "seg-013": {
+   "suitability": "accepted",
+   "reason": "Own respawn traversal and combat in seven samples, including a close wall camera; live HUD persists. Frame 15040 is an apparent reader miss on own play. No replay panel in these samples.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 11497,
+     "composition_ns": 556791126251178,
+     "decoded_bgr_sha256": "49ace36e495c0f7595cb580f554c5e7c167546ce36723e30ba8666bd1bad9f03"
+    },
+    {
+     "frame_index": 12678,
+     "composition_ns": 556800967917451,
+     "decoded_bgr_sha256": "d3126d6eab17411148a8353edacf03d9fb460eef78ec04262ab71012b2875ddc"
+    },
+    {
+     "frame_index": 13859,
+     "composition_ns": 556810809583724,
+     "decoded_bgr_sha256": "5c261d8b28bd4bffa7ea906184be4c5610a6de5a694a49a5f7f8da37a449e810"
+    },
+    {
+     "frame_index": 15040,
+     "composition_ns": 556820651249997,
+     "decoded_bgr_sha256": "37f4d1eea360fe30e17147754677dfc8b53fa6c360700f04239ca3144f01238f"
+    },
+    {
+     "frame_index": 16221,
+     "composition_ns": 556830492916270,
+     "decoded_bgr_sha256": "54919e96404b09cc7fa9a92771baf0862c50c41a13af10f16ab6ca6e88f5bdce"
+    },
+    {
+     "frame_index": 17402,
+     "composition_ns": 556840334582543,
+     "decoded_bgr_sha256": "64806ef67a3f8663db1a96124dba8c19910e6b27c019200ff02c4d9a3d67ce1f"
+    },
+    {
+     "frame_index": 18583,
+     "composition_ns": 556850176248816,
+     "decoded_bgr_sha256": "046232a421ba97748edce2863ec8716dc71b3e67a33e34feebff356bb4231470"
+    }
+   ]
+  },
+  "seg-014": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: retained intake exclusion. Zero-frame sliver; no visual claim.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": []
+  },
+  "seg-015": {
+   "suitability": "rejected",
+   "reason": "ui_key: retained intake exclusion. All supplied samples visually inspected; conservative cuts remain even when a boundary sample shows own play.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 18584,
+     "composition_ns": 556850184582149,
+     "decoded_bgr_sha256": "24df0914cb5eb11506bc0aa8556db079efc5f8acc7fc37d41b6e4cca3297b6f4"
+    },
+    {
+     "frame_index": 18796,
+     "composition_ns": 556851951248745,
+     "decoded_bgr_sha256": "577c341032853b0e11ccf06e2c4664a1b1f1ff61df81c2ad0772d7b32d6d2c90"
+    },
+    {
+     "frame_index": 19008,
+     "composition_ns": 556853717915341,
+     "decoded_bgr_sha256": "feb1a8b1dd0b1b21702e823c64a5d40680f6fee068c603e6cb9a571d50884711"
+    }
+   ]
+  },
+  "seg-016": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: retained intake exclusion. Zero-frame sliver; no visual claim.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": []
+  },
+  "seg-017": {
+   "suitability": "accepted",
+   "reason": "Own traversal ending in an apparent fall while still alive at 217 HP. This precedes the death and self-replay; supplied samples contain no Past Lives/Defeated By panel. Independent native edge check required.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 19009,
+     "composition_ns": 556853726248674,
+     "decoded_bgr_sha256": "9f24cc09290719251d5b4e56bf4f68f2099f085ea63de0f1ae3d1cca2885dbee"
+    },
+    {
+     "frame_index": 19728,
+     "composition_ns": 556859717915101,
+     "decoded_bgr_sha256": "300905a7394d7bdf17663fd2913d62d6aa8077a2fcd7ecb1917581043e148f6a"
+    },
+    {
+     "frame_index": 20448,
+     "composition_ns": 556865717914861,
+     "decoded_bgr_sha256": "5bed8653d976e17ad416f831965aa51fb3d2e2ed50534c64fde985f94d0b3140"
+    }
+   ]
+  },
+  "seg-018": {
+   "suitability": "rejected",
+   "reason": "dead: retained intake exclusion. All supplied samples visually inspected; conservative cuts remain even when a boundary sample shows own play.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 20449,
+     "composition_ns": 556865726248194,
+     "decoded_bgr_sha256": "1356a186bc382b755b3106c425f347ca70ec44a37bc1ef9c600ddf42d62b52dd"
+    },
+    {
+     "frame_index": 20489,
+     "composition_ns": 556866059581514,
+     "decoded_bgr_sha256": "e20bdb4924f07ab20b2a07bf8a2d00fd03e78f2e8341d68c130eda9cb48dd9da"
+    },
+    {
+     "frame_index": 20529,
+     "composition_ns": 556866392914834,
+     "decoded_bgr_sha256": "da16af806824e2d047b60a457ff48bf71b07f914995083c57e880cf841fb8992"
+    }
+   ]
+  },
+  "seg-019": {
+   "suitability": "rejected",
+   "reason": "ui_key: retained intake exclusion. All supplied samples visually inspected; conservative cuts remain even when a boundary sample shows own play. Self-replay occurs here; the own-HUD flag does not establish live control.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 20530,
+     "composition_ns": 556866401248167,
+     "decoded_bgr_sha256": "0ee9494b956636c873ec547b4945c62df0208728fca5627906878f41017310ea"
+    },
+    {
+     "frame_index": 20718,
+     "composition_ns": 556867967914771,
+     "decoded_bgr_sha256": "e6cb5736245e7fbfa51d19ea29b9cef855dc3325668083fe560a8d17d264cb1d"
+    },
+    {
+     "frame_index": 20906,
+     "composition_ns": 556869534581375,
+     "decoded_bgr_sha256": "481bec9abdbddf1f394efbcfe2e27b81c713cc86fe96ea36b2a46e197d969a93"
+    }
+   ]
+  },
+  "seg-020": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: retained intake exclusion. All supplied samples visually inspected; conservative cuts remain even when a boundary sample shows own play. Self-replay occurs here; the own-HUD flag does not establish live control.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 20907,
+     "composition_ns": 556869542914708,
+     "decoded_bgr_sha256": "0108c6d45065e830dfeda708f44089136fe7d65a82a0fb9155229254c6b6c735"
+    },
+    {
+     "frame_index": 20911,
+     "composition_ns": 556869576248040,
+     "decoded_bgr_sha256": "2d34fb7500d0fb5f2e1a0699a6b6d39d6af642741bd25c782ccfa950cd27f463"
+    },
+    {
+     "frame_index": 20916,
+     "composition_ns": 556869617914705,
+     "decoded_bgr_sha256": "1ee2586a2677ee094e94f6cfc0389bc80c60b6a4163ed58f0bd08ba3bbc38fa4"
+    }
+   ]
+  },
+  "seg-021": {
+   "suitability": "rejected",
+   "reason": "VISUAL REJECTION overriding unresolved proposal: all three supplied frames show Past Lives and Defeated By replay panels, despite own Spider-Man HUD being reader-positive. This is a replay of his own fall/death, not live control; reject the entire span.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 20917,
+     "composition_ns": 556869626248038,
+     "decoded_bgr_sha256": "03be2bc900294b9af5653665edd91b5e301df02e13b91db0f30d6db2860afc62"
+    },
+    {
+     "frame_index": 21174,
+     "composition_ns": 556871767914619,
+     "decoded_bgr_sha256": "2b8be9c604d35fe28c9e8ae20d24169bcd60211412bf7dfe696f6d398d5764b4"
+    },
+    {
+     "frame_index": 21432,
+     "composition_ns": 556873917914533,
+     "decoded_bgr_sha256": "c8cc774b30b2f1a3406e4eda14f2649c54ff7aaf986a87765c740cc4936cf1e3"
+    }
+   ]
+  },
+  "seg-022": {
+   "suitability": "rejected",
+   "reason": "dead: retained intake exclusion. All supplied samples visually inspected; conservative cuts remain even when a boundary sample shows own play. Self-replay occurs here; the own-HUD flag does not establish live control.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 21433,
+     "composition_ns": 556873926247866,
+     "decoded_bgr_sha256": "edf595168e11cfad990726f6fd03aa6eb72adeb652265958d5431fd8f8e7b0f6"
+    },
+    {
+     "frame_index": 21648,
+     "composition_ns": 556875717914461,
+     "decoded_bgr_sha256": "0b94f52c4ec43125cda9410c7de79e5e7309a0d1b5a5543a90e17528a59ad1d5"
+    },
+    {
+     "frame_index": 21864,
+     "composition_ns": 556877517914389,
+     "decoded_bgr_sha256": "9808f029a545b48f972f972ae6e688d1ddae4792dc31af1ba3e3ea5de3ac68ad"
+    }
+   ]
+  },
+  "seg-023": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: retained intake exclusion. Zero-frame sliver; no visual claim.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": []
+  },
+  "seg-024": {
+   "suitability": "accepted",
+   "reason": "Own respawn and combat in all six samples, ending alive before the round transition. Frames 22894, 24953 and 25982 are apparent reader misses on own gameplay.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 21865,
+     "composition_ns": 556877526247722,
+     "decoded_bgr_sha256": "05e77e3a0ddc5fff8a721b484d26eebdd460194363844e625413172b9f7f31bd"
+    },
+    {
+     "frame_index": 22894,
+     "composition_ns": 556886101247379,
+     "decoded_bgr_sha256": "3f2b5cf1e7d24f7d352167cd10abbcb51598dc07cb2e97e5921e681c71d358c9"
+    },
+    {
+     "frame_index": 23923,
+     "composition_ns": 556894676247036,
+     "decoded_bgr_sha256": "8a51c4120e9fb5544c5cc565a850d4703b3c622cae311cbba4ebfbded319dd50"
+    },
+    {
+     "frame_index": 24953,
+     "composition_ns": 556903259580026,
+     "decoded_bgr_sha256": "10d3ff9e7118ced49777962cec89a0c358e79186371532a7cc2273528ed33fc4"
+    },
+    {
+     "frame_index": 25982,
+     "composition_ns": 556911834579683,
+     "decoded_bgr_sha256": "e5a15eb4e8b73bdfbac835eb85f1ed4c2c0d60682dbcf0d0f3cc05074ef67285"
+    },
+    {
+     "frame_index": 27012,
+     "composition_ns": 556920417912673,
+     "decoded_bgr_sha256": "ab8b1768cecf45756d8ebd7a8c06f4939d2ec86bd2049e79d44aa817fb5c07b2"
+    }
+   ]
+  },
+  "seg-025": {
+   "suitability": "rejected",
+   "reason": "no_range_hud: retained intake exclusion. All supplied samples visually inspected; conservative cuts remain even when a boundary sample shows own play.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 27013,
+     "composition_ns": 556920426246006,
+     "decoded_bgr_sha256": "c800b233217998540f3e04ebf1757f9a7342430d7c5dc119d8e78a1293c26bc5"
+    },
+    {
+     "frame_index": 27049,
+     "composition_ns": 556920726245994,
+     "decoded_bgr_sha256": "195cdf3d505d007600de22fc64cccb26eb1ef44de12008c976e21573ca208f76"
+    },
+    {
+     "frame_index": 27085,
+     "composition_ns": 556921026245982,
+     "decoded_bgr_sha256": "45d4de3666581980896aec04ab005867bc294d5a77a1958e2904ebc93b066be9"
+    }
+   ]
+  },
+  "seg-026": {
+   "suitability": "rejected",
+   "reason": "ui_key: retained intake exclusion. All supplied samples visually inspected; conservative cuts remain even when a boundary sample shows own play.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 27086,
+     "composition_ns": 556921034579315,
+     "decoded_bgr_sha256": "6b33a4d86c7c9bb7887338365e1623ea521de3596522f03d49a1d374c10ecdda"
+    },
+    {
+     "frame_index": 27314,
+     "composition_ns": 556922934579239,
+     "decoded_bgr_sha256": "e29005cad6b955257af3bffd12416bd898c638f6ec943bd75bb8b1e58a943b89"
+    },
+    {
+     "frame_index": 27542,
+     "composition_ns": 556924834579163,
+     "decoded_bgr_sha256": "5ae120c3b2d58bc56e036598d656b1842eab5d7eec855e4fa38d5274b283a459"
+    }
+   ]
+  },
+  "seg-027": {
+   "suitability": "rejected",
+   "reason": "focus_transition: retained intake exclusion. All supplied samples visually inspected; conservative cuts remain even when a boundary sample shows own play.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 27672,
+     "composition_ns": 556925917912453,
+     "decoded_bgr_sha256": "8a8b53b44e6a1187d9dd9fc42f2e0b4e9badcbebf6a8b1016361bb4e04a9c92b"
+    },
+    {
+     "frame_index": 27686,
+     "composition_ns": 556926034579115,
+     "decoded_bgr_sha256": "c6e852f866a620682bf252d2cc37c86912fe2feb3532c360dedb62096c473fc7"
+    },
+    {
+     "frame_index": 27701,
+     "composition_ns": 556926159579110,
+     "decoded_bgr_sha256": "e124bf2f1e2f0a0e44d801e510d497e89df6079a816770ae803bad701391bd6b"
+    }
+   ]
+  },
+  "seg-028": {
+   "suitability": "rejected",
+   "reason": "no_range_hud: retained intake exclusion. All supplied samples visually inspected; conservative cuts remain even when a boundary sample shows own play.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 27702,
+     "composition_ns": 556926167912443,
+     "decoded_bgr_sha256": "7f9052100ec32e70309fb3b0b4d8432f2918a3ceee1a2c60d1c00ff10f3acceb"
+    },
+    {
+     "frame_index": 27721,
+     "composition_ns": 556926326245770,
+     "decoded_bgr_sha256": "78cced2be4470b2507dac717cdf11f5a92d4abeeb7a55413045217ef62d325ac"
+    },
+    {
+     "frame_index": 27741,
+     "composition_ns": 556926492912430,
+     "decoded_bgr_sha256": "1b45eca1f79a1b2a1a9837ffb4b62f562e8ef63995afc794c54a3fcd56831dd1"
+    }
+   ]
+  },
+  "seg-029": {
+   "suitability": "rejected",
+   "reason": "ui_key: retained intake exclusion. All supplied samples visually inspected; conservative cuts remain even when a boundary sample shows own play.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 27742,
+     "composition_ns": 556926501245763,
+     "decoded_bgr_sha256": "e7c776e0ae868d6c029d3e18804f5bbfc0540cfc21217289cbf6a4582667d468"
+    },
+    {
+     "frame_index": 27748,
+     "composition_ns": 556926551245761,
+     "decoded_bgr_sha256": "22047b363bb053d11a9ddff91647a54126069aa6155d9f07ea6b4dd4c8a9f5b6"
+    },
+    {
+     "frame_index": 27755,
+     "composition_ns": 556926609579092,
+     "decoded_bgr_sha256": "b467b88f37ef34068c71875eb9bf0a0bd75cc9ddb6df5b90269dc3d67ab8d31b"
+    }
+   ]
+  },
+  "seg-030": {
+   "suitability": "rejected",
+   "reason": "focus_transition: retained intake exclusion. All supplied samples visually inspected; conservative cuts remain even when a boundary sample shows own play.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 27908,
+     "composition_ns": 556927884579041,
+     "decoded_bgr_sha256": "419a92bacdc4ef1fdf05e5046390628ff83950063a33a5890e85db62774988c4"
+    },
+    {
+     "frame_index": 27922,
+     "composition_ns": 556928001245703,
+     "decoded_bgr_sha256": "83c09aa7b356738a504d499661df0b7534bbb4e59cd0c3584e2803cb79cf4cca"
+    },
+    {
+     "frame_index": 27937,
+     "composition_ns": 556928126245698,
+     "decoded_bgr_sha256": "ea165dd88de98a99b90cdf503a4d87a76036017591966168e93b836406ef6d6c"
+    }
+   ]
+  },
+  "seg-031": {
+   "suitability": "rejected",
+   "reason": "no_range_hud: retained intake exclusion. All supplied samples visually inspected; conservative cuts remain even when a boundary sample shows own play.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 27938,
+     "composition_ns": 556928134579031,
+     "decoded_bgr_sha256": "908d351c05e307d42b959046f3f46e14fd7cd1f71ba8e973e09a48d4d4ba140a"
+    },
+    {
+     "frame_index": 28501,
+     "composition_ns": 556932826245510,
+     "decoded_bgr_sha256": "e10e95ce1a638979562a985f8f131e27094b526825743558606dae5c997d9c1d"
+    },
+    {
+     "frame_index": 29064,
+     "composition_ns": 556937517911989,
+     "decoded_bgr_sha256": "763a46f33ed47180a2d5a3ecaa34d9e1ec8abdcf6ad36462219696e1eef358b2"
+    }
+   ]
+  },
+  "seg-032": {
+   "suitability": "accepted",
+   "reason": "Own setup-room movement before the next objective, all five samples own HUD and camera. Setup countdown is not a cut.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 29065,
+     "composition_ns": 556937526245322,
+     "decoded_bgr_sha256": "66c2120705aeb1fe80648e9f6ebd4a30078dbd5b917493668d140a7b3cee2597"
+    },
+    {
+     "frame_index": 30105,
+     "composition_ns": 556946192911642,
+     "decoded_bgr_sha256": "70e5f60d6d19067b26310bffc2a2510259f8ddcbbb80784d218ce3e2eb4d5fbe"
+    },
+    {
+     "frame_index": 31145,
+     "composition_ns": 556954859577962,
+     "decoded_bgr_sha256": "6737e15213ca700971748d910f300ca1c0b4c0df9e7353f769ae649f156e47a4"
+    },
+    {
+     "frame_index": 32185,
+     "composition_ns": 556963526244282,
+     "decoded_bgr_sha256": "8f6d2682084eb3af2e4ebd1845861fae58f19ef6a6e276351d8e20d25d18a67b"
+    },
+    {
+     "frame_index": 33226,
+     "composition_ns": 556972201243935,
+     "decoded_bgr_sha256": "5a7bcd37dff157f519ea602f2c079c34fab12738f75253ed2afe39b20c348b5e"
+    }
+   ]
+  },
+  "seg-033": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: retained intake exclusion. Zero-frame sliver; no visual claim.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": []
+  },
+  "seg-034": {
+   "suitability": "rejected",
+   "reason": "ui_key: retained intake exclusion. Zero-frame sliver; no visual claim.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": []
+  },
+  "seg-035": {
+   "suitability": "rejected",
+   "reason": "focus_transition: retained intake exclusion. All supplied samples visually inspected; conservative cuts remain even when a boundary sample shows own play.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 33298,
+     "composition_ns": 556972801243911,
+     "decoded_bgr_sha256": "dfebab1d2444dc8ddc155990ff952dc12a5a7180682a10bf2884c4c09e172c17"
+    },
+    {
+     "frame_index": 33312,
+     "composition_ns": 556972917910573,
+     "decoded_bgr_sha256": "4acd9319b5a65e77d075f121390c2243a5a4b31d2c8b482be0790b03a5d63885"
+    },
+    {
+     "frame_index": 33327,
+     "composition_ns": 556973042910568,
+     "decoded_bgr_sha256": "175b947f2fba35f5a295dc7e62ed2815ca6d00f02d6f56f12835c1dcd328175d"
+    }
+   ]
+  },
+  "seg-036": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: retained intake exclusion. All supplied samples visually inspected; conservative cuts remain even when a boundary sample shows own play.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 33328,
+     "composition_ns": 556973051243901,
+     "decoded_bgr_sha256": "9bf2a6669f5ec30afba290c525f817b789f41b00031efda0b2af33860e580f63"
+    },
+    {
+     "frame_index": 33329,
+     "composition_ns": 556973059577234,
+     "decoded_bgr_sha256": "f1ef0b8b0b3c22b0ea41e6210694730d193cbfaa5ae6cd1fc2196b68be073fe2"
+    },
+    {
+     "frame_index": 33331,
+     "composition_ns": 556973076243900,
+     "decoded_bgr_sha256": "43f8daacf39fb9d8bbecc0f80ce5e65eb5a6be6977468c4488b1949a723bec42"
+    }
+   ]
+  },
+  "seg-037": {
+   "suitability": "rejected",
+   "reason": "ui_key: retained intake exclusion. All supplied samples visually inspected; conservative cuts remain even when a boundary sample shows own play.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 33332,
+     "composition_ns": 556973084577233,
+     "decoded_bgr_sha256": "70c27e247b0fdd88572e7da5897db712f968a3a0bf316a62b37a9461d11018d2"
+    },
+    {
+     "frame_index": 33335,
+     "composition_ns": 556973109577232,
+     "decoded_bgr_sha256": "ebe95ae9cfdf03a1d83aeca6f1bf8927228cf797a9f56879a4865464c5fa0e78"
+    },
+    {
+     "frame_index": 33339,
+     "composition_ns": 556973142910564,
+     "decoded_bgr_sha256": "b88ec33f434e5a82b5f364b5eec02f34ef152b1ba36189046348ac49cd732bad"
+    }
+   ]
+  },
+  "seg-038": {
+   "suitability": "rejected",
+   "reason": "focus_transition: retained intake exclusion. All supplied samples visually inspected; conservative cuts remain even when a boundary sample shows own play.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 33447,
+     "composition_ns": 556974042910528,
+     "decoded_bgr_sha256": "ecd4a52cc9075788de66b22c28c674d0f29467057caa770761ad0b24f8fc9c77"
+    },
+    {
+     "frame_index": 33461,
+     "composition_ns": 556974159577190,
+     "decoded_bgr_sha256": "923b9458c1e50c18bfdc6f93626b5972e2883ce2c837dffd53a2193149e1a9e6"
+    },
+    {
+     "frame_index": 33476,
+     "composition_ns": 556974284577185,
+     "decoded_bgr_sha256": "e9abb665eae55c695ce19a0558e73121ff03f7352ba4c9e340acc7aa51b88d74"
+    }
+   ]
+  },
+  "seg-039": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: retained intake exclusion. Zero-frame sliver; no visual claim.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": []
+  },
+  "seg-040": {
+   "suitability": "accepted",
+   "reason": "Own setup exit, traversal, ultimate and combat in all ten samples, ending alive before the ping cut. Frame 42459 is an apparent reader miss. Scroll-up at logger 348.5132994 s needs independent native event-neighborhood inspection.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 33477,
+     "composition_ns": 556974292910518,
+     "decoded_bgr_sha256": "9b3d2b8768ba461b186fb602b874e2120d91dbfc9c6e9258fede3b25fe4fe885"
+    },
+    {
+     "frame_index": 34599,
+     "composition_ns": 556983642910144,
+     "decoded_bgr_sha256": "a5d03435aa9076dea349cbc16d17c520f109e4f4a850ef42f980dcf49d10d2a3"
+    },
+    {
+     "frame_index": 35722,
+     "composition_ns": 556993001243103,
+     "decoded_bgr_sha256": "f0e0924d8c810c4acc8cde5a262f2afcde861b3f624f1e5506903f1a27148ed2"
+    },
+    {
+     "frame_index": 36845,
+     "composition_ns": 557002359576062,
+     "decoded_bgr_sha256": "b7355629c44ac8ba462f7e27dd5319e443148ac35e4a8d19c7b40f646e677023"
+    },
+    {
+     "frame_index": 37968,
+     "composition_ns": 557011717909021,
+     "decoded_bgr_sha256": "c706dd2140080d40276d2fd5a4047d3f1f6030fdff07395a7a390f8bbaa78b41"
+    },
+    {
+     "frame_index": 39090,
+     "composition_ns": 557021067908647,
+     "decoded_bgr_sha256": "ee9877fd3cfec07e989067b0fd3dbf1136cb42fa9bb4da9913b5363d2f71ddb4"
+    },
+    {
+     "frame_index": 40213,
+     "composition_ns": 557030426241606,
+     "decoded_bgr_sha256": "8e5da8d0c6ca7f33d09c02c86fc877af050b99b429ee567130c6340e5210bbfa"
+    },
+    {
+     "frame_index": 41336,
+     "composition_ns": 557039784574565,
+     "decoded_bgr_sha256": "9db704ec889a5e6bc4053719f6eba7a8a37599589a3f607e2b79f89c4f50d997"
+    },
+    {
+     "frame_index": 42459,
+     "composition_ns": 557049142907524,
+     "decoded_bgr_sha256": "a41755472e95957a73f67a54f9dc8250de782ab548a89f4a7811c9d47a115d01"
+    },
+    {
+     "frame_index": 43582,
+     "composition_ns": 557058501240483,
+     "decoded_bgr_sha256": "bdbd15abd4ff801b1eb6b89442233ac301b93d112614b092cdd8606f3114a093"
+    }
+   ]
+  },
+  "seg-041": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: retained intake exclusion. Zero-frame sliver; no visual claim.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": []
+  },
+  "seg-042": {
+   "suitability": "rejected",
+   "reason": "ui_key: retained intake exclusion. All supplied samples visually inspected; conservative cuts remain even when a boundary sample shows own play.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 43583,
+     "composition_ns": 557058509573816,
+     "decoded_bgr_sha256": "331fb255276699d74b098f9b9bde970c5f14d4bcb3c61135d3a5d6e53c9a7b0e"
+    },
+    {
+     "frame_index": 43714,
+     "composition_ns": 557059601240439,
+     "decoded_bgr_sha256": "85784284bde25b28ea77e5628ad6ff308f8c7c62319921b407cf8b3a62515792"
+    },
+    {
+     "frame_index": 43846,
+     "composition_ns": 557060701240395,
+     "decoded_bgr_sha256": "f31e6a875880905b1eb3b8e75b0fe7ae78645109d292ce10219688e33854e41e"
+    }
+   ]
+  },
+  "seg-043": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: retained intake exclusion. Zero-frame sliver; no visual claim.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": []
+  },
+  "seg-044": {
+   "suitability": "accepted",
+   "reason": "Own healing and combat in all five samples after ping settle. Frames 45011 and 47339 are apparent reader misses on own play; last sample remains alive at 11 HP.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 43847,
+     "composition_ns": 557060709573728,
+     "decoded_bgr_sha256": "1aea28d28565716ee0602d151fa5c1391eee6d9c146a9b81e7380b0032b4b57a"
+    },
+    {
+     "frame_index": 45011,
+     "composition_ns": 557070409573340,
+     "decoded_bgr_sha256": "fa879d98310e3ee4f05c04cd908b054ac60467efc464e60982438c603565060b"
+    },
+    {
+     "frame_index": 46175,
+     "composition_ns": 557080109572952,
+     "decoded_bgr_sha256": "2eab02bc31da12a62335d79acfd04a431893a19e05a05472c0f28e73a555fae3"
+    },
+    {
+     "frame_index": 47339,
+     "composition_ns": 557089809572564,
+     "decoded_bgr_sha256": "e0e04e119e67edf887bd81c1bde94b73aa8b2cabf9f0d1c0c509b00d4e704930"
+    },
+    {
+     "frame_index": 48504,
+     "composition_ns": 557099517905509,
+     "decoded_bgr_sha256": "02d5b9d8f4d3540d318fed82244b3a1612a5290babe8ddaeea47a0beec75ca19"
+    }
+   ]
+  },
+  "seg-045": {
+   "suitability": "rejected",
+   "reason": "dead: retained intake exclusion. All supplied samples visually inspected; conservative cuts remain even when a boundary sample shows own play.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 48505,
+     "composition_ns": 557099526238842,
+     "decoded_bgr_sha256": "3e4782baa464521b539911bd2553ee370f1d5f6e9d3d5aeaf2099276f175bb96"
+    },
+    {
+     "frame_index": 48549,
+     "composition_ns": 557099892905494,
+     "decoded_bgr_sha256": "717f6d5d38310e924dbb94002ce8cf492ecd7ef55d1bc6471b58da548420e7c8"
+    },
+    {
+     "frame_index": 48593,
+     "composition_ns": 557100259572146,
+     "decoded_bgr_sha256": "7c720c46162b3fd8632cd5c65eeed8d76edc16189d6341bd750948084517c132"
+    }
+   ]
+  },
+  "seg-046": {
+   "suitability": "rejected",
+   "reason": "ui_key: retained intake exclusion. All supplied samples visually inspected; conservative cuts remain even when a boundary sample shows own play.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 48594,
+     "composition_ns": 557100267905479,
+     "decoded_bgr_sha256": "05e0eda46a49f99cab631b32d42608476fb845bd6ec099c340ad7e8bb68bdc8a"
+    },
+    {
+     "frame_index": 49030,
+     "composition_ns": 557103901238667,
+     "decoded_bgr_sha256": "bb039ef6f45cb0e94350f60001efcf1f7c2d307d3833fc71965d057ba201ab11"
+    },
+    {
+     "frame_index": 49466,
+     "composition_ns": 557107534571855,
+     "decoded_bgr_sha256": "967bc1c67532118ea87cf6993216609c5059dbda68a6efa3c6a456181423519c"
+    }
+   ]
+  },
+  "seg-047": {
+   "suitability": "rejected",
+   "reason": "dead: retained intake exclusion. All supplied samples visually inspected; conservative cuts remain even when a boundary sample shows own play.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 49467,
+     "composition_ns": 557107542905188,
+     "decoded_bgr_sha256": "36cd563852eb9e06680e2c6367d1ecaae93d962a5c7037bb5a8c165840dfa837"
+    },
+    {
+     "frame_index": 49521,
+     "composition_ns": 557107992905170,
+     "decoded_bgr_sha256": "246add9f8ad0184e9986b9d3d1a525819e0d66273ca6168fd8817c50dec21a91"
+    },
+    {
+     "frame_index": 49575,
+     "composition_ns": 557108442905152,
+     "decoded_bgr_sha256": "fb5a52076d5a4168ad64ca677024ef69482dade357af54eb4a969bd64eab7139"
+    }
+   ]
+  },
+  "seg-048": {
+   "suitability": "rejected",
+   "reason": "ui_key: retained intake exclusion. All supplied samples visually inspected; conservative cuts remain even when a boundary sample shows own play.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 49576,
+     "composition_ns": 557108451238485,
+     "decoded_bgr_sha256": "ec7a3b8b974b81f1ee95fae76901894203dad00805d6ab2b35425f6d8ea5cae4"
+    },
+    {
+     "frame_index": 49711,
+     "composition_ns": 557109576238440,
+     "decoded_bgr_sha256": "21cac9cdb0d7c69ed0cbd276ecfd27f8063efdc816e24408ca212bfa2747be67"
+    },
+    {
+     "frame_index": 49847,
+     "composition_ns": 557110709571728,
+     "decoded_bgr_sha256": "47ac128f30903bab0ee9c6d174721b3b146e20ef0ed239fa3c9e4e03a973869c"
+    }
+   ]
+  },
+  "seg-049": {
+   "suitability": "rejected",
+   "reason": "dead: retained intake exclusion. All supplied samples visually inspected; conservative cuts remain even when a boundary sample shows own play.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 49848,
+     "composition_ns": 557110717905061,
+     "decoded_bgr_sha256": "77c63f7f8b8861c9053ed5d9d574ad6c01d2fbdb66ed1d462a56fd4bf5ae85d1"
+    },
+    {
+     "frame_index": 49872,
+     "composition_ns": 557110917905053,
+     "decoded_bgr_sha256": "e6ca450ecfa4ef7c89b658b738cbe716b012c3281588c1c68f23e69fbea9029a"
+    },
+    {
+     "frame_index": 49896,
+     "composition_ns": 557111117905045,
+     "decoded_bgr_sha256": "991f5eeec097041086f5e9da22139d803284a64096c3ac2820ef4d4b2ba03f4f"
+    }
+   ]
+  },
+  "seg-050": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: retained intake exclusion. Zero-frame sliver; no visual claim.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": []
+  },
+  "seg-051": {
+   "suitability": "accepted",
+   "reason": "Own respawn, combat and ultimate in all ten samples. Reader misses at 50979, 53144 and 54227 are own gameplay under effects/bonus HP. Last frame is alive at 17 HP before the death cut.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 49897,
+     "composition_ns": 557111126238378,
+     "decoded_bgr_sha256": "b05be1375c19c259e6609f5a325f8761a88bea9a70f0c363ece52710e000e421"
+    },
+    {
+     "frame_index": 50979,
+     "composition_ns": 557120142904684,
+     "decoded_bgr_sha256": "df06623b172c203f0d14b7d03e4632631684bcac394f5755aefd9ee16c0445a7"
+    },
+    {
+     "frame_index": 52062,
+     "composition_ns": 557129167904323,
+     "decoded_bgr_sha256": "dc4119af2c3e7851b88da776ddd0a254114435770500c8a2fc9af9b501cc4418"
+    },
+    {
+     "frame_index": 53144,
+     "composition_ns": 557138184570629,
+     "decoded_bgr_sha256": "3f56aeb8d9741630e7f7547f71d6b8069ee9075ed4aae0b8748be2b5a009c5bd"
+    },
+    {
+     "frame_index": 54227,
+     "composition_ns": 557147209570268,
+     "decoded_bgr_sha256": "afd2610bad6bf86554b190ad32a4fd88503030b96abd0966ca0e96aa101f057b"
+    },
+    {
+     "frame_index": 55309,
+     "composition_ns": 557156226236574,
+     "decoded_bgr_sha256": "0bfc3ed727a0f70023d348dc55b726900ab03088463e6e423bdae92fb5df02ff"
+    },
+    {
+     "frame_index": 56392,
+     "composition_ns": 557165251236213,
+     "decoded_bgr_sha256": "512c93fe88e3846a67013523ba9d4a2a575514c3a31ab2a9a5bd5dedb1bf2a8c"
+    },
+    {
+     "frame_index": 57474,
+     "composition_ns": 557174267902519,
+     "decoded_bgr_sha256": "1e58f7c03a32d682b18c8a58ae7b3c32e5703e90e892311d04889c2dc62f93e9"
+    },
+    {
+     "frame_index": 58557,
+     "composition_ns": 557183292902158,
+     "decoded_bgr_sha256": "7e250750a2cce94d545b948e6d1a4b569231fc34512032b7fc7e93b6bfe20932"
+    },
+    {
+     "frame_index": 59640,
+     "composition_ns": 557192317901797,
+     "decoded_bgr_sha256": "fa486ca51e2b501c9e371dcd2f8f49bc52b643d5187d6ab22f20fe4bfb82cf3e"
+    }
+   ]
+  },
+  "seg-052": {
+   "suitability": "rejected",
+   "reason": "dead: retained intake exclusion. All supplied samples visually inspected; conservative cuts remain even when a boundary sample shows own play.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 59641,
+     "composition_ns": 557192326235130,
+     "decoded_bgr_sha256": "34bdbdf8d1c6917f6663c7be579b25dbaded8fe03eb5f7da31296d4db2bd0753"
+    },
+    {
+     "frame_index": 59679,
+     "composition_ns": 557192642901784,
+     "decoded_bgr_sha256": "f312121f97b7ed543803db0a3fe5a8d64255ed0dbc883b6e47fa642593a0d88b"
+    },
+    {
+     "frame_index": 59718,
+     "composition_ns": 557192967901771,
+     "decoded_bgr_sha256": "27d1dc450ccff7e5fa55f31ecdaa20290f4240546553389dd1dbd8023d5e4a87"
+    }
+   ]
+  },
+  "seg-053": {
+   "suitability": "rejected",
+   "reason": "ui_key: retained intake exclusion. All supplied samples visually inspected; conservative cuts remain even when a boundary sample shows own play.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 59719,
+     "composition_ns": 557192976235104,
+     "decoded_bgr_sha256": "fcc8864040a48c18cbeb35ca1f947f29ee8ef794be284a4656861ca8ae430804"
+    },
+    {
+     "frame_index": 60163,
+     "composition_ns": 557196676234956,
+     "decoded_bgr_sha256": "7b49e28325a94c51cd2faec3695ca8a3a1de37d58173ba159d55815b113f8954"
+    },
+    {
+     "frame_index": 60608,
+     "composition_ns": 557200384568141,
+     "decoded_bgr_sha256": "6f91f48aa100dec4a67406de2b78870c3d41c4ffec1be0ffc52a751046debf30"
+    }
+   ]
+  },
+  "seg-054": {
+   "suitability": "rejected",
+   "reason": "dead: retained intake exclusion. All supplied samples visually inspected; conservative cuts remain even when a boundary sample shows own play.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 60609,
+     "composition_ns": 557200392901474,
+     "decoded_bgr_sha256": "c4570f92be4043766bf2bd9027e879d173fab2a6f9fb7af8a1575402091571cc"
+    },
+    {
+     "frame_index": 60695,
+     "composition_ns": 557201109568112,
+     "decoded_bgr_sha256": "016c5af19a19f5cd6d2b5db15528339f3bf99838727ac50a15ca25c8ba0452f8"
+    },
+    {
+     "frame_index": 60781,
+     "composition_ns": 557201826234750,
+     "decoded_bgr_sha256": "e38d0fd749a66d692110f7dc5b7ac203df5b4feb95e41075dae2a1836a577ba3"
+    }
+   ]
+  },
+  "seg-055": {
+   "suitability": "rejected",
+   "reason": "ui_key: retained intake exclusion. All supplied samples visually inspected; conservative cuts remain even when a boundary sample shows own play.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 60782,
+     "composition_ns": 557201834568083,
+     "decoded_bgr_sha256": "3991513ba8851577962713b228fee4a8a793f88d9f458efd0f1f61b89a0a4a76"
+    },
+    {
+     "frame_index": 61081,
+     "composition_ns": 557204326234650,
+     "decoded_bgr_sha256": "091a1113444655c4dd8fc4af1cb0b532625b7a49514f927586d57fabe993748a"
+    },
+    {
+     "frame_index": 61380,
+     "composition_ns": 557206817901217,
+     "decoded_bgr_sha256": "d95c8aca724c7761013c9fb6f384841b62ab07513267995fb5a6c321b537a360"
+    }
+   ]
+  },
+  "seg-056": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: retained intake exclusion. Zero-frame sliver; no visual claim.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": []
+  },
+  "seg-057": {
+   "suitability": "rejected",
+   "reason": "VISUAL REJECTION overriding unresolved proposal: earlier supplied frames show own play, but final frame 64699 already dissolves into the Capture the Royal Palace round-transition screen. Reject the entire bounded span conservatively; do not infer HUD-positive means live control.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 61381,
+     "composition_ns": 557206826234550,
+     "decoded_bgr_sha256": "b28b5197fd2eb32692a3badbd797a2a82b6d5c48f2f43297d89b38aaabb41943"
+    },
+    {
+     "frame_index": 62487,
+     "composition_ns": 557216042900848,
+     "decoded_bgr_sha256": "16e9fe30f49288c04844361b6da1d9f770c389be9c3c84a4751136b8997d6097"
+    },
+    {
+     "frame_index": 63593,
+     "composition_ns": 557225259567146,
+     "decoded_bgr_sha256": "ec1d7c84405357138fa7cabf13e1d8529fe2a668e7859b5893ae057368dc6dd1"
+    },
+    {
+     "frame_index": 64699,
+     "composition_ns": 557234476233444,
+     "decoded_bgr_sha256": "1207a6bb5f4d0aa238082c4db5f1a71c0794c3813d48e46339462cf0aae1c25f"
+    }
+   ]
+  },
+  "seg-058": {
+   "suitability": "rejected",
+   "reason": "no_range_hud: retained intake exclusion. All supplied samples visually inspected; conservative cuts remain even when a boundary sample shows own play.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 64700,
+     "composition_ns": 557234484566777,
+     "decoded_bgr_sha256": "916b47405f146d35df07f357805cee762af52e679dd5eec082aa1f4d9cd2caa9"
+    },
+    {
+     "frame_index": 64712,
+     "composition_ns": 557234584566773,
+     "decoded_bgr_sha256": "7c45daf47a18b112f903c967f2ab3f454d83dfd9d6e0c8d8d91ead8ed2e89f94"
+    },
+    {
+     "frame_index": 64725,
+     "composition_ns": 557234692900102,
+     "decoded_bgr_sha256": "c7663cdc64cc59a962c4aebb6f0b77484a3e98e663689e8de86cfdbe968d9480"
+    }
+   ]
+  },
+  "seg-059": {
+   "suitability": "rejected",
+   "reason": "ui_key: retained intake exclusion. All supplied samples visually inspected; conservative cuts remain even when a boundary sample shows own play.",
+   "reviewer": "admission-codex (owner; independent review required)",
+   "reviewed_at": "2026-09-27T23:22:29.159596+00:00",
+   "evidence": "segments-evidence.json and all supplied JPEGs visually inspected through data/admission-codex/review-10/page-00.jpg through page-21.jpg",
+   "frames": [
+    {
+     "frame_index": 64726,
+     "composition_ns": 557234701233435,
+     "decoded_bgr_sha256": "1a81b875e85e9b1299ff87c80b08698bf18beb976634b11ddff0d8fb60fbee3d"
+    },
+    {
+     "frame_index": 64946,
+     "composition_ns": 557236534566695,
+     "decoded_bgr_sha256": "4b104838e8b49b46dbc3aaaa73d4e829b41cfbcd15896f5003c7001da71a8a51"
+    },
+    {
+     "frame_index": 65167,
+     "composition_ns": 557238376233288,
+     "decoded_bgr_sha256": "12b0c34791f452ce9a0efb9b93d33d47bc38388ad79f5a05735163729d455bd1"
+    }
+   ]
+  }
+ }
+}

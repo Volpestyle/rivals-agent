@@ -1,0 +1,68 @@
+{
+ "session": "20260927T060021-195Z-150600-10",
+ "input_sha256": "329184244f715ef5a7fc8ce4bee89b247b5a3c026fdb59c866ad9af87b591ac1",
+ "evidence_sha256": "a9d97ffd85d06f6394024a74654179468a0af6cda231c19887aa26625b154673",
+ "candidate_ids": [
+  "seg-002",
+  "seg-006",
+  "seg-013",
+  "seg-017",
+  "seg-024",
+  "seg-032",
+  "seg-040",
+  "seg-044",
+  "seg-051"
+ ],
+ "candidate_ns": 418791649924,
+ "ui_key_down_count": 0,
+ "ui_key_down_events": [],
+ "ping_cut_overlap_count": 0,
+ "ping_cut_overlaps": [],
+ "mouse_down_counts": {
+  "1": 61,
+  "2": 161,
+  "4": 30,
+  "5": 10
+ },
+ "key_down_counts": {
+  "87": 453,
+  "68": 447,
+  "32": 332,
+  "65": 456,
+  "83": 109,
+  "16": 326,
+  "67": 29,
+  "69": 90,
+  "70": 7,
+  "17": 1,
+  "81": 2
+ },
+ "unbound_key_down_events": [],
+ "unbound_mouse_down_events": [],
+ "scroll_events": [
+  {
+   "segment": "seg-040",
+   "t_rel_s": 348.5132994,
+   "vertical": 120,
+   "horizontal": 0
+  }
+ ],
+ "focus_events": [],
+ "ping_cuts_ns": [
+  [
+   556774496177100,
+   556776669123500,
+   "ui_key"
+  ],
+  [
+   557058509123500,
+   557060708109300,
+   "ui_key"
+  ]
+ ],
+ "visual_rejections": {
+  "seg-021": "Self replay with Past Lives/Defeated By despite own HUD",
+  "seg-057": "End frame already dissolves into round-transition screen"
+ },
+ "note": "Only owner-proposed accepts audited here. Key4 is known thank-you comms, excluded from gameplay vocabulary, no cut by lead decision. Independent native review required."
+}
