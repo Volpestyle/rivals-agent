@@ -1,0 +1,116 @@
+[
+  {
+    "session": "20260927T051206-888Z-150600-4",
+    "input_sha256": "c7b9de0f3f363a1c7c7c7331355df7f7d2397423fd2dbb684f2a4d222eb0e411",
+    "review_sha256": "cad8c9df75f082abd9eceab75064c1f00cef1bdec997368352d44983e601c303",
+    "button3_down_count": 3,
+    "holds_rel_s": [
+      [
+        142.7735466,
+        142.940512
+      ],
+      [
+        244.5075292,
+        244.6555504
+      ],
+      [
+        382.48556,
+        382.6575242
+      ]
+    ],
+    "accepted_overlap": [
+      {
+        "hold_rel_s": [
+          142.7735466,
+          142.940512
+        ],
+        "segment_id": "seg-015",
+        "segment_ns": [
+          553903301366691,
+          553944426365047
+        ]
+      },
+      {
+        "hold_rel_s": [
+          244.5075292,
+          244.6555504
+        ],
+        "segment_id": "seg-030",
+        "segment_ns": [
+          554033034694835,
+          554099426358847
+        ]
+      },
+      {
+        "hold_rel_s": [
+          382.48556,
+          382.6575242
+        ],
+        "segment_id": "seg-043",
+        "segment_ns": [
+          554137234690667,
+          554200201354816
+        ]
+      }
+    ],
+    "accepted_overlap_including_2s_settle": [
+      {
+        "hold_rel_s": [
+          142.7735466,
+          142.940512
+        ],
+        "segment_id": "seg-015"
+      },
+      {
+        "hold_rel_s": [
+          244.5075292,
+          244.6555504
+        ],
+        "segment_id": "seg-030"
+      },
+      {
+        "hold_rel_s": [
+          382.48556,
+          382.6575242
+        ],
+        "segment_id": "seg-043"
+      }
+    ],
+    "method": "Input log only, buttons_down/up 3 cross-checked against raw flags 0x10/0x20; no media access or decode."
+  },
+  {
+    "session": "20260927T052001-827Z-150600-5",
+    "input_sha256": "a06f048f7825a8c230c34510cb87a197d2b14208c8e960553ac827a900c1c0a4",
+    "review_sha256": "15844f604db7d589002208fa701f80410e54c65582f1090ab18e732739d67872",
+    "button3_down_count": 1,
+    "holds_rel_s": [
+      [
+        365.738506,
+        365.882539
+      ]
+    ],
+    "accepted_overlap": [
+      {
+        "hold_rel_s": [
+          365.738506,
+          365.882539
+        ],
+        "segment_id": "seg-030",
+        "segment_ns": [
+          554582993006170,
+          554701359668103
+        ]
+      }
+    ],
+    "accepted_overlap_including_2s_settle": [
+      {
+        "hold_rel_s": [
+          365.738506,
+          365.882539
+        ],
+        "segment_id": "seg-030"
+      }
+    ],
+    "method": "Input log only, buttons_down/up 3 cross-checked against raw flags 0x10/0x20; no media access or decode."
+  }
+]

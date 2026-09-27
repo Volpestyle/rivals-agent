@@ -209,6 +209,46 @@ def test_the_emote_wheel_is_cut_until_the_player_moves_again():
     assert hi.ui_cuts([(1 * S, 84, True), (2 * S, 84, False)], [(0, 9 * S)], presses=[])[0] == [(1 * S, 9 * S, "ui_key")]
 
 
+def test_ping_wheel_native_findings_are_cut_through_release_plus_two_seconds():
+    from agent import human_intake as hi
+    # -6 native review: wheels still visible at 33.156 and 285.415 s, after release.
+    events = [dict(type="mouse", t_ns=t, button_flags=flags) for t, flags in (
+        (32_872_000_000, 0x10), (33_077_000_000, 0x20),
+        (285_255_000_000, 0x10), (285_402_000_000, 0x20))]
+    cuts = hi.ping_wheel_cuts(events, [(0, 400_000_000_000)])
+    assert cuts == [(32_872_000_000, 35_077_000_000, "ui_key"),
+                    (285_255_000_000, 287_402_000_000, "ui_key")]
+    assert all(any(a <= t < b for a, b, _ in cuts) for t in (33_156_000_000, 285_415_000_000))
+
+
+def test_ping_wheel_repeats_unreleased_holds_and_focus_boundaries_are_conservative():
+    from agent import human_intake as hi
+    S = 10**9
+    events = [dict(type="mouse", t_ns=t * S, button_flags=f) for t, f in ((2, 0x10), (3, 0x10), (5, 0x20), (8, 0x10))]
+    assert hi.ping_wheel_cuts(events, [(0, 4 * S), (5 * S, 10 * S)]) == [
+        (2 * S, 4 * S, "ui_key"), (5 * S, 7 * S, "ui_key"), (8 * S, 10 * S, "ui_key")]
+    assert hi.ping_wheel_cuts([dict(type="mouse", t_ns=6 * S, button_flags=0x20)], [(5 * S, 10 * S)]) == [
+        (5 * S, 8 * S, "ui_key")]
+
+
+def test_gameplay_mouse_buttons_and_scroll_do_not_open_the_ping_wheel():
+    from agent import human_intake as hi
+    events = [dict(type="mouse", t_ns=i, button_flags=f) for i, f in enumerate((1, 2, 4, 8, 0x40, 0x80, 0x100, 0x200, 0x400, 0x800))]
+    assert hi.ping_wheel_cuts(events, [(0, 100)]) == []
+
+
+def test_match_ping_cut_reaches_proposals_without_changing_default_range_proposals():
+    from agent import human_intake as hi
+    S = 10**9
+    args = dict(intervals=[(0, 20 * S)], hud_samples=[(i * S // 5, True) for i in range(100)], focus_settle_ns=0)
+    old, _ = hi.propose_segments(**args)
+    events = [dict(type="mouse", t_ns=5 * S, button_flags=0x10), dict(type="mouse", t_ns=6 * S, button_flags=0x20)]
+    cut, _ = hi.propose_segments(**args, ping_wheel_events=events)
+    assert not any(s["machine_reason"] == "ui_key" for s in old)
+    assert any(s["machine_reason"] == "ui_key" and s["start_ns"] <= 5 * S and s["end_ns"] >= 8 * S for s in cut)
+    assert all(not (s["start_ns"] < 8 * S and s["end_ns"] > 5 * S) for s in cut if s["machine_reason"] == "range_hud_present")
+
+
 def test_after_a_round_transition_gameplay_resumes_only_after_the_splash_settle():
     """Pilot 052001: HUD absent 250.9-262.3 s (round transition), then the PARKER POWER-UP splash 262.3-263.5 s."""
     S = 10**9

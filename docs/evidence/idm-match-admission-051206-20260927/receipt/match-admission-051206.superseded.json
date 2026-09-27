@@ -1,0 +1,13 @@
+{
+ "status": "superseded",
+ "by": "the lead (herdr-lead), 2026-09-27",
+ "reason": "Input-only audit found physical button-3 ping-wheel holds inside accepted segments; independently visually confirmed by frame-review. Old acceptance is historical and must not authorize new consumption. Await accepted-a1 after cut-code LAND and changed-boundary agreement.",
+ "historical_receipt": {
+  "path": "docs/evidence/idm-match-admission-051206-20260927/receipt/match-admission-051206.accepted.json",
+  "sha256": "f4c2b7dfa9c562265255f55367bf1d96d180ddb233f2872275231251ee0be5a9"
+ },
+ "audit": {
+  "path": "data/admission-codex/accepted-ping-wheel-audit-20260927.json",
+  "sha256": "4e0ed4645b9c91c56bd04a1b4755f18e324c22511e099ae65003a11a42d20b34"
+ }
+}

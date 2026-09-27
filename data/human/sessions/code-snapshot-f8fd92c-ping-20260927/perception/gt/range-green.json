@@ -1,0 +1,369 @@
+{
+ "note": "Hand-checked enemy counts on native 2560x1440 frames, Enemy Color = Green. An enemy counts if the game marks it (body or plate visible). Images are gitignored under data/l1/<run>/<frame>.jpg; this file carries only the counts.",
+ "frames": [
+  {
+   "run": "tagrun0",
+   "frame": "000060",
+   "enemies": 0
+  },
+  {
+   "run": "tagrun0",
+   "frame": "000073",
+   "enemies": 1
+  },
+  {
+   "run": "tagrun0",
+   "frame": "000087",
+   "enemies": 1
+  },
+  {
+   "run": "tagrun0",
+   "frame": "000101",
+   "enemies": 1
+  },
+  {
+   "run": "tagrun0",
+   "frame": "000114",
+   "enemies": 1
+  },
+  {
+   "run": "tagrun0",
+   "frame": "000128",
+   "enemies": 1
+  },
+  {
+   "run": "tagrun0",
+   "frame": "000142",
+   "enemies": 1
+  },
+  {
+   "run": "tagrun0",
+   "frame": "000155",
+   "enemies": 1
+  },
+  {
+   "run": "tagrun0",
+   "frame": "000169",
+   "enemies": 1
+  },
+  {
+   "run": "tagrun0",
+   "frame": "000183",
+   "enemies": 1
+  },
+  {
+   "run": "tagrun0",
+   "frame": "000196",
+   "enemies": 1
+  },
+  {
+   "run": "tagrun0",
+   "frame": "000210",
+   "enemies": 1
+  },
+  {
+   "run": "tagrun0",
+   "frame": "000224",
+   "enemies": 1
+  },
+  {
+   "run": "tagrun0",
+   "frame": "000237",
+   "enemies": 0
+  },
+  {
+   "run": "tagrun0",
+   "frame": "000251",
+   "enemies": 1
+  },
+  {
+   "run": "tagrun0",
+   "frame": "000265",
+   "enemies": 1
+  },
+  {
+   "run": "tagrun0",
+   "frame": "000278",
+   "enemies": 1
+  },
+  {
+   "run": "tagrun0",
+   "frame": "000292",
+   "enemies": 1
+  },
+  {
+   "run": "tagrun0",
+   "frame": "000306",
+   "enemies": 1
+  },
+  {
+   "run": "tagrun0",
+   "frame": "000320",
+   "enemies": 0
+  },
+  {
+   "run": "tagrun0",
+   "frame": "000330",
+   "enemies": 0
+  },
+  {
+   "run": "tagrun0",
+   "frame": "000369",
+   "enemies": 0
+  },
+  {
+   "run": "tagrun0",
+   "frame": "000409",
+   "enemies": 0
+  },
+  {
+   "run": "tagrun0",
+   "frame": "000449",
+   "enemies": 0
+  },
+  {
+   "run": "tagrun0",
+   "frame": "000488",
+   "enemies": 0
+  },
+  {
+   "run": "tagrun0",
+   "frame": "000528",
+   "enemies": 0
+  },
+  {
+   "run": "tagrun0",
+   "frame": "000568",
+   "enemies": 0
+  },
+  {
+   "run": "tagrun0",
+   "frame": "000608",
+   "enemies": 0
+  },
+  {
+   "run": "tagrun",
+   "frame": "000040",
+   "enemies": 2
+  },
+  {
+   "run": "tagrun",
+   "frame": "000049",
+   "enemies": 2
+  },
+  {
+   "run": "tagrun",
+   "frame": "000058",
+   "enemies": 2
+  },
+  {
+   "run": "tagrun",
+   "frame": "000067",
+   "enemies": 2
+  },
+  {
+   "run": "tagrun",
+   "frame": "000076",
+   "enemies": 3
+  },
+  {
+   "run": "tagrun",
+   "frame": "000086",
+   "enemies": 3
+  },
+  {
+   "run": "tagrun",
+   "frame": "000095",
+   "enemies": 3
+  },
+  {
+   "run": "tagrun",
+   "frame": "000104",
+   "enemies": 3
+  },
+  {
+   "run": "tagrun",
+   "frame": "000113",
+   "enemies": 3
+  },
+  {
+   "run": "tagrun",
+   "frame": "000122",
+   "enemies": 3
+  },
+  {
+   "run": "tagrun",
+   "frame": "000132",
+   "enemies": 3
+  },
+  {
+   "run": "tagrun",
+   "frame": "000141",
+   "enemies": 3
+  },
+  {
+   "run": "tagrun",
+   "frame": "000150",
+   "enemies": 3
+  },
+  {
+   "run": "tagrun",
+   "frame": "000159",
+   "enemies": 3
+  },
+  {
+   "run": "tagrun",
+   "frame": "000168",
+   "enemies": 3
+  },
+  {
+   "run": "tagrun",
+   "frame": "000178",
+   "enemies": 3
+  },
+  {
+   "run": "tagrun",
+   "frame": "000187",
+   "enemies": 3
+  },
+  {
+   "run": "tagrun",
+   "frame": "000196",
+   "enemies": 2
+  },
+  {
+   "run": "tagrun",
+   "frame": "000205",
+   "enemies": 1
+  },
+  {
+   "run": "tagrun",
+   "frame": "000215",
+   "enemies": 0
+  },
+  {
+   "run": "tagrun",
+   "frame": "000230",
+   "enemies": 0
+  },
+  {
+   "run": "tagrun",
+   "frame": "000265",
+   "enemies": 0
+  },
+  {
+   "run": "tagrun",
+   "frame": "000301",
+   "enemies": 0
+  },
+  {
+   "run": "tagrun",
+   "frame": "000337",
+   "enemies": 1
+  },
+  {
+   "run": "tagrun",
+   "frame": "000372",
+   "enemies": 0
+  },
+  {
+   "run": "tagrun",
+   "frame": "000408",
+   "enemies": 0
+  },
+  {
+   "run": "tagrun",
+   "frame": "000444",
+   "enemies": 0
+  },
+  {
+   "run": "tagrun",
+   "frame": "000480",
+   "enemies": 0
+  },
+  {
+   "run": "tagrun1",
+   "frame": "000000",
+   "enemies": 0
+  },
+  {
+   "run": "tagrun1",
+   "frame": "000023",
+   "enemies": 1
+  },
+  {
+   "run": "tagrun1",
+   "frame": "000047",
+   "enemies": 2
+  },
+  {
+   "run": "tagrun1",
+   "frame": "000070",
+   "enemies": 1
+  },
+  {
+   "run": "tagrun1",
+   "frame": "000094",
+   "enemies": 1
+  },
+  {
+   "run": "tagrun1",
+   "frame": "000117",
+   "enemies": 1
+  },
+  {
+   "run": "tagrun1",
+   "frame": "000141",
+   "enemies": 1
+  },
+  {
+   "run": "tagrun1",
+   "frame": "000164",
+   "enemies": 0
+  },
+  {
+   "run": "tagrun1",
+   "frame": "000188",
+   "enemies": 1
+  },
+  {
+   "run": "tagrun1",
+   "frame": "000211",
+   "enemies": 1
+  },
+  {
+   "run": "tagrun1",
+   "frame": "000235",
+   "enemies": 0
+  },
+  {
+   "run": "tagrun1",
+   "frame": "000258",
+   "enemies": 0
+  },
+  {
+   "run": "tagrun1",
+   "frame": "000282",
+   "enemies": 1
+  },
+  {
+   "run": "tagrun1",
+   "frame": "000305",
+   "enemies": 0
+  },
+  {
+   "run": "tagrun1",
+   "frame": "000329",
+   "enemies": 0
+  },
+  {
+   "run": "tagrun1",
+   "frame": "000353",
+   "enemies": 0
+  }
+ ],
+ "totals": {
+  "frames": 72,
+  "enemies": 78
+ }
+}

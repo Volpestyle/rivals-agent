@@ -599,6 +599,9 @@ def _proposal_inputs(c):
     regime = json.loads((c.out / "regime-timeline.json").read_text())["session_regime_from_scan"]
     kw = dict(intervals=focused, hud_samples=hud, ui_keys=hi.ui_key_presses(events), controls=hi.control_times(events),
               gaps=gaps, session_regime=regime or "unknown", dead=dead)
+    if c.mode == "match":
+        need(hasattr(hi, "ping_wheel_cuts"), "match proposal requires the ping-wheel-aware snapshot")
+        kw["ping_wheel_events"] = [e for e in events if e.get("type") == "mouse" and int(e.get("button_flags", 0)) & 0x30]
     if hasattr(hi, "move_presses"):   # the emote wheel's cut runs to the player's next move (2026-09-27)
         kw["presses"] = hi.move_presses(events)
     change = c.out / "settings-change.json"
@@ -850,6 +853,8 @@ def step_evidence(c):
                    "settings-change.json")
                    if n not in ("timed-practice.json", "settings-change.json") or (c.out / n).exists()},
                parameters=dict(ui_keys=hi.UI_KEYS, settings_menu_keys=sorted(hi.SETTINGS_MENU_KEYS),
+                               ping_wheel=(dict(mouse_button=3, held=True, release_settle_ns=hi.UI_SETTLE_NS)
+                                           if c.mode == "match" else None),
                                ui_settle_ns=hi.UI_SETTLE_NS, afk_ns=hi.AFK_NS, max_hud_gap_ns=hi.MAX_HUD_GAP_NS,
                                review_interior_every_ns=REVIEW_INTERIOR_EVERY_NS,
                                mode=c.mode,
