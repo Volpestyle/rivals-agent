@@ -24,7 +24,7 @@ from .model import Config
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--horizon", type=int, choices=(4, 8), required=True)
+    parser.add_argument("--horizon", type=int, choices=(1, 4, 8), required=True)
     parser.add_argument("--manifest", required=True)
     parser.add_argument("--registry", required=True)
     parser.add_argument("--tally", required=True)
@@ -37,7 +37,7 @@ def main(argv=None):
                   "authorized Modal container required")
     train.require(torch.cuda.is_available(), "CUDA required; no fallback")
     gpu = torch.cuda.get_device_name()
-    train.require(gpu == "NVIDIA L40S", "both cloud arms require the same L40S device")
+    train.require(gpu == "NVIDIA L40S", "all cloud arms require the same L40S device")
     out = Path(args.out).resolve()
     train.require(out.is_relative_to("/outputs"), "outputs must stay on the explore output mount")
     train.require(Path(args.log).is_absolute(), "absolute evidence log required")

@@ -1,7 +1,7 @@
 # EXPLORATORY — short action chunks (2026-09-26)
 
-Owner: explore-policy. VUH-1346, Policy team, EXPLORE track. **Full caches complete; Mac H=1 running; Modal H=4/H=8 upload in progress.**
-Mac remains the H=1 reference. The dated 2026-09-27 lead authorization grants a separate $15 Modal explore cap for H=4/H=8; round 3 retains its own budget and resources.
+Owner: explore-policy. VUH-1346, Policy team, EXPLORE track. **Full caches complete; Mac H=1 running; Modal H=1/H=4/H=8 upload in progress.**
+The dated 2026-09-27 lead authorization grants a separate $30 hard Modal explore cap for device-matched H=1/H=4/H=8, with a warning before projections reach about $28. Mac H=1 continues as a cross-device check; round 3 retains its own budget and resources.
 Lead authorized an explore-only commit on 2026-09-27 once the full-run code is final.
 No validation, test, Gate 2 or sealed payloads are used.
 
@@ -41,6 +41,7 @@ if a chunk arm improves self-fed checks.
 | H=4 (full, Modal L40S) | 26 planned | Not run | Not run | Not run | Upload in progress |
 | H=8 (full, Modal L40S) | 26 planned | Not run | Not run | Not run | Upload in progress |
 | H=1 (full, Mac MPS) | 26 planned | Not evaluated | Not evaluated | Not evaluated | Training |
+| H=1 (full, Modal L40S) | 26 planned | Not run | Not run | Not run | Upload in progress |
 
 Each arm will have **fixed 0.5** and **TRAIN-chosen per-action threshold** rows,
 each under **median, mode and expectation** camera decoding.
@@ -272,15 +273,16 @@ complete set before verification, beyond the one-hour cutoff. No PC fit ran.
 The 16 GB RTX 4080 SUPER versus documented roughly 21 GB fit memory is an
 additional untested capacity concern, not a measured OOM.
 
-James then authorized a separate $15 Modal explore budget. The lead's final
-scope on thread `explore-modal-15` is **H=4 and H=8 only**, parallel L40S,
+James first authorized a separate $15 Modal explore budget, then raised it to
+a **$30 hard cap** to preserve comparison quality. The final scope on thread
+`explore-modal-15` is **H=1, H=4 and H=8**, parallel L40S,
 8 CPU cores/32 GiB, seed 0, 26 epochs, execute offset zero and replan.
-Mac H=1 continues as a **cross-device MPS versus CUDA reference**. A Modal H=1
-requires a new budget decision; it is not silently included. Once the cloud
+Mac H=1 continues as a **cross-device MPS versus CUDA check**; the primary
+chunk comparison uses the device-matched Modal H=1. Once the cloud
 arms are confirmed live, the Mac successor queue will stop after H=1 evaluation,
 preserving H=1 and preventing duplicate H=4/H=8 runs.
 
-Both cloud arms keep the same model/loss/targets/recipe and optional per-epoch
+All cloud arms keep the same model/loss/targets/recipe and per-epoch
 dev curves, with final fixed-0.5/train-chosen thresholds crossed with camera
 median/mode/expectation. `explore_cloud_run.py` calls the existing fit function;
 evaluation now accepts an explicit device with MPS still the default. No AMP,
@@ -288,10 +290,13 @@ batch, precision, seed, data selection or loss change is introduced.
 
 At the measured L40S benchmark and published resource rate $2.584224/hour,
 the 588 versus 284 updates per epoch project to about 119 min/$5.12 per arm
-including epoch-dev checks. Two arms plus setup/final evaluation project to
-roughly $11-12, with the **strict $15 guard** binding even if incomplete.
+including epoch-dev checks. Three arms plus setup/final evaluation project to
+roughly $16-18; the lead accepts about $21 plus setup/eval, with the
+**strict $30 guard** binding even if incomplete and notification at a $27.50
+projection or conservative spend bound, ahead of the roughly $28 warning point.
 These are extrapolations, not measured chunk-run costs. The original three-arm
-estimate exceeded $15 before final evaluation, which caused the scope reduction.
+estimate exceeded $15 before final evaluation; James then funded device matching
+instead of retaining a cheaper cross-device primary comparison.
 
 The Mac upload contains 69.446 GB including steps and pinned source/metadata;
 the prior 36.658 GB/3654.7 s upload implies about 115 min plus verification.
@@ -302,7 +307,7 @@ are never mounted or modified. The first upload failed on the file-descriptor
 limit; the documented 8192 limit was applied and the isolated upload restarted.
 Dashboard `explore-modal-upload`; Mac artifacts under `explore/modal15/`.
 
-Paid work is not yet launched. The driver reserves the complete $15 allowance
+Paid work is not yet launched. The driver reserves the complete $30 allowance
 before app creation, uses retries=0 and bounded function lifetimes, and starts
 an independent driver-death/deadline watchdog. The budget calculation reserves
 $0.75 non-GPU overhead and 120 seconds for teardown. Collection must prove
@@ -312,3 +317,8 @@ and 11 reservation/clock/identity/owned-teardown checks passed; targeted lint pa
 Runner artifacts and detailed estimates are in `handoff/explore/modal_*.py` and
 `pc-cuda-feasibility.md`. Cloud results must retain their actual CUDA/GPU/software
 identity and the cross-device limitation; this remains EXPLORATORY evidence.
+If a chunk arm clearly beats H=1, the next proposal is a multi-seed confirmation,
+not additional single-seed variants. The Mac H=1 is never interrupted by the
+successor-stop helper; its STOP is written only after training exits normally
+and its evaluator has started. The initial $15 waiting launcher was stopped
+before any paid driver existed, then replaced for the new three-arm authorization.
