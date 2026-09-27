@@ -1,0 +1,48 @@
+{
+  "tag": "EXPLORATORY",
+  "cohort": "full",
+  "train": [
+    {
+      "steps": "/inputs/steps/20260923T051828-422Z-33696-1.jsonl",
+      "cache": "/inputs/caches/20260923T051828-422Z-33696-1"
+    },
+    {
+      "steps": "/inputs/steps/20260923T200129-346Z-33696-6.jsonl",
+      "cache": "/inputs/caches/20260923T200129-346Z-33696-6"
+    },
+    {
+      "steps": "/inputs/steps/20260924T232304-170Z-12024-1.jsonl",
+      "cache": "/inputs/caches/20260924T232304-170Z-12024-1"
+    },
+    {
+      "steps": "/inputs/steps/20260925T021320-371Z-7804-1.jsonl",
+      "cache": "/inputs/caches/20260925T021320-371Z-7804-1"
+    },
+    {
+      "steps": "/inputs/steps/20260925T025230-605Z-7804-2.jsonl",
+      "cache": "/inputs/caches/20260925T025230-605Z-7804-2"
+    },
+    {
+      "steps": "/inputs/steps/20260925T203745-207Z-49728-2.jsonl",
+      "cache": "/inputs/caches/20260925T203745-207Z-49728-2"
+    },
+    {
+      "steps": "/inputs/steps/20260926T035932-508Z-63684-14.jsonl",
+      "cache": "/inputs/caches/20260926T035932-508Z-63684-14"
+    },
+    {
+      "steps": "/inputs/steps/20260926T045729-166Z-79780-1.jsonl",
+      "cache": "/inputs/caches/20260926T045729-166Z-79780-1"
+    }
+  ],
+  "dev": [
+    {
+      "steps": "/inputs/steps/20260923T171533-187Z-33696-5.jsonl",
+      "cache": "/inputs/caches/20260923T171533-187Z-33696-5"
+    },
+    {
+      "steps": "/inputs/steps/20260923T205528-900Z-45572-3.jsonl",
+      "cache": "/inputs/caches/20260923T205528-900Z-45572-3"
+    }
+  ]
+}

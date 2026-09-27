@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-nohistory-confirm-20260927/mac-code-88b231d/policy/range_bc/confirm_encoder_judge.py", line 230, in <module>
+    main()
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-nohistory-confirm-20260927/mac-code-88b231d/policy/range_bc/confirm_encoder_judge.py", line 222, in main
+    result = judge(rows)
+             ^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-nohistory-confirm-20260927/mac-code-88b231d/policy/range_bc/confirm_encoder_judge.py", line 160, in judge
+    configs.append(validate_run(ev, arm, seed))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-nohistory-confirm-20260927/mac-code-88b231d/policy/range_bc/confirm_encoder_judge.py", line 115, in validate_run
+    require(recipe["run_identity"].startswith(INPUT_SHA), "input manifest differs")
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-nohistory-confirm-20260927/mac-code-88b231d/policy/range_bc/confirm_encoder_judge.py", line 35, in require
+    raise ValueError(message)
+ValueError: input manifest differs

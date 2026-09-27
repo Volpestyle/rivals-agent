@@ -1,0 +1,58 @@
+{
+  "status": "JUDGE_REFUSED_NO_VERDICT",
+  "exit": 1,
+  "judge_sha256": "6f2187dd974befedbaf656470d7b153f3a5ca7be0a62a3954a67670ab726aa32",
+  "judge_expected_input_sha": "aec08c08e247e3743ddeb1eec49dd880e1c0f62039c375932cab31dfccb91e22d",
+  "expected_length": 65,
+  "actual_manifest_sha256": "aec08c08e247e3743ddeb1eec49dd880e1c0f62039c375932cab31dfccb91e22",
+  "actual_length": 64,
+  "manifest_bytes": 1487,
+  "upload_manifest_sha256": "73c8d80c13281e8a8d4d502e10cb82cf35831eb4ffb1897fdc4e9cbe7789c19e",
+  "upload_manifest_row": {
+    "source": "/Users/james/dev/range-bc-data/explore/modal15/manifest-modal.json",
+    "path": "manifest-modal.json",
+    "bytes": 1487,
+    "sha256": "aec08c08e247e3743ddeb1eec49dd880e1c0f62039c375932cab31dfccb91e22"
+  },
+  "stderr_sha256": "6e5354c611adf164cebecde8d8ee7af1898ec6247fcc5f62e13bc229840a5a54",
+  "terminal_sha256": "8b01f3a1deae4c09bdf113e743f046058b2d754e8090e2d67456b214a48bbb93",
+  "runs": [
+    {
+      "run": "candidate-s1",
+      "evaluation_sha256": "49106a04c14c88478a9fa0656d52e3a6d264e9ee03f9532223c3367beb54e8e6",
+      "run_identity": "aec08c08e247e3743ddeb1eec49dd880e1c0f62039c375932cab31dfccb91e227138cd19829b998e7553a93ccf2e24ea66e2844e2323ef785fd8f5e024a1a260",
+      "complete_receipt_sha256": "3536df90da3541377ee58d7b2747ebb8151bc259b0ff18ffaca795050ae59b22"
+    },
+    {
+      "run": "candidate-s2",
+      "evaluation_sha256": "ba644e00d983fb75363edaea46e8b3e5e79baaf50251389e72cfbdf71285d7fb",
+      "run_identity": "aec08c08e247e3743ddeb1eec49dd880e1c0f62039c375932cab31dfccb91e22e14643a8532aeeb870800b95a27d64a2c86c6d5d4de44c3eecd158fe8f3c71a1",
+      "complete_receipt_sha256": "cd47a530d2d3c8ed872b04b1842f63543a800c51e87f52b6e982f5565973143f"
+    },
+    {
+      "run": "candidate-s3",
+      "evaluation_sha256": "f2ebb1ac86a2e3128fa5f2d822c4da22230e26ea9402edd2a9629c003af9bde0",
+      "run_identity": "aec08c08e247e3743ddeb1eec49dd880e1c0f62039c375932cab31dfccb91e223a030f2ef000d2179e29fe70f1024f5568b2c952425db74b4b77162281016d7f",
+      "complete_receipt_sha256": "4ccc77d66f1c02a8bef06db2a6acf8159606512158d52830edc29dd1f3a15523"
+    },
+    {
+      "run": "control-s1",
+      "evaluation_sha256": "2af2e7a24cccf2d5b158ae0a1876aa8d8860ef6722f6668c32b4f17b19e5d632",
+      "run_identity": "aec08c08e247e3743ddeb1eec49dd880e1c0f62039c375932cab31dfccb91e2290b56a52bf9ae99a77e5d50be6b4687766abf344f5a714914908dbf582708d10",
+      "complete_receipt_sha256": "40ea176f72643b6f08d16ab1d2ae0695edf6401c4b65a8498dd400aae5727646"
+    },
+    {
+      "run": "control-s2",
+      "evaluation_sha256": "23e982212a3a7f16f11c6c51838733d7bdf0d33eef9d203427fb690edcfcfa6f",
+      "run_identity": "aec08c08e247e3743ddeb1eec49dd880e1c0f62039c375932cab31dfccb91e22bd8aa1b70bb1e9dbff3d59fae832a034793e2e48a329a1a1b4a854a12c2d48e5",
+      "complete_receipt_sha256": "67571855ef895c83e08d2397301b77e286be5c71ee4e8c00f7b23679a3eb29f3"
+    },
+    {
+      "run": "control-s3",
+      "evaluation_sha256": "aa569391605fdc7fafc6af0a4541c843f191fa191842d48c66c19eccd842a3a4",
+      "run_identity": "aec08c08e247e3743ddeb1eec49dd880e1c0f62039c375932cab31dfccb91e22969f932151f2275390f21bc4975a4f021b30185be9b6ae0eb0a341dfec2b571e",
+      "complete_receipt_sha256": "a42100ba127d7fbc7cbf0f3a5cb2b3c20d3ddbef660830d0cbbd82bc5069494f"
+    }
+  ],
+  "note": "All six evaluations complete before collection; no metric values exposed. Frozen judge and original evaluation/recipe bytes unchanged."
+}
