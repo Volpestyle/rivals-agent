@@ -62,3 +62,14 @@ def test_zero_control_zeroes_both_visual_streams_with_identical_rows():
     zero = D.infer(Model(), Examples(), device="cpu", zero=True, batch=2)
     assert real.shape == zero.shape == (3, 3)
     assert (real > .99).all() and (zero == .5).all()
+
+
+def test_recovery_without_completed_train_refuses_before_checkpoint(tmp_path):
+    from policy.idm import press_stages as S
+    loaded = [({'role':'train'}, SimpleNamespace(session_id='train')),
+              ({'role':'heldout'}, SimpleNamespace(session_id='heldout'))]
+    identity = {key:'1'*64 for key in S.IDENTITY}
+    identity.update(app_name='synthetic', output_volume_id='vo-synthetic')
+    with pytest.raises(ValueError, match='partial TRAIN inference'):
+        D.run(loaded, tmp_path/'must-not-open', '1'*64, tmp_path, device='cpu',
+              manifest_sha256='1'*64, stage_identity=identity, resume=True)

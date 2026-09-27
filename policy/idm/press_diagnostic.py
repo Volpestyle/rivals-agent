@@ -14,7 +14,7 @@ import numpy as np
 import torch
 
 from policy import idm_targets as T
-from policy.idm import explore as E, temporal, train as TR
+from policy.idm import explore as E, temporal, train as TR, press_stages
 from policy.idm.frames import FrameStore
 from policy.range_bc import vocab
 
@@ -78,10 +78,36 @@ def require_disjoint_roles(loaded):
               "separate explicit train and heldout required")
 
 
+def persist_json(path, value):
+    """Recovery preserves existing complete results byte-for-byte."""
+    if path.exists():
+        import json
+        E.require(json.loads(path.read_text()) == value, 'existing diagnostic artifact differs')
+    else:
+        E.write_json(path, value)
+
+
+def persist_scores(path, value):
+    if path.exists():
+        prior = np.load(path, allow_pickle=False)
+        E.require(prior.dtype == value.dtype and np.array_equal(prior, value),
+                  'existing probabilities differ; preserve original and use a new recovery directory')
+    else:
+        np.save(path, value, allow_pickle=False)
+
+
 def run(loaded, checkpoint, checkpoint_sha, out, *, device, progress=lambda _: None,
-        manifest_sha256=None):
+        manifest_sha256=None, stage_identity=None, resume=False):
     out = Path(out)
     require_disjoint_roles(loaded)
+    if stage_identity is not None:
+        press_stages.identity_check(stage_identity)
+        E.require(stage_identity['checkpoint_sha256'] == checkpoint_sha
+                  and stage_identity['run_config_sha256'] == manifest_sha256, 'stage run/checkpoint mismatch')
+    if resume:
+        E.require(stage_identity is not None, 'recovery needs immutable stage identity')
+        E.require((out / 'stages/train-inference/stage-complete.json').is_file(),
+                  'partial TRAIN inference refused; no complete stage to resume')
     E.require(T.sha256(checkpoint) == checkpoint_sha, "checkpoint hash mismatch")
     model, payload = TR.load_checkpoint(checkpoint, device=device)
     sets = {"train": [], "heldout": []}
@@ -104,13 +130,20 @@ def run(loaded, checkpoint, checkpoint_sha, out, *, device, progress=lambda _: N
                   "target differs from fixed checkpoint provenance")
     train = TR.Examples(sets["train"], model.config, model.support)
     progress("TRAIN inference for rate calibration")
-    train_p = infer(model, train, device=device, progress=progress)
-    np.save(out / "train-probabilities.npy", train_p, allow_pickle=False)
-    calibration = thresholds(view(train), train_p, role="train")
-    E.write_json(out / "calibration.json", calibration)
+    if stage_identity is None:
+        train_p = infer(model, train, device=device, progress=progress)
+        calibration = thresholds(view(train), train_p, role="train")
+    else:
+        train_p, calibration = press_stages.scores(
+            out / 'stages/train-inference', 'train-inference', stage_identity, press_stages.rows_identity(train),
+            lambda: infer(model, train, device=device, progress=progress), resume=resume,
+            calibrate=lambda p: thresholds(view(train), p, role='train'))
+        E.require(calibration == thresholds(view(train), train_p, role='train'), 'TRAIN calibration mismatch')
+    persist_scores(out / "train-probabilities.npy", train_p)
+    persist_json(out / "calibration.json", calibration)
     del train, train_p
     heldout = TR.Examples(sets["heldout"], model.config, model.support)
-    E.write_json(out / "heldout-row-ids.json", [[t.session_id, row["i"]] for t, _, row, _ in heldout.items])
+    persist_json(out / "heldout-row-ids.json", press_stages.rows_identity(heldout))
     cuts = [calibration["thresholds"][a] for a in ACTIONS]
     supported = [model.support[a] for a in ACTIONS]
     report = {"scope": "EXPLORATORY", "review": "provisional", "checkpoint_sha256": checkpoint_sha,
@@ -126,13 +159,19 @@ def run(loaded, checkpoint, checkpoint_sha, out, *, device, progress=lambda _: N
                          "Fixed-0.5 results differ from the old abstained-row report by design."}
     for control in ("real", "zero_visuals"):
         progress(f"Heldout {control} inference")
-        p = infer(model, heldout, device=device, zero=control == "zero_visuals", progress=progress)
-        np.save(out / (control + "-probabilities.npy"), p, allow_pickle=False)
+        if stage_identity is None:
+            p = infer(model, heldout, device=device, zero=control == "zero_visuals", progress=progress)
+        else:
+            p, _ = press_stages.scores(
+                out / 'stages' / control, control, stage_identity, press_stages.rows_identity(heldout),
+                lambda: infer(model, heldout, device=device, zero=control == 'zero_visuals', progress=progress),
+                resume=resume)
+        persist_scores(out / (control + "-probabilities.npy"), p)
         report["controls"][control] = {}
         for label, values in (("fixed_0.5", [0.5] * len(ACTIONS)), ("train_rate", cuts)):
             progress(f"{control}: {label} scoring")
             report["controls"][control][label] = score(view(heldout), p, values, supported, progress)
-    E.write_json(out / "report.json", report)
+    persist_json(out / "report.json", report)
     return report
 
 
@@ -141,10 +180,15 @@ def main(argv=None):
     for name in ("manifest", "manifest-sha256", "registry", "checkpoint", "checkpoint-sha256", "out"):
         p.add_argument("--" + name, required=True)
     p.add_argument("--device", choices=("cuda", "mps"), required=True)
+    p.add_argument('--stage-identity')
+    p.add_argument('--stage-identity-sha256')
+    p.add_argument('--resume-complete-stages', action='store_true')
     a = p.parse_args(argv)
     torch.set_num_threads(8)
     manifest = E.read_pinned(a.manifest, a.manifest_sha256)
     loaded = E.preflight(manifest, registry=a.registry, denylist=T.load_denylist())
+    E.require(bool(a.stage_identity) == bool(a.stage_identity_sha256), 'stage identity and pin required together')
+    identity = E.read_pinned(a.stage_identity, a.stage_identity_sha256) if a.stage_identity else None
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     from scripts.job_status import write
@@ -153,7 +197,8 @@ def main(argv=None):
           stage="running", evidence=str(out / "report.json"))
     try:
         run(loaded, a.checkpoint, a.checkpoint_sha256, out, device=a.device,
-            progress=lambda v: write(job, root=out / "jobs", progress=v), manifest_sha256=a.manifest_sha256)
+            progress=lambda v: write(job, root=out / "jobs", progress=v), manifest_sha256=a.manifest_sha256,
+            stage_identity=identity, resume=a.resume_complete_stages)
         write(job, root=out / "jobs", stage="done")
     except BaseException:
         write(job, root=out / "jobs", stage="failed")
