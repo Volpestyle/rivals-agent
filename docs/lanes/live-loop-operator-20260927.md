@@ -11,7 +11,10 @@ Camera startup a3 has pre-run LAND, receipt 47a7960a:
 Old a2 and earlier receipts are stale. Owner and independent reviewer each
 passed all 40 CPU tests. The actual yaw-01 drift frame now refuses.
 Full turns need NO focal. Every short-pulse block needs an ACCEPTED focal receipt.
-Offline focal remains unknown at this writing; do not wait in the range for it.
+Actual CALIBRATION focal attempt refused (96 frames /52 tracks, all 20 motion
+models failed). Focal remains unknown: **run yaw + FPS only, skip section 3**.
+Focal result: `docs/evidence/focal-calibration-20260927/RESULT.md` (0dafeb0).
+Do not wait in the range for a focal fit.
 The fallback is entirely neutral on TRAIN, so there is NO learned policy block.
 
 ## 0. Operator setup
@@ -186,7 +189,7 @@ uv run --no-project --python $camPython python scripts/measure_inference_fps.py 
 ```
 
 No live-loop or live-fps concurrent process is required. The CPU focal worker
-has no decode running as of its latest report; it must not decode while
+finished with a refusal and its decoder/fit exited; it must not decode while
 Marvel/OBS is active. Light existing-evidence math is the only concurrent work
 permitted before FPS; stop even that for the A/B/A comparison. No input from
 workers. Lead owns navigation, keep-alives, native recording and stop decisions.

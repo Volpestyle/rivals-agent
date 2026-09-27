@@ -10,11 +10,10 @@ cost and acceptance remain unknown. Raw evidence is
 `data/calibration/alt-cam-20260927/yaw-01`; partial OBS video is
 `C:/Users/volpe/Videos/2026-09-27 14-27-37.mkv`.
 
-Lead released the PC at 15:24 CDT: game and OBS closed. Camera CPU checks
-completed; calibration analysis may use one guarded CPU decode slot (admission
-has the other). The lead will start after both the focal verdict and admission
--5 assembly finish. A focal refusal means yaw + FPS only; no extra sweep is
-silently inserted. Workers stop before the sitting and whenever game/OBS starts.
+Lead released the PC at 15:24 CDT. Camera checks completed and a3 landed 91b6d9b.
+Calibration focal analysis completed with an explicit refusal; its decoder and
+fit exited. **Next sitting is yaw + FPS only**, after admission -5 assembly.
+No pulse or new mouse-sweep block is included. Workers stop before the sitting.
 
 ## Before the next sitting
 
@@ -32,13 +31,15 @@ silently inserted. Workers stop before the sitting and whenever game/OBS starts.
   through C:\desk in console session 1 after James closes the game. No new-env
   CUDA forward, FPS preparation or desktop qualification is claimed. Camera
   CPU tests passed using the repaired env.
-- Focal work now uses only the three explicitly authorized CALIBRATION entries:
-  alt `20260926T162648-153Z-116800-4`, rightward strokes
-  `20260925T030045-211Z-7804-3`, main `20260926T060921-977Z-60612-1`. They never
-  entered a split. Prepare counts/settings/window provenance now; guarded CPU
-  native decoding only when game/recording closes. Fit each account separately,
-  preserve uncertainty, and establish transfer before accepting alt pulses.
-  The earlier three-TRAIN-still attempt had zero tracks and remains a refusal.
+- Focal is unknown after the actual alt CALIBRATION attempt: four native pose
+  inspections, then 96 adjacent frames at 6.0-6.8s and 52 common tracks. All 20
+  delay/smoothing models refuse. Horizontal/vertical RMS 3.637/3.840px exceed 1.5px
+  gates; diagnostic 625px and profile 615-630 are NOT an accepted value or bounds.
+  Old 465 gain coupling is unresolved; no main-account transfer. Raw evidence:
+  `docs/evidence/focal-calibration-20260927/alt_left-window-20260927T202800/fit.json`.
+  Focal packet landed 0dafeb0 with seven owner tests; full result is
+  `docs/evidence/focal-calibration-20260927/RESULT.md`. Decoder/fit/test processes
+  exited, CPU only, 425 MB peak parent RSS; no further work queued.
 
 ## Operator sequence and time
 
@@ -47,11 +48,10 @@ activity. James need not be at the desk. No worker drives input or capture.
 Exact commands and atomic tokens are in
 [live-loop-operator-20260927.md](live-loop-operator-20260927.md); it names the accepted a3 receipt and durable interpreter.
 
-Allow about 23 minutes for yaw plus FPS, or about 29 minutes if accepted focal
-allows the six-minute pulse block. Plan around 30 minutes; hard stop remains
-minute 33 if camera work is incomplete. Do not keep the game idle awaiting
-implementation, review or a focal fit. No new mouse-sweep block is booked while
-existing calibration evidence is being analyzed.
+Allow about **23 minutes, capped at 30**, for yaw plus FPS. Hard stop remains
+minute 33 if camera work is incomplete. Do not keep the range idle awaiting
+implementation or a focal fit. The focal-dependent six-minute pulse block and
+old six-minute mouse-sweep block are omitted from this attempt.
 
 1. Setup Spider-Man in alt Practice Range, Steam Input disabled, H/V247/124,
    observed actual curve/assist/cooldown settings, FPS overlay and native OBS.
@@ -63,9 +63,8 @@ existing calibration evidence is being analyzed.
    approval without a pad, M1 prime, five-second neutral delay, then a separate
    ready-0 token. Recheck level, bots and banner after the roughly 50-degree turn.
    Native video must count full turns; an NPZ return is only a candidate.
-3. Only with accepted focal, run signed short-pulse groups. Pitch order alternates
-   +.5,-.5,+1,-1 away from clamps. No return pulse exists. Each pulse has its own
-   inspected token. Refusal leaves the rate unknown and ends the block.
+3. Skip all short-pulse groups: focal was not established. Their commands remain
+   in the sheet for a later accepted focal, not this sitting.
 4. After camera closure and another activity refresh, run the actuator-free FPS
    A/B/A for 120 seconds with fixed view/settings/OBS/cap. Stop all worker math,
    tests, decode and inference during the comparison. No keep-alive inside it.
@@ -103,7 +102,9 @@ repair has a3 pre-run LAND (47a7960a), with 40 owner/reviewer CPU tests and an
 actual yaw-01 drift rejection: pre-attach token, M1 300ms prime, five-second
 neutral, fresh ready-0. Durable env receipt
 38bf7953 provides C:/Users/volpe/.venvs/rivals-live-cu128/Scripts/python.exe;
-console-session desktop probe remains lead-owned. Focal now targets three
-existing CALIBRATION takes, with guarded CPU decoding released at15:24 after play/recording closed. Fallback
+console-session desktop probe remains lead-owned. The alt CALIBRATION focal
+attempt refused: 96 frames /52 tracks, all 20 models fail residual gates; no focal
+or bounds. Decoder/fit stopped. Next sitting is yaw+FPS only after admission
+assembly; no pulses. Fallback
 replay f8892cf was 100% neutral across 3,600 frames; learned/scripted trials remain
 deferred. Lead owns publication and sitting scheduling; no Linear write claimed.
