@@ -1,0 +1,58 @@
+{
+ "session": "20260927T051206-888Z-150600-4",
+ "at": "2026-09-27T21:06:34.799898+00:00",
+ "reason": "Lead-authorized ping-wheel correction. Historical receipts remain immutable; original assembly bytes preserved before replacement.",
+ "files": [
+  {
+   "previous": "settings.json",
+   "preserved": "settings.v1.json",
+   "sha256": "fcb7d8641725120cbd01a8e8080399235399f7b7cdf45a44dd071278e89db502"
+  },
+  {
+   "previous": "review.json",
+   "preserved": "review.v1.json",
+   "sha256": "cad8c9df75f082abd9eceab75064c1f00cef1bdec997368352d44983e601c303"
+  },
+  {
+   "previous": "imported-demo.jsonl",
+   "preserved": "imported-demo.v1.jsonl",
+   "sha256": "058f84d4a178f1e66b6cfd14f3f7c94104f4cc8cd9a8ce5a2cb0dc5d5a842653"
+  },
+  {
+   "previous": "20260927T051206-888Z-150600-4.steps.jsonl",
+   "preserved": "20260927T051206-888Z-150600-4.steps.v1.jsonl",
+   "sha256": "d02b32a7665f68ec4f36e3e33b9075a625897018e3f31386c59343ce8ed2fc48"
+  },
+  {
+   "previous": "sampling.json",
+   "preserved": "sampling.v1.json",
+   "sha256": "63ec8cb8ccbc7d115b4eb85b7bc606eee8957afa98f2d8a24dfd2dea3417a4b9"
+  },
+  {
+   "previous": "minutes.json",
+   "preserved": "minutes.v1.json",
+   "sha256": "bf431fc7856eded96922faa3857fef2c2099c6283738b918b05d2b8119636742"
+  },
+  {
+   "previous": "recording-log.32007db.md",
+   "preserved": "recording-log.32007db.v1.md",
+   "sha256": "76748eb90f1eb4e454cdd98d614e7514329a63f37969753f15607942aba59618"
+  },
+  {
+   "previous": "registry.1c9e2c671b14.json",
+   "preserved": "registry.1c9e2c671b14.v1.json",
+   "sha256": "1c9e2c671b14e9d1ea8bcefd4703668a039ecac946d2f5ece768746e67118a13"
+  },
+  {
+   "previous": "artifact-hashes.json",
+   "preserved": "artifact-hashes.v1.json",
+   "sha256": "c3dad2c1348a6590463aaf906c12582227da8acc15b375ada1691f5742216716"
+  }
+ ],
+ "previous_independent": {
+  "path": "independent-review.v1.verdicts.json",
+  "sha256": "84b11c1f3632155420019c3e1d7f92b6f209995bca2d15a34e5bca325b35717d"
+ },
+ "independent_sha256": "eb8442d91ab0aee2460dce0979aa97090f7263880ec38981407814ca4df72c41",
+ "required_after_assembly": "Every unchanged segment row must match the historical table except global row/run numbering; no accepted ping-hold or release-settle overlap."
+}

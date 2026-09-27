@@ -1,0 +1,41 @@
+{
+ "format": "rivals-idm-match-admission-v1",
+ "scope": "EXPLORATORY",
+ "decision": "accepted",
+ "reviewer": "fit-review (Codex, independent admission delta): docs/evidence/admission-reviews-20260927/review-ping-delta-d4ebdb1.md, verdict LAND at sha256 91b1c8b395e484812a46c96df83bb8bfe592e11d74fefb028f9b5ad8d0bb563d; frame-review (Opus, independent native-frame verdicts): data/human/sessions/20260927T051206-888Z-150600-4/independent-review.v2.verdicts.json sha256 eb8442d91ab0aee2460dce0979aa97090f7263880ec38981407814ca4df72c41, matches_owner on all 59 segments",
+ "producer": "admission-owner (data/human/sessions/match_admission.py)",
+ "snapshot": "code-snapshot-f8fd92c-6046514b",
+ "snapshot_manifest_sha256": "f37a5a717d06517d160403146eb69818060874582ce79d5fd6aa196fcea82e4e",
+ "registry": {
+  "path": "data/human/session-splits.corpus.json",
+  "sha256": "1c9e2c671b14e9d1ea8bcefd4703668a039ecac946d2f5ece768746e67118a13"
+ },
+ "sessions": {
+  "20260927T051206-888Z-150600-4": {
+   "source_kind": "live",
+   "session_group": "20260927T051206-888Z-150600-4",
+   "media_sha256": "d279f81bb4b36cfcf4a0224deef1eace2cbfaf02dbf5744e653b36ceb8bb49e3",
+   "steps_sha256": "058c5293dc3152b9a8edc5299192b27d59444b11badf994c2cca25e0344fadaf",
+   "imported_demo_sha256": "f5f9c4dce9bc1f8ce3526ee29fb06cb216dec94207e0ded4594c1c58a3203409",
+   "identity_sha256": "5100f677648de77413e6c419308f6a37daa5e5066532b78b6de078c82a23a436",
+   "motor_statement_sha256": "7b5fb0e1cb548cf90969408883f42f37cfea45ec7b253365f608aa078707f3c9"
+  }
+ },
+ "accepted": {
+  "by": "the lead (herdr-lead), 2026-09-27, on the two independent reviews above",
+  "written_by": "admission-codex, on the lead's instruction; the entry is byte-for-byte the pending one",
+  "pending": {
+   "path": "receipt/match-admission-051206.pending-a1.json",
+   "sha256": "d1753e8fb9dab6fc7921286ffd12e02c6c162db3645d3905bf3fb57a3d1e9029"
+  }
+ },
+ "supersedes": {
+  "path": "receipt/match-admission-051206.accepted.json",
+  "sha256": "f4c2b7dfa9c562265255f55367bf1d96d180ddb233f2872275231251ee0be5a9",
+  "reason": "Lead decision: historical acceptance included a held button-3 ping wheel in seg-015/030/043; this revision cuts the hold plus 2 s settle and preserves every unaffected segment.",
+  "audit": {
+   "path": "data/admission-codex/accepted-ping-wheel-audit-20260927.json",
+   "sha256": "4e0ed4645b9c91c56bd04a1b4755f18e324c22511e099ae65003a11a42d20b34"
+  }
+ }
+}

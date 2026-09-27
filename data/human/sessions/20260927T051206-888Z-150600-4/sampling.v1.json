@@ -3,13 +3,13 @@
  "format": "rivals-range-steps-v1",
  "step_ns": 33333333,
  "frame_period_ns": 8333333,
- "rows": 12189,
- "accepted_rows": 8923,
- "eligible_rows": 8923,
+ "rows": 12194,
+ "accepted_rows": 9103,
+ "eligible_rows": 9103,
  "steps": {
   "path": "20260927T051206-888Z-150600-4.steps.jsonl",
-  "sha256": "058c5293dc3152b9a8edc5299192b27d59444b11badf994c2cca25e0344fadaf"
+  "sha256": "d02b32a7665f68ec4f36e3e33b9075a625897018e3f31386c59343ce8ed2fc48"
  },
- "export_digest": "058c5293dc3152b9a8edc5299192b27d59444b11badf994c2cca25e0344fadaf",
+ "export_digest": "d02b32a7665f68ec4f36e3e33b9075a625897018e3f31386c59343ce8ed2fc48",
  "grid": "anchors every step_ns from the first frame inside each segment \u2229 focus span, while the step fits strictly before the span end; stale-frame anchors (age > 2 frame periods) are not emitted"
 }

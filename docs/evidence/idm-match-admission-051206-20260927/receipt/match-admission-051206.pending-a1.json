@@ -1,0 +1,24 @@
+{
+ "format": "rivals-idm-match-admission-v1",
+ "scope": "EXPLORATORY",
+ "decision": "pending",
+ "reviewer": null,
+ "producer": "admission-owner (data/human/sessions/match_admission.py)",
+ "snapshot": "code-snapshot-f8fd92c-6046514b",
+ "snapshot_manifest_sha256": "f37a5a717d06517d160403146eb69818060874582ce79d5fd6aa196fcea82e4e",
+ "registry": {
+  "path": "data/human/session-splits.corpus.json",
+  "sha256": "1c9e2c671b14e9d1ea8bcefd4703668a039ecac946d2f5ece768746e67118a13"
+ },
+ "sessions": {
+  "20260927T051206-888Z-150600-4": {
+   "source_kind": "live",
+   "session_group": "20260927T051206-888Z-150600-4",
+   "media_sha256": "d279f81bb4b36cfcf4a0224deef1eace2cbfaf02dbf5744e653b36ceb8bb49e3",
+   "steps_sha256": "058c5293dc3152b9a8edc5299192b27d59444b11badf994c2cca25e0344fadaf",
+   "imported_demo_sha256": "f5f9c4dce9bc1f8ce3526ee29fb06cb216dec94207e0ded4594c1c58a3203409",
+   "identity_sha256": "5100f677648de77413e6c419308f6a37daa5e5066532b78b6de078c82a23a436",
+   "motor_statement_sha256": "7b5fb0e1cb548cf90969408883f42f37cfea45ec7b253365f608aa078707f3c9"
+  }
+ }
+}
