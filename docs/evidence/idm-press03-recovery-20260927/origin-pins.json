@@ -1,0 +1,26 @@
+{
+  "identity": {
+    "app_name": "rivals-idm-press-20260927-02",
+    "checkpoint_sha256": "1b9bcc6a6f909d0e5cbd1cb5fb64c71c89a6cc5320c8c8989ac51cb952cbf541",
+    "input_manifest_sha256": "ea45b03bc2aa5a728dba5481682e4db09116303eb1f56fadc90a7c79d97ec548",
+    "output_volume_id": "vo-3nwjokChmoiQ176NeiDQ0o",
+    "run_config_sha256": "2560f70ab076d8b63d034fca5b77c026823f35516a51fe28a892eccba3d5358b",
+    "source_archive_sha256": "57e487897e78054b6393fd6e34a462f251b2f6a606b5e22176e4be6b78b8b440"
+  },
+  "original_final_sha256": "7b5cc6897deb68c71558d3017eaa07aa2e60fea9034e6f02b76fd978857added",
+  "artifacts": {
+    "calibration.json": "0e0c6b7fc578955e733c513c9044b7def061d44b9a6fe085bd396ee9d96645cb",
+    "heldout-row-ids.json": "d21761e8613b16640b9114b96feb8ecabc162c7453d72f8f513ffb4292df84b7",
+    "real-probabilities.npy": "65f8996e369e787f71d86e174c5b2275d509a31d9f8924deeb5689957a58f21e",
+    "run.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stage-identity.json": "ab6cc4cf83fe313239dd67dbdc1174c1e31ab7ae3b2919f11a4ab805565f9c28",
+    "train-probabilities.npy": "451cfb98f2a833729ee0b96118d0bf0349d1bb3d8f66a84be04e51eb32721a50",
+    "stages/real/probabilities.npy": "65f8996e369e787f71d86e174c5b2275d509a31d9f8924deeb5689957a58f21e",
+    "stages/real/row-ids.json": "07c2038f23cdf302729e38df57ce3888c2d9424d3e15d450ff3a34802698fc50",
+    "stages/real/stage-complete.json": "bdb8ffb1a13a931daf57aa2aade01eafeb31ad367aa20db0b0cb25712f5ee45c",
+    "stages/train-inference/calibration.json": "61c0b954ca3f7f0d0515d9442658a8bb7bc012c9be70752b1e7e554c82bb628d",
+    "stages/train-inference/probabilities.npy": "451cfb98f2a833729ee0b96118d0bf0349d1bb3d8f66a84be04e51eb32721a50",
+    "stages/train-inference/row-ids.json": "560cf2279b2fc995177216734f16b831dda9e2ce675822992df475182d0833a3",
+    "stages/train-inference/stage-complete.json": "15c871695b2874ed680e6e89ef22a7346a14ca79fa824ea536f89f976c875202"
+  }
+}

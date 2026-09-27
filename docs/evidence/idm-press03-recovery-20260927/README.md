@@ -1,0 +1,11 @@
+# Press03: zero-visual inference and paired report only
+
+Lead pre-approved this recovery after press02's function timeout. New app/output; unchanged reviewed spend enforcement, $1.50 hard. Existing own input volume stays read-only. No fitting, new target selection, pixels, sealed data, or old volume mutation.
+
+Exact wrapper bytes are in this packet. Runtime source archive is the press02 `c7b92c7` base plus only `policy/idm/press_zero_recovery.py` from `f439ba8`. `runner-manifest.json` pins it and the completed-stage archive. Origin is the hash-verified press02 delivery, final SHA-256 `7b5cc6897deb68c71558d3017eaa07aa2e60fea9034e6f02b76fd978857added`. TRAIN calibration and real probabilities are reused with their original identities and completion receipts. Partial zero outputs are not reused. New zero inference uses float32 zero motion and HUD tensors with the original batch shapes, all 49,080 saved rows and tail batch. No frame store is opened. Paired scoring uses the original scoring function and fixed TRAIN thresholds.
+
+At the measured 32,000 rows / 191 seconds, 49,080 rows take 292.946 seconds. The unchanged guard with cap 1.50 yields a 624-second function timeout, exceeding twice that measurement plus 30 seconds setup (615.893 seconds). Startup has a separate 300-second allowance and teardown 120 seconds. No 54.85 GB upload verification or frame-array reads recur. If time still runs out, no automatic new app or refit occurs.
+
+Tests: 24 synthetic tests pass, including exact zero-ablation equivalence with a tail batch, original-stage corruption refusal, exact saved row order and completion-receipt validation. The actual saved origin stages verify locally: 289,722 TRAIN rows and 49,080 real rows. Guard function ASTs and lifecycle/gate bytes match press02. All prior failures and result receipts remain immutable.
+
+Before this attempt: SSL $0.9568266506762123, press01 $1.798725950444412, press02 $2.715989037845592, all terminal with zero containers. Conservative cumulative bound $5.471541638966216; with this full cap, $6.971541638966216 of IDM's $25 hard budget, alert $20. These are allocation bounds, not invoices. No other active/upcoming IDM hold exists at preparation.

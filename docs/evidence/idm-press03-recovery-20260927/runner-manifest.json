@@ -1,0 +1,25 @@
+{
+  "scope": "EXPLORATORY",
+  "owner": "idm-owner",
+  "source_commit": "c7b92c7 base plus f439ba8 press_zero_recovery.py",
+  "source_archive_sha256": "cc942454d3dfdd4d17b40afecedb86269fd180a0766621c40a47dec685da4036",
+  "cap_usd": 1.5,
+  "launch_authorized": true,
+  "authorization": "Lead pre-approved zero-pass-only recovery, user message 2026-09-27",
+  "original_final_sha256": "7b5cc6897deb68c71558d3017eaa07aa2e60fea9034e6f02b76fd978857added",
+  "timeout_basis": "624 seconds >= 2*(49080/(32000/191)) + 30 seconds setup; no native pixel verification/read",
+  "files": {
+    "appcreate_gate.py": "2d076fa1c5908b11193a87838879bbd0498de515184a818d61f0586fac44c520",
+    "code.tar": "cc942454d3dfdd4d17b40afecedb86269fd180a0766621c40a47dec685da4036",
+    "explore_mounts.py": "2c36e2537fc7abb1cf39802fdd0f07fcb80cb7adec3a63a8c67d516ec2e702a9",
+    "idm_worker.py": "2ec339c48fcdf34a05357ebdf5c3ddc6d49d4772a3ec3e5150939ebe2790ab41",
+    "lifecycle.py": "17f1ef90df289c51b1f44b61bd2ec3113a64204ea624eaf81cdd9bb2c48a6c11",
+    "modal_budget.py": "795bed8679c4ce2c37cec84f8ff390573fd5feefb5310b3af5253bee50349be9",
+    "modal_lifecycle.py": "99969e7d4952f747eb65c997b73e03f9f8e2fb503a87609a190436114506358a",
+    "origin-pins.json": "c4fb445a0f20a845349615aa741410cba8f38c40df498baa24f6ed165e18c804",
+    "origin.tar": "fc1df0f81f7d142b4e1447950e5681e6b7b5c9ac9b0d9964bb3157441b0130f5",
+    "press_driver.py": "6a64b46abf460b57c289123fbc1a0701eb005daf1f98544e20958fe1cde06809",
+    "upload-receipt.json": "c92c1cc04fe263f22f4e7608247a6fe64bc4c0414c1637fe4dd7f241cccf7b2e",
+    "upload.exit": "13bf7b3039c63bf5a50491fa3cfd8eb4e699d1ba1436315aef9cbe5711530354"
+  }
+}

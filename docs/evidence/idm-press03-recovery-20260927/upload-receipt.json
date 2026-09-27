@@ -1,0 +1,11 @@
+{
+  "files": 150,
+  "bytes": 54850215042,
+  "volume_id": "vo-l6vlOAevRQVOveYRhWaQiT",
+  "volume_name": "rivals-idm-press-20260927-inputs",
+  "manifest_sha256": "ea45b03bc2aa5a728dba5481682e4db09116303eb1f56fadc90a7c79d97ec548",
+  "run_manifest_sha256": "2560f70ab076d8b63d034fca5b77c026823f35516a51fe28a892eccba3d5358b",
+  "compute_launched": false,
+  "recovery": "serial per-file commits; server content reuse",
+  "server_cached_files": 148
+}
