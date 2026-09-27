@@ -51,6 +51,7 @@ def run_arm(spec_ref, release_sha256, *, workspace_root=DEFAULT_ROOT):
     are for disposable offline tests only and cannot enter this paid path.
     """
     root = Path(workspace_root).resolve()
+    require(sys.platform == "darwin", "paid launch requires the Mac boot clock")
     require(root == DEFAULT_ROOT.resolve(), "paid launches require canonical workspace root")
     release.verify(Path(__file__).parent, release_sha256)
     release.reviewed(root, release_sha256)
@@ -64,15 +65,8 @@ def run_arm(spec_ref, release_sha256, *, workspace_root=DEFAULT_ROOT):
     ledger.refresh(provider.billing(month_at(time.time())))  # any failure => no reservation/RPC
     rate, rate_evidence = provider.rates()
     require(usd(spec["hold"]["rate_usd_second"]) >= rate, "underpriced GPU/CPU/RAM bound")
-    from .holds import derive
-    measurement = pinned(spec["measurement_ref"])
-    m = spec["hold"]["measurement"]
-    require(spec["measurement_ref"]["sha256"] == m["sha256"], "measurement reference mismatch")
-    require(derive(measurement["samples"], workload=m["workload"], concurrency=m["concurrency"],
-                   factor=m["factor"], margin_seconds=m["margin_seconds"],
-                   rate_usd_second=spec["hold"]["rate_usd_second"],
-                   overhead_usd=spec["hold"]["overhead_usd"], evidence_sha256=m["sha256"])
-            == spec["hold"], "hold differs from measured evidence")
+    from .holds import validate_spec
+    validate_spec(spec)
     row = ledger.reserve(spec, provider.snapshot())
     attempt = spec["attempt_id"]
     local = root / "attempts" / attempt

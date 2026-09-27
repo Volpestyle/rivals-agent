@@ -43,7 +43,7 @@ def test_fresh_ids_real_adapter_gate_and_no_replay(ledger, clock):
 def test_retry_only_explicit_rejection_same_key_and_spacing(ledger, clock):
     calls = []
     async def rpc(request, **kwargs):
-        calls.append((clock.wall(), dict(kwargs["metadata"])))
+        calls.append((clock.monotonic(), dict(kwargs["metadata"])))
         if len(calls) == 1:
             raise Exhausted()
         return SimpleNamespace(app_id="ap-ok")
@@ -80,7 +80,7 @@ def test_wrong_name_refuses_before_any_rpc(ledger, clock):
 def test_pacing_shared_across_campaigns(ledger, clock):
     calls = []
     async def rpc(request, **kwargs):
-        calls.append(clock.wall())
+        calls.append(clock.monotonic())
         return SimpleNamespace(app_id="ap-" + str(len(calls)))
     for attempt in ("idm-10", "encoder-100"):
         g = gate(ledger, clock, rpc, attempt)

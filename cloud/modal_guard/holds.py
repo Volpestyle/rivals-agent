@@ -3,7 +3,51 @@ from __future__ import annotations
 
 import math
 
-from .common import cost, number, require, usd
+from .common import cost, json_bytes, name, number, pinned, require, usd
+import hashlib
+
+
+def bootstrap(envelope):
+    """Explicit exploratory timeout envelope. No empirical/p95 claim is made."""
+    require(envelope["mode"] == "EXPLORATORY_BOOTSTRAP", "invalid bootstrap mode")
+    name(envelope["campaign_id"])
+    require(isinstance(envelope["workload"], str) and envelope["workload"], "workload required")
+    ids = envelope["attempt_ids"]
+    require(type(ids) is list and ids and len(set(ids)) == len(ids), "unique finite bootstrap slots required")
+    for attempt in ids:
+        name(attempt)
+    require(type(envelope["concurrency"]) is int and 0 < envelope["concurrency"] <= len(ids),
+            "invalid bootstrap concurrency")
+    limits = {p + "_seconds": envelope[p + "_seconds"] for p in ("startup", "work", "cleanup")}
+    for value in limits.values():
+        require(type(value) is int and value > 0, "positive integer bootstrap duration required")
+    require(usd(envelope["rate_usd_second"]) > 0, "positive all-resource rate required")
+    total = sum(limits.values())
+    reserved = cost(total, envelope["rate_usd_second"], envelope["overhead_usd"])
+    require(usd(envelope["campaign_cap_usd"]) > 0 and
+            len(ids) * usd(reserved) <= usd(envelope["campaign_cap_usd"]), "bootstrap campaign cap exceeded")
+    return {**limits, "total_seconds": total, "rate_usd_second": str(usd(envelope["rate_usd_second"])),
+            "overhead_usd": str(usd(envelope["overhead_usd"])), "reserved_usd": reserved,
+            "bootstrap": envelope, "envelope_sha256": hashlib.sha256(json_bytes(envelope)).hexdigest()}
+
+
+def validate_spec(spec):
+    """Both modes use pinned evidence; a probe can never masquerade as fit p95."""
+    hold = spec["hold"]
+    if "bootstrap" in hold:
+        require("measurement_ref" not in spec, "bootstrap cannot claim measured p95")
+        envelope = pinned(spec["bootstrap_ref"])
+        require(bootstrap(envelope) == hold and spec["attempt_id"] in envelope["attempt_ids"],
+                "bootstrap differs from pinned envelope/slot")
+    else:
+        require("bootstrap_ref" not in spec, "ambiguous admission mode")
+        measurement = pinned(spec["measurement_ref"])
+        m = hold["measurement"]
+        require(spec["measurement_ref"]["sha256"] == m["sha256"], "measurement reference mismatch")
+        require(derive(measurement["samples"], workload=m["workload"], concurrency=m["concurrency"],
+                       factor=m["factor"], margin_seconds=m["margin_seconds"],
+                       rate_usd_second=hold["rate_usd_second"], overhead_usd=hold["overhead_usd"],
+                       evidence_sha256=m["sha256"]) == hold, "hold differs from measured evidence")
 
 
 def derive(samples, *, workload, concurrency, factor=1.25, margin_seconds=30,
@@ -43,6 +87,9 @@ def derive(samples, *, workload, concurrency, factor=1.25, margin_seconds=30,
 
 
 def validate(hold):
+    if "bootstrap" in hold:
+        require(bootstrap(hold["bootstrap"]) == hold, "modified bootstrap hold")
+        return
     for key in ("startup_seconds", "work_seconds", "cleanup_seconds", "total_seconds"):
         require(type(hold[key]) is int and hold[key] > 0, "positive integer duration required")
     require(hold["total_seconds"] == sum(hold[p + "_seconds"] for p in ("startup", "work", "cleanup")),

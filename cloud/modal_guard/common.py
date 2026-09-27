@@ -11,11 +11,32 @@ from pathlib import Path, PurePosixPath
 import re
 import time
 import uuid
+import functools
+import subprocess
+import sys
 
 IDENTITY = {"profile": "rivals", "workspace": "volpestyle",
             "workspace_id": "ac-kMLf5bJKqF5CAlSbfNhGh0"}
 SDK_VERSION = "1.5.5"
 DEFAULT_ROOT = Path.home() / "dev/modal_guard/volpestyle"
+
+
+@functools.lru_cache(maxsize=1)
+def clock_id():
+    """Identify the host boot, not a wall/uptime subtraction that NTP can change.
+
+    Paid launch is Mac-only. Other platforms support offline tests; the Windows
+    fallback deliberately cannot establish continuity across fresh processes.
+    """
+    if sys.platform == "darwin":
+        boot = subprocess.check_output(["/usr/sbin/sysctl", "-n", "kern.bootsessionuuid"], timeout=2).decode().strip()
+    elif sys.platform.startswith("linux"):
+        boot = Path("/proc/sys/kernel/random/boot_id").read_text().strip()
+    else:
+        boot = "offline-process-" + uuid.uuid4().hex
+    # uuid.getnode() can fall back to a fresh random value in each Mac process.
+    # The kernel boot-session UUID is already host/boot unique and NTP-independent.
+    return hashlib.sha256((sys.platform + boot).encode()).hexdigest()
 
 
 class Refused(RuntimeError):

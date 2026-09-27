@@ -1,0 +1,31 @@
+{
+  "base_commit": "70d00514ac775532bf9cd7b3e6a8931f6f2652b0",
+  "version": "1.0.1",
+  "release_sha256": "72dead55817453c2e31668f0cf203514ff50c59433f007fd04eec226bb8c4547",
+  "mac_bundle_sha256": "55f681fececb1e414cddfd28dbd319f8f5380fa0ffad90432fcaff4954a5627d",
+  "files": {
+    "cloud/modal_guard/__init__.py": "2ab22c6990656b2a2286340b44aa2e271590e191eeb8718657c67f81b0b3d127",
+    "cloud/modal_guard/__main__.py": "0695f8297b93c46a8a7d7e52aae2090c4a862d0cda2fccc2b20a7a9b81e84e98",
+    "cloud/modal_guard/appcreate.py": "4179a9921b30a542a88cd3979259319f84b0c4a01d445bfdd95b1c3172cf6577",
+    "cloud/modal_guard/common.py": "71b0c6987ca7a4ba2219f1d31448cfc76bdf6b2865cdac0e19fc4cb41d9d8f5b",
+    "cloud/modal_guard/holds.py": "20db3369d7dc929241975395091e1353b18bbb9f43abf5451eecb660a02551d3",
+    "cloud/modal_guard/ledger.py": "e0e625e3ca27443d7c11a1af4890a673bc05614d8d0e34418113056ca6576959",
+    "cloud/modal_guard/lifecycle.py": "4e35e475b41a3421a363c85668d551b5cd62322c7877c5a1ddc39e93ae000e09",
+    "cloud/modal_guard/provider.py": "65569e9fc3d1909d2cbd19a0f35553ba3f8b4cea33c3d6cea1b22ce068a9badc",
+    "cloud/modal_guard/release.py": "498b82f9ea81b48ceedb1b2516f9f7a931cdadc33f0aeff68e47bc64430a8c01",
+    "cloud/modal_guard/runner.py": "ec3a78e42cda80918139a7c23e933966e31ff1844a2d2cf80f155399f15f5c4f",
+    "cloud/modal_guard/stages.py": "215e1583ffc1f275a1fe805074dc2de4f2bc6eb06df54d2039edfba6830774ea",
+    "tests/modal_guard/conftest.py": "db94924f9b17d83528602026f9b7ee354bfa6f359040750c5750dd52b00831b8",
+    "tests/modal_guard/test_accounting.py": "1a94da04194d0a7c0d48b8302ac280c543492ec51010f72dfe23d90106c2481d",
+    "tests/modal_guard/test_adapter.py": "673b7d989a701ece273845e2257d31db75d1b74b889686092aa048975716ce06",
+    "tests/modal_guard/test_bootstrap.py": "ebd4b5b9d8a76d0462c8bb253f158aa527d9d8a0cc007015e771863032269e3a",
+    "tests/modal_guard/test_lifecycle.py": "4d68fb0007e5f5e980e92d26005dd8509ef2b695dca7825f103a5552c67bb14d",
+    "tests/modal_guard/test_provider.py": "721e1ac53c12b0bf052198754214abe0b997fab211ee7d0f4526ffab47001b96",
+    "tests/modal_guard/test_runtime.py": "1259002c8369f7c278f7578cdd487c5cf0fb7915d41da792fb7442d4a66660c8",
+    "tests/modal_guard/test_sdk155.py": "6005f9c04af321746f39e7390d15b7768ea97ea2d8db21d94f95904df6f13f3c",
+    "tests/modal_guard/test_spend_regressions.py": "36420b82c5f28fca3a4849e44a76fa386cccd04d8d640dd4e74ebe9aced680b2",
+    "cloud/modal_guard/README.md": "65be970d74ec489c5d6d880003481296d17a7d9ed73c30d39402fff07832d75e",
+    "cloud/modal_guard/RELEASE.json": "72dead55817453c2e31668f0cf203514ff50c59433f007fd04eec226bb8c4547",
+    "cloud/modal_guard/.gitattributes": "cb7343d8ccc169881c6cc3ac19178335576351b06faedab70c14e7b1b5eefe15"
+  }
+}

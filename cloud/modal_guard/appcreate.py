@@ -12,7 +12,7 @@ import random
 import time
 import uuid
 
-from .common import SDK_VERSION, Refused, atomic, lock, read, require
+from .common import SDK_VERSION, Refused, atomic, clock_id, lock, read, require
 
 SPACING_SECONDS = 15
 RPC_TIMEOUT_SECONDS = 15
@@ -76,16 +76,18 @@ class AppCreateGate:
             while True:
                 if self.state.exists():
                     previous = read(self.state)
-                    require(self.wall() >= previous["wall"], "wall clock moved backwards")
-                    while self.wall() - previous["wall"] < SPACING_SECONDS:
-                        await self.pause(max(.001, SPACING_SECONDS - (self.wall() - previous["wall"])))
+                    require(previous.get("clock_id") == clock_id(), "pacing clock continuity lost")
+                    require(self.mono() >= previous["monotonic"], "pacing clock moved backwards")
+                    while self.mono() - previous["monotonic"] < SPACING_SECONDS:
+                        await self.pause(max(.001, SPACING_SECONDS - (self.mono() - previous["monotonic"])))
                 self.remaining()
                 await asyncio.wait_for(self.before_rpc(), timeout=self.remaining())
                 timeout = min(RPC_TIMEOUT_SECONDS, self.remaining())
                 self.ledger.rpc(self.attempt, "CREATING")  # durable before any RPC; crash => unknown
                 def record(outcome):
                     atomic(self.state, {"attempt_id": self.attempt, "logical_request_id": self.key,
-                                        "outcome": outcome, "wall": self.wall()})
+                                        "outcome": outcome, "wall": self.wall(),
+                                        "monotonic": self.mono(), "clock_id": clock_id()})
                 record("IN_FLIGHT")
                 try:
                     response = await asyncio.wait_for(self.original(

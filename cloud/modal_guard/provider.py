@@ -10,7 +10,7 @@ import subprocess
 import sys
 import time
 
-from .common import IDENTITY, SDK_VERSION, require, usd
+from .common import IDENTITY, SDK_VERSION, clock_id, require, usd
 
 OVERRIDES = ("MODAL_TOKEN_ID", "MODAL_TOKEN_SECRET", "MODAL_OAUTH_REFRESH_TOKEN",
              "MODAL_OAUTH_CLIENT_ID", "MODAL_OAUTH_CLIENT_SECRET", "MODAL_CONFIG_PATH",
@@ -50,17 +50,29 @@ def connect():
 
 
 class Provider:
-    def __init__(self, cli=None, *, wall=time.time):
+    def __init__(self, cli=None, *, wall=time.time, monotonic=time.monotonic):
         self.cli = cli or str(Path.home() / ".local/bin/modal")
         self.wall = wall
+        self.monotonic = monotonic
+
+    def budget(self, timeout):
+        end = self.monotonic() + timeout
+        def remaining():
+            value = end - self.monotonic()
+            require(value > 0, "control query budget exhausted")
+            return value
+        return remaining
 
     def _run(self, args, timeout=10):
         started = self.wall()
+        started_monotonic = self.monotonic()
         p = subprocess.run(args, env=environment(), capture_output=True, text=True, timeout=timeout)
         require(p.returncode == 0, "Modal query failed: " + p.stderr[-500:])
         return {"command": args, "stdout": p.stdout, "returncode": p.returncode,
                 "sha256": hashlib.sha256(p.stdout.encode()).hexdigest(),
-                "queried_at": started, "completed_at": self.wall()}
+                "queried_at": started, "completed_at": self.wall(),
+                "queried_monotonic": started_monotonic, "completed_monotonic": self.monotonic(),
+                "clock_id": clock_id()}
 
     def identity(self, timeout=10):
         raw = self._run([sys.executable, "-m", "cloud.modal_guard.provider", "identity"], timeout)
@@ -68,10 +80,12 @@ class Provider:
         return raw
 
     def snapshot(self, timeout=10):
-        identity = self.identity(timeout)
-        apps = self._run([self.cli, "app", "list", "--profile", "rivals", "--json"], timeout)
-        containers = self._run([self.cli, "container", "list", "--profile", "rivals", "--json"], timeout)
+        remaining = self.budget(timeout)
+        identity = self.identity(remaining())
+        apps = self._run([self.cli, "app", "list", "--profile", "rivals", "--json"], remaining())
+        containers = self._run([self.cli, "container", "list", "--profile", "rivals", "--json"], remaining())
         return {"identity": IDENTITY, "checked_at": self.wall(), "complete": True,
+                "checked_monotonic": self.monotonic(), "clock_id": clock_id(),
                 "raw": {"identity": identity, "apps": apps, "containers": containers}}
 
     def billing(self, month):
@@ -98,8 +112,9 @@ class Provider:
 
     def stop(self, app_id, timeout=10):
         require(isinstance(app_id, str) and app_id.startswith("ap-"), "invalid owned app ID")
-        self.identity(min(timeout, 10))
-        return self._run([self.cli, "app", "stop", app_id, "--profile", "rivals", "--yes"], timeout)
+        remaining = self.budget(timeout)
+        self.identity(min(remaining(), 1))
+        return self._run([self.cli, "app", "stop", app_id, "--profile", "rivals", "--yes"], remaining())
 
     def rates(self):
         self.identity()

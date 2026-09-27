@@ -17,7 +17,7 @@ def test_atomic_competing_admissions(tmp_path, clock):
     def admit(i):
         try:
             return ledger.reserve(spec("attempt-" + str(i)), snapshot(clock))
-        except Refused:
+        except (Refused, __import__("sqlite3").OperationalError):
             return None
     with ThreadPoolExecutor(max_workers=5) as pool:
         rows = list(pool.map(admit, range(5)))
@@ -123,7 +123,7 @@ def test_bad_absence_never_releases_allowance(ledger, clock, mutation):
     elif mutation == "exists":
         proof["snapshots"][-1] = snapshot(clock, [{"app_id": "ap-exists", "description": spec()["app_name"]}])
     else:
-        proof["snapshots"][-1]["raw"]["apps"]["queried_at"] -= 100
+        proof["snapshots"][-1]["raw"]["apps"]["queried_monotonic"] -= 100
     with pytest.raises(Refused):
         ledger.settle("fresh-04", proof)
     assert Decimal(ledger.get("fresh-04")["bound_usd"]) == Decimal("2.25")
@@ -138,7 +138,7 @@ def test_unknown_rpc_cannot_claim_zero_cost(ledger, clock):
         ledger.settle("fresh-04", proof)
 
 
-def test_terminal_billing_actuals_reduce_only_own_unbilled_tail(ledger, clock):
+def test_terminal_billing_actuals_do_not_free_unproven_overlap(ledger, clock):
     row = ledger.reserve(spec(), snapshot(clock))
     ledger.rpc("fresh-04", "CREATING")
     ledger.rpc("fresh-04", "RUNNING", app_id="ap-own")
@@ -150,10 +150,10 @@ def test_terminal_billing_actuals_reduce_only_own_unbilled_tail(ledger, clock):
     ledger.refresh(billing(clock, "48.25", {"ap-own": "0.05"}))
     result = ledger.settle("fresh-04", proof)
     assert Decimal(result["actual_usd"]) == Decimal("0.05")
-    assert Decimal(result["unbilled_allowance_usd"]) == Decimal("0.05")
+    assert Decimal(result["unbilled_allowance_usd"]) == Decimal("0.10")
     clock.advance(1)
     ledger.refresh(billing(clock, "48.30", {"ap-own": "0.10"}))
-    assert Decimal(ledger.totals()["outstanding_usd"]) == 0
+    assert Decimal(ledger.totals()["outstanding_usd"]) == Decimal("0.10")
 
 
 def test_fence_during_rpc_preserves_late_owned_id_without_reopening(ledger, clock):

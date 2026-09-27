@@ -4,7 +4,7 @@ import time
 
 import pytest
 
-from cloud.modal_guard.common import IDENTITY, json_bytes
+from cloud.modal_guard.common import IDENTITY, clock_id, json_bytes
 from cloud.modal_guard.holds import derive
 from cloud.modal_guard.ledger import Ledger
 
@@ -28,25 +28,28 @@ class Clock:
         self.advance(seconds)
 
 
-def raw(value, now):
+def raw(value, now, mono=None):
     text = json.dumps(value)
     return {"stdout": text, "sha256": hashlib.sha256(text.encode()).hexdigest(),
-            "returncode": 0, "queried_at": now, "completed_at": now}
+            "returncode": 0, "queried_at": now, "completed_at": now,
+            "queried_monotonic": mono if mono is not None else time.monotonic(),
+            "completed_monotonic": mono if mono is not None else time.monotonic(), "clock_id": clock_id()}
 
 
 def billing(clock, spent="48.25", apps=None):
     rows = [{"object_id": key, "cost": value, "interval_start": "2026-09-27T18:00:00"}
             for key, value in (apps or {}).items()]
     return {"identity": IDENTITY, "month": "2026-09", "queried_at": clock.wall(),
-            "raw": {"identity": raw(IDENTITY, clock.wall()),
+            "raw": {"identity": raw(IDENTITY, clock.wall(), clock.monotonic()),
                     "summary": raw({"metered_cost": spent, "billed_cost": "18.05"}, clock.wall()),
                     "reports": [raw(rows, clock.wall())]}}
 
 
 def snapshot(clock, apps=(), containers=()):
     return {"identity": IDENTITY, "checked_at": clock.wall(), "complete": True,
-            "raw": {"identity": raw(IDENTITY, clock.wall()),
-                    "apps": raw(list(apps), clock.wall()), "containers": raw(list(containers), clock.wall())}}
+            "checked_monotonic": clock.monotonic(), "clock_id": clock_id(),
+            "raw": {"identity": raw(IDENTITY, clock.wall(), clock.monotonic()),
+                    "apps": raw(list(apps), clock.wall(), clock.monotonic()), "containers": raw(list(containers), clock.wall(), clock.monotonic())}}
 
 
 def spec(attempt="fresh-04", *, rate="0.01"):
