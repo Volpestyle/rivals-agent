@@ -1,0 +1,15 @@
+{
+  "owner": "idm-owner",
+  "session_id": "20260926T045729-166Z-79780-1",
+  "continue_remaining": true,
+  "manifest_sha256": "410176acef5c7fe48c8be7da7142d9bbc66b500120a59ff1cf3ffefe3337fa95",
+  "native_png_sha256": "e800c71889be8c2d4193e04ba4636b3ab8b790fa12fc0546c5aae59ff216032e",
+  "native_frame_index": 7914,
+  "native_pts": 65971,
+  "observations": [
+    "Native control and stored grey agree in pose, scene geometry and HUD placement at exact PTS65971.",
+    "HUD crop shows matching web count4, ability row and ult68 percent in first sample.",
+    "Middle and late stored samples retain range view and correctly placed readable M&K HUD; no obvious crop/colour displacement."
+  ],
+  "limitations": "Small visual decode control, not gameplay re-admission or model/Gate2 validation. Full store exact PTS and payload hashes checked separately."
+}

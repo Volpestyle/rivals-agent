@@ -1,0 +1,28 @@
+Input #0, matroska,webm, from '/Users/james/dev/range-bc-data/explore/originals/2026-09-25 23-57-29.mkv':
+  Metadata:
+    ENCODER         : Lavf61.7.100
+  Duration: 00:10:27.70, start: 0.000000, bitrate: 111933 kb/s
+  Stream #0:0: Video: hevc (Main), yuv420p(tv, bt709), 2560x1440 [SAR 1:1 DAR 16:9], 120 fps, 120 tbr, 1k tbn, start 0.021000
+    Metadata:
+      DURATION        : 00:10:27.704000000
+  Stream #0:1: Audio: aac (LC), 48000 Hz, stereo, fltp
+    Metadata:
+      title           : simple_aac_recording0
+      DURATION        : 00:10:27.690000000
+Stream mapping:
+  Stream #0:0 -> #0:0 (hevc (native) -> png (native))
+[Parsed_showinfo_1 @ 0x7ba0c29200] config in time_base: 1/1000, frame_rate: 120/1
+[Parsed_showinfo_1 @ 0x7ba0c29200] config out time_base: 0/0, frame_rate: 0/0
+[Parsed_showinfo_1 @ 0x7ba0c29200] n:   0 pts:  65971 pts_time:65.971  duration:      8 duration_time:0.008   fmt:yuv420p cl:left sar:1/1 s:2560x1440 i:P iskey:0 type:P checksum:ABF69CF0 plane_checksum:[75606C3C 21605BFB AEC6D4AA] mean:[96 128 138] stdev:[36.5 13.6 13.6]
+[Parsed_showinfo_1 @ 0x7ba0c29200] color_range:tv color_space:bt709 color_primaries:bt709 color_trc:bt709
+Output #0, image2, to '/Users/james/dev/idm-data/range-stores-a730f75/native-control/native.png':
+  Metadata:
+    encoder         : Lavf62.12.102
+  Stream #0:0: Video: png, rgb24(pc, gbr/bt709/bt709, progressive), 2560x1440 [SAR 1:1 DAR 16:9], q=2-31, 200 kb/s, 120 fps, 120 tbn
+    Metadata:
+      encoder         : Lavc62.28.102 png
+      DURATION        : 00:10:27.704000000
+frame=    0 fps=0.0 q=0.0 size=       0KiB time=N/A bitrate=N/A speed=N/A elapsed=0:00:04.01    [image2 @ 0x7ba0c27480] The specified filename '/Users/james/dev/idm-data/range-stores-a730f75/native-control/native.png' does not contain an image sequence pattern or a pattern is invalid.
+[image2 @ 0x7ba0c27480] Use a pattern such as %03d for an image sequence or use the -update option (with -frames:v 1 if needed) to write a single image.
+[out#0/image2 @ 0x7ba0c28540] video:3126KiB audio:0KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown
+frame=    1 fps=0.2 q=-0.0 Lsize=N/A time=00:00:00.00 bitrate=N/A speed=   0x elapsed=0:00:04.50    
