@@ -1,0 +1,18 @@
+Load pinned admitted TRAIN/frozen-dev roster
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/cache-launch-01/code-677e4de/policy/range_bc/spatial_yaw_cache.py", line 226, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/cache-launch-01/code-677e4de/policy/range_bc/spatial_yaw_cache.py", line 162, in main
+    arrays, dev = load_manifest(args.manifest, args.registry, args.tally, cohort="full")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/cache-launch-01/code-677e4de/policy/range_bc/explore_chunks_train.py", line 60, in load_manifest
+    denylist, equivalence = steps.load_denylist(), steps.load_patch_equivalence()
+                            ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/cache-launch-01/code-677e4de/policy/range_bc/steps.py", line 205, in load_denylist
+    require(got == sha256_pin, f"sealed denylist refused: {full} differs from its pinned sha256 (LF-normalised)")
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/cache-launch-01/code-677e4de/policy/range_bc/steps.py", line 144, in require
+    raise StepError(message)
+policy.range_bc.steps.StepError: sealed denylist refused: /Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/cache-launch-01/code-677e4de/data/human/sealed-denylist.v2.json differs from its pinned sha256 (LF-normalised)

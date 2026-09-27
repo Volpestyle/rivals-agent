@@ -1,0 +1,33 @@
+{
+  "pid": 36884,
+  "launcher_pid": 36871,
+  "started_at": 1790551423.939564,
+  "nice": 10,
+  "command": [
+    "/Users/james/dev/range-bc-data/explore/nitrogen-nohistory-confirm-20260927/mac-eval-venv/bin/python",
+    "-u",
+    "-m",
+    "policy.range_bc.spatial_yaw_cache",
+    "--inputs",
+    "/Users/james/dev/range-bc-data/explore/nitrogen-nohistory-confirm-20260927/recovery-inputs.json",
+    "--manifest",
+    "/Users/james/dev/range-bc-data/explore/manifest-full.json",
+    "--registry",
+    "/Users/james/dev/range-bc-data/explore/nitrogen-nohistory-confirm-20260927/mac-code-88b231d/data/human/session-splits.corpus.json",
+    "--tally",
+    "/Users/james/dev/range-bc-data/explore/nitrogen-nohistory-confirm-20260927/mac-code-88b231d/data/human/sessions/tally.json",
+    "--vision",
+    "/Users/james/dev/range-bc-data/explore/encoder-historyoff-20260927/nitrogen/collected/assets/vision.safetensors",
+    "--vision-config",
+    "/Users/james/dev/range-bc-data/explore/encoder-inference-handoff-20260927/config.json",
+    "--job-name",
+    "nitrogen-spatial-yaw-dual-grid",
+    "--out",
+    "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/dual-grid-cache",
+    "--stop-file",
+    "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/STOP"
+  ],
+  "spec_sha256": "b428260a939fb999852be7150528f925a45d9cf20ccfd0f4c1f18c7bb4ee135a",
+  "source_manifest_sha256": "36c330b386b39f1424e7d8f9759a5e412f581318037f8473427535932a07d596",
+  "cloud_spend_usd": 0
+}

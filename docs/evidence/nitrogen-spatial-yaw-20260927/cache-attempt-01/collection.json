@@ -1,0 +1,18 @@
+{
+  "remote_paths": {
+    "launch.json": "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/cache-launch-01/launch.json",
+    "mac-cache-launch.json": "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/mac-cache-launch.json",
+    "mac-cache-terminal.json": "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/mac-cache-terminal.json",
+    "mac-cache.exit": "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/mac-cache.exit",
+    "mac-cache.log": "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/mac-cache.log",
+    "source-manifest.json": "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/cache-launch-01/source-manifest.json"
+  },
+  "verified_sha256": {
+    "launch.json": "39751de60a56157e07954c55e82046c324d4a44a6b85907f815d9f064bac4abd",
+    "mac-cache-launch.json": "f1332ae752ae50c8204b02471ec7c6c8fe4b0b434cf5d9bfc7d112197152c35e",
+    "mac-cache-terminal.json": "09b2e5f14a585f25417d749fe4f12792478d1e3d7125be2a5f06369b56e786dc",
+    "mac-cache.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+    "mac-cache.log": "37b687af7b5ed20333bb08a1e2e1204693723aac55f5b5f049884f5966cdd0a9",
+    "source-manifest.json": "36c330b386b39f1424e7d8f9759a5e412f581318037f8473427535932a07d596"
+  }
+}

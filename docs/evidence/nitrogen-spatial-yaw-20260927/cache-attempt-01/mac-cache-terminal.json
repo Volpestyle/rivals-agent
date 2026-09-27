@@ -1,0 +1,8 @@
+{
+  "pid": 36884,
+  "exit": 1,
+  "terminal": true,
+  "started_at": 1790551423.939564,
+  "checked_at": 1790551427.675689,
+  "evidence": "subprocess.wait returned"
+}
