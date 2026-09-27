@@ -408,3 +408,42 @@ def test_encoder_history_disabled_ignores_feedback_in_fit_and_recurrent_decode()
     assert model.global_enc[0].weight.grad.abs().sum() > 0
     assert model.crop_enc[0].weight.grad.abs().sum() > 0
     assert model.hist[0].weight.grad.count_nonzero() == 0
+
+
+@pytest.mark.parametrize("enabled,mae,expected_count", [(True, .3, 1), (True, .418, 2), (False, .3, 2)])
+def test_decode_persistence_stop_saves_first_result_and_stops_summary(
+        tmp_path, monkeypatch, enabled, mae, expected_count):
+    import json
+    from pathlib import Path
+    from policy.range_bc import explore_chunks_eval as ev
+    from policy.range_bc.explore_chunks_train import FORMAT
+
+    config = small_config()
+    model = ChunkPolicy(config, 1)
+    checkpoint = tmp_path / "model.pt"
+    torch.save({"format": FORMAT, "recipe": {"config": config.as_dict(), "horizon": 1, "cohort": "full"},
+                "model": model.state_dict(), "epoch": 26, "seconds": 1.}, checkpoint)
+    monkeypatch.setattr(steps, "train_statistics", lambda _: {"live_mask": [True] * vocab.N})
+    monkeypatch.setattr(train, "predict_teacher", lambda *a, **kw: [])
+    monkeypatch.setattr(ev, "choose_thresholds", lambda *a: {"thresholds": [.5] * vocab.N})
+    monkeypatch.setattr(ev, "recompute_references", lambda *a: {
+        "frozen_dev": {"persistence": {"camera_mae_mean": .418}}})
+    monkeypatch.setattr(ev, "conditioning_nll", lambda *a, **kw: {})
+    monkeypatch.setattr(ev, "predict_suite", lambda *a, **kw: {
+        ("fixed_0.5", d): {"teacher": [], "self": [], "teacher_camera": []}
+        for d in ("median", "mode")})
+    monkeypatch.setattr(ev.metrics, "evaluate", lambda *a, **kw: {
+        "camera_mae_mean": mae, "macro_press_f1_tol": .2})
+    monkeypatch.setattr(ev.metrics, "selffed_checks", lambda *a: {})
+    args = SimpleNamespace(out=str(tmp_path / "evaluation.json"), checkpoint=str(checkpoint),
+                           manifest="unused", registry="unused", tally="unused")
+    messages = []
+    result = ev.evaluate(args, messages.append, device="cpu", stop_on_persistence=enabled,
+                         array_loader=lambda *a, **kw: ([], []))
+    persisted = json.loads(Path(args.out).read_text())
+    assert persisted == result and len(result["decode"]) == expected_count
+    if expected_count == 1:
+        assert list(result["decode"]) == ["fixed_0.5/median"]
+        assert messages[-1] == result["stop_reason"]
+    else:
+        assert "stop_reason" not in result
