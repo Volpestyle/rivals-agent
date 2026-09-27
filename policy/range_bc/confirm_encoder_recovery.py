@@ -1,6 +1,8 @@
 """A2: authenticated completed checkpoints to evaluation only; no fit path."""
 import argparse
+import contextlib
 import hashlib
+import io
 import json
 from pathlib import Path
 import platform
@@ -27,10 +29,10 @@ def sha(path):
 def authenticate(root, pin):
     """Refuse partial fits or changed artifacts before any model inference."""
     root = Path(root)
+    train.require(set(pin["files"]) == {"epoch-26.pt", "latest.pt", "evaluation.json", "status.json"},
+                  "incomplete or unexpected recovery pins")
     for name, digest in pin["files"].items():
         train.require(sha(root / name) == digest, f"changed recovery artifact: {name}")
-    train.require({"epoch-26.pt", "latest.pt", "evaluation.json", "status.json"} <= pin["files"].keys(),
-                  "incomplete recovery pins")
     checkpoint = torch.load(root / "epoch-26.pt", map_location="cpu", weights_only=True)
     latest = torch.load(root / "latest.pt", map_location="cpu", weights_only=True)
     status = json.loads((root / "status.json").read_text())
@@ -111,11 +113,12 @@ def main():
         report(f"Evaluating {name}; metrics withheld until all six finish")
         call = SimpleNamespace(out=dest / "evaluation.json", checkpoint=Path(pin["root"]) / "epoch-26.pt",
                                manifest=args.manifest, registry=args.registry, tally=args.tally)
-        # Metric output from evaluate is captured by the launch log, which must
-        # remain unread until all six outputs exist (apart from STOP status).
-        result = evaluate(call, report, device="mps", model_factory=EncoderPolicy,
-                          array_loader=lambda *a, **kw: (arrays, features), chance_floor=True,
-                          stop_on_persistence=True, recovered_calibration=calibration)
+        # Do not leak a first seed's metric printouts through the shared job log.
+        # Status writes still expose progress; completed JSON remains unread.
+        with contextlib.redirect_stdout(io.StringIO()):
+            result = evaluate(call, report, device="mps", model_factory=EncoderPolicy,
+                              array_loader=lambda *a, **kw: (arrays, features), chance_floor=True,
+                              stop_on_persistence=True, recovered_calibration=calibration)
         receipt = {"scope": "evaluation-only recovery", "exit": 0,
                    "original_checkpoint_sha256": pin["files"]["epoch-26.pt"],
                    "original_failed_final_sha256": pin["original_final_sha256"],
