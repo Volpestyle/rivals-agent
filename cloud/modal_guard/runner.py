@@ -18,10 +18,19 @@ from .lifecycle import teardown
 from .provider import Provider, connect, environment, month_at
 
 
+def status(attempt, **fields):
+    """Dashboard failure must never prevent supervision or accounting cleanup."""
+    try:
+        from scripts.job_status import write
+        return write(attempt, **fields)
+    except Exception as exc:
+        print("modal_guard status unavailable: " + repr(exc), file=sys.stderr)
+
+
 def execute_stages(deadline, identity, stages, output_root, output_volume, release_sha256):
     """Modal worker entry. Application compute functions return 0 and write artifacts.
 
-    Stage modules come from the caller's immutable prebuilt image; no dynamic
+    Stage modules come from the pinned image/native source mount; no dynamic
     download/build here. A caller must pin that image/code and admitted inputs.
     """
     import modal
@@ -73,19 +82,21 @@ def _run_arm(spec_ref, release_sha256, *, workspace_root, inhibitor):
     require(usd(spec["hold"]["rate_usd_second"]) >= rate, "underpriced GPU/CPU/RAM bound")
     from .holds import validate_spec
     validate_spec(spec)
-    row = ledger.reserve(spec, provider.snapshot())
     attempt = spec["attempt_id"]
     local = root / "attempts" / attempt
-    local.mkdir(parents=True, exist_ok=False)
-    atomic(local / "spec.json", spec, fresh=True)
-    atomic(local / "rates.json", rate_evidence, fresh=True)
-    from scripts.job_status import write
-    write(attempt, owner=spec["lane"], host="modal", stage="running", started=time.time(),
-          evidence=str(local / "result.json"), progress="Guarded startup", eta=None)
     guard = None
     restore = None
+    local_ready = False
     result, error = None, None
+    row = ledger.reserve(spec, provider.snapshot())
     try:
+        # Every fallible operation after reserve belongs inside cleanup protection.
+        local.mkdir(parents=True, exist_ok=False)
+        local_ready = True
+        atomic(local / "spec.json", spec, fresh=True)
+        atomic(local / "rates.json", rate_evidence, fresh=True)
+        status(attempt, owner=spec["lane"], host="modal", stage="running",
+               evidence=str(local / "result.json"), progress="Guarded startup", eta=None)
         with (local / "watchdog.log").open("x") as log:
             guard = subprocess.Popen([sys.executable, "-m", "cloud.modal_guard", "watch",
                                       str(ledger.path), attempt, str(os.getpid())],
@@ -137,29 +148,37 @@ def _run_arm(spec_ref, release_sha256, *, workspace_root, inhibitor):
                 except TimeoutError:
                     pass
                 if int(time.time()) % 30 == 0:
-                    write(attempt, progress="Running within original funded deadline")
+                    status(attempt, progress="Running within original funded deadline")
     except BaseException as exc:
         error = repr(exc)
     finally:
         if restore:
-            restore()
+            try:
+                restore()
+            except Exception as exc:
+                error = (error or "") + " restore failed: " + repr(exc)
         # Main and watchdog may both request cleanup; settlement is idempotent at
         # the driver boundary. Neither retries paid work nor removes partial files.
         current = ledger.get(attempt)
         if current["state"] not in ("TERMINAL", "NEVER_CREATED", "ABSENT_RPC"):
             proof = teardown(ledger, attempt, provider)
-            atomic(local / "teardown.json", proof)
             if proof["kind"] != "INCOMPLETE_CLEANUP":
                 if ledger.get(attempt)["state"] == "FENCED":
                     ledger.settle(attempt, proof)
             else:
                 error = (error or "") + " teardown unproven; allowance retained"
+            if local_ready:
+                try:
+                    atomic(local / "teardown.json", proof)
+                except Exception as exc:
+                    error = (error or "") + " proof write failed: " + repr(exc)
         final = {"status": "INCOMPLETE" if error or not result else "COMPLETE",
                  "error": error, "result": result, "attempt_id": attempt,
                  "accounting": ledger.get(attempt)}
-        atomic(local / "result.json", final, fresh=True)
-        write(attempt, stage="failed" if final["status"] == "INCOMPLETE" else "done",
-              progress=final["status"] + "; " + final["accounting"]["state"])
+        if local_ready:
+            atomic(local / "result.json", final, fresh=True)
+        status(attempt, stage="failed" if final["status"] == "INCOMPLETE" else "done",
+               progress=final["status"] + "; " + final["accounting"]["state"])
     return final
 
 

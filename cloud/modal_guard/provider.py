@@ -10,7 +10,7 @@ import subprocess
 import sys
 import time
 
-from .common import elapsed_time, IDENTITY, SDK_VERSION, clock_id, require, usd
+from .common import DEFAULT_ROOT, atomic, elapsed_time, IDENTITY, SDK_VERSION, clock_id, lock, read, require, usd
 
 OVERRIDES = ("MODAL_TOKEN_ID", "MODAL_TOKEN_SECRET", "MODAL_OAUTH_REFRESH_TOKEN",
              "MODAL_OAUTH_CLIENT_ID", "MODAL_OAUTH_CLIENT_SECRET", "MODAL_CONFIG_PATH",
@@ -50,10 +50,11 @@ def connect():
 
 
 class Provider:
-    def __init__(self, cli=None, *, wall=time.time, monotonic=elapsed_time):
+    def __init__(self, cli=None, *, wall=time.time, monotonic=elapsed_time, billing_root=DEFAULT_ROOT):
         self.cli = cli or str(Path.home() / ".local/bin/modal")
         self.wall = wall
         self.monotonic = monotonic
+        self.billing_root = Path(billing_root)
 
     def budget(self, timeout):
         end = self.monotonic() + timeout
@@ -89,6 +90,43 @@ class Provider:
                 "raw": {"identity": identity, "apps": apps, "containers": containers}}
 
     def billing(self, month):
+        """One workspace query per minute, shared by drivers and daemon readers.
+
+        Preserve the query's original clock/evidence; cache reads never renew it.
+        A failed refresh replaces the cache with a shared refusal, never stale data.
+        This lock is only used off the watchdog's deadline/teardown path.
+        """
+        require(month == month_at(self.wall()), "query current billing month only")
+        self.billing_root.mkdir(parents=True, exist_ok=True)
+        path = self.billing_root / (month + "-billing.json")
+        with lock(self.billing_root / "billing.lock", timeout=65):
+            if path.exists():
+                cached = read(path)
+                if (cached["clock_id"] == clock_id() and cached["month"] == month
+                        and 0 <= self.monotonic() - cached["started_monotonic"] < 60):
+                    require(cached["error"] is None, "shared billing refresh failed: " + str(cached["error"]))
+                    value = cached["value"]
+                    require(value["month"] == month, "cached billing month mismatch")
+                    raw = value["raw"]["identity"]
+                    require(raw["clock_id"] == clock_id()
+                            and 0 <= self.monotonic() - raw["queried_monotonic"] < 60,
+                            "cached billing clock stale")
+                    billing_values(value)
+                    return value
+            cached = {"month": month, "clock_id": clock_id(),
+                      "started_monotonic": self.monotonic(), "value": None, "error": None}
+            try:
+                value = self._billing(month)
+                billing_values(value)
+                cached["value"] = value
+            except Exception as exc:
+                cached["error"] = str(exc)
+                atomic(path, cached)
+                raise
+            atomic(path, cached)
+            return value
+
+    def _billing(self, month):
         require(month == month_at(self.wall()), "query current billing month only")
         identity = self.identity()
         summary = self._run([self.cli, "billing", "summary", "--for", month,

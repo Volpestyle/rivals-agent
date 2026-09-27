@@ -1,0 +1,41 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+_____________ test_billing_cache_preserves_clock_and_fails_closed _____________
+
+tmp_path = WindowsPath('C:/Users/volpe/AppData/Local/Temp/pytest-of-volpe/pytest-1128/test_billing_cache_preserves_c0')
+clock = <conftest.Clock object at 0x0000013B24B8DD50>
+
+    def test_billing_cache_preserves_clock_and_fails_closed(tmp_path, clock):
+        calls = []
+        class Fake(Provider):
+            def _billing(self, month):
+                calls.append(1)
+                if len(calls) > 1:
+                    raise Refused("rate limited")
+                return billing(clock)
+        provider = Fake(billing_root=tmp_path, wall=clock.wall, monotonic=clock.monotonic)
+        first = provider.billing("2026-09")
+        clock.advance(59)
+>       assert provider.billing("2026-09") == first and len(calls) == 1
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\modal_guard\test_launch_failures.py:96: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+cloud\modal_guard\provider.py:119: in billing
+    value = self._billing(month)
+            ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <test_launch_failures.test_billing_cache_preserves_clock_and_fails_closed.<locals>.Fake object at 0x0000013B24B8E690>
+month = '2026-09'
+
+    def _billing(self, month):
+        calls.append(1)
+        if len(calls) > 1:
+>           raise Refused("rate limited")
+E           cloud.modal_guard.common.Refused: rate limited
+
+tests\modal_guard\test_launch_failures.py:91: Refused
+=========================== short test summary info ===========================
+FAILED tests/modal_guard/test_launch_failures.py::test_billing_cache_preserves_clock_and_fails_closed
+1 failed, 6 deselected in 0.17s

@@ -1,9 +1,9 @@
-# Shared Modal guard, v1.0.2
+# Shared Modal guard, v1.0.3
 
 One maintained package, pinned by `RELEASE.json` SHA256. Future run packets hold
 that pin and a spec; they do not copy launcher helpers. Import from a checkout
 of the pinned commit on the Mac and include the same package **and manifest**
-in the immutable, prebuilt worker image. `run_arm` and the remote stage entry
+in the immutable worker image or verified native entrypoint source mount. `run_arm` and the remote stage entry
 both verify it. Existing review packets and the parked round-3 ledger stay frozen.
 
 This release must receive **fit-review acceptance of the spend guard before use**.
@@ -18,6 +18,12 @@ The lead installs that acceptance at
 `rivals` / `volpestyle` / `ac-kMLf5bJKqF5CAlSbfNhGh0`, queries billing, checks the
 current all-resource rate, reserves the one arm, starts an independent watchdog,
 and creates `modal.App(name, tags={lane, run})`. The SDK is pinned to **1.5.5**.
+Concurrent drivers and watchdog billing readers share a workspace file lock and
+at most 60-second cached query, retaining its original boot clock and evidence.
+Refresh failures are shared refusals, never a fallback to stale billing. Waiting
+on billing remains outside the watchdog stop/teardown path. Every operation after
+reservation is protected by cleanup, including local evidence setup and watchdog
+creation. Dashboard updates use consistent default timestamps and are best effort.
 There is one L40S, eight bounded CPUs, 32 GiB bounded RAM and one container per app;
 the image and input/output volumes must already exist. No image build or bulk
 upload is hidden inside admission. Those operations need their own budget.

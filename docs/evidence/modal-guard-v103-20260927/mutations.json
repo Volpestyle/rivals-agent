@@ -1,0 +1,1 @@
+[{"exit_code": 1, "killed": true, "mutant": "fractional-status"}, {"exit_code": 1, "killed": true, "mutant": "setup-before-try"}, {"exit_code": 1, "killed": true, "mutant": "no-single-flight-reuse"}]

@@ -1,0 +1,71 @@
+F..                                                                      [100%]
+================================== FAILURES ===================================
+_______ test_post_reservation_failures_reach_teardown_and_settle[mkdir] _______
+
+tmp_path = WindowsPath('C:/Users/volpe/AppData/Local/Temp/pytest-of-volpe/pytest-1127/test_post_reservation_failures0')
+ledger = <cloud.modal_guard.ledger.Ledger object at 0x000001EADEB4EBD0>
+clock = <conftest.Clock object at 0x000001EADEB4E690>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001EADEB4E7D0>
+failure = 'mkdir'
+
+    @pytest.mark.parametrize("failure", ["mkdir", "spec", "watchdog"])
+    def test_post_reservation_failures_reach_teardown_and_settle(tmp_path, ledger, clock, monkeypatch, failure):
+        root = tmp_path / "workspace"
+        root.mkdir()
+        value = {**spec(), "release_sha256": "test", "run_cap_usd": "10"}
+        local = root / "attempts" / value["attempt_id"]
+        if failure == "mkdir":
+            local.mkdir(parents=True)
+            (local / "untouched").write_text("old evidence")
+        monkeypatch.setattr(runner, "sys", SimpleNamespace(platform="darwin", executable=sys.executable, stderr=sys.stderr))
+        monkeypatch.setattr(runner, "DEFAULT_ROOT", root)
+        monkeypatch.setattr(runner.release, "verify", lambda *a: None)
+        monkeypatch.setattr(runner.release, "reviewed", lambda *a: None)
+        monkeypatch.setattr(runner, "pinned", lambda *a: value)
+        monkeypatch.setattr(runner, "connect", lambda: None)
+        monkeypatch.setattr(runner, "Ledger", lambda *a: ledger)
+        monkeypatch.setattr(runner, "Provider", lambda: SimpleNamespace(
+            billing=lambda *a: billing(clock), rates=lambda: (0, {}), snapshot=lambda: snapshot(clock)))
+        monkeypatch.setattr(holds, "validate_spec", lambda *a: None)
+        monkeypatch.setattr(runner, "status", lambda *a, **kw: None)
+        def fail_popen(*a, **kw):
+            raise OSError("watchdog failed")
+        monkeypatch.setattr(runner.subprocess, "Popen", fail_popen)
+        def write(path, value, **kw):
+            if failure == "spec" and Path(path).name == "spec.json":
+                raise OSError("spec failed")
+            return atomic(path, value, **kw)
+        monkeypatch.setattr(runner, "atomic", write)
+        events = []
+        def teardown(journal, attempt, provider):
+            events.append("teardown")
+            row = journal.fence(attempt)
+            first = snapshot(clock)
+            clock.advance(61)
+            return {"kind": "NEVER_CREATED", "attempt_id": attempt, "app_name": row["app_name"],
+                    "checked_at": clock.wall(), "snapshots": [first, snapshot(clock)]}
+        monkeypatch.setattr(runner, "teardown", teardown)
+>       result = runner._run_arm({}, "test", workspace_root=root, inhibitor=None)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\modal_guard\test_launch_failures.py:75: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+cloud\modal_guard\runner.py:92: in _run_arm
+    local.mkdir(parents=True, exist_ok=False)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('C:/Users/volpe/AppData/Local/Temp/pytest-of-volpe/pytest-1127/test_post_reservation_failures0/workspace/attempts/fresh-04')
+mode = 511, parents = True, exist_ok = False
+
+    def mkdir(self, mode=0o777, parents=False, exist_ok=False):
+        """
+        Create a new directory at this given path.
+        """
+        try:
+>           os.mkdir(self, mode)
+E           FileExistsError: [WinError 183] Cannot create a file when that file already exists: 'C:\\Users\\volpe\\AppData\\Local\\Temp\\pytest-of-volpe\\pytest-1127\\test_post_reservation_failures0\\workspace\\attempts\\fresh-04'
+
+..\..\Programs\Python\Python311\Lib\pathlib.py:1116: FileExistsError
+=========================== short test summary info ===========================
+FAILED tests/modal_guard/test_launch_failures.py::test_post_reservation_failures_reach_teardown_and_settle[mkdir]
+1 failed, 2 passed, 4 deselected in 0.28s

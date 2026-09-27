@@ -1,0 +1,51 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+___________ test_status_fractional_start_repro_and_nonfatal_writer ____________
+
+tmp_path = WindowsPath('C:/Users/volpe/AppData/Local/Temp/pytest-of-volpe/pytest-1126/test_status_fractional_start_r0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x0000018B85E4DCD0>
+capsys = <_pytest.capture.CaptureFixture object at 0x0000018B85E4E490>
+
+    def test_status_fractional_start_repro_and_nonfatal_writer(tmp_path, monkeypatch, capsys):
+        from scripts import job_status
+        from datetime import datetime, timezone
+        class Fixed(datetime):
+            @classmethod
+            def now(cls, tz=None):
+                return cls(2026, 9, 27, 21, 55, 0, 750000, tzinfo=timezone.utc)
+        monkeypatch.setattr(job_status, "datetime", Fixed)
+        fields = dict(owner="test", host="modal", stage="running", evidence="/tmp/result.json")
+        with pytest.raises(ValueError, match="updated precedes started"):
+            job_status.write("fraction", root=tmp_path, started=Fixed.now().timestamp(), **fields)
+        runner.status("fixed", root=tmp_path, **fields)
+>       data = json.loads((tmp_path / "fixed.status.json").read_bytes())
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\modal_guard\test_launch_failures.py:29: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\Programs\Python\Python311\Lib\pathlib.py:1050: in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = WindowsPath('C:/Users/volpe/AppData/Local/Temp/pytest-of-volpe/pytest-1126/test_status_fractional_start_r0/fixed.status.json')
+mode = 'rb', buffering = -1, encoding = None, errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\volpe\\AppData\\Local\\Temp\\pytest-of-volpe\\pytest-1126\\test_status_fractional_start_r0\\fixed.status.json'
+
+..\..\Programs\Python\Python311\Lib\pathlib.py:1044: FileNotFoundError
+---------------------------- Captured stderr call -----------------------------
+modal_guard status unavailable: ValueError('updated precedes started')
+=========================== short test summary info ===========================
+FAILED tests/modal_guard/test_launch_failures.py::test_status_fractional_start_repro_and_nonfatal_writer
+1 failed, 6 deselected in 0.16s
