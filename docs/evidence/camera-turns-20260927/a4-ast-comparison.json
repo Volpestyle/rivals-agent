@@ -1,0 +1,28 @@
+{
+  "baseline_commit": "91b6d9b",
+  "driver_sha256": "fbc442d602bab060ad541c22d00520cc66dc101d5bb594e6c3c924d701c2ecde",
+  "unchanged_top_level_functions_ast": {
+    "verify_receipt": true,
+    "validate": true,
+    "return_candidates": true,
+    "collect_segment": true,
+    "save_native": true,
+    "unchanged_pose": true,
+    "attach_after_token": true,
+    "measure_pulse": true,
+    "run_block": true,
+    "focal_from_sweeps": true,
+    "main": true
+  },
+  "whole_module_ast_equal_after_replacing_only_six_statement_post_release_analysis_block": true,
+  "changed_analysis_block": [
+    "from perception.camera_prime_response import analyze",
+    "response = analyze(before_gray, after_gray, direction=-1, before_t=motion_t, after_t=last_t)",
+    "result['response_analysis_sha256'] = sha256(ROOT / 'perception/camera_prime_response.py')",
+    "result['response_analysis'] = response",
+    "if not response['motion_present']:\n    raise l4.MotionRefused(response)",
+    "dx, dy, confidence = (response['dx'], response['dy'], response['confidence'])"
+  ],
+  "input_calls_tokens_guards_and_constants_unchanged": true,
+  "scope": "AST comparison is owner evidence; a4 exact-byte input receipt belongs to binds-review"
+}

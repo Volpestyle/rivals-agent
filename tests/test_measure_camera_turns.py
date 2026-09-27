@@ -366,3 +366,51 @@ def test_changed_pre_attach_pose_refuses_before_pad(tmp_path):
                 lambda *a:changed.__setitem__(0,True),lambda f:True,180.)
     finally:
         journal.close()
+
+
+@pytest.mark.parametrize("accepted", [False, True])
+def test_prime_analysis_runs_after_release_and_preserves_refusal(tmp_path, monkeypatch, accepted):
+    from perception import camera_prime_response
+    frame = np.random.default_rng(20).integers(0, 256, (720, 1280, 3), dtype=np.uint8)
+    now, order = [1.], []
+    live = SimpleNamespace(frame_t=1.)
+    def proof():
+        live.frame_t = now[0]
+        return frame
+    def collect(live, d, seconds, fresh, **kw):
+        assert (d, seconds) == (.45, .3)
+        rows = []
+        for t in (1., 1.16, 1.24):
+            now[0] = t
+            rows.append((t, m.l4.band(fresh())))
+        now[0] = 1.3
+        order.append("prime_released")
+        return rows, 1., 1.3
+    response = {"motion_present": accepted, "refusal_reasons": [] if accepted else ["synthetic_refusal"],
+                "dx": -40., "dy": 0., "confidence": .9}
+    def analyze(before, after, direction, **kw):
+        assert order == ["prime_released"] and now[0] == 1.3
+        assert before.shape == after.shape == (720, 1280)
+        assert direction == -1 and kw == {"before_t": 1.16, "after_t": 1.24}
+        order.append("analysis")
+        return response
+    monkeypatch.setattr(m, "collect_segment", collect)
+    monkeypatch.setattr(camera_prime_response, "analyze", analyze)
+    journal = m.Journal(tmp_path / "analysis-adapter", {})
+    try:
+        def run():
+            m.initialize_pad(live, journal, proof, 10., clock=lambda: now[0],
+                             sleep=lambda dt: now.__setitem__(0, now[0] + dt))
+        if accepted:
+            run()
+            assert now[0] >= 6.3
+        else:
+            with pytest.raises(m.l4.MotionRefused) as exc:
+                run()
+            assert exc.value.audit == response and now[0] == 1.3
+        result = json.loads((journal.output / "initialization.json").read_text())
+        assert result["response_analysis"] == response
+        assert result["response_analysis_sha256"] == m.sha256(m.ROOT / "perception/camera_prime_response.py")
+        assert order == ["prime_released", "analysis"]
+    finally:
+        journal.close()

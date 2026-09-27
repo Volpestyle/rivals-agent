@@ -10,43 +10,37 @@ cost and acceptance remain unknown. Raw evidence is
 `data/calibration/alt-cam-20260927/yaw-01`; partial OBS video is
 `C:/Users/volpe/Videos/2026-09-27 14-27-37.mkv`.
 
-Lead released the PC at 15:24 CDT. Camera checks completed and a3 landed 91b6d9b.
-Calibration focal analysis completed with an explicit refusal; its decoder and
-fit exited. **Next sitting is yaw + FPS only**, after admission -5 assembly.
-No pulse or new mouse-sweep block is included. Workers stop before the sitting.
+The later sitting also stopped: yaw-01b visibly turned but its rigid-template
+measurement refused; FPS A1 worked, then the cold first prediction timed out.
+Those faults now have saved-native replay evidence and bounded repairs below.
+**Next short sitting remains camera turns + FPS only.** Lead owns setup/input,
+recording and scheduling; workers remain off desktop and stop compute on cue.
 
 ## Before the next sitting
 
-- Both camera modes have a3 pre-run LAND, receipt
-  `docs/evidence/camera-turns-20260927/camera-turns-review-v1-a3.json` (47a7960a),
-  reviewer handback f5298fae. Owner/reviewer each passed 40 CPU tests. Fixed native
-  yaw-01 drift refuses; duplicate control passes. Old a2 is stale. Startup is
-  capture-only token before Live; zero settle; M1 +.45 rx /300 ms; observed
-  response from a late-prime 40-100ms pair; five seconds neutral; NEW ready-0
-  inspection/token. Initialization is excluded with times. Changed or unprovable
-  ready poses refuse. No retry, automatic leveling or search.
-- Durable Python is `C:/Users/volpe/.venvs/rivals-live-cu128/Scripts/python.exe`.
-  Static env receipt 38bf7953: 36 pins, package checks/inference imports passed;
-  DXCAM enumeration failed in service session 0. Lead will probe DXCAM/vgamepad
-  through C:\desk in console session 1 after James closes the game. No new-env
-  CUDA forward, FPS preparation or desktop qualification is claimed. Camera
-  CPU tests passed using the repaired env.
-- Focal is unknown after the actual alt CALIBRATION attempt: four native pose
-  inspections, then 96 adjacent frames at 6.0-6.8s and 52 common tracks. All 20
-  delay/smoothing models refuse. Horizontal/vertical RMS 3.637/3.840px exceed 1.5px
-  gates; diagnostic 625px and profile 615-630 are NOT an accepted value or bounds.
-  Old 465 gain coupling is unresolved; no main-account transfer. Raw evidence:
-  `docs/evidence/focal-calibration-20260927/alt_left-window-20260927T202800/fit.json`.
-  Focal packet landed 0dafeb0 with seven owner tests; full result is
-  `docs/evidence/focal-calibration-20260927/RESULT.md`. Decoder/fit/test processes
-  exited, CPU only, 425 MB peak parent RSS; no further work queued.
+- Camera a4 pre-run LAND: receipt camera-turns-review-v1-a4.json (1be5e514),
+  reviewer handback3a6149ef. Owner42 driver +24 analyzer tests, reviewer66 tests.
+  Saved yaw-01b prime passes new pixel-only small-patch response analysis; no
+  input functions/calls changed. a3 and earlier receipts are stale. Ready-attach
+  before pad, M1 .45/.3s, observed response, five seconds neutral, new ready-0
+  token and pose lock remain. No retry, auto-leveling or search.
+- Durable Python: C:/Users/volpe/.venvs/rivals-live-cu128/Scripts/python.exe.
+  Latest sitting captured A1 about30Hz. Saved-PNG CUDA replay reproduced775ms
+  cold startup, then28-31ms; after40s idle six ages25-34ms passed250ms. FPS repair
+  adds capture/proof priming and bounded same-worker warmup before phase timing.
+  CPU packaging/land is the final pending FPS readiness item; no further GPU
+  job runs pending lead scheduling. No actual FPS A/B/A completed yet.
+- Focal remains UNKNOWN after the CALIBRATION attempt0dafeb0:96 frames/52 tracks,
+  all20 models refused residual checks. No focal/bounds or main-account transfer.
+  No pulse or mouse-sweep block is included. Model fallback remains an inference
+  workload only; learned/scripted pairs are deferred.
 
 ## Operator sequence and time
 
 James authorized the lead to use reenter.py for setup, navigate and refresh
 activity. James need not be at the desk. No worker drives input or capture.
 Exact commands and atomic tokens are in
-[live-loop-operator-20260927.md](live-loop-operator-20260927.md); it names the accepted a3 receipt and durable interpreter.
+[live-loop-operator-20260927.md](live-loop-operator-20260927.md); it names the accepted a4 receipt and durable interpreter.
 
 Allow about **23 minutes, capped at 30**, for yaw plus FPS. Hard stop remains
 minute 33 if camera work is incomplete. Do not keep the range idle awaiting
@@ -95,16 +89,13 @@ input and re-freeze of controller/loop/record/pad_bindings and dependencies.
 
 ## VUH-1384 current-result text for the lead
 
-The camera/FPS sitting stopped after yaw-01: fresh-pad drift invalidated its
-ready view, motion refused, and FPS could not start because the Temp Python
-launcher was missing. No camera map or game FPS cost was measured. Startup
-repair has a3 pre-run LAND (47a7960a), with 40 owner/reviewer CPU tests and an
-actual yaw-01 drift rejection: pre-attach token, M1 300ms prime, five-second
-neutral, fresh ready-0. Durable env receipt
-38bf7953 provides C:/Users/volpe/.venvs/rivals-live-cu128/Scripts/python.exe;
-console-session desktop probe remains lead-owned. The alt CALIBRATION focal
-attempt refused: 96 frames /52 tracks, all 20 models fail residual gates; no focal
-or bounds. Decoder/fit stopped. Next sitting is yaw+FPS only after admission
-assembly; no pulses. Fallback
-replay f8892cf was 100% neutral across 3,600 frames; learned/scripted trials remain
-deferred. Lead owns publication and sitting scheduling; no Linear write claimed.
+Camera a4 has pre-run LAND (1be5e514): minimal post-release analyzer call change,
+unchanged input functions/calls,42 driver +24 analyzer owner tests and66 reviewer
+tests. The actual yaw-01b prime now passes small-patch response checks; static,
+wrong-sign and stale controls refuse. Analyzer landed fe1118b. FPS saved-PNG
+CUDA replay reproduced775ms cold inference and passed bounded warmup plus40s
+idle with subsequent ages25-34ms under250ms. Capture/proof priming and same-worker
+warmup precede all A/B/A timing; steady limits remain100/250ms. FPS packaging
+is finishing CPU-only; GPU replay process exited. Focal0dafeb0 remains refused;
+next sitting is camera turns + FPS only. No camera map, live policy result or
+game FPS cost is accepted. Lead owns publication; no Linear write claimed.

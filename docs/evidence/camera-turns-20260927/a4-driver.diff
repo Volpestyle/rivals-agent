@@ -1,0 +1,17 @@
+--- a3/scripts/measure_camera_turns.py
++++ a4/scripts/measure_camera_turns.py
+@@ -175,7 +175,13 @@
+         result["motion_pair_times"] = [motion_t, last_t]
+         result["motion_pair_gap_s"] = last_t - motion_t
+         result["motion_pair_role"] = "mid_motion_response_only"
+-        dx, dy, confidence = l4.checked_shift(before_gray, after_gray, l4.YAW_BOX, direction=-1)
++        from perception.camera_prime_response import analyze
++        response = analyze(before_gray, after_gray, direction=-1, before_t=motion_t, after_t=last_t)
++        result["response_analysis_sha256"] = sha256(ROOT / "perception/camera_prime_response.py")
++        result["response_analysis"] = response
++        if not response["motion_present"]:
++            raise l4.MotionRefused(response)
++        dx, dy, confidence = response["dx"], response["dy"], response["confidence"]
+     except l4.MotionRefused as exc:
+         journal.write("initialization.json", {**result, "observed_response": "refused", "motion": exc.audit})
+         raise  # A swallowed initialization is not permission to try again.

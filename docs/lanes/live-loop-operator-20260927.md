@@ -6,10 +6,13 @@ inspect its result, then choose the next. Do not paste all commands as a batch.
 Only launch live commands through the established interactive desktop runner,
 with the game already foreground. Plain SSH cannot own dxcam or pad capture.
 
-Camera startup a3 has pre-run LAND, receipt 47a7960a:
-`docs/evidence/camera-turns-20260927/camera-turns-review-v1-a3.json`.
-Old a2 and earlier receipts are stale. Owner and independent reviewer each
-passed all 40 CPU tests. The actual yaw-01 drift frame now refuses.
+Camera response repair a4 has pre-run LAND, receipt 1be5e514:
+`docs/evidence/camera-turns-20260927/camera-turns-review-v1-a4.json`.
+Old a3 and earlier receipts are stale. Owner42 driver tests and24 analyzer
+tests pass; independent reviewer66 tests pass. Actual yaw-01 drift still refuses.
+The yaw-01b visible prime response now passes without relaxing NCC>=.8: small
+patches below the banner replace the oversized rigid template, after release.
+No command, duration, token, guard or lease changed.
 Full turns need NO focal. Every short-pulse block needs an ACCEPTED focal receipt.
 Actual CALIBRATION focal attempt refused (96 frames /52 tracks, all 20 motion
 models failed). Focal remains unknown: **run yaw + FPS only, skip section 3**.
@@ -33,15 +36,15 @@ $camSitting = 'REPLACE-WITH-NEW-SITTING'
 $camRoot = "C:/Users/volpe/repos/rivals-agent/data/calibration/$camSitting"
 $camGamePid = 12345 # REPLACE with fresh foreground Marvel game PID
 $camVideo = 'C:/Users/volpe/Videos/REPLACE-WITH-CURRENT-NATIVE-OBS.mkv'
-$camReceipt = 'docs/evidence/camera-turns-20260927/camera-turns-review-v1-a3.json'
+$camReceipt = 'docs/evidence/camera-turns-20260927/camera-turns-review-v1-a4.json'
 $camCommon = @('--live','--review-receipt',$camReceipt,'--game-pid',"$camGamePid",'--sitting',$camSitting,'--recording-ref',$camVideo,'--scope-seconds','180')
 ```
 
 The durable env receipt is commit 38bf7953. Inference imports and package checks
-passed. DXCAM import failed enumerating displays in service session 0; the lead
-will probe DXCAM/vgamepad through a C:\desk job in console session 1 after James
-closes the game. No CUDA forward or desktop qualification is claimed yet. Camera CPU tests
-now pass in this durable interpreter.
+passed. The subsequent sitting successfully captured A1 on this interpreter.
+An offline saved-PNG CUDA replay reproduced the cold first forward at775ms;
+pre-timing startup warmed it to28-31ms, and after40s idle prediction ages stayed
+25-34ms. These are offline inference checks, not measured game FPS cost.
 
 Perform a guarded move-and-attack activity refresh **before the first block**,
 then close that pad and restore the inspected pose. Setup alone did not prevent
@@ -173,6 +176,14 @@ $fpsOutput = "$camRoot/inference-fps-aba"
 $fpsArgs = @('--checkpoint','data/diagnostics/live-loop-fallback-20260927/model_nohud-seed0.pt','--checkpoint-sha256','2d5183cba12913a36327e0a459ec0c0b2a1238d26a7df98f7823929af3129f18','--support-json','docs/evidence/live-loop-fallback-20260927/support.json','--settings-json',$fpsSettings,'--preprocessor','compact-bgr','--cpu-threads','2','--capture-hz','30','--device','cuda','--desktop-capture','--game-pid',"$camGamePid",'--sitting',$camSitting,'--native-video',$camVideo,'--output',$fpsOutput)
 uv run --no-project --python $camPython python scripts/measure_inference_fps.py @fpsArgs
 ```
+
+FPS repair adds bounded startup BEFORE the phase clock: at most3s to get two
+consecutive fresh capture/proof frames (discard stale startup frames); first
+prediction at most5s, then three at the unchanged250ms deadline on the SAME
+worker; total startup cap10s. Range/idle/focus/key checks stay active. Outputs
+are discarded. Startup is excluded from A/B/A and recorded in startup.json;
+failure stops instead of starting timing. After priming, stale proof still stops
+at100ms. Warmup repair must be landed before this next FPS command.
 
 Append --fps-cap with the ACTUAL configured cap if present. Each phase has 10 s
 warmup +30 s measured; A1/B/A2 complete automatically without actuator. B runs

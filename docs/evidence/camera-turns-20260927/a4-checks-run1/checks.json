@@ -1,0 +1,22 @@
+{
+  "tests_exit": 0,
+  "native_inputs": {
+    "data/calibration/alt-cam-20260927/yaw-01/ready-0.png": "48bd54bf249b9e9ca27e8100ae0387014bea61f9c9496880914ae3202576cb9b",
+    "data/calibration/alt-cam-20260927/yaw-01/frames/0000039-guard.png": "29da3a25347b89591b04c71031ecddad791b1de10694f91b42723dab501058c8"
+  },
+  "duplicate_control": {
+    "dx_band_px": 0.0,
+    "dy_band_px": 0.0,
+    "phase_score": 1.0,
+    "correlation": 0.9999999999999998
+  },
+  "actual_yaw_drift": {
+    "refused": true,
+    "reason": "ready pose changed or unprovable: {'dx_band_px': -88.49569264725235, 'dy_band_px': 4.229086834086004, 'phase_score': -0.006339650283625096, 'correlation': 0.1331230374354503}"
+  },
+  "peak_rss": 105353216,
+  "cuda_hidden": true,
+  "video_opened": false,
+  "desktop_opened": false,
+  "live_input": false
+}
