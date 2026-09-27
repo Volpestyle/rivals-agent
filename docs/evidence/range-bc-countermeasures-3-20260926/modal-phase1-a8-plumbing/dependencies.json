@@ -1,0 +1,107 @@
+[
+  {
+    "path": "dependencies/appcreate_gate.py",
+    "sha256": "2d076fa1c5908b11193a87838879bbd0498de515184a818d61f0586fac44c520",
+    "source_path": "/Users/james/dev/range-bc-data/handoff/modal/phase102-proposal/appcreate_gate.py"
+  },
+  {
+    "path": "dependencies/cm3_accounting.py",
+    "sha256": "13c26df40e40f58eb4561b9e655eb71391e3aee4c05546f6e9d3ddbf7b0c7e4d",
+    "source_path": "/Users/james/dev/range-bc-data/handoff/modal/phase102-proposal/cm3_accounting.py"
+  },
+  {
+    "path": "dependencies/cm3_budget_plan.py",
+    "sha256": "1b76ee9707580beec7bb71f9b7b766bfb0b8f3a42ea849e7f767697a87ef59af",
+    "source_path": "/Users/james/dev/range-bc-data/handoff/modal/accounting-a8-lf/cm3_budget_plan.py"
+  },
+  {
+    "path": "dependencies/cm3_timeouts.py",
+    "sha256": "de57202e85942651ebeea699f6b0a834ee72bfab0d0c270d153edf2e9a84c097",
+    "source_path": "/Users/james/dev/range-bc-data/handoff/modal/phase102-proposal/cm3_timeouts.py"
+  },
+  {
+    "path": "dependencies/collector.py",
+    "sha256": "f39e6a7d1b5693cd9e3dadd88ea6da5fed7f41e2b26558a50df5d1f058e42b39",
+    "source_path": "/Users/james/dev/range-bc-data/handoff/modal/phase102-proposal/collector.py"
+  },
+  {
+    "path": "dependencies/diagnostic_capture.py",
+    "sha256": "469292cface2bc627513322adca8a207bae8f9bcf490092e348ae3541461e3e0",
+    "source_path": "/Users/james/dev/range-bc-data/handoff/modal/phase102-proposal/diagnostic_capture.py"
+  },
+  {
+    "path": "dependencies/guard.py",
+    "sha256": "905fd841d2ca7509c2d8abaadb84086fc3ee715f11126c1f2d061025be4c58a2",
+    "source_path": "/Users/james/dev/range-bc-data/handoff/modal/phase102-proposal/guard.py"
+  },
+  {
+    "path": "dependencies/identity_probe.py",
+    "sha256": "de2a47c7dc2d494a0fcdadde0c5c12092d5f2b6b67bf2398281be71912bd6916",
+    "source_path": "/Users/james/dev/range-bc-data/handoff/modal/phase102-proposal/identity_probe.py"
+  },
+  {
+    "path": "dependencies/input_closure.py",
+    "sha256": "00df2a52a7704dd9d212cf726126641f94d0d6b3097a014c025adebf299f23dd",
+    "source_path": "/Users/james/dev/range-bc-data/handoff/modal/phase102-proposal/input_closure.py"
+  },
+  {
+    "path": "dependencies/job_status.py",
+    "sha256": "df4dd2f05ef9aeabe6504927f37ca4bf983544aa58b8905d2bd9bfe5f5de6541",
+    "source_path": "/Users/james/dev/range-bc-data/handoff/modal/phase102-proposal/job_status.py"
+  },
+  {
+    "path": "dependencies/judge_cm3-a3.py",
+    "sha256": "e23b3212a0eadc98bc590e5081a92c9fab6740e93808aba2d245d6020b3f8eb0",
+    "source_path": "/Users/james/dev/range-bc-data/handoff/modal/phase102-proposal/judge_cm3-a3.py"
+  },
+  {
+    "path": "dependencies/judge_entry.py",
+    "sha256": "8edfa450bfba4e1d341221efe882d4e6e03fa864918f8f245071f7db3f709013",
+    "source_path": "/Users/james/dev/range-bc-data/handoff/modal/phase102-proposal/judge_entry.py"
+  },
+  {
+    "path": "dependencies/late_app_guard.py",
+    "sha256": "8a882c0fa21e3cffba7ded2fac5f23f55532ad06aa561ca99c33ec66a3fdf469",
+    "source_path": "/Users/james/dev/range-bc-data/handoff/modal/phase102-proposal/late_app_guard.py"
+  },
+  {
+    "path": "dependencies/lifecycle.py",
+    "sha256": "9ca93de4f694078b96084764dc117be9fc41e3463eaa89c7bed62ce8c187e9dc",
+    "source_path": "/Users/james/dev/range-bc-data/handoff/modal/phase102-proposal/lifecycle.py"
+  },
+  {
+    "path": "dependencies/make_receipt.py",
+    "sha256": "056e178d4fc9d57451480a1e051121da9fd01dee0ef230d5e5a3c0191ccd099e",
+    "source_path": "/Users/james/dev/range-bc-data/handoff/modal/phase102-proposal/make_receipt.py"
+  },
+  {
+    "path": "dependencies/map_metrics.py",
+    "sha256": "de20a8bf4a626b42df03cfe9468ff77eef041cd471393c2d26da20509be201b5",
+    "source_path": "/Users/james/dev/range-bc-data/handoff/modal/phase102-proposal/map_metrics.py"
+  },
+  {
+    "path": "dependencies/packet_adapter.py",
+    "sha256": "b469d345c48c9ff9a9b4555b06bf84c7183a1bd5373fc9d899aac24c2c91361a",
+    "source_path": "/Users/james/dev/range-bc-data/handoff/modal/phase102-proposal/packet_adapter.py"
+  },
+  {
+    "path": "dependencies/safety.py",
+    "sha256": "0b2ce44a3c5ce3d9ccf38f6aacf394391969e838e177d7a7f9bc3f952cc786c5",
+    "source_path": "/Users/james/dev/range-bc-data/handoff/modal/phase102-proposal/safety.py"
+  },
+  {
+    "path": "dependencies/task_driver.py",
+    "sha256": "262a7bcabd435e18edd4d03ae6e99549b580be76d3d1e73d26ca5eb53a7d3d17",
+    "source_path": "/Users/james/dev/range-bc-data/handoff/modal/phase102-proposal/task_driver.py"
+  },
+  {
+    "path": "dependencies/volume_inventory.py",
+    "sha256": "89da1c1077bae405a117f8fd7aafd1bb3826aa3556870b609272e78b73fc08ca",
+    "source_path": "/Users/james/dev/range-bc-data/handoff/modal/phase102-proposal/volume_inventory.py"
+  },
+  {
+    "path": "dependencies/volume_scope.py",
+    "sha256": "a17fafeeb834683b61b6f4a4097620aa16426b224e7c7ce3c27da1fa87c2872a",
+    "source_path": "/Users/james/dev/range-bc-data/handoff/modal/phase102-proposal/volume_scope.py"
+  }
+]

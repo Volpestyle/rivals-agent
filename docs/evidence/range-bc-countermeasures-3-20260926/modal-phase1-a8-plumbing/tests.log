@@ -1,0 +1,28 @@
+test_bad_runtime_pin_never_enables (test_approved_task_entry.EntryBoundary.test_bad_runtime_pin_never_enables) ... ok
+test_child_entry_is_explicit (test_approved_task_entry.EntryBoundary.test_child_entry_is_explicit) ... ok
+test_good_approval_enables_process_flags (test_approved_task_entry.EntryBoundary.test_good_approval_enables_process_flags) ... ok
+test_original_driver_remains_byte_exact (test_approved_task_entry.EntryBoundary.test_original_driver_remains_byte_exact) ... ok
+test_rejected_authority_never_enables (test_approved_task_entry.EntryBoundary.test_rejected_authority_never_enables) ... ok
+test_changed_payload (test_controls.Controls.test_changed_payload) ... ok
+test_changed_task_routing (test_controls.Controls.test_changed_task_routing) ... ok
+test_changed_workspace (test_controls.Controls.test_changed_workspace) ... ok
+test_local_escape (test_controls.Controls.test_local_escape) ... ok
+test_missing_receipt (test_controls.Controls.test_missing_receipt) ... ok
+test_remote_escape (test_controls.Controls.test_remote_escape) ... ok
+test_symlink_source (test_controls.Controls.test_symlink_source) ... ok
+test_valid (test_controls.Controls.test_valid) ... ok
+test_wrong_volume (test_controls.Controls.test_wrong_volume) ... ok
+test_collector_and_host_bind_same_version (test_input_version.Version.test_collector_and_host_bind_same_version) ... ok
+test_current_inputs07_metadata_accepted (test_input_version.Version.test_current_inputs07_metadata_accepted) ... ok
+test_old_inputs04_refused (test_input_version.Version.test_old_inputs04_refused) ... ok
+test_worker_uses_bound_version (test_input_version.Version.test_worker_uses_bound_version) ... ok
+test_a0_control_stops_before_gpu (test_phase_dispatch.Dispatch.test_a0_control_stops_before_gpu) ... ok
+test_control_pin_mismatch_refuses_gpu (test_phase_dispatch.Dispatch.test_control_pin_mismatch_refuses_gpu) ... ok
+test_gpu_and_cpu_timeouts_remain_inside_slot (test_phase_dispatch.Dispatch.test_gpu_and_cpu_timeouts_remain_inside_slot) ... ok
+test_guard_deadline_refuses_gpu_and_control (test_phase_dispatch.Dispatch.test_guard_deadline_refuses_gpu_and_control) ... ok
+test_other_task_waits_for_exact_control (test_phase_dispatch.Dispatch.test_other_task_waits_for_exact_control) ... ok
+
+----------------------------------------------------------------------
+Ran 23 tests in 0.163s
+
+OK

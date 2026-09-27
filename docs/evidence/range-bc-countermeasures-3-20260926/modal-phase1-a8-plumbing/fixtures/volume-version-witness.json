@@ -1,0 +1,1256 @@
+{
+  "format": "cm3-volume-version-witness-v1",
+  "full_verification": {
+    "bytes": 36308174322,
+    "exact_inventory": true,
+    "files": 163,
+    "format": "cm3-volume-verification-v1",
+    "manifest_sha256": "61e1519df3a244eb51e9d18363d8e32adb0ab0acf37a8ad751cccf4b5da672b0",
+    "profile": "rivals",
+    "sealed_excluded": true,
+    "status": "PASS",
+    "verifier_sha256": "00df2a52a7704dd9d212cf726126641f94d0d6b3097a014c025adebf299f23dd",
+    "volume_id": "vo-NpcsP2imIIon902PW96bTb",
+    "volume_name": "rivals-r3-cm3",
+    "workspace": "volpestyle"
+  },
+  "inventory": [
+    {
+      "path": "assets",
+      "type": "directory"
+    },
+    {
+      "path": "assets/dinov2-small-ed25f3a3",
+      "type": "directory"
+    },
+    {
+      "bytes": 547,
+      "mtime_ns": 1790481248886784640,
+      "path": "assets/dinov2-small-ed25f3a3/config.json",
+      "type": "file"
+    },
+    {
+      "bytes": 88249960,
+      "mtime_ns": 1790481249140897173,
+      "path": "assets/dinov2-small-ed25f3a3/model.safetensors",
+      "type": "file"
+    },
+    {
+      "path": "caches15",
+      "type": "directory"
+    },
+    {
+      "path": "caches15/20260923T051828-422Z-33696-1",
+      "type": "directory"
+    },
+    {
+      "bytes": 78569,
+      "mtime_ns": 1790480628815400890,
+      "path": "caches15/20260923T051828-422Z-33696-1/cache.json",
+      "type": "file"
+    },
+    {
+      "bytes": 617250816,
+      "mtime_ns": 1790480637102386534,
+      "path": "caches15/20260923T051828-422Z-33696-1/crop.u8",
+      "type": "file"
+    },
+    {
+      "bytes": 1388814336,
+      "mtime_ns": 1790480633845888045,
+      "path": "caches15/20260923T051828-422Z-33696-1/global.u8",
+      "type": "file"
+    },
+    {
+      "bytes": 602784000,
+      "mtime_ns": 1790480639644845567,
+      "path": "caches15/20260923T051828-422Z-33696-1/hud.u8",
+      "type": "file"
+    },
+    {
+      "path": "caches15/20260923T171533-187Z-33696-5",
+      "type": "directory"
+    },
+    {
+      "bytes": 29461,
+      "mtime_ns": 1790481909411621640,
+      "path": "caches15/20260923T171533-187Z-33696-5/cache.json",
+      "type": "file"
+    },
+    {
+      "bytes": 235929600,
+      "mtime_ns": 1790481912938772640,
+      "path": "caches15/20260923T171533-187Z-33696-5/crop.u8",
+      "type": "file"
+    },
+    {
+      "bytes": 530841600,
+      "mtime_ns": 1790481911682723772,
+      "path": "caches15/20260923T171533-187Z-33696-5/global.u8",
+      "type": "file"
+    },
+    {
+      "bytes": 230400000,
+      "mtime_ns": 1790481913758984369,
+      "path": "caches15/20260923T171533-187Z-33696-5/hud.u8",
+      "type": "file"
+    },
+    {
+      "path": "caches15/20260923T200129-346Z-33696-6",
+      "type": "directory"
+    },
+    {
+      "bytes": 328029,
+      "mtime_ns": 1790480640448969217,
+      "path": "caches15/20260923T200129-346Z-33696-6/cache.json",
+      "type": "file"
+    },
+    {
+      "bytes": 2368880640,
+      "mtime_ns": 1790481751413515380,
+      "path": "caches15/20260923T200129-346Z-33696-6/crop.u8",
+      "type": "file"
+    },
+    {
+      "bytes": 5329981440,
+      "mtime_ns": 1790481730617070501,
+      "path": "caches15/20260923T200129-346Z-33696-6/global.u8",
+      "type": "file"
+    },
+    {
+      "bytes": 2313360000,
+      "mtime_ns": 1790481761687928518,
+      "path": "caches15/20260923T200129-346Z-33696-6/hud.u8",
+      "type": "file"
+    },
+    {
+      "path": "caches15/20260923T205528-900Z-45572-3",
+      "type": "directory"
+    },
+    {
+      "bytes": 130207,
+      "mtime_ns": 1790481914481667260,
+      "path": "caches15/20260923T205528-900Z-45572-3/cache.json",
+      "type": "file"
+    },
+    {
+      "bytes": 979845120,
+      "mtime_ns": 1790481941436878695,
+      "path": "caches15/20260923T205528-900Z-45572-3/crop.u8",
+      "type": "file"
+    },
+    {
+      "bytes": 2204651520,
+      "mtime_ns": 1790481936833896640,
+      "path": "caches15/20260923T205528-900Z-45572-3/global.u8",
+      "type": "file"
+    },
+    {
+      "bytes": 956880000,
+      "mtime_ns": 1790481945545770719,
+      "path": "caches15/20260923T205528-900Z-45572-3/hud.u8",
+      "type": "file"
+    },
+    {
+      "path": "caches15/20260924T232304-170Z-12024-1",
+      "type": "directory"
+    },
+    {
+      "bytes": 101549,
+      "mtime_ns": 1790481764080317789,
+      "path": "caches15/20260924T232304-170Z-12024-1/cache.json",
+      "type": "file"
+    },
+    {
+      "bytes": 778616832,
+      "mtime_ns": 1790481770602807254,
+      "path": "caches15/20260924T232304-170Z-12024-1/crop.u8",
+      "type": "file"
+    },
+    {
+      "bytes": 1751887872,
+      "mtime_ns": 1790481767619519574,
+      "path": "caches15/20260924T232304-170Z-12024-1/global.u8",
+      "type": "file"
+    },
+    {
+      "bytes": 760368000,
+      "mtime_ns": 1790481772737808476,
+      "path": "caches15/20260924T232304-170Z-12024-1/hud.u8",
+      "type": "file"
+    },
+    {
+      "path": "caches15/20260925T021320-371Z-7804-1",
+      "type": "directory"
+    },
+    {
+      "bytes": 450578,
+      "mtime_ns": 1790481773641159126,
+      "path": "caches15/20260925T021320-371Z-7804-1/cache.json",
+      "type": "file"
+    },
+    {
+      "bytes": 3229384704,
+      "mtime_ns": 1790481859554061178,
+      "path": "caches15/20260925T021320-371Z-7804-1/crop.u8",
+      "type": "file"
+    },
+    {
+      "bytes": 7266115584,
+      "mtime_ns": 1790481799626694608,
+      "path": "caches15/20260925T021320-371Z-7804-1/global.u8",
+      "type": "file"
+    },
+    {
+      "bytes": 3153696000,
+      "mtime_ns": 1790481895032559297,
+      "path": "caches15/20260925T021320-371Z-7804-1/hud.u8",
+      "type": "file"
+    },
+    {
+      "path": "caches15/20260925T025230-605Z-7804-2",
+      "type": "directory"
+    },
+    {
+      "bytes": 40662,
+      "mtime_ns": 1790481898363158931,
+      "path": "caches15/20260925T025230-605Z-7804-2/cache.json",
+      "type": "file"
+    },
+    {
+      "bytes": 327696384,
+      "mtime_ns": 1790481906786956197,
+      "path": "caches15/20260925T025230-605Z-7804-2/crop.u8",
+      "type": "file"
+    },
+    {
+      "bytes": 737316864,
+      "mtime_ns": 1790481904338962667,
+      "path": "caches15/20260925T025230-605Z-7804-2/global.u8",
+      "type": "file"
+    },
+    {
+      "bytes": 320016000,
+      "mtime_ns": 1790481908848891023,
+      "path": "caches15/20260925T025230-605Z-7804-2/hud.u8",
+      "type": "file"
+    },
+    {
+      "path": "code-d4abc26",
+      "type": "directory"
+    },
+    {
+      "path": "code-d4abc26-inputs03",
+      "type": "directory"
+    },
+    {
+      "path": "code-d4abc26-inputs03/agent",
+      "type": "directory"
+    },
+    {
+      "path": "code-d4abc26-inputs03/judge",
+      "type": "directory"
+    },
+    {
+      "path": "code-d4abc26-inputs03/perception",
+      "type": "directory"
+    },
+    {
+      "path": "code-d4abc26-inputs03/policy",
+      "type": "directory"
+    },
+    {
+      "path": "code-d4abc26-inputs03/policy/idm",
+      "type": "directory"
+    },
+    {
+      "path": "code-d4abc26-inputs03/policy/range_bc",
+      "type": "directory"
+    },
+    {
+      "path": "code-d4abc26-inputs03/scripts",
+      "type": "directory"
+    },
+    {
+      "path": "code-d4abc26-mounts-770d000",
+      "type": "directory"
+    },
+    {
+      "path": "code-d4abc26-mounts-770d000/agent",
+      "type": "directory"
+    },
+    {
+      "path": "code-d4abc26-mounts-770d000/judge",
+      "type": "directory"
+    },
+    {
+      "path": "code-d4abc26-mounts-770d000/perception",
+      "type": "directory"
+    },
+    {
+      "path": "code-d4abc26-mounts-770d000/policy",
+      "type": "directory"
+    },
+    {
+      "path": "code-d4abc26-mounts-770d000/policy/idm",
+      "type": "directory"
+    },
+    {
+      "path": "code-d4abc26-mounts-770d000/policy/range_bc",
+      "type": "directory"
+    },
+    {
+      "path": "code-d4abc26-mounts-770d000/scripts",
+      "type": "directory"
+    },
+    {
+      "path": "code-d4abc26-prefix04-3c92d23",
+      "type": "directory"
+    },
+    {
+      "path": "code-d4abc26-prefix04-3c92d23/agent",
+      "type": "directory"
+    },
+    {
+      "path": "code-d4abc26-prefix04-3c92d23/judge",
+      "type": "directory"
+    },
+    {
+      "path": "code-d4abc26-prefix04-3c92d23/perception",
+      "type": "directory"
+    },
+    {
+      "path": "code-d4abc26-prefix04-3c92d23/policy",
+      "type": "directory"
+    },
+    {
+      "path": "code-d4abc26-prefix04-3c92d23/policy/idm",
+      "type": "directory"
+    },
+    {
+      "path": "code-d4abc26-prefix04-3c92d23/policy/range_bc",
+      "type": "directory"
+    },
+    {
+      "path": "code-d4abc26-prefix04-3c92d23/scripts",
+      "type": "directory"
+    },
+    {
+      "path": "code-d4abc26-prefix05-03fb0cd",
+      "type": "directory"
+    },
+    {
+      "path": "code-d4abc26-prefix05-03fb0cd/agent",
+      "type": "directory"
+    },
+    {
+      "path": "code-d4abc26-prefix05-03fb0cd/judge",
+      "type": "directory"
+    },
+    {
+      "path": "code-d4abc26-prefix05-03fb0cd/perception",
+      "type": "directory"
+    },
+    {
+      "path": "code-d4abc26-prefix05-03fb0cd/policy",
+      "type": "directory"
+    },
+    {
+      "path": "code-d4abc26-prefix05-03fb0cd/policy/idm",
+      "type": "directory"
+    },
+    {
+      "path": "code-d4abc26-prefix05-03fb0cd/policy/range_bc",
+      "type": "directory"
+    },
+    {
+      "path": "code-d4abc26-prefix05-03fb0cd/scripts",
+      "type": "directory"
+    },
+    {
+      "path": "code-d4abc26-prefix06-597b443",
+      "type": "directory"
+    },
+    {
+      "path": "code-d4abc26-prefix06-597b443/agent",
+      "type": "directory"
+    },
+    {
+      "bytes": 0,
+      "mtime_ns": 1790527559895101515,
+      "path": "code-d4abc26-prefix06-597b443/agent/__init__.py",
+      "type": "file"
+    },
+    {
+      "bytes": 19856,
+      "mtime_ns": 1790527559895994529,
+      "path": "code-d4abc26-prefix06-597b443/agent/brain.py",
+      "type": "file"
+    },
+    {
+      "bytes": 64553,
+      "mtime_ns": 1790527559896964550,
+      "path": "code-d4abc26-prefix06-597b443/agent/controller.py",
+      "type": "file"
+    },
+    {
+      "bytes": 76671,
+      "mtime_ns": 1790527559897826718,
+      "path": "code-d4abc26-prefix06-597b443/agent/demos.py",
+      "type": "file"
+    },
+    {
+      "bytes": 20925,
+      "mtime_ns": 1790527559898509876,
+      "path": "code-d4abc26-prefix06-597b443/agent/episodes.py",
+      "type": "file"
+    },
+    {
+      "bytes": 43550,
+      "mtime_ns": 1790527559899602070,
+      "path": "code-d4abc26-prefix06-597b443/agent/human_demos.py",
+      "type": "file"
+    },
+    {
+      "bytes": 86843,
+      "mtime_ns": 1790527559900310156,
+      "path": "code-d4abc26-prefix06-597b443/agent/human_intake.py",
+      "type": "file"
+    },
+    {
+      "bytes": 3541,
+      "mtime_ns": 1790527559901472747,
+      "path": "code-d4abc26-prefix06-597b443/agent/intents.py",
+      "type": "file"
+    },
+    {
+      "bytes": 37492,
+      "mtime_ns": 1790527559902121243,
+      "path": "code-d4abc26-prefix06-597b443/agent/jev.py",
+      "type": "file"
+    },
+    {
+      "bytes": 4954,
+      "mtime_ns": 1790527559902619223,
+      "path": "code-d4abc26-prefix06-597b443/agent/learned_range.py",
+      "type": "file"
+    },
+    {
+      "bytes": 6238,
+      "mtime_ns": 1790527559903141840,
+      "path": "code-d4abc26-prefix06-597b443/agent/learned_range_skill.py",
+      "type": "file"
+    },
+    {
+      "bytes": 78952,
+      "mtime_ns": 1790527559904007072,
+      "path": "code-d4abc26-prefix06-597b443/agent/loop.py",
+      "type": "file"
+    },
+    {
+      "bytes": 2975,
+      "mtime_ns": 1790527559904795800,
+      "path": "code-d4abc26-prefix06-597b443/agent/pad_bindings.py",
+      "type": "file"
+    },
+    {
+      "bytes": 16160,
+      "mtime_ns": 1790527559905346168,
+      "path": "code-d4abc26-prefix06-597b443/agent/physical_input.py",
+      "type": "file"
+    },
+    {
+      "bytes": 29235,
+      "mtime_ns": 1790527559905862095,
+      "path": "code-d4abc26-prefix06-597b443/agent/placement.py",
+      "type": "file"
+    },
+    {
+      "bytes": 5437,
+      "mtime_ns": 1790527559906415779,
+      "path": "code-d4abc26-prefix06-597b443/agent/placement_sim.py",
+      "type": "file"
+    },
+    {
+      "bytes": 7292,
+      "mtime_ns": 1790527559907020369,
+      "path": "code-d4abc26-prefix06-597b443/agent/replay.py",
+      "type": "file"
+    },
+    {
+      "bytes": 7745,
+      "mtime_ns": 1790527559907506380,
+      "path": "code-d4abc26-prefix06-597b443/agent/server.py",
+      "type": "file"
+    },
+    {
+      "bytes": 10235,
+      "mtime_ns": 1790527559907983048,
+      "path": "code-d4abc26-prefix06-597b443/agent/session.py",
+      "type": "file"
+    },
+    {
+      "bytes": 14577,
+      "mtime_ns": 1790527559908442650,
+      "path": "code-d4abc26-prefix06-597b443/agent/startup.py",
+      "type": "file"
+    },
+    {
+      "bytes": 3791,
+      "mtime_ns": 1790527559909043855,
+      "path": "code-d4abc26-prefix06-597b443/agent/state.py",
+      "type": "file"
+    },
+    {
+      "bytes": 23006,
+      "mtime_ns": 1790527559909588035,
+      "path": "code-d4abc26-prefix06-597b443/agent/tracker.py",
+      "type": "file"
+    },
+    {
+      "path": "code-d4abc26-prefix06-597b443/judge",
+      "type": "directory"
+    },
+    {
+      "bytes": 46689,
+      "mtime_ns": 1790527559910300587,
+      "path": "code-d4abc26-prefix06-597b443/judge/judge_cm3-a3.py",
+      "type": "file"
+    },
+    {
+      "bytes": 49602,
+      "mtime_ns": 1790527559911034322,
+      "path": "code-d4abc26-prefix06-597b443/judge/test_judge_cm3-a3.py",
+      "type": "file"
+    },
+    {
+      "path": "code-d4abc26-prefix06-597b443/perception",
+      "type": "directory"
+    },
+    {
+      "bytes": 12223,
+      "mtime_ns": 1790527559911664711,
+      "path": "code-d4abc26-prefix06-597b443/perception/autolabel.py",
+      "type": "file"
+    },
+    {
+      "bytes": 49539,
+      "mtime_ns": 1790527559912228059,
+      "path": "code-d4abc26-prefix06-597b443/perception/camera_motion.py",
+      "type": "file"
+    },
+    {
+      "bytes": 2537,
+      "mtime_ns": 1790527559912759369,
+      "path": "code-d4abc26-prefix06-597b443/perception/detect.py",
+      "type": "file"
+    },
+    {
+      "bytes": 2363,
+      "mtime_ns": 1790527559913226292,
+      "path": "code-d4abc26-prefix06-597b443/perception/eval.py",
+      "type": "file"
+    },
+    {
+      "bytes": 5429,
+      "mtime_ns": 1790527559913688247,
+      "path": "code-d4abc26-prefix06-597b443/perception/evalread.py",
+      "type": "file"
+    },
+    {
+      "bytes": 118835,
+      "mtime_ns": 1790527559914394821,
+      "path": "code-d4abc26-prefix06-597b443/perception/events.py",
+      "type": "file"
+    },
+    {
+      "bytes": 117898,
+      "mtime_ns": 1790527559915134956,
+      "path": "code-d4abc26-prefix06-597b443/perception/hud.py",
+      "type": "file"
+    },
+    {
+      "bytes": 14625,
+      "mtime_ns": 1790527559915848410,
+      "path": "code-d4abc26-prefix06-597b443/perception/match_timer.py",
+      "type": "file"
+    },
+    {
+      "bytes": 28139,
+      "mtime_ns": 1790527559916387331,
+      "path": "code-d4abc26-prefix06-597b443/perception/outline.py",
+      "type": "file"
+    },
+    {
+      "bytes": 30773,
+      "mtime_ns": 1790527559916885261,
+      "path": "code-d4abc26-prefix06-597b443/perception/replay_hud.py",
+      "type": "file"
+    },
+    {
+      "bytes": 6374,
+      "mtime_ns": 1790527559917359455,
+      "path": "code-d4abc26-prefix06-597b443/perception/replay_states.py",
+      "type": "file"
+    },
+    {
+      "bytes": 17443,
+      "mtime_ns": 1790527559917883684,
+      "path": "code-d4abc26-prefix06-597b443/perception/scoreboard.py",
+      "type": "file"
+    },
+    {
+      "bytes": 1674,
+      "mtime_ns": 1790527559918356446,
+      "path": "code-d4abc26-prefix06-597b443/perception/train.py",
+      "type": "file"
+    },
+    {
+      "path": "code-d4abc26-prefix06-597b443/policy",
+      "type": "directory"
+    },
+    {
+      "bytes": 0,
+      "mtime_ns": 1790527559918790299,
+      "path": "code-d4abc26-prefix06-597b443/policy/__init__.py",
+      "type": "file"
+    },
+    {
+      "bytes": 28417,
+      "mtime_ns": 1790527559919401038,
+      "path": "code-d4abc26-prefix06-597b443/policy/b0.py",
+      "type": "file"
+    },
+    {
+      "bytes": 4621,
+      "mtime_ns": 1790527559920037597,
+      "path": "code-d4abc26-prefix06-597b443/policy/b0_reads.py",
+      "type": "file"
+    },
+    {
+      "bytes": 28460,
+      "mtime_ns": 1790527559920631310,
+      "path": "code-d4abc26-prefix06-597b443/policy/behaviour.py",
+      "type": "file"
+    },
+    {
+      "bytes": 12880,
+      "mtime_ns": 1790527559921278845,
+      "path": "code-d4abc26-prefix06-597b443/policy/corpus.py",
+      "type": "file"
+    },
+    {
+      "bytes": 15441,
+      "mtime_ns": 1790527559921954192,
+      "path": "code-d4abc26-prefix06-597b443/policy/encode.py",
+      "type": "file"
+    },
+    {
+      "bytes": 28554,
+      "mtime_ns": 1790527559922599994,
+      "path": "code-d4abc26-prefix06-597b443/policy/execution.py",
+      "type": "file"
+    },
+    {
+      "bytes": 9609,
+      "mtime_ns": 1790527559923212536,
+      "path": "code-d4abc26-prefix06-597b443/policy/frames.py",
+      "type": "file"
+    },
+    {
+      "path": "code-d4abc26-prefix06-597b443/policy/idm",
+      "type": "directory"
+    },
+    {
+      "bytes": 668,
+      "mtime_ns": 1790527559923847993,
+      "path": "code-d4abc26-prefix06-597b443/policy/idm/__init__.py",
+      "type": "file"
+    },
+    {
+      "bytes": 20228,
+      "mtime_ns": 1790527559924435658,
+      "path": "code-d4abc26-prefix06-597b443/policy/idm/decode.py",
+      "type": "file"
+    },
+    {
+      "bytes": 5712,
+      "mtime_ns": 1790527559925057805,
+      "path": "code-d4abc26-prefix06-597b443/policy/idm/frames.py",
+      "type": "file"
+    },
+    {
+      "bytes": 3363,
+      "mtime_ns": 1790527559925669415,
+      "path": "code-d4abc26-prefix06-597b443/policy/idm/model.py",
+      "type": "file"
+    },
+    {
+      "bytes": 30259,
+      "mtime_ns": 1790527559926282849,
+      "path": "code-d4abc26-prefix06-597b443/policy/idm/train.py",
+      "type": "file"
+    },
+    {
+      "bytes": 16288,
+      "mtime_ns": 1790527559926845326,
+      "path": "code-d4abc26-prefix06-597b443/policy/idm_eval.py",
+      "type": "file"
+    },
+    {
+      "bytes": 31005,
+      "mtime_ns": 1790527559927645330,
+      "path": "code-d4abc26-prefix06-597b443/policy/idm_targets.py",
+      "type": "file"
+    },
+    {
+      "bytes": 9425,
+      "mtime_ns": 1790527559928269580,
+      "path": "code-d4abc26-prefix06-597b443/policy/live.py",
+      "type": "file"
+    },
+    {
+      "path": "code-d4abc26-prefix06-597b443/policy/range_bc",
+      "type": "directory"
+    },
+    {
+      "bytes": 1623,
+      "mtime_ns": 1790527559928828011,
+      "path": "code-d4abc26-prefix06-597b443/policy/range_bc/__init__.py",
+      "type": "file"
+    },
+    {
+      "bytes": 4268,
+      "mtime_ns": 1790527559929393522,
+      "path": "code-d4abc26-prefix06-597b443/policy/range_bc/baselines.py",
+      "type": "file"
+    },
+    {
+      "bytes": 5920,
+      "mtime_ns": 1790527559929977061,
+      "path": "code-d4abc26-prefix06-597b443/policy/range_bc/bench.py",
+      "type": "file"
+    },
+    {
+      "bytes": 16874,
+      "mtime_ns": 1790527559930683735,
+      "path": "code-d4abc26-prefix06-597b443/policy/range_bc/cache.py",
+      "type": "file"
+    },
+    {
+      "bytes": 254,
+      "mtime_ns": 1790527559931343418,
+      "path": "code-d4abc26-prefix06-597b443/policy/range_bc/cm3-environment.in",
+      "type": "file"
+    },
+    {
+      "bytes": 3223,
+      "mtime_ns": 1790527559931911263,
+      "path": "code-d4abc26-prefix06-597b443/policy/range_bc/cm3-execution-constraints.txt",
+      "type": "file"
+    },
+    {
+      "bytes": 76164,
+      "mtime_ns": 1790527559932551116,
+      "path": "code-d4abc26-prefix06-597b443/policy/range_bc/cm3-linux-x86_64.lock",
+      "type": "file"
+    },
+    {
+      "bytes": 67097,
+      "mtime_ns": 1790527559933410690,
+      "path": "code-d4abc26-prefix06-597b443/policy/range_bc/cm3-macos-arm64.lock",
+      "type": "file"
+    },
+    {
+      "bytes": 451,
+      "mtime_ns": 1790527559934201791,
+      "path": "code-d4abc26-prefix06-597b443/policy/range_bc/cm3-requirements.txt",
+      "type": "file"
+    },
+    {
+      "bytes": 7712,
+      "mtime_ns": 1790527559934795605,
+      "path": "code-d4abc26-prefix06-597b443/policy/range_bc/cm3.py",
+      "type": "file"
+    },
+    {
+      "bytes": 20496,
+      "mtime_ns": 1790527559935561068,
+      "path": "code-d4abc26-prefix06-597b443/policy/range_bc/cm3_accounting.py",
+      "type": "file"
+    },
+    {
+      "bytes": 12369,
+      "mtime_ns": 1790527559936268152,
+      "path": "code-d4abc26-prefix06-597b443/policy/range_bc/cm3_features.py",
+      "type": "file"
+    },
+    {
+      "bytes": 19120,
+      "mtime_ns": 1790527559936919593,
+      "path": "code-d4abc26-prefix06-597b443/policy/range_bc/cm3_proof.py",
+      "type": "file"
+    },
+    {
+      "bytes": 34518,
+      "mtime_ns": 1790527559937617413,
+      "path": "code-d4abc26-prefix06-597b443/policy/range_bc/cm3_reader.py",
+      "type": "file"
+    },
+    {
+      "bytes": 59257,
+      "mtime_ns": 1790527559938528655,
+      "path": "code-d4abc26-prefix06-597b443/policy/range_bc/cm3_run.py",
+      "type": "file"
+    },
+    {
+      "bytes": 17808,
+      "mtime_ns": 1790527559939285455,
+      "path": "code-d4abc26-prefix06-597b443/policy/range_bc/cm3_train.py",
+      "type": "file"
+    },
+    {
+      "bytes": 9500,
+      "mtime_ns": 1790527559939889564,
+      "path": "code-d4abc26-prefix06-597b443/policy/range_bc/executor.py",
+      "type": "file"
+    },
+    {
+      "bytes": 17022,
+      "mtime_ns": 1790527559940486733,
+      "path": "code-d4abc26-prefix06-597b443/policy/range_bc/fixture.py",
+      "type": "file"
+    },
+    {
+      "bytes": 11484,
+      "mtime_ns": 1790527559941095900,
+      "path": "code-d4abc26-prefix06-597b443/policy/range_bc/gates.py",
+      "type": "file"
+    },
+    {
+      "bytes": 8539,
+      "mtime_ns": 1790527559941722794,
+      "path": "code-d4abc26-prefix06-597b443/policy/range_bc/hudmap.py",
+      "type": "file"
+    },
+    {
+      "bytes": 12774,
+      "mtime_ns": 1790527559942378792,
+      "path": "code-d4abc26-prefix06-597b443/policy/range_bc/hudparity.py",
+      "type": "file"
+    },
+    {
+      "bytes": 22558,
+      "mtime_ns": 1790527559943105987,
+      "path": "code-d4abc26-prefix06-597b443/policy/range_bc/idle_sidecar.py",
+      "type": "file"
+    },
+    {
+      "bytes": 19391,
+      "mtime_ns": 1790527559943777077,
+      "path": "code-d4abc26-prefix06-597b443/policy/range_bc/metrics.py",
+      "type": "file"
+    },
+    {
+      "bytes": 5032,
+      "mtime_ns": 1790527559944363590,
+      "path": "code-d4abc26-prefix06-597b443/policy/range_bc/model.py",
+      "type": "file"
+    },
+    {
+      "bytes": 1723,
+      "mtime_ns": 1790527559944937624,
+      "path": "code-d4abc26-prefix06-597b443/policy/range_bc/report.py",
+      "type": "file"
+    },
+    {
+      "bytes": 54914,
+      "mtime_ns": 1790527559945642596,
+      "path": "code-d4abc26-prefix06-597b443/policy/range_bc/steps.py",
+      "type": "file"
+    },
+    {
+      "bytes": 66762,
+      "mtime_ns": 1790527559946540217,
+      "path": "code-d4abc26-prefix06-597b443/policy/range_bc/train.py",
+      "type": "file"
+    },
+    {
+      "bytes": 12415,
+      "mtime_ns": 1790527559947287322,
+      "path": "code-d4abc26-prefix06-597b443/policy/range_bc/verify.py",
+      "type": "file"
+    },
+    {
+      "bytes": 6309,
+      "mtime_ns": 1790527559947881757,
+      "path": "code-d4abc26-prefix06-597b443/policy/range_bc/vocab.py",
+      "type": "file"
+    },
+    {
+      "bytes": 22509,
+      "mtime_ns": 1790527559948432986,
+      "path": "code-d4abc26-prefix06-597b443/policy/range_policy.py",
+      "type": "file"
+    },
+    {
+      "bytes": 39059,
+      "mtime_ns": 1790527559949163136,
+      "path": "code-d4abc26-prefix06-597b443/policy/range_skill_policy.py",
+      "type": "file"
+    },
+    {
+      "bytes": 30250,
+      "mtime_ns": 1790527559949786374,
+      "path": "code-d4abc26-prefix06-597b443/policy/train.py",
+      "type": "file"
+    },
+    {
+      "bytes": 1848,
+      "mtime_ns": 1790527559950343603,
+      "path": "code-d4abc26-prefix06-597b443/pyproject.toml",
+      "type": "file"
+    },
+    {
+      "path": "code-d4abc26-prefix06-597b443/scripts",
+      "type": "directory"
+    },
+    {
+      "bytes": 4163,
+      "mtime_ns": 1790527559951029345,
+      "path": "code-d4abc26-prefix06-597b443/scripts/capture.py",
+      "type": "file"
+    },
+    {
+      "bytes": 3111,
+      "mtime_ns": 1790527559951613946,
+      "path": "code-d4abc26-prefix06-597b443/scripts/import_human_demo.py",
+      "type": "file"
+    },
+    {
+      "bytes": 49655,
+      "mtime_ns": 1790527559952367961,
+      "path": "code-d4abc26-prefix06-597b443/scripts/job_board.py",
+      "type": "file"
+    },
+    {
+      "bytes": 21825,
+      "mtime_ns": 1790527559953162757,
+      "path": "code-d4abc26-prefix06-597b443/scripts/l4_measure.py",
+      "type": "file"
+    },
+    {
+      "bytes": 12795,
+      "mtime_ns": 1790527559953879847,
+      "path": "code-d4abc26-prefix06-597b443/scripts/l4_menu.py",
+      "type": "file"
+    },
+    {
+      "bytes": 6138,
+      "mtime_ns": 1790527559954580281,
+      "path": "code-d4abc26-prefix06-597b443/scripts/l4_practice_settings.py",
+      "type": "file"
+    },
+    {
+      "bytes": 16849,
+      "mtime_ns": 1790527559955161737,
+      "path": "code-d4abc26-prefix06-597b443/scripts/l4_trial.py",
+      "type": "file"
+    },
+    {
+      "bytes": 8154,
+      "mtime_ns": 1790527559955694158,
+      "path": "code-d4abc26-prefix06-597b443/scripts/measure_replay_hud.py",
+      "type": "file"
+    },
+    {
+      "bytes": 4749,
+      "mtime_ns": 1790527559956243335,
+      "path": "code-d4abc26-prefix06-597b443/scripts/pad.py",
+      "type": "file"
+    },
+    {
+      "bytes": 5499,
+      "mtime_ns": 1790527559956741135,
+      "path": "code-d4abc26-prefix06-597b443/scripts/padprime_m1.py",
+      "type": "file"
+    },
+    {
+      "bytes": 4230,
+      "mtime_ns": 1790527559957266536,
+      "path": "code-d4abc26-prefix06-597b443/scripts/pins.py",
+      "type": "file"
+    },
+    {
+      "bytes": 62389,
+      "mtime_ns": 1790527559957968703,
+      "path": "code-d4abc26-prefix06-597b443/scripts/place.py",
+      "type": "file"
+    },
+    {
+      "bytes": 15569,
+      "mtime_ns": 1790527559958626383,
+      "path": "code-d4abc26-prefix06-597b443/scripts/range_benchmark.py",
+      "type": "file"
+    },
+    {
+      "bytes": 22848,
+      "mtime_ns": 1790527559959226396,
+      "path": "code-d4abc26-prefix06-597b443/scripts/range_cast_probe.py",
+      "type": "file"
+    },
+    {
+      "bytes": 16726,
+      "mtime_ns": 1790527559959817997,
+      "path": "code-d4abc26-prefix06-597b443/scripts/record.py",
+      "type": "file"
+    },
+    {
+      "bytes": 6817,
+      "mtime_ns": 1790527559960423809,
+      "path": "code-d4abc26-prefix06-597b443/scripts/recording_watch.py",
+      "type": "file"
+    },
+    {
+      "bytes": 70997,
+      "mtime_ns": 1790527559961026296,
+      "path": "code-d4abc26-prefix06-597b443/scripts/reenter.py",
+      "type": "file"
+    },
+    {
+      "bytes": 2771,
+      "mtime_ns": 1790527559961659960,
+      "path": "code-d4abc26-prefix06-597b443/scripts/regenerate_sealed.py",
+      "type": "file"
+    },
+    {
+      "bytes": 6683,
+      "mtime_ns": 1790527559962250299,
+      "path": "code-d4abc26-prefix06-597b443/scripts/replay_camera.py",
+      "type": "file"
+    },
+    {
+      "bytes": 17446,
+      "mtime_ns": 1790527559962992596,
+      "path": "code-d4abc26-prefix06-597b443/scripts/replay_hud_full.py",
+      "type": "file"
+    },
+    {
+      "bytes": 4465,
+      "mtime_ns": 1790527559963629115,
+      "path": "code-d4abc26-prefix06-597b443/scripts/replay_hud_run.py",
+      "type": "file"
+    },
+    {
+      "bytes": 13126,
+      "mtime_ns": 1790527559964146574,
+      "path": "code-d4abc26-prefix06-597b443/scripts/replay_hud_validate.py",
+      "type": "file"
+    },
+    {
+      "bytes": 29442,
+      "mtime_ns": 1790527559964976964,
+      "path": "code-d4abc26-prefix06-597b443/scripts/replay_steps.py",
+      "type": "file"
+    },
+    {
+      "bytes": 37527,
+      "mtime_ns": 1790527559965680944,
+      "path": "code-d4abc26-prefix06-597b443/scripts/transcode_recording.py",
+      "type": "file"
+    },
+    {
+      "bytes": 587046,
+      "mtime_ns": 1790527559967948027,
+      "path": "code-d4abc26-prefix06-597b443/uv.lock",
+      "type": "file"
+    },
+    {
+      "path": "code-d4abc26/agent",
+      "type": "directory"
+    },
+    {
+      "path": "code-d4abc26/judge",
+      "type": "directory"
+    },
+    {
+      "path": "code-d4abc26/perception",
+      "type": "directory"
+    },
+    {
+      "path": "code-d4abc26/policy",
+      "type": "directory"
+    },
+    {
+      "path": "code-d4abc26/policy/idm",
+      "type": "directory"
+    },
+    {
+      "path": "code-d4abc26/policy/range_bc",
+      "type": "directory"
+    },
+    {
+      "path": "code-d4abc26/scripts",
+      "type": "directory"
+    },
+    {
+      "path": "metadata",
+      "type": "directory"
+    },
+    {
+      "bytes": 469,
+      "mtime_ns": 1790480084948307991,
+      "path": "metadata/patch-equivalence.json",
+      "type": "file"
+    },
+    {
+      "bytes": 4423,
+      "mtime_ns": 1790480084948307991,
+      "path": "metadata/sealed-denylist.v2.json",
+      "type": "file"
+    },
+    {
+      "bytes": 25510,
+      "mtime_ns": 1790480084948307991,
+      "path": "metadata/session-splits.corpus.json",
+      "type": "file"
+    },
+    {
+      "path": "receipts",
+      "type": "directory"
+    },
+    {
+      "bytes": 14346,
+      "mtime_ns": 1790488645978778178,
+      "path": "receipts/common-context-inputs02.json",
+      "type": "file"
+    },
+    {
+      "bytes": 14200,
+      "mtime_ns": 1790483533498104095,
+      "path": "receipts/common-context.json",
+      "type": "file"
+    },
+    {
+      "bytes": 4707,
+      "mtime_ns": 1790488645979560123,
+      "path": "receipts/independent-review-inputs02.json",
+      "type": "file"
+    },
+    {
+      "bytes": 3614,
+      "mtime_ns": 1790483533498104095,
+      "path": "receipts/independent-review.json",
+      "type": "file"
+    },
+    {
+      "bytes": 15412,
+      "mtime_ns": 1790483533498104095,
+      "path": "receipts/inputs-01.json",
+      "type": "file"
+    },
+    {
+      "bytes": 16178,
+      "mtime_ns": 1790488645980449183,
+      "path": "receipts/inputs-02.json",
+      "type": "file"
+    },
+    {
+      "path": "sidecars",
+      "type": "directory"
+    },
+    {
+      "path": "sidecars/cm3",
+      "type": "directory"
+    },
+    {
+      "bytes": 1069064,
+      "mtime_ns": 1790480084948307991,
+      "path": "sidecars/cm3/20260923T051828-422Z-33696-1.idle.jsonl",
+      "type": "file"
+    },
+    {
+      "bytes": 4132584,
+      "mtime_ns": 1790480084948307991,
+      "path": "sidecars/cm3/20260923T200129-346Z-33696-6.idle.jsonl",
+      "type": "file"
+    },
+    {
+      "bytes": 1351422,
+      "mtime_ns": 1790480084948307991,
+      "path": "sidecars/cm3/20260924T232304-170Z-12024-1.idle.jsonl",
+      "type": "file"
+    },
+    {
+      "bytes": 5634439,
+      "mtime_ns": 1790480084948307991,
+      "path": "sidecars/cm3/20260925T021320-371Z-7804-1.idle.jsonl",
+      "type": "file"
+    },
+    {
+      "bytes": 565941,
+      "mtime_ns": 1790480084948307991,
+      "path": "sidecars/cm3/20260925T025230-605Z-7804-2.idle.jsonl",
+      "type": "file"
+    },
+    {
+      "bytes": 180099,
+      "mtime_ns": 1790480084948307991,
+      "path": "sidecars/cm3/manifest.json",
+      "type": "file"
+    },
+    {
+      "path": "steps15",
+      "type": "directory"
+    },
+    {
+      "bytes": 8515125,
+      "mtime_ns": 1790480628786546731,
+      "path": "steps15/20260923T051828-422Z-33696-1.jsonl",
+      "type": "file"
+    },
+    {
+      "bytes": 3247674,
+      "mtime_ns": 1790481909370504237,
+      "path": "steps15/20260923T171533-187Z-33696-5.jsonl",
+      "type": "file"
+    },
+    {
+      "bytes": 32759007,
+      "mtime_ns": 1790480640402787737,
+      "path": "steps15/20260923T200129-346Z-33696-6.jsonl",
+      "type": "file"
+    },
+    {
+      "bytes": 13522361,
+      "mtime_ns": 1790481914042197040,
+      "path": "steps15/20260923T205528-900Z-45572-3.jsonl",
+      "type": "file"
+    },
+    {
+      "bytes": 10744594,
+      "mtime_ns": 1790481763954844385,
+      "path": "steps15/20260924T232304-170Z-12024-1.jsonl",
+      "type": "file"
+    },
+    {
+      "bytes": 44677348,
+      "mtime_ns": 1790481773578483732,
+      "path": "steps15/20260925T021320-371Z-7804-1.jsonl",
+      "type": "file"
+    },
+    {
+      "bytes": 4515567,
+      "mtime_ns": 1790481898310657528,
+      "path": "steps15/20260925T025230-605Z-7804-2.jsonl",
+      "type": "file"
+    }
+  ],
+  "manifest_sha256": "61e1519df3a244eb51e9d18363d8e32adb0ab0acf37a8ad751cccf4b5da672b0",
+  "owner_hashes_unchanged": true,
+  "provider_commit_id": null,
+  "scheme": "manifest+exclusive-writer-generation",
+  "status": "PASS",
+  "version_id": "inputs-07",
+  "volume_id": "vo-NpcsP2imIIon902PW96bTb"
+}

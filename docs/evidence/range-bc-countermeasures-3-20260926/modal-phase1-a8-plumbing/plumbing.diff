@@ -1,0 +1,171 @@
+--- phase101/phase_worker.py
++++ phase102/phase_worker.py
+@@ -4,13 +4,13 @@
+  p=spec["plan"];m=spec["manifest"];raw=spec["manifest_bytes"]
+  assert hashlib.sha256(raw).hexdigest()==p["control_manifest"]["sha256"] and json.loads(raw)==m
+  claim=modal.Dict.from_id(p["claim_dict_id"])
+- assert claim.put("phase1-01-controls",True,skip_if_exists=True),"duplicate control invocation"
+- assert p["selected_task"]=="A-0" and m["root"]=="/outputs/.modal-control/phase1-01"
++ assert claim.put("phase1-02-controls",True,skip_if_exists=True),"duplicate control invocation"
++ assert p["selected_task"]=="A-0" and m["root"]=="/outputs/.modal-control/phase1-02"
+  assert m["format"]=="cm3-phase-control-manifest-v1" and m["output_volume_id"]==p["output_volume_id"]
+  from safety import canonical
+  assert m["identity"]=={"profile":"rivals","workspace":"volpestyle","workspace_id":"ac-kMLf5bJKqF5CAlSbfNhGh0"}
+  assert m["tasks_sha256"]==canonical(p["tasks"]) and m["input_manifest_sha256"]==p["input_manifest"]["sha256"]
+- assert set(spec["payload"])==set(m["files"]) and 0<len(m["files"])<=64
++ assert set(spec["payload"])==set(m["files"]) and 0<len(m["files"])==101
+  assert sum(len(v) for v in spec["payload"].values())<=8*1024**2
+  root=pathlib.Path("/outputs");target=pathlib.Path("/__modal/volumes")/p["output_volume_id"]
+  assert root.is_symlink() and root.readlink()==target and root.resolve(strict=True)==target and not target.is_symlink()
+@@ -77,7 +77,7 @@
+    if parent==root:break
+    assert not parent.is_symlink()
+  journal.mkdir(parents=True)
+- verification=verify_metadata("/inputs",p["input_witness_bytes"],p["input_witness"]["sha256"],p["input_volume_id"],"inputs-04")
++ verification=verify_metadata("/inputs",p["input_witness_bytes"],p["input_witness"]["sha256"],p["input_volume_id"],p["input_version_id"])
+  (journal/"metadata-input-verification.json").write_text(json.dumps(verification,indent=2))
+  volume=modal.Volume.from_id(p["output_volume_id"]);volume.commit()
+  started=time.time();remaining=min(p["attempt_timeout_seconds_by_arm"][arm]-30,p["absolute_deadline_unix"]-started)
+--- phase101/collect_phase.py
++++ phase102/collect_phase.py
+@@ -20,7 +20,7 @@
+   worker=wrapper["worker"];a=p["tasks"][key]["attempt_receipts"][0]
+   require(worker["result"]==wrapper["owner_result"] and worker["attempt_id"]==a["attempt_id"],"attempt reference")
+   verification=worker["mounted_verification"]
+-  require(verification["status"]=="PASS" and verification["witness_sha256"]==p["input_witness"]["sha256"] and verification["volume_id"]==p["input_volume_id"] and verification["version_id"]=="inputs-04" and verification["payload_bytes_read"]==0,"mounted closure verification")
++  require(verification["status"]=="PASS" and verification["witness_sha256"]==p["input_witness"]["sha256"] and verification["volume_id"]==p["input_volume_id"] and verification["version_id"]==p["input_version_id"] and verification["payload_bytes_read"]==0,"mounted closure verification")
+   require(0<len(worker["files"])<=64 and sum(x["bytes"] for x in worker["files"])<=2*1024**3,"owner output bound")
+   for row in worker["files"]:
+    require(row["path"].startswith(a["output"]+"/") and row["path"] not in rows,"output namespace/duplicate")
+@@ -67,7 +67,7 @@
+   require(size==row["bytes"] and h.hexdigest()==row["sha256"],"corrupt artifact "+str(path))
+   if path.suffix==".json":
+    require(size<=64*1024**2,"oversize JSON");docs[str(path)]=json.loads(target.read_bytes())
+-  job_status.write("cm3-phase1-01-collect",owner="modal-port",host="mac",stage="running",progress={"n":i,"total":len(rows)},eta=None,evidence=str(ROOT/"collection.log"))
++  job_status.write("cm3-phase1-02-collect",owner="modal-port",host="mac",stage="running",progress={"n":i,"total":len(rows)},eta=None,evidence=str(ROOT/"collection.log"))
+  # Diagnostic journals are bounded evidence, never a substitute for owner PASS.
+  diagnostics=[]
+  for name,size_expected in entries.items():
+@@ -112,11 +112,11 @@
+   "phase_result_sha256":digest(phase/"phase-result.json"),"launch_binding_sha256":p["launch_binding"]["sha256"],
+   "diagnostic_files":diagnostics,"matrix_verified":False,"judge_run":False}
+  atomic(dest/"collection.json",receipt)
+- job_status.write("cm3-phase1-01-collect",owner="modal-port",host="mac",stage="done",progress="All five artifacts/checkpoints verified; phase gate remains separate",eta=None,evidence=str(dest/"collection.json"))
++ job_status.write("cm3-phase1-02-collect",owner="modal-port",host="mac",stage="done",progress="All five artifacts/checkpoints verified; phase gate remains separate",eta=None,evidence=str(dest/"collection.json"))
+  print(json.dumps({"status":receipt["status"],"bytes":total,"files":len(rows)}))
+ if __name__=="__main__":
+  try:main()
+  except BaseException as exc:
+   import job_status
+-  job_status.write("cm3-phase1-01-collect",owner="modal-port",host="mac",stage="failed",progress=str(exc),eta=None,evidence=str(ROOT/"collection.log"))
++  job_status.write("cm3-phase1-02-collect",owner="modal-port",host="mac",stage="failed",progress=str(exc),eta=None,evidence=str(ROOT/"collection.log"))
+   raise
+--- phase101/approved_task_entry.py
++++ phase102/approved_task_entry.py
+@@ -0,0 +1,15 @@
++"""Enable one task only after external six-row batch authority validates."""
++import json,pathlib,sys
++from safety import require,digest
++import modal_app,task_driver
++from phase_transport import validate_authority
++def main():
++ require(len(sys.argv)==4,"approved task arguments required")
++ local,runtime_path,runtime_sha=sys.argv[1:]
++ require(digest(runtime_path)==runtime_sha,"runtime pin mismatch")
++ runtime=json.loads(pathlib.Path(runtime_path).read_bytes())
++ validate_authority(runtime["plan"])
++ task_driver.DRAFT_LAUNCH_ENABLED=True
++ modal_app.DEPLOYMENT_ENABLED=True
++ task_driver.execute(local,{"path":runtime_path,"sha256":runtime_sha})
++if __name__=="__main__":main()
+--- phase101/phase_transport.py
++++ phase102/phase_transport.py
+@@ -10,7 +10,7 @@
+  for name,pin in b["harness_code"].items():
+   relative(name);require(digest(ROOT/name)==pin,"harness bytes changed: "+name)
+  require(set(b["harness_code"])==set(read(ROOT/"harness-files.json")),"incomplete harness closure")
+- require(b["source_review"]["manifest_sha256"]=="37c432ab108f0881f489436d42a0205df271b21fe81c8ff96359eb9b8d05a134","review source changed")
++ require(b["source_review"]["manifest_sha256"]=="09f0e5ea9acaeae510cff9ab367fbf7d67fdc8c8cfb47241bd9cf10a1781cdf2","review source changed")
+ def validate_authority(p):
+  require(p.get("transport_v4") is True and p["phase"]=="phase1","this adapter only permits phase1")
+  require(p["launch_binding"]["local_path"]==str(ROOT/"launch-binding.proposal.json"),"binding path")
+@@ -21,31 +21,32 @@
+  rows=read(ROOT/"approvals.at-launch.json")["approvals"];b=document(p["launch_binding"])
+  def approved(stage,ref):
+   require(any(r.get("stage")==stage and r.get("path")==ref["path"] and r.get("sha256")==ref["sha256"] and r.get("approver")=="herdr-lead" and r.get("approved_at") for r in rows),"missing exact approval "+stage)
+- approved("phase1-01-driver",{"path":"handoff/modal/phase101-proposal/launch-binding.proposal.json","sha256":a["binding_sha256"]})
++ approved("phase1-02-driver",{"path":"handoff/modal/phase102-proposal/launch-binding.proposal.json","sha256":a["binding_sha256"]})
+  approved("budget",b["budget_approval"])
+- approved("common-context-inputs04",b["context_ref"])
++ approved("common-context-inputs07",b["context_ref"])
+  for key,task in p["tasks"].items():
+   v=task["attempt_receipts"][0];approved("fit",{"path":p["receipt_root"]+"/"+v["path"],"sha256":v["sha256"]})
+  validate_harness_v4(b)
+  return b
+ def validate_plan_v4(p):
+  b=validate_authority(p);numeric_plan(p);validate_binding(p)
+- require(p["run_id"]=="phase1-01" and p["campaign_id"]=="r3-20260926-l40s","run namespace")
++ require(p["run_id"]=="phase1-02" and p["campaign_id"]=="r3-20260926-l40s","run namespace")
+  require(set(p["tasks"])==PHASE1 and p["phase1_gate"] is None,"A3 phase1")
+  require(b["tasks"]==p["tasks"] and b["tasks_sha256"]==canonical(p["tasks"]),"routing pin")
+  require(p["campaigns_directory"]==b["campaigns_directory"]==str(ROOT.parent/"campaigns"),"campaign root")
+- for key in ("receipt_root","image_id","input_witness","control_manifest","extraction_collection","extraction_result","control_refs","diagnostic_contract","plumbing_review_pending","review_policy"):
++ for key in ("input_version_id","receipt_root","image_id","input_witness","control_manifest","extraction_collection","extraction_result","control_refs","diagnostic_contract","plumbing_review_pending","review_policy"):
+   require(p[key]==b[key],"transport binding changed: "+key)
+- require(p["receipt_root"]=="/outputs/.modal-control/phase1-01/receipts","receipt namespace")
++ require(p["receipt_root"]=="/outputs/.modal-control/phase1-02/receipts","receipt namespace")
+  require(p["plumbing_review_pending"] is True and p["review_policy"]=="plumbing-delta-review-before-verdict","review policy")
+  require(p["image_id"]=="im-tE3Y0YrWYZ0po0yAA0JQT8","existing captured image only")
+- require(p["entrypoint_sha256"]=="327f51225949f4bdb16da427fbabbf9439005f8e5b09a9455e760ba75acf4900","reviewed LF owner")
++ require(p["entrypoint_sha256"]=="7f27cd5d777ac24294083878379daf4d2a276b263c8131ffb568dd92c69693bd","reviewed LF owner")
+  context=document(p["approved_context"])
+  from input_closure import bind_context
+  manifest=document(p["input_manifest"]);bind_context(manifest,context,b["control_refs"])
+  require(manifest["volume_id"]==p["input_volume_id"] and manifest["code_directory"]==p["code_directory"],"input volume/code binding")
+  require(context["code"]["policy/range_bc/cm3_run.py"]==p["entrypoint_sha256"],"context/owner")
+  witness=document(p["input_witness"]);full=witness["full_verification"]
++ require(witness["version_id"]==p["input_version_id"],"input version binding changed")
+  require(witness["manifest_sha256"]==p["input_manifest"]["sha256"] and witness["volume_id"]==p["input_volume_id"],"witness binding")
+  require(full["status"]=="PASS" and full["exact_inventory"] and full["sealed_excluded"] and full["manifest_sha256"]==p["input_manifest"]["sha256"],"full input verification")
+  collection=document(p["extraction_collection"])
+@@ -59,7 +60,7 @@
+  for key,task in p["tasks"].items():
+   allocation=task["attempt_receipts"][0];relative(allocation["path"])
+   state=read(ROOT/"states"/(key+".json"))
+-  writer=Writer(context,state,authority,[(p["receipt_root"],ROOT/"receipts"),("/outputs/.modal-control/phase1-01/accounting",ROOT/"accounting"),("/outputs",outputs)])
++  writer=Writer(context,state,authority,[(p["receipt_root"],ROOT/"receipts"),("/outputs/.modal-control/phase1-02/accounting",ROOT/"accounting"),("/outputs",outputs)])
+   receipt=writer.stage("fit",allocation["output"],task=key,attempt=allocation["attempt_id"])
+   require(receipt==read(ROOT/"receipts"/allocation["path"]),"Writer receipt mismatch")
+   require(digest(ROOT/"receipts"/allocation["path"])==allocation["sha256"],"receipt pin")
+@@ -71,9 +72,9 @@
+  return b
+ def validate_control_manifest(p,m):
+  require(m["format"]=="cm3-phase-control-manifest-v1" and m["approved_by"]=="herdr-lead","control schema")
+- require(m["root"]=="/outputs/.modal-control/phase1-01" and m["identity"]==IDENTITY,"control namespace/identity")
++ require(m["root"]=="/outputs/.modal-control/phase1-02" and m["identity"]==IDENTITY,"control namespace/identity")
+  require(m["output_volume_id"]==p["output_volume_id"] and m["tasks_sha256"]==canonical(p["tasks"]),"control route")
+- require(0<len(m["files"])<=64 and sum(r["bytes"] for r in m["files"].values())<=8*1024**2,"control bound")
++ require(0<len(m["files"])==101 and sum(r["bytes"] for r in m["files"].values())<=8*1024**2,"control bound")
+  for name,row in m["files"].items():
+   remote=pathlib.PurePosixPath(name)
+   require(str(remote)==name and remote.is_relative_to(m["root"]) and ".." not in remote.parts and remote.suffix==".json","control path")
+@@ -94,7 +95,7 @@
+  v=modal.Volume.from_id(p["input_volume_id"],client=client)
+  found={x.path:x.size for x in v.iterdir("/",recursive=True) if x.type==modal.volume.FileEntryType.FILE}
+  require(found=={r["path"]:r["bytes"] for r in manifest["files"]},"input inventory changed")
+- prefixes=[".modal-control/phase1-01",".modal-journal/phase1-01"]
++ prefixes=[".modal-control/phase1-02",".modal-journal/phase1-02"]
+  prefixes += [a["output"].removeprefix("/outputs/") for t in p["tasks"].values() for a in t["attempt_receipts"]]
+  out=modal.Volume.from_id(p["output_volume_id"],client=client)
+  for x in out.iterdir("/",recursive=True):
+--- phase101/modal_app.py
++++ phase102/modal_app.py
+@@ -208,7 +208,7 @@
+   for key in sorted(p["tasks"]):
+    alive_guards();running_bound(bounds,completed=completed)
+    with (local/key/"driver.log").open("x") as log:
+-    children[key]=subprocess.Popen([sys.executable,str(ROOT/"task_driver.py"),str(local/key),
++    children[key]=subprocess.Popen([sys.executable,str(ROOT/"approved_task_entry.py"),str(local/key),
+                                    runtime_ref["path"],runtime_ref["sha256"]],
+                                   stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,start_new_session=True)
+   pending=set(children);last_report=0
