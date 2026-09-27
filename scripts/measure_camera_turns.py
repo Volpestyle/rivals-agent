@@ -23,6 +23,7 @@ from agent.live_range_bc import Journal, require, sha256
 from scripts import l4_measure as l4
 
 SIGNED = tuple(s * d for s in (1, -1) for d in (.1, .2, .3, .45, .6, .8, 1.))
+PRIME_D, PRIME_S = .45, .12  # pulse-block initialization, never calibration
 FILES = ("scripts/measure_camera_turns.py", "tests/test_measure_camera_turns.py",
          "agent/controller.py", "agent/startup.py", "scripts/l4_measure.py", "scripts/record.py",
          "agent/pad_bindings.py", "agent/loop.py", "scripts/run_range_bc_live.py",
@@ -102,6 +103,37 @@ def save_native(journal, name, frame, captured):
         "shape": list(frame.shape), "sha256": hashlib.sha256(raw).hexdigest()})
 
 
+def initialize_pulse_pad(live, journal, proof, scope_end, *, clock=time.perf_counter):
+    """One inspected yaw initialization; require observed response, never retry."""
+    import cv2
+    import numpy as np
+    live.release()
+    time.sleep(.35)
+    before = proof()
+    before_t = live.frame_t
+    save_native(journal, "initialization-before", before, before_t)
+    before_gray = cv2.cvtColor(cv2.resize(before, (1280,720), interpolation=cv2.INTER_AREA), cv2.COLOR_BGR2GRAY)
+    rows, on, off = collect_segment(live, PRIME_D, PRIME_S, proof, scope_end=scope_end, clock=clock)
+    require(on is not None and rows, "initialization produced no report/capture interval")
+    np.savez_compressed(journal.output / "initialization.npz",
+                        timestamps=np.array([r[0] for r in rows]), bands=np.stack([r[1] for r in rows]))
+    time.sleep(.35)
+    after = proof()
+    save_native(journal, "initialization-after", after, live.frame_t)
+    result = {"role": "initialization_excluded", "axis": "rx", "deflection": PRIME_D,
+              "requested_seconds": PRIME_S, "on": on, "off": off, "before_t": before_t,
+              "after_t": live.frame_t, "excluded_from_calibration": True}
+    after_gray = cv2.cvtColor(cv2.resize(after, (1280,720), interpolation=cv2.INTER_AREA), cv2.COLOR_BGR2GRAY)
+    try:
+        dx, dy, confidence = l4.checked_shift(before_gray, after_gray, l4.YAW_BOX, direction=-1)
+    except l4.MotionRefused as exc:
+        journal.write("initialization.json", {**result, "observed_response": "refused", "motion": exc.audit})
+        raise  # A swallowed initialization is not permission to try again.
+    journal.write("initialization.json", {**result, "observed_response": "directional_motion",
+                  "dx": dx, "dy": dy, "confidence": confidence,
+                  "not_device_delivery_timing": True})
+
+
 def measure_pulse(live, d, duration, axis, focal, journal, index, proof, scope_end,
                   *, clock=time.perf_counter, sleep=time.sleep):
     """Wrap the accepted l4 pulse/shift guards; each sign has its own timing."""
@@ -172,13 +204,17 @@ def run_block(live, deflections, duration, journal, *, proof, acknowledge, focus
     thread = threading.Thread(target=monitor, daemon=True)
     thread.start()
     try:
-        for index, d in enumerate(deflections):
+        jobs = ([("prime", PRIME_D)] if pulse_axis else []) + list(enumerate(deflections))
+        for index, d in jobs:
             live.release()
             frame = guarded_proof()
             # Separate file/metadata: never compete with Journal's frame writer.
             # Encoding is synchronous only while neutral, before acknowledgement.
             save_native(journal, f"ready-{index}", frame, live.frame_t)
             acknowledge(index, d, guarded_proof, end)
+            if index == "prime":
+                initialize_pulse_pad(live, journal, guarded_proof, end, clock=clock)
+                continue  # Next iteration is neutral, a fresh native still and a NEW token.
             if pulse_axis:
                 try:
                     result = measure_pulse(live, d, duration, pulse_axis, focal, journal, index,
@@ -289,6 +325,9 @@ def main(argv=None):
                 "recording_ref": a.recording_ref, "deflections": a.deflections, "seconds": a.seconds,
                 "scope_seconds": a.scope_seconds, "review": receipt, "source_sha256": LOADED,
                 "pulse_axis": a.pulse_axis, "focal": focal_receipt,
+                "pulse_initialization": {"axis": "rx", "deflection": PRIME_D, "seconds": PRIME_S,
+                    "separate_lead_token": True, "excluded_from_calibration": True,
+                    "role": "initialization_excluded", "motion_required": True} if a.pulse_axis else None,
                 "focal_receipt_sha256": hashlib.sha256(focal_raw).hexdigest() if a.focal_receipt else None,
                 "offline_analysis_sha256": sha256(ROOT / "perception/camera_turn_analysis.py"),
                 "wall_time_unix": time.time(), "monotonic_t": time.perf_counter(),
@@ -330,7 +369,9 @@ def main(argv=None):
         def acknowledge(index, d, fresh, end):
             token = uuid.uuid4().hex
             journal.write(f"ready-{index}.json", {"token": token, "deflection": d,
-                          "axis": a.pulse_axis or "rx", "seconds": a.seconds,
+                          "axis": "rx" if index == "prime" else a.pulse_axis or "rx",
+                          "seconds": PRIME_S if index == "prime" else a.seconds,
+                          "kind": "initialization_excluded" if index == "prime" else "measurement",
                           "native_frame": f"ready-{index}.png",
                           "instruction": "Lead inspects pose then writes token to continue-N.json"})
             marker = journal.output / f"continue-{index}.json"
@@ -346,11 +387,13 @@ def main(argv=None):
                             focused=focused, stop_requested=any_key_pressed, scope_seconds=a.scope_seconds,
                             pulse_axis=a.pulse_axis, focal=focal)
         journal.write("result.json", {"stop_reason": "completed_block", "segments": results,
+                                     "initialization_excluded": "initialization.json" if a.pulse_axis else None,
                                      "report_timing": timing, "acceptance": "raw_unreviewed"})
     except BaseException as exc:
         if live is not None:
             live.close()
-        journal.write("failure.json", {"error": repr(exc), "report_timing": timing, "acceptance": "failed"})
+        journal.write("failure.json", {"error": repr(exc), "report_timing": timing, "acceptance": "failed",
+            "initialization_excluded": "initialization.json" if a.pulse_axis else None})
         raise
     finally:
         if live is not None:

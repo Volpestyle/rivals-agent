@@ -187,3 +187,65 @@ def test_capture_retention_is_not_throttled_to_renewal():
                                     clock=lambda: now[0], sleep=lambda dt: None)
     assert len(rows) >= 20
     assert 2 <= len(sends) <= 3
+
+
+def test_pulse_block_primes_only_after_its_own_token_then_reinspects(tmp_path, monkeypatch):
+    order = []
+    live = SimpleNamespace(frame_t=0., release=lambda: order.append("neutral"), close=lambda: order.append("close"))
+    def collect(live, d, seconds, proof, **kw):
+        order.append(("prime", d, seconds))
+        proof()
+        return [(1., np.zeros((150,265),np.uint8))], 1., 1.12
+    monkeypatch.setattr(m, "collect_segment", collect)
+    monkeypatch.setattr(m.l4, "checked_shift", lambda *a, **kw: (-120, 0, .99))
+    monkeypatch.setattr(m, "measure_pulse", lambda live,d,*a,**kw: order.append(("pulse",d)) or {"deflection":d})
+    journal = m.Journal(tmp_path / "priming", {})
+    try:
+        result = m.run_block(live, [.5,-.5], .04, journal,
+            proof=lambda: np.zeros((360,640,3),np.uint8),
+            acknowledge=lambda index,*a: order.append(("token",index)), focused=lambda: True,
+            stop_requested=lambda: False, pulse_axis="ry", focal=640.)
+        assert order == ["neutral", ("token","prime"), "neutral", ("prime",.45,.12),
+                         "neutral", ("token",0), ("pulse",.5),
+                         "neutral", ("token",1), ("pulse",-.5), "close"]
+        assert len(result) == 2  # initialization never becomes a measurement
+        assert json.loads((journal.output / "initialization.json").read_text())["excluded_from_calibration"]
+        assert (journal.output / "ready-prime.png").exists() and (journal.output / "ready-0.png").exists()
+    finally:
+        journal.close()
+
+
+def test_swallowed_initialization_stops_without_pulses_or_retry(tmp_path, monkeypatch):
+    attempts = []
+    live = SimpleNamespace(frame_t=0., release=lambda: None, close=lambda: None)
+    def collect(*a, **kw):
+        attempts.append(True)
+        return [(1., np.zeros((150,265),np.uint8))], 1., 1.12
+    monkeypatch.setattr(m, "collect_segment", collect)
+    monkeypatch.setattr(m, "measure_pulse", lambda *a,**kw: pytest.fail("pulse after swallowed initialization"))
+    journal = m.Journal(tmp_path / "swallowed", {})
+    try:
+        with pytest.raises(m.l4.MotionRefused):
+            m.run_block(live, [.5], .04, journal, proof=lambda: np.zeros((360,640,3),np.uint8),
+                acknowledge=lambda *a: None, focused=lambda: True, stop_requested=lambda: False,
+                pulse_axis="ry", focal=640.)
+        assert attempts == [True]
+        result = json.loads((journal.output / "initialization.json").read_text())
+        assert result["role"] == "initialization_excluded" and result["observed_response"] == "refused"
+        assert not (journal.output / "ready-0.png").exists()
+    finally:
+        journal.close()
+
+
+def test_refused_prime_token_sends_no_initialization_or_pulse(tmp_path, monkeypatch):
+    live = SimpleNamespace(frame_t=0., release=lambda: None, close=lambda: None)
+    monkeypatch.setattr(m, "collect_segment", lambda *a,**kw: pytest.fail("initialization without token"))
+    monkeypatch.setattr(m, "measure_pulse", lambda *a,**kw: pytest.fail("pulse without token"))
+    journal = m.Journal(tmp_path / "no-prime", {})
+    try:
+        with pytest.raises(ValueError, match="refused"):
+            m.run_block(live, [.5], .04, journal, proof=lambda: np.zeros((360,640,3),np.uint8),
+                acknowledge=lambda *a: (_ for _ in ()).throw(ValueError("refused")),
+                focused=lambda: True, stop_requested=lambda: False, pulse_axis="ry", focal=640.)
+    finally:
+        journal.close()
