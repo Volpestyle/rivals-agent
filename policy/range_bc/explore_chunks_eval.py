@@ -117,7 +117,8 @@ def main(argv=None):
         raise
 
 
-def evaluate(a, report, *, device="mps", model_factory=ChunkPolicy, array_loader=load_manifest):
+def evaluate(a, report, *, device="mps", model_factory=ChunkPolicy, array_loader=load_manifest,
+             stop_on_persistence=False):
     out = Path(a.out)
     start = time.perf_counter()
     payload = torch.load(a.checkpoint, map_location="cpu", weights_only=True)
@@ -160,9 +161,16 @@ def evaluate(a, report, *, device="mps", model_factory=ChunkPolicy, array_loader
                                  "TF_camera_mae": camera["camera_mae_mean"],
                                  "T": tf["macro_press_f1_tol"], "F": sf["macro_press_f1_tol"]}
         result["evaluation_seconds"] = time.perf_counter() - start
+        if (stop_on_persistence and sf["camera_mae_mean"] <
+                result["references"]["frozen_dev"]["persistence"]["camera_mae_mean"]):
+            result["stop_reason"] = f"STOP: {key} self-fed camera beats persistence; report to lead"
         out.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
         print(json.dumps({"tag": "EXPLORATORY", "decode": key, "T": tf["macro_press_f1_tol"],
                           "F": sf["macro_press_f1_tol"]}), flush=True)
+        if "stop_reason" in result:
+            report(result["stop_reason"])
+            break
+    return result
 
 
 if __name__ == "__main__":

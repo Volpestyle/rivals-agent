@@ -381,3 +381,30 @@ def test_encoder_pool_preserves_row_major_spatial_cells():
     expected = torch.tensor([[(r * 4 + y) * 16 + c * 4 + x for y in range(4) for x in range(4)]
                              for r in range(4) for c in range(4)]).float().mean(1)
     assert torch.equal(pooled[0, :, 0], expected)
+
+
+def test_encoder_history_disabled_ignores_feedback_in_fit_and_recurrent_decode():
+    from policy.range_bc.explore_encoder import EncoderPolicy, WIDTH
+
+    config = Config(hud=False, history=False, embed=4, hidden=8, history_embed=4)
+    torch.manual_seed(12)
+    model = EncoderPolicy(config, 1)
+    g, c = torch.randn(1, 5, WIDTH), torch.randn(1, 5, WIDTH)
+    prev = torch.randn(1, 5, steps.PREV_DIM)
+    feats = model.features(g, c, None, 1, 5, prev)
+    for operation in (model.step, model.chunk_step):
+        a, cam, state = operation(feats, prev)
+        zero_a, zero_cam, zero_state = operation(feats, torch.zeros_like(prev))
+        assert torch.equal(a, zero_a) and torch.equal(cam, zero_cam)
+        assert all(torch.equal(x, y) for x, y in zip(state, zero_state))
+    # Recurrent rollout retains visual memory but is invariant to arbitrary feedback.
+    states = [None, None]
+    for t in range(5):
+        left = model.step(feats[:, t:t + 1], prev[:, t:t + 1], states[0])
+        right = model.step(feats[:, t:t + 1], prev[:, t:t + 1] * -100, states[1])
+        assert torch.equal(left[0], right[0]) and torch.equal(left[1], right[1])
+        states = [left[2], right[2]]
+    (a.square().mean() + cam.square().mean()).backward()
+    assert model.global_enc[0].weight.grad.abs().sum() > 0
+    assert model.crop_enc[0].weight.grad.abs().sum() > 0
+    assert model.hist[0].weight.grad.count_nonzero() == 0

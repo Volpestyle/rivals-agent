@@ -180,13 +180,15 @@ def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__)
     for key in ("arm", "manifest", "registry", "tally", "out", "stop-file", "log"):
         p.add_argument("--" + key, required=True)
+    p.add_argument("--history", choices=("enabled", "disabled"), default="enabled")
+    p.add_argument("--stop-on-persistence", action="store_true")
     a = p.parse_args(argv)
     train.require(torch.cuda.is_available() and torch.cuda.get_device_name() == "NVIDIA L40S",
                   "matched Modal L40S required")
     torch.set_num_threads(8)
     root = Path(a.out)
     from scripts.job_status import write
-    job = "explore-encoder-" + a.arm
+    job = "explore-encoder-" + ("historyoff-" if a.history == "disabled" else "") + a.arm
     def report(message):
         write(job, root=root / "jobs", owner="explore-policy", host="modal", stage="running",
               evidence=a.log, progress=message)
@@ -213,9 +215,10 @@ def main(argv=None):
     dev_arrays = [FeatureArrays(x, feature_root) for x in dev]
     stats = steps.train_statistics([x.session for x in arrays])
     identity = steps.sha256(a.manifest) + steps.sha256(feature_root / "features.json")
-    extra = {"arm": a.arm, "assets": assets, "extraction": extraction,
+    extra = {"arm": a.arm, "assets": assets, "extraction": extraction, "history_input": a.history,
              "incumbent_difference": "frozen pretrained tower and cached features; no pixel jitter/DrQ"}
-    _, _, status = fit_chunks(FeatureBatches(train_arrays, stride=64), Config(hud=False), stats, root,
+    config = Config(hud=False, history=a.history == "enabled")
+    _, _, status = fit_chunks(FeatureBatches(train_arrays, stride=64), config, stats, root,
                               dev=FeatureBatches(dev_arrays, stride=64), seed=0, epochs=26, device="cuda",
                               stop_file=a.stop_file, run_identity=identity, model_factory=EncoderPolicy,
                               recipe_extra=extra, progress=lambda n, total: report(f"fit {n}/{total}"))
@@ -223,9 +226,11 @@ def main(argv=None):
         return 75
     args = copy.copy(a)
     args.checkpoint, args.out = str(root / "epoch-26.pt"), str(root / "evaluation.json")
-    evaluate(args, report, device="cuda", model_factory=EncoderPolicy,
-             array_loader=lambda *args, **kw: (train_arrays, dev_arrays))
-    write(job, root=root / "jobs", stage="done", progress="26 epochs and six decodes complete")
+    result = evaluate(args, report, device="cuda", model_factory=EncoderPolicy,
+                      array_loader=lambda *args, **kw: (train_arrays, dev_arrays),
+                      stop_on_persistence=a.stop_on_persistence)
+    message = result.get("stop_reason", "26 epochs and six decodes complete")
+    write(job, root=root / "jobs", stage="done", progress=message)
     return 0
 
 
