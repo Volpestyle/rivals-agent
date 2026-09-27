@@ -1,0 +1,15 @@
+{
+ "session": "20260927T053118-260Z-150600-6",
+ "format": "rivals-range-steps-v1",
+ "step_ns": 33333333,
+ "frame_period_ns": 8333333,
+ "rows": 12930,
+ "accepted_rows": 7723,
+ "eligible_rows": 7723,
+ "steps": {
+  "path": "20260927T053118-260Z-150600-6.steps.jsonl",
+  "sha256": "99164a8ecc3ceb7148ab64f4a7ae0c36544d0d074a48a8ebedf3a68162c5d488"
+ },
+ "export_digest": "99164a8ecc3ceb7148ab64f4a7ae0c36544d0d074a48a8ebedf3a68162c5d488",
+ "grid": "anchors every step_ns from the first frame inside each segment \u2229 focus span, while the step fits strictly before the span end; stale-frame anchors (age > 2 frame periods) are not emitted"
+}
