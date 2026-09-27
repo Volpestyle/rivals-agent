@@ -72,6 +72,9 @@ so give cloud boxes 8 CPUs or more.
   comparisons). An arm that clearly beats H=1 goes next to a multi-seed confirm run, not to more single-seed variants.
   **~04:30 CDT, still the same night:** the explore cap rose to **$35**. The steering lead approved it as James's proxy,
   so the relaunched H=4 fits alongside H=1 and H=8.
+  The warning threshold is now **about $33**. This authorization covers the existing fresh H=4 launched at 03:51 CDT.
+  Its running drivers retained their stricter $30 guards; the lane note distinguishes the authorized ceiling from
+  effective enforcement. Changing a document or on-disk constant does not change an already-running guard.
 - A confirm-track fan-out (round 3's `handoff/modal/fanout/`) calls only the reviewed entry point
   (`policy/range_bc/cm3_run.py fit --arm --seed`), one fit per call, each authenticated by a lead-approved receipt.
   It never retries training automatically. The harness itself is launch plumbing, covered in "The two experiment tracks".
