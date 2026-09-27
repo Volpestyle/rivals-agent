@@ -120,7 +120,7 @@ account** in the usual skin, recorded with OBS and the logger as always.
 | 5 | **Second test take**, first in yet another sitting; type "test take" first. | 10-15 min | The same, for the final score. |
 | 6 | **More ordinary range play**, as much as you like. | any | The fit improves with data; 180 minutes is a milestone, not a ceiling. |
 | 7 | **Replay of the 2026-09-25 20:12 Heart of Heaven match** (alt), first person, 1x. **Before the next patch.** | ~6 min | Checks the Gate 2 readers on the Quick Match spectator layout. |
-| 8 | **A PC session with an agent** on the pad (`docs/next-pc-session.md`). | ~30 min | Only once there is a policy worth running live. |
+| 8 | **A PC session with an agent** on the pad. The 2026-09-26 sitting (`data/calibration/alt-20260926/SITTING.md`) did the touch test, press timing and period; focal, the yaw/pitch maps and wall attach are still open. (`docs/next-pc-session.md` is the pinned 2026-09-23 plan, not current status.) | ~10-30 min | Remaining calibration first; then a learned policy live once one presses. |
 
 Stay out of **Timed Practice** in range takes (it is cut), and keep range takes on the alt account (the main account's
 bindings are stored differently; one take was admitted only after a calibration proved them equivalent).

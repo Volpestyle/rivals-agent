@@ -32,6 +32,8 @@ gets them as one-line text files and loads no repo skills; set it to `true` and 
 | `docs/learning-plan.md` | The canonical learning plan: milestones, advancement gates, reward contract. Lead's |
 | `docs/recording-protocol.md`, `docs/recording-log.md` | What James does per recording session, and the ledger of every take (the lead appends rows; the admission lane fills intake status) |
 | `docs/machines.md` | Mac/PC responsibilities, remote access and transfer procedure |
+| `data/calibration/<sitting>/SITTING.md` | What a supervised pad sitting actually ran, measured and left open; newer than any plan |
+| `docs/steering/` | The steering charter: roles, the explore/confirm tracks, the portfolio and what is paused |
 | `docs/lanes/<lane>.md` | Each lane's present-state notes and measured facts; the lane's owner is its only writer |
 | `docs/spiderman-kit.md` | Sourced controller bindings, cooldowns, tracer rule, combos, settings. Its "Patch reflected" line is read at run time: keep it byte-identical within the first 2,000 characters |
 | `docs/evidence/` | Hash-pinned run records: frames, receipts, reports and the scripts that made them. Never edited or moved; `docs/evidence/README.md` indexes them |
@@ -46,6 +48,11 @@ gets them as one-line text files and loads no repo skills; set it to `true` and 
 
 ## Rules that came from real failures
 
+- A plan is not a record. Before telling James what a sitting needs, or stating what a lane has done, read the
+  newest dated records: the `docs/recording-log.md` rows, the lane note, the sitting's
+  `data/calibration/<sitting>/SITTING.md`, and the Linear issue's latest comment. Pinned plans such as
+  `docs/next-pc-session.md` (2026-09-23) keep their old wording forever. On 2026-09-26 a lead asked James to redo a
+  calibration sitting he had finished that evening.
 - `State.frame` is required and comes from the frame actually processed. Every
   `Detection.bbox` is in those pixels. A default frame size once put every box 2x off.
 - A perception reader returns a value or an explicit unknown (`None`), never a guess, and
