@@ -1,0 +1,34 @@
+{
+ "session": "20260927T052001-827Z-150600-5",
+ "attempt": "retry1",
+ "result": "stopped_by_game_guard",
+ "run_sha256": "845ae3419667dce1b6c82ea74689a04b31d469489dafc3b912ba2f21b8cabc47",
+ "failure": "Marvel or OBS active",
+ "finished": "2026-09-27T19:45:04.6187647Z",
+ "files": [
+  {
+   "source": "data/human/sessions/20260927T052001-827Z-150600-5/settings.json",
+   "preserved": "data/admission-codex/runs/20260927T052001-827Z-150600-5/ping-a1/retry1/aborted-outputs/settings.json",
+   "sha256": "a1d07db38190005486a7f4ffdc9a9c285d07eb058d932305bca49d31430e0cd1"
+  },
+  {
+   "source": "data/human/sessions/20260927T052001-827Z-150600-5/review.json",
+   "preserved": "data/admission-codex/runs/20260927T052001-827Z-150600-5/ping-a1/retry1/aborted-outputs/review.json",
+   "sha256": "91b30c8ef302d7ca353c832808937cbf408eaebacc77eb1fc0b583f99a0253fa"
+  },
+  {
+   "source": "data/human/sessions/20260927T052001-827Z-150600-5/recording-log.32007db.md",
+   "preserved": "data/admission-codex/runs/20260927T052001-827Z-150600-5/ping-a1/retry1/aborted-outputs/recording-log.32007db.md",
+   "sha256": "76748eb90f1eb4e454cdd98d614e7514329a63f37969753f15607942aba59618"
+  },
+  {
+   "source": "data/human/sessions/20260927T052001-827Z-150600-5/registry.1c9e2c671b14.json",
+   "preserved": "data/admission-codex/runs/20260927T052001-827Z-150600-5/ping-a1/retry1/aborted-outputs/registry.1c9e2c671b14.json",
+   "sha256": "1c9e2c671b14e9d1ea8bcefd4703668a039ecac946d2f5ece768746e67118a13"
+  }
+ ],
+ "completed_import": false,
+ "completed_steps": false,
+ "receipt_written": false,
+ "resume_condition": "Only after herdr-lead announces game closed; no automatic retry."
+}

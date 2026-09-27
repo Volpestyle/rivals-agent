@@ -1,0 +1,27 @@
+﻿{
+    "session":  "20260927T052001-827Z-150600-5",
+    "step":  "assemble",
+    "started":  "2026-09-27T19:40:59.7944150Z",
+    "finished":  "2026-09-27T19:45:04.6187647Z",
+    "pid":  162604,
+    "exit_code":  0,
+    "failure":  "Marvel or OBS active",
+    "free_bytes_before":  14514581504,
+    "process_peak_working_set_bytes":  {
+                                           "162604":  4812800,
+                                           "69680":  7536640,
+                                           "50804":  131108864,
+                                           "151728":  148529152
+                                       },
+    "arguments":  [
+                      "-u",
+                      "data/human/sessions/assemble_session.py",
+                      "20260927T052001-827Z-150600-5",
+                      "--independent-verdicts",
+                      "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json",
+                      "--snapshot",
+                      "code-snapshot-f8fd92c-6046514b",
+                      "--supersedes",
+                      "Lead 2026-09-27: ping-wheel boundary correction; prior assembly retained in versioned files and assembly-ping-a1-supersedes.json"
+                  ]
+}
