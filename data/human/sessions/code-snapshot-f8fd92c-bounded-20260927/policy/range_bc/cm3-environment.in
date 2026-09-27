@@ -1,0 +1,6 @@
+# Proposed CPython 3.11 environment, resolved separately for each accelerator host.
+# This is a package/wheel lock, not accelerator validation or a device choice.
+-r cm3-requirements.txt
+-c cm3-execution-constraints.txt
+torch==2.14.0
+torchvision==0.29.0

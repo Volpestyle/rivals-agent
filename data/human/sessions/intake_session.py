@@ -702,14 +702,13 @@ def step_propose(c):
 
 
 def _decode(c, file_ms_list, keep_frames=False):
-    """Decode exactly the frames at these file ms (CPU, 4 threads, below normal). Returns [(ms, bgr ndarray)]."""
+    """Yield exact-PTS native frames in windows of at most eight (CPU, two threads, below normal)."""
     import numpy as np
     wanted = sorted(set(file_ms_list))
-    out = []
     # decode contiguous windows so each frame is selected by its exact PTS
     windows, cur = [], [wanted[0]]
     for ms in wanted[1:]:
-        if ms - cur[-1] <= 500:
+        if ms - cur[-1] <= 500 and len(cur) < 8:
             cur.append(ms)
         else:
             windows.append(cur)
@@ -717,7 +716,7 @@ def _decode(c, file_ms_list, keep_frames=False):
     windows.append(cur)
     for win in windows:
         expr = "+".join(f"eq(pts\\,{ms})" for ms in win)
-        cmd = ["ffmpeg", "-hide_banner", "-loglevel", "error", "-nostdin", "-copyts", "-threads", "4",
+        cmd = ["ffmpeg", "-hide_banner", "-loglevel", "error", "-nostdin", "-copyts", "-threads", "2",
                "-ss", f"{max(0, win[0] / 1000 - 0.2):.3f}", "-i", c.video, "-an", "-sn", "-dn", "-filter_threads", "1",
                "-vf", f"select='{expr}'", "-fps_mode", "passthrough", "-frames:v", str(len(win)),
                "-f", "rawvideo", "-pix_fmt", "bgr24", "pipe:1"]
@@ -725,8 +724,7 @@ def _decode(c, file_ms_list, keep_frames=False):
         size = W * H * 3
         need(len(raw) == size * len(win), (len(raw) / size, len(win)))
         for i, ms in enumerate(win):
-            out.append((ms, np.frombuffer(raw[i * size:(i + 1) * size], np.uint8).reshape(H, W, 3)))
-    return out
+            yield ms, np.frombuffer(raw, np.uint8, count=size, offset=i * size).reshape(H, W, 3)
 
 
 def step_evidence(c):
@@ -752,8 +750,9 @@ def step_evidence(c):
     guard, guard_key, guard_rel = c.edge_guard(scan, layout, mapping)
 
     def proofs(frames):
-        by_ms = dict(_decode(c, [ms_of[t] for t in frames])) if frames else {}
-        return [(t, edge_proof(by_ms[ms_of[t]], scan, layout, mapping, guard, guard_key)) for t in frames]
+        time_of = {ms_of[t]: t for t in frames}
+        return [(time_of[ms], edge_proof(img, scan, layout, mapping, guard, guard_key))
+                for ms, img in _decode(c, list(time_of))] if frames else []
 
     # 1. native edge reads: every frame of each gameplay edge's bracket and, when the sample frame itself fails the
     # edge proof, the frames up to EDGE_INWARD_NS inside the segment (hi.propose_segments places the edge)
@@ -799,12 +798,14 @@ def step_evidence(c):
         chosen = {first, last} | {first + (last - first) * (k + 1) // (n + 1) for k in range(n)}
         picks[s["segment_id"]] = sorted(chosen)
     all_ms = sorted({ms_of[times[i]] for v in picks.values() for i in v})
-    frames = dict(_decode(c, all_ms))
+    owners = {}
     for s in segs:
         s["review_frames"] = []
         for i in picks[s["segment_id"]]:
+            owners.setdefault(ms_of[times[i]], []).append((s, i))
+    for ms, img in _decode(c, all_ms):
+        for s, i in owners[ms]:
             t = times[i]
-            img = frames[ms_of[t]]
             name = f"{s['segment_id']}-{i:05d}.jpg"
             cv2.imwrite(str(review_dir / name), cv2.resize(img, REVIEW_THUMB, interpolation=cv2.INTER_AREA),
                         [cv2.IMWRITE_JPEG_QUALITY, 88])
