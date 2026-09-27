@@ -72,7 +72,7 @@ def test_the_real_denylist_is_read_by_intakes_reader_with_its_pin():
     deny = steps.load_denylist()                 # data/human/sealed-denylist.v2.json, pinned (2026-09-26 test take added)
     assert [r["session_id"] for r in deny["sessions"]][:3] == [SEALED_ID, "20260926T153835-237Z-111496-2",
                                                                "20260926T153812-936Z-111496-1"]
-    assert len(deny["sessions"]) == 7    # plus the four gate2 identities (allowed_split gate2)
+    assert len(deny["sessions"]) == 8    # four gate2 identities plus the appended 2026-09-27 sealed take
     assert deny["sessions"][0]["media_sha256"] == SEALED_MEDIA
     with pytest.raises(steps.StepError, match="pinned"):
         steps.load_denylist(steps.DENYLIST, "0" * 64)

@@ -109,7 +109,7 @@ HEADER_KEYS = ("format", "session_id", "media_sha256", "session_group", "sitting
 DENYLIST = "data/human/sealed-denylist.v2.json"
 # The pinned sha256 of intake's denylist v2 (2026-09-26: 053616 and the 2026-09-26 test take). A changed file needs a
 # new pin, passed with it. v1 (sealed-denylist.json, 57cfe01f) stays byte-identical: the admitted freezes pin it.
-DENYLIST_SHA256 = "439c80df6cd5d6daa60b48e0acb2d3a3fa833134ff14edddc4121348c2dceb20"
+DENYLIST_SHA256 = "09e8b9d350c89eb41c1581e1bce47548bfb855bca5805cf2e65955b9b23597b5"
 # Game builds grouped by kit version (lead decision 2026-09-24; docs/lanes/end-to-end-fit-patch-equivalence.md). A human
 # cohort compares the kit version its builds map to, never the raw build; a build the file does not name is refused.
 # Pinned like the denylist (LF-normalised sha256); a changed file needs a new pin.
