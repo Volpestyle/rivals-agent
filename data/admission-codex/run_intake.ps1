@@ -25,8 +25,9 @@ if ($Step -in @('propose','evidence')) { $arguments+=@('--earlier-snapshot','cod
 $started=[DateTime]::UtcNow.ToString('o')
 $statusCode="import sys; from scripts.job_status import write; write('admission-'+sys.argv[1],owner='admission-codex',stage=sys.argv[3],host='pc',evidence=sys.argv[2],progress=sys.argv[4])"
 & $python -c $statusCode $Session $out 'running' $Step
-$p=Start-Process -FilePath $python -ArgumentList $arguments -WorkingDirectory $repo -WindowStyle Hidden -PassThru -RedirectStandardOutput $out -RedirectStandardError $err
-$p.PriorityClass='BelowNormal'
+Add-Type -Path (Join-Path $PSScriptRoot 'OwnedProcessJob.cs')
+$job=[AdmissionOwnedJob]::Start($python,[string[]]$arguments,$repo,$out,$err)
+$p=$job.Process
 $peak=@{}
 $failure=$null
 try {
@@ -49,6 +50,7 @@ try {
     $p.Refresh()
   }
   $p.WaitForExit()
+  if ($job.ActiveCount -ne 0) { throw 'Parent exited with surviving owned descendants; closing job to terminate them' }
   if ($p.ExitCode -ne 0) { throw "Intake exit $($p.ExitCode); see $err" }
   if ($Step -eq 'vote') {
     $mapping=Get-Content -Raw -LiteralPath "$repo/data/human/sessions/$Session/slot-mapping.json" | ConvertFrom-Json
@@ -56,9 +58,8 @@ try {
   }
 } catch {
   $failure=$_.Exception.Message
-  $p.Refresh()
-  if (-not $p.HasExited) { & taskkill /PID $p.Id /T /F | Out-Null; $p.WaitForExit() }
 } finally {
+  try { $job.Dispose() } catch { $failure="Job cleanup failed: $($_.Exception.Message); previous failure: $failure" }
   [ordered]@{session=$Session;step=$Step;started=$started;finished=[DateTime]::UtcNow.ToString('o');pid=$p.Id;exit_code=$p.ExitCode;failure=$failure;free_bytes_before=$freeBefore;process_peak_working_set_bytes=$peak;arguments=$arguments} | ConvertTo-Json -Depth 5 | Set-Content -Encoding UTF8 -LiteralPath $receipt
 }
 if ($failure) { & $python -c $statusCode $Session $out 'failed' $Step; throw $failure }
