@@ -1,0 +1,38 @@
+{
+  "owner": "idm-owner",
+  "scope": "EXPLORATORY stored-output sanity",
+  "result": "PASS",
+  "sessions": [
+    {
+      "session_id": "20260927T052001-827Z-150600-5",
+      "samples": [
+        11223,
+        37750,
+        55993
+      ],
+      "observations": [
+        "Spider-Man by Phoenix Egg doorway, cave, and cavern terrain in distinct scenes.",
+        "HUD web/ultimate readings: 5/10%, 4/ready, 1/ready.",
+        "Grey scene and HUD crop align; no blank output, crop displacement, menu or ping wheel observed."
+      ]
+    },
+    {
+      "session_id": "20260927T053118-260Z-150600-6",
+      "samples": [
+        3168,
+        18779,
+        34003
+      ],
+      "observations": [
+        "Spider-Man along defense approach, overhead swinging view, and tree-tunnel doorway.",
+        "HUD web/ultimate readings: 4/10%, 5/85%, 4/34%.",
+        "Grey scene and HUD crop align; distinct scenes without blank output or displaced crop."
+      ]
+    }
+  ],
+  "native_control": "Unchanged graph control: match4-control/inspection-4.json",
+  "limits": "Three grey/HUD pairs per store; not new admission, exhaustive frame review or accuracy evaluation. Raw worker visual_inspection=pending is preserved; this follow-up records the completed owner inspection.",
+  "mac_slot": "All three stores complete; explicitly released/idle. Explore moved extraction to cloud and acknowledged IDM availability. Any new heavy use is coordinated.",
+  "remaining_supervisor_exit": 0,
+  "remaining_supervisor_pid_absent_at_collection": 54184
+}

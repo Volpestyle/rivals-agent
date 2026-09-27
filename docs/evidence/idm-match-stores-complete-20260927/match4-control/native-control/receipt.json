@@ -1,0 +1,34 @@
+{
+  "session_id": "20260927T051206-888Z-150600-4",
+  "manifest_sha256": "88fff9b6590ced83e1276157f89a97d407a6f4025d007441e7086faaf7ff98f4",
+  "sample": {
+    "frame_index": 7544,
+    "pts": 62888
+  },
+  "source_sha256": "d279f81bb4b36cfcf4a0224deef1eace2cbfaf02dbf5744e653b36ceb8bb49e3",
+  "native_png_sha256": "89dccb51c043c57777b2f182f274e6912481257b295707e0f5fd7d5630c710da",
+  "exact_pts": true,
+  "command": [
+    "/Users/james/dev/idm-data/match-stores-9989f32/ffmpeg-two-threads",
+    "-hide_banner",
+    "-nostdin",
+    "-threads",
+    "2",
+    "-ss",
+    "60.888",
+    "-copyts",
+    "-i",
+    "/Users/james/dev/idm-match-data/originals/2026-09-27 00-12-06.mkv",
+    "-an",
+    "-sn",
+    "-dn",
+    "-vf",
+    "select='eq(pts,62888)',showinfo",
+    "-frames:v",
+    "1",
+    "-threads",
+    "2",
+    "/Users/james/dev/idm-data/match-stores-9989f32/native-control/native.png"
+  ],
+  "compute": "Mac CPU, two threads, nice10; $0"
+}

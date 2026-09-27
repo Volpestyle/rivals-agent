@@ -1,0 +1,20 @@
+{
+  "session_id": "20260927T051206-888Z-150600-4",
+  "owner": "idm-owner",
+  "result": "PASS stored/native control sanity",
+  "native_frame": 7544,
+  "native_pts": 62888,
+  "stored_samples": [
+    7544,
+    23783,
+    43979
+  ],
+  "observations": [
+    "Native scene/pose/HUD match stored first sample",
+    "HUD web/ult values4/11percent,4/0percent,2/15percent align with grey samples",
+    "No blank/duplicate/crop shift or menu observed in sampled frames"
+  ],
+  "limits": "Sparse preparation control; not new admission or accuracy evaluation",
+  "native_png_sha256": "89dccb51c043c57777b2f182f274e6912481257b295707e0f5fd7d5630c710da",
+  "collection_sha256": "1b6a44f230a95db978fb7189f3555c850f3da1a3fc21412be248b0bc055afa26"
+}

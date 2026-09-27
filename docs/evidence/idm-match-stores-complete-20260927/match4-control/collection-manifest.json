@@ -1,0 +1,54 @@
+{
+  "20260927T051206-888Z-150600-4.exit": {
+    "bytes": 2,
+    "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+  },
+  "20260927T051206-888Z-150600-4.result.json": {
+    "bytes": 1370,
+    "sha256": "9d8ed4341feb67d7fa2a8efb529684ec0fdfcc5de219928990afee9c41d05ecb"
+  },
+  "stores/20260927T051206-888Z-150600-4/frames.json": {
+    "bytes": 265012,
+    "sha256": "88fff9b6590ced83e1276157f89a97d407a6f4025d007441e7086faaf7ff98f4"
+  },
+  "native_control.py": {
+    "bytes": 2229,
+    "sha256": "768badc290eabc0457ea334713072c0cd2fb0d2211a2a73966554bc76bb4ea27"
+  },
+  "native-control/native.png": {
+    "bytes": 3870142,
+    "sha256": "89dccb51c043c57777b2f182f274e6912481257b295707e0f5fd7d5630c710da"
+  },
+  "native-control/receipt.json": {
+    "bytes": 940,
+    "sha256": "666ec200ac29e192bdcc0ec659e8ca26de95e881d2de86e7db89717da9340e5a"
+  },
+  "native-control/decode.log": {
+    "bytes": 2211,
+    "sha256": "97cb773bcd1d3ea3d354b013eb1739c07ae5b33a95548fbc5e1de66f7dabe620"
+  },
+  "samples/20260927T051206-888Z-150600-4/7544-grey.png": {
+    "bytes": 81817,
+    "sha256": "6457b6b4f1d1754b7b4cb7b6a54ba65cd0b59249a0d74b6b95d0ffee187a21cf"
+  },
+  "samples/20260927T051206-888Z-150600-4/7544-hud.png": {
+    "bytes": 23942,
+    "sha256": "3e0b32f41472a57c3efe0400b70a27830cf25c29cd9f9d08e9f509df20986c24"
+  },
+  "samples/20260927T051206-888Z-150600-4/23783-grey.png": {
+    "bytes": 79331,
+    "sha256": "1f6b5d1d93dc3a3c4c8fce4d8d36730b8594189318cae483aebf8c2cfc609bb8"
+  },
+  "samples/20260927T051206-888Z-150600-4/23783-hud.png": {
+    "bytes": 24781,
+    "sha256": "e3c82cfe93a077fed4b615663b522c6725f07dab9171f1cc8c69b6b999ac6895"
+  },
+  "samples/20260927T051206-888Z-150600-4/43979-grey.png": {
+    "bytes": 70975,
+    "sha256": "bb6702c649524fad02308e19992d9d40a26f0e86e1577180ecca92ee31b78210"
+  },
+  "samples/20260927T051206-888Z-150600-4/43979-hud.png": {
+    "bytes": 21749,
+    "sha256": "e93c55b2a3d91b7dc4878f2987fa2dae9e33c488a83eecd4d6c4a9b6df7e207e"
+  }
+}
