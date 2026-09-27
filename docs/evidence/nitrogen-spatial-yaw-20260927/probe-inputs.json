@@ -1,0 +1,35 @@
+{
+  "session": "20260923T051828-422Z-33696-1",
+  "cache_manifest_sha256": "14231e45f32ed4a3087b209c53742421e9307424e8196b0c8188c776f9aa7496",
+  "feature_receipt_sha256": "1fa3bc21adf5f829ad4cd4a2c899944dd56d78dd6950de34421ab7b3c3d3f465",
+  "frame_ids": [
+    7,
+    8
+  ],
+  "blocks": [
+    {
+      "path": "/inputs/caches/20260923T051828-422Z-33696-1/global.u8",
+      "offset": 774144,
+      "bytes": 110592,
+      "sha256": "d722d2d364d0ec780378acc9b6c44d3e257e8167f6fa6bcac5882b67896217af"
+    },
+    {
+      "path": "/inputs/caches/20260923T051828-422Z-33696-1/global.u8",
+      "offset": 884736,
+      "bytes": 110592,
+      "sha256": "4ec7114da07ce9605ee64951d7ff1b98414f35d260d57768ccf8baa7f0116ba1"
+    },
+    {
+      "path": "/inputs/caches/20260923T051828-422Z-33696-1/crop.u8",
+      "offset": 344064,
+      "bytes": 49152,
+      "sha256": "f2f2e78e503784cce8a6db59c9ca56eb12c1700363b0e9582361ac550558a49c"
+    },
+    {
+      "path": "/inputs/caches/20260923T051828-422Z-33696-1/crop.u8",
+      "offset": 393216,
+      "bytes": 49152,
+      "sha256": "7886b8dfd96098659bff57f02e939f5f396a56dd84b2cda512df4ea773ecc2de"
+    }
+  ]
+}
