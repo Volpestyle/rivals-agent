@@ -9,6 +9,12 @@ edited, moved or deleted, not even into an archive folder:
 - Pinned JSON elsewhere names these paths.
 - Tests read `l1/`, `l4/` and `hud-calibration-20260923/`.
 
+**Amending a pinned document.** Once a design or pre-registration is committed here and hashed in its folder's
+README, it is frozen. An amendment goes in a new file beside it (`<name>-a2.md`), with a README section that pins it and
+says which file is now current; cross-references inside the new file point at the new names. Never have a worker edit a
+pinned file in place. Keep drafts under review in the handoff folder as versioned copies, never overwritten. When you
+create a folder, never copy another folder's `.gitattributes` over one that already exists.
+
 This index is the pointer instead. Everything here predates the whole-session recording direction of 2026-09-23
 (`docs/recording-protocol.md`).
 

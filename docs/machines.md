@@ -89,6 +89,17 @@ use `launchctl bootstrap gui/$(id -u)` with the same plist path and restore the
 single Serve command above. `--dump` emits a cached-status-shaped JSON snapshot
 without starting the HTTP server.
 
+## Cloud accounts for training
+
+Both credentials live on the Mac; the PC's AWS login is expired and unused. Renew them with the device-code flow in
+the `mac-remote` skill; the lead never uses James's stored password.
+
+- **Modal** (round-3 fan-out): workspace `volpestyle`, token profile `rivals` in `~/.modal.toml`. James added a card on
+  2026-09-26; the round-3 cap is $50.
+- **AWS:** account 842434829012 (Clankie SSO, `sso_session clankie`, AdministratorAccess as james). Its default session
+  lasts 8 h and expires mid-job. G/VT on-demand quota is 4 vCPU in us-east-2; the 32 vCPU request is case 179046419000727,
+  escalated. It was used for the 2026-09-26 L40S benchmark only.
+
 ## Reach either machine
 
 Verified Windows-to-Mac SSH identity: `james`, Darwin arm64, Apple M5 Max,
