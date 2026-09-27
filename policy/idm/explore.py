@@ -238,7 +238,7 @@ def require_decode_platform(loaded):
     return next(iter(platforms))
 
 
-def refit(loaded, *, out, seed, epochs, device, progress, max_examples=None):
+def refit(loaded, *, out, seed, epochs, device, progress, max_examples=None, evaluate=True):
     require_decode_platform(loaded)
     stores, sets, exclusions = {}, {"train": [], "heldout": []}, {}
     for item, target in loaded:
@@ -267,7 +267,7 @@ def refit(loaded, *, out, seed, epochs, device, progress, max_examples=None):
     prov.update(scope="EXPLORATORY", cohort=cohort, camera_beta_nll=TR.CAMERA_BETA_DEFAULT)
     pin = TR.save_checkpoint(out / "refit.pt", model, prov)
     return {"checkpoint_sha256": pin, "history": history, "seconds": seconds, "exclusions": exclusions,
-            "gate1_diagnostic": TR.gate1(model, sets["heldout"], device=device),
+            "gate1_diagnostic": TR.gate1(model, sets["heldout"], device=device) if evaluate else None,
             "pitch_calibration": TR.PITCH_STD_CALIBRATION, "cohort": cohort}
 
 

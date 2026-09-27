@@ -1,0 +1,45 @@
+{
+  "exit": 0,
+  "packet_sha256": "6c42e5dfba230547f69a3ae4dfbdafdeecad83c32b18be202f7ae91bfcef6728",
+  "manifest_sha256": "94e0e17842d21961477d80f127a6f3b461e3b3b5586610ae8462059a0a9d4f24",
+  "files": {
+    "20260927T051206-888Z-150600-4/20260927T051206-888Z-150600-4.idm.jsonl": {
+      "source": "data/idm/cloud-20260927/match4-a1-targets/20260927T051206-888Z-150600-4.idm.jsonl",
+      "bytes": 17981274,
+      "sha256": "6f2d688ddb3479cda839f763d0bd2dc0b273d05f79657672f1b4b3aac0e0176f",
+      "destination": "/Users/james/dev/idm-match-data/targets/expanded-current-8e34383/20260927T051206-888Z-150600-4/20260927T051206-888Z-150600-4.idm.jsonl"
+    },
+    "20260927T051206-888Z-150600-4/target-receipt.json": {
+      "source": "data/idm/cloud-20260927/match4-a1-targets/target-receipt.json",
+      "bytes": 1141,
+      "sha256": "3732b25652df65d77ea978d479b91057f446691031e5cd27c4aa34a08cdaa002",
+      "destination": "/Users/james/dev/idm-match-data/targets/expanded-current-8e34383/20260927T051206-888Z-150600-4/target-receipt.json"
+    },
+    "20260927T051206-888Z-150600-4/match-admission-051206.accepted-a1.json": {
+      "source": "docs/evidence/idm-match-admission-051206-20260927/receipt/match-admission-051206.accepted-a1.json",
+      "bytes": 2421,
+      "sha256": "1aec79937aa7dca19cb6526b5d7c9ffdcb2ba6a53c7c09fb972edf6fe0d5325e",
+      "destination": "/Users/james/dev/idm-match-data/targets/expanded-current-8e34383/20260927T051206-888Z-150600-4/match-admission-051206.accepted-a1.json"
+    },
+    "20260927T053118-260Z-150600-6/20260927T053118-260Z-150600-6.idm.jsonl": {
+      "source": "data/idm/cloud-20260927/match6-targets/20260927T053118-260Z-150600-6.idm.jsonl",
+      "bytes": 18922135,
+      "sha256": "c443ea95bd037f9f276360eb1ecd805c4f823664c091a2a4065abb6e57b513b2",
+      "destination": "/Users/james/dev/idm-match-data/targets/expanded-current-8e34383/20260927T053118-260Z-150600-6/20260927T053118-260Z-150600-6.idm.jsonl"
+    },
+    "20260927T053118-260Z-150600-6/target-receipt.json": {
+      "source": "data/idm/cloud-20260927/match6-targets/target-receipt.json",
+      "bytes": 1135,
+      "sha256": "581d990cf3c3857dede8f7ae7bbd66904fc8b5984bad47150ef0262845d26827",
+      "destination": "/Users/james/dev/idm-match-data/targets/expanded-current-8e34383/20260927T053118-260Z-150600-6/target-receipt.json"
+    },
+    "20260927T053118-260Z-150600-6/match-admission-053118.accepted.json": {
+      "source": "docs/evidence/idm-match-admission-053118-20260927/receipt/match-admission-053118.accepted.json",
+      "bytes": 1873,
+      "sha256": "90694961f689c8a5040c679b48349d4b14b049e9566eec10b56a339ee6a8260c",
+      "destination": "/Users/james/dev/idm-match-data/targets/expanded-current-8e34383/20260927T053118-260Z-150600-6/match-admission-053118.accepted.json"
+    }
+  },
+  "media_copied": false,
+  "decoded": false
+}

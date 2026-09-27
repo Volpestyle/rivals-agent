@@ -18,6 +18,31 @@ from policy.range_bc.explore_mounts import check_mounts, logical_path
 from scripts.job_status import write
 
 
+def load_inputs(*, manifest, manifest_sha256, registry, out, input_volume_id, output_volume_id):
+    """Shared staged/CLI preflight; mount and admission checks precede stores."""
+    E.require(platform.system() == "Linux" and os.environ.get("MODAL_TASK_ID"), "Modal container required")
+    E.require(torch.cuda.is_available() and torch.cuda.get_device_name() == "NVIDIA L40S", "L40S required")
+    torch.set_num_threads(8)
+    mounts = check_mounts({"/inputs": input_volume_id, "/outputs": output_volume_id})
+    out = logical_path(out, mounts)
+    E.require(out.is_relative_to("/outputs"), "output mount required")
+    for path in (manifest, registry):
+        E.require(logical_path(path, mounts).is_relative_to("/inputs"), "input mount required")
+    manifest = E.read_pinned(manifest, manifest_sha256)
+    denylist = T.load_denylist()
+    receipts = match_targets.references(manifest)
+    for receipt in receipts:
+        E.require(logical_path(receipt["path"], mounts).is_relative_to("/inputs"), "admission mount required")
+    admission = match_targets.load_references(receipts, registry=registry, denylist=denylist)
+    # Preserve all source/family/header guards before touching native stores.
+    for item in manifest["sessions"]:
+        for key in ("targets", "store", "video", "steps", "demo"):
+            if key in item:
+                E.require(logical_path(item[key], mounts).is_relative_to("/inputs"), "input namespace required")
+    loaded = E.preflight(manifest, registry=registry, denylist=denylist, admission=admission)
+    return manifest, loaded, admission, denylist
+
+
 def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("command", choices=("refit", "prepare"))
@@ -26,26 +51,10 @@ def main(argv=None):
     p.add_argument("--epochs", type=int, default=3)
     p.add_argument("--seed", type=int, default=0)
     a = p.parse_args(argv)
-    E.require(platform.system() == "Linux" and os.environ.get("MODAL_TASK_ID"), "Modal container required")
-    E.require(torch.cuda.is_available() and torch.cuda.get_device_name() == "NVIDIA L40S", "L40S required")
-    torch.set_num_threads(8)
-    mounts = check_mounts({"/inputs": a.input_volume_id, "/outputs": a.output_volume_id})
-    out = logical_path(a.out, mounts)
-    E.require(out.is_relative_to("/outputs"), "output mount required")
-    for name in ("manifest", "registry"):
-        E.require(logical_path(getattr(a, name), mounts).is_relative_to("/inputs"), "input mount required")
-    manifest = E.read_pinned(a.manifest, a.manifest_sha256)
-    denylist = T.load_denylist()
-    receipts = match_targets.references(manifest)
-    for receipt in receipts:
-        E.require(logical_path(receipt["path"], mounts).is_relative_to("/inputs"), "admission mount required")
-    admission = match_targets.load_references(receipts, registry=a.registry, denylist=denylist)
-    # Preserve all source/family/header guards before touching native stores.
-    for item in manifest["sessions"]:
-        for key in ("targets", "store", "video", "steps", "demo"):
-            if key in item:
-                E.require(logical_path(item[key], mounts).is_relative_to("/inputs"), "input namespace required")
-    loaded = E.preflight(manifest, registry=a.registry, denylist=denylist, admission=admission)
+    manifest, loaded, admission, denylist = load_inputs(
+        manifest=a.manifest, manifest_sha256=a.manifest_sha256, registry=a.registry, out=a.out,
+        input_volume_id=a.input_volume_id, output_volume_id=a.output_volume_id)
+    out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     job = "idm-cloud-" + a.command
     write(job, root=out / "jobs", owner="idm-owner", host="modal", stage="running", evidence=str(out / "report.json"))

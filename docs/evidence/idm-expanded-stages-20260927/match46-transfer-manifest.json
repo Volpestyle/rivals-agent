@@ -1,0 +1,39 @@
+{
+  "scope": "EXPLORATORY",
+  "authority": "8e343837965906136d770429ca9d414e97550059",
+  "destination": "/Users/james/dev/idm-match-data/targets/expanded-current-8e34383",
+  "files": {
+    "20260927T051206-888Z-150600-4/20260927T051206-888Z-150600-4.idm.jsonl": {
+      "source": "data/idm/cloud-20260927/match4-a1-targets/20260927T051206-888Z-150600-4.idm.jsonl",
+      "bytes": 17981274,
+      "sha256": "6f2d688ddb3479cda839f763d0bd2dc0b273d05f79657672f1b4b3aac0e0176f"
+    },
+    "20260927T051206-888Z-150600-4/target-receipt.json": {
+      "source": "data/idm/cloud-20260927/match4-a1-targets/target-receipt.json",
+      "bytes": 1141,
+      "sha256": "3732b25652df65d77ea978d479b91057f446691031e5cd27c4aa34a08cdaa002"
+    },
+    "20260927T051206-888Z-150600-4/match-admission-051206.accepted-a1.json": {
+      "source": "docs/evidence/idm-match-admission-051206-20260927/receipt/match-admission-051206.accepted-a1.json",
+      "bytes": 2421,
+      "sha256": "1aec79937aa7dca19cb6526b5d7c9ffdcb2ba6a53c7c09fb972edf6fe0d5325e"
+    },
+    "20260927T053118-260Z-150600-6/20260927T053118-260Z-150600-6.idm.jsonl": {
+      "source": "data/idm/cloud-20260927/match6-targets/20260927T053118-260Z-150600-6.idm.jsonl",
+      "bytes": 18922135,
+      "sha256": "c443ea95bd037f9f276360eb1ecd805c4f823664c091a2a4065abb6e57b513b2"
+    },
+    "20260927T053118-260Z-150600-6/target-receipt.json": {
+      "source": "data/idm/cloud-20260927/match6-targets/target-receipt.json",
+      "bytes": 1135,
+      "sha256": "581d990cf3c3857dede8f7ae7bbd66904fc8b5984bad47150ef0262845d26827"
+    },
+    "20260927T053118-260Z-150600-6/match-admission-053118.accepted.json": {
+      "source": "docs/evidence/idm-match-admission-053118-20260927/receipt/match-admission-053118.accepted.json",
+      "bytes": 1873,
+      "sha256": "90694961f689c8a5040c679b48349d4b14b049e9566eec10b56a339ee6a8260c"
+    }
+  },
+  "media_opened": false,
+  "decoded": false
+}
