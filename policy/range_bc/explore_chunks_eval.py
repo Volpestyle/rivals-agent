@@ -118,7 +118,7 @@ def main(argv=None):
 
 
 def evaluate(a, report, *, device="mps", model_factory=ChunkPolicy, array_loader=load_manifest,
-             stop_on_persistence=False, chance_floor=False):
+             stop_on_persistence=False, chance_floor=False, recovered_calibration=None):
     out = Path(a.out)
     start = time.perf_counter()
     payload = torch.load(a.checkpoint, map_location="cpu", weights_only=True)
@@ -129,10 +129,22 @@ def evaluate(a, report, *, device="mps", model_factory=ChunkPolicy, array_loader
     train_arrays, dev_arrays = array_loader(a.manifest, a.registry, a.tally, cohort=recipe["cohort"])
     from . import steps
     live_mask = steps.train_statistics([arr.session for arr in train_arrays])["live_mask"]
-    report("TRAIN teacher-forced calibration")
-    train_predictions = train.predict_teacher(model, train_arrays, device=device)
-    thresholds = choose_thresholds(train_predictions, live_mask)
-    del train_predictions
+    if recovered_calibration is None:
+        report("TRAIN teacher-forced calibration")
+        train_predictions = train.predict_teacher(model, train_arrays, device=device)
+        thresholds = choose_thresholds(train_predictions, live_mask)
+        del train_predictions
+    else:
+        # The recovery caller authenticates the original checkpoint and complete
+        # CUDA TRAIN receipt before supplying this unchanged calibration.
+        import copy
+        import math
+        thresholds = copy.deepcopy(recovered_calibration)
+        train.require(thresholds["source"] == "TRAIN teacher-forced predictions only"
+                      and len(thresholds["thresholds"]) == vocab.N
+                      and all(math.isfinite(t) and 0 <= t <= 1 for t in thresholds["thresholds"]),
+                      "invalid recovered TRAIN calibration")
+        report("Reusing authenticated original CUDA TRAIN calibration")
     out.parent.mkdir(parents=True, exist_ok=True)
     tag = recipe.get("tag", "EXPLORATORY")
     result = {"tag": tag, "recipe": recipe, "checkpoint": a.checkpoint,

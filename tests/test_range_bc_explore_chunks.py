@@ -411,8 +411,9 @@ def test_encoder_history_disabled_ignores_feedback_in_fit_and_recurrent_decode()
 
 
 @pytest.mark.parametrize("enabled,mae,expected_count", [(True, .3, 1), (True, .418, 2), (False, .3, 2)])
+@pytest.mark.parametrize("recovered", [False, True])
 def test_decode_persistence_stop_saves_first_result_and_stops_summary(
-        tmp_path, monkeypatch, enabled, mae, expected_count):
+        tmp_path, monkeypatch, enabled, mae, expected_count, recovered):
     import json
     from pathlib import Path
     from policy.range_bc import explore_chunks_eval as ev
@@ -425,6 +426,10 @@ def test_decode_persistence_stop_saves_first_result_and_stops_summary(
                 "model": model.state_dict(), "epoch": 26, "seconds": 1.}, checkpoint)
     monkeypatch.setattr(steps, "train_statistics", lambda _: {"live_mask": [True] * vocab.N})
     monkeypatch.setattr(train, "predict_teacher", lambda *a, **kw: [])
+    if recovered:
+        def forbid_train_inference(*a, **kw):
+            raise AssertionError("recovery must reuse original TRAIN cutoffs")
+        monkeypatch.setattr(train, "predict_teacher", forbid_train_inference)
     monkeypatch.setattr(ev, "choose_thresholds", lambda *a: {"thresholds": [.5] * vocab.N})
     monkeypatch.setattr(ev, "recompute_references", lambda *a: {
         "frozen_dev": {"persistence": {"camera_mae_mean": .418}}})
@@ -439,9 +444,13 @@ def test_decode_persistence_stop_saves_first_result_and_stops_summary(
                            manifest="unused", registry="unused", tally="unused")
     messages = []
     result = ev.evaluate(args, messages.append, device="cpu", stop_on_persistence=enabled,
-                         array_loader=lambda *a, **kw: ([], []))
+                         array_loader=lambda *a, **kw: ([], []), recovered_calibration=(
+                             {"source": "TRAIN teacher-forced predictions only", "thresholds": [.7] * vocab.N}
+                             if recovered else None))
     persisted = json.loads(Path(args.out).read_text())
     assert persisted == result and len(result["decode"]) == expected_count
+    if recovered:
+        assert result["threshold_calibration"]["thresholds"] == [.7] * vocab.N
     if expected_count == 1:
         assert list(result["decode"]) == ["fixed_0.5/median"]
         assert messages[-1] == result["stop_reason"]
