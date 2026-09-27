@@ -369,7 +369,7 @@ def test_native_retention_is_lossless_and_refuses_overwrite(tmp_path):
                                                 ("cpu", "compact-bgr"), ("cuda", "compact-bgr")])
 def test_cli_prepare_has_no_live_object(tmp_path, monkeypatch, device, preprocessor):
     torch = pytest.importorskip("torch")
-    if device == "cuda" and torch.cuda.device_count() == 0:
+    if device == "cuda" and not torch.cuda.is_available():
         pytest.skip("CUDA unavailable")
     if preprocessor != "subprocess":
         pytest.importorskip("av")

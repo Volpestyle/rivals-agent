@@ -1,0 +1,155 @@
+diff --git a/scripts/run_range_bc_live.py b/scripts/run_range_bc_live.py
+index 11c1e5a..a73edd0 100644
+--- a/scripts/run_range_bc_live.py
++++ b/scripts/run_range_bc_live.py
+@@ -21,7 +21,9 @@ from agent import live_range_bc as harness
+ from agent.controller import Live
+ from policy.range_bc import vocab
+ 
+-REVIEWED_FILES = ("agent/live_range_bc.py", "scripts/run_range_bc_live.py", "tests/test_live_range_bc.py")
++REVIEW_FORMAT = "range-bc-live-review-v2"
++REVIEWED_FILES = ("agent/live_range_bc.py", "scripts/run_range_bc_live.py", "tests/test_live_range_bc.py",
++                  "policy/range_bc/live_inference.py", "tests/test_live_inference.py")
+ # Snapshot at import, then compare both this snapshot and on-disk bytes at launch.
+ # Editing source after this process loads it requires restarting and a new receipt.
+ LOADED_HASHES = {name: harness.sha256(ROOT / name) for name in REVIEWED_FILES}
+@@ -30,9 +32,9 @@ LOADED_HASHES = {name: harness.sha256(ROOT / name) for name in REVIEWED_FILES}
+ def verify_review_receipt(path):
+     raw = Path(path).read_bytes()
+     receipt = json.loads(raw.decode("utf-8-sig"))
+-    harness.require(receipt.get("format") == "range-bc-live-review-v1", "unsupported live review receipt")
++    harness.require(receipt.get("format") == REVIEW_FORMAT, "unsupported live review receipt")
+     pins = receipt.get("files")
+-    harness.require(isinstance(pins, dict) and set(pins) == set(REVIEWED_FILES), "review must pin all three files")
++    harness.require(isinstance(pins, dict) and set(pins) == set(REVIEWED_FILES), "review must pin all required files")
+     for name in REVIEWED_FILES:
+         harness.require(pins[name] == LOADED_HASHES[name] == harness.sha256(ROOT / name),
+                         f"stale review or loaded source differs: {name}")
+@@ -68,9 +70,13 @@ def parser():
+     p.add_argument("--dino-config-sha256")
+     p.add_argument("--ffmpeg", default="ffmpeg")
+     p.add_argument("--cpu-threads", type=int, default=2)
++    p.add_argument("--device", choices=("cpu", "cuda"), default="cpu",
++                   help="explicit inference device; CUDA never selected automatically")
++    p.add_argument("--preprocessor", choices=("subprocess", "inprocess", "compact-bgr"), default="subprocess",
++                   help="FFmpeg path; in-process variants require PyAV and build-specific pixel parity")
+     p.add_argument("--settle-seconds", type=float, default=3., help="neutral pad enumeration settle, 3..30 seconds; excluded")
+     p.add_argument("--live", action="store_true", help="attach a pad; requires review and a supervised sitting")
+-    p.add_argument("--review-receipt", type=Path, help="JSON range-bc-live-review-v1 receipt pinning all three reviewed files")
++    p.add_argument("--review-receipt", type=Path, help="JSON range-bc-live-review-v2 receipt pinning all five reviewed files")
+     p.add_argument("--sitting", help="lead/pad-binds scheduled supervised sitting identifier")
+     p.add_argument("--game-pid", type=int, help="require this PID in the foreground; no focus injection")
+     return p
+@@ -123,13 +129,22 @@ def main(argv=None):
+     torch.set_num_threads(a.cpu_threads)
+     model, metadata = harness.load_checkpoint(a.checkpoint, a.checkpoint_sha256)
+     distribution = harness.validate_distribution(metadata, settings["cooldowns"])
+-    preprocess = harness.CachePreprocessor(a.ffmpeg)
++    if a.preprocessor == "subprocess":
++        preprocess = harness.CachePreprocessor(a.ffmpeg)
++    else:
++        from policy.range_bc.live_inference import InProcessCachePreprocessor
++        preprocess = InProcessCachePreprocessor(compact_bgr=a.preprocessor == "compact-bgr")
+     backbone = None
+     if getattr(model.config, "arm", "I") in ("H", "W"):
+         harness.require(a.dino_assets is not None and a.dino_config_sha256, "local pinned DINO assets required")
+         from policy.range_bc.cm3_features import FrozenDino
+         backbone = FrozenDino(a.dino_assets, config_sha256=a.dino_config_sha256).cpu()
+-    predictor = harness.Predictor(model, preprocess, cooldowns=settings["cooldowns"], backbone=backbone)
++    if a.device == "cpu" and a.preprocessor == "subprocess":
++        predictor = harness.Predictor(model, preprocess, cooldowns=settings["cooldowns"], backbone=backbone)
++    else:
++        from policy.range_bc.live_inference import DevicePredictor
++        predictor = DevicePredictor(model, preprocess, cooldowns=settings["cooldowns"], backbone=backbone,
++                                    device=a.device)
+     files = {str(p.resolve()): harness.sha256(p) for p in
+              (a.support_json, a.settings_json, a.thresholds_json, a.review_receipt) if p is not None}
+     manifest = {"format": "range-bc-live-exploratory-v1", "created_utc": datetime.now(timezone.utc).isoformat(),
+@@ -138,7 +153,10 @@ def main(argv=None):
+                 "review": review, "input_distribution": distribution,
+                 "thresholds": dict(zip(vocab.NAMES, levels)), "live_mask": list(mask), "settings": settings,
+                 "camera_disabled": a.camera_disabled, "duration": a.duration, "max_prediction_age": a.max_prediction_age,
+-                "device": "cpu", "cpu_threads": a.cpu_threads, "torch": torch.__version__,
++                "device": a.device, "preprocessor": a.preprocessor,
++                "cpu_threads": a.cpu_threads, "torch": torch.__version__,
++                "cuda": {"runtime": torch.version.cuda, "device": torch.cuda.get_device_name(),
++                         "capability": list(torch.cuda.get_device_capability())} if a.device == "cuda" else None,
+                 "python": sys.version, "platform": platform.platform(), "ffmpeg": preprocess.version,
+                 "cache_graph": preprocess.graph, "dino": backbone.asset_receipt if backbone is not None else None,
+                 "capture": "native BGR dxcam",
+diff --git a/tests/test_live_range_bc.py b/tests/test_live_range_bc.py
+index 75602f4..a23b135 100644
+--- a/tests/test_live_range_bc.py
++++ b/tests/test_live_range_bc.py
+@@ -365,8 +365,14 @@ def test_native_retention_is_lossless_and_refuses_overwrite(tmp_path):
+         h.Journal(output, {})
+ 
+ 
+-def test_cli_prepare_has_no_live_object(tmp_path, monkeypatch):
+-    pytest.importorskip("torch")
++@pytest.mark.parametrize("device,preprocessor", [("cpu", "subprocess"), ("cpu", "inprocess"),
++                                                ("cpu", "compact-bgr"), ("cuda", "compact-bgr")])
++def test_cli_prepare_has_no_live_object(tmp_path, monkeypatch, device, preprocessor):
++    torch = pytest.importorskip("torch")
++    if device == "cuda" and not torch.cuda.is_available():
++        pytest.skip("CUDA unavailable")
++    if preprocessor != "subprocess":
++        pytest.importorskip("av")
+     if not shutil.which("ffmpeg"):
+         pytest.skip("ffmpeg unavailable")
+     from policy.range_bc import model, train
+@@ -385,10 +391,12 @@ def test_cli_prepare_has_no_live_object(tmp_path, monkeypatch):
+     out = tmp_path / "prepared"
+     assert cli.main(["--checkpoint", str(checkpoint), "--checkpoint-sha256", digest,
+                      "--support-json", str(support), "--settings-json", str(settings), "--camera-disabled",
+-                     "--output", str(out), "--threshold", ".3"]) == 0
++                     "--output", str(out), "--threshold", ".3", "--device", device,
++                     "--preprocessor", preprocessor]) == 0
+     manifest = json.loads((out / "manifest.json").read_text())
+     assert manifest["checkpoint_sha256"] == digest
+     assert manifest["thresholds"]["web_cluster"] == .3
++    assert manifest["device"] == device and manifest["preprocessor"] == preprocessor
+     assert manifest["code"]["files"]["agent/live_range_bc.py"] == h.sha256(Path(h.__file__))
+     assert json.loads((out / "result.json").read_text())["pad_opened"] is False
+ 
+@@ -561,7 +569,7 @@ def test_review_receipt_must_match_all_loaded_and_running_files(tmp_path, monkey
+         path.parent.mkdir(parents=True, exist_ok=True)
+         path.write_bytes((cli.ROOT / name).read_bytes())
+     monkeypatch.setattr(cli, "ROOT", tmp_path)
+-    receipt = {"format": "range-bc-live-review-v1", "files": dict(cli.LOADED_HASHES)}
++    receipt = {"format": cli.REVIEW_FORMAT, "files": dict(cli.LOADED_HASHES)}
+     path = tmp_path / "review.json"
+     path.write_text(json.dumps(receipt))
+     assert cli.verify_review_receipt(path)["files"] == cli.LOADED_HASHES
+@@ -576,5 +584,30 @@ def test_review_receipt_must_match_all_loaded_and_running_files(tmp_path, monkey
+         cli.verify_review_receipt(path)
+     receipt["files"].pop(cli.REVIEWED_FILES[-1])
+     path.write_text(json.dumps(receipt))
+-    with pytest.raises(ValueError, match="all three"):
++    with pytest.raises(ValueError, match="all required"):
+         cli.verify_review_receipt(path)
++
++
++def test_cli_defaults_remain_cpu_and_original_preprocessor():
++    from scripts import run_range_bc_live as cli
++    args = cli.parser().parse_args(["--checkpoint", "unused", "--checkpoint-sha256", "unused",
++                                   "--support-json", "unused", "--settings-json", "unused", "--output", "unused"])
++    assert args.device == "cpu" and args.preprocessor == "subprocess"
++
++
++def test_v1_review_cannot_authorize_new_inference_dependency(tmp_path):
++    from scripts import run_range_bc_live as cli
++    path = tmp_path / "review.json"
++    path.write_text(json.dumps({"format": "range-bc-live-review-v1", "files": dict(cli.LOADED_HASHES)}))
++    with pytest.raises(ValueError, match="unsupported live review"):
++        cli.verify_review_receipt(path)
++    assert "policy/range_bc/live_inference.py" in cli.REVIEWED_FILES
++
++
++def test_cuda_request_never_silently_falls_back_to_cpu(monkeypatch):
++    torch = pytest.importorskip("torch")
++    from policy.range_bc.live_inference import DevicePredictor
++    monkeypatch.setattr(torch.cuda, "is_available", lambda: False)
++    model = SimpleNamespace(config=SimpleNamespace(arm="I"))
++    with pytest.raises(RuntimeError, match="no silent fallback"):
++        DevicePredictor(model, None, cooldowns="normal", device="cuda")
