@@ -1,0 +1,173 @@
+{
+  "tag": "EXPLORATORY_LAUNCHER_SHAKEDOWN",
+  "arms": [
+    {
+      "attempt_id": "yaw-probe3-20260927-01",
+      "app_id": "ap-MAdUCvhfMKP7D1hbuNR3TT",
+      "status": "COMPLETE",
+      "error": null,
+      "state": "TERMINAL",
+      "bound_usd": "0.198035",
+      "spec_sha256": "bf6d18988517eacb84e61588053671cea0065e779de4249491774430fdd36e6b",
+      "artifact_verified": true
+    },
+    {
+      "attempt_id": "yaw-probe3-20260927-02",
+      "app_id": "ap-ahOxSkTySUvVHbTY5QBuvW",
+      "status": "COMPLETE",
+      "error": null,
+      "state": "TERMINAL",
+      "bound_usd": "0.187043",
+      "spec_sha256": "7c357d9737c44f6e9761d0d70302095f3acb6c9531e34787a53ecf8515c34973",
+      "artifact_verified": true
+    },
+    {
+      "attempt_id": "yaw-probe3-20260927-03",
+      "app_id": "ap-2ghN2b0Ezuu3NFkSaHPRZV",
+      "status": "COMPLETE",
+      "error": null,
+      "state": "TERMINAL",
+      "bound_usd": "0.145401",
+      "spec_sha256": "e5816e1cecec3af7863727857fc30a0f83c4ff1f6b9b47c354414fef156fa9a2",
+      "artifact_verified": true
+    },
+    {
+      "attempt_id": "yaw-probe3-20260927-04",
+      "app_id": "ap-olu863dInuTHWIgWfXsdhG",
+      "status": "COMPLETE",
+      "error": null,
+      "state": "TERMINAL",
+      "bound_usd": "0.158658",
+      "spec_sha256": "99fb3a4d15ad4f39080e52529e65a3a2697fd57ac49c278de264219466bb7d83",
+      "artifact_verified": true
+    },
+    {
+      "attempt_id": "yaw-probe3-20260927-05",
+      "app_id": "ap-iQXDlgScKMkrfP3NuUKaA2",
+      "status": "COMPLETE",
+      "error": null,
+      "state": "TERMINAL",
+      "bound_usd": "0.208651",
+      "spec_sha256": "39d648dcfaaff3c78fdcd09a235664f4690991c64850d0abd4d5d389d3042734",
+      "artifact_verified": true
+    },
+    {
+      "attempt_id": "yaw-probe3-20260927-06",
+      "app_id": "ap-0zrL46OUNnZguHuxCBKViy",
+      "status": "COMPLETE",
+      "error": null,
+      "state": "TERMINAL",
+      "bound_usd": "0.170222",
+      "spec_sha256": "f3a82e741eb07a7338ebca4b375842e162ba01bac8508741a0b9b25b058a93b6",
+      "artifact_verified": true
+    }
+  ],
+  "overlap": {
+    "six_way_overlap": true,
+    "start": 1790548166.9925992,
+    "end": 1790548189.4921465,
+    "seconds": 22.499547243118286
+  },
+  "appcreate_events": [
+    {
+      "app_id": null,
+      "at": 1790548067.564003,
+      "attempt_id": "yaw-probe3-20260927-03",
+      "event": "CREATING",
+      "previous": "b11fb32e62c54227f96df55ded1bfa097c1073555913a1983dd151696d6a48b6",
+      "sha256": "9e82b830a3e72129a650d5d2f63327a0e715e3a9c68bfbf0b3dea136d33ae2c5"
+    },
+    {
+      "app_id": "ap-2ghN2b0Ezuu3NFkSaHPRZV",
+      "at": 1790548067.774024,
+      "attempt_id": "yaw-probe3-20260927-03",
+      "event": "RUNNING",
+      "previous": "9e82b830a3e72129a650d5d2f63327a0e715e3a9c68bfbf0b3dea136d33ae2c5",
+      "sha256": "44d5bbb8aef54ef10fbf358ee02a3feb67a076daf5720c69e42aea5d70b66497"
+    },
+    {
+      "app_id": null,
+      "at": 1790548085.40322,
+      "attempt_id": "yaw-probe3-20260927-04",
+      "event": "CREATING",
+      "previous": "44d5bbb8aef54ef10fbf358ee02a3feb67a076daf5720c69e42aea5d70b66497",
+      "sha256": "6010e667337217100c8955054000fbc19328eb04a67288210ac12cec7610e679"
+    },
+    {
+      "app_id": "ap-olu863dInuTHWIgWfXsdhG",
+      "at": 1790548085.522444,
+      "attempt_id": "yaw-probe3-20260927-04",
+      "event": "RUNNING",
+      "previous": "6010e667337217100c8955054000fbc19328eb04a67288210ac12cec7610e679",
+      "sha256": "3b6a2d1ec85d2edba7c971920952705f4dab62c78fa26ef4ebbe6051c60c4ea7"
+    },
+    {
+      "app_id": null,
+      "at": 1790548103.094274,
+      "attempt_id": "yaw-probe3-20260927-06",
+      "event": "CREATING",
+      "previous": "3b6a2d1ec85d2edba7c971920952705f4dab62c78fa26ef4ebbe6051c60c4ea7",
+      "sha256": "8fd15c2513d2f8d9410cc56cf3a8d88860f36726d95497669e7e3f2518771d75"
+    },
+    {
+      "app_id": "ap-0zrL46OUNnZguHuxCBKViy",
+      "at": 1790548103.227871,
+      "attempt_id": "yaw-probe3-20260927-06",
+      "event": "RUNNING",
+      "previous": "8fd15c2513d2f8d9410cc56cf3a8d88860f36726d95497669e7e3f2518771d75",
+      "sha256": "a3b61df84a59e85753bb1be5f6bb3528576e682f172b5bd6c1ea4217ddfe4ed6"
+    },
+    {
+      "app_id": null,
+      "at": 1790548120.901967,
+      "attempt_id": "yaw-probe3-20260927-02",
+      "event": "CREATING",
+      "previous": "a3b61df84a59e85753bb1be5f6bb3528576e682f172b5bd6c1ea4217ddfe4ed6",
+      "sha256": "d2f633a351ea83ecd1b3f875db0e2f14f6ec2da034e26800a370cc96f380f4ae"
+    },
+    {
+      "app_id": "ap-ahOxSkTySUvVHbTY5QBuvW",
+      "at": 1790548121.052704,
+      "attempt_id": "yaw-probe3-20260927-02",
+      "event": "RUNNING",
+      "previous": "d2f633a351ea83ecd1b3f875db0e2f14f6ec2da034e26800a370cc96f380f4ae",
+      "sha256": "3775c43c747366fd1d40625bee5c451cb0978f53b9ff68af76b0d9f9ed02ba2c"
+    },
+    {
+      "app_id": null,
+      "at": 1790548138.696196,
+      "attempt_id": "yaw-probe3-20260927-01",
+      "event": "CREATING",
+      "previous": "67b9a108df9f2cfde4ea7667a64e8a1136f174a7138a9d68cf9719aa813dd7dc",
+      "sha256": "51063c240f5dffcce4e53f6e5ed3722f33ada56efc4b45c25f8d3a19e4960ee5"
+    },
+    {
+      "app_id": "ap-MAdUCvhfMKP7D1hbuNR3TT",
+      "at": 1790548138.878519,
+      "attempt_id": "yaw-probe3-20260927-01",
+      "event": "RUNNING",
+      "previous": "51063c240f5dffcce4e53f6e5ed3722f33ada56efc4b45c25f8d3a19e4960ee5",
+      "sha256": "bd80160de5adaec94ef26f7221c87df7526598be8c4aebcf30a2cba22b0c0a14"
+    },
+    {
+      "app_id": null,
+      "at": 1790548156.160938,
+      "attempt_id": "yaw-probe3-20260927-05",
+      "event": "CREATING",
+      "previous": "bd80160de5adaec94ef26f7221c87df7526598be8c4aebcf30a2cba22b0c0a14",
+      "sha256": "43983723b779bbf92f7f8b4b98a455787bfce5773865039dde0ce4f1b7c627b1"
+    },
+    {
+      "app_id": "ap-iQXDlgScKMkrfP3NuUKaA2",
+      "at": 1790548156.385368,
+      "attempt_id": "yaw-probe3-20260927-05",
+      "event": "RUNNING",
+      "previous": "43983723b779bbf92f7f8b4b98a455787bfce5773865039dde0ce4f1b7c627b1",
+      "sha256": "53ddcbaaf84b6708b1ef7741dd456833812ea4bb62f2a87c25faca9ad545e9d6"
+    }
+  ],
+  "conservative_bound_usd": "1.068010",
+  "outstanding_holds_usd": "0",
+  "verdict": "PASS",
+  "limitation": "Launcher/synthetic full-shape evidence only; not full-fit p95 or scientific yaw results."
+}
