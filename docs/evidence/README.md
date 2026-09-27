@@ -1,5 +1,7 @@
 # Evidence index
 
+- [Round 3 accounting-a8](range-bc-countermeasures-3-20260926/accounting-a8/README.md): lead-approved extraction hold 2320 seconds; unchanged caps/formulas; five metadata tests pass; post-landing review pending.
+
 Each entry below is a record: inspected frames, receipts, reports and the scripts that produced them. Later
 artefacts, fit reports, Linear comments and lane docs pin these files by path and by sha256, so an entry is never
 edited, moved or deleted, not even into an archive folder:

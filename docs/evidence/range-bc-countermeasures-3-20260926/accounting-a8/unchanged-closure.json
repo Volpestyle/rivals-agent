@@ -1,0 +1,10 @@
+{
+  "unchanged_diagnostic_context_sha256": "3db7f8dcfa598a2b56fb8ac2d8170549f5a67b6f91c6d0e87fc904a0af7d196d",
+  "unchanged_git_blob_sha256": {
+    "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a7/owner/cm3_accounting.py": "13c26df40e40f58eb4561b9e655eb71391e3aee4c05546f6e9d3ddbf7b0c7e4d",
+    "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a7/owner/cm3_timeouts.py": "de57202e85942651ebeea699f6b0a834ee72bfab0d0c270d153edf2e9a84c097",
+    "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a7/owner/make_receipt.py": "056e178d4fc9d57451480a1e051121da9fd01dee0ef230d5e5a3c0191ccd099e",
+    "policy/range_bc/cm3_accounting.py": "13c26df40e40f58eb4561b9e655eb71391e3aee4c05546f6e9d3ddbf7b0c7e4d",
+    "policy/range_bc/cm3_run.py": "7f27cd5d777ac24294083878379daf4d2a276b263c8131ffb568dd92c69693bd"
+  }
+}

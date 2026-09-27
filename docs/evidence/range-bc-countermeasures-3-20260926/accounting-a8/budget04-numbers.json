@@ -1,0 +1,125 @@
+{
+  "allocation": {
+    "accounting": {
+      "path": "/outputs/.modal-control/budget-04/accounting/ledger.json",
+      "sha256": "2da0cb381214594901221738d14101a73e8401327301a9e3762bb2386585e3de"
+    },
+    "approved_by": "herdr-lead",
+    "cap_seconds": 69120,
+    "cloud_cap_usd": 60,
+    "cloud_instance": "cuda:L40S",
+    "hold_seconds": 1320,
+    "hold_usd": 1.25,
+    "hourly_usd": 2.584224,
+    "spent_seconds": 26317,
+    "spent_usd": 22.11141756,
+    "stage_overhead_usd": 0.2678032,
+    "stage_seconds": 900
+  },
+  "expected": {
+    "arithmetic_only_forecast_seconds": 64004.017956114025,
+    "arithmetic_only_forecast_usd": "52.913912",
+    "cap_seconds": 69120,
+    "cap_usd": 60,
+    "measured_extraction_seconds": 1322.1116730380131,
+    "measured_fit_seconds": {
+      "A": 11360.191146909578,
+      "H": 1170.8308163814952,
+      "I": 8855.141511462749,
+      "W": 683.3392170993884
+    },
+    "minimum_integer_hold": 2288,
+    "not_a_budget_approval": true,
+    "proposed_hold_seconds": 2320,
+    "proposed_hold_usd": 1.933192,
+    "proposed_work_seconds": 1900,
+    "reason": "extraction hold below measured work and allowances",
+    "registered_hold": 2220,
+    "required_total_hold_seconds": 2287.6395912975163,
+    "required_work_seconds": 1867.6395912975163,
+    "settled_seconds": 26317,
+    "settled_usd": 22.11141756,
+    "source": "same pinned Writer formula reproduced without altering original guard",
+    "status": "BLOCKED_WRITER_GUARD"
+  },
+  "projection": {
+    "non_compute_usd": 3.7492448,
+    "per_fit_diagnostics_serialization_seconds": 60,
+    "safety_factor": 1.25,
+    "source_and_full_cache_hashing_seconds": 2408,
+    "startup_shutdown_seconds": 4050,
+    "total_cache_frames": 173698,
+    "verification_seconds": 300
+  },
+  "provenance": {
+    "diagnostic_manifest_sha256": "c4923cf040e6530d12e39a507aa87fa771bdf240e15c4240ae93d256fd3f8117",
+    "guard_diagnostic_sha256": "d3fb6419b146a38b0908d8f7e9957d65a765ab0facd18e2b2e5fdb22e74a233e",
+    "smoke_details_sha256": "aefff0446a0329964d3225e5a3acf24515913829fed293c01d7fae14eafbdbc9",
+    "state_sha256": "1318199a0b3ca65501a06885d1e96bac32eedc4472419f70d313125c971d33b9"
+  },
+  "smoke": {
+    "A": {
+      "smoke": {
+        "full_schedule_updates": 4901,
+        "seconds_per_update": 0.686101274437501,
+        "updates": 32
+      },
+      "timing": {
+        "dev_scores": false,
+        "per_epoch_dev_loss_seconds": 23.473352851000016,
+        "self_metric_seconds": 4.322971122000013,
+        "self_seconds": 31.115708875999985,
+        "teacher_metric_seconds": 7.663805341999989,
+        "teacher_seconds": 15.89196388199997
+      }
+    },
+    "H": {
+      "smoke": {
+        "full_schedule_updates": 3692,
+        "seconds_per_update": 0.04319869453124969,
+        "updates": 32
+      },
+      "timing": {
+        "dev_scores": false,
+        "per_epoch_dev_loss_seconds": 2.8870242579999967,
+        "self_metric_seconds": 4.972626221000013,
+        "self_seconds": 18.06556849499998,
+        "teacher_metric_seconds": 7.642069069999991,
+        "teacher_seconds": 5.006544746000003
+      }
+    },
+    "I": {
+      "smoke": {
+        "full_schedule_updates": 3692,
+        "seconds_per_update": 0.6850892199374998,
+        "updates": 32
+      },
+      "timing": {
+        "dev_scores": false,
+        "per_epoch_dev_loss_seconds": 23.42097626100002,
+        "self_metric_seconds": 5.352993027999958,
+        "self_seconds": 29.964451972000006,
+        "teacher_metric_seconds": 6.509816440000009,
+        "teacher_seconds": 16.06448431199999
+      }
+    },
+    "W": {
+      "smoke": {
+        "full_schedule_updates": 3692,
+        "seconds_per_update": 0.025766112843751188,
+        "updates": 32
+      },
+      "timing": {
+        "dev_scores": false,
+        "per_epoch_dev_loss_seconds": 2.8006663950000075,
+        "self_metric_seconds": 4.885144724999975,
+        "self_seconds": 20.22299309700003,
+        "teacher_metric_seconds": 7.067333248000011,
+        "teacher_seconds": 4.067116209000005
+      }
+    },
+    "extraction_and_rehash": {
+      "views_per_second": 262.7584394605158
+    }
+  }
+}

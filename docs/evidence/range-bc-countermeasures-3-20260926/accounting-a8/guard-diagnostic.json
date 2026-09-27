@@ -1,0 +1,26 @@
+{
+  "status": "BLOCKED_WRITER_GUARD",
+  "reason": "extraction hold below measured work and allowances",
+  "registered_hold": 2220,
+  "measured_extraction_seconds": 1322.1116730380131,
+  "required_work_seconds": 1867.6395912975163,
+  "required_total_hold_seconds": 2287.6395912975163,
+  "minimum_integer_hold": 2288,
+  "proposed_work_seconds": 1900,
+  "proposed_hold_seconds": 2320,
+  "proposed_hold_usd": 1.933192,
+  "settled_seconds": 26317,
+  "settled_usd": 22.11141756,
+  "arithmetic_only_forecast_seconds": 64004.017956114025,
+  "arithmetic_only_forecast_usd": "52.913912",
+  "cap_seconds": 69120,
+  "cap_usd": 60,
+  "not_a_budget_approval": true,
+  "source": "same pinned Writer formula reproduced without altering original guard",
+  "measured_fit_seconds": {
+    "A": 11360.191146909578,
+    "H": 1170.8308163814952,
+    "I": 8855.141511462749,
+    "W": 683.3392170993884
+  }
+}

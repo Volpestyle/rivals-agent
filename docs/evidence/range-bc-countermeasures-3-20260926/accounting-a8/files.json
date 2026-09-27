@@ -1,0 +1,12 @@
+{
+  "files": {
+    "README.md": "6c324cec99b7f171096ba224a21d268e5468e189fd7b392522a6914899dd2d82",
+    "budget04-numbers.json": "28213fd8c711cebcdf528ce0f3013a891a8c4e6066bf938a355328245be4bb4d",
+    "fanout/cm3_budget_plan.py": "1b76ee9707580beec7bb71f9b7b766bfb0b8f3a42ea849e7f767697a87ef59af",
+    "guard-diagnostic.json": "d3fb6419b146a38b0908d8f7e9957d65a765ab0facd18e2b2e5fdb22e74a233e",
+    "owner/cm3_budget_plan.py": "1b76ee9707580beec7bb71f9b7b766bfb0b8f3a42ea849e7f767697a87ef59af",
+    "test_a8.py": "ae721060fd34d0d6897bc8dc3aed519cb16b1dc02b49044d7958c49d830bb5e0",
+    "tests.log": "d8723ee001feaaf2086b9ce1b811b05cd7fcaa5a6810308b70293e0529ba97f7",
+    "unchanged-closure.json": "177077f25293abf79a185083fb1105f6b9dd94c8b1f89a1c67e20e7f7c9ec011"
+  }
+}
