@@ -24,3 +24,15 @@ filled (§13).
 | `review-round3-20260926.md` | `0f9e905367d5975df1c445db233eea7f837f1e2199126fb85bc47a31f30ffbf5` |
 | `review-round3-delta-20260926.md` | `723b563d56e6350b59a36d1df1ceb3665a217f0c9be45de4737def7b13137ce0` |
 | `round3-design.md` | `29087a467ca0f9ce934189c354c46a99677208e1e8ede65bb40229e8197a427b` |
+
+## Amendment 2 (2026-09-26 18:58 CDT, pre-result, approved by James): arm N dropped
+
+The train-only sidecars weight 753 of 148,963 rows (0.51 %), so the idle-target contrast is untested; downweighting stays in H, I and W.
+The current contract is the `-a2` pair. The files above are the pinned Amendment 1 versions, unchanged. admission-review: FIX
+(routing references only), which the lead corrected; the substantive checks all pass.
+
+| File | sha256 |
+|---|---|
+| `fit-countermeasures-3-prereg-draft-a2.md` | `93fc8ecaba9668b53bc3c0da4a4fdea211a9339535b0a06e050c46fa9cd50928` |
+| `round3-design-a2.md` | `b36a50c1967891777b5f8ed4a80ed58112891370b3eaae74bbbeac256da32905` |
+| `review-round3-a2-20260926.md` | `5de5b160f4e1fddc68735769569df9e9604e837780759d02668ec76680b8434a` |
