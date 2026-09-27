@@ -260,7 +260,8 @@ def anchor_dir(tmp_path, matches, decision=True, matched=60835):
         integrity_ok=True, errors=[], decoded_video_frames=60835, matched_video_frames=matched,
         muxer_pts_offset_seconds=0.021, max_video_pts_residual_seconds=0.00033333333340124227)), encoding="utf-8")
     if decision:
-        (d / "lead-decisions.json").write_text(json.dumps(dict(decisions=[dict(item="pts_anchor")])), encoding="utf-8")
+        (d / "lead-decisions.json").write_text(json.dumps(dict(
+            session=d.name, decisions=[dict(item="pts_anchor", outcome="accepted")])), encoding="utf-8")
     return d
 
 
@@ -277,3 +278,18 @@ def test_the_pts_anchor_states_its_true_basis(tmp_path):
         assemble.pts_anchor_basis(anchor_dir(tmp_path / "c", False, decision=False))
     with pytest.raises(assemble.Refused, match="whole-stream verify"):
         assemble.pts_anchor_basis(anchor_dir(tmp_path / "d", False, matched=60834))
+
+
+@pytest.mark.parametrize("record", [
+    {"session": "s", "decisions": [{"item": "pts_anchor", "outcome": "rejected"}]},
+    {"session": "another-session", "decisions": [{"item": "pts_anchor", "outcome": "accepted"}]},
+    {"session": "s", "decisions": [{"item": "pts_anchor"}]},
+    {"decisions": [{"item": "pts_anchor", "outcome": "accepted"}]},
+    {"session": "s", "decisions": [{"item": "pts_anchor", "outcome": "accepted"},
+                                    {"item": "pts_anchor", "outcome": "rejected"}]},
+])
+def test_pts_anchor_refuses_nonaccepting_or_unbound_decisions(tmp_path, record):
+    d = anchor_dir(tmp_path, False)
+    (d / "lead-decisions.json").write_text(json.dumps(record), encoding="utf-8")
+    with pytest.raises(assemble.Refused, match="explicitly accepted.*bound to this session"):
+        assemble.pts_anchor_basis(d)

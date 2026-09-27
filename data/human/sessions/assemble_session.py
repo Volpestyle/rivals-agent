@@ -208,9 +208,12 @@ def pts_anchor_basis(d):
          and round(ver["muxer_pts_offset_seconds"] * 1000) == 21,
          "the first-16 forward prediction failed and the whole-stream verify does not match at +21 ms (refused)")
     lead = d / "lead-decisions.json"
-    decisions = json.loads(lead.read_text(encoding="utf-8"))["decisions"] if lead.exists() else []
-    need(any(x.get("item") == "pts_anchor" for x in decisions),
-         "the first-16 forward prediction failed: a pts_anchor lead decision is required (refused)")
+    record = json.loads(lead.read_text(encoding="utf-8")) if lead.exists() else {}
+    decisions = [x for x in record.get("decisions", []) if x.get("item") == "pts_anchor"]
+    need(record.get("session") == d.name and len(decisions) == 1
+         and decisions[0].get("outcome") == "accepted",
+         "the first-16 forward prediction failed: one explicitly accepted pts_anchor lead decision "
+         "bound to this session is required (refused)")
     got, want = app["first_16_packets"], app["predicted"]
     stream, k = next((s, i) for s in ("video_ms", "audio_ms") for i, (a, b) in enumerate(zip(got[s], want[s])) if a != b)
     source = (f"whole-stream verify match at +21 ms ({ver['matched_video_frames']} of {ver['decoded_video_frames']} "
