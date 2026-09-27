@@ -147,7 +147,7 @@
   {
    "segment_id": "seg-015",
    "start_ns": 553903426366686,
-   "end_ns": 553943626365079,
+   "end_ns": 553944426365047,
    "machine_reason": "range_hud_present",
    "proposal": "unresolved",
    "edges": {
@@ -160,10 +160,10 @@
      "refined": false
     },
     "end": {
-     "sample_ns": 553943626365078,
+     "sample_ns": 553944426365046,
      "refine": [
-      553943626365078,
-      553943703128900
+      553944426365046,
+      553944426365047
      ],
      "refined": false
     }
@@ -171,14 +171,14 @@
   },
   {
    "segment_id": "seg-016",
-   "start_ns": 553943626365079,
-   "end_ns": 553943703128900,
-   "machine_reason": "unsampled_edge",
+   "start_ns": 553944426365047,
+   "end_ns": 553945037388100,
+   "machine_reason": "dead",
    "proposal": "rejected"
   },
   {
    "segment_id": "seg-017",
-   "start_ns": 553943703128900,
+   "start_ns": 553945037388100,
    "end_ns": 553951504332400,
    "machine_reason": "ui_key",
    "proposal": "rejected"
@@ -306,7 +306,7 @@
   {
    "segment_id": "seg-030",
    "start_ns": 554033226361494,
-   "end_ns": 554045426361007,
+   "end_ns": 554099426358847,
    "machine_reason": "range_hud_present",
    "proposal": "unresolved",
    "edges": {
@@ -315,52 +315,6 @@
      "refine": [
       554033026361503,
       554033226361495
-     ],
-     "refined": false
-    },
-    "end": {
-     "sample_ns": 554045426361006,
-     "refine": [
-      554045426361006,
-      554045437111500
-     ],
-     "refined": false
-    }
-   }
-  },
-  {
-   "segment_id": "seg-031",
-   "start_ns": 554045426361007,
-   "end_ns": 554045437111500,
-   "machine_reason": "unsampled_edge",
-   "proposal": "rejected"
-  },
-  {
-   "segment_id": "seg-032",
-   "start_ns": 554045437111500,
-   "end_ns": 554047585132700,
-   "machine_reason": "ui_key",
-   "proposal": "rejected"
-  },
-  {
-   "segment_id": "seg-033",
-   "start_ns": 554047585132700,
-   "end_ns": 554047626360918,
-   "machine_reason": "unsampled_edge",
-   "proposal": "rejected"
-  },
-  {
-   "segment_id": "seg-034",
-   "start_ns": 554047626360918,
-   "end_ns": 554099426358847,
-   "machine_reason": "range_hud_present",
-   "proposal": "unresolved",
-   "edges": {
-    "start": {
-     "sample_ns": 554047626360918,
-     "refine": [
-      554047585132700,
-      554047626360919
      ],
      "refined": false
     },
@@ -375,42 +329,42 @@
    }
   },
   {
-   "segment_id": "seg-035",
+   "segment_id": "seg-031",
    "start_ns": 554099426358847,
    "end_ns": 554100019315900,
    "machine_reason": "dead",
    "proposal": "rejected"
   },
   {
-   "segment_id": "seg-036",
+   "segment_id": "seg-032",
    "start_ns": 554100019315900,
    "end_ns": 554102241412200,
    "machine_reason": "ui_key",
    "proposal": "rejected"
   },
   {
-   "segment_id": "seg-037",
+   "segment_id": "seg-033",
    "start_ns": 554102241412200,
    "end_ns": 554108752377900,
    "machine_reason": "dead",
    "proposal": "rejected"
   },
   {
-   "segment_id": "seg-038",
+   "segment_id": "seg-034",
    "start_ns": 554108752377900,
    "end_ns": 554111270279100,
    "machine_reason": "ui_key",
    "proposal": "rejected"
   },
   {
-   "segment_id": "seg-039",
+   "segment_id": "seg-035",
    "start_ns": 554111270279100,
    "end_ns": 554111426358366,
    "machine_reason": "unsampled_edge",
    "proposal": "rejected"
   },
   {
-   "segment_id": "seg-040",
+   "segment_id": "seg-036",
    "start_ns": 554111426358366,
    "end_ns": 554125426357807,
    "machine_reason": "range_hud_present",
@@ -435,51 +389,51 @@
    }
   },
   {
-   "segment_id": "seg-041",
+   "segment_id": "seg-037",
    "start_ns": 554125426357807,
    "end_ns": 554126157305600,
    "machine_reason": "dead",
    "proposal": "rejected"
   },
   {
-   "segment_id": "seg-042",
+   "segment_id": "seg-038",
    "start_ns": 554126157305600,
    "end_ns": 554131401300600,
    "machine_reason": "ui_key",
    "proposal": "rejected"
   },
   {
-   "segment_id": "seg-043",
+   "segment_id": "seg-039",
    "start_ns": 554131401300600,
    "end_ns": 554134295415700,
    "machine_reason": "dead",
    "proposal": "rejected"
   },
   {
-   "segment_id": "seg-044",
+   "segment_id": "seg-040",
    "start_ns": 554134295415700,
    "end_ns": 554136855381000,
    "machine_reason": "ui_key",
    "proposal": "rejected"
   },
   {
-   "segment_id": "seg-045",
+   "segment_id": "seg-041",
    "start_ns": 554136855381000,
    "end_ns": 554137226357374,
    "machine_reason": "dead",
    "proposal": "rejected"
   },
   {
-   "segment_id": "seg-046",
+   "segment_id": "seg-042",
    "start_ns": 554137226357374,
    "end_ns": 554137426357326,
    "machine_reason": "unsampled_edge",
    "proposal": "rejected"
   },
   {
-   "segment_id": "seg-047",
+   "segment_id": "seg-043",
    "start_ns": 554137426357326,
-   "end_ns": 554183226355495,
+   "end_ns": 554201226354775,
    "machine_reason": "range_hud_present",
    "proposal": "unresolved",
    "edges": {
@@ -488,52 +442,6 @@
      "refine": [
       554137226357374,
       554137426357327
-     ],
-     "refined": false
-    },
-    "end": {
-     "sample_ns": 554183226355494,
-     "refine": [
-      554183226355494,
-      554183415142300
-     ],
-     "refined": false
-    }
-   }
-  },
-  {
-   "segment_id": "seg-048",
-   "start_ns": 554183226355495,
-   "end_ns": 554183415142300,
-   "machine_reason": "unsampled_edge",
-   "proposal": "rejected"
-  },
-  {
-   "segment_id": "seg-049",
-   "start_ns": 554183415142300,
-   "end_ns": 554185587106500,
-   "machine_reason": "ui_key",
-   "proposal": "rejected"
-  },
-  {
-   "segment_id": "seg-050",
-   "start_ns": 554185587106500,
-   "end_ns": 554185626355398,
-   "machine_reason": "unsampled_edge",
-   "proposal": "rejected"
-  },
-  {
-   "segment_id": "seg-051",
-   "start_ns": 554185626355398,
-   "end_ns": 554201226354775,
-   "machine_reason": "range_hud_present",
-   "proposal": "unresolved",
-   "edges": {
-    "start": {
-     "sample_ns": 554185626355398,
-     "refine": [
-      554185587106500,
-      554185626355399
      ],
      "refined": false
     },
@@ -548,37 +456,32 @@
    }
   },
   {
-   "segment_id": "seg-052",
+   "segment_id": "seg-044",
    "start_ns": 554201226354775,
    "end_ns": 554201803302400,
    "machine_reason": "dead",
    "proposal": "rejected"
   },
   {
-   "segment_id": "seg-053",
+   "segment_id": "seg-045",
    "start_ns": 554201803302400,
    "end_ns": 554210507388500,
    "machine_reason": "ui_key",
    "proposal": "rejected"
   },
   {
-   "segment_id": "seg-054",
+   "segment_id": "seg-046",
    "start_ns": 554210507388500,
    "end_ns": 554210731258800,
    "machine_reason": "dead",
    "proposal": "rejected"
   },
   {
-   "segment_id": "seg-055",
+   "segment_id": "seg-047",
    "start_ns": 554210731258800,
    "end_ns": 554216366191600,
    "machine_reason": "ui_key",
    "proposal": "rejected"
   }
- ],
- "supersedes": {
-  "file": "candidates-pass1.v1.json",
-  "sha256": "86ec8eeed758968e79081b50609406820f65d10e5b0206df38a992f9f5bb6294",
-  "reason": "Lead 2026-09-27: exclude held middle-mouse ping wheel plus 2 s settle; preserve prior packet"
- }
+ ]
 }

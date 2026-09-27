@@ -1,0 +1,243 @@
+{
+ "session": "20260927T051206-888Z-150600-4",
+ "segments_evidence_sha256": "e3d2a29a0fa440d964630bd7d687770c6636dab12faf2c204aafbf8da9dec766",
+ "owner_verdicts_sha256": "80841ca5c5c759faa32249ef60be02ae8116c6773497931bb8fbc2c7f72ce94f",
+ "previous_evidence": {
+  "file": "segments-evidence.v1.json",
+  "sha256": "45a01606ca4eb218eda659e4dd11fc2d5dd1a5839face61011875004c1366f59",
+  "review_frames": "review-frames.v1",
+  "reason": "Lead 2026-09-27: exclude held middle-mouse ping wheel plus 2 s settle; preserve prior packet"
+ },
+ "previous_owner": {
+  "path": "owner-verdicts.v1.json",
+  "sha256": "ea41484e73bf9c2ba8bc061679e0821995d5e3e47757deb280f4185b430b33ef"
+ },
+ "previous_independent": {
+  "path": "independent-review.v1.verdicts.json",
+  "sha256": "84b11c1f3632155420019c3e1d7f92b6f209995bca2d15a34e5bca325b35717d"
+ },
+ "unchanged_segments": [
+  "seg-000",
+  "seg-001",
+  "seg-002",
+  "seg-003",
+  "seg-004",
+  "seg-005",
+  "seg-006",
+  "seg-007",
+  "seg-008",
+  "seg-009",
+  "seg-010",
+  "seg-011",
+  "seg-012",
+  "seg-013",
+  "seg-014",
+  "seg-016",
+  "seg-017",
+  "seg-018",
+  "seg-019",
+  "seg-020",
+  "seg-021",
+  "seg-022",
+  "seg-023",
+  "seg-024",
+  "seg-025",
+  "seg-026",
+  "seg-027",
+  "seg-028",
+  "seg-029",
+  "seg-031",
+  "seg-032",
+  "seg-033",
+  "seg-034",
+  "seg-035",
+  "seg-036",
+  "seg-037",
+  "seg-038",
+  "seg-039",
+  "seg-040",
+  "seg-041",
+  "seg-042",
+  "seg-044",
+  "seg-045",
+  "seg-046",
+  "seg-047",
+  "seg-048"
+ ],
+ "unchanged_count": 46,
+ "unchanged_check": "Exact JSON equality, including native/JPEG pins; every current image hash and evidence input pin checked",
+ "changed_segments": [
+  {
+   "segment_id": "seg-015-a1-00",
+   "parent_segment": "seg-015",
+   "start_ns": 553903301366691,
+   "end_ns": 553943701365076,
+   "t_rel_s": [
+    102.371784391,
+    142.771782776
+   ],
+   "machine_reason": "range_hud_present",
+   "owner_verdict": "accepted",
+   "review_frame_count": 6
+  },
+  {
+   "segment_id": "seg-015-a1-01",
+   "parent_segment": "seg-015",
+   "start_ns": 553943701365076,
+   "end_ns": 553943703128900,
+   "t_rel_s": [
+    142.771782776,
+    142.7735466
+   ],
+   "machine_reason": "unsampled_edge",
+   "owner_verdict": "rejected",
+   "review_frame_count": 0
+  },
+  {
+   "segment_id": "seg-015-a1-02",
+   "parent_segment": "seg-015",
+   "start_ns": 553943703128900,
+   "end_ns": 553944426365047,
+   "t_rel_s": [
+    142.7735466,
+    143.496782747
+   ],
+   "machine_reason": "ui_key",
+   "owner_verdict": "rejected",
+   "review_frame_count": 3
+  },
+  {
+   "segment_id": "seg-030-a1-00",
+   "parent_segment": "seg-030",
+   "start_ns": 554033034694835,
+   "end_ns": 554045434694340,
+   "t_rel_s": [
+    232.105112535,
+    244.50511204
+   ],
+   "machine_reason": "range_hud_present",
+   "owner_verdict": "accepted",
+   "review_frame_count": 3
+  },
+  {
+   "segment_id": "seg-030-a1-01",
+   "parent_segment": "seg-030",
+   "start_ns": 554045434694340,
+   "end_ns": 554045437111500,
+   "t_rel_s": [
+    244.50511204,
+    244.5075292
+   ],
+   "machine_reason": "unsampled_edge",
+   "owner_verdict": "rejected",
+   "review_frame_count": 0
+  },
+  {
+   "segment_id": "seg-030-a1-02",
+   "parent_segment": "seg-030",
+   "start_ns": 554045437111500,
+   "end_ns": 554047585132700,
+   "t_rel_s": [
+    244.5075292,
+    246.6555504
+   ],
+   "machine_reason": "ui_key",
+   "owner_verdict": "rejected",
+   "review_frame_count": 3
+  },
+  {
+   "segment_id": "seg-030-a1-03",
+   "parent_segment": "seg-030",
+   "start_ns": 554047585132700,
+   "end_ns": 554047626360918,
+   "t_rel_s": [
+    246.6555504,
+    246.696778618
+   ],
+   "machine_reason": "unsampled_edge",
+   "owner_verdict": "rejected",
+   "review_frame_count": 3
+  },
+  {
+   "segment_id": "seg-030-a1-04",
+   "parent_segment": "seg-030",
+   "start_ns": 554047626360918,
+   "end_ns": 554099426358847,
+   "t_rel_s": [
+    246.696778618,
+    298.496776547
+   ],
+   "machine_reason": "range_hud_present",
+   "owner_verdict": "accepted",
+   "review_frame_count": 7
+  },
+  {
+   "segment_id": "seg-043-a1-00",
+   "parent_segment": "seg-043",
+   "start_ns": 554137234690667,
+   "end_ns": 554182543022189,
+   "t_rel_s": [
+    336.305108367,
+    381.613439889
+   ],
+   "machine_reason": "range_hud_present",
+   "owner_verdict": "accepted",
+   "review_frame_count": 6
+  },
+  {
+   "segment_id": "seg-043-a1-01",
+   "parent_segment": "seg-043",
+   "start_ns": 554182543022189,
+   "end_ns": 554183415142300,
+   "t_rel_s": [
+    381.613439889,
+    382.48556
+   ],
+   "machine_reason": "hud_unknown",
+   "owner_verdict": "rejected",
+   "review_frame_count": 3
+  },
+  {
+   "segment_id": "seg-043-a1-02",
+   "parent_segment": "seg-043",
+   "start_ns": 554183415142300,
+   "end_ns": 554185587106500,
+   "t_rel_s": [
+    382.48556,
+    384.6575242
+   ],
+   "machine_reason": "ui_key",
+   "owner_verdict": "rejected",
+   "review_frame_count": 3
+  },
+  {
+   "segment_id": "seg-043-a1-03",
+   "parent_segment": "seg-043",
+   "start_ns": 554185587106500,
+   "end_ns": 554185593022066,
+   "t_rel_s": [
+    384.6575242,
+    384.663439766
+   ],
+   "machine_reason": "unsampled_edge",
+   "owner_verdict": "rejected",
+   "review_frame_count": 0
+  },
+  {
+   "segment_id": "seg-043-a1-04",
+   "parent_segment": "seg-043",
+   "start_ns": 554185593022066,
+   "end_ns": 554200201354816,
+   "t_rel_s": [
+    384.663439766,
+    399.271772516
+   ],
+   "machine_reason": "range_hud_present",
+   "owner_verdict": "accepted",
+   "review_frame_count": 3
+  }
+ ],
+ "accepted_count": 10,
+ "accepted_ns": 297666654770,
+ "owner_inspection": "All 40 supplied thumbnails across 10 changed pieces inspected as contact sheets; three zero-frame slivers rejected by rule. Native-frame review remains independent."
+}

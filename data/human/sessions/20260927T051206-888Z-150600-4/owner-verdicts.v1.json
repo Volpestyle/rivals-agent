@@ -1,14 +1,9 @@
 {
  "session": "20260927T051206-888Z-150600-4",
- "segments_evidence_sha256": "e3d2a29a0fa440d964630bd7d687770c6636dab12faf2c204aafbf8da9dec766",
+ "segments_evidence_sha256": "45a01606ca4eb218eda659e4dd11fc2d5dd1a5839face61011875004c1366f59",
  "reviewer": "admission-codex",
- "reviewed_at": "2026-09-27T18:42:25.406291+00:00",
- "role": "Owner thumbnail delta inspection; provisional until independent native-frame agreement",
- "supersedes": {
-  "file": "owner-verdicts.v1.json",
-  "sha256": "ea41484e73bf9c2ba8bc061679e0821995d5e3e47757deb280f4185b430b33ef",
-  "reason": "Held-button3 plus two-second settle; changed boundaries only"
- },
+ "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+ "role": "owner thumbnail inspection; provisional until independent native-frame review",
  "verdicts": {
   "seg-000": {
    "suitability": "rejected",
@@ -315,12 +310,12 @@
    "evidence": "segments-evidence.json machine rule",
    "frames": []
   },
-  "seg-015-a1-00": {
+  "seg-015": {
    "suitability": "accepted",
-   "reason": "Own Spider-Man traversal and combat, own HUD at both boundaries; final thumbnail before the button-3 press has no wheel. Interior own_hud reader miss shows own camera, not spectate.",
+   "reason": "Owner visually inspected every supplied review thumbnail on the segment contact sheet: own Spider-Man gameplay HUD/body, traversal or combat; no menu, death, spectate, cinematic or end screen observed. Pre-match controllable setup room is permitted. Native BGR hashes below are inherited from the producer evidence, not independently re-decoded by owner; independent native-frame review required.",
    "reviewer": "admission-codex (lane owner; not independent review)",
-   "reviewed_at": "2026-09-27T18:42:25.406291+00:00",
-   "evidence": "segments-evidence.json; all supplied changed review thumbnails visually inspected; independent native boundary verdict required",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json; review-frames/; data/admission-codex/review-4/seg-015.jpg",
    "frames": [
     {
      "frame_index": 12273,
@@ -328,56 +323,24 @@
      "decoded_bgr_sha256": "c69ebdcecf2d6f9a8166fd8429075f44b19a9b0211d4ca2928528a49d76e1297"
     },
     {
-     "frame_index": 13242,
-     "composition_ns": 553911376366368,
-     "decoded_bgr_sha256": "8937c4b821262e2358e6d72dcdd61b4c77ad62a63f7bc1cd725796ccce7d8d48"
+     "frame_index": 13260,
+     "composition_ns": 553911526366362,
+     "decoded_bgr_sha256": "8be5d1c2f3cbd9055fb99595a71073fa58918875a1094465abfd8424dabbc275"
     },
     {
-     "frame_index": 14212,
-     "composition_ns": 553919459699378,
-     "decoded_bgr_sha256": "9d9092db83ca8e595ea73a50e523fbe5bd4144eda8d5bcc5cf5a1aa877ac644a"
+     "frame_index": 14247,
+     "composition_ns": 553919751366033,
+     "decoded_bgr_sha256": "525f5868c68b8a6ad78bdaf0a51ce8a750be2783b6fe1767eedb2b9a54e294c5"
     },
     {
-     "frame_index": 15181,
-     "composition_ns": 553927534699055,
-     "decoded_bgr_sha256": "514760bf0fcf3ed4b9e92682bc621d7a8781b3f19100b6c575b435b4d1a0f173"
+     "frame_index": 15234,
+     "composition_ns": 553927976365704,
+     "decoded_bgr_sha256": "87c065676db4b8ab78a06616cc194c6ca25ef097403d7bb77862ca725662646f"
     },
     {
-     "frame_index": 16151,
-     "composition_ns": 553935618032065,
-     "decoded_bgr_sha256": "b014b7efeaf14ac75981005ef7d3cf8050ef0657245f5430759fbf44f29ea963"
-    },
-    {
-     "frame_index": 17121,
-     "composition_ns": 553943701365075,
-     "decoded_bgr_sha256": "ba090349d017b1fcd0b7b00d648e0b4aa733e8b233c84338ad49a648cfdb1316"
-    }
-   ]
-  },
-  "seg-015-a1-01": {
-   "suitability": "rejected",
-   "reason": "Conservative unsampled native-boundary gap, rejected by rule. No native frame lies inside this sliver.",
-   "reviewer": "admission-codex (lane owner; not independent review)",
-   "reviewed_at": "2026-09-27T18:42:25.406291+00:00",
-   "evidence": "segments-evidence.json; all supplied changed review thumbnails visually inspected; independent native boundary verdict required",
-   "frames": []
-  },
-  "seg-015-a1-02": {
-   "suitability": "rejected",
-   "reason": "Held-button-3 ping wheel plus release settle: rejected by input rule. Supplied sparse thumbnails were inspected; they do not sample the short wheel itself, whose presence was independently confirmed in the prior ping audit.",
-   "reviewer": "admission-codex (lane owner; not independent review)",
-   "reviewed_at": "2026-09-27T18:42:25.406291+00:00",
-   "evidence": "segments-evidence.json; all supplied changed review thumbnails visually inspected; independent native boundary verdict required",
-   "frames": [
-    {
-     "frame_index": 17122,
-     "composition_ns": 553943709698408,
-     "decoded_bgr_sha256": "1b4decbe82204e69f272c6a1a4087485e5efe07fb9dc55b64c779035d6d77fa8"
-    },
-    {
-     "frame_index": 17165,
-     "composition_ns": 553944068031727,
-     "decoded_bgr_sha256": "08e45dd54088a93dc30b040a15adf82d31ab53f9992404c1ec91ad066c36a63d"
+     "frame_index": 16221,
+     "composition_ns": 553936201365375,
+     "decoded_bgr_sha256": "b5d997fc3340bdc920dbf5ac12dbb9894ccea73d76043d1f3e2150ce95b18edb"
     },
     {
      "frame_index": 17208,
@@ -705,12 +668,12 @@
     }
    ]
   },
-  "seg-030-a1-00": {
+  "seg-030": {
    "suitability": "accepted",
-   "reason": "Own Spider-Man combat and wall traversal; own HUD at both boundaries and no wheel in the retained-end thumbnail before the press.",
+   "reason": "Owner visually inspected every supplied review thumbnail on the segment contact sheet: own Spider-Man gameplay HUD/body, traversal or combat; no menu, death, spectate, cinematic or end screen observed. Pre-match controllable setup room is permitted. Native BGR hashes below are inherited from the producer evidence, not independently re-decoded by owner; independent native-frame review required.",
    "reviewer": "admission-codex (lane owner; not independent review)",
-   "reviewed_at": "2026-09-27T18:42:25.406291+00:00",
-   "evidence": "segments-evidence.json; all supplied changed review thumbnails visually inspected; independent native boundary verdict required",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json; review-frames/; data/admission-codex/review-4/seg-030.jpg",
    "frames": [
     {
      "frame_index": 27841,
@@ -718,109 +681,34 @@
      "decoded_bgr_sha256": "b11f515ddd71d525b1733217ca425dc60988a9bb51be18b9b778143f51b76678"
     },
     {
-     "frame_index": 28585,
-     "composition_ns": 554039234694587,
-     "decoded_bgr_sha256": "2ab3916d903b1678047708d19a4fd9a5096f897b5383453590adb6cf7637c205"
+     "frame_index": 28979,
+     "composition_ns": 554042518027789,
+     "decoded_bgr_sha256": "ae42d4757693d26621cf8a1412a0c603585cdac2ab2f64ce6e8a62b1621a45b5"
     },
     {
-     "frame_index": 29329,
-     "composition_ns": 554045434694339,
-     "decoded_bgr_sha256": "b72bbd2e095bf2ec7fedfabe7ab87e7558bdaf8510f01773b92022a347aa204b"
-    }
-   ]
-  },
-  "seg-030-a1-01": {
-   "suitability": "rejected",
-   "reason": "Conservative unsampled native-boundary gap, rejected by rule. No native frame lies inside this sliver.",
-   "reviewer": "admission-codex (lane owner; not independent review)",
-   "reviewed_at": "2026-09-27T18:42:25.406291+00:00",
-   "evidence": "segments-evidence.json; all supplied changed review thumbnails visually inspected; independent native boundary verdict required",
-   "frames": []
-  },
-  "seg-030-a1-02": {
-   "suitability": "rejected",
-   "reason": "Held-button-3 ping wheel plus release settle: rejected by input rule. Supplied sparse thumbnails were inspected; they do not sample the short wheel itself, whose presence was independently confirmed in the prior ping audit.",
-   "reviewer": "admission-codex (lane owner; not independent review)",
-   "reviewed_at": "2026-09-27T18:42:25.406291+00:00",
-   "evidence": "segments-evidence.json; all supplied changed review thumbnails visually inspected; independent native boundary verdict required",
-   "frames": [
-    {
-     "frame_index": 29330,
-     "composition_ns": 554045443027672,
-     "decoded_bgr_sha256": "d95ed43a538b9b0a4a01b25569611a2b01676bc73e0253998c3a803ac753b0bc"
+     "frame_index": 30117,
+     "composition_ns": 554052001360743,
+     "decoded_bgr_sha256": "37c48ec1fdc08718df2ef7d32dc016846ee9bbd569b336ded2eef7d391dd068c"
     },
     {
-     "frame_index": 29458,
-     "composition_ns": 554046509694296,
-     "decoded_bgr_sha256": "2c6e1efa0b89bbfb86da4fe1da9103fc21f6b1b562a4737e42f750e6c3381a70"
+     "frame_index": 31255,
+     "composition_ns": 554061484693697,
+     "decoded_bgr_sha256": "5831014944e2700d5ec363cea386b3feb61969f22c60f38c8ddf57e628d810b1"
     },
     {
-     "frame_index": 29587,
-     "composition_ns": 554047584694253,
-     "decoded_bgr_sha256": "06ce6f060a19a71d81f1e88ed3e9105c505167c09c570cca5e505a6acf069770"
-    }
-   ]
-  },
-  "seg-030-a1-03": {
-   "suitability": "rejected",
-   "reason": "Conservative unsampled native-boundary gap, rejected by rule. Inspected supplied thumbnails show own gameplay; the gap remains rejected.",
-   "reviewer": "admission-codex (lane owner; not independent review)",
-   "reviewed_at": "2026-09-27T18:42:25.406291+00:00",
-   "evidence": "segments-evidence.json; all supplied changed review thumbnails visually inspected; independent native boundary verdict required",
-   "frames": [
-    {
-     "frame_index": 29588,
-     "composition_ns": 554047593027586,
-     "decoded_bgr_sha256": "6cbebde8fd2303dd96c70d82a3f42163e54a4c7c3cbf62cbd1f00f57baf08a52"
+     "frame_index": 32393,
+     "composition_ns": 554070968026651,
+     "decoded_bgr_sha256": "7e61f46700492b520e39c62782a29d711422ce0cac369d362492d4ee03082edd"
     },
     {
-     "frame_index": 29589,
-     "composition_ns": 554047601360919,
-     "decoded_bgr_sha256": "dc2093352a2b2e8e698f1b1289d2338143be21dddf7b761d76118e48f6471e76"
+     "frame_index": 33531,
+     "composition_ns": 554080451359605,
+     "decoded_bgr_sha256": "a24e315fff49309f9fbcc574163f5899916958791b68ccfb4f700c82480fde17"
     },
     {
-     "frame_index": 29591,
-     "composition_ns": 554047618027585,
-     "decoded_bgr_sha256": "d7e9c0ab56e8a023fdb47fbb2189d138bd5061d74743e227a3a7399bee134c9a"
-    }
-   ]
-  },
-  "seg-030-a1-04": {
-   "suitability": "accepted",
-   "reason": "Own Spider-Man running, swinging and combat after the release settle, through the unchanged outer end. No wheel in the supplied frames; interior HUD reader miss shows own camera.",
-   "reviewer": "admission-codex (lane owner; not independent review)",
-   "reviewed_at": "2026-09-27T18:42:25.406291+00:00",
-   "evidence": "segments-evidence.json; all supplied changed review thumbnails visually inspected; independent native boundary verdict required",
-   "frames": [
-    {
-     "frame_index": 29592,
-     "composition_ns": 554047626360918,
-     "decoded_bgr_sha256": "a538d6207f8f71d1865749c76d5fae24a3e54f8a949f2fa2f47468cc0d4a0a57"
-    },
-    {
-     "frame_index": 30628,
-     "composition_ns": 554056259693906,
-     "decoded_bgr_sha256": "5afd56895af50f26d65e968d4e3f2eb4085a5cd80355839801f1f3216f0a4652"
-    },
-    {
-     "frame_index": 31664,
-     "composition_ns": 554064893026894,
-     "decoded_bgr_sha256": "d93d9ae56fd3f8fba8a1e015c0bb4d5329385894eb36dda7aace0c1555162d25"
-    },
-    {
-     "frame_index": 32700,
-     "composition_ns": 554073526359882,
-     "decoded_bgr_sha256": "b644852e64f3f65c7486d13c64b6a236548c65998fb4747db0053277ac67b203"
-    },
-    {
-     "frame_index": 33736,
-     "composition_ns": 554082159692870,
-     "decoded_bgr_sha256": "377799ec1fc3e7cf298917633e98c565ccebd5b075f3ef178c269c6e4d488cc7"
-    },
-    {
-     "frame_index": 34772,
-     "composition_ns": 554090793025858,
-     "decoded_bgr_sha256": "3ab74a2b00b650011406e499459cbf51a79ef0f414cc1f8f7a2b3d870a62c67d"
+     "frame_index": 34669,
+     "composition_ns": 554089934692559,
+     "decoded_bgr_sha256": "8c2b075fff9ba7d1d03021fc70453f835a7ec01e694e28f9edc791c7132cb266"
     },
     {
      "frame_index": 35808,
@@ -1085,12 +973,12 @@
    "evidence": "segments-evidence.json machine rule",
    "frames": []
   },
-  "seg-043-a1-00": {
+  "seg-043": {
    "suitability": "accepted",
-   "reason": "Own Spider-Man combat and traversal into overtime; last retained frame has own HUD. End moves conservatively inward before a web-counter reader miss and the later ping press.",
+   "reason": "Owner visually inspected every supplied review thumbnail on the segment contact sheet: own Spider-Man gameplay HUD/body, traversal or combat; no menu, death, spectate, cinematic or end screen observed. Pre-match controllable setup room is permitted. Native BGR hashes below are inherited from the producer evidence, not independently re-decoded by owner; independent native-frame review required.",
    "reviewer": "admission-codex (lane owner; not independent review)",
-   "reviewed_at": "2026-09-27T18:42:25.406291+00:00",
-   "evidence": "segments-evidence.json; all supplied changed review thumbnails visually inspected; independent native boundary verdict required",
+   "reviewed_at": "2026-09-27T17:03:16.353404+00:00",
+   "evidence": "segments-evidence.json; review-frames/; data/admission-codex/review-4/seg-043.jpg",
    "frames": [
     {
      "frame_index": 40345,
@@ -1098,104 +986,34 @@
      "decoded_bgr_sha256": "763a61877a9a7385b6af41e0e7bd60cf36ae15e591e4a8092ab5b2f10f13b135"
     },
     {
-     "frame_index": 41432,
-     "composition_ns": 554146293023638,
-     "decoded_bgr_sha256": "0d15ea694b705d813d051fc9fc2a153b2e86c411b24a39768bb71b92b39c8a42"
+     "frame_index": 41424,
+     "composition_ns": 554146226356974,
+     "decoded_bgr_sha256": "47a5e2b29b361f7bd087b4bf7e13d673c0e37e8cec68bf1589ff1e916dc341aa"
     },
     {
-     "frame_index": 42519,
-     "composition_ns": 554155351356609,
-     "decoded_bgr_sha256": "5d02acf58ea080e17ba3210d405e1cc8ced0731c8251d293024344a8bbfd175e"
+     "frame_index": 42503,
+     "composition_ns": 554155218023281,
+     "decoded_bgr_sha256": "b2a95579933b040a4ea1ba336a6ce0433c4962baf04f7d34194b4bcc95dbad4f"
     },
     {
-     "frame_index": 43607,
-     "composition_ns": 554164418022913,
-     "decoded_bgr_sha256": "0b7637cba70a0ab27a116b1629c39efdfe578850ff3e5a824a3c5211f27a3d43"
+     "frame_index": 43583,
+     "composition_ns": 554164218022921,
+     "decoded_bgr_sha256": "83758663dab87c71302c0ae56e34bc05cdea79cb9d652e34eee0eb833d7d52c6"
     },
     {
-     "frame_index": 44694,
-     "composition_ns": 554173476355884,
-     "decoded_bgr_sha256": "521bbf7fa1a3cc538d0657bcf1257ac9bbc7d7b64a8e90a477b52f781306faac"
+     "frame_index": 44662,
+     "composition_ns": 554173209689228,
+     "decoded_bgr_sha256": "253bac1abcc50bbe7a946a1fe72d93873129f685cb66f6dc8846232a2cf9b251"
     },
     {
-     "frame_index": 45782,
-     "composition_ns": 554182543022188,
-     "decoded_bgr_sha256": "96dd4970851acdc9b72043b53040330fc8b025803effb69c3d0cf776b3c6b2b1"
-    }
-   ]
-  },
-  "seg-043-a1-01": {
-   "suitability": "rejected",
-   "reason": "Own gameplay in inspected thumbnails, but own_hud is false in this bounded reader-miss region. Conservative rejection retained; no invented camera-state claim.",
-   "reviewer": "admission-codex (lane owner; not independent review)",
-   "reviewed_at": "2026-09-27T18:42:25.406291+00:00",
-   "evidence": "segments-evidence.json; all supplied changed review thumbnails visually inspected; independent native boundary verdict required",
-   "frames": [
-    {
-     "frame_index": 45783,
-     "composition_ns": 554182551355521,
-     "decoded_bgr_sha256": "72a937cab1e47a6a5f0087cc79c0149d6d620b48c8cc15fb5fd2db2c9026dec5"
+     "frame_index": 45742,
+     "composition_ns": 554182209688868,
+     "decoded_bgr_sha256": "36546192b9d39944254e1851720a1701a321920b5f816fd4405539f063385f51"
     },
     {
-     "frame_index": 45834,
-     "composition_ns": 554182976355504,
-     "decoded_bgr_sha256": "4c31123b82fa75a8c71e3b69a2ed049dd942a0ead2cd7f6e8e9027714131689f"
-    },
-    {
-     "frame_index": 45886,
-     "composition_ns": 554183409688820,
-     "decoded_bgr_sha256": "9843ebc05d14e255e1351ab03494480e305486f3bdfacab68f9a0beea9675691"
-    }
-   ]
-  },
-  "seg-043-a1-02": {
-   "suitability": "rejected",
-   "reason": "Held-button-3 ping wheel plus release settle: rejected by input rule. Supplied sparse thumbnails were inspected; they do not sample the short wheel itself, whose presence was independently confirmed in the prior ping audit.",
-   "reviewer": "admission-codex (lane owner; not independent review)",
-   "reviewed_at": "2026-09-27T18:42:25.406291+00:00",
-   "evidence": "segments-evidence.json; all supplied changed review thumbnails visually inspected; independent native boundary verdict required",
-   "frames": [
-    {
-     "frame_index": 45887,
-     "composition_ns": 554183418022153,
-     "decoded_bgr_sha256": "468fe2017576a39ef2df3ce80ef7655499035733a1fd5f03394f26def71186cd"
-    },
-    {
-     "frame_index": 46017,
-     "composition_ns": 554184501355443,
-     "decoded_bgr_sha256": "43b38212dffbb1c7021b7b43c4f37646396d72540c9a387fe6378f8d27a0a8bb"
-    },
-    {
-     "frame_index": 46147,
-     "composition_ns": 554185584688733,
-     "decoded_bgr_sha256": "e3f0190d2e39f2aa2fd75c289f62d616fd26c82c8f5f142287fd07c38094fb48"
-    }
-   ]
-  },
-  "seg-043-a1-03": {
-   "suitability": "rejected",
-   "reason": "Conservative unsampled native-boundary gap, rejected by rule. No native frame lies inside this sliver.",
-   "reviewer": "admission-codex (lane owner; not independent review)",
-   "reviewed_at": "2026-09-27T18:42:25.406291+00:00",
-   "evidence": "segments-evidence.json; all supplied changed review thumbnails visually inspected; independent native boundary verdict required",
-   "frames": []
-  },
-  "seg-043-a1-04": {
-   "suitability": "accepted",
-   "reason": "Own Spider-Man combat after the release settle through the unchanged outer end; no wheel in the supplied frames, own HUD at both boundaries. Interior own_hud reader miss shows own camera.",
-   "reviewer": "admission-codex (lane owner; not independent review)",
-   "reviewed_at": "2026-09-27T18:42:25.406291+00:00",
-   "evidence": "segments-evidence.json; all supplied changed review thumbnails visually inspected; independent native boundary verdict required",
-   "frames": [
-    {
-     "frame_index": 46148,
-     "composition_ns": 554185593022066,
-     "decoded_bgr_sha256": "0da14d678f056460101edd765bbb07f47a4584161dd8790cbb270e2cadb62310"
-    },
-    {
-     "frame_index": 47024,
-     "composition_ns": 554192893021774,
-     "decoded_bgr_sha256": "568f11e304896dec53e02af9f93d4d22fd15006e29d20caffd034bfe976457b4"
+     "frame_index": 46821,
+     "composition_ns": 554191201355175,
+     "decoded_bgr_sha256": "7d38f969d8a8c65aacd6bab2c2df2e3af9d7be581c713ff193729cfa0e3940fd"
     },
     {
      "frame_index": 47901,

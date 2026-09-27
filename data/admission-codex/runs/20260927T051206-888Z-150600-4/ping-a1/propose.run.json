@@ -1,0 +1,29 @@
+﻿{
+    "session":  "20260927T051206-888Z-150600-4",
+    "step":  "propose",
+    "started":  "2026-09-27T18:31:02.9389102Z",
+    "finished":  "2026-09-27T18:31:04.8561858Z",
+    "pid":  133712,
+    "exit_code":  0,
+    "failure":  null,
+    "free_bytes_before":  12492431360,
+    "process_peak_working_set_bytes":  {
+                                           "156708":  7507968,
+                                           "74252":  103878656,
+                                           "133712":  4820992
+                                       },
+    "arguments":  [
+                      "-u",
+                      "data/human/sessions/intake_session.py",
+                      "propose",
+                      "20260927T051206-888Z-150600-4",
+                      "--scratch",
+                      "data/admission-codex/intake",
+                      "--snapshot",
+                      "code-snapshot-f8fd92c-ping-20260927",
+                      "--supersedes",
+                      "Lead 2026-09-27: exclude held middle-mouse ping wheel plus 2 s settle; preserve prior packet",
+                      "--earlier-snapshot",
+                      "code-snapshot-f8fd92c-6046514b"
+                  ]
+}
