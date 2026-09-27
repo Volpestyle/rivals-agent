@@ -4,9 +4,9 @@ A vision-based agent that plays Spider-Man in the Marvel Rivals **practice range
 virtual Xbox 360 pad. Windows `supedupsilly` owns gameplay, recording and the live
 agent loop; the M5 Max Mac owns offline preparation, training and evaluation.
 Development can run on either machine. `CLAUDE.md` imports this file (its one line is `@AGENTS.md`).
-`.claude/skills` and `.codex/skills` are git symlinks to `.agents/skills`. They work on the Mac, but the PC
-checks them out as plain text (`core.symlinks=false`), so read skills there directly from `.agents/skills/`.
-Claude Code has no plain-file way to point at another skills folder, so they stay symlinks.
+`.claude/skills` and `.codex/skills` are git symlinks to `.agents/skills`. A checkout with `core.symlinks=false`
+gets them as one-line text files and loads no repo skills; set it to `true` and re-checkout those paths
+(the PC was fixed this way on 2026-09-26; see `~/dotfiles/docs/agents/setup.md`).
 
 ## Read before doing anything
 
