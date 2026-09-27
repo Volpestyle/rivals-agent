@@ -1,0 +1,52 @@
+{
+    "scope":  "EXPLORATORY",
+    "dependency":  {
+                       "path":  "scripts/job_status.py",
+                       "sha256":  "423d157ff52b5f399c4b32562cd0fd61069f0c95a884444b7152507c8f45556d",
+                       "owner":  "r3-reader"
+                   },
+    "files":  [
+                  {
+                      "sha256":  "0363d622eb8b51552b2cf12fbe3f9838d06be5a2d7813a536a8060a2e008ae8c",
+                      "path":  "policy/idm/match_targets.py"
+                  },
+                  {
+                      "sha256":  "55fafbe1b1e399b4988a6ae16963d179d19108c4ae1dfd303b83de10f99b5f1f",
+                      "path":  "policy/idm/temporal.py"
+                  },
+                  {
+                      "sha256":  "057a2b8f6ee12fdb3e5bf03f7d65b50f954684e33d9cbef87b846e7c294be95d",
+                      "path":  "policy/idm/temporal_store.py"
+                  },
+                  {
+                      "sha256":  "e4c6d7a622028733094a471efd8ac641e333e274dac8dbf630704a422d64108c",
+                      "path":  "policy/idm/explore.py"
+                  },
+                  {
+                      "sha256":  "bd67df97b019e5ed8c8cba9deb7cd81cab0dce7e044b7255812fe663a2ffa83e",
+                      "path":  "policy/idm_targets.py"
+                  },
+                  {
+                      "sha256":  "6c9934e804e23d9a7e6e27705b46dcb2ab09f467ae46b690ce00cc28a2e4d7e9",
+                      "path":  "policy/idm/train.py"
+                  },
+                  {
+                      "sha256":  "dc8339911e9a64ddfa992a8a442ab9eca5207da96e894f5645eb84c0875e50be",
+                      "path":  "policy/idm/decode.py"
+                  },
+                  {
+                      "sha256":  "59f6f2534b15be17676320f951bee9887a20405d71cabfab6bab0c541673aced",
+                      "path":  "tests/test_idm_explore.py"
+                  },
+                  {
+                      "sha256":  "5f2d6be4c916cf8a1f8a38c28edd6ffd5b332bef26eb5ba1fd93f0519d5c7a3f",
+                      "path":  "docs/lanes/idm-explore-implementation-20260926.md"
+                  },
+                  {
+                      "sha256":  "8cb64ecd2262d41fe02f7cb507fa979c082a076323b511a715167718f84fc4c2",
+                      "path":  "docs/lanes/idm-gate2-plan-20260926.md"
+                  }
+              ],
+    "owner":  "idm-owner",
+    "review":  "pending"
+}

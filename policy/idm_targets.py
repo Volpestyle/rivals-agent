@@ -89,7 +89,8 @@ DECLARED_UNSUPPORTED = {}
 # team_up is supported (lead decision 2026-09-23): 168 train presses, and in the range a press has a visible HUD
 # effect (the icon turns gold, hp 250 -> 300, a 10 s cooldown); the replay HUD reads 22 team-up events on DayMR.
 # Its match-time effect (with a partner hero) differs from the range's; a match label inherits that caveat.
-FIT_SPLITS = ("train", "val")
+TRAIN_SPLITS = ("train", "idm_train")
+FIT_SPLITS = (*TRAIN_SPLITS, "val")
 DENYLIST = ROOT / "data" / "human" / "sealed-denylist.v2.json"
 DENYLIST_SHA256 = "439c80df6cd5d6daa60b48e0acb2d3a3fa833134ff14edddc4121348c2dceb20"   # the intake's pin (review I3)
 # The calibration turn (data/human/calibration/20260923T204707-487Z-45572-2/calibration.json): 10,884.76 counts per
@@ -279,7 +280,11 @@ def header_from(steps_header, *, steps_path, demo_path, demo_sha256):
     _require(steps_header.get("source_kind", "human") == "human", "IDM targets come from human sessions only")
     _require(steps_header["split"] in FIT_SPLITS, f"split {steps_header['split']!r}: the IDM names no sealed session")
     _require(list(steps_header["actions"]) == list(vocab.NAMES), "the step table's actions differ from the vocabulary")
-    rel = lambda p: str(Path(p).resolve().relative_to(ROOT)).replace("\\", "/")
+    def rel(p):
+        path = Path(p).resolve()
+        # Mac training data can live outside the checkout. Keep its actual
+        # source path instead of requiring a duplicate copy under the repo.
+        return path.relative_to(ROOT).as_posix() if path.is_relative_to(ROOT) else path.as_posix()
     return {"format": FORMAT, **{k: steps_header[k] for k in ("session_id", "media_sha256", "session_group", "split")},
             "parent_step_ns": steps_header["step_ns"], "frame_period_ns": steps_header["frame_period_ns"],
             "actions": list(steps_header["actions"]), **{k: steps_header[k] for k in IDENTITY},
@@ -343,7 +348,7 @@ def check_cohort(targets, equivalence):
             "kit_version": kits[ids[0]], "builds": {t.session_id: t.header["patch"] for t in targets}}
 
 
-def build(session_id, out_dir=OUT, *, sessions=SESSIONS, registry=REGISTRY, denylist=None):
+def build(session_id, out_dir=OUT, *, sessions=SESSIONS, registry=REGISTRY, denylist=None, match_admission=None):
     """One admitted session's target file. Reads only the frozen step table and the imported demo, and only after
     the sealed checks (review S1): id, then the step header's media hash and split, then the registry."""
     from agent import human_demos as hd
@@ -361,6 +366,16 @@ def build(session_id, out_dir=OUT, *, sessions=SESSIONS, registry=REGISTRY, deny
     placements = hi.check_registry(registry, denylist=denylist)   # denylist first, then the registry
     _require(session_id in placements and placements[session_id].split in FIT_SPLITS,
              f"{session_id}: not a train/val session in the registry")
+    _require(steps_header["split"] == placements[session_id].split, "step role differs from registry")
+    if placements[session_id].split == "idm_train":
+        _require(match_admission is not None, "reviewed match admission required")
+        _require(steps_header["split"] == "idm_train", "match step role mismatch")
+        entry = match_admission.check(session_id, steps_header["media_sha256"])
+        from policy.idm.match_targets import digest, identity
+        _require(digest(identity(steps_header)) == entry["identity_sha256"], "match motor/calibration identity differs")
+        _require(sha256(steps_path) == entry["steps_sha256"], "match steps differ from admission")
+        _require(steps_header["source"]["imported_demo_sha256"] == entry["imported_demo_sha256"],
+                 "match demo pin differs from admission")
     lines = steps_path.read_text(encoding="utf-8").splitlines()
     steps_rows = [json.loads(x) for x in lines[1:]]
     demo_sha = sha256(demo_path)
@@ -375,6 +390,8 @@ def build(session_id, out_dir=OUT, *, sessions=SESSIONS, registry=REGISTRY, deny
     # admitted table (media_sha256) and the demo's hash by the table's source, both checked above.
     dataset = hd._build(payload, placement, demo_header["media_sha256"])
     header = header_from(steps_header, steps_path=steps_path, demo_path=demo_path, demo_sha256=demo_sha)
+    if header["split"] == "idm_train":
+        match_admission.header(header)
     rows = build_rows(steps_header, steps_rows, dataset.events, dataset.states, dataset.frames, hi,
                       empty_state=hd.HeldState())
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -440,11 +457,14 @@ def check_row(r, h, k):
              f"{where}: degrees disagree with the counts and the calibration")
 
 
-def load(path, *, allow_test=False, denylist=None):
+def load(path, *, allow_test=False, denylist=None, match_admission=None):
     with Path(path).open(encoding="utf-8") as fh:
         header = json.loads(fh.readline())
         check_header(header, allow_test=allow_test)
         refuse_sealed(header["session_id"], header["media_sha256"], denylist or load_denylist())
+        if header["split"] == "idm_train":
+            _require(match_admission is not None, "reviewed match admission required before target rows")
+            match_admission.header(header)
         rows = [json.loads(line) for line in fh if line.strip()]
     for k, r in enumerate(rows):
         check_row(r, header, k)
@@ -462,7 +482,7 @@ def supported_actions(targets, *, min_positives=MIN_POSITIVES, declared=DECLARED
     """F2: actions with at least `min_positives` presses in usable, known TRAIN rows, minus the declared ones."""
     counts = [0] * len(vocab.NAMES)
     for t in targets:
-        if t.header["split"] != "train":
+        if t.header["split"] not in TRAIN_SPLITS:
             continue
         for r in t.rows:
             if usable(r):

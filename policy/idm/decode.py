@@ -141,17 +141,33 @@ def _decode(path, ordinals, sink, ffmpeg, threads):
         drain.start()
         size = _STACK[0] * _STACK[1] * 3
         count = 0
-        while True:
-            block = proc.stdout.read(size)
-            if not block:
-                break
-            require(len(block) == size, "truncated frame from ffmpeg")
-            if count < len(ordinals):
-                img = np.frombuffer(block, dtype=np.uint8).reshape(_STACK)
-                sink(count, img[:MOTION[0]], img[MOTION[0]:, :FR.HUD_SHAPE[1]])
-            count += 1
-        proc.wait()
+        try:
+            while True:
+                block = proc.stdout.read(size)
+                if not block:
+                    break
+                require(len(block) == size, "truncated frame from ffmpeg")
+                if count < len(ordinals):
+                    img = np.frombuffer(block, dtype=np.uint8).reshape(_STACK)
+                    sink(count, img[:MOTION[0]], img[MOTION[0]:, :FR.HUD_SHAPE[1]])
+                count += 1
+            proc.wait()
+        except BaseException:
+            # The temporal sink can fail (for example an encoder OOM). Stop only
+            # the decoder we created, so it cannot linger with a blocked stdout.
+            proc.terminate()
+            try:
+                proc.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                proc.kill()
+                proc.wait()
+            drain.join()
+            proc.stdout.close()
+            proc.stderr.close()
+            raise
         drain.join()
+        proc.stdout.close()
+        proc.stderr.close()
         text = err[0].decode(errors="replace") if err else ""
         require(proc.returncode == 0, f"ffmpeg failed on {path}: {text[-2000:]}")
         shown = [int(p) for _, p in cache._SHOWINFO.findall(text)]

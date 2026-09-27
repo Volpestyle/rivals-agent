@@ -1,0 +1,28 @@
+﻿{
+    "scope":  "EXPLORATORY",
+    "owner":  "idm-owner",
+    "review":  "pending independent delta re-check",
+    "baseline":  {
+                     "path":  "docs/lanes/idm-explore-hashes-20260926.json",
+                     "sha256":  "b0adc24c8fc459fd1fc582115d701de8fc052ea26afda3e17aa2a311a1cc5628"
+                 },
+    "review_receipt":  {
+                           "path":  "docs/lanes/review-idm-explore-20260926.md",
+                           "sha256":  "adf94efd66e9321261c6ea49ad877eaa884fe133d9fe54560bb4c883550674ba"
+                       },
+    "files":  [
+                  {
+                      "path":  "policy/idm/explore.py",
+                      "sha256":  "5593af3477462853b03e2e8c923907242733d688bced3da78ff3223e711d3aba"
+                  },
+                  {
+                      "path":  "tests/test_idm_explore.py",
+                      "sha256":  "3b9e3c662b9c9655b160134f5998442eb4dd11e7fcc51e72a34ca3038dd249c0"
+                  },
+                  {
+                      "path":  "docs/lanes/idm-explore-review-delta-20260926.md",
+                      "sha256":  "62cab06a71b80646d6aaa478d6734ed48330ebb778684ba69f2a5d8b1c4bb8a2"
+                  }
+              ],
+    "validation":  "88 passed in 45.72 s; Ruff passed; synthetic/offline only"
+}

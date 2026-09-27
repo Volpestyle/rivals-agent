@@ -224,11 +224,12 @@ def seed_everything(seed, deterministic=True):
 
 
 def fit(examples, config, stats, *, seed=0, epochs=10, batch_size=16, lr=1e-3, weight_decay=1e-4, clip=1.0,
-        device="cpu", log=None, camera_beta=CAMERA_BETA_DEFAULT):
+        device="cpu", log=None, camera_beta=CAMERA_BETA_DEFAULT, progress=None):
     """Train one IDM on train examples. Returns (model, per-epoch history, seconds)."""
     require(len(examples) > 0, "no training examples")
     require(camera_beta is None or 0 < camera_beta <= 1, "camera_beta must be in (0, 1]")
-    require(all(t.header["split"] == "train" for t, _, _, _ in examples.items), "training accepts only train files")
+    require(all(t.header["split"] in T.TRAIN_SPLITS for t, _, _, _ in examples.items),
+            "training accepts only train/idm_train files")
     seed_everything(seed)
     model = IDM(config).to(device)
     opt = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=weight_decay)
@@ -252,6 +253,9 @@ def fit(examples, config, stats, *, seed=0, epochs=10, batch_size=16, lr=1e-3, w
             torch.nn.utils.clip_grad_norm_(model.parameters(), clip)
             opt.step()
             total, count = total + float(terms["total"].detach()), count + 1
+            if progress and (count % 100 == 0 or s + batch_size >= len(order)):
+                progress({"n": epoch * len(order) + min(s + batch_size, len(order)),
+                          "total": epochs * len(order)})
         entry = {"epoch": epoch, "train_loss": total / count, "seconds": time.perf_counter() - t0}
         history.append(entry)
         if log:
