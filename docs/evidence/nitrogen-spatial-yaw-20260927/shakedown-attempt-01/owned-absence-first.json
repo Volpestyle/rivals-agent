@@ -1,0 +1,65 @@
+{
+  "identity": {
+    "profile": "rivals",
+    "workspace": "volpestyle",
+    "workspace_id": "ac-kMLf5bJKqF5CAlSbfNhGh0"
+  },
+  "checked_at": 1790546195.6745448,
+  "complete": true,
+  "checked_monotonic": 451581.004775625,
+  "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5",
+  "raw": {
+    "identity": {
+      "command": [
+        "/Users/james/.local/share/uv/tools/modal/bin/python",
+        "-m",
+        "cloud.modal_guard.provider",
+        "identity"
+      ],
+      "stdout": "{\"profile\": \"rivals\", \"workspace\": \"volpestyle\", \"workspace_id\": \"ac-kMLf5bJKqF5CAlSbfNhGh0\"}\n",
+      "returncode": 0,
+      "sha256": "115ccb5f88cfa01cad9fa5ca24d1bbdbec18847c2450f8a2446bae25e817e6ee",
+      "queried_at": 1790546193.3088682,
+      "completed_at": 1790546193.864148,
+      "queried_monotonic": 451578.639114583,
+      "completed_monotonic": 451579.194395166,
+      "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5"
+    },
+    "apps": {
+      "command": [
+        "/Users/james/.local/bin/modal",
+        "app",
+        "list",
+        "--profile",
+        "rivals",
+        "--json"
+      ],
+      "stdout": "[\n  {\n    \"app_id\": \"ap-ZwXMMponOGgpGdd1IgiVKa\",\n    \"description\": \"rivals-idm-press-20260927-03\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 15:38:36-05:00\",\n    \"stopped_at\": \"2026-09-27 15:41:07-05:00\"\n  },\n  {\n    \"app_id\": \"ap-WZbhoHmsPD62QkTuSpAr91\",\n    \"description\": \"rivals-idm-press-20260927-02\",\n    \"state\": \"stopped\",\n    \"tasks\": \"0\",\n    \"created_at\": \"2026-09-27 14:41:15-05:00\",\n    \"stopped_at\": \"2026-09-27 15:26:45-05:00\"\n  }\n]\n",
+      "returncode": 0,
+      "sha256": "e9a5bb7d2d3250c304e5cf878dc552553f617ef21aee3c53df2285a3ce7ac9f5",
+      "queried_at": 1790546193.8642051,
+      "completed_at": 1790546194.754962,
+      "queried_monotonic": 451579.19444775,
+      "completed_monotonic": 451580.085202708,
+      "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5"
+    },
+    "containers": {
+      "command": [
+        "/Users/james/.local/bin/modal",
+        "container",
+        "list",
+        "--profile",
+        "rivals",
+        "--json"
+      ],
+      "stdout": "[]\n",
+      "returncode": 0,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "queried_at": 1790546194.754975,
+      "completed_at": 1790546195.6745331,
+      "queried_monotonic": 451580.085212041,
+      "completed_monotonic": 451581.004766291,
+      "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5"
+    }
+  }
+}

@@ -1,0 +1,4 @@
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/probe-launch-01/driver.py", line 23
+    (launch/'batch.exit').write_text(str(code)+'
+                                               ^
+SyntaxError: unterminated string literal (detected at line 23)

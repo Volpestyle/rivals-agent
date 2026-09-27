@@ -1,0 +1,9 @@
+{
+  "month": "2026-09",
+  "metered_floor_usd": "48.03386987",
+  "outstanding_usd": "0",
+  "committed_usd": "48.03386987",
+  "cap_usd": "100",
+  "headroom_usd": "51.96613013",
+  "weekend_uses_same_monthly_pool": true
+}

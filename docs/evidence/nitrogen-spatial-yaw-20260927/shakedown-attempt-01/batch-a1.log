@@ -1,0 +1,149 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/code/cloud/modal_guard/__main__.py", line 57, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/code/cloud/modal_guard/__main__.py", line 44, in main
+    result = run_arm({"path": args.spec, "sha256": args.spec_sha256}, args.release_sha256)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/code/cloud/modal_guard/runner.py", line 50, in run_arm
+    return _run_arm(spec_ref, release_sha256, workspace_root=workspace_root, inhibitor=inhibitor)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/code/cloud/modal_guard/runner.py", line 71, in _run_arm
+    ledger.refresh(provider.billing(month_at(time.time())))  # any failure => no reservation/RPC
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/code/cloud/modal_guard/provider.py", line 104, in billing
+    reports.append(self._run([self.cli, "billing", "report", "--start", today,
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/code/cloud/modal_guard/provider.py", line 70, in _run
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/code/cloud/modal_guard/__main__.py", line 57, in <module>
+    require(p.returncode == 0, "Modal query failed: " + p.stderr[-500:])
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/code/cloud/modal_guard/common.py", line 75, in require
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/code/cloud/modal_guard/__main__.py", line 44, in main
+    raise Refused(message)
+    result = run_arm({"path": args.spec, "sha256": args.spec_sha256}, args.release_sha256)
+cloud.modal_guard.common.Refused: Modal query failed: ╭─ Error ──────────────────────────────────────────────────────────────────────╮
+│ Rate limit exceeded for workspace billing report requests.                   │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/code/cloud/modal_guard/runner.py", line 50, in run_arm
+    return _run_arm(spec_ref, release_sha256, workspace_root=workspace_root, inhibitor=inhibitor)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/code/cloud/modal_guard/runner.py", line 71, in _run_arm
+    ledger.refresh(provider.billing(month_at(time.time())))  # any failure => no reservation/RPC
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/code/cloud/modal_guard/provider.py", line 104, in billing
+    reports.append(self._run([self.cli, "billing", "report", "--start", today,
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/code/cloud/modal_guard/provider.py", line 70, in _run
+    require(p.returncode == 0, "Modal query failed: " + p.stderr[-500:])
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/code/cloud/modal_guard/common.py", line 75, in require
+    raise Refused(message)
+cloud.modal_guard.common.Refused: Modal query failed: ╭─ Error ──────────────────────────────────────────────────────────────────────╮
+│ Rate limit exceeded for workspace billing report requests.                   │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/code/cloud/modal_guard/__main__.py", line 57, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/code/cloud/modal_guard/__main__.py", line 44, in main
+    result = run_arm({"path": args.spec, "sha256": args.spec_sha256}, args.release_sha256)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/code/cloud/modal_guard/runner.py", line 50, in run_arm
+    return _run_arm(spec_ref, release_sha256, workspace_root=workspace_root, inhibitor=inhibitor)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/code/cloud/modal_guard/runner.py", line 71, in _run_arm
+    ledger.refresh(provider.billing(month_at(time.time())))  # any failure => no reservation/RPC
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/code/cloud/modal_guard/provider.py", line 104, in billing
+    reports.append(self._run([self.cli, "billing", "report", "--start", today,
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/code/cloud/modal_guard/provider.py", line 70, in _run
+    require(p.returncode == 0, "Modal query failed: " + p.stderr[-500:])
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/code/cloud/modal_guard/common.py", line 75, in require
+    raise Refused(message)
+cloud.modal_guard.common.Refused: Modal query failed: ╭─ Error ──────────────────────────────────────────────────────────────────────╮
+│ Rate limit exceeded for workspace billing report requests.                   │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/code/cloud/modal_guard/__main__.py", line 57, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/code/cloud/modal_guard/__main__.py", line 44, in main
+    result = run_arm({"path": args.spec, "sha256": args.spec_sha256}, args.release_sha256)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/code/cloud/modal_guard/runner.py", line 50, in run_arm
+    return _run_arm(spec_ref, release_sha256, workspace_root=workspace_root, inhibitor=inhibitor)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/code/cloud/modal_guard/runner.py", line 71, in _run_arm
+    ledger.refresh(provider.billing(month_at(time.time())))  # any failure => no reservation/RPC
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/code/cloud/modal_guard/provider.py", line 104, in billing
+    reports.append(self._run([self.cli, "billing", "report", "--start", today,
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/code/cloud/modal_guard/provider.py", line 70, in _run
+    require(p.returncode == 0, "Modal query failed: " + p.stderr[-500:])
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/code/cloud/modal_guard/common.py", line 75, in require
+    raise Refused(message)
+cloud.modal_guard.common.Refused: Modal query failed: ╭─ Error ──────────────────────────────────────────────────────────────────────╮
+│ Rate limit exceeded for workspace billing report requests.                   │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/code/cloud/modal_guard/__main__.py", line 57, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/code/cloud/modal_guard/__main__.py", line 44, in main
+    result = run_arm({"path": args.spec, "sha256": args.spec_sha256}, args.release_sha256)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/code/cloud/modal_guard/runner.py", line 50, in run_arm
+    return _run_arm(spec_ref, release_sha256, workspace_root=workspace_root, inhibitor=inhibitor)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/code/cloud/modal_guard/runner.py", line 71, in _run_arm
+    ledger.refresh(provider.billing(month_at(time.time())))  # any failure => no reservation/RPC
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/code/cloud/modal_guard/provider.py", line 104, in billing
+    reports.append(self._run([self.cli, "billing", "report", "--start", today,
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/code/cloud/modal_guard/provider.py", line 70, in _run
+    require(p.returncode == 0, "Modal query failed: " + p.stderr[-500:])
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/code/cloud/modal_guard/common.py", line 75, in require
+    raise Refused(message)
+cloud.modal_guard.common.Refused: Modal query failed: ╭─ Error ──────────────────────────────────────────────────────────────────────╮
+│ Rate limit exceeded for workspace billing report requests.                   │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/code/cloud/modal_guard/__main__.py", line 57, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/code/cloud/modal_guard/__main__.py", line 44, in main
+    result = run_arm({"path": args.spec, "sha256": args.spec_sha256}, args.release_sha256)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/code/cloud/modal_guard/runner.py", line 50, in run_arm
+    return _run_arm(spec_ref, release_sha256, workspace_root=workspace_root, inhibitor=inhibitor)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/code/cloud/modal_guard/runner.py", line 83, in _run_arm
+    write(attempt, owner=spec["lane"], host="modal", stage="running", started=time.time(),
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/code/scripts/job_status.py", line 82, in write
+    validate(data)
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/code/scripts/job_status.py", line 46, in validate
+    raise ValueError("updated precedes started")
+ValueError: updated precedes started

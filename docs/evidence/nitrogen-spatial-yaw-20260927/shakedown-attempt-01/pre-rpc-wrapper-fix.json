@@ -1,0 +1,1 @@
+{"cause": "generated newline caused SyntaxError before imports or any RPC", "original_sha256": "e44b444785735fbe4729ca6c389e3b3031740545772cee72ee46bed891bb886c", "corrected_sha256": "d699b704a11d0e97f5dcdf3e0142abc87816efb9a660280ad87de796d0e4999c", "all_six_attempt_dirs_absent": true}

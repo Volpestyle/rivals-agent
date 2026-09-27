@@ -1,0 +1,243 @@
+{
+  "attempts": {
+    "yaw-probe-20260927-02": {
+      "app_id": null,
+      "app_name": "rivals-yaw-probe-20260927-02",
+      "attempt_id": "yaw-probe-20260927-02",
+      "bootstrap_ref": {
+        "path": "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/bootstrap.json",
+        "sha256": "ce6e77f38441c123f8bbc6fc87f1c0ea1b4d65c6c53c091d2b673e4673fa6484"
+      },
+      "bound_usd": "0.480734",
+      "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5",
+      "funded_until": 1790546763.849115,
+      "hold": {
+        "bootstrap": {
+          "attempt_ids": [
+            "yaw-probe-20260927-01",
+            "yaw-probe-20260927-02",
+            "yaw-probe-20260927-03",
+            "yaw-probe-20260927-04",
+            "yaw-probe-20260927-05",
+            "yaw-probe-20260927-06"
+          ],
+          "campaign_cap_usd": "3",
+          "campaign_id": "nitrogen-spatial-yaw-probe-20260927-01",
+          "cleanup_seconds": 120,
+          "concurrency": 6,
+          "mode": "EXPLORATORY_BOOTSTRAP",
+          "overhead_usd": "0.05",
+          "rate_usd_second": "0.0007178888888888888888888888889",
+          "startup_seconds": 300,
+          "work_seconds": 180,
+          "workload": "yaw-launch-probe-not-fullfit"
+        },
+        "cleanup_seconds": 120,
+        "envelope_sha256": "ce6e77f38441c123f8bbc6fc87f1c0ea1b4d65c6c53c091d2b673e4673fa6484",
+        "overhead_usd": "0.05",
+        "rate_usd_second": "0.0007178888888888888888888888889",
+        "reserved_usd": "0.480734",
+        "startup_seconds": 300,
+        "total_seconds": 600,
+        "work_seconds": 180
+      },
+      "image_id": "im-FNjy4v5u4XYF29SBGvT0KD",
+      "input_volume": "rivals-explore-chunks-20260927",
+      "input_volume_id": "vo-K5FeMtunP9vFG2mx8HVn0p",
+      "lane": "explore-policy",
+      "month": "2026-09",
+      "output_root": "/outputs/yaw-probe-20260927-02",
+      "output_volume": "rivals-yaw-probe-20260927-02-outputs",
+      "release_sha256": "732dc08f9d0351b3a601a0a613dbc31f5c2476b6eaddc8cb49e1575d004b78ce",
+      "rpc_count": 0,
+      "run_cap_usd": "0.5",
+      "stage_identity": {
+        "attempt_id": "yaw-probe-20260927-02",
+        "code_sha256": "b21266fdc85ae53d79e12355b186be2af10a84151fbb0ff3cc873a13b81f6de4",
+        "inputs_sha256": "c7061ddbe65a4d13dbb1cec6876b7df4fc6e20c84ced4bb5ea7d724c8025fe2d",
+        "output_volume_id": "vo-7keXkVX85cPjrXfkpaRbPu",
+        "recipe_sha256": "eaf2db9de7b1b3e9deea2f4075cdc2a0d73c821f8a32d3ccf350e51a4af7bb8f"
+      },
+      "stages": [
+        {
+          "artifacts": [
+            "probe.json",
+            "probe-yaw.pt"
+          ],
+          "function": "run",
+          "kwargs": {
+            "payload_manifest_sha256": "b21266fdc85ae53d79e12355b186be2af10a84151fbb0ff3cc873a13b81f6de4",
+            "slot": 2
+          },
+          "module": "cloud.yaw_entry",
+          "name": "probe"
+        }
+      ],
+      "started_at": 1790546163.849115,
+      "started_monotonic": 451549.180232583,
+      "state": "RESERVED",
+      "stop_at": 1790546643.849115
+    }
+  },
+  "billing": {
+    "identity": {
+      "profile": "rivals",
+      "workspace": "volpestyle",
+      "workspace_id": "ac-kMLf5bJKqF5CAlSbfNhGh0"
+    },
+    "month": "2026-09",
+    "queried_at": 1790546156.8630478,
+    "raw": {
+      "identity": {
+        "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5",
+        "command": [
+          "/Users/james/.local/share/uv/tools/modal/bin/python",
+          "-m",
+          "cloud.modal_guard.provider",
+          "identity"
+        ],
+        "completed_at": 1790546157.391045,
+        "completed_monotonic": 451542.7215505,
+        "queried_at": 1790546156.8630478,
+        "queried_monotonic": 451542.193556166,
+        "returncode": 0,
+        "sha256": "115ccb5f88cfa01cad9fa5ca24d1bbdbec18847c2450f8a2446bae25e817e6ee",
+        "stdout": "{\"profile\": \"rivals\", \"workspace\": \"volpestyle\", \"workspace_id\": \"ac-kMLf5bJKqF5CAlSbfNhGh0\"}\n"
+      },
+      "reports": [
+        {
+          "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5",
+          "command": [
+            "/Users/james/.local/bin/modal",
+            "billing",
+            "report",
+            "--start",
+            "2026-09-01",
+            "--end",
+            "2026-09-27",
+            "--resolution",
+            "d",
+            "--tag-names",
+            "lane,run",
+            "--profile",
+            "rivals",
+            "--json"
+          ],
+          "completed_at": 1790546159.65835,
+          "completed_monotonic": 451544.988841333,
+          "queried_at": 1790546158.430698,
+          "queried_monotonic": 451543.761193416,
+          "returncode": 0,
+          "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+          "stdout": "[]\n"
+        },
+        {
+          "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5",
+          "command": [
+            "/Users/james/.local/bin/modal",
+            "billing",
+            "report",
+            "--start",
+            "2026-09-27",
+            "--resolution",
+            "h",
+            "--tag-names",
+            "lane,run",
+            "--profile",
+            "rivals",
+            "--json"
+          ],
+          "completed_at": 1790546160.679546,
+          "completed_monotonic": 451546.010028416,
+          "queried_at": 1790546159.6583838,
+          "queried_monotonic": 451544.988872416,
+          "returncode": 0,
+          "sha256": "d6df228ebee8f4d60854767897a7ec31bad32a65836702a129c881b382089f76",
+          "stdout": "[\n  {\n    \"object_id\": \"ap-3Ervncefz5sXUFewt0VcIu\",\n    \"description\": \"rivals-cm3-r3p1-H-0-02-478a43ed7448\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T18:00:00\",\n    \"cost\": \"0.42555097\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-4MdS5BLGAj2PmBvReXDlHD\",\n    \"description\": \"rivals-cm3-copy-01-293f1570970b\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T03:00:00\",\n    \"cost\": \"0.00077366\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-6PbiXELBTKsFOd10VNG7lH\",\n    \"description\": \"rivals-cm3-smoke-05-d4c251fc1b84\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T17:00:00\",\n    \"cost\": \"0.32472296\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-7jh5OiC3Dk48V4kRUgyvuC\",\n    \"description\": \"rivals-cm3-smoke-03-ad21fb12e2d1\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T14:00:00\",\n    \"cost\": \"0.33446223\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-8nEMH8l8Yb9JVvTR0xv5YM\",\n    \"description\": \"rivals-cm3-extract-02-79fe4120ffac\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T17:00:00\",\n    \"cost\": \"0.57814301\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-99oPctlczidFsAnYBPBOyc\",\n    \"description\": \"rivals-cm3-proof128-02-8c0bd5ed5d18\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T11:00:00\",\n    \"cost\": \"0.08356054\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-Cczx81ojpGPDi536pQwqQU\",\n    \"description\": \"rivals-modal-benchmark\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T01:00:00\",\n    \"cost\": \"0.00047970\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-DbXYEXSXwm88yU6AkQEXI5\",\n    \"description\": \"rivals-cm3-proof128-04-cd9f2ad5b54e\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T16:00:00\",\n    \"cost\": \"0.09080426\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-J2YBqhdEVxPkCYu0KuZLux\",\n    \"description\": \"rivals-explore-h4-fresh-20260927\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T08:00:00\",\n    \"cost\": \"0.34458653\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-J2YBqhdEVxPkCYu0KuZLux\",\n    \"description\": \"rivals-explore-h4-fresh-20260927\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T09:00:00\",\n    \"cost\": \"2.58439995\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-J2YBqhdEVxPkCYu0KuZLux\",\n    \"description\": \"rivals-explore-h4-fresh-20260927\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T10:00:00\",\n    \"cost\": \"2.58440038\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-J2YBqhdEVxPkCYu0KuZLux\",\n    \"description\": \"rivals-explore-h4-fresh-20260927\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T11:00:00\",\n    \"cost\": \"1.47507217\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-Jun2ESssmjqlWZdRBqNd7O\",\n    \"description\": \"rivals-cm3-stage0-02-8ba5795f6398\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T03:00:00\",\n    \"cost\": \"0.04881641\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-Kwvl7474A9fBomqyeDqsS0\",\n    \"description\": \"rivals-cm3-stage0-01-6b82be1f8b9e\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T03:00:00\",\n    \"cost\": \"0.02777829\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-McTxozLZtgSIkoF8rx5Kkb\",\n    \"description\": \"rivals-nitrogen-confirm-control-s2-20260927\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T18:00:00\",\n    \"cost\": \"0.62459992\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-McTxozLZtgSIkoF8rx5Kkb\",\n    \"description\": \"rivals-nitrogen-confirm-control-s2-20260927\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T19:00:00\",\n    \"cost\": \"0.61595401\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-PHs9c7XwYWuP8TFIIM2mFf\",\n    \"description\": \"rivals-capture-04-9c0c91ca7b49\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T10:00:00\",\n    \"cost\": \"0.00287158\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-PR5gZ1baNAJ6JV6G5fXUy6\",\n    \"description\": \"rivals-nitrogen-confirm-candidate-s2-20260927\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T18:00:00\",\n    \"cost\": \"0.63317818\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-PR5gZ1baNAJ6JV6G5fXUy6\",\n    \"description\": \"rivals-nitrogen-confirm-candidate-s2-20260927\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T19:00:00\",\n    \"cost\": \"0.61594956\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-QElgTME5Sgg0rKfU2cb0UF\",\n    \"description\": \"rivals-cm3-proof128-03-c58f50f05c20\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T13:00:00\",\n    \"cost\": \"0.18122592\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-RUfsHpFc94fSt7Qid64QAz\",\n    \"description\": \"rivals-explore-encoder-historyoff-nitrogen-20260927\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T17:00:00\",\n    \"cost\": \"0.92320444\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-RUfsHpFc94fSt7Qid64QAz\",\n    \"description\": \"rivals-explore-encoder-historyoff-nitrogen-20260927\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T18:00:00\",\n    \"cost\": \"0.39855361\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-U4pCzUCVkymSbTLdBZ3bMj\",\n    \"description\": \"rivals-modal-benchmark\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T01:00:00\",\n    \"cost\": \"0.30083555\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-U4pCzUCVkymSbTLdBZ3bMj\",\n    \"description\": \"rivals-modal-benchmark\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T02:00:00\",\n    \"cost\": \"0.94890986\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-UL78GpaWyJMJqhvoraUQa9\",\n    \"description\": \"rivals-cm3-extract-01-2929db19b917\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T11:00:00\",\n    \"cost\": \"0.46377628\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-UL78GpaWyJMJqhvoraUQa9\",\n    \"description\": \"rivals-cm3-extract-01-2929db19b917\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T12:00:00\",\n    \"cost\": \"0.12823014\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-UuznXHyCEqJ5zipZ4EFz5p\",\n    \"description\": \"rivals-explore-encoder-siglip-20260927\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T16:00:00\",\n    \"cost\": \"0.23547883\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-UuznXHyCEqJ5zipZ4EFz5p\",\n    \"description\": \"rivals-explore-encoder-siglip-20260927\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T17:00:00\",\n    \"cost\": \"1.12593506\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-VBwJIXMrOsF6kQWEnacLNl\",\n    \"description\": \"rivals-cm3-inputs-02-94b226b5d9a9\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T05:00:00\",\n    \"cost\": \"0.09623943\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-WZbhoHmsPD62QkTuSpAr91\",\n    \"description\": \"rivals-idm-press-20260927-02\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T19:00:00\",\n    \"cost\": \"0.80116442\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-WZbhoHmsPD62QkTuSpAr91\",\n    \"description\": \"rivals-idm-press-20260927-02\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T20:00:00\",\n    \"cost\": \"1.14937828\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-WwyLDrBOhQEXrCgMxX2Ape\",\n    \"description\": \"rivals-cm3-r3p1-A-2-02-3f68c687106e\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T18:00:00\",\n    \"cost\": \"0.43077166\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-Zqtoz75RPrbhQ5z8Amjv7a\",\n    \"description\": \"rivals-explore-chunks-20260927\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T08:00:00\",\n    \"cost\": \"0.00006147\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-ZwXMMponOGgpGdd1IgiVKa\",\n    \"description\": \"rivals-idm-press-20260927-03\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T20:00:00\",\n    \"cost\": \"0.08186226\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-a0TbOqllE67arU7E8CegM2\",\n    \"description\": \"rivals-cm3-smoke-01-25661ca43705\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T08:00:00\",\n    \"cost\": \"0.32195610\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-aUEiiYFdTGSp0lZVJWrne1\",\n    \"description\": \"rivals-cm3-inputs-07-45339014e69e\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T16:00:00\",\n    \"cost\": \"0.11948650\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-atdZs7mZVtGfW76MRKANX9\",\n    \"description\": \"rivals-explore-chunks-20260927-attempt2\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T08:00:00\",\n    \"cost\": \"4.44823162\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-atdZs7mZVtGfW76MRKANX9\",\n    \"description\": \"rivals-explore-chunks-20260927-attempt2\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T09:00:00\",\n    \"cost\": \"5.16736507\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-atdZs7mZVtGfW76MRKANX9\",\n    \"description\": \"rivals-explore-chunks-20260927-attempt2\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T10:00:00\",\n    \"cost\": \"5.16880943\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-atdZs7mZVtGfW76MRKANX9\",\n    \"description\": \"rivals-explore-chunks-20260927-attempt2\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T11:00:00\",\n    \"cost\": \"1.62119498\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-b5GgJKfXqTT9I6sb3jdvqU\",\n    \"description\": \"rivals-cm3-r3p1-A-0-01-4319cd98e209\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T12:00:00\",\n    \"cost\": \"0.00574317\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-bOm7PMDWI8dnoLASru9vUg\",\n    \"description\": \"rivals-explore-encoder-historyoff-siglip-20260927\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T17:00:00\",\n    \"cost\": \"0.96054423\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-bOm7PMDWI8dnoLASru9vUg\",\n    \"description\": \"rivals-explore-encoder-historyoff-siglip-20260927\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T18:00:00\",\n    \"cost\": \"0.37874689\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-bnNLUCAkPwhrtf5ciSkHYt\",\n    \"description\": \"rivals-cm3-smoke-02-681efec679ba\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T11:00:00\",\n    \"cost\": \"0.33467844\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-ctQVW0V4AggbO7h3kbvog4\",\n    \"description\": \"rivals-cm3-inputs-01-a303d6edd532\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T04:00:00\",\n    \"cost\": \"0.00143612\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-dlUQUitwSwNF6G0MCpnWh6\",\n    \"description\": \"rivals-idm-ssl-smoke-20260927-01\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T18:00:00\",\n    \"cost\": \"0.19205096\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-dvEZ6H2q1DvUEDbP3pxRMC\",\n    \"description\": \"rivals-modal-benchmark\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T01:00:00\",\n    \"cost\": \"0.01682384\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-errDnc2RfA5XySLtxwWzfx\",\n    \"description\": \"rivals-cm3-inputs-05-c9081ca9ae53\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T13:00:00\",\n    \"cost\": \"0.01268792\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-f5ScnD277hZK60eqCQP0E7\",\n    \"description\": \"rivals-capture-05-e3e3b43e2e5f\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T13:00:00\",\n    \"cost\": \"0.00903814\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-f9BsJMoLeLTpup4M2ZF6AK\",\n    \"description\": \"rivals-cm3-r3p1-H-repeat-0-02-53f710ca329b\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T18:00:00\",\n    \"cost\": \"0.23983896\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-fYWjwmQOKYWRa2PmxFRi34\",\n    \"description\": \"rivals-runtime-probe-01-fc7a6e143548\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T06:00:00\",\n    \"cost\": \"0.00717833\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-gVTz6IrAovktsKRVkHZbJm\",\n    \"description\": \"rivals-cm3-inputs-06-825b4462af22\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T13:00:00\",\n    \"cost\": \"0.11396796\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-gYIQacf7buh72jFlFoqyrr\",\n    \"description\": \"rivals-capture-06-3c038da48e68\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T16:00:00\",\n    \"cost\": \"0.00287145\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-i85U45O1VaoGB1FeD35JEs\",\n    \"description\": \"rivals-nitrogen-confirm-control-s3-20260927\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T18:00:00\",\n    \"cost\": \"0.64035682\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-i85U45O1VaoGB1FeD35JEs\",\n    \"description\": \"rivals-nitrogen-confirm-control-s3-20260927\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T19:00:00\",\n    \"cost\": \"0.61738482\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-khEEQwovwEUrKGbfitbC6l\",\n    \"description\": \"rivals-cm3-inputs-04-c52e082e565b\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T11:00:00\",\n    \"cost\": \"0.12844451\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-knukQMDUgvluXxwHFKc9xg\",\n    \"description\": \"rivals-cm3-r3p1-A-0-02-f37caafcafb5\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T18:00:00\",\n    \"cost\": \"0.44080307\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-l7jKL3FMV5RMBav4THcXNc\",\n    \"description\": \"rivals-cm3-r3p1-A-2-01-a51b152009b2\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T12:00:00\",\n    \"cost\": \"0.00574309\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-lqtO43XNM4waKTCEDMHl0L\",\n    \"description\": \"rivals-modal-benchmark\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T00:00:00\",\n    \"cost\": \"0.00032666\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-lzX9GMBhxBFZ1DHblCCA7T\",\n    \"description\": \"rivals-capture-03-942685ac04e9\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T07:00:00\",\n    \"cost\": \"0.00287151\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-o50OUDetMJeT1QI85o6T8q\",\n    \"description\": \"rivals-cm3-copy-02-acddc42ce266\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T03:00:00\",\n    \"cost\": \"0.00084400\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-pczVAD3VGK5cX5adhuXLu3\",\n    \"description\": \"rivals-cm3-proof128-01-fc5dce660792\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T08:00:00\",\n    \"cost\": \"0.09045369\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-qG9re2Po0qwnHKEg4LWmwk\",\n    \"description\": \"rivals-nitrogen-confirm-candidate-s1-20260927\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T18:00:00\",\n    \"cost\": \"0.68632402\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-qG9re2Po0qwnHKEg4LWmwk\",\n    \"description\": \"rivals-nitrogen-confirm-candidate-s1-20260927\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T19:00:00\",\n    \"cost\": \"0.61881970\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-qan0bFQU52xnosEkv8MKMz\",\n    \"description\": \"rivals-nitrogen-confirm-control-s1-20260927\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T18:00:00\",\n    \"cost\": \"0.60593026\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-qan0bFQU52xnosEkv8MKMz\",\n    \"description\": \"rivals-nitrogen-confirm-control-s1-20260927\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T19:00:00\",\n    \"cost\": \"0.62008362\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-qoYesaN6NxbjwDVkuvRpVJ\",\n    \"description\": \"rivals-nitrogen-confirm-candidate-s3-20260927\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T18:00:00\",\n    \"cost\": \"0.65617283\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-qoYesaN6NxbjwDVkuvRpVJ\",\n    \"description\": \"rivals-nitrogen-confirm-candidate-s3-20260927\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T19:00:00\",\n    \"cost\": \"0.61881950\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-qu8I6QJ2O03oHfzPibSLML\",\n    \"description\": \"rivals-idm-press-20260927-01\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T18:00:00\",\n    \"cost\": \"0.33023284\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-qu8I6QJ2O03oHfzPibSLML\",\n    \"description\": \"rivals-idm-press-20260927-01\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T19:00:00\",\n    \"cost\": \"0.62025629\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-r9FdMzI6JGLQLbORSio8Vq\",\n    \"description\": \"rivals-cm3-r3p1-A-1-02-5393545814b6\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T18:00:00\",\n    \"cost\": \"0.40058164\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-rETlf63PTSACIl92BBp0tK\",\n    \"description\": \"rivals-cm3-smoke-04-49a688db5845\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T16:00:00\",\n    \"cost\": \"0.02871533\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-rETlf63PTSACIl92BBp0tK\",\n    \"description\": \"rivals-cm3-smoke-04-49a688db5845\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T17:00:00\",\n    \"cost\": \"0.39771795\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-sKEKpIXEeauhlWzxAk5vxQ\",\n    \"description\": \"rivals-explore-encoder-nitrogen-20260927\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T16:00:00\",\n    \"cost\": \"0.17229385\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-sKEKpIXEeauhlWzxAk5vxQ\",\n    \"description\": \"rivals-explore-encoder-nitrogen-20260927\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T17:00:00\",\n    \"cost\": \"1.15944272\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-ssQQeypWyniLrwDiXBeLok\",\n    \"description\": \"rivals-cm3-copy-03-c537c714eadf\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T04:00:00\",\n    \"cost\": \"0.02615613\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-uXnqtcVFg42PEfJBOnz5SJ\",\n    \"description\": \"rivals-modal-benchmark\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T00:00:00\",\n    \"cost\": \"0.00295889\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-xbtRzTdWlSoUKnYzLehZ7I\",\n    \"description\": \"rivals-cm3-inputs-03-82bb8287daed\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T07:00:00\",\n    \"cost\": \"0.11248684\",\n    \"tags\": \"{}\"\n  },\n  {\n    \"object_id\": \"ap-ztnSyCVjtpm8M8kW7S2PLa\",\n    \"description\": \"rivals-runtime-probe-03-291e8948cf84\",\n    \"environment\": \"main\",\n    \"interval_start\": \"2026-09-27T06:00:00\",\n    \"cost\": \"0.01579367\",\n    \"tags\": \"{}\"\n  }\n]\n"
+        }
+      ],
+      "summary": {
+        "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5",
+        "command": [
+          "/Users/james/.local/bin/modal",
+          "billing",
+          "summary",
+          "--for",
+          "2026-09",
+          "--profile",
+          "rivals",
+          "--json"
+        ],
+        "completed_at": 1790546158.4306118,
+        "completed_monotonic": 451543.76111125,
+        "queried_at": 1790546157.396706,
+        "queried_monotonic": 451542.727212916,
+        "returncode": 0,
+        "sha256": "839c86ff710395ce388ba70993112c215683daf3917a15ca22d6e017a776a1fa",
+        "stdout": "{\n  \"metered_cost\": \"48.00386987\",\n  \"billed_cost\": \"17.80000000\",\n  \"adjustments\": {\n    \"free_storage\": \"-0.20386987\",\n    \"credits\": \"-30.00000000\",\n    \"reservation_adjustment\": \"-0E-8\",\n    \"plan_cost\": \"0E-8\",\n    \"network_egress_allowance\": \"0E-8\"\n  },\n  \"metered_cost_breakdown\": {\n    \"ephemeral_apps\": \"47.80455459\",\n    \"volumes\": \"0.20386987\",\n    \"llm_tokens\": \"0E-8\"\n  }\n}\n"
+      }
+    }
+  },
+  "cap_usd": "100",
+  "events": [
+    {
+      "at": 1790546098.8218849,
+      "event": "BILLING",
+      "evidence_sha256": "b9acb4e516b41527fb6bd8f568eaf8f37b0f2a95dfa5f1ea345ca491a782d441",
+      "previous": null,
+      "sha256": "c8bdeb6a21cc31723f29e2332fdba68027adc6813dbe6c1a2fdc77a781e4cb47"
+    },
+    {
+      "at": 1790546160.685044,
+      "event": "BILLING",
+      "evidence_sha256": "1e262faa0e757701b78208a9be47d6c72e871ce5d2a76ee4d3f486cd43149c7e",
+      "previous": "c8bdeb6a21cc31723f29e2332fdba68027adc6813dbe6c1a2fdc77a781e4cb47",
+      "sha256": "e1b68b73d1fef3c92032cc5bcbc31bb91a8f2ecd2c85f0f4665765e3dd013d1d"
+    },
+    {
+      "at": 1790546163.849782,
+      "attempt_id": "yaw-probe-20260927-02",
+      "bound_usd": "0.480734",
+      "event": "RESERVE",
+      "previous": "e1b68b73d1fef3c92032cc5bcbc31bb91a8f2ecd2c85f0f4665765e3dd013d1d",
+      "sha256": "374dde609b69178fb5f9663b1e21603985987a27efffcfeb5363fb2a195db32a"
+    }
+  ],
+  "external_holds": {},
+  "floor_usd": "48.03386987",
+  "identity": {
+    "profile": "rivals",
+    "workspace": "volpestyle",
+    "workspace_id": "ac-kMLf5bJKqF5CAlSbfNhGh0"
+  },
+  "month": "2026-09",
+  "reports": [
+    {
+      "kind": "REPORT_NOT_INVOICE",
+      "lane": "round3",
+      "no_existing_apps": true,
+      "source": "lead parked disposition; old five pre-RPC holds remain frozen outside this new journal",
+      "unresolved_historical_holds_usd": "15.589909",
+      "usd": "26.24034256"
+    },
+    {
+      "kind": "REPORT_NOT_INVOICE",
+      "lane": "explore-confirm",
+      "source": {
+        "path": "docs/evidence/nitrogen-nohistory-confirm-20260927/explore-spend-report-20260927.json",
+        "sha256": "f1902e7e225df1a5d0de68faa455ca8044a29657806c1c9c12f08ceb39a4c213"
+      },
+      "usd": "49.026403877872901"
+    },
+    {
+      "kind": "REPORT_NOT_INVOICE",
+      "lane": "idm",
+      "source": {
+        "path": "docs/evidence/idm-press-diagnostic-result-20260927/cost-report.json",
+        "sha256": "6cb15e491cd6d5a483455edb67187d06e3662e0f23d42282f0dfd48eea26d0b6"
+      },
+      "usd": "6.335876068670252"
+    }
+  ],
+  "version": 1
+}

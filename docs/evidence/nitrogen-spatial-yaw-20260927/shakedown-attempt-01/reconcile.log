@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/probe-launch-01/reconcile.py", line 17, in <module>
+    print(json.dumps({'kind':proof['kind'],'totals':ledger.totals()}),flush=True)
+                                                    ^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/code/cloud/modal_guard/ledger.py", line 111, in totals
+    return self._totals(s)
+           ^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/code/cloud/modal_guard/ledger.py", line 97, in _totals
+    billing_clock(s["billing"], self.monotonic())
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/code/cloud/modal_guard/ledger.py", line 27, in billing_clock
+    require(0 <= now - raw["queried_monotonic"] <= BILLING_MAX_AGE, "billing stale; no paid work")
+  File "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927/guard-integration/probe-01/code/cloud/modal_guard/common.py", line 75, in require
+    raise Refused(message)
+cloud.modal_guard.common.Refused: billing stale; no paid work
