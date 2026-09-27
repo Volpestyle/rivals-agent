@@ -1,0 +1,36 @@
+{
+  "date": "2026-09-27",
+  "python": "C:/Users/volpe/.venvs/rivals-live-cu128/Scripts/python.exe",
+  "base_python": "C:/Users/volpe/AppData/Local/Programs/Python/Python311/python.exe",
+  "base_version": "3.11.9",
+  "base_executable_sha256": "5f7b89a612c9b8af1d6456cdfcd1dbe5ca630849e79aebced9bee9a6694952ec",
+  "uv_version": "0.9.26 (ee4f00362 2026-01-15)",
+  "installed_distribution_count": 36,
+  "pip_check": "All installed packages are compatible",
+  "successful_imports_in_order": ["torch", "torchvision", "av", "numpy", "cv2", "pytest"],
+  "dxcam_import": {
+    "status": "failed",
+    "exception": "_ctypes.COMError",
+    "code": -2005270494,
+    "message": "A resource is not available at the time of the call, but may become available later.",
+    "location": "dxcam import -> DXFactory.__init__ -> Device.enum_outputs -> adapter.EnumOutputs",
+    "capture_created": false
+  },
+  "vgamepad_import": "not reached because preceding dxcam import raised",
+  "desktop_input_or_capture": false,
+  "device_count": null,
+  "cuda_allocation_or_forward": "not run; authorization canceled by lead",
+  "fps_cpu_preparation": "not run; deferred under play/recording instruction",
+  "test_suite": "not run in rebuilt environment; deferred under play/recording instruction",
+  "old_environment": {
+    "path": "C:/Users/volpe/AppData/Local/Temp/live-loop-cuda-env",
+    "python_exe_exists": false,
+    "pythonw_exe_exists": false,
+    "configuration_and_33_distribution_metadata_survive": true,
+    "defender_log_search": "No matching path returned from queried recent detection/action events; not proof against quarantine or deletion",
+    "cause": "unknown; no attribution established",
+    "deleted_or_modified_by_repair": false
+  },
+  "no_automatic_resume": true,
+  "receipt_type": "Owner transcription of tool results; completed import command raised before its final JSON print"
+}

@@ -1,0 +1,2 @@
+comtypes==1.4.17
+dxcam==0.3.0
