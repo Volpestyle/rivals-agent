@@ -1,0 +1,8417 @@
+[
+  {
+    "i": 1631,
+    "pts": 54738,
+    "decoded_pts": 54738,
+    "anchor_ns": 463101843380795,
+    "frame_composition_ns": 463101843379374,
+    "human_yaw_label_deg": -0.0330738,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 54.738,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            2416.6,
+            836.1,
+            2548.4,
+            983.4
+          ],
+          "conf": 0.887,
+          "distance": null,
+          "tagged": null,
+          "track": 1,
+          "plate": null
+        }
+      ],
+      "coasting": [],
+      "bodies": [
+        {
+          "track": 1,
+          "cls": "enemy",
+          "how": "new",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2416.6,
+            836.1,
+            2548.4,
+            983.4
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1632,
+    "pts": 54771,
+    "decoded_pts": 54771,
+    "anchor_ns": 463101876714128,
+    "frame_composition_ns": 463101876712706,
+    "human_yaw_label_deg": -2.1167232,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 54.771,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            2418.5,
+            834.3,
+            2548.5,
+            979.6
+          ],
+          "conf": 0.883,
+          "distance": null,
+          "tagged": null,
+          "track": 1,
+          "plate": null
+        }
+      ],
+      "coasting": [],
+      "bodies": [
+        {
+          "track": 1,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2418.5,
+            834.3,
+            2548.5,
+            979.6
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1633,
+    "pts": 54804,
+    "decoded_pts": 54804,
+    "anchor_ns": 463101910047461,
+    "frame_composition_ns": 463101910046038,
+    "human_yaw_label_deg": -7.1770146,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 54.804,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            2045.6,
+            824.7,
+            2245.4,
+            1048.0
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 2,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            958.1,
+            738.8,
+            1129.8,
+            930.7
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 3,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2415.7,
+            835.5,
+            2548.3,
+            983.7
+          ],
+          "conf": 0.89,
+          "distance": null,
+          "tagged": null,
+          "track": 1,
+          "plate": null
+        }
+      ],
+      "coasting": [],
+      "bodies": [
+        {
+          "track": 2,
+          "cls": "enemy",
+          "how": "new",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2045.6,
+            824.7,
+            2245.4,
+            1048.0
+          ]
+        },
+        {
+          "track": 3,
+          "cls": "enemy",
+          "how": "new",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            958.1,
+            738.8,
+            1129.8,
+            930.7
+          ]
+        },
+        {
+          "track": 1,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            2
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2415.7,
+            835.5,
+            2548.3,
+            983.7
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1634,
+    "pts": 54838,
+    "decoded_pts": 54838,
+    "anchor_ns": 463101943380794,
+    "frame_composition_ns": 463101943379370,
+    "human_yaw_label_deg": -15.0155052,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 54.838,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1032.3,
+            713.7,
+            1205.7,
+            907.5
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 3,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1
+      ],
+      "bodies": [
+        {
+          "track": 3,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1032.3,
+            713.7,
+            1205.7,
+            907.5
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1635,
+    "pts": 54871,
+    "decoded_pts": 54871,
+    "anchor_ns": 463101976714127,
+    "frame_composition_ns": 463101976712702,
+    "human_yaw_label_deg": -14.9824314,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 54.871,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1240.3,
+            671.7,
+            1413.7,
+            865.5
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 3,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1
+      ],
+      "bodies": [
+        {
+          "track": 3,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1240.3,
+            671.7,
+            1413.7,
+            865.5
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1636,
+    "pts": 54904,
+    "decoded_pts": 54904,
+    "anchor_ns": 463102010047460,
+    "frame_composition_ns": 463102010046034,
+    "human_yaw_label_deg": -12.237306,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 54.904,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1428.3,
+            649.7,
+            1601.7,
+            843.5
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 3,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1
+      ],
+      "bodies": [
+        {
+          "track": 3,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1428.3,
+            649.7,
+            1601.7,
+            843.5
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1637,
+    "pts": 54938,
+    "decoded_pts": 54938,
+    "anchor_ns": 463102043380793,
+    "frame_composition_ns": 463102043379366,
+    "human_yaw_label_deg": -8.8968522,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 54.938,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1642.3,
+            621.7,
+            1815.7,
+            815.5
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 3,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1
+      ],
+      "bodies": [
+        {
+          "track": 3,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1642.3,
+            621.7,
+            1815.7,
+            815.5
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1638,
+    "pts": 54971,
+    "decoded_pts": 54971,
+    "anchor_ns": 463102076714126,
+    "frame_composition_ns": 463102076712698,
+    "human_yaw_label_deg": -5.787915,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 54.971,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            2033.8,
+            841.0,
+            2246.2,
+            1078.5
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 2,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            1772.3,
+            597.7,
+            1945.7,
+            791.5
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 3,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2123.4,
+            789.8,
+            2252.6,
+            934.2
+          ],
+          "conf": 0.88,
+          "distance": null,
+          "tagged": null,
+          "track": 4,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1
+      ],
+      "bodies": [
+        {
+          "track": 2,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2033.8,
+            841.0,
+            2246.2,
+            1078.5
+          ]
+        },
+        {
+          "track": 3,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1772.3,
+            597.7,
+            1945.7,
+            791.5
+          ]
+        },
+        {
+          "track": 4,
+          "cls": "enemy",
+          "how": "new",
+          "own": [
+            2
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2123.4,
+            789.8,
+            2252.6,
+            934.2
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1639,
+    "pts": 55004,
+    "decoded_pts": 55004,
+    "anchor_ns": 463102110047459,
+    "frame_composition_ns": 463102110046030,
+    "human_yaw_label_deg": -5.4241032,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 55.004,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1908.3,
+            563.7,
+            2081.7,
+            757.5
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 3,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2424.0,
+            815.7,
+            2549.0,
+            955.4
+          ],
+          "conf": 0.867,
+          "distance": null,
+          "tagged": null,
+          "track": 1,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2019.2,
+            776.2,
+            2112.8,
+            880.7
+          ],
+          "conf": 0.775,
+          "distance": null,
+          "tagged": null,
+          "track": 3,
+          "plate": null
+        }
+      ],
+      "coasting": [],
+      "bodies": [
+        {
+          "track": 3,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0,
+            2
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1908.3,
+            563.7,
+            2112.8,
+            880.7
+          ]
+        },
+        {
+          "track": 1,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2424.0,
+            815.7,
+            2549.0,
+            955.4
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1640,
+    "pts": 55038,
+    "decoded_pts": 55038,
+    "anchor_ns": 463102143380792,
+    "frame_composition_ns": 463102143379362,
+    "human_yaw_label_deg": -3.7042656000000003,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 55.038,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            2024.3,
+            537.7,
+            2197.7,
+            731.5
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 4,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2424.0,
+            814.7,
+            2549.0,
+            954.4
+          ],
+          "conf": 0.867,
+          "distance": null,
+          "tagged": null,
+          "track": 1,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2018.2,
+            776.3,
+            2099.8,
+            867.5
+          ],
+          "conf": 0.74,
+          "distance": null,
+          "tagged": null,
+          "track": 3,
+          "plate": null
+        }
+      ],
+      "coasting": [],
+      "bodies": [
+        {
+          "track": 4,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2024.3,
+            537.7,
+            2197.7,
+            731.5
+          ]
+        },
+        {
+          "track": 1,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2424.0,
+            814.7,
+            2549.0,
+            954.4
+          ]
+        },
+        {
+          "track": 3,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            2
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2018.2,
+            776.3,
+            2099.8,
+            867.5
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1641,
+    "pts": 55071,
+    "decoded_pts": 55071,
+    "anchor_ns": 463102176714125,
+    "frame_composition_ns": 463102176712694,
+    "human_yaw_label_deg": -0.7606974,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 55.071,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            2174.6,
+            537.4,
+            2351.4,
+            735.0
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 4,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2422.2,
+            814.6,
+            2548.8,
+            956.1
+          ],
+          "conf": 0.873,
+          "distance": null,
+          "tagged": null,
+          "track": 1,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2019.4,
+            789.0,
+            2114.6,
+            895.4
+          ],
+          "conf": 0.78,
+          "distance": null,
+          "tagged": null,
+          "track": 3,
+          "plate": null
+        }
+      ],
+      "coasting": [],
+      "bodies": [
+        {
+          "track": 4,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2174.6,
+            537.4,
+            2351.4,
+            735.0
+          ]
+        },
+        {
+          "track": 1,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2422.2,
+            814.6,
+            2548.8,
+            956.1
+          ]
+        },
+        {
+          "track": 3,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            2
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2019.4,
+            789.0,
+            2114.6,
+            895.4
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1642,
+    "pts": 55104,
+    "decoded_pts": 55104,
+    "anchor_ns": 463102210047458,
+    "frame_composition_ns": 463102210046026,
+    "human_yaw_label_deg": 2.480535,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 55.104,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            2233.0,
+            531.5,
+            2414.0,
+            733.8
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 4,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2422.2,
+            818.6,
+            2548.8,
+            960.1
+          ],
+          "conf": 0.873,
+          "distance": null,
+          "tagged": null,
+          "track": 1,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        3
+      ],
+      "bodies": [
+        {
+          "track": 4,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2233.0,
+            531.5,
+            2414.0,
+            733.8
+          ]
+        },
+        {
+          "track": 1,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2422.2,
+            818.6,
+            2548.8,
+            960.1
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1643,
+    "pts": 55138,
+    "decoded_pts": 55138,
+    "anchor_ns": 463102243380791,
+    "frame_composition_ns": 463102243379358,
+    "human_yaw_label_deg": 2.4143874,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 55.138,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            2197.1,
+            504.3,
+            2379.9,
+            708.5
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 4,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2421.2,
+            821.0,
+            2548.8,
+            963.5
+          ],
+          "conf": 0.875,
+          "distance": null,
+          "tagged": null,
+          "track": 1,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        3
+      ],
+      "bodies": [
+        {
+          "track": 4,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2197.1,
+            504.3,
+            2379.9,
+            708.5
+          ]
+        },
+        {
+          "track": 1,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2421.2,
+            821.0,
+            2548.8,
+            963.5
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1644,
+    "pts": 55171,
+    "decoded_pts": 55171,
+    "anchor_ns": 463102276714124,
+    "frame_composition_ns": 463102276712690,
+    "human_yaw_label_deg": 0.0,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 55.171,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            2161.2,
+            460.7,
+            2344.8,
+            665.9
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 4,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2420.3,
+            823.4,
+            2548.7,
+            966.9
+          ],
+          "conf": 0.877,
+          "distance": null,
+          "tagged": null,
+          "track": 1,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        3
+      ],
+      "bodies": [
+        {
+          "track": 4,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2161.2,
+            460.7,
+            2344.8,
+            665.9
+          ]
+        },
+        {
+          "track": 1,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2420.3,
+            823.4,
+            2548.7,
+            966.9
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1645,
+    "pts": 55204,
+    "decoded_pts": 55204,
+    "anchor_ns": 463102310047457,
+    "frame_composition_ns": 463102310046022,
+    "human_yaw_label_deg": 0.165369,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 55.204,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            2179.3,
+            451.6,
+            2364.7,
+            658.7
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 4,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        3
+      ],
+      "bodies": [
+        {
+          "track": 4,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2179.3,
+            451.6,
+            2364.7,
+            658.7
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1646,
+    "pts": 55238,
+    "decoded_pts": 55238,
+    "anchor_ns": 463102343380790,
+    "frame_composition_ns": 463102343379354,
+    "human_yaw_label_deg": 0.0,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 55.238,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            2167.2,
+            484.7,
+            2350.8,
+            689.9
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 4,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        3
+      ],
+      "bodies": [
+        {
+          "track": 4,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2167.2,
+            484.7,
+            2350.8,
+            689.9
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1647,
+    "pts": 55271,
+    "decoded_pts": 55271,
+    "anchor_ns": 463102376714123,
+    "frame_composition_ns": 463102376712686,
+    "human_yaw_label_deg": 0.0,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 55.271,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            2061.5,
+            827.4,
+            2248.5,
+            1036.4
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 3,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2151.2,
+            526.7,
+            2334.8,
+            731.9
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 4,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1
+      ],
+      "bodies": [
+        {
+          "track": 3,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2061.5,
+            827.4,
+            2248.5,
+            1036.4
+          ]
+        },
+        {
+          "track": 4,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2151.2,
+            526.7,
+            2334.8,
+            731.9
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1648,
+    "pts": 55304,
+    "decoded_pts": 55304,
+    "anchor_ns": 463102410047456,
+    "frame_composition_ns": 463102410046018,
+    "human_yaw_label_deg": 0.0,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 55.304,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            2137.1,
+            565.9,
+            2318.9,
+            769.2
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 4,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        3
+      ],
+      "bodies": [
+        {
+          "track": 4,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2137.1,
+            565.9,
+            2318.9,
+            769.2
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1649,
+    "pts": 55338,
+    "decoded_pts": 55338,
+    "anchor_ns": 463102443380789,
+    "frame_composition_ns": 463102443379350,
+    "human_yaw_label_deg": 0.0,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 55.338,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            2127.1,
+            591.9,
+            2308.9,
+            795.2
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 4,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        3
+      ],
+      "bodies": [
+        {
+          "track": 4,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2127.1,
+            591.9,
+            2308.9,
+            795.2
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1650,
+    "pts": 55371,
+    "decoded_pts": 55371,
+    "anchor_ns": 463102476714122,
+    "frame_composition_ns": 463102476712682,
+    "human_yaw_label_deg": 0.0,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 55.371,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            2120.9,
+            615.0,
+            2301.1,
+            816.4
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 4,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        3
+      ],
+      "bodies": [
+        {
+          "track": 4,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2120.9,
+            615.0,
+            2301.1,
+            816.4
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1651,
+    "pts": 55404,
+    "decoded_pts": 55404,
+    "anchor_ns": 463102510047455,
+    "frame_composition_ns": 463102510046014,
+    "human_yaw_label_deg": 0.6284022,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 55.404,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            2118.8,
+            634.2,
+            2297.2,
+            833.7
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 4,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        3
+      ],
+      "bodies": [
+        {
+          "track": 4,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2118.8,
+            634.2,
+            2297.2,
+            833.7
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1652,
+    "pts": 55438,
+    "decoded_pts": 55438,
+    "anchor_ns": 463102543380788,
+    "frame_composition_ns": 463102543379346,
+    "human_yaw_label_deg": 4.2665202,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 55.438,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            2100.6,
+            645.4,
+            2277.4,
+            843.0
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 4,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2031.2,
+            788.6,
+            2157.8,
+            930.1
+          ],
+          "conf": 0.873,
+          "distance": null,
+          "tagged": null,
+          "track": 3,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1
+      ],
+      "bodies": [
+        {
+          "track": 4,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2100.6,
+            645.4,
+            2277.4,
+            843.0
+          ]
+        },
+        {
+          "track": 3,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2031.2,
+            788.6,
+            2157.8,
+            930.1
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1653,
+    "pts": 55471,
+    "decoded_pts": 55471,
+    "anchor_ns": 463102576714121,
+    "frame_composition_ns": 463102576712678,
+    "human_yaw_label_deg": 10.252878,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 55.471,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            2045.6,
+            824.7,
+            2245.4,
+            1048.0
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 3,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2002.5,
+            628.5,
+            2177.6,
+            824.2
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 3,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        4
+      ],
+      "bodies": [
+        {
+          "track": 3,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0,
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2002.5,
+            628.5,
+            2245.4,
+            1048.0
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1654,
+    "pts": 55504,
+    "decoded_pts": 55504,
+    "anchor_ns": 463102610047454,
+    "frame_composition_ns": 463102610046010,
+    "human_yaw_label_deg": 23.2839552,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 55.504,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1725.3,
+            563.7,
+            1898.7,
+            757.5
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 3,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        4
+      ],
+      "bodies": [
+        {
+          "track": 3,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1725.3,
+            563.7,
+            1898.7,
+            757.5
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1655,
+    "pts": 55538,
+    "decoded_pts": 55538,
+    "anchor_ns": 463102643380787,
+    "frame_composition_ns": 463102643379342,
+    "human_yaw_label_deg": 21.4318224,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 55.538,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1412.3,
+            529.7,
+            1585.7,
+            723.5
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 5,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        3,
+        4
+      ],
+      "bodies": [
+        {
+          "track": 5,
+          "cls": "enemy",
+          "how": "new",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1412.3,
+            529.7,
+            1585.7,
+            723.5
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1656,
+    "pts": 55571,
+    "decoded_pts": 55571,
+    "anchor_ns": 463102676714120,
+    "frame_composition_ns": 463102676712674,
+    "human_yaw_label_deg": 15.9415716,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 55.571,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1046.3,
+            549.7,
+            1219.7,
+            743.5
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 6,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        3,
+        4
+      ],
+      "bodies": [
+        {
+          "track": 6,
+          "cls": "enemy",
+          "how": "new",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1046.3,
+            549.7,
+            1219.7,
+            743.5
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1657,
+    "pts": 55604,
+    "decoded_pts": 55604,
+    "anchor_ns": 463102710047453,
+    "frame_composition_ns": 463102710046006,
+    "human_yaw_label_deg": 0.0,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 55.604,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [],
+      "coasting": [
+        1,
+        3,
+        4
+      ],
+      "bodies": []
+    }
+  },
+  {
+    "i": 1658,
+    "pts": 55638,
+    "decoded_pts": 55638,
+    "anchor_ns": 463102743380786,
+    "frame_composition_ns": 463102743379338,
+    "human_yaw_label_deg": 0.0,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 55.638,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            820.3,
+            663.7,
+            993.7,
+            857.5
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2422.2,
+            747.6,
+            2548.8,
+            889.1
+          ],
+          "conf": 0.873,
+          "distance": null,
+          "tagged": null,
+          "track": 1,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        3,
+        4
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "new",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            820.3,
+            663.7,
+            993.7,
+            857.5
+          ]
+        },
+        {
+          "track": 1,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2422.2,
+            747.6,
+            2548.8,
+            889.1
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1659,
+    "pts": 55671,
+    "decoded_pts": 55671,
+    "anchor_ns": 463102776714119,
+    "frame_composition_ns": 463102776712670,
+    "human_yaw_label_deg": 0.0,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 55.671,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            856.5,
+            692.5,
+            1031.5,
+            888.2
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2421.2,
+            748.0,
+            2548.8,
+            890.5
+          ],
+          "conf": 0.875,
+          "distance": null,
+          "tagged": null,
+          "track": 1,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2424.0,
+            815.7,
+            2549.0,
+            955.4
+          ],
+          "conf": 0.867,
+          "distance": null,
+          "tagged": null,
+          "track": 8,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2019.4,
+            777.0,
+            2114.6,
+            883.4
+          ],
+          "conf": 0.78,
+          "distance": null,
+          "tagged": null,
+          "track": 4,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2150.8,
+            802.3,
+            2216.2,
+            875.5
+          ],
+          "conf": 0.693,
+          "distance": null,
+          "tagged": null,
+          "track": 4,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        3
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            856.5,
+            692.5,
+            1031.5,
+            888.2
+          ]
+        },
+        {
+          "track": 1,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2421.2,
+            748.0,
+            2548.8,
+            890.5
+          ]
+        },
+        {
+          "track": 8,
+          "cls": "enemy",
+          "how": "new",
+          "own": [
+            2
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2424.0,
+            815.7,
+            2549.0,
+            955.4
+          ]
+        },
+        {
+          "track": 4,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            3
+          ],
+          "pieces": [
+            [
+              4
+            ]
+          ],
+          "reference": [
+            2100.6,
+            645.4,
+            2277.4,
+            843.0
+          ],
+          "whole": [
+            2100.6,
+            645.4,
+            2277.4,
+            843.0
+          ],
+          "bbox": [
+            2019.4,
+            777.0,
+            2216.2,
+            883.4
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1660,
+    "pts": 55704,
+    "decoded_pts": 55704,
+    "anchor_ns": 463102810047452,
+    "frame_composition_ns": 463102810046002,
+    "human_yaw_label_deg": 0.0,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 55.704,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            2420.3,
+            748.4,
+            2548.7,
+            891.9
+          ],
+          "conf": 0.877,
+          "distance": null,
+          "tagged": null,
+          "track": 1,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2424.0,
+            815.7,
+            2549.0,
+            955.4
+          ],
+          "conf": 0.867,
+          "distance": null,
+          "tagged": null,
+          "track": 8,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2151.2,
+            827.7,
+            2255.8,
+            944.5
+          ],
+          "conf": 0.807,
+          "distance": null,
+          "tagged": null,
+          "track": 9,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2019.1,
+            775.9,
+            2099.9,
+            866.1
+          ],
+          "conf": 0.738,
+          "distance": null,
+          "tagged": null,
+          "track": 4,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            871.7,
+            659.4,
+            947.3,
+            743.9
+          ],
+          "conf": 0.723,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        3
+      ],
+      "bodies": [
+        {
+          "track": 1,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2420.3,
+            748.4,
+            2548.7,
+            891.9
+          ]
+        },
+        {
+          "track": 8,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2424.0,
+            815.7,
+            2549.0,
+            955.4
+          ]
+        },
+        {
+          "track": 9,
+          "cls": "enemy",
+          "how": "new",
+          "own": [
+            2
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2151.2,
+            827.7,
+            2255.8,
+            944.5
+          ]
+        },
+        {
+          "track": 4,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            3
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2019.1,
+            775.9,
+            2099.9,
+            866.1
+          ]
+        },
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            4
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            871.7,
+            659.4,
+            947.3,
+            743.9
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1661,
+    "pts": 55738,
+    "decoded_pts": 55738,
+    "anchor_ns": 463102843380785,
+    "frame_composition_ns": 463102843379334,
+    "human_yaw_label_deg": 0.0,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 55.738,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            2417.6,
+            749.7,
+            2548.4,
+            896.0
+          ],
+          "conf": 0.885,
+          "distance": null,
+          "tagged": null,
+          "track": 1,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2422.2,
+            815.6,
+            2548.8,
+            957.1
+          ],
+          "conf": 0.873,
+          "distance": null,
+          "tagged": null,
+          "track": 8,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2019.5,
+            789.9,
+            2116.4,
+            898.2
+          ],
+          "conf": 0.785,
+          "distance": null,
+          "tagged": null,
+          "track": 4,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2233.9,
+            822.6,
+            2312.1,
+            910.0
+          ],
+          "conf": 0.73,
+          "distance": null,
+          "tagged": null,
+          "track": 9,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        3,
+        7
+      ],
+      "bodies": [
+        {
+          "track": 1,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2417.6,
+            749.7,
+            2548.4,
+            896.0
+          ]
+        },
+        {
+          "track": 8,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2422.2,
+            815.6,
+            2548.8,
+            957.1
+          ]
+        },
+        {
+          "track": 4,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            2
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2019.5,
+            789.9,
+            2116.4,
+            898.2
+          ]
+        },
+        {
+          "track": 9,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            3
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2233.9,
+            822.6,
+            2312.1,
+            910.0
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1662,
+    "pts": 55771,
+    "decoded_pts": 55771,
+    "anchor_ns": 463102876714118,
+    "frame_composition_ns": 463102876712666,
+    "human_yaw_label_deg": 0.7276236,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 55.771,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            2407.4,
+            755.3,
+            2547.6,
+            912.0
+          ],
+          "conf": 0.912,
+          "distance": null,
+          "tagged": null,
+          "track": 1,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2422.2,
+            818.6,
+            2548.8,
+            960.1
+          ],
+          "conf": 0.873,
+          "distance": null,
+          "tagged": null,
+          "track": 8,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2243.8,
+            837.1,
+            2343.2,
+            948.3
+          ],
+          "conf": 0.792,
+          "distance": null,
+          "tagged": null,
+          "track": 9,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        3,
+        4,
+        7
+      ],
+      "bodies": [
+        {
+          "track": 1,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2407.4,
+            755.3,
+            2547.6,
+            912.0
+          ]
+        },
+        {
+          "track": 8,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2422.2,
+            818.6,
+            2548.8,
+            960.1
+          ]
+        },
+        {
+          "track": 9,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            2
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2243.8,
+            837.1,
+            2343.2,
+            948.3
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1663,
+    "pts": 55804,
+    "decoded_pts": 55804,
+    "anchor_ns": 463102910047451,
+    "frame_composition_ns": 463102910045998,
+    "human_yaw_label_deg": 0.6945498,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 55.804,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            938.3,
+            749.7,
+            1111.7,
+            943.5
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2421.2,
+            821.0,
+            2548.8,
+            963.5
+          ],
+          "conf": 0.875,
+          "distance": null,
+          "tagged": null,
+          "track": 8,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2255.8,
+            839.6,
+            2356.2,
+            951.7
+          ],
+          "conf": 0.795,
+          "distance": null,
+          "tagged": null,
+          "track": 9,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        3,
+        4
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            938.3,
+            749.7,
+            1111.7,
+            943.5
+          ]
+        },
+        {
+          "track": 8,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2421.2,
+            821.0,
+            2548.8,
+            963.5
+          ]
+        },
+        {
+          "track": 9,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            2
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2255.8,
+            839.6,
+            2356.2,
+            951.7
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1664,
+    "pts": 55838,
+    "decoded_pts": 55838,
+    "anchor_ns": 463102943380784,
+    "frame_composition_ns": 463102943379330,
+    "human_yaw_label_deg": 0.165369,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 55.838,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            948.3,
+            755.7,
+            1121.7,
+            949.5
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2420.3,
+            823.4,
+            2548.7,
+            966.9
+          ],
+          "conf": 0.877,
+          "distance": null,
+          "tagged": null,
+          "track": 8,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        3,
+        4,
+        9
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            948.3,
+            755.7,
+            1121.7,
+            949.5
+          ]
+        },
+        {
+          "track": 8,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2420.3,
+            823.4,
+            2548.7,
+            966.9
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1665,
+    "pts": 55871,
+    "decoded_pts": 55871,
+    "anchor_ns": 463102976714117,
+    "frame_composition_ns": 463102976712662,
+    "human_yaw_label_deg": -0.661476,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 55.871,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            2420.3,
+            823.4,
+            2548.7,
+            966.9
+          ],
+          "conf": 0.877,
+          "distance": null,
+          "tagged": null,
+          "track": 8,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            1045.4,
+            717.0,
+            1140.6,
+            823.4
+          ],
+          "conf": 0.78,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        3,
+        4,
+        9
+      ],
+      "bodies": [
+        {
+          "track": 8,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2420.3,
+            823.4,
+            2548.7,
+            966.9
+          ]
+        },
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1045.4,
+            717.0,
+            1140.6,
+            823.4
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1666,
+    "pts": 55904,
+    "decoded_pts": 55904,
+    "anchor_ns": 463103010047450,
+    "frame_composition_ns": 463103010045994,
+    "human_yaw_label_deg": -3.2743062,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 55.904,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            2060.6,
+            827.8,
+            2248.4,
+            1037.8
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 4,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2420.3,
+            819.4,
+            2548.7,
+            962.9
+          ],
+          "conf": 0.877,
+          "distance": null,
+          "tagged": null,
+          "track": 8,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        3,
+        7,
+        9
+      ],
+      "bodies": [
+        {
+          "track": 4,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2060.6,
+            827.8,
+            2248.4,
+            1037.8
+          ]
+        },
+        {
+          "track": 8,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2420.3,
+            819.4,
+            2548.7,
+            962.9
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1667,
+    "pts": 55938,
+    "decoded_pts": 55938,
+    "anchor_ns": 463103043380783,
+    "frame_composition_ns": 463103043379326,
+    "human_yaw_label_deg": -6.7470552,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 55.938,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            2061.5,
+            827.4,
+            2248.5,
+            1036.4
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 4,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2420.3,
+            819.4,
+            2548.7,
+            962.9
+          ],
+          "conf": 0.877,
+          "distance": null,
+          "tagged": null,
+          "track": 8,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2494.3,
+            699.8,
+            2554.7,
+            767.3
+          ],
+          "conf": 0.677,
+          "distance": null,
+          "tagged": null,
+          "track": 1,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        3,
+        7,
+        9
+      ],
+      "bodies": [
+        {
+          "track": 4,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2061.5,
+            827.4,
+            2248.5,
+            1036.4
+          ]
+        },
+        {
+          "track": 8,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2420.3,
+            819.4,
+            2548.7,
+            962.9
+          ]
+        },
+        {
+          "track": 1,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            2
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2494.3,
+            699.8,
+            2554.7,
+            767.3
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1668,
+    "pts": 55971,
+    "decoded_pts": 55971,
+    "anchor_ns": 463103076714116,
+    "frame_composition_ns": 463103076712658,
+    "human_yaw_label_deg": -22.5232578,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 55.971,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [],
+      "coasting": [
+        1,
+        3,
+        4,
+        7,
+        8,
+        9
+      ],
+      "bodies": []
+    }
+  },
+  {
+    "i": 1669,
+    "pts": 56004,
+    "decoded_pts": 56004,
+    "anchor_ns": 463103110047449,
+    "frame_composition_ns": 463103110045990,
+    "human_yaw_label_deg": -23.813136,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 56.004,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [],
+      "coasting": [
+        1,
+        3,
+        4,
+        7,
+        8,
+        9
+      ],
+      "bodies": []
+    }
+  },
+  {
+    "i": 1670,
+    "pts": 56038,
+    "decoded_pts": 56038,
+    "anchor_ns": 463103143380782,
+    "frame_composition_ns": 463103143379322,
+    "human_yaw_label_deg": -27.8150658,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 56.038,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1139.8,
+            755.5,
+            1341.2,
+            980.7
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2133.7,
+            777.6,
+            2254.3,
+            912.5
+          ],
+          "conf": 0.855,
+          "distance": null,
+          "tagged": null,
+          "track": 4,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        3,
+        8,
+        9
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1139.8,
+            755.5,
+            1341.2,
+            980.7
+          ]
+        },
+        {
+          "track": 4,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2133.7,
+            777.6,
+            2254.3,
+            912.5
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1671,
+    "pts": 56071,
+    "decoded_pts": 56071,
+    "anchor_ns": 463103176714115,
+    "frame_composition_ns": 463103176712654,
+    "human_yaw_label_deg": -29.601051000000002,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 56.071,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1063.8,
+            659.0,
+            1276.2,
+            896.5
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        3,
+        4,
+        8,
+        9
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1063.8,
+            659.0,
+            1276.2,
+            896.5
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1672,
+    "pts": 56104,
+    "decoded_pts": 56104,
+    "anchor_ns": 463103210047448,
+    "frame_composition_ns": 463103210045986,
+    "human_yaw_label_deg": -26.789778000000002,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 56.104,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1024.0,
+            468.7,
+            1240.0,
+            710.0
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2415.7,
+            745.5,
+            2548.3,
+            893.7
+          ],
+          "conf": 0.89,
+          "distance": null,
+          "tagged": null,
+          "track": 8,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            1205.3,
+            737.3,
+            1276.7,
+            817.1
+          ],
+          "conf": 0.71,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        3,
+        4,
+        9
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [
+            [
+              2
+            ]
+          ],
+          "reference": [
+            1063.8,
+            659.0,
+            1276.2,
+            896.5
+          ],
+          "whole": [
+            1063.8,
+            659.0,
+            1276.2,
+            896.5
+          ],
+          "bbox": [
+            1024.0,
+            468.7,
+            1276.7,
+            817.1
+          ]
+        },
+        {
+          "track": 8,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2415.7,
+            745.5,
+            2548.3,
+            893.7
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1673,
+    "pts": 56138,
+    "decoded_pts": 56138,
+    "anchor_ns": 463103243380781,
+    "frame_composition_ns": 463103243379318,
+    "human_yaw_label_deg": -17.033007,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 56.138,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1143.5,
+            353.7,
+            1353.5,
+            588.4
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2042.9,
+            826.4,
+            2246.1,
+            1053.4
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 4,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2415.7,
+            737.5,
+            2548.3,
+            885.7
+          ],
+          "conf": 0.89,
+          "distance": null,
+          "tagged": null,
+          "track": 8,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2416.6,
+            835.1,
+            2548.4,
+            982.4
+          ],
+          "conf": 0.887,
+          "distance": null,
+          "tagged": null,
+          "track": 9,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        3
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1143.5,
+            353.7,
+            1353.5,
+            588.4
+          ]
+        },
+        {
+          "track": 4,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2042.9,
+            826.4,
+            2246.1,
+            1053.4
+          ]
+        },
+        {
+          "track": 8,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            2
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2415.7,
+            737.5,
+            2548.3,
+            885.7
+          ]
+        },
+        {
+          "track": 9,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            3
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2416.6,
+            835.1,
+            2548.4,
+            982.4
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1674,
+    "pts": 56171,
+    "decoded_pts": 56171,
+    "anchor_ns": 463103276714114,
+    "frame_composition_ns": 463103276712650,
+    "human_yaw_label_deg": 0.0,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 56.171,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            2041.1,
+            829.2,
+            2245.9,
+            1058.2
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 4,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            1257.9,
+            331.6,
+            1427.1,
+            520.6
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2102.3,
+            814.3,
+            2252.7,
+            982.5
+          ],
+          "conf": 0.943,
+          "distance": null,
+          "tagged": null,
+          "track": 4,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        3,
+        8,
+        9
+      ],
+      "bodies": [
+        {
+          "track": 4,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [
+            [
+              2
+            ]
+          ],
+          "reference": [
+            2042.9,
+            826.4,
+            2246.1,
+            1053.4
+          ],
+          "whole": [
+            2042.9,
+            826.4,
+            2246.1,
+            1053.4
+          ],
+          "bbox": [
+            2041.1,
+            814.3,
+            2252.7,
+            1058.2
+          ]
+        },
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1257.9,
+            331.6,
+            1427.1,
+            520.6
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1675,
+    "pts": 56204,
+    "decoded_pts": 56204,
+    "anchor_ns": 463103310047447,
+    "frame_composition_ns": 463103310045982,
+    "human_yaw_label_deg": -1.9513542,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 56.204,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1209.1,
+            311.0,
+            1368.9,
+            489.6
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2418.5,
+            744.3,
+            2548.5,
+            889.6
+          ],
+          "conf": 0.883,
+          "distance": null,
+          "tagged": null,
+          "track": 8,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        3,
+        4,
+        9
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1209.1,
+            311.0,
+            1368.9,
+            489.6
+          ]
+        },
+        {
+          "track": 8,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2418.5,
+            744.3,
+            2548.5,
+            889.6
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1676,
+    "pts": 56238,
+    "decoded_pts": 56238,
+    "anchor_ns": 463103343380780,
+    "frame_composition_ns": 463103343379314,
+    "human_yaw_label_deg": 0.0,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 56.238,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1160.2,
+            305.9,
+            1309.8,
+            473.1
+          ],
+          "conf": 0.94,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        3,
+        4,
+        8,
+        9
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1160.2,
+            305.9,
+            1309.8,
+            473.1
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1677,
+    "pts": 56271,
+    "decoded_pts": 56271,
+    "anchor_ns": 463103376714113,
+    "frame_composition_ns": 463103376712646,
+    "human_yaw_label_deg": 0.0,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 56.271,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1125.8,
+            283.4,
+            1270.2,
+            444.9
+          ],
+          "conf": 0.925,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        3,
+        4,
+        8,
+        9
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1125.8,
+            283.4,
+            1270.2,
+            444.9
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1678,
+    "pts": 56304,
+    "decoded_pts": 56304,
+    "anchor_ns": 463103410047446,
+    "frame_composition_ns": 463103410045978,
+    "human_yaw_label_deg": 0.0,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 56.304,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            2031.9,
+            841.8,
+            2246.1,
+            1081.2
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 4,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            1094.0,
+            247.1,
+            1242.0,
+            412.4
+          ],
+          "conf": 0.935,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2124.4,
+            779.8,
+            2253.6,
+            924.2
+          ],
+          "conf": 0.88,
+          "distance": null,
+          "tagged": null,
+          "track": 4,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2422.2,
+            741.6,
+            2548.8,
+            883.1
+          ],
+          "conf": 0.873,
+          "distance": null,
+          "tagged": null,
+          "track": 8,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        9
+      ],
+      "bodies": [
+        {
+          "track": 4,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [
+            [
+              2
+            ]
+          ],
+          "reference": [
+            2041.1,
+            814.3,
+            2252.7,
+            1058.2
+          ],
+          "whole": [
+            2042.9,
+            826.4,
+            2246.1,
+            1053.4
+          ],
+          "bbox": [
+            2031.9,
+            779.8,
+            2253.6,
+            1081.2
+          ]
+        },
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1094.0,
+            247.1,
+            1242.0,
+            412.4
+          ]
+        },
+        {
+          "track": 8,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            3
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2422.2,
+            741.6,
+            2548.8,
+            883.1
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1679,
+    "pts": 56338,
+    "decoded_pts": 56338,
+    "anchor_ns": 463103443380779,
+    "frame_composition_ns": 463103443379310,
+    "human_yaw_label_deg": 0.0,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 56.338,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1066.1,
+            215.5,
+            1214.9,
+            381.8
+          ],
+          "conf": 0.938,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2422.2,
+            742.6,
+            2548.8,
+            884.1
+          ],
+          "conf": 0.873,
+          "distance": null,
+          "tagged": null,
+          "track": 8,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2424.0,
+            815.7,
+            2549.0,
+            955.4
+          ],
+          "conf": 0.867,
+          "distance": null,
+          "tagged": null,
+          "track": 9,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2150.3,
+            759.1,
+            2255.7,
+            876.9
+          ],
+          "conf": 0.81,
+          "distance": null,
+          "tagged": null,
+          "track": 4,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2018.3,
+            776.6,
+            2112.7,
+            882.1
+          ],
+          "conf": 0.778,
+          "distance": null,
+          "tagged": null,
+          "track": 4,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1066.1,
+            215.5,
+            1214.9,
+            381.8
+          ]
+        },
+        {
+          "track": 8,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2422.2,
+            742.6,
+            2548.8,
+            884.1
+          ]
+        },
+        {
+          "track": 9,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            2
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2424.0,
+            815.7,
+            2549.0,
+            955.4
+          ]
+        },
+        {
+          "track": 4,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            3
+          ],
+          "pieces": [
+            [
+              4
+            ]
+          ],
+          "reference": [
+            2031.9,
+            779.8,
+            2253.6,
+            1081.2
+          ],
+          "whole": [
+            2042.9,
+            826.4,
+            2246.1,
+            1053.4
+          ],
+          "bbox": [
+            2018.3,
+            759.1,
+            2255.7,
+            882.1
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1680,
+    "pts": 56371,
+    "decoded_pts": 56371,
+    "anchor_ns": 463103476714112,
+    "frame_composition_ns": 463103476712642,
+    "human_yaw_label_deg": 0.0,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 56.371,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1042.2,
+            199.9,
+            1191.8,
+            367.1
+          ],
+          "conf": 0.94,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2420.3,
+            747.4,
+            2548.7,
+            890.9
+          ],
+          "conf": 0.877,
+          "distance": null,
+          "tagged": null,
+          "track": 8,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2424.0,
+            815.7,
+            2549.0,
+            955.4
+          ],
+          "conf": 0.867,
+          "distance": null,
+          "tagged": null,
+          "track": 9,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2168.8,
+            781.7,
+            2257.2,
+            880.5
+          ],
+          "conf": 0.76,
+          "distance": null,
+          "tagged": null,
+          "track": 4,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2016.8,
+            774.2,
+            2094.2,
+            860.7
+          ],
+          "conf": 0.728,
+          "distance": null,
+          "tagged": null,
+          "track": 4,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1042.2,
+            199.9,
+            1191.8,
+            367.1
+          ]
+        },
+        {
+          "track": 8,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2420.3,
+            747.4,
+            2548.7,
+            890.9
+          ]
+        },
+        {
+          "track": 9,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            2
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2424.0,
+            815.7,
+            2549.0,
+            955.4
+          ]
+        },
+        {
+          "track": 4,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            3
+          ],
+          "pieces": [
+            [
+              4
+            ]
+          ],
+          "reference": [
+            2018.3,
+            759.1,
+            2255.7,
+            882.1
+          ],
+          "whole": [
+            2042.9,
+            826.4,
+            2246.1,
+            1053.4
+          ],
+          "bbox": [
+            2016.8,
+            774.2,
+            2257.2,
+            880.5
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1681,
+    "pts": 56404,
+    "decoded_pts": 56404,
+    "anchor_ns": 463103510047445,
+    "frame_composition_ns": 463103510045974,
+    "human_yaw_label_deg": 0.0,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 56.404,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1022.2,
+            189.9,
+            1171.8,
+            357.1
+          ],
+          "conf": 0.94,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2117.3,
+            785.9,
+            2256.7,
+            941.7
+          ],
+          "conf": 0.91,
+          "distance": null,
+          "tagged": null,
+          "track": 4,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2420.3,
+            744.4,
+            2548.7,
+            887.9
+          ],
+          "conf": 0.877,
+          "distance": null,
+          "tagged": null,
+          "track": 8,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2422.2,
+            814.6,
+            2548.8,
+            956.1
+          ],
+          "conf": 0.873,
+          "distance": null,
+          "tagged": null,
+          "track": 9,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2017.4,
+            789.0,
+            2112.6,
+            895.4
+          ],
+          "conf": 0.78,
+          "distance": null,
+          "tagged": null,
+          "track": 4,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1022.2,
+            189.9,
+            1171.8,
+            357.1
+          ]
+        },
+        {
+          "track": 4,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [
+            [
+              4
+            ]
+          ],
+          "reference": [
+            2016.8,
+            774.2,
+            2257.2,
+            880.5
+          ],
+          "whole": [
+            2042.9,
+            826.4,
+            2246.1,
+            1053.4
+          ],
+          "bbox": [
+            2017.4,
+            785.9,
+            2256.7,
+            941.7
+          ]
+        },
+        {
+          "track": 8,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            2
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2420.3,
+            744.4,
+            2548.7,
+            887.9
+          ]
+        },
+        {
+          "track": 9,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            3
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2422.2,
+            814.6,
+            2548.8,
+            956.1
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1682,
+    "pts": 56438,
+    "decoded_pts": 56438,
+    "anchor_ns": 463103543380778,
+    "frame_composition_ns": 463103543379306,
+    "human_yaw_label_deg": 0.0,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 56.438,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            2094.9,
+            802.7,
+            2252.1,
+            978.5
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 4,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            1004.2,
+            173.9,
+            1153.8,
+            341.1
+          ],
+          "conf": 0.94,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2407.4,
+            746.3,
+            2547.6,
+            903.0
+          ],
+          "conf": 0.912,
+          "distance": null,
+          "tagged": null,
+          "track": 8,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2422.2,
+            818.6,
+            2548.8,
+            960.1
+          ],
+          "conf": 0.873,
+          "distance": null,
+          "tagged": null,
+          "track": 9,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1
+      ],
+      "bodies": [
+        {
+          "track": 4,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2094.9,
+            802.7,
+            2252.1,
+            978.5
+          ]
+        },
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1004.2,
+            173.9,
+            1153.8,
+            341.1
+          ]
+        },
+        {
+          "track": 8,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            2
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2407.4,
+            746.3,
+            2547.6,
+            903.0
+          ]
+        },
+        {
+          "track": 9,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            3
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2422.2,
+            818.6,
+            2548.8,
+            960.1
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1683,
+    "pts": 56471,
+    "decoded_pts": 56471,
+    "anchor_ns": 463103576714111,
+    "frame_composition_ns": 463103576712638,
+    "human_yaw_label_deg": 0.0,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 56.471,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            990.1,
+            159.5,
+            1138.9,
+            325.8
+          ],
+          "conf": 0.938,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2421.2,
+            821.0,
+            2548.8,
+            963.5
+          ],
+          "conf": 0.875,
+          "distance": null,
+          "tagged": null,
+          "track": 9,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        4,
+        8
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            990.1,
+            159.5,
+            1138.9,
+            325.8
+          ]
+        },
+        {
+          "track": 9,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2421.2,
+            821.0,
+            2548.8,
+            963.5
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1684,
+    "pts": 56504,
+    "decoded_pts": 56504,
+    "anchor_ns": 463103610047444,
+    "frame_composition_ns": 463103610045970,
+    "human_yaw_label_deg": 0.0,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 56.504,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            976.2,
+            145.9,
+            1125.8,
+            313.1
+          ],
+          "conf": 0.94,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2420.3,
+            823.4,
+            2548.7,
+            966.9
+          ],
+          "conf": 0.877,
+          "distance": null,
+          "tagged": null,
+          "track": 9,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        4,
+        8
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            976.2,
+            145.9,
+            1125.8,
+            313.1
+          ]
+        },
+        {
+          "track": 9,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2420.3,
+            823.4,
+            2548.7,
+            966.9
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1685,
+    "pts": 56538,
+    "decoded_pts": 56538,
+    "anchor_ns": 463103643380777,
+    "frame_composition_ns": 463103643379302,
+    "human_yaw_label_deg": -0.1322952,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 56.538,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            964.2,
+            131.9,
+            1113.8,
+            299.1
+          ],
+          "conf": 0.94,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2422.2,
+            816.6,
+            2548.8,
+            958.1
+          ],
+          "conf": 0.873,
+          "distance": null,
+          "tagged": null,
+          "track": 9,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2485.1,
+            704.0,
+            2553.9,
+            781.0
+          ],
+          "conf": 0.703,
+          "distance": null,
+          "tagged": null,
+          "track": 1,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        4,
+        8
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            964.2,
+            131.9,
+            1113.8,
+            299.1
+          ]
+        },
+        {
+          "track": 9,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2422.2,
+            816.6,
+            2548.8,
+            958.1
+          ]
+        },
+        {
+          "track": 1,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            2
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2485.1,
+            704.0,
+            2553.9,
+            781.0
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1686,
+    "pts": 56571,
+    "decoded_pts": 56571,
+    "anchor_ns": 463103676714110,
+    "frame_composition_ns": 463103676712634,
+    "human_yaw_label_deg": -1.0252878,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 56.571,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            2059.7,
+            829.2,
+            2248.3,
+            1040.1
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 4,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            962.2,
+            125.9,
+            1111.8,
+            293.1
+          ],
+          "conf": 0.94,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2420.3,
+            819.4,
+            2548.7,
+            962.9
+          ],
+          "conf": 0.877,
+          "distance": null,
+          "tagged": null,
+          "track": 9,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        8
+      ],
+      "bodies": [
+        {
+          "track": 4,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2059.7,
+            829.2,
+            2248.3,
+            1040.1
+          ]
+        },
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            962.2,
+            125.9,
+            1111.8,
+            293.1
+          ]
+        },
+        {
+          "track": 9,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            2
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2420.3,
+            819.4,
+            2548.7,
+            962.9
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1687,
+    "pts": 56604,
+    "decoded_pts": 56604,
+    "anchor_ns": 463103710047443,
+    "frame_composition_ns": 463103710045966,
+    "human_yaw_label_deg": -1.2568044,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 56.604,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            974.0,
+            157.1,
+            1122.0,
+            322.4
+          ],
+          "conf": 0.935,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2420.3,
+            836.4,
+            2548.7,
+            979.9
+          ],
+          "conf": 0.877,
+          "distance": null,
+          "tagged": null,
+          "track": 9,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        4,
+        8
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            974.0,
+            157.1,
+            1122.0,
+            322.4
+          ]
+        },
+        {
+          "track": 9,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2420.3,
+            836.4,
+            2548.7,
+            979.9
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1688,
+    "pts": 56638,
+    "decoded_pts": 56638,
+    "anchor_ns": 463103743380776,
+    "frame_composition_ns": 463103743379298,
+    "human_yaw_label_deg": -2.3482398,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 56.638,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            996.1,
+            203.5,
+            1144.9,
+            369.8
+          ],
+          "conf": 0.938,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2122.6,
+            780.1,
+            2254.4,
+            927.4
+          ],
+          "conf": 0.887,
+          "distance": null,
+          "tagged": null,
+          "track": 4,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2420.3,
+            837.4,
+            2548.7,
+            980.9
+          ],
+          "conf": 0.877,
+          "distance": null,
+          "tagged": null,
+          "track": 9,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        8
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            996.1,
+            203.5,
+            1144.9,
+            369.8
+          ]
+        },
+        {
+          "track": 4,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2122.6,
+            780.1,
+            2254.4,
+            927.4
+          ]
+        },
+        {
+          "track": 9,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            2
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2420.3,
+            837.4,
+            2548.7,
+            980.9
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1689,
+    "pts": 56671,
+    "decoded_pts": 56671,
+    "anchor_ns": 463103776714109,
+    "frame_composition_ns": 463103776712630,
+    "human_yaw_label_deg": -3.9357822000000002,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 56.671,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1044.2,
+            271.9,
+            1193.8,
+            439.1
+          ],
+          "conf": 0.94,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2122.6,
+            781.1,
+            2254.4,
+            928.4
+          ],
+          "conf": 0.887,
+          "distance": null,
+          "tagged": null,
+          "track": 4,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2420.3,
+            837.4,
+            2548.7,
+            980.9
+          ],
+          "conf": 0.877,
+          "distance": null,
+          "tagged": null,
+          "track": 9,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        8
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1044.2,
+            271.9,
+            1193.8,
+            439.1
+          ]
+        },
+        {
+          "track": 4,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2122.6,
+            781.1,
+            2254.4,
+            928.4
+          ]
+        },
+        {
+          "track": 9,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            2
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2420.3,
+            837.4,
+            2548.7,
+            980.9
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1690,
+    "pts": 56704,
+    "decoded_pts": 56704,
+    "anchor_ns": 463103810047442,
+    "frame_composition_ns": 463103810045962,
+    "human_yaw_label_deg": -4.4318892,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 56.704,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1130.2,
+            365.9,
+            1279.8,
+            533.1
+          ],
+          "conf": 0.94,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2416.6,
+            843.1,
+            2548.4,
+            990.4
+          ],
+          "conf": 0.887,
+          "distance": null,
+          "tagged": null,
+          "track": 9,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2135.6,
+            774.2,
+            2255.4,
+            908.2
+          ],
+          "conf": 0.853,
+          "distance": null,
+          "tagged": null,
+          "track": 4,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        8
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1130.2,
+            365.9,
+            1279.8,
+            533.1
+          ]
+        },
+        {
+          "track": 9,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2416.6,
+            843.1,
+            2548.4,
+            990.4
+          ]
+        },
+        {
+          "track": 4,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            2
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2135.6,
+            774.2,
+            2255.4,
+            908.2
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1691,
+    "pts": 56738,
+    "decoded_pts": 56738,
+    "anchor_ns": 463103843380775,
+    "frame_composition_ns": 463103843379294,
+    "human_yaw_label_deg": -4.2665202,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 56.738,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            2250.1,
+            900.7,
+            2534.9,
+            1219.0
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 9,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            1213.1,
+            459.5,
+            1361.9,
+            625.8
+          ],
+          "conf": 0.938,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        4,
+        8
+      ],
+      "bodies": [
+        {
+          "track": 9,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2250.1,
+            900.7,
+            2534.9,
+            1219.0
+          ]
+        },
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1213.1,
+            459.5,
+            1361.9,
+            625.8
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1692,
+    "pts": 56771,
+    "decoded_pts": 56771,
+    "anchor_ns": 463103876714108,
+    "frame_composition_ns": 463103876712626,
+    "human_yaw_label_deg": -5.9202102,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 56.771,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            2180.9,
+            850.6,
+            2429.1,
+            1128.0
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 9,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            1310.1,
+            567.5,
+            1458.9,
+            733.8
+          ],
+          "conf": 0.938,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        4,
+        8
+      ],
+      "bodies": [
+        {
+          "track": 9,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2180.9,
+            850.6,
+            2429.1,
+            1128.0
+          ]
+        },
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1310.1,
+            567.5,
+            1458.9,
+            733.8
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1693,
+    "pts": 56804,
+    "decoded_pts": 56804,
+    "anchor_ns": 463103910047441,
+    "frame_composition_ns": 463103910045958,
+    "human_yaw_label_deg": -3.142011,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 56.804,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            2181.7,
+            843.9,
+            2416.3,
+            1106.1
+          ],
+          "conf": 0.95,
+          "distance": null,
+          "tagged": null,
+          "track": 9,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            1412.2,
+            643.9,
+            1561.8,
+            811.1
+          ],
+          "conf": 0.94,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2483.2,
+            773.9,
+            2553.8,
+            852.7
+          ],
+          "conf": 0.708,
+          "distance": null,
+          "tagged": null,
+          "track": 8,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2486.9,
+            727.2,
+            2554.1,
+            802.2
+          ],
+          "conf": 0.698,
+          "distance": null,
+          "tagged": null,
+          "track": 1,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        4
+      ],
+      "bodies": [
+        {
+          "track": 9,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2181.7,
+            843.9,
+            2416.3,
+            1106.1
+          ]
+        },
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1412.2,
+            643.9,
+            1561.8,
+            811.1
+          ]
+        },
+        {
+          "track": 8,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            2
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2483.2,
+            773.9,
+            2553.8,
+            852.7
+          ]
+        },
+        {
+          "track": 1,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            3
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2486.9,
+            727.2,
+            2554.1,
+            802.2
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1694,
+    "pts": 56838,
+    "decoded_pts": 56838,
+    "anchor_ns": 463103943380774,
+    "frame_composition_ns": 463103943379290,
+    "human_yaw_label_deg": -0.46303320000000003,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 56.838,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1479.2,
+            689.9,
+            1628.8,
+            857.1
+          ],
+          "conf": 0.94,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            2483.2,
+            744.9,
+            2553.8,
+            823.7
+          ],
+          "conf": 0.708,
+          "distance": null,
+          "tagged": null,
+          "track": 1,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        4,
+        8,
+        9
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1479.2,
+            689.9,
+            1628.8,
+            857.1
+          ]
+        },
+        {
+          "track": 1,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            2483.2,
+            744.9,
+            2553.8,
+            823.7
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1695,
+    "pts": 56871,
+    "decoded_pts": 56871,
+    "anchor_ns": 463103976714107,
+    "frame_composition_ns": 463103976712622,
+    "human_yaw_label_deg": 0.1322952,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 56.871,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1492.1,
+            705.5,
+            1640.9,
+            871.8
+          ],
+          "conf": 0.938,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        4,
+        8,
+        9
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1492.1,
+            705.5,
+            1640.9,
+            871.8
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1696,
+    "pts": 56904,
+    "decoded_pts": 56904,
+    "anchor_ns": 463104010047440,
+    "frame_composition_ns": 463104010045954,
+    "human_yaw_label_deg": 0.0,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 56.904,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1489.2,
+            703.9,
+            1638.8,
+            871.1
+          ],
+          "conf": 0.94,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        4,
+        8,
+        9
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1489.2,
+            703.9,
+            1638.8,
+            871.1
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1697,
+    "pts": 56938,
+    "decoded_pts": 56938,
+    "anchor_ns": 463104043380773,
+    "frame_composition_ns": 463104043379286,
+    "human_yaw_label_deg": 0.0330738,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 56.938,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1492.2,
+            693.9,
+            1641.8,
+            861.1
+          ],
+          "conf": 0.94,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        4,
+        8,
+        9
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1492.2,
+            693.9,
+            1641.8,
+            861.1
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1698,
+    "pts": 56971,
+    "decoded_pts": 56971,
+    "anchor_ns": 463104076714106,
+    "frame_composition_ns": 463104076712618,
+    "human_yaw_label_deg": 0.0,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 56.971,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1495.1,
+            685.5,
+            1643.9,
+            851.8
+          ],
+          "conf": 0.938,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        4,
+        8,
+        9
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1495.1,
+            685.5,
+            1643.9,
+            851.8
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1699,
+    "pts": 57004,
+    "decoded_pts": 57004,
+    "anchor_ns": 463104110047439,
+    "frame_composition_ns": 463104110045950,
+    "human_yaw_label_deg": 0.0,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 57.004,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1498.2,
+            676.9,
+            1647.8,
+            844.1
+          ],
+          "conf": 0.94,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            68.8,
+            727.5,
+            191.2,
+            864.3
+          ],
+          "conf": 0.86,
+          "distance": null,
+          "tagged": null,
+          "track": 10,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        4,
+        8,
+        9
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1498.2,
+            676.9,
+            1647.8,
+            844.1
+          ]
+        },
+        {
+          "track": 10,
+          "cls": "enemy",
+          "how": "new",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            68.8,
+            727.5,
+            191.2,
+            864.3
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1700,
+    "pts": 57038,
+    "decoded_pts": 57038,
+    "anchor_ns": 463104143380772,
+    "frame_composition_ns": 463104143379282,
+    "human_yaw_label_deg": 0.0,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 57.038,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1502.2,
+            667.9,
+            1651.8,
+            835.1
+          ],
+          "conf": 0.94,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            401.6,
+            655.6,
+            522.4,
+            790.5
+          ],
+          "conf": 0.855,
+          "distance": null,
+          "tagged": null,
+          "track": 11,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        4,
+        8,
+        9
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1502.2,
+            667.9,
+            1651.8,
+            835.1
+          ]
+        },
+        {
+          "track": 11,
+          "cls": "enemy",
+          "how": "new",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            401.6,
+            655.6,
+            522.4,
+            790.5
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1701,
+    "pts": 57071,
+    "decoded_pts": 57071,
+    "anchor_ns": 463104176714105,
+    "frame_composition_ns": 463104176712614,
+    "human_yaw_label_deg": 0.0,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 57.071,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1506.2,
+            665.9,
+            1655.8,
+            833.1
+          ],
+          "conf": 0.94,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            614.4,
+            642.0,
+            731.6,
+            773.1
+          ],
+          "conf": 0.845,
+          "distance": null,
+          "tagged": null,
+          "track": 12,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        4,
+        8,
+        9
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1506.2,
+            665.9,
+            1655.8,
+            833.1
+          ]
+        },
+        {
+          "track": 12,
+          "cls": "enemy",
+          "how": "new",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            614.4,
+            642.0,
+            731.6,
+            773.1
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1702,
+    "pts": 57104,
+    "decoded_pts": 57104,
+    "anchor_ns": 463104210047438,
+    "frame_composition_ns": 463104210045946,
+    "human_yaw_label_deg": 0.0,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 57.104,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1510.2,
+            671.9,
+            1659.8,
+            839.1
+          ],
+          "conf": 0.94,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            760.1,
+            684.7,
+            874.9,
+            813.0
+          ],
+          "conf": 0.838,
+          "distance": null,
+          "tagged": null,
+          "track": 12,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        4,
+        8,
+        9
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1510.2,
+            671.9,
+            1659.8,
+            839.1
+          ]
+        },
+        {
+          "track": 12,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            760.1,
+            684.7,
+            874.9,
+            813.0
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1703,
+    "pts": 57138,
+    "decoded_pts": 57138,
+    "anchor_ns": 463104243380771,
+    "frame_composition_ns": 463104243379278,
+    "human_yaw_label_deg": 0.0,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 57.138,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1514.2,
+            679.9,
+            1663.8,
+            847.1
+          ],
+          "conf": 0.94,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            882.9,
+            722.4,
+            995.1,
+            847.8
+          ],
+          "conf": 0.83,
+          "distance": null,
+          "tagged": null,
+          "track": 12,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        4,
+        8,
+        9
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1514.2,
+            679.9,
+            1663.8,
+            847.1
+          ]
+        },
+        {
+          "track": 12,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            882.9,
+            722.4,
+            995.1,
+            847.8
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1704,
+    "pts": 57171,
+    "decoded_pts": 57171,
+    "anchor_ns": 463104276714104,
+    "frame_composition_ns": 463104276712610,
+    "human_yaw_label_deg": 0.0,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 57.171,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1520.1,
+            685.5,
+            1668.9,
+            851.8
+          ],
+          "conf": 0.938,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            987.5,
+            748.3,
+            1095.5,
+            869.0
+          ],
+          "conf": 0.818,
+          "distance": null,
+          "tagged": null,
+          "track": 12,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        4,
+        8,
+        9
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1520.1,
+            685.5,
+            1668.9,
+            851.8
+          ]
+        },
+        {
+          "track": 12,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            987.5,
+            748.3,
+            1095.5,
+            869.0
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1705,
+    "pts": 57204,
+    "decoded_pts": 57204,
+    "anchor_ns": 463104310047437,
+    "frame_composition_ns": 463104310045942,
+    "human_yaw_label_deg": 0.0,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 57.204,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1524.2,
+            691.9,
+            1673.8,
+            859.1
+          ],
+          "conf": 0.94,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            1078.3,
+            769.1,
+            1183.7,
+            886.9
+          ],
+          "conf": 0.81,
+          "distance": null,
+          "tagged": null,
+          "track": 12,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        4,
+        8,
+        9
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1524.2,
+            691.9,
+            1673.8,
+            859.1
+          ]
+        },
+        {
+          "track": 12,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1078.3,
+            769.1,
+            1183.7,
+            886.9
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1706,
+    "pts": 57238,
+    "decoded_pts": 57238,
+    "anchor_ns": 463104343380770,
+    "frame_composition_ns": 463104343379274,
+    "human_yaw_label_deg": 0.0,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 57.238,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1530.2,
+            695.9,
+            1679.8,
+            863.1
+          ],
+          "conf": 0.94,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            1156.8,
+            781.1,
+            1256.2,
+            892.3
+          ],
+          "conf": 0.792,
+          "distance": null,
+          "tagged": null,
+          "track": 12,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        4,
+        8,
+        9
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1530.2,
+            695.9,
+            1679.8,
+            863.1
+          ]
+        },
+        {
+          "track": 12,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1156.8,
+            781.1,
+            1256.2,
+            892.3
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1707,
+    "pts": 57271,
+    "decoded_pts": 57271,
+    "anchor_ns": 463104376714103,
+    "frame_composition_ns": 463104376712606,
+    "human_yaw_label_deg": 0.0,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 57.271,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1536.2,
+            699.9,
+            1685.8,
+            867.1
+          ],
+          "conf": 0.94,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            1227.7,
+            792.7,
+            1326.3,
+            902.9
+          ],
+          "conf": 0.79,
+          "distance": null,
+          "tagged": null,
+          "track": 12,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        4,
+        8,
+        9
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1536.2,
+            699.9,
+            1685.8,
+            867.1
+          ]
+        },
+        {
+          "track": 12,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1227.7,
+            792.7,
+            1326.3,
+            902.9
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1708,
+    "pts": 57304,
+    "decoded_pts": 57304,
+    "anchor_ns": 463104410047436,
+    "frame_composition_ns": 463104410045938,
+    "human_yaw_label_deg": 0.0,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 57.304,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1542.2,
+            701.9,
+            1691.8,
+            869.1
+          ],
+          "conf": 0.94,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            1289.7,
+            800.7,
+            1388.3,
+            910.9
+          ],
+          "conf": 0.79,
+          "distance": null,
+          "tagged": null,
+          "track": 12,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            8.0,
+            834.9,
+            99.0,
+            936.6
+          ],
+          "conf": 0.768,
+          "distance": null,
+          "tagged": null,
+          "track": 13,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        4,
+        8,
+        9
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1542.2,
+            701.9,
+            1691.8,
+            869.1
+          ]
+        },
+        {
+          "track": 12,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1289.7,
+            800.7,
+            1388.3,
+            910.9
+          ]
+        },
+        {
+          "track": 13,
+          "cls": "enemy",
+          "how": "new",
+          "own": [
+            2
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            8.0,
+            834.9,
+            99.0,
+            936.6
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1709,
+    "pts": 57338,
+    "decoded_pts": 57338,
+    "anchor_ns": 463104443380769,
+    "frame_composition_ns": 463104443379270,
+    "human_yaw_label_deg": 0.0,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 57.338,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1548.2,
+            705.9,
+            1697.8,
+            873.1
+          ],
+          "conf": 0.94,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            167.6,
+            841.3,
+            265.4,
+            950.5
+          ],
+          "conf": 0.787,
+          "distance": null,
+          "tagged": null,
+          "track": 14,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            1346.5,
+            803.5,
+            1442.5,
+            910.8
+          ],
+          "conf": 0.782,
+          "distance": null,
+          "tagged": null,
+          "track": 12,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        4,
+        8,
+        9
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1548.2,
+            705.9,
+            1697.8,
+            873.1
+          ]
+        },
+        {
+          "track": 14,
+          "cls": "enemy",
+          "how": "new",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            167.6,
+            841.3,
+            265.4,
+            950.5
+          ]
+        },
+        {
+          "track": 12,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            2
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1346.5,
+            803.5,
+            1442.5,
+            910.8
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1710,
+    "pts": 57371,
+    "decoded_pts": 57371,
+    "anchor_ns": 463104476714102,
+    "frame_composition_ns": 463104476712602,
+    "human_yaw_label_deg": 0.0,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 57.371,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1554.2,
+            707.9,
+            1703.8,
+            875.1
+          ],
+          "conf": 0.94,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            1398.6,
+            807.3,
+            1496.4,
+            916.5
+          ],
+          "conf": 0.787,
+          "distance": null,
+          "tagged": null,
+          "track": 12,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            311.6,
+            842.3,
+            409.4,
+            951.5
+          ],
+          "conf": 0.787,
+          "distance": null,
+          "tagged": null,
+          "track": 15,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        4,
+        8,
+        9
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1554.2,
+            707.9,
+            1703.8,
+            875.1
+          ]
+        },
+        {
+          "track": 12,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1398.6,
+            807.3,
+            1496.4,
+            916.5
+          ]
+        },
+        {
+          "track": 15,
+          "cls": "enemy",
+          "how": "new",
+          "own": [
+            2
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            311.6,
+            842.3,
+            409.4,
+            951.5
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1711,
+    "pts": 57404,
+    "decoded_pts": 57404,
+    "anchor_ns": 463104510047435,
+    "frame_composition_ns": 463104510045934,
+    "human_yaw_label_deg": -0.0992214,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 57.404,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1562.1,
+            707.5,
+            1710.9,
+            873.8
+          ],
+          "conf": 0.938,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            1447.7,
+            807.7,
+            1546.3,
+            917.9
+          ],
+          "conf": 0.79,
+          "distance": null,
+          "tagged": null,
+          "track": 12,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            438.6,
+            840.3,
+            536.4,
+            949.5
+          ],
+          "conf": 0.787,
+          "distance": null,
+          "tagged": null,
+          "track": 15,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        4,
+        8,
+        9
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1562.1,
+            707.5,
+            1710.9,
+            873.8
+          ]
+        },
+        {
+          "track": 12,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1447.7,
+            807.7,
+            1546.3,
+            917.9
+          ]
+        },
+        {
+          "track": 15,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            2
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            438.6,
+            840.3,
+            536.4,
+            949.5
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1712,
+    "pts": 57438,
+    "decoded_pts": 57438,
+    "anchor_ns": 463104543380768,
+    "frame_composition_ns": 463104543379266,
+    "human_yaw_label_deg": -0.330738,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 57.438,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1571.1,
+            713.5,
+            1719.9,
+            879.8
+          ],
+          "conf": 0.938,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            553.7,
+            839.7,
+            652.3,
+            949.9
+          ],
+          "conf": 0.79,
+          "distance": null,
+          "tagged": null,
+          "track": 15,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            1495.5,
+            808.9,
+            1592.5,
+            917.2
+          ],
+          "conf": 0.785,
+          "distance": null,
+          "tagged": null,
+          "track": 12,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        4,
+        8,
+        9
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1571.1,
+            713.5,
+            1719.9,
+            879.8
+          ]
+        },
+        {
+          "track": 15,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            553.7,
+            839.7,
+            652.3,
+            949.9
+          ]
+        },
+        {
+          "track": 12,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            2
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1495.5,
+            808.9,
+            1592.5,
+            917.2
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1713,
+    "pts": 57471,
+    "decoded_pts": 57471,
+    "anchor_ns": 463104576714101,
+    "frame_composition_ns": 463104576712598,
+    "human_yaw_label_deg": -0.1984428,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 57.471,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1593.6,
+            710.6,
+            1736.4,
+            870.2
+          ],
+          "conf": 0.92,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            1543.7,
+            807.7,
+            1642.3,
+            917.9
+          ],
+          "conf": 0.79,
+          "distance": null,
+          "tagged": null,
+          "track": 12,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            662.5,
+            833.5,
+            758.5,
+            940.8
+          ],
+          "conf": 0.782,
+          "distance": null,
+          "tagged": null,
+          "track": 15,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        4,
+        8,
+        9
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1593.6,
+            710.6,
+            1736.4,
+            870.2
+          ]
+        },
+        {
+          "track": 12,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1543.7,
+            807.7,
+            1642.3,
+            917.9
+          ]
+        },
+        {
+          "track": 15,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            2
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            662.5,
+            833.5,
+            758.5,
+            940.8
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1714,
+    "pts": 57504,
+    "decoded_pts": 57504,
+    "anchor_ns": 463104610047434,
+    "frame_composition_ns": 463104610045930,
+    "human_yaw_label_deg": -0.1322952,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 57.504,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1612.8,
+            704.4,
+            1747.2,
+            854.5
+          ],
+          "conf": 0.895,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            1584.7,
+            801.7,
+            1683.3,
+            911.9
+          ],
+          "conf": 0.79,
+          "distance": null,
+          "tagged": null,
+          "track": 12,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            755.5,
+            825.9,
+            852.5,
+            934.2
+          ],
+          "conf": 0.785,
+          "distance": null,
+          "tagged": null,
+          "track": 15,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        4,
+        8,
+        9
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1612.8,
+            704.4,
+            1747.2,
+            854.5
+          ]
+        },
+        {
+          "track": 12,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1584.7,
+            801.7,
+            1683.3,
+            911.9
+          ]
+        },
+        {
+          "track": 15,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            2
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            755.5,
+            825.9,
+            852.5,
+            934.2
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1715,
+    "pts": 57538,
+    "decoded_pts": 57538,
+    "anchor_ns": 463104643380767,
+    "frame_composition_ns": 463104643379262,
+    "human_yaw_label_deg": -0.0661476,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 57.538,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1630.2,
+            699.0,
+            1757.8,
+            841.5
+          ],
+          "conf": 0.875,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            1622.6,
+            794.3,
+            1720.4,
+            903.5
+          ],
+          "conf": 0.787,
+          "distance": null,
+          "tagged": null,
+          "track": 12,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        8,
+        9,
+        15
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1630.2,
+            699.0,
+            1757.8,
+            841.5
+          ]
+        },
+        {
+          "track": 12,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1622.6,
+            794.3,
+            1720.4,
+            903.5
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1716,
+    "pts": 57571,
+    "decoded_pts": 57571,
+    "anchor_ns": 463104676714100,
+    "frame_composition_ns": 463104676712594,
+    "human_yaw_label_deg": 0.0330738,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 57.571,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1643.8,
+            692.5,
+            1766.2,
+            829.3
+          ],
+          "conf": 0.86,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            1655.7,
+            786.7,
+            1754.3,
+            896.9
+          ],
+          "conf": 0.79,
+          "distance": null,
+          "tagged": null,
+          "track": 12,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        8,
+        9,
+        15
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1643.8,
+            692.5,
+            1766.2,
+            829.3
+          ]
+        },
+        {
+          "track": 12,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1655.7,
+            786.7,
+            1754.3,
+            896.9
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1717,
+    "pts": 57604,
+    "decoded_pts": 57604,
+    "anchor_ns": 463104710047433,
+    "frame_composition_ns": 463104710045926,
+    "human_yaw_label_deg": 0.0992214,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 57.604,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1657.2,
+            681.1,
+            1772.8,
+            810.3
+          ],
+          "conf": 0.84,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            1685.7,
+            773.7,
+            1784.3,
+            883.9
+          ],
+          "conf": 0.79,
+          "distance": null,
+          "tagged": null,
+          "track": 12,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        8,
+        9,
+        15
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1657.2,
+            681.1,
+            1772.8,
+            810.3
+          ]
+        },
+        {
+          "track": 12,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1685.7,
+            773.7,
+            1784.3,
+            883.9
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1718,
+    "pts": 57638,
+    "decoded_pts": 57638,
+    "anchor_ns": 463104743380766,
+    "frame_composition_ns": 463104743379258,
+    "human_yaw_label_deg": 0.0,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 57.638,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1666.7,
+            672.2,
+            1776.3,
+            794.7
+          ],
+          "conf": 0.823,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            1711.7,
+            760.7,
+            1810.3,
+            870.9
+          ],
+          "conf": 0.79,
+          "distance": null,
+          "tagged": null,
+          "track": 12,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            1063.8,
+            765.8,
+            1140.2,
+            851.3
+          ],
+          "conf": 0.725,
+          "distance": null,
+          "tagged": null,
+          "track": 16,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        1,
+        15
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1666.7,
+            672.2,
+            1776.3,
+            794.7
+          ]
+        },
+        {
+          "track": 12,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1711.7,
+            760.7,
+            1810.3,
+            870.9
+          ]
+        },
+        {
+          "track": 16,
+          "cls": "enemy",
+          "how": "new",
+          "own": [
+            2
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1063.8,
+            765.8,
+            1140.2,
+            851.3
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1719,
+    "pts": 57671,
+    "decoded_pts": 57671,
+    "anchor_ns": 463104776714099,
+    "frame_composition_ns": 463104776712590,
+    "human_yaw_label_deg": 0.0330738,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 57.671,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1684.2,
+            661.2,
+            1787.8,
+            777.1
+          ],
+          "conf": 0.805,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            1755.6,
+            746.3,
+            1853.4,
+            855.5
+          ],
+          "conf": 0.787,
+          "distance": null,
+          "tagged": null,
+          "track": 12,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            1071.6,
+            762.3,
+            1169.4,
+            871.5
+          ],
+          "conf": 0.787,
+          "distance": null,
+          "tagged": null,
+          "track": 16,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        15
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1684.2,
+            661.2,
+            1787.8,
+            777.1
+          ]
+        },
+        {
+          "track": 12,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1755.6,
+            746.3,
+            1853.4,
+            855.5
+          ]
+        },
+        {
+          "track": 16,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            2
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1071.6,
+            762.3,
+            1169.4,
+            871.5
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "i": 1720,
+    "pts": 57704,
+    "decoded_pts": 57704,
+    "anchor_ns": 463104810047432,
+    "frame_composition_ns": 463104810045922,
+    "human_yaw_label_deg": -0.7937712,
+    "detector_path": "red-fallback",
+    "observation": {
+      "t": 57.704,
+      "frame": [
+        2560,
+        1440
+      ],
+      "raw": [
+        {
+          "cls": "enemy",
+          "bbox": [
+            1668.6,
+            653.8,
+            1777.4,
+            775.4
+          ],
+          "conf": 0.82,
+          "distance": null,
+          "tagged": null,
+          "track": 7,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            1724.6,
+            735.8,
+            1833.4,
+            857.4
+          ],
+          "conf": 0.82,
+          "distance": null,
+          "tagged": null,
+          "track": 12,
+          "plate": null
+        },
+        {
+          "cls": "enemy",
+          "bbox": [
+            1085.8,
+            735.2,
+            1163.2,
+            821.7
+          ],
+          "conf": 0.728,
+          "distance": null,
+          "tagged": null,
+          "track": 16,
+          "plate": null
+        }
+      ],
+      "coasting": [
+        15
+      ],
+      "bodies": [
+        {
+          "track": 7,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            0
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1668.6,
+            653.8,
+            1777.4,
+            775.4
+          ]
+        },
+        {
+          "track": 12,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            1
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1724.6,
+            735.8,
+            1833.4,
+            857.4
+          ]
+        },
+        {
+          "track": 16,
+          "cls": "enemy",
+          "how": "matched",
+          "own": [
+            2
+          ],
+          "pieces": [],
+          "reference": null,
+          "whole": null,
+          "bbox": [
+            1085.8,
+            735.2,
+            1163.2,
+            821.7
+          ]
+        }
+      ]
+    }
+  }
+]
