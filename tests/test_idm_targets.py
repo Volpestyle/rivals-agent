@@ -105,6 +105,41 @@ def test_a_mouse_button_press_is_an_edge_of_its_bound_action():
     assert rows[0]["press"][SP] == 0 and rows[1]["press"][SP] == 1 and rows[1]["held_end"][SP] == 1
 
 
+@pytest.mark.parametrize("scan,vk", [(5, 52), (34, 71)])
+def test_thank_you_4_and_map_interact_g_are_not_gameplay_edges(scan, vk):
+    """James's 4 thank-you ping opens no menu; G is map interact, also outside vocab."""
+    control = hd.PhysicalKey(device=1, vk=vk, scan=scan, flags=0)
+    h = header(bindings=vocab.DEFAULT_BINDINGS)
+    assert f"key:{scan}:0" not in {pid for group in T._ids(h["bindings"]) for pid in group}
+    events = [ev(A + 1_000_000, "key", device=1, vk=vk, scan=scan, flags=0, down=True),
+              ev(A + 9_000_000, "key", device=1, vk=vk, scan=scan, flags=0, down=True),
+              mouse(A + 18_000_000, 13, -2),
+              ev(A + 25_000_000, "key", device=1, vk=vk, scan=scan, flags=1, down=False)]
+    rows = split((events, [{control}, {control}, {control}, set()]), parent(mouse_dx=13, mouse_dy=-2), h)
+    assert len(rows) == 2  # no target cut merely because the thank-you key was pressed
+    for row in rows:
+        for field in ("press", "release", "held_start", "held_end"):
+            assert row[field] == [0] * N
+        assert all(row["held_known"])
+    assert sum(row["mouse_dx"] for row in rows) == 13
+    assert sum(row["pitch_deg"] for row in rows) == pytest.approx(-2 * .0330738)
+
+
+def test_keyboard_4_preserves_simultaneous_gameplay_and_mouse4_identity():
+    """Keyboard 4 is not mouse button 4 (the existing goh_targeting binding)."""
+    thank_you = hd.PhysicalKey(device=1, vk=52, scan=5, flags=0)
+    events = [ev(A + 1_000_000, "key", device=1, vk=52, scan=5, flags=0, down=True),
+              key(A + 3_000_000, True), mouse(A + 5_000_000, 0, down=[4]),
+              ev(A + 20_000_000, "key", device=1, vk=52, scan=5, flags=1, down=False),
+              mouse(A + 22_000_000, 0, up=[4]), key(A + 25_000_000, False)]
+    held = [{thank_you}, {thank_you, W}, {thank_you, W, 4}, {W, 4}, {W}, set()]
+    edges = one_hot(FWD)
+    edges[vocab.INDEX["goh_targeting"]] = 1
+    rows = split((events, held), parent(press=edges, release=edges), header(bindings=vocab.DEFAULT_BINDINGS))
+    assert rows[0]["press"] == edges and rows[1]["release"] == edges
+    assert sum(map(sum, (r["press"] for r in rows))) == 2
+
+
 def test_halves_that_do_not_add_up_to_the_admitted_row_are_refused():
     events = [mouse(A + 3_000_000, 10)]
     with pytest.raises(T.TargetError, match="mouse counts differ"):
