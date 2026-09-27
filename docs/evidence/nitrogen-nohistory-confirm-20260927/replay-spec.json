@@ -1,0 +1,45 @@
+{
+  "clip": "20260923T171533-187Z-33696-5",
+  "interval": {
+    "path": "/Users/james/dev/range-bc-data/explore/nitrogen-nohistory-confirm-20260927/replay-interval.json",
+    "sha256": "4ddc2064ed515129c3d21b21255a17e23509bd33870d1e6104333427e268292e"
+  },
+  "manifest": "/Users/james/dev/range-bc-data/explore/manifest-full.json",
+  "manifest_sha256": "dbf6bb571e1e281f59c709f551694a8aed0edee9707be6f932921c52c0ed9c0b",
+  "registry": "/Users/james/dev/range-bc-data/explore/nitrogen-nohistory-confirm-20260927/mac-code-c13820c/data/human/session-splits.corpus.json",
+  "tally": "/Users/james/dev/range-bc-data/explore/nitrogen-nohistory-confirm-20260927/mac-code-c13820c/data/human/sessions/tally.json",
+  "device": "mps",
+  "fps": 30,
+  "ffmpeg": "/opt/homebrew/bin/ffmpeg",
+  "ffprobe": "/opt/homebrew/bin/ffprobe",
+  "judgement": {
+    "path": "/Users/james/dev/range-bc-data/explore/nitrogen-nohistory-confirm-20260927/mac-evaluation-a2b/judgement-a3.json",
+    "sha256": "f09019fe10f4c01e7b9fc9440afe099c3c7214dc9c4bf8324aca8009b6a3ce27",
+    "expected_decision": "CONFIRMED"
+  },
+  "models": [
+    {
+      "label": "H1 incumbent",
+      "kind": "chunk",
+      "epoch": 26,
+      "checkpoint": "/Users/james/dev/range-bc-data/explore/modal30-attempt2/collected/h1/epoch-26.pt",
+      "checkpoint_sha256": "2f6aae5d716a095b0d29c3cf32ec5833107e47d0bc6c7b905282e3932ca99767",
+      "calibration": "/Users/james/dev/range-bc-data/explore/modal30-attempt2/collected/h1/evaluation.json",
+      "calibration_sha256": "bfda525a1ee17fc6fc22d1dce6296508744d57a0a0f72109c13a174da76435b0"
+    },
+    {
+      "label": "NitroGen no history",
+      "kind": "encoder",
+      "epoch": 26,
+      "checkpoint": "/Users/james/dev/range-bc-data/explore/nitrogen-nohistory-confirm-20260927/evaluation-recovery/candidate-s1/epoch-26.pt",
+      "checkpoint_sha256": "9f3dfd1a9a2edb1c280f0a2a86a18cb34cfe2a7ce172931823ababca41eebf24",
+      "calibration": "/Users/james/dev/range-bc-data/explore/nitrogen-nohistory-confirm-20260927/evaluation-recovery/candidate-s1/evaluation.json",
+      "calibration_sha256": "1399b086450478335e9c9b63bb4d99d8cc028f0705ebaab6ba90211a5f9b783c",
+      "features": {
+        "path": "/Users/james/dev/range-bc-data/explore/nitrogen-nohistory-confirm-20260927/recovery-features-stage.json",
+        "sha256": "d051df52812522d8973fec3b1e9a2dac5f1a37371cfdfd9798d553b53f66b23e",
+        "inputs_sha256": "14347004b5d12ed44a89d69961fcb2df7be8f1a34444460f145fee3c5797cf21"
+      }
+    }
+  ]
+}
