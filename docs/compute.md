@@ -63,6 +63,13 @@ so give cloud boxes 8 CPUs or more.
 - Every paid run: a benchmark or fan-out script with a hard cap, a projected cost printed before launch, a
   running-spend stop, one class for the whole experiment, and teardown proven afterwards (all apps stopped, no
   containers). Caps are James's: $50 for round 3, and $0 cloud for the explore track unless he adds money.
+  **Weekend cloud total is $150 (2026-09-26/27/28)**, covering round 3, explore and IDM together. James said: "I'd set
+  it to 150, whatever it takes to get this agent going this weekend." Round 3 keeps its $60. Explore and IDM share the
+  rest, each run under its own hard cap. Priority order for that money:
+  1. the pretrained-encoder explore (stock SigLIP init first, then NitroGen vs SigLIP);
+  2. the IDM SSL pilot and press-head runs;
+  3. seeds for any arm where vision measurably matters.
+  Run in parallel on Modal rather than queueing on the Mac. The lead tells James before anything would pass $150.
   **Round-3 cap raised to $60 / 69,120 s** (James, chat, 2026-09-27 ~09:20 CDT). The budget gate stopped at a padded
   $50.92 forecast; about $6 of that is full holds on apps Modal never created. The expected actual spend is ~$45.
   **Explore budget, 2026-09-27** (James, relayed by the steering lead, ~02:15 CDT): a separate **$15** Modal cap covers the
