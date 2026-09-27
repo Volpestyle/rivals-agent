@@ -1,0 +1,141 @@
+# Shared Modal guard, v1
+
+One maintained package, pinned by `RELEASE.json` SHA256. Future run packets hold
+that pin and a spec; they do not copy launcher helpers. Import from a checkout
+of the pinned commit on the Mac and include the same package **and manifest**
+in the immutable, prebuilt worker image. `run_arm` and the remote stage entry
+both verify it. Existing review packets and the parked round-3 ledger stay frozen.
+
+This release must receive **fit-review acceptance of the spend guard before use**.
+The lead installs that acceptance at
+`~/dev/modal_guard/volpestyle/reviews/<release-sha256>.json`, with fields
+`reviewer: fit-review`, `decision: LAND`, `scope: spend-guard`, and
+`release_sha256`. No acceptance is shipped or self-issued by this package.
+
+## Native execution
+
+`runner.run_arm(spec_ref, release_sha256)` runs in a fresh Mac process. It verifies
+`rivals` / `volpestyle` / `ac-kMLf5bJKqF5CAlSbfNhGh0`, queries billing, checks the
+current all-resource rate, reserves the one arm, starts an independent watchdog,
+and creates `modal.App(name, tags={lane, run})`. The SDK is pinned to **1.5.5**.
+There is one L40S, eight bounded CPUs, 32 GiB bounded RAM and one container per app;
+the image and input/output volumes must already exist. No image build or bulk
+upload is hidden inside admission. Those operations need their own budget.
+
+Native `timeout` and `startup_timeout` use measured p95 plus explicit margins.
+`holds.derive` consumes at least 20 complete samples of the same workload and
+target concurrency, using nearest-rank p95. Input reads, hashing, evaluation and
+serialization belong in the whole-work measurements. Censored timeouts and
+mean-throughput extrapolations do not establish p95. The receipt pins the original
+measurement file and the runner recomputes the hold. A new concurrent launcher
+still needs the cheap authorized shakedown required by `docs/compute.md`.
+
+The original wall and monotonic deadline also covers pacing/startup and survives
+worker redelivery; the cleanup allowance follows it. Native timeout alone is not
+a whole-app dollar cap: startup and CPU/RAM are billed too, and Modal can restart
+a crashed/preempted container on the same input. The host watchdog stops only the
+owned app, verifies terminal state and zero containers, and retains an allowance
+if cleanup cannot be proved. A lost Mac/network can prevent proof or teardown;
+Modal's independently configured workspace limit is the outer safety boundary.
+
+Pacing is at least 15 seconds across **all campaigns using the canonical root**.
+Only explicit ResourceExhausted rejection is retried, with a stable idempotency
+key and bounded jitter; unknown RPC outcomes are never retried. The exact reserved
+attempt/app name replaces the broken historical `-02` suffix check. An unresolved
+AppCreate blocks the shared creation gate until absence or terminal reconciliation.
+`isolated_batch` runs separate host processes and lets funded siblings finish when
+one arm fails. Every child independently observes the shared cap and its own guard.
+
+## Small workspace accounting journal
+
+The canonical Mac root is `~/dev/modal_guard/volpestyle/`, with one SQLite database
+named `YYYY-MM.sqlite3`. SQLite transactions serialize admission and state changes.
+Do not create per-campaign ledgers. UTC month rollover requires a fresh billing
+query and reconciled new-month initialization; a launch crossing the boundary is
+refused. Weekend and month are **the same pool**, not two additive budgets.
+
+The current default is **$100**, reflecting the reported actual workspace setting
+on September 27. The code refuses configuration above James's authorized $150
+ceiling. Raising the local cap does not alter Modal's setting. The lead confirms
+and configures a higher cap; the library never writes workspace billing settings.
+
+Billing comes from `modal billing summary --for YYYY-MM --json` plus disjoint
+daily report buckets for completed days and hourly buckets for today, with
+`--tag-names lane,run --json`, always with profile rivals. Hourly requests cannot
+span more than seven days in SDK 1.5.5. Queries, times, identity and raw hashes
+are retained. Use **metered** dollars, not billed dollars after credits. Admission
+fails on any query failure and billing older than 120 seconds; watchdog refreshes
+every 60 seconds. Historical lane estimates are labelled REPORTS and do not
+replace provider actuals. The running total is:
+
+```
+provider metered floor (never decreases during the month)
+  + sum(max(0, each outstanding cost bound - that app's reported actual))
+```
+
+Active apps retain a full prospective bound, including all resources and explicit
+overhead. Terminal proof reduces this to measured driver-through-cleanup cost.
+Per-app billing replaces that bound as it arrives; only the positive unbilled tail
+remains. A billing row is not a final invoice: hourly reports omit partial final
+intervals. This small allowance prevents an early/lagged row from freeing money
+twice. The journal exposes actual and estimated amounts separately. Unmanaged
+apps, storage growth and other external usage still depend on the workspace limit
+and the next billing refresh; this library cannot control another launcher.
+
+Pre-RPC refusal is a distinct, tested settlement: atomically fence creation,
+prove zero RPC attempts, and obtain two complete authenticated absence snapshots
+at least 60 seconds apart. It settles at $0 without inventing an RPC or an app ID.
+Uncertain/rejected RPC absence is separate, observed after the startup window,
+and conservatively retains the full bound. An app later appearing under either
+settled-as-absent name blocks further admission. This new contract does not silently
+rewrite round 3's historical unresolved holds.
+
+## Stage contract
+
+`stages.run` commits STARTED before computation. It commits all outputs before
+publishing `completed.json` last. Re-entry reloads the Volume and reuses a stage
+only if its attempt, code, input, recipe, output volume, original deadline and
+every expected artifact hash/size match. A partial directory is retained and
+refused; it never triggers a second fit. Later, never-started stages may run after
+earlier completed stages verify. Compute callbacks receive their own directory,
+write declared artifacts and return integer zero. They must not do expensive work
+at module import. One writer per stage and one container per app remain required.
+
+## Packet interface
+
+A spec has `attempt_id`, unique `app_name`, `lane`, `release_sha256`, `run_cap_usd`,
+`hold` from `holds.derive`, and `measurement_ref: {path, sha256}`. It also pins
+`image_id`, existing `input_volume`/`input_volume_id`, existing `output_volume`,
+`output_root` under `/outputs`, and `stage_identity` containing `attempt_id`,
+`code_sha256`, `inputs_sha256`, `recipe_sha256`, `output_volume_id`. The runner adds
+the immutable funded `deadline_unix`. Each `stages` item has `name`, `module`,
+`function`, `artifacts` (relative paths), and optional `kwargs`.
+
+```
+python -m cloud.modal_guard run /absolute/spec.json SPEC_SHA256 RELEASE_SHA256
+```
+
+One-time monthly setup (fresh file only) and subsequent read-only billing refresh:
+
+```
+python -m cloud.modal_guard init /absolute/lane-reports.json --cap 100
+python -m cloud.modal_guard status
+```
+
+`init` changes only the local journal. It cannot grant review approval or create
+a Modal app. Reports JSON contains `reports` and `external_holds`; the latter has
+unique `id`, `usd`, and optional `app_id` for already-running foreign launchers.
+Do not omit an active external allowance. Such legacy allowances require explicit
+owner reconciliation; they are never automatically expired by age.
+
+The caller remains responsible for authorized data admission, image/recipe closure,
+lead run authorization and the appropriate scientific judge. A COMPLETE execution
+is not a confirm PASS. No function retry, output overwrite, automatic relaunch,
+sealed-data access, Linear write or paid test is performed by importing the library.
+
+Sources: [Modal preemption](https://modal.com/docs/guide/preemption),
+[failures/retries](https://modal.com/docs/guide/retries),
+[timeouts](https://modal.com/docs/guide/timeouts),
+[billing API](https://modal.com/docs/sdk/py/latest/Workspace#billingreport).
+Provenance and the exact inherited source hashes are in the companion
+`docs/evidence/modal-guard-v1-20260927/` packet.

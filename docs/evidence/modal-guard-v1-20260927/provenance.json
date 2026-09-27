@@ -1,0 +1,40 @@
+{
+  "sources": [
+    {
+      "path": "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a9/fanout/appcreate_gate.py",
+      "sha256_worktree": "2d076fa1c5908b11193a87838879bbd0498de515184a818d61f0586fac44c520",
+      "sha256_git_blob": "2d076fa1c5908b11193a87838879bbd0498de515184a818d61f0586fac44c520"
+    },
+    {
+      "path": "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a9/fanout/cm3_accounting.py",
+      "sha256_worktree": "13c26df40e40f58eb4561b9e655eb71391e3aee4c05546f6e9d3ddbf7b0c7e4d",
+      "sha256_git_blob": "13c26df40e40f58eb4561b9e655eb71391e3aee4c05546f6e9d3ddbf7b0c7e4d"
+    },
+    {
+      "path": "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a9/fanout/lifecycle.py",
+      "sha256_worktree": "9ca93de4f694078b96084764dc117be9fc41e3463eaa89c7bed62ce8c187e9dc",
+      "sha256_git_blob": "9ca93de4f694078b96084764dc117be9fc41e3463eaa89c7bed62ce8c187e9dc"
+    },
+    {
+      "path": "docs/evidence/range-bc-countermeasures-3-20260926/accounting-a9/fanout/cm3_timeouts.py",
+      "sha256_worktree": "2ac8cadf52f66f8dc537fd7fa82e2d028e7af668ceb40ad42332c38992a9d447",
+      "sha256_git_blob": "2ac8cadf52f66f8dc537fd7fa82e2d028e7af668ceb40ad42332c38992a9d447"
+    },
+    {
+      "path": "docs/evidence/idm-press02-proposal-20260927/press_driver.py",
+      "sha256_worktree": "0ecca3b3b85adb2124a64e2a739bc89852d620cee19408a0449b4864466e9fb4",
+      "sha256_git_blob": "0ecca3b3b85adb2124a64e2a739bc89852d620cee19408a0449b4864466e9fb4"
+    },
+    {
+      "path": "docs/evidence/nitrogen-nohistory-confirm-20260927/launch/encoder_driver.py",
+      "sha256_worktree": "006859a86e04d9fcaac247c6904ab32b374c297b2eb8271bb17c3da468af7879",
+      "sha256_git_blob": "006859a86e04d9fcaac247c6904ab32b374c297b2eb8271bb17c3da468af7879"
+    },
+    {
+      "path": "policy/idm/press_stages.py",
+      "sha256_worktree": "7fce25be732fd8d89a657d398ab9cda20b3312fb8134de3d4523e9bca242e833",
+      "sha256_git_blob": "7fce25be732fd8d89a657d398ab9cda20b3312fb8134de3d4523e9bca242e833"
+    }
+  ],
+  "basis": "Reviewed behavioral contracts adapted into one maintained package; original packets unchanged."
+}

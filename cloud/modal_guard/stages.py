@@ -1,0 +1,73 @@
+"""Durable stage boundaries for container redelivery. Partial work never runs twice."""
+from __future__ import annotations
+
+from pathlib import Path
+import time
+
+from .common import artifact, atomic, name, read, require, sha256
+
+
+def identity_check(identity):
+    require(set(identity) == {"attempt_id", "code_sha256", "inputs_sha256", "recipe_sha256",
+                              "output_volume_id", "deadline_unix"}, "complete stage identity required")
+    name(identity["attempt_id"])
+    for key in ("code_sha256", "inputs_sha256", "recipe_sha256"):
+        value = identity[key]
+        require(isinstance(value, str) and len(value) == 64
+                and all(c in "0123456789abcdef" for c in value), "invalid stage pin")
+    require(isinstance(identity["output_volume_id"], str)
+            and identity["output_volume_id"].startswith("vo-"), "output volume identity required")
+
+
+def load(root, stage, identity, expected):
+    identity_check(identity)
+    root = Path(root)
+    require(root.is_dir() and not root.is_symlink(), "partial stage refused")
+    marker = root / "completed.json"
+    require(marker.is_file() and not marker.is_symlink(), "partial stage refused: no completion")
+    before = sha256(marker)
+    receipt = read(marker)
+    require(receipt["format"] == "modal-guard-stage-v1" and receipt["stage"] == stage
+            and receipt["identity"] == identity and receipt["exit_code"] == 0, "stage identity/completion mismatch")
+    require(set(receipt["artifacts"]) == set(expected) and expected, "stage artifact closure mismatch")
+    for relative, info in receipt["artifacts"].items():
+        path = artifact(root, relative)
+        require(path.is_file() and path.stat().st_size == info["bytes"]
+                and sha256(path) == info["sha256"], "stage artifact hash mismatch")
+    require(sha256(marker) == before, "completion changed during read")
+    return receipt
+
+
+def run(root, stage, identity, expected, compute, *, commit, reload, wall=time.time):
+    """Commit STARTED before compute; commit payload before publishing completion.
+
+    commit/reload are the output Volume methods in Modal. One writer per stage;
+    max_containers=1 remains required. On any exception leave STARTED/partial bytes.
+    No training checkpoint resume, stage retry, timeout reset or result promotion.
+    """
+    identity_check(identity)
+    name(stage)
+    require(wall() < identity["deadline_unix"], "original stage deadline expired")
+    root = Path(root)
+    reload()
+    if root.exists():
+        return load(root, stage, identity, expected)
+    root.mkdir(parents=True, exist_ok=False)
+    atomic(root / "started.json", {"identity": identity, "stage": stage}, fresh=True)
+    commit()  # a restarted container must see the claim before expensive work starts
+    code = compute(root)
+    require(code == 0 and type(code) is int, "stage failed; partial output retained")
+    require(wall() < identity["deadline_unix"], "stage finished past funded deadline")
+    files = {}
+    for relative in expected:
+        require(relative not in ("completed.json", "started.json"), "reserved stage filename")
+        path = artifact(root, relative)
+        require(path.is_file(), "missing stage output")
+        files[relative] = {"bytes": path.stat().st_size, "sha256": sha256(path)}
+    require(files, "no stage artifacts")
+    commit()
+    receipt = {"format": "modal-guard-stage-v1", "stage": stage, "identity": identity,
+               "exit_code": 0, "artifacts": files}
+    atomic(root / "completed.json", receipt, fresh=True)
+    commit()
+    return load(root, stage, identity, expected)

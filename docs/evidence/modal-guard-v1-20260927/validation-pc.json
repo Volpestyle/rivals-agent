@@ -1,0 +1,46 @@
+{
+  "checks": [
+    {
+      "command": [
+        "C:\\Users\\volpe\\repos\\rivals-agent\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pytest",
+        "tests/modal_guard",
+        "-q"
+      ],
+      "exit": 0,
+      "output": ".............................................s                           [100%]\n45 passed, 1 skipped in 1.65s\n"
+    },
+    {
+      "command": [
+        "uvx",
+        "ruff",
+        "check",
+        "cloud/modal_guard",
+        "tests/modal_guard"
+      ],
+      "exit": 0,
+      "output": "All checks passed!\n"
+    }
+  ],
+  "tested_source_sha256": {
+    "cloud/modal_guard/__init__.py": "b18696504b1b99c67f72e47811ebb05a32dc05c140763030eebfcbe434b90713",
+    "cloud/modal_guard/__main__.py": "0695f8297b93c46a8a7d7e52aae2090c4a862d0cda2fccc2b20a7a9b81e84e98",
+    "cloud/modal_guard/appcreate.py": "1e60cceab1f9a08f17cddf2a4a5770cbf6e9146f994745d5174671237e74e299",
+    "cloud/modal_guard/common.py": "6b6d96cd9fb2c59cde0c4da9e4f4a2938a2272a8c81229fb63de5dbcceafc9c2",
+    "cloud/modal_guard/holds.py": "373a6821251f37511636a086d9f64648db414b5c581ef7f872e2e1b50328e1ce",
+    "cloud/modal_guard/ledger.py": "a40aacfb3507ba1f13e60f53c40f3614ca644a1531f2172910456dafddeefb6a",
+    "cloud/modal_guard/lifecycle.py": "4bcecef22a187d6b9a0326912795edb01358f4911b5eec92c7704686d8e32a95",
+    "cloud/modal_guard/provider.py": "9f4e64f8c987bea2610281acf8c4ab3493501ef16a90f740785917dd52ab81c6",
+    "cloud/modal_guard/release.py": "9c30ac7168783bb1c56bc2ee9e5cdfaaf78f0af96ab25e4fa114f04cb3d84409",
+    "cloud/modal_guard/runner.py": "c48238698467607655aefbbdab06b513913cf19edaaa4e83a42cd7edf1615173",
+    "cloud/modal_guard/stages.py": "215e1583ffc1f275a1fe805074dc2de4f2bc6eb06df54d2039edfba6830774ea",
+    "tests/modal_guard/conftest.py": "3187f336817011cdf6a898d541dbbd5e5e3d65f7b4e3e117b5d3feba2a420088",
+    "tests/modal_guard/test_accounting.py": "2bf6557322b09682b36573c10fc9de82c5317118ef6b7d8e4f2132fb39693c93",
+    "tests/modal_guard/test_adapter.py": "673b7d989a701ece273845e2257d31db75d1b74b889686092aa048975716ce06",
+    "tests/modal_guard/test_lifecycle.py": "4d68fb0007e5f5e980e92d26005dd8509ef2b695dca7825f103a5552c67bb14d",
+    "tests/modal_guard/test_provider.py": "721e1ac53c12b0bf052198754214abe0b997fab211ee7d0f4526ffab47001b96",
+    "tests/modal_guard/test_runtime.py": "55fd7186a50bfccd28c881e3fc344aa745126f98fd45501a68412cbdb65cd505",
+    "tests/modal_guard/test_sdk155.py": "6005f9c04af321746f39e7390d15b7768ea97ea2d8db21d94f95904df6f13f3c"
+  }
+}

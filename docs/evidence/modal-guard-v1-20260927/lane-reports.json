@@ -1,0 +1,33 @@
+{
+  "reports": [
+    {
+      "lane": "round3",
+      "usd": "26.24034256",
+      "kind": "REPORT_NOT_INVOICE",
+      "source": "lead parked disposition; old five pre-RPC holds remain frozen outside this new journal",
+      "unresolved_historical_holds_usd": "15.589909",
+      "no_existing_apps": true
+    },
+    {
+      "lane": "explore-confirm",
+      "usd": "49.026403877872901",
+      "kind": "REPORT_NOT_INVOICE",
+      "source": {
+        "path": "docs/evidence/nitrogen-nohistory-confirm-20260927/explore-spend-report-20260927.json",
+        "sha256": "f1902e7e225df1a5d0de68faa455ca8044a29657806c1c9c12f08ceb39a4c213"
+      }
+    },
+    {
+      "lane": "idm",
+      "usd": "6.335876068670252",
+      "kind": "REPORT_NOT_INVOICE",
+      "source": {
+        "path": "docs/evidence/idm-press-diagnostic-result-20260927/cost-report.json",
+        "sha256": "6cb15e491cd6d5a483455edb67187d06e3662e0f23d42282f0dfd48eea26d0b6"
+      }
+    }
+  ],
+  "external_holds": [],
+  "as_of_utc": "2026-09-27T20:56:22.536274+00:00",
+  "basis": "Latest lane-owner reports; no active or upcoming apps reported; reports do not enter provider actuals."
+}
