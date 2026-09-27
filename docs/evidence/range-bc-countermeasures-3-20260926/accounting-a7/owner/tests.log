@@ -1,0 +1,3 @@
+Runner/cap candidate injection: 64 passed in 98.96s.
+Additional budget03 forecast old/new/seconds_over/dollars_over: 4 passed, 13 deselected in 3.54s.
+Only test fixture fixes after first run; candidate source bytes unchanged.

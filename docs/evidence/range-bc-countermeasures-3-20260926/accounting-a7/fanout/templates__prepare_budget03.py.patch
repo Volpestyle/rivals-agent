@@ -1,0 +1,10 @@
+--- prepare_budget03.py
++++ templates/prepare_budget03.py
+@@ -69,6 +69,6 @@
+  forecast_total_seconds=forecast["forecast_total_seconds"],projected_modal_usd=forecast["projected_modal_usd"],
+  extract_admission=dict(spent_seconds=totals["spent_seconds"],hold_seconds=2220,verification_seconds=300,total_seconds=totals["spent_seconds"]+2520,
+  spent_usd=totals["spent_usd"],hold_usd=extract_hold_usd,verification_usd=verify_usd,total_usd=totals["spent_usd"]+extract_hold_usd+verify_usd),
+- cap_seconds=57600,cap_usd=50,launch_authorized=False,workspace_limit="unconfirmed")
++ cap_seconds=69120,cap_usd=60,launch_authorized=False,workspace_limit="unconfirmed")
+ write(B/"decision.json",decision)
+ print(json.dumps(decision,indent=2))

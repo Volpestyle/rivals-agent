@@ -1,0 +1,20 @@
+--- prior/cm3_run.py
++++ candidate/cm3_run.py
+@@ -330,7 +330,7 @@
+                 "pre-proof pairing manifest not bound")
+         pinned(receipt["pairing"])
+     budget = receipt["budget"]
+-    require(0 < budget["cap_seconds"] <= 16 * 3600 and budget["spent_seconds"] >= previous_elapsed
++    require(0 < budget["cap_seconds"] <= 69120 and budget["spent_seconds"] >= previous_elapsed
+             and 0 < budget["stage_seconds"] <= budget["cap_seconds"] - budget["spent_seconds"], "budget exhausted")
+     require(budget["approved_by"] == "herdr-lead", "budget not approved")
+     if "accounting" in budget:
+@@ -971,7 +971,7 @@
+     check_namespace(receipt, ref)
+     require(Path(receipt["output"]).is_absolute() and not Path(receipt["output"]).exists(), "new absolute verification output required")
+     budget = receipt["budget"]
+-    require(budget["approved_by"] == "herdr-lead" and 0 < budget["cap_seconds"] <= 57600
++    require(budget["approved_by"] == "herdr-lead" and 0 < budget["cap_seconds"] <= 69120
+             and 0 < budget["stage_seconds"] <= budget["cap_seconds"] - budget["spent_seconds"], "verification budget exhausted")
+     if "accounting" in budget:
+         accounting.allocation(budget, document, required_results=receipt["outputs"])

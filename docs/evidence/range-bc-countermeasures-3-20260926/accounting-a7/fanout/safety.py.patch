@@ -1,0 +1,37 @@
+--- appcreate-a6-watch-draft-20260927/safety.py
++++ safety.py
+@@ -45,7 +45,7 @@
+         number(p[key],key,True)
+     for key in ("spent_before_usd","spent_before_compute_seconds","overhead_reserve_usd","startup_shutdown_reserve_seconds"):
+         number(p[key],key)
+-    require(p["cap_usd"]<=50,"cap invalid")
++    require(p["cap_usd"]<=60,"cap invalid")
+     require("attempt_timeout_seconds" not in p and "expected_fit_seconds" not in p,"uniform timeout/forecast forbidden")
+     measured=timeouts.measured_seconds(document(p["smoke_timing"]))
+     require(p["expected_fit_seconds_by_arm"]==measured,"smoke timing substitution")
+@@ -151,7 +151,7 @@
+             accounting.ledger(ref,measured_doc,required_results=data["completed_phase1"].values())
+         out=projection(p)
+         require(totals["spent_usd"]+out["reserved_max_usd"] <= p["cap_usd"], "campaign dollar reservation exceeds cap")
+-        require(totals["spent_seconds"]+out["remaining_compute_seconds"] <= 57600, "campaign aggregate compute exceeds 16 hours")
++        require(totals["spent_seconds"]+out["remaining_compute_seconds"] <= 69120, "campaign aggregate compute exceeds 19.2 hours")
+         return data
+     require(data["format"]=="cm3-campaign-ledger-v1" and data["approved_by"]=="herdr-lead","campaign ledger not approved")
+     require(data["campaign_id"]==p["campaign_id"] and data["profile"]=="rivals" and data["workspace"]=="volpestyle","wrong campaign ledger")
+@@ -189,7 +189,7 @@
+         for key,g in expected.items():require(data["completed_phase1"][key]==gate["outputs"][g],"phase1 ledger selected attempt mismatch")
+     out=projection(p)
+     require(usd+out["reserved_max_usd"]<=p["cap_usd"],"campaign dollar reservation exceeds cap")
+-    require(seconds+out["remaining_compute_seconds"]<=57600,"campaign aggregate compute exceeds 16 hours")
++    require(seconds+out["remaining_compute_seconds"]<=69120,"campaign aggregate compute exceeds 19.2 hours")
+     return data
+ def clock_bound(p,wall=None,mono=None):
+     numeric_plan(p)
+@@ -243,6 +243,6 @@
+     require(budget["stage_overhead_usd"]==overhead,"owner overhead allocation mismatch")
+     require(budget["hold_usd"]>=timeouts.hold_usd(hold)+overhead,"owner hold dollars underfunded")
+     require(budget["hourly_usd"]==p["resource_rate_usd_second"]*3600,"owner resource rate differs")
+-    require(budget["cap_seconds"]<=57600 and budget["cloud_cap_usd"]==p["cap_usd"],"owner cap differs")
++    require(budget["cap_seconds"]<=69120 and budget["cloud_cap_usd"]==p["cap_usd"],"owner cap differs")
+     require(budget["spent_seconds"]==p["spent_before_compute_seconds"] and budget["spent_usd"]==p["spent_before_usd"],"owner prior spend differs")
+     require(budget["accounting"]["sha256"]==p["campaign_ledger"]["sha256"],"owner accounting pin differs")

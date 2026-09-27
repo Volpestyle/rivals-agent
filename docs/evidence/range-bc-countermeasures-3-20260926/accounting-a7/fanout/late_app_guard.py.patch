@@ -1,0 +1,11 @@
+--- appcreate-a6-watch-draft-20260927/late_app_guard.py
++++ late_app_guard.py
+@@ -9,7 +9,7 @@
+ import cm3_accounting as accounting
+ 
+ IDENTITY = accounting.IDENTITY
+-HELPER_SHA256 = "6222e2dcfcfde138ebec25b1e2933fd7a4f1cb75a2df0ffa14e944a6cb642b4a"
++HELPER_SHA256 = "13c26df40e40f58eb4561b9e655eb71391e3aee4c05546f6e9d3ddbf7b0c7e4d"
+ ROOT = pathlib.Path(__file__).resolve().parent
+ 
+ 

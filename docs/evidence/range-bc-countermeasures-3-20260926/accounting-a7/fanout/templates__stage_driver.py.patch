@@ -1,0 +1,11 @@
+--- smoke03-proposal/stage_driver.py
++++ templates/stage_driver.py
+@@ -32,7 +32,7 @@
+  for value in budget.values():assert type(value) in (int,float) and math.isfinite(value) and value>=0
+  assert budget["work_seconds"]==600 and budget["reserved_seconds"]==1020
+  assert budget["overhead_usd"]+budget["reserved_seconds"]*budget["rate_usd_second"]<=budget["reserved_usd"]+1e-12
+- assert budget=={"cap_seconds":57600,"cap_usd":50,"cleanup_seconds":120,"overhead_usd":0.2678032,
++ assert budget=={"cap_seconds":69120,"cap_usd":60,"cleanup_seconds":120,"overhead_usd":0.2678032,
+  "prior_seconds":24373,"prior_usd":19.35691756,"rate_usd_second":0.00071784,"reserved_seconds":1020,
+  "reserved_usd":1,"startup_seconds":300,"work_seconds":600}
+  campaign=OLD/"bootstrap-campaign"

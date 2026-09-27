@@ -1,0 +1,402 @@
+..........................EE.............EFF.EFEEF.EEE.EFE
+======================================================================
+ERROR: test_native_sdk_resource_exhausted_only_retries (test_appcreate_gate.GateTests.test_native_sdk_resource_exhausted_only_retries)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/cap60-wrapper/test_appcreate_gate.py", line 255, in test_native_sdk_resource_exhausted_only_retries
+    from modal._grpc_client import UnaryUnaryWrapper
+ModuleNotFoundError: No module named 'modal'
+
+======================================================================
+ERROR: test_native_sdk_stub_install_and_restore_no_network (test_appcreate_gate.GateTests.test_native_sdk_stub_install_and_restore_no_network)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/cap60-wrapper/test_appcreate_gate.py", line 188, in test_native_sdk_stub_install_and_restore_no_network
+    import modal.client
+ModuleNotFoundError: No module named 'modal'
+
+======================================================================
+ERROR: test_before_reservation_rejects_without_creating_new_holds (test_late_app_guard.WatchTests.test_before_reservation_rejects_without_creating_new_holds)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/cap60-wrapper/test_late_app_guard.py", line 143, in test_before_reservation_rejects_without_creating_new_holds
+    await asyncio.to_thread(lifecycle.reserve,self.plan,self.root/"campaigns",guard.IDENTITY)
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/asyncio/threads.py", line 25, in to_thread
+    return await loop.run_in_executor(None, func_call)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/cap60-wrapper/lifecycle.py", line 57, in reserve
+    before_reservation(p,campaign,identity)
+  File "/Users/james/dev/range-bc-data/handoff/modal/cap60-wrapper/late_app_guard.py", line 172, in before_reservation
+    from modal._utils.async_utils import synchronizer
+ModuleNotFoundError: No module named 'modal'
+
+======================================================================
+ERROR: test_inventory_timeout_refuses (test_late_app_guard.WatchTests.test_inventory_timeout_refuses)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/cap60-wrapper/test_late_app_guard.py", line 125, in test_inventory_timeout_refuses
+    await guard.admit_async(self.plan,self.root/"evidence","test",inspector=broken)
+  File "/Users/james/dev/range-bc-data/handoff/modal/cap60-wrapper/late_app_guard.py", line 145, in admit_async
+    watchlist = watches(plan)  # Never trust a caller's copied watch list.
+                ^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/cap60-wrapper/late_app_guard.py", line 31, in watches
+    require(helper == ROOT / "cm3_accounting.py" and
+  File "/Users/james/dev/range-bc-data/handoff/modal/cap60-wrapper/late_app_guard.py", line 18, in require
+    raise ValueError(message)
+ValueError: A6 helper pin mismatch
+
+======================================================================
+ERROR: test_late_running_app_mutation_refuses_second_admission (test_late_app_guard.WatchTests.test_late_running_app_mutation_refuses_second_admission)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/cap60-wrapper/test_late_app_guard.py", line 89, in test_late_running_app_mutation_refuses_second_admission
+    await self.admit()
+  File "/Users/james/dev/range-bc-data/handoff/modal/cap60-wrapper/test_late_app_guard.py", line 81, in admit
+    return await guard.admit_async(self.plan,self.root/"evidence","test",inspector=self.snapshot)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/cap60-wrapper/late_app_guard.py", line 145, in admit_async
+    watchlist = watches(plan)  # Never trust a caller's copied watch list.
+                ^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/cap60-wrapper/late_app_guard.py", line 31, in watches
+    require(helper == ROOT / "cm3_accounting.py" and
+  File "/Users/james/dev/range-bc-data/handoff/modal/cap60-wrapper/late_app_guard.py", line 18, in require
+    raise ValueError(message)
+ValueError: A6 helper pin mismatch
+
+======================================================================
+ERROR: test_late_stopped_app_mutation_also_refuses (test_late_app_guard.WatchTests.test_late_stopped_app_mutation_also_refuses)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/cap60-wrapper/test_late_app_guard.py", line 96, in test_late_stopped_app_mutation_also_refuses
+    await self.admit()
+  File "/Users/james/dev/range-bc-data/handoff/modal/cap60-wrapper/test_late_app_guard.py", line 81, in admit
+    return await guard.admit_async(self.plan,self.root/"evidence","test",inspector=self.snapshot)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/cap60-wrapper/late_app_guard.py", line 145, in admit_async
+    watchlist = watches(plan)  # Never trust a caller's copied watch list.
+                ^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/cap60-wrapper/late_app_guard.py", line 31, in watches
+    require(helper == ROOT / "cm3_accounting.py" and
+  File "/Users/james/dev/range-bc-data/handoff/modal/cap60-wrapper/late_app_guard.py", line 18, in require
+    raise ValueError(message)
+ValueError: A6 helper pin mismatch
+
+======================================================================
+ERROR: test_name_mandatory_even_null_key (test_late_app_guard.WatchTests.test_name_mandatory_even_null_key)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/cap60-wrapper/test_late_app_guard.py", line 109, in test_name_mandatory_even_null_key
+    watches=guard.watches(self.plan);watches[0]["logical_request_id"]=None
+            ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/cap60-wrapper/late_app_guard.py", line 31, in watches
+    require(helper == ROOT / "cm3_accounting.py" and
+  File "/Users/james/dev/range-bc-data/handoff/modal/cap60-wrapper/late_app_guard.py", line 18, in require
+    raise ValueError(message)
+ValueError: A6 helper pin mismatch
+
+======================================================================
+ERROR: test_native_sdk_partial_environment_read_refuses (test_late_app_guard.WatchTests.test_native_sdk_partial_environment_read_refuses)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/cap60-wrapper/test_late_app_guard.py", line 192, in test_native_sdk_partial_environment_read_refuses
+    import modal.client,modal.config
+ModuleNotFoundError: No module named 'modal'
+
+======================================================================
+ERROR: test_native_sdk_scans_all_environments_without_network (test_late_app_guard.WatchTests.test_native_sdk_scans_all_environments_without_network)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/cap60-wrapper/test_late_app_guard.py", line 167, in test_native_sdk_scans_all_environments_without_network
+    import modal.client,modal.config
+ModuleNotFoundError: No module named 'modal'
+
+======================================================================
+ERROR: test_real_a6_canonical_ledger_emits_watch (test_late_app_guard.WatchTests.test_real_a6_canonical_ledger_emits_watch)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/cap60-wrapper/test_late_app_guard.py", line 83, in test_real_a6_canonical_ledger_emits_watch
+    watch=guard.watches(self.plan)
+          ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/cap60-wrapper/late_app_guard.py", line 31, in watches
+    require(helper == ROOT / "cm3_accounting.py" and
+  File "/Users/james/dev/range-bc-data/handoff/modal/cap60-wrapper/late_app_guard.py", line 18, in require
+    raise ValueError(message)
+ValueError: A6 helper pin mismatch
+
+======================================================================
+ERROR: test_unobservable_key_does_not_infer_match (test_late_app_guard.WatchTests.test_unobservable_key_does_not_infer_match)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/cap60-wrapper/test_late_app_guard.py", line 107, in test_unobservable_key_does_not_infer_match
+    await self.admit()
+  File "/Users/james/dev/range-bc-data/handoff/modal/cap60-wrapper/test_late_app_guard.py", line 81, in admit
+    return await guard.admit_async(self.plan,self.root/"evidence","test",inspector=self.snapshot)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/cap60-wrapper/late_app_guard.py", line 145, in admit_async
+    watchlist = watches(plan)  # Never trust a caller's copied watch list.
+                ^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/cap60-wrapper/late_app_guard.py", line 31, in watches
+    require(helper == ROOT / "cm3_accounting.py" and
+  File "/Users/james/dev/range-bc-data/handoff/modal/cap60-wrapper/late_app_guard.py", line 18, in require
+    raise ValueError(message)
+ValueError: A6 helper pin mismatch
+
+======================================================================
+FAIL: test_changed_ledger_digest_refuses_before_provider_read (test_late_app_guard.WatchTests.test_changed_ledger_digest_refuses_before_provider_read)
+----------------------------------------------------------------------
+ValueError: A6 helper pin mismatch
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/cap60-wrapper/test_late_app_guard.py", line 129, in test_changed_ledger_digest_refuses_before_provider_read
+    with self.assertRaisesRegex(ValueError,"digest"):await self.admit()
+AssertionError: "digest" does not match "A6 helper pin mismatch"
+
+======================================================================
+FAIL: test_changed_reconciliation_refuses (test_late_app_guard.WatchTests.test_changed_reconciliation_refuses)
+----------------------------------------------------------------------
+ValueError: A6 helper pin mismatch
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/cap60-wrapper/test_late_app_guard.py", line 134, in test_changed_reconciliation_refuses
+    with self.assertRaisesRegex(ValueError,"digest"):await self.admit()
+AssertionError: "digest" does not match "A6 helper pin mismatch"
+
+======================================================================
+FAIL: test_key_match_with_changed_name_refuses (test_late_app_guard.WatchTests.test_key_match_with_changed_name_refuses)
+----------------------------------------------------------------------
+ValueError: A6 helper pin mismatch
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/cap60-wrapper/test_late_app_guard.py", line 101, in test_key_match_with_changed_name_refuses
+    with self.assertRaisesRegex(ValueError,"late app"):await self.admit()
+AssertionError: "late app" does not match "A6 helper pin mismatch"
+
+======================================================================
+FAIL: test_logical_key_match_refuses (test_late_app_guard.WatchTests.test_logical_key_match_refuses)
+----------------------------------------------------------------------
+ValueError: A6 helper pin mismatch
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/cap60-wrapper/test_late_app_guard.py", line 104, in test_logical_key_match_refuses
+    with self.assertRaisesRegex(ValueError,"late app"):await self.admit()
+AssertionError: "late app" does not match "A6 helper pin mismatch"
+
+======================================================================
+FAIL: test_retry_rechecks_live_inventory_and_never_creates_second_app (test_late_app_guard.WatchTests.test_retry_rechecks_live_inventory_and_never_creates_second_app)
+----------------------------------------------------------------------
+ValueError: A6 helper pin mismatch
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/unittest/async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/unittest/async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/judge-runtime/cpython-3.11.12-macos-aarch64-none/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/james/dev/range-bc-data/handoff/modal/cap60-wrapper/test_late_app_guard.py", line 162, in test_retry_rechecks_live_inventory_and_never_creates_second_app
+    with self.assertRaisesRegex(ValueError,"late app"):
+AssertionError: "late app" does not match "A6 helper pin mismatch"
+
+----------------------------------------------------------------------
+Ran 58 tests in 0.641s
+
+FAILED (failures=5, errors=11)

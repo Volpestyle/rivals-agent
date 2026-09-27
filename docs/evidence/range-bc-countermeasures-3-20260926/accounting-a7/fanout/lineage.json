@@ -1,0 +1,92 @@
+{
+  "appcreate_gate.py": {
+    "before_sha256": "2d076fa1c5908b11193a87838879bbd0498de515184a818d61f0586fac44c520",
+    "sha256": "2d076fa1c5908b11193a87838879bbd0498de515184a818d61f0586fac44c520",
+    "source": "/Users/james/dev/range-bc-data/handoff/modal/appcreate-a6-watch-draft-20260927/appcreate_gate.py"
+  },
+  "canonical_safety.py": {
+    "before_sha256": "f01b893508ea5bbccac4e1d0416666ef12aae2ed41cadf80fca5e54792ac09a0",
+    "sha256": "0b2ce44a3c5ce3d9ccf38f6aacf394391969e838e177d7a7f9bc3f952cc786c5",
+    "source": "/Users/james/dev/range-bc-data/handoff/modal/smoke03-proposal/canonical_safety.py"
+  },
+  "cm3_accounting.py": {
+    "before_sha256": "13c26df40e40f58eb4561b9e655eb71391e3aee4c05546f6e9d3ddbf7b0c7e4d",
+    "sha256": "13c26df40e40f58eb4561b9e655eb71391e3aee4c05546f6e9d3ddbf7b0c7e4d",
+    "source": "/Users/james/dev/range-bc-data/handoff/modal/cap60-owner-review/cm3_accounting.py"
+  },
+  "cm3_budget_plan.py": {
+    "before_sha256": "4e2bd9f572f6883c91a872c16a4d1466bddce55730a469de01af8f73f7ec1b56",
+    "sha256": "4e2bd9f572f6883c91a872c16a4d1466bddce55730a469de01af8f73f7ec1b56",
+    "source": "/Users/james/dev/range-bc-data/handoff/modal/cap60-owner-review/cm3_budget_plan.py"
+  },
+  "cm3_timeouts.py": {
+    "before_sha256": "de57202e85942651ebeea699f6b0a834ee72bfab0d0c270d153edf2e9a84c097",
+    "sha256": "de57202e85942651ebeea699f6b0a834ee72bfab0d0c270d153edf2e9a84c097",
+    "source": "/Users/james/dev/range-bc-data/handoff/modal/cap60-owner-review/cm3_timeouts.py"
+  },
+  "guard.py": {
+    "before_sha256": "905fd841d2ca7509c2d8abaadb84086fc3ee715f11126c1f2d061025be4c58a2",
+    "sha256": "905fd841d2ca7509c2d8abaadb84086fc3ee715f11126c1f2d061025be4c58a2",
+    "source": "/Users/james/dev/range-bc-data/handoff/modal/appcreate-a6-watch-draft-20260927/guard.py"
+  },
+  "job_status.py": {
+    "before_sha256": "df4dd2f05ef9aeabe6504927f37ca4bf983544aa58b8905d2bd9bfe5f5de6541",
+    "sha256": "df4dd2f05ef9aeabe6504927f37ca4bf983544aa58b8905d2bd9bfe5f5de6541",
+    "source": "/Users/james/dev/range-bc-data/handoff/modal/appcreate-a6-watch-draft-20260927/job_status.py"
+  },
+  "late_app_guard.py": {
+    "before_sha256": "caf3d2834736ad047a6f01d4d7e59408d05b1177ad20fd55ca119db2c8bc2b3d",
+    "sha256": "8a882c0fa21e3cffba7ded2fac5f23f55532ad06aa561ca99c33ec66a3fdf469",
+    "source": "/Users/james/dev/range-bc-data/handoff/modal/appcreate-a6-watch-draft-20260927/late_app_guard.py"
+  },
+  "lifecycle.py": {
+    "before_sha256": "9ca93de4f694078b96084764dc117be9fc41e3463eaa89c7bed62ce8c187e9dc",
+    "sha256": "9ca93de4f694078b96084764dc117be9fc41e3463eaa89c7bed62ce8c187e9dc",
+    "source": "/Users/james/dev/range-bc-data/handoff/modal/appcreate-a6-watch-draft-20260927/lifecycle.py"
+  },
+  "make_receipt.py": {
+    "before_sha256": "056e178d4fc9d57451480a1e051121da9fd01dee0ef230d5e5a3c0191ccd099e",
+    "sha256": "056e178d4fc9d57451480a1e051121da9fd01dee0ef230d5e5a3c0191ccd099e",
+    "source": "/Users/james/dev/range-bc-data/handoff/modal/cap60-owner-review/make_receipt.py"
+  },
+  "owner-files.json": {
+    "before_sha256": "61662519eddd23149ccfdaab7765ef35f56b034513152347fb4c7178a1e383f5",
+    "sha256": "61662519eddd23149ccfdaab7765ef35f56b034513152347fb4c7178a1e383f5",
+    "source": "/Users/james/dev/range-bc-data/handoff/modal/cap60-owner-review/files.json"
+  },
+  "safety.py": {
+    "before_sha256": "f01b893508ea5bbccac4e1d0416666ef12aae2ed41cadf80fca5e54792ac09a0",
+    "sha256": "0b2ce44a3c5ce3d9ccf38f6aacf394391969e838e177d7a7f9bc3f952cc786c5",
+    "source": "/Users/james/dev/range-bc-data/handoff/modal/appcreate-a6-watch-draft-20260927/safety.py"
+  },
+  "serial-runtime/safety.py": {
+    "before_sha256": "5b3d9d30897a5fa2f60f1541631ac984261c549517b6bdda3a935381c4b8e89a",
+    "sha256": "0d140546fa17ef3cf4ca7e0006dbc5014cce3bd4ede2762be2a4cce89eb7d984",
+    "source": "/Users/james/dev/range-bc-data/handoff/modal/smoke03-proposal/wrapper-runtime/safety.py"
+  },
+  "task_driver.py": {
+    "before_sha256": "262a7bcabd435e18edd4d03ae6e99549b580be76d3d1e73d26ca5eb53a7d3d17",
+    "sha256": "262a7bcabd435e18edd4d03ae6e99549b580be76d3d1e73d26ca5eb53a7d3d17",
+    "source": "/Users/james/dev/range-bc-data/handoff/modal/appcreate-a6-watch-draft-20260927/task_driver.py"
+  },
+  "templates/prepare_budget03.py": {
+    "before_sha256": "14aa45ab97bc3373bad44cd0d39f450ade565da79a05434e1b8bd6efbe3cf606",
+    "sha256": "1d515393d3da8d60f232797e6f893d5d20fc8c7dd63665176f67aa3882b67fdc",
+    "source": "/Users/james/dev/range-bc-data/handoff/modal/prepare_budget03.py"
+  },
+  "templates/stage_driver.py": {
+    "before_sha256": "bf46552eeaf60f4ecbf9e2977f5497c21e43497ad5ed769990b7897d4c202853",
+    "sha256": "3928e273f53787821f0e2881bf3c9b3c782a609e72a96b61ad5ecde9588e07f4",
+    "source": "/Users/james/dev/range-bc-data/handoff/modal/smoke03-proposal/stage_driver.py"
+  },
+  "test_appcreate_gate.py": {
+    "before_sha256": "474cca8fd2eb491cf3e0c9e1fef7706dbb722282b03cb95047dc9ef80d579bde",
+    "sha256": "474cca8fd2eb491cf3e0c9e1fef7706dbb722282b03cb95047dc9ef80d579bde",
+    "source": "/Users/james/dev/range-bc-data/handoff/modal/appcreate-a6-watch-draft-20260927/test_appcreate_gate.py"
+  },
+  "test_late_app_guard.py": {
+    "before_sha256": "8142a74474ac6a77ffe0a5465fa02ea2d1c1fb83e8c76e4dc7c2ca795e553c3a",
+    "sha256": "8142a74474ac6a77ffe0a5465fa02ea2d1c1fb83e8c76e4dc7c2ca795e553c3a",
+    "source": "/Users/james/dev/range-bc-data/handoff/modal/appcreate-a6-watch-draft-20260927/test_late_app_guard.py"
+  }
+}

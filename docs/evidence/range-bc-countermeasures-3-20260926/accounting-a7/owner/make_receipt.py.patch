@@ -1,0 +1,20 @@
+--- prior/make_receipt.py
++++ candidate/make_receipt.py
+@@ -134,7 +134,7 @@
+         budget = dict(self.state['allocation'])
+         complete(budget, 'allocation')
+         require(budget['approved_by'] == 'herdr-lead', 'allocation is a proposal for the lead')
+-        require(0 < budget['cap_seconds'] <= 57600 and 0 < budget['stage_seconds']
++        require(0 < budget['cap_seconds'] <= 69120 and 0 < budget['stage_seconds']
+                 <= budget['cap_seconds'] - budget['spent_seconds'], 'invalid remaining compute allocation')
+         require(budget['spent_seconds'] >= max((r['elapsed_total_seconds'] for r in results.values()), default=0),
+                 'spent compute moved backwards')
+@@ -148,7 +148,7 @@
+             require(accounting.Decimal(str(budget['spent_usd'])) + accounting.Decimal(str(budget['hold_usd']))
+                     + reserve_usd <= accounting.Decimal(str(budget['cloud_cap_usd'])),
+                     'verification dollar reserve exhausted')
+-        require(0 < budget['hourly_usd'] and 0 < budget['cloud_cap_usd'] <= 50
++        require(0 < budget['hourly_usd'] and 0 < budget['cloud_cap_usd'] <= 60
+                 and ('accounting' in budget or budget['hourly_usd'] * budget['cap_seconds'] / 3600 <= budget['cloud_cap_usd']), 'cloud ceiling exceeded')
+         if stage in ('extract', 'fit'):
+             approved = self.approved(self.state['budget_approval'], 'budget')

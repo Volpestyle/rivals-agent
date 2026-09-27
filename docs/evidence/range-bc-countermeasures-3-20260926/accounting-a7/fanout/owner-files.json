@@ -1,0 +1,20 @@
+{
+  "files": {
+    "HANDBACK.md": "c13879af1e2ef8e754cc43c243687c70a033baa22b00f515c4b3a9471c15aed2",
+    "budget03-numbers.json": "b1b17b69978c91a8707fbbc4665cd5bd040b3b8ef25a73d04426c194c49add65",
+    "cm3_accounting.py": "13c26df40e40f58eb4561b9e655eb71391e3aee4c05546f6e9d3ddbf7b0c7e4d",
+    "cm3_accounting.py.patch": "41fb440e765022e6ae9b56abf8d9007fe77b42aa8c6de4e64a7caf36410006f0",
+    "cm3_budget_plan.py": "4e2bd9f572f6883c91a872c16a4d1466bddce55730a469de01af8f73f7ec1b56",
+    "cm3_run.py": "7f27cd5d777ac24294083878379daf4d2a276b263c8131ffb568dd92c69693bd",
+    "cm3_run.py.patch": "bd532f56ca9fbc2b340ba3aa36096d82926753b0d039ce5c9bfb2e5c2bb5f586",
+    "cm3_timeouts.py": "de57202e85942651ebeea699f6b0a834ee72bfab0d0c270d153edf2e9a84c097",
+    "lineage.json": "8c7df2585f6de64e3bd1ffb5780678a192580f1d0b24bb401531186538c7e8b3",
+    "make_receipt.py": "056e178d4fc9d57451480a1e051121da9fd01dee0ef230d5e5a3c0191ccd099e",
+    "make_receipt.py.patch": "7336e341599b1a84a404afe2eb66b796a0c20d96d2330c26913da4e09d42cf89",
+    "prereg-aN-cap60.md": "50ec537b460bbc744fd7694148d6b97d8be527d8fa5fccf6b4b2afa3c1a85d49",
+    "run_tests.py": "7d1eac2d3ca643d0fe2f07f5065150baf123e7818a9bd9b5f39ab2fdec387727",
+    "test_cap60.py": "1d1cf01281a5e97ed7a85c139f2a82b5171b580c4de5b3a055fe906d452156fe",
+    "tests.log": "5672c2064d140b79d0652c17bf90954fc55b01cb656ea9ef28f995d1520142db"
+  },
+  "status": "FROZEN_OWNER_CAP60_CANDIDATE"
+}

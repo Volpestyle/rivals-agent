@@ -1,0 +1,20 @@
+--- smoke03-proposal/wrapper-runtime/safety.py
++++ serial-runtime/safety.py
+@@ -41,7 +41,7 @@
+         number(p[key],key,True)
+     for key in ("spent_before_usd","spent_before_compute_seconds","overhead_reserve_usd","startup_shutdown_reserve_seconds"):
+         number(p[key],key)
+-    require(p["cap_usd"]<=50 and p["attempt_timeout_seconds"]>30,"cap/timeout invalid")
++    require(p["cap_usd"]<=60 and p["attempt_timeout_seconds"]>30,"cap/timeout invalid")
+     require(p["overhead_reserve_usd"]>=MIN_OVERHEAD_USD,"insufficient non-GPU overhead reserve")
+     require(p["startup_shutdown_reserve_seconds"]>=STARTUP_SECONDS+STOP_SECONDS,"startup/stop reserve below enforced timeouts")
+     require(p["attempts_max"]==1,"no automatic retry")
+@@ -119,7 +119,7 @@
+         for key,g in expected.items():require(data["completed_phase1"][key]==gate["outputs"][g],"phase1 ledger selected attempt mismatch")
+     out=projection(p)
+     require(usd+out["reserved_max_usd"]<=p["cap_usd"],"campaign dollar reservation exceeds cap")
+-    require(seconds+out["remaining_compute_seconds"]<=57600,"campaign aggregate compute exceeds 16 hours")
++    require(seconds+out["remaining_compute_seconds"]<=69120,"campaign aggregate compute exceeds 19.2 hours")
+     return data
+ def clock_bound(p,wall=None,mono=None):
+     # Must execute and persist before app/image creation; callers cannot set either clock.

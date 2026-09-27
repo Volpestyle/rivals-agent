@@ -1,0 +1,27 @@
+{
+  "cm3_run.py": {
+    "source": "C:\\Users\\volpe\\repos\\rivals-agent\\policy\\range_bc\\cm3_run.py",
+    "source_sha256": "327f51225949f4bdb16da427fbabbf9439005f8e5b09a9455e760ba75acf4900",
+    "candidate_sha256": "7f27cd5d777ac24294083878379daf4d2a276b263c8131ffb568dd92c69693bd"
+  },
+  "cm3_accounting.py": {
+    "source": "C:\\Users\\volpe\\repos\\rivals-agent\\policy\\range_bc\\cm3_accounting.py",
+    "source_sha256": "6222e2dcfcfde138ebec25b1e2933fd7a4f1cb75a2df0ffa14e944a6cb642b4a",
+    "candidate_sha256": "13c26df40e40f58eb4561b9e655eb71391e3aee4c05546f6e9d3ddbf7b0c7e4d"
+  },
+  "make_receipt.py": {
+    "source": "C:\\Users\\volpe\\repos\\rivals-agent\\docs\\evidence\\range-bc-countermeasures-3-20260926\\accounting-a5\\writer\\make_receipt.py",
+    "source_sha256": "ca1ac228a0fb6495117b81d6b3754810a54ed64ca7a5028df70fa272497c641e",
+    "candidate_sha256": "056e178d4fc9d57451480a1e051121da9fd01dee0ef230d5e5a3c0191ccd099e"
+  },
+  "cm3_budget_plan.py": {
+    "source": "C:\\Users\\volpe\\repos\\rivals-agent\\docs\\evidence\\range-bc-countermeasures-3-20260926\\accounting-a5\\writer\\cm3_budget_plan.py",
+    "source_sha256": "4e2bd9f572f6883c91a872c16a4d1466bddce55730a469de01af8f73f7ec1b56",
+    "candidate_sha256": "4e2bd9f572f6883c91a872c16a4d1466bddce55730a469de01af8f73f7ec1b56"
+  },
+  "cm3_timeouts.py": {
+    "source": "C:\\Users\\volpe\\repos\\rivals-agent\\docs\\evidence\\range-bc-countermeasures-3-20260926\\accounting-a5\\writer\\cm3_timeouts.py",
+    "source_sha256": "de57202e85942651ebeea699f6b0a834ee72bfab0d0c270d153edf2e9a84c097",
+    "candidate_sha256": "de57202e85942651ebeea699f6b0a834ee72bfab0d0c270d153edf2e9a84c097"
+  }
+}

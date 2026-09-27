@@ -1,0 +1,33 @@
+{
+  "files": {
+    "HANDBACK.md": "34ac62b48b5652f1714e3736bf2d3e1fde9134d4b9cd1796aee6368b2e195d0d",
+    "appcreate_gate.py": "2d076fa1c5908b11193a87838879bbd0498de515184a818d61f0586fac44c520",
+    "canonical_safety.py": "0b2ce44a3c5ce3d9ccf38f6aacf394391969e838e177d7a7f9bc3f952cc786c5",
+    "canonical_safety.py.patch": "776b3c0b8f784c5e411747411ce8f1784828b06d2ba39043e070910fac8781ea",
+    "cm3_accounting.py": "13c26df40e40f58eb4561b9e655eb71391e3aee4c05546f6e9d3ddbf7b0c7e4d",
+    "cm3_budget_plan.py": "4e2bd9f572f6883c91a872c16a4d1466bddce55730a469de01af8f73f7ec1b56",
+    "cm3_timeouts.py": "de57202e85942651ebeea699f6b0a834ee72bfab0d0c270d153edf2e9a84c097",
+    "guard.py": "905fd841d2ca7509c2d8abaadb84086fc3ee715f11126c1f2d061025be4c58a2",
+    "job_status.py": "df4dd2f05ef9aeabe6504927f37ca4bf983544aa58b8905d2bd9bfe5f5de6541",
+    "late_app_guard.py": "8a882c0fa21e3cffba7ded2fac5f23f55532ad06aa561ca99c33ec66a3fdf469",
+    "late_app_guard.py.patch": "8903222cf7430bf86e4a62c21033068f196f6ff8d88b06a583a53e8e256324d7",
+    "lifecycle.py": "9ca93de4f694078b96084764dc117be9fc41e3463eaa89c7bed62ce8c187e9dc",
+    "lineage.json": "3e9502de6dcc6f965830bdd388889df16a84327ee5bc5ea225db5cd7b0a8e737",
+    "make_receipt.py": "056e178d4fc9d57451480a1e051121da9fd01dee0ef230d5e5a3c0191ccd099e",
+    "owner-files.json": "61662519eddd23149ccfdaab7765ef35f56b034513152347fb4c7178a1e383f5",
+    "safety.py": "0b2ce44a3c5ce3d9ccf38f6aacf394391969e838e177d7a7f9bc3f952cc786c5",
+    "safety.py.patch": "6eed9a92239e78508d8794dd769d1df4615d4434305e6cab4e0e68e67587f849",
+    "serial-runtime/safety.py": "0d140546fa17ef3cf4ca7e0006dbc5014cce3bd4ede2762be2a4cce89eb7d984",
+    "serial-runtime__safety.py.patch": "8c9a69de3a37c52bf5d2e4f5f978c12b47259abcf998cb369bcdc105a5b1be67",
+    "task_driver.py": "262a7bcabd435e18edd4d03ae6e99549b580be76d3d1e73d26ca5eb53a7d3d17",
+    "templates/prepare_budget03.py": "1d515393d3da8d60f232797e6f893d5d20fc8c7dd63665176f67aa3882b67fdc",
+    "templates/stage_driver.py": "3928e273f53787821f0e2881bf3c9b3c782a609e72a96b61ad5ecde9588e07f4",
+    "templates__prepare_budget03.py.patch": "3997b273991201279cc30038eaf438a3e6563cdb90122e968eee0e13861363e7",
+    "templates__stage_driver.py.patch": "a945161faf1edc68344c4d3dd15d7f9f03e7085b938e7b23d863ad5eb4b27ec4",
+    "test_appcreate_gate.py": "474cca8fd2eb491cf3e0c9e1fef7706dbb722282b03cb95047dc9ef80d579bde",
+    "test_cap60_wrapper.py": "410ff9bff752b777d6d3a2c5ed4dc4291f9cab0ad2cafdf5dcb85d6c34feb074",
+    "test_late_app_guard.py": "8142a74474ac6a77ffe0a5465fa02ea2d1c1fb83e8c76e4dc7c2ca795e553c3a",
+    "tests.initial.log": "459926186a9bdb8a8cee9f0b038e5ad73e5a1d08e3df4b4cda87b614f30d09d6",
+    "tests.log": "0994fe0bc253d8599275744f72a4683a5907e0f33bbd1915a55c292c3c9dfc7f"
+  }
+}

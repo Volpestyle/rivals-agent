@@ -1,0 +1,13 @@
+--- prior/cm3_accounting.py
++++ candidate/cm3_accounting.py
+@@ -10,8 +10,8 @@
+ from pathlib import Path, PurePosixPath
+ import re
+ 
+-CAP_SECONDS = 57600
+-CAP_USD = Decimal('50')
++CAP_SECONDS = 69120
++CAP_USD = Decimal('60')
+ BASIS_SECONDS = 12159
+ BASIS_USD = Decimal('6.18374656')
+ IDENTITY = {'profile': 'rivals', 'workspace': 'volpestyle',
