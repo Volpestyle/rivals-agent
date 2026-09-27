@@ -1,0 +1,41 @@
+{
+  "producer": "admission-codex copying independent fit-review records unchanged",
+  "files": [
+    {
+      "path": "review-pts-anchor-5c20c8d.md",
+      "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\review-pts-anchor-5c20c8d.md",
+      "bytes": 2533,
+      "sha256": "eaa6c67e2779b4acc56ac1baef4cd2ef4ef220590226ed7d0e821b31606a5db4"
+    },
+    {
+      "path": "review-bounded-intake-b28d2e4.md",
+      "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\review-bounded-intake-b28d2e4.md",
+      "bytes": 5446,
+      "sha256": "66fec6239131b391798ff301f3f18e6268f82ade4e6c618ee881cba7791e4bb5"
+    },
+    {
+      "path": "review-admission-job-8593ef5.md",
+      "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\review-admission-job-8593ef5.md",
+      "bytes": 3378,
+      "sha256": "ddf3586068c31f3320b57ab6f48062b94fa4278ff11d7fa7a66da4cb2635fd5f"
+    },
+    {
+      "path": "review-ssl-f641ef3.md",
+      "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\review-ssl-f641ef3.md",
+      "bytes": 3847,
+      "sha256": "66d9f33083cbcc490e8bb11ec116a3caa3711887a5a7b0e2c387177b019185bc"
+    },
+    {
+      "path": "review-ssl-f641ef3-results.json",
+      "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\review-ssl-f641ef3-results.json",
+      "bytes": 1366,
+      "sha256": "f89524ba2328e7fd24f2eb0c641571cd57829a1dc669238b8c7d10f6ccc64b68"
+    },
+    {
+      "path": "review-ssl-f641ef3.py",
+      "source": "C:\\Users\\volpe\\AppData\\Local\\Temp\\claude\\C--Users-volpe\\7e6e33ed-20c0-4115-b6e2-59dc2d360929\\scratchpad\\handoff\\review-ssl-f641ef3.py",
+      "bytes": 5803,
+      "sha256": "4b0852202967fb6b7814e2423dc53a89815420bf1bbe1c1f46294f5d9139e936"
+    }
+  ]
+}

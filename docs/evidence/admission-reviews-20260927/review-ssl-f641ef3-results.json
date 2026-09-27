@@ -1,0 +1,43 @@
+{
+  "packet_sha256": "864e54350343a26ce0111d03d6e76d39bddef2f1e3e1c5cdb898b93e1f42dd02",
+  "forbidden_records": 18,
+  "metadata_pins_match": true,
+  "selected_four_smallest": true,
+  "sources": [
+    {
+      "name": "2026-02-13 21-30-25.mkv",
+      "bytes": 39775792417,
+      "sha256": "2d8f97eb2b85eb0424d68f7b2dbee6dc106990a8904c0c7d8dae0be4c2e47c6e",
+      "compression_line": 56,
+      "current_hash_matches": true,
+      "stat_stable": true
+    },
+    {
+      "name": "2026-02-14 14-27-37.mkv",
+      "bytes": 13001590692,
+      "sha256": "28772a0f0c1845d7a0048b9d2f45527c4737f7f63b1d37174bba2e91c19ae35e",
+      "compression_line": 58,
+      "current_hash_matches": true,
+      "stat_stable": true
+    },
+    {
+      "name": "2026-02-17 16-51-17.mkv",
+      "bytes": 28989212917,
+      "sha256": "772d8062b7239082df5a95bb7cb815b2672bab46efdb3ebc90367e8304ca4479",
+      "compression_line": 108,
+      "current_hash_matches": true,
+      "stat_stable": true
+    },
+    {
+      "name": "2026-02-17 23-51-41.mkv",
+      "bytes": 9153879199,
+      "sha256": "7ec0fa46f84642d537c1706ee2a3d88abcc067fedcdbd35e2c819fb7a4faa18a",
+      "compression_line": 109,
+      "current_hash_matches": true,
+      "stat_stable": true
+    }
+  ],
+  "total_bytes": 90920475225,
+  "total_seconds": 26767.174000000003,
+  "status": "PASS"
+}
