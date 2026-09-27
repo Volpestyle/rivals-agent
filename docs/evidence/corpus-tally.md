@@ -49,6 +49,18 @@ Minutes are **counted minutes**: focused logged time ∩ accepted segments ∩ g
 | 20260926T161008-331Z-116800-2 | 2026-09-26 | 20260926T010620-721Z-63684-5 | idm_train | not_range: replay of self released to idm_train (lead, 2026-09-26) with its live match 20-06-20: never range; its viewer inputs are never a target | - | - | - | - | - | - | - | - |
 | 20260926T162623-219Z-116800-3 | 2026-09-26 | - | - | not_range: OBS false start (13 s, Alt+Tab only); James deleted the video; not a session | - | - | - | - | - | - | - | - |
 | 20260926T162648-153Z-116800-4 | 2026-09-26 | - | - | not_range: leftward yaw calibration take (calibration_sessions); never a split | - | - | - | - | - | - | - | - |
+| 20260927T041331-992Z-150600-1 | 2026-09-26 | - | - | not_range: V-C reader_validation (allocation idm-reader-validation-20260927T030000Z): the 23:13 Competitive match, held out; never trained on | - | - | - | - | - | - | - | - |
+| 20260927T043214-589Z-150600-2 | 2026-09-26 | - | - | not_range: V-C reader_validation: the replay of the 23:13 Competitive match, held out with it; never trained on | - | - | - | - | - | - | - | - |
+| 20260927T045943-301Z-150600-3 | 2026-09-26 | - | - | not_range: V-Q reader_validation (allocation idm-reader-validation-20260927T030000Z): the 23:59 Quick Match, held out; never trained on | - | - | - | - | - | - | - | - |
+| 20260927T051206-888Z-150600-4 | 2026-09-27 | 20260927T051206-888Z-150600-4 | idm_train | not_range: logged live Quick Match registered idm_train (the default for matches): trains the IDM, never the range policy | - | - | - | - | - | - | - | - |
+| 20260927T052001-827Z-150600-5 | 2026-09-27 | 20260927T052001-827Z-150600-5 | idm_train | not_range: logged live Quick Match registered idm_train (the default for matches): trains the IDM, never the range policy | - | - | - | - | - | - | - | - |
+| 20260927T053118-260Z-150600-6 | 2026-09-27 | 20260927T053118-260Z-150600-6 | idm_train | not_range: logged live Quick Match registered idm_train (the default for matches): trains the IDM, never the range policy | - | - | - | - | - | - | - | - |
+| 20260927T053838-153Z-150600-7 | 2026-09-27 | 20260927T053838-153Z-150600-7 | idm_train | not_range: logged live Quick Match registered idm_train (the default for matches): trains the IDM, never the range policy | - | - | - | - | - | - | - | - |
+| 20260927T055006-068Z-150600-8 | 2026-09-27 | 20260927T055006-068Z-150600-8 | idm_train | not_range: logged live Quick Match registered idm_train (the default for matches): trains the IDM, never the range policy | - | - | - | - | - | - | - | - |
+| 20260927T055841-084Z-150600-9 | 2026-09-27 | - | - | not_range: 42 s practice-range fragment (lead, 2026-09-27): left unregistered; not a session | - | - | - | - | - | - | - | - |
+| 20260927T060021-195Z-150600-10 | 2026-09-27 | 20260927T060021-195Z-150600-10 | idm_train | not_range: logged live Quick Match registered idm_train (the default for matches): trains the IDM, never the range policy | - | - | - | - | - | - | - | - |
+| 20260927T061107-953Z-150600-11 | 2026-09-27 | 20260927T061107-953Z-150600-11 | idm_train | not_range: logged live Quick Match registered idm_train (the default for matches): trains the IDM, never the range policy | - | - | - | - | - | - | - | - |
+| 20260927T061900-143Z-150600-12 | 2026-09-27 | 20260927T061900-143Z-150600-12 | idm_train | not_range: logged live Quick Match registered idm_train (the default for matches): trains the IDM, never the range policy | - | - | - | - | - | - | - | - |
 
 **normal, train: 180.57 admitted / 180.56 trainable of 180 minutes** (0.00 to go, 10 sessions).
 normal, val: 15.58 admitted / 15.58 trainable minutes.

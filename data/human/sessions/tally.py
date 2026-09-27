@@ -73,6 +73,21 @@ ROWS = [
     *[dict(session=s, date="2026-09-26", status="sealed", reason=reason) for s, reason in (
         ("20260926T153835-237Z-111496-2", "test take 2026-09-26 (James, 16 min); never read"),
         ("20260926T153812-936Z-111496-1", "held with the 2026-09-26 test take (23 s, same OBS process); never read"))],
+    *[dict(session=s, date="2026-09-26", status="not_range", reason=reason) for s, reason in (
+        ("20260927T041331-992Z-150600-1", "V-C reader_validation (allocation idm-reader-validation-20260927T030000Z): "
+                                          "the 23:13 Competitive match, held out; never trained on"),
+        ("20260927T043214-589Z-150600-2", "V-C reader_validation: the replay of the 23:13 Competitive match, held out "
+                                          "with it; never trained on"),
+        ("20260927T045943-301Z-150600-3", "V-Q reader_validation (allocation idm-reader-validation-20260927T030000Z): "
+                                          "the 23:59 Quick Match, held out; never trained on"))],
+    *[dict(session=s, date="2026-09-27", status="not_range",
+           reason="logged live Quick Match registered idm_train (the default for matches): trains the IDM, never the "
+                  "range policy")
+      for s in ("20260927T051206-888Z-150600-4", "20260927T052001-827Z-150600-5", "20260927T053118-260Z-150600-6",
+                "20260927T053838-153Z-150600-7", "20260927T055006-068Z-150600-8", "20260927T060021-195Z-150600-10",
+                "20260927T061107-953Z-150600-11", "20260927T061900-143Z-150600-12")],
+    dict(session="20260927T055841-084Z-150600-9", date="2026-09-27", status="not_range",
+         reason="42 s practice-range fragment (lead, 2026-09-27): left unregistered; not a session"),
     *[dict(session=s, date="2026-09-25", status="pending", reason="logger folder without a video; not opened")
       for s in ("20260925T234952-361Z-63684-1", "20260926T022734-732Z-63684-10", "20260926T031019-828Z-63684-11",
                 "20260926T033121-111Z-63684-12")],

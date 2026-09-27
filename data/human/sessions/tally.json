@@ -663,6 +663,126 @@
    "split": null,
    "admitted_min": null,
    "trainable_min": null
+  },
+  {
+   "session": "20260927T041331-992Z-150600-1",
+   "date": "2026-09-26",
+   "status": "not_range",
+   "reason": "V-C reader_validation (allocation idm-reader-validation-20260927T030000Z): the 23:13 Competitive match, held out; never trained on",
+   "group": null,
+   "split": null,
+   "admitted_min": null,
+   "trainable_min": null
+  },
+  {
+   "session": "20260927T043214-589Z-150600-2",
+   "date": "2026-09-26",
+   "status": "not_range",
+   "reason": "V-C reader_validation: the replay of the 23:13 Competitive match, held out with it; never trained on",
+   "group": null,
+   "split": null,
+   "admitted_min": null,
+   "trainable_min": null
+  },
+  {
+   "session": "20260927T045943-301Z-150600-3",
+   "date": "2026-09-26",
+   "status": "not_range",
+   "reason": "V-Q reader_validation (allocation idm-reader-validation-20260927T030000Z): the 23:59 Quick Match, held out; never trained on",
+   "group": null,
+   "split": null,
+   "admitted_min": null,
+   "trainable_min": null
+  },
+  {
+   "session": "20260927T051206-888Z-150600-4",
+   "date": "2026-09-27",
+   "status": "not_range",
+   "reason": "logged live Quick Match registered idm_train (the default for matches): trains the IDM, never the range policy",
+   "group": "20260927T051206-888Z-150600-4",
+   "split": "idm_train",
+   "admitted_min": null,
+   "trainable_min": null
+  },
+  {
+   "session": "20260927T052001-827Z-150600-5",
+   "date": "2026-09-27",
+   "status": "not_range",
+   "reason": "logged live Quick Match registered idm_train (the default for matches): trains the IDM, never the range policy",
+   "group": "20260927T052001-827Z-150600-5",
+   "split": "idm_train",
+   "admitted_min": null,
+   "trainable_min": null
+  },
+  {
+   "session": "20260927T053118-260Z-150600-6",
+   "date": "2026-09-27",
+   "status": "not_range",
+   "reason": "logged live Quick Match registered idm_train (the default for matches): trains the IDM, never the range policy",
+   "group": "20260927T053118-260Z-150600-6",
+   "split": "idm_train",
+   "admitted_min": null,
+   "trainable_min": null
+  },
+  {
+   "session": "20260927T053838-153Z-150600-7",
+   "date": "2026-09-27",
+   "status": "not_range",
+   "reason": "logged live Quick Match registered idm_train (the default for matches): trains the IDM, never the range policy",
+   "group": "20260927T053838-153Z-150600-7",
+   "split": "idm_train",
+   "admitted_min": null,
+   "trainable_min": null
+  },
+  {
+   "session": "20260927T055006-068Z-150600-8",
+   "date": "2026-09-27",
+   "status": "not_range",
+   "reason": "logged live Quick Match registered idm_train (the default for matches): trains the IDM, never the range policy",
+   "group": "20260927T055006-068Z-150600-8",
+   "split": "idm_train",
+   "admitted_min": null,
+   "trainable_min": null
+  },
+  {
+   "session": "20260927T055841-084Z-150600-9",
+   "date": "2026-09-27",
+   "status": "not_range",
+   "reason": "42 s practice-range fragment (lead, 2026-09-27): left unregistered; not a session",
+   "group": null,
+   "split": null,
+   "admitted_min": null,
+   "trainable_min": null
+  },
+  {
+   "session": "20260927T060021-195Z-150600-10",
+   "date": "2026-09-27",
+   "status": "not_range",
+   "reason": "logged live Quick Match registered idm_train (the default for matches): trains the IDM, never the range policy",
+   "group": "20260927T060021-195Z-150600-10",
+   "split": "idm_train",
+   "admitted_min": null,
+   "trainable_min": null
+  },
+  {
+   "session": "20260927T061107-953Z-150600-11",
+   "date": "2026-09-27",
+   "status": "not_range",
+   "reason": "logged live Quick Match registered idm_train (the default for matches): trains the IDM, never the range policy",
+   "group": "20260927T061107-953Z-150600-11",
+   "split": "idm_train",
+   "admitted_min": null,
+   "trainable_min": null
+  },
+  {
+   "session": "20260927T061900-143Z-150600-12",
+   "date": "2026-09-27",
+   "status": "not_range",
+   "reason": "logged live Quick Match registered idm_train (the default for matches): trains the IDM, never the range policy",
+   "group": "20260927T061900-143Z-150600-12",
+   "split": "idm_train",
+   "admitted_min": null,
+   "trainable_min": null
   }
  ],
  "headline_train_by_regime": {
@@ -684,7 +804,7 @@
  "target_min": 180,
  "registry": {
   "path": "data/human/session-splits.corpus.json",
-  "sha256": "5b3a592d0ba8b638614ef2d5db1886495d5b0763d18c91e51de4d1f89717a74c"
+  "sha256": "1c9e2c671b14e9d1ea8bcefd4703668a039ecac946d2f5ece768746e67118a13"
  },
  "denylist": {
   "path": "data/human/sealed-denylist.v2.json",
