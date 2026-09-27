@@ -1,0 +1,19 @@
+{
+  "old_ref": "bcf5495:data/human/sealed-denylist.v2.json",
+  "old_lf_sha256": "439c80df6cd5d6daa60b48e0acb2d3a3fa833134ff14edddc4121348c2dceb20",
+  "new_lf_sha256": "09e8b9d350c89eb41c1581e1bce47548bfb855bca5805cf2e65955b9b23597b5",
+  "old_entries": 7,
+  "new_entries": 8,
+  "append_only": true,
+  "other_metadata_unchanged": true,
+  "added_entry": {
+    "session_id": "20260927T195110-265Z-152960-1",
+    "media_path": "C:/Users/volpe/Videos/2026-09-27 14-51-10.mkv",
+    "media_sha256": "7cf09ab5cd61035f4d4d5b65e7365a8285993e6626ec64a987b011cdbb0f2b6d",
+    "hashed_at": "2026-09-27T20:24:34+00:00",
+    "allowed_split": "test",
+    "session_group": "20260927T195110-265Z-152960-1",
+    "reason": "test take (James, chat 2026-09-27 15:07 CDT: 'recorded the 15 min test range take'); the first recording of his afternoon sitting; registered by the lead from file and folder names only; bytes hashed after the game and OBS closed"
+  },
+  "scope": "denylist metadata only; no sealed source/logger/frame access"
+}

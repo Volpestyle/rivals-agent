@@ -92,7 +92,7 @@ DECLARED_UNSUPPORTED = {}
 TRAIN_SPLITS = ("train", "idm_train")
 FIT_SPLITS = (*TRAIN_SPLITS, "val")
 DENYLIST = ROOT / "data" / "human" / "sealed-denylist.v2.json"
-DENYLIST_SHA256 = "439c80df6cd5d6daa60b48e0acb2d3a3fa833134ff14edddc4121348c2dceb20"   # the intake's pin (review I3)
+DENYLIST_SHA256 = "09e8b9d350c89eb41c1581e1bce47548bfb855bca5805cf2e65955b9b23597b5"   # append-only test take 195110 (946a243)
 # The calibration turn (data/human/calibration/20260923T204707-487Z-45572-2/calibration.json): 10,884.76 counts per
 # 360 degrees over 11.9 s, speeds ~200-1,400 counts/s. Up to its top speed the gain is measured; above it, not.
 CALIBRATION_RATE_CPS = 915.0

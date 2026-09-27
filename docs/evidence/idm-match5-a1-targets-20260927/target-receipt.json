@@ -1,0 +1,27 @@
+{
+  "session_id": "20260927T052001-827Z-150600-5",
+  "path": "data\\idm\\cloud-20260927\\match5-a1-targets\\20260927T052001-827Z-150600-5.idm.jsonl",
+  "sha256": "bdb36216f6017ba345949c55d9a2874c2c08570739829150fd5b9ca1d07f2ebd",
+  "rows": 31704,
+  "eligible_rows": 20534,
+  "source": {
+    "steps": {
+      "path": "data/human/sessions/20260927T052001-827Z-150600-5/20260927T052001-827Z-150600-5.steps.jsonl",
+      "sha256": "2c25a3fc96fb7e5a3ec41b173e958b79fd14e76293b09ad9d4c842f2de11dcf8"
+    },
+    "imported_demo": {
+      "path": "data/human/sessions/20260927T052001-827Z-150600-5/imported-demo.jsonl",
+      "sha256": "f0fa88940e7190bd5ca74b083e2e790d814bdf20e705370a9eab3ef5c0f95d79"
+    },
+    "builder": {
+      "path": "policy/idm_targets.py",
+      "sha256": "b570da810601bb79d6f3ac9f015e7f744c65481596257604182cd336bd6bc493"
+    }
+  },
+  "admission": {
+    "path": "docs/evidence/idm-match-pilot-052001-20260927/receipt/match-admission-052001.accepted-a1.json",
+    "sha256": "94701525132536f5794b4fefd9e06e6bdecdccb1f70c8bef0589a3b6af02c216"
+  },
+  "media_decoded": false,
+  "trained": false
+}
