@@ -1,0 +1,10 @@
+{
+  "source": "/Users/james/dev/range-bc-data/runs/interim94-s012/",
+  "destination": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\diagnostics\\live-loop-fallback-20260927",
+  "verified_both_ends": {
+    "model_nohud-seed0.pt": "2d5183cba12913a36327e0a459ec0c0b2a1238d26a7df98f7823929af3129f18",
+    "report.json": "e8d955c0faa59937456ed91485d731781850e316a1892a9544d24c93f47938d5",
+    "dev-cpu-reference.json": "73643a42c753ff25aa40112a7e9985adcc71b370b9f7824f5900fd4cc9d2d2c0"
+  },
+  "datasets_transferred": false
+}

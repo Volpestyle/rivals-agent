@@ -1,0 +1,170 @@
+{
+  "metadata": {
+    "format": "rivals-range-bc-v2",
+    "domain": "semantic_pad",
+    "actions": [
+      "move_forward",
+      "move_left",
+      "move_back",
+      "move_right",
+      "jump",
+      "web_swing",
+      "get_over_here",
+      "amazing_combo",
+      "ultimate",
+      "melee",
+      "spider_power",
+      "web_cluster",
+      "team_up",
+      "goh_targeting",
+      "simple_swing"
+    ],
+    "camera_reps": [
+      0.05,
+      0.1,
+      0.2,
+      0.35,
+      0.6,
+      1.0,
+      1.6,
+      2.5,
+      4.0,
+      6.0,
+      9.0,
+      13.0,
+      19.0,
+      28.0,
+      40.0
+    ],
+    "config": {
+      "channels": [
+        16,
+        32,
+        32
+      ],
+      "reduce": 8,
+      "embed": 256,
+      "hud_embed": 128,
+      "history_embed": 64,
+      "hidden": 512,
+      "global_hw": [
+        144,
+        256
+      ],
+      "crop_hw": [
+        128,
+        128
+      ],
+      "hud_hw": [
+        80,
+        200
+      ],
+      "frames": true,
+      "hud": false,
+      "history": true,
+      "regime_bit": false
+    },
+    "meta": {
+      "arm": "model_nohud",
+      "seed": 0,
+      "lag": 0,
+      "regimes": [
+        "normal"
+      ]
+    }
+  },
+  "distribution": {
+    "requested_regime": "normal",
+    "training_regimes": [
+      "normal"
+    ],
+    "pad_hud_input": false
+  },
+  "train_minutes": {
+    "per_recording": {
+      "20260923T051828-422Z-33696-1": 6.9722221525,
+      "20260923T200129-346Z-33696-6": 26.6166664005,
+      "20260924T232304-170Z-12024-1": 8.76499991235,
+      "20260925T021320-371Z-7804-1": 34.5144440993,
+      "20260925T025230-605Z-7804-2": 3.6633332967
+    },
+    "total": 80.53166586135
+  },
+  "train_press": [
+    1711,
+    2072,
+    1208,
+    1573,
+    3655,
+    1026,
+    254,
+    677,
+    21,
+    42,
+    1047,
+    2282,
+    266,
+    113,
+    5
+  ],
+  "train_press_known": [
+    144957,
+    144957,
+    144957,
+    144957,
+    144957,
+    144957,
+    144957,
+    144957,
+    144957,
+    144957,
+    144957,
+    144957,
+    144957,
+    144957,
+    144957
+  ],
+  "cpu_reference": {
+    "checkpoint": "model_nohud-seed0.pt",
+    "checkpoint_sha256": "2d5183cba12913a36327e0a459ec0c0b2a1238d26a7df98f7823929af3129f18",
+    "device": "cpu",
+    "device_vs_cpu": {
+      "max_probability_delta": 8.940696716308594e-07,
+      "tf_decisions_equal": true
+    },
+    "format": "rivals-range-bc-cpu-reference-v1",
+    "live_mask": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      false,
+      false,
+      true,
+      true,
+      false,
+      false,
+      false
+    ],
+    "probs_file": "dev-cpu-probs.f32",
+    "probs_sha256": "61a56ca631e620c5cf65c4a1da91516a8cc969e1ea6382561b593a23110987a3",
+    "sessions": {
+      "20260923T171533-187Z-33696-5": "dc28b0c1511f7847c8dde08c3e04addce8b57bc6c32cc2873405962d3235559e",
+      "20260923T205528-900Z-45572-3": "941950f16edef6a88b14d6bc536e33a66a0e779867fa145c78e7142164e1fd98"
+    },
+    "set": "dev",
+    "sf_camera_mae_mean": 1.2246451263967797,
+    "sf_decisions_sha256": "19cd6103fdc4b31bdc8879e878d17587e1f942f4fde9f8b06987407fbd22e29b",
+    "sf_macro_press_f1_tol": 0.0,
+    "steps": 24556,
+    "tf_camera_mae_mean": 0.5953260197344764,
+    "tf_decisions_sha256": "449b726b1e7bfe5e6fb05369c784d5bdb386985516a927a6d33ade7344702e85",
+    "tf_macro_press_f1_tol": 0.17830429440194628,
+    "torch": "2.14.0"
+  },
+  "scope": "Legacy fallback failure observation; self-fed decode failed offline; not live-ready before maps/refreeze"
+}

@@ -1,0 +1,11 @@
+{
+  "binding_profile": "james-alt-spiderman-20260926",
+  "swing_mode": {
+    "automatic_swing": false,
+    "hold_to_swing": true
+  },
+  "cooldowns": "normal",
+  "patch": "**Patch reflected: Season 10, Version 20260911 (balance post dated 2026-09-08, live 2026-09-11).**",
+  "calibration_status": "UNMEASURED: offline camera-disabled preparation only, never authorizes live input",
+  "provenance": "data/calibration/alt-20260926/SITTING.md; live settings must be re-observed at the sitting"
+}

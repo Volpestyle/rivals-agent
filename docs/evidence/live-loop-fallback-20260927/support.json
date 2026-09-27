@@ -1,0 +1,48 @@
+{
+  "checkpoint_sha256": "2d5183cba12913a36327e0a459ec0c0b2a1238d26a7df98f7823929af3129f18",
+  "press": [
+    1711,
+    2072,
+    1208,
+    1573,
+    3655,
+    1026,
+    254,
+    677,
+    21,
+    42,
+    1047,
+    2282,
+    266,
+    113,
+    5
+  ],
+  "live_mask": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    false,
+    false,
+    true,
+    true,
+    false,
+    false,
+    false
+  ],
+  "swing_mode": {
+    "automatic_swing": false,
+    "hold_to_swing": true
+  },
+  "provenance": {
+    "press": "report.json/train_statistics/press",
+    "report_sha256": "e8d955c0faa59937456ed91485d731781850e316a1892a9544d24c93f47938d5",
+    "live_mask": "dev-cpu-reference.json/live_mask",
+    "reference_sha256": "73643a42c753ff25aa40112a7e9985adcc71b370b9f7824f5900fd4cc9d2d2c0",
+    "swing_mode": "Current alt hold-to-swing runtime contract; not a new training-label claim"
+  }
+}

@@ -39,6 +39,7 @@ def test_segment_failure_always_releases():
 def test_segment_lease_never_outlives_scope(monkeypatch):
     now, sends, releases = [1.], [], []
     def proof():
+        now[0] += .005
         live.frame_t = now[0]
         return np.zeros((360,640,3),np.uint8)
     live = SimpleNamespace(frame_t=1., send_guarded=lambda pad, **kw: sends.append((pad, kw)),
@@ -67,15 +68,14 @@ def test_far_sweeps_need_both_directions_and_timing_precision():
         m.focal_from_sweeps(rows)
 
 
-def test_valid_rotating_texture_yields_candidate_but_never_acceptance():
-    rng = np.random.default_rng(42)
-    scene = rng.integers(0, 256, (150, 265), dtype=np.uint8)
-    # One synthetic revolution per 53 frames; leftward image motion for +rx.
-    rows = [(i * .05, np.roll(scene, -i * 5, axis=1)) for i in range(400)]
-    result = m.return_candidates(rows, 0, 20, .45)
-    assert result["repeatability_pass"]
-    assert result["candidate_signed_deg_s"] == pytest.approx(360 / 2.65)
-    assert result["acceptance"] == "candidate_only_native_turn_count_unverified"
+def test_analysis_adapter_preserves_candidate_and_refuses_unknown(monkeypatch):
+    from perception import camera_turn_analysis
+    result = {"candidate_signed_deg_s": 160., "acceptance": "candidate_only_native_turn_count_unverified"}
+    monkeypatch.setattr(camera_turn_analysis, "analyze", lambda *a: result)
+    assert m.return_candidates([], 0, 20, .45) is result
+    result["candidate_signed_deg_s"] = None
+    with pytest.raises(m.l4.MotionRefused):
+        m.return_candidates([], 0, 20, .45)
 
 
 @pytest.mark.parametrize("reason", ["focus", "keypress", "deadline"])
@@ -126,3 +126,64 @@ def test_sweep_analysis_rejects_live_before_any_output(tmp_path):
     with pytest.raises(ValueError, match="offline only"):
         m.main(["--sweeps-json", "missing.json", "--live", "--output", str(tmp_path / "out")])
     assert not (tmp_path / "out").exists()
+
+
+@pytest.mark.parametrize("axis,d,dx,dy", [("rx", .45, -12, 0), ("rx", -.45, 12, 0),
+                                        ("ry", .5, 0, 12), ("ry", -.5, 0, -12)])
+def test_signed_pulses_use_independent_duration_and_checked_motion(tmp_path, axis, d, dx, dy):
+    rng = np.random.default_rng(7)
+    before = rng.integers(0, 256, (720, 1280, 3), dtype=np.uint8)
+    after = np.roll(before, (dy, dx), (0, 1))
+    sends, releases = [], []
+    live = SimpleNamespace(frame_t=0., send_guarded=lambda pad, **kw: sends.append((pad, kw)),
+                           release=lambda: releases.append(True))
+    def proof():
+        live.frame_t = time.perf_counter()
+        return after if sends else before
+    journal = m.Journal(tmp_path / "pulse", {})
+    end = time.perf_counter() + 2
+    try:
+        result = m.measure_pulse(live, d, .033, axis, 640., journal, 0, proof, end, sleep=lambda dt: None)
+        assert len(sends) == len(releases) == 1
+        pad, bounds = sends[0]
+        assert pad == {**m.NEUTRAL, axis: d}
+        assert bounds["release_at"] <= bounds["scope_not_after"] == end
+        assert 0 < result["report_return_hold_s"] <= .043
+        assert result["signed_displacement_deg"] * d > 0
+        assert result["not_a_steady_rate"]
+        assert (journal.output / "pulse-0-before.png").exists()
+        assert (journal.output / "pulse-0-after.png").exists()
+    finally:
+        journal.close()
+
+
+def test_pulse_refuses_expired_scope_before_sending(tmp_path):
+    live = SimpleNamespace(frame_t=0., send_guarded=lambda *a, **kw: pytest.fail("late send"), release=lambda: None)
+    journal = m.Journal(tmp_path / "expired", {})
+    try:
+        with pytest.raises(ValueError, match="block deadline"):
+            m.measure_pulse(live, .5, .04, "ry", 640., journal, 0,
+                            lambda: np.zeros((720,1280,3), np.uint8), time.perf_counter() - 1,
+                            sleep=lambda dt: None)
+    finally:
+        journal.close()
+
+
+@pytest.mark.parametrize("axis,ds,seconds", [("ry", [.45], .04), ("rx", [.5], .04),
+    ("ry", [.5], .1), ("ry", [.5], 20)])
+def test_pulse_axes_and_lengths_are_bounded(axis, ds, seconds):
+    with pytest.raises(ValueError):
+        m.validate(ds, seconds, 180, axis)
+
+
+def test_capture_retention_is_not_throttled_to_renewal():
+    now, sends = [1.], []
+    live = SimpleNamespace(frame_t=1., send_guarded=lambda *a, **kw: sends.append(now[0]), release=lambda: None)
+    def proof():
+        now[0] += 1/240
+        live.frame_t = now[0]
+        return np.zeros((360, 640, 3), np.uint8)
+    rows, _, _ = m.collect_segment(live, .45, .1, proof, scope_end=1.2,
+                                    clock=lambda: now[0], sleep=lambda dt: None)
+    assert len(rows) >= 20
+    assert 2 <= len(sends) <= 3

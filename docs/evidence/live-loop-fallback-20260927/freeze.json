@@ -1,0 +1,15 @@
+{
+  "format": "offline-fallback-readiness-v1",
+  "files": {
+    "RESULT.md": "82aa296550b9f87f0febaaf8c2d733c303255634ae9d60b7daef6a6860910702",
+    "transfer.json": "820ffe5e1a793e1666a2e68f02d31d013e14981dd431c7b321a23e45acea6886",
+    "contract.json": "d45785ebe1d2a5022d2547252fe88e9cd82f5063c234799e0a8dae3b3bd2b505",
+    "support.json": "6ce79a68d0fd0894cb851574ecd30e1498f27a785e1d78f947b234232f40d97d",
+    "settings-offline-only.json": "409eca2d00d609ca76c7cd77b0a740d4825fb80fa916808785b37b0ff7c2de2c",
+    "cuda-t2/profile.json": "a49c2ca322d8af516dcbbc6bdd1c267f0abf37f4b36bcfb0aedbaaca07b6af32",
+    "prepared/manifest.json": "163025d8b63c04e9062b8cec5c552caf33dcdcf072484d065d0e9dde25304eb8",
+    "prepared/result.json": "6e9ba2aede4e3d9250bd1cf7fe4d685a8d284462109afec1cb24f849b7955793",
+    "profile-script.py": "ddfbaa3f228ae3e6cc8f46eb85a4280b98481a6c2750b846b42ee560605274fa",
+    "prepare-artifact.py": "c09a99bede5577f8d891f21e7c6bc0e242a2855f9f9dfcf9d55a4c409748d524"
+  }
+}

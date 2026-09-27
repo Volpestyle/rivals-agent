@@ -1,0 +1,13 @@
+{
+  "scripts/measure_camera_turns.py": "a5710a99762de956d417492b95818e55eb164c08a65ef463ddd768a3e6cd6c70",
+  "tests/test_measure_camera_turns.py": "776b6c8f09c5662a572a98a11b9f6daf950d873c613ca28a36000198752d6c6a",
+  "agent/controller.py": "4e5bb70fca797ab17a25a8699d1ad111f0b7cd561f59d2b308a52c10b44da060",
+  "agent/startup.py": "d2382fb5d9e0cc4fcb865f97eb43060ca223dbf7982375fc9fdc8a1352d7737a",
+  "scripts/l4_measure.py": "4045f76c752a6a8ee73f67de114e8939c801e27b580e815c6932ffa568e8075b",
+  "scripts/record.py": "d6aa320beb99a96953cccec2be81abbc9f65b026abade86fb34bff31babadead",
+  "agent/pad_bindings.py": "e71558625b1f35d0203958d383134fa98cdee55ecc94d65c2ea27eff87cdefc1",
+  "agent/loop.py": "040c77c2c4ed0fff5a893e6e00991c8df7bad1e87267bf6d416964911b1e596f",
+  "scripts/run_range_bc_live.py": "446ef0bb2dc74c615f8c445dfac043ec0be4bfbd3c36195e9dfc727c8a9f7823",
+  "agent/live_range_bc.py": "d4c109e7c7c503728df2ea82d021154f40a90b05a54bd37bdae64be41b2baa46",
+  "scripts/capture.py": "b98f310616cf0569375d3e24cbb564d7702872c4ffaa888523ac6b52f96fb547"
+}

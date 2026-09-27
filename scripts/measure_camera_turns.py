@@ -39,75 +39,115 @@ def verify_receipt(path):
     return receipt
 
 
-def validate(deflections, duration, scope_seconds):
+def validate(deflections, duration, scope_seconds, pulse_axis=None):
     require(1 <= len(deflections) <= 4 and len(set(deflections)) == len(deflections), "one to four distinct segments")
-    require(all(d in SIGNED for d in deflections), "unsupported signed deflection")
-    require(math.isfinite(duration) and .5 <= duration <= 20, "segment must be .5..20 s")
+    allowed = (-1., -.5, .5, 1.) if pulse_axis == "ry" else SIGNED
+    require(pulse_axis in (None, "rx", "ry"), "unknown pulse axis")
+    require(all(d in allowed for d in deflections), "unsupported signed deflection")
+    if pulse_axis:
+        require(duration in (.02, .033, .04, .067, .08), "pulse must be 20/33/40/67/80 ms")
+    else:
+        require(math.isfinite(duration) and .5 <= duration <= 20, "segment must be .5..20 s")
     require(math.isfinite(scope_seconds) and duration * len(deflections) < scope_seconds <= 180,
             "block <=180 s and must leave inspection time")
 
 
 def return_candidates(rows, on, off, deflection):
-    """Necessary motion + candidate returns; native-video turn count stays manual."""
-    import numpy as np
-    motion = l4.require_motion(rows, on, off, direction=-1 if deflection > 0 else 1)
-    steady = [(t, f) for t, f in rows if on + .5 <= t <= off]
-    require(bool(steady), "no post-transient frames")
-    ref = steady[0][1].astype(np.float32)
-    require(float(ref.std()) > 1e-6, "flat return reference")
-    ref = (ref - ref.mean()) / ref.std()
-    returns, scores, left, peak = [], [], False, None
-    for t, frame in steady[1:]:
-        x = frame.astype(np.float32)
-        score = float(np.mean(ref * (x - x.mean()) / max(float(x.std()), 1e-6)))
-        scores.append([t, score])
-        if score < .4:
-            if peak is not None:
-                returns.append(peak)
-                peak = None
-            left = True
-        elif left and score >= .85 and (peak is None or score > peak[1]):
-            peak = [t, score]
-    # An unclosed final peak is not counted. Four returns give three intervals,
-    # excluding the initial startup-to-reference and reference-to-first-return.
-    periods = [b[0] - a[0] for a, b in zip(returns, returns[1:])]
-    median = float(np.median(periods)) if periods else None
-    repeatable = len(periods) >= 3 and median > 0 and (max(periods) - min(periods)) / median <= .05
-    return {"acceptance": "candidate_only_native_turn_count_unverified", "motion": motion,
-            "returns": returns, "correlations": scores, "periods_s": periods,
-            "repeatability_pass": bool(repeatable),
-            "candidate_signed_deg_s": math.copysign(360 / median, deflection) if repeatable else None}
+    """Offline analysis never authorizes more input after a refused candidate."""
+    from perception.camera_turn_analysis import analyze
+    result = analyze(rows, on, off, deflection)
+    if result["candidate_signed_deg_s"] is None:
+        raise l4.MotionRefused(result)
+    return result
 
 
 def collect_segment(live, deflection, duration, proof, *, scope_end, clock=time.perf_counter, sleep=time.sleep):
-    """Fresh proof at every renewal; each lease <=100 ms and ends at segment end."""
+    """Retain every fresh capture; renew at <=40 ms, with <=100 ms leases."""
     rows, start = [], clock()
     end = min(start + duration, scope_end)
     require(end - start >= duration - 1e-6, "insufficient block time for another segment")
-    on = None
+    on, last_send, last_frame = None, -math.inf, -math.inf
     try:
         while clock() < end:
             frame = proof()
             now = clock()
             if now >= end:
                 break
-            until = min(now + .1, end)
-            live.send_guarded({**NEUTRAL, "rx": deflection}, not_after=until,
-                              release_at=until, scope_not_after=end)
-            if on is None:
-                on = clock()
-            rows.append((live.frame_t, l4.band(frame).astype("uint8")))
-            sleep(.02)
+            if now - last_send >= .04:
+                until = min(now + .1, end)
+                live.send_guarded({**NEUTRAL, "rx": deflection}, not_after=until,
+                                  release_at=until, scope_not_after=end)
+                last_send = clock()
+                if on is None:
+                    on = last_send
+            if live.frame_t > last_frame:
+                rows.append((live.frame_t, l4.band(frame).astype("uint8")))
+                last_frame = live.frame_t
+            # Yield only; Capture/Live.fresh waits for a new DXGI frame. Never
+            # throttle band retention to the pad renewal cadence.
+            sleep(0)
     finally:
         live.release()
     return rows, on, clock()
 
 
+def save_native(journal, name, frame, captured):
+    import cv2
+    ok, encoded = cv2.imencode(".png", frame, [cv2.IMWRITE_PNG_COMPRESSION, 1])
+    require(ok, "native frame encoding failed")
+    raw = encoded.tobytes()
+    with (journal.output / f"{name}.png").open("xb") as out:
+        out.write(raw)
+    journal.write(f"{name}-frame.json", {"captured": captured,
+        "shape": list(frame.shape), "sha256": hashlib.sha256(raw).hexdigest()})
+
+
+def measure_pulse(live, d, duration, axis, focal, journal, index, proof, scope_end,
+                  *, clock=time.perf_counter, sleep=time.sleep):
+    """Wrap the accepted l4 pulse/shift guards; each sign has its own timing."""
+    import cv2
+
+    def still(name):
+        sleep(.35)  # Neutral settling; independent block monitor remains active.
+        frame = proof()
+        save_native(journal, f"pulse-{index}-{name}", frame, live.frame_t)
+        return cv2.cvtColor(cv2.resize(frame, (1280, 720), interpolation=cv2.INTER_AREA), cv2.COLOR_BGR2GRAY)
+
+    class ProvenPulse:
+        fresh = staticmethod(proof)
+        release = staticmethod(live.release)
+
+        def send_guarded(self, pad, *, not_after, release_at):
+            require(clock() < not_after <= release_at <= scope_end, "pulse would cross block deadline")
+            live.send_guarded(pad, not_after=not_after, release_at=release_at, scope_not_after=scope_end)
+
+    before = still("before")
+    # l4.pulse re-proves and releases in finally, and refuses >10 ms overrun.
+    hold = l4.pulse(ProvenPulse(), duration, **{**NEUTRAL, axis: d})
+    after = still("after")
+    direction = (-1 if d > 0 else 1) if axis == "rx" else (1 if d > 0 else -1)
+    box = l4.YAW_BOX if axis == "rx" else l4.PITCH_BOX
+    dx, dy, confidence = l4.checked_shift(before, after, box, axis=0 if axis == "rx" else 1,
+                                          direction=direction)
+    center = (box[0] + box[2]) / 2 - 640 if axis == "rx" else (box[1] + box[3]) / 2 - 360
+    shift = dx if axis == "rx" else dy
+    angle = math.degrees(math.atan((center + shift) / focal) - math.atan(center / focal))
+    if axis == "rx":
+        angle = -angle
+    return {"acceptance": "candidate_only_focal_and_native_motion_review_required", "axis": axis,
+            "deflection": d, "requested_hold_s": duration, "report_return_hold_s": hold,
+            "dx": dx, "dy": dy, "confidence": confidence, "focal_px_1280": focal,
+            "signed_displacement_deg": angle, "mean_during_pulse_deg_s": angle / hold,
+            "not_a_steady_rate": True}
+
+
 def run_block(live, deflections, duration, journal, *, proof, acknowledge, focused, stop_requested,
-              scope_seconds=180, clock=time.perf_counter):
+              scope_seconds=180, clock=time.perf_counter, pulse_axis=None, focal=None):
     """No input while awaiting an acknowledgement; monitor closes independently."""
     import numpy as np
-    validate(deflections, duration, scope_seconds)
+    validate(deflections, duration, scope_seconds, pulse_axis)
+    if pulse_axis:
+        require(type(focal) in (int, float) and math.isfinite(focal) and focal > 0, "accepted focal required")
     end = clock() + scope_seconds
     stopped, reasons, results = threading.Event(), [], []
 
@@ -137,15 +177,19 @@ def run_block(live, deflections, duration, journal, *, proof, acknowledge, focus
             frame = guarded_proof()
             # Separate file/metadata: never compete with Journal's frame writer.
             # Encoding is synchronous only while neutral, before acknowledgement.
-            import cv2
-            ok, encoded = cv2.imencode(".png", frame, [cv2.IMWRITE_PNG_COMPRESSION, 1])
-            require(ok, "ready frame encoding failed")
-            raw = encoded.tobytes()
-            with (journal.output / f"ready-{index}.png").open("xb") as out:
-                out.write(raw)
-            journal.write(f"ready-frame-{index}.json", {"captured": live.frame_t,
-                "shape": list(frame.shape), "sha256": hashlib.sha256(raw).hexdigest()})
+            save_native(journal, f"ready-{index}", frame, live.frame_t)
             acknowledge(index, d, guarded_proof, end)
+            if pulse_axis:
+                try:
+                    result = measure_pulse(live, d, duration, pulse_axis, focal, journal, index,
+                                           guarded_proof, end, clock=clock)
+                except l4.MotionRefused as exc:
+                    journal.write(f"segment-{index}.json", {"deflection": d, "axis": pulse_axis,
+                        "acceptance": "motion_refused", "motion": exc.audit})
+                    raise
+                journal.write(f"segment-{index}.json", result)
+                results.append(result)
+                continue
             rows, on, off = collect_segment(live, d, duration, guarded_proof, scope_end=end, clock=clock)
             require(on is not None and rows, "no capture/report interval")
             np.savez_compressed(journal.output / f"segment-{index}.npz",
@@ -207,6 +251,8 @@ def main(argv=None):
     mode.add_argument("--sweeps-json", type=Path, help="offline annotated far-landmark sweeps; no capture or pad")
     p.add_argument("--seconds", type=float, default=20.)
     p.add_argument("--scope-seconds", type=float, default=180.)
+    p.add_argument("--pulse-axis", choices=("rx", "ry"), help="short-pulse wrapper; seconds must be 20/33/40/67/80 ms")
+    p.add_argument("--focal-receipt", type=Path, help="accepted focal_px_1280, acceptance=accepted, evidence; required for pulses")
     p.add_argument("--output", type=Path, required=True)
     p.add_argument("--live", action="store_true")
     p.add_argument("--review-receipt", type=Path)
@@ -222,7 +268,17 @@ def main(argv=None):
         a.output.mkdir(parents=True, exist_ok=False)
         (a.output / "focal-candidate.json").write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
         return
-    validate(a.deflections, a.seconds, a.scope_seconds)
+    validate(a.deflections, a.seconds, a.scope_seconds, a.pulse_axis)
+    focal_receipt, focal = None, None
+    if a.pulse_axis:
+        require(a.focal_receipt is not None, "pulse measurements require an accepted focal receipt")
+        focal_raw = a.focal_receipt.read_bytes()
+        focal_receipt = json.loads(focal_raw.decode("utf-8-sig"))
+        require(focal_receipt.get("acceptance") == "accepted" and focal_receipt.get("evidence"), "unaccepted focal")
+        focal = focal_receipt.get("focal_px_1280")
+        require(type(focal) in (int, float) and math.isfinite(focal) and focal > 0, "invalid focal")
+    else:
+        require(a.focal_receipt is None, "focal receipt only applies to pulses")
     receipt = None
     if a.live:
         require(platform.system() == "Windows" and a.game_pid and 0 < a.game_pid <= 0xffffffff,
@@ -232,6 +288,9 @@ def main(argv=None):
     manifest = {"format": "camera-turns-v1", "live": a.live, "sitting": a.sitting,
                 "recording_ref": a.recording_ref, "deflections": a.deflections, "seconds": a.seconds,
                 "scope_seconds": a.scope_seconds, "review": receipt, "source_sha256": LOADED,
+                "pulse_axis": a.pulse_axis, "focal": focal_receipt,
+                "focal_receipt_sha256": hashlib.sha256(focal_raw).hexdigest() if a.focal_receipt else None,
+                "offline_analysis_sha256": sha256(ROOT / "perception/camera_turn_analysis.py"),
                 "wall_time_unix": time.time(), "monotonic_t": time.perf_counter(),
                 "acceptance": "raw_unreviewed", "warning": "native video is required to disambiguate full turns"}
     journal = Journal(a.output, manifest)
@@ -271,6 +330,7 @@ def main(argv=None):
         def acknowledge(index, d, fresh, end):
             token = uuid.uuid4().hex
             journal.write(f"ready-{index}.json", {"token": token, "deflection": d,
+                          "axis": a.pulse_axis or "rx", "seconds": a.seconds,
                           "native_frame": f"ready-{index}.png",
                           "instruction": "Lead inspects pose then writes token to continue-N.json"})
             marker = journal.output / f"continue-{index}.json"
@@ -283,7 +343,8 @@ def main(argv=None):
             raise RangeLost("block deadline while waiting for inspection")
 
         results = run_block(live, a.deflections, a.seconds, journal, proof=proof, acknowledge=acknowledge,
-                            focused=focused, stop_requested=any_key_pressed, scope_seconds=a.scope_seconds)
+                            focused=focused, stop_requested=any_key_pressed, scope_seconds=a.scope_seconds,
+                            pulse_axis=a.pulse_axis, focal=focal)
         journal.write("result.json", {"stop_reason": "completed_block", "segments": results,
                                      "report_timing": timing, "acceptance": "raw_unreviewed"})
     except BaseException as exc:
