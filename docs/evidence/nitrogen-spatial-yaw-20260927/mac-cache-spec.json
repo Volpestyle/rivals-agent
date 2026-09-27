@@ -1,0 +1,21 @@
+{
+  "tag": "EXPLORATORY",
+  "cloud_spend_usd": 0,
+  "root": "/Users/james/dev/range-bc-data/explore/nitrogen-spatial-yaw-20260927",
+  "python": "/Users/james/dev/range-bc-data/explore/nitrogen-nohistory-confirm-20260927/mac-eval-venv/bin/python",
+  "inputs": "/Users/james/dev/range-bc-data/explore/nitrogen-nohistory-confirm-20260927/recovery-inputs.json",
+  "inputs_sha256": "14347004b5d12ed44a89d69961fcb2df7be8f1a34444460f145fee3c5797cf21",
+  "manifest": "/Users/james/dev/range-bc-data/explore/manifest-full.json",
+  "registry": "/Users/james/dev/range-bc-data/explore/nitrogen-nohistory-confirm-20260927/mac-code-88b231d/data/human/session-splits.corpus.json",
+  "tally": "/Users/james/dev/range-bc-data/explore/nitrogen-nohistory-confirm-20260927/mac-code-88b231d/data/human/sessions/tally.json",
+  "vision": "/Users/james/dev/range-bc-data/explore/encoder-historyoff-20260927/nitrogen/collected/assets/vision.safetensors",
+  "vision-config": "/Users/james/dev/range-bc-data/explore/encoder-inference-handoff-20260927/config.json",
+  "job-name": "nitrogen-spatial-yaw-dual-grid",
+  "device": "mps",
+  "nice_minimum": 10,
+  "threads": 2,
+  "grids": [4, 8],
+  "eligible_train": 300448,
+  "eligible_frozen_dev": 24556,
+  "queue": "After idm-owner explicitly releases range-stores-a730f75; this file does not launch or reserve compute."
+}
