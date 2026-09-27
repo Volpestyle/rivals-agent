@@ -32,6 +32,7 @@ gets them as one-line text files and loads no repo skills; set it to `true` and 
 | `docs/learning-plan.md` | The canonical learning plan: milestones, advancement gates, reward contract. Lead's |
 | `docs/recording-protocol.md`, `docs/recording-log.md` | What James does per recording session, and the ledger of every take (the lead appends rows; the admission lane fills intake status) |
 | `docs/machines.md` | Mac/PC responsibilities, remote access and transfer procedure |
+| `docs/compute.md` | The compute protocol: which machine runs what, the Mac queue and PC memory rules, Modal/AWS caps and teardown, the explore and confirm tracks, and job status for the dashboard. The `rivals-compute` skill points at it |
 | `data/calibration/<sitting>/SITTING.md` | What a supervised pad sitting actually ran, measured and left open; newer than any plan |
 | `docs/steering/` | The steering charter: roles, the explore/confirm tracks, the portfolio and what is paused |
 | `docs/lanes/<lane>.md` | Each lane's present-state notes and measured facts; the lane's owner is its only writer |
