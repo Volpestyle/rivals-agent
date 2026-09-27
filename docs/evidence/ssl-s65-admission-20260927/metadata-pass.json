@@ -1,0 +1,366 @@
+{
+    "schema":  "rivals-ssl-s65-metadata-candidates-v1",
+    "created_at_utc":  "2026-09-27T16:59:44.9689375Z",
+    "owner":  "admission-codex",
+    "actor_id":  "01542783-2667-4374-a98a-82189c2c15d1",
+    "status":  "metadata_only_not_admission",
+    "purpose":  "world-feature SSL only; no semantic labels",
+    "inventory":  "docs/research/idm/clips-2025-inventory.md",
+    "compression_log":  "D:/SPIDEY CLIPS/_hevc_compress_log.jsonl",
+    "compression_log_complete_lines_read":  110,
+    "access_performed":  [
+                             "inventory text",
+                             "compression log text",
+                             "named-file stat metadata"
+                         ],
+    "access_not_performed":  [
+                                 "media hash",
+                                 "media probe",
+                                 "seek",
+                                 "decode",
+                                 "copy",
+                                 "logger payload read"
+                             ],
+    "excluded_families":  [
+                              "053616",
+                              "153835",
+                              "153812",
+                              "Gate 2 pairs",
+                              "V-C -150600-1/-2",
+                              "V-Q -150600-3",
+                              "DayMR",
+                              "all other held-out/sealed/frozen-dev"
+                          ],
+    "selection_scope":  "exact eleven historical S6.5 raw-session filenames from inventory; no derived clips or stubs",
+    "membership_overlap_check":  "pending handoff and metadata registry comparison; no candidate admitted",
+    "eligible_source_count":  0,
+    "eligible_seconds":  0,
+    "sources":  [
+                    {
+                        "source_family":  "2026-02-13 21-30-25",
+                        "path":  "D:/SPIDEY CLIPS/2026-02-13 21-30-25.mkv",
+                        "name":  "2026-02-13 21-30-25.mkv",
+                        "recorded_local_time_from_filename":  "2026-02-13 21-30-25",
+                        "recording_timezone":  "unknown",
+                        "season":  "S6.5",
+                        "patch_version_from_inventory":  "20260213",
+                        "kit_regime_from_inventory":  "SM-K6",
+                        "bytes":  39775792417,
+                        "last_write_utc":  "2026-09-26T19:29:06.0000000Z",
+                        "latest_compression_status":  "replaced",
+                        "compression_log_entry":  {
+                                                      "line_number":  56,
+                                                      "record":  {
+                                                                     "file":  "2026-02-13 21-30-25.mkv",
+                                                                     "status":  "replaced",
+                                                                     "orig_bytes":  132955716532,
+                                                                     "new_bytes":  39775792417,
+                                                                     "dur_orig":  11469.304000,
+                                                                     "dur_new":  11469.308000,
+                                                                     "streams":  "v1 a1",
+                                                                     "secs":  8139
+                                                                 }
+                                                  },
+                        "size_matches_replaced_record":  true,
+                        "metadata_candidate":  true,
+                        "admission_status":  "not_audited",
+                        "media_sha256":  null,
+                        "eligible_intervals":  [
+
+                                               ],
+                        "semantic_labels_allowed":  false
+                    },
+                    {
+                        "source_family":  "2026-02-14 14-27-37",
+                        "path":  "D:/SPIDEY CLIPS/2026-02-14 14-27-37.mkv",
+                        "name":  "2026-02-14 14-27-37.mkv",
+                        "recorded_local_time_from_filename":  "2026-02-14 14-27-37",
+                        "recording_timezone":  "unknown",
+                        "season":  "S6.5",
+                        "patch_version_from_inventory":  "20260213",
+                        "kit_regime_from_inventory":  "SM-K6",
+                        "bytes":  13001590692,
+                        "last_write_utc":  "2026-09-26T20:29:48.0000000Z",
+                        "latest_compression_status":  "replaced",
+                        "compression_log_entry":  {
+                                                      "line_number":  58,
+                                                      "record":  {
+                                                                     "file":  "2026-02-14 14-27-37.mkv",
+                                                                     "status":  "replaced",
+                                                                     "orig_bytes":  45208866691,
+                                                                     "new_bytes":  13001590692,
+                                                                     "dur_orig":  3579.704000,
+                                                                     "dur_new":  3579.708000,
+                                                                     "streams":  "v1 a1",
+                                                                     "secs":  2423
+                                                                 }
+                                                  },
+                        "size_matches_replaced_record":  true,
+                        "metadata_candidate":  true,
+                        "admission_status":  "not_audited",
+                        "media_sha256":  null,
+                        "eligible_intervals":  [
+
+                                               ],
+                        "semantic_labels_allowed":  false
+                    },
+                    {
+                        "source_family":  "2026-02-14 23-21-35",
+                        "path":  "D:/SPIDEY CLIPS/2026-02-14 23-21-35.mkv",
+                        "name":  "2026-02-14 23-21-35.mkv",
+                        "recorded_local_time_from_filename":  "2026-02-14 23-21-35",
+                        "recording_timezone":  "unknown",
+                        "season":  "S6.5",
+                        "patch_version_from_inventory":  "20260213",
+                        "kit_regime_from_inventory":  "SM-K6",
+                        "bytes":  47600748382,
+                        "last_write_utc":  "2026-09-27T02:55:24.0000000Z",
+                        "latest_compression_status":  "replaced",
+                        "compression_log_entry":  {
+                                                      "line_number":  62,
+                                                      "record":  {
+                                                                     "file":  "2026-02-14 23-21-35.mkv",
+                                                                     "status":  "replaced",
+                                                                     "orig_bytes":  157581114489,
+                                                                     "new_bytes":  47600748382,
+                                                                     "dur_orig":  12997.354000,
+                                                                     "dur_new":  12997.358000,
+                                                                     "streams":  "v1 a1",
+                                                                     "secs":  8378
+                                                                 }
+                                                  },
+                        "size_matches_replaced_record":  true,
+                        "metadata_candidate":  true,
+                        "admission_status":  "not_audited",
+                        "media_sha256":  null,
+                        "eligible_intervals":  [
+
+                                               ],
+                        "semantic_labels_allowed":  false
+                    },
+                    {
+                        "source_family":  "2026-02-15 14-15-21",
+                        "path":  "D:/SPIDEY CLIPS/2026-02-15 14-15-21.mkv",
+                        "name":  "2026-02-15 14-15-21.mkv",
+                        "recorded_local_time_from_filename":  "2026-02-15 14-15-21",
+                        "recording_timezone":  "unknown",
+                        "season":  "S6.5",
+                        "patch_version_from_inventory":  "20260213",
+                        "kit_regime_from_inventory":  "SM-K6",
+                        "bytes":  61462478089,
+                        "last_write_utc":  "2026-09-27T10:41:26.0000000Z",
+                        "latest_compression_status":  "replaced",
+                        "compression_log_entry":  {
+                                                      "line_number":  105,
+                                                      "record":  {
+                                                                     "file":  "2026-02-15 14-15-21.mkv",
+                                                                     "status":  "replaced",
+                                                                     "orig_bytes":  157362199132,
+                                                                     "new_bytes":  61462478089,
+                                                                     "dur_orig":  25207.337000,
+                                                                     "dur_new":  25207.333000,
+                                                                     "streams":  "v1 a1",
+                                                                     "secs":  17556
+                                                                 }
+                                                  },
+                        "size_matches_replaced_record":  true,
+                        "metadata_candidate":  true,
+                        "admission_status":  "not_audited",
+                        "media_sha256":  null,
+                        "eligible_intervals":  [
+
+                                               ],
+                        "semantic_labels_allowed":  false
+                    },
+                    {
+                        "source_family":  "2026-02-16 20-39-03",
+                        "path":  "D:/SPIDEY CLIPS/2026-02-16 20-39-03.mkv",
+                        "name":  "2026-02-16 20-39-03.mkv",
+                        "recorded_local_time_from_filename":  "2026-02-16 20-39-03",
+                        "recording_timezone":  "unknown",
+                        "season":  "S6.5",
+                        "patch_version_from_inventory":  "20260213",
+                        "kit_regime_from_inventory":  "SM-K6",
+                        "bytes":  48879154426,
+                        "last_write_utc":  "2026-09-27T13:56:48.0000000Z",
+                        "latest_compression_status":  "replaced",
+                        "compression_log_entry":  {
+                                                      "line_number":  107,
+                                                      "record":  {
+                                                                     "file":  "2026-02-16 20-39-03.mkv",
+                                                                     "status":  "replaced",
+                                                                     "orig_bytes":  128342561945,
+                                                                     "new_bytes":  48879154426,
+                                                                     "dur_orig":  13358.587000,
+                                                                     "dur_new":  13358.583000,
+                                                                     "streams":  "v1 a1",
+                                                                     "secs":  8751
+                                                                 }
+                                                  },
+                        "size_matches_replaced_record":  true,
+                        "metadata_candidate":  true,
+                        "admission_status":  "not_audited",
+                        "media_sha256":  null,
+                        "eligible_intervals":  [
+
+                                               ],
+                        "semantic_labels_allowed":  false
+                    },
+                    {
+                        "source_family":  "2026-02-17 16-51-17",
+                        "path":  "D:/SPIDEY CLIPS/2026-02-17 16-51-17.mkv",
+                        "name":  "2026-02-17 16-51-17.mkv",
+                        "recorded_local_time_from_filename":  "2026-02-17 16-51-17",
+                        "recording_timezone":  "unknown",
+                        "season":  "S6.5",
+                        "patch_version_from_inventory":  "20260213",
+                        "kit_regime_from_inventory":  "SM-K6",
+                        "bytes":  28989212917,
+                        "last_write_utc":  "2026-09-27T15:44:08.0000000Z",
+                        "latest_compression_status":  "replaced",
+                        "compression_log_entry":  {
+                                                      "line_number":  108,
+                                                      "record":  {
+                                                                     "file":  "2026-02-17 16-51-17.mkv",
+                                                                     "status":  "replaced",
+                                                                     "orig_bytes":  82775931963,
+                                                                     "new_bytes":  28989212917,
+                                                                     "dur_orig":  8911.496000,
+                                                                     "dur_new":  8911.500000,
+                                                                     "streams":  "v1 a1",
+                                                                     "secs":  5703
+                                                                 }
+                                                  },
+                        "size_matches_replaced_record":  true,
+                        "metadata_candidate":  true,
+                        "admission_status":  "not_audited",
+                        "media_sha256":  null,
+                        "eligible_intervals":  [
+
+                                               ],
+                        "semantic_labels_allowed":  false
+                    },
+                    {
+                        "source_family":  "2026-02-17 23-51-41",
+                        "path":  "D:/SPIDEY CLIPS/2026-02-17 23-51-41.mkv",
+                        "name":  "2026-02-17 23-51-41.mkv",
+                        "recorded_local_time_from_filename":  "2026-02-17 23-51-41",
+                        "recording_timezone":  "unknown",
+                        "season":  "S6.5",
+                        "patch_version_from_inventory":  "20260213",
+                        "kit_regime_from_inventory":  "SM-K6",
+                        "bytes":  9153879199,
+                        "last_write_utc":  "2026-09-27T16:25:08.0000000Z",
+                        "latest_compression_status":  "replaced",
+                        "compression_log_entry":  {
+                                                      "line_number":  109,
+                                                      "record":  {
+                                                                     "file":  "2026-02-17 23-51-41.mkv",
+                                                                     "status":  "replaced",
+                                                                     "orig_bytes":  28740615796,
+                                                                     "new_bytes":  9153879199,
+                                                                     "dur_orig":  2806.655000,
+                                                                     "dur_new":  2806.658000,
+                                                                     "streams":  "v1 a1",
+                                                                     "secs":  1771
+                                                                 }
+                                                  },
+                        "size_matches_replaced_record":  true,
+                        "metadata_candidate":  true,
+                        "admission_status":  "not_audited",
+                        "media_sha256":  null,
+                        "eligible_intervals":  [
+
+                                               ],
+                        "semantic_labels_allowed":  false
+                    },
+                    {
+                        "source_family":  "2026-02-18 17-10-02",
+                        "path":  "D:/SPIDEY CLIPS/2026-02-18 17-10-02.mkv",
+                        "name":  "2026-02-18 17-10-02.mkv",
+                        "recorded_local_time_from_filename":  "2026-02-18 17-10-02",
+                        "recording_timezone":  "unknown",
+                        "season":  "S6.5",
+                        "patch_version_from_inventory":  "20260213",
+                        "kit_regime_from_inventory":  "SM-K6",
+                        "bytes":  201812787849,
+                        "last_write_utc":  "2026-02-19T04:34:00.0000000Z",
+                        "latest_compression_status":  "no_record",
+                        "compression_log_entry":  null,
+                        "size_matches_replaced_record":  null,
+                        "metadata_candidate":  false,
+                        "admission_status":  "not_audited",
+                        "media_sha256":  null,
+                        "eligible_intervals":  [
+
+                                               ],
+                        "semantic_labels_allowed":  false
+                    },
+                    {
+                        "source_family":  "2026-02-19 20-36-26",
+                        "path":  "D:/SPIDEY CLIPS/2026-02-19 20-36-26.mkv",
+                        "name":  "2026-02-19 20-36-26.mkv",
+                        "recorded_local_time_from_filename":  "2026-02-19 20-36-26",
+                        "recording_timezone":  "unknown",
+                        "season":  "S6.5",
+                        "patch_version_from_inventory":  "20260219",
+                        "kit_regime_from_inventory":  "SM-K6",
+                        "bytes":  43500768488,
+                        "last_write_utc":  "2026-02-20T02:50:44.0000000Z",
+                        "latest_compression_status":  "no_record",
+                        "compression_log_entry":  null,
+                        "size_matches_replaced_record":  null,
+                        "metadata_candidate":  false,
+                        "admission_status":  "not_audited",
+                        "media_sha256":  null,
+                        "eligible_intervals":  [
+
+                                               ],
+                        "semantic_labels_allowed":  false
+                    },
+                    {
+                        "source_family":  "2026-02-19 22-03-32",
+                        "path":  "D:/SPIDEY CLIPS/2026-02-19 22-03-32.mkv",
+                        "name":  "2026-02-19 22-03-32.mkv",
+                        "recorded_local_time_from_filename":  "2026-02-19 22-03-32",
+                        "recording_timezone":  "unknown",
+                        "season":  "S6.5",
+                        "patch_version_from_inventory":  "20260219",
+                        "kit_regime_from_inventory":  "SM-K6",
+                        "bytes":  148684725582,
+                        "last_write_utc":  "2026-02-20T05:59:20.0000000Z",
+                        "latest_compression_status":  "no_record",
+                        "compression_log_entry":  null,
+                        "size_matches_replaced_record":  null,
+                        "metadata_candidate":  false,
+                        "admission_status":  "not_audited",
+                        "media_sha256":  null,
+                        "eligible_intervals":  [
+
+                                               ],
+                        "semantic_labels_allowed":  false
+                    },
+                    {
+                        "source_family":  "2026-02-20 23-46-02",
+                        "path":  "D:/SPIDEY CLIPS/2026-02-20 23-46-02.mkv",
+                        "name":  "2026-02-20 23-46-02.mkv",
+                        "recorded_local_time_from_filename":  "2026-02-20 23-46-02",
+                        "recording_timezone":  "unknown",
+                        "season":  "S6.5",
+                        "patch_version_from_inventory":  "20260219",
+                        "kit_regime_from_inventory":  "SM-K6",
+                        "bytes":  41725955816,
+                        "last_write_utc":  "2026-02-21T06:00:50.0000000Z",
+                        "latest_compression_status":  "no_record",
+                        "compression_log_entry":  null,
+                        "size_matches_replaced_record":  null,
+                        "metadata_candidate":  false,
+                        "admission_status":  "not_audited",
+                        "media_sha256":  null,
+                        "eligible_intervals":  [
+
+                                               ],
+                        "semantic_labels_allowed":  false
+                    }
+                ]
+}

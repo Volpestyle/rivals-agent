@@ -1,0 +1,282 @@
+{
+  "schema": "rivals-ssl-whole-file-admission-v1",
+  "status": "accepted_ssl_only",
+  "owner": "admission-codex",
+  "created_at_utc": "2026-09-27T17:08:13.600596+00:00",
+  "usage": "world-feature SSL only; no semantic labels, no evaluation",
+  "review_status": "provisional_pending_post_landing_independent_review",
+  "selection": "four smallest finalized S6.5 raw sessions in metadata pass; no derived files or stubs",
+  "source_inventory": "docs/research/idm/clips-2025-inventory.md",
+  "source_manifest_sha256": "0b12d1019d6aefe9c306ab1c644dc0bdfd2152713797f04093d30ad266ce22f3",
+  "forbidden_family_overlap_result": "pass_filename_date_and_exact_digest_checks",
+  "exclusions": [
+    "053616",
+    "153835",
+    "153812",
+    "Gate 2 pairs",
+    "V-C -150600-1/-2",
+    "V-Q -150600-3",
+    "DayMR",
+    "all other held-out/sealed/frozen-dev"
+  ],
+  "overlap_basis": {
+    "registry_sha256": "1c9e2c671b14e9d1ea8bcefd4703668a039ecac946d2f5ece768746e67118a13",
+    "denylist_sha256": "439c80df6cd5d6daa60b48e0acb2d3a3fa833134ff14edddc4121348c2dceb20",
+    "forbidden_metadata_records": 18,
+    "selected_unique_filenames": 4,
+    "selected_unique_media_hashes": 4,
+    "recording_dates": "2026-02-13, 2026-02-14, 2026-02-17; distinct from all September paired families",
+    "limitation": "identity checks only; no visual/perceptual overlap claim; DayMR and derived clips excluded by exact raw-session allowlist"
+  },
+  "interval_contract": "No intervals admitted. Consumer must inspect native windows and create separate cut-free sampled-clip manifest before extraction/training.",
+  "sources": [
+    {
+      "source_family": "2026-02-13 21-30-25",
+      "path": "D:/SPIDEY CLIPS/2026-02-13 21-30-25.mkv",
+      "name": "2026-02-13 21-30-25.mkv",
+      "recorded_local_time_from_filename": "2026-02-13 21-30-25",
+      "recording_timezone": "unknown",
+      "season": "S6.5",
+      "patch_version_from_inventory": "20260213",
+      "kit_regime_from_inventory": "SM-K6",
+      "bytes": 39775792417,
+      "last_write_utc": "2026-09-26T19:29:06.0000000Z",
+      "latest_compression_status": "replaced",
+      "compression_log_entry": {
+        "line_number": 56,
+        "record": {
+          "file": "2026-02-13 21-30-25.mkv",
+          "status": "replaced",
+          "orig_bytes": 132955716532,
+          "new_bytes": 39775792417,
+          "dur_orig": 11469.304,
+          "dur_new": 11469.308,
+          "streams": "v1 a1",
+          "secs": 8139
+        }
+      },
+      "size_matches_replaced_record": true,
+      "metadata_candidate": true,
+      "admission_status": "whole_file_metadata_qualification_only",
+      "media_sha256": "2d8f97eb2b85eb0424d68f7b2dbee6dc106990a8904c0c7d8dae0be4c2e47c6e",
+      "eligible_intervals": [],
+      "semantic_labels_allowed": false,
+      "status": "accepted_ssl_only",
+      "duration_seconds": 11469.308,
+      "codec": "hevc",
+      "video_stream": {
+        "codec_name": "hevc",
+        "codec_type": "video",
+        "width": 2560,
+        "height": 1440,
+        "r_frame_rate": "120/1",
+        "time_base": "1/1000"
+      },
+      "replaced_log_identity": {
+        "path": "D:\\SPIDEY CLIPS\\_hevc_compress_log.jsonl",
+        "line_number": 56,
+        "record": {
+          "file": "2026-02-13 21-30-25.mkv",
+          "status": "replaced",
+          "orig_bytes": 132955716532,
+          "new_bytes": 39775792417,
+          "dur_orig": 11469.304,
+          "dur_new": 11469.308,
+          "streams": "v1 a1",
+          "secs": 8139
+        },
+        "record_text_sha256": "31042b782faf44c1d471c938ac8c57b8f7b8efbc6ce4b25acdcd96af109b207c"
+      },
+      "hashed_at_utc": "2026-09-27T17:06:45.653064+00:00",
+      "interval_selection_owner": "idm-owner",
+      "forbidden_family_overlap_result": "pass_filename_date_and_exact_digest_checks",
+      "visual_overlap_check": "not performed; no exhaustive perceptual deduplication claim"
+    },
+    {
+      "source_family": "2026-02-14 14-27-37",
+      "path": "D:/SPIDEY CLIPS/2026-02-14 14-27-37.mkv",
+      "name": "2026-02-14 14-27-37.mkv",
+      "recorded_local_time_from_filename": "2026-02-14 14-27-37",
+      "recording_timezone": "unknown",
+      "season": "S6.5",
+      "patch_version_from_inventory": "20260213",
+      "kit_regime_from_inventory": "SM-K6",
+      "bytes": 13001590692,
+      "last_write_utc": "2026-09-26T20:29:48.0000000Z",
+      "latest_compression_status": "replaced",
+      "compression_log_entry": {
+        "line_number": 58,
+        "record": {
+          "file": "2026-02-14 14-27-37.mkv",
+          "status": "replaced",
+          "orig_bytes": 45208866691,
+          "new_bytes": 13001590692,
+          "dur_orig": 3579.704,
+          "dur_new": 3579.708,
+          "streams": "v1 a1",
+          "secs": 2423
+        }
+      },
+      "size_matches_replaced_record": true,
+      "metadata_candidate": true,
+      "admission_status": "whole_file_metadata_qualification_only",
+      "media_sha256": "28772a0f0c1845d7a0048b9d2f45527c4737f7f63b1d37174bba2e91c19ae35e",
+      "eligible_intervals": [],
+      "semantic_labels_allowed": false,
+      "status": "accepted_ssl_only",
+      "duration_seconds": 3579.708,
+      "codec": "hevc",
+      "video_stream": {
+        "codec_name": "hevc",
+        "codec_type": "video",
+        "width": 2560,
+        "height": 1440,
+        "r_frame_rate": "120/1",
+        "time_base": "1/1000"
+      },
+      "replaced_log_identity": {
+        "path": "D:\\SPIDEY CLIPS\\_hevc_compress_log.jsonl",
+        "line_number": 58,
+        "record": {
+          "file": "2026-02-14 14-27-37.mkv",
+          "status": "replaced",
+          "orig_bytes": 45208866691,
+          "new_bytes": 13001590692,
+          "dur_orig": 3579.704,
+          "dur_new": 3579.708,
+          "streams": "v1 a1",
+          "secs": 2423
+        },
+        "record_text_sha256": "0056bd6ae6e2958b6fb817c3499c9fa9b6ec15f1f863ed5828438def2b5a30fc"
+      },
+      "hashed_at_utc": "2026-09-27T17:07:08.572561+00:00",
+      "interval_selection_owner": "idm-owner",
+      "forbidden_family_overlap_result": "pass_filename_date_and_exact_digest_checks",
+      "visual_overlap_check": "not performed; no exhaustive perceptual deduplication claim"
+    },
+    {
+      "source_family": "2026-02-17 16-51-17",
+      "path": "D:/SPIDEY CLIPS/2026-02-17 16-51-17.mkv",
+      "name": "2026-02-17 16-51-17.mkv",
+      "recorded_local_time_from_filename": "2026-02-17 16-51-17",
+      "recording_timezone": "unknown",
+      "season": "S6.5",
+      "patch_version_from_inventory": "20260213",
+      "kit_regime_from_inventory": "SM-K6",
+      "bytes": 28989212917,
+      "last_write_utc": "2026-09-27T15:44:08.0000000Z",
+      "latest_compression_status": "replaced",
+      "compression_log_entry": {
+        "line_number": 108,
+        "record": {
+          "file": "2026-02-17 16-51-17.mkv",
+          "status": "replaced",
+          "orig_bytes": 82775931963,
+          "new_bytes": 28989212917,
+          "dur_orig": 8911.496,
+          "dur_new": 8911.5,
+          "streams": "v1 a1",
+          "secs": 5703
+        }
+      },
+      "size_matches_replaced_record": true,
+      "metadata_candidate": true,
+      "admission_status": "whole_file_metadata_qualification_only",
+      "media_sha256": "772d8062b7239082df5a95bb7cb815b2672bab46efdb3ebc90367e8304ca4479",
+      "eligible_intervals": [],
+      "semantic_labels_allowed": false,
+      "status": "accepted_ssl_only",
+      "duration_seconds": 8911.5,
+      "codec": "hevc",
+      "video_stream": {
+        "codec_name": "hevc",
+        "codec_type": "video",
+        "width": 2560,
+        "height": 1440,
+        "r_frame_rate": "120/1",
+        "time_base": "1/1000"
+      },
+      "replaced_log_identity": {
+        "path": "D:\\SPIDEY CLIPS\\_hevc_compress_log.jsonl",
+        "line_number": 108,
+        "record": {
+          "file": "2026-02-17 16-51-17.mkv",
+          "status": "replaced",
+          "orig_bytes": 82775931963,
+          "new_bytes": 28989212917,
+          "dur_orig": 8911.496,
+          "dur_new": 8911.5,
+          "streams": "v1 a1",
+          "secs": 5703
+        },
+        "record_text_sha256": "9df789c8c2aa622457b9d588169ae1034b0c9e230765a63fafe7548649db8bd5"
+      },
+      "hashed_at_utc": "2026-09-27T17:07:56.775810+00:00",
+      "interval_selection_owner": "idm-owner",
+      "forbidden_family_overlap_result": "pass_filename_date_and_exact_digest_checks",
+      "visual_overlap_check": "not performed; no exhaustive perceptual deduplication claim"
+    },
+    {
+      "source_family": "2026-02-17 23-51-41",
+      "path": "D:/SPIDEY CLIPS/2026-02-17 23-51-41.mkv",
+      "name": "2026-02-17 23-51-41.mkv",
+      "recorded_local_time_from_filename": "2026-02-17 23-51-41",
+      "recording_timezone": "unknown",
+      "season": "S6.5",
+      "patch_version_from_inventory": "20260213",
+      "kit_regime_from_inventory": "SM-K6",
+      "bytes": 9153879199,
+      "last_write_utc": "2026-09-27T16:25:08.0000000Z",
+      "latest_compression_status": "replaced",
+      "compression_log_entry": {
+        "line_number": 109,
+        "record": {
+          "file": "2026-02-17 23-51-41.mkv",
+          "status": "replaced",
+          "orig_bytes": 28740615796,
+          "new_bytes": 9153879199,
+          "dur_orig": 2806.655,
+          "dur_new": 2806.658,
+          "streams": "v1 a1",
+          "secs": 1771
+        }
+      },
+      "size_matches_replaced_record": true,
+      "metadata_candidate": true,
+      "admission_status": "whole_file_metadata_qualification_only",
+      "media_sha256": "7ec0fa46f84642d537c1706ee2a3d88abcc067fedcdbd35e2c819fb7a4faa18a",
+      "eligible_intervals": [],
+      "semantic_labels_allowed": false,
+      "status": "accepted_ssl_only",
+      "duration_seconds": 2806.658,
+      "codec": "hevc",
+      "video_stream": {
+        "codec_name": "hevc",
+        "codec_type": "video",
+        "width": 2560,
+        "height": 1440,
+        "r_frame_rate": "120/1",
+        "time_base": "1/1000"
+      },
+      "replaced_log_identity": {
+        "path": "D:\\SPIDEY CLIPS\\_hevc_compress_log.jsonl",
+        "line_number": 109,
+        "record": {
+          "file": "2026-02-17 23-51-41.mkv",
+          "status": "replaced",
+          "orig_bytes": 28740615796,
+          "new_bytes": 9153879199,
+          "dur_orig": 2806.655,
+          "dur_new": 2806.658,
+          "streams": "v1 a1",
+          "secs": 1771
+        },
+        "record_text_sha256": "e8e335a866ec6be5761f770afc7a48775d21a473f45616ebda818c28667be057"
+      },
+      "hashed_at_utc": "2026-09-27T17:08:13.593933+00:00",
+      "interval_selection_owner": "idm-owner",
+      "forbidden_family_overlap_result": "pass_filename_date_and_exact_digest_checks",
+      "visual_overlap_check": "not performed; no exhaustive perceptual deduplication claim"
+    }
+  ]
+}
