@@ -1,0 +1,20 @@
+{
+  "a2_sha256": "6f7eedfb6e0f1cf4407a2fde9b9dc83c895b780350a549d7dd37ff35dfd33c1d",
+  "run": {
+    "arm": "control",
+    "seed": 3,
+    "root": "/Users/james/dev/range-bc-data/explore/nitrogen-nohistory-confirm-20260927/evaluation-recovery/control-s3",
+    "original_final_sha256": "37e8bc59808864eccece7a0da7954597630cf5b19eb92b1274a21d3223d72537",
+    "original_exit": 1,
+    "original_volume": "vo-hOYoMtDQPjyrJvBNrIVAz4",
+    "recovery_receipt_sha256": "de5808a908f3a97cd3df79bbbd686e7e441bdb82c37696c4ba169efce4561d77",
+    "files": {
+      "epoch-26.pt": "6be581663f4d1bf6d6e6a10b37d91c8fb62692b0c893d722caa9e68fc0cd23b1",
+      "latest.pt": "81e02e23ba06b18b3b11a89dd72eafcc2337b1cb5bc989699515d41979ef295f",
+      "evaluation.json": "d139ef0a769f75cca7d46096169e71b5d1db7f192588197b833bd6c696c24783",
+      "status.json": "89f9437b3b88dcf1355cf564e7ccde216c238d85ba79baccce9447d94e44a8dd"
+    }
+  },
+  "all_six_inputs_sha256": "14347004b5d12ed44a89d69961fcb2df7be8f1a34444460f145fee3c5797cf21",
+  "verification": "Two independent volume reads agree; complete epoch26/15288; finite final/latest tensors identical."
+}
