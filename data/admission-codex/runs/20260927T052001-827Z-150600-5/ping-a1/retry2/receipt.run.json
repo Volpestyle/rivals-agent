@@ -1,0 +1,17 @@
+{
+ "step": "receipt",
+ "mode": "hash validation only; no decode, capture or game input",
+ "started_unix": 1790541272.529777,
+ "finished_unix": 1790541277.084342,
+ "exit_code": 0,
+ "failure": null,
+ "arguments": [
+  "C:/Users/volpe/.uv-envs/admission-codex/Scripts/python.exe",
+  "data/human/sessions/match_admission.py",
+  "20260927T052001-827Z-150600-5",
+  "--snapshot",
+  "code-snapshot-f8fd92c-6046514b",
+  "--out",
+  "data\\admission-codex\\runs\\20260927T052001-827Z-150600-5\\ping-a1\\retry2\\match-admission.pending.json"
+ ]
+}

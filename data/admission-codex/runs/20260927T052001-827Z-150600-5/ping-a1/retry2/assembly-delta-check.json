@@ -1,0 +1,15 @@
+{
+ "session": "20260927T052001-827Z-150600-5",
+ "result": "pass",
+ "unchanged_segment_count": 47,
+ "unchanged_step_rows": 12303,
+ "comparison": "All step fields equal, except global row index and normalized run identifiers; run partition preserved.",
+ "raw_payload_and_decoded_pts_equal": true,
+ "accepted_ping_overlap_count": 0,
+ "accepted_segments": 7,
+ "accepted_ns": 342399986311,
+ "steps_sha256": "2c25a3fc96fb7e5a3ec41b173e958b79fd14e76293b09ad9d4c842f2de11dcf8",
+ "imported_demo_sha256": "f0fa88940e7190bd5ca74b083e2e790d814bdf20e705370a9eab3ef5c0f95d79",
+ "freeze_sha256": "86f7c93e9be9c167ff17a94dbe86529c22cb9f182f447bcf936bb2c2983e3651",
+ "verifier_sha256": "e84303b568668a609633a693fc6bf04a92551a862ea9a262af5350f6bf1d8fb4"
+}

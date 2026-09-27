@@ -1,0 +1,27 @@
+﻿{
+    "session":  "20260927T052001-827Z-150600-5",
+    "step":  "assemble",
+    "started":  "2026-09-27T20:27:08.0555185Z",
+    "finished":  "2026-09-27T20:33:39.0674404Z",
+    "pid":  23368,
+    "exit_code":  0,
+    "failure":  null,
+    "free_bytes_before":  14337392640,
+    "process_peak_working_set_bytes":  {
+                                           "23368":  4939776,
+                                           "40224":  7634944,
+                                           "140700":  189366272,
+                                           "25132":  115703808
+                                       },
+    "arguments":  [
+                      "-u",
+                      "data/human/sessions/assemble_session.py",
+                      "20260927T052001-827Z-150600-5",
+                      "--independent-verdicts",
+                      "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json",
+                      "--snapshot",
+                      "code-snapshot-f8fd92c-6046514b",
+                      "--supersedes",
+                      "Lead 2026-09-27: ping-wheel boundary correction; prior assembly retained in versioned files and assembly-ping-a1-supersedes.json"
+                  ]
+}

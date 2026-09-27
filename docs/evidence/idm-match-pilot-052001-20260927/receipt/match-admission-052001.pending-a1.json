@@ -1,0 +1,24 @@
+{
+ "format": "rivals-idm-match-admission-v1",
+ "scope": "EXPLORATORY",
+ "decision": "pending",
+ "reviewer": null,
+ "producer": "admission-owner (data/human/sessions/match_admission.py)",
+ "snapshot": "code-snapshot-f8fd92c-6046514b",
+ "snapshot_manifest_sha256": "f37a5a717d06517d160403146eb69818060874582ce79d5fd6aa196fcea82e4e",
+ "registry": {
+  "path": "data/human/session-splits.corpus.json",
+  "sha256": "1c9e2c671b14e9d1ea8bcefd4703668a039ecac946d2f5ece768746e67118a13"
+ },
+ "sessions": {
+  "20260927T052001-827Z-150600-5": {
+   "source_kind": "live",
+   "session_group": "20260927T052001-827Z-150600-5",
+   "media_sha256": "3e0a1ebe52d957655357b68cfaaf0e196cff6954a3b1d72706cbec6b00a5f61f",
+   "steps_sha256": "2c25a3fc96fb7e5a3ec41b173e958b79fd14e76293b09ad9d4c842f2de11dcf8",
+   "imported_demo_sha256": "f0fa88940e7190bd5ca74b083e2e790d814bdf20e705370a9eab3ef5c0f95d79",
+   "identity_sha256": "5100f677648de77413e6c419308f6a37daa5e5066532b78b6de078c82a23a436",
+   "motor_statement_sha256": "f5d3aa1aecbeaaaa6ca36cdb28d7567f863e9439ebda43fd57c4e6430dfd9f56"
+  }
+ }
+}

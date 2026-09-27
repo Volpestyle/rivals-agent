@@ -2,25 +2,25 @@
  "kind": "independent_session_review",
  "session": "20260927T052001-827Z-150600-5",
  "reviewer": "frame-review (Opus)",
- "reviewed_at": "2026-09-27T14:58:41Z",
+ "reviewed_at": "2026-09-27T18:52:14Z",
  "inputs": {
-  "segments_evidence_sha256": "7bfa7d5312e0b058db6326a09d4ff300974bc8ad4f8c8ca4226ff75cf88712c5",
-  "owner_verdicts_sha256": "e8738680cd512054728956ebd09f737cd3c9fef2eae2104db97ee25a41dfebcc",
-  "media_sha256": "3e0a1ebe52d957655357b68cfaaf0e196cff6954a3b1d72706cbec6b00a5f61f"
+  "segments_evidence_sha256": "608e35e8dfaf6607442d2ce13049fb48e104b6cd5e9c89cae98807bcbcc7d164",
+  "owner_verdicts_sha256": "7e8f1fdad86e07be22375851c754b3dfdce9d867eac845afea4b5e202a473aab",
+  "media_sha256": "3e0a1ebe52d957655357b68cfaaf0e196cff6954a3b1d72706cbec6b00a5f61f",
+  "ping_delta_sha256": "c04354f4520ea329b3882dfa3333ce1b9f92e5bfdfa0c989237db3fab1968ada"
  },
  "supersedes": {
-  "path": "independent-review.verdicts.json",
-  "sha256": "358e9076044d5c1303dec24c096f5324609a2563ab6beae0e7d524235aebc618",
-  "note": "v1, against evidence 393163fc...; kept unchanged"
+  "path": "independent-review.v2.verdicts.json",
+  "sha256": "49842f90b8f13c288baa698317c392a90e3cac56551a338bb02f651bd5868999"
  },
- "method": "Same decoder and checks as v1 (fr_decode.py: exact-PTS select with showinfo proof, streamed, CPU 4 threads below normal, obs64/Marvel absent before every window). v2: all 143 owner review frames hashed (equal 143/143, own_hud flags equal); 169 new frames decoded for the new edges (every 6th frame through 2 s at each edge of seg-026..seg-030, plus the frames just outside); seg-030's start edge inspected at 0.1 s. 43 segments have v1 bounds, and every v1 frame inside them re-hashes equal: their v1 verdicts are reused. Raw inputs replayed for the new segments with the v2 UI key set (T included). Media hash from v1 (file unchanged since, same bytes read by the decoder).",
+ "method": "Changed-boundary review of ping-a1 (rule: button 3 held, cut through release + 2 s). 47 segments are byte-equal JSON objects to segments-evidence.v3 (7bfa7d53, pinned by v2) and every v2 frame in them re-hashes equal: v2 verdicts reused. The 5 seg-030 children were judged on native frames: 186 new frames decoded with the same exact-PTS decoder (showinfo proof), BelowNormal, 4 threads, streamed, obs64/Marvel absent and free RAM >= 2 GiB before every window; every frame of the last 0.4 s of seg-030-a1-00 and first 0.25 s of seg-030-a1-04 plus 6-frame spacing through 2 s. All 150 owner review frames hash equal (own_hud flags equal). Every mouse button, wheel event and key inside the two new accepts replayed from inputs.jsonl. Guard change checked: the snapshot's scan.py differs only in decoder threads (4 to 2) and vote-frame disk spooling; read_sample is unchanged.",
  "matches_owner": true,
  "blocking_findings": [],
  "differences": [],
  "findings": [
-  "The emote rule (T down to the next W/A/S/D make + 2 s) matches the frames here: the wheel is 281.70-282.80 s, the Space at 283.495 s did not end the sit, D at 305.124 s did (standing by ~305.6 s).",
-  "seg-026's 17.5 s of own spawn-room control after the splash (263.6-281.41 s) is lost to the conservative reject; a round-start splash rule would recover it. Not blocking.",
-  "Unchanged from v1: no spectate, kill cam or respawn wait inside any accepted segment; the own-HUD reader misses the web counter on 1-24% of own-play frames and its max_hp cannot by itself separate spectate from own play."
+  "Lesson applied: the v2 record (49842f90) wrongly accepted old seg-030, which contained a ping wheel at 365.827 s; this record supersedes it.",
+  "Unbound key '4' (VK 52, scan 5) is pressed inside accepted segments at 137.046 s (seg-008), 368.644 s (seg-030-a1-04) and 488.357 s (seg-036). Frames at 0.25 s spacing around each show no menu or overlay (a small hand/communication icon at 368.83 and 488.94 s); not a reject, but it is absent from the binding table and should be identified.",
+  "The -4 changed-boundary decode was refused by the auto-mode permission classifier inside the frame-review worker; -4 v2 is not written yet."
  ],
  "session_findings": [
   "Media sha256 re-hashed: 3e0a1ebe...5f61f (matches the registry/evidence).",
@@ -7557,13 +7557,13 @@
    "frames": []
   },
   {
-   "segment_id": "seg-030",
+   "segment_id": "seg-030-a1-00",
    "start_ns": 554582993006170,
-   "end_ns": 554701359668103,
+   "end_ns": 554641601337160,
    "machine_reason": "range_hud_present",
    "owner_verdict": "accepted",
    "verdict": "accepted",
-   "reason": "Own live play from the spawn-door run under 'AWAITING MISSION AREA UNLOCK' (first frame f36844, 307.127 s: own HUD 250/250, webs 5; teammates pass in front of him 308.3-308.9 s, the camera is his) to hp 80 at 425.494 s before the third death. Frames every 0.25 s plus 0.1 s at both edges (v1 reads of this span reused, same hashes): own HUD throughout; bonus health 447/500 at 331-333 s; the max_hp 275 read at 408.3 s is a misread on own play, no spectate. No UI key, no focus change, longest input gap 0.32 s.",
+   "reason": "Own live play 307.127-365.736 s (v2 seg-030 body, unchanged frames reused). New end edge: every frame of the last 0.4 s decoded; the last in-segment frame f43877 (365.736 s) shows his own HUD (hp 105) and no ping wheel; button 3 goes down at 365.7385 s, after the edge, and the wheel first shows at 365.827 s (file_ms 365754). Inputs inside: mouse 1/2/4 and bound keys only, plus one unbound '4' press (see findings); no button 3, T, UI key, wheel or focus change; longest gap 0.32 s.",
    "frames": [
     {
      "frame_index": 36844,
@@ -7571,9 +7571,59 @@
      "decoded_bgr_sha256": "056481c0f7b0eb3a83cf366f22d0a5c9a922abb039b9b2bb73cd030bccb4f5ee"
     },
     {
+     "frame_index": 36845,
+     "composition_ns": 554583001339503,
+     "decoded_bgr_sha256": "211431201fa4c8fef450ce549e410e25857e8fe5c2ea16950abd96dc8d5c1e9d"
+    },
+    {
+     "frame_index": 36846,
+     "composition_ns": 554583009672836,
+     "decoded_bgr_sha256": "df0923fd24141e17721035eb9b73c87dc2cdc6939ba093e60a4e4241a3de4539"
+    },
+    {
+     "frame_index": 36847,
+     "composition_ns": 554583018006169,
+     "decoded_bgr_sha256": "096eaacfa7893c4975ff8935da6db6f872d2041560ee0082fc22c02ff0ee6bc8"
+    },
+    {
+     "frame_index": 36848,
+     "composition_ns": 554583026339502,
+     "decoded_bgr_sha256": "68e8217cc55c9a7a6404201d9a578369268127f0503c5764f7c93b7b498a88c0"
+    },
+    {
+     "frame_index": 36849,
+     "composition_ns": 554583034672835,
+     "decoded_bgr_sha256": "75fb3e7162155839fd548180bd5fa0c3307f41ce71e7b53ba3ba77bfb56457a9"
+    },
+    {
      "frame_index": 36850,
      "composition_ns": 554583043006168,
      "decoded_bgr_sha256": "d0da2f35e073e104422959d5beb58a124cee85f1e746cf2dc329e99fc82b09a9"
+    },
+    {
+     "frame_index": 36851,
+     "composition_ns": 554583051339501,
+     "decoded_bgr_sha256": "c16de73bf8e1eafd0bb7b5007c6a479fcee7b05db75d3d25242e8fbcface7778"
+    },
+    {
+     "frame_index": 36852,
+     "composition_ns": 554583059672834,
+     "decoded_bgr_sha256": "d46a4293138ecf20d4f3850b384564e08e8dfad1beac66d10ff27d8dbd097167"
+    },
+    {
+     "frame_index": 36853,
+     "composition_ns": 554583068006167,
+     "decoded_bgr_sha256": "b6af8726288add88bb4f0a44e897c5ce04278cf4e5cbd7a7d40dd4fdd0fa185c"
+    },
+    {
+     "frame_index": 36854,
+     "composition_ns": 554583076339500,
+     "decoded_bgr_sha256": "0c8aeacad1a1e8799e0df0252631c3acf5b64b8d19abcec1efec43170d603a42"
+    },
+    {
+     "frame_index": 36855,
+     "composition_ns": 554583084672833,
+     "decoded_bgr_sha256": "f001058995635ba57cb4328fee5c60b527b122a3bdf24df48014637b6f01ec70"
     },
     {
      "frame_index": 36856,
@@ -7581,14 +7631,89 @@
      "decoded_bgr_sha256": "c80e7bdb3038003d13975ce0dc817d5206a3765cfaf86ed2ebc264b31fa7d00c"
     },
     {
+     "frame_index": 36857,
+     "composition_ns": 554583101339499,
+     "decoded_bgr_sha256": "be7b9b09915cdf5e7ae901e74b4e628c1ea6bee476a9d8ffc6715d195d7aa5fd"
+    },
+    {
+     "frame_index": 36858,
+     "composition_ns": 554583109672832,
+     "decoded_bgr_sha256": "1be9ecf86e1f588c4045fd4da87ec9d79846b033671a3b21200079dff757dabe"
+    },
+    {
+     "frame_index": 36859,
+     "composition_ns": 554583118006165,
+     "decoded_bgr_sha256": "0bce9517061d21e1a3c11266b8bf0fd1c09320e7396402cb1034985bef676721"
+    },
+    {
+     "frame_index": 36860,
+     "composition_ns": 554583126339498,
+     "decoded_bgr_sha256": "0d3b4630362c11b8bbb9f32322e48c34c7f17361e4733dd10dd54b45129284db"
+    },
+    {
+     "frame_index": 36861,
+     "composition_ns": 554583134672831,
+     "decoded_bgr_sha256": "f3f02c271deafb501f4cc5d3b35036ff1d0fc67124e7d7d85255a869d4c57cd0"
+    },
+    {
      "frame_index": 36862,
      "composition_ns": 554583143006164,
      "decoded_bgr_sha256": "c1b24594e23e6e38dc168ca3f4b6bbbcffb3ba667f630296de5d462170025f89"
     },
     {
+     "frame_index": 36863,
+     "composition_ns": 554583151339497,
+     "decoded_bgr_sha256": "5ccd5d2c6460555be46672c095ab2453306053ce54f9746e0269ad6d2b2cd6b4"
+    },
+    {
+     "frame_index": 36864,
+     "composition_ns": 554583159672830,
+     "decoded_bgr_sha256": "d0cf087cc4f57f0321fd68df7e1f0f9a665927cf1c973eb09963207dafbcfb98"
+    },
+    {
+     "frame_index": 36865,
+     "composition_ns": 554583168006163,
+     "decoded_bgr_sha256": "3f610b5247e75515a7af1a6da2bc8981ac4fc87f5e9d84fb4dd0927035e0c9d8"
+    },
+    {
+     "frame_index": 36866,
+     "composition_ns": 554583176339496,
+     "decoded_bgr_sha256": "316f6b6c3dc71337bdd744255a33a5079cc9ff37183054c8b327d1fcf8a0ea96"
+    },
+    {
+     "frame_index": 36867,
+     "composition_ns": 554583184672829,
+     "decoded_bgr_sha256": "8d646ea9de4ac7093106ce0537c179c35844d74015a63254b1bc4430a559508d"
+    },
+    {
      "frame_index": 36868,
      "composition_ns": 554583193006162,
      "decoded_bgr_sha256": "81eebc5c768fa603469dcfeaf4fa6d8b23914e8d0ed546f6401c0325550d4c4f"
+    },
+    {
+     "frame_index": 36869,
+     "composition_ns": 554583201339495,
+     "decoded_bgr_sha256": "c0f6f507ce1bb4db608d4a2212ad0cab1c9758e8dbba271cf04fbe809a67444e"
+    },
+    {
+     "frame_index": 36870,
+     "composition_ns": 554583209672828,
+     "decoded_bgr_sha256": "669568637ecd1425657c7b9e0e9a4489817183f547753411830ed0d0000afb93"
+    },
+    {
+     "frame_index": 36871,
+     "composition_ns": 554583218006161,
+     "decoded_bgr_sha256": "d8ef147c2b287f5d9cfcdd7f5117b05f2e90ca2365647cd0182b60ad2c055866"
+    },
+    {
+     "frame_index": 36872,
+     "composition_ns": 554583226339494,
+     "decoded_bgr_sha256": "c584d6e316947c0867f364f6fdeef1f8bcd40da6c78c232588b83f198b2f449b"
+    },
+    {
+     "frame_index": 36873,
+     "composition_ns": 554583234672827,
+     "decoded_bgr_sha256": "a82a19f1474dc9eb909842c4cf20457efd0a6565bf08ab1ce3c4e91210657c3a"
     },
     {
      "frame_index": 36874,
@@ -7931,6 +8056,11 @@
      "decoded_bgr_sha256": "aca4e164264f665057f0556f4f8b387eb3732c7a9f2d9798d7b860ac646a819a"
     },
     {
+     "frame_index": 38016,
+     "composition_ns": 554592759672446,
+     "decoded_bgr_sha256": "dab47e1e5cfedf57fc74d2391e539c9f7fadb4ca57fd234dc924735dc65d35ad"
+    },
+    {
      "frame_index": 38027,
      "composition_ns": 554592851339109,
      "decoded_bgr_sha256": "01efaf067bd6bf7e97a936897ca33b95904f6898619f534f8fec492996fc8629"
@@ -8134,6 +8264,11 @@
      "frame_index": 39178,
      "composition_ns": 554602443005392,
      "decoded_bgr_sha256": "1f79a024b4c0dc278f78d10eae110c17233f43e4272f33c8b7d1d6fe23899d17"
+    },
+    {
+     "frame_index": 39188,
+     "composition_ns": 554602526338722,
+     "decoded_bgr_sha256": "12891e898f7db4f2f273c3956c6fa6ff3efa95861c1cb9ae08363c280b99de9f"
     },
     {
      "frame_index": 39208,
@@ -8341,6 +8476,11 @@
      "decoded_bgr_sha256": "35ab256f07de26e6b83c2f98f3108a20b00f72df4cab45353bb1fa160c760f74"
     },
     {
+     "frame_index": 40360,
+     "composition_ns": 554612293004998,
+     "decoded_bgr_sha256": "783ae88725121c7a7f96937b1c4c2109165daa36e343ab139fee817963b80769"
+    },
+    {
      "frame_index": 40378,
      "composition_ns": 554612443004992,
      "decoded_bgr_sha256": "ba16d07bd249412df8962b4cfa3737960897e8d80e03b0eec0372a608b0923d6"
@@ -8546,6 +8686,11 @@
      "decoded_bgr_sha256": "d71a9df5910df15763ce54a05307ec9154d866aa09f832d54f942f6698f4e743"
     },
     {
+     "frame_index": 41532,
+     "composition_ns": 554622059671274,
+     "decoded_bgr_sha256": "96476b3068f5e429d867f27cbdee2f7764fc7489bae7407c24b02cad394b577e"
+    },
+    {
      "frame_index": 41548,
      "composition_ns": 554622193004602,
      "decoded_bgr_sha256": "45071981d7d0dca3404f03145b5d07b2f171186d2d804fc80a6c3ab0f831ab58"
@@ -8746,6 +8891,11 @@
      "decoded_bgr_sha256": "0a76e2b23ffb2d13078a3129b1849b120a3c4d8e2b1aa8ec3b7f8314d0171e03"
     },
     {
+     "frame_index": 42704,
+     "composition_ns": 554631826337550,
+     "decoded_bgr_sha256": "db7ea394ed7094bdbdc7a8c12400c6caea0174451a09a893989e1215c5135813"
+    },
+    {
      "frame_index": 42718,
      "composition_ns": 554631943004212,
      "decoded_bgr_sha256": "a57c1eb534dec9f601248ee582396aa183f4d5d84c30bd750d59143e796a22d6"
@@ -8911,9 +9061,39 @@
      "decoded_bgr_sha256": "6d11ede77f48d2657e81b51560936d482cf3428e2267bae70db732023746e5a0"
     },
     {
+     "frame_index": 43643,
+     "composition_ns": 554639651337237,
+     "decoded_bgr_sha256": "ce31a8fa5f194594182bd5b43c657bc421304f99c6decaf077bc3c4f5275fcbe"
+    },
+    {
      "frame_index": 43648,
      "composition_ns": 554639693003902,
      "decoded_bgr_sha256": "024a0768a703a02bb289e1eaab40f087da81c4a48b22574126e9b8e440a6add9"
+    },
+    {
+     "frame_index": 43649,
+     "composition_ns": 554639701337235,
+     "decoded_bgr_sha256": "322eeda3db8f8ed0bdddbceb35a1fa4fc74b34721a94f2171387a3b727423119"
+    },
+    {
+     "frame_index": 43655,
+     "composition_ns": 554639751337233,
+     "decoded_bgr_sha256": "d85e96fc31b569327d38d3a50de36bf15b03ac5fc4895a66a4ba940316d0d0d1"
+    },
+    {
+     "frame_index": 43661,
+     "composition_ns": 554639801337231,
+     "decoded_bgr_sha256": "ba228cb1c3398e6fc5ed710990b3c2ef150aba6b67a318e0bcdc79dddcd87f1a"
+    },
+    {
+     "frame_index": 43667,
+     "composition_ns": 554639851337229,
+     "decoded_bgr_sha256": "be264ae3578282eb3b892413f83eb4f8b9ddfc53f38e1113613becda21edf2b7"
+    },
+    {
+     "frame_index": 43673,
+     "composition_ns": 554639901337227,
+     "decoded_bgr_sha256": "76caa9ed25b90086c27638b39239c7d0b13fd8afea4e7a1d7a644b4c320b8e0f"
     },
     {
      "frame_index": 43678,
@@ -8921,9 +9101,59 @@
      "decoded_bgr_sha256": "d8bd9da019c205548272f96c0012210c99803e843bb5e04e392dc3bf01fe964b"
     },
     {
+     "frame_index": 43679,
+     "composition_ns": 554639951337225,
+     "decoded_bgr_sha256": "4bc5fba2818e8463be0c73286df94f34616c22a764c3ab0b8dc88648c4eb7a51"
+    },
+    {
+     "frame_index": 43685,
+     "composition_ns": 554640001337223,
+     "decoded_bgr_sha256": "345c4768325cdef41b8444bcf6bd79fa91aa178f2a47ae41becece193e9b1e74"
+    },
+    {
+     "frame_index": 43691,
+     "composition_ns": 554640051337221,
+     "decoded_bgr_sha256": "e670798d0f5df78cde1d202b89f2a07e8a5afcf6ded5445d63be7f4da77004ac"
+    },
+    {
+     "frame_index": 43697,
+     "composition_ns": 554640101337219,
+     "decoded_bgr_sha256": "456698ba5600b5a219ed41d4defaf6e805b15b6afedc4cba4408ac53e5b0fb8b"
+    },
+    {
+     "frame_index": 43703,
+     "composition_ns": 554640151337217,
+     "decoded_bgr_sha256": "3713d8d003fb89486546f9402b8b89313a3af172374c57abeceecc06988701fe"
+    },
+    {
      "frame_index": 43708,
      "composition_ns": 554640193003882,
      "decoded_bgr_sha256": "eaebb0fc71327662e2b376a4e2d63b8951a3b2c469e5c79cbb0a8e3b5ee5f814"
+    },
+    {
+     "frame_index": 43709,
+     "composition_ns": 554640201337215,
+     "decoded_bgr_sha256": "200864b2853a0c35b148934838a3f69f0c8dce2a07d88eac26e870d9c9c612f3"
+    },
+    {
+     "frame_index": 43715,
+     "composition_ns": 554640251337213,
+     "decoded_bgr_sha256": "a1f9940857caa83d34d0131005f93634d49208d5c22b355f6631c26082b2b2fd"
+    },
+    {
+     "frame_index": 43721,
+     "composition_ns": 554640301337211,
+     "decoded_bgr_sha256": "58bcfecb4778766a407a2ea75d86a2598b72dc196fb8e2400e457c165a853dad"
+    },
+    {
+     "frame_index": 43727,
+     "composition_ns": 554640351337209,
+     "decoded_bgr_sha256": "023eb0cf00637d51ec1af164049a86eac039b107c588e145d9b8fa1d1beeffaa"
+    },
+    {
+     "frame_index": 43733,
+     "composition_ns": 554640401337207,
+     "decoded_bgr_sha256": "b56501512e2f2f4d6afb23ec2e9fc36522eb50e037568f0c492093bfedf16950"
     },
     {
      "frame_index": 43738,
@@ -8931,9 +9161,59 @@
      "decoded_bgr_sha256": "5fe0fe6635491805d704b743ae7c360f59f011d2e39e97b1dcde9df952a6d8cf"
     },
     {
+     "frame_index": 43739,
+     "composition_ns": 554640451337205,
+     "decoded_bgr_sha256": "94f02302cd5f4c8cf8998f66674871213e1a8c146eca2ea25de14398148fa96c"
+    },
+    {
+     "frame_index": 43745,
+     "composition_ns": 554640501337203,
+     "decoded_bgr_sha256": "6fb0d7a512c0f65ad962262d92122bfaf282323d56baaf63bf5f0c16d1bc04d6"
+    },
+    {
+     "frame_index": 43751,
+     "composition_ns": 554640551337201,
+     "decoded_bgr_sha256": "591149e96fd140d67038c2671fad06a069ac94f2d0317af86d9f003facdb7889"
+    },
+    {
+     "frame_index": 43757,
+     "composition_ns": 554640601337199,
+     "decoded_bgr_sha256": "85c64ce47bb4af34f6ebc4480e3b9abd682f4b14675089a799c9261772d5b520"
+    },
+    {
+     "frame_index": 43763,
+     "composition_ns": 554640651337197,
+     "decoded_bgr_sha256": "aa5f2562a964d366e273bbd46f0d07c6455e22840bae14e0d717c1a51d0c2509"
+    },
+    {
      "frame_index": 43768,
      "composition_ns": 554640693003862,
      "decoded_bgr_sha256": "37bae0e57fceb7122b716523a3194e6f9fe2d4954d70aa582ad4aad7552162cc"
+    },
+    {
+     "frame_index": 43769,
+     "composition_ns": 554640701337195,
+     "decoded_bgr_sha256": "8af919d71c98372028e53c5308e4937e76ed21919095bba1cc037e5e8cc78a9c"
+    },
+    {
+     "frame_index": 43775,
+     "composition_ns": 554640751337193,
+     "decoded_bgr_sha256": "ab6ecae26c939c9f7c8e7a6b9998e1b58e60bd4c9c374af9de675435fb3a8b64"
+    },
+    {
+     "frame_index": 43781,
+     "composition_ns": 554640801337191,
+     "decoded_bgr_sha256": "c0aa5ffbfd108223e36b670b20c5be4759a4d08ad5ebadf1546df271607e9861"
+    },
+    {
+     "frame_index": 43787,
+     "composition_ns": 554640851337189,
+     "decoded_bgr_sha256": "0738677df3c46f700dae43fb2eca51d3f6b4ddb92f5b4266c2eb95708175be1e"
+    },
+    {
+     "frame_index": 43793,
+     "composition_ns": 554640901337187,
+     "decoded_bgr_sha256": "457096558c37721c36d32b6c012518bc2573850f4c47a904e020c7aa39713f67"
     },
     {
      "frame_index": 43798,
@@ -8941,14 +9221,230 @@
      "decoded_bgr_sha256": "40d3428dd9ea6052caf7c3ec630901e7f7c9ccdc7f176e9357f0953848beab96"
     },
     {
+     "frame_index": 43799,
+     "composition_ns": 554640951337185,
+     "decoded_bgr_sha256": "f33a1cc839ba768c871e88f6f036b97fb468d61e8bb11fe7b8b8a0df10b00d36"
+    },
+    {
+     "frame_index": 43805,
+     "composition_ns": 554641001337183,
+     "decoded_bgr_sha256": "21bc560cbe3d4831b7a2d4a7d82b22618e7968674d0c8abbd29be3575b654537"
+    },
+    {
+     "frame_index": 43811,
+     "composition_ns": 554641051337181,
+     "decoded_bgr_sha256": "92e71b3965c33f1c1c962a0c1a13686735d279ef7fe35f7f099ff2a3137b32c6"
+    },
+    {
+     "frame_index": 43817,
+     "composition_ns": 554641101337179,
+     "decoded_bgr_sha256": "551cba42a8a5c9fcae12163c633662436ee7d56cd275c19b0a513fea00abc050"
+    },
+    {
+     "frame_index": 43823,
+     "composition_ns": 554641151337177,
+     "decoded_bgr_sha256": "6cdd5f2d698ffd59cd9a6036f441a37a94182d4832393501b105e782525935f0"
+    },
+    {
      "frame_index": 43828,
      "composition_ns": 554641193003842,
      "decoded_bgr_sha256": "3ec3309d3468b5601432417dfea896d5c39d299439f40d1140d495702ea1267e"
     },
     {
+     "frame_index": 43829,
+     "composition_ns": 554641201337175,
+     "decoded_bgr_sha256": "989c9472933ce7ad97b703a8ee14fedf327c6d77be36eb9cdc9bcfe3762b6102"
+    },
+    {
+     "frame_index": 43835,
+     "composition_ns": 554641251337173,
+     "decoded_bgr_sha256": "d360b4146a8a387358da558f16ffcda5c20314bffa2df39df3c28cfa73ec772d"
+    },
+    {
+     "frame_index": 43841,
+     "composition_ns": 554641301337171,
+     "decoded_bgr_sha256": "f388134b49d6909d6beed80cacfb43e61988990d47cc6df6a495537b2ea15b05"
+    },
+    {
+     "frame_index": 43847,
+     "composition_ns": 554641351337169,
+     "decoded_bgr_sha256": "f691c8ca7bb9790eea48508c90dd10f202a9ba1a18e763e564f9eb01a4854350"
+    },
+    {
+     "frame_index": 43848,
+     "composition_ns": 554641359670502,
+     "decoded_bgr_sha256": "a7d21b746d0f41b52e1ff1c3f0d6c5d83743ff5033ebb601a097328b8ebf8309"
+    },
+    {
+     "frame_index": 43849,
+     "composition_ns": 554641368003835,
+     "decoded_bgr_sha256": "fbbe867f4207f526882bc69b379fc8724867f1f4000fe867f9d0be925fc6f3cd"
+    },
+    {
+     "frame_index": 43850,
+     "composition_ns": 554641376337168,
+     "decoded_bgr_sha256": "196a20825e5005d4cb1a22139bfc11db81cf788241260ee00a43cd4d11f1f139"
+    },
+    {
+     "frame_index": 43851,
+     "composition_ns": 554641384670501,
+     "decoded_bgr_sha256": "2950cac3fd58f1e15109926303af2a95026f91204ab0d8f3ebaae7243e3997d0"
+    },
+    {
+     "frame_index": 43852,
+     "composition_ns": 554641393003834,
+     "decoded_bgr_sha256": "c3c88cf517d6c41e3d5457d087e34803d81729410ef172eaf92e5d91b2e28a41"
+    },
+    {
+     "frame_index": 43853,
+     "composition_ns": 554641401337167,
+     "decoded_bgr_sha256": "2d98b6704e5cba28a86c418d848b5da4fece5232820a8c9e7a5b06b4afaf8cbe"
+    },
+    {
+     "frame_index": 43854,
+     "composition_ns": 554641409670500,
+     "decoded_bgr_sha256": "7537e0d4f9c71385e0dc727aa6d49c7611a07cdf19502b591a3c351192eeb046"
+    },
+    {
+     "frame_index": 43855,
+     "composition_ns": 554641418003833,
+     "decoded_bgr_sha256": "44a24e228ed8e0e3d8f5ea1479c94749871d6bfe769355e931968ec1e3bf2ee6"
+    },
+    {
+     "frame_index": 43856,
+     "composition_ns": 554641426337166,
+     "decoded_bgr_sha256": "ddfffb9da925f973cda1bc2e64b7975bb57350ee7cae31ccb54db5b7fad73f27"
+    },
+    {
+     "frame_index": 43857,
+     "composition_ns": 554641434670499,
+     "decoded_bgr_sha256": "a277042ae37920b9c3f06c56237467746049ef0d1e07d0142a20b724f6bf329a"
+    },
+    {
      "frame_index": 43858,
      "composition_ns": 554641443003832,
      "decoded_bgr_sha256": "cb40f029670e48f2d1f99ac3c977fcc428c51941a90d97898bf919fea15a0ef9"
+    },
+    {
+     "frame_index": 43859,
+     "composition_ns": 554641451337165,
+     "decoded_bgr_sha256": "ab78fa8d259819bd33a74468890014c4fc342c3592d9ca4fa8cc85ccd1584983"
+    },
+    {
+     "frame_index": 43860,
+     "composition_ns": 554641459670498,
+     "decoded_bgr_sha256": "ae2bf4c3dd8e8df882078ad8d858b581d2a12ad0b763d37eb7e22a693d90e9e4"
+    },
+    {
+     "frame_index": 43861,
+     "composition_ns": 554641468003831,
+     "decoded_bgr_sha256": "3db3934d8887fee0b41c0a1144f22693e9250cf49bab6f943285cc4143405587"
+    },
+    {
+     "frame_index": 43862,
+     "composition_ns": 554641476337164,
+     "decoded_bgr_sha256": "571eeec77d8ac3eb3bb40f3fa773e564698fb3799cefb3d7affc33737e2c3cae"
+    },
+    {
+     "frame_index": 43863,
+     "composition_ns": 554641484670497,
+     "decoded_bgr_sha256": "257a3c1a289674680d5bc648342a5b1dabc24033bc1b1759356d895196e3d40a"
+    },
+    {
+     "frame_index": 43864,
+     "composition_ns": 554641493003830,
+     "decoded_bgr_sha256": "621b83cb5d96e7dc74ad10d12dd0ba12504ac13d9c4f775a402ad80b10bfa83a"
+    },
+    {
+     "frame_index": 43865,
+     "composition_ns": 554641501337163,
+     "decoded_bgr_sha256": "70f61563f5bbcfc02524e67724c44b788d193e5091b1f6263cc793eef3d032d5"
+    },
+    {
+     "frame_index": 43866,
+     "composition_ns": 554641509670496,
+     "decoded_bgr_sha256": "3f74474cee77252a71c264f124ad4624f822522b98efb5430428635b49341d8a"
+    },
+    {
+     "frame_index": 43867,
+     "composition_ns": 554641518003829,
+     "decoded_bgr_sha256": "c6853aa4ae1313be4e5e43d95beff1747b488f9b605c51a79642ecd6bf30c781"
+    },
+    {
+     "frame_index": 43868,
+     "composition_ns": 554641526337162,
+     "decoded_bgr_sha256": "e416d37440a712c118de919900480ebadd9bbd2c864d33edc21c8906453003a5"
+    },
+    {
+     "frame_index": 43869,
+     "composition_ns": 554641534670495,
+     "decoded_bgr_sha256": "4af3a335292650cf937ea52c6dd91a2bbd5d3d850e464ef2c9e16c7b240a013a"
+    },
+    {
+     "frame_index": 43870,
+     "composition_ns": 554641543003828,
+     "decoded_bgr_sha256": "9d51cc5e7a314699d1002c34c7df0e0b69e7104720a979932ba2fb2c400cf8a9"
+    },
+    {
+     "frame_index": 43871,
+     "composition_ns": 554641551337161,
+     "decoded_bgr_sha256": "0725bb49d86287be4a1cffc39cba55e721947f0061e756f0b0e434b89269ac19"
+    },
+    {
+     "frame_index": 43872,
+     "composition_ns": 554641559670494,
+     "decoded_bgr_sha256": "94dde31937402926ea5060fc455fe4e949067064fd3f31e537b225d238d41154"
+    },
+    {
+     "frame_index": 43873,
+     "composition_ns": 554641568003827,
+     "decoded_bgr_sha256": "71f2323efba4f433f3b06aeb3e594936c1dc41ca4832527bb2282c4a1912393c"
+    },
+    {
+     "frame_index": 43874,
+     "composition_ns": 554641576337160,
+     "decoded_bgr_sha256": "f78f920ec2456c869afbe2719e0c7636b2a20064535b4bfbb5882f127d00c31a"
+    },
+    {
+     "frame_index": 43875,
+     "composition_ns": 554641584670493,
+     "decoded_bgr_sha256": "4601c31942d5a66399f359621c925e1aab64e0e4378934bf3aed47389c144ff1"
+    },
+    {
+     "frame_index": 43876,
+     "composition_ns": 554641593003826,
+     "decoded_bgr_sha256": "70e13762f2e80ac45a15b3f3e9a1e8362626b1ed3296e49dc3684703c3d81122"
+    },
+    {
+     "frame_index": 43877,
+     "composition_ns": 554641601337159,
+     "decoded_bgr_sha256": "490818ff2101b40e9269f18349bce4be65667dfb4da691392b000cea85ca77f1"
+    }
+   ]
+  },
+  {
+   "segment_id": "seg-030-a1-01",
+   "start_ns": 554641601337160,
+   "end_ns": 554641604078800,
+   "machine_reason": "unsampled_edge",
+   "owner_verdict": "rejected",
+   "verdict": "rejected",
+   "reason": "unsampled_edge: 2.7 ms sliver before the button-3 packet; no native frame inside.",
+   "frames": []
+  },
+  {
+   "segment_id": "seg-030-a1-02",
+   "start_ns": 554641604078800,
+   "end_ns": 554643748111800,
+   "machine_reason": "ui_key",
+   "owner_verdict": "rejected",
+   "verdict": "rejected",
+   "reason": "ui_key (ping wheel): button 3 held 365.7385-365.8825 s plus the 2 s settle to 367.8825 s; the 'Need Healing / CANCEL' wheel is drawn at 365.827 s.",
+   "frames": [
+    {
+     "frame_index": 43878,
+     "composition_ns": 554641609670492,
+     "decoded_bgr_sha256": "3133172067813cfc9939a7d3bc3d42f6cb9414ae8b3d87646418b17b15b4a63b"
     },
     {
      "frame_index": 43888,
@@ -8976,6 +9472,11 @@
      "decoded_bgr_sha256": "05e911b20cbcacd2a4199f603816573e530c93c8748d6dc536bce22a2f567ab5"
     },
     {
+     "frame_index": 44006,
+     "composition_ns": 554642676337116,
+     "decoded_bgr_sha256": "be7499239f5d60186fd35be95d33f1b2fa6051a091df106f64a5bdd81e421fe2"
+    },
+    {
      "frame_index": 44008,
      "composition_ns": 554642693003782,
      "decoded_bgr_sha256": "a2afb35d713f5b5bfa76a16a54f0125b579853d42753a1f6721bb7b9c6c8ab15"
@@ -9001,6 +9502,27 @@
      "decoded_bgr_sha256": "4ad66fdc0ebbeecf7016df33c6dbd59b65ac2c511f3d3133e6aada838a441544"
     },
     {
+     "frame_index": 44134,
+     "composition_ns": 554643743003740,
+     "decoded_bgr_sha256": "58f408c1e4cdb185094f6949d14ac03eb8080e4bd861ae32c259aae213045056"
+    }
+   ]
+  },
+  {
+   "segment_id": "seg-030-a1-03",
+   "start_ns": 554643748111800,
+   "end_ns": 554644293003718,
+   "machine_reason": "hud_unknown",
+   "owner_verdict": "rejected",
+   "verdict": "rejected",
+   "reason": "hud_unknown after the settle: the own-HUD read fails at 368.327 s (the frame before the new start); a conservative rule cut over play.",
+   "frames": [
+    {
+     "frame_index": 44135,
+     "composition_ns": 554643751337073,
+     "decoded_bgr_sha256": "9e41983ea0e095c92471c80d5140ad85081e1abf68ca4c58037aec9e33a347c0"
+    },
+    {
      "frame_index": 44137,
      "composition_ns": 554643768003739,
      "decoded_bgr_sha256": "914743358386793d161743b2224989a60856bd9572c5e56c2e6b142370f8d032"
@@ -9011,9 +9533,120 @@
      "decoded_bgr_sha256": "28170206f68cef37733754f3fe86383bc82c08a031e041e02e35830e37a3f9ff"
     },
     {
+     "frame_index": 44167,
+     "composition_ns": 554644018003729,
+     "decoded_bgr_sha256": "85d7eeedbb3f2df58a7d04580b95228cefaa2c8967b30c2d39f577adbfad4da7"
+    },
+    {
      "frame_index": 44188,
      "composition_ns": 554644193003722,
      "decoded_bgr_sha256": "ecad17895d0fb5beb75a78ebaea1954a44f545012b785d4e199f016357138b0a"
+    },
+    {
+     "frame_index": 44199,
+     "composition_ns": 554644284670385,
+     "decoded_bgr_sha256": "fe2c65f6b08582258268ca5aa9966bd0cc04c00fce956ff9ab9a3326ab663ed1"
+    }
+   ]
+  },
+  {
+   "segment_id": "seg-030-a1-04",
+   "start_ns": 554644293003718,
+   "end_ns": 554701359668103,
+   "machine_reason": "range_hud_present",
+   "owner_verdict": "accepted",
+   "verdict": "accepted",
+   "reason": "Own live play 368.427-425.494 s. New start edge: first frame f44200 (368.436 s) shows his own HUD and live control, every frame of its first 0.25 s decoded; end edge unchanged from v2 (hp 80 at 425.494 s, before the third death). Inputs inside: mouse 1/2 and bound keys, plus one unbound '4' press at 368.644 s with no menu or overlay on frames (see findings); no button 3, T, UI key, wheel or focus change; longest gap 0.29 s.",
+   "frames": [
+    {
+     "frame_index": 44200,
+     "composition_ns": 554644293003718,
+     "decoded_bgr_sha256": "f6985c43ba7ad5969cacb71a0983072a9c6c046783b327a67f801b0afd463e6f"
+    },
+    {
+     "frame_index": 44201,
+     "composition_ns": 554644301337051,
+     "decoded_bgr_sha256": "4f977a180af88956219678e7a840868d247abfa44adc94e857daf1b584af5eee"
+    },
+    {
+     "frame_index": 44202,
+     "composition_ns": 554644309670384,
+     "decoded_bgr_sha256": "d4b66eefd733b176af58a16aa0ba47ff9fee506286e7c38cb490fd5bbb1cc9a4"
+    },
+    {
+     "frame_index": 44203,
+     "composition_ns": 554644318003717,
+     "decoded_bgr_sha256": "1f5909f21ec54c88be84dbed3d930258de25936e74a64b9f70473e7f4facfba8"
+    },
+    {
+     "frame_index": 44204,
+     "composition_ns": 554644326337050,
+     "decoded_bgr_sha256": "9ba77cf53dbb773508569af163a68e2b290bca96df002ce847d1b932cdce1b86"
+    },
+    {
+     "frame_index": 44205,
+     "composition_ns": 554644334670383,
+     "decoded_bgr_sha256": "d06258713e79663d7fb4ba3d31e075eb0270bbaad05a52d88bc4143ddd065480"
+    },
+    {
+     "frame_index": 44206,
+     "composition_ns": 554644343003716,
+     "decoded_bgr_sha256": "0d11fcef27c67f260282c5f3502cdec60440a401896e5c49050431262cc5742f"
+    },
+    {
+     "frame_index": 44207,
+     "composition_ns": 554644351337049,
+     "decoded_bgr_sha256": "0fe422c0f5572fc92f8954cc2a6f9877a1b85d033e05d112aa657739bc48aea5"
+    },
+    {
+     "frame_index": 44208,
+     "composition_ns": 554644359670382,
+     "decoded_bgr_sha256": "eb6287459345d7afc123ff1e1e2ec491c73a39347c720469785a95088665eeb0"
+    },
+    {
+     "frame_index": 44209,
+     "composition_ns": 554644368003715,
+     "decoded_bgr_sha256": "8523cb8d7107244012ea2243c2e7353ea46faeb089c6e3e6160a755a54d1cd83"
+    },
+    {
+     "frame_index": 44210,
+     "composition_ns": 554644376337048,
+     "decoded_bgr_sha256": "6c06443a74a57b41405edd02cfcf6acb9af07736c339fae197bd5e0da30f10fc"
+    },
+    {
+     "frame_index": 44211,
+     "composition_ns": 554644384670381,
+     "decoded_bgr_sha256": "eab30a42cbde7195254f7e457b6ea5caf006849d6340c1ef7bbf7773512fb617"
+    },
+    {
+     "frame_index": 44212,
+     "composition_ns": 554644393003714,
+     "decoded_bgr_sha256": "08a21d11e59946ef22fb63c86efd9ff8dd6699491763e5db5c5174afe5177a01"
+    },
+    {
+     "frame_index": 44213,
+     "composition_ns": 554644401337047,
+     "decoded_bgr_sha256": "a40bba72f94d6b2f27871b615c61a1606c5d1a529a95a09575ea8fb624188862"
+    },
+    {
+     "frame_index": 44214,
+     "composition_ns": 554644409670380,
+     "decoded_bgr_sha256": "ccdb58aa6ad85ad7ff8e51c4e20f7b5c1f71c624aa0be66a0db6dad96fb832e6"
+    },
+    {
+     "frame_index": 44215,
+     "composition_ns": 554644418003713,
+     "decoded_bgr_sha256": "483438c5fbabdf5fc0611fe66fd56841025eb765f991c54440837c19594e1e8a"
+    },
+    {
+     "frame_index": 44216,
+     "composition_ns": 554644426337046,
+     "decoded_bgr_sha256": "24bdddd32837f61c9ff77a1800dda6954724b0fe3dd1b95d746626d9e8205aca"
+    },
+    {
+     "frame_index": 44217,
+     "composition_ns": 554644434670379,
+     "decoded_bgr_sha256": "12c4ad9a260a803713ffece383a4cbaf1c93739a509db9577b707363d4207f6e"
     },
     {
      "frame_index": 44218,
@@ -9021,9 +9654,99 @@
      "decoded_bgr_sha256": "4e4fbc11ed3567a71581083642f00447395eed86f93a1e720cc5f6a05fadd59b"
     },
     {
+     "frame_index": 44219,
+     "composition_ns": 554644451337045,
+     "decoded_bgr_sha256": "06b08a8b49ae9492f9062f330ef8988a70f151880a54ed8aec0f4de71fc49a6c"
+    },
+    {
+     "frame_index": 44220,
+     "composition_ns": 554644459670378,
+     "decoded_bgr_sha256": "7a85eb132e9bf09768f9fdbcd20cab2d5c4b2293b4a5995094ea10f4f1a3b711"
+    },
+    {
+     "frame_index": 44221,
+     "composition_ns": 554644468003711,
+     "decoded_bgr_sha256": "baccec97be5458fc201b5653fbfd95913131c1c4c532db6e8b2dcbf1d68d5a11"
+    },
+    {
+     "frame_index": 44222,
+     "composition_ns": 554644476337044,
+     "decoded_bgr_sha256": "359d042b8773da85f10342dcf4a9ffe4c6e8783603c0b78425395d7215857648"
+    },
+    {
+     "frame_index": 44223,
+     "composition_ns": 554644484670377,
+     "decoded_bgr_sha256": "3c1fa1e5759d308d60759915cb8f146a74dd271ece1db6b65de9226674404c20"
+    },
+    {
+     "frame_index": 44224,
+     "composition_ns": 554644493003710,
+     "decoded_bgr_sha256": "163b595fd9e112d1b71d4720f03c459c3cdd759a763a431dbc27bdb9ce1fa81f"
+    },
+    {
+     "frame_index": 44225,
+     "composition_ns": 554644501337043,
+     "decoded_bgr_sha256": "b055c1253cb08797b6d9560549de8f77bb9c997cd1533baa1a339c759f8bd696"
+    },
+    {
+     "frame_index": 44226,
+     "composition_ns": 554644509670376,
+     "decoded_bgr_sha256": "3e1eeccf874b7c750931e495c98fc35351a439fb3a04e6f73fbf04f76a5c5286"
+    },
+    {
+     "frame_index": 44227,
+     "composition_ns": 554644518003709,
+     "decoded_bgr_sha256": "e07398f3d940c714282eea4725c9e0a99916d7d898e5ef2f5db8dbbb03467b59"
+    },
+    {
+     "frame_index": 44228,
+     "composition_ns": 554644526337042,
+     "decoded_bgr_sha256": "1bf1a14123a91a21594fa0b0ee90def285fdf1e0cf5fb5e7d99e9f64822ea72b"
+    },
+    {
+     "frame_index": 44229,
+     "composition_ns": 554644534670375,
+     "decoded_bgr_sha256": "a6e228f0a7b31a9ae0f369f73a65ae3d88d66485e474eb5b1247eb2aae5eb4c4"
+    },
+    {
+     "frame_index": 44230,
+     "composition_ns": 554644543003708,
+     "decoded_bgr_sha256": "52a52e3a0218d0dbd89c853bfcd4556ad280f3976a9a86187428c6b25303dee9"
+    },
+    {
+     "frame_index": 44236,
+     "composition_ns": 554644593003706,
+     "decoded_bgr_sha256": "0a1de6363b642e265afd13ba95aa9db929768983e6b3533df068abe3af6425e6"
+    },
+    {
+     "frame_index": 44242,
+     "composition_ns": 554644643003704,
+     "decoded_bgr_sha256": "bb8bbebee7a3927b826bb0a064f4b3b8c9a3c18320c696d1067d51e8a462d7c0"
+    },
+    {
      "frame_index": 44248,
      "composition_ns": 554644693003702,
      "decoded_bgr_sha256": "c6bf31a349437f55e8de14b3688f07b910c6660f0ccd0899a56216e06b0d06bd"
+    },
+    {
+     "frame_index": 44254,
+     "composition_ns": 554644743003700,
+     "decoded_bgr_sha256": "4e2b44216618c871ac4645c46dd15487e5b17526a6a8d82dcae68def48a01075"
+    },
+    {
+     "frame_index": 44260,
+     "composition_ns": 554644793003698,
+     "decoded_bgr_sha256": "3c1e1bac9d2126f3c431599cfdef5d77aaa7ec68b7fa3bd3f5eb0f6caf96ccaf"
+    },
+    {
+     "frame_index": 44266,
+     "composition_ns": 554644843003696,
+     "decoded_bgr_sha256": "22a4e92308560f0ae026499a5ec46b80b3823cf9e8e701a8037cda150ca3cc56"
+    },
+    {
+     "frame_index": 44272,
+     "composition_ns": 554644893003694,
+     "decoded_bgr_sha256": "bd21b1c19a583cc92696a652a89a9a5e2aa800539f1cbe06857d633e9af5536c"
     },
     {
      "frame_index": 44278,
@@ -9031,9 +9754,49 @@
      "decoded_bgr_sha256": "0665739da5f3a16db7f0d2a7e2a7f66f3e71c345ab1a067b23a323752ecfb0df"
     },
     {
+     "frame_index": 44284,
+     "composition_ns": 554644993003690,
+     "decoded_bgr_sha256": "8b54a3aac216da6863e622867f7637dbab7d2a30601cec350f3124ec7cbb911d"
+    },
+    {
+     "frame_index": 44290,
+     "composition_ns": 554645043003688,
+     "decoded_bgr_sha256": "2aac1ae9f842ed5f3d7bfe796c853b7d050348b2c2e182926465ea269e120253"
+    },
+    {
+     "frame_index": 44296,
+     "composition_ns": 554645093003686,
+     "decoded_bgr_sha256": "09321191d51da6028b3fb7a128493ab00b59807e6b3115059ebd3c7d9c759255"
+    },
+    {
+     "frame_index": 44302,
+     "composition_ns": 554645143003684,
+     "decoded_bgr_sha256": "277e7b5f4e51ee0fb291078b8c355a21da2204ff53511f00b7a963c0036cd94a"
+    },
+    {
      "frame_index": 44308,
      "composition_ns": 554645193003682,
      "decoded_bgr_sha256": "940f88b7ab1ba6f46c4618963880d70d28a5a63df1c8e47d50f4147e0c4fe42c"
+    },
+    {
+     "frame_index": 44314,
+     "composition_ns": 554645243003680,
+     "decoded_bgr_sha256": "8a277f6d75f9bc5172112b796bcdbead704c309b059855d1d661e29428b2f05b"
+    },
+    {
+     "frame_index": 44320,
+     "composition_ns": 554645293003678,
+     "decoded_bgr_sha256": "43efec6d0300605600a18db6bff642d01281b99ffa442e49913bcf19a455eb8c"
+    },
+    {
+     "frame_index": 44326,
+     "composition_ns": 554645343003676,
+     "decoded_bgr_sha256": "5b10dca36b95d7b1be7b7ebcb88f613ad27a8d31362fcd6cf948aaf743f001ab"
+    },
+    {
+     "frame_index": 44332,
+     "composition_ns": 554645393003674,
+     "decoded_bgr_sha256": "e29352bd2da9709e9a9e737da348bfd51f0beb0376edd63d557e6d226509dc62"
     },
     {
      "frame_index": 44338,
@@ -9041,9 +9804,49 @@
      "decoded_bgr_sha256": "8808ada9986a79bb9957a470161ffd21fcc6dfe0c6223be23f189fc2447c65a7"
     },
     {
+     "frame_index": 44344,
+     "composition_ns": 554645493003670,
+     "decoded_bgr_sha256": "259b69277d9976c477a73360b68f707eb51398e94e87a3fd19882e9f761f29bd"
+    },
+    {
+     "frame_index": 44350,
+     "composition_ns": 554645543003668,
+     "decoded_bgr_sha256": "95461cc5d33aa711c1d1b6c3570bf5decc9d881aad85d5bc8b5e142307f667b0"
+    },
+    {
+     "frame_index": 44356,
+     "composition_ns": 554645593003666,
+     "decoded_bgr_sha256": "305371a7ea0c63a56b4d4f555d08e7041eb24fa8fdee41a350dfcaf3db5f91b0"
+    },
+    {
+     "frame_index": 44362,
+     "composition_ns": 554645643003664,
+     "decoded_bgr_sha256": "eae1eb791118a14043bc02d2b37c60b49a5eab84d758288e4b144586bbfd09f9"
+    },
+    {
      "frame_index": 44368,
      "composition_ns": 554645693003662,
      "decoded_bgr_sha256": "669d074d9e3e57797607a7b4920c900ccda7d6623a23c964ab5a860a97a6cf52"
+    },
+    {
+     "frame_index": 44374,
+     "composition_ns": 554645743003660,
+     "decoded_bgr_sha256": "7bc85b8d99418b5e7e47eb0a696c4ef6dcf082c1626be1f6b93571c1964d83f8"
+    },
+    {
+     "frame_index": 44380,
+     "composition_ns": 554645793003658,
+     "decoded_bgr_sha256": "76249636207509787280de36c4d1b6b5b42bc0cd8ac3276a9f147eb4a5544300"
+    },
+    {
+     "frame_index": 44386,
+     "composition_ns": 554645843003656,
+     "decoded_bgr_sha256": "1892260924baf2183c58644c4416be57dd70226e89555423a2dde952c94a6a2a"
+    },
+    {
+     "frame_index": 44392,
+     "composition_ns": 554645893003654,
+     "decoded_bgr_sha256": "758aa72ed54a175f1112f694b5672be1542ea103f458b4cbf539bbe72e094c79"
     },
     {
      "frame_index": 44398,
@@ -9051,9 +9854,34 @@
      "decoded_bgr_sha256": "952533196f5b87336593885b04d980a5b07cb653ece03892543c9d15a0955f5a"
     },
     {
+     "frame_index": 44404,
+     "composition_ns": 554645993003650,
+     "decoded_bgr_sha256": "0c473d0f9e53ab6dd000919183b3df172be73eea7e3360d3499b44b9a30858a1"
+    },
+    {
+     "frame_index": 44410,
+     "composition_ns": 554646043003648,
+     "decoded_bgr_sha256": "02fc009491368e871effa5474aaa99bf36bd7b6540fe68f335731a417d19f464"
+    },
+    {
+     "frame_index": 44416,
+     "composition_ns": 554646093003646,
+     "decoded_bgr_sha256": "9336139fba409ecfcfda60703eec8e2f88d402959643a94f5caeeaa8088dfc01"
+    },
+    {
+     "frame_index": 44422,
+     "composition_ns": 554646143003644,
+     "decoded_bgr_sha256": "0cd3b88f3bf8a14b4b9eca37603aa8d17451236da0b3720e8707e4c575cce351"
+    },
+    {
      "frame_index": 44428,
      "composition_ns": 554646193003642,
      "decoded_bgr_sha256": "535a11b609079024be7eb4c8da8e9ab5ad1be869a97df923428a985b08c5d4b4"
+    },
+    {
+     "frame_index": 44434,
+     "composition_ns": 554646243003640,
+     "decoded_bgr_sha256": "f4b68078caada0c6cb502e96eae2959dd16c3226dba64363a42e8fdca88de3c4"
     },
     {
      "frame_index": 44458,
@@ -9214,6 +10042,11 @@
      "frame_index": 45328,
      "composition_ns": 554653693003342,
      "decoded_bgr_sha256": "0fbd60033914948588cd54d0e33038306add9f691e4d990ed765ae252acee568"
+    },
+    {
+     "frame_index": 45341,
+     "composition_ns": 554653801336671,
+     "decoded_bgr_sha256": "35c546e093d2cdf559bea7022acb6b8b649f2421504e81ffcdbbd6242a21bf84"
     },
     {
      "frame_index": 45358,
@@ -9416,6 +10249,11 @@
      "decoded_bgr_sha256": "9865a6635198e6bd592730b9e92a27211117a61f3737082769b3ee0ccf28c16d"
     },
     {
+     "frame_index": 46482,
+     "composition_ns": 554663309669624,
+     "decoded_bgr_sha256": "fe33342922abea66088103ca5f206acb9b7247719b1eee85eca03a31abc54e9e"
+    },
+    {
      "frame_index": 46498,
      "composition_ns": 554663443002952,
      "decoded_bgr_sha256": "68b677d94f79c15d96466ff76ee66609f77855629f0e7fd36e77c740c458e8af"
@@ -9614,6 +10452,11 @@
      "frame_index": 47608,
      "composition_ns": 554672693002582,
      "decoded_bgr_sha256": "703801453b44902421c0f9d37dd475be4b9e62c5bb5d22ea353c560d000c9a4a"
+    },
+    {
+     "frame_index": 47624,
+     "composition_ns": 554672826335910,
+     "decoded_bgr_sha256": "01daa23ded173bcda65a0a0e7c3baf5d7bbcd0005b802116e0584cb49491d8a8"
     },
     {
      "frame_index": 47638,
@@ -9816,6 +10659,11 @@
      "decoded_bgr_sha256": "c8159efbb771f489b7941cdb2dbf54675505342c9693f870c9848644bfb7a2c8"
     },
     {
+     "frame_index": 48765,
+     "composition_ns": 554682334668863,
+     "decoded_bgr_sha256": "948a3ba8f1681c38ef53dcdfb6a096d26e7f8cbbe3e1c8d165d9a6e3cdaa35b1"
+    },
+    {
      "frame_index": 48778,
      "composition_ns": 554682443002192,
      "decoded_bgr_sha256": "27e4320589c93193af5479c6d3481562bb9f2b429ccff2db964cff06e72e15dc"
@@ -10014,6 +10862,11 @@
      "frame_index": 49896,
      "composition_ns": 554691759668486,
      "decoded_bgr_sha256": "81edea274e301c95e1ec1a85aefd1fea96c155e5e005b85ffe89e9a09f364bfa"
+    },
+    {
+     "frame_index": 49906,
+     "composition_ns": 554691843001816,
+     "decoded_bgr_sha256": "b5eef02aa44c31ef5ae12b814d5615df4cffbe4b4d20c10b2b706913ac7d433e"
     },
     {
      "frame_index": 49918,
@@ -10381,9 +11234,49 @@
      "decoded_bgr_sha256": "95174f085c984fe38d86ed167037f01840fbcd7b4e2fd864b201a4e2d6fb285e"
     },
     {
+     "frame_index": 51019,
+     "composition_ns": 554701118001445,
+     "decoded_bgr_sha256": "debe443f130a545b980bf38b061dbae2fa736b3e44fcbcf4d9acdad564798220"
+    },
+    {
+     "frame_index": 51020,
+     "composition_ns": 554701126334778,
+     "decoded_bgr_sha256": "9480114ff62aada8b71ab0073ea7d048ef7a8bc079d6bbc716f914056b0307da"
+    },
+    {
+     "frame_index": 51021,
+     "composition_ns": 554701134668111,
+     "decoded_bgr_sha256": "042b1bf8264e3021524c3443e79ae804c6de02ae4c4d753efd94a2881bb88641"
+    },
+    {
+     "frame_index": 51022,
+     "composition_ns": 554701143001444,
+     "decoded_bgr_sha256": "dba4008cb76169c2a4154f51ba9d0ebbbc4b263b302290cfb43d98d748deb57a"
+    },
+    {
+     "frame_index": 51023,
+     "composition_ns": 554701151334777,
+     "decoded_bgr_sha256": "3625ed4ce968d441c2262701a23a96e300e7b6fbbe437582253da1b88633cf06"
+    },
+    {
      "frame_index": 51024,
      "composition_ns": 554701159668110,
      "decoded_bgr_sha256": "ca0b2039d03af55a835844583298e4504cb175fdf59dfff3a20a988cce39a030"
+    },
+    {
+     "frame_index": 51025,
+     "composition_ns": 554701168001443,
+     "decoded_bgr_sha256": "1c9b6a3b0524529ef857a7b7fb04581b8463c421ba8b5a352207514c1eed59cc"
+    },
+    {
+     "frame_index": 51026,
+     "composition_ns": 554701176334776,
+     "decoded_bgr_sha256": "d7c9a1a551c8610bbfe0a141ec2d7bd411d7422ac3d335a3ce913ed8d61e4181"
+    },
+    {
+     "frame_index": 51027,
+     "composition_ns": 554701184668109,
+     "decoded_bgr_sha256": "2e8aba4e81d05ee36bbb4caf1b6ae5c651b4eb6e5b92d92f0173c36c10fa2352"
     },
     {
      "frame_index": 51028,
@@ -10391,9 +11284,39 @@
      "decoded_bgr_sha256": "838975fa36701a0d059ab5c439e2ee5582dc6a8bb6dcd21951aa8ad7f75d102b"
     },
     {
+     "frame_index": 51029,
+     "composition_ns": 554701201334775,
+     "decoded_bgr_sha256": "f301defecff0694d1d12f37ae768286b7c996c53e87ab02c2968a8862b0cf606"
+    },
+    {
      "frame_index": 51030,
      "composition_ns": 554701209668108,
      "decoded_bgr_sha256": "fa975a5a6221393fc8346c8df384d28460a060d087c39baf56db4567ae895104"
+    },
+    {
+     "frame_index": 51031,
+     "composition_ns": 554701218001441,
+     "decoded_bgr_sha256": "00e4eda759524faa905c042832ee5fa8dc2dab73e7071354b67fc1b1dc9c2278"
+    },
+    {
+     "frame_index": 51032,
+     "composition_ns": 554701226334774,
+     "decoded_bgr_sha256": "8c283a0d4f74c6736db51cab407babf93ab1bac4b698a1e56c5888983011ac0d"
+    },
+    {
+     "frame_index": 51033,
+     "composition_ns": 554701234668107,
+     "decoded_bgr_sha256": "89f7475d7faa70a2bb2bb956cc7bb2556746abddbb93cf026f102b77541d0be2"
+    },
+    {
+     "frame_index": 51034,
+     "composition_ns": 554701243001440,
+     "decoded_bgr_sha256": "756f43a8fcba4454684ddf76ff3b2048bd10c426284636d00e37d93a0a41f4c2"
+    },
+    {
+     "frame_index": 51035,
+     "composition_ns": 554701251334773,
+     "decoded_bgr_sha256": "58e4b61a8c235d94216c8fbc51166ba72a9a7f48fbbd822272b7cb1402572088"
     },
     {
      "frame_index": 51036,
@@ -10401,9 +11324,59 @@
      "decoded_bgr_sha256": "a2d08b968bc0da9949e3eec1d79fd2e9a273054fd6f53eb8f0001cb48452263a"
     },
     {
+     "frame_index": 51037,
+     "composition_ns": 554701268001439,
+     "decoded_bgr_sha256": "4eaa9e5ea475bdb0dfb786646c58cdc3a67fc7604d5902f7118cf74be755bfed"
+    },
+    {
+     "frame_index": 51038,
+     "composition_ns": 554701276334772,
+     "decoded_bgr_sha256": "a012b68da7f090b654168e1d8f845e4a8dcbbd1df44681f147c470a40038c8ac"
+    },
+    {
+     "frame_index": 51039,
+     "composition_ns": 554701284668105,
+     "decoded_bgr_sha256": "1e6604ae9e881087e82fa251f3e202821e9c1e9a3492191c6dad6cee7f20b52d"
+    },
+    {
+     "frame_index": 51040,
+     "composition_ns": 554701293001438,
+     "decoded_bgr_sha256": "70cda5ee1cf131741c4f83c32526e2c9048455121eba5f64cd5b52d4713291e5"
+    },
+    {
+     "frame_index": 51041,
+     "composition_ns": 554701301334771,
+     "decoded_bgr_sha256": "9d36e2e63ea0499c36f8c10fccc3662a9a44b0d942a2f2fe8039c1e1387f05b4"
+    },
+    {
      "frame_index": 51042,
      "composition_ns": 554701309668104,
      "decoded_bgr_sha256": "b6cdb539de142d10412148417b0ac45a34e97948bb8c1138200ab4a651b97cb4"
+    },
+    {
+     "frame_index": 51043,
+     "composition_ns": 554701318001437,
+     "decoded_bgr_sha256": "73834c336ec9c97f2b9f2a5c296e8780eda1fd325699cba403c7829e69c45b64"
+    },
+    {
+     "frame_index": 51044,
+     "composition_ns": 554701326334770,
+     "decoded_bgr_sha256": "477ae64f462d53e6a8f09676bd68a4fed6e18b7acce272157c66c8c32f3c9e33"
+    },
+    {
+     "frame_index": 51045,
+     "composition_ns": 554701334668103,
+     "decoded_bgr_sha256": "884d9587ad7e1a8da4a7c44834807381f7f059003134e3ed0813bd2783a57482"
+    },
+    {
+     "frame_index": 51046,
+     "composition_ns": 554701343001436,
+     "decoded_bgr_sha256": "c4c038022ca6052729b902ba072c18077f16317f5b3c801f5e7f5e31424e58c4"
+    },
+    {
+     "frame_index": 51047,
+     "composition_ns": 554701351334769,
+     "decoded_bgr_sha256": "7ae2863382f00899f5665c67b146054d0d51a47def1f0a59c7afa0ebdc5e5806"
     },
     {
      "frame_index": 51048,

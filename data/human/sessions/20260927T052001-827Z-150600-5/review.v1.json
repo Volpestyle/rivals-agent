@@ -1,8 +1,8 @@
 {
  "schema_version": 1,
  "session_id": "20260927T052001-827Z-150600-5",
- "reviewer": "owner admission-owner (7e8f1fdad86e07be) + independent frame-review (Opus)",
- "reviewed_at": "2026-09-27T18:52:14Z",
+ "reviewer": "owner admission-owner (e8738680cd512054) + independent frame-review (Opus)",
+ "reviewed_at": "2026-09-27T14:58:41Z",
  "device_scope": {
   "kind": "single_keyboard_mouse",
   "source": "input-profile.json: keyboard ['1840451255'], mouse ['614403941']; 11 zero-effect handle-0 packets allowed (lead decision), no injected control input",
@@ -42,8 +42,8 @@
    "per_session_source": "James's statement for the 2026-09-27 night matches (docs/recording-log.md, Motor settings, committed 32007db): alt account, DPI, in-game sensitivity (1.89) and bindings unchanged (chat, 2026-09-27 ~09:20 CDT, and his 01:37 declaration)",
    "evidence": [
     {
-     "path": "data/human/sessions/20260927T052001-827Z-150600-5/recording-log.731cd7d.md",
-     "sha256": "de0b907e656974c1c38ed7984ca31f161e9a57c124d01b1157dbd76714eed700"
+     "path": "data/human/sessions/20260927T052001-827Z-150600-5/recording-log.32007db.md",
+     "sha256": "76748eb90f1eb4e454cdd98d614e7514329a63f37969753f15607942aba59618"
     },
     {
      "path": "data/human/notes/2026-09-21-user-settings.json",
@@ -133,8 +133,8 @@
    "per_session_source": "James's statement for the 2026-09-27 night matches (docs/recording-log.md, Motor settings, committed 32007db): bindings unchanged (chat, 2026-09-27 ~09:20 CDT)",
    "evidence": [
     {
-     "path": "data/human/sessions/20260927T052001-827Z-150600-5/recording-log.731cd7d.md",
-     "sha256": "de0b907e656974c1c38ed7984ca31f161e9a57c124d01b1157dbd76714eed700"
+     "path": "data/human/sessions/20260927T052001-827Z-150600-5/recording-log.32007db.md",
+     "sha256": "76748eb90f1eb4e454cdd98d614e7514329a63f37969753f15607942aba59618"
     },
     {
      "path": "data/human/notes/2026-09-21-user-settings.json",
@@ -189,16 +189,16 @@
   },
   "segments_evidence": {
    "path": "data/human/sessions/20260927T052001-827Z-150600-5/segments-evidence.json",
-   "sha256": "608e35e8dfaf6607442d2ce13049fb48e104b6cd5e9c89cae98807bcbcc7d164"
+   "sha256": "7bfa7d5312e0b058db6326a09d4ff300974bc8ad4f8c8ca4226ff75cf88712c5"
   },
   "owner_verdicts": {
    "path": "data/human/sessions/20260927T052001-827Z-150600-5/owner-verdicts.json",
-   "sha256": "7e8f1fdad86e07be22375851c754b3dfdce9d867eac845afea4b5e202a473aab"
+   "sha256": "e8738680cd512054728956ebd09f737cd3c9fef2eae2104db97ee25a41dfebcc"
   },
   "lead_decisions": null,
   "independent_review": {
    "path": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json",
-   "sha256": "df3e8409b85bf4fd79f943099ea116e9e590402decae40d0cdf08c246097aead",
+   "sha256": "49842f90b8f13c288baa698317c392a90e3cac56551a338bb02f651bd5868999",
    "reviewer": "frame-review (Opus)"
   }
  },
@@ -215,7 +215,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "rejected",
    "suitability_reason": "focus_transition: concur, rejected by rule; confirmed on native frames and raw inputs (see findings).",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "focus_transition"
   },
   {
@@ -225,7 +225,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "rejected",
    "suitability_reason": "no_range_hud: concur, rejected by rule; confirmed on native frames and raw inputs (see findings).",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "no_range_hud"
   },
   {
@@ -235,7 +235,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "rejected",
    "suitability_reason": "afk: concur, rejected by rule; confirmed on native frames and raw inputs (see findings).",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "afk"
   },
   {
@@ -245,7 +245,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "rejected",
    "suitability_reason": "unsampled_edge: sub-frame sliver with no native frame inside; rejected by rule.",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "unsampled_edge"
   },
   {
@@ -255,7 +255,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "accepted",
    "suitability_reason": "Own live control in the pre-match setup room (doors closed, timer 00:36 to 00:25): Spider-Man runs, jumps and web-zips; own HUD 250/250 with web counter on every inspected frame (117 at 0.25 s plus edge frames every 0.1 s). No UI key, no focus change, longest input gap 0.28 s.",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "range_hud_present"
   },
   {
@@ -265,7 +265,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "rejected",
    "suitability_reason": "unsampled_edge: sub-frame sliver with no native frame inside; rejected by rule.",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "unsampled_edge"
   },
   {
@@ -275,7 +275,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "rejected",
    "suitability_reason": "afk: concur, rejected by rule; confirmed on native frames and raw inputs (see findings).",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "afk"
   },
   {
@@ -285,7 +285,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "rejected",
    "suitability_reason": "unsampled_edge: sub-frame sliver with no native frame inside; rejected by rule.",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "unsampled_edge"
   },
   {
@@ -295,7 +295,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "accepted",
    "suitability_reason": "Own live play from the drop at 'AWAITING MISSION AREA UNLOCK' (70.37 s; the first ~0.1 s the camera is against geometry so the body renders faded, own HUD 250/250 webs 5) to hp 33 under the damage vignette at 175.03 s, before the first death. 501 inspected frames at 0.25 s: own HUD throughout; the cyan translucent body at 155-157 s is a teammate's invisibility buff (own HUD unchanged). No spectate, kill cam or death frame inside. No UI key, longest input gap 0.56 s.",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "range_hud_present"
   },
   {
@@ -305,7 +305,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "rejected",
    "suitability_reason": "hud_unknown: concur, rejected by rule; confirmed on native frames and raw inputs (see findings).",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "hud_unknown"
   },
   {
@@ -315,7 +315,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "rejected",
    "suitability_reason": "dead: concur, rejected by rule; confirmed on native frames and raw inputs (see findings).",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "dead"
   },
   {
@@ -325,7 +325,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "rejected",
    "suitability_reason": "ui_key: concur, rejected by rule; confirmed on native frames and raw inputs (see findings).",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "ui_key"
   },
   {
@@ -335,7 +335,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "rejected",
    "suitability_reason": "dead: concur, rejected by rule; confirmed on native frames and raw inputs (see findings).",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "dead"
   },
   {
@@ -345,7 +345,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "rejected",
    "suitability_reason": "unsampled_edge: sub-frame sliver with no native frame inside; rejected by rule.",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "unsampled_edge"
   },
   {
@@ -355,7 +355,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "accepted",
    "suitability_reason": "Own live play from respawn (186.70 s) to hp 2 at 209.69 s; the first frame after the end edge (f25153) still shows hp 2, so the cut is before the death. An enemy 'Charm' label at 209.39 s is crowd control on own play, not a camera change. 166 inspected frames, own HUD throughout; no UI key, longest input gap 0.21 s.",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "range_hud_present"
   },
   {
@@ -365,7 +365,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "rejected",
    "suitability_reason": "dead: concur, rejected by rule; confirmed on native frames and raw inputs (see findings).",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "dead"
   },
   {
@@ -375,7 +375,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "rejected",
    "suitability_reason": "ui_key: concur, rejected by rule; confirmed on native frames and raw inputs (see findings).",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "ui_key"
   },
   {
@@ -385,7 +385,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "rejected",
    "suitability_reason": "dead: concur, rejected by rule; confirmed on native frames and raw inputs (see findings).",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "dead"
   },
   {
@@ -395,7 +395,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "rejected",
    "suitability_reason": "ui_key: concur, rejected by rule; confirmed on native frames and raw inputs (see findings).",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "ui_key"
   },
   {
@@ -405,7 +405,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "rejected",
    "suitability_reason": "unsampled_edge: sub-frame sliver with no native frame inside; rejected by rule.",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "unsampled_edge"
   },
   {
@@ -415,7 +415,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "accepted",
    "suitability_reason": "Own live play from respawn (222.11 s, overtime) to hp 12 at 247.08 s, ending at the Tab press (247.09 s). 174 inspected frames, own HUD throughout (max 300 = bonus health); no UI key inside, longest input gap 0.21 s.",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "range_hud_present"
   },
   {
@@ -425,7 +425,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "rejected",
    "suitability_reason": "unsampled_edge: sub-frame sliver with no native frame inside; rejected by rule.",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "unsampled_edge"
   },
   {
@@ -435,7 +435,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "rejected",
    "suitability_reason": "ui_key: concur, rejected by rule; confirmed on native frames and raw inputs (see findings).",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "ui_key"
   },
   {
@@ -445,7 +445,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "rejected",
    "suitability_reason": "no_range_hud: concur, rejected by rule; confirmed on native frames and raw inputs (see findings).",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "no_range_hud"
   },
   {
@@ -455,7 +455,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "rejected",
    "suitability_reason": "ui_key: concur, rejected by rule; confirmed on native frames and raw inputs (see findings).",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "ui_key"
   },
   {
@@ -465,7 +465,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "rejected",
    "suitability_reason": "no_range_hud: concur, rejected by rule; confirmed on native frames and raw inputs (see findings).",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "no_range_hud"
   },
   {
@@ -475,7 +475,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "rejected",
    "suitability_reason": "Concur, rejected whole. [262.327, 281.411) opens under the PARKER POWER-UP team-up splash, which covers most of the frame to ~263.5 s with no input at all 260-267.8 s; no rule cuts round-start splashes yet. 263.6-281.41 s is own control in the round-2 spawn room (own HUD 250/250, webs 5), so this reject is conservative; it would become acceptable if a splash rule moved the start past ~263.6 s.",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "range_hud_present"
   },
   {
@@ -485,7 +485,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "rejected",
    "suitability_reason": "unsampled_edge: 3 ms sliver before the T press; no native frame inside.",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "unsampled_edge"
   },
   {
@@ -495,7 +495,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "rejected",
    "suitability_reason": "Concur: ui_key (emote wheel). T (vk 84) down 281.414 s; the EMOTES wheel is drawn 281.70-282.80 s (f33793-f33925); Spider-Man then sits in an emote with no key until D at 305.124 s, and the cut runs to D + 2 s settle (307.124 s). Space at 283.495 s did not end the sit on frames (he is seated again by ~287 s), which supports ending the cut on a movement key rather than any key.",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "ui_key"
   },
   {
@@ -505,57 +505,17 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "rejected",
    "suitability_reason": "unsampled_edge: 3 ms sliver after the emote settle; no native frame inside.",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "unsampled_edge"
   },
   {
-   "segment_id": "seg-030-a1-00",
+   "segment_id": "seg-030",
    "start_ns": 554582993006170,
-   "end_ns": 554641601337160,
-   "reviewed_gameplay": true,
-   "imitation_suitability": "accepted",
-   "suitability_reason": "Own live play 307.127-365.736 s (v2 seg-030 body, unchanged frames reused). New end edge: every frame of the last 0.4 s decoded; the last in-segment frame f43877 (365.736 s) shows his own HUD (hp 105) and no ping wheel; button 3 goes down at 365.7385 s, after the edge, and the wheel first shows at 365.827 s (file_ms 365754). Inputs inside: mouse 1/2/4 and bound keys only, plus one unbound '4' press (see findings); no button 3, T, UI key, wheel or focus change; longest gap 0.32 s.",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
-   "machine_reason": "range_hud_present"
-  },
-  {
-   "segment_id": "seg-030-a1-01",
-   "start_ns": 554641601337160,
-   "end_ns": 554641604078800,
-   "reviewed_gameplay": true,
-   "imitation_suitability": "rejected",
-   "suitability_reason": "unsampled_edge: 2.7 ms sliver before the button-3 packet; no native frame inside.",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
-   "machine_reason": "unsampled_edge"
-  },
-  {
-   "segment_id": "seg-030-a1-02",
-   "start_ns": 554641604078800,
-   "end_ns": 554643748111800,
-   "reviewed_gameplay": true,
-   "imitation_suitability": "rejected",
-   "suitability_reason": "ui_key (ping wheel): button 3 held 365.7385-365.8825 s plus the 2 s settle to 367.8825 s; the 'Need Healing / CANCEL' wheel is drawn at 365.827 s.",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
-   "machine_reason": "ui_key"
-  },
-  {
-   "segment_id": "seg-030-a1-03",
-   "start_ns": 554643748111800,
-   "end_ns": 554644293003718,
-   "reviewed_gameplay": true,
-   "imitation_suitability": "rejected",
-   "suitability_reason": "hud_unknown after the settle: the own-HUD read fails at 368.327 s (the frame before the new start); a conservative rule cut over play.",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
-   "machine_reason": "hud_unknown"
-  },
-  {
-   "segment_id": "seg-030-a1-04",
-   "start_ns": 554644293003718,
    "end_ns": 554701359668103,
    "reviewed_gameplay": true,
    "imitation_suitability": "accepted",
-   "suitability_reason": "Own live play 368.427-425.494 s. New start edge: first frame f44200 (368.436 s) shows his own HUD and live control, every frame of its first 0.25 s decoded; end edge unchanged from v2 (hp 80 at 425.494 s, before the third death). Inputs inside: mouse 1/2 and bound keys, plus one unbound '4' press at 368.644 s with no menu or overlay on frames (see findings); no button 3, T, UI key, wheel or focus change; longest gap 0.29 s.",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "suitability_reason": "Own live play from the spawn-door run under 'AWAITING MISSION AREA UNLOCK' (first frame f36844, 307.127 s: own HUD 250/250, webs 5; teammates pass in front of him 308.3-308.9 s, the camera is his) to hp 80 at 425.494 s before the third death. Frames every 0.25 s plus 0.1 s at both edges (v1 reads of this span reused, same hashes): own HUD throughout; bonus health 447/500 at 331-333 s; the max_hp 275 read at 408.3 s is a misread on own play, no spectate. No UI key, no focus change, longest input gap 0.32 s.",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "range_hud_present"
   },
   {
@@ -565,7 +525,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "rejected",
    "suitability_reason": "[v1 seg-027, same bounds and frames] dead: concur, rejected by rule; confirmed on native frames and raw inputs (see findings).",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "dead"
   },
   {
@@ -575,7 +535,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "rejected",
    "suitability_reason": "[v1 seg-028, same bounds and frames] ui_key: concur, rejected by rule; confirmed on native frames and raw inputs (see findings).",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "ui_key"
   },
   {
@@ -585,7 +545,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "rejected",
    "suitability_reason": "[v1 seg-029, same bounds and frames] dead: concur, rejected by rule; confirmed on native frames and raw inputs (see findings).",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "dead"
   },
   {
@@ -595,7 +555,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "rejected",
    "suitability_reason": "[v1 seg-030, same bounds and frames] ui_key: concur, rejected by rule; confirmed on native frames and raw inputs (see findings).",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "ui_key"
   },
   {
@@ -605,7 +565,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "rejected",
    "suitability_reason": "[v1 seg-031, same bounds and frames] unsampled_edge: sub-frame sliver with no native frame inside; rejected by rule.",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "unsampled_edge"
   },
   {
@@ -615,7 +575,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "accepted",
    "suitability_reason": "[v1 seg-032, same bounds and frames] Own live play from respawn (437.69 s) through his ultimate (bonus health 480-490/490 from ~498.7 s) to 501.00 s, the frame before the Tab press (501.008 s); the scoreboard follows and the end summary is at 505.7 s. 332 inspected frames, own HUD throughout. The last ~0.9 s shows little camera motion and near-still mouse, but the scene animates, the own HUD is live and W is pressed at 500.47 s: read as live control, not an end freeze. No UI key inside, longest input gap 0.42 s.",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "range_hud_present"
   },
   {
@@ -625,7 +585,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "rejected",
    "suitability_reason": "[v1 seg-033, same bounds and frames] unsampled_edge: sub-frame sliver with no native frame inside; rejected by rule.",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "unsampled_edge"
   },
   {
@@ -635,7 +595,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "rejected",
    "suitability_reason": "[v1 seg-034, same bounds and frames] ui_key: concur, rejected by rule; confirmed on native frames and raw inputs (see findings).",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "ui_key"
   },
   {
@@ -645,7 +605,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "rejected",
    "suitability_reason": "[v1 seg-035, same bounds and frames] no_range_hud: concur, rejected by rule; confirmed on native frames and raw inputs (see findings).",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "no_range_hud"
   },
   {
@@ -655,7 +615,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "rejected",
    "suitability_reason": "[v1 seg-036, same bounds and frames] ui_key: concur, rejected by rule; confirmed on native frames and raw inputs (see findings).",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "ui_key"
   },
   {
@@ -665,7 +625,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "rejected",
    "suitability_reason": "[v1 seg-037, same bounds and frames] focus_transition: concur, rejected by rule; confirmed on native frames and raw inputs (see findings).",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "focus_transition"
   },
   {
@@ -675,7 +635,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "rejected",
    "suitability_reason": "[v1 seg-038, same bounds and frames] no_range_hud: concur, rejected by rule; confirmed on native frames and raw inputs (see findings).",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "no_range_hud"
   },
   {
@@ -685,7 +645,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "rejected",
    "suitability_reason": "[v1 seg-039, same bounds and frames] ui_key: concur, rejected by rule; confirmed on native frames and raw inputs (see findings).",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "ui_key"
   },
   {
@@ -695,7 +655,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "rejected",
    "suitability_reason": "[v1 seg-040, same bounds and frames] no_range_hud: concur, rejected by rule; confirmed on native frames and raw inputs (see findings).",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "no_range_hud"
   },
   {
@@ -705,7 +665,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "rejected",
    "suitability_reason": "[v1 seg-041, same bounds and frames] ui_key: concur, rejected by rule; confirmed on native frames and raw inputs (see findings).",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "ui_key"
   },
   {
@@ -715,7 +675,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "rejected",
    "suitability_reason": "[v1 seg-042, same bounds and frames] no_range_hud: concur, rejected by rule; confirmed on native frames and raw inputs (see findings).",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "no_range_hud"
   },
   {
@@ -725,7 +685,7 @@
    "reviewed_gameplay": true,
    "imitation_suitability": "rejected",
    "suitability_reason": "[v1 seg-043, same bounds and frames] ui_key: concur, rejected by rule; confirmed on native frames and raw inputs (see findings).",
-   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (df3e8409b85bf4fd)",
+   "evidence": "data/human/sessions/20260927T052001-827Z-150600-5/independent-review.verdicts.json (49842f90b8f13c28)",
    "machine_reason": "ui_key"
   }
  ]
