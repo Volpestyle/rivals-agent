@@ -1,10 +1,19 @@
 """Receipt-set composition uses real loaders with synthetic metadata only."""
 import hashlib
 import json
+from pathlib import Path
 
 import pytest
 
 from policy.idm import match_targets as M
+from policy.idm import receipt_current as C
+
+
+@pytest.fixture(autouse=True)
+def synthetic_authority(tmp_path, monkeypatch):
+    monkeypatch.setattr(C, 'ROOT', tmp_path)
+    monkeypatch.setattr(C, 'INDEX', tmp_path/'authority.json')
+    monkeypatch.setattr(C, 'INDEX_SHA256', None)
 
 
 def packet(tmp_path, *, change=None):
@@ -23,12 +32,16 @@ def packet(tmp_path, *, change=None):
                    sessions={sid:entry})
         if i == 1 and change:
             change(row, doc)
-        p = tmp_path/(sid+'.json')
+        p = tmp_path/'docs/evidence'/('idm-match-'+sid)/'receipt'/(sid+'.accepted.json')
+        p.parent.mkdir(parents=True)
         p.write_text(json.dumps(doc))
         refs.append({'path':str(p), 'sha256':hashlib.sha256(p.read_bytes()).hexdigest()})
         rows.append(row); headers.append(header)
     reg = tmp_path/'registry.json'
     reg.write_text(json.dumps({'schema_version':1, 'sessions':rows}))
+    C.INDEX.write_text(json.dumps({'format':C.FORMAT, 'scope':'EXPLORATORY', 'files':{
+        Path(ref['path']).relative_to(tmp_path).as_posix():ref['sha256'] for ref in refs}}))
+    C.INDEX_SHA256 = hashlib.sha256(C.INDEX.read_bytes().replace(b'\r\n', b'\n')).hexdigest()
     return refs, reg, headers
 
 
@@ -41,7 +54,7 @@ def test_two_accepted_receipts_keep_both_header_checks(tmp_path):
         a.header(h)
         with pytest.raises(ValueError, match='motor/calibration'):
             a.header({**h, 'patch':'wrong'})
-    with pytest.raises(ValueError, match='not registered'):
+    with pytest.raises(ValueError, match='non-current'):
         a.check('unlisted')
 
 

@@ -11,6 +11,8 @@ import json
 from dataclasses import dataclass
 from pathlib import Path
 
+from policy.idm import receipt_current
+
 FORMAT = "rivals-idm-match-admission-v1"
 
 
@@ -28,9 +30,13 @@ class Admission:
     sessions: dict
     registry: dict
     sha256: str
+    receipt_pins: dict | None = None
 
     def check(self, session_id, media=None):
         from policy import idm_targets as T
+
+        if self.receipt_pins is not None:
+            receipt_current.require_current({session_id: self.receipt_pins.get(session_id)})
 
         row = self.registry.get(session_id)
         T._require(row is not None and row.get("split") == "idm_train", "match is not registered idm_train")
@@ -67,10 +73,13 @@ def load(path, sha256_pin, *, registry, denylist):
     doc = json.loads(raw)
     T._require(doc.get("format") == FORMAT and doc.get("scope") == "EXPLORATORY", "match admission format/scope")
     T._require(doc.get("decision") == "accepted" and doc.get("reviewer"), "match admission not independently accepted")
+    receipt_pins = {sid: sha256_pin for sid in doc["sessions"]}
+    T._require(receipt_pins, "match admission has no sessions")
+    receipt_current.require_current(receipt_pins)
     hi.check_registry(registry, denylist=denylist)  # includes role/family/denylist validation
     reg = json.loads(Path(registry).read_text(encoding="utf-8"))
     rows = {r["session_id"]: r for r in reg["sessions"]}
-    result = Admission(doc["sessions"], rows, sha256_pin)
+    result = Admission(doc["sessions"], rows, sha256_pin, receipt_pins)
     for sid in doc["sessions"]:
         entry = result.check(sid)
         T.refuse_sealed(sid, entry["media_sha256"], denylist)
@@ -117,7 +126,8 @@ def load_references(refs, *, registry, denylist):
         T._require(receipt.sessions, "empty member of admission receipt set")
         T._require(not sessions.keys() & receipt.sessions.keys(), "duplicate session across admission receipts")
         sessions.update(receipt.sessions)
-    return Admission(sessions, receipts[0].registry, digest(refs))
+    pins = {sid: pin for receipt in receipts for sid, pin in receipt.receipt_pins.items()}
+    return Admission(sessions, receipts[0].registry, digest(refs), pins)
 
 
 def load_steps(path, targets, admission, denylist):
