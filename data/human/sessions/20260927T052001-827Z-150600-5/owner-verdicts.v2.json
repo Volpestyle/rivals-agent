@@ -1,13 +1,13 @@
 {
  "session": "20260927T052001-827Z-150600-5",
- "segments_evidence_sha256": "608e35e8dfaf6607442d2ce13049fb48e104b6cd5e9c89cae98807bcbcc7d164",
- "reviewer": "admission-codex",
- "reviewed_at": "2026-09-27T18:44:57.038811+00:00",
- "role": "Owner thumbnail delta inspection; provisional until independent native-frame agreement",
+ "segments_evidence_sha256": "7bfa7d5312e0b058db6326a09d4ff300974bc8ad4f8c8ca4226ff75cf88712c5",
+ "reviewer": "admission-owner",
+ "reviewed_at": "2026-09-27T14:55:19Z",
+ "role": "owner inspection; assembly additionally requires the independent per-session review (R5)",
  "supersedes": {
-  "file": "owner-verdicts.v2.json",
-  "sha256": "e8738680cd512054728956ebd09f737cd3c9fef2eae2104db97ee25a41dfebcc",
-  "reason": "Held-button3 plus two-second settle; changed boundaries only"
+  "file": "owner-verdicts.v1.json",
+  "sha256": "af914927829de72206f3a8d7e53d70a943a59dca14ba1ddea2235928cde761f3",
+  "reason": "the evidence was re-proposed twice for the emote-wheel cut (frame-review's seg-026 finding); v1 verdicts pin segments-evidence.v1.json"
  },
  "verdicts": {
   "seg-000": {
@@ -672,12 +672,12 @@
    "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
    "frames": []
   },
-  "seg-030-a1-00": {
+  "seg-030": {
    "suitability": "accepted",
-   "reason": "Own Spider-Man control during mission-unlock preparation, then traversal/combat. The outer start is inherited from the earlier accepted segment; the new last thumbnail precedes the ping press and shows no wheel. Own HUD at both edges; interior reader misses show own camera.",
-   "reviewer": "admission-codex (lane owner; not independent review)",
-   "reviewed_at": "2026-09-27T18:44:57.038811+00:00",
-   "evidence": "segments-evidence.json; all supplied changed review thumbnails visually inspected; independent native boundary verdict required",
+   "reason": "own live play from the first move after the emote (D at 305.124 s, plus the settle) through round 2 to the low-hp frame before the third death; own HUD on every frame; own_hud=False at 346.6, 356.4, 376.2, 405.8, 415.6 s are web-counter reader misses on own play",
+   "reviewer": "admission-owner (lane owner; not the independent review)",
+   "reviewed_at": "2026-09-27T14:55:19Z",
+   "evidence": "segments-evidence.json 7bfa7d5312e0b058 review frames + contact sheets",
    "frames": [
     {
      "frame_index": 36844,
@@ -685,129 +685,59 @@
      "decoded_bgr_sha256": "056481c0f7b0eb3a83cf366f22d0a5c9a922abb039b9b2bb73cd030bccb4f5ee"
     },
     {
-     "frame_index": 38016,
-     "composition_ns": 554592759672446,
-     "decoded_bgr_sha256": "dab47e1e5cfedf57fc74d2391e539c9f7fadb4ca57fd234dc924735dc65d35ad"
+     "frame_index": 38027,
+     "composition_ns": 554592851339109,
+     "decoded_bgr_sha256": "01efaf067bd6bf7e97a936897ca33b95904f6898619f534f8fec492996fc8629"
     },
     {
-     "frame_index": 39188,
-     "composition_ns": 554602526338722,
-     "decoded_bgr_sha256": "12891e898f7db4f2f273c3956c6fa6ff3efa95861c1cb9ae08363c280b99de9f"
+     "frame_index": 39211,
+     "composition_ns": 554602718005381,
+     "decoded_bgr_sha256": "28b4298a6f3a0123299361a23454fda4ee3837b2588fe21df3012d5402e51585"
     },
     {
-     "frame_index": 40360,
-     "composition_ns": 554612293004998,
-     "decoded_bgr_sha256": "783ae88725121c7a7f96937b1c4c2109165daa36e343ab139fee817963b80769"
+     "frame_index": 40395,
+     "composition_ns": 554612584671653,
+     "decoded_bgr_sha256": "5637e3e2cc41a80a873ed142cf141b338a0c86b6a12a7076c4b72821a9293765"
     },
     {
-     "frame_index": 41532,
-     "composition_ns": 554622059671274,
-     "decoded_bgr_sha256": "96476b3068f5e429d867f27cbdee2f7764fc7489bae7407c24b02cad394b577e"
+     "frame_index": 41578,
+     "composition_ns": 554622443004592,
+     "decoded_bgr_sha256": "50b76a4110c492baba599d4f7b10a8401306850c61cb3651661736245f893250"
     },
     {
-     "frame_index": 42704,
-     "composition_ns": 554631826337550,
-     "decoded_bgr_sha256": "db7ea394ed7094bdbdc7a8c12400c6caea0174451a09a893989e1215c5135813"
+     "frame_index": 42762,
+     "composition_ns": 554632309670864,
+     "decoded_bgr_sha256": "92322ec0f12a5982ce7993580ad12470879ecd01b1f46184de1405b1c0518c85"
     },
     {
-     "frame_index": 43877,
-     "composition_ns": 554641601337159,
-     "decoded_bgr_sha256": "490818ff2101b40e9269f18349bce4be65667dfb4da691392b000cea85ca77f1"
-    }
-   ]
-  },
-  "seg-030-a1-01": {
-   "suitability": "rejected",
-   "reason": "Sub-frame unsampled boundary sliver: no native frame inside; rejected by rule.",
-   "reviewer": "admission-codex (lane owner; not independent review)",
-   "reviewed_at": "2026-09-27T18:44:57.038811+00:00",
-   "evidence": "segments-evidence.json; all supplied changed review thumbnails visually inspected; independent native boundary verdict required",
-   "frames": []
-  },
-  "seg-030-a1-02": {
-   "suitability": "rejected",
-   "reason": "Held middle-button ping wheel and two-second release settle, rejected by input rule. Supplied sparse thumbnails inspected; prior independent ping audit confirms the short wheel missed by these thumbnails.",
-   "reviewer": "admission-codex (lane owner; not independent review)",
-   "reviewed_at": "2026-09-27T18:44:57.038811+00:00",
-   "evidence": "segments-evidence.json; all supplied changed review thumbnails visually inspected; independent native boundary verdict required",
-   "frames": [
-    {
-     "frame_index": 43878,
-     "composition_ns": 554641609670492,
-     "decoded_bgr_sha256": "3133172067813cfc9939a7d3bc3d42f6cb9414ae8b3d87646418b17b15b4a63b"
+     "frame_index": 43946,
+     "composition_ns": 554642176337136,
+     "decoded_bgr_sha256": "e8e883ea58d7564d2585b419e886c0f86191c805a4ba00a8757db037adcc6ccb"
     },
     {
-     "frame_index": 44006,
-     "composition_ns": 554642676337116,
-     "decoded_bgr_sha256": "be7499239f5d60186fd35be95d33f1b2fa6051a091df106f64a5bdd81e421fe2"
+     "frame_index": 45129,
+     "composition_ns": 554652034670075,
+     "decoded_bgr_sha256": "071bda4aa50cab6148437bc4e4b1f2c5a6513fa606eca3c6ea7a3ec5360ddace"
     },
     {
-     "frame_index": 44134,
-     "composition_ns": 554643743003740,
-     "decoded_bgr_sha256": "58f408c1e4cdb185094f6949d14ac03eb8080e4bd861ae32c259aae213045056"
-    }
-   ]
-  },
-  "seg-030-a1-03": {
-   "suitability": "rejected",
-   "reason": "Own wall traversal in all three inspected thumbnails, but own_hud reader is false. Keep conservative boundary rejection before first proven frame.",
-   "reviewer": "admission-codex (lane owner; not independent review)",
-   "reviewed_at": "2026-09-27T18:44:57.038811+00:00",
-   "evidence": "segments-evidence.json; all supplied changed review thumbnails visually inspected; independent native boundary verdict required",
-   "frames": [
-    {
-     "frame_index": 44135,
-     "composition_ns": 554643751337073,
-     "decoded_bgr_sha256": "9e41983ea0e095c92471c80d5140ad85081e1abf68ca4c58037aec9e33a347c0"
+     "frame_index": 46313,
+     "composition_ns": 554661901336347,
+     "decoded_bgr_sha256": "997f63c89288f4a35e372fcf260afa5e359158b957f233fe7e912c4a9dff0596"
     },
     {
-     "frame_index": 44167,
-     "composition_ns": 554644018003729,
-     "decoded_bgr_sha256": "85d7eeedbb3f2df58a7d04580b95228cefaa2c8967b30c2d39f577adbfad4da7"
+     "frame_index": 47497,
+     "composition_ns": 554671768002619,
+     "decoded_bgr_sha256": "71055b24c7a0260e14f2b9303fe3d81d31a2a5bc1c9ff0b5d5ef529701738345"
     },
     {
-     "frame_index": 44199,
-     "composition_ns": 554644284670385,
-     "decoded_bgr_sha256": "fe2c65f6b08582258268ca5aa9966bd0cc04c00fce956ff9ab9a3326ab663ed1"
-    }
-   ]
-  },
-  "seg-030-a1-04": {
-   "suitability": "accepted",
-   "reason": "Own Spider-Man wall traversal and combat after the ping release settle and conservative HUD-reader gap, through the unchanged outer end. No wheel in supplied frames; own HUD at both edges; interior reader misses show own camera.",
-   "reviewer": "admission-codex (lane owner; not independent review)",
-   "reviewed_at": "2026-09-27T18:44:57.038811+00:00",
-   "evidence": "segments-evidence.json; all supplied changed review thumbnails visually inspected; independent native boundary verdict required",
-   "frames": [
-    {
-     "frame_index": 44200,
-     "composition_ns": 554644293003718,
-     "decoded_bgr_sha256": "f6985c43ba7ad5969cacb71a0983072a9c6c046783b327a67f801b0afd463e6f"
+     "frame_index": 48680,
+     "composition_ns": 554681626335558,
+     "decoded_bgr_sha256": "5df2836bef1978ec6020d65bfc0f45965b9d53bc7abc96c1e0fde74bb0d31e00"
     },
     {
-     "frame_index": 45341,
-     "composition_ns": 554653801336671,
-     "decoded_bgr_sha256": "35c546e093d2cdf559bea7022acb6b8b649f2421504e81ffcdbbd6242a21bf84"
-    },
-    {
-     "frame_index": 46482,
-     "composition_ns": 554663309669624,
-     "decoded_bgr_sha256": "fe33342922abea66088103ca5f206acb9b7247719b1eee85eca03a31abc54e9e"
-    },
-    {
-     "frame_index": 47624,
-     "composition_ns": 554672826335910,
-     "decoded_bgr_sha256": "01daa23ded173bcda65a0a0e7c3baf5d7bbcd0005b802116e0584cb49491d8a8"
-    },
-    {
-     "frame_index": 48765,
-     "composition_ns": 554682334668863,
-     "decoded_bgr_sha256": "948a3ba8f1681c38ef53dcdfb6a096d26e7f8cbbe3e1c8d165d9a6e3cdaa35b1"
-    },
-    {
-     "frame_index": 49906,
-     "composition_ns": 554691843001816,
-     "decoded_bgr_sha256": "b5eef02aa44c31ef5ae12b814d5615df4cffbe4b4d20c10b2b706913ac7d433e"
+     "frame_index": 49864,
+     "composition_ns": 554691493001830,
+     "decoded_bgr_sha256": "40df8f88c94c7d7f1ef7cec8ad3f86a682e79c90db00351ba73382fd64d632c5"
     },
     {
      "frame_index": 51048,

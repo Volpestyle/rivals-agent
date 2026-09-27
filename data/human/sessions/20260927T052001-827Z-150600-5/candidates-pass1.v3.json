@@ -32,22 +32,22 @@
   {
    "segment_id": "seg-003",
    "start_ns": 554307749080900,
-   "end_ns": 554308359683822,
-   "machine_reason": "no_range_hud",
+   "end_ns": 554307759683846,
+   "machine_reason": "unsampled_edge",
    "proposal": "rejected"
   },
   {
    "segment_id": "seg-004",
-   "start_ns": 554308359683822,
+   "start_ns": 554307759683846,
    "end_ns": 554318359683423,
    "machine_reason": "range_hud_present",
    "proposal": "unresolved",
    "edges": {
     "start": {
-     "sample_ns": 554308359683822,
+     "sample_ns": 554307759683846,
      "refine": [
-      554308159683831,
-      554308359683823
+      554307749080900,
+      554307759683847
      ],
      "refined": false
     },
@@ -251,22 +251,22 @@
   {
    "segment_id": "seg-024",
    "start_ns": 554534948250400,
-   "end_ns": 554541559674494,
+   "end_ns": 554538359674622,
    "machine_reason": "no_range_hud",
    "proposal": "rejected"
   },
   {
    "segment_id": "seg-025",
-   "start_ns": 554541559674494,
+   "start_ns": 554538359674622,
    "end_ns": 554557159673871,
    "machine_reason": "range_hud_present",
    "proposal": "unresolved",
    "edges": {
     "start": {
-     "sample_ns": 554541559674494,
+     "sample_ns": 554538359674622,
      "refine": [
-      554541359674503,
-      554541559674495
+      554538159674631,
+      554538359674623
      ],
      "refined": false
     },
@@ -304,7 +304,7 @@
   {
    "segment_id": "seg-029",
    "start_ns": 554583159672830,
-   "end_ns": 554641559670495,
+   "end_ns": 554701359668103,
    "machine_reason": "range_hud_present",
    "proposal": "unresolved",
    "edges": {
@@ -313,52 +313,6 @@
      "refine": [
       554582989421900,
       554583159672831
-     ],
-     "refined": false
-    },
-    "end": {
-     "sample_ns": 554641559670494,
-     "refine": [
-      554641559670494,
-      554641604078800
-     ],
-     "refined": false
-    }
-   }
-  },
-  {
-   "segment_id": "seg-030",
-   "start_ns": 554641559670495,
-   "end_ns": 554641604078800,
-   "machine_reason": "unsampled_edge",
-   "proposal": "rejected"
-  },
-  {
-   "segment_id": "seg-031",
-   "start_ns": 554641604078800,
-   "end_ns": 554643748111800,
-   "machine_reason": "ui_key",
-   "proposal": "rejected"
-  },
-  {
-   "segment_id": "seg-032",
-   "start_ns": 554643748111800,
-   "end_ns": 554643759670406,
-   "machine_reason": "unsampled_edge",
-   "proposal": "rejected"
-  },
-  {
-   "segment_id": "seg-033",
-   "start_ns": 554643759670406,
-   "end_ns": 554701359668103,
-   "machine_reason": "range_hud_present",
-   "proposal": "unresolved",
-   "edges": {
-    "start": {
-     "sample_ns": 554643759670406,
-     "refine": [
-      554643748111800,
-      554643759670407
      ],
      "refined": false
     },
@@ -373,42 +327,42 @@
    }
   },
   {
-   "segment_id": "seg-034",
+   "segment_id": "seg-030",
    "start_ns": 554701359668103,
    "end_ns": 554702052463600,
    "machine_reason": "dead",
    "proposal": "rejected"
   },
   {
-   "segment_id": "seg-035",
+   "segment_id": "seg-031",
    "start_ns": 554702052463600,
    "end_ns": 554706445370600,
    "machine_reason": "ui_key",
    "proposal": "rejected"
   },
   {
-   "segment_id": "seg-036",
+   "segment_id": "seg-032",
    "start_ns": 554706445370600,
    "end_ns": 554710403242900,
    "machine_reason": "dead",
    "proposal": "rejected"
   },
   {
-   "segment_id": "seg-037",
+   "segment_id": "seg-033",
    "start_ns": 554710403242900,
    "end_ns": 554713546284100,
    "machine_reason": "ui_key",
    "proposal": "rejected"
   },
   {
-   "segment_id": "seg-038",
+   "segment_id": "seg-034",
    "start_ns": 554713546284100,
    "end_ns": 554713559667614,
    "machine_reason": "unsampled_edge",
    "proposal": "rejected"
   },
   {
-   "segment_id": "seg-039",
+   "segment_id": "seg-035",
    "start_ns": 554713559667614,
    "end_ns": 554776759665087,
    "machine_reason": "range_hud_present",
@@ -433,77 +387,77 @@
    }
   },
   {
-   "segment_id": "seg-040",
+   "segment_id": "seg-036",
    "start_ns": 554776759665087,
    "end_ns": 554776873410800,
    "machine_reason": "unsampled_edge",
    "proposal": "rejected"
   },
   {
-   "segment_id": "seg-041",
+   "segment_id": "seg-037",
    "start_ns": 554776873410800,
    "end_ns": 554781550244300,
    "machine_reason": "ui_key",
    "proposal": "rejected"
   },
   {
-   "segment_id": "seg-042",
+   "segment_id": "seg-038",
    "start_ns": 554781550244300,
    "end_ns": 554782302278500,
    "machine_reason": "no_range_hud",
    "proposal": "rejected"
   },
   {
-   "segment_id": "seg-043",
+   "segment_id": "seg-039",
    "start_ns": 554782302278500,
    "end_ns": 554782419311300,
    "machine_reason": "ui_key",
    "proposal": "rejected"
   },
   {
-   "segment_id": "seg-044",
+   "segment_id": "seg-040",
    "start_ns": 554783177353700,
    "end_ns": 554783427353700,
    "machine_reason": "focus_transition",
    "proposal": "rejected"
   },
   {
-   "segment_id": "seg-045",
+   "segment_id": "seg-041",
    "start_ns": 554783427353700,
    "end_ns": 554797951269100,
    "machine_reason": "no_range_hud",
    "proposal": "rejected"
   },
   {
-   "segment_id": "seg-046",
+   "segment_id": "seg-042",
    "start_ns": 554797951269100,
    "end_ns": 554802719255600,
    "machine_reason": "ui_key",
    "proposal": "rejected"
   },
   {
-   "segment_id": "seg-047",
+   "segment_id": "seg-043",
    "start_ns": 554802719255600,
    "end_ns": 554803554349100,
    "machine_reason": "no_range_hud",
    "proposal": "rejected"
   },
   {
-   "segment_id": "seg-048",
+   "segment_id": "seg-044",
    "start_ns": 554803554349100,
    "end_ns": 554805610313300,
    "machine_reason": "ui_key",
    "proposal": "rejected"
   },
   {
-   "segment_id": "seg-049",
+   "segment_id": "seg-045",
    "start_ns": 554805610313300,
    "end_ns": 554806191336500,
    "machine_reason": "no_range_hud",
    "proposal": "rejected"
   },
   {
-   "segment_id": "seg-050",
+   "segment_id": "seg-046",
    "start_ns": 554806191336500,
    "end_ns": 554806332981500,
    "machine_reason": "ui_key",
@@ -511,8 +465,8 @@
   }
  ],
  "supersedes": {
-  "file": "candidates-pass1.v3.json",
-  "sha256": "95d6464f957aacfb0b4326725b3e2b9f8d884f804f8446020ce41a592f2d4ec1",
-  "reason": "Lead 2026-09-27: exclude held middle-mouse ping wheel plus 2 s settle; preserve prior packet"
+  "file": "candidates-pass1.v2.json",
+  "sha256": "50cbccb305198c512ec7b14f282f9219c20cabe67deeda6d8a0fa927740e68ba",
+  "reason": "v2 ended the emote-wheel cut at the next action (a jump at 283.5 s that did not end the sit); the cut now runs to the next movement-key press plus the settle (code-snapshot-f8fd92c-6046514b)"
  }
 }

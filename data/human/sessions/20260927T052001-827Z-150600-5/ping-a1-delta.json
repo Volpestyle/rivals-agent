@@ -1,0 +1,140 @@
+{
+ "session": "20260927T052001-827Z-150600-5",
+ "segments_evidence_sha256": "608e35e8dfaf6607442d2ce13049fb48e104b6cd5e9c89cae98807bcbcc7d164",
+ "owner_verdicts_sha256": "7e8f1fdad86e07be22375851c754b3dfdce9d867eac845afea4b5e202a473aab",
+ "previous_evidence": {
+  "file": "segments-evidence.v3.json",
+  "sha256": "7bfa7d5312e0b058db6326a09d4ff300974bc8ad4f8c8ca4226ff75cf88712c5",
+  "review_frames": "review-frames.v3",
+  "reason": "Lead 2026-09-27: exclude held middle-mouse ping wheel plus 2 s settle; preserve prior packet"
+ },
+ "previous_owner": {
+  "path": "owner-verdicts.v2.json",
+  "sha256": "e8738680cd512054728956ebd09f737cd3c9fef2eae2104db97ee25a41dfebcc"
+ },
+ "previous_independent": {
+  "path": "independent-review.v2.verdicts.json",
+  "sha256": "49842f90b8f13c288baa698317c392a90e3cac56551a338bb02f651bd5868999"
+ },
+ "unchanged_segments": [
+  "seg-000",
+  "seg-001",
+  "seg-002",
+  "seg-003",
+  "seg-004",
+  "seg-005",
+  "seg-006",
+  "seg-007",
+  "seg-008",
+  "seg-009",
+  "seg-010",
+  "seg-011",
+  "seg-012",
+  "seg-013",
+  "seg-014",
+  "seg-015",
+  "seg-016",
+  "seg-017",
+  "seg-018",
+  "seg-019",
+  "seg-020",
+  "seg-021",
+  "seg-022",
+  "seg-023",
+  "seg-024",
+  "seg-025",
+  "seg-026",
+  "seg-027",
+  "seg-028",
+  "seg-029",
+  "seg-031",
+  "seg-032",
+  "seg-033",
+  "seg-034",
+  "seg-035",
+  "seg-036",
+  "seg-037",
+  "seg-038",
+  "seg-039",
+  "seg-040",
+  "seg-041",
+  "seg-042",
+  "seg-043",
+  "seg-044",
+  "seg-045",
+  "seg-046",
+  "seg-047"
+ ],
+ "unchanged_count": 47,
+ "unchanged_check": "Exact JSON equality, including native/JPEG pins; every current image hash and evidence input pin checked",
+ "changed_segments": [
+  {
+   "segment_id": "seg-030-a1-00",
+   "parent_segment": "seg-030",
+   "start_ns": 554582993006170,
+   "end_ns": 554641601337160,
+   "t_rel_s": [
+    307.12743337,
+    365.73576436
+   ],
+   "machine_reason": "range_hud_present",
+   "owner_verdict": "accepted",
+   "review_frame_count": 7
+  },
+  {
+   "segment_id": "seg-030-a1-01",
+   "parent_segment": "seg-030",
+   "start_ns": 554641601337160,
+   "end_ns": 554641604078800,
+   "t_rel_s": [
+    365.73576436,
+    365.738506
+   ],
+   "machine_reason": "unsampled_edge",
+   "owner_verdict": "rejected",
+   "review_frame_count": 0
+  },
+  {
+   "segment_id": "seg-030-a1-02",
+   "parent_segment": "seg-030",
+   "start_ns": 554641604078800,
+   "end_ns": 554643748111800,
+   "t_rel_s": [
+    365.738506,
+    367.882539
+   ],
+   "machine_reason": "ui_key",
+   "owner_verdict": "rejected",
+   "review_frame_count": 3
+  },
+  {
+   "segment_id": "seg-030-a1-03",
+   "parent_segment": "seg-030",
+   "start_ns": 554643748111800,
+   "end_ns": 554644293003718,
+   "t_rel_s": [
+    367.882539,
+    368.427430918
+   ],
+   "machine_reason": "hud_unknown",
+   "owner_verdict": "rejected",
+   "review_frame_count": 3
+  },
+  {
+   "segment_id": "seg-030-a1-04",
+   "parent_segment": "seg-030",
+   "start_ns": 554644293003718,
+   "end_ns": 554701359668103,
+   "t_rel_s": [
+    368.427430918,
+    425.494095303
+   ],
+   "machine_reason": "range_hud_present",
+   "owner_verdict": "accepted",
+   "review_frame_count": 7
+  }
+ ],
+ "accepted_count": 7,
+ "accepted_ns": 342399986311,
+ "owner_inspection": "All20 supplied thumbnails across4 changed pieces inspected; one zero-frame sliver rejected by rule. Native-frame review remains independent."
+}
