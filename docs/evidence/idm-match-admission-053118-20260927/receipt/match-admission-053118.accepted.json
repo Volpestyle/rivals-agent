@@ -1,0 +1,32 @@
+{
+ "format": "rivals-idm-match-admission-v1",
+ "scope": "EXPLORATORY",
+ "decision": "accepted",
+ "reviewer": "fit-review (Codex, independent admission review): code-review/review-admission-053118-32fb531.md, verdict LAND at sha256 54481bc831a9f11e47b85d2d5fbd7565be6e72b2f1a0a8a0f6c13522599fd653; frame-review (Opus, independent native-frame verdicts): data/human/sessions/20260927T053118-260Z-150600-6/independent-review.v2.verdicts.json sha256 e8fd29046ff6f484fdd6c5f978e7d49a343c4a8823aecee1d6b5279aa5868b91, matches_owner on all 57 segments",
+ "producer": "admission-owner (data/human/sessions/match_admission.py)",
+ "snapshot": "code-snapshot-f8fd92c-6046514b",
+ "snapshot_manifest_sha256": "f37a5a717d06517d160403146eb69818060874582ce79d5fd6aa196fcea82e4e",
+ "registry": {
+  "path": "data/human/session-splits.corpus.json",
+  "sha256": "1c9e2c671b14e9d1ea8bcefd4703668a039ecac946d2f5ece768746e67118a13"
+ },
+ "sessions": {
+  "20260927T053118-260Z-150600-6": {
+   "source_kind": "live",
+   "session_group": "20260927T053118-260Z-150600-6",
+   "media_sha256": "a6f27e3ef6cf9ad6026a24dd01e56224dbccdc178ecc6b2d9158ee058d1c63a9",
+   "steps_sha256": "99164a8ecc3ceb7148ab64f4a7ae0c36544d0d074a48a8ebedf3a68162c5d488",
+   "imported_demo_sha256": "3f788e0fbfbfd99921dd71e8e635f83f0ba742ec59e203200602d62b4fb93dc7",
+   "identity_sha256": "5100f677648de77413e6c419308f6a37daa5e5066532b78b6de078c82a23a436",
+   "motor_statement_sha256": "5d7190e312c3fb7a8808325851cc8e089d23bde7a9e541b2ee2363a755d58e36"
+  }
+ },
+ "accepted": {
+  "by": "the lead (herdr-lead), 2026-09-27, on the two independent reviews above",
+  "written_by": "admission-codex, on the lead's instruction; the entry is byte-for-byte the pending one",
+  "pending": {
+   "path": "receipt/match-admission-053118.pending.json",
+   "sha256": "75d52be2bfcc6d66db4dff81dfc4b85644748f62b768577119b977b4a683557a"
+  }
+ }
+}

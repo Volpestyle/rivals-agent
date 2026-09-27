@@ -1,0 +1,15 @@
+# Independent admission review: -6 assembly 32fb531
+
+Verdict: LAND for the assembled -6 packet and pending receipt binding. Reviewer: fit-review (Codex), 2026-09-27. No findings. Existing reviewed assembly/admission code and independent native-frame evidence reused; no decode performed.
+
+Session: `20260927T053118-260Z-150600-6`.
+
+- Pending receipt SHA256 verifies as `75d52be2bfcc6d66db4dff81dfc4b85644748f62b768577119b977b4a683557a`; its run-output copy is identical. Decision remains pending and reviewer null.
+- Freeze SHA256 verifies as `a2d300460108b80c6e6d34088fb69d69dbcf699b7f5e4a712c9e42ba33803409`. All 25 internal artifact hashes and eight external metadata hashes match. The original video hash is inherited from the accepted provenance/integrity record, not freshly rehashed. The assembly snapshot and registry pins match the receipt.
+- Final independent frame record SHA256 is `e8fd29046ff6f484fdd6c5f978e7d49a343c4a8823aecee1d6b5279aa5868b91`; canonical and v2 copies are identical. Its evidence, owner, delta and media pins bind the current packet. Owner, independent record, evidence and assembled review agree on every ID and bound across all 57 segments.
+- Independently summed nine accepted segments to exactly 257,649,989,703 ns (257.649989703 s; 4.29416649505 minutes). No unresolved segment remains. The 49 reused segments retain previous bounds, machine reasons, decoded native-frame pins and independent verdicts; eight changed segments bind the final frame-review decision. Historical v1 evidence remains pinned by the freeze.
+- Every emitted gameplay edge has a true native proof in the retained evidence; all referenced review JPEG hashes match. These are pin checks, not new visual verdicts. The next-match setup spans remain in the same recording family under the existing frame-review acceptance; no session split or family was rewritten.
+- Streamed all 12,930 step rows and checked segment/bound consistency, including step completion strictly before each segment end. Exactly 7,723 rows are accepted and gap-free. Header source pins bind the current reviewed JSON and imported demo. All seven pending receipt entry fields independently reproduce: live source kind, family, media hash, steps hash, imported-demo hash, canonical identity hash, and motor-record hash.
+- Registry identity is live `idm_train`, not pending or paired; the existing sealed guard passes. Assembly and receipt run records report exit 0 with no failure. The retained verification records 52,541/52,541 matched decoded frames at +21 ms, maximum residual approximately 1/3000 s, with two unwritten tail packets excluded. Capture/display/input-delivery latency remains uncalibrated.
+
+This independent review supports lead acceptance of the unchanged pending receipt's session entry. It does not itself change the pending receipt or authorize use of that pending document: the lead/admission owner must publish the accepted copy with these review and frame-record references before consumption. The -4/-5 historical receipts remain superseded and are outside this acceptance. Lead owns VUH-1353 result-record reconciliation.
