@@ -16,4 +16,9 @@ The mechanics that rarely change:
 - Every job writes a status file (`scripts/job_status.py`) so it shows on the job board
   (`https://jamess-macbook-pro.tailb90f24.ts.net:9443/`).
 
+Before writing or debugging Modal code, load the `modal` skill (Modal's own, v1.5.5, refreshed with
+`modal skills update` on the Mac; it points at the current docs and `modal changelog`). Modal can restart a container
+and redeliver the same call (2026-09-27, ~19:15 UTC: two lanes lost their runs this way within 2 s). A worker must
+tolerate re-entry: resume only from a completed, hash-checked stage, and refuse a partial one instead of refitting.
+
 Machine access: `docs/machines.md` and the `mac-remote` / `windows-pc` skills. Live input: the `rivals-live-game` skill.
