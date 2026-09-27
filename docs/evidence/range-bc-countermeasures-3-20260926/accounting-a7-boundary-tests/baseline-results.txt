@@ -1,0 +1,2 @@
+F1 real verification boundary: 4 passed, 49 deselected in 95.80s.
+F2 integrated Windows behavioral suite: 4 tests OK in 0.064s.

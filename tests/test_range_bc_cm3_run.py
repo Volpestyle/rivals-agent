@@ -309,7 +309,8 @@ def test_platform_locks_include_conditional_dependency_and_wheel_hashes():
 
 
 @pytest.mark.parametrize("amendment", [2, 3])
-def test_complete_synthetic_matrix_and_mixed_attempt_refusal(packet, monkeypatch, tmp_path, amendment):
+@pytest.mark.parametrize("verification_cap", [69120, 69121])
+def test_complete_synthetic_matrix_and_mixed_attempt_refusal(packet, monkeypatch, tmp_path, amendment, verification_cap):
     context, make, write = packet
     context["amendment"] = amendment
     stage_deps = chain(packet, "fit")
@@ -375,8 +376,13 @@ def test_complete_synthetic_matrix_and_mixed_attempt_refusal(packet, monkeypatch
                 result(arm, seed)
     verification = dict(format="cm3-verify-approval-v1", approved_by="herdr-lead",
         context_sha256=cm3.digest(context), outputs=list(outputs.values()), output=str(tmp_path / "verified.json"),
-        budget={"approved_by": "herdr-lead", "spent_seconds": 13, "cap_seconds": 57600, "stage_seconds": 100})
+        budget={"approved_by": "herdr-lead", "spent_seconds": 13, "cap_seconds": verification_cap, "stage_seconds": 100})
     ref = write("verify-approval.json", verification)
+    if verification_cap > 69120:
+        with pytest.raises(ValueError, match="verification budget exhausted"):
+            run.verify_matrix(ref["path"], ref["sha256"])
+        assert not (tmp_path / "verified.json").exists()
+        return
     verified = run.verify_matrix(ref["path"], ref["sha256"])
     assert run.document(verified)["status"] == "PASS"
     # Rehashed but byte-different H0 repeat cannot be blessed by a true repeat flag.

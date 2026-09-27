@@ -1,0 +1,11 @@
+{
+  "files": {
+    "HANDBACK.md": "637f6d641109f998e5ac85df831a6bb7aa9490a675ce58731b5bc7cd2791054f",
+    "baseline.log": "cdf8c2d607401ea33b684e54e8eae7d1e72a3cb09b78d29b74b067019876ac05",
+    "dollar-plus-one-cent.log": "fa1d5a1d6ec0f360cfca570a88c7e561d9cf2b9b43a2285369bdbb3a8f661729",
+    "results.json": "9616c73ddd6810f27b9fd1072babd66b0052630f2328c63f8924d6c279a6daf7",
+    "run_mutations.py": "26d88537d29b865eb81e0080686f2cc1be40a594ed9ead9a813bfb801cce76ce",
+    "seconds-plus-one.log": "c146ed7a88cd2c85aa3e8dac4a6385e9e41db19040c8b3831d103a9b0e649ddf",
+    "test_serial_cap_boundaries.py": "d38a0f3435580775d613b61c90f9a274755503a8299ff82f9cf578af8995f413"
+  }
+}

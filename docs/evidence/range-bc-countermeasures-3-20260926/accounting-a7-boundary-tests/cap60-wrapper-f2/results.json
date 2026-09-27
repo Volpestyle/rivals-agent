@@ -1,0 +1,24 @@
+{
+  "source_sha256": "0d140546fa17ef3cf4ca7e0006dbc5014cce3bd4ede2762be2a4cce89eb7d984",
+  "python": "3.12.13 (main, Jul 18 2026, 16:55:18) [Clang 22.1.3 ]",
+  "cases": [
+    {
+      "case": "baseline",
+      "exit_code": 0,
+      "expected_failure": null,
+      "candidate_sha256": "0d140546fa17ef3cf4ca7e0006dbc5014cce3bd4ede2762be2a4cce89eb7d984"
+    },
+    {
+      "case": "dollar-plus-one-cent",
+      "exit_code": 1,
+      "expected_failure": "test_60_01_refuses",
+      "candidate_sha256": "c0db6c7de62c0a7fa34483c7d30b8493b1f74965f81221aa2b9f317c2c6c759e"
+    },
+    {
+      "case": "seconds-plus-one",
+      "exit_code": 1,
+      "expected_failure": "test_69121_refuses",
+      "candidate_sha256": "08f930192fc7266a2d2ee19228c2a508bb4239c07fd7506d7c7418ee1177667b"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+test_60_01_refuses (__main__.Boundaries.test_60_01_refuses) ... ok
+test_60_accepts (__main__.Boundaries.test_60_accepts) ... ok
+test_69120_accepts (__main__.Boundaries.test_69120_accepts) ... ok
+test_69121_refuses (__main__.Boundaries.test_69121_refuses) ... FAIL
+
+======================================================================
+FAIL: test_69121_refuses (__main__.Boundaries.test_69121_refuses)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/james/dev/range-bc-data/handoff/modal/cap60-wrapper-f2/test_serial_cap_boundaries.py", line 32, in test_69121_refuses
+    with self.assertRaisesRegex(ValueError,"aggregate compute"):self.aggregate(69121)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.002s
+
+FAILED (failures=1)

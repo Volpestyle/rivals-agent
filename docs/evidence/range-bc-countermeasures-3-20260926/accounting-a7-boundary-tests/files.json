@@ -1,0 +1,17 @@
+{
+  "files": {
+    "README.md": "cddb4b99464fe206abb20ddc36f209d4ceab5214fe4fdd3af04f2c270c7e57d5",
+    "baseline-results.txt": "4113ef52efe4ea6de01af89e7111cc23256f2c48bd5bcfe888644a1609adb55c",
+    "cap60-wrapper-f2/HANDBACK.md": "637f6d641109f998e5ac85df831a6bb7aa9490a675ce58731b5bc7cd2791054f",
+    "cap60-wrapper-f2/baseline.log": "cdf8c2d607401ea33b684e54e8eae7d1e72a3cb09b78d29b74b067019876ac05",
+    "cap60-wrapper-f2/dollar-plus-one-cent.log": "fa1d5a1d6ec0f360cfca570a88c7e561d9cf2b9b43a2285369bdbb3a8f661729",
+    "cap60-wrapper-f2/files.json": "5f1f4ffb28884b99a8fa465a2b32ae54114f0d11eaf7a9814cc060c9a56dcb08",
+    "cap60-wrapper-f2/results.json": "9616c73ddd6810f27b9fd1072babd66b0052630f2328c63f8924d6c279a6daf7",
+    "cap60-wrapper-f2/run_mutations.py": "26d88537d29b865eb81e0080686f2cc1be40a594ed9ead9a813bfb801cce76ce",
+    "cap60-wrapper-f2/seconds-plus-one.log": "c146ed7a88cd2c85aa3e8dac4a6385e9e41db19040c8b3831d103a9b0e649ddf",
+    "cap60-wrapper-f2/test_serial_cap_boundaries.py": "d38a0f3435580775d613b61c90f9a274755503a8299ff82f9cf578af8995f413",
+    "cap60-wrapper/serial-runtime/safety.py": "0d140546fa17ef3cf4ca7e0006dbc5014cce3bd4ede2762be2a4cce89eb7d984",
+    "check_verification_mutant.py": "b1e4d3e4ed7e252b84b60f1a320283f12c58fc86ca9137fa89f4ae42bcbb971d",
+    "verification-mutant.log": "6716538eae2584c9fefd5b0cf5dcce8562e002cd703a5aaf77b6db75664a5662"
+  }
+}

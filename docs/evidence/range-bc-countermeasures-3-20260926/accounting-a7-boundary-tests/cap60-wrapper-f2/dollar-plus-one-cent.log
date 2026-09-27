@@ -1,0 +1,18 @@
+test_60_01_refuses (__main__.Boundaries.test_60_01_refuses) ... FAIL
+test_60_accepts (__main__.Boundaries.test_60_accepts) ... ok
+test_69120_accepts (__main__.Boundaries.test_69120_accepts) ... ok
+test_69121_refuses (__main__.Boundaries.test_69121_refuses) ... ok
+
+======================================================================
+FAIL: test_60_01_refuses (__main__.Boundaries.test_60_01_refuses)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/james/dev/range-bc-data/handoff/modal/cap60-wrapper-f2/test_serial_cap_boundaries.py", line 18, in test_60_01_refuses
+    with self.assertRaisesRegex(ValueError,"cap/timeout"):s.numeric_plan(self.p)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.003s
+
+FAILED (failures=1)

@@ -1,0 +1,9 @@
+test_60_01_refuses (__main__.Boundaries.test_60_01_refuses) ... ok
+test_60_accepts (__main__.Boundaries.test_60_accepts) ... ok
+test_69120_accepts (__main__.Boundaries.test_69120_accepts) ... ok
+test_69121_refuses (__main__.Boundaries.test_69121_refuses) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.002s
+
+OK
