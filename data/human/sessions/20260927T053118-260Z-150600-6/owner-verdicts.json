@@ -1,0 +1,1369 @@
+{
+ "session": "20260927T053118-260Z-150600-6",
+ "segments_evidence_sha256": "56de079121df399bf58d8aa270fc57aafcdfb4925c571f579abfddfb0c2df3b3",
+ "reviewer": "admission-codex",
+ "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+ "role": "owner delta thumbnail inspection, unchanged evidence reused; pending independent boundary review",
+ "supersedes": {
+  "file": "owner-verdicts.v1.json",
+  "sha256": "04e43d2e9e4d21ae123c27ca2e3b731abd5edffe6e0f33a0d3dfe87cb0ed27de",
+  "reason": "Lead-authorized middle-mouse ping-wheel cut plus 2 s settle"
+ },
+ "verdicts": {
+  "seg-000": {
+   "suitability": "rejected",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-000 and independent-review.v1.verdicts.json agreement. focus_transition: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 34,
+     "composition_ns": 554952684658049,
+     "decoded_bgr_sha256": "9fbf0eb1fba1529dc2e117ddf918ce2d798b11ebea4320eb594c3142dccf2717"
+    },
+    {
+     "frame_index": 48,
+     "composition_ns": 554952801324711,
+     "decoded_bgr_sha256": "8cfe9f7428f93ff9f791eddd6b084471f4329e5ac277ff63c397133986d8bb27"
+    },
+    {
+     "frame_index": 63,
+     "composition_ns": 554952926324706,
+     "decoded_bgr_sha256": "9f9872ad200b89c4bce05827e171a4928231d6d36d06ab27d7ea4444e2207ce7"
+    }
+   ]
+  },
+  "seg-001": {
+   "suitability": "rejected",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-001 and independent-review.v1.verdicts.json agreement. unsampled_edge: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": []
+  },
+  "seg-002": {
+   "suitability": "accepted",
+   "reason": "Owner inspected all new supplied thumbnails: own Spider-Man control/HUD, no menu or ping wheel in the retained samples. Interval now excludes middle-button hold and release settle. Inherits prior native review of unaffected interior; changed boundary still needs independent review.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 64,
+     "composition_ns": 554952934658039,
+     "decoded_bgr_sha256": "9915caa562583e5a0553a34dc8b9cec11ddbca09cac8f0aa99165d1afbefa242"
+    },
+    {
+     "frame_index": 1029,
+     "composition_ns": 554960976324384,
+     "decoded_bgr_sha256": "0d49563841d86afc13110c540f5c1b2989f487c68049fbaf47e73067d4b17e37"
+    },
+    {
+     "frame_index": 1995,
+     "composition_ns": 554969026324062,
+     "decoded_bgr_sha256": "508fde2ace769002840a467d64b3bb2182b1e28c4d0dd42477688a0e1026cdba"
+    },
+    {
+     "frame_index": 2961,
+     "composition_ns": 554977076323740,
+     "decoded_bgr_sha256": "fdf6415b698ee566e66fa85fba88b71ff51758cbf419c21c1f505593a3be4abb"
+    },
+    {
+     "frame_index": 3927,
+     "composition_ns": 554985126323418,
+     "decoded_bgr_sha256": "008649de82d83b60c2be613716d77dc5aa6f0e8d0a3852bc88ab0de52409d78f"
+    }
+   ]
+  },
+  "seg-003": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: conservative cut from reviewed input rule/native edge proof. Owner inspected supplied thumbnails; the ping menu itself was proven in prior independent native frames, not necessarily at these sparse thumbnail times.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 3928,
+     "composition_ns": 554985134656751,
+     "decoded_bgr_sha256": "a664f4266a09d7b2325f7cd82c47d9e5682f9fb7c061d69d79898f59349bc66b"
+    },
+    {
+     "frame_index": 3929,
+     "composition_ns": 554985142990084,
+     "decoded_bgr_sha256": "d86bac0b31bc127e043c4eb76c8e58b8dcde425e52537770d278cbfe7c64daee"
+    },
+    {
+     "frame_index": 3931,
+     "composition_ns": 554985159656750,
+     "decoded_bgr_sha256": "e346c5f0475f383c233a54b41bfb385ebcc9dc8e650df4cea27bb069f5cff9ed"
+    }
+   ]
+  },
+  "seg-004": {
+   "suitability": "rejected",
+   "reason": "ui_key: conservative cut from reviewed input rule/native edge proof. Owner inspected supplied thumbnails; the ping menu itself was proven in prior independent native frames, not necessarily at these sparse thumbnail times.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 3932,
+     "composition_ns": 554985167990083,
+     "decoded_bgr_sha256": "bb0da29a376f9218d198a752da3c182476da0f812fe5b976d60006cd5acb3b3a"
+    },
+    {
+     "frame_index": 4327,
+     "composition_ns": 554988459656618,
+     "decoded_bgr_sha256": "10ec24032d464e71fd3b9c7e0d767669d5427dcedb579bb17e5dafd2e1bf9d71"
+    },
+    {
+     "frame_index": 4722,
+     "composition_ns": 554991751323153,
+     "decoded_bgr_sha256": "856f97f05096c27762d6dd237c7565e40930e9e2582c10a8d1aa44f6e5c40797"
+    }
+   ]
+  },
+  "seg-005": {
+   "suitability": "rejected",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-005 and independent-review.v1.verdicts.json agreement. dead: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 4723,
+     "composition_ns": 554991759656486,
+     "decoded_bgr_sha256": "ab26eee0e06c0a513dd6471e0f22072ab55e73544b62f3aa1c3d2f5141e84f1c"
+    },
+    {
+     "frame_index": 4891,
+     "composition_ns": 554993159656430,
+     "decoded_bgr_sha256": "53983a5e19d99cc751fd3de3fd6b995a9737f16d341be9243a8a2277ba4f3c5b"
+    },
+    {
+     "frame_index": 5059,
+     "composition_ns": 554994559656374,
+     "decoded_bgr_sha256": "f3615532c4be6fd0d57406e9e5ad8ef6ce65cdc960ff3cd2519145da1516d8a4"
+    }
+   ]
+  },
+  "seg-006": {
+   "suitability": "rejected",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-006 and independent-review.v1.verdicts.json agreement. ui_key: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 5060,
+     "composition_ns": 554994567989707,
+     "decoded_bgr_sha256": "c6c11049a483e81bff3e1777b561f5641e37c592d4d32540f552318377114556"
+    },
+    {
+     "frame_index": 5195,
+     "composition_ns": 554995692989662,
+     "decoded_bgr_sha256": "9959858ba5c297f4fbca6fa23aa8431a907822e70db46436e999ceed0580e1c4"
+    },
+    {
+     "frame_index": 5331,
+     "composition_ns": 554996826322950,
+     "decoded_bgr_sha256": "2c7592f98cb3f4de3c8b92862c60bdee351111751e412d4148d1bad0cf0b7e68"
+    }
+   ]
+  },
+  "seg-007": {
+   "suitability": "rejected",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-007 and independent-review.v1.verdicts.json agreement. dead: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 5332,
+     "composition_ns": 554996834656283,
+     "decoded_bgr_sha256": "d48ac2b1ce62bc56671ff802a7bdf1822a135d73be9c2ed69c1bdfd2a7a6477e"
+    },
+    {
+     "frame_index": 5378,
+     "composition_ns": 554997217989601,
+     "decoded_bgr_sha256": "45ad13d70d691b9fd5d5364df64a82c0025bd04e3602f458dea5d8653f291f86"
+    },
+    {
+     "frame_index": 5424,
+     "composition_ns": 554997601322919,
+     "decoded_bgr_sha256": "cfe063044aa5305e03fb9c6d38994bb7807812a65933a8922b15d435fcf344c6"
+    }
+   ]
+  },
+  "seg-008": {
+   "suitability": "rejected",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-008 and independent-review.v1.verdicts.json agreement. unsampled_edge: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 5425,
+     "composition_ns": 554997609656252,
+     "decoded_bgr_sha256": "80cb1b25113a7a4a4c2338a6326c8827524594802e872561d2b593d68c15650c"
+    },
+    {
+     "frame_index": 5435,
+     "composition_ns": 554997692989582,
+     "decoded_bgr_sha256": "049f6c8f9a372f3a5b2092b8b8fee265e6f74895ba9aa9d912e67cd67e72fe94"
+    },
+    {
+     "frame_index": 5446,
+     "composition_ns": 554997784656245,
+     "decoded_bgr_sha256": "f383982c02171648b43c595ff451c45492cca83e95bb3028535a176d970027f7"
+    }
+   ]
+  },
+  "seg-009": {
+   "suitability": "accepted",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-009 and independent-review.v1.verdicts.json agreement. Owner visually inspected every supplied review thumbnail on the segment contact sheet: own Spider-Man gameplay HUD/body, traversal or combat; no menu, death, spectate, cinematic or end screen observed. Pre-match controllable setup room is permitted. Native BGR hashes below are inherited from the producer evidence, not independently re-decoded by owner; independent native-frame review required.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 5447,
+     "composition_ns": 554997792989578,
+     "decoded_bgr_sha256": "d4acca32d5fb51b233e5058c4d92281f1406db41e0361db7e0d82f7e6c776a9c"
+    },
+    {
+     "frame_index": 6623,
+     "composition_ns": 555007592989186,
+     "decoded_bgr_sha256": "453dda15d93eb413e5251a64fbf112f5cc0addbc1071502b7358aa3218f3eb12"
+    },
+    {
+     "frame_index": 7800,
+     "composition_ns": 555017401322127,
+     "decoded_bgr_sha256": "f4196b6724c6fc50e0ede530c3514b9f0c983419ddc1bf0b67abffda5e254150"
+    },
+    {
+     "frame_index": 8977,
+     "composition_ns": 555027209655068,
+     "decoded_bgr_sha256": "6e9f277f3c812a702f523799ff26ebc222e165c43f42e0ef46321adf5091fae3"
+    }
+   ]
+  },
+  "seg-010": {
+   "suitability": "rejected",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-010 and independent-review.v1.verdicts.json agreement. hud_unknown: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 8978,
+     "composition_ns": 555027217988401,
+     "decoded_bgr_sha256": "3b3112b0a23f7935ecd23fc3f06b89a1f662dd1ae8c12adf502b34243396467b"
+    },
+    {
+     "frame_index": 8989,
+     "composition_ns": 555027309655064,
+     "decoded_bgr_sha256": "d0fb0b95dae1079a78679367ad0a0559271a6f97a3bc86dfad56512675ecbccb"
+    },
+    {
+     "frame_index": 9000,
+     "composition_ns": 555027401321727,
+     "decoded_bgr_sha256": "b5d73902db6709cd73a417bc14c8282038b73922b85ac075162d3304d33f224f"
+    }
+   ]
+  },
+  "seg-011": {
+   "suitability": "rejected",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-011 and independent-review.v1.verdicts.json agreement. dead: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 9001,
+     "composition_ns": 555027409655060,
+     "decoded_bgr_sha256": "e5719b79abaec312f2d1453197dda8e13e59f432e5ebda4557786af5639d61e3"
+    },
+    {
+     "frame_index": 9048,
+     "composition_ns": 555027801321711,
+     "decoded_bgr_sha256": "9609ce4beeec6deb7c27326f3632ec4c6608f4e694737b65a63825df04e27235"
+    },
+    {
+     "frame_index": 9096,
+     "composition_ns": 555028201321695,
+     "decoded_bgr_sha256": "6d10881a85e2a333eb04e5b0c138637c289b87abd95fdbee8e89b945ba9c926f"
+    }
+   ]
+  },
+  "seg-012": {
+   "suitability": "rejected",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-012 and independent-review.v1.verdicts.json agreement. ui_key: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 9097,
+     "composition_ns": 555028209655028,
+     "decoded_bgr_sha256": "a55886c61e8f6b1a1f4c994eb5abd95beb2d06b47b8a135c208340c570118030"
+    },
+    {
+     "frame_index": 9245,
+     "composition_ns": 555029442988312,
+     "decoded_bgr_sha256": "f67c9ebc4d1ad35dcc8692c7e693f2bd3f16864aa44b7094248bec76a944e7c5"
+    },
+    {
+     "frame_index": 9393,
+     "composition_ns": 555030676321596,
+     "decoded_bgr_sha256": "f04796f355fa7ec5de545430ba63e514026126d11140b10b6ea2d0b6d72bea20"
+    }
+   ]
+  },
+  "seg-013": {
+   "suitability": "rejected",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-013 and independent-review.v1.verdicts.json agreement. dead: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 9394,
+     "composition_ns": 555030684654929,
+     "decoded_bgr_sha256": "924c62b5de7ff3858a46ef2a0237609b28e70527a95b6d67e33099b333e07e65"
+    },
+    {
+     "frame_index": 9460,
+     "composition_ns": 555031234654907,
+     "decoded_bgr_sha256": "9254358ecf995ec7181cb20e570826c573dff9f09130b87d9633e19ebfc644de"
+    },
+    {
+     "frame_index": 9526,
+     "composition_ns": 555031784654885,
+     "decoded_bgr_sha256": "5ba1a8a404097f2b56ce391ea371b8529bdf95fd32e159c5cbce769c73200536"
+    }
+   ]
+  },
+  "seg-014": {
+   "suitability": "rejected",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-014 and independent-review.v1.verdicts.json agreement. ui_key: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 9527,
+     "composition_ns": 555031792988218,
+     "decoded_bgr_sha256": "e026d1b02a5f2b4d0e0ba9f142d68cfbc59b33f3a410d1177241abf60b7b7279"
+    },
+    {
+     "frame_index": 9710,
+     "composition_ns": 555033317988157,
+     "decoded_bgr_sha256": "aed9251a3d59da4f4d1233d0f3d03d665fb17759d8947caf9ff772150399c22e"
+    },
+    {
+     "frame_index": 9894,
+     "composition_ns": 555034851321429,
+     "decoded_bgr_sha256": "a857878cdcc11fa770427c704aff16393d156db0a58971f5114f5601907d37ff"
+    }
+   ]
+  },
+  "seg-015": {
+   "suitability": "rejected",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-015 and independent-review.v1.verdicts.json agreement. dead: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 9895,
+     "composition_ns": 555034859654762,
+     "decoded_bgr_sha256": "813d92ccff47a7193dd06d29c06ebc946e435953cd19e0cf0e173c6bc504e1c1"
+    },
+    {
+     "frame_index": 9977,
+     "composition_ns": 555035542988068,
+     "decoded_bgr_sha256": "2608bf4bdaa0490e7e979b5329f0b6a0e0fa3275eb2721dee501b51fcdc121d2"
+    },
+    {
+     "frame_index": 10060,
+     "composition_ns": 555036234654707,
+     "decoded_bgr_sha256": "4986f0825d3d7ae3f573202bb00c8ab759eb49a42a587b4b52b58163086fe5bb"
+    }
+   ]
+  },
+  "seg-016": {
+   "suitability": "rejected",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-016 and independent-review.v1.verdicts.json agreement. ui_key: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 10061,
+     "composition_ns": 555036242988040,
+     "decoded_bgr_sha256": "79633bd107c2a38df8b0a8bd9668a4b560433b733c7eecf46dd655824e2e0663"
+    },
+    {
+     "frame_index": 10193,
+     "composition_ns": 555037342987996,
+     "decoded_bgr_sha256": "fabb5999fdfab295a995d61569061afd6128c5163b1128a8e033f528dc660d07"
+    },
+    {
+     "frame_index": 10326,
+     "composition_ns": 555038451321285,
+     "decoded_bgr_sha256": "b507e173e02739d4fe011074e53d983222a070c645810d2f131fd41b66489a1f"
+    }
+   ]
+  },
+  "seg-017": {
+   "suitability": "rejected",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-017 and independent-review.v1.verdicts.json agreement. dead: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 10327,
+     "composition_ns": 555038459654618,
+     "decoded_bgr_sha256": "8756016cb53809a9076b3c564ccd00f93beb27514a1c2003149ddf3da074cec2"
+    },
+    {
+     "frame_index": 10371,
+     "composition_ns": 555038826321270,
+     "decoded_bgr_sha256": "9353cc4ec84fa8749f918345f4baf3d3416b80da8318244480373944e768c7f2"
+    },
+    {
+     "frame_index": 10416,
+     "composition_ns": 555039201321255,
+     "decoded_bgr_sha256": "271c12fcf2bb9ae0ba73de0a30db838d6981b42b2d17d8aeeb2009ce3f14cfd1"
+    }
+   ]
+  },
+  "seg-018": {
+   "suitability": "rejected",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-018 and independent-review.v1.verdicts.json agreement. no_range_hud: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 10417,
+     "composition_ns": 555039209654588,
+     "decoded_bgr_sha256": "1296d6e22cb7d5f5f61f221c77bce2baa501d91e77ab0d3af26f7bbed3409eef"
+    },
+    {
+     "frame_index": 10536,
+     "composition_ns": 555040201321215,
+     "decoded_bgr_sha256": "ae52b48b2a8f904b653af3c15db8b9e44ce007cb795b9cbaa5fdcf26774f95b3"
+    },
+    {
+     "frame_index": 10656,
+     "composition_ns": 555041201321175,
+     "decoded_bgr_sha256": "193a627632e4cfa77753492e5d0809c392f41ba27d7e6f77771e0b512023deb1"
+    }
+   ]
+  },
+  "seg-019": {
+   "suitability": "accepted",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-019 and independent-review.v1.verdicts.json agreement. Owner visually inspected every supplied review thumbnail on the segment contact sheet: own Spider-Man gameplay HUD/body, traversal or combat; no menu, death, spectate, cinematic or end screen observed. Pre-match controllable setup room is permitted. Native BGR hashes below are inherited from the producer evidence, not independently re-decoded by owner; independent native-frame review required.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 10657,
+     "composition_ns": 555041209654508,
+     "decoded_bgr_sha256": "64b26a7a6d18d521aa2999262f6e09a3744a50842b3ef90cec45f4df924da50f"
+    },
+    {
+     "frame_index": 11852,
+     "composition_ns": 555051167987443,
+     "decoded_bgr_sha256": "38f28af2ae54b32932eb500e5940d59561cad3b02db87b23f9476a5033ee4200"
+    },
+    {
+     "frame_index": 13048,
+     "composition_ns": 555061134653711,
+     "decoded_bgr_sha256": "c1dca7e8b2a441b87b85502afe9b9acdeea7e62b0b9a6f6f0df12c882fe15f7d"
+    },
+    {
+     "frame_index": 14244,
+     "composition_ns": 555071101319979,
+     "decoded_bgr_sha256": "9cabc28a2d48fac43b83de9bf72d6a7cf8083b7d203ffb815cb0ff3ddd0a0a92"
+    },
+    {
+     "frame_index": 15440,
+     "composition_ns": 555081067986247,
+     "decoded_bgr_sha256": "ab9e608e3e3214d8ed04bc4b666b0f5e0a3eee4a303450a32dfef961be894ff7"
+    },
+    {
+     "frame_index": 16636,
+     "composition_ns": 555091034652515,
+     "decoded_bgr_sha256": "42f793bcc7b2a5d258a192747dc1c1f9a29061a7a5e82328022f698d3d5cfc17"
+    },
+    {
+     "frame_index": 17832,
+     "composition_ns": 555101001318783,
+     "decoded_bgr_sha256": "e0213b3d2c707adaa232a09fc34d866511f080120c613f74bdbdd15c56ecf801"
+    },
+    {
+     "frame_index": 19028,
+     "composition_ns": 555110967985051,
+     "decoded_bgr_sha256": "abe0df7b89494a963506a451cc9305642a68a6462be0e00ab551696eb31c2a02"
+    },
+    {
+     "frame_index": 20224,
+     "composition_ns": 555120934651319,
+     "decoded_bgr_sha256": "d4e521fb3ab9363af9893858376244f3335c57be33407a631ddfc90a29fc7fc6"
+    },
+    {
+     "frame_index": 21420,
+     "composition_ns": 555130901317587,
+     "decoded_bgr_sha256": "c1c4a0d61e1aad7833adf15706f7ca8e9968e559a9027b1fe91abcd714b503c8"
+    },
+    {
+     "frame_index": 22616,
+     "composition_ns": 555140867983855,
+     "decoded_bgr_sha256": "ab0599f6f492bffebaac4d0b14c8769e69b9c15849c93e667d2eb5e3308c4f16"
+    },
+    {
+     "frame_index": 23812,
+     "composition_ns": 555150834650123,
+     "decoded_bgr_sha256": "b01266e498d7e23fcff311a6767c404c64efb0347fe47829a2ec31a51269545e"
+    },
+    {
+     "frame_index": 25008,
+     "composition_ns": 555160801316391,
+     "decoded_bgr_sha256": "6a37929f0219e5f1d60702c35210e8e75c6175b52dce2f443adbf8846ba81801"
+    }
+   ]
+  },
+  "seg-020": {
+   "suitability": "rejected",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-020 and independent-review.v1.verdicts.json agreement. dead: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 25009,
+     "composition_ns": 555160809649724,
+     "decoded_bgr_sha256": "b8d01d1d207a2c8eee1c5a0ebc0a9e5f0163ed6449c342d8c1e31ba6f25d6baa"
+    },
+    {
+     "frame_index": 25047,
+     "composition_ns": 555161126316378,
+     "decoded_bgr_sha256": "d818604fb2eb78c686030fda7919d3e926a64710bab9882f763eb269262e8e01"
+    },
+    {
+     "frame_index": 25086,
+     "composition_ns": 555161451316365,
+     "decoded_bgr_sha256": "b322cfb007d4d81337abc7b1acf5cf975b9598a4622dad6618949337b715ced2"
+    }
+   ]
+  },
+  "seg-021": {
+   "suitability": "rejected",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-021 and independent-review.v1.verdicts.json agreement. ui_key: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 25087,
+     "composition_ns": 555161459649698,
+     "decoded_bgr_sha256": "1f28ab8d48a4c0ae7db954210e5a573816256c2f7a2f7a3e48f9a658962a5955"
+    },
+    {
+     "frame_index": 25723,
+     "composition_ns": 555166759649486,
+     "decoded_bgr_sha256": "efd5996a3bb803de4b4a89b4047c051c8f6664d6daba499438c3815423fbcbcb"
+    },
+    {
+     "frame_index": 26359,
+     "composition_ns": 555172059649274,
+     "decoded_bgr_sha256": "4b51c0ac82498f29b67bb6b83e3f2580178cae957ccd52934b978131102e3adc"
+    }
+   ]
+  },
+  "seg-022": {
+   "suitability": "rejected",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-022 and independent-review.v1.verdicts.json agreement. dead: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 26360,
+     "composition_ns": 555172067982607,
+     "decoded_bgr_sha256": "770dace777e7a4f9288dbe39187c3df3b4441ba0d3b3dd8042d296a5d1d29080"
+    },
+    {
+     "frame_index": 26392,
+     "composition_ns": 555172334649263,
+     "decoded_bgr_sha256": "e2bbee4d3c80d2b76477f24359b7b1b34f5bdb31204bc045b22a3a2a13a5b159"
+    },
+    {
+     "frame_index": 26424,
+     "composition_ns": 555172601315919,
+     "decoded_bgr_sha256": "78eeabc3f8de0f01f6fc9356dde60467917ec7580ffdebda9aa91a9db56d8160"
+    }
+   ]
+  },
+  "seg-023": {
+   "suitability": "rejected",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-023 and independent-review.v1.verdicts.json agreement. unsampled_edge: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": []
+  },
+  "seg-024": {
+   "suitability": "accepted",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-024 and independent-review.v1.verdicts.json agreement. Owner visually inspected every supplied review thumbnail on the segment contact sheet: own Spider-Man gameplay HUD/body, traversal or combat; no menu, death, spectate, cinematic or end screen observed. Pre-match controllable setup room is permitted. Native BGR hashes below are inherited from the producer evidence, not independently re-decoded by owner; independent native-frame review required.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 26425,
+     "composition_ns": 555172609649252,
+     "decoded_bgr_sha256": "b1d53b14ca17ed2500e8d59b03fd8e8752b0f0633824fddc622cbd9ba8e78c95"
+    },
+    {
+     "frame_index": 27408,
+     "composition_ns": 555180801315591,
+     "decoded_bgr_sha256": "f35cf1d81e4e4b7fa2aae74d7b005fbf11c6e9e5b9d4cf700cf360348fa77900"
+    },
+    {
+     "frame_index": 28392,
+     "composition_ns": 555189001315263,
+     "decoded_bgr_sha256": "e9ccec6dc5e9330c8f79076607f610831979f7ba4c5cf708fc3865a34cfa5161"
+    },
+    {
+     "frame_index": 29376,
+     "composition_ns": 555197201314935,
+     "decoded_bgr_sha256": "2f9f0624d58b5e1341b19575d2f195ae24c23b4304103acec021ec9102733f5b"
+    },
+    {
+     "frame_index": 30360,
+     "composition_ns": 555205401314607,
+     "decoded_bgr_sha256": "8fb0d1080c307b45efff4cf9243322624d9f2b9febcddedd8f0b72c327fb5e51"
+    },
+    {
+     "frame_index": 31344,
+     "composition_ns": 555213601314279,
+     "decoded_bgr_sha256": "d93768d817d9c022b530052434e5f9309aeecb05015a4bb60b9e6ea6b10fbcad"
+    }
+   ]
+  },
+  "seg-025": {
+   "suitability": "rejected",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-025 and independent-review.v1.verdicts.json agreement. dead: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 31345,
+     "composition_ns": 555213609647612,
+     "decoded_bgr_sha256": "5b95f1b802831f2a810fcb9e9a16a595e053b8393a9f91362fe7c1ade1db6af7"
+    },
+    {
+     "frame_index": 31384,
+     "composition_ns": 555213934647599,
+     "decoded_bgr_sha256": "33a797438d200c41320e8c916c73e41f16e5e8dfa6cd4107ad4baf7f289c52e6"
+    },
+    {
+     "frame_index": 31424,
+     "composition_ns": 555214267980919,
+     "decoded_bgr_sha256": "d8fd5ee4826128238dceb2876b2c2f873e7b940981a0ab3032f0df4f02698bf0"
+    }
+   ]
+  },
+  "seg-026": {
+   "suitability": "rejected",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-026 and independent-review.v1.verdicts.json agreement. ui_key: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 31425,
+     "composition_ns": 555214276314252,
+     "decoded_bgr_sha256": "82421334e0ba8980e10ecd12e5270c47cb2a17c953d2de760ffac9cd10336de6"
+    },
+    {
+     "frame_index": 31726,
+     "composition_ns": 555216784647485,
+     "decoded_bgr_sha256": "c8bd6937529bbf90bce341cf0e258a944a3acc9e45e120cbb577fbc347b347c4"
+    },
+    {
+     "frame_index": 32027,
+     "composition_ns": 555219292980718,
+     "decoded_bgr_sha256": "9c5d6b8d635c14c1408081fd4602d38f9c2143b67771221885693765180b2699"
+    }
+   ]
+  },
+  "seg-027": {
+   "suitability": "rejected",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-027 and independent-review.v1.verdicts.json agreement. dead: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 32028,
+     "composition_ns": 555219301314051,
+     "decoded_bgr_sha256": "8d14ffbc0754c49db747e703258d6afde3a5aa7dc19ec17e5300a60ef6eaf67a"
+    },
+    {
+     "frame_index": 32225,
+     "composition_ns": 555220942980652,
+     "decoded_bgr_sha256": "655ebe8dc7217e9503c88ce9da0a37cdd73e64309d57526ee94601d035ebf950"
+    },
+    {
+     "frame_index": 32423,
+     "composition_ns": 555222592980586,
+     "decoded_bgr_sha256": "5294e6cd21788e1520a828fb9cf7313a0e4fd56e703c4d51b52f6416b91aa506"
+    }
+   ]
+  },
+  "seg-028": {
+   "suitability": "rejected",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-028 and independent-review.v1.verdicts.json agreement. ui_key: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 32424,
+     "composition_ns": 555222601313919,
+     "decoded_bgr_sha256": "6ce2ec534e31e924a2ff9437baeca06ef7ce36e393244e481835685e96f5bf0f"
+    },
+    {
+     "frame_index": 32554,
+     "composition_ns": 555223684647209,
+     "decoded_bgr_sha256": "9872b2ef934bbe3ded872b9c784eab0b0572c1a6a4c68772f017c703cda132d9"
+    },
+    {
+     "frame_index": 32684,
+     "composition_ns": 555224767980499,
+     "decoded_bgr_sha256": "43495a6ceb1855dd614f95055eea40518fe1ac61ef0cfa8ca0889e86991dc17b"
+    }
+   ]
+  },
+  "seg-029": {
+   "suitability": "rejected",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-029 and independent-review.v1.verdicts.json agreement. dead: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 32685,
+     "composition_ns": 555224776313832,
+     "decoded_bgr_sha256": "4f19d0f96d9063fef71c1df1cac008a535f35c019ba323da85ba42bcea10e17b"
+    },
+    {
+     "frame_index": 32710,
+     "composition_ns": 555224984647157,
+     "decoded_bgr_sha256": "5698fdf51d5b20107a660b25cd2ed60d5616357a2858c01dba0781a55157f114"
+    },
+    {
+     "frame_index": 32736,
+     "composition_ns": 555225201313815,
+     "decoded_bgr_sha256": "f49740a3892c554341cd3a735a7502abdb3490d31e24cc98ea69fabb801a508c"
+    }
+   ]
+  },
+  "seg-030": {
+   "suitability": "rejected",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-030 and independent-review.v1.verdicts.json agreement. unsampled_edge: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": []
+  },
+  "seg-031": {
+   "suitability": "accepted",
+   "reason": "Owner inspected all new supplied thumbnails: own Spider-Man control/HUD, no menu or ping wheel in the retained samples. Interval now excludes middle-button hold and release settle. Inherits prior native review of unaffected interior; changed boundary still needs independent review.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 32737,
+     "composition_ns": 555225209647148,
+     "decoded_bgr_sha256": "1d530b984438da8f8d6d5cbbf3eae2298c586ada7b58b5f59ceea94c3a816d44"
+    },
+    {
+     "frame_index": 33477,
+     "composition_ns": 555231376313568,
+     "decoded_bgr_sha256": "77ef83d4461a1a304fa86e190d68567030062211bca1d82acee4570f631d276f"
+    },
+    {
+     "frame_index": 34217,
+     "composition_ns": 555237542979988,
+     "decoded_bgr_sha256": "4fe9df48447fb00b12c69d1bb6357ab046793338846a939a9a1e58be6a556963"
+    }
+   ]
+  },
+  "seg-032": {
+   "suitability": "rejected",
+   "reason": "unsampled_edge: conservative cut from reviewed input rule/native edge proof. No frame lies in this sliver.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": []
+  },
+  "seg-033": {
+   "suitability": "rejected",
+   "reason": "ui_key: conservative cut from reviewed input rule/native edge proof. Owner inspected supplied thumbnails; the ping menu itself was proven in prior independent native frames, not necessarily at these sparse thumbnail times.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 34218,
+     "composition_ns": 555237551313321,
+     "decoded_bgr_sha256": "042f6e6e9f6e76520520391373bfcd790dc9b6e7bb0d8e18860af30a5b587248"
+    },
+    {
+     "frame_index": 34346,
+     "composition_ns": 555238617979945,
+     "decoded_bgr_sha256": "ca07ca6b8a917d94b532a37481ce0cbaafc9186fe008bc0b8f723db9ff1e80ae"
+    },
+    {
+     "frame_index": 34475,
+     "composition_ns": 555239692979902,
+     "decoded_bgr_sha256": "613bd677cc1350a9bf33c5f6fa8b71e179849335df32857ea1bf92c810157c4c"
+    }
+   ]
+  },
+  "seg-034": {
+   "suitability": "rejected",
+   "reason": "no_range_hud: conservative cut from reviewed input rule/native edge proof. Owner inspected supplied thumbnails; the ping menu itself was proven in prior independent native frames, not necessarily at these sparse thumbnail times.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 34476,
+     "composition_ns": 555239701313235,
+     "decoded_bgr_sha256": "c80cf4d587be0cb7630206df49d853e4fb68aa9c5f9f3d3248d0de8648af0a83"
+    },
+    {
+     "frame_index": 34491,
+     "composition_ns": 555239826313230,
+     "decoded_bgr_sha256": "bc98efb3f318c628b83b6fba19914b3b5644f76617b8acf6571273895ae8605e"
+    },
+    {
+     "frame_index": 34507,
+     "composition_ns": 555239959646558,
+     "decoded_bgr_sha256": "24005e019a50507c2e9c3a6826ea35015a2e8386d0dc8986be8ff2aa41cb64ac"
+    }
+   ]
+  },
+  "seg-035": {
+   "suitability": "accepted",
+   "reason": "Owner inspected all new supplied thumbnails: own Spider-Man control/HUD, no menu or ping wheel in the retained samples. Interval now excludes middle-button hold and release settle. Inherits prior native review of unaffected interior; changed boundary still needs independent review.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 34508,
+     "composition_ns": 555239967979891,
+     "decoded_bgr_sha256": "9a4f40e5762de09d8fd4b8530b55da67339e47d393c9a36c063dff8abf977bea"
+    },
+    {
+     "frame_index": 35158,
+     "composition_ns": 555245384646341,
+     "decoded_bgr_sha256": "c81156ffdec92ab8a2c5c14f086d43303a57e6e0547eb2d7874a53467e42f6ba"
+    },
+    {
+     "frame_index": 35808,
+     "composition_ns": 555250801312791,
+     "decoded_bgr_sha256": "5c623b9756a421f94634453a79bd4fc77202c7b28849156fe0fbbd1108cfdd4c"
+    }
+   ]
+  },
+  "seg-036": {
+   "suitability": "rejected",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-032 and independent-review.v1.verdicts.json agreement. dead: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 35809,
+     "composition_ns": 555250809646124,
+     "decoded_bgr_sha256": "8c3dfb037d8394d2ce34f3704733c80b466be1d95b31fed16c09529a96c29329"
+    },
+    {
+     "frame_index": 35845,
+     "composition_ns": 555251109646112,
+     "decoded_bgr_sha256": "15a8ba366dd4803352e5f80fcd6660f7b6284a6146532fa5c39594f15412bc35"
+    },
+    {
+     "frame_index": 35882,
+     "composition_ns": 555251417979433,
+     "decoded_bgr_sha256": "16c6a67bd629dc5ee3e754d51372d2ed1b71d95d29464d96b5670bf67fd2fddb"
+    }
+   ]
+  },
+  "seg-037": {
+   "suitability": "rejected",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-033 and independent-review.v1.verdicts.json agreement. ui_key: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 35883,
+     "composition_ns": 555251426312766,
+     "decoded_bgr_sha256": "510663fa0eb2f637981918c64cabe4e25ebd44ae82489f72b077fa40a37a9ff1"
+    },
+    {
+     "frame_index": 36573,
+     "composition_ns": 555257176312536,
+     "decoded_bgr_sha256": "fa9361c5030a65c4ae65d22178ab1aed0c1a7147b929a35d9dfaf034723a1aa6"
+    },
+    {
+     "frame_index": 37264,
+     "composition_ns": 555262934645639,
+     "decoded_bgr_sha256": "90bcb6ead6782289c9f25639cc939fc1dee4fbb1481aa101a48e21037086b012"
+    }
+   ]
+  },
+  "seg-038": {
+   "suitability": "rejected",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-034 and independent-review.v1.verdicts.json agreement. no_range_hud: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 37265,
+     "composition_ns": 555262942978972,
+     "decoded_bgr_sha256": "3bf65b123f1ee01ebd5744b5c3f75856d7e76b2541225864f26c8313d91afdb2"
+    },
+    {
+     "frame_index": 37352,
+     "composition_ns": 555263667978943,
+     "decoded_bgr_sha256": "8815e3a884e879c389c8a3c689046ec65065dab48ffe231f1413f410aacdf32f"
+    },
+    {
+     "frame_index": 37440,
+     "composition_ns": 555264401312247,
+     "decoded_bgr_sha256": "c8c0c1539b2e8fb6972e3f4465d6b6a520a59eac686c69226d4bb66f07711352"
+    }
+   ]
+  },
+  "seg-039": {
+   "suitability": "accepted",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-035 and independent-review.v1.verdicts.json agreement. Owner visually inspected every supplied review thumbnail on the segment contact sheet: own Spider-Man gameplay HUD/body, traversal or combat; no menu, death, spectate, cinematic or end screen observed. Pre-match controllable setup room is permitted. Native BGR hashes below are inherited from the producer evidence, not independently re-decoded by owner; independent native-frame review required.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 37441,
+     "composition_ns": 555264409645580,
+     "decoded_bgr_sha256": "222cf85c3b9aab7afb8522070caadeb52ee45f431b40387e5f29da30e575fc84"
+    },
+    {
+     "frame_index": 37860,
+     "composition_ns": 555267901312107,
+     "decoded_bgr_sha256": "cb1b04a2547e4b65c119ac7b0f41421d2a3a5447876718f334da6ea5457002f0"
+    },
+    {
+     "frame_index": 38280,
+     "composition_ns": 555271401311967,
+     "decoded_bgr_sha256": "4c4aadf4f4315bf73759229618daeec370eeb1318fe2f022a887b41145fe000e"
+    }
+   ]
+  },
+  "seg-040": {
+   "suitability": "rejected",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-036 and independent-review.v1.verdicts.json agreement. dead: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 38281,
+     "composition_ns": 555271409645300,
+     "decoded_bgr_sha256": "ad09e0287d5448dfc502e056cd45f69689e0a3a44219eec4165e472cdde2ec42"
+    },
+    {
+     "frame_index": 38311,
+     "composition_ns": 555271659645290,
+     "decoded_bgr_sha256": "702d07a4fbaeb3c56a611bff0bee45307d2f57cb9f639627c16deb5cba727a08"
+    },
+    {
+     "frame_index": 38342,
+     "composition_ns": 555271917978613,
+     "decoded_bgr_sha256": "ce44ca2062c5f9c735eb82730d9230a93add81941c8fb31214e770b7f823f2e5"
+    }
+   ]
+  },
+  "seg-041": {
+   "suitability": "rejected",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-037 and independent-review.v1.verdicts.json agreement. ui_key: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 38343,
+     "composition_ns": 555271926311946,
+     "decoded_bgr_sha256": "8263aa8782c412501b1a0478034526082f196a80e68bed5c48adccf561d88c45"
+    },
+    {
+     "frame_index": 39150,
+     "composition_ns": 555278651311677,
+     "decoded_bgr_sha256": "f39dc1b01f26d53f33b139c3c964d3c29f2fc8e7ef700817b6da87adf2c798cb"
+    },
+    {
+     "frame_index": 39957,
+     "composition_ns": 555285376311408,
+     "decoded_bgr_sha256": "0bc548349bd712b57468cba9a40850351220281f13d62127c57fa2eb5d4ee39b"
+    },
+    {
+     "frame_index": 40764,
+     "composition_ns": 555292101311139,
+     "decoded_bgr_sha256": "0e78c5f879a5b15e7c50fec7193d00c52ebf96b9a6f15ba7a704b405f92cd12c"
+    }
+   ]
+  },
+  "seg-042": {
+   "suitability": "rejected",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-038 and independent-review.v1.verdicts.json agreement. dead: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 40765,
+     "composition_ns": 555292109644472,
+     "decoded_bgr_sha256": "19f21e48dd512b34c6cbe7dfded4bf8ace5492f1271dd03369ee81a5599bd61c"
+    },
+    {
+     "frame_index": 40784,
+     "composition_ns": 555292267977799,
+     "decoded_bgr_sha256": "5c901525aaf581e449faeed54494b3c42c79ac92bde6ae3a479294a937516a82"
+    },
+    {
+     "frame_index": 40803,
+     "composition_ns": 555292426311126,
+     "decoded_bgr_sha256": "1b3442eb1850dc9008f973db789a37237267c04a7b3bcbe1cb2705f2c94f0f52"
+    }
+   ]
+  },
+  "seg-043": {
+   "suitability": "rejected",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-039 and independent-review.v1.verdicts.json agreement. ui_key: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 40804,
+     "composition_ns": 555292434644459,
+     "decoded_bgr_sha256": "31b608a4b41319da5bb8efc7610086b68a90609c384248eac8bd18af04ce3555"
+    },
+    {
+     "frame_index": 41105,
+     "composition_ns": 555294942977692,
+     "decoded_bgr_sha256": "d60f864d2c0db6a74e66eb70702298e436fa3fa68cfdf055bf5f79e22d24fff9"
+    },
+    {
+     "frame_index": 41407,
+     "composition_ns": 555297459644258,
+     "decoded_bgr_sha256": "4ffcdea0c338a849ecfd4e740db22daf2a6e60dedb994f322c2e57492695b11d"
+    }
+   ]
+  },
+  "seg-044": {
+   "suitability": "rejected",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-040 and independent-review.v1.verdicts.json agreement. dead: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 41408,
+     "composition_ns": 555297467977591,
+     "decoded_bgr_sha256": "ba5ef87ef94a18b86d5b4d74903416083bda4c38e536fb0136cfa0cab7bac25c"
+    },
+    {
+     "frame_index": 42568,
+     "composition_ns": 555307134643871,
+     "decoded_bgr_sha256": "eec6dc70e9e5b63e174c0a224a6fb66434b5b36d80ebf6eb5b23fa1eb78b66d7"
+    },
+    {
+     "frame_index": 43728,
+     "composition_ns": 555316801310151,
+     "decoded_bgr_sha256": "aaaee766dee097c92bb24a08da6d6800cbae4f5604b92abf8b05b03c5266b8ee"
+    },
+    {
+     "frame_index": 44888,
+     "composition_ns": 555326467976431,
+     "decoded_bgr_sha256": "39be40986e7a5880ef4027902c3c1435f45ceccefcfefeef26b9d64470d02ef9"
+    },
+    {
+     "frame_index": 46048,
+     "composition_ns": 555336134642711,
+     "decoded_bgr_sha256": "b24d431c972192731b24207c379bab2851f2048863cb71e9199534712efeb33c"
+    },
+    {
+     "frame_index": 47208,
+     "composition_ns": 555345801308991,
+     "decoded_bgr_sha256": "8828c0a156c5a0407b36ced9326de9d300797c72cf29db6bf2e6dbcc40d257b2"
+    },
+    {
+     "frame_index": 48368,
+     "composition_ns": 555355467975271,
+     "decoded_bgr_sha256": "d1800d25377805ea0e6984ada7e593a8707b047527fac1bbada2805de6acc23e"
+    },
+    {
+     "frame_index": 49528,
+     "composition_ns": 555365134641551,
+     "decoded_bgr_sha256": "6acc78ed4418f0663f18fc5aa5b979fbd922e1f5a821643ebb268f5264bdf278"
+    },
+    {
+     "frame_index": 50688,
+     "composition_ns": 555374801307831,
+     "decoded_bgr_sha256": "1a188a960601dbde3fef0470987775686e3011ef0ea2128a3cfa0e229459eaf3"
+    }
+   ]
+  },
+  "seg-045": {
+   "suitability": "rejected",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-041 and independent-review.v1.verdicts.json agreement. afk: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 50689,
+     "composition_ns": 555374809641164,
+     "decoded_bgr_sha256": "ce37fb9c2322a6284acedb843065e64992cd27292028e23a36c99b78d1993553"
+    },
+    {
+     "frame_index": 50933,
+     "composition_ns": 555376842974416,
+     "decoded_bgr_sha256": "748ce7a2c77acf1e5e4b8048a3fb3e3b01fbff35498d9d87d73931cd125f7c63"
+    },
+    {
+     "frame_index": 51178,
+     "composition_ns": 555378884641001,
+     "decoded_bgr_sha256": "7668777f032b973e0f639be8c7828ff9b2902f323cfa0bd1169a35bc6b2f3c7c"
+    }
+   ]
+  },
+  "seg-046": {
+   "suitability": "rejected",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-042 and independent-review.v1.verdicts.json agreement. unsampled_edge: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": []
+  },
+  "seg-047": {
+   "suitability": "accepted",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-043 and independent-review.v1.verdicts.json agreement. Owner visually inspected every supplied review thumbnail on the segment contact sheet: own Spider-Man gameplay HUD/body, traversal or combat; no menu, death, spectate, cinematic or end screen observed. Pre-match controllable setup room is permitted. Native BGR hashes below are inherited from the producer evidence, not independently re-decoded by owner; independent native-frame review required.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 51179,
+     "composition_ns": 555378892974334,
+     "decoded_bgr_sha256": "68558890059db4f85dd71425281b9d2d530c6e11836ffea56c646bd5106ce316"
+    },
+    {
+     "frame_index": 51347,
+     "composition_ns": 555380292974278,
+     "decoded_bgr_sha256": "f6343f6675342eabcda87bdac10782a04fb24d7e64351e6f67a7c03287e9eb37"
+    },
+    {
+     "frame_index": 51516,
+     "composition_ns": 555381701307555,
+     "decoded_bgr_sha256": "4e93a844afea2a79562cb242cbad35c0a2cdbf092f4b29670252dca7af6c74c3"
+    }
+   ]
+  },
+  "seg-048": {
+   "suitability": "rejected",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-044 and independent-review.v1.verdicts.json agreement. unsampled_edge: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": []
+  },
+  "seg-049": {
+   "suitability": "rejected",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-045 and independent-review.v1.verdicts.json agreement. ui_key: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 51517,
+     "composition_ns": 555381709640888,
+     "decoded_bgr_sha256": "558b173a87649e3e0441072153518a3579432dec76bf3144e57bdf2ae0292549"
+    },
+    {
+     "frame_index": 51520,
+     "composition_ns": 555381734640887,
+     "decoded_bgr_sha256": "f305abfe48d6627ae20f5c60f6d6425b9b3890ca0d4a6f9e33fbbc7022600a4d"
+    },
+    {
+     "frame_index": 51524,
+     "composition_ns": 555381767974219,
+     "decoded_bgr_sha256": "0c46e8a1f8613c0f44afb1ada87f8e7862b06f64cd4b0a67c030f7f41e8f470d"
+    }
+   ]
+  },
+  "seg-050": {
+   "suitability": "rejected",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-046 and independent-review.v1.verdicts.json agreement. focus_transition: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 51734,
+     "composition_ns": 555383517974149,
+     "decoded_bgr_sha256": "582e84549ed614dfd9645b5f2bccb5c1df12805a9c900d86bce96e5614eee754"
+    },
+    {
+     "frame_index": 51748,
+     "composition_ns": 555383634640811,
+     "decoded_bgr_sha256": "bed712e98da067420cde7126e264f12e0fe2892b846ec62ceda26d17b168eafb"
+    },
+    {
+     "frame_index": 51763,
+     "composition_ns": 555383759640806,
+     "decoded_bgr_sha256": "6dc4c6921fcf52802c21e9ab9c313308f0c4f27b25e337c802c7076ba8784849"
+    }
+   ]
+  },
+  "seg-051": {
+   "suitability": "rejected",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-047 and independent-review.v1.verdicts.json agreement. unsampled_edge: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": []
+  },
+  "seg-052": {
+   "suitability": "accepted",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-048 and independent-review.v1.verdicts.json agreement. Owner visually inspected every supplied review thumbnail on the segment contact sheet: own Spider-Man gameplay HUD/body, traversal or combat; no menu, death, spectate, cinematic or end screen observed. Pre-match controllable setup room is permitted. Native BGR hashes below are inherited from the producer evidence, not independently re-decoded by owner; independent native-frame review required.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 51764,
+     "composition_ns": 555383767974139,
+     "decoded_bgr_sha256": "9ad91ed3b7f5195fa600420ad0ab76c026b5d03d92dc925310bcf780d49710a1"
+    },
+    {
+     "frame_index": 51913,
+     "composition_ns": 555385009640756,
+     "decoded_bgr_sha256": "8f4df41ac191eb2bb242fd820f69f51ee48f9116048896db7382960e7e355d01"
+    },
+    {
+     "frame_index": 52063,
+     "composition_ns": 555386259640706,
+     "decoded_bgr_sha256": "c1fb06614a97b53b50a1d7b6b4835de3b4d2454376f76aff01a7bb6d68a2ea2b"
+    }
+   ]
+  },
+  "seg-053": {
+   "suitability": "rejected",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-049 and independent-review.v1.verdicts.json agreement. unsampled_edge: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": []
+  },
+  "seg-054": {
+   "suitability": "rejected",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-050 and independent-review.v1.verdicts.json agreement. ui_key: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 52064,
+     "composition_ns": 555386267974039,
+     "decoded_bgr_sha256": "e1346ebeaed3fb90b5efeef5c1243ef32bb132369d52861bda9a1182a97909f5"
+    },
+    {
+     "frame_index": 52069,
+     "composition_ns": 555386309640704,
+     "decoded_bgr_sha256": "380d85696511194d9f4c86400f6becf9f52f39a5177cd845f864a958ce60e014"
+    },
+    {
+     "frame_index": 52075,
+     "composition_ns": 555386359640702,
+     "decoded_bgr_sha256": "86acd3f766e2e5e1c033222567d1b08c9cfa4b955f78e93a9e303c9c91ccafa4"
+    }
+   ]
+  },
+  "seg-055": {
+   "suitability": "rejected",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-051 and independent-review.v1.verdicts.json agreement. focus_transition: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 52343,
+     "composition_ns": 555388592973946,
+     "decoded_bgr_sha256": "78674303a94c5661c28fc555d0aa0a118a7d362b4a3f510bd05ba1dfe7064f13"
+    },
+    {
+     "frame_index": 52355,
+     "composition_ns": 555388692973942,
+     "decoded_bgr_sha256": "65c11a1bf60dc6540bab9edaf91b42f5e8c6adbb4018935113b0a504810f0a93"
+    },
+    {
+     "frame_index": 52368,
+     "composition_ns": 555388801307271,
+     "decoded_bgr_sha256": "b4a057ac1dfdcb2f4c36bfe645669b30c54e0653c1affecdffe139915e877f6e"
+    }
+   ]
+  },
+  "seg-056": {
+   "suitability": "rejected",
+   "reason": "Unchanged bounds, rule and all native review-frame hashes: reuse owner-verdicts.v1.json seg-052 and independent-review.v1.verdicts.json agreement. ui_key: cut by intake rule; not individually visually inspected by this owner.",
+   "reviewer": "admission-codex (owner; independent delta review required)",
+   "reviewed_at": "2026-09-27T18:18:48.253271+00:00",
+   "evidence": "segments-evidence.json; prior packet for unchanged spans; data/admission-codex/review-6-ping-a1 for changed thumbnails",
+   "frames": [
+    {
+     "frame_index": 52369,
+     "composition_ns": 555388809640604,
+     "decoded_bgr_sha256": "fcf62d40a7179be9dd0a6f8da2212b2b5e597feae37c282ecbcdef76eb8d20bb"
+    },
+    {
+     "frame_index": 52370,
+     "composition_ns": 555388817973937,
+     "decoded_bgr_sha256": "876bf69dc4d2279a916590ef1d6bf9e19b00eb6bb52ce400be9c35355b017f08"
+    },
+    {
+     "frame_index": 52371,
+     "composition_ns": 555388826307270,
+     "decoded_bgr_sha256": "52a252f55979cd06936b79d743091aac03e7c4a783c50a62c05ec59985be7ad9"
+    }
+   ]
+  }
+ }
+}

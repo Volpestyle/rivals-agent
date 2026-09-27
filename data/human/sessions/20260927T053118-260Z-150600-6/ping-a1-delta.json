@@ -1,0 +1,417 @@
+{
+ "session": "20260927T053118-260Z-150600-6",
+ "new_evidence_sha256": "56de079121df399bf58d8aa270fc57aafcdfb4925c571f579abfddfb0c2df3b3",
+ "new_owner_sha256": "4acf3b49728e718cd8fd9faa3caf7b0007ca2f554967955a137230be35844dfa",
+ "prior_evidence_sha256": "8b2da02cd14b66f30b7a088d1e5e343e558fa427fbde3a2ef236c054f9ade06e",
+ "prior_independent_sha256": "5d1b56cfbb91f1d95cfe2d68529ea830f546cc892501b04bc272277c9fa2f85c",
+ "changed": [
+  {
+   "segment_id": "seg-002",
+   "reason": "range_hud_present",
+   "start_ns": 554952934658039,
+   "end_ns": 554985126323419,
+   "t_rel_s": [
+    0.639668539,
+    32.831333919
+   ],
+   "owner_suitability": "accepted",
+   "old_containing_segments": [
+    "seg-002"
+   ]
+  },
+  {
+   "segment_id": "seg-003",
+   "reason": "unsampled_edge",
+   "start_ns": 554985126323419,
+   "end_ns": 554985167063900,
+   "t_rel_s": [
+    32.831333919,
+    32.8720744
+   ],
+   "owner_suitability": "rejected",
+   "old_containing_segments": [
+    "seg-002"
+   ]
+  },
+  {
+   "segment_id": "seg-004",
+   "reason": "ui_key",
+   "start_ns": 554985167063900,
+   "end_ns": 554991753267700,
+   "t_rel_s": [
+    32.8720744,
+    39.4582782
+   ],
+   "owner_suitability": "rejected",
+   "old_containing_segments": []
+  },
+  {
+   "segment_id": "seg-031",
+   "reason": "range_hud_present",
+   "start_ns": 555225209647148,
+   "end_ns": 555237542979989,
+   "t_rel_s": [
+    272.914657648,
+    285.247990489
+   ],
+   "owner_suitability": "accepted",
+   "old_containing_segments": [
+    "seg-031"
+   ]
+  },
+  {
+   "segment_id": "seg-032",
+   "reason": "unsampled_edge",
+   "start_ns": 555237542979989,
+   "end_ns": 555237550143700,
+   "t_rel_s": [
+    285.247990489,
+    285.2551542
+   ],
+   "owner_suitability": "rejected",
+   "old_containing_segments": [
+    "seg-031"
+   ]
+  },
+  {
+   "segment_id": "seg-033",
+   "reason": "ui_key",
+   "start_ns": 555237550143700,
+   "end_ns": 555239697094400,
+   "t_rel_s": [
+    285.2551542,
+    287.4021049
+   ],
+   "owner_suitability": "rejected",
+   "old_containing_segments": [
+    "seg-031"
+   ]
+  },
+  {
+   "segment_id": "seg-034",
+   "reason": "no_range_hud",
+   "start_ns": 555239697094400,
+   "end_ns": 555239967979891,
+   "t_rel_s": [
+    287.4021049,
+    287.672990391
+   ],
+   "owner_suitability": "rejected",
+   "old_containing_segments": [
+    "seg-031"
+   ]
+  },
+  {
+   "segment_id": "seg-035",
+   "reason": "range_hud_present",
+   "start_ns": 555239967979891,
+   "end_ns": 555250801312792,
+   "t_rel_s": [
+    287.672990391,
+    298.506323292
+   ],
+   "owner_suitability": "accepted",
+   "old_containing_segments": [
+    "seg-031"
+   ]
+  }
+ ],
+ "reused": [
+  {
+   "new_segment": "seg-000",
+   "old_segment": "seg-000",
+   "start_ns": 554952676655200,
+   "end_ns": 554952926655200
+  },
+  {
+   "new_segment": "seg-001",
+   "old_segment": "seg-001",
+   "start_ns": 554952926655200,
+   "end_ns": 554952934658039
+  },
+  {
+   "new_segment": "seg-005",
+   "old_segment": "seg-005",
+   "start_ns": 554991753267700,
+   "end_ns": 554994565296500
+  },
+  {
+   "new_segment": "seg-006",
+   "old_segment": "seg-006",
+   "start_ns": 554994565296500,
+   "end_ns": 554996831343500
+  },
+  {
+   "new_segment": "seg-007",
+   "old_segment": "seg-007",
+   "start_ns": 554996831343500,
+   "end_ns": 554997601322959
+  },
+  {
+   "new_segment": "seg-008",
+   "old_segment": "seg-008",
+   "start_ns": 554997601322959,
+   "end_ns": 554997792989578
+  },
+  {
+   "new_segment": "seg-009",
+   "old_segment": "seg-009",
+   "start_ns": 554997792989578,
+   "end_ns": 555027209655069
+  },
+  {
+   "new_segment": "seg-010",
+   "old_segment": "seg-010",
+   "start_ns": 555027209655069,
+   "end_ns": 555027401321728
+  },
+  {
+   "new_segment": "seg-011",
+   "old_segment": "seg-011",
+   "start_ns": 555027401321728,
+   "end_ns": 555028205381200
+  },
+  {
+   "new_segment": "seg-012",
+   "old_segment": "seg-012",
+   "start_ns": 555028205381200,
+   "end_ns": 555030680319900
+  },
+  {
+   "new_segment": "seg-013",
+   "old_segment": "seg-013",
+   "start_ns": 555030680319900,
+   "end_ns": 555031789360100
+  },
+  {
+   "new_segment": "seg-014",
+   "old_segment": "seg-014",
+   "start_ns": 555031789360100,
+   "end_ns": 555034854392100
+  },
+  {
+   "new_segment": "seg-015",
+   "old_segment": "seg-015",
+   "start_ns": 555034854392100,
+   "end_ns": 555036240363800
+  },
+  {
+   "new_segment": "seg-016",
+   "old_segment": "seg-016",
+   "start_ns": 555036240363800,
+   "end_ns": 555038457268900
+  },
+  {
+   "new_segment": "seg-017",
+   "old_segment": "seg-017",
+   "start_ns": 555038457268900,
+   "end_ns": 555039201321295
+  },
+  {
+   "new_segment": "seg-018",
+   "old_segment": "seg-018",
+   "start_ns": 555039201321295,
+   "end_ns": 555041209654508
+  },
+  {
+   "new_segment": "seg-019",
+   "old_segment": "seg-019",
+   "start_ns": 555041209654508,
+   "end_ns": 555160801316392
+  },
+  {
+   "new_segment": "seg-020",
+   "old_segment": "seg-020",
+   "start_ns": 555160801316392,
+   "end_ns": 555161453285800
+  },
+  {
+   "new_segment": "seg-021",
+   "old_segment": "seg-021",
+   "start_ns": 555161453285800,
+   "end_ns": 555172067321300
+  },
+  {
+   "new_segment": "seg-022",
+   "old_segment": "seg-022",
+   "start_ns": 555172067321300,
+   "end_ns": 555172601315959
+  },
+  {
+   "new_segment": "seg-023",
+   "old_segment": "seg-023",
+   "start_ns": 555172601315959,
+   "end_ns": 555172609649252
+  },
+  {
+   "new_segment": "seg-024",
+   "old_segment": "seg-024",
+   "start_ns": 555172609649252,
+   "end_ns": 555213601314280
+  },
+  {
+   "new_segment": "seg-025",
+   "old_segment": "seg-025",
+   "start_ns": 555213601314280,
+   "end_ns": 555214268385200
+  },
+  {
+   "new_segment": "seg-026",
+   "old_segment": "seg-026",
+   "start_ns": 555214268385200,
+   "end_ns": 555219295342900
+  },
+  {
+   "new_segment": "seg-027",
+   "old_segment": "seg-027",
+   "start_ns": 555219295342900,
+   "end_ns": 555222600350300
+  },
+  {
+   "new_segment": "seg-028",
+   "old_segment": "seg-028",
+   "start_ns": 555222600350300,
+   "end_ns": 555224768404900
+  },
+  {
+   "new_segment": "seg-029",
+   "old_segment": "seg-029",
+   "start_ns": 555224768404900,
+   "end_ns": 555225201313855
+  },
+  {
+   "new_segment": "seg-030",
+   "old_segment": "seg-030",
+   "start_ns": 555225201313855,
+   "end_ns": 555225209647148
+  },
+  {
+   "new_segment": "seg-036",
+   "old_segment": "seg-032",
+   "start_ns": 555250801312792,
+   "end_ns": 555251418272000
+  },
+  {
+   "new_segment": "seg-037",
+   "old_segment": "seg-033",
+   "start_ns": 555251418272000,
+   "end_ns": 555262935251600
+  },
+  {
+   "new_segment": "seg-038",
+   "old_segment": "seg-034",
+   "start_ns": 555262935251600,
+   "end_ns": 555264409645580
+  },
+  {
+   "new_segment": "seg-039",
+   "old_segment": "seg-035",
+   "start_ns": 555264409645580,
+   "end_ns": 555271401311968
+  },
+  {
+   "new_segment": "seg-040",
+   "old_segment": "seg-036",
+   "start_ns": 555271401311968,
+   "end_ns": 555271920295600
+  },
+  {
+   "new_segment": "seg-041",
+   "old_segment": "seg-037",
+   "start_ns": 555271920295600,
+   "end_ns": 555292108253800
+  },
+  {
+   "new_segment": "seg-042",
+   "old_segment": "seg-038",
+   "start_ns": 555292108253800,
+   "end_ns": 555292430243700
+  },
+  {
+   "new_segment": "seg-043",
+   "old_segment": "seg-039",
+   "start_ns": 555292430243700,
+   "end_ns": 555297462257300
+  },
+  {
+   "new_segment": "seg-044",
+   "old_segment": "seg-040",
+   "start_ns": 555297462257300,
+   "end_ns": 555374801307871
+  },
+  {
+   "new_segment": "seg-045",
+   "old_segment": "seg-041",
+   "start_ns": 555374801307871,
+   "end_ns": 555378887403900
+  },
+  {
+   "new_segment": "seg-046",
+   "old_segment": "seg-042",
+   "start_ns": 555378887403900,
+   "end_ns": 555378892974334
+  },
+  {
+   "new_segment": "seg-047",
+   "old_segment": "seg-043",
+   "start_ns": 555378892974334,
+   "end_ns": 555381701307556
+  },
+  {
+   "new_segment": "seg-048",
+   "old_segment": "seg-044",
+   "start_ns": 555381701307556,
+   "end_ns": 555381706454200
+  },
+  {
+   "new_segment": "seg-049",
+   "old_segment": "seg-045",
+   "start_ns": 555381706454200,
+   "end_ns": 555381770651400
+  },
+  {
+   "new_segment": "seg-050",
+   "old_segment": "seg-046",
+   "start_ns": 555383517535000,
+   "end_ns": 555383767535000
+  },
+  {
+   "new_segment": "seg-051",
+   "old_segment": "seg-047",
+   "start_ns": 555383767535000,
+   "end_ns": 555383767974139
+  },
+  {
+   "new_segment": "seg-052",
+   "old_segment": "seg-048",
+   "start_ns": 555383767974139,
+   "end_ns": 555386259640707
+  },
+  {
+   "new_segment": "seg-053",
+   "old_segment": "seg-049",
+   "start_ns": 555386259640707,
+   "end_ns": 555386265392100
+  },
+  {
+   "new_segment": "seg-054",
+   "old_segment": "seg-050",
+   "start_ns": 555386265392100,
+   "end_ns": 555386364638300
+  },
+  {
+   "new_segment": "seg-055",
+   "old_segment": "seg-051",
+   "start_ns": 555388584934700,
+   "end_ns": 555388804433400
+  },
+  {
+   "new_segment": "seg-056",
+   "old_segment": "seg-052",
+   "start_ns": 555388804433400,
+   "end_ns": 555388834280000
+  }
+ ],
+ "accepted_count": 9,
+ "accepted_seconds": 257.649989703
+}
