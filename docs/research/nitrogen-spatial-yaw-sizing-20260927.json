@@ -1,0 +1,118 @@
+{
+  "tag": "EXPLORATORY_SIZING_ONLY",
+  "generated_utc": "2026-09-27T21:06:53.759122+00:00",
+  "cloud_spend_usd": "0",
+  "eligible_train": 300448,
+  "eligible_dev": 24556,
+  "seeds": [
+    1,
+    2,
+    3
+  ],
+  "epochs": 26,
+  "windows": 4697,
+  "updates": 15288,
+  "window": 96,
+  "batch": 8,
+  "cache_formula": "eligible_frames * 2 views * grid**2 * 1024 channels * 2 bytes",
+  "cache": {
+    "4": {
+      "bytes": 21299462144,
+      "gib": 19.836669921875
+    },
+    "8": {
+      "bytes": 85197848576,
+      "gib": 79.3466796875
+    },
+    "16": {
+      "bytes": 340791394304,
+      "gib": 317.38671875
+    }
+  },
+  "combined_cache_gib": 99.183349609375,
+  "batch_payload_mib": 240.0,
+  "logical_8x8_training_read_tib": 2.7951507568359375,
+  "readout_parameters": 201187,
+  "old_extraction_receipts": [
+    {
+      "member": "candidate-s1/collected/features-summary.json",
+      "sha256": "7138cd19829b998e7553a93ccf2e24ea66e2844e2323ef785fd8f5e024a1a260",
+      "frames": 325004,
+      "seconds": 893.1468671399999
+    },
+    {
+      "member": "candidate-s2/collected/features-summary.json",
+      "sha256": "e14643a8532aeeb870800b95a27d64a2c86c6d5d4de44c3eecd158fe8f3c71a1",
+      "frames": 325004,
+      "seconds": 883.87385543
+    },
+    {
+      "member": "candidate-s3/collected/features-summary.json",
+      "sha256": "3a030f2ef000d2179e29fe70f1024f5568b2c952425db74b4b77162281016d7f",
+      "frames": 325004,
+      "seconds": 878.4485084790003
+    },
+    {
+      "member": "control-s1/collected/features-summary.json",
+      "sha256": "90b56a52bf9ae99a77e5d50be6b4687766abf344f5a714914908dbf582708d10",
+      "frames": 325004,
+      "seconds": 880.242696804
+    },
+    {
+      "member": "control-s2/collected/features-summary.json",
+      "sha256": "bd8aa1b70bb1e9dbff3d59fae832a034793e2e48a329a1a1b4a854a12c2d48e5",
+      "frames": 325004,
+      "seconds": 891.4285101459999
+    },
+    {
+      "member": "control-s3/collected/features-summary.json",
+      "sha256": "969f932151f2275390f21bc4975a4f021b30185be9b6ae0eb0a341dfec2b571e",
+      "frames": 325004,
+      "seconds": 862.8346739329997
+    }
+  ],
+  "old_extraction_median_seconds": 882.0582761170001,
+  "tower_in_loop_padded_view_forwards": 23447424,
+  "tower_in_loop_equivalent_extractions": 36.07251603057193,
+  "pricing_checked_url": "https://modal.com/pricing",
+  "listed_rate_usd_second": "0.00071784",
+  "guard_planning_rate_usd_second": "0.0007178888889",
+  "proposed_cap_components_usd": {
+    "six_app_shakedown": "3",
+    "extraction": "3",
+    "six_fit_eval_apps": "15",
+    "image_setup": "1",
+    "storage_tail": "2"
+  },
+  "proposed_hard_cap_usd": "24",
+  "warning_usd": "20",
+  "forecast_usd": [
+    10,
+    17
+  ],
+  "forecast_is_measured": false,
+  "per_fit_cap_usd": "2.50",
+  "per_fit_max_all_resource_seconds_before_extra_overhead": "3482.433059843949341280855141",
+  "bootstrap_example_compute_usd": "2.0675200000320",
+  "lane_completed_report_usd": "49.026403877872901",
+  "lane_report_plus_proposed_cap_usd": "73.026403877872901",
+  "outstanding_lane_cloud_holds_usd": "0",
+  "shared_guard_ready": false,
+  "shared_guard_commit": "70d00514ac775532bf9cd7b3e6a8931f6f2652b0",
+  "shared_guard_release": "24271e668f97d281bcc9956ff47be404ad08de5c14374b0fd2f4c6918c2e7ba1",
+  "blockers": [
+    "lead budget approval",
+    "shared spend review acceptance",
+    "accepted bootstrap contract, not fake full-workload p95",
+    "prebuilt verified derived image"
+  ],
+  "source_sha256": {
+    "policy/range_bc/explore_encoder.py": "a3a326de3b0af44920cad5188a1bb55ce89ccd3c04764019630ed36b00dccc51",
+    "policy/range_bc/explore_chunks_train.py": "400dad6f6b58887314e1ada249cd3d29f4c5d3144a7843b549494df84df6cf72",
+    "policy/range_bc/model.py": "2b9619339970230902859ec42e149858382bf712840a7e2e61bc528b2c5e69e6",
+    "docs/evidence/nitrogen-nohistory-confirm-20260927/incident-raw.zip": "bd91bd53c99f03196aa9b1ab749d578f893ee81e9e6a22d07815b399e30d90c3",
+    "docs/evidence/explore-encoder-20260927/history-disabled/summary.json": "72f655823748bb6bd1594fd4d205bd1c1b4bd14db0e4122d2a76c494fee10dbc",
+    "docs/evidence/nitrogen-nohistory-confirm-20260927/explore-spend-report-20260927.json": "f1902e7e225df1a5d0de68faa455ca8044a29657806c1c9c12f08ceb39a4c213",
+    "cloud/modal_guard/RELEASE.json": "24271e668f97d281bcc9956ff47be404ad08de5c14374b0fd2f4c6918c2e7ba1"
+  }
+}
