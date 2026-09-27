@@ -2,9 +2,23 @@
 from __future__ import annotations
 
 from pathlib import Path
+import os
 import time
 
-from .common import artifact, atomic, name, read, require, sha256
+from .common import artifact, json_bytes, name, read, require, sha256
+
+
+def claim(path, value):
+    """Volume-safe exclusive create; a torn receipt is partial and never resumed.
+
+    Modal Volumes reject hard links. O_EXCL preserves no-overwrite semantics;
+    the caller commits only after a complete write/fsync. Readers validate the
+    entire receipt and every artifact, so a partial JSON file grants no success.
+    """
+    with Path(path).open("xb") as stream:
+        stream.write(json_bytes(value))
+        stream.flush()
+        os.fsync(stream.fileno())
 
 
 def identity_check(identity):
@@ -53,7 +67,7 @@ def run(root, stage, identity, expected, compute, *, commit, reload, wall=time.t
     if root.exists():
         return load(root, stage, identity, expected)
     root.mkdir(parents=True, exist_ok=False)
-    atomic(root / "started.json", {"identity": identity, "stage": stage}, fresh=True)
+    claim(root / "started.json", {"identity": identity, "stage": stage})
     commit()  # a restarted container must see the claim before expensive work starts
     code = compute(root)
     require(code == 0 and type(code) is int, "stage failed; partial output retained")
@@ -68,6 +82,6 @@ def run(root, stage, identity, expected, compute, *, commit, reload, wall=time.t
     commit()
     receipt = {"format": "modal-guard-stage-v1", "stage": stage, "identity": identity,
                "exit_code": 0, "artifacts": files}
-    atomic(root / "completed.json", receipt, fresh=True)
+    claim(root / "completed.json", receipt)
     commit()
     return load(root, stage, identity, expected)

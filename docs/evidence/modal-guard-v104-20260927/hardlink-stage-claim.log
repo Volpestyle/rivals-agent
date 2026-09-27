@@ -1,0 +1,39 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+____________ test_volume_without_hardlinks_completes_and_reenters _____________
+
+tmp_path = WindowsPath('C:/Users/volpe/AppData/Local/Temp/pytest-of-volpe/pytest-1146/test_volume_without_hardlinks_0')
+clock = <conftest.Clock object at 0x000001F054C92690>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001F054C93ED0>
+
+    def test_volume_without_hardlinks_completes_and_reenters(tmp_path, clock, monkeypatch):
+        def denied(*a, **kw): raise PermissionError(1, "Operation not permitted")
+        monkeypatch.setattr(os, "link", denied)
+        events=[]
+        def compute(root):
+            events.append("compute")
+            (root/"model.bin").write_bytes(b"complete")
+            return 0
+        kw=dict(commit=lambda:events.append("commit"),reload=lambda:None,wall=clock.wall)
+>       first=stages.run(tmp_path/"stage", "fit", identity(clock), ["model.bin"], compute, **kw)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\modal_guard\test_volume_receipts.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+cloud\modal_guard\stages.py:70: in run
+    __import__("cloud.modal_guard.common", fromlist=["atomic"]).atomic(root / "started.json", {"identity": identity, "stage": stage}, fresh=True)
+cloud\modal_guard\common.py:140: in atomic
+    os.link(temporary, path)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+a = (WindowsPath('C:/Users/volpe/AppData/Local/Temp/pytest-of-volpe/pytest-1146/test_volume_without_hardlinks_0/stage/star...th('C:/Users/volpe/AppData/Local/Temp/pytest-of-volpe/pytest-1146/test_volume_without_hardlinks_0/stage/started.json'))
+kw = {}
+
+>   def denied(*a, **kw): raise PermissionError(1, "Operation not permitted")
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   PermissionError: [Errno 1] Operation not permitted
+
+tests\modal_guard\test_volume_receipts.py:18: PermissionError
+=========================== short test summary info ===========================
+FAILED tests/modal_guard/test_volume_receipts.py::test_volume_without_hardlinks_completes_and_reenters
+1 failed, 3 deselected in 0.12s

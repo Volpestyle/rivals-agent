@@ -1,4 +1,4 @@
-# Shared Modal guard, v1.0.3
+# Shared Modal guard, v1.0.4
 
 One maintained package, pinned by `RELEASE.json` SHA256. Future run packets hold
 that pin and a spec; they do not copy launcher helpers. Import from a checkout
@@ -50,8 +50,12 @@ resuming from any such interruption, expired work is stopped without new funding
 The watchdog performs billing in a daemon reader that cannot write the ledger;
 stop checks do not wait for it. Cleanup uses only the time remaining until the
 original funded end. Known owned IDs receive a stop before inventory queries.
-Control subprocesses share one remaining timeout budget, and SQLite lock
-contention refuses rather than blocking control. Poll latency (at most 0.25 s)
+Control subprocesses share one remaining timeout budget. SQLite uses WAL and
+read-only deferred snapshots; only mutations acquire short write transactions.
+Every connection has a busy timeout of at most30seconds. Watchdog journal waits
+are capped by the original stop deadline; cleanup fencing waits are capped by
+the original funded end, so contention cannot grant new time. Readiness is published
+only after the initial row and funding checks succeed. Poll latency (at most 0.25 s)
 and stop/identity/inventory latency consume the reserved cleanup phase.
 An already-expired envelope gets a bounded emergency stop, explicitly unfunded;
 unproven teardown retains its allowance and blocks subsequent admissions.
@@ -220,3 +224,7 @@ Sources: [Modal preemption](https://modal.com/docs/guide/preemption),
 [billing API](https://modal.com/docs/sdk/py/latest/Workspace#billingreport).
 Provenance and the exact inherited source hashes are in the companion
 `docs/evidence/modal-guard-v1-20260927/` packet.
+
+Stage receipts use exclusive file creation and flush/fsync before Volume commit;
+Modal Volumes do not support the host atomic helper's hard-link publication.
+A torn stage receipt refuses re-entry; it cannot trigger recomputation.

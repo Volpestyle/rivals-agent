@@ -1,0 +1,45 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+_______________ test_write_contention_cannot_delay_funded_stop ________________
+
+tmp_path = WindowsPath('C:/Users/volpe/AppData/Local/Temp/pytest-of-volpe/pytest-1145/test_write_contention_cannot_d0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x000001AF934980D0>
+
+    def test_write_contention_cannot_delay_funded_stop(tmp_path, monkeypatch):
+        start = elapsed_time()
+        clock = SimpleNamespace(wall=lambda:1790542000 + elapsed_time()-start, monotonic=elapsed_time)
+        ledger = Ledger.initialize(tmp_path/'clock.db',billing(clock),wall=clock.wall,monotonic=elapsed_time)
+        row = ledger.reserve(spec(),snapshot(clock))
+        ledger.rpc(row['attempt_id'],'CREATING')
+        ledger.rpc(row['attempt_id'],'RUNNING',app_id='ap-own')
+        with ledger.transaction() as s:
+            r=s['attempts'][row['attempt_id']]
+            r['started_monotonic']=elapsed_time()-(r['hold']['total_seconds']-r['hold']['cleanup_seconds'])+.35
+        row=ledger.get(row['attempt_id'])
+        locked=threading.Event()
+        def writer():
+            db=sqlite3.connect(ledger.path)
+            db.execute('BEGIN IMMEDIATE');locked.set();time.sleep(1.5);db.rollback();db.close()
+        writer_thread=threading.Thread(target=writer);writer_thread.start();assert locked.wait(1)
+        stops=[]
+        class Provider:
+            def stop(self,app_id,timeout):stops.append(elapsed_time())
+            def snapshot(self,timeout):
+                value = snapshot(clock,[{'app_id':'ap-own','description':row['app_name'],'state':'stopped','tasks':0}])
+                # Real clocks advance while the fixture builds its raw evidence.
+                value['checked_monotonic'] = elapsed_time()
+                return value
+        class Ready:
+            def poll(self):return billing(clock),None
+        monkeypatch.setattr(lifecycle,'alive',lambda _:True)
+        called=elapsed_time()
+        try:
+            proof=lifecycle.watch(ledger,row['attempt_id'],Provider(),1,sleep=lambda _:None,
+                                  wall=clock.wall,monotonic=elapsed_time,refresh_factory=lambda *a:Ready(),initial_row=row)
+>           assert stops and stops[0]-called < .8
+E           assert ([615525.906] and (615525.906 - 615524.375) < 0.8)
+
+tests\modal_guard\test_contention.py:93: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/modal_guard/test_contention.py::test_write_contention_cannot_delay_funded_stop
+1 failed, 6 deselected in 1.68s

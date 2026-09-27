@@ -47,9 +47,12 @@ def main():
     provider = Provider()
     with caffeinated():
         provider.identity()
+        # Never advertise readiness before acquiring the initial funded row.
+        row = ledger.get(args.attempt)
+        ledger.funded(args.attempt)
         atomic(Path(args.ledger).parent / "attempts" / args.attempt / "watchdog-ready.json",
                {"identity_verified": True, "idle_sleep_inhibited": True}, fresh=True)
-        watch(ledger, args.attempt, provider, args.driver_pid)
+        watch(ledger, args.attempt, provider, args.driver_pid, initial_row=row)
     return 0
 
 

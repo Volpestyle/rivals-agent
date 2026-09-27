@@ -72,7 +72,8 @@ def teardown(ledger, attempt, provider, *, sleep=time.sleep, wall=time.time,
         except Exception as exc:
             errors.append({"at": wall(), "error": str(exc)})
     try:
-        row = ledger.fence(attempt)
+        with ledger.bounded(end):
+            row = ledger.fence(attempt)
     except Exception as exc:
         errors.append({"at": wall(), "error": "fence failed: " + str(exc)})
         end = monotonic()  # cannot prove revocation; do not release an allowance
@@ -134,33 +135,35 @@ class BillingRefresh:
 
 
 def watch(ledger, attempt, provider, driver_pid, *, sleep=time.sleep,
-          wall=time.time, monotonic=elapsed_time, refresh_factory=BillingRefresh):
+          wall=time.time, monotonic=elapsed_time, refresh_factory=BillingRefresh, initial_row=None):
     """Independent host process. No network billing wait on the stop path."""
     refreshed, pending = float("-inf"), None
-    row = ledger.get(attempt)
+    row = initial_row if initial_row is not None else ledger.get(attempt)
     while True:
         try:
             require(row.get("clock_id") == clock_id(), "clock continuity lost")
             stop = row["started_monotonic"] + row["hold"]["total_seconds"] - row["hold"]["cleanup_seconds"]
             require(monotonic() < stop, "funded deadline")
             require(alive(driver_pid), "driver exited")
-            row = ledger.get(attempt)  # nonblocking SQLite; failure triggers stop
-            if row["state"] in ("TERMINAL", "NEVER_CREATED", "ABSENT_RPC"):
-                return
-            ledger.funded(attempt, monotonic=monotonic)
-            if pending is not None:
-                completed = pending.poll()
-                if completed is not None:
-                    value, error = completed
-                    require(error is None, "billing refresh failed: " + str(error))
-                    require(monotonic() < stop, "funded deadline")
-                    ledger.refresh(value)
-                    pending, refreshed = None, monotonic()
-            elif monotonic() - refreshed >= 60:
-                pending = refresh_factory(provider, row["month"])
-        except Exception:
+            with ledger.bounded(stop):
+                row = ledger.get(attempt)
+                if row["state"] in ("TERMINAL", "NEVER_CREATED", "ABSENT_RPC"):
+                    return
+                ledger.funded(attempt, monotonic=monotonic)
+                if pending is not None:
+                    completed = pending.poll()
+                    if completed is not None:
+                        value, error = completed
+                        require(error is None, "billing refresh failed: " + str(error))
+                        require(monotonic() < stop, "funded deadline")
+                        ledger.refresh(value)
+                        pending, refreshed = None, monotonic()
+                elif monotonic() - refreshed >= 60:
+                    pending = refresh_factory(provider, row["month"])
+        except Exception as exc:
             proof = teardown(ledger, attempt, provider, sleep=sleep, wall=wall,
                              monotonic=monotonic, cached_row=row)
+            proof["trigger_error"] = repr(exc)
             if proof["kind"] != "INCOMPLETE_CLEANUP":
                 try:
                     ledger.settle(attempt, proof)

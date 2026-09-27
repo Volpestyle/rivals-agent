@@ -31,12 +31,46 @@ def billing_clock(billing, now):
 class Ledger:
     def __init__(self, path, *, wall=time.time, monotonic=elapsed_time):
         self.path, self.wall, self.monotonic = Path(path), wall, monotonic
+        self.control_deadline = None
+
+    @contextmanager
+    def bounded(self, end):
+        """Journal waits may consume only the caller's original remaining clock."""
+        previous = self.control_deadline
+        self.control_deadline = min(previous, end) if previous is not None else end
+        try:
+            yield
+        finally:
+            self.control_deadline = previous
+
+    def connect(self):
+        require(self.path.is_file(), "workspace ledger not initialized")
+        wait = 30 if self.control_deadline is None else max(0, min(30, self.control_deadline - self.monotonic()))
+        db = sqlite3.connect(self.path, timeout=wait)
+        try:
+            db.execute("PRAGMA busy_timeout=" + str(int(wait * 1000)))
+            # WAL persists on the database; migrate legacy journals without
+            # resetting state. Readers never compete for the writer's lock.
+            if db.execute("PRAGMA journal_mode").fetchone()[0] != "wal":
+                require(db.execute("PRAGMA journal_mode=WAL").fetchone()[0] == "wal", "WAL unavailable")
+            return db
+        except BaseException:
+            db.close()
+            raise
+
+    @contextmanager
+    def reading(self):
+        db = self.connect()
+        try:
+            db.execute("PRAGMA query_only=ON")
+            db.execute("BEGIN")
+            yield json.loads(db.execute("SELECT value FROM state WHERE id=1").fetchone()[0])
+        finally:
+            db.close()
 
     @contextmanager
     def transaction(self):
-        require(self.path.is_file(), "workspace ledger not initialized")
-        # A busy journal refuses immediately; it must not stall deadline control.
-        db = sqlite3.connect(self.path, timeout=0)
+        db = self.connect()
         try:
             db.execute("BEGIN IMMEDIATE")
             state = json.loads(db.execute("SELECT value FROM state WHERE id=1").fetchone()[0])
@@ -66,8 +100,10 @@ class Ledger:
             require(key not in state["external_holds"] and usd(row["usd"]) > 0,
                     "invalid external allowance")
             state["external_holds"][key] = row
-        db = sqlite3.connect(path)
+        db = sqlite3.connect(path, timeout=30)
         try:
+            db.execute("PRAGMA busy_timeout=30000")
+            require(db.execute("PRAGMA journal_mode=WAL").fetchone()[0] == "wal", "WAL unavailable")
             db.execute("CREATE TABLE state(id INTEGER PRIMARY KEY CHECK(id=1), value TEXT NOT NULL)")
             db.execute("INSERT INTO state VALUES(1,?)", (json_bytes(state).decode(),))
             db.commit()
@@ -107,7 +143,7 @@ class Ledger:
                 "weekend_uses_same_monthly_pool": True}
 
     def totals(self):
-        with self.transaction() as s:
+        with self.reading() as s:
             return self._totals(s)
 
     def reserve(self, spec, snapshot):
@@ -153,7 +189,7 @@ class Ledger:
             return row
 
     def get(self, attempt):
-        with self.transaction() as s:
+        with self.reading() as s:
             return s["attempts"][attempt]
 
     def check_absent_names(self, snapshot):
@@ -161,12 +197,12 @@ class Ledger:
         require(snapshot.get("clock_id") == clock_id() and
                 0 <= self.monotonic() - snapshot["checked_monotonic"] <= 30, "stale app inventory")
         observed = {r["description"] for r in apps}
-        with self.transaction() as s:
+        with self.reading() as s:
             require(not any(r["state"] in ("NEVER_CREATED", "ABSENT_RPC") and r["app_name"] in observed
                             for r in s["attempts"].values()), "late app appeared after absence settlement")
 
     def funded(self, attempt, *, monotonic=elapsed_time):
-        with self.transaction() as s:
+        with self.reading() as s:
             row = s["attempts"][attempt]
             require(row["state"] in ("RESERVED", "CREATING", "REJECTED", "RUNNING"), "attempt fenced")
             require(row.get("clock_id") == clock_id(), "clock continuity lost")

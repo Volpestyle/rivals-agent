@@ -1,0 +1,1 @@
+[{"exit_code": 1, "killed": true, "mutant": "read-lock-regression"}, {"exit_code": 1, "killed": true, "mutant": "unbounded-deadline-wait"}, {"exit_code": 1, "killed": true, "mutant": "hardlink-stage-claim"}]

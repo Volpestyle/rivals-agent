@@ -1,0 +1,41 @@
+F                                                                        [100%]
+================================== FAILURES ===================================
+______________ test_wal_reads_do_not_rewrite_or_wait_for_writer _______________
+
+ledger = <cloud.modal_guard.ledger.Ledger object at 0x00000202F358A310>
+clock = <conftest.Clock object at 0x00000202F3589290>
+
+    def test_wal_reads_do_not_rewrite_or_wait_for_writer(ledger, clock):
+        row = ledger.reserve(spec(), snapshot(clock))
+        db = sqlite3.connect(ledger.path, timeout=1)
+        assert db.execute("PRAGMA journal_mode").fetchone()[0] == "wal"
+        db.execute("BEGIN IMMEDIATE")
+        before = db.execute("SELECT value FROM state").fetchone()[0]
+        try:
+            started = elapsed_time()
+>           assert ledger.get(row["attempt_id"]) == row
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\modal_guard\test_contention.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+cloud\modal_guard\ledger.py:193: in get
+    with self.reading() as s:
+..\..\Programs\Python\Python311\Lib\contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <cloud.modal_guard.ledger.Ledger object at 0x00000202F358A310>
+
+    @contextmanager
+    def reading(self):
+        db = self.connect()
+        try:
+            db.execute("PRAGMA query_only=ON")
+>           db.execute("BEGIN IMMEDIATE")
+E           sqlite3.OperationalError: attempt to write a readonly database
+
+cloud\modal_guard\ledger.py:67: OperationalError
+=========================== short test summary info ===========================
+FAILED tests/modal_guard/test_contention.py::test_wal_reads_do_not_rewrite_or_wait_for_writer
+1 failed, 6 deselected in 0.16s
