@@ -127,10 +127,10 @@ co-leads route scope decisions through that lead. A status request alone creates
 - Review is independent of the lane that wrote the code: a read-only review by an agent outside the lane, preferably
   another model family. The lead verifies each finding before dispatching a fix to the owning lane. A lane's own tests
   and report are evidence, not a review.
-- By default, review happens after landing (James, 2026-09-27): the code lands and runs, and its results stay
-  provisional until the review lands. Review is still required before the code lands or runs for three kinds of
-  code: code that sends live-game input, anything that could let spend exceed a hard cap, and anything that could
-  open sealed data. `docs/compute.md`, "The two experiment tracks", has the detail.
+- Review only where it pays off (James, 2026-09-27). Before the code lands or runs: live-game input, a new or changed
+  spend guard, and anything that could open sealed data. After landing, before the result is used: data admission and a
+  confirm run's judge. Nothing else is reviewed; exploratory code, launch plumbing and record-keeping rely on the
+  owner's tests. `docs/compute.md`, "The two experiment tracks", has the detail.
 - Several agents often share this checkout. Edit only the paths your brief names, and
   load the `shared-checkout` skill before committing.
 - **Frozen review packets.** A lane note whose current bytes are pinned by a review receipt or a freeze

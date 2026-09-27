@@ -92,45 +92,28 @@ so give cloud boxes 8 CPUs or more.
 
 ## The two experiment tracks
 
-- **Explore** (steering charter): fast sweeps on the full admitted train cohort and frozen dev, on the Mac only. There's
-  no pre-registration, pinning or judge. Every result is tagged EXPLORATORY in the lane note. Nothing from explore reaches
+- **Explore** (steering charter): fast sweeps on the full admitted train cohort and frozen dev, on the Mac or on Modal
+  under their own hard cap. There's no pre-registration, pinning, judge or review. Every result is tagged EXPLORATORY in the lane note. Nothing from explore reaches
   a real fit or a pilot without a confirm run.
 - **Confirm:** a pre-registration committed to `docs/evidence/<folder>/` before any result exists, with amendments as new
-  `-aN` files. The judge is written and tested on synthetic inputs, reviewed, and pinned before any result. The
-  implementation gets an independent review. The lead approves each stage receipt (weights → proof → smoke → budget →
+  `-aN` files. The judge is written and tested on synthetic inputs, pinned, and reviewed before any result is read. The lead approves each stage receipt (weights → proof → smoke → budget →
   extraction → fits) in `approvals.json`, and the judge's reading and the evidence land in the repo and on the Linear issue.
-- Independent review is always required for code that sends live input, and for code that decides what enters a training
-  or evaluation set. Prefer a reviewer from the other model family.
-- **Review after landing by default** (James, 2026-09-27 ~11:40 CDT: "less process, more results").
-  - **Default.** Code lands and runs first. Independent review follows on the delta, and a result stays provisional
-    until that review lands. A finding that could have changed data, numbers or spend means a rerun.
-  - **Still reviewed before it lands or runs,** in exactly three cases:
+- **Review only where it pays off** (James, 2026-09-27 ~13:30 CDT: "we shouldn't waste too much time reviewing unless
+  we know the reviews pay off in the long run"). This replaces the earlier review-after-landing and launch-plumbing rules.
+  - **Reviewed before it lands or runs:**
     - code that sends live-game input;
-    - anything that could let spend exceed a hard cap;
+    - a new or changed spend guard, or anything else that could let spend exceed a hard cap;
     - anything that could open sealed data.
-  - **This supersedes the stricter lists below.** Data selection, model, loss, metric, judge and numerics code now
-    follow the default, reviewed after landing. A change to a pre-registration still needs a pre-result `-aN`
-    amendment before its result is read.
-- **Launch plumbing: fix, run, review afterwards** (James, 2026-09-27; decided after a night of round-3 launch fixes
-  that each cost a full review cycle and trained nothing). The rule above supersedes this entry's review lists.
-  - **What counts as plumbing.** Code that only moves, mounts, orchestrates, reports or refuses:
-    - mount and namespace handling, wrapper and chain drivers, collection;
-    - job status, teardown and watchdogs;
-    - runtime-identity checks that decide whether a run may start.
-  - **How it works.** The owner fixes it and runs the owner's own tests, and the lead approves the stage receipt as
-    usual. The run then goes ahead. Independent review follows, on the delta, before the stage's result is accepted
-    into a verdict.
-  - **Results are provisional until that review lands.** A finding that could have changed data, numbers or spend
-    means a rerun.
-  - **Not plumbing, so reviewed before any run:**
-    - anything that selects or weights training or evaluation data;
-    - model, loss or metric code;
-    - the judge;
-    - anything that changes numerics (seeds, precision, determinism settings);
-    - spend caps and budget stops;
-    - live game input.
-  - **Pre-registration pins** (for example the §11 runtime identity) still change only through a lead-approved
-    pre-result `-aN` amendment, which records the change; it no longer waits on a pre-run review.
+  - **Reviewed after landing, before its result is used:**
+    - admission of training or evaluation data, including the frame verdicts; this review caught the ping wheel in
+      accepted matches on 2026-09-27;
+    - a confirm run's judge, before anyone reads a result.
+  - **Not reviewed:** everything else. That covers exploratory code and results, launch plumbing (mounts, wrappers,
+    transfers, collection, status, teardown), and record-keeping fixes. The owner's own tests are the check, and a real
+    failure is investigated when it shows up. An explore result gets its review when it is promoted to a confirm run.
+  - **Small spends:** a run under $5 that uses an already-reviewed spend guard, changing only its cap or name
+    configuration, launches without waiting for review.
+  - A change to a pre-registration still needs a pre-result `-aN` amendment before its result is read.
 
 ## Seeing what's running
 
