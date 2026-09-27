@@ -20,6 +20,7 @@ from .explore_chunks import ChunkBatches
 from .explore_chunks_eval import evaluate
 from .explore_chunks_train import fit_chunks, load_manifest
 from .model import Config
+from .explore_mounts import check_mounts, logical_path
 
 
 def main(argv=None):
@@ -32,15 +33,22 @@ def main(argv=None):
     parser.add_argument("--stop-file", required=True)
     parser.add_argument("--log", required=True)
     parser.add_argument("--stage", choices=("fit", "eval"), required=True)
+    parser.add_argument("--input-volume-id", required=True)
+    parser.add_argument("--output-volume-id", required=True)
     args = parser.parse_args(argv)
     train.require(platform.system() == "Linux" and bool(os.environ.get("MODAL_TASK_ID")),
                   "authorized Modal container required")
     train.require(torch.cuda.is_available(), "CUDA required; no fallback")
     gpu = torch.cuda.get_device_name()
     train.require(gpu == "NVIDIA L40S", "all cloud arms require the same L40S device")
-    out = Path(args.out).resolve()
+    targets = check_mounts({"/inputs": args.input_volume_id, "/outputs": args.output_volume_id})
+    out = logical_path(args.out, targets)
     train.require(out.is_relative_to("/outputs"), "outputs must stay on the explore output mount")
-    train.require(Path(args.log).is_absolute(), "absolute evidence log required")
+    for name in ("log", "stop_file"):
+        train.require(logical_path(getattr(args, name), targets).is_relative_to(out),
+                      "logs and stop file must stay under arm output")
+    train.require(logical_path(args.manifest, targets).is_relative_to("/inputs"),
+                  "manifest must stay on input mount")
     out.mkdir(parents=True, exist_ok=True)
     environment = {"tag": "EXPLORATORY", "device": "cuda:NVIDIA L40S", "torch": str(torch.__version__),
                    "cuda": torch.version.cuda, "python": sys.version, "platform": platform.platform(),

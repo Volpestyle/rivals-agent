@@ -307,7 +307,7 @@ are never mounted or modified. The first upload failed on the file-descriptor
 limit; the documented 8192 limit was applied and the isolated upload restarted.
 Dashboard `explore-modal-upload`; Mac artifacts under `explore/modal15/`.
 
-Paid work is not yet launched. The driver reserves the complete $30 allowance
+The driver reserves the complete remaining $30 allowance
 before app creation, uses retries=0 and bounded function lifetimes, and starts
 an independent driver-death/deadline watchdog. The budget calculation reserves
 $0.75 non-GPU overhead and 120 seconds for teardown. Collection must prove
@@ -322,3 +322,33 @@ not additional single-seed variants. The Mac H=1 is never interrupted by the
 successor-stop helper; its STOP is written only after training exits normally
 and its evaluator has started. The initial $15 waiting launcher was stopped
 before any paid driver existed, then replaced for the new three-arm authorization.
+
+
+### EXPLORATORY first cloud attempt and mount correction
+
+The upload completed: 126 files, 69,446,072,111 bytes, 2,561.86 s (42.70 min)
+for upload and 2,605.77 s (43.43 min) including source hashing, about 27.11 MB/s.
+The first paid attempt failed during CPU-only input verification, before any
+GPU arm started. App `ap-Zqtoz75RPrbhQ5z8Amjv7a` ended with driver/launcher exit 1,
+`results={}`, and verified **zero owned containers**. There are no full-cohort
+Modal six-decode metrics from this attempt. The stop command's nonzero result
+meant the app was already stopped; the subsequent app/container observation,
+not that command result, establishes teardown.
+
+The verifier resolved `/inputs` through Modal's legitimate volume symlink and
+then incorrectly tested containment against the logical alias. The output
+adapter had the same latent mistake. The lead authorized the reviewed `770d000`
+namespace pattern: authenticate both aliases against exact SDK-resolved volume
+IDs, preserve logical paths, and reject traversal, physical paths and child
+symlinks. Synthetic tests cover the valid alias and these refusal cases.
+This changes launch plumbing only; cohort, model, loss and metrics are unchanged.
+
+The failed reservation-to-zero interval was 14.539 s. Its conservative bound is
+$0.75 overhead plus that interval charged at all three L40S resource rates,
+rounded up to **$0.80**. This is a booked bound, not an actual billing receipt.
+The replacement reserves that charge plus $0.75 new overhead inside the same
+$30 hard cap, shortening the funded lifetime. Failed receipts remain under
+`explore/modal15/`; the replacement uses `explore/modal30-attempt2/`, a fresh
+`rivals-explore-chunks-20260927-attempt2` app/output volume and a versioned
+small code overlay on the existing input volume. The 69.446 GB payload is reused.
+Results remain provisional pending the post-run plumbing review.
