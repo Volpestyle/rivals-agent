@@ -428,9 +428,9 @@
    "session": "20260926T005304-628Z-63684-4",
    "date": "2026-09-25",
    "status": "not_range",
-   "reason": "evaluation-only match recording (reader_validation, reader_development or match_dev), never trained on (handoff/matches-0925.md)",
-   "group": null,
-   "split": null,
+   "reason": "logged live match released to idm_train (James, 2026-09-26): trains the IDM, never the range policy; its earlier reader results stand as historical (handoff/matches-0925.md)",
+   "group": "20260926T005304-628Z-63684-4",
+   "split": "idm_train",
    "admitted_min": null,
    "trainable_min": null
   },
@@ -438,9 +438,9 @@
    "session": "20260926T010620-721Z-63684-5",
    "date": "2026-09-25",
    "status": "not_range",
-   "reason": "evaluation-only match recording (reader_validation, reader_development or match_dev), never trained on (handoff/matches-0925.md)",
-   "group": null,
-   "split": null,
+   "reason": "logged live match released to idm_train (James, 2026-09-26): trains the IDM, never the range policy; its earlier reader results stand as historical (handoff/matches-0925.md)",
+   "group": "20260926T010620-721Z-63684-5",
+   "split": "idm_train",
    "admitted_min": null,
    "trainable_min": null
   },
@@ -448,9 +448,9 @@
    "session": "20260926T012552-291Z-63684-6",
    "date": "2026-09-25",
    "status": "not_range",
-   "reason": "evaluation-only match recording (reader_validation, reader_development or match_dev), never trained on (handoff/matches-0925.md)",
-   "group": null,
-   "split": null,
+   "reason": "logged live match released to idm_train (James, 2026-09-26): trains the IDM, never the range policy; its earlier reader results stand as historical (handoff/matches-0925.md)",
+   "group": "20260926T012552-291Z-63684-6",
+   "split": "idm_train",
    "admitted_min": null,
    "trainable_min": null
   },
@@ -458,9 +458,9 @@
    "session": "20260926T013711-125Z-63684-7",
    "date": "2026-09-25",
    "status": "not_range",
-   "reason": "evaluation-only match recording (reader_validation, reader_development or match_dev), never trained on (handoff/matches-0925.md)",
-   "group": null,
-   "split": null,
+   "reason": "logged live match released to idm_train (James, 2026-09-26): trains the IDM, never the range policy; its earlier reader results stand as historical (handoff/matches-0925.md)",
+   "group": "20260926T013711-125Z-63684-7",
+   "split": "idm_train",
    "admitted_min": null,
    "trainable_min": null
   },
@@ -468,9 +468,9 @@
    "session": "20260926T015610-960Z-63684-8",
    "date": "2026-09-25",
    "status": "not_range",
-   "reason": "evaluation-only match recording (reader_validation, reader_development or match_dev), never trained on (handoff/matches-0925.md)",
-   "group": null,
-   "split": null,
+   "reason": "logged live match released to idm_train (James, 2026-09-26): trains the IDM, never the range policy; its earlier reader results stand as historical (handoff/matches-0925.md)",
+   "group": "20260926T015610-960Z-63684-8",
+   "split": "idm_train",
    "admitted_min": null,
    "trainable_min": null
   },
@@ -478,9 +478,9 @@
    "session": "20260926T021321-378Z-63684-9",
    "date": "2026-09-25",
    "status": "not_range",
-   "reason": "evaluation-only match recording (reader_validation, reader_development or match_dev), never trained on (handoff/matches-0925.md)",
-   "group": null,
-   "split": null,
+   "reason": "logged live match released to idm_train (James, 2026-09-26): trains the IDM, never the range policy; its earlier reader results stand as historical (handoff/matches-0925.md)",
+   "group": "20260926T021321-378Z-63684-9",
+   "split": "idm_train",
    "admitted_min": null,
    "trainable_min": null
   },
@@ -518,9 +518,9 @@
    "session": "20260926T034805-307Z-63684-13",
    "date": "2026-09-25",
    "status": "not_range",
-   "reason": "evaluation-only match recording (reader_validation, reader_development or match_dev), never trained on (handoff/matches-0925.md)",
-   "group": null,
-   "split": null,
+   "reason": "logged live match released to idm_train (James, 2026-09-26): trains the IDM, never the range policy; its earlier reader results stand as historical (handoff/matches-0925.md)",
+   "group": "20260926T034805-307Z-63684-13",
+   "split": "idm_train",
    "admitted_min": null,
    "trainable_min": null
   },
@@ -638,9 +638,9 @@
    "session": "20260926T161008-331Z-116800-2",
    "date": "2026-09-26",
    "status": "not_range",
-   "reason": "reader_development: the replay of the Heart of Heaven match (20-06-20), never trained on",
-   "group": null,
-   "split": null,
+   "reason": "replay of self released to idm_train (lead, 2026-09-26) with its live match 20-06-20: never range; its viewer inputs are never a target",
+   "group": "20260926T010620-721Z-63684-5",
+   "split": "idm_train",
    "admitted_min": null,
    "trainable_min": null
   },
@@ -684,12 +684,12 @@
  "target_min": 180,
  "registry": {
   "path": "data/human/session-splits.corpus.json",
-  "sha256": "e8a1d0606bfc62fe304e73c78d94f4f62e90d9ef6468a09c486a8f5218ce7e29"
+  "sha256": "5b3a592d0ba8b638614ef2d5db1886495d5b0763d18c91e51de4d1f89717a74c"
  },
  "denylist": {
   "path": "data/human/sealed-denylist.v2.json",
   "sha256": "439c80df6cd5d6daa60b48e0acb2d3a3fa833134ff14edddc4121348c2dceb20"
  },
- "snapshot": "code-snapshot-e7f5045",
+ "snapshot": "code-snapshot-107970b-3c8a3b7e",
  "counted_rule": "focused logged time \u2229 accepted segments \u2229 gap-free runs >= 1.6 s"
 }

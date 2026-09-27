@@ -52,14 +52,14 @@ ROWS = [
       for s in ("20260925T200851-935Z-49728-1", "20260925T212548-665Z-49728-3", "20260925T212615-212Z-49728-4",
                 "20260925T212626-543Z-49728-5")],
     *[dict(session=m, date="2026-09-25", status="not_range",
-           reason="evaluation-only match recording (reader_validation, reader_development or match_dev), never trained on "
-                  "(handoff/matches-0925.md)")
+           reason="logged live match released to idm_train (James, 2026-09-26): trains the IDM, never the range policy; "
+                  "its earlier reader results stand as historical (handoff/matches-0925.md)")
       for m in ("20260926T005304-628Z-63684-4", "20260926T010620-721Z-63684-5", "20260926T012552-291Z-63684-6",
                 "20260926T013711-125Z-63684-7", "20260926T015610-960Z-63684-8", "20260926T021321-378Z-63684-9",
                 "20260926T034805-307Z-63684-13")],
     *[dict(session=s, date="2026-09-26", status="not_range", reason=reason) for s, reason in (
-        ("20260926T161008-331Z-116800-2", "reader_development: the replay of the Heart of Heaven match (20-06-20), never "
-                                          "trained on"),
+        ("20260926T161008-331Z-116800-2", "replay of self released to idm_train (lead, 2026-09-26) with its live match "
+                                          "20-06-20: never range; its viewer inputs are never a target"),
         ("20260926T162648-153Z-116800-4", "leftward yaw calibration take (calibration_sessions); never a split"),
         ("20260926T162623-219Z-116800-3", "OBS false start (13 s, Alt+Tab only); James deleted the video; not a session"),
         ("20260926T060921-977Z-60612-1", "main-account yaw calibration take (calibration_sessions); never a split"),
@@ -114,8 +114,9 @@ def admitted_row(hi, session):
 
 
 # The default snapshot validates the live registry: it knows the denylist's allowed_split (test and gate2) and checks
-# every registry list (2026-09-26, the test-take seal). An older snapshot refuses the gate2 rows.
-DEFAULT_SNAPSHOT = "code-snapshot-e7f5045"
+# every registry list (2026-09-26, the test-take seal), and the idm_train split with review F1's allocator fix
+# (2026-09-26, the release of the logged matches). An older snapshot refuses the gate2 or idm_train rows.
+DEFAULT_SNAPSHOT = "code-snapshot-107970b-3c8a3b7e"
 
 
 def build(snapshot=DEFAULT_SNAPSHOT):

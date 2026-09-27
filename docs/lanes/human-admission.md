@@ -1564,3 +1564,223 @@ min.
   for gate2, its pair (B2).
 - **`hi.tally`** allows `sealed` rows in test or gate2, so the four gate2 recordings are `sealed` in the tally.
 - **Tests:** `tests/test_sealed_denylist_v2.py`. With the guard removed, all 127 refusal tests fail.
+
+
+## 2026-09-26 (evening): proposal: logged matches register as IDM-train by default (VUH-1353/VUH-1359; not applied)
+
+**Asked by the lead** (steering, relaying James): paired logged **matches** should train the IDM by default. Today every
+logged match is evaluation-only (gate2, reader_validation, reader_development; `match_dev` is empty). They must stay out
+of the range policy corpus, and Gate 2's held-out needs must be carved out explicitly, pre-registered per
+`docs/lanes/idm-gate2-plan-20260926.md` §3. This is a design for the lead to approve; admission-review reviews the code.
+
+**Mechanism: one new unsealed registry split, `idm_train`, for live logged matches.**
+1. **Registry.** Add `idm_train` to `agent/human_demos.SPLITS`, but not to `SEALED_SPLITS`.
+   - A match's live recording is placed in `sessions` with split `idm_train`. The usual rules hold: one session group per
+     match, group and media leakage checks, and B1 disjointness from calibration and evaluation rows.
+   - `for_training` is allowed, as for train.
+2. **Out of the range corpus by construction, not by convention.**
+   - `policy/range_bc/steps.HUMAN_SPLITS` stays ("train", "val", "test"). A step table whose header says `idm_train` is
+     refused ("unknown split") before any row is read, and `load_cohort` never asks for it.
+   - The tally's range headline counts only admitted train/val. `idm_train` rows appear under their own heading
+     ("IDM-train, matches"), with minutes reported beside the headline and never added to it.
+3. **Into the IDM.**
+   - `policy/idm_targets.FIT_SPLITS` gains `idm_train`.
+   - The places that mean "the IDM's training rows" (`supported_actions`, and any `split == "train"` statistic) read
+     `IDM_TRAIN_SPLITS = ("train", "idm_train")`.
+   - The IDM's frozen dev sessions stay as the IDM lineage pins them (plan §4). `idm_train` never becomes dev without the
+     IDM owner's pre-registration.
+4. **Registration is not admission.** A match cannot use the range intake: the proposer, the edge rule and the regime
+   scan assume the practice-range HUD. An `idm_train` placement lets a match be trained on only once the IDM's reviewed
+   match target path exists (plan §5: "an evaluation-only target build" for matches, generalised to training), with its
+   own freeze and review. Until then the placement is inert.
+5. **The default at registration.**
+   - `agent.human_intake.assign_split` gains `kind=`. For `kind="match"` (a logged live match, named by James), it
+     returns `idm_train` unless the match fills an open held-out slot (6).
+   - Range takes keep the 70/15/15 rule. A replay is never `idm_train`: viewer inputs are not labels. A replay goes to
+     `evaluation_sessions` (`reader_development`, paired to its live match) unless a slot claims it.
+   - The replay of a training match is contaminated evaluation (the same match), so it is development evidence only.
+6. **The Gate 2 carve-out, pre-registered and enforced.**
+   - A lead-owned, pinned file `data/human/heldout-allocation.json` holds open **slots**, written before the recordings
+     exist. Each slot has an id, a role (`reader_development`, `reader_validation` or `gate2`), a plain description of
+     what fills it, the date written, and `filled_by` (null until registration).
+   - It starts with the plan's §3 request: **D-C** → `reader_development`; **V-C** and **V-Q** → `reader_validation`;
+     each is a whole live match plus its same-day replay, one indivisible group.
+   - At registration, a match that fills an open slot goes to that role, with its replay. The admission owner records
+     `filled_by`, and the lead commits it before any inspection. Otherwise the match goes to `idm_train`.
+   - `check_registry` refuses a session named in a filled slot unless it is placed in that slot's role. Gate2 roles also
+     go on the denylist v2 with `allowed_split` gate2, as pairs 1 and 2 are. So "a note saying sealed" is never the
+     guard (plan §3).
+7. **What is unchanged.**
+   - The existing gate2 (pairs 1 and 2), reader_validation, reader_development, calibration and test entries.
+   - Denylist v2 (the new split adds nothing to it).
+   - The range corpus and its 180.57 / 15.58 tally.
+   - The `match_dev` kind stays valid but empty.
+
+**Code and tests if approved.** Small, reviewed with the session that first uses it:
+- **Code:** `human_demos.SPLITS`; `human_intake.assign_split(kind=)` and the slot check in `check_registry`; a loader and
+  pin for `heldout-allocation.json`; `idm_targets.FIT_SPLITS` and `IDM_TRAIN_SPLITS`; the tally's separate heading.
+- **Tests:**
+  - range_bc refuses an `idm_train` header before any row;
+  - the IDM accepts it;
+  - `assign_split(kind="match")` gives `idm_train`, and gives the slot role when a slot is open;
+  - a filled slot's session placed in `idm_train`, or any other role, is refused;
+  - the range headline is unchanged by `idm_train` rows.
+
+**Open questions for the lead and idm-owner:**
+- (a) Does the IDM want a match dev split (`idm_val`) now? The mechanism allows it, but I'd add it only on the IDM
+  owner's pre-registration.
+- (b) Does a match on the main account need its own motor statement and settings identity before it is trainable? Yes
+  by the range rules; the match target path decides for the IDM.
+- (c) Who writes new slots: the lead, from the IDM owner's plan.
+
+
+## 2026-09-26 (evening): the Gate 2 carve-out rule for new logged matches (agreed with idm-owner; fixed before any registration)
+
+**SUPERSEDED, never applied** (2026-09-26 ~20:55 CDT, PC clock): the lead's decision relaying James makes every
+logged match train; idm-owner withdrew this three-slot rule and is proposing a smaller two-family carve-out to the lead.
+Nothing below was used to register anything. Kept as the record of what was agreed and why it changed.
+
+**Status (written 2026-09-26 20:53 CDT, PC clock; the lead's times below are the lead's clock, which runs ahead):** agreed with idm-owner, including the ordering clarification in rule 1. The
+lead's 21:15 decision (James: the logged matches were recorded to be trained on) makes train the default for new logged
+matches. Any carve-out must be minimal, argued by idm-owner, and approved by the lead. **This rule is therefore not
+applied until the lead approves it.** Until then, new matches stay on the pending list, unregistered and uninspected.
+
+**Design credit: idm-owner.** The slot definitions come from idm-owner's plan (`docs/lanes/idm-gate2-plan-20260926.md`
+§3: D-C, V-C, V-Q). The mechanical order rule below is idm-owner's own; it replaced my seed-draw proposal, and I adopted
+it as simpler and equally blind. Lead-authorized: the IDM-train default, 2026-09-26. The rule was written here at
+20:51 CDT (PC clock); at that time no logger session after the boundary existed, and no match of the sitting had been registered, opened or inspected.
+
+**Scope and sitting boundary (names only).** The rule covers every logger session in `C:/Users/volpe/Videos/RivalsInput/`
+whose id sorts lexically after `20260926T233007-331Z-83948-2`: the last session the lead logged before the evening
+match sitting (18:30 CDT, agent pad calibration; that session and everything before it are out of scope). Its original
+video is the file OBS names in that session's `metadata.json`. Slots still open when the sitting ends carry forward in
+the same order to later sittings, until filled.
+
+**The rule, applied mechanically:**
+1. **Declared mode only.** Mode (Competitive or Quick Match) and which files are a match's replay, cut or re-encode come
+   only from James's report as the lead records it (the recording-log row) or from recorder metadata. Never from frames,
+   content, quality or results.
+   - **Mode unknown:** the allocation is held pending a declaration. The match is not decoded, and not defaulted to
+     IDM-train first.
+   - **An earlier unresolved-mode live recording also holds every later slot assignment it could affect** (idm-owner,
+     2026-09-26). Slots are allocated in recording order, never in the order declarations arrive, so a late declaration
+     cannot take D-C, V-C or V-Q after they were allocated.
+2. **Order.** Original live recordings in session start order (logger session id), with a lexical session-id
+   tie-break.
+3. **D-C = the earliest live recording declared Competitive** → `reader_development`.
+4. **V-C = the next distinct live recording declared Competitive** → `reader_validation`.
+5. **V-Q = the earliest live recording declared Quick Match** → `reader_validation`.
+6. **Families are indivisible.** Each selected live recording, with every replay, cut or re-encode of it, is one family
+   and keeps its slot's role.
+   - A missing replay, or a short or failed take, keeps its role. There is no cherry-picked replacement.
+   - **A multi-match file inherits the first role it is selected for** and cannot fill a second, independent slot. A
+     later slot then goes to the next eligible recording in order.
+7. **Everything else:** every other new live match → **IDM-train** (the proposed `idm_train` split; pending the lead's
+   approval of the mechanism, and until then on the pending list, `handoff/admission-pending-registrations.md`). Their
+   replays are development-only (`reader_development`), never held-out truth and never train.
+8. **Existing roles are unchanged.**
+   - The sealed gate2 pairs (Central Park 19:28, Hall of Djalia 19:49) stay sealed and are the 2-map model-transfer
+     gate.
+   - V-C and V-Q are **reader** validation, not further model Gate 2 pairs.
+   - Current evaluation-only roles are not edited. There is no `idm_val` split now.
+9. **Admission is separate.** A main-account match still needs its motor statement, identity and calibration before any
+   admission. Registration from names and metadata is not admission.
+
+
+## Allocation idm-reader-validation-20260927T030000Z: the approved minimal carve-out for new logged matches (authoritative)
+
+**Supersedes** the section "2026-09-26 (evening): the Gate 2 carve-out rule for new logged matches", which was never
+applied.
+- **Approved by the lead,** relaying James's 21:15 decision (lead's clock) that every logged match trains.
+- **Designed and argued by idm-owner**, including the resolve-before-finalize ordering rule and the two-family minimum.
+- **Recorded here verbatim from the lead's approval,** at 2026-09-26 ~20:58 CDT (PC clock), before any registration
+  under it. No logger session started at or after the boundary existed then.
+
+**Selection text (lead-approved; applied mechanically):**
+- **Boundary.** Original live recording START ≥ **2026-09-27T03:00:00Z** (2026-09-26 22:00 CDT). This fixed future
+  boundary is after the 21:15 decision and reclaims no existing or in-progress training take. **A recording started
+  before the boundary stays training,** even if it finishes after.
+- **Order.** Starting at the boundary, complete original live recording identities are sorted by UTC logger start, with
+  a lexical full-session-id tie-break.
+- **Slots.** The **first declared Competitive family → V-C, `reader_validation`**. The **first declared Quick Match
+  family → V-Q, `reader_validation`**.
+- **Declarations.** Mode and live/replay family linkage come from names, plus James, lead or recorder metadata **only**.
+  - An earlier unknown-mode or unresolved live identity is resolved before any later slot it could affect is finalized.
+  - The order in which declarations arrive never counts.
+- **Families.** One indivisible family (the original, live, replay, cut or re-encode) occupies one slot, never both.
+  - A multi-match or mixed-mode identity needs a declaration, never frames.
+  - A short, failed or missing-replay family keeps its slot. There is no automatic replacement.
+- **Everything else.**
+  - All other new live matches are **IDM-train**.
+  - Their replays are unlabelled development: viewer input is never gameplay truth.
+  - The seven released live files stay IDM-train and are never reclaimed.
+  - Both existing model Gate 2 pairs (Central Park 19:28; Hall of Djalia 19:49) stay sealed.
+  - There is no D-C and no `idm_val`.
+- **Carry forward.** An open V-C or V-Q carries forward until filled. The exact selected session ids are recorded here,
+  before any inspection.
+- **Review.** The new mechanism (`idm_train`, `assign_split(kind="match")`) is independently reviewed before it is used.
+
+**Selected ids:**
+
+| Slot | Family (original live session id, plus linked files) | Recorded at |
+|---|---|---|
+| V-C | (open) | |
+| V-Q | (open) | |
+
+
+## 2026-09-26 (evening): the seven logged matches released to idm_train (James's call; applied, awaiting review)
+
+**James, via the lead's decision (21:15 on the lead's clock):** "we should use those, I thought that's what I recorded
+them for." The proposal section above supplied the split and its default for matches, and those are applied. Its
+held-out slot file is not: the allocation section above replaces it. idm-owner's two conditions are followed: each file
+keeps its exposure history, and no released file is ever taken back.
+
+**Code.**
+- `agent/human_demos.py` adds `IDM_TRAIN_SPLIT = "idm_train"` to `SPLITS`. It is unsealed.
+- `agent/human_intake.assign_split(kind="match")` returns it. Range takes keep 70/15/15.
+- **Review F1** (admission-review, LAND WITH FIXES, review sha256 `e56381a0…`) found a defect in the range allocation.
+  - It counted every group's minutes in the target denominator, but only train/val/test in the per-split totals.
+  - So a new `idm_train` match, or a `gate2` group, could change the next range take's split.
+  - admission-review's reproduction: `{g1: train 10, sealed: test 2.1}` plus a new 3-minute range group gives val. Adding
+    an unrelated `idm_train` group of 20 minutes gave train.
+  - Now both the denominator and the totals come from `SPLIT_TARGETS`' splits only.
+  - Regression: `test_idm_and_gate2_groups_never_move_a_range_allocation`.
+- `range_bc.steps.HUMAN_SPLITS` is unchanged, so a range step table carrying `idm_train` is refused as an unknown split.
+- Tests: `tests/test_gate2_split.py::test_idm_train_is_a_registry_split_that_range_bc_refuses` and the F1 regression.
+- `idm_targets.FIT_SPLITS` is idm-owner's to change, when the reviewed match target path exists.
+
+**Registry.** `data/human/session-splits.corpus.json` changes from LF `e8a1d060…` to LF `5b3a592d…`, the final value after the 11-10-08 change below.
+- The seven rows moved from `evaluation_sessions` into `sessions` with split `idm_train`, each its own `session_group`.
+- Each row pins `expected_media_sha256`, streamed at below-normal priority with neither OBS nor the game running.
+- Each row records its `prior_exposure`, and states that the reader results measured on it stand as historical.
+
+| Session | Video | Earlier role | Media sha256 |
+|---|---|---|---|
+| 20260926T005304-628Z-63684-4 | 19-53-04 | reader_validation, spent in the Gate 2 reader validation | `c2a28032…` |
+| 20260926T010620-721Z-63684-5 | 20-06-20 | reader_development (scoreboard fix) | `b286939f…` |
+| 20260926T012552-291Z-63684-6 | 20-25-52 | reader_validation, spent in the Gate 2 reader validation | `9e96ac69…` |
+| 20260926T013711-125Z-63684-7 | 20-37-11 | reader_development (scoreboard fix) | `2a82d168…` |
+| 20260926T015610-960Z-63684-8 | 20-56-10 | reader_validation, spent in the Gate 2 reader validation | `9602ce5b…` |
+| 20260926T021321-378Z-63684-9 | 21-13-21 | reader_validation, spent in the one re-validation | `7ec60040…` |
+| 20260926T034805-307Z-63684-13 | 22-48-05 | reader_validation, spent in the one re-validation (main account) | `cb9c7ad7…` |
+
+- **Unchanged:** both Gate 2 pairs, the test take, denylist v2 (`439c80df…`) and every calibration row.
+- **11-10-08** (20260926T161008-331Z-116800-2), the Heart of Heaven replay of 20-06-20, is released to `idm_train` in
+  20-06-20's `session_group`. The lead confirmed it at 21:09 CDT as the replay-of-self pair, for true-input
+  replay-transfer training.
+  - Its input labels come only from the live half. Its logged viewer inputs are never a target.
+  - Its pinned media hash `4c74f388…` is carried over unchanged. The file is unchanged since registration
+    (4,555,570,015 B, mtime 11:22).
+  - `evaluation_sessions` is now empty.
+- **22-48-05** stays `idm_train` with a `training_pending` flag. It is the main account, so it needs its own motor
+  statement, identity and calibration before it trains. The lead is asking James for the motor statement.
+- **The registry is now LF `5b3a592d…`,** with 28 split rows: train 12, idm_train 8, gate2 4, test 3, val 1.
+
+**Tally.** `tally.py`'s default snapshot becomes `code-snapshot-107970b-3c8a3b7e`, archived at HEAD 107970b with this
+batch's `human_demos`/`human_intake`, including the F1 fix. The earlier default, e7f5045, refuses `idm_train`.
+- The first archive, `code-snapshot-107970b`, was reviewed but held the pre-F1 allocator. It was never landed and was
+  removed.
+- The headline is unchanged: train 180.57 admitted over 10 sessions, val 15.58.
+- Only the seven rows (their reason, group and split), the registry hash and the snapshot name change.
+- `tests/test_tally_default.py` now expects `idm_train` and checks that `DEFAULT_SNAPSHOT` is tracked. That check passes
+  only once the snapshot is committed.

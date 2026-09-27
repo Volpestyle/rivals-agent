@@ -21,6 +21,10 @@ def _run(code):
     return out.stdout
 
 
+def _default_snapshot():
+    return _run("import tally\nprint(tally.DEFAULT_SNAPSHOT)\n").strip()
+
+
 def test_the_default_snapshot_is_committed_and_validates_the_live_registry():
     probe = _run(
         "import json, sys, tally\n"
@@ -31,8 +35,8 @@ def test_the_default_snapshot_is_committed_and_validates_the_live_registry():
         "den = hi.load_denylist(tally.ROOT / 'data/human/sealed-denylist.v2.json', sha256_pin=tally.DENYLIST_SHA256)\n"
         "reg = hi.check_registry(tally.ROOT / 'data/human/session-splits.corpus.json', denylist=den)\n"
         "print(json.dumps(sorted({p.split for p in reg.values()})))\n")
-    assert json.loads(probe.strip().splitlines()[-1]) == ["gate2", "test", "train", "val"]
-    manifest = SESSIONS / "code-snapshot-e7f5045" / "manifest.json"
+    assert json.loads(probe.strip().splitlines()[-1]) == ["gate2", "idm_train", "test", "train", "val"]
+    manifest = SESSIONS / _default_snapshot() / "manifest.json"
     assert manifest.is_file()
     tracked = subprocess.run(["git", "-C", str(ROOT), "ls-files", "--error-unmatch", str(manifest)], capture_output=True)
     assert tracked.returncode == 0, "the default snapshot must be committed"
