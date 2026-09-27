@@ -1,7 +1,14 @@
 # Waiting on James
 
-- Next PC session, before any agent run on the alt (VUH-1384): about 20 min for camera focal and full yaw/pitch maps,
-  plus wall crawl/run from a flat wall spot. Steam Input must be **disabled** for Marvel Rivals while the agent drives
-  the pad. Keep OBS recording, and tell the lead before opening any menu.
-- Optional, any time: one replay of a match nobody has used yet (~5 min); it decides the Gate 2 replay half (VUH-1353).
+Nothing blocks on James right now (2026-09-27, 15:25 CDT). The camera sitting is lead-operated: the lead opens the
+game, runs `scripts/reenter.py` into the range and drives the pad (VUH-1384). The focal comes from his existing
+calibration recordings. It waits on the reviewed camera fix, not on him.
+
+Optional, any time:
+- One replay of a match nobody has used yet (~5 min); it decides the Gate 2 replay half (VUH-1353).
+- Whether one SPIDEY archive clip may be used for an IDM camera demo. Its admission covers SSL only, so the demo's
+  second part waits on this (VUH-1353).
+- Reopen round 3? It's parked; relaunching needs a reviewed accounting amendment first (VUH-1346). Default: stays
+  parked.
 - Approve the scoped agent AWS credential plan when the lead brings it (Phase 1 draft, then creation).
+- Free Mac space: `! ssh mac zsh /tmp/grapple-shrink.sh`.

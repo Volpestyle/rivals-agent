@@ -61,6 +61,15 @@
    "allowed_split": "gate2",
    "session_group": "gate2-20260925-hall-of-djalia-1949",
    "reason": "gate2 gate2-20260925-hall-of-djalia-1949: its Hall of Djalia replay; sealed by split gate2 (lead 2026-09-26, docs/lanes/inverse-dynamics.md Gate 2 protocol); in the denylist so a registry cannot relabel it (review B2)"
+  },
+  {
+   "session_id": "20260927T195110-265Z-152960-1",
+   "media_path": "C:/Users/volpe/Videos/2026-09-27 14-51-10.mkv",
+   "media_sha256": "7cf09ab5cd61035f4d4d5b65e7365a8285993e6626ec64a987b011cdbb0f2b6d",
+   "hashed_at": "2026-09-27T20:24:34+00:00",
+   "allowed_split": "test",
+   "session_group": "20260927T195110-265Z-152960-1",
+   "reason": "test take (James, chat 2026-09-27 15:07 CDT: 'recorded the 15 min test range take'); the first recording of his afternoon sitting; registered by the lead from file and folder names only; bytes hashed after the game and OBS closed"
   }
  ],
  "version": 2,
