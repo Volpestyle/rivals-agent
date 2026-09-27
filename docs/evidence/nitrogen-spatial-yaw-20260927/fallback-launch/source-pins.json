@@ -1,0 +1,22 @@
+{
+  "tag": "EXPLORATORY_PREPARATION_ONLY",
+  "files": {
+    "appcreate_gate.py": "2d076fa1c5908b11193a87838879bbd0498de515184a818d61f0586fac44c520",
+    "encoder_budget.py": "362e82b51c23154f2817cedd3483bde97f756772d75c9a4ac7c0ffaa96dddcd5",
+    "encoder_driver.py": "548575902db65b39d56d87ee0b47b826a92291d132e26e3b78e5b0e822d7a47a",
+    "encoder_lifecycle.py": "ce05eb46d9a0da59a606f1e296f316e8f7266347667fcc516448e478e8f9d36a",
+    "encoder_worker.py": "d356254e3380d34d9d8bb12d50f44f583b4fbeccb063f3cddfdcf193d413db67",
+    "explore_mounts.py": "2c36e2537fc7abb1cf39802fdd0f07fcb80cb7adec3a63a8c67d516ec2e702a9",
+    "job_status.py": "423d157ff52b5f399c4b32562cd0fd61069f0c95a884444b7152507c8f45556d",
+    "launch.sh": "39a6ea6fa16798525ec529b5bb835b29441f92b257a2794996f52db4d0ea5446",
+    "lifecycle.py": "aa0842c34711aee5a7301c48561220c0be6512c3ab70e29038bbbb76ec9e3bbd",
+    "prepare.py": "655ea01e299eefc2067ffef0886d6c3437032c38047c54a105b85c65f675d61d",
+    "README.md": "d6f16edc6056fad03d9e0c7f33c36e7489425c98244195a073ee4b2a55c6a915"
+  },
+  "tests": {
+    "path": "tests/test_spatial_yaw_fallback.py",
+    "sha256": "8e22f626880feafae56475ccfefc391983bc3573d13e9c8195f3bdfe03da2519",
+    "result": "4 passed; CPU only"
+  },
+  "launched": false
+}
