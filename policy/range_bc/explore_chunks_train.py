@@ -104,7 +104,7 @@ def batch_identity(batches):
 
 def fit_chunks(batches, config, stats, out, *, dev=None, seed=0, epochs=26, batch_size=8,
                lr=3e-4, weight_decay=1e-4, warmup=500, device="mps", resume=False,
-               stop_file=None, run_identity="", stop_after_steps=None, cohort="full"):
+               stop_file=None, run_identity="", stop_after_steps=None, cohort="full", progress=None):
     """Checkpoint at each epoch, and at next update when STOP is requested.
 
     A resumed arm restores optimizer, scheduler, CPU augmentation RNG and epoch
@@ -144,6 +144,9 @@ def fit_chunks(batches, config, stats, out, *, dev=None, seed=0, epochs=26, batc
         count, loss_sum = saved["count"], saved["loss_sum"]
         history, elapsed = saved["history"], saved["seconds"]
     started = time.perf_counter()
+    reported = started
+    if progress:
+        progress(updates, total)
 
     def snapshot(status):
         if device == "mps":
@@ -183,6 +186,9 @@ def fit_chunks(batches, config, stats, out, *, dev=None, seed=0, epochs=26, batc
             count += 1
             updates += 1
             cursor += len(ids)
+            if progress and time.perf_counter() - reported >= 30:
+                progress(updates, total)
+                reported = time.perf_counter()
         entry = {"epoch": epoch + 1, "steps": updates, "train_chunk_loss": loss_sum / count,
                  "seconds": elapsed + time.perf_counter() - started}
         if dev is not None:
@@ -196,6 +202,8 @@ def fit_chunks(batches, config, stats, out, *, dev=None, seed=0, epochs=26, batc
         if epoch in (13, epochs):
             save_state(out / f"epoch-{epoch}.pt", payload)
         print(json.dumps({"tag": "EXPLORATORY", "horizon": batches.horizon, "seed": seed, **entry}), flush=True)
+        if progress:
+            progress(updates, total)
     return model, history, "complete"
 
 
@@ -210,19 +218,34 @@ def main(argv=None):
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--resume", action="store_true")
     p.add_argument("--stop-file", required=True)
+    p.add_argument("--job-name", required=True)
+    p.add_argument("--log", required=True, help="Absolute path used by the launcher's log redirection")
     a = p.parse_args(argv)
     train.require(platform.system() == "Darwin" and platform.machine() == "arm64", "Mac only")
     root = Path("/Users/james/dev/range-bc-data/explore").resolve()
     train.require(Path(a.out).resolve().is_relative_to(root), "outputs must stay under explore/")
     train.require(torch.backends.mps.is_available(), "MPS required; no silent CPU fallback")
-    train_arrays, dev_arrays = load_manifest(a.manifest, a.registry, a.tally, cohort=a.cohort)
-    batches = ChunkBatches(train_arrays, horizon=a.horizon, stride=64)
-    dev = train.Batches(dev_arrays, stride=64)
-    stats = steps.train_statistics([arr.session for arr in train_arrays])
-    identity = hashlib.sha256(Path(a.manifest).read_bytes() + Path(a.registry).read_bytes()
-                              + Path(a.tally).read_bytes()).hexdigest()
-    _, _, status = fit_chunks(batches, Config(hud=False), stats, a.out, dev=dev, seed=a.seed,
-                              resume=a.resume, stop_file=a.stop_file, run_identity=identity, cohort=a.cohort)
+    train.require(Path(a.log).is_absolute(), "dashboard evidence log must be absolute")
+    from scripts.job_status import write
+    write(a.job_name, owner="explore-policy", stage="running", host="mac", evidence=a.log,
+          started=int(time.time()), progress="EXPLORATORY: loading authorized cohort", eta=None)
+    try:
+        train_arrays, dev_arrays = load_manifest(a.manifest, a.registry, a.tally, cohort=a.cohort)
+        batches = ChunkBatches(train_arrays, horizon=a.horizon, stride=64)
+        dev = train.Batches(dev_arrays, stride=64)
+        stats = steps.train_statistics([arr.session for arr in train_arrays])
+        identity = hashlib.sha256(Path(a.manifest).read_bytes() + Path(a.registry).read_bytes()
+                                  + Path(a.tally).read_bytes()).hexdigest()
+        def report(n, total):
+            write(a.job_name, progress={"n": n, "total": total})
+        _, _, status = fit_chunks(batches, Config(hud=False), stats, a.out, dev=dev, seed=a.seed,
+                                  resume=a.resume, stop_file=a.stop_file, run_identity=identity,
+                                  cohort=a.cohort, progress=report)
+        write(a.job_name, stage="queued" if status == "yielded" else "done",
+              progress="Yielded with resume checkpoint" if status == "yielded" else "26 epochs complete")
+    except BaseException as exc:
+        write(a.job_name, stage="failed", progress=f"{type(exc).__name__}: {exc}"[:4096])
+        raise
     return 75 if status == "yielded" else 0
 
 

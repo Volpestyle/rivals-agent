@@ -17,11 +17,12 @@ import time
 import torch
 from torch import nn
 
-from . import baselines, executor, metrics, train, vocab
+from . import baselines, metrics, train, vocab
 from .explore_camera import DECODERS, conditioning_nll, predict_suite
 from .explore_chunks import ChunkPolicy
 from .explore_chunks_train import FORMAT, load_manifest
 from .model import Config
+from .explore_thresholds import choose_thresholds
 
 THRESHOLDS = tuple(i / 20 for i in range(1, 20))
 
@@ -37,7 +38,7 @@ class ThresholdPolicy(nn.Module):
 
     def __init__(self, model, thresholds):
         super().__init__()
-        train.require(len(thresholds) == vocab.N and all(0 < t < 1 for t in thresholds), "invalid cutoffs")
+        train.require(len(thresholds) == vocab.N and all(0 <= t <= 1 for t in thresholds), "invalid cutoffs")
         self.model, self.config = model, model.config
         self.thresholds = torch.tensor(thresholds, dtype=torch.float64)
 
@@ -55,48 +56,6 @@ class ThresholdPolicy(nn.Module):
     def forward(self, *args, **kwargs):
         actions, camera, state = self.model(*args, **kwargs)
         return self.decisions(actions), camera, state
-
-
-def choose_thresholds(teacher_runs, live_mask, *, grid=THRESHOLDS):
-    """Train-only rate match; ties prefer 0.5, then the lower cutoff.
-
-    Use the executor's exact rule, preserving previous holds on invalid rows,
-    while invalid/unknown labels never contribute to either count.
-    """
-    train.require(.5 in grid and all(0 < t < 1 for t in grid), "threshold grid must include 0.5")
-    true = [0] * vocab.N
-    known = [0] * vocab.N
-    counts = [[0] * vocab.N for _ in grid]
-    for run in teacher_runs:
-        previous = [[0] * vocab.N for _ in grid]
-        for record, prediction in run:
-            target = record["target"]
-            mask = target.get("press_known", target["known"])
-            if record["valid"]:
-                for c in range(vocab.N):
-                    if live_mask[c] and mask[c]:
-                        true[c] += target["press"][c]
-                        known[c] += 1
-            for j, threshold in enumerate(grid):
-                held, presses, _ = executor.decode_step(prediction["held"], prediction["press"],
-                                                        prediction["release"], previous[j], live_mask,
-                                                        threshold=threshold)
-                previous[j] = held
-                if record["valid"]:
-                    for c in range(vocab.N):
-                        if live_mask[c] and mask[c]:
-                            counts[j][c] += presses[c]
-    chosen = []
-    for c in range(vocab.N):
-        if not live_mask[c] or not known[c] or not true[c]:
-            chosen.append(.5)
-        else:
-            j = min(range(len(grid)), key=lambda j: (abs(counts[j][c] - true[c]), abs(grid[j] - .5), grid[j]))
-            chosen.append(grid[j])
-    return {"tag": "EXPLORATORY", "source": "TRAIN teacher-forced predictions only",
-            "rule": "per-action closest executed press count; ties closest to 0.5, then lower; no positives keeps 0.5",
-            "thresholds": chosen, "grid": list(grid), "true_presses": true, "known_steps": known,
-            "pred_presses_by_threshold": counts}
 
 
 def measure(model, arrays, live_mask, *, device="mps"):
@@ -124,7 +83,7 @@ def recompute_references(train_arrays, dev_arrays):
         records = train.baseline_runs(arrays)
         result[name] = {}
         for method, predictor in (("zero_motion", baselines.zero_motion), ("persistence", baselines.persistence),
-                                  ("ar2_refit_full_train", baselines.ar2(ar2))):
+                                  ("ar2_refit_selected_train", baselines.ar2(ar2))):
             values = metrics.evaluate(metrics.predict_runs(records, predictor), **metrics.TEACHER)
             result[name][method] = {"camera_mae_mean": values["camera_mae_mean"], "camera": values["camera"]}
     return result
@@ -137,6 +96,8 @@ def main(argv=None):
     p.add_argument("--registry", required=True)
     p.add_argument("--tally", required=True)
     p.add_argument("--out", required=True)
+    p.add_argument("--job-name", required=True)
+    p.add_argument("--log", required=True)
     a = p.parse_args(argv)
     train.require(platform.system() == "Darwin" and platform.machine() == "arm64", "Mac only")
     train.require(torch.backends.mps.is_available(), "MPS required")
@@ -144,6 +105,20 @@ def main(argv=None):
                   "output must stay under explore/")
     out = Path(a.out)
     train.require(not out.exists(), "refuse to overwrite an evaluation")
+    train.require(Path(a.log).is_absolute(), "dashboard evidence log must be absolute")
+    from scripts.job_status import write
+    write(a.job_name, owner="explore-policy", stage="running", host="mac", evidence=a.log,
+          started=int(time.time()), progress="EXPLORATORY: loading checkpoint", eta=None)
+    try:
+        evaluate(a, lambda text: write(a.job_name, progress=text))
+        write(a.job_name, stage="done", progress="Six decode conditions complete")
+    except BaseException as exc:
+        write(a.job_name, stage="failed", progress=f"{type(exc).__name__}: {exc}"[:4096])
+        raise
+
+
+def evaluate(a, report):
+    out = Path(a.out)
     start = time.perf_counter()
     payload = torch.load(a.checkpoint, map_location="cpu", weights_only=True)
     train.require(payload["format"] == FORMAT, "not an exploratory chunk checkpoint")
@@ -153,6 +128,7 @@ def main(argv=None):
     train_arrays, dev_arrays = load_manifest(a.manifest, a.registry, a.tally, cohort=recipe["cohort"])
     from . import steps
     live_mask = steps.train_statistics([arr.session for arr in train_arrays])["live_mask"]
+    report("TRAIN teacher-forced calibration")
     train_predictions = train.predict_teacher(model, train_arrays, device="mps")
     thresholds = choose_thresholds(train_predictions, live_mask)
     del train_predictions
@@ -160,15 +136,20 @@ def main(argv=None):
     result = {"tag": "EXPLORATORY", "recipe": recipe, "checkpoint": a.checkpoint,
               "epoch": payload["epoch"], "training_seconds": payload["seconds"],
               "threshold_calibration": thresholds, "decode": {}}
+    out.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
+    report("Recomputing cohort camera references")
     result["references"] = recompute_references(train_arrays, dev_arrays)
     if model.horizon == 1:
+        report("H=1 visual conditioning NLL pre-step")
         result["conditioning_pre_step"] = conditioning_nll(model, dev_arrays)
         out.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
     conditions = {(name, decoder): cutoffs
                   for name, cutoffs in (("fixed_0.5", [.5] * vocab.N), ("train_chosen", thresholds["thresholds"]))
                   for decoder in DECODERS}
-    runs = predict_suite(model, dev_arrays, live_mask, conditions)
+    report("Six independent teacher/self-fed decode conditions")
+    runs = predict_suite(model, dev_arrays, live_mask, conditions, progress=report)
     for (name, decoder), values in runs.items():
+        report(f"Summarizing {name}/{decoder}")
         tf = metrics.evaluate(values["teacher"], **metrics.EXECUTED_TEACHER)
         sf = metrics.evaluate(values["self"], **metrics.SELF)
         camera = metrics.evaluate(values["teacher_camera"], **metrics.TEACHER)

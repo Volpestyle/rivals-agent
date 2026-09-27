@@ -226,13 +226,37 @@ def test_threshold_calibration_masks_unknowns_and_resets_runs():
         return {"valid": valid, "target": target}, pred
 
     run = [example(.4, 1), example(.1, 0), example(.4, 1)]
-    result = choose_thresholds([run, [example(.4, 1)]], [True] * vocab.N, grid=(.25, .5, .75))
-    assert result["thresholds"] == [.25] * vocab.N
+    result = choose_thresholds([run, [example(.4, 1)]], [True] * vocab.N)
+    assert result["thresholds"] == [.4] * vocab.N
     assert result["true_presses"] == [3] * vocab.N
-    assert result["pred_presses_by_threshold"][0] == [3] * vocab.N
+    assert [v["calibrated"]["presses"] for v in result["actions"].values()] == [3] * vocab.N
     unknown = choose_thresholds([[example(.4, 1, known=False)]], [True] * vocab.N)
     assert unknown["known_steps"] == [0] * vocab.N
     assert unknown["thresholds"] == [.5] * vocab.N
+
+
+def test_exact_threshold_search_matches_exhaustive_executor_boundaries():
+    import numpy as np
+    from policy.range_bc.explore_thresholds import choose, vector_counts
+
+    rng = np.random.default_rng(9184)
+    for n in (1, 7, 100):
+        for _ in range(12):
+            p = rng.choice([0., .1, .25, .5, .75, .9, 1.], size=(n, 3)).astype(np.float64)
+            previous = np.r_[-1., p[:-1, 0]]
+            previous[::7] = -1.
+            known = rng.integers(0, 2, n).astype(bool)
+            target = int(rng.integers(0, n + 1))
+            threshold, count, _ = choose(p, previous, known, target)
+            assert vector_counts(p, previous, known, known, threshold)["presses"] == count
+            edges = np.unique(np.r_[0., 1., p.ravel()])
+            candidates = np.unique(np.r_[edges, np.nextafter(edges[edges < 1], np.inf), .5])
+            expected = min((abs(vector_counts(p, previous, known, known, t)["presses"] - target),
+                            abs(t - .5), t) for t in candidates)
+            assert (abs(count - target), abs(threshold - .5), threshold) == expected
+    # A live zero-positive action is calibrated by the same rule, not forced to .5.
+    threshold, count, _ = choose(np.array([[.8, 0., 0.]]), np.array([-1.]), np.array([True]), 0)
+    assert threshold == np.nextafter(.8, np.inf) and count == 0
 
 
 def camera_arrays():

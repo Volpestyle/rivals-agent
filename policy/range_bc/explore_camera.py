@@ -5,6 +5,8 @@ each decoder. No future frame is an input. The zero-feature ablation is a
 distribution-shift sensitivity test, not a separately trained history-only model.
 """
 
+import time
+
 import torch
 import torch.nn.functional as F
 
@@ -50,7 +52,7 @@ def sent_prediction(probabilities, camera, previous, live_mask, thresholds, deco
 
 
 @torch.no_grad()
-def predict_suite(model, arrays, live_mask, conditions, *, device="mps", chunk=steps.WINDOW):
+def predict_suite(model, arrays, live_mask, conditions, *, device="mps", chunk=steps.WINDOW, progress=None):
     """TF and self-fed runs for {(threshold-name, camera-decoder): thresholds}.
 
     Visual encoders run once. The self-fed core uses a batch of independent
@@ -60,6 +62,7 @@ def predict_suite(model, arrays, live_mask, conditions, *, device="mps", chunk=s
     model.eval()
     names = list(conditions)
     count = len(names)
+    reported = time.perf_counter()
     results = {name: {"teacher": [], "teacher_camera": [], "self": []} for name in names}
     for arr in arrays:
         pk = train._pitch_known(arr.session)
@@ -71,6 +74,9 @@ def predict_suite(model, arrays, live_mask, conditions, *, device="mps", chunk=s
             sf_held = [[0] * vocab.N for _ in names]
             outputs = {name: {"teacher": [], "teacher_camera": [], "self": []} for name in names}
             for start in range(a, b, chunk):
+                if progress and time.perf_counter() - reported >= 30:
+                    progress(f"Six decode rollouts: {arr.session.session_id}, row {start}, run end {b}")
+                    reported = time.perf_counter()
                 rows = torch.arange(start, min(b, start + chunk))
                 frames = (x[None].to(device) for x in train._frames(model, arr, rows))
                 prev = arr.prev[rows][None].to(device)
