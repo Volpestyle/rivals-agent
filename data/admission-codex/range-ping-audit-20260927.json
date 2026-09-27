@@ -1,0 +1,95 @@
+{
+  "method": "Input-log-only audit of unsealed, unpaired, assembled range train whole sessions selected before input access; no media or held-out payloads opened. Range policy unchanged; lead decides implications.",
+  "allowlist": {
+    "path": "data\\admission-codex\\range-ping-audit-allowlist-20260927.json",
+    "sha256": "22ad5923a41c7c92777d36a7eac094a530863a46646e4bcd4218d805af1a512b"
+  },
+  "results": [
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "button3_down_count": 0,
+      "hold_count": 0,
+      "accepted_overlaps": [],
+      "inputs_sha256": "f6188c34c850eab8e4fd4a1199513b2b01342f6e0fe1516801bddf0273f40990",
+      "frozen_input_pin_matches": true
+    },
+    {
+      "session": "20260923T171533-187Z-33696-5",
+      "button3_down_count": 0,
+      "hold_count": 0,
+      "accepted_overlaps": [],
+      "inputs_sha256": "07191e90725c55916a4c003e8f994ec214a1e46f9832e23cb6ab201b81d60b1e",
+      "frozen_input_pin_matches": true
+    },
+    {
+      "session": "20260923T200129-346Z-33696-6",
+      "button3_down_count": 0,
+      "hold_count": 0,
+      "accepted_overlaps": [],
+      "inputs_sha256": "bb6a024736d9b9db26559c5c2403a51994c31a0e4780a6432362baa2f40bbfb4",
+      "frozen_input_pin_matches": true
+    },
+    {
+      "session": "20260923T205528-900Z-45572-3",
+      "button3_down_count": 0,
+      "hold_count": 0,
+      "accepted_overlaps": [],
+      "inputs_sha256": "f7008ad72f343167eb560fc2c598065e415a51b8a7fb63f684cb4c5acd862163",
+      "frozen_input_pin_matches": true
+    },
+    {
+      "session": "20260924T232304-170Z-12024-1",
+      "button3_down_count": 0,
+      "hold_count": 0,
+      "accepted_overlaps": [],
+      "inputs_sha256": "e906c61f2a0850ae88836c30c38297106148bd848fab295578de86d040cfe847",
+      "frozen_input_pin_matches": true
+    },
+    {
+      "session": "20260925T021320-371Z-7804-1",
+      "button3_down_count": 0,
+      "hold_count": 0,
+      "accepted_overlaps": [],
+      "inputs_sha256": "6fdf4fecd5b4a20922b050385f425c1d09b4cccb2a3b908cad2bb89501615dac",
+      "frozen_input_pin_matches": true
+    },
+    {
+      "session": "20260925T025230-605Z-7804-2",
+      "button3_down_count": 0,
+      "hold_count": 0,
+      "accepted_overlaps": [],
+      "inputs_sha256": "d46cddf219e5b6dcc49945f4b1555d8f0e454a475cc93a05c5b33910d31b1126",
+      "frozen_input_pin_matches": true
+    },
+    {
+      "session": "20260925T203745-207Z-49728-2",
+      "button3_down_count": 0,
+      "hold_count": 0,
+      "accepted_overlaps": [],
+      "inputs_sha256": "c2beba39e2a63bb055f806dfb1aaaa90d80a4822e961164113f91da6e2e6e85d",
+      "frozen_input_pin_matches": true
+    },
+    {
+      "session": "20260926T035932-508Z-63684-14",
+      "button3_down_count": 0,
+      "hold_count": 0,
+      "accepted_overlaps": [],
+      "inputs_sha256": "efe410e98bae89b7177dcd3d665a20b971781907f223db374f3b58ba76341c91",
+      "frozen_input_pin_matches": true
+    },
+    {
+      "session": "20260926T045729-166Z-79780-1",
+      "button3_down_count": 0,
+      "hold_count": 0,
+      "accepted_overlaps": [],
+      "inputs_sha256": "1a9f2086dca84ffceb1d96244f9a3936e671516e168e730f309e015a3683cbe2",
+      "frozen_input_pin_matches": true
+    }
+  ],
+  "totals": {
+    "sessions": 10,
+    "button3_downs": 0,
+    "accepted_overlaps": 0,
+    "sessions_with_accepted_overlap": 0
+  }
+}

@@ -1,0 +1,171 @@
+{
+  "registry_sha256": "1c9e2c671b14e9d1ea8bcefd4703668a039ecac946d2f5ece768746e67118a13",
+  "selected": [
+    {
+      "session": "20260923T051828-422Z-33696-1",
+      "inputs_path": "C:\\Users\\volpe\\Videos\\RivalsInput\\20260923T051828-422Z-33696-1\\inputs.jsonl",
+      "review_path": "data\\human\\sessions\\20260923T051828-422Z-33696-1\\review.json",
+      "freeze_path": "data\\human\\sessions\\20260923T051828-422Z-33696-1\\artifact-hashes.json"
+    },
+    {
+      "session": "20260923T171533-187Z-33696-5",
+      "inputs_path": "C:\\Users\\volpe\\Videos\\RivalsInput\\20260923T171533-187Z-33696-5\\inputs.jsonl",
+      "review_path": "data\\human\\sessions\\20260923T171533-187Z-33696-5\\review.json",
+      "freeze_path": "data\\human\\sessions\\20260923T171533-187Z-33696-5\\artifact-hashes.json"
+    },
+    {
+      "session": "20260923T200129-346Z-33696-6",
+      "inputs_path": "C:\\Users\\volpe\\Videos\\RivalsInput\\20260923T200129-346Z-33696-6\\inputs.jsonl",
+      "review_path": "data\\human\\sessions\\20260923T200129-346Z-33696-6\\review.json",
+      "freeze_path": "data\\human\\sessions\\20260923T200129-346Z-33696-6\\artifact-hashes.json"
+    },
+    {
+      "session": "20260923T205528-900Z-45572-3",
+      "inputs_path": "C:\\Users\\volpe\\Videos\\RivalsInput\\20260923T205528-900Z-45572-3\\inputs.jsonl",
+      "review_path": "data\\human\\sessions\\20260923T205528-900Z-45572-3\\review.json",
+      "freeze_path": "data\\human\\sessions\\20260923T205528-900Z-45572-3\\artifact-hashes.json"
+    },
+    {
+      "session": "20260924T232304-170Z-12024-1",
+      "inputs_path": "C:\\Users\\volpe\\Videos\\RivalsInput\\20260924T232304-170Z-12024-1\\inputs.jsonl",
+      "review_path": "data\\human\\sessions\\20260924T232304-170Z-12024-1\\review.json",
+      "freeze_path": "data\\human\\sessions\\20260924T232304-170Z-12024-1\\artifact-hashes.json"
+    },
+    {
+      "session": "20260925T021320-371Z-7804-1",
+      "inputs_path": "C:\\Users\\volpe\\Videos\\RivalsInput\\20260925T021320-371Z-7804-1\\inputs.jsonl",
+      "review_path": "data\\human\\sessions\\20260925T021320-371Z-7804-1\\review.json",
+      "freeze_path": "data\\human\\sessions\\20260925T021320-371Z-7804-1\\artifact-hashes.json"
+    },
+    {
+      "session": "20260925T025230-605Z-7804-2",
+      "inputs_path": "C:\\Users\\volpe\\Videos\\RivalsInput\\20260925T025230-605Z-7804-2\\inputs.jsonl",
+      "review_path": "data\\human\\sessions\\20260925T025230-605Z-7804-2\\review.json",
+      "freeze_path": "data\\human\\sessions\\20260925T025230-605Z-7804-2\\artifact-hashes.json"
+    },
+    {
+      "session": "20260925T203745-207Z-49728-2",
+      "inputs_path": "C:\\Users\\volpe\\Videos\\RivalsInput\\20260925T203745-207Z-49728-2\\inputs.jsonl",
+      "review_path": "data\\human\\sessions\\20260925T203745-207Z-49728-2\\review.json",
+      "freeze_path": "data\\human\\sessions\\20260925T203745-207Z-49728-2\\artifact-hashes.json"
+    },
+    {
+      "session": "20260926T035932-508Z-63684-14",
+      "inputs_path": "C:\\Users\\volpe\\Videos\\RivalsInput\\20260926T035932-508Z-63684-14\\inputs.jsonl",
+      "review_path": "data\\human\\sessions\\20260926T035932-508Z-63684-14\\review.json",
+      "freeze_path": "data\\human\\sessions\\20260926T035932-508Z-63684-14\\artifact-hashes.json"
+    },
+    {
+      "session": "20260926T045729-166Z-79780-1",
+      "inputs_path": "C:\\Users\\volpe\\Videos\\RivalsInput\\20260926T045729-166Z-79780-1\\inputs.jsonl",
+      "review_path": "data\\human\\sessions\\20260926T045729-166Z-79780-1\\review.json",
+      "freeze_path": "data\\human\\sessions\\20260926T045729-166Z-79780-1\\artifact-hashes.json"
+    }
+  ],
+  "skipped": [
+    {
+      "session": "20260922T032454-642Z-24328-1",
+      "reason": "no assembled whole-session freeze/review at canonical sessions path"
+    },
+    {
+      "session": "20260922T033319-205Z-24328-2",
+      "reason": "no assembled whole-session freeze/review at canonical sessions path"
+    },
+    {
+      "session": "20260923T053616-779Z-33696-2",
+      "reason": "not unsealed unpaired admitted range train candidate"
+    },
+    {
+      "session": "20260925T212646-322Z-49728-6",
+      "reason": "not unsealed unpaired admitted range train candidate"
+    },
+    {
+      "session": "20260926T002109-428Z-63684-2",
+      "reason": "not unsealed unpaired admitted range train candidate"
+    },
+    {
+      "session": "20260926T044958-507Z-63684-15",
+      "reason": "not unsealed unpaired admitted range train candidate"
+    },
+    {
+      "session": "20260926T002851-659Z-63684-3",
+      "reason": "not unsealed unpaired admitted range train candidate"
+    },
+    {
+      "session": "20260926T155737-285Z-116800-1",
+      "reason": "not unsealed unpaired admitted range train candidate"
+    },
+    {
+      "session": "20260926T153835-237Z-111496-2",
+      "reason": "not unsealed unpaired admitted range train candidate"
+    },
+    {
+      "session": "20260926T153812-936Z-111496-1",
+      "reason": "not unsealed unpaired admitted range train candidate"
+    },
+    {
+      "session": "20260926T005304-628Z-63684-4",
+      "reason": "not unsealed unpaired admitted range train candidate"
+    },
+    {
+      "session": "20260926T010620-721Z-63684-5",
+      "reason": "not unsealed unpaired admitted range train candidate"
+    },
+    {
+      "session": "20260926T161008-331Z-116800-2",
+      "reason": "not unsealed unpaired admitted range train candidate"
+    },
+    {
+      "session": "20260926T012552-291Z-63684-6",
+      "reason": "not unsealed unpaired admitted range train candidate"
+    },
+    {
+      "session": "20260926T013711-125Z-63684-7",
+      "reason": "not unsealed unpaired admitted range train candidate"
+    },
+    {
+      "session": "20260926T015610-960Z-63684-8",
+      "reason": "not unsealed unpaired admitted range train candidate"
+    },
+    {
+      "session": "20260926T021321-378Z-63684-9",
+      "reason": "not unsealed unpaired admitted range train candidate"
+    },
+    {
+      "session": "20260926T034805-307Z-63684-13",
+      "reason": "not unsealed unpaired admitted range train candidate"
+    },
+    {
+      "session": "20260927T051206-888Z-150600-4",
+      "reason": "not unsealed unpaired admitted range train candidate"
+    },
+    {
+      "session": "20260927T052001-827Z-150600-5",
+      "reason": "not unsealed unpaired admitted range train candidate"
+    },
+    {
+      "session": "20260927T053118-260Z-150600-6",
+      "reason": "not unsealed unpaired admitted range train candidate"
+    },
+    {
+      "session": "20260927T053838-153Z-150600-7",
+      "reason": "not unsealed unpaired admitted range train candidate"
+    },
+    {
+      "session": "20260927T055006-068Z-150600-8",
+      "reason": "not unsealed unpaired admitted range train candidate"
+    },
+    {
+      "session": "20260927T060021-195Z-150600-10",
+      "reason": "not unsealed unpaired admitted range train candidate"
+    },
+    {
+      "session": "20260927T061107-953Z-150600-11",
+      "reason": "not unsealed unpaired admitted range train candidate"
+    },
+    {
+      "session": "20260927T061900-143Z-150600-12",
+      "reason": "not unsealed unpaired admitted range train candidate"
+    }
+  ]
+}
