@@ -176,7 +176,7 @@ def main():
                                    "sha256": arr.manifest[f"{name}_sha256"]})
         identity = {"graph": GRAPH, "inputs_sha256": INPUTS, "manifest_sha256": sha(args.manifest),
                     "code_sha256": {name: sha(Path(__file__).parent / name)
-                                    for name in ("spatial_yaw.py", "spatial_yaw_cache.py")}}
+                                    for name in ("spatial_yaw.py", "spatial_yaw_cache.py", "spatial_yaw_data.py")}}
         args.out.mkdir(parents=True, exist_ok=True)
         if (args.out / "identity.json").exists():
             train.require(json.loads((args.out / "identity.json").read_text()) == identity, "root identity differs")
@@ -203,11 +203,16 @@ def main():
             value = extract_session(arr, tower, dest, session_identity, report, stop=args.stop_file)
             summary[arr.session.session_id] = {"receipt_sha256": sha(dest / "completed.json"),
                                               "count": len(ids), "seconds": value["seconds"]}
-        result = {"identity": identity, "exit": 0, "sessions": summary, "completed_at": time.time()}
+        from .spatial_yaw_data import export_labels
+        report("Export authenticated labels for the shared-library fits")
+        export_labels(arrays, dev, args.out)
+        result = {"identity": identity, "exit": 0, "sessions": summary, "completed_at": time.time(),
+                  "dataset_sha256": sha(args.out / "dataset.json")}
         if (args.out / "complete.json").exists():
             saved = json.loads((args.out / "complete.json").read_text(encoding="utf-8"))
             train.require(saved["identity"] == identity and saved["exit"] == 0
-                          and saved["sessions"] == summary, "completed root receipt differs")
+                          and saved["sessions"] == summary
+                          and saved["dataset_sha256"] == result["dataset_sha256"], "completed root receipt differs")
         else:
             write_new(args.out / "complete.json", result)
         write(args.job_name, stage="done", progress="Both grids verified for all 325004 frames; cloud spend $0")
