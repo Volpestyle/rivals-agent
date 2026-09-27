@@ -33,6 +33,55 @@ LOCKS = ("uv.lock", "policy/range_bc/cm3-requirements.txt", "policy/range_bc/cm3
          "policy/range_bc/cm3-execution-constraints.txt", "policy/range_bc/cm3-macos-arm64.lock",
          "policy/range_bc/cm3-linux-x86_64.lock")
 require = training.require
+MOUNT_ROOTS = ("/inputs", "/outputs")
+MODAL_VOLUMES = Path("/__modal/volumes")
+
+
+def logical_path(path, *, resolve_local=True):
+    """Keep approved Modal aliases in references; retain local-path behavior elsewhere."""
+    path = Path(path)
+    for root in map(Path, MOUNT_ROOTS):
+        if path.is_relative_to(root):
+            require(".." not in path.parts, "mount path traversal")
+            child = root
+            for part in path.relative_to(root).parts:
+                child /= part
+                require(not child.is_symlink(), "child symlink in mount namespace")
+            return path
+    return path.resolve() if resolve_local else path
+
+
+def check_namespace(receipt, ref):
+    """After receipt hash authentication, bind logical aliases to exact volume IDs."""
+    def paths(value, key=None):
+        if isinstance(value, dict):
+            for name, child in value.items():
+                yield from paths(child, name)
+        elif isinstance(value, list):
+            for child in value:
+                yield from paths(child)
+        elif isinstance(value, str) and (Path(value).is_absolute() or key in ("path", "output", "cache", "directory")):
+            yield Path(value)
+    named = list(paths(receipt)) + [Path(ref["path"])]
+    mounts = receipt.get("context", {}).get("mounts", receipt.get("mounts"))
+    if mounts is None:
+        require(not any(p.is_relative_to(root) for p in named for root in (*MOUNT_ROOTS, MODAL_VOLUMES)),
+                "Modal volume pins required")
+        return
+    require(isinstance(mounts, dict) and set(mounts) == set(MOUNT_ROOTS), "both Modal volume pins required")
+    targets = {}
+    for alias, volume in mounts.items():
+        require(isinstance(volume, str) and re.fullmatch(r"vo-[a-zA-Z0-9]+", volume), "invalid volume ID")
+        root, expected = Path(alias), MODAL_VOLUMES / volume
+        require(root.is_symlink() and root.readlink() == expected and root.resolve(strict=True) == expected
+                and expected.is_dir() and not expected.is_symlink(), "mount differs from pinned volume")
+        targets[root] = expected
+    require(len(set(mounts.values())) == 2, "input and output volumes must differ")
+    for path in named:
+        root = next((r for r in targets if path.is_relative_to(r)), None)
+        require(root is not None, "path outside logical mount namespace")
+        path = logical_path(path)
+        require(path.resolve(strict=False) == targets[root] / path.relative_to(root), "mount path escaped pinned volume")
 
 
 def sha(path):
@@ -57,8 +106,9 @@ def pinned(ref):
     require(isinstance(ref, dict) and set(ref) == {"path", "sha256"}, "pinned file reference required")
     require(Path(ref["path"]).is_absolute(), "absolute pinned path required")
     require(re.fullmatch("[0-9a-f]{64}", ref["sha256"]) is not None, "invalid receipt digest")
-    require(sha(ref["path"]) == ref["sha256"], "receipt/file hash mismatch")
-    return Path(ref["path"])
+    path = logical_path(ref["path"], resolve_local=False)
+    require(sha(path) == ref["sha256"], "receipt/file hash mismatch")
+    return path
 
 
 def document(ref):
@@ -66,11 +116,13 @@ def document(ref):
 
 
 def reference(path):
-    return {"path": str(Path(path).resolve()), "sha256": sha(path)}
+    path = logical_path(path)
+    return {"path": str(path), "sha256": sha(path)}
 
 
 def write_json(path, value):
-    with Path(path).open("x", encoding="utf-8", newline="\n") as stream:
+    path = logical_path(path, resolve_local=False)
+    with path.open("x", encoding="utf-8", newline="\n") as stream:
         json.dump(value, stream, sort_keys=True, indent=2, allow_nan=False)
         stream.write("\n")
     return reference(path)
@@ -139,11 +191,13 @@ def authenticate(stage, ref, *, runtime=True):
     require(receipt["format"] == "cm3-stage-approval-v1" and receipt["approved_by"] == "herdr-lead",
             "lead stage approval required")
     require(receipt["stage"] == stage and stage in STAGES, "wrong stage")
+    check_namespace(receipt, ref)
     context = receipt["context"]
     fields = {"amendment", "device", "hardware", "software", "code", "implementation_review", "judge", "judge_tests",
               "registry", "denylist", "patch_equivalence", "sidecar_manifest", "sidecar_reader_sha256",
               "assets", "dev_workload", "sources"}
-    require(set(context) == fields | ({"mps_A"} if context.get("device") == "mps" else set()),
+    require(set(context) == fields | ({"mps_A"} if context.get("device") == "mps" else set())
+            | ({"mounts"} if "mounts" in context else set()),
             "incomplete context or caller-supplied weights/statistics")
     require(Path(receipt["output"]).is_absolute(), "absolute immutable output required")
     identity = cm3.digest(context)
@@ -522,7 +576,7 @@ def fit_result(ref, context, *, arm, seed, purpose="registered"):
     require(0 <= result["elapsed_stage_seconds"] <= approval["budget"]["stage_seconds"]
             and result["elapsed_total_seconds"] >= approval["budget"]["spent_seconds"] + result["elapsed_stage_seconds"],
             "per-fit elapsed budget mismatch")
-    require(Path(ref["path"]).resolve() == Path(approval["output"]).resolve() / "result.json", "wrong attempt output")
+    require(logical_path(ref["path"]) == logical_path(approval["output"]) / "result.json", "wrong attempt output")
     require(not (Path(approval["output"]) / "INCOMPLETE.json").exists(), "interrupted attempt")
     details = document(result["artifacts"]["details"])
     if arm != "A" or context["device"] == "cuda":
@@ -794,7 +848,7 @@ def _fit_one(receipt, inputs, freeze, backend, output, measurement):
 def run(stage, receipt_path, receipt_sha256, *, arm=None, seed=None):
     """Budget supervisor owns only its child. A killed/failed stage never emits PASS."""
     started = time.monotonic()
-    ref = {"path": str(Path(receipt_path).resolve()), "sha256": receipt_sha256}
+    ref = {"path": str(logical_path(receipt_path)), "sha256": receipt_sha256}
     if stage == "fit":
         header = document(ref)
         require((arm, seed) == (header["arm"], header["seed"]), "CLI arm/seed differs from receipt")
@@ -825,9 +879,10 @@ def run(stage, receipt_path, receipt_sha256, *, arm=None, seed=None):
 def verify_matrix(receipt_path, receipt_sha256):
     """Mandatory pre-judge check; no model load, fitting or policy selection."""
     started = time.monotonic()
-    ref = {"path": str(Path(receipt_path).resolve()), "sha256": receipt_sha256}
+    ref = {"path": str(logical_path(receipt_path)), "sha256": receipt_sha256}
     receipt = document(ref)
     require(receipt["format"] == "cm3-verify-approval-v1" and receipt["approved_by"] == "herdr-lead", "verification approval")
+    check_namespace(receipt, ref)
     require(Path(receipt["output"]).is_absolute() and not Path(receipt["output"]).exists(), "new absolute verification output required")
     budget = receipt["budget"]
     require(budget["approved_by"] == "herdr-lead" and 0 < budget["cap_seconds"] <= 57600
@@ -842,6 +897,7 @@ def verify_matrix(receipt_path, receipt_sha256):
         require(key in expected and key not in found, "duplicate/unknown matrix fit")
         approval = document(result["approval"])
         context = approval["context"]
+        require(context.get("mounts") == receipt.get("mounts"), "matrix mount binding differs")
         require(result["context_sha256"] == receipt["context_sha256"], "mixed matrix context")
         fit_result(ref, context, arm=key[0], seed=key[1], purpose=key[2])
         pins = (result["hardware"], result["code_sha256"], result["software_sha256"])
