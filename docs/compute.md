@@ -68,7 +68,7 @@ so give cloud boxes 8 CPUs or more.
   device. They use their own app and volume, never round 3's, with a hard guard and proven teardown.
 - A confirm-track fan-out (round 3's `handoff/modal/fanout/`) calls only the reviewed entry point
   (`policy/range_bc/cm3_run.py fit --arm --seed`), one fit per call, each authenticated by a lead-approved receipt.
-  It never retries training automatically, and it stays disabled until its independent review lands.
+  It never retries training automatically. The harness itself is launch plumbing, covered in "The two experiment tracks".
 
 ## The two experiment tracks
 
@@ -81,6 +81,26 @@ so give cloud boxes 8 CPUs or more.
   extraction → fits) in `approvals.json`, and the judge's reading and the evidence land in the repo and on the Linear issue.
 - Independent review is always required for code that sends live input, and for code that decides what enters a training
   or evaluation set. Prefer a reviewer from the other model family.
+- **Launch plumbing: fix, run, review afterwards** (James, 2026-09-27; decided after a night of round-3 launch fixes
+  that each cost a full review cycle and trained nothing).
+  - **What counts as plumbing.** Code that only moves, mounts, orchestrates, reports or refuses:
+    - mount and namespace handling, wrapper and chain drivers, collection;
+    - job status, teardown and watchdogs;
+    - runtime-identity checks that decide whether a run may start.
+  - **How it works.** The owner fixes it and runs the owner's own tests, and the lead approves the stage receipt as
+    usual. The run then goes ahead. Independent review follows, on the delta, before the stage's result is accepted
+    into a verdict.
+  - **Results are provisional until that review lands.** A finding that could have changed data, numbers or spend
+    means a rerun.
+  - **Not plumbing, so reviewed before any run:**
+    - anything that selects or weights training or evaluation data;
+    - model, loss or metric code;
+    - the judge;
+    - anything that changes numerics (seeds, precision, determinism settings);
+    - spend caps and budget stops;
+    - live game input.
+  - **Pre-registration pins** (for example the §11 runtime identity) still change only through a lead-approved
+    pre-result `-aN` amendment, which records the change; it no longer waits on a pre-run review.
 
 ## Seeing what's running
 

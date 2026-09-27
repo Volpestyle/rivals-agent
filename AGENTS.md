@@ -119,7 +119,9 @@ co-leads route scope decisions through that lead. A status request alone creates
   game, and code that decides what enters a training or evaluation set, gets a read-only
   review by an agent outside the lane (preferably another model family) before it is relied
   on; the lead verifies each finding before dispatching a fix to the owning lane. A lane's
-  own tests and report are evidence, not a review.
+  own tests and report are evidence, not a review. Launch plumbing (mounts, wrappers, chain drivers, status, teardown,
+  runtime-identity refusals) is fixed and run first and reviewed afterwards, with results provisional until then;
+  `docs/compute.md`, "The two experiment tracks", draws the line.
 - Several agents often share this checkout. Edit only the paths your brief names, and
   load the `shared-checkout` skill before committing.
 - **Frozen review packets.** A lane note whose current bytes are pinned by a review receipt or a freeze
