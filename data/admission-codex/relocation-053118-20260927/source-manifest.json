@@ -1,0 +1,57 @@
+{
+ "session": "20260927T053118-260Z-150600-6",
+ "authority": {
+  "path": "docs/evidence/idm-match-admission-053118-20260927/receipt/match-admission-053118.accepted.json",
+  "sha256": "90694961f689c8a5040c679b48349d4b14b049e9566eec10b56a339ee6a8260c"
+ },
+ "files": [
+  {
+   "windows_path": "C:/Users/volpe/Videos/2026-09-27 00-31-18.mkv",
+   "mac_path": "/Users/james/dev/idm-match-data/originals/2026-09-27 00-31-18.mkv",
+   "bytes": 4175625602,
+   "expected_sha256": "a6f27e3ef6cf9ad6026a24dd01e56224dbccdc178ecc6b2d9158ee058d1c63a9",
+   "partial_path": "/Users/james/dev/idm-match-data/originals/2026-09-27 00-31-18.mkv.admission-20260927.part",
+   "windows_sha256": "a6f27e3ef6cf9ad6026a24dd01e56224dbccdc178ecc6b2d9158ee058d1c63a9"
+  },
+  {
+   "windows_path": "C:/Users/volpe/Videos/RivalsInput/20260927T053118-260Z-150600-6/metadata.json",
+   "mac_path": "/Users/james/dev/idm-match-data/originals/20260927T053118-260Z-150600-6/metadata.json",
+   "bytes": 1122,
+   "expected_sha256": "19f7c56bd82a5bd87342e97654680a7e45ddb4e265f31ed521d0f80ae657eac1",
+   "partial_path": "/Users/james/dev/idm-match-data/originals/20260927T053118-260Z-150600-6/metadata.json.admission-20260927.part",
+   "windows_sha256": "19f7c56bd82a5bd87342e97654680a7e45ddb4e265f31ed521d0f80ae657eac1"
+  },
+  {
+   "windows_path": "C:/Users/volpe/Videos/RivalsInput/20260927T053118-260Z-150600-6/inputs.jsonl",
+   "mac_path": "/Users/james/dev/idm-match-data/originals/20260927T053118-260Z-150600-6/inputs.jsonl",
+   "bytes": 6665102,
+   "expected_sha256": "a4ac2595fccec697f78b68b482312739950835ab23ebab14aaac88295b12b1fe",
+   "partial_path": "/Users/james/dev/idm-match-data/originals/20260927T053118-260Z-150600-6/inputs.jsonl.admission-20260927.part",
+   "windows_sha256": "a4ac2595fccec697f78b68b482312739950835ab23ebab14aaac88295b12b1fe"
+  },
+  {
+   "windows_path": "C:/Users/volpe/Videos/RivalsInput/20260927T053118-260Z-150600-6/frames.csv",
+   "mac_path": "/Users/james/dev/idm-match-data/originals/20260927T053118-260Z-150600-6/frames.csv",
+   "bytes": 6633279,
+   "expected_sha256": "7e12feeac5c9c2d3477ab051746eab4a39db6482ff31f736340dc2a1f3e4532a",
+   "partial_path": "/Users/james/dev/idm-match-data/originals/20260927T053118-260Z-150600-6/frames.csv.admission-20260927.part",
+   "windows_sha256": "7e12feeac5c9c2d3477ab051746eab4a39db6482ff31f736340dc2a1f3e4532a"
+  },
+  {
+   "windows_path": "C:/Users/volpe/repos/rivals-agent/data/human/sessions/20260927T053118-260Z-150600-6/20260927T053118-260Z-150600-6.steps.jsonl",
+   "mac_path": "/Users/james/dev/idm-match-data/sessions/20260927T053118-260Z-150600-6/20260927T053118-260Z-150600-6.steps.jsonl",
+   "bytes": 8756323,
+   "expected_sha256": "99164a8ecc3ceb7148ab64f4a7ae0c36544d0d074a48a8ebedf3a68162c5d488",
+   "partial_path": "/Users/james/dev/idm-match-data/sessions/20260927T053118-260Z-150600-6/20260927T053118-260Z-150600-6.steps.jsonl.admission-20260927.part",
+   "windows_sha256": "99164a8ecc3ceb7148ab64f4a7ae0c36544d0d074a48a8ebedf3a68162c5d488"
+  },
+  {
+   "windows_path": "C:/Users/volpe/repos/rivals-agent/data/human/sessions/20260927T053118-260Z-150600-6/imported-demo.jsonl",
+   "mac_path": "/Users/james/dev/idm-match-data/sessions/20260927T053118-260Z-150600-6/imported-demo.jsonl",
+   "bytes": 23723304,
+   "expected_sha256": "3f788e0fbfbfd99921dd71e8e635f83f0ba742ec59e203200602d62b4fb93dc7",
+   "partial_path": "/Users/james/dev/idm-match-data/sessions/20260927T053118-260Z-150600-6/imported-demo.jsonl.admission-20260927.part",
+   "windows_sha256": "3f788e0fbfbfd99921dd71e8e635f83f0ba742ec59e203200602d62b4fb93dc7"
+  }
+ ]
+}

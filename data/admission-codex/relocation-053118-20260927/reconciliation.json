@@ -1,0 +1,71 @@
+{
+  "session": "20260927T053118-260Z-150600-6",
+  "status": "verified",
+  "at": "2026-09-27T22:40:51.878638+00:00",
+  "authority": {
+    "path": "docs/evidence/idm-match-admission-053118-20260927/receipt/match-admission-053118.accepted.json",
+    "sha256": "90694961f689c8a5040c679b48349d4b14b049e9566eec10b56a339ee6a8260c"
+  },
+  "inputs": {
+    "run.json": "727680a8947b301dc089a586b8464b35860fb4be1ebc96c187d6405fb22cbdd7",
+    "source-manifest.json": "fa1e91adde8446321e91288ad3e8efdfbd2aa649b3d9ec2cb47a3d14d0599706",
+    "relocation-053118-mac.json": "e3352751a6534086c5e7295f9193ec272e3eea5c26833b090ba78c8ac682183b"
+  },
+  "files": [
+    {
+      "path": "/Users/james/dev/idm-match-data/originals/2026-09-27 00-31-18.mkv",
+      "bytes": 4175625602,
+      "sha256": "a6f27e3ef6cf9ad6026a24dd01e56224dbccdc178ecc6b2d9158ee058d1c63a9",
+      "source_destination_hash_agreement": true,
+      "accepted_or_frozen_pin_agreement": true,
+      "final_remote_size_verified": true,
+      "partial_absent": true
+    },
+    {
+      "path": "/Users/james/dev/idm-match-data/originals/20260927T053118-260Z-150600-6/metadata.json",
+      "bytes": 1122,
+      "sha256": "19f7c56bd82a5bd87342e97654680a7e45ddb4e265f31ed521d0f80ae657eac1",
+      "source_destination_hash_agreement": true,
+      "accepted_or_frozen_pin_agreement": true,
+      "final_remote_size_verified": true,
+      "partial_absent": true
+    },
+    {
+      "path": "/Users/james/dev/idm-match-data/originals/20260927T053118-260Z-150600-6/inputs.jsonl",
+      "bytes": 6665102,
+      "sha256": "a4ac2595fccec697f78b68b482312739950835ab23ebab14aaac88295b12b1fe",
+      "source_destination_hash_agreement": true,
+      "accepted_or_frozen_pin_agreement": true,
+      "final_remote_size_verified": true,
+      "partial_absent": true
+    },
+    {
+      "path": "/Users/james/dev/idm-match-data/originals/20260927T053118-260Z-150600-6/frames.csv",
+      "bytes": 6633279,
+      "sha256": "7e12feeac5c9c2d3477ab051746eab4a39db6482ff31f736340dc2a1f3e4532a",
+      "source_destination_hash_agreement": true,
+      "accepted_or_frozen_pin_agreement": true,
+      "final_remote_size_verified": true,
+      "partial_absent": true
+    },
+    {
+      "path": "/Users/james/dev/idm-match-data/sessions/20260927T053118-260Z-150600-6/20260927T053118-260Z-150600-6.steps.jsonl",
+      "bytes": 8756323,
+      "sha256": "99164a8ecc3ceb7148ab64f4a7ae0c36544d0d074a48a8ebedf3a68162c5d488",
+      "source_destination_hash_agreement": true,
+      "accepted_or_frozen_pin_agreement": true,
+      "final_remote_size_verified": true,
+      "partial_absent": true
+    },
+    {
+      "path": "/Users/james/dev/idm-match-data/sessions/20260927T053118-260Z-150600-6/imported-demo.jsonl",
+      "bytes": 23723304,
+      "sha256": "3f788e0fbfbfd99921dd71e8e635f83f0ba742ec59e203200602d62b4fb93dc7",
+      "source_destination_hash_agreement": true,
+      "accepted_or_frozen_pin_agreement": true,
+      "final_remote_size_verified": true,
+      "partial_absent": true
+    }
+  ],
+  "note": "Reconciled recorded source and destination hashes against current accepted receipt and frozen raw pins. Fresh remote stat confirms final sizes and no partials; no redundant media hash or decode."
+}
