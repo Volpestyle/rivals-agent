@@ -1,0 +1,10 @@
+# NitroGen confirmation and follow-up evidence
+
+- [Confirmation report](confirmation-report.md): **CONFIRMED** under the unchanged statistical rules, reviewed A3 judge `66830ce6`; candidate TRAIN-cutoff F1 0.302564 at 0.932194x human rate. Aggregate camera beats zero by 3.39%, but yaw still loses to zero and the gain is pitch-driven. Main result landed `52e6376`; the lead posted it on VUH-1346.
+- [A3 preregistration](preregistration-a3.md): corrects the malformed 65-character manifest pin only. Historical judge `6f2187dd` stays byte-intact; reviewer independently verified the actual manifest and all checkpoint prefixes before any numerical result was inspected.
+- [Strict joint cold split](confirmation-report-addendum-cold-onsets.md): exploratory, **uninformative for initiation** because it has only 5 cold press targets at 0.5 s and none at 1 s. It does not reassure about live independence.
+- [Per-action onset split](confirmation-report-addendum-action-onsets.md): exploratory, other activity allowed. At 1 s / 2 s, 977 / 577 onset presses; candidate onset F1 0.134030 / 0.122656 vs control 0.003740 / 0.005151, but macro recall only 9.1% / 8.2%. Late-match sensitivity leaves visual-echo risk unresolved.
+- [30-second replay](offline-predictions.mp4) and [report](offline-replay-report.md): James/H1/NitroGen predictions on the same recorded frames, explicitly not autonomous gameplay. Landed `0f018dd`; [parameterised renderer usage](replay-usage.md), spec and checkpoint hashes retained.
+- [Exact cumulative lane spend REPORT](explore-spend-report-20260927.json): $49.026403877872901, outstanding cloud holds $0. This replaces the earlier rounded cumulative estimate, is not an invoice or verified balance, and excludes other lanes/storage. Raw source receipts are archived.
+
+All six original cloud apps are terminal. Mac evaluation, replay and both exploratory audits completed with exit 0; Mac slot explicitly released to lead and IDM. No refit, re-extraction, new cloud run, live-game input or sealed read was used for these follow-ups. The yaw proposal remains offline research; no new paid comparison is authorized.
