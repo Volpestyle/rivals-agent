@@ -1,0 +1,9 @@
+{
+  "status": "STAGED_NOT_LAUNCHED",
+  "files": 169,
+  "inventory_sha256": "348fb00d7d501f6b0d97bc15cac6917975150e484c9a1fe9c974af313fa3ade5",
+  "manifest_sha256": "2949209223e3afb08732b47494cfc38c04b81f78f587908bb9a6ed62b944ea18",
+  "media_opened": false,
+  "decode_started": false,
+  "condition": "After final range verification and explore dual-grid release; one match at a time."
+}

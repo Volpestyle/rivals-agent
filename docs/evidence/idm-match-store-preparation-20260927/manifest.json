@@ -1,0 +1,79 @@
+{
+  "scope": "EXPLORATORY",
+  "code_commit": "39f8365",
+  "sessions": [
+    {
+      "session_id": "20260927T051206-888Z-150600-4",
+      "admission": {
+        "path": "docs/evidence/idm-match-admission-051206-20260927/receipt/match-admission-051206.accepted-a1.json",
+        "sha256": "1aec79937aa7dca19cb6526b5d7c9ffdcb2ba6a53c7c09fb972edf6fe0d5325e"
+      },
+      "relocation": {
+        "path": "/Users/james/dev/idm-data/match-stores-39f8365/receipts/20260927T051206-888Z-150600-4.relocation.json",
+        "sha256": "06d9318072f88fd765c7a2363a28c4aec4581f5781e7a7b6cab9030dcde0054e"
+      },
+      "video": "/Users/james/dev/idm-match-data/originals/2026-09-27 00-12-06.mkv",
+      "targets": {
+        "path": "/Users/james/dev/idm-match-data/targets/expanded-current-8e34383/20260927T051206-888Z-150600-4/20260927T051206-888Z-150600-4.idm.jsonl",
+        "sha256": "6f2d688ddb3479cda839f763d0bd2dc0b273d05f79657672f1b4b3aac0e0176f"
+      },
+      "steps": {
+        "path": "/Users/james/dev/idm-match-data/sessions/20260927T051206-888Z-150600-4/20260927T051206-888Z-150600-4.steps.jsonl",
+        "sha256": "058c5293dc3152b9a8edc5299192b27d59444b11badf994c2cca25e0344fadaf"
+      },
+      "demo": {
+        "path": "/Users/james/dev/idm-match-data/sessions/20260927T051206-888Z-150600-4/imported-demo.jsonl",
+        "sha256": "f5f9c4dce9bc1f8ce3526ee29fb06cb216dec94207e0ded4594c1c58a3203409"
+      }
+    },
+    {
+      "session_id": "20260927T052001-827Z-150600-5",
+      "admission": {
+        "path": "docs/evidence/idm-match-pilot-052001-20260927/receipt/match-admission-052001.accepted-a1.json",
+        "sha256": "94701525132536f5794b4fefd9e06e6bdecdccb1f70c8bef0589a3b6af02c216"
+      },
+      "relocation": {
+        "path": "/Users/james/dev/idm-data/match-stores-39f8365/receipts/20260927T052001-827Z-150600-5.relocation.json",
+        "sha256": "7735756101758f33343e247cdc7550f11628241ee9e5307ab3921ed0971c43f4"
+      },
+      "video": "/Users/james/dev/idm-match-data/originals/2026-09-27 00-20-01.mkv",
+      "targets": {
+        "path": "/Users/james/dev/idm-match-data/a1-951cd9e/20260927T052001-827Z-150600-5/20260927T052001-827Z-150600-5.idm.jsonl",
+        "sha256": "bdb36216f6017ba345949c55d9a2874c2c08570739829150fd5b9ca1d07f2ebd"
+      },
+      "steps": {
+        "path": "/Users/james/dev/idm-match-data/a1-951cd9e/20260927T052001-827Z-150600-5/20260927T052001-827Z-150600-5.steps.jsonl",
+        "sha256": "2c25a3fc96fb7e5a3ec41b173e958b79fd14e76293b09ad9d4c842f2de11dcf8"
+      },
+      "demo": {
+        "path": "/Users/james/dev/idm-match-data/a1-951cd9e/20260927T052001-827Z-150600-5/imported-demo.jsonl",
+        "sha256": "f0fa88940e7190bd5ca74b083e2e790d814bdf20e705370a9eab3ef5c0f95d79"
+      }
+    },
+    {
+      "session_id": "20260927T053118-260Z-150600-6",
+      "admission": {
+        "path": "docs/evidence/idm-match-admission-053118-20260927/receipt/match-admission-053118.accepted.json",
+        "sha256": "90694961f689c8a5040c679b48349d4b14b049e9566eec10b56a339ee6a8260c"
+      },
+      "relocation": {
+        "path": "/Users/james/dev/idm-data/match-stores-39f8365/receipts/20260927T053118-260Z-150600-6.relocation.json",
+        "sha256": "e3352751a6534086c5e7295f9193ec272e3eea5c26833b090ba78c8ac682183b"
+      },
+      "video": "/Users/james/dev/idm-match-data/originals/2026-09-27 00-31-18.mkv",
+      "targets": {
+        "path": "/Users/james/dev/idm-match-data/targets/expanded-current-8e34383/20260927T053118-260Z-150600-6/20260927T053118-260Z-150600-6.idm.jsonl",
+        "sha256": "c443ea95bd037f9f276360eb1ecd805c4f823664c091a2a4065abb6e57b513b2"
+      },
+      "steps": {
+        "path": "/Users/james/dev/idm-match-data/sessions/20260927T053118-260Z-150600-6/20260927T053118-260Z-150600-6.steps.jsonl",
+        "sha256": "99164a8ecc3ceb7148ab64f4a7ae0c36544d0d074a48a8ebedf3a68162c5d488"
+      },
+      "demo": {
+        "path": "/Users/james/dev/idm-match-data/sessions/20260927T053118-260Z-150600-6/imported-demo.jsonl",
+        "sha256": "3f788e0fbfbfd99921dd71e8e635f83f0ba742ec59e203200602d62b4fb93dc7"
+      }
+    }
+  ],
+  "launch_condition": "Only after final range verification and explore dual-grid Mac release; one match at a time."
+}
