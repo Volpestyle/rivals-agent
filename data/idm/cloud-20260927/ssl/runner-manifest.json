@@ -1,0 +1,16 @@
+{
+  "scope": "EXPLORATORY",
+  "source_commit": "c2bef3e",
+  "cap_usd": 2,
+  "files": {
+    "ssl_driver.py": "3dcfb7064a8f78b324238f4c8d2584e2f332ce051f05c01bdc85e502cf776aac",
+    "modal_budget.py": "b5d2b6775dda8230fad4bfd8f52a5d1b8ac73c3290eefa18e73427294c209049",
+    "modal_lifecycle.py": "99969e7d4952f747eb65c997b73e03f9f8e2fb503a87609a190436114506358a",
+    "idm_worker.py": "065d0f2fffc6f0b9a2654306d6efef04021ab71dc979e2f277e613de87363df2",
+    "explore_mounts.py": "2c36e2537fc7abb1cf39802fdd0f07fcb80cb7adec3a63a8c67d516ec2e702a9",
+    "appcreate_gate.py": "2d076fa1c5908b11193a87838879bbd0498de515184a818d61f0586fac44c520",
+    "lifecycle.py": "17f1ef90df289c51b1f44b61bd2ec3113a64204ea624eaf81cdd9bb2c48a6c11",
+    "upload_ssl.py": "0f47e70dc78a552506263fc3227e642ac546665136b49d44d820d0f67c500afd",
+    "code.tar": "b02fac247bdb1134922acf8e5363e023d6dff755803d3977bb91be480fee7a3d"
+  }
+}
