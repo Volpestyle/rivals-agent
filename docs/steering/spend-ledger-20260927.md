@@ -16,6 +16,7 @@ for it twice. A lesson that lives only in a lane note hasn't been learned by the
 | Yaw 4x4 spatial readout | $2.57 | NEGATIVE and overfitting (train loss down, dev up); next is regularization or a smaller head | `docs/evidence/nitrogen-spatial-yaw-20260927/` |
 | Yaw 4x4 with dropout p=0.5 | about $2.4 | NEGATIVE: narrows the gap to the no-dropout control (1.886 against 1.908) but stays worse than the frozen base (1.773) and zero (1.735); the yaw-residual line is closed | `docs/evidence/nitrogen-spatial-yaw-20260927/`, 4d4da44 |
 | IDM press diagnostics | $2.98 | Train-calibrated thresholds lift button precision (Combo 16% to 42%, F1 0.48 against 0.01 chance) | `docs/lanes/idm-press-diagnostic-results-20260927.md` |
+| IDM full03, expanded refit (3 epochs, per-epoch checkpoints, guard v2) | ≈ $21.9 (metered delta) | Camera and press both improve on the pinned baseline (yaw MAE .2835 → .2488, pitch .2554 → .2359; Combo/Jump/Web precision .491/.421/.492); persistence is still better on camera; not Gate 2 | `docs/evidence/` full03 report (landing) |
 | IDM SSL smoke | $0.19 | Pipeline works; no science yet | IDM lane notes |
 | Round 3 (DINOv2 confirm), 36 apps | $6.04 | No model answer; parked after 18 h of launch failures | steering log; compute.md shakedown rule |
 
@@ -46,5 +47,6 @@ exploration is for.
 |---|---:|---:|---|---:|---|
 | 09-28 02:35 | $78.24 | $48.04 | v2 shakedown, two L40S apps, $0.48 all-in (frozen estimate, 0.10 overhead included); then IDM full03 ~$26.29 | ~$105.01 | Yes |
 | 09-28 02:51 | $78.33 | $48.13 | After the v2 shakedown PASS (two L40S apps; metered +$0.09 so far against the $0.48 estimate; Modal's meter can lag). Next: IDM full03, ~$26.29 | ~$104.62 | Yes |
+| 09-28 10:34 | $101.89 | $70.40 | After IDM full03 finished (stopped 15:30:57Z). Since 02:51, Ephemeral Apps rose $22.27 (full03 ≈ $21.9 plus the shakedown's lagged remainder) and Volumes $1.29 (storage for the retained 114 GB IDM input and ~70 finished-run output volumes). Nothing else is launched | $101.89 | Yes |
 
 `modal billing report` covers only complete days; use `modal billing summary` for the metered figure that includes today.
