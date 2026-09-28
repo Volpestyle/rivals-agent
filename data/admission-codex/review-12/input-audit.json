@@ -1,0 +1,58 @@
+{
+ "session": "20260927T061900-143Z-150600-12",
+ "input_sha256": "ff82f786bc76f62b8f404f73ac0212d8b3bef58792d93ca5b583f3805ddea004",
+ "evidence_sha256": "130b2b77a336ac553d763a1c6efe85cc3eefc92f511119bc63c32c8a4abe3dde",
+ "candidate_ids": [
+  "seg-002",
+  "seg-009",
+  "seg-016",
+  "seg-021",
+  "seg-029",
+  "seg-033",
+  "seg-036",
+  "seg-040"
+ ],
+ "candidate_ns": 406249983758,
+ "ui_key_down_count": 0,
+ "ui_key_down_events": [],
+ "ping_cut_overlap_count": 0,
+ "ping_cut_overlaps": [],
+ "key_down_counts": {
+  "87": 688,
+  "32": 235,
+  "68": 523,
+  "83": 145,
+  "65": 490,
+  "17": 3,
+  "16": 122,
+  "67": 29,
+  "70": 4,
+  "69": 30,
+  "86": 1,
+  "81": 2
+ },
+ "mouse_down_counts": {
+  "1": 48,
+  "2": 134,
+  "4": 24
+ },
+ "unbound_key_down_events": [
+  {
+   "segment": "seg-016",
+   "t_rel_s": 170.3793789,
+   "vk": 86
+  }
+ ],
+ "unbound_mouse_down_events": [],
+ "thank_you_comms_events": [],
+ "scroll_events": [],
+ "focus_events": [],
+ "ping_cuts_ns": [
+  [
+   558168172038400,
+   558170345313600,
+   "ui_key"
+  ]
+ ],
+ "note": "Keyboard 4 is thank-you comms, no cut and outside gameplay vocabulary. Native independent review still required."
+}
