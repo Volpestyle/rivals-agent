@@ -4,7 +4,7 @@ from pathlib import Path
 import time
 
 
-def exercise(base, *, device, seed, seconds=30, batch=8, window=96):
+def exercise(base, *, device, seed, seconds=60, batch=8, window=96):
     import torch
     from . import steps, vocab
     from .spatial_yaw_train import SpatialYawPolicy, tensor_digest
