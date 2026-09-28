@@ -635,3 +635,22 @@ A2 initially failed before inference on Path JSON serialization. Fix and complet
 The parameterised offline renderer/spec landed ec3a44f; [30 s video/report](../evidence/nitrogen-nohistory-confirm-20260927/offline-replay-report.md) landed 0f018dd. 900 frames, 30.000 s, 1536x800; same James-recorded policy-view frames across James/H1/NitroGen panels. Labelled offline predictions, not model gameplay. TRAIN cutoffs on this pre-pinned clip: H1 1 press/F1 0.022222, NitroGen 65/F1 0.370400, human 77 presses. Original full-cohort metrics remain authoritative.
 
 All Mac follow-ups ended with exit 0; slot explicitly released to lead and idm-owner after the per-action audit. No further compute queued. Exact unrounded cumulative lane REPORT is $49.026403877872901, cloud holds $0 (0d9e206); this replaces the previous approximate figure based on rounded chunk cost and is not a verified balance/invoice. Existing cloud launchers unchanged. No sealed data or live input used. Paid yaw work still awaits a new lead-approved brief.
+
+## Native-label full-policy feasibility, 2026-09-28 (CPU interim)
+
+Lead resumed VUH-1346 under the accepted IDM-to-policy priority note; IDM label
+qualification is no longer a prerequisite for sizing on existing native labels.
+The [feasibility note](../research/nitrogen/native-policy-feasibility-20260928.md)
+records the actual authenticated full NitroGen checkpoint: 25 coordinates,
+18 actions, 16 sampling iterations, tokenizer buttons-first, action_shift=3,
+pretraining FPS unspecified. Seven synthetic CPU contract groups passed; unknown
+coordinates require replacing upstream's all-known mask, and semantic aliases,
+opposite movement and within-bin taps prevent a globally lossless round trip.
+493,631,513 checkpoint elements; 468,440,089 trainable under released freeze rules;
+7.074 GiB is only the FP32 AdamW-state arithmetic floor, not measured peak VRAM.
+
+The live camera/FPS sitting took exclusive PC GPU ownership before any sampler
+started. Whole-sampler latency/memory and synthetic-update throughput remain
+PENDING explicit lead release. Prepared bounded benchmark is not launched. No
+Modal creates, dataset/sealed reads, live input, fit or paid proposal. Current
+camera calibration remains a target-validity prerequisite, not an IDM dependency.
