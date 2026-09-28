@@ -1,0 +1,837 @@
+{
+  "scope": "Sparse development values/cue coverage only, not whole-recording layout authorization",
+  "opencv": "5.0.0",
+  "numpy": "2.4.6",
+  "samples": [
+    {
+      "source": "live",
+      "pts": 102.504,
+      "timers": {
+        "centre": {
+          "text": "04:53",
+          "seconds": 293.0,
+          "fmt": "mmss",
+          "color": "white",
+          "score": 0.9282204508781433
+        },
+        "team_a": null,
+        "team_b": null
+      },
+      "layout": {
+        "layout": null,
+        "reason": "unfamiliar_or_absent_layout",
+        "live_score": -0.026376638561487198,
+        "spectator_score": 0.02433856390416622,
+        "prompt_score": 0.0,
+        "centre_timer": true,
+        "team_clock": false
+      }
+    },
+    {
+      "source": "live",
+      "pts": 107.504,
+      "timers": {
+        "centre": {
+          "text": "04:48",
+          "seconds": 288.0,
+          "fmt": "mmss",
+          "color": "white",
+          "score": 0.9196311831474304
+        },
+        "team_a": null,
+        "team_b": null
+      },
+      "layout": {
+        "layout": null,
+        "reason": "unfamiliar_or_absent_layout",
+        "live_score": 0.1254817545413971,
+        "spectator_score": 0.015157582238316536,
+        "prompt_score": 0.0,
+        "centre_timer": true,
+        "team_clock": false
+      }
+    },
+    {
+      "source": "live",
+      "pts": 112.504,
+      "timers": {
+        "centre": {
+          "text": "04:43",
+          "seconds": 283.0,
+          "fmt": "mmss",
+          "color": "white",
+          "score": 0.9115652441978455
+        },
+        "team_a": null,
+        "team_b": null
+      },
+      "layout": {
+        "layout": null,
+        "reason": "unfamiliar_or_absent_layout",
+        "live_score": 0.1378292292356491,
+        "spectator_score": -0.07258160412311554,
+        "prompt_score": 0.0,
+        "centre_timer": true,
+        "team_clock": false
+      }
+    },
+    {
+      "source": "live",
+      "pts": 117.504,
+      "timers": {
+        "centre": {
+          "text": "04:38",
+          "seconds": 278.0,
+          "fmt": "mmss",
+          "color": "white",
+          "score": 0.9325293898582458
+        },
+        "team_a": null,
+        "team_b": null
+      },
+      "layout": {
+        "layout": null,
+        "reason": "unfamiliar_or_absent_layout",
+        "live_score": 0.12003935873508453,
+        "spectator_score": -0.05417865514755249,
+        "prompt_score": 0.0,
+        "centre_timer": true,
+        "team_clock": false
+      }
+    },
+    {
+      "source": "live",
+      "pts": 122.504,
+      "timers": {
+        "centre": {
+          "text": "04:33",
+          "seconds": 273.0,
+          "fmt": "mmss",
+          "color": "white",
+          "score": 0.9294397830963135
+        },
+        "team_a": null,
+        "team_b": null
+      },
+      "layout": {
+        "layout": null,
+        "reason": "unfamiliar_or_absent_layout",
+        "live_score": -0.001041078008711338,
+        "spectator_score": 0.07569357007741928,
+        "prompt_score": 0.22918695211410522,
+        "centre_timer": true,
+        "team_clock": false
+      }
+    },
+    {
+      "source": "live",
+      "pts": 127.504,
+      "timers": {
+        "centre": {
+          "text": "04:28",
+          "seconds": 268.0,
+          "fmt": "mmss",
+          "color": "white",
+          "score": 0.9310047030448914
+        },
+        "team_a": null,
+        "team_b": null
+      },
+      "layout": {
+        "layout": null,
+        "reason": "unfamiliar_or_absent_layout",
+        "live_score": 0.0,
+        "spectator_score": -0.018910134211182594,
+        "prompt_score": 0.0,
+        "centre_timer": true,
+        "team_clock": false
+      }
+    },
+    {
+      "source": "live",
+      "pts": 132.504,
+      "timers": {
+        "centre": {
+          "text": "04:23",
+          "seconds": 263.0,
+          "fmt": "mmss",
+          "color": "white",
+          "score": 0.9350763559341431
+        },
+        "team_a": null,
+        "team_b": null
+      },
+      "layout": {
+        "layout": null,
+        "reason": "unfamiliar_or_absent_layout",
+        "live_score": 0.15285329520702362,
+        "spectator_score": -0.00982314720749855,
+        "prompt_score": 0.0,
+        "centre_timer": true,
+        "team_clock": false
+      }
+    },
+    {
+      "source": "live",
+      "pts": 137.504,
+      "timers": {
+        "centre": {
+          "text": "04:18",
+          "seconds": 258.0,
+          "fmt": "mmss",
+          "color": "white",
+          "score": 0.932666003704071
+        },
+        "team_a": null,
+        "team_b": null
+      },
+      "layout": {
+        "layout": null,
+        "reason": "unfamiliar_or_absent_layout",
+        "live_score": 0.025274300947785378,
+        "spectator_score": -0.19652681052684784,
+        "prompt_score": 0.0,
+        "centre_timer": true,
+        "team_clock": false
+      }
+    },
+    {
+      "source": "live",
+      "pts": 142.504,
+      "timers": {
+        "centre": {
+          "text": "04:13",
+          "seconds": 253.0,
+          "fmt": "mmss",
+          "color": "white",
+          "score": 0.8968409299850464
+        },
+        "team_a": null,
+        "team_b": null
+      },
+      "layout": {
+        "layout": null,
+        "reason": "complete_match_scan_required",
+        "live_score": 0.9973248243331909,
+        "spectator_score": 0.05425301566720009,
+        "prompt_score": 0.0,
+        "centre_timer": true,
+        "team_clock": false
+      }
+    },
+    {
+      "source": "live",
+      "pts": 147.504,
+      "timers": {
+        "centre": {
+          "text": "04:08",
+          "seconds": 248.0,
+          "fmt": "mmss",
+          "color": "white",
+          "score": 0.9335083961486816
+        },
+        "team_a": null,
+        "team_b": null
+      },
+      "layout": {
+        "layout": null,
+        "reason": "unfamiliar_or_absent_layout",
+        "live_score": 0.5216987729072571,
+        "spectator_score": 0.1581074595451355,
+        "prompt_score": -0.048206035047769547,
+        "centre_timer": true,
+        "team_clock": false
+      }
+    },
+    {
+      "source": "live",
+      "pts": 152.504,
+      "timers": {
+        "centre": {
+          "text": "04:03",
+          "seconds": 243.0,
+          "fmt": "mmss",
+          "color": "white",
+          "score": 0.9273245334625244
+        },
+        "team_a": null,
+        "team_b": null
+      },
+      "layout": {
+        "layout": null,
+        "reason": "unfamiliar_or_absent_layout",
+        "live_score": 0.23578046262264252,
+        "spectator_score": -0.0006696319323964417,
+        "prompt_score": 0.0,
+        "centre_timer": true,
+        "team_clock": false
+      }
+    },
+    {
+      "source": "live",
+      "pts": 157.504,
+      "timers": {
+        "centre": {
+          "text": "03:58",
+          "seconds": 238.0,
+          "fmt": "mmss",
+          "color": "white",
+          "score": 0.9147564768791199
+        },
+        "team_a": null,
+        "team_b": null
+      },
+      "layout": {
+        "layout": null,
+        "reason": "unfamiliar_or_absent_layout",
+        "live_score": -0.07823916524648666,
+        "spectator_score": -0.23790699243545532,
+        "prompt_score": 0.0,
+        "centre_timer": true,
+        "team_clock": false
+      }
+    },
+    {
+      "source": "replay",
+      "pts": 102.504,
+      "timers": {
+        "centre": {
+          "text": "04:23",
+          "seconds": 263.0,
+          "fmt": "mmss",
+          "color": "white",
+          "score": 0.9373456239700317
+        },
+        "team_a": null,
+        "team_b": null
+      },
+      "layout": {
+        "layout": null,
+        "reason": "incomplete_or_ambiguous_replay_evidence",
+        "live_score": 0.01719439961016178,
+        "spectator_score": -0.1523365080356598,
+        "prompt_score": 0.990994930267334,
+        "centre_timer": true,
+        "team_clock": false
+      }
+    },
+    {
+      "source": "replay",
+      "pts": 107.504,
+      "timers": {
+        "centre": {
+          "text": "04:18",
+          "seconds": 258.0,
+          "fmt": "mmss",
+          "color": "white",
+          "score": 0.9138947129249573
+        },
+        "team_a": null,
+        "team_b": null
+      },
+      "layout": {
+        "layout": null,
+        "reason": "incomplete_or_ambiguous_replay_evidence",
+        "live_score": 0.02843499928712845,
+        "spectator_score": 0.07322186231613159,
+        "prompt_score": 0.9987316131591797,
+        "centre_timer": true,
+        "team_clock": false
+      }
+    },
+    {
+      "source": "replay",
+      "pts": 112.504,
+      "timers": {
+        "centre": {
+          "text": "04:13",
+          "seconds": 253.0,
+          "fmt": "mmss",
+          "color": "white",
+          "score": 0.9322305917739868
+        },
+        "team_a": null,
+        "team_b": null
+      },
+      "layout": {
+        "layout": null,
+        "reason": "incomplete_or_ambiguous_replay_evidence",
+        "live_score": 0.030485358089208603,
+        "spectator_score": 0.18322569131851196,
+        "prompt_score": 0.9971126914024353,
+        "centre_timer": true,
+        "team_clock": false
+      }
+    },
+    {
+      "source": "replay",
+      "pts": 117.504,
+      "timers": {
+        "centre": {
+          "text": "04:08",
+          "seconds": 248.0,
+          "fmt": "mmss",
+          "color": "white",
+          "score": 0.9350230097770691
+        },
+        "team_a": null,
+        "team_b": null
+      },
+      "layout": {
+        "layout": null,
+        "reason": "incomplete_or_ambiguous_replay_evidence",
+        "live_score": 0.015961632132530212,
+        "spectator_score": 0.18308274447917938,
+        "prompt_score": 0.9630556106567383,
+        "centre_timer": true,
+        "team_clock": false
+      }
+    },
+    {
+      "source": "replay",
+      "pts": 122.504,
+      "timers": {
+        "centre": {
+          "text": "04:03",
+          "seconds": 243.0,
+          "fmt": "mmss",
+          "color": "white",
+          "score": 0.9313058257102966
+        },
+        "team_a": null,
+        "team_b": null
+      },
+      "layout": {
+        "layout": null,
+        "reason": "incomplete_or_ambiguous_replay_evidence",
+        "live_score": 0.00944912526756525,
+        "spectator_score": 0.14950989186763763,
+        "prompt_score": 0.9980066418647766,
+        "centre_timer": true,
+        "team_clock": false
+      }
+    },
+    {
+      "source": "replay",
+      "pts": 127.504,
+      "timers": {
+        "centre": {
+          "text": "03:58",
+          "seconds": 238.0,
+          "fmt": "mmss",
+          "color": "white",
+          "score": 0.9029875993728638
+        },
+        "team_a": null,
+        "team_b": null
+      },
+      "layout": {
+        "layout": null,
+        "reason": "incomplete_or_ambiguous_replay_evidence",
+        "live_score": 0.017858808860182762,
+        "spectator_score": 0.12050098925828934,
+        "prompt_score": 0.9842057228088379,
+        "centre_timer": true,
+        "team_clock": false
+      }
+    },
+    {
+      "source": "replay",
+      "pts": 132.504,
+      "timers": {
+        "centre": {
+          "text": "03:53",
+          "seconds": 233.0,
+          "fmt": "mmss",
+          "color": "white",
+          "score": 0.8446024060249329
+        },
+        "team_a": null,
+        "team_b": null
+      },
+      "layout": {
+        "layout": null,
+        "reason": "incomplete_or_ambiguous_replay_evidence",
+        "live_score": 0.05346406251192093,
+        "spectator_score": 0.058039117604494095,
+        "prompt_score": 0.9980517625808716,
+        "centre_timer": true,
+        "team_clock": false
+      }
+    },
+    {
+      "source": "replay",
+      "pts": 137.504,
+      "timers": {
+        "centre": null,
+        "team_a": null,
+        "team_b": null
+      },
+      "layout": {
+        "layout": null,
+        "reason": "incomplete_or_ambiguous_replay_evidence",
+        "live_score": 0.03449888154864311,
+        "spectator_score": 0.16099363565444946,
+        "prompt_score": 0.999001681804657,
+        "centre_timer": false,
+        "team_clock": false
+      }
+    },
+    {
+      "source": "replay",
+      "pts": 142.504,
+      "timers": {
+        "centre": null,
+        "team_a": null,
+        "team_b": null
+      },
+      "layout": {
+        "layout": null,
+        "reason": "incomplete_or_ambiguous_replay_evidence",
+        "live_score": 0.011286688968539238,
+        "spectator_score": -0.013380155898630619,
+        "prompt_score": 0.9967411160469055,
+        "centre_timer": false,
+        "team_clock": false
+      }
+    },
+    {
+      "source": "replay",
+      "pts": 147.504,
+      "timers": {
+        "centre": {
+          "text": "03:38",
+          "seconds": 218.0,
+          "fmt": "mmss",
+          "color": "white",
+          "score": 0.9192957282066345
+        },
+        "team_a": null,
+        "team_b": null
+      },
+      "layout": {
+        "layout": null,
+        "reason": "incomplete_or_ambiguous_replay_evidence",
+        "live_score": 0.010603840462863445,
+        "spectator_score": 0.0,
+        "prompt_score": 0.9968429803848267,
+        "centre_timer": true,
+        "team_clock": false
+      }
+    },
+    {
+      "source": "replay",
+      "pts": 152.504,
+      "timers": {
+        "centre": {
+          "text": "03:33",
+          "seconds": 213.0,
+          "fmt": "mmss",
+          "color": "white",
+          "score": 0.935996949672699
+        },
+        "team_a": null,
+        "team_b": null
+      },
+      "layout": {
+        "layout": null,
+        "reason": "incomplete_or_ambiguous_replay_evidence",
+        "live_score": 0.006460542790591717,
+        "spectator_score": -0.12459086626768112,
+        "prompt_score": 0.9967295527458191,
+        "centre_timer": true,
+        "team_clock": false
+      }
+    },
+    {
+      "source": "replay",
+      "pts": 157.504,
+      "timers": {
+        "centre": {
+          "text": "03:28",
+          "seconds": 208.0,
+          "fmt": "mmss",
+          "color": "white",
+          "score": 0.8664728999137878
+        },
+        "team_a": null,
+        "team_b": null
+      },
+      "layout": {
+        "layout": null,
+        "reason": "incomplete_or_ambiguous_replay_evidence",
+        "live_score": -0.029876749962568283,
+        "spectator_score": -0.21478328108787537,
+        "prompt_score": 0.9957782626152039,
+        "centre_timer": true,
+        "team_clock": false
+      }
+    },
+    {
+      "source": "competitive",
+      "pts": 102.504,
+      "timers": {
+        "centre": null,
+        "team_a": null,
+        "team_b": null
+      },
+      "layout": {
+        "layout": null,
+        "reason": "unfamiliar_or_absent_layout",
+        "live_score": 0.24497833847999573,
+        "spectator_score": 0.07816196978092194,
+        "prompt_score": 0.0,
+        "centre_timer": false,
+        "team_clock": false
+      }
+    },
+    {
+      "source": "competitive",
+      "pts": 107.504,
+      "timers": {
+        "centre": null,
+        "team_a": null,
+        "team_b": null
+      },
+      "layout": {
+        "layout": null,
+        "reason": "unfamiliar_or_absent_layout",
+        "live_score": 0.25058597326278687,
+        "spectator_score": 0.07734683901071548,
+        "prompt_score": 0.0,
+        "centre_timer": false,
+        "team_clock": false
+      }
+    },
+    {
+      "source": "competitive",
+      "pts": 112.504,
+      "timers": {
+        "centre": null,
+        "team_a": null,
+        "team_b": null
+      },
+      "layout": {
+        "layout": null,
+        "reason": "unfamiliar_or_absent_layout",
+        "live_score": 0.252186119556427,
+        "spectator_score": 0.07821834832429886,
+        "prompt_score": 0.015582915395498276,
+        "centre_timer": false,
+        "team_clock": false
+      }
+    },
+    {
+      "source": "competitive",
+      "pts": 117.504,
+      "timers": {
+        "centre": null,
+        "team_a": null,
+        "team_b": null
+      },
+      "layout": {
+        "layout": null,
+        "reason": "unfamiliar_or_absent_layout",
+        "live_score": 0.25002288818359375,
+        "spectator_score": 0.07728050649166107,
+        "prompt_score": 0.06628959625959396,
+        "centre_timer": false,
+        "team_clock": false
+      }
+    },
+    {
+      "source": "competitive",
+      "pts": 122.504,
+      "timers": {
+        "centre": null,
+        "team_a": null,
+        "team_b": null
+      },
+      "layout": {
+        "layout": null,
+        "reason": "unfamiliar_or_absent_layout",
+        "live_score": 0.2447906881570816,
+        "spectator_score": 0.07728452235460281,
+        "prompt_score": 0.06561046093702316,
+        "centre_timer": false,
+        "team_clock": false
+      }
+    },
+    {
+      "source": "competitive",
+      "pts": 127.504,
+      "timers": {
+        "centre": null,
+        "team_a": null,
+        "team_b": null
+      },
+      "layout": {
+        "layout": null,
+        "reason": "unfamiliar_or_absent_layout",
+        "live_score": 0.2508322596549988,
+        "spectator_score": 0.07791732251644135,
+        "prompt_score": 0.06675396859645844,
+        "centre_timer": false,
+        "team_clock": false
+      }
+    },
+    {
+      "source": "competitive",
+      "pts": 132.504,
+      "timers": {
+        "centre": null,
+        "team_a": null,
+        "team_b": null
+      },
+      "layout": {
+        "layout": null,
+        "reason": "unfamiliar_or_absent_layout",
+        "live_score": 0.2524545192718506,
+        "spectator_score": 0.0774734690785408,
+        "prompt_score": 0.06671306490898132,
+        "centre_timer": false,
+        "team_clock": false
+      }
+    },
+    {
+      "source": "competitive",
+      "pts": 137.504,
+      "timers": {
+        "centre": {
+          "text": "00:36",
+          "seconds": 36.0,
+          "fmt": "mmss",
+          "color": "white",
+          "score": 0.9337178468704224
+        },
+        "team_a": null,
+        "team_b": {
+          "text": "04:00",
+          "seconds": 240.0,
+          "fmt": "mmss",
+          "color": "white",
+          "score": 0.8058023452758789
+        }
+      },
+      "layout": {
+        "layout": null,
+        "reason": "unsupported_team_clock_layout",
+        "live_score": 0.21011650562286377,
+        "spectator_score": -0.04487939924001694,
+        "prompt_score": 0.06668460369110107,
+        "centre_timer": true,
+        "team_clock": true
+      }
+    },
+    {
+      "source": "competitive",
+      "pts": 142.504,
+      "timers": {
+        "centre": {
+          "text": "00:31",
+          "seconds": 31.0,
+          "fmt": "mmss",
+          "color": "white",
+          "score": 0.9319038391113281
+        },
+        "team_a": null,
+        "team_b": {
+          "text": "04:00",
+          "seconds": 240.0,
+          "fmt": "mmss",
+          "color": "white",
+          "score": 0.8029046654701233
+        }
+      },
+      "layout": {
+        "layout": null,
+        "reason": "unsupported_team_clock_layout",
+        "live_score": 0.2113349586725235,
+        "spectator_score": -0.050969138741493225,
+        "prompt_score": 0.06664139032363892,
+        "centre_timer": true,
+        "team_clock": true
+      }
+    },
+    {
+      "source": "competitive",
+      "pts": 147.504,
+      "timers": {
+        "centre": {
+          "text": "00:26",
+          "seconds": 26.0,
+          "fmt": "mmss",
+          "color": "white",
+          "score": 0.9324910640716553
+        },
+        "team_a": null,
+        "team_b": {
+          "text": "04:00",
+          "seconds": 240.0,
+          "fmt": "mmss",
+          "color": "white",
+          "score": 0.8013127446174622
+        }
+      },
+      "layout": {
+        "layout": null,
+        "reason": "unsupported_team_clock_layout",
+        "live_score": 0.21239636838436127,
+        "spectator_score": -0.05035533010959625,
+        "prompt_score": 0.06634808331727982,
+        "centre_timer": true,
+        "team_clock": true
+      }
+    },
+    {
+      "source": "competitive",
+      "pts": 152.504,
+      "timers": {
+        "centre": {
+          "text": "00:21",
+          "seconds": 21.0,
+          "fmt": "mmss",
+          "color": "white",
+          "score": 0.9326823353767395
+        },
+        "team_a": null,
+        "team_b": {
+          "text": "04:00",
+          "seconds": 240.0,
+          "fmt": "mmss",
+          "color": "white",
+          "score": 0.8033255338668823
+        }
+      },
+      "layout": {
+        "layout": null,
+        "reason": "unsupported_team_clock_layout",
+        "live_score": 0.2115425020456314,
+        "spectator_score": -0.050529491156339645,
+        "prompt_score": 0.01622556895017624,
+        "centre_timer": true,
+        "team_clock": true
+      }
+    },
+    {
+      "source": "competitive",
+      "pts": 157.504,
+      "timers": {
+        "centre": null,
+        "team_a": null,
+        "team_b": null
+      },
+      "layout": {
+        "layout": null,
+        "reason": "unfamiliar_or_absent_layout",
+        "live_score": 0.0,
+        "spectator_score": -0.0178687684237957,
+        "prompt_score": 0.0,
+        "centre_timer": false,
+        "team_clock": false
+      }
+    }
+  ],
+  "exit": 0,
+  "seconds": 1.8576814999105409
+}

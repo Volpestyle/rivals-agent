@@ -1,0 +1,12 @@
+{
+  "sample.py": "ca0fc15b06e7a952dd5a843ba4cc0ccf0f45d5f676fddb3c8aa19889c95eee22",
+  "perception/killfeed_layout.py": "4300722bb7ee27b0cd23af3c2cc468301a80e38ea1ea68da498aaf5e208793bc",
+  "perception/match_timer.py": "945b36341ea77847e35cea6aff6c9ba9546d802ca9bfa27943c0c1be07146c78",
+  "perception/match_timer_glyphs.json": "1f5ce4766fb1fb0deb7f46efc1c7d81a76375075ec9ac9805d528029178f0298",
+  "perception/killfeed_layout_templates/kf_live_dark.png": "f02c89402492bb513f0c5ffa0c83fad43fcbe43473dddf1c36ccc2e52499b3aa",
+  "perception/killfeed_layout_templates/kf_live_light.png": "feb289bb2ccc510b1aa243ecceacd5ad840dc9799ca875ae2f6f12ef0309f546",
+  "perception/killfeed_layout_templates/kf_spec_entry.png": "c266450e4375fbf74be33f71a2107fb1afc1bee2b82ee9043d6b65f082555764",
+  "perception/killfeed_layout_templates/prompt_viewer.png": "11be632169bdc43aa0bd02c771c3024629992ce389df9308dd727860541bcbde",
+  "perception/killfeed_layout_templates/README.md": "6635c8e7d163213e0c88f801538bc2f0eff2bf8c138823ff8d4d34e763806f3d",
+  "scripts/job_status.py": "423d157ff52b5f399c4b32562cd0fd61069f0c95a884444b7152507c8f45556d"
+}

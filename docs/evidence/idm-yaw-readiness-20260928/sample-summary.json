@@ -1,0 +1,51 @@
+{
+  "all_36_native_samples_verified": true,
+  "sources": {
+    "live": {
+      "samples": 12,
+      "manually_legible_centre": 12,
+      "correct_values": 12,
+      "unknown_legible": 0,
+      "wrong_legible": 0,
+      "layout_answers": 0,
+      "reasons": {
+        "unfamiliar_or_absent_layout": 11,
+        "complete_match_scan_required": 1
+      },
+      "manual_state_counts": {
+        "gameplay": 12
+      }
+    },
+    "replay": {
+      "samples": 12,
+      "manually_legible_centre": 12,
+      "correct_values": 10,
+      "unknown_legible": 2,
+      "wrong_legible": 0,
+      "layout_answers": 0,
+      "reasons": {
+        "incomplete_or_ambiguous_replay_evidence": 12
+      },
+      "manual_state_counts": {
+        "gameplay": 12
+      }
+    },
+    "competitive": {
+      "samples": 12,
+      "manually_legible_centre": 0,
+      "correct_values": 0,
+      "unknown_legible": 0,
+      "wrong_legible": 0,
+      "layout_answers": 0,
+      "reasons": {
+        "unfamiliar_or_absent_layout": 8,
+        "unsupported_team_clock_layout": 4
+      },
+      "manual_state_counts": {
+        "hero_selection": 2,
+        "desktop_or_media_player_overlay": 9,
+        "menu": 1
+      }
+    }
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "scope": "Registry metadata only; no listed payload access",
+  "records": [
+    {
+      "session_id": "20260927T041331-992Z-150600-1",
+      "session_group": "reader_validation",
+      "kind": "reader_validation",
+      "allocation": "idm-reader-validation-20260927T030000Z",
+      "slot": "V-C",
+      "account": "alt",
+      "sitting": "2026-09-26-night",
+      "obs_process": 150600,
+      "registered_at": "2026-09-26",
+      "codec": "hevc",
+      "video_path": "C:/Users/volpe/Videos/2026-09-26 23-13-31.mkv",
+      "recorded_video_path": "C:/Users/volpe/Videos/2026-09-26 23-13-31.mkv",
+      "expected_media_sha256": "2ff787b2d1eaffdbde10d98a0e1dd22f984fae43d772edd63fc18b50b7f189ff",
+      "role": "Competitive match, Platinum, alt account, the live half (James, chat, 23:49 CDT: \"1 new competitive match in plat on my alt and the full replay\"; docs/recording-log.md, da92739)",
+      "note": "held out as V-C reader_validation: the first declared Competitive family starting at or after 2026-09-27T03:00:00Z (docs/lanes/human-admission-2.md). Evaluation-only: never a split, never trained on. Registered from name, size, id and the lead's row only; nothing inspected; media hashed 2026-09-27T06:51:04+00:00 (14639289304 B, streamed, neither OBS nor the game running)"
+    },
+    {
+      "session_id": "20260927T043214-589Z-150600-2",
+      "session_group": "reader_validation",
+      "kind": "reader_validation",
+      "allocation": "idm-reader-validation-20260927T030000Z",
+      "slot": "V-C",
+      "account": "alt",
+      "sitting": "2026-09-26-night",
+      "obs_process": 150600,
+      "registered_at": "2026-09-26",
+      "codec": "hevc",
+      "pair": "20260927T041331-992Z-150600-1",
+      "video_path": "C:/Users/volpe/Videos/2026-09-26 23-32-14.mkv",
+      "recorded_video_path": "C:/Users/volpe/Videos/2026-09-26 23-32-14.mkv",
+      "expected_media_sha256": "71919c7504c7aaba3e3d8542a75c5ebc66ce61a124246213ff66a911191d1f85",
+      "role": "replay of self of the 23:13 Competitive match (James: \"the full replay\"; docs/recording-log.md, da92739)",
+      "note": "held out with its live half in V-C (one indivisible family). Viewer inputs are never gameplay truth. Evaluation-only: never a split, never trained on. Registered from name, size, id and the lead's row only; nothing inspected; media hashed 2026-09-27T06:51:17+00:00 (14368464487 B, streamed, neither OBS nor the game running)"
+    },
+    {
+      "session_id": "20260927T045943-301Z-150600-3",
+      "session_group": "reader_validation",
+      "kind": "reader_validation",
+      "allocation": "idm-reader-validation-20260927T030000Z",
+      "slot": "V-Q",
+      "account": "alt",
+      "sitting": "2026-09-26-night",
+      "obs_process": 150600,
+      "registered_at": "2026-09-27",
+      "video_path": "C:/Users/volpe/Videos/2026-09-26 23-59-43.mkv",
+      "recorded_video_path": "C:/Users/volpe/Videos/2026-09-26 23-59-43.mkv",
+      "expected_media_sha256": "1cb37dbeeaecbcd1aec00fac45809a058532cd4a5496aac62bdd10006f7384bd",
+      "role": "Quick Match, Museum of Contemplation, victory (10m19s match), alt account, in a party with a friend; no replay (James, chat, 01:37 CDT, with his in-game match-history screenshot: alt account, keyboard settings unchanged (DPI, sensitivity 1.89, binds), played in a party with a friend (docs/recording-log.md, 8392576))",
+      "note": "held out as V-Q reader_validation: the first declared Quick Match family starting at or after 2026-09-27T03:00:00Z (docs/lanes/human-admission-2.md). Evaluation-only: never a split, never trained on. Registered from name, size, id and the lead's row only; nothing inspected; media hashed 2026-09-27T06:51:24+00:00 (6833257949 B, streamed, neither OBS nor the game running)"
+    }
+  ],
+  "vq_replay_found": false
+}

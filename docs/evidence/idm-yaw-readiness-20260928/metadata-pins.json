@@ -1,0 +1,52 @@
+[
+  {
+    "path": "perception/replay_cuts.py",
+    "sha256": "f50f57e39de75f0fec3962c3bbe696141b249e0bf3917c9c79d6c7fc4a31b92f",
+    "lf_sha256": "f50f57e39de75f0fec3962c3bbe696141b249e0bf3917c9c79d6c7fc4a31b92f"
+  },
+  {
+    "path": "tests/test_replay_cuts.py",
+    "sha256": "dc181973e2b6e37154a2d965a5b7196ad8d71bf30534b2456a77790ae449d0aa",
+    "lf_sha256": "dc181973e2b6e37154a2d965a5b7196ad8d71bf30534b2456a77790ae449d0aa"
+  },
+  {
+    "path": "policy/idm/train.py",
+    "sha256": "2834d6c95472ea6a3cc3764e66a1176ca0a815447b0d01327dce890a41933bd7",
+    "lf_sha256": "e60e4fc9d36ce8cb15ebc9e3ba3de0a3f0136791331d4b2097918deb625265b3"
+  },
+  {
+    "path": "policy/idm/match_diagnostic.py",
+    "sha256": "272dbb49f1db3258895d3d85a2dae6a89b6de7ebedcb80d9acba25d5a57a6217",
+    "lf_sha256": "272dbb49f1db3258895d3d85a2dae6a89b6de7ebedcb80d9acba25d5a57a6217"
+  },
+  {
+    "path": "perception/killfeed_layout.py",
+    "sha256": "4300722bb7ee27b0cd23af3c2cc468301a80e38ea1ea68da498aaf5e208793bc",
+    "lf_sha256": "4300722bb7ee27b0cd23af3c2cc468301a80e38ea1ea68da498aaf5e208793bc"
+  },
+  {
+    "path": "perception/match_timer.py",
+    "sha256": "945b36341ea77847e35cea6aff6c9ba9546d802ca9bfa27943c0c1be07146c78",
+    "lf_sha256": "945b36341ea77847e35cea6aff6c9ba9546d802ca9bfa27943c0c1be07146c78"
+  },
+  {
+    "path": "docs/lanes/review-killfeed-layout-20260926.md",
+    "sha256": "94700da23b48e7c1e0b59e9c9dab7a246bfeac20f133a279e81a2fd10bbba1b4",
+    "lf_sha256": "94700da23b48e7c1e0b59e9c9dab7a246bfeac20f133a279e81a2fd10bbba1b4"
+  },
+  {
+    "path": "docs/evidence/gate2-revalidation-20260926/review-gate2-revalidation-20260926.md",
+    "sha256": "0c204fdb219b25775ffd5c67c61620b61236ec019659fbe526b80433a6cac116",
+    "lf_sha256": "0c204fdb219b25775ffd5c67c61620b61236ec019659fbe526b80433a6cac116"
+  },
+  {
+    "path": "docs/lanes/idm-gate2-anchors-results.md",
+    "sha256": "5afbdc89a663e3fc6b36605e920fff8ba2d038157aec737af04401942380e244",
+    "lf_sha256": "5afbdc89a663e3fc6b36605e920fff8ba2d038157aec737af04401942380e244"
+  },
+  {
+    "path": "data/human/session-splits.corpus.json",
+    "sha256": "1c9e2c671b14e9d1ea8bcefd4703668a039ecac946d2f5ece768746e67118a13",
+    "lf_sha256": "1c9e2c671b14e9d1ea8bcefd4703668a039ecac946d2f5ece768746e67118a13"
+  }
+]

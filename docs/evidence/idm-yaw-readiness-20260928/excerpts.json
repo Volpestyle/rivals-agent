@@ -1,0 +1,159 @@
+{
+  "role": "development-only, no label or alignment admission",
+  "selection": "100<=original PTS<160s, 12 uniformly spaced samples at 102.5+5*k; selection independent of reader output",
+  "sources": [
+    {
+      "name": "live",
+      "source": "C:\\Users\\volpe\\Videos\\2026-09-25 20-06-20.mkv",
+      "source_bytes": 4411579199,
+      "source_sha256": "b286939f3a503a52bffa0c0a29873e8c71aac7d89dfb1b726f4818176e2efc87",
+      "excerpt": "live.mkv",
+      "excerpt_bytes": 800704520,
+      "excerpt_sha256": "bd2b4e5bd33e7f8eccc22966d3f2dc01f5f8de0f185fbb16f877db5cbe3913b8",
+      "command": [
+        "ffmpeg",
+        "-nostdin",
+        "-v",
+        "error",
+        "-threads",
+        "2",
+        "-ss",
+        "95",
+        "-t",
+        "70",
+        "-copyts",
+        "-i",
+        "C:\\Users\\volpe\\Videos\\2026-09-25 20-06-20.mkv",
+        "-map",
+        "0:v:0",
+        "-c:v",
+        "copy",
+        "-an",
+        "-avoid_negative_ts",
+        "disabled",
+        "-n",
+        "C:\\Users\\volpe\\repos\\rivals-agent\\data\\idm\\yaw-readiness-20260928\\live.mkv"
+      ],
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "hevc",
+            "width": 2560,
+            "height": 1440,
+            "r_frame_rate": "120/1",
+            "time_base": "1/1000",
+            "start_time": "92.904000"
+          }
+        ],
+        "format": {
+          "start_time": "92.904000",
+          "duration": "165.021000"
+        }
+      }
+    },
+    {
+      "name": "replay",
+      "source": "C:\\Users\\volpe\\Videos\\2026-09-26 11-10-08.mkv",
+      "source_bytes": 4555570015,
+      "source_sha256": "4c74f388be47e44c53002005edb548cd41aa7308ecf50ac39a34625862817e7e",
+      "excerpt": "replay.mkv",
+      "excerpt_bytes": 935575970,
+      "excerpt_sha256": "b3e7716764e65f58dd5fdde8f8dbb05cff09da34b3956b3a39d440e7489f26c9",
+      "command": [
+        "ffmpeg",
+        "-nostdin",
+        "-v",
+        "error",
+        "-threads",
+        "2",
+        "-ss",
+        "95",
+        "-t",
+        "70",
+        "-copyts",
+        "-i",
+        "C:\\Users\\volpe\\Videos\\2026-09-26 11-10-08.mkv",
+        "-map",
+        "0:v:0",
+        "-c:v",
+        "copy",
+        "-an",
+        "-avoid_negative_ts",
+        "disabled",
+        "-n",
+        "C:\\Users\\volpe\\repos\\rivals-agent\\data\\idm\\yaw-readiness-20260928\\replay.mkv"
+      ],
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "hevc",
+            "width": 2560,
+            "height": 1440,
+            "r_frame_rate": "120/1",
+            "time_base": "1/1000",
+            "start_time": "94.179000"
+          }
+        ],
+        "format": {
+          "start_time": "94.179000",
+          "duration": "165.012000"
+        }
+      }
+    },
+    {
+      "name": "competitive",
+      "source": "C:\\Users\\volpe\\Videos\\2026-09-25 22-48-05.mkv",
+      "source_bytes": 5458119803,
+      "source_sha256": "cb9c7ad74873a3e802bae332aca7b19065162009b5bfd1c30439cbdbc71fdda2",
+      "excerpt": "competitive.mkv",
+      "excerpt_bytes": 232163432,
+      "excerpt_sha256": "2f5987726d5ad6b7f69f1c2d39a645ebbea5b05925f6170e407a506eacc92990",
+      "command": [
+        "ffmpeg",
+        "-nostdin",
+        "-v",
+        "error",
+        "-threads",
+        "2",
+        "-ss",
+        "95",
+        "-t",
+        "70",
+        "-copyts",
+        "-i",
+        "C:\\Users\\volpe\\Videos\\2026-09-25 22-48-05.mkv",
+        "-map",
+        "0:v:0",
+        "-c:v",
+        "copy",
+        "-an",
+        "-avoid_negative_ts",
+        "disabled",
+        "-n",
+        "C:\\Users\\volpe\\repos\\rivals-agent\\data\\idm\\yaw-readiness-20260928\\competitive.mkv"
+      ],
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "hevc",
+            "width": 2560,
+            "height": 1440,
+            "r_frame_rate": "120/1",
+            "time_base": "1/1000",
+            "start_time": "93.771000"
+          }
+        ],
+        "format": {
+          "start_time": "93.771000",
+          "duration": "165.029000"
+        }
+      }
+    }
+  ]
+}

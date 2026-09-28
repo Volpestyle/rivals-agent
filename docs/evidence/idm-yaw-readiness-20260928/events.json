@@ -1,0 +1,821 @@
+{
+  "scope": "Development coarse shifted-arrival inspection; 10Hz samples cannot establish 120Hz onset accuracy",
+  "windows": [
+    {
+      "source": "live",
+      "start": 137.5,
+      "stop": 147.5,
+      "samples": [
+        {
+          "pts": 137.504,
+          "path": "events/live/001.png"
+        },
+        {
+          "pts": 137.604,
+          "path": "events/live/002.png"
+        },
+        {
+          "pts": 137.704,
+          "path": "events/live/003.png"
+        },
+        {
+          "pts": 137.804,
+          "path": "events/live/004.png"
+        },
+        {
+          "pts": 137.904,
+          "path": "events/live/005.png"
+        },
+        {
+          "pts": 138.004,
+          "path": "events/live/006.png"
+        },
+        {
+          "pts": 138.104,
+          "path": "events/live/007.png"
+        },
+        {
+          "pts": 138.204,
+          "path": "events/live/008.png"
+        },
+        {
+          "pts": 138.304,
+          "path": "events/live/009.png"
+        },
+        {
+          "pts": 138.404,
+          "path": "events/live/010.png"
+        },
+        {
+          "pts": 138.504,
+          "path": "events/live/011.png"
+        },
+        {
+          "pts": 138.604,
+          "path": "events/live/012.png"
+        },
+        {
+          "pts": 138.704,
+          "path": "events/live/013.png"
+        },
+        {
+          "pts": 138.804,
+          "path": "events/live/014.png"
+        },
+        {
+          "pts": 138.904,
+          "path": "events/live/015.png"
+        },
+        {
+          "pts": 139.004,
+          "path": "events/live/016.png"
+        },
+        {
+          "pts": 139.104,
+          "path": "events/live/017.png"
+        },
+        {
+          "pts": 139.204,
+          "path": "events/live/018.png"
+        },
+        {
+          "pts": 139.304,
+          "path": "events/live/019.png"
+        },
+        {
+          "pts": 139.404,
+          "path": "events/live/020.png"
+        },
+        {
+          "pts": 139.504,
+          "path": "events/live/021.png"
+        },
+        {
+          "pts": 139.604,
+          "path": "events/live/022.png"
+        },
+        {
+          "pts": 139.704,
+          "path": "events/live/023.png"
+        },
+        {
+          "pts": 139.804,
+          "path": "events/live/024.png"
+        },
+        {
+          "pts": 139.904,
+          "path": "events/live/025.png"
+        },
+        {
+          "pts": 140.004,
+          "path": "events/live/026.png"
+        },
+        {
+          "pts": 140.104,
+          "path": "events/live/027.png"
+        },
+        {
+          "pts": 140.204,
+          "path": "events/live/028.png"
+        },
+        {
+          "pts": 140.304,
+          "path": "events/live/029.png"
+        },
+        {
+          "pts": 140.404,
+          "path": "events/live/030.png"
+        },
+        {
+          "pts": 140.504,
+          "path": "events/live/031.png"
+        },
+        {
+          "pts": 140.604,
+          "path": "events/live/032.png"
+        },
+        {
+          "pts": 140.704,
+          "path": "events/live/033.png"
+        },
+        {
+          "pts": 140.804,
+          "path": "events/live/034.png"
+        },
+        {
+          "pts": 140.904,
+          "path": "events/live/035.png"
+        },
+        {
+          "pts": 141.004,
+          "path": "events/live/036.png"
+        },
+        {
+          "pts": 141.104,
+          "path": "events/live/037.png"
+        },
+        {
+          "pts": 141.204,
+          "path": "events/live/038.png"
+        },
+        {
+          "pts": 141.304,
+          "path": "events/live/039.png"
+        },
+        {
+          "pts": 141.404,
+          "path": "events/live/040.png"
+        },
+        {
+          "pts": 141.504,
+          "path": "events/live/041.png"
+        },
+        {
+          "pts": 141.604,
+          "path": "events/live/042.png"
+        },
+        {
+          "pts": 141.704,
+          "path": "events/live/043.png"
+        },
+        {
+          "pts": 141.804,
+          "path": "events/live/044.png"
+        },
+        {
+          "pts": 141.904,
+          "path": "events/live/045.png"
+        },
+        {
+          "pts": 142.004,
+          "path": "events/live/046.png"
+        },
+        {
+          "pts": 142.104,
+          "path": "events/live/047.png"
+        },
+        {
+          "pts": 142.204,
+          "path": "events/live/048.png"
+        },
+        {
+          "pts": 142.304,
+          "path": "events/live/049.png"
+        },
+        {
+          "pts": 142.404,
+          "path": "events/live/050.png"
+        },
+        {
+          "pts": 142.504,
+          "path": "events/live/051.png"
+        },
+        {
+          "pts": 142.604,
+          "path": "events/live/052.png"
+        },
+        {
+          "pts": 142.704,
+          "path": "events/live/053.png"
+        },
+        {
+          "pts": 142.804,
+          "path": "events/live/054.png"
+        },
+        {
+          "pts": 142.904,
+          "path": "events/live/055.png"
+        },
+        {
+          "pts": 143.004,
+          "path": "events/live/056.png"
+        },
+        {
+          "pts": 143.104,
+          "path": "events/live/057.png"
+        },
+        {
+          "pts": 143.204,
+          "path": "events/live/058.png"
+        },
+        {
+          "pts": 143.304,
+          "path": "events/live/059.png"
+        },
+        {
+          "pts": 143.404,
+          "path": "events/live/060.png"
+        },
+        {
+          "pts": 143.504,
+          "path": "events/live/061.png"
+        },
+        {
+          "pts": 143.604,
+          "path": "events/live/062.png"
+        },
+        {
+          "pts": 143.704,
+          "path": "events/live/063.png"
+        },
+        {
+          "pts": 143.804,
+          "path": "events/live/064.png"
+        },
+        {
+          "pts": 143.904,
+          "path": "events/live/065.png"
+        },
+        {
+          "pts": 144.004,
+          "path": "events/live/066.png"
+        },
+        {
+          "pts": 144.104,
+          "path": "events/live/067.png"
+        },
+        {
+          "pts": 144.204,
+          "path": "events/live/068.png"
+        },
+        {
+          "pts": 144.304,
+          "path": "events/live/069.png"
+        },
+        {
+          "pts": 144.404,
+          "path": "events/live/070.png"
+        },
+        {
+          "pts": 144.504,
+          "path": "events/live/071.png"
+        },
+        {
+          "pts": 144.604,
+          "path": "events/live/072.png"
+        },
+        {
+          "pts": 144.704,
+          "path": "events/live/073.png"
+        },
+        {
+          "pts": 144.804,
+          "path": "events/live/074.png"
+        },
+        {
+          "pts": 144.904,
+          "path": "events/live/075.png"
+        },
+        {
+          "pts": 145.004,
+          "path": "events/live/076.png"
+        },
+        {
+          "pts": 145.104,
+          "path": "events/live/077.png"
+        },
+        {
+          "pts": 145.204,
+          "path": "events/live/078.png"
+        },
+        {
+          "pts": 145.304,
+          "path": "events/live/079.png"
+        },
+        {
+          "pts": 145.404,
+          "path": "events/live/080.png"
+        },
+        {
+          "pts": 145.504,
+          "path": "events/live/081.png"
+        },
+        {
+          "pts": 145.604,
+          "path": "events/live/082.png"
+        },
+        {
+          "pts": 145.704,
+          "path": "events/live/083.png"
+        },
+        {
+          "pts": 145.804,
+          "path": "events/live/084.png"
+        },
+        {
+          "pts": 145.904,
+          "path": "events/live/085.png"
+        },
+        {
+          "pts": 146.004,
+          "path": "events/live/086.png"
+        },
+        {
+          "pts": 146.104,
+          "path": "events/live/087.png"
+        },
+        {
+          "pts": 146.204,
+          "path": "events/live/088.png"
+        },
+        {
+          "pts": 146.304,
+          "path": "events/live/089.png"
+        },
+        {
+          "pts": 146.404,
+          "path": "events/live/090.png"
+        },
+        {
+          "pts": 146.504,
+          "path": "events/live/091.png"
+        },
+        {
+          "pts": 146.604,
+          "path": "events/live/092.png"
+        },
+        {
+          "pts": 146.704,
+          "path": "events/live/093.png"
+        },
+        {
+          "pts": 146.804,
+          "path": "events/live/094.png"
+        },
+        {
+          "pts": 146.904,
+          "path": "events/live/095.png"
+        },
+        {
+          "pts": 147.004,
+          "path": "events/live/096.png"
+        },
+        {
+          "pts": 147.104,
+          "path": "events/live/097.png"
+        },
+        {
+          "pts": 147.204,
+          "path": "events/live/098.png"
+        },
+        {
+          "pts": 147.304,
+          "path": "events/live/099.png"
+        },
+        {
+          "pts": 147.404,
+          "path": "events/live/100.png"
+        }
+      ]
+    },
+    {
+      "source": "replay",
+      "start": 107.5,
+      "stop": 117.5,
+      "samples": [
+        {
+          "pts": 107.504,
+          "path": "events/replay/001.png"
+        },
+        {
+          "pts": 107.604,
+          "path": "events/replay/002.png"
+        },
+        {
+          "pts": 107.704,
+          "path": "events/replay/003.png"
+        },
+        {
+          "pts": 107.804,
+          "path": "events/replay/004.png"
+        },
+        {
+          "pts": 107.904,
+          "path": "events/replay/005.png"
+        },
+        {
+          "pts": 108.004,
+          "path": "events/replay/006.png"
+        },
+        {
+          "pts": 108.104,
+          "path": "events/replay/007.png"
+        },
+        {
+          "pts": 108.204,
+          "path": "events/replay/008.png"
+        },
+        {
+          "pts": 108.304,
+          "path": "events/replay/009.png"
+        },
+        {
+          "pts": 108.404,
+          "path": "events/replay/010.png"
+        },
+        {
+          "pts": 108.504,
+          "path": "events/replay/011.png"
+        },
+        {
+          "pts": 108.604,
+          "path": "events/replay/012.png"
+        },
+        {
+          "pts": 108.704,
+          "path": "events/replay/013.png"
+        },
+        {
+          "pts": 108.804,
+          "path": "events/replay/014.png"
+        },
+        {
+          "pts": 108.904,
+          "path": "events/replay/015.png"
+        },
+        {
+          "pts": 109.004,
+          "path": "events/replay/016.png"
+        },
+        {
+          "pts": 109.104,
+          "path": "events/replay/017.png"
+        },
+        {
+          "pts": 109.204,
+          "path": "events/replay/018.png"
+        },
+        {
+          "pts": 109.304,
+          "path": "events/replay/019.png"
+        },
+        {
+          "pts": 109.404,
+          "path": "events/replay/020.png"
+        },
+        {
+          "pts": 109.504,
+          "path": "events/replay/021.png"
+        },
+        {
+          "pts": 109.604,
+          "path": "events/replay/022.png"
+        },
+        {
+          "pts": 109.704,
+          "path": "events/replay/023.png"
+        },
+        {
+          "pts": 109.804,
+          "path": "events/replay/024.png"
+        },
+        {
+          "pts": 109.904,
+          "path": "events/replay/025.png"
+        },
+        {
+          "pts": 110.004,
+          "path": "events/replay/026.png"
+        },
+        {
+          "pts": 110.104,
+          "path": "events/replay/027.png"
+        },
+        {
+          "pts": 110.204,
+          "path": "events/replay/028.png"
+        },
+        {
+          "pts": 110.304,
+          "path": "events/replay/029.png"
+        },
+        {
+          "pts": 110.404,
+          "path": "events/replay/030.png"
+        },
+        {
+          "pts": 110.504,
+          "path": "events/replay/031.png"
+        },
+        {
+          "pts": 110.604,
+          "path": "events/replay/032.png"
+        },
+        {
+          "pts": 110.704,
+          "path": "events/replay/033.png"
+        },
+        {
+          "pts": 110.804,
+          "path": "events/replay/034.png"
+        },
+        {
+          "pts": 110.904,
+          "path": "events/replay/035.png"
+        },
+        {
+          "pts": 111.004,
+          "path": "events/replay/036.png"
+        },
+        {
+          "pts": 111.104,
+          "path": "events/replay/037.png"
+        },
+        {
+          "pts": 111.204,
+          "path": "events/replay/038.png"
+        },
+        {
+          "pts": 111.304,
+          "path": "events/replay/039.png"
+        },
+        {
+          "pts": 111.404,
+          "path": "events/replay/040.png"
+        },
+        {
+          "pts": 111.504,
+          "path": "events/replay/041.png"
+        },
+        {
+          "pts": 111.604,
+          "path": "events/replay/042.png"
+        },
+        {
+          "pts": 111.704,
+          "path": "events/replay/043.png"
+        },
+        {
+          "pts": 111.804,
+          "path": "events/replay/044.png"
+        },
+        {
+          "pts": 111.904,
+          "path": "events/replay/045.png"
+        },
+        {
+          "pts": 112.004,
+          "path": "events/replay/046.png"
+        },
+        {
+          "pts": 112.104,
+          "path": "events/replay/047.png"
+        },
+        {
+          "pts": 112.204,
+          "path": "events/replay/048.png"
+        },
+        {
+          "pts": 112.304,
+          "path": "events/replay/049.png"
+        },
+        {
+          "pts": 112.404,
+          "path": "events/replay/050.png"
+        },
+        {
+          "pts": 112.504,
+          "path": "events/replay/051.png"
+        },
+        {
+          "pts": 112.604,
+          "path": "events/replay/052.png"
+        },
+        {
+          "pts": 112.704,
+          "path": "events/replay/053.png"
+        },
+        {
+          "pts": 112.804,
+          "path": "events/replay/054.png"
+        },
+        {
+          "pts": 112.904,
+          "path": "events/replay/055.png"
+        },
+        {
+          "pts": 113.004,
+          "path": "events/replay/056.png"
+        },
+        {
+          "pts": 113.104,
+          "path": "events/replay/057.png"
+        },
+        {
+          "pts": 113.204,
+          "path": "events/replay/058.png"
+        },
+        {
+          "pts": 113.304,
+          "path": "events/replay/059.png"
+        },
+        {
+          "pts": 113.404,
+          "path": "events/replay/060.png"
+        },
+        {
+          "pts": 113.504,
+          "path": "events/replay/061.png"
+        },
+        {
+          "pts": 113.604,
+          "path": "events/replay/062.png"
+        },
+        {
+          "pts": 113.704,
+          "path": "events/replay/063.png"
+        },
+        {
+          "pts": 113.804,
+          "path": "events/replay/064.png"
+        },
+        {
+          "pts": 113.904,
+          "path": "events/replay/065.png"
+        },
+        {
+          "pts": 114.004,
+          "path": "events/replay/066.png"
+        },
+        {
+          "pts": 114.104,
+          "path": "events/replay/067.png"
+        },
+        {
+          "pts": 114.204,
+          "path": "events/replay/068.png"
+        },
+        {
+          "pts": 114.304,
+          "path": "events/replay/069.png"
+        },
+        {
+          "pts": 114.404,
+          "path": "events/replay/070.png"
+        },
+        {
+          "pts": 114.504,
+          "path": "events/replay/071.png"
+        },
+        {
+          "pts": 114.604,
+          "path": "events/replay/072.png"
+        },
+        {
+          "pts": 114.704,
+          "path": "events/replay/073.png"
+        },
+        {
+          "pts": 114.804,
+          "path": "events/replay/074.png"
+        },
+        {
+          "pts": 114.904,
+          "path": "events/replay/075.png"
+        },
+        {
+          "pts": 115.004,
+          "path": "events/replay/076.png"
+        },
+        {
+          "pts": 115.104,
+          "path": "events/replay/077.png"
+        },
+        {
+          "pts": 115.204,
+          "path": "events/replay/078.png"
+        },
+        {
+          "pts": 115.304,
+          "path": "events/replay/079.png"
+        },
+        {
+          "pts": 115.404,
+          "path": "events/replay/080.png"
+        },
+        {
+          "pts": 115.504,
+          "path": "events/replay/081.png"
+        },
+        {
+          "pts": 115.604,
+          "path": "events/replay/082.png"
+        },
+        {
+          "pts": 115.704,
+          "path": "events/replay/083.png"
+        },
+        {
+          "pts": 115.804,
+          "path": "events/replay/084.png"
+        },
+        {
+          "pts": 115.904,
+          "path": "events/replay/085.png"
+        },
+        {
+          "pts": 116.004,
+          "path": "events/replay/086.png"
+        },
+        {
+          "pts": 116.104,
+          "path": "events/replay/087.png"
+        },
+        {
+          "pts": 116.204,
+          "path": "events/replay/088.png"
+        },
+        {
+          "pts": 116.304,
+          "path": "events/replay/089.png"
+        },
+        {
+          "pts": 116.404,
+          "path": "events/replay/090.png"
+        },
+        {
+          "pts": 116.504,
+          "path": "events/replay/091.png"
+        },
+        {
+          "pts": 116.604,
+          "path": "events/replay/092.png"
+        },
+        {
+          "pts": 116.704,
+          "path": "events/replay/093.png"
+        },
+        {
+          "pts": 116.804,
+          "path": "events/replay/094.png"
+        },
+        {
+          "pts": 116.904,
+          "path": "events/replay/095.png"
+        },
+        {
+          "pts": 117.004,
+          "path": "events/replay/096.png"
+        },
+        {
+          "pts": 117.104,
+          "path": "events/replay/097.png"
+        },
+        {
+          "pts": 117.204,
+          "path": "events/replay/098.png"
+        },
+        {
+          "pts": 117.304,
+          "path": "events/replay/099.png"
+        },
+        {
+          "pts": 117.404,
+          "path": "events/replay/100.png"
+        }
+      ]
+    }
+  ],
+  "exit": 0,
+  "seconds": 111.23796566692181
+}

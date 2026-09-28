@@ -1,0 +1,5 @@
+{
+  "role": "development-only, no label or alignment admission",
+  "selection": "100<=original PTS<160s, 12 uniformly spaced samples at 102.5+5*k; selection independent of reader output",
+  "sources": []
+}

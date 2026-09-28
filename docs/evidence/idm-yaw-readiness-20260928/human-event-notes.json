@@ -1,0 +1,54 @@
+{
+  "scope": "Owner visual development labels, not independent native-onset truth; 10Hz brackets cannot test 1-2 recorded-frame tolerances",
+  "adaptive_selection": "After the uniform native-frame inspection, inspect only live137.5..147.5 and replay107.5..117.5, both inside fixed100..160 source windows; no candidate detector used to find events",
+  "events": [
+    {
+      "identity": "S.t4rfir3 -> ShadowFox594",
+      "type": "shifted_arrival_in_both",
+      "live_shift_bracket_seconds": [
+        139.604,
+        139.704
+      ],
+      "replay_shift_bracket_seconds": [
+        109.004,
+        109.104
+      ],
+      "live_first_visible_entry_bracket_seconds": [
+        139.704,
+        139.804
+      ],
+      "replay_first_visible_entry_bracket_seconds": [
+        109.104,
+        109.204
+      ],
+      "replay_minus_live_shift_bracket_seconds": [
+        -30.7,
+        -30.5
+      ]
+    },
+    {
+      "identity": "cowboyboopbop -> Yoitscolin",
+      "type": "shifted_arrival_in_both",
+      "live_shift_bracket_seconds": [
+        140.904,
+        141.004
+      ],
+      "replay_shift_bracket_seconds": [
+        110.304,
+        110.404
+      ],
+      "replay_minus_live_shift_bracket_seconds": [
+        -30.7,
+        -30.5
+      ]
+    },
+    {
+      "identity": "cowboyboopbop -> Carsonred",
+      "type": "live_shift_but_replay_empty_feed_arrival",
+      "timing_anchor_eligible": false,
+      "basis": "Coarse overview: live144.504 retains preceding entries then145.504 new entry; replay114.504 empty then115.504 new entry. Excluded rather than treated as equivalent shifted arrival."
+    }
+  ],
+  "paired_timer_values": "Six equal displayed values at sampled PTS offsets -30s; only coarse one-second bins, not a fitted offset or accepted clock correspondence",
+  "conclusion": "Two unique paired shifted events are visible; below registered support floors, and below the plan proposed 3-per-span support. No rotation-assisted alignment, no timing PASS or lag estimate."
+}
