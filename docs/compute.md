@@ -72,6 +72,9 @@ so give cloud boxes 8 CPUs or more.
   2. the IDM SSL pilot and press-head runs;
   3. seeds for any arm where vision measurably matters.
   Run in parallel on Modal rather than queueing on the Mac. The lead tells James before anything would pass $150.
+  **Modal workspace usage limit raised to $200** (James, 2026-09-27 22:08 CDT). The shared guard (`cloud/modal_guard`)
+  uses $200 as its hard cap and refuses new reservations past $150 without an explicit lead acceptance, because James
+  is told before spend passes the $150 weekend total.
   **Round-3 cap raised to $60 / 69,120 s** (James, chat, 2026-09-27 ~09:20 CDT). The budget gate stopped at a padded
   $50.92 forecast; about $6 of that is full holds on apps Modal never created. The expected actual spend is ~$45.
   **Explore budget, 2026-09-27** (James, relayed by the steering lead, ~02:15 CDT): a separate **$15** Modal cap covers the
