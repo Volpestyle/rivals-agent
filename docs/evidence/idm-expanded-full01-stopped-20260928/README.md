@@ -1,0 +1,15 @@
+# Expanded IDM full01: stopped by workspace guard
+
+EXPLORATORY, idm-owner, VUH-1353. 2026-09-28 UTC. App `ap-MBdVG1UvBj4TtV4f9ALrsU`, one AppCreate at01:51:51.310360UTC, failed at03:00:31 with `Refused('workspace spend stop')`. Accepted v1.0.4 guarded it. Teardown proves TERMINAL and zero containers;4141.982153177261 funded seconds, conservative settled bound3.013483USD. No automatic retry or journal change by this lane.
+
+Collected output inventory contains only fit/started.json and fit/jobs/idm-expanded-fit.status.json. No checkpoint, completed stage or real/zero report exists. The final scientific status is failed, n116800/1961526, updated03:00:35UTC. Those rows are progress, not a completed fit or accuracy measurement. Original output is preserved and cannot resume as a completed stage.
+
+The first probe timed out at60s after persisting its synthetic report; fresh probe02 completed after increasing timeout to240s. Both probes settled0.203861. Prior lane bound6.335876068670252 plus probes and this full attempt gives9.553220068670252. Storage1.65 remains an allocation, not measured usage. A fresh6.20 attempt would put the conservative lane ceiling at17.403220068670252, below25. The accepted fresh hold configuration6.199487 would make the exact ceiling17.402707068670252.
+
+Lead reports the shared stop was a false positive from accounting over-counting; its correction is v1.0.5, owned by modal-port. The lead corrected reported provider month-to-date from47 to approximately69USD, leaving approximately25-30 under the100workspace cap. This packet does not independently reconcile provider billing. Lead pre-approved a fresh6.20full attempt FIRST after v1.0.5 independent LAND and lead acceptance. No launch under the old guard.
+
+Input volume `rivals-idm-expanded-20260928-01-inputs` / `vo-PnBxKAp9G4Y8nNwfBOgrdU` is RETAINED by explicit newer lead instruction for the relaunch, superseding deletion after this failed report. Original runtime/input/outputs remain unchanged. Same eight TRAIN ranges plus current -4a1/-5a1/-6; no extra night payload.
+
+A separate throughput uncertainty remains: only5.95percent of declared three-epoch training progress persisted during69minutes. Elapsed time includes startup, metadata checks and full native-store hashing, so it is not isolated training throughput. Direct Volume-backed random frame reads may be limiting; no per-phase timing was recorded to establish that cause. The owner flagged the risk to the lead before repeating the7800second envelope. Next: resolve the guard and timing prerequisites, then fresh approved full; collect camera/real-zero result and settle, then follow current lead instruction on volume retention/deletion. No Gate2, accuracy or transfer claim.
+
+Latest lead decision: do not rerun the same Volume-backed path. Add verified local-disk staging, then a bounded $1.00 real shuffled training timing probe with per-phase measurements on accepted v1.0.5. Use its measured rate plus30percent margin to propose the full-run cost before launch. Lane remains25; input retained.

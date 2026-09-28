@@ -1,0 +1,28 @@
+{
+  "status": "INCOMPLETE",
+  "reason": "Refused('workspace spend stop')",
+  "app_id": "ap-MBdVG1UvBj4TtV4f9ALrsU",
+  "state": "TERMINAL",
+  "bound_usd": "3.013483",
+  "terminal_seconds": 4141.982153177261,
+  "zero_containers": true,
+  "fit_status": {
+    "eta": null,
+    "evidence": "/outputs/idm-expanded-20260928-full-01/fit/completed.json",
+    "host": "modal",
+    "name": "idm-expanded-fit",
+    "owner": "idm-owner",
+    "progress": {
+      "n": 116800,
+      "total": 1961526
+    },
+    "stage": "failed",
+    "started": "2026-09-28T01:52:36+00:00",
+    "updated": "2026-09-28T03:00:35+00:00"
+  },
+  "completed_stages": [],
+  "checkpoint_present": false,
+  "real_zero_report_present": false,
+  "input_volume_retained": "Lead directs retain for pre-approved fresh full after v1.0.5 LAND and acceptance",
+  "automatic_retry": false
+}
