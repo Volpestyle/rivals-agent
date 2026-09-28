@@ -1,0 +1,55 @@
+{
+  "owner": "idm-owner",
+  "scope": "Transport/hash record only; no deployment bytes modified",
+  "reason": "core.autocrlf normalized newly generated Windows text on commit. Raw pins describe PC/Mac transport; this record binds canonical Git LF forms. Frozen evidence untouched.",
+  "cloud_runtime_impact": "None. Running uploader, source inventory, input and upload manifests, current-authority bundle and native proof have exact raw/Git pins.",
+  "reproduction": "When reproducing historical raw source-sessions.json pin5e1834e6 from Git, use CRLF bytes. Current cloud run-manifest.json is already LF and needs no conversion.",
+  "packets": [
+    {
+      "commit": "d4f05e0",
+      "packet": "docs/evidence/idm-match-stores-complete-20260927",
+      "members": 36,
+      "raw_transport_all_verified": true,
+      "git_all_verified_after_explicit_line_ending_normalization": true,
+      "differences": [
+        {
+          "path": "README.md",
+          "raw_transport_sha256": "355824e7307ca462785e7267123e4f0987af6ca47025f0a98e8a2ab5226da11c",
+          "git_lf_sha256": "899f5fc0b2fd13ca3b0f4b9c260984592918705965b268cac38498f5027b44ce",
+          "difference": "CRLF to LF only"
+        },
+        {
+          "path": "inspection-56.json",
+          "raw_transport_sha256": "141cb80ecd54e9a2dd25c9843d0c7e13fa28235f4b31796e03aefb89c5de6c52",
+          "git_lf_sha256": "bcdf8221b2575e26fc22e1c3c4648db2d8308772c080cc6ba3cf9bedeb7a7311",
+          "difference": "CRLF to LF only"
+        }
+      ],
+      "manifest_raw_sha256": "f89e222e7ec66fc66d3af4befddba2830fa340d36ba82c5ddf456d888b9855b9",
+      "manifest_git_lf_sha256": "3d93e7ffc30e8096e40f87e3720f7db5804139bd59c6bc4092165031d04ecad1"
+    },
+    {
+      "commit": "ba8f6a2",
+      "packet": "docs/evidence/idm-expanded-cloud-preparation-20260927",
+      "members": 19,
+      "raw_transport_all_verified": true,
+      "git_all_verified_after_explicit_line_ending_normalization": true,
+      "differences": [
+        {
+          "path": "README.md",
+          "raw_transport_sha256": "c8fdcd2ff7ab7d229455b0b1bf54eaeccd76791e3548171a54a2f89c69ad4345",
+          "git_lf_sha256": "133cc7288c77af229cbf069c2d4bc4ebb22974074e1f107b25756eac64e06d69",
+          "difference": "CRLF to LF only"
+        },
+        {
+          "path": "source-sessions.json",
+          "raw_transport_sha256": "5e1834e6eac34b7048d33a0e393c7cf890d0a0af76928d5af801c5a5fa01923c",
+          "git_lf_sha256": "e5f9a85c162da766ed6cfee9c0ed46fbddab0532bd95efd6c4bff33e185dcfb0",
+          "difference": "CRLF to LF only"
+        }
+      ],
+      "manifest_raw_sha256": "115005251f8be9769c9a8b214b9b2add1cccd5102785cbf641e7812e0d3bd4e7",
+      "manifest_git_lf_sha256": "e90340a808011dd4f851163e790b0a7731bb05e5f6356e07d67e1404e96423df"
+    }
+  ]
+}
