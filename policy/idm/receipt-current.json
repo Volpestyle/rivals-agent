@@ -1,5 +1,5 @@
 {
-  "basis": "Canonical admission metadata through -8 accepted (27e34517), independently reviewed and lead-accepted, confirmed by admission-codex 2026-09-27. Authority inventory is not the fit roster; the approved expanded refit still excludes -7 and -8. Update complete bundle and consumer pin for each new admission/revocation.",
+  "basis": "Canonical admission metadata through -10 accepted (4f16079c), independently reviewed and lead-accepted, confirmed by admission-codex 2026-09-28 UTC. Authority inventory is not the fit roster; the approved expanded refit still excludes -7, -8 and -10. Update complete bundle and consumer pin for each new admission/revocation.",
   "files": {
     "docs/evidence/idm-match-admission-051206-20260927/receipt/match-admission-051206.accepted-a1.json": "1aec79937aa7dca19cb6526b5d7c9ffdcb2ba6a53c7c09fb972edf6fe0d5325e",
     "docs/evidence/idm-match-admission-051206-20260927/receipt/match-admission-051206.accepted.json": "f4c2b7dfa9c562265255f55367bf1d96d180ddb233f2872275231251ee0be5a9",
@@ -7,6 +7,7 @@
     "docs/evidence/idm-match-admission-053118-20260927/receipt/match-admission-053118.accepted.json": "90694961f689c8a5040c679b48349d4b14b049e9566eec10b56a339ee6a8260c",
     "docs/evidence/idm-match-admission-053838-20260927/receipt/match-admission-053838.accepted.json": "535adf28f42ba37b2051c7ccb5707d0b1e175bb0463bd7502bfe72b4ce578a87",
     "docs/evidence/idm-match-admission-055006-20260927/receipt/match-admission-055006.accepted.json": "27e34517ec16b694147a0a897eb8c75fcfce34061b778fbf59ca29e7c86c9819",
+    "docs/evidence/idm-match-admission-060021-20260927/receipt/match-admission-060021.accepted.json": "4f16079cac4e500d94b8e047e903d4b0690e0b5f87673e9ef41bfda7af822331",
     "docs/evidence/idm-match-pilot-052001-20260927/receipt/match-admission-052001.accepted-a1.json": "94701525132536f5794b4fefd9e06e6bdecdccb1f70c8bef0589a3b6af02c216",
     "docs/evidence/idm-match-pilot-052001-20260927/receipt/match-admission-052001.accepted.json": "e36283a5d14a4d1ad3a8b2a9bf814526c1b3f6d2a967fcd14ebcb228f8caaeb5",
     "docs/evidence/idm-match-pilot-052001-20260927/receipt/match-admission-052001.superseded.json": "353605dc484f11f1557267f9161f855d2710745f423149252d9bf186d50c6811"
