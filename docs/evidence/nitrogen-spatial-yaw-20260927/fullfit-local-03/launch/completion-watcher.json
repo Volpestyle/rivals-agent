@@ -1,0 +1,14 @@
+{
+  "host": "pc",
+  "owner": "explore-policy",
+  "launcher_pid": 92216,
+  "python_pid": 22976,
+  "priority": "BelowNormal",
+  "priority_verified_at": 1790560942.4205225,
+  "script_sha256": "e6251a01f2af92c0279c0b25756cba577695c2bfcf4c90439c081edc06b07ebe",
+  "receipt_root": "C:/Users/volpe/AppData/Local/Temp/nitrogen-confirm/fit-local03-watcher",
+  "purpose": "Read-only final-metadata poll; prompt same Herdr agent for collection",
+  "cloud_mutations": false,
+  "fit_retries": false,
+  "priority_note": "Set explicitly on launcher and Python child after checking priority; initial untyped ctypes request did not apply."
+}

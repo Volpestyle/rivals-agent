@@ -1,0 +1,26 @@
+{
+  "unix": 1790561066.000184,
+  "logs": [
+    {
+      "attempt": "yaw-fit-grid8-s1-20260927-03",
+      "state": "RUNNING",
+      "code": 0,
+      "stdout": "2026-09-27 21:00:29-05:00 Local copy/hash complete: 20260923T205528-900Z-45572-3\n2026-09-27 21:00:29-05:00 Local cache copy/hash PASS: 107013598154 bytes in 283.385s\n2026-09-27 21:03:48-05:00 spatial yaw 8 seed 1: 0/15288\n2026-09-27 21:04:18-05:00 spatial yaw 8 seed 1: 103/15288\n",
+      "stderr": ""
+    },
+    {
+      "attempt": "yaw-fit-grid8-s2-20260927-03",
+      "state": "RUNNING",
+      "code": 0,
+      "stdout": "2026-09-27 21:00:05-05:00 \n2026-09-27 21:00:05-05:00 Local cache copy/hash PASS: 107013598154 bytes in 273.142s\n2026-09-27 21:03:29-05:00 spatial yaw 8 seed 2: 0/15288\n2026-09-27 21:03:59-05:00 spatial yaw 8 seed 2: 82/15288\n",
+      "stderr": ""
+    },
+    {
+      "attempt": "yaw-fit-grid8-s3-20260927-03",
+      "state": "RUNNING",
+      "code": 0,
+      "stdout": "2026-09-27 20:57:41-05:00 Local copy/hash complete: 20260923T200129-346Z-33696-6\n2026-09-27 20:58:03-05:00 Local copy/hash complete: 20260924T232304-170Z-12024-1\n2026-09-27 20:59:54-05:00 Local copy/hash complete: 20260925T021320-371Z-7804-1\n2026-09-27 21:00:03-05:00 Local copy/hash complete: 20260925T025230-605Z-7804-2\n2026-09-27 21:02:36-05:00 Local copy/hash complete: 20260925T203745-207Z-49728-2\n2026-09-27 21:04:07-05:00 Local copy/hash complete: 20260926T035932-508Z-63684-14\n",
+      "stderr": ""
+    }
+  ]
+}

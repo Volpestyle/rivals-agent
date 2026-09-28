@@ -1,0 +1,26 @@
+{
+  "unix": 1790561404.7657979,
+  "logs": [
+    {
+      "attempt": "yaw-fit-grid8-s1-20260927-03",
+      "state": "RUNNING",
+      "code": 0,
+      "stdout": "2026-09-27 21:09:19-05:00 spatial yaw 8 seed 1: 1173/15288\n2026-09-27 21:09:29-05:00 {\"tag\": \"EXPLORATORY\", \"horizon\": 1, \"seed\": 1, \"epoch\": 2, \"steps\": 1176, \"train_chunk_loss\": 1.397583477959341, \"seconds\": 332.06158125900004, \"dev_step_one\": {\"held\": 0.16959322327577725, \"press\": 0.3275103421964471, \"release\": 0.2728121101700606, \"camera\": 2.785447652906413, \"total\": 2.1626395020954914}}\n2026-09-27 21:09:29-05:00 spatial yaw 8 seed 1: 1176/15288\n2026-09-27 21:09:49-05:00 spatial yaw 8 seed 1: 1258/15288\n",
+      "stderr": ""
+    },
+    {
+      "attempt": "yaw-fit-grid8-s2-20260927-03",
+      "state": "RUNNING",
+      "code": 0,
+      "stdout": "2026-09-27 21:08:41-05:00 spatial yaw 8 seed 2: 846/15288\n2026-09-27 21:09:11-05:00 spatial yaw 8 seed 2: 926/15288\n2026-09-27 21:09:41-05:00 spatial yaw 8 seed 2: 1008/15288\n",
+      "stderr": ""
+    },
+    {
+      "attempt": "yaw-fit-grid8-s3-20260927-03",
+      "state": "RUNNING",
+      "code": 0,
+      "stdout": "2026-09-27 21:08:30-05:00 spatial yaw 8 seed 3: 0/15288\n2026-09-27 21:09:00-05:00 spatial yaw 8 seed 3: 102/15288\n2026-09-27 21:09:30-05:00 spatial yaw 8 seed 3: 207/15288\n",
+      "stderr": ""
+    }
+  ]
+}
