@@ -1,0 +1,41 @@
+{
+  "status": "RUNNING; not a completion guarantee",
+  "source_sha256": "47af02cdfbd4fbe436b2fb013fe1708b2b017b43b3159478e24c9e73b107dd8a",
+  "rows": [
+    {
+      "attempt": "yaw-fit-grid8-s1-20260927-03",
+      "updates": 3488,
+      "rate_updates_sec": 3.581699346405229,
+      "interval_seconds": 153.0,
+      "remaining_epoch_boundary_allowance_seconds": 199.65640245599798,
+      "final_verify_eval_checkpoint_allowance_seconds": 327.125675472,
+      "projected_finish_utc": "2026-09-28T03:23:35.307625+00:00",
+      "stop_utc": "2026-09-28T03:45:18.312865+00:00",
+      "margin_seconds": 1303.005239725113
+    },
+    {
+      "attempt": "yaw-fit-grid8-s2-20260927-03",
+      "updates": 2821,
+      "rate_updates_sec": 3.1125827814569536,
+      "interval_seconds": 151.0,
+      "remaining_epoch_boundary_allowance_seconds": 209.16385019199788,
+      "final_verify_eval_checkpoint_allowance_seconds": 327.125675472,
+      "projected_finish_utc": "2026-09-28T03:35:30.644845+00:00",
+      "stop_utc": "2026-09-28T03:45:18.312182+00:00",
+      "margin_seconds": 587.6673369407654
+    },
+    {
+      "attempt": "yaw-fit-grid8-s3-20260927-03",
+      "updates": 2354,
+      "rate_updates_sec": 3.831168831168831,
+      "interval_seconds": 154.0,
+      "remaining_epoch_boundary_allowance_seconds": 209.16385019199788,
+      "final_verify_eval_checkpoint_allowance_seconds": 327.125675472,
+      "projected_finish_utc": "2026-09-28T03:24:46.282746+00:00",
+      "stop_utc": "2026-09-28T03:45:18.314234+00:00",
+      "margin_seconds": 1232.031487941742
+    }
+  ],
+  "assumptions": "Recent measured rate persists. Add final full-cache verification/evaluation/checkpoint allowance plus every remaining epoch boundary; this deliberately overcounts boundaries already in sampled rate. One probe, not p95. No guard changes or retries.",
+  "recorded_at": 1790562057.362155
+}
