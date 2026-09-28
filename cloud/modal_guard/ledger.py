@@ -137,6 +137,10 @@ class Ledger:
         external = sum((usd(x["usd"]) for x in s["external_holds"].values()), usd("0"))
         retained = sum((usd(row["bound_usd"]) for key, row in s["attempts"].items()
                         if row["state"] == "TERMINAL" and key not in reconciled), usd("0"))
+        # Per-app actuals settle compute only. Storage/setup overhead has no
+        # separate inclusion proof and remains reserved, even for a billed app.
+        overhead = sum((usd(row["retained_overhead_usd"]) for row in reconciled.values()), usd("0"))
+        retained += overhead
         active = sum((usd(row["bound_usd"]) for row in s["attempts"].values()
                       if row["state"] != "TERMINAL"), usd("0"))
         outstanding = external + retained + active
@@ -146,6 +150,7 @@ class Ledger:
         floor = max(usd(s["floor_usd"]), current_floor)
         return {"month": s["month"], "metered_floor_usd": str(floor),
                 "retained_terminal_usd": str(retained), "active_allowances_usd": str(active),
+                "covered_terminal_overhead_usd": str(overhead),
                 "external_holds_usd": str(external), "reconciled_terminals": reconciled,
                 "outstanding_usd": str(outstanding), "committed_usd": str(floor + outstanding),
                 "cap_usd": s["cap_usd"], "headroom_usd": str(usd(s["cap_usd"]) - floor - outstanding),

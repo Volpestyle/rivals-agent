@@ -59,6 +59,9 @@ def terminal_actuals(billing, attempts):
         if row["state"] != "TERMINAL" or not row.get("app_id"):
             continue
         try:
+            # App billing cannot prove that non-app storage/setup overhead is
+            # included. Missing/invalid legacy overhead means no reconciliation.
+            overhead = usd(row["hold"]["overhead_usd"])
             proof = row["proof"]
             require(proof["kind"] == "TERMINAL" and proof["attempt_id"] == attempt
                     and proof["app_name"] == row["app_name"], "no bound terminal proof")
@@ -84,6 +87,7 @@ def terminal_actuals(billing, attempts):
                 # the old estimate. Report total, not summary overlap, proves inclusion.
                 amount = sum((v for (app, _), v in indexed.items() if app == row["app_id"]), usd("0"))
                 actuals[attempt] = {"app_id": row["app_id"], "actual_usd": str(amount),
+                                    "retained_overhead_usd": str(overhead),
                                     "created_at": created, "stopped_at": stopped,
                                     "coverage_start": start, "coverage_end": end,
                                     "report_sha256": hashlib.sha256(json_bytes(report)).hexdigest()}

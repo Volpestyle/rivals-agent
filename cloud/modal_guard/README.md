@@ -107,7 +107,7 @@ provider metered floor (never decreases during the month)
 
 Active apps retain a full prospective bound, including all resources and explicit
 overhead. Terminal proof reduces this to measured driver-through-cleanup cost.
-A terminal allowance is omitted only when the authenticated stopped/zero-container
+The compute portion of a terminal allowance is omitted only when the authenticated stopped/zero-container
 proof supplies exact app ID and created/stopped timestamps, and an exact UTC hourly
 report has a row for every occupied hour through the stopping hour. Its query must
 also cover one additional **closed** hour after that hour. Missing occupied buckets
@@ -115,6 +115,10 @@ are unknown, never zero; the trailing hour needs query coverage, not a zero row 
 a stopped app. The complete app actual is already included in the report-total
 floor, which is max(summary metered, report sum, historical floor). Nothing is
 subtracted from the summary, and costs above the estimate are never capped.
+The full `hold.overhead_usd` remains reserved separately: app rows do not prove
+storage/setup costs are billed. Missing or invalid overhead provenance retains
+the whole bound. This release has no automatic storage-overhead settlement path;
+a summary containing some storage does not establish that allowance's coverage.
 Active/uncertain attempts and external holds retain their entire allowance.
 
 The one-hour lag buffer is the lead's explicit policy, not a guarantee of final

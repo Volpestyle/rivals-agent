@@ -10,7 +10,7 @@ from cloud.modal_guard.reconciliation import terminal_actuals, timestamp
 from conftest import billing, raw, snapshot, spec
 
 
-def evidence(clock, *, end="2026-09-28T03:00:00+00:00", costs=("0.7", "0.3"), spent="69.09386987"):
+def evidence(clock, *, end="2026-09-28T03:00:00+00:00", costs=("0.7", "0.3"), spent="69.09386987", overhead="0"):
     clock.now = timestamp("2026-09-28T03:10:00+00:00")
     value = billing(clock, spent)
     report = raw([{"object_id": "ap-own", "interval_start": f"2026-09-28T0{h}:00:00", "cost": cost}
@@ -21,13 +21,14 @@ def evidence(clock, *, end="2026-09-28T03:00:00+00:00", costs=("0.7", "0.3"), sp
     app = {"app_id": "ap-own", "description": "rivals-old", "state": "stopped", "tasks": "0",
            "created_at": "2026-09-27 19:40:00-05:00", "stopped_at": "2026-09-27 20:20:00-05:00"}
     row = {"attempt_id": "old", "app_name": "rivals-old", "app_id": "ap-own", "state": "TERMINAL",
+           "hold": {"overhead_usd": overhead},
            "bound_usd": "10.256773", "proof": {"kind": "TERMINAL", "attempt_id": "old", "app_name": "rivals-old",
                                                "snapshots": [snapshot(clock, [app])]}}
     return value, row
 
 
 def test_stop_numbers_and_covered_terminal_inclusion(tmp_path, clock):
-    value, row = evidence(clock)
+    value, row = evidence(clock, overhead="1.17")
     ledger = Ledger.initialize(tmp_path / "ledger.db", value, wall=clock.wall, monotonic=clock.monotonic)
     with ledger.transaction() as s:
         s["attempts"] = {"old": row, "active": {"state": "RUNNING", "bound_usd": "20.822129"}}
@@ -36,9 +37,10 @@ def test_stop_numbers_and_covered_terminal_inclusion(tmp_path, clock):
     with ledger.transaction() as s:
         s["attempts"]["old"]["state"] = "TERMINAL"
     totals = ledger.totals()
-    assert totals["committed_usd"] == "89.91599887"
+    assert totals["committed_usd"] == "91.08599887"
     assert totals["reconciled_terminals"]["old"]["actual_usd"] == "1.0"
-    assert totals["retained_terminal_usd"] == "0"
+    assert totals["retained_terminal_usd"] == "1.17"
+    assert totals["covered_terminal_overhead_usd"] == "1.17"
     # Bad later evidence restores the whole allowance, without editing history.
     ledger.refresh(billing(clock, "69.09386987", {"ap-own": "1"}))
     assert ledger.totals()["committed_usd"] == "100.17277187"
@@ -88,17 +90,63 @@ def test_zero_cost_requires_explicit_all_hour_rows(clock):
 
 
 def test_settled_snapshot_projection_and_idm_relaunch(tmp_path, clock):
-    value, row = evidence(clock)
+    value, row = evidence(clock, overhead="1.17")
     ledger = Ledger.initialize(tmp_path / "ledger.db", value, wall=clock.wall, monotonic=clock.monotonic)
     with ledger.transaction() as s:
         # Current 21.883853 total: older covered 10.256773 + fresh stopped 11.627080.
         fresh = deepcopy(row)
         fresh.update(state="TERMINAL", bound_usd="11.627080", app_id="ap-fresh")
         s["attempts"] = {"old": row, "fresh": fresh}
-    assert Decimal(ledger.totals()["committed_usd"]) == Decimal("80.72094987")
+    assert Decimal(ledger.totals()["committed_usd"]) == Decimal("81.89094987")
     # $6.20 prospective relaunch would fit even the prior $100 cap. This is a
     # synthetic coverage control, NOT a live eligibility decision.
-    assert Decimal(ledger.totals()["committed_usd"]) + Decimal("6.20") == Decimal("86.92094987")
+    assert Decimal(ledger.totals()["committed_usd"]) + Decimal("6.20") == Decimal("88.09094987")
+
+
+@pytest.mark.parametrize("spent,allowed", [("197.75", False), ("197.71", True)])
+def test_covered_app_cannot_release_storage_overhead(tmp_path, clock, spent, allowed):
+    from cloud.modal_guard.common import atomic
+    from test_workspace_policy import installed
+    value, row = evidence(clock, spent=spent, overhead="0.04")
+    row["bound_usd"] = "1.04"
+    ledger = Ledger.initialize(tmp_path / "ledger.db", value, cap_usd="200",
+                               wall=clock.wall, monotonic=clock.monotonic)
+    with ledger.transaction() as s:
+        s["attempts"] = {"old": row}
+    digest, _, path, policy = installed(ledger)
+    policy.update(authorize_crossing_warn_usd=True, james_notified_at="2026-09-27T20:00:00+00:00")
+    atomic(path, policy)
+    ledger.configure_policy(digest)
+    assert ledger.totals()["covered_terminal_overhead_usd"] == "0.04"
+    assert Decimal(ledger.totals()["committed_usd"]) == Decimal(spent) + Decimal("0.04")
+    if allowed:
+        ledger.reserve(spec(), snapshot(clock))
+        assert Decimal(ledger.totals()["committed_usd"]) == 200
+    else:
+        with pytest.raises(Refused, match="cap"): ledger.reserve(spec(), snapshot(clock))
+        assert ledger.get("old") == row
+        with ledger.reading() as s: assert list(s["attempts"]) == ["old"]
+
+
+@pytest.mark.parametrize("overhead", ["0", "0.04"])
+def test_external_hold_retained_separately_from_covered_overhead(tmp_path, clock, overhead):
+    value, row = evidence(clock, spent="48", overhead=overhead)
+    ledger = Ledger.initialize(tmp_path / "ledger.db", value, external_holds=[{"id": "storage", "usd": "0.12"}],
+                               wall=clock.wall, monotonic=clock.monotonic)
+    with ledger.transaction() as s: s["attempts"] = {"old": row}
+    totals = ledger.totals()
+    assert totals["external_holds_usd"] == "0.12"
+    assert Decimal(totals["committed_usd"]) == Decimal("48.12") + Decimal(overhead)
+
+
+@pytest.mark.parametrize("overhead", [None, "NaN", "-0.01"])
+def test_missing_invalid_overhead_keeps_full_bound(tmp_path, clock, overhead):
+    value, row = evidence(clock, overhead=overhead)
+    if overhead is None: row.pop("hold")
+    ledger = Ledger.initialize(tmp_path / "ledger.db", value, wall=clock.wall, monotonic=clock.monotonic)
+    with ledger.transaction() as s: s["attempts"] = {"old": row}
+    assert ledger.totals()["retained_terminal_usd"] == "10.256773"
+    assert ledger.totals()["reconciled_terminals"] == {}
 
 
 @pytest.mark.parametrize("base,allowed", [("147.749999", True), ("147.75", False), ("148", False)])

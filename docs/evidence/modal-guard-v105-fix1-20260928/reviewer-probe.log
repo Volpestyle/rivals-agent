@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "C:\Users\volpe\AppData\Local\Temp\claude\C--Users-volpe\7e6e33ed-20c0-4115-b6e2-59dc2d360929\scratchpad\handoff\probe-modal-guard-v105-overhead.py", line 23, in <module>
+    ledger.reserve(spec(),snapshot(clock))
+  File "C:\Users\volpe\repos\rivals-agent\cloud\modal_guard\ledger.py", line 224, in reserve
+    require(usd(totals["committed_usd"]) + usd(spec["hold"]["reserved_usd"]) <= usd(s["cap_usd"]),
+  File "C:\Users\volpe\repos\rivals-agent\cloud\modal_guard\common.py", line 75, in require
+    raise Refused(message)
+cloud.modal_guard.common.Refused: workspace cap would be crossed
