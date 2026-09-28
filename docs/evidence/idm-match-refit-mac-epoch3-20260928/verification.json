@@ -1,0 +1,52 @@
+{
+  "receipt_sha256": "7bf730853baa890ce42ff749b9101277f8e3dd13eab6a5a2ef2a09171bbd4a2d",
+  "checkpoint_sha256": "769d5d009d7dcdaf439690e38d03f896435d820b826e2abedeb0c10d3a9be4c6",
+  "completed_epochs": 3,
+  "step_count": 135390,
+  "history": [
+    {
+      "epoch": 0,
+      "train_loss": 1.1415385462089451,
+      "seconds": 2640.4364514169865
+    },
+    {
+      "epoch": 1,
+      "train_loss": 0.6957841428067332,
+      "seconds": 5207.039081874944
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.5968495498119765,
+      "seconds": 7790.928292375
+    }
+  ],
+  "epoch3_seconds": 2583.889210500056,
+  "epoch3_minutes": 43.06482017500093,
+  "epoch3_updates_per_second": 17.465919133299863,
+  "total_training_minutes": 129.84880487291667,
+  "fit_complete_sha256": "4fdd27d7440e69c98d45e38734a42e6366a0fa34bcc6129e46c800d1bc0d1805",
+  "final_inference_checkpoint_sha256": "1ddf84b5486973ef65387d65d9304daf507d58deb0ab026117c618739bab8efb",
+  "rng_keys": [
+    "python",
+    "numpy",
+    "torch",
+    "cuda",
+    "mps"
+  ],
+  "mps_rng_bytes": 44,
+  "holdout_families_absent": true,
+  "memory_samples_epoch3": 453,
+  "last_memory": {
+    "max_rss_bytes": 95160401920,
+    "mps_allocated_bytes": 84261888,
+    "mps_driver_bytes": 1107755008,
+    "swap": "total = 13312.00M  used = 12306.19M  free = 1005.81M  (encrypted)"
+  },
+  "peak_rss_gib": 88.62503051757812,
+  "swap_start_reported_M": 12314.19,
+  "swap_max_reported_M": 12314.19,
+  "swap_end_reported_M": 12306.19,
+  "limitations": "Fit complete does not imply calibration/evaluation complete. No accuracy claim.",
+  "final_checkpoint_download_hash_verified": true,
+  "final_model_equals_complete_epoch3": true
+}
