@@ -21,4 +21,9 @@ Before writing or debugging Modal code, load the `modal` skill (Modal's own, v1.
 and redeliver the same call (2026-09-27, ~19:15 UTC: two lanes lost their runs this way within 2 s). A worker must
 tolerate re-entry: resume only from a completed, hash-checked stage, and refuse a partial one instead of refitting.
 
+Never train by reading frames or feature caches at random straight off a Modal Volume: stage them onto the
+container's local disk first, hash-check, then read locally. On 2026-09-27 Volume-backed random reads ran 3-15x slower
+and cost two lanes about $14 of runs that never finished (`docs/steering/spend-ledger-20260927.md`). Time a new
+workload with a short probe before sizing its full run.
+
 Machine access: `docs/machines.md` and the `mac-remote` / `windows-pc` skills. Live input: the `rivals-live-game` skill.
