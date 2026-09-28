@@ -1,0 +1,11 @@
+{
+  "report_sha256": "8d9a460a9dc4cb701d785ca19e140c8a378836469500af4aefe6ed831cd30a32",
+  "prediction_sha256": "72cf61a0df2d015bf520b3fff91f76d37f86a40b69b5cbb46f34d83e4dc5f86c",
+  "rows": 9000,
+  "exact_row_selection_pass": true,
+  "report_recompute_pass": true,
+  "independent_slice_mean_arithmetic_pass": true,
+  "finite_or_explicit_unknown_pass": true,
+  "current_admission_pass": true,
+  "no_inference_or_decode": true
+}

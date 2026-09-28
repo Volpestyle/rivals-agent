@@ -1,0 +1,37 @@
+{
+  "session_id": "20260927T053838-153Z-150600-7",
+  "admission": {
+    "path": "docs/evidence/idm-match-admission-053838-20260927/receipt/match-admission-053838.accepted.json",
+    "sha256": "535adf28f42ba37b2051c7ccb5707d0b1e175bb0463bd7502bfe72b4ce578a87"
+  },
+  "relocation": {
+    "path": "/Users/james/dev/idm-data/range-to-match-20260928-a2/receipts/20260927T053838-153Z-150600-7/relocation.json",
+    "sha256": "33f2506eae06571dba46056dd1ab98e2edd50568dfcea80995632533954e3116"
+  },
+  "frames": 25274,
+  "manifest_sha256": "3540ad3f0ed2e5b4c27e99dcd502a5993afa51ab6b1bb904da99985ad48c1734",
+  "frames_sha256": "0b771d3c170e713a490eed53344f4d91c6f3fc6fcf65c3ce62c59ce7f3702ff8",
+  "hud_sha256": "8db29eba4da66184046c5c2c732aa70a9795494d9c9d95eb2eba7dc828aaa199",
+  "platform": "Darwin arm64",
+  "source_sha256": "de6aea85939a986b9c090ac72139b66c2ab6742259d3c8aff427d31a58c4ff81",
+  "target_sha256": "fb111143f18132264b52be38ee5b79e74d7f29cd935c7d9975af89541def0982",
+  "payload_rehash_passed": true,
+  "sample_frames": [
+    {
+      "frame_index": 6751,
+      "pts": 56279
+    },
+    {
+      "frame_index": 33599,
+      "pts": 280013
+    },
+    {
+      "frame_index": 55727,
+      "pts": 464413
+    }
+  ],
+  "seconds": 425.9356376249925,
+  "peak_rss_bytes": 450756608,
+  "visual_inspection": "pending",
+  "compute": "Mac CPU, one decoder, two threads, nice10, $0"
+}

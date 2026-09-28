@@ -1,0 +1,7 @@
+{
+  "diagnostic-manifest.json": "8c6e6c61f51465bfcacf3ad93cc1be478163497e32ea611d94c8b1a154d2edbf",
+  "diagnostic.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+  "diagnostic.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "diagnostic-result/report.json": "8d9a460a9dc4cb701d785ca19e140c8a378836469500af4aefe6ed831cd30a32",
+  "diagnostic-result/camera-predictions.json": "72cf61a0df2d015bf520b3fff91f76d37f86a40b69b5cbb46f34d83e4dc5f86c"
+}

@@ -1,0 +1,31 @@
+{
+  "at": "2026-09-28T16:53:15.862850+00:00",
+  "session_id": "20260927T053838-153Z-150600-7",
+  "result_sha256": "3f34fff884b2bf1b1e975547245c7d13ec5cfee7770746be2109cbf5952fd222",
+  "collected_archive_sha256": "eea2ec98531b47b57590903aeb0edbdf7a1b854348861559a3d2826e6353d077",
+  "all_collected_hashes_verified": true,
+  "inspection": {
+    "sample_frame_indices": [
+      6751,
+      33599,
+      55727
+    ],
+    "images_seen": 6,
+    "findings": "All three grayscale gameplay frames and corresponding color HUD crops intact; Spider-Man gameplay visible, no blank/corrupt frame or displaced HUD crop. This is a stored-pixel control, not an independent admission or timing verdict."
+  },
+  "next": {
+    "mac_pid": 76049,
+    "serial_sessions": [
+      "-8",
+      "-10",
+      "-11",
+      "-12"
+    ],
+    "manifest_sha256": "20ef107b6d05ec9b595eb9d330591fb6299d3cfe19f70af0a75e03c1d6f4ed4b",
+    "watcher_pid": 126836,
+    "watcher": "rest-watch",
+    "no_fitting": true,
+    "paid_cost_usd": 0,
+    "mac_slot_released": false
+  }
+}

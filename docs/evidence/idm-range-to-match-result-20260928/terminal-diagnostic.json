@@ -1,0 +1,14 @@
+{
+  "exits": {
+    "decode7.exit": "0",
+    "decode-rest.exit": "0",
+    "diagnostic.exit": "0"
+  },
+  "owned_processes": {
+    "67763": "",
+    "76049": "",
+    "88610": ""
+  },
+  "report_exists": true,
+  "mac_heavy_work_complete": true
+}

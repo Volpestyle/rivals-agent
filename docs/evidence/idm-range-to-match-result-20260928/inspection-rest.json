@@ -1,0 +1,13 @@
+{
+  "at": "2026-09-28T17:18:43.759644+00:00",
+  "collection_archive_sha256": "97dcd2ed0a04be1e120785c9de69f8b6c37befc0c9f595ff7352d32f73bd007f",
+  "all_collection_hashes_verified": true,
+  "sessions": [
+    "20260927T055006-068Z-150600-8",
+    "20260927T060021-195Z-150600-10",
+    "20260927T061107-953Z-150600-11",
+    "20260927T061900-143Z-150600-12"
+  ],
+  "images_seen": 24,
+  "finding": "All twelve stored gameplay frames and twelve corresponding HUD crops intact; Spider-Man and match HUD visible, no corrupt or blank payload/crop. Some frames are pre-objective movement within admitted segments. This is a stored-pixel control, not renewed admission or camera timing validation."
+}

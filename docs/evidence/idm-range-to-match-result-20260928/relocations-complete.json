@@ -1,0 +1,27 @@
+[
+  {
+    "session_id": "20260927T053838-153Z-150600-7",
+    "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\idm\\range-to-match-20260928\\relocations\\20260927T053838-153Z-150600-7\\relocation.json",
+    "sha256": "33f2506eae06571dba46056dd1ab98e2edd50568dfcea80995632533954e3116"
+  },
+  {
+    "session_id": "20260927T055006-068Z-150600-8",
+    "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\idm\\range-to-match-20260928\\relocations\\20260927T055006-068Z-150600-8\\relocation.json",
+    "sha256": "9408a42973de1117e794ee9b9201d8f375d1889264d54df9fd95c995d294995b"
+  },
+  {
+    "session_id": "20260927T060021-195Z-150600-10",
+    "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\idm\\range-to-match-20260928\\relocations\\20260927T060021-195Z-150600-10\\relocation.json",
+    "sha256": "fe84b5b4db1758b31e8c78214dd4bcbe0c70e57ad9f4cc8e165ca34ddddc9283"
+  },
+  {
+    "session_id": "20260927T061107-953Z-150600-11",
+    "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\idm\\range-to-match-20260928\\relocations\\20260927T061107-953Z-150600-11\\relocation.json",
+    "sha256": "25721a508a377d27936ebdfe9e0dcad7887f4eec91bfd76d59911846fe89fe5a"
+  },
+  {
+    "session_id": "20260927T061900-143Z-150600-12",
+    "path": "C:\\Users\\volpe\\repos\\rivals-agent\\data\\idm\\range-to-match-20260928\\relocations\\20260927T061900-143Z-150600-12\\relocation.json",
+    "sha256": "94f50925cb2472dab1e52201764bee72086bdbdb244c257751fd2267c872b8ed"
+  }
+]
