@@ -1,0 +1,12 @@
+{
+  "calibration.json": "05bf8b79ae5a5466456f03dec0bbac45936be1fdfdd101d6927e0e8747578426",
+  "collection-receipt.json": "4147cd67be3abe4ae5cd843c650de0ab6a3a7076be6e9a6f72f3e8483251038d",
+  "complete.json": "874821881d6dee4d1221615d1418bea59aab6de650557b16120bcc1799e932e6",
+  "press-report.json": "e94f627d10cd049e40876b3df6ea9e08a6eda3a2f422a380d54a2aac29d5b825",
+  "range-dev-report.json": "78e4065ed7aab12cc240bdd3dfb13b8a558fdbc9cff459a664be70d87826fb83",
+  "report.md": "318f6eddb6103746dde9f375328879d10cb3ccfccf649af1049d918e328ed0f8",
+  "terminal.json": "9d4ee28ca5e26edf1f0d53a70577b6be4d8ee3b74dc259c4093f00970eff7c96",
+  "transfer-report.json": "6bacb1f025cd37e08812fd9bbbab4605956d97d46dee57c889fb299cfbb5478d",
+  "verification.json": "eb957f26ca492ec946873de4613d7b5e3033a5cbfa089e40ef017d495e10b645",
+  "verify-result.py": "3b8bcbaad7c6472557f3ca23c694e6d078924f2a5515301c8b064f18a506af5c"
+}

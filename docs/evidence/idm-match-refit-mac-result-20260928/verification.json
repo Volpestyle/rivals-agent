@@ -1,0 +1,24 @@
+{
+  "range_dev": {
+    "rows": {
+      "20260923T171533-187Z-33696-5": 9244,
+      "20260923T205528-900Z-45572-3": 39836
+    },
+    "all_camera_metrics_recomputed": true
+  },
+  "transfer": {
+    "rows": {
+      "20260927T061107-953Z-150600-11": 15960,
+      "20260927T061900-143Z-150600-12": 22020
+    },
+    "all_camera_metrics_recomputed": true
+  },
+  "files_verified": 32,
+  "epochs_verified": 3,
+  "complete_model_equals_epoch3": true,
+  "train_calibration_recomputed": true,
+  "press_scores_chance_recomputed": true,
+  "baseline_dev_row_order_identical": true,
+  "max_numeric_difference": 0.0,
+  "heldout_no_tuning": true
+}

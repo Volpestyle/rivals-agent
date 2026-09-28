@@ -1,0 +1,54 @@
+{
+  "utc": "2026-09-28T20:59:57.785123+00:00",
+  "epochs": [
+    {
+      "epoch": 1,
+      "step_count": 45130,
+      "receipt": "/Users/james/dev/idm-data/match-refit-mac-20260928/result/fit/epochs/epoch-0001-6b507421bf68411399ac3fd06fc78006.complete.json",
+      "receipt_sha256": "39adaba7b786573d0493791c7ddea47cca2eb4ea6bfbe3e1c05f7315906a1bed",
+      "checkpoint": "/Users/james/dev/idm-data/match-refit-mac-20260928/result/fit/epochs/epoch-0001-6b507421bf68411399ac3fd06fc78006.pt",
+      "checkpoint_sha256": "211233600c4c49860986be0bbd52733144318b1bad18223080edd78388d82953",
+      "checkpoint_bytes": 5142203
+    },
+    {
+      "epoch": 2,
+      "step_count": 90260,
+      "receipt": "/Users/james/dev/idm-data/match-refit-mac-20260928/result/fit/epochs/epoch-0002-b3d2d0af1cd64196bdd393ea9890e4cc.complete.json",
+      "receipt_sha256": "5ac8b44f9e633c070c357a7caf6085dee44302b58b592a2d961aea7fbbcc3853",
+      "checkpoint": "/Users/james/dev/idm-data/match-refit-mac-20260928/result/fit/epochs/epoch-0002-b3d2d0af1cd64196bdd393ea9890e4cc.pt",
+      "checkpoint_sha256": "1fc6ae2f0bb9b35f90674726732cc940ed5c5e702cdd767d6f0254bf465ebde5",
+      "checkpoint_bytes": 5142267
+    },
+    {
+      "epoch": 3,
+      "step_count": 135390,
+      "receipt": "/Users/james/dev/idm-data/match-refit-mac-20260928/result/fit/epochs/epoch-0003-5af04d975023447db8e33c8b8266724a.complete.json",
+      "receipt_sha256": "7bf730853baa890ce42ff749b9101277f8e3dd13eab6a5a2ef2a09171bbd4a2d",
+      "checkpoint": "/Users/james/dev/idm-data/match-refit-mac-20260928/result/fit/epochs/epoch-0003-5af04d975023447db8e33c8b8266724a.pt",
+      "checkpoint_sha256": "769d5d009d7dcdaf439690e38d03f896435d820b826e2abedeb0c10d3a9be4c6",
+      "checkpoint_bytes": 5142331
+    }
+  ],
+  "exit": "0",
+  "phase_exits": {
+    "fit": "0",
+    "press": "0",
+    "evaluate": "0"
+  },
+  "fit_tail": "allocated_bytes\": 130333952, \"mps_driver_bytes\": 1107755008, \"swap\": \"total = 13312.00M  used = 12306.19M  free = 1005.81M  (encrypted)\"}}\n{\"progress\": {\"n\": 2149748, \"total\": 2166222}, \"memory\": {\"max_rss_bytes\": 95160401920, \"mps_allocated_bytes\": 130333952, \"mps_driver_bytes\": 1107755008, \"swap\": \"total = 13312.00M  used = 12306.19M  free = 1005.81M  (encrypted)\"}}\n{\"progress\": {\"n\": 2151348, \"total\": 2166222}, \"memory\": {\"max_rss_bytes\": 95160401920, \"mps_allocated_bytes\": 130333952, \"mps_driver_bytes\": 1107755008, \"swap\": \"total = 13312.00M  used = 12306.19M  free = 1005.81M  (encrypted)\"}}\n{\"progress\": {\"n\": 2152948, \"total\": 2166222}, \"memory\": {\"max_rss_bytes\": 95160401920, \"mps_allocated_bytes\": 130333952, \"mps_driver_bytes\": 1107755008, \"swap\": \"total = 13312.00M  used = 12306.19M  free = 1005.81M  (encrypted)\"}}\n{\"progress\": {\"n\": 2154548, \"total\": 2166222}, \"memory\": {\"max_rss_bytes\": 95160401920, \"mps_allocated_bytes\": 130333952, \"mps_driver_bytes\": 1107755008, \"swap\": \"total = 13312.00M  used = 12306.19M  free = 1005.81M  (encrypted)\"}}\n{\"progress\": {\"n\": 2156148, \"total\": 2166222}, \"memory\": {\"max_rss_bytes\": 95160401920, \"mps_allocated_bytes\": 130333952, \"mps_driver_bytes\": 1107755008, \"swap\": \"total = 13312.00M  used = 12306.19M  free = 1005.81M  (encrypted)\"}}\n{\"progress\": {\"n\": 2157748, \"total\": 2166222}, \"memory\": {\"max_rss_bytes\": 95160401920, \"mps_allocated_bytes\": 130333952, \"mps_driver_bytes\": 1107755008, \"swap\": \"total = 13312.00M  used = 12306.19M  free = 1005.81M  (encrypted)\"}}\n{\"progress\": {\"n\": 2159348, \"total\": 2166222}, \"memory\": {\"max_rss_bytes\": 95160401920, \"mps_allocated_bytes\": 130333952, \"mps_driver_bytes\": 1107755008, \"swap\": \"total = 13312.00M  used = 12306.19M  free = 1005.81M  (encrypted)\"}}\n{\"progress\": {\"n\": 2160948, \"total\": 2166222}, \"memory\": {\"max_rss_bytes\": 95160401920, \"mps_allocated_bytes\": 130333952, \"mps_driver_bytes\": 1107755008, \"swap\": \"total = 13312.00M  used = 12306.19M  free = 1005.81M  (encrypted)\"}}\n{\"progress\": {\"n\": 2162548, \"total\": 2166222}, \"memory\": {\"max_rss_bytes\": 95160401920, \"mps_allocated_bytes\": 130333952, \"mps_driver_bytes\": 1107755008, \"swap\": \"total = 13312.00M  used = 12306.19M  free = 1005.81M  (encrypted)\"}}\n{\"progress\": {\"n\": 2164148, \"total\": 2166222}, \"memory\": {\"max_rss_bytes\": 95160401920, \"mps_allocated_bytes\": 130333952, \"mps_driver_bytes\": 1107755008, \"swap\": \"total = 13312.00M  used = 12306.19M  free = 1005.81M  (encrypted)\"}}\n{\"progress\": {\"n\": 2165748, \"total\": 2166222}, \"memory\": {\"max_rss_bytes\": 95160401920, \"mps_allocated_bytes\": 130333952, \"mps_driver_bytes\": 1107755008, \"swap\": \"total = 13312.00M  used = 12306.19M  free = 1005.81M  (encrypted)\"}}\n{\"progress\": {\"n\": 2166222, \"total\": 2166222}, \"memory\": {\"max_rss_bytes\": 95160401920, \"mps_allocated_bytes\": 84261888, \"mps_driver_bytes\": 1107755008, \"swap\": \"total = 13312.00M  used = 12306.19M  free = 1005.81M  (encrypted)\"}}\n{\"completed_epoch\": {\"receipt\": \"result/fit/epochs/epoch-0003-5af04d975023447db8e33c8b8266724a.complete.json\", \"sha256\": \"7bf730853baa890ce42ff749b9101277f8e3dd13eab6a5a2ef2a09171bbd4a2d\", \"completed_epochs\": 3}, \"memory\": {\"max_rss_bytes\": 95160401920, \"mps_allocated_bytes\": 84261888, \"mps_driver_bytes\": 1107755008, \"swap\": \"total = 13312.00M  used = 12306.19M  free = 1005.81M  (encrypted)\"}}\n     8145.23 real      3105.45 user       988.07 sys\n         95160401920  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n            42143744  page reclaims\n            34610847  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                   0  messages sent\n                   0  messages received\n                   0  signals received\n                7356  voluntary context switches\n            40060018  involuntary context switches\n      54266945486465  instructions retired\n      17552740008829  cycles elapsed\n          6052960080  peak memory footprint\n",
+  "press_tail": "     1819.08 real       988.51 user       260.95 sys\n         95953207296  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n             4058631  page reclaims\n            11420177  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                   0  messages sent\n                   0  messages received\n                   0  signals received\n                6483  voluntary context switches\n             9761303  involuntary context switches\n      18137640290340  instructions retired\n       5402756814854  cycles elapsed\n          5971406120  peak memory footprint\n",
+  "evaluate_tail": "      433.46 real       330.88 user        35.80 sys\n         11454595072  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n             1242160  page reclaims\n                 685  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                   0  messages sent\n                   0  messages received\n                   0  signals received\n                1857  voluntary context switches\n             1718199  involuntary context switches\n       6048879174717  instructions retired\n       1591434882599  cycles elapsed\n          6271704240  peak memory footprint\n",
+  "complete_exists": true,
+  "status": {
+    "eta": null,
+    "evidence": "result/complete.json",
+    "host": "mac",
+    "name": "idm-match-refit-mac-20260928",
+    "owner": "idm-owner",
+    "progress": "evaluate complete",
+    "stage": "done",
+    "started": "2026-09-28T17:58:31+00:00",
+    "updated": "2026-09-28T20:59:19+00:00"
+  },
+  "processes": []
+}
