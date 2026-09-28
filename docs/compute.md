@@ -62,9 +62,10 @@ so give cloud boxes 8 CPUs or more.
 - Data goes in the Modal volume `rivals-range-bc`, and only after every file's sha256 is verified inside Modal against
   a pinned manifest. Only train and frozen-dev caches and steps, code and receipts go up. Sealed, test and validation
   data never leave James's machines.
-- Every paid run: a benchmark or fan-out script with a hard cap, a projected cost printed before launch, a
-  running-spend stop, one class for the whole experiment, and teardown proven afterwards (all apps stopped, no
-  containers). Caps are James's: $50 for round 3, and $0 cloud for the explore track unless he adds money.
+- Every paid run: a projected cost worked out before launch, a native `timeout=` on every function, one GPU class for
+  the whole experiment, and teardown proven afterwards (zero containers). **No running-spend stop and no other custom
+  budget code** (superseded 2026-09-28; see "No custom budget code" below). Lane caps are James's allocations, which
+  the lead tracks by hand.
   **Weekend cloud total is $150 (2026-09-26/27/28)**, covering round 3, explore and IDM together. James said: "I'd set
   it to 150, whatever it takes to get this agent going this weekend." Round 3 keeps its $60. Explore and IDM share the
   rest, each run under its own hard cap. Priority order for that money:
