@@ -7,7 +7,7 @@ from .common import atomic, read, require, sha256
 def freeze(root):
     root = Path(root)
     paths = sorted(p for p in root.glob("*.py") if p.is_file())
-    manifest = {"format": "modal-guard-release-v1", "version": "1.0.4", "sdk": "1.5.5",
+    manifest = {"format": "modal-guard-release-v1", "version": "1.0.5", "sdk": "1.5.5",
                 "files": {p.name: sha256(p) for p in paths}}
     atomic(root / "RELEASE.json", manifest, fresh=True)
     return sha256(root / "RELEASE.json")
@@ -18,7 +18,7 @@ def verify(root, expected):
     manifest = root / "RELEASE.json"
     require(sha256(manifest) == expected, "shared library release pin mismatch")
     value = read(manifest)
-    require(value["format"] == "modal-guard-release-v1" and value["version"] == "1.0.4"
+    require(value["format"] == "modal-guard-release-v1" and value["version"] == "1.0.5"
             and value["sdk"] == "1.5.5", "unsupported release")
     require(set(value["files"]) == {p.name for p in root.glob("*.py")}, "unlisted library module")
     for name, digest in value["files"].items():

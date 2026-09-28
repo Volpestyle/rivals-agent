@@ -1,0 +1,26 @@
+{
+  "at_utc": "2026-09-28T03:00:31.000625+00:00",
+  "floor_usd": "69.09386987",
+  "retained_terminal_usd": "10.256773",
+  "active_holds_usd": "20.822129",
+  "external_usd": "0",
+  "commitment_usd": "100.17277187",
+  "active": [
+    {
+      "attempt_id": "idm-expanded-20260928-full-01",
+      "hold": "6.199487"
+    },
+    {
+      "attempt_id": "yaw-fit-grid8-s2-20260927-03",
+      "hold": "4.874214"
+    },
+    {
+      "attempt_id": "yaw-fit-grid8-s1-20260927-03",
+      "hold": "4.874214"
+    },
+    {
+      "attempt_id": "yaw-fit-grid8-s3-20260927-03",
+      "hold": "4.874214"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+[
+  {
+    "mutant": "closed-hour-buffer",
+    "killed": true,
+    "test": "test_incomplete_evidence_retains_allowance[young]"
+  },
+  {
+    "mutant": "active-app-credit",
+    "killed": true,
+    "test": "test_incomplete_evidence_retains_allowance[nonterminal]"
+  },
+  {
+    "mutant": "warn-boundary",
+    "killed": true,
+    "test": "test_warn_boundary_atomic_reservation[147.75-False]"
+  }
+]

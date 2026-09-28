@@ -15,9 +15,11 @@ import time
 from .common import elapsed_time, IDENTITY, clock_id, cost, json_bytes, name, number, require, usd
 from .holds import validate
 from .provider import billing_values, month_at, snapshot_values
+from .reconciliation import terminal_actuals, timestamp
 
-MAX_CAP_USD = "150"
+MAX_CAP_USD = "200"
 DEFAULT_CAP_USD = "100"
+WARN_USD = "150"
 BILLING_MAX_AGE = 120
 
 
@@ -131,16 +133,65 @@ class Ledger:
     def _totals(self, s):
         require(s["identity"] == IDENTITY and s["month"] == month_at(self.wall()), "ledger identity/month mismatch")
         billing_clock(s["billing"], self.monotonic())
-        # Separate summary/report queries cannot prove overlap. Keep the entire
-        # allowance; actuals remain reporting evidence, never automatic credit.
-        outstanding = sum((usd(x["usd"]) for x in s["external_holds"].values()), usd("0"))
-        for row in s["attempts"].values():
-            outstanding += usd(row["bound_usd"])
-        floor = usd(s["floor_usd"])
+        reconciled = terminal_actuals(s["billing"], s["attempts"])
+        external = sum((usd(x["usd"]) for x in s["external_holds"].values()), usd("0"))
+        retained = sum((usd(row["bound_usd"]) for key, row in s["attempts"].items()
+                        if row["state"] == "TERMINAL" and key not in reconciled), usd("0"))
+        active = sum((usd(row["bound_usd"]) for row in s["attempts"].values()
+                      if row["state"] != "TERMINAL"), usd("0"))
+        outstanding = external + retained + active
+        # Inclusion is established in report total, never by subtracting a later
+        # app report from an unrelated summary. Preserve the historical floor.
+        current_floor, _ = billing_values(s["billing"])
+        floor = max(usd(s["floor_usd"]), current_floor)
         return {"month": s["month"], "metered_floor_usd": str(floor),
+                "retained_terminal_usd": str(retained), "active_allowances_usd": str(active),
+                "external_holds_usd": str(external), "reconciled_terminals": reconciled,
                 "outstanding_usd": str(outstanding), "committed_usd": str(floor + outstanding),
                 "cap_usd": s["cap_usd"], "headroom_usd": str(usd(s["cap_usd"]) - floor - outstanding),
+                "warn_usd": WARN_USD, "warn_crossing_authorized": self._warn_authorized(s),
                 "weekend_uses_same_monthly_pool": True}
+
+    @staticmethod
+    def _warn_authorized(s):
+        policy = s.get("lead_policy", {})
+        return (policy.get("authorize_crossing_warn_usd") is True
+                and policy.get("month") == s["month"]
+                and policy.get("workspace_cap_usd") == s["cap_usd"]
+                and policy.get("workspace_warn_usd") == WARN_USD
+                and policy.get("accepting_lead") == "herdr-lead"
+                and policy.get("decision") == "ACCEPT")
+
+    def configure_policy(self, expected_release):
+        """Explicit local policy update from a release-bound installed acceptance.
+
+        Never reset the journal or change Modal's native workspace limit. The lead
+        must separately say James was notified before authorizing the WARN crossing.
+        """
+        from .common import read, sha256
+        from .release import reviewed, verify
+        verify(Path(__file__).parent, expected_release)
+        reviewed(self.path.parent, expected_release)
+        receipt = self.path.parent / "reviews" / (expected_release + ".json")
+        lead_path = receipt.with_suffix(".lead.json")
+        policy = read(lead_path)
+        require(policy["accepting_lead"] == "herdr-lead" and policy["decision"] == "ACCEPT"
+                and policy["release_sha256"] == expected_release
+                and policy["reviewer_receipt_sha256"] == sha256(receipt)
+                and policy["identity"] == IDENTITY, "invalid lead policy acceptance")
+        cap = usd(policy["workspace_cap_usd"])
+        require(0 < cap <= usd(MAX_CAP_USD) and policy["workspace_warn_usd"] == WARN_USD,
+                "unauthorized workspace limits")
+        crossing = policy.get("authorize_crossing_warn_usd", False)
+        require(type(crossing) is bool and (not crossing or policy.get("james_notified_at")),
+                "WARN crossing needs explicit lead authorization and notification record")
+        if crossing:
+            require(timestamp(policy["james_notified_at"]) <= self.wall(), "James notification is in the future")
+        with self.transaction() as s:
+            require(policy["month"] == s["month"] == month_at(self.wall()), "policy month mismatch")
+            s["cap_usd"] = str(cap)
+            s["lead_policy"] = {**policy, "workspace_cap_usd": str(cap)}
+            self._event(s, "POLICY", acceptance_sha256=sha256(lead_path), policy=s["lead_policy"])
 
     def totals(self):
         with self.reading() as s:
@@ -167,6 +218,8 @@ class Ledger:
             require(app_name not in observed, "owned app already exists")
             require(usd(totals["committed_usd"]) + usd(spec["hold"]["reserved_usd"]) <= usd(s["cap_usd"]),
                     "workspace cap would be crossed")
+            require(usd(totals["committed_usd"]) + usd(spec["hold"]["reserved_usd"]) < usd(WARN_USD)
+                    or self._warn_authorized(s), "workspace WARN threshold requires lead acceptance")
             if "bootstrap" in spec["hold"]:
                 envelope = spec["hold"]["bootstrap"]
                 require(attempt in envelope["attempt_ids"], "attempt outside bootstrap slots")

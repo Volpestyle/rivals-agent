@@ -25,7 +25,14 @@ def main():
     initialize.add_argument("reports", help="JSON with reports and external_holds; estimates stay annotations")
     initialize.add_argument("--cap", default="100")
     sub.add_parser("status", help="Refresh provider actuals and show shared monthly/weekend headroom")
+    policy = sub.add_parser("configure-policy", help="Apply installed lead acceptance to existing journal")
+    policy.add_argument("release_sha256")
     args = parser.parse_args()
+    if args.command == "configure-policy":
+        ledger = Ledger(DEFAULT_ROOT / (month_at(time.time()) + ".sqlite3"))
+        ledger.configure_policy(args.release_sha256)
+        print(json.dumps({"configured": True, "release_sha256": args.release_sha256}))
+        return 0
     if args.command in ("init", "status"):
         month = month_at(time.time())
         path = DEFAULT_ROOT / (month + ".sqlite3")

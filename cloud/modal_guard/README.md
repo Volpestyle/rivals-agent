@@ -1,4 +1,4 @@
-# Shared Modal guard, v1.0.4
+# Shared Modal guard, v1.0.5
 
 One maintained package, pinned by `RELEASE.json` SHA256. Future run packets hold
 that pin and a spec; they do not copy launcher helpers. Import from a checkout
@@ -83,12 +83,14 @@ query and reconciled new-month initialization; a launch crossing the boundary is
 refused. Weekend and month are **the same pool**, not two additive budgets.
 
 The current default is **$100**, reflecting the reported actual workspace setting
-on September 27. The code refuses configuration above James's authorized $150
-ceiling. Raising the local cap does not alter Modal's setting. The lead confirms
+on September 27. James raised the authorized native limit to $200 at 22:08 CDT;
+the code now refuses configuration above $200. Existing journals retain their
+cap until the lead-installed policy is explicitly applied. Raising the local cap does not alter Modal's setting. The lead confirms
 and configures a higher cap; the library never writes workspace billing settings.
 
 Billing comes from `modal billing summary --for YYYY-MM --json` plus disjoint
-daily report buckets for completed days and hourly buckets for today, with
+daily report buckets for older days and hourly buckets for the most recent
+six UTC days plus today, ending at the last closed hour, with
 `--tag-names lane,run --json`, always with profile rivals. Hourly requests cannot
 span more than seven days in SDK 1.5.5. Queries, times, identity and raw hashes
 are retained. Use **metered** dollars, not billed dollars after credits. Admission
@@ -105,14 +107,44 @@ provider metered floor (never decreases during the month)
 
 Active apps retain a full prospective bound, including all resources and explicit
 overhead. Terminal proof reduces this to measured driver-through-cleanup cost.
-Separate summary/report queries do not prove that reported app dollars are
-included in the summary. This release therefore **does not subtract per-app
-actuals from allowances**. It may double-count billed amounts; that conservative
-overcount is intentional. There is no automatic reconciliation credit until an
-inclusion-proof contract is implemented and reviewed. Per-app actuals remain
-visible separately; hourly reports can omit partial final intervals. Unmanaged
-apps, storage growth and other external usage still depend on the workspace limit
-and the next billing refresh; this library cannot control another launcher.
+A terminal allowance is omitted only when the authenticated stopped/zero-container
+proof supplies exact app ID and created/stopped timestamps, and an exact UTC hourly
+report has a row for every occupied hour through the stopping hour. Its query must
+also cover one additional **closed** hour after that hour. Missing occupied buckets
+are unknown, never zero; the trailing hour needs query coverage, not a zero row for
+a stopped app. The complete app actual is already included in the report-total
+floor, which is max(summary metered, report sum, historical floor). Nothing is
+subtracted from the summary, and costs above the estimate are never capped.
+Active/uncertain attempts and external holds retain their entire allowance.
+
+The one-hour lag buffer is the lead's explicit policy, not a guarantee of final
+invoice completeness: Modal documents possible collection delays. Future refreshes
+can raise the floor. Credit is computed from current evidence only; missing,
+malformed, legacy daily-only, or aged-out hourly coverage restores the allowance.
+Historical row bounds/settlement proofs remain intact. Totals expose retained
+terminal allowances, active allowances, external holds and each reconciled app's
+actual, coverage range and report hash. No existing ledger reset or manual credit.
+Unmanaged apps/storage still depend on the native limit and next refresh.
+
+The WARN threshold is **$150 in prospective commitment**. A new reservation that
+would reach or exceed it refuses unless the installed lead policy explicitly
+allows crossing. WARN does not stop already-funded work; $200 (or the journal's
+lower configured cap) remains the hard stop. Campaign caps do not increase.
+After reviewer LAND and lead acceptance, the explicit local command is:
+
+```
+python -m cloud.modal_guard configure-policy RELEASE_SHA256
+```
+
+It verifies the exact package and reviewer receipt and reads the matching
+`reviews/<release>.lead.json`. In addition to the existing ACCEPT metadata this
+record must bind `identity` (the rivals/volpestyle identity object), `month`
+(`2026-09` here), `workspace_cap_usd: "200"`, `workspace_warn_usd: "150"`, and
+`reviewer_receipt_sha256`. `authorize_crossing_warn_usd` defaults false; true
+requires the lead's `james_notified_at` record. Only herdr-lead acceptance is
+recognized. The policy and its hash are recorded in the existing journal event
+chain; attempts, holds, campaign consumption and billing are preserved. This
+command does not change Modal settings or authorize any workload.
 
 Pre-RPC refusal is a distinct, tested settlement: atomically fence creation,
 prove zero RPC attempts, and obtain two complete authenticated absence snapshots
@@ -228,3 +260,5 @@ Provenance and the exact inherited source hashes are in the companion
 Stage receipts use exclusive file creation and flush/fsync before Volume commit;
 Modal Volumes do not support the host atomic helper's hard-link publication.
 A torn stage receipt refuses re-entry; it cannot trigger recomputation.
+
+Billing coverage references: [CLI interval semantics](https://modal.com/docs/cli/latest/billing) and [collection delays](https://modal.com/docs/guide/billing).

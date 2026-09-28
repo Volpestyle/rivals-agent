@@ -43,7 +43,7 @@ def test_invalid_money_refused(tmp_path, clock, bad):
 
 def test_cap_above_james_maximum_refused(tmp_path, clock):
     with pytest.raises(Refused):
-        Ledger.initialize(tmp_path / "bad.db", billing(clock), cap_usd="150.01", wall=clock.wall)
+        Ledger.initialize(tmp_path / "bad.db", billing(clock), cap_usd="200.01", wall=clock.wall)
 
 
 def test_stale_failed_or_wrong_month_billing_refuses(ledger, clock):

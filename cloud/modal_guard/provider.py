@@ -1,7 +1,7 @@
 """Modal 1.5.5 identity, billing and inventory; explicit rivals profile everywhere."""
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 import hashlib
 import json
 import os
@@ -131,15 +131,19 @@ class Provider:
         identity = self.identity()
         summary = self._run([self.cli, "billing", "summary", "--for", month,
                              "--profile", "rivals", "--json"])
-        # Hourly reports are limited to seven days in SDK 1.5.5. Combine disjoint
-        # closed days with today's closed hours, never double-count a boundary.
-        today = datetime.fromtimestamp(self.wall(), timezone.utc).strftime("%Y-%m-%d")
+        # Keep recent terminal apps hourly across UTC midnight. SDK 1.5.5 caps
+        # hourly requests at seven days. Older days and recent hours are disjoint.
+        now = datetime.fromtimestamp(self.wall(), timezone.utc)
+        first = datetime.fromisoformat(month + "-01").replace(tzinfo=timezone.utc)
+        boundary = max(first, now.replace(hour=0, minute=0, second=0, microsecond=0) - timedelta(days=6))
+        start = boundary.strftime("%Y-%m-%d")
+        end = now.replace(minute=0, second=0, microsecond=0).isoformat()
         reports = []
-        if today != month + "-01":
+        if start != month + "-01":
             reports.append(self._run([self.cli, "billing", "report", "--start", month + "-01",
-                                      "--end", today, "--resolution", "d", "--tag-names", "lane,run",
+                                      "--end", start, "--resolution", "d", "--tag-names", "lane,run",
                                       "--profile", "rivals", "--json"]))
-        reports.append(self._run([self.cli, "billing", "report", "--start", today,
+        reports.append(self._run([self.cli, "billing", "report", "--start", start, "--end", end,
                                   "--resolution", "h", "--tag-names", "lane,run",
                                   "--profile", "rivals", "--json"]))
         raw = {"identity": identity, "summary": summary, "reports": reports}
