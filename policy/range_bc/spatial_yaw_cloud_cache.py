@@ -12,6 +12,18 @@ MANIFEST_SHA = "aec08c08e247e3743ddeb1eec49dd880e1c0f62039c375932cab31dfccb91e22
 UPLOAD_SHA = "73c8d80c13281e8a8d4d502e10cb82cf35831eb4ffb1897fdc4e9cbe7789c19e"
 
 
+def pixel_path(filename, session_id, view, *, cache_root="/inputs/caches"):
+    """Compare canonical mount paths on both sides, then bind exact session/view."""
+    if view not in ("global", "crop") or Path(session_id).name != session_id:
+        raise ValueError("invalid pixel identity")
+    root = Path(cache_root).resolve(strict=True)
+    path = Path(filename).resolve(strict=True)
+    expected = (root / session_id / (view + ".u8")).resolve(strict=True)
+    if path != expected or not path.is_relative_to(root):
+        raise ValueError("pixels differ from admitted session/view mount")
+    return path
+
+
 def extract_dual(arrays, dev, tower, root, identity, report, *, device="cuda", batch=32):
     """Same extractor for both grids, one backend/tower, portable labels last."""
     from . import train
@@ -85,8 +97,7 @@ def run(root, *, spec_path, spec_sha256):
     for arr in arrays + dev:
         for view, source in (("global", arr.global_frames), ("crop", arr.crop_frames)):
             report(f"Hash input {arr.session.session_id}/{view}")
-            path = Path(source.filename)
-            train.require(path.resolve().is_relative_to("/inputs/caches"), "pixels outside admitted mount")
+            path = pixel_path(source.filename, arr.session.session_id, view)
             digest = sha(path)
             train.require(digest == arr.manifest[f"{view}_sha256"], "pixel bytes differ")
             verified.append({"path": str(path), "bytes": path.stat().st_size, "sha256": digest})

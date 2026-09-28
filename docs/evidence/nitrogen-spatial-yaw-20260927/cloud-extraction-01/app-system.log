@@ -1,0 +1,31 @@
+2026-09-27 19:06:26-05:00 Authenticate fixed admitted cohort metadata
+2026-09-27 19:07:36-05:00 Hash input 20260923T051828-422Z-33696-1/global
+2026-09-27 19:07:36-05:00 Traceback (most recent call last):
+2026-09-27 19:07:36-05:00   File "/pkg/modal/_runtime/container_io_manager.py", line 987, in handle_input_exception
+2026-09-27 19:07:36-05:00     yield
+2026-09-27 19:07:36-05:00   File "/pkg/modal/_container_entrypoint.py", line 189, in run_input_sync
+2026-09-27 19:07:36-05:00     values = io_context.call_function_sync()
+2026-09-27 19:07:36-05:00              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-09-27 19:07:36-05:00   File "/pkg/modal/_runtime/container_io_manager.py", line 266, in call_function_sync
+2026-09-27 19:07:36-05:00     expected_value_or_values = self.finalized_function.callable(*args, **kwargs)
+2026-09-27 19:07:36-05:00                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-09-27 19:07:36-05:00   File "/root/cloud/modal_guard/runner.py", line 50, in execute_stages
+2026-09-27 19:07:36-05:00     results.append(run(Path(output_root) / name(stage["name"]), stage["name"], identity,
+2026-09-27 19:07:36-05:00                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-09-27 19:07:36-05:00   File "/root/cloud/modal_guard/stages.py", line 72, in run
+2026-09-27 19:07:36-05:00     code = compute(root)
+2026-09-27 19:07:36-05:00            ^^^^^^^^^^^^^
+2026-09-27 19:07:36-05:00   File "/root/cloud/modal_guard/runner.py", line 51, in <lambda>
+2026-09-27 19:07:36-05:00     stage["artifacts"], lambda root: compute(root, **stage.get("kwargs", {})),
+2026-09-27 19:07:36-05:00                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-09-27 19:07:36-05:00   File "/root/cloud/yaw_entry.py", line 37, in run
+2026-09-27 19:07:36-05:00     return worker.run(root, spec_path=str(payload / manifest["input_spec"]),
+2026-09-27 19:07:36-05:00            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-09-27 19:07:36-05:00   File "/root/cloud/yaw_payload/policy/range_bc/spatial_yaw_cloud_cache.py", line 89, in run
+2026-09-27 19:07:36-05:00     train.require(path.resolve().is_relative_to("/inputs/caches"), "pixels outside admitted mount")
+2026-09-27 19:07:36-05:00   File "/root/cloud/yaw_payload/policy/range_bc/train.py", line 43, in require
+2026-09-27 19:07:36-05:00     raise FitError(message)
+2026-09-27 19:07:36-05:00 policy.range_bc.train.FitError: pixels outside admitted mount
+2026-09-27 19:07:36-05:00 Stopping app - uncaught exception raised locally: ExecutionError('Could not deserialize remote exception due to local error:\nDeserialization failed because the \'policy\' module is not available in the local environment.\nThis can happen if your local environment does not have the remote exception definitions.\nHere is the remote traceback:\nTraceback (most recent call last):\n  File "/pkg/modal/_runtime/container_io_manager.py", line 987, in handle_input_exception\n    yield\n  File "/pkg/modal/_container_entrypoint.py", line 189, in run_input_sync\n    values = io_context.call_function_sync()\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File "/pkg/modal/_runtime/container_io_manager.py", line 266, in call_function_sync\n    expected_value_or_values = self.finalized_function.callable(*args, **kwargs)\n                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File "/root/cloud/modal_guard/runner.py", line 50, in execute_stages\n    results.append(run(Path(output_root) / name(stage["name"]), stage["name"].
+2026-09-27 19:07:37-05:00 Stopping app - user stopped from CLI.
+2026-09-27 19:07:38-05:00 Stopping app - user stopped from CLI.
