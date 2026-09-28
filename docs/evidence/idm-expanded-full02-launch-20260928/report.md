@@ -1,0 +1,19 @@
+# Expanded IDM full02: unchanged three-epoch run
+
+EXPLORATORY, idm-owner/VUH-1353. Lead authorized lane cap $40 and the unchanged full recipe after the short $0 bottleneck investigation. Timing02 measured total-pipeline work; the analysis found a serial input path but no recorded CPU/GPU split to justify a specific fix. The optional extra probe was skipped. Timing and analysis are landed at d2ba3ba.
+
+One RPC created ap-euLgri5kwbkjuNBUaB7Nng (RUNNING event 2026-09-28T04:12:22.176883Z). AppCreate window released to explore-policy at +15s. Fresh output volume vo-of4DuLu1EBJH1t8IqOMmva; input vo-PnBxKAp9G4Y8nNwfBOgrdU retained and mounted read-only. Accepted guard v1.0.5 fix1 is unchanged. No helper fork, image build, shared-journal reset or automatic retry.
+
+The scientific recipe hash fa4c98b31a34187480f378f305da282daf91ab662ac9a83eed597862c29d2dcb exactly matches full01: seed0, three epochs, existing camera/legacy press, TRAIN-only rate calibration, real/zero control. Exact eight TRAIN ranges plus current -4a1/-5a1/-6; two existing range-dev sources. No new night payload, sealed data, archive corpus or decode. Local stage copies and independently verifies store bytes before fit; completed cache re-verification applies before camera/calibration/real, while zero/report retain their pixel-free route.
+
+Envelope: 36,310s work (measured total projection plus30%), 120s startup,120s cleanup, $0.05 overhead; all-resource rate $0.0007178888888888888888888888889/s. Reserved $26.288839 under $26.29. This is a single-app exploratory projection, not measured p95. The full cost includes roughly6,692s post-fit inference and repeated verification/loading, not only training.
+
+Terminal lane bounds before launch $10.375030068670252 plus separately allocated storage $1.65 and this reservation give $38.313869068670252 exposure, below the newly authorized $40. Historical installed acceptance says25; the subsequent explicit lead allocation40 governs this attempt. A metadata-only watcher reports completion and alerts the lead when estimated elapsed cost plus prior bounds/storage reaches20; the unchanged guard independently enforces the paid envelope. The watcher initially used a Mac Python SQLite build that could not open the read-only URI; selecting the pinned Modal Python fixed its read-only probe before it was armed. No paid worker was affected.
+
+## Required result comparison
+
+Collect and hash-verify checkpoint and all completed-stage artifacts; prove terminal teardown and exact accounting. Compare camera error, coverage and integration errors to baseline-camera.json (raw SHA bce156fcf7cd941a3ee77d16a7eac93e709e3f04d35c32a40ad90e773bdf6e2a, interim checkpoint1b9bcc6a). The old camera run used MPS and the new run CUDA; disclose this and verify dev rows/coverage rather than claiming a device-controlled comparison. Include zero and previous-true-rotation diagnostics with their respective answered denominators.
+
+Compare press precision, recall and answered-row/event coverage under fixed0.5 and TRAIN-rate thresholds to docs/evidence/idm-press-diagnostic-result-20260927/report.json, raw SHA dd09f3b33b2a27c458fca580bec8da7753b38584d73950aa35a4fe14efed6a98. That diagnostic used the same49,080 dev rows without the earlier abstention band, plus real/zero controls. Verify identities and scoring semantics before comparing; new thresholds use the expanded TRAIN corpus. Keep per-session action support, especially Combo14 onsets in171533.
+
+No accuracy result exists at launch. Range-dev improvement alone cannot authorize larger-corpus labeling: range-to-match/live-to-replay and the Gate2 plan remain binding. After a complete report lands, verify exact input-volume ID/name and perform the previously authorized one-time CLI deletion with receipt. If incomplete, retain inputs for a lead decision. No sealed pair is opened by collection.
