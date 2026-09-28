@@ -1,0 +1,49 @@
+{
+  "tag": "EXPLORATORY_DIAGNOSTIC_NOT_HUMAN_GROUND_TRUTH",
+  "n": 12,
+  "causal_plausible_single_focus": [
+    "E07",
+    "E08",
+    "E09",
+    "E12"
+  ],
+  "oracle_apparent_bot_focus": [
+    "E01",
+    "E03",
+    "E07",
+    "E08",
+    "E09",
+    "E11"
+  ],
+  "newly_resolved_in_hindsight": [
+    "E01",
+    "E03",
+    "E11"
+  ],
+  "causal_hypothesis_but_future_exit": [
+    "E12"
+  ],
+  "overlapping_intent_counts": {
+    "acquisition": 5,
+    "engagement": 5,
+    "traversal": 8,
+    "unknown": 3
+  },
+  "cloud_usd": 0,
+  "frame_count": 72,
+  "decode_seconds": 178.75,
+  "peak_decoder_working_set_bytes": 168026112,
+  "source_sha256": {
+    "plan.md": "a9bc450a92c66abc161398203b8019c101d1e247733bf8d10c9609254bbd8f73",
+    "selection.json": "31eb665661eac5768ed47a94a688ef80a8adb3a3ff83e15b2764e937642ad0c5",
+    "audit.py": "3a1c07a1c6242f1c720c0ad94069036a07751d3495787d759a1352ad3ef42bf9",
+    "test_audit.py": "c2702da62f892e9c6137a0a7827c817f89d94bbbfcf7587d02b9c2937802c977",
+    "causal-annotations.json": "b30136b6c295f4fa292b30ade98ffb1b46046dd8ab3b929309383b2e9009adc7",
+    "causal-freeze.json": "587d033f70ebc7d2d4b82bb0c5c654a3e5b7e46abb78535886e2ac84c78e63c5",
+    "oracle-annotations.json": "ff2bce169d686b2fe4709d9024adeab09267a23c641fc3c298d9f82360330184",
+    "causal/receipt.json": "8489ead802f7678684f561cf65f4c3435b199cef5a9138afe819d724666092a2",
+    "oracle/receipt.json": "f033782bb942f1724fc10b376cdf798fe64836f333ad1245c7b036b6c4f94b62",
+    "native-archive.json": "6584445b84a4b72c3d3231eeb08bddd813b93688cc12ede402fe1c8695df52b6"
+  },
+  "reported_unix": 1790565751.9041345
+}

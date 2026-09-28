@@ -1,0 +1,551 @@
+{
+  "frames": [
+    {
+      "event": "E01",
+      "path": "oracle/E01-0.jpg",
+      "sha256": "a33730e6915fe61be05bdbec8d297746d037d901de65c342a8f3227419813ca7",
+      "row": 216,
+      "pts": 8721,
+      "decoded_pts": 8721,
+      "timebase": [
+        1,
+        1000
+      ],
+      "offset_s": 0.499999995,
+      "composition_ns": 261573327107715,
+      "anchor_ns": 261573327107768
+    },
+    {
+      "event": "E01",
+      "path": "oracle/E01-1.jpg",
+      "sha256": "f37a10fb53a9c3d6aaea900a1dac0c6783fc3d9c46749bd276e08f5079b6afc9",
+      "row": 231,
+      "pts": 9221,
+      "decoded_pts": 9221,
+      "timebase": [
+        1,
+        1000
+      ],
+      "offset_s": 0.99999999,
+      "composition_ns": 261573827107695,
+      "anchor_ns": 261573827107763
+    },
+    {
+      "event": "E01",
+      "path": "oracle/E01-2.jpg",
+      "sha256": "cb4ef15e6edc5821a9c1dbcf8b081a9d8706d99b013ef815b0d951b5d496c7a4",
+      "row": 261,
+      "pts": 10221,
+      "decoded_pts": 10221,
+      "timebase": [
+        1,
+        1000
+      ],
+      "offset_s": 1.99999998,
+      "composition_ns": 261574827107655,
+      "anchor_ns": 261574827107753
+    },
+    {
+      "event": "E02",
+      "path": "oracle/E02-0.jpg",
+      "sha256": "2ef9130154ca102c632f0657329317a57266796e0c47479b8775706d230594bd",
+      "row": 863,
+      "pts": 30288,
+      "decoded_pts": 30288,
+      "timebase": [
+        1,
+        1000
+      ],
+      "offset_s": 0.499999995,
+      "composition_ns": 261594893773519,
+      "anchor_ns": 261594893774219
+    },
+    {
+      "event": "E02",
+      "path": "oracle/E02-1.jpg",
+      "sha256": "bb69129e7b59b58d353b437a7863dcd7b61465c3d0b974c829b587ce83d9f670",
+      "row": 878,
+      "pts": 30788,
+      "decoded_pts": 30788,
+      "timebase": [
+        1,
+        1000
+      ],
+      "offset_s": 0.99999999,
+      "composition_ns": 261595393773499,
+      "anchor_ns": 261595393774214
+    },
+    {
+      "event": "E02",
+      "path": "oracle/E02-2.jpg",
+      "sha256": "fd62d83393e010fb8723bc754b9484229b4411f4fc75349ec6bfd96a8a1e35e9",
+      "row": 908,
+      "pts": 31788,
+      "decoded_pts": 31788,
+      "timebase": [
+        1,
+        1000
+      ],
+      "offset_s": 1.99999998,
+      "composition_ns": 261596393773459,
+      "anchor_ns": 261596393774204
+    },
+    {
+      "event": "E03",
+      "path": "oracle/E03-0.jpg",
+      "sha256": "3e7470c9f27c2cb252aea6ab4c1f9ce7e55f4fb3b7b884a16b9bb7686b1f31ea",
+      "row": 47240,
+      "pts": 1576263,
+      "decoded_pts": 1576263,
+      "timebase": [
+        1,
+        1000
+      ],
+      "offset_s": 0.499999995,
+      "composition_ns": 263140868711680,
+      "anchor_ns": 263140868735939
+    },
+    {
+      "event": "E03",
+      "path": "oracle/E03-1.jpg",
+      "sha256": "6de1957759e526620f8aa3214865db73b797bfa61deab2798b9ab20e7369e42a",
+      "row": 47255,
+      "pts": 1576763,
+      "decoded_pts": 1576763,
+      "timebase": [
+        1,
+        1000
+      ],
+      "offset_s": 0.99999999,
+      "composition_ns": 263141368711660,
+      "anchor_ns": 263141368735934
+    },
+    {
+      "event": "E03",
+      "path": "oracle/E03-2.jpg",
+      "sha256": "bc507860fa52cea0919e99c7f8e7e63919825914d439bd340be281cba5437c16",
+      "row": 47285,
+      "pts": 1577763,
+      "decoded_pts": 1577763,
+      "timebase": [
+        1,
+        1000
+      ],
+      "offset_s": 1.99999998,
+      "composition_ns": 263142368711620,
+      "anchor_ns": 263142368735924
+    },
+    {
+      "event": "E04",
+      "path": "oracle/E04-0.jpg",
+      "sha256": "a53bc16cfd2d7a516cde5f29bbfa8c82c4b1111fcc563aa796faacff3a4a6be0",
+      "row": 47924,
+      "pts": 1599063,
+      "decoded_pts": 1599063,
+      "timebase": [
+        1,
+        1000
+      ],
+      "offset_s": 0.499999995,
+      "composition_ns": 263163668710768,
+      "anchor_ns": 263163668735711
+    },
+    {
+      "event": "E04",
+      "path": "oracle/E04-1.jpg",
+      "sha256": "32b72810f14ee5b16bf377278f82e833d828643e1777f169ed8b6e0d731ccab9",
+      "row": 47939,
+      "pts": 1599563,
+      "decoded_pts": 1599563,
+      "timebase": [
+        1,
+        1000
+      ],
+      "offset_s": 0.99999999,
+      "composition_ns": 263164168710748,
+      "anchor_ns": 263164168735706
+    },
+    {
+      "event": "E04",
+      "path": "oracle/E04-2.jpg",
+      "sha256": "553dd268557fd7882d1a4a056c9c8cc33ac577ee3e76e2a0a3ac5ba7efb19ee2",
+      "row": 47969,
+      "pts": 1600563,
+      "decoded_pts": 1600563,
+      "timebase": [
+        1,
+        1000
+      ],
+      "offset_s": 1.99999998,
+      "composition_ns": 263165168710708,
+      "anchor_ns": 263165168735696
+    },
+    {
+      "event": "E05",
+      "path": "oracle/E05-0.jpg",
+      "sha256": "6914d085615a5d18854da093e9b2a07c8081d433f3982d9b784e0bbf843f460f",
+      "row": 620,
+      "pts": 34488,
+      "decoded_pts": 34488,
+      "timebase": [
+        1,
+        1000
+      ],
+      "offset_s": 0.499999995,
+      "composition_ns": 436574409395965,
+      "anchor_ns": 436574409396578
+    },
+    {
+      "event": "E05",
+      "path": "oracle/E05-1.jpg",
+      "sha256": "2d0970b08b292fd9369852a76d3522bd7c6bea4660973206d11fc12ffe04a9e6",
+      "row": 635,
+      "pts": 34988,
+      "decoded_pts": 34988,
+      "timebase": [
+        1,
+        1000
+      ],
+      "offset_s": 0.99999999,
+      "composition_ns": 436574909395945,
+      "anchor_ns": 436574909396573
+    },
+    {
+      "event": "E05",
+      "path": "oracle/E05-2.jpg",
+      "sha256": "4a4ac3078490d144471a183249d8487de5d986c6dc3c468d8584cd72093f3f33",
+      "row": 665,
+      "pts": 35988,
+      "decoded_pts": 35988,
+      "timebase": [
+        1,
+        1000
+      ],
+      "offset_s": 1.99999998,
+      "composition_ns": 436575909395905,
+      "anchor_ns": 436575909396563
+    },
+    {
+      "event": "E06",
+      "path": "oracle/E06-0.jpg",
+      "sha256": "87eae6b95cf02c5fbb1279a324862a805a0d0ecc3f46c8a256fc22dc0ad299db",
+      "row": 1664,
+      "pts": 69288,
+      "decoded_pts": 69288,
+      "timebase": [
+        1,
+        1000
+      ],
+      "offset_s": 0.499999995,
+      "composition_ns": 436609209394573,
+      "anchor_ns": 436609209396230
+    },
+    {
+      "event": "E06",
+      "path": "oracle/E06-1.jpg",
+      "sha256": "d3d5b2dc25937c8c55c691589599093d84e79691f3466b3cb1ca227b58b46c65",
+      "row": 1679,
+      "pts": 69788,
+      "decoded_pts": 69788,
+      "timebase": [
+        1,
+        1000
+      ],
+      "offset_s": 0.99999999,
+      "composition_ns": 436609709394553,
+      "anchor_ns": 436609709396225
+    },
+    {
+      "event": "E06",
+      "path": "oracle/E06-2.jpg",
+      "sha256": "1985a96cd7b00289a7ec42588de111cffe2c4365f47ed9393e5ba2c9f69cb51a",
+      "row": 1709,
+      "pts": 70788,
+      "decoded_pts": 70788,
+      "timebase": [
+        1,
+        1000
+      ],
+      "offset_s": 1.99999998,
+      "composition_ns": 436610709394513,
+      "anchor_ns": 436610709396215
+    },
+    {
+      "event": "E07",
+      "path": "oracle/E07-0.jpg",
+      "sha256": "46f432a5587a0c3664758eef899edc9d851bc3f534fcb6d0250c420f5fb9213a",
+      "row": 84815,
+      "pts": 2841321,
+      "decoded_pts": 2841321,
+      "timebase": [
+        1,
+        1000
+      ],
+      "offset_s": 0.499999995,
+      "composition_ns": 439381242617025,
+      "anchor_ns": 439381242632671
+    },
+    {
+      "event": "E07",
+      "path": "oracle/E07-1.jpg",
+      "sha256": "8712a4013827d323c900773c2e7bf9c11e9b638ec6ba3cdf9a029d0f87228a10",
+      "row": 84830,
+      "pts": 2841821,
+      "decoded_pts": 2841821,
+      "timebase": [
+        1,
+        1000
+      ],
+      "offset_s": 0.99999999,
+      "composition_ns": 439381742617005,
+      "anchor_ns": 439381742632666
+    },
+    {
+      "event": "E07",
+      "path": "oracle/E07-2.jpg",
+      "sha256": "65328820dd0f573b449e25277e317a4be1ea5acf3536f2c25c68d0d73798f95b",
+      "row": 84860,
+      "pts": 2842821,
+      "decoded_pts": 2842821,
+      "timebase": [
+        1,
+        1000
+      ],
+      "offset_s": 1.99999998,
+      "composition_ns": 439382742616965,
+      "anchor_ns": 439382742632656
+    },
+    {
+      "event": "E08",
+      "path": "oracle/E08-0.jpg",
+      "sha256": "ba28a057b385551eed741f84589f3dadcaba560b9f326e795c9931fa179aefbc",
+      "row": 85296,
+      "pts": 2857354,
+      "decoded_pts": 2857354,
+      "timebase": [
+        1,
+        1000
+      ],
+      "offset_s": 0.499999995,
+      "composition_ns": 439397275949717,
+      "anchor_ns": 439397275965844
+    },
+    {
+      "event": "E08",
+      "path": "oracle/E08-1.jpg",
+      "sha256": "365d7f4b052ae0867e4afc768a21b0fa869fcfcb1ce171d79fe7fba5cb147249",
+      "row": 85311,
+      "pts": 2857854,
+      "decoded_pts": 2857854,
+      "timebase": [
+        1,
+        1000
+      ],
+      "offset_s": 0.99999999,
+      "composition_ns": 439397775949697,
+      "anchor_ns": 439397775965839
+    },
+    {
+      "event": "E08",
+      "path": "oracle/E08-2.jpg",
+      "sha256": "b7e9e5e385ff2da0d8957af6bdf1dd5a7b11b14db1d7b05b9aef62d6d3f04fbe",
+      "row": 85341,
+      "pts": 2858854,
+      "decoded_pts": 2858854,
+      "timebase": [
+        1,
+        1000
+      ],
+      "offset_s": 1.99999998,
+      "composition_ns": 439398775949657,
+      "anchor_ns": 439398775965829
+    },
+    {
+      "event": "E09",
+      "path": "oracle/E09-0.jpg",
+      "sha256": "0d7add2f70381f431a438b5ffab0b6451dbcb5d3c7320e7277ac00adc717f71c",
+      "row": 313,
+      "pts": 10804,
+      "decoded_pts": 10804,
+      "timebase": [
+        1,
+        1000
+      ],
+      "offset_s": 0.499999995,
+      "composition_ns": 463057910047798,
+      "anchor_ns": 463057910047901
+    },
+    {
+      "event": "E09",
+      "path": "oracle/E09-1.jpg",
+      "sha256": "9b6299909c9a13ada5365f449f5d18e748b97461e9e7826300e5a36bbece0835",
+      "row": 328,
+      "pts": 11304,
+      "decoded_pts": 11304,
+      "timebase": [
+        1,
+        1000
+      ],
+      "offset_s": 0.99999999,
+      "composition_ns": 463058410047778,
+      "anchor_ns": 463058410047896
+    },
+    {
+      "event": "E09",
+      "path": "oracle/E09-2.jpg",
+      "sha256": "14541141c981de4fe4d92ce9c4010a265e6d02b62e205cfe3595b79f75b9768f",
+      "row": 358,
+      "pts": 12304,
+      "decoded_pts": 12304,
+      "timebase": [
+        1,
+        1000
+      ],
+      "offset_s": 1.99999998,
+      "composition_ns": 463059410047738,
+      "anchor_ns": 463059410047886
+    },
+    {
+      "event": "E10",
+      "path": "oracle/E10-0.jpg",
+      "sha256": "222b817f4bc1ae480ee296a2867a63adbc67fb545c9d84de9603b32bced5161c",
+      "row": 1926,
+      "pts": 64571,
+      "decoded_pts": 64571,
+      "timebase": [
+        1,
+        1000
+      ],
+      "offset_s": 0.499999995,
+      "composition_ns": 463111676712314,
+      "anchor_ns": 463111676714030
+    },
+    {
+      "event": "E10",
+      "path": "oracle/E10-1.jpg",
+      "sha256": "05fa61f4bc52259228e48f7e51575dc6f007374f0156d43adc448fbeb61789d4",
+      "row": 1941,
+      "pts": 65071,
+      "decoded_pts": 65071,
+      "timebase": [
+        1,
+        1000
+      ],
+      "offset_s": 0.99999999,
+      "composition_ns": 463112176712294,
+      "anchor_ns": 463112176714025
+    },
+    {
+      "event": "E10",
+      "path": "oracle/E10-2.jpg",
+      "sha256": "fbab168daf05540dc16e74de57b3d6642446c97d8ab163c43facdafa14ffc923",
+      "row": 1971,
+      "pts": 66071,
+      "decoded_pts": 66071,
+      "timebase": [
+        1,
+        1000
+      ],
+      "offset_s": 1.99999998,
+      "composition_ns": 463113176712254,
+      "anchor_ns": 463113176714015
+    },
+    {
+      "event": "E11",
+      "path": "oracle/E11-0.jpg",
+      "sha256": "fe55291ca05a6d7ead23815d9c352753b28db1b02cde9c614c5383626d331e74",
+      "row": 54272,
+      "pts": 1818154,
+      "decoded_pts": 1818154,
+      "timebase": [
+        1,
+        1000
+      ],
+      "offset_s": 0.499999995,
+      "composition_ns": 464865259975504,
+      "anchor_ns": 464865259981457
+    },
+    {
+      "event": "E11",
+      "path": "oracle/E11-1.jpg",
+      "sha256": "e61d1c192ae881c6a77c2dd33671dc95b19bbdd59d60034d29e65b8929516062",
+      "row": 54287,
+      "pts": 1818654,
+      "decoded_pts": 1818654,
+      "timebase": [
+        1,
+        1000
+      ],
+      "offset_s": 0.99999999,
+      "composition_ns": 464865759975484,
+      "anchor_ns": 464865759981452
+    },
+    {
+      "event": "E11",
+      "path": "oracle/E11-2.jpg",
+      "sha256": "0984ca013fa89260b42192906b8c8cfad133664ed6b728184d9ba463ef1ed731",
+      "row": 54317,
+      "pts": 1819654,
+      "decoded_pts": 1819654,
+      "timebase": [
+        1,
+        1000
+      ],
+      "offset_s": 1.99999998,
+      "composition_ns": 464866759975444,
+      "anchor_ns": 464866759981442
+    },
+    {
+      "event": "E12",
+      "path": "oracle/E12-0.jpg",
+      "sha256": "2c0a7b5f82a69b910956329b7fb48300c86cc61992ed1dd336818935e34db3fa",
+      "row": 54831,
+      "pts": 1836788,
+      "decoded_pts": 1836788,
+      "timebase": [
+        1,
+        1000
+      ],
+      "offset_s": 0.499999995,
+      "composition_ns": 464883893308092,
+      "anchor_ns": 464883893314604
+    },
+    {
+      "event": "E12",
+      "path": "oracle/E12-1.jpg",
+      "sha256": "41b159142cc621b54eff01909bf254a8737323c756a032a63ff59459f3722108",
+      "row": 54846,
+      "pts": 1837288,
+      "decoded_pts": 1837288,
+      "timebase": [
+        1,
+        1000
+      ],
+      "offset_s": 0.99999999,
+      "composition_ns": 464884393308072,
+      "anchor_ns": 464884393314599
+    },
+    {
+      "event": "E12",
+      "path": "oracle/E12-2.jpg",
+      "sha256": "4fa44f16eb9ee51a0d3ef8bab342dd8f9829760c9357fb9e2a305508f33c0591",
+      "row": 54876,
+      "pts": 1838288,
+      "decoded_pts": 1838288,
+      "timebase": [
+        1,
+        1000
+      ],
+      "offset_s": 1.99999998,
+      "composition_ns": 464885393308032,
+      "anchor_ns": 464885393314589
+    }
+  ],
+  "selection_sha256": "31eb665661eac5768ed47a94a688ef80a8adb3a3ff83e15b2764e937642ad0c5",
+  "script_sha256": "3a1c07a1c6242f1c720c0ad94069036a07751d3495787d759a1352ad3ef42bf9",
+  "seconds": 95.625,
+  "peak_working_set_bytes": 167555072,
+  "priority": "BelowNormal",
+  "device": "CPU",
+  "decoder_threads": 2
+}
