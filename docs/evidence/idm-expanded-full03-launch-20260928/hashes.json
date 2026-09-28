@@ -1,0 +1,23 @@
+{
+  "assembly.json": "3a7fcafe6b145bac6967f5a103be2df5e3c0b06649404a7e84243904315164b8",
+  "stage-identity.json": "f56bef932fdb430fc8689cb0f8cbe7b68b1046d8cdf7ad239fb9df0db64ad4e0",
+  "spec.json": "a30d4f55a395a014b816734076c211e37137b8ac98e162dd5ed49d61df5e874f",
+  "bindings.json": "52ea1df5f04b3d6c2ef0bcd580459a9f4723ee10663ef92fdd096de856af4d0c",
+  "run.zsh": "b14db439797a4a8d09d8add447a860b5b41fe0f24932bf338df2d4d37e43c1e8",
+  "output-volume.json": "7ecaf227ec510cbb305dbc9081292bd6c829b996f5d335789144cd4ac5872d47",
+  "source-inventory.json": "93c36a60a75e8b80bcfbae9d9c972c69998634edd85655d887684f5da98b3e93",
+  "native-mount-proof.json": "cbf48f7f6ddd83776453cd4b67fecca7add23e3a93f78e12c43da718b4b8cafd",
+  "app.json": "b35d8f1a1d78e910b6ca0c1b3c7e6196c11e696e975ce32ba79e6f17b9a339db",
+  "acceptance.json": "749d024adf11a2d7b5919388892e928490cbd4f5ca27a23b40acb27095ca1868",
+  "run.log": "d96149f44c0f770240f0d163df500795400cb20ef87cc4b92d6bdc3da41358d0",
+  "recipe.json": "a815bde52d2cce2221c180a63a9a46c38b4e007c470ac1f647160b33805583af",
+  "projection.json": "4bc72533393a688d9975522a7aa2b8f44accb33996691b4345c4cdc96fcb897e",
+  "shakedown-final-native-inventory-no-stop.json": "de71e7aa9ea708330455b29726a8011fae68afb9081bc3d64909345ab4fbcd5c",
+  "call.json": "6dd85f947d7a305a208ae3eef23d73e77b689922aa64326da40cdb20f2a82be7",
+  "store-manifest.json": "2349b3cc48890c483d380780c30dd16f40356ab8807b203f93f5845573b1fa47",
+  "acceptance.lead.json": "dc2d22976b6300e816d3f48220b5f2a275d61ba31f4101c4147a53ae640bd9dd",
+  "attempt.json": "e8aacc11f0bce5b919cddda8fca36d9e8dc939033910f4ef81481d74d8c8abb3",
+  "shakedown-summary.json": "20c747bde473968c01b5cded8d2a8d47d007d6c74558ca3f5cb810c391cefd47",
+  "appcreate.json": "409f7424f0094ea54b447e36a8ca3666174cb4e6e071fcd7ae7ec57a475cdf36",
+  "guard-spec.json": "f61862c98d4b63a5dc49d7368f05bff0086b08dc1d13a2092ca306111aca27ee"
+}

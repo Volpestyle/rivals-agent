@@ -1,0 +1,16 @@
+{
+  "appcreates": 0,
+  "auto_delete": false,
+  "billing_runtime_gate": false,
+  "input_volume_id": "vo-PnBxKAp9G4Y8nNwfBOgrdU",
+  "lead_lane_allocation_usd": "50",
+  "lead_metered_usd": "78.33",
+  "lead_projected_weekend_usd": "104.62",
+  "native_timeout_seconds": 36310,
+  "output_volume_id": "vo-dpykVEKfIL22lf5pWsMeQA",
+  "output_volume_name": "rivals-idm-expanded-20260928-full-03-outputs",
+  "recipe_sha256": "fa4c98b31a34187480f378f305da282daf91ab662ac9a83eed597862c29d2dcb",
+  "release_sha256": "e7fb306cfb7fa3f7e9047b78ef85a4824071c5a29eb17d6c85957f8d03531823",
+  "source_inventory_sha256": "93c36a60a75e8b80bcfbae9d9c972c69998634edd85655d887684f5da98b3e93",
+  "spec_sha256": "a30d4f55a395a014b816734076c211e37137b8ac98e162dd5ed49d61df5e874f"
+}

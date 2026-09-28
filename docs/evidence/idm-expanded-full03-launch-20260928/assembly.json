@@ -1,0 +1,18 @@
+{
+  "app_commit": "9989f32a10e3a2aa7fae11818e757abe3b5c3178",
+  "authority_commit": "6ac019fa2208eb915549c75cf59e87ca5e315950",
+  "epoch_adapter_commit": "05a61b487b16429685e9b9ee8aaaa3ac6a6df595",
+  "files": 191,
+  "guard_commit": "ead3e6d9a3f19c22f27fae0c39102b3d0e2f6ee9",
+  "image_id": "im-FNjy4v5u4XYF29SBGvT0KD",
+  "image_route": "existing image and immutable native source mount; no build",
+  "input_manifest_sha256": "42494717650293cc4b77add3721d5168c20781e6b98ca275443824656e055580",
+  "launch_performed": false,
+  "local_adapter_commit": "adda577052a3919fe154c8e649f6fb4cb8d9f40f",
+  "payload_manifest_sha256": "e6eec4f528643f0cbdd0857e075b420a087f387fe77b9302e23e3b754377e93f",
+  "release_sha256": "e7fb306cfb7fa3f7e9047b78ef85a4824071c5a29eb17d6c85957f8d03531823",
+  "source_inventory_sha256": "93c36a60a75e8b80bcfbae9d9c972c69998634edd85655d887684f5da98b3e93",
+  "specs": [],
+  "staging_manifest_sha256": "2349b3cc48890c483d380780c30dd16f40356ab8807b203f93f5845573b1fa47",
+  "status": "FROZEN; full03 lead GO; native proof and exact spec pending"
+}
