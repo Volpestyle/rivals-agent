@@ -1,0 +1,150 @@
+{
+  "manifest_sha256": "81304ead59639e05a46b05f6508a9caf2916226dca3c90415e723915cea3571d",
+  "module_sha256": "dd2bced2dfce9a58a3b7eb40dbc40243cb218ccdaf05321466a8357164413e4c",
+  "tests": "40 passed (pitch-deadband, match-diagnostic, idm_eval)",
+  "proposal_commit": "a065c99",
+  "approved_cloud_cost_usd": 0,
+  "row_totals": {
+    "train": 28800,
+    "dev": 49080,
+    "match": 98880
+  },
+  "predictions_started": false,
+  "selections": [
+    {
+      "session_id": "20260923T051828-422Z-33696-1",
+      "role": "train",
+      "targets_sha256": "2e89adf3079a27c2f64fb2d142cfdd6c39bf1b2895398491e03dc82976bc6d8d",
+      "frames_sha256": "457637aa99f61327d70bf5775d3a711a001e0a742888ae3b2fd3e7be8059ab2c",
+      "eligible_context_rows": 25084,
+      "selected_rows": 3600,
+      "context_rows_excluded_or_trimmed": 21484
+    },
+    {
+      "session_id": "20260923T200129-346Z-33696-6",
+      "role": "train",
+      "targets_sha256": "a32a738090a1492e2ff600efdbd7ee9853699569053388ca6ea8102a4d267fd5",
+      "frames_sha256": "a111ba075390634d2e658f7db28cdd6222b176a5be6d615b4a642b74f24a1939",
+      "eligible_context_rows": 95788,
+      "selected_rows": 3600,
+      "context_rows_excluded_or_trimmed": 92188
+    },
+    {
+      "session_id": "20260924T232304-170Z-12024-1",
+      "role": "train",
+      "targets_sha256": "8b00217ac5928ffcf7cda6e19004671ca044016b8ad38f90d6843a76ce607bc3",
+      "frames_sha256": "7e9484be87e84244ffb32290b87f589ddd89a50fb9d480ec2a69260bf1b3b126",
+      "eligible_context_rows": 31522,
+      "selected_rows": 3600,
+      "context_rows_excluded_or_trimmed": 27922
+    },
+    {
+      "session_id": "20260925T021320-371Z-7804-1",
+      "role": "train",
+      "targets_sha256": "ec36759487f4f5eb0755828808face1c90b5d7767a63c96d8aaa6c7dcc242a0a",
+      "frames_sha256": "d6597f92180050584d193ced251d046ddf8f2197d4d5f61bc90f85bface10361",
+      "eligible_context_rows": 124172,
+      "selected_rows": 3600,
+      "context_rows_excluded_or_trimmed": 120572
+    },
+    {
+      "session_id": "20260925T025230-605Z-7804-2",
+      "role": "train",
+      "targets_sha256": "5c815469993392eb60d562fe9497706228070748da017262e3e75ba93ed0f02c",
+      "frames_sha256": "77c879351083eaa68aa72ab185829e46fb1f162d1c1269be4575c88611351a54",
+      "eligible_context_rows": 13156,
+      "selected_rows": 3600,
+      "context_rows_excluded_or_trimmed": 9556
+    },
+    {
+      "session_id": "20260925T203745-207Z-49728-2",
+      "role": "train",
+      "targets_sha256": "e091b4fdae7e61d9e8dd564687a56aaf8bc9416768e23c38873e1896a984b1e0",
+      "frames_sha256": "185a1cf964b21155f1530766d152baefee6d6bc124ddf0353bd00bc012607eed",
+      "eligible_context_rows": 165416,
+      "selected_rows": 3600,
+      "context_rows_excluded_or_trimmed": 161816
+    },
+    {
+      "session_id": "20260926T035932-508Z-63684-14",
+      "role": "train",
+      "targets_sha256": "52856414daefd6021af07109bc8425b55a3d9057974b6437153f0c9205991cb8",
+      "frames_sha256": "6e7653c14bab459ec6d45ebc5018e6e1df3995ab92d8216794dd1cb8856167fa",
+      "eligible_context_rows": 108412,
+      "selected_rows": 3600,
+      "context_rows_excluded_or_trimmed": 104812
+    },
+    {
+      "session_id": "20260926T045729-166Z-79780-1",
+      "role": "train",
+      "targets_sha256": "8f8b75bdc0ccfbeb68fe585c176f139590681306550a5c2afcc5fbce76bcf629",
+      "frames_sha256": "410176acef5c7fe48c8be7da7142d9bbc66b500120a59ff1cf3ffefe3337fa95",
+      "eligible_context_rows": 36882,
+      "selected_rows": 3600,
+      "context_rows_excluded_or_trimmed": 33282
+    },
+    {
+      "session_id": "20260923T171533-187Z-33696-5",
+      "role": "dev",
+      "targets_sha256": "427328415625e68658a34254506ff0dbc30dda61d7a29ad1535c45f6a89898e8",
+      "frames_sha256": "8780ea7c10884a943c38a5a006a40854ee58b2a56978bd76f8249d98b644af8b",
+      "eligible_context_rows": 9244,
+      "selected_rows": 9244,
+      "context_rows_excluded_or_trimmed": 0
+    },
+    {
+      "session_id": "20260923T205528-900Z-45572-3",
+      "role": "dev",
+      "targets_sha256": "5d51f2409b00025da95fa888a4633d3c445c7fd6a1334c06d5d589d984154f73",
+      "frames_sha256": "14190df6abcf0b8af7dbdc828f6c326c124bee30f96eb1f6f68a2e52920bdae6",
+      "eligible_context_rows": 39836,
+      "selected_rows": 39836,
+      "context_rows_excluded_or_trimmed": 0
+    },
+    {
+      "session_id": "20260927T053838-153Z-150600-7",
+      "role": "match",
+      "targets_sha256": "fb111143f18132264b52be38ee5b79e74d7f29cd935c7d9975af89541def0982",
+      "frames_sha256": "3540ad3f0ed2e5b4c27e99dcd502a5993afa51ab6b1bb904da99985ad48c1734",
+      "eligible_context_rows": 24922,
+      "selected_rows": 22500,
+      "context_rows_excluded_or_trimmed": 2422
+    },
+    {
+      "session_id": "20260927T055006-068Z-150600-8",
+      "role": "match",
+      "targets_sha256": "e90ccdf7f86137c3b3536af4a087c93d956c3811e8da66d344248eae84c6630e",
+      "frames_sha256": "9d539df8a71c6e6a60d5983fa165be7d746689d9d19e47581d892fe31fe32014",
+      "eligible_context_rows": 18336,
+      "selected_rows": 15840,
+      "context_rows_excluded_or_trimmed": 2496
+    },
+    {
+      "session_id": "20260927T060021-195Z-150600-10",
+      "role": "match",
+      "targets_sha256": "e656578d0a3afd9d4dd884e5856f2ac3e8853261f68df43c3ef53b63d9e19b87",
+      "frames_sha256": "a1eb9b53d295f1a77baedae2424275d7a2091fe3fe877b41fc7f0d3fafc1842d",
+      "eligible_context_rows": 24974,
+      "selected_rows": 22560,
+      "context_rows_excluded_or_trimmed": 2414
+    },
+    {
+      "session_id": "20260927T061107-953Z-150600-11",
+      "role": "match",
+      "targets_sha256": "59abec151c6eefa8fdf77cb555b70c0c05d6438f66886e3ed0992e1aa8dcdd3e",
+      "frames_sha256": "2b8086e7c352acb10073a50ba425bd3645ab4a6881bf14299639e7592e914b41",
+      "eligible_context_rows": 18136,
+      "selected_rows": 15960,
+      "context_rows_excluded_or_trimmed": 2176
+    },
+    {
+      "session_id": "20260927T061900-143Z-150600-12",
+      "role": "match",
+      "targets_sha256": "7ae583d643c98b6575546b37947897a74755bb23b8c44fc57f4ea8610527df2d",
+      "frames_sha256": "5a148e7d443415f0cfd59d6dcaef0b48256f63d45a6a6c8488902d8abe40ca4a",
+      "eligible_context_rows": 24236,
+      "selected_rows": 22020,
+      "context_rows_excluded_or_trimmed": 2216
+    }
+  ]
+}
