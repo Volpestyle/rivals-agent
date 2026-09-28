@@ -1,0 +1,58 @@
+{
+  "name": "rivals-yaw-extract-20260927-02-outputs",
+  "id": "vo-ujapSF2Htu9GfKAXEyXH70",
+  "created_at": 1790554224.914548,
+  "files": [
+    {
+      "source": "/Users/james/dev/range-bc-data/explore/encoder-historyoff-20260927/nitrogen/collected/assets/vision.safetensors",
+      "remote": "/assets/vision.safetensors",
+      "bytes": 1263873664,
+      "sha256": "2fceee7b828e737e459b39aa5d11e01362ce38210033f6f885b9974d7a0d6e79"
+    },
+    {
+      "source": "/Users/james/dev/range-bc-data/explore/encoder-inference-handoff-20260927/config.json",
+      "remote": "/assets/config.json",
+      "bytes": 537,
+      "sha256": "172e39dbf0143b8fe22d2f08921730eb8c397967e58cb37d133161e28aa34104"
+    },
+    {
+      "source": "/Users/james/dev/range-bc-data/explore/nitrogen-nohistory-confirm-20260927/evaluation-recovery/candidate-s1/epoch-26.pt",
+      "remote": "/assets/candidate-s1/epoch-26.pt",
+      "bytes": 128236405,
+      "sha256": "9f3dfd1a9a2edb1c280f0a2a86a18cb34cfe2a7ce172931823ababca41eebf24"
+    },
+    {
+      "source": "/Users/james/dev/range-bc-data/explore/nitrogen-nohistory-confirm-20260927/evaluation-recovery/candidate-s1/evaluation.json",
+      "remote": "/assets/candidate-s1/evaluation.json",
+      "bytes": 31111,
+      "sha256": "1399b086450478335e9c9b63bb4d99d8cc028f0705ebaab6ba90211a5f9b783c"
+    },
+    {
+      "source": "/Users/james/dev/range-bc-data/explore/nitrogen-nohistory-confirm-20260927/evaluation-recovery/candidate-s2/epoch-26.pt",
+      "remote": "/assets/candidate-s2/epoch-26.pt",
+      "bytes": 128236405,
+      "sha256": "99f17cd5e105a96dc1b89face1145ec037606c329cc7a2710c081f4dc7c495b7"
+    },
+    {
+      "source": "/Users/james/dev/range-bc-data/explore/nitrogen-nohistory-confirm-20260927/evaluation-recovery/candidate-s2/evaluation.json",
+      "remote": "/assets/candidate-s2/evaluation.json",
+      "bytes": 16648,
+      "sha256": "cacc25bbadf15e146cfef36a485d1c69783af36be639914ebfc8fa755b1e59a1"
+    },
+    {
+      "source": "/Users/james/dev/range-bc-data/explore/nitrogen-nohistory-confirm-20260927/evaluation-recovery/candidate-s3/epoch-26.pt",
+      "remote": "/assets/candidate-s3/epoch-26.pt",
+      "bytes": 128236405,
+      "sha256": "b52c3aef493118b8275bc8f291719b54efaae16d9e4d45caea0313aea6aa6c51"
+    },
+    {
+      "source": "/Users/james/dev/range-bc-data/explore/nitrogen-nohistory-confirm-20260927/evaluation-recovery/candidate-s3/evaluation.json",
+      "remote": "/assets/candidate-s3/evaluation.json",
+      "bytes": 16637,
+      "sha256": "89e0f132bcac4052301381e907410d87045b0f7c066c66252c057cffb5a320fb"
+    }
+  ],
+  "profile": "rivals",
+  "workspace": "volpestyle",
+  "upload_completed_at": 1790554226.749672
+}

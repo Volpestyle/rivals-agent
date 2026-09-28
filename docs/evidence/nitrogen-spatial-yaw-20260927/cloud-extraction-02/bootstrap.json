@@ -1,0 +1,1 @@
+{"attempt_ids":["yaw-extract-20260927-02"],"campaign_cap_usd":"2.812807","campaign_id":"nitrogen-spatial-yaw-extraction-02","cleanup_seconds":120,"concurrency":1,"mode":"EXPLORATORY_BOOTSTRAP","overhead_usd":"0.10","rate_usd_second":"0.0007178888888888888888888888889","startup_seconds":300,"work_seconds":2200,"workload":"full-cohort-dual-grid-cuda-extraction"}
