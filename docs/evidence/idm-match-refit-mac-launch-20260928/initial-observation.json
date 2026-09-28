@@ -1,0 +1,24 @@
+{
+  "utc": "2026-09-28T18:08:44.423607+00:00",
+  "epochs": [],
+  "exit": null,
+  "phase_exits": {},
+  "fit_tail": "",
+  "complete_exists": false,
+  "status": {
+    "eta": null,
+    "evidence": "result/complete.json",
+    "host": "mac",
+    "name": "idm-match-refit-mac-20260928",
+    "owner": "idm-owner",
+    "progress": "prepare complete",
+    "stage": "running",
+    "started": "2026-09-28T17:58:31+00:00",
+    "updated": "2026-09-28T18:06:02+00:00"
+  },
+  "processes": [
+    "12430     1 15       02:42   1344 /bin/zsh run.zsh",
+    "12433 12430 19       02:42    224 /usr/bin/time -l /Users/james/dev/idm-data/explore-20260927/code-54bae68/.venv/bin/python -m policy.idm.mac_refit fit manifest-a1.json 73d486da67f85e87041567cd4d90b553c24a40e22c0cff05a63136e29f771d5c result",
+    "12434 12433 19       02:42 41757232 /Users/james/dev/idm-data/explore-20260927/code-54bae68/.venv/bin/python -m policy.idm.mac_refit fit manifest-a1.json 73d486da67f85e87041567cd4d90b553c24a40e22c0cff05a63136e29f771d5c result"
+  ]
+}

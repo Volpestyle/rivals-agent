@@ -1,0 +1,19 @@
+{
+  "commit": "17b0f96f3beaa1e8eea58288df574c2c15ccc6fc",
+  "manifest_sha256": "73d486da67f85e87041567cd4d90b553c24a40e22c0cff05a63136e29f771d5c",
+  "runtime_sha256": "b603668da3cfd8b9e4d14f5dc85f90ae504cc1f308d3d4fc5ad69539d393d460",
+  "utc": "2026-09-28T18:06:02.081906+00:00",
+  "cost_usd": 0,
+  "device": "mps",
+  "torch": "2.14.0",
+  "resume_test": "29 passed native CPU/MPS",
+  "recipe": {
+    "seed": 0,
+    "epochs": 3,
+    "device": "mps",
+    "threads": 2,
+    "batch_size": 16,
+    "fresh_init": true,
+    "camera_beta_nll": 0.5
+  }
+}
