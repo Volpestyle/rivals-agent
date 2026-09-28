@@ -1,0 +1,46 @@
+{
+  "status": "PASS",
+  "release_sha256": "4a4d57d5ec2b97566b5bc59f212c8f4b9357198fe0eb7270874902079bdd8af6",
+  "attempts": [
+    {
+      "attempt_id": "yaw-dropout-probe-s1-20260928-01",
+      "app_id": "ap-QVeLevoayFdWqPzS95UUaK",
+      "bound_usd": "0.103155",
+      "pins": {
+        "probe/probe.json": {
+          "bytes": 890,
+          "sha256": "19c5b72b569e111344b00810d436feeb8f61253e964995c15c2da1a441b6030f"
+        }
+      }
+    },
+    {
+      "attempt_id": "yaw-dropout-probe-s2-20260928-01",
+      "app_id": "ap-CjWEJxyEcdzRl91dqM3KDs",
+      "bound_usd": "0.092766",
+      "pins": {
+        "probe/probe.json": {
+          "bytes": 888,
+          "sha256": "f904ebdc48d30d1cdca91c3fd4862ff2ed84fbbfee0b416b1c9dc3d03136215a"
+        }
+      }
+    },
+    {
+      "attempt_id": "yaw-dropout-probe-s3-20260928-01",
+      "app_id": "ap-6Dl7cjGkqqQ4f3TPurjS92",
+      "bound_usd": "0.077333",
+      "pins": {
+        "probe/probe.json": {
+          "bytes": 890,
+          "sha256": "223302850323aa23fc5af50c870f19705ad2dd796c55fcd18ffc7f663e293b58"
+        }
+      }
+    }
+  ],
+  "active_holds_usd": "0",
+  "mode": "probe",
+  "bound_usd": "0.273254",
+  "collected_at": 1790567045.7070541,
+  "collector_sha256": "5e02cdafcdc8c9a8f85484a84a1d730d4a6d2ec6e6fe7f1f8e7caf2609b4de11",
+  "three_way_work_overlap_seconds": 25.758112907409668,
+  "full_fit_p95_claim": false
+}

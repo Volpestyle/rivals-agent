@@ -1,0 +1,20 @@
+{
+  "work_started_at": 1790566795.9676263,
+  "work_finished_at": 1790566856.0437052,
+  "updates": 568,
+  "batch": 8,
+  "window": 96,
+  "seed": 3,
+  "hidden_dropout": 0.5,
+  "base_tensor_sha256": "59f5c406ebc6192ba14883c3bad1d21fe81f458aa3fab0ded79fd873d39cc7ff",
+  "retention": "exact actions/pitch; base unchanged and gradient-free",
+  "evaluation_dropout_disabled": true,
+  "limitation": "Synthetic repeated tokens and a fixed base; launcher evidence only, no full-fit p95 or I/O throughput claim",
+  "tag": "EXPLORATORY_LAUNCHER_SHAKEDOWN",
+  "spec_sha256": "c93166c1b4a061799bf1b4bb717329f00f544789228ad638fd9df6c926ffb970",
+  "torch": "2.14.0+cu130",
+  "cuda": "13.0",
+  "checkpoint_sha256": "b4b867f86867e55940d273cf6732c857767dec7fe210eaba50cef894fd791985",
+  "device": "NVIDIA L40S",
+  "dataset_manifest_sha256": "71e344f4f17d9e537c87c154b30f6aae12c14cc601b59d668299ac799715660e"
+}
