@@ -1,0 +1,11 @@
+{
+  "changed": [
+    "cloud/idm-payload-manifest.json",
+    "cloud/idm_payload/policy/idm/receipt-current.json",
+    "cloud/idm_payload/policy/idm/receipt_current.py",
+    "cloud/idm_payload/docs/evidence/idm-match-admission-060021-20260927/receipt/match-admission-060021.accepted.json"
+  ],
+  "from": "d4f05e0",
+  "guard_science_inputs_unchanged": true,
+  "to": "19275383335370d5fcb7caa9b23ab2125214c856"
+}

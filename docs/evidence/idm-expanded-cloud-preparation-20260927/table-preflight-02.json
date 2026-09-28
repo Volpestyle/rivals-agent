@@ -1,0 +1,154 @@
+{
+  "decode_platform": "Darwin arm64",
+  "heldout_context_rows": 49080,
+  "media_read": false,
+  "pixels_read": false,
+  "seconds": 18.134624709025957,
+  "sessions": [
+    {
+      "context_counts": {
+        "eligible": 25084,
+        "excluded": 32,
+        "total_rows": 25116
+      },
+      "context_rows": 25084,
+      "role": "train",
+      "session_id": "20260923T051828-422Z-33696-1",
+      "training_rows": 25100
+    },
+    {
+      "context_counts": {
+        "eligible": 9244,
+        "excluded": 356,
+        "total_rows": 9600
+      },
+      "context_rows": 9244,
+      "role": "heldout",
+      "session_id": "20260923T171533-187Z-33696-5",
+      "training_rows": 9260
+    },
+    {
+      "context_counts": {
+        "eligible": 95788,
+        "excluded": 602,
+        "total_rows": 96390
+      },
+      "context_rows": 95788,
+      "role": "train",
+      "session_id": "20260923T200129-346Z-33696-6",
+      "training_rows": 95820
+    },
+    {
+      "context_counts": {
+        "eligible": 39836,
+        "excluded": 34,
+        "total_rows": 39870
+      },
+      "context_rows": 39836,
+      "role": "heldout",
+      "session_id": "20260923T205528-900Z-45572-3",
+      "training_rows": 39852
+    },
+    {
+      "context_counts": {
+        "eligible": 31522,
+        "excluded": 160,
+        "total_rows": 31682
+      },
+      "context_rows": 31522,
+      "role": "train",
+      "session_id": "20260924T232304-170Z-12024-1",
+      "training_rows": 31554
+    },
+    {
+      "context_counts": {
+        "eligible": 124172,
+        "excluded": 7232,
+        "total_rows": 131404
+      },
+      "context_rows": 124172,
+      "role": "train",
+      "session_id": "20260925T021320-371Z-7804-1",
+      "training_rows": 124252
+    },
+    {
+      "context_counts": {
+        "eligible": 13156,
+        "excluded": 178,
+        "total_rows": 13334
+      },
+      "context_rows": 13156,
+      "role": "train",
+      "session_id": "20260925T025230-605Z-7804-2",
+      "training_rows": 13188
+    },
+    {
+      "context_counts": {
+        "eligible": 36882,
+        "excluded": 324,
+        "total_rows": 37206
+      },
+      "context_rows": 36882,
+      "role": "train",
+      "session_id": "20260926T045729-166Z-79780-1",
+      "training_rows": 36930
+    },
+    {
+      "context_counts": {
+        "eligible": 108412,
+        "excluded": 1622,
+        "total_rows": 110034
+      },
+      "context_rows": 108412,
+      "role": "train",
+      "session_id": "20260926T035932-508Z-63684-14",
+      "training_rows": 108540
+    },
+    {
+      "context_counts": {
+        "eligible": 165416,
+        "excluded": 6306,
+        "total_rows": 171722
+      },
+      "context_rows": 165416,
+      "role": "train",
+      "session_id": "20260925T203745-207Z-49728-2",
+      "training_rows": 165512
+    },
+    {
+      "context_counts": {
+        "eligible": 17686,
+        "excluded": 6692,
+        "total_rows": 24378
+      },
+      "context_rows": 17686,
+      "role": "train",
+      "session_id": "20260927T051206-888Z-150600-4",
+      "training_rows": 17846
+    },
+    {
+      "context_counts": {
+        "eligible": 20422,
+        "excluded": 11282,
+        "total_rows": 31704
+      },
+      "context_rows": 20422,
+      "role": "train",
+      "session_id": "20260927T052001-827Z-150600-5",
+      "training_rows": 20534
+    },
+    {
+      "context_counts": {
+        "eligible": 15302,
+        "excluded": 10558,
+        "total_rows": 25860
+      },
+      "context_rows": 15302,
+      "role": "train",
+      "session_id": "20260927T053118-260Z-150600-6",
+      "training_rows": 15446
+    }
+  ],
+  "status": "PASS",
+  "train_context_rows": 653842
+}

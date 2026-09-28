@@ -1,0 +1,25 @@
+# Expanded IDM cloud packet and upload
+
+Owner: idm-owner, VUH-1353. EXPLORATORY. 2026-09-28 UTC / September 27 CDT.
+
+All eight admitted TRAIN range stores and current -4a1/-5a1/-6 match stores are complete and inspected (match evidence `d4f05e0`). The full source-table preflight passed in **18.134625 seconds** with exactly eleven TRAIN sessions and the two existing frozen-dev sessions. It found **653,842 TRAIN rows with complete temporal context** (181.623 minutes at 60 Hz) and **49,080 dev rows**; 181.888048 minutes is the broader admitted TRAIN duration. All stores report Darwin arm64 decoding. No pixels or original media were read by this table check. Final model-usable counts still come from the fit's store binding and label masks.
+
+The complete ten-member authority delta `1927538` has independent LAND: `scratchpad/handoff/review-idm-authority-refresh10-1927538.md` (72 independent tests; 96 broader owner tests). -7/-8/-10 add authority metadata only; none enters this fit. Science source remains `9989f32`, with only the authority index, its constant and new -10 receipt overlaid from `1927538`. The source delta is recorded in `delta.json`.
+
+The immutable native source-mount check passed on SDK1.5.5: **179 cloud files** plus the host status helper. Accepted shared modal_guard v1.0.4 is byte-unchanged: commit `80d944bd8732103f2de1ad67dd83c4009b6bb7f2`, release `5c0e979227738363bfceaef792d9852d2578fcc149f77d2f9cde61510dc8a8fd`. Existing image `im-FNjy4v5u4XYF29SBGvT0KD`; no image build. Source inventory SHA256 `ade69eba85ae8b400a5f499059b58488a3d969adc6b145eeb30e60e5a44a29a8`; payload manifest SHA256 `99d03a512bdb0133be78c76b6ea0b5ca96d8819e166e969918da92448fa732cc`.
+
+The input manifest pins **57 files / 113,955,631,920 bytes**, plus its own 16,004 bytes. Input manifest SHA256 `42494717650293cc4b77add3721d5168c20781e6b98ca275443824656e055580`; upload manifest SHA256 `bf06e8e4c5ff491515315a5f23415e8e274640bf38644a5c950add9d4ffea290`. Original videos are absent. Each file is streamed through SHA256 before serial SDK upload; old matching server blobs may be reused without modifying any prior volume. Upload acknowledgement is followed by manifest read-back; the worker must independently rehash native payloads before fit.
+
+Upload started under nice10 at **00:19:31 UTC**, Mac PID8093, in `/Users/james/dev/idm-data/expanded-refit-d4f05e0`. Fresh input volume `rivals-idm-expanded-20260928-01-inputs`, ID **vo-PnBxKAp9G4Y8nNwfBOgrdU**. The upload is in progress, not yet accepted as complete. `upload.exit` plus the final `upload-receipt.json` determine completion. No AppCreate, GPU launch or GPU reservation has occurred. The PC completion watcher will notify idm-owner; it does not launch paid work.
+
+## Final approved budget and cleanup
+
+The lead's final reallocation is **$8.25 hard total**, within IDM's unchanged $25: **$1.65 setup/storage + $0.40 one probe + $6.20 one full attempt**. Full work remains 7,800 seconds; no fit retry or reduced scientific cohort. Prior terminal lane bounds remain $6.335876068670252. The conservative total including the full new allocation is $14.585876068670252; alert remains $20. Storage is a setup allocation, not an active GPU hold or an invoice.
+
+Authenticated Modal rates report volume storage at $0.09000/GiB-month. One occupied daily sample plus up to four post-deletion billed days gives a conservative ~$1.592 for this 106.13 GiB replica, without assuming free allowance. The lead chose manual deletion rather than new lease enforcement. **No automatic deletion script is deployed or running.** After the refit report lands, idm-owner checks this exact name/ID using `modal volume list --json`, deletes it once with the Modal CLI, and records the deletion/absence receipt. Mac and PC originals/stores stay intact. If work is delayed into another occupied storage day, report the changed bound before continuing.
+
+Remaining: complete and verify upload; bind fresh probe/full output volumes and exact specs; announce the AppCreate window, at least 15 seconds from explore-policy; run the $0.40 metadata/synthetic-CUDA probe; after PASS, run the single approved full refit with TRAIN-only calibration and matched real/zero-visual report; collect evidence and perform manual input-volume deletion. No accuracy, match-transfer or Gate 2 claim follows from this preparation.
+
+## Disclosed preparation failures
+
+The initial host table preflight used the NumPy-only decoder environment and failed at importing Torch, before data reads. The retry used the existing IDM Torch2.14 environment and passed. The first nine-member source-mount proof remains historical; the ten-member revision passed separately. A proposed auto-delete lease was rejected by independent review (unsupported SDK deletion call, status/identity issues and daily billing arithmetic); the lead explicitly dropped that approach. Its rejected files remain in ignored local preparation history and are neither deployed nor used. The actual uploader is `upload-expanded-manual.py`, SHA256 `3f97943c2c933f1fc8ae63721575e749c5317a6bd2fc62eb500e214fff9c59f1`.
