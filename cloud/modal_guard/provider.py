@@ -1,7 +1,6 @@
-"""Modal 1.5.5 identity, billing and inventory; explicit rivals profile everywhere."""
+"""Modal 1.5.5 identity and inventory; explicit rivals profile everywhere."""
 from __future__ import annotations
 
-from datetime import datetime, timezone, timedelta
 import hashlib
 import json
 import os
@@ -10,7 +9,7 @@ import subprocess
 import sys
 import time
 
-from .common import DEFAULT_ROOT, atomic, elapsed_time, IDENTITY, SDK_VERSION, clock_id, lock, read, require, usd
+from .common import elapsed_time, IDENTITY, SDK_VERSION, clock_id, require
 
 OVERRIDES = ("MODAL_TOKEN_ID", "MODAL_TOKEN_SECRET", "MODAL_OAUTH_REFRESH_TOKEN",
              "MODAL_OAUTH_CLIENT_ID", "MODAL_OAUTH_CLIENT_SECRET", "MODAL_CONFIG_PATH",
@@ -50,11 +49,10 @@ def connect():
 
 
 class Provider:
-    def __init__(self, cli=None, *, wall=time.time, monotonic=elapsed_time, billing_root=DEFAULT_ROOT):
+    def __init__(self, cli=None, *, wall=time.time, monotonic=elapsed_time):
         self.cli = cli or str(Path.home() / ".local/bin/modal")
         self.wall = wall
         self.monotonic = monotonic
-        self.billing_root = Path(billing_root)
 
     def budget(self, timeout):
         end = self.monotonic() + timeout
@@ -89,83 +87,11 @@ class Provider:
                 "checked_monotonic": self.monotonic(), "clock_id": clock_id(),
                 "raw": {"identity": identity, "apps": apps, "containers": containers}}
 
-    def billing(self, month):
-        """One workspace query per minute, shared by drivers and daemon readers.
-
-        Preserve the query's original clock/evidence; cache reads never renew it.
-        A failed refresh replaces the cache with a shared refusal, never stale data.
-        This lock is only used off the watchdog's deadline/teardown path.
-        """
-        require(month == month_at(self.wall()), "query current billing month only")
-        self.billing_root.mkdir(parents=True, exist_ok=True)
-        path = self.billing_root / (month + "-billing.json")
-        with lock(self.billing_root / "billing.lock", timeout=65):
-            if path.exists():
-                cached = read(path)
-                if (cached["clock_id"] == clock_id() and cached["month"] == month
-                        and 0 <= self.monotonic() - cached["started_monotonic"] < 60):
-                    require(cached["error"] is None, "shared billing refresh failed: " + str(cached["error"]))
-                    value = cached["value"]
-                    require(value["month"] == month, "cached billing month mismatch")
-                    raw = value["raw"]["identity"]
-                    require(raw["clock_id"] == clock_id()
-                            and 0 <= self.monotonic() - raw["queried_monotonic"] < 60,
-                            "cached billing clock stale")
-                    billing_values(value)
-                    return value
-            cached = {"month": month, "clock_id": clock_id(),
-                      "started_monotonic": self.monotonic(), "value": None, "error": None}
-            try:
-                value = self._billing(month)
-                billing_values(value)
-                cached["value"] = value
-            except Exception as exc:
-                cached["error"] = str(exc)
-                atomic(path, cached)
-                raise
-            atomic(path, cached)
-            return value
-
-    def _billing(self, month):
-        require(month == month_at(self.wall()), "query current billing month only")
-        identity = self.identity()
-        summary = self._run([self.cli, "billing", "summary", "--for", month,
-                             "--profile", "rivals", "--json"])
-        # Keep recent terminal apps hourly across UTC midnight. SDK 1.5.5 caps
-        # hourly requests at seven days. Older days and recent hours are disjoint.
-        now = datetime.fromtimestamp(self.wall(), timezone.utc)
-        first = datetime.fromisoformat(month + "-01").replace(tzinfo=timezone.utc)
-        boundary = max(first, now.replace(hour=0, minute=0, second=0, microsecond=0) - timedelta(days=6))
-        start = boundary.strftime("%Y-%m-%d")
-        end = now.replace(minute=0, second=0, microsecond=0).isoformat()
-        reports = []
-        if start != month + "-01":
-            reports.append(self._run([self.cli, "billing", "report", "--start", month + "-01",
-                                      "--end", start, "--resolution", "d", "--tag-names", "lane,run",
-                                      "--profile", "rivals", "--json"]))
-        reports.append(self._run([self.cli, "billing", "report", "--start", start, "--end", end,
-                                  "--resolution", "h", "--tag-names", "lane,run",
-                                  "--profile", "rivals", "--json"]))
-        raw = {"identity": identity, "summary": summary, "reports": reports}
-        value = {"identity": IDENTITY, "month": month, "queried_at": identity["queried_at"],
-                 "raw": raw}
-        billing_values(value)
-        return value
-
     def stop(self, app_id, timeout=10):
         require(isinstance(app_id, str) and app_id.startswith("ap-"), "invalid owned app ID")
         remaining = self.budget(timeout)
         self.identity(min(remaining(), 1))
         return self._run([self.cli, "app", "stop", app_id, "--profile", "rivals", "--yes"], remaining())
-
-    def rates(self):
-        self.identity()
-        raw = self._run([self.cli, "billing", "rates", "--profile", "rivals", "--json"])
-        values = unpack(raw)
-        # v1 deliberately supports the measured L40S / 8 CPU / 32 GiB class only.
-        rate = (usd(values["gpu_hour_cost_l40s"]) + 8 * usd(values["cpu_hour_cost"])
-                + 32 * usd(values["mem_gib_hour_cost"])) / 3600
-        return rate, raw
 
 
 def unpack(raw):
@@ -187,30 +113,6 @@ def snapshot_values(value):
         require(isinstance(row["app_id"], str) and row["app_id"].startswith("ap-"),
                 "invalid container inventory row")
     return apps, containers
-
-
-def billing_values(value):
-    require(value["identity"] == IDENTITY and unpack(value["raw"]["identity"]) == IDENTITY,
-            "billing workspace mismatch")
-    summary = unpack(value["raw"]["summary"])
-    reports = value["raw"]["reports"]
-    require(type(reports) is list and reports, "billing report unavailable")
-    rows = []
-    for report in reports:
-        batch = unpack(report)
-        require(type(batch) is list, "billing report unavailable")
-        rows.extend(batch)
-    by_app = {}
-    for row in rows:
-        require(row["interval_start"].startswith(value["month"] + "-"), "billing interval mismatch")
-        key = row["object_id"]
-        by_app[key] = by_app.get(key, usd("0")) + usd(row["cost"])
-    # Metered, not net-of-credit billed dollars. Never let credits increase the cap.
-    return max(usd(summary["metered_cost"]), sum(by_app.values(), usd("0"))), by_app
-
-
-def month_at(now):
-    return datetime.fromtimestamp(now, timezone.utc).strftime("%Y-%m")
 
 
 if __name__ == "__main__":

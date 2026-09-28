@@ -11,7 +11,7 @@ from cloud.modal_guard.common import Refused
 
 def identity(clock):
     return {"attempt_id":"volume-01", "code_sha256":"a"*64, "inputs_sha256":"b"*64,
-            "recipe_sha256":"c"*64, "output_volume_id":"vo-fresh", "deadline_unix":clock.wall()+100}
+            "recipe_sha256":"c"*64, "output_volume_id":"vo-fresh"}
 
 
 def test_volume_without_hardlinks_completes_and_reenters(tmp_path, clock, monkeypatch):
@@ -22,7 +22,7 @@ def test_volume_without_hardlinks_completes_and_reenters(tmp_path, clock, monkey
         events.append("compute")
         (root/"model.bin").write_bytes(b"complete")
         return 0
-    kw=dict(commit=lambda:events.append("commit"),reload=lambda:None,wall=clock.wall)
+    kw=dict(commit=lambda:events.append("commit"),reload=lambda:None)
     first=stages.run(tmp_path/"stage", "fit", identity(clock), ["model.bin"], compute, **kw)
     again=stages.run(tmp_path/"stage", "fit", identity(clock), ["model.bin"], compute, **kw)
     assert again==first
@@ -46,5 +46,5 @@ def test_torn_volume_receipt_never_recomputes(tmp_path, clock, marker):
     calls=[]
     with pytest.raises((Refused,json.JSONDecodeError)):
         stages.run(root,"fit",identity(clock),["model.bin"],lambda p:calls.append(p),
-                   commit=lambda:None,reload=lambda:None,wall=clock.wall)
+                   commit=lambda:None,reload=lambda:None)
     assert calls==[]

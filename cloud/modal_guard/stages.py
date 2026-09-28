@@ -1,9 +1,8 @@
-"""Durable stage boundaries for container redelivery. Partial work never runs twice."""
+"""Durable stage boundaries and explicit complete-epoch recovery."""
 from __future__ import annotations
 
 from pathlib import Path
 import os
-import time
 
 from .common import artifact, json_bytes, name, read, require, sha256
 
@@ -23,7 +22,7 @@ def claim(path, value):
 
 def identity_check(identity):
     require(set(identity) == {"attempt_id", "code_sha256", "inputs_sha256", "recipe_sha256",
-                              "output_volume_id", "deadline_unix"}, "complete stage identity required")
+                              "output_volume_id"}, "complete stage identity required")
     name(identity["attempt_id"])
     for key in ("code_sha256", "inputs_sha256", "recipe_sha256"):
         value = identity[key]
@@ -52,26 +51,35 @@ def load(root, stage, identity, expected):
     return receipt
 
 
-def run(root, stage, identity, expected, compute, *, commit, reload, wall=time.time):
+def run(root, stage, identity, expected, compute, *, commit, reload, resume=None, resume_source=False):
     """Commit STARTED before compute; commit payload before publishing completion.
 
     commit/reload are the output Volume methods in Modal. One writer per stage;
     max_containers=1 remains required. On any exception leave STARTED/partial bytes.
-    No training checkpoint resume, stage retry, timeout reset or result promotion.
+    An explicit consumer validator may resume a complete epoch checkpoint; the
+    guard never interprets partial weights; native Modal timeouts own execution.
     """
     identity_check(identity)
     name(stage)
-    require(wall() < identity["deadline_unix"], "original stage deadline expired")
     root = Path(root)
     reload()
+    state = None
     if root.exists():
-        return load(root, stage, identity, expected)
-    root.mkdir(parents=True, exist_ok=False)
-    claim(root / "started.json", {"identity": identity, "stage": stage})
-    commit()  # a restarted container must see the claim before expensive work starts
-    code = compute(root)
+        if (root / "completed.json").exists():
+            return load(root, stage, identity, expected)
+        require(resume is not None and not root.is_symlink(), "partial stage refused: no checkpoint validator")
+        require(read(root / "started.json") == {"identity": identity, "stage": stage}, "partial stage identity mismatch")
+        state = resume(root)
+        require(type(state) is dict and state, "partial stage has no validated complete epoch")
+    else:
+        root.mkdir(parents=True, exist_ok=False)
+        claim(root / "started.json", {"identity": identity, "stage": stage})
+        commit()  # durable before expensive compute
+        if resume is not None and resume_source:
+            state = resume(root)
+            require(type(state) is dict and state, "prior source has no validated complete epoch")
+    code = compute(root, resume_state=state) if resume is not None else compute(root)
     require(code == 0 and type(code) is int, "stage failed; partial output retained")
-    require(wall() < identity["deadline_unix"], "stage finished past funded deadline")
     files = {}
     for relative in expected:
         require(relative not in ("completed.json", "started.json"), "reserved stage filename")

@@ -19,21 +19,21 @@ RPC_TIMEOUT_SECONDS = 15
 
 
 class AppCreateGate:
-    def __init__(self, original, ledger, attempt, *, exhausted, before_rpc,
+    def __init__(self, original, attempts, attempt, *, exhausted, before_rpc,
                  wall=time.time, monotonic=elapsed_time, sleep=asyncio.sleep, uniform=random.uniform):
-        self.original, self.ledger, self.attempt = original, ledger, attempt
+        self.original, self.attempts, self.attempt = original, attempts, attempt
         self.exhausted, self.before_rpc = exhausted, before_rpc
         self.wall, self.mono, self.sleep, self.uniform = wall, monotonic, sleep, uniform
-        self.row = ledger.get(attempt)
-        require(self.row["state"] == "RESERVED", "fresh reserved attempt required")
+        self.row = attempts.get(attempt)
+        require(self.row["state"] == "READY", "fresh reserved attempt required")
         self.key, self.used = str(uuid.uuid4()), False
-        self.root = Path(ledger.path).parent
+        self.root = Path(attempts.root)
         self.state = self.root / "appcreate-pacing.json"
 
     def remaining(self):
-        self.ledger.funded(self.attempt, monotonic=self.mono)
-        left = min(self.row["started_at"] + self.row["hold"]["startup_seconds"] - self.wall(),
-                   self.row["started_monotonic"] + self.row["hold"]["startup_seconds"] - self.mono())
+        self.attempts.startup_open(self.attempt, monotonic=self.mono)
+        left = min(self.row["started_at"] + self.row["timing"]["startup_seconds"] - self.wall(),
+                   self.row["started_monotonic"] + self.row["timing"]["startup_seconds"] - self.mono())
         require(left > 0, "AppCreate startup deadline")
         return left
 
@@ -44,7 +44,7 @@ class AppCreateGate:
 
     @asynccontextmanager
     async def serialized(self):
-        # Queue for the whole funded startup window, not a fixed ten-second lock
+        # Queue for the whole startup window, not a fixed ten-second lock
         # timeout that would refuse the other arms of a five-app paced burst.
         while True:
             self.remaining()
@@ -70,7 +70,7 @@ class AppCreateGate:
             if self.state.exists():
                 previous = read(self.state)
                 if previous["outcome"] in ("IN_FLIGHT", "UNKNOWN"):
-                    require(self.ledger.get(previous["attempt_id"])["state"] == "ABSENT_RPC",
+                    require(self.attempts.get(previous["attempt_id"])["state"] == "ABSENT_RPC",
                             "uncertain prior AppCreate; reconcile first")
             count = 0
             while True:
@@ -83,7 +83,7 @@ class AppCreateGate:
                 self.remaining()
                 await asyncio.wait_for(self.before_rpc(), timeout=self.remaining())
                 timeout = min(RPC_TIMEOUT_SECONDS, self.remaining())
-                self.ledger.rpc(self.attempt, "CREATING")  # durable before any RPC; crash => unknown
+                self.attempts.rpc(self.attempt, "CREATING")  # durable before any RPC; crash => unknown
                 def record(outcome):
                     atomic(self.state, {"attempt_id": self.attempt, "logical_request_id": self.key,
                                         "outcome": outcome, "wall": self.wall(),
@@ -96,7 +96,7 @@ class AppCreateGate:
                                   ("x-throttle-retry-attempt", str(count)),
                                   ("x-modal-timestamp", str(self.wall()))]), timeout=timeout)
                 except self.exhausted:
-                    self.ledger.rpc(self.attempt, "REJECTED")
+                    self.attempts.rpc(self.attempt, "REJECTED")
                     record("REJECTED")
                     maximum = min(60, 5 * 2 ** min(count, 10))
                     delay = self.uniform(maximum / 2, maximum)
@@ -105,17 +105,22 @@ class AppCreateGate:
                     await self.pause(delay)
                     continue
                 except BaseException:
-                    self.ledger.rpc(self.attempt, "UNKNOWN")
+                    self.attempts.rpc(self.attempt, "UNKNOWN")
                     record("UNKNOWN")
                     raise
                 # A bad/late response leaves CREATING/IN_FLIGHT, never a retry.
-                self.ledger.rpc(self.attempt, "RUNNING", app_id=response.app_id)
-                record("CREATED")
-                self.remaining()
+                from .lifecycle import warning
+                try:
+                    self.attempts.rpc(self.attempt, "RUNNING", app_id=response.app_id)
+                    record("CREATED")
+                except Exception as exc:
+                    # IN_FLIGHT continues blocking new apps, but recording failure
+                    # must not destroy this known detached app or hide its ID.
+                    warning("AppCreate receipt pending for " + response.app_id + ": " + repr(exc))
                 return response
 
 
-def install(client, ledger, attempt, *, before_rpc):
+def install(client, attempts, attempt, *, before_rpc):
     """No historical suffix allowlist. Identity/spec is the reserved exact attempt."""
     import modal
     import modal.exception
@@ -126,7 +131,7 @@ def install(client, ledger, attempt, *, before_rpc):
     original = internal.stub.AppCreate
     require(isinstance(original, UnaryUnaryWrapper)
             and original.name == "/modal.client.ModalClient/AppCreate", "unreviewed SDK RPC seam")
-    gate = AppCreateGate(original, ledger, attempt, exhausted=modal.exception.ResourceExhaustedError,
+    gate = AppCreateGate(original, attempts, attempt, exhausted=modal.exception.ResourceExhaustedError,
                          before_rpc=before_rpc)
     internal.stub.AppCreate = gate
 

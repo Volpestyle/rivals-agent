@@ -1,25 +1,38 @@
-from cloud.modal_guard.provider import Provider, billing_values
-from cloud.modal_guard.common import IDENTITY
-from conftest import raw
+import pytest
+from cloud.modal_guard.common import IDENTITY, Refused
+from cloud.modal_guard.provider import Provider, environment, snapshot_values
+from conftest import raw, snapshot
 
 
-def test_month_report_uses_disjoint_days_and_hours(clock, tmp_path):
+def test_queries_explicit_profile_and_no_billing(clock):
     commands = []
     class Fake(Provider):
         def identity(self, timeout=10):
             return raw(IDENTITY, clock.wall())
         def _run(self, args, timeout=10):
             commands.append(args)
-            if "summary" in args:
-                return raw({"metered_cost": "40"}, clock.wall())
-            return raw([{"object_id": "ap-one", "interval_start": "2026-09-20T00:00:00"
-                         if "d" in args else "2026-09-27T18:00:00", "cost": "2"}], clock.wall())
-    value = Fake(wall=clock.wall, billing_root=tmp_path).billing("2026-09")
-    assert len(commands) == 3
-    assert commands[1][commands[1].index("--end") + 1] == "2026-09-21"
-    assert commands[2][commands[2].index("--start") + 1] == "2026-09-21"
-    assert commands[2][commands[2].index("--end") + 1] == "2026-09-27T20:00:00+00:00"
-    assert commands[1][commands[1].index("--resolution") + 1] == "d"
-    assert commands[2][commands[2].index("--resolution") + 1] == "h"
-    floor, apps = billing_values(value)
-    assert floor == 40 and apps["ap-one"] == 4
+            return raw([], clock.wall())
+    provider = Fake(wall=clock.wall, monotonic=clock.monotonic)
+    assert snapshot_values(provider.snapshot()) == ([], [])
+    provider.stop("ap-own")
+    assert all(args[args.index("--profile") + 1] == "rivals" for args in commands)
+    assert not hasattr(provider, "billing")
+    assert not any("billing" in command for command in commands)
+
+
+def test_snapshot_hash_and_workspace_are_verified(clock):
+    proof = snapshot(clock)
+    proof["raw"]["apps"]["stdout"] = '[{"app_id":"ap-forged"}]'
+    with pytest.raises(Refused, match="evidence"):
+        snapshot_values(proof)
+    proof = snapshot(clock)
+    proof["identity"] = {"workspace": "someone-else"}
+    with pytest.raises(Refused, match="workspace"):
+        snapshot_values(proof)
+
+
+def test_credentials_cannot_override_rivals(monkeypatch):
+    monkeypatch.setenv("MODAL_TOKEN_SECRET", "untrusted")
+    monkeypatch.setenv("MODAL_PROFILE", "other")
+    env = environment()
+    assert env["MODAL_PROFILE"] == "rivals" and "MODAL_TOKEN_SECRET" not in env

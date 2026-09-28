@@ -1,12 +1,11 @@
 import hashlib
 import json
-import time
 
 import pytest
 
 from cloud.modal_guard.common import IDENTITY, clock_id, elapsed_time, json_bytes
-from cloud.modal_guard.holds import derive
-from cloud.modal_guard.ledger import Ledger
+from cloud.modal_guard.timing import derive
+from cloud.modal_guard.attempt import Attempt
 
 
 class Clock:
@@ -36,15 +35,6 @@ def raw(value, now, mono=None):
             "completed_monotonic": mono if mono is not None else elapsed_time(), "clock_id": clock_id()}
 
 
-def billing(clock, spent="48.25", apps=None):
-    rows = [{"object_id": key, "cost": value, "interval_start": "2026-09-27T18:00:00"}
-            for key, value in (apps or {}).items()]
-    return {"identity": IDENTITY, "month": "2026-09", "queried_at": clock.wall(),
-            "raw": {"identity": raw(IDENTITY, clock.wall(), clock.monotonic()),
-                    "summary": raw({"metered_cost": spent, "billed_cost": "18.05"}, clock.wall()),
-                    "reports": [raw(rows, clock.wall())]}}
-
-
 def snapshot(clock, apps=(), containers=()):
     return {"identity": IDENTITY, "checked_at": clock.wall(), "complete": True,
             "checked_monotonic": clock.monotonic(), "clock_id": clock_id(),
@@ -52,12 +42,12 @@ def snapshot(clock, apps=(), containers=()):
                     "apps": raw(list(apps), clock.wall(), clock.monotonic()), "containers": raw(list(containers), clock.wall(), clock.monotonic())}}
 
 
-def spec(attempt="fresh-04", *, rate="0.01"):
+def spec(attempt="fresh-04"):
     samples = [{"workload": "tiny", "concurrency": 5, "complete": True,
                 "startup_seconds": 10, "work_seconds": 10, "cleanup_seconds": 10} for _ in range(20)]
     return {"attempt_id": attempt, "app_name": "rivals-" + attempt, "lane": "unit-tests",
-            "hold": derive(samples, workload="tiny", concurrency=5, factor=1.5,
-                           margin_seconds=60, rate_usd_second=rate,
+            "timing": derive(samples, workload="tiny", concurrency=5, factor=1.5,
+                           margin_seconds=60,
                            evidence_sha256=hashlib.sha256(json_bytes({"samples": samples})).hexdigest())}
 
 
@@ -67,6 +57,5 @@ def clock():
 
 
 @pytest.fixture
-def ledger(tmp_path, clock):
-    return Ledger.initialize(tmp_path / "2026-09.sqlite3", billing(clock), wall=clock.wall,
-                             monotonic=clock.monotonic)
+def attempts(tmp_path, clock):
+    return Attempt(tmp_path, wall=clock.wall, monotonic=clock.monotonic)

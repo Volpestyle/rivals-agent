@@ -5,10 +5,10 @@ from types import SimpleNamespace
 import pytest
 
 from cloud.modal_guard.appcreate import install
-from conftest import snapshot, spec
+from conftest import spec
 
 
-def test_sdk155_real_wrapper_install_new_id(ledger, clock, monkeypatch):
+def test_sdk155_real_wrapper_install_new_id(attempts, clock, monkeypatch):
     modal = pytest.importorskip("modal")
     assert modal.__version__ == "1.5.5"
     from modal._grpc_client import UnaryUnaryWrapper
@@ -21,10 +21,10 @@ def test_sdk155_real_wrapper_install_new_id(ledger, clock, monkeypatch):
     original = UnaryUnaryWrapper(SimpleNamespace(name="/modal.client.ModalClient/AppCreate"),
                                  SimpleNamespace(), "https://api.modal.com")
     client = SimpleNamespace(stub=SimpleNamespace(AppCreate=original))
-    ledger.reserve(spec("phase1-04-new-id"), snapshot(clock))
+    attempts.create(spec("phase1-04-new-id"))
     async def admission():
         pass
-    restore = install(client, ledger, "phase1-04-new-id", before_rpc=admission)
+    restore = install(client, attempts, "phase1-04-new-id", before_rpc=admission)
     gate = client.stub.AppCreate
     gate.wall, gate.mono, gate.sleep = clock.wall, clock.monotonic, clock.sleep
     response = asyncio.run(gate(api_pb2.AppCreateRequest(description="rivals-phase1-04-new-id")))

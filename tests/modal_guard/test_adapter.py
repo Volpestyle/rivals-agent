@@ -12,7 +12,7 @@ from cloud.modal_guard.release import freeze, reviewed, verify
 from conftest import snapshot, spec
 
 
-def test_actual_install_dispatches_fresh_id_and_restores(ledger, clock, monkeypatch):
+def test_actual_install_dispatches_fresh_id_and_restores(attempts, clock, monkeypatch):
     calls = []
     class Unary:
         name = "/modal.client.ModalClient/AppCreate"
@@ -33,12 +33,12 @@ def test_actual_install_dispatches_fresh_id_and_restores(ledger, clock, monkeypa
         monkeypatch.setitem(sys.modules, key, module)
     client = SimpleNamespace(stub=SimpleNamespace(AppCreate=Unary()))
     original = client.stub.AppCreate
-    ledger.reserve(spec("genuinely-fresh-103"), snapshot(clock))
+    attempts.create(spec("genuinely-fresh-103"))
     async def before():
         pass
     # install runs its real SDK/type/attempt checks. Its clocks are replaced only
     # after installation; no install mock can hide an old -02 allowlist again.
-    restore = install(client, ledger, "genuinely-fresh-103", before_rpc=before)
+    restore = install(client, attempts, "genuinely-fresh-103", before_rpc=before)
     gate = client.stub.AppCreate
     gate.wall, gate.mono, gate.sleep = clock.wall, clock.monotonic, clock.sleep
     response = asyncio.run(gate(SimpleNamespace(description="rivals-genuinely-fresh-103")))
@@ -46,7 +46,7 @@ def test_actual_install_dispatches_fresh_id_and_restores(ledger, clock, monkeypa
     restore()
     assert client.stub.AppCreate is original
     with pytest.raises(Refused):
-        install(client, ledger, "genuinely-fresh-103", before_rpc=before)
+        install(client, attempts, "genuinely-fresh-103", before_rpc=before)
 
 
 def test_release_and_review_gate(tmp_path):

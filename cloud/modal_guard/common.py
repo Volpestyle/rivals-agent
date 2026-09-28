@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 from contextlib import contextmanager
-from decimal import Decimal, InvalidOperation, ROUND_CEILING
 import hashlib
 import json
 import math
@@ -38,14 +37,24 @@ def elapsed_time():
 def caffeinated():
     """Prevent Mac idle sleep for this owner process, including its teardown."""
     require(sys.platform == "darwin", "paid control requires the Mac")
-    child = subprocess.Popen(["/usr/bin/caffeinate", "-i", "-w", str(os.getpid())])
+    child = None
+    from .lifecycle import warning
     try:
-        require(child.poll() is None, "caffeinate failed")
+        child = subprocess.Popen(["/usr/bin/caffeinate", "-i", "-w", str(os.getpid())])
+    except Exception as exc:
+        warning("sleep inhibition unavailable: " + repr(exc))
+    try:
+        if child is not None and child.poll() is not None:
+            warning("sleep inhibitor exited; detached work remains native-timed")
         yield child
     finally:
-        if child.poll() is None:
-            child.terminate()
-        child.wait(timeout=2)
+        try:
+            if child is not None:
+                if child.poll() is None:
+                    child.terminate()
+                child.wait(timeout=2)
+        except Exception as exc:
+            warning("sleep inhibitor cleanup unavailable: " + repr(exc))
 
 
 @functools.lru_cache(maxsize=1)
@@ -67,7 +76,7 @@ def clock_id():
 
 
 class Refused(RuntimeError):
-    """No further paid work is permitted; existing holds are retained."""
+    """A required execution or evidence condition failed."""
 
 
 def require(ok, message):
@@ -79,21 +88,6 @@ def number(value, name="number", *, positive=False):
     require(type(value) in (int, float) and math.isfinite(value)
             and (value > 0 if positive else value >= 0), "invalid " + name)
     return value
-
-
-def usd(value):
-    require(type(value) in (str, int, float, Decimal), "invalid dollars")
-    try:
-        result = Decimal(str(value))
-    except InvalidOperation as exc:
-        raise Refused("invalid dollars") from exc
-    require(result.is_finite() and result >= 0, "invalid dollars")
-    return result
-
-
-def cost(seconds, rate, overhead="0"):
-    return str((Decimal(str(number(seconds))) * usd(rate) + usd(overhead)).quantize(
-        Decimal("0.000001"), rounding=ROUND_CEILING))
 
 
 def name(value):
