@@ -99,6 +99,13 @@ stuck, ask James rather than trying further input paths.
 
 ## Into the Practice Range from the lobby
 
+**Use `scripts/reenter.py`, not the hand tool.** It classifies the current screen (lobby, practice panel or
+hero select), steers the cursor from fresh frames, proves what it's on before every `A`, confirms with `X` only
+on hero select, and walks out of the spawn room. `--dry-run` classifies one frame with no pad. Hand steering with
+`pad.py` is only for a screen it reports as unknown (a season splash, a popup). On 2026-09-28 the lead
+hand-steered hero select with `pad.py` for ~10 minutes, re-learning cursor distances that reenter.py already
+encodes. The manual steps below are the fallback and the record of how reenter.py was built.
+
 Menus use a stick-driven cursor. It keeps its position between pad connects, is hidden
 until the stick moves, and stick magnitude under ~0.5 barely moves it in short taps.
 Speed at full deflection is ~1200 px/s measured on a 2000 px-wide view of the 2560 screen
