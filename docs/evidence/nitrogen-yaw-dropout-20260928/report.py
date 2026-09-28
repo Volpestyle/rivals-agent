@@ -64,7 +64,8 @@ def build(candidate_root, control_root, control_curves):
                 label = 'control'
             assert status['epoch'] == 26 and status['updates'] == 15288 and status['status'] == 'complete'
             assert status['recipe']['run_identity'] == value['spec_sha256']
-            assert status['recipe']['seed'] == seed and status['recipe']['head_parameters'] == 201187
+            assert status['recipe']['seed'] == seed
+            assert status['recipe']['encoder_explore']['head_parameters'] == 201187
             assert [h['epoch'] for h in status['history']] == list(range(1, 27))
             for h in status['history']:
                 curves.append(dict(arm=label, seed=seed, epoch=h['epoch'], steps=h['steps'],
