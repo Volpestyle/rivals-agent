@@ -238,7 +238,7 @@ def require_decode_platform(loaded):
     return next(iter(platforms))
 
 
-def refit(loaded, *, out, seed, epochs, device, progress, max_examples=None, evaluate=True):
+def refit(loaded, *, out, seed, epochs, device, progress, max_examples=None, evaluate=True, epoch_options=None):
     require_decode_platform(loaded)
     stores, sets, exclusions = {}, {"train": [], "heldout": []}, {}
     for item, target in loaded:
@@ -259,13 +259,23 @@ def refit(loaded, *, out, seed, epochs, device, progress, max_examples=None, eva
     examples.supported = supported
     examples.press_mask &= torch.tensor([supported[a] for a in vocab.NAMES])[None]
     stats = TR.train_statistics(examples)
-    model, history, seconds = TR.fit(examples, config, stats, seed=seed, epochs=epochs, device=device,
-                                     progress=progress)
+    if epoch_options is not None:
+        from policy.idm.epoch_resume import EpochJournal
     prov = TR.provenance(seed=seed, supported=supported, train_press_counts=counts,
                          targets={t.session_id: TR.target_entry(t, i["targets_sha256"]) for i, t in loaded},
                          frame_stores={sid: TR.store_entry(s) for sid, s in stores.items()})
     prov.update(scope="EXPLORATORY", cohort=cohort, camera_beta_nll=TR.CAMERA_BETA_DEFAULT)
-    pin = TR.save_checkpoint(out / "refit.pt", model, prov)
+    journal = None
+    if epoch_options is not None:
+        journal = EpochJournal(out / "epochs", provenance=prov, **epoch_options)
+    model, history, seconds = TR.fit(examples, config, stats, seed=seed, epochs=epochs, device=device,
+                                     progress=progress, epoch_journal=journal)
+    if journal is not None and (out / "refit.pt").exists():
+        require((out / "refit.pt").read_bytes() == TR.checkpoint_bytes(model, prov),
+                "existing final checkpoint differs from completed epochs")
+        pin = T.sha256(out / "refit.pt")
+    else:
+        pin = TR.save_checkpoint(out / "refit.pt", model, prov)
     return {"checkpoint_sha256": pin, "history": history, "seconds": seconds, "exclusions": exclusions,
             "gate1_diagnostic": TR.gate1(model, sets["heldout"], device=device) if evaluate else None,
             "pitch_calibration": TR.PITCH_STD_CALIBRATION, "cohort": cohort}

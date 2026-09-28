@@ -1,0 +1,13 @@
+{
+  "scope": "offline synthetic CPU only",
+  "torch_threads": 2,
+  "pytest_passed": 105,
+  "pytest_failed": 0,
+  "pytest_seconds": 36.52,
+  "command": "uv run --group execution --group perception python -c \"import torch,pytest; torch.set_num_threads(2); raise SystemExit(pytest.main(['-q','tests/test_idm_epoch_resume.py','tests/test_idm_resumable_run.py','tests/test_idm_recovery_io.py','tests/test_idm_explore.py','tests/test_idm_refit_stages.py','tests/test_idm_io_probe.py','tests/test_idm_native_entry.py','tests/test_idm_model.py']))\"",
+  "ruff": "PASS on all changed Python paths",
+  "cloud_launches": 0,
+  "cuda_parity_measured": false,
+  "modal_volume_publication_measured": false,
+  "test_integration": "working v2 no-deadline stage seam; launch still requires accepted frozen guard and shakedown"
+}

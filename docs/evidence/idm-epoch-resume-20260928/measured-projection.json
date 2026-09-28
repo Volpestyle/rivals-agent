@@ -1,0 +1,19 @@
+{
+  "kind": "measured-projection",
+  "accepted_by": "herdr-lead",
+  "basis": "One measured full-cohort timing probe plus right-censored full02 observed progress; includes post-fit inference. Not full-fit p95.",
+  "evidence_refs": [
+    {
+      "path": "docs/evidence/idm-local-timing02-result-20260928/timing/timing.json",
+      "sha256": "5bb89717d187816e8710b97213cbd2ee7f26ada57cf80fe1321f66c6d91b82bd"
+    },
+    {
+      "path": "docs/evidence/idm-expanded-full02-stopped-20260928/result.json",
+      "sha256": "5e4400ccdc9ad8f62299af7be0ec5e8ea399b03d826b8c67288038489af1067f"
+    }
+  ],
+  "projected_work_seconds": 27930.558779,
+  "factor": 1.3,
+  "startup_seconds": 120,
+  "cleanup_seconds": 120
+}

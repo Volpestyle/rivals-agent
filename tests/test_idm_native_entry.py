@@ -83,11 +83,10 @@ def test_dispatch_only_selected_callback(tmp_path, monkeypatch, phase):
 
 def test_guarded_fit_redelivery_still_uses_completed_stage(tmp_path):
     from cloud.modal_guard import stages
-    import time
     calls = []
     identity = dict(attempt_id="idm-native-test", code_sha256="a" * 64,
                     inputs_sha256="b" * 64, recipe_sha256="c" * 64,
-                    output_volume_id="vo-test", deadline_unix=time.time() + 60)
+                    output_volume_id="vo-test")
     def compute(root):
         calls.append(root)
         (root / "fit.json").write_text("{}")

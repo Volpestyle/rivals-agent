@@ -93,3 +93,23 @@ def run_local(root, *, payload_manifest_sha256, phase, input_volume_id, output_v
                       manifest_sha256=manifest["inputs"]["sha256"],
                       registry=input_ref(manifest["registry"]), input_volume_id=input_volume_id,
                       output_volume_id=output_volume_id)
+
+
+def run_resumable(root, *, payload_manifest_sha256, phase, input_volume_id, output_volume_id,
+                  scientific_identity, commit=None, resume_state=None, local_data_root=None):
+    """v2 supplies local staging and durable output commit; IDM owns epoch state."""
+    payload, manifest = verify_payload(Path(__file__).resolve().parent, payload_manifest_sha256)
+    activate(payload)
+    worker = importlib.import_module("policy.idm.resumable_run")
+    return worker.run(root, phase=phase, manifest=input_ref(manifest["inputs"]),
+                      manifest_sha256=manifest["inputs"]["sha256"], registry=input_ref(manifest["registry"]),
+                      input_volume_id=input_volume_id, output_volume_id=output_volume_id,
+                      scientific_identity=scientific_identity, commit=commit, resume_state=resume_state,
+                      local_data_root=local_data_root)
+
+
+def validate_epoch(root, *, payload_manifest_sha256, scientific_identity, source_ref=None):
+    payload, _ = verify_payload(Path(__file__).resolve().parent, payload_manifest_sha256)
+    activate(payload)
+    worker = importlib.import_module("policy.idm.epoch_resume")
+    return worker.validate_resume(root, scientific_identity=scientific_identity, source_ref=source_ref)

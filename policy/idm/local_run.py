@@ -5,6 +5,7 @@ import tempfile
 import time
 
 from policy.idm import cloud_run, local_store, refit_stages as R
+from policy.idm.telemetry import emit
 
 
 def run(root, *, phase, manifest, manifest_sha256, registry, input_volume_id, output_volume_id):
@@ -22,8 +23,8 @@ def run(root, *, phase, manifest, manifest_sha256, registry, input_volume_id, ou
     attempt = identity['attempt_id']
     R.E.require(Path(attempt).name == attempt and attempt not in ('.', '..'), 'invalid local attempt')
     def progress(value):
-        print(json.dumps({'stage': phase, 'progress': value}), flush=True)
-        R.write('idm-local-'+phase, root=root/'jobs', owner='idm-owner', host='modal',
+        emit(print, json.dumps({'stage': phase, 'progress': value}), flush=True)
+        emit(R.write, 'idm-local-'+phase, root=root/'jobs', owner='idm-owner', host='modal',
                 stage='running', evidence=str(root/'completed.json'), progress=json.dumps(value))
     if phase not in ('zero', 'report'):
         cache = Path(tempfile.gettempdir())/('idm-native-'+attempt)
@@ -49,5 +50,5 @@ def run(root, *, phase, manifest, manifest_sha256, registry, input_volume_id, ou
         R.E.write_json(root/'timing.json', report)
         return 0
     # Existing training/evaluation code still re-hashes FrameStore inputs and
-    # authenticates completed predecessor stages; no partial fit can resume.
+    # authenticates completed predecessor stages. Epoch resume uses resumable_run.
     return R.compute(root, phase, loaded, device='cuda', manifest_sha256=manifest_sha256, progress=progress)

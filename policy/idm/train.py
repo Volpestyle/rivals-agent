@@ -61,6 +61,7 @@ if str(ROOT) not in sys.path:
 
 from policy import idm_eval, idm_targets as T  # noqa: E402
 from policy.idm.frames import FrameStore  # noqa: E402
+from policy.idm.telemetry import emit  # noqa: E402
 from policy.idm.model import IDM, Config, parameter_count  # noqa: E402
 from policy.range_bc import report as bc_report, vocab  # noqa: E402
 from policy.range_bc.train import code_closure, require_committed  # noqa: E402
@@ -224,7 +225,7 @@ def seed_everything(seed, deterministic=True):
 
 
 def fit(examples, config, stats, *, seed=0, epochs=10, batch_size=16, lr=1e-3, weight_decay=1e-4, clip=1.0,
-        device="cpu", log=None, camera_beta=CAMERA_BETA_DEFAULT, progress=None):
+        device="cpu", log=None, camera_beta=CAMERA_BETA_DEFAULT, progress=None, epoch_journal=None):
     """Train one IDM on train examples. Returns (model, per-epoch history, seconds)."""
     require(len(examples) > 0, "no training examples")
     require(camera_beta is None or 0 < camera_beta <= 1, "camera_beta must be in (0, 1]")
@@ -235,7 +236,15 @@ def fit(examples, config, stats, *, seed=0, epochs=10, batch_size=16, lr=1e-3, w
     opt = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=weight_decay)
     pw = stats["pos_weight"].to(device)
     history, t0 = [], time.perf_counter()
-    for epoch in range(epochs):
+    model.support = support_set(examples.supported)
+    first_epoch, prior_seconds = 0, 0.0
+    if epoch_journal is not None:
+        epoch_journal.bind(examples, config, stats, seed=seed, epochs=epochs, batch_size=batch_size,
+                           lr=lr, weight_decay=weight_decay, clip=clip, device=device, camera_beta=camera_beta)
+        history = epoch_journal.restore(model, opt)
+        first_epoch = len(history)
+        prior_seconds = history[-1]["seconds"] if history else 0.0
+    for epoch in range(first_epoch, epochs):
         order = list(range(len(examples)))
         random.Random(seed * 1000003 + epoch).shuffle(order)
         model.train()
@@ -254,14 +263,16 @@ def fit(examples, config, stats, *, seed=0, epochs=10, batch_size=16, lr=1e-3, w
             opt.step()
             total, count = total + float(terms["total"].detach()), count + 1
             if progress and (count % 100 == 0 or s + batch_size >= len(order)):
-                progress({"n": epoch * len(order) + min(s + batch_size, len(order)),
-                          "total": epochs * len(order)})
-        entry = {"epoch": epoch, "train_loss": total / count, "seconds": time.perf_counter() - t0}
+                emit(progress, {"n": epoch * len(order) + min(s + batch_size, len(order)),
+                                "total": epochs * len(order)})
+        entry = {"epoch": epoch, "train_loss": total / count, "seconds": prior_seconds + time.perf_counter() - t0}
         history.append(entry)
+        if epoch_journal is not None:
+            epoch_journal.save(model, opt, history)
         if log:
-            log(json.dumps({"seed": seed, **entry}))
+            emit(log, json.dumps({"seed": seed, **entry}))
     model.support = support_set(examples.supported)
-    return model, history, time.perf_counter() - t0
+    return model, history, prior_seconds + time.perf_counter() - t0
 
 
 # ---- provenance and checkpoints -----------------------------------------------------------------------------------

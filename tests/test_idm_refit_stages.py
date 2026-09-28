@@ -59,13 +59,12 @@ def rig(tmp_path, monkeypatch):
     monkeypatch.setattr(R.TR, "gate1", lambda *a, **k: {"synthetic": True})
     identity = {"attempt_id": "synthetic-attempt", "code_sha256": "1"*64,
                 "inputs_sha256": "2"*64, "recipe_sha256": "3"*64,
-                "output_volume_id": "vo-synthetic", "deadline_unix": 1000}
+                "output_volume_id": "vo-synthetic"}
 
     def run(phase):
         return stages.run(tmp_path / phase, phase, identity, R.ARTIFACTS[phase],
             lambda path: R.compute(path, phase, loaded, device="cpu", manifest_sha256="4"*64,
-                                   progress=lambda _: None), commit=lambda: None, reload=lambda: None,
-            wall=lambda: 1)
+                                   progress=lambda _: None), commit=lambda: None, reload=lambda: None)
     yield SimpleNamespace(run=run, root=tmp_path, calls=fit_calls, loaded=loaded, identity=identity, model=model)
     torch.set_num_threads(before)
 

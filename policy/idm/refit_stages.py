@@ -1,7 +1,8 @@
 """EXPLORATORY expanded refit callbacks for the accepted shared Modal guard.
 
 This module never provisions an app, sets a cap, or retries work. The guard
-publishes completed.json after each callback; a partial fit cannot be resumed.
+publishes completed.json after each callback. The v2 route may resume only from
+an authenticated complete epoch; partial epoch bytes are never loaded.
 """
 from __future__ import annotations
 
@@ -21,6 +22,7 @@ from policy.idm.frames import FrameStore
 from policy.idm.press_zero_recovery import ZeroInputs
 from policy.range_bc import vocab
 from scripts.job_status import write
+from policy.idm.telemetry import emit
 
 ARTIFACTS = {
     "fit": ["refit.pt", "fit.json"],
@@ -99,18 +101,36 @@ def saved(root, phase, loaded, role, support):
     return rows, examples, values
 
 
-def compute(root, phase, loaded, *, device, manifest_sha256, progress):
+def compute(root, phase, loaded, *, device, manifest_sha256, progress, commit=None,
+            resume_state=None, scientific_identity=None):
     """Scientific callback; orchestration/re-entry belongs to modal_guard.stages."""
     root = Path(root)
+    callback = progress
+    progress = lambda value: emit(callback, value)
     E.require(phase in ARTIFACTS, "unknown expanded refit stage")
     D.require_disjoint_roles(loaded)
     E.require_decode_platform(loaded)
     if phase == "fit":
+        options = None
+        if commit is not None:
+            E.require(scientific_identity and scientific_identity.get("inputs_sha256") == manifest_sha256,
+                      "epoch scientific input identity differs")
+            options = {"identity": scientific_identity, "commit": commit}
+            if resume_state is not None:
+                options.update(resume_from=resume_state["receipt"], resume_sha256=resume_state["sha256"])
+        else:
+            E.require(resume_state is None, "epoch resume requires durable commit hook")
         result = E.refit(loaded, out=root, seed=0, epochs=3, device=device,
-                         progress=progress, evaluate=False)
+                         progress=progress, evaluate=False, epoch_options=options)
         result.update(seed=0, epochs=3, manifest_sha256=manifest_sha256)
         E.require([r["epoch"] for r in result["history"]] == [0, 1, 2], "incomplete fit history")
-        E.write_json(root / "fit.json", result)
+        if options is not None and (root / "fit.json").exists():
+            old = json.loads((root / "fit.json").read_bytes())
+            E.require({k: v for k, v in old.items() if k != "seconds"}
+                      == {k: v for k, v in result.items() if k != "seconds"},
+                      "existing fit report differs from completed epochs")
+        else:
+            E.write_json(root / "fit.json", result)
         return 0
 
     model, pin, fit = checkpoint(root, loaded, device)
@@ -171,15 +191,15 @@ def stage(root, *, phase, manifest, manifest_sha256, registry, input_volume_id, 
         manifest=manifest, manifest_sha256=manifest_sha256, registry=registry, out=str(root),
         input_volume_id=input_volume_id, output_volume_id=output_volume_id)
     job = "idm-expanded-" + phase
-    write(job, root=root / "jobs", owner="idm-owner", host="modal", stage="running",
+    emit(write, job, root=root / "jobs", owner="idm-owner", host="modal", stage="running",
           evidence=str(root / "completed.json"))
     try:
         result = compute(root, phase, loaded, device="cuda", manifest_sha256=manifest_sha256,
-                         progress=lambda value: write(job, root=root / "jobs", progress=value))
-        write(job, root=root / "jobs", stage="done")
+                         progress=lambda value: emit(write, job, root=root / "jobs", progress=value))
+        emit(write, job, root=root / "jobs", stage="done")
         return result
     except BaseException:
-        write(job, root=root / "jobs", stage="failed")
+        emit(write, job, root=root / "jobs", stage="failed")
         raise
     finally:
         gc.collect()
