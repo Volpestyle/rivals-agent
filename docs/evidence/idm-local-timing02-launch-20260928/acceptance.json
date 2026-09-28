@@ -1,0 +1,25 @@
+{
+  "reviewer": "fit-review",
+  "decision": "LAND",
+  "scope": "spend-guard",
+  "release_sha256": "4a4d57d5ec2b97566b5bc59f212c8f4b9357198fe0eb7270874902079bdd8af6",
+  "commit": "7ead52f0845fb83b4db0ebf9fc274c6a5adb760b",
+  "review_date": "2026-09-28",
+  "report": "review-modal-guard-v105-fix1-7ead52f0.md",
+  "handback_sha256": "8fb7afa5e09015b89e1c93e28e88e90053b5368369740d82071d294d174c581d",
+  "sha256sums_sha256": "3b7fc96b54c540e436ed3627a809d6c6d08b740337797c0196abe6c706bc72ae",
+  "independent_windows_tests": "137 passed, 5 platform skips",
+  "reused_pinned_mac_tests": "142 passed, Modal SDK 1.5.5",
+  "independent_original_probe": "PASS: unchanged original probe now refuses workspace-cap crossing",
+  "independent_snapshot_replay": {
+    "covered_apps": 24,
+    "covered_terminal_overhead_usd": "1.17",
+    "committed_usd": "81.89094987"
+  },
+  "closed_findings": [
+    "F1: covered terminal non-app overhead is retained; missing/invalid provenance retains full bound"
+  ],
+  "unresolved_blocking_findings": [],
+  "additional_budget_authorized": false,
+  "warn_crossing_authorized": false
+}
