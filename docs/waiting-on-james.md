@@ -8,7 +8,5 @@ Optional, any time:
 - One replay of a match nobody has used yet (~5 min); it decides the Gate 2 replay half (VUH-1353).
 - Whether one SPIDEY archive clip may be used for an IDM camera demo. Its admission covers SSL only, so the demo's
   second part waits on this (VUH-1353).
-- Reopen round 3? It's parked; relaunching needs a reviewed accounting amendment first (VUH-1346). Default: stays
-  parked.
 - Approve the scoped agent AWS credential plan when the lead brings it (Phase 1 draft, then creation).
 - Free Mac space: `! ssh mac zsh /tmp/grapple-shrink.sh`.
