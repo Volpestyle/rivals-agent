@@ -1,0 +1,16 @@
+[
+  {
+    "arm": "grid4-s1",
+    "container": "ta-01M3JRTJVNYCMS2KBAGZZG21BR",
+    "code": 2,
+    "output": "",
+    "error": "Usage: python -m modal container exec [OPTIONS] CONTAINER_ID COMMAND...\nTry 'python -m modal container exec --help' for help.\n\nError: No such option '-c'.\n"
+  },
+  {
+    "arm": "grid8-s1",
+    "container": "ta-01M3JRV2WZ87ZAA0CC46K4B9YR",
+    "code": 2,
+    "output": "",
+    "error": "Usage: python -m modal container exec [OPTIONS] CONTAINER_ID COMMAND...\nTry 'python -m modal container exec --help' for help.\n\nError: No such option '-c'.\n"
+  }
+]

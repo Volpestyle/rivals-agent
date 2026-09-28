@@ -1,0 +1,47 @@
+{
+  "unix": 1790557915.493191,
+  "logs": [
+    {
+      "attempt": "yaw-fit-grid4-s1-20260927-02",
+      "state": "RUNNING",
+      "code": 0,
+      "stdout": "2026-09-27 20:10:55-05:00 spatial yaw 4 seed 1: 0/15288\n2026-09-27 20:11:25-05:00 spatial yaw 4 seed 1: 546/15288\n2026-09-27 20:11:29-05:00 {\"tag\": \"EXPLORATORY\", \"horizon\": 1, \"seed\": 1, \"epoch\": 1, \"steps\": 588, \"train_chunk_loss\": 1.4010440816684646, \"seconds\": 32.20815966800001, \"dev_step_one\": {\"held\": 0.16959322327577725, \"press\": 0.3275103421964471, \"release\": 0.2728121101700606, \"camera\": 2.7387318430619203, \"total\": 2.139281597173245}}\n2026-09-27 20:11:29-05:00 spatial yaw 4 seed 1: 588/15288\n",
+      "stderr": ""
+    },
+    {
+      "attempt": "yaw-fit-grid4-s2-20260927-02",
+      "state": "RUNNING",
+      "code": 0,
+      "stdout": "2026-09-27 20:11:04-05:00 spatial yaw 4 seed 2: 1538/15288\n2026-09-27 20:11:20-05:00 {\"tag\": \"EXPLORATORY\", \"horizon\": 1, \"seed\": 2, \"epoch\": 3, \"steps\": 1764, \"train_chunk_loss\": 1.3944837488487465, \"seconds\": 102.99707216, \"dev_step_one\": {\"held\": 0.17084041790302365, \"press\": 0.3235535310391658, \"release\": 0.267914020517165, \"camera\": 2.8066105307237907, \"total\": 2.16561323482125}}\n2026-09-27 20:11:20-05:00 spatial yaw 4 seed 2: 1764/15288\n2026-09-27 20:11:34-05:00 spatial yaw 4 seed 2: 2021/15288\n",
+      "stderr": ""
+    },
+    {
+      "attempt": "yaw-fit-grid4-s3-20260927-02",
+      "state": "RUNNING",
+      "code": 0,
+      "stdout": "2026-09-27 20:11:13-05:00 \n2026-09-27 20:11:13-05:00 spatial yaw 4 seed 3: 588/15288\n2026-09-27 20:11:38-05:00 spatial yaw 4 seed 3: 1062/15288\n2026-09-27 20:11:46-05:00 {\"tag\": \"EXPLORATORY\", \"horizon\": 1, \"seed\": 3, \"epoch\": 2, \"steps\": 1176, \"train_chunk_loss\": 1.3974645241182677, \"seconds\": 66.056078444, \"dev_step_one\": {\"held\": 0.16997044337013684, \"press\": 0.3167096637092122, \"release\": 0.26643793732316934, \"camera\": 2.806684718742072, \"total\": 2.156460403773554}}\n2026-09-27 20:11:46-05:00 spatial yaw 4 seed 3: 1176/15288\n",
+      "stderr": ""
+    },
+    {
+      "attempt": "yaw-fit-grid8-s1-20260927-02",
+      "state": "RUNNING",
+      "code": 0,
+      "stdout": "2026-09-27 20:11:19-05:00 spatial yaw 8 seed 1: 0/15288\n2026-09-27 20:11:49-05:00 spatial yaw 8 seed 1: 48/15288\n",
+      "stderr": ""
+    },
+    {
+      "attempt": "yaw-fit-grid8-s2-20260927-02",
+      "state": "RUNNING",
+      "code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "attempt": "yaw-fit-grid8-s3-20260927-02",
+      "state": "RUNNING",
+      "code": 0,
+      "stdout": "2026-09-27 20:11:15-05:00 spatial yaw 8 seed 3: 0/15288\n2026-09-27 20:11:46-05:00 spatial yaw 8 seed 3: 36/15288\n",
+      "stderr": ""
+    }
+  ]
+}

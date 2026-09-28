@@ -1,0 +1,74 @@
+[
+  {
+    "attempt": "yaw-fit-grid8-s1-20260927-02",
+    "app_id": "ap-7LZrm9P3uPwwgtO7UpGgA6",
+    "stopped_requested_at": 1790558555.498354,
+    "result": {
+      "command": [
+        "/Users/james/.local/bin/modal",
+        "app",
+        "stop",
+        "ap-7LZrm9P3uPwwgtO7UpGgA6",
+        "--profile",
+        "rivals",
+        "--yes"
+      ],
+      "stdout": "",
+      "returncode": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "queried_at": 1790558554.816041,
+      "completed_at": 1790558555.498337,
+      "queried_monotonic": 463940.047791875,
+      "completed_monotonic": 463940.730084541,
+      "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5"
+    }
+  },
+  {
+    "attempt": "yaw-fit-grid8-s2-20260927-02",
+    "app_id": "ap-FBrD9A5uFj8XBiPb5Q7g8i",
+    "stopped_requested_at": 1790558556.7328079,
+    "result": {
+      "command": [
+        "/Users/james/.local/bin/modal",
+        "app",
+        "stop",
+        "ap-FBrD9A5uFj8XBiPb5Q7g8i",
+        "--profile",
+        "rivals",
+        "--yes"
+      ],
+      "stdout": "",
+      "returncode": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "queried_at": 1790558555.9182148,
+      "completed_at": 1790558556.732796,
+      "queried_monotonic": 463941.149956125,
+      "completed_monotonic": 463941.9645325,
+      "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5"
+    }
+  },
+  {
+    "attempt": "yaw-fit-grid8-s3-20260927-02",
+    "app_id": "ap-mtWfzxaiOXT9s4vYDS5OY8",
+    "stopped_requested_at": 1790558558.0014029,
+    "result": {
+      "command": [
+        "/Users/james/.local/bin/modal",
+        "app",
+        "stop",
+        "ap-mtWfzxaiOXT9s4vYDS5OY8",
+        "--profile",
+        "rivals",
+        "--yes"
+      ],
+      "stdout": "",
+      "returncode": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "queried_at": 1790558557.212137,
+      "completed_at": 1790558558.001368,
+      "queried_monotonic": 463942.443867291,
+      "completed_monotonic": 463943.23310975,
+      "clock_id": "6f39b702bc73c7afc126b64fa4254003233e47137d5a7b6ae7247587d694b5f5"
+    }
+  }
+]

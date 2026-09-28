@@ -1,0 +1,116 @@
+{
+  "tag": "EXPLORATORY",
+  "comparison": "completed 4x4 residual head versus its frozen base",
+  "grid8_status": "incomplete; neither supports nor rejects finer features",
+  "source_files": [
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\docs\\evidence\\nitrogen-spatial-yaw-20260927\\grid4-results-02\\yaw-fit-grid4-s1-20260927-02\\evaluation\\evaluation.json",
+      "sha256": "924d18202b18253a85599830dd79d6ebbced460dc39cfbb23dedfaf8b05f258c"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\docs\\evidence\\nitrogen-spatial-yaw-20260927\\grid4-results-02\\yaw-fit-grid4-s2-20260927-02\\evaluation\\evaluation.json",
+      "sha256": "cd6f2983934d8432578d292703f78e3d9750d6dd52f7b9bef68ee85ddf5cddef"
+    },
+    {
+      "path": "C:\\Users\\volpe\\repos\\rivals-agent\\docs\\evidence\\nitrogen-spatial-yaw-20260927\\grid4-results-02\\yaw-fit-grid4-s3-20260927-02\\evaluation\\evaluation.json",
+      "sha256": "86d025940e2b4c8b8ce9b9b914f6c72d1a9e7523c20cde56327ca12ad1d51ef9"
+    }
+  ],
+  "collection": {
+    "status": "PASS",
+    "attempts": [
+      {
+        "attempt_id": "yaw-fit-grid4-s1-20260927-02",
+        "app_id": "ap-sbOxnxmADtyWNSBRT1NB8Z",
+        "bound_usd": "0.890870",
+        "pins": {
+          "fit/fit.json": {
+            "bytes": 432,
+            "sha256": "f6fb28ad09209bfaddbc14028d20b748b77ea9b8a584e15611eeedb8541c7d39"
+          },
+          "evaluation/evaluation.json": {
+            "bytes": 64787,
+            "sha256": "924d18202b18253a85599830dd79d6ebbced460dc39cfbb23dedfaf8b05f258c"
+          }
+        }
+      },
+      {
+        "attempt_id": "yaw-fit-grid4-s2-20260927-02",
+        "app_id": "ap-jcD4xTKHndUFfD00zMtykN",
+        "bound_usd": "0.822238",
+        "pins": {
+          "fit/fit.json": {
+            "bytes": 432,
+            "sha256": "973eb97f1aa5e33425590adf5b1bfed105148e57d9f1451d7147418fba4cecbb"
+          },
+          "evaluation/evaluation.json": {
+            "bytes": 65001,
+            "sha256": "cd6f2983934d8432578d292703f78e3d9750d6dd52f7b9bef68ee85ddf5cddef"
+          }
+        }
+      },
+      {
+        "attempt_id": "yaw-fit-grid4-s3-20260927-02",
+        "app_id": "ap-xl5AV9TjzB0TJVjfgEHAjm",
+        "bound_usd": "0.872379",
+        "pins": {
+          "fit/fit.json": {
+            "bytes": 432,
+            "sha256": "f26a953f4626bcf6c077b8bac33cbedadbd5915ea96f5df04816ccd15e3e4975"
+          },
+          "evaluation/evaluation.json": {
+            "bytes": 65024,
+            "sha256": "86d025940e2b4c8b8ce9b9b914f6c72d1a9e7523c20cde56327ca12ad1d51ef9"
+          }
+        }
+      }
+    ],
+    "active_holds_usd": "0",
+    "recovery_conservative_usd": "2.585487",
+    "prior_conservative_usd": "6.919855",
+    "campaign_conservative_usd": "9.505342",
+    "collected_at": 1790558774.859976
+  },
+  "seed_means": {
+    "candidate": {
+      "yaw_mae": 1.9081679744420474,
+      "zero_yaw_mae": 1.735183864749924,
+      "left_mae": 2.4503777753833886,
+      "right_mae": 2.101504023743543,
+      "false_turn_ge_point6_when_yaw_zero": 0.3118657985805619,
+      "false_turn_ge_point6_when_both_zero": 0.3074945619932766,
+      "press_f1": 0.30068794148597805,
+      "pitch_mae": 0.5941461304066947
+    },
+    "base": {
+      "yaw_mae": 1.7728513125680558,
+      "zero_yaw_mae": 1.735183864749924,
+      "left_mae": 2.320278046611251,
+      "right_mae": 1.9895937095762841,
+      "false_turn_ge_point6_when_yaw_zero": 0.24980937298375272,
+      "false_turn_ge_point6_when_both_zero": 0.2465229714587041,
+      "press_f1": 0.30068794148597805,
+      "pitch_mae": 0.5941461304066947
+    }
+  },
+  "paired_candidate_minus_base": [
+    {
+      "seed": 1,
+      "all": 0.11967217975782685,
+      "left": 0.12572301466309144,
+      "right": 0.07874653477600901
+    },
+    {
+      "seed": 2,
+      "all": 0.1369164436553243,
+      "left": 0.1287891735826756,
+      "right": 0.11758468213166484
+    },
+    {
+      "seed": 3,
+      "all": 0.1493613622088239,
+      "left": 0.13578699807064698,
+      "right": 0.1393997255941033
+    }
+  ]
+}

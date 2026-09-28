@@ -1,0 +1,16 @@
+[
+  {
+    "arm": "grid4-s1",
+    "container": "ta-01M3JRTJVNYCMS2KBAGZZG21BR",
+    "code": 0,
+    "output": "{\"unix\": 1790558034.5714498, \"processes\": [], \"gpu\": \"15 %, 3 %, 1058 MiB, 46068 MiB\\n\", \"disk\": \"Filesystem      Size  Used Avail Use% Mounted on\\nnone            8.0E  6.3M  8.0E   1% /\\n\"}\n",
+    "error": ""
+  },
+  {
+    "arm": "grid8-s1",
+    "container": "ta-01M3JRV2WZ87ZAA0CC46K4B9YR",
+    "code": 0,
+    "output": "{\"unix\": 1790558035.7646697, \"processes\": [], \"gpu\": \"0 %, 0 %, 1974 MiB, 49140 MiB\\n\", \"disk\": \"Filesystem      Size  Used Avail Use% Mounted on\\nnone            8.0E  6.3M  8.0E   1% /\\n\"}\n",
+    "error": ""
+  }
+]

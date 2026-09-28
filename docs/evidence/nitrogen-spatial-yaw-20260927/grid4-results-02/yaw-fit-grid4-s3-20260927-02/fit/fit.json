@@ -1,0 +1,13 @@
+{
+  "tag": "EXPLORATORY",
+  "spec_sha256": "a55ff2b34bbb314edd92f1af79c18ff0bd08a63653c7d28c6250b06844a111c1",
+  "grid": 4,
+  "seed": 3,
+  "epoch": 26,
+  "updates": 15288,
+  "checkpoint_sha256": "08208692c727704803ec3adfc178cddb3c977dd252728c3c24ed61a43bbfa21d",
+  "base_tensor_sha256": "59f5c406ebc6192ba14883c3bad1d21fe81f458aa3fab0ded79fd873d39cc7ff",
+  "frozen_base_exact": true,
+  "device": "cuda",
+  "torch": "2.14.0+cu130"
+}
