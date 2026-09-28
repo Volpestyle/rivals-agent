@@ -1,0 +1,17 @@
+{
+  "reason": "Git normalizes two Windows-generated host receipts. Original SHA256SUMS records the raw collected bytes; these base64 files preserve those exact bytes. Scientific report, predictions, all store manifests and all individual relocation receipts match git blob pins unchanged. No existing frozen packet file edited.",
+  "receipts": {
+    "run.json": {
+      "original_raw_sha256": "81ef363c07dafc965c39a5401a09bb5981d338716620383cbe19464010c6f7ee",
+      "git_lf_sha256": "df7dce01c9d1f6b40d34d531e289b121d924a1058c5511f9ffd625802959c995",
+      "raw_reconstruction": "run.json.original-base64.txt",
+      "difference": "CRLF -> LF only; parsed JSON identical"
+    },
+    "relocations-complete.json": {
+      "original_raw_sha256": "3483922ad27c5e7546bffb387b4e2b59c0b1762d0dd491df02c434d497c8cab6",
+      "git_lf_sha256": "b7e4c1a23f0685eb93c470baeafc644ba38471b4cb1ae0b628a4962701cbf8ad",
+      "raw_reconstruction": "relocations-complete.json.original-base64.txt",
+      "difference": "CRLF -> LF only; parsed JSON identical"
+    }
+  }
+}
