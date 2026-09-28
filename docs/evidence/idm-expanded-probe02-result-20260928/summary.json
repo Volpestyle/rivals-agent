@@ -1,0 +1,73 @@
+{
+  "status": "PASS",
+  "app_id": "ap-sJqIahxUS2H0HuMeJ3Di7E",
+  "state": "TERMINAL",
+  "bound_usd": "0.100146",
+  "probe": {
+    "decode_platform": "Darwin arm64",
+    "human_fit": false,
+    "loss": 0.010259760543704033,
+    "manifest_sha256": "42494717650293cc4b77add3721d5168c20781e6b98ca275443824656e055580",
+    "peak_cuda_bytes": 103524864,
+    "pixels_opened": false,
+    "scope": "EXPLORATORY",
+    "sessions": [
+      {
+        "role": "train",
+        "session_id": "20260923T051828-422Z-33696-1"
+      },
+      {
+        "role": "heldout",
+        "session_id": "20260923T171533-187Z-33696-5"
+      },
+      {
+        "role": "train",
+        "session_id": "20260923T200129-346Z-33696-6"
+      },
+      {
+        "role": "heldout",
+        "session_id": "20260923T205528-900Z-45572-3"
+      },
+      {
+        "role": "train",
+        "session_id": "20260924T232304-170Z-12024-1"
+      },
+      {
+        "role": "train",
+        "session_id": "20260925T021320-371Z-7804-1"
+      },
+      {
+        "role": "train",
+        "session_id": "20260925T025230-605Z-7804-2"
+      },
+      {
+        "role": "train",
+        "session_id": "20260926T045729-166Z-79780-1"
+      },
+      {
+        "role": "train",
+        "session_id": "20260926T035932-508Z-63684-14"
+      },
+      {
+        "role": "train",
+        "session_id": "20260925T203745-207Z-49728-2"
+      },
+      {
+        "role": "train",
+        "session_id": "20260927T051206-888Z-150600-4"
+      },
+      {
+        "role": "train",
+        "session_id": "20260927T052001-827Z-150600-5"
+      },
+      {
+        "role": "train",
+        "session_id": "20260927T053118-260Z-150600-6"
+      }
+    ],
+    "synthetic_only": true
+  },
+  "output_hash_verified": true,
+  "guard_completion_verified": true,
+  "zero_containers": true
+}
