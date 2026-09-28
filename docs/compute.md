@@ -72,9 +72,15 @@ so give cloud boxes 8 CPUs or more.
   2. the IDM SSL pilot and press-head runs;
   3. seeds for any arm where vision measurably matters.
   Run in parallel on Modal rather than queueing on the Mac. The lead tells James before anything would pass $150.
-  **Modal workspace usage limit raised to $200** (James, 2026-09-27 22:08 CDT). The shared guard (`cloud/modal_guard`)
-  uses $200 as its hard cap and refuses new reservations past $150 without an explicit lead acceptance, because James
-  is told before spend passes the $150 weekend total.
+  **Modal workspace usage limit raised to $200** (James, 2026-09-27 22:08 CDT). That limit, enforced by Modal, is the
+  hard cap.
+  **No custom budget code** (James, 2026-09-28 ~02:30 CDT), after our own guard killed healthy runs twice: at 22:00 a
+  false workspace stop, then at 02:08 a billing query that timed out. Spend is bounded by Modal alone: every function
+  sets `timeout=` (measured p95 plus a margin, so time × GPU rate caps a run) under the $200 workspace limit. The $150
+  "tell James first" rule is a lead process, not code. Before a paid launch the lead reads `modal billing report` and
+  adds the run's estimate; after it ends, the lead records the bill in the spend ledger. `cloud/modal_guard` keeps only
+  what protects the work: detached apps, the timeout, teardown proof, paced AppCreate, checkpoint re-entry and
+  local-disk staging.
   **Round-3 cap raised to $60 / 69,120 s** (James, chat, 2026-09-27 ~09:20 CDT). The budget gate stopped at a padded
   $50.92 forecast; about $6 of that is full holds on apps Modal never created. The expected actual spend is ~$45.
   **Explore budget, 2026-09-27** (James, relayed by the steering lead, ~02:15 CDT): a separate **$15** Modal cap covers the

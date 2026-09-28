@@ -23,8 +23,9 @@ tolerate re-entry: resume only from a completed, hash-checked stage, and refuse 
 
 Only a run's own timeout and Modal's workspace limit may stop a running app. On 2026-09-28 at 07:08 UTC a single
 10-second timeout of `modal billing` made guard v1.0.5 kill IDM full02, a healthy run 55% through a ~10 h fit
-(VUH-1353). Billing is checked before launch and reconciled after it; a failed billing query mid-run only warns.
-Prefer fewer moving parts: every check that can stop a run is one more way to lose it.
+(VUH-1353). So there is no custom budget code: set `timeout=` on every function and rely on Modal's workspace limit.
+The lead checks the bill by hand before and after paid runs (`docs/compute.md`). Prefer fewer moving parts: every
+check that can stop a run is one more way to lose it. Long fits checkpoint every epoch and resume from the last one.
 
 Never train by reading frames or feature caches at random straight off a Modal Volume: stage them onto the
 container's local disk first, hash-check, then read locally. On 2026-09-27 Volume-backed random reads ran 3-15x slower
