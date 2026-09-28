@@ -97,14 +97,17 @@ def test_checkpoint_provenance_contains_dev_but_never_trains_it():
     entries=[{'session_id':s,'role':'dev' if s in DEV else 'train',
               'targets_sha256':'a'*64,'frames_sha256':'b'*64} for s in (*RANGES,*MATCHES,*DEV)]
     m={'sessions':entries}
-    meta={'targets':{e['session_id']:{'split':'val' if e['session_id'] in DEV else
+    original={'sessions':[{**e,'role':'heldout' if e['session_id'] in DEV else 'train'} for e in entries]}
+    meta={'targets':{e['session_id']:{'split':
                        ('idm_train' if e['session_id'] in MATCHES else 'train'),'sha256':'a'*64} for e in entries},
           'frame_stores':{e['session_id']:{'manifest_sha256':'b'*64} for e in entries}}
-    checkpoint_roster(meta,m)
-    for bad in ('train','test','idm_train'):
+    checkpoint_roster(meta,m,original)
+    for bad in ('val','test','idm_train'):
         changed=copy.deepcopy(meta);changed['targets'][DEV[0]]['split']=bad
-        with pytest.raises(ValueError):checkpoint_roster(changed,m)
+        with pytest.raises(ValueError):checkpoint_roster(changed,m,original)
     changed=copy.deepcopy(meta);changed['targets'][RANGES[0]]['sha256']='c'*64
-    with pytest.raises(ValueError):checkpoint_roster(changed,m)
+    with pytest.raises(ValueError):checkpoint_roster(changed,m,original)
     changed=copy.deepcopy(meta);changed['targets']['later-match']={}
-    with pytest.raises(ValueError):checkpoint_roster(changed,m)
+    with pytest.raises(ValueError):checkpoint_roster(changed,m,original)
+    changed=copy.deepcopy(original);changed['sessions'][-1]['role']='train'
+    with pytest.raises(ValueError):checkpoint_roster(meta,m,changed)

@@ -12,6 +12,7 @@ from policy.idm import yaw_support as S
 from policy.idm.pitch_deadband import RANGES, DEV
 
 MATCHES=('20260927T051206-888Z-150600-4','20260927T052001-827Z-150600-5','20260927T053118-260Z-150600-6')
+FULL03_INPUTS='42494717650293cc4b77add3721d5168c20781e6b98ca275443824656e055580'
 
 
 def roster(manifest):
@@ -21,20 +22,27 @@ def roster(manifest):
         raise ValueError('exact full03 TRAIN and two range-dev roster required')
 
 
-def checkpoint_roster(meta, manifest):
-    """Checkpoint provenance includes DEV too; authenticate roles, not keys alone."""
+def checkpoint_roster(meta, manifest, full03_run):
+    """Registry TRAIN is not experiment TRAIN: the frozen fit manifest owns roles."""
     roster(manifest)
     expected={e['session_id']:e for e in manifest['sessions']}
+    original={e['session_id']:e for e in full03_run['sessions']}
+    if len(full03_run['sessions'])!=len(expected) or set(original)!=set(expected):
+        raise ValueError('full03 experiment roster differs')
     if set(meta['targets'])!=set(expected) or set(meta['frame_stores'])!=set(expected):
         raise ValueError('checkpoint provenance roster mismatch')
     trained=set()
     for sid,e in expected.items():
         actual=meta['targets'][sid]
-        split='idm_train' if sid in MATCHES else ('val' if sid in DEV else 'train')
+        split='idm_train' if sid in MATCHES else 'train'
+        experiment_role='heldout' if sid in DEV else 'train'
+        if original[sid]['role']!=experiment_role or original[sid]['targets_sha256']!=e['targets_sha256'] \
+                or original[sid]['frames_sha256']!=e['frames_sha256']:
+            raise ValueError('full03 experiment role or pin differs')
         if actual['split']!=split or actual['sha256']!=e['targets_sha256'] \
                 or meta['frame_stores'][sid]['manifest_sha256']!=e['frames_sha256']:
             raise ValueError('checkpoint role/target/store pin differs')
-        if actual['split'] in ('train','idm_train'):trained.add(sid)
+        if original[sid]['role']=='train':trained.add(sid)
     if trained!=set((*RANGES,*MATCHES)):raise ValueError('checkpoint TRAIN roster mismatch')
 
 
@@ -80,14 +88,15 @@ def main():
         if set(admission.sessions)!=set(MATCHES):raise ValueError('unexpected match admission selected')
         if T.sha256(m['checkpoint'])!=S.CHECKPOINT:raise ValueError('full03 pin')
         model,payload=train.load_checkpoint(m['checkpoint'],device='mps')
-        checkpoint_roster(payload['meta'],m)
+        if T.sha256(m['full03_manifest'])!=FULL03_INPUTS:raise ValueError('full03 experiment manifest pin')
+        checkpoint_roster(payload['meta'],m,json.loads(Path(m['full03_manifest']).read_bytes()))
         if model.config.embed!=128:raise ValueError('feature dimension')
         selections={};selected={};rates=[];rate_summary={}
         def load(e):
             if T.sha256(e['targets'])!=e['targets_sha256']:raise ValueError('target pin')
             t=T.load(e['targets'],denylist=deny,match_admission=admission if e['session_id'] in MATCHES else None)
             if t.session_id!=e['session_id']:raise ValueError('session identity')
-            split='idm_train' if t.session_id in MATCHES else ('val' if e['role']=='dev' else 'train')
+            split='idm_train' if t.session_id in MATCHES else 'train'
             if t.header['split']!=split:raise ValueError('role mismatch')
             fp=Path(e['store'])/'frames.json'
             if T.sha256(fp)!=e['frames_sha256']:raise ValueError('frame manifest pin')
