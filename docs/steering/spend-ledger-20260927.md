@@ -14,6 +14,7 @@ for it twice. A lesson that lives only in a lane note hasn't been learned by the
 | No-history encoders | $2.66 | The breakthrough: press F1 0.10 to 0.37 | explore-policy lane note; VUH-1346 |
 | NitroGen no-history confirm, 6 fits | $7.55 | CONFIRMED over 3 seeds: F1 0.30 against 0.004 for the control; yaw still worse than zero | `docs/evidence/nitrogen-nohistory-confirm-20260927/`; VUH-1346 |
 | Yaw 4x4 spatial readout | $2.57 | NEGATIVE and overfitting (train loss down, dev up); next is regularization or a smaller head | `docs/evidence/nitrogen-spatial-yaw-20260927/` |
+| Yaw 4x4 with dropout p=0.5 | about $2.4 | NEGATIVE: narrows the gap to the no-dropout control (1.886 against 1.908) but stays worse than the frozen base (1.773) and zero (1.735); the yaw-residual line is closed | `docs/evidence/nitrogen-spatial-yaw-20260927/`, 4d4da44 |
 | IDM press diagnostics | $2.98 | Train-calibrated thresholds lift button precision (Combo 16% to 42%, F1 0.48 against 0.01 chance) | `docs/lanes/idm-press-diagnostic-results-20260927.md` |
 | IDM SSL smoke | $0.19 | Pipeline works; no science yet | IDM lane notes |
 | Round 3 (DINOv2 confirm), 36 apps | $6.04 | No model answer; parked after 18 h of launch failures | steering log; compute.md shakedown rule |
